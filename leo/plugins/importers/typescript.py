@@ -2,6 +2,7 @@
 #@+node:ekr.20140723122936.18152: * @file importers/typescript.py
 '''The @auto importer for TypeScript.'''
 import leo.core.leoGlobals as g
+assert g
 import leo.plugins.importers.linescanner as linescanner
 import re
 Importer = linescanner.Importer
@@ -22,8 +23,6 @@ class TS_Importer(Importer):
     #@+node:ekr.20161118093751.2: *3* ts_i.skip_possible_regex
     def skip_possible_regex(self, s, i):
         '''look ahead for a regex /'''
-        trace = False and not g.unitTesting
-        if trace: g.trace(repr(s))
         assert s[i] in '=(', repr(s[i])
         i += 1
         while i < len(s) and s[i] in ' \t':
@@ -43,7 +42,6 @@ class TS_Importer(Importer):
                     i += 1
                 assert progress < i
 
-        if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i-1
     #@+node:ekr.20161118093751.5: *3* js_i.clean_headline
     def clean_headline(self, s, p=None):

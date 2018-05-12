@@ -32,19 +32,16 @@ class Org_Importer(Importer):
         Return a cleaned up headline for p.
         Also parses org-mode tags.
         '''
-        trace = True and not g.unitTesting
         if p and self.tc:
             # Support for #578: org-mode tags.
             m = self.tag_pattern.search(s)
             if m:
                 i = m.start()
-                head = s[:i].strip()
+                # head = s[:i].strip()
                 tail = s[i+1:-1].strip()
                 tags = tail.split(':')
                 for tag in tags:
                     self.tc.add_tag(p, tag)
-                if trace:
-                    g.trace('head', head, 'tags:', tags)
         return s
 
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines & helper
@@ -52,14 +49,12 @@ class Org_Importer(Importer):
 
     def gen_lines(self, s, parent):
         '''Node generator for org mode.'''
-        trace = False and not g.unitTesting
         self.inject_lines_ivar(parent)
         self.parents = [parent]
         for line in g.splitLines(s):
             m = self.org_pattern.match(line)
             if m:
                 # Cut back the stack, then allocate a new node.
-                if trace: g.trace(m.group(1), m.group(2))
                 level = len(m.group(1))
                 self.parents = self.parents[:level]
                 self.find_parent(
@@ -67,7 +62,6 @@ class Org_Importer(Importer):
                     h = m.group(2).strip())
             else:
                 p = self.parents[-1]
-                if trace: g.trace(p.h, repr(line))
                 self.add_line(p, line)
     #@+node:ekr.20161123194732.2: *4* org_i.find_parent
     def find_parent(self, level, h):

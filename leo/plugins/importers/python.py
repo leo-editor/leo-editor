@@ -56,7 +56,6 @@ class Py_Importer(Importer):
         Return a *general* state dictionary for the given context.
         Subclasses may override...
         '''
-        trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
 
         def add_key(d, key, data):
@@ -106,7 +105,6 @@ class Py_Importer(Importer):
                 add_key(d, comment[0], ('all', comment, '', None))
             if block1 and block2:
                 add_key(d, block1[0], ('len', block1, block1, None))
-        if trace: g.trace('created %s dict for %r state ' % (self.name, context))
         return d
     #@+node:ekr.20161119161953.1: *3* py_i.gen_lines & overrides
     def gen_lines(self, s, parent):
@@ -114,7 +112,6 @@ class Py_Importer(Importer):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         '''
-        trace = False and g.unitTesting
         tail_p = None
         prev_state = self.state_class()
         target = PythonTarget(parent, prev_state)
@@ -127,7 +124,6 @@ class Py_Importer(Importer):
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
             top = stack[-1]
-            if trace: self.trace_status(line, new_state, prev_state, stack, top)
             if self.skip > 0:
                 self.skip -= 1
             elif self.starts_decorator(i, lines, new_state):
@@ -163,19 +159,13 @@ class Py_Importer(Importer):
     def cut_stack(self, new_state, stack, append=False):
         '''Cut back the stack until stack[-1] matches new_state.'''
         # pylint: disable=arguments-differ
-        trace = False # and g.unitTesting
-        if trace:
-            g.trace(new_state)
-            g.printList(stack)
         assert len(stack) > 1 # Fail on entry.
         while stack:
             top_state = stack[-1].state
             if new_state.level() < top_state.level():
-                if trace: g.trace('new_state < top_state', top_state)
                 assert len(stack) > 1, stack # <
                 stack.pop()
             elif top_state.level() == new_state.level():
-                if trace: g.trace('new_state == top_state', top_state)
                 assert len(stack) > 1, stack # ==
                 if append:
                     pass # Append line to the previous node.
@@ -184,14 +174,11 @@ class Py_Importer(Importer):
                 break
             else:
                 # This happens often in valid Python programs.
-                if trace: g.trace('new_state > top_state', top_state)
                 break
         # Restore the guard entry if necessary.
         if len(stack) == 1:
-            if trace: g.trace('RECOPY:', stack)
             stack.append(stack[-1])
         assert len(stack) > 1 # Fail on exit.
-        if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20161116173901.1: *4* python_i.end_block
     def end_block(self, i, lines, new_state, prev_state, stack):
         '''
@@ -244,16 +231,11 @@ class Py_Importer(Importer):
         #@+others
         #@-others
         '''
-        trace = False # and g.unitTesting
         indent_ws = self.get_str_lws(line)
         h = self.clean_headline(line, p=None)
         if not target.at_others_flag:
             target.at_others_flag = True
             ref = '%s@others\n' % indent_ws
-            if trace:
-                g.trace('indent_ws: %r line: %r parent: %s' % (
-                     indent_ws, line, parent.h))
-                g.printList(self.get_lines(parent))
             self.add_line(parent,ref)
         return h
     #@+node:ekr.20161222123105.1: *4* python_i.promote_last_lines
@@ -284,7 +266,6 @@ class Py_Importer(Importer):
         deleting one tab's worth of indentation. Typically, this will remove
         the underindent escape.
         '''
-        trace = True
         pattern = self.escape_pattern # A compiled regex pattern
         for p in parent.subtree():
             lines = self.get_lines(p)
@@ -308,24 +289,15 @@ class Py_Importer(Importer):
                 else:
                     break
             if tail:
-                if trace:
-                    g.trace(parent.h)
-                    g.printList(reversed(tail))
                 parent = p.parent()
                 self.set_lines(p, lines)
                 self.extend_lines(parent, reversed(tail))
     #@+node:ekr.20161116034633.7: *4* python_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
-        trace = False and g.unitTesting
         assert not prev_state.in_context(), prev_state
         line = lines[i]
         top = stack[-1]
-        if trace:
-            g.trace('line', repr(line))
-            g.trace('top_state', top.state)
-            g.trace('new_state', new_state)
-            g.printList(stack)
         # Adjust the stack.
         if new_state.indent > top.state.indent:
             pass
@@ -340,7 +312,6 @@ class Py_Importer(Importer):
         h = self.clean_headline(line, p=None)
         child = self.create_child_node(parent, line, h)
         self.prepend_lines(child, self.decorator_lines)
-        if trace: g.printList(self.get_lines(child))
         self.decorator_lines = []
         target = PythonTarget(child, new_state)
         target.kind = 'class' if h.startswith('class') else 'def'
@@ -352,7 +323,6 @@ class Py_Importer(Importer):
     def starts_block(self, i, lines, new_state, prev_state, stack):
         '''True if the line startswith class or def outside any context.'''
         # pylint: disable=arguments-differ
-        trace = False and not g.unitTesting
         if prev_state.in_context():
             return False
         line = lines[i]
@@ -370,9 +340,6 @@ class Py_Importer(Importer):
         elif top.at_others_flag and new_state.indent > prev_indent:
             return False
         else:
-            if trace and new_state.indent > prev_indent:
-                g.trace(prev_indent, new_state.indent, repr(line))
-                g.trace('@others', top.at_others_flag)
             return True
     #@+node:ekr.20170305105047.1: *4* python_i.starts_decorator
     decorator_pattern = re.compile(r'^\s*@\s*(\w+)')
@@ -423,7 +390,6 @@ class Py_Importer(Importer):
 
         Return (kind, i, j), where kind in (None, 'class', 'def')
         '''
-        trace = True and not g.unitTesting
         prev_state = Python_ScanState()
         target = Target(parent, prev_state)
         stack = [target, target]
@@ -431,7 +397,6 @@ class Py_Importer(Importer):
         index = 0
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
-            if trace: g.trace(new_state)
             if self.starts_block(i, lines, new_state, prev_state):
                 return self.skip_block(i, index, lines, new_state, stack)
             prev_state = new_state
@@ -445,7 +410,6 @@ class Py_Importer(Importer):
 
         Return (kind, i, j), where kind in (None, 'class', 'def')
         .'''
-        trace = True and not g.unitTesting
         index1 = index
         line = lines[i]
         kind = 'class' if line.strip().startswith('class') else 'def'
@@ -456,7 +420,6 @@ class Py_Importer(Importer):
             index += len(line)
             new_state = self.scan_line(line, prev_state)
             top = stack[-1]
-            if trace: g.trace('new level', new_state.level(), 'line', line)
             # Similar to self.ends_block.
             if (not self.is_ws_line(line) and
                 not prev_state.in_context() and

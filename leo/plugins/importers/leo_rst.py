@@ -39,7 +39,6 @@ class Rst_Importer(Importer):
     #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers
     def gen_lines(self, s, parent):
         '''Node generator for reStructuredText importer.'''
-        trace = False and g.unitTesting
         if not s or s.isspace():
             return
         self.inject_lines_ivar(parent)
@@ -48,7 +47,6 @@ class Rst_Importer(Importer):
         skip = 0
         lines = g.splitLines(s)
         for i, line in enumerate(lines):
-            if trace: g.trace('%2s %r' % (i+1, line))
             if skip > 0:
                 skip -= 1
             elif self.is_lookahead_overline(i, lines):
@@ -71,22 +69,13 @@ class Rst_Importer(Importer):
         Return the parent at the indicated level, allocating
         place-holder nodes as necessary.
         '''
-        trace = False and g.unitTesting
-        trace_stack = True
         assert level > 0
-        if trace: g.trace('===== level: %s len(stack): %s h: %s' % (
-            level, len(self.stack), h))
         while level < len(self.stack):
-            p = self.stack.pop()
-            if trace:
-                g.trace('POP', len(self.get_lines(p)), p.h)
-                if trace and trace_stack:
-                    self.print_list(self.get_lines(p))
+            self.stack.pop()
         # Insert placeholders as necessary.
         # This could happen in imported files not created by us.
         while level > len(self.stack):
             top = self.stack[-1]
-            if trace: g.trace('PLACE HOLDER', top.h)
             child = self.create_child_node(
                 parent = top,
                 body = None,
@@ -95,14 +84,12 @@ class Rst_Importer(Importer):
             self.stack.append(child)
         # Create the desired node.
         top = self.stack[-1]
-        if trace: g.trace('TOP', top.h)
         child = self.create_child_node(
             parent = top,
             body = None,
             headline = h, # Leave the headline alone
         )
         self.stack.append(child)
-        if trace and trace_stack: self.print_stack(self.stack)
         return self.stack[level]
     #@+node:ekr.20161129111503.1: *4* rst_i.is_lookahead_overline
     def is_lookahead_overline(self, i, lines):
@@ -137,8 +124,6 @@ class Rst_Importer(Importer):
     #@+node:ekr.20161129040921.8: *4* rst_i.is_underline
     def is_underline(self, line, extra=None):
         '''True if the line consists of nothing but the same underlining characters.'''
-        trace = False and g.unitTesting
-        if trace: g.trace(repr(line))
         if line.isspace():
             return None
         chars = underlines

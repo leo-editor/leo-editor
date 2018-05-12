@@ -134,9 +134,7 @@ class Import_IPYNB(object):
     #@+node:ekr.20160412101537.12: *4* ipynb.do_cell
     def do_cell(self, cell):
 
-        trace = False and not g.unitTesting
         if self.is_empty_code(cell):
-            if trace: g.trace('skipping empty cell')
             return
         self.parent = cell_p = self.root.insertAsLastChild()
         # Expand the node if metadata: collapsed is False
@@ -149,9 +147,6 @@ class Import_IPYNB(object):
         self.parent.h = h
         if collapsed is not None and not collapsed:
             cell_p.v.expand()
-        if trace:
-            print('')
-            g.trace('=====', self.cell_n, cell.get('cell_type'))
         # Handle the body text.
         val = cell.get('source')
         if val and val.strip():
@@ -258,10 +253,6 @@ class Import_IPYNB(object):
     #@+node:ekr.20180407175655.1: *4* ipynb.set_ua
     def set_ua(self, p, key, val):
         '''Set p.v.u'''
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace(p.h, key)
-            g.printObj(val)
         d = p.v.u
         d2 = d.get('ipynb') or {}
         d2 [key] = val
