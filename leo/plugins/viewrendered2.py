@@ -330,18 +330,15 @@ def preview(event):
 @g.command('vr2')
 def viewrendered(event):
     """Open render view for commander"""
-    trace = False and not g.unitTesting
     c = event.get('c')
     if not c: return None
     global controllers
     vr = controllers.get(c.hash())
     if vr:
-        if trace: g.trace('** controller exists: %s' % (vr))
         vr.show()
     else:
         vr = ViewRenderedController(c)
         controllers[c.hash()] = vr
-        if trace: g.trace('** new controller: %s' % (vr))
         if hasattr(c, 'free_layout'):
             vr._ns_id = '_leo_viewrendered' # for free_layout load/save
             splitter = c.free_layout.get_top_splitter()
@@ -1020,7 +1017,6 @@ class WebViewPlus(QtWidgets.QWidget):
     #@+node:ekr.20140226075611.16796: *7* vr2.process_directives
     def process_directives(self, s, d):
         """s is string to process, d is dictionary of directives at the node."""
-        trace = False and not g.unitTesting
         lang = d.get('language') or 'python' # EKR.
         codeflag = lang != 'rest' # EKR
         lines = g.splitLines(s)
@@ -1059,7 +1055,6 @@ class WebViewPlus(QtWidgets.QWidget):
                     result.append(s)
         result = ''.join(result)
         
-        if trace: g.trace('result:\n', result) # ,'\ncode:',code)
         return result, code
     #@+node:ekr.20140226075611.16795: *7* vr2.underline2
     def underline2(self, p):
@@ -1250,8 +1245,6 @@ class WebViewPlus(QtWidgets.QWidget):
     #@+node:peckj.20140228100832.6398: *7* vr2.md_exec_code
     def md_exec_code(self, code, environment):
         """Execute the code, capturing the output in stdout and stderr."""
-        trace = True and not g.unitTesting
-        if trace: g.trace('\n', code)
         saveout = sys.stdout # save stdout
         saveerr = sys.stderr
         sys.stdout = bufferout = StringIO()
@@ -1279,7 +1272,6 @@ class WebViewPlus(QtWidgets.QWidget):
     #@+node:peckj.20140228100832.6400: *7* vr2.md_process_directives
     def md_process_directives(self, s, d):
         """s is string to process, d is dictionary of directives at the node."""
-        trace = False and not g.unitTesting
         lang = d.get('language') or 'python' # EKR.
         codeflag = lang != 'md' # EKR
         lines = g.splitLines(s)
@@ -1317,7 +1309,6 @@ class WebViewPlus(QtWidgets.QWidget):
                 if not self.code_only:
                     result.append(s)
         result = ''.join(result)
-        if trace: g.trace('result:\n', result) # ,'\ncode:',code)
         return result, code
     #@+node:peckj.20140228100832.6401: *7* vr2.md_underline2
     def md_underline2(self, p):
@@ -1508,7 +1499,6 @@ class ViewRenderedController(QtWidgets.QWidget):
     # Must have this signature: called by leoPlugins.callTagHandler.
 
     def update(self, tag, keywords):
-        trace = False and not g.unitTesting
         pc = self
         p = pc.c.p
         if pc.must_update(keywords):
@@ -1524,9 +1514,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             if kind is None:
                 kind = pc.get_kind(p)
             f = pc.dispatch_dict.get(kind)
-            if f:
-                if trace: g.trace(f.__name__)
-            else:
+            if not f:
                 g.trace('no handler for kind: %s' % kind)
                 f = pc.update_rst
             f(s, keywords)
@@ -1595,26 +1583,20 @@ class ViewRenderedController(QtWidgets.QWidget):
     #@+node:ekr.20140226074510.4223: *4* vr2.must_update
     def must_update(self, keywords):
         '''Return True if we must update the rendering pane.'''
-        trace = False and not g.unitTesting
         pc = self
         c, p = pc.c, pc.c.p
         if g.unitTesting:
             return False
         if keywords.get('force'):
             pc.active = True
-            if trace: g.trace('force: activating')
             return True
         if c != keywords.get('c') or not pc.active:
-            if trace: g.trace('not active')
             return False
         if pc.locked:
-            if trace: g.trace('locked')
             return False
         if pc.gnx != p.v.gnx:
-            if trace: g.trace('changed node')
             return True
         if len(p.b) != pc.length:
-            if trace: g.trace('text changed')
             return True
         # This will be called at idle time.
         # if trace: g.trace('no change')
@@ -1709,7 +1691,6 @@ class ViewRenderedController(QtWidgets.QWidget):
     #     pc = self ; c = pc.c ;  p = c.p
     #     s = s.strip().strip('"""').strip("'''").strip()
     #     isHtml = s.startswith('<') and not s.startswith('<<')
-    #     if trace: g.trace('isHtml',isHtml)
     # 
     #     # Do this regardless of whether we show the widget or not.
     #     w = pc.ensure_text_widget()

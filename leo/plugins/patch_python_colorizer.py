@@ -35,13 +35,12 @@ def patch_colorizer(c):
     c.frame.body.wrapper.setAllText(c.p.b)
 #@+node:ekr.20180119164405.1: ** python_rule_global
 def python_rule_global(colorer, s, i):
-    trace = False
+
     pattern = re.compile(r'\b(G[A-Z0-9_]*)')
     self = colorer
     kind = 'keyword1'
     for m in re.finditer(pattern,s):
         if m.start() == i:
-            if trace: g.trace(i, repr(s), m.group(0))
             j = i + len(m.group(0))
             self.colorRangeWithTag(s, i, j, kind, delegate=None)
             self.prev = (i, j, kind)

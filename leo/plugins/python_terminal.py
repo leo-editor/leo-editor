@@ -289,7 +289,6 @@ class PyInterp(QtWidgets.QTextEdit):
     #@+node:ekr.20180307132016.1: *4* doEnter
     def doEnter(self, event):
         # set cursor to end of line to avoid line splitting
-        trace = False and not g.unitTesting
         textCursor = self.textCursor()
         position   = len(self.document().toPlainText())
         textCursor.setPosition(position)
@@ -304,9 +303,6 @@ class PyInterp(QtWidgets.QTextEdit):
             if done: line = line [4:] # remove marker
             lines.insert(0, line.rstrip())
             if done: break
-        if trace:
-            g.trace()
-            g.printObj(lines)
         self.historyIndex = -1
         if len(lines) > 1:
             # #792: python_console plugin doesn't handle copy/paste properly.

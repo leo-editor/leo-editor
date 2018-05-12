@@ -184,10 +184,8 @@ class TagController(object):
     #@+node:peckj.20140804103733.9259: *4* get_tags
     def get_tags(self, p):
         ''' returns a list of tags applied to position p.'''
-        trace = False and not g.unitTesting
         if p:
             tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
-            if trace and tags: g.trace(tags, p.h)
             return list(tags)
         else:
             return []

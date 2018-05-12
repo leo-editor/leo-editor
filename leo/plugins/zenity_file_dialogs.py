@@ -23,13 +23,8 @@ def testForZenity():
     command = [ 'which', 'zenity']
     o = subprocess.Popen(command, stdout=subprocess.PIPE)
     o.wait()
-    filename = o.communicate()[0].rstrip()
+    o.communicate()[0].rstrip()
     ret = o.returncode
-    if trace:
-        g.trace('\n\texecutable', repr(filename))
-        print('\n\treturncode', ret)
-    if trace and ret:
-        g.trace('\n\tCan\'t find Zenity!')
     return not ret
 #@+node:ekr.20101110095557.5888: ** init
 def init ():
@@ -60,11 +55,7 @@ def callZenity(title, multiple=False, save=False, test=False):
     o.wait()
     filename = o.communicate()[0].rstrip()
     ret = o.returncode
-    if trace:
-        g.trace('\n\tfiles', repr(filename))
-        print('\treturncode', ret)
     if ret:
-        if trace: g.trace('save' if save else 'open', 'cancelled')
         return ''
     if multiple:
         return filename.split('|')
