@@ -2036,17 +2036,6 @@
 <v t="ekr.20180511101509.1"><vh>#868: Allow separate bindings for numeric keypad keys</vh></v>
 </v>
 </v>
-<v t="ekr.20180512074012.1"><vh>OLD @button to-md</vh>
-<v t="ekr.20180512081559.1"><vh>clean_headline</vh></v>
-<v t="ekr.20180512085916.1"><vh>get_level</vh></v>
-<v t="ekr.20180512092138.1"><vh>get_link</vh></v>
-<v t="ekr.20180512080505.1"><vh>make_body</vh></v>
-<v t="ekr.20180512081702.1"><vh>make_head</vh></v>
-<v t="ekr.20180512121339.1"><vh>make_html_node</vh></v>
-<v t="ekr.20180512121306.1"><vh>make_markdown_node</vh></v>
-<v t="ekr.20180512081043.1"><vh>make_toc</vh></v>
-<v t="ekr.20180512074234.1"><vh>to_markdown</vh></v>
-</v>
 <v t="ekr.20180512150125.1"><vh>@button to-md</vh>
 <v t="ekr.20180512150256.1"><vh>mdc.main &amp; helpers</vh>
 <v t="ekr.20180512150125.2"><vh>clean_headline</vh></v>
@@ -26966,102 +26955,6 @@ As usual, spellings are not significant. For example:
 clone-find-all-flattened = Key_Pad+9
 clone-find-all = keypad-PageUp
     # Same as keypad+pageup, etc. etc.</t>
-<t tx="ekr.20180512074012.1">'''A prototype for #767: a markdown command for Leo.'''
-@language python
-import markdown
-
-def main(c):
-    root = c.p
-    @others
-        # Defining all helpers inside main creates scoping problems
-        # because python2 lacks non-local.
-    source = '\n'.join(
-        [make_toc()] +
-        [to_markdown(p) for p in c.p.self_and_subtree()]
-    )
-    html = markdown.markdown(source)
-    make_markdown_node(source)
-    make_html_node(html)
-    c.redraw()
-
-main(c)
-</t>
-<t tx="ekr.20180512074234.1">def to_markdown(p):
-    '''Create markdown for node p.'''
-    return make_head(p) + make_body(p)
-</t>
-<t tx="ekr.20180512080505.1">def make_body(p):
-    '''Return the cleaned body text for p.'''
-    if not p.b.strip():
-        return ''
-    aList = []
-    for s in g.splitLines(p.b.strip()):
-        if s.startswith('#'):
-            aList.append(' ' + s)
-        elif s.startswith('@language'):
-            pass
-        elif s.startswith('@wrap'):
-            pass
-        else:
-            aList.append(s.rstrip() + '\n')
-    s = ''.join(aList)
-    s = s.replace('\n\n\n', '\n\n')
-    return s.rstrip() +'\n'</t>
-<t tx="ekr.20180512081043.1">def make_toc():
-    '''Return the table of contents for root.'''
-    return ''.join([
-        '%s- [%s](#%s)\n' % (
-            ' '*4*( get_level(p)-1), p.h.strip(), get_link(p))
-        for p in root.self_and_subtree()
-    ])
-</t>
-<t tx="ekr.20180512081559.1">def clean_headline(p):
-    '''Clean a headline so it can be used in a an &lt;h1..6&gt; element.'''
-    return (
-        p.h.strip()
-        .replace('&amp;','&amp;amp;')
-        .replace('&lt;','&amp;lt')
-        .replace('&gt;','&amp;gt')
-        # .replace('"', '&amp;quote)
-        # .replace("'", '&amp;#39;')
-    )
-</t>
-<t tx="ekr.20180512081702.1">def make_head(p):
-    '''Return an &lt;h1...6&gt; element with the proper id.'''
-    level = min(6, get_level(p))
-    return'&lt;h%s id="%s"&gt;%s&lt;/h%s&gt;\n' % (
-        level,
-        get_link(p),
-        clean_headline(p),
-        level,
-    )
-</t>
-<t tx="ekr.20180512085916.1">def get_level(p):
-    '''Return the markdown level for p.'''
-    return 1 + p.level() - c.p.level()
-</t>
-<t tx="ekr.20180512092138.1">links = { 'd': {}, 'n': 1, }
-    # nonlocal does not exist in Python 2,
-    # so we must create a helper dict.
-
-def get_link(p):
-    '''Return a unique int associated with p.v.'''
-    d = links.get('d')
-    if p.v not in d:
-        d [p.v] = links.get('n')
-        links ['n'] += 1
-    return d.get(p.v)
-</t>
-<t tx="ekr.20180512121306.1">def make_markdown_node(source):
-    '''Create the markdown node.'''
-    p = c.lastTopLevel().insertAfter()
-    p.h = 'Markdown: %s' % root.h
-    p.b = source</t>
-<t tx="ekr.20180512121339.1">def make_html_node(html):
-    '''Create markdown node.'''
-    p = c.lastTopLevel().insertAfter()
-    p.h = 'HTML: %s' % root.h
-    p.b = html</t>
 <t tx="ekr.20180512150125.1">'''A prototype for #767: a markdown command for Leo.'''
 @language python
 import markdown
@@ -27099,6 +26992,18 @@ MarkDownWriter().main(c)
     if p.v not in d:
         d [p.v] = self.n
         self.n += 1
+    return d.get(p.v)
+
+links = { 'd': {}, 'n': 1, }
+    # nonlocal does not exist in Python 2,
+    # so we must create a helper dict.
+
+def OLD_get_link(p):
+    '''Return a unique int associated with p.v.'''
+    d = links.get('d')
+    if p.v not in d:
+        d [p.v] = links.get('n')
+        links ['n'] += 1
     return d.get(p.v)
 </t>
 <t tx="ekr.20180512150125.5">def make_body(p):
