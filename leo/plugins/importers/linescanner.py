@@ -227,7 +227,6 @@ class Importer(object):
         Return a *general* state dictionary for the given context.
         Subclasses may override...
         '''
-        trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
 
         def add_key(d, pattern, data):
@@ -264,7 +263,6 @@ class Importer(object):
                 add_key(d, comment, ('all', comment, '', None))
             if block1 and block2:
                 add_key(d, block1, ('len', block1, block1, None))
-        if trace: g.trace('created %s dict for %4r state ' % (self.name, context))
         return d
     #@+node:ekr.20161113135037.1: *4* i.get_table
     #@@nobeautify
@@ -291,9 +289,6 @@ class Importer(object):
         i.scan_dict: Scan at position i of s with the give context and dict.
         Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
         '''
-        trace = False and g.unitTesting
-        trace_fail = False
-        if trace and trace_fail: g.trace('='*20, repr(context))
         found = False
         delta_c = delta_p = delta_s = 0
         ch = s[i] # For traces.
@@ -336,20 +331,10 @@ class Importer(object):
                 assert kind == 'len', (kind, self.name)
                 i += len(pattern)
             bs_nl = pattern == '\\\n'
-            if trace:
-                g.trace(
-                    '   MATCH: i: %s ch: %r kind: %r pattern: %r '
-                    'context: %r new_context: %r line: %r' % (
-                        i, ch, kind, pattern, context, new_context, s))
-                g.trace('deltas', delta_c, delta_p, delta_s)
-                g.trace('data', data)
             return new_context, i, delta_c, delta_p, delta_s, bs_nl
         else:
             # No match: stay in present state. All deltas are zero.
             new_context = context
-            if trace and trace_fail: g.trace(
-                'NO MATCH: i: %s ch: %r context: %r line: %r' % (
-                    i, ch, context, s))
         return new_context, i+1, 0, 0, 0, False
     #@+node:ekr.20161108170435.1: *4* i.scan_line
     def scan_line(self, s, prev_state):
@@ -368,7 +353,6 @@ class Importer(object):
 
         2. The state class must have an update method.
         '''
-        trace = False and g.unitTesting
         # This dict allows new data to be added without changing ScanState signatures.
         d = {
             'indent': self.get_int_lws(s),
@@ -385,7 +369,6 @@ class Importer(object):
             data = self.scan_dict(context, i, s, table)
             i = new_state.update(data)
             assert progress < i
-        if trace: g.trace('\n\n%r\n\n%s\n' % (s, new_state))
         return new_state
     #@+node:ekr.20161114024119.1: *4* i.test_scan_state
     def test_scan_state(self, tests, State):
@@ -401,27 +384,19 @@ class Importer(object):
             importer = py.Py_Importer(c.importCommands)
             importer.test_scan_state(tests, Python_ScanState)
         '''
-        trace = False and g.unitTesting
         assert self.single_comment == '#', self.single_comment
-        trace_contexts = True
-        trace_states = True
         table = self.get_table(context='')
         contexts = self.all_contexts(table)
-        if trace and trace_contexts:
-            print('\ncontexts:'+' '.join([repr(z) for z in contexts]))
         for bunch in tests:
             assert bunch.line is not None
             line = bunch.line
             ctx = getattr(bunch, 'ctx', None)
-            if trace: g.trace('===== ctx: %r line: %r' % (ctx, line))
             if ctx: # Test one transition.
                 ctx_in, ctx_out = ctx
                 prev_state =  State()
                 prev_state.context = ctx_in
                 new_state = self.scan_line(line, prev_state)
                 new_context = new_state.context
-                if trace and trace_states: g.trace(
-                    '\nprev: %s\n new: %s' % (prev_state, new_state))
                 assert new_context == ctx_out, (
                     'FAIL1:\nline: %r\ncontext: %r new_context: %r ctx_out: %r\n%s\n%s' % (
                         line, ctx_in, new_context, ctx_out, prev_state, new_state))
@@ -430,8 +405,6 @@ class Importer(object):
                     prev_state =  State()
                     prev_state.context = context
                     new_state = self.scan_line(line, prev_state)
-                    if trace and trace_states: g.trace(
-                        '\nprev: %s\n new: %s' % (prev_state, new_state))
                     assert new_state.context == context, (
                         'FAIL2:\nline: %r\ncontext: %r new_context: %r\n%s\n%s' % (
                             line, context, new_state.context, prev_state, new_state))
@@ -439,12 +412,9 @@ class Importer(object):
     #@+node:ekr.20161108131153.10: *4* i.run (driver) & helers
     def run(self, s, parent, parse_body=False):
         '''The common top-level code for all scanners.'''
-        trace = False and g.unitTesting
         c = self.c
-        if trace: g.trace('-' * 10, parent.h)
         # Fix #449: Cloned @auto nodes duplicates section references.
         if parent.isCloned() and parent.hasChildren():
-            if trace: g.trace('already imported', parent.h)
             return
         self.root = root = parent.copy()
         self.file_s = s
@@ -475,7 +445,6 @@ class Importer(object):
         for p in root.self_and_subtree():
             p.clearDirty()
         c.setChanged(changed)
-        if trace: g.trace('-' * 10, parent.h)
         return ok
     #@+node:ekr.20161108131153.14: *5* i.regularize_whitespace
     def regularize_whitespace(self, s):
@@ -483,8 +452,6 @@ class Importer(object):
         Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
         '''
-        trace = False and not g.unitTesting
-        trace_lines = False
         kind = 'tabs' if self.tab_width > 0 else 'blanks'
         kind2 = 'blanks' if self.tab_width > 0 else 'tabs'
         fn = g.shortFileName(self.root.h)
@@ -498,8 +465,6 @@ class Importer(object):
                     # Use negative width.
                 if s != line:
                     count += 1
-                    if trace and trace_lines:
-                        g.es_print('%s: %r\n%s: %r' % (n+1, line, n+1, s))
                 result.append(s)
         elif tab_width > 0: # Convert blanks to tabs.
             for n, line in enumerate(lines):
@@ -507,8 +472,6 @@ class Importer(object):
                     # Use positive width.
                 if s != line:
                     count += 1
-                    if trace and trace_lines:
-                        g.es_print('%s: %r\n%s: %r' % (n+1, line, n+1, s))
                 result.append(s)
         if count:
             self.ws_error = True # A flag to check.
@@ -543,7 +506,6 @@ class Importer(object):
     def check_blanks_and_tabs(self, lines):
         '''Check for intermixed blank & tabs.'''
         # Do a quick check for mixed leading tabs/blanks.
-        trace = False and not g.unitTesting
         fn = g.shortFileName(self.root.h)
         w = self.tab_width
         blanks = tabs = 0
@@ -561,9 +523,7 @@ class Importer(object):
         if ok:
             ok = blanks == 0 or tabs == 0
             message = 'intermixed blanks and tabs in: %s' % (fn)
-        if ok:
-            if trace: g.trace('=====', len(lines), blanks, tabs)
-        else:
+        if not ok:
             if g.unitTesting:
                 self.report(message)
             else:
@@ -575,7 +535,6 @@ class Importer(object):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         '''
-        trace = False # and g.unitTesting
         tail_p = None
         prev_state = self.state_class()
         target = Target(parent, prev_state)
@@ -586,7 +545,6 @@ class Importer(object):
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
             top = stack[-1]
-            if trace: self.trace_status(line, new_state, prev_state, stack, top)
             if self.skip > 0:
                 self.skip -= 1
             elif self.is_ws_line(line):
@@ -614,29 +572,23 @@ class Importer(object):
     #@+node:ekr.20161119130337.1: *5* i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
-        trace = False and g.unitTesting
         
         def underflow(n):
             g.trace(n)
             g.trace(new_state)
             g.printList(stack)
             
-        if trace:
-            g.trace(new_state)
-            g.printList(stack)
         # assert len(stack) > 1 # Fail on entry.
         if len(stack) <= 1:
             return underflow(0)
         while stack:
             top_state = stack[-1].state
             if new_state.level() < top_state.level():
-                if trace: g.trace('new_state < top_state', top_state)
                 if len(stack) > 1:
                     stack.pop()
                 else:
                     return underflow(1)
             elif top_state.level() == new_state.level():
-                if trace: g.trace('new_state == top_state', top_state)
                 # assert len(stack) > 1, stack # ==
                 # This is the only difference between i.cut_stack and python/cs.cut_stack
                 if len(stack) <= 1:
@@ -644,15 +596,12 @@ class Importer(object):
                 break
             else:
                 # This happens often in valid Python programs.
-                if trace: g.trace('new_state > top_state', top_state)
                 break
         # Restore the guard entry if necessary.
         if len(stack) == 1:
-            if trace: g.trace('RECOPY:', stack)
             stack.append(stack[-1])
         elif len(stack) <= 1:
             return underflow(3)
-        if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20161108160409.3: *5* i.end_block
     def end_block(self, line, new_state, stack):
         # The block is ending. Add tail lines until the start of the next block.
@@ -672,7 +621,6 @@ class Importer(object):
         '''
         Generate the ref line. Return the headline.
         '''
-        trace = False and g.unitTesting
         indent_ws = self.get_str_lws(line)
         h = self.clean_headline(line, p=None)
         if self.gen_refs:
@@ -696,16 +644,11 @@ class Importer(object):
                 # Don't generate another @others in this target.
             headline = h
         if ref:
-            if trace:
-                g.trace('%s indent_ws: %r line: %r parent: %s' % (
-                '*' * 20, indent_ws, line, parent.h))
-                g.printList(self.get_lines(parent))
             self.add_line(parent,ref)
         return headline
     #@+node:ekr.20161108160409.6: *5* i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
-        trace = False and g.unitTesting
         if hasattr(new_state, 'in_context'):
             assert not new_state.in_context(), ('start_new_block', new_state)
         line = lines[i]
@@ -715,9 +658,6 @@ class Importer(object):
         # Create a new child and associated target.
         child = self.create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
-        if trace:
-            g.trace('=====', repr(line))
-            g.printList(stack)
     #@+node:ekr.20161119124217.1: *5* i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''
@@ -782,7 +722,6 @@ class Importer(object):
         Delete nodes consisting of nothing but whitespace.
         Move the whitespace to the preceding node.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         aList = []
         for p in parent.subtree():
@@ -801,7 +740,6 @@ class Importer(object):
                         # Do delete p.
                         aList.append(p.copy())
         if aList:
-            if trace: g.trace('=====', parent.h)
             c.deletePositionsInList(aList, redraw=False)
                 # Suppress redraw.
     #@+node:ekr.20161222122914.1: *5* i.promote_last_lines
@@ -893,7 +831,6 @@ class Importer(object):
         Update the body text of all nodes in parent's tree using the injected
         v._import_lines lists.
         '''
-        trace = False and g.unitTesting
         for p in parent.self_and_subtree():
             v = p.v
             # Make sure that no code in x.post_pass has mistakenly set p.b.
@@ -901,11 +838,7 @@ class Importer(object):
             lines = v._import_lines
             if lines:
                 if not lines[-1].endswith('\n'):
-                    if trace: g.trace('===== add newline', repr(lines[-1]), p.h)
                     lines[-1] += '\n'
-            if trace:
-                g.trace('=====', repr(p.h))
-                self.print_lines(lines)
             v._bodyString = g.toUnicode(''.join(lines), reportErrors=True)
                 # Bug fix: 2017/01/24: must convert to unicode!
                 # This was the source of the internal error in the p.b getter.
@@ -1086,11 +1019,8 @@ class Importer(object):
     #@+node:ekr.20161108131153.18: *4* i.Messages
     def error(self, s):
         '''Issue an error and cause a unit test to fail.'''
-        trace = False
         self.errors += 1
         self.importCommands.errors += 1
-        if trace or not g.unitTesting:
-            g.error('Error:', s)
 
     def report(self, message):
         if self.strict:
@@ -1158,14 +1088,10 @@ class Importer(object):
     #@+node:ekr.20161108131153.19: *4* i.undent & helper
     def undent(self, p):
         '''Remove maximal leading whitespace from the start of all lines.'''
-        trace = False and g.unitTesting
         if self.is_rst:
             return p.b # Never unindent rst code.
         lines = self.get_lines(p)
         ws = self.common_lws(lines)
-        if trace:
-            g.trace('common_lws:', repr(ws))
-            g.printList(lines)
         result = []
         for s in lines:
             if s.startswith(ws):
@@ -1179,14 +1105,10 @@ class Importer(object):
                     self.c.atFileCommands.underindentEscapeString,
                     g.computeWidth(ws, self.tab_width),
                     s.lstrip()))
-        if trace:
-            g.trace('----- result...')
-            g.printList(result)
         return result
     #@+node:ekr.20161108131153.20: *5* i.common_lws
     def common_lws(self, lines):
         '''Return the lws (a string) common to all lines.'''
-        trace = False and not g.unitTesting # and self.root.h.endswith('.c')
         if not lines:
             return ''
         lws = self.get_str_lws(lines[0])
@@ -1200,9 +1122,6 @@ class Importer(object):
                 else:
                     lws = '' # Nothing in common.
                     break
-        if trace:
-            g.trace(repr(lws))
-            self.print_lines(lines)
         return lws
     #@+node:ekr.20161109072221.1: *4* i.undent_body_lines & helper
     def undent_body_lines(self, lines, ignoreComments=True):
@@ -1210,23 +1129,15 @@ class Importer(object):
         Remove the first line's leading indentation from all lines.
         Return the resulting string.
         '''
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace('='*20)
-            self.print_lines(lines)
         s = ''.join(lines)
         if self.is_rst:
             return s # Never unindent rst code.
         # Calculate the amount to be removed from each line.
         undent_val = self.get_leading_indent(lines, 0, ignoreComments=ignoreComments)
-        if trace: g.trace(undent_val, repr(lines[0]))
         if undent_val == 0:
             return s
         else:
             result = self.undent_by(s, undent_val)
-            if trace:
-                g.trace('-'*209)
-                self.print_lines(g.splitLines(result))
             return result
     #@+node:ekr.20161108180655.2: *5* i.undent_by
     def undent_by(self, s, undent_val):
@@ -1235,7 +1146,6 @@ class Importer(object):
 
         Strict languages: prepend the underindent escape for underindented lines.
         '''
-        trace = False and not g.app.unitTesting
         if self.is_rst:
             return s # Never unindent rst code.
         result = []
@@ -1244,14 +1154,11 @@ class Importer(object):
             lws = g.computeWidth(lws_s, self.tab_width)
             # Add underindentEscapeString only for strict languages.
             if self.strict and not line.isspace() and lws < undent_val:
-                if trace: g.trace('undent_val: %s, lws: %s, %r' % (
-                    undent_val, lws, line))
                 # End the underindent count with a period to
                 # protect against lines that start with a digit!
                 result.append("%s%s.%s" % (
                     self.escape, undent_val-lws, line.lstrip()))
             else:
-                if trace: g.trace(undent_val, repr(line))
                 s = g.removeLeadingWhitespace(line, undent_val, self.tab_width)
                 result.append(s)
         return ''.join(result)
