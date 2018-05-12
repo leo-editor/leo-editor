@@ -2040,9 +2040,10 @@
 <v t="ekr.20180512081559.1"><vh>clean_headline</vh></v>
 <v t="ekr.20180512085916.1"><vh>get_level</vh></v>
 <v t="ekr.20180512092138.1"><vh>get_link</vh></v>
-<v t="ekr.20180512103312.1"><vh>main</vh></v>
 <v t="ekr.20180512080505.1"><vh>make_body</vh></v>
 <v t="ekr.20180512081702.1"><vh>make_head</vh></v>
+<v t="ekr.20180512121339.1"><vh>make_html_node</vh></v>
+<v t="ekr.20180512121306.1"><vh>make_markdown_node</vh></v>
 <v t="ekr.20180512081043.1"><vh>make_toc</vh></v>
 <v t="ekr.20180512074234.1"><vh>to_markdown</vh></v>
 </v>
@@ -26955,7 +26956,21 @@ clone-find-all = keypad-PageUp
 <t tx="ekr.20180512074012.1">'''A prototype for #767: a markdown command for Leo.'''
 @language python
 import markdown
-@others
+
+def main(c):
+    root = c.p
+    @others
+        # Defining all helpers inside main creates scoping problems
+        # because python2 lacks non-local.
+    source = '\n'.join(
+        [make_toc()] +
+        [to_markdown(p) for p in c.p.self_and_subtree()]
+    )
+    html = markdown.markdown(source)
+    make_markdown_node(source)
+    make_html_node(html)
+    c.redraw()
+
 main(c)
 </t>
 <t tx="ekr.20180512074234.1">def to_markdown(p):
@@ -26979,7 +26994,7 @@ main(c)
     s = ''.join(aList)
     s = s.replace('\n\n\n', '\n\n')
     return s.rstrip() +'\n'</t>
-<t tx="ekr.20180512081043.1">def make_toc(root):
+<t tx="ekr.20180512081043.1">def make_toc():
     '''Return the table of contents for root.'''
     return ''.join([
         '%s- [%s](#%s)\n' % (
@@ -27012,34 +27027,28 @@ main(c)
     '''Return the markdown level for p.'''
     return 1 + p.level() - c.p.level()
 </t>
-<t tx="ekr.20180512092138.1">link_n = 1
-    # The next int to be returned.
-links = {}
-    # Keys are vnodes, values are ints.
+<t tx="ekr.20180512092138.1">links = { 'd': {}, 'n': 1, }
+    # nonlocal does not exist in Python 2,
+    # so we must create a helper dict.
 
 def get_link(p):
     '''Return a unique int associated with p.v.'''
-    global link_n, links
-    if p.v not in links:
-        links [p.v] = link_n
-        link_n += 1
-    return links.get(p.v)
+    d = links.get('d')
+    if p.v not in d:
+        d [p.v] = links.get('n')
+        links ['n'] += 1
+    return d.get(p.v)
 </t>
-<t tx="ekr.20180512103312.1">def main(c):
-    root = c.p
-    aList = [make_toc(c.p)]
-    aList.extend([to_markdown(p) for p in c.p.self_and_subtree()])
-    source = '\n'.join(aList)
-    html = markdown.markdown(source)
-    # Create source node
+<t tx="ekr.20180512121306.1">def make_markdown_node(source):
+    '''Create the markdown node.'''
     p = c.lastTopLevel().insertAfter()
     p.h = 'Markdown: %s' % root.h
-    p.b = source
-    # Create markdown node
+    p.b = source</t>
+<t tx="ekr.20180512121339.1">def make_html_node(html):
+    '''Create markdown node.'''
     p = c.lastTopLevel().insertAfter()
     p.h = 'HTML: %s' % root.h
-    p.b = html
-    c.redraw()</t>
+    p.b = html</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
