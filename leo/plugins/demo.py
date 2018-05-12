@@ -200,8 +200,6 @@ class Demo(object):
         if self.script_i < len(self.script_list):
             # Execute the next script.
             script = self.script_list[self.script_i]
-            if trace:
-                self.print_script(script)
             self.script_i += 1
             self.setup_script()
             self.exec_node(script)
