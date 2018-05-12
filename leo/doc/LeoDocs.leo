@@ -2049,6 +2049,8 @@
 <v t="ekr.20180512150125.10"><vh>to_markdown</vh></v>
 </v>
 </v>
+<v t="ekr.20180512164338.1"><vh>Markdown: Leo 5.7.3 release notes</vh></v>
+<v t="ekr.20180512164338.2"><vh>HTML: Leo 5.7.3 release notes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -27028,9 +27030,7 @@ def get_link(p):
     for s in g.splitLines(p.b.strip()):
         if s.startswith('#'):
             aList.append(' ' + s)
-        elif s.startswith('@language'):
-            pass
-        elif s.startswith('@wrap'):
+        elif g.isDirective(s):
             pass
         else:
             aList.append(s.rstrip() + '\n')
@@ -27078,6 +27078,226 @@ def get_link(p):
     make_html_node(html)
     c.redraw()
 </t>
+<t tx="ekr.20180512164338.1">- [Leo 5.7.3 release notes](#1)
+    - [Bugs](#2)
+        - [#892: Crash in checkForChangedNodes](#3)
+        - [#901: The Windows Right-Menu key insert "Menu" into text](#4)
+    - [Code](#5)
+        - [#875: Rename json reader/writer plugins](#6)
+    - [Features](#7)
+        - [Smart searches for functions and methods](#8)
+        - [Added diff-related wrappers](#9)
+        - [Added leo_babel plugin](#10)
+        - [Removed settings](#11)
+        - [#868: Allow separate bindings for numeric keypad keys](#12)
+
+&lt;h1 id="1"&gt;Leo 5.7.3 release notes&lt;/h1&gt;
+Leo 5.7.3, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 5.7.3**
+
+- Smart searches for functions and methods.
+- Allow separate bindings for numeric keypad keys
+- Added easy-to-use diff-related wrappers for scripts.
+- Added leo_babel plugin.
+- A mass cleanup of Leo's code, removing many unused tracing statements.
+- The usual minor bug fixes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+
+&lt;h2 id="2"&gt;Bugs&lt;/h2&gt;
+
+&lt;h3 id="3"&gt;#892: Crash in checkForChangedNodes&lt;/h3&gt;
+
+Crash in checkForChangedNodes when changing git branches
+https://github.com/leo-editor/leo-editor/issues/892
+
+&lt;h3 id="4"&gt;#901: The Windows Right-Menu key insert "Menu" into text&lt;/h3&gt;
+https://github.com/leo-editor/leo-editor/issues/901
+
+&lt;h2 id="5"&gt;Code&lt;/h2&gt;
+
+&lt;h3 id="6"&gt;#875: Rename json reader/writer plugins&lt;/h3&gt;
+https://github.com/leo-editor/leo-editor/issues/875
+
+&lt;h2 id="7"&gt;Features&lt;/h2&gt;
+
+&lt;h3 id="8"&gt;Smart searches for functions and methods&lt;/h3&gt;
+The find-def command is typically invoked by control-clicking a function name. This command now will search for possible *alternative spellings* of the name if no match is found initially:
+
+- If the original name contains an underscore, say x_y, the second search will be for the camelCase version, xY.
+
+- Otherwise, we assume the name may be camelCase, say xY, and we attempt to convert it to x_y.
+
+A second search is attempted only if the converted name is different from the original.  In particular, names starting with a leading underscore are never converted.
+
+The new setting: @bool find-def-creates-clones (default False) controls whether a clone-find-flattened command is used to show all matching definitions. This setting has no effect when only one definition is found.
+
+&lt;h3 id="9"&gt;Added diff-related wrappers&lt;/h3&gt;
+
+Added c.diff_file, c.diff_two_branches and c.git_diff. Examples:
+
+ # creates outline-oriented diffs between all changed files between any two revs.
+ # In this case, rev1 is the last rev in devel not affected by removing trace statements.
+
+c.diff_two_revs(
+ rev1="24abd822b", # devel
+ rev2="HEAD", # will work in *any* branch
+)
+
+ # Leo's git-diff command:
+c.git_diff()
+
+ # Compares a file in two different branches:
+c.diff_two_branches(
+    branch1='master',
+    branch2='devel',
+    fn='leo/core/leoCommands.py',
+)
+
+&lt;h3 id="10"&gt;Added leo_babel plugin&lt;/h3&gt;
+For documentation, see the leo/plugins/leo_babel/doc folder.
+
+&lt;h3 id="11"&gt;Removed settings&lt;/h3&gt;
+- Removed @bool trace_import.
+- Removed @bool trace_bind_key_exceptions.
+
+&lt;h3 id="12"&gt;#868: Allow separate bindings for numeric keypad keys&lt;/h3&gt;
+https://github.com/leo-editor/leo-editor/issues/868
+
+As usual, spellings are not significant. For example:
+
+clone-find-all-flattened = Key_Pad+9
+clone-find-all = keypad-PageUp
+    # Same as keypad+pageup, etc. etc.
+</t>
+<t tx="ekr.20180512164338.2">&lt;ul&gt;
+&lt;li&gt;&lt;a href="#1"&gt;Leo 5.7.3 release notes&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#2"&gt;Bugs&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#3"&gt;#892: Crash in checkForChangedNodes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#4"&gt;#901: The Windows Right-Menu key insert "Menu" into text&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#5"&gt;Code&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#6"&gt;#875: Rename json reader/writer plugins&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#7"&gt;Features&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#8"&gt;Smart searches for functions and methods&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#9"&gt;Added diff-related wrappers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#10"&gt;Added leo_babel plugin&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#11"&gt;Removed settings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#12"&gt;#868: Allow separate bindings for numeric keypad keys&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="1"&gt;Leo 5.7.3 release notes&lt;/h1&gt;
+
+&lt;p&gt;Leo 5.7.3, http://leoeditor.com, is now available on
+&lt;a href="https://github.com/leo-editor/leo-editor"&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Leo is an IDE, outliner and PIM, as described &lt;a href="http://leoeditor.com/preface.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The highlights of Leo 5.7.3&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Smart searches for functions and methods.&lt;/li&gt;
+&lt;li&gt;Allow separate bindings for numeric keypad keys&lt;/li&gt;
+&lt;li&gt;Added easy-to-use diff-related wrappers for scripts.&lt;/li&gt;
+&lt;li&gt;Added leo_babel plugin.&lt;/li&gt;
+&lt;li&gt;A mass cleanup of Leo's code, removing many unused tracing statements.&lt;/li&gt;
+&lt;li&gt;The usual minor bug fixes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Links&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Leo's home page: http://leoeditor.com&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://leoeditor.com/leo_toc.html"&gt;Documentation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://leoeditor.com/tutorial.html"&gt;Tutorials&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://leoeditor.com/screencasts.html"&gt;Video tutorials&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://groups.google.com/group/leo-editor"&gt;Forum&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://sourceforge.net/projects/leo/files/"&gt;Download&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/leo-editor/leo-editor"&gt;Leo on GitHub&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/kaleguy/leovue#leo-vue"&gt;LeoVue&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://leoeditor.com/testimonials.html"&gt;What people are saying about Leo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://leoeditor.com/load-leo.html"&gt;A web page that displays .leo files&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://leoeditor.com/leoLinks.html"&gt;More links&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="2"&gt;Bugs&lt;/h2&gt;
+
+&lt;h3 id="3"&gt;#892: Crash in checkForChangedNodes&lt;/h3&gt;
+
+&lt;p&gt;Crash in checkForChangedNodes when changing git branches
+https://github.com/leo-editor/leo-editor/issues/892&lt;/p&gt;
+&lt;h3 id="4"&gt;#901: The Windows Right-Menu key insert "Menu" into text&lt;/h3&gt;
+
+&lt;p&gt;https://github.com/leo-editor/leo-editor/issues/901&lt;/p&gt;
+&lt;h2 id="5"&gt;Code&lt;/h2&gt;
+
+&lt;h3 id="6"&gt;#875: Rename json reader/writer plugins&lt;/h3&gt;
+
+&lt;p&gt;https://github.com/leo-editor/leo-editor/issues/875&lt;/p&gt;
+&lt;h2 id="7"&gt;Features&lt;/h2&gt;
+
+&lt;h3 id="8"&gt;Smart searches for functions and methods&lt;/h3&gt;
+
+&lt;p&gt;The find-def command is typically invoked by control-clicking a function name. This command now will search for possible &lt;em&gt;alternative spellings&lt;/em&gt; of the name if no match is found initially:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;If the original name contains an underscore, say x_y, the second search will be for the camelCase version, xY.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Otherwise, we assume the name may be camelCase, say xY, and we attempt to convert it to x_y.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A second search is attempted only if the converted name is different from the original.  In particular, names starting with a leading underscore are never converted.&lt;/p&gt;
+&lt;p&gt;The new setting: @bool find-def-creates-clones (default False) controls whether a clone-find-flattened command is used to show all matching definitions. This setting has no effect when only one definition is found.&lt;/p&gt;
+&lt;h3 id="9"&gt;Added diff-related wrappers&lt;/h3&gt;
+
+&lt;p&gt;Added c.diff_file, c.diff_two_branches and c.git_diff. Examples:&lt;/p&gt;
+&lt;p&gt;# creates outline-oriented diffs between all changed files between any two revs.
+ # In this case, rev1 is the last rev in devel not affected by removing trace statements.&lt;/p&gt;
+&lt;p&gt;c.diff_two_revs(
+ rev1="24abd822b", # devel
+ rev2="HEAD", # will work in &lt;em&gt;any&lt;/em&gt; branch
+)&lt;/p&gt;
+&lt;p&gt;# Leo's git-diff command:
+c.git_diff()&lt;/p&gt;
+&lt;p&gt;# Compares a file in two different branches:
+c.diff_two_branches(
+    branch1='master',
+    branch2='devel',
+    fn='leo/core/leoCommands.py',
+)&lt;/p&gt;
+&lt;h3 id="10"&gt;Added leo_babel plugin&lt;/h3&gt;
+
+&lt;p&gt;For documentation, see the leo/plugins/leo_babel/doc folder.&lt;/p&gt;
+&lt;h3 id="11"&gt;Removed settings&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Removed @bool trace_import.&lt;/li&gt;
+&lt;li&gt;Removed @bool trace_bind_key_exceptions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="12"&gt;#868: Allow separate bindings for numeric keypad keys&lt;/h3&gt;
+
+&lt;p&gt;https://github.com/leo-editor/leo-editor/issues/868&lt;/p&gt;
+&lt;p&gt;As usual, spellings are not significant. For example:&lt;/p&gt;
+&lt;p&gt;clone-find-all-flattened = Key_Pad+9
+clone-find-all = keypad-PageUp
+    # Same as keypad+pageup, etc. etc.&lt;/p&gt;</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
