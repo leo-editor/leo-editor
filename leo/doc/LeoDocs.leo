@@ -2040,6 +2040,7 @@
 <v t="ekr.20180512081559.1"><vh>clean_headline</vh></v>
 <v t="ekr.20180512085916.1"><vh>get_level</vh></v>
 <v t="ekr.20180512092138.1"><vh>get_link</vh></v>
+<v t="ekr.20180512103312.1"><vh>main</vh></v>
 <v t="ekr.20180512080505.1"><vh>make_body</vh></v>
 <v t="ekr.20180512081702.1"><vh>make_head</vh></v>
 <v t="ekr.20180512081043.1"><vh>make_toc</vh></v>
@@ -26951,23 +26952,11 @@ As usual, spellings are not significant. For example:
 clone-find-all-flattened = Key_Pad+9
 clone-find-all = keypad-PageUp
     # Same as keypad+pageup, etc. etc.</t>
-<t tx="ekr.20180512074012.1">@language python
+<t tx="ekr.20180512074012.1">'''A prototype for #767: a markdown command for Leo.'''
+@language python
 import markdown
 @others
-root = c.p
-aList = [make_toc(c.p)]
-aList.extend([to_markdown(p) for p in c.p.self_and_subtree()])
-source = '\n'.join(aList)
-html = markdown.markdown(source)
-# Create source node
-p = c.lastTopLevel().insertAfter()
-p.h = 'Markdown: %s' % root.h
-p.b = source
-# Create markdown node
-p = c.lastTopLevel().insertAfter()
-p.h = 'HTML: %s' % root.h
-p.b = html
-c.redraw()
+main(c)
 </t>
 <t tx="ekr.20180512074234.1">def to_markdown(p):
     '''Create markdown for node p.'''
@@ -27036,6 +27025,21 @@ def get_link(p):
         link_n += 1
     return links.get(p.v)
 </t>
+<t tx="ekr.20180512103312.1">def main(c):
+    root = c.p
+    aList = [make_toc(c.p)]
+    aList.extend([to_markdown(p) for p in c.p.self_and_subtree()])
+    source = '\n'.join(aList)
+    html = markdown.markdown(source)
+    # Create source node
+    p = c.lastTopLevel().insertAfter()
+    p.h = 'Markdown: %s' % root.h
+    p.b = source
+    # Create markdown node
+    p = c.lastTopLevel().insertAfter()
+    p.h = 'HTML: %s' % root.h
+    p.b = html
+    c.redraw()</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
