@@ -369,15 +369,11 @@ class AtButtonCallback(object):
     #@+node:ekr.20180313171043.1: *4* AtButtonCallback.find_script
     def find_script(self):
         
-        trace = False and not g.unitTesting
         gnx = self.gnx
         # First, search self.c for the gnx.
-        if trace:
-            g.trace('searching %s for %s' % (self.c.shortFileName(), gnx))
         for p in self.c.all_positions():
             if p.gnx == gnx:
                 script = self.controller.getScript(p)
-                if trace: g.trace('FOUND', len(script or ''))
                 return script
         # See if myLeoSettings.leo is open.
         for c in g.app.commanders():
@@ -385,21 +381,12 @@ class AtButtonCallback(object):
                 break
         else:
             c = None
-            if trace: g.trace('myLeoSettings.leo is not open')
         if c:
             # Search myLeoSettings.leo file for the gnx.
-            if trace:
-                g.trace('searching %s for %s' % (c.shortFileName(), gnx))
             for p in c.all_positions():
                 if p.gnx == gnx:
                     script = self.controller.getScript(p)
-                    if trace: g.trace('FOUND', len(script or ''))
                     return script
-            if trace:
-                g.trace('can not find gnx: %s in %s' % (gnx, c.shortFileName()))
-        if trace:
-            g.trace('Using STATIC script: length: %s' % len(self.script or ''))
-            # g.printObj(g.splitLines(self.script or ''))
         return self.script
     #@-others
 #@+node:ekr.20060328125248.6: ** class ScriptingController
@@ -708,12 +695,10 @@ class ScriptingController(object):
         
         Called only from a callback in QtIconBarClass.setCommandForButton.
         '''
-        trace = False and not g.unitTesting
         if not gnx: g.trace('can not happen: no gnx')
         # First, look in commander c.
         for p2 in c.all_positions():
             if p2.gnx == gnx:
-                if trace: g.trace('Found', c.shortFileName(), p2.h)
                 return c, p2
         # Fix bug 74: problems with @button if defined in myLeoSettings.leo.
         for f in (c.openMyLeoSettings, c.openLeoSettings):
@@ -721,11 +706,9 @@ class ScriptingController(object):
             if c2:
                 for p2 in c2.all_positions():
                     if p2.gnx == gnx:
-                        if trace: g.trace('Found', c2.shortFileName(), p2.h)
                         return c2, p2
                 c2.close()
         # Fix bug 92: restore the previously selected tab.
-        if trace: g.trace('Not found', gnx)
         if g.app.qt_use_tabs:
             c.frame.top.leo_master.select(c)
                 # c.frame.top.leo_master is a LeoTabbedTopLevel.
@@ -756,11 +739,7 @@ class ScriptingController(object):
         
         See https://github.com/leo-editor/leo-editor/issues/171
         '''
-        trace = False and not g.unitTesting
         c = self.c
-        if trace:
-            g.trace('global @button IN', c.shortFileName())
-            g.trace('FROM:', p.gnx, p.v.context.shortFileName(), p.h)
         gnx = p.gnx
         args = self.getArgs(p)
         # Fix bug #74: problems with @button if defined in myLeoSettings.leo
@@ -868,7 +847,6 @@ class ScriptingController(object):
         An optional @color=colorname defines a color for the button's background.  It does
         not appear in the status line nor the button name.
         '''
-        trace = False and not g.app.unitTesting and not g.app.batchMode
         h = p.h
         shortcut = self.getShortcut(h)
         docstring = g.getDocString(p.b).strip()
@@ -878,7 +856,6 @@ class ScriptingController(object):
         g.app.config.atLocalButtonsList.append(p.copy())
         # g.trace(c.config,p.h)
         # This helper is also called by the script-button callback.
-        if trace: g.trace('local @button', h)
         self.createLocalAtButtonHelper(p, h, statusLine, verbose=False)
     #@+node:ekr.20060328125248.10: *4* sc.handleAtCommandNode @command
     def handleAtCommandNode(self, p):
@@ -1125,17 +1102,9 @@ class ScriptingController(object):
     #@+node:ekr.20120301114648.9932: *4* sc.registerAllCommands
     def registerAllCommands(self, args, func, h, pane, source_c=None, tag=None):
         '''Register @button <name> and @rclick <name> and <name>'''
-        trace = False and not g.unitTesting
-        trace_name = False
         c, k = self.c, self.c.k
         shortcut = self.getShortcut(h) or ''
-        if trace: g.trace('pane', pane, 'shortcut', shortcut, h)
         commandName = self.cleanButtonText(h)
-        if trace and trace_name:
-            if hasattr(func, '__name__'):
-                g.trace(func.__name__, func.__doc__)
-            else:
-                g.trace(func)
         # Register the original function.
         k.registerCommand(
             allowBinding=True,
@@ -1436,24 +1405,20 @@ class EvalController(object):
     #@+node:ekr.20180329130623.1: *5* eval.old_exec
     def old_exec(self, blocks, txt):
         
-        trace = False and not g.unitTesting
         # pylint: disable=eval-used
         c = self.c
         leo_globals = {'c':c, 'g':g, 'p':c.p}
         all_done, ans = False, None
         try:
             # Execute all but the last 'block'
-            if trace: g.trace('all but last')
             exec('\n'.join(blocks[:-1]), leo_globals, c.vs) # Compatible with Python 3.x.
             all_done = False
         except SyntaxError:
             # Splitting the last block caused syntax error
             try:
                 # Is the whole thing a single expression?
-                if trace: g.trace('one expression')
                 ans = eval(txt, leo_globals, c.vs)
             except SyntaxError:
-                if trace: g.trace('statement block')
                 try:
                     exec(txt, leo_globals, c.vs)
                 except Exception:
@@ -1461,10 +1426,8 @@ class EvalController(object):
             all_done = True  # Either way, the last block will be used.
         if not all_done:  # last block still needs using
             try:
-                if trace: g.trace('final expression')
                 ans = eval(blocks[-1], leo_globals, c.vs)
             except SyntaxError:
-                if trace: g.trace('final statement')
                 try:
                     exec(txt, leo_globals, c.vs)
                 except Exception:
