@@ -27061,10 +27061,9 @@ def get_link(p):
 
     # Quasi read-only ivars: 'c' and 'root'.
     @others
-    source = '\n'.join(
-        [make_toc()] +
-        [to_markdown(p) for p in root.self_and_subtree()]
-    )
+    source = make_toc() + '\n'.join([
+        to_markdown(p) for p in root.self_and_subtree()
+    ])
     html = markdown.markdown(source)
     make_markdown_node(source)
     make_html_node(html)
