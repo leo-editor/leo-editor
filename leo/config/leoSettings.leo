@@ -2311,6 +2311,10 @@
 <v t="ekr.20080510072134.2"></v>
 </v>
 <v t="ekr.20060603215208"></v>
+<v t="ekr.20180515154016.1"><vh>Found:keypad</vh>
+<v t="ekr.20080512082834.1"></v>
+<v t="ekr.20080510072134.2"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4346,26 +4350,33 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 back-word                           = Ctrl-LtArrow
 back-word-extend-selection          = Ctrl-Shift-LtArrow
 beginning-of-buffer                 = Ctrl-Home
-beginning-of-buffer                 = Ctrl-Keypad-Home
 beginning-of-buffer-extend-selection= Ctrl-Shift-Home
-beginning-of-buffer-extend-selection= Ctrl-Shift-Keypad-Home
 end-of-buffer                       = Ctrl-End
-end-of-buffer                       = Ctrl-Keypad-End
 end-of-buffer-extend-selection      = Ctrl-Shift-End
-end-of-buffer-extend-selection      = Ctrl-Shift-Keypad-End
 forward-word                        = Ctrl-RtArrow
 forward-word-extend-selection       = Ctrl-Shift-RtArrow
+#
+# Keypad variants...
+back-word                           = Keypad+Ctrl-LtArrow
+back-word-extend-selection          = Keypad+Ctrl-Shift-LtArrow
+beginning-of-buffer                 = Keypad+Ctrl-Home
+beginning-of-buffer-extend-selection= Keypad+Ctrl-Shift-Home
+end-of-buffer                       = Keypad+Ctrl-End
+end-of-buffer-extend-selection      = Keypad+Ctrl-Shift-End
+forward-word                        = Keypad+Ctrl-RtArrow
+forward-word-extend-selection       = Keypad+Ctrl-Shift-RtArrow
 
 # beginning-of-line                   = Home
 back-to-home                        = Home
-back-to-home                        = Keypad-Home
 beginning-of-line-extend-selection  = Shift-Home
-beginning-of-line-extend-selection  = Shift-Keypad-Home
 end-of-line                         = End
-end-of-line                         = Keypad-End
 end-of-line-extend-selection        = Shift-End
-end-of-line-extend-selection        = Shift-Keypad-End
-
+#
+# Keypad variants...
+back-to-home                        = Keypad+Home
+beginning-of-line-extend-selection  = Keypad+Shift-Keypad-Home
+end-of-line                         = Keypad+End
+end-of-line-extend-selection        = Keypad+Shift-End
 </t>
 <t tx="ekr.20080510121331.16"># Must keep all these bindings for basic vim compatibility.
 
@@ -4485,21 +4496,35 @@ For some reason, colors in the text widget do not match the colors in the canvas
 # do-nothing    = Ctrl-PageDn  # working in Xfce at least
 
 end-edit-headline           ! tree = Return # Escape is also possible.
-end-edit-headline           ! tree = Keypad+Return
 # end-edit-headline           ! tree = Escape # May interfere with dismissing dialogs.
 insert-newline              ! body = Return
-insert-newline              ! body = Keypad+Return
 insert-newline              ! text = Insert
+#
+# Keypad variants...
+end-edit-headline           ! tree = Keypad+Return
+insert-newline              ! body = Keypad+Return
 
 back-char                   ! text = LtArrow
 forward-char                ! text = RtArrow
 next-line                   ! text = DnArrow
 previous-line               ! text = UpArrow
+#
+# Keypad variants...
+back-char                   ! text = Keypad+LtArrow
+forward-char                ! text = Keypad+RtArrow
+next-line                   ! text = Keypad+DnArrow
+previous-line               ! text = Keypad+UpArrow
 
 back-char-extend-selection      ! text = Shift-LtArrow
 forward-char-extend-selection   ! text = Shift-RtArrow
 next-line-extend-selection      ! text = Shift-DnArrow
 previous-line-extend-selection  ! text = Shift-UpArrow
+#
+# Keypad variants...
+back-char-extend-selection      ! text = Keypad+Shift-LtArrow
+forward-char-extend-selection   ! text = Keypad+Shift-RtArrow
+next-line-extend-selection      ! text = Keypad+Shift-DnArrow
+previous-line-extend-selection  ! text = Keypad+Shift-UpArrow
 
 contract-or-go-left         ! tree = LtArrow
 expand-and-go-right         ! tree = RtArrow
@@ -4509,11 +4534,20 @@ move-outline-down           ! tree = Shift-DnArrow
 move-outline-left           ! tree = Shift-LtArrow
 move-outline-right          ! tree = Shift-RtArrow
 move-outline-up             ! tree = Shift-UpArrow
-
+#
+# Keypad variants...
+contract-or-go-left         ! tree = Keypad+LtArrow
+expand-and-go-right         ! tree = Keypad+RtArrow
+goto-next-visible           ! tree = Keypad+DnArrow
+goto-prev-visible           ! tree = Keypad+UpArrow
+move-outline-down           ! tree = Keypad+Shift-DnArrow
+move-outline-left           ! tree = Keypad+Shift-LtArrow
+move-outline-right          ! tree = Keypad+Shift-RtArrow
+move-outline-up             ! tree = Keypad+Shift-UpArrow
+#
 # These cause problems with editing headlines.
 # goto-first-visible-node     ! tree= Home
 # goto-last-visible-node      ! tree= End
-
 contract-or-go-left         = Alt-LtArrow
 expand-and-go-right         = Alt-RtArrow
 goto-next-visible           = Alt-DnArrow
@@ -4522,33 +4556,56 @@ move-outline-down           = Alt-Shift-DnArrow
 move-outline-left           = Alt-Shift-LtArrow
 move-outline-right          = Alt-Shift-RtArrow
 move-outline-up             = Alt-Shift-UpArrow
+#
+# Keypad variants...
+contract-or-go-left         = Keypad+Alt-LtArrow
+expand-and-go-right         = Keypad+Alt-RtArrow
+goto-next-visible           = Keypad+Alt-DnArrow
+goto-prev-visible           = Keypad+Alt-UpArrow
+move-outline-down           = Keypad+Alt-Shift-DnArrow
+move-outline-left           = Keypad+Alt-Shift-LtArrow
+move-outline-right          = Keypad+Alt-Shift-RtArrow
+move-outline-up             = Keypad+Alt-Shift-UpArrow
 
 do-nothing                  ! tree = Ctrl-DnArrow
 do-nothing                  ! tree = Ctrl-UpArrow
 move-lines-up               ! body = Ctrl-UpArrow
-move-lines-down             ! body = Ctrl-DnArrow 
+move-lines-down             ! body = Ctrl-DnArrow
+#
+# Keypad variants...
+do-nothing                  ! tree = Keypad+Ctrl-DnArrow
+do-nothing                  ! tree = Keypad+Ctrl-UpArrow
+move-lines-up               ! body = Keypad+Ctrl-UpArrow
+move-lines-down             ! body = Keypad+Ctrl-DnArrow
   
 goto-first-visible-node     = Alt-Home
-# goto-last-visible-node    = Alt-End
 goto-last-sibling           = Alt-End
+#
+# Keypad variants...
+goto-first-visible-node     = Keypad+Alt-Home
+goto-last-sibling           = Keypad+Alt-End
 
 back-page                       ! text = PageUp
-back-page                       ! text = Keypad-PageUp
 back-page-extend-selection      ! text = Shift-PageUp
-back-page-extend-selection      ! text = Shift-Keypad-PageUp
 forward-page                    ! text = PageDn
-forward-page                    ! text = Keypad-PageDn
 forward-page-extend-selection   ! text = Shift-PageDn
-forward-page-extend-selection   ! text = Shift-Keypad-PageDn
+#
+# Keypad variants...
+back-page                       ! text = Keypad+PageUp
+back-page-extend-selection      ! text = Keypad+Shift-PageUp
+forward-page                    ! text = Keypad-PageDn
+forward-page-extend-selection   ! text = Keypad+Shift-PageDn
 
 scroll-down-half-page   ! tree = Shift-PageDn
-scroll-down-half-page   ! tree = Shift-Keypad-PageDn
 scroll-down-page        ! tree = PageDn
-scroll-down-page        ! tree = Keypad-PageDn
 scroll-up-half-page     ! tree = Shift-PageUp
-scroll-up-half-page     ! tree = Shift-Keypad-PageUp
 scroll-up-page          ! tree = PageUp
-scroll-up-page          ! tree = Keypad-PageUp
+#
+# Keypad variants...
+scroll-down-half-page   ! tree = Keypad+Shift-PageDn
+scroll-down-page        ! tree = Keypad+PageDn
+scroll-up-half-page     ! tree = Keypad+Shift-PageUp
+scroll-up-page          ! tree = Keypad+PageUp
 </t>
 <t tx="ekr.20080513095644.1"># q in vim bindings.
 # The mode prompt is everything following the ::
@@ -11722,6 +11779,9 @@ True:  Replace the Meta key with the Alt Key.
 <t tx="ekr.20180511123426.1"># flattened, ignore-case, head, body
 
 # found 2 nodes</t>
+<t tx="ekr.20180515154016.1"># flattened, word, ignore-case, head, body
+
+# found 3 nodes</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
