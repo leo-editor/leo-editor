@@ -4485,8 +4485,10 @@ For some reason, colors in the text widget do not match the colors in the canvas
 # do-nothing    = Ctrl-PageDn  # working in Xfce at least
 
 end-edit-headline           ! tree = Return # Escape is also possible.
+end-edit-headline           ! tree = Keypad+Return
 # end-edit-headline           ! tree = Escape # May interfere with dismissing dialogs.
 insert-newline              ! body = Return
+insert-newline              ! body = Keypad+Return
 insert-newline              ! text = Insert
 
 back-char                   ! text = LtArrow

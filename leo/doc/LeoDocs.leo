@@ -2049,8 +2049,8 @@
 <v t="ekr.20180513084304.13"><vh>to_markdown</vh></v>
 </v>
 </v>
-<v t="ekr.20180513083650.1"><vh>@md html/tutorial.md</vh></v>
-<v t="ekr.20180513090430.1"><vh>@md html/tutorial-basics.md</vh>
+<v t="ekr.20180513083650.1"><vh>@md html/tutorial.html</vh></v>
+<v t="ekr.20180513090430.1"><vh>@md html/tutorial_basics2.md</vh>
 <v t="ekr.20180513090430.2"><vh>Leo's main window</vh></v>
 <v t="ekr.20180513090430.3"><vh>Commands</vh></v>
 <v t="ekr.20180513090430.4"><vh>Outlines and clones</vh></v>
@@ -2080,6 +2080,7 @@
 <v t="ekr.20180512150125.4"><vh>get_link</vh></v>
 <v t="ekr.20180512150125.5"><vh>make_body</vh></v>
 <v t="ekr.20180512150125.6"><vh>make_head</vh></v>
+<v t="ekr.20180513122115.1"><vh>make_markdown_node</vh></v>
 <v t="ekr.20180512150125.9"><vh>make_toc</vh></v>
 <v t="ekr.20180512150125.10"><vh>to_markdown</vh></v>
 </v>
@@ -26986,11 +26987,14 @@ clone-find-all = keypad-PageUp
     # Same as keypad+pageup, etc. etc.</t>
 <t tx="ekr.20180512150125.1">'''A prototype for #767: a markdown command for Leo.'''
 @language python
+import markdown
+assert markdown
 
 ### What to do about the index?
 
 g.cls()
-root = g.findNodeAnywhere(c, '@md html/tutorial-basics.md')
+root = g.findNodeAnywhere(c, '@md html/tutorial-basics2.md')
+    # For sphinx.
 assert root
 
 class MarkDownWriter (object):
@@ -27046,6 +27050,8 @@ def get_link(self, p):
     return s.rstrip() +'\n'</t>
 <t tx="ekr.20180512150125.6">def make_head(self, p):
     '''Return an &lt;h1..h6&gt; element with the proper id.'''
+    #
+    # This *does* work as input to sphinx, despite not working in Typora.
     level = min(6, self.get_level(p))
     return'&lt;h%s id="%s"&gt;%s&lt;/h%s&gt;\n' % (
         level,
@@ -27053,17 +27059,35 @@ def get_link(self, p):
         self.clean_headline(p),
         level,
     )
-</t>
+    #
+    # This doesn't even work in Typora.
+        # return '%s %s\n\n' % ('#'*self.get_level(p), p.h.strip())
+
+    </t>
 <t tx="ekr.20180512150125.9">def make_toc(self):
     '''Return the table of contents for root.'''
+    
+    if 1: # Use links.
+    
+        def toc_line(p):
+          return '%s- [%s](#%s)\n' % (
+                ' '*4*(self.get_level(p)-2),
+                    # Assume the top-level node has a level-one headline.
+                p.h.strip(),
+                self.get_link(p),
+            )
+    
+    else: # Use headlines.
 
-    def toc_line(p):
-        return '%s- [%s](#%s)\n' % (
-            ' '*4*(self.get_level(p)-2),
-                # Assume the top-level node has a level-one headline.
-            p.h.strip(),
-            self.get_link(p),
-        )
+        def toc_line(p):
+            h = p.h.strip()
+            level = self.get_level(p)
+            return '%s- [%s](%s)\n' % (
+                ' '*4*(level-2),
+                h,
+                '#'*(level) + h.lower().replace(' ', '-')
+            )
+    
 
     return ''.join([toc_line(p)
         for p in self.root.subtree()
@@ -27075,12 +27099,20 @@ def get_link(self, p):
     self.c = c
     self.root = root
     source = (
-        self.make_toc() +
-        root.b +
+        self.make_toc() + '\n' +
+        root.b + '\n' +
         '\n'.join([self.to_markdown(p) for p in root.subtree()])
     )
-    print(source)
-</t>
+    ### html = markdown.markdown(source)
+    assert root.h.startswith('@md ')
+    path = g.os_path_finalize_join(c.fileName, root.h[4:].strip())
+    directory = g.os_path_dirname(path)
+    if g.os_path_exists(directory):
+        with open(path, 'w') as f:
+            f.write(source)
+        g.es_print('wrote: %s' % g.shortFileName(path))
+    else:
+        g.es_print('does not exist: %s' % directory)</t>
 <t tx="ekr.20180513083650.1"># Leo's Tutorials
     
 Leo is a full-featured outliner. Unique features make Leo a powerful IDE, Personal Information Manager and scripting environment. The first three tutorials are for everyone:
@@ -27220,21 +27252,9 @@ def get_link(p):
     
 This chapter introduces Leo's most important features and terminology.
 </t>
-<t tx="ekr.20180513090430.10">.. index::
-    pair: @all; Tutorial
-    pair: Outline Order; Tutorial
-
-The **@all** directive tells Leo to write the nodes of an **@file tree** to the external file, *ignoring* all markup. As a result, Leo writes nodes to the file in **outline order**, the order in which they appear in the outline when all nodes are expanded.
+<t tx="ekr.20180513090430.10">The **@all** directive tells Leo to write the nodes of an **@file tree** to the external file, *ignoring* all markup. As a result, Leo writes nodes to the file in **outline order**, the order in which they appear in the outline when all nodes are expanded.
 </t>
-<t tx="ekr.20180513090430.11">.. index::
-    pair: leoSettings.leo; Tutorial
-    pair: Global Settings; Tutorial
-    pair: myLeoSettings.leo; Tutorial
-    pair: Personal Settings; Tutorial
-    pair: Local Settings; Tutorial
-    pair: Configuration file; Tutorial
-    
-Leo uses outlines for just about *everything*, including configuring Leo:
+<t tx="ekr.20180513090430.11">Leo uses outlines for just about *everything*, including configuring Leo:
 
 - **leo/config/leoSettings.leo** contains Leo's default **global settings**. Don't change this file unless you are one of Leo's developers.
    
@@ -27282,26 +27302,11 @@ Leo uses outlines for just about *everything*, including configuring Leo:
 
 For more information, see Leo's `configuration guide`_.
 </t>
-<t tx="ekr.20180513090430.12">.. _`bookmarks.py`:     plugins.html#bookmarks-py
-.. _`contextmenu.py`:   plugins.html#contextmenu-py
-.. _`mod_scripting.py`: plugins.html#mod-scripting-py
-.. _`quicksearch.py`:   plugins.html#quicksearch-py
-.. _`todo.py`:          plugins.html#todo-py
-.. _`valuespace.py`:    plugins.html#valuespace-py
-.. _`viewrendered.py`:  plugins.html#viewrendered-py
+<t tx="ekr.20180513090430.12">[Leo plugins](plugins.html)are Python programs that extend what Leo can do. Plugins reside in the leo/plugins folder. **@enabled-plugins** settings node enable plugins. Leo has dozens of plugins, including:
 
-.. index::
-    pair: Plugins; Tutorial
-
-`Leo plugins &lt;plugins.html&gt;`_ are Python programs that extend what Leo can do. Plugins reside in the leo/plugins folder. **@enabled-plugins** settings node enable plugins. Leo has dozens of plugins, including:
-
-- `bookmarks.py`_ manages and shows bookmarks.
-- `contextmenu.py`_ shows a context menu when you right-click a headline.
-- `mod_scripting.py`_ supports @button and @command nodes.
-- `quicksearch.py`_ Adds Nav tab for searching.
-- `todo.py`_ provides to-do list and simple project-management capabilities.
-- `valuespace.py`_ adds outline-oriented spreadsheet capabilities.
-- `viewrendered.py`_ creates the rendering pane and renders content in it.
+- [bookmarks.py](plugins.html#bookmarks-py) manages and shows bookmarks.
+- [contextmenu.py](plugins.html#contextmenu-py) shows a context menu when you right-click a headline.
+- [mod_scripting.py](plugins.html#mod-scripting-py) supports @button and @command nodes.
 </t>
 <t tx="ekr.20180513090430.13">Non-programmers: feel free to skip this part.</t>
 <t tx="ekr.20180513090430.14">.. in tutorial-basics.html (Scripting basics)
@@ -27338,12 +27343,7 @@ The execute-script command pre-defines three names: c, g, and p. **c** is the `c
 .. _`scripting tutorial`: tutorial-scripting.html
 
 For more information, see Leo's `scripting tutorial`_.</t>
-<t tx="ekr.20180513090430.17">.. index::
-    pair: Script Button; Tutorial
-    pair: @button Node; Tutorial
-    pair: @command Node; Tutorial
-
-**@command nodes** define a command. Running the command runs a script that can be applied to any outline node. That is, p is bound to the presently selected node, *not* the @button node. **@button nodes** work the same way, and in addition create a button in the icon area. Pressing that button runs the command. For example, this node defines the print-tree command bound to Ctrl-9:
+<t tx="ekr.20180513090430.17">**@command nodes** define a command. Running the command runs a script that can be applied to any outline node. That is, p is bound to the presently selected node, *not* the @button node. **@button nodes** work the same way, and in addition create a button in the icon area. Pressing that button runs the command. For example, this node defines the print-tree command bound to Ctrl-9:
 
     @command print-tree @key=Ctrl-9 # in the headline
     
@@ -27359,9 +27359,7 @@ For more information, see Leo's `scripting tutorial`_.</t>
             ' '*p.level(),  # p.level() is p's indentation level.
             p.h,            # p.h is p's headline.
         )
-        
-.. index::
-    pair: @test Node; Tutorial</t>
+</t>
 <t tx="ekr.20180513090430.18">**@test nodes** create unit tests. @test nodes automatically convert the body to a subclass of unittest.TestCase. Run these tests with one of Leo's ``run-unit-test-`` commands. ``&lt;Alt-X&gt;run&lt;tab&gt;`` gives the full list. Here one of Leo's actual unit tests:
 
     @test c.positionExists for all nodes # In the headline
@@ -27430,13 +27428,7 @@ For programmers:
 
 Leo has hundreds of commands, described in `Leo's Command Reference`_. Please feel free to `ask for help`_ at any time.
 </t>
-<t tx="ekr.20180513090430.3">.. _`Leo's Command Reference`: commands.html
-.. _`Leo's minibuffer`: commands.html#executing-commands-from-the-minibuffer
-.. _`typing completion`: commands.html#executing-commands-from-the-minibuffer
-.. _`key bindings`: commands.html#key-reference
-.. _`Emacs minibuffer`: https://www.gnu.org/software/emacs/manual/html_node/emacs/Minibuffer.html 
-
-Leo has hundreds of commands, described in `Leo's Command Reference`_. **Very important**: You can (and should) ignore most of these commands at first. You execute commands using `key bindings`_ or *by name* in `Leo's minibuffer`_, similar to the `Emacs minibuffer`_.
+<t tx="ekr.20180513090430.3">Leo has hundreds of commands, described in [Leo's Command Reference](commands.html). **Very important**: You can (and should) ignore most of these commands at first. You execute commands using [key bindings](commands.html#key-reference) or *by name* in [Leo's minibuffer](commands.html#executing-commands-from-the-minibuffer), similar to the [Emacs minibuffer](https://www.gnu.org/software/emacs/manual/html_node/emacs/Minibuffer.html).
 
 You could type the full command name in the minibuffer, followed by the ``&lt;Return&gt;`` key to invoke the command, but that would be *way* too much work. Instead, you should use **typing completion** to avoid most typing. For example, you can execute the sort-lines commands this way:
 
@@ -27452,7 +27444,7 @@ After typing l&lt;Tab&gt; the minibuffer will contain:
     
 Now, just type &lt;Return&gt; to execute the command.  Typing completion quickly becomes second nature.
 
-**Very important**: There is no need to remember the exact names of Leo’s commands. Instead, you only need to remember a few common command prefixes, such as:
+**Very important**: There is no need to remember the exact names of Leo's commands. Instead, you only need to remember a few common command prefixes, such as:
 
     clone-find  clone-find commands
     file-       file commands
@@ -27520,24 +27512,13 @@ Moving C right gives this outline:
             
 Clones allow you to create multiple views of data within a single outline. For example, Leo's `clone-find commands`_ create clones of all found nodes, moving the newly-created clones so they are all children of an **organizer node** describing the search. The organizer node is a new view of the outline's data, one focused on the found nodes!
 </t>
-<t tx="ekr.20180513090430.5">.. index::
-   pair: Directive; Tutorial
-
-Leo **directives** control Leo's operations. Directives start with ``@`` in the leftmost column of body text. Directives **apply to descendants** until overridden in descendant nodes.
-
-.. index::
-    pair: @color; Tutorial
-    pair: @nocolor; Tutorial
-    pair: @nocolor-node; Tutorial
+<t tx="ekr.20180513090430.5">Leo **directives** control Leo's operations. Directives start with ``@`` in the leftmost column of body text. Directives **apply to descendants** until overridden in descendant nodes.
 
 The **@color**, **nocolor** and **nocolor-node** directives control syntax coloring. **Note**: Nodes containing multiple color directives do *not* affect coloring of descendant nodes:
 
     @color
     @nocolor
     @nocolor-node
-    
-.. index::
-    pair: @language; Tutorial
 
 The **@language** directive tells which language is in effect:
 
@@ -27546,20 +27527,11 @@ The **@language** directive tells which language is in effect:
     @language rest # restructured text
     @language plain # plain text: no syntax coloring.
 
-.. index::
-    pair: @pagewidth; Tutorial
-    pair: @tabwidth; Tutorial
-    pair: Negative tab width; Tutorial
-
 The **@pagewidth** directive set page width (used when formatting paragraphs). The **@tabwidth** directive controls tabbing. Negative tab widths (recommended for Python) convert tabs to spaces:
 
     @pagewidth 100
     @tabwidth -4
     @tabwidth 8
-
-.. index::
-    pair: @wrap; Tutorial
-    pair: @nowrap; Tutorial
     
 The **@wrap** and **@nowrap** enable or disable line wrapping in the body pane:
 
@@ -27578,19 +27550,13 @@ Leo has many other directives, described in the `directives reference page`_.
 </t>
 <t tx="ekr.20180513090430.6">Leo outlines can refer to **external files**, files on your file system. Leo quickly loads the files when opening Leo outlines. The following sections discuss only the basics.  See `Leo's Reference Guide &lt;directives.html&gt;`_ for full details.
 </t>
-<t tx="ekr.20180513090430.7">.. index::
-    pair: @file node; Tutorial
-
-An **@file node** is a node whose headline starts with `@file` followed by a path to an external file:
+<t tx="ekr.20180513090430.7">An **@file node** is a node whose headline starts with `@file` followed by a path to an external file:
 
     @file leoNodes.py
     @file ../../notes.txt
 
 The @file node and its descendants represent an external file. Leo updates @file nodes when you change external files outside of Leo. When saving an outline, Leo writes all changed @file trees to their external files.</t>
 <t tx="ekr.20180513090430.8">.. in tutorial-basics.html (External files)
-
-.. index::
-    pair: Markup; Tutorial
 
 Leo's **markup** tells Leo how to create external files from @file trees. Markup may appear in any body text, and *must* appear in the body of the @file node itself.
 
@@ -27613,16 +27579,18 @@ When writing this file, Leo writes the first two lines:
     
 followed by the *body text* of the &lt;&lt; imports&gt;&gt; node, followed by the body text of all *other* nodes, in outline order, followed by the comment # That's all, folks.
 </t>
-<t tx="ekr.20180513090430.9">.. index::
-    pair: @clean; Tutorial
-
-When writing **file trees**, Leo writes **sentinel comments** into external files. These comments represent outline structure. When writing an @file tree to a .leo file, Leo writes only the root @file node. To avoid sentinels, use **@clean** instead of @file:
+<t tx="ekr.20180513090430.9">When writing **file trees**, Leo writes **sentinel comments** into external files. These comments represent outline structure. When writing an @file tree to a .leo file, Leo writes only the root @file node. To avoid sentinels, use **@clean** instead of @file:
 
     @clean leoNodes.py
     @clean ../../notes.txt
     
 There is a small cost to @clean: Leo saves the entire @clean tree in the .leo file.
 </t>
+<t tx="ekr.20180513122115.1">def make_markdown_node(self, source):
+    '''Create the markdown node.'''
+    p = c.lastTopLevel().insertAfter()
+    p.h = 'Markdown: %s' % self.root.h
+    p.b = source</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

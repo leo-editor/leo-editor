@@ -581,7 +581,8 @@ class KeyStroke(object):
             ['ctrl', 'control',], # Use ctrl, not control.
             ['meta',],
             ['shift', 'shft',],
-            ['keypad', 'key_pad',], # 868: Allow alternative spellings.
+            ['keypad', 'key_pad', 'numpad', 'num_pad'],
+                # 868: Allow alternative spellings.
         )
         result = []
         for aList in table:
