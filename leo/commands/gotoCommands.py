@@ -63,9 +63,9 @@ class GoToCommands(object):
             s = g.getScript(c, root, useSelectedText=False)
             # s = self.get_external_file_with_sentinels(root)
         delim1, delim2 = self.get_delims(root)
+        # Match only the node with the correct gnx.
         node_pat = re.compile(r'\s*%s@\+node:%s:' % (
             re.escape(delim1), re.escape(p.gnx)))
-            # Match only the node with the correct gnx.
         for i, s in enumerate(g.splitLines(s)):
             if node_pat.match(s):
                 return i + 1
