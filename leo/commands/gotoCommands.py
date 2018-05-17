@@ -52,16 +52,14 @@ class GoToCommands(object):
     def find_node_start(self, p, s=None):
         '''Return the global line number of the first line of p.b'''
         # See #283: https://github.com/leo-editor/leo-editor/issues/283
-        c = self.c
+        # c = self.c
         root, fileName = self.find_root(p)
         if not root:
             return None
-        if root == p:
-            return 0
         assert root.isAnyAtFileNode()
         if s is None:
-            s = g.getScript(c, root, useSelectedText=False)
-            # s = self.get_external_file_with_sentinels(root)
+            ### s = g.getScript(c, root, useSelectedText=False)
+            s = self.get_external_file_with_sentinels(root)
         delim1, delim2 = self.get_delims(root)
         # Match only the node with the correct gnx.
         node_pat = re.compile(r'\s*%s@\+node:%s:' % (
@@ -334,5 +332,23 @@ class GoToCommands(object):
         c.bodyWantsFocus()
         w.seeInsertPoint()
     #@-others
+#@+node:ekr.20180517041303.1: ** show-file-line
+@g.command('show-file-line')
+def show_file_line(event):
+    c = event.get('c')
+    if not c:
+        return
+    w = c.frame.body.wrapper
+    if not w:
+        return
+    n0 = GoToCommands(c).find_node_start(p=c.p)
+    if n0 is None:
+        return
+    i = w.getInsertPoint()
+    s = w.getAllText()
+    row, col = g.convertPythonIndexToRowCol(s, i)
+    g.es_print(1+n0+row)
+    
+       
 #@-others
 #@-leo
