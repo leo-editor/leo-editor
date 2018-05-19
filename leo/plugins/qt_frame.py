@@ -2163,7 +2163,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # An added editor window doesn't display line/col
             te = body.widget
             if c.config.getBool('word-count', default=False):
-                
                 if isinstance(te, QtWidgets.QTextEdit):
                     offset = c.p.textOffset()
                     cr = te.textCursor()
@@ -2190,7 +2189,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     fcol = '' if offset is None else max(0, col + offset - fcol_offset)
                     u = c.p.b
                     wordNum = len(u.split(None))
-                        
                 else:
                     row, col, fcol = 0, 0, ''
                 if 1:
@@ -2200,7 +2198,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     fline = self.file_line()
                     fline = '' if fline is None else fline + row
                     self.put1(
-                        "fline: %s line: %d col: %d fcol: %s words: %u" % (fline, row, col, fcol, wordNum))
+                        "fline: %s line: %d col: %d fcol: %s words: %u" % (
+                            fline, row, col, fcol, wordNum))
                 self.lastRow = row
                 self.lastCol = col
                 self.lastFcol = fcol

@@ -58,7 +58,6 @@ class GoToCommands(object):
             return None
         assert root.isAnyAtFileNode()
         if s is None:
-            ### s = g.getScript(c, root, useSelectedText=False)
             s = self.get_external_file_with_sentinels(root)
         delim1, delim2 = self.get_delims(root)
         # Match only the node with the correct gnx.
