@@ -9,14 +9,20 @@
 #@+<< imports >>
 #@+node:ekr.20061031131434.1: ** << imports >> (leoKeys)
 import leo.core.leoGlobals as g
+import leo.commands.gotoCommands as gotoCommands
 import leo.external.codewise as codewise
+try:
+    import jedi
+except ImportError:
+    jedi = None
 # import glob
 import inspect
 import os
 import re
 import string
 import sys
-# import time
+import time
+assert time
 #@-<< imports >>
 #@+<< Key bindings, an overview >>
 #@+node:ekr.20130920121326.11281: ** << Key bindings, an overview >>
@@ -526,8 +532,20 @@ class AutoCompleterClass(object):
         prefix = s[i: j]
         return prefix
     #@+node:ekr.20110512212836.14471: *4* ac.get_completions & helpers
-    def get_completions(self, prefix):
+    jedi_warning = False
 
+    def get_completions(self, prefix):
+        '''Return jedi or codewise completions.'''
+        c = self.c
+        if c.config.getBool('use_jedi', default=False):
+            if jedi:
+                return self.get_jedi_completions()
+            elif not self.jedi_warning:
+                self.jedi_warning = False
+                g.es_print('can not import jedi')
+                g.es_print('ignoring @bool use_jedi = True')
+        #
+        # Use codewise.
         d = self.completionsDict
         # Precompute the codewise completions for '.self'.
         if not self.codewiseSelfList:
@@ -538,10 +556,6 @@ class AutoCompleterClass(object):
         aList = d.get(prefix)
         if aList:
             return aList
-        # elif self.use_codewise:
-            # aList = self.get_codewise_completions(prefix)
-        # else:
-            # aList = self.get_leo_completions(prefix)
         # Always try the Leo completions first.
         # Fall back to the codewise completions.
         aList = (
@@ -639,6 +653,79 @@ class AutoCompleterClass(object):
         aList = codewise.cmd_functions([aList[0]])
         hits = [z.split(None, 1) for z in aList if z.strip()]
         return self.clean(hits)
+    #@+node:ekr.20180519111302.1: *5* ac.get_jedi_completions (new)
+    def get_jedi_completions(self):
+        
+        g.trace(g.callers())
+        c = self.c
+        w = c.frame.body.wrapper
+        i = w.getInsertPoint()
+        p = c.p
+        body_s = p.b
+        #
+        # Get the entire source for jedi.
+        t1 = time.clock()
+        goto = gotoCommands.GoToCommands(c)
+        root, fileName = goto.find_root(p)
+        source = goto.get_external_file_with_sentinels(root=root or p)
+        n0 = goto.find_node_start(p=p, s=source)
+        if n0 is None: n0 = 0
+        t2 = time.clock()
+        #
+        # Get local line
+        lines = g.splitLines(p.b)
+        row, column = g.convertPythonIndexToRowCol(body_s, i)
+        line = lines[row]
+        #
+        # Find the global line, and compute offsets.
+        source_lines = g.splitLines(source)
+        for jedi_line, g_line in enumerate(source_lines[n0:]):
+            if line.lstrip() == g_line.lstrip():
+                # Adjust the column.
+                indent1 = len(line)-len(line.lstrip())
+                indent2 = len(g_line)-len(g_line.lstrip())
+                if indent2 >= indent1:
+                    local_column = column # For traces.
+                    column += abs(indent2-indent1)
+                    break
+        else:
+            jedi_line, indent1, indent2 = None, None, None
+            g.printObj(source_lines[n0-1:n0+30])
+            print('can not happen: not found: %r' % line)
+        #
+        # Get the jedi completions.
+        if jedi_line is not None:
+            try:
+                script = jedi.Script(
+                    source=source,
+                    line=1+n0+jedi_line,
+                    column=column,
+                    path = g.shortFileName(fileName),
+                    # encoding='utf-8',
+                    # sys_path=None):
+                ) 
+                completions = script.completions()
+                t3 = time.clock()
+            except ValueError:
+                t3 = time.clock()
+                completions = None
+                g.printObj(source_lines[n0-1:n0+30])
+                print('ERROR', p.h)
+        if completions is None:
+            return []
+        if 1:
+            print('Found %s completions for %r' % (
+                len(completions), line[:local_column].strip()))
+            print(' get: %5.4f sec.' % (t2-t1))
+            print('jedi: %5.4f sec.' % (t3-t2))
+        if 0:
+            g.printObj(sorted([z.name for z in completions]))
+        if 0:
+            print('n0: %s len(source): %s jedi_line: %s' % (n0, len(source), jedi_line))
+            print('LINE: %r' % line)
+            print('HEAD: %r' % line[:local_column])
+            print('TAIL: %r' % line[local_column:])
+        return [z.name for z in completions]
     #@+node:ekr.20110509064011.14557: *5* ac.get_leo_completions
     def get_leo_completions(self, prefix):
         '''Return completions in an environment defining c, g and p.'''
