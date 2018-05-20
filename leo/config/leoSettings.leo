@@ -2306,15 +2306,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20180511123426.1"><vh>Found:home</vh>
-<v t="ekr.20080512082834.1"></v>
-<v t="ekr.20080510072134.2"></v>
-</v>
-<v t="ekr.20060603215208"></v>
-<v t="ekr.20180515154016.1"><vh>Found:keypad</vh>
-<v t="ekr.20080512082834.1"></v>
-<v t="ekr.20080510072134.2"></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11776,12 +11767,6 @@ True:  Replace the Meta key with the Alt Key.
        This allows Windows Keyboards to be used without changing key bindings.
 </t>
 <t tx="ekr.20180511075115.1"></t>
-<t tx="ekr.20180511123426.1"># flattened, ignore-case, head, body
-
-# found 2 nodes</t>
-<t tx="ekr.20180515154016.1"># flattened, word, ignore-case, head, body
-
-# found 3 nodes</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
