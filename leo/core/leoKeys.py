@@ -11,10 +11,6 @@
 import leo.core.leoGlobals as g
 import leo.commands.gotoCommands as gotoCommands
 import leo.external.codewise as codewise
-try:
-    import jedi
-except ImportError:
-    jedi = None
 # import glob
 import inspect
 import os
@@ -538,12 +534,15 @@ class AutoCompleterClass(object):
         '''Return jedi or codewise completions.'''
         c = self.c
         if c.config.getBool('use_jedi', default=False):
+            try:
+                import jedi
+            except ImportError:
+                if not self.jedi_warning:
+                    self.jedi_warning = False
+                    g.es_print('can not import jedi')
+                    g.es_print('ignoring @bool use_jedi = True')
             if jedi:
                 return self.get_jedi_completions()
-            elif not self.jedi_warning:
-                self.jedi_warning = False
-                g.es_print('can not import jedi')
-                g.es_print('ignoring @bool use_jedi = True')
         #
         # Use codewise.
         d = self.completionsDict
@@ -695,6 +694,7 @@ class AutoCompleterClass(object):
         #
         # Get the jedi completions.
         if jedi_line is not None:
+            import jedi
             try:
                 script = jedi.Script(
                     source=source,
