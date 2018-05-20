@@ -185,7 +185,7 @@ class AutoCompleterClass(object):
         
     def reloadSettings(self):
         c = self.c
-        self.auto_tab = c.config.getBool('auto_tab_complete', False)
+        self.auto_tab = c.config.getBool('auto_tab_complete', True)
         self.forbid_invalid = c.config.getBool('forbid_invalid_completions', False)
         self.use_qcompleter = c.config.getBool('use_qcompleter', False)
             # True: show results in autocompleter tab.
@@ -848,6 +848,8 @@ class AutoCompleterClass(object):
                 if self.forbid_invalid: # 2011/06/17.
                     # Delete the character we just inserted.
                     self.do_backspace()
+            # @bool auto_tab_complete is deprecated.
+            # Auto-completion makes no sense if it is False.
             elif self.auto_tab and len(common_prefix) > len(prefix):
                 extend = common_prefix[len(prefix):]
                 ins = w.getInsertPoint()

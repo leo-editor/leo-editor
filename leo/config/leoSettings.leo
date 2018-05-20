@@ -490,7 +490,7 @@
 </v>
 </v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
-<v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = False</vh></v>
+<v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = True</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
 <v t="ekr.20060216170801"><vh>@bool enable_calltips_initially = False</vh></v>
 <v t="ekr.20110617081407.14760"><vh>@bool forbid_invalid_completions = False</vh></v>
