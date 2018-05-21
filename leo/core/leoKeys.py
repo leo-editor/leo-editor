@@ -187,6 +187,7 @@ class AutoCompleterClass(object):
         c = self.c
         self.auto_tab = c.config.getBool('auto_tab_complete', True)
         self.forbid_invalid = c.config.getBool('forbid_invalid_completions', False)
+        self.use_jedi = c.config.getBool('use_jedi', False)
         self.use_qcompleter = c.config.getBool('use_qcompleter', False)
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
@@ -532,8 +533,8 @@ class AutoCompleterClass(object):
 
     def get_completions(self, prefix):
         '''Return jedi or codewise completions.'''
-        c = self.c
-        if c.config.getBool('use_jedi', default=False):
+        d = self.completionsDict
+        if self.use_jedi:
             try:
                 import jedi
             except ImportError:
@@ -542,10 +543,11 @@ class AutoCompleterClass(object):
                     g.es_print('can not import jedi')
                     g.es_print('ignoring @bool use_jedi = True')
             if jedi:
-                return self.get_jedi_completions()
+                aList = self.get_jedi_completions()
+                d[prefix] = aList
+                return aList
         #
         # Use codewise.
-        d = self.completionsDict
         # Precompute the codewise completions for '.self'.
         if not self.codewiseSelfList:
             aList = self.get_codewise_completions('self.')
@@ -666,13 +668,17 @@ class AutoCompleterClass(object):
         t1 = time.clock()
         goto = gotoCommands.GoToCommands(c)
         root, fileName = goto.find_root(p)
-        source = goto.get_external_file_with_sentinels(root=root or p)
-        n0 = goto.find_node_start(p=p, s=source)
-        if n0 is None: n0 = 0
+        if root:
+            source = goto.get_external_file_with_sentinels(root=root or p)
+            n0 = goto.find_node_start(p=p, s=source)
+            if n0 is None: n0 = 0
+        else:
+            source = body_s
+            n0 = 0
         t2 = time.clock()
         #
         # Get local line
-        lines = g.splitLines(p.b)
+        lines = g.splitLines(body_s)
         row, column = g.convertPythonIndexToRowCol(body_s, i)
         line = lines[row]
         #
@@ -688,6 +694,7 @@ class AutoCompleterClass(object):
                     column += abs(indent2-indent1)
                     break
         else:
+            completions = None
             jedi_line, indent1, indent2 = None, None, None
             g.printObj(source_lines[n0-1:n0+30])
             print('can not happen: not found: %r' % line)
@@ -718,13 +725,13 @@ class AutoCompleterClass(object):
                 len(completions), line[:local_column].strip()))
             print(' get: %5.4f sec.' % (t2-t1))
             print('jedi: %5.4f sec.' % (t3-t2))
-        if 0:
+        if len(completions) < 20:
             g.printObj(sorted([z.name for z in completions]))
-        if 0:
-            print('n0: %s len(source): %s jedi_line: %s' % (n0, len(source), jedi_line))
-            print('LINE: %r' % line)
-            print('HEAD: %r' % line[:local_column])
-            print('TAIL: %r' % line[local_column:])
+        ###
+            # print('n0: %s len(source): %s jedi_line: %s' % (n0, len(source), jedi_line))
+            # print('LINE: %r' % line)
+            # print('HEAD: %r' % line[:local_column])
+            # print('TAIL: %r' % line[local_column:])
         return [z.name for z in completions]
     #@+node:ekr.20110509064011.14557: *5* ac.get_leo_completions
     def get_leo_completions(self, prefix):
@@ -950,7 +957,9 @@ class AutoCompleterClass(object):
     #@+node:ekr.20061031131434.46: *4* ac.start
     def start(self, event):
         # We don't need to clear this now that we don't use ContextSniffer.
-        # self.completionsDict = {}
+        c = self.c
+        if c.config.getBool('use_jedi', default=True):
+            self.completionsDict = {}
         if self.use_qcompleter:
             self.init_qcompleter(event)
         else:
