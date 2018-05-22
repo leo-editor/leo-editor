@@ -171,23 +171,26 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.selectPosition(root)
         if not c.p:
             return
-        tree_s = c.config.getOutlineData('tree-abbreviations')
-        if not tree_s:
+        data = c.config.getOutlineData('tree-abbreviations')
+        if data is None:
             return
-        #
-        # Expand the tree so we can traverse it.
-        if not c.canPasteOutline(tree_s):
-            return
-        c.fileCommands.leo_file_encoding = 'utf-8'
-        #
-        # As part of #427, disable all redraws.
-        try:
-            g.app.disable_redraw = True
-            d = {}
-            self.init_tree_abbrev_helper(d, tree_s)
-            self.tree_abbrevs_d = d
-        finally:
-            g.app.disable_redraw = False
+        d = {}
+        # #904: data may be a string or a list of two strings.
+        aList = [data] if g.isString(data) else data
+        for tree_s in aList:
+            #
+            # Expand the tree so we can traverse it.
+            if not c.canPasteOutline(tree_s):
+                return
+            c.fileCommands.leo_file_encoding = 'utf-8'
+            #
+            # As part of #427, disable all redraws.
+            try:
+                g.app.disable_redraw = True
+                self.init_tree_abbrev_helper(d, tree_s)
+            finally:
+                g.app.disable_redraw = False
+        self.tree_abbrevs_d = d
     #@+node:ekr.20170227062001.1: *7* abbrev.init_tree_abbrev_helper
     def init_tree_abbrev_helper(self, d, tree_s):
 

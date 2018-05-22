@@ -4,12 +4,10 @@
 # pylint: disable=unsubscriptable-object
 #@+<< imports >>
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
-import leo.core.leoGlobals as g
-# from leo.core.leoNodes import VNode
-from leo.plugins.mod_scripting import build_rclick_tree
 import os
 import sys
-# from copy import deepcopy
+from leo.plugins.mod_scripting import build_rclick_tree
+import leo.core.leoGlobals as g
 #@-<< imports >>
 #@+<< class ParserBaseClass >>
 #@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>
@@ -1591,6 +1589,14 @@ class LocalConfigManager(object):
     #@+node:ekr.20120215072959.12527: *5* c.config.getData
     def getData(self, setting, strip_comments=True, strip_data=True):
         '''Return a list of non-comment strings in the body text of @data setting.'''
+        # 904: Add local abbreviations to global settings.
+        append = setting == 'global-abbreviations'
+        if append:
+            data0 = g.app.config.getData(setting,
+                strip_comments=strip_comments,
+                strip_data=strip_data,
+            )
+            ### g.trace('OLD: %4s %s' % (data0 and len(data0), setting))
         data = self.get(setting, "data")
         # New in Leo 4.11: parser.doData strips only comments now.
         # New in Leo 4.12: parser.doData strips *nothing*.
@@ -1598,11 +1604,27 @@ class LocalConfigManager(object):
             data = [z for z in data if not z.strip().startswith('#')]
         if data and strip_data:
             data = [z.strip() for z in data if z.strip()]
+        if append and data != data0:
+            if data:
+                data.extend(data0)
+            else:
+                data = data0
+            ### g.trace('NEW: %4s %s' % (data and len(data), setting))
         return data
     #@+node:ekr.20131114051702.16542: *5* c.config.getOutlineData
     def getOutlineData(self, setting):
         '''Return the pastable (xml) text of the entire @outline-data tree.'''
-        return self.get(setting, "outlinedata")
+        data = self.get(setting, "outlinedata")
+        if setting == 'tree-abbreviations':
+            # 904: Append local tree abbreviations to the global abbreviations.
+            data0 = g.app.config.getOutlineData(setting)
+            if data and data0 and data != data0:
+                assert g.isString(data0)
+                assert g.isString(data)
+                # We can't merge the data here: they are .leo files!
+                # abbrev.init_tree_abbrev_helper does the merge.
+                data = [data0, data]
+        return data
     #@+node:ekr.20120215072959.12528: *5* c.config.getDirectory
     def getDirectory(self, setting):
         '''Return the value of @directory setting, or None if the directory does not exist.'''
