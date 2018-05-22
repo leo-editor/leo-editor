@@ -2031,6 +2031,7 @@
 </v>
 <v t="ekr.20180509123018.1"><vh>Features</vh>
 <v t="ekr.20180511101509.1"><vh>#868: Allow separate bindings for numeric keypad keys</vh></v>
+<v t="ekr.20180522121943.1"><vh>#904: Allow local overrides of abbreviations</vh></v>
 <v t="ekr.20180509122603.1"><vh>Added diff-related wrappers</vh></v>
 <v t="ekr.20180509122901.1"><vh>Added leo_babel plugin</vh></v>
 <v t="ekr.20180522101650.1"><vh>pylint creates clickable links</vh></v>
@@ -26920,6 +26921,7 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - Added easy-to-use diff-related wrappers for scripts.
 - Added leo_babel plugin.
 - Leo's pylint command writes clickable links.
+- Allow local overrides of all abbreviations.
 - A mass cleanup of Leo's code, removing many unused tracing statements.
 - The usual minor bug fixes.
 
@@ -27607,6 +27609,8 @@ When present, bpm.put_log uses these as follows::
     nodeLink = "%s,%d" % (unl, -line)
     c.frame.log.put(s + '\n', nodeLink=nodeLink)
 </t>
+<t tx="ekr.20180522121943.1">Allow local overrides of @data global-abbreviations &amp; @outline-data tree-abbreviations
+https://github.com/leo-editor/leo-editor/issues/904</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
