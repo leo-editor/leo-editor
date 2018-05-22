@@ -2027,13 +2027,15 @@
 </v>
 <v t="ekr.20180509125836.1"><vh>Code</vh>
 <v t="ekr.20180509125839.1"><vh>#875: Rename json reader/writer plugins</vh></v>
+<v t="ekr.20180522101756.1"><vh>BackgroundProcessManager supports clickable links</vh></v>
 </v>
 <v t="ekr.20180509123018.1"><vh>Features</vh>
-<v t="ekr.20180511061629.1"><vh>Smart searches for functions and methods</vh></v>
+<v t="ekr.20180511101509.1"><vh>#868: Allow separate bindings for numeric keypad keys</vh></v>
 <v t="ekr.20180509122603.1"><vh>Added diff-related wrappers</vh></v>
 <v t="ekr.20180509122901.1"><vh>Added leo_babel plugin</vh></v>
+<v t="ekr.20180522101650.1"><vh>pylint creates clickable links</vh></v>
 <v t="ekr.20180510093733.1"><vh>Removed settings</vh></v>
-<v t="ekr.20180511101509.1"><vh>#868: Allow separate bindings for numeric keypad keys</vh></v>
+<v t="ekr.20180511061629.1"><vh>Smart searches for functions and methods</vh></v>
 </v>
 </v>
 <v t="ekr.20180513084304.1"><vh>OLD @button to-md</vh>
@@ -26917,6 +26919,7 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - Allow separate bindings for numeric keypad keys
 - Added easy-to-use diff-related wrappers for scripts.
 - Added leo_babel plugin.
+- Leo's pylint command writes clickable links.
 - A mass cleanup of Leo's code, removing many unused tracing statements.
 - The usual minor bug fixes.
 
@@ -27591,6 +27594,19 @@ There is a small cost to @clean: Leo saves the entire @clean tree in the .leo fi
     p = c.lastTopLevel().insertAfter()
     p.h = 'Markdown: %s' % self.root.h
     p.b = source</t>
+<t tx="ekr.20180522101650.1">Clicking on underlined links in the log pane takes you to the proper node and line.</t>
+<t tx="ekr.20180522101756.1">BackgroundProcessManager.start_process now takes two new kwargs:  link_pattern and link_root:
+
+- link_pattern: a regex string or compiled regex pattern, used to determine whether a message contains a link.
+
+- link_root: the root @file node.
+
+When present, bpm.put_log uses these as follows::
+
+    unl = link_root.get_UNL(with_proto=True, with_count=True)
+    nodeLink = "%s,%d" % (unl, -line)
+    c.frame.log.put(s + '\n', nodeLink=nodeLink)
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
