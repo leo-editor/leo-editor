@@ -16,7 +16,7 @@ except ImportError:
     pyflakes = None
 import os
 import shlex
-import subprocess
+# import subprocess
 import sys
 import time
 #@-<< imports >>
@@ -313,13 +313,6 @@ class PylintCommand(object):
         '''ctor for PylintCommand class.'''
         self.c = c
         self.seen = [] # List of checked vnodes.
-        self.wait = False
-            # Waiting has several advantages:
-            # 1. output is shown in the log pane.
-            # 2. Total timing statistics can be shown,
-            #    so it is always clear when the command has ended.
-            # Not waiting *does* works, but the user can't
-            # see when the command has ended.
 
     #@+others
     #@+node:ekr.20150514125218.9: *3* pylint.check
@@ -367,12 +360,9 @@ class PylintCommand(object):
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:
             sys.path.append(leo_path)
-        t1 = time.time()
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         for p in roots:
             self.check(p, rc_fn)
-        if self.wait:
-            g.es_print('pylint done %s' % g.timeSince(t1))
     #@+node:ekr.20150514125218.12: *3* pylint.run_pylint
     pylint_install_message = False
 
@@ -406,21 +396,16 @@ class PylintCommand(object):
             # When shell is True, it's recommended to pass a string, not a sequence.
             command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
                 sys.executable, ','.join(args))
-        if self.wait:
-            g.es_print('pylint:', g.shortFileName(fn))
-            proc = subprocess.Popen(
-                command,
-                stdout=subprocess.PIPE,
-                shell=False,
-                universal_newlines=True, # Converts stdout to unicode
-            )
-            stdout_data, stderr_data = proc.communicate()
-            for s in g.splitLines(stdout_data):
-                if s.strip():
-                    g.es_print(s.rstrip())
-        else:
-            bpm = g.app.backgroundProcessManager
-            bpm.start_process(c, command, kind='pylint', fn=fn)
+        #
+        # Run the command using the BPM.
+        bpm = g.app.backgroundProcessManager
+        roots = g.findRootsWithPredicate(c, c.p, predicate=None)
+        bpm.start_process(c, command,
+            fn=fn,
+            kind='pylint',
+            link_pattern = r'^\w+:(.*),.*:(.*)$',
+            link_root = roots and roots[0],
+        )
     #@-others
 #@-others
 #@@language python
