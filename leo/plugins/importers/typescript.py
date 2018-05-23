@@ -15,8 +15,7 @@ class TS_Importer(Importer):
         # Init the base class.
         Importer.__init__(self,
             importCommands,
-            language = 'javascript',
-                # At present, this *must* be 'javascript', not 'typescript'.
+            language = 'typescript', # Case is important.
             state_class = TS_ScanState,
         )
 
