@@ -404,7 +404,7 @@
 <v t="ekr.20180523101514.5"><vh>#837: LeoU: Running unit tests</vh></v>
 <v t="ekr.20180523101514.13"><vh>#857: LeoU: How devs should use git branches</vh></v>
 <v t="ekr.20180523101514.12"><vh>#859: LeoU: How to make complex changes to a code base</vh></v>
-<v t="ekr.20180523101514.4"><vh>#890: About Leo's Architecture</vh></v>
+<v t="ekr.20180523101514.4"><vh>#890: LeoU: About Leo's Architecture</vh></v>
 <v t="ekr.20180523101514.3"><vh>#891: LeoU: About Leo's Position and VNode classes</vh></v>
 </v>
 </v>
