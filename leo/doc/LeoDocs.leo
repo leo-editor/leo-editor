@@ -2099,38 +2099,58 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180523093349.2"><vh>24 Info issues</vh>
-<v t="ekr.20180523093350.24"><vh>#105: Index of old LaunchPad bugs re plugins</vh></v>
-<v t="ekr.20180523093350.23"><vh>#322: Rewrite importers as they become needed</vh></v>
-<v t="ekr.20180523093350.22"><vh>#324: How to install Anaconda</vh></v>
-<v t="ekr.20180523093350.21"><vh>#355: Python 3 bug, now resolved, ruined Leo</vh></v>
-<v t="ekr.20180523093350.20"><vh>#486: Workaround: Ctrl-) binding may not work on Windows 10</vh></v>
-<v t="ekr.20180523093350.19"><vh>#517: leoConfig.ParserBaseClass methods should be revised</vh></v>
-<v t="ekr.20180523093350.18"><vh>#551: How to make .leo files happy in git repository?</vh></v>
-<v t="ekr.20180523093350.17"><vh>#636: Installing pyenchant fails for Windows 64 bit python</vh></v>
-<v t="ekr.20180523093350.16"><vh>#681: Use the tools that Leo supports</vh></v>
-<v t="ekr.20180523093350.15"><vh>#688: How to install miniconda on Windows 10</vh></v>
-<v t="ekr.20180523093350.14"><vh>#699: How to install Anaconda3 on Windows</vh></v>
-<v t="ekr.20180523093350.13"><vh>#701: How to install zerorpc on Windows</vh></v>
-<v t="ekr.20180523093350.12"><vh>#703: How to install and run the hello world electron app on Windows</vh></v>
-<v t="ekr.20180523093350.11"><vh>#710: How to Switch between Anaconda installations</vh></v>
-<v t="ekr.20180523093350.10"><vh>#715: Generating aspell dictionaries</vh></v>
-<v t="ekr.20180523093350.9"><vh>#719: clean-recent-files does nothing by default</vh></v>
-<v t="ekr.20180523093350.8"><vh>#733: How to Install and run the leocljs demo</vh></v>
-<v t="ekr.20180523093350.7"><vh>#735: How to Install and run LeoVue</vh></v>
-<v t="ekr.20180523093350.6"><vh>#752: How to install eric6 on Windows</vh></v>
-<v t="ekr.20180523093350.5"><vh>#754: Move distribution from SourceForge to github + pip install Leo</vh></v>
-<v t="ekr.20180523093350.4"><vh>#755: How to build pyzo from sources</vh></v>
-<v t="ekr.20180523093350.3"><vh>#872: Info: how Leo handles uA's</vh></v>
-<v t="ekr.20180523093350.2"><vh>#883: Enhancement: make stand-alone trees of vnodes possible</vh></v>
-<v t="ekr.20180523093350.1"><vh>#906: Dubious major projects</vh></v>
+<v t="ekr.20180523085523.1"></v>
+<v t="ekr.20180523093753.1"><vh>Backup of GitHub Info and Summary issues</vh>
+<v t="ekr.20180523095242.2"><vh>24 Closed Info issues</vh>
+<v t="ekr.20180523095243.24"><vh>#105: Index of old LaunchPad bugs re plugins</vh></v>
+<v t="ekr.20180523095243.23"><vh>#322: Rewrite importers as they become needed</vh></v>
+<v t="ekr.20180523095243.22"><vh>#324: How to install Anaconda</vh></v>
+<v t="ekr.20180523095243.21"><vh>#355: Python 3 bug, now resolved, ruined Leo</vh></v>
+<v t="ekr.20180523095243.20"><vh>#486: Workaround: Ctrl-) binding may not work on Windows 10</vh></v>
+<v t="ekr.20180523095243.19"><vh>#517: leoConfig.ParserBaseClass methods should be revised</vh></v>
+<v t="ekr.20180523095243.18"><vh>#551: How to make .leo files happy in git repository?</vh></v>
+<v t="ekr.20180523095243.17"><vh>#636: Installing pyenchant fails for Windows 64 bit python</vh></v>
+<v t="ekr.20180523095243.16"><vh>#681: Use the tools that Leo supports</vh></v>
+<v t="ekr.20180523095243.15"><vh>#688: How to install miniconda on Windows 10</vh></v>
+<v t="ekr.20180523095243.14"><vh>#699: How to install Anaconda3 on Windows</vh></v>
+<v t="ekr.20180523095243.13"><vh>#701: How to install zerorpc on Windows</vh></v>
+<v t="ekr.20180523095243.12"><vh>#703: How to install and run the hello world electron app on Windows</vh></v>
+<v t="ekr.20180523095243.11"><vh>#710: How to Switch between Anaconda installations</vh></v>
+<v t="ekr.20180523095243.10"><vh>#715: Generating aspell dictionaries</vh></v>
+<v t="ekr.20180523095243.9"><vh>#719: clean-recent-files does nothing by default</vh></v>
+<v t="ekr.20180523095243.8"><vh>#733: How to Install and run the leocljs demo</vh></v>
+<v t="ekr.20180523095243.7"><vh>#735: How to Install and run LeoVue</vh></v>
+<v t="ekr.20180523095243.6"><vh>#752: How to install eric6 on Windows</vh></v>
+<v t="ekr.20180523095243.5"><vh>#754: Move distribution from SourceForge to github + pip install Leo</vh></v>
+<v t="ekr.20180523095243.4"><vh>#755: How to build pyzo from sources</vh></v>
+<v t="ekr.20180523095243.3"><vh>#872: Info: how Leo handles uA's</vh></v>
+<v t="ekr.20180523095243.2"><vh>#883: Enhancement: make stand-alone trees of vnodes possible</vh></v>
+<v t="ekr.20180523095243.1"><vh>#906: Dubious major projects</vh></v>
 </v>
-<v t="ekr.20180523093350.25"><vh>5 Summary issues</vh>
-<v t="ekr.20180523093350.30"><vh>#680: Summary: remove sclerotic features from Leo's code base</vh></v>
-<v t="ekr.20180523093350.29"><vh>#770: Summary: explain Leo's features</vh></v>
-<v t="ekr.20180523093350.28"><vh>#799: Summary: general info for Leo devs</vh></v>
-<v t="ekr.20180523093350.27"><vh>#801: Summary: plans for 2018</vh></v>
-<v t="ekr.20180523093350.26"><vh>#803: Summary: Themes items</vh></v>
+<v t="ekr.20180523095243.25"><vh>5 Closed Summary issues</vh>
+<v t="ekr.20180523095245.5"><vh>#680: Summary: remove sclerotic features from Leo's code base</vh></v>
+<v t="ekr.20180523095245.4"><vh>#770: Summary: explain Leo's features</vh></v>
+<v t="ekr.20180523095245.3"><vh>#799: Summary: general info for Leo devs</vh></v>
+<v t="ekr.20180523095245.2"><vh>#801: Summary: plans for 2018</vh></v>
+<v t="ekr.20180523095245.1"><vh>#803: Summary: Themes items</vh></v>
+</v>
+<v t="ekr.20180523095245.6"><vh>5 Open Info issues</vh>
+<v t="ekr.20180523095245.11"><vh>#897: Support VS Code's FileSystemProviders</vh></v>
+<v t="ekr.20180523095245.10"><vh>#907: Info: Borrow key features from other IDE's and editors</vh></v>
+<v t="ekr.20180523095245.9"><vh>#908: Info: Summary of Leo's features</vh></v>
+<v t="ekr.20180523095245.8"><vh>#909: How to use LaTex with Leo</vh></v>
+<v t="ekr.20180523095245.7"><vh>#910: Summary of developer info items</vh></v>
+</v>
+<v t="ekr.20180523095245.12"><vh>8 Open Summary issues</vh>
+<v t="ekr.20180523095245.20"><vh>#100: Summary: bugs re quicksearch plugin</vh></v>
+<v t="ekr.20180523095245.19"><vh>#665: Summary: support for org mode</vh></v>
+<v t="ekr.20180523095245.18"><vh>#796: Summary: installation info items</vh></v>
+<v t="ekr.20180523095245.17"><vh>#797: Summary: jupyter-related issues</vh></v>
+<v t="ekr.20180523095245.16"><vh>#798: Summary: Terry's enhancements re Leo's Gui</vh></v>
+<v t="ekr.20180523095245.15"><vh>#816: Summary: Leo University</vh></v>
+<v t="ekr.20180523095245.14"><vh>#908: Info: Summary of Leo's features</vh></v>
+<v t="ekr.20180523095245.13"><vh>#910: Summary of developer info items</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -27670,8 +27690,9 @@ g.getGitIssues(
 <t tx="ekr.20180523085905.1"></t>
 <t tx="ekr.20180523085918.1"></t>
 <t tx="ekr.20180523090042.1"></t>
-<t tx="ekr.20180523093349.2"></t>
-<t tx="ekr.20180523093350.1">https://github.com/leo-editor/leo-editor/issues/906
+<t tx="ekr.20180523093753.1"></t>
+<t tx="ekr.20180523095242.2"></t>
+<t tx="ekr.20180523095243.1">https://github.com/leo-editor/leo-editor/issues/906
 #684 Envisages creating a browser gui for Leo, but that's not a high priority at present.
 
 The following projects are **highly risky** and may be **less useful** than might appear at first.  If you are interested in either project, please make yourself known to Leo's core devs **before** doing any programming work. See the post [Leo can be embedded in VS Code if...](https://groups.google.com/forum/#!topic/leo-editor/uESWp-eL8AY) for more details.
@@ -27701,7 +27722,7 @@ The post [ENB: Why python will remain Leo's future](https://groups.google.com/fo
 - Best for users as the simplest and most flexible scripting language.
 - The basis for Leo's API.
 - Able to support scripting in any language.</t>
-<t tx="ekr.20180523093350.10">https://github.com/leo-editor/leo-editor/issues/715
+<t tx="ekr.20180523095243.10">https://github.com/leo-editor/leo-editor/issues/715
 The following is a reformatting and summary of the readme file in [aspell6-en-2017.08.24-0](http://wordlist.aspell.net/). Closing this issue also closes #711.
 
 **Installation**
@@ -27719,7 +27740,7 @@ The following is a reformatting and summary of the readme file in [aspell6-en-20
     aspell -d en dump master | aspell -l en expand &gt; en.txt
 
 This works! en.txt contains 9789 lines.</t>
-<t tx="ekr.20180523093350.11">https://github.com/leo-editor/leo-editor/issues/710
+<t tx="ekr.20180523095243.11">https://github.com/leo-editor/leo-editor/issues/710
 [This post](https://groups.google.com/d/msg/leo-editor/dy132kU7EnA/S8AIaJ-zBgAJ) by David Szent-Györgyi discusses distributions issue for Windows. My present plan is to leave the NSIS installer unchanged.  The Windows pyinstaller distro will be based on 32-bit code.
 
 I installed 32-bit Anaconda2-5.0.1-Windows-x86.exe, but pyinstaller is incompatible with PyQt4. [This page](https://stackoverflow.com/questions/21637922) tells how to install PyQt4 on Python 2.  The following is a bit different, but works:
@@ -27733,7 +27754,7 @@ And now pyinstaller works!
 [a32] pyinstaller --clean --win-private-assemblies launchLeo-unified.spec
 ```
 The second comment here gives scripts for switching between 32 and 64 bit installs.</t>
-<t tx="ekr.20180523093350.12">https://github.com/leo-editor/leo-editor/issues/703
+<t tx="ekr.20180523095243.12">https://github.com/leo-editor/leo-editor/issues/703
 [This page](https://electronjs.org/docs/tutorial/quick-start#write-your-first-electron-app) describes how to create the "hello world" electron app.  **Notes**:
 
 - `npm install -g electron` installs to `C:\Users\edreamleo\AppData\Roaming\npm\electron`
@@ -27752,7 +27773,7 @@ A newbie mistake: The -g option is important.  Otherwise the npm gets installed 
     C:\Users\edreamleo\AppData\Roaming\npm\electron .
 
 [This page](https://electronjs.org/docs/tutorial/debugging-main-process#debugging-the-main-process) tells how to debug an electron app in Chrome. Very cool</t>
-<t tx="ekr.20180523093350.13">https://github.com/leo-editor/leo-editor/issues/701
+<t tx="ekr.20180523095243.13">https://github.com/leo-editor/leo-editor/issues/701
 This item is motivated by [this](https://stackoverflow.com/questions/10775351/combining-node-js-and-python) stack overflow item.
 
 Installing the **python** zerorpc is easy: `PIP install zerorpc`
@@ -27778,7 +27799,7 @@ python c:\test\zerorpc.py
 node c:\test\zerorpc.js
 ```
 The output in the node console is "Hello, World!"</t>
-<t tx="ekr.20180523093350.14">https://github.com/leo-editor/leo-editor/issues/699
+<t tx="ekr.20180523095243.14">https://github.com/leo-editor/leo-editor/issues/699
 Here is how I installed Anaconda3 on Windows 10:
 
   Downloaded Anaconda3-5.0.1-Windows-x86_64.exe
@@ -27802,7 +27823,7 @@ This downloads and installs Visual C++ Build Tools 2015.
 - pylint version is 1.7.4: no need to downgrade to 1.7
 - Leo runs, but without spell checking. See [this post](https://groups.google.com/d/msg/leo-editor/HzxTtIQjxuY/29JoaJYDBgAJ).
 `conda install pyenchant` fails: The 'enchant' C library was not found.</t>
-<t tx="ekr.20180523093350.15">https://github.com/leo-editor/leo-editor/issues/688
+<t tx="ekr.20180523095243.15">https://github.com/leo-editor/leo-editor/issues/688
 Here is how I installed python2 and python3 on Windows.  This issue will remain open indefinitely.
 ```
 # Install Miniconda itself
@@ -27865,7 +27886,7 @@ renamed pylint.bat to ll.bat, to invoke pylint properly.
 
 - jupyter should have been installed in a separate jupyter environment, not in the python3 environment.
 - Pylint complains about html.parser in the python2 environment.</t>
-<t tx="ekr.20180523093350.16">https://github.com/leo-editor/leo-editor/issues/681
+<t tx="ekr.20180523095243.16">https://github.com/leo-editor/leo-editor/issues/681
 There is much to be learned this way.
 
 - [ ] [atom](https://atom.io/docs) is built on electron.
@@ -27891,7 +27912,7 @@ And essential python tools:
 - [x] [virtualenv](https://virtualenv.pypa.io/en/stable/): This has destroyed my previous Anaconda3 environment.
 - [ ] Use Anaconda's conda manager to [manage separate environments](https://conda.io/docs/user-guide/tasks/manage-environments.html)
     This is proper way to set up environments in the Anaconda world.</t>
-<t tx="ekr.20180523093350.17">https://github.com/leo-editor/leo-editor/issues/636
+<t tx="ekr.20180523095243.17">https://github.com/leo-editor/leo-editor/issues/636
 _Strictly speaking this is an upstream issue and isn't Leo's problem, but prospective Leo users run into it, so lets document the problem and the workarounds. From mailing list:_
 
     VR&gt; PyEnchant is now also available as a wheel for Python 2.7 as well as Python 3.x. - See
@@ -27929,10 +27950,10 @@ Also see
 * https://github.com/leo-editor/leo-editor/issues/324
 * https://stackoverflow.com/questions/29381919/importerror-the-enchant-c-library-was-not-found-please-install-it-via-your-o
 * https://github.com/rfk/pyenchant/issues/42</t>
-<t tx="ekr.20180523093350.18">https://github.com/leo-editor/leo-editor/issues/551
+<t tx="ekr.20180523095243.18">https://github.com/leo-editor/leo-editor/issues/551
 I put some .leo files into a git repo. I open a .leo file and change nothing but save it again, it will be marked as changed in the repo. `git diff` shows that many lines have changed. I checked the diffs, and typically these changes are about accessing time etc.
 How to make .leo files happy in a git reposity? I mean, if nothing about the content changes, these files will keep clean to a git repo. Or could I use git only to trace the changes of outline nodes?</t>
-<t tx="ekr.20180523093350.19">https://github.com/leo-editor/leo-editor/issues/517
+<t tx="ekr.20180523095243.19">https://github.com/leo-editor/leo-editor/issues/517
 I have noticed some methods that are not mentioned in documentation nor used in leoSettings.leo.
 We should either remove them or document them properly. 
 
@@ -27942,7 +27963,7 @@ Here is a suspect list:
 3. `doPage`  empty method, can't figure why?
 
 I am working on standalone script for analyzing settings outlines and I want to be clear on what kind of settings are to be supported and which can be skipped in new code.</t>
-<t tx="ekr.20180523093350.2">https://github.com/leo-editor/leo-editor/issues/883
+<t tx="ekr.20180523095243.2">https://github.com/leo-editor/leo-editor/issues/883
 **Update**: I think it's time to do this, while I am making other changes to Leo's code base.
 
 This issue records my thoughts here to complete [recent discussions](https://groups.google.com/forum/#!topic/leo-editor/wMlURDDDUvY). To create a stand-alone tree of VNodes the following would be required:
@@ -27956,13 +27977,13 @@ This issue records my thoughts here to complete [recent discussions](https://gro
 At minimum, the GnxManager class would be a straightforward refactoring of the NodeIndices class in leoNodes.py.  However, the new GnxManager might also manage a global cache of already-generated gnx's. This might ensure that *different instances* of Leo could not possibly allocate (on a local machine) conflicting gnx's.
 
 At present, at.readPostPass and its helpers check for conflicting gnx's.  The GnxManager class might simplify this code, or it might be a "belt and suspenders" check.</t>
-<t tx="ekr.20180523093350.20">https://github.com/leo-editor/leo-editor/issues/486
+<t tx="ekr.20180523095243.20">https://github.com/leo-editor/leo-editor/issues/486
 This could be called a Windows 10 bug.  Leo can do nothing about it, because the bug causes Windows 10 not to pass the Ctrl-).  Apparently Windows 10 binds `Ctrl-)` to something, but I can not find out what.
 
 At one time there was a workaround involving, iirc, a change to the windows registry, but just now googling does not turn up anything.</t>
-<t tx="ekr.20180523093350.21">https://github.com/leo-editor/leo-editor/issues/355
+<t tx="ekr.20180523095243.21">https://github.com/leo-editor/leo-editor/issues/355
 This is an information item about a [Python bug](http://bugs.python.org/issue25778) that can't be fixed in Leo, but has been fixed in Python 3.6.1. The bug affects windows users using Python 3.x on some (not all) versions of Windows 10.  The initial bug report was on leo-editor, [here](https://groups.google.com/d/msg/leo-editor/Q8B0gNeaKfc/-9zTKOgzCQAJ).</t>
-<t tx="ekr.20180523093350.22">https://github.com/leo-editor/leo-editor/issues/324
+<t tx="ekr.20180523095243.22">https://github.com/leo-editor/leo-editor/issues/324
 I am writing these notes why the details are fresh in my mind.
 
 The latest version of Anaconda is [here](https://www.continuum.io/downloads). Older versions are [here](https://repo.continuum.io/archive/).
@@ -27986,7 +28007,7 @@ pip2/3 install pylint: Test pylint -a works.
 pip2/3 install pyinstaller (needed only when distributing Leo).
 
 pylint sometimes can not import the leo module.  As a workaround, my sitecustomize.py files add the leo folder to sys.path.  This should be addressed in Leo's pylint support code.</t>
-<t tx="ekr.20180523093350.23">https://github.com/leo-editor/leo-editor/issues/322
+<t tx="ekr.20180523095243.23">https://github.com/leo-editor/leo-editor/issues/322
 The new javascript importer is a template for other importers.  This issue describes what would be done.  As such, is an information item as well as an enhancement request. Much of the following has been taken from [this discussion](https://groups.google.com/forum/#!topic/leo-editor/Ct3ZKqTo_KE) on leo-editor. 
 
 Most of the code resides in the `JavaScriptScanner` class, and its helpers, the `Block` class and the `ScanState` classes. Imo, these classes are the simplest thing that could possibly work. These three classes form a framework for writing any importer.
@@ -28028,7 +28049,7 @@ Finally, the new code uses a custom check method.  The existing code parameteriz
 Import code will never be trivial, and special cases will have to be made for some languages.  For example, a completely new version of the `ScanState` class would be needed for Python, because blocks are delimited by indentation, not delimiters.
 
 I would certainly have used the present scheme for all importers if I had discovered it earlier.  For now, I plan to convert an importer to the new scheme only if serious bugs are reported against it.</t>
-<t tx="ekr.20180523093350.24">https://github.com/leo-editor/leo-editor/issues/105
+<t tx="ekr.20180523095243.24">https://github.com/leo-editor/leo-editor/issues/105
 ## For others
 
 https://bugs.launchpad.net/leo-editor/+bug/1240688
@@ -28044,35 +28065,8 @@ Todo.py documentation - image link semi-broken in docstring
 
 [Fixed at 87480b3] https://bugs.launchpad.net/leo-editor/+bug/1158269
 viewrendered pane goes blank when url clicked.</t>
-<t tx="ekr.20180523093350.25"></t>
-<t tx="ekr.20180523093350.26">https://github.com/leo-editor/leo-editor/issues/803
-- [x] #808 Loading Images in Themes is Broken.
-- [x] #766: Create a Themes menu.
-- [x] #790: Support @load-themes setting.
-   Won't do: `@string theme-name` suffices.</t>
-<t tx="ekr.20180523093350.27">https://github.com/leo-editor/leo-editor/issues/801
-Here are my main plans for this year:
-
-- [x] #803: Complete themes.
-- [ ] #797: Support Jupyter notebooks as much as possible.
-
-Ongoing: Support Joe Orr's great work.</t>
-<t tx="ekr.20180523093350.28">https://github.com/leo-editor/leo-editor/issues/799
-These will be closed *only* so as not to clutter the [info items page].
-
-- #786: Suggestions for theme developers
-
-- #527: Info: unit tests need not, and should not, depend on settings</t>
-<t tx="ekr.20180523093350.29">https://github.com/leo-editor/leo-editor/issues/770
-Excerpted from [this post](https://groups.google.com/d/msg/leo-editor/scjyAiA-DXU/BGgYjU4iBAAJ):
-
--  #762: quickstart.leo &amp; CheatSheet.leo should demo Leo's features, including markdown rendering
-- #765: Improve the Cmds menu
-- #763: Use html comments to support @file x.md
-- #764: Improve the screen shot on Leo's home page
-- #803: Summary: Themes items
-- #766: Create a Themes menu and simplify theme settings.</t>
-<t tx="ekr.20180523093350.3">https://github.com/leo-editor/leo-editor/issues/872
+<t tx="ekr.20180523095243.25"></t>
+<t tx="ekr.20180523095243.3">https://github.com/leo-editor/leo-editor/issues/872
 From [this post](https://groups.google.com/d/msg/leo-editor/Gv6D-h8Mcag/wbBEK9gfCgAJ)
 
 **EKR**: It looks like json.dumps may have problems with p.v.unknownAttributes
@@ -28097,29 +28091,11 @@ p.v.u['pantry'] = {
 That just doesn't work in JSON.
 
 I don't think we want to go down the track of letting users register JSON read/write helpers for certain keys in p.v.u.  *Maybe* we could handle the case of ints/floats/tuples/(frozen sets) as keys by converting to/from string representations.</t>
-<t tx="ekr.20180523093350.30">https://github.com/leo-editor/leo-editor/issues/680
-**Update**: Imo, little, if any, truly sclerotic code remains in Leo.  In particular, naming conventions replace unnecessary asserts.  The remaining assert are benign.  Many are a form of documentation.
-
-[This post](https://groups.google.com/d/msg/leo-editor/Ejf3tif-eJs/cT3ZJINIBAAJ) lists Leo's flexible and sclerotic aspects:
-
-- Fixed: **Sclerotic**: Leo's key-handling code. #858 tells how to solve this problem.
-
-- Won't Do: **Sclerotic**: Leo's @shortcuts nodes mix all pane bindings together.
-  Instead, use inheritable  `@data &lt;pane&gt;-shortcut` nodes 
-
-- **Sclerotic**: Leo's concrete gui code.
-  It might be possible to use a local browser as Leo's rendering engine, while having Leo remain a desktop app. It would be easy to simulate the needed parts of the javascript DOM in Leo's API.
-
-- **Partially sclerotic**: Leo's rendering tools.
-  We are suffering from [LeoVue](https://github.com/kaleguy/leovue#leo-vue) envy.
-
-- **Partially sclerotic**: Leo's attribute handling.
-  See #588.</t>
-<t tx="ekr.20180523093350.4">https://github.com/leo-editor/leo-editor/issues/755
+<t tx="ekr.20180523095243.4">https://github.com/leo-editor/leo-editor/issues/755
 pyzo is pure python with only a few optional dependencies.  Use the binary installer.
 
 See [this pyzo issue](https://github.com/pyzo/pyzo/issues/386) for more details. In particular, the binaries depend on [cx_freeze](http://cx-freeze.readthedocs.io/en/latest/) and maybe [PySide](http://wiki.qt.io/About_PySide).</t>
-<t tx="ekr.20180523093350.5">https://github.com/leo-editor/leo-editor/issues/754
+<t tx="ekr.20180523095243.5">https://github.com/leo-editor/leo-editor/issues/754
 - [ ] Update the summary + news tabs on SourceForge:
     For example: Leo is now available on [GitHub](https://github.com/leo-editor/leo-editor). Follow the installation guide at leoeditor.com
       
@@ -28129,11 +28105,11 @@ See [this pyzo issue](https://github.com/pyzo/pyzo/issues/386) for more details.
 - [ ] Update links on Leo's home page to these branches.
 
 .</t>
-<t tx="ekr.20180523093350.6">https://github.com/leo-editor/leo-editor/issues/752
+<t tx="ekr.20180523095243.6">https://github.com/leo-editor/leo-editor/issues/752
 **Summary**: Not installed yet on Windows.
 
 The [eric6 download page](http://eric-ide.python-projects.org/eric-download.html).</t>
-<t tx="ekr.20180523093350.7">https://github.com/leo-editor/leo-editor/issues/735
+<t tx="ekr.20180523095243.7">https://github.com/leo-editor/leo-editor/issues/735
 LeoVue is Joe Orr's prototype of Leo using vue.js. First announced [here](https://groups.google.com/d/msg/leo-editor/50SZd4136iM/owhCnBqcDAAJ). Joe's [leo-examples page](https://github.com/kaleguy/leo-examples) discusses how to run leovue on a local machine. The git repo is [here](https://github.com/kaleguy/leovue).
 
 I can now successfully build leovue on both Ubuntu and Windows 10. **Note**: Before doing so I simulated a clean install by *uninstalling* java, node.js and a previous copy of leovue.  Uninstalling node.js involved deleting ~AppData/npm and ~AppData/npm-cache.
@@ -28194,7 +28170,7 @@ At the end of the build, this message appears:
 
 **From tscv11**: The script 'leo4sqlite' is now online using leovue. The syntax highlighting works well.
 I'm looking forward to trying some of leovue's more advanced capabilities. The leovue/leo4sqlite demo lives [here](https://tscv11.github.io/leo4sqlite/#/t/23/)</t>
-<t tx="ekr.20180523093350.8">https://github.com/leo-editor/leo-editor/issues/733
+<t tx="ekr.20180523095243.8">https://github.com/leo-editor/leo-editor/issues/733
 This info item describes how to install and run Vitalije's clojurescript demo project, **leocljs**. leocljs uses [electron.js](https://electronjs.org/) and [Om/React](https://github.com/omcljs/om). Vitalije first announced leocljs [here](https://groups.google.com/d/msg/leo-editor/Isd93qGd-RU/SaQoVv7gCQAJ). The *original* sources and documentation are [here](https://repo.computingart.net/leocljs/tree?ci=tip). The *current* sources are in the [leo/proto/Vitalije/leocljs](https://github.com/leo-editor/leo-editor/tree/proto/leo/proto/Vitalije/leocljs) folder of Leo's [proto](https://github.com/leo-editor/leo-editor/tree/proto) branch. 
 
 This item is a distillation of information from [this post]( https://groups.google.com/d/msg/leo-editor/Isd93qGd-RU/tnRajD7qCQAJ) and [this post](https://groups.google.com/d/msg/leo-editor/wAmZfFCQWVU/mwhMfQ_LCgAJ) and [this thread](https://groups.google.com/forum/#!topic/leo-editor/pUN94kB5cLE). All comments and corrections are welcome.
@@ -28220,10 +28196,246 @@ This item is a distillation of information from [this post]( https://groups.goog
 1. In src_front/leo_front/core.cljs file at line 379 is `(get-leo-doc "line-numbering.leo")` Change "line-numbering.leo" to match the Leo file you have placed in app/dev/.
 
 2. Usually you start with: `(in-ns 'leo-front/core)` You must be running the cljs app, otherwise the console will hang.</t>
-<t tx="ekr.20180523093350.9">https://github.com/leo-editor/leo-editor/issues/719
+<t tx="ekr.20180523095243.9">https://github.com/leo-editor/leo-editor/issues/719
 rf.cleanRecentFiles does nothing if c.config.getData('path-demangle') is empty, which it is by default.
 
 That *is* ok because Leo's startup logic removes files from the recent files list if they no longer exist.</t>
+<t tx="ekr.20180523095245.1">https://github.com/leo-editor/leo-editor/issues/803
+- [x] #808 Loading Images in Themes is Broken.
+- [x] #766: Create a Themes menu.
+- [x] #790: Support @load-themes setting.
+   Won't do: `@string theme-name` suffices.</t>
+<t tx="ekr.20180523095245.10">https://github.com/leo-editor/leo-editor/issues/907
+This is an ongoing info Item.  Here are some preliminary ideas:
+
+**Settings**
+
+I did like the way VS Code handles key bindings.  In particular, settings can be associated with events, not just panes as in Leo. This might be a new direction for Leo.
+
+**Non-outline tabs**
+
+Many IDE's, including VS Code, can display web pages using the entire window. The idea is to allow the VR pane (or an external file) to occupy the entire window, that is, an entire tab.  This would allow Leo to display .md files "natively" in the entire window, rather than squashed into whatever space is allocated to the VR pane. Similarly, one of Kent's favorite requests, a "flattened" view of an entire file, would also be a good candidate for displaying in the full window.  And so on.
+
+**Pylint**
+
+- Add a setting to run Pylint whenever saving a .py file.
+- Pylint errors should also create clickable links, if they don't already.
+
+**Other panes**
+
+Most IDE's support lots and lots of other views.  It's an open question how useful these would be in Leo.
+
+**Integrated debugger**
+
+Single-stepping through code *in Leo's outline* would be a good feature to have. The recent work on jedi auto-completion shows how to associate line numbers in the external file with lines in each node of the file.  It's actually very easy and fast to do, which I had not realized until this week.</t>
+<t tx="ekr.20180523095245.11">https://github.com/leo-editor/leo-editor/issues/897
+From [this post](https://groups.google.com/d/msg/leo-editor/ySG0WtcOdgI/OTtF5ldFBQAJ): The latest release of VS Code includes the idea of FileSystemProviders that allow you to open editors via various [Universal Resource Identifiers](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier).
+
+You would have to develop a leo: or maybe leoFS: scheme to let you open nodes, and probably a LSP to keep node updated in Leo, but it would be a way to let VS Code do editing. There is a memory based example memFS [here](https://marketplace.visualstudio.com/items?itemName=jrieken.vscode-memfs).</t>
+<t tx="ekr.20180523095245.12"></t>
+<t tx="ekr.20180523095245.13">https://github.com/leo-editor/leo-editor/issues/910
+This is the top-level summary of all info items for Leo's devs.  This item will remain open "forever". The items referenced here have all been closed.
+
+**Build instructions**
+
+- #755: How to build pyzo from sources
+- #752: How to install eric6 on Windows
+- #735: How to install and run LeoVue
+- #733: How to Install and run the leocljs demo
+- #703: How to install and run the hello world electron app on Windows
+- #701: How to install zerorpc on Windows
+- #699: How to install Anaconda3 on Windows
+- #688: How to install miniconda on Windows 10
+- #324: How to install Anaconda
+
+**Other info items**
+
+- #906: Dubious major projects
+- #872: Info: how Leo handles uA's
+- #710: How to Switch between Anaconda installations
+- #681: Use the tools that Leo supports
+- #105: Index of old LaunchPad bugs re plugins</t>
+<t tx="ekr.20180523095245.14">https://github.com/leo-editor/leo-editor/issues/908
+To do: create a list/matrix of essential Leo features, compared to other IDE's.  This should be useful for everyone: Leo's devs, power users, and newbies.</t>
+<t tx="ekr.20180523095245.15">https://github.com/leo-editor/leo-editor/issues/816
+This the gateway to Leo University, a project devoted to help people become Leo devs.
+
+All lessons have the LeoU label. All comments welcome.
+
+- Lesson 1: [Think process, not memory](https://github.com/leo-editor/leo-editor/issues/817).
+    Programming is *much* easier than you might think.
+- Lesson 2: [Learn Leo's debugging tools](https://github.com/leo-editor/leo-editor/issues/836).
+- Lesson 3: [Running unit tests](https://github.com/leo-editor/leo-editor/issues/837).
+- Lesson 4: [Use issues as a programming notebook](https://github.com/leo-editor/leo-editor/issues/818).
+- Lesson 5: [c.recursiveImport imports files recursively](https://github.com/leo-editor/leo-editor/issues/846)
+- Lesson 6: [How devs should use git branches](https://github.com/leo-editor/leo-editor/issues/857).
+- Lesson 7: [How to make complex changes to a code base](https://github.com/leo-editor/leo-editor/issues/859).
+
+And here are some other items for devs:
+
+- #786: LeoU: Suggestions for theme developers
+- #527: LeoU: Unit tests need not, and should not, depend on settings
+- #890: LeoU: About Leo's Architecture
+- #891: LeoU: About Leo's Position and VNode classes</t>
+<t tx="ekr.20180523095245.16">https://github.com/leo-editor/leo-editor/issues/798
+This is an info item summarizing Terry's planned enhancements to Leo's windowing system &amp; gui.
+
+- [ ] #778 Leo-edit-pane (LEP) project
+- [ ] #777 QDock layout project
+- [ ] #465 Use publish / subscribe architecture</t>
+<t tx="ekr.20180523095245.17">https://github.com/leo-editor/leo-editor/issues/797
+[The road map for 2018: visualization &amp; services](https://groups.google.com/forum/#!topic/leo-editor/5jydZQF26iE) contains the present plan.
+**Summary**: Visualization is the heart of what we want.
+
+**Scripting**
+
+- #760: Optionally use ipython in the python_console plugin.
+- #729: Ongoing: support scripting (execute-script) in more languages
+- #561: Making Leo a client of Jupyter, by communicating with its kernel
+    Add convenient access to jupyter kernels.
+- #465: Use publish / subscribe architecture
+
+**Importers**
+
+- #838: Better jupyter notebook (.ipynb) importer/exporter
+- #723: More improvements to javascript importer needed
+
+**Plugins**
+
+- #839: Split valuespace plugin (or its docs) in two
+  vs-eval-block *already* does much of what jupyter does. It is buggy at present.
+- #761: Make the valuespace plugin more visible
+- #760: Optionally use ipython in the python_console plugin
+- #682: Use live objects for autocompletion in the valuespace plugin
+- #447: VR plugin should be improved.
+   Support `@`treeview directives so the rendered output of a tree of Leo nodes
+   looks like a jupyter notebook.
+
+**Gui**
+
+- #684: Create a browser gui for Leo
+- #667: Pipes into the body pane's widget
+- #588: Make node attributes visible, with support in Leo's core
+
+**Obsolete**: This [design document](https://groups.google.com/forum/#!topic/leo-editor/5AryK8fvje8) and these [implementation notes](https://groups.google.com/forum/#!topic/leo-editor/cEahcRp0jME) contain the original ideas.</t>
+<t tx="ekr.20180523095245.18">https://github.com/leo-editor/leo-editor/issues/796
+This item summarizes all info items related to installation:
+
+- #755: How to build pyzo from sources
+- #754: Move distribution from SourceForge to github + pip install Leo
+- #752: Installing eric6 on Windows
+- #735: Installing and running LeoVue
+- #733: Installing and running the leocljs demo
+- #710: Switching between Anaconda installations
+- #703: Running the hello world electron app on Windows
+- #701: Summary of installing zerorpc on Windows
+- #693: Summary of installing Anaconda3 on Windows
+- #688: Summary of installing miniconda on Windows 10
+- #324: Installation notes for Anaconda</t>
+<t tx="ekr.20180523095245.19">https://github.com/leo-editor/leo-editor/issues/665
+Note: #797: Summary: jupyter-related issues contains other issues related to org mode.
+
+- #775: support org-mode agendas.
+- #440: Allow args to `@`language directives.
+    Add or enhance directives to split body text into different rendering regions.
+- #433: Complete the tables.py plugin.
+- #429: execute-script should execute unselected code between `@`language directives</t>
+<t tx="ekr.20180523095245.2">https://github.com/leo-editor/leo-editor/issues/801
+Here are my main plans for this year:
+
+- [x] #803: Complete themes.
+- [ ] #797: Support Jupyter notebooks as much as possible.
+
+Ongoing: Support Joe Orr's great work.</t>
+<t tx="ekr.20180523095245.20">https://github.com/leo-editor/leo-editor/issues/100
+These have been delegated to Ville M. Vainio, the author of this plugin.
+
+https://bugs.launchpad.net/leo-editor/+bug/820019
+Shift-Ctrl-F (quicksearch) Sometimes leaves focus in body
+
+https://bugs.launchpad.net/leo-editor/+bug/823538
+Plugin quicksearch.py command marked-list does nothing
+
+https://bugs.launchpad.net/leo-editor/+bug/917805
+Quicksearch, select string in header, Shift-Ctrl-F does NOT work
+
+https://bugs.launchpad.net/leo-editor/+bug/1199979
+find-quick / Nav tab doesn't work with "first_date = events[0].date"</t>
+<t tx="ekr.20180523095245.3">https://github.com/leo-editor/leo-editor/issues/799
+These will be closed *only* so as not to clutter the [info items page].
+
+- #786: Suggestions for theme developers
+
+- #527: Info: unit tests need not, and should not, depend on settings</t>
+<t tx="ekr.20180523095245.4">https://github.com/leo-editor/leo-editor/issues/770
+Excerpted from [this post](https://groups.google.com/d/msg/leo-editor/scjyAiA-DXU/BGgYjU4iBAAJ):
+
+-  #762: quickstart.leo &amp; CheatSheet.leo should demo Leo's features, including markdown rendering
+- #765: Improve the Cmds menu
+- #763: Use html comments to support @file x.md
+- #764: Improve the screen shot on Leo's home page
+- #803: Summary: Themes items
+- #766: Create a Themes menu and simplify theme settings.</t>
+<t tx="ekr.20180523095245.5">https://github.com/leo-editor/leo-editor/issues/680
+**Update**: Imo, little, if any, truly sclerotic code remains in Leo.  In particular, naming conventions replace unnecessary asserts.  The remaining assert are benign.  Many are a form of documentation.
+
+[This post](https://groups.google.com/d/msg/leo-editor/Ejf3tif-eJs/cT3ZJINIBAAJ) lists Leo's flexible and sclerotic aspects:
+
+- Fixed: **Sclerotic**: Leo's key-handling code. #858 tells how to solve this problem.
+
+- Won't Do: **Sclerotic**: Leo's @shortcuts nodes mix all pane bindings together.
+  Instead, use inheritable  `@data &lt;pane&gt;-shortcut` nodes 
+
+- **Sclerotic**: Leo's concrete gui code.
+  It might be possible to use a local browser as Leo's rendering engine, while having Leo remain a desktop app. It would be easy to simulate the needed parts of the javascript DOM in Leo's API.
+
+- **Partially sclerotic**: Leo's rendering tools.
+  We are suffering from [LeoVue](https://github.com/kaleguy/leovue#leo-vue) envy.
+
+- **Partially sclerotic**: Leo's attribute handling.
+  See #588.</t>
+<t tx="ekr.20180523095245.6"></t>
+<t tx="ekr.20180523095245.7">https://github.com/leo-editor/leo-editor/issues/910
+This is the top-level summary of all info items for Leo's devs.  This item will remain open "forever". The items referenced here have all been closed.
+
+**Build instructions**
+
+- #755: How to build pyzo from sources
+- #752: How to install eric6 on Windows
+- #735: How to install and run LeoVue
+- #733: How to Install and run the leocljs demo
+- #703: How to install and run the hello world electron app on Windows
+- #701: How to install zerorpc on Windows
+- #699: How to install Anaconda3 on Windows
+- #688: How to install miniconda on Windows 10
+- #324: How to install Anaconda
+
+**Other info items**
+
+- #906: Dubious major projects
+- #872: Info: how Leo handles uA's
+- #710: How to Switch between Anaconda installations
+- #681: Use the tools that Leo supports
+- #105: Index of old LaunchPad bugs re plugins</t>
+<t tx="ekr.20180523095245.8">https://github.com/leo-editor/leo-editor/issues/909
+It's easy to use LaTex with Leo. This info item tells how.
+
+**Create external files**: `@clean` create an external file without Leo sentinels, that is, without extra LaTex/tex comment lines.  Leo will automagically incorporate changes you make outside Leo into the `@clean` outline.
+
+Leo may place newly-added lines at the boundary of two nodes in the "wrong" node. If that happens, just move the line to the correct node and save the outline.  Leo will remember what you did.  The next time you open the outline, the moved line will be in the correct node.
+
+**Automate your work flow**: g.execute_shell_commands executes commands without hanging Leo. For example:
+```python
+g.execute_shell_commands([
+    '"C:\Program Files (x86)\SumatraPDF\SumatraPDF.exe",
+    'latex_test.pdf'
+]) 
+```
+The argument to g.execute_shell_commands can be a string containing a *single* command, or a list one or more commands, as shown above. 
+
+You can put calls to g.execute_shell_commands into an `@button` or `@command` node to create visible buttons and/or commands that you can execute by name from the minibuffer.</t>
+<t tx="ekr.20180523095245.9">https://github.com/leo-editor/leo-editor/issues/908
+To do: create a list/matrix of essential Leo features, compared to other IDE's.  This should be useful for everyone: Leo's devs, power users, and newbies.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

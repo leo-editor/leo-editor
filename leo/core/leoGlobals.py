@@ -4676,7 +4676,8 @@ def backupGitIssues(c, base_url=None):
     
     root = c.lastTopLevel().insertAfter()
     root.h = 'Backup of issues: %s' % time.strftime("%Y/%m/%d")
-    GitIssueController().backup_issues(base_url, c, root)
+    label_list = []
+    GitIssueController().backup_issues(base_url, c, label_list, root)
     root.expand()
     c.selectPosition(root)
     c.redraw()
@@ -4717,8 +4718,9 @@ class GitIssueController(object):
         self.root = root
         self.milestone = None
         if label_list:
-            for label in label_list:
-                self.get_one_issue(label)
+            for state in ('closed', 'open'):
+                for label in label_list:
+                    self.get_one_issue(label, state)
         elif state is None:
             for state in ('closed', 'open'):
                 organizer = root.insertAsLastChild()
@@ -4762,23 +4764,22 @@ class GitIssueController(object):
         self.base_url = base_url
         self.milestone = milestone
         self.root = root
-        self.state = state # in (None, 'closed', 'open')
         for label in label_list:
-            self.get_one_issue(label)
+            self.get_one_issue(label, state)
     #@+node:ekr.20180126043719.3: *5* git.get_one_issue
-    def get_one_issue(self, label, limit=20):
+    def get_one_issue(self, label, state, limit=20):
         '''Create a list of issues with the given label.'''
         import requests
         root = self.root.insertAsLastChild()
         page, total = 1, 0
-        page_url = self.base_url + '?labels=%s&state=closed&page=%s'
+        page_url = self.base_url + '?labels=%s&state=%s&page=%s'
         while True:
-            url =  page_url % (label, page)
+            url =  page_url % (label, state, page)
             r = requests.get(url)
             try:
                 done, n = self.get_one_page(label, page, r, root)
                 # Do not remove this trace. It's reassuring.
-                g.trace('done: %5s page: %3s found: %s label: %s' % (
+                g.trace('done: %5s page: %3s found: %3s label: %s' % (
                     done, page, n, label))
             except AttributeError:
                 g.trace('Possible rate limit')
@@ -4792,10 +4793,12 @@ class GitIssueController(object):
             if page > limit:
                 g.trace('too many pages')
                 break
+        state = state.capitalize()
         if self.milestone:
-            root.h = '%s %s issues for milestone %s' % (total, label, self.milestone)
+            root.h = '%s %s %s issues for milestone %s' % (
+                total, state, label, self.milestone)
         else:
-            root.h = '%s %s issues' % (total, label)
+            root.h = '%s %s %s issues' % (total, state, label)
     #@+node:ekr.20180126043719.4: *5* git.get_one_page
     def get_one_page(self, label, page, r, root):
         
@@ -4812,7 +4815,7 @@ class GitIssueController(object):
             html_url = d.get('html_url') or self.base_url
             p = root.insertAsNthChild(0)
             p.h = '#%s: %s' % (n, title)
-            p.b = '%s\n' % (html_url)
+            p.b = '%s\n\n' % (html_url)
             p.b += d.get('body').strip()
         link = r.headers.get('Link')
         done = not link or link.find('rel="next"') == -1
