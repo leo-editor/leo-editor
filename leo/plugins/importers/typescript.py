@@ -45,17 +45,95 @@ class TS_Importer(Importer):
     #@+node:ekr.20161118093751.5: *3* ts_i.clean_headline
     def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
+        trace = False ### To be removed.
         s = s.strip()
-        ### g.trace(s)
         # Don't clean a headline twice.
         if s.endswith('>>') and s.startswith('<<'):
             return s
-        elif 1:
-            # Imo, showing the whole line is better than truncating it.
-            return s
-        else:
-            i = s.find('(')
-            return s if i == -1 else s[:i]
+        #
+        # Define modifier kinds
+        kinds = r'(async|public|private|static)'
+        #
+        # Replace match by \1.
+        table = [
+            re.compile(r'(class\s+\w+)'),
+                # class name
+            re.compile(r'export\s+(class\s+\w+)'),
+                # class name
+            re.compile(r'function\s+(\w+)'),
+                # function name
+            re.compile(r'(constructor).*{'),
+                # constructor ... {
+        ]
+        for pattern in table:
+            m = pattern.match(s)
+            if m:
+                if trace: g.trace('1 ===', m.group(1))
+                return m.group(1)
+        #
+        # Replace match by \2.
+        table = [
+            re.compile(r'%s\s*function\s+(\w+)' % kinds),
+                # kind function name
+        ]
+        for pattern in table:
+            m = pattern.match(s)
+            if m:
+                if trace: g.trace('2 ===', m.group(2))
+                return m.group(2)
+        # Replace match by \3
+        table = [
+            re.compile(r'%s\s+%s\s+function\s+(\w+)' % (kinds, kinds)),
+                # kind kind function name
+            re.compile(r'%s\s+%s\s+(\w+).*{' % (kinds, kinds)),
+                # kind kind name ... {
+        ]
+        for pattern in table:
+            m = pattern.match(s)
+            if m:
+                if trace: g.trace('3 ===', m.group(3))
+                return m.group(3)
+        #
+        # Bare functions. Use \3
+        table = [
+            re.compile(r'%s\s+%s\s+(\w+)\s*\(.*\).*{' % (kinds, kinds)),
+                # kind kind name (...) {
+        ]
+        for pattern in table:
+            m = pattern.match(s)
+            if m:
+                if trace: g.trace('3a ===', m.group(3))
+                return m.group(3)
+        #
+        # Bare functions. Use \2
+        table = [
+            re.compile(r'%s\s+(\w+)\s*\(.*\).*{' % kinds),
+                # name (...) {
+        ]
+        for pattern in table:
+            m = pattern.match(s)
+            if m:
+                if trace: g.trace('2a ===', m.group(2))
+                return m.group(2)
+        #
+        # Bare functions. Use \1
+        table = [
+            re.compile(r'(\w+)\s*\(.*\).*{'),
+                # name (...) {
+        ]
+        for pattern in table:
+            m = pattern.match(s)
+            if m:
+                if trace: g.trace('1a ===', m.group(1))
+                return m.group(1)
+        # Final cleanups...
+        for ch in '{(=':
+            if s.endswith(ch):
+                s = s[:-1].strip()
+        # Final whitespace cleanups.
+        s = s.replace('  ', ' ')
+        s = s.replace(' (', '(')
+        return g.truncate(s, 100)
     #@-others
 #@+node:ekr.20161118071747.14: ** class TS_ScanState
 class TS_ScanState:
