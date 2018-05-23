@@ -2029,6 +2029,10 @@
 <v t="ekr.20180509125839.1"><vh>#875: Rename json reader/writer plugins</vh></v>
 <v t="ekr.20180522101756.1"><vh>BackgroundProcessManager supports clickable links</vh></v>
 </v>
+<v t="ekr.20180523053906.1"><vh>Info items</vh>
+<v t="ekr.20180523053913.1"><vh>#909: How to use LaTeX with Leo</vh></v>
+<v t="ekr.20180523063338.1"><vh>#910: Summary of developer info items</vh></v>
+</v>
 <v t="ekr.20180509123018.1"><vh>Features</vh>
 <v t="ekr.20180511101509.1"><vh>#868: Allow separate bindings for numeric keypad keys</vh></v>
 <v t="ekr.20180522121943.1"><vh>#904: Allow local overrides of abbreviations</vh></v>
@@ -27611,6 +27615,10 @@ When present, bpm.put_log uses these as follows::
 </t>
 <t tx="ekr.20180522121943.1">Allow local overrides of @data global-abbreviations &amp; @outline-data tree-abbreviations
 https://github.com/leo-editor/leo-editor/issues/904</t>
+<t tx="ekr.20180523053906.1"></t>
+<t tx="ekr.20180523053913.1">https://github.com/leo-editor/leo-editor/issues/909
+</t>
+<t tx="ekr.20180523063338.1">https://github.com/leo-editor/leo-editor/issues/910</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
