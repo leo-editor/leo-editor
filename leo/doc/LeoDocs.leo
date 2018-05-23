@@ -354,7 +354,7 @@
 </v>
 <v t="ekr.20131017051340.16850"><vh>Scripts</vh>
 <v t="ekr.20180523085905.1"><vh>Scripts that get GitHub issues</vh>
-<v t="ekr.20180523085523.1"><vh>Script: get all info &amp; summary issues</vh></v>
+<v t="ekr.20180523085523.1"><vh>Script: get issues with given labels</vh></v>
 <v t="ekr.20180125112540.1"><vh>Script: get closed issues</vh></v>
 <v t="ekr.20180125112749.1"><vh>Script: get tips</vh></v>
 </v>
@@ -390,6 +390,71 @@
 <v t="ekr.20180124100723.8"><vh>Scripting</vh></v>
 <v t="ekr.20180124100723.9"><vh>Data model</vh></v>
 </v>
+</v>
+</v>
+</v>
+<v t="ekr.20180523093753.1"><vh>Backup of GitHub issues</vh>
+<v t="ekr.20180523101625.1"><vh>GitHub LeoU issues</vh>
+<v t="ekr.20180523101514.14"><vh>#816: Summary: Leo University</vh>
+<v t="ekr.20180523101514.10"><vh>#527: LeoU: unit tests need not, and should not, depend on settings</vh></v>
+<v t="ekr.20180523101514.9"><vh>#786: LeoU: Suggestions for theme developers</vh></v>
+<v t="ekr.20180523101514.8"><vh>#817: LeoU: Think process, not knowledge</vh></v>
+<v t="ekr.20180523101514.7"><vh>#818: LeoU: Use issues as an programming notebook</vh></v>
+<v t="ekr.20180523101514.6"><vh>#836: LeoU: Leo's debugging tools</vh></v>
+<v t="ekr.20180523101514.5"><vh>#837: LeoU: Running unit tests</vh></v>
+<v t="ekr.20180523101514.13"><vh>#857: LeoU: How devs should use git branches</vh></v>
+<v t="ekr.20180523101514.12"><vh>#859: LeoU: How to make complex changes to a code base</vh></v>
+<v t="ekr.20180523101514.4"><vh>#890: About Leo's Architecture</vh></v>
+<v t="ekr.20180523101514.3"><vh>#891: LeoU: About Leo's Position and VNode classes</vh></v>
+</v>
+</v>
+<v t="ekr.20180523095623.1"><vh>GitHub User issues</vh>
+<v t="ekr.20180523095245.9"><vh>#908: Info: Summary of Leo's features</vh>
+<v t="ekr.20180523095245.4"><vh>#770: Summary: explain Leo's features</vh></v>
+</v>
+<v t="ekr.20180523095245.8"><vh>#909: How to use LaTex with Leo</vh></v>
+</v>
+<v t="ekr.20180523095717.1"><vh>GitHub Dev issues</vh>
+<v t="ekr.20180523101133.1"><vh>Dev summaries</vh>
+<v t="ekr.20180523095245.20"><vh>#100: Summary: bugs re quicksearch plugin</vh></v>
+<v t="ekr.20180523095245.18"><vh>#796: Summary: installation info items</vh></v>
+<v t="ekr.20180523095245.17"><vh>#797: Summary: jupyter-related issues</vh></v>
+<v t="ekr.20180523095245.16"><vh>#798: Summary: Terry's enhancements re Leo's Gui</vh></v>
+<v t="ekr.20180523095245.3"><vh>#799: Summary: general info for Leo devs</vh></v>
+<v t="ekr.20180523095245.2"><vh>#801: Summary: plans for 2018</vh></v>
+<v t="ekr.20180523095245.1"><vh>#803: Summary: Themes items</vh></v>
+<v t="ekr.20180523095245.7"><vh>#910: Summary of developer info items</vh>
+<v t="ekr.20180523095243.24"><vh>#105: Index of old LaunchPad bugs re plugins</vh></v>
+<v t="ekr.20180523095243.22"><vh>#324: How to install Anaconda</vh></v>
+<v t="ekr.20180523095243.16"><vh>#681: Use the tools that Leo supports</vh></v>
+<v t="ekr.20180523095243.15"><vh>#688: How to install miniconda on Windows 10</vh></v>
+<v t="ekr.20180523095243.14"><vh>#699: How to install Anaconda3 on Windows</vh></v>
+<v t="ekr.20180523095243.13"><vh>#701: How to install zerorpc on Windows</vh></v>
+<v t="ekr.20180523095243.12"><vh>#703: How to install and run the hello world electron app on Windows</vh></v>
+<v t="ekr.20180523095243.11"><vh>#710: How to Switch between Anaconda installations</vh></v>
+<v t="ekr.20180523095243.8"><vh>#733: How to Install and run the leocljs demo</vh></v>
+<v t="ekr.20180523095243.7"><vh>#735: How to Install and run LeoVue</vh></v>
+<v t="ekr.20180523095243.6"><vh>#752: How to install eric6 on Windows</vh></v>
+<v t="ekr.20180523095243.5"><vh>#754: Move distribution from SourceForge to github + pip install Leo</vh></v>
+<v t="ekr.20180523095243.4"><vh>#755: How to build pyzo from sources</vh></v>
+<v t="ekr.20180523095243.3"><vh>#872: Info: how Leo handles uA's</vh></v>
+<v t="ekr.20180523095243.1"><vh>#906: Dubious major projects</vh></v>
+</v>
+</v>
+<v t="ekr.20180523095925.1"><vh>Dev items</vh>
+<v t="ekr.20180523095243.23"><vh>#322: Rewrite importers as they become needed</vh></v>
+<v t="ekr.20180523095243.21"><vh>#355: Python 3 bug, now resolved, ruined Leo</vh></v>
+<v t="ekr.20180523095243.20"><vh>#486: Workaround: Ctrl-) binding may not work on Windows 10</vh></v>
+<v t="ekr.20180523095243.19"><vh>#517: leoConfig.ParserBaseClass methods should be revised</vh></v>
+<v t="ekr.20180523095243.18"><vh>#551: How to make .leo files happy in git repository?</vh></v>
+<v t="ekr.20180523095243.17"><vh>#636: Installing pyenchant fails for Windows 64 bit python</vh></v>
+<v t="ekr.20180523095245.19"><vh>#665: Summary: support for org mode</vh></v>
+<v t="ekr.20180523095245.5"><vh>#680: Summary: remove sclerotic features from Leo's code base</vh></v>
+<v t="ekr.20180523095243.10"><vh>#715: Generating aspell dictionaries</vh></v>
+<v t="ekr.20180523095243.9"><vh>#719: clean-recent-files does nothing by default</vh></v>
+<v t="ekr.20180523095243.2"><vh>#883: Enhancement: make stand-alone trees of vnodes possible</vh></v>
+<v t="ekr.20180523095245.11"><vh>#897: Support VS Code's FileSystemProviders</vh></v>
+<v t="ekr.20180523095245.10"><vh>#907: Info: Borrow key features from other IDE's and editors</vh></v>
 </v>
 </v>
 </v>
@@ -2097,59 +2162,6 @@
 <v t="ekr.20180512150125.9"><vh>make_toc</vh></v>
 <v t="ekr.20180512150125.10"><vh>to_markdown</vh></v>
 </v>
-</v>
-</v>
-<v t="ekr.20180523085523.1"></v>
-<v t="ekr.20180523093753.1"><vh>Backup of GitHub Info and Summary issues</vh>
-<v t="ekr.20180523095242.2"><vh>24 Closed Info issues</vh>
-<v t="ekr.20180523095243.24"><vh>#105: Index of old LaunchPad bugs re plugins</vh></v>
-<v t="ekr.20180523095243.23"><vh>#322: Rewrite importers as they become needed</vh></v>
-<v t="ekr.20180523095243.22"><vh>#324: How to install Anaconda</vh></v>
-<v t="ekr.20180523095243.21"><vh>#355: Python 3 bug, now resolved, ruined Leo</vh></v>
-<v t="ekr.20180523095243.20"><vh>#486: Workaround: Ctrl-) binding may not work on Windows 10</vh></v>
-<v t="ekr.20180523095243.19"><vh>#517: leoConfig.ParserBaseClass methods should be revised</vh></v>
-<v t="ekr.20180523095243.18"><vh>#551: How to make .leo files happy in git repository?</vh></v>
-<v t="ekr.20180523095243.17"><vh>#636: Installing pyenchant fails for Windows 64 bit python</vh></v>
-<v t="ekr.20180523095243.16"><vh>#681: Use the tools that Leo supports</vh></v>
-<v t="ekr.20180523095243.15"><vh>#688: How to install miniconda on Windows 10</vh></v>
-<v t="ekr.20180523095243.14"><vh>#699: How to install Anaconda3 on Windows</vh></v>
-<v t="ekr.20180523095243.13"><vh>#701: How to install zerorpc on Windows</vh></v>
-<v t="ekr.20180523095243.12"><vh>#703: How to install and run the hello world electron app on Windows</vh></v>
-<v t="ekr.20180523095243.11"><vh>#710: How to Switch between Anaconda installations</vh></v>
-<v t="ekr.20180523095243.10"><vh>#715: Generating aspell dictionaries</vh></v>
-<v t="ekr.20180523095243.9"><vh>#719: clean-recent-files does nothing by default</vh></v>
-<v t="ekr.20180523095243.8"><vh>#733: How to Install and run the leocljs demo</vh></v>
-<v t="ekr.20180523095243.7"><vh>#735: How to Install and run LeoVue</vh></v>
-<v t="ekr.20180523095243.6"><vh>#752: How to install eric6 on Windows</vh></v>
-<v t="ekr.20180523095243.5"><vh>#754: Move distribution from SourceForge to github + pip install Leo</vh></v>
-<v t="ekr.20180523095243.4"><vh>#755: How to build pyzo from sources</vh></v>
-<v t="ekr.20180523095243.3"><vh>#872: Info: how Leo handles uA's</vh></v>
-<v t="ekr.20180523095243.2"><vh>#883: Enhancement: make stand-alone trees of vnodes possible</vh></v>
-<v t="ekr.20180523095243.1"><vh>#906: Dubious major projects</vh></v>
-</v>
-<v t="ekr.20180523095243.25"><vh>5 Closed Summary issues</vh>
-<v t="ekr.20180523095245.5"><vh>#680: Summary: remove sclerotic features from Leo's code base</vh></v>
-<v t="ekr.20180523095245.4"><vh>#770: Summary: explain Leo's features</vh></v>
-<v t="ekr.20180523095245.3"><vh>#799: Summary: general info for Leo devs</vh></v>
-<v t="ekr.20180523095245.2"><vh>#801: Summary: plans for 2018</vh></v>
-<v t="ekr.20180523095245.1"><vh>#803: Summary: Themes items</vh></v>
-</v>
-<v t="ekr.20180523095245.6"><vh>5 Open Info issues</vh>
-<v t="ekr.20180523095245.11"><vh>#897: Support VS Code's FileSystemProviders</vh></v>
-<v t="ekr.20180523095245.10"><vh>#907: Info: Borrow key features from other IDE's and editors</vh></v>
-<v t="ekr.20180523095245.9"><vh>#908: Info: Summary of Leo's features</vh></v>
-<v t="ekr.20180523095245.8"><vh>#909: How to use LaTex with Leo</vh></v>
-<v t="ekr.20180523095245.7"><vh>#910: Summary of developer info items</vh></v>
-</v>
-<v t="ekr.20180523095245.12"><vh>8 Open Summary issues</vh>
-<v t="ekr.20180523095245.20"><vh>#100: Summary: bugs re quicksearch plugin</vh></v>
-<v t="ekr.20180523095245.19"><vh>#665: Summary: support for org mode</vh></v>
-<v t="ekr.20180523095245.18"><vh>#796: Summary: installation info items</vh></v>
-<v t="ekr.20180523095245.17"><vh>#797: Summary: jupyter-related issues</vh></v>
-<v t="ekr.20180523095245.16"><vh>#798: Summary: Terry's enhancements re Leo's Gui</vh></v>
-<v t="ekr.20180523095245.15"><vh>#816: Summary: Leo University</vh></v>
-<v t="ekr.20180523095245.14"><vh>#908: Info: Summary of Leo's features</vh></v>
-<v t="ekr.20180523095245.13"><vh>#910: Summary of developer info items</vh></v>
 </v>
 </v>
 </vnodes>
@@ -27682,7 +27694,7 @@ https://github.com/leo-editor/leo-editor/issues/904</t>
 # Get all info and summary issues.
 g.getGitIssues(
     c=c,
-    label_list = ['Info', 'Summary'],
+    label_list = ['LeoU',], # 'Info', 'Summary'
     milestone = None,
     state = None, # Get both open and closed issues.
 )
@@ -27691,7 +27703,6 @@ g.getGitIssues(
 <t tx="ekr.20180523085918.1"></t>
 <t tx="ekr.20180523090042.1"></t>
 <t tx="ekr.20180523093753.1"></t>
-<t tx="ekr.20180523095242.2"></t>
 <t tx="ekr.20180523095243.1">https://github.com/leo-editor/leo-editor/issues/906
 #684 Envisages creating a browser gui for Leo, but that's not a high priority at present.
 
@@ -28065,7 +28076,6 @@ Todo.py documentation - image link semi-broken in docstring
 
 [Fixed at 87480b3] https://bugs.launchpad.net/leo-editor/+bug/1158269
 viewrendered pane goes blank when url clicked.</t>
-<t tx="ekr.20180523095243.25"></t>
 <t tx="ekr.20180523095243.3">https://github.com/leo-editor/leo-editor/issues/872
 From [this post](https://groups.google.com/d/msg/leo-editor/Gv6D-h8Mcag/wbBEK9gfCgAJ)
 
@@ -28206,6 +28216,7 @@ That *is* ok because Leo's startup logic removes files from the recent files lis
 - [x] #790: Support @load-themes setting.
    Won't do: `@string theme-name` suffices.</t>
 <t tx="ekr.20180523095245.10">https://github.com/leo-editor/leo-editor/issues/907
+
 This is an ongoing info Item.  Here are some preliminary ideas:
 
 **Settings**
@@ -28229,54 +28240,10 @@ Most IDE's support lots and lots of other views.  It's an open question how usef
 
 Single-stepping through code *in Leo's outline* would be a good feature to have. The recent work on jedi auto-completion shows how to associate line numbers in the external file with lines in each node of the file.  It's actually very easy and fast to do, which I had not realized until this week.</t>
 <t tx="ekr.20180523095245.11">https://github.com/leo-editor/leo-editor/issues/897
+
 From [this post](https://groups.google.com/d/msg/leo-editor/ySG0WtcOdgI/OTtF5ldFBQAJ): The latest release of VS Code includes the idea of FileSystemProviders that allow you to open editors via various [Universal Resource Identifiers](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier).
 
 You would have to develop a leo: or maybe leoFS: scheme to let you open nodes, and probably a LSP to keep node updated in Leo, but it would be a way to let VS Code do editing. There is a memory based example memFS [here](https://marketplace.visualstudio.com/items?itemName=jrieken.vscode-memfs).</t>
-<t tx="ekr.20180523095245.12"></t>
-<t tx="ekr.20180523095245.13">https://github.com/leo-editor/leo-editor/issues/910
-This is the top-level summary of all info items for Leo's devs.  This item will remain open "forever". The items referenced here have all been closed.
-
-**Build instructions**
-
-- #755: How to build pyzo from sources
-- #752: How to install eric6 on Windows
-- #735: How to install and run LeoVue
-- #733: How to Install and run the leocljs demo
-- #703: How to install and run the hello world electron app on Windows
-- #701: How to install zerorpc on Windows
-- #699: How to install Anaconda3 on Windows
-- #688: How to install miniconda on Windows 10
-- #324: How to install Anaconda
-
-**Other info items**
-
-- #906: Dubious major projects
-- #872: Info: how Leo handles uA's
-- #710: How to Switch between Anaconda installations
-- #681: Use the tools that Leo supports
-- #105: Index of old LaunchPad bugs re plugins</t>
-<t tx="ekr.20180523095245.14">https://github.com/leo-editor/leo-editor/issues/908
-To do: create a list/matrix of essential Leo features, compared to other IDE's.  This should be useful for everyone: Leo's devs, power users, and newbies.</t>
-<t tx="ekr.20180523095245.15">https://github.com/leo-editor/leo-editor/issues/816
-This the gateway to Leo University, a project devoted to help people become Leo devs.
-
-All lessons have the LeoU label. All comments welcome.
-
-- Lesson 1: [Think process, not memory](https://github.com/leo-editor/leo-editor/issues/817).
-    Programming is *much* easier than you might think.
-- Lesson 2: [Learn Leo's debugging tools](https://github.com/leo-editor/leo-editor/issues/836).
-- Lesson 3: [Running unit tests](https://github.com/leo-editor/leo-editor/issues/837).
-- Lesson 4: [Use issues as a programming notebook](https://github.com/leo-editor/leo-editor/issues/818).
-- Lesson 5: [c.recursiveImport imports files recursively](https://github.com/leo-editor/leo-editor/issues/846)
-- Lesson 6: [How devs should use git branches](https://github.com/leo-editor/leo-editor/issues/857).
-- Lesson 7: [How to make complex changes to a code base](https://github.com/leo-editor/leo-editor/issues/859).
-
-And here are some other items for devs:
-
-- #786: LeoU: Suggestions for theme developers
-- #527: LeoU: Unit tests need not, and should not, depend on settings
-- #890: LeoU: About Leo's Architecture
-- #891: LeoU: About Leo's Position and VNode classes</t>
 <t tx="ekr.20180523095245.16">https://github.com/leo-editor/leo-editor/issues/798
 This is an info item summarizing Terry's planned enhancements to Leo's windowing system &amp; gui.
 
@@ -28394,7 +28361,6 @@ Excerpted from [this post](https://groups.google.com/d/msg/leo-editor/scjyAiA-DX
 
 - **Partially sclerotic**: Leo's attribute handling.
   See #588.</t>
-<t tx="ekr.20180523095245.6"></t>
 <t tx="ekr.20180523095245.7">https://github.com/leo-editor/leo-editor/issues/910
 This is the top-level summary of all info items for Leo's devs.  This item will remain open "forever". The items referenced here have all been closed.
 
@@ -28435,7 +28401,289 @@ The argument to g.execute_shell_commands can be a string containing a *single* c
 
 You can put calls to g.execute_shell_commands into an `@button` or `@command` node to create visible buttons and/or commands that you can execute by name from the minibuffer.</t>
 <t tx="ekr.20180523095245.9">https://github.com/leo-editor/leo-editor/issues/908
+
 To do: create a list/matrix of essential Leo features, compared to other IDE's.  This should be useful for everyone: Leo's devs, power users, and newbies.</t>
+<t tx="ekr.20180523095623.1"></t>
+<t tx="ekr.20180523095717.1"></t>
+<t tx="ekr.20180523095925.1"></t>
+<t tx="ekr.20180523101133.1"></t>
+<t tx="ekr.20180523101514.10">https://github.com/leo-editor/leo-editor/issues/527
+Relying on settings nodes in unitTest.leo risks creating hard-to-find dependencies between seemingly unrelated unit tests.  Instead, unit tests can follow the pattern for, say, `@test add python comments`:
+
+```python
+w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'python')
+assert p,'not found: python'
+# Save the initial value of the setting.
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        True,
+        '@language python\ndef spam():\n    pass\n\n# after',
+        '@language python\ndef spam():\n    # pass\n\n# after',
+    ),
+    (
+        False,
+        '@language python\ndef spam():\n    pass\n\n# after',
+        '@language python\ndef spam():\n#     pass\n\n# after',
+    ),
+)
+try:
+    for indent, s1, expected in table:
+        # Step 1: set the setting.
+        c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+        val = c.config.getBool('indent_added_comments')
+        assert indent == val, (repr(indent), repr(val))
+        # Step 2: set p.b and the insert point.
+        c.selectPosition(p)
+        p.b = s1
+        i = p.b.find('pass')
+        assert i &gt; -1,'fail1: %s' % (repr(p.b))
+        w.setSelectionRange(i,i+4)
+        # Step 3: test add-comments
+        c.addComments()
+        assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+finally:
+    # Restore the initial value of the setting.
+    c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+    val = c.config.getBool('indent_added_comments')
+```
+This code saves and restores the actual value of the `@bool indent_added_comments` setting. It uses:
+```python
+ c.config.set(c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+```
+to set the setting to the value of 'indent'.  Note that c.config.set is seldom (never?) used in Leo's core.</t>
+<t tx="ekr.20180523101514.12">https://github.com/leo-editor/leo-editor/issues/859
+This lesson discusses the *process* of making arbitrarily complex changes throughout a code base.  It's an elaboration of [Lesson 1: Think process, not knowledge](https://github.com/leo-editor/leo-editor/issues/817), but it's worth reading because it contains helpful hints about tackling *any* big project.  I used this general method when making Leo's code base work with Python 3 as well as Python 2.
+
+The grand summary:
+
+1. Study the code first with clone-find commands.
+2. Let python crashes &amp; failed unit tests guide you.
+
+For example, here is how I am doing [#858: Rewrite Leo's key handling &amp; key binding code](https://github.com/leo-editor/leo-editor/issues/858):
+
+1. Create a new git branch for the work, in this case, "keys".
+
+2. Create a **global master switch**that separates and marks the old and new versions of the code. This is a boolean.  It selects the new code if True and the old code otherwise.  We say the switch is either in the "**new**" position or the "**legacy**" position.
+
+- **All unit tests should continue to pass when the switch selects legacy code.**
+- **All pushes should have the legacy code selected until every works.**
+
+These two requirements make it safe to pause work on the project.
+
+3. Make sure you understand what needs to be done.  Use the clone find commands to answer any and all questions about the code and how it should be changed.
+
+4. Make the fundamental changes required, **without worrying about the consequences**.
+
+For the "keys" branch I changed the representation of settings so that they are NewLeoKey objects.
+
+5.  With the switch in the "new" position, run a test copy of Leo.
+
+Because of step 4, we *expect* crashes.  Fix each as they happen, separating the old and new code with a test on the switch.  Repeat this step until no crashes happen.
+
+When this phase works, set the switch to "legacy", re-run all unit tests, and commit the code.
+
+6. For the "keys" branch, getting through startup is only half the task.  When I type a key I *expect* more crashes.  I'll follow step 5 until no crashes happen when I type various key combination.
+
+Again, I'll set the switch to "legacy", re-run all unit tests and commit the code.
+
+7. When normal operation appears to work with the switch in the "new" position, **run all unit tests** and fix any crashes or unit tests failures.
+
+Now you can commit the code with the switch in the "new" position.
+
+8. At this point you can start eating your own dog food.  When satisfied that the code is stable enough, you can do the following:
+
+- Remove the switch and all code disabled when the switch is in the "legacy" position.
+- Run all unit tests.
+- Continue to eat your own dog food.
+- Commit the branch to "devel" when all seems well.
+
+That's the process.  It's extremely effective.  You don't have to remember your changes because a cff on the switch should yield *all* changed code.  Naturally, you can make clones of nodes containing the most important changes.</t>
+<t tx="ekr.20180523101514.13">https://github.com/leo-editor/leo-editor/issues/857
+Marcel Franke [explained](https://groups.google.com/d/msg/leo-editor/p_6ljMQL660/57Z8lYuQAAAJ) the recommended way of using git branches. Here are his remarks, slightly edited:
+
+- **master** is stable.
+- **devel** is "mostly" stable.
+- **feature branches** off devel can be wildly unstable.
+- **release branches** are candidates for master, so should be stable. 
+
+Everything new comes from devel and goes to devel. Devs **must** run unit tests before pushing to devel, so devel should usually be stable.
+
+All experimental code should reside in a feature branch.
+
+At all times, anyone can pull stable code from master.
+
+Only the maintainer (EKR) is supposed to work on release or master, so nobody needs to hold back or knows what is going on in them. At all times everyone can happily hack on devel,  or better, their personal feature branches.
+
+To prepare a new release,  the maintainer branches devel to a new branch, say 5.7.x.  The maintainer runs tests on it, and makes any last-minute fixes. To publish the release, the maintainer merges the release to master **and** to devel, then optionally deletes the release branch.
+
+This visualization made it all clear to me:
+
+![git branches](https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-3.png).</t>
+<t tx="ekr.20180523101514.14">https://github.com/leo-editor/leo-editor/issues/816
+This the gateway to Leo University, a project devoted to help people become Leo devs.
+
+All lessons have the LeoU label. All comments welcome.
+
+- Lesson 1: [Think process, not memory](https://github.com/leo-editor/leo-editor/issues/817).
+    Programming is *much* easier than you might think.
+- Lesson 2: [Learn Leo's debugging tools](https://github.com/leo-editor/leo-editor/issues/836).
+- Lesson 3: [Running unit tests](https://github.com/leo-editor/leo-editor/issues/837).
+- Lesson 4: [Use issues as a programming notebook](https://github.com/leo-editor/leo-editor/issues/818).
+- Lesson 5: [c.recursiveImport imports files recursively](https://github.com/leo-editor/leo-editor/issues/846)
+- Lesson 6: [How devs should use git branches](https://github.com/leo-editor/leo-editor/issues/857).
+- Lesson 7: [How to make complex changes to a code base](https://github.com/leo-editor/leo-editor/issues/859).
+
+And here are some other items for devs:
+
+- #786: LeoU: Suggestions for theme developers
+- #527: LeoU: Unit tests need not, and should not, depend on settings
+- #890: LeoU: About Leo's Architecture
+- #891: LeoU: About Leo's Position and VNode classes</t>
+<t tx="ekr.20180523101514.3">https://github.com/leo-editor/leo-editor/issues/891
+From [this post](https://groups.google.com/forum/#!topic/leo-editor/SjHfXepxiTo). Not everyone agrees with everything I say here.
+
+This LeoU discussion discusses the present code base only. #883 (a low priority item) discusses ways in which the tree of vnodes could be decoupled from c, the Commands instance. 
+
+**The Position class**
+
+The Position class concerns itself only with traversing the tree. The position class contains no node-related data.  In order to insert top-level nodes, methods of the Position class gets access to c.hiddenRootNode via p.v.context. 
+
+**The VNode class**
+
+The VNode class contains all data in an outline, as well as crucial, low-level operations on those data. There is no other place to store node-related data. 
+
+The VNode class is one of the foundations of Leo's scripting. As a result, *none* of the ivars or methods of the VNode class can change in any way. That is, all of the ivars of the VNode class are "official". Scripts can, and do, access these ivars directly. Perhaps the "context" kwarg of `VNode.__init__` should just be called "c", but that can't be done now.
+
+Theoretically, it would be possible to add new kwargs to VNode methods, but that is extremely unlikely. It would also be possible to add new ivars to the VNode class, but uA's make that unnecessary.
+
+The properties of the VNode class, v.b, v.h, v.gnx, v.u, allow higher-level access to various VNode ivars, but in some cases Leo's code accesses the corresponding ivars directly, for greater performance.
+
+**Interaction with other classes**
+
+The v.context ivar is controversial. In fact, the v.context ivar is completely benign. It has never caused problems, and it never will. It does not, in any significant way, make the VNode class dependent on any other class. It has no harmful architectural consequences.
+
+Yes, the FileCommands class must know about gnx's, but *the converse is not true*.  The VNode class knows nothing about how other classes use gnx's.  The FileCommands class creates VNode instances without knowing *anything* about low-level VNode methods.
+
+The VNode class is, in fact, an excellent example of information hiding.  The boundary between the VNode class is well defined and well enforced.
+
+**Possible improvements**
+
+1. A new c.new_vnode method could help instantiate VNodes:
+```python
+def new_vnode(self, gnx=None):
+    c = self
+    return leoNodes.VNode(context=c, gnx=gnx)
+```
+The (small) advantage is that clients of c.new_vnode(gnx) would no longer need to import leo.core.leoNodes.
+
+2. The  v.saveCursorAndScroll and v.restoreCursorAndScroll could be moved elsewhere. At present, these methods cause no problems, but moving them would be part of #883.</t>
+<t tx="ekr.20180523101514.4">https://github.com/leo-editor/leo-editor/issues/890
+By the term **architecture** I mean the design of Leo's modules and classes. 
+
+**Information hiding**
+
+Leo's design is based on the thinking of [Glenford Meyers](https://en.wikipedia.org/wiki/Glenford_Myers).  Let's use the word **component** to mean either a Python module or class.
+
+We devs *must* be able to change the implementation of a component *without* affecting any other code.  This has been true throughout Leo's 20+ years of history. This is the foundation on which Leo is built.
+
+**Principle 1**: Each class should concern itself with one, easily defined "area of concern".
+
+Modules should contain related classes.  All components should have short, simple *descriptions*, no matter how complex they are internally.
+
+**Principle 2**: Components should know as little as possible about the internal details of other components.
+
+Components have well-defined **boundaries**.  The **inside** of a component contains the implementation.  The **outside** of a component is its API.
+
+Changes to the API can break code. However, knowing about the *existence* of a component's high-level methods does *not* (usually) blur the boundaries of a component!
+
+In most cases, components should know *nothing* about the ivars and low-level methods.  However, components can freely use the so-called **official ivars** of other classes.  These official ivars are highly unlikely ever to change.  And they are useful.  We wouldn't want to require long-winded alternatives to, say, c.frame.body.wrapper.
+
+**Class design: inheritance vs instantiation**
+
+Leo uses the "has-a" pattern, rather than the "is-a" class pattern. That is, Leo gains access to the capabilities of other classes by instantiating the other classes rather than being subclasses of other classes. The "has-a" pattern is a personal preference of mine, and is now pretty much baked into Leo.
+
+The "has-a" pattern *completely* insulates classes from the internal details of other classes.  There is no need to worry about clashing ivars, or _ ivars, etc. Otoh, the "has-a" pattern results in more complex startup code.  Imo, that "extra" complexity is well worthwhile.</t>
+<t tx="ekr.20180523101514.5">https://github.com/leo-editor/leo-editor/issues/837
+​All devs must run all unit tests before commit anything. Here's how:
+
+- Open leo/test/unitTest.leo in a console.
+- The "Active Unit Tests" node should already be selected. If not, select it.
+- Do Alt-4. It is bound in the file to run-selected-unit-tests-locally.
+
+**Important**: Some unit tests may fail on your environment.  Don't worry about them.  You need only ensure that your new code causes no *other* unit tests to fail.  If in doubt, ask on [leo-editor](https://groups.google.com/forum/#!forum/leo-editor).</t>
+<t tx="ekr.20180523101514.6">https://github.com/leo-editor/leo-editor/issues/836
+Here are the basics:
+
+**g.trace**
+
+g.trace(*args, **kwargs) prints its arguments to the console.
+
+**g.pdb**
+
+g.pdb() invokes a version of [python's pdb debugger](https://docs.python.org/2/library/pdb.html), adapted to Leo's Qt gui.  I use g.pdb only rarely, when g.trace doesn't tell me enough.
+
+**Using `@`button/command nodes as a testing framework**
+
+This is the so-called [stupendous Aha](http://leoeditor.com/FAQ.html#what-is-the-stupendous-aha-and-why-does-it-matter). This can save you a lot of time.</t>
+<t tx="ekr.20180523101514.7">https://github.com/leo-editor/leo-editor/issues/818
+For any programming project I recommend using github issues to track your work.  You'll be glad you did.
+
+This is especially true for Leo devs.  You want other people to be able to follow and comment on your work.
+
+The convention is to have the first comment for any issue contain an up-to-date summary of the status of the issue.  I have found that it is useful to continually edit the first comment.</t>
+<t tx="ekr.20180523101514.8">https://github.com/leo-editor/leo-editor/issues/817
+Many of Leo's most important devs made major contributions to Leo without asking me a single question.  Do they have super powers?  No, they don't.
+
+But they do know the secret of programming: **Simple processes, endlessly repeated, suffice to find, understand and change *any* software**.  And Leo simplifies these techniques even further.  Here they are...
+
+**Basic skill/process 1: Familiarize yourself with the code**
+
+For any project you want to know what files exist.  When studying other people's code I use a [recursive import script](https://github.com/leo-editor/leo-editor/issues/846) to create a tree of files. The goal is just to have a *vague* understanding of what files are involved. Don't even think about remember details.
+
+It's even easier with Leo.  LeoPy.py contains Leo's sources.  Peruse this outline, seeing what `@file` nodes it contains.
+
+*Don't make a big deal about this step*. It should just take 5 or 10 minutes. Look *only* at files that interest you. In those files you will probably want to look briefly at the top-level classes in the files that interest you. You will likely repeat this step many times, adding a little to your understanding each time.
+
+**Basic skill/process 2: Learn what to search for**
+
+We devs often want to change how commands work.  You can usually find the top-level code for a command simply by searching for the command's name, in single quotes.
+
+To find the definition of a method, function or class, simply control-click on it.  That will start a search for def x and class x.  If that doesn't work, a cff (clone-find-all-flattened) search on a name will find all uses of that name in the present outline.
+
+**Basic skill/process 3: Look for helpers in child nodes**
+
+With Leo outlines **it's natural to put a method's helpers in child nodes**. I usually forget implementation details, but the children of a node usually contain most of the details.
+
+**Basic skill/process 4: Use clones to organize and remember your work**
+
+When working on a project I make create an organizer node as the last top-level node of the outline.  This node will typically contain a link to the github issue.  I make clones of all relevant nodes and move them so they are clones of the organizer node.  For complex projects I may create subsidiary organizer nodes, like "changed", "reference", etc.
+
+When a project is done (or suspended), I move the project's organizer node so it is the last child of *another* organizer node called "Recent Code". This hides all work except the what I am, this minute, working on.  This is important: it hides details and lessens distractions.
+
+**Summary**
+
+The easy processes just described form the basis for programming workflow.
+
+*Expect to repeat these processes many times*.  Don't worry if not everything is clear at first.</t>
+<t tx="ekr.20180523101514.9">https://github.com/leo-editor/leo-editor/issues/786
+I recommend using the organization of leo/themes/EKRDark.leo as a guide. **Note**: Syntax coloring settings are required because they are *not* used in the css.
+
+To avoid confusion, it's best if theme .leo files contain no **unbound settings**. This will ensure that the appearance of a theme does not unwittingly depend on settings in myLeoSettings.leo.
+
+**Important**: Theme devs should set the following **theme description settings**:
+
+    @string theme_name   # crucial
+    @bool color_theme_is_dark
+    @string color_theme = ekr_dark
+
+These settings ensure that relative urls (including ":/" syntax are resolved properly in css, and that icons are found in the proper directories.
+
+**Icons boxes should have constant width**.  Otherwise, the variable indentation of the rest of the headline appears to represent variable outline structure, which is highly confusing.
+
+**Obsolete**: The post [ENB: Simple design principles for style sheets](https://groups.google.com/d/msg/leo-editor/JyyuOscgmow/kAJcGU0xBQAJ) contained my original ideas.  In particular, the so-called "settings Aha" is dubious.</t>
+<t tx="ekr.20180523101625.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
