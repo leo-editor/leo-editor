@@ -4314,15 +4314,6 @@ def prompt_for_files(self):
     if names:
         g.chdir(names[0])
         self.import_files(names)
-#@+node:ekr.20160921220517.1: ** goto.is_visible_sentinel
-def is_visible_sentinel(self, s):
-    '''Return True if s is a sentinel that actually would appear in the external file.'''
-    # This code is a prototype. More work is needed.
-    table = ('@@', '@+doc')
-    for z in table:
-        if s.startswith(z):
-            return True
-    return False
 #@-all
 #@@nosearch
 #@-leo
