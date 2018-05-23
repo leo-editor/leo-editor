@@ -9,6 +9,35 @@ Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161118093751.1: ** class TS_Importer(Importer)
 class TS_Importer(Importer):
+    
+    #@+<< define function patterns >>
+    #@+node:ekr.20180523172655.1: *3* << define function patterns >>
+    kinds = r'(async|public|private|static)'
+    #
+    # The pattern table. Order matters!
+    function_patterns = (
+        (1, re.compile(r'(class\s+\w+).*{')),
+            # class name
+        (1, re.compile(r'export\s+(class\s+\w+).*{')),
+            # export class name
+        (1, re.compile(r'function\s+(\w+)')),
+            # function name
+        (1, re.compile(r'(constructor).*{')),
+            # constructor ... {
+        (2, re.compile(r'%s\s*function\s+(\w+)' % kinds)),
+            # kind function name
+        (3, re.compile(r'%s\s+%s\s+function\s+(\w+)' % (kinds, kinds))),
+            # kind kind function name
+        #
+        # Bare functions last...
+        (3, re.compile(r'%s\s+%s\s+(\w+)\s*\(.*\).*{' % (kinds, kinds))),
+            # kind kind name (...) {
+        (2, re.compile(r'%s\s+(\w+)\s*\(.*\).*{' % kinds)),
+            # name (...) {
+        (1,  re.compile(r'(\w+)\s*\(.*\).*{')),
+            # name (...) {
+    )
+    #@-<< define function patterns >>
 
     def __init__(self, importCommands, **kwargs):
         '''The ctor for the TS_ImportController class.'''
@@ -43,31 +72,6 @@ class TS_Importer(Importer):
 
         return i-1
     #@+node:ekr.20161118093751.5: *3* ts_i.clean_headline
-    # The pattern table. Order matters!
-    kinds = r'(async|public|private|static)'
-    clean_headline_table = [
-        (1, re.compile(r'(class\s+\w+)')),
-            # class name
-        (1, re.compile(r'export\s+(class\s+\w+)')),
-            # export class name
-        (1, re.compile(r'function\s+(\w+)')),
-            # function name
-        (1, re.compile(r'(constructor).*{')),
-            # constructor ... {
-        (2, re.compile(r'%s\s*function\s+(\w+)' % kinds)),
-            # kind function name
-        (3, re.compile(r'%s\s+%s\s+function\s+(\w+)' % (kinds, kinds))),
-            # kind kind function name
-        #
-        # Bare functions last...
-        (3, re.compile(r'%s\s+%s\s+(\w+)\s*\(.*\).*{' % (kinds, kinds))),
-            # kind kind name (...) {
-        (2, re.compile(r'%s\s+(\w+)\s*\(.*\).*{' % kinds)),
-            # name (...) {
-        (1,  re.compile(r'(\w+)\s*\(.*\).*{')),
-            # name (...) {
-    ]
-
     def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
         s = s.strip()
@@ -75,7 +79,7 @@ class TS_Importer(Importer):
         if s.endswith('>>') and s.startswith('<<'):
             return s
         # Try to match patterns.
-        for group_n, pattern in self.clean_headline_table:
+        for group_n, pattern in self.function_patterns:
             m = pattern.match(s)
             if m:
                 # g.trace('group %s: %s' % (group_n, m.group(group_n)))
@@ -87,6 +91,19 @@ class TS_Importer(Importer):
         s = s.replace('  ', ' ')
         s = s.replace(' (', '(')
         return g.truncate(s, 100)
+    #@+node:ekr.20180523170649.1: *3* ts_i.starts_block
+    def starts_block(self, i, lines, new_state, prev_state):
+        '''True if the new state starts a block.'''
+        if new_state.level() <= prev_state.level():
+            return False
+        line = lines[i].strip()
+        for word in ('do', 'else', 'for', 'if', 'switch', 'try', 'while'):
+            if line.startswith(word):
+                return False
+        for group_n, pattern in self.function_patterns:
+            if pattern.match(line) is not None:
+                return True
+        return False
     #@-others
 #@+node:ekr.20161118071747.14: ** class TS_ScanState
 class TS_ScanState:
