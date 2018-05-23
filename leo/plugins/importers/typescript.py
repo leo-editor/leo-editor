@@ -45,7 +45,6 @@ class TS_Importer(Importer):
     #@+node:ekr.20161118093751.5: *3* ts_i.clean_headline
     def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
-        trace = False ### To be removed.
         s = s.strip()
         # Don't clean a headline twice.
         if s.endswith('>>') and s.startswith('<<'):
@@ -54,83 +53,41 @@ class TS_Importer(Importer):
         # Define modifier kinds
         kinds = r'(async|public|private|static)'
         #
-        # Replace match by \1.
+        # The pattern table. Order matters!
         table = [
-            re.compile(r'(class\s+\w+)'),
+            (1, re.compile(r'(class\s+\w+)')),
                 # class name
-            re.compile(r'export\s+(class\s+\w+)'),
+            (1, re.compile(r'export\s+(class\s+\w+)')),
                 # class name
-            re.compile(r'function\s+(\w+)'),
+            (1, re.compile(r'function\s+(\w+)')),
                 # function name
-            re.compile(r'(constructor).*{'),
+            (1, re.compile(r'(constructor).*{')),
                 # constructor ... {
-        ]
-        for pattern in table:
-            m = pattern.match(s)
-            if m:
-                if trace: g.trace('1 ===', m.group(1))
-                return m.group(1)
-        #
-        # Replace match by \2.
-        table = [
-            re.compile(r'%s\s*function\s+(\w+)' % kinds),
+            (2, re.compile(r'%s\s*function\s+(\w+)' % kinds)),
                 # kind function name
-        ]
-        for pattern in table:
-            m = pattern.match(s)
-            if m:
-                if trace: g.trace('2 ===', m.group(2))
-                return m.group(2)
-        # Replace match by \3
-        table = [
-            re.compile(r'%s\s+%s\s+function\s+(\w+)' % (kinds, kinds)),
+            (3, re.compile(r'%s\s+%s\s+function\s+(\w+)' % (kinds, kinds))),
                 # kind kind function name
-            re.compile(r'%s\s+%s\s+(\w+).*{' % (kinds, kinds)),
+            (3, re.compile(r'%s\s+%s\s+(\w+).*{' % (kinds, kinds))),
                 # kind kind name ... {
-        ]
-        for pattern in table:
-            m = pattern.match(s)
-            if m:
-                if trace: g.trace('3 ===', m.group(3))
-                return m.group(3)
-        #
-        # Bare functions. Use \3
-        table = [
-            re.compile(r'%s\s+%s\s+(\w+)\s*\(.*\).*{' % (kinds, kinds)),
+            #
+            # Bare functions last...
+            (3, re.compile(r'%s\s+%s\s+(\w+)\s*\(.*\).*{' % (kinds, kinds))),
                 # kind kind name (...) {
-        ]
-        for pattern in table:
-            m = pattern.match(s)
-            if m:
-                if trace: g.trace('3a ===', m.group(3))
-                return m.group(3)
-        #
-        # Bare functions. Use \2
-        table = [
-            re.compile(r'%s\s+(\w+)\s*\(.*\).*{' % kinds),
+            (2, re.compile(r'%s\s+(\w+)\s*\(.*\).*{' % kinds)),
+                # name (...) {
+            (1,  re.compile(r'(\w+)\s*\(.*\).*{')),
                 # name (...) {
         ]
-        for pattern in table:
+        for group_n, pattern in table:
             m = pattern.match(s)
             if m:
-                if trace: g.trace('2a ===', m.group(2))
-                return m.group(2)
+                # g.trace('group %s: %s' % (group_n, m.group(group_n)))
+                return m.group(group_n)
         #
-        # Bare functions. Use \1
-        table = [
-            re.compile(r'(\w+)\s*\(.*\).*{'),
-                # name (...) {
-        ]
-        for pattern in table:
-            m = pattern.match(s)
-            if m:
-                if trace: g.trace('1a ===', m.group(1))
-                return m.group(1)
-        # Final cleanups...
+        # Final cleanups, if nothing matches.
         for ch in '{(=':
             if s.endswith(ch):
                 s = s[:-1].strip()
-        # Final whitespace cleanups.
         s = s.replace('  ', ' ')
         s = s.replace(' (', '(')
         return g.truncate(s, 100)
