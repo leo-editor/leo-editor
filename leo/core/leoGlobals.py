@@ -4686,7 +4686,6 @@ def backupGitIssues(c, base_url=None):
 def getGitIssues(c,
     base_url=None,
     label_list=None,
-    include_body=False,
     milestone=None,
     state=None, # in (None, 'closed', 'open')
 ):
@@ -4696,7 +4695,7 @@ def getGitIssues(c,
     if isinstance(label_list, (list, tuple)):
         root = c.lastTopLevel().insertAfter()
         root.h = 'Issues for ' + milestone if milestone else 'Backup'
-        GitIssueController().backup_issues(base_url, c, root)
+        GitIssueController().backup_issues(base_url, c, label_list, root)
         root.expand()
         c.selectPosition(root)
         c.redraw()
@@ -4712,23 +4711,25 @@ class GitIssueController(object):
     '''
     #@+others
     #@+node:ekr.20180325023336.1: *5* git.backup_issues
-    def backup_issues(self, base_url, c, root, state=None):
+    def backup_issues(self, base_url, c, label_list, root, state=None):
         
         self.base_url = base_url
         self.root = root
-        self.include_body = True
         self.milestone = None
-        if state is None:
+        if label_list:
+            for label in label_list:
+                self.get_one_issue(label)
+        elif state is None:
             for state in ('closed', 'open'):
                 organizer = root.insertAsLastChild()
                 organizer.h = '%s issues...' % state
-                self.get_all_issues(organizer, state)
+                self.get_all_issues(label_list, organizer, state)
         elif state in ('closed', 'open'):
-            self.get_all_issues(root, state)
+            self.get_all_issues(label_list, root, state)
         else:
             g.es_print('state must be in (None, "open", "closed")')
     #@+node:ekr.20180325024334.1: *5* git.get_all_issues
-    def get_all_issues(self, root, state, limit=100):
+    def get_all_issues(self, label_list, root, state, limit=100):
         '''Get all issues for the base url.'''
         import requests
         label = None
@@ -4740,6 +4741,9 @@ class GitIssueController(object):
             r = requests.get(url)
             try:
                 done, n = self.get_one_page(label, page, r, root)
+                # Do not remove this trace. It's reassuring.
+                g.trace('done: %5s page: %3s found: %s label: %s' % (
+                    done, page, n, label))
             except AttributeError:
                 g.trace('Possible rate limit')
                 self.print_header(r)
@@ -4753,10 +4757,9 @@ class GitIssueController(object):
                 g.trace('too many pages')
                 break
     #@+node:ekr.20180126044850.1: *5* git.get_issues
-    def get_issues(self, base_url, include_body, label_list, milestone, root, state):
+    def get_issues(self, base_url, label_list, milestone, root, state):
         '''Create a list of issues for each label in label_list.'''
         self.base_url = base_url
-        self.include_body = include_body
         self.milestone = milestone
         self.root = root
         self.state = state # in (None, 'closed', 'open')
@@ -4774,7 +4777,9 @@ class GitIssueController(object):
             r = requests.get(url)
             try:
                 done, n = self.get_one_page(label, page, r, root)
-                # if page == 1: self.print_header(r)
+                # Do not remove this trace. It's reassuring.
+                g.trace('done: %5s page: %3s found: %s label: %s' % (
+                    done, page, n, label))
             except AttributeError:
                 g.trace('Possible rate limit')
                 self.print_header(r)
@@ -4787,7 +4792,10 @@ class GitIssueController(object):
             if page > limit:
                 g.trace('too many pages')
                 break
-        root.h = '%s %s issues for milestone %s' % (total, label, self.milestone)
+        if self.milestone:
+            root.h = '%s %s issues for milestone %s' % (total, label, self.milestone)
+        else:
+            root.h = '%s %s issues' % (total, label)
     #@+node:ekr.20180126043719.4: *5* git.get_one_page
     def get_one_page(self, label, page, r, root):
         
@@ -4801,11 +4809,11 @@ class GitIssueController(object):
             aList = [z for z in r.json()]
         for d in aList:
             n, title = d.get('number'), d.get('title')
+            html_url = d.get('html_url') or self.base_url
             p = root.insertAsNthChild(0)
             p.h = '#%s: %s' % (n, title)
-            p.b = '%s/%s\n' % (self.base_url, n)
-            if self.include_body:
-                p.b += d.get('body').strip()
+            p.b = '%s\n' % (html_url)
+            p.b += d.get('body').strip()
         link = r.headers.get('Link')
         done = not link or link.find('rel="next"') == -1
         return done, len(aList)
