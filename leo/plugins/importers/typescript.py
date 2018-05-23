@@ -58,7 +58,7 @@ class TS_Importer(Importer):
             (1, re.compile(r'(class\s+\w+)')),
                 # class name
             (1, re.compile(r'export\s+(class\s+\w+)')),
-                # class name
+                # export class name
             (1, re.compile(r'function\s+(\w+)')),
                 # function name
             (1, re.compile(r'(constructor).*{')),
@@ -67,8 +67,6 @@ class TS_Importer(Importer):
                 # kind function name
             (3, re.compile(r'%s\s+%s\s+function\s+(\w+)' % (kinds, kinds))),
                 # kind kind function name
-            (3, re.compile(r'%s\s+%s\s+(\w+).*{' % (kinds, kinds))),
-                # kind kind name ... {
             #
             # Bare functions last...
             (3, re.compile(r'%s\s+%s\s+(\w+)\s*\(.*\).*{' % (kinds, kinds))),
