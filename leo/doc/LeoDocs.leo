@@ -28408,6 +28408,7 @@ To do: create a list/matrix of essential Leo features, compared to other IDE's. 
 <t tx="ekr.20180523095925.1"></t>
 <t tx="ekr.20180523101133.1"></t>
 <t tx="ekr.20180523101514.10">https://github.com/leo-editor/leo-editor/issues/527
+
 Relying on settings nodes in unitTest.leo risks creating hard-to-find dependencies between seemingly unrelated unit tests.  Instead, unit tests can follow the pattern for, say, `@test add python comments`:
 
 ```python
@@ -28454,6 +28455,7 @@ This code saves and restores the actual value of the `@bool indent_added_comment
 ```
 to set the setting to the value of 'indent'.  Note that c.config.set is seldom (never?) used in Leo's core.</t>
 <t tx="ekr.20180523101514.12">https://github.com/leo-editor/leo-editor/issues/859
+
 This lesson discusses the *process* of making arbitrarily complex changes throughout a code base.  It's an elaboration of [Lesson 1: Think process, not knowledge](https://github.com/leo-editor/leo-editor/issues/817), but it's worth reading because it contains helpful hints about tackling *any* big project.  I used this general method when making Leo's code base work with Python 3 as well as Python 2.
 
 The grand summary:
@@ -28501,6 +28503,7 @@ Now you can commit the code with the switch in the "new" position.
 
 That's the process.  It's extremely effective.  You don't have to remember your changes because a cff on the switch should yield *all* changed code.  Naturally, you can make clones of nodes containing the most important changes.</t>
 <t tx="ekr.20180523101514.13">https://github.com/leo-editor/leo-editor/issues/857
+
 Marcel Franke [explained](https://groups.google.com/d/msg/leo-editor/p_6ljMQL660/57Z8lYuQAAAJ) the recommended way of using git branches. Here are his remarks, slightly edited:
 
 - **master** is stable.
@@ -28522,6 +28525,7 @@ This visualization made it all clear to me:
 
 ![git branches](https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-3.png).</t>
 <t tx="ekr.20180523101514.14">https://github.com/leo-editor/leo-editor/issues/816
+
 This the gateway to Leo University, a project devoted to help people become Leo devs.
 
 All lessons have the LeoU label. All comments welcome.
@@ -28542,6 +28546,7 @@ And here are some other items for devs:
 - #890: LeoU: About Leo's Architecture
 - #891: LeoU: About Leo's Position and VNode classes</t>
 <t tx="ekr.20180523101514.3">https://github.com/leo-editor/leo-editor/issues/891
+
 From [this post](https://groups.google.com/forum/#!topic/leo-editor/SjHfXepxiTo). Not everyone agrees with everything I say here.
 
 This LeoU discussion discusses the present code base only. #883 (a low priority item) discusses ways in which the tree of vnodes could be decoupled from c, the Commands instance. 
@@ -28580,6 +28585,7 @@ The (small) advantage is that clients of c.new_vnode(gnx) would no longer need t
 
 2. The  v.saveCursorAndScroll and v.restoreCursorAndScroll could be moved elsewhere. At present, these methods cause no problems, but moving them would be part of #883.</t>
 <t tx="ekr.20180523101514.4">https://github.com/leo-editor/leo-editor/issues/890
+
 By the term **architecture** I mean the design of Leo's modules and classes. 
 
 **Information hiding**
@@ -28606,6 +28612,7 @@ Leo uses the "has-a" pattern, rather than the "is-a" class pattern. That is, Leo
 
 The "has-a" pattern *completely* insulates classes from the internal details of other classes.  There is no need to worry about clashing ivars, or _ ivars, etc. Otoh, the "has-a" pattern results in more complex startup code.  Imo, that "extra" complexity is well worthwhile.</t>
 <t tx="ekr.20180523101514.5">https://github.com/leo-editor/leo-editor/issues/837
+
 ​All devs must run all unit tests before commit anything. Here's how:
 
 - Open leo/test/unitTest.leo in a console.
@@ -28614,6 +28621,7 @@ The "has-a" pattern *completely* insulates classes from the internal details of 
 
 **Important**: Some unit tests may fail on your environment.  Don't worry about them.  You need only ensure that your new code causes no *other* unit tests to fail.  If in doubt, ask on [leo-editor](https://groups.google.com/forum/#!forum/leo-editor).</t>
 <t tx="ekr.20180523101514.6">https://github.com/leo-editor/leo-editor/issues/836
+
 Here are the basics:
 
 **g.trace**
@@ -28628,12 +28636,14 @@ g.pdb() invokes a version of [python's pdb debugger](https://docs.python.org/2/l
 
 This is the so-called [stupendous Aha](http://leoeditor.com/FAQ.html#what-is-the-stupendous-aha-and-why-does-it-matter). This can save you a lot of time.</t>
 <t tx="ekr.20180523101514.7">https://github.com/leo-editor/leo-editor/issues/818
+
 For any programming project I recommend using github issues to track your work.  You'll be glad you did.
 
 This is especially true for Leo devs.  You want other people to be able to follow and comment on your work.
 
 The convention is to have the first comment for any issue contain an up-to-date summary of the status of the issue.  I have found that it is useful to continually edit the first comment.</t>
 <t tx="ekr.20180523101514.8">https://github.com/leo-editor/leo-editor/issues/817
+
 Many of Leo's most important devs made major contributions to Leo without asking me a single question.  Do they have super powers?  No, they don't.
 
 But they do know the secret of programming: **Simple processes, endlessly repeated, suffice to find, understand and change *any* software**.  And Leo simplifies these techniques even further.  Here they are...
@@ -28668,6 +28678,7 @@ The easy processes just described form the basis for programming workflow.
 
 *Expect to repeat these processes many times*.  Don't worry if not everything is clear at first.</t>
 <t tx="ekr.20180523101514.9">https://github.com/leo-editor/leo-editor/issues/786
+
 I recommend using the organization of leo/themes/EKRDark.leo as a guide. **Note**: Syntax coloring settings are required because they are *not* used in the css.
 
 To avoid confusion, it's best if theme .leo files contain no **unbound settings**. This will ensure that the appearance of a theme does not unwittingly depend on settings in myLeoSettings.leo.
