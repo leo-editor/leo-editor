@@ -15,7 +15,8 @@ class TS_Importer(Importer):
         # Init the base class.
         Importer.__init__(self,
             importCommands,
-            language = 'TypeScript',
+            language = 'javascript',
+                # At present, this *must* be 'javascript', not 'typescript'.
             state_class = TS_ScanState,
         )
 
@@ -42,10 +43,11 @@ class TS_Importer(Importer):
                 assert progress < i
 
         return i-1
-    #@+node:ekr.20161118093751.5: *3* js_i.clean_headline
+    #@+node:ekr.20161118093751.5: *3* ts_i.clean_headline
     def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
         s = s.strip()
+        ### g.trace(s)
         # Don't clean a headline twice.
         if s.endswith('>>') and s.startswith('<<'):
             return s
