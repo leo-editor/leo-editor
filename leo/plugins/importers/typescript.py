@@ -43,45 +43,43 @@ class TS_Importer(Importer):
 
         return i-1
     #@+node:ekr.20161118093751.5: *3* ts_i.clean_headline
+    # The pattern table. Order matters!
+    kinds = r'(async|public|private|static)'
+    clean_headline_table = [
+        (1, re.compile(r'(class\s+\w+)')),
+            # class name
+        (1, re.compile(r'export\s+(class\s+\w+)')),
+            # export class name
+        (1, re.compile(r'function\s+(\w+)')),
+            # function name
+        (1, re.compile(r'(constructor).*{')),
+            # constructor ... {
+        (2, re.compile(r'%s\s*function\s+(\w+)' % kinds)),
+            # kind function name
+        (3, re.compile(r'%s\s+%s\s+function\s+(\w+)' % (kinds, kinds))),
+            # kind kind function name
+        #
+        # Bare functions last...
+        (3, re.compile(r'%s\s+%s\s+(\w+)\s*\(.*\).*{' % (kinds, kinds))),
+            # kind kind name (...) {
+        (2, re.compile(r'%s\s+(\w+)\s*\(.*\).*{' % kinds)),
+            # name (...) {
+        (1,  re.compile(r'(\w+)\s*\(.*\).*{')),
+            # name (...) {
+    ]
+
     def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
         s = s.strip()
         # Don't clean a headline twice.
         if s.endswith('>>') and s.startswith('<<'):
             return s
-        #
-        # Define modifier kinds
-        kinds = r'(async|public|private|static)'
-        #
-        # The pattern table. Order matters!
-        table = [
-            (1, re.compile(r'(class\s+\w+)')),
-                # class name
-            (1, re.compile(r'export\s+(class\s+\w+)')),
-                # export class name
-            (1, re.compile(r'function\s+(\w+)')),
-                # function name
-            (1, re.compile(r'(constructor).*{')),
-                # constructor ... {
-            (2, re.compile(r'%s\s*function\s+(\w+)' % kinds)),
-                # kind function name
-            (3, re.compile(r'%s\s+%s\s+function\s+(\w+)' % (kinds, kinds))),
-                # kind kind function name
-            #
-            # Bare functions last...
-            (3, re.compile(r'%s\s+%s\s+(\w+)\s*\(.*\).*{' % (kinds, kinds))),
-                # kind kind name (...) {
-            (2, re.compile(r'%s\s+(\w+)\s*\(.*\).*{' % kinds)),
-                # name (...) {
-            (1,  re.compile(r'(\w+)\s*\(.*\).*{')),
-                # name (...) {
-        ]
-        for group_n, pattern in table:
+        # Try to match patterns.
+        for group_n, pattern in self.clean_headline_table:
             m = pattern.match(s)
             if m:
                 # g.trace('group %s: %s' % (group_n, m.group(group_n)))
                 return m.group(group_n)
-        #
         # Final cleanups, if nothing matches.
         for ch in '{(=':
             if s.endswith(ch):
