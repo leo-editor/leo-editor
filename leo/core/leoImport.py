@@ -1948,6 +1948,31 @@ class RecursiveImportController(object):
         if p.firstChild():
             self.minimize_headlines(p.firstChild(), prefix)
         self.clear_dirty_bits(p)
+        self.add_class_names(p)
+    #@+node:ekr.20180524100258.1: *5* ric.add_class_names
+    def add_class_names(self, p):
+        '''Add class names to headlines for all descendant nodes.'''
+        after, fn, class_name = None, None, None
+        for p in p.self_and_subtree():
+            # Part 1: update the status.
+            m = self.file_pattern.match(p.h)
+            if m:
+                prefix = m.group(1)
+                fn = g.shortFileName(p.h[len(prefix):].strip())
+                after, class_name = None, None
+            elif p.h.startswith('@path '):
+                after, fn, class_name = None, None, None
+            elif p.h.startswith('class '):
+                class_name = p.h[5:].strip()
+                if class_name:
+                    after = p.nodeAfterTree()
+            elif p == after:
+                after, class_name = None, None
+            # Part 2: update the headline.
+            if class_name:
+                p.h = '%s.%s' % (class_name, p.h)
+            elif fn:
+                p.h = '%s (%s)' % (p.h, fn)
     #@+node:ekr.20130823083943.12608: *5* ric.clear_dirty_bits
     def clear_dirty_bits(self, p):
         c = self.c
