@@ -28719,7 +28719,17 @@ https://github.com/leo-editor/leo-editor/issues/908
     - Scripts.
 </t>
 <t tx="ekr.20180523193116.1"></t>
-<t tx="ekr.20180524104432.1">It now adds the class or file name to all imported headlines.
+<t tx="ekr.20180524104432.1">The recursive import script now adds disambiguating headline comments as follows:
+
+- If a node is a descendant of a class node, the script prepends the class's name:
+
+    aClass.headline
+
+- Otherwise, the script appends the file name:
+
+    headline (x.py)
+
+This is a huge help when using the clone-find commands.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
