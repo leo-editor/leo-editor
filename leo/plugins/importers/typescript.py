@@ -16,9 +16,9 @@ class TS_Importer(Importer):
     #
     # The pattern table. Order matters!
     function_patterns = (
-        (1, re.compile(r'(class\s+\w+).*{')),
+        (1, re.compile(r'(class\s+\w+)')),
             # class name
-        (1, re.compile(r'export\s+(class\s+\w+).*{')),
+        (1, re.compile(r'export\s+(class\s+\w+)')),
             # export class name
         (1, re.compile(r'function\s+(\w+)')),
             # function name
