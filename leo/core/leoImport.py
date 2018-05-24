@@ -1825,6 +1825,7 @@ class RecursiveImportController(object):
         '''Ctor for RecursiveImportController class.'''
         self.c = c
         self.add_path = add_path
+        self.file_pattern = re.compile(r'^(([@])+(auto|clean|edit|file|nosent))')
         self.kind = kind
             # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         # self.force_at_others = force_at_others #tag:no-longer-used
@@ -1960,12 +1961,14 @@ class RecursiveImportController(object):
                 prefix = m.group(1)
                 fn = g.shortFileName(p.h[len(prefix):].strip())
                 after, class_name = None, None
+                continue
             elif p.h.startswith('@path '):
                 after, fn, class_name = None, None, None
             elif p.h.startswith('class '):
                 class_name = p.h[5:].strip()
                 if class_name:
                     after = p.nodeAfterTree()
+                    continue
             elif p == after:
                 after, class_name = None, None
             # Part 2: update the headline.
@@ -1992,8 +1995,6 @@ class RecursiveImportController(object):
             if s != p.h:
                 p.v.h = s
     #@+node:ekr.20130823083943.12611: *5* ric.minimize_headlines & helper
-    file_pattern = re.compile(r'^(([@])+(auto|clean|edit|file|nosent))')
-
     def minimize_headlines(self, p, prefix):
         '''Create @path nodes to minimize the paths required in descendant nodes.'''
         if prefix and not prefix.endswith('/'):

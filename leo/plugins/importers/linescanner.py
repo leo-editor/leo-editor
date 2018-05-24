@@ -681,6 +681,7 @@ class Importer(object):
         cause asserts to fail later in i.finish().
         '''
         self.clean_all_headlines(parent)
+        self.add_class_names(parent)
         self.clean_all_nodes(parent)
         self.unindent_all_nodes(parent)
         #
@@ -690,6 +691,40 @@ class Importer(object):
         #
         # This probably should be the last sub-pass.
         self.delete_all_empty_nodes(parent)
+    #@+node:ekr.20180524130023.1: *5* i.add_class_names
+    file_pattern = re.compile(r'^(([@])+(auto|clean|edit|file|nosent))')
+        # Note: this method is never called for @clean trees.
+
+    def add_class_names(self, p):
+        '''Add class names to headlines for all descendant nodes.'''
+        if g.app.unitTesting:
+            return # Don't changes the expected headlines.
+        seen = {} # Keys are vnodes
+        after, fn, class_name = None, None, None
+        for p in p.self_and_subtree():
+            # Part 1: update the status.
+            m = self.file_pattern.match(p.h)
+            if m:
+                prefix = m.group(1)
+                fn = g.shortFileName(p.h[len(prefix):].strip())
+                after, class_name = None, None
+                continue
+            elif p.h.startswith('@path '):
+                after, fn, class_name = None, None, None
+            elif p.h.startswith('class '):
+                class_name = p.h[5:].strip()
+                if class_name:
+                    after = p.nodeAfterTree()
+                    continue
+            elif p == after:
+                after, class_name = None, None
+            # Part 2: update the headline.
+            if p.v not in seen:
+                seen [p.v] = True
+                if class_name:
+                    p.h = '%s.%s' % (class_name, p.h)
+                elif fn:
+                    p.h = '%s (%s)' % (p.h, fn)
     #@+node:ekr.20161110125940.1: *5* i.clean_all_headlines
     def clean_all_headlines(self, parent):
         '''
