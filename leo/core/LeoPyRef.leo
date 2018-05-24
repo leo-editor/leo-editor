@@ -208,6 +208,7 @@
 <v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
 <v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
 <v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
+<v t="ekr.20170429153135.1"><vh>@file ../external/log_listener.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
 <v t="ekr.20160317054700.1"><vh>@file ../external/make_stub_files.py</vh></v>
 <v t="ekr.20160316091132.1"><vh>@file ../external/py2cs.py</vh></v>
@@ -744,7 +745,6 @@ import leo.core.leoGlobals as g
 e = extendForth()
 
 def pre_init_mode(c):
-    # g.trace('modes/forth.py',c)
     e.c = c
     e.init()
     e.createKeywords()
@@ -799,7 +799,6 @@ def pre_init_mode(c):
     if func not in aList:
         aList.append(func)
         rulesDict[ch] = aList
-    # g.trace(z,kind)
 </t>
 <t tx="ekr.20150326145530.2"># Rules for forth_main ruleset.
 
@@ -966,21 +965,26 @@ importDict = {}
 </t>
 <t tx="ekr.20150326145530.5">def __init__(self):
     self.c = None # set by pre_init_mode function.
-    # g.trace('modes/forth.py:extendForth')
+    #
     # Default forth keywords: extended by @data forth-words
     # Forth words to be rendered in boldface: extended by @data forth-bold-words
     self.boldwords = []
+    #
     # Forth bold-italics words: extended by @data forth-bold-italic-words
     # Note: on some boxen, bold italics may show in plain bold.
     self.bolditalicwords = []
+    #
     # Forth words that define brackets: extended by @data forth-delimiter-pairs
     self.brackets = [] # Helper: a list of tuples.
     self.brackets1 = []
     self.brackets2 = []
+    #
     # Words which define other words: extended by forth-defwords
     self.definingwords = []
+    #
     # Forth words to be rendered in italics: extended by forth-italic-words
     self.italicwords = []
+    #
     # Default keywords: extended by @data forth-keywords
     self.keywords = []
         # "variable", "constant", "code", "end-code",
@@ -997,12 +1001,13 @@ importDict = {}
         # "@", "!", ",", "1+", "+", "-",
         # "&lt;", "&lt;=", "=", "&gt;=", "&gt;",
         # "invert", "and", "or",
+    #
     # Forth words which start strings: extended by @data forth-string-word-pairs
     self.stringwords = []
     self.stringwords1 = []
     self.stringwords2 = []
     self.verbose = False # True: tell when extending forth words.
-    # g.trace('rulesDict...\n',g.dictToString(rulesDict),tag='rulesDict...')
+
 </t>
 <t tx="ekr.20150326145530.6">def init(self):
     '''Set our ivars from settings.'''
@@ -1025,7 +1030,6 @@ importDict = {}
             for s in aList:
                 s = s.strip()
                 if s and s[0] != '\\':
-                    # g.trace(setting,s)
                     extras.append(s)
             if extras:
                 if self.verbose:
@@ -1039,7 +1043,6 @@ importDict = {}
     )
     for(ivar, setting) in table2:
         self.splitList(ivar, setting)
-    # g.trace('keywords',self.keywords)
 </t>
 <t tx="ekr.20150326145530.7">def splitList(self, ivar, setting):
     '''Process lines containing pairs of entries
@@ -1060,9 +1063,6 @@ importDict = {}
     name2 = '%s2' % ivar
     setattr(self, name1, result1)
     setattr(self, name2, result2)
-    if 0:
-        g.trace(name1, getattr(self, name1))
-        g.trace(name2, getattr(self, name2))
 </t>
 <t tx="ekr.20150326145530.8">def createBracketRules(self):
     for z in self.brackets1:
