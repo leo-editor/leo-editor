@@ -1973,9 +1973,12 @@ class RecursiveImportController(object):
                 after, class_name = None, None
             # Part 2: update the headline.
             if class_name:
-                p.h = '%s.%s' % (class_name, p.h)
+                if not p.h.startswith(class_name):
+                    p.h = '%s.%s' % (class_name, p.h)
             elif fn:
-                p.h = '%s (%s)' % (p.h, fn)
+                tag = ' (%s)' % fn
+                if not p.h.endswith(tag):
+                    p.h += tag
     #@+node:ekr.20130823083943.12608: *5* ric.clear_dirty_bits
     def clear_dirty_bits(self, p):
         c = self.c

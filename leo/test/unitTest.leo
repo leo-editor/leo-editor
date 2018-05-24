@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.52" body_secondary_ratio="0.66">
-	<global_window_position top="111" left="720" height="894" width="1078"/>
+	<global_window_position top="106" left="365" height="894" width="1078"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -694,6 +694,9 @@
 <v t="ekr.20180523173242.71"><vh>@@file @test php here doc</vh>
 <v t="ekr.20180523173242.72"><vh>class foo</vh></v>
 </v>
+<v t="ekr.20180524182728.96"><vh>@@file @test php here doc</vh>
+<v t="ekr.20180524182728.97"><vh>class foo</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20090529141856.4736"><vh>Python tests</vh>
@@ -734,7 +737,16 @@
 <v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
 <v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
 <v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
-<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh></v>
+<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh>
+<v t="ekr.20180524182729.89"><vh>@@file @test python top-level later decl</vh>
+<v t="ekr.20180524182729.90"><vh>Declarations</vh></v>
+<v t="ekr.20180524182729.91"><vh>merge_value</vh></v>
+<v t="ekr.20180524182729.92"><vh>class MainDisplay</vh>
+<v t="ekr.20180524182729.93"><vh>save_file</vh></v>
+</v>
+<v t="ekr.20180524182729.94"><vh>retab</vh></v>
+</v>
+</v>
 <v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
 <v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
 <v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
@@ -1222,6 +1234,8 @@
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
+<v t="ekr.20161222064421.1"></v>
+<v t="ekr.20170306041801.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -10372,7 +10386,7 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
-    if 1:
+    if 0:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
@@ -15896,6 +15910,53 @@ bar
 EOT;
 }
 ?&gt;
+</t>
+<t tx="ekr.20180524182728.96">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20180524182728.97">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20180524182729.89">#!/usr/bin/env python3
+
+@others
+if __name__=="__main__":
+    main()
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20180524182729.90">import os
+import re
+
+</t>
+<t tx="ekr.20180524182729.91">def merge_value(v1, v2):
+    return v
+
+</t>
+<t tx="ekr.20180524182729.92">class MainDisplay(object):
+
+    @others
+ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
+
+</t>
+<t tx="ekr.20180524182729.93">def save_file(self):
+    """Write the file out to disk."""
+    with open(self.save_name, "w") as f:
+        for newline in newlines:
+            f.write(newline)
+
+\\-4.# This line should be included at the end of the class node.
+</t>
+<t tx="ekr.20180524182729.94">def retab(s, tabsize):
+    return ''.join(pieces)
+
 </t>
 </tnodes>
 </leo_file>

@@ -699,7 +699,6 @@ class Importer(object):
         '''Add class names to headlines for all descendant nodes.'''
         if g.app.unitTesting:
             return # Don't changes the expected headlines.
-        seen = {} # Keys are vnodes
         after, fn, class_name = None, None, None
         for p in p.self_and_subtree():
             # Part 1: update the status.
@@ -719,12 +718,13 @@ class Importer(object):
             elif p == after:
                 after, class_name = None, None
             # Part 2: update the headline.
-            if p.v not in seen:
-                seen [p.v] = True
-                if class_name:
+            if class_name:
+                if not p.h.startswith(class_name):
                     p.h = '%s.%s' % (class_name, p.h)
-                elif fn:
-                    p.h = '%s (%s)' % (p.h, fn)
+            elif fn:
+                tag = ' (%s)' % fn
+                if not p.h.endswith(tag):
+                    p.h += tag
     #@+node:ekr.20161110125940.1: *5* i.clean_all_headlines
     def clean_all_headlines(self, parent):
         '''

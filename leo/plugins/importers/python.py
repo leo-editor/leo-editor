@@ -149,13 +149,13 @@ class Py_Importer(Importer):
                 p = tail_p or top.p
                 self.add_line(p, line)
             prev_state = new_state
-    #@+node:ekr.20161220171728.1: *4* python_i.common_lws
+    #@+node:ekr.20161220171728.1: *4* py_i.common_lws
     def common_lws(self, lines):
         '''Return the lws (a string) common to all lines.'''
         return self.get_str_lws(lines[0]) if lines else ''
             # We must unindent the class/def line fully.
             # It would be wrong to examine the indentation of other lines.
-    #@+node:ekr.20161116034633.2: *4* python_i.cut_stack
+    #@+node:ekr.20161116034633.2: *4* py_i.cut_stack
     def cut_stack(self, new_state, stack, append=False):
         '''Cut back the stack until stack[-1] matches new_state.'''
         # pylint: disable=arguments-differ
@@ -179,7 +179,7 @@ class Py_Importer(Importer):
         if len(stack) == 1:
             stack.append(stack[-1])
         assert len(stack) > 1 # Fail on exit.
-    #@+node:ekr.20161116173901.1: *4* python_i.end_block
+    #@+node:ekr.20161116173901.1: *4* py_i.end_block
     def end_block(self, i, lines, new_state, prev_state, stack):
         '''
         Handle a line that terminates the previous class/def. The line is
@@ -214,17 +214,18 @@ class Py_Importer(Importer):
                 self.skip += 1
             assert progress < i, repr(line)
         return top.p
-    #@+node:ekr.20161220073836.1: *4* python_i.ends_block
+    #@+node:ekr.20161220073836.1: *4* py_i.ends_block
     def ends_block(self, line, new_state, prev_state, stack):
         '''True if line ends the block.'''
         # Comparing new_state against prev_state does not work for python.
-        if line.isspace() or prev_state.in_context():
+        ### if line.isspace() or prev_state.in_context():
+        if self.is_ws_line(line) or prev_state.in_context():
             return False
         else:
             # *Any* underindented non-blank line ends the class/def.
             top = stack[-1]
             return new_state.level() < top.state.level()
-    #@+node:ekr.20161220064822.1: *4* python_i.gen_ref
+    #@+node:ekr.20161220064822.1: *4* py_i.gen_ref
     def gen_ref(self, line, parent, target):
         '''
         Generate the at-others and a flag telling this method whether a previous
@@ -238,61 +239,7 @@ class Py_Importer(Importer):
             ref = '%s@others\n' % indent_ws
             self.add_line(parent,ref)
         return h
-    #@+node:ekr.20161222123105.1: *4* python_i.promote_last_lines
-    def promote_last_lines(self, parent):
-        '''python_i.promote_last_lines.'''
-        last = parent.lastNode()
-        if not last or last.h == 'Declarations':
-            return
-        if last.parent() != parent:
-            return # The indentation would be wrong.
-        lines = self.get_lines(last)
-        prev_state = self.state_class()
-        if_pattern = re.compile(r'^\s*if\b')
-        # Scan for a top-level if statement.
-        for i, line in enumerate(lines):
-            new_state = self.scan_line(line, prev_state)
-            m = if_pattern.match(line)
-            if m and not prev_state.context and new_state.indent == 0:
-                self.set_lines(last, lines[:i])
-                self.extend_lines(parent, lines[i:])
-                break
-            else:
-                prev_state = new_state
-    #@+node:ekr.20161222112801.1: *4* python_i.promote_trailing_underindented_lines
-    def promote_trailing_underindented_lines(self, parent):
-        '''
-        Promote all trailing underindent lines to the node's parent node,
-        deleting one tab's worth of indentation. Typically, this will remove
-        the underindent escape.
-        '''
-        pattern = self.escape_pattern # A compiled regex pattern
-        for p in parent.subtree():
-            lines = self.get_lines(p)
-            tail = []
-            while lines:
-                line = lines[-1]
-                m = pattern.match(line)
-                if m:
-                    lines.pop()
-                    n_str = m.group(1)
-                    try:
-                        n = int(n_str)
-                    except ValueError:
-                        break
-                    if n == abs(self.tab_width):
-                        new_line = line[len(m.group(0)):]
-                        tail.append(new_line)
-                    else:
-                        g.trace('unexpected unindent value', n)
-                        break
-                else:
-                    break
-            if tail:
-                parent = p.parent()
-                self.set_lines(p, lines)
-                self.extend_lines(parent, reversed(tail))
-    #@+node:ekr.20161116034633.7: *4* python_i.start_new_block
+    #@+node:ekr.20161116034633.7: *4* py_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
         assert not prev_state.in_context(), prev_state
@@ -316,7 +263,7 @@ class Py_Importer(Importer):
         target = PythonTarget(child, new_state)
         target.kind = 'class' if h.startswith('class') else 'def'
         stack.append(target)
-    #@+node:ekr.20161116040557.1: *4* python_i.starts_block
+    #@+node:ekr.20161116040557.1: *4* py_i.starts_block
     starts_pattern = re.compile(r'\s*(class|def)\s+')
         # Matches lines that apparently start a class or def.
 
@@ -341,7 +288,7 @@ class Py_Importer(Importer):
             return False
         else:
             return True
-    #@+node:ekr.20170305105047.1: *4* python_i.starts_decorator
+    #@+node:ekr.20170305105047.1: *4* py_i.starts_decorator
     decorator_pattern = re.compile(r'^\s*@\s*(\w+)')
 
     def starts_decorator(self, i, lines, prev_state):
@@ -364,14 +311,17 @@ class Py_Importer(Importer):
             for i, line in enumerate(lines[i+1:]):
                 new_state = self.scan_line(line, prev_state)
                 m = self.starts_pattern.match(line)
-                if m and not new_state.in_context():
+                if m:
+                    # 2018/05/24: don't check in_context!
+                    # The class or def could start a context.
                     return True
                 else:
                     self.decorator_lines.append(line)
                     self.skip += 1
                     prev_state = new_state
         return False
-    #@+node:ekr.20170617125213.1: *3* py_i.clean_all_headlines
+    #@+node:ekr.20180524173510.1: *3* py_i: post_pass
+    #@+node:ekr.20170617125213.1: *4* py_i.clean_all_headlines
     def clean_all_headlines(self, parent):
         '''
         Clean all headlines in parent's tree by calling the language-specific
@@ -383,53 +333,60 @@ class Py_Importer(Importer):
             h = self.clean_headline(p.h, p=p)
             if h and h != p.h:
                 p.h = h
-    #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper
-    def find_class(self, parent):
-        '''
-        Find the start and end of a class/def in a node.
-
-        Return (kind, i, j), where kind in (None, 'class', 'def')
-        '''
-        prev_state = Python_ScanState()
-        target = Target(parent, prev_state)
-        stack = [target, target]
-        lines = g.splitlines(parent.b)
-        index = 0
+    #@+node:ekr.20161222123105.1: *4* py_i.promote_last_lines
+    def promote_last_lines(self, parent):
+        '''python_i.promote_last_lines.'''
+        last = parent.lastNode()
+        if not last or last.h == 'Declarations':
+            return
+        if last.parent() != parent:
+            return # The indentation would be wrong.
+        lines = self.get_lines(last)
+        prev_state = self.state_class()
+        if_pattern = re.compile(r'^\s*if\b')
+        # Scan for a top-level if statement.
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
-            if self.starts_block(i, lines, new_state, prev_state):
-                return self.skip_block(i, index, lines, new_state, stack)
-            prev_state = new_state
-            index += len(line)
-        return None, -1, -1
-    #@+node:ekr.20161205052712.1: *4* py_i.skip_block
-    def skip_block(self, i, index, lines, prev_state, stack):
+            m = if_pattern.match(line)
+            if m and not prev_state.context and new_state.indent == 0:
+                self.set_lines(last, lines[:i])
+                self.extend_lines(parent, lines[i:])
+                break
+            else:
+                prev_state = new_state
+    #@+node:ekr.20161222112801.1: *4* py_i.promote_trailing_underindented_lines
+    def promote_trailing_underindented_lines(self, parent):
         '''
-        Find the end of a class/def starting at index
-        on line i of lines.
-
-        Return (kind, i, j), where kind in (None, 'class', 'def')
-        .'''
-        index1 = index
-        line = lines[i]
-        kind = 'class' if line.strip().startswith('class') else 'def'
-        i += 1
-        while i < len(lines):
-            progress = i
-            line = lines[i]
-            index += len(line)
-            new_state = self.scan_line(line, prev_state)
-            top = stack[-1]
-            # Similar to self.ends_block.
-            if (not self.is_ws_line(line) and
-                not prev_state.in_context() and
-                new_state.level() <= top.state.level()
-            ):
-                return kind, index1, index
-            prev_state = new_state
-            i += 1
-            assert progress < i
-        return None, -1, -1
+        Promote all trailing underindent lines to the node's parent node,
+        deleting one tab's worth of indentation. Typically, this will remove
+        the underindent escape.
+        '''
+        pattern = self.escape_pattern # A compiled regex pattern
+        for p in parent.children(): # 2018/05/24.
+            lines = self.get_lines(p)
+            tail = []
+            while lines:
+                line = lines[-1]
+                m = pattern.match(line)
+                if m:
+                    lines.pop()
+                    n_str = m.group(1)
+                    try:
+                        n = int(n_str)
+                    except ValueError:
+                        break
+                    if n == abs(self.tab_width):
+                        new_line = line[len(m.group(0)):]
+                        tail.append(new_line)
+                    else:
+                        g.trace('unexpected unindent value', n)
+                        break
+                else:
+                    break
+            if tail:
+                parent = p.parent()
+                self.set_lines(p, lines)
+                self.extend_lines(parent, reversed(tail))
     #@-others
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:
