@@ -218,7 +218,6 @@ class Py_Importer(Importer):
     def ends_block(self, line, new_state, prev_state, stack):
         '''True if line ends the block.'''
         # Comparing new_state against prev_state does not work for python.
-        ### if line.isspace() or prev_state.in_context():
         if self.is_ws_line(line) or prev_state.in_context():
             return False
         else:
