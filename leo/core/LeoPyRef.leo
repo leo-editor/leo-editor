@@ -208,6 +208,7 @@
 <v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
 <v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
 <v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
+<v t="ekr.20170429161422.1"><vh>@file ../external/log_broadcast.py</vh></v>
 <v t="ekr.20170429153135.1"><vh>@file ../external/log_listener.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
 <v t="ekr.20160317054700.1"><vh>@file ../external/make_stub_files.py</vh></v>
