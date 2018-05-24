@@ -691,6 +691,9 @@
 <v t="ekr.20180123135055.48"><vh>@@file @test php here doc</vh>
 <v t="ekr.20180123135055.49"><vh>class foo</vh></v>
 </v>
+<v t="ekr.20180523173242.71"><vh>@@file @test php here doc</vh>
+<v t="ekr.20180523173242.72"><vh>class foo</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20090529141856.4736"><vh>Python tests</vh>
@@ -1635,7 +1638,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -15881,5 +15884,18 @@ EOT;
 ?&gt;
 </t>
 <t tx="ekr.20180214042153.1">False is the legacy value.</t>
+<t tx="ekr.20180523173242.71">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20180523173242.72">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
 </tnodes>
 </leo_file>
