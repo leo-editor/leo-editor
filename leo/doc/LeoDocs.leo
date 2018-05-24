@@ -2164,6 +2164,13 @@
 </v>
 </v>
 </v>
+<v t="ekr.20180523192946.1"><vh>#908: Summary of Leo's features</vh>
+<v t="ekr.20180523193116.1"><vh>Gui</vh></v>
+<v t="ekr.20180523193048.1"><vh>Organization</vh></v>
+<v t="ekr.20180523193000.1"><vh>Data</vh></v>
+<v t="ekr.20180523192953.1"><vh>Scripting</vh></v>
+<v t="ekr.20180523193034.1"><vh>Plugins</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -28695,6 +28702,21 @@ These settings ensure that relative urls (including ":/" syntax are resolved pro
 
 **Obsolete**: The post [ENB: Simple design principles for style sheets](https://groups.google.com/d/msg/leo-editor/JyyuOscgmow/kAJcGU0xBQAJ) contained my original ideas.  In particular, the so-called "settings Aha" is dubious.</t>
 <t tx="ekr.20180523101625.1"></t>
+<t tx="ekr.20180523192946.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/908
+</t>
+<t tx="ekr.20180523192953.1">- Markup</t>
+<t tx="ekr.20180523193000.1">- Directed Acyclic Graph.
+- Clones.</t>
+<t tx="ekr.20180523193034.1"></t>
+<t tx="ekr.20180523193048.1">- Everything is an outline:
+    - Settings.
+    - Code.
+    - Scripts.
+</t>
+<t tx="ekr.20180523193116.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
