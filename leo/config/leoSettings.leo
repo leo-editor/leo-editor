@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.31" body_secondary_ratio="0.50">
+	<global_window_position top="18" left="1" height="730" width="1364"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -753,6 +753,7 @@
 </v>
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
 <v t="ekr.20161011090731.1"><vh>Retired: @bool allow_section_references_in_at_auto = False</vh></v>
+<v t="tbrown.20180525163032.1"><vh>@bool add-context-to-headlines = True</vh></v>
 <v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
 <v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
 <v t="ekr.20161010085256.1"><vh>@bool js_importer_clean_lws = True</vh></v>
@@ -4180,7 +4181,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401">@nocolor-node
+<t tx="ekr.20070622214401" str_leo_pos="1">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -12418,6 +12419,13 @@ AltControlShift hoist
 #     WITH: /
 
 </t>
+<t tx="tbrown.20180525163032.1">If True, names uses headline "Foo.bar" for bar() defined in class
+Foo, and headline "bar (foo.py)" for bar() defined at top level in
+foo.py.  This is useful if you've cloned the node so its origin is
+not obvious from context.
+
+If False, does not do the above, useful if you don't use clones
+and don't want the visual clutter of repeated class / file names.</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
