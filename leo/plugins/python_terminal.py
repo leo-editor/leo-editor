@@ -313,13 +313,22 @@ class PyInterp(QtWidgets.QTextEdit):
         # Always end the input.
         self.append('')
         #
-        # Just return if the last line if it is a continued line.
-        if len(lines) > 1:
-            last_line = lines[-1]
-            if is_continued_line(last_line) and clean_line(last_line).strip():
-                # Real last line. Continue until the user types a blank line.
-                self.insert_marker()
-                return
+        # Handle special lines.
+        last_line = lines and lines[-1].strip()
+        if self.customCommands(last_line):
+            return
+        # Handle the history.
+        if last_line:
+            self.history.insert(0, clean_line(last_line))
+        #
+        # Just return if the last line if it is a non-blank continued line.
+        if (
+            len(lines) > 1 and
+            is_continued_line(last_line) and
+            clean_line(last_line).strip()
+        ):
+            self.insert_marker()
+            return
         #
         # Clean the lines.
         lines = [clean_line(z) for z in lines if z.strip()]
@@ -328,7 +337,6 @@ class PyInterp(QtWidgets.QTextEdit):
         if not lines:
             self.insert_marker()
             return
-        # g.printObj(lines)
         the_code = self.compile_lines(lines)
         if the_code is None:
             # Continuation mode.
