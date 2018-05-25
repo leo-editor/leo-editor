@@ -48,64 +48,49 @@ class Py_Importer(Importer):
                     else:
                         return ''
         return ''
-    #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
-    #@@nobeautify
-
-    def get_new_dict(self, context):
+    #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper
+    def find_class(self, parent):
         '''
-        Return a *general* state dictionary for the given context.
-        Subclasses may override...
+        Find the start and end of a class/def in a node.
+
+        Return (kind, i, j), where kind in (None, 'class', 'def')
         '''
-        comment, block1, block2 = self.single_comment, self.block1, self.block2
+        # Called from Leo's core to implement two minor commands.
+        prev_state = Python_ScanState()
+        target = Target(parent, prev_state)
+        stack = [target, target]
+        lines = g.splitlines(parent.b)
+        index = 0
+        for i, line in enumerate(lines):
+            new_state = self.scan_line(line, prev_state)
+            if self.starts_block(i, lines, new_state, prev_state):
+                return self.skip_block(i, index, lines, new_state, stack)
+            prev_state = new_state
+            index += len(line)
+        return None, -1, -1
+    #@+node:ekr.20161205052712.1: *4* py_i.skip_block
+    def skip_block(self, i, index, lines, prev_state, stack):
+        '''
+        Find the end of a class/def starting at index
+        on line i of lines.
 
-        def add_key(d, key, data):
-            aList = d.get(key,[])
-            aList.append(data)
-            d[key] = aList
-
-        if context:
-            d = {
-                # key   kind    pattern ends?
-                '\\':   [('len+1', '\\',None),],
-                '"':[
-                        ('len', '"""',  context == '"""'),
-                        ('len', '"',    context == '"'),
-                    ],
-                "'":[
-                        ('len', "'''",  context == "'''"),
-                        ('len', "'",    context == "'"),
-                    ],
-            }
-            if block1 and block2:
-                add_key(d, block2[0], ('len', block1, True))
-        else:
-            # Not in any context.
-            d = {
-                # key    kind pattern new-ctx  deltas
-                '\\': [('len+1','\\', context, None),],
-                '#':  [('all', '#',   context, None),],
-                '"':[
-                        # order matters.
-                        ('len', '"""',  '"""', None),
-                        ('len', '"',    '"',   None),
-                    ],
-                "'":[
-                        # order matters.
-                        ('len', "'''",  "'''", None),
-                        ('len', "'",    "'",   None),
-                    ],
-                '{':    [('len', '{', context, (1,0,0)),],
-                '}':    [('len', '}', context, (-1,0,0)),],
-                '(':    [('len', '(', context, (0,1,0)),],
-                ')':    [('len', ')', context, (0,-1,0)),],
-                '[':    [('len', '[', context, (0,0,1)),],
-                ']':    [('len', ']', context, (0,0,-1)),],
-            }
-            if comment:
-                add_key(d, comment[0], ('all', comment, '', None))
-            if block1 and block2:
-                add_key(d, block1[0], ('len', block1, block1, None))
-        return d
+        Return (kind, i, j), where kind in (None, 'class', 'def')
+        .'''
+        index1 = index
+        line = lines[i]
+        kind = 'class' if line.strip().startswith('class') else 'def'
+        i += 1
+        while i < len(lines):
+            progress = i
+            line = lines[i]
+            index += len(line)
+            new_state = self.scan_line(line, prev_state)
+            if self.ends_block(line, new_state, prev_state, stack):
+                return kind, index1, index
+            prev_state = new_state
+            i += 1
+            assert progress < i
+        return None, -1, -1
     #@+node:ekr.20161119161953.1: *3* py_i.gen_lines & overrides
     def gen_lines(self, s, parent):
         '''
@@ -319,6 +304,64 @@ class Py_Importer(Importer):
                     self.skip += 1
                     prev_state = new_state
         return False
+    #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
+    #@@nobeautify
+
+    def get_new_dict(self, context):
+        '''
+        Return a *general* state dictionary for the given context.
+        Subclasses may override...
+        '''
+        comment, block1, block2 = self.single_comment, self.block1, self.block2
+
+        def add_key(d, key, data):
+            aList = d.get(key,[])
+            aList.append(data)
+            d[key] = aList
+
+        if context:
+            d = {
+                # key   kind    pattern ends?
+                '\\':   [('len+1', '\\',None),],
+                '"':[
+                        ('len', '"""',  context == '"""'),
+                        ('len', '"',    context == '"'),
+                    ],
+                "'":[
+                        ('len', "'''",  context == "'''"),
+                        ('len', "'",    context == "'"),
+                    ],
+            }
+            if block1 and block2:
+                add_key(d, block2[0], ('len', block1, True))
+        else:
+            # Not in any context.
+            d = {
+                # key    kind pattern new-ctx  deltas
+                '\\': [('len+1','\\', context, None),],
+                '#':  [('all', '#',   context, None),],
+                '"':[
+                        # order matters.
+                        ('len', '"""',  '"""', None),
+                        ('len', '"',    '"',   None),
+                    ],
+                "'":[
+                        # order matters.
+                        ('len', "'''",  "'''", None),
+                        ('len', "'",    "'",   None),
+                    ],
+                '{':    [('len', '{', context, (1,0,0)),],
+                '}':    [('len', '}', context, (-1,0,0)),],
+                '(':    [('len', '(', context, (0,1,0)),],
+                ')':    [('len', ')', context, (0,-1,0)),],
+                '[':    [('len', '[', context, (0,0,1)),],
+                ']':    [('len', ']', context, (0,0,-1)),],
+            }
+            if comment:
+                add_key(d, comment[0], ('all', comment, '', None))
+            if block1 and block2:
+                add_key(d, block1[0], ('len', block1, block1, None))
+        return d
     #@+node:ekr.20180524173510.1: *3* py_i: post_pass
     #@+node:ekr.20170617125213.1: *4* py_i.clean_all_headlines
     def clean_all_headlines(self, parent):
