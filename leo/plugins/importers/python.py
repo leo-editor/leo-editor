@@ -134,6 +134,12 @@ class Py_Importer(Importer):
                 p = tail_p or top.p
                 self.add_line(p, line)
             prev_state = new_state
+        if self.skip:
+            g.trace('can not happen: self.skip > 0', color='red')
+        if self.decorator_lines:
+            g.trace('can not happen: unused decorator lines...', color='red')
+            g.printObj(self.decorator_lines)
+
     #@+node:ekr.20161220171728.1: *4* py_i.common_lws
     def common_lws(self, lines):
         '''Return the lws (a string) common to all lines.'''
@@ -286,6 +292,8 @@ class Py_Importer(Importer):
         if prev_state.context:
             # Only test for docstrings, not [{(.
             return False
+        old_skip = self.skip
+        old_decorator_lines = self.decorator_lines[:]
         line = lines[i]
         m = self.decorator_pattern.match(line)
         if m and m.group(1) not in g.globalDirectiveList:
@@ -303,6 +311,9 @@ class Py_Importer(Importer):
                     self.decorator_lines.append(line)
                     self.skip += 1
                     prev_state = new_state
+        # Recover froma a bare decorator, without a class or def.
+        self.skip = old_skip
+        self.decorator_lines = old_decorator_lines
         return False
     #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
     #@@nobeautify
