@@ -1600,6 +1600,8 @@ class LocalConfigManager(object):
         data = self.get(setting, "data")
         # New in Leo 4.11: parser.doData strips only comments now.
         # New in Leo 4.12: parser.doData strips *nothing*.
+        if g.isString(data):
+            data = [data]
         if data and strip_comments:
             data = [z for z in data if not z.strip().startswith('#')]
         if data and strip_data:
