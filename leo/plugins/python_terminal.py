@@ -282,12 +282,6 @@ class PyInterp(QtWidgets.QTextEdit):
     #@+node:ekr.20180307132016.1: *4* PyInterp.doEnter
     def doEnter(self, event):
         '''Handle the <return> key.'''
-        
-        def is_continued_line(s):
-            return s.startswith('...')
-        
-        def clean_line(s):
-            return ' '*4 + s[4:] if is_continued_line(s) else s
         #
         # Set cursor to end of line to avoid line splitting
         textCursor = self.textCursor()
@@ -321,12 +315,11 @@ class PyInterp(QtWidgets.QTextEdit):
         last_line = lines and lines[-1]
         if self.customCommands(last_line):
             return
-        # Handle the history.
+        # Handle the history and indent.
         if last_line.strip():
             self.history.insert(0, last_line.rstrip())
-            # Set the indent.
             self.indent = len(last_line) - len(last_line.lstrip())
-            if last_line.endswith(':'):
+            if last_line.rstrip().endswith(':'):
                 self.indent += 4
         #
         # Just return if the last line if it is a non-blank continued line.
