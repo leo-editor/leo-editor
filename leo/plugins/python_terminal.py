@@ -295,6 +295,7 @@ class PyInterp(QtWidgets.QTextEdit):
         pasteFlag = False
         while block:
             line = g.toUnicode(block.text())
+            line = line.replace('\t',' '*4)
             block = block.previous()
             if line.startswith('>>> '):
                 lines.insert(0, line[4:].rstrip())
