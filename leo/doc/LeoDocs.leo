@@ -2092,7 +2092,9 @@
 </v>
 <v t="ekr.20180509122406.1"><vh>Leo 5.7.3 release notes</vh>
 <v t="ekr.20180509123013.1"><vh>Bugs</vh>
+<v t="ekr.20180526131124.1"><vh>#841: Python importer does not always handle decorators properly </vh></v>
 <v t="ekr.20180509123007.1"><vh>#892: Crash in checkForChangedNodes</vh></v>
+<v t="ekr.20180526130745.1"><vh>#893: Python Console gets stuck on IndentationError </vh></v>
 <v t="ekr.20180511062809.1"><vh>#901: The Windows Right-Menu key insert "Menu" into text</vh></v>
 </v>
 <v t="ekr.20180509125836.1"><vh>Code</vh>
@@ -2110,6 +2112,7 @@
 <v t="ekr.20180509122603.1"><vh>Added diff-related wrappers</vh></v>
 <v t="ekr.20180509122901.1"><vh>Added leo_babel plugin</vh></v>
 <v t="ekr.20180524104432.1"><vh>Improved recursive import script</vh></v>
+<v t="ekr.20180526131023.1"><vh>Improved typescript importer</vh></v>
 <v t="ekr.20180522101650.1"><vh>pylint creates clickable links</vh></v>
 <v t="ekr.20180510093733.1"><vh>Removed settings</vh></v>
 <v t="ekr.20180511061629.1"><vh>Smart searches for functions and methods</vh></v>
@@ -27007,6 +27010,8 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - Leo's pylint command writes clickable links.
 - Allow local overrides of all abbreviations.
 - Much improved recursive import script.
+- Much improved python_terminal plugin.
+- Improved TypeScript importer.
 - A mass cleanup of Leo's code, removing many unused tracing statements.
 - The usual minor bug fixes.
 
@@ -28734,6 +28739,11 @@ This is a huge help when using the clone-find commands.
 </t>
 <t tx="ekr.20180525211530.1">https://github.com/leo-editor/leo-editor/issues/738
 </t>
+<t tx="ekr.20180526130745.1">https://github.com/leo-editor/leo-editor/issues/893
+
+A complete rewrite of the python_terminal plugin.</t>
+<t tx="ekr.20180526131023.1"></t>
+<t tx="ekr.20180526131124.1">https://github.com/leo-editor/leo-editor/issues/841</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
