@@ -1168,6 +1168,10 @@ class LeoQtGui(leoGui.LeoGui):
             self.leo_checked = True
             self.setObjectName('TipMessageBox')
             self.setIcon(self.Information)
+            # self.setMinimumSize(5000, 4000)
+                # Doesn't work.
+                # Prevent the dialog from jumping around when
+                # selecting multiple tips.
             self.setWindowTitle('Leo Tips')
             self.setText(repr(tip))
             self.next_tip_button = self.addButton('Show Next Tip', self.ActionRole)
@@ -1184,6 +1188,10 @@ class LeoQtGui(leoGui.LeoGui):
                 cb.setCheckState(2)
                 cb.stateChanged.connect(controller.onClick)
                 layout.addWidget(cb, 4, 0, -1, -1)
+                if 0: # Does not work well.
+                    sizePolicy = QtWidgets.QSizePolicy
+                    vSpacer =QtWidgets.QSpacerItem(200, 200, sizePolicy.Minimum, sizePolicy.Expanding)
+                    layout.addItem(vSpacer)
             
     def show_tips(self, force=False):
         import leo.core.leoTips as leoTips

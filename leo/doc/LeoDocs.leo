@@ -2104,6 +2104,7 @@
 <v t="ekr.20180523063338.1"><vh>#910: Summary of developer info items</vh></v>
 </v>
 <v t="ekr.20180509123018.1"><vh>Features</vh>
+<v t="ekr.20180525211530.1"><vh>#738: Links in Tips dialogs are now clickable</vh></v>
 <v t="ekr.20180511101509.1"><vh>#868: Allow separate bindings for numeric keypad keys</vh></v>
 <v t="ekr.20180522121943.1"><vh>#904: Allow local overrides of abbreviations</vh></v>
 <v t="ekr.20180509122603.1"><vh>Added diff-related wrappers</vh></v>
@@ -28730,6 +28731,8 @@ https://github.com/leo-editor/leo-editor/issues/908
     headline (x.py)
 
 This is a huge help when using the clone-find commands.
+</t>
+<t tx="ekr.20180525211530.1">https://github.com/leo-editor/leo-editor/issues/738
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
