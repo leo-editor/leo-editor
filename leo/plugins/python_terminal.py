@@ -91,34 +91,33 @@ class PyInterp(QtWidgets.QTextEdit):
             code.InteractiveInterpreter.runsource(self, command)
         #@-others
     #@+node:peckj.20150428142729.9: *3* PyInterp.__init__
-    def __init__(self,  parent, c):
-        super(PyInterp,  self).__init__(parent)
-
+    def __init__(self, parent, c):
+        super(PyInterp, self).__init__(parent)
+        #
         # this widget swallows stdout + stderr while focused,
         # but resets them upon losing focus
-
         if not g.user_dict.get('old_stdout', None):
             g.user_dict['old_stdout'] = sys.stdout
         if not g.user_dict.get('old_stderr', None):
             g.user_dict['old_stderr'] = sys.stderr
-
-        self.refreshMarker      = False # to change back to >>> from ...
-        self.multiLine          = False # code spans more than one line
-        self.command            = ''    # command to be ran
-        self.printBanner()              # print sys info
-        self.insert_marker()            # make the >>> or ... marker
-        self.history            = []    # list of commands entered
-        self.historyIndex       = -1
-        self.interpreterLocals  = {}
-
+        #
+        # init ivars.
+        self.indent = 0
+        self.refreshMarker = False # to change back to >>> from ...
+        self.multiLine = False # code spans more than one line
+        ### self.command        = ''    # command to be ran
+        self.printBanner() # print sys info
+        self.insert_marker() # make the >>> or ... marker
+        self.history = [] # list of commands entered
+        self.historyIndex = -1
+        self.interpreterLocals = {}
         self.c = c
-
+        #
         # initilize interpreter with self locals
         self.initInterpreter(locals())
-
+        #
         # update p when new node selected
         g.registerHandler('select2', self.select2_hook)
-
     #@+node:peckj.20150428142729.10: *3* PyInterp.select2_hook
     def select2_hook(self, tag, keywords):
         self.interpreter.runIt('p = c.p')
@@ -135,10 +134,9 @@ class PyInterp(QtWidgets.QTextEdit):
             self.write(msg)
     #@+node:peckj.20150428142729.12: *3* PyInterp.insert_marker
     def insert_marker(self):
-        if self.multiLine:
-            self.insertPlainText('... ')
-        else:
-            self.insertPlainText('>>> ')
+        
+        line = '... ' if self.multiLine else '>>> '
+        self.insertPlainText(line + ' '*self.indent)
     #@+node:peckj.20150428142729.13: *3* PyInterp.initInterpreter
     def initInterpreter(self, interpreterLocals=None):
         if interpreterLocals:
@@ -300,38 +298,44 @@ class PyInterp(QtWidgets.QTextEdit):
         block = self.document().lastBlock()
         #
         # Scan backward, looking for lines.
+        pasteFlag = False
         while block:
-                line = g.toUnicode(block.text())
-                block = block.previous()
-                done = g.match(line, 0, '>>>')
-                if done:
-                    line = line [4:] # remove marker
+            line = g.toUnicode(block.text())
+            block = block.previous()
+            if line.startswith('>>> '):
+                lines.insert(0, line[4:].rstrip())
+                break
+            elif line.startswith('... '):
+                lines.insert(0, line[4:].rstrip())
+            else:
                 lines.insert(0, line.rstrip())
-                if done:
-                    break
+                pasteFlag = True
+        # Enter continuation mode for pasted lines.
+        if pasteFlag and lines and lines[-1].strip():
+            self.multiLine = True
         #
         # Always end the input.
         self.append('')
         #
         # Handle special lines.
-        last_line = lines and lines[-1].strip()
+        last_line = lines and lines[-1]
         if self.customCommands(last_line):
             return
         # Handle the history.
-        if last_line:
-            self.history.insert(0, clean_line(last_line))
+        if last_line.strip():
+            self.history.insert(0, last_line.rstrip())
+            # Set the indent.
+            self.indent = len(last_line) - len(last_line.lstrip())
+            if last_line.endswith(':'):
+                self.indent += 4
         #
         # Just return if the last line if it is a non-blank continued line.
-        if (
-            len(lines) > 1 and
-            is_continued_line(last_line) and
-            clean_line(last_line).strip()
-        ):
+        if len(lines) > 1 and last_line.strip():
             self.insert_marker()
             return
         #
         # Clean the lines.
-        lines = [clean_line(z) for z in lines if z.strip()]
+        lines = [z for z in lines if z.strip()]
         #
         # Just add the marker if we are done.
         if not lines:
@@ -346,6 +350,7 @@ class PyInterp(QtWidgets.QTextEdit):
         #
         # End continuation mode.
         self.multiLine = False
+        self.indent = 0
         if the_code != 'error':
             self.run_code(the_code)
         self.insert_marker()
