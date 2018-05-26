@@ -681,7 +681,8 @@ class Importer(object):
         cause asserts to fail later in i.finish().
         '''
         self.clean_all_headlines(parent)
-        self.add_class_names(parent)
+        if self.c.config.getBool("add-context-to-headlines"):
+            self.add_class_names(parent)
         self.clean_all_nodes(parent)
         self.unindent_all_nodes(parent)
         #

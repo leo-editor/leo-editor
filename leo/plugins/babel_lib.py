@@ -424,7 +424,7 @@ def babelExec(event):
         babel_script_args = gld.get('babel_script_args')
         if babel_script_args:
             cmdList.extend(babel_script_args)
-
+        # pylint: disable=unexpected-keyword-arg
         wro = tempfile.NamedTemporaryFile(buffering=0)
         wre = tempfile.NamedTemporaryFile(buffering=0)
         reo = io.open(wro.name, 'rb', buffering=0)
