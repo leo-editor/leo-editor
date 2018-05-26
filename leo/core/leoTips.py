@@ -296,16 +296,15 @@ The parse-body command parses p.b (the body text of the selected node) into sepa
 UserTip(
     n=622,
     tags=['Command', 'Testing'],
-    title="The pylint command",
-    text="""\
-    
-Leo's pylint command runs pylint on all `@<file>` nodes in the selected trees.
+    title="<html>The pylint command",
+    text="""
+<p>Leo's pylint command runs
+<a href="https://www.pylint.org/">pylint</a>
+on all `@<file>` nodes in the selected trees.</p>
 
-Pylint runs in the background, so you can continue to use Leo while pylint runs.
+<p>Pylint runs in the background. It doesn't interfere with Leo.</p>
 
-See: https://www.pylint.org/.
-
-"""),
+</html>"""),
 #@+node:ekr.20180324073008.1: *4* repeat-complex-command
 UserTip(
     n=0,
@@ -326,14 +325,13 @@ button using Ctrl-P.
 UserTip(
     n=621,
     tags=['Tutorial', 'Commands'],
-    title="The rst3 command",
+    title="<html>The rst3 command",
     text="""\
-    
-The rst3 command converts an @rst tree to a document file.
+<p>The rst3 command converts an @rst tree to a document file.</p>
 
-See http://leoeditor.com/tutorial-rst3.html.
+<p>See <a href="http://leoeditor.com/tutorial-rst3.html">Leo's rst3 tutorial.</a></p>
 
-"""),
+</html>"""),
 
 #@+node:ekr.20180324072625.1: *4* sort-siblings command
 UserTip(
@@ -364,67 +362,65 @@ When developing scripts that use Log window to display results, it is sometimes 
 UserTip(
     n=610,
     tags=['Scripting', 'Debugging', 'Beginner'],
-    title="g.callers() returns a list of callers",
+    title="<html>The g.callers() function",
     text="""
-    
-g.callers() returns the last n callers (default 4) callers of a function or method. The verbose option shows each caller on a separate line.  For example:
-    
-    g.trace(g.callers())
+<p>g.callers() returns the last n callers (default 4) callers of a function or method. The verbose option shows each caller on a separate line.  For example:</p>
 
-You must [launch Leo from a console for this to work.
-See http://leoeditor.com/running.html#running-leo-from-a-console-window.
+<p><pre>    g.trace(g.callers())</pre></p>
 
-"""),
+<p>You must
+<a href="http://leoeditor.com/running.html#running-leo-from-a-console-window">
+run Leo from a console</a> for this to work.</p>
+ 
+</html>"""),
 
 #@+node:ekr.20180324072527.1: *4* g.pdb
 UserTip(
     n=608,
     tags=['Scripting', 'Debugging'],
-    title="Use g.pdb from the console",
+    title="<html>The g.pdb function",
     text="""
-    
-g.pdb launches Python's pdb debugger, adapted for Leo.
+<p>g.pdb launches
+<a href="https://docs.python.org/3/library/pdb.html">Python's pdb debugger</a>
+adapted for Leo.</p>
 
-See https://docs.python.org/3/library/pdb.html.
+<p>You must
+<a href="http://leoeditor.com/running.html#running-leo-from-a-console-window">
+run Leo from a console</a> for this to work.</p>
 
-You must [launch Leo from a console for this to work.
-See http://leoeditor.com/running.html#running-leo-from-a-console-window.
-
-"""),
+</html>"""),
 
 #@+node:ekr.20180324072513.1: *4* g.trace
 UserTip(
     n=609,
     tags=['Scripting', 'Debugging', 'Beginner'],
-    title="Use g.trace to debug scripts",
+    title="<html>The g.trace function",
     text="""
-    
-The g.trace function prints all its arguments to the console.
+<p>The g.trace function prints all its arguments to the console.</p>
 
-It's great for seeing patterns in running code.
+<p>It's great for seeing patterns in running code.</p>
 
-You must [launch Leo from a console for this to work.
-See http://leoeditor.com/running.html#running-leo-from-a-console-window.
+<p>You must
+<a href="http://leoeditor.com/running.html#running-leo-from-a-console-window">
+run Leo from a console</a> for this to work.</p>
 
-"""),
-
+</html>"""),
 #@+node:ekr.20180324065152.4: *4* Pyflakes
 UserTip(
     n=624,
     tags=['Settings', 'Scripting'],
-    title="The pyflakes command",
+    title="<html>The pyflakes command",
     text="""\
-    
-pyflakes is a superb programming tool. It checks python files almost instantly.
+<p><a href="https://pypi.python.org/pypi/pyflakes">pyflakes</a>
+checks python files almost instantly.</p>
 
-These settings cause Leo to run pyflakes whenever saving a .py file and to raise a dialog if any errors are found:
-
-    @bool run-pyflakes-on-write = True
-    @bool syntax-error-popup = True
-    
-See https://pypi.python.org/pypi/pyflakes.
-
-"""),
+<p>Enable pyflakes with these settings:
+<pre>
+@bool run-pyflakes-on-write = True
+@bool syntax-error-popup = True
+</pre>
+</p>
+</html>"""),
 #@+node:ekr.20180324065653.1: *4* Re @button
 UserTip(
     n=618,
@@ -444,16 +440,17 @@ As a result, @button nodes bring scripts to data.
 UserTip(
     n=619,
     tags=['Tutorial', 'Testing', 'Scripting'],
-    title="Use @test nodes",
+    title="<html>@test nodes",
     text="""\
-    
-@test nodes create unit tests. They automatically convert the body to a subclass of unittest.TestCase.
+<p><a href="http://leoeditor.com/tutorial-basics.html#test-nodes">@test nodes</a>
+create unit tests.</p>
 
-Leo's run-* commands execute unit tests.
+<p>They automatically convert the body to a subclass of
+<a href="https://docs.python.org/3/library/unittest.html#test-cases">unittest.TestCase.</a></p>
 
-See http://leoeditor.com/tutorial-basics.html#test-nodes.
+<p>Leo's run-* commands execute unit tests.</p>
 
-"""),
+</html>"""),
 #@+node:ekr.20180324065152.2: *4* Section refs vs @others
 UserTip(
     n=626,
@@ -495,29 +492,32 @@ where the body of the %(start)s organizer %(end)s node contains just @others."""
 UserTip(
     n=620,
     tags=['PIM', 'Tutorial'],
-    title="Use abbreviations",
+    title="<html>Use abbreviations",
     text="""\
-    
-Leo's abbreviations can correct spelling mistakes, expand to multiple lines or even trees of nodes.
+<p>Leo's
+<a href="http://leoeditor.com/tutorial-pim.html#using-abbreviations-and-templates">
+abbreviations</a>
+can correct spelling mistakes, expand to multiple lines or even trees of nodes.
+</p>
 
-Abbreviations can execute scripts and can prompt for values to be substituted within the abbreviation.
+<p>Abbreviations can execute scripts and
+can prompt for values to be substituted within the abbreviation.</p>
 
-See http://leoeditor.com/tutorial-pim.html#using-abbreviations-and-templates.
-
-"""),
+</html>"""),
 
 #@+node:ekr.20180324072110.1: *4* Clones
 UserTip(
     n=615,
     tags=['Tutorial',],
-    title="Learn to use clones",
+    title="<html>Learn to use clones",
     text="""
-    
-Clones are "live" copies of the node itself and all its descendants.
+<p>
+<a href="http://leoeditor.com/tutorial-pim.html#clones">Clones</a>
+are "live" copies of the node itself and all its descendants.</p>
 
-See http://leoeditor.com/tutorial-pim.html#clones.
+<p>Clones are a unique feature of Leo.</p>
 
-"""),
+</html>"""),
 
 #@+node:ekr.20180312101254.1: *4* How to find your @command nodes
 UserTip(
