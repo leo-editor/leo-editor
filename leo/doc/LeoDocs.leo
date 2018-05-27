@@ -2106,6 +2106,7 @@
 <v t="ekr.20180523063338.1"><vh>#910: Summary of developer info items</vh></v>
 </v>
 <v t="ekr.20180509123018.1"><vh>Features</vh>
+<v t="ekr.20180526213056.1"><vh>#309: Support Jedi autocompletion</vh></v>
 <v t="ekr.20180525211530.1"><vh>#738: Links in Tips dialogs are now clickable</vh></v>
 <v t="ekr.20180511101509.1"><vh>#868: Allow separate bindings for numeric keypad keys</vh></v>
 <v t="ekr.20180522121943.1"><vh>#904: Allow local overrides of abbreviations</vh></v>
@@ -2168,13 +2169,6 @@
 <v t="ekr.20180512150125.10"><vh>to_markdown</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20180523192946.1"><vh>#908: Summary of Leo's features</vh>
-<v t="ekr.20180523193116.1"><vh>Gui</vh></v>
-<v t="ekr.20180523193048.1"><vh>Organization</vh></v>
-<v t="ekr.20180523193000.1"><vh>Data</vh></v>
-<v t="ekr.20180523192953.1"><vh>Scripting</vh></v>
-<v t="ekr.20180523193034.1"><vh>Plugins</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -27003,6 +26997,7 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **The highlights of Leo 5.7.3**
 
+- Added support for Jedi autocompletion.
 - Smart searches for functions and methods.
 - Allow separate bindings for numeric keypad keys
 - Added easy-to-use diff-related wrappers for scripts.
@@ -28710,21 +28705,6 @@ These settings ensure that relative urls (including ":/" syntax are resolved pro
 
 **Obsolete**: The post [ENB: Simple design principles for style sheets](https://groups.google.com/d/msg/leo-editor/JyyuOscgmow/kAJcGU0xBQAJ) contained my original ideas.  In particular, the so-called "settings Aha" is dubious.</t>
 <t tx="ekr.20180523101625.1"></t>
-<t tx="ekr.20180523192946.1">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/908
-</t>
-<t tx="ekr.20180523192953.1">- Markup</t>
-<t tx="ekr.20180523193000.1">- Directed Acyclic Graph.
-- Clones.</t>
-<t tx="ekr.20180523193034.1"></t>
-<t tx="ekr.20180523193048.1">- Everything is an outline:
-    - Settings.
-    - Code.
-    - Scripts.
-</t>
-<t tx="ekr.20180523193116.1"></t>
 <t tx="ekr.20180524104432.1">The recursive import script now adds disambiguating headline comments as follows:
 
 - If a node is a descendant of a class node, the script prepends the class's name:
@@ -28744,6 +28724,8 @@ This is a huge help when using the clone-find commands.
 A complete rewrite of the python_terminal plugin.</t>
 <t tx="ekr.20180526131023.1"></t>
 <t tx="ekr.20180526131124.1">https://github.com/leo-editor/leo-editor/issues/841</t>
+<t tx="ekr.20180526213056.1">https://github.com/leo-editor/leo-editor/issues/309
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
