@@ -543,11 +543,11 @@ class AutoCompleterClass(object):
                     g.es_print('can not import jedi')
                     g.es_print('ignoring @bool use_jedi = True')
             if jedi:
-                aList = self.get_jedi_completions()
+                aList = self.get_jedi_completions(prefix)
                 d[prefix] = aList
                 return aList
         #
-        # Use codewise.
+        # Not jedi. Use codewise.
         # Precompute the codewise completions for '.self'.
         if not self.codewiseSelfList:
             aList = self.get_codewise_completions('self.')
@@ -654,10 +654,9 @@ class AutoCompleterClass(object):
         aList = codewise.cmd_functions([aList[0]])
         hits = [z.split(None, 1) for z in aList if z.strip()]
         return self.clean(hits)
-    #@+node:ekr.20180519111302.1: *5* ac.get_jedi_completions (new)
-    def get_jedi_completions(self):
-        
-        g.trace(g.callers())
+    #@+node:ekr.20180519111302.1: *5* ac.get_jedi_completions & helper
+    def get_jedi_completions(self, prefix):
+
         c = self.c
         w = c.frame.body.wrapper
         i = w.getInsertPoint()
@@ -720,19 +719,31 @@ class AutoCompleterClass(object):
                 print('ERROR', p.h)
         if completions is None:
             return []
-        if 1:
-            print('Found %s completions for %r' % (
-                len(completions), line[:local_column].strip()))
-            print(' get: %5.4f sec.' % (t2-t1))
-            print('jedi: %5.4f sec.' % (t3-t2))
-        if len(completions) < 20:
-            g.printObj(sorted([z.name for z in completions]))
-        ###
+        # May be used in traces below.
+        assert t3 >= t2 >= t1
+        assert local_column is not None
+                
+        completions = [z.name for z in completions]
+        completions = [self.add_prefix(prefix, z) for z in completions]
+        ### Retain these for now...
+            # g.printObj(completions[:5])
+            # head = line[:local_column]
+            # tail = line[local_column:]
+            # print('%s completions for %r' % (len(completions), head.strip()))
+            # print(' get: %5.4f sec.' % (t2-t1))
+            # print('jedi: %5.4f sec.' % (t3-t2))
             # print('n0: %s len(source): %s jedi_line: %s' % (n0, len(source), jedi_line))
             # print('LINE: %r' % line)
-            # print('HEAD: %r' % line[:local_column])
-            # print('TAIL: %r' % line[local_column:])
-        return [z.name for z in completions]
+            # print('HEAD: %r' % head)
+            # print('TAIL: %r' % tail)
+        return completions
+    #@+node:ekr.20180526211127.1: *6* ac.add_prefix
+    def add_prefix(self, prefix, s):
+        '''A hack to match the callers expectations.'''
+        if prefix.find('.') > -1:
+            aList = prefix.split('.')
+            prefix = '.'.join(aList[:-1]) + '.'
+        return s if s.startswith(prefix) else prefix + s
     #@+node:ekr.20110509064011.14557: *5* ac.get_leo_completions
     def get_leo_completions(self, prefix):
         '''Return completions in an environment defining c, g and p.'''
@@ -914,6 +925,7 @@ class AutoCompleterClass(object):
         c = self.c
         aList = common_prefix.split('.')
         header = '.'.join(aList[: -1])
+        # "!" toggles self.verbose.
         if self.verbose or self.use_qcompleter or len(tabList) < 20:
             tabList = self.clean_completion_list(header, tabList,)
         else:
