@@ -27005,8 +27005,10 @@ c.diff_two_branches(
 <t tx="ekr.20180509122901.1">For documentation, see the leo/plugins/leo_babel/doc folder.</t>
 <t tx="ekr.20180509123007.1">https://github.com/leo-editor/leo-editor/issues/892
 </t>
-<t tx="ekr.20180509123013.1"></t>
-<t tx="ekr.20180509123018.1"></t>
+<t tx="ekr.20180509123013.1">See https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A5.7.3+label%3Abug
+</t>
+<t tx="ekr.20180509123018.1">See https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A5.7.3+label%3Aenhancement
+</t>
 <t tx="ekr.20180509125836.1"></t>
 <t tx="ekr.20180509125839.1">https://github.com/leo-editor/leo-editor/issues/875</t>
 <t tx="ekr.20180510093733.1">- Removed @bool trace_import.
