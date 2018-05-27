@@ -344,9 +344,9 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20141118074110.4" a="E"><vh>How to...</vh>
+<v t="ekr.20141118074110.4"><vh>How to...</vh>
 <v t="ekr.20141118074110.3"><vh>How to Install Leo on Linux</vh></v>
-<v t="maphew.20180128212042.1" a="E"><vh>How to build Leo's PyPi Package</vh>
+<v t="maphew.20180128212042.1"><vh>How to build Leo's PyPi Package</vh>
 <v t="maphew.20180128212042.3"><vh>Create an PyPi.org account</vh></v>
 <v t="maphew.20180128212042.2"><vh>Build requirements</vh></v>
 <v t="maphew.20180128212042.4"><vh>Build &amp; publish a release</vh></v>
@@ -2364,8 +2364,6 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 - My blog: http://edreamleo.blogspot.com/
   **Paste source-forge or leo-editor announcement**.
   **To get HTML, just use html tab**.
-
-- Twitter (point to my blog)
 </t>
 <t tx="ekr.20161015092224.1">Run make-leo.
 - Commit all files before running make-leo.
@@ -3703,8 +3701,6 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 - My blog: http://edreamleo.blogspot.com/
   **Paste source-forge or leo-editor announcement**.
   **To get HTML, just use html tab**.
-
-- Twitter (point to my blog)
 </t>
 <t tx="ekr.20180406011011.1">Leo 5.7.1 April 6, 2018
 
