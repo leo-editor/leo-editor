@@ -2098,6 +2098,7 @@
 <v t="ekr.20180509123007.1"><vh>#892: Crash in checkForChangedNodes</vh></v>
 <v t="ekr.20180526130745.1"><vh>#893: Python Console gets stuck on IndentationError </vh></v>
 <v t="ekr.20180511062809.1"><vh>#901: The Windows Right-Menu key insert "Menu" into text</vh></v>
+<v t="ekr.20180527102346.1"><vh>#912: Can't type tilde</vh></v>
 </v>
 <v t="ekr.20180509125836.1"><vh>Code</vh>
 <v t="ekr.20180509125839.1"><vh>#875: Rename json reader/writer plugins</vh></v>
@@ -28122,6 +28123,8 @@ If really want a dummy LeoApp class, this is a good starting point::
         # Use g.NullObject for everything else.
         def __getattr__(self, attr):
             return g.NullObject()</t>
+<t tx="ekr.20180527102346.1">https://github.com/leo-editor/leo-editor/issues/912
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
