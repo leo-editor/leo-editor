@@ -273,7 +273,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3871097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -386,18 +386,9 @@
 <v t="ekr.20140822063016.4474"><vh>@test zzz force a quit</vh></v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
-<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh>
-<v t="ekr.20180524182729.89"><vh>@@file @test python top-level later decl</vh>
-<v t="ekr.20180524182729.90"><vh>Declarations</vh></v>
-<v t="ekr.20180524182729.91"><vh>merge_value</vh></v>
-<v t="ekr.20180524182729.92"><vh>class MainDisplay</vh>
-<v t="ekr.20180524182729.93"><vh>save_file</vh></v>
 </v>
-<v t="ekr.20180524182729.94"><vh>retab</vh></v>
-</v>
-</v>
-<v t="ekr.20170306041801.1"><vh>@test python bug #390</vh></v>
-</v>
+<v t="ekr.20100131171342.5608"><vh>@test g.KeyStroke</vh></v>
+<v t="ekr.20180527141026.1"><vh>@test g.KeyStroke (printable characters)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1504,6 +1495,66 @@ for key in keys:
     expected = ('event',)
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected, message
+</t>
+<t tx="ekr.20100131171342.5608">table = [
+    # Gang of four, unmodified)
+    ('bksp', 'BackSpace'),
+    ('backspace', 'BackSpace'),
+    ('backtab', 'Tab'),
+    ('linefeed', '\n'),
+    ('\r', '\n'),
+    ('return', '\n'),
+    ('tab', 'Tab'),
+    # Gang of four, with shift mod.
+    ('Shift-bksp', 'Shift+BackSpace'),
+    ('Shift-backspace', 'Shift+BackSpace'),
+    ('Shift-backtab', 'Shift+Tab'),
+    ('Shift-linefeed', 'Shift+Return'),
+    ('Shift-\r', 'Shift+Return'),
+    ('Shift-return', 'Shift+Return'),
+    ('Shift-tab', 'Shift+Tab'),
+    # Gang of four, with Alt mod.
+    ('Alt-bksp', 'Alt+BackSpace'),
+    ('Alt-backspace', 'Alt+BackSpace'),
+    ('Alt-backtab', 'Alt+Tab'),
+    ('Alt-linefeed', 'Alt+Return'),
+    ('Alt-\r', 'Alt+Return'),
+    ('Alt-return', 'Alt+Return'),
+    ('Alt-tab', 'Alt+Tab'),
+    #
+    # #912: tilde.
+    ('~', '~'),
+    ('Shift-~', '~'),
+    #
+    # Alpha
+    ('1', '1'),
+    ('a','a'),
+    ('A','A'),
+    ('Alt-a','Alt+a'),
+    ('Alt-A','Alt+a'),
+    ('Alt-Shift-a','Alt+Shift+a'),
+    # We can no longer ignore the shift.
+    # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
+    ('Shift-a','A'),
+    ('Shift-A','A'),
+    ('RtArrow','Right'),
+    ('Shift-RtArrow','Shift+Right'),
+    ('PageUp','Prior'),
+    ('Prior','Prior'),
+    ('Shift-PageUp','Shift+Prior'),
+    ('PageDn','Next'),
+    ('Next','Next'),
+    ('Shift-Next','Shift+Next'),
+    ('Alt-=','Alt+='),
+    ('Alt-+','Alt++'),
+    ('Alt--','Alt+-'),
+    ('Ctrl-RtArrow','Ctrl+Right'),
+    ('Control-Right','Ctrl+Right'),
+]
+for setting, result in table:
+    stroke = g.KeyStroke(binding=setting)
+    val = stroke.s
+    assert val==result,'For %r, expected %r, Got %r' % (setting, result,val)
 </t>
 <t tx="ekr.20100731163237.5782">@language html
 
@@ -2983,76 +3034,6 @@ See what we did there - one more '#' - this is a subnode.
 </t>
 <t tx="ekr.20161204040924.1"># Alt-G works.  The tests themselves are erroneous.
 </t>
-<t tx="ekr.20161222064421.1"># From xo.py.
-if 0: # Preamble...
-    # g.cls()
-    if c.isChanged(): c.save()
-    # import leo
-    import leo.core.leoImport as leoImport
-    import leo.plugins.importers.linescanner as linescanner
-    import leo.plugins.importers.python
-    # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
-    g.app.loadManager.createAllImporetersData()
-    ic = leoImport.LeoImportCommands(c)
-else:
-    ic = c.importCommands  
-
-s = r'''#!/usr/bin/env python3
-
-import os
-import re
-
-def merge_value(v1, v2):
-    return v
-
-class MainDisplay(object):
-
-    def save_file(self):
-        """Write the file out to disk."""
-        with open(self.save_name, "w") as f:
-            for newline in newlines:
-                f.write(newline)
-
-# This line should be included at the end of the class node.
-ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
-
-def retab(s, tabsize):
-    return ''.join(pieces)
-
-if __name__=="__main__":
-    main()
-'''
-table = (
-    (1, 'Declarations'),
-    (1, 'merge_value'),
-    (1, 'class MainDisplay'),
-    (2, 'save_file'),
-    (1, 'retab'),
-)
-try:
-    test_node = p.copy()
-    test_node.deleteAllChildren()
-    ic.pythonUnitTest(p,s=s,showTree=True)
-    after = p.nodeAfterTree()
-    root = p.lastChild()
-    assert root.h.startswith('@@'), root.h
-    p = root.firstChild()
-    if 1:
-        for n, h in table:
-            n2 = p.level() - root.level()
-            assert h == p.h, (h, p.h)
-            assert n == n2, (n, n2, p.h)
-            p.moveToThreadNext()
-        assert p == after, ('tree comp failed', p.h)
-    if 0:
-        test_node.deleteAllChildren()
-finally:
-    c.redraw()
-</t>
 <t tx="ekr.20161224111342.1">import glob
 import os
 if 0: # Preamble...
@@ -3152,46 +3133,6 @@ else:
 </t>
 <t tx="ekr.20170101134417.1"></t>
 <t tx="ekr.20170128023431.1">@language html
-</t>
-<t tx="ekr.20170306041801.1">s = """\
-import sys
-
-class Foo():
-    pass
-    
-a = 2
-
-def main(self):
-    pass
-
-if __name__ == '__main__':
-    main()
-"""
-table = (
-    (1, 'Declarations'),
-    (1, 'class Foo'),
-    (1, 'main'),
-)
-try:
-    test_node = p.copy()
-    test_node.deleteAllChildren()
-    c.importCommands .pythonUnitTest(p,s=s,showTree=True)
-    after = p.nodeAfterTree()
-    root = p.lastChild()
-    assert root.h.startswith('@@'), root.h
-    p = root.firstChild()
-    if 1:
-        for n, h in table:
-            n2 = p.level() - root.level()
-            assert h == p.h, (h, p.h)
-            assert n == n2, (n, n2, p.h)
-            p.moveToThreadNext()
-        assert p == after, ('tree comp failed', p.h)
-        assert root.b.find("if __name__ == '__main__':") &gt; -1
-    if 1:
-        test_node.deleteAllChildren()
-finally:
-    c.redraw()
 </t>
 <t tx="ekr.20170401122024.7">@language cweb
 @ % This file is part of CWEB.
@@ -7117,39 +7058,20 @@ gnx: ekr.20170504122721.3
 unl: section 2
 </t>
 <t tx="ekr.20180214042153.1">False is the legacy value.</t>
-<t tx="ekr.20180524182729.89">#!/usr/bin/env python3
-
-@others
-if __name__=="__main__":
-    main()
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20180524182729.90">import os
-import re
-
-</t>
-<t tx="ekr.20180524182729.91">def merge_value(v1, v2):
-    return v
-
-</t>
-<t tx="ekr.20180524182729.92">class MainDisplay(object):
-
-    @others
-ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
-
-</t>
-<t tx="ekr.20180524182729.93">def save_file(self):
-    """Write the file out to disk."""
-    with open(self.save_name, "w") as f:
-        for newline in newlines:
-            f.write(newline)
-
-# This line should be included at the end of the class node.
-</t>
-<t tx="ekr.20180524182729.94">def retab(s, tabsize):
-    return ''.join(pieces)
-
+<t tx="ekr.20180527141026.1">import string
+letters = string.ascii_letters if g.isPython3 else string.letters
+# Unshifted.
+for ch in string.printable:
+    stroke = g.KeyStroke(binding=ch)
+    assert stroke.s in string.printable, (repr(ch), repr(stroke.s))
+    if ch == '\r':
+        assert stroke.s == '\n', (repr(ch), repr(stroke.s))
+    else:
+        assert stroke.s == ch, (repr(ch), repr(stroke.s))
+# Shifted.
+for ch in string.digits + letters:
+    stroke = g.KeyStroke(binding='Shift-'+ch)
+    assert stroke.s in string.printable, (repr(ch), repr(stroke.s))
 </t>
 </tnodes>
 </leo_file>

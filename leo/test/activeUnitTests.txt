@@ -21624,6 +21624,21 @@ for setting, result in table:
     stroke = g.KeyStroke(binding=setting)
     val = stroke.s
     assert val==result,'For %r, expected %r, Got %r' % (setting, result,val)
+#@+node:ekr.20180527141026.1: *4* @test g.KeyStroke (printable characters)
+import string
+letters = string.ascii_letters if g.isPython3 else string.letters
+# Unshifted.
+for ch in string.printable:
+    stroke = g.KeyStroke(binding=ch)
+    assert stroke.s in string.printable, (repr(ch), repr(stroke.s))
+    if ch == '\r':
+        assert stroke.s == '\n', (repr(ch), repr(stroke.s))
+    else:
+        assert stroke.s == ch, (repr(ch), repr(stroke.s))
+# Shifted.
+for ch in string.digits + letters:
+    stroke = g.KeyStroke(binding='Shift-'+ch)
+    assert stroke.s in string.printable, (repr(ch), repr(stroke.s))
 #@+node:ekr.20110509104953.3474: *4* @test k.get_leo_completions
 table = (
     ( 50,'c.'),
