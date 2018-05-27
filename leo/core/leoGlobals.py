@@ -532,6 +532,7 @@ class KeyStroke(object):
         # That's ok in user settings: the Shift modifier is just removed.
         shift_d = {
             # Top row of keyboard.
+            "`": "~", "~": "~",
             "1": "!", "!": "!",
             "2": "@", "@": "@",
             "3": "#", "#": "#",
