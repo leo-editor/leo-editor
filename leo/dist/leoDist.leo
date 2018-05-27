@@ -1493,7 +1493,9 @@ LeoPyRef.leo and LeoPluginsRef.leo:
     git tag -a rel-5.xxx -m "Added 5.xxx tag"
     git push --follow-tags
 </t>
-<t tx="ekr.20180405171433.8">- Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
+<t tx="ekr.20180405171433.8">- Create a documentation file at SourceForge, directing people to GitHub.
+
+- Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
    This must be done *soon* after the release's actual commit.
    There is a "Draft New Release" button at the top-right of the page.
 </t>
