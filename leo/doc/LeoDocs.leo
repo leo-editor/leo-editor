@@ -640,6 +640,7 @@
 <v t="ekr.20120229094652.15148"><vh>How can I use BibTeX citations from Leo?</vh></v>
 </v>
 <v t="ekr.20141109053526.4"><vh>Scripting &amp; Testing</vh>
+<v t="ekr.20180527095137.1"><vh>How can I run a script with a dummy Leo app?</vh></v>
 <v t="ekr.20141108064630.15"><vh>How can I create buttons with dropdown menus?</vh></v>
 <v t="ekr.20120229094652.15099"><vh>How can I make commonly-used scripts widely accessible?</vh></v>
 <v t="ekr.20160415031743.21"><vh>How can I organize large docstrings?</vh></v>
@@ -28083,6 +28084,44 @@ A complete rewrite of the python_terminal plugin.</t>
 - Added easy-to-use diff-related wrappers for scripts.
 - Allow local overrides of all abbreviations.
 - Improved TypeScript importer.</t>
+<t tx="ekr.20180527095137.1">@language rest
+@wrap
+
+It's better to use the Leo bridge. The following creates creates a working version of Leo, without a gui::
+    
+    import leo.core.leoBridge as leoBridge
+    controller = leoBridge.controller(
+        gui='nullGui',
+        loadPlugins=False,
+        readSettings=False,
+        silent=True,
+        verbose=True,
+    )
+    g = controller.globals()
+    fileName = r'~/workbook.leo'
+    c = controller.openLeoFile(fileName)
+
+If really want a dummy LeoApp class, this is a good starting point::
+
+@language python
+
+    class NullLeoApp:
+        # Required ivars...
+        debug = []
+        homeLeoDir = 'pick-a-directory'
+        leoID = 'your-id-here'
+        positions = 0
+        # Required objects...
+        config = leoConfig.GlobalConfigManager()
+        gui = leoGui.NullGui()
+        loadManager = leoApp.LoadManager()
+        nodeIndices = leoNodes.NodeIndices(leoID)
+        # Required overrides...
+        def commanders(self):
+            return []
+        # Use g.NullObject for everything else.
+        def __getattr__(self, attr):
+            return g.NullObject()</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
