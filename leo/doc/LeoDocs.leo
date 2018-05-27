@@ -1515,8 +1515,9 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20180427130312.1"><vh>What's new in 5.7.2</vh></v>
-<v t="ekr.20180404015558.1"><vh>What's new in 5.7.1</vh>
+<v t="ekr.20180527084307.1"><vh>What's new in Leo 5.7.3</vh></v>
+<v t="ekr.20180427130312.1"><vh>What's new in Leo 5.7.2</vh></v>
+<v t="ekr.20180404015558.1"><vh>What's new in Leo 5.7.1</vh>
 <v t="ekr.20180411071648.1"><vh>Features</vh>
 <v t="ekr.20180411071654.1"><vh>#850: Optionally convert Meta to Alt on MacOs</vh></v>
 </v>
@@ -2026,6 +2027,29 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
+<v t="ekr.20180411070654.1"><vh>Leo 5.7.2 Jupyter &amp; Git</vh>
+<v t="ekr.20180411150947.1"><vh>Bugs</vh>
+<v t="ekr.20180411150950.1"><vh>#757: MacOS: replace-then-find does not work in headlines</vh></v>
+<v t="ekr.20180411105215.1"><vh>#794: Clicking Find Tab should do exactly what pushing Ctrl-F does</vh></v>
+<v t="ekr.20180505114332.5"><vh>#848: Recent Files menu will break for foreign languages</vh></v>
+<v t="ekr.20180505114332.8"><vh>#862: paste-retaining-clones can corrupt the outline</vh></v>
+<v t="ekr.20180505114332.9"><vh>#863: Serious problems changing branches</vh></v>
+<v t="ekr.20180505114332.13"><vh>#877: Exception in the markdown importer</vh></v>
+<v t="ekr.20180505114332.14"><vh>#879: g.es can be too slow</vh></v>
+<v t="ekr.20180505114332.15"><vh>#880: Replace command does not set @&lt;file&gt; nodes dirty</vh></v>
+<v t="ekr.20180505114332.17"><vh>#884: Log pane does not handle leading whitespace properly</vh></v>
+</v>
+<v t="ekr.20180427130017.1"><vh>Code</vh>
+<v t="ekr.20180505114332.2"><vh>#423: Simplify key handling with a better KeyStroke class</vh></v>
+</v>
+<v t="ekr.20180411073507.1"><vh>Features</vh>
+<v t="ekr.20180411102234.1"><vh>#838: Better .ipynb importer/exporters</vh></v>
+<v t="ekr.20180505114332.18"><vh>#886: Add c.interactive1/2/3 methods</vh></v>
+<v t="ekr.20180501163005.1"><vh>Added insert-jupyter-toc and insert-markdown-toc commands</vh></v>
+<v t="ekr.20180427125919.1"><vh>Added new command-line arguments</vh></v>
+<v t="ekr.20180427130028.1"><vh>Removed unused settings</vh></v>
+</v>
+</v>
 <v t="ekr.20180404015249.1"><vh>Leo 5.7.1 Themes</vh>
 <v t="ekr.20180404020342.1"><vh>Bugs</vh>
 <v t="ekr.20180404015841.6"><vh>#780: @tabwidth -2 in @data qt-gui-plugin-style-sheet crashes Leo</vh></v>
@@ -2066,30 +2090,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180427130312.1"></v>
-<v t="ekr.20180411070654.1"><vh>Leo 5.7.2 release notes</vh>
-<v t="ekr.20180411150947.1"><vh>Bugs</vh>
-<v t="ekr.20180411150950.1"><vh>#757: MacOS: replace-then-find does not work in headlines</vh></v>
-<v t="ekr.20180411105215.1"><vh>#794: Clicking Find Tab should do exactly what pushing Ctrl-F does</vh></v>
-<v t="ekr.20180505114332.5"><vh>#848: Recent Files menu will break for foreign languages</vh></v>
-<v t="ekr.20180505114332.8"><vh>#862: paste-retaining-clones can corrupt the outline</vh></v>
-<v t="ekr.20180505114332.9"><vh>#863: Serious problems changing branches</vh></v>
-<v t="ekr.20180505114332.13"><vh>#877: Exception in the markdown importer</vh></v>
-<v t="ekr.20180505114332.14"><vh>#879: g.es can be too slow</vh></v>
-<v t="ekr.20180505114332.15"><vh>#880: Replace command does not set @&lt;file&gt; nodes dirty</vh></v>
-<v t="ekr.20180505114332.17"><vh>#884: Log pane does not handle leading whitespace properly</vh></v>
-</v>
-<v t="ekr.20180427130017.1"><vh>Code</vh>
-<v t="ekr.20180505114332.2"><vh>#423: Simplify key handling with a better KeyStroke class</vh></v>
-</v>
-<v t="ekr.20180411073507.1"><vh>Features</vh>
-<v t="ekr.20180411102234.1"><vh>#838: Better .ipynb importer/exporters</vh></v>
-<v t="ekr.20180505114332.18"><vh>#886: Add c.interactive1/2/3 methods</vh></v>
-<v t="ekr.20180501163005.1"><vh>Added insert-jupyter-toc and insert-markdown-toc commands</vh></v>
-<v t="ekr.20180427125919.1"><vh>Added new command-line arguments</vh></v>
-<v t="ekr.20180427130028.1"><vh>Removed unused settings</vh></v>
-</v>
-</v>
+<v t="ekr.20180527084307.1"></v>
 <v t="ekr.20180509122406.1"><vh>Leo 5.7.3 release notes</vh>
 <v t="ekr.20180509123013.1"><vh>Bugs</vh>
 <v t="ekr.20180526131124.1"><vh>#841: Python importer does not always handle decorators properly </vh></v>
@@ -2100,6 +2101,7 @@
 <v t="ekr.20180509125836.1"><vh>Code</vh>
 <v t="ekr.20180509125839.1"><vh>#875: Rename json reader/writer plugins</vh></v>
 <v t="ekr.20180522101756.1"><vh>BackgroundProcessManager supports clickable links</vh></v>
+<v t="ekr.20180527084114.1"><vh>Removed most g.trace statements</vh></v>
 </v>
 <v t="ekr.20180523053906.1"><vh>Info items</vh>
 <v t="ekr.20180523053913.1"><vh>#909: How to use LaTeX with Leo</vh></v>
@@ -2117,57 +2119,6 @@
 <v t="ekr.20180522101650.1"><vh>pylint creates clickable links</vh></v>
 <v t="ekr.20180510093733.1"><vh>Removed settings</vh></v>
 <v t="ekr.20180511061629.1"><vh>Smart searches for functions and methods</vh></v>
-</v>
-</v>
-<v t="ekr.20180523090042.1"><vh>recent markdown stuff</vh>
-<v t="ekr.20180513084304.1"><vh>OLD @button to-md</vh>
-<v t="ekr.20180513084304.4"><vh>main &amp; helpers</vh>
-<v t="ekr.20180513084304.5"><vh>clean_headline</vh></v>
-<v t="ekr.20180513084304.6"><vh>get_level</vh></v>
-<v t="ekr.20180513084304.7"><vh>get_link</vh></v>
-<v t="ekr.20180513084304.8"><vh>make_body</vh></v>
-<v t="ekr.20180513084304.9"><vh>make_head</vh></v>
-<v t="ekr.20180513084304.10"><vh>make_html_node</vh></v>
-<v t="ekr.20180513084304.11"><vh>make_markdown_node</vh></v>
-<v t="ekr.20180513084304.12"><vh>make_toc</vh></v>
-<v t="ekr.20180513084304.13"><vh>to_markdown</vh></v>
-</v>
-</v>
-<v t="ekr.20180513083650.1"><vh>@md html/tutorial.html</vh></v>
-<v t="ekr.20180513090430.1"><vh>@md html/tutorial_basics2.md</vh>
-<v t="ekr.20180513090430.2"><vh>Leo's main window</vh></v>
-<v t="ekr.20180513090430.3"><vh>Commands</vh></v>
-<v t="ekr.20180513090430.4"><vh>Outlines and clones</vh></v>
-<v t="ekr.20180513090430.5"><vh>Leo directives</vh></v>
-<v t="ekr.20180513090430.6"><vh>External files</vh>
-<v t="ekr.20180513090430.7"><vh>\@file</vh></v>
-<v t="ekr.20180513090430.8"><vh>Markup</vh></v>
-<v t="ekr.20180513090430.9"><vh>\@clean</vh></v>
-<v t="ekr.20180513090430.10"><vh>\@all</vh></v>
-</v>
-<v t="ekr.20180513090430.11"><vh>Configuring Leo</vh></v>
-<v t="ekr.20180513090430.12"><vh>Plugins</vh></v>
-<v t="ekr.20180513090430.13"><vh>Scripting basics</vh>
-<v t="ekr.20180513090430.14"><vh>Scripting markup</vh></v>
-<v t="ekr.20180513090430.15"><vh>c, g and p</vh></v>
-<v t="ekr.20180513090430.16"><vh>Accessing outline data</vh></v>
-<v t="ekr.20180513090430.17"><vh>\@button and @command nodes</vh></v>
-<v t="ekr.20180513090430.18"><vh>\@test nodes</vh></v>
-<v t="ekr.20180513090430.19"><vh>Autocompletion and calltips</vh></v>
-</v>
-<v t="ekr.20180513090430.20"><vh>Summary</vh></v>
-</v>
-<v t="ekr.20180512150125.1"><vh>@button write-md</vh>
-<v t="ekr.20180512150256.1"><vh>w.write &amp; helpers</vh>
-<v t="ekr.20180512150125.2"><vh>clean_headline</vh></v>
-<v t="ekr.20180512150125.3"><vh>get_level</vh></v>
-<v t="ekr.20180512150125.4"><vh>get_link</vh></v>
-<v t="ekr.20180512150125.5"><vh>make_body</vh></v>
-<v t="ekr.20180512150125.6"><vh>make_head</vh></v>
-<v t="ekr.20180513122115.1"><vh>make_markdown_node</vh></v>
-<v t="ekr.20180512150125.9"><vh>make_toc</vh></v>
-<v t="ekr.20180512150125.10"><vh>to_markdown</vh></v>
-</v>
 </v>
 </v>
 </vnodes>
@@ -11184,13 +11135,13 @@ The file is written by double-clicking the node. Thus the following outline::
 
     -@bibtex biblio.bib
      +@book key
-      author = {A. Uthor},
+      author = {P. D. James},
       year = 1999
 
 will be written in the file 'biblio.bib' as::
 
     @book{key,
-    author = {A. Uthor},
+    author = {P. D. James},
     year= 1999}
 
 Strings are defined in @string nodes and they can contain multiple entries. All @string nodes are written at the start of the file. Thus the following outline::
@@ -11199,7 +11150,7 @@ Strings are defined in @string nodes and they can contain multiple entries. All 
      +@string
       j1 = {Journal1}
      +@article AUj1
-      author = {A. Uthor},
+      author = {P. D. James},
       journal = j1
      +@string
       j2 = {Journal2}
@@ -11212,7 +11163,7 @@ Will be written as::
     @string{j3 = {Journal3}}
 
     @article{AUj1,
-    author = {A. Uthor},
+    author = {P. D. James},
     journal = j1}
 
 No error checking is made on the syntax. The entries can be organized under nodes --- if the headline doesn't start with '@', the headline and body text are ignored, but the child nodes are parsed as usual.
@@ -26990,7 +26941,8 @@ Leo University
 
 This is a backup of the online `LeoU issues`_.
 </t>
-<t tx="ekr.20180509122406.1">Leo 5.7.3, http://leoeditor.com, is now available on
+<t tx="ekr.20180509122406.1">May 28, 2018
+Leo 5.7.3, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
@@ -26998,16 +26950,15 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 **The highlights of Leo 5.7.3**
 
 - Added support for Jedi autocompletion.
+- Much improved python_terminal plugin.
+- Much improved recursive import script.
+- New leo_babel plugin.
+- Leo's pylint command writes clickable links.
 - Smart searches for functions and methods.
 - Allow separate bindings for numeric keypad keys
 - Added easy-to-use diff-related wrappers for scripts.
-- Added leo_babel plugin.
-- Leo's pylint command writes clickable links.
 - Allow local overrides of all abbreviations.
-- Much improved recursive import script.
-- Much improved python_terminal plugin.
 - Improved TypeScript importer.
-- A mass cleanup of Leo's code, removing many unused tracing statements.
 - The usual minor bug fixes.
 
 **Links**
@@ -27075,612 +27026,6 @@ As usual, spellings are not significant. For example:
 clone-find-all-flattened = Key_Pad+9
 clone-find-all = keypad-PageUp
     # Same as keypad+pageup, etc. etc.</t>
-<t tx="ekr.20180512150125.1">'''A prototype for #767: a markdown command for Leo.'''
-@language python
-import markdown
-assert markdown
-
-### What to do about the index?
-
-g.cls()
-root = g.findNodeAnywhere(c, '@md html/tutorial-basics2.md')
-    # For sphinx.
-assert root
-
-class MarkDownWriter (object):
-    @others
-
-MarkDownWriter().write(c, root)
-</t>
-<t tx="ekr.20180512150125.10">def to_markdown(self, p):
-    '''Create markdown for node p.'''
-    return self.make_head(p) + self.make_body(p)
-</t>
-<t tx="ekr.20180512150125.2">def clean_headline(self, p):
-    '''Clean a headline so it can be used in a an &lt;h1..6&gt; element.'''
-    return (
-        p.h.strip()
-        .replace('&amp;','&amp;amp;')
-        .replace('&lt;','&amp;lt')
-        .replace('&gt;','&amp;gt')
-        # .replace('"', '&amp;quote)
-        # .replace("'", '&amp;#39;')
-    )
-</t>
-<t tx="ekr.20180512150125.3">def get_level(self, p):
-    '''Return the markdown level for p, relative to self.root.'''
-    return 1 + p.level() - self.root.level()
-</t>
-<t tx="ekr.20180512150125.4">link_d = {}
-    # Can't use either global or nonlocal to access this.
-    # It's not global, and Python 2 doesn't have nonlocal.
-
-def get_link(self, p):
-    '''Return a unique int associated with p.v.'''
-    d = self.link_d
-    if p.v not in d:
-        d [p.v] = 1 + len(d.keys())
-    return d.get(p.v)
-</t>
-<t tx="ekr.20180512150125.5">def make_body(self, p):
-    '''Return the cleaned body text for p.'''
-    if not p.b.strip():
-        return ''
-    aList = []
-    for s in g.splitLines(p.b.strip()):
-        if s.startswith('#') and p != self.root:
-            # Assume the root node defines a level-one heading.
-            aList.append(' ' + s)
-        elif g.isDirective(s):
-            pass
-        else:
-            aList.append(s.rstrip() + '\n')
-    s = ''.join(aList)
-    s = s.replace('\n\n\n', '\n\n')
-    return s.rstrip() +'\n'</t>
-<t tx="ekr.20180512150125.6">def make_head(self, p):
-    '''Return an &lt;h1..h6&gt; element with the proper id.'''
-    #
-    # This *does* work as input to sphinx, despite not working in Typora.
-    level = min(6, self.get_level(p))
-    return'&lt;h%s id="%s"&gt;%s&lt;/h%s&gt;\n' % (
-        level,
-        self.get_link(p),
-        self.clean_headline(p),
-        level,
-    )
-    #
-    # This doesn't even work in Typora.
-        # return '%s %s\n\n' % ('#'*self.get_level(p), p.h.strip())
-
-    </t>
-<t tx="ekr.20180512150125.9">def make_toc(self):
-    '''Return the table of contents for root.'''
-    
-    if 1: # Use links.
-    
-        def toc_line(p):
-          return '%s- [%s](#%s)\n' % (
-                ' '*4*(self.get_level(p)-2),
-                    # Assume the top-level node has a level-one headline.
-                p.h.strip(),
-                self.get_link(p),
-            )
-    
-    else: # Use headlines.
-
-        def toc_line(p):
-            h = p.h.strip()
-            level = self.get_level(p)
-            return '%s- [%s](%s)\n' % (
-                ' '*4*(level-2),
-                h,
-                '#'*(level) + h.lower().replace(' ', '-')
-            )
-    
-
-    return ''.join([toc_line(p)
-        for p in self.root.subtree()
-            # Don't include the @md node itself
-    ])
-</t>
-<t tx="ekr.20180512150256.1">def write(self, c, root):
-    
-    self.c = c
-    self.root = root
-    source = (
-        self.make_toc() + '\n' +
-        root.b + '\n' +
-        '\n'.join([self.to_markdown(p) for p in root.subtree()])
-    )
-    ### html = markdown.markdown(source)
-    assert root.h.startswith('@md ')
-    path = g.os_path_finalize_join(c.fileName, root.h[4:].strip())
-    directory = g.os_path_dirname(path)
-    if g.os_path_exists(directory):
-        with open(path, 'w') as f:
-            f.write(source)
-        g.es_print('wrote: %s' % g.shortFileName(path))
-    else:
-        g.es_print('does not exist: %s' % directory)</t>
-<t tx="ekr.20180513083650.1"># Leo's Tutorials
-    
-Leo is a full-featured outliner. Unique features make Leo a powerful IDE, Personal Information Manager and scripting environment. The first three tutorials are for everyone:
-
-- [tutorial-basics](tutorial-basics.html)
-- [tutorial-pim](tutorial-pim.html)
-- [tutorial-rst3](tutorial-rst3.html)
-
-The last tutorial is for programmers:
-
-- [tutorial-scripting](tutorial-scripting.html)
-
-And finally, here is a list of helpful tips:
-
-- [tutorial-tips](tutorial-tips.html)
-
-Ask for help at [leo-editor](https://groups.google.com/forum/#!forum/leo-editor).
-
-</t>
-<t tx="ekr.20180513084304.1">'''A prototype for #767: a markdown command for Leo.'''
-@language python
-import markdown
-
-root = g.findNodeAnywhere(c, 'Leo 5.7.3 release notes')
-assert root
-@others
-main(c, root)
-</t>
-<t tx="ekr.20180513084304.10">def make_html_node(html):
-    '''Create markdown node.'''
-    p = c.lastTopLevel().insertAfter()
-    p.h = 'HTML: %s' % root.h
-    p.b = html</t>
-<t tx="ekr.20180513084304.11">def make_markdown_node(source):
-    '''Create the markdown node.'''
-    p = c.lastTopLevel().insertAfter()
-    p.h = 'Markdown: %s' % root.h
-    p.b = source</t>
-<t tx="ekr.20180513084304.12">def make_toc():
-    '''Return the table of contents for root.'''
-    return ''.join([
-        '%s- [%s](#%s)\n' % (
-            ' '*4*( get_level(p)-1), p.h.strip(), get_link(p))
-        for p in root.self_and_subtree()
-    ])
-</t>
-<t tx="ekr.20180513084304.13">def to_markdown(p):
-    '''Create markdown for node p.'''
-    return make_head(p) + make_body(p)
-</t>
-<t tx="ekr.20180513084304.4">def main(c, root):
-
-    # Quasi read-only ivars: 'c' and 'root'.
-    @others
-    source = make_toc() + '\n'.join([
-        to_markdown(p) for p in root.self_and_subtree()
-    ])
-    html = markdown.markdown(source)
-    make_markdown_node(source)
-    make_html_node(html)
-    c.redraw()
-</t>
-<t tx="ekr.20180513084304.5">def clean_headline(p):
-    '''Clean a headline so it can be used in a an &lt;h1..6&gt; element.'''
-    return (
-        p.h.strip()
-        .replace('&amp;','&amp;amp;')
-        .replace('&lt;','&amp;lt')
-        .replace('&gt;','&amp;gt')
-        # .replace('"', '&amp;quote)
-        # .replace("'", '&amp;#39;')
-    )
-</t>
-<t tx="ekr.20180513084304.6">def get_level(p):
-    '''Return the markdown level for p, relative to root.'''
-    return 1 + p.level() - root.level()
-</t>
-<t tx="ekr.20180513084304.7">link_d = {}
-    # Can't use either global or nonlocal to access this.
-    # It's not global, and Python 2 doesn't have nonlocal.
-
-def get_link(p):
-    '''Return a unique int associated with p.v.'''
-    if p.v not in link_d:
-        link_d [p.v] = 1 + len(link_d.keys())
-    return link_d.get(p.v)
-
-# def get_link(p):
-    # '''Return a unique int associated with p.v.'''
-    # if not hasattr(self, 'd'):
-        # self.d = {}
-        # self.n = 1
-    # d = self.d
-    # if p.v not in d:
-        # d [p.v] = self.n
-        # self.n += 1
-    # return d.get(p.v)
-
-# links = { 'd': {}, 'n': 1, }
-    # # nonlocal does not exist in Python 2,
-    # # so we must create a helper dict.
-
-# def OLD_get_link(p):
-    # '''Return a unique int associated with p.v.'''
-    # d = links.get('d')
-    # if p.v not in d:
-        # d [p.v] = links.get('n')
-        # links ['n'] += 1
-    # return d.get(p.v)
-</t>
-<t tx="ekr.20180513084304.8">def make_body(p):
-    '''Return the cleaned body text for p.'''
-    if not p.b.strip():
-        return ''
-    aList = []
-    for s in g.splitLines(p.b.strip()):
-        if s.startswith('#'):
-            aList.append(' ' + s)
-        elif g.isDirective(s):
-            pass
-        else:
-            aList.append(s.rstrip() + '\n')
-    s = ''.join(aList)
-    s = s.replace('\n\n\n', '\n\n')
-    return s.rstrip() +'\n'</t>
-<t tx="ekr.20180513084304.9">def make_head(p):
-    '''Return an &lt;h1..h6&gt; element with the proper id.'''
-    level = min(6, get_level(p))
-    return'&lt;h%s id="%s"&gt;%s&lt;/h%s&gt;\n' % (
-        level,
-        get_link(p),
-        clean_headline(p),
-        level,
-    )
-</t>
-<t tx="ekr.20180513090430.1"># Leo in 10 Minutes
-    
-This chapter introduces Leo's most important features and terminology.
-</t>
-<t tx="ekr.20180513090430.10">The **@all** directive tells Leo to write the nodes of an **@file tree** to the external file, *ignoring* all markup. As a result, Leo writes nodes to the file in **outline order**, the order in which they appear in the outline when all nodes are expanded.
-</t>
-<t tx="ekr.20180513090430.11">Leo uses outlines for just about *everything*, including configuring Leo:
-
-- **leo/config/leoSettings.leo** contains Leo's default **global settings**. Don't change this file unless you are one of Leo's developers.
-   
-- **~/myLeoSettings.leo** contains your **personal settings**. Leo will not create this file automatically: you should create it yourself. Settings in myLeoSettings.leo override (or add to) the default settings in leoSettings.leo.
-   
-- Any other .leo file may also contain **local settings**. Local settings apply only to that file and override all other settings.
-
-**Settings nodes** specify settings.  These nodes *must* be descendants of an **@settings** node. Moving a settings node out from the @settings tree disables the setting. Headlines start with @ followed by a type, and possibly a value.  Here are some examples, with body text shown indented from headlines:
-
-    @bool vim_mode = False
-    
-    @color flash_brackets_background_color = red
-    
-    @data global-abbreviations
-        # Body text contains abbreviations.
-        date;;={|{x=time.strftime("%Y/%m/%d")}|}
-        trace;;=trace = &lt;|bool|&gt; and not g.unitTesting
-        al;;=@language
-        alh;;=@language html\n
-        alj;;=@language javascript\n
-        alm;;=@language md\n
-        alp;;=@language python\n
-        alr;;=@language rest\n@wrap\n
-        nc;;=@nocolor\n
-        ncn;;=@nocolor-node\n
-    
-    @string script_file_path = ../test/scriptFile.py
-
-    @enabled-plugins
-        # a list of enabled plugins
-        plugins_menu.py
-        free_layout.py
-        mod_scripting.py
-        backlink.py
-        bigdash.py
-        bookmarks.py
-        contextmenu.py
-
-    @shortcuts
-        # body text contains personal key bindings
-        file-open-by-name   = Ctrl-O
-        save-all            = Ctrl-S
-        
-.. _`configuration guide`: customizing.html
-
-For more information, see Leo's `configuration guide`_.
-</t>
-<t tx="ekr.20180513090430.12">[Leo plugins](plugins.html)are Python programs that extend what Leo can do. Plugins reside in the leo/plugins folder. **@enabled-plugins** settings node enable plugins. Leo has dozens of plugins, including:
-
-- [bookmarks.py](plugins.html#bookmarks-py) manages and shows bookmarks.
-- [contextmenu.py](plugins.html#contextmenu-py) shows a context menu when you right-click a headline.
-- [mod_scripting.py](plugins.html#mod-scripting-py) supports @button and @command nodes.
-</t>
-<t tx="ekr.20180513090430.13">Non-programmers: feel free to skip this part.</t>
-<t tx="ekr.20180513090430.14">.. in tutorial-basics.html (Scripting basics)
-
-Leo's markup applies to scripts as well as external files. Leo's execute-script command **composes** the script from the selected node, using Leo's markup. For example: this body text defines the top-level part of a script:
-
-    '''My script'''
-    &lt;&lt; imports &gt;&gt;
-    class Controller:
-        # Child nodes define the methods of this class.
-        @others
-    Controller(c).run # c *is* defined.
-
-**Important**: Leo recognizes section references *everywhere*, even inside strings or comments. See `this FAQ entry &lt;FAQ.html#what-about-code-that-looks-like-a-section-reference&gt;`_.</t>
-<t tx="ekr.20180513090430.15">.. _`commander`: tutorial-basics.html#accessing-outline-data
-.. _`position`: tutorial-scripting.html#positions-and-vnodes
-
-The execute-script command pre-defines three names: c, g, and p. **c** is the `commander`_ of the outline in which the script executes. **g** is the ``leo.core.leoGlobals`` module, containing dozens of useful functions and classes.  **p** is the `position`_ of the presently selected node.
-</t>
-<t tx="ekr.20180513090430.16">The **Commander class** defines both a scripting API and a DOM (Document Object Module) giving *complete* access to all data in an outline.  For example:
-
-    '''
-        Print all headlines of the outline, properly indented,
-        with the number of characters in each node's body text.
-    '''
-    # c.all_positions() is a python generator yielding all positions, in outline order.
-    for p in c.all_positions():
-        print('%3s %s %s' % (
-            len(p.b),       # p.b is p's body text.
-            ' '*p.level(),  # p.level() is p's indentation level.
-            p.h,            # p.h is p's headline.
-        )
-
-.. _`scripting tutorial`: tutorial-scripting.html
-
-For more information, see Leo's `scripting tutorial`_.</t>
-<t tx="ekr.20180513090430.17">**@command nodes** define a command. Running the command runs a script that can be applied to any outline node. That is, p is bound to the presently selected node, *not* the @button node. **@button nodes** work the same way, and in addition create a button in the icon area. Pressing that button runs the command. For example, this node defines the print-tree command bound to Ctrl-9:
-
-    @command print-tree @key=Ctrl-9 # in the headline
-    
-    '''
-        Print all headlines of the selected subtree, properly indented,
-        with the number of characters in each node's body text.
-    '''
-    # p.self_and_subtree() is a python generator yielding p and
-    # all positions in p's subtree, in outline order.
-    for p in p.self.and_subtree():
-        print('%3s %s %s' % (
-            len(p.b),       # p.b is position p's body text.
-            ' '*p.level(),  # p.level() is p's indentation level.
-            p.h,            # p.h is p's headline.
-        )
-</t>
-<t tx="ekr.20180513090430.18">**@test nodes** create unit tests. @test nodes automatically convert the body to a subclass of unittest.TestCase. Run these tests with one of Leo's ``run-unit-test-`` commands. ``&lt;Alt-X&gt;run&lt;tab&gt;`` gives the full list. Here one of Leo's actual unit tests:
-
-    @test c.positionExists for all nodes # In the headline
-
-    for p in c.all_positions():
-        assert c.positionExists(p)
-    
-Within @test nodes, c, g, and p are predefined as usual. In addition, **self** is the instance of unittest.TestCase created by the @test node. For example:
-  
-    self.assertTrue(g)
-    
-For more details, see `Leo's unit-testing reference &lt;unitTesting.html&gt;`_.
-</t>
-<t tx="ekr.20180513090430.19">**Autocompletion** reminds you of all members (functions, methods, ivars, etc.) contained in objects in Leo's source code, and in Python's standard library modules. ``Alt-1 (toggle-autocompleter)`` enables and disables autocompletion. **Note**: Autocompletion can be enabled only when @language python is in effect.
-
-For example, typing just "c.atF" (in the body pane, with autocompletion enabled) automatically inserts "c.atFileCommands" into the body pane, because "c.atFileCommands" is the only possible completion of "c.atF".
-
-As another example, typing "at.writeA" will show (in an autocompleter tab in the Log pane) all of the write commands in leoAtFile.py:
-
-    writeAll:method
-    writeAllHelper:method
-    writeAtAutoNodes:method
-    writeAtAutoNodesHelper:method
-    writeAtShadowNodes:method
-    writeAtShadowNodesHelper:method
-
-When a single completion is shown, typing '?' will show the docstring for a method. For example, "c.atFileCommands.write?" shows:
-
-    Write a 4.x derived file.
-    root is the position of an @&lt;file&gt; node
-    
-**Calltips** show the expected arguments to functions and methods. ``Alt-2 (toggle-calltips)`` enables and disables calltips. ``(`` shows calltips, when @language python is in effect.
-``&lt;Return&gt;`` or ``Ctrl-G (keyboard-quit)`` exits calltips. Calltips work for any Python function or method, including Python's global functions. Examples:
-
-    g.toUnicode(            g.toUnicode(s, encoding, reportErrors=False
-    c.widgetWantsFocusNow(  c.widgetWantsFocusNow(w
-    reduce(                 reduce(function, sequence[, initial]) -&gt; value</t>
-<t tx="ekr.20180513090430.2">Here is a screenshot of Leo's main window:
-
-.. image:: screen-shots/leo-workbook.png
-   :alt: Screenshot
-
-Leo's main window consists of an **icon area** just below the menus, an **outline pane** at the top left, a **log pane** at the top right, a **body pane** at the bottom left, and an optional **viewrendered pane** at the bottom right. The **minibuffer** and **status line** lie at the bottom of the main window.
-
-The log pane contains several tabs. The **Log tab** shows messages from Leo, the **Find Tab** shows the status of Leo's Find/Replace commands. Other tabs may also appear in the log pane: The **Spell Tab** controls Leo's spell-checking. The **Completion Tab** shows available typing completions.
-
-Leo stores all data in **nodes**. Nodes have **headlines**, shown in the outline pane, and **body text**. The body pane shows the body text of the **presently selected node**, the node whose headline is selected in the outline pane.  Headlines have an **icon box** indicating a nodes status. For example, the icon box has a black border when the node has been changed. 
-
-</t>
-<t tx="ekr.20180513090430.20">Leo is a full-featured outliner with the following special features:
-
-- Directives control how Leo works.
-- @file and @clean nodes create external files.
-- myLeoSettings.leo specifies your personal settings.
-- Plugins extend Leo. @enabled-plugins settings nodes enable plugins.
-
-For programmers:
-
-- Leo has an easy-to-use scripting API, giving full access to all data in the outline.
-- @button and @command nodes define scripts that can be applied to *other* nodes.
-- @test nodes create unit tests.
-- Alt-1 enables autocompletion.
-
-.. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
-.. _`Leo's Command Reference`: commands.html
-
-Leo has hundreds of commands, described in `Leo's Command Reference`_. Please feel free to `ask for help`_ at any time.
-</t>
-<t tx="ekr.20180513090430.3">Leo has hundreds of commands, described in [Leo's Command Reference](commands.html). **Very important**: You can (and should) ignore most of these commands at first. You execute commands using [key bindings](commands.html#key-reference) or *by name* in [Leo's minibuffer](commands.html#executing-commands-from-the-minibuffer), similar to the [Emacs minibuffer](https://www.gnu.org/software/emacs/manual/html_node/emacs/Minibuffer.html).
-
-You could type the full command name in the minibuffer, followed by the ``&lt;Return&gt;`` key to invoke the command, but that would be *way* too much work. Instead, you should use **typing completion** to avoid most typing. For example, you can execute the sort-lines commands this way:
-
-    &lt;Alt-X&gt;so&lt;Tab&gt;
-    
-Now the minibuffer will list common prefix of all commands that start with "so", namely:
-
-    sort-
-    
-After typing l&lt;Tab&gt; the minibuffer will contain:
-
-    sort-lines
-    
-Now, just type &lt;Return&gt; to execute the command.  Typing completion quickly becomes second nature.
-
-**Very important**: There is no need to remember the exact names of Leo's commands. Instead, you only need to remember a few common command prefixes, such as:
-
-    clone-find  clone-find commands
-    file-       file commands
-    find-       find commands
-    isearch-    incremental search commands
-    leo-        open .leo files
-    open-       open files or url's
-    print-      print commands
-    sort-       sort commands
-    toggle-     toggle settings commands
-    
-The following commands pertain to the minibuffer itself:
-    
-``Alt-X (full-command)``
-    Executes any other command by typing its full name.
-    
-``Ctrl-P (repeat-complex-command``
-    Repeats the last command entered by name in the minibuffer.
-    
-When in the minibuffer, the following keys are treated in special ways:
-
-``&lt;Return&gt;``
-    Executes the command.
-
-``&lt;Tab&gt;``
-    Shows all valid completions.
-
-``&lt;BackSpace&gt;``
-    Shows more completions.
-    
-``Ctrl-G``
-    Exits the minibuffer and puts focus in the body pane.
-    
-``UpArrow``
-    Moves backward through command history. The first ``UpArrow`` is the same as ``Ctrl-P``.
-
-``DownArrow``
-    Moves forward through command history.
-</t>
-<t tx="ekr.20180513090430.4">.. _`full-featured outliner`: commands.html#outline-commands
-
-Leo is a `full-featured outliner`_, with commands to insert, delete, move, hoist, promote and demote nodes.
-
-**Clones** are a unique feature of Leo. Any outline node may be cloned. Cloned nodes are actually the *same* node, but they appear in different places in the outline. Changes to any clone affect all other clones of that node, *including their descendants*. For example, suppose the A` nodes are clones of each other:
-
-    - A`
-        - B
-        - C
-    - D
-    - A`
-        - B
-        - C
-        
-Moving C right gives this outline:
-
-    - A`
-        - B
-            - C
-    - D
-    - A`
-        - B
-            - C
-            
-.. _`clone-find commands`:
-            
-Clones allow you to create multiple views of data within a single outline. For example, Leo's `clone-find commands`_ create clones of all found nodes, moving the newly-created clones so they are all children of an **organizer node** describing the search. The organizer node is a new view of the outline's data, one focused on the found nodes!
-</t>
-<t tx="ekr.20180513090430.5">Leo **directives** control Leo's operations. Directives start with ``@`` in the leftmost column of body text. Directives **apply to descendants** until overridden in descendant nodes.
-
-The **@color**, **nocolor** and **nocolor-node** directives control syntax coloring. **Note**: Nodes containing multiple color directives do *not* affect coloring of descendant nodes:
-
-    @color
-    @nocolor
-    @nocolor-node
-
-The **@language** directive tells which language is in effect:
-
-    @language python
-    @language c
-    @language rest # restructured text
-    @language plain # plain text: no syntax coloring.
-
-The **@pagewidth** directive set page width (used when formatting paragraphs). The **@tabwidth** directive controls tabbing. Negative tab widths (recommended for Python) convert tabs to spaces:
-
-    @pagewidth 100
-    @tabwidth -4
-    @tabwidth 8
-    
-The **@wrap** and **@nowrap** enable or disable line wrapping in the body pane:
-
-    @nowrap
-    @wrap
-    
-The **@first** directive ensures that lines appear at the very start of an external file. See the next section. Multiple @first directives are allowed. These directives must be the *very first* lines of body text:
-
-    @first # -*- coding: utf-8 -*-
-    @first #! /usr/bin/env python
-    
-.. _`directives reference page`: directives.html
-    
-Leo has many other directives, described in the `directives reference page`_.
-
-</t>
-<t tx="ekr.20180513090430.6">Leo outlines can refer to **external files**, files on your file system. Leo quickly loads the files when opening Leo outlines. The following sections discuss only the basics.  See `Leo's Reference Guide &lt;directives.html&gt;`_ for full details.
-</t>
-<t tx="ekr.20180513090430.7">An **@file node** is a node whose headline starts with `@file` followed by a path to an external file:
-
-    @file leoNodes.py
-    @file ../../notes.txt
-
-The @file node and its descendants represent an external file. Leo updates @file nodes when you change external files outside of Leo. When saving an outline, Leo writes all changed @file trees to their external files.</t>
-<t tx="ekr.20180513090430.8">.. in tutorial-basics.html (External files)
-
-Leo's **markup** tells Leo how to create external files from @file trees. Markup may appear in any body text, and *must* appear in the body of the @file node itself.
-
-There are two kinds of markup: **section references** (&lt;&lt; this is my section &gt;&gt;) and the **@others** directive. Section references refer to **named nodes**, nodes whose *headlines* look like a section reference. @others refers to all *other* (unnamed) nodes. Here is the body text of a typical @file node for a python file:
-
-    @first # -*- coding: utf-8 -*-
-    '''whatever.py'''
-    &lt;&lt; imports &gt;&gt;
-    @others
-    # That's all, folks
-    @language python
-    @tabwidth
-    
-Child nodes must define the &lt;&lt; import &gt;&gt; node and the methods of the Controller class.
-
-When writing this file, Leo writes the first two lines:
-
-    @first # -*- coding: utf-8 -*-
-    '''whatever.py'''
-    
-followed by the *body text* of the &lt;&lt; imports&gt;&gt; node, followed by the body text of all *other* nodes, in outline order, followed by the comment # That's all, folks.
-</t>
-<t tx="ekr.20180513090430.9">When writing **file trees**, Leo writes **sentinel comments** into external files. These comments represent outline structure. When writing an @file tree to a .leo file, Leo writes only the root @file node. To avoid sentinels, use **@clean** instead of @file:
-
-    @clean leoNodes.py
-    @clean ../../notes.txt
-    
-There is a small cost to @clean: Leo saves the entire @clean tree in the .leo file.
-</t>
-<t tx="ekr.20180513122115.1">def make_markdown_node(self, source):
-    '''Create the markdown node.'''
-    p = c.lastTopLevel().insertAfter()
-    p.h = 'Markdown: %s' % self.root.h
-    p.b = source</t>
 <t tx="ekr.20180522101650.1">Clicking on underlined links in the log pane takes you to the proper node and line.</t>
 <t tx="ekr.20180522101756.1">BackgroundProcessManager.start_process now takes two new kwargs:  link_pattern and link_root:
 
@@ -27711,7 +27056,6 @@ g.getGitIssues(
 </t>
 <t tx="ekr.20180523085905.1"></t>
 <t tx="ekr.20180523085918.1"></t>
-<t tx="ekr.20180523090042.1"></t>
 <t tx="ekr.20180523093753.1"></t>
 <t tx="ekr.20180523095243.1">https://github.com/leo-editor/leo-editor/issues/906
 #684 Envisages creating a browser gui for Leo, but that's not a high priority at present.
@@ -27973,7 +27317,8 @@ Also see
 * https://github.com/rfk/pyenchant/issues/42</t>
 <t tx="ekr.20180523095243.18">https://github.com/leo-editor/leo-editor/issues/551
 I put some .leo files into a git repo. I open a .leo file and change nothing but save it again, it will be marked as changed in the repo. `git diff` shows that many lines have changed. I checked the diffs, and typically these changes are about accessing time etc.
-How to make .leo files happy in a git reposity? I mean, if nothing about the content changes, these files will keep clean to a git repo. Or could I use git only to trace the changes of outline nodes?</t>
+
+How to make .leo files happy in a git repository? I mean, if nothing about the content changes, these files will keep clean to a git repo. Or could I use git only to trace the changes of outline nodes?</t>
 <t tx="ekr.20180523095243.19">https://github.com/leo-editor/leo-editor/issues/517
 I have noticed some methods that are not mentioned in documentation nor used in leoSettings.leo.
 We should either remove them or document them properly. 
@@ -28180,7 +27525,7 @@ The following also works (it's quite slow):
     # build for production with minification
     leovue&gt;npm run build
 
-    # build for production and view the bundle analyser report
+    # build for production and view the bundle analyzer report
     leovue&gt;npm run build --report
 
 At the end of the build, this message appears:
@@ -28726,6 +28071,17 @@ A complete rewrite of the python_terminal plugin.</t>
 <t tx="ekr.20180526131124.1">https://github.com/leo-editor/leo-editor/issues/841</t>
 <t tx="ekr.20180526213056.1">https://github.com/leo-editor/leo-editor/issues/309
 </t>
+<t tx="ekr.20180527084114.1">A mass cleanup of Leo's code, removing many unused tracing statements.</t>
+<t tx="ekr.20180527084307.1">- Added support for Jedi autocompletion.
+- Much improved python_terminal plugin.
+- Much improved recursive import script.
+- New leo_babel plugin.
+- Leo's pylint command writes clickable links.
+- Smart searches for functions and methods.
+- Allow separate bindings for numeric keypad keys
+- Added easy-to-use diff-related wrappers for scripts.
+- Allow local overrides of all abbreviations.
+- Improved TypeScript importer.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
