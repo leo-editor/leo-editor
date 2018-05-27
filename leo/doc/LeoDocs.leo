@@ -26942,6 +26942,7 @@ Leo University
 This is a backup of the online `LeoU issues`_.
 </t>
 <t tx="ekr.20180509122406.1">May 28, 2018
+
 Leo 5.7.3, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 

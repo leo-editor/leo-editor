@@ -188,7 +188,7 @@ SOFTWARE.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.7.2
+Version: 5.7.3
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -208,20 +208,25 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">May 7, 2018
+<t tx="EKR.20040519090846.9">May 28, 2018
 
-Leo 5.7.2, http://leoeditor.com, is now available on
+Leo 5.7.3, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 5.7.2**
+**The highlights of Leo 5.7.3**
 
-- Much improved support for Jupyter (.ipynb) files.
-- Fixed bugs that prevented switching between git branches easily.
-- Rewrote large parts of Leo's key-handling code.
-- New command-line arguments to trace Leo's code.
-- Removed about 20 unused settings.
+- Added support for Jedi autocompletion.
+- Much improved python_terminal plugin.
+- Much improved recursive import script.
+- New leo_babel plugin.
+- Leo's pylint command writes clickable links.
+- Smart searches for functions and methods.
+- Allow separate bindings for numeric keypad keys
+- Added easy-to-use diff-related wrappers for scripts.
+- Allow local overrides of all abbreviations.
+- Improved TypeScript importer.
 - The usual minor bug fixes.
 
 **Links**
