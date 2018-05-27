@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.31" body_secondary_ratio="0.50">
-	<global_window_position top="18" left="1" height="730" width="1364"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -3051,7 +3051,6 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20060112103537.17">'''Check for commands that exist in some but not all key- binding sets.'''
 g.cls()
 import leo.core.leoConfig as leoConfig
-import leo.core.leoTest as leoTest
 parser = leoConfig.SettingsTreeParser(c)
 # Add these as required to handle commands defined by plugins.
 optionalCommandPrefixes = ['group-operations']
@@ -3117,8 +3116,7 @@ main()
             for key in d.keys():
                 allNames[key] = key
         else:
-            g.es_print('No setsDict for %s' % (repr(setName)),color='red')
-    k = c.keyHandler
+            g.es_print('No setsDict for %r' % (setName),color='red')
     keys = sorted(allNames.keys())
     # Warn about missing names.
     for setName in ('No bindings',): # setNames:
@@ -4181,7 +4179,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="1">@nocolor-node
+<t tx="ekr.20070622214401">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
