@@ -5119,7 +5119,6 @@ def importModule(moduleName, pluginName=None, verbose=False):
     '''
     # Important: g is Null during startup.
     trace = 'plugins' in g.app.debug
-    # if moduleName == 'rope': g.pdb()
     module = sys.modules.get(moduleName)
     if module:
         return module
@@ -5156,11 +5155,12 @@ def importModule(moduleName, pluginName=None, verbose=False):
                     if v not in exceptions:
                         exceptions.append(v)
             else:
-                #unable to load module, display all exception messages
+                # Unable to load module, display all exception messages
                 if verbose:
                     for e in exceptions:
                         g.warning(e)
-        except Exception: # Importing a module can throw exceptions other than ImportError.
+        except Exception:
+            # Importing a module can throw exceptions other than ImportError.
             if verbose:
                 t, v, tb = sys.exc_info()
                 del tb # don't need the traceback
