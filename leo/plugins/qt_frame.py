@@ -60,7 +60,19 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_menubar = None # Set in createMenuBar.
         self.leo_ui = None # Set in construct.
         c._style_deltas = defaultdict(lambda: 0) # for adjusting styles dynamically
+        self.reloadSettings()
 
+    def reloadSettings(self):
+        c = self.leo_c
+        c.registerReloadSettings(self)
+        self.bigTree = c.config.getBool('big_outline_pane')
+        self.show_iconbar = c.config.getBool('show_iconbar', default=True)
+        self.toolbar_orientation = c.config.getString('qt-toolbar-location') or ''
+        if getattr(self, 'iconBar', None):
+            if self.show_iconbar:
+                self.iconBar.show()
+            else:
+                self.iconBar.hide()
     #@+node:ekr.20110605121601.18172: *3* do_leo_spell_btn_*
     def doSpellBtn(self, btn):
         getattr(self.leo_c.spellCommands.handler.tab, btn)()
@@ -95,7 +107,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if not ui_file_name:
             ui_file_name = 'qt_main.ui'
         ui_description_file = g.app.loadDir + "/../plugins/" + ui_file_name
-        # g.pr('DynamicWindw.__init__,ui_description_file)
         assert g.os_path_exists(ui_description_file)
         self.reloadSettings()
         main_splitter, secondary_splitter = self.createMainWindow()
@@ -112,17 +123,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setSplitDirection(main_splitter, secondary_splitter, orientation)
         if hasattr(c, 'styleSheetManager'):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
-
-    def reloadSettings(self):
-        c = self.leo_c
-        c.registerReloadSettings(self)
-        self.bigTree = c.config.getBool('big_outline_pane')
-        self.show_iconbar = c.config.getBool('show_iconbar', default=True)
-        if getattr(self, 'iconBar', None):
-            if self.show_iconbar:
-                self.iconBar.show()
-            else:
-                self.iconBar.hide()
     #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
     def set_icon_bar_orientation(self, c):
         '''Set the orientation of the icon bar based on settings.'''
@@ -132,10 +132,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
             'right': QtCore.Qt.RightToolBarArea,
             'top': QtCore.Qt.TopToolBarArea,
         }
-        where = c.config.getString('qt-toolbar-location')
+        where = self.toolbar_orientation
+        if not where:
+            where = 'top'
+        where = d.get(where.lower())
         if where:
-            where = d.get(where)
-            if where: self.addToolBar(where, self.iconBar)
+            self.addToolBar(where, self.iconBar)
     #@+node:ekr.20110605121601.18141: *3* dw.createMainWindow & helpers
     def createMainWindow(self):
         '''
@@ -2276,6 +2278,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c = self.c
             c.registerReloadSettings(self)
             self.buttonColor = c.config.getString('qt-button-color')
+            self.toolbar_orientation = c.config.getString('qt-toolbar-location')
         #@+node:ekr.20110605121601.18264: *4*  do-nothings (QtIconBarClass)
         # These *are* called from Leo's core.
 
