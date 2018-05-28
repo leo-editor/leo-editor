@@ -2121,6 +2121,11 @@
 <v t="ekr.20180511061629.1"><vh>Smart searches for functions and methods</vh></v>
 </v>
 </v>
+<v t="ekr.20180528114703.1"><vh>Leo 5.7.4 release notes</vh>
+<v t="ekr.20180528114740.1"><vh>Features</vh>
+<v t="ekr.20180528114754.1"><vh>#871: A setting to position the icon bar </vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -28082,6 +28087,36 @@ A complete rewrite of the python_terminal plugin.</t>
 - Added easy-to-use diff-related wrappers for scripts.
 - Allow local overrides of all abbreviations.
 - Improved TypeScript importer.</t>
+<t tx="ekr.20180528114703.1">
+
+Leo 5.7.4, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 5.7.4**
+
+- The usual minor bug fixes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20180528114740.1"></t>
+<t tx="ekr.20180528114754.1">https://github.com/leo-editor/leo-editor/issues/871
+
+In fact, this setting has existed for a long time.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
