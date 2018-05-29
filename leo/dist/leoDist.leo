@@ -1492,10 +1492,12 @@ Create a git tag **last**
 
 - Create a full (annotated) tag:
   - Do not use the -f option.
-  - Use rel-5.xxx to distinguish between the release and the branch.
+  - Make sure the tag does not conflict with the release branch.
+    Release *branches* should end with "-rel"
+    Tags should *not* end with "-rel"
 
-    git tag -a rel-5.xxx -m "Added 5.xxx tag"
-    git push --follow-tags
+git tag -a 5.xxx -m "Added 5.xxx tag"
+git push --follow-tags
 </t>
 <t tx="ekr.20180405171433.8">- Create a documentation file at SourceForge, directing people to GitHub.
 
