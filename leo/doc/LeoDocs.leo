@@ -595,11 +595,33 @@
 <v t="ekr.20090202191501.7"><vh>Leo's installer failed, what do I do?</vh></v>
 <v t="ekr.20150313053238.40"><vh>Common problems</vh></v>
 </v>
+<v t="ekr.20050830115714.1"><vh>Learning to use Leo</vh>
+<v t="ekr.20161207052511.1"><vh>How can I learn Leo, or python, or anything</vh></v>
+<v t="ekr.20050830115714.2"><vh>What's the best way to learn to use Leo?</vh></v>
+<v t="ekr.20050830115714.7"><vh>When is using a section better than using a method?</vh></v>
+</v>
+<v t="ekr.20180529064813.1"><vh>Abbreviations</vh>
+<v t="ekr.20170228104217.1"><vh>What are some useful abbreviations?</vh></v>
+</v>
+<v t="ekr.20180529064355.1"><vh>Clones</vh>
+<v t="ekr.20150415111549.1"><vh>How can I customize the clone-find-all commands?</vh></v>
+<v t="ekr.20150415110715.1"><vh>How can I eliminate clone wars?</vh></v>
+<v t="ekr.20160414191631.1"><vh>How can I simulate more flexible clones?</vh></v>
+<v t="ekr.20150415111217.1"><vh>How can I use clones to reorganize an outline?</vh></v>
+<v t="ekr.20141108064630.8"><vh>How does EKR use clones?</vh></v>
+<v t="ekr.20120229094652.15152"><vh>How does Leo handle clone conflicts?</vh></v>
+<v t="ekr.20060111192108"><vh>When is deleting a node dangerous?</vh></v>
+<v t="ekr.20170228103914.1"><vh>When may I delete clones safely?</vh></v>
+<v t="ekr.20110521135104.18151"><vh>Why doesn't Leo support cross-file clones?</vh></v>
+<v t="ekr.20150415105956.1"><vh>Why is Alt-N (goto-next-clone) important?</vh></v>
+<v t="ekr.20050830115714.4"><vh>Why should I use clones?</vh></v>
+</v>
 <v t="ekr.20050830115714.26"><vh>Customizing Leo</vh>
 <v t="ekr.20050830115714.29"><vh>How can I add support for a new language?</vh></v>
 <v t="ekr.20141108064630.18"><vh>How can I create a pane for matplotlib charts?</vh></v>
 <v t="ekr.20060915112109"><vh>How can I enable and disable support for psyco?</vh></v>
 <v t="ekr.20141108064630.16"><vh>How can I put background images in the body pane?</vh></v>
+<v t="ekr.20180529064307.1"><vh>How can I run code at startup?</vh></v>
 <v t="ekr.20160304081437.3"><vh>How can I use a dark theme in Leo?</vh></v>
 <v t="ekr.20060805094325"><vh>How can I use Leo's legacy key bindings?</vh></v>
 <v t="ekr.20050830120844"><vh>How do I add a new menu item from a plugin?</vh></v>
@@ -607,59 +629,39 @@
 <v t="ekr.20091105080104.9031"><vh>How do I specify qt fonts?</vh></v>
 <v t="ekr.20050830115714.30"><vh>How do I submit a plugin?</vh></v>
 </v>
-<v t="ekr.20170906090516.1"><vh>Developing Leo's own code</vh>
-<v t="ekr.20110531155858.20559"><vh>How does EKR (Leo's developer) use Leo?</vh></v>
+<v t="ekr.20170906090516.1"><vh>Developing Leo</vh>
 <v t="ekr.20170804153108.2"><vh>How can I use dev nodes to develop and test Leo's own code?</vh></v>
+<v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
+<v t="ekr.20110531155858.20559"><vh>How does EKR (Leo's developer) use Leo?</vh></v>
 <v t="ekr.20160309092522.1"><vh>What is the Stupendous Aha and why does it matter?</vh></v>
 </v>
-<v t="ekr.20050830115714.1"><vh>Learning to use Leo</vh>
-<v t="ekr.20161207052511.1"><vh>How can I learn Leo, or python, or anything</vh></v>
-<v t="ekr.20141108064630.8"><vh>How does EKR use clones?</vh></v>
-<v t="ekr.20120229094652.15152"><vh>How does Leo handle clone conflicts?</vh></v>
-<v t="ekr.20050830115714.2"><vh>What's the best way to learn to use Leo?</vh></v>
-<v t="ekr.20060111192108"><vh>When is deleting a node dangerous?</vh></v>
-<v t="ekr.20050830115714.7"><vh>When is using a section better than using a method?</vh></v>
-<v t="ekr.20170228103914.1"><vh>When may I delete clones safely?</vh></v>
-<v t="ekr.20110521135104.18151"><vh>Why doesn't Leo support cross-file clones?</vh></v>
-<v t="ekr.20050830115714.4"><vh>Why should I use clones?</vh></v>
-</v>
-<v t="ekr.20101025080245.6084"><vh>Leo in Shared environments</vh>
-<v t="ekr.20090706042206.14718"><vh>How can I use Leo cooperatively without sentinels?</vh></v>
-<v t="ekr.20120229094652.15137"><vh>What's the recommended way to upgrade Leo?</vh></v>
-</v>
-<v t="ekr.20180126190053.1"><vh>Leo and Git</vh>
-<v t="ekr.20180130105010.1"><vh>What is a reference .leo file?</vh></v>
-<v t="ekr.20050830115714.12"><vh>How should I use Leo with git, etc.?</vh></v>
-<v t="ekr.20171027125705.1"><vh>Why do files sometimes change when switching branches?</vh></v>
-</v>
-<v t="ekr.20180126190015.1"><vh>Leo and Excel</vh>
+<v t="ekr.20180126190015.1"><vh>Excel</vh>
 <v t="ekr.20050830115714.116"><vh>How can I show Leo files with Excel?</vh></v>
 </v>
-<v t="ekr.20180126185857.1"><vh>Leo and LaTeX</vh>
-<v t="ekr.20180124094454.1"><vh>How can I produce PDF output from LaTex input?</vh></v>
-<v t="ekr.20120229094652.15148"><vh>How can I use BibTeX citations from Leo?</vh></v>
-</v>
-<v t="ekr.20141109053526.4"><vh>Scripting &amp; Testing</vh>
-<v t="ekr.20141108064630.15"><vh>How can I create buttons with dropdown menus?</vh></v>
-<v t="ekr.20120229094652.15099"><vh>How can I make commonly-used scripts widely accessible?</vh></v>
-<v t="ekr.20160415031743.21"><vh>How can I organize large docstrings?</vh></v>
-<v t="ekr.20160428105918.1"><vh>How can I run pylint outside of Leo?</vh></v>
-<v t="ekr.20131115075142.16636"><vh>How can I test settings easily?</vh></v>
-<v t="ekr.20141108064630.12"><vh>How can I use setuptools instead of .bat files?</vh></v>
-<v t="ekr.20141108064630.13"><vh>How can scripts call functions from Leo's core?</vh></v>
-<v t="ekr.20170612093902.1"><vh>How do I choose between @others and section references?</vh></v>
-<v t="ekr.20141108064630.10"><vh>How do I run unit tests from Leo?</vh></v>
-<v t="ekr.20141108064630.14"><vh>How to use leo to make mathematical notes?</vh></v>
-<v t="ekr.20160304081437.6"><vh>Tip: run unit tests locally using clones</vh></v>
-<v t="ekr.20080527063511.1"><vh>What is an easy way to profile code?</vh></v>
-</v>
-<v t="ekr.20050830115714.118"><vh>Tips and techniques</vh>
+<v t="ekr.20050830115714.13"><vh>Files</vh>
+<v t="ekr.20050830115714.24"><vh>Can @file trees contain material not in the external file?</vh></v>
+<v t="shadow.20080825171547.9"><vh>How can I avoid getting long lines in external files?</vh></v>
 <v t="ekr.20050830115714.113"><vh>How can I create a template .leo file?</vh></v>
-<v t="ekr.20170131092936.1"><vh>How can I create and use markdown files?</vh></v>
-<v t="ekr.20150415111549.1"><vh>How can I customize the clone-find-all commands?</vh></v>
+<v t="ekr.20050830115714.18"><vh>How can I create Javascript comments?</vh></v>
+<v t="ekr.20050830115714.19"><vh>How can I disable PHP comments?</vh></v>
+<v t="ekr.20180212165141.1"><vh>How can I open special .leo files easily?</vh></v>
+<v t="ekr.20141030042423.9"><vh>How can I specify the root directory of a thumb drive?</vh></v>
+<v t="ekr.20050830115714.25"><vh>How can I use Leo with older C compilers</vh></v>
+<v t="ekr.20050830115714.20"><vh>How can I use Leo with unsupported languages?</vh></v>
+<v t="ekr.20050830115714.14"><vh>How do I inhibit sentinels in external files?</vh></v>
+<v t="ekr.20050830115714.21"><vh>How do I make external files start with a shebang line?</vh></v>
+<v t="ekr.20050830115714.16"><vh>How do I prevent Leo from expanding sections?</vh></v>
+<v t="ekr.20060529053407"><vh>Why can't I use @ignore directives in @file trees?</vh></v>
+</v>
+<v t="ekr.20180126190053.1"><vh>Git</vh>
+<v t="ekr.20130807203905.16526"><vh>How can I use git to check Leo's importers?</vh></v>
+<v t="ekr.20160304081437.5"><vh>How can I use Leo with git?</vh></v>
+<v t="ekr.20050830115714.12"><vh>How should I use Leo with git, etc.?</vh></v>
+<v t="ekr.20180130105010.1"><vh>What is a reference .leo file?</vh></v>
+<v t="ekr.20171027125705.1"><vh>Why do files sometimes change when switching branches?</vh></v>
+</v>
+<v t="ekr.20180529065538.1"><vh>Graphics</vh>
 <v t="ekr.20050830115714.120"><vh>How can I display graphics in Leo?</vh></v>
-<v t="ekr.20150415110715.1"><vh>How can I eliminate clone wars?</vh></v>
-<v t="ekr.20050830115714.74"><vh>How can I import many files at once?</vh></v>
 <v t="ekr.20131122055946.16401"><vh>How can I make a screencast?</vh>
 <v t="ekr.20131122055946.16402"><vh>Use a script to open your app</vh></v>
 <v t="ekr.20131122055946.16403"><vh>Debug your workflow with short videos</vh></v>
@@ -670,20 +672,33 @@
 <v t="ekr.20131129061821.16884"><vh>Additional tips</vh></v>
 <v t="ekr.20131211054925.16388"><vh>Tips for improving audio</vh></v>
 </v>
-<v t="ekr.20150416100041.1"><vh>How can I organize data so I can find stuff later?</vh></v>
-<v t="ekr.20120229094652.15124"><vh>How can I restore focus without using the mouse</vh></v>
-<v t="ekr.20160414191631.1"><vh>How can I simulate more flexible clones?</vh></v>
-<v t="ekr.20141030042423.9"><vh>How can I specify the root directory of a thumb drive?</vh></v>
-<v t="ekr.20150415111217.1"><vh>How can I use clones to reorganize an outline?</vh></v>
-<v t="ekr.20130807203905.16526"><vh>How can I use git to check Leo's importers?</vh></v>
-<v t="ekr.20180212165141.1"><vh>How can I open special .leo files easily?</vh></v>
+</v>
+<v t="ekr.20180529065039.1"><vh>Importing files</vh>
+<v t="ekr.20050830115714.74"><vh>How can I import many files at once?</vh></v>
+</v>
+<v t="ekr.20180126185857.1"><vh>LaTeX</vh>
+<v t="ekr.20180124094454.1"><vh>How can I produce PDF output from LaTex input?</vh></v>
+<v t="ekr.20120229094652.15148"><vh>How can I use BibTeX citations from Leo?</vh></v>
+</v>
+<v t="ekr.20180529062944.1"><vh>Markdown &amp; Sphinx</vh>
+<v t="ekr.20180529063449.1"><vh>How can I create markdown files?</vh></v>
+<v t="ekr.20180529064039.1"><vh>How can I create a markdown table of contents?</vh></v>
+<v t="ekr.20180529062956.1"><vh>How can I use Markdown with Sphinx?</vh></v>
+</v>
+<v t="ekr.20141109053526.4"><vh>Scripting &amp; Testing</vh>
+<v t="ekr.20141108064630.15"><vh>How can I create buttons with dropdown menus?</vh></v>
+<v t="ekr.20120229094652.15099"><vh>How can I make commonly-used scripts widely accessible?</vh></v>
+<v t="ekr.20160415031743.21"><vh>How can I organize large docstrings?</vh></v>
+<v t="ekr.20160428105918.1"><vh>How can I run pylint outside of Leo?</vh></v>
+<v t="ekr.20131115075142.16636"><vh>How can I test settings easily?</vh></v>
 <v t="ekr.20160304081437.4"><vh>How can I use Leo in virtualenv?</vh></v>
-<v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
-<v t="ekr.20160304081437.5"><vh>How can I use Leo with git?</vh></v>
-<v t="ekr.20141109053526.8"><vh>How can I use the GTD workflow in Leo?</vh></v>
-<v t="ekr.20050830115714.119"><vh>How can I use two copies of Leo to advantage?</vh></v>
-<v t="ekr.20170228104217.1"><vh>What are some useful abbreviations?</vh></v>
-<v t="ekr.20150415105956.1"><vh>Why is Alt-N (goto-next-clone) important?</vh></v>
+<v t="ekr.20141108064630.12"><vh>How can I use setuptools instead of .bat files?</vh></v>
+<v t="ekr.20141108064630.13"><vh>How can scripts call functions from Leo's core?</vh></v>
+<v t="ekr.20170612093902.1"><vh>How do I choose between @others and section references?</vh></v>
+<v t="ekr.20141108064630.10"><vh>How do I run unit tests from Leo?</vh></v>
+<v t="ekr.20141108064630.14"><vh>How to use leo to make mathematical notes?</vh></v>
+<v t="ekr.20160304081437.6"><vh>Tip: run unit tests locally using clones</vh></v>
+<v t="ekr.20080527063511.1"><vh>What is an easy way to profile code?</vh></v>
 </v>
 <v t="ekr.20050830115714.76"><vh>Trouble shooting</vh>
 <v t="ekr.20050830115714.115"><vh>Error messages from the rst3 plugin aren't helpful. What can I do?</vh></v>
@@ -704,24 +719,20 @@
 <v t="ekr.20120229094652.15130"><vh>Why do Qt windows disappear in my scripts?</vh></v>
 <v t="ekr.20180212070758.1"><vh>Why isn't the Spell tab showing?</vh></v>
 </v>
-<v t="ekr.20071026055929"><vh>Unicode issues</vh>
+<v t="ekr.20071026055929"><vh>Unicode</vh>
 <v t="ekr.20061021164213"><vh>I can not enter non-ascii characters.  What can I do?</vh></v>
 <v t="ekr.20050830115714.9"><vh>Some characters in external files look funny. What can I do?</vh></v>
 <v t="ekr.20060917130130"><vh>I get weird results when defining unicode strings in scripts.  What is going on?</vh></v>
 <v t="ekr.20050830115714.10"><vh>Some characters are garbled when importing files. What can I do?</vh></v>
 <v t="ekr.20071026055929.1"><vh>Python's print statement shows 'byte hash' for unicode characters.  What can I do?</vh></v>
 </v>
-<v t="ekr.20050830115714.13"><vh>Using external files</vh>
-<v t="ekr.20050830115714.14"><vh>How do I inhibit sentinels in external files?</vh></v>
-<v t="ekr.20050830115714.16"><vh>How do I prevent Leo from expanding sections?</vh></v>
-<v t="ekr.20050830115714.18"><vh>How can I create Javascript comments?</vh></v>
-<v t="ekr.20050830115714.19"><vh>How can I disable PHP comments?</vh></v>
-<v t="ekr.20050830115714.20"><vh>How can I use Leo with unsupported languages?</vh></v>
-<v t="ekr.20050830115714.21"><vh>How do I make external files start with a shebang line?</vh></v>
-<v t="ekr.20050830115714.24"><vh>Can @file trees contain material not in the external file?</vh></v>
-<v t="ekr.20050830115714.25"><vh>How can I use Leo with older C compilers</vh></v>
-<v t="ekr.20060529053407"><vh>Why can't I use @ignore directives in @file trees?</vh></v>
-<v t="shadow.20080825171547.9"><vh>How can I avoid getting long lines in external files?</vh></v>
+<v t="ekr.20180529065351.1"><vh>Work flow</vh>
+<v t="ekr.20150416100041.1"><vh>How can I organize data so I can find stuff later?</vh></v>
+<v t="ekr.20120229094652.15124"><vh>How can I restore focus without using the mouse</vh></v>
+<v t="ekr.20050830115714.119"><vh>How can I see two nodes at once?</vh></v>
+<v t="ekr.20090706042206.14718"><vh>How can I use Leo cooperatively without sentinels?</vh></v>
+<v t="ekr.20141109053526.8"><vh>How can I use the GTD workflow in Leo?</vh></v>
+<v t="ekr.20120229094652.15137"><vh>What's the recommended way to upgrade Leo?</vh></v>
 </v>
 </v>
 </v>
@@ -4117,7 +4128,6 @@ In Excel you would see 4500 below those two numbers. This is completely independ
     syn region leoComment start="^@\\s*" end="^@c\\s*$"
     syn match   pythonDecorator	"@\\S\\S+" display nextgroup=pythonFunction skipwhite
 </t>
-<t tx="ekr.20050830115714.118"></t>
 <t tx="ekr.20050830115714.119">By Rich Ries. I often rework C code that's already been "Leo-ized"--the first pass was quick and dirty to get it going. When I do subsequent passes, I wind up with subnodes that are out of order with the sequence found in the main node_. It's not a big deal, but I like 'em ordered. With just one editor pane, clicking on the node_ to move would switch focus to that node_. I'd then need to re-focus on the main node_. A minor nuisance, but it does slow you down.
 
 My solution is to open a second editor with its focus on the main node_. Switch to the other editor, and, referring to the first editor pane, move the nodes as you like. The second editor's pane will change focus to the node_ you're moving, but the first editor will stay focused on the main node_. It's a lot easier to do than to describe!
@@ -9301,7 +9311,6 @@ What's New in Leo
 <t tx="ekr.20101025080245.5798"></t>
 <t tx="ekr.20101025080245.5799" str_atime="1376411965.0"></t>
 <t tx="ekr.20101025080245.5805"></t>
-<t tx="ekr.20101025080245.6084"></t>
 <t tx="ekr.20101025080245.6085">Leo 4.5 final was released September 2, 2008. Leo's drawing and focus code was substantially simplified, removing all calls to c.beginUpdate and c.endUpdate.
 
 ::
@@ -22195,13 +22204,6 @@ https://github.com/leo-editor/leo-editor/issues/332
 
 The new javascript and perl importers know *nothing* about parsing. They know only about how to scan tokens accurately. The importers copy only entire lines from the text file to Leo nodes. As a result, the new importers much more reliable than previous importers.
 </t>
-<t tx="ekr.20170131092936.1">Here are some tips:
-
-- Use @auto-md to create your file.
-- Optional: change @language md to @language rest.
-  At present, syntax coloring for markdown is feeble.
-- Use @button make-md-toc in LeoDocs.leo to generate a table of contents from the selected outline.
-</t>
 <t tx="ekr.20170203060220.1">The scripting tutorial contains a few more examples before jumping into the details.</t>
 <t tx="ekr.20170205185641.10">https://github.com/leo-editor/leo-editor/issues/389
 
@@ -28117,6 +28119,39 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 In fact, this setting has existed for a long time.
 </t>
+<t tx="ekr.20180529062944.1"></t>
+<t tx="ekr.20180529062956.1">An `open issue &lt;https://github.com/leo-editor/leo-editor/issues/333&gt;`_ discusses various possibilities.
+
+</t>
+<t tx="ekr.20180529063449.1">Create your markdown files with @auto-md myfile.md.
+
+This automatically converts headlines to section headings.
+
+Optional: change @language md to @language rest.
+At present, syntax coloring for markdown is feeble.
+   </t>
+<t tx="ekr.20180529064039.1">The @button make-md-toc script in LeoDocs.leo writes a TOC to the console log.
+
+Just select the @auto-md node and execute the script.
+</t>
+<t tx="ekr.20180529064307.1">The following plugin, placed in ~/.leo/plugins, runs code at 'start1' time, that is, while other plugins are loading::
+
+    import leo.core.leoGlobals as g
+    print('===== local_plugin.py in ~/.leo/plugins/')
+    
+    def hook(tag, keys):
+        g.trace(tag)
+    
+    def init():
+        g.registerHandler('start1', hook)
+        return True
+
+Alternatively, the plugin could run code at 'start2' time, after all plugins have been loaded, or at any other time, as described `on this page &lt;writingPlugins.html#handling-events&gt;`_.</t>
+<t tx="ekr.20180529064355.1"></t>
+<t tx="ekr.20180529064813.1"></t>
+<t tx="ekr.20180529065039.1"></t>
+<t tx="ekr.20180529065351.1"></t>
+<t tx="ekr.20180529065538.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
