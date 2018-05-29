@@ -155,7 +155,7 @@
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
-<v t="ekr.20180405171433.7"><vh>Create git tag</vh></v>
+<v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
 <v t="ekr.20180405171433.8"><vh>Publish release</vh></v>
 <v t="ekr.20180405171433.9"><vh>Announcements</vh></v>
 </v>
@@ -1484,7 +1484,11 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with *both* Python 2 and 3.
 - Run ll -a with *both* Python 2 and 3.</t>
-<t tx="ekr.20180405171433.7">Create a git tag **last**
+<t tx="ekr.20180405171433.7">Merge the -rel branch into master.
+- Run all unit tests.
+- Run pylint on all files.
+
+Create a git tag **last**
 
 - Create a full (annotated) tag:
   - Do not use the -f option.
