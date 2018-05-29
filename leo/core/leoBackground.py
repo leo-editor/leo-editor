@@ -5,6 +5,7 @@
 '''Handling background processes'''
 
 import leo.core.leoGlobals as g
+import re
 import subprocess
 
 #@+others
@@ -49,9 +50,8 @@ class BackgroundProcessManager(object):
     in any way.
     '''
     #@-<< BPM docstring>>
-
-    # Use self.put_log, not g.es or g.es_print!
-
+    #@+others
+    #@+node:ekr.20180522085807.1: *3* bpm.__init__
     def __init__(self):
         '''Ctor for the base BackgroundProcessManager class.'''
         self.data = None
@@ -61,19 +61,27 @@ class BackgroundProcessManager(object):
         self.pid = None
             # The process id of the running process.
         g.app.idleTimeManager.add_callback(self.on_idle)
-
-    #@+others
     #@+node:ekr.20161028090624.1: *3* class ProcessData
     class ProcessData(object):
         '''A class to hold data about running or queued processes.'''
 
-        def __init__(self, c, kind, fn, shell):
+        def __init__(self, c, kind, fn, link_pattern, link_root, shell):
             '''Ctor for the ProcessData class.'''
             self.c = c
             self.callback = None
             self.fn = fn
             self.kind = kind
+            self.link_pattern = None
+            self.link_root = link_root
             self.shell = shell
+            #
+            # Check and compile the link pattern.
+            if link_pattern and g.isString(link_pattern):
+                try:
+                    self.link_pattern = re.compile(link_pattern)
+                except Exception:
+                    g.trace('Invalid link pattern: %s' % link_pattern)
+                    self.link_pattern = None
 
         def __repr__(self):
             return 'c: %s kind: %s callback: %s fn: %s shell: %s' % (
@@ -88,22 +96,14 @@ class BackgroundProcessManager(object):
     #@+node:ekr.20161026193609.2: *3* bpm.check_process & helpers
     def check_process(self):
         '''Check the running process, and switch if necessary.'''
-        trace = False and not g.unitTesting
-        trace_inactive = True
-        trace_running = False
         if self.pid:
             if self.pid.poll() is None:
-                if trace and trace_running:
-                    self.put_log('running: %s' % id(self.pid))
+                pass
             else:
-                if trace:
-                    self.put_log('ending: %s' % id(self.pid))
                 self.end() # End this process.
                 self.start_next() # Start the next process.
         elif self.process_queue:
             self.start_next() # Start the next process.
-        elif trace and trace_inactive:
-            self.put_log('%s inactive' % (self.data and self.data.kind or 'all'))
     #@+node:ekr.20161028063557.1: *4* bpm.end
     def end(self):
         '''End the present process.'''
@@ -146,7 +146,6 @@ class BackgroundProcessManager(object):
     #@+node:ekr.20161026193609.4: *3* bpm.on_idle
     def on_idle(self):
         '''The idle-time callback for leo.commands.checkerCommands.'''
-        # g.trace('(BPM)', 'pid:', self.pid, 'queue:', len(self.process_queue))
         if self.process_queue or self.pid:
             self.check_process()
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
@@ -155,25 +154,50 @@ class BackgroundProcessManager(object):
         Put a string to the originating log.
         This is not what g.es_print does!
         '''
+        #
+        # Warning: don't use g.es or g.es_print here!
+        #
         s = s and s.rstrip()
-        if s:
-            # Put the message to the originating log pane, if it still exists.
-            c = self.data and self.data.c
-            if c and c.exists:
-                c.frame.log.put(s + '\n')
-                print(s)
-            else:
-                g.es_print(s)
+        if not s:
+            return
+        #
+        # Make sure c still exists
+        data = self.data
+        c = data and data.c
+        if not c or not c.exists:
+            return
+        #
+        # Always print the message.
+        print(s)
+        #
+        # Put the plain message if there are no links.
+        link_pattern, link_root = data.link_pattern, data.link_root
+        if not (link_pattern and link_root):
+            c.frame.log.put(s + '\n')
+            return
+        #
+        # Put a clickable link if the message matches the link. pattern
+        m = link_pattern.match(s)
+        if m:
+            line = int(m.group(1))
+            unl = link_root.get_UNL(with_proto=True, with_count=True)
+            nodeLink = "%s,%d" % (unl, -line)
+            c.frame.log.put(s + '\n', nodeLink=nodeLink)
+        else:
+            c.frame.log.put(s + '\n')
     #@+node:ekr.20161026193609.5: *3* bpm.start_process
-    def start_process(self, c, command, kind, fn=None, shell=False):
+    def start_process(self, c, command, kind,
+        fn=None,
+        link_pattern=None,
+        link_root=None,
+        shell=False,
+    ):
         '''Start or queue a process described by command and fn.'''
-        trace = False and not g.unitTesting
-        self.data = data = self.ProcessData(c, kind, fn, shell)
+        self.data = data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
         if self.pid:
             # A process is already active.  Add a new callback.
-            if trace: self.put_log('===== Adding callback for %s' % g.shortFileName(fn))
 
-            def callback(data=data):
+            def callback(data=data, kind=kind):
                 fn = data.fn
                 self.put_log('%s: %s\n' % (kind, g.shortFileName(fn)))
                 self.pid = subprocess.Popen(
@@ -183,13 +207,11 @@ class BackgroundProcessManager(object):
                     stdout=subprocess.PIPE,
                     universal_newlines=True,
                 )
-                if trace: self.put_log('===== Starting: %s for %s' % (
-                    id(self.pid), g.shortFileName(fn)))
-
             data.callback = callback
             self.process_queue.append(data)
         else:
             # Start the process immediately.
+            self.kind = kind
             self.put_log('%s: %s\n' % (kind, g.shortFileName(fn)))
             self.pid = subprocess.Popen(
                 command,
@@ -198,8 +220,6 @@ class BackgroundProcessManager(object):
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
             )
-            if trace: self.put_log('===== Starting: %s for %s' % (
-                id(self.pid), g.shortFileName(fn)))
     #@-others
 #@-others
 #@@language python

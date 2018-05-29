@@ -57,7 +57,6 @@ def get_home():
 #@+node:ekr.20160517222236.1: *3* get_flake8_config
 def get_flake8_config():
     '''Return the path to the flake8 configuration file.'''
-    trace = False and not g.unitTesting
     join = g.os_path_finalize_join
     homeDir = get_home()
     loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
@@ -71,7 +70,6 @@ def get_flake8_config():
         for path in dir_table:
             fn = g.os_path_abspath(join(path, base))
             if g.os_path_exists(fn):
-                if trace: g.trace('found:', fn)
                 return fn
     print('no flake8 configuration file found in\n%s' % (
         '\n'.join(dir_table)))
@@ -93,7 +91,7 @@ def check_all(files, style):
         # if g.os_path_exists(fn):
             # # Make *sure* that we check files only once.
             # if fn in seen:
-                # g.trace('already seen:', fn)
+                # pass
             # else:
                 # seen.add(fn)
                 # paths.append(fn)

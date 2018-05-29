@@ -135,10 +135,9 @@ if QtWidgets:
         #@+node:ekr.20110605121601.17962: *3* nsh.__init__
         def __init__(self, owner):
             '''Ctor for NestedSplitterHandle class.'''
-            # g.trace('NestedSplitterHandle')
             QtWidgets.QSplitterHandle.__init__(self, owner.orientation(), owner)
-            # self.setStyleSheet("background-color: green;")
-                # Confusing!
+            # Confusing!
+                # self.setStyleSheet("background-color: green;")
             self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
             self.customContextMenuRequested.connect(self.splitter_menu)
         #@+node:ekr.20110605121601.17963: *3* nsh.__repr__
@@ -417,11 +416,6 @@ if QtWidgets: # NOQA
             '''Ctor for NestedSplitter class.'''
             QtWidgets.QSplitter.__init__(self, orientation, parent)
                 # This creates a NestedSplitterHandle.
-            trace = False and g and not g.unitTesting
-                # The import of g will fail when run from main() function.
-            if trace:
-                g.trace('%s parent: %s orientation: %s' % (self, parent, orientation))
-                g.trace(g.callers())
             if root is None:
                 root = self.top(local=True)
                 if root == self:
@@ -433,6 +427,7 @@ if QtWidgets: # NOQA
                     # list of top level NestedSplitter windows opened from 'Open Window'
                     # splitter handle context menu
                     root.zoomed = False
+                #
                 # NestedSplitter is a kind of meta-widget, in that it manages
                 # panes across multiple actual splitters, even windows.
                 # So to create a signal for a click on splitter handle, we
@@ -502,11 +497,8 @@ if QtWidgets: # NOQA
         def add(self, side, w=None):
             """wrap a horizontal splitter in a vertical splitter, or
             visa versa"""
-            trace = False and g and not g.unitTesting
             orientation = self.other_orientation[self.orientation()]
             layout = self.parent().layout()
-            if trace: g.trace('parent: %s side: %s orient: %s layout: %s' % (
-                self.parent(), side, orientation, layout))
             if isinstance(self.parent(), NestedSplitter):
                 # don't add new splitter if not needed, i.e. we're the
                 # only child of a previously more populated splitter
@@ -535,7 +527,6 @@ if QtWidgets: # NOQA
         #@+node:tbrown.20110621120042.22675: *3* ns.add_adjacent
         def add_adjacent(self, what, widget_id, side='right-of'):
             """add a widget relative to another already present widget"""
-            trace = False and g and not g.unitTesting
             horizontal, vertical = QtCore.Qt.Horizontal, QtCore.Qt.Vertical
             layout = self.top().get_layout()
 
@@ -562,25 +553,16 @@ if QtWidgets: # NOQA
             # pylint: disable=unpacking-non-sequence
             layout, pos = l
             orient = layout['orientation']
-            if trace:
-                print()
-                g.trace('widget_id: %s side: %s pos: %s orient: %s' % (
-                    widget_id, side, pos, orient))
-                # g.trace('before layout...\n%s' % (self.layout_to_text(layout)))
             if (orient == horizontal and side in ('right-of', 'left-of') or
                 orient == vertical and side in ('above', 'below')
             ):
                 # easy case, just insert the new thing, what,
                 # either side of old, in existng splitter
-                if trace: g.trace(
-                    '** use existing splitter: orient %s side: %s' % (orient, side))
                 if side in ('right-of', 'below'):
                     pos += 1
                 layout['splitter'].insert(pos, what)
             else:
                 # hard case, need to replace old with a new splitter
-                if trace: g.trace(
-                    '** create splitter: orient %s side: %s' % (orient, side))
                 if side in ('right-of', 'left-of'):
                     ns = NestedSplitter(orientation=horizontal, root=self.root)
                 else:
@@ -595,8 +577,6 @@ if QtWidgets: # NOQA
                 # now put the old content in the new splitter,
                 # doing this sooner would mess up the index (pos)
                 ns.insert(0 if side in ('right-of', 'below') else 1, old)
-            if trace:
-                g.trace('after layout...\n%s' % (self.layout_to_text(layout)))
             return True
         #@+node:ekr.20110605121601.17972: *3* ns.choice_menu
         def choice_menu(self, button, pos):
@@ -719,12 +699,10 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110605121601.17975: *3* ns.insert (NestedSplitter)
         def insert(self, index, w=None):
             """insert a pane with a widget or, when w==None, Action button"""
-            trace = False and g and not g.unitTesting
             if w is None: # do NOT use 'not w', fails in PyQt 4.8
                 w = NestedSplitterChoice(self)
                 # A QWidget, with self as parent.
                 # This creates the menu.
-            if trace: g.trace('index: %s w: %s' % (index, w))
             self.insertWidget(index, w)
             self.equalize_sizes()
             return w
@@ -951,7 +929,6 @@ if QtWidgets: # NOQA
         def split(self, index, side, w=None, name=None):
             """replace the adjacent widget with a NestedSplitter containing
             the widget and an Action button"""
-            trace = False and g and not g.unitTesting
             sizes = self.sizes()
             old = self.widget(index + side - 1)
             #X old_name = old and old.objectName() or '<no name>'
@@ -973,8 +950,6 @@ if QtWidgets: # NOQA
                 new.equalize_sizes()
                 #X index = new.indexOf(w)
                 #X return new,index # For viewrendered plugin.
-            if trace: g.trace('name: %s index: %s side: %s w: %s' % (
-                name, index, side, w))
             self.setSizes(sizes)
         #@+node:ekr.20110605121601.17986: *3* ns.swap
         def swap(self, index):
@@ -1054,8 +1029,7 @@ if QtWidgets: # NOQA
             return None
         #@+node:tbrown.20110628083641.21154: *3* ns.load_layout
         def load_layout(self, layout, level=0):
-            trace = False and g and not g.unitTesting
-            if trace: g.trace('level: %s layout: %s' % (level, layout))
+
             self.setOrientation(layout['orientation'])
             found = 0
             if level == 0:

@@ -204,15 +204,15 @@ def cmd_scintilla(args):
         f.close()
 #@+node:ekr.20110310091639.14286: *4* cmd_setup
 def cmd_setup(args):
+    
     ctagsfile = os.path.normpath(os.path.expanduser("~/.ctags"))
-    # assert not os.path.isfile(ctagsfile)
     if os.path.isfile(ctagsfile):
         print("Using template file: %s" % ctagsfile)
     else:
         print("Creating template: %s" % ctagsfile)
         open(ctagsfile, "w").write("--exclude=*.html\n--exclude=*.css\n")
     # No need for this: the docs say to run "init" after "setup"
-    # cmd_init(args)
+        # cmd_init(args)
 #@+node:ekr.20110310091639.14284: *4* cmd_tags
 def cmd_tags(args):
     cw = CodeWise()

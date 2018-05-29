@@ -5,6 +5,7 @@
 '''Leo's goto commands.'''
 import leo.core.leoGlobals as g
 # import os
+import re
 #@+others
 #@+node:ekr.20150625050355.1: ** class GoToCommands
 class GoToCommands(object):
@@ -20,8 +21,6 @@ class GoToCommands(object):
         Place the cursor on the n'th line (one-based) of an external file.
         Return (p, offset, found) for unit testing.
         '''
-        trace = False and not g.unitTesting
-            # It's usually better to look at the file in scite.
         c = self.c
         if n < 0:
             return
@@ -33,10 +32,6 @@ class GoToCommands(object):
             sentinels = root.isAtFileNode()
             s = self.get_external_file_with_sentinels(root)
             lines = g.splitLines(s)
-            if trace:
-                g.trace('sentinels', sentinels)
-                aList = ['%3s %s' % (i+1, s2) for i, s2 in enumerate(lines)]
-                g.trace('n: %s script: ...\n%s' % (n, ''.join(aList)))
             # Step 2: scan the lines for line n.
             if sentinels:
                 # All sentinels count as real lines.
@@ -53,72 +48,36 @@ class GoToCommands(object):
                 return None, -1, False
         else:
             return self.find_script_line(n, p)
-    #@+node:ekr.20160921210529.1: *3* goto.find_node_start  & helper
-    def find_node_start(self, p):
+    #@+node:ekr.20160921210529.1: *3* goto.find_node_start
+    def find_node_start(self, p, s=None):
         '''Return the global line number of the first line of p.b'''
         # See #283: https://github.com/leo-editor/leo-editor/issues/283
-        if 1: # Not ready yet, and probably will never be ready.
+        # c = self.c
+        root, fileName = self.find_root(p)
+        if not root:
             return None
-        else: # Prototype code.
-            trace = False and not g.unitTesting
-            root, fileName = self.find_root(p)
-            has_sentinels = p.isAtFileNode()
-            if root:
-                if root == p:
-                    return 0
-                s = self.get_external_file_with_sentinels(root)
-                    # s has sentinels, regardless of root's @<file> kind.
-                lines = g.splitLines(s)
-                if trace:
-                    g.trace('=====', p.h)
-                    for i, s in enumerate(lines):
-                        print('%3s %s' % (i,s.rstrip()))
-                delim1, delim2 = self.get_delims(root)
-                count = 0
-                for s in lines:
-                    # g.trace(count, s.rstrip())
-                    if self.is_sentinel(delim1, delim2, s):
-                        if trace: g.trace(s.rstrip())
-                        s2 = s.strip()[len(delim1):]
-                        if has_sentinels:
-                            count += 1
-                        elif self.is_visible_sentinel(s2):
-                            count += 1
-                        if s2.startswith('@+node'):
-                            gnx, h = self.get_script_node_info(s, delim2)
-                            if p.gnx == gnx:
-                                break
-                    else:
-                        count += 1
-                if trace: g.trace(count, root.h)
-                return count
-            else:
-                return None
-    #@+node:ekr.20160921220517.1: *4* goto.is_visible_sentinel
-    def is_visible_sentinel(self, s):
-        '''Return True if s is a sentinel that actually would appear in the external file.'''
-        # This code is a prototype. More work is needed.
-        table = ('@@', '@+doc')
-        for z in table:
-            if s.startswith(z):
-                g.trace('visible: %s' % s.rstrip())
-                return True
-        return False
+        assert root.isAnyAtFileNode()
+        if s is None:
+            s = self.get_external_file_with_sentinels(root)
+        delim1, delim2 = self.get_delims(root)
+        # Match only the node with the correct gnx.
+        node_pat = re.compile(r'\s*%s@\+node:%s:' % (
+            re.escape(delim1), re.escape(p.gnx)))
+        for i, s in enumerate(g.splitLines(s)):
+            if node_pat.match(s):
+                return i + 1
+        return None
     #@+node:ekr.20150622140140.1: *3* goto.find_script_line
     def find_script_line(self, n, root):
         '''
         Go to line n (zero based) of the script with the given root.
         Return p, offset, found for unit testing.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         if n < 0:
             return None, -1, False
         script = g.getScript(c, root, useSelectedText=False)
         lines = g.splitLines(script)
-        if trace:
-            aList = ['%3s %s' % (i, s) for i, s in enumerate(lines)]
-            g.trace('n: %s script: ...\n%s' % (n, ''.join(aList)))
         # Script lines now *do* have gnx's.
         gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
         p, found = self.find_gnx(root, gnx, h)
@@ -142,22 +101,17 @@ class GoToCommands(object):
         h:      the headline of the #@+node
         offset: the offset of line n within the node.
         '''
-        trace = False and not g.unitTesting
-        trace_lines = True
         delim1, delim2 = self.get_delims(root)
         count, gnx, h, offset = 0, root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
-        if trace: g.trace('=====', delim1, delim2, n)
         for s in lines:
             is_sentinel = self.is_sentinel(delim1, delim2, s)
-            # if trace and trace_lines: g.trace('%5s %s' % (is_sentinel, s.rstrip()))
             if is_sentinel:
                 s2 = s.strip()[len(delim1):]
                 if s2.startswith('@+node'):
                     # Invisible, but resets the offset.
                     offset = 0
                     gnx, h = self.get_script_node_info(s, delim2)
-                    if trace: g.trace('@+node: %30s %5s %s' % (gnx, count+1, g.truncate(h,50)))
                 elif s2.startswith('@+others') or s2.startswith('@+<<'):
                     stack.append((gnx, h, offset),)
                     # @others is visible in the outline, but *not* in the file.
@@ -176,13 +130,11 @@ class GoToCommands(object):
                 # Non-sentinel lines are visible both in the outline and the file.
                 count += 1
                 offset += 1
-            if trace and trace_lines: g.trace(count, offset, s.rstrip())
             if count == n:
                 # Count is the real, one-based count.
                 break
         else:
             gnx, h, offset = None, None, -1
-        if trace: g.trace('----- gnx:', gnx, 'h:', h, 'offset:', offset)
         return gnx, h, offset
     #@+node:ekr.20150623175314.1: *3* goto.scan_sentinel_lines
     def scan_sentinel_lines(self, lines, n, root):
@@ -195,20 +147,15 @@ class GoToCommands(object):
         h:      the headline of the #@+node
         offset: the offset of line n within the node.
         '''
-        trace = False and not g.unitTesting
-        trace_lines = False
         delim1, delim2 = self.get_delims(root)
         gnx, h, offset = root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
-        if trace: g.trace('=====', delim1, delim2, n)
         for i, s in enumerate(lines):
-            if trace and trace_lines: g.trace(s.rstrip())
             if self.is_sentinel(delim1, delim2, s):
                 s2 = s.strip()[len(delim1):]
                 if s2.startswith('@+node'):
                     offset = 0
                     gnx, h = self.get_script_node_info(s, delim2)
-                    if trace: g.trace('node: %30s %5s %s' % (gnx, i+1, g.truncate(h,50)))
                 elif s2.startswith('@+others') or s2.startswith('@+<<'):
                     stack.append((gnx, h, offset),)
                     offset += 1
@@ -219,12 +166,10 @@ class GoToCommands(object):
                     offset += 1
             else:
                 offset += 1
-            if trace and trace_lines: g.trace(i+1, offset, s.rstrip())
             if i+1 == n: # Bug fix 2017/04/01: n is one based.
                 break
         else:
             gnx, h, offset = None, None, -1
-        if trace: g.trace('----- gnx', gnx, 'h', h, 'offset', offset)
         return gnx, h, offset
     #@+node:ekr.20150624142449.1: *3* goto.Utils
     #@+node:ekr.20150625133523.1: *4* goto.fail
@@ -251,7 +196,6 @@ class GoToCommands(object):
         Scan root's tree for a node with the given gnx and vnodeName.
         return (p,found)
         '''
-        trace = False and not g.unitTesting
         if gnx:
             assert g.isString(gnx)
             gnx = g.toUnicode(gnx)
@@ -259,7 +203,6 @@ class GoToCommands(object):
                 if p.matchHeadline(vnodeName):
                     if p.v.fileIndex == gnx:
                         return p.copy(), True
-            if trace: g.trace('not found! %s, %s' % (gnx, repr(vnodeName)))
             return None, False
         else:
             return root, False
@@ -297,7 +240,6 @@ class GoToCommands(object):
         finally:
             c.target_language = old_target_language
         delims1, delims2, delims3 = d.get('delims')
-        # g.trace(root.h, d.get('language'), d.get('delims'))
         if delims1:
             return delims1, None
         else:
@@ -344,7 +286,6 @@ class GoToCommands(object):
             h = self.remove_level_stars(h).strip()
             if delim2:
                 h = h.rstrip(delim2)
-            # g.trace(gnx, h, s.rstrip())
             return gnx, h
     #@+node:ekr.20150625124027.1: *4* goto.is_sentinel
     def is_sentinel(self, delim1, delim2, s):
@@ -375,7 +316,6 @@ class GoToCommands(object):
     #@+node:ekr.20100216141722.5638: *4* goto.success
     def success(self, lines, n, n2, p):
         '''Place the cursor on line n2 of p.b.'''
-        trace = False and not g.unitTesting
         c = self.c
         w = c.frame.body.wrapper
         # Select p and make it visible.
@@ -385,14 +325,29 @@ class GoToCommands(object):
         # Put the cursor on line n2 of the body text.
         s = w.getAllText()
         ins = g.convertRowColToPythonIndex(s, n2 - 1, 0)
-        if trace:
-            i, j = g.getLine(s, ins)
-            g.trace('%2s %2s %15s %s' % (n, n2, p.h, repr(s[i: j])))
         c.frame.clearStatusLine()
         c.frame.putStatusLine('goto-global-line found: %s' % (n2))
         w.setInsertPoint(ins)
         c.bodyWantsFocus()
         w.seeInsertPoint()
     #@-others
+#@+node:ekr.20180517041303.1: ** show-file-line
+@g.command('show-file-line')
+def show_file_line(event):
+    c = event.get('c')
+    if not c:
+        return
+    w = c.frame.body.wrapper
+    if not w:
+        return
+    n0 = GoToCommands(c).find_node_start(p=c.p)
+    if n0 is None:
+        return
+    i = w.getInsertPoint()
+    s = w.getAllText()
+    row, col = g.convertPythonIndexToRowCol(s, i)
+    g.es_print(1+n0+row)
+    
+       
 #@-others
 #@-leo

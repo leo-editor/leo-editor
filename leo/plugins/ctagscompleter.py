@@ -85,7 +85,6 @@ def read_tags_file():
     '''Return the lines of ~/.leo/tags.
     Return [] on error.'''
 
-    trace = False ; verbose = True
     tagsFileName = os.path.expanduser('~/.leo/tags')
     if not os.path.exists(tagsFileName):
         return [] # EKR: 11/18/2009
@@ -95,12 +94,6 @@ def read_tags_file():
         f = open(tagsFileName)
         tags = f.read()
         lines = g.splitLines(tags)
-        if trace:
-            print('ctagscomplter.py: ~/.leo/tags has %s lines' % (
-                len(lines)))
-            if verbose:
-                for z in lines[:30]:
-                    print(repr(z))
         return lines
     except IOError:
         return []
@@ -137,8 +130,6 @@ class CtagsController(object):
         # Init.
         w = c.frame.body.wrapper # A LeoQTextBrowser.
         self.ev_filter = w.ev_filter
-
-        # g.trace('CtagsController',c.shortFileName(),self.body)
     #@+node:ekr.20091015185801.5243: *3* complete
     def complete(self,event):
 
@@ -163,7 +154,6 @@ class CtagsController(object):
             cmpl = g.u(completion).split(None,1)[0]
             cmpl = g.u(cmpl)
             prefix = g.u(cpl.completionPrefix())
-            # g.trace(completion,prefix)
             tc = body.textCursor()
             extra = len(cmpl) - len(prefix)
             tc.movePosition(tc.Left)
@@ -175,8 +165,6 @@ class CtagsController(object):
     def kill (self):
 
         # Delete the completer.
-        # g.trace()
-
         self.completer.deleteLater()
         self.completer = None
         self.active = False
@@ -186,27 +174,16 @@ class CtagsController(object):
 
         '''Return a list of all items starting with prefix.'''
 
-        trace = True ; verbose = False
         global tagLines
 
         if keep_tag_lines:
             # Use saved lines. Split at first whitespace.
             hits = [z.split(None,1) for z in tagLines if z.startswith(prefix)]
-            if trace:
-                for z in tagLines:
-                    if z.startswith(prefix):
-                        aList = z.split('\t')
-                        print(aList[0],g.shortFileName(aList[1]))
-                        print(aList[2:],'\n')
         else:
             # Open the file in a separate process, then use grep to match lines.
             # This will be slower, but grep returns very few lines.
             hits = (z.split(None) for z in os.popen('grep "^%s" ~/.leo/tags' % prefix))
 
-        if trace:
-            g.trace('%s hits' % len(hits))
-            if verbose:
-                for z in hits: print(z)
 
         desc = []
         for h in hits:
@@ -222,8 +199,6 @@ class CtagsController(object):
         return aList
     #@+node:ekr.20110307092028.14159: *3* onKey
     def onKey (self,event,stroke):
-
-        # g.trace(stroke)
 
         stroke = stroke.lower()
 

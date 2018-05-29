@@ -548,7 +548,6 @@ class Leo_to_HTML(object):
             ss = config(s)
             if ss: return ss.lower()[0] in ('y', 't', '1')
 
-        #g.trace(g.app.loadDir,"..","plugins","leo_to_html.ini")
         fileName = abspath(g.app.loadDir,"..","plugins","leo_to_html.ini")
         configParser = ConfigParser.ConfigParser()
         configParser.read(fileName)
@@ -699,24 +698,17 @@ class Leo_to_HTML(object):
         self.path will be used.
 
         """
-
         if basedir is None:
             basedir = self.basedir
-
         if path is None:
             path = self.path
-
         filepath = abspath(basedir,path,name)
-
-        # g.trace('basedir',basedir,'path',path,'name',name)
-
         try:
             f = open(filepath, 'wb')
         except Exception:
             g.error('can not open: %s' % (filepath))
             g.es_exception(full=False,c=self.c)
             return False
-
         try:
             try:
                 f.write(data.encode('utf-8'))

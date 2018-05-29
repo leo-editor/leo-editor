@@ -55,7 +55,7 @@ class View(object):
     def __init__ (self,c):
 
         self.c = c
-        # g.trace('View')
+
     #@+node:ktenney.20041211072654.9: *3* icondclick2 (at_view.py)
     def icondclick2 (self, tag, keywords):
 
@@ -81,18 +81,14 @@ class View(object):
             self.clip()
     #@+node:ktenney.20041211072654.10: *3* view
     def view(self):
-
-        '''Place the contents of a file in the body pane
+        '''
+        Place the contents of a file in the body pane
 
         the file is either in the current headstring,
         or found by ascending the tree
         '''
-
         # get a path object for this position
         currentPath = self.getCurrentPath()
-
-        # g.trace(currentPath.exists(),currentPath)
-
         if currentPath.exists():
             g.es('currentPath: %s' % currentPath.abspath())
             if currentPath.isfile():
@@ -135,9 +131,6 @@ class View(object):
         # get a path object for this position
         c = self.c
         currentPath = self.getCurrentPath()
-
-        # g.trace(currentPath.exists(),currentPath)
-
         if currentPath.exists():
             path = currentPath.abspath()
             s = 'currentPath: %s' % path
@@ -185,15 +178,11 @@ class View(object):
         """
         Return the path fragment if this node is a @path or @view or any @file node.
         """
-
         head = p.h
-
         for s in ('@path','@view','@strip','@file','@thin','@nosent','@asis'):
             if head.startswith(s):
                 fragment = head [head.find(' '):].strip()
-                # g.trace(repr(fragment))
                 return fragment
-
         return ''
     #@+node:ktenney.20041211072654.13: *3* processFile
     def processFile(self, path, node):

@@ -221,11 +221,9 @@ class ValueSpaceController(object):
     #@+others
     #@+node:ekr.20110408065137.14223: *3*  ctor
     def __init__(self, c=None, ns=None):
-        # g.trace('(ValueSpaceController)',c)
+
         self.c = c
         self.d = {} if ns is None else ns
-        self.trace = False
-        self.verbose = False
         self.reset()
         if c:
             # This must come after self.reset()
@@ -332,7 +330,6 @@ class ValueSpaceController(object):
         for p in c.all_unique_positions():
             h = p.h.strip()
             if h.startswith('@= '):
-                if self.trace and self.verbose: g.trace('pass1',p.h)
                 self.d['p'] = p.copy() # g.vs.p = p.copy()
                 var = h[3:].strip()
                 self.let_body(var,self.untangle(p))
@@ -352,7 +349,6 @@ class ValueSpaceController(object):
 
 
             elif h == '@a' or h.startswith('@a '):
-                if self.trace and self.verbose: g.trace('pass1',p.h)
                 tail = h[2:].strip()
                 parent = p.parent()
 
@@ -363,15 +359,12 @@ class ValueSpaceController(object):
                 except Exception:
                     g.es_exception()
                     g.es("Error parsing " + parent.h)
-        # g.trace(self.d)
     #@+node:ekr.20110407174428.5777: *5* let & let_body
     def let(self,var,val):
 
         '''Enter var into self.d with the given value.
         Both var and val must be strings.'''
 
-        if self.trace:
-            print("Let [%s] = [%s]" % (var,val))
         self.d ['__vstemp'] = val
         if var.endswith('+'):
             rvar = var.rstrip('+')
@@ -383,7 +376,6 @@ class ValueSpaceController(object):
 
     def let_cl(self, var, body):
         """ handle @cl node """
-        # g.trace()
         lend = body.find('\n')
         firstline = body[0:lend]
         rest = firstline[4:].strip()
@@ -423,9 +415,6 @@ class ValueSpaceController(object):
     def parse_body(self,p):
 
         body = self.untangle(p) # body is the script in p's body.
-        # print("Body")
-        # print(body)
-        if self.trace and self.verbose: g.trace('pass1',p.h,'\n',body)
         self.d ['p'] = p.copy()
         backop = []
         segs = re.finditer('^(@x (.*))$',body,re.MULTILINE)
@@ -449,9 +438,6 @@ class ValueSpaceController(object):
     #@+node:ekr.20110407174428.5779: *6* runblock
     def runblock(self,block):
 
-        if self.trace and self.verbose:
-            g.trace('pass1',block)
-
         exec(block,self.d)
     #@+node:ekr.20110407174428.5778: *6* untangle (getScript)
     def untangle(self,p):
@@ -469,7 +455,6 @@ class ValueSpaceController(object):
         for p in c.all_unique_positions():
             h = p.h.strip()
             if h.startswith('@r '):
-                if self.trace and self.verbose: g.trace('pass2:',p.h)
                 expr = h[3:].strip()
                 try:
                     result = eval(expr,self.d)
@@ -477,7 +462,6 @@ class ValueSpaceController(object):
                     g.es_exception()
                     g.es("Failed to render " + h)
                     continue
-                if self.trace: print("Eval:",expr,"result:",repr(result))
                 self.render_value(p,result)
 
             if h.startswith("@vso "):

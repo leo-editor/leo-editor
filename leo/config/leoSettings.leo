@@ -214,7 +214,6 @@
 <v t="ekr.20140912075503.19320"><vh>@color body-fg = black</vh></v>
 <v t="ekr.20140912075503.19321"><vh>@color body-sel-fg = white</vh></v>
 <v t="ekr.20140912075503.19322"><vh>@color body-sel-bg = lightgray</vh></v>
-<v t="ekr.20141020061642.19855"><vh>@color big-text-warning-bg = pink</vh></v>
 </v>
 <v t="ekr.20140915194122.23439"><vh>Border colors</vh>
 <v t="tbrown.20140514191846.42171"><vh>@color focused-border-focus-color = blue</vh></v>
@@ -491,11 +490,12 @@
 </v>
 </v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
-<v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = False</vh></v>
+<v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
+<v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = True</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
 <v t="ekr.20060216170801"><vh>@bool enable_calltips_initially = False</vh></v>
 <v t="ekr.20110617081407.14760"><vh>@bool forbid_invalid_completions = False</vh></v>
-<v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
+<v t="ekr.20180525053145.1"><vh>@bool use_jedi = False</vh></v>
 <v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
 </v>
 <v t="ekr.20140916113003.20415"><vh>Bracket matching</vh>
@@ -645,7 +645,6 @@
 </v>
 <v t="ekr.20051126062243"><vh>Debugging</vh>
 <v t="ekr.20060408090018"><vh>@bool added_setting = True</vh></v>
-<v t="ekr.20070729101310"><vh>@bool trace_import = False</vh></v>
 <v t="ekr.20060323131801"><vh>@bool warn_about_missing_settings = False</vh></v>
 <v t="ekr.20060521134125"><vh>@string debugger_default_target = None</vh></v>
 <v t="ekr.20060521134125.1"><vh>@string debugger_force_target = None</vh></v>
@@ -754,6 +753,7 @@
 </v>
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
 <v t="ekr.20161011090731.1"><vh>Retired: @bool allow_section_references_in_at_auto = False</vh></v>
+<v t="tbrown.20180525163032.1"><vh>@bool add-context-to-headlines = True</vh></v>
 <v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
 <v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
 <v t="ekr.20161010085256.1"><vh>@bool js_importer_clean_lws = True</vh></v>
@@ -772,7 +772,6 @@
 <v t="ekr.20131007055150.13034"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
 <v t="ekr.20120205022040.15411"><vh>@bool swap_mac_keys = False</vh></v>
-<v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
 <v t="ekr.20131112161153.4420"><vh>@bool vim-mode = False</vh></v>
 <v t="ekr.20060926161207.1"><vh>@bool warn_about_redefined_shortcuts = True</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
@@ -1495,8 +1494,6 @@
 <v t="ekr.20131213135427.22134"><vh>@item gc-dump-&amp;new-objects</vh></v>
 <v t="ekr.20131213135427.22135"><vh>@item gc-dump-objects-&amp;verbose</vh></v>
 <v t="ekr.20131213135427.22136"><vh>@item gc-print-&amp;summary</vh></v>
-<v t="ekr.20131213135427.22137"><vh>@item gc-&amp;trace-disable</vh></v>
-<v t="ekr.20131213135427.22138"><vh>@item gc-&amp;trace-enable</vh></v>
 </v>
 <v t="ekr.20131213135427.22194"><vh>@menu &amp;Execute Shell Commands</vh>
 <v t="ekr.20131213135427.22130"><vh>@item &amp;open-python-window</vh></v>
@@ -1532,9 +1529,10 @@
 <v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
 <v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
 <v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
+<v t="ekr.20180511075115.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22323"><vh>@item toggle-&amp;split-direction</vh></v>
 </v>
 <v t="ekr.20170509103101.1"><vh>@menu &amp;Expand/Contract Panes</vh>
-<v t="ekr.20131213135427.22323"><vh>@item toggle-&amp;split-direction</vh></v>
 <v t="ekr.20131213135427.22321"><vh>@item &amp;equal-sized-panes</vh></v>
 <v t="ekr.20180403110757.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22325"><vh>@item contract-&amp;body-pane</vh></v>
@@ -3053,7 +3051,6 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20060112103537.17">'''Check for commands that exist in some but not all key- binding sets.'''
 g.cls()
 import leo.core.leoConfig as leoConfig
-import leo.core.leoTest as leoTest
 parser = leoConfig.SettingsTreeParser(c)
 # Add these as required to handle commands defined by plugins.
 optionalCommandPrefixes = ['group-operations']
@@ -3119,8 +3116,7 @@ main()
             for key in d.keys():
                 allNames[key] = key
         else:
-            g.es_print('No setsDict for %s' % (repr(setName)),color='red')
-    k = c.keyHandler
+            g.es_print('No setsDict for %r' % (setName),color='red')
     keys = sorted(allNames.keys())
     # Warn about missing names.
     for setName in ('No bindings',): # setNames:
@@ -3617,7 +3613,6 @@ aquamarine1</t>
 <t tx="ekr.20060606085536.1">Overrides body_text_foreground_color.</t>
 <t tx="ekr.20060620085654">vertical:   pack body-pane editors vertically.
 horizontal: pack body-pane editors horizontally.</t>
-<t tx="ekr.20060627065953"></t>
 <t tx="ekr.20060627084739">True: flash matching bracket when typing (, ), [, ], { or }.</t>
 <t tx="ekr.20060627121646"></t>
 <t tx="ekr.20060627121646.1"></t>
@@ -4189,7 +4184,6 @@ menu-shortcut = Alt-W # Window menu.
 Please don't change this node and its descendants; they are for Leo's
 developers.
 </t>
-<t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070925144552">Leo creates its menus using @menus trees. Within @menus trees,
 @menu nodes create menus and @item nodes create menu items.
@@ -4352,13 +4346,28 @@ end-of-buffer                       = Ctrl-End
 end-of-buffer-extend-selection      = Ctrl-Shift-End
 forward-word                        = Ctrl-RtArrow
 forward-word-extend-selection       = Ctrl-Shift-RtArrow
+#
+# Keypad variants...
+back-word                           = Keypad+Ctrl-LtArrow
+back-word-extend-selection          = Keypad+Ctrl-Shift-LtArrow
+beginning-of-buffer                 = Keypad+Ctrl-Home
+beginning-of-buffer-extend-selection= Keypad+Ctrl-Shift-Home
+end-of-buffer                       = Keypad+Ctrl-End
+end-of-buffer-extend-selection      = Keypad+Ctrl-Shift-End
+forward-word                        = Keypad+Ctrl-RtArrow
+forward-word-extend-selection       = Keypad+Ctrl-Shift-RtArrow
 
 # beginning-of-line                   = Home
 back-to-home                        = Home
 beginning-of-line-extend-selection  = Shift-Home
 end-of-line                         = End
 end-of-line-extend-selection        = Shift-End
-
+#
+# Keypad variants...
+back-to-home                        = Keypad+Home
+beginning-of-line-extend-selection  = Keypad+Shift-Keypad-Home
+end-of-line                         = Keypad+End
+end-of-line-extend-selection        = Keypad+Shift-End
 </t>
 <t tx="ekr.20080510121331.16"># Must keep all these bindings for basic vim compatibility.
 
@@ -4481,16 +4490,32 @@ end-edit-headline           ! tree = Return # Escape is also possible.
 # end-edit-headline           ! tree = Escape # May interfere with dismissing dialogs.
 insert-newline              ! body = Return
 insert-newline              ! text = Insert
+#
+# Keypad variants...
+end-edit-headline           ! tree = Keypad+Return
+insert-newline              ! body = Keypad+Return
 
 back-char                   ! text = LtArrow
 forward-char                ! text = RtArrow
 next-line                   ! text = DnArrow
 previous-line               ! text = UpArrow
+#
+# Keypad variants...
+back-char                   ! text = Keypad+LtArrow
+forward-char                ! text = Keypad+RtArrow
+next-line                   ! text = Keypad+DnArrow
+previous-line               ! text = Keypad+UpArrow
 
 back-char-extend-selection      ! text = Shift-LtArrow
 forward-char-extend-selection   ! text = Shift-RtArrow
 next-line-extend-selection      ! text = Shift-DnArrow
 previous-line-extend-selection  ! text = Shift-UpArrow
+#
+# Keypad variants...
+back-char-extend-selection      ! text = Keypad+Shift-LtArrow
+forward-char-extend-selection   ! text = Keypad+Shift-RtArrow
+next-line-extend-selection      ! text = Keypad+Shift-DnArrow
+previous-line-extend-selection  ! text = Keypad+Shift-UpArrow
 
 contract-or-go-left         ! tree = LtArrow
 expand-and-go-right         ! tree = RtArrow
@@ -4500,11 +4525,20 @@ move-outline-down           ! tree = Shift-DnArrow
 move-outline-left           ! tree = Shift-LtArrow
 move-outline-right          ! tree = Shift-RtArrow
 move-outline-up             ! tree = Shift-UpArrow
-
+#
+# Keypad variants...
+contract-or-go-left         ! tree = Keypad+LtArrow
+expand-and-go-right         ! tree = Keypad+RtArrow
+goto-next-visible           ! tree = Keypad+DnArrow
+goto-prev-visible           ! tree = Keypad+UpArrow
+move-outline-down           ! tree = Keypad+Shift-DnArrow
+move-outline-left           ! tree = Keypad+Shift-LtArrow
+move-outline-right          ! tree = Keypad+Shift-RtArrow
+move-outline-up             ! tree = Keypad+Shift-UpArrow
+#
 # These cause problems with editing headlines.
 # goto-first-visible-node     ! tree= Home
 # goto-last-visible-node      ! tree= End
-
 contract-or-go-left         = Alt-LtArrow
 expand-and-go-right         = Alt-RtArrow
 goto-next-visible           = Alt-DnArrow
@@ -4513,25 +4547,56 @@ move-outline-down           = Alt-Shift-DnArrow
 move-outline-left           = Alt-Shift-LtArrow
 move-outline-right          = Alt-Shift-RtArrow
 move-outline-up             = Alt-Shift-UpArrow
+#
+# Keypad variants...
+contract-or-go-left         = Keypad+Alt-LtArrow
+expand-and-go-right         = Keypad+Alt-RtArrow
+goto-next-visible           = Keypad+Alt-DnArrow
+goto-prev-visible           = Keypad+Alt-UpArrow
+move-outline-down           = Keypad+Alt-Shift-DnArrow
+move-outline-left           = Keypad+Alt-Shift-LtArrow
+move-outline-right          = Keypad+Alt-Shift-RtArrow
+move-outline-up             = Keypad+Alt-Shift-UpArrow
 
 do-nothing                  ! tree = Ctrl-DnArrow
 do-nothing                  ! tree = Ctrl-UpArrow
 move-lines-up               ! body = Ctrl-UpArrow
-move-lines-down             ! body = Ctrl-DnArrow 
+move-lines-down             ! body = Ctrl-DnArrow
+#
+# Keypad variants...
+do-nothing                  ! tree = Keypad+Ctrl-DnArrow
+do-nothing                  ! tree = Keypad+Ctrl-UpArrow
+move-lines-up               ! body = Keypad+Ctrl-UpArrow
+move-lines-down             ! body = Keypad+Ctrl-DnArrow
   
 goto-first-visible-node     = Alt-Home
-# goto-last-visible-node    = Alt-End
 goto-last-sibling           = Alt-End
+#
+# Keypad variants...
+goto-first-visible-node     = Keypad+Alt-Home
+goto-last-sibling           = Keypad+Alt-End
 
 back-page                       ! text = PageUp
 back-page-extend-selection      ! text = Shift-PageUp
 forward-page                    ! text = PageDn
 forward-page-extend-selection   ! text = Shift-PageDn
+#
+# Keypad variants...
+back-page                       ! text = Keypad+PageUp
+back-page-extend-selection      ! text = Keypad+Shift-PageUp
+forward-page                    ! text = Keypad-PageDn
+forward-page-extend-selection   ! text = Keypad+Shift-PageDn
 
 scroll-down-half-page   ! tree = Shift-PageDn
 scroll-down-page        ! tree = PageDn
 scroll-up-half-page     ! tree = Shift-PageUp
-scroll-up-page          ! tree = PageUp         
+scroll-up-page          ! tree = PageUp
+#
+# Keypad variants...
+scroll-down-half-page   ! tree = Keypad+Shift-PageDn
+scroll-down-page        ! tree = Keypad+PageDn
+scroll-up-half-page     ! tree = Keypad+Shift-PageUp
+scroll-up-page          ! tree = Keypad+PageUp
 </t>
 <t tx="ekr.20080513095644.1"># q in vim bindings.
 # The mode prompt is everything following the ::
@@ -4950,8 +5015,10 @@ http://pythonhosted.org/pyenchant/tutorial.html#adding-language-dictionaries
 #    name=definition
 
 # Definitions in @data abbreviation nodes override definitions in @data
-# global-abbreviation nodes. Typically you would define @data abbreviation nodes
-# in myLeoSettings.leo
+# global-abbreviation nodes. 
+
+# Typically you would define @data global-abbreviation nodes
+# in myLeoSettings.leo and @data abbreviation nodes in local files.
 
 # type html;; to insert template and ,, to select next &lt;|placeholder|&gt;
 html;;=&lt;html&gt;
@@ -4975,8 +5042,10 @@ date;;={|{x=time.asctime()}|}
 #    name=definition
 
 # Definitions in @data abbreviation nodes override definitions in @data
-# global-abbreviation nodes. Typically you would define @data abbreviation nodes
-# in myLeoSettings.leo
+# global-abbreviation nodes.
+
+# Typically you would define @data global-abbreviation nodes
+# in myLeoSettings.leo and @data abbreviation nodes in local files.
 </t>
 <t tx="ekr.20100904134301.11006">True: enable abbreviations
 False disable abbreviations
@@ -5400,7 +5469,7 @@ Controller(c).run()</t>
     and add items to d.
     '''
 
-    trace = True
+    trace = False
     for p in c.all_positions():
         self.scan_for_configs(p,d)
     if trace:
@@ -6262,8 +6331,6 @@ False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131213135427.22134"></t>
 <t tx="ekr.20131213135427.22135"></t>
 <t tx="ekr.20131213135427.22136"></t>
-<t tx="ekr.20131213135427.22137"></t>
-<t tx="ekr.20131213135427.22138"></t>
 <t tx="ekr.20131213135427.22139"></t>
 <t tx="ekr.20131213135427.22140"></t>
 <t tx="ekr.20131213135427.22141"></t>
@@ -9946,7 +10013,6 @@ c.k.simulateCommand('show-color-wheel')
 <t tx="ekr.20140922124047.20313"></t>
 <t tx="ekr.20141010095448.19776"></t>
 <t tx="ekr.20141010095448.19779"></t>
-<t tx="ekr.20141020061642.19855">Background color for big-text warning area.</t>
 <t tx="ekr.20141024165714.1">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
 False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>
@@ -11703,6 +11769,10 @@ False: Legacy operation.
 True:  Replace the Meta key with the Alt Key.
        This allows Windows Keyboards to be used without changing key bindings.
 </t>
+<t tx="ekr.20180511075115.1"></t>
+<t tx="ekr.20180525053145.1">True: use jedi for autocompletion if available.
+See https://jedi.readthedocs.io/en/latest/index.html
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -12347,6 +12417,13 @@ AltControlShift hoist
 #     WITH: /
 
 </t>
+<t tx="tbrown.20180525163032.1">If True, names uses headline "Foo.bar" for bar() defined in class
+Foo, and headline "bar (foo.py)" for bar() defined at top level in
+foo.py.  This is useful if you've cloned the node so its origin is
+not obvious from context.
+
+If False, does not do the above, useful if you don't use clones
+and don't want the visual clutter of repeated class / file names.</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

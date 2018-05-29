@@ -341,14 +341,11 @@ class textLeoMenu(leoMenu.LeoMenu):
             parent = self._top_menu
         parent.entries.append(textMenuCascade(menu, label, underline,))
     #@+node:ekr.20150107090324.50: *3* add_command
-    ### def add_command(self, menu, label, underline, command, accelerator=''):
-
     def add_command(self, **keys):
         # ?
         # underline - Offset into label. For those who memorised Alt, F, X rather than Alt+F4.
         # accelerator - For display only; these are implemented by Leo's key handling.
         menu = self
-        # g.trace(keys)
 
         def doNothingCallback():
             pass
@@ -463,7 +460,7 @@ class textTree(leoFrame.LeoTree):
         return None
     #@+node:ekr.20150107090324.67: *3* text_draw_tree & helper
     def text_draw_tree(self):
-        # g.trace(g.callers())
+
         g.pr('--- tree ---')
         self.draw_tree_helper(self.c.rootPosition(), indent=0)
 

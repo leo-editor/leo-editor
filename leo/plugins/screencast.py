@@ -474,7 +474,6 @@ class ScreenCastController(object):
             # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         if menu:
             c.frame.menu.activateMenu(menu_name)
-            # g.trace(menu.signalsBlocked())
             if 0: # None of this works.
                 g.trace('repaint', c.frame.top)
                 c.frame.top.repaint()
@@ -557,14 +556,12 @@ class ScreenCastController(object):
     def next(self):
         '''Find the next screencast node and execute its script.
         Call m.quit if no more nodes remain.'''
-        trace = False and not g.unitTesting
         m = self; c = m.c; k = c.k
         m.delete_widgets()
         # Restore k.state from m.k_state.
         if m.k_state.kind and m.k_state.kind != m.state_name:
             k.setState(kind=m.k_state.kind, n=m.k_state.n, handler=m.k_state.handler)
         while m.p:
-            if trace: g.trace(m.p.h)
             h = m.p.h.replace('_', '').replace('-', '')
             if g.match_word(h, 0, '@ignorenode'):
                 m.p.moveToThreadNext()
@@ -598,9 +595,7 @@ class ScreenCastController(object):
     #@+node:ekr.20120918103526.10596: *5* sc.exec_node
     def exec_node(self, p):
         '''Execute the script in node p.'''
-        trace = False and not g.unitTesting
         m = self; c = m.c
-        if trace: g.trace(p.h, c.p.v)
         assert p
         assert p.b
         d = {'c': c, 'g:': g, 'm': m, 'p': p}
@@ -617,7 +612,6 @@ class ScreenCastController(object):
     def prev(self):
         '''Show the previous slide.  This will recreate the slide's widgets,
         but the user may have to adjust the minibuffer or other widgets by hand.'''
-        trace = False and not g.unitTesting
         m = self
         if m.p and m.p == m.p1:
             g.trace('at start: %s' % (m.p and m.p.h))
@@ -625,14 +619,11 @@ class ScreenCastController(object):
         else:
             p = m.undo()
             if p and p == m.p1:
-                if trace: g.trace('at start: %s' % (m.p and m.p.h))
                 m.start(m.p1)
             elif p:
-                if trace: g.trace('undo, undo, next: %s' % (m.p and m.p.h))
                 m.undo()
                 m.next()
             else:
-                if trace: g.trace('no undo: restart: %s' % (m.p and m.p.h))
                 m.start(m.p1)
     #@+node:ekr.20120914074855.10720: *4* sc.start
     def start(self, p):
@@ -678,19 +669,13 @@ class ScreenCastController(object):
     #@+node:ekr.20120914074855.10715: *4* sc.state_handler
     def state_handler(self, event=None):
         '''Handle keys while in the "screencast" input state.'''
-        trace = True and not g.unitTesting
         m = self; c = m.c; k = c.k
         state = k.getState(m.state_name)
         char = event.char if event else ''
-        if trace:
-            g.trace('char: %s k.state.kind: %s m.k_state: %s' % (
-                repr(char), repr(k.state.kind),
-                m.k_state and repr(m.k_state.kind) or '<none>'))
         if m.ignore_keys:
             return
         if state == 0:
             # Init the minibuffer as in k.fullCommand.
-            if trace: g.trace('======= state 0 =====')
             assert m.p1 and m.p1 == m.p
             k.mb_event = event
             k.mb_prefix = k.getLabel()
@@ -719,8 +704,6 @@ class ScreenCastController(object):
             m.single_key(char)
             k.setState(kind, n, handler)
             m.set_state(m_state_copy)
-        elif trace:
-            g.trace('ignore %s' % (repr(char)))
     #@+node:ekr.20120914195404.11208: *4* sc.undo
     def undo(self):
         '''Undo the previous screencast scene.'''
@@ -737,14 +720,12 @@ class ScreenCastController(object):
     #@+node:ekr.20120916062255.10596: *4* sc.set_state & clear_state
     def set_state(self, state):
         m = self
-        # g.trace('**** setting m.k_state: %s' % (state.kind))
         m.k_state.kind = state.kind
         m.k_state.n = state.n
         m.k_state.handler = state.handler
 
     def clear_state(self):
         m = self
-        # g.trace('**** clearing m.k_state')
         m.k_state.kind = None
         m.k_state.n = None
         m.k_state.handler = None
@@ -758,7 +739,6 @@ class ScreenCastController(object):
             stroke = k.strokeFromSetting(ch).s
         else:
             stroke = key = ch
-        # g.trace(ch,key,stroke)
         return leoGui.LeoKeyEvent(c, key, stroke,
             binding=None,
             w=w,
@@ -805,7 +785,6 @@ class ScreenCastController(object):
             n = n1
         if n > 0:
             n = n * m.speed
-            # g.trace(n)
             g.sleep(n)
     #@-others
 #@-others

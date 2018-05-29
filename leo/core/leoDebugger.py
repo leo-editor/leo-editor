@@ -26,7 +26,6 @@ def set_trace(c):
 
     if not c.debugger:
         c.debugger = leoDebugger(c)
-    # g.trace(c,sys._getframe().f_back)
     c.debugger.set_trace()
         # sys._getframe().f_back.f_back) # Go back two levels.
 #@-others

@@ -2412,8 +2412,6 @@ import tempfile
 
 def onStart (tag,keywords):
 
-    # g.trace("replacing openWithTempFilePath")
-
     g.funcToMethod(openWithTempFilePath,leoCommands.Commands,"openWithTempFilePath")
 
 def openWithTempFilePath (self,v,ext):

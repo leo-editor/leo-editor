@@ -55,12 +55,7 @@ class JS_Importer(Importer):
 
     def remove_singleton_at_others(self, parent):
         '''Replace @others by the body of a singleton child node.'''
-        trace = False
         found = False
-        if trace:
-            print('')
-            g.trace(parent.h)
-            print('')
         for p in parent.subtree():
             if p.numberOfChildren() == 1:
                 child = p.firstChild()
@@ -69,36 +64,21 @@ class JS_Importer(Importer):
                 if len(matches) == 1:
                     found = True
                     i = matches[0]
-                    if trace:
-                        g.trace('===== @others, line', i)
-                        g.printList(lines)
-                        g.trace('.....')
-                        g.printList(self.get_lines(child))
                     lines = lines[:i] + self.get_lines(child) + lines[i+1:]
-                    if trace:
-                        g.trace('----- result')
-                        g.printList(lines)
                     self.set_lines(p, lines)
                     self.clear_lines(child) # Delete child later. Is this enough???
-                elif len(matches) > 1:
-                    if trace: g.trace('Ambiguous @others', p.h)
-                else:
-                    if trace: g.trace('No @others directive', p.h)
         return found
         
                 
     #@+node:ekr.20180123060307.1: *4* js_i.remove_organizer_nodes
     def remove_organizer_nodes(self, parent):
         '''Removed all organizer nodes created by i.delete_all_empty_nodes.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace('=====', parent.h)
         # Careful: Restart this loop whenever we find an organizer.
         found = True
         while found:
             found = False
             for p in parent.subtree():
                 if p.h.lower() == 'organizer' and not self.get_lines(p):
-                    if trace: g.trace('FOUND', p.h)
                     p.promote()
                     p.doDelete()
                     found = True # Restart the loop.
@@ -136,8 +116,6 @@ class JS_Importer(Importer):
         (, [, {, ;, and binops can only be followed by a regexp.
         ), ], }, ids, strings and numbers can only be followed by a div operator.
         '''
-        trace = False # and not g.unitTesting
-        trace_ch = True
         context = prev_state.context
         curlies, parens = prev_state.curlies, prev_state.parens
         expect = None # (None, 'regex', 'div')
@@ -154,7 +132,6 @@ class JS_Importer(Importer):
             assert expect is None, expect
             progress = i
             ch, s2 = s[i], s[i:i+2]
-            if trace and trace_ch: g.trace(repr(ch)) #, repr(s2))
             if context == '/*':
                 if s2 == '*/':
                     i += 2
@@ -231,7 +208,6 @@ class JS_Importer(Importer):
             else:
                 m = self.op_pattern.match(s, i)
                 if m:
-                    if trace: g.trace('OP', m.group(0))
                     i += len(m.group(0))
                     expect = 'regex'
                 elif ch == '/':
@@ -257,28 +233,22 @@ class JS_Importer(Importer):
             assert progress < i
         d = {'context':context, 'curlies':curlies, 'parens':parens}
         state = JS_ScanState(d)
-        if trace: g.trace(state)
         return state
     #@+node:ekr.20161011045426.1: *4* js_i.skip_regex
     def skip_regex(self, s, i):
         '''Skip an *actual* regex /'''
-        trace = False # and not g.unitTesting
-        trace_ch = False
-        if trace: g.trace('ENTRY', i, repr(s[i:]))
         assert s[i] == '/', (i, repr(s))
         i1 = i
         i += 1
         while i < len(s):
             progress = i
             ch = s[i]
-            if trace and trace_ch: g.trace(repr(ch))
             if ch == '\\':
                 i += 2
             elif ch == '/':
                 i += 1
                 if i < len(s) and s[i] in 'igm':
                     i += 1 # Skip modifier.
-                if trace: g.trace('FOUND', i, s[i1:i])
                 return i
             else:
                 i += 1
@@ -298,7 +268,6 @@ class JS_Importer(Importer):
         line = lines[i]
         for pattern in self.func_patterns:
             if pattern.search(line) is not None:
-                # g.trace('FOUND:', line.strip())
                 return True
         return False
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
@@ -346,28 +315,24 @@ class JS_Importer(Importer):
             m = pattern.match(s)
             if m:
                 s = m.group(1)
-                if trace: g.trace('match 1', pattern)
                 break
         # Second regex cleanup. Use \1 + \2
         for pattern in self.clean_regex_list2:
             m = pattern.match(s)
             if m:
                 s = m.group(1) + m.group(2)
-                if trace: g.trace('match 2', pattern)
                 break
         # Third regex cleanup. Use \1 + ' ' + \2
         for pattern in self.clean_regex_list3:
             m = pattern.match(s)
             if m:
                 s = m.group(1) + ' ' + m.group(2)
-                if trace: g.trace('match 3', pattern)
                 break
         # Fourth cleanup. Use \1 + ' ' + \2 again
         for pattern in self.clean_regex_list4:
             m = pattern.match(s)
             if m:
                 s = m.group(1) + ' ' + m.group(2)
-                if trace: g.trace('match 4', pattern)
                 break
         # Final whitespace cleanups.
         s = s.replace('  ', ' ')

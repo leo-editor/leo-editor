@@ -45,10 +45,8 @@ class BaseEditCommandsClass(object):
         Do the common processing at the end of each command.
         Handles undo only if we are in the body pane.
         '''
-        trace = False and not g.unitTesting
         c, k = self.c, self.c.k
         b = self.undoData
-        if trace: g.trace('changed', changed)
         if b and b.name.startswith('body') and changed:
             c.frame.body.onBodyChanged(undoType=b.undoType,
                 oldSel=b.oldSel, oldText=b.oldText, oldYview=None)
@@ -63,15 +61,13 @@ class BaseEditCommandsClass(object):
     #@+node:ekr.20150514043714.7: *3* BaseEdit.editWidget
     def editWidget(self, event, forceFocus=True):
         '''Return the edit widget for the event. Also sets self.w'''
-        trace = False and not g.unitTesting
         c = self.c
         w = event and event.widget
-        wname = c.widget_name(w) if w else '<no widget>'
+        # wname = c.widget_name(w) if w else '<no widget>'
         if w and g.isTextWrapper(w):
             pass
         else:
             w = c.frame.body and c.frame.body.wrapper
-        if trace: g.trace(g.isTextWrapper(w), wname, w)
         if w and forceFocus:
             c.widgetWantsFocusNow(w)
         self.w = w

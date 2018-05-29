@@ -48,7 +48,6 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20110605121601.18539: *3* filter.ctor
     def __init__(self, c, w, tag=''):
         '''Ctor for LeoQtEventFilter class.'''
-        # g.trace('LeoQtEventFilter',tag,w)
         # Init the base class.
         QtCore.QObject.__init__(self)
         self.c = c
@@ -85,9 +84,6 @@ class LeoQtEventFilter(QtCore.QObject):
             binding, ch = self.toBinding(event)
             if not binding:
                 return False # Allow Qt to handle the key event.
-            stroke = g.KeyStroke(binding=binding)
-            if 'keys' in g.app.debug:
-                g.trace('binding: %s, stroke: %s, char: %r' % (binding, stroke, ch))
             #
             # Pass the KeyStroke to masterKeyHandler.
             key_event = self.createKeyEvent(event, c, self.w, ch, binding)
@@ -224,7 +220,6 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20180419160958.1: *5* filter.doMacTweaks
     def doMacTweaks(self, actual_ch, ch, mods):
         '''Replace MacOS Alt characters.'''
-        ### g.trace(mods, repr(actual_ch), repr(ch)
         if g.isMac and len(mods) == 1 and mods[0] == 'Alt':
             # Patch provided by resi147.
             # See the thread: special characters in MacOSX, like '@'.
@@ -268,8 +263,11 @@ class LeoQtEventFilter(QtCore.QObject):
                 # On Windows, when the KeyDown event for this key is sent,
                 # the Ctrl+Alt modifiers are also set.
             qt.Key_Control: 'Key_Control', # MacOS: Command key
-            qt.Key_Meta: 'Key_Meta', # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
+            qt.Key_Meta: 'Key_Meta',
+                # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
             qt.Key_Shift: 'Key_Shift',
+            qt.Key_NumLock: 'Num_Lock',
+                # 868.
         }
         if d.get(keynum):
             if 0: # Allow bare modifier key.
@@ -308,6 +306,7 @@ class LeoQtEventFilter(QtCore.QObject):
             (qt.ControlModifier, 'Control'),
             (qt.MetaModifier, 'Meta'),
             (qt.ShiftModifier, 'Shift'),
+            (qt.KeypadModifier, 'KeyPad'),
         )
         mods = [b for a, b in table if (modifiers & a)]
         #
@@ -521,13 +520,6 @@ class LeoQtEventFilter(QtCore.QObject):
             e.FocusOut: 'focus-out', # 9
             e.WindowActivate: 'window-activate', # 24
         }
-        # c = self.c
-        # table = (
-            # c.frame.miniBufferWidget and c.frame.miniBufferWidget.widget,
-            # c.frame.body.wrapper and c.frame.body.wrapper.widget,
-            # c.frame.tree and c.frame.tree.treeWidget,
-            # c.frame.log and c.frame.log.logCtrl and c.frame.log.logCtrl.widget,
-        # )
         if et in ignore_d:
             return
         w = QtWidgets.QApplication.focusWidget()

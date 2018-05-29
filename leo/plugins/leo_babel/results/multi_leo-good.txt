@@ -1,0 +1,66 @@
+||* Tests *|| 2018-04-03 12:16:1522782972
+||* Test Name *|| Leo-Babel script using 3 Leo-Editor Files
+||* stdout *||
+('Today is day', 93, 'of the current year')
+('Today is day', 93, 'of ', 2018)
+('Today is day', '093', 'of the current year')
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:16:13 End Time
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/test_scripts.leo
+read outline in 0.00 seconds
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/test_results.leo
+read outline in 0.01 seconds
+12:16:14 saved: test_results.leo
+||* Test Name *|| Leo-Babel script using a script in another Leo-Editor file
+||* stdout *||
+('Today is day', 93, 'of the current year')
+('Today is day', 93, 'of ', 2018)
+('Today is day', '093', 'of the current year')
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:16:15 End Time
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/test_scripts.leo
+read outline in 0.00 seconds
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/examples_multi_leo.leo
+read outline in 0.02 seconds
+12:16:16 saved: examples_multi_leo.leo
+||* Other Color *|| blue
+Results Root UNL satisfies 2 positions.
+||* Test Name *|| Leo-Babel script using a script in another Leo-Editor file
+||* stdout *||
+2.7.12 (default, Dec  4 2017, 14:50:18) 
+[GCC 5.4.0 20160609]
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:16:17 End Time
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/test_scripts.leo
+read outline in 0.00 seconds
+12:16:18 saved: examples_multi_leo.leo
+||* Test Name *|| Leo-Babel script using a Results Root in another Leo-Editor file
+||* stdout *||
+('Today is day', 93, 'of the current year')
+('Today is day', 93, 'of ', 2018)
+('Today is day', '2018-04-03')
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:16:20 End Time
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/test_results.leo
+read outline in 0.02 seconds
+12:16:21 saved: test_results.leo

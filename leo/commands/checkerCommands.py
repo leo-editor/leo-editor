@@ -16,7 +16,7 @@ except ImportError:
     pyflakes = None
 import os
 import shlex
-import subprocess
+# import subprocess
 import sys
 import time
 #@-<< imports >>
@@ -130,7 +130,6 @@ class Flake8Command(object):
     #@+node:ekr.20160517133049.4: *3* flake8.get_flake8_config
     def get_flake8_config(self):
         '''Return the path to the pylint configuration file.'''
-        trace = False and not g.unitTesting
         join = g.os_path_finalize_join
         dir_table = (
             g.app.homeDir,
@@ -145,7 +144,6 @@ class Flake8Command(object):
             for path in dir_table:
                 fn = g.os_path_abspath(join(path, base))
                 if g.os_path_exists(fn):
-                    if trace: g.trace('found:', fn)
                     return fn
         if not g.unitTesting:
             g.es_print('no flake8 configuration file found in\n%s' % (
@@ -174,12 +172,10 @@ class Flake8Command(object):
         # If still not found, expand the search if root is a clone.
         if not found:
             isCloned = any([p.isCloned() for p in root.self_and_parents()])
-            # g.trace(isCloned,root.h)
             if isCloned:
                 for p in c.all_positions():
                     if p.isAnyAtFileNode():
                         isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
-                        # g.trace(isAncestor,p.h)
                         if isAncestor and self.find(p):
                             break
         paths = list(set(self.seen))
@@ -317,13 +313,6 @@ class PylintCommand(object):
         '''ctor for PylintCommand class.'''
         self.c = c
         self.seen = [] # List of checked vnodes.
-        self.wait = False
-            # Waiting has several advantages:
-            # 1. output is shown in the log pane.
-            # 2. Total timing statistics can be shown,
-            #    so it is always clear when the command has ended.
-            # Not waiting *does* works, but the user can't
-            # see when the command has ended.
 
     #@+others
     #@+node:ekr.20150514125218.9: *3* pylint.check
@@ -346,7 +335,6 @@ class PylintCommand(object):
     #@+node:ekr.20150514125218.10: *3* pylint.get_rc_file
     def get_rc_file(self):
         '''Return the path to the pylint configuration file.'''
-        trace = False and not g.unitTesting
         base = 'pylint-leo-rc.txt'
         table = (
             g.os_path_finalize_join(g.app.homeDir, '.leo', base),
@@ -357,7 +345,6 @@ class PylintCommand(object):
         for fn in table:
             fn = g.os_path_abspath(fn)
             if g.os_path_exists(fn):
-                if trace: g.trace('found:', fn)
                 return fn
         g.es_print('no pylint configuration file found in\n%s' % (
             '\n'.join(table)))
@@ -373,12 +360,9 @@ class PylintCommand(object):
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:
             sys.path.append(leo_path)
-        t1 = time.time()
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         for p in roots:
             self.check(p, rc_fn)
-        if self.wait:
-            g.es_print('pylint done %s' % g.timeSince(t1))
     #@+node:ekr.20150514125218.12: *3* pylint.run_pylint
     pylint_install_message = False
 
@@ -412,21 +396,16 @@ class PylintCommand(object):
             # When shell is True, it's recommended to pass a string, not a sequence.
             command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
                 sys.executable, ','.join(args))
-        if self.wait:
-            g.es_print('pylint:', g.shortFileName(fn))
-            proc = subprocess.Popen(
-                command,
-                stdout=subprocess.PIPE,
-                shell=False,
-                universal_newlines=True, # Converts stdout to unicode
-            )
-            stdout_data, stderr_data = proc.communicate()
-            for s in g.splitLines(stdout_data):
-                if s.strip():
-                    g.es_print(s.rstrip())
-        else:
-            bpm = g.app.backgroundProcessManager
-            bpm.start_process(c, command, kind='pylint', fn=fn)
+        #
+        # Run the command using the BPM.
+        bpm = g.app.backgroundProcessManager
+        roots = g.findRootsWithPredicate(c, c.p, predicate=None)
+        bpm.start_process(c, command,
+            fn=fn,
+            kind='pylint',
+            link_pattern = r'^\w+:(.*),.*:(.*)$',
+            link_root = roots and roots[0],
+        )
     #@-others
 #@-others
 #@@language python

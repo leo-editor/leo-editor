@@ -112,10 +112,7 @@ class LProtoServer(object):
     #@+node:ekr.20111012070545.7255: *3* listen
     def listen(self,name):
 
-        # g.trace(name,g.callers())
-
         self.srv.listen(name)
-
         lprint("lproto.py: listen on",self.srv.fullServerName())
 
     #@+node:ekr.20111012070545.7256: *3* msg_received
@@ -188,13 +185,7 @@ class LProtoClient(object):
             self.recvbuf = None
     #@+node:ekr.20111012070545.7212: *3* connect
     def connect (self,fname):
-
         '''Connect to the server.  Return True if the connection was established.'''
-
-        trace = False and not g.unitTesting
-
-        if trace: g.trace(fname,socket)
-
         if hasattr(socket,'AF_UNIX'):
             try:
                 # pylint: disable=no-member

@@ -1,0 +1,232 @@
+||* Tests *|| 2018-04-03 12:19:1522783176
+||* Test Name *|| Name of current shell
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:19:37 End Time
+||* stdout *||
+bob       9104  9103  0 12:19 pts/0    00:00:00 sh /sec/tmp/leoScript.py
+bob       9105  9104  0 12:19 pts/0    00:00:00 ps -ef
+bob       9108  9103  0 12:19 pts/0    00:00:00 /usr/bin/python3 /pri/git/leo-editor/leo/plugins/leo_babel/babel_kill.py 9104
+||* Test Name *|| Slow Shell Output
+||* Completion *||
+2 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:19:38 End Time
+||* stderr *||
+/sec/tmp/leoScript.py: 7: /sec/tmp/leoScript.py: Syntax error: word unexpected (expecting ")")
+||* Test Name *|| Slow output by script in node
+||* Completion *||
+0 Subprocess Termination Code
+00:00:08 Elapsed Time. 2018-04-03 12:19:47 End Time
+||* stderr *||
+stderr output
+stderr output
+stderr output
+stderr output
+stderr output
+stderr output
+stderr output
+||* stdout *||
+a
+b
+c
+d
+e
+f
+g
+||* Test Name *|| Slow Out No Flush
+||* Completion *||
+0 Subprocess Termination Code
+00:00:16 Elapsed Time. 2018-04-03 12:20:04 End Time
+||* stderr *||
+stderr 2
+stderr 4
+||* stdout *||
+stdout 1
+stdout 2
+stdout 3
+stdout 4
+stdout 5
+Done
+||* Test Name *|| Slow Out With Flush
+||* Completion *||
+0 Subprocess Termination Code
+00:00:16 Elapsed Time. 2018-04-03 12:20:21 End Time
+||* stderr *||
+stderr 2
+stderr 4
+||* stdout *||
+stdout 1
+stdout 2
+stdout 3
+stdout 4
+stdout 5
+Done
+||* Test Name *|| Slow Out by Bash script
+||* Completion *||
+2 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:20:22 End Time
+||* stderr *||
+./slowOut.sh: 8: ./slowOut.sh: Syntax error: word unexpected (expecting ")")
+||* Test Name *|| Current Working Directory
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:20:23 End Time
+||* stdout *||
+/pri/git/leo_babel/examples
+||* Test Name *|| Current Working Directory with @path
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:20:24 End Time
+||* stdout *||
+/tmp
+||* Test Name *|| Multi-node Script
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:20:25 End Time
+||* stdout *||
+filename=leoScript.py
+extension=py
+rootname=leoScript
+||* Test Name *|| Bash Function, no parameters script
+||* Completion *||
+2 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:20:26 End Time
+||* stderr *||
+/sec/tmp/leoScript.py: 6: /sec/tmp/leoScript.py: Syntax error: "(" unexpected
+||* Test Name *|| Current Working Directory with relative @path
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:20:27 End Time
+||* stdout *||
+/pri/git/leo_babel/examples
+||* Test Name *|| Slow Python Output
+||* Completion *||
+0 Subprocess Termination Code
+00:00:16 Elapsed Time. 2018-04-03 12:20:44 End Time
+||* stderr *||
+stderr 2
+stderr 4
+||* stdout *||
+stdout 1
+stdout 2
+stdout 3
+stdout 4
+stdout 5
+Done
+||* Test Name *|| Slow Python Output No Flush
+||* Completion *||
+0 Subprocess Termination Code
+00:00:16 Elapsed Time. 2018-04-03 12:21:01 End Time
+||* stderr *||
+stderr 2
+stderr 4
+||* stdout *||
+stdout 1
+stdout 2
+stdout 3
+stdout 4
+stdout 5
+Done
+||* Test Name *|| Slow Out by Python with Flush
+||* Completion *||
+0 Subprocess Termination Code
+00:00:16 Elapsed Time. 2018-04-03 12:21:18 End Time
+||* stderr *||
+stderr 2
+stderr 4
+||* stdout *||
+stdout 1
+stdout 2
+stdout 3
+stdout 4
+stdout 5
+Done
+||* Test Name *|| Slow Out by Python No Flush
+||* Completion *||
+0 Subprocess Termination Code
+00:00:16 Elapsed Time. 2018-04-03 12:21:35 End Time
+||* stderr *||
+stderr 2
+stderr 4
+||* stdout *||
+stdout 1
+stdout 2
+stdout 3
+stdout 4
+stdout 5
+Done
+||* Test Name *|| Current Working Directory
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:21:37 End Time
+||* stdout *||
+/pri/git/leo_babel/examples
+||* Test Name *|| Current Working Directory with @path
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:21:39 End Time
+||* stdout *||
+/tmp
+||* Test Name *|| Multi-node Script
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:21:41 End Time
+||* stdout *||
+2018-04-03
+||* Test Name *|| Default Python Version
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:21:43 End Time
+||* stdout *||
+3.5.2 (default, Nov 23 2017, 16:37:01) 
+[GCC 5.4.0 20160609]
+||* Test Name *|| Current Working Directory with relative @path
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:21:45 End Time
+||* stdout *||
+/pri/git/leo_babel/examples
+||* Test Name *|| Command line arguments
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:21:46 End Time
+||* stdout *||
+a 3.141592653589793 Abbra Kadabra
+||* Test Name *|| Python Version Specified by Babel Parameter Script
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:21:48 End Time
+||* stdout *||
+2.7.12 (default, Dec  4 2017, 14:50:18) 
+[GCC 5.4.0 20160609]
+||* Test Name *|| Python Function, No parameters script
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:21:50 End Time
+||* stdout *||
+2018-04-03
+||* Other Color *|| black
+12:21:51 saved: examples_no_error.leo
+||* Test Name *|| Python Version & Node Creation Specified by Babel Parameter Script
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:21:52 End Time
+||* stdout *||
+3.5.2 (default, Nov 23 2017, 16:37:01) 
+[GCC 5.4.0 20160609]
+||* Other Color *|| black
+12:21:53 saved: examples_no_error.leo
+||* Test Name *|| Redirect stdout to stderr
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:21:54 End Time
+||* stderr *||
+First line
+Second line
+Third line
+||* Test Name *|| Python - Command line arguments
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:21:56 End Time
+||* stdout *||
+['/sec/tmp/leoScript.py', 'a', '3.141592653589793', 'Abbra Kadabra']

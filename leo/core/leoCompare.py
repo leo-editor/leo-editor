@@ -449,7 +449,6 @@ class CompareLeoOutlines(object):
     #@+node:ekr.20180211170333.3: *3* loc.diff_two_files
     def diff_two_files(self, fn1, fn2):
         '''Create an outline describing the git diffs for fn.'''
-        g.trace('\n%s\n%s' % (fn1, fn2))
         self.path1, self.path2 = fn1, fn2
         s1 = self.get_file(fn1)
         s2 = self.get_file(fn2)
@@ -470,12 +469,8 @@ class CompareLeoOutlines(object):
     #@+node:ekr.20180211170333.5: *4* loc.compute_dicts
     def compute_dicts(self, c1, c2):
         '''Compute inserted, deleted, changed dictionaries.'''
-        trace = False and not g.unitTesting
         d1 = {v.fileIndex: v for v in c1.all_unique_nodes()} 
         d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
-        if trace:
-            g.trace('len(d1)', len(d1.keys()))
-            g.trace('len(d2)', len(d2.keys()))
         added   = {key: d2.get(key) for key in d2 if not d1.get(key)}
         deleted = {key: d1.get(key) for key in d1 if not d2.get(key)}
         changed = {}
@@ -487,10 +482,6 @@ class CompareLeoOutlines(object):
                 assert v1.context != v2.context
                 if v1.h != v2.h or v1.b != v2.b:
                     changed[key] = (v1, v2)
-        if trace:
-            for kind, d in (('added', added), ('deleted', deleted), ('changed', changed)):
-                g.trace(kind)
-                g.printObj(d)
         return added, deleted, changed
     #@+node:ekr.20180211170333.6: *4* loc.create_compare_node
     def create_compare_node(self, c1, c2, d, kind):

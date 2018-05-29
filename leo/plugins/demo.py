@@ -96,8 +96,6 @@ class Demo(object):
         self.script_list = []
             # A list of strings (scripts).
             # Scripts are removed when executed.
-        self.trace = trace
-            # True: enable traces in k.masterKeyWidget.
         self.user_dict = {}
             # For use by scripts.
         self.widgets = []
@@ -112,8 +110,6 @@ class Demo(object):
         old_demo = getattr(g.app, 'demo', None)
         if old_demo:
             old_demo.delete_all_widgets()
-            if self.trace: g.trace('deleting old demo:',
-                old_demo.__class__.__name__)
         g.app.demo = self
     #@+node:ekr.20170208124125.1: *4* demo.init_namespace
     def init_namespace(self):
@@ -143,7 +139,6 @@ class Demo(object):
         # Add most ivars.
         for key, value in self.namespace.items():
             if not hasattr(self, key) and key not in 'cgp':
-                # g.trace('SET', key, value)
                 setattr(self, key, value)
     #@+node:ekr.20170128222411.1: *3* demo.Control
     #@+node:ekr.20170207090715.1: *4* demo.bind
@@ -153,7 +148,6 @@ class Demo(object):
             g.trace('redefining', name)
             g.printDict(self.namespace)
         self.namespace [name] = object_
-        # g.trace(name, object_, object_.__init__)
         return object_
     #@+node:ekr.20170129174251.1: *4* demo.end
     def end(self):
@@ -193,15 +187,11 @@ class Demo(object):
     #@+node:ekr.20170128213103.30: *4* demo.next
     def next(self, chain=True, wait=None):
         '''Execute the next demo script, or call end().'''
-        trace = False
-        # g.trace(chain, g.callers(2), self.c.p.h)
         if wait is not None:
             self.wait(wait)
         if self.script_i < len(self.script_list):
             # Execute the next script.
             script = self.script_list[self.script_i]
-            if trace:
-                self.print_script(script)
             self.script_i += 1
             self.setup_script()
             self.exec_node(script)
@@ -225,13 +215,8 @@ class Demo(object):
             self.script_i += 1
                 # Restore invariant, and make net change = -1.
             self.teardown_script()
-        elif self.trace:
-            g.trace('no previous script')
 
     prev_command = prev
-
-    # def prev_command(self):
-        # self.prev()
     #@+node:ekr.20170208094834.1: *4* demo.retain
     def retain (self, w):
         '''Retain widet w so that dele_widgets does not delete it.'''
@@ -347,7 +332,6 @@ class Demo(object):
                     # Experimental: allow escapes.
         if lines:
             aList.append(''.join(lines))
-        # g.trace('===== delim', delim) ; g.printList(aList)
         return aList
     #@+node:ekr.20170128213103.43: *4* demo.wait & key_wait
     def key_wait(self, speed=None, n1=None, n2=None):
@@ -486,7 +470,6 @@ class Demo(object):
             tkKey=None,
             shortcut=shortcut,
         )
-        # g.trace('%10r %r' % (shortcut, event))
         return event
     #@+node:ekr.20170130090124.1: *3* demo.Menus
     #@+node:ekr.20170128213103.15: *4* demo.dismiss_menu_bar

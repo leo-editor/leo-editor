@@ -7,7 +7,6 @@ All options come from sys.argv.  See scan_options for the available options.
 
 **Important**: Leo's core does not use this module in any way.
 '''
-trace = False # True: enable traces in main.
 import leo.core.leoBridge as leoBridge
 import optparse
 import sys
@@ -32,7 +31,6 @@ def main():
         g = bridge.globals()
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'test') #relative_path)
         c = bridge.openLeoFile(path)
-        if trace: g.es('%s %s' % (tag, c.shortFileName()))
         if c:
             runUnitTests(c, g)
     g.pr(tag, 'done')

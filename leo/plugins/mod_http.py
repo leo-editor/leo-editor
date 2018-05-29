@@ -347,7 +347,6 @@ def getData(setting):
         strip_data=False,
     )
     s = ''.join(aList or [])
-    # g.trace(setting, len(s))
     return s
 #@+node:bwmulder.20050326191345: ** class config
 class config(object):
@@ -712,7 +711,6 @@ class LeoActions(object):
         parent = None # parent node for new bookmarks
         using_root = False
         path = self.bookmark_unl
-        # g.trace(path)
         if path:
             parsed = urlparse.urlparse(path)
             leo_path = os.path.expanduser(parsed.path)
@@ -857,7 +855,6 @@ class LeoActions(object):
 
         i.e. just above the "Users comments" line.
         '''
-        # g.trace(node.h)
         b = node.b.split('\n')
         insert = ['', '"""', text, '"""']
         collected = None
@@ -882,10 +879,8 @@ class LeoActions(object):
     #@+node:tbrown.20111005093154.17683: *3* get_favicon
     def get_favicon(self):
         path = g.os_path_join(g.computeLeoDir(), 'Icons', 'LeoApp16.ico')
-        # g.trace(g.os_path_exists(path),path)
         try:
             f = StringIO()
-            # f.write(open(path).read())
             f2 = open(path)
             s = f2.read()
             f.write(s)
@@ -1184,7 +1179,6 @@ def a_read(obj):
     except asyncore.ExitNow:
         raise
     except Exception:
-        # g.trace('error')
         obj.handle_error()
 #@+node:ekr.20110522152535.18252: *3* escape
 def escape(s):

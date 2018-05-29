@@ -392,7 +392,6 @@ def init():
 def make_screen_shot(path):
     '''Create a screenshot of the present Leo outline and save it to path.
     This is a callback called from make_screen_shot in runLeo.py'''
-    # g.trace('screenshots.py:',path)
     app = g.app.gui.qtApp
     # pylint: disable=no-member
     if isQt5:
@@ -411,8 +410,6 @@ class ScreenShotController(object):
     #@+node:ekr.20100908110845.5532: *3*  ctor & helpers
     def __init__(self, c):
         self.c = c
-        # g.trace('ScreenShotController')
-        # import flags
         try:
             from PIL import Image, ImageChops
             assert Image, ImageChops # for pyflakes
@@ -914,7 +911,6 @@ class ScreenShotController(object):
             if g.match_word(child.h, 0, '@callout'):
                 callout = sc.get_callout(child)
                 if callout: aList.append(callout)
-        # g.trace(aList)
         return aList
     #@+node:ekr.20100909121239.6096: *6* get_callout
     def get_callout(self, p):
@@ -945,7 +941,6 @@ class ScreenShotController(object):
             ):
                 callout = sc.get_marker(child)
                 if callout: aList.extend(callout)
-        # g.trace(aList)
         return aList
     #@+node:ekr.20100909121239.6097: *6* get_marker
     def get_marker(self, p):
@@ -960,7 +955,6 @@ class ScreenShotController(object):
         '''Get a local or global option.
         Global options are children of the @slideshow node.
         Local options are children of the p, the @slide node.'''
-        trace = False
         sc = self
         assert hasattr(sc, option)
         tag = '@' + option
@@ -982,7 +976,6 @@ class ScreenShotController(object):
                             val = int(val)
                         elif not val:
                             g.warning('ignoring setting', child.h)
-                        if trace: g.trace(option, repr(val or False))
                         return val
                     else:
                         g.warning('ignoring setting:', child.h)
@@ -1026,7 +1019,6 @@ class ScreenShotController(object):
         for tag in ('title', 'title_pattern'):
             s = sc.get_option(tag)
             if s:
-                # g.trace(repr(tag),repr(s))
                 if tag == '@title':
                     return s
                 else:
@@ -1038,7 +1030,6 @@ class ScreenShotController(object):
             return slide_name
         else:
             s = sc.default_slide_pattern % d
-            # g.trace('using default title:',s)
             return s
     #@+node:ekr.20101006060338.5706: *5* get_verbose_flag
     def get_verbose_flag(self):
@@ -1262,11 +1253,9 @@ class ScreenShotController(object):
         changed = 0
         for child in p.children():
             if g.match_word(child.h, 0, '@url built slide'):
-                # g.trace(child.b)
                 child.doDelete()
                 changed += 1
         if changed:
-            # g.es('deleted %s nodes' % (changed))
             c.redraw()
     #@+node:ekr.20100909193826.5600: *4* select_at_image_node (not used)
     # def select_at_image_node (self,p):
@@ -1466,7 +1455,6 @@ class ScreenShotController(object):
     #@+node:ekr.20100908110845.5546: *5* make_dom & helpers
     def make_dom(self):
         '''Create the template dom object.'''
-        trace = True and not g.unitTesting
         sc = self
         template = sc.get_template()
         if not template: return None
@@ -1484,7 +1472,6 @@ class ScreenShotController(object):
             parent = parents_d.get(i)
             parent.remove(i)
         for n, callout in enumerate(sc.callouts):
-            if trace: g.trace('callout %s: %s' % (n, callout))
             z = copy.deepcopy(part['co_g_co'])
             ids_d = sc.getIds(z)
             text = ids_d.get('co_text_holder')
@@ -1502,7 +1489,6 @@ class ScreenShotController(object):
             sc.move_element(z, 20 * n, 20 * n)
             part_parent.append(z)
         for n, number in enumerate(sc.markers):
-            if trace: g.trace('number %s: %s' % (n, number))
             if len(str(number)) == 2:
                 use_g, use_t = 'co_g_bc_2', 'co_bc_text_2'
             else:
@@ -1597,9 +1583,7 @@ class ScreenShotController(object):
         th = sc.get_dim(fn, text_id, 'height') # text height
         if not th:
             g.trace('no th')
-        # g.trace('  ', present, h, present*h, th)
         while present > min_ and present * h + 15 > th:
-            # g.trace('  ', present, h, present*h, th)
             del pnts[h0]
             del pnts[h1]
             present -= 1
@@ -1619,10 +1603,8 @@ class ScreenShotController(object):
         """return dimension of element in fn with @id Id, what is
         x, y, width, or height
         """
-        trace = False
         sc = self
         hsh = fn + Id + what
-        if trace: g.trace('hsh', repr(fn), repr(Id), repr(what))
         if hsh in sc.dimCache:
             sc.is_cache += 1
             return sc.dimCache[hsh]
@@ -1642,7 +1624,6 @@ class ScreenShotController(object):
             id_, x, y, w, h = line.split(',')
             for part in ('x', x), ('y', y), ('width', w), ('height', h):
                 hsh2 = fn + id_ + part[0]
-                if trace: g.trace('hsh2', repr(id_), repr(part[0]))
                 sc.dimCache[hsh2] = float(part[1])
         sc.is_reads += 1
         assert sc.dimCache.get(hsh)
@@ -1705,7 +1686,6 @@ class ScreenShotController(object):
             for z2 in expanded:
                 if z2.h == z.h:
                     z.expand()
-                    # g.trace('Expanding',z.h)
         # Save the file silently.
         c.fileCommands.save(fn)
         c.close()
@@ -1820,14 +1800,12 @@ class ScreenShotController(object):
     #@+node:ekr.20101113193341.5450: *6* add_at_url_final_output_file
     def add_at_url_final_output_file(self, p, slide_number):
         '''Create or update the "@url final output file" node.'''
-        trace = True
         sc = self
         tag = '@url final output file'
         for child in p.children():
             if sc.match(child, tag):
                 p2 = child; break
         else:
-            if trace: g.es('add %s' % tag)
             p2 = p.insertAsLastChild()
             p2.h = tag
         p2.b = sc.finalize(
@@ -1847,12 +1825,10 @@ class ScreenShotController(object):
     #@+node:ekr.20101113193341.5452: *6* delete_at_url_built_slide_node
     def delete_at_url_built_slide_node(self, p):
         '''Delete any "@url built slide" node in p's children.'''
-        trace = True
         sc = self
         tag = '@url built slide'
         for child in p.children():
             if sc.match(child, tag):
-                if trace: g.es('del %s in %s' % (tag, p.h))
                 child.doDelete()
                 break
     #@+node:ekr.20101113193341.5453: *4* check_meld & helpers
@@ -1936,7 +1912,6 @@ class ScreenShotController(object):
                 p.moveToThreadNext()
     #@+node:ekr.20101113193341.5457: *5* copy_screenshot
     def copy_screenshot(self, aList, slide_n, wink_n):
-        trace = True
         sc = self
         if wink_n >= len(aList):
             return g.trace('can not happen: '
@@ -1944,13 +1919,10 @@ class ScreenShotController(object):
                     len(aList), wink_n))
         fn_src = aList[wink_n]
         fn_dst = sc.finalize('slide-%03d.png' % (slide_n))
-        if trace:
-            g.trace('%7s -> %s' % (g.shortFileName(fn_src), fn_dst))
         shutil.copyfile(fn_src, fn_dst)
     #@+node:ekr.20101113193341.5458: *4* get_wink_screenshots
     def get_wink_screenshots(self):
         '''Return the properly sorted list of wink screenshots.'''
-        trace = True
         sc = self
         aList = glob.glob(sc.wink_path + '/*.png')
 
@@ -1971,9 +1943,6 @@ class ScreenShotController(object):
                 raise KeyError
 
         aList.sort(key=key) # Essential.
-        if trace:
-            for z in aList:
-                print(z)
         return aList
     #@+node:ekr.20101113193341.5445: *4* has_at_no_screenshot_node
     def has_at_no_screenshot_node(self, p):

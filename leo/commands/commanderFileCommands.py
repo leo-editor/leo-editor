@@ -5,7 +5,7 @@
 '''File commands that used to be defined in leoCommands.py'''
 import leo.core.leoGlobals as g
 import os
-import time
+# import time
 #@+others
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings & helper
 @g.commander_command('reload-settings')
@@ -234,7 +234,6 @@ def open(self, event=None):
 @g.commander_command('refresh-from-disk')
 def refreshFromDisk(self, event=None):
     '''Refresh an @<file> node from disk.'''
-    trace = False and not g.unitTesting
     c, p, u = self, self.p, self.undoer
     c.nodeConflictList = []
     fn = p.anyAtFileNodeName()
@@ -280,13 +279,7 @@ def refreshFromDisk(self, event=None):
         u.afterChangeTree(p, command='refresh-from-disk', bunch=b)
         # Create the 'Recovered Nodes' tree.
         c.fileCommands.handleNodeConflicts()
-        t1 = time.clock()
         c.redraw()
-        t2 = time.clock()
-        if trace:
-            n = sum([1 for z in p.self_and_subtree()])
-            h = sum([hash(z.h) for z in p.self_and_subtree()])
-            g.trace('%s nodes, hash: %s in %5.2f sec. %r' % (n, h, (t2-t1), p.h))
 #@+node:ekr.20031218072017.2834: *3* c_file.save
 @g.commander_command('save-file')
 def save(self, event=None, fileName=None):

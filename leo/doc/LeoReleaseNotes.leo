@@ -3188,6 +3188,36 @@
 <v t="ekr.20180406011314.33"><vh>Settings &amp; command-line arguments</vh></v>
 </v>
 <v t="ekr.20180507105516.1"><vh>Leo 5.7.2 New key code</vh></v>
+<v t="ekr.20180527085214.1"><vh>Leo 5.7.3 Jedi, leo_babel, python_terminal</vh>
+<v t="ekr.20180527085214.2"><vh>Bugs</vh>
+<v t="ekr.20180527085214.3"><vh>#841: Python importer does not always handle decorators properly </vh></v>
+<v t="ekr.20180527085214.4"><vh>#892: Crash in checkForChangedNodes</vh></v>
+<v t="ekr.20180527085214.5"><vh>#893: Python Console gets stuck on IndentationError </vh></v>
+<v t="ekr.20180527085214.6"><vh>#901: The Windows Right-Menu key insert "Menu" into text</vh></v>
+</v>
+<v t="ekr.20180527085214.7"><vh>Code</vh>
+<v t="ekr.20180527085214.8"><vh>#875: Rename json reader/writer plugins</vh></v>
+<v t="ekr.20180527085214.9"><vh>BackgroundProcessManager supports clickable links</vh></v>
+<v t="ekr.20180527085214.10"><vh>Removed most g.trace statements</vh></v>
+</v>
+<v t="ekr.20180527085214.11"><vh>Info items</vh>
+<v t="ekr.20180527085214.12"><vh>#909: How to use LaTeX with Leo</vh></v>
+<v t="ekr.20180527085214.13"><vh>#910: Summary of developer info items</vh></v>
+</v>
+<v t="ekr.20180527085214.14"><vh>Features</vh>
+<v t="ekr.20180527085214.15"><vh>#309: Support Jedi autocompletion</vh></v>
+<v t="ekr.20180527085214.16"><vh>#738: Links in Tips dialogs are now clickable</vh></v>
+<v t="ekr.20180527085214.17"><vh>#868: Allow separate bindings for numeric keypad keys</vh></v>
+<v t="ekr.20180527085214.18"><vh>#904: Allow local overrides of abbreviations</vh></v>
+<v t="ekr.20180527085214.19"><vh>Added diff-related wrappers</vh></v>
+<v t="ekr.20180527085214.20"><vh>Added leo_babel plugin</vh></v>
+<v t="ekr.20180527085214.21"><vh>Improved recursive import script</vh></v>
+<v t="ekr.20180527085214.22"><vh>Improved typescript importer</vh></v>
+<v t="ekr.20180527085214.23"><vh>pylint creates clickable links</vh></v>
+<v t="ekr.20180527085214.24"><vh>Removed settings</vh></v>
+<v t="ekr.20180527085214.25"><vh>Smart searches for functions and methods</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20150313053238.1"></t>
@@ -24435,6 +24465,132 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20180527085214.1">May 28, 2018
+Leo 5.7.3, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 5.7.3**
+
+- Added support for Jedi autocompletion.
+- Much improved python_terminal plugin.
+- Much improved recursive import script.
+- New leo_babel plugin.
+- Leo's pylint command writes clickable links.
+- Smart searches for functions and methods.
+- Allow separate bindings for numeric keypad keys
+- Added easy-to-use diff-related wrappers for scripts.
+- Allow local overrides of all abbreviations.
+- Improved TypeScript importer.
+- The usual minor bug fixes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20180527085214.10">A mass cleanup of Leo's code, removing many unused tracing statements.</t>
+<t tx="ekr.20180527085214.11"></t>
+<t tx="ekr.20180527085214.12">https://github.com/leo-editor/leo-editor/issues/909
+</t>
+<t tx="ekr.20180527085214.13">https://github.com/leo-editor/leo-editor/issues/910</t>
+<t tx="ekr.20180527085214.14"></t>
+<t tx="ekr.20180527085214.15">https://github.com/leo-editor/leo-editor/issues/309
+</t>
+<t tx="ekr.20180527085214.16">https://github.com/leo-editor/leo-editor/issues/738
+</t>
+<t tx="ekr.20180527085214.17">https://github.com/leo-editor/leo-editor/issues/868
+
+As usual, spellings are not significant. For example:
+
+clone-find-all-flattened = Key_Pad+9
+clone-find-all = keypad-PageUp
+    # Same as keypad+pageup, etc. etc.</t>
+<t tx="ekr.20180527085214.18">Allow local overrides of @data global-abbreviations &amp; @outline-data tree-abbreviations
+https://github.com/leo-editor/leo-editor/issues/904</t>
+<t tx="ekr.20180527085214.19">@language rest
+
+Added c.diff_file, c.diff_two_branches and c.git_diff. Examples:
+
+@language python
+
+# creates outline-oriented diffs between all changed files between any two revs.
+# In this case, rev1 is the last rev in devel not affected by removing trace statements.
+
+c.diff_two_revs(
+ rev1="24abd822b", # devel
+ rev2="HEAD", # will work in *any* branch
+)
+
+# Leo's git-diff command:
+c.git_diff()
+
+# Compares a file in two different branches:
+c.diff_two_branches(
+    branch1='master',
+    branch2='devel',
+    fn='leo/core/leoCommands.py',
+)
+</t>
+<t tx="ekr.20180527085214.2"></t>
+<t tx="ekr.20180527085214.20">For documentation, see the leo/plugins/leo_babel/doc folder.</t>
+<t tx="ekr.20180527085214.21">The recursive import script now adds disambiguating headline comments as follows:
+
+- If a node is a descendant of a class node, the script prepends the class's name:
+
+    aClass.headline
+
+- Otherwise, the script appends the file name:
+
+    headline (x.py)
+
+This is a huge help when using the clone-find commands.
+</t>
+<t tx="ekr.20180527085214.22"></t>
+<t tx="ekr.20180527085214.23">Clicking on underlined links in the log pane takes you to the proper node and line.</t>
+<t tx="ekr.20180527085214.24">- Removed @bool trace_import.
+- Removed @bool trace_bind_key_exceptions.</t>
+<t tx="ekr.20180527085214.25">The find-def command is typically invoked by control-clicking a function name. This command now will search for possible *alternative spellings* of the name if no match is found initially:
+
+- If the original name contains an underscore, say x_y, the second search will be for the camelCase version, xY.
+
+- Otherwise, we assume the name may be camelCase, say xY, and we attempt to convert it to x_y.
+
+A second search is attempted only if the converted name is different from the original.  In particular, names starting with a leading underscore are never converted.
+
+The new setting: @bool find-def-creates-clones (default False) controls whether a clone-find-flattened command is used to show all matching definitions. This setting has no effect when only one definition is found.</t>
+<t tx="ekr.20180527085214.3">https://github.com/leo-editor/leo-editor/issues/841</t>
+<t tx="ekr.20180527085214.4">https://github.com/leo-editor/leo-editor/issues/892
+</t>
+<t tx="ekr.20180527085214.5">https://github.com/leo-editor/leo-editor/issues/893
+
+A complete rewrite of the python_terminal plugin.</t>
+<t tx="ekr.20180527085214.6">https://github.com/leo-editor/leo-editor/issues/901
+</t>
+<t tx="ekr.20180527085214.7"></t>
+<t tx="ekr.20180527085214.8">https://github.com/leo-editor/leo-editor/issues/875</t>
+<t tx="ekr.20180527085214.9">BackgroundProcessManager.start_process now takes two new kwargs:  link_pattern and link_root:
+
+- link_pattern: a regex string or compiled regex pattern, used to determine whether a message contains a link.
+
+- link_root: the root @file node.
+
+When present, bpm.put_log uses these as follows::
+
+    unl = link_root.get_UNL(with_proto=True, with_count=True)
+    nodeLink = "%s,%d" % (unl, -line)
+    c.frame.log.put(s + '\n', nodeLink=nodeLink)
 </t>
 </tnodes>
 </leo_file>

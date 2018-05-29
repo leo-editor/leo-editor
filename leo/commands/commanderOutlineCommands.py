@@ -193,14 +193,9 @@ def contractNode(self, event=None):
 @g.commander_command('contract-or-go-left')
 def contractNodeOrGoToParent(self, event=None):
     """Simulate the left Arrow Key in folder of Windows Explorer."""
-    trace = False and not g.unitTesting
     c, cc, p = self, self.chapterController, self.p
     parent = p.parent()
     redraw = False
-    if trace: g.trace(p.h,
-        'children:', p.hasChildren(),
-        'expanded:', p.isExpanded(),
-        'shouldBeExpanded:', c.shouldBeExpanded(p))
     # Bug fix: 2016/04/19: test p.v.isExpanded().
     if p.hasChildren() and (p.v.isExpanded() or p.isExpanded()):
         c.contractNode()
@@ -212,9 +207,8 @@ def contractNodeOrGoToParent(self, event=None):
                     child.contract()
                     redraw = True
         if cc and cc.inChapter and parent.h.startswith('@chapter '):
-            if trace: g.trace('root is selected chapter', parent.h)
+            pass
         else:
-            if trace: g.trace('not an @chapter node', parent.h)
             c.goToParent()
     # This is a bit off-putting.
     # elif not parent and not c.hoistStack:
@@ -314,17 +308,14 @@ def expandNextLevel(self, event=None):
     if c.expansionNode != c.p:
         c.expansionLevel = 1
         c.expansionNode = c.p.copy()
-    # g.trace(c.expansionLevel)
     self.expandToLevel(c.expansionLevel + 1)
 #@+node:ekr.20031218072017.2907: *3* c_oc.expandNode
 @g.commander_command('expand-node')
 def expandNode(self, event=None):
     '''Expand the presently selected node.'''
-    trace = False and not g.unitTesting
     c = self; p = c.p
     p.expand()
     if p.isCloned():
-        if trace: g.trace('***redraw')
         c.redraw() # Bug fix: 2009/10/03.
     else:
         c.redraw_after_expand(p, setFocus=True)
@@ -356,17 +347,14 @@ def expandNodeOrGoToFirstChild(self, event=None):
 @g.commander_command('expand-ancestors-only')
 def expandOnlyAncestorsOfNode(self, event=None, p=None):
     '''Contract all nodes in the outline.'''
-    trace = False and not g.unitTesting
     c = self
     level = 1
     if p: c.selectPosition(p) # 2013/12/25
     root = c.p
-    if trace: g.trace(root.h)
     for p in c.all_unique_positions():
         p.v.expandedPositions = []
         p.v.contract()
     for p in root.parents():
-        if trace: g.trace('call p.expand', p.h, p._childIndex)
         p.expand()
         level += 1
     c.redraw(setFocus=True)
@@ -1178,7 +1166,6 @@ def demote(self, event=None):
     parent_v = p._parentVnode()
     n = p.childIndex()
     followingSibs = parent_v.children[n + 1:]
-    # g.trace('sibs2\n',g.listToString(followingSibs2))
     # Remove the moved nodes from the parent's children.
     parent_v.children = parent_v.children[: n + 1]
     # Add the moved nodes to p's children
@@ -1311,14 +1298,12 @@ def moveOutlineRight(self, event=None):
     dirtyVnodeList.extend(dirtyVnodeList2)
     c.setChanged(True)
     u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
-    # g.trace(p)
     c.redraw(p, setFocus=True)
     c.recolor()
 #@+node:ekr.20031218072017.1772: *3* c_oc.moveOutlineUp
 @g.commander_command('move-outline-up')
 def moveOutlineUp(self, event=None):
     '''Move the selected node up if possible.'''
-    trace = False and not g.unitTesting
     c = self; u = c.undoer; p = c.p
     if not p: return
     if not c.canMoveOutlineUp(): # Support for hoist.
@@ -1327,7 +1312,6 @@ def moveOutlineUp(self, event=None):
         return
     back = p.visBack(c)
     if not back:
-        if trace: g.trace('no visBack')
         return
     inAtIgnoreRange = p.inAtIgnoreRange()
     back2 = back.visBack(c)
@@ -1337,11 +1321,6 @@ def moveOutlineUp(self, event=None):
     moved = False
     #@+<< Move p up >>
     #@+node:ekr.20031218072017.1773: *4* << Move p up >>
-    if trace:
-        g.trace("visBack", back)
-        g.trace("visBack2", back2)
-        g.trace("back2.hasChildren", back2 and back2.hasChildren())
-        g.trace("back2.isExpanded", back2 and back2.isExpanded())
     parent = p.parent()
     if not back2:
         if c.hoistStack: # hoist or chapter.
@@ -1351,7 +1330,6 @@ def moveOutlineUp(self, event=None):
                 # canMoveOutlineUp should have caught this.
                 g.trace('can not happen. In hoist')
             else:
-                # g.trace('chapter first child')
                 moved = True
                 p.moveToFirstChildOf(limit)
         else:
@@ -1453,7 +1431,6 @@ def sortSiblings(self, event=None,
         return
     # 2010/01/20. Fix bug 510148.
     c.setChanged(True)
-    # g.trace(g.listToString(newChildren))
     bunch = u.beforeSort(p, undoType, oldChildren, newChildren, sortChildren)
     parent_v.children = newChildren
     if parent:

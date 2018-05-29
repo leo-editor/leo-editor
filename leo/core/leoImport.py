@@ -56,7 +56,6 @@ class FreeMindImporter(object):
         tag = element.tag if g.isString(element.tag) else ''
         text = element.text or ''
         if not tag: text = text.strip()
-        # g.trace('tag: %5r text: %10r attrib.text: %r' % (tag, text, attrib_text))
         p.h = attrib_text or tag or 'Comment'
         p.b = text if text.strip() else ''
         for child in element:
@@ -126,7 +125,7 @@ class FreeMindImporter(object):
             g.chdir(names[0])
             self.import_files(names)
     #@-others
-#@+node:ekr.20160504144241.1: ** class JSON_Import_Helper (To do)
+#@+node:ekr.20160504144241.1: ** class JSON_Import_Helper
 class JSON_Import_Helper(object):
     '''
     A class that helps client scripts import .json files.
@@ -141,83 +140,12 @@ class JSON_Import_Helper(object):
         self.vnodes_dict = {}
 
     #@+others
-    #@+node:ekr.20160505044925.1: *3*  unused code
-    if 0:
-        #@+others
-        #@+node:ekr.20160505045041.1: *4* unused write code
-        #@+node:ekr.20160504144545.1: *5* json.put
-        def put(self, s):
-            '''Write line s using at.os, taking special care of newlines.'''
-            at = self.c.leoAtFile
-            at.os(s[: -1] if s.endswith('\n') else s)
-            at.onl()
-        #@+node:ekr.20160504144241.7: *5* json.vnode_dict
-        def vnode_dict(self, v):
-            return {
-                'gnx': v.gnx,
-                'h': v.h, 'b': v.b,
-                # 'ua': v.u,
-                'children': [z.gnx for z in v.children]
-            }
-        #@+node:ekr.20160504144455.1: *5* json.write
-        def write(self, root):
-            """Write all the @auto-json node."""
-            nodes = list(set([p.v for p in root.subtree()]))
-            nodes = [self.vnode_dict(v) for v in nodes]
-            d = {
-                'top': self.vnode_dict(root.v),
-                'nodes': nodes,
-            }
-            s = json.dumps(d,
-                sort_keys=True,
-                indent=2, # Pretty print.
-                separators=(',', ': '))
-            self.put(s)
-            root.setVisited()
-            return True
-        #@+node:ekr.20160505045049.1: *4* unused read code
-        #@+node:ekr.20160504144241.3: *5* json.import_files
-        def import_files(self, files):
-            '''Import a list of MindMap (.csv) files.'''
-            c = self.c
-            if files:
-                self.tab_width = c.getTabWidth(c.p)
-                for fileName in files:
-                    g.setGlobalOpenDir(fileName)
-                    p = self.create_outline(fileName)
-                    p.contract()
-                    p.setDirty()
-                    c.setChanged(True)
-                c.redraw(p)
-        #@+node:ekr.20160504144241.4: *5* json.prompt_for_files
-        def prompt_for_files(self):
-            '''Prompt for a list of MindJet (.csv) files and import them.'''
-            c = self.c
-            types = [
-                ("JSON files", "*.json"),
-                ("All files", "*"),
-            ]
-            names = g.app.gui.runOpenFileDialog(c,
-                title="Import MindJet File",
-                filetypes=types,
-                defaultextension=".csv",
-                multiple=True)
-            c.bringToFront()
-            if names:
-                g.chdir(names[0])
-                self.import_files(names)
-        #@-others
     #@+node:ekr.20160504144353.1: *3* json.create_nodes (generalize)
     def create_nodes(self, parent, parent_d):
         '''Create the tree of nodes rooted in parent.'''
-        import pprint
-        trace = False and not g.unitTesting
         d = self.gnx_dict
-        if trace: g.trace(parent.h, pprint.pprint(parent_d))
         for child_gnx in parent_d.get('children'):
             d2 = d.get(child_gnx)
-            if trace:
-                g.trace('child', pprint.pprint(d2))
             if child_gnx in self.vnodes_dict:
                 # It's a clone.
                 v = self.vnodes_dict.get(child_gnx)
@@ -252,11 +180,9 @@ class JSON_Import_Helper(object):
     #@+node:ekr.20160504144314.1: *3* json.scan (generalize)
     def scan(self, s, parent):
         '''Create an outline from a MindMap (.csv) file.'''
-        trace = False and not g.unitTesting
         c, d, self.gnx_dict = self.c, json.loads(s), {}
         for d2 in d.get('nodes', []):
             gnx = d2.get('gnx')
-            if trace: print('%25s %s' % (d2.get('gnx'), d2.get('h')))
             self.gnx_dict[gnx] = d2
         top_d = d.get('top')
         if top_d:
@@ -288,14 +214,13 @@ class LeoImportCommands(object):
         self.output_newline = g.getOutputNewline(c=c) # Value of @bool output_newline
         self.rootLine = "" # Empty or @root + self.fileName
         self.tab_width = c.tab_width
-        self.trace = False # set below.
         self.treeType = "@file" # None or "@file"
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
         self.reload_settings()
         
     def reload_settings(self):
-        self.trace = self.c.config.getBool('trace_import')
+        pass
         
     reloadSettings = reload_settings
     #@+node:ekr.20031218072017.3289: *3* ic.Export
@@ -305,7 +230,6 @@ class LeoImportCommands(object):
         # Headlines not containing a section reference are ignored in noweb
         and generate index index in cweb.
         '''
-        # g.trace(g.get_line(s,i))
         ic = self
         nl = ic.output_newline
         head_ref = ic.getHeadRef(p)
@@ -400,7 +324,6 @@ class LeoImportCommands(object):
     #@+node:ekr.20031218072017.3296: *4* ic.convertDocPartToWeb (handle @ %def)
     def convertDocPartToWeb(self, s, i, result):
         nl = self.output_newline
-        # g.trace(g.get_line(s,i))
         if g.match_word(s, i, "@doc"):
             i = g.skip_line(s, i)
         elif g.match(s, i, "@ ") or g.match(s, i, "@\t") or g.match(s, i, "@*"):
@@ -439,7 +362,6 @@ class LeoImportCommands(object):
         i, result, docSeen = 0, "", False
         while i < len(s):
             progress = i
-            # g.trace(g.get_line(s,i))
             i = g.skip_ws_and_nl(s, i)
             if self.isDocStart(s, i) or g.match_word(s, i, "@doc"):
                 i, result = self.convertDocPartToWeb(s, i, result)
@@ -471,7 +393,7 @@ class LeoImportCommands(object):
     # Copies characters to result until the end of the present section is seen.
 
     def copyPart(self, s, i, result):
-        # g.trace(g.get_line(s,i))
+
         lb = "@<" if self.webType == "cweb" else "<<"
         rb = "@>" if self.webType == "cweb" else ">>"
         theType = self.webType
@@ -615,7 +537,6 @@ class LeoImportCommands(object):
             else:
                 line_delim, start_delim = start_delim, None
             #@-<< set delims from the header line >>
-            # g.trace("line: '%s', start: '%s', end: '%s'" % (line_delim,start_delim,end_delim))
             s = self.removeSentinelLines(s, line_delim, start_delim, end_delim)
             ext = c.config.remove_sentinels_extension
             if not ext:
@@ -730,7 +651,6 @@ class LeoImportCommands(object):
         parent:     The parent position of the created outline.
         s:          A string or None. The file's contents.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         p = parent.copy()
         self.treeType = '@file'
@@ -745,15 +665,10 @@ class LeoImportCommands(object):
         )
         ext, s = self.init_import(atShadow, ext, fileName, s)
         if s is None:
-            if trace: g.trace('read failed', fileName)
             return
-        if trace and not s:
-            g.trace('empty file: but calling importer', fileName)
         # Get the so-called scanning func.
         func = self.dispatch(ext, p)
             # Func is a callback. It must have a c argument.
-        if trace: g.trace('%8s %20s %20s %s' % (
-            ext, func and func.__name__, func and func.scanner_name, p.h))
         # Call the scanning function.
         if g.unitTesting:
             assert func or ext in ('.txt', '.w', '.xxx'), (ext, p.h)
@@ -861,7 +776,6 @@ class LeoImportCommands(object):
                 language = unknown
         else:
             language = unknown
-        # g.trace(ext,repr(language))
         # Return the language even if there is no colorizer mode for it.
         return language
     #@+node:ekr.20070806111212: *4* ic.readAtAutoNodes
@@ -903,7 +817,6 @@ class LeoImportCommands(object):
             fileName = fileName.replace('\\', '/') # 2011/10/09.
             g.setGlobalOpenDir(fileName)
             isThin = at.scanHeaderForThin(fileName)
-            # g.trace('isThin',isThin,fileName)
             if command: undoData = u.beforeInsertNode(parent)
             p = parent.insertAfter()
             if isThin:
@@ -1072,7 +985,6 @@ class LeoImportCommands(object):
             i = 0
             while i < len(s):
                 i = g.skip_ws_and_nl(s, i)
-                # line = g.get_line(s,i) ; g.trace(line)
                 # Allow constructs such as @ @c, or @ @<.
                 if self.isDocStart(s, i):
                     i += 2; i = g.skip_ws(s, i)
@@ -1101,7 +1013,6 @@ class LeoImportCommands(object):
             i = 0
             while i < len(s):
                 i = g.skip_ws_and_nl(s, i)
-                # line = g.get_line(s,i) ; g.trace(line)
                 if g.match(s, i, "<<"):
                     k = g.find_on_line(s, i, ">>=")
                     if k > -1:
@@ -1129,7 +1040,6 @@ class LeoImportCommands(object):
         while i < len(s):
             progress = i
             i = g.skip_ws_and_nl(s, i)
-            # line = g.get_line(s,i) ; g.trace(line)
             if self.isDocStart(s, i):
                 if theType == "cweb": i += 2
                 else: i = g.skip_line(s, i)
@@ -1140,7 +1050,6 @@ class LeoImportCommands(object):
                 if k > -1: self.cstEnter(s[j: k])
             else: i += 1
             assert(i > progress)
-        # g.trace(self.cstDump())
         #@-<< Create a symbol table of all section names >>
         #@+<< Create nodes for limbo text and the root section >>
         #@+node:ekr.20031218072017.3233: *6* << Create nodes for limbo text and the root section >>
@@ -1165,7 +1074,7 @@ class LeoImportCommands(object):
                 else: i = g.skip_line(s, i)
                 assert(i > progress)
             self.createHeadline(parent, s[j: i], g.angleBrackets(" @ "))
-        # g.trace(g.get_line(s,i))
+
         #@-<< Create nodes for limbo text and the root section >>
         while i < len(s):
             outer_progress = i
@@ -1297,7 +1206,6 @@ class LeoImportCommands(object):
             d = g.app.language_extension_dict
             fileType = d.get(language, 'py')
             ic.methodName, ic.fileType = p.h, fileType
-        # g.trace(language, ext, parser and parser.__name__ or '<NO PARSER>')
         if parser:
             bunch = c.undoer.beforeChangeTree(p)
             s = p.b
@@ -1398,7 +1306,6 @@ class LeoImportCommands(object):
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
         '''
-        trace = False
         c, h = self.c, p.h
         old_root = p.copy()
         self.treeType = '@file'
@@ -1431,9 +1338,6 @@ class LeoImportCommands(object):
         # Set ok.
         d = g.app.unitTestDict
         ok = d.get('result') is True
-        if trace:
-            g.trace('-'*10, ok, p.h)
-            g.printDict(d)
         # Clean up.
         if showTree:
             # 2016/11/17: Make sure saving the outline doesn't create any file.
@@ -1462,7 +1366,6 @@ class LeoImportCommands(object):
                 d2 = g.app.atAutoDict
                 for z in d2:
                     if d2.get(z) == aClass:
-                        # g.trace('found',z,'for',ext,aClass.__name__)
                         return z
         return '@file'
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
@@ -1504,7 +1407,6 @@ class LeoImportCommands(object):
         p.initHeadString(headline)
         if body:
             self.setBodyString(p, body)
-        # g.trace(p.v.gnx,p.h)
         return p
     #@+node:ekr.20031218072017.3307: *4* ic.error
     def error(self, s):
@@ -1567,7 +1469,6 @@ class LeoImportCommands(object):
                         doc = "@ " if self.webType == "cweb" else "@\n"
                     else:
                         doc += "\n\n"
-                    # g.trace("new doc:",doc)
                     s = s[: start] + doc + s[end:]
                     i = start + len(doc)
             else: i = g.skip_line(s, i)
@@ -1578,7 +1479,6 @@ class LeoImportCommands(object):
         i = 0
         while i < len(s):
             progress = i
-            # g.trace(g.get_line(s,i))
             if g.match(s, i, lb):
                 i += 2; j = i; k = g.find_on_line(s, j, rb)
                 if k > -1:
@@ -1586,7 +1486,6 @@ class LeoImportCommands(object):
                     name2 = self.cstLookup(name)
                     if name != name2:
                         # Replace name by name2 in s.
-                        # g.trace("replacing %s by %s" % (name,name2))
                         s = s[: j] + name2 + s[k:]
                         i = j + len(name2)
             i = g.skip_line(s, i)
@@ -1890,7 +1789,7 @@ class MORE_Importer(object):
         return self.check_lines(strings)
 
     def check_lines(self, strings):
-        trace = False and not g.unitTesting
+
         if len(strings) < 1: return False
         level1, plusFlag = self.headlineLevel(strings[0])
         if level1 == -1: return False
@@ -1898,8 +1797,6 @@ class MORE_Importer(object):
         lastLevel = level1
         for s in strings:
             level, newFlag = self.headlineLevel(s)
-            if trace: g.trace('level1: %s level: %s lastLevel: %s %s' % (
-                level1, level, lastLevel, s.rstrip()))
             if level == -1:
                 return True # A body line.
             elif level < level1 or level > lastLevel + 1:
@@ -1928,6 +1825,7 @@ class RecursiveImportController(object):
         '''Ctor for RecursiveImportController class.'''
         self.c = c
         self.add_path = add_path
+        self.file_pattern = re.compile(r'^(([@])+(auto|clean|edit|file|nosent))')
         self.kind = kind
             # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         # self.force_at_others = force_at_others #tag:no-longer-used
@@ -1977,8 +1875,6 @@ class RecursiveImportController(object):
     #@+node:ekr.20130823083943.12597: *4* ric.import_dir
     def import_dir(self, dir_, parent):
         '''Import selected files from dir_, a directory.'''
-        trace = False and not g.unitTesting
-        limit = True # True: only one file per directory.
         if g.os_path_isfile(dir_):
             files = [dir_]
         else:
@@ -2006,7 +1902,6 @@ class RecursiveImportController(object):
             if files2:
                 for f in files2:
                     self.import_one_file(f, parent=parent)
-                    if trace and limit: break
             if dirs:
                 assert self.recursive
                 for dir_ in sorted(dirs):
@@ -2047,8 +1942,6 @@ class RecursiveImportController(object):
         Traverse p's tree, replacing all nodes that start with prefix
         by the smallest equivalent @path or @file node.
         '''
-        trace = False and not g.unitTesting
-        if trace: t1 = time.time()
         self.fix_back_slashes(p)
         prefix = prefix.replace('\\', '/')
         if self.kind not in ('@auto', '@edit'):
@@ -2056,9 +1949,36 @@ class RecursiveImportController(object):
         if p.firstChild():
             self.minimize_headlines(p.firstChild(), prefix)
         self.clear_dirty_bits(p)
-        if trace:
-            t2 = time.time()
-            g.trace('%2.2f sec' % (t2-t1))
+        self.add_class_names(p)
+    #@+node:ekr.20180524100258.1: *5* ric.add_class_names
+    def add_class_names(self, p):
+        '''Add class names to headlines for all descendant nodes.'''
+        after, fn, class_name = None, None, None
+        for p in p.self_and_subtree():
+            # Part 1: update the status.
+            m = self.file_pattern.match(p.h)
+            if m:
+                prefix = m.group(1)
+                fn = g.shortFileName(p.h[len(prefix):].strip())
+                after, class_name = None, None
+                continue
+            elif p.h.startswith('@path '):
+                after, fn, class_name = None, None, None
+            elif p.h.startswith('class '):
+                class_name = p.h[5:].strip()
+                if class_name:
+                    after = p.nodeAfterTree()
+                    continue
+            elif p == after:
+                after, class_name = None, None
+            # Part 2: update the headline.
+            if class_name:
+                if not p.h.startswith(class_name):
+                    p.h = '%s.%s' % (class_name, p.h)
+            elif fn:
+                tag = ' (%s)' % fn
+                if not p.h.endswith(tag):
+                    p.h += tag
     #@+node:ekr.20130823083943.12608: *5* ric.clear_dirty_bits
     def clear_dirty_bits(self, p):
         c = self.c
@@ -2078,8 +1998,6 @@ class RecursiveImportController(object):
             if s != p.h:
                 p.v.h = s
     #@+node:ekr.20130823083943.12611: *5* ric.minimize_headlines & helper
-    file_pattern = re.compile(r'^(([@])+(auto|clean|edit|file|nosent))')
-
     def minimize_headlines(self, p, prefix):
         '''Create @path nodes to minimize the paths required in descendant nodes.'''
         if prefix and not prefix.endswith('/'):
@@ -2210,7 +2128,6 @@ class TabImporter:
     #@+node:ekr.20161006071801.5: *3* tabbed.scan
     def scan(self, s1, fn=None, root=None):
         '''Create the outline corresponding to s1.'''
-        trace = False and not g.unitTesting
         c = self.c
         # Self.root can be None if we are called from a script or unit test.
         if not self.root:
@@ -2222,7 +2139,6 @@ class TabImporter:
         self.stack = []
         # Redo the checks in case we are called from a script.
         if s1.strip() and self.check(lines):
-            if trace: g.trace('importing to %s' % self.root.h)
             for s in lines:
                 if s.strip() or not self.separate:
                     self.scan_helper(s)
@@ -2230,15 +2146,12 @@ class TabImporter:
     #@+node:ekr.20161006071801.6: *3* tabbed.scan_helper
     def scan_helper(self, s):
         '''Update the stack as necessary and return (level, parent, stack).'''
-        trace = False and not g.unitTesting
         root, separate, stack = self.root, self.separate, self.stack
         if stack:
             level, parent = stack[-1]
         else:
             level, parent = 0, None
         lws = len(self.lws(s))
-        if trace:
-            g.trace('----- level: %s lws: %s %s' % (level, lws, s.rstrip()))
         h = s.strip()
         if lws == level:
             if separate or not parent:
@@ -2259,7 +2172,6 @@ class TabImporter:
             stack.append((level, parent),)
         else:
             # Find the previous parent.
-            if trace: self.dump_stack()
             while stack:
                 level2, parent2 = stack.pop()
                 if level2 == lws:
@@ -2274,9 +2186,6 @@ class TabImporter:
                 parent = root.insertAsLastChild()
                 parent.h = h
                 stack = [(0, parent),]
-        if trace:
-            g.trace('DONE: lws: %s level: %s parent: %s' % (lws, level, parent.h))
-            self.dump_stack()
         assert parent and parent == stack[-1][1]
             # An important invariant.
         assert level == stack[-1][0], (level, stack[-1][0])
@@ -2286,7 +2195,6 @@ class TabImporter:
     #@+node:ekr.20161006071801.7: *3* tabbed.undent
     def undent(self, level, s):
         '''Unindent all lines of p.b by level.'''
-        # g.trace(level, s.rstrip())
         if level <= 0:
             return s
         if s.strip():

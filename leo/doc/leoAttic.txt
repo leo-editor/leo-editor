@@ -4231,6 +4231,89 @@ def enableGcTrace(self, event=None):
         g.blue('enabled verbose gc stats')
     else:
         g.blue('enabled brief gc stats')
+#@+node:ekr.20180504182541.1: ** efc.getDiffBranch (not used)
+@cmd('git-diff-branch')
+def gitDiffBranch(self, event):
+    '''Prompt for a branch name, then diff one file against it.'''
+    c = self.c
+    roots = g.findRootsWithPredicate(c, c.p)
+        # Looks up and down the tree.
+    if not roots:
+        g.es_print('no .py files found')
+        return
+    gdc = GitDiffController(self.c, 'HEAD')
+    
+    def callback(args, *extra, **kwargs):
+        if g._assert(len(args) == 1):
+            for p in roots:
+                gdc.diff_branch(branch=args[0], fn=p.anyAtFileNodeName())
+                
+    c.interactive(callback, event, prompts=['Branch name: '])
+#@+node:ekr.20160505044925.1: **  unused json importer code
+if 0:
+    @others
+#@+node:ekr.20160505045041.1: *3* unused write code
+#@+node:ekr.20160504144545.1: *4* json.put
+def put(self, s):
+    '''Write line s using at.os, taking special care of newlines.'''
+    at = self.c.leoAtFile
+    at.os(s[: -1] if s.endswith('\n') else s)
+    at.onl()
+#@+node:ekr.20160504144241.7: *4* json.vnode_dict
+def vnode_dict(self, v):
+    return {
+        'gnx': v.gnx,
+        'h': v.h, 'b': v.b,
+        # 'ua': v.u,
+        'children': [z.gnx for z in v.children]
+    }
+#@+node:ekr.20160504144455.1: *4* json.write
+def write(self, root):
+    """Write all the @auto-json node."""
+    nodes = list(set([p.v for p in root.subtree()]))
+    nodes = [self.vnode_dict(v) for v in nodes]
+    d = {
+        'top': self.vnode_dict(root.v),
+        'nodes': nodes,
+    }
+    s = json.dumps(d,
+        sort_keys=True,
+        indent=2, # Pretty print.
+        separators=(',', ': '))
+    self.put(s)
+    root.setVisited()
+    return True
+#@+node:ekr.20160505045049.1: *3* unused read code
+#@+node:ekr.20160504144241.3: *4* json.import_files
+def import_files(self, files):
+    '''Import a list of MindMap (.csv) files.'''
+    c = self.c
+    if files:
+        self.tab_width = c.getTabWidth(c.p)
+        for fileName in files:
+            g.setGlobalOpenDir(fileName)
+            p = self.create_outline(fileName)
+            p.contract()
+            p.setDirty()
+            c.setChanged(True)
+        c.redraw(p)
+#@+node:ekr.20160504144241.4: *4* json.prompt_for_files
+def prompt_for_files(self):
+    '''Prompt for a list of MindJet (.csv) files and import them.'''
+    c = self.c
+    types = [
+        ("JSON files", "*.json"),
+        ("All files", "*"),
+    ]
+    names = g.app.gui.runOpenFileDialog(c,
+        title="Import MindJet File",
+        filetypes=types,
+        defaultextension=".csv",
+        multiple=True)
+    c.bringToFront()
+    if names:
+        g.chdir(names[0])
+        self.import_files(names)
 #@-all
 #@@nosearch
 #@-leo

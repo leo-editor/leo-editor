@@ -44,7 +44,6 @@ class LeoGui(object):
         self.root = None
         self.script = None
         self.splashScreen = None
-        self.trace = False
         self.utils = None
         # To keep pylint happy.
         self.ScriptingControllerClass = NullScriptingControllerClass
@@ -195,7 +194,7 @@ class LeoGui(object):
         self.oops()
     #@+node:ekr.20031218072017.3736: *5* LeoGui.Font
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
-        # g.trace('g.app.gui',g.callers()) # 'family',family,'size',size,'defaultSize',defaultSize,
+
         self.oops()
     #@+node:ekr.20070212145124: *5* LeoGui.getFullVersion
     def getFullVersion(self, c=None):
@@ -262,7 +261,6 @@ class LeoKeyEvent(object):
         x=None, y=None, x_root=None, y_root=None
     ):
         '''Ctor for LeoKeyEvent class.'''
-        trace = False and not g.unitTesting
         if g.isStroke(binding):
             g.trace('***** (LeoKeyEvent) oops: already a stroke', binding, g.callers())
             stroke = binding
@@ -270,7 +268,9 @@ class LeoKeyEvent(object):
             stroke = g.KeyStroke(binding) if binding else None
         assert g.isStrokeOrNone(stroke), '(LeoKeyEvent) %s %s' % (
             repr(stroke), g.callers())
-        if trace: g.trace('(LeoKeyEvent) stroke', stroke)
+        if 'keys' in g.app.debug:
+            print('LeoKeyEvent: binding: %s, stroke: %s, char: %r' % (
+                binding, stroke, char))
         self.c = c
         self.char = char or ''
         self.event = event # New in Leo 4.11.
@@ -425,13 +425,10 @@ class NullGui(LeoGui):
     #@+node:ekr.20031218072017.2229: *3* NullGui.runMainLoop
     def runMainLoop(self):
         """Run the null gui's main loop."""
-        trace = False
         if self.script:
             frame = self.lastFrame
             g.app.log = frame.log
-            if trace: g.trace("NullGui: start of batch script")
             self.lastFrame.c.executeScript(script=self.script)
-            if trace: g.trace("NullGui: end of batch script")
         else:
             print('**** NullGui.runMainLoop: terminating Leo.')
         # Getting here will terminate Leo.
@@ -489,6 +486,7 @@ class StringGui(LeoGui):
         # self.isNullGui = True
     #@+node:ekr.20170613095422.7: *3* StringGui.oops
     def oops(self):
+
         g.trace("StringGui", g.callers(4))
     #@+node:ekr.20170613114120.1: *3* StringGui.runMainLoop
     def runMainLoop(self):
@@ -546,13 +544,12 @@ class UnitTestGui(NullGui):
     # Presently used only by the import/export unit tests.
     #@+others
     #@+node:ekr.20031218072017.3743: *3* UnitTestGui.__init__
-    def __init__(self, theDict=None, trace=False):
+    def __init__(self, theDict=None):
         '''ctor for the UnitTestGui class.'''
         self.oldGui = g.app.gui
         NullGui.__init__(self, "UnitTestGui")
             # Init the base class
         self.theDict = {} if theDict is None else theDict
-        self.trace = trace
         g.app.gui = self
 
     def destroySelf(self):

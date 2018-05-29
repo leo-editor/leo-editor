@@ -252,7 +252,6 @@ class CoffeeScriptTraverser(object):
 
     def indent(self, s):
         '''Return s, properly indented.'''
-        # assert not s.startswith('\n'), (g.callers(), repr(s))
         n = 0
         while s and s.startswith('\n'):
             n += 1
@@ -1214,7 +1213,6 @@ class LeoGlobals(object):
                 self.i += 1
             else:
                 line = ''
-            # g.trace(repr(line))
             return line
 
         __next__ = next
@@ -1337,7 +1335,6 @@ class LeoGlobals(object):
 
     def toUnicode(self, s, encoding='utf-8', reportErrors=False):
         '''Connvert a non-unicode string with the given encoding to unicode.'''
-        trace = False
         if g.isUnicode(s):
             return s
         if not encoding:
@@ -1349,17 +1346,13 @@ class LeoGlobals(object):
             s = s.decode(encoding, 'strict')
         except UnicodeError:
             s = s.decode(encoding, 'replace')
-            if trace or reportErrors:
+            if reportErrors:
                 g.trace(g.callers())
                 print("toUnicode: Error converting %s... from %s encoding to unicode" % (
                     s[: 200], encoding))
         except AttributeError:
-            if trace:
-                print('toUnicode: AttributeError!: %s' % s)
             # May be a QString.
             s = g.u(s)
-        if trace and encoding == 'cp1252':
-            print('toUnicode: returns %s' % s)
         return s
     #@+node:ekr.20160316091132.93: *3* g.trace
 
@@ -1535,17 +1528,16 @@ class MakeCoffeeScriptController(object):
 
     def scan_options(self):
         '''Set all configuration-related ivars.'''
-        trace = False
         if not self.config_fn:
             return
         self.parser = parser = self.create_parser()
         s = self.get_config_string()
         self.init_parser(s)
         if self.files:
-            files_source = 'command-line'
+            # files_source = 'command-line'
             files = self.files
         elif parser.has_section('Global'):
-            files_source = 'config file'
+            # files_source = 'config file'
             files = parser.get('Global', 'files')
             files = [z.strip() for z in files.split('\n') if z.strip()]
         else:
@@ -1554,11 +1546,6 @@ class MakeCoffeeScriptController(object):
         for z in files:
             files2.extend(glob.glob(self.finalize(z)))
         self.files = [z for z in files2 if z and os.path.exists(z)]
-        if trace:
-            print('Files (from %s)...\n' % files_source)
-            for z in self.files:
-                print(z)
-            print('')
         if 'output_directory' in parser.options('Global'):
             s = parser.get('Global', 'output_directory')
             output_dir = self.finalize(s)
@@ -1573,11 +1560,6 @@ class MakeCoffeeScriptController(object):
             prefix = parser.get('Global', 'prefix_lines')
             self.prefix_lines = prefix.split('\n')
                 # The parser does not preserve leading whitespace.
-            if trace:
-                print('Prefix lines...\n')
-                for z in self.prefix_lines:
-                    print(z)
-                print('')
         #
         # self.def_patterns = self.scan_patterns('Def Name Patterns')
         # self.general_patterns = self.scan_patterns('General Patterns')
@@ -1607,7 +1589,6 @@ class MakeCoffeeScriptController(object):
 
     def init_parser(self, s):
         '''Add double back-slashes to all patterns starting with '['.'''
-        trace = False
         if not s: return
         aList = []
         for s in s.split('\n'):
@@ -1615,11 +1596,9 @@ class MakeCoffeeScriptController(object):
                 aList.append(s)
             elif s.strip().startswith('['):
                 aList.append(r'\\' + s[1:])
-                if trace: g.trace('*** escaping:', s)
             else:
                 aList.append(s)
         s = '\n'.join(aList) + '\n'
-        if trace: g.trace(s)
         file_object = io.StringIO(s)
         # pylint: disable=deprecated-method
         self.parser.readfp(file_object)
@@ -1717,7 +1696,6 @@ class TokenSync(object):
         Return a list of lists of tokens for each list in self.lines.
         The strings in self.lines may end in a backslash, so care is needed.
         '''
-        trace = False
         n, result = len(self.lines), []
         for i in range(0, n+1):
             result.append([])
@@ -1728,7 +1706,6 @@ class TokenSync(object):
             erow, ecol = t4
             line = erow-1 if kind == 'string' else srow-1
             result[line].append(token)
-            if trace: g.trace('%3s %s' % (line, self.dump_token(token)))
         assert len(self.lines) + 1 == len(result), len(result)
         return result
     #@+node:ekr.20160316091132.114: *4* ts.make_nl_token
@@ -1825,7 +1802,6 @@ class TokenSync(object):
     def leading_lines(self, node):
         '''Return a list of the preceding comment and blank lines'''
         # This can be called on arbitrary nodes.
-        trace = False
         leading = []
         if hasattr(node, 'lineno'):
             i, n = self.first_leading_line, node.lineno
@@ -1834,7 +1810,6 @@ class TokenSync(object):
                 if token:
                     s = self.token_raw_val(token).rstrip()+'\n'
                     leading.append(s)
-                    if trace: g.trace('%11s: %s' % (i, s.rstrip()))
                 i += 1
             self.first_leading_line = i
         return leading
@@ -1867,7 +1842,6 @@ class TokenSync(object):
 
     def sync_string(self, node):
         '''Return the spelling of the string at the given node.'''
-        # g.trace('%-10s %2s: %s' % (' ', node.lineno, self.line_at(node)))
         n = node.lineno
         tokens = self.string_tokens[n-1]
         if tokens:
@@ -1917,13 +1891,11 @@ class TokenSync(object):
         if hasattr(node, 'lineno'):
             return self.trailing_comment_at_lineno(node.lineno)
         else:
-            # g.trace('no lineno', node.__class__.__name__, g.callers())
             return '\n'
     #@+node:ekr.20160316091132.128: *3* ts.trailing_comment_at_lineno
 
     def trailing_comment_at_lineno(self, lineno):
         '''Return any trailing comment at the given node.lineno.'''
-        trace = False
         tokens = self.line_tokens[lineno-1]
         for token in tokens:
             if self.token_kind(token) == 'comment':
@@ -1931,14 +1903,12 @@ class TokenSync(object):
                 if not raw_val.strip().startswith('#'):
                     val = self.token_val(token).rstrip()
                     s = ' %s\n' % val
-                    if trace: g.trace(lineno, s.rstrip(), g.callers())
                     return s
         return '\n'
     #@+node:ekr.20160316091132.129: *3* ts.trailing_lines
 
     def trailing_lines(self):
         '''return any remaining ignored lines.'''
-        trace = False
         trailing = []
         i = self.first_leading_line
         while i < len(self.ignored_lines):
@@ -1946,7 +1916,6 @@ class TokenSync(object):
             if token:
                 s = self.token_raw_val(token).rstrip()+'\n'
                 trailing.append(s)
-                if trace: g.trace('%11s: %s' % (i, s.rstrip()))
             i += 1
         self.first_leading_line = i
         return trailing

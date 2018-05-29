@@ -371,7 +371,6 @@ def on_open (tag,keywords):
 
 def on_bodykey1 (tag,keywords):
 
-    # g.trace()
     c = keywords.get("c")
     p = keywords.get("p")
     if g.match_word(p.h,0,"@read-only"):
@@ -393,9 +392,6 @@ def on_headkey2 (tag,keywords):
     p = keywords.get("p")
     h = p.h
     ch = keywords.get("ch")
-
-    # g.trace(repr(ch))
-
     if ch in ('\n','\r') and g.match_word(h,0,"@read-only"):
         # on-the-fly update of @read-only directives
         changed = insert_read_only_node(c,p,h[11:])

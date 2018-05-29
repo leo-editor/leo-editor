@@ -104,8 +104,6 @@ class ContextSniffer(object):
     #@+node:ekr.20110309051057.14284: *4* declare
     def declare(self, var, klass):
 
-        # g.trace(var,klass) # Very large trace.
-
         vars = self.vars.get(var, [])
         if not vars:
             self.vars[var] = vars
@@ -150,7 +148,6 @@ def read_tags_file():
     '''Return the lines of ~/.leo/tags.
     Return [] on error.'''
 
-    trace = False ; verbose = False
     tagsFileName = os.path.expanduser('~/.leo/tags')
     if not os.path.exists(tagsFileName):
         return [] # EKR: 11/18/2009
@@ -160,12 +157,6 @@ def read_tags_file():
         f = open(tagsFileName)
         tags = f.read()
         lines = g.splitLines(tags)
-        if trace:
-            print('ctagscomplter.py: ~/.leo/tags has %s lines' % (
-                len(lines)))
-            if verbose:
-                for z in lines[:30]:
-                    print(repr(z))
         return lines
     except IOError:
         return []
@@ -216,8 +207,6 @@ class CodewiseController(object):
 
         # Init.
         self.ev_filter = self.w.ev_filter
-
-        # g.trace('CodewiseController',c.shortFileName(),self.body)
     #@+node:ville.20091204224145.5363: *3* complete
     def complete(self,event):
 
@@ -295,9 +284,7 @@ class CodewiseController(object):
     #@+node:ville.20091204224145.5364: *3* lookup
     def lookup(self,prefix):
 
-        trace = False
         aList = codewise.cmd_functions([prefix])
-        if trace: g.trace(prefix,len(aList))
         hits = (z.split(None,1) for z in aList if z.strip())
 
         desc = []
@@ -314,8 +301,6 @@ class CodewiseController(object):
         return aList
     #@+node:ville.20091205173337.10140: *3* lookup_methods
     def lookup_methods(self,klasses, prefix):
-
-        trace = True
 
         aList = codewise.cmd_members([klasses[0]])
         hits = (z.split(None,1) for z in aList if z.strip())
@@ -334,7 +319,6 @@ class CodewiseController(object):
         aList = list(set(desc))
         aList.sort()
 
-        if trace: g.trace(prefix,len(aList))
         return aList
     #@+node:ekr.20110309051057.14273: *3* start
     def start (self,event):
@@ -363,7 +347,6 @@ class CodewiseController(object):
     #@+node:ekr.20110309051057.14272: *3* suggest
     def suggest(self,event=None,pattern=''):
 
-        trace = True
         c,w = self.c,self.w ; p = c.p
 
         if not pattern:
@@ -376,17 +359,14 @@ class CodewiseController(object):
             prefix = m.group(3)
             klasses = self.guess_class(c,p,obj)
         else:
-            if trace: g.trace('no attr for %s' % (pattern))
             prefix = pattern
             klasses = []
 
         if klasses:
-            if trace: g.trace('klasses: %s' % (klasses))
             hits = self.lookup_methods(klasses,prefix)
             hits = [h for h in hits if h.startswith(prefix)]
         else:
             # s = self.get_word()
-            if trace: g.trace('prefix: %s' % (prefix))
             hits = self.lookup(prefix)
 
         if 0:

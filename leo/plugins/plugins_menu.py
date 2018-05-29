@@ -76,7 +76,6 @@ def addPluginMenuItem(p, c):
     @param p:  Plugin object for one currently loaded plugin
     @param c:  Leo-editor "commander" for the current .leo file
     """
-    trace = False
     plugin_name = p.name.split('.')[-1] # TNB 20100304 strip module path
     if p.hastoplevel:
         # Check at runtime to see if the plugin has actually been loaded.
@@ -117,11 +116,9 @@ def addPluginMenuItem(p, c):
                 items.append((cmd, None, fn),)
                     # No need for a callback.
             table.extend(sorted(items))
-        if trace: g.trace(table)
         c.frame.menu.createMenuEntries(m, table, dynamicMenu=True)
     else:
         table = ((plugin_name, None, p.about),)
-        if trace: g.trace(plugin_name)
         c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p), table, dynamicMenu=True)
 #@+node:EKR.20040517080555.23: *3* createPluginsMenu & helper
 def createPluginsMenu(tag, keywords):

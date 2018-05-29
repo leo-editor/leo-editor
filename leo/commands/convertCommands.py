@@ -287,7 +287,7 @@ class To_Python(object):
             i = j
     #@+node:ekr.20150514063305.148: *6* munge_block_comment
     def munge_block_comment(self, comment_lines):
-        trace = False
+
         n = len(comment_lines)
         assert n > 0
         s = comment_lines[0]
@@ -303,9 +303,6 @@ class To_Python(object):
                 pass # Omit the line entirely.
             else:
                 result.append('') # Add a blank line
-        if trace:
-            g.trace()
-            for z in result: print(repr(z))
         return result
     #@+node:ekr.20150514063305.149: *5* replaceSectionDefs
     def replaceSectionDefs(self, aList):
@@ -496,16 +493,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.ivars_dict = self.parse_ivars_data(aList)
             else:
                 self.ivars_dict = {}
-            if 0:
-                #g.trace('class_list',self.class_list)
-                #g.trace('type_list',self.type_list)
-                g.trace('ivars_dict...')
-                d = self.ivars_dict
-                keys = list(d.keys())
-                for key in sorted(keys):
-                    print('%s:' % (key))
-                    for val in d.get(key):
-                        print('  %s' % (val))
         #@+node:ekr.20150514063305.163: *6* parse_ivars_data
         def parse_ivars_data(self, aList):
             d, key = {}, None
@@ -664,7 +651,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     j = self.handlePossibleFunctionHeader(aList, i, prevSemi, firstOpen)
                     prevSemi = j
                     firstOpen = None # restart the scan
-                    # g.trace(repr(''.join(aList[prevSemi:prevSemi+20])))
                 else:
                     j = i + 1
                 # Handle unusual cases.
@@ -681,7 +667,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             to
                 def y (z1,..zn): {
             '''
-            trace = False
             assert(self.match(aList, i, "{"))
             prevSemi = self.skip_ws_and_nl(aList, prevSemi)
             close = self.prevNonWsOrNlChar(aList, i)
@@ -710,15 +695,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             args = aList[open_paren: close + 1]
             k = 1 + self.skip_to_matching_bracket(aList, i)
             body = aList[close + 1: k]
-            if True and trace:
-                g.trace('\nhead: %s\nargs: %s\nbody: %s' % (
-                    ''.join(head), ''.join(args), ''.join(body)))
             head = self.massageFunctionHead(head)
             args = self.massageFunctionArgs(args)
             body = self.massageFunctionBody(body)
-            if False and trace:
-                g.trace('\nhead2: %s\nargs2: %s\nbody2: %s' % (
-                    ''.join(head), ''.join(args), ''.join(body)))
             result = []
             if head: result.extend(head)
             if args: result.extend(args)
@@ -761,7 +740,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             prevWord = []
             self.class_name = ''
             i = 0
-            # g.trace(repr(''.join(head)))
             while i < len(head):
                 i = self.skip_ws_and_nl(head, i)
                 if i < len(head) and head[i].isalpha():
@@ -823,7 +801,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if self.match(body, j, '{'):
                         k = j
                         j = self.skip_to_matching_bracket(body, j)
-                        # g.trace('found block\n',''.join(body[k:j+1]))
                         m = '# <Start dedented block>...'
                         body[k: k + 1] = list(m)
                         j += len(m)
@@ -999,7 +976,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20160213070235.4: *6* msf.scan_d
             def scan_d(self, kind):
                 '''Return a dict created from an @data node of the given kind.'''
-                trace = False and not g.unitTesting
                 c = self.c
                 aList = c.config.getData(kind, strip_comments=True, strip_data=True)
                 d = {}
@@ -1007,36 +983,21 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     g.trace('warning: no @data %s node' % kind)
                 for s in aList or []:
                     name, value = s.split(':',1)
-                    # g.trace('name',name,'value',value)
                     d[name.strip()] = value.strip()
-                if trace:
-                    print('@data %s...' % kind)
-                    for key in sorted(d):
-                        print('  %s: %s' % (key, d.get(key)))
                 return d
             #@+node:ekr.20160213070235.5: *6* msf.scan_patterns
             def scan_patterns(self, kind):
                 '''Parse the config section into a list of patterns, preserving order.'''
-                trace = False or self.trace_patterns
                 d = self.scan_d(kind)
                 aList = []
                 seen = set()
                 for key in d:
                     value = d.get(key)
-                    # A kludge: strip leading \\ from patterns.
-                    # if key.startswith(r'\\'):
-                        # key = '[' + key[2:]
-                        # if trace: g.trace('removing escapes', key)
                     if key in seen:
                         g.trace('duplicate key', key)
                     else:
                         seen.add(key)
                         aList.append(self.msf.Pattern(key, value))
-                if trace:
-                    g.trace('@data %s ...\n' % kind)
-                    for z in aList:
-                        print(z)
-                    print('')
                 return aList
             #@+node:ekr.20160213070235.6: *5* msf.finalize
             def finalize(self, fn):
@@ -1329,7 +1290,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         break
                 else:
                     return
-                    # assert False, 'not a scope id: %s' % word
                 # Skip any following spaces.
                 i2 = self.skip_ws(aList, i)
                 # Scan to the next newline:
@@ -1339,7 +1299,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Change the list in place.
                 aList[i1: i3] = aList[i2: i3] + comment
                 i = i1 + (i3 - i2) + len(comment)
-                # g.trace(''.join(aList[i1:i]))
                 return i
             #@+node:ekr.20150514063305.181: *6* handle_all_keywords
             def handle_all_keywords(self, aList):
@@ -1451,7 +1410,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         j = self.handlePossibleFunctionHeader(aList, i, prevSemi, firstOpen)
                         prevSemi = j
                         firstOpen = None # restart the scan
-                        # g.trace(repr(''.join(aList[prevSemi:prevSemi+20])))
                     else:
                         j = i + 1
                     # Handle unusual cases.
@@ -1469,7 +1427,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 to
                     def y (z1,..zn): { # (public|private|export)
                 '''
-                trace = False
                 assert(self.match(aList, i, "{"))
                 prevSemi = self.skip_ws_and_nl(aList, prevSemi)
                 close = self.prevNonWsOrNlChar(aList, i)
@@ -1498,15 +1455,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 args = aList[open_paren: close + 1]
                 k = 1 + self.skip_to_matching_bracket(aList, i)
                 body = aList[close + 1: k]
-                if trace:
-                    g.trace('\nhead: %s\nargs: %s\nbody: %s' % (
-                        ''.join(head), ''.join(args), ''.join(body)))
                 head = self.massageFunctionHead(head)
                 args = self.massageFunctionArgs(args)
                 body = self.massageFunctionBody(body)
-                if False and trace:
-                    g.trace('\nhead2: %s\nargs2: %s\nbody2: %s' % (
-                        ''.join(head), ''.join(args), ''.join(body)))
                 result = []
                 if head: result.extend(head)
                 if args: result.extend(args)
@@ -1548,7 +1499,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 prevWord = []
                 self.class_name = ''
                 i = 0
-                # g.trace(repr(''.join(head)))
                 while i < len(head):
                     i = self.skip_ws_and_nl(head, i)
                     if i < len(head) and head[i].isalpha():
@@ -1611,7 +1561,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         if self.match(body, j, '{'):
                             k = j
                             j = self.skip_to_matching_bracket(body, j)
-                            # g.trace('found block\n',''.join(body[k:j+1]))
                             m = '# <Start dedented block>...'
                             body[k: k + 1] = list(m)
                             j += len(m)

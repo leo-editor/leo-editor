@@ -106,8 +106,6 @@ class SettingsFinder(object):
         :return: unl of leaf copy in myLeoSettings.leo
         :rtype: str
         """
-        trace = False and not g.unitTesting
-        if trace: g.es(unl)
         path, unl = unl.split('#', 1)
         # Undo the replacements made in p.getUNL.
         path = path.replace("file://", "")
@@ -126,7 +124,6 @@ class SettingsFinder(object):
             return '' # Fix 434.
         found, maxdepth, maxp = g.recursiveUNLFind(unl, c2)
 
-        if trace: g.trace('COPYING', unl)
         nd = settings.insertAsLastChild()
         dest = nd.get_UNL()
         self.copy_recursively(maxp, nd)
@@ -136,7 +133,6 @@ class SettingsFinder(object):
         self.c.config.settingsDict.update(settingsDict)
         my_settings_c.config.settingsDict.update(settingsDict)
 
-        if trace: g.trace('-->'.join([dest] + tail))
         return '-->'.join([dest] + tail)
     #@+node:tbrown.20150818161651.6: *3* sf.find_setting
     def find_setting(self, setting):

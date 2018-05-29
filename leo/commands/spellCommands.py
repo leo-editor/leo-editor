@@ -131,10 +131,6 @@ class DefaultDict(object):
     #@+node:ekr.20180207101513.1: *3* dict.add_words_from_dict
     def add_words_from_dict(self, kind, fn, words):
         '''For use by DefaultWrapper.'''
-        trace = False and not g.unitTesting
-        if trace:
-            g.es_print('%6s words in %6s dictionary: %s' % (
-                len(words or []), kind, g.os_path_normpath(fn)))
         for word in words or []:
             self.words.add(word)
             self.words.add(word.lower())
@@ -162,7 +158,6 @@ class DefaultDict(object):
             known(self.edits2(word))
             # [word] # Fall back to the unknown word itself.
         )
-        # g.trace(word, suggestions)
         return suggestions
     #@+node:ekr.20180207085717.1: *4* dict.edits1 & edits2
     def edits1(self, word):
@@ -283,9 +278,6 @@ class DefaultWrapper(BaseSpellWrapper):
             for word in self.d.added_words:
                 words.add(word)
         aList = sorted(words, key=lambda s: s.lower())
-        if trace:
-            # The clean-*-spell-dict commands set trace = True.
-            print('%s words in %s' % (len(aList), fn))
         f = open(fn, mode='wb')
         s = '\n'.join(aList) + '\n'
         f.write(g.toEncodedString(s))
@@ -357,12 +349,10 @@ class EnchantWrapper(BaseSpellWrapper):
     #@+node:ekr.20180207102856.1: *3* enchant.open_dict_file
     def open_dict_file(self, fn):
         '''Open or create the dict with the given fn.'''
-        trace = False and not g.unitTesting
         language = self.language
         if not fn or not language:
             return None
         if g.app.spellDict:
-            if trace: g.trace('already open', self.c.fileName(), fn)
             return g.app.spellDict
         if not g.os_path_exists(fn):
             # Fix bug 1175013: leo/plugins/spellpyx.txt is
@@ -373,7 +363,6 @@ class EnchantWrapper(BaseSpellWrapper):
             try:
                 self.clean_dict(fn)
                 d = enchant.DictWithPWL(language, fn)
-                if trace: g.trace('open', g.shortFileName(self.c.fileName()), fn)
             except Exception:
                 # This is off-putting, and not necessary.
                 # g.es('Error reading dictionary file', fn)
@@ -752,7 +741,6 @@ class SpellTabHandler(object):
                 start = getattr(self.tab, 'change_i')
                 end = getattr(self.tab, 'change_j')
                 oldSel = start, end
-                # g.trace('using',start,end)
             else:
                 start, end = oldSel = w.getSelectionRange()
             if start is not None:
@@ -771,13 +759,9 @@ class SpellTabHandler(object):
     #@+node:ekr.20150514063305.505: *4* find & helper
     def find(self, event=None):
         """Find the next unknown word."""
-        trace = False and not g.unitTesting
-        trace_lookup = False
-        trace_end_body = False
         if not self.loaded:
             return
         c, n, p = self.c, 0, self.c.p
-        if trace: g.trace('entry', p.h)
         sc = self.spellController
         w = c.frame.body.wrapper
         c.selectPosition(p)
@@ -799,10 +783,8 @@ class SpellTabHandler(object):
                 k2 = ins + start + len(word)
                 if k2 < len(s) and s[k2].isdigit():
                     continue
-                if trace and trace_lookup: g.trace('lookup', word)
                 alts = sc.process_word(word)
                 if alts:
-                    if trace: g.trace('%s searches' % n)
                     self.currentWord = word
                     i = ins + start
                     j = i + len(word)
@@ -816,13 +798,11 @@ class SpellTabHandler(object):
                 else:
                     self.seen.add(word)
             # No more misspellings in p
-            if trace and trace_end_body: g.trace('----- end of text', p.h)
             p.moveToThreadNext()
             if p:
                 ins = 0
                 s = p.b
             else:
-                if trace: g.trace('%s searches' % n)
                 g.es("no more misspellings")
                 c.selectPosition(last_p)
                 self.tab.fillbox([])

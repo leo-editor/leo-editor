@@ -162,21 +162,26 @@ class extendForth(object):
     '''A helper class to extend the mode tables from @data forth-x settings.'''
     def __init__(self):
         self.c = None # set by pre_init_mode function.
-        # g.trace('modes/forth.py:extendForth')
+        #
         # Default forth keywords: extended by @data forth-words
         # Forth words to be rendered in boldface: extended by @data forth-bold-words
         self.boldwords = []
+        #
         # Forth bold-italics words: extended by @data forth-bold-italic-words
         # Note: on some boxen, bold italics may show in plain bold.
         self.bolditalicwords = []
+        #
         # Forth words that define brackets: extended by @data forth-delimiter-pairs
         self.brackets = [] # Helper: a list of tuples.
         self.brackets1 = []
         self.brackets2 = []
+        #
         # Words which define other words: extended by forth-defwords
         self.definingwords = []
+        #
         # Forth words to be rendered in italics: extended by forth-italic-words
         self.italicwords = []
+        #
         # Default keywords: extended by @data forth-keywords
         self.keywords = []
             # "variable", "constant", "code", "end-code",
@@ -193,12 +198,13 @@ class extendForth(object):
             # "@", "!", ",", "1+", "+", "-",
             # "<", "<=", "=", ">=", ">",
             # "invert", "and", "or",
+        #
         # Forth words which start strings: extended by @data forth-string-word-pairs
         self.stringwords = []
         self.stringwords1 = []
         self.stringwords2 = []
         self.verbose = False # True: tell when extending forth words.
-        # g.trace('rulesDict...\n',g.dictToString(rulesDict),tag='rulesDict...')
+
     def init(self):
         '''Set our ivars from settings.'''
         c = self.c
@@ -220,7 +226,6 @@ class extendForth(object):
                 for s in aList:
                     s = s.strip()
                     if s and s[0] != '\\':
-                        # g.trace(setting,s)
                         extras.append(s)
                 if extras:
                     if self.verbose:
@@ -234,7 +239,6 @@ class extendForth(object):
         )
         for(ivar, setting) in table2:
             self.splitList(ivar, setting)
-        # g.trace('keywords',self.keywords)
     def splitList(self, ivar, setting):
         '''Process lines containing pairs of entries
         in a list whose *name* is ivar.
@@ -254,9 +258,6 @@ class extendForth(object):
         name2 = '%s2' % ivar
         setattr(self, name1, result1)
         setattr(self, name2, result2)
-        if 0:
-            g.trace(name1, getattr(self, name1))
-            g.trace(name2, getattr(self, name2))
     def createBracketRules(self):
         for z in self.brackets1:
             func = self.createBracketRule(z)
@@ -337,11 +338,9 @@ class extendForth(object):
         if func not in aList:
             aList.append(func)
             rulesDict[ch] = aList
-        # g.trace(z,kind)
 e = extendForth()
 
 def pre_init_mode(c):
-    # g.trace('modes/forth.py',c)
     e.c = c
     e.init()
     e.createKeywords()

@@ -89,7 +89,6 @@ def run(fn, verbose):
         args = ','.join(["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn)])
         command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
             sys.executable, args)
-    # g.trace('===== pylint-leo.run: %s' % command)
     # If shell is True, it is recommended to pass args as a string rather than as a sequence.
     proc = subprocess.Popen(command, shell=False)
     proc.communicate()

@@ -104,7 +104,6 @@ if sys.platform != 'cli':
             self.nodeStack = []
             self.ratio = self.secondary_ratio = 0.5
             self.rootNode = None # a sax node.
-            self.trace = False # True and g.unitTesting
         #@+node:ekr.20060919110638.29: *3*  sax.Do nothing
         def endElementNS(self, unused_name, unused_qname):
             g.trace(unused_name)
@@ -180,9 +179,7 @@ if sys.platform != 'cli':
             if not content:
                 return
             elementName = self.elementStack[-1].lower() if self.elementStack else '<no element name>'
-            # if self.trace: g.trace(elementName,content.strip())
             if elementName in ('t', 'vh'):
-                # if elementName == 'vh': g.trace(elementName,repr(content))
                 self.content.append(content)
             elif content.strip():
                 g.pr('unexpected content:', elementName, repr(content))
@@ -195,40 +192,36 @@ if sys.platform != 'cli':
                 g.pr('%s</%s>' % (indent, self.clean(name).strip()))
             data = self.dispatchDict.get(name)
             if data is None:
-                if 1: g.trace('unknown end element', name)
+                g.trace('unknown end element', name)
             else:
                 junk, func = data
                 if func:
                     func()
             name2 = self.elementStack.pop()
             assert name == name2
-            # if self.trace: g.trace('** pop',name2)
+
         #@+node:ekr.20060919110638.32: *4* sax.endTnode
         def endTnode(self):
             '''Handle the end of a <tnode> element.'''
-            trace = (False or self.trace) and not g.unitTesting
-            # trace = trace and self.fileName.endswith('clone-test.leo')
             for sax_node in self.nodeList:
                 sax_node.bodyString = ''.join(self.content)
-                if trace: g.trace(repr(sax_node))
             self.content = []
         #@+node:ekr.20060919110638.33: *4* sax.endVnode
         def endVnode(self):
             '''Handle the end of a <vnode> element.'''
             self.level -= 1
             self.node = self.nodeStack.pop()
-            # if self.trace: g.trace(repr(self.node))
+
         #@+node:ekr.20060919110638.34: *4* sax.endVH
         def endVH(self):
             '''Handle the end of a <vh> element.'''
             if self.node:
                 self.node.headString = ''.join(self.content)
-                # if self.trace: g.trace(repr(self.node))
             self.content = []
         #@+node:ekr.20060919110638.45: *3* sax.getRootNode
         def getRootNode(self):
-            if self.trace:
-                g.trace()
+
+            if False:
                 self.rootNode.dump()
                 for child in self.rootNode.children:
                     child.dump()
@@ -239,7 +232,6 @@ if sys.platform != 'cli':
             sax: handle an xml processing instruction.
             We expect the target to be 'xml-stylesheet'.
             '''
-            trace = False and not g.unitTesting
             if target == 'xml-stylesheet':
                 # A strange hack.  Don't set this for settings files.
                 # This looks like a strange sax interaction.
@@ -248,7 +240,6 @@ if sys.platform != 'cli':
                     pass
                 else:
                     self.c.frame.stylesheet = data
-                    if trace: g.trace(self.c.shortFileName(), repr(data))
                 # g.warning('','%s: %s' % (target,data))
             else:
                 g.trace(target, data)
@@ -258,7 +249,6 @@ if sys.platform != 'cli':
             if name in self.printElements or 'all' in self.printElements:
                 self.printStartElement(name, attrs)
             self.elementStack.append(name)
-            # if self.trace: g.trace('**push',name)
             data = self.dispatchDict.get(name)
             if data is None:
                 if 1: g.trace('unknown start element', name)
@@ -268,7 +258,6 @@ if sys.platform != 'cli':
                     func(attrs)
         #@+node:ekr.20060919110638.36: *4* sax.getWindowPositionAttributes
         def getWindowPositionAttributes(self, attrs):
-            trace = False and not g.unitTesting
             c = self.c
             d = {}
             windowSize = g.app.loadManager.options.get('windowSize')
@@ -283,7 +272,6 @@ if sys.platform != 'cli':
                             d[name] = int(val)
                         except ValueError:
                             d[name] = 50 # A reasonable default.
-                if trace: g.trace(d)
             elif g.enableDB and c.mFileName:
                 d = c.cacher.getCachedWindowPositionDict(c.mFileName)
             if not d and c.fixed and c.fixedWindowPosition:
@@ -299,19 +287,15 @@ if sys.platform != 'cli':
                             d[name] = 100 # A reasonable default.
                     else:
                         g.trace(name, len(val))
-            if trace: g.trace(c.mFileName, d)
             return d # Assigned to self.global_window_position
         #@+node:ekr.20060919110638.37: *4* sax.startGlobals
         def startGlobals(self, attrs):
-            trace = False and not g.unitTesting
             c = self.c
             if self.inClipboard:
                 return
-            if trace: g.trace(c.mFileName)
             use_db = g.enableDB and c.mFileName
             if use_db:
                 ratio, ratio2 = c.cacher.getCachedGlobalFileRatios()
-                if trace: g.trace(ratio, ratio2)
                 self.ratio, self.secondary_ratio = ratio, ratio2
             else:
                 try:
@@ -321,8 +305,6 @@ if sys.platform != 'cli':
                             self.ratio = float(val)
                         elif name == 'body_secondary_ratio':
                             self.secondary_ratio = float(val)
-                    if trace: g.trace('** not cached:', '%1.2f %1.2f' % (
-                        self.ratio, self.secondary_ratio))
                 except Exception:
                     pass
         #@+node:ekr.20060919110638.38: *4* sax.startWinPos
@@ -343,7 +325,7 @@ if sys.platform != 'cli':
             h = d.get('height', 500)
             x = d.get('left', 50)
             y = d.get('top', 50)
-            # g.trace(d,w,h,x,y)
+            #
             # Redraw the window before writing into it.
             # Honor --minimized, --maximized or --fullscreen.
             # 2013/10/25: do set the geometry for minimized windows.
@@ -368,8 +350,6 @@ if sys.platform != 'cli':
         def tnodeAttributes(self, attrs):
             # The VNode must have a tx attribute to associate content
             # with the proper node.
-            trace = False and not g.unitTesting
-            verbose = False
             node = self.node
             self.nodeList = []
             val = None
@@ -381,7 +361,6 @@ if sys.platform != 'cli':
                     # different when unit testing just to support a unit test.
                     # Hahaha.  The unit test *caused* the bug!
                     self.nodeList = self.tnxToListDict.get(val, [])
-                    if trace and verbose: g.trace('tx', self.nodeList)
                     break
             if not self.nodeList:
                 self.error('Bad leo file: no node for <t tx=%s>' % (val))
@@ -392,7 +371,6 @@ if sys.platform != 'cli':
                 if name != 'tx':
                     # Huge bug fix: 2009/7/1: was node == self.node.
                     for node in self.nodeList:
-                        if trace: g.trace('%s %s=%s...' % (node, name, val[: 20]))
                         node.tnodeAttributes[name] = val
             # if not self.nodeList:
                 # self.error('Bad leo file: no tx attribute for VNode')
@@ -469,7 +447,6 @@ class FileCommands(object):
     #@+node:ekr.20031218072017.3019: *4* fc.ctor
     def __init__(self, c):
         '''Ctor for FileCommands class.'''
-        # g.trace("__init__", "FileCommands.__init__")
         self.c = c
         self.frame = c.frame
         self.nativeTnodeAttributes = ('tx',)
@@ -683,7 +660,6 @@ class FileCommands(object):
             Read a .leo file.
             The caller should follow this with a call to c.redraw().
         '''
-        trace = False and not g.unitTesting
         fc, c = self, self.c
         t1 = time.time()
         c.setChanged(False) # May be set when reading @file nodes.
@@ -709,9 +685,6 @@ class FileCommands(object):
                     c.redraw()
                     recoveryNode = fc.readExternalFiles(fileName)
         finally:
-            if trace: g.trace(
-                recoveryNode and recoveryNode.h,
-                c.p and c.p.h)
             p = recoveryNode or c.p or c.lastTopLevel()
                 # lastTopLevel is a better fallback, imo.
             # New in Leo 5.3. Delay the second redraw until idle time.
@@ -922,7 +895,6 @@ class FileCommands(object):
                 tnx = sax_child.tnx
                 v = fc.gnxDict.get(tnx)
                 if v: # A clone.
-                    ### v = fc.createSaxVnode(sax_child, parent_v, v=v)
                     fc.updateSaxClone(sax_child, parent_v, v)
                 else:
                     v = fc.createSaxVnode(sax_child, parent_v)
@@ -1057,7 +1029,6 @@ class FileCommands(object):
         '''
         gnxs = s.split(',')
         result = [gnx for gnx in gnxs if len(gnx) > 0]
-        # g.trace(tag,result)
         return result
     #@+node:EKR.20040627114602: *5* fc.getDescendentUnknownAttributes
     # Pre Leo 4.5 Only @thin vnodes had the descendentTnodeUnknownAttributes field.
@@ -1084,69 +1055,37 @@ class FileCommands(object):
         self.descendentMarksList = []
             # 2011/12/10: never re-init this dict.
             # self.gnxDict = {}
-            # g.trace('*** clearing gnxDict',g.callers())
         self.c.nodeConflictList = [] # 2010/01/05
         self.c.nodeConflictFileName = None # 2010/01/05
     #@+node:EKR.20040627120120: *5* fc.restoreDescendentAttributes
     def restoreDescendentAttributes(self):
 
-        trace = False and not g.unitTesting
-        trace_dict = False
-        trace_expanded = False
-        trace_marks = False
         c = self.c
         for resultDict in self.descendentTnodeUaDictList:
-            if trace and trace_dict: g.trace('t.dict', resultDict)
             for gnx in resultDict:
                 tref = self.canonicalTnodeIndex(gnx)
                 v = self.gnxDict.get(tref)
                 if v:
                     v.unknownAttributes = resultDict[gnx]
                     v._p_changed = 1
-                elif trace:
-                    g.error(
-                        'restoreDescendantAttributes: '
-                        'can not find VNode (duA): gnx = %s' % (gnx))
         # New in Leo 4.5: keys are archivedPositions, values are attributes.
         for root_v, resultDict in self.descendentVnodeUaDictList:
-            if trace and trace_dict: g.trace('v.dict', resultDict)
             for key in resultDict:
                 v = self.resolveArchivedPosition(key, root_v)
                 if v:
                     v.unknownAttributes = resultDict[key]
                     v._p_changed = 1
-                elif trace:
-                    g.error(
-                        'restoreDescendantAttributes: '
-                        'can not find VNode (duA): archivedPosition: %s, root_v: %s' % (
-                            key, root_v))
         marks = {}; expanded = {}
         for gnx in self.descendentExpandedList:
             tref = self.canonicalTnodeIndex(gnx)
             v = self.gnxDict.get(gnx)
             if v:
                 expanded[v] = v
-                # if trace: g.trace('expanded',v)
-            elif trace and trace_expanded:
-                g.error(
-                    'restoreDescendantAttributes: '
-                    'can not find VNode (expanded): gnx = %s, tref: %s' % (gnx, tref))
-                # This doesn't help, because it is never written.
-                # The real answer would be to delete the "offending" uA.
-                    # self.descendentExpandedList.remove(gnx)
         for gnx in self.descendentMarksList:
             tref = self.canonicalTnodeIndex(gnx)
             v = self.gnxDict.get(gnx)
             if v: marks[v] = v
-            elif trace and trace_marks:
-                g.error(
-                    'restoreDescendantAttributes: '
-                    'can not find VNode (marks): gnx = %s tref: %s' % (gnx, tref))
-                # This doesn't help, because it is never written.
-                # The real answer would be to delete the "offending" uA.
-                    # self.descendentMarksList.remove(gnx)
         if marks or expanded:
-            # g.trace('marks',len(marks),'expanded',len(expanded))
             for p in c.all_unique_positions():
                 if marks.get(p.v):
                     p.v.initMarkedBit()
@@ -1154,7 +1093,6 @@ class FileCommands(object):
                         # There was a big performance bug in the mark hook in the Node Navigator plugin.
                 if expanded.get(p.v):
                     p.expand()
-                    # if trace: g.trace('expand',p.h)
     #@+node:ekr.20060919104530: *4* fc.Reading Sax
     #@+node:ekr.20090525144314.6526: *5* fc.cleanSaxInputString
     def cleanSaxInputString(self, s):
@@ -1363,7 +1301,6 @@ class FileCommands(object):
         try:
             # No change needed to support protocols.
             val2 = pickle.loads(binString)
-            # g.trace('v.3 val:',val2)
             return val2
         except(pickle.UnpicklingError, ImportError, AttributeError, ValueError, TypeError):
             try:
@@ -1407,7 +1344,6 @@ class FileCommands(object):
             handler = SaxContentHandler(c, inputFileName, silent, inClipboard)
             parser.setContentHandler(handler)
             parser.parse(theFile) # expat does not support parseString
-            # g.trace('parsing done')
             sax_node = handler.getRootNode()
         except Exception:
             g.error('error parsing', inputFileName)
@@ -1444,11 +1380,9 @@ class FileCommands(object):
         '''
         Called *before* reading external files.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         for p in c.all_unique_positions():
             if hasattr(p.v, 'tempTnodeList'):
-                # g.trace(p.v.headString())
                 result = []
                 for tnx in p.v.tempTnodeList:
                     index = self.canonicalTnodeIndex(tnx)
@@ -1456,13 +1390,11 @@ class FileCommands(object):
                     index = g.toUnicode(index)
                     v = self.gnxDict.get(index)
                     if v:
-                        if trace: g.trace(tnx, v)
                         result.append(v)
                     else:
                         g.trace('*** No VNode for %s' % tnx)
                 if result:
                     p.v.tnodeList = result
-                    # g.trace('*** tnodeList for',p.h,result)
                 delattr(p.v, 'tempTnodeList')
     #@+node:ekr.20080805132422.3: *5* fc.resolveArchivedPosition
     def resolveArchivedPosition(self, archivedPosition, root_v):
@@ -1470,12 +1402,9 @@ class FileCommands(object):
         Return a VNode corresponding to the archived position relative to root
         node root_v.
         '''
-        trace = False and not g.unitTesting
 
         def oops(message):
             '''Give an error only if no file errors have been seen.'''
-            if trace and self.c.atFileCommands.errors == 0:
-                g.error('bad archived position: %s' % (message))
             return None
 
         try:
@@ -1588,7 +1517,7 @@ class FileCommands(object):
         return geom
     #@+node:ekr.20060919110638.13: *5* fc.setPositionsFromVnodes & helper (sax read)
     def setPositionsFromVnodes(self):
-        trace = False and not g.unitTesting
+
         c, root = self.c, self.c.rootPosition()
         if c.sqlite_connection:
             # position is already selected
@@ -1597,28 +1526,21 @@ class FileCommands(object):
         use_db = g.enableDB and c.mFileName
         if use_db:
             str_pos = c.cacher.getCachedStringPosition()
-            if trace: g.trace('cached str_pos', str_pos)
         if not str_pos:
             d = root.v.u
-            if trace: g.trace(d)
             if d: str_pos = d.get('str_leo_pos')
-            if trace: g.trace('p.v.u', str_pos)
         if str_pos:
             current = self.archivedPositionToPosition(str_pos)
-            if trace: g.trace(current and current.h)
-        elif trace:
-            g.trace('no str_pos!')
         c.setCurrentPosition(current or c.rootPosition())
     #@+node:ekr.20061006104837.1: *6* fc.archivedPositionToPosition
     def archivedPositionToPosition(self, s):
-        trace = False and not g.unitTesting
+
         c = self.c
         s = g.toUnicode(s) # 2011/02/25
         aList = s.split(',')
         try:
             aList = [int(z) for z in aList]
         except Exception:
-            if trace: g.trace('not all ints:', aList)
             aList = None
         if not aList: return None
         p = c.rootPosition(); level = 0
@@ -1629,12 +1551,10 @@ class FileCommands(object):
                     p.moveToNext()
                     i -= 1
                 else:
-                    # g.trace('oops: bad archived position. no sibling:',aList,p.h,c)
                     return None
             level += 1
             if level < len(aList):
                 p.moveToFirstChild()
-                # g.trace('level',level,'index',aList[level],p.h)
         return p
     #@+node:ekr.20031218072017.3032: *3* fc.Writing
     #@+node:ekr.20070413045221.2: *4*  fc.Top-level
@@ -1790,7 +1710,6 @@ class FileCommands(object):
         '''Put string s to self.outputFile. All output eventually comes here.'''
         # Improved code: self.outputFile (a cStringIO object) always exists.
         if s:
-            # if g.unitTesting: g.trace(g.callers(1),repr(s))
             self.putCount += 1
             if not g.isPython3:
                 s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
@@ -1850,11 +1769,10 @@ class FileCommands(object):
     # Changed for Leo 4.0.
 
     def putGlobals(self):
-        trace = False and not g.unitTesting
+
         c = self.c
         use_db = g.enableDB and c.mFileName
         if use_db:
-            if trace: g.trace(c.mFileName)
             c.cacher.setCachedGlobalsElement(c.mFileName)
         # Always put positions, to trigger sax methods.
         self.put("<globals")
@@ -1866,8 +1784,6 @@ class FileCommands(object):
         self.put(" body_secondary_ratio=")
         self.put_in_dquotes("0.5" if c.fixed or use_db else "%1.2f" % (
             c.frame.secondary_ratio))
-        if trace: g.trace('fixed or use_db', c.fixed or use_db,
-            '%1.2f %1.2f' % (c.frame.ratio, c.frame.secondary_ratio))
         #@-<< put the body/outline ratios >>
         self.put(">"); self.put_nl()
         #@+<< put the position of this frame >>
@@ -1882,7 +1798,6 @@ class FileCommands(object):
                 # of Leo that do not support fixed .leo files.
         else:
             width, height, left, top = c.frame.get_window_info()
-        # g.trace(width,height,left,top)
         self.put_tab()
         self.put("<global_window_position")
         self.put(" top="); self.put_in_dquotes(str(top))
@@ -1946,14 +1861,12 @@ class FileCommands(object):
 
         The old way made it almost impossible to delete stylesheet element.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         sheet = (c.config.getString('stylesheet') or '').strip()
         # sheet2 = c.frame.stylesheet and c.frame.stylesheet.strip() or ''
         # sheet = sheet or sheet2
         if sheet:
             s = '<?xml-stylesheet %s ?>' % sheet
-            if trace: g.trace(c.shortFileName(), s)
             self.put(s)
             self.put_nl()
     #@+node:ekr.20031218072017.1577: *5* fc.putTnode
@@ -1988,7 +1901,6 @@ class FileCommands(object):
             tnodes[index] = p.v
         # Put all tnodes in index order.
         for index in sorted(tnodes):
-            # g.trace(index)
             v = tnodes.get(index)
             if v:
                 # Write only those tnodes whose vnodes were written.
@@ -2079,7 +1991,6 @@ class FileCommands(object):
         elif hasattr(v, "unknownAttributes"):
             d = v.unknownAttributes
             if d and not c.fixed and d.get('str_leo_pos'):
-                # g.trace("clearing str_leo_pos",v)
                 del d['str_leo_pos']
                 v.unknownAttributes = d
         # Append unKnownAttributes to attrs
@@ -2514,14 +2425,10 @@ class FileCommands(object):
     #@+node:ekr.20080805085257.2: *4* fc.pickle
     def pickle(self, torv, val, tag):
         '''Pickle val and return the hexlified result.'''
-        trace = False and g.unitTesting
         try:
             s = pickle.dumps(val, protocol=1)
             s2 = binascii.hexlify(s)
             s3 = g.ue(s2, 'utf-8')
-            if trace: g.trace('\n',
-                type(val), val, '\n', type(s), repr(s), '\n',
-                type(s2), s2, '\n', type(s3), s3)
             field = ' %s="%s"' % (tag, s3)
             return field
         except pickle.PicklingError:
@@ -2550,15 +2457,15 @@ class FileCommands(object):
                 for v in theList:
                     sList.append("%s," % v.fileIndex)
                 s = ''.join(sList)
-                # g.trace(tag,[str(p.h) for p in theList])
                 result.append('\n%s="%s"' % (tag, s))
         return ''.join(result)
     #@+node:ekr.20080805071954.2: *4* fc.putDescendentVnodeUas
     def putDescendentVnodeUas(self, p):
-        '''Return the a uA field for descendent VNode attributes,
-        suitable for reconstituting uA's for anonymous vnodes.'''
-        trace = False
-        if trace: g.trace(p.h)
+        '''
+        Return the a uA field for descendent VNode attributes,
+        suitable for reconstituting uA's for anonymous vnodes.
+        '''
+        #
         # Create aList of tuples (p,v) having a valid unknownAttributes dict.
         # Create dictionary: keys are vnodes, values are corresonding archived positions.
         pDict = {}; aList = []
@@ -2573,10 +2480,8 @@ class FileCommands(object):
         d = {}
         for v, d2 in aList:
             aList2 = [str(z) for z in pDict.get(v)]
-            # g.trace(aList2)
             key = '.'.join(aList2)
             d[key] = d2
-        if trace: g.trace(p.h, g.dictToString(d))
         # Pickle and hexlify d
         # pylint: disable=consider-using-ternary
         return d and self.pickle(
@@ -2629,7 +2534,6 @@ class FileCommands(object):
             else:
                 val = False
             c.fixed = val
-        # g.trace('c.fixed',c.fixed)
     #@-others
 #@-others
 #@@language python

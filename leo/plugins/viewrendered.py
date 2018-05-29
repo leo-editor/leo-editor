@@ -223,8 +223,6 @@ if docutils:
         g.es_exception()
 else:
     got_docutils = False
-if trace:
-    print('viewrendered.py: got_docutils: %s' % got_docutils)
 # markdown support, non-vital
 try:
     from markdown import markdown
@@ -232,8 +230,6 @@ try:
 except ImportError:
     got_markdown = False
 import os
-if trace:
-    print('viewrendered.py: got_markdown: %s' % got_markdown)
 # nbformat (@jupyter) support, non-vital.
 try:
     import nbformat
@@ -362,7 +358,6 @@ def viewrendered(event):
     global controllers, layouts
     vr = controllers.get(c.hash())
     if vr:
-        if trace: g.trace('** controller exists: %s' % (vr))
         vr.activate()
         vr.show()
         vr.adjust_layout('open')
@@ -370,7 +365,6 @@ def viewrendered(event):
         h = c.hash()
         controllers[h] = vr = ViewRenderedController(c)
         layouts[h] = c.cacher.db.get('viewrendered_default_layouts', (None, None))
-        if trace: g.trace('** new controller: %s' % (vr))
         if hasattr(c, 'free_layout'):
             vr._ns_id = '_leo_viewrendered' # for free_layout load/save
             vr.splitter = splitter = c.free_layout.get_top_splitter()
@@ -670,7 +664,6 @@ if QtWidgets: # NOQA
             '''Activate the vr-window.'''
             pc = self
             if pc.active: return
-            if trace: g.trace('=====')
             pc.inited = True
             pc.active = True
             g.registerHandler('select2', pc.update)
@@ -680,7 +673,6 @@ if QtWidgets: # NOQA
             '''Deactivate the vr window.'''
             pc = self
             # Never disable the idle-time hook: other plugins may need it.
-            if trace: g.trace('=====')
             g.unregisterHandler('select2', pc.update)
             g.unregisterHandler('idle', pc.update)
             pc.active = False
@@ -727,13 +719,9 @@ if QtWidgets: # NOQA
 
         def update(self, tag, keywords):
             '''Update the vr pane.'''
-            verbose = True
             pc = self
             p = pc.c.p
             if pc.must_update(keywords):
-                if trace and verbose:
-                    g.trace('===== updating')
-                    g.printDict(keywords)
                 # Suppress updates until we change nodes.
                 pc.node_changed = pc.gnx != p.v.gnx
                 pc.gnx = p.v.gnx
@@ -744,9 +732,7 @@ if QtWidgets: # NOQA
                 # Dispatch based on the computed kind.
                 kind = keywords.get('flags') if 'flags' in keywords else pc.get_kind(p)
                 f = pc.dispatch_dict.get(kind)
-                if f:
-                    if trace and verbose: g.trace(p.h, f.__name__)
-                else:
+                if not f:
                     g.trace('no handler for kind: %s' % kind)
                     f = pc.update_rst
                 f(s, keywords)
@@ -775,7 +761,6 @@ if QtWidgets: # NOQA
             w.show()
             # Special inits for text widgets...
             if w.__class__ == QtWidgets.QTextBrowser:
-                if trace: g.trace(g.callers())
                 text_name = 'body-text-renderer'
                 w.setObjectName(text_name)
                 # Do not do this! It interferes with themes.
@@ -794,7 +779,6 @@ if QtWidgets: # NOQA
                 pc = self
                 if not colorName: return
                 styleSheet = 'QTextEdit#%s { background-color: %s; }' % (name, colorName)
-                if trace: g.trace(name,colorName, g.callers())
                 if QtGui.QColor(colorName).isValid():
                     w.setStyleSheet(styleSheet)
                 elif colorName not in pc.badColors:
@@ -809,24 +793,18 @@ if QtWidgets: # NOQA
                 return False
             if keywords.get('force'):
                 pc.active = True
-                if trace: g.trace('force: activating', p.h)
                 return True
             if c != keywords.get('c') or not pc.active:
-                if trace: g.trace('not active', p.h)
                 return False
             if pc.locked:
-                if trace: g.trace('locked', p.h)
                 return False
             if pc.gnx != p.v.gnx:
-                if trace: g.trace('changed node', p.h)
                 return True
             if len(p.b) != pc.length:
                 if pc.get_kind(p) in ('html', 'pyplot'):
-                    if trace: g.trace('html or pyplot text changed', p.h)
                     pc.length = len(p.b)
                     return False # Only update explicitly.
                 else:
-                    if trace: g.trace('text changed', p.h)
                     return True
             # This will be called at idle time.
             # if trace: g.trace('no change')
@@ -867,7 +845,6 @@ if QtWidgets: # NOQA
             pc = self
             c = pc.c
             if pc.must_change_widget(QtWebKitWidgets.QWebView):
-                # g.trace('===== instantiating QWebView')
                 w = QtWebKitWidgets.QWebView()
                 n = c.config.getInt('qweb_view_font_size')
                 if n:
@@ -915,7 +892,6 @@ if QtWidgets: # NOQA
             pc = self
             c = pc.c
             if pc.must_change_widget(QtWebKitWidgets.QWebView):
-                # g.trace('===== instantiating QWebView')
                 w = QtWebKitWidgets.QWebView()
                 n = c.config.getInt('qweb_view_font_size')
                 if n:
@@ -928,7 +904,6 @@ if QtWidgets: # NOQA
             s = self.get_jupyter_source(c)
             if isQt5:
                 w.hide() # This forces a proper update.
-            # g.trace(len(g.splitLines(s)))
             w.setHtml(s)
             w.show()
             c.bodyWantsFocusNow()
@@ -991,7 +966,6 @@ if QtWidgets: # NOQA
         #@+node:ekr.20170324085132.1: *5* vr.create_latex_html
         def create_latex_html(self, s):
             '''Create an html page embedding the latex code s.'''
-            trace = False and not g.unitTesting
             c = self.c
             # pylint: disable=deprecated-method
             try:
@@ -1003,9 +977,6 @@ if QtWidgets: # NOQA
             html_s = escape(s)
             template = latex_template % (html_s)
             template = g.adjustTripleString(template, c.tab_width).strip()
-            if trace:
-                g.trace()
-                g.printList(g.splitLines(template))
             return template
         #@+node:peckj.20130207132858.3671: *4* vr.update_md & helper
         def update_md(self, s, keywords):
@@ -1013,7 +984,6 @@ if QtWidgets: # NOQA
             pc = self; c = pc.c; p = c.p
             s = s.strip().strip('"""').strip("'''").strip()
             isHtml = s.startswith('<') and not s.startswith('<<')
-            if trace: g.trace('isHtml:', isHtml, p.h)
             # Do this regardless of whether we show the widget or not.
             w = pc.ensure_text_widget()
             assert pc.w
@@ -1023,7 +993,6 @@ if QtWidgets: # NOQA
                 force = keywords.get('force')
                 colorizer = c.frame.body.colorizer
                 language = colorizer.scanLanguageDirectives(p)
-                if trace: g.trace(language)
                 if force or language in ('rst', 'rest', 'markdown', 'md'):
                     if not isHtml:
                         s = self.convert_to_markdown(s)
@@ -1127,7 +1096,6 @@ if QtWidgets: # NOQA
                         # The order of these statements is important...
                         import matplotlib
                         matplotlib.use('module://leo.plugins.pyplot_backend')
-                        if trace: g.trace('===== LOADED: pyplot.backend')
                     except ImportError:
                         g.trace('===== FAIL: pyplot.backend')
                 else:
@@ -1166,7 +1134,6 @@ if QtWidgets: # NOQA
             # Careful: we may be unit testing.
             splitter = c.free_layout.get_top_splitter()
             if not splitter:
-                if trace: g.trace('no splitter')
                 return
             if not pc.pyplot_canvas:
 
@@ -1307,7 +1274,6 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110320120020.14483: *5* vr.get_kind
         def get_kind(self, p):
             '''Return the proper rendering kind for node p.'''
-            trace = False and not g.unitTesting
             c, h, pc = self.c, p.h, self
             if h.startswith('@'):
                 i = g.skip_id(h, 1, chars='-')
@@ -1318,7 +1284,6 @@ if QtWidgets: # NOQA
             colorizer = c.frame.body.colorizer
             language = colorizer.scanLanguageDirectives(p, use_default=False)
                 # Fix #344: don't use c.target_language as a default.
-            if trace: g.trace(repr(language))
             if got_markdown and language in ('md', 'markdown'):
                 return language
             elif got_docutils and language in ('rest', 'rst'):
@@ -1381,10 +1346,7 @@ if QtWidgets: # NOQA
             c = self.c
             splitter = self.splitter
             deflo = c.db.get('viewrendered_default_layouts', (None, None))
-            # if trace:
-                # g.trace()
-                # g.printObj(deflo)
-            (loc, loo) = layouts.get(c.hash(), deflo)
+            loc, loo = layouts.get(c.hash(), deflo)
             if which == 'closed' and loc and splitter:
                 splitter.load_layout(loc)
             elif which == 'open' and loo and splitter:

@@ -142,11 +142,6 @@ class LeoMenu(object):
         The 'top' menu has already been created.
         '''
         # Called from createMenuBar.
-        trace = False and not g.unitTesting
-        trace_list = False
-        if trace and trace_list:
-            g.trace('=====')
-            g.printObj(aList)
         c = self.c
         for z in aList:
             kind, val, val2 = z
@@ -284,7 +279,7 @@ class LeoMenu(object):
                 underline=amp_index)
     #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback
     def createMasterMenuCallback(self, dynamicMenu, command, commandName):
-        trace = False and not g.unitTesting
+
         c = self.c
 
         def setWidget():
@@ -305,7 +300,6 @@ class LeoMenu(object):
                 def masterDynamicMenuCallback(c=c, command=command):
                     # 2012/01/07: set w here.
                     w = setWidget()
-                    if trace: g.trace(command.__name__, w)
                     event = g.app.gui.create_key_event(c, w=w)
                     return c.k.masterCommand(func=command, event=event)
 
@@ -323,7 +317,6 @@ class LeoMenu(object):
                 # 2011/10/28: Use only the command name to dispatch the command.
                 # 2012/01/07: Bug fix: set w here.
                 w = setWidget()
-                if trace: g.trace(commandName, w, c)
                 event = g.app.gui.create_key_event(c, w=w)
                 return c.k.masterCommand(commandName=commandName, event=event)
 
@@ -331,7 +324,6 @@ class LeoMenu(object):
     #@+node:ekr.20111028060955.16568: *5* LeoMenu.getMenuEntryBindings
     def getMenuEntryBindings(self, command, dynamicMenu, label):
         '''Compute commandName from command.'''
-        trace = False and not g.unitTesting
         c = self.c
         if g.isString(command):
             # Command is really a command name.
@@ -340,9 +332,6 @@ class LeoMenu(object):
             # First, get the old-style name.
             commandName = self.computeOldStyleShortcutKey(label)
         command = c.commandsDict.get(commandName)
-        if trace and not command and not dynamicMenu:
-            # This may come from a plugin that normally isn't enabled.
-            g.trace('No inverse for %s' % commandName)
         return commandName
     #@+node:ekr.20111028060955.16565: *5* LeoMenu.getMenuEntryInfo
     def getMenuEntryInfo(self, data, menu):
@@ -375,6 +364,7 @@ class LeoMenu(object):
         return label, command, done
     #@+node:ekr.20111028060955.16563: *5* LeoMenu.traceMenuTable
     def traceMenuTable(self, table):
+
         trace = False and not g.unitTesting
         if not trace: return
         format = '%40s %s'
@@ -391,15 +381,12 @@ class LeoMenu(object):
                 print(format % (data, ''))
     #@+node:ekr.20031218072017.3784: *4* LeoMenu.createMenuItemsFromTable
     def createMenuItemsFromTable(self, menuName, table, dynamicMenu=False):
-        trace = False
+
         if g.app.gui.isNullGui:
             return
         try:
             menu = self.getMenu(menuName)
             if menu is None:
-                if trace and not g.app.menuWarningsGiven:
-                    g.es_print(g.app.gui.guiName(), g.callers())
-                    g.es_print("menu does not exist: %s" % (menuName))
                 return
             self.createMenuEntries(menu, table, dynamicMenu=dynamicMenu)
         except Exception:
@@ -450,13 +437,11 @@ class LeoMenu(object):
             'ext':      the file extension.
             'kind':     the method used to open the file, such as subprocess.Popen.
         '''
-        # trace = False and not g.unitTesting
         k = self.c.k
         if not table: return
         g.app.openWithTable = table # Override any previous table.
         # Delete the previous entry.
         parent = self.getMenu("File")
-        # if trace: g.trace('parent',parent)
         if not parent:
             if not g.app.batchMode:
                 g.error('', 'createOpenWithMenuFromTable:', 'no File menu')
@@ -498,16 +483,11 @@ class LeoMenu(object):
         'name':     menu label.
         'shortcut': optional menu shortcut.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         if g.app.unitTesting: return
         for d in table:
             label = d.get('name')
             args = d.get('args', [])
-            if trace:
-                print()
-                for key in sorted(list(d.keys())):
-                    print('%15s %s' % (key, d.get(key)))
             accel = d.get('shortcut') or ''
             if label and args:
                 realLabel = self.getRealMenuName(label)
@@ -686,7 +666,6 @@ class NullMenu(LeoMenu):
         self.isNull = True
     #@+node:ekr.20050104094029: *3* oops
     def oops(self):
-        # g.trace("LeoMenu", g.callers())
         pass
     #@-others
 #@-others

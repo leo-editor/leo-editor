@@ -143,9 +143,6 @@ def OnIconDoubleClick(tag,keywords):
     c=keywords.get('c')
     if not c or not c.exists: return
     p = c.p
-
-    # g.trace(c.shortFileName())
-
     h = p.h
     if g.match_word(h,0,"@run"):
         if RunNode or RunList:
@@ -157,13 +154,11 @@ def OnIconDoubleClick(tag,keywords):
 
             for p2 in p.self_and_subtree():
                 if g.match_word(p2.h,0,"@run"):
-                    # g.trace(p2.h)
-                    # 2009/10/30: don't use iter copy arg.
+                    # Don't use iter copy arg.
                     RunList.append(p2.copy())
 
             ExitCode = None
             OwnIdleHook = True
-            ### g.enableIdleTimeHook()
             #@-<< handle double click in @run icon >>
     elif g.match_word(h,0,"@in"):
         if RunNode:
@@ -186,12 +181,10 @@ def OnIdle(tag,keywords):
     global ExitCode,OwnIdleHook
 
     c=keywords.get('c')
-    if not c or not c.exists: return
-
-    if not OwnIdleHook: return
-
-    # g.trace(c.shortFileName())
-
+    if not c or not c.exists:
+        return
+    if not OwnIdleHook:
+        return
     if RunNode:
         o = UpdateText(OutThread)
         e = UpdateText(ErrThread,"red")

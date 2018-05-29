@@ -53,9 +53,6 @@ class EditBodyTestCase(unittest.TestCase):
         self.ins = ins and ins.copy()
             # One line giving the insert point in tk coordinate.
         self.tempNode = tempNode.copy()
-        # g.trace('parent',parent.h)
-        # g.trace('before',before.h)
-        # g.trace('after',after.h)
     #@+node:ekr.20051104075904.72: *3*  fail (EditBodyTestCase)
     def fail(self, msg=None):
         """Mark a unit test as having failed."""
@@ -71,7 +68,6 @@ class EditBodyTestCase(unittest.TestCase):
         i = commandName.find(' ')
         if i > -1:
             commandName = commandName[: i]
-        # g.trace(commandName)
         # Compute the result in tempNode.b
         command = getattr(c, commandName)
         command()
@@ -172,8 +168,6 @@ class GeneralTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.10: *3* runTest (generalTestCase)
     def runTest(self, define_g=True):
         '''Run a Leo GeneralTestCase test.'''
-        trace = False
-        trace_script = False
         trace_time = False
         tm = self
         c = tm.c
@@ -193,12 +187,6 @@ class GeneralTestCase(unittest.TestCase):
         else:
             d = {'self': tm,}
         script = script + '\n'
-        if trace:
-            if trace_script:
-                g.trace('p: %s c: %s write script: %s script:\n%s' % (
-                p and p.h, c.shortFileName(), c.write_script_file, script))
-            else:
-                g.trace(p and p.h)
         # Execute the script. Let the unit test handle any errors!
         # 2011/11/02: pass the script sources to exec or execfile.
         if c.write_script_file:
@@ -218,7 +206,6 @@ class GeneralTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.11: *3* shortDescription
     def shortDescription(self):
         s = self.p.h
-        # g.trace(s)
         return s + '\n'
     #@-others
 #@+node:ekr.20051104075904.79: ** class ImportExportTestCase
@@ -259,7 +246,7 @@ class ImportExportTestCase(unittest.TestCase):
         self.importExport()
     #@+node:ekr.20051104075904.84: *3* setUp (ImportExportTestCase)
     def setUp(self):
-        trace = False
+
         c = self.c; temp_p = self.temp_p
         d = self.dialog
         assert(d)
@@ -283,7 +270,6 @@ class ImportExportTestCase(unittest.TestCase):
         except AttributeError:
             fileName = g.os_path_normpath(fileName)
         self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir, "..", fileName)
-        if trace: g.trace('(ImportExportTestCase', fileName)
         # Set the dict for UnitTestGui, a subclass of NullGui.
         # NullGui.simulateDialog uses this dict to return values for dialogs.
         if self.doImport:
@@ -291,7 +277,7 @@ class ImportExportTestCase(unittest.TestCase):
         else:
             theDict = {name: fileName}
         self.oldGui = g.app.gui
-        self.gui = leoGui.UnitTestGui(theDict, trace=False)
+        self.gui = leoGui.UnitTestGui(theDict)
     #@+node:ekr.20051104075904.85: *3* shortDescription (ImportExportTestCase)
     def shortDescription(self):
         try:
@@ -321,7 +307,6 @@ class LinterTable():
         '''Ctor for LinterTable class.'''
         # Define self. relative to leo.core.leoGlobals
         self.loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
-        # g.trace('LinterTable', self.loadDir)
 
     #@+others
     #@+node:ekr.20160518074545.2: *3* commands
@@ -422,11 +407,6 @@ class LinterTable():
         ]
         remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
         aList = sorted([z for z in aList if z not in remove])
-        # Remove all gui related items.
-        # for z in sorted(aList):
-            # if z.startswith('qt_'):
-                # aList.remove(z)
-        # g.trace('\n'.join(aList))
         return sorted(set(aList))
     #@+node:ekr.20160520093506.1: *3* get_files (LinterTable)
     def get_files(self, pattern):
@@ -462,7 +442,6 @@ class LinterTable():
                     else:
                         print('does not exist: %s' % fn)
             paths = sorted(set(paths))
-            # g.trace('\n'+'\n'.join('%2s %s' % (i+1,z) for i,z in enumerate(paths)))
             return paths
         else:
             print('LinterTable.get_table: bad scope', scope)
@@ -489,10 +468,7 @@ class RunTestExternallyHelperClass(object):
         Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
         in a separate process.
         '''
-        trace = False
-        import time
         c = self.c; p = c.p
-        t1 = time.time()
         old_silent_mode = g.app.silentMode
         g.app.silentMode = True
         c2 = c.new(gui=g.app.nullGui)
@@ -500,12 +476,6 @@ class RunTestExternallyHelperClass(object):
         found = self.createOutline(c2)
         if found:
             self.createFileFromOutline(c2)
-            t2 = time.time()
-            if trace:
-                kind = 'all' if self.all else 'selected'
-                print('created %s unit tests in %0.2fsec in %s' % (
-                    kind, t2 - t1, self.fileName))
-                # g.blue('created %s unit tests' % (kind))
             # 2010/09/09: allow a way to specify the gui.
             gui = g.app.unitTestGui or 'nullGui'
             self.runUnitTestLeoFile(gui=gui, path='dynamicUnitTest.leo')
@@ -555,7 +525,6 @@ class RunTestExternallyHelperClass(object):
             if aList2:
                 for p in aList: last = self.addNode(p, last)
                 for p in aList2: last = self.addNode(p, last)
-            # g.trace('aList',len(aList),'aList2',len(aList2))
             return bool(aList2)
     #@+node:ekr.20070705065154.1: *5* addNode
     def addNode(self, p, last):
@@ -579,10 +548,6 @@ class RunTestExternallyHelperClass(object):
     ):
         '''Run all unit tests in path (a .leo file) in a pristine environment.'''
         # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
-        trace = False
-        verbose = False
-            # The verbose trace is pretty much a duplicate of the trace in
-            # leoDynamicTest.py:main()
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', path)
         leo = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoDynamicTest.py')
         if sys.platform.startswith('win'):
@@ -596,16 +561,10 @@ class RunTestExternallyHelperClass(object):
         if silent: args.append('--silent')
         if tracePlugins: args.append('--trace-plugins')
         if verbose: args.append('--verbose')
-        if trace and verbose:
-            g.trace('args...\n  %s' % '\n  '.join(args))
         # Set the current directory so that importing leo.core.whatever works.
         leoDir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
         env = dict(os.environ)
         env['PYTHONPATH'] = env.get('PYTHONPATH', '') + os.pathsep + leoDir
-        if False and trace:
-            for z in sorted(os.environ.keys()):
-                print(z, os.environ.get(z))
-        if trace: print('\n\nrunUnitTestLeoFile: spawning separate process: %s\n\n' % path)
         os.spawnve(os.P_NOWAIT, sys.executable, args, env)
     #@-others
 #@+node:ekr.20120220070422.10417: ** class TestManager
@@ -627,7 +586,6 @@ class TestManager(object):
         Important: this is also called from dynamicUnitTest.leo
         to run external tests "locally" from dynamicUnitTest.leo
         '''
-        trace = False
         c, tm = self.c, self
         # Clear the screen before running multiple unit tests locally.
         # if all or marked: g.cls()
@@ -636,7 +594,6 @@ class TestManager(object):
         if not c.fileName().endswith('unitTest.leo'):
             if c.isChanged():
                 c.save() # Eliminate the need for ctrl-s.
-        if trace: g.trace('marked', marked, 'c', c)
         try:
             g.unitTesting = g.app.unitTesting = True
             g.app.runningAllUnitTests = all and not marked # Bug fix: 2012/12/20
@@ -655,13 +612,10 @@ class TestManager(object):
                     setup_script = p.b
                     test = None
                 elif tm.isTestNode(p):
-                    if trace: g.trace('adding', p.h)
                     test = tm.makeTestCase(p, setup_script)
                 elif tm.isSuiteNode(p): # @suite
-                    if trace: g.trace('adding', p.h)
                     test = tm.makeTestSuite(p, setup_script)
                 elif tm.isTestClassNode(p):
-                    if trace: g.trace('adding', p.h)
                     test = tm.makeTestClass(p) # A suite of tests.
                 else:
                     test = None
@@ -671,7 +625,6 @@ class TestManager(object):
             # Verbosity: 1: print just dots.
             if not found:
                 # 2011/10/30: run the body of p as a unit test.
-                if trace: g.trace('not found: running raw body')
                 test = tm.makeTestCase(c.p, setup_script)
                 if test:
                     suite.addTest(test)
@@ -894,7 +847,6 @@ class TestManager(object):
         c = self.c
         if c.isChanged():
             c.save() # Eliminate the need for ctrl-s.
-        # g.trace('all',all,'marked',marked)
         runner = RunTestExternallyHelperClass(c, all, marked)
         runner.runTests()
         c.bodyWantsFocusNow()
@@ -1051,7 +1003,6 @@ class TestManager(object):
     def runEditCommandTest(self, p):
         tm = self
         c = self.c
-        # g.trace(c.config.getInt('page_width'), c.config.getInt('tab_width'), p.h)
         atTest = p.copy()
         w = c.frame.body.wrapper
         h = atTest.h
@@ -1421,45 +1372,35 @@ class TestManager(object):
         return paths
     #@+node:ekr.20111104132424.9907: *4* TM.findAllUnitTestNodes
     def findAllUnitTestNodes(self, all, marked):
-        trace = False
-        verbose = False
+
         c, tm = self.c, self
         # Bug fix 2016/01/23: Scan entire file if marked.
         p = c.rootPosition() if all or marked else c.p
         limit = None if all or marked else p.nodeAfterTree()
         seen, result = [], []
-        if trace: g.trace('all: %s marked: %s p: %s limit: %s' % (
-            all, marked, p.h, limit and limit.h))
         # 2012/08/13: Add special cases only after this loop.
         while p and p != limit:
-            if trace and verbose: g.trace(p.h)
             if p.v in seen:
-                if trace and verbose: g.trace('already seen', p.h)
                 p.moveToNodeAfterTree()
                 continue
             seen.append(p.v)
             # pylint: disable=consider-using-ternary
             add = (marked and p.isMarked()) or not marked
             if g.match_word(p.h, 0, '@ignore'):
-                if trace and verbose: g.trace(p.h)
                 p.moveToNodeAfterTree()
             elif tm.isTestSetupNode(p): # @testsetup
-                if trace: g.trace('adding', p.h)
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
             elif add and tm.isTestNode(p): # @test
-                if trace: g.trace('adding', p.h)
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
             elif add and tm.isSuiteNode(p): # @suite
-                if trace: g.trace('adding', p.h)
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
             elif add and tm.isTestClassNode(p): # @testclass
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
             elif not marked or not p.isMarked() or not p.hasChildren():
-                if trace and verbose: g.trace('skipping:', p.h)
                 p.moveToThreadNext()
             else:
                 assert marked and p.isMarked() and p.hasChildren()
@@ -1467,26 +1408,21 @@ class TestManager(object):
                 assert not tm.isSuiteNode(p)
                 # Add all @test or @suite nodes in p's subtree,
                 # *regardless* of whether they are marked or not.
-                if trace: g.trace('adding subtree of marked', p.h)
                 after2 = p.nodeAfterTree()
                 p.moveToFirstChild()
                 while p and p != after2:
                     if p.v in seen:
-                        if trace: g.trace('already seen', p.h)
                         p.moveToNodeAfterTree()
                         continue
                     seen.append(p.v)
                     if g.match_word(p.h, 0, '@ignore'):
                         # Support @ignore here.
-                        if trace and verbose:
-                            g.trace(p.h)
                         p.moveToNodeAfterTree()
                     elif(tm.isTestNode(p) or # @test
                           tm.isSuiteNode(p) or # @suite
                           tm.isTestClassNode(p) or # @testclass
                           tm.isTestSetupNode(p) # @testsetup
                     ):
-                        if trace: g.trace(p.h)
                         result.append(p.copy())
                         p.moveToNodeAfterTree()
                     else:
@@ -1497,7 +1433,6 @@ class TestManager(object):
             p2 = p.threadBack()
             while p2:
                 if tm.isTestSetupNode(p2):
-                    if trace: g.trace('special case 0', p2.h)
                     result.insert(0, p2.copy())
                     break
                 else:
@@ -1507,7 +1442,6 @@ class TestManager(object):
         # Important: this may be used to run a test in an @ignore tree.
         if not result and (tm.isTestNode(c.p) or tm.isSuiteNode(c.p)):
             seen.append(p.v)
-            if trace: g.trace(p.h)
             result.append(c.p.copy())
         # Special case 2:
         # Look up the selected tree for @test & @suite nodes if none have been found so far.
@@ -1515,7 +1449,6 @@ class TestManager(object):
         if not result and not marked and not all:
             for p in c.p.parents():
                 if tm.isTestNode(p) or tm.isSuiteNode(p):
-                    if trace: g.trace(p.h)
                     result.append(p.copy())
                     break
         # Remove duplicates.
@@ -1524,26 +1457,20 @@ class TestManager(object):
             if p.v not in seen2:
                 seen2.append(p.v)
                 result2.append(p)
-        if trace:
-            g.trace([z.h for z in result2])
         return result2
     #@+node:ekr.20120221204110.10345: *4* TM.findMarkForUnitTestNodes
     def findMarkForUnitTestNodes(self):
         '''return the position of *all* non-ignored @mark-for-unit-test nodes.'''
-        trace = False and not g.unitTesting
         c = self.c
         p, result, seen = c.rootPosition(), [], []
         while p:
             if p.v in seen:
-                if trace: g.trace('seen', p.v)
                 p.moveToNodeAfterTree()
             else:
                 seen.append(p.v)
                 if g.match_word(p.h, 0, '@ignore'):
-                    if trace: g.trace(p.h)
                     p.moveToNodeAfterTree()
                 elif p.h.startswith('@mark-for-unit-tests'):
-                    if trace: g.trace(p.h)
                     result.append(p.copy())
                     p.moveToNodeAfterTree()
                 else:
@@ -1613,7 +1540,6 @@ class TestManager(object):
             module = tm.safeImportModule(theFile)
             if module:
                 modules.append(module)
-        # g.trace(modules)
         return modules
     #@+node:ekr.20051104075904.101: *4* TM.importAllModulesInPathList
     def importAllModulesInPathList(self, paths):
@@ -1666,7 +1592,6 @@ class TestManager(object):
         oldUnitTesting = g.unitTesting
         if ext == ".py":
             try:
-                # g.trace(moduleName)
                 g.unitTesting = False # Disable @test nodes!
                 g.app.unitTesting = False
                 try:
@@ -1682,7 +1607,6 @@ class TestManager(object):
                     g.unitTesting = oldUnitTesting
                     g.app.unitTesting = oldUnitTesting
             except Exception:
-                # g.trace('can not import',moduleName,fileName)
                 # leoScriptModule.py, for example, can throw other exceptions.
                 return None
         else:

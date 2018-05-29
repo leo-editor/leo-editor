@@ -632,21 +632,14 @@ if docutils:
                 try:
                     filename = 'intermediateFile.txt'
                     s = open(filename).read()
-                    # g.trace('creating .pdf file from %s...' % filename)
                     visitor = dummyPDFTranslator(self,self.document,s)
                 except IOError:
-                    # g.trace('can not open %s' % filename)
                     return
-
+            #
             # Create a list of paragraphs using Platypus.
             self.document.walkabout(visitor)
             story = visitor.as_what()
-
-            if 0: # Not useful: story is a list of reportlab.platypus.para.Para objects.
-                # Use the trace in createParagraph instead.
-                g.trace('story','*'*40)
-                g.pr(story)
-
+            #
             # Generate self.output.  Gets sent to reportlab.
             self.output = self.createPDF_usingPlatypus(story)
             # Solve the newline problem by brute force.
@@ -787,11 +780,12 @@ if docutils: # NOQA
                     self.starttag(node,'setLink','',destination=a['ids']))
                 markup.append('</setLink>')
 
-            if   node.hasattr('refid'):   href = a ['refid']
-            elif node.hasattr('refname'): href = self.document.nameids [a ['refname']]
-            else:                         href = ''
-            # g.trace('href:',href)
-
+            if   node.hasattr('refid'):
+                href = a ['refid']
+            elif node.hasattr('refname'):
+                href = self.document.nameids [a ['refname']]
+            else:
+                href = ''
             format = self.settings.footnote_references
             if format == 'brackets':
                 suffix = '[' ; markup.append(']')
@@ -799,12 +793,10 @@ if docutils: # NOQA
                 suffix = '<super>' ; markup.append('</super>')
             else: # shouldn't happen
                 suffix = None
-
             if suffix:
                 self.body.append(
                     self.starttag(node,'link',suffix,destination=href))
                 markup.append('</link>')
-
             markup.reverse()
             self.push(kind='footnote-ref',markup=markup)
         #@+node:ekr.20090704103932.5201: *6* depart_footnote_reference
@@ -986,7 +978,6 @@ if docutils: # NOQA
 
         def starttag (self,node,tagname,suffix='\n',caller='',**attributes):
 
-            # g.trace(repr(attributes))
             atts = {}
             for (name,value) in attributes.items():
                 atts [name.lower()] = value
@@ -1002,7 +993,6 @@ if docutils: # NOQA
             parts = [tagname]
             # Convert the attributes in attlist to a single string.
             for name, value in attlist:
-                # g.trace('attlist element:',repr(name),repr(value))
                 if value is None: # boolean attribute
                     parts.append(name.lower().strip())
                 elif g.isList(value):
@@ -1015,7 +1005,6 @@ if docutils: # NOQA
                         name.lower(),self.encode(str(value).strip())))
 
             val = '<%s>%s' % (' '.join(parts),suffix)
-            # g.trace('%-24s %s' % (caller,val))
             return val
         #@+node:ekr.20090704103932.5215: *4* as_what
         def as_what(self):
@@ -1158,8 +1147,6 @@ if docutils: # NOQA
 
             bunch = Bunch(**keys)
             self.context.append(bunch)
-            # g.trace(bunch)
-
 
         def pop (self,kind):
 
@@ -1167,7 +1154,6 @@ if docutils: # NOQA
             assert bunch.kind == kind,\
                 'wrong bunch kind popped.  Expected: %s Got: %s' % (
                     kind, bunch.kind)
-
             return bunch
 
         def peek (self,kind):

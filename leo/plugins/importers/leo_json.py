@@ -1,8 +1,8 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20160504080826.1: * @file importers/json.py
+#@+node:ekr.20160504080826.1: * @file importers/leo_json.py
 '''The @auto importer for .json files.'''
-# pylint: disable=import-self
-# json is not the same as leo.plugins.json
+#
+# This module must **not** be named json, to avoid conflicts with the json standard library.
 import json
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
@@ -29,14 +29,9 @@ class JSON_Scanner:
     #@+node:ekr.20160504093537.1: *3* json.create_nodes
     def create_nodes(self, parent, parent_d):
         '''Create the tree of nodes rooted in parent.'''
-        import pprint
-        trace = False and not g.unitTesting
         d = self.gnx_dict
-        if trace: g.trace(parent.h, pprint.pprint(parent_d))
         for child_gnx in parent_d.get('children'):
             d2 = d.get(child_gnx)
-            if trace:
-                g.trace('child', pprint.pprint(d2))
             if child_gnx in self.vnodes_dict:
                 # It's a clone.
                 v = self.vnodes_dict.get(child_gnx)
@@ -129,13 +124,11 @@ class JSON_Scanner:
     #@+node:ekr.20160504082809.1: *3* json.scan
     def scan(self, s, parent):
         '''Create an outline from a MindMap (.csv) file.'''
-        trace = False and not g.unitTesting
         # pylint: disable=no-member
         # pylint confuses this module with the stdlib json module
         c, d, self.gnx_dict = self.c, json.loads(s), {}
         for d2 in d.get('nodes', []):
             gnx = d2.get('gnx')
-            if trace: print('%25s %s' % (d2.get('gnx'), d2.get('h')))
             self.gnx_dict[gnx] = d2
         top_d = d.get('top')
         if top_d:

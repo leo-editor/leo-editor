@@ -252,7 +252,7 @@ class LeoPluginsController(object):
     #@+node:ekr.20100909065501.5954: *3* plugins.Birth
     #@+node:ekr.20100908125007.6034: *4* plugins.ctor & reloadSettings
     def __init__(self):
-        # g.trace('LeoPluginsController',g.callers())
+
         self.handlers = {}
         self.loadedModulesFilesDict = {}
             # Keys are regularized module names, values are the names of .leo files
@@ -281,15 +281,11 @@ class LeoPluginsController(object):
     #@+node:ekr.20161029060545.1: *4* plugins.on_idle
     def on_idle(self):
         '''Call all idle-time hooks.'''
-        trace = False and not g.unitTesting
         if g.app.idle_time_hooks_enabled:
             for frame in g.app.windowList:
                 c = frame.c
                 # Do NOT compute c.currentPosition.
                 # This would be a MAJOR leak of positions.
-                if trace:
-                    g.trace('(leoPlugins.py) calling g.doHook(c=%s)' % (
-                        c.shortFileName()))
                 g.doHook("idle", c=c)
     #@+node:ekr.20100908125007.6017: *4* plugins.doHandlersForTag & helper
     def doHandlersForTag(self, tag, keywords):
@@ -297,13 +293,9 @@ class LeoPluginsController(object):
         Execute all handlers for a given tag, in alphabetical order.
         The caller, doHook, catches all exceptions.
         """
-        trace = False and not g.unitTesting
-        traceIdle = True
         if g.app.killed:
             return None
-        if trace and (traceIdle or tag != 'idle'):
-            event_p = keywords.get('new_p') or keywords.get('p')
-            g.trace(tag, event_p.h if event_p else '')
+        #
         # Execute hooks in some random order.
         # Return if one of them returns a non-None result.
         for bunch in self.handlers.get(tag, []):
@@ -318,16 +310,7 @@ class LeoPluginsController(object):
     #@+node:ekr.20100908125007.6016: *5* plugins.callTagHandler
     def callTagHandler(self, bunch, tag, keywords):
         '''Call the event handler.'''
-        trace = False and not g.unitTesting
-        traceIdle = True
         handler, moduleName = bunch.fn, bunch.moduleName
-        if trace and (traceIdle or tag != 'idle'):
-            c = keywords.get('c')
-            name = moduleName; tag2 = 'leo.plugins.'
-            if name.startswith(tag2): name = name[len(tag2):]
-            g.trace('c: %s %23s : %s . %s' % (
-                c and c.shortFileName() or '<no c>',
-                tag, handler.__name__, name))
         # Make sure the new commander exists.
         for key in ('c', 'new_c'):
             c = keywords.get(key)
@@ -349,16 +332,8 @@ class LeoPluginsController(object):
     #@+node:ekr.20100908125007.6018: *4* plugins.doPlugins (g.app.hookFunction)
     def doPlugins(self, tag, keywords):
         '''The default g.app.hookFunction.'''
-        trace = False and not g.unitTesting
-        trace_idle = True
         if g.app.killed:
             return
-        if trace:
-            if (
-                (trace_idle and tag == 'idle') or
-                (not trace_idle and tag != 'idle')
-            ):
-                g.trace(tag)
         if tag in ('start1', 'open0'):
             self.loadHandlers(tag, keywords)
         return self.doHandlersForTag(tag, keywords)

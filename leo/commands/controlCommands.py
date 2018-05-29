@@ -28,7 +28,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.91: *3* executeSubprocess (improved)
     def executeSubprocess(self, event, command):
         '''Execute a command in a separate process.'''
-        trace = False and not g.unitTesting
+        trace = False
         import sys
         k = self.c.k
         try:

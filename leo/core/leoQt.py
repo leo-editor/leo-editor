@@ -77,8 +77,6 @@ else:
     if 0:
         import leo.core.leoGlobals as g
         isNewQt = g.CheckVersion(qt_version, '4.5.0')
-if trace:
-    print('leoQt.py: isQt5: %s' % isQt5)
 # Define phonon,Qsci,QtSvg,QtWebKit,QtWebKitWidgets,uic.
 # These imports may fail without affecting the isQt5 constant.
 if fail:
