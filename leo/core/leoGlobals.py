@@ -2571,6 +2571,13 @@ def printGcVerbose(tag=''):
     g.pr('dicts: %d, sequences: %d' % (dicts, seqs))
     g.pr("%s: %d new, %d total objects" % (tag, len(newObjects), len(objects)))
     g.pr('-' * 40)
+#@+node:ekr.20180528151850.1: *3* g.printTimes
+def printTimes(times):
+    
+    for n, junk in enumerate(times[:-1]):
+        t = times[n+1]-times[n]
+        if t > 0.1:
+            g.trace('*** %s %5.4f sec.' % (n, t))
 #@+node:ekr.20031218072017.3133: *3* g.Statistics
 #@+node:ekr.20031218072017.3134: *4* g.clearStats
 def clearStats():
