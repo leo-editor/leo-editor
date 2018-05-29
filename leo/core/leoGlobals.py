@@ -2573,7 +2573,11 @@ def printGcVerbose(tag=''):
     g.pr('-' * 40)
 #@+node:ekr.20180528151850.1: *3* g.printTimes
 def printTimes(times):
+    '''
+    Print the differences in the times array.
     
+    times: an array of times (calls to time.clock()).
+    '''
     for n, junk in enumerate(times[:-1]):
         t = times[n+1]-times[n]
         if t > 0.1:
