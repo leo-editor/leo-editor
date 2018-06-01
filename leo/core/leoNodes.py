@@ -1272,7 +1272,7 @@ class Position(object):
                 if limit and self.checkVisNextLimit(limit,p):
                     return None
                 if p.isVisible(c):
-                    return p.copy()
+                    return p
         return p
     #@+node:ekr.20090715145956.6167: *5* checkVisNextLimit
     def checkVisNextLimit(self, limit, p):
