@@ -2133,6 +2133,9 @@
 </v>
 </v>
 <v t="ekr.20180528114703.1"><vh>Leo 5.7.4 release notes</vh>
+<v t="ekr.20180601095122.1"><vh>Bugs</vh>
+<v t="ekr.20180601095134.1"><vh>#917: System keys on Microsoft keyboard insert unwanted text</vh></v>
+</v>
 <v t="ekr.20180528114740.1"><vh>Features</vh>
 <v t="ekr.20180528114754.1"><vh>#871: A setting to position the icon bar </vh></v>
 </v>
@@ -28152,6 +28155,9 @@ Alternatively, the plugin could run code at 'start2' time, after all plugins hav
 <t tx="ekr.20180529065039.1"></t>
 <t tx="ekr.20180529065351.1"></t>
 <t tx="ekr.20180529065538.1"></t>
+<t tx="ekr.20180601095122.1"></t>
+<t tx="ekr.20180601095134.1">https://github.com/leo-editor/leo-editor/issues/917
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
