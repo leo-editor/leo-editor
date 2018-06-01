@@ -3546,6 +3546,10 @@ class KeyHandlerClass(object):
         if not event:
             # An empty event is not an error.
             return False
+        # Fix #917.
+        if len(event.char) > 1 and not event.stroke.s:
+            # stroke.s was cleared, but not event.char.
+            return True
         return event.char in g.app.gui.ignoreChars
     #@+node:ekr.20180418024449.1: *5* k.keyboardQuit
     def doKeyboardQuit(self, event):

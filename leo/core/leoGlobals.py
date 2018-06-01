@@ -493,11 +493,14 @@ class KeyStroke(object):
         #
         # pylint: disable=undefined-loop-variable
             # Looks like a pylint bug.
-        if s in (None, 'none'):
-            return ''
+        if s in (None, 'none', 'None'):
+            return 'None'
         if s.lower() in translate_d:
             s = translate_d.get(s.lower())
             return self.strip_shift(s)
+        if len(s) > 1 and s.find(' ') > -1:
+            # #917: not a pure, but should be ignored.
+            return ''
         if s.isalpha():
             if len(s) == 1:
                 if 'shift' in self.mods:
@@ -509,10 +512,13 @@ class KeyStroke(object):
                 elif self.mods:
                     s = s.lower()
             else:
-                # Make sure all special chars are in translate_d.
-                if g.app.gui: # It may not exist yet.
-                    if s.capitalize() in g.app.gui.specialChars:
-                        s = s.capitalize()
+                # 917: Ignore multi-byte alphas not in the table.
+                s = ''
+                if 0:
+                    # Make sure all special chars are in translate_d.
+                    if g.app.gui: # It may not exist yet.
+                        if s.capitalize() in g.app.gui.specialChars:
+                            s = s.capitalize()
             return s
         #
         # Translate shifted keys to their appropriate alternatives.
