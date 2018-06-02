@@ -1,8 +1,19 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3018: * @file leoFileCommands.py
 '''Classes relating to reading and writing .leo files.'''
+### fast_read = False
 #@+<< imports >>
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
+# For FastRead class
+import xml.etree.ElementTree as ElementTree
+# from collections import defaultdict
+
+try:
+    # IronPython has problems with this.
+    import xml.sax
+    import xml.sax.saxutils
+except Exception:
+    pass
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
 import binascii
@@ -21,12 +32,6 @@ import string
 import sys
 import tempfile
 import zipfile
-try:
-    # IronPython has problems with this.
-    import xml.sax
-    import xml.sax.saxutils
-except Exception:
-    pass
 import sqlite3
 import hashlib
 from contextlib import contextmanager
@@ -673,8 +678,9 @@ class FileCommands(object):
             if not silent and checkOpenFiles:
                 # Don't check for open file when reverting.
                 g.app.checkForOpenFile(c, fileName)
+            #
+            # Read the .leo file and create the outline.
             ok = fc.getLeoFileHelper(theFile, fileName, silent)
-                # Read the .leo file and create the outline.
             if ok:
                 fc.resolveTnodeLists()
                     # Do this before reading external files.
@@ -2534,6 +2540,113 @@ class FileCommands(object):
             else:
                 val = False
             c.fixed = val
+    #@-others
+#@+node:ekr.20180602062323.1: ** class FastRead
+class FastRead (object):
+    
+    def __init__(self,c ):
+        self.c = c
+
+    #@+<< define VNode class >>
+    #@+node:ekr.20180602062323.3: *3* << define VNode class >>
+    class VNode (object):
+        def __init__(self, context, gnx):
+            self.context = context
+            self.gnx = gnx
+            self.children = []
+            self.parents = []
+            self._bodyString = None
+            self._headString = None
+    #@-<< define VNode class >>
+        # For testing only.
+        
+    #@+others
+    #@+node:ekr.20180602062323.5: *3* fast.dump_vnodes
+    def dump_vnodes (self, gnx2vnode, root_v):
+        '''
+        Dump the tree of vnodes whose root is given.
+        
+        d: keys are gnx's: values are vnodes.
+        '''
+        for gnx, v in gnx2vnode.items():
+            print('%30s: %s' % (gnx, v._headString))
+    #@+node:ekr.20180602062323.6: *3* fast.read
+    def read(self, path):
+        
+        self.path = path
+        with open(path, 'r') as f:
+            s = f.read()
+            self.readWithElementTree(s)
+    #@+node:ekr.20180602062323.7: *3* fast.readWithElementTree & helpers
+    def readWithElementTree(self, s):
+        
+        xroot = ElementTree.fromstring(s)
+        v_elements = xroot.find('vnodes')
+        t_elements = xroot.find('tnodes')
+        gnx2body = self.makeBodyDict(t_elements)
+        gnx2vnode = {}
+        hidden_v = self.makeVnodes(gnx2body, gnx2vnode, v_elements)
+        assert hidden_v
+        # self.dump_vnodes(gnx2vnode, hidden_v)
+    #@+node:ekr.20180602062323.8: *4* fast.makeBodyDict
+    def makeBodyDict (self, t_elements):
+
+        d = {}
+        for e in t_elements:
+            gnx = e.attrib['tx']
+            body = e.text or ''
+            d [gnx] = body
+        return d
+    #@+node:ekr.20180602062323.9: *4* fast.makeVnodes
+    def makeVnodes(self, gnx2body, gnx2vnode, v_elements):
+        
+        trace = False
+        context = None
+        
+        t1 = time.clock()
+
+        def v_element_visitor(parent_e, parent_v):
+            for e in parent_e:
+                assert e.tag in ('v','vh'), e.tag
+                if e.tag == 'vh':
+                    head = e.text or g.u('')
+                    assert g.isUnicode(head), head.__class__.__name__
+                    parent_v._headString = head
+                    if trace: print('HEAD:  %20s: %s' % (parent_v.gnx, head))
+                    continue
+                gnx = e.attrib['t']
+                if gnx in gnx2vnode:
+                    # A clone
+                    v = gnx2vnode.get(gnx)
+                    if trace: print('Clone: %s: %s' % (gnx, v._headString))
+                    parent_v.children.append(v)
+                    v.parents.append(parent_v)
+                else:
+                    # Make a new vnode, linked to the parent.
+                    v = self.VNode(context=context, gnx=gnx)
+                    gnx2vnode [gnx] = v
+                    parent_v.children.append(v)
+                    v.parents.append(parent_v)
+                    body = gnx2body.get(gnx) or ''
+                    assert g.isUnicode(body), body.__class__.__name__
+                    v._bodyString = body
+                    v._headString = 'PLACE HOLDER'
+                    if trace: print('New:   %s' % gnx)
+                    # Handle all inner elements.
+                    for child_e in e:
+                        v_element_visitor(e, v)
+        #
+        # Create the hidden root vnode.
+        gnx = 'hidden-root-vnode-gnx'
+        v = self.VNode(context=context, gnx=gnx)
+        v._headString = '<hidden root vnode>'
+        gnx2vnode [gnx] = v
+        #
+        # Traverse the tree of v elements.
+        v_element_visitor(v_elements, v)
+        t2 = time.clock()
+        g.trace('%s nodes, %6.4f sec' % (len(gnx2vnode.keys()), t2-t1))
+        return v
     #@-others
 #@-others
 #@@language python
