@@ -5153,6 +5153,7 @@ class FastAtRead (object):
         others_pat = patterns.others
         section_pat = patterns.section
         #@-<< init the scan >>
+        special_lines = 0
         i = 0 # for pylint.
         for i, line in enumerate(lines[start:]):
             # These three sections must be first.
@@ -5185,6 +5186,7 @@ class FastAtRead (object):
                 body.append(line)
                 continue
             #@-<< short-circuit later tests >>
+            special_lines += 1
             # The order of these sections does matter.
             #@+<< handle @all >>
             #@+node:ekr.20180602103135.13: *5* << handle @all >>
@@ -5357,6 +5359,7 @@ class FastAtRead (object):
             # No @-leo sentinel
             return False
         # Warn about trailing cruft.
+        # g.trace('%4s %s' % (len(lines), special_lines))
         self.check_last_lines(start+i+1, lines)
         return True
     #@+node:ekr.20180602103135.22: *4* fast_at.yield_all_nodes
