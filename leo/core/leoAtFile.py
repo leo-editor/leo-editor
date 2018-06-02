@@ -5027,6 +5027,351 @@ class AtFile(object):
     #@-others
 
 atFile = AtFile # compatibility
+#@+node:ekr.20180602102448.1: ** class FastAtFile
+class FastAtRead (object):
+    
+    '''
+    A prototype of the fast AtFile read logic.
+    Based on code from Vitalije.
+    '''
+    
+    def __init__ (self, c):
+        self.c = c
+        
+    #@+others
+    #@+node:ekr.20180602103135.1: *3* fast_at.load_at_file
+    def load_at_file(self, path, s):
+        '''A prototype of fast read code.'''
+        t1 = time.clock()
+        lines = g.splitLines(s)
+        data = self.scan_header(lines)
+        if not data:
+            g.trace('bad external file')
+            return
+        delims, first_lines, start_i = data
+        patterns = self.get_patterns(delims)
+        self.scan_lines(delims, first_lines, lines, patterns, start_i)
+        t2 = time.clock()
+        # report = '%20s %4s lines in %5.3f sec' % (
+            # g.shortFileName(path), len(lines), (t2-t1))
+        report = g.shortFileName(path), len(lines), (t2-t1)
+        return report
+        # self.yield_all_nodes()
+    #@+node:ekr.20180602110045.1: *4* fast_at.do_last_lines
+    def do_last_lines(self, i, lines):
+        
+        # if i + 1 < len(lines):
+            # nodes.body[topgnx].extend('@last %s'%x for x in lines[i+1:])
+        if 0:
+            g.trace(i, len(lines))
+    #@+node:ekr.20180602103135.3: *4* fast_at.get_patterns
+    def get_patterns(self, delims):
+        '''
+        Create regex patterns based on the given comment delims.
+        There is zero cost to making this a function.
+        '''
+        delim_start, delim_end = delims
+        if delim_end:
+            dlms = re.escape(delim_start), re.escape(delim_end)
+            # Plain...
+            code_src = r'^%s@@c(ode)?%s$'%dlms
+            doc_src = r'^%s@\+(at|doc)?(\s.*?)?%s$'%dlms
+            ns_src = r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*?)%s$'%dlms
+            sec_src = r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*?)%s$'%dlms
+            # DOTALL..
+            all_src = r'^(\s*)%s@(\+|-)all%s\s*$'%dlms
+            oth_src = r'^(\s*)%s@(\+|-)others%s\s*$'%dlms
+        else:
+            dlms = re.escape(delim_start)
+            all_src = r'^(\s*)%s@(\+|-)all\s*$'%dlms
+            code_src = r'^%s@@c(ode)?$'%dlms
+            doc_src = r'^%s@\+(at|doc)?(\s.*?)?'%dlms + '\n'
+            ns_src = r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)$'%dlms
+            oth_src = r'^(\s*)%s@(\+|-)others\s*$'%dlms
+            sec_src = r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*)$'%dlms
+        return g.Bunch(
+            all        = re.compile(all_src, re.DOTALL),
+            code       = re.compile(code_src),
+            doc        = re.compile(doc_src),
+            node_start = re.compile(ns_src),
+            others     = re.compile(oth_src, re.DOTALL),
+            section    = re.compile(sec_src),
+        )
+    #@+node:ekr.20180602103135.2: *4* fast_at.scan_header
+    header_pattern = re.compile(r'''
+        ^(.+)@\+leo
+        (-ver=(\d+))?
+        (-thin)?
+        (-encoding=(.*)(\.))?
+        (.*)$''', re.VERBOSE)
+
+    def scan_header(self, lines):
+        '''
+        Scan for the header line, which follows any @first lines.
+        '''
+        first_lines = []
+        i = 0 # To keep pylint happy.
+        for i, line in enumerate(lines):
+            m = self.header_pattern.match(line)
+            if m:
+                delims = m.group(1), m.group(8) or ''
+                return delims, first_lines, i+1
+            first_lines.append(line)
+        return None
+    #@+node:ekr.20180602103135.8: *4* fast_at.scan_lines
+    def scan_lines(self, delims, first_lines, lines, patterns, start):
+        '''Scan all lines of the file, creating vnodes.'''
+        #@+<< init the scan >>
+        #@+node:ekr.20180602103135.9: *5* << init the scan >>
+        body = [] ### nodes.body[gnx]
+            # list of lines for current node.
+        delim_end, delim_start = delims
+            # The start/end delims.
+        doc_skip = (delim_start + '\n', delim_end + '\n')
+            # 
+        in_all = False
+            # True: in @all.
+        in_doc = False
+            # True: in @doc parts.
+        verbline = delim_start + '@verbatim' + delim_end + '\n'
+            # The spelling of at-verbatim sentinel
+        verbatim = False
+            # True: the next line must be added without change.
+        start = 2 * len(first_lines) + 2
+            # Skip twice the number of first_lines, one header line, and one top node line
+        indent = 0 
+            # The current indentation.
+        gnx = None ### topgnx
+            # The node that we are reading.
+        stack = []
+            # Entries are (gnx, indent)
+            # Updated when at+others, at+<section>, or at+all is seen.
+        #
+        # dereference the patterns
+        all_pat = patterns.all
+        code_pat = patterns.code
+        doc_pat = patterns.doc
+        node_start_pat = patterns.node_start
+        others_pat = patterns.others
+        section_pat = patterns.section
+        #@-<< init the scan >>
+        i = 0
+        for i, line in enumerate(lines[start:]):
+            # These three sections must be first.
+            #@+<< handle verbatim lines >>
+            #@+node:ekr.20180602103135.10: *5* << handle verbatim lines >>
+            if verbatim:
+                # Previous line was verbatim sentinel. Append this line as it is.
+                body.append(line)
+                verbatim = False # next line should be normally processed.
+                continue
+            if line == verbline:
+                # This line is verbatim sentinel, next line should be appended as it is
+                verbatim = True
+                continue
+            #@-<< handle verbatim lines >>
+            #@+<< unindent the line if necessary >>
+            #@+node:ekr.20180602103135.11: *5* << unindent the line if necessary >>
+            # is indent still valid?
+            if indent and line[:indent].isspace() and len(line) > indent:
+                # yes? let's strip unnecessary indentation
+                line = line[indent:]
+            #@-<< unindent the line if necessary >>
+            #@+<< short-circuit later tests >>
+            #@+node:ekr.20180602103135.12: *5* << short-circuit later tests >>
+            # This is valid because all following sections are either:
+            # 1. guarded by 'if in_doc' or
+            # 2. guarded by a pattern that matches delim_start + '@'   
+            if not in_doc and not line.strip().startswith(delim_start+'@'):
+                body.append(line)
+                continue
+            #@-<< short-circuit later tests >>
+            # The order of these sections does matter.
+            #@+<< handle @all >>
+            #@+node:ekr.20180602103135.13: *5* << handle @all >>
+            m = all_pat.match(line)
+            if m:
+                in_all = m.group(2) == '+' # is it opening or closing sentinel
+                if in_all:
+                    # opening sentinel
+                    body.append('@all\n')
+                    # keep track which node should we continue to build
+                    # once we encounter closing at-all sentinel
+                    stack.append((gnx, indent))
+                else:
+                    # this is closing sentinel
+                    # let's restore node where we started at-all directive
+                    gnx, indent = stack.pop()
+                    # restore body which should receive next lines
+                    ### body = nodes.body[gnx]
+                continue
+            #@-<< handle @all >>
+            #@+<< handle @others >>
+            #@+node:ekr.20180602103135.14: *5* << handle @others >>
+            m = others_pat.match(line)
+            if m:
+                in_doc = False
+                if m.group(2) == '+': # is it opening or closing sentinel
+                    # opening sentinel
+                    body.append(m.group(1) + '@others\n')
+                    # keep track which node should we continue to build
+                    # once we encounter closing at-others sentinel
+                    stack.append((gnx, indent))
+                    indent += m.end(1) # adjust current identation
+                else:
+                    # this is closing sentinel
+                    # let's restore node where we started at-others directive
+                    gnx, indent = stack.pop()
+                    # restore body which should receive next lines
+                    ### body = nodes.body[gnx]
+                continue
+
+            #@-<< handle @others >>
+            #@+<< handle start of @doc parts >>
+            #@+node:ekr.20180602103135.15: *5* << handle start of @doc parts >>
+            if not in_doc:
+                # This guard ensures that the short-circuit tests are valid.
+                m = doc_pat.match(line)
+                if m:
+                    # yes we are at the beginning of doc part
+                    # was it @+at or @+doc?
+                    doc = '@doc' if m.group(1) == 'doc' else '@'
+                    doc2 = m.group(2) or '' # is there any text on first line?
+                    if doc2:
+                        # start doc part with some text on the same line
+                        body.append('%s%s\n'%(doc, doc2))
+                    else:
+                        # no it is only directive on this line
+                        body.append(doc + '\n')
+                    # following lines are part of doc block
+                    in_doc = True
+                    continue
+            #@-<< handle start of @doc parts >>
+            #@+<< handle start of @code parts >>
+            #@+node:ekr.20180602103135.16: *5* << handle start of @code parts >>
+            if in_doc:
+                # when using both delimiters, doc block starts with first delimiter
+                # alone on line and at the end of doc block end delimiter is also
+                # alone on line. Both of this lines should be skipped
+                if line in doc_skip:
+                    continue
+                #
+                # maybe this line ends doc part and starts code part?
+                m = code_pat.match(line)
+                if m:
+                    # yes, this line is at-c or at-code line
+                    in_doc = False  # stop building doc part
+                    # append directive line
+                    body.append('@code\n' if m.group(1) else '@c\n')
+                    continue
+            #@-<< handle start of @code parts >>
+            #@+<< handle section refs >>
+            #@+node:ekr.20180602103135.18: *5* << handle section refs >>
+            m = section_pat.match(line)
+            if m:
+                in_doc = False
+                if m.group(2) == '+': # is it opening or closing sentinel
+                    # opening sentinel
+                    ii = m.end(2) # before <<
+                    jj = m.end(3) # at the end of line
+                    body.append(m.group(1) + line[ii:jj] + '\n')
+                    # keep track which node should we continue to build
+                    # once we encounter closing at-<< sentinel
+                    stack.append((gnx, indent))
+                    indent += m.end(1) # adjust current identation
+                else:
+                    # this is closing sentinel
+                    # Restore node where we started at+<< directive
+                    gnx, indent = stack.pop()
+                    # Restore body which should receive next lines
+                    ### body = nodes.body[gnx]
+                continue
+            #@-<< handle section refs >>
+            #@+<< handle node_start >>
+            #@+node:ekr.20180602103135.19: *5* << handle node_start >>
+            m = node_start_pat.match(line)
+            if m:
+                in_doc = False
+                #@+<< define set_node >>
+                #@+node:ekr.20180602103135.6: *6* << define set_node >>
+                def set_node(m):
+                    '''
+                    utility function to set data from regex match object from sentinel line.
+                    
+                    Groups of the node_start pattern are:
+                        
+                    indent, gnx, level-number, second star, headline)
+                    1       2    3             4            5
+                 
+                    '''
+                    gnx = m.group(2)
+                    lev = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
+                    assert lev is not None ###
+                    ###
+                    # nodes.level[gnx].append(lev)
+                    # nodes.head[gnx] = m.group(5)
+                    # nodes.gnxes.append(gnx)
+                    return gnx
+                #@-<< define set_node >>
+                gnx = set_node(m)
+                ### Not ready yet.
+                    # if len(nodes.level[gnx]) > 1:
+                        # # clone in at-all
+                        # # let it collect lines in throwaway list
+                        # body = []
+                    # else:
+                        # body = nodes.body[gnx]
+                continue
+            #@-<< handle node_start >>
+            #@+<< handle @-leo >>
+            #@+node:ekr.20180602103135.20: *5* << handle @-leo >>
+            if line.startswith(delim_start + '@-leo'):
+                break
+            #@-<< handle @-leo >>
+            #@+<< handle directives >>
+            #@+node:ekr.20180602103135.21: *5* << handle directives >>
+            if line.startswith(delim_start + '@@'):
+                ii = len(delim_start) + 1 # on second '@'
+                # strip delim_end if it is set or just '\n'
+                jj = line.rfind(delim_end) if delim_end else -1
+                # append directive line
+                body.append(line[ii:jj] + '\n')
+                continue
+            #@-<< handle directives >>
+            #@+<< handle in_doc >>
+            #@+node:ekr.20180602103135.17: *5* << handle in_doc >>
+            if in_doc and not delim_end:
+                # when using just one delimiter (start)
+                # doc lines start with delimiter + ' '
+                body.append(line[len(delim_start)+1:])
+                continue
+            #
+            # when delim_end is not '', doc part starts with one start delimiter and \n
+            # and ends with end delimiter followed by \n
+            # in that case doc lines are unchcanged
+            #@-<< handle in_doc >>
+            #@afterref
+ # Apparently, must be last.
+            # A normal line.
+            body.append(line)
+        self.do_last_lines(i, lines)
+    #@+node:ekr.20180602103135.22: *4* fast_at.yield_all_nodes
+    def yield_all_nodes(self, nodes):
+
+        for gnx in nodes.gnxes:
+            b = ''.join(nodes.body[gnx])
+            h = nodes.head[gnx]
+            lev = nodes.level[gnx].pop(0)
+            yield gnx, h, b, lev-1
+    #@+node:ekr.20180602103655.1: *3* fast_at.read
+    def read(self, path):
+        
+        self.path = path
+        with open(path, 'r') as f:
+            s = f.read()
+            report = self.load_at_file(path, s)
+        return report
+    #@-others
 #@-others
 #@@language python
 #@@tabwidth -4
