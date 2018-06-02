@@ -2632,20 +2632,20 @@ class FastRead (object):
                     v._headString = 'PLACE HOLDER'
                     if trace: print('New:   %s' % gnx)
                     # Handle all inner elements.
-                    for child_e in e:
-                        v_element_visitor(e, v)
+                    v_element_visitor(e, v)
         #
         # Create the hidden root vnode.
         gnx = 'hidden-root-vnode-gnx'
-        v = self.VNode(context=context, gnx=gnx)
-        v._headString = '<hidden root vnode>'
-        d [gnx] = v
+        hidden_v = self.VNode(context=context, gnx=gnx)
+        hidden_v._headString = '<hidden root vnode>'
+        d [gnx] = hidden_v
         #
         # Traverse the tree of v elements.
-        v_element_visitor(v_elements, v)
+        v_element_visitor(v_elements, hidden_v)
         t2 = time.clock()
         g.trace('%s nodes, %6.4f sec' % (len(d.keys()), t2-t1))
-        return v
+        # self.dump_vnodes (d, hidden_v)
+        return hidden_v
     #@-others
 #@-others
 #@@language python
