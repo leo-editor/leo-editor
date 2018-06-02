@@ -5089,6 +5089,7 @@ class FastAtRead (object):
             ns_src = r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)$'%dlms
             oth_src = r'^(\s*)%s@(\+|-)others\s*$'%dlms
             sec_src = r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*)$'%dlms
+        # sentinel_src = '^\s*%s' % delim_start
         return g.Bunch(
             all        = re.compile(all_src, re.DOTALL),
             code       = re.compile(code_src),
@@ -5096,6 +5097,7 @@ class FastAtRead (object):
             node_start = re.compile(ns_src),
             others     = re.compile(oth_src, re.DOTALL),
             section    = re.compile(sec_src),
+            # sentinel   = re.compile(sentinel_src),
         )
     #@+node:ekr.20180602103135.2: *4* fast_at.scan_header
     header_pattern = re.compile(r'''
@@ -5133,17 +5135,19 @@ class FastAtRead (object):
             # True: in @all.
         in_doc = False
             # True: in @doc parts.
-        verbline = delim_start + '@verbatim' + delim_end + '\n'
-            # The spelling of at-verbatim sentinel
-        verbatim = False
-            # True: the next line must be added without change.
         indent = 0 
             # The current indentation.
         gnx = None ### topgnx
             # The node that we are reading.
+        sentinel = delim_start + '@'
+            # Faster than a regex!
         stack = []
             # Entries are (gnx, indent)
             # Updated when at+others, at+<section>, or at+all is seen.
+        verbline = delim_start + '@verbatim' + delim_end + '\n'
+            # The spelling of at-verbatim sentinel
+        verbatim = False
+            # True: the next line must be added without change.
         #
         # dereference the patterns
         all_pat = patterns.all
@@ -5152,6 +5156,8 @@ class FastAtRead (object):
         node_start_pat = patterns.node_start
         others_pat = patterns.others
         section_pat = patterns.section
+        ### sentinel_pat = patterns.sentinel
+            # A regex is slower.
         #@-<< init the scan >>
         special_lines = 0
         i = 0 # for pylint.
@@ -5180,9 +5186,10 @@ class FastAtRead (object):
             #@+node:ekr.20180602103135.12: *5* << short-circuit later tests >>
             # This is valid because all following sections are either:
             # 1. guarded by 'if in_doc' or
-            # 2. guarded by a pattern that matches delim_start + '@'   
-            # g.trace(repr(line))
-            if not in_doc and not line.strip().startswith(delim_start+'@'):
+            # 2. guarded by a pattern that matches the start of the sentinel.   
+            #
+            if not in_doc and not line.strip().startswith(sentinel):
+                # lstrip() is faster than using a regex!
                 body.append(line)
                 continue
             #@-<< short-circuit later tests >>
