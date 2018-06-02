@@ -2584,10 +2584,8 @@ class FastRead (object):
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
         gnx2body = self.makeBodyDict(t_elements)
-        gnx2vnode = {}
-        hidden_v = self.makeVnodes(gnx2body, gnx2vnode, v_elements)
-        assert hidden_v
-        # self.dump_vnodes(gnx2vnode, hidden_v)
+        hidden_v = self.makeVnodes(gnx2body, v_elements)
+        return hidden_v
     #@+node:ekr.20180602062323.8: *4* fast.makeBodyDict
     def makeBodyDict (self, t_elements):
 
@@ -2598,10 +2596,11 @@ class FastRead (object):
             d [gnx] = body
         return d
     #@+node:ekr.20180602062323.9: *4* fast.makeVnodes
-    def makeVnodes(self, gnx2body, gnx2vnode, v_elements):
+    def makeVnodes(self, gnx2body, v_elements):
         
         trace = False
         context = None
+        gnx2vnode = {}
         
         t1 = time.clock()
 
