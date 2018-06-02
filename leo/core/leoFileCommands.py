@@ -2600,7 +2600,7 @@ class FastRead (object):
         
         trace = False
         context = None
-        gnx2vnode = {}
+        d = {}
         
         t1 = time.clock()
 
@@ -2614,16 +2614,16 @@ class FastRead (object):
                     if trace: print('HEAD:  %20s: %s' % (parent_v.gnx, head))
                     continue
                 gnx = e.attrib['t']
-                if gnx in gnx2vnode:
+                if gnx in d:
                     # A clone
-                    v = gnx2vnode.get(gnx)
+                    v = d.get(gnx)
                     if trace: print('Clone: %s: %s' % (gnx, v._headString))
                     parent_v.children.append(v)
                     v.parents.append(parent_v)
                 else:
                     # Make a new vnode, linked to the parent.
                     v = self.VNode(context=context, gnx=gnx)
-                    gnx2vnode [gnx] = v
+                    d [gnx] = v
                     parent_v.children.append(v)
                     v.parents.append(parent_v)
                     body = gnx2body.get(gnx) or ''
@@ -2639,12 +2639,12 @@ class FastRead (object):
         gnx = 'hidden-root-vnode-gnx'
         v = self.VNode(context=context, gnx=gnx)
         v._headString = '<hidden root vnode>'
-        gnx2vnode [gnx] = v
+        d [gnx] = v
         #
         # Traverse the tree of v elements.
         v_element_visitor(v_elements, v)
         t2 = time.clock()
-        g.trace('%s nodes, %6.4f sec' % (len(gnx2vnode.keys()), t2-t1))
+        g.trace('%s nodes, %6.4f sec' % (len(d.keys()), t2-t1))
         return v
     #@-others
 #@-others
