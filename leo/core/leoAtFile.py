@@ -5043,27 +5043,27 @@ class FastAtRead (object):
     def load_at_file(self, path, s):
         '''A prototype of fast read code.'''
         t1 = time.clock()
+        sfn = g.shortFileName(path)
         lines = g.splitLines(s)
         data = self.scan_header(lines)
         if not data:
-            g.trace('bad external file')
-            return
+            return g.trace('empty external file: %s' % sfn)
         delims, first_lines, start_i = data
         patterns = self.get_patterns(delims)
-        self.scan_lines(delims, first_lines, lines, patterns, start_i)
+        ok = self.scan_lines(delims, first_lines, lines, patterns, start_i)
         t2 = time.clock()
-        # report = '%20s %4s lines in %5.3f sec' % (
-            # g.shortFileName(path), len(lines), (t2-t1))
-        report = g.shortFileName(path), len(lines), (t2-t1)
+        if not ok:
+            print('bad external file. No @-leo sentinel: %s' % sfn)
+            return None
+        report = sfn, len(lines), (t2-t1)
         return report
-        # self.yield_all_nodes()
-    #@+node:ekr.20180602110045.1: *4* fast_at.do_last_lines
-    def do_last_lines(self, i, lines):
+    #@+node:ekr.20180602110045.1: *4* fast_at.check_last_lines
+    def check_last_lines(self, i, lines):
         
-        # if i + 1 < len(lines):
-            # nodes.body[topgnx].extend('@last %s'%x for x in lines[i+1:])
-        if 0:
-            g.trace(i, len(lines))
+        tail = lines[i:]
+        if ''.join(tail).strip():
+            g.trace('ignoring lines after @-leo sentinel')
+            g.printObj(tail)
     #@+node:ekr.20180602103135.3: *4* fast_at.get_patterns
     def get_patterns(self, delims):
         '''
@@ -5125,7 +5125,7 @@ class FastAtRead (object):
         #@+node:ekr.20180602103135.9: *5* << init the scan >>
         body = [] ### nodes.body[gnx]
             # list of lines for current node.
-        delim_end, delim_start = delims
+        delim_start, delim_end = delims
             # The start/end delims.
         doc_skip = (delim_start + '\n', delim_end + '\n')
             # 
@@ -5137,8 +5137,6 @@ class FastAtRead (object):
             # The spelling of at-verbatim sentinel
         verbatim = False
             # True: the next line must be added without change.
-        start = 2 * len(first_lines) + 2
-            # Skip twice the number of first_lines, one header line, and one top node line
         indent = 0 
             # The current indentation.
         gnx = None ### topgnx
@@ -5155,7 +5153,7 @@ class FastAtRead (object):
         others_pat = patterns.others
         section_pat = patterns.section
         #@-<< init the scan >>
-        i = 0
+        i = 0 # for pylint.
         for i, line in enumerate(lines[start:]):
             # These three sections must be first.
             #@+<< handle verbatim lines >>
@@ -5182,6 +5180,7 @@ class FastAtRead (object):
             # This is valid because all following sections are either:
             # 1. guarded by 'if in_doc' or
             # 2. guarded by a pattern that matches delim_start + '@'   
+            # g.trace(repr(line))
             if not in_doc and not line.strip().startswith(delim_start+'@'):
                 body.append(line)
                 continue
@@ -5354,7 +5353,12 @@ class FastAtRead (object):
  # Apparently, must be last.
             # A normal line.
             body.append(line)
-        self.do_last_lines(i, lines)
+        else:
+            # No @-leo sentinel
+            return False
+        # Warn about trailing cruft.
+        self.check_last_lines(start+i+1, lines)
+        return True
     #@+node:ekr.20180602103135.22: *4* fast_at.yield_all_nodes
     def yield_all_nodes(self, nodes):
 
