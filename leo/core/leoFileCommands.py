@@ -2557,6 +2557,9 @@ class FastRead (object):
             self.parents = []
             self._bodyString = None
             self._headString = None
+
+        def headString(self):
+            self._headString
     #@-<< define VNode class >>
         # For testing only.
         
@@ -2576,7 +2579,8 @@ class FastRead (object):
         self.path = path
         with open(path, 'r') as f:
             s = f.read()
-            self.readWithElementTree(s)
+            hidden_v = self.readWithElementTree(s)
+        self.test(hidden_v)
     #@+node:ekr.20180602062323.7: *3* fast.readWithElementTree & helpers
     def readWithElementTree(self, s):
         
@@ -2646,6 +2650,27 @@ class FastRead (object):
         g.trace('%s nodes, %6.4f sec' % (len(d.keys()), t2-t1))
         # self.dump_vnodes (d, hidden_v)
         return hidden_v
+    #@+node:ekr.20180602170813.1: *3* fast.test
+    def test (self, hidden_v):
+        
+        '''A minimal test of the structure of the generated vnodes.'''
+        
+        class Context:
+            hiddenRootNode = hidden_v
+            
+        context = Context()
+        root_v = hidden_v.children[0]
+        assert root_v
+        p = leoNodes.Position(root_v)
+        print('test of vnodes')
+        i = 0
+        while p and i < 10000:
+            i += 1
+            p.v.context = context
+                # Patch up the context.
+            print('%3s%s%r' % (i, ' '*p.level(), p.v._headString))
+            p.moveToThreadNext()
+        print('done')
     #@-others
 #@-others
 #@@language python
