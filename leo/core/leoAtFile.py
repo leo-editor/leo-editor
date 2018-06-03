@@ -4,6 +4,7 @@
 #@@first
     # Needed because of unicode characters in tests.
 """Classes to read and write @file nodes."""
+FAST = False
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -988,6 +989,7 @@ class AtFile(object):
             at.rememberReadPath(fileName, root)
             while root.hasChildren():
                 root.firstChild().doDelete()
+        # g.trace('read_new:', read_new, 'FAST:', FAST)
         if read_new:
             lastLines = at.scanText4(fileName, root)
         else:
@@ -5066,7 +5068,7 @@ class FastAtRead (object):
         if not data:
             return g.trace('empty external file: %s' % sfn)
         delims, first_lines, start_i = data
-        root_vnode = self.scan_lines(delims, first_lines, lines, start_i)
+        root_vnode, last_lines = self.scan_lines(delims, first_lines, lines, start_i)
         t2 = time.clock()
         if root_vnode:
             self.test(path, root_vnode)
@@ -5075,13 +5077,6 @@ class FastAtRead (object):
         print('bad external file. No @-leo sentinel: %s' % sfn)
         return None
         
-    #@+node:ekr.20180602110045.1: *4* fast_at.check_last_lines
-    def check_last_lines(self, i, lines):
-        
-        tail = lines[i:]
-        if ''.join(tail).strip():
-            g.trace('ignoring lines after @-leo sentinel')
-            g.printObj(tail)
     #@+node:ekr.20180602103135.3: *4* fast_at.get_patterns
     #@@nobeautify
 
@@ -5098,6 +5093,7 @@ class FastAtRead (object):
             code_src =  r'^%s@@c(ode)?%s$'%delims
             doc_src =   r'^%s@\+(at|doc)?(\s.*?)?%s$'%delims
             first_src = r'^%s@@first%s$'%delims
+            last_src =  r'^%s@@last%s$'%delims
             ns_src =    r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*?)%s$'%delims
             sec_src =   r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*?)%s$'%delims
             # DOTALL..
@@ -5110,6 +5106,7 @@ class FastAtRead (object):
             code_src =  r'^%s@@c(ode)?$'%delims
             doc_src =   r'^%s@\+(at|doc)?(\s.*?)?'%delims + '\n'
             first_src = r'^%s@@first$'%delims
+            last_src =  r'^%s@@last$'%delims
             ns_src =    r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)$'%delims
             oth_src =   r'^(\s*)%s@(\+|-)others\s*$'%delims
             sec_src =   r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*)$'%delims
@@ -5119,10 +5116,11 @@ class FastAtRead (object):
         code       = re.compile(code_src)
         doc        = re.compile(doc_src)
         first      = re.compile(first_src)
+        last       = re.compile(last_src)
         node_start = re.compile(ns_src)
         others     = re.compile(oth_src, re.DOTALL)
         section    = re.compile(sec_src)
-        return after, all, code, doc, first, node_start, others, section
+        return after, all, code, doc, first, last, node_start, others, section
     #@+node:ekr.20180603060721.1: *4* fast_at.post_pass
     def post_pass(self, gnx2body, gnx2vnode, root_v):
         '''Set all body text.'''
@@ -5189,6 +5187,8 @@ class FastAtRead (object):
             # Keys are gnxs, values are list of body lines.
         level_stack = []
             # The vnodes at each level.
+        n_last_lines = 0
+            # The number of @@last directives seen.
         sentinel = delim_start + '@'
             # Faster than a regex!
         stack = []
@@ -5217,7 +5217,7 @@ class FastAtRead (object):
         level_stack.append(root_v)
         #
         # get the patterns  
-        after_pat, all_pat, code_pat, doc_pat, first_pat, \
+        after_pat, all_pat, code_pat, doc_pat, first_pat, last_pat, \
         node_start_pat, others_pat, section_pat = self.get_patterns(delims)
         #@-<< init the scan >>
         special_lines = 0
@@ -5402,8 +5402,8 @@ class FastAtRead (object):
                         # body = gnx2body[gnx]
                 continue
             #@-<< handle node_start >>
-            #@+<< handle @first >>
-            #@+node:ekr.20180603135602.1: *5* << handle @first >>
+            #@+<< handle @first & @last >>
+            #@+node:ekr.20180603135602.1: *5* << handle @first & @last >>
             m = first_pat.match(line)
             if m:
                 if 0 <= first_i < len(first_lines):
@@ -5412,10 +5412,15 @@ class FastAtRead (object):
                 else:
                     g.trace('too many @first lines')
                 continue
-            #@-<< handle @first >>
+            m = last_pat.match(line)
+            if m:
+                n_last_lines += 1
+                continue
+            #@-<< handle @first & @last >>
             #@+<< handle @-leo >>
             #@+node:ekr.20180602103135.20: *5* << handle @-leo >>
             if line.startswith(delim_start + '@-leo'):
+                i += 1
                 break
             #@-<< handle @-leo >>
             #@+<< handle @@ lines >>
@@ -5441,12 +5446,10 @@ class FastAtRead (object):
             body.append(line)
         else:
             # No @-leo sentinel
-            return None
-        # Warn about trailing cruft.
-        # g.trace('%4s %s' % (len(lines), special_lines))
-        self.check_last_lines(start+i+1, lines)
+            return None, []
+        last_lines = lines[start+i:]
         self.post_pass(gnx2body, gnx2vnode, root_v)
-        return root_v
+        return root_v, last_lines
     #@+node:ekr.20180602103135.22: *4* fast_at.yield_all_nodes
     def yield_all_nodes(self, nodes):
 
@@ -5464,9 +5467,6 @@ class FastAtRead (object):
         c = self.c
         sfn = g.shortFileName(path)
         p = g.findNodeAnywhere(c, '@file ' + sfn)
-        if not p:
-            g.trace('not found: @file %s' % path)
-            return
         
         class Context:
             hiddenRootNode = hidden_v
@@ -5475,7 +5475,7 @@ class FastAtRead (object):
         root_v = hidden_v.children[0]
         root_v.context = context
         assert root_v
-        if 1:
+        if p: # Run the full test.
             root_p = p.copy()
             assert root_p
             p2 = leoNodes.Position(root_v)
@@ -5497,9 +5497,9 @@ class FastAtRead (object):
             assert not p2.v, p2.v
             if trace: g.trace('PASS', sfn)
         else:
+            trace = trace_bodies = True
             p = leoNodes.Position(root_v)
-            if trace:
-                g.trace(sfn)
+            if trace: g.trace(sfn)
             i = 0
             while p:
                 i += 1
