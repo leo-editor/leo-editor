@@ -5066,8 +5066,7 @@ class FastAtRead (object):
         if not data:
             return g.trace('empty external file: %s' % sfn)
         delims, first_lines, start_i = data
-        patterns = self.get_patterns(delims)
-        root_vnode = self.scan_lines(delims, first_lines, lines, patterns, start_i)
+        root_vnode = self.scan_lines(delims, first_lines, lines, start_i)
         t2 = time.clock()
         if root_vnode:
             self.test(path, root_vnode)
@@ -5084,6 +5083,8 @@ class FastAtRead (object):
             g.trace('ignoring lines after @-leo sentinel')
             g.printObj(tail)
     #@+node:ekr.20180602103135.3: *4* fast_at.get_patterns
+    #@@nobeautify
+
     def get_patterns(self, delims):
         '''
         Create regex patterns based on the given comment delims.
@@ -5091,36 +5092,37 @@ class FastAtRead (object):
         '''
         delim_start, delim_end = delims
         if delim_end:
-            dlms = re.escape(delim_start), re.escape(delim_end)
+            delims = re.escape(delim_start), re.escape(delim_end)
             # Plain...
-            after_src = r'^%s@afterref%s$'%dlms
-            code_src = r'^%s@@c(ode)?%s$'%dlms
-            doc_src = r'^%s@\+(at|doc)?(\s.*?)?%s$'%dlms
-            ns_src = r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*?)%s$'%dlms
-            sec_src = r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*?)%s$'%dlms
+            after_src = r'^\s*%s@afterref%s$'%delims
+            code_src =  r'^%s@@c(ode)?%s$'%delims
+            doc_src =   r'^%s@\+(at|doc)?(\s.*?)?%s$'%delims
+            first_src = r'^%s@@first%s$'%delims
+            ns_src =    r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*?)%s$'%delims
+            sec_src =   r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*?)%s$'%delims
             # DOTALL..
-            all_src = r'^(\s*)%s@(\+|-)all%s\s*$'%dlms
-            oth_src = r'^(\s*)%s@(\+|-)others%s\s*$'%dlms
+            all_src =   r'^(\s*)%s@(\+|-)all%s\s*$'%delims
+            oth_src =   r'^(\s*)%s@(\+|-)others%s\s*$'%delims
         else:
-            dlms = re.escape(delim_start)
-            after_src = r'^%s@afterref$'%dlms
-            all_src = r'^(\s*)%s@(\+|-)all\s*$'%dlms
-            code_src = r'^%s@@c(ode)?$'%dlms
-            doc_src = r'^%s@\+(at|doc)?(\s.*?)?'%dlms + '\n'
-            ns_src = r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)$'%dlms
-            oth_src = r'^(\s*)%s@(\+|-)others\s*$'%dlms
-            sec_src = r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*)$'%dlms
-        # sentinel_src = '^\s*%s' % delim_start
-        return g.Bunch(
-            after      = re.compile(after_src),
-            all        = re.compile(all_src, re.DOTALL),
-            code       = re.compile(code_src),
-            doc        = re.compile(doc_src),
-            node_start = re.compile(ns_src),
-            others     = re.compile(oth_src, re.DOTALL),
-            section    = re.compile(sec_src),
-            # sentinel   = re.compile(sentinel_src),
-        )
+            delims = re.escape(delim_start)
+            after_src = r'^\s*%s@afterref$'%delims
+            all_src =   r'^(\s*)%s@(\+|-)all\s*$'%delims
+            code_src =  r'^%s@@c(ode)?$'%delims
+            doc_src =   r'^%s@\+(at|doc)?(\s.*?)?'%delims + '\n'
+            first_src = r'^%s@@first$'%delims
+            ns_src =    r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)$'%delims
+            oth_src =   r'^(\s*)%s@(\+|-)others\s*$'%delims
+            sec_src =   r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*)$'%delims
+        # Compile the patterns.
+        after      = re.compile(after_src)
+        all        = re.compile(all_src, re.DOTALL)
+        code       = re.compile(code_src)
+        doc        = re.compile(doc_src)
+        first      = re.compile(first_src)
+        node_start = re.compile(ns_src)
+        others     = re.compile(oth_src, re.DOTALL)
+        section    = re.compile(sec_src)
+        return after, all, code, doc, first, node_start, others, section
     #@+node:ekr.20180603060721.1: *4* fast_at.post_pass
     def post_pass(self, gnx2body, gnx2vnode, root_v):
         '''Set all body text.'''
@@ -5128,7 +5130,6 @@ class FastAtRead (object):
         # Check the keys.
         bkeys = sorted(gnx2body.keys())
         vkeys = sorted(gnx2vnode.keys())
-        #### lkeys = sorted(gnx2level.keys())
         if bkeys != vkeys:
             g.trace('KEYS MISMATCH')
             g.printObj(bkeys)
@@ -5161,7 +5162,7 @@ class FastAtRead (object):
             first_lines.append(line)
         return None
     #@+node:ekr.20180602103135.8: *4* fast_at.scan_lines
-    def scan_lines(self, delims, first_lines, lines, patterns, start):
+    def scan_lines(self, delims, first_lines, lines, start):
         '''Scan all lines of the file, creating vnodes.'''
         #@+<< init the scan >>
         #@+node:ekr.20180602103135.9: *5* << init the scan >>
@@ -5172,8 +5173,11 @@ class FastAtRead (object):
         delim_start, delim_end = delims
             # The start/end delims.
         doc_skip = (delim_start + '\n', delim_end + '\n')
-            # 
-        ### in_all = False
+            # To handle doc parts.
+        first_i = 0
+            # Index into first array.
+        in_all = False
+        assert in_all is not None
             # True: in @all.
         in_doc = False
             # True: in @doc parts.
@@ -5185,11 +5189,8 @@ class FastAtRead (object):
         gnx_head =  '<hidden top vnode>'
             # The headline of the root node.
         gnx2vnode = defaultdict(g.Bunch)
-        assert gnx2vnode is not None ### to do
         gnx2body = defaultdict(list)
             # Keys are gnxs, values are list of body lines.
-        ### gnx2level = {gnx: 0}
-            # Keys are gnxs, values are levels (ints)
         parent_v = self.VNode(context=None, gnx=gnx)
         parent_v._headString = gnx_head
             # Corresponds to the @files node itself.
@@ -5209,15 +5210,11 @@ class FastAtRead (object):
         verbatim = False
             # True: the next line must be added without change.
         #
-        # dereference the patterns
-        after_pat = patterns.after
-        all_pat = patterns.all
-        code_pat = patterns.code
-        doc_pat = patterns.doc
-        node_start_pat = patterns.node_start
-        others_pat = patterns.others
-        section_pat = patterns.section
-
+        # get the patterns  
+        (
+            after_pat, all_pat, code_pat, doc_pat, first_pat,
+            node_start_pat, others_pat, section_pat
+        ) = self.get_patterns(delims)
         #@-<< init the scan >>
         special_lines = 0
         i = 0 # for pylint.
@@ -5229,11 +5226,10 @@ class FastAtRead (object):
                 # Previous line was verbatim sentinel. Append this line as it is.
                 if afterref:
                     afterref = False
-                    g.printObj(body)
                     if body: # a List of lines.
                         body[-1] = body[-1].rstrip() + line
                     else:
-                        body.append(line)
+                        body = [line]
                 else:
                     body.append(line)
                 verbatim = False # next line should be normally processed.
@@ -5353,7 +5349,7 @@ class FastAtRead (object):
             #@+node:ekr.20180602103135.19: *5* << handle node_start >>
             m = node_start_pat.match(line)
             if m:
-                trace = True
+                trace = False
                 trace_stack = False
                 in_doc = False
                 # The groups are as follows:
@@ -5402,6 +5398,17 @@ class FastAtRead (object):
                         # body = gnx2body[gnx]
                 continue
             #@-<< handle node_start >>
+            #@+<< handle @first >>
+            #@+node:ekr.20180603135602.1: *5* << handle @first >>
+            m = first_pat.match(line)
+            if m:
+                if 0 <= first_i < len(first_lines):
+                    body.append('@first ' + first_lines[first_i])
+                    first_i += 1
+                else:
+                    g.trace('too many @first lines')
+                continue
+            #@-<< handle @first >>
             #@+<< handle @-leo >>
             #@+node:ekr.20180602103135.20: *5* << handle @-leo >>
             if line.startswith(delim_start + '@-leo'):
@@ -5448,36 +5455,65 @@ class FastAtRead (object):
     def test (self, path, hidden_v):
         
         '''Compare the generated vnodes with the nodes in the @file tree.'''
+        trace = False
+        trace_bodies = False
         c = self.c
-        p = g.findNodeAnywhere(c, '@file ' + path)
+        sfn = g.shortFileName(path)
+        p = g.findNodeAnywhere(c, '@file ' + sfn)
         if not p:
             g.trace('not found: @file %s' % path)
+            return
         
         class Context:
             hiddenRootNode = hidden_v
             
         context = Context()
         root_v = hidden_v.children[0]
+        root_v.context = context
         assert root_v
-        p = leoNodes.Position(root_v)
-        print('test of fast_at.load_at_file')
-        i = 0
-        while p:
-            i += 1
-            if i >= 1000 or p.level() > 20:
-                print('LIMIT')
-                break
-            p.v.context = context
-                # Patch up the context.
-            pad = ' '*4*p.level()
-            print('%3s %3s %s%r' % (
-                i, len(p.v._bodyString), pad , p.v._headString))
-            if 1:
-                for line in g.splitLines(p.v._bodyString):
-                    print('%s%s%r' % (' '*8, pad, line))
-            # g.printObj(g.splitLines(p.v._bodyString))
-            p.moveToThreadNext()
-        print('done')
+        if 1:
+            root_p = p.copy()
+            assert root_p
+            p2 = leoNodes.Position(root_v)
+            p2.context = context
+            i = 0
+            while p and p2 and i < 1000:
+                i += 1
+                assert p.v.h == p2.v._headString, (p.v.h, p2.v._headString)
+                if p.v.b.rstrip() != p2.v._bodyString.rstrip():
+                    g.trace('=====', p.v.h)
+                    g.printObj(p.v.b)
+                    g.trace('-----', p2.v._headString)
+                    g.printObj(p2.v._bodyString)
+                    assert False
+                    # assert p.v.b.rstrip() == p2.v._bodyString.rstrip(), (
+                    #    '\n p.v.b:...\n%s\np2.v.b:...\n%s' % (p.v.b, p2.v._bodyString))
+                p.moveToThreadNext()
+                p2.moveToThreadNext()
+            assert not p2.v, p2.v
+            if trace: g.trace('PASS', sfn)
+        else:
+            p = leoNodes.Position(root_v)
+            if trace:
+                g.trace(sfn)
+            i = 0
+            while p:
+                i += 1
+                if i >= 1000 or p.level() > 20:
+                    g.trace('LIMIT')
+                    break
+                p.v.context = context
+                    # Patch up the context.
+                pad = ' '*4*p.level()
+                if trace:
+                    print('%3s %3s %s%r' % (
+                        i, len(p.v._bodyString), pad , p.v._headString))
+                if trace and trace_bodies:
+                    for line in g.splitLines(p.v._bodyString):
+                        print('%s%s%r' % (' '*8, pad, line))
+                # g.printObj(g.splitLines(p.v._bodyString))
+                p.moveToThreadNext()
+            g.trace('done: %s nodes' % i)
     #@+node:ekr.20180602103655.1: *3* fast_at.read
     def read(self, path):
         
