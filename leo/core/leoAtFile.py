@@ -5168,7 +5168,7 @@ class FastAtRead (object):
         #@+node:ekr.20180602103135.9: *5* << init the scan >>
         afterref = False
             # A special verbatim line follows @afterref.
-        body = None # Set below
+        body = []
             # list of lines for current node.
         delim_start, delim_end = delims
             # The start/end delims.
@@ -5183,22 +5183,11 @@ class FastAtRead (object):
             # True: in @doc parts.
         indent = 0 
             # The current indentation.
-        gnx = 'root-gnx'
-            # The node that we are reading.
-            # start with the gnx for the @file node.
-        gnx_head =  '<hidden top vnode>'
-            # The headline of the root node.
         gnx2vnode = defaultdict(g.Bunch)
+            # Keys are gnx's, values are vnodes.
         gnx2body = defaultdict(list)
             # Keys are gnxs, values are list of body lines.
-        parent_v = self.VNode(context=None, gnx=gnx)
-        parent_v._headString = gnx_head
-            # Corresponds to the @files node itself.
-        gnx2vnode[gnx] = parent_v
-        body = gnx2body[gnx]
-            # The list of lines for the @file node.
-        root_v = parent_v
-        level_stack = [root_v]
+        level_stack = []
             # The vnodes at each level.
         sentinel = delim_start + '@'
             # Faster than a regex!
@@ -5210,11 +5199,26 @@ class FastAtRead (object):
         verbatim = False
             # True: the next line must be added without change.
         #
+        # Init the data structures with the root vnode.
+        gnx = 'root-gnx'
+            # The node that we are reading.
+            # start with the gnx for the @file node.
+        gnx_head =  '<hidden top vnode>'
+            # The headline of the root node.
+        parent_v = self.VNode(context=None, gnx=gnx)
+        parent_v._headString = gnx_head
+            # Corresponds to the @files node itself.
+        gnx2vnode[gnx] = parent_v
+            # Add gnx to the keys
+        gnx2body[gnx] = []
+            # Add gnx to the keys.
+        root_v = parent_v
+            # Does not change.
+        level_stack.append(root_v)
+        #
         # get the patterns  
-        (
-            after_pat, all_pat, code_pat, doc_pat, first_pat,
-            node_start_pat, others_pat, section_pat
-        ) = self.get_patterns(delims)
+        after_pat, all_pat, code_pat, doc_pat, first_pat, \
+        node_start_pat, others_pat, section_pat = self.get_patterns(delims)
         #@-<< init the scan >>
         special_lines = 0
         i = 0 # for pylint.
