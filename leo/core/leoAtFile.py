@@ -5230,7 +5230,7 @@ class FastAtRead (object):
         #
         # get the patterns.
         after_pat, all_pat, code_pat, doc_pat, first_pat, last_pat, \
-        node_start_pat, others_pat, section_pat = self.get_patterns(delims)
+        node_start_pat, others_pat, ref_pat = self.get_patterns(delims)
         #@-<< init scan_lines >>
         i = 0 # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
@@ -5287,7 +5287,7 @@ class FastAtRead (object):
  # clears in_doc
             #@+<< 4. handle section refs >>
             #@+node:ekr.20180602103135.18: *5* << 4. handle section refs >>
-            m = section_pat.match(line)
+            m = ref_pat.match(line)
             if m:
                 in_doc = False
                 if m.group(2) == '+': # open sentinel.
