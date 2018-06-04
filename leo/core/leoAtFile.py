@@ -5,6 +5,7 @@
     # Needed because of unicode characters in tests.
 """Classes to read and write @file nodes."""
 FAST = False
+    # Do not set this True until gnx2vnode has been inited properly.
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -5220,6 +5221,8 @@ class FastAtRead (object):
             context = self.c
             parent_v = self.root.v
             self.VNode = leoNodes.VNode
+            ### Must init gnx2vnode will *all* vnodes.
+            assert False, 'Not Ready Yet'
         else:
             context = None
             parent_v = self.VNode(context=context, gnx=gnx)
