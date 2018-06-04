@@ -5305,6 +5305,7 @@ class FastAtRead (object):
             #@afterref
  # clears in_doc.
             # Order matters only to test()!
+            # Put more commonly matched patterns first.
             #@+<< 5. handle node_start >>
             #@+node:ekr.20180602103135.19: *5* << 5. handle node_start >>
             m = node_start_pat.match(line)
