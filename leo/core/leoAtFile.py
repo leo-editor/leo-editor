@@ -5219,6 +5219,7 @@ class FastAtRead (object):
             # Production.
             context = self.c
             parent_v = self.root.v
+            self.VNode = leoNodes.VNode
         else:
             context = None
             parent_v = self.VNode(context=context, gnx=gnx)
@@ -5488,11 +5489,39 @@ class FastAtRead (object):
             h = nodes.head[gnx]
             lev = nodes.level[gnx].pop(0)
             yield gnx, h, b, lev-1
-    #@+node:ekr.20180603053517.1: *4* fast_at.test
+    #@+node:ekr.20180602103655.1: *3* fast_at.read
+    def read(self, path):
+        
+        self.path = path
+        with open(path, 'r') as f:
+            s = f.read()
+            report = self.load_at_file(path, s)
+        return report
+    #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
+    def read_into_root(self, fileName, fromString):
+        
+        assert self.root
+            # Required for scan_lines.
+        sfn = g.shortFileName(fileName)
+        if fromString:
+            s = fromString
+        else:
+            with open(fileName, 'r') as f:
+                s = f.read()
+        lines = g.splitLines(s)
+        data = self.scan_header(lines)
+        if not data:
+            return g.trace('empty external file: %s' % sfn)
+        delims, first_lines, start_i = data
+        root_vnode, last_lines = self.scan_lines(delims, first_lines, lines, start_i)
+        if root_vnode:
+            self.test(fileName, root_vnode)
+        return root_vnode, last_lines
+    #@+node:ekr.20180603053517.1: *3* fast_at.test
     def test (self, path, hidden_v):
         
         '''Compare the generated vnodes with the nodes in the @file tree.'''
-        trace = False
+        trace = FAST
         trace_bodies = False
         c = self.c
         sfn = g.shortFileName(path)
@@ -5520,14 +5549,13 @@ class FastAtRead (object):
                     g.trace('-----', p2.v._headString)
                     g.printObj(p2.v._bodyString)
                     assert False
-                    # assert p.v.b.rstrip() == p2.v._bodyString.rstrip(), (
-                    #    '\n p.v.b:...\n%s\np2.v.b:...\n%s' % (p.v.b, p2.v._bodyString))
                 p.moveToThreadNext()
                 p2.moveToThreadNext()
             assert not p2.v, p2.v
             if trace: g.trace('PASS', sfn)
         else:
-            trace = trace_bodies = True
+            trace = not FAST
+            trace_bodies = True
             p = leoNodes.Position(root_v)
             if trace: g.trace(sfn)
             i = 0
@@ -5548,32 +5576,6 @@ class FastAtRead (object):
                 # g.printObj(g.splitLines(p.v._bodyString))
                 p.moveToThreadNext()
             g.trace('done: %s nodes' % i)
-    #@+node:ekr.20180602103655.1: *3* fast_at.read
-    def read(self, path):
-        
-        self.path = path
-        with open(path, 'r') as f:
-            s = f.read()
-            report = self.load_at_file(path, s)
-        return report
-    #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
-    def read_into_root(self, fileName, fromString):
-        
-        assert self.root
-            # Required for scan_lines.
-        sfn = g.shortFileName(fileName)
-        if fromString:
-            s = fromString
-        else:
-            with open(fileName, 'r') as f:
-                s = f.read()
-        lines = g.splitLines(s)
-        data = self.scan_header(lines)
-        if not data:
-            return g.trace('empty external file: %s' % sfn)
-        delims, first_lines, start_i = data
-        root_vnode, last_lines = self.scan_lines(delims, first_lines, lines, start_i)
-        return root_vnode, last_lines
     #@-others
 #@-others
 #@@language python
