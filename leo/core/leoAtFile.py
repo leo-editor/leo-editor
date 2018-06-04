@@ -482,6 +482,13 @@ class AtFile(object):
             # For @shadow files, calls x.updatePublicAndPrivateFiles.
             # Calls at.initReadLine(s), where s is the file contents.
             # This will be used only if not cached.
+            
+        if FAST:
+            faf = FastAtRead(c)
+            root_vnode, last_lines = faf.read_into_root(fileName, root, fromString)
+            g.trace('=====', fileName, root_vnode)
+            root.clearDirty()
+            return True
 
         if fileName and at.inputFile:
             c.setFileTimeStamp(fileName)
@@ -989,7 +996,6 @@ class AtFile(object):
             at.rememberReadPath(fileName, root)
             while root.hasChildren():
                 root.firstChild().doDelete()
-        # g.trace('read_new:', read_new, 'FAST:', FAST)
         if read_new:
             lastLines = at.scanText4(fileName, root)
         else:
@@ -5030,7 +5036,7 @@ class AtFile(object):
     #@-others
 
 atFile = AtFile # compatibility
-#@+node:ekr.20180602102448.1: ** class FastAtFile
+#@+node:ekr.20180602102448.1: ** class FastAtRead
 class FastAtRead (object):
     
     '''
@@ -5040,22 +5046,25 @@ class FastAtRead (object):
     
     def __init__ (self, c):
         self.c = c
+        
+    if FAST:
+        VNode = leoNodes.VNode
+    else:
+        #@+<< define VNode class >>
+        #@+node:ekr.20180603062024.1: *3* << define VNode class >>
+        class VNode (object):
+            def __init__(self, context, gnx):
+                self.context = context
+                self.gnx = gnx
+                self.children = []
+                self.parents = []
+                self._bodyString = None
+                self._headString = None
 
-    #@+<< define VNode class >>
-    #@+node:ekr.20180603062024.1: *3* << define VNode class >>
-    class VNode (object):
-        def __init__(self, context, gnx):
-            self.context = context
-            self.gnx = gnx
-            self.children = []
-            self.parents = []
-            self._bodyString = None
-            self._headString = None
-
-        def headString(self):
-            self._headString
-    #@-<< define VNode class >>
-        # Testing only.
+            def headString(self):
+                self._headString
+        #@-<< define VNode class >>
+            # Testing only.
         
     #@+others
     #@+node:ekr.20180602103135.1: *3* fast_at.load_at_file & helpers
@@ -5162,12 +5171,12 @@ class FastAtRead (object):
     #@+node:ekr.20180602103135.8: *4* fast_at.scan_lines
     def scan_lines(self, delims, first_lines, lines, start):
         '''Scan all lines of the file, creating vnodes.'''
-        #@+<< init the scan >>
-        #@+node:ekr.20180602103135.9: *5* << init the scan >>
+        #@+<< init scan_lines >>
+        #@+node:ekr.20180602103135.9: *5* << init scan_lines >>
+        #
+        # Simple vars...
         afterref = False
             # A special verbatim line follows @afterref.
-        body = []
-            # list of lines for current node.
         delim_start, delim_end = delims
             # The start/end delims.
         doc_skip = (delim_start + '\n', delim_end + '\n')
@@ -5181,10 +5190,6 @@ class FastAtRead (object):
             # True: in @doc parts.
         indent = 0 
             # The current indentation.
-        gnx2vnode = defaultdict(g.Bunch)
-            # Keys are gnx's, values are vnodes.
-        gnx2body = defaultdict(list)
-            # Keys are gnxs, values are list of body lines.
         level_stack = []
             # The vnodes at each level.
         n_last_lines = 0
@@ -5199,29 +5204,45 @@ class FastAtRead (object):
         verbatim = False
             # True: the next line must be added without change.
         #
-        # Init the data structures with the root vnode.
+        # Init the data for the root node.
+        #
         gnx = 'root-gnx'
             # The node that we are reading.
             # start with the gnx for the @file node.
         gnx_head =  '<hidden top vnode>'
             # The headline of the root node.
-        parent_v = self.VNode(context=None, gnx=gnx)
-        parent_v._headString = gnx_head
-            # Corresponds to the @files node itself.
-        gnx2vnode[gnx] = parent_v
-            # Add gnx to the keys
-        gnx2body[gnx] = []
-            # Add gnx to the keys.
+        #
+        # Init the parent vnode for testing.
+        #
+        if FAST:
+            # Production.
+            context = self.c
+            parent_v = None ### To do: another arg needed. ###
+        else:
+            context = None
+            parent_v = self.VNode(context=context, gnx=gnx)
+            parent_v._headString = gnx_head
+                # Corresponds to the @files node itself.
         root_v = parent_v
             # Does not change.
         level_stack.append(root_v)
         #
-        # get the patterns  
+        # Init the gnx dict last.
+        #
+        gnx2vnode = defaultdict(g.Bunch)
+            # Keys are gnx's, values are vnodes.
+        gnx2body = defaultdict(list)
+            # Keys are gnxs, values are list of body lines.
+        gnx2vnode[gnx] = parent_v
+            # Add gnx to the keys
+        body = gnx2body[gnx]
+            # Add gnx to the keys.
+        #
+        # get the patterns.
         after_pat, all_pat, code_pat, doc_pat, first_pat, last_pat, \
         node_start_pat, others_pat, section_pat = self.get_patterns(delims)
-        #@-<< init the scan >>
-        special_lines = 0
-        i = 0 # for pylint.
+        #@-<< init scan_lines >>
+        i = 0 # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
             # These three sections must be first.
             #@+<< common code for all lines >>
@@ -5256,8 +5277,7 @@ class FastAtRead (object):
                 body.append(line)
                 continue
             #@-<< short-circuit later tests >>
-            special_lines += 1
-            # The order of these sections does matter.
+            # The order of these sections should not matter.
             #@+<< handle @all >>
             #@+node:ekr.20180602103135.13: *5* << handle @all >>
             m = all_pat.match(line)
@@ -5373,7 +5393,7 @@ class FastAtRead (object):
                     v.children = []
                 else:
                     # Make a new vnode.
-                    v = self.VNode(context=None, gnx=gnx)
+                    v = self.VNode(context=context, gnx=gnx)
                     v._headString = head
                     gnx2vnode [gnx] = v
                     body = gnx2body[gnx]
@@ -5431,19 +5451,28 @@ class FastAtRead (object):
                 body.append(line[ii:jj] + '\n')
                 continue
             #@-<< handle @@ lines >>
-            #@+<< handle in_doc >>
-            #@+node:ekr.20180602103135.17: *5* << handle in_doc >>
-            if in_doc and not delim_end:
-                # Doc lines start with start_delim + one blank.
-                body.append(line[len(delim_start)+1:])
+            # This must be last.
+            #@+<< handle remaining lines >>
+            #@+node:ekr.20180602103135.17: *5* << handle remaining lines >>
+            if in_doc:
+                if delim_end:
+                    # doc lines are unchanged.
+                    body.append(line)
+                else:
+                    # Doc lines start with start_delim + one blank.
+                    body.append(line[len(delim_start)+1:])
                 continue
             #
-            # When there *is* and ending delim.
-            #@-<< handle in_doc >>
-            #@afterref
- # Apparently, must be last.
-            # A normal line.
+            # Probably can't happen: an apparent sentinel line.
+            # Such lines should be @@ lines or follow @verbatim.
+            #
+            # This assert verifies the short-circuit test.
+            assert line.startswith.sentinel, repr(line)
+            #
+            # This trace is less important, but interesting.
+            g.trace('UNEXPECTED LINE:', line)
             body.append(line)
+            #@-<< handle remaining lines >>
         else:
             # No @-leo sentinel
             return None, []
@@ -5526,6 +5555,22 @@ class FastAtRead (object):
             s = f.read()
             report = self.load_at_file(path, s)
         return report
+    #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
+    def read_into_root(self, fileName, root, fromString):
+        
+        sfn = g.shortFileName(fileName)
+        if fromString:
+            s = fromString
+        else:
+            with open(fileName, 'r') as f:
+                s = f.read()
+        lines = g.splitLines(s)
+        data = self.scan_header(lines)
+        if not data:
+            return g.trace('empty external file: %s' % sfn)
+        delims, first_lines, start_i = data
+        root_vnode, last_lines = self.scan_lines(delims, first_lines, lines, start_i)
+        return root_vnode, last_lines
     #@-others
 #@-others
 #@@language python
