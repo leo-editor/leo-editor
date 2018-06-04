@@ -2,6 +2,8 @@
 #@+node:ekr.20031218072017.3018: * @file leoFileCommands.py
 '''Classes relating to reading and writing .leo files.'''
 FAST = False
+if FAST:
+    print('\nFAST (leoFileCommands.py\n')
 #@+<< imports >>
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
 # For FastRead class
@@ -680,7 +682,11 @@ class FileCommands(object):
                 g.app.checkForOpenFile(c, fileName)
             #
             # Read the .leo file and create the outline.
-            ok = fc.getLeoFileHelper(theFile, fileName, silent)
+            if FAST:
+                fastReader = FastRead(c)
+                ok = fastReader.readFile(fileName)
+            else:
+                ok = fc.getLeoFileHelper(theFile, fileName, silent)
             if ok:
                 fc.resolveTnodeLists()
                     # Do this before reading external files.
@@ -2544,11 +2550,12 @@ class FileCommands(object):
 #@+node:ekr.20180602062323.1: ** class FastRead
 class FastRead (object):
 
-    def __init__(self,c ):
+    def __init__(self, c):
         self.c = c
         
-    if not FAST:
-
+    if FAST:
+        VNode = leoNodes.VNode
+    else:
         #@+<< define VNode class >>
         #@+node:ekr.20180602062323.3: *3* << define VNode class >>
         class VNode (object):
@@ -2563,7 +2570,6 @@ class FastRead (object):
             def headString(self):
                 self._headString
         #@-<< define VNode class >>
-            # For testing only.
         
     #@+others
     #@+node:ekr.20180602062323.5: *3* fast.dump_vnodes
@@ -2579,14 +2585,15 @@ class FastRead (object):
     def read(self, path):
         
         self.path = path
-        with open(path, 'r') as f:
+        with open(path, 'rb') as f:
             s = f.read()
-            hidden_v = self.readWithElementTree(s)
+        contents = g.toUnicode(s)
+        hidden_v = self.readWithElementTree(contents)
         self.test(hidden_v)
     #@+node:ekr.20180602062323.7: *3* fast.readWithElementTree & helpers
-    def readWithElementTree(self, s):
+    def readWithElementTree(self, contents):
         
-        xroot = ElementTree.fromstring(s)
+        xroot = ElementTree.fromstring(contents)
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
         gnx2body = self.makeBodyDict(t_elements)
@@ -2605,7 +2612,7 @@ class FastRead (object):
     def makeVnodes(self, gnx2body, v_elements):
         
         trace = False
-        context = None
+        context = self.c if FAST else None
         d = {}
         
         t1 = time.clock()
@@ -2649,9 +2656,22 @@ class FastRead (object):
         # Traverse the tree of v elements.
         v_element_visitor(v_elements, hidden_v)
         t2 = time.clock()
-        g.trace('%s nodes, %6.4f sec' % (len(d.keys()), t2-t1))
+        if trace: g.trace('%s nodes, %6.4f sec' % (len(d.keys()), t2-t1))
         # self.dump_vnodes (d, hidden_v)
         return hidden_v
+    #@+node:ekr.20180604110143.1: *3* fast.readFile
+    def readFile(self, path):
+        
+        c = self.c
+        self.path = path
+        t1 = time.clock()
+        with open(path, 'rb') as f:
+            s = f.read()
+        contents = g.toUnicode(s)
+        c.hiddenRootNode = self.readWithElementTree(contents)
+        t2 = time.clock()
+        g.trace('%5.3f sec' % (t2-t1))
+        return c.hiddenRootNode
     #@+node:ekr.20180602170813.1: *3* fast.test
     if FAST:
         
