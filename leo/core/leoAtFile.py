@@ -485,7 +485,7 @@ class AtFile(object):
             # This will be used only if not cached.
             
         if FAST:
-            faf = FastAtRead(c, root=root)
+            faf = FastAtRead(c, path=fileName, root=root)
             root_vnode, last_lines = faf.read_into_root(fileName, fromString)
             g.trace('=====', fileName, root_vnode)
             root.clearDirty()
@@ -5045,8 +5045,9 @@ class FastAtRead (object):
     Based on code from Vitalije.
     '''
     
-    def __init__ (self, c, root=None):
+    def __init__ (self, c, path=None, root=None):
         self.c = c
+        self.path = path
         self.root = root
         
     if FAST:
@@ -5300,21 +5301,25 @@ class FastAtRead (object):
             #@-<< handle @others >>
             #@afterref
  # clears in_doc
-            # The order of these sections should not matter.
-            #@+<< handle @all >>
-            #@+node:ekr.20180602103135.13: *5* << handle @all >>
-            m = all_pat.match(line)
-            if m:
-                ### To do: this is not enough ###
-                if m.group(2) == '+': # opening sentinel
-                    body.append('@all\n')
-                    stack.append((gnx, indent))
-                else: # closing sentine.
-                    # m.group(2) is '-' because the pattern matched.
-                    gnx, indent = stack.pop()
-                    body = gnx2body[gnx]
-                continue
-            #@-<< handle @all >>
+            # The order of these sections matters.
+            if 0:
+                #@+<< handle @all >>
+                #@+node:ekr.20180602103135.13: *5* << handle @all >>
+                m = all_pat.match(line)
+                if m:
+                    ### To do: this is not enough ###
+                    g.trace('===== @all', self.path)
+                    if m.group(2) == '+': # opening sentinel
+                        body.append('@all\n')
+                        stack.append((gnx, indent))
+                    else: # closing sentine.
+                        # m.group(2) is '-' because the pattern matched.
+                        gnx, indent = stack.pop()
+                        body = gnx2body[gnx]
+                    continue
+                #@-<< handle @all >>
+                #@afterref
+ ### Why must this be first???
             #@+<< handle end of  @doc & @code parts >>
             #@+node:ekr.20180602103135.16: *5* << handle end of @doc & @code parts >>
             if in_doc:
@@ -5363,6 +5368,9 @@ class FastAtRead (object):
                     body = gnx2body[gnx]
                 continue
             #@-<< handle section refs >>
+            #@afterref
+ # clears in_doc.
+            # The order of these sections does not matter.
             #@+<< handle afterref >>
             #@+node:ekr.20180603063102.1: *5* << handle afterref >>
             m = after_pat.match(line)
