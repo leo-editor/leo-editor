@@ -5099,10 +5099,11 @@ class FastAtRead (object):
         patterns = (
             # The list of patterns, in alphabetical order.
             # These patterns must be mutually exclusive.
+            ### To do: @comment and @delims.
             r'^\s*%s@afterref%s$'%delims,               # @afterref
             r'^(\s*)%s@(\+|-)all\s*%s$'%delims,         # @all
             r'^%s@@c(ode)?%s$'%delims,                  # @c and @code
-            r'^%s@\+(at|doc)?(\s.*?)?%s'%delims + '\n', # @doc or @
+            r'^%s@\+(at|doc)?(\s.*?)?%s\n'%delims,      # @doc or @
             r'^%s@@first%s$'%delims,                    # @first
             r'^%s@@last%s$'%delims,                     # @last
             r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)%s$'%delims, # @node
