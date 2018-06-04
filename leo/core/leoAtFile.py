@@ -5124,13 +5124,13 @@ class FastAtRead (object):
             sec_src =   r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*)$'%delims
         # Compile the patterns.
         after      = re.compile(after_src)
-        all        = re.compile(all_src, re.DOTALL)
+        all        = re.compile(all_src) ###, re.DOTALL)
         code       = re.compile(code_src)
         doc        = re.compile(doc_src)
         first      = re.compile(first_src)
         last       = re.compile(last_src)
         node_start = re.compile(ns_src)
-        others     = re.compile(oth_src, re.DOTALL)
+        others     = re.compile(oth_src) ###, re.DOTALL)
         section    = re.compile(sec_src)
         return after, all, code, doc, first, last, node_start, others, section
     #@+node:ekr.20180603060721.1: *4* fast_at.post_pass
@@ -5320,7 +5320,7 @@ class FastAtRead (object):
                 #@-<< handle @all >>
                 #@afterref
  ### Why must this be first???
-            #@+<< handle end of  @doc & @code parts >>
+            #@+<< handle end of @doc & @code parts >>
             #@+node:ekr.20180602103135.16: *5* << handle end of @doc & @code parts >>
             if in_doc:
                 # When delim_end exists the doc block:
@@ -5350,7 +5350,7 @@ class FastAtRead (object):
                     # Enter @doc mode.
                     in_doc = True
                     continue
-            #@-<< handle end of  @doc & @code parts >>
+            #@-<< handle end of @doc & @code parts >>
             #@+<< handle section refs >>
             #@+node:ekr.20180602103135.18: *5* << handle section refs >>
             m = section_pat.match(line)
@@ -5370,7 +5370,6 @@ class FastAtRead (object):
             #@-<< handle section refs >>
             #@afterref
  # clears in_doc.
-            # The order of these sections does not matter.
             #@+<< handle afterref >>
             #@+node:ekr.20180603063102.1: *5* << handle afterref >>
             m = after_pat.match(line)
@@ -5433,8 +5432,10 @@ class FastAtRead (object):
                         # body = gnx2body[gnx]
                 continue
             #@-<< handle node_start >>
-            #@+<< handle @first & @last >>
-            #@+node:ekr.20180603135602.1: *5* << handle @first & @last >>
+            # The order of these sections should not matter.
+            #@+<< handle @@ lines, including @first & @last >>
+            #@+node:ekr.20180603135602.1: *5* << handle @@ lines, including @first & @last >>
+            # @first and @last generate @@ sentinels
             m = first_pat.match(line)
             if m:
                 if 0 <= first_i < len(first_lines):
@@ -5447,21 +5448,18 @@ class FastAtRead (object):
             if m:
                 n_last_lines += 1
                 continue
-            #@-<< handle @first & @last >>
+            if line.startswith(delim_start + '@@'):
+                ii = len(delim_start) + 1 # on second '@'
+                jj = line.rfind(delim_end) if delim_end else -1
+                body.append(line[ii:jj] + '\n')
+                continue
+            #@-<< handle @@ lines, including @first & @last >>
             #@+<< handle @-leo >>
             #@+node:ekr.20180602103135.20: *5* << handle @-leo >>
             if line.startswith(delim_start + '@-leo'):
                 i += 1
                 break
             #@-<< handle @-leo >>
-            #@+<< handle @@ lines >>
-            #@+node:ekr.20180602103135.21: *5* << handle @@ lines >>
-            if line.startswith(delim_start + '@@'):
-                ii = len(delim_start) + 1 # on second '@'
-                jj = line.rfind(delim_end) if delim_end else -1
-                body.append(line[ii:jj] + '\n')
-                continue
-            #@-<< handle @@ lines >>
             # This must be last.
             #@+<< handle remaining lines >>
             #@+node:ekr.20180602103135.17: *5* << handle remaining lines >>
