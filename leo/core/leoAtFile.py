@@ -5249,7 +5249,7 @@ class FastAtRead (object):
         #@-<< init scan_lines >>
         i = 0 # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
-            # These three sections must be first.
+            # These sections must be first.
             #@+<< common code for all lines >>
             #@+node:ekr.20180602103135.10: *5* << common code for all lines >>
             if verbatim:
@@ -5312,27 +5312,9 @@ class FastAtRead (object):
                 continue
 
             #@-<< handle @others >>
-            #@+<< handle start of @doc parts >>
-            #@+node:ekr.20180602103135.15: *5* << handle start of @doc parts >>
-            if not in_doc:
-                # This guard ensures that the short-circuit tests are valid.
-                m = doc_pat.match(line)
-                if m:
-                    # @+at or @+doc?
-                    doc = '@doc' if m.group(1) == 'doc' else '@'
-                    doc2 = m.group(2) or '' # Trailing text.
-                    if doc2:
-                        body.append('%s%s\n'%(doc, doc2))
-                    else:
-                        body.append(doc + '\n')
-                    # Enter @doc mode.
-                    in_doc = True
-                    continue
-            #@-<< handle start of @doc parts >>
-            #@+<< handle start of @code parts >>
-            #@+node:ekr.20180602103135.16: *5* << handle start of @code parts >>
+            #@+<< handle end of  @doc & @code parts >>
+            #@+node:ekr.20180602103135.16: *5* << handle end of @doc & @code parts >>
             if in_doc:
-                #
                 # When delim_end exists the doc block:
                 # - begins with the opening delim, alonw on its own line
                 # - ends with the closing delim, alone on its own line.
@@ -5347,7 +5329,20 @@ class FastAtRead (object):
                     in_doc = False 
                     body.append('@code\n' if m.group(1) else '@c\n')
                     continue
-            #@-<< handle start of @code parts >>
+            else:
+                m = doc_pat.match(line)
+                if m:
+                    # @+at or @+doc?
+                    doc = '@doc' if m.group(1) == 'doc' else '@'
+                    doc2 = m.group(2) or '' # Trailing text.
+                    if doc2:
+                        body.append('%s%s\n'%(doc, doc2))
+                    else:
+                        body.append(doc + '\n')
+                    # Enter @doc mode.
+                    in_doc = True
+                    continue
+            #@-<< handle end of  @doc & @code parts >>
             #@+<< handle section refs >>
             #@+node:ekr.20180602103135.18: *5* << handle section refs >>
             m = section_pat.match(line)
