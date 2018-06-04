@@ -5282,20 +5282,6 @@ class FastAtRead (object):
                 body.append(line)
                 continue
             #@-<< short-circuit later tests >>
-            # The order of these sections should not matter.
-            #@+<< handle @all >>
-            #@+node:ekr.20180602103135.13: *5* << handle @all >>
-            m = all_pat.match(line)
-            if m:
-                if m.group(2) == '+': # opening sentinel
-                    body.append('@all\n')
-                    stack.append((gnx, indent))
-                else: # closing sentine.
-                    # m.group(2) is '-' because the pattern matched.
-                    gnx, indent = stack.pop()
-                    body = gnx2body[gnx]
-                continue
-            #@-<< handle @all >>
             #@+<< handle @others >>
             #@+node:ekr.20180602103135.14: *5* << handle @others >>
             m = others_pat.match(line)
@@ -5312,6 +5298,23 @@ class FastAtRead (object):
                 continue
 
             #@-<< handle @others >>
+            #@afterref
+ # clears in_doc
+            # The order of these sections should not matter.
+            #@+<< handle @all >>
+            #@+node:ekr.20180602103135.13: *5* << handle @all >>
+            m = all_pat.match(line)
+            if m:
+                ### To do: this is not enough ###
+                if m.group(2) == '+': # opening sentinel
+                    body.append('@all\n')
+                    stack.append((gnx, indent))
+                else: # closing sentine.
+                    # m.group(2) is '-' because the pattern matched.
+                    gnx, indent = stack.pop()
+                    body = gnx2body[gnx]
+                continue
+            #@-<< handle @all >>
             #@+<< handle end of  @doc & @code parts >>
             #@+node:ekr.20180602103135.16: *5* << handle end of @doc & @code parts >>
             if in_doc:
