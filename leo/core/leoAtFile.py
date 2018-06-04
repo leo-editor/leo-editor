@@ -5094,6 +5094,7 @@ class FastAtRead (object):
 
     def get_patterns(self, delims):
         '''Create regex patterns for the given comment delims.'''
+        # This must be a function, because of @comments & @delims.
         delim_start, delim_end = delims
         delims = re.escape(delim_start), re.escape(delim_end or '')
         patterns = (

@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3018: * @file leoFileCommands.py
 '''Classes relating to reading and writing .leo files.'''
-### fast_read = False
+FAST = False
 #@+<< imports >>
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
 # For FastRead class
@@ -2543,25 +2543,27 @@ class FileCommands(object):
     #@-others
 #@+node:ekr.20180602062323.1: ** class FastRead
 class FastRead (object):
-    
+
     def __init__(self,c ):
         self.c = c
+        
+    if not FAST:
 
-    #@+<< define VNode class >>
-    #@+node:ekr.20180602062323.3: *3* << define VNode class >>
-    class VNode (object):
-        def __init__(self, context, gnx):
-            self.context = context
-            self.gnx = gnx
-            self.children = []
-            self.parents = []
-            self._bodyString = None
-            self._headString = None
+        #@+<< define VNode class >>
+        #@+node:ekr.20180602062323.3: *3* << define VNode class >>
+        class VNode (object):
+            def __init__(self, context, gnx):
+                self.context = context
+                self.gnx = gnx
+                self.children = []
+                self.parents = []
+                self._bodyString = None
+                self._headString = None
 
-        def headString(self):
-            self._headString
-    #@-<< define VNode class >>
-        # For testing only.
+            def headString(self):
+                self._headString
+        #@-<< define VNode class >>
+            # For testing only.
         
     #@+others
     #@+node:ekr.20180602062323.5: *3* fast.dump_vnodes
@@ -2651,26 +2653,30 @@ class FastRead (object):
         # self.dump_vnodes (d, hidden_v)
         return hidden_v
     #@+node:ekr.20180602170813.1: *3* fast.test
-    def test (self, hidden_v):
+    if FAST:
         
-        '''A minimal test of the structure of the generated vnodes.'''
+        pass
         
-        class Context:
-            hiddenRootNode = hidden_v
+    else:
+        def test (self, hidden_v):
+            '''A minimal test of the structure of the generated vnodes.'''
             
-        context = Context()
-        root_v = hidden_v.children[0]
-        assert root_v
-        p = leoNodes.Position(root_v)
-        print('test of vnodes')
-        i = 0
-        while p and i < 10000:
-            i += 1
-            p.v.context = context
-                # Patch up the context.
-            print('%3s%s%r' % (i, ' '*p.level(), p.v._headString))
-            p.moveToThreadNext()
-        print('done')
+            class Context:
+                hiddenRootNode = hidden_v
+                
+            context = Context()
+            root_v = hidden_v.children[0]
+            assert root_v
+            p = leoNodes.Position(root_v)
+            print('test of vnodes')
+            i = 0
+            while p and i < 10000:
+                i += 1
+                p.v.context = context
+                    # Patch up the context.
+                print('%3s%s%r' % (i, ' '*p.level(), p.v._headString))
+                p.moveToThreadNext()
+            print('done')
     #@-others
 #@-others
 #@@language python
