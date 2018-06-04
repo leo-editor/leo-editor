@@ -5250,9 +5250,9 @@ class FastAtRead (object):
         #@-<< init scan_lines >>
         i = 0 # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
-            # These sections must be first.
-            #@+<< common code for all lines >>
-            #@+node:ekr.20180602103135.10: *5* << common code for all lines >>
+            # Order matters.
+            #@+<< 1. common code for all lines >>
+            #@+node:ekr.20180602103135.10: *5* << 1. common code for all lines >>
             if verbatim:
                 # Previous line was verbatim sentinel. Append this line as it is.
                 if afterref:
@@ -5271,9 +5271,9 @@ class FastAtRead (object):
             # Adjust indentation.
             if indent and line[:indent].isspace() and len(line) > indent:
                 line = line[indent:]
-            #@-<< common code for all lines >>
-            #@+<< short-circuit later tests >>
-            #@+node:ekr.20180602103135.12: *5* << short-circuit later tests >>
+            #@-<< 1. common code for all lines >>
+            #@+<< 2. short-circuit later tests >>
+            #@+node:ekr.20180602103135.12: *5* << 2. short-circuit later tests >>
             # This is valid because all following sections are either:
             # 1. guarded by 'if in_doc' or
             # 2. guarded by a pattern that matches the start of the sentinel.   
@@ -5282,9 +5282,9 @@ class FastAtRead (object):
                 # lstrip() is faster than using a regex!
                 body.append(line)
                 continue
-            #@-<< short-circuit later tests >>
-            #@+<< handle @others >>
-            #@+node:ekr.20180602103135.14: *5* << handle @others >>
+            #@-<< 2. short-circuit later tests >>
+            #@+<< 3. handle @others >>
+            #@+node:ekr.20180602103135.14: *5* << 3. handle @others >>
             m = others_pat.match(line)
             if m:
                 in_doc = False
@@ -5298,61 +5298,11 @@ class FastAtRead (object):
                     body = gnx2body[gnx]
                 continue
 
-            #@-<< handle @others >>
+            #@-<< 3. handle @others >>
             #@afterref
  # clears in_doc
-            # The order of these sections matters.
-            if 0:
-                #@+<< handle @all >>
-                #@+node:ekr.20180602103135.13: *5* << handle @all >>
-                m = all_pat.match(line)
-                if m:
-                    ### To do: this is not enough ###
-                    g.trace('===== @all', self.path)
-                    if m.group(2) == '+': # opening sentinel
-                        body.append('@all\n')
-                        stack.append((gnx, indent))
-                    else: # closing sentine.
-                        # m.group(2) is '-' because the pattern matched.
-                        gnx, indent = stack.pop()
-                        body = gnx2body[gnx]
-                    continue
-                #@-<< handle @all >>
-                #@afterref
- ### Why must this be first???
-            #@+<< handle end of @doc & @code parts >>
-            #@+node:ekr.20180602103135.16: *5* << handle end of @doc & @code parts >>
-            if in_doc:
-                # When delim_end exists the doc block:
-                # - begins with the opening delim, alonw on its own line
-                # - ends with the closing delim, alone on its own line.
-                # Both of these lines should be skipped
-                if line in doc_skip:
-                    # doc_skip is (delim_start + '\n', delim_end + '\n')
-                    continue
-                #
-                # Check for @c or @code.
-                m = code_pat.match(line)
-                if m:
-                    in_doc = False 
-                    body.append('@code\n' if m.group(1) else '@c\n')
-                    continue
-            else:
-                m = doc_pat.match(line)
-                if m:
-                    # @+at or @+doc?
-                    doc = '@doc' if m.group(1) == 'doc' else '@'
-                    doc2 = m.group(2) or '' # Trailing text.
-                    if doc2:
-                        body.append('%s%s\n'%(doc, doc2))
-                    else:
-                        body.append(doc + '\n')
-                    # Enter @doc mode.
-                    in_doc = True
-                    continue
-            #@-<< handle end of @doc & @code parts >>
-            #@+<< handle section refs >>
-            #@+node:ekr.20180602103135.18: *5* << handle section refs >>
+            #@+<< 4. handle section refs >>
+            #@+node:ekr.20180602103135.18: *5* << 4. handle section refs >>
             m = section_pat.match(line)
             if m:
                 in_doc = False
@@ -5367,20 +5317,12 @@ class FastAtRead (object):
                     gnx, indent = stack.pop()
                     body = gnx2body[gnx]
                 continue
-            #@-<< handle section refs >>
+            #@-<< 4. handle section refs >>
             #@afterref
  # clears in_doc.
-            #@+<< handle afterref >>
-            #@+node:ekr.20180603063102.1: *5* << handle afterref >>
-            m = after_pat.match(line)
-            if m:
-                afterref = True
-                verbatim = True
-                    # Avoid an extra test in the main loop.
-                continue
-            #@-<< handle afterref >>
-            #@+<< handle node_start >>
-            #@+node:ekr.20180602103135.19: *5* << handle node_start >>
+            # Order matters only to test()!
+            #@+<< 5. handle node_start >>
+            #@+node:ekr.20180602103135.19: *5* << 5. handle node_start >>
             m = node_start_pat.match(line)
             if m:
                 trace = False
@@ -5431,10 +5373,64 @@ class FastAtRead (object):
                     # else:
                         # body = gnx2body[gnx]
                 continue
-            #@-<< handle node_start >>
-            # The order of these sections should not matter.
-            #@+<< handle @@ lines, including @first & @last >>
-            #@+node:ekr.20180603135602.1: *5* << handle @@ lines, including @first & @last >>
+            #@-<< 5. handle node_start >>
+            #@+<< 6. handle end of @doc & @code parts >>
+            #@+node:ekr.20180602103135.16: *5* << 6. handle end of @doc & @code parts >>
+            if in_doc:
+                # When delim_end exists the doc block:
+                # - begins with the opening delim, alonw on its own line
+                # - ends with the closing delim, alone on its own line.
+                # Both of these lines should be skipped
+                if line in doc_skip:
+                    # doc_skip is (delim_start + '\n', delim_end + '\n')
+                    continue
+                #
+                # Check for @c or @code.
+                m = code_pat.match(line)
+                if m:
+                    in_doc = False 
+                    body.append('@code\n' if m.group(1) else '@c\n')
+                    continue
+            else:
+                m = doc_pat.match(line)
+                if m:
+                    # @+at or @+doc?
+                    doc = '@doc' if m.group(1) == 'doc' else '@'
+                    doc2 = m.group(2) or '' # Trailing text.
+                    if doc2:
+                        body.append('%s%s\n'%(doc, doc2))
+                    else:
+                        body.append(doc + '\n')
+                    # Enter @doc mode.
+                    in_doc = True
+                    continue
+            #@-<< 6. handle end of @doc & @code parts >>
+            #@+<< 7. handle @all >>
+            #@+node:ekr.20180602103135.13: *5* << 7. handle @all >>
+            m = all_pat.match(line)
+            if m:
+                ### To do: this is not enough ###
+                g.trace('===== @all', self.path)
+                if m.group(2) == '+': # opening sentinel
+                    body.append('@all\n')
+                    stack.append((gnx, indent))
+                else: # closing sentine.
+                    # m.group(2) is '-' because the pattern matched.
+                    gnx, indent = stack.pop()
+                    body = gnx2body[gnx]
+                continue
+            #@-<< 7. handle @all >>
+            #@+<< 8. handle afterref >>
+            #@+node:ekr.20180603063102.1: *5* << 8. handle afterref >>
+            m = after_pat.match(line)
+            if m:
+                afterref = True
+                verbatim = True
+                    # Avoid an extra test in the main loop.
+                continue
+            #@-<< 8. handle afterref >>
+            #@+<< 9. handle @@ lines, including @first & @last >>
+            #@+node:ekr.20180603135602.1: *5* << 9. handle @@ lines, including @first & @last >>
             # @first and @last generate @@ sentinels
             m = first_pat.match(line)
             if m:
@@ -5453,16 +5449,16 @@ class FastAtRead (object):
                 jj = line.rfind(delim_end) if delim_end else -1
                 body.append(line[ii:jj] + '\n')
                 continue
-            #@-<< handle @@ lines, including @first & @last >>
-            #@+<< handle @-leo >>
-            #@+node:ekr.20180602103135.20: *5* << handle @-leo >>
+            #@-<< 9. handle @@ lines, including @first & @last >>
+            #@+<< 10. handle @-leo >>
+            #@+node:ekr.20180602103135.20: *5* << 10. handle @-leo >>
             if line.startswith(delim_start + '@-leo'):
                 i += 1
                 break
-            #@-<< handle @-leo >>
+            #@-<< 10. handle @-leo >>
             # This must be last.
-            #@+<< handle remaining lines >>
-            #@+node:ekr.20180602103135.17: *5* << handle remaining lines >>
+            #@+<< 11. handle remaining lines >>
+            #@+node:ekr.20180602103135.17: *5* << 11. handle remaining lines >>
             if in_doc:
                 if delim_end:
                     # doc lines are unchanged.
@@ -5481,7 +5477,7 @@ class FastAtRead (object):
             # This trace is less important, but interesting.
             g.trace('UNEXPECTED LINE:', line)
             body.append(line)
-            #@-<< handle remaining lines >>
+            #@-<< 11. handle remaining lines >>
         else:
             # No @-leo sentinel
             return None, []
@@ -5549,13 +5545,13 @@ class FastAtRead (object):
             i = 0
             while p and p2 and i < 1000:
                 i += 1
-                assert p.v.h == p2.v._headString, (p.v.h, p2.v._headString)
+                assert p.v.h == p2.v._headString, (self.path, p.v.h, p2.v._headString)
                 if p.v.b.rstrip() != p2.v._bodyString.rstrip():
                     g.trace('=====', p.v.h)
                     g.printObj(p.v.b)
                     g.trace('-----', p2.v._headString)
                     g.printObj(p2.v._bodyString)
-                    assert False
+                    assert False, self.path
                 p.moveToThreadNext()
                 p2.moveToThreadNext()
             assert not p2.v, p2.v
