@@ -5095,28 +5095,22 @@ class FastAtRead (object):
     def get_patterns(self, delims):
         '''Create regex patterns for the given comment delims.'''
         delim_start, delim_end = delims
-        delims = re.escape(delim_start), re.escape(delim_end)
-        after = r'^\s*%s@afterref%s$'%delims
-        all =   r'^(\s*)%s@(\+|-)all\s*%s$'%delims
-        code =  r'^%s@@c(ode)?%s$'%delims
-        doc =   r'^%s@\+(at|doc)?(\s.*?)?%s'%delims + '\n'
-        first = r'^%s@@first%s$'%delims
-        last =  r'^%s@@last%s$'%delims
-        node =  r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)%s$'%delims
-        others =r'^(\s*)%s@(\+|-)others\s*%s$'%delims
-        ref =   r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*)%s$'%delims
-        # Return the compiled patterns, in alphabetical order.
-        return (
-            re.compile(after),
-            re.compile(all),
-            re.compile(code),
-            re.compile(doc),
-            re.compile(first),
-            re.compile(last),
-            re.compile(node),
-            re.compile(others),
-            re.compile(ref),
+        delims = re.escape(delim_start), re.escape(delim_end or '')
+        patterns = (
+            # The list of patterns, in alphabetical order.
+            # These patterns must be mutually exclusive.
+            r'^\s*%s@afterref%s$'%delims,               # @afterref
+            r'^(\s*)%s@(\+|-)all\s*%s$'%delims,         # @all
+            r'^%s@@c(ode)?%s$'%delims,                  # @c and @code
+            r'^%s@\+(at|doc)?(\s.*?)?%s'%delims + '\n', # @doc or @
+            r'^%s@@first%s$'%delims,                    # @first
+            r'^%s@@last%s$'%delims,                     # @last
+            r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)%s$'%delims, # @node
+            r'^(\s*)%s@(\+|-)others\s*%s$'%delims,      # @others
+            r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*)%s$'%delims,# section ref
         )
+        # Return the compiled patterns, in alphabetical order.
+        return (re.compile(pattern) for pattern in patterns)
     #@+node:ekr.20180603060721.1: *4* fast_at.post_pass
     def post_pass(self, gnx2body, gnx2vnode, root_v):
         '''Set all body text.'''
