@@ -5093,46 +5093,30 @@ class FastAtRead (object):
     #@@nobeautify
 
     def get_patterns(self, delims):
-        '''
-        Create regex patterns based on the given comment delims.
-        There is zero cost to making this a function.
-        '''
+        '''Create regex patterns for the given comment delims.'''
         delim_start, delim_end = delims
-        if delim_end:
-            delims = re.escape(delim_start), re.escape(delim_end)
-            # Plain...
-            after_src = r'^\s*%s@afterref%s$'%delims
-            code_src =  r'^%s@@c(ode)?%s$'%delims
-            doc_src =   r'^%s@\+(at|doc)?(\s.*?)?%s$'%delims
-            first_src = r'^%s@@first%s$'%delims
-            last_src =  r'^%s@@last%s$'%delims
-            ns_src =    r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*?)%s$'%delims
-            sec_src =   r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*?)%s$'%delims
-            # DOTALL..
-            all_src =   r'^(\s*)%s@(\+|-)all%s\s*$'%delims
-            oth_src =   r'^(\s*)%s@(\+|-)others%s\s*$'%delims
-        else:
-            delims = re.escape(delim_start)
-            after_src = r'^\s*%s@afterref$'%delims
-            all_src =   r'^(\s*)%s@(\+|-)all\s*$'%delims
-            code_src =  r'^%s@@c(ode)?$'%delims
-            doc_src =   r'^%s@\+(at|doc)?(\s.*?)?'%delims + '\n'
-            first_src = r'^%s@@first$'%delims
-            last_src =  r'^%s@@last$'%delims
-            ns_src =    r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)$'%delims
-            oth_src =   r'^(\s*)%s@(\+|-)others\s*$'%delims
-            sec_src =   r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*)$'%delims
-        # Compile the patterns.
-        after      = re.compile(after_src)
-        all        = re.compile(all_src) ###, re.DOTALL)
-        code       = re.compile(code_src)
-        doc        = re.compile(doc_src)
-        first      = re.compile(first_src)
-        last       = re.compile(last_src)
-        node_start = re.compile(ns_src)
-        others     = re.compile(oth_src) ###, re.DOTALL)
-        section    = re.compile(sec_src)
-        return after, all, code, doc, first, last, node_start, others, section
+        delims = re.escape(delim_start), re.escape(delim_end)
+        after = r'^\s*%s@afterref%s$'%delims
+        all =   r'^(\s*)%s@(\+|-)all\s*%s$'%delims
+        code =  r'^%s@@c(ode)?%s$'%delims
+        doc =   r'^%s@\+(at|doc)?(\s.*?)?%s'%delims + '\n'
+        first = r'^%s@@first%s$'%delims
+        last =  r'^%s@@last%s$'%delims
+        node =  r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)%s$'%delims
+        others =r'^(\s*)%s@(\+|-)others\s*%s$'%delims
+        ref =   r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*)%s$'%delims
+        # Return the compiled patterns, in alphabetical order.
+        return (
+            re.compile(after),
+            re.compile(all),
+            re.compile(code),
+            re.compile(doc),
+            re.compile(first),
+            re.compile(last),
+            re.compile(node),
+            re.compile(others),
+            re.compile(ref),
+        )
     #@+node:ekr.20180603060721.1: *4* fast_at.post_pass
     def post_pass(self, gnx2body, gnx2vnode, root_v):
         '''Set all body text.'''
