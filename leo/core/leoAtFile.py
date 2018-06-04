@@ -484,8 +484,8 @@ class AtFile(object):
             # This will be used only if not cached.
             
         if FAST:
-            faf = FastAtRead(c)
-            root_vnode, last_lines = faf.read_into_root(fileName, root, fromString)
+            faf = FastAtRead(c, root=root)
+            root_vnode, last_lines = faf.read_into_root(fileName, fromString)
             g.trace('=====', fileName, root_vnode)
             root.clearDirty()
             return True
@@ -5044,8 +5044,9 @@ class FastAtRead (object):
     Based on code from Vitalije.
     '''
     
-    def __init__ (self, c):
+    def __init__ (self, c, root=None):
         self.c = c
+        self.root = root
         
     if FAST:
         VNode = leoNodes.VNode
@@ -5217,7 +5218,7 @@ class FastAtRead (object):
         if FAST:
             # Production.
             context = self.c
-            parent_v = None ### To do: another arg needed. ###
+            parent_v = self.root.v
         else:
             context = None
             parent_v = self.VNode(context=context, gnx=gnx)
@@ -5556,8 +5557,10 @@ class FastAtRead (object):
             report = self.load_at_file(path, s)
         return report
     #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
-    def read_into_root(self, fileName, root, fromString):
+    def read_into_root(self, fileName, fromString):
         
+        assert self.root
+            # Required for scan_lines.
         sfn = g.shortFileName(fileName)
         if fromString:
             s = fromString
