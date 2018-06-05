@@ -2702,8 +2702,6 @@ class FastRead (object):
                     v._headString = 'PLACE HOLDER'
                     if trace: print('New:   %s' % gnx)
                     #@-<< Make a new vnode, linked to the parent >>
-                    # Handle all inner elements.
-                    v_element_visitor(e, v)
                     #@+<< handle all other v attributes >>
                     #@+node:ekr.20180605075113.1: *6* << handle all other v attributes >>
                     # Like fc.handleVnodeSaxAttrutes.
@@ -2744,6 +2742,8 @@ class FastRead (object):
                     if val:
                         v.unknownAttributes = val
                     #@-<< handle all other v attributes >>
+                    # Handle all inner elements.
+                    v_element_visitor(e, v)
         #@-<< define v_element_visitor >>
         #
         # Create the hidden root vnode.
