@@ -5,7 +5,7 @@
 #@+node:ekr.20180605060817.1: ** << define FAST (leoFileCommands) >>
 FAST = False
 if FAST:
-    print('\nFAST (leoFileCommands.py\n')
+    print('\n===== FAST (leoFileCommands) ===== \n')
 #@-<< define FAST (leoFileCommands) >>
 #@+<< imports >>
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
@@ -686,7 +686,7 @@ class FileCommands(object):
             #
             # Read the .leo file and create the outline.
             if FAST:
-                fastReader = FastRead(c)
+                fastReader = FastRead(c, self.gnxDict)
                 ok = fastReader.readFile(fileName)
             else:
                 ok = fc.getLeoFileHelper(theFile, fileName, silent)
