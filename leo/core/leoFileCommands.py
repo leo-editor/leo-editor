@@ -2555,6 +2555,7 @@ class FastRead (object):
 
     def __init__(self, c, gnx2vnode):
         self.c = c
+        self.fc = c.fileCommands
         self.gnx2vnode = gnx2vnode if FAST else {}
             # Do not change the global dict while testing!!
         
@@ -2600,11 +2601,42 @@ class FastRead (object):
     def readWithElementTree(self, contents):
         
         xroot = ElementTree.fromstring(contents)
+        g_element = xroot.find('globals')
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
+        self.scanGlobals(g_element)
         gnx2body = self.makeBodyDict(t_elements)
         hidden_v = self.makeVnodes(gnx2body, self.gnx2vnode, v_elements)
         return hidden_v
+    #@+node:ekr.20180605062300.1: *4* fast.scanGlobals
+    def scanGlobals(self, g_element):
+        
+        c, fc = self.c, self.fc
+        attrib = g_element.attrib
+        g.trace(attrib)
+        fc.ratio = float(attrib ['body_secondary_ratio'])
+        fc.secondary_ratio = float(attrib ['body_secondary_ratio'])
+        for e in g_element:
+            if e.tag != 'global_window_position':
+                #  Ignore legacy elements.
+                continue
+            d = {}
+            table = (
+                ('top', 50), ('left', 50),
+                ('height', 500), ('width', 800),
+            )
+            for name, default in table:
+                try:
+                    d [name] = int(e.attrib[name])
+                except Exception:
+                    d [name] = default
+            w, h = d.get('width'), d.get('width')
+            x, y = d.get('left'), d.get('top')
+            if g.app.start_minimized:
+                c.frame.setTopGeometry(w, h, x, y)
+            elif not g.app.start_maximized and not g.app.start_fullscreen:
+                c.frame.setTopGeometry(w, h, x, y)
+                c.frame.deiconify()
     #@+node:ekr.20180602062323.8: *4* fast.makeBodyDict
     def makeBodyDict (self, t_elements):
 
