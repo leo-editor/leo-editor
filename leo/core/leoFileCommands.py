@@ -3,7 +3,7 @@
 '''Classes relating to reading and writing .leo files.'''
 #@+<< define FAST (leoFileCommands) >>
 #@+node:ekr.20180605060817.1: ** << define FAST (leoFileCommands) >>
-FAST = False
+FAST = True
 if FAST:
     print('\n===== FAST (leoFileCommands) ===== \n')
 #@-<< define FAST (leoFileCommands) >>
@@ -22,6 +22,7 @@ except Exception:
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
 import binascii
+from collections import defaultdict
 import difflib
 import time
 if g.isPython3:
@@ -1168,7 +1169,7 @@ class FileCommands(object):
         self.handleVnodeSaxAttributes(sax_node, v)
         self.handleTnodeSaxAttributes(sax_node, v)
         return v
-    #@+node:ekr.20060919110638.8: *7* fc.handleTnodeSaxAttributes
+    #@+node:ekr.20060919110638.8: *7* fc.handleTnodeSaxAttributes (sax read)
     def handleTnodeSaxAttributes(self, sax_node, v):
 
         d = sax_node.tnodeAttributes
@@ -1179,7 +1180,7 @@ class FileCommands(object):
             aDict[key] = val2
         if aDict:
             v.unknownAttributes = aDict
-    #@+node:ekr.20061004053644: *7* fc.handleVnodeSaxAttributes
+    #@+node:ekr.20061004053644: *7* fc.handleVnodeSaxAttributes (sax read)
     def handleVnodeSaxAttributes(self, sax_node, v):
         '''
         The native attributes of <v> elements are a, t, vtag, tnodeList,
@@ -1530,7 +1531,7 @@ class FileCommands(object):
         except sqlite3.OperationalError:
             pass
         return geom
-    #@+node:ekr.20060919110638.13: *5* fc.setPositionsFromVnodes & helper (sax read)
+    #@+node:ekr.20060919110638.13: *5* fc.setPositionsFromVnodes (sax read)
     def setPositionsFromVnodes(self):
 
         c, root = self.c, self.c.rootPosition()
@@ -1547,30 +1548,6 @@ class FileCommands(object):
         if str_pos:
             current = self.archivedPositionToPosition(str_pos)
         c.setCurrentPosition(current or c.rootPosition())
-    #@+node:ekr.20061006104837.1: *6* fc.archivedPositionToPosition
-    def archivedPositionToPosition(self, s):
-
-        c = self.c
-        s = g.toUnicode(s) # 2011/02/25
-        aList = s.split(',')
-        try:
-            aList = [int(z) for z in aList]
-        except Exception:
-            aList = None
-        if not aList: return None
-        p = c.rootPosition(); level = 0
-        while level < len(aList):
-            i = aList[level]
-            while i > 0:
-                if p.hasNext():
-                    p.moveToNext()
-                    i -= 1
-                else:
-                    return None
-            level += 1
-            if level < len(aList):
-                p.moveToFirstChild()
-        return p
     #@+node:ekr.20031218072017.3032: *3* fc.Writing
     #@+node:ekr.20070413045221.2: *4*  fc.Top-level
     #@+node:ekr.20031218072017.1720: *5* fc.save
@@ -1974,7 +1951,7 @@ class FileCommands(object):
                 fc.put('</v>\n')
             else:
                 fc.put('%s</v>\n' % v_head) # Call put only once.
-    #@+node:ekr.20031218072017.1865: *6* fc.compute_attribute_bits
+    #@+node:ekr.20031218072017.1865: *6* fc.compute_attribute_bits (helper for fc.putVnode)
     def compute_attribute_bits(self, forceWrite, p):
         '''Return the initial values of v's attributes.'''
         c, v = self.c, p.v
@@ -2410,6 +2387,30 @@ class FileCommands(object):
         self.write_Leo_file(self.mFileName, outlineOnlyFlag=True)
         g.blue('done')
     #@+node:ekr.20080805114146.2: *3* fc.Utils
+    #@+node:ekr.20061006104837.1: *4* fc.archivedPositionToPosition
+    def archivedPositionToPosition(self, s):
+
+        c = self.c
+        s = g.toUnicode(s)
+        aList = s.split(',')
+        try:
+            aList = [int(z) for z in aList]
+        except Exception:
+            aList = None
+        if not aList: return None
+        p = c.rootPosition(); level = 0
+        while level < len(aList):
+            i = aList[level]
+            while i > 0:
+                if p.hasNext():
+                    p.moveToNext()
+                    i -= 1
+                else:
+                    return None
+            level += 1
+            if level < len(aList):
+                p.moveToFirstChild()
+        return p
     #@+node:ekr.20031218072017.1570: *4* fc.assignFileIndices & compactFileIndices
     def assignFileIndices(self):
         """Assign a file index to all tnodes"""
@@ -2605,8 +2606,8 @@ class FastRead (object):
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
         self.scanGlobals(g_element)
-        gnx2body = self.makeBodyDict(t_elements)
-        hidden_v = self.makeVnodes(gnx2body, self.gnx2vnode, v_elements)
+        gnx2body, gnx2ua = self.scanTnodes(t_elements)
+        hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
         return hidden_v
     #@+node:ekr.20180605062300.1: *4* fast.scanGlobals & helper
     def scanGlobals(self, g_element):
@@ -2645,31 +2646,41 @@ class FastRead (object):
         elif not g.app.start_maximized and not g.app.start_fullscreen:
             c.frame.setTopGeometry(w, h, x, y)
             c.frame.deiconify()
-    #@+node:ekr.20180602062323.8: *4* fast.makeBodyDict
-    def makeBodyDict (self, t_elements):
+    #@+node:ekr.20180602062323.8: *4* fast.scanTnodes
+    def scanTnodes (self, t_elements):
 
-        d = {}
+        gnx2body, gnx2ua = {}, defaultdict(dict)
         for e in t_elements:
+            # First, find the gnx.
             gnx = e.attrib['tx']
-            body = e.text or ''
-            d [gnx] = body
-        return d
-    #@+node:ekr.20180602062323.9: *4* fast.makeVnodes
-    def makeVnodes(self, gnx2body, gnx2vnode, v_elements):
+            gnx2body [gnx] = e.text or ''
+            # Next, scan for uA's for this gnx.
+            for key, val in e.attrib.items():
+                if key != 'tx':
+                    gnx2ua [gnx][key] = val
+        return gnx2body, gnx2ua
+    #@+node:ekr.20180602062323.9: *4* fast.scanVnodes
+    def scanVnodes(self, gnx2body, gnx2vnode, gnx2ua, v_elements):
         
         trace = False
-        context = self.c if FAST else None
+        c, fc = self.c, self.c.fileCommands
+        context = c if FAST else None
         
         t1 = time.clock()
-
+        #@+<< define v_element_visitor >>
+        #@+node:ekr.20180605102822.1: *5* << define v_element_visitor >>
         def v_element_visitor(parent_e, parent_v):
+            '''Visit the given element, creating or updating the parent vnode.'''
             for e in parent_e:
                 assert e.tag in ('v','vh'), e.tag
                 if e.tag == 'vh':
+                    #@+<< handle <vh> element >>
+                    #@+node:ekr.20180605075006.1: *6* << handle <vh> element >>
                     head = e.text or g.u('')
                     assert g.isUnicode(head), head.__class__.__name__
                     parent_v._headString = head
                     if trace: print('HEAD:  %20s: %s' % (parent_v.gnx, head))
+                    #@-<< handle <vh> element >>
                     continue
                 gnx = e.attrib['t']
                 v = gnx2vnode.get(gnx)
@@ -2679,7 +2690,8 @@ class FastRead (object):
                     parent_v.children.append(v)
                     v.parents.append(parent_v)
                 else:
-                    # Make a new vnode, linked to the parent.
+                    #@+<< Make a new vnode, linked to the parent >>
+                    #@+node:ekr.20180605075042.1: *6* << Make a new vnode, linked to the parent >>
                     v = self.VNode(context=context, gnx=gnx)
                     gnx2vnode [gnx] = v
                     parent_v.children.append(v)
@@ -2689,8 +2701,50 @@ class FastRead (object):
                     v._bodyString = body
                     v._headString = 'PLACE HOLDER'
                     if trace: print('New:   %s' % gnx)
+                    #@-<< Make a new vnode, linked to the parent >>
                     # Handle all inner elements.
                     v_element_visitor(e, v)
+                    #@+<< handle all other v attributes >>
+                    #@+node:ekr.20180605075113.1: *6* << handle all other v attributes >>
+                    # Like fc.handleVnodeSaxAttrutes.
+                    #
+                    # The native attributes of <v> elements are a, t, vtag, tnodeList,
+                    # marks, expanded, and descendentTnode/VnodeUnknownAttributes.
+                    d = e.attrib
+                    s = d.get('a')
+                    if s:
+                        if 'M' in s: v.setMarked()
+                        if 'E' in s: v.expand()
+                        if 'O' in s: v.setOrphan()
+                        if 'V' in s: fc.currentVnode = v # Legacy.
+                    s = d.get('tnodeList', '')
+                    tnodeList = s and s.split(',')
+                    if tnodeList:
+                        # This tnodeList will be resolved later.
+                        v.tempTnodeList = tnodeList
+                    s = d.get('descendentTnodeUnknownAttributes')
+                    if s:
+                        aDict = fc.getDescendentUnknownAttributes(s, v=v)
+                        if aDict:
+                            fc.descendentTnodeUaDictList.append(aDict)
+                    s = d.get('descendentVnodeUnknownAttributes')
+                    if s:
+                        aDict = fc.getDescendentUnknownAttributes(s, v=v)
+                        if aDict:
+                            fc.descendentVnodeUaDictList.append((v, aDict),)
+                    s = d.get('expanded')
+                    if s:
+                        aList = fc.getDescendentAttributes(s, tag="expanded")
+                        fc.descendentExpandedList.extend(aList)
+                    s = d.get('marks')
+                    if s:
+                        aList = fc.getDescendentAttributes(s, tag="marks")
+                        fc.descendentMarksList.extend(aList)
+                    val = gnx2ua.get(gnx)
+                    if val:
+                        v.unknownAttributes = val
+                    #@-<< handle all other v attributes >>
+        #@-<< define v_element_visitor >>
         #
         # Create the hidden root vnode.
         gnx = 'hidden-root-vnode-gnx'
@@ -2703,7 +2757,6 @@ class FastRead (object):
         t2 = time.clock()
         if trace: g.trace('%s nodes, %6.4f sec' % (
             len(gnx2vnode.keys()), t2-t1))
-        # self.dump_vnodes (d, hidden_v)
         return hidden_v
     #@+node:ekr.20180604110143.1: *3* fast.readFile (production)
     def readFile(self, path):

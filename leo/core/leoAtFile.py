@@ -4,8 +4,14 @@
 #@@first
     # Needed because of unicode characters in tests.
 """Classes to read and write @file nodes."""
+#@+<< define FAST (leoAtFile) >>
+#@+node:ekr.20180605093406.1: ** << define FAST (leoAtFile) >>
 FAST = False
     # Do not set this True until gnx2vnode has been inited properly.
+if FAST:
+    print('\n===== FAST (leoAtFile) ===== \n')
+
+#@-<< define FAST (leoAtFile) >>
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
