@@ -2550,11 +2550,14 @@ class FileCommands(object):
 #@+node:ekr.20180602062323.1: ** class FastRead
 class FastRead (object):
 
-    def __init__(self, c):
+    def __init__(self, c, gnx2vnode):
         self.c = c
+        self.gnx2vnode = gnx2vnode if FAST else {}
+            # Do not change the global dict while testing!!
         
     if FAST:
         VNode = leoNodes.VNode
+        
     else:
         #@+<< define VNode class >>
         #@+node:ekr.20180602062323.3: *3* << define VNode class >>
@@ -2581,7 +2584,7 @@ class FastRead (object):
         '''
         for gnx, v in gnx2vnode.items():
             print('%30s: %s' % (gnx, v._headString))
-    #@+node:ekr.20180602062323.6: *3* fast.read
+    #@+node:ekr.20180602062323.6: *3* fast.read (testing)
     def read(self, path):
         
         self.path = path
@@ -2597,7 +2600,7 @@ class FastRead (object):
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
         gnx2body = self.makeBodyDict(t_elements)
-        hidden_v = self.makeVnodes(gnx2body, v_elements)
+        hidden_v = self.makeVnodes(gnx2body, self.gnx2vnode, v_elements)
         return hidden_v
     #@+node:ekr.20180602062323.8: *4* fast.makeBodyDict
     def makeBodyDict (self, t_elements):
@@ -2609,11 +2612,10 @@ class FastRead (object):
             d [gnx] = body
         return d
     #@+node:ekr.20180602062323.9: *4* fast.makeVnodes
-    def makeVnodes(self, gnx2body, v_elements):
+    def makeVnodes(self, gnx2body, gnx2vnode, v_elements):
         
         trace = False
         context = self.c if FAST else None
-        d = {}
         
         t1 = time.clock()
 
@@ -2627,16 +2629,16 @@ class FastRead (object):
                     if trace: print('HEAD:  %20s: %s' % (parent_v.gnx, head))
                     continue
                 gnx = e.attrib['t']
-                if gnx in d:
+                v = gnx2vnode.get(gnx)
+                if v:
                     # A clone
-                    v = d.get(gnx)
                     if trace: print('Clone: %s: %s' % (gnx, v._headString))
                     parent_v.children.append(v)
                     v.parents.append(parent_v)
                 else:
                     # Make a new vnode, linked to the parent.
                     v = self.VNode(context=context, gnx=gnx)
-                    d [gnx] = v
+                    gnx2vnode [gnx] = v
                     parent_v.children.append(v)
                     v.parents.append(parent_v)
                     body = gnx2body.get(gnx) or ''
@@ -2651,15 +2653,16 @@ class FastRead (object):
         gnx = 'hidden-root-vnode-gnx'
         hidden_v = self.VNode(context=context, gnx=gnx)
         hidden_v._headString = '<hidden root vnode>'
-        d [gnx] = hidden_v
+        gnx2vnode [gnx] = hidden_v
         #
         # Traverse the tree of v elements.
         v_element_visitor(v_elements, hidden_v)
         t2 = time.clock()
-        if trace: g.trace('%s nodes, %6.4f sec' % (len(d.keys()), t2-t1))
+        if trace: g.trace('%s nodes, %6.4f sec' % (
+            len(gnx2vnode.keys()), t2-t1))
         # self.dump_vnodes (d, hidden_v)
         return hidden_v
-    #@+node:ekr.20180604110143.1: *3* fast.readFile
+    #@+node:ekr.20180604110143.1: *3* fast.readFile (production)
     def readFile(self, path):
         
         c = self.c
