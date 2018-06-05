@@ -1,9 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3018: * @file leoFileCommands.py
 '''Classes relating to reading and writing .leo files.'''
+#@+<< define FAST (leoFileCommands) >>
+#@+node:ekr.20180605060817.1: ** << define FAST (leoFileCommands) >>
 FAST = False
 if FAST:
     print('\nFAST (leoFileCommands.py\n')
+#@-<< define FAST (leoFileCommands) >>
 #@+<< imports >>
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
 # For FastRead class
