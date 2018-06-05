@@ -2608,18 +2608,24 @@ class FastRead (object):
         gnx2body = self.makeBodyDict(t_elements)
         hidden_v = self.makeVnodes(gnx2body, self.gnx2vnode, v_elements)
         return hidden_v
-    #@+node:ekr.20180605062300.1: *4* fast.scanGlobals
+    #@+node:ekr.20180605062300.1: *4* fast.scanGlobals & helper
     def scanGlobals(self, g_element):
         
-        c, fc = self.c, self.fc
+        fc = self.fc
         attrib = g_element.attrib
-        g.trace(attrib)
         fc.ratio = float(attrib ['body_secondary_ratio'])
         fc.secondary_ratio = float(attrib ['body_secondary_ratio'])
         for e in g_element:
-            if e.tag != 'global_window_position':
-                #  Ignore legacy elements.
-                continue
+            #  Ignore legacy elements.
+            if e.tag == 'global_window_position':
+                self.scanWindowPosition(e)
+    #@+node:ekr.20180605071907.1: *5* fast.scanWindowPosition
+    def scanWindowPosition(self, e):
+        
+        c = self.c
+        if g.enableDB and c.mFileName:
+            d = c.cacher.getCachedWindowPositionDict(c.mFileName)
+        else:
             d = {}
             table = (
                 ('top', 50), ('left', 50),
@@ -2629,14 +2635,16 @@ class FastRead (object):
                 try:
                     d [name] = int(e.attrib[name])
                 except Exception:
+                    g.trace('OOPS', name)
                     d [name] = default
-            w, h = d.get('width'), d.get('width')
-            x, y = d.get('left'), d.get('top')
-            if g.app.start_minimized:
-                c.frame.setTopGeometry(w, h, x, y)
-            elif not g.app.start_maximized and not g.app.start_fullscreen:
-                c.frame.setTopGeometry(w, h, x, y)
-                c.frame.deiconify()
+        w, h = d.get('width'), d.get('width')
+        x, y = d.get('left'), d.get('top')
+        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
+        if g.app.start_minimized:
+            c.frame.setTopGeometry(w, h, x, y)
+        elif not g.app.start_maximized and not g.app.start_fullscreen:
+            c.frame.setTopGeometry(w, h, x, y)
+            c.frame.deiconify()
     #@+node:ekr.20180602062323.8: *4* fast.makeBodyDict
     def makeBodyDict (self, t_elements):
 
@@ -2700,6 +2708,7 @@ class FastRead (object):
     #@+node:ekr.20180604110143.1: *3* fast.readFile (production)
     def readFile(self, path):
         
+        trace = False
         c = self.c
         self.path = path
         t1 = time.clock()
@@ -2707,8 +2716,9 @@ class FastRead (object):
             s = f.read()
         contents = g.toUnicode(s)
         c.hiddenRootNode = self.readWithElementTree(contents)
-        t2 = time.clock()
-        g.trace('%5.3f sec' % (t2-t1))
+        if trace:
+            t2 = time.clock()
+            g.trace('%5.3f sec' % (t2-t1))
         return c.hiddenRootNode
     #@+node:ekr.20180602170813.1: *3* fast.test
     if FAST:
