@@ -2637,7 +2637,7 @@ class FastRead (object):
                 except Exception:
                     g.trace('OOPS', name)
                     d [name] = default
-        w, h = d.get('width'), d.get('width')
+        w, h = d.get('width'), d.get('height')
         x, y = d.get('left'), d.get('top')
         c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
         if g.app.start_minimized:
