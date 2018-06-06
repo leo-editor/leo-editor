@@ -5056,12 +5056,29 @@ class FastAtRead (object):
     - Honor the trailing whitespace convention in @doc parts.
     - (test) Support cweb hack.
     '''
-    
+
     def __init__ (self, c, path=None, root=None):
+        
+        #@+<< define TestVNode >>
+        #@+node:ekr.20180606070520.1: *3* << define TestVNode >>
+        class TestVNode (object):
+            def __init__(self, context, gnx):
+                self.context = context
+                self.gnx = gnx
+                self.children = []
+                self.parents = []
+                self._bodyString = None
+                self._headString = None
+
+            def headString(self):
+                self._headString
+        #@-<< define TestVNode >>
+    
         self.c = c
         self.path = path
         self.root = root
-        
+        self.VNode = leoNodes.VNode if FAST else TestVNode
+
     #@+others
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
     #@@nobeautify
@@ -5083,7 +5100,8 @@ class FastAtRead (object):
             r'^%s@@last%s$'%delims,                     # @last
             r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)%s$'%delims, # @node
             r'^(\s*)%s@(\+|-)others\s*%s$'%delims,      # @others
-            r'^(\s*)%s@(\+|-)<{2}[^>]+>>(.*)%s$'%delims,# section ref
+            r'^(\s*)%s@(\+|-)%s(.*)%s$'%(               # section ref
+                delim_start, g.angleBrackets('(.*)'), delim_end)
         )
         # Return the compiled patterns, in alphabetical order.
         return (re.compile(pattern) for pattern in patterns)
@@ -5176,7 +5194,7 @@ class FastAtRead (object):
             parent_v = self.root.v
         else:
             context = None
-            parent_v = leoNodes.VNode(context=context, gnx=gnx)
+            parent_v = self.VNode(context=context, gnx=gnx)
             parent_v._headString = gnx_head
                 # Corresponds to the @files node itself.
         root_v = parent_v
@@ -5264,13 +5282,13 @@ class FastAtRead (object):
             m = ref_pat.match(line)
             if m:
                 in_doc = False
-                if m.group(2) == '+': # open sentinel.
-                    ii = m.end(2) # head: before <<
-                    jj = m.end(3) # tail: after >>
-                    body.append(m.group(1) + line[ii:jj] + '\n')
+                if m.group(2) == '+':
+                    # open sentinel.
+                    body.append(m.group(1) + g.angleBrackets(m.group(3)) + '\n')
                     stack.append((gnx, indent))
                     indent += m.end(1)
-                else: # close sentinel.
+                else:
+                    # close sentinel.
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent = stack.pop()
                     body = gnx2body[gnx]
@@ -5303,7 +5321,7 @@ class FastAtRead (object):
                     v.children = []
                 else:
                     # Make a new vnode.
-                    v = leoNodes.VNode(context=context, gnx=gnx)
+                    v = self.VNode(context=context, gnx=gnx)
                     v._headString = head
                     gnx2vnode [gnx] = v
                     body = gnx2body[gnx]
@@ -5441,10 +5459,10 @@ class FastAtRead (object):
             # Such lines should be @@ lines or follow @verbatim.
             #
             # This assert verifies the short-circuit test.
-            assert line.startswith.sentinel, repr(line)
+            assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
             #
             # This trace is less important, but interesting.
-            g.trace('UNEXPECTED LINE:', line)
+            g.trace('UNEXPECTED LINE:', repr(sentinel), repr(line), g.shortFileName(self.path))
             body.append(line)
             #@-<< Last 3. handle remaining @ lines >>
         else:
@@ -5473,6 +5491,102 @@ class FastAtRead (object):
             return self.scan_lines(delims, first_lines, lines, start_i)
         g.trace('Invalid external file: %s' % sfn)
         return None, []
+    #@+node:ekr.20180606054909.1: *3* Testing
+    #@+node:ekr.20180602103655.1: *4* fast_at.read_test
+    def read_test(self, path):
+        
+        self.path = path
+        with open(path, 'r') as f:
+            s = f.read()
+            report = self.load_at_file(path, s)
+        return report
+    #@+node:ekr.20180603053517.1: *4* fast_at.test
+    def test (self, path, hidden_v):
+        
+        '''Compare the generated vnodes with the nodes in the @file tree.'''
+        ### return ######
+        trace = FAST
+        trace_bodies = False
+        c = self.c
+        sfn = g.shortFileName(path)
+        p = g.findNodeAnywhere(c, '@file ' + sfn)
+        
+        class Context:
+            hiddenRootNode = hidden_v
+            
+        context = Context()
+        root_v = hidden_v.children[0]
+        root_v.context = context
+        assert root_v
+        if p: # Run the full test.
+            root_p = p.copy()
+            assert root_p
+            p2 = leoNodes.Position(root_v)
+            p2.context = context
+            i = 0
+            while p and p2 and i < 1000:
+                i += 1
+                assert p.v.h == p2.v._headString, (self.path, p.v.h, p2.v._headString)
+                if p.v.b.rstrip() != p2.v._bodyString.rstrip():
+                    g.trace('=====', p.v.h)
+                    g.printObj(p.v.b)
+                    g.trace('-----', p2.v._headString)
+                    g.printObj(p2.v._bodyString)
+                    assert False, self.path
+                p.moveToThreadNext()
+                p2.moveToThreadNext()
+            assert not p2.v, p2.v
+            if trace: g.trace('PASS', sfn)
+        else:
+            trace = not FAST
+            trace_bodies = True
+            p = leoNodes.Position(root_v)
+            if trace: g.trace(sfn)
+            i = 0
+            while p:
+                i += 1
+                if i >= 1000 or p.level() > 20:
+                    g.trace('LIMIT')
+                    break
+                p.v.context = context
+                    # Patch up the context.
+                pad = ' '*4*p.level()
+                if trace:
+                    print('%3s %3s %s%r' % (
+                        i, len(p.v._bodyString), pad , p.v._headString))
+                if trace and trace_bodies:
+                    for line in g.splitLines(p.v._bodyString):
+                        print('%s%s%r' % (' '*8, pad, line))
+                # g.printObj(g.splitLines(p.v._bodyString))
+                p.moveToThreadNext()
+            g.trace('done: %s nodes' % i)
+    #@+node:ekr.20180602103135.1: *4* fast_at.load_at_file (testing)
+    def load_at_file(self, path, s):
+        '''A prototype of fast read code.'''
+        t1 = time.clock()
+        sfn = g.shortFileName(path)
+        lines = g.splitLines(s)
+        data = self.scan_header(lines)
+        if not data:
+            return g.trace('empty external file: %s' % sfn)
+        delims, first_lines, start_i = data
+        root_vnode, last_lines = self.scan_lines(delims, first_lines, lines, start_i)
+        t2 = time.clock()
+        if root_vnode:
+            self.test(path, root_vnode)
+            report = sfn, len(lines), (t2-t1)
+            return report
+        print('bad external file. No @-leo sentinel: %s' % sfn)
+        return None
+        
+    #@+node:ekr.20180602103135.22: *4* fast_at.yield_all_nodes (testing)
+    def yield_all_nodes(self, nodes):
+
+        for gnx in nodes.gnxes:
+            b = ''.join(nodes.body[gnx])
+            h = nodes.head[gnx]
+            lev = nodes.level[gnx].pop(0)
+            yield gnx, h, b, lev-1
     #@-others
 #@-others
 #@@language python
