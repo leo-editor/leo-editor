@@ -491,14 +491,9 @@ class AtFile(object):
             
         if FAST:
             gnx2vnode = c.fileCommands.gnxDict
-            ###
-                # g.trace('1 =====')
-                # g.printObj([(z, gnx2vnode.get(z)) for z in gnx2vnode
-                    # if gnx2vnode.get(z).h.startswith('@file')])
             faf = FastAtRead(c, 
                 gnx2vnode=gnx2vnode, path=fileName, root=root)
             root_vnode, last_lines = faf.read_into_root(fileName, fromString)
-            ### g.trace('2 =====', fileName, root_vnode)
             root.clearDirty()
             return True
 
