@@ -5100,7 +5100,7 @@ class FastAtRead (object):
             r'^%s@@last%s$'%delims,                     # @last
             r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)%s$'%delims, # @node
             r'^(\s*)%s@(\+|-)others\s*%s$'%delims,      # @others
-            r'^(\s*)%s@(\+|-)%s(.*)%s$'%(               # section ref
+            r'^(\s*)%s@(\+|-)%s\s*%s$'%(                # section ref
                 delim_start, g.angleBrackets('(.*)'), delim_end)
         )
         # Return the compiled patterns, in alphabetical order.
