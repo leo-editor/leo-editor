@@ -5172,9 +5172,6 @@ class FastAtRead (object):
             # To handle doc parts.
         first_i = 0
             # Index into first array.
-        in_all = False
-        assert in_all is not None
-            # True: in @all.
         in_doc = False
             # True: in @doc parts.
         indent = 0 
@@ -5229,6 +5226,7 @@ class FastAtRead (object):
             # Add gnx to the keys
         body = gnx2body[gnx]
             # Add gnx to the keys.
+            # Body is the list of lines presently being accumulated.
         #
         # get the patterns.
         after_pat, all_pat, code_pat, doc_pat, first_pat, last_pat, \
@@ -5396,12 +5394,13 @@ class FastAtRead (object):
             #@+node:ekr.20180602103135.13: *5* << 7. handle @all >>
             m = all_pat.match(line)
             if m:
-                ### To do: this is not enough ###
-                g.trace('===== @all', self.path)
+                # @all tells Leo's *write* code not to check for undefined sections.
+                # Here, in the read code, we merely need to add it to the body.
+                # Pushing and popping the stack may not be necessary, but it can't hurt.
                 if m.group(2) == '+': # opening sentinel
                     body.append('@all\n')
                     stack.append((gnx, indent))
-                else: # closing sentine.
+                else: # closing sentinel.
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent = stack.pop()
                     body = gnx2body[gnx]
