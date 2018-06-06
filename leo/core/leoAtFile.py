@@ -5164,6 +5164,8 @@ class FastAtRead (object):
             # Index into first array.
         in_doc = False
             # True: in @doc parts.
+        in_raw = False
+            # True: @raw seen.
         is_cweb = delim_start == '@q@' and delim_end == '@>'
             # True: cweb hack in effect.
         indent = 0 
@@ -5228,6 +5230,7 @@ class FastAtRead (object):
             #@+<< 1. common code for all lines >>
             #@+node:ekr.20180602103135.10: *4* << 1. common code for all lines >>
             if verbatim:
+                # We are in raw mode, or other special situation.
                 # Previous line was verbatim sentinel. Append this line as it is.
                 if afterref:
                     afterref = False
@@ -5235,9 +5238,18 @@ class FastAtRead (object):
                         body[-1] = body[-1].rstrip() + line
                     else:
                         body = [line]
+                    verbatim = False
+                elif in_raw:
+                    m = end_raw_pat.match(line)
+                    if m:
+                        in_raw = False
+                        verbatim = False
+                    else:
+                         body.append(line)
+                         # Continue verbatim/raw mode.
                 else:
                     body.append(line)
-                verbatim = False # next line should be normally processed.
+                    verbatim = False
                 continue
             if line == verbline: # <delim>@verbatim.
                 verbatim = True
@@ -5306,9 +5318,8 @@ class FastAtRead (object):
             #@+node:ekr.20180602103135.19: *4* << handle node_start >>
             m = node_start_pat.match(line)
             if m:
-                trace = False
-                trace_stack = False
                 in_doc = False
+                in_raw = False
                 # The groups are as follows:
                 # indent, gnx, level-number, second star, headline)
                 # 1       2    3             4            5
@@ -5320,7 +5331,6 @@ class FastAtRead (object):
                 if gnx in gnx2vnode:
                     # A clone
                     v = gnx2vnode.get(gnx)
-                    if trace: print('Clone: %s: %s' % (gnx, v._headString))
                     # We are about to rescan everything, so start afresh.
                     gnx2body[gnx] = body = []
                     v.children = []
@@ -5330,29 +5340,21 @@ class FastAtRead (object):
                     v._headString = head
                     gnx2vnode [gnx] = v
                     body = gnx2body[gnx]
-                    if trace: print('New:   %s' % gnx)
                 #
-                # Update the stack. (Seems to be correct).
+                # Update the stack.
                 level_stack = level_stack[:level]
                 level_stack.append(v)
+                #
                 # Update the links.
                 parent_v = level_stack[-2]
                 parent_v.children.append(v)
                 v.parents.append(parent_v)
-                if trace and trace_stack:
-                    print('')
-                    g.trace('EXIT: level_stack', level, 'parent_v', parent_v._headString)
-                    print(repr(line))
-                    g.printObj([z._headString for z in level_stack])
-                    parent_v = level_stack[-1]
-                # Handle @all bodies
-                ###
-                    # if gnx2level[gnx] > 1:
-                        # # clone in at-all
-                        # # let it collect lines in throwaway list
-                        # body = []
-                    # else:
-                        # body = gnx2body[gnx]
+                ### Traces.
+                    # print('')
+                    # g.trace('EXIT: level_stack', level, 'parent_v', parent_v._headString)
+                    # print(repr(line))
+                    # g.printObj([z._headString for z in level_stack])
+                    # parent_v = level_stack[-1]
                 continue
             #@-<< handle node_start >>
             #@+<< handle end of @doc & @code parts >>
@@ -5429,11 +5431,29 @@ class FastAtRead (object):
             #@+<< handle @comment and @delims >>
             #@+node:ekr.20180606051525.1: *4* << handle @comment and @delims >>
             # http://leoeditor.com/directives.html#part-4-dangerous-directives
+            m = comment_pat.match(line)
+            if m:
+                delims = m.group(1)
+                g.trace(repr(delims))
+                g.trace('@comment not yet supported')
+                continue
+            m = delims_pat.match(line)
+            if m:
+                delims = m.group(1)
+                g.trace(repr(delims))
+                g.trace('@delims not yet supported')
+                continue
             #@-<< handle @comment and @delims >>
-            #@+<< handle @raw and @end_raw >>
-            #@+node:ekr.20180606080200.1: *4* << handle @raw and @end_raw >>
+            #@+<< handle @raw >>
+            #@+node:ekr.20180606080200.1: *4* << handle @raw >>
             # http://leoeditor.com/directives.html#part-4-dangerous-directives
-            #@-<< handle @raw and @end_raw >>
+            m = raw_pat.match(line)
+            if m:
+                in_raw = True
+                verbatim = True
+                    # Avoid an extra test in the main loop.
+                continue
+            #@-<< handle @raw >>
             #@+<< handle @-leo >>
             #@+node:ekr.20180602103135.20: *4* << handle @-leo >>
             if line.startswith(delim_start + '@-leo'):
