@@ -3,7 +3,7 @@
 '''Classes relating to reading and writing .leo files.'''
 #@+<< define FAST (leoFileCommands) >>
 #@+node:ekr.20180605060817.1: ** << define FAST (leoFileCommands) >>
-FAST = False
+FAST = True
 if FAST:
     print('\n===== FAST (leoFileCommands) ===== \n')
 #@-<< define FAST (leoFileCommands) >>
@@ -2764,7 +2764,7 @@ class FastRead (object):
                         if key not in self.nativeVnodeAttributes:
                             uaDict[key] = self.resolveUa(key, val)
                     if uaDict:
-                        v.unknownAttributes = aDict
+                        v.unknownAttributes = uaDict
                         
                     ###
                         # From fc.handleVnodeSaxAttributes (sax read)
