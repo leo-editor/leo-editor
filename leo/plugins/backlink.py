@@ -427,6 +427,7 @@ class backlinkController(object):
 
         for vnode in idsSeen:  # just the vnodes with link info.
             if 'links' not in self.vnode[vnode].u['_bklnk']:
+                g.trace(self.vnode[vnode].u)
                 # graphcanvas.py will only init x and y keys
                 self.vnode[vnode].u['_bklnk']['links'] = []
             links = self.vnode[vnode].u['_bklnk']['links']
