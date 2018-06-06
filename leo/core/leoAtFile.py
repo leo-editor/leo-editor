@@ -5094,12 +5094,16 @@ class FastAtRead (object):
             ### To do: @comment and @delims.
             r'^\s*%s@afterref%s$'%delims,               # @afterref
             r'^(\s*)%s@(\+|-)all\s*%s$'%delims,         # @all
-            r'^%s@@c(ode)?%s$'%delims,                  # @c and @code
-            r'^%s@\+(at|doc)?(\s.*?)?%s\n'%delims,      # @doc or @
-            r'^%s@@first%s$'%delims,                    # @first
-            r'^%s@@last%s$'%delims,                     # @last
+            r'^\s*%s@@c(ode)?%s$'%delims,               # @c and @code
+            r'^\s*%s@comment(.*)%s'%delims,             # @comment
+            r'^\s*%s@delims(.*)%s'%delims,              # @delims
+            r'^\s*%s@\+(at|doc)?(\s.*?)?%s\n'%delims,   # @doc or @
+            r'^\s*%s@end_raw\s*%s'%delims,              # @end_raw
+            r'^\s*%s@@first%s$'%delims,                 # @first
+            r'^\s*%s@@last%s$'%delims,                  # @last
             r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)%s$'%delims, # @node
             r'^(\s*)%s@(\+|-)others\s*%s$'%delims,      # @others
+            r'^\s*%s@raw(.*)%s'%delims,                 # @raw
             r'^(\s*)%s@(\+|-)%s\s*%s$'%(                # section ref
                 delim_start, g.angleBrackets('(.*)'), delim_end)
         )
@@ -5214,8 +5218,9 @@ class FastAtRead (object):
             # Body is the list of lines presently being accumulated.
         #
         # get the patterns.
-        after_pat, all_pat, code_pat, doc_pat, first_pat, last_pat, \
-        node_start_pat, others_pat, ref_pat = self.get_patterns(delims)
+        after_pat, all_pat, code_pat, comment_pat, delims_pat,\
+        doc_pat, end_raw_pat, first_pat, last_pat, \
+        node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(delims)
         #@-<< init scan_lines >>
         i = 0 # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
@@ -5423,8 +5428,12 @@ class FastAtRead (object):
             #@-<< handle @first and @last >>
             #@+<< handle @comment and @delims >>
             #@+node:ekr.20180606051525.1: *4* << handle @comment and @delims >>
-
+            # http://leoeditor.com/directives.html#part-4-dangerous-directives
             #@-<< handle @comment and @delims >>
+            #@+<< handle @raw and @end_raw >>
+            #@+node:ekr.20180606080200.1: *4* << handle @raw and @end_raw >>
+            # http://leoeditor.com/directives.html#part-4-dangerous-directives
+            #@-<< handle @raw and @end_raw >>
             #@+<< handle @-leo >>
             #@+node:ekr.20180602103135.20: *4* << handle @-leo >>
             if line.startswith(delim_start + '@-leo'):
