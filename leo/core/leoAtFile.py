@@ -7,7 +7,6 @@
 #@+<< define FAST (leoAtFile) >>
 #@+node:ekr.20180605093406.1: ** << define FAST (leoAtFile) >>
 FAST = False
-    # Must connect vnodes first.
 if FAST:
     print('\n===== FAST (leoAtFile) ===== \n')
 
@@ -491,9 +490,15 @@ class AtFile(object):
             # This will be used only if not cached.
             
         if FAST:
-            faf = FastAtRead(c, path=fileName, root=root)
+            gnx2vnode = c.fileCommands.gnxDict
+            ###
+                # g.trace('1 =====')
+                # g.printObj([(z, gnx2vnode.get(z)) for z in gnx2vnode
+                    # if gnx2vnode.get(z).h.startswith('@file')])
+            faf = FastAtRead(c, 
+                gnx2vnode=gnx2vnode, path=fileName, root=root)
             root_vnode, last_lines = faf.read_into_root(fileName, fromString)
-            g.trace('=====', fileName, root_vnode)
+            ### g.trace('2 =====', fileName, root_vnode)
             root.clearDirty()
             return True
 
@@ -5051,13 +5056,14 @@ class FastAtRead (object):
     This is Vitalije's code, edited by EKR.
     
     To do:
+    - Connect vnodes properly to the outline.
     - Suppport @comment, @delims, @raw & @end_raw.
       http://leoeditor.com/directives.html#part-4-dangerous-directives
     - Honor the trailing whitespace convention in @doc parts.
     - (test) Support cweb hack.
     '''
 
-    def __init__ (self, c, path=None, root=None):
+    def __init__ (self, c, gnx2vnode=None, path=None, root=None):
         
         #@+<< define TestVNode >>
         #@+node:ekr.20180606070520.1: *3* << define TestVNode >>
@@ -5075,6 +5081,10 @@ class FastAtRead (object):
         #@-<< define TestVNode >>
     
         self.c = c
+        if FAST:
+            assert gnx2vnode is not None
+            assert isinstance(root, leoNodes.Position), repr(root)
+        self.gnx2vnode = gnx2vnode or {}
         self.path = path
         self.root = root
         self.VNode = leoNodes.VNode if FAST else TestVNode
@@ -5112,20 +5122,25 @@ class FastAtRead (object):
     #@+node:ekr.20180603060721.1: *3* fast_at.post_pass
     def post_pass(self, gnx2body, gnx2vnode, root_v):
         '''Set all body text.'''
-        #
-        # Check the keys.
-        bkeys = sorted(gnx2body.keys())
-        vkeys = sorted(gnx2vnode.keys())
-        if bkeys != vkeys:
-            g.trace('KEYS MISMATCH')
-            g.printObj(bkeys)
-            g.printObj(vkeys)
-        #
-        # Set the body text.
-        for key in vkeys:
-            v = gnx2vnode.get(key)
-            body = gnx2body.get(key)
-            v._bodyString = ''.join(body)
+        if FAST:
+            # Set the body text.
+            for key, body in gnx2body.items():
+                v = gnx2vnode.get(key)
+                v._bodyString = ''.join(body)
+        else:
+            # Check the keys.
+            bkeys = sorted(gnx2body.keys())
+            vkeys = sorted(gnx2vnode.keys())
+            if bkeys != vkeys:
+                g.trace('KEYS MISMATCH')
+                g.printObj(bkeys)
+                g.printObj(vkeys)
+                sys.exit(1)
+            # Set the body text.
+            for key in vkeys:
+                v = gnx2vnode.get(key)
+                body = gnx2body.get(key)
+                v._bodyString = ''.join(body)
     #@+node:ekr.20180602103135.2: *3* fast_at.scan_header
     header_pattern = re.compile(r'''
         ^(.+)@\+leo
@@ -5209,7 +5224,7 @@ class FastAtRead (object):
         #
         # Init the gnx dict last.
         #
-        gnx2vnode = defaultdict(g.Bunch)
+        gnx2vnode = self.gnx2vnode
             # Keys are gnx's, values are vnodes.
         gnx2body = defaultdict(list)
             # Keys are gnxs, values are list of body lines.
@@ -5327,10 +5342,11 @@ class FastAtRead (object):
                 head = m.group(5)
                 level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
                 #
-                # Make the vnode.
+                # Make the vnode if it does not already exist.
                 if gnx in gnx2vnode:
                     # A clone
                     v = gnx2vnode.get(gnx)
+                    ### if root_v == v: g.trace('ROOT', gnx, head)
                     # We are about to rescan everything, so start afresh.
                     gnx2body[gnx] = body = []
                     v.children = []
@@ -5345,16 +5361,11 @@ class FastAtRead (object):
                 level_stack = level_stack[:level]
                 level_stack.append(v)
                 #
-                # Update the links.
-                parent_v = level_stack[-2]
-                parent_v.children.append(v)
-                v.parents.append(parent_v)
-                ### Traces.
-                    # print('')
-                    # g.trace('EXIT: level_stack', level, 'parent_v', parent_v._headString)
-                    # print(repr(line))
-                    # g.printObj([z._headString for z in level_stack])
-                    # parent_v = level_stack[-1]
+                # Update the links, but special case the root node.
+                if v != root_v:
+                    parent_v = level_stack[-2]
+                    parent_v.children.append(v)
+                    v.parents.append(parent_v)
                 continue
             #@-<< handle node_start >>
             #@+<< handle end of @doc & @code parts >>
@@ -5433,12 +5444,17 @@ class FastAtRead (object):
             # http://leoeditor.com/directives.html#part-4-dangerous-directives
             m = comment_pat.match(line)
             if m:
+                # <1, 2 or 3 comment delims>
+                # Within these delimiters:
+                # - underscores represent a significant space,
+                # - double underscores represent a newline.
                 delims = m.group(1)
                 g.trace(repr(delims))
                 g.trace('@comment not yet supported')
                 continue
             m = delims_pat.match(line)
             if m:
+                # <1 or 2 comment delims>
                 delims = m.group(1)
                 g.trace(repr(delims))
                 g.trace('@delims not yet supported')
@@ -5507,12 +5523,10 @@ class FastAtRead (object):
         if fromString:
             s = fromString
         else:
-            try:
-                with open(fileName, 'r') as f:
-                    s = f.read()
-            except Exception:
-                g.es_exception()
+            s, e = g.readFileIntoString(fileName)
+            if not s:
                 return None, []
+            s = s.replace('\r','')
         lines = g.splitLines(s)
         data = self.scan_header(lines)
         if data:
@@ -5533,7 +5547,6 @@ class FastAtRead (object):
     def test (self, path, hidden_v):
         
         '''Compare the generated vnodes with the nodes in the @file tree.'''
-        ### return ######
         trace = FAST
         trace_bodies = False
         c = self.c
