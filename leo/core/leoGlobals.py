@@ -4501,32 +4501,18 @@ def is_c_id(ch):
 #@+node:ekr.20031218072017.3178: *4* is_nl
 def is_nl(s, i):
     return i < len(s) and (s[i] == '\n' or s[i] == '\r')
-#@+node:ekr.20031218072017.3179: *4* g.is_special (Test)
+#@+node:ekr.20031218072017.3179: *4* g.is_special
 def is_special(s, directive):
     '''Return True if the body text contains the @ directive.'''
-    # We no longer require that the directive appear before
-    # any @c directive or section definition.
-    if 1:
-        assert(directive and directive[0] == '@')
-        lws = directive in ("@others", "@all")
-            # Most directives must start the line.
-        pattern = r'^\s*(%s\b)' if lws else r'^(%s\b)'
-        pattern = re.compile(pattern % directive, re.MULTILINE)
-        m = re.search(pattern, s)
-        if m:
-            return True, m.start(1)
-        return False, -1
-    else:
-        skip_flag = directive in ("@others", "@all")
-        i = 0
-        while i < len(s):
-            if g.match_word(s, i, directive):
-                return True, i
-            else:
-                i = g.skip_line(s, i)
-                if skip_flag:
-                    i = g.skip_ws(s, i)
-        return False, -1
+    assert(directive and directive[0] == '@')
+    lws = directive in ("@others", "@all")
+        # Most directives must start the line.
+    pattern = r'^\s*(%s\b)' if lws else r'^(%s\b)'
+    pattern = re.compile(pattern % directive, re.MULTILINE)
+    m = re.search(pattern, s)
+    if m:
+        return True, m.start(1)
+    return False, -1
 #@+node:ekr.20031218072017.3180: *4* is_ws & is_ws_or_nl
 def is_ws(c):
     return c == '\t' or c == ' '
@@ -4551,15 +4537,6 @@ def match_ignoring_case(s1, s2):
     return s1 and s2 and s1.lower() == s2.lower()
 #@+node:ekr.20031218072017.3184: *4* g.match_word
 def match_word(s, i, pattern):
-    
-    if not g.app.statsLockout:
-        g.app.statsLockout = True
-        try:
-            d = app.statsDict
-            key = 'g.match_word:' + callers()
-            d [key] = d.get(key, 0) + 1
-        finally:
-            g.app.statsLockout = False
 
     # Using a regex is surprisingly tricky.
     if pattern is None:
@@ -5652,24 +5629,6 @@ def stripBOM(s):
             if bom == s[: len(bom)]:
                 return e, s[len(bom):]
     return None, s
-#@+node:ekr.20050208093800: *4* g.toEncodedString
-def toEncodedString(s, encoding='utf-8', reportErrors=False):
-    '''Convert unicode string to an encoded string.'''
-    if not g.isUnicode(s):
-        return s
-    if not encoding:
-        encoding = 'utf-8'
-    # These are the only significant calls to s.encode in Leo.
-    try:
-        s = s.encode(encoding, "strict")
-    except UnicodeError:
-        s = s.encode(encoding, "replace")
-        if reportErrors:
-            g.error("Error converting %s from unicode to %s encoding" % (s, encoding))
-    # Tracing these calls directly yields thousands of calls.
-    # Never call g.trace here!
-        # g.dump_encoded_string(encoding,s)
-    return s
 #@+node:ekr.20050208093800.1: *4* g.toUnicode (Inlined)
 # This inlining makes a huge difference.
 # It saves most calls to _toUnicode and g.isUnicode!
@@ -5677,10 +5636,12 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
 if isPython3:
     def toUnicode(s, encoding='utf-8', reportErrors=False):
         '''Convert a non-unicode string with the given encoding to unicode.'''
+        # pylint: disable=no-member
         return s if isinstance(s, str) else _toUnicode(s, encoding, reportErrors)
 else:
     def toUnicode(s, encoding='utf-8', reportErrors=False):
         '''Convert a non-unicode string with the given encoding to unicode.'''
+        # pylint: disable=no-member
         return s if isinstance(s, types.UnicodeType) else _toUnicode(s, encoding, reportErrors)
             
 def _toUnicode(s, encoding, reportErrors):
@@ -5701,6 +5662,24 @@ def _toUnicode(s, encoding, reportErrors):
     except AttributeError:
         # May be a QString.
         s = g.u(s)
+    return s
+#@+node:ekr.20050208093800: *4* g.toEncodedString
+def toEncodedString(s, encoding='utf-8', reportErrors=False):
+    '''Convert unicode string to an encoded string.'''
+    if not g.isUnicode(s):
+        return s
+    if not encoding:
+        encoding = 'utf-8'
+    # These are the only significant calls to s.encode in Leo.
+    try:
+        s = s.encode(encoding, "strict")
+    except UnicodeError:
+        s = s.encode(encoding, "replace")
+        if reportErrors:
+            g.error("Error converting %s from unicode to %s encoding" % (s, encoding))
+    # Tracing these calls directly yields thousands of calls.
+    # Never call g.trace here!
+        # g.dump_encoded_string(encoding,s)
     return s
 #@+node:ekr.20091206161352.6232: *4* g.u & g.ue
 if isPython3: # g.not defined yet.
