@@ -497,7 +497,7 @@ class LeoImportCommands(object):
         self.treeType = "@file"
         # Set self.treeType to @root if p or an ancestor is an @root node.
         for p in current.parents():
-            flag, junk = g.is_special(p.b, 0, "@root")
+            flag, junk = g.is_special(p.b, "@root")
             if flag:
                 self.treeType = "@root"
                 break

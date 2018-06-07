@@ -1073,7 +1073,7 @@ def markChangedRoots(self, event=None):
     for p in c.all_unique_positions():
         if p.isDirty() and not p.isMarked():
             s = p.b
-            flag, i = g.is_special(s, 0, "@root")
+            flag, i = g.is_special(s, "@root")
             if flag:
                 bunch = u.beforeMark(p, undoType)
                 c.setMarked(p)

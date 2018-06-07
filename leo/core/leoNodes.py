@@ -2069,7 +2069,7 @@ class VNodeBase(object):
     #@+node:EKR.20040430152000: *4* v.isAtAllNode
     def isAtAllNode(self):
         """Returns True if the receiver contains @others in its body at the start of a line."""
-        flag, i = g.is_special(self._bodyString, 0, "@all")
+        flag, i = g.is_special(self._bodyString, "@all")
         return flag
     #@+node:ekr.20040326031436: *4* v.isAnyAtFileNode
     def isAnyAtFileNode(self):
@@ -2122,12 +2122,12 @@ class VNodeBase(object):
         if g.match_word(self._headString, 0, '@ignore'):
             return True
         else:
-            flag, i = g.is_special(self._bodyString, 0, "@ignore")
+            flag, i = g.is_special(self._bodyString, "@ignore")
             return flag
     #@+node:ekr.20031218072017.3352: *4* v.isAtOthersNode
     def isAtOthersNode(self):
         """Returns True if the receiver contains @others in its body at the start of a line."""
-        flag, i = g.is_special(self._bodyString, 0, "@others")
+        flag, i = g.is_special(self._bodyString, "@others")
         return flag
     #@+node:ekr.20031218072017.3353: *4* v.matchHeadline
     def matchHeadline(self, pattern):

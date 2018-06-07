@@ -4501,22 +4501,32 @@ def is_c_id(ch):
 #@+node:ekr.20031218072017.3178: *4* is_nl
 def is_nl(s, i):
     return i < len(s) and (s[i] == '\n' or s[i] == '\r')
-#@+node:ekr.20031218072017.3179: *4* is_special
-# We no longer require that the directive appear befor any @c directive or section definition.
-
-def is_special(s, i, directive):
+#@+node:ekr.20031218072017.3179: *4* g.is_special (Test)
+def is_special(s, directive):
     '''Return True if the body text contains the @ directive.'''
-    assert(directive and directive[0] == '@')
-    # All directives except @others must start the line.
-    skip_flag = directive in ("@others", "@all")
-    while i < len(s):
-        if g.match_word(s, i, directive):
-            return True, i
-        else:
-            i = g.skip_line(s, i)
-            if skip_flag:
-                i = g.skip_ws(s, i)
-    return False, -1
+    # We no longer require that the directive appear before
+    # any @c directive or section definition.
+    if 1:
+        assert(directive and directive[0] == '@')
+        lws = directive in ("@others", "@all")
+            # Most directives must start the line.
+        pattern = r'^\s*(%s\b)' if lws else r'^(%s\b)'
+        pattern = re.compile(pattern % directive, re.MULTILINE)
+        m = re.search(pattern, s)
+        if m:
+            return True, m.start(1)
+        return False, -1
+    else:
+        skip_flag = directive in ("@others", "@all")
+        i = 0
+        while i < len(s):
+            if g.match_word(s, i, directive):
+                return True, i
+            else:
+                i = g.skip_line(s, i)
+                if skip_flag:
+                    i = g.skip_ws(s, i)
+        return False, -1
 #@+node:ekr.20031218072017.3180: *4* is_ws & is_ws_or_nl
 def is_ws(c):
     return c == '\t' or c == ' '
@@ -4539,26 +4549,32 @@ def match_c_word(s, i, name):
 #@+node:ekr.20031218072017.3183: *4* match_ignoring_case
 def match_ignoring_case(s1, s2):
     return s1 and s2 and s1.lower() == s2.lower()
-#@+node:ekr.20031218072017.3184: *4* match_word
+#@+node:ekr.20031218072017.3184: *4* g.match_word
 def match_word(s, i, pattern):
-    if 0:
-        # Doesn't work (yet).
-        pattern = re.compile('\b' + pattern + '\b')
-        return pattern.match(s, i)
-    else:
-        if pattern is None:
-            return False
-        if i > 0 and g.isWordChar(s[i-1]): # Bug fix: 2017/06/01.
-            return False
-        j = len(pattern)
-        if j == 0:
-            return False
-        if s.find(pattern, i, i + j) != i:
-            return False
-        if i + j >= len(s):
-            return True
-        ch = s[i + j]
-        return not g.isWordChar(ch)
+    
+    if not g.app.statsLockout:
+        g.app.statsLockout = True
+        try:
+            d = app.statsDict
+            key = 'g.match_word:' + callers()
+            d [key] = d.get(key, 0) + 1
+        finally:
+            g.app.statsLockout = False
+
+    # Using a regex is surprisingly tricky.
+    if pattern is None:
+        return False
+    if i > 0 and g.isWordChar(s[i-1]): # Bug fix: 2017/06/01.
+        return False
+    j = len(pattern)
+    if j == 0:
+        return False
+    if s.find(pattern, i, i + j) != i:
+        return False
+    if i + j >= len(s):
+        return True
+    ch = s[i + j]
+    return not g.isWordChar(ch)
 #@+node:ekr.20031218072017.3185: *4* skip_blank_lines
 # This routine differs from skip_ws_and_nl in that
 # it does not advance over whitespace at the start
