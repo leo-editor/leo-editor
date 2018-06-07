@@ -1331,7 +1331,7 @@ class LeoGlobals(object):
     def splitLines(self, s):
         '''Split s into lines, preserving trailing newlines.'''
         return s.splitlines(True) if s else []
-    #@+node:ekr.20160316091132.92: *3* g.toUnicode
+    #@+node:ekr.20160316091132.92: *3* g.toUnicode (py2cs.py)
 
     def toUnicode(self, s, encoding='utf-8', reportErrors=False):
         '''Connvert a non-unicode string with the given encoding to unicode.'''
