@@ -763,9 +763,9 @@ class AtFile(object):
         if not g.unitTesting:
             if nRead:
                 t2 = time.time()
-                g.es_print('read %s files in %2.2f seconds' % (nRead, t2 - t1))
+                g.es('read %s files in %2.2f seconds' % (nRead, t2 - t1))
             elif force:
-                g.es_print("no @<file> nodes in the selected tree")
+                g.es("no @<file> nodes in the selected tree")
         if use_tracer: tt.stop()
         c.raise_error_dialogs()
     #@+node:ekr.20080801071227.7: *5* at.readAtShadowNodes
