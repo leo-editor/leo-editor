@@ -6,7 +6,7 @@
 """Classes to read and write @file nodes."""
 #@+<< define FAST (leoAtFile) >>
 #@+node:ekr.20180605093406.1: ** << define FAST (leoAtFile) >>
-FAST = False
+FAST = True
 if FAST:
     print('\n===== FAST (leoAtFile) ===== \n')
 
@@ -491,6 +491,8 @@ class AtFile(object):
             
         if FAST:
             gnx2vnode = c.fileCommands.gnxDict
+            ### Clear visited in tree?
+            ### Scan directives???
             faf = FastAtRead(c, 
                 gnx2vnode=gnx2vnode, path=fileName, root=root)
             root_vnode, last_lines = faf.read_into_root(fileName, fromString)
@@ -761,9 +763,9 @@ class AtFile(object):
         if not g.unitTesting:
             if nRead:
                 t2 = time.time()
-                g.es('read %s files in %2.2f seconds' % (nRead, t2 - t1))
+                g.es_print('read %s files in %2.2f seconds' % (nRead, t2 - t1))
             elif force:
-                g.es("no @<file> nodes in the selected tree")
+                g.es_print("no @<file> nodes in the selected tree")
         if use_tracer: tt.stop()
         c.raise_error_dialogs()
     #@+node:ekr.20080801071227.7: *5* at.readAtShadowNodes
@@ -5514,6 +5516,8 @@ class FastAtRead (object):
     #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
     def read_into_root(self, fileName, fromString):
         '''Read the external file, returning (root_vnode, first_lines).'''
+        trace = False
+        t1 = time.clock()
         sfn = g.shortFileName(fileName)
         if fromString:
             s = fromString
@@ -5526,7 +5530,12 @@ class FastAtRead (object):
         data = self.scan_header(lines)
         if data:
             delims, first_lines, start_i = data
-            return self.scan_lines(delims, first_lines, lines, start_i)
+            root_v, last_lines = self.scan_lines(
+                delims, first_lines, lines, start_i)
+            if trace:
+                t2 = time.clock()
+                g.trace('%5.3f sec. %s' % ((t2-t1), fileName))
+            return root_v, last_lines
         g.trace('Invalid external file: %s' % sfn)
         return None, []
     #@+node:ekr.20180606054909.1: *3* Testing

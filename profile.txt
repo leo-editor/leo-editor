@@ -1,0 +1,233 @@
+profiling binary stats to c:/leo.repo/leo-editor/leoProfile
+
+reading settings in C:/leo.repo/leo-editor/leo/config/leoSettings.leo
+
+===== FAST (leoAtFile) ===== 
+
+
+===== FAST (leoFileCommands) ===== 
+
+reading settings in C:/Users/edreamleo/.leo/myLeoSettings.leo
+reading settings in c:/leo.repo/leo-editor/leo/core/leoPy.leo
+reading settings in C:/leo.repo/leo-editor/leo/themes/EKRDark.leo
+
+Leo 5.7.4 devel, build 20180525162844, Fri May 25 16:28:44 CDT 2018
+Git repo info: branch = fast-read, commit = 7ae56de86066
+Python 3.6.3, PyQt version 5.6.2
+Windows 10 AMD64 (build 10.0.17134) SP0
+** isPython3: True
+** caching enabled
+
+reading settings in c:/leo.repo/leo-editor/leo/core/leoPy.leo
+readExternalFiles 1.401 sec.
+wrote recent file: C:/Users/edreamleo/.leo/.leoRecentFiles.txt
+Wed Jun  6 18:42:07 2018    c:/leo.repo/leo-editor/leoProfile
+
+         11685846 function calls (11653798 primitive calls) in 8.145 seconds
+
+   Ordered by: internal time
+   List reduced from 6049 to 200 due to restriction <200>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    1.129    1.129    1.305    1.305 {built-in method exec_}
+      584    1.025    0.002    1.025    0.002 {built-in method __new__ of type object at 0x00000000664AB3F0}
+     6775    0.219    0.000    0.219    0.000 {built-in method nt.stat}
+   145181    0.208    0.000    0.422    0.000 spellCommands.py:243(add_expanded_line)
+      165    0.162    0.001    0.333    0.002 leoAtFile.py:5163(scan_lines)
+   521491    0.138    0.000    0.188    0.000 leoGlobals.py:5551(isUnicode)
+   212321    0.135    0.000    0.243    0.000 leoGlobals.py:4530(match_word)
+    35564    0.131    0.000    0.260    0.000 ntpath.py:471(normpath)
+ 1829/448    0.119    0.000    0.230    0.001 sre_parse.py:470(_parse)
+   585766    0.119    0.000    0.119    0.000 {method 'find' of 'str' objects}
+   204403    0.104    0.000    0.104    0.000 leoNodes.py:198(__init__)
+   355472    0.095    0.000    0.229    0.000 leoGlobals.py:5628(toUnicode)
+    11373    0.095    0.000    0.095    0.000 leoGlobals.py:2961(<listcomp>)
+   204235    0.094    0.000    0.198    0.000 leoNodes.py:1338(copy)
+   679649    0.093    0.000    0.093    0.000 {method 'add' of 'set' objects}
+    10435    0.093    0.000    0.397    0.000 leoGlobals.py:4494(is_special)
+    11373    0.091    0.000    0.302    0.000 leoGlobals.py:2911(get_directives_dict)
+   106781    0.091    0.000    0.311    0.000 leoNodes.py:1203(moveToThreadNext)
+1236269/1234836    0.089    0.000    0.089    0.000 {built-in method builtins.len}
+      691    0.088    0.000    0.088    0.000 {built-in method marshal.loads}
+     5428    0.087    0.000    0.087    0.000 {built-in method winreg.OpenKey}
+   132602    0.082    0.000    0.214    0.000 leoNodes.py:2228(headString)
+776730/776729    0.082    0.000    0.082    0.000 {built-in method builtins.isinstance}
+    72681    0.079    0.000    0.367    0.000 leoCommands.py:812(all_unique_positions)
+    98137    0.078    0.000    0.105    0.000 leoNodes.py:1150(moveToNext)
+   122195    0.073    0.000    0.111    0.000 leoNodes.py:780(hasNext)
+    57936    0.072    0.000    0.100    0.000 ntpath.py:121(splitdrive)
+   158556    0.069    0.000    0.115    0.000 leoGlobals.py:4585(skip_line)
+   248025    0.067    0.000    0.067    0.000 {method 'replace' of 'str' objects}
+    12544    0.067    0.000    0.082    0.000 leoNodes.py:1931(__init__)
+        2    0.061    0.030    0.105    0.053 spellCommands.py:132(add_words_from_dict)
+   393127    0.061    0.000    0.061    0.000 {method 'startswith' of 'str' objects}
+     1070    0.058    0.000    0.058    0.000 {method 'splitlines' of 'str' objects}
+   239756    0.053    0.000    0.053    0.000 leoNodes.py:1025(_parentVnode)
+    57881    0.048    0.000    0.115    0.000 leoGlobals.py:6958(toUnicodeFileEncoding)
+166257/166247    0.046    0.000    0.047    0.000 {built-in method builtins.hasattr}
+   186038    0.044    0.000    0.061    0.000 leoGlobals.py:5579(isWordChar)
+2718/2697    0.042    0.000    0.279    0.000 {built-in method builtins.__build_class__}
+        1    0.041    0.041    0.655    0.655 mod_scripting.py:521(createAllButtons)
+      748    0.040    0.000    0.041    0.000 {built-in method io.open}
+   119593    0.039    0.000    0.231    0.000 leoNodes.py:654(headString)
+      895    0.039    0.000    0.217    0.000 leoNodes.py:740(get_UNL)
+   122208    0.036    0.000    0.036    0.000 sre_parse.py:232(__next)
+   297872    0.036    0.000    0.036    0.000 {method 'strip' of 'str' objects}
+      696    0.036    0.000    0.064    0.000 <frozen importlib._bootstrap_external>:830(get_data)
+        2    0.035    0.017    0.468    0.234 spellCommands.py:231(read_words)
+   119593    0.034    0.000    0.265    0.000 leoNodes.py:1601(__get_h)
+   241666    0.033    0.000    0.037    0.000 {method 'get' of 'dict' objects}
+    40356    0.033    0.000    0.101    0.000 leoNodes.py:517(self_and_parents)
+     9828    0.033    0.000    0.105    0.000 todo.py:525(loadIcons)
+   329344    0.033    0.000    0.033    0.000 {method 'lower' of 'str' objects}
+   385760    0.032    0.000    0.032    0.000 {method 'append' of 'list' objects}
+        6    0.031    0.005    0.031    0.005 {method 'feed' of 'xml.etree.ElementTree.XMLParser' objects}
+   118705    0.030    0.000    0.065    0.000 sre_parse.py:253(get)
+    11912    0.029    0.000    0.052    0.000 leoGlobals.py:6665(os_path_expandExpression)
+      696    0.028    0.000    0.028    0.000 {method 'read' of '_io.FileIO' objects}
+84354/84273    0.028    0.000    0.031    0.000 {method 'join' of 'str' objects}
+       11    0.028    0.003    0.028    0.003 {built-in method setStyleSheet}
+    55575    0.026    0.000    0.035    0.000 leoNodes.py:1184(moveToParent)
+     7931    0.025    0.000    0.286    0.000 leoGlobals.py:6784(os_path_join)
+   207026    0.025    0.000    0.025    0.000 leoNodes.py:282(__bool__)
+      932    0.025    0.000    0.028    0.000 sre_compile.py:250(_optimize_charset)
+     7822    0.025    0.000    0.493    0.000 leoGlobals.py:6744(os_path_finalize_join)
+     3359    0.023    0.000    0.375    0.000 leoGlobals.py:2965(get_directives_dict_list)
+      541    0.023    0.000    0.023    0.000 {method 'read' of '_io.BufferedReader' objects}
+    50266    0.022    0.000    0.022    0.000 {method 'match' of '_sre.SRE_Pattern' objects}
+        6    0.022    0.004    0.145    0.024 leoCommands.py:1317(checkGnxs)
+    20150    0.022    0.000    0.038    0.000 editCommands.py:834(getIconList)
+       27    0.022    0.001    0.022    0.001 {built-in method repaint}
+    750/1    0.021    0.000    9.396    9.396 {built-in method builtins.exec}
+    10395    0.021    0.000    0.053    0.000 ntpath.py:74(join)
+    14459    0.021    0.000    0.339    0.000 re.py:286(_compile)
+   4560/6    0.021    0.000    0.045    0.008 leoFileCommands.py:2692(v_element_visitor)
+   250314    0.020    0.000    0.020    0.000 {method 'isalnum' of 'str' objects}
+    13047    0.020    0.000    0.166    0.000 leoGlobals.py:6717(os_path_expanduser)
+    13772    0.019    0.000    0.080    0.000 leoNodes.py:1282(safeMoveToThreadNext)
+    17087    0.018    0.000    0.032    0.000 nodetags.py:185(get_tags)
+       10    0.018    0.002    0.018    0.002 {built-in method builtins.compile}
+    24213    0.018    0.000    0.021    0.000 leoNodes.py:1117(moveToFirstChild)
+    59262    0.018    0.000    0.023    0.000 leoGlobals.py:5543(isString)
+    11373    0.017    0.000    0.122    0.000 leoGlobals.py:2954(compute_directives_re)
+     5428    0.017    0.000    0.017    0.000 {built-in method winreg.EnumKey}
+    19658    0.016    0.000    0.098    0.000 leoCommands.py:749(all_positions)
+        4    0.016    0.004    0.016    0.004 {built-in method show}
+    19424    0.016    0.000    0.022    0.000 leoNodes.py:1104(moveToBack)
+        1    0.015    0.015    0.015    0.015 {msleep}
+     3335    0.015    0.000    0.435    0.000 leoCommands.py:1936(scanAtPathDirectives)
+     6737    0.015    0.000    0.032    0.000 leoGlobals.py:4572(skip_id)
+      524    0.015    0.000    0.015    0.000 {built-in method nt._isdir}
+    17/15    0.015    0.001    0.023    0.002 {built-in method _imp.create_dynamic}
+   133155    0.014    0.000    0.014    0.000 {built-in method nt.fspath}
+ 3186/403    0.014    0.000    0.056    0.000 sre_compile.py:64(_compile)
+        1    0.014    0.014    0.135    0.135 mimetypes.py:230(read_windows_registry)
+      169    0.013    0.000    0.015    0.000 leoAtFile.py:225(initReadIvars)
+     9835    0.013    0.000    0.013    0.000 {built-in method today}
+    13778    0.013    0.000    0.108    0.000 leoCommands.py:832(safe_all_positions)
+    11076    0.013    0.000    0.067    0.000 leoNodes.py:1999(findAtFileName)
+    46987    0.013    0.000    0.023    0.000 leoNodes.py:2599(__get_u)
+      834    0.013    0.000    0.013    0.000 {built-in method winreg.QueryValueEx}
+    36253    0.013    0.000    0.013    0.000 {method 'split' of 'str' objects}
+     4749    0.012    0.000    0.025    0.000 ntpath.py:199(split)
+        2    0.012    0.006    0.018    0.009 QNCalendarWidget.py:35(build)
+   105011    0.011    0.000    0.012    0.000 sre_parse.py:248(match)
+        8    0.011    0.001    0.012    0.001 {built-in method addTab}
+    26114    0.011    0.000    0.011    0.000 {method 'finditer' of '_sre.SRE_Pattern' objects}
+     1348    0.011    0.000    0.923    0.001 leoGlobals.py:3448(fullPath)
+     1307    0.011    0.000    0.141    0.000 <frozen importlib._bootstrap_external>:1233(find_spec)
+    39325    0.011    0.000    0.015    0.000 todo.py:607(getat)
+       44    0.011    0.000    0.011    0.000 {method 'execute' of 'sqlite3.Connection' objects}
+     8200    0.011    0.000    0.015    0.000 leoGlobals.py:4654(skip_ws)
+    17539    0.010    0.000    0.017    0.000 leoGlobals.py:4516(match)
+    13053    0.010    0.000    0.017    0.000 ntpath.py:308(expanduser)
+    17086    0.010    0.000    0.060    0.000 leoChapters.py:245(parseHeadline)
+    19424    0.010    0.000    0.049    0.000 leoNodes.py:697(getBack)
+      683    0.010    0.000    0.010    0.000 {method 'decode' of 'bytes' objects}
+    10438    0.010    0.000    0.416    0.000 leoNodes.py:2116(isAtIgnoreNode)
+    49398    0.010    0.000    0.010    0.000 {method 'pop' of 'list' objects}
+     7528    0.010    0.000    0.061    0.000 leoGlobals.py:6748(<listcomp>)
+        2    0.009    0.005    0.009    0.005 {built-in method setCalendarWidget}
+    29520    0.009    0.000    0.154    0.000 leoCommands.py:737(all_unique_nodes)
+        2    0.009    0.004    0.160    0.080 leoChapters.py:318(setAllChapterNames)
+      727    0.009    0.000    0.009    0.000 {method 'connect' of 'PyQt5.QtCore.pyqtBoundSignal' objects}
+        1    0.008    0.008    0.008    0.008 backend.py:71(Backend)
+     4043    0.008    0.000    0.012    0.000 leoMenu.py:247(<listcomp>)
+    17343    0.008    0.000    0.008    0.000 {method 'search' of '_sre.SRE_Pattern' objects}
+     8708    0.008    0.000    0.081    0.000 ntpath.py:538(abspath)
+      184    0.008    0.000    0.008    0.000 {built-in method _hashlib.openssl_md5}
+     8708    0.008    0.000    0.008    0.000 {built-in method nt._getfullpathname}
+        1    0.008    0.008    0.062    0.062 backlink.py:412(loadLinksInt)
+     7528    0.008    0.000    0.480    0.000 leoCommands.py:1884(os_path_finalize_join)
+   9829/1    0.008    0.000    0.189    0.189 todo.py:497(new)
+      172    0.008    0.000    0.008    0.000 {built-in method nt.access}
+    15089    0.007    0.000    0.012    0.000 {built-in method builtins.getattr}
+   104773    0.007    0.000    0.007    0.000 {built-in method builtins.ord}
+     5893    0.007    0.000    0.017    0.000 enum.py:801(__and__)
+    34709    0.007    0.000    0.007    0.000 {method 'lstrip' of 'str' objects}
+        1    0.007    0.007    0.173    0.173 todo.py:519(loadAllIcons)
+    96309    0.007    0.000    0.007    0.000 {method 'isspace' of 'str' objects}
+     5628    0.007    0.000    0.013    0.000 leoGlobals.py:1881(add)
+     5632    0.006    0.000    0.068    0.000 leoGlobals.py:6826(os_path_normpath)
+    12544    0.006    0.000    0.013    0.000 leoNodes.py:102(new_vnode_helper)
+4489/2090    0.006    0.000    0.008    0.000 sre_parse.py:173(getwidth)
+    16156    0.006    0.000    0.013    0.000 leoNodes.py:2173(bodyString)
+    42249    0.006    0.000    0.006    0.000 {method 'group' of '_sre.SRE_Match' objects}
+    11227    0.006    0.000    0.013    0.000 leoGlobals.py:1931(get)
+     7931    0.006    0.000    0.167    0.000 leoGlobals.py:6801(<listcomp>)
+       19    0.006    0.000    0.073    0.004 leoCommands.py:1181(setChanged)
+     6405    0.006    0.000    0.027    0.000 leoConfig.py:1728(getShortcut)
+        1    0.006    0.006    0.006    0.006 leoColorizer.py:396(addLeoRules)
+  794/141    0.006    0.000    2.121    0.015 <frozen importlib._bootstrap>:966(_find_and_load)
+     5220    0.006    0.000    0.015    0.000 leoAtFile.py:4321(os)
+       99    0.006    0.000    0.009    0.000 {built-in method builtins.sorted}
+     4252    0.006    0.000    0.062    0.000 leoKeys.py:2956(registerCommandShortcut)
+     1928    0.006    0.000    0.369    0.000 leoConfig.py:1898(visitNode)
+        7    0.006    0.001    0.059    0.008 leoKeys.py:2264(makeBindingsFromCommandsDict)
+     2294    0.006    0.000    0.029    0.000 leoAtFile.py:3705(putCodeLine)
+        1    0.006    0.006    1.401    1.401 leoAtFile.py:703(readAll)
+    12884    0.006    0.000    0.006    0.000 enum.py:515(__new__)
+      167    0.006    0.000    0.049    0.000 leoGlobals.py:3683(readFileIntoString)
+      693    0.005    0.000    0.007    0.000 <frozen importlib._bootstrap_external>:430(_validate_bytecode_header)
+     4605    0.005    0.000    0.050    0.000 leoGlobals.py:6641(os_path_basename)
+        1    0.005    0.005    0.037    0.037 qt_gui.py:46(__init__)
+    19808    0.005    0.000    0.005    0.000 leoNodes.py:2621(__get_gnx)
+      749    0.005    0.000    0.163    0.000 <frozen importlib._bootstrap>:870(_find_spec)
+    15776    0.005    0.000    0.023    0.000 leoNodes.py:1572(__get_b)
+    15776    0.005    0.000    0.018    0.000 leoNodes.py:651(bodyString)
+3137/2629    0.005    0.000    0.007    0.000 proxy_metaclass.py:77(__getattribute__)
+    12544    0.005    0.000    0.007    0.000 leoNodes.py:45(check_gnx)
+      693    0.005    0.000    0.221    0.000 <frozen importlib._bootstrap_external>:743(get_code)
+     7931    0.005    0.000    0.032    0.000 leoGlobals.py:6792(<listcomp>)
+        1    0.005    0.005    0.103    0.103 backlink.py:116(fixIDs)
+      171    0.005    0.000    0.027    0.000 leoExternalFiles.py:334(checksum)
+        2    0.005    0.002    0.005    0.002 {built-in method minimumSizeHint}
+     1386    0.005    0.000    0.014    0.000 <frozen importlib._bootstrap_external>:263(cache_from_source)
+     4028    0.005    0.000    0.056    0.000 leoNodes.py:2014(anyAtFileNodeName)
+    14087    0.005    0.000    0.336    0.000 re.py:231(compile)
+     6570    0.005    0.000    0.012    0.000 <frozen importlib._bootstrap_external>:57(_path_join)
+        1    0.005    0.005    0.005    0.005 qt_gui.py:879(getIconImage)
+    13517    0.005    0.000    0.007    0.000 sre_parse.py:163(__getitem__)
+    17694    0.005    0.000    0.005    0.000 leoGlobals.py:367(__hash__)
+     4252    0.005    0.000    0.068    0.000 leoKeys.py:2913(registerCommand)
+       84    0.005    0.000    0.005    0.000 {built-in method nt.listdir}
+     4558    0.005    0.000    0.008    0.000 leoConfig.py:1129(canonicalizeSettingName)
+    12894    0.005    0.000    0.013    0.000 enum.py:265(__call__)
+       80    0.004    0.000    0.007    0.000 qt_frame.py:4354(__init__)
+    23391    0.004    0.000    0.004    0.000 leoNodes.py:776(hasBack)
+    18158    0.004    0.000    0.004    0.000 leoGlobals.py:1866(_checkKeyType)
+        1    0.004    0.004    0.064    0.064 nodetags.py:175(get_tagged_gnxes)
+      165    0.004    0.000    0.667    0.004 leoAtFile.py:464(read)
+        6    0.004    0.001    0.005    0.001 leoFileCommands.py:2658(scanTnodes)
+        1    0.004    0.004    0.064    0.064 nodetags.py:140(initialize_taglist)
+     1928    0.004    0.000    0.017    0.000 leoConfig.py:713(parseHeadline)
+       82    0.004    0.000    0.008    0.000 <frozen importlib._bootstrap_external>:1067(_path_hooks)
+    16757    0.004    0.000    0.004    0.000 {built-in method builtins.min}
+        2    0.004    0.002    0.022    0.011 QNCalendarWidget.py:20(__init__)
+     6570    0.004    0.000    0.006    0.000 <frozen importlib._bootstrap_external>:59(<listcomp>)
+ 1193/403    0.004    0.000    0.232    0.001 sre_parse.py:407(_parse_sub)
+    10438    0.004    0.000    0.420    0.000 leoNodes.py:631(isAtIgnoreNode)
+     1324    0.004    0.000    0.019    0.000 leoKeys.py:2025(bindKey)
+      876    0.004    0.000    0.227    0.000 leoConfig.py:845(set)
+
+

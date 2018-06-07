@@ -3,7 +3,7 @@
 '''Classes relating to reading and writing .leo files.'''
 #@+<< define FAST (leoFileCommands) >>
 #@+node:ekr.20180605060817.1: ** << define FAST (leoFileCommands) >>
-FAST = False
+FAST = True
 if FAST:
     print('\n===== FAST (leoFileCommands) ===== \n')
 #@-<< define FAST (leoFileCommands) >>
@@ -830,10 +830,7 @@ class FileCommands(object):
     def readExternalFiles(self, fileName):
         '''Read all external files.'''
         c, fc = self.c, self
-        t1 = time.clock()
         c.atFileCommands.readAll(c.rootVnode(), force=False)
-        t2 = time.clock()
-        g.trace('%5.3f sec.' % (t2-t1))
         recoveryNode = fc.handleNodeConflicts()
         # Do this after reading external files.
         # The descendent nodes won't exist unless we have read
