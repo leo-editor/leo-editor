@@ -5074,7 +5074,7 @@ class FastAtRead (object):
                 self._headString = None
 
             def headString(self):
-                self._headString
+                return self._headString
         #@-<< define TestVNode >>
     
         self.c = c
