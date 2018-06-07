@@ -163,6 +163,8 @@ class LeoApp(object):
             # Set by p.safeMoveToThreadNext.
         self.statsDict = {}
             # dict used by g.stat, g.clear_stats, g.print_stats.
+        self.statsLockout = False
+            # A lockout to prevent unbound recursion while gathering stats.
         self.validate_outline = False
             # True: enables c.validate_outline. (slow)
         #@-<< LeoApp: Debugging & statistics >>
