@@ -197,6 +197,17 @@ class Position(object):
     #@+node:ekr.20080416161551.190: *4*  p.__init__
     def __init__(self, v, childIndex=0, stack=None):
         '''Create a new position with the given childIndex and parent stack.'''
+        
+        ###
+        # if not g.app.statsLockout:
+            # g.app.statsLockout = True
+            # try:
+                # d = g.app.statsDict
+                # key = 'p.__init__:' + g.callers()
+                # d [key] = d.get(key, 0) + 1
+            # finally:
+                # g.app.statsLockout = False
+        
         # To support ZODB the code must set v._p_changed = 1
         # whenever any mutable VNode object changes.
         self._childIndex = childIndex
@@ -294,8 +305,6 @@ class Position(object):
     def __str__(self):
         p = self
         if p.v:
-            # return "<pos %d childIndex: %d lvl: %d [%d] %s>" % (
-                # id(p),p._childIndex,p.level(),len(p.stack),p.cleanHeadString())
             return "<pos %d childIndex: %d lvl: %d key: %s %s>" % (
                 id(p), p._childIndex, p.level(), p.key(), p.cleanHeadString())
         else:
@@ -1973,7 +1982,6 @@ class VNodeBase(object):
         assert self.fileIndex, g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__(self):
-        # return "<VNode %7x %s>" % (id(self), self.cleanHeadString())
         return "<VNode %s %s>" % (self.gnx, self.cleanHeadString())
 
     __str__ = __repr__
