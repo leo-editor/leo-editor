@@ -517,7 +517,7 @@ class ScriptingController(object):
         if 0:
             # Do not assume the script will want to remain in this commander.
             c.bodyWantsFocus()
-    #@+node:ekr.20060328125248.8: *3* sc.createAllButtons
+    #@+node:ekr.20060328125248.8: *3* sc.createAllButtons (revised)
     def createAllButtons(self):
         '''Scan for @button, @rclick, @command, @plugin and @script nodes.'''
         c = self.c
@@ -534,14 +534,33 @@ class ScriptingController(object):
         # Next, create common buttons and commands.
         self.createCommonButtons()
         self.createCommonCommands()
-        # Last, scan for user-defined nodes.
-        table = (
+        #
+        # Use regex.
+        d = table = (
             ('@button', self.handleAtButtonNode),
             ('@command', self.handleAtCommandNode),
             ('@plugin', self.handleAtPluginNode),
             ('@rclick', self.handleAtRclickNode), # Jake Peck.
             ('@script', self.handleAtScriptNode),
         )
+        if 1:
+            d = {
+                'button': self.handleAtButtonNode,
+                'command': self.handleAtCommandNode,
+                'plugin': self.handleAtPluginNode,
+                'rclick': self.handleAtRclickNode,
+                'script': self.handleAtScriptNode,
+            }
+        else:
+            table = (
+                ('@button', self.handleAtButtonNode),
+                ('@command', self.handleAtCommandNode),
+                ('@plugin', self.handleAtPluginNode),
+                ('@rclick', self.handleAtRclickNode), # Jake Peck.
+                ('@script', self.handleAtScriptNode),
+            )
+            assert table
+        pattern = re.compile(r'^@(button|command|plugin|rclick|script)\b')
         p = c.rootPosition()
         while p:
             gnx = p.v.gnx
@@ -549,15 +568,21 @@ class ScriptingController(object):
                 p.moveToNodeAfterTree()
             elif gnx in self.seen:
                 # tag:#657
-                if g.match_word(p.h, 0, '@rclick'):
+                # if g.match_word(p.h, 0, '@rclick'):
+                if p.h.startswith('@rlick'):
                     self.handleAtRclickNode(p)
                 p.moveToThreadNext()
             else:
                 self.seen.add(gnx)
-                for kind, func in table:
-                    if g.match_word(p.h, 0, kind):
-                        func(p)
-                        break
+                m = pattern.match(p.h)
+                if m:
+                    func = d.get(m.group(1))
+                    func(p)
+                    break
+                # for kind, func in table:
+                    # if g.match_word(p.h, 0, kind):
+                        # func(p)
+                        #break
                 p.moveToThreadNext()
     #@+node:ekr.20060328125248.24: *3* sc.createLocalAtButtonHelper
     def createLocalAtButtonHelper(self, p, h, statusLine,
