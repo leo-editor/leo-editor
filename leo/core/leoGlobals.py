@@ -2773,7 +2773,8 @@ def printStats(event=None, name=None):
             name = repr(name)
     else:
         name = g._callerName(n=2) # Get caller name 2 levels back.
-    ### g.printObj(g.app.statsDict, tag='statistics at %s' % name)
+    #
+    # Print the stats, organized by number of calls.
     d = g.app.statsDict
     if g.isPython3:
         d2 = {val: key for key, val in d.items()}
@@ -5520,12 +5521,17 @@ def getPythonEncodingFromString(s):
     return encoding
 #@+node:ekr.20080816125725.2: *4* g.isBytes/Callable/Int/String/Unicode
 # The syntax of these functions must be valid on Python2K and Python3K.
-#@+node:ekr.20160229070349.2: *5* g.isBytes
-def isBytes(s):
-    '''Return True if s is Python3k bytes type.'''
-    if g.isPython3:
+#@+node:ekr.20160229070349.2: *5* g.isBytes (inlined)
+if isPython3:
+
+    def isBytes(s):
+        '''Return True if s is Python3k bytes type.'''
         return isinstance(s, bytes)
-    else:
+        
+else:
+
+    def isBytes(s):
+        '''Return True if s is Python3k bytes type.'''
         return False
 #@+node:ekr.20160229070349.3: *5* g.isCallable
 def isCallable(obj):
@@ -5551,37 +5557,34 @@ def isList(s):
         return isinstance(s, list)
     else:
         return isinstance(s, types.ListTypes)
-#@+node:ekr.20160229070349.5: *5* g.isString
-def isString(s):
-    '''Return True if s is any string, but not bytes.'''
-    # pylint: disable=no-member
-    if g.isPython3:
+#@+node:ekr.20160229070349.5: *5* g.isString (inlined)
+if isPython3:
+
+    def isString(s):
+        '''Return True if s is any string, but not bytes.'''
+        # pylint: disable=no-member
         return isinstance(s, str)
-    else:
+
+else:
+
+     def isString(s):
+        '''Return True if s is any string, but not bytes.'''
+        # pylint: disable=no-member
         return isinstance(s, types.StringTypes)
 #@+node:ekr.20160229070349.6: *5* g.isUnicode (Inlined)
-# It's well worth doing the inlining.
-
 if isPython3:
+    
     def isUnicode(s):
         '''Return True if s is a unicode string.'''
         # pylint: disable=no-member
         return isinstance(s, str)
+
 else:
+
     def isUnicode(s):
         '''Return True if s is a unicode string.'''
         # pylint: disable=no-member
         return isinstance(s, types.UnicodeType)
-        
-        ###
-        # if not g.app.statsLockout:
-            # g.app.statsLockout = True
-            # try:
-                # d = app.statsDict
-                # key = 'g.isUnicode:' + callers()
-                # d [key] = d.get(key, 0) + 1
-            # finally:
-                # g.app.statsLockout = False
 #@+node:ekr.20031218072017.1500: *4* g.isValidEncoding
 def isValidEncoding(encoding):
     '''Return True if the encooding is valid.'''
@@ -5665,22 +5668,11 @@ else:
         return s if isinstance(s, types.UnicodeType) else _toUnicode(s, encoding, reportErrors)
             
 def _toUnicode(s, encoding, reportErrors):
-    
-    ###
-    # if not g.app.statsLockout:
-        # g.app.statsLockout = True
-        # try:
-            # d = app.statsDict
-            # key = 'g._toUnicode:' + callers()
-            # d [key] = d.get(key, 0) + 1
-        # finally:
-            # g.app.statsLockout = False
-            
+    '''Helper for g.toUnicode.'''
     if not encoding:
         encoding = 'utf-8'
     #
     # These are the only significant calls to s.decode in Leo.
-    # Tracing these calls directly yields thousands of calls.
     try:
         s = s.decode(encoding, 'strict')
     except (UnicodeDecodeError, UnicodeError):
