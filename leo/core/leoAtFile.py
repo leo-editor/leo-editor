@@ -5010,6 +5010,7 @@ class FastAtRead (object):
         # This must be a function, because of @comments & @delims.
         delim_start, delim_end = delims
         delims = re.escape(delim_start), re.escape(delim_end or '')
+        delim_start, delim_end = delims
         patterns = (
             # The list of patterns, in alphabetical order.
             # These patterns must be mutually exclusive.
@@ -5350,46 +5351,78 @@ class FastAtRead (object):
                 n_last_lines += 1
                 continue
             #@-<< handle @first and @last >>
-            #@+<< handle @comment and @delims >>
-            #@+node:ekr.20180606051525.1: *4* << handle @comment and @delims >>
+            #@+<< handle @comment >>
+            #@+node:ekr.20180606051525.1: *4* << handle @comment >>
             # http://leoeditor.com/directives.html#part-4-dangerous-directives
             m = comment_pat.match(line)
             if m:
                 # <1, 2 or 3 comment delims>
-                delims = m.group(1)
+                delims = m.group(1).strip()
+                # Whatever happens, retain the @delims line.
+                body.append('@comment %s\n' % delims)
                 delim1, delim2, delim3 = g.set_delims_from_string(delims)
-                # delim1 is always the single-line delimiter.
+                    # delim1 is always the single-line delimiter.
                 if delim1:
                     delim_start, delim_end = delim1, ''
                 else:
                     delim_start, delim_end = delim2, delim3
+                #
                 # Within these delimiters:
-                # - underscores represent a significant space,
                 # - double underscores represent a newline.
+                # - underscores represent a significant space,
                 delim_start = delim_start.replace('__','\n').replace('_',' ')
                 delim_end = delim_end.replace('__','\n').replace('_',' ')
                 # Recalculate all delim-related values
                 doc_skip = (delim_start + '\n', delim_end + '\n')
                 is_cweb = delim_start == '@q@' and delim_end == '@>'
                 sentinel = delim_start + '@'
+                #
+                # Recalculate the patterns.
+                delims = delim_start, delim_end
+                (
+                    after_pat, all_pat, code_pat, comment_pat, delims_pat,
+                    doc_pat, end_raw_pat, first_pat, last_pat,
+                    node_start_pat, others_pat, raw_pat, ref_pat
+                ) = self.get_patterns(delims)
                 continue
+            #@-<< handle @comment >>
+            #@+<< handle @delims >>
+            #@+node:ekr.20180608104836.1: *4* << handle @delims >>
             m = delims_pat.match(line)
             if m:
-                # <1 or 2 comment delims>
-                delims = m.group(1)
-                delims_pat = re.compile(r'([^ ]+)(\s+[.*])?')
+                # Get 1 or 2 comment delims
+                # Whatever happens, retain the original @delims line.
+                delims = m.group(1).strip()
+                body.append('@delims %s\n' % delims)
+                #
+                # Parse the delims.
+                delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
                 m2 = delims_pat.match(delims)
-                if m2:
-                    delim_start = m2.group(1)
-                    delim_start = m2.group(2) or ''
-                    # Recalculate all delim-related values
-                    doc_skip = (delim_start + '\n', delim_end + '\n')
-                    is_cweb = delim_start == '@q@' and delim_end == '@>'
-                    sentinel = delim_start + '@'
-                else:
-                    g.trace('Ignoring invalid @delim: %r' % line)
+                if not m2:
+                    g.trace('Ignoring invalid @comment: %r' % line)
+                    continue
+                delim_start = m2.group(1)
+                delim_end = m2.group(2) or ''
+                #
+                # Within these delimiters:
+                # - double underscores represent a newline.
+                # - underscores represent a significant space,
+                delim_start = delim_start.replace('__','\n').replace('_',' ')
+                delim_end = delim_end.replace('__','\n').replace('_',' ')
+                # Recalculate all delim-related values
+                doc_skip = (delim_start + '\n', delim_end + '\n')
+                is_cweb = delim_start == '@q@' and delim_end == '@>'
+                sentinel = delim_start + '@'
+                #
+                # Recalculate the patterns
+                delims = delim_start, delim_end
+                (
+                    after_pat, all_pat, code_pat, comment_pat, delims_pat,
+                    doc_pat, end_raw_pat, first_pat, last_pat,
+                    node_start_pat, others_pat, raw_pat, ref_pat
+                ) = self.get_patterns(delims)
                 continue
-            #@-<< handle @comment and @delims >>
+            #@-<< handle @delims >>
             #@+<< handle @raw >>
             #@+node:ekr.20180606080200.1: *4* << handle @raw >>
             # http://leoeditor.com/directives.html#part-4-dangerous-directives
