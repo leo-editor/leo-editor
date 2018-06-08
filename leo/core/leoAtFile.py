@@ -520,7 +520,7 @@ class AtFile(object):
             return True
         #
         # ===== Legacy code.
-        ### Done above
+        # Done above
             # if fileName and at.inputFile:
                 # c.setFileTimeStamp(fileName)
             # elif fromString: # 2010/09/02.
@@ -5258,7 +5258,6 @@ class FastAtRead (object):
                 if gnx in gnx2vnode:
                     # A clone
                     v = gnx2vnode.get(gnx)
-                    ### if root_v == v: g.trace('ROOT', gnx, head)
                     # We are about to rescan everything, so start afresh.
                     gnx2body[gnx] = body = []
                     v.children = []
@@ -5436,13 +5435,6 @@ class FastAtRead (object):
         trace = False
         t1 = time.clock()
         sfn = g.shortFileName(fileName)
-        # if fromString:
-            # s = fromString
-        # else:
-            # s, e = g.readFileIntoString(fileName)
-            # if not s:
-                # return None, []
-            # s = s.replace('\r','')
         contents = contents.replace('\r','')
         lines = g.splitLines(contents)
         data = self.scan_header(lines)
