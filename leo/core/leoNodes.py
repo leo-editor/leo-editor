@@ -1298,7 +1298,7 @@ class Position(object):
         if p.v:
             child_v = p.v.children and p.v.children[0]
             if child_v:
-                for parent in p.self_and_parents():
+                for parent in p.self_and_parents(copy=False): ###
                     if child_v == parent.v:
                         g.app.structure_errors += 1
                         g.error('vnode: %s is its own parent' % child_v)

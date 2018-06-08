@@ -2996,8 +2996,9 @@ def get_directives_dict_list(p):
     the start of each directive"""
     result = []
     p1 = p.copy()
-    for p in p1.self_and_parents():
-        root = None if p.hasParent() else [p.copy()]
+    for p in p1.self_and_parents(copy=False): ###
+        root = None if p.hasParent() else [p]
+            # No copy necessary: g.get_directives_dict does not change p.
         result.append(g.get_directives_dict(p, root=root))
     return result
 #@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
@@ -3478,7 +3479,7 @@ def fullPath(c, p, simulate=False):
     path nor the fileName will be created if it does not exist.
     '''
     # Search p and p's parents.
-    for p in p.self_and_parents():
+    for p in p.self_and_parents(copy=False):
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
         fn = p.h if simulate else p.anyAtFileNodeName()

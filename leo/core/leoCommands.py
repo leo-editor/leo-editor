@@ -1139,12 +1139,12 @@ class Commands(object):
     #@+node:ekr.20031218072017.2984: *5* c.clearAllMarked
     def clearAllMarked(self):
         c = self
-        for p in c.all_unique_positions():
+        for p in c.all_unique_positions(copy=False):
             p.v.clearMarked()
     #@+node:ekr.20031218072017.2985: *5* c.clearAllVisited
     def clearAllVisited(self):
         c = self
-        for p in c.all_unique_positions():
+        for p in c.all_unique_positions(copy=False):
             p.v.clearVisited()
             p.v.clearWriteBit()
     #@+node:ekr.20060906211138: *5* c.clearMarked
@@ -1330,7 +1330,7 @@ class Commands(object):
             v.fileIndex = ni.getNewIndex(v)
 
         count, gnx_errors = 0, 0
-        for p in c.safe_all_positions():
+        for p in c.safe_all_positions(copy=False): ###
             count += 1
             v = p.v
             if hasattr(v, "tnodeList"):

@@ -1397,7 +1397,7 @@ class FileCommands(object):
         Called *before* reading external files.
         '''
         c = self.c
-        for p in c.all_unique_positions():
+        for p in c.all_unique_positions(copy=False):
             if hasattr(p.v, 'tempTnodeList'):
                 result = []
                 for tnx in p.v.tempTnodeList:
