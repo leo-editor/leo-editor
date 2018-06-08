@@ -1485,13 +1485,13 @@ class Commands(object):
         c = self
         message = "Illegal move or drag: no clone may contain a clone of itself"
         clonedVnodes = {}
-        for ancestor in parent.self_and_parents():
+        for ancestor in parent.self_and_parents(copy=False):
             if ancestor.isCloned():
                 v = ancestor.v
                 clonedVnodes[v] = v
         if not clonedVnodes:
             return True
-        for p in root.self_and_subtree():
+        for p in root.self_and_subtree(copy=False):
             if p.isCloned() and clonedVnodes.get(p.v):
                 if g.app.unitTesting:
                     g.app.unitTestDict['checkMoveWithParentWithWarning'] = True
@@ -1856,7 +1856,7 @@ class Commands(object):
         c = self
         path = g.scanAllAtPathDirectives(c, p)
         name = ''
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             name = p.anyAtFileNodeName()
             if name: break
         if name:
@@ -2878,7 +2878,7 @@ class Commands(object):
         n = c.p.level()
         old_expansion_level = c.expansionLevel
         max_level = 0
-        for p in c.p.self_and_subtree():
+        for p in c.p.self_and_subtree(copy=False):
             if p.level() - n + 1 < level:
                 p.expand()
                 max_level = max(max_level, p.level() - n + 1)
@@ -3499,7 +3499,7 @@ class Commands(object):
                 if flatten:
                     seen.add(p.v)
                 else:
-                    for p2 in p.self_and_subtree():
+                    for p2 in p.self_and_subtree(copy=False):
                         seen.add(p2.v)
                 clones.append(p.copy())
         if clones:
@@ -3867,7 +3867,7 @@ class Commands(object):
             v = target.v
             for p in c.all_positions():
                 if p.v == v:
-                    for parent in p.self_and_parents():
+                    for parent in p.self_and_parents(copy=False):
                         if parent.isAnyAtFileNode():
                             break
                     else:

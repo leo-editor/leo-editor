@@ -65,7 +65,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         '''
         c = self.c
         # Look for an @clean node.
-        for p in c.p.self_and_parents():
+        for p in c.p.self_and_parents(copy=False):
             if g.match_word(p.h, 0, '@clean') and p.h.rstrip().endswith('.py'):
                 break
         else:
@@ -187,7 +187,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     # Fix bug 1160660: File-Compare-Leo-Files creates "other file" clones.
                     copy = p.copyTreeAfter()
                     copy.moveToLastChildOf(parent)
-                    for p2 in copy.self_and_subtree():
+                    for p2 in copy.self_and_subtree(copy=False):
                         p2.v.context = c
     #@+node:ekr.20170806094317.15: *4* efc.createHiddenCommander
     def createHiddenCommander(self, fn):
@@ -275,7 +275,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 Values are copies of positions.
                 '''
                 d = {} #
-                for p in p1.self_and_subtree():
+                for p in p1.self_and_subtree(copy=False):
                     h = p.h.strip()
                     i = h.find('.')
                     if i > -1:
@@ -489,7 +489,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         row -= len(directives)
         row = max(0, row)
         # Count preceding lines from p to c.p, again ignoring directives.
-        for p2 in p.self_and_subtree():
+        for p2 in p.self_and_subtree(copy=False):
             if p2 == c.p:
                 break
             lines = [z for z in g.splitLines(p2.b) if not g.isDirective(z)]
@@ -723,7 +723,7 @@ class GitDiffController:
         at.readOpenFile(root, fn, deleteNodes=True)
         at.inputFile.close()
         # Complete the read.
-        for p in root.self_and_subtree():
+        for p in root.self_and_subtree(copy=False):
             p.b = ''.join(getattr(p.v, 'tempBodyList', []))
         at.scanAllDirectives(root, importing=False, reading=True)
         return hidden_c
@@ -802,7 +802,7 @@ class GitDiffController:
         # Read the file using the @file read logic.
         at.readOpenFile(hidden_root, fn, deleteNodes=True)
         # Complete the read.
-        for p in hidden_root.self_and_subtree():
+        for p in hidden_root.self_and_subtree(copy=False):
             p.b = ''.join(getattr(p.v, 'tempBodyList', []))
         if at.errors:
             g.trace(at.errors, 'errors!')

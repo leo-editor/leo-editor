@@ -2867,7 +2867,7 @@ def findTabWidthDirectives(c, p):
         return # c may be None for testing.
     w = None
     # 2009/10/02: no need for copy arg to iter
-    for p in p.self_and_parents():
+    for p in p.self_and_parents(copy=False):
         if w: break
         for s in p.h, p.b:
             if w: break
@@ -2891,8 +2891,7 @@ def findLanguageDirectives(c, p):
     else:
         language = 'python'
     found = False
-    # 2009/10/02: no need for copy arg to iter.
-    for p in p.self_and_parents():
+    for p in p.self_and_parents(copy=False):
         if found: break
         for s in p.h, p.b:
             if found: break
@@ -2916,17 +2915,17 @@ def findReference(name, root):
     and an ancestor is an @root node,
     search all the descendants of the @root node.
     '''
-    for p in root.subtree():
+    for p in root.subtree(copy=False):
         assert(p != root)
         if p.matchHeadline(name) and not p.isAtIgnoreNode():
-            return p
+            return p.copy()
     # New in Leo 4.7: expand the search for @root trees.
-    for p in root.self_and_parents():
+    for p in root.self_and_parents(copy=False):
         d = g.get_directives_dict(p)
         if 'root' in d:
-            for p2 in p.subtree():
+            for p2 in p.subtree(copy=False):
                 if p2.matchHeadline(name) and not p2.isAtIgnoreNode():
-                    return p2
+                    return p2.copy()
     return None
 #@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
 # The caller passes [root_node] or None as the second arg.
@@ -2996,7 +2995,7 @@ def get_directives_dict_list(p):
     the start of each directive"""
     result = []
     p1 = p.copy()
-    for p in p1.self_and_parents(copy=False): ###
+    for p in p1.self_and_parents(copy=False):
         root = None if p.hasParent() else [p]
             # No copy necessary: g.get_directives_dict does not change p.
         result.append(g.get_directives_dict(p, root=root))
@@ -3007,7 +3006,7 @@ def getLanguageFromAncestorAtFileNode(p):
     Return the language in effect as determined
     by the file extension of the nearest enclosing @<file> node.
     '''
-    for p in p.self_and_parents():
+    for p in p.self_and_parents(copy=False):
         if p.isAnyAtFileNode():
             name = p.anyAtFileNodeName()
             junk, ext = g.os_path_splitext(name)
@@ -3231,7 +3230,7 @@ def scanForAtIgnore(c, p):
     """Scan position p and its ancestors looking for @ignore directives."""
     if g.app.unitTesting:
         return False # For unit tests.
-    for p in p.self_and_parents():
+    for p in p.self_and_parents(copy=False):
         d = g.get_directives_dict(p)
         if 'ignore' in d:
             return True
@@ -3243,7 +3242,7 @@ def scanForAtLanguage(c, p):
     Returns the language found, or c.target_language."""
     # Unlike the code in x.scanAllDirectives, this code ignores @comment directives.
     if c and p:
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             d = g.get_directives_dict(p)
             if 'language' in d:
                 z = d["language"]
@@ -3253,7 +3252,7 @@ def scanForAtLanguage(c, p):
 #@+node:ekr.20041123094807: *3* g.scanForAtSettings
 def scanForAtSettings(p):
     """Scan position p and its ancestors looking for @settings nodes."""
-    for p in p.self_and_parents():
+    for p in p.self_and_parents(copy=False):
         h = p.h
         h = g.app.config.canonicalizeSettingName(h)
         if h.startswith("@settings"):
@@ -3978,7 +3977,7 @@ def findRootsWithPredicate(c, root, predicate=None):
             return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
 
     # 1. Search p's tree.
-    for p in root.self_and_subtree():
+    for p in root.self_and_subtree(copy=False):
         if predicate(p) and p.v not in seen:
             seen.append(p.v)
             roots.append(p.copy())
@@ -3990,11 +3989,11 @@ def findRootsWithPredicate(c, root, predicate=None):
             return [p.copy()]
     # 3. Expand the search if root is a clone.
     clones = []
-    for p in root.self_and_parents():
+    for p in root.self_and_parents(copy=False):
         if p.isCloned():
             clones.append(p.v)
     if clones:
-        for p in c.all_positions():
+        for p in c.all_positions(copy=False):
             if predicate(p):
                 # Match if any node in p's tree matches any clone.
                 for p2 in p.self_and_subtree():
@@ -7273,22 +7272,22 @@ def findNodeInTree(c, p, headline, exact=True):
 
 def findNodeAnywhere(c, headline, exact=True):
     h = headline.strip()
-    for p in c.all_unique_positions():
+    for p in c.all_unique_positions(copy=False):
         if p.h.strip() == h:
             return p.copy()
     if not exact:
-        for p in c.all_unique_positions():
+        for p in c.all_unique_positions(copy=False):
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
 
 def findTopLevelNode(c, headline, exact=True):
     h = headline.strip()
-    for p in c.rootPosition().self_and_siblings():
+    for p in c.rootPosition().self_and_siblings(copy=False):
         if p.h.strip() == h:
             return p.copy()
     if not exact:
-        for p in c.rootPosition().self_and_siblings():
+        for p in c.rootPosition().self_and_siblings(copy=False):
             if p.h.strip().startswith(h):
                 return p.copy()
     return None

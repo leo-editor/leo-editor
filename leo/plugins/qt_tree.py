@@ -494,7 +494,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.redrawing = True
         try:
             self.getCurrentItem()
-            for p in c.rootPosition().self_and_siblings():
+            for p in c.rootPosition().self_and_siblings(copy=False):
                 # Updates icons in p and all visible descendants of p.
                 self.updateVisibleIcons(p)
         finally:

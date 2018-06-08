@@ -2117,7 +2117,7 @@ class QScintillaColorizer(BaseColorizer):
         '''
         c = self.c
         root = p.copy()
-        for p in root.self_and_parents():
+        for p in root.self_and_parents(copy=False):
             language = self.findFirstValidAtLanguageDirective(p)
             if language:
                 return language

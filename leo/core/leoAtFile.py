@@ -1203,7 +1203,7 @@ class AtFile(object):
         '''Post-process all vnodes.'''
         at = self
         seen = {}
-        for p in root.self_and_subtree():
+        for p in root.self_and_subtree(copy=False):
             v = p.v
             if v.gnx not in seen:
                 seen[v.gnx] = v
@@ -1299,7 +1299,7 @@ class AtFile(object):
     def reportCorrection(self, old, new, v):
         '''Debugging only. Report changed perfect import lines.'''
         at = self
-        found = any([p.v == v for p in at.perfectImportRoot.self_and_subtree()])
+        found = any([p.v == v for p in at.perfectImportRoot.self_and_subtree(copy=False)])
         if found:
             g.pr('\n', '-' * 40)
             g.pr("old", len(old))
@@ -2610,7 +2610,7 @@ class AtFile(object):
             if not at.openFileForWriting(root, targetFileName, toString):
                 # openFileForWriting calls root.setDirty() if there are errors.
                 return
-            for p in root.self_and_subtree():
+            for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
             at.closeWriteFile()
             at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
@@ -2893,7 +2893,7 @@ class AtFile(object):
     def clearAllOrphanBits(self, p):
         '''Clear orphan bits for all nodes *except* orphan @file nodes.'''
         # 2011/06/15: Important bug fix: retain orphan bits for @file nodes.
-        for p2 in p.self_and_subtree():
+        for p2 in p.self_and_subtree(copy=False):
             if p2.isOrphan():
                 if p2.isAnyAtFileNode():
                     pass
@@ -2972,7 +2972,7 @@ class AtFile(object):
                 # Clear the dirty bits in all descendant nodes.
                 # However, persistence data may still have to be written.
                 # This can not be helped.
-                for p2 in p.self_and_subtree():
+                for p2 in p.self_and_subtree(copy=False):
                     p2.v.clearDirty()
     #@+node:ekr.20150602204757.1: *7* at.autoBeautify
     def autoBeautify(self, p):
@@ -4631,7 +4631,7 @@ class AtFile(object):
         at, root = self, self.root
         if at.errors:
             return # No need to repeat this.
-        for p in root.self_and_subtree():
+        for p in root.self_and_subtree(copy=False):
             if not p.v.isVisited():
                 at.writeError("Orphan node:  " + p.h)
                 if p.hasParent():

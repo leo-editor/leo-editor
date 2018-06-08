@@ -1720,7 +1720,7 @@ class LeoFind(object):
             p.moveToThreadNext()
         elif found:
             # Don't look at the node or it's descendants.
-            for p2 in p.self_and_subtree():
+            for p2 in p.self_and_subtree(copy=False):
                 skip.add(p2.v)
             p.moveToNodeAfterTree()
         else:

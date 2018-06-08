@@ -634,7 +634,7 @@ class FileCommands(object):
         if not parent:
             return True
         parents = list(parent.self_and_parents())
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             for z in parents:
                 if p.v == z.v:
                     g.warning('Invalid paste: nodes may not descend from themselves')
@@ -654,7 +654,7 @@ class FileCommands(object):
         '''Reassign all indices in p's subtree.'''
         c = self.c
         ni = g.app.nodeIndices
-        for p2 in p.self_and_subtree():
+        for p2 in p.self_and_subtree(copy=False):
             v = p2.v
             index = ni.getNewIndex(v)
             if 'gnx' in g.app.debug:
@@ -1593,7 +1593,7 @@ class FileCommands(object):
             fc.rootPosition = c.rootPosition()
             fc.vnodesDict = {}
             ref_fname = None
-            for p in c.rootPosition().self_and_siblings():
+            for p in c.rootPosition().self_and_siblings(copy=False):
                 if p.h == PRIVAREA:
                     ref_fname = p.b.split('\n',1)[0].strip()
                     break
@@ -1881,9 +1881,9 @@ class FileCommands(object):
         '''Put all referenced tnodes.'''
         c = self.c
         if self.usingClipboard: # write the current tree.
-            theIter = self.currentPosition.self_and_subtree()
+            theIter = self.currentPosition.self_and_subtree(copy=False)
         else: # write everything
-            theIter = c.all_unique_positions()
+            theIter = c.all_unique_positions(copy=False)
         # Populate tnodes
         tnodes = {}
         for p in theIter:
@@ -2485,7 +2485,7 @@ class FileCommands(object):
         # Create aList of tuples (p,v) having a valid unknownAttributes dict.
         # Create dictionary: keys are vnodes, values are corresonding archived positions.
         pDict = {}; aList = []
-        for p2 in p.self_and_subtree():
+        for p2 in p.self_and_subtree(copy=False):
             if hasattr(p2.v, "unknownAttributes"):
                 aList.append((p2.copy(), p2.v),)
                 pDict[p2.v] = p2.archivedPosition(root_p=p)

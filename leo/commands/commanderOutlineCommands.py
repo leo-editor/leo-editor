@@ -104,7 +104,7 @@ def pasteOutline(self, event=None,
 def computeCopiedBunchList(c, pasted, vnodeInfoDict):
     '''Create a dict containing only copied vnodes.'''
     d = {}
-    for p in pasted.self_and_subtree():
+    for p in pasted.self_and_subtree(copy=False):
         d[p.v] = p.v
     aList = []
     for v in vnodeInfoDict:

@@ -308,7 +308,7 @@ class Position(object):
             aList = [z._childIndex for z in p.self_and_parents()]
         else:
             aList = []
-            for z in p.self_and_parents():
+            for z in p.self_and_parents(copy=False):
                 if z == root_p:
                     aList.append(0)
                     break
@@ -352,7 +352,7 @@ class Position(object):
         """Convert a positions  suboutline to a string in MORE format."""
         p = self; level1 = p.level()
         array = []
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             array.append(p.moreHead(level1) + '\n')
             body = p.moreBody()
             if body:
@@ -433,7 +433,7 @@ class Position(object):
 
         # First, look up the tree.
         p1 = self
-        for p in p1.self_and_parents():
+        for p in p1.self_and_parents(copy=False):
             if predicate(p):
                 yield p.copy() if copy else p
                 return
@@ -469,7 +469,7 @@ class Position(object):
 
         # First, look up the tree.
         p1 = self
-        for p in p1.self_and_parents():
+        for p in p1.self_and_parents(copy=False):
             if predicate(p):
                 yield p.copy() if copy else p
                 return
@@ -565,7 +565,7 @@ class Position(object):
         '''Yield p.v and all unique vnodes in p's subtree.'''
         p = self
         seen = set()
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             if p.v not in seen:
                 seen.add(p.v)
                 yield p.v
@@ -743,15 +743,13 @@ class Position(object):
         with_count - include ',x,y' at end where y zero based count of same headlines
         """
         aList = []
-        for i in self.self_and_parents(copy=False): ###
+        for i in self.self_and_parents(copy=False):
             if with_index or with_count:
-                ### i = i.copy()
                 count = 0
                 ind = 0
                 p = i.copy()
                 while p.hasBack():
                     ind = ind + 1
-                    ### p = p.back().copy()
                     p.moveToBack()
                     if i.h == p.h:
                         count = count + 1
@@ -847,7 +845,7 @@ class Position(object):
         p = self
 
         def visible(p, root=None):
-            for parent in p.parents():
+            for parent in p.parents(copy=False):
                 if parent and parent == root:
                     # Fix bug: https://github.com/leo-editor/leo-editor/issues/12
                     return True
@@ -863,7 +861,7 @@ class Position(object):
             else:
                 return root.isAncestorOf(p) and visible(p, root=root)
         else:
-            for root in c.rootPosition().self_and_siblings():
+            for root in c.rootPosition().self_and_siblings(copy=False):
                 if root == p or root.isAncestorOf(p):
                     return visible(p)
             return False
@@ -919,7 +917,7 @@ class Position(object):
         '''
         p = self
         found, offset = False, 0
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             if p.isAnyAtFileNode():
                 # Ignore parent of @<file> node.
                 found = True
@@ -942,7 +940,7 @@ class Position(object):
     def isOutsideAnyAtFileTree(self):
         '''Select the first clone of target that is outside any @file node.'''
         p = self
-        for parent in p.self_and_parents():
+        for parent in p.self_and_parents(copy=False):
             if parent.isAnyAtFileNode():
                 return False
         return True
@@ -1287,7 +1285,7 @@ class Position(object):
         if p.v:
             child_v = p.v.children and p.v.children[0]
             if child_v:
-                for parent in p.self_and_parents(copy=False): ###
+                for parent in p.self_and_parents(copy=False):
                     if child_v == parent.v:
                         g.app.structure_errors += 1
                         g.error('vnode: %s is its own parent' % child_v)
@@ -1772,7 +1770,7 @@ class Position(object):
     def inAtIgnoreRange(self):
         """Returns True if position p or one of p's parents is an @ignore node."""
         p = self
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             if p.isAtIgnoreNode():
                 return True
         return False
@@ -1829,7 +1827,7 @@ class Position(object):
     def in_at_all_tree(self):
         '''Return True if p or one of p's ancestors is an @all node.'''
         p = self
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             if p.is_at_all():
                 return True
         return False
@@ -1842,7 +1840,7 @@ class Position(object):
     def in_at_ignore_tree(self):
         '''Return True if p or one of p's ancestors is an @ignore node.'''
         p = self
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             if g.match_word(p.h, 0, '@ignore'):
                 return True
         return False

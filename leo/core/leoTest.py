@@ -1483,7 +1483,7 @@ class TestManager(object):
     def findNodeAnywhere(self, headline, breakOnError=False):
         # tm = self
         c = self.c
-        for p in c.all_unique_positions():
+        for p in c.all_unique_positions(copy=False):
             h = headline.strip().lower()
             if p.h.strip().lower() == h:
                 return p.copy()
