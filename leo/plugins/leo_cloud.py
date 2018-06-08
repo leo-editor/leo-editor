@@ -135,9 +135,10 @@ class LeoCloudIOBase:
     """
     def __init__(self, c, p, kwargs):
         """
-        :param context c: Leo outline
-        :param position p: @leo_cloud position
-        :param dict kwargs: key word args from p.b
+        Args:
+            c (context): Leo outline
+            p (position): @leo_cloud position
+            kwargs (dict): key word args from p.b
         """
         self.v = p.v
         self.c = c
@@ -146,7 +147,9 @@ class LeoCloudIOBase:
     def get_subtree(self, lc_id):
         """get_subtree - get a Leo subtree from the cloud
 
-        :param str(?) lc_id: resource to get
+        Args:
+            lc_id (str(?)): resource to get
+
         :returns: vnode build from lc_id
         """
         # pylint: disable=no-member
@@ -156,8 +159,9 @@ class LeoCloudIOBase:
     def put_subtree(self, lc_id, v):
         """put - put a subtree into the Leo Cloud
 
-        :param str(?) lc_id: place to put it
-        :param vnode v: subtree to put
+        Args:
+            lc_id (str(?)): place to put it
+            v (vnode): subtree to put
         """
         # pylint: disable=no-member
         # self.put_data
@@ -171,18 +175,22 @@ class LeoCloudIOFileSystem(LeoCloudIOBase):
     """
     def __init__(self, c, p, kwargs):
         """
-        :param str basepath: root folder for data
+        Args:
+            basepath (str): root folder for data
         """
         LeoCloudIOBase.__init__(self, c, p, kwargs)
-        self.basepath = kwargs['root']
+        self.basepath = os.path.expanduser(kwargs['root'])
         if not os.path.exists(self.basepath):
             os.makedirs((self.basepath))
 
     def get_data(self, lc_id):
         """get_data - get a Leo Cloud resource
 
-        :param str(?) lc_id: resource to get
-        :returns: object loaded from JSON
+        Args:
+            lc_id (str(?)): resource to get
+
+        Returns:
+            object loaded from JSON
         """
         filepath = os.path.join(self.basepath, lc_id+'.json')
         with open(filepath) as data:
@@ -191,8 +199,9 @@ class LeoCloudIOFileSystem(LeoCloudIOBase):
     def put_data(self, lc_id, data):
         """put - store data in the Leo Cloud
 
-        :param str(?) lc_id: place to put it
-        :param obj data: data to store
+        Args:
+            lc_id (str(?)): place to put it
+            data (obj): data to store
         """
         filepath = os.path.join(self.basepath, lc_id+'.json')
         with open(filepath, 'w') as out:
@@ -206,7 +215,8 @@ class LeoCloudIOGit(LeoCloudIOBase):
     """
     def __init__(self, c, p, kwargs):
         """
-        :param str basepath: root folder for data
+        Args:
+            basepath (str): root folder for data
         """
         # if p.v._leo_cloud_io was used, we'd probably also need to pull
         # in get_data(), so don't bother with p.v._leo_cloud_io
@@ -223,14 +233,17 @@ class LeoCloudIOGit(LeoCloudIOBase):
     def _run_git(self, text):
         """_run_git - run a git command
 
-        :param str text: command to run
+        Args:
+            text (str): command to run
         """
         subprocess.Popen(shlex.split(text)).wait()
 
     def get_data(self, lc_id):
         """get_data - get a Leo Cloud resource
 
-        :param str(?) lc_id: resource to get
+        Args:
+            lc_id (str(?)): resource to get
+
         :returns: object loaded from JSON
         """
         filepath = os.path.join(self.local, lc_id+'.json')
@@ -240,8 +253,9 @@ class LeoCloudIOGit(LeoCloudIOBase):
     def put_data(self, lc_id, data):
         """put - store data in the Leo Cloud
 
-        :param str(?) lc_id: place to put it
-        :param obj data: data to store
+        Args:
+            lc_id (str(?)): place to put it
+            data (obj): data to store
         """
         filepath = os.path.join(self.local, lc_id+'.json')
         with open(filepath, 'w') as out:
@@ -254,8 +268,8 @@ class LeoCloudIOGit(LeoCloudIOBase):
 class LeoCloud:
     def __init__(self, c):
         """
-        :param context c: Leo context
-        """
+        Args:
+            c (context): Leo context    """
         self.c = c
         self.bg_finished = False  # used for background thread
         self.bg_results = []      # results from background thread
@@ -271,7 +285,8 @@ class LeoCloud:
 
         WARNING: no gui impacting calls allowed here (g.es() etc.)
 
-        :param list to_check: list of (vnode, kwargs, hash) tuples to check
+        Args:
+            to_check (list): list of (vnode, kwargs, hash) tuples to check
 
         This (background) thread can't handle any changes found, because it
         would have to interact with the user and GUI code can only be called
@@ -293,7 +308,8 @@ class LeoCloud:
         bg_post_process - check to see if background checking is finished,
         handle any changed cloud trees found
 
-        :param leo-idle-timer timer: Leo idle timer
+        Args:
+            timer (leo-idle-timer): Leo idle timer
         """
         if not self.bg_finished:
             return
@@ -312,8 +328,11 @@ class LeoCloud:
     def find_at_leo_cloud(self, p):
         """find_at_leo_cloud - find @leo_cloud node
 
-        :param position p: start from here, work up
-        :return: position or None
+        Args:
+            p (position): start from here, work up
+
+        Returns:
+            position or None
         """
         while not p.h.startswith("@leo_cloud") and p.parent():
             p = p.parent()
@@ -361,16 +380,22 @@ class LeoCloud:
     def from_dict(self, d):
         """from_dict - make a Leo subtree from a dict
 
-        :param dict d: input dict
-        :return: vnode
+        Args:
+            d (dict): input dict
+
+        Returns:
+            vnode
         """
         return self._from_dict_recursive(vnode(self.c), d)
 
     def io_from_node(self, p):
         """io_from_node - create LeoCloudIO instance from body text
 
-        :param position p: node containing text
-        :return: LeoCloudIO instance
+        Args:
+            p (position): node containing text
+
+        Returns:
+            LeoCloudIO instance
         """
         kwargs = self.kw_from_node(p)
         # pylint: disable=eval-used
@@ -380,8 +405,11 @@ class LeoCloud:
     def kw_from_node(self, p):
         """kw_from_node - read keywords from body text
 
-        :param position p: node containing text
-        :return: dict
+        Args:
+            p (position): node containing text
+
+        Returns:
+            dict
         """
         kwargs = {'remote': None}
         # some methods assume 'remote' exists, but it's absent in LeoCloudIOFileSystem
@@ -396,10 +424,9 @@ class LeoCloud:
         load_clouds - Handle loading from cloud on startup and after
         background checking for changes.
 
-        :param set from_background: set of (remote, ID) str tuples if we're
+        Args:
+            from_background (set): set of (remote, ID) str tuples if we're
             called after a background check process finds changes.
-        :return: <|returns|>
-        :rtype: <|return type|>
         """
         if from_background is None:
             from_background = set()
@@ -491,13 +518,13 @@ class LeoCloud:
         """
         recursive_hash - recursively hash a tree
 
-        Note - currently unused but intend to use to analyse changes in trees
+        Args:
+            nd (vnode): node to hash
+            tree (list): recursive list of hashes
+            include_current (bool): include h/b/u of current node in hash?
 
-        :param vnode nd: node to hash
-        :param list tree: recursive list of hashes
-        :param bool include_current: include h/b/u of current node in hash?
-        :return: sha1 hash of tree
-        :rtype: str
+        Returns:
+            str: sha1 hash of tree
 
         Calling with include_current=False ignores the h/b/u of the top node
 
@@ -548,8 +575,11 @@ class LeoCloud:
     def subtree_changed(self, p):
         """subtree_changed - check if subtree is changed
 
-        :param position p: top of subtree
-        :return: bool
+        Args:
+            p (position): top of subtree
+
+        Returns:
+            bool
         """
         if isinstance(p, vnode):
             p = self.c.vnode2position(p)
@@ -573,9 +603,11 @@ class LeoCloud:
     def to_json(data):
         """to_json - convert dict to appropriate JSON
 
-        :param dict data: data to convert
-        :return: json
-        :rtype: str
+        Args:
+            data (dict): data to convert
+
+        Returns:
+            str: json
         """
         return json.dumps(
             data,
@@ -588,9 +620,12 @@ class LeoCloud:
     def _to_dict_recursive(v, d):
         """_to_dict_recursive - recursively make dictionary representation of v
 
-        :param vnode v: subtree to convert
-        :param dict d: dict for results
-        :return: dict of subtree
+        Args:
+            v (vnode): subtree to convert
+            d (dict): dict for results
+
+        Returns:
+            dict of subtree
         """
         d['b'] = v.b
         d['h'] = v.h
@@ -604,8 +639,11 @@ class LeoCloud:
     def to_dict(v):
         """to_dict - make dictionary representation of v
 
-        :param vnode v: subtree to convert
-        :return: dict of subtree
+        Args:
+            v (vnode): subtree to convert
+
+        Returns:
+            dict of subtree
         """
         return LeoCloud._to_dict_recursive(v, dict())
 
@@ -613,8 +651,11 @@ class LeoCloud:
     def _ua_clean(d):
         """_ua_clean - strip todo icons from dict
 
-        :param dict d: dict to clean
-        :return: cleaned dict
+        Args:
+            d (dict): dict to clean
+
+        Returns:
+            cleaned dict
 
         recursive_hash() to compare trees stumbles on todo icons which are
         derived information from the todo attribute and include *local*
