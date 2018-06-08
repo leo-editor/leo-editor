@@ -5356,19 +5356,38 @@ class FastAtRead (object):
             m = comment_pat.match(line)
             if m:
                 # <1, 2 or 3 comment delims>
+                delims = m.group(1)
+                delim1, delim2, delim3 = g.set_delims_from_string(delims)
+                # delim1 is always the single-line delimiter.
+                if delim1:
+                    delim_start, delim_end = delim1, ''
+                else:
+                    delim_start, delim_end = delim2, delim3
                 # Within these delimiters:
                 # - underscores represent a significant space,
                 # - double underscores represent a newline.
-                delims = m.group(1)
-                g.trace(repr(delims))
-                g.trace('@comment not yet supported')
+                delim_start = delim_start.replace('__','\n').replace('_',' ')
+                delim_end = delim_end.replace('__','\n').replace('_',' ')
+                # Recalculate all delim-related values
+                doc_skip = (delim_start + '\n', delim_end + '\n')
+                is_cweb = delim_start == '@q@' and delim_end == '@>'
+                sentinel = delim_start + '@'
                 continue
             m = delims_pat.match(line)
             if m:
                 # <1 or 2 comment delims>
                 delims = m.group(1)
-                g.trace(repr(delims))
-                g.trace('@delims not yet supported')
+                delims_pat = re.compile(r'([^ ]+)(\s+[.*])?')
+                m2 = delims_pat.match(delims)
+                if m2:
+                    delim_start = m2.group(1)
+                    delim_start = m2.group(2) or ''
+                    # Recalculate all delim-related values
+                    doc_skip = (delim_start + '\n', delim_end + '\n')
+                    is_cweb = delim_start == '@q@' and delim_end == '@>'
+                    sentinel = delim_start + '@'
+                else:
+                    g.trace('Ignoring invalid @delim: %r' % line)
                 continue
             #@-<< handle @comment and @delims >>
             #@+<< handle @raw >>
