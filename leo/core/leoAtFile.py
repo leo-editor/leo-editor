@@ -402,7 +402,7 @@ class AtFile(object):
         at.inputFile.close()
         if at.errors == 0:
             g.blue('check-derived-file passed')
-    #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper (**changed**)
+    #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
     def openFileForReading(self, fromString=False):
         '''
         Open the file given by at.root.
@@ -4978,7 +4978,7 @@ class FastAtRead (object):
     def __init__ (self, c, gnx2vnode=None, path=None, root=None):
         
         #@+<< define TestVNode >>
-        #@+node:ekr.20180606070520.1: *3* << define TestVNode >>
+        #@+node:ekr.20180606070520.1: *4* << define TestVNode >>
         class TestVNode (object):
             def __init__(self, context, gnx):
                 self.context = context
