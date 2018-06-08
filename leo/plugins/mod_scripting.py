@@ -524,6 +524,7 @@ class ScriptingController(object):
         if self.scanned:
             return # Defensive.
         self.scanned = True
+        #
         # First, create standard buttons.
         if self.createRunScriptButton:
             self.createRunScriptIconButton()
@@ -531,36 +532,19 @@ class ScriptingController(object):
             self.createScriptButtonIconButton()
         if self.createDebugButton:
             self.createDebugIconButton()
+        #
         # Next, create common buttons and commands.
         self.createCommonButtons()
         self.createCommonCommands()
         #
-        # Use regex.
-        d = table = (
-            ('@button', self.handleAtButtonNode),
-            ('@command', self.handleAtCommandNode),
-            ('@plugin', self.handleAtPluginNode),
-            ('@rclick', self.handleAtRclickNode), # Jake Peck.
-            ('@script', self.handleAtScriptNode),
-        )
-        NEW = False
-        if NEW:
-            d = {
-                'button': self.handleAtButtonNode,
-                'command': self.handleAtCommandNode,
-                'plugin': self.handleAtPluginNode,
-                'rclick': self.handleAtRclickNode,
-                'script': self.handleAtScriptNode,
-            }
-        else:
-            table = (
-                ('@button', self.handleAtButtonNode),
-                ('@command', self.handleAtCommandNode),
-                ('@plugin', self.handleAtPluginNode),
-                ('@rclick', self.handleAtRclickNode), # Jake Peck.
-                ('@script', self.handleAtScriptNode),
-            )
-            assert table
+        # Handle all other nodes.
+        d = {
+            'button': self.handleAtButtonNode,
+            'command': self.handleAtCommandNode,
+            'plugin': self.handleAtPluginNode,
+            'rclick': self.handleAtRclickNode,
+            'script': self.handleAtScriptNode,
+        }
         pattern = re.compile(r'^@(button|command|plugin|rclick|script)\b')
         p = c.rootPosition()
         while p:
@@ -568,24 +552,17 @@ class ScriptingController(object):
             if p.isAtIgnoreNode():
                 p.moveToNodeAfterTree()
             elif gnx in self.seen:
-                # tag:#657
+                # #657
                 # if g.match_word(p.h, 0, '@rclick'):
                 if p.h.startswith('@rlick'):
                     self.handleAtRclickNode(p)
                 p.moveToThreadNext()
             else:
                 self.seen.add(gnx)
-                if NEW:
-                    m = pattern.match(p.h)
-                    if m:
-                        func = d.get(m.group(1))
-                        func(p)
-                        break
-                else:
-                    for kind, func in table:
-                        if g.match_word(p.h, 0, kind):
-                            func(p)
-                            break
+                m = pattern.match(p.h)
+                if m:
+                    func = d.get(m.group(1))
+                    func(p)
                 p.moveToThreadNext()
     #@+node:ekr.20060328125248.24: *3* sc.createLocalAtButtonHelper
     def createLocalAtButtonHelper(self, p, h, statusLine,
