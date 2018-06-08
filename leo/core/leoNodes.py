@@ -1749,11 +1749,11 @@ class Position(object):
     # Compatibility routine for scripts.
 
     def clearVisitedInTree(self):
-        for p in self.self_and_subtree():
+        for p in self.self_and_subtree(copy=False):
             p.clearVisited()
     #@+node:ekr.20031218072017.3388: *5* p.clearAllVisitedInTree
     def clearAllVisitedInTree(self):
-        for p in self.self_and_subtree():
+        for p in self.self_and_subtree(copy=False):
             p.v.clearVisited()
             p.v.clearWriteBit()
     #@+node:ekr.20040305162628: *4* p.Dirty bits

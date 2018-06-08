@@ -402,7 +402,7 @@ class AtFile(object):
         at.inputFile.close()
         if at.errors == 0:
             g.blue('check-derived-file passed')
-    #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
+    #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper (**changed**)
     def openFileForReading(self, fromString=False):
         '''
         Open the file given by at.root.
@@ -415,33 +415,36 @@ class AtFile(object):
                     'can not call at.read from string for @shadow files')
             at.inputFile = g.FileLikeObject(fromString=fromString)
             at.initReadLine(fromString)
-            fn = None
-        else:
-            fn = g.fullPath(c, at.root)
-                # Returns full path, including file name.
-            at.setPathUa(at.root, fn)
-                # Remember the full path to this node.
-            if at.atShadow:
-                fn = at.openAtShadowFileForReading(fn)
-                if not fn: return None
-            try:
-                # Open the file in binary mode to allow 0x1a in bodies & headlines.
-                at.inputFile = open(fn, 'rb')
-                at.readFileToUnicode(fn)
-                    # Sets at.encoding...
-                    #   From the BOM, if present.
-                    #   Otherwise from the header, if it has -encoding=
-                    #   Otherwise, uses existing value of at.encoding.
-                    # Then does:
-                    #    s = s.replace('\r\n','\n')
-                    #    at.initReadLine(s)
-                at.warnOnReadOnlyFile(fn)
-            except IOError:
-                at.error("can not open: '@file %s'" % (fn))
-                at.inputFile = None
-                at._file_bytes = g.toEncodedString('')
-                fn = None
-        return fn
+            return None, None
+        #
+        # Not from a string. Carefully read the file.
+        fn = g.fullPath(c, at.root)
+            # Returns full path, including file name.
+        at.setPathUa(at.root, fn)
+            # Remember the full path to this node.
+        if at.atShadow:
+            fn = at.openAtShadowFileForReading(fn)
+            if not fn:
+                return None, None
+        assert fn
+        try:
+            # Open the file in binary mode to allow 0x1a in bodies & headlines.
+            at.inputFile = open(fn, 'rb')
+            s = at.readFileToUnicode(fn)
+                # Sets at.encoding...
+                #   From the BOM, if present.
+                #   Otherwise from the header, if it has -encoding=
+                #   Otherwise, uses existing value of at.encoding.
+                # Then does:
+                #    s = s.replace('\r\n','\n')
+                #    at.initReadLine(s)
+            at.warnOnReadOnlyFile(fn)
+        except IOError:
+            at.error("can not open: '@file %s'" % (fn))
+            at.inputFile = None
+            at._file_bytes = g.toEncodedString('')
+            fn, s = None, None
+        return fn, s
     #@+node:ekr.20150204165040.4: *6* at.openAtShadowFileForReading
     def openAtShadowFileForReading(self, fn):
         '''Open an @shadow for reading and return shadow_fn.'''
@@ -484,27 +487,46 @@ class AtFile(object):
         if at.errors:
             return False
 
-        fileName = at.openFileForReading(fromString=fromString)
+        fileName, file_s = at.openFileForReading(fromString=fromString)
             # For @shadow files, calls x.updatePublicAndPrivateFiles.
             # Calls at.initReadLine(s), where s is the file contents.
             # This will be used only if not cached.
-            
-        if FAST:
-            gnx2vnode = c.fileCommands.gnxDict
-            ### Clear visited in tree?
-            ### Scan directives???
-            faf = FastAtRead(c, 
-                gnx2vnode=gnx2vnode, path=fileName, root=root)
-            root_vnode, last_lines = faf.read_into_root(fileName, fromString)
-            root.clearDirty()
-            return True
-
+        
+        #
+        # Set the time stamp.
         if fileName and at.inputFile:
             c.setFileTimeStamp(fileName)
-        elif fromString: # 2010/09/02.
-            pass
-        else:
+        elif not fileName and not fromString and not file_s:
             return False
+       
+        if FAST:
+            # These are fast.
+            root.clearVisitedInTree()
+            at.scanAllDirectives(root, importing=at.importing, reading=True)
+                # Sets the following ivars:
+                    # at.default_directory
+                    # at.encoding: **changed later** by readOpenFile/at.scanHeader.
+                    # at.explicitLineEnding
+                    # at.language
+                    # at.output_newline
+                    # at.page_width
+                    # at.tab_width
+            gnx2vnode = c.fileCommands.gnxDict
+            contents = fromString or file_s
+            faf = FastAtRead(c, 
+                gnx2vnode=gnx2vnode, path=fileName, root=root)
+            root_vnode, last_lines = faf.read_into_root(fileName, contents)
+            root.clearDirty()
+            return True
+        #
+        # ===== Legacy code.
+        ### Done above
+            # if fileName and at.inputFile:
+                # c.setFileTimeStamp(fileName)
+            # elif fromString: # 2010/09/02.
+                # pass
+            # else:
+                # return False
         if g.SQLITE and c.sqlite_connection:
             loaded = at.checkExternalFileAgainstDb(root)
             if loaded: return True
@@ -5407,19 +5429,22 @@ class FastAtRead (object):
         self.post_pass(gnx2body, gnx2vnode, root_v)
         return root_v, last_lines
     #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
-    def read_into_root(self, fileName, fromString):
-        '''Read the external file, returning (root_vnode, first_lines).'''
+    def read_into_root(self, fileName, contents):
+        '''Parse the file's contents, creating a tree of vnodes.
+        return the tuple (root_vnode, first_lines).
+        '''
         trace = False
         t1 = time.clock()
         sfn = g.shortFileName(fileName)
-        if fromString:
-            s = fromString
-        else:
-            s, e = g.readFileIntoString(fileName)
-            if not s:
-                return None, []
-            s = s.replace('\r','')
-        lines = g.splitLines(s)
+        # if fromString:
+            # s = fromString
+        # else:
+            # s, e = g.readFileIntoString(fileName)
+            # if not s:
+                # return None, []
+            # s = s.replace('\r','')
+        contents = contents.replace('\r','')
+        lines = g.splitLines(contents)
         data = self.scan_header(lines)
         if data:
             delims, first_lines, start_i = data
