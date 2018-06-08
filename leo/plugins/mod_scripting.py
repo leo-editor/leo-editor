@@ -543,7 +543,8 @@ class ScriptingController(object):
             ('@rclick', self.handleAtRclickNode), # Jake Peck.
             ('@script', self.handleAtScriptNode),
         )
-        if 1:
+        NEW = False
+        if NEW:
             d = {
                 'button': self.handleAtButtonNode,
                 'command': self.handleAtCommandNode,
@@ -574,15 +575,17 @@ class ScriptingController(object):
                 p.moveToThreadNext()
             else:
                 self.seen.add(gnx)
-                m = pattern.match(p.h)
-                if m:
-                    func = d.get(m.group(1))
-                    func(p)
-                    break
-                # for kind, func in table:
-                    # if g.match_word(p.h, 0, kind):
-                        # func(p)
-                        #break
+                if NEW:
+                    m = pattern.match(p.h)
+                    if m:
+                        func = d.get(m.group(1))
+                        func(p)
+                        break
+                else:
+                    for kind, func in table:
+                        if g.match_word(p.h, 0, kind):
+                            func(p)
+                            break
                 p.moveToThreadNext()
     #@+node:ekr.20060328125248.24: *3* sc.createLocalAtButtonHelper
     def createLocalAtButtonHelper(self, p, h, statusLine,
