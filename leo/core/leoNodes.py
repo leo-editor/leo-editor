@@ -197,17 +197,6 @@ class Position(object):
     #@+node:ekr.20080416161551.190: *4*  p.__init__
     def __init__(self, v, childIndex=0, stack=None):
         '''Create a new position with the given childIndex and parent stack.'''
-        
-        ###
-        # if not g.app.statsLockout:
-            # g.app.statsLockout = True
-            # try:
-                # d = g.app.statsDict
-                # key = 'p.__init__:' + g.callers()
-                # d [key] = d.get(key, 0) + 1
-            # finally:
-                # g.app.statsLockout = False
-        
         # To support ZODB the code must set v._p_changed = 1
         # whenever any mutable VNode object changes.
         self._childIndex = childIndex
@@ -1347,17 +1336,6 @@ class Position(object):
     #@+node:ekr.20040117171654: *4* p.copy
     def copy(self):
         """"Return an independent copy of a position."""
-        
-        ###
-        # if not g.app.statsLockout:
-            # g.app.statsLockout = True
-            # try:
-                # d = g.app.statsDict
-                # key = 'p.copy:' + g.callers()
-                # d [key] = d.get(key, 0) + 1
-            # finally:
-                # g.app.statsLockout = False
-
         return Position(self.v, self._childIndex, self.stack)
     #@+node:ekr.20040303175026.9: *4* p.copyTreeAfter, copyTreeTo
     # These used by unit tests, by the group_operations plugin,
