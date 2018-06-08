@@ -530,7 +530,7 @@ class RstCommands(object):
                 h.startswith('@rst') and not h.startswith('@rst-') or
                 h.startswith('@slides'))
 
-        roots = g.findRootsWithPredicate(self.c, p, predicate)
+        roots = g.findRootsWithPredicate(self.c, p, predicate=predicate)
         if roots:
             for p in roots:
                 self.root = p.copy()

@@ -402,29 +402,29 @@ class Position(object):
         return '\n'.join(array)
     #@+node:ekr.20091001141621.6060: *3* p.generators
     #@+node:ekr.20091001141621.6055: *4* p.children
-    def children(self):
+    def children(self, copy=True):
         '''Yield all child positions of p.'''
         p = self
         p = p.firstChild()
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToNext()
 
     # Compatibility with old code...
     children_iter = children
     #@+node:ekr.20091002083910.6102: *4* p.following_siblings
-    def following_siblings(self):
+    def following_siblings(self, copy=True):
         '''Yield all siblings positions that follow p, not including p.'''
         p = self
         p = p.next()
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToNext()
 
     # Compatibility with old code...
     following_siblings_iter = following_siblings
     #@+node:ekr.20161120105707.1: *4* p.nearest_roots
-    def nearest_roots(self, predicate=None):
+    def nearest_roots(self, copy=True, predicate=None):
         '''
         A generator yielding all the root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -446,20 +446,20 @@ class Position(object):
         p1 = self
         for p in p1.self_and_parents():
             if predicate(p):
-                yield p.copy() # 2017/02/19
+                yield p.copy() if copy else p
                 return
         # Next, look for all .md files in the tree.
         after = p1.nodeAfterTree()
         p = p1
         while p and p != after:
             if predicate(p):
-                yield p.copy() # 2017/02/19
+                yield p.copy() if copy else p
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
 
     #@+node:ekr.20161120163203.1: *4* p.nearest_unique_roots (aka p.nearest)
-    def nearest_unique_roots(self, predicate=None):
+    def nearest_unique_roots(self, copy=True, predicate=None):
         '''
         A generator yielding all unique root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -482,7 +482,7 @@ class Position(object):
         p1 = self
         for p in p1.self_and_parents():
             if predicate(p):
-                yield p.copy() # 2017/02/19
+                yield p.copy() if copy else p
                 return
         # Next, look for all unique .md files in the tree.
         seen = set()
@@ -492,7 +492,7 @@ class Position(object):
             if predicate(p):
                 if p.v not in seen:
                     seen.add(p.v)
-                    yield p.copy() # 2017/02/19
+                    yield p.copy() if copy else p
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -512,61 +512,61 @@ class Position(object):
     tnodes_iter = nodes
     vnodes_iter = nodes
     #@+node:ekr.20091001141621.6058: *4* p.parents
-    def parents(self):
+    def parents(self, copy=True):
         '''Yield all parent positions of p.'''
         p = self
         p = p.parent()
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToParent()
 
     # Compatibility with old code...
     parents_iter = parents
     #@+node:ekr.20091002083910.6099: *4* p.self_and_parents
-    def self_and_parents(self):
+    def self_and_parents(self, copy=True):
         '''Yield p and all parent positions of p.'''
         p = self
         p = p.copy()
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToParent()
 
     # Compatibility with old code...
     self_and_parents_iter = self_and_parents
     #@+node:ekr.20091001141621.6057: *4* p.self_and_siblings
-    def self_and_siblings(self):
+    def self_and_siblings(self, copy=True):
         '''Yield all sibling positions of p including p.'''
         p = self
         p = p.copy()
         while p.hasBack():
             p.moveToBack()
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToNext()
 
     # Compatibility with old code...
     self_and_siblings_iter = self_and_siblings
     #@+node:ekr.20091001141621.6066: *4* p.self_and_subtree
-    def self_and_subtree(self):
+    def self_and_subtree(self, copy=True):
         '''Yield p and all positions in p's subtree.'''
         p = self
         p = p.copy()
         after = p.nodeAfterTree()
         while p and p != after:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToThreadNext()
 
     # Compatibility with old code...
     self_and_subtree_iter = self_and_subtree
     #@+node:ekr.20091001141621.6056: *4* p.subtree
-    def subtree(self):
+    def subtree(self, copy=True):
         '''Yield all positions in p's subtree, but not p.'''
         p = self
         p = p.copy()
         after = p.nodeAfterTree()
         p.moveToThreadNext()
         while p and p != after:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToThreadNext()
 
     # Compatibility with old code...
@@ -585,7 +585,7 @@ class Position(object):
     unique_tnodes_iter = unique_nodes
     unique_vnodes_iter = unique_nodes
     #@+node:ekr.20091002083910.6103: *4* p.unique_subtree
-    def unique_subtree(self):
+    def unique_subtree(self, copy=True):
         '''Yield p and all other unique positions in p's subtree.'''
         p = self
         seen = set()
@@ -593,7 +593,7 @@ class Position(object):
             if p.v not in seen:
                 seen.add(p.v)
                 # Fixed bug 1255208: p.unique_subtree returns vnodes, not positions.
-                yield p.copy()
+                yield p.copy() if copy else p
 
     # Compatibility with old code...
     subtree_with_unique_tnodes_iter = unique_subtree

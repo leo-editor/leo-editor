@@ -737,7 +737,7 @@ class Commands(object):
     def all_unique_nodes(self):
         '''A generator returning each vnode of the outline.'''
         c = self
-        for p in c.all_unique_positions():
+        for p in c.all_unique_positions(copy=False):
             yield p.v
 
     # Compatibility with old code...
@@ -746,19 +746,19 @@ class Commands(object):
     all_unique_tnodes_iter = all_unique_nodes
     all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6044: *5* c.all_positions
-    def all_positions(self):
+    def all_positions(self, copy=True):
         '''A generator return all positions of the outline, in outline order.'''
         c = self
         p = c.rootPosition()
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToThreadNext()
 
     # Compatibility with old code...
     all_positions_iter = all_positions
     allNodes_iter = all_positions
     #@+node:ekr.20161120121226.1: *5* c.all_roots
-    def all_roots(self, predicate=None):
+    def all_roots(self, copy=True, predicate=None):
         '''
         A generator yielding *all* the root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -783,7 +783,7 @@ class Commands(object):
                 p.moveToThreadNext()
 
     #@+node:ekr.20161120125322.1: *5* c.all_unique_roots
-    def all_unique_roots(self, predicate=None):
+    def all_unique_roots(self, copy=True, predicate=None):
         '''
         A generator yielding all unique root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -804,12 +804,12 @@ class Commands(object):
         while p:
             if p.v not in seen and predicate(p):
                 seen.add(p.v)
-                yield p.copy() # 2017/02/19
+                yield p.copy() if copy else p
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20091001141621.6062: *5* c.all_unique_positions
-    def all_unique_positions(self):
+    def all_unique_positions(self, copy=True):
         '''
         A generator return all positions of the outline, in outline order.
         Returns only the first position for each vnode.
@@ -822,14 +822,14 @@ class Commands(object):
                 p.moveToNodeAfterTree()
             else:
                 seen.add(p.v)
-                yield p.copy()
+                yield p.copy() if copy else p
                 p.moveToThreadNext()
 
     # Compatibility with old code...
     all_positions_with_unique_tnodes_iter = all_unique_positions
     all_positions_with_unique_vnodes_iter = all_unique_positions
     #@+node:ekr.20150316175921.5: *5* c.safe_all_positions
-    def safe_all_positions(self):
+    def safe_all_positions(self, copy=True):
         '''
         A generator returning all positions of the outline. This generator does
         *not* assume that vnodes are never their own ancestors.
@@ -837,7 +837,7 @@ class Commands(object):
         c = self
         p = c.rootPosition() # Make one copy.
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.safeMoveToThreadNext()
     #@+node:ekr.20060906211747: *4* c.Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition
