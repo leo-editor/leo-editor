@@ -6,7 +6,7 @@
 """Classes to read and write @file nodes."""
 #@+<< define FAST (leoAtFile) >>
 #@+node:ekr.20180605093406.1: ** << define FAST (leoAtFile) >>
-FAST = False
+FAST = True
 if FAST:
     print('\n===== FAST (leoAtFile) ===== \n')
 
