@@ -414,7 +414,7 @@ class AtFile(object):
                 return at.error(
                     'can not call at.read from string for @shadow files')
             at.inputFile = g.FileLikeObject(fromString=fromString)
-            at.initReadLine(fromString) # 2014/10/07
+            at.initReadLine(fromString)
             fn = None
         else:
             fn = g.fullPath(c, at.root)
@@ -475,7 +475,7 @@ class AtFile(object):
             # Fix bug 760531: always mark the root as read, even if there was an error.
             # Fix bug 889175: Remember the full fileName.
         root.clearOrphan()
-            # 2015/04/17: Clear the bit and continue so that the
+            # Clear the bit and continue so that the
             # outline can be updated from the external file.
         at.initReadIvars(root, fileName,
             importFileName=importFileName, atShadow=atShadow)
@@ -2329,167 +2329,60 @@ class AtFile(object):
         p.v.setVisited() # Suppress warning about unvisited node.
         return p
     #@+node:ekr.20041005105605.120: *5* at.parseLeoSentinel
-    if 1: # Experimental. All unit tests pass.
-
-        def parseLeoSentinel(self, s):
-            '''
-            Parse the sentinel line s.
-            If the sentinel is valid, set at.encoding, at.readVersion, at.readVersion5.
-            '''
-            at, c = self, self.c
-            # Set defaults.
-            encoding = c.config.default_derived_file_encoding
-            readVersion, readVersion5 = None, None
-            new_df, start, end, isThin = False, '', '', False
-            # Example: \*@+leo-ver=5-thin-encoding=utf-8,.*/
-            pattern = re.compile(r'(.+)@\+leo(-ver=([0123456789]+))?(-thin)?(-encoding=(.*)(\.))?(.*)')
-                # The old code weirdly allowed '.' in version numbers.
-            m = pattern.match(s)
-            valid = bool(m)
-            if valid:
-                # set start delim: whitespace before @+leo is significant.
-                # group(1): \*
-                start = m.group(1)
-                valid = bool(start)
-            if valid:
-                # set new_df
-                # group(2): -ver=5
-                new_df = bool(m.group(2))
-                if new_df:
-                    # Set the version number.
-                    # group(3): 5
-                    if m.group(3):
-                        readVersion = m.group(3)
-                        readVersion5 = readVersion >= '5'
-                    else:
-                        valid = False
-            if valid:
-                # set isThin
-                # group(4): -thin
-                isThin = bool(m.group(4))
-            if valid and m.group(5):
-                # set encoding.
-                # group(5): -encoding=utf-8,.
-                # group(6): utf-8,
-                # group(7): .
-                encoding = m.group(6)
-                if encoding and encoding.endswith(','):
-                    # Leo 4.2 or after.
-                    encoding = encoding[:-1]
-                if not g.isValidEncoding(encoding):
-                    g.es_print("bad encoding in derived file:", encoding)
-                    valid = False
-            if valid:
-                # set end.
-                # group(8): */
-                end = m.group(8)
-            if valid:
-                at.encoding = encoding
-                at.readVersion = readVersion
-                at.readVersion5 = readVersion5
-            return valid, new_df, start, end, isThin
-
-    else:
-
-        def parseLeoSentinel(self, s):
-            at = self; c = at.c
-            new_df = False; valid = True; n = len(s)
-            start = ''; end = ''; isThinDerivedFile = False
-            encoding_tag = "-encoding="
-            version_tag = "-ver="
-            tag = "@+leo"
-            thin_tag = "-thin"
-            #@+<< set the opening comment delim >>
-            #@+node:ekr.20041005105605.121: *6* << set the opening comment delim >>
-            # s contains the tag
-            i = j = g.skip_ws(s, 0)
-            # The opening comment delim is the initial non-tag
-            while i < n and not g.match(s, i, tag) and not g.is_nl(s, i):
-                i += 1
-            if j < i:
-                start = s[j: i]
-            else:
-                valid = False
-            #@-<< set the opening comment delim >>
-            #@+<< make sure we have @+leo >>
-            #@+node:ekr.20041005105605.122: *6* << make sure we have @+leo >>
-            #@+at
-            # REM hack: leading whitespace is significant before the
-            # @+leo. We do this so that sentinelKind need not skip
-            # whitespace following self.startSentinelComment. This is
-            # correct: we want to be as restrictive as possible about what
-            # is recognized as a sentinel. This minimizes false matches.
-            #@@c
-            if 0: # Make leading whitespace significant.
-                i = g.skip_ws(s, i)
-            if g.match(s, i, tag):
-                i += len(tag)
-            else:
-                valid = False
-            #@-<< make sure we have @+leo >>
-            #@+<< read optional version param >>
-            #@+node:ekr.20041005105605.123: *6* << read optional version param >>
-            new_df = g.match(s, i, version_tag)
+    def parseLeoSentinel(self, s):
+        '''
+        Parse the sentinel line s.
+        If the sentinel is valid, set at.encoding, at.readVersion, at.readVersion5.
+        '''
+        at, c = self, self.c
+        # Set defaults.
+        encoding = c.config.default_derived_file_encoding
+        readVersion, readVersion5 = None, None
+        new_df, start, end, isThin = False, '', '', False
+        # Example: \*@+leo-ver=5-thin-encoding=utf-8,.*/
+        pattern = re.compile(r'(.+)@\+leo(-ver=([0123456789]+))?(-thin)?(-encoding=(.*)(\.))?(.*)')
+            # The old code weirdly allowed '.' in version numbers.
+            # group 1: opening delim
+            # group 2: -ver=
+            # group 3: version number
+            # group(4): -thin
+            # group(5): -encoding=utf-8,.
+            # group(6): utf-8,
+            # group(7): .
+            # group(8): closing delim.
+        m = pattern.match(s)
+        valid = bool(m)
+        if valid:
+            start = m.group(1) # start delim
+            valid = bool(start)
+        if valid:
+            new_df = bool(m.group(2)) # -ver=
             if new_df:
-                # Pre Leo 4.4.1: Skip to the next minus sign or end-of-line.
-                # Leo 4.4.1 +:   Skip to next minus sign, end-of-line,
-                #                or non numeric character.
-                # This is required to handle trailing comment delims properly.
-                i += len(version_tag)
-                j = i
-                while i < len(s) and (s[i] == '.' or s[i].isdigit()):
-                    i += 1
-                at.readVersion = s[j: i] # 2010/05/18.
-                at.readVersion5 = at.readVersion >= '5'
-                if j < i:
-                    pass
+                # Set the version number.
+                if m.group(3):
+                    readVersion = m.group(3)
+                    readVersion5 = readVersion >= '5'
                 else:
                     valid = False
-            #@-<< read optional version param >>
-            #@+<< read optional thin param >>
-            #@+node:ekr.20041005105605.124: *6* << read optional thin param >>
-            if g.match(s, i, thin_tag):
-                i += len(tag)
-                isThinDerivedFile = True
-            #@-<< read optional thin param >>
-            #@+<< read optional encoding param >>
-            #@+node:ekr.20041005105605.125: *6* << read optional encoding param >>
-            # Set the default encoding
-            at.encoding = c.config.default_derived_file_encoding
-            if g.match(s, i, encoding_tag):
-                # Read optional encoding param, e.g., -encoding=utf-8,
-                i += len(encoding_tag)
-                # Skip to the next end of the field.
-                j = s.find(",.", i)
-                if j > -1:
-                    # The encoding field was written by 4.2 or after:
-                    encoding = s[i: j]
-                    i = j + 2 # 6/8/04, 1/11/05 (was i = j + 1)
-                else:
-                    # The encoding field was written before 4.2.
-                    j = s.find('.', i)
-                    if j > -1:
-                        encoding = s[i: j]
-                        i = j + 1 # 6/8/04
-                    else:
-                        encoding = None
-                if encoding:
-                    if g.isValidEncoding(encoding):
-                        at.encoding = encoding
-                    else:
-                        g.es_print("bad encoding in derived file:", encoding)
-                else:
-                    valid = False
-            #@-<< read optional encoding param >>
-            #@+<< set the closing comment delim >>
-            #@+node:ekr.20041005105605.126: *6* << set the closing comment delim >>
-            # The closing comment delim is the trailing non-whitespace.
-            i = j = g.skip_ws(s, i)
-            while i < n and not g.is_ws(s[i]) and not g.is_nl(s, i):
-                i += 1
-            end = s[j: i]
-            #@-<< set the closing comment delim >>
-            return valid, new_df, start, end, isThinDerivedFile
+        if valid:
+            # set isThin
+            isThin = bool(m.group(4))
+        if valid and m.group(5):
+            # set encoding.
+            encoding = m.group(6)
+            if encoding and encoding.endswith(','):
+                # Leo 4.2 or after.
+                encoding = encoding[:-1]
+            if not g.isValidEncoding(encoding):
+                g.es_print("bad encoding in derived file:", encoding)
+                valid = False
+        if valid:
+            end = m.group(8) # closing delim
+        if valid:
+            at.encoding = encoding
+            at.readVersion = readVersion
+            at.readVersion5 = readVersion5
+        return valid, new_df, start, end, isThin
     #@+node:ekr.20041005105605.127: *5* at.readError
     def readError(self, message):
         # This is useful now that we don't print the actual messages.
