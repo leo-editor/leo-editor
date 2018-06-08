@@ -2768,6 +2768,20 @@ def clearStats():
 #@+node:ekr.20031218072017.3135: *4* g.printStats
 @command('print-stats')
 def printStats(event=None, name=None):
+    '''
+    Print all gathered statistics.
+    
+    Here is the recommended code to gather stats for one method/function:
+        
+        if not g.app.statsLockout:
+            g.app.statsLockout = True
+            try:
+                d = g.app.statsDict
+                key = 'g.isUnicode:' + g.callers()
+                d [key] = d.get(key, 0) + 1
+            finally:
+                g.app.statsLockout = False
+    '''
     if name:
         if not isString(name):
             name = repr(name)

@@ -754,15 +754,16 @@ class Position(object):
         with_count - include ',x,y' at end where y zero based count of same headlines
         """
         aList = []
-        for i in self.self_and_parents():
+        for i in self.self_and_parents(copy=False): ###
             if with_index or with_count:
-                i = i.copy()
+                ### i = i.copy()
                 count = 0
                 ind = 0
                 p = i.copy()
                 while p.hasBack():
                     ind = ind + 1
-                    p = p.back().copy()
+                    ### p = p.back().copy()
+                    p.moveToBack()
                     if i.h == p.h:
                         count = count + 1
                 aList.append(i.h.replace('-->', '--%3E') + ":" + str(ind))
@@ -1346,6 +1347,17 @@ class Position(object):
     #@+node:ekr.20040117171654: *4* p.copy
     def copy(self):
         """"Return an independent copy of a position."""
+        
+        ###
+        # if not g.app.statsLockout:
+            # g.app.statsLockout = True
+            # try:
+                # d = g.app.statsDict
+                # key = 'p.copy:' + g.callers()
+                # d [key] = d.get(key, 0) + 1
+            # finally:
+                # g.app.statsLockout = False
+
         return Position(self.v, self._childIndex, self.stack)
     #@+node:ekr.20040303175026.9: *4* p.copyTreeAfter, copyTreeTo
     # These used by unit tests, by the group_operations plugin,
