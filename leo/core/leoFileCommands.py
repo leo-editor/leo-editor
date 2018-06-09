@@ -40,7 +40,7 @@ import tempfile
 import zipfile
 import sqlite3
 import hashlib
-from contextlib import contextmanager
+# from contextlib import contextmanager
 PRIVAREA = '---begin-private-area---'
 #@-<< imports >>
 #@+others
@@ -309,8 +309,8 @@ class FileCommands(object):
             if FAST:
                 fastReader = FastRead(c, self.gnxDict)
                 ok = fastReader.readFile(fileName)
-            else:
-                ok = fc.getLeoFileHelper(theFile, fileName, silent)
+            # else:
+                # ok = fc.getLeoFileHelper(theFile, fileName, silent)
             if ok:
                 fc.resolveTnodeLists()
                     # Do this before reading external files.
@@ -485,120 +485,6 @@ class FileCommands(object):
         junk, junk, secondary_ratio = self.frame.initialRatios()
         c.frame.resizePanesToRatio(ratio, secondary_ratio)
         return ok
-    #@+node:vitalije.20170831144643.1: *5* fc.updateFromRefFile
-    def updateFromRefFile(self):
-        '''Updates public part of outline from the specified file.'''
-        fc = self; c = self.c
-        #@+others
-        #@+node:vitalije.20170831144827.2: *6* get_ref_filename
-        def get_ref_filename():
-            for v in priv_vnodes():
-                return g.splitLines(v.b)[0].strip()
-        #@+node:vitalije.20170831144827.3: *6* createSaxChildren2
-        def createSaxChildren2(sax_node, parent_v):
-            children = []
-            for sax_child in sax_node.children:
-                tnx = sax_child.tnx
-                v = fc.gnxDict.get(tnx)
-                if v: # A clone.
-                    fc.updateSaxClone(sax_child, parent_v, v)
-                else:
-                    v = fc.createSaxVnode(sax_child, parent_v)
-                    createSaxChildren2(sax_child, v)
-                children.append(v)
-            return children
-        #@+node:vitalije.20170831144827.4: *6* pub_vnodes
-        def pub_vnodes():
-            for v in c.hiddenRootNode.children:
-                if v.h == PRIVAREA:
-                    break
-                yield v
-
-        #@+node:vitalije.20170831144827.5: *6* priv_vnodes
-        def priv_vnodes():
-            pub = True
-            for v in c.hiddenRootNode.children:
-                if v.h == PRIVAREA:
-                    pub = False
-                if pub: continue
-                yield v
-        #@+node:vitalije.20170831144827.6: *6* pub_gnxes
-        def sub_gnxes(children):
-            for v in children:
-                yield v.gnx
-                for gnx in sub_gnxes(v.children):
-                    yield gnx
-
-        def pub_gnxes():
-            return sub_gnxes(pub_vnodes())
-
-        def priv_gnxes():
-            return sub_gnxes(priv_vnodes())
-        #@+node:vitalije.20170831144827.7: *6* restore_priv
-        def restore_priv(prdata, topgnxes):
-            vnodes = []
-            for row in prdata:
-                (gnx,
-                    h,
-                    b,
-                    children,
-                    parents,
-                    iconVal,
-                    statusBits,
-                    ua) = row
-                v = leoNodes.VNode(context=c, gnx=gnx)
-                v._headString = h
-                v._bodyString = b
-                v.children = children
-                v.parents = parents
-                v.iconVal = iconVal
-                v.statusBits = statusBits
-                v.u = ua
-                vnodes.append(v)
-            pv = lambda x: fc.gnxDict.get(x, c.hiddenRootNode)
-            for v in vnodes:
-                v.children = [pv(x) for x in v.children]
-                v.parents = [pv(x) for x in v.parents]
-            for gnx in topgnxes:
-                v = fc.gnxDict[gnx]
-                c.hiddenRootNode.children.append(v)
-        #@+node:vitalije.20170831144827.8: *6* priv_data
-        def priv_data(gnxes):
-            dbrow = lambda v:(
-                        v.gnx,
-                        v.h,
-                        v.b,
-                        [x.gnx for x in v.children],
-                        [x.gnx for x in v.parents],
-                        v.iconVal,
-                        v.statusBits,
-                        v.u
-                    )
-            return tuple(dbrow(fc.gnxDict[x]) for x in gnxes)
-        #@+node:vitalije.20170831144827.9: *6* nosqlite_commander
-        @contextmanager
-        def nosqlite_commander(fname):
-            oldname = c.mFileName
-            conn = getattr(c, 'sqlite_connection', None)
-            c.sqlite_connection = None
-            c.mFileName = fname
-            yield c
-            if c.sqlite_connection:
-                c.sqlite_connection.close()
-            c.mFileName = oldname
-            c.sqlite_connection = conn
-        #@-others
-        pubgnxes = set(pub_gnxes())
-        privgnxes = set(priv_gnxes())
-        privnodes = priv_data(privgnxes - pubgnxes)
-        toppriv = [v.gnx for v in priv_vnodes()]
-        fname = get_ref_filename()
-        with nosqlite_commander(fname):
-            theFile = open(fname, 'rb')
-            fc.initIvars()
-            fc.getLeoFile(theFile, fname, checkOpenFiles=False)
-        restore_priv(privnodes, toppriv)
-        c.redraw()
     #@+node:vitalije.20170831154734.1: *5* fc.setReferenceFile
     def setReferenceFile(self, fileName):
         c = self.c

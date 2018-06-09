@@ -4978,7 +4978,7 @@ class FastAtRead (object):
     def __init__ (self, c, gnx2vnode=None, path=None, root=None):
         
         #@+<< define TestVNode >>
-        #@+node:ekr.20180606070520.1: *4* << define TestVNode >>
+        #@+node:ekr.20180606070520.1: *3* << define TestVNode >>
         class TestVNode (object):
             def __init__(self, context, gnx):
                 self.context = context
