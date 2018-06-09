@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.66">
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.51">
 	<global_window_position top="106" left="365" height="894" width="1078"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -273,7 +273,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3871097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3571017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3871097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -389,6 +389,18 @@
 </v>
 <v t="ekr.20100131171342.5608"><vh>@test g.KeyStroke</vh></v>
 <v t="ekr.20180527141026.1"><vh>@test g.KeyStroke (printable characters)</vh></v>
+<v t="ekr.20180609150109.1"><vh>To be removed</vh>
+<v t="ekr.20100131180007.5451"><vh>@test fc.cleanSaxInputString</vh></v>
+<v t="ekr.20100131180007.5450"><vh>@test fc.getSaxUa</vh></v>
+<v t="ekr.20100131180007.5463"><vh>@test fc.handleTnodeSaxAttributes</vh></v>
+<v t="ekr.20100131180007.5460"><vh>@test fc.handleVnodeSaxAttributes</vh></v>
+</v>
+<v t="ekr.20180609150500.1"><vh>Failures involving paste outline</vh>
+<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
+<v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
+<v t="ekr.20111006064419.3491"><vh>@test delete-marked-nodes</vh></v>
+<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -873,6 +885,71 @@ for h in sorted(d2.keys()):
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
+</t>
+<t tx="ekr.20080423110627.5">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+child = p.insertAsNthChild(0)
+child.setHeadString('child')
+child2 = p.insertAsNthChild(1)
+child2.setHeadString('child2')
+grandChild = child.insertAsNthChild(0)
+grandChild.setHeadString('grand child')
+c.selectPosition(grandChild)
+c.clone()
+c.selectPosition(child)
+
+try:
+    p.expand()
+    c.selectPosition(child)
+    assert c.p.h == 'child','fail 1'
+    c.copyOutline()
+    oldVnodes = [p2.v for p2 in child.self_and_subtree()]
+    c.selectPosition(child)
+    c.p.contract() # Essential
+    c.pasteOutline()
+    assert c.p != child, 'fail 2'
+    assert c.p.h == 'child','fail 3'
+    newVnodes = [p2.v for p2 in c.p.self_and_subtree()]
+    for v in newVnodes:
+        assert v not in oldVnodes, 'fail 4'
+    c.undoer.undo()
+    c.undoer.redo()
+    c.undoer.undo()
+    c.undoer.redo()
+
+finally:
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+    if 1:
+        c.redraw_now(p)
+</t>
+<t tx="ekr.20080423110627.8">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+child = p.insertAsNthChild(0)
+child.setHeadString('child')
+assert child, 'no child'
+grandChild = child.insertAsNthChild(0)
+grandChild.setHeadString('grand child')
+
+try:
+    c.selectPosition(child)
+    c.copyOutline()
+    oldVnodes = [p2.v for p2 in child.self_and_subtree()]
+    c.p.contract() # Essential
+    c.pasteOutlineRetainingClones()
+    assert c.p != child, 'fail 2'
+    newVnodes = [p2.v for p2 in c.p.self_and_subtree()]
+    for v in newVnodes:
+        assert v in oldVnodes, 'fail 3'
+finally:
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+    if 1:
+        c.redraw_now(p)
 </t>
 <t tx="ekr.20080904084223.1"># changed.
 @others
@@ -1556,6 +1633,160 @@ for setting, result in table:
     val = stroke.s
     assert val==result,'For %r, expected %r, Got %r' % (setting, result,val)
 </t>
+<t tx="ekr.20100131180007.5450">expectedIconDictList = [
+{
+    'on': 'tnode',
+    'where': 'beforeHeadline',
+    'yoffset': 0,
+    # 'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\add.png',
+    'file': 'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\add.png',
+    'xpad': 1,
+    'type': 'file',
+    'xoffset': 2,
+    # 'relPath': u'Tango\\16x16\\actions\\add.png',
+    'relPath': 'Tango\\16x16\\actions\\add.png',
+},
+{
+    'on': 'tnode',
+    'where': 'beforeHeadline',
+    'yoffset': 0,
+    # 'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png',
+    'file': 'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png',
+    'xpad': 1,
+    'type': 'file',
+    'xoffset': 2,
+    # 'relPath': u'Tango\\16x16\\actions\\bottom.png',
+    'relPath': 'Tango\\16x16\\actions\\bottom.png',
+}]
+table = (
+('tx','raw',None,"ekr.20090701133940.1767"),
+('lineYOffset',None,3,"4b032e"),
+# A real icon
+('icons',None,expectedIconDictList,
+"5d7100287d71012855026f6e71025505746e6f6465710355047479\
+70657104550466696c6571055507796f666673657471064b006805583700000\
+0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
+676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
+471084b01550577686572657109550e6265666f7265486561646c696e65710a\
+5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
+e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
+55026f6e710f68035504747970657110550466696c6571115507796f6666736\
+57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
+656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
+4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
+65666f7265486561646c696e6571165507786f666673657471174b025507726\
+56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
+5c626f74746f6d2e706e67711975652e"),
+)
+for attr,kind,expected,val in table:
+    result = c.fileCommands.getSaxUa(attr,val,kind=kind)
+    if expected is None: expected = val
+    assert g.toEncodedString(expected)==result,'expected %s got %s' % (
+        expected,result)
+</t>
+<t tx="ekr.20100131180007.5451">s = 'test%cthis' % 27
+
+assert c.fileCommands.cleanSaxInputString(s) == 'test this'
+</t>
+<t tx="ekr.20100131180007.5460">sax_node = g.bunch(
+    attributes={
+'a':'M',
+'lineYOffset':"4b032e",
+# A real icon attribute, see the tests below for what we expect
+'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
+70657104550466696c6571055507796f666673657471064b006805583700000\
+0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
+676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
+471084b01550577686572657109550e6265666f7265486561646c696e65710a\
+5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
+e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
+55026f6e710f68035504747970657110550466696c6571115507796f6666736\
+57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
+656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
+4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
+65666f7265486561646c696e6571165507786f666673657471174b025507726\
+56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
+5c626f74746f6d2e706e67711975652e"
+})
+try:
+    p2 = p.insertAsLastChild()
+    v = p2.v
+    c.fileCommands.handleVnodeSaxAttributes(sax_node,v)
+    d = v.u
+    for attr in ('lineYOffset','icons'):
+        assert d.get(attr) is not None,attr
+    # The a:M attribute should mark the node.
+    assert d.get('a') is None
+    assert v.isMarked()
+    aList = d.get('icons')
+    assert aList
+    assert len(aList) == 2
+    for d2 in aList:
+        for key in ('on','where','yoffset','file'):
+            assert d2.get(key) is not None,key
+finally:
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete()
+</t>
+<t tx="ekr.20100131180007.5463">sax_node = g.bunch(
+    tnodeAttributes={
+# The 'tx' attribute is handled by contentHandler.tnodeAttributes.
+# 'tx':"ekr.20090701133940.1767",
+'lineYOffset':"4b032e",
+# A real icon attribute, see the tests below for what we expect
+'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
+70657104550466696c6571055507796f666673657471064b006805583700000\
+0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
+676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
+471084b01550577686572657109550e6265666f7265486561646c696e65710a\
+5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
+e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
+55026f6e710f68035504747970657110550466696c6571115507796f6666736\
+57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
+656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
+4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
+65666f7265486561646c696e6571165507786f666673657471174b025507726\
+56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
+5c626f74746f6d2e706e67711975652e"
+})
+try:
+    p2 = p.insertAsLastChild()
+    v = p2.v
+    c.fileCommands.handleTnodeSaxAttributes(sax_node,v)
+    d = v.u
+    for attr in ('lineYOffset','icons'):
+        assert d.get(attr),attr
+    for attr in ('tx','a'):
+        assert d.get(attr) is None,attr # A known attribute.
+finally:
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete()
+</t>
+<t tx="ekr.20100204053330.5367">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode = None)
+try:
+    p1 = p.insertAsLastChild()
+    s = '\xd4\xc5\xd3\xd4' # the word 'test' in Russian, koi8-r
+    if g.isPython3:
+        assert g.isUnicode(s)
+    else:
+        s = unicode(s,'koi8-r')
+    p1.setBodyString(s)
+    c.selectPosition(p1)
+    c.copyOutline()
+    c.pasteOutline()
+    p2 = p1.next()
+    # self.assertEqual(p1.b, p2.b) # 'self' defined only when unit-testing.
+    assert p1.b == p2.b
+finally:
+    if 1:
+         while root.hasChildren():
+              root.firstChild().doDelete(newNode = None)
+    c.redraw_now(p)
+</t>
 <t tx="ekr.20100731163237.5782">@language html
 
 &lt;&lt; a section reference &gt;&gt;
@@ -1590,6 +1821,28 @@ False:
 </t>
 <t tx="ekr.20110615130436.3317"># This was used by @test writing a .leo file retains orphan bits.
 # but this test is moot because Leo no longer writes orphan bits.</t>
+<t tx="ekr.20111006064419.3491">if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+
+    exec(g.findTestScript(c,'@common x-marked-nodes test code'))
+    
+    def test(p):
+        setup_test(p)
+        c.deleteMarked()
+        n = p.numberOfChildren()
+        assert n == 2 ,'delete: children: %s' % (n)
+        c.undoer.undo()
+        n = p.numberOfChildren()
+        assert n == 4,'undo: children: %s' % (n)
+        c.undoer.redo()
+        n = p.numberOfChildren()
+        assert n == 2 ,'delete: children: %s' % (n)
+    try:
+        test(p)
+    finally:
+        tear_down(p)
+</t>
 <t tx="ekr.20111021115306.3697">\begin{document}
 &lt;&lt; Document &gt;&gt;
 % hidden comment
@@ -7073,5 +7326,7 @@ for ch in string.digits + letters:
     stroke = g.KeyStroke(binding='Shift-'+ch)
     assert stroke.s in string.printable, (repr(ch), repr(stroke.s))
 </t>
+<t tx="ekr.20180609150109.1"></t>
+<t tx="ekr.20180609150500.1"></t>
 </tnodes>
 </leo_file>

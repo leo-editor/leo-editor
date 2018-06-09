@@ -82,7 +82,7 @@ class Cacher(object):
             return db
         except Exception:
             return {} # Use a plain dict as a dummy.
-    #@+node:ekr.20100210163813.5747: *4* cacher.save
+    #@+node:ekr.20100210163813.5747: *4* cacher.save (revise)
     def save(self, fn, changeName):
         if SQLITE:
             self.commit(True)
@@ -435,7 +435,7 @@ class Cacher(object):
             #self.createOutlineFromCacheList(root.v, aList, fileName=fileName)
         return s, ok, key
     #@+node:ekr.20100208082353.5927: *3* cacher.Writing
-    #@+node:ekr.20100208071151.5901: *4* cacher.makeCacheList
+    #@+node:ekr.20100208071151.5901: *4* cacher.makeCacheList (to be removed)
     def makeCacheList(self, p):
         '''Create a recursive list describing a tree
         for use by createOutlineFromCacheList.

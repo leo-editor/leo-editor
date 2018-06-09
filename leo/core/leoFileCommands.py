@@ -123,8 +123,6 @@ class FileCommands(object):
     @cmd('check-leo-file')
     def checkLeoFile(self, event=None):
         '''The check-leo-file command.'''
-        g.trace('===== not ready yet: uses sax')
-        return ###
         fc = self; c = fc.c; p = c.p
         # Put the body (minus the @nocolor) into the file buffer.
         s = p.b; tag = '@nocolor\n'
@@ -132,51 +130,79 @@ class FileCommands(object):
         # Do a trial read.
         self.checking = True
         self.initReadIvars()
-        c.loading = True # disable c.changed
+        path = c.mFileName
+        ### if FAST:
         try:
-            try:
-                theFile = g.app.loadManager.openLeoOrZipFile(c.mFileName)
-                self.readSaxFile(
-                    theFile, fileName='check-leo-file',
-                    silent=False, inClipboard=False, reassignIndices=False)
-                g.blue('check-leo-file passed')
-            except Exception:
-                junk, message, junk = sys.exc_info()
-                # g.es_exception()
-                g.error('check-leo-file failed:', str(message))
+            c.loading = True # disable c.changed
+            theFile = g.app.loadManager.openLeoOrZipFile(path)
+            assert theFile
+            fr = FastRead(c, self.gnxDict)
+            contents = theFile.read()
+            contents = contents.replace('\r','')
+            ### contents = fr.readContents(path)
+            fr.scanContents(contents, path)
+        except Exception:
+            junk, message, junk = sys.exc_info()
+            g.es_exception()
+            g.error('check-leo-file failed:', str(message))
         finally:
-            self.checking = False
-            c.loading = False # reenable c.changed
+            c.loading = False
+        ###
+        # theFile = g.app.loadManager.openLeoOrZipFile(path)
+        # try:
+            # try:
+                # self.readSaxFile(
+                    # theFile, fileName='check-leo-file',
+                    # silent=False, inClipboard=False, reassignIndices=False)
+                # g.blue('check-leo-file passed')
+            # except Exception:
+                # junk, message, junk = sys.exc_info()
+                # # g.es_exception()
+                # g.error('check-leo-file failed:', str(message))
+        # finally:
+            # self.checking = False
+            # c.loading = False # reenable c.changed
     #@+node:vitalije.20180304190953.1: *5* fc.getVnodeFromClipboard
     def getVnodeFromClipboard(self, s):
-        
-        g.trace('===== not ready yet: uses sax')
-        return None ##
 
         c = self.c
         self.initReadIvars()
         # Save the hidden root's children.
         children = c.hiddenRootNode.children
-        oldGnxDict = self.gnxDict
-        self.gnxDict = {}
-        self.usingClipboard = True
         try:
-            # This encoding must match the encoding used in putLeoOutline.
-            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            # readSaxFile modifies the hidden root.
-            v = self.readSaxFile(
-                theFile=None, fileName='<clipboard>',
-                silent=True, # don't tell about stylesheet elements.
-                inClipboard=True, reassignIndices=True, s=s)
-            if not v:
-                return g.es("the clipboard is not valid ", color="blue")
+            self.usingClipboard = True
+            oldGnxDict = self.gnxDict
+            self.gnxDict = {}
+            ### if FAST:
+            assert g.isUnicode(s), s.__class__.__name__
+            fr = FastRead(c, self.gnxDict)
+            v = fr.readWithElementTree(contents=s)
+            ###
+                # This encoding must match the encoding used in putLeoOutline.
+                # s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+                # # readSaxFile modifies the hidden root.
+                # v = self.readSaxFile(
+                    # theFile=None, fileName='<clipboard>',
+                    # silent=True, # don't tell about stylesheet elements.
+                    # inClipboard=True, reassignIndices=True, s=s)
+                # if not v:
+                    # return g.es("the clipboard is not valid ", color="blue")
+        except Exception:
+            g.es_exception()
+            v = None
         finally:
             self.usingClipboard = False
             self.gnxDict = oldGnxDict
         # Restore the hidden root's children
-        c.hiddenRootNode.children = children
+        if c.hiddenRootNode.children != children:
+            g.trace('OOPS: children')
+            c.hiddenRootNode.children = children
         # Unlink v from the hidden root.
-        v.parents.remove(c.hiddenRootNode)
+        if c.hiddenRootNode in v.parents:
+            g.trace('OOPS: parents')
+            v.parents.remove(c.hiddenRootNode)
+        if not v:
+            g.es("the clipboard is not valid ", color="blue")
         return v
 
     def getPosFromClipboard(self, s):
@@ -185,9 +211,6 @@ class FileCommands(object):
     #@+node:ekr.20031218072017.1559: *5* fc.getLeoOutlineFromClipboard & helpers
     def getLeoOutlineFromClipboard(self, s, reassignIndices=True):
         '''Read a Leo outline from string s in clipboard format.'''
-        g.trace('===== not ready yet: uses sax')
-        g.trace(g.callers())
-        return None ###
         c = self.c
         current = c.p
         if not current:
@@ -196,7 +219,7 @@ class FileCommands(object):
         check = not reassignIndices
         self.initReadIvars()
         # Save the hidden root's children.
-        children = c.hiddenRootNode.children
+        ### children = c.hiddenRootNode.children
         #
         # Save and clear gnxDict.
         # This ensures that new indices will be used for all nodes.
@@ -211,20 +234,28 @@ class FileCommands(object):
         self.usingClipboard = True
         try:
             # This encoding must match the encoding used in putLeoOutline.
-            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            # readSaxFile modifies the hidden root.
-            v = self.readSaxFile(
-                theFile=None, fileName='<clipboard>',
-                silent=True, # don't tell about stylesheet elements.
-                inClipboard=True, reassignIndices=reassignIndices, s=s)
-            if not v:
-                return g.es("the clipboard is not valid ", color="blue")
+            assert g.isUnicode(s), s.__class__.__name__
+            fr = FastRead(c, self.gnxDict)
+            hidden_v = fr.readWithElementTree(contents=s)
+            # 
+            v = hidden_v.children[0]
+            v.parents.remove(hidden_v)
+            ###
+                # s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+                # # readSaxFile modifies the hidden root.
+                # v = self.readSaxFile(
+                    # theFile=None, fileName='<clipboard>',
+                    # silent=True, # don't tell about stylesheet elements.
+                    # inClipboard=True, reassignIndices=reassignIndices, s=s)
+                # if not v:
+                    # return g.es("the clipboard is not valid ", color="blue")
         finally:
             self.usingClipboard = False
-        # Restore the hidden root's children
-        c.hiddenRootNode.children = children
-        # Unlink v from the hidden root.
-        v.parents.remove(c.hiddenRootNode)
+        ### No longer necessary
+            # # Restore the hidden root's children
+            # c.hiddenRootNode.children = children
+            # # Unlink v from the hidden root.
+            # v.parents.remove(c.hiddenRootNode)
         p = leoNodes.Position(v)
         #
         # Important: we must not adjust links when linking v
@@ -300,26 +331,30 @@ class FileCommands(object):
         fc.initReadIvars()
         recoveryNode = None
         try:
+            ok = True
             c.loading = True # disable c.changed
             if not silent and checkOpenFiles:
                 # Don't check for open file when reverting.
                 g.app.checkForOpenFile(c, fileName)
             #
             # Read the .leo file and create the outline.
-            if FAST:
-                fastReader = FastRead(c, self.gnxDict)
-                ok = fastReader.readFile(fileName)
-            # else:
-                # ok = fc.getLeoFileHelper(theFile, fileName, silent)
-            if ok:
-                fc.resolveTnodeLists()
-                    # Do this before reading external files.
-                c.setFileTimeStamp(fileName)
-                if readAtFileNodesFlag:
-                    # Redraw before reading the @file nodes so the screen isn't blank.
-                    # This is important for big files like LeoPy.leo.
-                    c.redraw()
-                    recoveryNode = fc.readExternalFiles(fileName)
+            ### if FAST:
+            fr = FastRead(c, self.gnxDict)
+            contents = fr.readContents(fileName)
+            c.hiddenRootNode = fr.readWithElementTree(contents)
+            ### ok = True
+            ###if ok:
+            fc.resolveTnodeLists()
+                # Do this before reading external files.
+            c.setFileTimeStamp(fileName)
+            if readAtFileNodesFlag:
+                # Redraw before reading the @file nodes so the screen isn't blank.
+                # This is important for big files like LeoPy.leo.
+                c.redraw()
+                recoveryNode = fc.readExternalFiles(fileName)
+        except Exception:
+            g.es_exception()
+            ok = False
         finally:
             p = recoveryNode or c.p or c.lastTopLevel()
                 # lastTopLevel is a better fallback, imo.
@@ -1712,7 +1747,8 @@ class FastRead (object):
         g_element = xroot.find('globals')
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
-        self.scanGlobals(g_element)
+        if g_element: # Can be empty when cutting or pasting.
+            self.scanGlobals(g_element)
         gnx2body, gnx2ua = self.scanTnodes(t_elements)
         hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
         return hidden_v
@@ -1926,21 +1962,20 @@ class FastRead (object):
             except Exception:
                 g.trace('can not unpickle %s=%s' % (attr, val))
                 return val
-    #@+node:ekr.20180604110143.1: *3* fast.readFile (production)
-    def readFile(self, path):
+    #@+node:ekr.20180604110143.1: *3* fast.scanContents (production)
+    def scanContents(self, contents):
         
-        trace = False
-        c = self.c
-        self.path = path
-        t1 = time.clock()
-        with open(path, 'rb') as f:
-            s = f.read()
-        contents = g.toUnicode(s)
-        c.hiddenRootNode = self.readWithElementTree(contents)
-        if trace:
-            t2 = time.clock()
-            g.trace('%5.3f sec' % (t2-t1))
-        return c.hiddenRootNode
+        return self.readWithElementTree(contents)
+    #@+node:ekr.20180609140642.1: *3* fast.readContents
+    def readContents(self, path):
+        '''Return the full contents of fileName.'''
+        try:
+            with open(path, 'rb') as f:
+                s = f.read()
+            return g.toUnicode(s)
+        except Exception:
+            g.es_exception()
+            return ''
     #@-others
 #@-others
 #@@language python

@@ -47,11 +47,13 @@ class NodeIndices(object):
         fc = c.fileCommands
         if fc is None:
             g.internalError('getNewIndex: fc is None! c:' % c)
-        else:
-            v2 = fc.gnxDict.get(gnx)
-            if v2 and v2 != v:
-                g.internalError(
-                    'getNewIndex: gnx clash %s: v: %s v2: %s' % (gnx, v, v2))
+            return
+        if gnx == 'hidden-root-vnode-gnx':
+            return # Not an error.
+        v2 = fc.gnxDict.get(gnx)
+        if v2 and v2 != v:
+            g.internalError(
+                'getNewIndex: gnx clash %s\n v: %s\nv2: %s' % (gnx, v, v2))
     #@+node:ekr.20150302061758.14: *3* ni.compute_last_index
     def compute_last_index(self, c):
         '''Scan the entire leo outline to compute ni.last_index.'''
