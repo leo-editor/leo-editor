@@ -185,6 +185,9 @@ class FileCommands(object):
     #@+node:ekr.20031218072017.1559: *5* fc.getLeoOutlineFromClipboard & helpers
     def getLeoOutlineFromClipboard(self, s, reassignIndices=True):
         '''Read a Leo outline from string s in clipboard format.'''
+        g.trace('===== not ready yet: uses sax')
+        g.trace(g.callers())
+        return None ###
         c = self.c
         current = c.p
         if not current:
@@ -1736,6 +1739,36 @@ class FileCommands(object):
         if str_pos:
             current = self.archivedPositionToPosition(str_pos)
         c.setCurrentPosition(current or c.rootPosition())
+    #@+node:ekr.20180609124807.1: *3* fc.resolveArchivedPosition (from sax read)
+    def resolveArchivedPosition(self, archivedPosition, root_v):
+        '''
+        Return a VNode corresponding to the archived position relative to root
+        node root_v.
+        '''
+
+        def oops(message):
+            '''Give an error only if no file errors have been seen.'''
+            return None
+
+        try:
+            aList = [int(z) for z in archivedPosition.split('.')]
+            aList.reverse()
+        except Exception:
+            return oops('"%s"' % archivedPosition)
+        if not aList:
+            return oops('empty')
+        last_v = root_v
+        n = aList.pop()
+        if n != 0:
+            return oops('root index="%s"' % n)
+        while aList:
+            n = aList.pop()
+            children = last_v.children
+            if n < len(children):
+                last_v = children[n]
+            else:
+                return oops('bad index="%s", len(children)="%s"' % (n, len(children)))
+        return last_v
     #@-others
 #@+node:ekr.20180602062323.1: ** class FastRead
 class FastRead (object):
