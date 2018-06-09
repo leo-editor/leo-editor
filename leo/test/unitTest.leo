@@ -269,8 +269,16 @@
 <v t="ekr.20070627082044.811"><vh>@thin unittest/batchTest.py</vh></v>
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
+<v t="ekr.20180609160138.1"><vh>@ignore unused/slow tests</vh>
 <v t="ekr.20170101134417.1"><vh>@ignore Slow tests</vh>
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
+</v>
+<v t="ekr.20180609150109.1"><vh>@ignore sax tests</vh>
+<v t="ekr.20100131180007.5451"><vh>@test fc.cleanSaxInputString</vh></v>
+<v t="ekr.20100131180007.5450"><vh>@test fc.getSaxUa</vh></v>
+<v t="ekr.20100131180007.5463"><vh>@test fc.handleTnodeSaxAttributes</vh></v>
+<v t="ekr.20100131180007.5460"><vh>@test fc.handleVnodeSaxAttributes</vh></v>
+</v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3571017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3871097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
@@ -389,12 +397,6 @@
 </v>
 <v t="ekr.20100131171342.5608"><vh>@test g.KeyStroke</vh></v>
 <v t="ekr.20180527141026.1"><vh>@test g.KeyStroke (printable characters)</vh></v>
-<v t="ekr.20180609150109.1"><vh>To be removed</vh>
-<v t="ekr.20100131180007.5451"><vh>@test fc.cleanSaxInputString</vh></v>
-<v t="ekr.20100131180007.5450"><vh>@test fc.getSaxUa</vh></v>
-<v t="ekr.20100131180007.5463"><vh>@test fc.handleTnodeSaxAttributes</vh></v>
-<v t="ekr.20100131180007.5460"><vh>@test fc.handleVnodeSaxAttributes</vh></v>
-</v>
 <v t="ekr.20180609150500.1"><vh>Failures involving paste outline</vh>
 <v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
 <v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
@@ -7328,5 +7330,6 @@ for ch in string.digits + letters:
 </t>
 <t tx="ekr.20180609150109.1"></t>
 <t tx="ekr.20180609150500.1"></t>
+<t tx="ekr.20180609160138.1"></t>
 </tnodes>
 </leo_file>
