@@ -394,14 +394,12 @@
 <v t="ekr.20140822063016.4474"><vh>@test zzz force a quit</vh></v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
-</v>
-<v t="ekr.20100131171342.5608"><vh>@test g.KeyStroke</vh></v>
-<v t="ekr.20180527141026.1"><vh>@test g.KeyStroke (printable characters)</vh></v>
 <v t="ekr.20180609150500.1"><vh>Failures involving paste outline</vh>
 <v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
 <v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
 <v t="ekr.20111006064419.3491"><vh>@test delete-marked-nodes</vh></v>
 <v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -1574,66 +1572,6 @@ for key in keys:
     expected = ('event',)
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected, message
-</t>
-<t tx="ekr.20100131171342.5608">table = [
-    # Gang of four, unmodified)
-    ('bksp', 'BackSpace'),
-    ('backspace', 'BackSpace'),
-    ('backtab', 'Tab'),
-    ('linefeed', '\n'),
-    ('\r', '\n'),
-    ('return', '\n'),
-    ('tab', 'Tab'),
-    # Gang of four, with shift mod.
-    ('Shift-bksp', 'Shift+BackSpace'),
-    ('Shift-backspace', 'Shift+BackSpace'),
-    ('Shift-backtab', 'Shift+Tab'),
-    ('Shift-linefeed', 'Shift+Return'),
-    ('Shift-\r', 'Shift+Return'),
-    ('Shift-return', 'Shift+Return'),
-    ('Shift-tab', 'Shift+Tab'),
-    # Gang of four, with Alt mod.
-    ('Alt-bksp', 'Alt+BackSpace'),
-    ('Alt-backspace', 'Alt+BackSpace'),
-    ('Alt-backtab', 'Alt+Tab'),
-    ('Alt-linefeed', 'Alt+Return'),
-    ('Alt-\r', 'Alt+Return'),
-    ('Alt-return', 'Alt+Return'),
-    ('Alt-tab', 'Alt+Tab'),
-    #
-    # #912: tilde.
-    ('~', '~'),
-    ('Shift-~', '~'),
-    #
-    # Alpha
-    ('1', '1'),
-    ('a','a'),
-    ('A','A'),
-    ('Alt-a','Alt+a'),
-    ('Alt-A','Alt+a'),
-    ('Alt-Shift-a','Alt+Shift+a'),
-    # We can no longer ignore the shift.
-    # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
-    ('Shift-a','A'),
-    ('Shift-A','A'),
-    ('RtArrow','Right'),
-    ('Shift-RtArrow','Shift+Right'),
-    ('PageUp','Prior'),
-    ('Prior','Prior'),
-    ('Shift-PageUp','Shift+Prior'),
-    ('PageDn','Next'),
-    ('Next','Next'),
-    ('Shift-Next','Shift+Next'),
-    ('Alt-=','Alt+='),
-    ('Alt-+','Alt++'),
-    ('Alt--','Alt+-'),
-    ('Ctrl-RtArrow','Ctrl+Right'),
-    ('Control-Right','Ctrl+Right'),
-]
-for setting, result in table:
-    stroke = g.KeyStroke(binding=setting)
-    val = stroke.s
-    assert val==result,'For %r, expected %r, Got %r' % (setting, result,val)
 </t>
 <t tx="ekr.20100131180007.5450">expectedIconDictList = [
 {
@@ -7313,21 +7251,6 @@ gnx: ekr.20170504122721.3
 unl: section 2
 </t>
 <t tx="ekr.20180214042153.1">False is the legacy value.</t>
-<t tx="ekr.20180527141026.1">import string
-letters = string.ascii_letters if g.isPython3 else string.letters
-# Unshifted.
-for ch in string.printable:
-    stroke = g.KeyStroke(binding=ch)
-    assert stroke.s in string.printable, (repr(ch), repr(stroke.s))
-    if ch == '\r':
-        assert stroke.s == '\n', (repr(ch), repr(stroke.s))
-    else:
-        assert stroke.s == ch, (repr(ch), repr(stroke.s))
-# Shifted.
-for ch in string.digits + letters:
-    stroke = g.KeyStroke(binding='Shift-'+ch)
-    assert stroke.s in string.printable, (repr(ch), repr(stroke.s))
-</t>
 <t tx="ekr.20180609150109.1"></t>
 <t tx="ekr.20180609150500.1"></t>
 <t tx="ekr.20180609160138.1"></t>

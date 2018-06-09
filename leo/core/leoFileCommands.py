@@ -146,8 +146,6 @@ class FileCommands(object):
 
         c = self.c
         self.initReadIvars()
-        ### # Save the hidden root's children.
-        ### children = c.hiddenRootNode.children
         try:
             self.usingClipboard = True
             oldGnxDict = self.gnxDict
@@ -161,15 +159,6 @@ class FileCommands(object):
         finally:
             self.usingClipboard = False
             self.gnxDict = oldGnxDict
-        ### No longer needed.
-            # Restore the hidden root's children
-            # if c.hiddenRootNode.children != children:
-                # g.trace('OOPS: children')
-                # c.hiddenRootNode.children = children
-            # # Unlink v from the hidden root.
-            # if c.hiddenRootNode in v.parents:
-                # g.trace('OOPS: parents')
-                # v.parents.remove(c.hiddenRootNode)
         if not v:
             g.es("the clipboard is not valid ", color="blue")
         return v
@@ -187,8 +176,6 @@ class FileCommands(object):
             return None
         check = not reassignIndices
         self.initReadIvars()
-        # Save the hidden root's children.
-        ### children = c.hiddenRootNode.children
         #
         # Save and clear gnxDict.
         # This ensures that new indices will be used for all nodes.
