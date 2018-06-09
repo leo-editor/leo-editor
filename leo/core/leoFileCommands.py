@@ -1,12 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3018: * @file leoFileCommands.py
 '''Classes relating to reading and writing .leo files.'''
-#@+<< define FAST (leoFileCommands) >>
-#@+node:ekr.20180605060817.1: ** << define FAST (leoFileCommands) >>
-FAST = True
-if FAST:
-    print('\n===== FAST (leoFileCommands) ===== \n')
-#@-<< define FAST (leoFileCommands) >>
 #@+<< imports >>
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
 # For FastRead class
@@ -126,81 +120,56 @@ class FileCommands(object):
         fc = self; c = fc.c; p = c.p
         # Put the body (minus the @nocolor) into the file buffer.
         s = p.b; tag = '@nocolor\n'
-        if s.startswith(tag): s = s[len(tag):]
+        if s.startswith(tag):
+            s = s[len(tag):]
+        #
         # Do a trial read.
         self.checking = True
         self.initReadIvars()
         path = c.mFileName
-        ### if FAST:
         try:
             c.loading = True # disable c.changed
             theFile = g.app.loadManager.openLeoOrZipFile(path)
             assert theFile
             fr = FastRead(c, self.gnxDict)
             contents = theFile.read()
-            contents = contents.replace('\r','')
-            ### contents = fr.readContents(path)
-            fr.scanContents(contents, path)
+            fr.scanContents(contents)
         except Exception:
             junk, message, junk = sys.exc_info()
             g.es_exception()
             g.error('check-leo-file failed:', str(message))
         finally:
             c.loading = False
-        ###
-        # theFile = g.app.loadManager.openLeoOrZipFile(path)
-        # try:
-            # try:
-                # self.readSaxFile(
-                    # theFile, fileName='check-leo-file',
-                    # silent=False, inClipboard=False, reassignIndices=False)
-                # g.blue('check-leo-file passed')
-            # except Exception:
-                # junk, message, junk = sys.exc_info()
-                # # g.es_exception()
-                # g.error('check-leo-file failed:', str(message))
-        # finally:
-            # self.checking = False
-            # c.loading = False # reenable c.changed
+            self.checking = False
     #@+node:vitalije.20180304190953.1: *5* fc.getVnodeFromClipboard
     def getVnodeFromClipboard(self, s):
 
         c = self.c
         self.initReadIvars()
-        # Save the hidden root's children.
-        children = c.hiddenRootNode.children
+        ### # Save the hidden root's children.
+        ### children = c.hiddenRootNode.children
         try:
             self.usingClipboard = True
             oldGnxDict = self.gnxDict
             self.gnxDict = {}
-            ### if FAST:
             assert g.isUnicode(s), s.__class__.__name__
             fr = FastRead(c, self.gnxDict)
             v = fr.readWithElementTree(contents=s)
-            ###
-                # This encoding must match the encoding used in putLeoOutline.
-                # s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-                # # readSaxFile modifies the hidden root.
-                # v = self.readSaxFile(
-                    # theFile=None, fileName='<clipboard>',
-                    # silent=True, # don't tell about stylesheet elements.
-                    # inClipboard=True, reassignIndices=True, s=s)
-                # if not v:
-                    # return g.es("the clipboard is not valid ", color="blue")
         except Exception:
             g.es_exception()
             v = None
         finally:
             self.usingClipboard = False
             self.gnxDict = oldGnxDict
-        # Restore the hidden root's children
-        if c.hiddenRootNode.children != children:
-            g.trace('OOPS: children')
-            c.hiddenRootNode.children = children
-        # Unlink v from the hidden root.
-        if c.hiddenRootNode in v.parents:
-            g.trace('OOPS: parents')
-            v.parents.remove(c.hiddenRootNode)
+        ### No longer needed.
+            # Restore the hidden root's children
+            # if c.hiddenRootNode.children != children:
+                # g.trace('OOPS: children')
+                # c.hiddenRootNode.children = children
+            # # Unlink v from the hidden root.
+            # if c.hiddenRootNode in v.parents:
+                # g.trace('OOPS: parents')
+                # v.parents.remove(c.hiddenRootNode)
         if not v:
             g.es("the clipboard is not valid ", color="blue")
         return v
@@ -237,25 +206,12 @@ class FileCommands(object):
             assert g.isUnicode(s), s.__class__.__name__
             fr = FastRead(c, self.gnxDict)
             hidden_v = fr.readWithElementTree(contents=s)
-            # 
+            # Get the actual desired node.
+            assert len(hidden_v.children) == 1, hidden_v.children
             v = hidden_v.children[0]
             v.parents.remove(hidden_v)
-            ###
-                # s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-                # # readSaxFile modifies the hidden root.
-                # v = self.readSaxFile(
-                    # theFile=None, fileName='<clipboard>',
-                    # silent=True, # don't tell about stylesheet elements.
-                    # inClipboard=True, reassignIndices=reassignIndices, s=s)
-                # if not v:
-                    # return g.es("the clipboard is not valid ", color="blue")
         finally:
             self.usingClipboard = False
-        ### No longer necessary
-            # # Restore the hidden root's children
-            # c.hiddenRootNode.children = children
-            # # Unlink v from the hidden root.
-            # v.parents.remove(c.hiddenRootNode)
         p = leoNodes.Position(v)
         #
         # Important: we must not adjust links when linking v
@@ -338,12 +294,9 @@ class FileCommands(object):
                 g.app.checkForOpenFile(c, fileName)
             #
             # Read the .leo file and create the outline.
-            ### if FAST:
             fr = FastRead(c, self.gnxDict)
             contents = fr.readContents(fileName)
             c.hiddenRootNode = fr.readWithElementTree(contents)
-            ### ok = True
-            ###if ok:
             fc.resolveTnodeLists()
                 # Do this before reading external files.
             c.setFileTimeStamp(fileName)
@@ -358,6 +311,7 @@ class FileCommands(object):
         finally:
             p = recoveryNode or c.p or c.lastTopLevel()
                 # lastTopLevel is a better fallback, imo.
+            #
             # New in Leo 5.3. Delay the second redraw until idle time.
             # This causes a slight flash, but corrects a hangnail.
 
@@ -1622,7 +1576,7 @@ class FileCommands(object):
             else:
                 val = False
             c.fixed = val
-    #@+node:ekr.20060919110638.11: *3* fc.resolveTnodeLists (from sax read)
+    #@+node:ekr.20060919110638.11: *3* fc.resolveTnodeLists
     def resolveTnodeLists(self):
         '''
         Called *before* reading external files.
@@ -1643,7 +1597,7 @@ class FileCommands(object):
                 if result:
                     p.v.tnodeList = result
                 delattr(p.v, 'tempTnodeList')
-    #@+node:ekr.20180609124531.1: *3* fc.setPositionsFromVnodes (from sax read)
+    #@+node:ekr.20180609124531.1: *3* fc.setPositionsFromVnodes
     def setPositionsFromVnodes(self):
 
         c, root = self.c, self.c.rootPosition()
@@ -1660,7 +1614,7 @@ class FileCommands(object):
         if str_pos:
             current = self.archivedPositionToPosition(str_pos)
         c.setCurrentPosition(current or c.rootPosition())
-    #@+node:ekr.20180609124807.1: *3* fc.resolveArchivedPosition (from sax read)
+    #@+node:ekr.20180609124807.1: *3* fc.resolveArchivedPosition
     def resolveArchivedPosition(self, archivedPosition, root_v):
         '''
         Return a VNode corresponding to the archived position relative to root
@@ -1697,8 +1651,7 @@ class FastRead (object):
     def __init__(self, c, gnx2vnode):
         self.c = c
         self.fc = c.fileCommands
-        self.gnx2vnode = gnx2vnode if FAST else {}
-            # Do not change the global dict while testing!!
+        self.gnx2vnode = gnx2vnode
         self.nativeVnodeAttributes = (
             'a',
             'descendentTnodeUnknownAttributes',
@@ -1822,7 +1775,7 @@ class FastRead (object):
         
         trace = False
         c, fc = self.c, self.c.fileCommands
-        context = c if FAST else None
+        context = c
         
         t1 = time.clock()
         #@+<< define v_element_visitor >>
@@ -1962,9 +1915,10 @@ class FastRead (object):
             except Exception:
                 g.trace('can not unpickle %s=%s' % (attr, val))
                 return val
-    #@+node:ekr.20180604110143.1: *3* fast.scanContents (production)
+    #@+node:ekr.20180604110143.1: *3* fast.scanContents
     def scanContents(self, contents):
         
+        contents = contents.replace('\r','')
         return self.readWithElementTree(contents)
     #@+node:ekr.20180609140642.1: *3* fast.readContents
     def readContents(self, path):

@@ -45,11 +45,13 @@ class NodeIndices(object):
     def check_gnx(self, c, gnx, v):
         '''Check that no vnode exists with the given gnx in fc.gnxDict.'''
         fc = c.fileCommands
-        if fc is None:
-            g.internalError('getNewIndex: fc is None! c:' % c)
-            return
+        # if fc is None:
+            # g.internalError('getNewIndex: fc is None! c:' % c)
+            # return
         if gnx == 'hidden-root-vnode-gnx':
-            return # Not an error.
+            # No longer an error.
+            # fast.readWithElementTree always generates a nominal hidden vnode.
+            return 
         v2 = fc.gnxDict.get(gnx)
         if v2 and v2 != v:
             g.internalError(
