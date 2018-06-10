@@ -1706,7 +1706,7 @@ class FastRead (object):
             ('top', 50), ('left', 50),
             ('height', 500), ('width', 800),
         )
-        if g.enableDB and c.mFileName:
+        if c.mFileName: ### g.enableDB and c.mFileName:
             d = c.cacher.getCachedWindowPositionDict(c.mFileName)
             for name, default in table:
                 if d.get(name) is None:
