@@ -767,12 +767,14 @@ class FileCommands(object):
     def putGlobals(self):
 
         c = self.c
-        use_db = c.mFileName ### g.enableDB and c.mFileName
-        if use_db:
+        if c.mFileName: ### g.enableDB and c.mFileName
             c.cacher.setCachedGlobalsElement(c.mFileName)
-        if 1: ### Legacy
-            # Always put positions, to trigger sax methods.
-            self.put("<globals")
+        if 0: ### Not yet.
+            self.put('<globals/>\n')
+        else: ### Legacy
+            self.put('<globals>\n')
+            use_db = c.mFileName
+            # self.put("<globals")
             #@+<< put the body/outline ratios >>
             #@+node:ekr.20031218072017.3038: *6* << put the body/outline ratios >>
             self.put(" body_outline_ratio=")
@@ -815,8 +817,6 @@ class FileCommands(object):
             self.put("/>"); self.put_nl()
             #@-<< put the position of the log window >>
             self.put("</globals>"); self.put_nl()
-        else:
-            self.put('<globals></globals')
     #@+node:ekr.20031218072017.3041: *5* fc.putHeader
     def putHeader(self):
         tnodes = 0; clone_windows = 0 # Always zero in Leo2.
@@ -1586,8 +1586,7 @@ class FileCommands(object):
             # position is already selected
             return
         current, str_pos = None, None
-        use_db = c.mFileName ### g.enableDB and c.mFileName
-        if use_db:
+        if c.mFileName: ### g.enableDB and c.mFileName
             str_pos = c.cacher.getCachedStringPosition()
         if not str_pos:
             d = root.v.u
@@ -1691,8 +1690,10 @@ class FastRead (object):
         
         fc = self.fc
         attrib = g_element.attrib
-        fc.ratio = float(attrib ['body_secondary_ratio'])
-        fc.secondary_ratio = float(attrib ['body_secondary_ratio'])
+        ratio = attrib.get('body_secondary_ratio')
+        fc.ratio = 0.5 if ratio is None else float(ratio)
+        ratio2 = attrib.get('body_secondary_ratio')
+        fc.secondary_ratio =  0.5 if ratio2 is None else float(ratio2)
         for e in g_element:
             #  Ignore legacy elements.
             if e.tag == 'global_window_position':
