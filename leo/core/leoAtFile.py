@@ -4,13 +4,7 @@
 #@@first
     # Needed because of unicode characters in tests.
 """Classes to read and write @file nodes."""
-#@+<< define FAST (leoAtFile) >>
-#@+node:ekr.20180605093406.1: ** << define FAST (leoAtFile) >>
-FAST = False
-if FAST:
-    print('\n===== FAST (leoAtFile) ===== \n')
-
-#@-<< define FAST (leoAtFile) >>
+### < < define FAST (leoAtFile) > >
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -499,7 +493,7 @@ class AtFile(object):
         elif not fileName and not fromString and not file_s:
             return False
        
-        if FAST:
+        if 1: ### FAST:
             # These are fast.
             root.clearVisitedInTree()
             at.scanAllDirectives(root, importing=at.importing, reading=True)
@@ -518,82 +512,74 @@ class AtFile(object):
             root_vnode, last_lines = faf.read_into_root(fileName, contents)
             root.clearDirty()
             return True
-        #
-        # ===== Legacy code.
-        # Done above
-            # if fileName and at.inputFile:
-                # c.setFileTimeStamp(fileName)
-            # elif fromString: # 2010/09/02.
-                # pass
+        ###
+            # if g.SQLITE and c.sqlite_connection:
+                # loaded = at.checkExternalFileAgainstDb(root)
+                # if loaded: return True
+                # s, loaded, fileKey, force = at._file_bytes, False, None, True
+            # elif fromString or not g.enableDB:
+                # s, loaded, fileKey = fromString, False, None
             # else:
-                # return False
-        if g.SQLITE and c.sqlite_connection:
-            loaded = at.checkExternalFileAgainstDb(root)
-            if loaded: return True
-            s, loaded, fileKey, force = at._file_bytes, False, None, True
-        elif fromString or not g.enableDB:
-            s, loaded, fileKey = fromString, False, None
-        else:
-            s, loaded, fileKey = c.cacher.readFile(fileName, root)
-        # Never read an external file with file-like sentinels from the cache.
-        isFileLike = loaded and at.isFileLike(s)
-        if not loaded or isFileLike:
-            force = True # Disable caching.
-        if loaded and not force:
-            at.inputFile.close()
-            root.clearDirty()
-            return True
-        if not g.unitTesting:
-            g.es_print("reading:", g.os_path_normslashes(root.h))
-        if isFileLike:
-            if g.unitTesting:
-                if 0: print("converting @file format in", root.h)
-                g.app.unitTestDict['read-convert'] = True
-            else:
-                g.red("converting @file format in", root.h)
-        root.clearVisitedInTree()
-        at.scanAllDirectives(root, importing=at.importing, reading=True)
-            # Sets the following ivars:
-                # at.default_directory
-                # at.encoding: **changed later** by readOpenFile/at.scanHeader.
-                # at.explicitLineEnding
-                # at.language
-                # at.output_newline
-                # at.page_width
-                # at.tab_width
-        thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
-            # Calls at.scanHeader, which sets at.encoding.
-        at.inputFile.close()
-        root.clearDirty() # May be set dirty below.
-        if at.errors == 0:
-            at.deleteUnvisitedNodes(root)
-            at.deleteTnodeList(root)
-        if at.errors == 0 and not at.importing:
-            # Used by mod_labels plugin.
-            at.readPostPass(root, thinFile)
-        at.deleteAllTempBodyStrings()
-        if isFileLike and at.errors == 0: # Old-style sentinels.
-            # 2010/02/24: Make the root @file node dirty so it will
-            # be written automatically when saving the file.
-            # Do *not* set the orphan bit here!
-            root.clearOrphan()
-            root.setDirty()
-            c.setChanged(True) # Essential, to keep dirty bit set.
-        elif at.errors > 0:
-            # 2010/10/22: Dirty bits are *always* cleared.
-            # Only the orphan bit is preserved.
-            # root.setDirty() # 2011/06/17: Won't be preserved anyway
-            root.setOrphan()
-            # c.setChanged(True) # 2011/06/17.
-        else:
-            root.clearOrphan()
-        # There will be an internal error if fileKey is None.
-        # This is not the cause of the bug.
-        write_to_cache = (not (g.SQLITE and c.sqlite_connection)
-            and at.errors == 0 and not isFileLike and not fromString)
-        if write_to_cache:
-            c.cacher.writeFile(root, fileKey)
-        return at.errors == 0
+                # s, loaded, fileKey = c.cacher.readFile(fileName, root)
+            # # Never read an external file with file-like sentinels from the cache.
+            # isFileLike = loaded and at.isFileLike(s)
+            # if not loaded or isFileLike:
+                # force = True # Disable caching.
+            # if loaded and not force:
+                # at.inputFile.close()
+                # root.clearDirty()
+                # return True
+            # if not g.unitTesting:
+                # g.es_print("reading:", g.os_path_normslashes(root.h))
+            # if isFileLike:
+                # if g.unitTesting:
+                    # if 0: print("converting @file format in", root.h)
+                    # g.app.unitTestDict['read-convert'] = True
+                # else:
+                    # g.red("converting @file format in", root.h)
+            # root.clearVisitedInTree()
+            # at.scanAllDirectives(root, importing=at.importing, reading=True)
+                # # Sets the following ivars:
+                    # # at.default_directory
+                    # # at.encoding: **changed later** by readOpenFile/at.scanHeader.
+                    # # at.explicitLineEnding
+                    # # at.language
+                    # # at.output_newline
+                    # # at.page_width
+                    # # at.tab_width
+            # thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
+                # # Calls at.scanHeader, which sets at.encoding.
+            # at.inputFile.close()
+            # root.clearDirty() # May be set dirty below.
+            # if at.errors == 0:
+                # at.deleteUnvisitedNodes(root)
+                # at.deleteTnodeList(root)
+            # if at.errors == 0 and not at.importing:
+                # # Used by mod_labels plugin.
+                # at.readPostPass(root, thinFile)
+            # at.deleteAllTempBodyStrings()
+            # if isFileLike and at.errors == 0: # Old-style sentinels.
+                # # 2010/02/24: Make the root @file node dirty so it will
+                # # be written automatically when saving the file.
+                # # Do *not* set the orphan bit here!
+                # root.clearOrphan()
+                # root.setDirty()
+                # c.setChanged(True) # Essential, to keep dirty bit set.
+            # elif at.errors > 0:
+                # # 2010/10/22: Dirty bits are *always* cleared.
+                # # Only the orphan bit is preserved.
+                # # root.setDirty() # 2011/06/17: Won't be preserved anyway
+                # root.setOrphan()
+                # # c.setChanged(True) # 2011/06/17.
+            # else:
+                # root.clearOrphan()
+            # # There will be an internal error if fileKey is None.
+            # # This is not the cause of the bug.
+            # write_to_cache = (not (g.SQLITE and c.sqlite_connection)
+                # and at.errors == 0 and not isFileLike and not fromString)
+            # if write_to_cache:
+                # c.cacher.writeFile(root, fileKey)
+            # return at.errors == 0
     #@+node:ekr.20041005105605.25: *6* at.deleteAllTempBodyStrings
     def deleteAllTempBodyStrings(self):
         '''Delete all temp attributes.'''
@@ -4977,29 +4963,16 @@ class FastAtRead (object):
 
     def __init__ (self, c, gnx2vnode=None, path=None, root=None):
         
-        #@+<< define TestVNode >>
-        #@+node:ekr.20180606070520.1: *3* << define TestVNode >>
-        class TestVNode (object):
-            def __init__(self, context, gnx):
-                self.context = context
-                self.gnx = gnx
-                self.children = []
-                self.parents = []
-                self._bodyString = None
-                self._headString = None
-
-            def headString(self):
-                return self._headString
-        #@-<< define TestVNode >>
+        ### < < define TestVNode > >
     
         self.c = c
-        if FAST:
+        if 1: ### FAST:
             assert gnx2vnode is not None
             assert isinstance(root, leoNodes.Position), repr(root)
         self.gnx2vnode = gnx2vnode or {}
         self.path = path
         self.root = root
-        self.VNode = leoNodes.VNode if FAST else TestVNode
+        self.VNode = leoNodes.VNode ### if FAST else TestVNode
 
     #@+others
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
@@ -5035,25 +5008,26 @@ class FastAtRead (object):
     #@+node:ekr.20180603060721.1: *3* fast_at.post_pass
     def post_pass(self, gnx2body, gnx2vnode, root_v):
         '''Set all body text.'''
-        if FAST:
-            # Set the body text.
-            for key, body in gnx2body.items():
-                v = gnx2vnode.get(key)
-                v._bodyString = ''.join(body)
-        else:
-            # Check the keys.
-            bkeys = sorted(gnx2body.keys())
-            vkeys = sorted(gnx2vnode.keys())
-            if bkeys != vkeys:
-                g.trace('KEYS MISMATCH')
-                g.printObj(bkeys)
-                g.printObj(vkeys)
-                sys.exit(1)
-            # Set the body text.
-            for key in vkeys:
-                v = gnx2vnode.get(key)
-                body = gnx2body.get(key)
-                v._bodyString = ''.join(body)
+        ###if FAST:
+        # Set the body text.
+        for key, body in gnx2body.items():
+            v = gnx2vnode.get(key)
+            v._bodyString = ''.join(body)
+        ###
+            # else:
+                # # Check the keys.
+                # bkeys = sorted(gnx2body.keys())
+                # vkeys = sorted(gnx2vnode.keys())
+                # if bkeys != vkeys:
+                    # g.trace('KEYS MISMATCH')
+                    # g.printObj(bkeys)
+                    # g.printObj(vkeys)
+                    # sys.exit(1)
+                # # Set the body text.
+                # for key in vkeys:
+                    # v = gnx2vnode.get(key)
+                    # body = gnx2body.get(key)
+                    # v._bodyString = ''.join(body)
     #@+node:ekr.20180602103135.2: *3* fast_at.scan_header
     header_pattern = re.compile(r'''
         ^(.+)@\+leo
@@ -5125,7 +5099,7 @@ class FastAtRead (object):
         #
         # Init the parent vnode for testing.
         #
-        if FAST:
+        if 1: ### FAST:
             # Production.
             context = self.c
             parent_v = self.root.v
@@ -5530,101 +5504,6 @@ class FastAtRead (object):
             return root_v, last_lines
         g.trace('Invalid external file: %s' % sfn)
         return None, []
-    #@+node:ekr.20180606054909.1: *3* Testing
-    #@+node:ekr.20180602103655.1: *4* fast_at.read_test
-    def read_test(self, path):
-        
-        self.path = path
-        with open(path, 'r') as f:
-            s = f.read()
-            report = self.load_at_file(path, s)
-        return report
-    #@+node:ekr.20180603053517.1: *4* fast_at.test
-    def test (self, path, hidden_v):
-        
-        '''Compare the generated vnodes with the nodes in the @file tree.'''
-        trace = FAST
-        trace_bodies = False
-        c = self.c
-        sfn = g.shortFileName(path)
-        p = g.findNodeAnywhere(c, '@file ' + sfn)
-        
-        class Context:
-            hiddenRootNode = hidden_v
-            
-        context = Context()
-        root_v = hidden_v.children[0]
-        root_v.context = context
-        assert root_v
-        if p: # Run the full test.
-            root_p = p.copy()
-            assert root_p
-            p2 = leoNodes.Position(root_v)
-            p2.context = context
-            i = 0
-            while p and p2 and i < 1000:
-                i += 1
-                assert p.v.h == p2.v._headString, (self.path, p.v.h, p2.v._headString)
-                if p.v.b.rstrip() != p2.v._bodyString.rstrip():
-                    g.trace('=====', p.v.h)
-                    g.printObj(p.v.b)
-                    g.trace('-----', p2.v._headString)
-                    g.printObj(p2.v._bodyString)
-                    assert False, self.path
-                p.moveToThreadNext()
-                p2.moveToThreadNext()
-            assert not p2.v, p2.v
-            if trace: g.trace('PASS', sfn)
-        else:
-            trace = not FAST
-            trace_bodies = True
-            p = leoNodes.Position(root_v)
-            if trace: g.trace(sfn)
-            i = 0
-            while p:
-                i += 1
-                if i >= 1000 or p.level() > 20:
-                    g.trace('LIMIT')
-                    break
-                p.v.context = context
-                    # Patch up the context.
-                pad = ' '*4*p.level()
-                if trace:
-                    print('%3s %3s %s%r' % (
-                        i, len(p.v._bodyString), pad , p.v._headString))
-                if trace and trace_bodies:
-                    for line in g.splitLines(p.v._bodyString):
-                        print('%s%s%r' % (' '*8, pad, line))
-                # g.printObj(g.splitLines(p.v._bodyString))
-                p.moveToThreadNext()
-            g.trace('done: %s nodes' % i)
-    #@+node:ekr.20180602103135.1: *4* fast_at.load_at_file (testing)
-    def load_at_file(self, path, s):
-        '''A prototype of fast read code.'''
-        t1 = time.clock()
-        sfn = g.shortFileName(path)
-        lines = g.splitLines(s)
-        data = self.scan_header(lines)
-        if not data:
-            return g.trace('empty external file: %s' % sfn)
-        delims, first_lines, start_i = data
-        root_vnode, last_lines = self.scan_lines(delims, first_lines, lines, start_i)
-        t2 = time.clock()
-        if root_vnode:
-            self.test(path, root_vnode)
-            report = sfn, len(lines), (t2-t1)
-            return report
-        print('bad external file. No @-leo sentinel: %s' % sfn)
-        return None
-        
-    #@+node:ekr.20180602103135.22: *4* fast_at.yield_all_nodes (testing)
-    def yield_all_nodes(self, nodes):
-
-        for gnx in nodes.gnxes:
-            b = ''.join(nodes.body[gnx])
-            h = nodes.head[gnx]
-            lev = nodes.level[gnx].pop(0)
-            yield gnx, h, b, lev-1
     #@-others
 #@-others
 #@@language python
