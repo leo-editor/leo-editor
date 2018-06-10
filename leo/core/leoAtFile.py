@@ -11,6 +11,12 @@ if FAST:
     print('\n===== FAST (leoAtFile) ===== \n')
 
 #@-<< define FAST (leoAtFile) >>
+#@+<< define CACHE_AT_AUTO (leoAtFile) >>
+#@+node:ekr.20180610153209.1: ** << define CACHE_AT_AUTO (leoAtFile) >>
+CACHE_AT_AUTO = False
+if not CACHE_AT_AUTO:
+    print('\n===== Disable @auto caching (leoAtFile) ===== \n')
+#@-<< define CACHE_AT_AUTO (leoAtFile) >>
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -816,15 +822,16 @@ class AtFile(object):
         # Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fileName, p)
-        s, ok, fileKey = c.cacher.readFile(fileName, p)
-        if ok:
-            # Even if the file is in the cache, the @persistence node may be different.
-            if c.persistenceController:
-                c.persistenceController.update_after_read_foreign_file(p)
-            g.doHook('after-auto', c=c, p=p)
-                # call after-auto callbacks
-                # 2011/09/30: added call to g.doHook here.
-            return p
+        if CACHE_AT_AUTO: # Experimental: don't cache.
+            s, ok, fileKey = c.cacher.readFile(fileName, p)
+            if ok:
+                # Even if the file is in the cache, the @persistence node may be different.
+                if c.persistenceController:
+                    c.persistenceController.update_after_read_foreign_file(p)
+                g.doHook('after-auto', c=c, p=p)
+                    # call after-auto callbacks
+                    # 2011/09/30: added call to g.doHook here.
+                return p
         if not g.unitTesting:
             g.es("reading:", p.h)
         try:
@@ -856,7 +863,8 @@ class AtFile(object):
             p.clearDirty()
             c.setChanged(oldChanged)
         else:
-            c.cacher.writeFile(p, fileKey)
+            if CACHE_AT_AUTO: ### Experimental: don't cache.
+                c.cacher.writeFile(p, fileKey)
             g.doHook('after-auto', c=c, p=p)
         return p
     #@+node:ekr.20090225080846.3: *5* at.readOneAtEditNode
