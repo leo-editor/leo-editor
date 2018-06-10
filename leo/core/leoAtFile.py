@@ -4,7 +4,13 @@
 #@@first
     # Needed because of unicode characters in tests.
 """Classes to read and write @file nodes."""
-### < < define FAST (leoAtFile) > >
+#@+<< define FAST (leoAtFile) >>
+#@+node:ekr.20180605093406.1: ** << define FAST (leoAtFile) >>
+FAST = True
+if FAST:
+    print('\n===== FAST (leoAtFile) ===== \n')
+
+#@-<< define FAST (leoAtFile) >>
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -493,7 +499,7 @@ class AtFile(object):
         elif not fileName and not fromString and not file_s:
             return False
        
-        if 1: ### FAST:
+        if FAST:
             # These are fast.
             root.clearVisitedInTree()
             at.scanAllDirectives(root, importing=at.importing, reading=True)
@@ -512,74 +518,82 @@ class AtFile(object):
             root_vnode, last_lines = faf.read_into_root(fileName, contents)
             root.clearDirty()
             return True
-        ###
-            # if g.SQLITE and c.sqlite_connection:
-                # loaded = at.checkExternalFileAgainstDb(root)
-                # if loaded: return True
-                # s, loaded, fileKey, force = at._file_bytes, False, None, True
-            # elif fromString or not g.enableDB:
-                # s, loaded, fileKey = fromString, False, None
+        #
+        # ===== Legacy code.
+        # Done above
+            # if fileName and at.inputFile:
+                # c.setFileTimeStamp(fileName)
+            # elif fromString: # 2010/09/02.
+                # pass
             # else:
-                # s, loaded, fileKey = c.cacher.readFile(fileName, root)
-            # # Never read an external file with file-like sentinels from the cache.
-            # isFileLike = loaded and at.isFileLike(s)
-            # if not loaded or isFileLike:
-                # force = True # Disable caching.
-            # if loaded and not force:
-                # at.inputFile.close()
-                # root.clearDirty()
-                # return True
-            # if not g.unitTesting:
-                # g.es_print("reading:", g.os_path_normslashes(root.h))
-            # if isFileLike:
-                # if g.unitTesting:
-                    # if 0: print("converting @file format in", root.h)
-                    # g.app.unitTestDict['read-convert'] = True
-                # else:
-                    # g.red("converting @file format in", root.h)
-            # root.clearVisitedInTree()
-            # at.scanAllDirectives(root, importing=at.importing, reading=True)
-                # # Sets the following ivars:
-                    # # at.default_directory
-                    # # at.encoding: **changed later** by readOpenFile/at.scanHeader.
-                    # # at.explicitLineEnding
-                    # # at.language
-                    # # at.output_newline
-                    # # at.page_width
-                    # # at.tab_width
-            # thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
-                # # Calls at.scanHeader, which sets at.encoding.
-            # at.inputFile.close()
-            # root.clearDirty() # May be set dirty below.
-            # if at.errors == 0:
-                # at.deleteUnvisitedNodes(root)
-                # at.deleteTnodeList(root)
-            # if at.errors == 0 and not at.importing:
-                # # Used by mod_labels plugin.
-                # at.readPostPass(root, thinFile)
-            # at.deleteAllTempBodyStrings()
-            # if isFileLike and at.errors == 0: # Old-style sentinels.
-                # # 2010/02/24: Make the root @file node dirty so it will
-                # # be written automatically when saving the file.
-                # # Do *not* set the orphan bit here!
-                # root.clearOrphan()
-                # root.setDirty()
-                # c.setChanged(True) # Essential, to keep dirty bit set.
-            # elif at.errors > 0:
-                # # 2010/10/22: Dirty bits are *always* cleared.
-                # # Only the orphan bit is preserved.
-                # # root.setDirty() # 2011/06/17: Won't be preserved anyway
-                # root.setOrphan()
-                # # c.setChanged(True) # 2011/06/17.
-            # else:
-                # root.clearOrphan()
-            # # There will be an internal error if fileKey is None.
-            # # This is not the cause of the bug.
-            # write_to_cache = (not (g.SQLITE and c.sqlite_connection)
-                # and at.errors == 0 and not isFileLike and not fromString)
-            # if write_to_cache:
-                # c.cacher.writeFile(root, fileKey)
-            # return at.errors == 0
+                # return False
+        if g.SQLITE and c.sqlite_connection:
+            loaded = at.checkExternalFileAgainstDb(root)
+            if loaded: return True
+            s, loaded, fileKey, force = at._file_bytes, False, None, True
+        elif fromString or not g.enableDB:
+            s, loaded, fileKey = fromString, False, None
+        else:
+            s, loaded, fileKey = c.cacher.readFile(fileName, root)
+        # Never read an external file with file-like sentinels from the cache.
+        isFileLike = loaded and at.isFileLike(s)
+        if not loaded or isFileLike:
+            force = True # Disable caching.
+        if loaded and not force:
+            at.inputFile.close()
+            root.clearDirty()
+            return True
+        if not g.unitTesting:
+            g.es_print("reading:", g.os_path_normslashes(root.h))
+        if isFileLike:
+            if g.unitTesting:
+                if 0: print("converting @file format in", root.h)
+                g.app.unitTestDict['read-convert'] = True
+            else:
+                g.red("converting @file format in", root.h)
+        root.clearVisitedInTree()
+        at.scanAllDirectives(root, importing=at.importing, reading=True)
+            # Sets the following ivars:
+                # at.default_directory
+                # at.encoding: **changed later** by readOpenFile/at.scanHeader.
+                # at.explicitLineEnding
+                # at.language
+                # at.output_newline
+                # at.page_width
+                # at.tab_width
+        thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
+            # Calls at.scanHeader, which sets at.encoding.
+        at.inputFile.close()
+        root.clearDirty() # May be set dirty below.
+        if at.errors == 0:
+            at.deleteUnvisitedNodes(root)
+            at.deleteTnodeList(root)
+        if at.errors == 0 and not at.importing:
+            # Used by mod_labels plugin.
+            at.readPostPass(root, thinFile)
+        at.deleteAllTempBodyStrings()
+        if isFileLike and at.errors == 0: # Old-style sentinels.
+            # 2010/02/24: Make the root @file node dirty so it will
+            # be written automatically when saving the file.
+            # Do *not* set the orphan bit here!
+            root.clearOrphan()
+            root.setDirty()
+            c.setChanged(True) # Essential, to keep dirty bit set.
+        elif at.errors > 0:
+            # 2010/10/22: Dirty bits are *always* cleared.
+            # Only the orphan bit is preserved.
+            # root.setDirty() # 2011/06/17: Won't be preserved anyway
+            root.setOrphan()
+            # c.setChanged(True) # 2011/06/17.
+        else:
+            root.clearOrphan()
+        # There will be an internal error if fileKey is None.
+        # This is not the cause of the bug.
+        write_to_cache = (not (g.SQLITE and c.sqlite_connection)
+            and at.errors == 0 and not isFileLike and not fromString)
+        if write_to_cache:
+            c.cacher.writeFile(root, fileKey)
+        return at.errors == 0
     #@+node:ekr.20041005105605.25: *6* at.deleteAllTempBodyStrings
     def deleteAllTempBodyStrings(self):
         '''Delete all temp attributes.'''
@@ -4962,11 +4976,9 @@ class FastAtRead (object):
     '''
 
     def __init__ (self, c, gnx2vnode=None, path=None, root=None):
-        
-        ### < < define TestVNode > >
     
         self.c = c
-        if 1: ### FAST:
+        if FAST:
             assert gnx2vnode is not None
             assert isinstance(root, leoNodes.Position), repr(root)
         self.gnx2vnode = gnx2vnode or {}
@@ -5008,26 +5020,25 @@ class FastAtRead (object):
     #@+node:ekr.20180603060721.1: *3* fast_at.post_pass
     def post_pass(self, gnx2body, gnx2vnode, root_v):
         '''Set all body text.'''
-        ###if FAST:
-        # Set the body text.
-        for key, body in gnx2body.items():
-            v = gnx2vnode.get(key)
-            v._bodyString = ''.join(body)
-        ###
-            # else:
-                # # Check the keys.
-                # bkeys = sorted(gnx2body.keys())
-                # vkeys = sorted(gnx2vnode.keys())
-                # if bkeys != vkeys:
-                    # g.trace('KEYS MISMATCH')
-                    # g.printObj(bkeys)
-                    # g.printObj(vkeys)
-                    # sys.exit(1)
-                # # Set the body text.
-                # for key in vkeys:
-                    # v = gnx2vnode.get(key)
-                    # body = gnx2body.get(key)
-                    # v._bodyString = ''.join(body)
+        if FAST:
+            # Set the body text.
+            for key, body in gnx2body.items():
+                v = gnx2vnode.get(key)
+                v._bodyString = ''.join(body)
+        else:
+            # Check the keys.
+            bkeys = sorted(gnx2body.keys())
+            vkeys = sorted(gnx2vnode.keys())
+            if bkeys != vkeys:
+                g.trace('KEYS MISMATCH')
+                g.printObj(bkeys)
+                g.printObj(vkeys)
+                sys.exit(1)
+            # Set the body text.
+            for key in vkeys:
+                v = gnx2vnode.get(key)
+                body = gnx2body.get(key)
+                v._bodyString = ''.join(body)
     #@+node:ekr.20180602103135.2: *3* fast_at.scan_header
     header_pattern = re.compile(r'''
         ^(.+)@\+leo
@@ -5082,7 +5093,7 @@ class FastAtRead (object):
         sentinel = delim_start + '@'
             # Faster than a regex!
         stack = []
-            # Entries are (gnx, indent)
+            # Entries are (gnx, indent, body)
             # Updated when at+others, at+<section>, or at+all is seen.
         verbline = delim_start + '@verbatim' + delim_end + '\n'
             # The spelling of at-verbatim sentinel
@@ -5099,7 +5110,7 @@ class FastAtRead (object):
         #
         # Init the parent vnode for testing.
         #
-        if 1: ### FAST:
+        if FAST:
             # Production.
             context = self.c
             parent_v = self.root.v
@@ -5188,12 +5199,12 @@ class FastAtRead (object):
                 in_doc = False
                 if m.group(2) == '+': # opening sentinel
                     body.append(m.group(1) + '@others\n')
-                    stack.append((gnx, indent))
+                    stack.append((gnx, indent, body))
                     indent += m.end(1) # adjust current identation
                 else: # closing sentinel.
                     # m.group(2) is '-' because the pattern matched.
-                    gnx, indent = stack.pop()
-                    body = gnx2body[gnx]
+                    gnx, indent, body = stack.pop()
+                    ### body = gnx2body[gnx]
                 continue
 
             #@-<< 3. handle @others >>
@@ -5207,13 +5218,13 @@ class FastAtRead (object):
                 if m.group(2) == '+':
                     # open sentinel.
                     body.append(m.group(1) + g.angleBrackets(m.group(3)) + '\n')
-                    stack.append((gnx, indent))
+                    stack.append((gnx, indent, body))
                     indent += m.end(1)
                 else:
                     # close sentinel.
                     # m.group(2) is '-' because the pattern matched.
-                    gnx, indent = stack.pop()
-                    body = gnx2body[gnx]
+                    gnx, indent, body = stack.pop()
+                    ### body = gnx2body[gnx]
                 continue
             #@-<< 4. handle section refs >>
             #@afterref
@@ -5224,18 +5235,18 @@ class FastAtRead (object):
             m = node_start_pat.match(line)
             if m:
                 
-                # def dump(v):
-                    # print('----- LEVEL', level, v.h)
-                    # print('       PARENT', parent_v.h)
-                    # print('[')
-                    # for i, data in enumerate(level_stack):
-                        # v2, in_tree = data
-                        # print('%2s %5s %s' % (i+1, in_tree, v2.h))
-                    # print(']')
-                    # print('PARENT.CHILDREN...')
-                    # g.printObj([v2.h for v2 in parent_v.children])
-                    # print('PARENTS...')
-                    # g.printObj([v2.h for v2 in v.parents])
+                def dump(v):
+                    print('----- LEVEL', level, v.h)
+                    print('       PARENT', parent_v.h)
+                    print('[')
+                    for i, data in enumerate(level_stack):
+                        v2, in_tree = data
+                        print('%2s %5s %s' % (i+1, in_tree, v2.h))
+                    print(']')
+                    print('PARENT.CHILDREN...')
+                    g.printObj([v2.h for v2 in parent_v.children])
+                    print('PARENTS...')
+                    g.printObj([v2.h for v2 in v.parents])
                     
                 in_doc = False
                 in_raw = False
@@ -5324,11 +5335,11 @@ class FastAtRead (object):
                 # Pushing and popping the stack may not be necessary, but it can't hurt.
                 if m.group(2) == '+': # opening sentinel
                     body.append('@all\n')
-                    stack.append((gnx, indent))
+                    stack.append((gnx, indent, body))
                 else: # closing sentinel.
                     # m.group(2) is '-' because the pattern matched.
-                    gnx, indent = stack.pop()
-                    body = gnx2body[gnx]
+                    gnx, indent, body = stack.pop()
+                    ### body = gnx2body[gnx]
                 continue
             #@-<< handle @all >>
             #@+<< handle afterref >>
