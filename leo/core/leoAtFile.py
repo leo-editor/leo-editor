@@ -5090,6 +5090,9 @@ class FastAtRead (object):
             # To handle doc parts.
         first_i = 0
             # Index into first array.
+        in_clone_tree = False
+            # True: scanning a clone and all it's descendants.
+            # Within clone trees, no parent or child links are updated.
         in_doc = False
             # True: in @doc parts.
         in_raw = False
@@ -5099,7 +5102,7 @@ class FastAtRead (object):
         indent = 0 
             # The current indentation.
         level_stack = []
-            # The vnodes at each level.
+            # Entries are (vnode, in_clone_tree)
         n_last_lines = 0
             # The number of @@last directives seen.
         sentinel = delim_start + '@'
@@ -5133,7 +5136,7 @@ class FastAtRead (object):
                 # Corresponds to the @files node itself.
         root_v = parent_v
             # Does not change.
-        level_stack.append(root_v)
+        level_stack.append((root_v, False),)
         #
         # Init the gnx dict last.
         #
@@ -5246,6 +5249,20 @@ class FastAtRead (object):
             #@+node:ekr.20180602103135.19: *4* << handle node_start >>
             m = node_start_pat.match(line)
             if m:
+                
+                # def dump(v):
+                    # print('----- LEVEL', level, v.h)
+                    # print('       PARENT', parent_v.h)
+                    # print('[')
+                    # for i, data in enumerate(level_stack):
+                        # v2, in_tree = data
+                        # print('%2s %5s %s' % (i+1, in_tree, v2.h))
+                    # print(']')
+                    # print('PARENT.CHILDREN...')
+                    # g.printObj([v2.h for v2 in parent_v.children])
+                    # print('PARENTS...')
+                    # g.printObj([v2.h for v2 in v.parents])
+                    
                 in_doc = False
                 in_raw = False
                 # The groups are as follows:
@@ -5254,14 +5271,27 @@ class FastAtRead (object):
                 gnx = m.group(2)
                 head = m.group(5)
                 level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
-                #
-                # Make the vnode if it does not already exist.
-                if gnx in gnx2vnode:
-                    # A clone
-                    v = gnx2vnode.get(gnx)
-                    # We are about to rescan everything, so start afresh.
+                v = gnx2vnode.get(gnx)
+                # Get the previous value of in_clone_tree
+                if v and v == root_v:
                     gnx2body[gnx] = body = []
                     v.children = []
+                    continue
+                parent_v, in_clone_tree = level_stack[level-2]
+                if v and in_clone_tree:
+                    # Create a throw-away body.
+                    body = []
+                    # Update *only* the level_stack.
+                    level_stack = level_stack[:level-1]
+                    level_stack.append((v, in_clone_tree),)
+                    # dump(v)
+                    # Leave all parent/child links unchanged!
+                    continue
+                if v:
+                    # The *start* of a clone tree.
+                    in_clone_tree = v != root_v
+                    # Reset *only* the body. Retain the previous children.
+                    gnx2body[gnx] = body = []
                 else:
                     # Make a new vnode.
                     v = self.VNode(context=context, gnx=gnx)
@@ -5270,14 +5300,14 @@ class FastAtRead (object):
                     body = gnx2body[gnx]
                 #
                 # Update the stack.
-                level_stack = level_stack[:level]
-                level_stack.append(v)
+                level_stack = level_stack[:level-1]
+                level_stack.append((v, in_clone_tree),)
                 #
                 # Update the links, but special case the root node.
-                if v != root_v:
-                    parent_v = level_stack[-2]
-                    parent_v.children.append(v)
-                    v.parents.append(parent_v)
+                assert v != root_v
+                parent_v.children.append(v)
+                v.parents.append(parent_v)
+                # dump(v)
                 continue
             #@-<< handle node_start >>
             #@+<< handle end of @doc & @code parts >>
