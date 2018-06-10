@@ -2707,8 +2707,11 @@ class AtFile(object):
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
                     # Leo 5.6: update the cache *here*, not just when reading.
-                    fileKey = c.cacher.fileKey(eventualFileName, at.outputContents)
-                    c.cacher.writeFile(at.root, fileKey)
+                    if FAST:
+                        pass
+                    else:
+                        fileKey = c.cacher.fileKey(eventualFileName, at.outputContents)
+                        c.cacher.writeFile(at.root, fileKey)
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
