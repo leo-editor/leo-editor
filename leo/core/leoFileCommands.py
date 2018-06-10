@@ -3,16 +3,9 @@
 '''Classes relating to reading and writing .leo files.'''
 #@+<< imports >>
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
-# For FastRead class
 import xml.etree.ElementTree as ElementTree
-# from collections import defaultdict
-
-try:
-    # IronPython has problems with this.
-    import xml.sax
-    import xml.sax.saxutils
-except Exception:
-    pass
+import xml.sax.saxutils as saxutils
+    # Required for xml escapes.
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
 import binascii
@@ -475,7 +468,6 @@ class FileCommands(object):
             c.redraw()
         g.es('set reference file:', g.shortFileName(fileName))
     #@+node:ekr.20060919133249: *4* fc.Reading Common
-    # Methods common to both the sax and non-sax code.
     #@+node:ekr.20031218072017.2004: *5* fc.canonicalTnodeIndex
     def canonicalTnodeIndex(self, index):
         """Convert Tnnn to nnn, leaving gnx's unchanged."""
@@ -749,7 +741,6 @@ class FileCommands(object):
             n -= 1
     #@+node:ekr.20031218072017.1971: *4* fc.putClipboardHeader
     def putClipboardHeader(self):
-        # Put the minimum header for sax.
         self.put('<leo_header file_format="2"/>\n')
     #@+node:ekr.20040324080819.1: *4* fc.putLeoFile & helpers
     def putLeoFile(self):
@@ -779,50 +770,53 @@ class FileCommands(object):
         use_db = g.enableDB and c.mFileName
         if use_db:
             c.cacher.setCachedGlobalsElement(c.mFileName)
-        # Always put positions, to trigger sax methods.
-        self.put("<globals")
-        #@+<< put the body/outline ratios >>
-        #@+node:ekr.20031218072017.3038: *6* << put the body/outline ratios >>
-        self.put(" body_outline_ratio=")
-        self.put_in_dquotes("0.5" if c.fixed or use_db else "%1.2f" % (
-            c.frame.ratio))
-        self.put(" body_secondary_ratio=")
-        self.put_in_dquotes("0.5" if c.fixed or use_db else "%1.2f" % (
-            c.frame.secondary_ratio))
-        #@-<< put the body/outline ratios >>
-        self.put(">"); self.put_nl()
-        #@+<< put the position of this frame >>
-        #@+node:ekr.20031218072017.3039: *6* << put the position of this frame >>
-        # New in Leo 4.5: support fixed .leo files.
-        if c.fixed or use_db:
-            width, height, left, top = 700, 500, 50, 50
-                # Put fixed, immutable, reasonable defaults.
-                # Leo 4.5 and later will ignore these when reading.
-                # These should be reasonable defaults so that the
-                # file will be opened properly by older versions
-                # of Leo that do not support fixed .leo files.
+        if 1: ### Legacy
+            # Always put positions, to trigger sax methods.
+            self.put("<globals")
+            #@+<< put the body/outline ratios >>
+            #@+node:ekr.20031218072017.3038: *6* << put the body/outline ratios >>
+            self.put(" body_outline_ratio=")
+            self.put_in_dquotes("0.5" if c.fixed or use_db else "%1.2f" % (
+                c.frame.ratio))
+            self.put(" body_secondary_ratio=")
+            self.put_in_dquotes("0.5" if c.fixed or use_db else "%1.2f" % (
+                c.frame.secondary_ratio))
+            #@-<< put the body/outline ratios >>
+            self.put(">"); self.put_nl()
+            #@+<< put the position of this frame >>
+            #@+node:ekr.20031218072017.3039: *6* << put the position of this frame >>
+            # New in Leo 4.5: support fixed .leo files.
+            if c.fixed or use_db:
+                width, height, left, top = 700, 500, 50, 50
+                    # Put fixed, immutable, reasonable defaults.
+                    # Leo 4.5 and later will ignore these when reading.
+                    # These should be reasonable defaults so that the
+                    # file will be opened properly by older versions
+                    # of Leo that do not support fixed .leo files.
+            else:
+                width, height, left, top = c.frame.get_window_info()
+            self.put_tab()
+            self.put("<global_window_position")
+            self.put(" top="); self.put_in_dquotes(str(top))
+            self.put(" left="); self.put_in_dquotes(str(left))
+            self.put(" height="); self.put_in_dquotes(str(height))
+            self.put(" width="); self.put_in_dquotes(str(width))
+            self.put("/>"); self.put_nl()
+            #@-<< put the position of this frame >>
+            #@+<< put the position of the log window >>
+            #@+node:ekr.20031218072017.3040: *6* << put the position of the log window >>
+            top = left = height = width = 0 # no longer used
+            self.put_tab()
+            self.put("<global_log_window_position")
+            self.put(" top="); self.put_in_dquotes(str(top))
+            self.put(" left="); self.put_in_dquotes(str(left))
+            self.put(" height="); self.put_in_dquotes(str(height))
+            self.put(" width="); self.put_in_dquotes(str(width))
+            self.put("/>"); self.put_nl()
+            #@-<< put the position of the log window >>
+            self.put("</globals>"); self.put_nl()
         else:
-            width, height, left, top = c.frame.get_window_info()
-        self.put_tab()
-        self.put("<global_window_position")
-        self.put(" top="); self.put_in_dquotes(str(top))
-        self.put(" left="); self.put_in_dquotes(str(left))
-        self.put(" height="); self.put_in_dquotes(str(height))
-        self.put(" width="); self.put_in_dquotes(str(width))
-        self.put("/>"); self.put_nl()
-        #@-<< put the position of this frame >>
-        #@+<< put the position of the log window >>
-        #@+node:ekr.20031218072017.3040: *6* << put the position of the log window >>
-        top = left = height = width = 0 # no longer used
-        self.put_tab()
-        self.put("<global_log_window_position")
-        self.put(" top="); self.put_in_dquotes(str(top))
-        self.put(" left="); self.put_in_dquotes(str(left))
-        self.put(" height="); self.put_in_dquotes(str(height))
-        self.put(" width="); self.put_in_dquotes(str(width))
-        self.put("/>"); self.put_nl()
-        #@-<< put the position of the log window >>
-        self.put("</globals>"); self.put_nl()
+            self.put('<globals></globals')
     #@+node:ekr.20031218072017.3041: *5* fc.putHeader
     def putHeader(self):
         tnodes = 0; clone_windows = 0 # Always zero in Leo2.
@@ -881,7 +875,7 @@ class FileCommands(object):
         # pylint: disable=consider-using-ternary
         ua = hasattr(v, 'unknownAttributes') and self.putUnknownAttributes(v) or ''
         b = v.b
-        body = xml.sax.saxutils.escape(b) if b else ''
+        body = saxutils.escape(b) if b else ''
         self.put('<t tx="%s"%s>%s</t>\n' % (gnx, ua, body))
     #@+node:ekr.20031218072017.1575: *5* fc.putTnodes
     def putTnodes(self):
@@ -949,7 +943,7 @@ class FileCommands(object):
             fc.put(v_head + '</v>\n')
         else:
             fc.vnodesDict[gnx] = True
-            v_head += '<vh>%s</vh>' % (xml.sax.saxutils.escape(p.v.headString() or ''))
+            v_head += '<vh>%s</vh>' % (saxutils.escape(p.v.headString() or ''))
             # New in 4.2: don't write child nodes of @file-thin trees
             # (except when writing to clipboard)
             if p.hasChildren() and (forceWrite or self.usingClipboard):
@@ -1522,7 +1516,7 @@ class FileCommands(object):
         if key.startswith('str_'):
             if g.isString(val) or g.isBytes(val):
                 val = g.toUnicode(val)
-                attr = ' %s="%s"' % (key, xml.sax.saxutils.escape(val))
+                attr = ' %s="%s"' % (key, saxutils.escape(val))
                 return attr
             else:
                 g.trace(type(val), repr(val))

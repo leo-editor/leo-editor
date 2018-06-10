@@ -5236,6 +5236,7 @@ class FastAtRead (object):
             if m:
                 
                 def dump(v):
+                    # pylint: disable=cell-var-from-loop
                     print('----- LEVEL', level, v.h)
                     print('       PARENT', parent_v.h)
                     print('[')
