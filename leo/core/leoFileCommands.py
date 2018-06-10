@@ -767,7 +767,7 @@ class FileCommands(object):
     def putGlobals(self):
 
         c = self.c
-        use_db = g.enableDB and c.mFileName
+        use_db = c.mFileName ### g.enableDB and c.mFileName
         if use_db:
             c.cacher.setCachedGlobalsElement(c.mFileName)
         if 1: ### Legacy
@@ -980,7 +980,7 @@ class FileCommands(object):
             if d.get('str_leo_pos'):
                 del d['str_leo_pos']
             # Don't write the current position if we can cache it.
-            if g.enableDB and c.mFileName:
+            if c.mFileName: ### g.enableDB and c.mFileName:
                 c.cacher.setCachedStringPosition(str_pos)
             elif c.fixed:
                 pass
@@ -1586,7 +1586,7 @@ class FileCommands(object):
             # position is already selected
             return
         current, str_pos = None, None
-        use_db = g.enableDB and c.mFileName
+        use_db = c.mFileName ### g.enableDB and c.mFileName
         if use_db:
             str_pos = c.cacher.getCachedStringPosition()
         if not str_pos:

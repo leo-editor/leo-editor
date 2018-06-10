@@ -82,7 +82,7 @@ class Cacher(object):
             return db
         except Exception:
             return {} # Use a plain dict as a dummy.
-    #@+node:ekr.20100210163813.5747: *4* cacher.save (revise)
+    #@+node:ekr.20100210163813.5747: *4* cacher.save
     def save(self, fn, changeName):
         if SQLITE:
             self.commit(True)
@@ -416,6 +416,7 @@ class Cacher(object):
         # sfn = g.shortFileName(fileName)
         if not g.enableDB:
             return '', False, None
+        g.trace('=====', g.shortFileName(fileName) or fileName)
         s = g.readFileIntoEncodedString(fileName, silent=True)
         if s is None:
             return s, False, None
@@ -435,7 +436,7 @@ class Cacher(object):
             #self.createOutlineFromCacheList(root.v, aList, fileName=fileName)
         return s, ok, key
     #@+node:ekr.20100208082353.5927: *3* cacher.Writing
-    #@+node:ekr.20100208071151.5901: *4* cacher.makeCacheList (to be removed)
+    #@+node:ekr.20100208071151.5901: *4* cacher.makeCacheList
     def makeCacheList(self, p):
         '''Create a recursive list describing a tree
         for use by createOutlineFromCacheList.
@@ -469,13 +470,12 @@ class Cacher(object):
         '''Update the cache after reading the file.'''
         # Check g.enableDB before giving internal error.
         if not g.enableDB:
-            pass
-        elif not fileKey:
+            return
+        g.trace('=====', p.h)
+        if not fileKey:
             g.trace(g.callers(5))
             g.internalError('empty fileKey')
-        elif self.db.get(fileKey):
-            pass
-        else:
+        elif not self.db.get(fileKey):
             self.db[fileKey] = self.makeCacheList(p)
     #@+node:ekr.20100208065621.5890: *3* cacher.test
     def test(self):
