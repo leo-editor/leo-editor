@@ -71,8 +71,7 @@ class Cacher(object):
             # Fixes bug 670108.
             self.c.db = self.db
             self.inited = True
-            self.dump(self.db, 'file cache: %s' % sfn)
-        
+            self.dump(self.db, 'c.db: %s' % sfn)
     #@+node:ekr.20100208082353.5920: *4* cacher.initGlobalDb
     def initGlobalDB(self):
         '''
@@ -90,7 +89,7 @@ class Cacher(object):
             db = SqlitePickleShare(dbdirname) if SQLITE else PickleShareDB(dbdirname)
             self.db = db
             self.inited = True
-            self.dump(db, 'g.app.db')
+            self.dump(self.db, 'g.app.db')
             return db
         except Exception:
             return {} # Use a plain dict as a dummy.
@@ -470,11 +469,6 @@ class Cacher(object):
             [self.makeCacheList(p2) for p2 in p.children()]]
     #@+node:ekr.20100210163813.5747: *4* cacher.save
     def save(self, fn, changeName):
-        '''
-        Save c.db. Called from c.save, etc.
-        '''
-        g.trace('(cacher)', fn)
-        g.printObj(list(self.c.db.keys()))
         if SQLITE:
             self.commit(True)
         if changeName or not self.inited:
