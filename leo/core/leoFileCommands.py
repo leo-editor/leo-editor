@@ -767,7 +767,8 @@ class FileCommands(object):
     def putGlobals(self):
 
         c = self.c
-        if c.mFileName: ### g.enableDB and c.mFileName
+        # c.mFileName can be None for pasted outlines.
+        if g.enableDB and c.mFileName:
             c.cacher.setCachedGlobalsElement(c.mFileName)
         if 0: ### Not yet.
             self.put('<globals/>\n')
@@ -1586,7 +1587,8 @@ class FileCommands(object):
             # position is already selected
             return
         current, str_pos = None, None
-        if c.mFileName: ### g.enableDB and c.mFileName
+        # c.mFileName can be None for pasted outlines.
+        if g.enableDB and c.mFileName:
             str_pos = c.cacher.getCachedStringPosition()
         if not str_pos:
             d = root.v.u
@@ -1706,7 +1708,8 @@ class FastRead (object):
             ('top', 50), ('left', 50),
             ('height', 500), ('width', 800),
         )
-        if c.mFileName: ### g.enableDB and c.mFileName:
+        # c.mFileName may be None for copied outlines.
+        if g.enableDB and c.mFileName:
             d = c.cacher.getCachedWindowPositionDict(c.mFileName)
             for name, default in table:
                 if d.get(name) is None:
