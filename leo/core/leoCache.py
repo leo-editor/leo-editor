@@ -112,6 +112,14 @@ class Cacher(object):
     #@+node:ekr.20180611054447.1: *3* cacher.dump
     def dump(self, db, tag):
         '''Dump the indicated cache.'''
+        
+        def dump_list(aList, result, indent=0):
+            head, body, gnx, children = tuple(aList)
+            assert isinstance(children, list)
+            result.append('%6s%s %20s %s' % (len(body), ' '*indent, gnx, head))
+            for child in children:
+                dump_list(child, result, indent=indent+2)
+
         if 'cache' not in g.app.debug:
             return
         print('\n===== %s =====\n' % tag)
@@ -119,7 +127,16 @@ class Cacher(object):
             key = key[0]
             val = db.get(key)
             print('%s:' % key)
-            if g.isString(val):
+            if key.startswith('fcache/'):
+                assert isinstance(val, list), val.__class__.__name__
+                result = ['list of nodes...']
+                dump_list(val, result)
+                if 1: # Brief
+                    n = len(result)-1
+                    print('%s node%s in %s' % (n, g.plural(n), val[0].strip()))
+                else:
+                    g.printObj(result)
+            elif g.isString(val):
                 print(val)
             elif isinstance(val, (int, float)):
                 print(val)
