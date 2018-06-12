@@ -2616,8 +2616,10 @@ class FastRead (object):
         
         fc = self.fc
         attrib = g_element.attrib
-        fc.ratio = float(attrib ['body_secondary_ratio'])
-        fc.secondary_ratio = float(attrib ['body_secondary_ratio'])
+        ratio = attrib.get('body_secondary_ratio')
+        fc.ratio = 0.5 if ratio is None else float(ratio)
+        ratio2 = attrib.get('body_secondary_ratio')
+        fc.secondary_ratio =  0.5 if ratio2 is None else float(ratio2)
         for e in g_element:
             #  Ignore legacy elements.
             if e.tag == 'global_window_position':
