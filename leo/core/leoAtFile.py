@@ -5275,9 +5275,6 @@ class FastAtRead (object):
                 if v:
                     # The *start* of a clone tree.
                     # Reset the children.
-                    # if v.h == '@test x.makeShadowDirectory':
-                        # print('')
-                        # g.trace('CLEAR CHILDREN', v.h)
                     clone_v = v
                     v.children = []
                     # Reset the body.
