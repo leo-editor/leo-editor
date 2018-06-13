@@ -2695,7 +2695,7 @@ class FastRead (object):
                 if e.tag == 'vh':
                     #@+<< handle <vh> element >>
                     #@+node:ekr.20180605075006.1: *6* << handle <vh> element >>
-                    head = e.text or g.u('')
+                    head = g.toUnicode(e.text or '')
                     assert g.isUnicode(head), head.__class__.__name__
                     parent_v._headString = head
                     if trace: print('HEAD:  %20s: %s' % (parent_v.gnx, head))
@@ -2715,7 +2715,7 @@ class FastRead (object):
                     gnx2vnode [gnx] = v
                     parent_v.children.append(v)
                     v.parents.append(parent_v)
-                    body = gnx2body.get(gnx) or ''
+                    body = g.toUnicode(gnx2body.get(gnx) or '')
                     assert g.isUnicode(body), body.__class__.__name__
                     v._bodyString = body
                     v._headString = 'PLACE HOLDER'
@@ -2832,7 +2832,7 @@ class FastRead (object):
         t1 = time.clock()
         with open(path, 'rb') as f:
             s = f.read()
-        contents = g.toUnicode(s)
+        contents = g.toUnicode(s) if g.isPython3 else s
         c.hiddenRootNode = self.readWithElementTree(contents)
         if trace:
             t2 = time.clock()
