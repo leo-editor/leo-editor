@@ -5243,44 +5243,49 @@ class FastAtRead (object):
                     print('PARENTS...')
                     g.printObj([v2.h for v2 in v.parents])
                 #@-<< define dump_v >>
-                in_doc = False
-                in_raw = False
-                # The groups are as follows:
-                # indent, gnx, level-number, second star, headline)
-                # 1       2    3             4            5
-                gnx = m.group(2)
-                head = m.group(5)
+                in_doc, in_raw = False, False
+                gnx, head = m.group(2), m.group(5)
                 level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
+                    # m.group(3) is the level number, m.group(4) is the number of stars.
                 v = gnx2vnode.get(gnx)
-                # Get the previous value of in_clone_tree
+                #
+                # Case 1: Special case the root vnode.
                 if v and v == root_v:
                     gnx2body[gnx] = body = []
                     v.children = []
+                    local_gnx2vnode[gnx] = v
                     continue
+                #
+                # Case 2: We are scanning the descendants of a clone.
                 parent_v, in_clone_tree = level_stack[level-2]
                 if v and in_clone_tree:
-                    #
-                    # Experimental: always rescan the body.
                     # The last version of the body scanned in the external file wins.
-                        ### Create a throw-away body.
-                        ### body = []
                     gnx2body[gnx] = body = []
-                    #
-                    # Experimental: clear all children.
-                    if gnx not in local_gnx2vnode:
+                    if gnx in gnx2vnode and gnx not in local_gnx2vnode:
+                        # This clone arises from the .leo file.
                         local_gnx2vnode[gnx] = v
                         v.children = []
+                        if v.h == '@test x.makeShadowDirectory':
+                            g.trace('clear 1', self.root.h, v.h)
+                            g.printObj(level_stack)
                     # Update the level_stack.
                     level_stack = level_stack[:level-1]
                     level_stack.append((v, in_clone_tree),)
                     # dump_v()
+                    # Do *not*update the parent/child links!
                     continue
+                #
+                # Case 3: we are not already scanning the descendants of a clone.
                 if v:
                     # The *start* of a clone tree.
                     in_clone_tree = v != root_v
-                    if gnx not in local_gnx2vnode:
+                    if gnx in gnx2vnode and gnx not in local_gnx2vnode:
+                        # The clone arises from the .leo file.
                         local_gnx2vnode[gnx] = v
                         v.children = []
+                        if v.h == '@test x.makeShadowDirectory':
+                            g.trace('clear 2', self.root.h, v.h)
+                            g.printObj(level_stack)
                     # Reset the body.
                     gnx2body[gnx] = body = []
                 else:
@@ -5289,6 +5294,7 @@ class FastAtRead (object):
                     v._headString = head
                     gnx2vnode [gnx] = v
                     body = gnx2body[gnx]
+                    local_gnx2vnode[gnx] = v
                 #
                 # Update the stack.
                 level_stack = level_stack[:level-1]
