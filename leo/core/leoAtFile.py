@@ -5079,9 +5079,6 @@ class FastAtRead (object):
             # The current indentation.
         level_stack = []
             # Entries are (vnode, in_clone_tree)
-        local_gnx2vnode = {}
-            # The local gnxDict, for the @file node being read.
-            # Keys are gnx's, values are vnodes.
         n_last_lines = 0
             # The number of @@last directives seen.
         sentinel = delim_start + '@'
@@ -5255,7 +5252,6 @@ class FastAtRead (object):
                     clone_v = None
                     gnx2body[gnx] = body = []
                     v.children = []
-                    local_gnx2vnode[gnx] = v
                     continue
                 #
                 # Case 2: We are scanning the descendants of a clone.
