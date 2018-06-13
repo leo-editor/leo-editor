@@ -5014,7 +5014,7 @@ class FastAtRead (object):
             # Set the body text.
             for key, body in gnx2body.items():
                 v = gnx2vnode.get(key)
-                v._bodyString = ''.join(body)
+                v._bodyString = g.toUnicode(''.join(body))
         ###
             # Check the keys.
             # bkeys = sorted(gnx2body.keys())
@@ -5315,7 +5315,7 @@ class FastAtRead (object):
                 if m:
                     # @+at or @+doc?
                     doc = '@doc' if m.group(1) == 'doc' else '@'
-                    doc2 = g.toUnicode(m.group(2) or '') # Trailing text.
+                    doc2 = m.group(2) or '' # Trailing text.
                     if doc2:
                         body.append('%s%s\n'%(doc, doc2))
                     else:
@@ -5376,7 +5376,7 @@ class FastAtRead (object):
                 delim1, delim2, delim3 = g.set_delims_from_string(delims)
                     # delim1 is always the single-line delimiter.
                 if delim1:
-                    delim_start, delim_end = delim1, g.toUnicode('')
+                    delim_start, delim_end = delim1, ''
                 else:
                     delim_start, delim_end = delim2, delim3
                 #
@@ -5415,7 +5415,7 @@ class FastAtRead (object):
                     g.trace('Ignoring invalid @comment: %r' % line)
                     continue
                 delim_start = m2.group(1)
-                delim_end = g.toUnicode(m2.group(2) or '')
+                delim_end = m2.group(2) or ''
                 #
                 # Within these delimiters:
                 # - double underscores represent a newline.
