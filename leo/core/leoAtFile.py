@@ -4966,15 +4966,18 @@ class FastAtRead (object):
     This is Vitalije's code, edited by EKR.
     '''
 
-    def __init__ (self, c, gnx2vnode, path, root):
+    def __init__ (self, c, gnx2vnode, path, root, test=False, TestVNode=None):
         self.c = c
         assert gnx2vnode is not None
-        assert isinstance(root, leoNodes.Position), repr(root)
-        self.gnx2vnode = gnx2vnode or {}
+        if not test:
+            assert isinstance(root, leoNodes.Position), repr(root)
+        assert gnx2vnode is not None
+        self.gnx2vnode = gnx2vnode
             # The global fc.gnxDict. Keys are gnx's, values are vnodes.
         self.path = path
         self.root = root
-        self.VNode = leoNodes.VNode ### if FAST else TestVNode
+        self.VNode = TestVNode if test else leoNodes.VNode
+        self.test = test
 
     #@+others
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
@@ -5010,25 +5013,25 @@ class FastAtRead (object):
     #@+node:ekr.20180603060721.1: *3* fast_at.post_pass
     def post_pass(self, gnx2body, gnx2vnode, root_v):
         '''Set all body text.'''
-        if FAST:
+        # Set the body text.
+        if self.test:
+            # Check the keys.
+            bkeys = sorted(gnx2body.keys())
+            vkeys = sorted(gnx2vnode.keys())
+            if bkeys != vkeys:
+                g.trace('KEYS MISMATCH')
+                g.printObj(bkeys)
+                g.printObj(vkeys)
+                sys.exit(1)
             # Set the body text.
+            for key in vkeys:
+                v = gnx2vnode.get(key)
+                body = gnx2body.get(key)
+                v._bodyString = ''.join(body)
+        else:
             for key, body in gnx2body.items():
                 v = gnx2vnode.get(key)
                 v._bodyString = g.toUnicode(''.join(body))
-        ###
-            # Check the keys.
-            # bkeys = sorted(gnx2body.keys())
-            # vkeys = sorted(gnx2vnode.keys())
-            # if bkeys != vkeys:
-                # g.trace('KEYS MISMATCH')
-                # g.printObj(bkeys)
-                # g.printObj(vkeys)
-                # sys.exit(1)
-            # # Set the body text.
-            # for key in vkeys:
-                # v = gnx2vnode.get(key)
-                # body = gnx2body.get(key)
-                # v._bodyString = ''.join(body)
     #@+node:ekr.20180602103135.2: *3* fast_at.scan_header
     header_pattern = re.compile(r'''
         ^(.+)@\+leo
@@ -5051,7 +5054,7 @@ class FastAtRead (object):
             first_lines.append(line)
         return None
     #@+node:ekr.20180602103135.8: *3* fast_at.scan_lines
-    def scan_lines(self, delims, first_lines, lines, start):
+    def scan_lines(self, delims, first_lines, lines, start, test=False):
         '''Scan all lines of the file, creating vnodes.'''
         #@+<< init scan_lines >>
         #@+node:ekr.20180602103135.9: *4* << init scan_lines >>
@@ -5093,23 +5096,23 @@ class FastAtRead (object):
         #
         # Init the data for the root node.
         #
-        gnx = 'root-gnx'
+        gnx = g.u('root-gnx')
             # The node that we are reading.
             # start with the gnx for the @file node.
-        gnx_head =  '<hidden top vnode>'
+        gnx_head =  g.u('<hidden top vnode>')
             # The headline of the root node.
         #
         # Init the parent vnode for testing.
         #
-        if FAST:
-            # Production.
-            context = self.c
-            parent_v = self.root.v
-        else:
+        if self.test:
             context = None
             parent_v = self.VNode(context=context, gnx=gnx)
             parent_v._headString = gnx_head
                 # Corresponds to the @files node itself.
+        else:
+            # Production.
+            context = self.c
+            parent_v = self.root.v
         root_v = parent_v
             # Does not change.
         level_stack.append((root_v, False),)
