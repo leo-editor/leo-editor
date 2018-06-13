@@ -6,7 +6,7 @@
 """Classes to read and write @file nodes."""
 #@+<< define FAST (leoAtFile) >>
 #@+node:ekr.20180605093406.1: ** << define FAST (leoAtFile) >>
-FAST = False
+FAST = True
 if FAST:
     print('\n===== FAST (leoAtFile) ===== \n')
 #@-<< define FAST (leoAtFile) >>
@@ -5059,15 +5059,16 @@ class FastAtRead (object):
         # Simple vars...
         afterref = False
             # A special verbatim line follows @afterref.
+        clone_v = None
+            # The root of the clone tree.
+            # When not None, we are scanning a clone and all it's descendants.
         delim_start, delim_end = delims
             # The start/end delims.
         doc_skip = (delim_start + '\n', delim_end + '\n')
             # To handle doc parts.
         first_i = 0
             # Index into first array.
-        in_clone_tree = False
-            # True: scanning a clone and all it's descendants.
-            # Within clone trees, no parent or child links are updated.
+           
         in_doc = False
             # True: in @doc parts.
         in_raw = False
@@ -5249,43 +5250,36 @@ class FastAtRead (object):
                     # m.group(3) is the level number, m.group(4) is the number of stars.
                 v = gnx2vnode.get(gnx)
                 #
-                # Case 1: Special case the root vnode.
+                # Case 1: The root @file node.
                 if v and v == root_v:
+                    clone_v = None
                     gnx2body[gnx] = body = []
                     v.children = []
                     local_gnx2vnode[gnx] = v
                     continue
                 #
                 # Case 2: We are scanning the descendants of a clone.
-                parent_v, in_clone_tree = level_stack[level-2]
-                if v and in_clone_tree:
+                parent_v, clone_v = level_stack[level-2]
+                if v and clone_v:
                     # The last version of the body scanned in the external file wins.
                     gnx2body[gnx] = body = []
-                    if gnx in gnx2vnode and gnx not in local_gnx2vnode:
-                        # This clone arises from the .leo file.
-                        local_gnx2vnode[gnx] = v
-                        v.children = []
-                        if v.h == '@test x.makeShadowDirectory':
-                            g.trace('clear 1', self.root.h, v.h)
-                            g.printObj(level_stack)
                     # Update the level_stack.
                     level_stack = level_stack[:level-1]
-                    level_stack.append((v, in_clone_tree),)
-                    # dump_v()
-                    # Do *not*update the parent/child links!
+                    level_stack.append((v, clone_v),)
+                    # Update *only* clone_root.children.
+                    if parent_v == clone_v:
+                        parent_v.children.append(v)
                     continue
                 #
                 # Case 3: we are not already scanning the descendants of a clone.
                 if v:
                     # The *start* of a clone tree.
-                    in_clone_tree = v != root_v
-                    if gnx in gnx2vnode and gnx not in local_gnx2vnode:
-                        # The clone arises from the .leo file.
-                        local_gnx2vnode[gnx] = v
-                        v.children = []
-                        if v.h == '@test x.makeShadowDirectory':
-                            g.trace('clear 2', self.root.h, v.h)
-                            g.printObj(level_stack)
+                    # Reset the children.
+                    # if v.h == '@test x.makeShadowDirectory':
+                        # print('')
+                        # g.trace('CLEAR CHILDREN', v.h)
+                    clone_v = v
+                    v.children = []
                     # Reset the body.
                     gnx2body[gnx] = body = []
                 else:
@@ -5294,11 +5288,10 @@ class FastAtRead (object):
                     v._headString = head
                     gnx2vnode [gnx] = v
                     body = gnx2body[gnx]
-                    local_gnx2vnode[gnx] = v
                 #
                 # Update the stack.
                 level_stack = level_stack[:level-1]
-                level_stack.append((v, in_clone_tree),)
+                level_stack.append((v, clone_v),)
                 #
                 # Update the links.
                 assert v != root_v
