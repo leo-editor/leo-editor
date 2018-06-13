@@ -5131,6 +5131,22 @@ class FastAtRead (object):
         doc_pat, end_raw_pat, first_pat, last_pat, \
         node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(delims)
         #@-<< init scan_lines >>
+        #@+<< define dump_v >>
+        #@+node:ekr.20180613061743.1: *4* << define dump_v >>
+        def dump_v():
+            '''Dump the level stack and v.'''
+            print('----- LEVEL', level, v.h)
+            print('       PARENT', parent_v.h)
+            print('[')
+            for i, data in enumerate(level_stack):
+                v2, in_tree = data
+                print('%2s %5s %s' % (i+1, in_tree, v2.h))
+            print(']')
+            print('PARENT.CHILDREN...')
+            g.printObj([v2.h for v2 in parent_v.children])
+            print('PARENTS...')
+            g.printObj([v2.h for v2 in v.parents])
+        #@-<< define dump_v >>
         i = 0 # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
             # Order matters.
@@ -5225,22 +5241,6 @@ class FastAtRead (object):
             #@+node:ekr.20180602103135.19: *4* << handle node_start >>
             m = node_start_pat.match(line)
             if m:
-                #@+<< define dump_v >>
-                #@+node:ekr.20180613061743.1: *5* << define dump_v >>
-                def dump_v():
-                    '''Dump the level stack and v.'''
-                    print('----- LEVEL', level, v.h)
-                    print('       PARENT', parent_v.h)
-                    print('[')
-                    for i, data in enumerate(level_stack):
-                        v2, in_tree = data
-                        print('%2s %5s %s' % (i+1, in_tree, v2.h))
-                    print(']')
-                    print('PARENT.CHILDREN...')
-                    g.printObj([v2.h for v2 in parent_v.children])
-                    print('PARENTS...')
-                    g.printObj([v2.h for v2 in v.parents])
-                #@-<< define dump_v >>
                 in_doc, in_raw = False, False
                 gnx, head = m.group(2), m.group(5)
                 level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
