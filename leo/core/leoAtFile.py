@@ -15,7 +15,7 @@ if FAST:
 import leo.core.leoGlobals as g
 import leo.core.leoBeautify as leoBeautify
 import leo.core.leoNodes as leoNodes
-from collections import defaultdict
+# from collections import defaultdict
 # import glob
 # import importlib
 import os
@@ -512,9 +512,7 @@ class AtFile(object):
                     # at.tab_width
             gnx2vnode = c.fileCommands.gnxDict
             contents = fromString or file_s
-            faf = FastAtRead(c, 
-                gnx2vnode=gnx2vnode, path=fileName, root=root)
-            root_vnode, last_lines = faf.read_into_root(fileName, contents)
+            FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
             root.clearDirty()
             return True
         #
@@ -4966,16 +4964,13 @@ class FastAtRead (object):
     This is Vitalije's code, edited by EKR.
     '''
 
-    def __init__ (self, c, gnx2vnode, path, root, test=False, TestVNode=None):
+    def __init__ (self, c, gnx2vnode, test=False, TestVNode=None): 
         self.c = c
-        assert gnx2vnode is not None
-        if not test:
-            assert isinstance(root, leoNodes.Position), repr(root)
         assert gnx2vnode is not None
         self.gnx2vnode = gnx2vnode
             # The global fc.gnxDict. Keys are gnx's, values are vnodes.
-        self.path = path
-        self.root = root
+        self.path = None
+        self.root = None
         self.VNode = TestVNode if test else leoNodes.VNode
         self.test = test
 
@@ -4992,7 +4987,6 @@ class FastAtRead (object):
         patterns = (
             # The list of patterns, in alphabetical order.
             # These patterns must be mutually exclusive.
-            ### To do: @comment and @delims.
             r'^\s*%s@afterref%s$'%delims,               # @afterref
             r'^(\s*)%s@(\+|-)all\s*%s$'%delims,         # @all
             r'^\s*%s@@c(ode)?%s$'%delims,               # @c and @code
@@ -5022,15 +5016,21 @@ class FastAtRead (object):
                 g.trace('KEYS MISMATCH')
                 g.printObj(bkeys)
                 g.printObj(vkeys)
-                sys.exit(1)
+                if self.test:
+                    sys.exit(1)
             # Set the body text.
             for key in vkeys:
                 v = gnx2vnode.get(key)
                 body = gnx2body.get(key)
                 v._bodyString = ''.join(body)
         else:
-            for key, body in gnx2body.items():
+            assert root_v.gnx in gnx2vnode, root_v
+            assert root_v.gnx in gnx2body, root_v
+            # Don't use items(): it doesn't exist in Python 2.
+            for key in gnx2body: 
+                body = gnx2body.get(key)
                 v = gnx2vnode.get(key)
+                assert v
                 v._bodyString = g.toUnicode(''.join(body))
     #@+node:ekr.20180602103135.2: *3* fast_at.scan_header
     header_pattern = re.compile(r'''
@@ -5096,21 +5096,23 @@ class FastAtRead (object):
         #
         # Init the data for the root node.
         #
-        gnx = g.u('root-gnx')
-            # The node that we are reading.
-            # start with the gnx for the @file node.
-        gnx_head =  g.u('<hidden top vnode>')
-            # The headline of the root node.
+
         #
         # Init the parent vnode for testing.
         #
         if self.test:
+            root_gnx = gnx = g.u('root-gnx')
+                # The node that we are reading.
+                # start with the gnx for the @file node.
+            gnx_head =  g.u('<hidden top vnode>')
+                # The headline of the root node.
             context = None
             parent_v = self.VNode(context=context, gnx=gnx)
             parent_v._headString = gnx_head
                 # Corresponds to the @files node itself.
         else:
             # Production.
+            root_gnx = gnx = self.root.gnx
             context = self.c
             parent_v = self.root.v
         root_v = parent_v
@@ -5121,11 +5123,11 @@ class FastAtRead (object):
         #
         gnx2vnode = self.gnx2vnode
             # Keys are gnx's, values are vnodes.
-        gnx2body = defaultdict(list)
+        gnx2body = {}
             # Keys are gnxs, values are list of body lines.
         gnx2vnode[gnx] = parent_v
             # Add gnx to the keys
-        body = gnx2body[gnx]
+        gnx2body[gnx] = body = first_lines
             # Add gnx to the keys.
             # Body is the list of lines presently being accumulated.
         #
@@ -5214,7 +5216,6 @@ class FastAtRead (object):
                 else: # closing sentinel.
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent, body = stack.pop()
-                    ### body = gnx2body[gnx]
                 continue
 
             #@-<< 3. handle @others >>
@@ -5234,7 +5235,6 @@ class FastAtRead (object):
                     # close sentinel.
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent, body = stack.pop()
-                    ### body = gnx2body[gnx]
                 continue
             #@-<< 4. handle section refs >>
             #@afterref
@@ -5282,8 +5282,8 @@ class FastAtRead (object):
                     # Make a new vnode.
                     v = self.VNode(context=context, gnx=gnx)
                     v._headString = head
-                    gnx2vnode [gnx] = v
-                    body = gnx2body[gnx]
+                    gnx2vnode[gnx] = v
+                    gnx2body[gnx] = body = []
                 #
                 # Update the stack.
                 level_stack = level_stack[:level-1]
@@ -5340,7 +5340,7 @@ class FastAtRead (object):
                 else: # closing sentinel.
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent, body = stack.pop()
-                    ### body = gnx2body[gnx]
+                    gnx2body[gnx] = body
                 continue
             #@-<< handle @all >>
             #@+<< handle afterref >>
@@ -5492,30 +5492,36 @@ class FastAtRead (object):
         else:
             # No @-leo sentinel
             return None, []
+        # Handle @last lines.
         last_lines = lines[start+i:]
+        if last_lines:
+            gnx2body[root_gnx] = gnx2body.get(root_gnx).extend(last_lines)
         self.post_pass(gnx2body, gnx2vnode, root_v)
         return root_v, last_lines
-    #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
-    def read_into_root(self, fileName, contents):
-        '''Parse the file's contents, creating a tree of vnodes.
-        return the tuple (root_vnode, first_lines).
+    #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root (production)
+    def read_into_root(self, contents, path, root):
+        '''
+        Parse the file's contents, creating a tree of vnodes
+        anchored in root.v.
         '''
         trace = False
         t1 = time.clock()
-        sfn = g.shortFileName(fileName)
+        self.path = path
+        self.root = root
+        sfn = g.shortFileName(path)
         contents = contents.replace('\r','')
         lines = g.splitLines(contents)
         data = self.scan_header(lines)
         if data:
             delims, first_lines, start_i = data
-            root_v, last_lines = self.scan_lines(
+            self.scan_lines(
                 delims, first_lines, lines, start_i)
             if trace:
                 t2 = time.clock()
-                g.trace('%5.3f sec. %s' % ((t2-t1), fileName))
-            return root_v, last_lines
+                g.trace('%5.3f sec. %s' % ((t2-t1), path))
+            return True
         g.trace('Invalid external file: %s' % sfn)
-        return None, []
+        return False
     #@-others
 #@-others
 #@@language python
