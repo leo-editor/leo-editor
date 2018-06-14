@@ -2174,7 +2174,7 @@ class VNodeBase(object):
         else:
             if not self.body_unicode_warning:
                 self.body_unicode_warning = True
-                g.internalError('not unicode:', repr(self._bodyString))
+                g.internalError('not unicode:', repr(self._bodyString), self._headString)
             return g.toUnicode(self._bodyString)
 
     getBody = bodyString

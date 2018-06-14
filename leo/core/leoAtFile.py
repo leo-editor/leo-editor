@@ -9,14 +9,13 @@
 FAST = True
 if FAST:
     print('\n===== FAST (leoAtFile) ===== \n')
-
 #@-<< define FAST (leoAtFile) >>
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
 import leo.core.leoBeautify as leoBeautify
 import leo.core.leoNodes as leoNodes
-from collections import defaultdict
+# from collections import defaultdict
 # import glob
 # import importlib
 import os
@@ -513,9 +512,7 @@ class AtFile(object):
                     # at.tab_width
             gnx2vnode = c.fileCommands.gnxDict
             contents = fromString or file_s
-            faf = FastAtRead(c, 
-                gnx2vnode=gnx2vnode, path=fileName, root=root)
-            root_vnode, last_lines = faf.read_into_root(fileName, contents)
+            FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
             root.clearDirty()
             return True
         #
@@ -816,19 +813,15 @@ class AtFile(object):
         # Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fileName, p)
-        #
-        # Experimental
-        cache_at_auto_files = False ###
-        if g.enableDB and cache_at_auto_files:
-            s, ok, fileKey = c.cacher.readFile(fileName, p)
-            if ok:
-                # Even if the file is in the cache, the @persistence node may be different.
-                if c.persistenceController:
-                    c.persistenceController.update_after_read_foreign_file(p)
-                g.doHook('after-auto', c=c, p=p)
-                    # call after-auto callbacks
-                    # 2011/09/30: added call to g.doHook here.
-                return p
+        s, ok, fileKey = c.cacher.readFile(fileName, p)
+        if ok:
+            # Even if the file is in the cache, the @persistence node may be different.
+            if c.persistenceController:
+                c.persistenceController.update_after_read_foreign_file(p)
+            g.doHook('after-auto', c=c, p=p)
+                # call after-auto callbacks
+                # 2011/09/30: added call to g.doHook here.
+            return p
         if not g.unitTesting:
             g.es("reading:", p.h)
         try:
@@ -860,10 +853,7 @@ class AtFile(object):
             p.clearDirty()
             c.setChanged(oldChanged)
         else:
-            # We write the @auto file so that it will exist
-            # the *next* time we read it.
-            if g.enableDB and cache_at_auto_files:
-                c.cacher.writeFile(p, fileKey)
+            c.cacher.writeFile(p, fileKey)
             g.doHook('after-auto', c=c, p=p)
         return p
     #@+node:ekr.20090225080846.3: *5* at.readOneAtEditNode
@@ -2706,11 +2696,8 @@ class AtFile(object):
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
                     # Leo 5.6: update the cache *here*, not just when reading.
-                    if FAST:
-                        pass
-                    else:
-                        fileKey = c.cacher.fileKey(eventualFileName, at.outputContents)
-                        c.cacher.writeFile(at.root, fileKey)
+                    fileKey = c.cacher.fileKey(eventualFileName, at.outputContents)
+                    c.cacher.writeFile(at.root, fileKey)
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
@@ -4972,29 +4959,20 @@ class AtFile(object):
 atFile = AtFile # compatibility
 #@+node:ekr.20180602102448.1: ** class FastAtRead
 class FastAtRead (object):
-    
     '''
-    A prototype of the fast AtFile read logic.
+    Read an exteral file, created from an @file tree.
     This is Vitalije's code, edited by EKR.
-    
-    To do:
-    - Connect vnodes properly to the outline.
-    - Suppport @comment, @delims, @raw & @end_raw.
-      http://leoeditor.com/directives.html#part-4-dangerous-directives
-    - Honor the trailing whitespace convention in @doc parts.
-    - (test) Support cweb hack.
     '''
 
-    def __init__ (self, c, gnx2vnode=None, path=None, root=None):
-    
+    def __init__ (self, c, gnx2vnode, test=False, TestVNode=None): 
         self.c = c
-        if FAST:
-            assert gnx2vnode is not None
-            assert isinstance(root, leoNodes.Position), repr(root)
-        self.gnx2vnode = gnx2vnode or {}
-        self.path = path
-        self.root = root
-        self.VNode = leoNodes.VNode ### if FAST else TestVNode
+        assert gnx2vnode is not None
+        self.gnx2vnode = gnx2vnode
+            # The global fc.gnxDict. Keys are gnx's, values are vnodes.
+        self.path = None
+        self.root = None
+        self.VNode = TestVNode if test else leoNodes.VNode
+        self.test = test
 
     #@+others
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
@@ -5009,7 +4987,6 @@ class FastAtRead (object):
         patterns = (
             # The list of patterns, in alphabetical order.
             # These patterns must be mutually exclusive.
-            ### To do: @comment and @delims.
             r'^\s*%s@afterref%s$'%delims,               # @afterref
             r'^(\s*)%s@(\+|-)all\s*%s$'%delims,         # @all
             r'^\s*%s@@c(ode)?%s$'%delims,               # @c and @code
@@ -5030,12 +5007,8 @@ class FastAtRead (object):
     #@+node:ekr.20180603060721.1: *3* fast_at.post_pass
     def post_pass(self, gnx2body, gnx2vnode, root_v):
         '''Set all body text.'''
-        if FAST:
-            # Set the body text.
-            for key, body in gnx2body.items():
-                v = gnx2vnode.get(key)
-                v._bodyString = ''.join(body)
-        else:
+        # Set the body text.
+        if self.test:
             # Check the keys.
             bkeys = sorted(gnx2body.keys())
             vkeys = sorted(gnx2vnode.keys())
@@ -5043,12 +5016,22 @@ class FastAtRead (object):
                 g.trace('KEYS MISMATCH')
                 g.printObj(bkeys)
                 g.printObj(vkeys)
-                sys.exit(1)
+                if self.test:
+                    sys.exit(1)
             # Set the body text.
             for key in vkeys:
                 v = gnx2vnode.get(key)
                 body = gnx2body.get(key)
                 v._bodyString = ''.join(body)
+        else:
+            assert root_v.gnx in gnx2vnode, root_v
+            assert root_v.gnx in gnx2body, root_v
+            # Don't use items(): it doesn't exist in Python 2.
+            for key in gnx2body: 
+                body = gnx2body.get(key)
+                v = gnx2vnode.get(key)
+                assert v
+                v._bodyString = g.toUnicode(''.join(body))
     #@+node:ekr.20180602103135.2: *3* fast_at.scan_header
     header_pattern = re.compile(r'''
         ^(.+)@\+leo
@@ -5071,7 +5054,7 @@ class FastAtRead (object):
             first_lines.append(line)
         return None
     #@+node:ekr.20180602103135.8: *3* fast_at.scan_lines
-    def scan_lines(self, delims, first_lines, lines, start):
+    def scan_lines(self, delims, first_lines, lines, start, test=False):
         '''Scan all lines of the file, creating vnodes.'''
         #@+<< init scan_lines >>
         #@+node:ekr.20180602103135.9: *4* << init scan_lines >>
@@ -5079,15 +5062,16 @@ class FastAtRead (object):
         # Simple vars...
         afterref = False
             # A special verbatim line follows @afterref.
+        clone_v = None
+            # The root of the clone tree.
+            # When not None, we are scanning a clone and all it's descendants.
         delim_start, delim_end = delims
             # The start/end delims.
         doc_skip = (delim_start + '\n', delim_end + '\n')
             # To handle doc parts.
         first_i = 0
             # Index into first array.
-        in_clone_tree = False
-            # True: scanning a clone and all it's descendants.
-            # Within clone trees, no parent or child links are updated.
+           
         in_doc = False
             # True: in @doc parts.
         in_raw = False
@@ -5112,23 +5096,25 @@ class FastAtRead (object):
         #
         # Init the data for the root node.
         #
-        gnx = 'root-gnx'
-            # The node that we are reading.
-            # start with the gnx for the @file node.
-        gnx_head =  '<hidden top vnode>'
-            # The headline of the root node.
+
         #
         # Init the parent vnode for testing.
         #
-        if FAST:
-            # Production.
-            context = self.c
-            parent_v = self.root.v
-        else:
+        if self.test:
+            root_gnx = gnx = g.u('root-gnx')
+                # The node that we are reading.
+                # start with the gnx for the @file node.
+            gnx_head =  g.u('<hidden top vnode>')
+                # The headline of the root node.
             context = None
             parent_v = self.VNode(context=context, gnx=gnx)
             parent_v._headString = gnx_head
                 # Corresponds to the @files node itself.
+        else:
+            # Production.
+            root_gnx = gnx = self.root.gnx
+            context = self.c
+            parent_v = self.root.v
         root_v = parent_v
             # Does not change.
         level_stack.append((root_v, False),)
@@ -5137,11 +5123,11 @@ class FastAtRead (object):
         #
         gnx2vnode = self.gnx2vnode
             # Keys are gnx's, values are vnodes.
-        gnx2body = defaultdict(list)
+        gnx2body = {}
             # Keys are gnxs, values are list of body lines.
         gnx2vnode[gnx] = parent_v
             # Add gnx to the keys
-        body = gnx2body[gnx]
+        gnx2body[gnx] = body = first_lines
             # Add gnx to the keys.
             # Body is the list of lines presently being accumulated.
         #
@@ -5150,6 +5136,22 @@ class FastAtRead (object):
         doc_pat, end_raw_pat, first_pat, last_pat, \
         node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(delims)
         #@-<< init scan_lines >>
+        #@+<< define dump_v >>
+        #@+node:ekr.20180613061743.1: *4* << define dump_v >>
+        def dump_v():
+            '''Dump the level stack and v.'''
+            print('----- LEVEL', level, v.h)
+            print('       PARENT', parent_v.h)
+            print('[')
+            for i, data in enumerate(level_stack):
+                v2, in_tree = data
+                print('%2s %5s %s' % (i+1, in_tree, v2.h))
+            print(']')
+            print('PARENT.CHILDREN...')
+            g.printObj([v2.h for v2 in parent_v.children])
+            print('PARENTS...')
+            g.printObj([v2.h for v2 in v.parents])
+        #@-<< define dump_v >>
         i = 0 # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
             # Order matters.
@@ -5214,7 +5216,6 @@ class FastAtRead (object):
                 else: # closing sentinel.
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent, body = stack.pop()
-                    ### body = gnx2body[gnx]
                 continue
 
             #@-<< 3. handle @others >>
@@ -5234,7 +5235,6 @@ class FastAtRead (object):
                     # close sentinel.
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent, body = stack.pop()
-                    ### body = gnx2body[gnx]
                 continue
             #@-<< 4. handle section refs >>
             #@afterref
@@ -5244,66 +5244,56 @@ class FastAtRead (object):
             #@+node:ekr.20180602103135.19: *4* << handle node_start >>
             m = node_start_pat.match(line)
             if m:
-                
-                def dump(v):
-                    # pylint: disable=cell-var-from-loop
-                    print('----- LEVEL', level, v.h)
-                    print('       PARENT', parent_v.h)
-                    print('[')
-                    for i, data in enumerate(level_stack):
-                        v2, in_tree = data
-                        print('%2s %5s %s' % (i+1, in_tree, v2.h))
-                    print(']')
-                    print('PARENT.CHILDREN...')
-                    g.printObj([v2.h for v2 in parent_v.children])
-                    print('PARENTS...')
-                    g.printObj([v2.h for v2 in v.parents])
-                    
-                in_doc = False
-                in_raw = False
-                # The groups are as follows:
-                # indent, gnx, level-number, second star, headline)
-                # 1       2    3             4            5
-                gnx = m.group(2)
-                head = m.group(5)
+                in_doc, in_raw = False, False
+                gnx, head = m.group(2), m.group(5)
                 level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
+                    # m.group(3) is the level number, m.group(4) is the number of stars.
                 v = gnx2vnode.get(gnx)
-                # Get the previous value of in_clone_tree
+                #
+                # Case 1: The root @file node.
                 if v and v == root_v:
+                    clone_v = None
                     gnx2body[gnx] = body = []
                     v.children = []
                     continue
-                parent_v, in_clone_tree = level_stack[level-2]
-                if v and in_clone_tree:
-                    # Create a throw-away body.
-                    body = []
-                    # Update *only* the level_stack.
+                #
+                # Case 2: We are scanning the descendants of a clone.
+                parent_v, clone_v = level_stack[level-2]
+                if v and clone_v:
+                    # The last version of the body scanned in the external file wins.
+                    gnx2body[gnx] = body = []
+                    # Update the level_stack.
                     level_stack = level_stack[:level-1]
-                    level_stack.append((v, in_clone_tree),)
-                    # dump(v)
-                    # Leave all parent/child links unchanged!
+                    level_stack.append((v, clone_v),)
+                    # Update *only* clone_root.children.
+                    if parent_v == clone_v:
+                        parent_v.children.append(v)
                     continue
+                #
+                # Case 3: we are not already scanning the descendants of a clone.
                 if v:
                     # The *start* of a clone tree.
-                    in_clone_tree = v != root_v
-                    # Reset *only* the body. Retain the previous children.
+                    # Reset the children.
+                    clone_v = v
+                    v.children = []
+                    # Reset the body.
                     gnx2body[gnx] = body = []
                 else:
                     # Make a new vnode.
                     v = self.VNode(context=context, gnx=gnx)
                     v._headString = head
-                    gnx2vnode [gnx] = v
-                    body = gnx2body[gnx]
+                    gnx2vnode[gnx] = v
+                    gnx2body[gnx] = body = []
                 #
                 # Update the stack.
                 level_stack = level_stack[:level-1]
-                level_stack.append((v, in_clone_tree),)
+                level_stack.append((v, clone_v),)
                 #
-                # Update the links, but special case the root node.
+                # Update the links.
                 assert v != root_v
                 parent_v.children.append(v)
                 v.parents.append(parent_v)
-                # dump(v)
+                # dump_v()
                 continue
             #@-<< handle node_start >>
             #@+<< handle end of @doc & @code parts >>
@@ -5350,7 +5340,7 @@ class FastAtRead (object):
                 else: # closing sentinel.
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent, body = stack.pop()
-                    ### body = gnx2body[gnx]
+                    gnx2body[gnx] = body
                 continue
             #@-<< handle @all >>
             #@+<< handle afterref >>
@@ -5502,30 +5492,36 @@ class FastAtRead (object):
         else:
             # No @-leo sentinel
             return None, []
+        # Handle @last lines.
         last_lines = lines[start+i:]
+        if last_lines:
+            gnx2body[root_gnx] = gnx2body.get(root_gnx).extend(last_lines)
         self.post_pass(gnx2body, gnx2vnode, root_v)
         return root_v, last_lines
-    #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
-    def read_into_root(self, fileName, contents):
-        '''Parse the file's contents, creating a tree of vnodes.
-        return the tuple (root_vnode, first_lines).
+    #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root (production)
+    def read_into_root(self, contents, path, root):
+        '''
+        Parse the file's contents, creating a tree of vnodes
+        anchored in root.v.
         '''
         trace = False
         t1 = time.clock()
-        sfn = g.shortFileName(fileName)
+        self.path = path
+        self.root = root
+        sfn = g.shortFileName(path)
         contents = contents.replace('\r','')
         lines = g.splitLines(contents)
         data = self.scan_header(lines)
         if data:
             delims, first_lines, start_i = data
-            root_v, last_lines = self.scan_lines(
+            self.scan_lines(
                 delims, first_lines, lines, start_i)
             if trace:
                 t2 = time.clock()
-                g.trace('%5.3f sec. %s' % ((t2-t1), fileName))
-            return root_v, last_lines
+                g.trace('%5.3f sec. %s' % ((t2-t1), path))
+            return True
         g.trace('Invalid external file: %s' % sfn)
-        return None, []
+        return False
     #@-others
 #@-others
 #@@language python
