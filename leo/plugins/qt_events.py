@@ -309,6 +309,8 @@ class LeoQtEventFilter(QtCore.QObject):
             (qt.KeypadModifier, 'KeyPad'),
         )
         mods = [b for a, b in table if (modifiers & a)]
+        if not g.isMac:
+            return mods
         #
         # MacOS: optionally convert Meta (Ctrl key) to Alt.
         if c.k.replace_meta_with_alt:
