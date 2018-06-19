@@ -455,7 +455,7 @@ class Cacher(object):
         # sfn = g.shortFileName(fileName)
         if not g.enableDB:
             return '', False, None
-        g.trace('=====', g.shortFileName(fileName) or fileName)
+        # g.trace('=====', g.shortFileName(fileName) or fileName)
         s = g.readFileIntoEncodedString(fileName, silent=True)
         if s is None:
             return s, False, None
@@ -516,7 +516,7 @@ class Cacher(object):
         # Check g.enableDB before giving internal error.
         if not g.enableDB:
             return
-        g.trace('=====', p.h)
+        ### g.trace('=====', p.h)
         if not fileKey:
             g.trace(g.callers(5))
             g.internalError('empty fileKey')

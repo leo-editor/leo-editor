@@ -508,7 +508,7 @@ class FileCommands(object):
             # keys are gnx strings; values are ignored
     #@+node:ekr.20031218072017.3020: *3* fc.Reading
     #@+node:ekr.20060919104836: *4*  fc.Reading Top-level
-    #@+node:ekr.20070919133659.1: *5* fc.checkLeoFile
+    #@+node:ekr.20070919133659.1: *5* fc.checkLeoFile (calls readSaxFile)
     @cmd('check-leo-file')
     def checkLeoFile(self, event=None):
         '''The check-leo-file command.'''
@@ -738,7 +738,7 @@ class FileCommands(object):
         t2 = time.time()
         g.es('read outline in %2.2f seconds' % (t2 - t1))
         return ok, c.frame.ratio
-    #@+node:ekr.20090526081836.5841: *6* fc.getLeoFileHelper
+    #@+node:ekr.20090526081836.5841: *6* fc.getLeoFileHelper (calls readSaxFile)
     def getLeoFileHelper(self, theFile, fileName, silent):
         '''Read the .leo file and create the outline.'''
         c, fc = self.c, self
