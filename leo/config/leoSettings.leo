@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.31" body_secondary_ratio="0.50">
-	<global_window_position top="18" left="1" height="730" width="1364"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1728,7 +1728,6 @@
 <v t="tbrown.20150821171510.5"><vh>Foreground</vh></v>
 <v t="tbrown.20150821171510.6"><vh>Selected foreground</vh></v>
 <v t="tbrown.20150821171510.7"><vh>Selected background</vh></v>
-<v t="tbrown.20150821171510.8"><vh>Long text warning background</vh></v>
 </v>
 <v t="tbrown.20150821171510.9"><vh>Border colors</vh>
 <v t="tbrown.20150821171510.10"><vh>Focused border</vh></v>
@@ -4181,7 +4180,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="1">@nocolor-node
+<t tx="ekr.20070622214401">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -9589,7 +9588,7 @@ QTextEdit#richTextEdit {
 }
 
 QTextEdit#bigtextwarning {
-    background-color: @big-text-warning-bg;
+    background-color: red; /* No longer used */
 }</t>
 <t tx="ekr.20140915194122.19459">/* ========== Components of the Find Tab ========== */
 
@@ -12349,7 +12348,6 @@ version of Leo.
 do at first. All other font settings are defined in terms of the basic fonts.</t>
 <t tx="tbrown.20150821171510.79"># All other fonts are defined in terms of these basic fonts.
 # Changing the basic fonts are all that most users will want to do.</t>
-<t tx="tbrown.20150821171510.8">big-text-warning-bg</t>
 <t tx="tbrown.20150821171510.80">font-family</t>
 <t tx="tbrown.20150821171510.81">font-size</t>
 <t tx="tbrown.20150821171510.82">medium-font-size</t>
