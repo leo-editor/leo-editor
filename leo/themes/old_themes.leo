@@ -926,7 +926,7 @@ QTextEdit#richTextEdit {
 }
 
 QTextEdit#bigtextwarning {
-    background-color: @big-text-warning-bg;
+    background-color: red; /* no longer used */
 }</t>
 <t tx="ekr.20180307015158.117">/* ========== Buttons ========== 
 

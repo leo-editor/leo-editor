@@ -10,7 +10,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20180312111155.1"><vh>Read me</vh></v>
-<v t="chris.20180322171300.1" a="E"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="chris.20180322171300.1"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="chris.20180322171300.2"><vh>General Widgets</vh></v>
 <v t="chris.20180322171300.3"><vh>Body &amp; other text</vh></v>
 <v t="chris.20180322171300.4"><vh>Minibuffer &amp; label</vh></v>
@@ -32,17 +32,17 @@
 <v t="chris.20180314054143.4"><vh>Test g.es(color=*)</vh></v>
 <v t="chris.20180314054143.5"><vh>g.error/note/warning test</vh></v>
 </v>
-<v t="chris.20180313181652.1" a="E"><vh>@settings</vh>
-<v t="chris.20180313181652.2" a="E"><vh>@theme Breeze Dark</vh>
+<v t="chris.20180313181652.1"><vh>@settings</vh>
+<v t="chris.20180313181652.2"><vh>@theme Breeze Dark</vh>
 <v t="chris.20180313181652.3"><vh>Resources</vh></v>
 <v t="chris.20180322164627.2"><vh>@string focused-border-unfocus-color = @solarized-base2</vh></v>
-<v t="chris.20180313181652.115" a="E"><vh>Theme description settings</vh>
+<v t="chris.20180313181652.115"><vh>Theme description settings</vh>
 <v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = False</vh></v>
 <v t="chris.20180313181652.117"><vh>@string color_theme = light</vh></v>
 <v t="chris.20180322154730.1"><vh>@string theme-name = DefaultTheme</vh></v>
-<v t="chris.20180322171707.1" a="E"><vh>Settings for Default Theme</vh>
+<v t="chris.20180322171707.1"><vh>Settings for Default Theme</vh>
 <v t="chris.20180322171707.2"><vh>Colors...</vh>
-<v t="chris.20180322171707.3" a="E"><vh>Default Color definitions</vh>
+<v t="chris.20180322171707.3"><vh>Default Color definitions</vh>
 <v t="chris.20180322171707.4"><vh>@color dark-base0 = #eff0f1</vh></v>
 <v t="chris.20180322171707.5"><vh>@color dark-base1 = #909396</vh></v>
 <v t="chris.20180322171707.6"><vh>@color dark-base2 = #ffffff</vh></v>
@@ -53,7 +53,7 @@
 <v t="chris.20180322171707.11"><vh>@color dark-base7 = #224e65</vh></v>
 <v t="chris.20180322171707.12"><vh>@color dark-base8 = #ff0000</vh></v>
 </v>
-<v t="chris.20180322171707.13" a="E"><vh>Colors: Logical colors</vh>
+<v t="chris.20180322171707.13"><vh>Colors: Logical colors</vh>
 <v t="chris.20180322171707.14"><vh>@color log_black_color = @text-foreground</vh></v>
 <v t="chris.20180322171707.15"><vh>@color log_blue_color = @solarized-blue</vh></v>
 <v t="chris.20180322171707.16"><vh>@color log_cyan_color = @solarized-cyan</vh></v>
@@ -101,7 +101,7 @@
 <v t="chris.20180322171707.56"><vh>@color url_color = #f21eec</vh></v>
 </v>
 </v>
-<v t="chris.20180322171707.57" a="E"><vh>Colors: Text</vh>
+<v t="chris.20180322171707.57"><vh>Colors: Text</vh>
 <v t="chris.20180322171707.58"><vh>@color log_text_background_color = @body-bg</vh></v>
 <v t="chris.20180322171707.59"><vh>@color log_text_foreground_color = @body-fg</vh></v>
 <v t="chris.20180322171707.60"><vh>@color text-background = @body-bg</vh></v>
@@ -109,7 +109,7 @@
 <v t="chris.20180322171707.62"><vh>@color text-foreground = @body-fg</vh></v>
 <v t="chris.20180322171707.63"><vh>@color text-foreground-bright = @find-found-fg</vh></v>
 </v>
-<v t="chris.20180322171707.64" a="E"><vh>Colors: Widgets</vh>
+<v t="chris.20180322171707.64"><vh>Colors: Widgets</vh>
 <v t="chris.20180322171707.65"><vh>@color button-hover-fg = @dark-base7</vh></v>
 </v>
 </v>
@@ -164,13 +164,13 @@
 </v>
 </v>
 </v>
-<v t="chris.20180322171707.110" a="E"><vh>Outline indicators</vh>
+<v t="chris.20180322171707.110"><vh>Outline indicators</vh>
 <v t="chris.20180322171707.111"><vh>@string tree-image-closed = light/branch_closed.svg</vh></v>
 <v t="chris.20180322171707.112"><vh>@string tree-image-open = light/branch_open.svg</vh></v>
 </v>
 </v>
 </v>
-<v t="chris.20180322171328.1" a="E"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="chris.20180322171328.1"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="chris.20180322171328.2"><vh>Widgets</vh></v>
 <v t="chris.20180322171328.3"><vh>Body pane</vh></v>
 <v t="chris.20180322171328.4"><vh>Buttons</vh></v>
@@ -2769,7 +2769,7 @@ QTextEdit#richTextEdit {
 }
 
 QTextEdit#bigtextwarning {
-    background-color: @big-text-warning-bg;
+    background-color: red; /* No longer used */
 }</t>
 <t tx="chris.20180322171328.4">/* ========== Buttons ========== 
 
