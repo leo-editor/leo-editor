@@ -2139,7 +2139,7 @@
 </v>
 <v t="ekr.20180608054147.1"><vh>Code</vh>
 <v t="ekr.20180608054151.1"><vh>fast-read branch</vh></v>
-<v t="ekr.20180608054356.1"><vh>perf branch</vh></v>
+<v t="ekr.20180608054356.1"><vh>perf branch (copy kwarg to generators)</vh></v>
 </v>
 <v t="ekr.20180528114740.1"><vh>Features</vh>
 <v t="ekr.20180608055318.1"><vh>Added print-stats command &amp; improved tracing</vh></v>
