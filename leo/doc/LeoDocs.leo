@@ -622,6 +622,7 @@
 <v t="ekr.20060915112109"><vh>How can I enable and disable support for psyco?</vh></v>
 <v t="ekr.20141108064630.16"><vh>How can I put background images in the body pane?</vh></v>
 <v t="ekr.20180529064307.1"><vh>How can I run code at startup?</vh></v>
+<v t="ekr.20180619051649.1"><vh>How can I sync settings across .leo files?</vh></v>
 <v t="ekr.20160304081437.3"><vh>How can I use a dark theme in Leo?</vh></v>
 <v t="ekr.20060805094325"><vh>How can I use Leo's legacy key bindings?</vh></v>
 <v t="ekr.20050830120844"><vh>How do I add a new menu item from a plugin?</vh></v>
@@ -2138,13 +2139,14 @@
 </v>
 <v t="ekr.20180608054147.1"><vh>Code</vh>
 <v t="ekr.20180608054151.1"><vh>fast-read branch</vh></v>
-<v t="ekr.20180608054356.1"><vh>perf branch</vh></v>
+<v t="ekr.20180608054356.1"><vh>perf branch (copy kwarg to generators)</vh></v>
 </v>
 <v t="ekr.20180528114740.1"><vh>Features</vh>
 <v t="ekr.20180608055318.1"><vh>Added print-stats command &amp; improved tracing</vh></v>
 <v t="ekr.20180528114754.1"><vh>#871: A setting to position the icon bar </vh></v>
 </v>
 </v>
+<v t="ekr.20180619051649.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -28224,6 +28226,19 @@ This pattern produces superb statistics that show how many times the *callers* o
 1646 g.match_word:putLine,putAtOthersLine,putBody,directiveKind4
 1645 g.match_word:fullPath,anyAtFileNodeName,anyAtFileNodeName,findAtFileName
 </t>
+<t tx="ekr.20180619051649.1">Organize your myLeoSettings.leo file like this::
+
+    @settings
+         -my settings &lt;clone&gt;
+              -@bool .... = True
+              -@data fldsdf
+    
+    @file mysettings.txt
+          my settings &lt;clone&gt;
+          
+Syncing mySettings.txt will synchronize your settings across your .leo files.
+
+**Note**: Changed settings will not be available in other open outlines until you reload settings. You can do this with the reload-all-settings command.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

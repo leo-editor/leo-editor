@@ -1669,8 +1669,10 @@ class KeyHandlerClass(object):
             # Set at end of finishCreate.
         self.killedBindings = []
             # A list of commands whose bindings have been set to None in the local file.
+        self.replace_meta_with_alt = False
+            # True: (Mac only) swap Meta and Alt keys.
         self.swap_mac_keys = False
-            # How to init this??
+            # True: (Mac only) swap Command and Control keys.
         self.w = None
             # Note: will be None for NullGui.
         # Generalize...
@@ -1981,6 +1983,7 @@ class KeyHandlerClass(object):
         self.minibuffer_foreground_color = getColor('minibuffer_foreground_color') or 'black'
         self.minibuffer_warning_color = getColor('minibuffer_warning_color') or 'lightgrey'
         self.minibuffer_error_color = getColor('minibuffer_error_color') or 'red'
+        self.replace_meta_with_alt = getBool('replace_meta_with_alt')
         self.swap_mac_keys = getBool('swap_mac_keys')
         self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
         # Has to be disabled (default) for AltGr support on Windows
