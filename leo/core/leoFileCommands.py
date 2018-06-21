@@ -28,7 +28,7 @@ else:
     StringIO = cStringIO.StringIO
 import os
 import pickle
-import string
+# import string
 import sys
 import tempfile
 import zipfile
@@ -729,19 +729,6 @@ class FileCommands(object):
         def get_ref_filename():
             for v in priv_vnodes():
                 return g.splitLines(v.b)[0].strip()
-        #@+node:vitalije.20170831144827.3: *6* createSaxChildren2
-        def createSaxChildren2(sax_node, parent_v):
-            children = []
-            for sax_child in sax_node.children:
-                tnx = sax_child.tnx
-                v = fc.gnxDict.get(tnx)
-                if v: # A clone.
-                    fc.updateSaxClone(sax_child, parent_v, v)
-                else:
-                    v = fc.createSaxVnode(sax_child, parent_v)
-                    createSaxChildren2(sax_child, v)
-                children.append(v)
-            return children
         #@+node:vitalije.20170831144827.4: *6* pub_vnodes
         def pub_vnodes():
             for v in c.hiddenRootNode.children:
@@ -934,7 +921,7 @@ class FileCommands(object):
                         # There was a big performance bug in the mark hook in the Node Navigator plugin.
                 if expanded.get(p.v):
                     p.expand()
-    #@+node:vitalije.20180304190953.1: *5* fc.getPos/VnodeFromClipboard (OK)
+    #@+node:vitalije.20180304190953.1: *5* fc.getPos/VnodeFromClipboard
     def getPosFromClipboard(self, s):
         '''A utility called from init_tree_abbrev.'''
         v = self.getVnodeFromClipboard(s)
@@ -954,392 +941,6 @@ class FileCommands(object):
         finally:
             self.gnxDict = oldGnxDict
         return v
-    #@+node:ekr.20060919104530: *4* fc.Reading Sax
-    #@+node:ekr.20090525144314.6526: *5* fc.cleanSaxInputString
-    def cleanSaxInputString(self, s):
-        '''Clean control characters from s.
-        s may be a bytes or a (unicode) string.'''
-        # Note: form-feed ('\f') is 12 decimal.
-        badchars = [chr(ch) for ch in range(32)]
-        badchars.remove('\t')
-        badchars.remove('\r')
-        badchars.remove('\n')
-        flatten = ''.join(badchars)
-        pad = ' ' * len(flatten)
-        # pylint: disable=no-member
-        # Class 'str' has no 'maketrans' member
-        if g.isPython3:
-            flatten = bytes(flatten, 'utf-8')
-            pad = bytes(pad, 'utf-8')
-            transtable = bytes.maketrans(flatten, pad)
-        else:
-            transtable = string.maketrans(flatten, pad)
-        return s.translate(transtable)
-    # for i in range(32): print i,repr(chr(i))
-    #@+node:ekr.20060919110638.5: *5* fc.createSaxChildren & helpers
-    def createSaxChildren(self, sax_node, parent_v):
-        '''Create vnodes for all children in sax_node.children.'''
-        children = []
-        for sax_child in sax_node.children:
-            tnx = sax_child.tnx
-            v = self.gnxDict.get(tnx)
-            if v: # A clone. Don't look at the children.
-                self.updateSaxClone(sax_child, parent_v, v)
-            else:
-                v = self.createSaxVnode(sax_child, parent_v)
-                self.createSaxChildren(sax_child, v)
-            children.append(v)
-        parent_v.children = children
-        for child in children:
-            child.parents.append(parent_v)
-        return children
-    #@+node:ekr.20060919110638.7: *6* fc.createSaxVnode & helpers
-    def createSaxVnode(self, sax_node, parent_v):
-        '''Create a vnode, or use an existing vnode.'''
-        c = self.c
-        at = c.atFileCommands
-        #
-        # Fix #158: Corrupt .leo files cause Leo to hang.
-        # Explicitly test against None: tnx could be 0.
-        if sax_node.tnx is None:
-            gnx = None
-        else:
-            gnx = g.toUnicode(self.canonicalTnodeIndex(sax_node.tnx))
-        #
-        # Allocate and init a new vnode.
-        v = leoNodes.VNode(context=c, gnx=gnx)
-        v.setBodyString(sax_node.bodyString)
-        at.bodySetInited(v)
-        v.setHeadString(sax_node.headString)
-        self.handleVnodeSaxAttributes(sax_node, v)
-        self.handleTnodeSaxAttributes(sax_node, v)
-        return v
-    #@+node:ekr.20060919110638.8: *7* fc.handleTnodeSaxAttributes (sax read)
-    def handleTnodeSaxAttributes(self, sax_node, v):
-
-        d = sax_node.tnodeAttributes
-        aDict = {}
-        for key in d:
-            val = g.toUnicode(d.get(key))
-            val2 = self.getSaxUa(key, val)
-            aDict[key] = val2
-        if aDict:
-            v.unknownAttributes = aDict
-    #@+node:ekr.20061004053644: *7* fc.handleVnodeSaxAttributes (sax read)
-    def handleVnodeSaxAttributes(self, sax_node, v):
-        '''
-        The native attributes of <v> elements are a, t, vtag, tnodeList,
-        marks, expanded, and descendentTnode/VnodeUnknownAttributes.
-        '''
-        d = sax_node.attributes
-        s = d.get('a')
-        if s:
-            if 'M' in s: v.setMarked()
-            if 'E' in s: v.expand()
-            if 'O' in s: v.setOrphan()
-            if 'V' in s: self.currentVnode = v
-        s = d.get('tnodeList', '')
-        tnodeList = s and s.split(',')
-        if tnodeList:
-            # This tnodeList will be resolved later.
-            v.tempTnodeList = tnodeList
-        s = d.get('descendentTnodeUnknownAttributes')
-        if s:
-            aDict = self.getDescendentUnknownAttributes(s, v=v)
-            if aDict:
-                self.descendentTnodeUaDictList.append(aDict)
-        s = d.get('descendentVnodeUnknownAttributes')
-        if s:
-            aDict = self.getDescendentUnknownAttributes(s, v=v)
-            if aDict:
-                self.descendentVnodeUaDictList.append((v, aDict),)
-        s = d.get('expanded')
-        if s:
-            aList = self.getDescendentAttributes(s, tag="expanded")
-            self.descendentExpandedList.extend(aList)
-        s = d.get('marks')
-        if s:
-            aList = self.getDescendentAttributes(s, tag="marks")
-            self.descendentMarksList.extend(aList)
-        aDict = {}
-        for key in d:
-            if key in self.nativeVnodeAttributes:
-                pass # This is not a bug.
-            else:
-                val = d.get(key)
-                val2 = self.getSaxUa(key, val)
-                aDict[key] = val2
-        if aDict:
-            v.unknownAttributes = aDict
-    #@+node:ekr.20180424120245.1: *6* fc.updateSaxClone
-    def updateSaxClone(self, sax_node, parent_v, v):
-        '''
-        Update the body text of v. It overrides any previous body text.
-        '''
-        at = self.c.atFileCommands
-        b = sax_node.bodyString
-        if v.b != b:
-            v.setBodyString(b)
-            at.bodySetInited(v)
-        #
-        # New in Leo 5.7.2. Don't call these
-            # self.handleVnodeSaxAttributes(sax_node, v)
-            # self.handleTnodeSaxAttributes(sax_node, v)
-    #@+node:ekr.20060919110638.2: *5* fc.dumpSaxTree
-    def dumpSaxTree(self, root, dummy):
-        if not root:
-            g.pr('dumpSaxTree: empty tree')
-            return
-        if not dummy:
-            root.dump()
-        for child in root.children:
-            self.dumpSaxTree(child, dummy=False)
-    #@+node:tbrown.20140615093933.89639: *5* fc.bytes_to_unicode
-    def bytes_to_unicode(self, ob):
-        """recursively convert bytes objects in strings / lists / dicts to str
-        objects, thanks to TNT
-        http://stackoverflow.com/questions/22840092/unpickling-data-from-python-2-with-unicode-strings-in-python-3
-
-        Needed for reading Python 2.7 pickles in Python 3.4 in getSaxUa()
-        """
-        # pylint: disable=unidiomatic-typecheck
-        # This is simpler than using isinstance.
-        t = type(ob)
-        if t in (list, tuple):
-            l = [str(i, 'utf-8') if type(i) is bytes else i for i in ob]
-            l = [self.bytes_to_unicode(i) if type(i) in (list, tuple, dict) else i
-                for i in l]
-            ro = tuple(l) if t is tuple else l
-        elif t is dict:
-            byte_keys = [i for i in ob if type(i) is bytes]
-            for bk in byte_keys:
-                v = ob[bk]
-                del(ob[bk])
-                ob[str(bk, 'utf-8')] = v
-            for k in ob:
-                if type(ob[k]) is bytes:
-                    ob[k] = str(ob[k], 'utf-8')
-                elif type(ob[k]) in (list, tuple, dict):
-                    ob[k] = self.bytes_to_unicode(ob[k])
-            ro = ob
-        elif t is bytes: # TNB added this clause
-            ro = str(ob, 'utf-8')
-        else:
-            ro = ob
-        return ro
-    #@+node:ekr.20061003093021: *5* fc.getSaxUa
-    def getSaxUa(self, attr, val, kind=None): # Kind is for unit testing.
-        """Parse an unknown attribute in a <v> or <t> element.
-        The unknown tag has been pickled and hexlify'd.
-        """
-        try:
-            # val = str(val)
-            val = g.toEncodedString(val) # 2011/02/22.
-        except Exception:
-            g.es_print('unexpected exception converting hexlified string to string')
-            g.es_exception()
-            return None
-        # New in 4.3: leave string attributes starting with 'str_' alone.
-        if attr.startswith('str_'):
-            if g.isString(val) or g.isBytes(val):
-                return g.toUnicode(val)
-        # New in 4.3: convert attributes starting with 'b64_' using the base64 conversion.
-        if 0: # Not ready yet.
-            if attr.startswith('b64_'):
-                try: pass
-                except Exception: pass
-        try:
-            binString = binascii.unhexlify(val) # Throws a TypeError if val is not a hex string.
-        except Exception:
-            # Python 2.x throws TypeError
-            # Python 3.x throws binascii.Error
-            # Assume that Leo 4.1 wrote the attribute.
-            if g.unitTesting:
-                assert kind == 'raw', 'unit test failed: kind=' % repr(kind)
-            else:
-                g.trace('can not unhexlify %s=%s' % (attr, val))
-            return val
-        try:
-            # No change needed to support protocols.
-            val2 = pickle.loads(binString)
-            return val2
-        except(pickle.UnpicklingError, ImportError, AttributeError, ValueError, TypeError):
-            try:
-                # for python 2.7 in python 3.4
-                # pylint: disable=unexpected-keyword-arg
-                val2 = pickle.loads(binString, encoding='bytes')
-                val2 = self.bytes_to_unicode(val2)
-                return val2
-            except(pickle.UnpicklingError, ImportError, AttributeError, ValueError, TypeError):
-                g.trace('can not unpickle %s=%s' % (attr, val))
-                return val
-    #@+node:ekr.20060919110638.14: *5* fc.parse_leo_file (OK)
-    def parse_leo_file(self, theFile, inputFileName, silent, inClipboard, s=None):
-            ### To do: remove inClipboard switch ###
-        '''Called to parse abbreviation outline.'''
-        if not theFile and not s:
-            # Fix #434: Potential bug in settings.
-            return None
-        v = FastRead(self.c, self.gnxDict).readFile(inputFileName, s=s)
-        return v
-    #@+node:ekr.20060919110638.11: *5* fc.resolveTnodeLists
-    def resolveTnodeLists(self):
-        '''
-        Called *before* reading external files.
-        '''
-        c = self.c
-        for p in c.all_unique_positions(copy=False):
-            if hasattr(p.v, 'tempTnodeList'):
-                result = []
-                for tnx in p.v.tempTnodeList:
-                    index = self.canonicalTnodeIndex(tnx)
-                    # new gnxs:
-                    index = g.toUnicode(index)
-                    v = self.gnxDict.get(index)
-                    if v:
-                        result.append(v)
-                    else:
-                        g.trace('*** No VNode for %s' % tnx)
-                if result:
-                    p.v.tnodeList = result
-                delattr(p.v, 'tempTnodeList')
-    #@+node:ekr.20080805132422.3: *5* fc.resolveArchivedPosition
-    def resolveArchivedPosition(self, archivedPosition, root_v):
-        '''
-        Return a VNode corresponding to the archived position relative to root
-        node root_v.
-        '''
-
-        def oops(message):
-            '''Give an error only if no file errors have been seen.'''
-            return None
-
-        try:
-            aList = [int(z) for z in archivedPosition.split('.')]
-            aList.reverse()
-        except Exception:
-            return oops('"%s"' % archivedPosition)
-        if not aList:
-            return oops('empty')
-        last_v = root_v
-        n = aList.pop()
-        if n != 0:
-            return oops('root index="%s"' % n)
-        while aList:
-            n = aList.pop()
-            children = last_v.children
-            if n < len(children):
-                last_v = children[n]
-            else:
-                return oops('bad index="%s", len(children)="%s"' % (n, len(children)))
-        return last_v
-    #@+node:vitalije.20170630152841.1: *5* fc.retrieveVnodesFromDb (called from readSaxFile)
-    def retrieveVnodesFromDb(self, conn):
-        '''
-        Recreates tree from the data contained in table vnodes.
-        
-        This method follows behavior of readSaxFile.
-        '''
-
-        c, fc = self.c, self
-        sql = '''select gnx, head, 
-             body,
-             children,
-             parents,
-             iconVal,
-             statusBits,
-             ua from vnodes'''
-        vnodes = []
-        try:
-            for row in conn.execute(sql):
-                (gnx,
-                    h,
-                    b,
-                    children,
-                    parents,
-                    iconVal,
-                    statusBits,
-                    ua) = row
-                try:
-                    ua = pickle.loads(g.toEncodedString(ua))
-                except ValueError:
-                    ua = None
-                v = leoNodes.VNode(context=c, gnx=gnx)
-                v._headString = h
-                v._bodyString = b
-                v.children = children.split()
-                v.parents = parents.split()
-                v.iconVal = iconVal
-                v.statusBits = statusBits
-                v.u = ua
-                vnodes.append(v)
-        except sqlite3.Error as er:
-            if er.args[0].find('no such table') < 0:
-                # there was an error raised but it is not the one we expect
-                g.internalError(er)
-            # there is no vnodes table 
-            return None
-
-        rootChildren = [x for x in vnodes if 'hidden-root-vnode-gnx' in x.parents]
-        if not rootChildren:
-            g.trace('there should be at least one top level node!')
-            return None
-
-        findNode = lambda x: fc.gnxDict.get(x, c.hiddenRootNode)
-
-        # let us replace every gnx with the corresponding vnode
-        for v in vnodes:
-            v.children = [findNode(x) for x in v.children]
-            v.parents = [findNode(x) for x in v.parents]
-        c.hiddenRootNode.children = rootChildren
-        (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
-        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
-        c.frame.resizePanesToRatio(r1, r2)
-        p = fc.decodePosition(encp)
-        c.setCurrentPosition(p)
-        return rootChildren[0]
-    #@+node:vitalije.20170815162307.1: *6* fc.initNewDb
-    def initNewDb(self, conn):
-        ''' Initializes tables and returns None'''
-        fc = self; c = self.c
-        v = leoNodes.VNode(context=c)
-        c.hiddenRootNode.children = [v]
-        (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
-        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
-        c.frame.resizePanesToRatio(r1, r2)
-        c.sqlite_connection = conn
-        fc.exportToSqlite(c.mFileName)
-        return v
-    #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
-    def getWindowGeometryFromDb(self, conn):
-        geom = (600, 400, 50, 50 , 0.5, 0.5, '')
-        keys = (  'width', 'height', 'left', 'top',
-                  'ratio', 'secondary_ratio',
-                  'current_position')
-        try:
-            d = dict(conn.execute('''select * from extra_infos 
-                where name in (?, ?, ?, ?, ?, ?, ?)''', keys).fetchall())
-            geom = (d.get(*x) for x in zip(keys, geom))
-        except sqlite3.OperationalError:
-            pass
-        return geom
-    #@+node:ekr.20060919110638.13: *5* fc.setPositionsFromVnodes (sax read)
-    def setPositionsFromVnodes(self):
-
-        c, root = self.c, self.c.rootPosition()
-        if c.sqlite_connection:
-            # position is already selected
-            return
-        current, str_pos = None, None
-        use_db = g.enableDB and c.mFileName
-        if use_db:
-            str_pos = c.cacher.getCachedStringPosition()
-        if not str_pos:
-            d = root.v.u
-            if d: str_pos = d.get('str_leo_pos')
-        if str_pos:
-            current = self.archivedPositionToPosition(str_pos)
-        c.setCurrentPosition(current or c.rootPosition())
     #@+node:ekr.20031218072017.3032: *3* fc.Writing
     #@+node:ekr.20070413045221.2: *4*  fc.Top-level
     #@+node:ekr.20031218072017.1720: *5* fc.save
@@ -2210,6 +1811,39 @@ class FileCommands(object):
     # Indices are now immutable, so there is no longer any difference between these two routines.
 
     compactFileIndices = assignFileIndices
+    #@+node:tbrown.20140615093933.89639: *4* fc.bytes_to_unicode
+    def bytes_to_unicode(self, ob):
+        """recursively convert bytes objects in strings / lists / dicts to str
+        objects, thanks to TNT
+        http://stackoverflow.com/questions/22840092/unpickling-data-from-python-2-with-unicode-strings-in-python-3
+
+        Needed for reading Python 2.7 pickles in Python 3.4 in getSaxUa()
+        """
+        # pylint: disable=unidiomatic-typecheck
+        # This is simpler than using isinstance.
+        t = type(ob)
+        if t in (list, tuple):
+            l = [str(i, 'utf-8') if type(i) is bytes else i for i in ob]
+            l = [self.bytes_to_unicode(i) if type(i) in (list, tuple, dict) else i
+                for i in l]
+            ro = tuple(l) if t is tuple else l
+        elif t is dict:
+            byte_keys = [i for i in ob if type(i) is bytes]
+            for bk in byte_keys:
+                v = ob[bk]
+                del(ob[bk])
+                ob[str(bk, 'utf-8')] = v
+            for k in ob:
+                if type(ob[k]) is bytes:
+                    ob[k] = str(ob[k], 'utf-8')
+                elif type(ob[k]) in (list, tuple, dict):
+                    ob[k] = self.bytes_to_unicode(ob[k])
+            ro = ob
+        elif t is bytes: # TNB added this clause
+            ro = str(ob, 'utf-8')
+        else:
+            ro = ob
+        return ro
     #@+node:ekr.20080805085257.1: *4* fc.createUaList
     def createUaList(self, aList):
         '''Given aList of pairs (p,torv), return a list of pairs (torv,d)
@@ -2321,6 +1955,147 @@ class FileCommands(object):
         else:
             g.warning("ignoring non-dictionary unknownAttributes for", torv)
             return ''
+    #@+node:ekr.20080805132422.3: *4* fc.resolveArchivedPosition
+    def resolveArchivedPosition(self, archivedPosition, root_v):
+        '''
+        Return a VNode corresponding to the archived position relative to root
+        node root_v.
+        '''
+
+        def oops(message):
+            '''Give an error only if no file errors have been seen.'''
+            return None
+
+        try:
+            aList = [int(z) for z in archivedPosition.split('.')]
+            aList.reverse()
+        except Exception:
+            return oops('"%s"' % archivedPosition)
+        if not aList:
+            return oops('empty')
+        last_v = root_v
+        n = aList.pop()
+        if n != 0:
+            return oops('root index="%s"' % n)
+        while aList:
+            n = aList.pop()
+            children = last_v.children
+            if n < len(children):
+                last_v = children[n]
+            else:
+                return oops('bad index="%s", len(children)="%s"' % (n, len(children)))
+        return last_v
+    #@+node:ekr.20060919110638.11: *4* fc.resolveTnodeLists
+    def resolveTnodeLists(self):
+        '''
+        Called *before* reading external files.
+        '''
+        c = self.c
+        for p in c.all_unique_positions(copy=False):
+            if hasattr(p.v, 'tempTnodeList'):
+                result = []
+                for tnx in p.v.tempTnodeList:
+                    index = self.canonicalTnodeIndex(tnx)
+                    # new gnxs:
+                    index = g.toUnicode(index)
+                    v = self.gnxDict.get(index)
+                    if v:
+                        result.append(v)
+                    else:
+                        g.trace('*** No VNode for %s' % tnx)
+                if result:
+                    p.v.tnodeList = result
+                delattr(p.v, 'tempTnodeList')
+    #@+node:vitalije.20170630152841.1: *4* fc.retrieveVnodesFromDb
+    def retrieveVnodesFromDb(self, conn):
+        '''
+        Recreates tree from the data contained in table vnodes.
+        
+        This method follows behavior of readSaxFile.
+        '''
+
+        c, fc = self.c, self
+        sql = '''select gnx, head, 
+             body,
+             children,
+             parents,
+             iconVal,
+             statusBits,
+             ua from vnodes'''
+        vnodes = []
+        try:
+            for row in conn.execute(sql):
+                (gnx,
+                    h,
+                    b,
+                    children,
+                    parents,
+                    iconVal,
+                    statusBits,
+                    ua) = row
+                try:
+                    ua = pickle.loads(g.toEncodedString(ua))
+                except ValueError:
+                    ua = None
+                v = leoNodes.VNode(context=c, gnx=gnx)
+                v._headString = h
+                v._bodyString = b
+                v.children = children.split()
+                v.parents = parents.split()
+                v.iconVal = iconVal
+                v.statusBits = statusBits
+                v.u = ua
+                vnodes.append(v)
+        except sqlite3.Error as er:
+            if er.args[0].find('no such table') < 0:
+                # there was an error raised but it is not the one we expect
+                g.internalError(er)
+            # there is no vnodes table 
+            return None
+
+        rootChildren = [x for x in vnodes if 'hidden-root-vnode-gnx' in x.parents]
+        if not rootChildren:
+            g.trace('there should be at least one top level node!')
+            return None
+
+        findNode = lambda x: fc.gnxDict.get(x, c.hiddenRootNode)
+
+        # let us replace every gnx with the corresponding vnode
+        for v in vnodes:
+            v.children = [findNode(x) for x in v.children]
+            v.parents = [findNode(x) for x in v.parents]
+        c.hiddenRootNode.children = rootChildren
+        (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
+        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
+        c.frame.resizePanesToRatio(r1, r2)
+        p = fc.decodePosition(encp)
+        c.setCurrentPosition(p)
+        return rootChildren[0]
+    #@+node:vitalije.20170815162307.1: *5* fc.initNewDb
+    def initNewDb(self, conn):
+        ''' Initializes tables and returns None'''
+        fc = self; c = self.c
+        v = leoNodes.VNode(context=c)
+        c.hiddenRootNode.children = [v]
+        (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
+        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
+        c.frame.resizePanesToRatio(r1, r2)
+        c.sqlite_connection = conn
+        fc.exportToSqlite(c.mFileName)
+        return v
+    #@+node:vitalije.20170630200802.1: *5* fc.getWindowGeometryFromDb
+    def getWindowGeometryFromDb(self, conn):
+        geom = (600, 400, 50, 50 , 0.5, 0.5, '')
+        keys = (  'width', 'height', 'left', 'top',
+                  'ratio', 'secondary_ratio',
+                  'current_position')
+        try:
+            d = dict(conn.execute('''select * from extra_infos 
+                where name in (?, ?, ?, ?, ?, ?, ?)''', keys).fetchall())
+            geom = (d.get(*x) for x in zip(keys, geom))
+        except sqlite3.OperationalError:
+            pass
+        return geom
     #@+node:ekr.20031218072017.3045: *4* fc.setDefaultDirectoryForNewFiles
     def setDefaultDirectoryForNewFiles(self, fileName):
         """Set c.openDirectory for new files for the benefit of leoAtFile.scanAllDirectives."""
@@ -2329,6 +2104,23 @@ class FileCommands(object):
             theDir = g.os_path_dirname(fileName)
             if theDir and g.os_path_isabs(theDir) and g.os_path_exists(theDir):
                 c.openDirectory = c.frame.openDirectory = theDir
+    #@+node:ekr.20060919110638.13: *4* fc.setPositionsFromVnodes
+    def setPositionsFromVnodes(self):
+
+        c, root = self.c, self.c.rootPosition()
+        if c.sqlite_connection:
+            # position is already selected
+            return
+        current, str_pos = None, None
+        use_db = g.enableDB and c.mFileName
+        if use_db:
+            str_pos = c.cacher.getCachedStringPosition()
+        if not str_pos:
+            d = root.v.u
+            if d: str_pos = d.get('str_leo_pos')
+        if str_pos:
+            current = self.archivedPositionToPosition(str_pos)
+        c.setCurrentPosition(current or c.rootPosition())
     #@+node:ekr.20080412172151.2: *4* fc.updateFixedStatus
     def updateFixedStatus(self):
         c = self.c
