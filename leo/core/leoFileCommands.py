@@ -106,6 +106,9 @@ class FastRead (object):
     #@+node:ekr.20180605062300.1: *4* fast.scanGlobals & helper
     def scanGlobals(self, g_element):
         
+        if not g_element:
+            # May be None for copied trees.
+            return
         fc = self.fc
         attrib = g_element.attrib
         ratio = attrib.get('body_secondary_ratio')
@@ -199,6 +202,10 @@ class FastRead (object):
                     if trace: print('Clone: %s: %s' % (gnx, v._headString))
                     parent_v.children.append(v)
                     v.parents.append(parent_v)
+                    # The body overrides any previous body text.
+                    body = g.toUnicode(gnx2body.get(gnx) or '')
+                    assert g.isUnicode(body), body.__class__.__name__
+                    v._bodyString = body
                 else:
                     #@+<< Make a new vnode, linked to the parent >>
                     #@+node:ekr.20180605075042.1: *6* << Make a new vnode, linked to the parent >>
@@ -315,20 +322,22 @@ class FastRead (object):
                 g.trace('can not unpickle %s=%s' % (attr, val))
                 return val
     #@+node:ekr.20180604110143.1: *3* fast.readFile (production)
-    def readFile(self, path):
+    def readFile(self, path=None, s=None):
         
         trace = False
-        c = self.c
         self.path = path
         t1 = time.clock()
-        with open(path, 'rb') as f:
-            s = f.read()
+        if s:
+            contents = s
+        else:
+            with open(path, 'rb') as f:
+                s = f.read()
         contents = g.toUnicode(s) if g.isPython3 else s
-        c.hiddenRootNode = self.readWithElementTree(contents)
+        v = self.readWithElementTree(contents)
         if trace:
             t2 = time.clock()
             g.trace('%5.3f sec' % (t2-t1))
-        return c.hiddenRootNode
+        return v
     #@-others
 #@+node:ekr.20160514120347.1: ** class FileCommands
 class FileCommands(object):
@@ -393,7 +402,7 @@ class FileCommands(object):
             # keys are gnx strings; values are ignored
     #@+node:ekr.20031218072017.3020: *3* fc.Reading
     #@+node:ekr.20060919104836: *4*  fc.Reading Top-level
-    #@+node:ekr.20070919133659.1: *5* fc.checkLeoFile
+    #@+node:ekr.20070919133659.1: *5* fc.checkLeoFile (OK)
     @cmd('check-leo-file')
     def checkLeoFile(self, event=None):
         '''The check-leo-file command.'''
@@ -408,51 +417,35 @@ class FileCommands(object):
         try:
             try:
                 theFile = g.app.loadManager.openLeoOrZipFile(c.mFileName)
-                self.readSaxFile(
-                    theFile, fileName='check-leo-file',
-                    silent=False, inClipboard=False, reassignIndices=False)
+                if FAST:
+                    gnxDict = self.gnxDict
+                    self.gnxDict = {}
+                    try:
+                        s = theFile.read()
+                        FastRead(c, self.gnxDict).readFile(s=s)
+                    finally:
+                        self.gnxDict = gnxDict
+                else:
+                    assert False, 'readSaxFile'
+                    ###
+                        # self.readSaxFile(
+                            # theFile, fileName='check-leo-file',
+                            # silent=False,
+                            # inClipboard=False,
+                            # reassignIndices=False,
+                        # )
                 g.blue('check-leo-file passed')
             except Exception:
                 junk, message, junk = sys.exc_info()
                 # g.es_exception()
-                g.error('check-leo-file failed:', str(message))
+                g.error('check-leo-file failed:', g.toUnicode(message))
         finally:
             self.checking = False
             c.loading = False # reenable c.changed
-    #@+node:vitalije.20180304190953.1: *5* fc.getVnodeFromClipboard
-    def getVnodeFromClipboard(self, s):
-        c = self.c
-        self.initReadIvars()
-        # Save the hidden root's children.
-        children = c.hiddenRootNode.children
-        oldGnxDict = self.gnxDict
-        self.gnxDict = {}
-        self.usingClipboard = True
-        try:
-            # This encoding must match the encoding used in putLeoOutline.
-            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            # readSaxFile modifies the hidden root.
-            v = self.readSaxFile(
-                theFile=None, fileName='<clipboard>',
-                silent=True, # don't tell about stylesheet elements.
-                inClipboard=True, reassignIndices=True, s=s)
-            if not v:
-                return g.es("the clipboard is not valid ", color="blue")
-        finally:
-            self.usingClipboard = False
-            self.gnxDict = oldGnxDict
-        # Restore the hidden root's children
-        c.hiddenRootNode.children = children
-        # Unlink v from the hidden root.
-        v.parents.remove(c.hiddenRootNode)
-        return v
-
-    def getPosFromClipboard(self, s):
-        v = self.getVnodeFromClipboard(s)
-        return leoNodes.Position(v)
-    #@+node:ekr.20031218072017.1559: *5* fc.getLeoOutlineFromClipboard & helpers
+    #@+node:ekr.20031218072017.1559: *5* fc.getLeoOutlineFromClipboard & helpers (PASTE MAIN LINE: OK)
     def getLeoOutlineFromClipboard(self, s, reassignIndices=True):
         '''Read a Leo outline from string s in clipboard format.'''
+        ### print('') ; g.trace('=====', reassignIndices)
         c = self.c
         current = c.p
         if not current:
@@ -477,11 +470,20 @@ class FileCommands(object):
         try:
             # This encoding must match the encoding used in putLeoOutline.
             s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            # readSaxFile modifies the hidden root.
-            v = self.readSaxFile(
-                theFile=None, fileName='<clipboard>',
-                silent=True, # don't tell about stylesheet elements.
-                inClipboard=True, reassignIndices=reassignIndices, s=s)
+            ### g.trace(g.objToString(g.splitLines(s)))
+            if FAST:
+                hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
+                v = hidden_v.children[0]
+                if reassignIndices:
+                    v.parents = []
+            else:
+                assert False, 'readSaxFile'
+                ###
+                    # # readSaxFile modifies the hidden root.
+                    # v = self.readSaxFile(
+                        # theFile=None, fileName='<clipboard>',
+                        # silent=True, # don't tell about stylesheet elements.
+                        # inClipboard=True, reassignIndices=reassignIndices, s=s)
             if not v:
                 return g.es("the clipboard is not valid ", color="blue")
         finally:
@@ -489,7 +491,10 @@ class FileCommands(object):
         # Restore the hidden root's children
         c.hiddenRootNode.children = children
         # Unlink v from the hidden root.
-        v.parents.remove(c.hiddenRootNode)
+        if FAST:
+            assert c.hiddenRootNode not in v.parents, g.objToString(v.parents)
+        else:
+            v.parents.remove(c.hiddenRootNode)
         p = leoNodes.Position(v)
         #
         # Important: we must not adjust links when linking v
@@ -503,6 +508,7 @@ class FileCommands(object):
                 return None
             p._linkAfter(current, adjust=False)
         if reassignIndices:
+            assert not p.isCloned(), g.objToString(p.v.parents)
             self.gnxDict = oldGnxDict
             self.reassignAllIndices(p)
         else:
@@ -537,14 +543,13 @@ class FileCommands(object):
     #@+node:ekr.20180425034856.1: *6* fc.reassignAllIndices
     def reassignAllIndices(self, p):
         '''Reassign all indices in p's subtree.'''
-        c = self.c
         ni = g.app.nodeIndices
         for p2 in p.self_and_subtree(copy=False):
             v = p2.v
             index = ni.getNewIndex(v)
             if 'gnx' in g.app.debug:
-                g.trace(c.shortFileName(), '**reassigning**', index, v)
-    #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile & helpers
+                g.trace('**reassigning**', index, v)
+    #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile & helpers (READ MAIN LINE)
     def getLeoFile(self,
         theFile,
         fileName,
@@ -572,11 +577,16 @@ class FileCommands(object):
             #
             # Read the .leo file and create the outline.
             if FAST:
-                fastReader = FastRead(c, self.gnxDict)
-                ok = fastReader.readFile(fileName)
-            else:
-                ok = fc.getLeoFileHelper(theFile, fileName, silent)
-            if ok:
+                if fileName.endswith('.db'):
+                    v = fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
+                else:
+                    v = FastRead(c, self.gnxDict).readFile(fileName)
+                    if v:
+                        c.hiddenRootNode = v
+            ###
+                # else:
+                #    ok = fc.getLeoFileHelper(theFile, fileName, silent)
+            if v:
                 fc.resolveTnodeLists()
                     # Do this before reading external files.
                 c.setFileTimeStamp(fileName)
@@ -622,7 +632,7 @@ class FileCommands(object):
         fc.initReadIvars()
         t2 = time.time()
         g.es('read outline in %2.2f seconds' % (t2 - t1))
-        return ok, c.frame.ratio
+        return v, c.frame.ratio
     #@+node:ekr.20100205060712.8314: *6* fc.handleNodeConflicts
     def handleNodeConflicts(self):
         '''Create a 'Recovered Nodes' node for each entry in c.nodeConflictList.'''
@@ -964,6 +974,46 @@ class FileCommands(object):
                         # There was a big performance bug in the mark hook in the Node Navigator plugin.
                 if expanded.get(p.v):
                     p.expand()
+    #@+node:vitalije.20180304190953.1: *5* fc.getPos/VnodeFromClipboard (OK)
+    def getPosFromClipboard(self, s):
+        '''A utility called from init_tree_abbrev.'''
+        v = self.getVnodeFromClipboard(s)
+        return leoNodes.Position(v)
+
+    def getVnodeFromClipboard(self, s):
+        '''Called only from getPosFromClipboard.'''
+        c = self.c
+        self.initReadIvars()
+        # Save the hidden root's children.
+        children = c.hiddenRootNode.children
+        oldGnxDict = self.gnxDict
+        try:
+            # This encoding must match the encoding used in putLeoOutline.
+            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+            if FAST:
+                v = FastRead(c, {}).readFile(s=s)
+            else:
+                assert False, 'readSaxFile'
+                    # # readSaxFile modifies the hidden root.
+                    # self.usingClipboard = True
+                    # self.gnxDict = {}
+                    # v = self.readSaxFile(
+                        # theFile=None, fileName='<clipboard>',
+                        # silent=True, # don't tell about stylesheet elements.
+                        # inClipboard=True, reassignIndices=True, s=s)
+            if not v:
+                return g.es("the clipboard is not valid ", color="blue")
+        finally:
+            self.usingClipboard = False ### To be removed.
+            self.gnxDict = oldGnxDict
+        # Restore the hidden root's children
+        c.hiddenRootNode.children = children
+        # Unlink v from the hidden root.
+        if FAST:
+            pass
+        else:
+            v.parents.remove(c.hiddenRootNode)
+        return v
     #@+node:ekr.20060919104530: *4* fc.Reading Sax
     #@+node:ekr.20090525144314.6526: *5* fc.cleanSaxInputString
     def cleanSaxInputString(self, s):
@@ -1183,69 +1233,51 @@ class FileCommands(object):
             except(pickle.UnpicklingError, ImportError, AttributeError, ValueError, TypeError):
                 g.trace('can not unpickle %s=%s' % (attr, val))
                 return val
-    #@+node:ekr.20060919110638.14: *5* fc.parse_leo_file
+    #@+node:ekr.20060919110638.14: *5* fc.parse_leo_file (OK)
     def parse_leo_file(self, theFile, inputFileName, silent, inClipboard, s=None):
-        c = self.c
+            ### To do: remove inClipboard switch ###
+        '''Called to parse abbreviation outline.'''
+        ### g.trace('==========', g.callers())
+        ### g.printObj(s and g.splitLines(g.toUnicode(s)))
         # Fix #434: Potential bug in settings.
         if not theFile and not s:
             return None
-        try:
-            if g.isPython3:
-                if theFile:
-                    # Use the open binary file, opened by the caller.
-                    s = theFile.read() # isinstance(s, bytes)
-                    s = self.cleanSaxInputString(s)
-                    theFile = BytesIO(s)
-                else:
-                    s = str(s, encoding='utf-8')
-                    s = self.cleanSaxInputString(s)
-                    theFile = StringIO(s)
-            else:
-                if theFile: s = theFile.read()
-                s = self.cleanSaxInputString(s)
-                theFile = cStringIO.StringIO(s)
-            parser = xml.sax.make_parser()
-            parser.setFeature(xml.sax.handler.feature_external_ges, 1)
-                # Include external general entities, esp. xml-stylesheet lines.
-            if 0: # Expat does not read external features.
-                parser.setFeature(xml.sax.handler.feature_external_pes, 1)
-                    # Include all external parameter entities
-                    # Hopefully the parser can figure out the encoding from the <?xml> element.
-            # It's very hard to do anything meaningful wih an exception.
-            handler = SaxContentHandler(c, inputFileName, silent, inClipboard)
-            parser.setContentHandler(handler)
-            parser.parse(theFile) # expat does not support parseString
-            sax_node = handler.getRootNode()
-        except Exception:
-            g.error('error parsing', inputFileName)
-            g.es_exception()
-            sax_node = None
-        return sax_node
-    #@+node:ekr.20060919110638.3: *5* fc.readSaxFile
-    def readSaxFile(self, theFile, fileName, silent, inClipboard, reassignIndices, s=None):
-        '''Read the entire .leo file using the sax parser.'''
-        dump = False and not g.unitTesting
-        fc = self; c = fc.c
-
-        if fileName.endswith('.db'):
-            return fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
-        #
-        # Pass one: create the intermediate nodes.
-        saxRoot = fc.parse_leo_file(theFile, fileName,
-            silent=silent, inClipboard=inClipboard, s=s)
-        if not saxRoot:
-            return None
-        #
-        # Pass two: create the tree of vnodes from the intermediate nodes.
-        if dump: fc.dumpSaxTree(saxRoot, dummy=True)
-        parent_v = c.hiddenRootNode
-        children = fc.createSaxChildren(saxRoot, parent_v)
-        assert c.hiddenRootNode.children == children
-        v = children[0] if children else None
+        v = FastRead(self.c, self.gnxDict).readFile(inputFileName, s=s)
         return v
-       
-            
-                
+        ###
+            # c = self.c
+            # try:
+                # if g.isPython3:
+                    # if theFile:
+                        # # Use the open binary file, opened by the caller.
+                        # s = theFile.read() # isinstance(s, bytes)
+                        # s = self.cleanSaxInputString(s)
+                        # theFile = BytesIO(s)
+                    # else:
+                        # s = str(s, encoding='utf-8')
+                        # s = self.cleanSaxInputString(s)
+                        # theFile = StringIO(s)
+                # else:
+                    # if theFile: s = theFile.read()
+                    # s = self.cleanSaxInputString(s)
+                    # theFile = cStringIO.StringIO(s)
+                # parser = xml.sax.make_parser()
+                # parser.setFeature(xml.sax.handler.feature_external_ges, 1)
+                    # # Include external general entities, esp. xml-stylesheet lines.
+                # if 0: # Expat does not read external features.
+                    # parser.setFeature(xml.sax.handler.feature_external_pes, 1)
+                        # # Include all external parameter entities
+                        # # Hopefully the parser can figure out the encoding from the <?xml> element.
+                # # It's very hard to do anything meaningful wih an exception.
+                # handler = SaxContentHandler(c, inputFileName, silent, inClipboard)
+                # parser.setContentHandler(handler)
+                # parser.parse(theFile) # expat does not support parseString
+                # sax_node = handler.getRootNode()
+            # except Exception:
+                # g.error('error parsing', inputFileName)
+                # g.es_exception()
+                # sax_node = None
+            # return sax_node
     #@+node:ekr.20060919110638.11: *5* fc.resolveTnodeLists
     def resolveTnodeLists(self):
         '''
@@ -1297,12 +1329,15 @@ class FileCommands(object):
             else:
                 return oops('bad index="%s", len(children)="%s"' % (n, len(children)))
         return last_v
-    #@+node:vitalije.20170630152841.1: *5* fc.retrieveVnodesFromDb
+    #@+node:vitalije.20170630152841.1: *5* fc.retrieveVnodesFromDb (called from readSaxFile)
     def retrieveVnodesFromDb(self, conn):
-        '''Recreates tree from the data contained in table vnodes. This
-           method follows behavior of readSaxFile.'''
+        '''
+        Recreates tree from the data contained in table vnodes.
+        
+        This method follows behavior of readSaxFile.
+        '''
 
-        fc = self; c = fc.c
+        c, fc = self.c, self
         sql = '''select gnx, head, 
              body,
              children,
@@ -1312,7 +1347,6 @@ class FileCommands(object):
              ua from vnodes'''
         vnodes = []
         try:
-
             for row in conn.execute(sql):
                 (gnx,
                     h,
@@ -1335,7 +1369,6 @@ class FileCommands(object):
                 v.statusBits = statusBits
                 v.u = ua
                 vnodes.append(v)
-
         except sqlite3.Error as er:
             if er.args[0].find('no such table') < 0:
                 # there was an error raised but it is not the one we expect
@@ -2405,39 +2438,13 @@ class FileCommands(object):
             else:
                 val = False
             c.fixed = val
-    #@+node:ekr.20090526081836.5841: *3* fc.getLeoFileHelper (to be deleted)
-    def getLeoFileHelper(self, theFile, fileName, silent):
-        '''Read the .leo file and create the outline.'''
-        c, fc = self.c, self
-        try:
-            ok = True
-            v = fc.readSaxFile(
-                theFile,
-                fileName,
-                silent,
-                inClipboard=False,
-                reassignIndices=False,
-            )
-            if v:
-                # readSaxFile sets c.hiddenRootNode.
-                pass
-            else:
-                # v is None for minimal .leo files.
-                v = leoNodes.VNode(context=c)
-                v.setHeadString('created root node')
-                p = leoNodes.Position(v)
-                p._linkAsRoot(oldRoot=None)
-                c.changed = False
-        except BadLeoFile:
-            junk, message, junk = sys.exc_info()
-            if not silent:
-                g.es_exception()
-                c.alert(fc.mFileName + " is not a valid Leo file: " + str(message))
-            ok = False
-        return ok
     #@-others
 #@+node:ekr.20060919110638.19: ** class SaxContentHandler (XMLGenerator)
-if sys.platform != 'cli':
+if FAST:
+    
+    pass
+    
+elif sys.platform != 'cli':
 
     class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         '''A sax content handler class that reads Leo files.'''
@@ -2796,7 +2803,11 @@ if sys.platform != 'cli':
                     node.attributes[name] = val
         #@-others
 #@+node:ekr.20060919110638.15: ** class SaxNodeClass
-if sys.platform != 'cli':
+if FAST:
+    
+    pass
+
+elif sys.platform != 'cli':
 
     class SaxNodeClass:
         '''A class representing one <v> element.

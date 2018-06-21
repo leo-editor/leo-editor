@@ -41,7 +41,7 @@ class NodeIndices(object):
         self.userId = id_
         # Assign the initial timestamp.
         self.setTimeStamp()
-    #@+node:ekr.20150321161305.8: *3* ni.check_gnx (recognizes hidden gnx)
+    #@+node:ekr.20150321161305.8: *3* ni.check_gnx
     def check_gnx(self, c, gnx, v):
         '''Check that no vnode exists with the given gnx in fc.gnxDict.'''
         fc = c.fileCommands

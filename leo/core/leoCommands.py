@@ -1348,10 +1348,11 @@ class Commands(object):
         for gnx in sorted(d.keys()):
             aList = list(d.get(gnx))
             if len(aList) != 1:
+                print('\nc.checkGnxs...')
                 g.es_print('multiple vnodes with gnx: %r' % (gnx), color='red')
                 for v in aList:
                     gnx_errors += 1
-                    g.es_print('new gnx: %s %s' % (v.fileIndex, v), color='red')
+                    g.es_print('id(v): %s gnx: %s %s' % (id(v), v.fileIndex, v.h), color='red')
                     new_gnx(v)
         ok = not gnx_errors and not g.app.structure_errors
         t2 = time.time()
@@ -1360,6 +1361,9 @@ class Commands(object):
                 c.shortFileName(), count, gnx_errors, g.app.structure_errors), color='red')
         elif c.verbose_check_outline and not g.unitTesting:
             print('check-outline OK: %4.2f sec. %s %s nodes' % (t2 - t1, c.shortFileName(), count))
+        # if g.unitTesting:
+            # assert g.app.structure_errors == 0
+            # assert gnx_errors == 0
         return g.app.structure_errors
     #@+node:ekr.20150318131947.7: *4* c.checkLinks & helpers
     def checkLinks(self):
