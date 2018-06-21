@@ -315,7 +315,7 @@ class FastRead (object):
             except Exception:
                 g.trace('can not unpickle %s=%s' % (attr, val))
                 return val
-    #@+node:ekr.20180604110143.1: *3* fast.readFile (production)
+    #@+node:ekr.20180604110143.1: *3* fast.readFile
     def readFile(self, path=None, s=None):
         
         trace = False
