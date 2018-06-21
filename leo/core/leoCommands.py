@@ -1361,9 +1361,6 @@ class Commands(object):
                 c.shortFileName(), count, gnx_errors, g.app.structure_errors), color='red')
         elif c.verbose_check_outline and not g.unitTesting:
             print('check-outline OK: %4.2f sec. %s %s nodes' % (t2 - t1, c.shortFileName(), count))
-        # if g.unitTesting:
-            # assert g.app.structure_errors == 0
-            # assert gnx_errors == 0
         return g.app.structure_errors
     #@+node:ekr.20150318131947.7: *4* c.checkLinks & helpers
     def checkLinks(self):
