@@ -396,7 +396,7 @@ class FileCommands(object):
             # keys are gnx strings; values are ignored
     #@+node:ekr.20031218072017.3020: *3* fc.Reading
     #@+node:ekr.20060919104836: *4*  fc.Reading Top-level
-    #@+node:ekr.20070919133659.1: *5* fc.checkLeoFile (OK)
+    #@+node:ekr.20070919133659.1: *5* fc.checkLeoFile
     @cmd('check-leo-file')
     def checkLeoFile(self, event=None):
         '''The check-leo-file command.'''
@@ -427,7 +427,7 @@ class FileCommands(object):
         finally:
             self.checking = False
             c.loading = False # reenable c.changed
-    #@+node:ekr.20031218072017.1559: *5* fc.getLeoOutlineFromClipboard & helpers (PASTE MAIN LINE: OK)
+    #@+node:ekr.20031218072017.1559: *5* fc.getLeoOutlineFromClipboard & helpers (Paste main line)
     def getLeoOutlineFromClipboard(self, s, reassignIndices=True):
         '''Read a Leo outline from string s in clipboard format.'''
         c = self.c
@@ -513,7 +513,7 @@ class FileCommands(object):
             index = ni.getNewIndex(v)
             if 'gnx' in g.app.debug:
                 g.trace('**reassigning**', index, v)
-    #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile & helpers (READ MAIN LINE)
+    #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile & helpers (read main line)
     def getLeoFile(self,
         theFile,
         fileName,
