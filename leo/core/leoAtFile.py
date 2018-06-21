@@ -5250,7 +5250,7 @@ class FastAtRead (object):
                     # m.group(3) is the level number, m.group(4) is the number of stars.
                 v = gnx2vnode.get(gnx)
                 #
-                # Case 1: The root @file node.
+                # Case 1: The root @file node. Don't change the headline.
                 if v and v == root_v:
                     clone_v = None
                     gnx2body[gnx] = body = []
@@ -5260,8 +5260,9 @@ class FastAtRead (object):
                 # Case 2: We are scanning the descendants of a clone.
                 parent_v, clone_v = level_stack[level-2]
                 if v and clone_v:
-                    # The last version of the body scanned in the external file wins.
+                    # The last version of the body and headline wins..
                     gnx2body[gnx] = body = []
+                    v._headString = head
                     # Update the level_stack.
                     level_stack = level_stack[:level-1]
                     level_stack.append((v, clone_v),)
@@ -5272,18 +5273,17 @@ class FastAtRead (object):
                 #
                 # Case 3: we are not already scanning the descendants of a clone.
                 if v:
-                    # The *start* of a clone tree.
-                    # Reset the children.
+                    # The *start* of a clone tree. Reset the children.
                     clone_v = v
                     v.children = []
-                    # Reset the body.
-                    gnx2body[gnx] = body = []
                 else:
                     # Make a new vnode.
                     v = self.VNode(context=context, gnx=gnx)
-                    v._headString = head
-                    gnx2vnode[gnx] = v
-                    gnx2body[gnx] = body = []
+                #
+                # The last version of the body and headline wins.
+                gnx2vnode[gnx] = v
+                gnx2body[gnx] = body = []
+                v._headString = head
                 #
                 # Update the stack.
                 level_stack = level_stack[:level-1]
