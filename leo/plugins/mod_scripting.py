@@ -1381,6 +1381,7 @@ class EvalController(object):
             blocks = re.split('\n(?=[^\\s])', s)
             ans = self.old_exec(blocks, s)
             self.show_legacy_answer(ans, blocks)
+            return ans  # needed by mod_http
         else:
             self.new_exec(s)
             self.show_answers()
@@ -1404,7 +1405,7 @@ class EvalController(object):
             g.es_exception()
     #@+node:ekr.20180329130623.1: *5* eval.old_exec
     def old_exec(self, blocks, txt):
-        
+
         # pylint: disable=eval-used
         c = self.c
         leo_globals = {'c':c, 'g':g, 'p':c.p}

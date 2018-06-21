@@ -4932,6 +4932,8 @@ def gitInfo(path=None):
         with open(path) as f:
             s = f.read()
             if not s.startswith('ref'):
+                branch = 'None'
+                commit = s[:7]
                 return branch, commit
         # On a proper branch
         pointer = s.split()[1]
