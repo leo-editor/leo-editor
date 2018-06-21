@@ -1,12 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3018: * @file leoFileCommands.py
 '''Classes relating to reading and writing .leo files.'''
-#@+<< define FAST (leoFileCommands) >>
-#@+node:ekr.20180605060817.1: ** << define FAST (leoFileCommands) >>
-FAST = True
-if FAST:
-    print('\n===== FAST (leoFileCommands) ===== \n')
-#@-<< define FAST (leoFileCommands) >>
 #@+<< imports >>
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
 # For FastRead class
@@ -407,8 +401,10 @@ class FileCommands(object):
     def checkLeoFile(self, event=None):
         '''The check-leo-file command.'''
         fc = self; c = fc.c; p = c.p
+        # 
         # Put the body (minus the @nocolor) into the file buffer.
-        s = p.b; tag = '@nocolor\n'
+        s = p.b
+        tag = '@nocolor\n'
         if s.startswith(tag): s = s[len(tag):]
         # Do a trial read.
         self.checking = True
@@ -417,27 +413,17 @@ class FileCommands(object):
         try:
             try:
                 theFile = g.app.loadManager.openLeoOrZipFile(c.mFileName)
-                if FAST:
-                    gnxDict = self.gnxDict
-                    self.gnxDict = {}
-                    try:
-                        s = theFile.read()
-                        FastRead(c, self.gnxDict).readFile(s=s)
-                    finally:
-                        self.gnxDict = gnxDict
-                else:
-                    assert False, 'readSaxFile'
-                    ###
-                        # self.readSaxFile(
-                            # theFile, fileName='check-leo-file',
-                            # silent=False,
-                            # inClipboard=False,
-                            # reassignIndices=False,
-                        # )
+                ### FAST
+                gnxDict = self.gnxDict
+                self.gnxDict = {} # Always allocate new vnodes.
+                try:
+                    s = theFile.read()
+                    FastRead(c, self.gnxDict).readFile(s=s)
+                finally:
+                    self.gnxDict = gnxDict
                 g.blue('check-leo-file passed')
             except Exception:
                 junk, message, junk = sys.exc_info()
-                # g.es_exception()
                 g.error('check-leo-file failed:', g.toUnicode(message))
         finally:
             self.checking = False
@@ -470,31 +456,21 @@ class FileCommands(object):
         try:
             # This encoding must match the encoding used in putLeoOutline.
             s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            ### g.trace(g.objToString(g.splitLines(s)))
-            if FAST:
-                hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
-                v = hidden_v.children[0]
-                if reassignIndices:
-                    v.parents = []
-            else:
-                assert False, 'readSaxFile'
-                ###
-                    # # readSaxFile modifies the hidden root.
-                    # v = self.readSaxFile(
-                        # theFile=None, fileName='<clipboard>',
-                        # silent=True, # don't tell about stylesheet elements.
-                        # inClipboard=True, reassignIndices=reassignIndices, s=s)
+            ### FAST:
+            hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
+            v = hidden_v.children[0]
+            if reassignIndices:
+                v.parents = []
+            assert c.hiddenRootNode not in v.parents, g.objToString(v.parents)
             if not v:
                 return g.es("the clipboard is not valid ", color="blue")
         finally:
             self.usingClipboard = False
+        #
         # Restore the hidden root's children
         c.hiddenRootNode.children = children
-        # Unlink v from the hidden root.
-        if FAST:
-            assert c.hiddenRootNode not in v.parents, g.objToString(v.parents)
-        else:
-            v.parents.remove(c.hiddenRootNode)
+        #
+        # Create the position.
         p = leoNodes.Position(v)
         #
         # Important: we must not adjust links when linking v
@@ -576,16 +552,13 @@ class FileCommands(object):
                 g.app.checkForOpenFile(c, fileName)
             #
             # Read the .leo file and create the outline.
-            if FAST:
-                if fileName.endswith('.db'):
-                    v = fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
-                else:
-                    v = FastRead(c, self.gnxDict).readFile(fileName)
-                    if v:
-                        c.hiddenRootNode = v
-            ###
-                # else:
-                #    ok = fc.getLeoFileHelper(theFile, fileName, silent)
+            ### FAST
+            if fileName.endswith('.db'):
+                v = fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
+            else:
+                v = FastRead(c, self.gnxDict).readFile(fileName)
+                if v:
+                    c.hiddenRootNode = v
             if v:
                 fc.resolveTnodeLists()
                     # Do this before reading external files.
@@ -984,35 +957,17 @@ class FileCommands(object):
         '''Called only from getPosFromClipboard.'''
         c = self.c
         self.initReadIvars()
-        # Save the hidden root's children.
-        children = c.hiddenRootNode.children
         oldGnxDict = self.gnxDict
         try:
             # This encoding must match the encoding used in putLeoOutline.
             s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            if FAST:
-                v = FastRead(c, {}).readFile(s=s)
-            else:
-                assert False, 'readSaxFile'
-                    # # readSaxFile modifies the hidden root.
-                    # self.usingClipboard = True
-                    # self.gnxDict = {}
-                    # v = self.readSaxFile(
-                        # theFile=None, fileName='<clipboard>',
-                        # silent=True, # don't tell about stylesheet elements.
-                        # inClipboard=True, reassignIndices=True, s=s)
+            ### FAST
+            v = FastRead(c, {}).readFile(s=s)
             if not v:
                 return g.es("the clipboard is not valid ", color="blue")
         finally:
             self.usingClipboard = False ### To be removed.
             self.gnxDict = oldGnxDict
-        # Restore the hidden root's children
-        c.hiddenRootNode.children = children
-        # Unlink v from the hidden root.
-        if FAST:
-            pass
-        else:
-            v.parents.remove(c.hiddenRootNode)
         return v
     #@+node:ekr.20060919104530: *4* fc.Reading Sax
     #@+node:ekr.20090525144314.6526: *5* fc.cleanSaxInputString
