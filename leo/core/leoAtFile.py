@@ -5368,7 +5368,7 @@ class FastAtRead (object):
                 continue
             #@-<< handle @first and @last >>
             #@+<< handle @comment >>
-            #@+node:ekr.20180606051525.1: *4* << handle @comment >>
+            #@+node:ekr.20180621050901.1: *4* << handle @comment >>
             # http://leoeditor.com/directives.html#part-4-dangerous-directives
             m = comment_pat.match(line)
             if m:
@@ -5498,7 +5498,7 @@ class FastAtRead (object):
             gnx2body[root_gnx] = gnx2body.get(root_gnx).extend(last_lines)
         self.post_pass(gnx2body, gnx2vnode, root_v)
         return root_v, last_lines
-    #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root (production)
+    #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
     def read_into_root(self, contents, path, root):
         '''
         Parse the file's contents, creating a tree of vnodes
