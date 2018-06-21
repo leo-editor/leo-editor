@@ -5495,7 +5495,8 @@ class FastAtRead (object):
         # Handle @last lines.
         last_lines = lines[start+i:]
         if last_lines:
-            gnx2body[root_gnx] = gnx2body.get(root_gnx).extend(last_lines)
+            last_lines = ['@last ' + z for z in last_lines]
+            gnx2body[root_gnx] = gnx2body[root_gnx] + last_lines
         self.post_pass(gnx2body, gnx2vnode, root_v)
         return root_v, last_lines
     #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
