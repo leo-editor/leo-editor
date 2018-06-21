@@ -4132,7 +4132,13 @@ class AtFile(object):
     at_directive_kind_pattern = re.compile(r'\s*@([\w-]+)\s*')
 
     def directiveKind4(self, s, i):
-        """Return the kind of at-directive or noDirective."""
+        """
+        Return the kind of at-directive or noDirective.
+        
+        Potential simplifications:
+        - Using strings instead of constants.
+        - Using additional regex's to recognize directives.
+        """
         at = self
         n = len(s)
         if i >= n or s[i] != '@':
@@ -4163,8 +4169,8 @@ class AtFile(object):
         for name, directive in table:
             if g.match_word(s, i, name):
                 return directive
-        # New in Leo 4.4.3: add support for add_directives plugin.
-        # 2017/01/23: Use regex to properly distinguish between Leo directives
+        # Support for add_directives plugin.
+        # Use regex to properly distinguish between Leo directives
         # and python decorators.
         s2 = s[i:]
         m = self.at_directive_kind_pattern.match(s2)
