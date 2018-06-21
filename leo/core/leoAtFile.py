@@ -45,74 +45,78 @@ class AtFile(object):
     rawDirective    =  9 # @raw
     endRawDirective = 10 # @end_raw
 
-    # The kind of sentinel line.
-    noSentinel   = 20 # Not a sentinel
-    endAt        = 21 # @-at
-    endBody      = 22 # @-body
-    # not used   = 23
-    endDoc       = 24 # @-doc
-    endLeo       = 25 # @-leo
-    endNode      = 26 # @-node
-    endOthers    = 27 # @-others
-
-    # not used     = 40
-    startAt        = 41 # @+at
-    startBody      = 42 # @+body
-    startDoc       = 43 # @+doc
-    startLeo       = 44 # @+leo
-    startNode      = 45 # @+node
-    startOthers    = 46 # @+others
-
-    startComment   = 60 # @comment
-    startDelims    = 61 # @delims
-    startDirective = 62 # @@
-    startRef       = 63 # @< < ... > >
-    startVerbatim  = 64 # @verbatim
-    startVerbatimAfterRef = 65 # @verbatimAfterRef (3.0 only)
-
-    # New in 4.x. Paired
-    endAll         = 70 # at-all (4.2)
-    endMiddle      = 71 # at-middle (4.2)
-    startAll       = 72 # at+all (4.2)
-    startMiddle    = 73 # at+middle (4.2)
-
-    # New in 4.x.  Unpaired.
-    startAfterRef  = 80 # @afterref (4.0)
-    startClone     = 81 # @clone (4.2)
-    startNl        = 82 # @nl (4.0)
-    startNonl      = 83 # @nonl (4.0)
-
-    # New in 4.8.
-    endRef         = 84 # @-<<
+    if FAST:
+        startVerbatim  = 64 # @verbatim
+    else:
+        # The kind of sentinel line.
+        noSentinel   = 20 # Not a sentinel
+        endAt        = 21 # @-at
+        endBody      = 22 # @-body
+        # not used   = 23
+        endDoc       = 24 # @-doc
+        endLeo       = 25 # @-leo
+        endNode      = 26 # @-node
+        endOthers    = 27 # @-others
+        
+        # not used     = 40
+        startAt        = 41 # @+at
+        startBody      = 42 # @+body
+        startDoc       = 43 # @+doc
+        startLeo       = 44 # @+leo
+        startNode      = 45 # @+node
+        startOthers    = 46 # @+others
+        
+        startComment   = 60 # @comment
+        startDelims    = 61 # @delims
+        startDirective = 62 # @@
+        startRef       = 63 # @< < ... > >
+        startVerbatim  = 64 # @verbatim
+        startVerbatimAfterRef = 65 # @verbatimAfterRef (3.0 only)
+        
+        # New in 4.x. Paired
+        endAll         = 70 # at-all (4.2)
+        endMiddle      = 71 # at-middle (4.2)
+        startAll       = 72 # at+all (4.2)
+        startMiddle    = 73 # at+middle (4.2)
+        
+        # New in 4.x.  Unpaired.
+        startAfterRef  = 80 # @afterref (4.0)
+        startClone     = 81 # @clone (4.2)
+        startNl        = 82 # @nl (4.0)
+        startNonl      = 83 # @nonl (4.0)
+        
+        # New in 4.8.
+        endRef         = 84 # @-<<
     #@-<< define class constants >>
-    #@+<< define sentinelDict >>
-    #@+node:ekr.20041005105605.6: *3* << define sentinelDict >>
-    #@@nobeautify
+    if not FAST:
+        #@+<< define sentinelDict >>
+        #@+node:ekr.20041005105605.6: *3* << define sentinelDict >>
+        #@@nobeautify
 
-    sentinelDict = {
-        # Unpaired sentinels: 3.x and 4.x.
-        "@comment" : startComment,
-        "@delims" :  startDelims,
-        "@verbatim": startVerbatim,
-        # Unpaired sentinels: 3.x only.
-        "@verbatimAfterRef": startVerbatimAfterRef,
-        # Unpaired sentinels: 4.x only.
-        "@afterref" : startAfterRef,
-        "@clone"    : startClone,
-        "@nl"       : startNl,
-        "@nonl"     : startNonl,
-        # Paired sentinels: 3.x only.
-        "@+body":   startBody,   "@-body":   endBody,
-        # Paired sentinels: 3.x and 4.x.
-        "@+all":    startAll,    "@-all":    endAll,
-        "@+at":     startAt,     "@-at":     endAt,
-        "@+doc":    startDoc,    "@-doc":    endDoc,
-        "@+leo":    startLeo,    "@-leo":    endLeo,
-        "@+middle": startMiddle, "@-middle": endMiddle,
-        "@+node":   startNode,   "@-node":   endNode,
-        "@+others": startOthers, "@-others": endOthers,
-    }
-    #@-<< define sentinelDict >>
+        sentinelDict = {
+            # Unpaired sentinels: 3.x and 4.x.
+            "@comment" : startComment,
+            "@delims" :  startDelims,
+            "@verbatim": startVerbatim,
+            # Unpaired sentinels: 3.x only.
+            "@verbatimAfterRef": startVerbatimAfterRef,
+            # Unpaired sentinels: 4.x only.
+            "@afterref" : startAfterRef,
+            "@clone"    : startClone,
+            "@nl"       : startNl,
+            "@nonl"     : startNonl,
+            # Paired sentinels: 3.x only.
+            "@+body":   startBody,   "@-body":   endBody,
+            # Paired sentinels: 3.x and 4.x.
+            "@+all":    startAll,    "@-all":    endAll,
+            "@+at":     startAt,     "@-at":     endAt,
+            "@+doc":    startDoc,    "@-doc":    endDoc,
+            "@+leo":    startLeo,    "@-leo":    endLeo,
+            "@+middle": startMiddle, "@-middle": endMiddle,
+            "@+node":   startNode,   "@-node":   endNode,
+            "@+others": startOthers, "@-others": endOthers,
+        }
+        #@-<< define sentinelDict >>
     #@+others
     #@+node:ekr.20041005105605.7: *3* at.Birth & init
     #@+node:ekr.20041005105605.8: *4* at.ctor & helpers
@@ -1147,6 +1151,20 @@ class AtFile(object):
            # Don't check the headline.  It simply causes problems.
            v.setVisited() # Supress warning/deletion of unvisited nodes.
            return v
+       #@+node:ekr.20110523201030.18288: *5* at.massageAtDocPart
+       def massageAtDocPart(self, s):
+           '''Compute the final @doc part when block comments are used.'''
+           at = self
+           if at.endSentinelComment:
+               ok1 = s.startswith(at.startSentinelComment + '\n')
+               ok2 = s.endswith(at.endSentinelComment + '\n')
+               if ok1 and ok2:
+                   n1 = len(at.startSentinelComment)
+                   n2 = len(at.endSentinelComment)
+                   s = s[n1 + 1: -(n2 + 1)]
+               else:
+                   at.error('invalid @doc part...\n%s' % repr(s))
+           return s
        #@+node:ekr.20050301105854: *5* at.readPostPass & helpers
        def readPostPass(self, root, thinFile):
            '''Post-process all vnodes.'''
@@ -2220,20 +2238,6 @@ class AtFile(object):
            assert i < len(s) and s[i] == '@', 'skipSentinelStart4 3'
            return i + 1
        #@-others
-    #@+node:ekr.20110523201030.18288: *4* at.massageAtDocPart
-    def massageAtDocPart(self, s):
-        '''Compute the final @doc part when block comments are used.'''
-        at = self
-        if at.endSentinelComment:
-            ok1 = s.startswith(at.startSentinelComment + '\n')
-            ok2 = s.endswith(at.endSentinelComment + '\n')
-            if ok1 and ok2:
-                n1 = len(at.startSentinelComment)
-                n2 = len(at.endSentinelComment)
-                s = s[n1 + 1: -(n2 + 1)]
-            else:
-                at.error('invalid @doc part...\n%s' % repr(s))
-        return s
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20100625092449.5963: *5* at.appendToOut
     def appendToOut(self, s):
@@ -4122,7 +4126,7 @@ class AtFile(object):
             s2 = s2.replace('\r', '')
             equal = s1 == s2
         return equal
-    #@+node:ekr.20041005105605.198: *5* at.directiveKind4 (write logic, changed)
+    #@+node:ekr.20041005105605.198: *5* at.directiveKind4 (write logic)
     # These patterns exclude constructs such as @encoding.setter or @encoding(whatever)
     # However, they must allow @language python, @nocolor-node, etc.
     at_directive_kind_pattern = re.compile(r'\s*@([\w-]+)\s*')
