@@ -962,11 +962,11 @@ class LeoApp(object):
                 pass
         else: sysVersion = sys.platform
         branch, commit = g.gitInfo()
-        if not branch or not commit:
+        if not commit:
             app.signon1 = 'Not running from a git repo'
         else:
             app.signon1 = 'Git repo info: branch = %s, commit = %s' % (
-                branch, commit)
+                branch or '(none)', commit)
         app.signon = 'Leo %s' % leoVer
         if build:
             app.signon += ', build '+build
