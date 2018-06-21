@@ -413,7 +413,6 @@ class FileCommands(object):
         try:
             try:
                 theFile = g.app.loadManager.openLeoOrZipFile(c.mFileName)
-                ### FAST
                 gnxDict = self.gnxDict
                 self.gnxDict = {} # Always allocate new vnodes.
                 try:
@@ -431,7 +430,6 @@ class FileCommands(object):
     #@+node:ekr.20031218072017.1559: *5* fc.getLeoOutlineFromClipboard & helpers (PASTE MAIN LINE: OK)
     def getLeoOutlineFromClipboard(self, s, reassignIndices=True):
         '''Read a Leo outline from string s in clipboard format.'''
-        ### print('') ; g.trace('=====', reassignIndices)
         c = self.c
         current = c.p
         if not current:
@@ -452,20 +450,15 @@ class FileCommands(object):
             ni = g.app.nodeIndices
             for v in c.all_unique_nodes():
                 ni.check_gnx(c, v.fileIndex, v)
-        self.usingClipboard = True
-        try:
+        s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
             # This encoding must match the encoding used in putLeoOutline.
-            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            ### FAST:
-            hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
-            v = hidden_v.children[0]
-            if reassignIndices:
-                v.parents = []
-            assert c.hiddenRootNode not in v.parents, g.objToString(v.parents)
-            if not v:
-                return g.es("the clipboard is not valid ", color="blue")
-        finally:
-            self.usingClipboard = False
+        hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
+        v = hidden_v.children[0]
+        if reassignIndices:
+            v.parents = []
+        assert c.hiddenRootNode not in v.parents, g.objToString(v.parents)
+        if not v:
+            return g.es("the clipboard is not valid ", color="blue")
         #
         # Restore the hidden root's children
         c.hiddenRootNode.children = children
@@ -552,7 +545,6 @@ class FileCommands(object):
                 g.app.checkForOpenFile(c, fileName)
             #
             # Read the .leo file and create the outline.
-            ### FAST
             if fileName.endswith('.db'):
                 v = fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
             else:
@@ -961,12 +953,11 @@ class FileCommands(object):
         try:
             # This encoding must match the encoding used in putLeoOutline.
             s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            ### FAST
             v = FastRead(c, {}).readFile(s=s)
             if not v:
                 return g.es("the clipboard is not valid ", color="blue")
         finally:
-            self.usingClipboard = False ### To be removed.
+            ### self.usingClipboard = False ### To be removed.
             self.gnxDict = oldGnxDict
         return v
     #@+node:ekr.20060919104530: *4* fc.Reading Sax
