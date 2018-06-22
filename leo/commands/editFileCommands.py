@@ -12,6 +12,9 @@ import leo.core.leoCommands as leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 #@-<< imports >>
 
+import leo.core.leoAtFile as leoAtFile
+FAST = leoAtFile.FAST
+
 def cmd(name):
     '''Command decorator for the EditFileCommandsClass class.'''
     return g.new_cmd_decorator(name, ['c', 'editFileCommands',])
@@ -613,6 +616,7 @@ class GitDiffController:
         '''
         if not self.set_directory(directory):
             return
+        g.pdb()
         c = self.c
         s1 = self.get_file_from_rev(rev1, fn)
         s2 = self.get_file_from_rev(rev2, fn)
@@ -707,7 +711,6 @@ class GitDiffController:
     #@+node:ekr.20170806094321.7: *5* gdc.make_at_file_outline
     def make_at_file_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
-        g.trace('=====')
         # A specialized version of atFileCommands.read.
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         at = hidden_c.atFileCommands
@@ -719,15 +722,27 @@ class GitDiffController:
         if at.errors > 0:
             g.trace('***** errors')
             return None
-        at.inputFile = g.FileLikeObject(fromString=at.fromString)
-        at.initReadLine(at.fromString)
-        at.readOpenFile(root, fn, deleteNodes=True)
-        at.inputFile.close()
-        # Complete the read.
-        for p in root.self_and_subtree(copy=False):
-            p.b = ''.join(getattr(p.v, 'tempBodyList', []))
-        at.scanAllDirectives(root, importing=False, reading=True)
-        return hidden_c
+        if FAST:
+            at.fast_read_into_root(
+                c = hidden_c,
+                contents = s,
+                gnx2vnode = {},
+                path = fn,
+                root = root,
+            )
+            for p in root.self_and_subtree(copy=False):
+                p.b = ''.join(getattr(p.v, 'tempBodyList', []))
+            return hidden_c
+        else:
+            at.inputFile = g.FileLikeObject(fromString=at.fromString)
+            at.initReadLine(at.fromString)
+            at.readOpenFile(root, fn, deleteNodes=True)
+            at.inputFile.close()
+            # Complete the read.
+            for p in root.self_and_subtree(copy=False):
+                p.b = ''.join(getattr(p.v, 'tempBodyList', []))
+            at.scanAllDirectives(root, importing=False, reading=True)
+            return hidden_c
     #@+node:ekr.20170806125535.1: *5* gdc.make_diff_outlines & helper
     def make_diff_outlines(self, c1, c2, fn, rev1='', rev2=''):
         '''Create an outline-oriented diff from the *hidden* outlines c1 and c2.'''
@@ -798,17 +813,27 @@ class GitDiffController:
         assert old_public_lines
         new_private_lines = x.propagate_changed_lines(
             new_public_lines, old_private_lines, marker, p=hidden_root)
-        # Init the input stream used by read-open file.
-        at.read_lines = new_private_lines
-        at.read_ptr = 0
-        # Read the file using the @file read logic.
-        at.readOpenFile(hidden_root, fn, deleteNodes=True)
-        # Complete the read.
-        for p in hidden_root.self_and_subtree(copy=False):
-            p.b = ''.join(getattr(p.v, 'tempBodyList', []))
-        if at.errors:
-            g.trace(at.errors, 'errors!')
-        return None if at.errors else hidden_c
+        if FAST:
+            at.fast_read_into_root(
+                c = hidden_c,
+                contents = ''.join(new_private_lines),
+                gnx2vnode = {},
+                path = fn,
+                root = hidden_root,
+            )
+            return hidden_c
+        else:
+            # Init the input stream used by read-open file.
+            at.read_lines = new_private_lines
+            at.read_ptr = 0
+            # Read the file using the @file read logic.
+            at.readOpenFile(hidden_root, fn, deleteNodes=True)
+            # Complete the read.
+            for p in hidden_root.self_and_subtree(copy=False):
+                p.b = ''.join(getattr(p.v, 'tempBodyList', []))
+            if at.errors:
+                g.trace(at.errors, 'errors!')
+            return None if at.errors else hidden_c
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806094320.18: *4* gdc.create_root
     def create_root(self, rev1, rev2):

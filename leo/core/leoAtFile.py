@@ -281,18 +281,23 @@ class AtFile(object):
             return g.error('file not found: %s' % (fn))
         s, e = g.readFileIntoString(fn)
         if s is None: return
+        #
         # Create a dummy, unconnected, VNode as the root.
         root_v = leoNodes.VNode(context=c)
         root = leoNodes.Position(root_v)
-        # 2010/01/22: readOpenFiles now determines whether a file is thin or not.
-        at.initReadIvars(root, fn)
-        if at.errors: return
-        at.openFileForReading(fromString=s)
-        if not at.inputFile: return
-        at.readOpenFile(root, fn)
-        at.inputFile.close()
-        if at.errors == 0:
-            g.blue('check-derived-file passed')
+        if FAST:
+            FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
+            return c
+        else:
+            # readOpenFiles now determines whether a file is thin or not.
+            at.initReadIvars(root, fn)
+            if at.errors: return
+            at.openFileForReading(fromString=s)
+            if not at.inputFile: return
+            at.readOpenFile(root, fn)
+            at.inputFile.close()
+            if at.errors == 0:
+                g.blue('check-derived-file passed')
     #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
     def openFileForReading(self, fromString=False):
         '''
@@ -816,30 +821,32 @@ class AtFile(object):
             g.es("updating:", root.h)
         # The following is like at.read() w/o caching logic.
         root.clearVisitedInTree()
-        # Init the input stream used by read-open file.
-        at.read_lines = new_private_lines
-        at.read_ptr = 0
-        if False: ###FAST:
-            firstLines, read_new, thinFile = at.scanHeader(fileName)
-            g.trace(read_new, thinFile)
-            assert root == self.root
-            gnx2vnode = at.fileCommands.gnxDict ###
-            fileName, contents = at.openFileForReading(fromString=False)
+        
+        if FAST:
+            gnx2vnode = at.fileCommands.gnxDict
+            contents = ''.join(new_private_lines)
             FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
-        else:
-            # Read the file using the @file read logic.
-            thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
-        root.clearDirty()
-        if at.errors == 0:
-            at.deleteUnvisitedNodes(root) ####
-            at.deleteTnodeList(root)
-            at.readPostPass(root, thinFile) ####
-                # Used by mod_labels plugin: May set c dirty.
             root.clearOrphan()
+            return True ### Errors not detected ???
         else:
-            root.setOrphan()
-        at.deleteAllTempBodyStrings()
-        return at.errors == 0
+            #
+            # Init the input stream used by read-open file.
+            at.read_lines = new_private_lines
+            at.read_ptr = 0
+            # Read the file using the @file read logic.
+            # This logic uses the input stream just created.
+            thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
+            root.clearDirty()
+            if at.errors == 0:
+                at.deleteUnvisitedNodes(root) ####
+                at.deleteTnodeList(root)
+                at.readPostPass(root, thinFile) ####
+                    # Used by mod_labels plugin: May set c dirty.
+                root.clearOrphan()
+            else:
+                root.setOrphan()
+            at.deleteAllTempBodyStrings()
+            return at.errors == 0
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
     def dump(self, lines, tag):
         '''Dump all lines.'''
@@ -911,6 +918,10 @@ class AtFile(object):
             c.setChanged(oldChanged)
         # else: g.doHook('after-shadow', p = p)
         return ic.errors == 0
+    #@+node:ekr.20180622110112.1: *4* at.fast_read_into_root (NEW: wrapper)
+    def fast_read_into_root(self, c, contents, gnx2vnode, path, root):
+        '''A convenience wrapper for FastAtReAD.read_into_root()'''
+        return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20100625092449.5963: *5* at.appendToOut
     def appendToOut(self, s):
@@ -4158,7 +4169,7 @@ class FastAtRead (object):
         anchored in root.v.
         '''
         trace = False
-        assert root.v != self.c.hiddenRootNode, g.callers()
+        ### assert root.v != self.c.hiddenRootNode, g.callers()
         t1 = time.clock()
         self.path = path
         self.root = root
