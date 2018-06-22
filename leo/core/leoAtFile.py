@@ -819,19 +819,21 @@ class AtFile(object):
         # Init the input stream used by read-open file.
         at.read_lines = new_private_lines
         at.read_ptr = 0
-        if FAST:
+        if False: ###FAST:
+            firstLines, read_new, thinFile = at.scanHeader(fileName)
+            g.trace(read_new, thinFile)
             assert root == self.root
             gnx2vnode = at.fileCommands.gnxDict ###
             fileName, contents = at.openFileForReading(fromString=False)
             FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
-        ###
-            # # Read the file using the @file read logic.
-            # thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
+        else:
+            # Read the file using the @file read logic.
+            thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
         root.clearDirty()
         if at.errors == 0:
-            ### at.deleteUnvisitedNodes(root)
+            at.deleteUnvisitedNodes(root) ####
             at.deleteTnodeList(root)
-            ### at.readPostPass(root, thinFile)
+            at.readPostPass(root, thinFile) ####
                 # Used by mod_labels plugin: May set c dirty.
             root.clearOrphan()
         else:
@@ -4156,6 +4158,7 @@ class FastAtRead (object):
         anchored in root.v.
         '''
         trace = False
+        assert root.v != self.c.hiddenRootNode, g.callers()
         t1 = time.clock()
         self.path = path
         self.root = root
