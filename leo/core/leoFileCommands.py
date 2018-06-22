@@ -438,6 +438,10 @@ class FileCommands(object):
         check = not reassignIndices
         self.initReadIvars()
         #
+        # Save the hidden root's children.
+        ### Needed?
+        children = c.hiddenRootNode.children
+        #
         # Save and clear gnxDict.
         # This ensures that new indices will be used for all nodes.
         if reassignIndices:
@@ -454,7 +458,11 @@ class FileCommands(object):
         v = hidden_v.children[0]
         if reassignIndices:
             v.parents = []
+        #
+        # Restore the hidden root's children
+        ### Needed
         assert c.hiddenRootNode not in v.parents, g.objToString(v.parents)
+        c.hiddenRootNode.children = children
         if not v:
             return g.es("the clipboard is not valid ", color="blue")
         #
