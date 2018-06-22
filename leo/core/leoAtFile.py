@@ -44,9 +44,8 @@ class AtFile(object):
     miscDirective   =  8 # All other directives
     rawDirective    =  9 # @raw
     endRawDirective = 10 # @end_raw
-    #
-    # Sentinel...
-    startVerbatim  = 64 # @verbatim
+    startVerbatim   = 11 # @verbatim
+        # Not a real directive. Used to issue warnings.
     #@-<< define class constants >>
     #@+others
     #@+node:ekr.20041005105605.7: *3* at.Birth & init
@@ -267,12 +266,11 @@ class AtFile(object):
     #@+node:ekr.20041005105605.17: *3* at.Reading
 
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
-    #@+at All reading happens in the readOpenFile logic, so plugins
-    # should need to override only this method.
     #@+node:ekr.20070919133659: *5* at.checkDerivedFile
     @cmd('check-derived-file')
     def checkDerivedFile(self, event=None):
         '''Make sure an external file written by Leo may be read properly.'''
+        g.trace('=====')
         at = self; c = at.c; p = c.p
         if not p.isAtFileNode() and not p.isAtThinFileNode():
             return g.red('Please select an @thin or @file node')
@@ -785,7 +783,7 @@ class AtFile(object):
         p.b = g.u(head) + g.toUnicode(s, encoding=encoding, reportErrors='True')
         if not changed: c.setChanged(False)
         g.doHook('after-edit', p=p)
-    #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
+    #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers (TEST)
     def readOneAtCleanNode(self, root):
         '''Update the @clean/@nosent node at root.'''
         at, c, x = self, self.c, self.c.shadowController
@@ -821,13 +819,19 @@ class AtFile(object):
         # Init the input stream used by read-open file.
         at.read_lines = new_private_lines
         at.read_ptr = 0
-        # Read the file using the @file read logic.
-        thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
+        if FAST:
+            assert root == self.root
+            gnx2vnode = at.fileCommands.gnxDict ###
+            fileName, contents = at.openFileForReading(fromString=False)
+            FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
+        ###
+            # # Read the file using the @file read logic.
+            # thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
         root.clearDirty()
         if at.errors == 0:
-            at.deleteUnvisitedNodes(root)
+            ### at.deleteUnvisitedNodes(root)
             at.deleteTnodeList(root)
-            at.readPostPass(root, thinFile)
+            ### at.readPostPass(root, thinFile)
                 # Used by mod_labels plugin: May set c dirty.
             root.clearOrphan()
         else:
@@ -905,112 +909,6 @@ class AtFile(object):
             c.setChanged(oldChanged)
         # else: g.doHook('after-shadow', p = p)
         return ic.errors == 0
-    #@+node:ekr.20041005105605.27: *5* at.readOpenFile & helpers
-    def readOpenFile(self, root, fileName, deleteNodes=False):
-        '''
-        Read an open derived file.
-        Leo 4.5 and later can only read 4.x derived files.
-        '''
-        at = self
-        firstLines, read_new, thinFile = at.scanHeader(fileName)
-            # Important: this sets at.encoding, used by at.readLine.
-        at.thinFile = thinFile
-            # 2010/01/22: use *only* the header to set self.thinFile.
-        if deleteNodes and at.shouldDeleteChildren(root, thinFile):
-            # Fix bug 889175: Remember the full fileName.
-            at.rememberReadPath(fileName, root)
-            while root.hasChildren():
-                root.firstChild().doDelete()
-        if read_new:
-            lastLines = at.scanText4(fileName, root)
-        else:
-            firstLines = []; lastLines = []
-            if at.atShadow:
-                g.trace(g.callers())
-                g.trace('invalid @shadow private file', fileName)
-                at.error('invalid @shadow private file', fileName)
-            else:
-                at.error('can not read 3.x derived file', fileName)
-                # g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
-                g.es("Please use Leo's import command to read the file")
-        if root:
-            root.v.setVisited() # Disable warning about set nodes.
-        at.completeRootNode(firstLines, lastLines, root)
-        return thinFile
-    #@+node:ekr.20041005105605.28: *6* at.completeRootNode & helpers
-    def completeRootNode(self, firstLines, lastLines, root):
-        '''Terminate the root's body text, handling @first and @last.'''
-        at = self
-        v = root.v
-        lines = v.tempBodyList if hasattr(v, 'tempBodyList') else []
-        at.completeFirstDirectives(lines, firstLines)
-        at.completeLastDirectives(lines, lastLines)
-        v.tempBodyList = lines
-            # Don't set v.b here: at.readPostPass uses v.tempBodyList.
-    #@+node:ekr.20041005105605.117: *7* at.completeFirstDirective
-    def completeFirstDirectives(self, out, firstLines):
-        '''
-        14-SEP-2002 DTHEIN
-
-        Scans the lines in the list 'out' for @first directives, appending the
-        corresponding line from 'firstLines' to each @first directive found.
-
-        NOTE: the @first directives must be the very first lines in 'out'.
-        '''
-        if not firstLines:
-            return
-        found, j, tag = False, 0, "@first"
-        for k, s in enumerate(out):
-            # Skip leading whitespace lines.
-            if not found and s.isspace():
-                continue
-            # Quit if something other than @first directive.
-            if not g.match(s, 0, tag):
-                break
-            found = True
-            # Quit if no leading lines to apply.
-            if j >= len(firstLines):
-                break
-            # Make the  @first directive.
-            leadingLine = " " + firstLines[j]
-            out[k] = tag + leadingLine.rstrip() + '\n'
-            j += 1
-    #@+node:ekr.20041005105605.118: *7* at.completeLastDirectives
-    def completeLastDirectives(self, out, lastLines):
-        '''
-        14-SEP-2002 DTHEIN.
-
-        Scans the lines in the list 'out' for @last directives, appending the
-        corresponding line from 'lastLines' to each @last directive found.
-
-        NOTE: the @last directives must be the very last lines in 'out'.
-        '''
-        if not lastLines:
-            return
-        found, j, tag = False, -1, "@last"
-        for k in range(-1, -len(out), -1):
-            # Skip trailing whitespace lines.
-            if not found and not out[k].strip():
-                continue
-            # Quit if something other than @last directive.
-            if not g.match(out[k], 0, tag):
-                break
-            found = True
-            # Quit if no trailing lines to apply.
-            if j < -len(lastLines):
-                break
-            # Make the @last directive.
-            trailingLine = " " + lastLines[j]
-            out[k] = tag + trailingLine.rstrip() + '\n'
-            j -= 1
-    #@+node:ekr.20100122130101.6175: *6* at.shouldDeleteChildren
-    def shouldDeleteChildren(self, root, thinFile):
-        '''Return True if we should delete all children before a read.'''
-        # Delete all children except for old-style @file nodes
-        if root.isAtFileNode() and not thinFile:
-            return False
-        else:
-            return True
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20100625092449.5963: *5* at.appendToOut
     def appendToOut(self, s):

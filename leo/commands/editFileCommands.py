@@ -707,6 +707,7 @@ class GitDiffController:
     #@+node:ekr.20170806094321.7: *5* gdc.make_at_file_outline
     def make_at_file_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
+        g.trace('=====')
         # A specialized version of atFileCommands.read.
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         at = hidden_c.atFileCommands
@@ -775,6 +776,7 @@ class GitDiffController:
         root is the @<file> node for fn.
         s is the contents of the (public) file, without sentinels.
         '''
+        g.trace('=====')
         # A specialized version of at.readOneAtCleanNode.
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         at = hidden_c.atFileCommands
