@@ -1330,7 +1330,7 @@ class Commands(object):
             v.fileIndex = ni.getNewIndex(v)
 
         count, gnx_errors = 0, 0
-        for p in c.safe_all_positions(copy=False): ###
+        for p in c.safe_all_positions(copy=False):
             count += 1
             v = p.v
             if hasattr(v, "tnodeList"):

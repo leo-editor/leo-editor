@@ -64,8 +64,6 @@ class AtFile(object):
         self.runPyFlakesOnWrite = False
         self.underindentEscapeString = '\\-'
         self.reloadSettings()
-        # Define the dispatch dictionary used by scanText4.
-        ### self.dispatch_dict = self.defineDispatchDict()
     #@+node:ekr.20171113152939.1: *5* at.reloadSettings
     def reloadSettings(self):
         '''AtFile.reloadSettings'''
@@ -282,16 +280,6 @@ class AtFile(object):
         root = leoNodes.Position(root_v)
         FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
         return c
-        ###
-            # # readOpenFiles now determines whether a file is thin or not.
-            # at.initReadIvars(root, fn)
-            # if at.errors: return
-            # at.openFileForReading(fromString=s)
-            # if not at.inputFile: return
-            # at.readOpenFile(root, fn)
-            # at.inputFile.close()
-            # if at.errors == 0:
-                # g.blue('check-derived-file passed')
     #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
     def openFileForReading(self, fromString=False):
         '''
@@ -403,85 +391,6 @@ class AtFile(object):
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         root.clearDirty()
         return True
-        #
-        # ===== Legacy code.
-        # Done above
-            # if fileName and at.inputFile:
-                # c.setFileTimeStamp(fileName)
-            # elif fromString: # 2010/09/02.
-                # pass
-            # else:
-                # return False
-                
-        ### All other code.
-        
-            # if g.SQLITE and c.sqlite_connection:
-                # loaded = at.checkExternalFileAgainstDb(root)
-                # if loaded: return True
-                # s, loaded, fileKey, force = at._file_bytes, False, None, True
-            # elif fromString or not g.enableDB:
-                # s, loaded, fileKey = fromString, False, None
-            # else:
-                # s, loaded, fileKey = c.cacher.readFile(fileName, root)
-            # # Never read an external file with file-like sentinels from the cache.
-            # isFileLike = loaded and at.isFileLike(s)
-            # if not loaded or isFileLike:
-                # force = True # Disable caching.
-            # if loaded and not force:
-                # at.inputFile.close()
-                # root.clearDirty()
-                # return True
-            # if not g.unitTesting:
-                # g.es_print("reading:", g.os_path_normslashes(root.h))
-            # if isFileLike:
-                # if g.unitTesting:
-                    # if 0: print("converting @file format in", root.h)
-                    # g.app.unitTestDict['read-convert'] = True
-                # else:
-                    # g.red("converting @file format in", root.h)
-            # root.clearVisitedInTree()
-            # at.scanAllDirectives(root, importing=at.importing, reading=True)
-                # # Sets the following ivars:
-                    # # at.default_directory
-                    # # at.encoding: **changed later** by readOpenFile/at.scanHeader.
-                    # # at.explicitLineEnding
-                    # # at.language
-                    # # at.output_newline
-                    # # at.page_width
-                    # # at.tab_width
-            # thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
-                # # Calls at.scanHeader, which sets at.encoding.
-            # at.inputFile.close()
-            # root.clearDirty() # May be set dirty below.
-            # if at.errors == 0:
-                # at.deleteUnvisitedNodes(root)
-                # at.deleteTnodeList(root)
-            # if at.errors == 0 and not at.importing:
-                # # Used by mod_labels plugin.
-                # at.readPostPass(root, thinFile)
-            # at.deleteAllTempBodyStrings()
-            # if isFileLike and at.errors == 0: # Old-style sentinels.
-                # # 2010/02/24: Make the root @file node dirty so it will
-                # # be written automatically when saving the file.
-                # # Do *not* set the orphan bit here!
-                # root.clearOrphan()
-                # root.setDirty()
-                # c.setChanged(True) # Essential, to keep dirty bit set.
-            # elif at.errors > 0:
-                # # 2010/10/22: Dirty bits are *always* cleared.
-                # # Only the orphan bit is preserved.
-                # # root.setDirty() # 2011/06/17: Won't be preserved anyway
-                # root.setOrphan()
-                # # c.setChanged(True) # 2011/06/17.
-            # else:
-                # root.clearOrphan()
-            # # There will be an internal error if fileKey is None.
-            # # This is not the cause of the bug.
-            # write_to_cache = (not (g.SQLITE and c.sqlite_connection)
-                # and at.errors == 0 and not isFileLike and not fromString)
-            # if write_to_cache:
-                # c.cacher.writeFile(root, fileKey)
-            # return at.errors == 0
     #@+node:ekr.20041005105605.25: *6* at.deleteAllTempBodyStrings
     def deleteAllTempBodyStrings(self):
         '''Delete all temp attributes.'''
@@ -815,26 +724,6 @@ class AtFile(object):
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         root.clearOrphan()
         return True ### Errors not detected ???
-        ###
-            # The following is like at.read() w/o caching logic.
-            # #
-            # # Init the input stream used by read-open file.
-            # at.read_lines = new_private_lines
-            # at.read_ptr = 0
-            # # Read the file using the @file read logic.
-            # # This logic uses the input stream just created.
-            # thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
-            # root.clearDirty()
-            # if at.errors == 0:
-                # at.deleteUnvisitedNodes(root) ####
-                # at.deleteTnodeList(root)
-                # at.readPostPass(root, thinFile) ####
-                    # # Used by mod_labels plugin: May set c dirty.
-                # root.clearOrphan()
-            # else:
-                # root.setOrphan()
-            # at.deleteAllTempBodyStrings()
-            # return at.errors == 0
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
     def dump(self, lines, tag):
         '''Dump all lines.'''
@@ -4157,7 +4046,6 @@ class FastAtRead (object):
         anchored in root.v.
         '''
         trace = False
-        ### assert root.v != self.c.hiddenRootNode, g.callers()
         t1 = time.clock()
         self.path = path
         self.root = root

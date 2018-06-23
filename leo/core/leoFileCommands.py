@@ -1,12 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3018: * @file leoFileCommands.py
 '''Classes relating to reading and writing .leo files.'''
-#@+<< define FAST (leoFileCommands) >>
-#@+node:ekr.20180605060817.1: ** << define FAST (leoFileCommands) >>
-FAST = True
-if FAST:
-    print('\n===== FAST (leoFileCommands) ===== \n')
-#@-<< define FAST (leoFileCommands) >>
 #@+<< imports >>
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
 # For FastRead class
@@ -686,11 +680,8 @@ class FileCommands(object):
                 g.app.checkForOpenFile(c, fileName)
             #
             # Read the .leo file and create the outline.
-            if FAST:
-                fastReader = FastRead(c, self.gnxDict)
-                ok = fastReader.readFile(fileName)
-            else:
-                ok = fc.getLeoFileHelper(theFile, fileName, silent)
+            fastReader = FastRead(c, self.gnxDict)
+            ok = fastReader.readFile(fileName)
             if ok:
                 fc.resolveTnodeLists()
                     # Do this before reading external files.
@@ -2557,7 +2548,7 @@ class FastRead (object):
     def __init__(self, c, gnx2vnode):
         self.c = c
         self.fc = c.fileCommands
-        self.gnx2vnode = gnx2vnode if FAST else {}
+        self.gnx2vnode = gnx2vnode
             # Do not change the global dict while testing!!
         self.nativeVnodeAttributes = (
             'a',
@@ -2683,7 +2674,7 @@ class FastRead (object):
         
         trace = False
         c, fc = self.c, self.c.fileCommands
-        context = c if FAST else None
+        context = c
         
         t1 = time.clock()
         #@+<< define v_element_visitor >>
