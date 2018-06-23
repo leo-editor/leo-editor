@@ -616,7 +616,6 @@ class GitDiffController:
         '''
         if not self.set_directory(directory):
             return
-        g.pdb()
         c = self.c
         s1 = self.get_file_from_rev(rev1, fn)
         s2 = self.get_file_from_rev(rev2, fn)
@@ -708,7 +707,7 @@ class GitDiffController:
                 if fn2.endswith(fn):
                     return p
         return None
-    #@+node:ekr.20170806094321.7: *5* gdc.make_at_file_outline
+    #@+node:ekr.20170806094321.7: *5* gdc.make_at_file_outline (Changed)
     def make_at_file_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
         # A specialized version of atFileCommands.read.
@@ -730,8 +729,9 @@ class GitDiffController:
                 path = fn,
                 root = root,
             )
-            for p in root.self_and_subtree(copy=False):
-                p.b = ''.join(getattr(p.v, 'tempBodyList', []))
+            ### This would clear all body text.
+                # for p in root.self_and_subtree(copy=False):
+                    # p.b = ''.join(getattr(p.v, 'tempBodyList', []))
             return hidden_c
         else:
             at.inputFile = g.FileLikeObject(fromString=at.fromString)
@@ -757,6 +757,13 @@ class GitDiffController:
     def compute_dicts(self, c1, c2):
         '''Compute inserted, deleted, changed dictionaries.'''
         # Special case the root: only compare the body text.
+        ###
+            # g.trace('c1...')
+            # for p in c1.all_positions():
+                # print('%4s %s' % (len(p.b), p.h))
+            # g.trace('c2...')
+            # for p in c2.all_positions():
+                # print('%4s %s' % (len(p.b), p.h))
         c1.rootPosition().v.h = c2.rootPosition().v.h
         d1 = {v.fileIndex: v for v in c1.all_unique_nodes()} 
         d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
