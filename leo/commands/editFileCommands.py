@@ -704,7 +704,7 @@ class GitDiffController:
                 if fn2.endswith(fn):
                     return p
         return None
-    #@+node:ekr.20170806094321.7: *5* gdc.make_at_file_outline
+    #@+node:ekr.20170806094321.7: *5* gdc.make_at_file_outline (Changed)
     def make_at_file_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
         # A specialized version of atFileCommands.read.
@@ -714,19 +714,18 @@ class GitDiffController:
         root = hidden_c.rootPosition()
         root.h = fn + ':' + rev if rev else fn
         at.initReadIvars(root, fn, importFileName=None, atShadow=None)
-        at.fromString = s
         if at.errors > 0:
             g.trace('***** errors')
             return None
-        at.inputFile = g.FileLikeObject(fromString=at.fromString)
-        at.initReadLine(at.fromString)
-        at.readOpenFile(root, fn, deleteNodes=True)
-        at.inputFile.close()
-        # Complete the read.
-        for p in root.self_and_subtree(copy=False):
-            p.b = ''.join(getattr(p.v, 'tempBodyList', []))
-        at.scanAllDirectives(root, importing=False, reading=True)
+        at.fast_read_into_root(
+            c = hidden_c,
+            contents = s,
+            gnx2vnode = {},
+            path = fn,
+            root = root,
+        )
         return hidden_c
+       
     #@+node:ekr.20170806125535.1: *5* gdc.make_diff_outlines & helper
     def make_diff_outlines(self, c1, c2, fn, rev1='', rev2=''):
         '''Create an outline-oriented diff from the *hidden* outlines c1 and c2.'''
@@ -741,11 +740,22 @@ class GitDiffController:
     def compute_dicts(self, c1, c2):
         '''Compute inserted, deleted, changed dictionaries.'''
         # Special case the root: only compare the body text.
-        c1.rootPosition().v.h = c2.rootPosition().v.h
+        root1, root2 = c1.rootPosition().v, c2.rootPosition().v
+        root1.h = root2.h
+        if 0:
+            g.trace('c1...')
+            for p in c1.all_positions():
+                print('%4s %s' % (len(p.b), p.h))
+            g.trace('c2...')
+            for p in c2.all_positions():
+                print('%4s %s' % (len(p.b), p.h))
         d1 = {v.fileIndex: v for v in c1.all_unique_nodes()} 
         d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
         added   = {key: d2.get(key) for key in d2 if not d1.get(key)}
         deleted = {key: d1.get(key) for key in d1 if not d2.get(key)}
+        # Remove the root from the added and deleted dicts.
+        del added[root2.fileIndex]
+        del deleted[root1.fileIndex]
         changed = {}
         for key in d1:
             if key in d2:
@@ -768,13 +778,14 @@ class GitDiffController:
             return ''.join(lines).strip()
         else:
             return 'uncommitted'
-    #@+node:ekr.20170820084258.1: *5* gdc.make_at_clean_outline
+    #@+node:ekr.20170820084258.1: *5* gdc.make_at_clean_outline (Changed)
     def make_at_clean_outline(self, fn, root, s, rev):
         '''
         Create a hidden temp outline from lines without sentinels.
         root is the @<file> node for fn.
         s is the contents of the (public) file, without sentinels.
         '''
+        g.trace('=====')
         # A specialized version of at.readOneAtCleanNode.
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         at = hidden_c.atFileCommands
@@ -796,17 +807,14 @@ class GitDiffController:
         assert old_public_lines
         new_private_lines = x.propagate_changed_lines(
             new_public_lines, old_private_lines, marker, p=hidden_root)
-        # Init the input stream used by read-open file.
-        at.read_lines = new_private_lines
-        at.read_ptr = 0
-        # Read the file using the @file read logic.
-        at.readOpenFile(hidden_root, fn, deleteNodes=True)
-        # Complete the read.
-        for p in hidden_root.self_and_subtree(copy=False):
-            p.b = ''.join(getattr(p.v, 'tempBodyList', []))
-        if at.errors:
-            g.trace(at.errors, 'errors!')
-        return None if at.errors else hidden_c
+        at.fast_read_into_root(
+            c = hidden_c,
+            contents = ''.join(new_private_lines),
+            gnx2vnode = {},
+            path = fn,
+            root = hidden_root,
+        )
+        return hidden_c
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806094320.18: *4* gdc.create_root
     def create_root(self, rev1, rev2):
