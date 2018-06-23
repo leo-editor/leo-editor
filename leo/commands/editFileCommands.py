@@ -741,18 +741,22 @@ class GitDiffController:
     def compute_dicts(self, c1, c2):
         '''Compute inserted, deleted, changed dictionaries.'''
         # Special case the root: only compare the body text.
-        ###
-            # g.trace('c1...')
-            # for p in c1.all_positions():
-                # print('%4s %s' % (len(p.b), p.h))
-            # g.trace('c2...')
-            # for p in c2.all_positions():
-                # print('%4s %s' % (len(p.b), p.h))
-        c1.rootPosition().v.h = c2.rootPosition().v.h
+        root1, root2 = c1.rootPosition().v, c2.rootPosition().v
+        root1.h = root2.h
+        if 0:
+            g.trace('c1...')
+            for p in c1.all_positions():
+                print('%4s %s' % (len(p.b), p.h))
+            g.trace('c2...')
+            for p in c2.all_positions():
+                print('%4s %s' % (len(p.b), p.h))
         d1 = {v.fileIndex: v for v in c1.all_unique_nodes()} 
         d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
         added   = {key: d2.get(key) for key in d2 if not d1.get(key)}
         deleted = {key: d1.get(key) for key in d1 if not d2.get(key)}
+        # Remove the root from the added and deleted dicts.
+        del added[root2.fileIndex]
+        del deleted[root1.fileIndex]
         changed = {}
         for key in d1:
             if key in d2:
