@@ -4,12 +4,7 @@
 #@@first
     # Needed because of unicode characters in tests.
 """Classes to read and write @file nodes."""
-#@+<< define FAST (leoAtFile) >>
-#@+node:ekr.20180605093406.1: ** << define FAST (leoAtFile) >>
-FAST = True
-if FAST:
-    print('\n===== FAST (leoAtFile) ===== \n')
-#@-<< define FAST (leoAtFile) >>
+print('\n===== fast-read branch =====\n')
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -285,19 +280,18 @@ class AtFile(object):
         # Create a dummy, unconnected, VNode as the root.
         root_v = leoNodes.VNode(context=c)
         root = leoNodes.Position(root_v)
-        if FAST:
-            FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
-            return c
-        else:
-            # readOpenFiles now determines whether a file is thin or not.
-            at.initReadIvars(root, fn)
-            if at.errors: return
-            at.openFileForReading(fromString=s)
-            if not at.inputFile: return
-            at.readOpenFile(root, fn)
-            at.inputFile.close()
-            if at.errors == 0:
-                g.blue('check-derived-file passed')
+        FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
+        return c
+        ###
+            # # readOpenFiles now determines whether a file is thin or not.
+            # at.initReadIvars(root, fn)
+            # if at.errors: return
+            # at.openFileForReading(fromString=s)
+            # if not at.inputFile: return
+            # at.readOpenFile(root, fn)
+            # at.inputFile.close()
+            # if at.errors == 0:
+                # g.blue('check-derived-file passed')
     #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
     def openFileForReading(self, fromString=False):
         '''
@@ -394,24 +388,21 @@ class AtFile(object):
             c.setFileTimeStamp(fileName)
         elif not fileName and not fromString and not file_s:
             return False
-       
-        if FAST:
-            # These are fast.
-            root.clearVisitedInTree()
-            at.scanAllDirectives(root, importing=at.importing, reading=True)
-                # Sets the following ivars:
-                    # at.default_directory
-                    # at.encoding: **changed later** by readOpenFile/at.scanHeader.
-                    # at.explicitLineEnding
-                    # at.language
-                    # at.output_newline
-                    # at.page_width
-                    # at.tab_width
-            gnx2vnode = c.fileCommands.gnxDict
-            contents = fromString or file_s
-            FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
-            root.clearDirty()
-            return True
+        root.clearVisitedInTree()
+        at.scanAllDirectives(root, importing=at.importing, reading=True)
+            # Sets the following ivars:
+                # at.default_directory
+                # at.encoding: **changed later** by readOpenFile/at.scanHeader.
+                # at.explicitLineEnding
+                # at.language
+                # at.output_newline
+                # at.page_width
+                # at.tab_width
+        gnx2vnode = c.fileCommands.gnxDict
+        contents = fromString or file_s
+        FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
+        root.clearDirty()
+        return True
         #
         # ===== Legacy code.
         # Done above
@@ -798,7 +789,6 @@ class AtFile(object):
                 nodeLink=root.get_UNL(with_proto=True))
             return
         at.rememberReadPath(fileName, root)
-        # Set at.encoding first.
         at.initReadIvars(root, fileName)
             # Must be called before at.scanAllDirectives.
         at.scanAllDirectives(root)
@@ -819,34 +809,32 @@ class AtFile(object):
             return True
         if not g.unitTesting:
             g.es("updating:", root.h)
-        # The following is like at.read() w/o caching logic.
         root.clearVisitedInTree()
-        
-        if FAST:
-            gnx2vnode = at.fileCommands.gnxDict
-            contents = ''.join(new_private_lines)
-            FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
-            root.clearOrphan()
-            return True ### Errors not detected ???
-        else:
-            #
-            # Init the input stream used by read-open file.
-            at.read_lines = new_private_lines
-            at.read_ptr = 0
-            # Read the file using the @file read logic.
-            # This logic uses the input stream just created.
-            thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
-            root.clearDirty()
-            if at.errors == 0:
-                at.deleteUnvisitedNodes(root) ####
-                at.deleteTnodeList(root)
-                at.readPostPass(root, thinFile) ####
-                    # Used by mod_labels plugin: May set c dirty.
-                root.clearOrphan()
-            else:
-                root.setOrphan()
-            at.deleteAllTempBodyStrings()
-            return at.errors == 0
+        gnx2vnode = at.fileCommands.gnxDict
+        contents = ''.join(new_private_lines)
+        FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
+        root.clearOrphan()
+        return True ### Errors not detected ???
+        ###
+            # The following is like at.read() w/o caching logic.
+            # #
+            # # Init the input stream used by read-open file.
+            # at.read_lines = new_private_lines
+            # at.read_ptr = 0
+            # # Read the file using the @file read logic.
+            # # This logic uses the input stream just created.
+            # thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
+            # root.clearDirty()
+            # if at.errors == 0:
+                # at.deleteUnvisitedNodes(root) ####
+                # at.deleteTnodeList(root)
+                # at.readPostPass(root, thinFile) ####
+                    # # Used by mod_labels plugin: May set c dirty.
+                # root.clearOrphan()
+            # else:
+                # root.setOrphan()
+            # at.deleteAllTempBodyStrings()
+            # return at.errors == 0
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
     def dump(self, lines, tag):
         '''Dump all lines.'''
