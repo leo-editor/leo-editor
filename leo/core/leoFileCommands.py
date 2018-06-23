@@ -3,10 +3,7 @@
 '''Classes relating to reading and writing .leo files.'''
 #@+<< imports >>
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
-# For FastRead class
 import xml.etree.ElementTree as ElementTree
-# from collections import defaultdict
-
 try:
     # IronPython has problems with this.
     import xml.sax
@@ -38,6 +35,15 @@ from contextlib import contextmanager
 PRIVAREA = '---begin-private-area---'
 #@-<< imports >>
 #@+others
+#@+node:ekr.20060918164811: ** class BadLeoFile
+class BadLeoFile(Exception):
+
+    def __init__(self, message):
+        self.message = message
+        Exception.__init__(self, message) # Init the base class.
+
+    def __str__(self):
+        return "Bad Leo File:" + self.message
 #@+node:ekr.20180602062323.1: ** class FastRead
 class FastRead (object):
 
@@ -2143,18 +2149,6 @@ class FileCommands(object):
                 val = False
             c.fixed = val
     #@-others
-#@+node:ekr.20060918164811: ** Exception classes
-class BadLeoFile(Exception):
-
-    def __init__(self, message):
-        self.message = message
-        Exception.__init__(self, message) # Init the base class.
-
-    def __str__(self):
-        return "Bad Leo File:" + self.message
-
-class InvalidPaste(Exception):
-    pass
 #@-others
 #@@language python
 #@@tabwidth -4
