@@ -788,7 +788,7 @@ class AtFile(object):
         p.b = g.u(head) + g.toUnicode(s, encoding=encoding, reportErrors='True')
         if not changed: c.setChanged(False)
         g.doHook('after-edit', p=p)
-    #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers (TEST)
+    #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers (Changed)
     def readOneAtCleanNode(self, root):
         '''Update the @clean/@nosent node at root.'''
         at, c, x = self, self.c, self.c.shadowController
@@ -918,7 +918,7 @@ class AtFile(object):
             c.setChanged(oldChanged)
         # else: g.doHook('after-shadow', p = p)
         return ic.errors == 0
-    #@+node:ekr.20180622110112.1: *4* at.fast_read_into_root (NEW: wrapper)
+    #@+node:ekr.20180622110112.1: *4* at.fast_read_into_root (New)
     def fast_read_into_root(self, c, contents, gnx2vnode, path, root):
         '''A convenience wrapper for FastAtReAD.read_into_root()'''
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
