@@ -3741,6 +3741,7 @@ cut-node                    = Shift-Ctrl-x
 contract-all                = Alt--
 edit-headline               = Ctrl-h
 delete-node                 !tree = Delete
+delete-node                 !tree = Keypad+Delete
 delete-node                 !tree = BackSpace
 demote                      = Ctrl-}
 demote                      = Ctrl-]
@@ -3769,9 +3770,12 @@ backward-kill-word                  = Alt-BackSpace
 copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
 cut-text                            = Ctrl-x
 delete-char                         = Shift-Delete
+delete-char                         = Keypad+Shift+Delete
 delete-char                         !text = Delete
+delete-char                         !text = Keypad+Delete
 delete-comments                     = Ctrl-parenright # Shift-Ctrl-0
 delete-word                         = Ctrl-Delete
+delete-word                         = Keypad+Ctrl+Delete
 delete-spaces                       = None
 # indent-region                     = Tab # Only when text is selected.
 indent-region                       = ctrl-greater # Ctrl-shift-&gt;
@@ -4368,7 +4372,7 @@ end-of-line-extend-selection        = Shift-End
 #
 # Keypad variants...
 back-to-home                        = Keypad+Home
-beginning-of-line-extend-selection  = Keypad+Shift-Keypad-Home
+beginning-of-line-extend-selection  = Keypad+Shift-Home
 end-of-line                         = Keypad+End
 end-of-line-extend-selection        = Keypad+Shift-End
 </t>

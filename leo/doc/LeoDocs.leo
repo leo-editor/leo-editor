@@ -5948,14 +5948,13 @@ Here are the sentinels used by Leo, in alphabetical order. Unless otherwise note
 
     The @+doc @+at sentinels indicate the start of a doc parts.
 
-    We use the following **trailing whitespace convention** to
-    determine where putDocPart has inserted line breaks::
-
-        A line in a doc part is followed by an inserted newline
-        if and only if the newline if preceded by whitespace.
-
-    To make this convention work, Leo's write code deletes the trailing
-    whitespace of all lines that are followed by a "real" newline.
+..  Officially retired in Leo 5.7.4.
+..  We use the following **trailing whitespace convention** to
+..  determine where putDocPart has inserted line breaks::
+..      A line in a doc part is followed by an inserted newline
+..      if and only if the newline if preceded by whitespace.
+..  To make this convention work, Leo's write code deletes the trailing
+..  whitespace of all lines that are followed by a "real" newline.
 
 \@+body **(Leo 3.x only)**
     Marks the start of body text.
