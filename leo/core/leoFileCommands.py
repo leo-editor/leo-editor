@@ -196,12 +196,13 @@ class FastRead (object):
                     # The native attributes of <v> elements are a, t, vtag, tnodeList,
                     # marks, expanded, and descendentTnode/VnodeUnknownAttributes.
                     d = e.attrib
-                    s = d.get('a')
-                    if s:
-                        if 'M' in s: v.setMarked()
-                        if 'E' in s: v.expand()
-                        if 'O' in s: v.setOrphan()
-                        if 'V' in s: fc.currentVnode = v # Legacy.
+                    if 0: ###
+                        s = d.get('a')
+                        if s:
+                            if 'M' in s: v.setMarked()
+                            if 'E' in s: v.expand()
+                            if 'O' in s: v.setOrphan()
+                            if 'V' in s: fc.currentVnode = v # Legacy.
                     s = d.get('tnodeList', '')
                     tnodeList = s and s.split(',')
                     if tnodeList:
@@ -1375,15 +1376,18 @@ class FileCommands(object):
         '''Return the initial values of v's attributes.'''
         c, v = self.c, p.v
         attrs = []
-        # New in Leo 4.5: support fixed .leo files.
-        if not c.fixed:
-            bits = []
-            if v.isExpanded() and v.hasChildren() and c.putBitsFlag:
-                bits.append("E")
-            if v.isMarked():
-                bits.append("M")
-            if bits:
-                attrs.append(' a="%s"' % ''.join(bits))
+        if 1: # Leo 4.8: write marked/expanded bits to the cache.
+            pass
+        else: ###
+            # New in Leo 4.5: support fixed .leo files.
+            if not c.fixed:
+                bits = []
+                if v.isExpanded() and v.hasChildren() and c.putBitsFlag:
+                    bits.append("E")
+                if v.isMarked():
+                    bits.append("M")
+                if bits:
+                    attrs.append(' a="%s"' % ''.join(bits))
         # Put the archived *current* position in the *root* position's <v> element.
         if p == self.rootPosition:
             aList = [str(z) for z in self.currentPosition.archivedPosition()]
