@@ -152,25 +152,21 @@ class Cacher(object):
                 g.printObj(val)
             print('')
     #@+node:ekr.20100208071151.5907: *3* cacher.fileKey
-    def fileKey(self, fileName, content, requireEncodedString=False):
+    def fileKey(self, fileName, content):
         '''
-        Compute the hash of fileName and content. fileName may be unicode,
-        content must be bytes (or plain string in Python 2.x).
+        Compute the hash of branch name, fileName and content.
         '''
         m = hashlib.md5()
-        if g.isUnicode(fileName):
-            fileName = g.toEncodedString(fileName)
-        if g.isUnicode(content):
-            if requireEncodedString:
-                g.internalError('content arg must be str/bytes')
+        if 1:
+            # Use only the contents.
+            m.update(g.toEncodedString(content))
+        else:
+            branch = g.toEncodedString(g.gitBranchName())
             content = g.toEncodedString(content)
-        # New in Leo 5.6: Use the git branch name in the key.
-        branch = g.gitBranchName()
-        branch = g.toEncodedString(branch)
-            # Fix #475.
-        m.update(branch)
-        m.update(fileName)
-        m.update(content)
+            fileName = g.toEncodedString(fileName)
+            m.update(branch)
+            m.update(fileName)
+            m.update(content)
         return "fcache/" + m.hexdigest()
     #@+node:ekr.20100208082353.5925: *3* cacher.Reading
     #@+node:vitalije.20180507112319.1: *4* cacher.collectChangedNodes
@@ -452,16 +448,14 @@ class Cacher(object):
         Read the file from the cache if possible.
         Return (s,ok,key)
         '''
-        # sfn = g.shortFileName(fileName)
         if not g.enableDB:
             return '', False, None
-        # g.trace('=====', g.shortFileName(fileName) or fileName)
+        g.trace('=====', g.shortFileName(fileName) or fileName)
         s = g.readFileIntoEncodedString(fileName, silent=True)
         if s is None:
             return s, False, None
         assert not g.isUnicode(s)
-        # There will be a bug if s is not already an encoded string.
-        key = self.fileKey(fileName, s, requireEncodedString=True)
+        key = self.fileKey(fileName, s)
             # Fix bug #385: use the full fileName, not root.h.
         ok = self.db and key in self.db
         if ok:
@@ -486,6 +480,7 @@ class Cacher(object):
             [self.makeCacheList(p2) for p2 in p.children()]]
     #@+node:ekr.20100210163813.5747: *4* cacher.save
     def save(self, fn, changeName):
+        g.trace('=====', fn, g.callers())
         if SQLITE:
             self.commit(True)
         if changeName or not self.inited:
@@ -516,7 +511,7 @@ class Cacher(object):
         # Check g.enableDB before giving internal error.
         if not g.enableDB:
             return
-        ### g.trace('=====', p.h)
+        g.trace('=====', p.h)
         if not fileKey:
             g.trace(g.callers(5))
             g.internalError('empty fileKey')
