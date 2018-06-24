@@ -4,7 +4,6 @@
 #@@first
     # Needed because of unicode characters in tests.
 """Classes to read and write @file nodes."""
-print('\n===== no-sax branch =====\n')
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
