@@ -32,8 +32,8 @@ import zipfile
 import sqlite3
 import hashlib
 from contextlib import contextmanager
-PRIVAREA = '---begin-private-area---'
 #@-<< imports >>
+PRIVAREA = '---begin-private-area---'
 #@+others
 #@+node:ekr.20060918164811: ** class BadLeoFile
 class BadLeoFile(Exception):
