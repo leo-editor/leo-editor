@@ -6,7 +6,7 @@
 import sys
 isPython3 = sys.version_info >= (3, 0, 0)
 import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
+###import leo.core.leoNodes as leoNodes
 if isPython3:
     import pickle
 else:
@@ -168,306 +168,33 @@ class Cacher(object):
             m.update(fileName)
             m.update(content)
         return "fcache/" + m.hexdigest()
-    #@+node:ekr.20100208082353.5925: *3* cacher.Reading
-    #@+node:vitalije.20180507112319.1: *4* cacher.collectChangedNodes
-    def collectChangedNodes(self, root_v, aList, fileName):
-        '''Populates c.nodeConflictList with data about nodes that
-           are going to change during recreation of outline from 
-           cached list.'''
-        c = self.c
-        #@+others
-        #@+node:vitalije.20180507113809.1: *5* vnodes helper iterator
-        gnxDict = c.fileCommands.gnxDict
-        def vnodes(_vlist):
-            h, b, gnx, c_vlist = _vlist
-            v = gnxDict.get(gnx)
-            if v:
-                yield v, h, b, gnx
-            for x in c_vlist:
-                for y in vnodes(x):
-                    yield y
-        #@-others
-        for v, h, b, gnx in vnodes(aList):
-            if v is root_v and not (v.b or v.children):
-                #
-                # no children and an empty body of root node most probably means
-                # we are reading external file for the first time. In this case
-                # there is no point in counting this as nodeConflict
-                continue
-            same_h = v.h == h
-            same_b = (v.b == b or
-                (v.b[-1:] == '\n' and v.b[:-1] == b) or
-                (b[-1:] == '\n' and v.b == b[:-1]))
-            if same_h and same_b:
-                continue
-            c.nodeConflictList.append(g.bunch(
-                tag='(cached)',
-                fileName=fileName,
-                gnx=gnx,
-                b_old=v.b,
-                h_old=v.h,
-                b_new=b,
-                h_new=h,
-                root_v=root_v,
-            ))
-    #@+node:ekr.20100208071151.5910: *4* cacher.createOutlineFromCacheList & helpers
-    def createOutlineFromCacheList(self, parent_v, aList, fileName, top=True):
-        '''
-        Create outline structure from recursive aList built by makeCacheList.
-        '''
-        c = self.c
-        if not c:
-            g.internalError('no c')
-            return
-        if top:
-            c.cacheListFileName = fileName
-        if not aList:
-            return
-        h, b, gnx, children = aList
-        if h is not None:
-            v = parent_v
-            # Does this destroy the ability to handle the rare case?
-            v._headString = g.toUnicode(h)
-            v._bodyString = g.toUnicode(b)
-        for child_tuple in children:
-            h, b, gnx, grandChildren = child_tuple
-            isClone, child_v = self.fastAddLastChild(fileName, gnx, parent_v)
-            if isClone:
-                self.checkForChangedNodes(child_tuple, fileName, parent_v)
-            else:
-                self.createOutlineFromCacheList(child_v, child_tuple, fileName, top=False)
-        
-    #@+node:ekr.20170622112151.1: *5* cacher.checkForChangedNodes
-    # update_warning_given = False
-
-    def checkForChangedNodes(self, child_tuple, fileName, parent_v):
-        '''
-        Update the outline described by child_tuple, including all descendants.
-        '''
-        h, junk_b, gnx, grand_children = child_tuple
-        child_v = self.c.fileCommands.gnxDict.get(gnx)
-        if child_v:
-            self.reportIfNodeChanged(child_tuple, child_v, fileName, parent_v)
-            for grand_child in grand_children:
-                self.checkForChangedNodes(grand_child, fileName, child_v)
-            gnxes_in_cache = set(x[2] for x in grand_children)
-            for_removal = [(i, v)
-                for i, v in enumerate(child_v.children) 
-                if v.gnx not in gnxes_in_cache]
-            for i, v in reversed(for_removal):
-                v._cutLink(i, child_v)
-            #
-            # sort children in the order from cache
-            for i, grand_child in enumerate(grand_children):
-                gnx = grand_child[2]
-                v = self.c.fileCommands.gnxDict.get(gnx)
-                if i < len(child_v.children):
-                    child_v.children[i] = v
-                elif i == len(child_v.children):
-                    g.trace('Warning: dubious cache: please check %s' % fileName)
-                    child_v.children.append(v)
-                else:
-                    g.trace('Corrupted cache. Use --no-cache')
-                    g.printObj(child_v.children)
-                    raise IndexError
+    #@+node:ekr.20180624041117.1: *3* cacher.Reading
+    #@+node:ekr.20180624044526.1: *4* cacher.getGlobalData
+    def getGlobalData(self, fn):
+        '''Return a dict containing all global data.'''
+        key = self.fileKey(fn, self.globals_tag)
+        data = self.db.get('window_position_%s' % (key))
+        if data:
+            # pylint: disable=unpacking-non-sequence
+            top, left, height, width = data
+            d = {
+                'top': int(top),
+                'left': int(left),
+                'height': int(height),
+                'width': int(width),
+            }
+        # Return reasonable defaults.
         else:
-            # If the outline is out of sync, there may be write errors later,
-            # but the user should be handle them easily enough.
-            isClone, child_v = self.fastAddLastChild(fileName, gnx, parent_v)
-            self.createOutlineFromCacheList(child_v, child_tuple, fileName, top=False)
-            # if not self.update_warning_given: # not needed.
-                # self.update_warning_given = True
-                # g.internalError('no vnode', child_tuple)
-    #@+node:ekr.20100208071151.5911: *5* cacher.fastAddLastChild (sets tempRoots)
-    # Similar to createThinChild4
-
-    def fastAddLastChild(self, fileName, gnxString, parent_v):
-        '''
-        Create new VNode as last child of the receiver.
-        If the gnx exists already, create a clone instead of new VNode.
-        '''
-        trace = 'gnx' in g.app.debug
-        c = self.c
-        gnxString = g.toUnicode(gnxString)
-        gnxDict = c.fileCommands.gnxDict
-        if gnxString is None:
-            v = None
-        else:
-            v = gnxDict.get(gnxString)
-        is_clone = v is not None
-        if trace:
-            g.trace(
-                'clone', '%-5s' % (is_clone),
-                'parent_v', parent_v, 'gnx', gnxString, 'v', repr(v))
-        if is_clone:
-            # new-read: update tempRoots.
-            if not hasattr(v, 'tempRoots'):
-                v.tempRoots = set()
-            v.tempRoots.add(fileName)
-        else:
-            if gnxString:
-                assert g.isUnicode(gnxString)
-                v = leoNodes.VNode(context=c, gnx=gnxString)
-                if 'gnx' in g.app.debug:
-                    g.trace(c.shortFileName(), gnxString, v)
-            else:
-                v = leoNodes.VNode(context=c)
-                # This is not an error: it can happen with @auto nodes.
-                    # g.trace('**** no gnx for',v,parent_v)
-            # Indicate that this node came from an external file.
-            v.tempRoots = set()
-            v.tempRoots.add(fileName)
-        child_v = v
-        child_v._linkAsNthChild(parent_v, parent_v.numberOfChildren())
-        child_v.setVisited() # Supress warning/deletion of unvisited nodes.
-        return is_clone, child_v
-    #@+node:ekr.20100705083838.5740: *5* cacher.reportIfNodeChanged
-    def reportIfNodeChanged(self, child_tuple, child_v, fileName, parent_v):
-        '''
-        Schedule a recovered node if child_v is substantially different from an
-        earlier version.
-
-        Issue a (rare) warning if two different files are involved.
-        '''
-        always_warn = True # True always warn about changed nodes.
-        c = self.c
-        h, b, gnx, grandChildren = child_tuple
-        old_b, new_b = child_v.b, b
-        old_h, new_h = child_v.h, h
-        # Leo 5.6: test headlines.
-        same_head = old_h == new_h
-        same_body = (
-            old_b == new_b or
-            new_b.endswith('\n') and old_b == new_b[: -1] or
-            old_b.endswith('\n') and new_b == old_b[: -1]
-        )
-        if same_head and same_body:
-            return
-        old_roots = list(getattr(child_v, 'tempRoots', set()))
-        same_file = (
-            len(old_roots) == 0 or
-            len(old_roots) == 1 and old_roots[0] == fileName
-        )
-        must_warn = not same_file
-        if not hasattr(child_v, 'tempRoots'):
-            child_v.tempRoots = set()
-        child_v.tempRoots.add(fileName)
-        if must_warn:
-            # This is the so-called "rare" case:
-            # The node differs  in two different external files.
-            self.warning('out-of-sync node: %s' % h)
-            g.es_print('using node in %s' % fileName)
-        if always_warn or must_warn:
-            if c.make_node_conflicts_node:
-                g.es_print('creating recovered node:', h)
-            c.nodeConflictList.append(g.bunch(
-                tag='(cached)',
-                fileName=fileName,
-                gnx=gnx,
-                b_old=child_v.b,
-                h_old=child_v.h,
-                b_new=b,
-                h_new=h,
-                root_v=parent_v,
-            ))
-        # Always update the node.
-        child_v.h, child_v.b = h, b
-        child_v.setDirty()
-        c.changed = True # Tell getLeoFile to propegate dirty nodes.
-    #@+node:vitalije.20180507114013.1: *4* cacher.createOutlineFromCacheList2
-    def createOutlineFromCacheList2(self, parent_v, aList):
-        '''
-        Create outline structure from recursive aList built by makeCacheList.
-        '''
-        c = self.c
-        #@+others
-        #@+node:vitalije.20180507115741.1: *5* recreateV helper
-        gnxDict = c.fileCommands.gnxDict
-        def recreateV(_vlist):
-            h, b, gnx, c_vlist = _vlist
-            v = gnxDict.get(gnx)
-            if not v:
-                v = leoNodes.VNode(context=c, gnx=gnx)
-            else:
-                del v.children[:]
-            v.h = h
-            v.b = b
-            for x in c_vlist:
-                cv = recreateV(x)
-                v.children.append(cv)
-                if v not in cv.parents:
-                    cv.parents.append(v)
-            return v
-        #@-others
-        recreateV(aList)
-    #@+node:ekr.20100208082353.5923: *4* cacher.getCachedGlobalFileRatios
-    def getCachedGlobalFileRatios(self):
-
-        c = self.c
-        if not c:
-            return g.internalError('no commander')
-        key = self.fileKey(c.mFileName, self.globals_tag)
-        try:
-            ratio = float(self.db.get('body_outline_ratio_%s' % (key), '0.5'))
-        except TypeError:
-            ratio = 0.5
-        try:
-            ratio2 = float(self.db.get('body_secondary_ratio_%s' % (key), '0.5'))
-        except TypeError:
-            ratio2 = 0.5
-        return ratio, ratio2
+            d = {'top': 50, 'left': 50, 'height': 500, 'width': 800}
+        d['r1'] = float(self.db.get('body_outline_ratio_%s' % (key), '0.5'))
+        d['r2'] = float(self.db.get('body_secondary_ratio_%s' % (key), '0.5'))
+        return d
     #@+node:ekr.20100208082353.5924: *4* cacher.getCachedStringPosition
-    def getCachedStringPosition(self):
+    def getCachedStringPosition(self, fn):
 
-        c = self.c
-        if not c:
-            return g.internalError('no commander')
-        key = self.fileKey(c.mFileName, self.globals_tag)
+        key = self.fileKey(fn, self.globals_tag)
         str_pos = self.db.get('current_position_%s' % key)
         return str_pos
-    #@+node:ekr.20100208082353.5922: *4* cacher.getCachedWindowPositionDict
-    def getCachedWindowPositionDict(self, fn):
-        '''Return a dict containing window positions.'''
-        c = self.c
-        if not c:
-            g.internalError('no commander')
-            return {}
-        key = self.fileKey(c.mFileName, self.globals_tag)
-        data = self.db.get('window_position_%s' % (key))
-        # pylint: disable=unpacking-non-sequence
-        if data:
-            top, left, height, width = data
-            top, left, height, width = int(top), int(left), int(height), int(width)
-            d = {'top': top, 'left': left, 'height': height, 'width': width}
-        else:
-            d = {}
-        return d
-    #@+node:ekr.20100208071151.5905: *4* cacher.readFile
-    def readFile(self, fileName, root):
-        '''
-        Read the file from the cache if possible.
-        Return (s,ok,key)
-        '''
-        if not g.enableDB:
-            return '', False, None
-        g.trace('=====', g.shortFileName(fileName) or fileName)
-        s = g.readFileIntoEncodedString(fileName, silent=True)
-        if s is None:
-            return s, False, None
-        assert not g.isUnicode(s)
-        key = self.fileKey(fileName, s)
-            # Fix bug #385: use the full fileName, not root.h.
-        ok = self.db and key in self.db
-        if ok:
-            # Delete the previous tree, regardless of the @<file> type.
-            while root.hasChildren():
-                root.firstChild().doDelete()
-            # Recreate the file from the cache.
-            aList = self.db.get(key)
-            self.collectChangedNodes(root.v, aList, fileName)
-            self.createOutlineFromCacheList2(root.v, aList)
-            #self.createOutlineFromCacheList(root.v, aList, fileName=fileName)
-        return s, ok, key
     #@+node:ekr.20100208082353.5927: *3* cacher.Writing
     #@+node:ekr.20100208071151.5901: *4* cacher.makeCacheList
     def makeCacheList(self, p):
@@ -480,7 +207,7 @@ class Cacher(object):
             [self.makeCacheList(p2) for p2 in p.children()]]
     #@+node:ekr.20100210163813.5747: *4* cacher.save
     def save(self, fn, changeName):
-        g.trace('=====', fn, g.callers())
+        ### g.trace('=====', fn)
         if SQLITE:
             self.commit(True)
         if changeName or not self.inited:
@@ -489,9 +216,7 @@ class Cacher(object):
     def setCachedGlobalsElement(self, fn):
 
         c = self.c
-        if not c:
-            return g.internalError('no commander')
-        key = self.fileKey(c.mFileName, self.globals_tag)
+        key = self.fileKey(fn, self.globals_tag)
         self.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
         self.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
         width, height, left, top = c.frame.get_window_info()
@@ -501,22 +226,8 @@ class Cacher(object):
     def setCachedStringPosition(self, str_pos):
 
         c = self.c
-        if not c:
-            return g.internalError('no commander')
         key = self.fileKey(c.mFileName, self.globals_tag)
         self.db['current_position_%s' % key] = str_pos
-    #@+node:ekr.20100208071151.5903: *4* cacher.writeFile
-    def writeFile(self, p, fileKey):
-        '''Update the cache after reading the file.'''
-        # Check g.enableDB before giving internal error.
-        if not g.enableDB:
-            return
-        g.trace('=====', p.h)
-        if not fileKey:
-            g.trace(g.callers(5))
-            g.internalError('empty fileKey')
-        elif not self.db.get(fileKey):
-            self.db[fileKey] = self.makeCacheList(p)
     #@+node:ekr.20100208065621.5890: *3* cacher.test
     def test(self):
         

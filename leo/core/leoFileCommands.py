@@ -105,44 +105,14 @@ class FastRead (object):
         return hidden_v
     #@+node:ekr.20180605062300.1: *4* fast.scanGlobals & helper
     def scanGlobals(self, g_element):
-        
-        if not g_element:
-            # May be None for copied trees.
-            return
-        fc = self.fc
-        attrib = g_element.attrib
-        ratio = attrib.get('body_secondary_ratio')
-        fc.ratio = 0.5 if ratio is None else float(ratio)
-        ratio2 = attrib.get('body_secondary_ratio')
-        fc.secondary_ratio =  0.5 if ratio2 is None else float(ratio2)
-        for e in g_element:
-            #  Ignore legacy elements.
-            if e.tag == 'global_window_position':
-                self.scanWindowPosition(e)
-    #@+node:ekr.20180605071907.1: *5* fast.scanWindowPosition
-    def scanWindowPosition(self, e):
-        
+        '''Get global data from the cache, with reasonable defaults.'''
         c = self.c
-        table = (
-            ('top', 50), ('left', 50),
-            ('height', 500), ('width', 800),
-        )
-        if g.enableDB and c.mFileName:
-            d = c.cacher.getCachedWindowPositionDict(c.mFileName)
-            for name, default in table:
-                if d.get(name) is None:
-                    d[name] = default
-        else:
-            d = {}
-            for name, default in table:
-                try:
-                    d [name] = int(e.attrib[name])
-                except Exception:
-                    g.trace('OOPS', name)
-                    d [name] = default
+        d = c.cacher.getGlobalData(c.mFileName)
         w, h = d.get('width'), d.get('height')
         x, y = d.get('left'), d.get('top')
+        r1, r2 = d.get('r1'), d.get('r2')
         c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
+        c.frame.resizePanesToRatio(r1, r2)
         if g.app.start_minimized:
             c.frame.setTopGeometry(w, h, x, y)
         elif not g.app.start_maximized and not g.app.start_fullscreen:
@@ -889,6 +859,26 @@ class FileCommands(object):
             g.es_exception()
             g.trace('Can not unpickle', type(s), v and v.h, s[: 40])
             return None
+    #@+node:vitalije.20180304190953.1: *5* fc.getPos/VnodeFromClipboard
+    def getPosFromClipboard(self, s):
+        '''A utility called from init_tree_abbrev.'''
+        v = self.getVnodeFromClipboard(s)
+        return leoNodes.Position(v)
+
+    def getVnodeFromClipboard(self, s):
+        '''Called only from getPosFromClipboard.'''
+        c = self.c
+        self.initReadIvars()
+        oldGnxDict = self.gnxDict
+        try:
+            # This encoding must match the encoding used in putLeoOutline.
+            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+            v = FastRead(c, {}).readFile(s=s)
+            if not v:
+                return g.es("the clipboard is not valid ", color="blue")
+        finally:
+            self.gnxDict = oldGnxDict
+        return v
     #@+node:ekr.20060919142200.1: *5* fc.initReadIvars
     def initReadIvars(self):
         self.descendentTnodeUaDictList = []
@@ -935,26 +925,96 @@ class FileCommands(object):
                         # There was a big performance bug in the mark hook in the Node Navigator plugin.
                 if expanded.get(p.v):
                     p.expand()
-    #@+node:vitalije.20180304190953.1: *5* fc.getPos/VnodeFromClipboard
-    def getPosFromClipboard(self, s):
-        '''A utility called from init_tree_abbrev.'''
-        v = self.getVnodeFromClipboard(s)
-        return leoNodes.Position(v)
+    #@+node:vitalije.20170630152841.1: *5* fc.retrieveVnodesFromDb
+    def retrieveVnodesFromDb(self, conn):
+        '''
+        Recreates tree from the data contained in table vnodes.
+        
+        This method follows behavior of readSaxFile.
+        '''
 
-    def getVnodeFromClipboard(self, s):
-        '''Called only from getPosFromClipboard.'''
-        c = self.c
-        self.initReadIvars()
-        oldGnxDict = self.gnxDict
+        c, fc = self.c, self
+        sql = '''select gnx, head, 
+             body,
+             children,
+             parents,
+             iconVal,
+             statusBits,
+             ua from vnodes'''
+        vnodes = []
         try:
-            # This encoding must match the encoding used in putLeoOutline.
-            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            v = FastRead(c, {}).readFile(s=s)
-            if not v:
-                return g.es("the clipboard is not valid ", color="blue")
-        finally:
-            self.gnxDict = oldGnxDict
+            for row in conn.execute(sql):
+                (gnx,
+                    h,
+                    b,
+                    children,
+                    parents,
+                    iconVal,
+                    statusBits,
+                    ua) = row
+                try:
+                    ua = pickle.loads(g.toEncodedString(ua))
+                except ValueError:
+                    ua = None
+                v = leoNodes.VNode(context=c, gnx=gnx)
+                v._headString = h
+                v._bodyString = b
+                v.children = children.split()
+                v.parents = parents.split()
+                v.iconVal = iconVal
+                v.statusBits = statusBits
+                v.u = ua
+                vnodes.append(v)
+        except sqlite3.Error as er:
+            if er.args[0].find('no such table') < 0:
+                # there was an error raised but it is not the one we expect
+                g.internalError(er)
+            # there is no vnodes table 
+            return None
+
+        rootChildren = [x for x in vnodes if 'hidden-root-vnode-gnx' in x.parents]
+        if not rootChildren:
+            g.trace('there should be at least one top level node!')
+            return None
+
+        findNode = lambda x: fc.gnxDict.get(x, c.hiddenRootNode)
+
+        # let us replace every gnx with the corresponding vnode
+        for v in vnodes:
+            v.children = [findNode(x) for x in v.children]
+            v.parents = [findNode(x) for x in v.parents]
+        c.hiddenRootNode.children = rootChildren
+        (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
+        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
+        c.frame.resizePanesToRatio(r1, r2)
+        p = fc.decodePosition(encp)
+        c.setCurrentPosition(p)
+        return rootChildren[0]
+    #@+node:vitalije.20170815162307.1: *6* fc.initNewDb
+    def initNewDb(self, conn):
+        ''' Initializes tables and returns None'''
+        fc = self; c = self.c
+        v = leoNodes.VNode(context=c)
+        c.hiddenRootNode.children = [v]
+        (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
+        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
+        c.frame.resizePanesToRatio(r1, r2)
+        c.sqlite_connection = conn
+        fc.exportToSqlite(c.mFileName)
         return v
+    #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
+    def getWindowGeometryFromDb(self, conn):
+        geom = (600, 400, 50, 50 , 0.5, 0.5, '')
+        keys = (  'width', 'height', 'left', 'top',
+                  'ratio', 'secondary_ratio',
+                  'current_position')
+        try:
+            d = dict(conn.execute('''select * from extra_infos 
+                where name in (?, ?, ?, ?, ?, ?, ?)''', keys).fetchall())
+            geom = (d.get(*x) for x in zip(keys, geom))
+        except sqlite3.OperationalError:
+            pass
+        return geom
     #@+node:ekr.20031218072017.3032: *3* fc.Writing
     #@+node:ekr.20070413045221.2: *4*  fc.Top-level
     #@+node:ekr.20031218072017.1720: *5* fc.save
@@ -1164,7 +1224,7 @@ class FileCommands(object):
         # New in 4.3:  These settings never get written to the .leo file.
         self.put("<find_panel_settings/>")
         self.put_nl()
-    #@+node:ekr.20031218072017.3037: *5* fc.putGlobals
+    #@+node:ekr.20031218072017.3037: *5* fc.putGlobals (To be changed)
     # Changed for Leo 4.0.
 
     def putGlobals(self):
@@ -2020,96 +2080,6 @@ class FileCommands(object):
                 if result:
                     p.v.tnodeList = result
                 delattr(p.v, 'tempTnodeList')
-    #@+node:vitalije.20170630152841.1: *4* fc.retrieveVnodesFromDb
-    def retrieveVnodesFromDb(self, conn):
-        '''
-        Recreates tree from the data contained in table vnodes.
-        
-        This method follows behavior of readSaxFile.
-        '''
-
-        c, fc = self.c, self
-        sql = '''select gnx, head, 
-             body,
-             children,
-             parents,
-             iconVal,
-             statusBits,
-             ua from vnodes'''
-        vnodes = []
-        try:
-            for row in conn.execute(sql):
-                (gnx,
-                    h,
-                    b,
-                    children,
-                    parents,
-                    iconVal,
-                    statusBits,
-                    ua) = row
-                try:
-                    ua = pickle.loads(g.toEncodedString(ua))
-                except ValueError:
-                    ua = None
-                v = leoNodes.VNode(context=c, gnx=gnx)
-                v._headString = h
-                v._bodyString = b
-                v.children = children.split()
-                v.parents = parents.split()
-                v.iconVal = iconVal
-                v.statusBits = statusBits
-                v.u = ua
-                vnodes.append(v)
-        except sqlite3.Error as er:
-            if er.args[0].find('no such table') < 0:
-                # there was an error raised but it is not the one we expect
-                g.internalError(er)
-            # there is no vnodes table 
-            return None
-
-        rootChildren = [x for x in vnodes if 'hidden-root-vnode-gnx' in x.parents]
-        if not rootChildren:
-            g.trace('there should be at least one top level node!')
-            return None
-
-        findNode = lambda x: fc.gnxDict.get(x, c.hiddenRootNode)
-
-        # let us replace every gnx with the corresponding vnode
-        for v in vnodes:
-            v.children = [findNode(x) for x in v.children]
-            v.parents = [findNode(x) for x in v.parents]
-        c.hiddenRootNode.children = rootChildren
-        (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
-        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
-        c.frame.resizePanesToRatio(r1, r2)
-        p = fc.decodePosition(encp)
-        c.setCurrentPosition(p)
-        return rootChildren[0]
-    #@+node:vitalije.20170815162307.1: *5* fc.initNewDb
-    def initNewDb(self, conn):
-        ''' Initializes tables and returns None'''
-        fc = self; c = self.c
-        v = leoNodes.VNode(context=c)
-        c.hiddenRootNode.children = [v]
-        (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
-        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
-        c.frame.resizePanesToRatio(r1, r2)
-        c.sqlite_connection = conn
-        fc.exportToSqlite(c.mFileName)
-        return v
-    #@+node:vitalije.20170630200802.1: *5* fc.getWindowGeometryFromDb
-    def getWindowGeometryFromDb(self, conn):
-        geom = (600, 400, 50, 50 , 0.5, 0.5, '')
-        keys = (  'width', 'height', 'left', 'top',
-                  'ratio', 'secondary_ratio',
-                  'current_position')
-        try:
-            d = dict(conn.execute('''select * from extra_infos 
-                where name in (?, ?, ?, ?, ?, ?, ?)''', keys).fetchall())
-            geom = (d.get(*x) for x in zip(keys, geom))
-        except sqlite3.OperationalError:
-            pass
-        return geom
     #@+node:ekr.20031218072017.3045: *4* fc.setDefaultDirectoryForNewFiles
     def setDefaultDirectoryForNewFiles(self, fileName):
         """Set c.openDirectory for new files for the benefit of leoAtFile.scanAllDirectives."""
@@ -2128,7 +2098,7 @@ class FileCommands(object):
         current, str_pos = None, None
         use_db = g.enableDB and c.mFileName
         if use_db:
-            str_pos = c.cacher.getCachedStringPosition()
+            str_pos = c.cacher.getCachedStringPosition(c.mFileName)
         if not str_pos:
             d = root.v.u
             if d: str_pos = d.get('str_leo_pos')
