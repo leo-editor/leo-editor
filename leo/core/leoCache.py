@@ -107,7 +107,9 @@ class Cacher(object):
         g.es('done', color='blue')
     #@+node:ekr.20180611054447.1: *3* cacher.dump
     def dump(self, db, tag):
-        '''Dump the indicated cache.'''
+        '''Dump the indicated cache if --trace-cache is in effect.'''
+        if 'cache' not in g.app.debug:
+            return
         
         def dump_list(aList, result, indent=0):
             head, body, gnx, children = tuple(aList)
@@ -116,8 +118,6 @@ class Cacher(object):
             for child in children:
                 dump_list(child, result, indent=indent+2)
 
-        if 'cache' not in g.app.debug:
-            return
         print('\n===== %s =====\n' % tag)
         for key in db.keys():
             key = key[0]
