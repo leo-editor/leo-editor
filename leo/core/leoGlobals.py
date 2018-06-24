@@ -22,15 +22,7 @@ in_bridge = False
     # This tells leoApp to load a null Gui.
 #
 # True unless --no-cache is in effect.
-# Don't even think about eliminating this constant.
-enableDB = True
-#
-# These print statements have been moved to writeWaitingLog.
-# This allows for better --silent operation.
-if 0:
-    print('*** isPython3: %s' % isPython3)
-    if not enableDB:
-        print('** leoGlobals.py: caching disabled')
+### enableDB = True
 #
 # True: Enable SQLite DB.
 SQLITE = True

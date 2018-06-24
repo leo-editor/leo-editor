@@ -1228,7 +1228,8 @@ class FileCommands(object):
     def putGlobals(self):
         '''Put a vestigial <globals> element, and write global data to the cache.'''
         c = self.c
-        if g.enableDB and c.mFileName:
+        ### if g.enableDB and c.mFileName:
+        if c.mFileName:
             c.cacher.setCachedGlobalsElement(c.mFileName)
         self.put("<globals/>\n")
     #@+node:ekr.20031218072017.3041: *5* fc.putHeader
@@ -1394,7 +1395,8 @@ class FileCommands(object):
             if d.get('str_leo_pos'):
                 del d['str_leo_pos']
             # Don't write the current position if we can cache it.
-            if g.enableDB and c.mFileName:
+            ### if g.enableDB and c.mFileName:
+            if c.mFileName:
                 c.cacher.setCachedStringPosition(str_pos)
             elif c.fixed:
                 pass
@@ -2050,13 +2052,13 @@ class FileCommands(object):
             # position is already selected
             return
         current, str_pos = None, None
-        use_db = g.enableDB and c.mFileName
-        if use_db:
+        ### use_db = g.enableDB and c.mFileName
+        if c.mFileName:
             str_pos = c.cacher.getCachedStringPosition(c.mFileName)
-        if not str_pos:
+        if str_pos is None:
             d = root.v.u
             if d: str_pos = d.get('str_leo_pos')
-        if str_pos:
+        if str_pos is not None:
             current = self.archivedPositionToPosition(str_pos)
         c.setCurrentPosition(current or c.rootPosition())
     #@+node:ekr.20080412172151.2: *4* fc.updateFixedStatus
