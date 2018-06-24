@@ -94,7 +94,7 @@ class FastRead (object):
         return ro
     #@+node:ekr.20180602062323.7: *3* fast.readWithElementTree & helpers
     def readWithElementTree(self, contents):
-        
+
         xroot = ElementTree.fromstring(contents)
         g_element = xroot.find('globals')
         v_elements = xroot.find('vnodes')
@@ -102,7 +102,17 @@ class FastRead (object):
         self.scanGlobals(g_element)
         gnx2body, gnx2ua = self.scanTnodes(t_elements)
         hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
+        self.handleBits()
         return hidden_v
+    #@+node:ekr.20180624125321.1: *4* fast.handleBits
+    def handleBits(self):
+
+        c, fc = self.c, self.c.fileCommands
+        expanded, marked = c.cacher.getBits()
+        if expanded:
+            fc.descendentExpandedList = expanded
+        if marked:
+            fc.descendentMarksList = marked
     #@+node:ekr.20180605062300.1: *4* fast.scanGlobals & helper
     def scanGlobals(self, g_element):
         '''Get global data from the cache, with reasonable defaults.'''
@@ -218,14 +228,15 @@ class FastRead (object):
                         aDict = fc.getDescendentUnknownAttributes(s, v=v)
                         if aDict:
                             fc.descendentVnodeUaDictList.append((v, aDict),)
-                    s = d.get('expanded')
-                    if s:
-                        aList = fc.getDescendentAttributes(s, tag="expanded")
-                        fc.descendentExpandedList.extend(aList)
-                    s = d.get('marks')
-                    if s:
-                        aList = fc.getDescendentAttributes(s, tag="marks")
-                        fc.descendentMarksList.extend(aList)
+                    if 0: ###
+                        s = d.get('expanded')
+                        if s:
+                            aList = fc.getDescendentAttributes(s, tag="expanded")
+                            fc.descendentExpandedList.extend(aList)
+                        s = d.get('marks')
+                        if s:
+                            aList = fc.getDescendentAttributes(s, tag="marks")
+                            fc.descendentMarksList.extend(aList)
                     #
                     # Handle vnode uA's
                     uaDict = gnx2ua.get(gnx)
@@ -1377,7 +1388,7 @@ class FileCommands(object):
         c, v = self.c, p.v
         attrs = []
         if 1: # Leo 4.8: write marked/expanded bits to the cache.
-            pass
+            c.cacher.setBits(v)
         else: ###
             # New in Leo 4.5: support fixed .leo files.
             if not c.fixed:
@@ -1425,11 +1436,13 @@ class FileCommands(object):
         self.rootPosition = c.rootPosition()
         self.vnodesDict = {}
         if self.usingClipboard:
-            self.putVnode(self.currentPosition) # Write only current tree.
+            self.putVnode(self.currentPosition)
+                # Write only current tree.
         else:
+            c.cacher.initBits()
             for p in c.rootPosition().self_and_siblings():
-                # New in Leo 4.4.2 b2 An optimization:
-                self.putVnode(p, isIgnore=p.isAtIgnoreNode()) # Write the next top-level node.
+                self.putVnode(p, isIgnore=p.isAtIgnoreNode())
+            c.cacher.writeBits()
         self.put("</vnodes>\n")
     #@+node:ekr.20031218072017.1247: *5* fc.putXMLLine
     def putXMLLine(self):

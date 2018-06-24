@@ -49,6 +49,10 @@ class Cacher(object):
         self.dbdirname = None # A string.
         self.globals_tag = 'leo.globals'
         self.inited = False
+        #
+        # Sets of gnxs
+        self.expanded_gnxs = []
+        self.marked_gnxs = []
     #@+node:ekr.20100208082353.5918: *4* cacher.initFileDB
     def initFileDB(self, fn):
 
@@ -138,6 +142,32 @@ class Cacher(object):
             else:
                 g.printObj(val)
             print('')
+    #@+node:ekr.20180624123924.1: *3* cacher.Bits
+    def initBits(self):
+        self.expanded_gnxs = []
+        self.marked_gnxs = []
+        
+    def getBits(self):
+        key = self.c.fileName()
+        expanded = self.db.get('expanded_' + key)
+        marked = self.db.get('marked_' + key)
+        expanded = expanded.split(',') if expanded else []
+        marked = marked.split(',') if marked else []
+        return expanded, marked
+        
+    def setBits(self, v):
+        if v.isExpanded() and v.hasChildren():
+            self.expanded_gnxs.append(v.gnx) 
+        if v.isMarked():
+            self.marked_gnxs.append(v.gnx)
+            
+    def writeBits(self):
+        key = self.c.fileName()
+        expanded = ','.join(list(set(self.expanded_gnxs)))
+        marked = ','.join(list(set(self.marked_gnxs)))
+        self.db ['expanded_' + key] = expanded
+        self.db ['marked_' + key] = marked
+        self.initBits()
     #@+node:ekr.20180624041117.1: *3* cacher.Reading
     #@+node:ekr.20180624044526.1: *4* cacher.getGlobalData
     def getGlobalData(self, fn):
@@ -166,16 +196,7 @@ class Cacher(object):
         str_pos = self.db.get('current_position_%s' % key)
         return str_pos
     #@+node:ekr.20100208082353.5927: *3* cacher.Writing
-    #@+node:ekr.20100208071151.5901: *4* cacher.makeCacheList
-    def makeCacheList(self, p):
-        '''Create a recursive list describing a tree
-        for use by createOutlineFromCacheList.
-        '''
-        # This is called after at.readPostPass, so p.b *is* the body text.
-        return [
-            p.h, p.b, p.gnx,
-            [self.makeCacheList(p2) for p2 in p.children()]]
-    #@+node:ekr.20100210163813.5747: *4* cacher.save (to do)
+    #@+node:ekr.20100210163813.5747: *4* cacher.save
     def save(self, fn, changeName):
         if SQLITE:
             self.commit(True)
