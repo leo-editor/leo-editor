@@ -221,10 +221,6 @@ class Cacher(object):
         if 0: print(db.keys())
         db.clear()
         return True
-    #@+node:ekr.20170624135447.1: *3* cacher.warning
-    def warning(self, s):
-        '''Print a warning message in red.'''
-        g.es_print('Warning: %s' % s.lstrip(), color='red')
     #@-others
     def commit(self, close=True):
         # in some cases while unit testing self.db is python dict
