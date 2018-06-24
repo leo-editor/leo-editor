@@ -60,23 +60,6 @@ class Cacher(object):
         self.c.db = self.db
         self.inited = True
         self.dump(self.db, 'c.db: %s' % g.shortFileName(fn))
-        ###
-            # pth, bname = split(fn)
-            # if pth and bname:
-                # sfn = g.shortFileName(fn) # For dumps.
-                # fn = fn.lower()
-                # fn = g.toEncodedString(fn) # Required for Python 3.x.
-                # # Important: this creates a top-level directory of the form x_y.
-                # # x is a short file name, included for convenience.
-                # # y is a key computed by the *full* path name fn.
-                # # Thus, there will a separate top-level directory for every path.
-                # self.dbdirname = dbdirname = join(g.app.homeLeoDir, 'db',
-                    # '%s_%s' % (bname, hashlib.md5(fn).hexdigest()))
-                # self.db = SqlitePickleShare(dbdirname) if SQLITE else PickleShareDB(dbdirname)
-                # # Fixes bug 670108.
-                # self.c.db = self.db
-                # self.inited = True
-                # self.dump(self.db, 'c.db: %s' % sfn)
     #@+node:ekr.20100208082353.5920: *4* cacher.initGlobalDb
     def initGlobalDB(self):
         '''
