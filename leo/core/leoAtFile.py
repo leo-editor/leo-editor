@@ -613,16 +613,6 @@ class AtFile(object):
         # Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fileName, p)
-        ###
-            # s, ok, fileKey = c.cacher.readFile(fileName, p)
-            # ok:
-                # # Even if the file is in the cache, the @persistence node may be different.
-                # if c.persistenceController:
-                    # c.persistenceController.update_after_read_foreign_file(p)
-                # g.doHook('after-auto', c=c, p=p)
-                    # # call after-auto callbacks
-                    # # 2011/09/30: added call to g.doHook here.
-                # return p
         if not g.unitTesting:
             g.es("reading:", p.h)
         try:
@@ -654,7 +644,6 @@ class AtFile(object):
             p.clearDirty()
             c.setChanged(oldChanged)
         else:
-            ### c.cacher.writeFile(p, fileKey)
             g.doHook('after-auto', c=c, p=p)
         return p
     #@+node:ekr.20090225080846.3: *5* at.readOneAtEditNode
@@ -1267,9 +1256,6 @@ class AtFile(object):
                     at.rememberReadPath(eventualFileName, root)
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
-                    # Leo 5.6: update the cache *here*, not just when reading.
-                    ### fileKey = c.cacher.fileKey(eventualFileName, at.outputContents)
-                    ### c.cacher.writeFile(at.root, fileKey)
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')

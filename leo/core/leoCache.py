@@ -13,7 +13,7 @@ else:
     import cPickle as pickle
 # import glob
 import fnmatch
-import hashlib
+# import hashlib
 import os
 import stat
 # import time
@@ -55,22 +55,28 @@ class Cacher(object):
 
         if not fn:
             return
-        pth, bname = split(fn)
-        if pth and bname:
-            sfn = g.shortFileName(fn) # For dumps.
-            fn = fn.lower()
-            fn = g.toEncodedString(fn) # Required for Python 3.x.
-            # Important: this creates a top-level directory of the form x_y.
-            # x is a short file name, included for convenience.
-            # y is a key computed by the *full* path name fn.
-            # Thus, there will a separate top-level directory for every path.
-            self.dbdirname = dbdirname = join(g.app.homeLeoDir, 'db',
-                '%s_%s' % (bname, hashlib.md5(fn).hexdigest()))
-            self.db = SqlitePickleShare(dbdirname) if SQLITE else PickleShareDB(dbdirname)
-            # Fixes bug 670108.
-            self.c.db = self.db
-            self.inited = True
-            self.dump(self.db, 'c.db: %s' % sfn)
+        self.dbdirname = name = join(g.app.homeLeoDir, 'db', 'global_data')
+        self.db = SqlitePickleShare(name) if SQLITE else PickleShareDB(name)
+        self.c.db = self.db
+        self.inited = True
+        self.dump(self.db, 'c.db: %s' % g.shortFileName(fn))
+        ###
+            # pth, bname = split(fn)
+            # if pth and bname:
+                # sfn = g.shortFileName(fn) # For dumps.
+                # fn = fn.lower()
+                # fn = g.toEncodedString(fn) # Required for Python 3.x.
+                # # Important: this creates a top-level directory of the form x_y.
+                # # x is a short file name, included for convenience.
+                # # y is a key computed by the *full* path name fn.
+                # # Thus, there will a separate top-level directory for every path.
+                # self.dbdirname = dbdirname = join(g.app.homeLeoDir, 'db',
+                    # '%s_%s' % (bname, hashlib.md5(fn).hexdigest()))
+                # self.db = SqlitePickleShare(dbdirname) if SQLITE else PickleShareDB(dbdirname)
+                # # Fixes bug 670108.
+                # self.c.db = self.db
+                # self.inited = True
+                # self.dump(self.db, 'c.db: %s' % sfn)
     #@+node:ekr.20100208082353.5920: *4* cacher.initGlobalDb
     def initGlobalDB(self):
         '''
@@ -150,28 +156,11 @@ class Cacher(object):
             else:
                 g.printObj(val)
             print('')
-    #@+node:ekr.20100208071151.5907: *3* cacher.fileKey
-    def fileKey(self, fileName, content):
-        '''
-        Compute the hash of branch name, fileName and content.
-        '''
-        m = hashlib.md5()
-        if 1:
-            # Use only the contents.
-            m.update(g.toEncodedString(content))
-        else:
-            branch = g.toEncodedString(g.gitBranchName())
-            content = g.toEncodedString(content)
-            fileName = g.toEncodedString(fileName)
-            m.update(branch)
-            m.update(fileName)
-            m.update(content)
-        return "fcache/" + m.hexdigest()
     #@+node:ekr.20180624041117.1: *3* cacher.Reading
     #@+node:ekr.20180624044526.1: *4* cacher.getGlobalData
     def getGlobalData(self, fn):
         '''Return a dict containing all global data.'''
-        key = self.fileKey(fn, self.globals_tag)
+        key = fn
         data = self.db.get('window_position_%s' % (key))
         if data:
             # pylint: disable=unpacking-non-sequence
@@ -191,7 +180,7 @@ class Cacher(object):
     #@+node:ekr.20100208082353.5924: *4* cacher.getCachedStringPosition
     def getCachedStringPosition(self, fn):
 
-        key = self.fileKey(fn, self.globals_tag)
+        key = fn
         str_pos = self.db.get('current_position_%s' % key)
         return str_pos
     #@+node:ekr.20100208082353.5927: *3* cacher.Writing
@@ -206,7 +195,6 @@ class Cacher(object):
             [self.makeCacheList(p2) for p2 in p.children()]]
     #@+node:ekr.20100210163813.5747: *4* cacher.save (to do)
     def save(self, fn, changeName):
-        ### g.trace('=====', fn)
         if SQLITE:
             self.commit(True)
         if changeName or not self.inited:
@@ -215,7 +203,7 @@ class Cacher(object):
     def setCachedGlobalsElement(self, fn):
 
         c = self.c
-        key = self.fileKey(fn, self.globals_tag)
+        key = fn
         self.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
         self.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
         width, height, left, top = c.frame.get_window_info()
@@ -225,7 +213,7 @@ class Cacher(object):
     def setCachedStringPosition(self, str_pos):
 
         c = self.c
-        key = self.fileKey(c.mFileName, self.globals_tag)
+        key = c.mFileName
         self.db['current_position_%s' % key] = str_pos
     #@+node:ekr.20100208065621.5890: *3* cacher.test
     def test(self):
