@@ -206,13 +206,6 @@ class FastRead (object):
                     # The native attributes of <v> elements are a, t, vtag, tnodeList,
                     # marks, expanded, and descendentTnode/VnodeUnknownAttributes.
                     d = e.attrib
-                    if 0: ###
-                        s = d.get('a')
-                        if s:
-                            if 'M' in s: v.setMarked()
-                            if 'E' in s: v.expand()
-                            if 'O' in s: v.setOrphan()
-                            if 'V' in s: fc.currentVnode = v # Legacy.
                     s = d.get('tnodeList', '')
                     tnodeList = s and s.split(',')
                     if tnodeList:
@@ -228,15 +221,6 @@ class FastRead (object):
                         aDict = fc.getDescendentUnknownAttributes(s, v=v)
                         if aDict:
                             fc.descendentVnodeUaDictList.append((v, aDict),)
-                    if 0: ###
-                        s = d.get('expanded')
-                        if s:
-                            aList = fc.getDescendentAttributes(s, tag="expanded")
-                            fc.descendentExpandedList.extend(aList)
-                        s = d.get('marks')
-                        if s:
-                            aList = fc.getDescendentAttributes(s, tag="marks")
-                            fc.descendentMarksList.extend(aList)
                     #
                     # Handle vnode uA's
                     uaDict = gnx2ua.get(gnx)
@@ -1081,7 +1065,6 @@ class FileCommands(object):
         #@+node:vitalije.20170831135447.1: *6* getPublicLeoFile
         def getPublicLeoFile():
             fc.outputFile = g.FileLikeObject()
-            ### fc.updateFixedStatus()
             fc.putProlog()
             fc.putHeader()
             fc.putGlobals()
@@ -1217,7 +1200,6 @@ class FileCommands(object):
         self.put('<leo_header file_format="2"/>\n')
     #@+node:ekr.20040324080819.1: *4* fc.putLeoFile & helpers
     def putLeoFile(self):
-        ### self.updateFixedStatus()
         self.putProlog()
         self.putHeader()
         self.putGlobals()
@@ -1385,31 +1367,11 @@ class FileCommands(object):
         c, v = self.c, p.v
         attrs = []
         c.cacher.setBits(v)
-        # Put the archived *current* position in the *root* position's <v> element.
-        if p == self.rootPosition:
-            ###
-                # d = v.u
-                # aList = [str(z) for z in self.currentPosition.archivedPosition()]
-                # str_pos = ','.join(aList)
-                # if d.get('str_leo_pos'):
-                    # del d['str_leo_pos']
-            # Don't write the current position if we can cache it.
-            if c.mFileName:
-                aList = [str(z) for z in self.currentPosition.archivedPosition()]
-                str_pos = ','.join(aList)
-                c.cacher.setCachedStringPosition(str_pos)
-            ###
-                # elif c.fixed:
-                    # pass
-                # else:
-                    # d['str_leo_pos'] = str_pos
-                # v.u = d
-        ###
-            # elif hasattr(v, "unknownAttributes"):
-                # d = v.unknownAttributes
-                # if d and not c.fixed and d.get('str_leo_pos'):
-                    # del d['str_leo_pos']
-                    # v.unknownAttributes = d
+        if p == self.rootPosition and c.mFileName:
+            aList = [str(z) for z in self.currentPosition.archivedPosition()]
+            str_pos = ','.join(aList)
+            c.cacher.setCachedStringPosition(str_pos)
+        #
         # Append unKnownAttributes to attrs
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # Fix #526: do this for @auto nodes as well.

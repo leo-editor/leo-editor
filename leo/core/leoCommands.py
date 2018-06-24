@@ -549,7 +549,6 @@ class Commands(object):
         c.collapse_nodes_after_move = getBool('collapse_nodes_after_move')
         c.collapse_on_lt_arrow = getBool('collapse_on_lt_arrow', default=True)
         c.contractVisitedNodes = getBool('contractVisitedNodes')
-        ### c.fixed = getBool('fixedWindow', default=False)
         c.fixedWindowPositionData = getData('fixedWindowPosition')
         c.focus_border_color = getColor('focus_border_color') or 'red'
         c.focus_border_command_state_color = getColor('focus_border_command_state_color') or 'blue'
