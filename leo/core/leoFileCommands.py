@@ -1081,7 +1081,7 @@ class FileCommands(object):
         #@+node:vitalije.20170831135447.1: *6* getPublicLeoFile
         def getPublicLeoFile():
             fc.outputFile = g.FileLikeObject()
-            fc.updateFixedStatus()
+            ### fc.updateFixedStatus()
             fc.putProlog()
             fc.putHeader()
             fc.putGlobals()
@@ -1217,17 +1217,14 @@ class FileCommands(object):
         self.put('<leo_header file_format="2"/>\n')
     #@+node:ekr.20040324080819.1: *4* fc.putLeoFile & helpers
     def putLeoFile(self):
-        self.updateFixedStatus()
+        ### self.updateFixedStatus()
         self.putProlog()
         self.putHeader()
         self.putGlobals()
         self.putPrefs()
         self.putFindSettings()
-        #start = g.getTime()
         self.putVnodes()
-        #start = g.printDiffTime("vnodes ",start)
         self.putTnodes()
-        #start = g.printDiffTime("tnodes ",start)
         self.putPostlog()
     #@+node:ekr.20031218072017.3035: *5* fc.putFindSettings
     def putFindSettings(self):
@@ -1387,38 +1384,32 @@ class FileCommands(object):
         '''Return the initial values of v's attributes.'''
         c, v = self.c, p.v
         attrs = []
-        if 1: # Leo 4.8: write marked/expanded bits to the cache.
-            c.cacher.setBits(v)
-        else: ###
-            # New in Leo 4.5: support fixed .leo files.
-            if not c.fixed:
-                bits = []
-                if v.isExpanded() and v.hasChildren() and c.putBitsFlag:
-                    bits.append("E")
-                if v.isMarked():
-                    bits.append("M")
-                if bits:
-                    attrs.append(' a="%s"' % ''.join(bits))
+        c.cacher.setBits(v)
         # Put the archived *current* position in the *root* position's <v> element.
         if p == self.rootPosition:
-            aList = [str(z) for z in self.currentPosition.archivedPosition()]
-            d = v.u
-            str_pos = ','.join(aList)
-            if d.get('str_leo_pos'):
-                del d['str_leo_pos']
+            ###
+                # d = v.u
+                # aList = [str(z) for z in self.currentPosition.archivedPosition()]
+                # str_pos = ','.join(aList)
+                # if d.get('str_leo_pos'):
+                    # del d['str_leo_pos']
             # Don't write the current position if we can cache it.
             if c.mFileName:
+                aList = [str(z) for z in self.currentPosition.archivedPosition()]
+                str_pos = ','.join(aList)
                 c.cacher.setCachedStringPosition(str_pos)
-            elif c.fixed:
-                pass
-            else:
-                d['str_leo_pos'] = str_pos
-            v.u = d
-        elif hasattr(v, "unknownAttributes"):
-            d = v.unknownAttributes
-            if d and not c.fixed and d.get('str_leo_pos'):
-                del d['str_leo_pos']
-                v.unknownAttributes = d
+            ###
+                # elif c.fixed:
+                    # pass
+                # else:
+                    # d['str_leo_pos'] = str_pos
+                # v.u = d
+        ###
+            # elif hasattr(v, "unknownAttributes"):
+                # d = v.unknownAttributes
+                # if d and not c.fixed and d.get('str_leo_pos'):
+                    # del d['str_leo_pos']
+                    # v.unknownAttributes = d
         # Append unKnownAttributes to attrs
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # Fix #526: do this for @auto nodes as well.
@@ -2073,19 +2064,6 @@ class FileCommands(object):
         if str_pos is not None:
             current = self.archivedPositionToPosition(str_pos)
         c.setCurrentPosition(current or c.rootPosition())
-    #@+node:ekr.20080412172151.2: *4* fc.updateFixedStatus
-    def updateFixedStatus(self):
-        c = self.c
-        p = c.config.findSettingsPosition('@bool fixedWindow')
-        if p:
-            import leo.core.leoConfig as leoConfig
-            parser = leoConfig.SettingsTreeParser(c)
-            kind, name, val = parser.parseHeadline(p.h)
-            if val and val.lower() in ('true', '1'):
-                val = True
-            else:
-                val = False
-            c.fixed = val
     #@-others
 #@-others
 #@@language python
