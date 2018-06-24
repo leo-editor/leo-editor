@@ -1203,7 +1203,7 @@ class FileCommands(object):
             n -= 1
     #@+node:ekr.20031218072017.1971: *4* fc.putClipboardHeader
     def putClipboardHeader(self):
-        # Put the minimum header for sax.
+        # Put the minimal header.
         self.put('<leo_header file_format="2"/>\n')
     #@+node:ekr.20040324080819.1: *4* fc.putLeoFile & helpers
     def putLeoFile(self):
