@@ -6,7 +6,6 @@
 import sys
 isPython3 = sys.version_info >= (3, 0, 0)
 import leo.core.leoGlobals as g
-###import leo.core.leoNodes as leoNodes
 if isPython3:
     import pickle
 else:

@@ -986,7 +986,6 @@ class LeoApp(object):
             print(app.signon1)
             print(app.signon2)
             print('** isPython3: %s' % g.isPython3)
-            ### print('** caching %s' % ('enabled' if g.enableDB else 'disabled'))
             print('')
     #@+node:ekr.20100831090251.5838: *4* app.createXGui
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
@@ -1213,14 +1212,12 @@ class LeoApp(object):
             return
         # Write the signon to the log: similar to self.computeSignon().
         p3 = 'isPython3: %s' % g.isPython3
-        ### caching = 'caching %s' % ('enabled' if g.enableDB else 'disabled')
         table = [
             ('Leo Log Window', 'red'),
             (app.signon, None),
             (app.signon1, None),
             (app.signon2, None),
             (p3, None),
-            ### (caching, None),
         ]
         table.reverse()
         c.setLog()
@@ -2665,7 +2662,6 @@ class LoadManager(object):
         add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
         add_bool('--maximized',     'start maximized')
         add_bool('--minimized',     'start minimized')
-        ### add_bool('--no-cache',      'disable reading of cached files')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
         add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
@@ -2778,9 +2774,6 @@ class LoadManager(object):
         g.app.start_maximized = options.maximized
         # --minimized
         g.app.start_minimized = options.minimized
-        # --no-cache
-        ### if options.no_cache:
-        ###    g.enableDB = False
         # --no-plugins
         if options.no_plugins:
             g.app.enablePlugins = False

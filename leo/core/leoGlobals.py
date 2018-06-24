@@ -20,12 +20,8 @@ isWindows = sys.platform.startswith('win')
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
-#
-# True unless --no-cache is in effect.
-### enableDB = True
-#
-# True: Enable SQLite DB.
 SQLITE = True
+    # True: Enable SQLite DB.
 #@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)

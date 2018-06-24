@@ -415,7 +415,6 @@ class FileCommands(object):
         self.initReadIvars()
         #
         # Save the hidden root's children.
-        ### Needed?
         children = c.hiddenRootNode.children
         #
         # Save and clear gnxDict.
@@ -436,7 +435,6 @@ class FileCommands(object):
             v.parents = []
         #
         # Restore the hidden root's children
-        ### Needed
         assert c.hiddenRootNode not in v.parents, g.objToString(v.parents)
         c.hiddenRootNode.children = children
         if not v:
@@ -1228,7 +1226,6 @@ class FileCommands(object):
     def putGlobals(self):
         '''Put a vestigial <globals> element, and write global data to the cache.'''
         c = self.c
-        ### if g.enableDB and c.mFileName:
         if c.mFileName:
             c.cacher.setCachedGlobalsElement(c.mFileName)
         self.put("<globals/>\n")
@@ -1395,7 +1392,6 @@ class FileCommands(object):
             if d.get('str_leo_pos'):
                 del d['str_leo_pos']
             # Don't write the current position if we can cache it.
-            ### if g.enableDB and c.mFileName:
             if c.mFileName:
                 c.cacher.setCachedStringPosition(str_pos)
             elif c.fixed:
@@ -2052,7 +2048,6 @@ class FileCommands(object):
             # position is already selected
             return
         current, str_pos = None, None
-        ### use_db = g.enableDB and c.mFileName
         if c.mFileName:
             str_pos = c.cacher.getCachedStringPosition(c.mFileName)
         if str_pos is None:

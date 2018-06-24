@@ -675,7 +675,7 @@ class TestManager(object):
                         logger.info('\n'+''.join(stream.aList))
                     logger.removeHandler(handler)
                 # put info to db as well
-                if True: ### g.enableDB:
+                if True:
                     # Used by quicksearch plugin.
                     key = 'unittest/cur/fail'
                     archive = [(t.p.gnx, trace2) for(t, trace2) in result.errors]
