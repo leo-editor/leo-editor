@@ -49,7 +49,6 @@ class Cacher(object):
             # When caching is enabled will be a PickleShareDB instance.
         self.dbdirname = None # A string.
         self.globals_tag = 'leo.globals'
-            # 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
         self.inited = False
     #@+node:ekr.20100208082353.5918: *4* cacher.initFileDB
     def initFileDB(self, fn):
@@ -81,11 +80,11 @@ class Cacher(object):
 
             g.app.db['hello'] = [1,2,5]
             
-        This method *always* creates .leo/db/global, even if caching is
+        This method *always* creates .leo/db/g_app_db, even if caching is
         disabled.
         '''
         try:
-            dbdirname = g.app.homeLeoDir + "/db/global"
+            dbdirname = g.app.homeLeoDir + "/db/g_app_db"
             db = SqlitePickleShare(dbdirname) if SQLITE else PickleShareDB(dbdirname)
             self.db = db
             self.inited = True
@@ -205,7 +204,7 @@ class Cacher(object):
         return [
             p.h, p.b, p.gnx,
             [self.makeCacheList(p2) for p2 in p.children()]]
-    #@+node:ekr.20100210163813.5747: *4* cacher.save
+    #@+node:ekr.20100210163813.5747: *4* cacher.save (to do)
     def save(self, fn, changeName):
         ### g.trace('=====', fn)
         if SQLITE:

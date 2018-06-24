@@ -341,7 +341,7 @@ class AtFile(object):
         # This method is the gateway to the shadow algorithm.
         x.updatePublicAndPrivateFiles(at.root, fn, shadow_fn)
         return shadow_fn
-    #@+node:ekr.20041005105605.21: *5* at.read & helpers (Simplify)
+    #@+node:ekr.20041005105605.21: *5* at.read & helpers
     def read(self, root, importFileName=None,
         fromString=None, atShadow=False, force=False
     ):

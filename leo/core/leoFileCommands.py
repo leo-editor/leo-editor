@@ -1224,63 +1224,17 @@ class FileCommands(object):
         # New in 4.3:  These settings never get written to the .leo file.
         self.put("<find_panel_settings/>")
         self.put_nl()
-    #@+node:ekr.20031218072017.3037: *5* fc.putGlobals (To be changed)
-    # Changed for Leo 4.0.
-
+    #@+node:ekr.20031218072017.3037: *5* fc.putGlobals
     def putGlobals(self):
-
+        '''Put a vestigial <globals> element, and write global data to the cache.'''
         c = self.c
-        use_db = g.enableDB and c.mFileName
-        if use_db:
+        if g.enableDB and c.mFileName:
             c.cacher.setCachedGlobalsElement(c.mFileName)
-        # Always put positions, to trigger sax methods.
-        self.put("<globals")
-        #@+<< put the body/outline ratios >>
-        #@+node:ekr.20031218072017.3038: *6* << put the body/outline ratios >>
-        self.put(" body_outline_ratio=")
-        self.put_in_dquotes("0.5" if c.fixed or use_db else "%1.2f" % (
-            c.frame.ratio))
-        self.put(" body_secondary_ratio=")
-        self.put_in_dquotes("0.5" if c.fixed or use_db else "%1.2f" % (
-            c.frame.secondary_ratio))
-        #@-<< put the body/outline ratios >>
-        self.put(">"); self.put_nl()
-        #@+<< put the position of this frame >>
-        #@+node:ekr.20031218072017.3039: *6* << put the position of this frame >>
-        # New in Leo 4.5: support fixed .leo files.
-        if c.fixed or use_db:
-            width, height, left, top = 700, 500, 50, 50
-                # Put fixed, immutable, reasonable defaults.
-                # Leo 4.5 and later will ignore these when reading.
-                # These should be reasonable defaults so that the
-                # file will be opened properly by older versions
-                # of Leo that do not support fixed .leo files.
-        else:
-            width, height, left, top = c.frame.get_window_info()
-        self.put_tab()
-        self.put("<global_window_position")
-        self.put(" top="); self.put_in_dquotes(str(top))
-        self.put(" left="); self.put_in_dquotes(str(left))
-        self.put(" height="); self.put_in_dquotes(str(height))
-        self.put(" width="); self.put_in_dquotes(str(width))
-        self.put("/>"); self.put_nl()
-        #@-<< put the position of this frame >>
-        #@+<< put the position of the log window >>
-        #@+node:ekr.20031218072017.3040: *6* << put the position of the log window >>
-        top = left = height = width = 0 # no longer used
-        self.put_tab()
-        self.put("<global_log_window_position")
-        self.put(" top="); self.put_in_dquotes(str(top))
-        self.put(" left="); self.put_in_dquotes(str(left))
-        self.put(" height="); self.put_in_dquotes(str(height))
-        self.put(" width="); self.put_in_dquotes(str(width))
-        self.put("/>"); self.put_nl()
-        #@-<< put the position of the log window >>
-        self.put("</globals>"); self.put_nl()
+        self.put("<globals/>\n")
     #@+node:ekr.20031218072017.3041: *5* fc.putHeader
     def putHeader(self):
         tnodes = 0; clone_windows = 0 # Always zero in Leo2.
-        if 1: # For compatibility with versions before Leo 4.5.
+        if 0: # For compatibility with versions before Leo 4.5.
             self.put("<leo_header")
             self.put(" file_format="); self.put_in_dquotes("2")
             self.put(" tnodes="); self.put_in_dquotes(str(tnodes))
