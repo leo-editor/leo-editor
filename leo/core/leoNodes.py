@@ -2225,10 +2225,10 @@ class VNodeBase(object):
     def headString(self):
         """Return the headline string."""
         # This message should never be printed and we want to avoid crashing here!
-        if not g.isUnicode(self._headString):
+        if not g.isString(self._headString):
             if not self.head_unicode_warning:
                 self.head_unicode_warning = True
-                g.internalError('not unicode', repr(self._headString))
+                g.internalError('not a string', repr(self._headString))
         # Make _sure_ we return a unicode string.
         return g.toUnicode(self._headString)
 
