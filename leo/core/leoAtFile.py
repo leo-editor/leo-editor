@@ -2007,27 +2007,19 @@ class AtFile(object):
         if not inCode:
             at.putEndDocLine()
     #@+node:ekr.20041005105605.169: *7* at.putAtAllChild
-    #@+at This code puts only the first of two or more cloned siblings, preceding the
-    # clone with an @clone n sentinel.
-    # 
-    # This is a debatable choice: the cloned tree appears only once in the external
-    # file. This should be benign; the text created by @all is likely to be used only
-    # for recreating the outline in Leo. The representation in the derived file
-    # doesn't matter much.
-    #@@c
-
     def putAtAllChild(self, p):
+        '''
+        This code puts only the first of two or more cloned siblings, preceding
+        the clone with an @clone n sentinel.
+        
+        This is a debatable choice: the cloned tree appears only once in the
+        external file. This should be benign; the text created by @all is
+        likely to be used only for recreating the outline in Leo. The
+        representation in the derived file doesn't matter much.
+        '''
         at = self
-        parent_v = p._parentVnode()
-        if False: # 2010/01/23: This generates AtFile errors about orphan nodes.
-            clonedSibs, thisClonedSibIndex = at.scanForClonedSibs(parent_v, p.v)
-            if clonedSibs > 1:
-                at.putSentinel("@clone %d" % (clonedSibs))
-            else:
-                g.trace('**** ignoring', p.h)
-                p.v.setVisited() # 2010/01/23
-                return # Don't write second or greater trees.
-        at.putOpenNodeSentinel(p, inAtAll=True) # Suppress warnings about @file nodes.
+        at.putOpenNodeSentinel(p, inAtAll=True)
+            # Suppress warnings about @file nodes.
         at.putAtAllBody(p)
         for child in p.children():
             at.putAtAllChild(child)
@@ -3355,19 +3347,6 @@ class AtFile(object):
             "tabwidth": at.tab_width,
         }
         return d
-    #@+node:ekr.20041005105605.242: *4* at.scanForClonedSibs (reading & writing)
-    def scanForClonedSibs(self, parent_v, v):
-        """Scan the siblings of VNode v looking for clones of v.
-        Return the number of cloned sibs and n where p is the n'th cloned sibling."""
-        clonedSibs = 0 # The number of cloned siblings of p, including p.
-        thisClonedSibIndex = 0 # Position of p in list of cloned siblings.
-        if v and v.isCloned():
-            for sib in parent_v.children:
-                if sib == v:
-                    clonedSibs += 1
-                    if sib == v:
-                        thisClonedSibIndex = clonedSibs
-        return clonedSibs, thisClonedSibIndex
     #@+node:ekr.20120110174009.9965: *4* at.shouldPromptForDangerousWrite
     def shouldPromptForDangerousWrite(self, fn, p):
         '''
