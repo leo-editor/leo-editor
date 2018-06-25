@@ -2351,10 +2351,10 @@ class Commands(object):
         c, d = self, {}
         for v in c.all_unique_nodes():
             gnxString = v.fileIndex
-            assert g.isUnicode(gnxString)
-            d[gnxString] = v
-            if 'gnx' in g.app.debug:
-                g.trace(c.shortFileName(), gnxString, v)
+            if g.isString(gnxString):
+                d[gnxString] = v
+                if 'gnx' in g.app.debug:
+                    g.trace(c.shortFileName(), gnxString, v)
         c.fileCommands.gnxDict = d
     #@+node:ekr.20180508111544.1: *3* c.Git
     #@+node:ekr.20180510104805.1: *4* c.diff_file (new)
