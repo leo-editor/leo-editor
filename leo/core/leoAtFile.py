@@ -2651,25 +2651,6 @@ class AtFile(object):
             return True, i + 2
         else:
             return False, -1
-    #@+node:ekr.20070909103844: *5* at.isSignificantTree (not used!)
-    def isSignificantTree(self, p):
-        '''Return True if p's tree has a significant amount of information.'''
-        s = p.b
-        # Remove all blank lines and all Leo directives.
-        lines = []
-        for line in g.splitLines(s):
-            if not line.strip():
-                pass
-            elif line.startswith('@'):
-                i = 1; j = g.skip_id(line, i, chars='-')
-                word = s[i: j]
-                if not (word and word in g.globalDirectiveList):
-                    lines.append(line)
-            else:
-                lines.append(line)
-        s2 = ''.join(lines)
-        val = p.hasChildren() or len(s2.strip()) >= 10
-        return val
     #@+node:ekr.20080712150045.2: *5* at.openStringFile
     def openStringFile(self, fn, encoding='utf-8'):
         at = self
@@ -2767,27 +2748,6 @@ class AtFile(object):
             if g.match(line, 0, tag):
                 i = len(tag); i = g.skip_ws(line, i)
                 at.os(line[i:])
-    #@+node:ekr.20071117152308: *5* at.putBuffered
-    def putBuffered(self, s):
-        '''Put s, converting all tabs to blanks as necessary.'''
-        if not s: return
-        w = self.tab_width
-        if w < 0:
-            result = []
-            lines = s.split('\n')
-            for line in lines:
-                line2 = []; j = 0
-                for ch in line:
-                    j += 1
-                    if ch == '\t':
-                        w2 = g.computeWidth(s[: j], w)
-                        w3 = (abs(w) - (w2 % abs(w)))
-                        line2.append(' ' * w3)
-                    else:
-                        line2.append(ch)
-                result.append(''.join(line2))
-            s = '\n'.join(result)
-        self.os(s)
     #@+node:ekr.20041005105605.206: *5* at.putDirective 4.x & helper
     def putDirective(self, s, i):
         r'''

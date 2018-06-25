@@ -276,6 +276,7 @@
 <v t="ekr.20100131180007.5463"><vh>@test fc.handleTnodeSaxAttributes</vh></v>
 <v t="ekr.20100131180007.5460"><vh>@test fc.handleVnodeSaxAttributes</vh></v>
 </v>
+<v t="ekr.20071113143844.5"><vh>@test at.isSignificantTree</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3571017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3871097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
@@ -878,6 +879,9 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
+<t tx="ekr.20071113143844.5">assert c.atFileCommands.isSignificantTree(p)
+
+</t>
 <t tx="ekr.20071113203234"></t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 

@@ -1592,9 +1592,6 @@ s2 = '''
 at = c.atFileCommands
 assert at.isFileLike(s1),'fail1'
 assert not at.isFileLike(s2),'fail2'
-#@+node:ekr.20071113143844.5: *4* @test at.isSignificantTree
-assert c.atFileCommands.isSignificantTree(p)
-
 #@+node:ekr.20110524091618.3488: *4* @@@test at.massageDocPart
 at = c.atFileCommands
 
