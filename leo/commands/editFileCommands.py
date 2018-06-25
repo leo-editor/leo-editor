@@ -704,7 +704,7 @@ class GitDiffController:
                 if fn2.endswith(fn):
                     return p
         return None
-    #@+node:ekr.20170806094321.7: *5* gdc.make_at_file_outline (Changed)
+    #@+node:ekr.20170806094321.7: *5* gdc.make_at_file_outline
     def make_at_file_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
         # A specialized version of atFileCommands.read.
@@ -778,7 +778,7 @@ class GitDiffController:
             return ''.join(lines).strip()
         else:
             return 'uncommitted'
-    #@+node:ekr.20170820084258.1: *5* gdc.make_at_clean_outline (Changed)
+    #@+node:ekr.20170820084258.1: *5* gdc.make_at_clean_outline
     def make_at_clean_outline(self, fn, root, s, rev):
         '''
         Create a hidden temp outline from lines without sentinels.
