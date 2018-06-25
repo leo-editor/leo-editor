@@ -155,7 +155,6 @@ class AtFile(object):
             # New in Leo 4.8: "4" or "5" for new-style thin files.
         at.readVersion5 = False
             # synonym for at.readVersion >= '5' and not atShadow.
-            # set by at.parseLeoSentinel()
         at.root = root
         at.rootSeen = False
         at.atShadow = atShadow
@@ -248,13 +247,6 @@ class AtFile(object):
             if hasattr(at.root.v, 'tnodeList'):
                 delattr(at.root.v, 'tnodeList')
             at.root.v._p_changed = True
-    #@+node:ekr.20130911110233.11286: *4* at.initReadLine
-    def initReadLine(self, s):
-        '''Init the ivars so that at.readLine will read all of s.'''
-        at = self
-        at.read_i = 0
-        at.read_lines = g.splitLines(s)
-        at._file_bytes = g.toEncodedString(s)
     #@+node:ekr.20041005105605.17: *3* at.Reading
 
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
@@ -390,11 +382,6 @@ class AtFile(object):
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         root.clearDirty()
         return True
-    #@+node:ekr.20041005105605.25: *6* at.deleteAllTempBodyStrings
-    def deleteAllTempBodyStrings(self):
-        '''Delete all temp attributes.'''
-        at = self
-        at.clearAllBodyInited()
     #@+node:ekr.20100122130101.6174: *6* at.deleteTnodeList
     def deleteTnodeList(self, p): # AtFile method.
         '''Remove p's tnodeList.'''
@@ -503,8 +490,10 @@ class AtFile(object):
     #     This is also true if we are reading fromString.
     #@@c
     def checkExternalFileAgainstDb(self, root):
-        '''Returns True if file is not modified since last save in db.
-           Otherwise returns False.'''
+        '''
+        Returns True if file is not modified since last save in db.
+        Otherwise returns False.
+        '''
         conn = self.c.sqlite_connection
         if conn is None: return False
         hx = hashlib.md5(self._file_bytes).hexdigest()
@@ -677,7 +666,7 @@ class AtFile(object):
         p.b = g.u(head) + g.toUnicode(s, encoding=encoding, reportErrors='True')
         if not changed: c.setChanged(False)
         g.doHook('after-edit', p=p)
-    #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers (Changed)
+    #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
     def readOneAtCleanNode(self, root):
         '''Update the @clean/@nosent node at root.'''
         at, c, x = self, self.c, self.c.shadowController
@@ -744,7 +733,7 @@ class AtFile(object):
         )
         s = g.toUnicode(at.stringOutput, encoding=at.encoding)
         return g.splitLines(s)
-    #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode
+    #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
     def readOneAtShadowNode(self, fn, p, force=False):
 
         at = self; c = at.c; x = c.shadowController
@@ -784,42 +773,11 @@ class AtFile(object):
             c.setChanged(oldChanged)
         # else: g.doHook('after-shadow', p = p)
         return ic.errors == 0
-    #@+node:ekr.20180622110112.1: *4* at.fast_read_into_root (New)
+    #@+node:ekr.20180622110112.1: *4* at.fast_read_into_root
     def fast_read_into_root(self, c, contents, gnx2vnode, path, root):
         '''A convenience wrapper for FastAtReAD.read_into_root()'''
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
-    #@+node:ekr.20100625092449.5963: *5* at.appendToOut
-    def appendToOut(self, s):
-        '''Append s to at.out (old sentinels) or
-           at.v.tempBodyList (new sentinels).'''
-        at = self
-        if at.readVersion5:
-            if not at.v: at.v = at.root.v
-            if hasattr(at.v, "tempBodyList"):
-                at.v.tempBodyList.append(s)
-            else:
-                at.v.tempBodyList = [s]
-        else:
-            at.out.append(s)
-    #@+node:ekr.20150310141151.5: *5* at.body inited accessors
-    def bodyIsInited(self, v):
-        '''Return True if v.b has been inited.'''
-        c = self.c
-        return hasattr(c, 'bodyInitedDict') and v.gnx in c.bodyInitedDict
-
-    def bodySetInited(self, v):
-        '''Indicate that v.b has been inited.'''
-        c = self.c
-        if not hasattr(c, 'bodyInitedDict'):
-            c.bodyInitedDict = {}
-        c.bodyInitedDict[v.gnx] = True
-
-    def clearAllBodyInited(self):
-        '''Clear all v.b inited bits.'''
-        c = self.c
-        if hasattr(c, 'bodyInitedDict'):
-            delattr(c, 'bodyInitedDict')
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
     def createImportedNode(self, root, headline):
         at = self
@@ -832,6 +790,13 @@ class AtFile(object):
             at.importRootSeen = True
         p.v.setVisited() # Suppress warning about unvisited node.
         return p
+    #@+node:ekr.20130911110233.11286: *5* at.initReadLine
+    def initReadLine(self, s):
+        '''Init the ivars so that at.readLine will read all of s.'''
+        at = self
+        at.read_i = 0
+        at.read_lines = g.splitLines(s)
+        at._file_bytes = g.toEncodedString(s)
     #@+node:ekr.20041005105605.120: *5* at.parseLeoSentinel
     def parseLeoSentinel(self, s):
         '''
@@ -887,23 +852,11 @@ class AtFile(object):
             at.readVersion = readVersion
             at.readVersion5 = readVersion5
         return valid, new_df, start, end, isThin
-    #@+node:ekr.20041005105605.127: *5* at.readError
-    def readError(self, message):
-        # This is useful now that we don't print the actual messages.
-        if self.errors == 0:
-            self.printError("----- read error. line: %s, file: %s" % (
-                self.lineNumber, self.targetFileName,))
-        self.error(message)
-        # Delete all of root's tree.
-        self.root.v.children = []
-        self.root.setDirty()
-            # 2010/10/22: the dirty bit gets cleared later, though.
-        self.root.setOrphan()
     #@+node:ekr.20130911110233.11284: *5* at.readFileToUnicode & helpers
     def readFileToUnicode(self, fn):
         '''
         Carefully sets at.encoding, then uses at.encoding to convert the file
-        to a unicode string. Calls at.initReadLine if all went well.
+        to a unicode string.
 
         Sets at.encoding as follows:
         1. Use the BOM, if present. This unambiguously determines the encoding.
@@ -980,6 +933,7 @@ class AtFile(object):
         Read one line from file using the present encoding.
         Returns at.read_lines[at.read_i++]
         """
+        # Used by scanHeader.
         at = self
         if at.read_i < len(at.read_lines):
             s = at.read_lines[at.read_i]
@@ -990,7 +944,7 @@ class AtFile(object):
     #@+node:ekr.20041005105605.129: *5* at.scanHeader
     def scanHeader(self, fileName, giveErrors=True):
         """
-        Scan the @+leo sentinel.
+        Scan the @+leo sentinel, using the old readLine interface.
 
         Sets self.encoding, and self.start/endSentinelComment.
 
@@ -1043,17 +997,6 @@ class AtFile(object):
             # scanHeader uses at.readline instead of its args.
             # scanHeader also sets at.encoding.
         return isThin
-    #@+node:ekr.20041005105605.131: *5* at.skipIndent
-    # Skip past whitespace equivalent to width spaces.
-
-    def skipIndent(self, s, i, width):
-        ws = 0; n = len(s)
-        while i < n and ws < width:
-            if s[i] == '\t': ws += (abs(self.tab_width) - (ws % abs(self.tab_width)))
-            elif s[i] == ' ': ws += 1
-            else: break
-            i += 1
-        return i
     #@+node:ekr.20041005105605.132: *3* at.Writing
     #@+node:ekr.20041005105605.133: *4* Writing (top level)
     #@+node:ekr.20041005105605.154: *5* at.asisWrite & helper
@@ -3569,6 +3512,7 @@ class FastAtRead (object):
     def scan_header(self, lines):
         '''
         Scan for the header line, which follows any @first lines.
+        Return (delims, first_lines, i+1) or None
         '''
         first_lines = []
         i = 0 # To keep pylint happy.
