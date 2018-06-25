@@ -9,15 +9,10 @@
 import leo.core.leoGlobals as g
 import leo.core.leoBeautify as leoBeautify
 import leo.core.leoNodes as leoNodes
-# from collections import defaultdict
-# import glob
-# import importlib
 import os
 import re
 import sys
 import time
-import hashlib
-import sqlite3
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160514120655.1: ** class AtFile
@@ -481,31 +476,6 @@ class AtFile(object):
             line = s[j: k]
             valid, new_df, start, end, isThin = at.parseLeoSentinel(line)
             return not isThin
-    #@+node:vitalije.20170701155512.1: *6* at.checkExternalFileAgainstDb
-    #@+at
-    #     This method assumes that file was already read and that
-    #     at.initReadLine was called, which did set at._file_bytes to
-    #     content of file as encoded string.
-    # 
-    #     This is also true if we are reading fromString.
-    #@@c
-    def checkExternalFileAgainstDb(self, root):
-        '''
-        Returns True if file is not modified since last save in db.
-        Otherwise returns False.
-        '''
-        conn = self.c.sqlite_connection
-        if conn is None: return False
-        hx = hashlib.md5(self._file_bytes).hexdigest()
-        try:
-            hx2 = conn.execute(
-                    '''select value from extra_infos
-                            where name=?''',
-                    ('md5_' + root.gnx,)
-                ).fetchone()
-        except sqlite3.OperationalError:
-            hx2 = False
-        return hx2 and hx2[0] == hx
     #@+node:ekr.20041005105605.26: *5* at.readAll
     def readAll(self, root, force=False):
         """Scan positions, looking for @<file> nodes to read."""
@@ -933,7 +903,8 @@ class AtFile(object):
         Read one line from file using the present encoding.
         Returns at.read_lines[at.read_i++]
         """
-        # Used by scanHeader.
+        # This is an old interface, now used only by at.scanHeader.
+        # For now, it's not worth replacing.
         at = self
         if at.read_i < len(at.read_lines):
             s = at.read_lines[at.read_i]
