@@ -2355,6 +2355,8 @@ class Commands(object):
                 d[gnxString] = v
                 if 'gnx' in g.app.debug:
                     g.trace(c.shortFileName(), gnxString, v)
+            else:
+                g.internalError('no gnx for vnode: %s' % (v))
         c.fileCommands.gnxDict = d
     #@+node:ekr.20180508111544.1: *3* c.Git
     #@+node:ekr.20180510104805.1: *4* c.diff_file (new)
