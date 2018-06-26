@@ -71,6 +71,8 @@ def global_search_f(event):
 #@+node:ville.20120302233106.3580: *3* init (bigdash.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
+    if not QtWebKitWidgets:
+        return False
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.app._global_search = GlobalSearch()
