@@ -239,7 +239,7 @@ class FastRead (object):
         # Create the hidden root vnode.
         gnx = 'hidden-root-vnode-gnx'
         hidden_v = leoNodes.VNode(context=context, gnx=gnx)
-        hidden_v._headString = g.toUnicode('<hidden root vnode>')
+        hidden_v._headString = g.u('<hidden root vnode>')
         gnx2vnode [gnx] = hidden_v
         #
         # Traverse the tree of v elements.
