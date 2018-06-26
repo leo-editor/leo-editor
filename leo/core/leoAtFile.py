@@ -3649,10 +3649,6 @@ class FastAtRead (object):
                     # Always clear the children!
                     v.children=[]
                     parent_v.children.append(v)
-                    ###
-                        # Update *only* clone_root.children.
-                        # if parent_v == clone_v:
-                            # parent_v.children.append(v)
                     continue
                 #
                 # Case 3: we are not already scanning the descendants of a clone.
