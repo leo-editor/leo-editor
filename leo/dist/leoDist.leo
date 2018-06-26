@@ -1530,7 +1530,9 @@ git push --follow-tags
 
 - My blog: http://edreamleo.blogspot.com/
   **Paste source-forge or leo-editor announcement** as text, not html.
-</t>
+  
+- Email Matt Wilkie, maphew@gmail.com, announcing the release.
+  </t>
 <t tx="ekr.20180527084946.1">May 28, 2018
 Leo 5.7.3, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).

@@ -28167,7 +28167,33 @@ Alternatively, the plugin could run code at 'start2' time, after all plugins hav
 <t tx="ekr.20180608054147.1"></t>
 <t tx="ekr.20180608054151.1">This branch incorporates Vitalije's great new read code.  This code reads external files (from @file nodes) almost exactly as fast as when using the cacher.
 
-As a result, caching is no longer needed, and the the --no-cache option does nothing.</t>
+As a result, file caching is no longer needed, The --no-cache option is gone.
+
+** Highlights of the fast-read branch **
+
+1. It includes the no-sax branch.  That is, the fast-read branch contains new code for reading both external files and .leo files.
+
+2. Caching has been radically simplified:
+
+A. No file caching whatever is done.  The cache contains only non-essential items, such as marked and expanded bits.
+
+B. ~/.leo/db now contains only two sub-folders: g_app_db and global_data.  g_app_db corresponds to the old "global" folder.  It contains the cached result of g.app.db.  The global_data folder contains all expanded and marked bits, plus some other data.  The keys are simply the full path names of each .leo file.  This should be safe enough.
+
+3. Leo writes only a vestigial &lt;globals&gt; element in .leo files.  This should be enough to allow old (Leo 4.5 and above) versions of Leo to read .leo files.
+
+4. Leo no longer writes expanded and marked bits to the root node of @file trees.
+
+5. As a result of 2, 3 and 4, all Leo files are essentially "fixed".  Their contents will change much less often than before.  As a result, the c.fixed switch has been eliminated, along with the @bool fixedwindow setting.
+
+6. The g.enableDB switch has been eliminated, along with the --no-cache command-line argument.
+
+**Summary**
+
+Leo now works as if --no-cache were permanently in effect.  In other words, Leo always recreates outlines directly from external files.  This eliminates an important source of confusion.
+
+Leo's new read code is almost exactly as fast as reading cached data, a remarkable accomplishment.
+
+Leo no longer pollutes .leo files with non-essential data, resulting in fewer diffs of .leo files.</t>
 <t tx="ekr.20180608054356.1">This branch greatly reduces overhead during startup.
 
 1. All generators yielding positions now accept a "copy" kwarg.
