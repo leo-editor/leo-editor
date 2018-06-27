@@ -228,7 +228,7 @@ class Commands(object):
         self.spellCommands = None
         self.leoTestManager = None
         self.vimCommands = None
-    #@+node:ekr.20120217070122.10470: *5* c.initObjects (changed)
+    #@+node:ekr.20120217070122.10470: *5* c.initObjects
     #@@nobeautify
 
     def initObjects(self, gui):

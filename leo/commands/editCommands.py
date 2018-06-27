@@ -57,18 +57,18 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.openBracketsList = cf.getString('open_flash_brackets') or '([{'
         self.closeBracketsList = cf.getString('close_flash_brackets') or ')]}'
         self.initBracketMatcher(c)
-    #@+node:ekr.20150514063305.190: *3* ec.cache (changed)
+    #@+node:ekr.20150514063305.190: *3* ec.cache
     @cmd('clear-all-caches')
     @cmd('clear-cache')
     def clearAllCaches(self, event=None):
         '''Clear all of Leo's file caches.'''
-        g.app.cacher.clear()
+        g.app.global_cacher.clear()
         g.app.commander_cacher.clear()
         
     @cmd('dump-caches')
     def dumpCaches(self, event=None):
         '''Dump, all of Leo's file caches.'''
-        g.app.cacher.dump()
+        g.app.global_cacher.dump()
         g.app.commander_cacher.dump()
     #@+node:ekr.20150514063305.118: *3* ec.doNothing
     @cmd('do-nothing')

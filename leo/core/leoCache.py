@@ -52,7 +52,7 @@ class CommanderCacher(object):
         self.closed = False
 
     #@+others
-    #@+node:ekr.20100209160132.5759: *3* cacher.clear (changed)
+    #@+node:ekr.20100209160132.5759: *3* cacher.clear
     def clear(self):
         '''Clear the cache for all commanders.'''
         # Careful: self.db may be a Python dict.
@@ -78,40 +78,10 @@ class CommanderCacher(object):
             # pylint: disable=no-member
             self.db.conn.commit()
     #@+node:ekr.20100208062523.5886: *3* cacher.ctor
-    #@+node:ekr.20180611054447.1: *3* cacher.dump (changed)
-    def dump(self, db):
+    #@+node:ekr.20180611054447.1: *3* cacher.dump
+    def dump(self):
         '''Dump the indicated cache if --trace-cache is in effect.'''
-        if 'cache' not in g.app.debug:
-            return
-        
-        def dump_list(aList, result, indent=0):
-            head, body, gnx, children = tuple(aList)
-            assert isinstance(children, list)
-            result.append('%6s%s %20s %s' % (len(body), ' '*indent, gnx, head))
-            for child in children:
-                dump_list(child, result, indent=indent+2)
-
-        print('\n===== Commander Cache =====\n')
-        for key in db.keys():
-            key = key[0]
-            val = db.get(key)
-            print('%s:' % key)
-            if key.startswith('fcache/'):
-                assert isinstance(val, list), val.__class__.__name__
-                result = ['list of nodes...']
-                dump_list(val, result)
-                if 1: # Brief
-                    n = len(result)-1
-                    print('%s node%s in %s' % (n, g.plural(n), val[0].strip()))
-                else:
-                    g.printObj(result)
-            elif g.isString(val):
-                print(val)
-            elif isinstance(val, (int, float)):
-                print(val)
-            else:
-                g.printObj(val)
-            print('')
+        dump_cache(g.app.commander_db, tag='Commander Cache')
     #@+node:ekr.20180627053508.1: *3* cacher.get_wrapper
     def get_wrapper(self, c, fn=None):
         '''Return a new wrapper for c.'''
@@ -139,7 +109,7 @@ class CommanderCacher(object):
         if 0: print(db.keys())
         db.clear()
         return True
-    #@+node:ekr.20100210163813.5747: *3* cacher.save (changed)
+    #@+node:ekr.20100210163813.5747: *3* cacher.save
     def save(self, c, fn, changeName):
         '''
         Save the per-commander cache.
@@ -275,39 +245,9 @@ class GlobalCacher(object):
             self.db.conn.commit()
             self.db.conn.close()
     #@+node:ekr.20180627045953.1: *3* g_cacher.dump
-    def dump(self, db):
+    def dump(self):
         '''Dump the indicated cache if --trace-cache is in effect.'''
-        if 'cache' not in g.app.debug:
-            return
-        
-        def dump_list(aList, result, indent=0):
-            head, body, gnx, children = tuple(aList)
-            assert isinstance(children, list)
-            result.append('%6s%s %20s %s' % (len(body), ' '*indent, gnx, head))
-            for child in children:
-                dump_list(child, result, indent=indent+2)
-
-        print('\n===== Global Cache =====\n')
-        for key in db.keys():
-            key = key[0]
-            val = db.get(key)
-            print('%s:' % key)
-            if key.startswith('fcache/'):
-                assert isinstance(val, list), val.__class__.__name__
-                result = ['list of nodes...']
-                dump_list(val, result)
-                if 1: # Brief
-                    n = len(result)-1
-                    print('%s node%s in %s' % (n, g.plural(n), val[0].strip()))
-                else:
-                    g.printObj(result)
-            elif g.isString(val):
-                print(val)
-            elif isinstance(val, (int, float)):
-                print(val)
-            else:
-                g.printObj(val)
-            print('')
+        dump_cache(g.app.db, 'Global Cache')
     #@-others
 #@+node:ekr.20100208223942.5967: ** class PickleShareDB
 _sentinel = object()
@@ -808,39 +748,27 @@ class SqlitePickleShare(object):
         pass
     #@-others
 #@+node:ekr.20180627050237.1: ** function: dump_cache
-def dump(db, tag):
-    '''Dump the indicated cache if --trace-cache is in effect.'''
-    if 'cache' not in g.app.debug:
-        return
-    
-    def dump_list(aList, result, indent=0):
-        head, body, gnx, children = tuple(aList)
-        assert isinstance(children, list)
-        result.append('%6s%s %20s %s' % (len(body), ' '*indent, gnx, head))
-        for child in children:
-            dump_list(child, result, indent=indent+2)
-
+def dump_cache(db, tag):
+    '''Dump the given cache.'''
     print('\n===== %s =====\n' % tag)
     for key in db.keys():
         key = key[0]
         val = db.get(key)
-        print('%s:' % key)
-        if key.startswith('fcache/'):
-            assert isinstance(val, list), val.__class__.__name__
-            result = ['list of nodes...']
-            dump_list(val, result)
-            if 1: # Brief
-                n = len(result)-1
-                print('%s node%s in %s' % (n, g.plural(n), val[0].strip()))
+        if g.isString(val):
+            if key.endswith(('leo_expanded', 'leo_marked')):
+                if val:
+                    print('%s:' % key)
+                    g.printObj(val.split(','))
+                else:
+                    print('%s:[]' % key)
             else:
-                g.printObj(result)
-        elif g.isString(val):
-            print(val)
+                print('%s:%s' % (key, val))   
         elif isinstance(val, (int, float)):
-            print(val)
+            print('%s:%s' % (key, val))    
         else:
+            print('%s:' % key)
             g.printObj(val)
-        print('')
+    print('')
 #@-others
 #@@language python
 #@@tabwidth -4

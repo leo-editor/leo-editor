@@ -221,7 +221,7 @@ class LeoApp(object):
             # Translations of menu names.
         #@-<< LeoApp: global data >>
         #@+<< LeoApp: global controller/manager objects >>
-        #@+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >> (changed)
+        #@+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >>
         # Most of these are defined in initApp.
         self.backgroundProcessManager = None
             # The singleton BackgroundProcessManager instance.
@@ -1066,7 +1066,7 @@ class LeoApp(object):
         app.pluginsController.loadOnePlugin('leo.plugins.wxGui', verbose=verbose)
         if fileName and verbose:
             print('wxGui created in %s' % fileName)
-    #@+node:ville.20090620122043.6275: *4* app.setGlobalDb (changed)
+    #@+node:ville.20090620122043.6275: *4* app.setGlobalDb
     def setGlobalDb(self):
         """ Create global pickleshare db
 
@@ -1311,7 +1311,7 @@ class LeoApp(object):
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
         frame.destroySelf()
-    #@+node:ekr.20031218072017.1732: *4* app.finishQuit (changed)
+    #@+node:ekr.20031218072017.1732: *4* app.finishQuit
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
         if 'shutdown' in g.app.debug:
