@@ -108,7 +108,6 @@ class FastRead (object):
     def handleBits(self):
 
         c, fc = self.c, self.c.fileCommands
-        ### expanded, marked = c.db.getBits()
         expanded = c.db.get('expanded')
         marked = c.db.get('marked')
         expanded = expanded.split(',') if expanded else []
@@ -121,7 +120,6 @@ class FastRead (object):
     def scanGlobals(self, g_element):
         '''Get global data from the cache, with reasonable defaults.'''
         c = self.c
-        ### d = c.db.getGlobalData()
         d = self.getGlobalData()
         w, h = d.get('width'), d.get('height')
         x, y = d.get('left'), d.get('top')
@@ -1244,7 +1242,6 @@ class FileCommands(object):
         c = self.c
         self.put("<globals/>\n")
         if c.mFileName:
-            ### c.db.setCachedGlobalsElement()
             c.db ['body_outline_ratio'] = str(c.frame.ratio)
             c.db ['body_secondary_ratio'] = str(c.frame.secondary_ratio)
             w, h, l, t = c.frame.get_window_info()
@@ -1394,16 +1391,15 @@ class FileCommands(object):
     def compute_attribute_bits(self, forceWrite, p):
         '''Return the initial values of v's attributes.'''
         c, v = self.c, p.v
+        #
+        # Remember the to-be-cashed data.
         attrs = []
-        ### c.db.setBits(v)
         if v.isExpanded() and v.hasChildren():
             self.expanded_gnxs.add(v.gnx) 
         if v.isMarked():
             self.marked_gnxs.add(v.gnx)
         if p == self.rootPosition and c.mFileName:
             aList = [str(z) for z in self.currentPosition.archivedPosition()]
-            ### str_pos = ','.join(aList)
-            ### c.db.setCachedStringPosition(str_pos)
             c.db ['current_position'] = ','.join(aList)
         #
         # Append unKnownAttributes to attrs
@@ -1428,11 +1424,9 @@ class FileCommands(object):
             self.putVnode(self.currentPosition)
                 # Write only current tree.
         else:
-            ### c.db.initBits()
             self.expanded_gnxs, self.marked_gnxs = set(), set()
             for p in c.rootPosition().self_and_siblings():
                 self.putVnode(p, isIgnore=p.isAtIgnoreNode())
-            ### c.db.writeBits()
             c.db ['expanded'] = ','.join(list(self.expanded_gnxs))
             c.db ['marked'] = ','.join(list(self.marked_gnxs))
         self.put("</vnodes>\n")
@@ -2058,7 +2052,6 @@ class FileCommands(object):
             return
         current, str_pos = None, None
         if c.mFileName:
-            ### str_pos = c.db.getCachedStringPosition(c.mFileName)
             str_pos = c.db.get('current_position')
         if str_pos is None:
             d = root.v.u

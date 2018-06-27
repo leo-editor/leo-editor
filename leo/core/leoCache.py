@@ -132,7 +132,6 @@ class CommanderWrapper(object):
         self.key = fn or c.mFileName
         self.sfn = g.shortFileName(fn or c.mFileName)
         self.user_keys = set()
-        ### self.initBits()
 
     def get(self, key, default=None):
         value = self.db.get('%s_%s' % (self.key, key))
