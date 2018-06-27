@@ -132,91 +132,30 @@ class CommanderWrapper(object):
         self.key = fn or c.mFileName
         self.sfn = g.shortFileName(fn or c.mFileName)
         self.user_keys = set()
-        self.initBits()
+        ### self.initBits()
 
-    #@+others
-    #@+node:ekr.20180627061703.1: *3* wrapper.get & special methods
     def get(self, key, default=None):
         value = self.db.get('%s_%s' % (self.key, key))
         return default if value is None else value
-        
+    
     def keys(self):
         return sorted(list(self.user_keys))
         
     def __contains__ (self, key):
         return '%s_%s' % (self.key, key) in self.db
-
+    
     def __delitem__ (self, key):
         if key in self.user_keys:
             self.user_keys.remove(key)
         del self.db ['%s_%s' % (self.key, key)]
-
+    
     def __getitem__(self, key):
         return self.db ['%s_%s' % (self.key, key)]
             # May (properly) raise KeyError
-
+    
     def __setitem__ (self, key, value):
         self.user_keys.add(key)
         self.db ['%s_%s' % (self.key, key)] = value
-    #@+node:ekr.20180624123924.1: *3* wrapper.Bits
-    def initBits(self):
-        self.expanded_gnxs = []
-        self.marked_gnxs = []
-        
-    def getBits(self):
-        expanded = self.get('expanded')
-        marked = self.get('marked')
-        expanded = expanded.split(',') if expanded else []
-        marked = marked.split(',') if marked else []
-        return expanded, marked
-        
-    def setBits(self, v):
-        if v.isExpanded() and v.hasChildren():
-            self.expanded_gnxs.append(v.gnx) 
-        if v.isMarked():
-            self.marked_gnxs.append(v.gnx)
-            
-    def writeBits(self):
-        self ['expanded'] = ','.join(list(set(self.expanded_gnxs)))
-        self ['marked'] = ','.join(list(set(self.marked_gnxs)))
-        self.initBits()
-    #@+node:ekr.20180624044526.1: *3* wrapper.getGlobalData
-    def getGlobalData(self):
-        '''Return a dict containing all global data.'''
-        data = self.get('window_position')
-        if data:
-            # pylint: disable=unpacking-non-sequence
-            top, left, height, width = data
-            d = {
-                'top': int(top),
-                'left': int(left),
-                'height': int(height),
-                'width': int(width),
-            }
-        # Return reasonable defaults.
-        else:
-            d = {'top': 50, 'left': 50, 'height': 500, 'width': 800}
-        d ['r1'] = float(self.get('body_outline_ratio', '0.5'))
-        d ['r2'] = float(self.get('body_secondary_ratio', '0.5'))
-        return d
-    #@+node:ekr.20100208082353.5924: *3* wrapper.getCachedStringPosition
-    def getCachedStringPosition(self, fn):
-
-        return self.get('current_position') or '0'
-    #@+node:ekr.20100208082353.5929: *3* wrapper.setCachedGlobalsElement
-    def setCachedGlobalsElement(self):
-
-        c = self.c
-        self ['body_outline_ratio'] = str(c.frame.ratio)
-        self ['body_secondary_ratio'] = str(c.frame.secondary_ratio)
-        width, height, left, top = c.frame.get_window_info()
-        data = str(top), str(left), str(height), str(width)
-        self ['window_position'] = data
-    #@+node:ekr.20100208082353.5928: *3* wrapper.setCachedStringPosition
-    def setCachedStringPosition(self, str_pos):
-
-        self ['current_position'] = str_pos
-    #@-others
 #@+node:ekr.20180627041556.1: ** class GlobalCacher
 class GlobalCacher(object):
     '''A singleton global cacher, g.app.db'''

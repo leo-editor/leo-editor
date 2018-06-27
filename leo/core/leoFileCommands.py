@@ -108,7 +108,11 @@ class FastRead (object):
     def handleBits(self):
 
         c, fc = self.c, self.c.fileCommands
-        expanded, marked = c.db.getBits()
+        ### expanded, marked = c.db.getBits()
+        expanded = c.db.get('expanded')
+        marked = c.db.get('marked')
+        expanded = expanded.split(',') if expanded else []
+        marked = marked.split(',') if marked else []
         if expanded:
             fc.descendentExpandedList = expanded
         if marked:
@@ -117,7 +121,8 @@ class FastRead (object):
     def scanGlobals(self, g_element):
         '''Get global data from the cache, with reasonable defaults.'''
         c = self.c
-        d = c.db.getGlobalData()
+        ### d = c.db.getGlobalData()
+        d = self.getGlobalData()
         w, h = d.get('width'), d.get('height')
         x, y = d.get('left'), d.get('top')
         r1, r2 = d.get('r1'), d.get('r2')
@@ -128,6 +133,26 @@ class FastRead (object):
         elif not g.app.start_maximized and not g.app.start_fullscreen:
             c.frame.setTopGeometry(w, h, x, y)
             c.frame.deiconify()
+            
+    def getGlobalData(self):
+        '''Return a dict containing all global data.'''
+        c = self.c
+        data = c.db.get('window_position')
+        if data:
+            # pylint: disable=unpacking-non-sequence
+            top, left, height, width = data
+            d = {
+                'top': int(top),
+                'left': int(left),
+                'height': int(height),
+                'width': int(width),
+            }
+        # Return reasonable defaults.
+        else:
+            d = {'top': 50, 'left': 50, 'height': 500, 'width': 800}
+        d ['r1'] = float(c.db.get('body_outline_ratio', '0.5'))
+        d ['r2'] = float(c.db.get('body_secondary_ratio', '0.5'))
+        return d
     #@+node:ekr.20180602062323.8: *4* fast.scanTnodes
     def scanTnodes (self, t_elements):
 
@@ -1217,9 +1242,13 @@ class FileCommands(object):
     def putGlobals(self):
         '''Put a vestigial <globals> element, and write global data to the cache.'''
         c = self.c
-        if c.mFileName:
-            c.db.setCachedGlobalsElement()
         self.put("<globals/>\n")
+        if c.mFileName:
+            ### c.db.setCachedGlobalsElement()
+            c.db ['body_outline_ratio'] = str(c.frame.ratio)
+            c.db ['body_secondary_ratio'] = str(c.frame.secondary_ratio)
+            w, h, l, t = c.frame.get_window_info()
+            c.db ['window_position'] = str(t), str(l), str(h), str(w)
     #@+node:ekr.20031218072017.3041: *5* fc.putHeader
     def putHeader(self):
         tnodes = 0; clone_windows = 0 # Always zero in Leo2.
@@ -1366,11 +1395,16 @@ class FileCommands(object):
         '''Return the initial values of v's attributes.'''
         c, v = self.c, p.v
         attrs = []
-        c.db.setBits(v)
+        ### c.db.setBits(v)
+        if v.isExpanded() and v.hasChildren():
+            self.expanded_gnxs.add(v.gnx) 
+        if v.isMarked():
+            self.marked_gnxs.add(v.gnx)
         if p == self.rootPosition and c.mFileName:
             aList = [str(z) for z in self.currentPosition.archivedPosition()]
-            str_pos = ','.join(aList)
-            c.db.setCachedStringPosition(str_pos)
+            ### str_pos = ','.join(aList)
+            ### c.db.setCachedStringPosition(str_pos)
+            c.db ['current_position'] = ','.join(aList)
         #
         # Append unKnownAttributes to attrs
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
@@ -1389,13 +1423,18 @@ class FileCommands(object):
         self.rootPosition = c.rootPosition()
         self.vnodesDict = {}
         if self.usingClipboard:
+            self.expanded_gnxs, self.marked_gnxs = set(), set()
+                # These will be ignored.
             self.putVnode(self.currentPosition)
                 # Write only current tree.
         else:
-            c.db.initBits()
+            ### c.db.initBits()
+            self.expanded_gnxs, self.marked_gnxs = set(), set()
             for p in c.rootPosition().self_and_siblings():
                 self.putVnode(p, isIgnore=p.isAtIgnoreNode())
-            c.db.writeBits()
+            ### c.db.writeBits()
+            c.db ['expanded'] = ','.join(list(self.expanded_gnxs))
+            c.db ['marked'] = ','.join(list(self.marked_gnxs))
         self.put("</vnodes>\n")
     #@+node:ekr.20031218072017.1247: *5* fc.putXMLLine
     def putXMLLine(self):
@@ -2019,7 +2058,8 @@ class FileCommands(object):
             return
         current, str_pos = None, None
         if c.mFileName:
-            str_pos = c.db.getCachedStringPosition(c.mFileName)
+            ### str_pos = c.db.getCachedStringPosition(c.mFileName)
+            str_pos = c.db.get('current_position')
         if str_pos is None:
             d = root.v.u
             if d: str_pos = d.get('str_leo_pos')
