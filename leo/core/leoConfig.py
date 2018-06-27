@@ -1596,7 +1596,6 @@ class LocalConfigManager(object):
                 strip_comments=strip_comments,
                 strip_data=strip_data,
             )
-            ### g.trace('OLD: %4s %s' % (data0 and len(data0), setting))
         data = self.get(setting, "data")
         # New in Leo 4.11: parser.doData strips only comments now.
         # New in Leo 4.12: parser.doData strips *nothing*.
@@ -1611,7 +1610,6 @@ class LocalConfigManager(object):
                 data.extend(data0)
             else:
                 data = data0
-            ### g.trace('NEW: %4s %s' % (data and len(data), setting))
         return data
     #@+node:ekr.20131114051702.16542: *5* c.config.getOutlineData
     def getOutlineData(self, setting):

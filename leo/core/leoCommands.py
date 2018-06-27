@@ -228,7 +228,7 @@ class Commands(object):
         self.spellCommands = None
         self.leoTestManager = None
         self.vimCommands = None
-    #@+node:ekr.20120217070122.10470: *5* c.initObjects
+    #@+node:ekr.20120217070122.10470: *5* c.initObjects (changed)
     #@@nobeautify
 
     def initObjects(self, gui):
@@ -261,7 +261,6 @@ class Commands(object):
         import leo.core.leoAtFile as leoAtFile
         import leo.core.leoBeautify as leoBeautify # So decorators are executed.
         assert leoBeautify # for pyflakes.
-        import leo.core.leoCache as leoCache
         import leo.core.leoChapters as leoChapters
         # User commands...
         import leo.commands.abbrevCommands as abbrevCommands
@@ -366,8 +365,7 @@ class Commands(object):
         # Other objects
         c.configurables = c.subCommanders[:]
             # A list of other classes that have a reloadSettings method
-        self.cacher = leoCache.Cacher(c)
-        self.cacher.initFileDB(self.mFileName)
+        c.db = g.app.commander_cacher.get_wrapper(c)
         import leo.plugins.free_layout as free_layout
         self.free_layout = free_layout.FreeLayoutController(c)
         if hasattr(g.app.gui, 'styleSheetManagerClass'):

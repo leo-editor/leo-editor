@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -273,7 +270,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3871097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3871057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343171097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -708,9 +705,6 @@
 <v t="ekr.20180626053904.59"><vh>@@file @test php here doc</vh>
 <v t="ekr.20180626053904.60"><vh>class foo</vh></v>
 </v>
-<v t="ekr.20180626054101.96"><vh>@@file @test php here doc</vh>
-<v t="ekr.20180626054101.97"><vh>class foo</vh></v>
-</v>
 </v>
 </v>
 <v t="ekr.20090529141856.4736"><vh>Python tests</vh>
@@ -752,13 +746,13 @@
 <v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
 <v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
 <v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh>
-<v t="ekr.20180626054102.113"><vh>@@file @test python top-level later decl</vh>
-<v t="ekr.20180626054102.114"><vh>Declarations</vh></v>
-<v t="ekr.20180626054102.115"><vh>merge_value</vh></v>
-<v t="ekr.20180626054102.116"><vh>class MainDisplay(object)</vh>
-<v t="ekr.20180626054102.117"><vh>save_file</vh></v>
+<v t="ekr.20180626053946.13"><vh>@@file @test python top-level later decl</vh>
+<v t="ekr.20180626053946.14"><vh>Declarations</vh></v>
+<v t="ekr.20180626053946.15"><vh>merge_value</vh></v>
+<v t="ekr.20180626053946.16"><vh>class MainDisplay(object)</vh>
+<v t="ekr.20180626053946.17"><vh>save_file</vh></v>
 </v>
-<v t="ekr.20180626054102.118"><vh>retab</vh></v>
+<v t="ekr.20180626053946.18"><vh>retab</vh></v>
 </v>
 </v>
 <v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
@@ -1249,6 +1243,7 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
 <v t="ekr.20161115063144.16"></v>
+<v t="ekr.20100210222021.5388"><vh>@test save new file</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3428,6 +3423,33 @@ for setting, result in table:
     stroke = g.KeyStroke(binding=setting)
     val = stroke.s
     assert val==result,'For %r, expected %r, Got %r' % (setting, result,val)
+</t>
+<t tx="ekr.20100210222021.5388">import os
+import sys
+if g.isPython3 and sys.platform.startswith('linux'):
+    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
+    # The crash causes several other unit tests to fail.
+    self.skipTest('Not for Linux.')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses')
+else:
+    c1 = c
+    fn = g.os_path_finalize_join(g.app.loadDir,'..','test','save-new-test.py')
+    if g.os_path_exists(fn):
+        os.remove(fn)
+    assert not g.os_path_exists(fn)
+    try:
+        c = c1.new()
+        # Not a perfect unit test, but it similar to c.save.
+        c.mFileName = fn
+        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
+        silent = g.app.gui.guiName() == 'curses'
+        c.fileCommands.save(c.mFileName,silent=silent)
+        c.close()
+        assert g.os_path_exists(fn)
+    finally:
+        if g.os_path_exists(fn):
+            os.remove(fn)
 </t>
 <t tx="ekr.20100219080213.5365"></t>
 <t tx="ekr.20100219080213.5366">s = '''\
@@ -16051,20 +16073,7 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20180626054101.96">&lt;?php
-@others
-@language php
-@tabwidth -4
-</t>
-<t tx="ekr.20180626054101.97">class foo {
-    public $bar = &lt;&lt;&lt;EOT
-a test.
-bar
-EOT;
-}
-?&gt;
-</t>
-<t tx="ekr.20180626054102.113">#!/usr/bin/env python3
+<t tx="ekr.20180626053946.13">#!/usr/bin/env python3
 
 @others
 if __name__=="__main__":
@@ -16072,29 +16081,29 @@ if __name__=="__main__":
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20180626054102.114">import os
+<t tx="ekr.20180626053946.14">import os
 import re
 
 </t>
-<t tx="ekr.20180626054102.115">def merge_value(v1, v2):
+<t tx="ekr.20180626053946.15">def merge_value(v1, v2):
     return v
 
 </t>
-<t tx="ekr.20180626054102.116">class MainDisplay(object):
+<t tx="ekr.20180626053946.16">class MainDisplay(object):
 
     @others
 ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
 
 </t>
-<t tx="ekr.20180626054102.117">def save_file(self):
+<t tx="ekr.20180626053946.17">def save_file(self):
     """Write the file out to disk."""
     with open(self.save_name, "w") as f:
         for newline in newlines:
             f.write(newline)
 
-\\-4.# This line should be included at the end of the class node.
+# This line should be included at the end of the class node.
 </t>
-<t tx="ekr.20180626054102.118">def retab(s, tabsize):
+<t tx="ekr.20180626053946.18">def retab(s, tabsize):
     return ''.join(pieces)
 
 </t>

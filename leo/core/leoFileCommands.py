@@ -108,7 +108,7 @@ class FastRead (object):
     def handleBits(self):
 
         c, fc = self.c, self.c.fileCommands
-        expanded, marked = c.cacher.getBits()
+        expanded, marked = c.db.getBits()
         if expanded:
             fc.descendentExpandedList = expanded
         if marked:
@@ -117,7 +117,7 @@ class FastRead (object):
     def scanGlobals(self, g_element):
         '''Get global data from the cache, with reasonable defaults.'''
         c = self.c
-        d = c.cacher.getGlobalData(c.mFileName)
+        d = c.db.getGlobalData()
         w, h = d.get('width'), d.get('height')
         x, y = d.get('left'), d.get('top')
         r1, r2 = d.get('r1'), d.get('r2')
@@ -1020,7 +1020,7 @@ class FileCommands(object):
         if ok is None:
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
-            c.cacher.save(fileName, changeName=True)
+            g.app.commander_cacher.save(c, fileName, changeName=True)
             ok = c.checkFileTimeStamp(fileName)
             if ok:
                 if c.sqlite_connection:
@@ -1103,7 +1103,7 @@ class FileCommands(object):
                 c.sqlite_connection.close()
                 c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
-            c.cacher.save(fileName, changeName=True)
+            g.app.commander_cacher.save(c, fileName, changeName=True)
             # Disable path-changed messages in writeAllHelper.
             c.ignoreChangedPaths = True
             try:
@@ -1124,7 +1124,7 @@ class FileCommands(object):
                 c.sqlite_connection.close()
                 c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
-            c.cacher.save(fileName, changeName=False)
+            g.app.commander_cacher.save(c, fileName, changeName=False)
             # Disable path-changed messages in writeAllHelper.
             c.ignoreChangedPaths = True
             try:
@@ -1218,7 +1218,7 @@ class FileCommands(object):
         '''Put a vestigial <globals> element, and write global data to the cache.'''
         c = self.c
         if c.mFileName:
-            c.cacher.setCachedGlobalsElement(c.mFileName)
+            c.db.setCachedGlobalsElement()
         self.put("<globals/>\n")
     #@+node:ekr.20031218072017.3041: *5* fc.putHeader
     def putHeader(self):
@@ -1366,11 +1366,11 @@ class FileCommands(object):
         '''Return the initial values of v's attributes.'''
         c, v = self.c, p.v
         attrs = []
-        c.cacher.setBits(v)
+        c.db.setBits(v)
         if p == self.rootPosition and c.mFileName:
             aList = [str(z) for z in self.currentPosition.archivedPosition()]
             str_pos = ','.join(aList)
-            c.cacher.setCachedStringPosition(str_pos)
+            c.db.setCachedStringPosition(str_pos)
         #
         # Append unKnownAttributes to attrs
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
@@ -1392,10 +1392,10 @@ class FileCommands(object):
             self.putVnode(self.currentPosition)
                 # Write only current tree.
         else:
-            c.cacher.initBits()
+            c.db.initBits()
             for p in c.rootPosition().self_and_siblings():
                 self.putVnode(p, isIgnore=p.isAtIgnoreNode())
-            c.cacher.writeBits()
+            c.db.writeBits()
         self.put("</vnodes>\n")
     #@+node:ekr.20031218072017.1247: *5* fc.putXMLLine
     def putXMLLine(self):
@@ -2019,7 +2019,7 @@ class FileCommands(object):
             return
         current, str_pos = None, None
         if c.mFileName:
-            str_pos = c.cacher.getCachedStringPosition(c.mFileName)
+            str_pos = c.db.getCachedStringPosition(c.mFileName)
         if str_pos is None:
             d = root.v.u
             if d: str_pos = d.get('str_leo_pos')

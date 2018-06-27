@@ -416,7 +416,6 @@ else:
     assert not g.os_path_exists(fn)
     try:
         c = c1.new()
-        assert not c.cacher.db
         # Not a perfect unit test, but it similar to c.save.
         c.mFileName = fn
         c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)

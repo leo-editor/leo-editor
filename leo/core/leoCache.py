@@ -34,82 +34,52 @@ normcase = g.os_path_normcase
 split = g.os_path_split
 SQLITE = True
 #@+others
-#@+node:ekr.20100208062523.5885: ** class Cacher
-class Cacher(object):
-    '''A class that encapsulates all aspects of Leo's file caching.'''
-    #@+others
-    #@+node:ekr.20100208082353.5919: *3* cacher.Birth
-    #@+node:ekr.20100208062523.5886: *4* cacher.ctor
-    def __init__(self, c=None):
-        
-        self.c = c
-        # set by initFileDB and initGlobalDB...
-        self.db = {}
-            # When caching is enabled will be a PickleShareDB instance.
-        self.dbdirname = None # A string.
-        self.globals_tag = 'leo.globals'
-        self.inited = False
-        #
-        # Sets of gnxs
-        self.expanded_gnxs = []
-        self.marked_gnxs = []
-    #@+node:ekr.20100208082353.5918: *4* cacher.initFileDB
-    def initFileDB(self, fn):
-
-        if not fn:
-            return
-        self.dbdirname = name = join(g.app.homeLeoDir, 'db', 'global_data')
-        self.db = SqlitePickleShare(name) if SQLITE else PickleShareDB(name)
-        self.c.db = self.db
-        self.inited = True
-        self.dump(self.db, 'c.db: %s' % g.shortFileName(fn))
-    #@+node:ekr.20100208082353.5920: *4* cacher.initGlobalDb
-    def initGlobalDB(self):
-        '''
-        g.app.doPrePluginsInit() calls this method to init g.app.db.
-        
-        Plugins and scripts can use this as follows:
-
-            g.app.db['hello'] = [1,2,5]
-            
-        This method *always* creates .leo/db/g_app_db, even if caching is
-        disabled.
-        '''
+#@+node:ekr.20100208062523.5885: ** class CommanderCacher
+class CommanderCacher(object):
+    '''
+    A class to manage per-commander caches.
+   
+    c.initObjects creates an per-commander instance of this class.
+    
+    This class prepends c.fileName() to all keys.
+    '''
+    def __init__(self):
         try:
-            dbdirname = g.app.homeLeoDir + "/db/g_app_db"
-            db = SqlitePickleShare(dbdirname) if SQLITE else PickleShareDB(dbdirname)
-            self.db = db
-            self.inited = True
-            self.dump(self.db, 'g.app.db')
-            return db
+            path = join(g.app.homeLeoDir, 'db', 'global_data')
+            self.db = SqlitePickleShare(path) if SQLITE else PickleShareDB(path)
         except Exception:
-            return {} # Use a plain dict as a dummy.
-    #@+node:ekr.20100209160132.5759: *3* cacher.clearCache & clearAllCaches
-    def clearCache(self):
-        '''Clear the cache for the open window.'''
-        if self.db:
-            # Be careful about calling db.clear.
-            try:
-                self.db.clear(verbose=True)
-            except TypeError:
-                self.db.clear() # self.db is a Python dict.
-            except Exception:
-                g.trace('unexpected exception')
-                g.es_exception()
-                self.db = {}
+            self.db = {}
+        self.closed = False
 
-    def clearAllCaches(self):
-        '''
-        Clear the Cachers *only* for all open windows. This is much safer than
-        killing all db's.
-        '''
-        for frame in g.windows():
-            c = frame.c
-            if c.cacher:
-                c.cacher.clearCache()
-        g.es('done', color='blue')
-    #@+node:ekr.20180611054447.1: *3* cacher.dump
-    def dump(self, db, tag):
+    #@+others
+    #@+node:ekr.20100209160132.5759: *3* cacher.clear (changed)
+    def clear(self):
+        '''Clear the cache for all commanders.'''
+        # Careful: self.db may be a Python dict.
+        try:
+            self.db.clear(verbose=True)
+        except TypeError:
+            self.db.clear()
+        except Exception:
+            g.trace('unexpected exception')
+            g.es_exception()
+            self.db = {}
+    #@+node:ekr.20180627062431.1: *3* cacher.close (new)
+    def close(self):
+        # Careful: self.db may be a dict.
+        if SQLITE and hasattr(self.db, 'conn'):
+            # pylint: disable=no-member
+            self.db.conn.commit()
+            self.db.conn.close()
+    #@+node:ekr.20180627042809.1: *3* cacher.commit
+    def commit(self):
+        # Careful: self.db may be a dict.
+        if SQLITE and hasattr(self.db, 'conn'):
+            # pylint: disable=no-member
+            self.db.conn.commit()
+    #@+node:ekr.20100208062523.5886: *3* cacher.ctor
+    #@+node:ekr.20180611054447.1: *3* cacher.dump (changed)
+    def dump(self, db):
         '''Dump the indicated cache if --trace-cache is in effect.'''
         if 'cache' not in g.app.debug:
             return
@@ -121,7 +91,7 @@ class Cacher(object):
             for child in children:
                 dump_list(child, result, indent=indent+2)
 
-        print('\n===== %s =====\n' % tag)
+        print('\n===== Commander Cache =====\n')
         for key in db.keys():
             key = key[0]
             val = db.get(key)
@@ -142,82 +112,10 @@ class Cacher(object):
             else:
                 g.printObj(val)
             print('')
-    #@+node:ekr.20180624123924.1: *3* cacher.Bits
-    def initBits(self):
-        self.expanded_gnxs = []
-        self.marked_gnxs = []
-        
-    def getBits(self):
-        key = self.c.fileName()
-        expanded = self.db.get('expanded_' + key)
-        marked = self.db.get('marked_' + key)
-        expanded = expanded.split(',') if expanded else []
-        marked = marked.split(',') if marked else []
-        return expanded, marked
-        
-    def setBits(self, v):
-        if v.isExpanded() and v.hasChildren():
-            self.expanded_gnxs.append(v.gnx) 
-        if v.isMarked():
-            self.marked_gnxs.append(v.gnx)
-            
-    def writeBits(self):
-        key = self.c.fileName()
-        expanded = ','.join(list(set(self.expanded_gnxs)))
-        marked = ','.join(list(set(self.marked_gnxs)))
-        self.db ['expanded_' + key] = expanded
-        self.db ['marked_' + key] = marked
-        self.initBits()
-    #@+node:ekr.20180624041117.1: *3* cacher.Reading
-    #@+node:ekr.20180624044526.1: *4* cacher.getGlobalData
-    def getGlobalData(self, fn):
-        '''Return a dict containing all global data.'''
-        key = fn
-        data = self.db.get('window_position_%s' % (key))
-        if data:
-            # pylint: disable=unpacking-non-sequence
-            top, left, height, width = data
-            d = {
-                'top': int(top),
-                'left': int(left),
-                'height': int(height),
-                'width': int(width),
-            }
-        # Return reasonable defaults.
-        else:
-            d = {'top': 50, 'left': 50, 'height': 500, 'width': 800}
-        d['r1'] = float(self.db.get('body_outline_ratio_%s' % (key), '0.5'))
-        d['r2'] = float(self.db.get('body_secondary_ratio_%s' % (key), '0.5'))
-        return d
-    #@+node:ekr.20100208082353.5924: *4* cacher.getCachedStringPosition
-    def getCachedStringPosition(self, fn):
-
-        key = fn
-        str_pos = self.db.get('current_position_%s' % key)
-        return str_pos
-    #@+node:ekr.20100208082353.5927: *3* cacher.Writing
-    #@+node:ekr.20100210163813.5747: *4* cacher.save
-    def save(self, fn, changeName):
-        if SQLITE:
-            self.commit(True)
-        if changeName or not self.inited:
-            self.initFileDB(fn)
-    #@+node:ekr.20100208082353.5929: *4* cacher.setCachedGlobalsElement
-    def setCachedGlobalsElement(self, fn):
-
-        c = self.c
-        key = fn
-        self.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
-        self.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
-        width, height, left, top = c.frame.get_window_info()
-        self.db['window_position_%s' % key] = (
-            str(top), str(left), str(height), str(width))
-    #@+node:ekr.20100208082353.5928: *4* cacher.setCachedStringPosition
-    def setCachedStringPosition(self, str_pos):
-
-        c = self.c
-        key = c.mFileName
-        self.db['current_position_%s' % key] = str_pos
+    #@+node:ekr.20180627053508.1: *3* cacher.get_wrapper
+    def get_wrapper(self, c, fn=None):
+        '''Return a new wrapper for c.'''
+        return CommanderWrapper(c, fn=fn)
     #@+node:ekr.20100208065621.5890: *3* cacher.test
     def test(self):
         
@@ -241,15 +139,173 @@ class Cacher(object):
         if 0: print(db.keys())
         db.clear()
         return True
+    #@+node:ekr.20100210163813.5747: *3* cacher.save (changed)
+    def save(self, c, fn, changeName):
+        '''
+        Save the per-commander cache.
+        
+        Change the cache prefix if changeName is True.
+        
+        save and save-as set changeName to True, save-to does not.
+        '''
+        if SQLITE:
+            self.commit()
+        if changeName:
+            c.db = self.get_wrapper(c, fn=fn)
     #@-others
-    def commit(self, close=True):
-        # in some cases while unit testing self.db is python dict
+#@+node:ekr.20180627052459.1: ** class CommanderWrapper
+class CommanderWrapper(object):
+    
+    def __init__(self, c, fn=None):
+        self.c = c
+        self.db = g.app.db
+        self.key = fn or c.mFileName
+        self.sfn = g.shortFileName(fn or c.mFileName)
+        self.initBits()
+
+    #@+others
+    #@+node:ekr.20180627061703.1: *3* wrapper.get & special methods
+    def get(self, key, default=None):
+        value = self.db.get('%s_%s' % (self.key, key))
+        # g.trace(key, repr(value))
+        return default if value is None else value
+        
+    ### To do: Support "in" keyword ###
+
+    def __delitem__ (self, item):
+        g.trace('=====', item)
+
+    def __setitem__ (self, key, value):
+        # g.trace(key, repr(value))
+        self.db ['%s_%s' % (self.key, key)] = value
+    #@+node:ekr.20180624123924.1: *3* wrapper.Bits
+    def initBits(self):
+        self.expanded_gnxs = []
+        self.marked_gnxs = []
+        
+    def getBits(self):
+        expanded = self.get('expanded')
+        marked = self.get('marked')
+        expanded = expanded.split(',') if expanded else []
+        marked = marked.split(',') if marked else []
+        return expanded, marked
+        
+    def setBits(self, v):
+        if v.isExpanded() and v.hasChildren():
+            self.expanded_gnxs.append(v.gnx) 
+        if v.isMarked():
+            self.marked_gnxs.append(v.gnx)
+            
+    def writeBits(self):
+        self ['expanded'] = ','.join(list(set(self.expanded_gnxs)))
+        self ['marked'] = ','.join(list(set(self.marked_gnxs)))
+        self.initBits()
+    #@+node:ekr.20180624044526.1: *3* wrapper.getGlobalData
+    def getGlobalData(self):
+        '''Return a dict containing all global data.'''
+        data = self.get('window_position')
+        if data:
+            # pylint: disable=unpacking-non-sequence
+            top, left, height, width = data
+            d = {
+                'top': int(top),
+                'left': int(left),
+                'height': int(height),
+                'width': int(width),
+            }
+        # Return reasonable defaults.
+        else:
+            d = {'top': 50, 'left': 50, 'height': 500, 'width': 800}
+        d ['r1'] = float(self.get('body_outline_ratio', '0.5'))
+        d ['r2'] = float(self.get('body_secondary_ratio', '0.5'))
+        return d
+    #@+node:ekr.20100208082353.5924: *3* wrapper.getCachedStringPosition
+    def getCachedStringPosition(self, fn):
+
+        return self.get('current_position') or '0'
+    #@+node:ekr.20100208082353.5929: *3* wrapper.setCachedGlobalsElement
+    def setCachedGlobalsElement(self):
+
+        c = self.c
+        self ['body_outline_ratio'] = str(c.frame.ratio)
+        self ['body_secondary_ratio'] = str(c.frame.secondary_ratio)
+        width, height, left, top = c.frame.get_window_info()
+        data = str(top), str(left), str(height), str(width)
+        self ['window_position'] = data
+    #@+node:ekr.20100208082353.5928: *3* wrapper.setCachedStringPosition
+    def setCachedStringPosition(self, str_pos):
+
+        self ['current_position'] = str_pos
+    #@-others
+#@+node:ekr.20180627041556.1: ** class GlobalCacher
+class GlobalCacher(object):
+    '''A singleton global cacher, g.app.db'''
+    #@+others
+    #@+node:ekr.20180627041647.1: *3* g_cacher.ctor
+    def __init__(self):
+        '''Ctor for the GlobalCacher class.'''
+        # Init the db.
+        try:
+            path = join(g.app.homeLeoDir, 'db', 'g_app_db')
+            self.db = SqlitePickleShare(path) if SQLITE else PickleShareDB(path)
+        except Exception:
+            self.db = {} # Use a plain dict as a dummy.
+
+        
+    #@+node:ekr.20180627045750.1: *3* g_cacher.clear
+    def clear(self):
+        '''Clear the global cache.'''
+        # Careful: self.db may be a Python dict.
+        try:
+            self.db.clear(verbose=True)
+        except TypeError:
+            self.db.clear()
+        except Exception:
+            g.trace('unexpected exception')
+            g.es_exception()
+            self.db = {}
+    #@+node:ekr.20180627042948.1: *3* g_cacher.commit_and_close()
+    def commit_and_close(self):
+        # Careful: self.db may be a dict.
         if SQLITE and hasattr(self.db, 'conn'):
             # pylint: disable=no-member
             self.db.conn.commit()
-            if close:
-                self.db.conn.close()
-                self.inited = False
+            self.db.conn.close()
+    #@+node:ekr.20180627045953.1: *3* g_cacher.dump
+    def dump(self, db):
+        '''Dump the indicated cache if --trace-cache is in effect.'''
+        if 'cache' not in g.app.debug:
+            return
+        
+        def dump_list(aList, result, indent=0):
+            head, body, gnx, children = tuple(aList)
+            assert isinstance(children, list)
+            result.append('%6s%s %20s %s' % (len(body), ' '*indent, gnx, head))
+            for child in children:
+                dump_list(child, result, indent=indent+2)
+
+        print('\n===== Global Cache =====\n')
+        for key in db.keys():
+            key = key[0]
+            val = db.get(key)
+            print('%s:' % key)
+            if key.startswith('fcache/'):
+                assert isinstance(val, list), val.__class__.__name__
+                result = ['list of nodes...']
+                dump_list(val, result)
+                if 1: # Brief
+                    n = len(result)-1
+                    print('%s node%s in %s' % (n, g.plural(n), val[0].strip()))
+                else:
+                    g.printObj(result)
+            elif g.isString(val):
+                print(val)
+            elif isinstance(val, (int, float)):
+                print(val)
+            else:
+                g.printObj(val)
+            print('')
+    #@-others
 #@+node:ekr.20100208223942.5967: ** class PickleShareDB
 _sentinel = object()
 
@@ -748,6 +804,40 @@ class SqlitePickleShare(object):
         """not used in SqlitePickleShare"""
         pass
     #@-others
+#@+node:ekr.20180627050237.1: ** function: dump_cache
+def dump(db, tag):
+    '''Dump the indicated cache if --trace-cache is in effect.'''
+    if 'cache' not in g.app.debug:
+        return
+    
+    def dump_list(aList, result, indent=0):
+        head, body, gnx, children = tuple(aList)
+        assert isinstance(children, list)
+        result.append('%6s%s %20s %s' % (len(body), ' '*indent, gnx, head))
+        for child in children:
+            dump_list(child, result, indent=indent+2)
+
+    print('\n===== %s =====\n' % tag)
+    for key in db.keys():
+        key = key[0]
+        val = db.get(key)
+        print('%s:' % key)
+        if key.startswith('fcache/'):
+            assert isinstance(val, list), val.__class__.__name__
+            result = ['list of nodes...']
+            dump_list(val, result)
+            if 1: # Brief
+                n = len(result)-1
+                print('%s node%s in %s' % (n, g.plural(n), val[0].strip()))
+            else:
+                g.printObj(result)
+        elif g.isString(val):
+            print(val)
+        elif isinstance(val, (int, float)):
+            print(val)
+        else:
+            g.printObj(val)
+        print('')
 #@-others
 #@@language python
 #@@tabwidth -4

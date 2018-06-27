@@ -221,16 +221,22 @@ class LeoApp(object):
             # Translations of menu names.
         #@-<< LeoApp: global data >>
         #@+<< LeoApp: global controller/manager objects >>
-        #@+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >>
+        #@+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >> (changed)
         # Most of these are defined in initApp.
         self.backgroundProcessManager = None
             # The singleton BackgroundProcessManager instance.
+        self.commander_cacher = None
+            # The singleton leoCacher.CommanderCacher instance.
+        self.commander_db = None
+            # The singleton db, managed by g.app.commander_cacher.
         self.config = None
             # The singleton leoConfig instance.
         self.db = None
-            # The singleton leoCacher instance.
+            # The singleton global db, managed by g.app.global_cacher.
         self.externalFilesController = None
             # The singleton ExternalFilesController instance.
+        self.global_cacher = None
+            # The singleton leoCacher.GlobalCacher instance.
         self.idleTimeManager = None
             # The singleton IdleTimeManager instance.
         self.ipk = None
@@ -1060,7 +1066,7 @@ class LeoApp(object):
         app.pluginsController.loadOnePlugin('leo.plugins.wxGui', verbose=verbose)
         if fileName and verbose:
             print('wxGui created in %s' % fileName)
-    #@+node:ville.20090620122043.6275: *4* app.setGlobalDb
+    #@+node:ville.20090620122043.6275: *4* app.setGlobalDb (changed)
     def setGlobalDb(self):
         """ Create global pickleshare db
 
@@ -1071,8 +1077,10 @@ class LeoApp(object):
         """
         # Fixes bug 670108.
         import leo.core.leoCache as leoCache
-        g.app.cacher = cacher = leoCache.Cacher()
-        g.app.db = cacher.initGlobalDB()
+        g.app.global_cacher = leoCache.GlobalCacher()
+        g.app.db = g.app.global_cacher.db
+        g.app.commander_cacher = leoCache.CommanderCacher()
+        g.app.commander_db = g.app.commander_cacher.db
     #@+node:ekr.20031218072017.1978: *4* app.setLeoID & helpers
     def setLeoID(self, useDialog=True, verbose=True):
         '''Get g.app.leoID from various sources.'''
@@ -1267,8 +1275,9 @@ class LeoApp(object):
             if veto: return False
         g.app.setLog(None) # no log until we reactive a window.
         g.doHook("close-frame", c=c)
-        c.cacher.commit() # store cache
-            # This may remove frame from the window list.
+        g.app.commander_cacher.commit()
+            # store cache, but don't close it.
+        # This may remove frame from the window list.
         if frame in g.app.windowList:
             g.app.destroyWindow(frame)
             g.app.windowList.remove(frame)
@@ -1302,14 +1311,16 @@ class LeoApp(object):
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
         frame.destroySelf()
-    #@+node:ekr.20031218072017.1732: *4* app.finishQuit
+    #@+node:ekr.20031218072017.1732: *4* app.finishQuit (changed)
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
         if 'shutdown' in g.app.debug:
             g.pr('finishQuit')
         if not g.app.killed:
             g.doHook("end1")
-            g.app.cacher.commit()
+            g.app.global_cacher.commit_and_close()
+            g.app.commander_cacher.commit()
+            g.app.commander_cacher.close()
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         self.destroyAllOpenWithFiles()
@@ -2365,6 +2376,7 @@ class LoadManager(object):
         verbose = script is None
         # Init the app.
         lm.initApp(verbose)
+        g.app.setGlobalDb()
         lm.reportDirectories(verbose)
         # Read settings *after* setting g.app.config and *before* opening plugins.
         # This means if-gui has effect only in per-file settings.
@@ -2375,7 +2387,6 @@ class LoadManager(object):
         # Read the recent files file.
         localConfigFile = lm.files[0] if lm.files else None
         g.app.recentFilesManager.readRecentFiles(localConfigFile)
-        g.app.setGlobalDb()
         # Create the gui after reading options and settings.
         lm.createGui(pymacs)
         # We can't print the signon until we know the gui.

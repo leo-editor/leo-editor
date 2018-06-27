@@ -679,7 +679,7 @@ class TestManager(object):
                     # Used by quicksearch plugin.
                     key = 'unittest/cur/fail'
                     archive = [(t.p.gnx, trace2) for(t, trace2) in result.errors]
-                    c.cacher.db[key] = archive
+                    c.db [key] = archive
             else:
                 g.error('no %s@test or @suite nodes in %s outline' % (
                     'marked ' if marked else '',
