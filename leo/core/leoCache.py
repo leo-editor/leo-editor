@@ -167,16 +167,19 @@ class CommanderWrapper(object):
     #@+node:ekr.20180627061703.1: *3* wrapper.get & special methods
     def get(self, key, default=None):
         value = self.db.get('%s_%s' % (self.key, key))
-        # g.trace(key, repr(value))
         return default if value is None else value
         
-    ### To do: Support "in" keyword ###
+    def __contains__ (self, key):
+        return key in self.db
 
     def __delitem__ (self, item):
-        g.trace('=====', item)
+        del self.db [item]
+            
+    def __getitem__(self, key):
+        return self.db [key]
+            # May (properly) raise KeyError
 
     def __setitem__ (self, key, value):
-        # g.trace(key, repr(value))
         self.db ['%s_%s' % (self.key, key)] = value
     #@+node:ekr.20180624123924.1: *3* wrapper.Bits
     def initBits(self):
