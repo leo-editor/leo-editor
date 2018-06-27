@@ -36,13 +36,8 @@ SQLITE = True
 #@+others
 #@+node:ekr.20100208062523.5885: ** class CommanderCacher
 class CommanderCacher(object):
-    '''
-    A class to manage per-commander caches.
-   
-    c.initObjects creates an per-commander instance of this class.
-    
-    This class prepends c.fileName() to all keys.
-    '''
+    '''A class to manage per-commander caches.'''
+
     def __init__(self):
         try:
             path = join(g.app.homeLeoDir, 'db', 'global_data')
@@ -123,12 +118,12 @@ class CommanderCacher(object):
     #@-others
 #@+node:ekr.20180627052459.1: ** class CommanderWrapper
 class CommanderWrapper(object):
-    
+    '''A class to distinguish keys from separate commanders.'''
+
     def __init__(self, c, fn=None):
         self.c = c
         self.db = g.app.db
         self.key = fn or c.mFileName
-        self.sfn = g.shortFileName(fn or c.mFileName)
         self.user_keys = set()
 
     def get(self, key, default=None):
@@ -156,18 +151,16 @@ class CommanderWrapper(object):
 #@+node:ekr.20180627041556.1: ** class GlobalCacher
 class GlobalCacher(object):
     '''A singleton global cacher, g.app.db'''
-    #@+others
-    #@+node:ekr.20180627041647.1: *3* g_cacher.ctor
+    
     def __init__(self):
         '''Ctor for the GlobalCacher class.'''
-        # Init the db.
         try:
             path = join(g.app.homeLeoDir, 'db', 'g_app_db')
             self.db = SqlitePickleShare(path) if SQLITE else PickleShareDB(path)
         except Exception:
             self.db = {} # Use a plain dict as a dummy.
 
-        
+    #@+others
     #@+node:ekr.20180627045750.1: *3* g_cacher.clear
     def clear(self):
         '''Clear the global cache.'''
