@@ -131,6 +131,7 @@ class CommanderWrapper(object):
         self.db = g.app.db
         self.key = fn or c.mFileName
         self.sfn = g.shortFileName(fn or c.mFileName)
+        self.user_keys = set()
         self.initBits()
 
     #@+others
@@ -139,17 +140,23 @@ class CommanderWrapper(object):
         value = self.db.get('%s_%s' % (self.key, key))
         return default if value is None else value
         
+    def keys(self):
+        return sorted(list(self.user_keys))
+        
     def __contains__ (self, key):
-        return key in self.db
+        return '%s_%s' % (self.key, key) in self.db
 
-    def __delitem__ (self, item):
-        del self.db [item]
-            
+    def __delitem__ (self, key):
+        if key in self.user_keys:
+            self.user_keys.remove(key)
+        del self.db ['%s_%s' % (self.key, key)]
+
     def __getitem__(self, key):
-        return self.db [key]
+        return self.db ['%s_%s' % (self.key, key)]
             # May (properly) raise KeyError
 
     def __setitem__ (self, key, value):
+        self.user_keys.add(key)
         self.db ['%s_%s' % (self.key, key)] = value
     #@+node:ekr.20180624123924.1: *3* wrapper.Bits
     def initBits(self):
