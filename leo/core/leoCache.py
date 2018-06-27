@@ -44,7 +44,6 @@ class CommanderCacher(object):
             self.db = SqlitePickleShare(path) if SQLITE else PickleShareDB(path)
         except Exception:
             self.db = {}
-        self.closed = False
 
     #@+others
     #@+node:ekr.20100209160132.5759: *3* cacher.clear
