@@ -57,8 +57,6 @@ class CommanderCacher(object):
         '''Clear the cache for all commanders.'''
         # Careful: self.db may be a Python dict.
         try:
-            self.db.clear(verbose=True)
-        except TypeError:
             self.db.clear()
         except Exception:
             g.trace('unexpected exception')
@@ -349,13 +347,10 @@ class PickleShareDB(object):
         """
         return fnmatch.fnmatch(basename(s), pattern)
     #@+node:ekr.20100208223942.5978: *3* clear (PickleShareDB)
-    def clear(self, verbose=False):
+    def clear(self):
         # Deletes all files in the fcache subdirectory.
         # It would be more thorough to delete everything
         # below the root directory, but it's not necessary.
-        if verbose:
-            g.red('clearing cache at directory...\n')
-            g.es_print(self.root)
         for z in self.keys():
             self.__delitem__(z)
     #@+node:ekr.20100208223942.5979: *3* get
@@ -611,13 +606,10 @@ class SqlitePickleShare(object):
         """
         return fnmatch.fnmatch(basename(s), pattern)
     #@+node:vitalije.20170716201700.15: *3* clear (SqlitePickleShare)
-    def clear(self, verbose=False):
+    def clear(self):
         # Deletes all files in the fcache subdirectory.
         # It would be more thorough to delete everything
         # below the root directory, but it's not necessary.
-        if verbose:
-            g.red('clearing cache at directory...\n')
-            g.es_print(self.root)
         self.conn.execute('delete from cachevalues;')
     #@+node:vitalije.20170716201700.16: *3* get
     def get(self, key, default=None):
