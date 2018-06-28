@@ -2620,6 +2620,9 @@ class LoadManager(object):
     def scanOptions(self, fileName, pymacs):
         '''Handle all options, remove them from sys.argv and set lm.options.'''
         lm = self
+        if '--no-cache' in sys.argv:
+            sys.argv.remove('--no-cache')
+            print('\nIgnoring the deprecated --no-cache option\n')
         lm.old_argv = sys.argv[:]
         parser = optparse.OptionParser(
             usage="usage: launchLeo.py [options] file1, file2, ...")
