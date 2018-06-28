@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="102" left="665" height="840" width="1117"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -2142,8 +2142,9 @@
 <v t="ekr.20180608054356.1"><vh>perf branch (copy kwarg to generators)</vh></v>
 </v>
 <v t="ekr.20180528114740.1"><vh>Features</vh>
-<v t="ekr.20180608055318.1"><vh>Added print-stats command &amp; improved tracing</vh></v>
 <v t="ekr.20180528114754.1"><vh>#871: A setting to position the icon bar </vh></v>
+<v t="ekr.20180626054937.1"><vh>#913: Show base classes in python importer</vh></v>
+<v t="ekr.20180608055318.1"><vh>Added print-stats command &amp; improved tracing</vh></v>
 </v>
 </v>
 <v t="ekr.20180619051649.1"></v>
@@ -4446,7 +4447,7 @@ What People are Saying about Leo
 </t>
 <t tx="ekr.20050831184021.5"></t>
 <t tx="ekr.20050831195331.1"></t>
-<t tx="ekr.20050831195449">For instruction about installing Leo see:
+<t tx="ekr.20050831195449" str_leo_pos="7">For instruction about installing Leo see:
 http://leoeditor.com/installing.html
 
 For everything a beginner needs to know about Leo see:
@@ -28264,6 +28265,8 @@ This pattern produces superb statistics that show how many times the *callers* o
 Syncing mySettings.txt will synchronize your settings across your .leo files.
 
 **Note**: Changed settings will not be available in other open outlines until you reload settings. You can do this with the reload-all-settings command.</t>
+<t tx="ekr.20180626054937.1">https://github.com/leo-editor/leo-editor/issues/913
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

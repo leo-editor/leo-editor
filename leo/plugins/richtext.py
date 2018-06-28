@@ -61,7 +61,10 @@ To make a button to toggle the editor on and off, use::
 #@+node:tbrown.20130813134319.14335: ** << imports >> (richtext.py)
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore,QtWidgets,QtWebKit,QtWebKitWidgets
-real_webkit = 'engine' not in g.os_path_basename(QtWebKit.__file__).lower()
+if QtWebKit:
+    real_webkit = 'engine' not in g.os_path_basename(QtWebKit.__file__).lower()
+else:
+    real_webkit = False
 import time
 # pylint: disable=no-name-in-module
 if g.isPython3:
@@ -73,6 +76,8 @@ else:
 #@+node:tbrown.20130813134319.14337: ** init (richtext.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    if not QtWebKit:
+        return False
     name = g.app.gui.guiName()
     ok = name == 'qt'
     if ok:
