@@ -15,8 +15,7 @@ class SignalData:
     #@+others
     #@+node:tbrown.20171028115601.3: *3* __init__
     def __init__(self):
-        # pylint: disable=unnecessary-lambda
-        self.listeners = defaultdict(lambda: list())
+        self.listeners = defaultdict(list)
         self.emitters = []
         self.locked = False
 
