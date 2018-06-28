@@ -126,27 +126,27 @@ class CommanderWrapper(object):
         self.user_keys = set()
 
     def get(self, key, default=None):
-        value = self.db.get('%s_%s' % (self.key, key))
+        value = self.db.get('%s:::%s' % (self.key, key))
         return default if value is None else value
     
     def keys(self):
         return sorted(list(self.user_keys))
         
     def __contains__ (self, key):
-        return '%s_%s' % (self.key, key) in self.db
+        return '%s:::%s' % (self.key, key) in self.db
     
     def __delitem__ (self, key):
         if key in self.user_keys:
             self.user_keys.remove(key)
-        del self.db ['%s_%s' % (self.key, key)]
+        del self.db ['%s:::%s' % (self.key, key)]
     
     def __getitem__(self, key):
-        return self.db ['%s_%s' % (self.key, key)]
+        return self.db ['%s:::%s' % (self.key, key)]
             # May (properly) raise KeyError
     
     def __setitem__ (self, key, value):
         self.user_keys.add(key)
-        self.db ['%s_%s' % (self.key, key)] = value
+        self.db ['%s:::%s' % (self.key, key)] = value
 #@+node:ekr.20180627041556.1: ** class GlobalCacher
 class GlobalCacher(object):
     '''A singleton global cacher, g.app.db'''
@@ -680,24 +680,48 @@ class SqlitePickleShare(object):
 def dump_cache(db, tag):
     '''Dump the given cache.'''
     print('\n===== %s =====\n' % tag)
+    # Create a dict, sorted by file prefixes.
+    d = {}
     for key in db.keys():
         key = key[0]
         val = db.get(key)
+        data = key.split(':::')
+        if len(data) == 2:
+            fn, key2 = data
+        else:
+            fn, key2 = 'None', key
+        aList = d.get(fn, [])
+        aList.append((key2, val),)
+        d[fn] = aList
+    # Print the dict.
+    files = 0
+    for key in sorted(d.keys()):
+        if key != 'None':
+            dump_list('File: ' + key, d.get(key))
+            files += 1
+    if d.get('None'):
+        heading = 'All others' if files else None
+        dump_list(heading, d.get('None'))
+        
+def dump_list(heading, aList):
+    if heading:
+        print('\n%s...\n' % heading)
+    for aTuple in aList:
+        key, val = aTuple
         if g.isString(val):
             if key.endswith(('leo_expanded', 'leo_marked')):
                 if val:
-                    print('%s:' % key)
+                    print('%30s:' % key)
                     g.printObj(val.split(','))
                 else:
-                    print('%s:[]' % key)
+                    print('%30s: []' % key)
             else:
-                print('%s:%s' % (key, val))   
+                print('%30s: %s' % (key, val))   
         elif isinstance(val, (int, float)):
-            print('%s:%s' % (key, val))    
+            print('%30s: %s' % (key, val))    
         else:
-            print('%s:' % key)
+            print('%30s:' % key)
             g.printObj(val)
-    print('')
 #@-others
 #@@language python
 #@@tabwidth -4
