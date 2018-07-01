@@ -378,6 +378,7 @@ def xpdb(event):
                     g.es('unknown qr request:', aList)
         #@-<< define listener >>
         g.app.debugger_d = d = {
+            # These items never change.
             'qc': Queue(), # Command queue.
             'qr': Queue(), # Request queue.
             'timer': g.IdleTime(listener, delay=0)
