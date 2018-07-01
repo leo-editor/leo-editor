@@ -8,8 +8,11 @@
 import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 import os
+import pdb
 import subprocess
 import sys
+import threading
+from queue import Queue
 #@-<< imports >>
 
 def cmd(name):
@@ -203,5 +206,195 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Tests are run in an external process, so tests *cannot* change the outline.'''
         self.c.testManager.runTestsExternally(all=False, marked=False)
     #@-others
+#@+node:ekr.20180701050839.5: ** class XPdb ((pdb.Pdb, threading.Thread)
+class XPdb(pdb.Pdb, threading.Thread):
+    # Pdb is a subclass of Cmd and Bdb.
+
+    def __init__(self, func=None):
+        threading.Thread.__init__(self)
+        pdb.Pdb.__init__(self, stdin=QueueStdin(), readrc=False)
+        self.func=func
+        self.use_rawinput = False # for cmd.Cmd.
+        self.daemon = True
+        
+    def run(self):
+        '''Start the thread.'''
+        from leo.core.leoQt import QtCore
+        QtCore.pyqtRemoveInputHook() # From g.pdb
+        if self.func:
+            self.runcall(self.func)
+        else:
+            self.set_trace()
+        
+    #@+others
+    #@+node:ekr.20180701050839.6: *3* xpdb.do_clear
+    def do_clear(self, arg):
+        """cl(ear) filename:lineno\ncl(ear) [bpnumber [bpnumber...]]
+        With a space separated list of breakpoint numbers, clear
+        those breakpoints.  Without argument, clear all breaks (but
+        first ask confirmation).  With a filename:lineno argument,
+        clear all breaks at that line in that file.
+        """
+        import bdb
+        # Same as pdb.do_clear except uses self.stdin.readline (as it should).
+        if not arg:
+            ### Old code. does not support i/o redirection.
+                # try:
+                    # reply = input('Clear all breaks? ')
+                # except EOFError:
+                    # reply = 'no'
+            reply = self.stdin.readline().strip().lower()
+            if reply in ('y', 'yes'):
+                bplist = [bp for bp in bdb.Breakpoint.bpbynumber if bp]
+                self.clear_all_breaks()
+                for bp in bplist:
+                    self.message('Deleted %s' % bp)
+            return
+        if ':' in arg:
+            # Make sure it works for "clear C:\foo\bar.py:12"
+            i = arg.rfind(':')
+            filename = arg[:i]
+            arg = arg[i+1:]
+            try:
+                lineno = int(arg)
+            except ValueError:
+                err = "Invalid line number (%s)" % arg
+            else:
+                bplist = self.get_breaks(filename, lineno)
+                err = self.clear_break(filename, lineno)
+            if err:
+                self.error(err)
+            else:
+                for bp in bplist:
+                    self.message('Deleted %s' % bp)
+            return
+        numberlist = arg.split()
+        for i in numberlist:
+            try:
+                bp = self.get_bpbynumber(i)
+            except ValueError as err:
+                self.error(err)
+            else:
+                self.clear_bpbynumber(i)
+                self.message('Deleted %s' % bp)
+
+    do_cl = do_clear # 'c' is already an abbreviation for 'continue'
+
+    # complete_clear = self._complete_location
+    # complete_cl = self._complete_location
+
+    #@+node:ekr.20180701050839.7: *3* xpdb.do_quit
+    def do_quit(self, arg):
+        """q(uit)\nexit
+        Quit from the debugger. The program being executed is aborted.
+        """
+        self._user_requested_quit = True
+        self.set_quit()
+        self.kill()
+        return 1
+
+    do_q = do_quit
+    do_exit = do_quit
+    #@+node:ekr.20180701050839.8: *3* xpdb.interaction
+    def interaction(self, frame, traceback):
+            '''Override.'''
+            stack, curindex = self.get_stack(frame, traceback)
+            frame, lineno = stack[curindex]
+            filename = self.canonic(frame.f_code.co_filename)
+                # Might not work for python 2.
+            qr = g.app.debugger_d.get('qr')
+            qr.put(['select-line', lineno, filename])
+            pdb.Pdb.interaction(self, frame, traceback)
+                # Call the base class method.
+    #@+node:ekr.20180701050839.9: *3* xpdb.kill
+    def kill(self):
+
+        d = g.app.debugger_d
+        d ['xpdb'] = None
+        qr = d.get('qr')
+        qr.put(['stop-timer'])
+    #@+node:ekr.20180701050839.10: *3* xpdb.set_continue
+    def set_continue(self):
+        ''' override Bdb.set_continue'''
+        # Don't stop except at breakpoints or when finished
+        self._set_stopinfo(self.botframe, None, -1)
+        if not self.breaks:
+            # no breakpoints; run without debugger overhead
+            self.kill()
+            import sys
+            sys.settrace(None)
+            frame = sys._getframe().f_back
+            while frame and frame is not self.botframe:
+                del frame.f_trace
+                frame = frame.f_back
+    #@-others
+            
+    
+#@+node:ekr.20180701050839.4: ** class QueueStdin (obj)
+class QueueStdin(object):
+    '''A class to get input from the qc channel.'''
+    
+    def readline(self):
+        qc = g.app.debugger_d.get('qc')
+        s = qc.get() # blocks
+        print(s) # Correct.
+        return s
+#@+node:ekr.20180701050839.1: ** command: 'xpdb'
+@g.command('xpdb')
+def xpdb(event):
+    '''Start the external debugger on a toy test program.'''
+    d = getattr(g.app, 'debugger_d', None)
+    if d is None:
+        g.app.debugger_d = d = {
+            'qc': Queue(), # Command queue.
+            'qr': Queue(), # Request queue.
+            'timer': g.IdleTime(listener, delay=0)
+       }
+    
+    def test():
+        for i in range(6):
+            g.trace(i)
+        g.trace('done')
+    #
+    # Shut down previous invocations of the debugger.
+    xpdb = d.get('xpdb')
+    if xpdb:
+        g.es('quitting previous debugger.')
+        xpdb.do_quit(arg=None)
+    else:
+        d['xpdb'] = xpdb = XPdb(func=test)
+    #
+    # Start the listener and debugger (in a separate thread).
+    d['timer'].start()
+    xpdb.start()
+#@+node:ekr.20180701050839.3: *3* function: listener
+def listener(timer):
+    '''Listen for data on the qr channel.'''
+    qr = g.app.debugger_d.get('qr')
+    while not qr.empty():
+        aList = qr.get() # blocks
+        kind = aList[0]
+        if kind == 'stop-timer':
+            timer.stop()
+        elif kind == 'select-line':
+            line, fn = aList[1], aList[2]
+            g.es(line, g.shortFileName(fn))
+        else:
+            g.es('unknown qr request:', aList)
+#@+node:ekr.20180701050839.2: ** command: 'db-input'
+@g.command('db-input')
+def xpdb_input(event):
+    c = event.get('c')
+    d = g.app.debugger_d
+    if c and d:
+    
+        def callback(args, c, event):
+            qc = d.get('qc')
+            qc.put(args[0])
+    
+        c.interactive(callback, event, prompts=['Debugger command: '])
+        
+    elif c:
+        g.es('xpdb not active')
 #@-others
 #@-leo
