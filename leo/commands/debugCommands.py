@@ -339,6 +339,22 @@ class QueueStdin(object):
         s = qc.get() # blocks
         print(s) # Correct.
         return s
+#@+node:ekr.20180701050839.2: ** command: 'db-input'
+@g.command('db-input')
+def xpdb_input(event):
+    c = event.get('c')
+    d = getattr(g.app, 'debugger_d', {})
+    xpdb = d.get('xpdb')
+    if c and xpdb:
+    
+        def callback(args, c, event):
+            qc = d.get('qc')
+            qc.put(args[0])
+    
+        c.interactive(callback, event, prompts=['Debugger command: '])
+        
+    elif c:
+        g.es('xpdb not active')
 #@+node:ekr.20180701050839.1: ** command: 'xpdb'
 @g.command('xpdb')
 def xpdb(event):
@@ -381,19 +397,15 @@ def listener(timer):
             g.es(line, g.shortFileName(fn))
         else:
             g.es('unknown qr request:', aList)
-#@+node:ekr.20180701050839.2: ** command: 'db-input'
-@g.command('db-input')
-def xpdb_input(event):
+#@+node:ekr.20180701054344.1: ** command: 'xpdb-kill'
+@g.command('xpdb-kill')
+def xpdb_kill(event):
     c = event.get('c')
-    d = getattr(g.app, 'debugger_d', None)
-    if c and d:
-    
-        def callback(args, c, event):
-            qc = d.get('qc')
-            qc.put(args[0])
-    
-        c.interactive(callback, event, prompts=['Debugger command: '])
-        
+    d = getattr(g.app, 'debugger_d', {})
+    xpdb = d.get('xpdb')
+    if c and xpdb:
+        qc = d.get('qc')
+        qc.put('quit')
     elif c:
         g.es('xpdb not active')
 #@-others
