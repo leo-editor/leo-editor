@@ -385,7 +385,7 @@ def listener(timer):
 @g.command('db-input')
 def xpdb_input(event):
     c = event.get('c')
-    d = g.app.debugger_d
+    d = getattr(g.app, 'debugger_d', None)
     if c and d:
     
         def callback(args, c, event):
