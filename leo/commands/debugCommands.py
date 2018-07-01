@@ -355,48 +355,51 @@ def xpdb_input(event):
         
     elif c:
         g.es('xpdb not active')
-#@+node:ekr.20180701050839.1: ** command: 'xpdb'
+#@+node:ekr.20180701050839.1: ** command: 'xpdb' & local helper
 @g.command('xpdb')
 def xpdb(event):
     '''Start the external debugger on a toy test program.'''
     d = getattr(g.app, 'debugger_d', None)
     if d is None:
+        #@+<< define listener >>
+        #@+node:ekr.20180701050839.3: *3* << define listener >>
+        def listener(timer):
+            '''Listen for data on the qr channel.'''
+            qr = g.app.debugger_d.get('qr')
+            while not qr.empty():
+                aList = qr.get() # blocks
+                kind = aList[0]
+                if kind == 'stop-timer':
+                    timer.stop()
+                elif kind == 'select-line':
+                    line, fn = aList[1], aList[2]
+                    g.es(line, g.shortFileName(fn))
+                else:
+                    g.es('unknown qr request:', aList)
+        #@-<< define listener >>
         g.app.debugger_d = d = {
             'qc': Queue(), # Command queue.
             'qr': Queue(), # Request queue.
             'timer': g.IdleTime(listener, delay=0)
        }
-    
+    #@+<< define test >>
+    #@+node:ekr.20180701060011.1: *3* << define test >>
     def test():
         for i in range(6):
             g.trace(i)
         g.trace('done')
+    #@-<< define test >>
     #
     # Shut down previous invocations of the debugger.
     xpdb = d.get('xpdb')
     if xpdb:
         g.es('quitting previous debugger.')
         xpdb.do_quit(arg=None)
-    else:
-        d['xpdb'] = xpdb = XPdb(func=test)
     #
     # Start the listener and debugger (in a separate thread).
-    d['timer'].start()
+    d['xpdb'] = xpdb = XPdb(func=test)
     xpdb.start()
-#@+node:ekr.20180701050839.3: *3* function: listener
-def listener(timer):
-    '''Listen for data on the qr channel.'''
-    qr = g.app.debugger_d.get('qr')
-    while not qr.empty():
-        aList = qr.get() # blocks
-        kind = aList[0]
-        if kind == 'stop-timer':
-            timer.stop()
-        elif kind == 'select-line':
-            line, fn = aList[1], aList[2]
-            g.es(line, g.shortFileName(fn))
-        else:
-            g.es('unknown qr request:', aList)
+    d['timer'].start()
 #@+node:ekr.20180701054344.1: ** command: 'xpdb-kill'
 @g.command('xpdb-kill')
 def xpdb_kill(event):
