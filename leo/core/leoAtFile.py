@@ -2033,7 +2033,7 @@ class AtFile(object):
         k = g.skip_to_end_of_line(s,i)
         at.putLeadInSentinel(s, i, j, delta)
         at.indent += delta
-        at.putSentinel("@+" + s[j+1:k])
+        at.putSentinel("@+" + s[j+1:k].strip())
             # s[j:k] starts with '@others'
             # Never write lws in new sentinels.
         for child in p.children():
