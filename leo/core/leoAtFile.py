@@ -1977,9 +1977,11 @@ class AtFile(object):
         """Put the expansion of @all."""
         at = self
         j, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
+        k = g.skip_to_end_of_line(s,i)
         at.putLeadInSentinel(s, i, j, delta)
         at.indent += delta
-        at.putSentinel("@+all")
+        at.putSentinel("@+" + s[j+1:k].strip())
+            # s[j:k] starts with '@all'
         for child in p.children():
             at.putAtAllChild(child)
         at.putSentinel("@-all")
@@ -3369,7 +3371,7 @@ class FastAtRead (object):
             # The list of patterns, in alphabetical order.
             # These patterns must be mutually exclusive.
             r'^\s*%s@afterref%s$'%delims,               # @afterref
-            r'^(\s*)%s@(\+|-)all\s*%s$'%delims,         # @all
+            r'^(\s*)%s@(\+|-)all\b(.*)%s$'%delims,      # @all
             r'^\s*%s@@c(ode)?%s$'%delims,               # @c and @code
             r'^\s*%s@comment(.*)%s'%delims,             # @comment
             r'^\s*%s@delims(.*)%s'%delims,              # @delims
@@ -3378,7 +3380,7 @@ class FastAtRead (object):
             r'^\s*%s@@first%s$'%delims,                 # @first
             r'^\s*%s@@last%s$'%delims,                  # @last
             r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)%s$'%delims, # @node
-            r'^(\s*)%s@(\+|-)others\b(.*)%s$'%delims,      # @others
+            r'^(\s*)%s@(\+|-)others\b(.*)%s$'%delims,   # @others
             r'^\s*%s@raw(.*)%s'%delims,                 # @raw
             r'^(\s*)%s@(\+|-)%s\s*%s$'%(                # section ref
                 delim_start, g.angleBrackets('(.*)'), delim_end)
@@ -3592,8 +3594,7 @@ class FastAtRead (object):
             if m:
                 in_doc = False
                 if m.group(2) == '+': # opening sentinel
-                    ### body.append(m.group(1) + '@others\n')
-                    body.append(m.group(1) + '@others' + (m.group(3) or '') + '\n')
+                    body.append('%s@others%s\n' % (m.group(1), m.group(3) or ''))
                     stack.append((gnx, indent, body))
                     indent += m.end(1) # adjust current identation
                 else: # closing sentinel.
@@ -3718,7 +3719,7 @@ class FastAtRead (object):
                 # Here, in the read code, we merely need to add it to the body.
                 # Pushing and popping the stack may not be necessary, but it can't hurt.
                 if m.group(2) == '+': # opening sentinel
-                    body.append('@all\n')
+                    body.append('%s@all%s\n' % (m.group(1), m.group(3) or ''))
                     stack.append((gnx, indent, body))
                 else: # closing sentinel.
                     # m.group(2) is '-' because the pattern matched.
