@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="102" left="665" height="840" width="1117"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -28186,7 +28183,7 @@ B. ~/.leo/db now contains only two sub-folders: g_app_db and global_data.  g_app
 
 5. As a result of 2, 3 and 4, all Leo files are essentially "fixed".  Their contents will change much less often than before.  As a result, the c.fixed switch has been eliminated, along with the @bool fixedwindow setting.
 
-6. The g.enableDB switch has been eliminated, along with the --no-cache command-line argument.
+6. The g.enableDB switch has been eliminated. The --no-cache command-line argument has been deprecated.
 
 **Summary**
 
