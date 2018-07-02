@@ -2030,9 +2030,11 @@ class AtFile(object):
         """Put the expansion of @others."""
         at = self
         j, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
+        k = g.skip_to_end_of_line(s,i)
         at.putLeadInSentinel(s, i, j, delta)
         at.indent += delta
-        at.putSentinel("@+others")
+        at.putSentinel("@+" + s[j+1:k])
+            # s[j:k] starts with '@others'
             # Never write lws in new sentinels.
         for child in p.children():
             p = child.copy()
