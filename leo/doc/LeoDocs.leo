@@ -2121,6 +2121,7 @@
 <v t="ekr.20180525211530.1"><vh>#738: Links in Tips dialogs are now clickable</vh></v>
 <v t="ekr.20180511101509.1"><vh>#868: Allow separate bindings for numeric keypad keys</vh></v>
 <v t="ekr.20180522121943.1"><vh>#904: Allow local overrides of abbreviations</vh></v>
+<v t="ekr.20180702171546.1"><vh>#932: use show-prefix</vh></v>
 <v t="ekr.20180509122603.1"><vh>Added diff-related wrappers</vh></v>
 <v t="ekr.20180509122901.1"><vh>Added leo_babel plugin</vh></v>
 <v t="ekr.20180524104432.1"><vh>Improved recursive import script</vh></v>
@@ -28266,6 +28267,37 @@ Syncing mySettings.txt will synchronize your settings across your .leo files.
 <t tx="ekr.20180626054937.1">https://github.com/leo-editor/leo-editor/issues/913
 </t>
 <t tx="ekr.20180702154446.1">https://github.com/leo-editor/leo-editor/issues/922</t>
+<t tx="ekr.20180702171546.1">https://github.com/leo-editor/leo-editor/issues/932
+
+Commands that *DO* use the printer:
+
+    print-body
+    print-html
+    print-node
+    print-expanded-body
+    print-expanded-html
+    print-marked-bodies
+    print-marked-html
+    print-marked-nodes
+    print-tree-bodies
+    print-tree-html
+    print-tree-nodes
+
+Commands that *DON'T* use the printer:
+
+    gc-show-summary
+    show-all-uas
+    show-bindings
+    show-buttons
+    show-commands
+    show-focus
+    show-node-uas
+    show-plugin-handlers
+    show-plugins-info
+    show-settings
+    show-stats
+    show-style-sheet
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
