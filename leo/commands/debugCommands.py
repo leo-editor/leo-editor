@@ -7,6 +7,7 @@
 #@+node:ekr.20150514050138.1: ** << imports >> (debugCommands.py)
 import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+import bdb
 import os
 import pdb
 import subprocess
@@ -210,23 +211,32 @@ class DebugCommandsClass(BaseEditCommandsClass):
 class XPdb(pdb.Pdb, threading.Thread):
     # Pdb is a subclass of Cmd and Bdb.
 
-    def __init__(self, func=None):
+    def __init__(self, path=None):
         threading.Thread.__init__(self)
         pdb.Pdb.__init__(self, stdin=QueueStdin(), readrc=False)
-        self.func=func
+        self.path=path
         self.use_rawinput = False # for cmd.Cmd.
         self.daemon = True
-        
+        self.saved_frame = None
+        self.saved_traceback = None
+
     def run(self):
         '''Start the thread.'''
         from leo.core.leoQt import QtCore
         QtCore.pyqtRemoveInputHook() # From g.pdb
-        if self.func:
-            self.runcall(self.func)
+        if self.path:
+            self.run_path(self.path)
+            ### self.runcall(self.func)
         else:
             self.set_trace()
         
     #@+others
+    #@+node:ekr.20180701150326.1: *3* xpdb.postcmd
+    def postcmd(self, stop, line):
+        """Hook method executed just after a command dispatch is finished."""
+        self.select_line(self.saved_frame, self.saved_traceback)
+        return stop
+
     #@+node:ekr.20180701050839.6: *3* xpdb.do_clear
     def do_clear(self, arg):
         """cl(ear) filename:lineno\ncl(ear) [bpnumber [bpnumber...]]
@@ -297,15 +307,12 @@ class XPdb(pdb.Pdb, threading.Thread):
     do_exit = do_quit
     #@+node:ekr.20180701050839.8: *3* xpdb.interaction
     def interaction(self, frame, traceback):
-            '''Override.'''
-            stack, curindex = self.get_stack(frame, traceback)
-            frame, lineno = stack[curindex]
-            filename = self.canonic(frame.f_code.co_filename)
-                # Might not work for python 2.
-            qr = g.app.debugger_d.get('qr')
-            qr.put(['select-line', lineno, filename])
-            pdb.Pdb.interaction(self, frame, traceback)
-                # Call the base class method.
+        '''Override.'''
+        self.saved_frame = frame
+        self.saved_traceback = traceback
+        self.select_line(frame, traceback)
+        pdb.Pdb.interaction(self, frame, traceback)
+            # Call the base class method.
     #@+node:ekr.20180701050839.9: *3* xpdb.kill
     def kill(self):
 
@@ -313,6 +320,27 @@ class XPdb(pdb.Pdb, threading.Thread):
         d ['xpdb'] = None
         qr = d.get('qr')
         qr.put(['stop-timer'])
+    #@+node:ekr.20180701090439.1: *3* xpdb.run_path
+    def run_path(self, path):
+        '''Begin execution of the python file.'''
+        source = g.readFileIntoUnicodeString(path)
+        fn = g.shortFileName(path)
+        try:
+            code = compile(source, fn, 'exec')
+            g.trace(code)
+        except Exception:
+            g.es_exception()
+            return g.trace('can not compile', path)
+        self.reset()
+        sys.settrace(self.trace_dispatch)
+        try:
+            self.quitting = False
+            exec(code, {}, {})
+        except bdb.BdbQuit:
+            pass
+        finally:
+            self.quitting = True
+            sys.settrace(None)
     #@+node:ekr.20180701050839.10: *3* xpdb.set_continue
     def set_continue(self):
         ''' override Bdb.set_continue'''
@@ -327,6 +355,15 @@ class XPdb(pdb.Pdb, threading.Thread):
             while frame and frame is not self.botframe:
                 del frame.f_trace
                 frame = frame.f_back
+    #@+node:ekr.20180701151233.1: *3* xpdb.select_line
+    def select_line(self, frame, traceback):
+
+        stack, curindex = self.get_stack(frame, traceback)
+        frame, lineno = stack[curindex]
+        filename = self.canonic(frame.f_code.co_filename)
+            # Might not work for python 2.
+        qr = g.app.debugger_d.get('qr')
+        qr.put(['select-line', lineno, filename])
     #@-others
             
     
@@ -355,50 +392,67 @@ def xpdb_input(event):
         
     elif c:
         g.es('xpdb not active')
-#@+node:ekr.20180701050839.1: ** command: 'xpdb' & local helper
+#@+node:ekr.20180701050839.1: ** command: 'xpdb' & listener
 @g.command('xpdb')
 def xpdb(event):
     '''Start the external debugger on a toy test program.'''
     d = getattr(g.app, 'debugger_d', None)
+    #@+others
+    #@+node:ekr.20180701050839.3: *3* function: listener
+    def listener(timer):
+        '''Listen (in Leo's main thread) for data on the qr channel.'''
+        qr = g.app.debugger_d.get('qr')
+        while not qr.empty():
+            aList = qr.get() # blocks
+            kind = aList[0]
+            if kind == 'stop-timer':
+                timer.stop()
+            elif kind == 'select-line':
+                line, fn = aList[1], aList[2]
+                show_line(line, fn)
+                c = g.app.log.c
+                def callback(args, c, event):
+                    qc = d.get('qc')
+                    qc.put(args[0])
+                c.k.keyboardQuit()
+                c.interactive(callback, event, prompts=['Debugger command: '])
+            else:
+                g.es('unknown qr request:', aList)
+    #@+node:ekr.20180701061957.1: *3* function: show_line
+    def show_line(line, fn):
+        '''
+        Select the node (and the line in the node) for the given line number
+        and file name.
+        '''
+        g.es(line, g.shortFileName(fn))
+        #
+        # Find the @<file> node.
+        
+        #
+        # Select the line within the node.
+
+    #@-others
+    # Use a fixed path for testing.
+    path = g.os_path_finalize_join(g.app.loadDir,
+        '..', '..', 'pylint-leo.py')
+    if not g.os_path_exists(path):
+        return g.trace('not found', path)
     if d is None:
-        #@+<< define listener >>
-        #@+node:ekr.20180701050839.3: *3* << define listener >>
-        def listener(timer):
-            '''Listen for data on the qr channel.'''
-            qr = g.app.debugger_d.get('qr')
-            while not qr.empty():
-                aList = qr.get() # blocks
-                kind = aList[0]
-                if kind == 'stop-timer':
-                    timer.stop()
-                elif kind == 'select-line':
-                    line, fn = aList[1], aList[2]
-                    g.es(line, g.shortFileName(fn))
-                else:
-                    g.es('unknown qr request:', aList)
-        #@-<< define listener >>
         g.app.debugger_d = d = {
+            # For development, just pick a specific file.
+            'fn': path,
             # These items never change.
             'qc': Queue(), # Command queue.
             'qr': Queue(), # Request queue.
-            'timer': g.IdleTime(listener, delay=0)
+            'timer': g.IdleTime(listener, delay=0),
        }
-    #@+<< define test >>
-    #@+node:ekr.20180701060011.1: *3* << define test >>
-    def test():
-        for i in range(6):
-            g.trace(i)
-        g.trace('done')
-    #@-<< define test >>
-    #
     # Shut down previous invocations of the debugger.
     xpdb = d.get('xpdb')
     if xpdb:
         g.es('quitting previous debugger.')
         xpdb.do_quit(arg=None)
-    #
     # Start the listener and debugger (in a separate thread).
-    d['xpdb'] = xpdb = XPdb(func=test)
+    d['xpdb'] = xpdb = XPdb(path=path)
     xpdb.start()
     d['timer'].start()
 #@+node:ekr.20180701054344.1: ** command: 'xpdb-kill'
