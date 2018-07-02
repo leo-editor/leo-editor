@@ -364,7 +364,7 @@ def viewrendered(event):
     else:
         h = c.hash()
         controllers[h] = vr = ViewRenderedController(c)
-        layouts[h] = c.cacher.db.get('viewrendered_default_layouts', (None, None))
+        layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
         if hasattr(c, 'free_layout'):
             vr._ns_id = '_leo_viewrendered' # for free_layout load/save
             vr.splitter = splitter = c.free_layout.get_top_splitter()
@@ -558,7 +558,7 @@ class ViewRenderedProvider(object):
             h = c.hash()
             controllers[h] = vr
             if not layouts.get(h):
-                layouts[h] = c.cacher.db.get('viewrendered_default_layouts', (None, None))
+                layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
             # return ViewRenderedController(self.c)
             return vr
     #@-others

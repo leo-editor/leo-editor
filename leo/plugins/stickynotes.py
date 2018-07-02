@@ -675,10 +675,10 @@ class Tabula(QMainWindow):
     #@+node:ekr.20101114061906.5440: *4* load_states
     def load_states(self):
 
-        if not self.c.cacher.db:
+        if not self.c.db:
             return
         try:
-            stored = self.c.cacher.db['tabulanotes']
+            stored = self.c.db['tabulanotes']
         except KeyError:
             return
 
@@ -735,8 +735,8 @@ class Tabula(QMainWindow):
 
         geoms['mainwindow'] = self.saveState()
 
-        if self.c.cacher.db:
-            self.c.cacher.db['tabulanotes'] = geoms
+        if self.c.db:
+            self.c.db['tabulanotes'] = geoms
     #@-others
 #@-others
 #@@language python

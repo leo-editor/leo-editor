@@ -443,7 +443,7 @@ class LeoImportCommands(object):
             g.warning("can not open", fileName)
             c.testManager.fail()
             return
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             head = p.moreHead(firstLevel, useVerticalBar=True)
             s = head + nl
             if not g.isPython3: # 2010/08/27
@@ -472,7 +472,7 @@ class LeoImportCommands(object):
             g.warning("can not open", fileName)
             c.testManager.fail()
             return
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             s = p.moreHead(firstLevel) + nl
             s = g.toEncodedString(s, encoding=self.encoding, reportErrors=True)
             theFile.write(s)
@@ -501,7 +501,7 @@ class LeoImportCommands(object):
             if flag:
                 self.treeType = "@root"
                 break
-        for p in current.self_and_subtree():
+        for p in current.self_and_subtree(copy=False):
             s = self.convertVnodeToWeb(p)
             if s:
                 if not g.isPython3: # 2010/08/27
@@ -1865,7 +1865,7 @@ class RecursiveImportController(object):
             g.es_exception()
         finally:
             g.app.disable_redraw = False
-            for p2 in parent.self_and_subtree():
+            for p2 in parent.self_and_subtree(copy=False):
                 p2.contract()
             c.redraw(parent)
         t2 = time.time()
@@ -1954,7 +1954,7 @@ class RecursiveImportController(object):
     def add_class_names(self, p):
         '''Add class names to headlines for all descendant nodes.'''
         after, fn, class_name = None, None, None
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             # Part 1: update the status.
             m = self.file_pattern.match(p.h)
             if m:
@@ -1983,17 +1983,17 @@ class RecursiveImportController(object):
     def clear_dirty_bits(self, p):
         c = self.c
         c.setChanged(False)
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             p.clearDirty()
     #@+node:ekr.20130823083943.12609: *5* ric.dump_headlines
     def dump_headlines(self, p):
         # show all headlines.
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             print(p.h)
     #@+node:ekr.20130823083943.12610: *5* ric.fix_back_slashes
     def fix_back_slashes(self, p):
         '''Convert backslash to slash in all headlines.'''
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             s = p.h.replace('\\', '/')
             if s != p.h:
                 p.v.h = s

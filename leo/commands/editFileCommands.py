@@ -65,7 +65,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         '''
         c = self.c
         # Look for an @clean node.
-        for p in c.p.self_and_parents():
+        for p in c.p.self_and_parents(copy=False):
             if g.match_word(p.h, 0, '@clean') and p.h.rstrip().endswith('.py'):
                 break
         else:
@@ -187,7 +187,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     # Fix bug 1160660: File-Compare-Leo-Files creates "other file" clones.
                     copy = p.copyTreeAfter()
                     copy.moveToLastChildOf(parent)
-                    for p2 in copy.self_and_subtree():
+                    for p2 in copy.self_and_subtree(copy=False):
                         p2.v.context = c
     #@+node:ekr.20170806094317.15: *4* efc.createHiddenCommander
     def createHiddenCommander(self, fn):
@@ -275,7 +275,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 Values are copies of positions.
                 '''
                 d = {} #
-                for p in p1.self_and_subtree():
+                for p in p1.self_and_subtree(copy=False):
                     h = p.h.strip()
                     i = h.find('.')
                     if i > -1:
@@ -489,7 +489,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         row -= len(directives)
         row = max(0, row)
         # Count preceding lines from p to c.p, again ignoring directives.
-        for p2 in p.self_and_subtree():
+        for p2 in p.self_and_subtree(copy=False):
             if p2 == c.p:
                 break
             lines = [z for z in g.splitLines(p2.b) if not g.isDirective(z)]
@@ -714,19 +714,18 @@ class GitDiffController:
         root = hidden_c.rootPosition()
         root.h = fn + ':' + rev if rev else fn
         at.initReadIvars(root, fn, importFileName=None, atShadow=None)
-        at.fromString = s
         if at.errors > 0:
             g.trace('***** errors')
             return None
-        at.inputFile = g.FileLikeObject(fromString=at.fromString)
-        at.initReadLine(at.fromString)
-        at.readOpenFile(root, fn, deleteNodes=True)
-        at.inputFile.close()
-        # Complete the read.
-        for p in root.self_and_subtree():
-            p.b = ''.join(getattr(p.v, 'tempBodyList', []))
-        at.scanAllDirectives(root, importing=False, reading=True)
+        at.fast_read_into_root(
+            c = hidden_c,
+            contents = s,
+            gnx2vnode = {},
+            path = fn,
+            root = root,
+        )
         return hidden_c
+       
     #@+node:ekr.20170806125535.1: *5* gdc.make_diff_outlines & helper
     def make_diff_outlines(self, c1, c2, fn, rev1='', rev2=''):
         '''Create an outline-oriented diff from the *hidden* outlines c1 and c2.'''
@@ -741,11 +740,22 @@ class GitDiffController:
     def compute_dicts(self, c1, c2):
         '''Compute inserted, deleted, changed dictionaries.'''
         # Special case the root: only compare the body text.
-        c1.rootPosition().v.h = c2.rootPosition().v.h
+        root1, root2 = c1.rootPosition().v, c2.rootPosition().v
+        root1.h = root2.h
+        if 0:
+            g.trace('c1...')
+            for p in c1.all_positions():
+                print('%4s %s' % (len(p.b), p.h))
+            g.trace('c2...')
+            for p in c2.all_positions():
+                print('%4s %s' % (len(p.b), p.h))
         d1 = {v.fileIndex: v for v in c1.all_unique_nodes()} 
         d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
         added   = {key: d2.get(key) for key in d2 if not d1.get(key)}
         deleted = {key: d1.get(key) for key in d1 if not d2.get(key)}
+        # Remove the root from the added and deleted dicts.
+        del added[root2.fileIndex]
+        del deleted[root1.fileIndex]
         changed = {}
         for key in d1:
             if key in d2:
@@ -775,6 +785,7 @@ class GitDiffController:
         root is the @<file> node for fn.
         s is the contents of the (public) file, without sentinels.
         '''
+        g.trace('=====')
         # A specialized version of at.readOneAtCleanNode.
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         at = hidden_c.atFileCommands
@@ -796,17 +807,14 @@ class GitDiffController:
         assert old_public_lines
         new_private_lines = x.propagate_changed_lines(
             new_public_lines, old_private_lines, marker, p=hidden_root)
-        # Init the input stream used by read-open file.
-        at.read_lines = new_private_lines
-        at.read_ptr = 0
-        # Read the file using the @file read logic.
-        at.readOpenFile(hidden_root, fn, deleteNodes=True)
-        # Complete the read.
-        for p in hidden_root.self_and_subtree():
-            p.b = ''.join(getattr(p.v, 'tempBodyList', []))
-        if at.errors:
-            g.trace(at.errors, 'errors!')
-        return None if at.errors else hidden_c
+        at.fast_read_into_root(
+            c = hidden_c,
+            contents = ''.join(new_private_lines),
+            gnx2vnode = {},
+            path = fn,
+            root = hidden_root,
+        )
+        return hidden_c
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806094320.18: *4* gdc.create_root
     def create_root(self, rev1, rev2):

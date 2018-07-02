@@ -45,13 +45,14 @@ class NodeIndices(object):
     def check_gnx(self, c, gnx, v):
         '''Check that no vnode exists with the given gnx in fc.gnxDict.'''
         fc = c.fileCommands
-        if fc is None:
-            g.internalError('getNewIndex: fc is None! c:' % c)
-        else:
-            v2 = fc.gnxDict.get(gnx)
-            if v2 and v2 != v:
-                g.internalError(
-                    'getNewIndex: gnx clash %s: v: %s v2: %s' % (gnx, v, v2))
+        if gnx == 'hidden-root-vnode-gnx':
+            # No longer an error.
+            # fast.readWithElementTree always generates a nominal hidden vnode.
+            return 
+        v2 = fc.gnxDict.get(gnx)
+        if v2 and v2 != v:
+            g.internalError(
+                'getNewIndex: gnx clash %s\n v: %s\nv2: %s' % (gnx, v, v2))
     #@+node:ekr.20150302061758.14: *3* ni.compute_last_index
     def compute_last_index(self, c):
         '''Scan the entire leo outline to compute ni.last_index.'''
@@ -308,7 +309,7 @@ class Position(object):
             aList = [z._childIndex for z in p.self_and_parents()]
         else:
             aList = []
-            for z in p.self_and_parents():
+            for z in p.self_and_parents(copy=False):
                 if z == root_p:
                     aList.append(0)
                     break
@@ -352,7 +353,7 @@ class Position(object):
         """Convert a positions  suboutline to a string in MORE format."""
         p = self; level1 = p.level()
         array = []
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             array.append(p.moreHead(level1) + '\n')
             body = p.moreBody()
             if body:
@@ -433,7 +434,7 @@ class Position(object):
 
         # First, look up the tree.
         p1 = self
-        for p in p1.self_and_parents():
+        for p in p1.self_and_parents(copy=False):
             if predicate(p):
                 yield p.copy() if copy else p
                 return
@@ -469,7 +470,7 @@ class Position(object):
 
         # First, look up the tree.
         p1 = self
-        for p in p1.self_and_parents():
+        for p in p1.self_and_parents(copy=False):
             if predicate(p):
                 yield p.copy() if copy else p
                 return
@@ -565,7 +566,7 @@ class Position(object):
         '''Yield p.v and all unique vnodes in p's subtree.'''
         p = self
         seen = set()
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             if p.v not in seen:
                 seen.add(p.v)
                 yield p.v
@@ -743,15 +744,13 @@ class Position(object):
         with_count - include ',x,y' at end where y zero based count of same headlines
         """
         aList = []
-        for i in self.self_and_parents(copy=False): ###
+        for i in self.self_and_parents(copy=False):
             if with_index or with_count:
-                ### i = i.copy()
                 count = 0
                 ind = 0
                 p = i.copy()
                 while p.hasBack():
                     ind = ind + 1
-                    ### p = p.back().copy()
                     p.moveToBack()
                     if i.h == p.h:
                         count = count + 1
@@ -847,7 +846,7 @@ class Position(object):
         p = self
 
         def visible(p, root=None):
-            for parent in p.parents():
+            for parent in p.parents(copy=False):
                 if parent and parent == root:
                     # Fix bug: https://github.com/leo-editor/leo-editor/issues/12
                     return True
@@ -863,7 +862,7 @@ class Position(object):
             else:
                 return root.isAncestorOf(p) and visible(p, root=root)
         else:
-            for root in c.rootPosition().self_and_siblings():
+            for root in c.rootPosition().self_and_siblings(copy=False):
                 if root == p or root.isAncestorOf(p):
                     return visible(p)
             return False
@@ -919,7 +918,7 @@ class Position(object):
         '''
         p = self
         found, offset = False, 0
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             if p.isAnyAtFileNode():
                 # Ignore parent of @<file> node.
                 found = True
@@ -942,7 +941,7 @@ class Position(object):
     def isOutsideAnyAtFileTree(self):
         '''Select the first clone of target that is outside any @file node.'''
         p = self
-        for parent in p.self_and_parents():
+        for parent in p.self_and_parents(copy=False):
             if parent.isAnyAtFileNode():
                 return False
         return True
@@ -1287,7 +1286,7 @@ class Position(object):
         if p.v:
             child_v = p.v.children and p.v.children[0]
             if child_v:
-                for parent in p.self_and_parents(copy=False): ###
+                for parent in p.self_and_parents(copy=False):
                     if child_v == parent.v:
                         g.app.structure_errors += 1
                         g.error('vnode: %s is its own parent' % child_v)
@@ -1751,11 +1750,11 @@ class Position(object):
     # Compatibility routine for scripts.
 
     def clearVisitedInTree(self):
-        for p in self.self_and_subtree():
+        for p in self.self_and_subtree(copy=False):
             p.clearVisited()
     #@+node:ekr.20031218072017.3388: *5* p.clearAllVisitedInTree
     def clearAllVisitedInTree(self):
-        for p in self.self_and_subtree():
+        for p in self.self_and_subtree(copy=False):
             p.v.clearVisited()
             p.v.clearWriteBit()
     #@+node:ekr.20040305162628: *4* p.Dirty bits
@@ -1772,7 +1771,7 @@ class Position(object):
     def inAtIgnoreRange(self):
         """Returns True if position p or one of p's parents is an @ignore node."""
         p = self
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             if p.isAtIgnoreNode():
                 return True
         return False
@@ -1829,7 +1828,7 @@ class Position(object):
     def in_at_all_tree(self):
         '''Return True if p or one of p's ancestors is an @all node.'''
         p = self
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             if p.is_at_all():
                 return True
         return False
@@ -1842,7 +1841,7 @@ class Position(object):
     def in_at_ignore_tree(self):
         '''Return True if p or one of p's ancestors is an @ignore node.'''
         p = self
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             if g.match_word(p.h, 0, '@ignore'):
                 return True
         return False
@@ -2175,7 +2174,7 @@ class VNodeBase(object):
         else:
             if not self.body_unicode_warning:
                 self.body_unicode_warning = True
-                g.internalError('not unicode:', repr(self._bodyString))
+                g.internalError('not unicode:', repr(self._bodyString), self._headString)
             return g.toUnicode(self._bodyString)
 
     getBody = bodyString
@@ -2226,10 +2225,10 @@ class VNodeBase(object):
     def headString(self):
         """Return the headline string."""
         # This message should never be printed and we want to avoid crashing here!
-        if not g.isUnicode(self._headString):
+        if not g.isString(self._headString):
             if not self.head_unicode_warning:
                 self.head_unicode_warning = True
-                g.internalError('not unicode', repr(self._headString))
+                g.internalError('not a string', repr(self._headString))
         # Make _sure_ we return a unicode string.
         return g.toUnicode(self._headString)
 

@@ -434,7 +434,7 @@ class Chapter(object):
             theIter = c.all_unique_positions
         else:
             theIter = root.self_and_subtree
-        for p in theIter():
+        for p in theIter(copy=False):
             if p.v == p1.v:
                 return p.copy()
         return None

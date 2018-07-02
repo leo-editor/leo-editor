@@ -371,7 +371,7 @@ def should_beautify(p):
     Return True if @beautify is in effect for node p.
     Ambiguous @beautify
     '''
-    for p2 in p.self_and_parents():
+    for p2 in p.self_and_parents(copy=False):
         d = g.get_directives_dict(p2)
         if 'killbeautify' in d:
             return False

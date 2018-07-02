@@ -1097,7 +1097,7 @@ class RstCommands(object):
         c = self.c
         current = p or c.p
         self.initSettings(current)
-        for p in current.self_and_parents():
+        for p in current.self_and_parents(copy=False):
             if p.h.startswith('@rst'):
                 return self.processTree(p, ext=ext, toString=True, justOneFile=True)
         return self.processTree(current, ext=ext, toString=True, justOneFile=True)
@@ -1187,7 +1187,7 @@ class RstCommands(object):
         # 3. Search all parents, using self.dd.
         root = self.root if self.root and p.isAncestorOf(self.root) else p
             # Fix #362.
-        for p2 in root.self_and_parents():
+        for p2 in root.self_and_parents(copy=False):
             d = self.dd.get(p2.v, {})
             val = d.get(name)
             if val is not None:
@@ -1229,7 +1229,7 @@ class RstCommands(object):
         # Bug fix 12/4/05: must preprocess parents too.
         for p in root.parents():
             self.preprocessNode(p)
-        for p in root.self_and_subtree():
+        for p in root.self_and_subtree(copy=False):
             self.preprocessNode(p)
     #@+node:ekr.20090502071837.47: *5* rst.preprocessNode & helper
     def preprocessNode(self, p):
@@ -1471,7 +1471,7 @@ class RstCommands(object):
         Look at the descendents of p.
         Used for relocation.
         """
-        for p1 in p.self_and_subtree():
+        for p1 in p.self_and_subtree(copy=False):
             attr = mod_http.get_http_attribute(p1)
             if attr:
                 yield(p1.copy(), attr)

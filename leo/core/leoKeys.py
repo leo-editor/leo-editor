@@ -725,7 +725,7 @@ class AutoCompleterClass(object):
                 
         completions = [z.name for z in completions]
         completions = [self.add_prefix(prefix, z) for z in completions]
-        ### Retain these for now...
+        # Retain these for now...
             # g.printObj(completions[:5])
             # head = line[:local_column]
             # tail = line[local_column:]
