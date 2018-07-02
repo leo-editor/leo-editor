@@ -226,7 +226,6 @@ class XPdb(pdb.Pdb, threading.Thread):
         QtCore.pyqtRemoveInputHook() # From g.pdb
         if self.path:
             self.run_path(self.path)
-            ### self.runcall(self.func)
         else:
             self.set_trace()
         
@@ -292,9 +291,8 @@ class XPdb(pdb.Pdb, threading.Thread):
 
     # complete_clear = self._complete_location
     # complete_cl = self._complete_location
-
     #@+node:ekr.20180701050839.7: *3* xpdb.do_quit
-    def do_quit(self, arg):
+    def do_quit(self, arg=None):
         """q(uit)\nexit
         Quit from the debugger. The program being executed is aborted.
         """
@@ -337,7 +335,8 @@ class XPdb(pdb.Pdb, threading.Thread):
             self.quitting = False
             exec(code, {}, {})
         except bdb.BdbQuit:
-            pass
+            g.trace('BdbQuit')
+            self.do_quit()
         finally:
             self.quitting = True
             sys.settrace(None)
