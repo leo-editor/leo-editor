@@ -3376,7 +3376,7 @@ class FastAtRead (object):
             r'^\s*%s@@first%s$'%delims,                 # @first
             r'^\s*%s@@last%s$'%delims,                  # @last
             r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)%s$'%delims, # @node
-            r'^(\s*)%s@(\+|-)others\s*%s$'%delims,      # @others
+            r'^(\s*)%s@(\+|-)others\b(.*)%s$'%delims,      # @others
             r'^\s*%s@raw(.*)%s'%delims,                 # @raw
             r'^(\s*)%s@(\+|-)%s\s*%s$'%(                # section ref
                 delim_start, g.angleBrackets('(.*)'), delim_end)
@@ -3590,7 +3590,8 @@ class FastAtRead (object):
             if m:
                 in_doc = False
                 if m.group(2) == '+': # opening sentinel
-                    body.append(m.group(1) + '@others\n')
+                    ### body.append(m.group(1) + '@others\n')
+                    body.append(m.group(1) + '@others' + (m.group(3) or '') + '\n')
                     stack.append((gnx, indent, body))
                     indent += m.end(1) # adjust current identation
                 else: # closing sentinel.
