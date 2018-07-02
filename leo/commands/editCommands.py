@@ -3451,7 +3451,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         for v in self.c.all_unique_nodes():
             v.u = {}
     #@+node:ekr.20150514063305.350: *4* ec.printUas & printAllUas
-    @cmd('print-all-uas')
+    @cmd('show-all-uas')
     def printAllUas(self, event=None):
         '''Print all uA's in the outline.'''
         g.es_print('Dump of uAs...')
@@ -3459,7 +3459,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             if v.u:
                 self.printUas(v=v)
 
-    @cmd('print-node-uas')
+    @cmd('show-node-uas')
     def printUas(self, event=None, v=None):
         '''Print the uA's in the selected node.'''
         c = self.c

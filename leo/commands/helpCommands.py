@@ -598,9 +598,9 @@ class HelpCommandsClass(BaseEditCommandsClass):
             dump-new-objects:  Print a summary of all newly-created Python objects.
             enable-gc-trace:   Enable tracing of the garbage collector.
             free-tree-widgets: Free all widgets used in Leo's outline pane.
-            print-focus:       Print information about the requested focus.
-            print-stats:       Print statistics about existing Python objects.
-            print-gc-summary:  Print a brief summary of all Python objects.
+            show-focus:        Print information about the requested focus.
+            show-stats:        Print statistics about existing Python objects.
+            show-gc-summary:   Print a brief summary of all Python objects.
             run-unit-tests:    Run unit tests in the presently selected tree.
             verbose-dump-objects: Print a more verbose listing of all existing Python objects.
 
@@ -1134,7 +1134,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         #@-<< define s >>
         self.c.putHelpFor(s)
     #@+node:ekr.20150514063305.402: *3* printSettings
-    @cmd('print-settings')
+    @cmd('show-settings')
     def printSettings(self, event=None):
         '''
         Prints the value of every setting, except key bindings and commands and

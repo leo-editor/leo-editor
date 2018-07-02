@@ -2754,7 +2754,7 @@ def clearStats():
 
     g.app.statsDict = {}
 #@+node:ekr.20031218072017.3135: *4* g.printStats
-@command('print-stats')
+@command('show-stats')
 def printStats(event=None, name=None):
     '''
     Print all gathered statistics.

@@ -2133,6 +2133,7 @@
 <v t="ekr.20180528114703.1"><vh>Leo 5.7.4 release notes</vh>
 <v t="ekr.20180601095122.1"><vh>Bugs</vh>
 <v t="ekr.20180601095134.1"><vh>#917: System keys on Microsoft keyboard insert unwanted text</vh></v>
+<v t="ekr.20180702154446.1"><vh>#922: text following @others is ignored</vh></v>
 </v>
 <v t="ekr.20180608054147.1"><vh>Code</vh>
 <v t="ekr.20180608054151.1"><vh>fast-read branch</vh></v>
@@ -28264,6 +28265,7 @@ Syncing mySettings.txt will synchronize your settings across your .leo files.
 **Note**: Changed settings will not be available in other open outlines until you reload settings. You can do this with the reload-all-settings command.</t>
 <t tx="ekr.20180626054937.1">https://github.com/leo-editor/leo-editor/issues/913
 </t>
+<t tx="ekr.20180702154446.1">https://github.com/leo-editor/leo-editor/issues/922</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

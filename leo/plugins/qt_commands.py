@@ -98,10 +98,10 @@ for vis in 'hide', 'show', 'toggle':
             getattr(w, vis)()
 
     g.command("gui-all-%s" % vis)(doall)
-#@+node:ekr.20140918124632.17893: ** qt: print-style-sheet
-@g.command('print-style-sheet')
+#@+node:ekr.20140918124632.17893: ** qt: show-style-sheet
+@g.command('show-style-sheet')
 def print_style_sheet(event):
-    '''print-style-sheet command.'''
+    '''show-style-sheet command.'''
     c = event.get('c')
     if c:
         c.styleSheetManager.print_style_sheet()

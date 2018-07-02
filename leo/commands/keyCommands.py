@@ -15,7 +15,7 @@ class KeyHandlerCommandsClass(BaseEditCommandsClass):
     def menuShortcutPlaceHolder(self, event=None):
         '''
         This will never be called.
-        A placeholder for the print-bindings command.
+        A placeholder for the show-bindings command.
         '''
     #@-others
 #@-others

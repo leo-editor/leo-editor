@@ -2526,7 +2526,7 @@ class KeyHandlerClass(object):
         # This method must exist, but it never gets called.
         pass
     #@+node:ekr.20061031131434.119: *4* k.printBindings & helper
-    @cmd('print-bindings')
+    @cmd('show-bindings')
     def printBindings(self, event=None):
         '''Print all the bindings presently in effect.'''
         k = self; c = k.c
@@ -2599,7 +2599,7 @@ class KeyHandlerClass(object):
         if data:
             result.append('\n')
     #@+node:ekr.20120520174745.9867: *4* k.printButtons
-    @cmd('print-buttons')
+    @cmd('show-buttons')
     def printButtons(self, event=None):
         '''Print all @button and @command commands, their bindings and their source.'''
         k = self; c = k.c
@@ -2629,7 +2629,7 @@ class KeyHandlerClass(object):
         ])
         put('\n'.join(result))
     #@+node:ekr.20061031131434.121: *4* k.printCommands
-    @cmd('print-commands')
+    @cmd('show-commands')
     def printCommands(self, event=None):
         '''Print all the known commands and their bindings, if any.'''
         k = self; c = k.c; tabName = 'Commands'
