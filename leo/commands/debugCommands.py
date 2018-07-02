@@ -325,7 +325,6 @@ class XPdb(pdb.Pdb, threading.Thread):
         fn = g.shortFileName(path)
         try:
             code = compile(source, fn, 'exec')
-            g.trace(code)
         except Exception:
             g.es_exception()
             return g.trace('can not compile', path)
@@ -359,7 +358,8 @@ class XPdb(pdb.Pdb, threading.Thread):
 
         stack, curindex = self.get_stack(frame, traceback)
         frame, lineno = stack[curindex]
-        filename = self.canonic(frame.f_code.co_filename)
+        filename = frame.f_code.co_filename
+        ### filename = self.canonic(frame.f_code.co_filename)
             # Might not work for python 2.
         qr = g.app.debugger_d.get('qr')
         qr.put(['select-line', lineno, filename])
@@ -391,7 +391,7 @@ def xpdb_input(event):
         
     elif c:
         g.es('xpdb not active')
-#@+node:ekr.20180701050839.1: ** command: 'xpdb' & listener
+#@+node:ekr.20180701050839.1: ** command: 'xpdb', listener & show_line
 @g.command('xpdb')
 def xpdb(event):
     '''Start the external debugger on a toy test program.'''
@@ -423,17 +423,26 @@ def xpdb(event):
         Select the node (and the line in the node) for the given line number
         and file name.
         '''
-        g.es(line, g.shortFileName(fn))
+        g.es(line, fn)
         #
         # Find the @<file> node.
-        
+        c = g.app.log.c
+        path = fn.replace('\\','/')
+        for p in c.all_positions():
+            if p.isAnyAtFileNode():
+                path2 = g.fullPath(c, p).replace('\\','/')
+                if path2.endswith(path):
+                    g.trace('found', p.h)
+                    break
+        else:
+            g.trace('not found:', path)
         #
         # Select the line within the node.
 
     #@-others
     # Use a fixed path for testing.
-    path = g.os_path_finalize_join(g.app.loadDir,
-        '..', '..', 'pylint-leo.py')
+    # path = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'pylint-leo.py')
+    path = 'c:/test/runLeo.py'
     if not g.os_path_exists(path):
         return g.trace('not found', path)
     if d is None:
