@@ -222,6 +222,7 @@ class XPdb(pdb.Pdb, threading.Thread):
 
     def run(self):
         '''Start the thread.'''
+        # pylint: disable=arguments-differ
         from leo.core.leoQt import QtCore
         QtCore.pyqtRemoveInputHook() # From g.pdb
         if self.path:
@@ -375,6 +376,28 @@ class QueueStdin(object):
         s = qc.get() # blocks
         print(s) # Correct.
         return s
+#@+node:ekr.20180702074705.1: ** command: db-* commands
+@g.command('db-c')
+def xpdb_c(event): db_command(event, 'c')
+    
+@g.command('db-l')
+def xpdb_l(event): db_command(event, 'l')
+    
+@g.command('db-n')
+def xpdb_n(event): db_command(event, 'n')
+    
+@g.command('db-s')
+def xpdb_s(event): db_command(event, 's')
+    
+def db_command(event, command):
+    c = event.get('c')
+    d = getattr(g.app, 'debugger_d', {})
+    xpdb = d.get('xpdb')
+    if c and xpdb:
+        qc = d.get('qc')
+        qc.put(command)
+    elif c:
+        g.es('xpdb not active')
 #@+node:ekr.20180701050839.2: ** command: 'db-input'
 @g.command('db-input')
 def xpdb_input(event):
@@ -400,7 +423,10 @@ def xpdb(event):
     #@+node:ekr.20180701050839.3: *3* function: listener
     def listener(timer):
         '''Listen (in Leo's main thread) for data on the qr channel.'''
-        qr = g.app.debugger_d.get('qr')
+        d = getattr(g.app, 'debugger_d')
+        if not d:
+            return
+        qr = d.get('qr')
         while not qr.empty():
             aList = qr.get() # blocks
             kind = aList[0]
@@ -409,22 +435,18 @@ def xpdb(event):
             elif kind == 'select-line':
                 line, fn = aList[1], aList[2]
                 show_line(line, fn)
-                c = g.app.log.c
-                def callback(args, c, event):
-                    qc = d.get('qc')
-                    qc.put(args[0])
-                c.k.keyboardQuit()
-                c.interactive(callback, event, prompts=['Debugger command: '])
+                if 0: # Interferes with show_line?
+                    c = g.app.log.c
+                    def callback(args, c, event):
+                        qc = d.get('qc')
+                        qc.put(args[0])
+                    c.k.keyboardQuit()
+                    c.interactive(callback, event, prompts=['Debugger command: '])
             else:
                 g.es('unknown qr request:', aList)
     #@+node:ekr.20180701061957.1: *3* function: show_line
     def show_line(line, fn):
-        '''
-        Select the node (and the line in the node) for the given line number
-        and file name.
-        '''
-        g.es(line, fn)
-        #
+        '''Put the cursor on the requested line.'''
         # Find the @<file> node.
         c = g.app.log.c
         path = fn.replace('\\','/')
@@ -432,13 +454,11 @@ def xpdb(event):
             if p.isAnyAtFileNode():
                 path2 = g.fullPath(c, p).replace('\\','/')
                 if path2.endswith(path):
-                    g.trace('found', p.h)
-                    break
-        else:
-            g.trace('not found:', path)
-        #
-        # Select the line within the node.
-
+                    # Select the line.
+                    c.gotoCommands.find_file_line(n=line)
+                    c.bodyWantsFocusNow()
+                    return
+        g.trace('not found:', line, path)
     #@-others
     # Use a fixed path for testing.
     # path = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'pylint-leo.py')

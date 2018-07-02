@@ -57,6 +57,10 @@ class IdleTimeManager(object):
         '''IdleTimeManager: Run all idle-time callbacks.'''
         if not g.app: return
         if g.app.killed: return
+        if not g.app.pluginsController:
+            g.trace('No g.app.pluginsController', g.callers())
+            timer.stop()
+            return ### For debugger.
         self.on_idle_count += 1
         # Handle the registered callbacks.
         for callback in self.callback_list:
