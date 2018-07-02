@@ -453,9 +453,9 @@ def xpdb(event):
         for p in c.all_positions():
             if p.isAnyAtFileNode():
                 path2 = g.fullPath(c, p).replace('\\','/')
-                if path2.endswith(path):
+                if path2.endswith(path): ### A bad hack. We need the full file name.
                     # Select the line.
-                    c.gotoCommands.find_file_line(n=line)
+                    c.gotoCommands.find_file_line(n=line, p=p)
                     c.bodyWantsFocusNow()
                     return
         g.trace('not found:', line, path)
