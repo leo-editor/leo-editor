@@ -203,6 +203,7 @@ class ParserBaseClass(object):
         # New in Leo 4.12.1: allow composition of nodes:
         # - Append all text in descendants in outline order.
         # - Ensure all fragments end with a newline.
+        ### g.trace(p.v.context.shortFileName(), kind, name, val)
         data = g.splitLines(p.b)
         for p2 in p.subtree():
             if p2.b and not p2.h.startswith('@'):
@@ -213,12 +214,12 @@ class ParserBaseClass(object):
     #@+node:ekr.20131114051702.16545: *4* doOutlineData & helper (ParserBaseClass)
     def doOutlineData(self, p, kind, name, val):
         # New in Leo 4.11: do not strip lines.
+        ### g.trace(p.v.context.shortFileName(), kind, name, val)
         data = self.getOutlineDataHelper(p)
         self.set(p, kind, name, data)
         return 'skip'
     #@+node:ekr.20131114051702.16546: *5* getOutlineDataHelper
     def getOutlineDataHelper(self, p):
-        return None ###
         c = self.c
         if not p:
             return None
@@ -1254,6 +1255,7 @@ class GlobalConfigManager(object):
 
     def getOutlineData(self, setting):
         '''Return the pastable (xml text) of the entire @outline-data tree.'''
+        ### g.trace(self.get(setting, "outlinedata"))
         return self.get(setting, "outlinedata")
     #@+node:ekr.20041117093009.1: *4* gcm.getDirectory
     def getDirectory(self, setting):
@@ -1617,6 +1619,7 @@ class LocalConfigManager(object):
     def getOutlineData(self, setting):
         '''Return the pastable (xml) text of the entire @outline-data tree.'''
         data = self.get(setting, "outlinedata")
+        ### g.trace(len(data) if data else 0)
         if setting == 'tree-abbreviations':
             # 904: Append local tree abbreviations to the global abbreviations.
             data0 = g.app.config.getOutlineData(setting)

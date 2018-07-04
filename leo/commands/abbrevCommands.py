@@ -51,12 +51,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def finishCreate(self):
         '''AbbrevCommandsClass.finishCreate.'''
         self.reload_settings()
-        if 0: # Annoying.
-            c = self.c
-            if (not g.app.initing and not g.unitTesting and
-                not g.app.batchMode and not c.gui.isNullGui
-            ):
-                g.red('Abbreviations %s' % ('on' if c.k.abbrevOn else 'off'))
+        ### Annoying.
+            # c = self.c
+            # if (not g.app.initing and not g.unitTesting and
+                # not g.app.batchMode and not c.gui.isNullGui
+            # ):
+                # g.red('Abbreviations %s' % ('on' if c.k.abbrevOn else 'off'))
     #@+node:ekr.20170221035644.1: *5* abbrev.reload_settings & helpers
     def reload_settings(self):
         '''Reload all abbreviation settings.'''
@@ -178,9 +178,11 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         # #904: data may be a string or a list of two strings.
         aList = [data] if g.isString(data) else data
         for tree_s in aList:
+            ### g.trace(len(tree_s))
             #
             # Expand the tree so we can traverse it.
             if not c.canPasteOutline(tree_s):
+                ### g.trace('CAN NOT PASTE', repr(tree_s))
                 return
             c.fileCommands.leo_file_encoding = 'utf-8'
             #
@@ -191,24 +193,28 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             finally:
                 g.app.disable_redraw = False
         self.tree_abbrevs_d = d
+        ### g.trace(c.shortFileName())
+        ### g.printObj(sorted(list(d.keys())))
+
     #@+node:ekr.20170227062001.1: *7* abbrev.init_tree_abbrev_helper
     def init_tree_abbrev_helper(self, d, tree_s):
 
         c = self.c
-        p = c.fileCommands.getPosFromClipboard(tree_s)
-        if not p:
+        hidden_root = c.fileCommands.getPosFromClipboard(tree_s)
+        ### g.trace(len(tree_s), hidden_root.h)
+        if not hidden_root:
             return g.trace('no pasted node')
-        for s in g.splitLines(p.b):
-            if s.strip() and not s.startswith('#'):
-                abbrev_name = s.strip()
-                for child in p.children():
-                    if child.h.strip() == abbrev_name:
-                        abbrev_s = c.fileCommands.putLeoOutline(child)
-                        d[abbrev_name] = abbrev_s
-                        break
-                else:
-                    g.trace('no definition for %s' % abbrev_name)
-
+        for p in hidden_root.children():
+            for s in g.splitLines(p.b):
+                if s.strip() and not s.startswith('#'):
+                    abbrev_name = s.strip()
+                    for child in p.children():
+                        if child.h.strip() == abbrev_name:
+                            abbrev_s = c.fileCommands.putLeoOutline(child)
+                            d[abbrev_name] = abbrev_s
+                            break
+                    else:
+                        g.trace('no definition for %s' % abbrev_name)
     #@+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
     def expandAbbrev(self, event, stroke):
         '''
@@ -223,7 +229,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if not w:
             return False
         ch = self.get_ch(event, stroke, w)
-        if not ch: return False
+        if not ch:
+            return False
         s, i, j, prefixes = self.get_prefixes(w)
         for prefix in prefixes:
             i, tag, word, val = self.match_prefix(ch, i, j, prefix, s)
@@ -238,16 +245,20 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     # Do not call c.endEditing here.
                 break
         else:
+            ### g.trace('NOT FOUND')
+            ### g.printObj(prefixes)
             return False
         # 448: Add abbreviations for commands.
-        if 0: # This is not worth documenting.
-            val, tag = self.abbrevs.get(word, (None, None))
-            if val and c.k.commandExists(val):
-                # Execute the command directly, so as not to call this method recursively.
-                commandName = val
-                func = c.commandsDict.get(commandName)
-                c.doCommand(func, commandName, event)
-                return
+        ###
+            # Not even worth documenting.
+            # val, tag = self.abbrevs.get(word, (None, None))
+            # if val and c.k.commandExists(val):
+                # # Execute the command directly,
+                # # so as not to call this method recursively.
+                # commandName = val
+                # func = c.commandsDict.get(commandName)
+                # c.doCommand(func, commandName, event)
+                # return
         c.abbrev_subst_env['_abr'] = word
         if tag == 'tree':
             self.root = p.copy()
