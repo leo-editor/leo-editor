@@ -51,7 +51,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def finishCreate(self):
         '''AbbrevCommandsClass.finishCreate.'''
         self.reload_settings()
-        ### Annoying.
+        # Annoying.
             # c = self.c
             # if (not g.app.initing and not g.unitTesting and
                 # not g.app.batchMode and not c.gui.isNullGui
@@ -178,11 +178,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         # #904: data may be a string or a list of two strings.
         aList = [data] if g.isString(data) else data
         for tree_s in aList:
-            ### g.trace(len(tree_s))
             #
             # Expand the tree so we can traverse it.
             if not c.canPasteOutline(tree_s):
-                ### g.trace('CAN NOT PASTE', repr(tree_s))
                 return
             c.fileCommands.leo_file_encoding = 'utf-8'
             #
@@ -193,15 +191,11 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             finally:
                 g.app.disable_redraw = False
         self.tree_abbrevs_d = d
-        ### g.trace(c.shortFileName())
-        ### g.printObj(sorted(list(d.keys())))
-
     #@+node:ekr.20170227062001.1: *7* abbrev.init_tree_abbrev_helper
     def init_tree_abbrev_helper(self, d, tree_s):
 
         c = self.c
         hidden_root = c.fileCommands.getPosFromClipboard(tree_s)
-        ### g.trace(len(tree_s), hidden_root.h)
         if not hidden_root:
             return g.trace('no pasted node')
         for p in hidden_root.children():
@@ -245,20 +239,18 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     # Do not call c.endEditing here.
                 break
         else:
-            ### g.trace('NOT FOUND')
-            ### g.printObj(prefixes)
+
             return False
         # 448: Add abbreviations for commands.
-        ###
-            # Not even worth documenting.
-            # val, tag = self.abbrevs.get(word, (None, None))
-            # if val and c.k.commandExists(val):
-                # # Execute the command directly,
-                # # so as not to call this method recursively.
-                # commandName = val
-                # func = c.commandsDict.get(commandName)
-                # c.doCommand(func, commandName, event)
-                # return
+        if 0: # Not worth documenting.
+            val, tag = self.abbrevs.get(word, (None, None))
+            if val and c.k.commandExists(val):
+                # Execute the command directly,
+                # so as not to call this method recursively.
+                commandName = val
+                func = c.commandsDict.get(commandName)
+                c.doCommand(func, commandName, event)
+                return
         c.abbrev_subst_env['_abr'] = word
         if tag == 'tree':
             self.root = p.copy()
