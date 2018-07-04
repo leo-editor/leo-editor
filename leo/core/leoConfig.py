@@ -210,7 +210,7 @@ class ParserBaseClass(object):
                 if not p2.b.endswith('\n'):
                     data.append('\n')
         self.set(p, kind, name, data)
-    #@+node:ekr.20131114051702.16545: *4* doOutlineData & helper (new in Leo 4.11.1)
+    #@+node:ekr.20131114051702.16545: *4* doOutlineData & helper (ParserBaseClass)
     def doOutlineData(self, p, kind, name, val):
         # New in Leo 4.11: do not strip lines.
         data = self.getOutlineDataHelper(p)
@@ -218,8 +218,10 @@ class ParserBaseClass(object):
         return 'skip'
     #@+node:ekr.20131114051702.16546: *5* getOutlineDataHelper
     def getOutlineDataHelper(self, p):
+        return None ###
         c = self.c
-        if not p: return None
+        if not p:
+            return None
         try:
             # Copy the entire tree to s.
             c.fileCommands.leo_file_encoding = 'utf-8'

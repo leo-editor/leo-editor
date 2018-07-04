@@ -1444,17 +1444,30 @@ class FileCommands(object):
         Return a string, *not unicode*, encoded with self.leo_file_encoding,
         suitable for pasting to the clipboard.
         '''
-        p = p or self.c.p
-        self.outputFile = g.FileLikeObject()
-        self.usingClipboard = True
-        self.putProlog()
-        self.putClipboardHeader()
-        self.putVnodes(p)
-        self.putTnodes()
-        self.putPostlog()
-        s = self.outputFile.getvalue()
-        self.outputFile = None
-        self.usingClipboard = False
+        try:
+            # Save
+            tua = self.descendentTnodeUaDictList
+            vua = self.descendentVnodeUaDictList
+            gnxDict = self.gnxDict
+            vnodesDict = self.vnodesDict
+            # Paste.
+            p = p or self.c.p
+            self.outputFile = g.FileLikeObject()
+            self.usingClipboard = True
+            self.putProlog()
+            self.putClipboardHeader()
+            self.putVnodes(p)
+            self.putTnodes()
+            self.putPostlog()
+            s = self.outputFile.getvalue()
+            self.outputFile = None
+            self.usingClipboard = False
+        finally:
+            # Restore
+            self.descendentTnodeUaDictList = tua
+            self.descendentVnodeUaDictList = vua
+            self.gnxDict = gnxDict
+            self.vnodesDict = vnodesDict
         return s
     #@+node:ekr.20031218072017.3046: *4* fc.write_Leo_file & helpers
     def write_Leo_file(self, fileName, outlineOnlyFlag, toString=False, toOPML=False):
