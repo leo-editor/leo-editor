@@ -754,8 +754,10 @@ class GitDiffController:
         added   = {key: d2.get(key) for key in d2 if not d1.get(key)}
         deleted = {key: d1.get(key) for key in d1 if not d2.get(key)}
         # Remove the root from the added and deleted dicts.
-        del added[root2.fileIndex]
-        del deleted[root1.fileIndex]
+        if root2.fileIndex in added:
+            del added[root2.fileIndex]
+        if root1.fileIndex in deleted:
+            del deleted[root1.fileIndex]
         changed = {}
         for key in d1:
             if key in d2:
@@ -785,7 +787,6 @@ class GitDiffController:
         root is the @<file> node for fn.
         s is the contents of the (public) file, without sentinels.
         '''
-        g.trace('=====')
         # A specialized version of at.readOneAtCleanNode.
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         at = hidden_c.atFileCommands
@@ -906,7 +907,9 @@ class GitDiffController:
             if self.repo_dir:
                 # Use previously-computed result.
                 return self.repo_dir
-            directory = g.app.loadDir
+            ### directory = g.app.loadDir
+            directory = g.os_path_abspath(os.curdir)
+            g.trace(directory)
         #
         # Change to the new directory.
         self.repo_dir = self.find_git_working_directory(directory)
