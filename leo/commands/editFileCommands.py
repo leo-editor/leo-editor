@@ -907,9 +907,7 @@ class GitDiffController:
             if self.repo_dir:
                 # Use previously-computed result.
                 return self.repo_dir
-            ### directory = g.app.loadDir
             directory = g.os_path_abspath(os.curdir)
-            g.trace(directory)
         #
         # Change to the new directory.
         self.repo_dir = self.find_git_working_directory(directory)
