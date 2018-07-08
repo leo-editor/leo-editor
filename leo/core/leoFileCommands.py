@@ -26,7 +26,7 @@ else:
 import os
 import pickle
 # import string
-import sys
+# import sys
 import tempfile
 import zipfile
 import sqlite3

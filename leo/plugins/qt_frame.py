@@ -3149,7 +3149,6 @@ class LeoQtLog(leoFrame.LeoLog):
 
         :param QUrl link: link that was clicked
         """
-        ### url = link.url()
         # see addition of '/' in LeoQtLog.put()
         url = s = g.toUnicode(link.toString())
         if platform.system() == 'Windows':
