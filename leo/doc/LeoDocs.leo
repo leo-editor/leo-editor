@@ -464,7 +464,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -2148,6 +2148,7 @@
 <v t="ekr.20180528114754.1"><vh>#871: A setting to position the icon bar </vh></v>
 <v t="ekr.20180626054937.1"><vh>#913: Show base classes in python importer</vh></v>
 <v t="ekr.20180608055318.1"><vh>Added print-stats command &amp; improved tracing</vh></v>
+<v t="ekr.20180708120421.1"><vh>Added dump-clone-parents command</vh></v>
 </v>
 </v>
 </vnodes>
@@ -28320,6 +28321,7 @@ Changes:
   File "c:\leo.repo\leo-editor\leo\plugins\qt_frame.py", line 3152, in linkClicked
     url = link.url()
 AttributeError: 'QUrl' object has no attribute 'url'</t>
+<t tx="ekr.20180708120421.1">This is for debugging only.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

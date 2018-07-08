@@ -1972,7 +1972,7 @@ class FileCommands(object):
             current = self.archivedPositionToPosition(str_pos)
         c.setCurrentPosition(current or c.rootPosition())
     #@-others
-#@+node:ekr.20180708114847.1: ** dump-parents
+#@+node:ekr.20180708114847.1: ** dump-clone-parents
 @g.command('dump-clone-parents')
 def dump_clone_parents(event):
     c = event.get('c')
