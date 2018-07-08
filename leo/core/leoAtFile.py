@@ -243,7 +243,6 @@ class AtFile(object):
                 delattr(at.root.v, 'tnodeList')
             at.root.v._p_changed = True
     #@+node:ekr.20041005105605.17: *3* at.Reading
-
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkDerivedFile
     @cmd('check-derived-file')
@@ -3898,6 +3897,9 @@ class FastAtRead (object):
         lines = g.splitLines(contents)
         data = self.scan_header(lines)
         if data:
+            ### Clear all children.
+            ### Previously, this had been done in readOpenFile.
+            root.children = []
             delims, first_lines, start_i = data
             self.scan_lines(
                 delims, first_lines, lines, start_i)
