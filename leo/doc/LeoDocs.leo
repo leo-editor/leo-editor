@@ -2136,6 +2136,7 @@
 <v t="ekr.20180601095134.1"><vh>#917: System keys on Microsoft keyboard insert unwanted text</vh></v>
 <v t="ekr.20180702154446.1"><vh>#922: text following @others is ignored</vh></v>
 <v t="ekr.20180704130141.1"><vh>#938: New code breakes tree abbreviations </vh></v>
+<v t="ekr.20180708030832.1"><vh>Fixed problems with git-diff command</vh></v>
 </v>
 <v t="ekr.20180608054147.1"><vh>Code</vh>
 <v t="ekr.20180608054151.1"><vh>fast-read branch</vh></v>
@@ -2147,7 +2148,6 @@
 <v t="ekr.20180608055318.1"><vh>Added print-stats command &amp; improved tracing</vh></v>
 </v>
 </v>
-<v t="ekr.20180619051649.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -28302,6 +28302,8 @@ Commands that *DON'T* use the printer:
 <t tx="ekr.20180704130141.1">https://github.com/leo-editor/leo-editor/issues/938
 
 The fix was in abbrev.init_tree_abbrev_helper.
+</t>
+<t tx="ekr.20180708030832.1">It now works in folders besides the leo-editor folder.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
