@@ -3899,7 +3899,7 @@ class FastAtRead (object):
         if data:
             ### Clear all children.
             ### Previously, this had been done in readOpenFile.
-            root.children = []
+            ### root.children = []
             delims, first_lines, start_i = data
             self.scan_lines(
                 delims, first_lines, lines, start_i)
