@@ -3149,12 +3149,14 @@ class LeoQtLog(leoFrame.LeoLog):
 
         :param QUrl link: link that was clicked
         """
-        url = link.url()
+        ### url = link.url()
         # see addition of '/' in LeoQtLog.put()
+        url = s = g.toUnicode(link.toString())
         if platform.system() == 'Windows':
             for scheme in 'file', 'unl':
-                if url.startswith(scheme+':///') and url[len(scheme)+5] == ':':
-                    url = url.replace(':///', '://', 1)
+                if s.startswith(scheme+':///') and s[len(scheme)+5] == ':':
+                    url = s.replace(':///', '://', 1)
+                    break
         g.handleUrl(url, c=self.c)
     #@+node:ekr.20120304214900.9940: *3* LeoQtLog.onCurrentChanged
     def onCurrentChanged(self, idx):

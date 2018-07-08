@@ -354,37 +354,6 @@ class FileCommands(object):
             # keys are gnx strings; values are ignored
     #@+node:ekr.20031218072017.3020: *3* fc.Reading
     #@+node:ekr.20060919104836: *4*  fc.Reading Top-level
-    #@+node:ekr.20070919133659.1: *5* fc.checkLeoFile
-    @cmd('check-leo-file')
-    def checkLeoFile(self, event=None):
-        '''The check-leo-file command.'''
-        fc = self; c = fc.c; p = c.p
-        # 
-        # Put the body (minus the @nocolor) into the file buffer.
-        s = p.b
-        tag = '@nocolor\n'
-        if s.startswith(tag): s = s[len(tag):]
-        # Do a trial read.
-        self.checking = True
-        self.initReadIvars()
-        c.loading = True # disable c.changed
-        try:
-            try:
-                theFile = g.app.loadManager.openLeoOrZipFile(c.mFileName)
-                gnxDict = self.gnxDict
-                self.gnxDict = {} # Always allocate new vnodes.
-                try:
-                    s = theFile.read()
-                    FastRead(c, self.gnxDict).readFile(s=s)
-                finally:
-                    self.gnxDict = gnxDict
-                g.blue('check-leo-file passed')
-            except Exception:
-                junk, message, junk = sys.exc_info()
-                g.error('check-leo-file failed:', g.toUnicode(message))
-        finally:
-            self.checking = False
-            c.loading = False # reenable c.changed
     #@+node:ekr.20031218072017.1559: *5* fc.getLeoOutlineFromClipboard & helpers (Paste main line)
     def getLeoOutlineFromClipboard(self, s, reassignIndices=True):
         '''Read a Leo outline from string s in clipboard format.'''
