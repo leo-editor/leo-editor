@@ -1971,8 +1971,20 @@ class FileCommands(object):
         if str_pos is not None:
             current = self.archivedPositionToPosition(str_pos)
         c.setCurrentPosition(current or c.rootPosition())
-    #@+node:ekr.20180708114847.1: *3* dump-parents
     #@-others
+#@+node:ekr.20180708114847.1: ** dump-parents
+@g.command('dump-clone-parents')
+def dump_clone_parents(event):
+    c = event.get('c')
+    if not c:
+        return
+    print('dump-clone-parents...')
+    d = c.fileCommands.gnxDict
+    for gnx in d:
+        v = d.get(gnx)
+        if len(v.parents) > 1:
+            print(v.h)
+            g.printObj(v.parents)
 #@-others
 #@@language python
 #@@tabwidth -4
