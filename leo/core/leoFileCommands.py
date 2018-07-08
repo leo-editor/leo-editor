@@ -46,33 +46,102 @@ class BadLeoFile(Exception):
         return "Bad Leo File:" + self.message
 #@+node:ekr.20180602062323.1: ** class FastRead
 class FastRead (object):
+    
+    nativeVnodeAttributes = (
+        'a',
+        'descendentTnodeUnknownAttributes',
+        'descendentVnodeUnknownAttributes',
+        'expanded', 'marks', 't', 'tnodeList',
+    )
 
     def __init__(self, c, gnx2vnode):
         self.c = c
-        self.fc = c.fileCommands
         self.gnx2vnode = gnx2vnode
-        self.nativeVnodeAttributes = (
-            'a',
-            'descendentTnodeUnknownAttributes',
-            'descendentVnodeUnknownAttributes',
-            'expanded', 'marks', 't', 'tnodeList',
-        )
         
     #@+others
-    #@+node:ekr.20180606044154.1: *3* fast.bytes_to_unicode
-    def bytes_to_unicode(self, ob):
+    #@+node:ekr.20180604110143.1: *3* fast.readFile & helper
+    def readFile(self, path=None, s=None):
+
+        if not s:
+            with open(path, 'rb') as f:
+                s = f.read()
+        return self.readWithElementTree(s)
+    #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
+    def readWithElementTree(self, s):
+
+        contents = g.toUnicode(s) if g.isPython3 else s
+        xroot = ElementTree.fromstring(contents)
+        g_element = xroot.find('globals')
+        v_elements = xroot.find('vnodes')
+        t_elements = xroot.find('tnodes')
+        self.scanGlobals(g_element)
+        gnx2body, gnx2ua = self.scanTnodes(t_elements)
+        hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
+        self.handleBits()
+        return hidden_v
+    #@+node:ekr.20180624125321.1: *5* fast.handleBits
+    def handleBits(self):
+
+        c, fc = self.c, self.c.fileCommands
+        expanded = c.db.get('expanded')
+        marked = c.db.get('marked')
+        expanded = expanded.split(',') if expanded else []
+        marked = marked.split(',') if marked else []
+        fc.descendentExpandedList = expanded
+        fc.descendentMarksList = marked
+    #@+node:ekr.20180606041211.1: *5* fast.resolveUa & helper
+    def resolveUa(self, attr, val, kind=None): # Kind is for unit testing.
+        '''Parse an unknown attribute in a <v> or <t> element.'''
+        try:
+            val = g.toEncodedString(val)
+        except Exception:
+            g.es_print('unexpected exception converting hexlified string to string')
+            g.es_exception()
+            return None
+        # Leave string attributes starting with 'str_' alone.
+        if attr.startswith('str_'):
+            if g.isString(val) or g.isBytes(val):
+                return g.toUnicode(val)
+        try:
+            binString = binascii.unhexlify(val)
+                # Throws a TypeError if val is not a hex string.
+        except Exception:
+            # Python 2.x throws TypeError
+            # Python 3.x throws binascii.Error
+            # Assume that Leo 4.1 or above wrote the attribute.
+            if g.unitTesting:
+                assert kind == 'raw', 'unit test failed: kind=' % repr(kind)
+            else:
+                g.trace('can not unhexlify %s=%s' % (attr, val))
+            return val
+        try:
+            # No change needed to support protocols.
+            val2 = pickle.loads(binString)
+            return val2
+        except Exception:
+            try:
+                # for python 2.7 and python 3.4
+                # pylint: disable=unexpected-keyword-arg
+                val2 = pickle.loads(binString, encoding='bytes')
+                val2 = self.bytesToUnicode(val2)
+                return val2
+            except Exception:
+                g.trace('can not unpickle %s=%s' % (attr, val))
+                return val
+    #@+node:ekr.20180606044154.1: *6* fast.bytesToUnicode
+    def bytesToUnicode(self, ob):
         """
         Recursively convert bytes objects in strings / lists / dicts to str
         objects, thanks to TNT
         http://stackoverflow.com/questions/22840092
-        Needed for reading Python 2.7 pickles in Python 3.4 in resolveUa()
+        Needed for reading Python 2.7 pickles in Python 3.4.
         """
         # pylint: disable=unidiomatic-typecheck
         # This is simpler than using isinstance.
         t = type(ob)
         if t in (list, tuple):
             l = [str(i, 'utf-8') if type(i) is bytes else i for i in ob]
-            l = [self.bytes_to_unicode(i) if type(i) in (list, tuple, dict) else i
+            l = [self.bytesToUnicode(i) if type(i) in (list, tuple, dict) else i
                 for i in l]
             ro = tuple(l) if t is tuple else l
         elif t is dict:
@@ -85,38 +154,14 @@ class FastRead (object):
                 if type(ob[k]) is bytes:
                     ob[k] = str(ob[k], 'utf-8')
                 elif type(ob[k]) in (list, tuple, dict):
-                    ob[k] = self.bytes_to_unicode(ob[k])
+                    ob[k] = self.bytesToUnicode(ob[k])
             ro = ob
         elif t is bytes: # TNB added this clause
             ro = str(ob, 'utf-8')
         else:
             ro = ob
         return ro
-    #@+node:ekr.20180602062323.7: *3* fast.readWithElementTree & helpers
-    def readWithElementTree(self, contents):
-
-        xroot = ElementTree.fromstring(contents)
-        g_element = xroot.find('globals')
-        v_elements = xroot.find('vnodes')
-        t_elements = xroot.find('tnodes')
-        self.scanGlobals(g_element)
-        gnx2body, gnx2ua = self.scanTnodes(t_elements)
-        hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
-        self.handleBits()
-        return hidden_v
-    #@+node:ekr.20180624125321.1: *4* fast.handleBits
-    def handleBits(self):
-
-        c, fc = self.c, self.c.fileCommands
-        expanded = c.db.get('expanded')
-        marked = c.db.get('marked')
-        expanded = expanded.split(',') if expanded else []
-        marked = marked.split(',') if marked else []
-        if expanded:
-            fc.descendentExpandedList = expanded
-        if marked:
-            fc.descendentMarksList = marked
-    #@+node:ekr.20180605062300.1: *4* fast.scanGlobals & helper
+    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper
     def scanGlobals(self, g_element):
         '''Get global data from the cache, with reasonable defaults.'''
         c = self.c
@@ -131,7 +176,7 @@ class FastRead (object):
         elif not g.app.start_maximized and not g.app.start_fullscreen:
             c.frame.setTopGeometry(w, h, x, y)
             c.frame.deiconify()
-            
+    #@+node:ekr.20180708060437.1: *6* fast.getGlobalData
     def getGlobalData(self):
         '''Return a dict containing all global data.'''
         c = self.c
@@ -151,7 +196,7 @@ class FastRead (object):
         d ['r1'] = float(c.db.get('body_outline_ratio', '0.5'))
         d ['r2'] = float(c.db.get('body_secondary_ratio', '0.5'))
         return d
-    #@+node:ekr.20180602062323.8: *4* fast.scanTnodes
+    #@+node:ekr.20180602062323.8: *5* fast.scanTnodes
     def scanTnodes (self, t_elements):
 
         gnx2body, gnx2ua = {}, defaultdict(dict)
@@ -176,33 +221,23 @@ class FastRead (object):
             # if aDict:
                 # v.unknownAttributes = aDict
 
-    #@+node:ekr.20180602062323.9: *4* fast.scanVnodes
+    #@+node:ekr.20180602062323.9: *5* fast.scanVnodes & helper
     def scanVnodes(self, gnx2body, gnx2vnode, gnx2ua, v_elements):
         
-        trace = False
         c, fc = self.c, self.c.fileCommands
-        context = c
-        t1 = time.clock()
         #@+<< define v_element_visitor >>
-        #@+node:ekr.20180605102822.1: *5* << define v_element_visitor >>
+        #@+node:ekr.20180605102822.1: *6* << define v_element_visitor >>
         def v_element_visitor(parent_e, parent_v):
             '''Visit the given element, creating or updating the parent vnode.'''
             for e in parent_e:
                 assert e.tag in ('v','vh'), e.tag
                 if e.tag == 'vh':
-                    #@+<< handle <vh> element >>
-                    #@+node:ekr.20180605075006.1: *6* << handle <vh> element >>
-                    head = g.toUnicode(e.text or '')
-                    assert g.isUnicode(head), head.__class__.__name__
-                    parent_v._headString = head
-                    if trace: print('HEAD:  %20s: %s' % (parent_v.gnx, head))
-                    #@-<< handle <vh> element >>
+                    parent_v._headString = g.toUnicode(e.text or '')
                     continue
                 gnx = e.attrib['t']
                 v = gnx2vnode.get(gnx)
                 if v:
                     # A clone
-                    if trace: print('Clone: %s: %s' % (gnx, v._headString))
                     parent_v.children.append(v)
                     v.parents.append(parent_v)
                     # The body overrides any previous body text.
@@ -211,8 +246,8 @@ class FastRead (object):
                     v._bodyString = body
                 else:
                     #@+<< Make a new vnode, linked to the parent >>
-                    #@+node:ekr.20180605075042.1: *6* << Make a new vnode, linked to the parent >>
-                    v = leoNodes.VNode(context=context, gnx=gnx)
+                    #@+node:ekr.20180605075042.1: *7* << Make a new vnode, linked to the parent >>
+                    v = leoNodes.VNode(context=c, gnx=gnx)
                     gnx2vnode [gnx] = v
                     parent_v.children.append(v)
                     v.parents.append(parent_v)
@@ -220,10 +255,9 @@ class FastRead (object):
                     assert g.isUnicode(body), body.__class__.__name__
                     v._bodyString = body
                     v._headString = 'PLACE HOLDER'
-                    if trace: print('New:   %s' % gnx)
                     #@-<< Make a new vnode, linked to the parent >>
                     #@+<< handle all other v attributes >>
-                    #@+node:ekr.20180605075113.1: *6* << handle all other v attributes >>
+                    #@+node:ekr.20180605075113.1: *7* << handle all other v attributes >>
                     # Like fc.handleVnodeSaxAttrutes.
                     #
                     # The native attributes of <v> elements are a, t, vtag, tnodeList,
@@ -261,72 +295,13 @@ class FastRead (object):
         #
         # Create the hidden root vnode.
         gnx = 'hidden-root-vnode-gnx'
-        hidden_v = leoNodes.VNode(context=context, gnx=gnx)
+        hidden_v = leoNodes.VNode(context=c, gnx=gnx)
         hidden_v._headString = g.u('<hidden root vnode>')
         gnx2vnode [gnx] = hidden_v
         #
         # Traverse the tree of v elements.
         v_element_visitor(v_elements, hidden_v)
-        t2 = time.clock()
-        if trace: g.trace('%s nodes, %6.4f sec' % (
-            len(gnx2vnode.keys()), t2-t1))
         return hidden_v
-    #@+node:ekr.20180606041211.1: *3* fast.resolveUa
-    def resolveUa(self, attr, val, kind=None): # Kind is for unit testing.
-        '''Parse an unknown attribute in a <v> or <t> element.'''
-        try:
-            val = g.toEncodedString(val)
-        except Exception:
-            g.es_print('unexpected exception converting hexlified string to string')
-            g.es_exception()
-            return None
-        # Leave string attributes starting with 'str_' alone.
-        if attr.startswith('str_'):
-            if g.isString(val) or g.isBytes(val):
-                return g.toUnicode(val)
-        try:
-            binString = binascii.unhexlify(val)
-                # Throws a TypeError if val is not a hex string.
-        except Exception:
-            # Python 2.x throws TypeError
-            # Python 3.x throws binascii.Error
-            # Assume that Leo 4.1 or above wrote the attribute.
-            if g.unitTesting:
-                assert kind == 'raw', 'unit test failed: kind=' % repr(kind)
-            else:
-                g.trace('can not unhexlify %s=%s' % (attr, val))
-            return val
-        try:
-            # No change needed to support protocols.
-            val2 = pickle.loads(binString)
-            return val2
-        except Exception:
-            try:
-                # for python 2.7 and python 3.4
-                # pylint: disable=unexpected-keyword-arg
-                val2 = pickle.loads(binString, encoding='bytes')
-                val2 = self.bytes_to_unicode(val2)
-                return val2
-            except Exception:
-                g.trace('can not unpickle %s=%s' % (attr, val))
-                return val
-    #@+node:ekr.20180604110143.1: *3* fast.readFile
-    def readFile(self, path=None, s=None):
-        
-        trace = False
-        self.path = path
-        t1 = time.clock()
-        if s:
-            contents = s
-        else:
-            with open(path, 'rb') as f:
-                s = f.read()
-        contents = g.toUnicode(s) if g.isPython3 else s
-        v = self.readWithElementTree(contents)
-        if trace:
-            t2 = time.clock()
-            g.trace('%5.3f sec' % (t2-t1))
-        return v
     #@-others
 #@+node:ekr.20160514120347.1: ** class FileCommands
 class FileCommands(object):
