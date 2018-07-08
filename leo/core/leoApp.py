@@ -2336,6 +2336,8 @@ class LoadManager(object):
         c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
         # Open the cheatsheet, but not in batch mode.
         if not g.app.batchMode and not g.os_path_exists(fn):
+            # #933: Save clipboard.
+            old_clipboard = g.app.gui.getTextFromClipboard()
             # Paste the contents of CheetSheet.leo into c.
             c2 = c.openCheatSheet(redraw=False)
             if c2:
@@ -2358,6 +2360,8 @@ class LoadManager(object):
                     # Settings not parsed the first time.
                 c.setChanged(False)
                 c.redraw()
+            # #933: Restore clipboard
+            g.app.gui.setClipboardSelection(old_clipboard)
         return c
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
     def doPrePluginsInit(self, fileName, pymacs):

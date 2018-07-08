@@ -160,6 +160,8 @@ class LeoQtGui(leoGui.LeoGui):
             QtWidgets.QApplication.processEvents()
         else:
             g.trace('no clipboard!')
+
+    setClipboardSelection = replaceClipboardWith
     #@+node:ekr.20160917125948.1: *4* qt_gui.getTextFromClipboard
     def getTextFromClipboard(self):
         '''Get a unicode string from the clipboard.'''
@@ -175,19 +177,6 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             g.trace('no clipboard!')
             return ''
-    #@+node:ekr.20160917130023.1: *4* qt_gui.setClipboardSelection
-    def setClipboardSelection(self, s):
-        '''
-        Set the clipboard selection to s.
-        There are problems with PyQt5.
-        '''
-        if isQt5:
-            # Alas, returning reopens bug 218: https://github.com/leo-editor/leo-editor/issues/218
-            return
-        if s:
-            # This code generates a harmless, but annoying warning on PyQt5.
-            cb = self.qtApp.clipboard()
-            cb.setText(QString(s), mode=cb.Selection)
     #@+node:ekr.20110605121601.18487: *3* qt_gui.Dialogs & panels
     #@+node:ekr.20110605121601.18488: *4* qt_gui.alert
     def alert(self, c, message):
