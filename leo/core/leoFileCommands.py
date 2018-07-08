@@ -1785,39 +1785,6 @@ class FileCommands(object):
     # Indices are now immutable, so there is no longer any difference between these two routines.
 
     compactFileIndices = assignFileIndices
-    #@+node:tbrown.20140615093933.89639: *4* fc.bytes_to_unicode
-    def bytes_to_unicode(self, ob):
-        """recursively convert bytes objects in strings / lists / dicts to str
-        objects, thanks to TNT
-        http://stackoverflow.com/questions/22840092/unpickling-data-from-python-2-with-unicode-strings-in-python-3
-
-        Needed for reading Python 2.7 pickles in Python 3.4 in getSaxUa()
-        """
-        # pylint: disable=unidiomatic-typecheck
-        # This is simpler than using isinstance.
-        t = type(ob)
-        if t in (list, tuple):
-            l = [str(i, 'utf-8') if type(i) is bytes else i for i in ob]
-            l = [self.bytes_to_unicode(i) if type(i) in (list, tuple, dict) else i
-                for i in l]
-            ro = tuple(l) if t is tuple else l
-        elif t is dict:
-            byte_keys = [i for i in ob if type(i) is bytes]
-            for bk in byte_keys:
-                v = ob[bk]
-                del(ob[bk])
-                ob[str(bk, 'utf-8')] = v
-            for k in ob:
-                if type(ob[k]) is bytes:
-                    ob[k] = str(ob[k], 'utf-8')
-                elif type(ob[k]) in (list, tuple, dict):
-                    ob[k] = self.bytes_to_unicode(ob[k])
-            ro = ob
-        elif t is bytes: # TNB added this clause
-            ro = str(ob, 'utf-8')
-        else:
-            ro = ob
-        return ro
     #@+node:ekr.20080805085257.1: *4* fc.createUaList
     def createUaList(self, aList):
         '''Given aList of pairs (p,torv), return a list of pairs (torv,d)
@@ -2004,6 +1971,7 @@ class FileCommands(object):
         if str_pos is not None:
             current = self.archivedPositionToPosition(str_pos)
         c.setCurrentPosition(current or c.rootPosition())
+    #@+node:ekr.20180708114847.1: *3* dump-parents
     #@-others
 #@-others
 #@@language python
