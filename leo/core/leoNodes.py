@@ -1390,7 +1390,9 @@ class Position(object):
         return c.createNodeHierarchy(heads, parent=self, forcecreate=forcecreate)
     #@+node:ekr.20131230090121.16552: *4* p.deleteAllChildren
     def deleteAllChildren(self):
-        '''Delete all children of the receiver.'''
+        '''
+        Delete all children of the receiver and set p.dirty().
+        '''
         p = self
         p.setDirty() # Mark @file nodes dirty!
         p.v.deleteAllChildren()
