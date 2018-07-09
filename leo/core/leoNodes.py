@@ -979,30 +979,48 @@ class Position(object):
             i += 1
         if changed:
             p.stack = stack
-    #@+node:ekr.20080416161551.214: *4* p._linkAfter
-    def _linkAfter(self, p_after, adjust=True):
+    #@+node:ekr.20080416161551.214: *4* p._linkAfter & _linkCopiedAfter
+    def _linkAfter(self, p_after):
         '''Link self after p_after.'''
         p = self
         parent_v = p_after._parentVnode()
-            # Returns None if p.v is None
-        # Init the ivars.
         p.stack = p_after.stack[:]
         p._childIndex = p_after._childIndex + 1
-        # Set the links.
         child = p.v
         n = p_after._childIndex + 1
-        child._addLink(n, parent_v, adjust=adjust)
+        child._addLink(n, parent_v)
+        
+    def _linkCopiedAfter(self, p_after):
+        '''Link self, a newly copied tree, after p_after.'''
+        p = self
+        parent_v = p_after._parentVnode()
+        p.stack = p_after.stack[:]
+        p._childIndex = p_after._childIndex + 1
+        child = p.v
+        n = p_after._childIndex + 1
+        child._addCopiedLink(n, parent_v)
+
     #@+node:ekr.20080416161551.215: *4* p._linkAsNthChild
-    def _linkAsNthChild(self, parent, n, adjust=True):
-        '''(low-level position method) Link self as the n'th child of the parent.'''
+    def _linkAsNthChild(self, parent, n):
+        '''Link self as the n'th child of the parent.'''
         p = self
         parent_v = parent.v
-        # Init the ivars.
         p.stack = parent.stack[:]
         p.stack.append((parent_v, parent._childIndex),)
         p._childIndex = n
         child = p.v
-        child._addLink(n, parent_v, adjust=adjust)
+        child._addLink(n, parent_v)
+        
+    #@+node:ekr.20180709180140.1: *4* p._linkCopiedAsNthChild
+    def _linkCopiedAsNthChild(self, parent, n):
+        '''Link a copied self as the n'th child of the parent.'''
+        p = self
+        parent_v = parent.v
+        p.stack = parent.stack[:]
+        p.stack.append((parent_v, parent._childIndex),)
+        p._childIndex = n
+        child = p.v
+        child._addCopiedLink(n, parent_v)
     #@+node:ekr.20080416161551.216: *4* p._linkAsRoot
     def _linkAsRoot(self, oldRoot):
         """Link self as the root node."""
@@ -2401,6 +2419,9 @@ class VNodeBase(object):
     #@+node:ekr.20080429053831.9: *5* v.setWriteBit
     def setWriteBit(self):
         self.statusBits |= self.writeBit
+    #@+node:ville.20120502221057.7499: *4* v.childrenModified
+    def childrenModified(self):
+        g.childrenModifiedSet.add(self)
     #@+node:ekr.20031218072017.3385: *4* v.computeIcon & setIcon
     def computeIcon(self):
         val = 0; v = self
@@ -2412,6 +2433,9 @@ class VNodeBase(object):
 
     def setIcon(self):
         pass # Compatibility routine for old scripts
+    #@+node:ville.20120502221057.7498: *4* v.contentModified
+    def contentModified(self):
+        g.contentModifiedSet.add(self)
     #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll
     # Called only by LeoTree.selectHelper.
 
@@ -2494,12 +2518,6 @@ class VNodeBase(object):
         v = self
         v.selectionStart = start
         v.selectionLength = length
-    #@+node:ville.20120502221057.7498: *4* v.contentModified
-    def contentModified(self):
-        g.contentModifiedSet.add(self)
-    #@+node:ville.20120502221057.7499: *4* v.childrenModified
-    def childrenModified(self):
-        g.childrenModifiedSet.add(self)
     #@+node:ekr.20130524063409.10700: *3* v.Inserting & cloning
     def cloneAsNthChild(self, parent_v, n):
         # Does not check for illegal clones!
@@ -2524,11 +2542,12 @@ class VNodeBase(object):
         return v2
     #@+node:ekr.20080427062528.9: *3* v.Low level methods
     #@+node:ekr.20090706110836.6135: *4* v._addLink & _addParentLinks
-    def _addLink(self, childIndex, parent_v, adjust=True):
+    def _addLink(self, childIndex, parent_v): ###, adjust=True):
         '''Adjust links after adding a link to v.'''
         v = self
         v.context.frame.tree.generation += 1
         parent_v.childrenModified()
+            # For a plugin.
         # Update parent_v.children & v.parents.
         parent_v.children.insert(childIndex, v)
         v.parents.append(parent_v)
@@ -2538,10 +2557,15 @@ class VNodeBase(object):
         # If v has only one parent, we adjust all
         # the parents links in the descendant tree.
         # This handles clones properly when undoing a delete.
-        if adjust:
-            if len(v.parents) == 1:
-                for child in v.children:
-                    child._addParentLinks(parent=v)
+        # if not adjust and len(v.parents) == 1:
+            # print('')
+            # g.trace(g.callers())
+            # g.trace('=====', parent_v)
+            # g.trace('-----', v)
+        ### if adjust:
+        if len(v.parents) == 1:
+            for child in v.children:
+                child._addParentLinks(parent=v)
     #@+node:ekr.20090804184658.6129: *5* v._addParentLinks
     def _addParentLinks(self, parent):
 
@@ -2550,6 +2574,19 @@ class VNodeBase(object):
         if len(v.parents) == 1:
             for child in v.children:
                 child._addParentLinks(parent=v)
+    #@+node:ekr.20180709175203.1: *4* v._addCopiedLink
+    def _addCopiedLink(self, childIndex, parent_v):
+        '''Adjust links after adding a link to v.'''
+        v = self
+        v.context.frame.tree.generation += 1
+        parent_v.childrenModified()
+            # For a plugin.
+        # Update parent_v.children & v.parents.
+        parent_v.children.insert(childIndex, v)
+        v.parents.append(parent_v)
+        # Set zodb changed flags.
+        v._p_changed = 1
+        parent_v._p_changed = 1
     #@+node:ekr.20090804184658.6128: *4* v._cutLink & _cutParentLinks
     def _cutLink(self, childIndex, parent_v):
         '''Adjust links after cutting a link to v.'''

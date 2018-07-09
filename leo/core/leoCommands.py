@@ -3600,7 +3600,7 @@ class Commands(object):
             changed_node = False
         u.afterChangeGroup(parent, undoType, undoData)
         return parent # actually the last created/found position
-    #@+node:ekr.20100802121531.5804: *4* c.deletePositionsInList
+    #@+node:ekr.20100802121531.5804: *4* c.deletePositionsInList (TO DO)
     def deletePositionsInList(self, aList, callback=None, redraw=True):
         '''
         Delete all vnodes corresponding to the positions in aList. If a
@@ -3753,10 +3753,12 @@ class Commands(object):
                     if v in parent_v.children:
                         childIndex = parent_v.children.index(v)
                         v._cutLink(childIndex, parent_v)
-        # Bug fix 2014/03/13: Make sure c.hiddenRootNode always has at least one child.
+        # Make sure c.hiddenRootNode always has at least one child.
         if not c.hiddenRootNode.children:
             v = leoNodes.VNode(context=c)
-            v._addLink(childIndex=0, parent_v=c.hiddenRootNode, adjust=False)
+            v._addCopiedLink(childIndex=0, parent_v=c.hiddenRootNode)
+            ### c.hiddenRootNode.children = [v]
+            ### v.parents = [c.hiddenRootNode]
         if redraw:
             c.selectPosition(c.rootPosition())
                 # Calls redraw()

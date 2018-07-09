@@ -196,18 +196,20 @@ def setup_test(target):
         assert p2,'not found: %s' % (h)
         p2.setMarked()
         
-    for child in target.children():
-        if child.h == 'a':
-            assert child.isCloned(),'not cloned!: %s' % (child)
-        else:
-            assert not child.isCloned(),'cloned!: %s' % (child)
+    if 1: # This is correct.
+        for child in target.children():
+            if child.h == 'a':
+                assert child.isCloned(),'not cloned!: %s' % (child)
+            else:
+                assert not child.isCloned(),'cloned!: %s' % (child)
         
     # g.trace('setup complete')
     
 #@+node:ekr.20111006115024.3613: *4* tear_down
 def tear_down(p,h=None):
     
-    delete_children(p)
+    if 1:
+        delete_children(p)
     
     if h:
         node = g.findNodeAnywhere(c,h)
@@ -6701,6 +6703,7 @@ else:
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
     
     def test(p):
+        target = p.copy()
         setup_test(p)
         c.cloneMarked()
         h = 'Clones of marked nodes'
@@ -6708,7 +6711,7 @@ else:
         c.undoer.undo()
         assert not g.findNodeAnywhere(c,h)
         c.undoer.redo()
-        assert c.p.h == h,c.p.h
+        assert c.p.h == h, c.p.h
     try:
         test(p)
     finally:

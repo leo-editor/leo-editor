@@ -366,7 +366,7 @@ class FileCommands(object):
         self.initReadIvars()
         #
         # Save the hidden root's children.
-        children = c.hiddenRootNode.children
+        old_children = c.hiddenRootNode.children
         #
         # Save and clear gnxDict.
         # This ensures that new indices will be used for all nodes.
@@ -387,7 +387,7 @@ class FileCommands(object):
         #
         # Restore the hidden root's children
         assert c.hiddenRootNode not in v.parents, g.objToString(v.parents)
-        c.hiddenRootNode.children = children
+        c.hiddenRootNode.children = old_children
         if not v:
             return g.es("the clipboard is not valid ", color="blue")
         #
@@ -399,11 +399,11 @@ class FileCommands(object):
         if current.hasChildren() and current.isExpanded():
             if check and not self.checkPaste(current, p):
                 return None
-            p._linkAsNthChild(current, 0, adjust=False)
+            p._linkCopiedAsNthChild(current, 0)
         else:
             if check and not self.checkPaste(current.parent(), p):
                 return None
-            p._linkAfter(current, adjust=False)
+            p._linkCopiedAfter(current)
         if reassignIndices:
             assert not p.isCloned(), g.objToString(p.v.parents)
             self.gnxDict = oldGnxDict

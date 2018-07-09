@@ -736,9 +736,7 @@ def cloneToAtSpot(self, event=None):
     undoData = c.undoer.beforeCloneNode(p)
     c.endEditing() # Capture any changes to the headline.
     clone = p.copy()
-    clone._linkAsNthChild(last_spot,
-                          n=last_spot.numberOfChildren(),
-                          adjust=True)
+    clone._linkAsNthChild(last_spot, n=last_spot.numberOfChildren())
     dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
     c.setChanged(True)
     if c.validateOutline():
@@ -905,7 +903,7 @@ def cloneMarked(self, event=None):
                 # Create the clone directly as a child of parent.
                 p2 = p.copy()
                 n = parent.numberOfChildren()
-                p2._linkAsNthChild(parent, n, adjust=True)
+                p2._linkAsNthChild(parent, n)
             p.moveToNodeAfterTree()
             n += 1
         else:
@@ -937,7 +935,7 @@ def copyMarked(self, event=None):
         elif p.isMarked() and p.v not in copied:
             copied.append(p.v)
             p2 = p.copyWithNewVnodes(copyMarked=True)
-            p2._linkAsNthChild(parent, n, adjust=True)
+            p2._linkAsNthChild(parent, n)
             p.moveToNodeAfterTree()
             n += 1
         else:

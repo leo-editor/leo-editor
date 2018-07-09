@@ -1244,6 +1244,24 @@
 </v>
 <v t="ekr.20161115063144.16"></v>
 <v t="ekr.20100210222021.5388"><vh>@test save new file</vh></v>
+<v t="ekr.20111006072734.3640"><vh>@common x-marked-nodes test code</vh>
+<v t="ekr.20111006072734.3641"><vh>setup_test</vh></v>
+<v t="ekr.20111006115024.3613"><vh>tear_down</vh></v>
+<v t="ekr.20111006105711.3734"><vh>delete_children</vh></v>
+<v t="ekr.20111006072734.3642"><vh>test_children</vh></v>
+<v t="ekr.20111211094602.3972"><vh>data</vh>
+<v t="ekr.20111211094602.3978"><vh>a</vh>
+<v t="ekr.20111211094602.3979"><vh>b</vh></v>
+</v>
+<v t="ekr.20111211094602.3975"><vh>c</vh></v>
+<v t="ekr.20111211094602.3976"><vh>d</vh></v>
+<v t="ekr.20111211094602.3977"><vh>e</vh>
+<v t="ekr.20111211094602.3978"></v>
+</v>
+</v>
+</v>
+<v t="ekr.20111006105711.3544"><vh>@test clone-marked-nodes</vh></v>
+<v t="ekr.20111006064419.3491"><vh>@test delete-marked-nodes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3593,6 +3611,123 @@ False:
 </t>
 <t tx="ekr.20110615130436.3317"># This was used by @test writing a .leo file retains orphan bits.
 # but this test is moot because Leo no longer writes orphan bits.</t>
+<t tx="ekr.20111006064419.3491">if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+
+    exec(g.findTestScript(c,'@common x-marked-nodes test code'))
+    
+    def test(p):
+        setup_test(p)
+        c.deleteMarked()
+        n = p.numberOfChildren()
+        assert n == 2 ,'delete: children: %s' % (n)
+        c.undoer.undo()
+        n = p.numberOfChildren()
+        assert n == 4,'undo: children: %s' % (n)
+        c.undoer.redo()
+        n = p.numberOfChildren()
+        assert n == 2 ,'delete: children: %s' % (n)
+    try:
+        test(p)
+    finally:
+        tear_down(p)
+</t>
+<t tx="ekr.20111006072734.3640">@others
+</t>
+<t tx="ekr.20111006072734.3641">def setup_test(target):
+    
+    c.unmarkAll() # Make sure we move only the test nodes!
+    
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    assert common,'no common'
+    data = g.findNodeInTree(c,common,'data')
+    assert data,'no data'
+    
+    delete_children(target)
+
+    # Copy the nodes.
+    c.selectPosition(data)
+    c.copyOutline()
+    c.selectPosition(target)
+    c.pasteOutline()
+    c.moveOutlineRight()
+    c.promote()
+    c.deleteOutline()
+    c.redraw()
+        
+    for h in ('a','b','c'):
+        p2 = g.findNodeInTree(c,target,h)
+        assert p2,'not found: %s' % (h)
+        p2.setMarked()
+        
+    if 1: # This is correct.
+        for child in target.children():
+            if child.h == 'a':
+                assert child.isCloned(),'not cloned!: %s' % (child)
+            else:
+                assert not child.isCloned(),'cloned!: %s' % (child)
+        
+    # g.trace('setup complete')
+    
+</t>
+<t tx="ekr.20111006072734.3642">def test_children(p):
+    
+    n = p.numberOfChildren()
+    assert n == 3 ,'children: %s' % (n)
+    
+    child = p.firstChild()
+    assert child.h == 'a','child1: %s' % (child)
+    
+    child = child.next()
+    assert child.h == 'c','child2: %s' % (child)
+    
+    child = child.next()
+    assert child.h == 'a','child3: %s' % (child)
+</t>
+<t tx="ekr.20111006105711.3544">if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+
+    exec(g.findTestScript(c,'@common x-marked-nodes test code'))
+    
+    def test(p):
+        target = p.copy()
+        setup_test(p)
+        c.cloneMarked()
+        h = 'Clones of marked nodes'
+        assert c.p.h == h,c.p.h
+        c.undoer.undo()
+        assert not g.findNodeAnywhere(c,h)
+        c.undoer.redo()
+        assert c.p.h == h, c.p.h
+    try:
+        test(p)
+    finally:
+        tear_down(p,'Clones of marked nodes')
+</t>
+<t tx="ekr.20111006105711.3734">def delete_children(p):
+
+    while p.hasChildren():
+        p.firstChild().doDelete()
+</t>
+<t tx="ekr.20111006115024.3613">def tear_down(p,h=None):
+    
+    if 1:
+        delete_children(p)
+    
+    if h:
+        node = g.findNodeAnywhere(c,h)
+        if node:
+            node.doDelete()
+            # g.trace('deleted',node.h)
+
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    common.contract()
+
+    c.selectPosition(p)
+    c.redraw()
+</t>
 <t tx="ekr.20111021115306.3697">\begin{document}
 &lt;&lt; Document &gt;&gt;
 % hidden comment
@@ -4073,6 +4208,12 @@ try:
     assert child.h.lower() == h.lower(),child.h
 finally:
     setup()</t>
+<t tx="ekr.20111211094602.3972"></t>
+<t tx="ekr.20111211094602.3975"></t>
+<t tx="ekr.20111211094602.3976"></t>
+<t tx="ekr.20111211094602.3977"></t>
+<t tx="ekr.20111211094602.3978"></t>
+<t tx="ekr.20111211094602.3979"></t>
 <t tx="ekr.20111211094936.3970"></t>
 <t tx="ekr.20111213122041.3930">@language python
 @tabwidth -4
