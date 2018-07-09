@@ -1392,8 +1392,10 @@ class Position(object):
     def deleteAllChildren(self):
         '''Delete all children of the receiver.'''
         p = self
-        while p.hasChildren():
-            p.firstChild().doDelete()
+        p.setDirty() # Mark @file nodes dirty!
+        p.v.deleteAllChildren()
+        ### while p.hasChildren():
+        ###    p.firstChild().doDelete()
     #@+node:ekr.20040303175026.2: *4* p.doDelete
     #@+at This is the main delete routine.
     # It deletes the receiver's entire tree from the screen.
@@ -2163,6 +2165,16 @@ class VNodeBase(object):
         for child in v.children:
             v2.children.append(child.copyTree(copyMarked))
         return v2
+    #@+node:ekr.20180709064515.1: *3* v.deleteAllChildren
+    def deleteAllChildren(self):
+        '''Delete all children of self.'''
+        v = self
+        for v2 in v.children:
+            try:
+                v2.parents.remove(v)
+            except ValueError:
+                g.internalError('%s not in %s.parents' % (v, v2))
+        v.children = []
     #@+node:ekr.20031218072017.3359: *3* v.Getters
     #@+node:ekr.20031218072017.3378: *4* v.bodyString
     body_unicode_warning = False
