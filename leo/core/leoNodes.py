@@ -2523,7 +2523,7 @@ class VNodeBase(object):
         assert v.children[n] == v2
         return v2
     #@+node:ekr.20080427062528.9: *3* v.Low level methods
-    #@+node:ekr.20090706110836.6135: *4* v._addLink & helper
+    #@+node:ekr.20090706110836.6135: *4* v._addLink & _addParentLinks
     def _addLink(self, childIndex, parent_v, adjust=True):
         '''Adjust links after adding a link to v.'''
         v = self
@@ -2550,7 +2550,7 @@ class VNodeBase(object):
         if len(v.parents) == 1:
             for child in v.children:
                 child._addParentLinks(parent=v)
-    #@+node:ekr.20090804184658.6128: *4* v._cutLink
+    #@+node:ekr.20090804184658.6128: *4* v._cutLink & _cutParentLinks
     def _cutLink(self, childIndex, parent_v):
         '''Adjust links after cutting a link to v.'''
         v = self
@@ -2576,7 +2576,7 @@ class VNodeBase(object):
         if not v.parents:
             for child in v.children:
                 child._cutParentLinks(parent=v)
-    #@+node:ekr.20031218072017.3425: *4* v._linkAsNthChild (used by 4.x read logic)
+    #@+node:ekr.20031218072017.3425: *4* v._linkAsNthChild
     def _linkAsNthChild(self, parent_v, n):
         """Links self as the n'th child of VNode pv"""
         v = self # The child node.

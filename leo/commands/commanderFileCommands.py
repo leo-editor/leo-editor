@@ -248,11 +248,11 @@ def refreshFromDisk(self, event=None):
         word = p.h[0: i]
         if word == '@auto':
             # This includes @auto-*
-            if shouldDelete: p.deleteAllChildren()
+            if shouldDelete: p.v.deleteAllChildren()
             # Fix #451: refresh-from-disk selects wrong node.
             p = at.readOneAtAutoNode(fn, p)
         elif word in ('@thin', '@file'):
-            if shouldDelete: p.deleteAllChildren()
+            if shouldDelete: p.v.deleteAllChildren()
             at.read(p, force=True)
         elif word in ('@clean',):
             # Wishlist 148: use @auto parser if the node is empty.
@@ -262,10 +262,10 @@ def refreshFromDisk(self, event=None):
                 # Fix #451: refresh-from-disk selects wrong node.
                 p = at.readOneAtAutoNode(fn, p)
         elif word == '@shadow':
-            if shouldDelete: p.deleteAllChildren()
+            if shouldDelete: p.v.deleteAllChildren()
             at.read(p, force=True, atShadow=True)
         elif word == '@edit':
-            if shouldDelete: p.deleteAllChildren()
+            if shouldDelete: p.v.deleteAllChildren()
             at.readOneAtEditNode(fn, p)
         else:
             g.es_print('can not refresh from disk\n%r' % p.h)
