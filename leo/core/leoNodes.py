@@ -979,7 +979,7 @@ class Position(object):
             i += 1
         if changed:
             p.stack = stack
-    #@+node:ekr.20080416161551.214: *4* p._linkAfter & _linkCopiedAfter
+    #@+node:ekr.20080416161551.214: *4* p._linkAfter
     def _linkAfter(self, p_after):
         '''Link self after p_after.'''
         p = self
@@ -989,7 +989,7 @@ class Position(object):
         child = p.v
         n = p_after._childIndex + 1
         child._addLink(n, parent_v)
-        
+    #@+node:ekr.20180709181718.1: *4* p._linkCopiedAfter
     def _linkCopiedAfter(self, p_after):
         '''Link self, a newly copied tree, after p_after.'''
         p = self
@@ -999,7 +999,6 @@ class Position(object):
         child = p.v
         n = p_after._childIndex + 1
         child._addCopiedLink(n, parent_v)
-
     #@+node:ekr.20080416161551.215: *4* p._linkAsNthChild
     def _linkAsNthChild(self, parent, n):
         '''Link self as the n'th child of the parent.'''
@@ -1417,20 +1416,21 @@ class Position(object):
         ### while p.hasChildren():
         ###    p.firstChild().doDelete()
     #@+node:ekr.20040303175026.2: *4* p.doDelete
-    #@+at This is the main delete routine.
-    # It deletes the receiver's entire tree from the screen.
-    # Because of the undo command we never actually delete vnodes or tnodes.
-    #@@c
-
     def doDelete(self, newNode=None):
-        """Deletes position p from the outline."""
+        """
+        Deletes position p from the outline.
+        
+        This is the main delete routine.
+        It deletes the receiver's entire tree from the screen.
+        Because of the undo command we never actually delete vnodes.
+        """
         p = self
         p.setDirty() # Mark @file nodes dirty!
-        # Adjust newNode._childIndex if newNode is a following sibling of p.
         sib = p.copy()
         while sib.hasNext():
             sib.moveToNext()
             if sib == newNode:
+                # Adjust newNode._childIndex if newNode is a following sibling of p.
                 newNode._childIndex -= 1
                 break
         p._unlink()
@@ -2542,7 +2542,7 @@ class VNodeBase(object):
         return v2
     #@+node:ekr.20080427062528.9: *3* v.Low level methods
     #@+node:ekr.20090706110836.6135: *4* v._addLink & _addParentLinks
-    def _addLink(self, childIndex, parent_v): ###, adjust=True):
+    def _addLink(self, childIndex, parent_v):
         '''Adjust links after adding a link to v.'''
         v = self
         v.context.frame.tree.generation += 1
@@ -2557,12 +2557,6 @@ class VNodeBase(object):
         # If v has only one parent, we adjust all
         # the parents links in the descendant tree.
         # This handles clones properly when undoing a delete.
-        # if not adjust and len(v.parents) == 1:
-            # print('')
-            # g.trace(g.callers())
-            # g.trace('=====', parent_v)
-            # g.trace('-----', v)
-        ### if adjust:
         if len(v.parents) == 1:
             for child in v.children:
                 child._addParentLinks(parent=v)

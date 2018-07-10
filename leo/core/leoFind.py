@@ -1589,7 +1589,7 @@ class LeoFind(object):
         else:
             g.es_print('tag not found: %s' % self.find_text)
         return len(clones)
-    #@+node:ekr.20160920112617.2: *5* find.createCloneTagNodes (***changed)
+    #@+node:ekr.20160920112617.2: *5* find.createCloneTagNodes (changed)
     def createCloneTagNodes(self, clones):
         '''
         Create a "Found Tag" node as the last node of the outline.
@@ -1607,7 +1607,7 @@ class LeoFind(object):
             # Create the clone directly as a child of found.
             p2 = p.copy()
             n = found.numberOfChildren()
-            p2._linkCopiedAsNthChild(found, n) ###, adjust=False)
+            p2._linkCopiedAsNthChild(found, n)
         return found
     #@+node:ekr.20031218072017.3073: *4* find.findAll & helpers
     def findAll(self, clone_find_all=False, clone_find_all_flattened=False):
@@ -1678,7 +1678,7 @@ class LeoFind(object):
         else:
             self.restore(data)
         return count
-    #@+node:ekr.20141023110422.1: *6* find.createCloneFindAllNodes (***changed)
+    #@+node:ekr.20141023110422.1: *6* find.createCloneFindAllNodes (changed)
     def createCloneFindAllNodes(self, clones, flattened):
         '''
         Create a "Found" node as the last node of the outline.
@@ -1700,7 +1700,7 @@ class LeoFind(object):
             # Create the clone directly as a child of found.
             p2 = p.copy()
             n = found.numberOfChildren()
-            p2._linkCopiedAsNthChild(found, n) ###, adjust=False)
+            p2._linkCopiedAsNthChild(found, n)
         # Sort the clones in place, without undo.
         found.v.children.sort(key=lambda v: v.h.lower())
         return found
