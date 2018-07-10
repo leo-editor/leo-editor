@@ -582,7 +582,7 @@ class AtFile(object):
                 reading=True,
             )
             p.v.b = '' # Required for @auto API checks.
-            p.v.deleteAllChildren()
+            p.v._deleteAllChildren()
             p = ic.createOutline(fileName, parent=p.copy())
             # Do *not* select a postion here.
             # That would improperly expand nodes.
@@ -3899,7 +3899,7 @@ class FastAtRead (object):
         if data:
             ### Clear all children.
             ### Previously, this had been done in readOpenFile.
-            root.v.deleteAllChildren()
+            root.v._deleteAllChildren()
             delims, first_lines, start_i = data
             self.scan_lines(
                 delims, first_lines, lines, start_i)

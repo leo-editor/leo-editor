@@ -1412,9 +1412,8 @@ class Position(object):
         '''
         p = self
         p.setDirty() # Mark @file nodes dirty!
-        p.v.deleteAllChildren()
-        ### while p.hasChildren():
-        ###    p.firstChild().doDelete()
+        while p.hasChildren():
+            p.firstChild().doDelete()
     #@+node:ekr.20040303175026.2: *4* p.doDelete
     def doDelete(self, newNode=None):
         """
@@ -2185,16 +2184,6 @@ class VNodeBase(object):
         for child in v.children:
             v2.children.append(child.copyTree(copyMarked))
         return v2
-    #@+node:ekr.20180709064515.1: *3* v.deleteAllChildren
-    def deleteAllChildren(self):
-        '''Delete all children of self.'''
-        v = self
-        for v2 in v.children:
-            try:
-                v2.parents.remove(v)
-            except ValueError:
-                g.internalError('%s not in %s.parents' % (v, v2))
-        v.children = []
     #@+node:ekr.20031218072017.3359: *3* v.Getters
     #@+node:ekr.20031218072017.3378: *4* v.bodyString
     body_unicode_warning = False
@@ -2541,6 +2530,19 @@ class VNodeBase(object):
         assert v.children[n] == v2
         return v2
     #@+node:ekr.20080427062528.9: *3* v.Low level methods
+    #@+node:ekr.20180709175203.1: *4* v._addCopiedLink
+    def _addCopiedLink(self, childIndex, parent_v):
+        '''Adjust links after adding a link to v.'''
+        v = self
+        v.context.frame.tree.generation += 1
+        parent_v.childrenModified()
+            # For a plugin.
+        # Update parent_v.children & v.parents.
+        parent_v.children.insert(childIndex, v)
+        v.parents.append(parent_v)
+        # Set zodb changed flags.
+        v._p_changed = 1
+        parent_v._p_changed = 1
     #@+node:ekr.20090706110836.6135: *4* v._addLink & _addParentLinks
     def _addLink(self, childIndex, parent_v):
         '''Adjust links after adding a link to v.'''
@@ -2568,19 +2570,6 @@ class VNodeBase(object):
         if len(v.parents) == 1:
             for child in v.children:
                 child._addParentLinks(parent=v)
-    #@+node:ekr.20180709175203.1: *4* v._addCopiedLink
-    def _addCopiedLink(self, childIndex, parent_v):
-        '''Adjust links after adding a link to v.'''
-        v = self
-        v.context.frame.tree.generation += 1
-        parent_v.childrenModified()
-            # For a plugin.
-        # Update parent_v.children & v.parents.
-        parent_v.children.insert(childIndex, v)
-        v.parents.append(parent_v)
-        # Set zodb changed flags.
-        v._p_changed = 1
-        parent_v._p_changed = 1
     #@+node:ekr.20090804184658.6128: *4* v._cutLink & _cutParentLinks
     def _cutLink(self, childIndex, parent_v):
         '''Adjust links after cutting a link to v.'''
@@ -2590,7 +2579,10 @@ class VNodeBase(object):
         assert parent_v.children[childIndex] == v
         del parent_v.children[childIndex]
         if parent_v in v.parents:
-            v.parents.remove(parent_v)
+            try:
+                v.parents.remove(parent_v)
+            except ValueError:
+                g.internalError('%s not in parents of %s' % (parent_v, v))
         v._p_changed = 1
         parent_v._p_changed = 1
         # If v has no more parents, we adjust all
@@ -2607,6 +2599,21 @@ class VNodeBase(object):
         if not v.parents:
             for child in v.children:
                 child._cutParentLinks(parent=v)
+    #@+node:ekr.20180709064515.1: *4* v._deleteAllChildren
+    def _deleteAllChildren(self):
+        '''
+        Delete all children of self.
+        
+        This is a low-level method, used by the read code.
+        It is not intended as a general replacement for p.doDelete().
+        '''
+        v = self
+        for v2 in v.children:
+            try:
+                v2.parents.remove(v)
+            except ValueError:
+                g.internalError('%s not in parents of %s' % (v, v2))
+        v.children = []
     #@+node:ekr.20031218072017.3425: *4* v._linkAsNthChild
     def _linkAsNthChild(self, parent_v, n):
         """Links self as the n'th child of VNode pv"""
