@@ -356,89 +356,54 @@ class FileCommands(object):
     #@+node:ekr.20060919104836: *4*  fc.Reading Top-level
     #@+node:ekr.20031218072017.1559: *5* fc.Paste
     #@+node:ekr.20180709205603.1: *6* fc.getLeoOutlineFromClipBoard
-    def getLeoOutlineFromClipboard(self, s): ###, reassignIndices=True):
+    def getLeoOutlineFromClipboard(self, s):
         '''Read a Leo outline from string s in clipboard format.'''
         c = self.c
         current = c.p
         if not current:
             g.trace('no c.p')
             return None
-        ### check = not reassignIndices
         self.initReadIvars()
-        #
         # Save the hidden root's children.
         old_children = c.hiddenRootNode.children
         # Save and clear gnxDict.
-        # This ensures that new indices will be used for all nodes.
-        ### if reassignIndices:
         oldGnxDict = self.gnxDict
         self.gnxDict = {}
-        ###
-        # else:
-            # # All pasted nodes should already have unique gnx's.
-            # ni = g.app.nodeIndices
-            # for v in c.all_unique_nodes():
-                # ni.check_gnx(c, v.fileIndex, v)
         s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
             # This encoding must match the encoding used in putLeoOutline.
         hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
         v = hidden_v.children[0]
-        ### if reassignIndices:
         v.parents = []
-        #
         # Restore the hidden root's children
         assert c.hiddenRootNode not in v.parents, g.objToString(v.parents)
         c.hiddenRootNode.children = old_children
         if not v:
             return g.es("the clipboard is not valid ", color="blue")
-        #
         # Create the position.
         p = leoNodes.Position(v)
-        #
-        # Important: we must not adjust links when linking v
-        # into the outline.  The read code has already done that.
+        # Do *not* adjust links when linking v.
         if current.hasChildren() and current.isExpanded():
-            ### if check and not self.checkPaste(current, p):
-            ###    return None
             p._linkCopiedAsNthChild(current, 0)
         else:
-            ### if check and not self.checkPaste(current.parent(), p):
-            ###    return None
             p._linkCopiedAfter(current)
-        ### if reassignIndices:
         assert not p.isCloned(), g.objToString(p.v.parents)
         self.gnxDict = oldGnxDict
         self.reassignAllIndices(p)
-        ###
-        # else:
-            # # Fix #862: paste-retaining-clones can corrupt the outline.
-            # self.linkChildrenToParents(p)
         c.selectPosition(p)
         self.initReadIvars()
         return p
 
     getLeoOutline = getLeoOutlineFromClipboard # for compatibility
     #@+node:ekr.20180709205640.1: *6* fc.getLeoOutlineFromClipBoardRetainingClones
-    def getLeoOutlineFromClipboardRetainingClones(self, s): ### reassignIndices=False
+    def getLeoOutlineFromClipboardRetainingClones(self, s):
         '''Read a Leo outline from string s in clipboard format.'''
         c = self.c
         current = c.p
         if not current:
-            g.trace('no c.p')
-            return None
-        ### check = not reassignIndices
+            return g.trace('no c.p')
         self.initReadIvars()
-        #
         # Save the hidden root's children.
         old_children = c.hiddenRootNode.children
-        ###
-            # #
-            # # Save and clear gnxDict.
-            # # This ensures that new indices will be used for all nodes.
-            # if reassignIndices:
-                # oldGnxDict = self.gnxDict
-                # self.gnxDict = {}
-        ### else:
         # All pasted nodes should already have unique gnx's.
         ni = g.app.nodeIndices
         for v in c.all_unique_nodes():
@@ -447,35 +412,22 @@ class FileCommands(object):
             # This encoding must match the encoding used in putLeoOutline.
         hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
         v = hidden_v.children[0]
-        ### if reassignIndices:
-        ###     v.parents = []
-        #
         # Restore the hidden root's children
         assert c.hiddenRootNode not in v.parents, g.objToString(v.parents)
         c.hiddenRootNode.children = old_children
         if not v:
             return g.es("the clipboard is not valid ", color="blue")
-        #
         # Create the position.
         p = leoNodes.Position(v)
-        #
-        # Important: we must not adjust links when linking v
-        # into the outline.  The read code has already done that.
+        # Do *not* adjust links when linking v.
         if current.hasChildren() and current.isExpanded():
-            if not self.checkPaste(current, p): ### and check.
+            if not self.checkPaste(current, p):
                 return None
             p._linkCopiedAsNthChild(current, 0)
         else:
-            if not self.checkPaste(current.parent(), p): ### and check
+            if not self.checkPaste(current.parent(), p):
                 return None
             p._linkCopiedAfter(current)
-        ###
-            # if reassignIndices:
-                # assert not p.isCloned(), g.objToString(p.v.parents)
-                # self.gnxDict = oldGnxDict
-                # self.reassignAllIndices(p)
-        # else:
-
         # Fix #862: paste-retaining-clones can corrupt the outline.
         self.linkChildrenToParents(p)
         c.selectPosition(p)

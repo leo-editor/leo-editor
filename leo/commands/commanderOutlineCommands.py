@@ -26,12 +26,9 @@ def cutOutline(self, event=None):
         c.deleteOutline(op_name="Cut Node")
         c.recolor()
 #@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline
-# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
-
 @g.commander_command('paste-node')
 def pasteOutline(self,
     event=None,
-    ### reassignIndices=True,
     redrawFlag=True,
     s=None,
     undoFlag=True
@@ -51,7 +48,6 @@ def pasteOutline(self,
         return None
     # Get *position* to be pasted.
     pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
-        ###, reassignIndices)
     if not pasted:
         # Leo no longer supports MORE outlines. Use import-MORE-files instead.
         return None
@@ -83,7 +79,6 @@ def pasteOutline(self,
 @g.commander_command('paste-retaining-clones')
 def pasteOutlineRetainingClones(self,
     event=None,
-    ### reassignIndices=False,
     redrawFlag=True,
     s=None,
     undoFlag=True,
@@ -101,10 +96,8 @@ def pasteOutlineRetainingClones(self,
     isLeo = g.match(s, 0, g.app.prolog_prefix_string)
     if not isLeo:
         return None
-    #
     # Get *position* to be pasted.
     pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
-        ###, reassignIndices)
     if not pasted:
         # Leo no longer supports MORE outlines. Use import-MORE-files instead.
         return None
