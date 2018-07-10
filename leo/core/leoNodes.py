@@ -2583,6 +2583,8 @@ class VNodeBase(object):
                 v.parents.remove(parent_v)
             except ValueError:
                 g.internalError('%s not in parents of %s' % (parent_v, v))
+                g.trace('v.parents:')
+                g.printObj(v.parents)
         v._p_changed = 1
         parent_v._p_changed = 1
         # If v has no more parents, we adjust all
@@ -2613,6 +2615,8 @@ class VNodeBase(object):
                 v2.parents.remove(v)
             except ValueError:
                 g.internalError('%s not in parents of %s' % (v, v2))
+                g.trace('v2.parents:')
+                g.printObj(v2.parents)
         v.children = []
     #@+node:ekr.20031218072017.3425: *4* v._linkAsNthChild
     def _linkAsNthChild(self, parent_v, n):
