@@ -3728,8 +3728,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if not isLeo:
             return
         c.selectPosition(p)
-        pasted = c.fileCommands.getLeoOutlineFromClipboard(
-            s, reassignIndices=True)
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
             # Paste the node after the presently selected node.
         if not pasted:
             return
@@ -3990,8 +3989,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             c2.selectPosition(p2)
             s = c2.fileCommands.putLeoOutline()
             # Paste the outline after the selected node.
-            c.fileCommands.getLeoOutlineFromClipboard(
-                s, reassignIndices=True)
+            c.fileCommands.getLeoOutlineFromClipboard(s)
         dummy_p.doDelete()
         c.selectPosition(p)
         p.v.contract()

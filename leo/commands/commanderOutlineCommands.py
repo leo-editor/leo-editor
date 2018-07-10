@@ -6,15 +6,6 @@
 import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20031218072017.1548: ** c_oc.Cut & Paste Outlines
-#@+node:ekr.20031218072017.1549: *3* c_oc.cutOutline
-@g.commander_command('cut-node')
-def cutOutline(self, event=None):
-    '''Delete the selected outline and send it to the clipboard.'''
-    c = self
-    if c.canDeleteHeadline():
-        c.copyOutline()
-        c.deleteOutline(op_name="Cut Node")
-        c.recolor()
 #@+node:ekr.20031218072017.1550: *3* c_oc.copyOutline
 @g.commander_command('copy-node')
 def copyOutline(self, event=None):
@@ -25,12 +16,22 @@ def copyOutline(self, event=None):
     s = c.fileCommands.putLeoOutline()
     g.app.paste_c = c
     g.app.gui.replaceClipboardWith(s)
-#@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline & helpers
+#@+node:ekr.20031218072017.1549: *3* c_oc.cutOutline
+@g.commander_command('cut-node')
+def cutOutline(self, event=None):
+    '''Delete the selected outline and send it to the clipboard.'''
+    c = self
+    if c.canDeleteHeadline():
+        c.copyOutline()
+        c.deleteOutline(op_name="Cut Node")
+        c.recolor()
+#@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline
 # To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
 
 @g.commander_command('paste-node')
-def pasteOutline(self, event=None,
-    reassignIndices=True,
+def pasteOutline(self,
+    event=None,
+    ### reassignIndices=True,
     redrawFlag=True,
     s=None,
     undoFlag=True
@@ -42,39 +43,27 @@ def pasteOutline(self, event=None,
     c = self
     if s is None:
         s = g.app.gui.getTextFromClipboard()
-    pasteAsClone = not reassignIndices
-    # commenting following block fixes #478
-        # if pasteAsClone and g.app.paste_c != c:
-        #    g.es('illegal paste-retaining-clones', color='red')
-        #    g.es('only valid in same outline.')
-        #    return
     c.endEditing()
     if not s or not c.canPasteOutline(s):
-        return # This should never happen.
+        return None # This should never happen.
     isLeo = g.match(s, 0, g.app.prolog_prefix_string)
-    vnodeInfoDict = computeVnodeInfoDict(c) if pasteAsClone else {}
-    #
+    if not isLeo:
+        return None
     # Get *position* to be pasted.
-    if isLeo:
-        pasted = c.fileCommands.getLeoOutlineFromClipboard(s, reassignIndices)
+    pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
+        ###, reassignIndices)
     if not pasted:
         # Leo no longer supports MORE outlines. Use import-MORE-files instead.
         return None
-    #
     # Validate.
     c.validateOutline()
     c.checkOutline()
-    #
     # Handle the "before" data for undo.
     if undoFlag:
-        if pasteAsClone:
-            copiedBunchList = computeCopiedBunchList(c, pasted, vnodeInfoDict)
-        else:
-            copiedBunchList = []
         undoData = c.undoer.beforeInsertNode(c.p,
-            pasteAsClone=pasteAsClone,
-            copiedBunchList=copiedBunchList)
-    #
+            pasteAsClone=False,
+            copiedBunchList=[],
+        )
     # Paste the node into the outline.
     c.selectPosition(pasted)
     pasted.setDirty()
@@ -82,20 +71,69 @@ def pasteOutline(self, event=None,
         # Prevent flash when fixing #387.
     back = pasted.back()
     if back and back.hasChildren() and back.isExpanded():
-        # 2011/06/21: fixed hanger: test back.hasChildren().
         pasted.moveToNthChildOf(back, 0)
-    #
-    # Set dirty bits for ancestors of *all* pasted nodes.
-    # Note: the setDescendentsDirty flag does not do what we want.
-    if pasteAsClone:
-        for p in pasted.self_and_subtree():
-            p.setAllAncestorAtFileNodesDirty(
-                setDescendentsDirty=False)
-    #
     # Finish the command.
     if undoFlag:
-        undoType = 'Paste Node' if reassignIndices else 'Paste As Clone'
-        c.undoer.afterInsertNode(pasted, undoType, undoData)
+        c.undoer.afterInsertNode(pasted, 'Paste Node', undoData)
+    if redrawFlag:
+        c.redraw(pasted)
+        c.recolor()
+    return pasted
+#@+node:EKR.20040610130943: *3* c_oc.pasteOutlineRetainingClones & helpers
+@g.commander_command('paste-retaining-clones')
+def pasteOutlineRetainingClones(self,
+    event=None,
+    ### reassignIndices=False,
+    redrawFlag=True,
+    s=None,
+    undoFlag=True,
+):
+    '''
+    Paste an outline into the present outline from the clipboard.
+    Nodes *retain* their original identify.
+    '''
+    c = self
+    if s is None:
+        s = g.app.gui.getTextFromClipboard()
+    c.endEditing()
+    if not s or not c.canPasteOutline(s):
+        return None # This should never happen.
+    isLeo = g.match(s, 0, g.app.prolog_prefix_string)
+    if not isLeo:
+        return None
+    #
+    # Get *position* to be pasted.
+    pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
+        ###, reassignIndices)
+    if not pasted:
+        # Leo no longer supports MORE outlines. Use import-MORE-files instead.
+        return None
+    # Validate.
+    c.validateOutline()
+    c.checkOutline()
+    # Handle the "before" data for undo.
+    if undoFlag:
+        vnodeInfoDict = computeVnodeInfoDict(c)
+        undoData = c.undoer.beforeInsertNode(c.p,
+            pasteAsClone=True,
+            copiedBunchList=computeCopiedBunchList(c, pasted, vnodeInfoDict),
+        )
+    # Paste the node into the outline.
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    c.setChanged(True, redrawFlag=redrawFlag)
+        # Prevent flash when fixing #387.
+    back = pasted.back()
+    if back and back.hasChildren() and back.isExpanded():
+        pasted.moveToNthChildOf(back, 0)
+    # Set dirty bits for ancestors of *all* pasted nodes.
+    # Note: the setDescendentsDirty flag does not do what we want.
+    for p in pasted.self_and_subtree():
+        p.setAllAncestorAtFileNodesDirty(
+            setDescendentsDirty=False)
+    # Finish the command.
+    if undoFlag:
+        c.undoer.afterInsertNode(pasted, 'Paste As Clone', undoData)
     if redrawFlag:
         c.redraw(pasted)
         c.recolor()
@@ -127,13 +165,6 @@ def computeVnodeInfoDict(c):
         if v not in d:
             d[v] = g.Bunch(v=v, head=v.h, body=v.b)
     return d
-#@+node:EKR.20040610130943: *3* c_oc.pasteOutlineRetainingClones
-@g.commander_command('paste-retaining-clones')
-def pasteOutlineRetainingClones(self, event=None):
-    '''Paste an outline into the present outline from the clipboard.
-    Nodes *retain* their original identify.'''
-    c = self
-    return c.pasteOutline(reassignIndices=False)
 #@+node:ekr.20040412060927: ** c_oc.dumpOutline
 @g.commander_command('dump-outline')
 def dumpOutline(self, event=None):
