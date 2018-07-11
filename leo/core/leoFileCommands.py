@@ -1059,7 +1059,7 @@ class FileCommands(object):
         if ok is None:
             fileName, content = getPublicLeoFile()
             fileName = g.os_path_finalize_join(c.openDirectory, fileName)
-            with open(fileName, 'w') as out:
+            with open(fileName, 'w', encoding="utf-8", newline='\n') as out:
                 out.write(content)
             g.es('updated reference file:',
                   g.shortFileName(fileName))
