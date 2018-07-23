@@ -73,6 +73,7 @@ import os
 import re
 import shlex
 import subprocess
+import tempfile
 import threading
 from copy import deepcopy
 from datetime import date, datetime
@@ -302,6 +303,15 @@ class LeoCloud:
             subtree = lc_io.get_subtree(lc_io.lc_id)
             remote_hash = self.recursive_hash(subtree, [], include_current=False)
             self.bg_results.append((v, local_hash == remote_hash))
+            if False and local_hash != remote_hash:
+                # disabled dev. / debug code
+                # record difference for inspection
+                tmpdir = tempfile.mkdtemp()
+                with open(os.path.join(tmpdir, 'leo_cloug_local.json'), 'w') as out:
+                    out.write(self.to_json(self.to_dict(v)))
+                with open(os.path.join(tmpdir, 'leo_cloug_remote.json'), 'w') as out:
+                    out.write(self.to_json(self.to_dict(subtree)))
+
         self.bg_finished = True
     def bg_post_process(self, timer):
         """
@@ -509,6 +519,9 @@ class LeoCloud:
         g.es("Read %s" % lc_io.lc_id)
         # set c changed but don't dirty tree, which would cause
         # write to cloud prompt on save
+        # but... (a) top node is ending up dirty anyway, and (b) this is ok
+        # because we want the user to understand why the outline's changed,
+        # so just ignore top node dirtiness in self.subtree_changed()
         self.c.setChanged(changedFlag=True)
         p.v.u.setdefault('_leo_cloud', {})['last_read'] = datetime.now().isoformat()
 
@@ -530,11 +543,13 @@ class LeoCloud:
 
         To hash a dict, need a string representation
         that sorts keys, i.e. json.dumps(s, sort_keys=True)
+
+        Trailing newlines are ignored in body text.
         """
         childs = []
         hashes = [LeoCloud.recursive_hash(child, childs) for child in nd.children]
         if include_current:
-            hashes.extend([nd.h + nd.b + json.dumps(LeoCloud._ua_clean(nd.u), sort_keys=True)])
+            hashes.extend([nd.h + nd.b.rstrip('\n') + json.dumps(LeoCloud._ua_clean(nd.u), sort_keys=True)])
         whole_hash = sha1(''.join(hashes).encode('utf-8')).hexdigest()
         tree.append([whole_hash, childs])
         return whole_hash
@@ -583,7 +598,7 @@ class LeoCloud:
         """
         if isinstance(p, vnode):
             p = self.c.vnode2position(p)
-        for nd in p.self_and_subtree_iter():
+        for nd in p.subtree_iter():
             if nd.isDirty():
                 break
         else:
