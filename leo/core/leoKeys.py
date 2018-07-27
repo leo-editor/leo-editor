@@ -725,7 +725,7 @@ class AutoCompleterClass(object):
                 
         completions = [z.name for z in completions]
         completions = [self.add_prefix(prefix, z) for z in completions]
-        ### Retain these for now...
+        # Retain these for now...
             # g.printObj(completions[:5])
             # head = line[:local_column]
             # tail = line[local_column:]
@@ -1669,8 +1669,10 @@ class KeyHandlerClass(object):
             # Set at end of finishCreate.
         self.killedBindings = []
             # A list of commands whose bindings have been set to None in the local file.
+        self.replace_meta_with_alt = False
+            # True: (Mac only) swap Meta and Alt keys.
         self.swap_mac_keys = False
-            # How to init this??
+            # True: (Mac only) swap Command and Control keys.
         self.w = None
             # Note: will be None for NullGui.
         # Generalize...
@@ -1981,6 +1983,7 @@ class KeyHandlerClass(object):
         self.minibuffer_foreground_color = getColor('minibuffer_foreground_color') or 'black'
         self.minibuffer_warning_color = getColor('minibuffer_warning_color') or 'lightgrey'
         self.minibuffer_error_color = getColor('minibuffer_error_color') or 'red'
+        self.replace_meta_with_alt = getBool('replace_meta_with_alt')
         self.swap_mac_keys = getBool('swap_mac_keys')
         self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
         # Has to be disabled (default) for AltGr support on Windows
@@ -2523,7 +2526,7 @@ class KeyHandlerClass(object):
         # This method must exist, but it never gets called.
         pass
     #@+node:ekr.20061031131434.119: *4* k.printBindings & helper
-    @cmd('print-bindings')
+    @cmd('show-bindings')
     def printBindings(self, event=None):
         '''Print all the bindings presently in effect.'''
         k = self; c = k.c
@@ -2596,7 +2599,7 @@ class KeyHandlerClass(object):
         if data:
             result.append('\n')
     #@+node:ekr.20120520174745.9867: *4* k.printButtons
-    @cmd('print-buttons')
+    @cmd('show-buttons')
     def printButtons(self, event=None):
         '''Print all @button and @command commands, their bindings and their source.'''
         k = self; c = k.c
@@ -2626,7 +2629,7 @@ class KeyHandlerClass(object):
         ])
         put('\n'.join(result))
     #@+node:ekr.20061031131434.121: *4* k.printCommands
-    @cmd('print-commands')
+    @cmd('show-commands')
     def printCommands(self, event=None):
         '''Print all the known commands and their bindings, if any.'''
         k = self; c = k.c; tabName = 'Commands'

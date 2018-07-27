@@ -199,7 +199,7 @@ class GoToCommands(object):
         if gnx:
             assert g.isString(gnx)
             gnx = g.toUnicode(gnx)
-            for p in root.self_and_subtree():
+            for p in root.self_and_subtree(copy=False):
                 if p.matchHeadline(vnodeName):
                     if p.v.fileIndex == gnx:
                         return p.copy(), True
@@ -214,7 +214,7 @@ class GoToCommands(object):
         '''
         c = self.c; p1 = p.copy()
         # First look for ancestor @file node.
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             if not p.isAtEditNode() and not p.isAtAllNode():
                 fileName = p.anyAtFileNodeName()
                 if fileName:

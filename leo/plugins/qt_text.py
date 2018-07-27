@@ -1496,7 +1496,8 @@ class QTextEditWrapper(QTextMixin):
         w.setTextCursor(tc)
         # Fix bug 218: https://github.com/leo-editor/leo-editor/issues/218
         if hasattr(g.app.gui, 'setClipboardSelection'):
-            g.app.gui.setClipboardSelection(s[i:j])
+            if s[i:j]:
+                g.app.gui.setClipboardSelection(s[i:j])
         # Remember the values for v.restoreCursorAndScroll.
         v = self.c.p.v # Always accurate.
         v.insertSpot = ins

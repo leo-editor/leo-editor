@@ -139,7 +139,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         '''Fall into pdb.'''
         g.pdb()
     #@+node:ekr.20150514063305.110: *3* debug.printFocus
-    @cmd('print-focus')
+    @cmd('show-focus')
     def printFocus(self, event=None):
         '''
         Print information about the requested focus.
@@ -155,7 +155,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
             '           c.get_focus:',
             c.widget_name(c.get_focus()))
     #@+node:ekr.20150514063305.111: *3* debug.printGcSummary
-    @cmd('gc-print-summary')
+    @cmd('gc-show-summary')
     def printGcSummary(self, event=None):
         '''Print a brief summary of all Python objects.'''
         g.printGcSummary()

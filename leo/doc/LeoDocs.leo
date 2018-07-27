@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -622,6 +619,7 @@
 <v t="ekr.20060915112109"><vh>How can I enable and disable support for psyco?</vh></v>
 <v t="ekr.20141108064630.16"><vh>How can I put background images in the body pane?</vh></v>
 <v t="ekr.20180529064307.1"><vh>How can I run code at startup?</vh></v>
+<v t="ekr.20180619051649.1"><vh>How can I sync settings across .leo files?</vh></v>
 <v t="ekr.20160304081437.3"><vh>How can I use a dark theme in Leo?</vh></v>
 <v t="ekr.20060805094325"><vh>How can I use Leo's legacy key bindings?</vh></v>
 <v t="ekr.20050830120844"><vh>How do I add a new menu item from a plugin?</vh></v>
@@ -2123,6 +2121,7 @@
 <v t="ekr.20180525211530.1"><vh>#738: Links in Tips dialogs are now clickable</vh></v>
 <v t="ekr.20180511101509.1"><vh>#868: Allow separate bindings for numeric keypad keys</vh></v>
 <v t="ekr.20180522121943.1"><vh>#904: Allow local overrides of abbreviations</vh></v>
+<v t="ekr.20180702171546.1"><vh>#932: use show-prefix</vh></v>
 <v t="ekr.20180509122603.1"><vh>Added diff-related wrappers</vh></v>
 <v t="ekr.20180509122901.1"><vh>Added leo_babel plugin</vh></v>
 <v t="ekr.20180524104432.1"><vh>Improved recursive import script</vh></v>
@@ -2135,9 +2134,21 @@
 <v t="ekr.20180528114703.1"><vh>Leo 5.7.4 release notes</vh>
 <v t="ekr.20180601095122.1"><vh>Bugs</vh>
 <v t="ekr.20180601095134.1"><vh>#917: System keys on Microsoft keyboard insert unwanted text</vh></v>
+<v t="ekr.20180702154446.1"><vh>#922: text following @others is ignored</vh></v>
+<v t="ekr.20180708035251.1"><vh>#933: Leo clears the user's clipboard on first time startup</vh></v>
+<v t="ekr.20180704130141.1"><vh>#938: New code breakes tree abbreviations </vh></v>
+<v t="ekr.20180708030832.1"><vh>Fixed problems with git-diff command</vh></v>
+<v t="ekr.20180708081949.1"><vh>Fixed crasher in LeoQtLog.linkClicked</vh></v>
+</v>
+<v t="ekr.20180608054147.1"><vh>Code</vh>
+<v t="ekr.20180608054151.1"><vh>fast-read branch</vh></v>
+<v t="ekr.20180608054356.1"><vh>perf branch (copy kwarg to generators)</vh></v>
 </v>
 <v t="ekr.20180528114740.1"><vh>Features</vh>
 <v t="ekr.20180528114754.1"><vh>#871: A setting to position the icon bar </vh></v>
+<v t="ekr.20180626054937.1"><vh>#913: Show base classes in python importer</vh></v>
+<v t="ekr.20180608055318.1"><vh>Added print-stats command &amp; improved tracing</vh></v>
+<v t="ekr.20180708120421.1"><vh>Added dump-clone-parents command</vh></v>
 </v>
 </v>
 </vnodes>
@@ -4439,7 +4450,7 @@ What People are Saying about Leo
 </t>
 <t tx="ekr.20050831184021.5"></t>
 <t tx="ekr.20050831195331.1"></t>
-<t tx="ekr.20050831195449">For instruction about installing Leo see:
+<t tx="ekr.20050831195449" str_leo_pos="7">For instruction about installing Leo see:
 http://leoeditor.com/installing.html
 
 For everything a beginner needs to know about Leo see:
@@ -5941,14 +5952,13 @@ Here are the sentinels used by Leo, in alphabetical order. Unless otherwise note
 
     The @+doc @+at sentinels indicate the start of a doc parts.
 
-    We use the following **trailing whitespace convention** to
-    determine where putDocPart has inserted line breaks::
-
-        A line in a doc part is followed by an inserted newline
-        if and only if the newline if preceded by whitespace.
-
-    To make this convention work, Leo's write code deletes the trailing
-    whitespace of all lines that are followed by a "real" newline.
+..  Officially retired in Leo 5.7.4.
+..  We use the following **trailing whitespace convention** to
+..  determine where putDocPart has inserted line breaks::
+..      A line in a doc part is followed by an inserted newline
+..      if and only if the newline if preceded by whitespace.
+..  To make this convention work, Leo's write code deletes the trailing
+..  whitespace of all lines that are followed by a "real" newline.
 
 \@+body **(Leo 3.x only)**
     Marks the start of body text.
@@ -28158,6 +28168,160 @@ Alternatively, the plugin could run code at 'start2' time, after all plugins hav
 <t tx="ekr.20180601095122.1"></t>
 <t tx="ekr.20180601095134.1">https://github.com/leo-editor/leo-editor/issues/917
 </t>
+<t tx="ekr.20180608054147.1"></t>
+<t tx="ekr.20180608054151.1">This branch incorporates Vitalije's great new read code.  This code reads external files (from @file nodes) almost exactly as fast as when using the cacher.
+
+As a result, file caching is no longer needed, The --no-cache option is gone.
+
+** Highlights of the fast-read branch **
+
+1. It includes the no-sax branch.  That is, the fast-read branch contains new code for reading both external files and .leo files.
+
+2. Caching has been radically simplified:
+
+A. No file caching whatever is done.  The cache contains only non-essential items, such as marked and expanded bits.
+
+B. ~/.leo/db now contains only two sub-folders: g_app_db and global_data.  g_app_db corresponds to the old "global" folder.  It contains the cached result of g.app.db.  The global_data folder contains all expanded and marked bits, plus some other data.  The keys are simply the full path names of each .leo file.  This should be safe enough.
+
+3. Leo writes only a vestigial &lt;globals&gt; element in .leo files.  This should be enough to allow old (Leo 4.5 and above) versions of Leo to read .leo files.
+
+4. Leo no longer writes expanded and marked bits to the root node of @file trees.
+
+5. As a result of 2, 3 and 4, all Leo files are essentially "fixed".  Their contents will change much less often than before.  As a result, the c.fixed switch has been eliminated, along with the @bool fixedwindow setting.
+
+6. The g.enableDB switch has been eliminated. The --no-cache command-line argument has been deprecated.
+
+**Summary**
+
+Leo now works as if --no-cache were permanently in effect.  In other words, Leo always recreates outlines directly from external files.  This eliminates an important source of confusion.
+
+Leo's new read code is almost exactly as fast as reading cached data, a remarkable accomplishment.
+
+Leo no longer pollutes .leo files with non-essential data, resulting in fewer diffs of .leo files.</t>
+<t tx="ekr.20180608054356.1">This branch greatly reduces overhead during startup.
+
+1. All generators yielding positions now accept a "copy" kwarg.
+
+   The default value is True, for compatibility with user scripts.
+   
+   When True, these generators yield *copies* of all positions.
+
+   Leo's core sets copy=False in several places, greatly reducing
+   unnecessary positions.
+
+2. g.isUnicode and g.toUnicode are simpler and faster.
+
+3. Rewrote g.is_special, greatly reduced calls to g.match_words.</t>
+<t tx="ekr.20180608055318.1">This command just calls g.printStats, which prints the contents of g.app.statsDict.
+
+Put the following snippet at the start of any function/method you wish to profile:
+
+@language python
+
+    if not g.app.statsLockout:
+        g.app.statsLockout = True
+        try:
+            d = g.app.statsDict
+            key = 'g.isUnicode:' + g.callers()
+            d [key] = d.get(key, 0) + 1
+        finally:
+            g.app.statsLockout = False
+            
+@language rest
+@wrap
+
+To see the stats, restart Leo, then do print-stats.
+
+This pattern produces superb statistics that show how many times the *callers* of a routine called the routine.  Here are before/after statistics for g.match_word:
+
+@language python
+
+# Yikes: createAllButtons takes a long time.
+244179 g.match_word:createAllButtons,isAtIgnoreNode,isAtIgnoreNode,is_special
+ 76017 g.match_word:doHandlersForTag,callTagHandler,onCreate,createAllButtons
+ 16801 g.match_word:onCreate,createAllButtons,isAtIgnoreNode,isAtIgnoreNode
+  
+# Nothing else matters much...
+7540 g.match_word:writeFromString,writeOpenFile,putBody,directiveKind4
+2861 g.match_word:readAll,isAtIgnoreNode,isAtIgnoreNode,is_special
+2572 g.match_word:putVnode,isAtIgnoreNode,isAtIgnoreNode,is_special
+1824 g.match_word:fullPath,anyAtFileNodeName,anyAtFileNodeName,findAtFileName
+1646 g.match_word:putLine,putAtOthersLine,putBody,directiveKind4
+1089 g.match_word:isAnyAtFileNode,isAnyAtFileNode,anyAtFileNodeName,findAtFileName
+   
+# After improvements...
+
+7540 g.match_word:writeFromString,writeOpenFile,putBody,directiveKind4
+1646 g.match_word:putLine,putAtOthersLine,putBody,directiveKind4
+1645 g.match_word:fullPath,anyAtFileNodeName,anyAtFileNodeName,findAtFileName
+</t>
+<t tx="ekr.20180619051649.1">Organize your myLeoSettings.leo file like this::
+
+    @settings
+         -my settings &lt;clone&gt;
+              -@bool .... = True
+              -@data fldsdf
+    
+    @file mysettings.txt
+          my settings &lt;clone&gt;
+          
+Syncing mySettings.txt will synchronize your settings across your .leo files.
+
+**Note**: Changed settings will not be available in other open outlines until you reload settings. You can do this with the reload-all-settings command.</t>
+<t tx="ekr.20180626054937.1">https://github.com/leo-editor/leo-editor/issues/913
+</t>
+<t tx="ekr.20180702154446.1">https://github.com/leo-editor/leo-editor/issues/922</t>
+<t tx="ekr.20180702171546.1">https://github.com/leo-editor/leo-editor/issues/932
+
+Commands that *DO* use the printer:
+
+    print-body
+    print-html
+    print-node
+    print-expanded-body
+    print-expanded-html
+    print-marked-bodies
+    print-marked-html
+    print-marked-nodes
+    print-tree-bodies
+    print-tree-html
+    print-tree-nodes
+
+Commands that *DON'T* use the printer:
+
+    gc-show-summary
+    show-all-uas
+    show-bindings
+    show-buttons
+    show-commands
+    show-focus
+    show-node-uas
+    show-plugin-handlers
+    show-plugins-info
+    show-settings
+    show-stats
+    show-style-sheet
+</t>
+<t tx="ekr.20180704130141.1">https://github.com/leo-editor/leo-editor/issues/938
+
+The fix was in abbrev.init_tree_abbrev_helper.
+</t>
+<t tx="ekr.20180708030832.1">It now works in folders besides the leo-editor folder.
+</t>
+<t tx="ekr.20180708035251.1">https://github.com/leo-editor/leo-editor/issues/933
+
+Changes:
+    
+- LM.openEmptyWorkBook now saves/restores clipboard.
+- Deleted qt_gui.setClipboardSelection.
+  It is now a synonym for replaceClipboardWith.
+- qtew.setSelectionRange now sets the selection only if there is selected text.
+</t>
+<t tx="ekr.20180708081949.1">Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\plugins\qt_frame.py", line 3152, in linkClicked
+    url = link.url()
+AttributeError: 'QUrl' object has no attribute 'url'</t>
+<t tx="ekr.20180708120421.1">This is for debugging only.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

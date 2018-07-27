@@ -3149,12 +3149,13 @@ class LeoQtLog(leoFrame.LeoLog):
 
         :param QUrl link: link that was clicked
         """
-        url = link.url()
         # see addition of '/' in LeoQtLog.put()
+        url = s = g.toUnicode(link.toString())
         if platform.system() == 'Windows':
             for scheme in 'file', 'unl':
-                if url.startswith(scheme+':///') and url[len(scheme)+5] == ':':
-                    url = url.replace(':///', '://', 1)
+                if s.startswith(scheme+':///') and s[len(scheme)+5] == ':':
+                    url = s.replace(':///', '://', 1)
+                    break
         g.handleUrl(url, c=self.c)
     #@+node:ekr.20120304214900.9940: *3* LeoQtLog.onCurrentChanged
     def onCurrentChanged(self, idx):
@@ -3727,8 +3728,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if not isLeo:
             return
         c.selectPosition(p)
-        pasted = c.fileCommands.getLeoOutlineFromClipboard(
-            s, reassignIndices=True)
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
             # Paste the node after the presently selected node.
         if not pasted:
             return
@@ -3989,8 +3989,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             c2.selectPosition(p2)
             s = c2.fileCommands.putLeoOutline()
             # Paste the outline after the selected node.
-            c.fileCommands.getLeoOutlineFromClipboard(
-                s, reassignIndices=True)
+            c.fileCommands.getLeoOutlineFromClipboard(s)
         dummy_p.doDelete()
         c.selectPosition(p)
         p.v.contract()

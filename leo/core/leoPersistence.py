@@ -103,7 +103,7 @@ class PersistenceDataController(object):
         if uas:
             at_uas = self.find_at_uas_node(root)
             if at_uas.hasChildren():
-                at_uas.deleteAllChildren()
+                at_uas.v._deleteAllChildren()
             for p in uas:
                 p2 = at_uas.insertAsLastChild()
                 p2.h = '@ua:' + p.v.gnx
@@ -118,7 +118,7 @@ class PersistenceDataController(object):
     def delete_at_data_children(self, at_data, root):
         '''Delete all children of the @data node'''
         if at_data.hasChildren():
-            at_data.deleteAllChildren()
+            at_data.v._deleteAllChildren()
     #@+node:ekr.20140711111623.17807: *4* pd.update_after_read_foreign_file & helpers
     def update_after_read_foreign_file(self, root):
         '''Restore gnx's, uAs and clone links using @gnxs nodes and @uas trees.'''
@@ -198,7 +198,7 @@ class PersistenceDataController(object):
         # Create an *inner* gnx dict.
         # Keys are gnx's, values are positions *within* root's tree.
         d = {}
-        for p in root.self_and_subtree():
+        for p in root.self_and_subtree(copy=False):
             d[p.v.gnx] = p.copy()
         # Recreate the uA's for the gnx's given by each @ua node.
         for at_ua in at_uas.children():
@@ -317,7 +317,7 @@ class PersistenceDataController(object):
         '''Find the best partial matches of the tail in root's tree.'''
         tail = unl_list[-1]
         matches = []
-        for p in root.self_and_subtree():
+        for p in root.self_and_subtree(copy=False):
             if p.h == tail: # A match
                 # Compute the partial unl.
                 parents = 0
@@ -509,7 +509,7 @@ class PersistenceDataController(object):
     def relative_unl(self, p, root):
         '''Return the unl of p relative to the root position.'''
         result = []
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             if p == root:
                 break
             else:
@@ -519,7 +519,7 @@ class PersistenceDataController(object):
     def unl(self, p):
         '''Return the unl corresponding to the given position.'''
         return '-->'.join(reversed(
-            [self.expected_headline(p2) for p2 in p.self_and_parents()]))
+            [self.expected_headline(p2) for p2 in p.self_and_parents(copy=False)]))
     #@+node:ekr.20140711111623.17885: *5* pd.unl_tail
     def unl_tail(self, unl):
         '''Return the last part of a unl.'''

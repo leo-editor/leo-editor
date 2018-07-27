@@ -59,18 +59,17 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.initBracketMatcher(c)
     #@+node:ekr.20150514063305.190: *3* ec.cache
     @cmd('clear-all-caches')
+    @cmd('clear-cache')
     def clearAllCaches(self, event=None):
         '''Clear all of Leo's file caches.'''
-        c = self.c
-        if c.cacher:
-            c.cacher.clearAllCaches()
-
-    @cmd('clear-cache')
-    def clearCache(self, event=None):
-        '''Clear the outline's file cache.'''
-        c = self.c
-        if c.cacher:
-            c.cacher.clearCache()
+        g.app.global_cacher.clear()
+        g.app.commander_cacher.clear()
+        
+    @cmd('dump-caches')
+    def dumpCaches(self, event=None):
+        '''Dump, all of Leo's file caches.'''
+        g.app.global_cacher.dump()
+        g.app.commander_cacher.dump()
     #@+node:ekr.20150514063305.118: *3* ec.doNothing
     @cmd('do-nothing')
     def doNothing(self, event):
@@ -3452,7 +3451,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         for v in self.c.all_unique_nodes():
             v.u = {}
     #@+node:ekr.20150514063305.350: *4* ec.printUas & printAllUas
-    @cmd('print-all-uas')
+    @cmd('show-all-uas')
     def printAllUas(self, event=None):
         '''Print all uA's in the outline.'''
         g.es_print('Dump of uAs...')
@@ -3460,7 +3459,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             if v.u:
                 self.printUas(v=v)
 
-    @cmd('print-node-uas')
+    @cmd('show-node-uas')
     def printUas(self, event=None, v=None):
         '''Print the uA's in the selected node.'''
         c = self.c

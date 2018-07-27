@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.31" body_secondary_ratio="0.50">
-	<global_window_position top="18" left="1" height="730" width="1364"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -1358,10 +1355,10 @@
 <v t="tbrown.20140814090009.57476"><vh>@item reload-style-sheets</vh></v>
 </v>
 <v t="tbrown.20140814090009.57475"><vh>@menu &amp;Show Settings</vh>
-<v t="ekr.20131213135427.21957"><vh>@item pri&amp;nt-bindings</vh></v>
-<v t="ekr.20131213135427.21958"><vh>@item print-c&amp;ommands</vh></v>
-<v t="ekr.20131213135427.21960"><vh>@item print-&amp;settings</vh></v>
-<v t="ekr.20131213135427.21959"><vh>@item print-&amp;plugins-info</vh></v>
+<v t="ekr.20131213135427.21957"><vh>@item show-&amp;bindings</vh></v>
+<v t="ekr.20131213135427.21958"><vh>@item show-&amp;commands</vh></v>
+<v t="ekr.20131213135427.21960"><vh>@item show-&amp;settings</vh></v>
+<v t="ekr.20131213135427.21959"><vh>@item show-&amp;plugins-info</vh></v>
 </v>
 <v t="ekr.20131215083347.18154"><vh>@menu &amp;Toggle Settings</vh>
 <v t="ekr.20131213135427.22289"><vh>@item toggle-a&amp;utocompleter</vh></v>
@@ -1471,7 +1468,7 @@
 </v>
 <v t="ekr.20131213135427.22045"><vh>@menu &amp;Plugins</vh>
 <v t="ekr.20131213135427.22046"><vh>@item open-leo-plugins-leo</vh></v>
-<v t="ekr.20131213135427.22047"><vh>@item print-plugins-info</vh></v>
+<v t="ekr.20131213135427.22047"><vh>@item show-plugins-info</vh></v>
 <v t="ekr.20131213135427.22048"><vh>@item -</vh></v>
 </v>
 <v t="ekr.20180403122045.1"><vh>@menu Run</vh>
@@ -1493,7 +1490,7 @@
 <v t="ekr.20131213135427.22133"><vh>@item gc-dump-&amp;all-objects</vh></v>
 <v t="ekr.20131213135427.22134"><vh>@item gc-dump-&amp;new-objects</vh></v>
 <v t="ekr.20131213135427.22135"><vh>@item gc-dump-objects-&amp;verbose</vh></v>
-<v t="ekr.20131213135427.22136"><vh>@item gc-print-&amp;summary</vh></v>
+<v t="ekr.20131213135427.22136"><vh>@item gc-show-&amp;summary</vh></v>
 </v>
 <v t="ekr.20131213135427.22194"><vh>@menu &amp;Execute Shell Commands</vh>
 <v t="ekr.20131213135427.22130"><vh>@item &amp;open-python-window</vh></v>
@@ -1728,7 +1725,6 @@
 <v t="tbrown.20150821171510.5"><vh>Foreground</vh></v>
 <v t="tbrown.20150821171510.6"><vh>Selected foreground</vh></v>
 <v t="tbrown.20150821171510.7"><vh>Selected background</vh></v>
-<v t="tbrown.20150821171510.8"><vh>Long text warning background</vh></v>
 </v>
 <v t="tbrown.20150821171510.9"><vh>Border colors</vh>
 <v t="tbrown.20150821171510.10"><vh>Focused border</vh></v>
@@ -2264,7 +2260,6 @@
 </v>
 </v>
 <v t="ekr.20041213105954"><vh>Windows</vh>
-<v t="ekr.20100929121021.8511"><vh>@bool fixedwindow = False</vh></v>
 <v t="ekr.20080412115752.1"><vh>@data fixedWindowPosition</vh></v>
 <v t="ekr.20041119034357.38"><vh>Body pane options</vh>
 <v t="jlunz.20151119171553.1"><vh>@bool cursor_stay_on_paste = True</vh></v>
@@ -2308,6 +2303,8 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20180411070112.1"></v>
+<v t="ekr.20120205022040.15411"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3051,7 +3048,7 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20060112103537.17">'''Check for commands that exist in some but not all key- binding sets.'''
 g.cls()
 import leo.core.leoConfig as leoConfig
-import leo.core.leoTest as leoTest
+# import leo.core.leoTest as leoTest
 parser = leoConfig.SettingsTreeParser(c)
 # Add these as required to handle commands defined by plugins.
 optionalCommandPrefixes = ['group-operations']
@@ -3118,7 +3115,6 @@ main()
                 allNames[key] = key
         else:
             g.es_print('No setsDict for %s' % (repr(setName)),color='red')
-    k = c.keyHandler
     keys = sorted(allNames.keys())
     # Warn about missing names.
     for setName in ('No bindings',): # setNames:
@@ -3740,6 +3736,7 @@ cut-node                    = Shift-Ctrl-x
 contract-all                = Alt--
 edit-headline               = Ctrl-h
 delete-node                 !tree = Delete
+delete-node                 !tree = Keypad+Delete
 delete-node                 !tree = BackSpace
 demote                      = Ctrl-}
 demote                      = Ctrl-]
@@ -3768,9 +3765,12 @@ backward-kill-word                  = Alt-BackSpace
 copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
 cut-text                            = Ctrl-x
 delete-char                         = Shift-Delete
+delete-char                         = Keypad+Shift+Delete
 delete-char                         !text = Delete
+delete-char                         !text = Keypad+Delete
 delete-comments                     = Ctrl-parenright # Shift-Ctrl-0
 delete-word                         = Ctrl-Delete
+delete-word                         = Keypad+Ctrl+Delete
 delete-spaces                       = None
 # indent-region                     = Tab # Only when text is selected.
 indent-region                       = ctrl-greater # Ctrl-shift-&gt;
@@ -4170,7 +4170,7 @@ False: Leo leaves body text alone when writing @nosent trees.</t>
 <t tx="ekr.20070531103454"></t>
 <t tx="ekr.20070604075218">True:  Chapter tabs appear in the outline pane.
 False: Chapter tabs do not appear.</t>
-<t tx="ekr.20070613133747"># These commands do nothing except serve as placeholders for the print-bindings command.
+<t tx="ekr.20070613133747"># These commands do nothing except serve as placeholders for the show-bindings command.
 menu-shortcut = Alt-C # Cmds menu.
 menu-shortcut = Alt-E # Edit menu.
 menu-shortcut = Alt-F # File menu.
@@ -4181,7 +4181,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="1">@nocolor-node
+<t tx="ekr.20070622214401">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -4367,7 +4367,7 @@ end-of-line-extend-selection        = Shift-End
 #
 # Keypad variants...
 back-to-home                        = Keypad+Home
-beginning-of-line-extend-selection  = Keypad+Shift-Keypad-Home
+beginning-of-line-extend-selection  = Keypad+Shift-Home
 end-of-line                         = Keypad+End
 end-of-line-extend-selection        = Keypad+Shift-End
 </t>
@@ -5058,7 +5058,6 @@ False disable abbreviations
 <t tx="ekr.20100907092300.6959">Path to Inkscape executable</t>
 <t tx="ekr.20100910115903.8297"></t>
 <t tx="ekr.20100910115903.8299"></t>
-<t tx="ekr.20100929121021.8511"></t>
 <t tx="ekr.20101009103953.8642">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
@@ -6709,8 +6708,8 @@ paste-retaining-clones          = None
 paste-text                      = None      # Ctrl-V conflicts with scroll-down-page
 previous-line                   = Ctrl-p
 previous-line-extend-selection  = None
-print-bindings                  = None
-print-commands                  = None
+show-bindings                   = None
+show-commands                   = None
 promote                         = Ctrl-{            
 quick-command                   = Ctrl-c
 re-search-backward              = None
@@ -7046,7 +7045,7 @@ gc-collect-garbage                  = None
 gc-dump-all-objects                 = None
 gc-dump-new-objects                 = None
 gc-dump-objects-verbose             = None
-gc-print-summary                    = None
+gc-show-summary                     = None
 # gc-trace-disable                  = None
 # gc-trace-enable                   = None
 get-ipython-results                 = None
@@ -7165,9 +7164,9 @@ paste-retaining-clones              = None
 paste-text                          = None
 previous-line                       = None
 previous-line-extend-selection      = None
-print-bindings                      = None
-print-commands                      = None
-print-focus                         = None
+show-bindings                       = None
+show-commands                       = None
+show-focus                          = None
 promote                             = None
 quick-command                       = None
 re-search-backward                  = None
@@ -9589,7 +9588,7 @@ QTextEdit#richTextEdit {
 }
 
 QTextEdit#bigtextwarning {
-    background-color: @big-text-warning-bg;
+    background-color: red; /* No longer used */
 }</t>
 <t tx="ekr.20140915194122.19459">/* ========== Components of the Find Tab ========== */
 
@@ -12349,7 +12348,6 @@ version of Leo.
 do at first. All other font settings are defined in terms of the basic fonts.</t>
 <t tx="tbrown.20150821171510.79"># All other fonts are defined in terms of these basic fonts.
 # Changing the basic fonts are all that most users will want to do.</t>
-<t tx="tbrown.20150821171510.8">big-text-warning-bg</t>
 <t tx="tbrown.20150821171510.80">font-family</t>
 <t tx="tbrown.20150821171510.81">font-size</t>
 <t tx="tbrown.20150821171510.82">medium-font-size</t>

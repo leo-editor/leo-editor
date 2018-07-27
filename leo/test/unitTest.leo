@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.66">
-	<global_window_position top="106" left="365" height="894" width="1078"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -273,7 +270,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3871097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3871057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343171097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -387,8 +384,6 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5608"><vh>@test g.KeyStroke</vh></v>
-<v t="ekr.20180527141026.1"><vh>@test g.KeyStroke (printable characters)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -805,7 +800,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070417092935">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1495,66 +1490,6 @@ for key in keys:
     expected = ('event',)
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected, message
-</t>
-<t tx="ekr.20100131171342.5608">table = [
-    # Gang of four, unmodified)
-    ('bksp', 'BackSpace'),
-    ('backspace', 'BackSpace'),
-    ('backtab', 'Tab'),
-    ('linefeed', '\n'),
-    ('\r', '\n'),
-    ('return', '\n'),
-    ('tab', 'Tab'),
-    # Gang of four, with shift mod.
-    ('Shift-bksp', 'Shift+BackSpace'),
-    ('Shift-backspace', 'Shift+BackSpace'),
-    ('Shift-backtab', 'Shift+Tab'),
-    ('Shift-linefeed', 'Shift+Return'),
-    ('Shift-\r', 'Shift+Return'),
-    ('Shift-return', 'Shift+Return'),
-    ('Shift-tab', 'Shift+Tab'),
-    # Gang of four, with Alt mod.
-    ('Alt-bksp', 'Alt+BackSpace'),
-    ('Alt-backspace', 'Alt+BackSpace'),
-    ('Alt-backtab', 'Alt+Tab'),
-    ('Alt-linefeed', 'Alt+Return'),
-    ('Alt-\r', 'Alt+Return'),
-    ('Alt-return', 'Alt+Return'),
-    ('Alt-tab', 'Alt+Tab'),
-    #
-    # #912: tilde.
-    ('~', '~'),
-    ('Shift-~', '~'),
-    #
-    # Alpha
-    ('1', '1'),
-    ('a','a'),
-    ('A','A'),
-    ('Alt-a','Alt+a'),
-    ('Alt-A','Alt+a'),
-    ('Alt-Shift-a','Alt+Shift+a'),
-    # We can no longer ignore the shift.
-    # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
-    ('Shift-a','A'),
-    ('Shift-A','A'),
-    ('RtArrow','Right'),
-    ('Shift-RtArrow','Shift+Right'),
-    ('PageUp','Prior'),
-    ('Prior','Prior'),
-    ('Shift-PageUp','Shift+Prior'),
-    ('PageDn','Next'),
-    ('Next','Next'),
-    ('Shift-Next','Shift+Next'),
-    ('Alt-=','Alt+='),
-    ('Alt-+','Alt++'),
-    ('Alt--','Alt+-'),
-    ('Ctrl-RtArrow','Ctrl+Right'),
-    ('Control-Right','Ctrl+Right'),
-]
-for setting, result in table:
-    stroke = g.KeyStroke(binding=setting)
-    val = stroke.s
-    assert val==result,'For %r, expected %r, Got %r' % (setting, result,val)
 </t>
 <t tx="ekr.20100731163237.5782">@language html
 
@@ -7058,20 +6993,5 @@ gnx: ekr.20170504122721.3
 unl: section 2
 </t>
 <t tx="ekr.20180214042153.1">False is the legacy value.</t>
-<t tx="ekr.20180527141026.1">import string
-letters = string.ascii_letters if g.isPython3 else string.letters
-# Unshifted.
-for ch in string.printable:
-    stroke = g.KeyStroke(binding=ch)
-    assert stroke.s in string.printable, (repr(ch), repr(stroke.s))
-    if ch == '\r':
-        assert stroke.s == '\n', (repr(ch), repr(stroke.s))
-    else:
-        assert stroke.s == ch, (repr(ch), repr(stroke.s))
-# Shifted.
-for ch in string.digits + letters:
-    stroke = g.KeyStroke(binding='Shift-'+ch)
-    assert stroke.s in string.printable, (repr(ch), repr(stroke.s))
-</t>
 </tnodes>
 </leo_file>

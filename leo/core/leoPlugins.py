@@ -473,7 +473,7 @@ class LeoPluginsController(object):
         # Define local helper functions.
         #@+others
         #@+node:ekr.20180528160855.1: *5* function:callInitFunction
-        def callInitFunction(result): ### moduleName, result):
+        def callInitFunction(result):
             '''True to call the top-level init function.'''
             try:
                 # Indicate success only if init_result is True.

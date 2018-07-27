@@ -163,6 +163,8 @@ class LeoApp(object):
             # Set by p.safeMoveToThreadNext.
         self.statsDict = {}
             # dict used by g.stat, g.clear_stats, g.print_stats.
+        self.statsLockout = False
+            # A lockout to prevent unbound recursion while gathering stats.
         self.validate_outline = False
             # True: enables c.validate_outline. (slow)
         #@-<< LeoApp: Debugging & statistics >>
@@ -223,12 +225,18 @@ class LeoApp(object):
         # Most of these are defined in initApp.
         self.backgroundProcessManager = None
             # The singleton BackgroundProcessManager instance.
+        self.commander_cacher = None
+            # The singleton leoCacher.CommanderCacher instance.
+        self.commander_db = None
+            # The singleton db, managed by g.app.commander_cacher.
         self.config = None
             # The singleton leoConfig instance.
         self.db = None
-            # The singleton leoCacher instance.
+            # The singleton global db, managed by g.app.global_cacher.
         self.externalFilesController = None
             # The singleton ExternalFilesController instance.
+        self.global_cacher = None
+            # The singleton leoCacher.GlobalCacher instance.
         self.idleTimeManager = None
             # The singleton IdleTimeManager instance.
         self.ipk = None
@@ -960,11 +968,11 @@ class LeoApp(object):
                 pass
         else: sysVersion = sys.platform
         branch, commit = g.gitInfo()
-        if not branch or not commit:
+        if not commit:
             app.signon1 = 'Not running from a git repo'
         else:
             app.signon1 = 'Git repo info: branch = %s, commit = %s' % (
-                branch, commit)
+                branch or '(none)', commit)
         app.signon = 'Leo %s' % leoVer
         if build:
             app.signon += ', build '+build
@@ -984,7 +992,6 @@ class LeoApp(object):
             print(app.signon1)
             print(app.signon2)
             print('** isPython3: %s' % g.isPython3)
-            print('** caching %s' % ('enabled' if g.enableDB else 'disabled'))
             print('')
     #@+node:ekr.20100831090251.5838: *4* app.createXGui
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
@@ -1070,8 +1077,10 @@ class LeoApp(object):
         """
         # Fixes bug 670108.
         import leo.core.leoCache as leoCache
-        g.app.cacher = cacher = leoCache.Cacher()
-        g.app.db = cacher.initGlobalDB()
+        g.app.global_cacher = leoCache.GlobalCacher()
+        g.app.db = g.app.global_cacher.db
+        g.app.commander_cacher = leoCache.CommanderCacher()
+        g.app.commander_db = g.app.commander_cacher.db
     #@+node:ekr.20031218072017.1978: *4* app.setLeoID & helpers
     def setLeoID(self, useDialog=True, verbose=True):
         '''Get g.app.leoID from various sources.'''
@@ -1211,14 +1220,12 @@ class LeoApp(object):
             return
         # Write the signon to the log: similar to self.computeSignon().
         p3 = 'isPython3: %s' % g.isPython3
-        caching = 'caching %s' % ('enabled' if g.enableDB else 'disabled')
         table = [
             ('Leo Log Window', 'red'),
             (app.signon, None),
             (app.signon1, None),
             (app.signon2, None),
             (p3, None),
-            (caching, None),
         ]
         table.reverse()
         c.setLog()
@@ -1268,8 +1275,9 @@ class LeoApp(object):
             if veto: return False
         g.app.setLog(None) # no log until we reactive a window.
         g.doHook("close-frame", c=c)
-        c.cacher.commit() # store cache
-            # This may remove frame from the window list.
+        g.app.commander_cacher.commit()
+            # store cache, but don't close it.
+        # This may remove frame from the window list.
         if frame in g.app.windowList:
             g.app.destroyWindow(frame)
             g.app.windowList.remove(frame)
@@ -1310,7 +1318,9 @@ class LeoApp(object):
             g.pr('finishQuit')
         if not g.app.killed:
             g.doHook("end1")
-            g.app.cacher.commit()
+            g.app.global_cacher.commit_and_close()
+            g.app.commander_cacher.commit()
+            g.app.commander_cacher.close()
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         self.destroyAllOpenWithFiles()
@@ -2326,6 +2336,8 @@ class LoadManager(object):
         c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
         # Open the cheatsheet, but not in batch mode.
         if not g.app.batchMode and not g.os_path_exists(fn):
+            # #933: Save clipboard.
+            old_clipboard = g.app.gui.getTextFromClipboard()
             # Paste the contents of CheetSheet.leo into c.
             c2 = c.openCheatSheet(redraw=False)
             if c2:
@@ -2348,6 +2360,8 @@ class LoadManager(object):
                     # Settings not parsed the first time.
                 c.setChanged(False)
                 c.redraw()
+            # #933: Restore clipboard
+            g.app.gui.setClipboardSelection(old_clipboard)
         return c
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
     def doPrePluginsInit(self, fileName, pymacs):
@@ -2366,6 +2380,7 @@ class LoadManager(object):
         verbose = script is None
         # Init the app.
         lm.initApp(verbose)
+        g.app.setGlobalDb()
         lm.reportDirectories(verbose)
         # Read settings *after* setting g.app.config and *before* opening plugins.
         # This means if-gui has effect only in per-file settings.
@@ -2376,7 +2391,6 @@ class LoadManager(object):
         # Read the recent files file.
         localConfigFile = lm.files[0] if lm.files else None
         g.app.recentFilesManager.readRecentFiles(localConfigFile)
-        g.app.setGlobalDb()
         # Create the gui after reading options and settings.
         lm.createGui(pymacs)
         # We can't print the signon until we know the gui.
@@ -2610,6 +2624,9 @@ class LoadManager(object):
     def scanOptions(self, fileName, pymacs):
         '''Handle all options, remove them from sys.argv and set lm.options.'''
         lm = self
+        if '--no-cache' in sys.argv:
+            sys.argv.remove('--no-cache')
+            print('\nIgnoring the deprecated --no-cache option\n')
         lm.old_argv = sys.argv[:]
         parser = optparse.OptionParser(
             usage="usage: launchLeo.py [options] file1, file2, ...")
@@ -2663,7 +2680,6 @@ class LoadManager(object):
         add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
         add_bool('--maximized',     'start maximized')
         add_bool('--minimized',     'start minimized')
-        add_bool('--no-cache',      'disable reading of cached files')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
         add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
@@ -2675,6 +2691,7 @@ class LoadManager(object):
         add_bool('--silent',        'disable all log messages')
         add_other('--theme',        'use the named theme file', m='NAME')
         add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
+        add_bool('--trace-cache',   'trace caching in .leo/db')
         add_bool('--trace-coloring', 'trace syntax coloring')
         add_bool('--trace-events',  'trace non-key events')
         add_bool('--trace-focus',   'trace changes of focus')
@@ -2775,9 +2792,6 @@ class LoadManager(object):
         g.app.start_maximized = options.maximized
         # --minimized
         g.app.start_minimized = options.minimized
-        # --no-cache
-        if options.no_cache:
-            g.enableDB = False
         # --no-plugins
         if options.no_plugins:
             g.app.enablePlugins = False
@@ -2793,6 +2807,7 @@ class LoadManager(object):
         #
         # Most --trace- options append items to g.app.debug.
         table = (
+            ('cache', options.trace_cache),
             ('coloring', options.trace_coloring),
             ('events', options.trace_events), # New
             ('focus', options.trace_focus),

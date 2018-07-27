@@ -196,18 +196,20 @@ def setup_test(target):
         assert p2,'not found: %s' % (h)
         p2.setMarked()
         
-    for child in target.children():
-        if child.h == 'a':
-            assert child.isCloned(),'not cloned!: %s' % (child)
-        else:
-            assert not child.isCloned(),'cloned!: %s' % (child)
+    if 1: # This is correct.
+        for child in target.children():
+            if child.h == 'a':
+                assert child.isCloned(),'not cloned!: %s' % (child)
+            else:
+                assert not child.isCloned(),'cloned!: %s' % (child)
         
     # g.trace('setup complete')
     
 #@+node:ekr.20111006115024.3613: *4* tear_down
 def tear_down(p,h=None):
     
-    delete_children(p)
+    if 1:
+        delete_children(p)
     
     if h:
         node = g.findNodeAnywhere(c,h)
@@ -416,7 +418,6 @@ else:
     assert not g.os_path_exists(fn)
     try:
         c = c1.new()
-        assert not c.cacher.db
         # Not a perfect unit test, but it similar to c.save.
         c.mFileName = fn
         c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
@@ -1592,10 +1593,7 @@ s2 = '''
 at = c.atFileCommands
 assert at.isFileLike(s1),'fail1'
 assert not at.isFileLike(s2),'fail2'
-#@+node:ekr.20071113143844.5: *4* @test at.isSignificantTree
-assert c.atFileCommands.isSignificantTree(p)
-
-#@+node:ekr.20110524091618.3488: *4* @test at.massageDocPart
+#@+node:ekr.20110524091618.3488: *4* @@@test at.massageDocPart
 at = c.atFileCommands
 
 # A mininimal test.
@@ -6705,6 +6703,7 @@ else:
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
     
     def test(p):
+        target = p.copy()
         setup_test(p)
         c.cloneMarked()
         h = 'Clones of marked nodes'
@@ -6712,7 +6711,7 @@ else:
         c.undoer.undo()
         assert not g.findNodeAnywhere(c,h)
         c.undoer.redo()
-        assert c.p.h == h,c.p.h
+        assert c.p.h == h, c.p.h
     try:
         test(p)
     finally:
@@ -11019,10 +11018,6 @@ c.fileCommands.handleNodeConflicts()
 c.nodeConflictList = []
 
 c.redraw()
-#@+node:ekr.20100131180007.5451: *4* @test fc.cleanSaxInputString
-s = 'test%cthis' % 27
-
-assert c.fileCommands.cleanSaxInputString(s) == 'test this'
 #@+node:ekr.20071113145804.18: *4* @test fc.deleteFileWithMessage
 fc=c.fileCommands
 fc.deleteFileWithMessage('xyzzy','test')
@@ -11032,133 +11027,6 @@ if 0: # one-time test of es statements.
     g.es("read only",color="red")
     g.es("exception deleting %s file: %s" % (fileName,kind))
     g.es("exception deleting backup file:" + fileName)
-#@+node:ekr.20100131180007.5450: *4* @test fc.getSaxUa
-expectedIconDictList = [
-{
-    'on': 'tnode',
-    'where': 'beforeHeadline',
-    'yoffset': 0,
-    # 'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\add.png',
-    'file': 'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\add.png',
-    'xpad': 1,
-    'type': 'file',
-    'xoffset': 2,
-    # 'relPath': u'Tango\\16x16\\actions\\add.png',
-    'relPath': 'Tango\\16x16\\actions\\add.png',
-},
-{
-    'on': 'tnode',
-    'where': 'beforeHeadline',
-    'yoffset': 0,
-    # 'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png',
-    'file': 'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png',
-    'xpad': 1,
-    'type': 'file',
-    'xoffset': 2,
-    # 'relPath': u'Tango\\16x16\\actions\\bottom.png',
-    'relPath': 'Tango\\16x16\\actions\\bottom.png',
-}]
-table = (
-('tx','raw',None,"ekr.20090701133940.1767"),
-('lineYOffset',None,3,"4b032e"),
-# A real icon
-('icons',None,expectedIconDictList,
-"5d7100287d71012855026f6e71025505746e6f6465710355047479\
-70657104550466696c6571055507796f666673657471064b006805583700000\
-0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
-676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
-471084b01550577686572657109550e6265666f7265486561646c696e65710a\
-5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
-e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
-55026f6e710f68035504747970657110550466696c6571115507796f6666736\
-57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
-656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
-4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
-65666f7265486561646c696e6571165507786f666673657471174b025507726\
-56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
-5c626f74746f6d2e706e67711975652e"),
-)
-for attr,kind,expected,val in table:
-    result = c.fileCommands.getSaxUa(attr,val,kind=kind)
-    if expected is None: expected = val
-    assert g.toEncodedString(expected)==result,'expected %s got %s' % (
-        expected,result)
-#@+node:ekr.20100131180007.5463: *4* @test fc.handleTnodeSaxAttributes
-sax_node = g.bunch(
-    tnodeAttributes={
-# The 'tx' attribute is handled by contentHandler.tnodeAttributes.
-# 'tx':"ekr.20090701133940.1767",
-'lineYOffset':"4b032e",
-# A real icon attribute, see the tests below for what we expect
-'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
-70657104550466696c6571055507796f666673657471064b006805583700000\
-0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
-676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
-471084b01550577686572657109550e6265666f7265486561646c696e65710a\
-5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
-e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
-55026f6e710f68035504747970657110550466696c6571115507796f6666736\
-57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
-656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
-4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
-65666f7265486561646c696e6571165507786f666673657471174b025507726\
-56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
-5c626f74746f6d2e706e67711975652e"
-})
-try:
-    p2 = p.insertAsLastChild()
-    v = p2.v
-    c.fileCommands.handleTnodeSaxAttributes(sax_node,v)
-    d = v.u
-    for attr in ('lineYOffset','icons'):
-        assert d.get(attr),attr
-    for attr in ('tx','a'):
-        assert d.get(attr) is None,attr # A known attribute.
-finally:
-    if 1:
-        while p.hasChildren():
-            p.firstChild().doDelete()
-#@+node:ekr.20100131180007.5460: *4* @test fc.handleVnodeSaxAttributes
-sax_node = g.bunch(
-    attributes={
-'a':'M',
-'lineYOffset':"4b032e",
-# A real icon attribute, see the tests below for what we expect
-'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
-70657104550466696c6571055507796f666673657471064b006805583700000\
-0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
-676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
-471084b01550577686572657109550e6265666f7265486561646c696e65710a\
-5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
-e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
-55026f6e710f68035504747970657110550466696c6571115507796f6666736\
-57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
-656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
-4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
-65666f7265486561646c696e6571165507786f666673657471174b025507726\
-56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
-5c626f74746f6d2e706e67711975652e"
-})
-try:
-    p2 = p.insertAsLastChild()
-    v = p2.v
-    c.fileCommands.handleVnodeSaxAttributes(sax_node,v)
-    d = v.u
-    for attr in ('lineYOffset','icons'):
-        assert d.get(attr) is not None,attr
-    # The a:M attribute should mark the node.
-    assert d.get('a') is None
-    assert v.isMarked()
-    aList = d.get('icons')
-    assert aList
-    assert len(aList) == 2
-    for d2 in aList:
-        for key in ('on','where','yoffset','file'):
-            assert d2.get(key) is not None,key
-finally:
-    if 1:
-        while p.hasChildren():
-            p.firstChild().doDelete()
 #@+node:ekr.20080806072412.1: *4* @test fc.resolveArchivedPosition
 child1 = p.firstChild()
 child2 = p.firstChild().next()
@@ -16394,6 +16262,45 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20180626053305.96: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20180626053305.97: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20180626053549.48: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20180626053549.49: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20180626053904.59: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20180626053904.60: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 
 #@+node:ekr.20161204042938.1: *6* @@test print('end python tests')
@@ -16993,7 +16900,7 @@ if __name__ == '__main__':
 '''
 table = (
     (1, "Declarations"),
-    (1, "class AttrDict"),
+    (1, "class AttrDict(dict)"),
     (2, "__init__"),
     (1, "make_parser"),
     (1, "get_options"),
@@ -17685,11 +17592,11 @@ class mainPages(mammalProviderBase):
         return ans
 ''' 
 table = (
-    (1, 'class mammalProviderBase'),
+    (1, 'class mammalProviderBase(object)'),
     (2, '__init__'),
     (2, 'provide'),
     (2, 'imagePath'),
-    (1, 'class mainPages'),
+    (1, 'class mainPages(mammalProviderBase)'),
     (2, 'provide'),
 )
 try:
@@ -17787,7 +17694,7 @@ class LeoImportCommands(object):
 """
 table = (
     (1, 'Declarations'),
-    (1, "class LeoImportCommands"),
+    (1, "class LeoImportCommands(object)"),
     (2, "createOutline"),
     (2, "dispatch"),
     (2, "scanner_for_at_auto"),
@@ -18064,7 +17971,7 @@ if __name__=="__main__":
 table = (
     (1, 'Declarations'),
     (1, 'merge_value'),
-    (1, 'class MainDisplay'),
+    (1, 'class MainDisplay(object)'),
     (2, 'save_file'),
     (1, 'retab'),
 )
@@ -18087,7 +17994,7 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
-#@+node:ekr.20180524182729.89: *7* @@file @test python top-level later decl
+#@+node:ekr.20180626053946.13: *7* @@file @test python top-level later decl
 #!/usr/bin/env python3
 
 @others
@@ -18095,21 +18002,21 @@ if __name__=="__main__":
     main()
 @language python
 @tabwidth -4
-#@+node:ekr.20180524182729.90: *8* Declarations
+#@+node:ekr.20180626053946.14: *8* Declarations
 import os
 import re
 
-#@+node:ekr.20180524182729.91: *8* merge_value
+#@+node:ekr.20180626053946.15: *8* merge_value
 def merge_value(v1, v2):
     return v
 
-#@+node:ekr.20180524182729.92: *8* class MainDisplay
+#@+node:ekr.20180626053946.16: *8* class MainDisplay(object)
 class MainDisplay(object):
 
     @others
 ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
 
-#@+node:ekr.20180524182729.93: *9* save_file
+#@+node:ekr.20180626053946.17: *9* save_file
 def save_file(self):
     """Write the file out to disk."""
     with open(self.save_name, "w") as f:
@@ -18117,7 +18024,7 @@ def save_file(self):
             f.write(newline)
 
 # This line should be included at the end of the class node.
-#@+node:ekr.20180524182729.94: *8* retab
+#@+node:ekr.20180626053946.18: *8* retab
 def retab(s, tabsize):
     return ''.join(pieces)
 

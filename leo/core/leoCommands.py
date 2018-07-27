@@ -243,7 +243,7 @@ class Commands(object):
 
         c.fileCommands = DummyFileCommands()
         self.hiddenRootNode = leoNodes.VNode(context=c, gnx=gnx)
-        self.hiddenRootNode.h = "<hidden root vnode>"
+        self.hiddenRootNode.h = g.u('<hidden root vnode>')
         c.fileCommands = None
         # Create the gui frame.
         title = c.computeWindowTitle(c.mFileName)
@@ -261,7 +261,6 @@ class Commands(object):
         import leo.core.leoAtFile as leoAtFile
         import leo.core.leoBeautify as leoBeautify # So decorators are executed.
         assert leoBeautify # for pyflakes.
-        import leo.core.leoCache as leoCache
         import leo.core.leoChapters as leoChapters
         # User commands...
         import leo.commands.abbrevCommands as abbrevCommands
@@ -366,8 +365,7 @@ class Commands(object):
         # Other objects
         c.configurables = c.subCommanders[:]
             # A list of other classes that have a reloadSettings method
-        self.cacher = leoCache.Cacher(c)
-        self.cacher.initFileDB(self.mFileName)
+        c.db = g.app.commander_cacher.get_wrapper(c)
         import leo.plugins.free_layout as free_layout
         self.free_layout = free_layout.FreeLayoutController(c)
         if hasattr(g.app.gui, 'styleSheetManagerClass'):
@@ -549,7 +547,6 @@ class Commands(object):
         c.collapse_nodes_after_move = getBool('collapse_nodes_after_move')
         c.collapse_on_lt_arrow = getBool('collapse_on_lt_arrow', default=True)
         c.contractVisitedNodes = getBool('contractVisitedNodes')
-        c.fixed = getBool('fixedWindow', default=False)
         c.fixedWindowPositionData = getData('fixedWindowPosition')
         c.focus_border_color = getColor('focus_border_color') or 'red'
         c.focus_border_command_state_color = getColor('focus_border_command_state_color') or 'blue'
@@ -737,7 +734,7 @@ class Commands(object):
     def all_unique_nodes(self):
         '''A generator returning each vnode of the outline.'''
         c = self
-        for p in c.all_unique_positions():
+        for p in c.all_unique_positions(copy=False):
             yield p.v
 
     # Compatibility with old code...
@@ -746,19 +743,19 @@ class Commands(object):
     all_unique_tnodes_iter = all_unique_nodes
     all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6044: *5* c.all_positions
-    def all_positions(self):
+    def all_positions(self, copy=True):
         '''A generator return all positions of the outline, in outline order.'''
         c = self
         p = c.rootPosition()
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToThreadNext()
 
     # Compatibility with old code...
     all_positions_iter = all_positions
     allNodes_iter = all_positions
     #@+node:ekr.20161120121226.1: *5* c.all_roots
-    def all_roots(self, predicate=None):
+    def all_roots(self, copy=True, predicate=None):
         '''
         A generator yielding *all* the root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -783,7 +780,7 @@ class Commands(object):
                 p.moveToThreadNext()
 
     #@+node:ekr.20161120125322.1: *5* c.all_unique_roots
-    def all_unique_roots(self, predicate=None):
+    def all_unique_roots(self, copy=True, predicate=None):
         '''
         A generator yielding all unique root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -804,12 +801,12 @@ class Commands(object):
         while p:
             if p.v not in seen and predicate(p):
                 seen.add(p.v)
-                yield p.copy() # 2017/02/19
+                yield p.copy() if copy else p
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20091001141621.6062: *5* c.all_unique_positions
-    def all_unique_positions(self):
+    def all_unique_positions(self, copy=True):
         '''
         A generator return all positions of the outline, in outline order.
         Returns only the first position for each vnode.
@@ -822,14 +819,14 @@ class Commands(object):
                 p.moveToNodeAfterTree()
             else:
                 seen.add(p.v)
-                yield p.copy()
+                yield p.copy() if copy else p
                 p.moveToThreadNext()
 
     # Compatibility with old code...
     all_positions_with_unique_tnodes_iter = all_unique_positions
     all_positions_with_unique_vnodes_iter = all_unique_positions
     #@+node:ekr.20150316175921.5: *5* c.safe_all_positions
-    def safe_all_positions(self):
+    def safe_all_positions(self, copy=True):
         '''
         A generator returning all positions of the outline. This generator does
         *not* assume that vnodes are never their own ancestors.
@@ -837,7 +834,7 @@ class Commands(object):
         c = self
         p = c.rootPosition() # Make one copy.
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.safeMoveToThreadNext()
     #@+node:ekr.20060906211747: *4* c.Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition
@@ -1139,12 +1136,12 @@ class Commands(object):
     #@+node:ekr.20031218072017.2984: *5* c.clearAllMarked
     def clearAllMarked(self):
         c = self
-        for p in c.all_unique_positions():
+        for p in c.all_unique_positions(copy=False):
             p.v.clearMarked()
     #@+node:ekr.20031218072017.2985: *5* c.clearAllVisited
     def clearAllVisited(self):
         c = self
-        for p in c.all_unique_positions():
+        for p in c.all_unique_positions(copy=False):
             p.v.clearVisited()
             p.v.clearWriteBit()
     #@+node:ekr.20060906211138: *5* c.clearMarked
@@ -1330,7 +1327,7 @@ class Commands(object):
             v.fileIndex = ni.getNewIndex(v)
 
         count, gnx_errors = 0, 0
-        for p in c.safe_all_positions():
+        for p in c.safe_all_positions(copy=False):
             count += 1
             v = p.v
             if hasattr(v, "tnodeList"):
@@ -1348,10 +1345,11 @@ class Commands(object):
         for gnx in sorted(d.keys()):
             aList = list(d.get(gnx))
             if len(aList) != 1:
+                print('\nc.checkGnxs...')
                 g.es_print('multiple vnodes with gnx: %r' % (gnx), color='red')
                 for v in aList:
                     gnx_errors += 1
-                    g.es_print('new gnx: %s %s' % (v.fileIndex, v), color='red')
+                    g.es_print('id(v): %s gnx: %s %s' % (id(v), v.fileIndex, v.h), color='red')
                     new_gnx(v)
         ok = not gnx_errors and not g.app.structure_errors
         t2 = time.time()
@@ -1485,13 +1483,13 @@ class Commands(object):
         c = self
         message = "Illegal move or drag: no clone may contain a clone of itself"
         clonedVnodes = {}
-        for ancestor in parent.self_and_parents():
+        for ancestor in parent.self_and_parents(copy=False):
             if ancestor.isCloned():
                 v = ancestor.v
                 clonedVnodes[v] = v
         if not clonedVnodes:
             return True
-        for p in root.self_and_subtree():
+        for p in root.self_and_subtree(copy=False):
             if p.isCloned() and clonedVnodes.get(p.v):
                 if g.app.unitTesting:
                     g.app.unitTestDict['checkMoveWithParentWithWarning'] = True
@@ -1856,7 +1854,7 @@ class Commands(object):
         c = self
         path = g.scanAllAtPathDirectives(c, p)
         name = ''
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             name = p.anyAtFileNodeName()
             if name: break
         if name:
@@ -2351,10 +2349,12 @@ class Commands(object):
         c, d = self, {}
         for v in c.all_unique_nodes():
             gnxString = v.fileIndex
-            assert g.isUnicode(gnxString)
-            d[gnxString] = v
-            if 'gnx' in g.app.debug:
-                g.trace(c.shortFileName(), gnxString, v)
+            if g.isString(gnxString):
+                d[gnxString] = v
+                if 'gnx' in g.app.debug:
+                    g.trace(c.shortFileName(), gnxString, v)
+            else:
+                g.internalError('no gnx for vnode: %s' % (v))
         c.fileCommands.gnxDict = d
     #@+node:ekr.20180508111544.1: *3* c.Git
     #@+node:ekr.20180510104805.1: *4* c.diff_file (new)
@@ -2878,7 +2878,7 @@ class Commands(object):
         n = c.p.level()
         old_expansion_level = c.expansionLevel
         max_level = 0
-        for p in c.p.self_and_subtree():
+        for p in c.p.self_and_subtree(copy=False):
             if p.level() - n + 1 < level:
                 p.expand()
                 max_level = max(max_level, p.level() - n + 1)
@@ -3499,7 +3499,7 @@ class Commands(object):
                 if flatten:
                     seen.add(p.v)
                 else:
-                    for p2 in p.self_and_subtree():
+                    for p2 in p.self_and_subtree(copy=False):
                         seen.add(p2.v)
                 clones.append(p.copy())
         if clones:
@@ -3600,7 +3600,7 @@ class Commands(object):
             changed_node = False
         u.afterChangeGroup(parent, undoType, undoData)
         return parent # actually the last created/found position
-    #@+node:ekr.20100802121531.5804: *4* c.deletePositionsInList
+    #@+node:ekr.20100802121531.5804: *4* c.deletePositionsInList (changed)
     def deletePositionsInList(self, aList, callback=None, redraw=True):
         '''
         Delete all vnodes corresponding to the positions in aList. If a
@@ -3753,14 +3753,13 @@ class Commands(object):
                     if v in parent_v.children:
                         childIndex = parent_v.children.index(v)
                         v._cutLink(childIndex, parent_v)
-        # Bug fix 2014/03/13: Make sure c.hiddenRootNode always has at least one child.
+        # Make sure c.hiddenRootNode always has at least one child.
         if not c.hiddenRootNode.children:
             v = leoNodes.VNode(context=c)
-            v._addLink(childIndex=0, parent_v=c.hiddenRootNode, adjust=False)
+            v._addCopiedLink(childIndex=0, parent_v=c.hiddenRootNode)
         if redraw:
             c.selectPosition(c.rootPosition())
                 # Calls redraw()
-            # c.redraw()
     #@+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
     def doBatchOperations(self, aList=None):
         # Validate aList and create the parents dict
@@ -3867,7 +3866,7 @@ class Commands(object):
             v = target.v
             for p in c.all_positions():
                 if p.v == v:
-                    for parent in p.self_and_parents():
+                    for parent in p.self_and_parents(copy=False):
                         if parent.isAnyAtFileNode():
                             break
                     else:
