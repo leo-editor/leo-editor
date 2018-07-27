@@ -2361,7 +2361,7 @@ class LoadManager(object):
                 c.setChanged(False)
                 c.redraw()
             # #933: Restore clipboard
-            g.app.gui.setClipboardSelection(old_clipboard)
+            g.app.gui.replaceClipboardWith(old_clipboard)
         return c
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
     def doPrePluginsInit(self, fileName, pymacs):

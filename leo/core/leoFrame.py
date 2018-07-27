@@ -1038,7 +1038,7 @@ class LeoFrame(object):
     OnPasteFromMenu = pasteText
     #@+node:ekr.20061016071937: *5* LeoFrame.OnPaste (support middle-button paste)
     def OnPaste(self, event=None):
-        return self.pasteText(event=event, middleButton=False)
+        return self.pasteText(event=event, middleButton=True)
     #@+node:ekr.20031218072017.3980: *4* LeoFrame.Edit Menu
     #@+node:ekr.20031218072017.3981: *5* LeoFrame.abortEditLabelCommand
     @cmd('abort-edit-headline')
