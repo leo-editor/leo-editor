@@ -220,7 +220,6 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20180419160958.1: *5* filter.doMacTweaks
     def doMacTweaks(self, actual_ch, ch, mods):
         '''Replace MacOS Alt characters.'''
-        ### g.trace(repr(actual_ch), repr(ch))
         if not g.isMac:
             return actual_ch, ch, mods
         if ch == 'Backspace':
