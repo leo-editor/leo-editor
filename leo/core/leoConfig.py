@@ -793,6 +793,8 @@ class ParserBaseClass(object):
         command-name --> same = binding
         '''
         # c = self.c
+        s = s.replace('\x7f', '')
+            # Can happen on MacOS. Very weird.
         name = val = nextMode = None; nextMode = 'none'
         i = g.skip_ws(s, 0)
         if g.match(s, i, '-->'): # New in 4.4.1 b1: allow mode-entry commands.

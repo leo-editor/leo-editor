@@ -552,7 +552,7 @@ class KeyStroke(object):
         s = self.finalize_char(s)
             # May change self.mods.
         mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
-        if trace:
+        if trace and 'meta' in self.mods:
             g.trace('%20s:%-20s ==> %s' % (binding, self.mods, mods+s))
         return mods+s
     #@+node:ekr.20180415083926.1: *4* ks.finalize_char & helper
