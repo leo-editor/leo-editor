@@ -740,7 +740,7 @@ table = (
     ('minibuffer_warning_color',        getColor('minibuffer_warning_color') or 'lightgrey'),
     ('overwrite_mode_bg_color',         getColor('overwrite_mode_bg_color') or bg),
     ('overwrite_mode_fg_color',         getColor('overwrite_mode_fg_color') or fg),
-    ('swap_mac_keys',                   getBool('swap_mac_keys')),
+    # ('swap_mac_keys',                   getBool('swap_mac_keys')),
     ('unselected_body_bg_color',        getColor('unselected_body_bg_color') or bg),
     ('unselected_body_fg_color',        getColor('unselected_body_fg_color') or bg),
     ('warn_about_redefined_shortcuts',  getBool('warn_about_redefined_shortcuts')),

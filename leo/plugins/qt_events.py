@@ -313,21 +313,20 @@ class LeoQtEventFilter(QtCore.QObject):
             return mods
         #
         # MacOS: optionally convert Meta (Ctrl key) to Alt.
-        if c.k.replace_meta_with_alt:
-            if 'Meta' in mods:
-                mods.remove('Meta')
-                mods.append('Alt')
-        #
-        # #930: Restore @bool swap_mac_keys.
-        if c.k.swap_mac_keys:
-            # Swap the Command (clover) and Control keys.
-            # That is, swap the meaning of the Control and Meta modifiers.
-            if 'Meta' in mods and 'Control' not in mods:
-                mods.remove('Meta')
-                mods.append('Control')
-            elif 'Control' in mods and 'Meta' not in mods:
-                mods.remove('Control')
-                mods.append('Meta')
+        # 945: remove @bool swap-mac-keys and @bool replace-meta-with-alt.
+            # if c.k.replace_meta_with_alt:
+                # if 'Meta' in mods:
+                    # mods.remove('Meta')
+                    # mods.append('Alt')
+            # if c.k.swap_mac_keys:
+                # # Swap the Command (clover) and Control keys.
+                # # That is, swap the meaning of the Control and Meta modifiers.
+                # if 'Meta' in mods and 'Control' not in mods:
+                    # mods.remove('Meta')
+                    # mods.append('Control')
+                # elif 'Control' in mods and 'Meta' not in mods:
+                    # mods.remove('Control')
+                    # mods.append('Meta')
         return mods
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
     #@+node:ekr.20110605121601.18548: *4* filter.traceEvent
