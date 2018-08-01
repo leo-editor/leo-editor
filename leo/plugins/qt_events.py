@@ -220,7 +220,13 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20180419160958.1: *5* filter.doMacTweaks
     def doMacTweaks(self, actual_ch, ch, mods):
         '''Replace MacOS Alt characters.'''
-        if g.isMac and len(mods) == 1 and mods[0] == 'Alt':
+        ### g.trace(repr(actual_ch), repr(ch))
+        if not g.isMac:
+            return actual_ch, ch, mods
+        if ch == 'Backspace':
+            # On the Mac, the reported char can be DEL (7F)
+            return '\b', ch, mods
+        if len(mods) == 1 and mods[0] == 'Alt':
             # Patch provided by resi147.
             # See the thread: special characters in MacOSX, like '@'.
             mac_d = {

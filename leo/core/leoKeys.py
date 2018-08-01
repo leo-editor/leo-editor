@@ -3048,7 +3048,7 @@ class KeyHandlerClass(object):
         k = self
         # Setup...
         if 'keys' in g.app.debug:
-            g.trace(repr(event.char), event.stroke)
+            g.trace(repr(k.state.kind), repr(event.char), event.stroke)
         k.checkKeyEvent(event)
         k.setEventWidget(event)
         k.traceVars(event)
@@ -3479,7 +3479,6 @@ class KeyHandlerClass(object):
                 '\n', 'Return',
                 '\t', 'Tab',
                 'Escape',
-                'Delete', ###
             ):
                 return False
             if k.isFKey(stroke):
