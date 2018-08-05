@@ -270,7 +270,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''Create Leo's menu bar.'''
         dw = self
         w = QtWidgets.QMenuBar(dw)
-        w.setNativeMenuBar(False)
+        w.setNativeMenuBar(platform.system() == 'Darwin')
         w.setGeometry(QtCore.QRect(0, 0, 957, 22))
         w.setObjectName("menubar")
         dw.setMenuBar(w)
