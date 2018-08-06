@@ -166,7 +166,7 @@ def sync_transformations(event):
             exec(code, dict(v=gnxDict[src], out=out, g=g, c=c))
             gnxDict[dst].b = out.get()
             count += 1
-        except:
+        except Exception:
             g.es_exception(True, c)
     if count:
         g.es('%d node(s) transformed'%count)
