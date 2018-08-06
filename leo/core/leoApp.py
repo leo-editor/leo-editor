@@ -463,6 +463,7 @@ class LeoApp(object):
             # "jsp":      "jsp",
             "ksh":      "kshell",
             "kv":       "kivy", # PeckJ 2014/05/05
+            "latex":    "latex",
             "less":     "css", # McNab
             "lua":      "lua", # ddm 13/02/06
             "ly":       "lilypond",
@@ -517,6 +518,7 @@ class LeoApp(object):
             "sqr":      "sqr",
             "ss":       "ssharp",
             "ssi":      "shtml",
+            "sty":      "latex",
             "tcl":      "tcl", # modes/tcl.py exists.
             # "tcl":    "tcltk",
             "tex":      "latex",
