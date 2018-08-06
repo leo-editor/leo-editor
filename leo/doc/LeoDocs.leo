@@ -2153,6 +2153,7 @@
 <v t="ekr.20180708120421.1"><vh>Added dump-clone-parents command</vh></v>
 <v t="ekr.20180608055318.1"><vh>Added print-stats command &amp; improved tracing</vh></v>
 <v t="ekr.20180806085322.1"><vh>Added .sty and .latex entries in extension_dict</vh></v>
+<v t="ekr.20180806095812.1"><vh>Added md_docer.py plugin</vh></v>
 </v>
 </v>
 </vnodes>
@@ -28345,6 +28346,9 @@ https://github.com/leo-editor/leo-editor/issues/880
 The present code converts a straight quote (single or double) to an opening curly quote if the cursor is at the start of a line or if a blank or tab precedes the cursor.  Otherwise, the code converts a straight quote (single or double) to a closing curly quote.
 </t>
 <t tx="ekr.20180806085322.1"></t>
+<t tx="ekr.20180806095812.1">https://groups.google.com/forum/#!topic/leo-editor/Nun7rRRhato
+
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
