@@ -21,6 +21,16 @@
                   node. This marker can be pasted in the documentation where
                   source code example should be.
     
+    md-sync-transformations command updates body of all @transform-node nodes.
+    
+        transformations can be defined in nodes with headline like:
+            @transformer <name>
+        body (and possibly subtree), should be script which has predefined
+        symbols c, g, v, out where v is source vnode whose body is being
+        transformed and out is file like object where transformer script
+        can write its output. This synchronization is done before save
+        automatically.
+    
     Author: vitalije(at)kviziracija.net
 """
 __version__ = "0.1"
@@ -29,6 +39,7 @@ import leo.core.leoGlobals as g
 pat = re.compile(r'^(\s*)LEOGNX:(.+)$')
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    g.registerHandler('save1', beforeSave)
     g.plugin_signon(__name__)
     return True
 #@+others
@@ -70,25 +81,94 @@ def md_write_files(event):
         g.es(fname, 'ok')
     #@-others
     seen = set()
-    for p in c.all_positions():
+    p = c.rootPosition()
+    while p:
         v = p.v
-        if v.gnx in seen: continue
-        seen.add(v.gnx)
-        if v.isAtIgnoreNode(): continue
-        h = v.h
-        if h.startswith('md:'):
-            pth = c.getNodePath(p)
-            fname = g.os_path_finalize_join(pth, h[3:].strip())
-            if not fname.endswith('.md'):
-                fname = fname + '.md'
-            process(v, fname)
-
-    
+        if v.gnx in seen:
+            p.moveToNodeAfterTree()
+        else:
+            seen.add(v.gnx)
+            if v.isAtIgnoreNode():
+                p.moveToNodeAfterTree()
+                continue
+            h = v.h
+            if h.startswith('md:'):
+                pth = c.getNodePath(p)
+                fname = g.os_path_finalize_join(pth, h[3:].strip())
+                if not fname.endswith('.md'):
+                    fname = fname + '.md'
+                process(v, fname)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
 #@+node:vitalije.20180804180928.1: ** md_copy_leo_gnx
 @g.command('md-copy-leo-gnx')
 def md_copy_leo_gnx(event):
     '''Puts on clipboard `LEOGNX:<gnx of currently selected node>`.'''
     c = event.get('c')
     g.app.gui.replaceClipboardWith('LEOGNX:' + c.p.gnx)
+#@+node:vitalije.20180805114033.1: ** beforeSave
+def beforeSave(tag, key):
+    sync_transformations(key)
+#@+node:vitalije.20180805114039.1: ** sync_transformations
+@g.command('md-sync-transformations')
+def sync_transformations(event):
+    c = event.get('c')
+    gnxDict = c.fileCommands.gnxDict
+    trscripts = {}
+    trtargets = {}
+    #@+others
+    #@+node:vitalije.20180805121201.1: *3* collect_data
+    def collect_data():
+        p = c.rootPosition()
+        seen = set()
+        while p:
+            v = p.v
+            if v.gnx in seen:
+                p.moveToNodeAfterTree()
+                continue
+            seen.add(v.gnx)
+            h = v.h
+            if h.startswith('@transformer '):
+                name = h.partition(' ')[2].strip()
+                trscripts[name] = g.getScript(c, p.copy(), 
+                    useSentinels=False, forcePythonSentinels=True)
+                p.moveToNodeAfterTree()
+            elif h.startswith('@transform-node '):
+                name = h.partition(' ')[2].strip()
+                name, sep, rest = name.partition('(')
+                if not sep:
+                    g.warning('wrong syntax expected "("', nodeLink=p)
+                    p.moveToThreadNext()
+                    continue
+                srcgnx, sep, rest = rest.partition(')')
+                if not sep:
+                    g.warning('wrong syntax expected ")"', nodeLink=p)
+                    p.moveToThreadNext()
+                    continue
+                srcgnx = srcgnx.strip()
+                if not srcgnx in c.fileCommands.gnxDict:
+                    g.warning('unknown gnx', srcgnx, nodeLink=p)
+                    p.moveToThreadNext()
+                    continue
+                trtargets[v.gnx] = (name, srcgnx)
+                p.moveToThreadNext()
+            else:
+                p.moveToThreadNext()
+    #@-others
+    collect_data()
+    count = 0
+    for dst, args in trtargets.items():
+        name, src = args
+        code = trscripts.get(name, 'out.write("not found transformer code")')
+        out = g.fileLikeObject()
+        try:
+            exec(code, dict(v=gnxDict[src], out=out, g=g, c=c))
+            gnxDict[dst].b = out.get()
+            count += 1
+        except:
+            g.es_exception(True, c)
+    if count:
+        g.es('%d node(s) transformed'%count)
 #@-others
 #@-leo
