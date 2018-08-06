@@ -35,6 +35,8 @@ else:
         except ImportError:
             if strict:
                 print('leoQt.py: can not import either PyQt4 or PyQt5.')
+                g.es_exception() # PR #339.
+                print('')
                 raise
             else:
                 fail = True
@@ -58,6 +60,8 @@ elif isQt5:
         printsupport = Qt
     except ImportError:
         print('leoQt.py: can not fully import PyQt5.')
+        g.es_exception() # PR #339.
+        print('')
 else:
     try:
         from PyQt4 import QtCore
@@ -69,6 +73,8 @@ else:
         printsupport = QtWidgets
     except ImportError:
         print('leoQt.py: can not fully import PyQt4.')
+        g.es_exception() # PR #339.
+        print('')
 # Define qt_version
 if fail:
     pass
