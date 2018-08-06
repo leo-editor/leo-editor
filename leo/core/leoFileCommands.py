@@ -836,6 +836,7 @@ class FileCommands(object):
         c = self.c
         self.initReadIvars()
         oldGnxDict = self.gnxDict
+        self.gnxDict = {} # Fix #943
         try:
             # This encoding must match the encoding used in putLeoOutline.
             s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
