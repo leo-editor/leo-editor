@@ -2137,6 +2137,7 @@
 <v t="ekr.20180702154446.1"><vh>#922: text following @others is ignored</vh></v>
 <v t="ekr.20180708035251.1"><vh>#933: Leo clears the user's clipboard on first time startup</vh></v>
 <v t="ekr.20180704130141.1"><vh>#938: New code breakes tree abbreviations </vh></v>
+<v t="ekr.20180806040310.1"><vh>#943: reload-all-settings</vh></v>
 <v t="ekr.20180708030832.1"><vh>Fixed problems with git-diff command</vh></v>
 <v t="ekr.20180708081949.1"><vh>Fixed crasher in LeoQtLog.linkClicked</vh></v>
 </v>
@@ -28322,6 +28323,11 @@ Changes:
     url = link.url()
 AttributeError: 'QUrl' object has no attribute 'url'</t>
 <t tx="ekr.20180708120421.1">This is for debugging only.</t>
+<t tx="ekr.20180806040310.1">https://github.com/leo-editor/leo-editor/issues/943
+
+The fix was to getVnodeFromClipboard
+
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
