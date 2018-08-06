@@ -533,21 +533,16 @@ class LeoFind(object):
             c.frame.log.selectTab('Find')
     #@+node:ekr.20131117164142.17016: *4* find.changeAllCommand
     def changeAllCommand(self, event=None):
+        c = self.c
         self.setup_command()
         self.changeAll()
-        # Fixes: #722 replace-all leaves unsaved changed files
-        c = self.c
-        dirtyvnodes = [v for v in c.fileCommands.gnxDict.values() if v.isDirty()]
-        
-        def propagate(v):
-            for v1 in v.parents:
-                if not v1.isDirty():
-                    v1.setDirty()
-                    propagate(v1)
-
-        for v in dirtyvnodes:
-            propagate(v)
-        # Fix #880.
+        # Bugs #947, #880 and #722:
+        # Set ancestor @<file> nodes by brute force.
+        for p in c.all_positions():
+            if (p.anyAtFileNodeName() and not p.v.isDirty() and
+                any([p2.v.isDirty() for p2 in p.subtree()])
+            ):
+                p.v.setDirty()
         c.redraw()
     #@+node:ekr.20150629072547.1: *4* find.preloadFindPattern
     def preloadFindPattern(self, w):
