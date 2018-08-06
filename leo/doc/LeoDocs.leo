@@ -2149,8 +2149,9 @@
 <v t="ekr.20180528114740.1"><vh>Features</vh>
 <v t="ekr.20180528114754.1"><vh>#871: A setting to position the icon bar </vh></v>
 <v t="ekr.20180626054937.1"><vh>#913: Show base classes in python importer</vh></v>
-<v t="ekr.20180608055318.1"><vh>Added print-stats command &amp; improved tracing</vh></v>
+<v t="ekr.20180806054424.1"><vh>#949: Smart quotes</vh></v>
 <v t="ekr.20180708120421.1"><vh>Added dump-clone-parents command</vh></v>
+<v t="ekr.20180608055318.1"><vh>Added print-stats command &amp; improved tracing</vh></v>
 </v>
 </v>
 </vnodes>
@@ -28337,6 +28338,10 @@ See also:
     
 https://github.com/leo-editor/leo-editor/issues/722
 https://github.com/leo-editor/leo-editor/issues/880
+</t>
+<t tx="ekr.20180806054424.1">https://github.com/leo-editor/leo-editor/issues/949
+
+The present code converts a straight quote (single or double) to an opening curly quote if the cursor is at the start of a line or if a blank or tab precedes the cursor.  Otherwise, the code converts a straight quote (single or double) to a closing curly quote.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
