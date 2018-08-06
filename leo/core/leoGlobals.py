@@ -6158,7 +6158,7 @@ def es_print(*args, **keys):
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
     g.pr(*args, **keys)
-    if not g.app.unitTesting:
+    if g.app and not g.app.unitTesting:
         g.es(*args, **keys)
 #@+node:ekr.20111107181638.9741: *3* g.es_print_exception
 def es_print_exception(full=True, c=None, color="red"):
