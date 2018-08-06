@@ -1523,6 +1523,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         elif ch in ('\r', '\n'):
             ch = '\n'
             self.insertNewlineHelper(w, oldSel, undoType)
+        elif ch in '\'"' and c.config.getBool('smart-quotes'):
+            self.doSmartQuote(action, ch, oldSel, w)
         elif inBrackets and self.autocompleteBrackets:
             self.updateAutomatchBracket(p, w, ch, oldSel)
         elif ch:
@@ -1591,6 +1593,29 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.insert(i, ' ' * n)
             ins = i + n
         w.setSelectionRange(ins, ins, insert=ins)
+    #@+node:ekr.20180806045802.1: *5* ec.doSmartQuote
+    def doSmartQuote(self, action, ch, oldSel, w):
+        '''Convert a straight quote to a curly quote, depending on context.'''
+        i, j = oldSel
+        if i > j:
+            i, j = j, i
+        # Use raw insert/delete to retain the coloring.
+        if i != j:
+            w.delete(i, j)
+        elif action == 'overwrite':
+            w.delete(i)
+        ins = w.getInsertPoint()
+        # Pick the correct curly quote.
+        s = w.getAllText() or ""
+        i2 = g.skip_to_start_of_line(s, max(0,ins-1))
+        open_curly = ins == i2 or ins > i2 and s[ins-1] in ' \t'
+            # not s[ins-1].isalnum()
+        if open_curly:
+            ch = '‘' if ch == "'" else "“"
+        else:
+            ch = '’' if ch == "'" else "”"
+        w.insert(ins, ch)
+        w.setInsertPoint(ins + 1)
     #@+node:ekr.20150514063305.271: *5* ec.flashCharacter
     def flashCharacter(self, w, i):
         '''Flash the character at position i of widget w.'''
