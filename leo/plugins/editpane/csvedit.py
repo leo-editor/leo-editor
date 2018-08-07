@@ -1,5 +1,4 @@
 import csv
-import re
 from collections import namedtuple
 import leo.core.leoGlobals as g
 assert g
@@ -11,6 +10,8 @@ except ImportError:
     from io import StringIO
 
 TableRow = namedtuple('TableRow', 'line row')
+TableDelim = namedtuple('TableDelim', 'sep start end')
+DEFAULTDELIM = TableDelim(sep=',', start='', end='')
 
 DELTA = {  # offsets for selection when moving row/column
     'go-top': (-1, 0),
@@ -50,12 +51,14 @@ class ListTable(QtCore.QAbstractTableModel):
     """
 
     @staticmethod
-    def get_table_list(text, sep=',', regex=False):
+    def get_table_list(text, delim=None):
         """get_table_list - return a list of tables, based
         on number of columns
 
         :param str text: text
         """
+        if delim is None:
+            delim = DEFAULTDELIM
 
         # look for seperator not in text
         sep_i = 0
@@ -65,29 +68,29 @@ class ListTable(QtCore.QAbstractTableModel):
             sep_i=0  # probably not going to work
         rep = SEPS[sep_i]
 
-        if regex:
-            text = re.sub(sep, rep, text)
-        else:
-            text = text.replace(sep, rep)
+        text = text.replace(delim.sep, rep)
 
-        reader = csv.reader(StringIO(text), delimiter=rep)
+        reader = csv.reader(text.replace('\r', '').split('\n'), delimiter=rep)
         rows = [TableRow(line=reader.line_num-1, row=row) for row in reader]
         tables = []
         for row in rows:
+            if row.row and delim.start and row.row[0].startswith(delim.start):
+                row.row[0] = row.row[0][len(delim.start):]
+            if row.row and delim.end and row.row[-1].endswith(delim.end):
+                row.row[-1] = row.row[-1][:len(delim.end)]
             if not tables or len(row.row) != len(tables[-1][0].row):
                 tables.append([])
             tables[-1].append(row)
         return tables
-    def __init__(self, text, tbl, sep=',', regex=False, *args, **kwargs):
+    def __init__(self, text, tbl, delim=None, *args, **kwargs):
         self.tbl = tbl
-        self.sep = sep
-        self.regex = regex
+        self.delim = delim or DEFAULTDELIM
         self.get_table(text)
         # FIXME: use super()
         QtCore.QAbstractTableModel.__init__(self, *args, **kwargs)
 
     def get_table(self, text):
-        tables = self.get_table_list(text, sep=self.sep, regex=self.regex)
+        tables = self.get_table_list(text, delim=self.delim)
         self.tbl = min(self.tbl, len(tables)-1)
         lines = text.split('\n')
         if tables and tables[self.tbl]:
@@ -108,12 +111,28 @@ class ListTable(QtCore.QAbstractTableModel):
             return self.data[index.row()][index.column()]
         return None
     def get_text(self):
+
+        # look for seperator not in text
+        sep_i = 0
+        tmp = ''.join([''.join(i) for i in self.data])
+        while SEPS[sep_i] in tmp and sep_i < len(SEPS)-1:
+            sep_i += 1
+        if sep_i == len(SEPS)-1:
+            sep_i=0  # probably not going to work
+        rep = SEPS[sep_i]
+
+
         out = StringIO()
-        writer = csv.writer(out, delimiter=self.sep[0] if self.sep else ',')
+        writer = csv.writer(out, delimiter=rep)
         writer.writerows(self.data)
         text = out.getvalue()
+        if self.delim.start or self.delim.end:
+            text = text.split('\n')
+            text = [''.join([self.delim.start, line, self.delim.end]) for line in text]
+            text = '\n'.join(text)
         if text.endswith('\n'):
             text = text[:-1]
+        text = text.replace(rep, self.delim.sep)
         text = self.pretext + [text] + self.posttext
         return '\n'.join(text)
     def setData(self, index, value, role):
@@ -135,6 +154,14 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         self.lep = lep
         self.tbl = 0
         self.ui = self.make_ui()
+    def get_delim(self):
+        """get_delim - get the current delimite parts"""
+        return TableDelim(
+            sep=self.ui.sep_txt.text(),
+            start=self.ui.start_txt.text(),
+            end=self.ui.end_txt.text()
+        )
+
     def make_ui(self):
         """make_ui - build up UI"""
 
@@ -178,15 +205,16 @@ class LEP_CSVEdit(QtWidgets.QWidget):
 
         ui.min_rows = QtWidgets.QSpinBox()
         buttons2.addWidget(ui.min_rows)
-        ui.sep_txt = QtWidgets.QLineEdit(',')
-        buttons2.addWidget(QtWidgets.QLabel("Sep:"))
-        buttons2.addWidget(ui.sep_txt)
-        ui.regex_sep = QtWidgets.QCheckBox("regex.")
-        buttons2.addWidget(ui.regex_sep)
         ui.min_rows.setMinimum(1)
         ui.min_rows.setPrefix("tbl with ")
         ui.min_rows.setSuffix(" rows")
         ui.min_rows.setValue(4)
+        for attr in 'sep', 'start', 'end':
+            buttons2.addWidget(QtWidgets.QLabel(attr.title()+':'))
+            w = QtWidgets.QLineEdit()
+            setattr(ui, attr+'_txt', w)
+            buttons2.addWidget(w)
+        ui.sep_txt.setText(',')
 
         buttons.addStretch(1)
 
@@ -267,7 +295,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         self.insert(name, move=True)
     def prev_tbl(self, next=False):
         text = self.ui.data.get_text()
-        tables = ListTable.get_table_list(text, sep=self.ui.sep_txt.text(), regex=self.ui.regex_sep.isChecked())
+        tables = ListTable.get_table_list(text, delim=self.get_delim())
         self.tbl += 1 if next else -1
         while 0 <= self.tbl <= len(tables)-1:
             if len(tables[self.tbl]) >= self.ui.min_rows.value():
@@ -293,7 +321,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
 
         :param str text: new text
         """
-        tables = ListTable.get_table_list(text, sep=self.ui.sep_txt.text(), regex=self.ui.regex_sep.isChecked())
+        tables = ListTable.get_table_list(text, delim=self.get_delim())
         self.tbl = 0
         # find largest table, or first table of more than n rows
         for i in range(1, len(tables)):
@@ -309,6 +337,6 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         :param str text: current text
         """
         DBG("update editor text")
-        self.ui.data = ListTable(text, self.tbl, sep=self.ui.sep_txt.text(), regex=self.ui.regex_sep.isChecked())
+        self.ui.data = ListTable(text, self.tbl, delim=self.get_delim())
         self.ui.data.dataChanged.connect(self.new_data)
         self.ui.table.setModel(self.ui.data)
