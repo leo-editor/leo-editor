@@ -157,23 +157,25 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         self.tbl = 0
         self.ui = self.make_ui()
     def get_delim(self):
-        """get_delim - get the current delimite parts"""
+        """get_delim - get the current delimiter parts"""
         return TableDelim(
-            sep=self.ui.sep_txt.text(),
-            start=self.ui.start_txt.text(),
-            end=self.ui.end_txt.text()
+            sep=self.ui.sep_txt.text().replace('\\t', chr(9)),
+            start=self.ui.start_txt.text().replace('\\t', chr(9)),
+            end=self.ui.end_txt.text().replace('\\t', chr(9))
         )
 
     def make_ui(self):
         """make_ui - build up UI"""
 
         ui = type('CSVEditUI', (), {})
+        # a QVBox containing two QHBoxes
         self.setLayout(QtWidgets.QVBoxLayout())
         buttons = QtWidgets.QHBoxLayout()
         self.layout().addLayout(buttons)
         buttons2 = QtWidgets.QHBoxLayout()
         self.layout().addLayout(buttons2)
 
+        # make 4 directional buttons
         def mkbuttons(what, function):
 
             list_ = [
@@ -192,7 +194,9 @@ class LEP_CSVEdit(QtWidgets.QWidget):
                 button.clicked.connect(lambda checked, name=name: function(name))
                 buttons.addWidget(button)
 
+        # add buttons to move rows / columns
         mkbuttons("Move", self.move)
+        # add buttons to insert rows / columns
         mkbuttons("Insert", self.insert)
 
         for text, function, layout in [
@@ -205,20 +209,29 @@ class LEP_CSVEdit(QtWidgets.QWidget):
             layout.addWidget(btn)
             btn.clicked.connect(function)
 
+        # input for minimum rows to count as a table
         ui.min_rows = QtWidgets.QSpinBox()
         buttons2.addWidget(ui.min_rows)
         ui.min_rows.setMinimum(1)
         ui.min_rows.setPrefix("tbl with ")
         ui.min_rows.setSuffix(" rows")
         ui.min_rows.setValue(2)
+        # separator text and line start / end text
         for attr in 'sep', 'start', 'end':
             buttons2.addWidget(QtWidgets.QLabel(attr.title()+':'))
             w = QtWidgets.QLineEdit()
             w.setText(getattr(DEFAULTDELIM, attr))
             setattr(ui, attr+'_txt', w)
+            # w.textEdited.connect(self.delim_changed)
             buttons2.addWidget(w)
+        ui.sep_txt.setToolTip("Use Prev/Next to rescan table with new sep")
+        w = QtWidgets.QPushButton('Change')
+        w.setToolTip("Change separator in text")
+        w.clicked.connect(lambda checked: self.delim_changed())
+        buttons2.addWidget(w)
 
         buttons.addStretch(1)
+        buttons2.addStretch(1)
 
         ui.table = QtWidgets.QTableView()
         self.layout().addWidget(ui.table)
@@ -237,6 +250,12 @@ class LEP_CSVEdit(QtWidgets.QWidget):
             d[:] = [d[i][:c] + d[i][c+1:] for i in range(len(d))]
         self.update_text(self.new_data())
         self.ui.table.setCurrentIndex(self.ui.data.index(r, c))
+    def delim_changed(self):
+        """delim_changed - new delimiter"""
+
+        # self.update_text(self.lep.get_position().b)
+        self.ui.data.delim = self.get_delim()
+        self.new_data()
     def insert(self, name, move=False):
         index = self.ui.table.currentIndex()
         row = None
