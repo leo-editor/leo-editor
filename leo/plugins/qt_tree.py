@@ -146,7 +146,7 @@ class LeoQtTree(leoFrame.LeoTree):
         w = self.treeWidget
         w.clear()
     #@+node:ekr.20110605121601.17873: *4* qtree.full_redraw & helpers
-    def full_redraw(self, p=None): ###, scroll=True, forceDraw=False):
+    def full_redraw(self, p=None):
         '''
         Redraw all visible nodes of the tree.
         Preserve the vertical scrolling unless scroll is True.
@@ -175,7 +175,7 @@ class LeoQtTree(leoFrame.LeoTree):
             self.drawTopTree(p)
         finally:
             self.redrawing = False
-        self.setItemForCurrentPosition() ### scroll=scroll)
+        self.setItemForCurrentPosition()
         return p # Return the position, which may have changed.
 
     # Compatibility
@@ -443,7 +443,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
         if self.declutter_update:
             self.declutter_update = False
-            self.full_redraw() ### scroll=False)
+            self.full_redraw()
         return None
     #@+node:ekr.20110605121601.17880: *4* qtree.redraw_after_contract
     def redraw_after_contract(self, p=None):
@@ -456,11 +456,11 @@ class LeoQtTree(leoFrame.LeoTree):
         else:
             # This is not an error.
             # We may have contracted a node that was not, in fact, visible.
-            self.full_redraw() ### scroll=False)
+            self.full_redraw()
     #@+node:ekr.20110605121601.17881: *4* qtree.redraw_after_expand
     def redraw_after_expand(self, p=None):
         # Important, setting scrolling to False makes the problem *worse*
-        self.full_redraw(p) ### , scroll=True)
+        self.full_redraw(p)
             # Don't try to shortcut this!
     #@+node:ekr.20110605121601.17882: *4* qtree.redraw_after_head_changed
     def redraw_after_head_changed(self):
@@ -502,7 +502,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.selecting = False
         try:
             if not self.busy():
-                self.full_redraw(p) ###, scroll=False)
+                self.full_redraw(p)
         finally:
             self.selecting = oldSelecting
         # c.redraw_after_select calls tree.select indirectly.
@@ -703,7 +703,7 @@ class LeoQtTree(leoFrame.LeoTree):
             if p.isCloned():
                 self.select(p) # Calls before/afterSelectHint.
                 # 2010/02/04: Keep the expansion bits of all tree nodes in sync.
-                self.full_redraw() ### scroll=False)
+                self.full_redraw()
             else:
                 self.select(p) # Calls before/afterSelectHint.
         else:
@@ -746,10 +746,10 @@ class LeoQtTree(leoFrame.LeoTree):
             if not p.isExpanded():
                 p.expand()
                 self.select(p) # Calls before/afterSelectHint.
-                # Important: setting scroll=False here has no effect
-                # when a keystroke causes the expansion, but is a
-                # *big* improvement when clicking the outline.
-                self.full_redraw() ### scroll=False)
+                self.full_redraw()
+                    # Important: setting scroll=False here has no effect
+                    # when a keystroke causes the expansion, but is a
+                    # *big* improvement when clicking the outline.
             else:
                 self.select(p)
         else:
@@ -1241,7 +1241,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 self.full_redraw(p)
             else:
                 c.outerUpdate() # Bring the tree up to date.
-                self.setItemForCurrentPosition() ### scroll=False)
+                self.setItemForCurrentPosition()
         else:
             self.selecting = False
             c.requestLaterRedraw = True
@@ -1326,9 +1326,8 @@ class LeoQtTree(leoFrame.LeoTree):
             if item:
                 self.setItemText(item, s)
     #@+node:ekr.20110605121601.17913: *4* qtree.setItemForCurrentPosition
-    def setItemForCurrentPosition(self): ###, scroll=True):
+    def setItemForCurrentPosition(self):
         '''Select the item for c.p'''
-        scroll = False ###
         c = self.c; p = c.currentPosition()
         if self.busy():
             return None
@@ -1341,20 +1340,13 @@ class LeoQtTree(leoFrame.LeoTree):
             return None
         item2 = self.getCurrentItem()
         if item == item2:
-            if scroll:
-                self.scrollToItem(item)
-        else:
-            try:
-                self.selecting = True
+            return item
+        try:
+            self.selecting = True
+            self.treeWidget.setCurrentItem(item)
                 # This generates gui events, so we must use a lockout.
-                self.setCurrentItemHelper(item)
-                    # Just calls self.setCurrentItem(item)
-                if scroll:
-                    self.scrollToItem(item)
-            finally:
-                self.selecting = False
-        if not item:
-            g.trace('*** no item')
+        finally:
+            self.selecting = False
         return item
     #@-others
 #@-others

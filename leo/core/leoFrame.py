@@ -83,7 +83,7 @@ class TreeAPI(object):
 
     def edit_widget(self, p): return None
 
-    def redraw(self, p=None): pass ###, scroll=True, forceDraw=False): pass
+    def redraw(self, p=None): pass
     redraw_now = redraw
 
     def scrollTo(self, p): pass
@@ -120,7 +120,7 @@ class TreeAPI(object):
 
     def onHeadlineKey(self, event): pass
 
-    def select(self, p): pass ### , scroll=True
+    def select(self, p): pass
 
     def updateHead(self, event, w): pass
 #@+node:ekr.20140903025053.18631: *3* class WrapperAPI
@@ -1452,11 +1452,11 @@ class LeoTree(object):
 
     def drawIcon(self, p): self.oops()
 
-    def redraw(self, p=None): self.oops() ### , scroll=True, forceDraw=False
+    def redraw(self, p=None): self.oops()
     redraw_now = redraw
 
     def scrollTo(self, p): self.oops()
-    # idle_scrollTo = scrollTo # For compatibility.
+
     # Headlines.
 
     def editLabel(self, p, selectAll=False, selection=None): self.oops()
@@ -1465,7 +1465,7 @@ class LeoTree(object):
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
     tree_select_lockout = False
 
-    def select(self, p): ###, scroll=True):
+    def select(self, p):
         '''
         Select a node.
         Never redraws outline, but may change coloring of individual headlines.
@@ -1481,7 +1481,7 @@ class LeoTree(object):
             val = 'break'
             self.tree_select_lockout = True
             c.frame.tree.beforeSelectHint(p, old_p)
-            val = self.selectHelper(p) ###, scroll=scroll)
+            val = self.selectHelper(p)
         finally:
             self.tree_select_lockout = False
             c.frame.tree.afterSelectHint(p, old_p)
@@ -1491,7 +1491,7 @@ class LeoTree(object):
                 print('%20s: %2.3f sec' % ('tree-select:outer', delta_t))
         return val # Don't put a return in a finally clause.
     #@+node:ekr.20070423101911: *4* selectHelper (LeoTree) & helpers
-    def selectHelper(self, p): ###, scroll):
+    def selectHelper(self, p):
         '''
         A helper function for leoTree.select.
         Do **not** "optimize" this by returning if p==c.p!
@@ -2031,7 +2031,7 @@ class NullTree(LeoTree):
     def drawIcon(self, p):
         pass
 
-    def redraw(self, p=None): ### , scroll=True, forceDraw=False
+    def redraw(self, p=None):
         self.redrawCount += 1
         return p
             # Support for #503: Use string/null gui for unit tests
