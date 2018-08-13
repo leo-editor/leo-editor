@@ -1144,6 +1144,10 @@ class LeoQtTree(leoFrame.LeoTree):
         return item
     #@+node:ekr.20110605121601.18430: *4* qtree.scrollToItem
     def scrollToItem(self, item):
+        '''
+        Scroll the tree widget so that item is visible.
+        Leo's core no longer calls this method.
+        '''
         w = self.treeWidget
         hPos, vPos = self.getScroll()
         w.scrollToItem(item, w.EnsureVisible)
