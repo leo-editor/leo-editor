@@ -35,7 +35,6 @@ class LeoQtTree(leoFrame.LeoTree):
         self.revertHeadline = None # Previous headline text for abortEditLabel.
         self.selecting = False
         # Debugging...
-        ### self.nodeDrawCount = 0
         self.traceCallersFlag = False # Enable traceCallers method.
         # Associating items with position and vnodes...
         self.item2positionDict = {}
@@ -171,8 +170,6 @@ class LeoQtTree(leoFrame.LeoTree):
             c.setCurrentPosition(p)
         self.redrawCount += 1
         self.initData()
-        ### g.trace('%40s %s' % (','.join(g.callers(3).split(',')[:-1]), p and p.h))
-        ### self.nodeDrawCount = 0
         try:
             self.redrawing = True
             self.drawTopTree(p)
@@ -339,7 +336,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def drawNode(self, p, parent_item):
         '''Draw the node p.'''
         c = self.c
-        ### self.nodeDrawCount += 1
         # Allocate the item.
         item = self.createTreeItem(p, parent_item)
         # Do this now, so self.isValidItem will be true in setItemIcon.
@@ -358,7 +354,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def drawTopTree(self, p):
         '''Draw the tree rooted at p.'''
         c = self.c
-        ### hPos, vPos = self.getScroll()
         self.clear()
         # Draw all top-level nodes and their visible descendants.
         if c.hoistStack:
@@ -376,11 +371,6 @@ class LeoQtTree(leoFrame.LeoTree):
             while p:
                 self.drawTree(p)
                 p.moveToNext()
-        ###
-            # This method always retains previous scroll position.
-            # self.setHScroll(hPos)
-            # self.setVScroll(vPos)
-            # self.repaint()
     #@+node:ekr.20110605121601.17877: *5* qtree.drawTree
     def drawTree(self, p, parent_item=None):
         if g.app.gui.isNullGui:
