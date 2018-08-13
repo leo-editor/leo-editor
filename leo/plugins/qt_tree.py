@@ -461,6 +461,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def redraw_after_expand(self, p=None):
         # Important, setting scrolling to False makes the problem *worse*
         self.full_redraw(p, scroll=True)
+            # Don't try to shortcut this!
     #@+node:ekr.20110605121601.17882: *4* qtree.redraw_after_head_changed
     def redraw_after_head_changed(self):
 
