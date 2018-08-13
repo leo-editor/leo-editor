@@ -2864,13 +2864,14 @@ class Commands(object):
         for p in p.subtree():
             p.contract()
     #@+node:ekr.20031218072017.2911: *5* c.expandSubtree
-    def expandSubtree(self, v):
+    def expandSubtree(self, v, redraw=True):
         c = self
         last = v.lastNode()
         while v and v != last:
             v.expand()
             v = v.threadNext()
-        c.redraw()
+        if redraw:
+            c.redraw()
     #@+node:ekr.20031218072017.2912: *5* c.expandToLevel
     def expandToLevel(self, level):
 

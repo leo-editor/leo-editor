@@ -171,7 +171,8 @@ class LeoQtTree(leoFrame.LeoTree):
             c.setCurrentPosition(p)
         self.redrawCount += 1
         self.initData()
-        self.nodeDrawCount = 0
+        ### g.trace(g.callers(2), p and p.h)
+        ### self.nodeDrawCount = 0
         try:
             self.redrawing = True
             self.drawTopTree(p)
@@ -338,7 +339,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def drawNode(self, p, parent_item):
         '''Draw the node p.'''
         c = self.c
-        self.nodeDrawCount += 1
+        ### self.nodeDrawCount += 1
         # Allocate the item.
         item = self.createTreeItem(p, parent_item)
         # Do this now, so self.isValidItem will be true in setItemIcon.
