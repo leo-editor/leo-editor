@@ -39,6 +39,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # Debugging...
         self.traceCallersFlag = False # Enable traceCallers method.
         # Associating items with position and vnodes...
+        self.items = []
         self.item2positionDict = {}
         self.item2vnodeDict = {}
         self.position2itemDict = {}
