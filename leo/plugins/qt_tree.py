@@ -487,9 +487,9 @@ class LeoQtTree(leoFrame.LeoTree):
         # Draw the icon.
         if p:
             # Expand self.drawItemIcon(p, item).
-            p.v.iconVal = val = p.v.computeIcon()
-            icon = self.getCompositeIconImage(p, val)
-                # Very slow.  drawTopTree should precompute these.
+            v.iconVal = v.computeIcon()
+            icon = self.getCompositeIconImage(p, v.iconVal)
+                # **Slow**, but allows per-vnode icons.
             if icon:
                 item.setIcon(0, icon)
         return item
