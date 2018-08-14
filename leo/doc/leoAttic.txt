@@ -3473,6 +3473,24 @@ for p in tree.yieldVisible(c.rootPosition()):
         w.setCurrentItem(item)
 t4 = time.clock()
 print('%s nodes in %5.2f sec' % (n, t4-t3))
+#@+node:ekr.20110605121601.17879: *3* qtree.rememberItem
+def rememberItem(self, p, item):
+
+    v = p.v
+    # Update position dicts.
+    itemHash = self.itemHash(item)
+    self.position2itemDict[p.key()] = item
+    self.item2positionDict[itemHash] = p.copy() # was item
+    # Update item2vnodeDict.
+    self.item2vnodeDict[itemHash] = v # was item
+    # Update vnode2itemsDict.
+    d = self.vnode2itemsDict
+    aList = d.get(v, [])
+    if item in aList:
+        g.trace('*** ERROR *** item already in list: %s, %s' % (item, aList))
+    else:
+        aList.append(item)
+    d[v] = aList
 #@-all
 #@@nosearch
 #@-leo

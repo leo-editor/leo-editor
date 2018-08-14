@@ -466,19 +466,32 @@ class LeoQtTree(leoFrame.LeoTree):
     def drawNode(self, p, parent_item):
         '''Draw the node p.'''
         c = self.c
+        v = p.v
         # Allocate the item.
         item = self.createTreeItem(p, parent_item)
-        # Do this now, so self.isValidItem will be true in setItemIcon.
-        self.rememberItem(p, item)
+        #
+        # Update the data structures.
+        itemHash = self.itemHash(item)
+        self.position2itemDict[p.key()] = item
+        self.item2positionDict[itemHash] = p.copy() # was item
+        self.item2vnodeDict[itemHash] = v # was item
+        d = self.vnode2itemsDict
+        aList = d.get(v, [])
+        if item not in aList:
+            aList.append(item)
+        d[v] = aList
         # Set the headline and maybe the icon.
         self.setItemText(item, p.h)
-
         if self.use_declutter:
             self.declutter_node(c, p, item)
-
+        # Draw the icon.
         if p:
-            self.drawItemIcon(p, item)
-
+            # Expand self.drawItemIcon(p, item).
+            p.v.iconVal = val = p.v.computeIcon()
+            icon = self.getCompositeIconImage(p, val)
+                # Very slow.  drawTopTree should precompute these.
+            if icon:
+                item.setIcon(0, icon)
         return item
     #@+node:ekr.20110605121601.17876: *5* qtree.drawTopTree
     def drawTopTree(self, p):
@@ -516,24 +529,6 @@ class LeoQtTree(leoFrame.LeoTree):
         self.position2itemDict = {}
         self.vnode2itemsDict = {}
         self.editWidgetsDict = {}
-    #@+node:ekr.20110605121601.17879: *5* qtree.rememberItem
-    def rememberItem(self, p, item):
-
-        v = p.v
-        # Update position dicts.
-        itemHash = self.itemHash(item)
-        self.position2itemDict[p.key()] = item
-        self.item2positionDict[itemHash] = p.copy() # was item
-        # Update item2vnodeDict.
-        self.item2vnodeDict[itemHash] = v # was item
-        # Update vnode2itemsDict.
-        d = self.vnode2itemsDict
-        aList = d.get(v, [])
-        if item in aList:
-            g.trace('*** ERROR *** item already in list: %s, %s' % (item, aList))
-        else:
-            aList.append(item)
-        d[v] = aList
     #@+node:tbrown.20150808075906.1: *5* qtree.update_appearance
     def update_appearance(self, tag, keywords):
         """clear_visual_icons - update appearance, but can't call
