@@ -3265,7 +3265,7 @@ def bytesToUnicode(self, ob):
         ro = ob
     return ro
 #@+node:ekr.20180813063846.1: ** Not used (fast-draw branch)
-#@+node:ekr.20180808075509.1: *3* qtree.partialDraw & helpers (not used)
+#@+node:ekr.20180808075509.1: *3* qtree.partialDraw & helpers (never used)
 def partialDraw(self, p):
 
     trace = True and not g.unitTesting
@@ -3409,130 +3409,6 @@ def print_parents(self, parents, tag):
     g.printObj([
         '%10s %s' % (id(z), z.__class__.__name__)
             for z in parents])
-#@+node:ekr.20180810052056.1: *3* qtree.drawVisible & helpers
-def drawVisible(self, p):
-    
-    t1 = time.clock()
-    c = self.c
-    parents = []
-    # Clear the widget.
-    w = self.treeWidget
-    w.clear()
-    # Clear the dicts.
-    self.initData()
-    if c.hoistStack:
-        first_p = c.hoistStack[-1].p
-        target_p = first_p.nodeAfterTree().visBack(c)
-    else:
-        first_p = c.rootPosition()
-        target_p = None
-    n = 0
-    for p in self.yieldVisible(first_p, target_p):
-        n += 1
-        level = p.level()
-        parent_item = w if level == 0 else parents[level-1]
-        item = QtWidgets.QTreeWidgetItem(parent_item)
-        item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
-        item.setChildIndicatorPolicy(
-            item.ShowIndicator if p.hasChildren()
-            else item.DontShowIndicator)
-        item.setExpanded(bool(p.hasChildren() and p.isExpanded()))
-        self.items.append(item)
-        # Update parents.
-        parents = [] if level == 0 else parents[:level]
-        parents.append(item)
-        # Update the dicts.
-        itemHash = self.itemHash(item)
-        self.item2positionDict[itemHash] = p.copy()
-        self.item2vnodeDict[itemHash] = p.v
-        self.position2itemDict[p.key()] = item
-        d = self.vnode2itemsDict
-        v = p.v
-        aList = d.get(v, [])
-        aList.append(item)
-        d[v] = aList
-        # Enter the headline.
-        item.setText(0, p.h)
-        if self.use_declutter:
-            item._real_text = p.h
-        # Draw the icon.
-        v.iconVal = v.computeIcon()
-        icon = self.getCompositeIconImage(p, v.iconVal)
-        if icon:
-            self.setItemIcon(item, icon)
-        # Set current item.
-        if p == c.p:
-            w.setCurrentItem(item)
-    # Useful, for now.
-    t2 = time.clock()
-    if t2-t1 > 0.1:
-        g.trace('%s nodes, %5.3f sec' % (n, t2-t1))
-#@+node:ekr.20180810052056.2: *4* qtree.yieldVisible
-def yieldVisible(self, first_p, target_p=None):
-    """
-    A generator yielding positions from first_p to target_p.
-    """
-    c = self.c
-    p = first_p.copy()
-    yield p
-    while p:
-        if p == target_p:
-            return
-        v = p.v
-        if (v.children and (
-            # Use slower test for clones:
-            len(v.parents) > 1 and p in v.expandedPositions or
-            # Use a quick test for non-clones:
-            len(v.parents) <= 1  and (v.statusBits & v.expandedBit) != 0
-        )):
-            # p.moveToFirstChild()
-            p.stack.append((v, p._childIndex),)
-            p.v = v.children[0]
-            p._childIndex = 0
-            yield p
-            continue
-        # if p.hasNext():
-        parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
-        if p._childIndex + 1 < len(parent_v.children):
-            # p.moveToNext()
-            p._childIndex += 1
-            p.v = parent_v.children[p._childIndex]
-            yield p
-            continue
-        #
-        # A fast version of p.moveToThreadNext().
-        # We look for a parent with a following sibling.
-        while p.stack:
-            # p.moveToParent()
-            p.v, p._childIndex = p.stack.pop()
-            # if p.hasNext():
-            parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
-            if p._childIndex + 1 < len(parent_v.children):
-                # p.moveToNext()
-                p._childIndex += 1
-                p.v = parent_v.children[p._childIndex]
-                break # Found: moveToThreadNext()
-        else:
-            break # Not found.
-        # Found moveToThreadNext()
-        yield p
-        continue
-    if target_p:
-        g.trace('NOT FOUND:', target_p.h)
-#@+node:ekr.20180810052056.3: *4* qtree.slowYieldVisible
-def slowYieldVisible(self, first_p, target_p=None):
-    """
-    A generator yielding positions from first_p to target_p.
-    """
-    c = self.c
-    p = first_p.copy()
-    while p:
-        yield p
-        if p == target_p:
-            return
-        p.moveToVisNext(c)
-    if target_p:
-        g.trace('NOT FOUND:', target_p.h)
 #@+node:ekr.20180810060655.1: *3* test vieldVisible
 g.cls()
 import time

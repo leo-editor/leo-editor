@@ -12,6 +12,8 @@ import leo.core.leoPlugins as leoPlugins # Uses leoPlugins.TryNext.
 import leo.plugins.qt_text as qt_text
 from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets
 import re
+import time
+assert time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160514120051.1: ** class LeoQtTree
@@ -145,6 +147,134 @@ class LeoQtTree(leoFrame.LeoTree):
         '''Clear all widgets in the tree.'''
         w = self.treeWidget
         w.clear()
+    #@+node:ekr.20180810052056.1: *4* qtree.drawVisible & helpers (not used)
+    def drawVisible(self, p):
+        '''
+        Add only the visible nodes to the outline.
+        
+        Not used, as this causes scrolling issues.
+        '''
+        t1 = time.clock()
+        c = self.c
+        parents = []
+        # Clear the widget.
+        w = self.treeWidget
+        w.clear()
+        # Clear the dicts.
+        self.initData()
+        if c.hoistStack:
+            first_p = c.hoistStack[-1].p
+            target_p = first_p.nodeAfterTree().visBack(c)
+        else:
+            first_p = c.rootPosition()
+            target_p = None
+        n = 0
+        for p in self.yieldVisible(first_p, target_p):
+            n += 1
+            level = p.level()
+            parent_item = w if level == 0 else parents[level-1]
+            item = QtWidgets.QTreeWidgetItem(parent_item)
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+            item.setChildIndicatorPolicy(
+                item.ShowIndicator if p.hasChildren()
+                else item.DontShowIndicator)
+            item.setExpanded(bool(p.hasChildren() and p.isExpanded()))
+            self.items.append(item)
+            # Update parents.
+            parents = [] if level == 0 else parents[:level]
+            parents.append(item)
+            # Update the dicts.
+            itemHash = self.itemHash(item)
+            self.item2positionDict[itemHash] = p.copy()
+            self.item2vnodeDict[itemHash] = p.v
+            self.position2itemDict[p.key()] = item
+            d = self.vnode2itemsDict
+            v = p.v
+            aList = d.get(v, [])
+            aList.append(item)
+            d[v] = aList
+            # Enter the headline.
+            item.setText(0, p.h)
+            if self.use_declutter:
+                item._real_text = p.h
+            # Draw the icon.
+            v.iconVal = v.computeIcon()
+            icon = self.getCompositeIconImage(p, v.iconVal)
+            if icon:
+                self.setItemIcon(item, icon)
+            # Set current item.
+            if p == c.p:
+                w.setCurrentItem(item)
+        # Useful, for now.
+        t2 = time.clock()
+        if t2-t1 > 0.1:
+            g.trace('%s nodes, %5.3f sec' % (n, t2-t1))
+    #@+node:ekr.20180810052056.2: *5* qtree.yieldVisible
+    def yieldVisible(self, first_p, target_p=None):
+        """
+        A generator yielding positions from first_p to target_p.
+        """
+        c = self.c
+        p = first_p.copy()
+        yield p
+        while p:
+            if p == target_p:
+                return
+            v = p.v
+            if (v.children and (
+                # Use slower test for clones:
+                len(v.parents) > 1 and p in v.expandedPositions or
+                # Use a quick test for non-clones:
+                len(v.parents) <= 1  and (v.statusBits & v.expandedBit) != 0
+            )):
+                # p.moveToFirstChild()
+                p.stack.append((v, p._childIndex),)
+                p.v = v.children[0]
+                p._childIndex = 0
+                yield p
+                continue
+            # if p.hasNext():
+            parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+            if p._childIndex + 1 < len(parent_v.children):
+                # p.moveToNext()
+                p._childIndex += 1
+                p.v = parent_v.children[p._childIndex]
+                yield p
+                continue
+            #
+            # A fast version of p.moveToThreadNext().
+            # We look for a parent with a following sibling.
+            while p.stack:
+                # p.moveToParent()
+                p.v, p._childIndex = p.stack.pop()
+                # if p.hasNext():
+                parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+                if p._childIndex + 1 < len(parent_v.children):
+                    # p.moveToNext()
+                    p._childIndex += 1
+                    p.v = parent_v.children[p._childIndex]
+                    break # Found: moveToThreadNext()
+            else:
+                break # Not found.
+            # Found moveToThreadNext()
+            yield p
+            continue
+        if target_p:
+            g.trace('NOT FOUND:', target_p.h)
+    #@+node:ekr.20180810052056.3: *5* qtree.slowYieldVisible
+    def slowYieldVisible(self, first_p, target_p=None):
+        """
+        A generator yielding positions from first_p to target_p.
+        """
+        c = self.c
+        p = first_p.copy()
+        while p:
+            yield p
+            if p == target_p:
+                return
+            p.moveToVisNext(c)
+        if target_p:
+            g.trace('NOT FOUND:', target_p.h)
     #@+node:ekr.20110605121601.17873: *4* qtree.full_redraw & helpers
     def full_redraw(self, p=None):
         '''
