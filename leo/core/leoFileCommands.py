@@ -375,7 +375,6 @@ class FileCommands(object):
         v = hidden_v.children[0]
         v.parents = []
         # Restore the hidden root's children
-        ### assert c.hiddenRootNode not in v.parents, g.objToString(v.parents)
         c.hiddenRootNode.children = old_children
         if not v:
             return g.es("the clipboard is not valid ", color="blue")
@@ -413,7 +412,6 @@ class FileCommands(object):
         hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
         v = hidden_v.children[0]
         # Restore the hidden root's children
-        ### assert c.hiddenRootNode not in v.parents, g.objToString(v.parents)
         c.hiddenRootNode.children = old_children
         if not v:
             return g.es("the clipboard is not valid ", color="blue")

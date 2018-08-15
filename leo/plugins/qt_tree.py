@@ -300,11 +300,9 @@ class LeoQtTree(leoFrame.LeoTree):
         self.redrawCount += 1
         self.initData()
         try:
-            ### self.redrawing = True
             self.busy = True
             self.drawTopTree(p)
         finally:
-            ### self.redrawing = False
             self.busy = False
         self.setItemForCurrentPosition()
         return p # Return the position, which may have changed.
@@ -580,8 +578,8 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17880: *4* qtree.redraw_after_contract
     def redraw_after_contract(self, p=None):
 
-        ###if self.redrawing:
         if self.busy:
+            g.trace('busy', g.callers())
             return
         item = self.position2item(p)
         if item:
@@ -599,10 +597,9 @@ class LeoQtTree(leoFrame.LeoTree):
     def redraw_after_head_changed(self):
 
         if self.busy:
+            g.trace('busy', g.callers())
             return
         p = self.c.p
-        # ew = self.edit_widget(p)
-        # currentItem = self.getCurrentItem()
         if p:
             h = p.h # 2010/02/09: Fix bug 518823.
             for item in self.vnode2items(p.v):
@@ -614,20 +611,18 @@ class LeoQtTree(leoFrame.LeoTree):
     def redraw_after_icons_changed(self):
 
         if self.busy:
-            if 'drawing' in g.app.debug: g.trace('busy', g.callers())
+            g.trace('busy', g.callers())
             return
         self.redrawCount += 1 # To keep a unit test happy.
         c = self.c
         # Suppress call to setHeadString in onItemChanged!
         try:
-            ### self.redrawing = True
             self.busy = True
             self.getCurrentItem()
             for p in c.rootPosition().self_and_siblings(copy=False):
                 # Updates icons in p and all visible descendants of p.
                 self.updateVisibleIcons(p)
         finally:
-            ### self.redrawing = False
             self.busy = False
     #@+node:ekr.20110605121601.17884: *4* qtree.redraw_after_select
     # Important: this can not replace before/afterSelectHint.
@@ -635,7 +630,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def redraw_after_select(self, p=None):
         '''Redraw the entire tree when an invisible node is selected.'''
         if self.busy:
-            if 'drawing' in g.app.debug: g.trace('busy', g.callers())
+            g.trace('busy', g.callers())
             return
         self.full_redraw(p)
         # c.redraw_after_select calls tree.select indirectly.
@@ -787,6 +782,7 @@ class LeoQtTree(leoFrame.LeoTree):
         '''Handle a click in a BaseNativeTree widget item.'''
         # This is called after an item is selected.
         if self.busy:
+            g.trace('busy', g.callers())
             return
         c = self.c
         try:
@@ -826,6 +822,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def onItemCollapsed(self, item):
 
         if self.busy:
+            g.trace('busy', g.callers())
             return
         c = self.c
         p = self.item2position(item)
@@ -891,7 +888,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17899: *4* qtree.onTreeSelect
     def onTreeSelect(self):
         '''Select the proper position when a tree node is selected.'''
-        if self.busy:
+        if self.busy: # Required
             return
         c = self.c
         item = self.getCurrentItem()
@@ -1384,7 +1381,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def beforeSelectHint(self, p, old_p):
 
         if self.busy:
-            if 'drawing' in g.app.debug: g.trace('busy', g.callers())
+            g.trace('busy', g.callers())
             return
         c = self.c
         self.prev_v = c.p.v
@@ -1408,7 +1405,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
         if self.busy:
-            if 'drawing' in g.app.debug: g.trace('busy', g.callers())
+            g.trace('busy', g.callers())
             return
         c = self.c
         c.outerUpdate()
@@ -1465,6 +1462,7 @@ class LeoQtTree(leoFrame.LeoTree):
         '''Select the item for c.p'''
         c = self.c; p = c.currentPosition()
         if self.busy:
+            g.trace('busy', g.callers())
             return None
         if not p:
             return None
