@@ -15,6 +15,7 @@ import leo.core.leoColorizer as leoColorizer
 import leo.core.leoMenu as LeoMenu
 import leo.core.leoNodes as leoNodes
 import time
+assert time
 #@-<< imports >>
 #@+<< About handling events >>
 #@+node:ekr.20031218072017.2410: ** << About handling events >>
@@ -1471,34 +1472,24 @@ class LeoTree(object):
         Never redraws outline, but may change coloring of individual headlines.
         The scroll argument is used by the gui to suppress scrolling while dragging.
         '''
-        if g.app.killed or self.tree_select_lockout:
+        if g.app.killed or self.tree_select_lockout: # Essential.
             return None
-        traceTime = False and not g.unitTesting
-        if traceTime:
-            t1 = time.time()
         try:
             c = self.c; old_p = c.p
-            val = 'break'
+            ### val = 'break'
             self.tree_select_lockout = True
             c.frame.tree.beforeSelectHint(p, old_p)
-            val = self.selectHelper(p)
+            self.selectHelper(p)
         finally:
             self.tree_select_lockout = False
             c.frame.tree.afterSelectHint(p, old_p)
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                print('%20s: %2.3f sec' % ('tree-select:outer', delta_t))
-        return val # Don't put a return in a finally clause.
+        ### return val # Don't put a return in a finally clause.
     #@+node:ekr.20070423101911: *4* selectHelper (LeoTree) & helpers
     def selectHelper(self, p):
         '''
         A helper function for leoTree.select.
         Do **not** "optimize" this by returning if p==c.p!
         '''
-        traceTime = False and not g.unitTesting
-        if traceTime:
-            t1 = time.time()
         if not p:
             # This is not an error! We may be changing roots.
             # Do *not* test c.positionExists(p) here!
@@ -1511,18 +1502,14 @@ class LeoTree(object):
         old_p = c.p
         call_event_handlers = p != old_p
         # Order is important...
-        self.unselect_helper(old_p, p, traceTime)
-        self.select_new_node(old_p, p, traceTime)
-        self.change_current_position(old_p, p, traceTime)
-        self.scroll_cursor(p, traceTime)
-        self.set_status_line(p, traceTime)
+        self.unselect_helper(old_p, p)
+        self.select_new_node(old_p, p)
+        self.change_current_position(old_p, p)
+        self.scroll_cursor(p)
+        self.set_status_line(p)
         if call_event_handlers:
             g.doHook("select2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
             g.doHook("select3", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                print('%20s: %2.3f sec' % ('tree-select:total', delta_t))
     #@+node:ekr.20140831085423.18637: *5* LeoTree.is_qt_body (not used)
     if 0:
 
@@ -1536,10 +1523,8 @@ class LeoTree(object):
                 # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
             return val
     #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper & helper
-    def unselect_helper(self, old_p, p, traceTime):
+    def unselect_helper(self, old_p, p):
         '''Unselect the old node, calling the unselect hooks.'''
-        if traceTime:
-            t1 = time.time()
         c = self.c
         call_event_handlers = p != old_p
         if call_event_handlers:
@@ -1551,15 +1536,9 @@ class LeoTree(object):
             self.endEditLabel()
         if call_event_handlers:
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                print('%20s: %2.3f sec' % ('tree-select:unselect', delta_t))
     #@+node:ekr.20140829053801.18455: *5* 2. LeoTree.select_new_node & helper
-    def select_new_node(self, old_p, p, traceTime):
+    def select_new_node(self, old_p, p):
         '''Select the new node, part 1.'''
-        if traceTime:
-            t1 = time.time()
         c = self.c
         call_event_handlers = p != old_p
         if call_event_handlers:
@@ -1572,14 +1551,10 @@ class LeoTree(object):
             self.revertHeadline = p.h
             # Not that expensive
             c.frame.setWrap(p)
-            self.set_body_text_after_select(p, old_p, traceTime)
+            self.set_body_text_after_select(p, old_p)
             c.nodeHistory.update(p)
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                print('%20s: %2.3f sec' % ('tree-select:select1', delta_t))
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
-    def set_body_text_after_select(self, p, old_p, traceTime, force=False):
+    def set_body_text_after_select(self, p, old_p, force=False):
         '''Set the text after selecting a node.'''
         c = self.c
         w = c.frame.body.wrapper
@@ -1596,10 +1571,8 @@ class LeoTree(object):
         # This is now done after c.p has been changed.
             # p.restoreCursorAndScroll()
     #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
-    def change_current_position(self, old_p, p, traceTime):
+    def change_current_position(self, old_p, p):
         '''Select the new node, part 2.'''
-        if traceTime:
-            t1 = time.time()
         c = self.c
         # c.setCurrentPosition(p)
             # This is now done in set_body_text_after_select.
@@ -1613,26 +1586,14 @@ class LeoTree(object):
                 theChapter.p = p.copy()
         c.treeFocusHelper()
         c.undoer.onSelect(old_p, p)
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                print('%20s: %2.3f sec' % ('tree-select:select2', delta_t))
     #@+node:ekr.20140829053801.18459: *5* 4. LeoTree.scroll_cursor
-    def scroll_cursor(self, p, traceTime):
-        '''Scroll the cursor. It deserves separate timing stats.'''
-        if traceTime:
-            t1 = time.time()
+    def scroll_cursor(self, p):
+        '''Scroll the cursor.'''
         p.restoreCursorAndScroll()
             # Was in setBodyTextAfterSelect
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                print('%20s: %2.3f sec' % ('tree-select:scroll', delta_t))
     #@+node:ekr.20140829053801.18460: *5* 5. LeoTree.set_status_line
-    def set_status_line(self, p, traceTime=False):
+    def set_status_line(self, p):
         '''Update the status line.'''
-        if traceTime:
-            t1 = time.time()
         c = self.c
         c.frame.body.assignPositionToEditor(p)
             # New in Leo 4.4.1.
@@ -1642,10 +1603,6 @@ class LeoTree(object):
         verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
         if p and p.v:
             c.frame.putStatusLine(p.get_UNL(with_proto=verbose, with_index=verbose))
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                print('%20s: %2.3f sec' % ('tree-select:status', delta_t))
     #@+node:ekr.20031218072017.3718: *3* oops
     def oops(self):
         g.pr("LeoTree oops:", g.callers(4), "should be overridden in subclass")

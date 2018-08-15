@@ -896,7 +896,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def onTreeSelect(self):
         '''Select the proper position when a tree node is selected.'''
         if self.busy: # Required
-            ### g.trace('busy', g.callers())
             return
         c = self.c
         item = self.getCurrentItem()
