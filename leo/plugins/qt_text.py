@@ -77,9 +77,13 @@ class QTextMixin(object):
             return
         if tree.tree_select_lockout:
             return
-        if tree.selecting:
-            return
-        if tree.redrawing:
+        ###
+            # if tree.selecting:
+                # return
+            # if tree.redrawing:
+                # return
+        if tree.selecting or tree.busy:
+            g.trace('SELECTING', g.callers())
             return
         if not p:
             return

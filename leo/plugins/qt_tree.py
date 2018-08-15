@@ -29,13 +29,15 @@ class LeoQtTree(leoFrame.LeoTree):
             # Init the base class.
         self.c = c
         # Widget independent status ivars...
-        self.contracting = False
-        self.expanding = False
         self.prev_v = None
-        self.redrawing = False
         self.redrawCount = 0 # Count for debugging.
         self.revertHeadline = None # Previous headline text for abortEditLabel.
+        self.busy = False
         self.selecting = False
+            # A separate lockout, for onTextChanged.
+        ### self.contracting = False
+        ###self.expanding = False
+        ### self.redrawing = False
         # Debugging...
         self.traceCallersFlag = False # Enable traceCallers method.
         # Associating items with position and vnodes...
@@ -285,7 +287,7 @@ class LeoQtTree(leoFrame.LeoTree):
         c = self.c
         if g.app.disable_redraw:
             return
-        if self.busy():
+        if self.busy:
             return g.trace('*** full_redraw: busy!', g.callers())
         # Cancel the delayed redraw request.
         c.requestLaterRedraw = False
@@ -299,13 +301,16 @@ class LeoQtTree(leoFrame.LeoTree):
             c.setCurrentPosition(p)
         else:
             c.setCurrentPosition(p)
+        assert not self.busy, g.callers()
         self.redrawCount += 1
         self.initData()
         try:
-            self.redrawing = True
+            ### self.redrawing = True
+            self.busy = True
             self.drawTopTree(p)
         finally:
-            self.redrawing = False
+            ### self.redrawing = False
+            self.busy = False
         self.setItemForCurrentPosition()
         return p # Return the position, which may have changed.
 
@@ -580,7 +585,8 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17880: *4* qtree.redraw_after_contract
     def redraw_after_contract(self, p=None):
 
-        if self.redrawing:
+        ###if self.redrawing:
+        if self.busy:
             return
         item = self.position2item(p)
         if item:
@@ -597,7 +603,8 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17882: *4* qtree.redraw_after_head_changed
     def redraw_after_head_changed(self):
 
-        if self.busy(): return
+        if self.busy:
+            return
         p = self.c.p
         # ew = self.edit_widget(p)
         # currentItem = self.getCurrentItem()
@@ -611,32 +618,37 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17883: *4* qtree.redraw_after_icons_changed
     def redraw_after_icons_changed(self):
 
-        if self.busy():
+        if self.busy:
             return
         self.redrawCount += 1 # To keep a unit test happy.
         c = self.c
         # Suppress call to setHeadString in onItemChanged!
-        self.redrawing = True
         try:
+            ### self.redrawing = True
+            self.busy = True
             self.getCurrentItem()
             for p in c.rootPosition().self_and_siblings(copy=False):
                 # Updates icons in p and all visible descendants of p.
                 self.updateVisibleIcons(p)
         finally:
-            self.redrawing = False
+            ### self.redrawing = False
+            self.busy = False
     #@+node:ekr.20110605121601.17884: *4* qtree.redraw_after_select
     # Important: this can not replace before/afterSelectHint.
 
     def redraw_after_select(self, p=None):
         '''Redraw the entire tree when an invisible node is selected.'''
+        if self.busy:
+            return
         # Prevent the selecting lockout from disabling the redraw.
-        oldSelecting = self.selecting
-        self.selecting = False
         try:
-            if not self.busy():
-                self.full_redraw(p)
+            ### assert not self.selecting ### new
+            ### oldSelecting = self.selecting
+            ### self.selecting = False
+            self.full_redraw(p)
         finally:
-            self.selecting = oldSelecting
+            ### self.selecting = oldSelecting
+            assert not self.busy, g.callers()
         # c.redraw_after_select calls tree.select indirectly.
         # Do not call it again here.
     #@+node:ekr.20140907201613.18986: *4* qtree.repaint
@@ -649,21 +661,24 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17887: *4*  qtree.Click Box
     #@+node:ekr.20110605121601.17888: *5* qtree.onClickBoxClick
     def onClickBoxClick(self, event, p=None):
-        if self.busy(): return
+        if self.busy:
+            return
         c = self.c
         g.doHook("boxclick1", c=c, p=p, event=event)
         g.doHook("boxclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17889: *5* qtree.onClickBoxRightClick
     def onClickBoxRightClick(self, event, p=None):
-        if self.busy(): return
+        if self.busy:
+            return
         c = self.c
         g.doHook("boxrclick1", c=c, p=p, event=event)
         g.doHook("boxrclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17890: *5* qtree.onPlusBoxRightClick
     def onPlusBoxRightClick(self, event, p=None):
-        if self.busy(): return
+        if self.busy:
+            return
         c = self.c
         g.doHook('rclick-popup', c=c, p=p, event=event, context_menu='plusbox')
         c.outerUpdate()
@@ -671,7 +686,8 @@ class LeoQtTree(leoFrame.LeoTree):
     # For Qt, there seems to be no way to trigger these events.
     #@+node:ekr.20110605121601.17892: *5* qtree.onIconBoxClick
     def onIconBoxClick(self, event, p=None):
-        if self.busy(): return
+        if self.busy:
+            return
         c = self.c
         g.doHook("iconclick1", c=c, p=p, event=event)
         g.doHook("iconclick2", c=c, p=p, event=event)
@@ -679,14 +695,16 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17893: *5* qtree.onIconBoxRightClick
     def onIconBoxRightClick(self, event, p=None):
         """Handle a right click in any outline widget."""
-        if self.busy(): return
+        if self.busy:
+            return
         c = self.c
         g.doHook("iconrclick1", c=c, p=p, event=event)
         g.doHook("iconrclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17894: *5* qtree.onIconBoxDoubleClick
     def onIconBoxDoubleClick(self, event, p=None):
-        if self.busy(): return
+        if self.busy:
+            return
         c = self.c
         if not p: p = c.p
         if not g.doHook("icondclick1", c=c, p=p, event=event):
@@ -694,12 +712,6 @@ class LeoQtTree(leoFrame.LeoTree):
             self.OnIconDoubleClick(p) # Call the method in the base class.
         g.doHook("icondclick2", c=c, p=p, event=event)
         c.outerUpdate()
-    #@+node:ekr.20110605121601.17886: *4* qtree.busy
-    def busy(self):
-        '''Return True (actually, a debugging string) if any lockout is set.'''
-        table = ('contracting','expanding','redrawing','selecting')
-        kinds = ','.join([z for z in table if getattr(self, z)])
-        return kinds # Return the string for debugging
     #@+node:ekr.20110605121601.18437: *4* qtree.onContextMenu
     def onContextMenu(self, point):
         c = self.c
@@ -785,11 +797,12 @@ class LeoQtTree(leoFrame.LeoTree):
     def onItemClicked(self, item, col, auto_edit=False):
         '''Handle a click in a BaseNativeTree widget item.'''
         # This is called after an item is selected.
-        if self.busy():
+        if self.busy:
             return
         c = self.c
         try:
-            self.selecting = True
+            ### self.selecting = True
+            self.busy = True
             p = self.item2position(item)
             auto_edit = self.prev_v == p.v
             if p:
@@ -820,11 +833,12 @@ class LeoQtTree(leoFrame.LeoTree):
             # 2014/10/26: Reset find vars.
             c.findCommands.reset_state_ivars()
         finally:
-            self.selecting = False
+            ### self.selecting = False
+            self.busy = False
     #@+node:ekr.20110605121601.17895: *4* qtree.onItemCollapsed
     def onItemCollapsed(self, item):
 
-        if self.busy():
+        if self.busy:
             return
         c = self.c
         p = self.item2position(item)
@@ -844,18 +858,20 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17897: *4* qtree.onItemDoubleClicked
     def onItemDoubleClicked(self, item, col):
         '''Handle a double click in a BaseNativeTree widget item.'''
-        if self.busy():
+        if self.busy:
             return
         c = self.c
         try:
-            self.selecting = True
+            ### self.selecting = True
+            self.busy = True
             e, wrapper = self.createTreeEditorForItem(item)
             if not e:
                 g.trace('*** no e')
             p = self.item2position(item)
         # 2011/07/28: End the lockout here, not at the end.
         finally:
-            self.selecting = False
+            ### self.selecting = False
+            self.busy = False
         if p:
             # 2014/02/21: generate headddlick1/2 instead of icondclick1/2.
             event = None
@@ -868,7 +884,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17898: *4* qtree.onItemExpanded
     def onItemExpanded(self, item):
         '''Handle and tree-expansion event.'''
-        if self.busy():
+        if self.busy:
             return
         c = self.c
         p = self.item2position(item)
@@ -890,7 +906,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17899: *4* qtree.onTreeSelect
     def onTreeSelect(self):
         '''Select the proper position when a tree node is selected.'''
-        if self.busy():
+        if self.busy:
             return
         c = self.c
         item = self.getCurrentItem()
@@ -1363,13 +1379,14 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17906: *4* qtree.afterSelectHint
     def afterSelectHint(self, p, old_p):
 
+        self.selecting = False ### To be removed???
+        if self.busy:
+            return self.error('afterSelectHint busy!: %s')
+        if not p:
+            return self.error('no p')
         c = self.c
         if c.enableRedrawFlag:
-            self.selecting = False
-            if self.busy():
-                self.error('afterSelectHint busy!: %s' % self.busy())
-            if not p:
-                return self.error('no p')
+            ### self.selecting = False
             if p != c.p:
                 p = c.p
             # We don't redraw during unit testing: an important speedup.
@@ -1379,12 +1396,12 @@ class LeoQtTree(leoFrame.LeoTree):
                 c.outerUpdate() # Bring the tree up to date.
                 self.setItemForCurrentPosition()
         else:
-            self.selecting = False
+            ### self.selecting = False
             c.requestLaterRedraw = True
     #@+node:ekr.20110605121601.17907: *4* qtree.beforeSelectHint
     def beforeSelectHint(self, p, old_p):
 
-        if self.busy():
+        if self.busy:
             return
         c = self.c
         # Disable onTextChanged.
@@ -1409,7 +1426,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17909: *4* qtree.editLabel
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
-        if self.busy():
+        if self.busy:
             return
         c = self.c
         c.outerUpdate()
@@ -1465,7 +1482,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def setItemForCurrentPosition(self):
         '''Select the item for c.p'''
         c = self.c; p = c.currentPosition()
-        if self.busy():
+        if self.busy:
             return None
         if not p:
             return None
@@ -1478,11 +1495,13 @@ class LeoQtTree(leoFrame.LeoTree):
         if item == item2:
             return item
         try:
-            self.selecting = True
+            ### self.selecting = True
+            self.busy = True
             self.treeWidget.setCurrentItem(item)
                 # This generates gui events, so we must use a lockout.
         finally:
-            self.selecting = False
+            ### self.selecting = False
+            self.busy = False
         return item
     #@-others
 #@-others
