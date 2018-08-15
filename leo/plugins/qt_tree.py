@@ -619,6 +619,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def redraw_after_icons_changed(self):
 
         if self.busy:
+            if 'drawing' in g.app.debug: g.trace('busy', g.callers())
             return
         self.redrawCount += 1 # To keep a unit test happy.
         c = self.c
@@ -639,6 +640,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def redraw_after_select(self, p=None):
         '''Redraw the entire tree when an invisible node is selected.'''
         if self.busy:
+            if 'drawing' in g.app.debug: g.trace('busy', g.callers())
             return
         # Prevent the selecting lockout from disabling the redraw.
         try:
@@ -858,7 +860,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17897: *4* qtree.onItemDoubleClicked
     def onItemDoubleClicked(self, item, col):
         '''Handle a double click in a BaseNativeTree widget item.'''
-        if self.busy:
+        if self.busy: # Required.
             return
         c = self.c
         try:
@@ -884,7 +886,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17898: *4* qtree.onItemExpanded
     def onItemExpanded(self, item):
         '''Handle and tree-expansion event.'''
-        if self.busy:
+        if self.busy: # Required
             return
         c = self.c
         p = self.item2position(item)
@@ -1402,6 +1404,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def beforeSelectHint(self, p, old_p):
 
         if self.busy:
+            if 'drawing' in g.app.debug: g.trace('busy', g.callers())
             return
         c = self.c
         # Disable onTextChanged.
@@ -1427,6 +1430,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
         if self.busy:
+            if 'drawing' in g.app.debug: g.trace('busy', g.callers())
             return
         c = self.c
         c.outerUpdate()
