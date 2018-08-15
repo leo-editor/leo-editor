@@ -65,8 +65,7 @@ class QTextMixin(object):
         '''
         Update Leo after the body has been changed.
 
-        self.selecting is guaranteed to be True during
-        the entire selection process.
+        tree.tree_select_lockout is True during the entire selection process.
         '''
         # Important: usually w.changingText is True.
         # This method very seldom does anything.
@@ -76,14 +75,7 @@ class QTextMixin(object):
         if w.changingText:
             return
         if tree.tree_select_lockout:
-            return
-        ###
-            # if tree.selecting:
-                # return
-            # if tree.redrawing:
-                # return
-        if tree.selecting or tree.busy:
-            g.trace('SELECTING', g.callers())
+            g.trace('*** LOCKOUT', g.callers())
             return
         if not p:
             return

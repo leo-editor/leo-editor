@@ -33,11 +33,6 @@ class LeoQtTree(leoFrame.LeoTree):
         self.redrawCount = 0 # Count for debugging.
         self.revertHeadline = None # Previous headline text for abortEditLabel.
         self.busy = False
-        self.selecting = False
-            # A separate lockout, for onTextChanged.
-        ### self.contracting = False
-        ###self.expanding = False
-        ### self.redrawing = False
         # Debugging...
         self.traceCallersFlag = False # Enable traceCallers method.
         # Associating items with position and vnodes...
@@ -288,7 +283,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if g.app.disable_redraw:
             return
         if self.busy:
-            return g.trace('*** full_redraw: busy!', g.callers())
+            return g.trace('*** busy!', g.callers())
         # Cancel the delayed redraw request.
         c.requestLaterRedraw = False
         if not p:
@@ -642,15 +637,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if self.busy:
             if 'drawing' in g.app.debug: g.trace('busy', g.callers())
             return
-        # Prevent the selecting lockout from disabling the redraw.
-        try:
-            ### assert not self.selecting ### new
-            ### oldSelecting = self.selecting
-            ### self.selecting = False
-            self.full_redraw(p)
-        finally:
-            ### self.selecting = oldSelecting
-            assert not self.busy, g.callers()
+        self.full_redraw(p)
         # c.redraw_after_select calls tree.select indirectly.
         # Do not call it again here.
     #@+node:ekr.20140907201613.18986: *4* qtree.repaint
@@ -803,7 +790,6 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         c = self.c
         try:
-            ### self.selecting = True
             self.busy = True
             p = self.item2position(item)
             auto_edit = self.prev_v == p.v
@@ -835,7 +821,6 @@ class LeoQtTree(leoFrame.LeoTree):
             # 2014/10/26: Reset find vars.
             c.findCommands.reset_state_ivars()
         finally:
-            ### self.selecting = False
             self.busy = False
     #@+node:ekr.20110605121601.17895: *4* qtree.onItemCollapsed
     def onItemCollapsed(self, item):
@@ -864,7 +849,6 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         c = self.c
         try:
-            ### self.selecting = True
             self.busy = True
             e, wrapper = self.createTreeEditorForItem(item)
             if not e:
@@ -872,7 +856,6 @@ class LeoQtTree(leoFrame.LeoTree):
             p = self.item2position(item)
         # 2011/07/28: End the lockout here, not at the end.
         finally:
-            ### self.selecting = False
             self.busy = False
         if p:
             # 2014/02/21: generate headddlick1/2 instead of icondclick1/2.
@@ -1381,14 +1364,12 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17906: *4* qtree.afterSelectHint
     def afterSelectHint(self, p, old_p):
 
-        self.selecting = False ### To be removed???
         if self.busy:
             return self.error('afterSelectHint busy!: %s')
         if not p:
             return self.error('no p')
         c = self.c
         if c.enableRedrawFlag:
-            ### self.selecting = False
             if p != c.p:
                 p = c.p
             # We don't redraw during unit testing: an important speedup.
@@ -1398,7 +1379,6 @@ class LeoQtTree(leoFrame.LeoTree):
                 c.outerUpdate() # Bring the tree up to date.
                 self.setItemForCurrentPosition()
         else:
-            ### self.selecting = False
             c.requestLaterRedraw = True
     #@+node:ekr.20110605121601.17907: *4* qtree.beforeSelectHint
     def beforeSelectHint(self, p, old_p):
@@ -1407,8 +1387,6 @@ class LeoQtTree(leoFrame.LeoTree):
             if 'drawing' in g.app.debug: g.trace('busy', g.callers())
             return
         c = self.c
-        # Disable onTextChanged.
-        self.selecting = True
         self.prev_v = c.p.v
     #@+node:ekr.20110605121601.17908: *4* qtree.edit_widget
     def edit_widget(self, p):
@@ -1499,12 +1477,10 @@ class LeoQtTree(leoFrame.LeoTree):
         if item == item2:
             return item
         try:
-            ### self.selecting = True
             self.busy = True
             self.treeWidget.setCurrentItem(item)
                 # This generates gui events, so we must use a lockout.
         finally:
-            ### self.selecting = False
             self.busy = False
         return item
     #@-others
