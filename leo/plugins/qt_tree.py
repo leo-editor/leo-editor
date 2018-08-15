@@ -788,7 +788,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def onItemClicked(self, item, col, auto_edit=False):
         '''Handle a click in a BaseNativeTree widget item.'''
         # This is called after an item is selected.
-        g.trace(self, item)
         if self.busy:
             g.trace('busy', g.callers())
             return
@@ -875,7 +874,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def onItemExpanded(self, item):
         '''Handle and tree-expansion event.'''
         if self.busy: # Required
-            g.trace('busy', g.callers()) ###
             return
         c = self.c
         p = self.item2position(item)
