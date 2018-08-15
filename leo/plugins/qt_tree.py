@@ -497,6 +497,9 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17876: *5* qtree.drawTopTree
     def drawTopTree(self, p):
         '''Draw the tree rooted at p.'''
+        trace = 'drawing' in g.app.debug and not g.unitTesting
+        if trace:
+            t1 = time.clock()
         c = self.c
         self.clear()
         # Draw all top-level nodes and their visible descendants.
@@ -515,6 +518,9 @@ class LeoQtTree(leoFrame.LeoTree):
             while p:
                 self.drawTree(p)
                 p.moveToNext()
+        if trace:
+            t2 = time.clock()
+            g.trace('%5.2f sec.' % (t2-t1))
     #@+node:ekr.20110605121601.17877: *5* qtree.drawTree
     def drawTree(self, p, parent_item=None):
         if g.app.gui.isNullGui:

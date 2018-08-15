@@ -2693,8 +2693,9 @@ class LoadManager(object):
         add_bool('--silent',        'disable all log messages')
         add_other('--theme',        'use the named theme file', m='NAME')
         add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
-        add_bool('--trace-cache',   'trace caching in .leo/db')
+        # add_bool('--trace-cache',   'trace caching in .leo/db')
         add_bool('--trace-coloring', 'trace syntax coloring')
+        add_bool('--trace-drawing', 'trace outline redraws')
         add_bool('--trace-events',  'trace non-key events')
         add_bool('--trace-focus',   'trace changes of focus')
         add_bool('--trace-gnx',     'trace gnx logic')
@@ -2809,8 +2810,9 @@ class LoadManager(object):
         #
         # Most --trace- options append items to g.app.debug.
         table = (
-            ('cache', options.trace_cache),
+            # ('cache', options.trace_cache),
             ('coloring', options.trace_coloring),
+            ('drawing', options.trace_drawing),
             ('events', options.trace_events), # New
             ('focus', options.trace_focus),
             ('gnx', options.trace_gnx), # New.
