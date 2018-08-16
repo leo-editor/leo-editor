@@ -266,7 +266,7 @@ class PersistenceDataController(object):
             p = data.insertAsLastChild()
             p.h = h
         return p
-    #@+node:ekr.20140711111623.17863: *5* pd.find_at_persistence_node (changed)
+    #@+node:ekr.20140711111623.17863: *5* pd.find_at_persistence_node
     def find_at_persistence_node(self):
         '''
         Find the first @persistence node in the outline.
@@ -284,7 +284,7 @@ class PersistenceDataController(object):
             p.h = h
             g.es_print('created %s node' % h, color='red')
         return p
-    #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node (changed)
+    #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node
     def find_at_uas_node(self, root):
         '''
         Find the @uas node for root, a foreign node.

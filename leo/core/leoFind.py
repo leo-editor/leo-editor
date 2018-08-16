@@ -1584,7 +1584,7 @@ class LeoFind(object):
         else:
             g.es_print('tag not found: %s' % self.find_text)
         return len(clones)
-    #@+node:ekr.20160920112617.2: *5* find.createCloneTagNodes (changed)
+    #@+node:ekr.20160920112617.2: *5* find.createCloneTagNodes
     def createCloneTagNodes(self, clones):
         '''
         Create a "Found Tag" node as the last node of the outline.
@@ -1673,7 +1673,7 @@ class LeoFind(object):
         else:
             self.restore(data)
         return count
-    #@+node:ekr.20141023110422.1: *6* find.createCloneFindAllNodes (changed)
+    #@+node:ekr.20141023110422.1: *6* find.createCloneFindAllNodes
     def createCloneFindAllNodes(self, clones, flattened):
         '''
         Create a "Found" node as the last node of the outline.

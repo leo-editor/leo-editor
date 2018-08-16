@@ -203,7 +203,7 @@ def contractIfNotCurrent(c, p, leaveOpen):
         else:
             for p2 in child.self_and_subtree():
                 p2.contract()
-#@+node:ekr.20031218072017.2901: *3* c_oc.contractNode (changed)
+#@+node:ekr.20031218072017.2901: *3* c_oc.contractNode
 @g.commander_command('contract-node')
 def contractNode(self, event=None):
     '''Contract the presently selected node.'''
@@ -246,7 +246,7 @@ def contractNodeOrGoToParent(self, event=None):
             # p.moveToNext()
     if redraw:
         c.redraw()
-#@+node:ekr.20031218072017.2902: *3* c_oc.contractParent (changed)
+#@+node:ekr.20031218072017.2902: *3* c_oc.contractParent
 @g.commander_command('contract-parent')
 def contractParent(self, event=None):
     '''Contract the parent of the presently selected node.'''
@@ -257,7 +257,7 @@ def contractParent(self, event=None):
     if not parent: return
     parent.contract()
     c.redraw_after_contract(p=parent)
-#@+node:ekr.20031218072017.2903: *3* c_oc.expandAllHeadlines (changed)
+#@+node:ekr.20031218072017.2903: *3* c_oc.expandAllHeadlines
 @g.commander_command('expand-all')
 def expandAllHeadlines(self, event=None):
     '''Expand all headlines.
@@ -338,7 +338,7 @@ def expandNextLevel(self, event=None):
         c.expansionLevel = 1
         c.expansionNode = c.p.copy()
     self.expandToLevel(c.expansionLevel + 1)
-#@+node:ekr.20031218072017.2907: *3* c_oc.expandNode (changed)
+#@+node:ekr.20031218072017.2907: *3* c_oc.expandNode
 @g.commander_command('expand-node')
 def expandNode(self, event=None):
     '''Expand the presently selected node.'''
@@ -364,7 +364,7 @@ def expandNodeAndGoToFirstChild(self, event=None):
             # expandNodeAndGoToFirstChild only expands or only goes to first child .
             c.selectPosition(p.firstChild())
     c.treeFocusHelper()
-#@+node:ekr.20171125082744.1: *3* c_oc.expandNodeOrGoToFirstChild (changed)
+#@+node:ekr.20171125082744.1: *3* c_oc.expandNodeOrGoToFirstChild
 @g.commander_command('expand-or-go-right')
 def expandNodeOrGoToFirstChild(self, event=None):
     """Simulate the Right Arrow Key in folder of Windows Explorer."""

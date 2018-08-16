@@ -4082,8 +4082,8 @@ class KeyHandlerClass(object):
                 else:
                     k.silentMode = False # All silent modes must do --> set-silent-mode.
                     self.initMode(event, nextMode) # Enter another mode.
-    #@+node:ekr.20061031131434.156: *3* k.Modes (changed)
-    #@+node:ekr.20061031131434.163: *4* k.initMode (changed)
+    #@+node:ekr.20061031131434.156: *3* k.Modes
+    #@+node:ekr.20061031131434.163: *4* k.initMode
     def initMode(self, event, modeName):
 
         k = self; c = k.c

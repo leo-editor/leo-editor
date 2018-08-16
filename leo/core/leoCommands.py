@@ -2704,7 +2704,7 @@ class Commands(object):
             # c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
-    #@+node:ekr.20090110131802.2: *6* c.redraw_after_contract (changed)
+    #@+node:ekr.20090110131802.2: *6* c.redraw_after_contract
     def redraw_after_contract(self, p=None):
         c = self
         if c.enableRedrawFlag:
@@ -2716,7 +2716,7 @@ class Commands(object):
             c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
-    #@+node:ekr.20090112065525.1: *6* c.redraw_after_expand (changed)
+    #@+node:ekr.20090112065525.1: *6* c.redraw_after_expand
     def redraw_after_expand(self, p=None):
         c = self
         if c.enableRedrawFlag:
@@ -3596,7 +3596,7 @@ class Commands(object):
             changed_node = False
         u.afterChangeGroup(parent, undoType, undoData)
         return parent # actually the last created/found position
-    #@+node:ekr.20100802121531.5804: *4* c.deletePositionsInList (changed)
+    #@+node:ekr.20100802121531.5804: *4* c.deletePositionsInList
     def deletePositionsInList(self, aList, callback=None, redraw=True):
         '''
         Delete all vnodes corresponding to the positions in aList. If a

@@ -550,7 +550,7 @@ class LeoImportCommands(object):
                 return s
             else:
                 #@+<< Write s into newFileName >>
-                #@+node:ekr.20031218072017.1149: *5* << Write s into newFileName >> (remove-sentinels) (changed)
+                #@+node:ekr.20031218072017.1149: *5* << Write s into newFileName >> (remove-sentinels)
                 # Remove sentinels command.
                 try:
                     theFile = open(newFileName, 'w')

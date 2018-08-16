@@ -3882,7 +3882,7 @@ class FastAtRead (object):
             gnx2body[root_gnx] = gnx2body[root_gnx] + last_lines
         self.post_pass(gnx2body, gnx2vnode, root_v)
         return root_v, last_lines
-    #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root (changed)
+    #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
     def read_into_root(self, contents, path, root):
         '''
         Parse the file's contents, creating a tree of vnodes

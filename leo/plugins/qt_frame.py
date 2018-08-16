@@ -2750,7 +2750,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     f.hideOutlinePane()
                     c.bodyWantsFocus()
                     break
-    #@+node:ekr.20110605121601.18299: *5* qtFrame.expand/contract/hide...Pane (changed)
+    #@+node:ekr.20110605121601.18299: *5* qtFrame.expand/contract/hide...Pane
     @cmd('contract-body-pane')
     @cmd('expand-outline-pane')
     def contractBodyPane(self, event=None):
