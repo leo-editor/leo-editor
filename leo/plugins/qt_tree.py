@@ -583,10 +583,8 @@ class LeoQtTree(leoFrame.LeoTree):
             g.trace('busy', g.callers())
             return
         if p.isCloned():
-            self.full_redraw(p) ###, setFocus=setFocus)
+            self.full_redraw(p)
             return
-        ### c.frame.tree.redraw_after_contract(p)
-        ### if setFocus: c.treeFocusHelper()
         item = self.position2item(p)
         if item:
             self.contractItem(item)

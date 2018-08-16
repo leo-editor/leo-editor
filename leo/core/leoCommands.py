@@ -2668,7 +2668,7 @@ class Commands(object):
         c = self
         c.enableRedrawFlag = True
     #@+node:ekr.20090110073010.1: *6* c.redraw
-    def redraw(self, p=None, setFocus=False):
+    def redraw(self, p=None):
         '''Redraw the screen immediately.'''
         c = self
         # New in Leo 5.6: clear the redraw request.
@@ -2687,7 +2687,7 @@ class Commands(object):
         # Be careful.  NullTree.redraw returns None.
         # #503: NullTree.redraw(p) now returns p.
         c.selectPosition(p2 or p)
-        if setFocus: c.treeFocusHelper()
+        c.treeFocusHelper()
         # New in Leo 5.6: clear the redraw request, again.
         c.requestLaterRedraw = False
 
@@ -2705,38 +2705,30 @@ class Commands(object):
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090110131802.2: *6* c.redraw_after_contract (changed)
-    def redraw_after_contract(self, p=None, setFocus=False):
+    def redraw_after_contract(self, p=None):
         c = self
-        ### c.endEditing()
         if c.enableRedrawFlag:
             if p:
                 c.setCurrentPosition(p)
             else:
                 p = c.currentPosition()
             c.frame.tree.redraw_after_contract(p)
-            if setFocus: c.treeFocusHelper()
-            ###
-            # if p.isCloned():
-                # c.redraw(p=p, setFocus=setFocus)
-            # else:
-                # c.frame.tree.redraw_after_contract(p)
-                # if setFocus: c.treeFocusHelper()
+            c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090112065525.1: *6* c.redraw_after_expand (changed)
-    def redraw_after_expand(self, p=None, setFocus=False):
+    def redraw_after_expand(self, p=None):
         c = self
-        ### c.endEditing()
         if c.enableRedrawFlag:
             if p:
                 c.setCurrentPosition(p)
             else:
                 p = c.currentPosition()
             if p.isCloned():
-                c.redraw(p=p, setFocus=setFocus)
+                c.redraw(p)
             else:
                 c.frame.tree.redraw_after_expand(p)
-                if setFocus: c.treeFocusHelper()
+                c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090110073010.2: *6* c.redraw_after_head_changed
@@ -2860,7 +2852,7 @@ class Commands(object):
         while p and p.hasParent():
             p.moveToParent()
         if redrawFlag:
-            c.redraw(p, setFocus=True)
+            c.redraw(p)
         c.expansionLevel = 1 # Reset expansion level.
     #@+node:ekr.20031218072017.2910: *5* c.contractSubtree
     def contractSubtree(self, p):

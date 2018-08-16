@@ -214,7 +214,7 @@ def contractNode(self, event=None):
     if p.isCloned():
         c.redraw() # A full redraw is necessary to handle clones.
     else:
-        c.redraw_after_contract(p=p, setFocus=True)
+        c.redraw_after_contract(p)
 #@+node:ekr.20040930064232: *3* c_oc.contractNodeOrGoToParent
 @g.commander_command('contract-or-go-left')
 def contractNodeOrGoToParent(self, event=None):
@@ -268,7 +268,7 @@ def expandAllHeadlines(self, event=None):
     while p:
         c.expandSubtree(p,redraw=False)
         p.moveToNext()
-    c.redraw_after_expand(p=c.rootPosition(), setFocus=True)
+    c.redraw_after_expand(p=c.rootPosition())
     c.expansionLevel = 0 # Reset expansion level.
 #@+node:ekr.20031218072017.2904: *3* c_oc.expandAllSubheads
 @g.commander_command('expand-all-subheads')
@@ -281,7 +281,7 @@ def expandAllSubheads(self, event=None):
     while child:
         c.expandSubtree(child)
         child = child.next()
-    c.redraw(p, setFocus=True)
+    c.redraw(p)
 #@+node:ekr.20031218072017.2905: *3* c_oc.expandLevel1..9
 @g.commander_command('expand-to-level-1')
 def expandLevel1(self, event=None):
@@ -349,7 +349,7 @@ def expandNode(self, event=None):
     if p.isCloned():
         c.redraw() # Bug fix: 2009/10/03.
     else:
-        c.redraw_after_expand(p, setFocus=True)
+        c.redraw_after_expand(p)
 #@+node:ekr.20040930064232.1: *3* c_oc.expandNodeAndGoToFirstChild
 @g.commander_command('expand-and-go-right')
 def expandNodeAndGoToFirstChild(self, event=None):
@@ -374,7 +374,7 @@ def expandNodeOrGoToFirstChild(self, event=None):
         if not p.isExpanded():
             c.expandNode() # Calls redraw_after_expand.
         else:
-            c.redraw_after_expand(p.firstChild(), setFocus=True)
+            c.redraw_after_expand(p.firstChild())
 #@+node:ekr.20060928062431: *3* c_oc.expandOnlyAncestorsOfNode
 @g.commander_command('expand-ancestors-only')
 def expandOnlyAncestorsOfNode(self, event=None, p=None):
@@ -389,7 +389,7 @@ def expandOnlyAncestorsOfNode(self, event=None, p=None):
     for p in root.parents():
         p.expand()
         level += 1
-    c.redraw(setFocus=True)
+    c.redraw()
     c.expansionLevel = level # Reset expansion level.
 #@+node:ekr.20031218072017.2908: *3* c_oc.expandPrevLevel
 @g.commander_command('expand-prev-level')
@@ -1210,7 +1210,7 @@ def demote(self, event=None):
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
     c.setChanged(True)
     u.afterDemote(p, followingSibs, dirtyVnodeList)
-    c.redraw(p, setFocus=True)
+    c.redraw(p)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1768: *3* c_oc.moveOutlineDown
 @g.commander_command('move-outline-down')
@@ -1267,7 +1267,7 @@ def moveOutlineDown(self, event=None):
             dirtyVnodeList.extend(dirtyVnodeList2)
         c.setChanged(True)
         u.afterMoveNode(p, 'Move Down', undoData, dirtyVnodeList)
-    c.redraw(p, setFocus=True)
+    c.redraw(p)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1770: *3* c_oc.moveOutlineLeft
 @g.commander_command('move-outline-left')
@@ -1299,7 +1299,7 @@ def moveOutlineLeft(self, event=None):
     # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
     if c.collapse_nodes_after_move and c.sparse_move: # New in Leo 4.4.2
         parent.contract()
-    c.redraw(p, setFocus=True)
+    c.redraw(p)
     c.recolor() # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1771: *3* c_oc.moveOutlineRight
 @g.commander_command('move-outline-right')
@@ -1328,7 +1328,7 @@ def moveOutlineRight(self, event=None):
     dirtyVnodeList.extend(dirtyVnodeList2)
     c.setChanged(True)
     u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
-    c.redraw(p, setFocus=True)
+    c.redraw(p)
     c.recolor()
 #@+node:ekr.20031218072017.1772: *3* c_oc.moveOutlineUp
 @g.commander_command('move-outline-up')
@@ -1388,7 +1388,7 @@ def moveOutlineUp(self, event=None):
         dirtyVnodeList.extend(dirtyVnodeList2)
         c.setChanged(True)
         u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
-    c.redraw(p, setFocus=True)
+    c.redraw(p)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1774: *3* c_oc.promote
 @g.commander_command('promote')
@@ -1412,7 +1412,7 @@ def promote(self, event=None, undoFlag=True, redrawFlag=True):
             dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
         u.afterPromote(p, children, dirtyVnodeList)
     if redrawFlag:
-        c.redraw(p, setFocus=True)
+        c.redraw(p)
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
 #@+node:ekr.20071213185710: *3* c_oc.toggleSparseMove
 @g.commander_command('toggle-sparse-move')
