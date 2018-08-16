@@ -300,7 +300,7 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
         '''Return the text version of the modifiers of the key event.'''
-        c = self.c
+        # c = self.c
         qt = QtCore.Qt
         modifiers = event.modifiers()
         #
