@@ -301,6 +301,8 @@ class LeoQtTree(leoFrame.LeoTree):
         self.redrawCount += 1
         self.initData()
         try:
+            if 'drawing' in g.app.debug:
+                g.trace(self.redrawCount)
             self.busy = True
             self.drawTopTree(p)
         finally:
@@ -626,8 +628,6 @@ class LeoQtTree(leoFrame.LeoTree):
         finally:
             self.busy = False
     #@+node:ekr.20110605121601.17884: *4* qtree.redraw_after_select
-    # Important: this can not replace before/afterSelectHint.
-
     def redraw_after_select(self, p=None):
         '''Redraw the entire tree when an invisible node is selected.'''
         if self.busy:
@@ -840,11 +840,11 @@ class LeoQtTree(leoFrame.LeoTree):
         # Only methods that actually generate events should set lockouts.
         p.contract()
         if p.isCloned():
-            self.select(p) # Calls before/afterSelectHint.
+            self.select(p)
             # 2010/02/04: Keep the expansion bits of all tree nodes in sync.
             self.full_redraw()
         else:
-            self.select(p) # Calls before/afterSelectHint.
+            self.select(p)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17897: *4* qtree.onItemDoubleClicked
     def onItemDoubleClicked(self, item, col):
@@ -884,7 +884,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # Only methods that actually generate events should set lockouts.
         if not p.isExpanded():
             p.expand()
-            self.select(p) # Calls before/afterSelectHint.
+            self.select(p)
             self.full_redraw()
                 # Important: setting scroll=False here has no effect
                 # when a keystroke causes the expansion, but is a
@@ -907,7 +907,6 @@ class LeoQtTree(leoFrame.LeoTree):
         # Only methods that actually generate events should set lockouts.
         self.select(p)
             # This is a call to LeoTree.select(!!)
-            # Calls before/afterSelectHint.
         c.outerUpdate()
     #@+node:ekr.20110605121601.17900: *4* qtree.OnPopup & allies
     def OnPopup(self, p, event):
@@ -1365,33 +1364,6 @@ class LeoQtTree(leoFrame.LeoTree):
         vScroll = w.verticalScrollBar()
         vScroll.setValue(vPos)
     #@+node:ekr.20110605121601.17905: *3* qtree.Selecting & editing
-    #@+node:ekr.20110605121601.17906: *4* qtree.afterSelectHint
-    def afterSelectHint(self, p, old_p):
-
-        if self.busy:
-            return self.error('busy!: %s')
-        if not p:
-            return self.error('no p')
-        c = self.c
-        if c.enableRedrawFlag:
-            if p != c.p:
-                p = c.p
-            # We don't redraw during unit testing: an important speedup.
-            if c.expandAllAncestors(p) and not g.unitTesting:
-                self.full_redraw(p)
-            else:
-                c.outerUpdate() # Bring the tree up to date.
-                self.setItemForCurrentPosition()
-        else:
-            c.requestLaterRedraw = True
-    #@+node:ekr.20110605121601.17907: *4* qtree.beforeSelectHint
-    def beforeSelectHint(self, p, old_p):
-
-        if self.busy:
-            g.trace('busy', g.callers())
-            return
-        c = self.c
-        self.prev_v = c.p.v
     #@+node:ekr.20110605121601.17908: *4* qtree.edit_widget
     def edit_widget(self, p):
         """Returns the edit widget for position p."""

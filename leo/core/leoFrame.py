@@ -92,10 +92,6 @@ class TreeAPI(object):
 
     def initAfterLoad(self): pass
 
-    def afterSelectHint(self, p, old_p): pass
-
-    def beforeSelectHint(self, p, old_p): pass
-
     def onHeadChanged(self, p, undoType='Typing', s=None, e=None): pass
     # Hints for optimization. The proper default is c.redraw()
 
@@ -1267,22 +1263,22 @@ class LeoTree(object):
     def initAfterLoad(self):
         '''Do late initialization. Called in g.openWithFileName after a successful load.'''
 
-    def afterSelectHint(self, p, old_p):
-        '''Called at end of tree.select.'''
-
-    def beforeSelectHint(self, p, old_p):
-        '''Called at start of tree.select.'''
     # Hints for optimization. The proper default is c.redraw()
 
-    def redraw_after_contract(self, p=None): self.c.redraw()
+    def redraw_after_contract(self, p=None):
+        self.c.redraw()
 
-    def redraw_after_expand(self, p=None): self.c.redraw()
+    def redraw_after_expand(self, p=None):
+        self.c.redraw()
 
-    def redraw_after_head_changed(self): self.c.redraw()
+    def redraw_after_head_changed(self):
+        self.c.redraw()
 
-    def redraw_after_icons_changed(self): self.c.redraw()
+    def redraw_after_icons_changed(self):
+        self.c.redraw()
 
-    def redraw_after_select(self, p=None): self.c.redraw()
+    def redraw_after_select(self, p=None):
+        self.c.redraw()
     #@+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged (Used by the leoBridge module)
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used by the leoBridge module.
@@ -1475,15 +1471,25 @@ class LeoTree(object):
         if g.app.killed or self.tree_select_lockout: # Essential.
             return None
         try:
-            c = self.c; old_p = c.p
-            ### val = 'break'
+            c = self.c
             self.tree_select_lockout = True
-            c.frame.tree.beforeSelectHint(p, old_p)
+            self.prev_v = c.p.v
             self.selectHelper(p)
         finally:
             self.tree_select_lockout = False
-            c.frame.tree.afterSelectHint(p, old_p)
-        ### return val # Don't put a return in a finally clause.
+            if c.enableRedrawFlag:
+                p = c.p
+                # Don't redraw during unit testing: an important speedup.
+                if c.expandAllAncestors(p) and not g.unitTesting:
+                    self.full_redraw(p)
+                        # This *does* happen sometimes.
+                else:
+                    c.outerUpdate() # Bring the tree up to date.
+                    if hasattr(self, 'setItemForCurrentPosition'):
+                        self.setItemForCurrentPosition()
+            else:
+                c.requestLaterRedraw = True
+       
     #@+node:ekr.20070423101911: *4* selectHelper (LeoTree) & helpers
     def selectHelper(self, p):
         '''
