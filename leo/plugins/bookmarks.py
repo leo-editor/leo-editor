@@ -1008,7 +1008,7 @@ class BookMarkDisplay(object):
                         todo.append(bm.children)
                         row_parent = bm.v
 
-                if bm.v.u['__bookmarks']['is_dupe']:
+                if bm.v.u['__bookmarks'].get('is_dupe'):
                     style_sheet = "background: red; color: white;"
                 else:
                     style_sheet = ("background: #%s;" %
