@@ -1482,7 +1482,8 @@ class LeoTree(object):
                 # Don't redraw during unit testing: an important speedup.
                 if c.expandAllAncestors(p) and not g.unitTesting:
                     # This can happen when doing goto-next-clone.
-                    # g.trace('EXTRA REDRAW')
+                    if 'drawing' in g.app.debug:
+                        g.trace('EXTRA REDRAW')
                     c.redraw(p)
                         # This *does* happen sometimes.
                 else:

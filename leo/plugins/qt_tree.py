@@ -301,8 +301,6 @@ class LeoQtTree(leoFrame.LeoTree):
         self.redrawCount += 1
         self.initData()
         try:
-            if 'drawing' in g.app.debug:
-                g.trace(self.redrawCount, g.callers(3))
             self.busy = True
             self.drawTopTree(p)
         finally:
