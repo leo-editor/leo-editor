@@ -2704,26 +2704,29 @@ class Commands(object):
             # c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
-    #@+node:ekr.20090110131802.2: *6* c.redraw_after_contract
+    #@+node:ekr.20090110131802.2: *6* c.redraw_after_contract (changed)
     def redraw_after_contract(self, p=None, setFocus=False):
         c = self
-        c.endEditing()
+        ### c.endEditing()
         if c.enableRedrawFlag:
             if p:
                 c.setCurrentPosition(p)
             else:
                 p = c.currentPosition()
-            if p.isCloned():
-                c.redraw(p=p, setFocus=setFocus)
-            else:
-                c.frame.tree.redraw_after_contract(p)
-                if setFocus: c.treeFocusHelper()
+            c.frame.tree.redraw_after_contract(p)
+            if setFocus: c.treeFocusHelper()
+            ###
+            # if p.isCloned():
+                # c.redraw(p=p, setFocus=setFocus)
+            # else:
+                # c.frame.tree.redraw_after_contract(p)
+                # if setFocus: c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
-    #@+node:ekr.20090112065525.1: *6* c.redraw_after_expand
+    #@+node:ekr.20090112065525.1: *6* c.redraw_after_expand (changed)
     def redraw_after_expand(self, p=None, setFocus=False):
         c = self
-        c.endEditing()
+        ### c.endEditing()
         if c.enableRedrawFlag:
             if p:
                 c.setCurrentPosition(p)

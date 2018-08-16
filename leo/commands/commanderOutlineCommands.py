@@ -203,11 +203,13 @@ def contractIfNotCurrent(c, p, leaveOpen):
         else:
             for p2 in child.self_and_subtree():
                 p2.contract()
-#@+node:ekr.20031218072017.2901: *3* c_oc.contractNode
+#@+node:ekr.20031218072017.2901: *3* c_oc.contractNode (changed)
 @g.commander_command('contract-node')
 def contractNode(self, event=None):
     '''Contract the presently selected node.'''
-    c = self; p = c.p
+    c = self
+    p = c.p
+    c.endEditing()
     p.contract()
     if p.isCloned():
         c.redraw() # A full redraw is necessary to handle clones.
@@ -244,21 +246,24 @@ def contractNodeOrGoToParent(self, event=None):
             # p.moveToNext()
     if redraw:
         c.redraw()
-#@+node:ekr.20031218072017.2902: *3* c_oc.contractParent
+#@+node:ekr.20031218072017.2902: *3* c_oc.contractParent (changed)
 @g.commander_command('contract-parent')
 def contractParent(self, event=None):
     '''Contract the parent of the presently selected node.'''
-    c = self; p = c.p
+    c = self
+    c.endEditing()
+    p = c.p
     parent = p.parent()
     if not parent: return
     parent.contract()
     c.redraw_after_contract(p=parent)
-#@+node:ekr.20031218072017.2903: *3* c_oc.expandAllHeadlines
+#@+node:ekr.20031218072017.2903: *3* c_oc.expandAllHeadlines (changed)
 @g.commander_command('expand-all')
 def expandAllHeadlines(self, event=None):
     '''Expand all headlines.
     Warning: this can take a long time for large outlines.'''
     c = self
+    c.endEditing()
     p = c.rootPosition()
     while p:
         c.expandSubtree(p,redraw=False)
@@ -333,11 +338,13 @@ def expandNextLevel(self, event=None):
         c.expansionLevel = 1
         c.expansionNode = c.p.copy()
     self.expandToLevel(c.expansionLevel + 1)
-#@+node:ekr.20031218072017.2907: *3* c_oc.expandNode
+#@+node:ekr.20031218072017.2907: *3* c_oc.expandNode (changed)
 @g.commander_command('expand-node')
 def expandNode(self, event=None):
     '''Expand the presently selected node.'''
-    c = self; p = c.p
+    c = self
+    p = c.p
+    c.endEditing()
     p.expand()
     if p.isCloned():
         c.redraw() # Bug fix: 2009/10/03.
@@ -357,11 +364,12 @@ def expandNodeAndGoToFirstChild(self, event=None):
             # expandNodeAndGoToFirstChild only expands or only goes to first child .
             c.selectPosition(p.firstChild())
     c.treeFocusHelper()
-#@+node:ekr.20171125082744.1: *3* c_oc.expandNodeOrGoToFirstChild
+#@+node:ekr.20171125082744.1: *3* c_oc.expandNodeOrGoToFirstChild (changed)
 @g.commander_command('expand-or-go-right')
 def expandNodeOrGoToFirstChild(self, event=None):
     """Simulate the Right Arrow Key in folder of Windows Explorer."""
     c = self; p = c.p
+    c.endEditing()
     if p.hasChildren():
         if not p.isExpanded():
             c.expandNode() # Calls redraw_after_expand.

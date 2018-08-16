@@ -576,12 +576,17 @@ class LeoQtTree(leoFrame.LeoTree):
             self.declutter_update = False
             self.full_redraw()
         return None
-    #@+node:ekr.20110605121601.17880: *4* qtree.redraw_after_contract
+    #@+node:ekr.20110605121601.17880: *4* qtree.redraw_after_contract (changed)
     def redraw_after_contract(self, p=None):
 
         if self.busy:
             g.trace('busy', g.callers())
             return
+        if p.isCloned():
+            self.full_redraw(p) ###, setFocus=setFocus)
+            return
+        ### c.frame.tree.redraw_after_contract(p)
+        ### if setFocus: c.treeFocusHelper()
         item = self.position2item(p)
         if item:
             self.contractItem(item)
