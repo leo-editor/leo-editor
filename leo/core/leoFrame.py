@@ -1481,11 +1481,12 @@ class LeoTree(object):
                 p = c.p
                 # Don't redraw during unit testing: an important speedup.
                 if c.expandAllAncestors(p) and not g.unitTesting:
-                    self.full_redraw(p)
+                    c.redraw(p)
                         # This *does* happen sometimes.
                 else:
                     c.outerUpdate() # Bring the tree up to date.
                     if hasattr(self, 'setItemForCurrentPosition'):
+                        # pylint: disable=no-member
                         self.setItemForCurrentPosition()
             else:
                 c.requestLaterRedraw = True
