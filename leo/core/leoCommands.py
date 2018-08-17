@@ -2717,18 +2717,21 @@ class Commands(object):
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090112065525.1: *6* c.redraw_after_expand
-    def redraw_after_expand(self, p=None):
+    def redraw_after_expand(self, p):
         c = self
         if c.enableRedrawFlag:
             if p:
                 c.setCurrentPosition(p)
             else:
                 p = c.currentPosition()
-            if p.isCloned():
-                c.redraw(p)
-            else:
-                c.frame.tree.redraw_after_expand(p)
-                c.treeFocusHelper()
+            c.frame.tree.redraw_after_expand(p)
+            c.treeFocusHelper()
+            ###
+                # if p.isCloned():
+                    # c.redraw(p)
+                # else:
+                    # c.frame.tree.redraw_after_expand(p)
+                    # c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090110073010.2: *6* c.redraw_after_head_changed
@@ -2852,6 +2855,8 @@ class Commands(object):
         while p and p.hasParent():
             p.moveToParent()
         if redrawFlag:
+            # Do a *full* redraw.
+            # c.redraw_after_contract(p) only contracts a single position.
             c.redraw(p)
         c.expansionLevel = 1 # Reset expansion level.
     #@+node:ekr.20031218072017.2910: *5* c.contractSubtree

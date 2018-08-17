@@ -95,9 +95,9 @@ class TreeAPI(object):
     def onHeadChanged(self, p, undoType='Typing', s=None, e=None): pass
     # Hints for optimization. The proper default is c.redraw()
 
-    def redraw_after_contract(self, p=None): pass
+    def redraw_after_contract(self, p): pass
 
-    def redraw_after_expand(self, p=None): pass
+    def redraw_after_expand(self, p): pass
 
     def redraw_after_head_changed(self): pass
 
@@ -1265,10 +1265,10 @@ class LeoTree(object):
 
     # Hints for optimization. The proper default is c.redraw()
 
-    def redraw_after_contract(self, p=None):
+    def redraw_after_contract(self, p):
         self.c.redraw()
 
-    def redraw_after_expand(self, p=None):
+    def redraw_after_expand(self, p):
         self.c.redraw()
 
     def redraw_after_head_changed(self):
@@ -2004,9 +2004,11 @@ class NullTree(LeoTree):
             # Support for #503: Use string/null gui for unit tests
     redraw_now = redraw
 
-    def redraw_after_contract(self, p=None): self.redraw()
+    def redraw_after_contract(self, p):
+        self.redraw()
 
-    def redraw_after_expand(self, p=None): self.redraw()
+    def redraw_after_expand(self, p):
+        self.redraw()
 
     def redraw_after_head_changed(self): self.redraw()
 

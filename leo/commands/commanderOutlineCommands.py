@@ -211,10 +211,7 @@ def contractNode(self, event=None):
     p = c.p
     c.endEditing()
     p.contract()
-    if p.isCloned():
-        c.redraw() # A full redraw is necessary to handle clones.
-    else:
-        c.redraw_after_contract(p)
+    c.redraw_after_contract(p)
 #@+node:ekr.20040930064232: *3* c_oc.contractNodeOrGoToParent
 @g.commander_command('contract-or-go-left')
 def contractNodeOrGoToParent(self, event=None):
@@ -226,25 +223,19 @@ def contractNodeOrGoToParent(self, event=None):
     if p.hasChildren() and (p.v.isExpanded() or p.isExpanded()):
         c.contractNode()
     elif parent and parent.isVisible(c):
-        # New in Leo 4.9.1: contract all children first.
+        # Contract all children first.
         if c.collapse_on_lt_arrow:
             for child in parent.children():
                 if child.isExpanded():
                     child.contract()
-                    redraw = True
+                    if child.hasChildren():
+                        redraw = True
         if cc and cc.inChapter and parent.h.startswith('@chapter '):
             pass
         else:
             c.goToParent()
-    # This is a bit off-putting.
-    # elif not parent and not c.hoistStack:
-        # p = c.rootPosition()
-        # while p:
-            # if p.isExpanded():
-                # p.contract()
-                # redraw = True
-            # p.moveToNext()
     if redraw:
+        # A *child* should be collapsed.  Do a *full* redraw.
         c.redraw()
 #@+node:ekr.20031218072017.2902: *3* c_oc.contractParent
 @g.commander_command('contract-parent')
@@ -346,35 +337,34 @@ def expandNode(self, event=None):
     p = c.p
     c.endEditing()
     p.expand()
-    if p.isCloned():
-        c.redraw() # Bug fix: 2009/10/03.
-    else:
-        c.redraw_after_expand(p)
+    c.redraw_after_expand(p)
 #@+node:ekr.20040930064232.1: *3* c_oc.expandNodeAndGoToFirstChild
 @g.commander_command('expand-and-go-right')
 def expandNodeAndGoToFirstChild(self, event=None):
     """If a node has children, expand it if needed and go to the first child."""
-    c = self; p = c.p
+    c, p = self, self.p
+    c.endEditing()
     if p.hasChildren():
-        if p.isExpanded():
-            c.selectPosition(p.firstChild())
-        else:
+        if not p.isExpanded():
             c.expandNode()
-            # Fix bug 930726
-            # expandNodeAndGoToFirstChild only expands or only goes to first child .
-            c.selectPosition(p.firstChild())
+        c.selectPosition(p.firstChild())
     c.treeFocusHelper()
 #@+node:ekr.20171125082744.1: *3* c_oc.expandNodeOrGoToFirstChild
 @g.commander_command('expand-or-go-right')
 def expandNodeOrGoToFirstChild(self, event=None):
-    """Simulate the Right Arrow Key in folder of Windows Explorer."""
-    c = self; p = c.p
+    """
+    Simulate the Right Arrow Key in folder of Windows Explorer.
+    if c.p has no children, do nothing.
+    Otherwise, if c.p is expanded, select the first child.
+    Otherwise, expand c.p.
+    """
+    c, p = self, self.p
     c.endEditing()
     if p.hasChildren():
-        if not p.isExpanded():
-            c.expandNode() # Calls redraw_after_expand.
-        else:
+        if p.isExpanded():
             c.redraw_after_expand(p.firstChild())
+        else:
+            c.expandNode()
 #@+node:ekr.20060928062431: *3* c_oc.expandOnlyAncestorsOfNode
 @g.commander_command('expand-ancestors-only')
 def expandOnlyAncestorsOfNode(self, event=None, p=None):
