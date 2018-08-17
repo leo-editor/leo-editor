@@ -2726,12 +2726,6 @@ class Commands(object):
                 p = c.currentPosition()
             c.frame.tree.redraw_after_expand(p)
             c.treeFocusHelper()
-            ###
-                # if p.isCloned():
-                    # c.redraw(p)
-                # else:
-                    # c.frame.tree.redraw_after_expand(p)
-                    # c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090110073010.2: *6* c.redraw_after_head_changed

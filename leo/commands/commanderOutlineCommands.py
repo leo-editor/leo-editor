@@ -212,6 +212,7 @@ def contractNode(self, event=None):
     c.endEditing()
     p.contract()
     c.redraw_after_contract(p)
+    c.selectPosition(p)
 #@+node:ekr.20040930064232: *3* c_oc.contractNodeOrGoToParent
 @g.commander_command('contract-or-go-left')
 def contractNodeOrGoToParent(self, event=None):
@@ -338,6 +339,7 @@ def expandNode(self, event=None):
     c.endEditing()
     p.expand()
     c.redraw_after_expand(p)
+    c.selectPosition(p)
 #@+node:ekr.20040930064232.1: *3* c_oc.expandNodeAndGoToFirstChild
 @g.commander_command('expand-and-go-right')
 def expandNodeAndGoToFirstChild(self, event=None):

@@ -583,17 +583,6 @@ class LeoQtTree(leoFrame.LeoTree):
             g.trace('busy', g.callers())
             return
         self.update_expansion(p)
-        ###
-            # if p.isCloned():
-                # self.full_redraw(p)
-                # return
-            # item = self.position2item(p)
-            # if item:
-                # self.contractItem(item)
-            # else:
-                # # This is not an error.
-                # # We may have contracted a node that was not, in fact, visible.
-                # self.full_redraw()
     #@+node:ekr.20110605121601.17881: *4* qtree.redraw_after_expand (test)
     def redraw_after_expand(self, p):
         
@@ -673,26 +662,11 @@ class LeoQtTree(leoFrame.LeoTree):
         else:
             g.trace('NO P')
             c.redraw()
-        ###
-            # else:
-                # d = self.vnode2itemsDict
-                # items = d.get(p.v)
-                # func = w.expandItem if expand else w.collapseItem
-                # g.trace('expand' if expand else 'contract', len(items))
-                
-                # for item in items:
-                    # try:
-                        # func(item)
-                    # except RuntimeError:
-                        # g.trace('remove')
-                        # items.remove(item)
-                        # d [p.v] = items
     #@+node:ekr.20110605121601.17885: *3* qtree.Event handlers
     #@+node:ekr.20110605121601.17887: *4*  qtree.Click Box
     #@+node:ekr.20110605121601.17888: *5* qtree.onClickBoxClick
     def onClickBoxClick(self, event, p=None):
         if self.busy:
-            g.trace('busy', g.callers()) ###
             return
         c = self.c
         g.doHook("boxclick1", c=c, p=p, event=event)
@@ -701,7 +675,6 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17889: *5* qtree.onClickBoxRightClick
     def onClickBoxRightClick(self, event, p=None):
         if self.busy:
-            g.trace('busy', g.callers()) ###
             return
         c = self.c
         g.doHook("boxrclick1", c=c, p=p, event=event)
@@ -710,7 +683,6 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17890: *5* qtree.onPlusBoxRightClick
     def onPlusBoxRightClick(self, event, p=None):
         if self.busy:
-            g.trace('busy', g.callers()) ###
             return
         c = self.c
         g.doHook('rclick-popup', c=c, p=p, event=event, context_menu='plusbox')
@@ -720,7 +692,6 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17892: *5* qtree.onIconBoxClick
     def onIconBoxClick(self, event, p=None):
         if self.busy:
-            g.trace('busy', g.callers()) ###
             return
         c = self.c
         g.doHook("iconclick1", c=c, p=p, event=event)
@@ -730,7 +701,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def onIconBoxRightClick(self, event, p=None):
         """Handle a right click in any outline widget."""
         if self.busy:
-            g.trace('busy', g.callers()) ###
             return
         c = self.c
         g.doHook("iconrclick1", c=c, p=p, event=event)
@@ -739,7 +709,6 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17894: *5* qtree.onIconBoxDoubleClick
     def onIconBoxDoubleClick(self, event, p=None):
         if self.busy:
-            g.trace('busy', g.callers()) ###
             return
         c = self.c
         if not p: p = c.p
@@ -883,27 +852,16 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         # Do **not** set lockouts here.
         # Only methods that actually generate events should set lockouts.
-        if 1:
-            if p.isExpanded():
-                p.contract()
-                c.redraw_after_contract(p)
-            else:
-                self.select(p)
-            c.outerUpdate()
-        else: ###
+        if p.isExpanded():
             p.contract()
-            if p.isCloned():
-                self.select(p)
-                # 2010/02/04: Keep the expansion bits of all tree nodes in sync.
-                self.full_redraw()
-            else:
-                self.select(p)
-            c.outerUpdate()
+            c.redraw_after_contract(p)
+        self.select(p)
+        c.outerUpdate()
+       
     #@+node:ekr.20110605121601.17897: *4* qtree.onItemDoubleClicked
     def onItemDoubleClicked(self, item, col):
         '''Handle a double click in a BaseNativeTree widget item.'''
         if self.busy: # Required.
-            g.trace('busy', g.callers()) ###
             return
         c = self.c
         try:
@@ -936,23 +894,12 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         # Do **not** set lockouts here.
         # Only methods that actually generate events should set lockouts.
-            
-        if 1: ### New
-            if p.isExpanded():
-                self.select(p)
-            else:
-                p.expand()
-                c.redraw_after_expand(p)
-            c.outerUpdate()
-        else:
-            if not p.isExpanded():
-                p.expand()
-                self.select(p)
-                ### self.full_redraw()
-                self.update_expansion(p)
-            else:
-                self.select(p)
-            c.outerUpdate()
+        if not p.isExpanded():
+            p.expand()
+            c.redraw_after_expand(p)
+        self.select(p)
+        c.outerUpdate()
+        
     #@+node:ekr.20110605121601.17899: *4* qtree.onTreeSelect
     def onTreeSelect(self):
         '''Select the proper position when a tree node is selected.'''
