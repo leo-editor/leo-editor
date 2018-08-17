@@ -999,14 +999,23 @@ class LeoApp(object):
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
         try:
+            import _curses
+            assert _curses
+        except Exception:
+            g.es_exception()
+            print('can not import _curses.')
+            if g.isWindows:
+                print('Windows: pip install windows-curses')
+            sys.exit()
+        try:
             import leo.plugins.cursesGui2 as cursesGui2
             ok = cursesGui2.init()
-        except ImportError:
-            ok = False
-        if ok:
-            g.app.gui = cursesGui2.LeoCursesGui()
-        else:
+            if ok:
+                g.app.gui = cursesGui2.LeoCursesGui()
+        except Exception:
+            g.es_exception()
             print('can not create curses gui.')
+            sys.exit()
     #@+node:ekr.20090619065122.8593: *5* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
         """A convenience routines for plugins to create the default gui class."""
