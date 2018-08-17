@@ -175,6 +175,7 @@ class AstFormatter(object):
         '''Format the node (or list of nodes) and its descendants.'''
         self.level = 0
         val = self.visit(node)
+        # pylint: disable=consider-using-ternary
         return val and val.strip() or ''
     #@+node:ekr.20160317055215.5: *4* f.visit
     def visit(self, node):
@@ -230,7 +231,7 @@ class AstFormatter(object):
     # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
 
-    def do_FunctionDef(self, node, async=False):
+    def do_FunctionDef(self, node, async_flag=False):
         '''Format a FunctionDef node.'''
         result = []
         if node.decorator_list:
@@ -238,7 +239,7 @@ class AstFormatter(object):
                 result.append('@%s\n' % self.visit(z))
         name = node.name # Only a plain string is valid.
         args = self.visit(node.args) if node.args else ''
-        asynch_prefix = 'asynch ' if async else ''
+        asynch_prefix = 'asynch ' if async_flag else ''
         if getattr(node, 'returns', None): # Python 3.
             returns = self.visit(node.returns)
             result.append(self.indent('%sdef %s(%s): -> %s\n' % (
@@ -253,7 +254,7 @@ class AstFormatter(object):
         return ''.join(result)
 
     def do_AsyncFunctionDef(self, node):
-        return self.do_FunctionDef(node, async=True)
+        return self.do_FunctionDef(node, async_flag=True)
     #@+node:ekr.20160317055215.9: *4* f.Interactive
     def do_Interactive(self, node):
         for z in node.body:
@@ -391,7 +392,7 @@ class AstFormatter(object):
 
     #@+node:ekr.20170721092717.1: *4* f.Constant (Python 3.6+)
     def do_Constant(self, node): # Python 3.6+ only.
-        assert g.isPython3
+        assert isPython3
         return str(node.s) # A guess.
     #@+node:ekr.20160317055215.24: *4* f.comprehension
     def do_comprehension(self, node):
@@ -436,7 +437,7 @@ class AstFormatter(object):
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     def do_FormattedValue(self, node): # Python 3.6+ only.
-        assert g.isPython3
+        assert isPython3
         return '%s%s%s' % (
             self.visit(node.value),
             self.visit(node.conversion) if node.conversion else '',
@@ -675,10 +676,10 @@ class AstFormatter(object):
             return self.indent('exec %s\n' % (body))
 
     #@+node:ekr.20160317055215.53: *4* f.For & AsyncFor
-    def do_For(self, node, async=False):
+    def do_For(self, node, async_flag=False):
         result = []
         result.append(self.indent('%sfor %s in %s:\n' % (
-            'asynch ' if async else '',
+            'asynch ' if async_flag else '',
             self.visit(node.target),
             self.visit(node.iter))))
         for z in node.body:
@@ -694,7 +695,7 @@ class AstFormatter(object):
         return ''.join(result)
 
     def do_AsyncFor(self, node):
-        return self.do_For(node, async=True)
+        return self.do_For(node, async_flag=True)
 
     #@+node:ekr.20160317055215.54: *4* f.Global
     def do_Global(self, node):
@@ -784,7 +785,7 @@ class AstFormatter(object):
 
     def do_Raise(self, node):
         args = []
-        attrs = ('exc', 'cause') if g.isPython3 else ('type', 'inst', 'tback')
+        attrs = ('exc', 'cause') if isPython3 else ('type', 'inst', 'tback')
         for attr in attrs:
             if getattr(node, attr, None) is not None:
                 args.append(self.visit(getattr(node, attr)))
@@ -813,7 +814,7 @@ class AstFormatter(object):
     def do_Try(self, node): # Python 3
 
         result = []
-        self.append(self.indent('try:\n'))
+        result.append(self.indent('try:\n'))
         for z in node.body:
             self.level += 1
             result.append(self.visit(z))
@@ -897,9 +898,9 @@ class AstFormatter(object):
     #          stmt* body)
     # withitem = (expr context_expr, expr? optional_vars)
 
-    def do_With(self, node, async=False):
+    def do_With(self, node, async_flag=False):
         result = []
-        result.append(self.indent('%swith ' % 'async ' if async else ''))
+        result.append(self.indent('%swith ' % 'async ' if async_flag else ''))
         vars_list = []
         if getattr(node, 'context_expression', None):
             result.append(self.visit(node.context_expresssion))
@@ -928,7 +929,7 @@ class AstFormatter(object):
         return ''.join(result)
 
     def do_AsyncWith(self, node):
-        return self.do_With(node, async=True)
+        return self.do_With(node, async_flag=True)
     #@+node:ekr.20160317055215.71: *4* f.Yield
     def do_Yield(self, node):
         if getattr(node, 'value', None):
@@ -1141,6 +1142,7 @@ class LeoGlobals(object):
     #@+node:ekr.20160317054700.92: *3* g.shortFileName
 
     def shortFileName(self,fileName, n=None):
+        # pylint: disable=invalid-unary-operand-type
         if n is None or n < 1:
             return os.path.basename(fileName)
         else:
@@ -2175,6 +2177,7 @@ class StubFormatter (AstFormatter):
         if len(keys) == len(values):
             result.append('{')
             items = []
+            # pylint: disable=consider-using-enumerate
             for i in range(len(keys)):
                 items.append('%s:%s' % (keys[i], values[i]))
             result.append(', '.join(items))

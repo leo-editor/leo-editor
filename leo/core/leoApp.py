@@ -1049,22 +1049,28 @@ class LeoApp(object):
         app = self
         try:
             from leo.core.leoQt import Qt
+            assert Qt
+        except Exception:
+            g.es_exception()
+            print('can not import Qt')
+            sys.exit(1)
+        try:
             import leo.plugins.qt_gui as qt_gui
-            try:
-                from leo.plugins.editpane.editpane import edit_pane_test_open, edit_pane_csv
-                g.command('edit-pane-test-open')(edit_pane_test_open)
-                g.command('edit-pane-csv')(edit_pane_csv)
-            except ImportError:
-                print('Failed to import editpane')
+        except Exception:
+            g.es_exception()
+            print('can not importleo.plugins.qt_gui')
+            sys.exit(1)
+        try:
+            from leo.plugins.editpane.editpane import edit_pane_test_open, edit_pane_csv
+            g.command('edit-pane-test-open')(edit_pane_test_open)
+            g.command('edit-pane-csv')(edit_pane_csv)
         except ImportError:
-            Qt = None
-        if Qt:
-            qt_gui.init()
-            if app.gui and fileName and verbose:
-                print('Qt Gui created in %s' % fileName)
-        else:
-            print('createQtGui: can not create Qt gui.')
-
+            print('Failed to import editpane')
+        #
+        # Complete the initialization.
+        qt_gui.init()
+        if app.gui and fileName and verbose:
+            print('Qt Gui created in %s' % fileName)
     #@+node:ekr.20170419093747.1: *5* app.createTextGui (was createCursesGui)
     def createTextGui(self, fileName='', verbose=False):
         app = self
