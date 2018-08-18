@@ -2749,6 +2749,7 @@ class Commands(object):
             flag = c.expandAllAncestors(p)
             if flag:
                 c.frame.tree.redraw_after_select(p)
+                    # This is the same as c.frame.tree.full_redraw().
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20170908081918.1: *6* c.redraw_later
