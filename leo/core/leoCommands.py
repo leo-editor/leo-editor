@@ -2690,7 +2690,7 @@ class Commands(object):
         # #503: NullTree.redraw(p) now returns p.
         c.selectPosition(p2 or p)
         c.treeFocusHelper()
-        # New in Leo 5.6: clear the redraw request, again.
+        # Clear the redraw request, again.
         c.requestLaterRedraw = False
 
     # Compatibility with old scripts

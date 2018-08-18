@@ -1494,7 +1494,6 @@ class LeoTree(object):
                         self.setItemForCurrentPosition()
             else:
                 c.requestLaterRedraw = True
-       
     #@+node:ekr.20070423101911: *4* selectHelper (LeoTree) & helpers
     def selectHelper(self, p):
         '''
