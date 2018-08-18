@@ -718,7 +718,8 @@ class todoController(object):
     def redraw(self):
 
         self.updateUI()
-        self.c.redraw()
+        ### self.c.redraw()
+        self.c.redraw_later()
     #@+node:tbrown.20090119215428.29: *4* clear_all
     @redrawer
     def clear_all(self, recurse=False, all=False):

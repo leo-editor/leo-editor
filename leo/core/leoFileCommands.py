@@ -509,14 +509,14 @@ class FileCommands(object):
             # New in Leo 5.3. Delay the second redraw until idle time.
             # This causes a slight flash, but corrects a hangnail.
 
-            def handler(timer, c=c, p=c.p):
+            def getLeoFile_handler(timer, c=c, p=c.p):
                 c.initialFocusHelper()
                 c.redraw(p)
                 c.k.showStateAndMode()
                 c.outerUpdate()
                 timer.stop()
 
-            timer = g.IdleTime(handler, delay=0, tag='getLeoFile')
+            timer = g.IdleTime(getLeoFile_handler, delay=0, tag='getLeoFile')
             if timer:
                 timer.start()
             else:

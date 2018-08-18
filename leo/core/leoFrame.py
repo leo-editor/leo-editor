@@ -1484,7 +1484,8 @@ class LeoTree(object):
                     # This can happen when doing goto-next-clone.
                     if 'drawing' in g.app.debug:
                         g.trace('EXTRA REDRAW')
-                    c.redraw(p)
+                    ### c.redraw(p)
+                    c.redraw_later()
                         # This *does* happen sometimes.
                 else:
                     c.outerUpdate() # Bring the tree up to date.
