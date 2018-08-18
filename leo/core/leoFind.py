@@ -2516,7 +2516,7 @@ class LeoFind(object):
         if self.wrap and not self.wrapPosition:
             self.wrapPosition = self.p
         if c.sparse_find:
-            c.expandOnlyAncestorsOfNode(p=p)
+            c.expandOnlyAncestorsOfNode(p=p, redraw=False)
         if self.in_headline:
             c.endEditing()
             selection = pos, newpos, insert
@@ -2536,10 +2536,11 @@ class LeoFind(object):
             c.bodyWantsFocusNow()
             w.setSelectionRange(pos, newpos, insert=insert)
             w.see(insert)
-            # Fix bug 78: find-next match not always scrolled into view.
-            # https://github.com/leo-editor/leo-editor/issues/78
-            g.app.allow_delayed_see = True
+                # Fix bug 78: find-next match not always scrolled into view.
+                # https://github.com/leo-editor/leo-editor/issues/78
+            ### g.app.allow_delayed_see = True
             c.outerUpdate()
+                # Set the focus immediately.
             if c.vim_mode and c.vimCommands:
                 c.vimCommands.update_selection_after_search()
         # Support for the console gui.

@@ -276,7 +276,7 @@ class LeoApp(object):
             # copy of Leo.
         self.dragging = False
             # True: dragging.
-        self.allow_delayed_see = False
+        ### self.allow_delayed_see = False
             # True: pqsh.reformat_blocks_helper calls w.seeInsertPoint
         self.inBridge = False
             # True: running from leoBridge module.

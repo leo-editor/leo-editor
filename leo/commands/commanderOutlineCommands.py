@@ -369,7 +369,7 @@ def expandNodeOrGoToFirstChild(self, event=None):
             c.expandNode()
 #@+node:ekr.20060928062431: *3* c_oc.expandOnlyAncestorsOfNode
 @g.commander_command('expand-ancestors-only')
-def expandOnlyAncestorsOfNode(self, event=None, p=None):
+def expandOnlyAncestorsOfNode(self, event=None, p=None, redraw=True):
     '''Contract all nodes in the outline.'''
     c = self
     level = 1
@@ -381,7 +381,8 @@ def expandOnlyAncestorsOfNode(self, event=None, p=None):
     for p in root.parents():
         p.expand()
         level += 1
-    c.redraw()
+    if redraw:
+        c.redraw()
     c.expansionLevel = level # Reset expansion level.
 #@+node:ekr.20031218072017.2908: *3* c_oc.expandPrevLevel
 @g.commander_command('expand-prev-level')
