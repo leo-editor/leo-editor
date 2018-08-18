@@ -502,7 +502,7 @@ class CoffeeScriptTraverser(object):
         return ''.join(result)
     #@+node:ekr.20170721093550.1: *4* cv.Constant (Python 3.6+)
     def do_Constant(self, node): # Python 3.6+ only.
-        assert g.isPython3
+        assert isPython3
         if hasattr(node, 'lineno'):
             # Do *not* handle leading lines here.
             # leading = self.leading_string(node)
@@ -557,7 +557,7 @@ class CoffeeScriptTraverser(object):
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     def do_FormattedValue(self, node): # Python 3.6+ only.
-        assert g.isPython3
+        assert isPython3
         
         return '%s%s%s' % (
             self.visit(node.value),
@@ -852,12 +852,12 @@ class CoffeeScriptTraverser(object):
         return head + self.indent(s) + tail
     #@+node:ekr.20160316091132.64: *4* cv.For & AsyncFor
 
-    def do_For(self, node, async=False):
+    def do_For(self, node, async_flag=False):
 
         result = self.leading_lines(node)
         tail = self.trailing_comment(node)
         s = '%sfor %s in %s:' % (
-            'async ' if async else '',
+            'async ' if async_flag else '',
             self.visit(node.target),
             self.visit(node.iter))
         result.append(self.indent(s + tail))
@@ -875,7 +875,7 @@ class CoffeeScriptTraverser(object):
         return ''.join(result)
 
     def do_AsyncFor(self, node):
-        return self.do_For(node, async=True)
+        return self.do_For(node, async_flag=True)
     #@+node:ekr.20160316091132.65: *4* cv.Global
 
     def do_Global(self, node):
@@ -987,7 +987,7 @@ class CoffeeScriptTraverser(object):
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         args = []
-        attrs = ('exc', 'cause') if g.isPython3 else ('type', 'inst', 'tback')
+        attrs = ('exc', 'cause') if isPython3 else ('type', 'inst', 'tback')
         for attr in attrs:
             if getattr(node, attr, None) is not None:
                 args.append(self.visit(getattr(node, attr)))
@@ -1116,12 +1116,12 @@ class CoffeeScriptTraverser(object):
     #          stmt* body)
     # withitem = (expr context_expr, expr? optional_vars)
 
-    def do_With(self, node, async=False):
+    def do_With(self, node, async_flag=False):
 
         result = self.leading_lines(node)
         tail = self.trailing_comment(node)
         vars_list = []
-        result.append(self.indent('%swith ' % ('async ' if async else '')))
+        result.append(self.indent('%swith ' % ('async ' if async_flag else '')))
         if getattr(node, 'context_expression', None):
             result.append(self.visit(node.context_expresssion))
         if getattr(node, 'optional_vars', None):
@@ -1148,7 +1148,7 @@ class CoffeeScriptTraverser(object):
         return ''.join(result) + tail
 
     def do_AsyncWith(self, node):
-        return self.do_With(node, async=True)
+        return self.do_With(node, async_flag=True)
 
     #@+node:ekr.20160316091132.79: *4* cv.Yield
 
@@ -1322,6 +1322,7 @@ class LeoGlobals(object):
     #@+node:ekr.20160316091132.90: *3* g.shortFileName
 
     def shortFileName(self, fileName, n=None):
+        # pylint: disable=invalid-unary-operand-type
         if n is None or n < 1:
             return os.path.basename(fileName)
         else:
