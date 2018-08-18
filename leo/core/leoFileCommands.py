@@ -501,7 +501,9 @@ class FileCommands(object):
                 if readAtFileNodesFlag:
                     # Redraw before reading the @file nodes so the screen isn't blank.
                     # This is important for big files like LeoPy.leo.
-                    c.redraw()
+                    ### This does nothing at present.
+                    ### c.redraw()
+                        
                     recoveryNode = fc.readExternalFiles(fileName)
         finally:
             p = recoveryNode or c.p or c.lastTopLevel()

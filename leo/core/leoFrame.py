@@ -1483,7 +1483,7 @@ class LeoTree(object):
                 if c.expandAllAncestors(p) and not g.unitTesting:
                     # This can happen when doing goto-next-clone.
                     if 'drawing' in g.app.debug:
-                        g.trace('EXTRA REDRAW')
+                        g.trace('EXTRA REDRAW', g.callers(6))
                     c.redraw(p)
                         # This *does* happen sometimes.
                 else:
@@ -1493,7 +1493,6 @@ class LeoTree(object):
                         self.setItemForCurrentPosition()
             else:
                 c.requestLaterRedraw = True
-       
     #@+node:ekr.20070423101911: *4* selectHelper (LeoTree) & helpers
     def selectHelper(self, p):
         '''

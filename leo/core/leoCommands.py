@@ -2676,6 +2676,7 @@ class Commands(object):
         if not p:
             p = c.p or c.rootPosition()
         if not p:
+            g.trace('no p') # not an error.
             return
         c.expandAllAncestors(p)
         if p:
@@ -2746,6 +2747,8 @@ class Commands(object):
         if c.enableRedrawFlag:
             flag = c.expandAllAncestors(p)
             if flag:
+                if 'drawing' in g.app.debug:
+                    g.trace('UNEXPANDED ANCESTOR', p.h, g.callers(6))
                 c.frame.tree.redraw_after_select(p)
         else:
             c.requestLaterRedraw = True
@@ -3341,6 +3344,9 @@ class Commands(object):
                     break
                 else:
                     bunch = c.hoistStack.pop()
+        c.expandAllAncestors(p)
+            ### Experimental.
+            # This will reduce/eliminate the extra redraw in qtree.select.
         c.frame.tree.select(p)
         c.setCurrentPosition(p)
             # Do *not* test whether the position exists!
