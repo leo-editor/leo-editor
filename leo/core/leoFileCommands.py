@@ -508,25 +508,28 @@ class FileCommands(object):
         finally:
             p = recoveryNode or c.p or c.lastTopLevel()
                 # lastTopLevel is a better fallback, imo.
-            # New in Leo 5.3. Delay the second redraw until idle time.
-            # This causes a slight flash, but corrects a hangnail.
-
-            def handler(timer, c=c, p=c.p):
-                c.initialFocusHelper()
-                c.redraw(p)
-                c.k.showStateAndMode()
-                c.outerUpdate()
-                timer.stop()
-
-            timer = g.IdleTime(handler, delay=0, tag='getLeoFile')
-            if timer:
-                timer.start()
-            else:
-                # Defensive code:
-                c.selectPosition(p)
-                c.initialFocusHelper()
-                c.k.showStateAndMode()
-                c.outerUpdate()
+            
+            if 0: ### Experimental: don't do anything here!
+            
+                # New in Leo 5.3. Delay the second redraw until idle time.
+                # This causes a slight flash, but corrects a hangnail.
+        
+                def handler(timer, c=c, p=c.p):
+                    c.initialFocusHelper()
+                    c.redraw(p)
+                    c.k.showStateAndMode()
+                    c.outerUpdate()
+                    timer.stop()
+        
+                timer = g.IdleTime(handler, delay=0, tag='getLeoFile')
+                if timer:
+                    timer.start()
+                else:
+                    # Defensive code:
+                    c.selectPosition(p)
+                    c.initialFocusHelper()
+                    c.k.showStateAndMode()
+                    c.outerUpdate()
 
             c.checkOutline()
                 # Must be called *after* ni.end_holding.
