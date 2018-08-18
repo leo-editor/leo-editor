@@ -2630,8 +2630,8 @@ class Commands(object):
         if c.requestLaterRedraw:
             if c.enableRedrawFlag:
                 c.requestLaterRedraw = False
-                if 'drawing' in g.app.debug and not g.unitTesting:
-                    g.trace('DELAYED REDRAW')
+                ### if 'drawing' in g.app.debug and not g.unitTesting:
+                ###    g.trace('DELAYED REDRAW')
                 c.redraw()
         # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
@@ -2761,7 +2761,7 @@ class Commands(object):
         '''
         c = self
         c.requestLaterRedraw = True
-        if 'drawing' in g.app.debug:
+        if False and 'drawing' in g.app.debug:
             g.trace('=====', g.callers())
     #@+node:ekr.20080514131122.17: *5* c.widget_name
     def widget_name(self, widget):

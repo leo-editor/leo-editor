@@ -574,7 +574,9 @@ class LeoQtTree(leoFrame.LeoTree):
 
         if self.declutter_update:
             self.declutter_update = False
+            g.trace('=====', g.callers())
             self.full_redraw()
+            ### c.redraw_later()
         return None
     #@+node:ekr.20110605121601.17880: *4* qtree.redraw_after_contract (test)
     def redraw_after_contract(self, p):
