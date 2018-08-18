@@ -381,6 +381,9 @@ def expandOnlyAncestorsOfNode(self, event=None, p=None):
     for p in root.parents():
         p.expand()
         level += 1
+    ### Now done in callers.
+        # if redraw:
+            # c.redraw()
     c.expansionLevel = level # Reset expansion level.
 #@+node:ekr.20031218072017.2908: *3* c_oc.expandPrevLevel
 @g.commander_command('expand-prev-level')
@@ -437,8 +440,10 @@ def goToFirstNode(self, event=None):
     '''Select the first node of the entire outline.'''
     c = self
     p = c.rootPosition()
+    ### c.selectPosition(p)
     c.expandOnlyAncestorsOfNode(p=p)
     c.redraw()
+    ### c.treeSelectHelper(p)
 #@+node:ekr.20051012092453: *3* c_oc.goToFirstSibling
 @g.commander_command('goto-first-sibling')
 def goToFirstSibling(self, event=None):
@@ -455,8 +460,11 @@ def goToFirstVisibleNode(self, event=None):
     c = self
     p = c.firstVisible()
     if p:
+        ### c.selectPosition(p)
         c.expandOnlyAncestorsOfNode(p=p)
+        ### c.redraw_after_select(p)
         c.redraw()
+        ### c.treeSelectHelper(p)
 #@+node:ekr.20031218072017.2915: *3* c_oc.goToLastNode
 @g.commander_command('goto-last-node')
 def goToLastNode(self, event=None):
@@ -465,6 +473,8 @@ def goToLastNode(self, event=None):
     p = c.rootPosition()
     while p and p.hasThreadNext():
         p.moveToThreadNext()
+    ### c.selectPosition(p)
+    ### c.treeSelectHelper(p)
     c.expandOnlyAncestorsOfNode(p=p)
     c.redraw()
 #@+node:ekr.20051012092847.1: *3* c_oc.goToLastSibling
@@ -483,8 +493,11 @@ def goToLastVisibleNode(self, event=None):
     c = self
     p = c.lastVisible()
     if p:
+        ### c.selectPosition(p)
         c.expandOnlyAncestorsOfNode(p=p)
         c.redraw()
+        ### c.redraw_after_select(p)
+        ### c.treeSelectHelper(p)
 #@+node:ekr.20031218072017.2916: *3* c_oc.goToNextClone
 @g.commander_command('goto-next-clone')
 def goToNextClone(self, event=None):

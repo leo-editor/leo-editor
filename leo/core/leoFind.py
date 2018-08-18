@@ -2538,6 +2538,7 @@ class LeoFind(object):
             w.see(insert)
                 # Fix bug 78: find-next match not always scrolled into view.
                 # https://github.com/leo-editor/leo-editor/issues/78
+            ### g.app.allow_delayed_see = True
             c.outerUpdate()
                 # Set the focus immediately.
             if c.vim_mode and c.vimCommands:
