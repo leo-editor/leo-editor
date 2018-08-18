@@ -2516,7 +2516,7 @@ class LeoFind(object):
         if self.wrap and not self.wrapPosition:
             self.wrapPosition = self.p
         if c.sparse_find:
-            c.expandOnlyAncestorsOfNode(p=p, redraw=False)
+            c.expandOnlyAncestorsOfNode(p=p)
         if self.in_headline:
             c.endEditing()
             selection = pos, newpos, insert
