@@ -719,7 +719,6 @@ class todoController(object):
 
         self.updateUI()
         if not g.app.initing:
-            ### g.trace('===== todo.py', self.c.shortFileName())
             self.c.redraw_later()
     #@+node:tbrown.20090119215428.29: *4* clear_all
     @redrawer
