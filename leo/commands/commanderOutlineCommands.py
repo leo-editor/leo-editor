@@ -513,6 +513,7 @@ def goToNextClone(self, event=None):
             wrapped = True
             p = c.rootPosition()
     if p:
+        c.expandAllAncestors(p)
         if cc:
             # Fix bug #252: goto-next clone activate chapter.
             # https://github.com/leo-editor/leo-editor/issues/252
@@ -520,14 +521,18 @@ def goToNextClone(self, event=None):
             old_name = chapter and chapter.name
             new_name = cc.findChapterNameForPosition(p)
             if new_name == old_name:
-                c.selectPosition(p)
-                c.redraw_after_select(p)
+                # Always do a full redraw.
+                c.redraw(p)
             else:
-                c.selectPosition(p)
-                cc.selectChapterByName(new_name)
+                if 1:
+                    cc.selectChapterByName(new_name)
+                    c.redraw(p)
+                else: ### Old code.
+                    c.selectPosition(p)
+                    cc.selectChapterByName(new_name)
         else:
-            c.selectPosition(p)
-            c.redraw_after_select(p)
+            # Always do a full redraw.
+            c.redraw(p)
     else:
         g.blue('done')
 #@+node:ekr.20071213123942: *3* c_oc.findNextClone
