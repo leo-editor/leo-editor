@@ -20752,7 +20752,7 @@ At one time I thought the following might work, but it appears that it doesn't:
 5. Set both radio buttons to "Not Assigned" and click OK.</t>
 <t tx="ekr.20160304081437.3">To enable a theme .leo file, put the following setting in myLeoSettings.leo::
 
-    @string theme-name &lt;theme file, without the .leo extension&gt;
+    @string theme-name = &lt;theme file, without the .leo extension&gt;
 
 You can also define a theme directly in myLeoSettings.leo as follows:
 
