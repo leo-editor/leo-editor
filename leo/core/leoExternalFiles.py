@@ -138,6 +138,11 @@ class ExternalFilesController(object):
         if not g.app or g.app.killed:
             return
         self.on_idle_count += 1
+        # New in Leo 5.7: always handle delayed requests.
+        if g.app.windowList:
+            c = g.app.log and g.app.log.c
+            if c:
+                c.outerUpdate()
         if 1:
             # Fix #262: Improve performance of check_for_changed_external_files.
             if self.unchecked_files:

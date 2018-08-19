@@ -494,7 +494,7 @@ class todoController(object):
     def redrawer(fn):
         """decorator for methods which create the need for a redraw"""
         # pylint: disable=no-self-argument
-        def new(self, *args, **kargs):
+        def todo_redrawer_callback(self, *args, **kargs):
             self.redrawLevels += 1
             try:
                 # pylint: disable=not-callable
@@ -504,7 +504,7 @@ class todoController(object):
                 if self.redrawLevels == 0:
                     self.redraw()
             return ans
-        return new
+        return todo_redrawer_callback
     #@+node:tbrown.20090119215428.14: *3* projectChanger
     def projectChanger(fn):
         """decorator for methods which change projects"""
@@ -718,8 +718,9 @@ class todoController(object):
     def redraw(self):
 
         self.updateUI()
-        ### self.c.redraw()
-        self.c.redraw_later()
+        if not g.app.initing:
+            ### g.trace('===== todo.py', self.c.shortFileName())
+            self.c.redraw_later()
     #@+node:tbrown.20090119215428.29: *4* clear_all
     @redrawer
     def clear_all(self, recurse=False, all=False):

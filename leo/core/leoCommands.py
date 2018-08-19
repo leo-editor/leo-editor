@@ -2630,8 +2630,8 @@ class Commands(object):
         if c.requestLaterRedraw:
             if c.enableRedrawFlag:
                 c.requestLaterRedraw = False
-                ### if 'drawing' in g.app.debug and not g.unitTesting:
-                ###    g.trace('DELAYED REDRAW')
+                if False and 'drawing' in g.app.debug and not g.unitTesting:
+                    g.trace('DELAYED REDRAW')
                 c.redraw()
         # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:

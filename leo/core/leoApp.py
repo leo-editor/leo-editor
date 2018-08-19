@@ -2272,6 +2272,7 @@ class LoadManager(object):
         g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.  Show it and all queued messages.
         c = c1 = None
+        g.app.disable_redraw = True ### experimental
         if lm.files:
             for n, fn in enumerate(lm.files):
                 lm.more_cmdline_files = n < len(lm.files) - 1
@@ -2289,6 +2290,7 @@ class LoadManager(object):
                         c = c1 = g.app.windowList[0].c
                     else:
                         c = c1 = None
+        g.app.disable_redraw = False ### experimental.
         if not c1 or not g.app.windowList:
             c1 = lm.openEmptyWorkBook()
         # Fix bug #199.
@@ -2312,14 +2314,16 @@ class LoadManager(object):
         # print('doPostPluginsInit: ***** set log')
         p = c.p if c else None
         g.doHook("start2", c=c, p=p, fileName=fileName)
-        if c: lm.initFocusAndDraw(c, fileName)
+        if c: ###
+            ### lm.initFocusAndDraw(c, fileName)
+            c.initialFocusHelper()
         screenshot_fn = lm.options.get('screenshot_fn')
         if screenshot_fn:
             lm.make_screen_shot(screenshot_fn)
             return False # Force an immediate exit.
         else:
             return True
-    #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw
+    #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw (not used)
     def initFocusAndDraw(self, c, fileName):
 
         def init_focus_handler(timer, c=c, p=c.p):

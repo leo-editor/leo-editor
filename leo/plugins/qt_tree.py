@@ -519,7 +519,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 p.moveToNext()
         if trace:
             t2 = time.clock()
-            g.trace('%5.2f sec.' % (t2-t1), g.callers(3))
+            g.trace('%5.2f sec.' % (t2-t1), g.callers(5))
     #@+node:ekr.20110605121601.17877: *5* qtree.drawTree
     def drawTree(self, p, parent_item=None):
         if g.app.gui.isNullGui:
@@ -574,9 +574,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
         if self.declutter_update:
             self.declutter_update = False
-            g.trace('=====', g.callers())
-            self.full_redraw()
-            ### c.redraw_later()
+            c.redraw_later()
         return None
     #@+node:ekr.20110605121601.17880: *4* qtree.redraw_after_contract (test)
     def redraw_after_contract(self, p):
