@@ -575,13 +575,13 @@ class LeoQtTree(leoFrame.LeoTree):
             self.declutter_update = False
             c.redraw_later()
         return None
-    #@+node:ekr.20110605121601.17880: *4* qtree.redraw_after_contract (test)
+    #@+node:ekr.20110605121601.17880: *4* qtree.redraw_after_contract
     def redraw_after_contract(self, p):
 
         if self.busy:
             return
         self.update_expansion(p)
-    #@+node:ekr.20110605121601.17881: *4* qtree.redraw_after_expand (test)
+    #@+node:ekr.20110605121601.17881: *4* qtree.redraw_after_expand
     def redraw_after_expand(self, p):
         
         if 0: # Does not work. Newly visible nodes do not show children correctly.
@@ -634,7 +634,7 @@ class LeoQtTree(leoFrame.LeoTree):
         w = self.treeWidget
         w.repaint()
         w.resizeColumnToContents(0) # 2009/12/22
-    #@+node:ekr.20180817043619.1: *4* qtree.update_expansion (new)
+    #@+node:ekr.20180817043619.1: *4* qtree.update_expansion
     def update_expansion(self, p):
         '''Update expansion bits for p, including all clones.'''
         c = self.c
@@ -891,7 +891,6 @@ class LeoQtTree(leoFrame.LeoTree):
             c.redraw_after_expand(p)
         self.select(p)
         c.outerUpdate()
-        
     #@+node:ekr.20110605121601.17899: *4* qtree.onTreeSelect
     def onTreeSelect(self):
         '''Select the proper position when a tree node is selected.'''
