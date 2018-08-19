@@ -719,7 +719,8 @@ class todoController(object):
 
         self.updateUI()
         if not g.app.initing:
-            self.c.redraw_later()
+            self.c.redraw()
+                # This is disabled (converted to redraw_later) during startup.
     #@+node:tbrown.20090119215428.29: *4* clear_all
     @redrawer
     def clear_all(self, recurse=False, all=False):

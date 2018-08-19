@@ -2222,7 +2222,8 @@ class LoadManager(object):
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
         print('') # Give some separation for the coming traces.
-        if not lm.isValidPython(): return
+        if not lm.isValidPython():
+            return
         lm.doPrePluginsInit(fileName, pymacs)
             # sets lm.options and lm.files
         if lm.options.get('version'):
@@ -2230,6 +2231,8 @@ class LoadManager(object):
             return
         if not g.app.gui:
             return
+        g.app.disable_redraw = True
+            # Disable redraw until all files are loaded.
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
         if g.app.killed: return
@@ -2272,8 +2275,6 @@ class LoadManager(object):
         g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.  Show it and all queued messages.
         c = c1 = None
-        # Disable redraw until all files are loaded.
-        g.app.disable_redraw = True
         if lm.files:
             for n, fn in enumerate(lm.files):
                 lm.more_cmdline_files = n < len(lm.files) - 1
@@ -2312,8 +2313,9 @@ class LoadManager(object):
         # Do the final inits.
         g.app.logInited = True
         g.app.initComplete = True
-        if c: c.setLog()
-        # print('doPostPluginsInit: ***** set log')
+        if c:
+            c.setLog()
+            c.redraw()
         p = c.p if c else None
         g.doHook("start2", c=c, p=p, fileName=fileName)
         if c:

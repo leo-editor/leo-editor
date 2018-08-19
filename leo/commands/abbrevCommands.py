@@ -186,10 +186,11 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             #
             # As part of #427, disable all redraws.
             try:
+                old_disable = g.app.disable_redraw
                 g.app.disable_redraw = True
                 self.init_tree_abbrev_helper(d, tree_s)
             finally:
-                g.app.disable_redraw = False
+                g.app.disable_redraw = old_disable
         self.tree_abbrevs_d = d
     #@+node:ekr.20170227062001.1: *7* abbrev.init_tree_abbrev_helper
     def init_tree_abbrev_helper(self, d, tree_s):
