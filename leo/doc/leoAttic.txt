@@ -3264,7 +3264,7 @@ def bytesToUnicode(self, ob):
     else:
         ro = ob
     return ro
-#@+node:ekr.20180813063846.1: ** Not used (fast-draw branch)
+#@+node:ekr.20180813063846.1: ** Not used (fast-draw branches)
 #@+node:ekr.20180808075509.1: *3* qtree.partialDraw & helpers (never used)
 def partialDraw(self, p):
 
@@ -3491,6 +3491,25 @@ def rememberItem(self, p, item):
     else:
         aList.append(item)
     d[v] = aList
+#@+node:ekr.20120219154958.10488: *3* LM.initFocusAndDraw (not used)
+def initFocusAndDraw(self, c, fileName):
+
+    def init_focus_handler(timer, c=c, p=c.p):
+        '''Idle-time handler for initFocusAndDraw'''
+        c.initialFocusHelper()
+        c.outerUpdate()
+        timer.stop()
+
+    # This must happen after the code in getLeoFile.
+    timer = g.IdleTime(init_focus_handler, delay=0.1, tag='getLeoFile')
+    if timer:
+        timer.start()
+    else:
+        # Default code.
+        c.selectPosition(c.p)
+        c.initialFocusHelper()
+        c.k.showStateAndMode()
+        c.outerUpdate()
 #@-all
 #@@nosearch
 #@-leo
