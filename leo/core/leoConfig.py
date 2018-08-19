@@ -1872,18 +1872,12 @@ class LocalConfigManager(object):
         if i > -1:
             h = h[:i].strip()
         p.h = '%s = %s' % (h, value)
+        #
         # Delay the second redraw until idle time.
-
-        def handler(timer, c=c, p=p):
-            c.setChanged()
-            p.setDirty()
-            c.selectPosition(p)
-            c.redraw_now()
-            timer.stop()
-
-        timer = g.IdleTime(handler, delay=0, tag='c.config.setUserSetting')
-        if timer:
-            timer.start()
+        c.setChanged(redrawFlag=False)
+        p.setDirty()
+        c.redraw_later()
+       
     #@-others
 #@+node:ekr.20041119203941.3: ** class SettingsTreeParser (ParserBaseClass)
 class SettingsTreeParser(ParserBaseClass):

@@ -2272,7 +2272,8 @@ class LoadManager(object):
         g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.  Show it and all queued messages.
         c = c1 = None
-        g.app.disable_redraw = True ### experimental
+        # Disable redraw until all files are loaded.
+        g.app.disable_redraw = True
         if lm.files:
             for n, fn in enumerate(lm.files):
                 lm.more_cmdline_files = n < len(lm.files) - 1
@@ -2290,7 +2291,8 @@ class LoadManager(object):
                         c = c1 = g.app.windowList[0].c
                     else:
                         c = c1 = None
-        g.app.disable_redraw = False ### experimental.
+        # Enable redraws.
+        g.app.disable_redraw = False
         if not c1 or not g.app.windowList:
             c1 = lm.openEmptyWorkBook()
         # Fix bug #199.
@@ -2314,7 +2316,7 @@ class LoadManager(object):
         # print('doPostPluginsInit: ***** set log')
         p = c.p if c else None
         g.doHook("start2", c=c, p=p, fileName=fileName)
-        if c: ###
+        if c:
             ### lm.initFocusAndDraw(c, fileName)
             c.initialFocusHelper()
         screenshot_fn = lm.options.get('screenshot_fn')
@@ -2323,25 +2325,6 @@ class LoadManager(object):
             return False # Force an immediate exit.
         else:
             return True
-    #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw (not used)
-    def initFocusAndDraw(self, c, fileName):
-
-        def init_focus_handler(timer, c=c, p=c.p):
-            '''Idle-time handler for initFocusAndDraw'''
-            c.initialFocusHelper()
-            c.outerUpdate()
-            timer.stop()
-
-        # This must happen after the code in getLeoFile.
-        timer = g.IdleTime(init_focus_handler, delay=0.1, tag='getLeoFile')
-        if timer:
-            timer.start()
-        else:
-            # Default code.
-            c.selectPosition(c.p)
-            c.initialFocusHelper()
-            c.k.showStateAndMode()
-            c.outerUpdate()
     #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
     def make_screen_shot(self, fn):
         '''Create a screenshot of the present Leo outline and save it to path.'''

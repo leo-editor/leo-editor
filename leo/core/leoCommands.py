@@ -1195,18 +1195,19 @@ class Commands(object):
         if not c.frame.top:
             return
         master = hasattr(c.frame.top, 'leo_master') and c.frame.top.leo_master
-        if redrawFlag: # Prevent flash when fixing #387.
-            if master:
-                # Call LeoTabbedTopLevel.setChanged.
-                master.setChanged(c, changedFlag)
-            s = c.frame.getTitle()
-            if len(s) > 2:
-                if changedFlag:
-                    if s[0] != '*':
-                        c.frame.setTitle("* " + s)
-                else:
-                    if s[0: 2] == "* ":
-                        c.frame.setTitle(s[2:])
+        if not redrawFlag: # Prevent flash when fixing #387.
+            return
+        if master:
+            # Call LeoTabbedTopLevel.setChanged.
+            master.setChanged(c, changedFlag)
+        s = c.frame.getTitle()
+        if len(s) > 2:
+            if changedFlag:
+                if s[0] != '*':
+                    c.frame.setTitle("* " + s)
+            else:
+                if s[0: 2] == "* ":
+                    c.frame.setTitle(s[2:])
     #@+node:ekr.20040803140033.1: *5* c.setCurrentPosition
     _currentCount = 0
 
