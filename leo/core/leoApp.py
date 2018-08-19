@@ -2317,7 +2317,6 @@ class LoadManager(object):
         p = c.p if c else None
         g.doHook("start2", c=c, p=p, fileName=fileName)
         if c:
-            ### lm.initFocusAndDraw(c, fileName)
             c.initialFocusHelper()
         screenshot_fn = lm.options.get('screenshot_fn')
         if screenshot_fn:

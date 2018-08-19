@@ -499,37 +499,18 @@ class FileCommands(object):
                     # Do this before reading external files.
                 c.setFileTimeStamp(fileName)
                 if readAtFileNodesFlag:
-                    # Redraw before reading the @file nodes so the screen isn't blank.
-                    # This is important for big files like LeoPy.leo.
-                    ### c.redraw()
+                    # c.redraw()
+                        # Does not work.
+                        # Redraw before reading the @file nodes so the screen isn't blank.
+                        # This is important for big files like LeoPy.leo.
                     recoveryNode = fc.readExternalFiles(fileName)
         finally:
             p = recoveryNode or c.p or c.lastTopLevel()
                 # lastTopLevel is a better fallback, imo.
-            # New in Leo 5.3. Delay the second redraw until idle time.
-            # This causes a slight flash, but corrects a hangnail.
-            
-            if 1:
-                c.redraw_later()
-            else:
-
-                def getLeoFile_handler(timer, c=c, p=c.p):
-                    c.initialFocusHelper()
-                    c.redraw(p)
-                    c.k.showStateAndMode()
-                    c.outerUpdate()
-                    timer.stop()
-        
-                timer = g.IdleTime(getLeoFile_handler, delay=0, tag='getLeoFile')
-                if timer:
-                    timer.start()
-                else:
-                    # Defensive code:
-                    c.selectPosition(p)
-                    c.initialFocusHelper()
-                    c.k.showStateAndMode()
-                    c.outerUpdate()
-        
+            c.selectPosition(p)
+            c.redraw_later()
+                # Delay the second redraw until idle time.
+                # This causes a slight flash, but corrects a hangnail.
             c.checkOutline()
                 # Must be called *after* ni.end_holding.
             c.loading = False

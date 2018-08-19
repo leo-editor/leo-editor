@@ -283,7 +283,6 @@ class LeoQtTree(leoFrame.LeoTree):
         if g.app.disable_redraw:
             return
         if self.busy:
-            self.error('busy!')
             return
         # Cancel the delayed redraw request.
         c.requestLaterRedraw = False
@@ -580,7 +579,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def redraw_after_contract(self, p):
 
         if self.busy:
-            g.trace('busy', g.callers())
             return
         self.update_expansion(p)
     #@+node:ekr.20110605121601.17881: *4* qtree.redraw_after_expand (test)
@@ -597,7 +595,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def redraw_after_head_changed(self):
 
         if self.busy:
-            g.trace('busy', g.callers())
             return
         p = self.c.p
         if p:
@@ -611,7 +608,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def redraw_after_icons_changed(self):
 
         if self.busy:
-            g.trace('busy', g.callers())
             return
         self.redrawCount += 1 # To keep a unit test happy.
         c = self.c
@@ -628,7 +624,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def redraw_after_select(self, p=None):
         '''Redraw the entire tree when an invisible node is selected.'''
         if self.busy:
-            g.trace('busy', g.callers())
             return
         self.full_redraw(p)
         # c.redraw_after_select calls tree.select indirectly.
@@ -803,7 +798,6 @@ class LeoQtTree(leoFrame.LeoTree):
         '''Handle a click in a BaseNativeTree widget item.'''
         # This is called after an item is selected.
         if self.busy:
-            g.trace('busy', g.callers())
             return
         c = self.c
         try:
@@ -843,7 +837,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def onItemCollapsed(self, item):
 
         if self.busy:
-            # g.trace('busy', 'expanded' if item.isExpanded() else 'contracted', g.callers())
             return
         c = self.c
         p = self.item2position(item)
@@ -885,7 +878,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def onItemExpanded(self, item):
         '''Handle and tree-expansion event.'''
         if self.busy: # Required
-            # g.trace('busy', 'expanded' if item.isExpanded() else 'contracted', g.callers())
             return
         c = self.c
         p = self.item2position(item)
@@ -1392,7 +1384,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
         if self.busy:
-            g.trace('busy', g.callers())
             return
         c = self.c
         c.outerUpdate()
@@ -1449,7 +1440,6 @@ class LeoQtTree(leoFrame.LeoTree):
         '''Select the item for c.p'''
         c = self.c; p = c.currentPosition()
         if self.busy:
-            g.trace('busy', g.callers())
             return None
         if not p:
             return None
