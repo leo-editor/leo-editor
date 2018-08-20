@@ -2220,6 +2220,7 @@ class Commands(object):
         Backup to base_dir or join(base_dir, sub_dir).
         '''
         c = self
+        old_cwd = os.getcwd()
         join = g.os_path_finalize_join
         if not base_dir:
             if env_key:
@@ -2246,6 +2247,7 @@ class Commands(object):
                 g.es_print('backup_dir not found: %r' % backup_dir)
         else:
             g.es_print('base_dir not found: %r' % base_dir)
+        os.chdir(old_cwd)
     #@+node:ekr.20090103070824.11: *4* c.checkFileTimeStamp
     def checkFileTimeStamp(self, fn):
         '''
