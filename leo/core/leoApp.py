@@ -2696,7 +2696,6 @@ class LoadManager(object):
         add_bool('--silent',        'disable all log messages')
         add_other('--theme',        'use the named theme file', m='NAME')
         add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
-        # add_bool('--trace-cache',   'trace caching in .leo/db')
         add_bool('--trace-coloring', 'trace syntax coloring')
         add_bool('--trace-drawing', 'trace outline redraws')
         add_bool('--trace-events',  'trace non-key events')
@@ -2707,6 +2706,7 @@ class LoadManager(object):
         add_bool('--trace-plugins', 'trace imports of plugins')
         add_other('--trace-setting', 'trace where named setting is set', m="NAME")
         add_bool('--trace-shutdown', 'trace shutdown logic')
+        add_bool('--trace-startup',  'trace startup logic')
         add_bool('--trace-themes',  'trace theme init logic')
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         # Multiple bool values.
@@ -2823,6 +2823,7 @@ class LoadManager(object):
             ('ipython', options.trace_ipython), # New
             ('plugins', options.trace_plugins),
             ('shutdown', options.trace_shutdown),
+            ('startup', options.trace_startup), # New
             ('themes', options.trace_themes),
         )
         for val, option in table:
