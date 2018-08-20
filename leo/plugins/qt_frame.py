@@ -4553,6 +4553,7 @@ class TabbedFrameFactory(object):
                     c.close()
 
         def tab_cycle(offset):
+
             tabw = self.masterFrame
             cur = tabw.currentIndex()
             count = tabw.count()
@@ -4600,9 +4601,11 @@ class TabbedFrameFactory(object):
         w.setFocus()
         f = self.leoFrames[w]
         c = f.c
+        c.redraw()
         c.bodyWantsFocusNow()
         # Fix bug 690260: correct the log.
         g.app.log = f.log
+       
     #@+node:ekr.20110605121601.18469: *3* setTabForCommander (TabbedFrameFactory)
     def setTabForCommander(self, c):
         tabw = self.masterFrame # a QTabWidget
