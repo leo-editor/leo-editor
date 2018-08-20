@@ -4601,11 +4601,10 @@ class TabbedFrameFactory(object):
         w.setFocus()
         f = self.leoFrames[w]
         c = f.c
-        c.redraw()
+        ### c.redraw()
         c.bodyWantsFocusNow()
         # Fix bug 690260: correct the log.
         g.app.log = f.log
-       
     #@+node:ekr.20110605121601.18469: *3* setTabForCommander (TabbedFrameFactory)
     def setTabForCommander(self, c):
         tabw = self.masterFrame # a QTabWidget
@@ -4634,14 +4633,19 @@ class TabbedFrameFactory(object):
         tabw = self.masterFrame
         w = tabw.widget(idx)
         f = self.leoFrames.get(w)
-        if f:
-            tabw.setWindowTitle(f.title)
-            if hasattr(g.app.gui, 'findDialogSelectCommander'):
-                g.app.gui.findDialogSelectCommander(f.c)
-            # g.app.selectLeoWindow(f.c)
-                # would break --minimize
-            # Fix bug 690260: correct the log.
-            g.app.log = f.log
+        if not f:
+            return
+        tabw.setWindowTitle(f.title)
+        if hasattr(g.app.gui, 'findDialogSelectCommander'):
+            g.app.gui.findDialogSelectCommander(f.c)
+        # g.app.selectLeoWindow(f.c)
+            # would break --minimize
+        # Fix bug 690260: correct the log.
+        g.app.log = f.log
+        # Redraw the tab.
+        c = f.c
+        if c:
+            c.redraw()
     #@-others
 #@-others
 #@@language python

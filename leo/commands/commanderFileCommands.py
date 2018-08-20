@@ -151,6 +151,8 @@ def new(self, event=None, gui=None):
     old_c = self
     # Clean out the update queue so it won't interfere with the new window.
     self.outerUpdate()
+    # Supress redraws until later.
+    g.app.disable_redraw = True
     # Send all log messages to the new frame.
     g.app.setLog(None)
     g.app.lockLog()
@@ -176,6 +178,7 @@ def new(self, event=None, gui=None):
     g.doHook("new", old_c=old_c, c=c, new_c=c)
     c.setLog()
     c.setChanged(False) # Fix #387
+    g.app.disable_redraw = False
     c.redraw()
     return c # For unit tests and scripts.
 #@+node:ekr.20031218072017.2821: *3* c_file.open

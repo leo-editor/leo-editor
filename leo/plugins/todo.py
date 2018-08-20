@@ -509,12 +509,12 @@ class todoController(object):
     def projectChanger(fn):
         """decorator for methods which change projects"""
         # pylint: disable=no-self-argument
-        def new(self, *args, **kargs):
+        def project_changer_callback(self, *args, **kargs):
             # pylint: disable=not-callable
             ans = fn(self,*args, **kargs)
             self.update_project()
             return ans
-        return new
+        return project_changer_callback
     #@+node:tbrown.20090119215428.15: *3* loadAllIcons
     @redrawer
     def loadAllIcons(self, tag=None, k=None, clear=None):
