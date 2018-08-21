@@ -2164,9 +2164,8 @@
 <v t="ekr.20180821062138.24"><vh>Stats: p.ctor (no change will be made)</vh></v>
 </v>
 </v>
-<v t="ekr.20180608054151.1"><vh>fast-read branch</vh></v>
-<v t="ekr.20180608054356.1"><vh>perf branch (copy kwarg to generators)</vh></v>
-<v t="ekr.20180821062138.109"><vh>Added copy kwarg to all position generators</vh>
+<v t="ekr.20180608054151.1"><vh>Much faster reading of external files</vh></v>
+<v t="ekr.20180608054356.1"><vh>Added copy kwarg to generators</vh>
 <v t="ekr.20180821062138.130"><vh>Stats: p.copy (before)</vh></v>
 <v t="ekr.20180821062138.131"><vh>Stats: p.copy (after, with s.bat)</vh></v>
 <v t="ekr.20180821062138.132"><vh>Stats: p.copy (after changing p.get_UNL)</vh></v>
@@ -2174,7 +2173,7 @@
 <v t="ekr.20180821062138.134"><vh>Stats: p.copy (after 3)</vh></v>
 </v>
 <v t="ekr.20180821062022.4"><vh>Removed "adjust" kwarg</vh></v>
-<v t="ekr.20180821062022.23"><vh>Removed reassignIndices kwag</vh></v>
+<v t="ekr.20180821062022.23"><vh>Removed "reassignIndices" kwag</vh></v>
 </v>
 <v t="ekr.20180528114740.1"><vh>Features</vh>
 <v t="ekr.20180528114754.1"><vh>#871: A setting to position the icon bar </vh></v>
@@ -28147,9 +28146,8 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **The highlights of Leo 5.8**
 
-- fast-read branch: Much faster file-read code.
-- Leo no longer caches file contents. No more --no-cache.
-- Must faster startup.
+- Much faster file-read code.
+- Leo no longer caches file contents. Removed --no-cache!
 - Leo using ElementTree instead of sax to read .leo files.
 - Refactored and improved Leo's key-handling code.
 - The usual minor bug fixes.
@@ -28206,7 +28204,7 @@ Alternatively, the plugin could run code at 'start2' time, after all plugins hav
 <t tx="ekr.20180529065039.1"></t>
 <t tx="ekr.20180529065351.1"></t>
 <t tx="ekr.20180529065538.1"></t>
-<t tx="ekr.20180601095122.1"></t>
+<t tx="ekr.20180601095122.1">For the full list, see: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.8+-label%3Awaiting+is%3Aclosed</t>
 <t tx="ekr.20180601095134.1">https://github.com/leo-editor/leo-editor/issues/917
 </t>
 <t tx="ekr.20180608054147.1"></t>
@@ -28402,7 +28400,6 @@ Better tracing if the cursor gui fails to load.</t>
 <t tx="ekr.20180821062022.38">See c.backup_helper.</t>
 <t tx="ekr.20180821062022.4">This is an important simplification of the code.</t>
 <t tx="ekr.20180821062138.107"></t>
-<t tx="ekr.20180821062138.109">This significantly speeds the generators during startup.</t>
 <t tx="ekr.20180821062138.130"># get_UNL makes way too many copies.
 
   11831 p.copy:visitNode,doBool,set,get_UNL
