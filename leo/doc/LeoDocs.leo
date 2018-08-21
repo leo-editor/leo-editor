@@ -28833,7 +28833,7 @@ The new code just makes regularizeName more flexible.</t>
       584    1.022    0.002    1.022    0.002 {built-in method __new__ of type object at 0x00000000664AB3F0}
      6785    0.212    0.000    0.212    0.000 {built-in method nt.stat}
 
-# Costly, but no obvious improvments.
+# Costly, but no obvious improvements.
    145181    0.184    0.000    0.355    0.000 spellCommands.py:243(add_expanded_line)
    
 # Benchmark: good speed.
