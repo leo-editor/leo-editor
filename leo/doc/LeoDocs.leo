@@ -3486,11 +3486,6 @@ Node mark commands::
     Ctrl-m      Go to next marked node
     Alt-m       Clear all marked nodes
 
-Node clone commands::
-
-    t           Clone the current node (transclude)
-    Ctrl-t      Go to next clone of current node
-
 Outline scroll commands::
 
    Ctrl-y       Scroll outline up one line
