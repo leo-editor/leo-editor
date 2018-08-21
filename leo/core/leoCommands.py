@@ -2692,7 +2692,7 @@ class Commands(object):
         # Be careful.  NullTree.redraw returns None.
         # #503: NullTree.redraw(p) now returns p.
         c.selectPosition(p2 or p)
-        c.treeFocusHelper()
+        ### c.treeFocusHelper()
         # Clear the redraw request, again.
         c.requestLaterRedraw = False
 
@@ -2706,7 +2706,7 @@ class Commands(object):
         c = self
         if c.enableRedrawFlag:
             c.frame.tree.redraw_after_icons_changed()
-            # c.treeFocusHelper()
+            ### c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090110131802.2: *6* c.redraw_after_contract
@@ -2915,7 +2915,8 @@ class Commands(object):
         if w and g.app.gui:
             if 'focus' in g.app.debug:
                 g.trace('(c)', repr(g.app.gui.widget_name(w)), w)
-                g.callers()
+                g.trace(g.callers())
+                print('')
             c.requestedFocusWidget = w
 
     def set_focus(self, w, force=False):
@@ -2925,6 +2926,7 @@ class Commands(object):
             if trace:
                 g.trace('(c)', repr(w and g.app.gui.widget_name(w)), w)
                 g.callers()
+                print('')
             g.app.gui.set_focus(c, w)
         else:
             if trace: g.trace('(c) no w')
@@ -2982,6 +2984,7 @@ class Commands(object):
         if w:
             c.set_focus(w)
             c.requestedFocusWidget = None
+
     # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
 
     def bodyWantsFocusNow(self):
@@ -3383,6 +3386,7 @@ class Commands(object):
             c.selectPosition(p)
             c.redraw_after_select(p)
         c.treeFocusHelper()
+            # This is essential.
     #@+node:ekr.20171123135625.51: *4* c.updateBodyPane (handles changeNodeContents)
     def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview, preserveSel=False):
         '''Handle changed text in the body pane.'''
