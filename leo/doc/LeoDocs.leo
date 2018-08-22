@@ -2134,6 +2134,8 @@
 <v t="ekr.20180821154658.1"><vh>What's new in Leo 5.8</vh></v>
 <v t="ekr.20180528114703.1"><vh>Leo 5.8 release notes</vh>
 <v t="ekr.20180601095122.1"><vh>Bugs</vh>
+<v t="ekr.20180822072454.4"><vh>#893: Python Console gets stuck on IndentationError</vh></v>
+<v t="ekr.20180822072454.2"><vh>#841: Python importer does not always handle decorators properly</vh></v>
 <v t="ekr.20180601095134.1"><vh>#917: System keys on Microsoft keyboard insert unwanted text</vh></v>
 <v t="ekr.20180702154446.1"><vh>#922: text following @others is ignored</vh></v>
 <v t="ekr.20180821062138.6"><vh>#922: text following @others is ignored</vh></v>
@@ -29196,6 +29198,10 @@ The fix was to getVnodeFromClipboard.
 <t tx="ekr.20180821062419.1"></t>
 <t tx="ekr.20180821154658.1"></t>
 <t tx="ekr.20180821155534.1"></t>
+<t tx="ekr.20180822072454.2">https://github.com/leo-editor/leo-editor/issues/841
+</t>
+<t tx="ekr.20180822072454.4">https://github.com/leo-editor/leo-editor/issues/893
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
