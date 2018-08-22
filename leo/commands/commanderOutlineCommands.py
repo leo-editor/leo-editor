@@ -726,6 +726,7 @@ def clone(self, event=None):
     if c.validateOutline():
         u.afterCloneNode(clone, 'Clone Node', undoData, dirtyVnodeList=dirtyVnodeList)
         c.redraw(clone)
+        c.treeWantsFocus()
         return clone # For mod_labels and chapters plugins.
     else:
         clone.doDelete()
