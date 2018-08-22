@@ -614,7 +614,6 @@ class Tabula(QMainWindow):
     def closeEvent(self,event):
 
         self.save_states()
-        g.trace(event)
         event.accept() # EKR: doesn't help: we don't get the event.
 
     #@+node:ekr.20101114061906.5444: *4* create_actions (has all toolbar commands!)
@@ -701,7 +700,6 @@ class Tabula(QMainWindow):
     #@+node:ekr.20101114061906.5446: *4* on_quit
     def on_quit(self,tag, kw):
 
-        g.trace(tag,kw,self)
         # saving when hidden nukes all
 
         if self.isVisible():
