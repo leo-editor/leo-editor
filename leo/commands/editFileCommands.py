@@ -552,9 +552,7 @@ class GitDiffController:
             self.make_diff_outlines(c1, c2, fn)
             self.file_node.b = '%s\n@language %s\n' % (
                 self.file_node.b.rstrip(), c2.target_language)
-        self.root.expand()
-        c.selectPosition(self.root)
-        c.redraw()
+        self.finish()
     #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
     def diff_two_revs(self, directory=None, rev1='HEAD', rev2=''):
         '''
@@ -849,6 +847,7 @@ class GitDiffController:
         self.root.expand()
         c.selectPosition(self.root)
         c.redraw()
+        c.treeWantsFocusNow()
     #@+node:ekr.20180506064102.11: *4* gdc.get_file_from_branch
     def get_file_from_branch(self, branch, fn):
         '''Get the file from the hed of the given branch.'''
