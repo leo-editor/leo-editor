@@ -2652,7 +2652,6 @@ class Commands(object):
         )
         for kind, mods in table:
             if mods:
-                g.trace('===== g.doHook')
                 g.doHook(kind, c=c, nodes=mods)
                 mods.clear()
     #@+node:ekr.20080514131122.13: *5* c.recolor
