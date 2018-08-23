@@ -2529,31 +2529,17 @@ class LeoFind(object):
             w = c.frame.body.wrapper
             # *Always* do the full selection logic.
             # This ensures that the body text is inited  and recolored.
-            if 1:
-                if showState:
-                    c.k.showStateAndMode(w)
-                c.bodyWantsFocusNow()
-                w.setSelectionRange(pos, newpos, insert=insert)
-                w.see(insert)
-                    # Fix bug 78: find-next match not always scrolled into view.
-                    # https://github.com/leo-editor/leo-editor/issues/78
-                # g.app.allow_delayed_see = True
-                c.redraw(p)
-                c.outerUpdate()
-                    # Set the focus immediately.
-            else: # Old code
-                c.selectPosition(p)
-                c.bodyWantsFocus()
-                if showState:
-                    c.k.showStateAndMode(w)
-                c.bodyWantsFocusNow()
-                w.setSelectionRange(pos, newpos, insert=insert)
-                w.see(insert)
-                    # Fix bug 78: find-next match not always scrolled into view.
-                    # https://github.com/leo-editor/leo-editor/issues/78
-                # g.app.allow_delayed_see = True
-                c.outerUpdate()
-                    # Set the focus immediately.
+            if showState:
+                c.k.showStateAndMode(w)
+            c.bodyWantsFocusNow()
+            w.setSelectionRange(pos, newpos, insert=insert)
+            w.see(insert)
+                # Fix bug 78: find-next match not always scrolled into view.
+                # https://github.com/leo-editor/leo-editor/issues/78
+            # g.app.allow_delayed_see = True
+            c.redraw(p)
+            c.outerUpdate()
+                # Set the focus immediately.
             if c.vim_mode and c.vimCommands:
                 c.vimCommands.update_selection_after_search()
         # Support for the console gui.

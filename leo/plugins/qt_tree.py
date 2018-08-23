@@ -535,7 +535,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.position2itemDict = {}
         self.vnode2itemsDict = {}
         self.editWidgetsDict = {}
-    #@+node:tbrown.20150808075906.1: *5* qtree.update_appearance
+    #@+node:tbrown.20150808075906.1: *5* qtree.update_appearance (no longer used)
     def update_appearance(self, tag, keywords):
         """clear_visual_icons - update appearance, but can't call
         self.full_redraw() now, so just set a flag to do it on idle.
@@ -550,7 +550,7 @@ class LeoQtTree(leoFrame.LeoTree):
             return None
         self.declutter_update = True
         return None
-    #@+node:tbrown.20150808082111.1: *5* qtree.update_appearance_idle
+    #@+node:tbrown.20150808082111.1: *5* qtree.update_appearance_idle (no longer used)
     def update_appearance_idle(self, tag, keywords):
         """clear_visual_icons - update appearance now we're safely out of
         the redraw loop.

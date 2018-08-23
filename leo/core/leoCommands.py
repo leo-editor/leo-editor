@@ -2773,7 +2773,7 @@ class Commands(object):
         c.requestLaterRedraw = True
         if 'drawing' in g.app.debug:
             print('')
-            g.trace('=====', g.callers(8))
+            g.trace(g.callers(8))
     #@+node:ekr.20080514131122.17: *5* c.widget_name
     def widget_name(self, widget):
         # c = self
