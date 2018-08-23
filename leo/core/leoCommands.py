@@ -2697,7 +2697,8 @@ class Commands(object):
         # Be careful.  NullTree.redraw returns None.
         # #503: NullTree.redraw(p) now returns p.
         c.selectPosition(p2 or p)
-        ### c.treeFocusHelper()
+        # Do not call treeFocusHelper here.
+            # c.treeFocusHelper()
         # Clear the redraw request, again.
         c.requestLaterRedraw = False
 
@@ -2711,7 +2712,8 @@ class Commands(object):
         c = self
         if c.enableRedrawFlag:
             c.frame.tree.redraw_after_icons_changed()
-            ### c.treeFocusHelper()
+            # Do not call treeFocusHelper here.
+                # c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090110131802.2: *6* c.redraw_after_contract

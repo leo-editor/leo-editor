@@ -3150,7 +3150,6 @@ class LoadManager(object):
         # New in Leo 4.6: provide an official way for very late initialization.
         c.frame.tree.initAfterLoad()
         c.initAfterLoad()
-        ### c.redraw()
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
         if c.chapterController: c.chapterController.finishCreate()

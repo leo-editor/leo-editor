@@ -4601,7 +4601,6 @@ class TabbedFrameFactory(object):
         w.setFocus()
         f = self.leoFrames[w]
         c = f.c
-        ### c.redraw()
         c.bodyWantsFocusNow()
         # Fix bug 690260: correct the log.
         g.app.log = f.log

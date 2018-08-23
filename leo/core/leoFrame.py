@@ -1591,7 +1591,8 @@ class LeoTree(object):
             theChapter = cc and cc.getSelectedChapter()
             if theChapter:
                 theChapter.p = p.copy()
-        ### c.treeFocusHelper()
+        # Do not call treeFocusHelper here!
+            # c.treeFocusHelper()
         c.undoer.onSelect(old_p, p)
     #@+node:ekr.20140829053801.18459: *5* 4. LeoTree.scroll_cursor
     def scroll_cursor(self, p):
