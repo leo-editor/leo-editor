@@ -782,8 +782,9 @@ class LeoQtGui(leoGui.LeoGui):
                 # with wrapper = None, so return the LeoQtBody.
                 w = c.frame.body
         if trace:
+            print('')
             g.trace('(LeoQtGui)', w.__class__.__name__)
-            g.trace(g.callers())
+            g.trace(g.callers(6))
         return w
 
     def set_focus(self, c, w):
@@ -794,8 +795,9 @@ class LeoQtGui(leoGui.LeoGui):
             if hasattr(w, 'widget') and w.widget:
                 w = w.widget
             if 'focus' in g.app.debug:
-                g.trace('(LeoQtGui)', w.__class__.__name__)
-                g.trace(g.callers())
+                print('')
+                g.trace('(LeoQtGui)',  w.__class__.__name__)
+                g.trace(g.callers(6))
             w.setFocus()
 
     def ensure_commander_visible(self, c1):

@@ -2146,7 +2146,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 bg == c.config.getColor('find-not-found-bg')
             ):
                 status = 'fail'
-
             d = self.styleSheetCache
             if status != d.get(w, '__undefined__'):
                 d[w] = status
@@ -2154,6 +2153,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 c.styleSheetManager.mng.add_sclass(w, status)
                 c.styleSheetManager.mng.update_view(w)  # force appearance update
             w.setText(s)
+
         #@+node:chris.20180320072817.1: *4* QtStatusLineClass.update & helper
         def update(self):
             if g.app.killed: return

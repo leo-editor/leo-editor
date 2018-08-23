@@ -2633,12 +2633,17 @@ class Commands(object):
         if c.requestLaterRedraw:
             if c.enableRedrawFlag:
                 c.requestLaterRedraw = False
-                if False and 'drawing' in g.app.debug and not g.unitTesting:
+                if 'drawing' in g.app.debug and not g.unitTesting:
+                    print('')
                     g.trace('DELAYED REDRAW')
+                    time.sleep(1.0)
                 c.redraw()
         # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
+            if 'focus' in g.app.debug and not g.unitTesting:
+                print('')
+                g.trace('DELAYED FOCUS', g.callers())
             c.set_focus(w)
             c.requestedFocusWidget = None
         table = (
@@ -2647,6 +2652,7 @@ class Commands(object):
         )
         for kind, mods in table:
             if mods:
+                g.trace('===== g.doHook')
                 g.doHook(kind, c=c, nodes=mods)
                 mods.clear()
     #@+node:ekr.20080514131122.13: *5* c.recolor
@@ -2764,8 +2770,9 @@ class Commands(object):
         '''
         c = self
         c.requestLaterRedraw = True
-        if False and 'drawing' in g.app.debug:
-            g.trace('=====', g.callers())
+        if 'drawing' in g.app.debug:
+            print('')
+            g.trace('=====', g.callers(8))
     #@+node:ekr.20080514131122.17: *5* c.widget_name
     def widget_name(self, widget):
         # c = self
@@ -2902,8 +2909,9 @@ class Commands(object):
         c = self
         w = g.app.gui and g.app.gui.get_focus(c)
         if 'focus' in g.app.debug:
-            g.trace('(c)', repr(w and g.app.gui.widget_name(w)), w)
-            g.callers()
+            print('')
+            g.trace('(c)',  w.__class__.__name__)
+            g.trace(g.callers(6))
         return w
 
     def get_requested_focus(self):
@@ -2914,9 +2922,9 @@ class Commands(object):
         c = self
         if w and g.app.gui:
             if 'focus' in g.app.debug:
-                g.trace('(c)', repr(g.app.gui.widget_name(w)), w)
-                g.trace(g.callers())
                 print('')
+                g.trace('(c)',  w.__class__.__name__)
+                g.trace(g.callers(6))
             c.requestedFocusWidget = w
 
     def set_focus(self, w, force=False):
@@ -2924,14 +2932,14 @@ class Commands(object):
         c = self
         if w and g.app.gui:
             if trace:
-                g.trace('(c)', repr(w and g.app.gui.widget_name(w)), w)
-                g.callers()
                 print('')
+                g.trace('(c)',  w.__class__.__name__)
+                g.trace(g.callers(6))
             g.app.gui.set_focus(c, w)
         else:
             if trace: g.trace('(c) no w')
         c.requestedFocusWidget = None
-    #@+node:ekr.20080514131122.10: *5* c.invalidateFocus
+    #@+node:ekr.20080514131122.10: *5* c.invalidateFocus (do nothing)
     def invalidateFocus(self):
         '''Indicate that the focus is in an invalid location, or is unknown.'''
         # c = self
