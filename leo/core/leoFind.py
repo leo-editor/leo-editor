@@ -2526,9 +2526,12 @@ class LeoFind(object):
             w = c.edit_widget(p)
             self.was_in_headline = True # 2015/03/25
         else:
+            # Tricky code.  Do not change without careful thought.
             w = c.frame.body.wrapper
             # *Always* do the full selection logic.
             # This ensures that the body text is inited  and recolored.
+            c.selectPosition(p)
+            c.bodyWantsFocus()
             if showState:
                 c.k.showStateAndMode(w)
             c.bodyWantsFocusNow()
@@ -2537,7 +2540,6 @@ class LeoFind(object):
                 # Fix bug 78: find-next match not always scrolled into view.
                 # https://github.com/leo-editor/leo-editor/issues/78
             # g.app.allow_delayed_see = True
-            c.redraw(p)
             c.outerUpdate()
                 # Set the focus immediately.
             if c.vim_mode and c.vimCommands:
