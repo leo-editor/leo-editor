@@ -676,20 +676,20 @@ class backlinkController(object):
             pass
         texts = []
         if (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
-            i = 0
             links = v.u['_bklnk']['links']
             dests = []
             self.dests = dests
-            while i < len(links):
-                linkType, other = links[i]
-                otherV = self.vnode[other]
-                otherP = self.vnodePosition(otherV)
-                if not self.c.positionExists(otherP):
-                    self.showMessage('Lost link(s) deleted', color='red')
-                    del links[i]
-                else:
-                    i += 1
+            for data in links[:]: # Must use a copy.
+                linkType, other = data
+                try:
+                    otherV = self.vnode[other]
+                    otherP = self.vnodePosition(otherV)
                     dests.append((linkType, otherP))
+                except KeyError:
+                    self.showMessage('Lost link(s) deleted', other, color='red')
+                    links.remove(data)
+                except Exception:
+                    g.es_exception()
             if dests:
                 self.ui.enableDelete(True)
                 self.showMessage('Click a link to follow it', optional=True)
