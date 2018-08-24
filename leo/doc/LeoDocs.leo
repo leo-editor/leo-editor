@@ -2145,6 +2145,7 @@
 <v t="ekr.20180821062138.89"><vh>#943: Error in reload-all-settings</vh></v>
 <v t="ekr.20180806043625.1"><vh>#947: replace-all</vh></v>
 <v t="ekr.20180821062022.32"><vh>#956: syntax error</vh></v>
+<v t="ekr.20180824085929.1"><vh>#967: Cross-bile backlink errors</vh></v>
 <v t="ekr.20180821062022.38"><vh>backup script saves/restores cwd</vh></v>
 <v t="ekr.20180708081949.1"><vh>Fixed crasher in LeoQtLog.linkClicked</vh></v>
 <v t="ekr.20180708030832.1"><vh>Fixed problems with git-diff command</vh></v>
@@ -29196,6 +29197,7 @@ The change was to load_session.</t>
 
 added update_nodes method.
 </t>
+<t tx="ekr.20180824085929.1">https://github.com/leo-editor/leo-editor/issues/967</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
