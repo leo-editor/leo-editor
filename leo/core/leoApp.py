@@ -388,10 +388,11 @@ class LeoApp(object):
         self.delegate_language_dict = {
             # Keys are new language names.
             # Values are existing languages in leo/modes.
+            'clojure': 'lisp',
             "less": "css",
             "hbs": "html",
             "handlebars": "html",
-            "rust": "c", 
+            "rust": "c",
             # "vue": "c",
         }
     #@+node:ekr.20120522160137.9911: *5* app.define_extension_dict
@@ -422,6 +423,8 @@ class LeoApp(object):
             "cfg":      "config",
             "cfm":      "coldfusion",
             "clj":      "clojure", # 2013/09/25: Fix bug 879338.
+            "cljs":     "clojure",
+            "cljc":     "clojure",
             "ch":       "chill", # Other extensions, .c186,.c286
             "coffee":   "coffeescript",
             "conf":     "apacheconf",
