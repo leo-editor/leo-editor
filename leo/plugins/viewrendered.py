@@ -300,6 +300,9 @@ def init():
     g.registerHandler('close-frame', onClose)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
+#@+node:ekr.20180825025924.1: *3* vr.isVisible
+def isVisible():
+    '''Return True if the VR pane is visible.'''
 #@+node:ekr.20110317024548.14376: *3* vr.onCreate
 def onCreate(tag, keys):
     c = keys.get('c')
@@ -419,24 +422,29 @@ def hide_rendering_pane(event):
     '''Close the rendering pane.'''
     global controllers, layouts
     c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if vr:
-            vr.store_layout('open')
-            vr.deactivate()
-            vr.deleteLater()
+    if not c:
+        return
+    vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+    if not vr:
+        return
+    if vr.pyplot_active:
+        g.es_print('can not close VR pane after using pyplot')
+        return
+    vr.store_layout('open')
+    vr.deactivate()
+    vr.deleteLater()
 
-            def at_idle(c=c, _vr=vr):
-                _vr.adjust_layout('closed')
-                c.bodyWantsFocusNow()
+    def at_idle(c=c, _vr=vr):
+        _vr.adjust_layout('closed')
+        c.bodyWantsFocusNow()
 
-            QtCore.QTimer.singleShot(0, at_idle)
-            h = c.hash()
-            c.bodyWantsFocus()
-            if vr == controllers.get(h):
-                del controllers[h]
-            else:
-                g.trace('Can not happen: no controller for %s' % (c))
+    QtCore.QTimer.singleShot(0, at_idle)
+    h = c.hash()
+    c.bodyWantsFocus()
+    if vr == controllers.get(h):
+        del controllers[h]
+    else:
+        g.trace('Can not happen: no controller for %s' % (c))
 # Compatibility
 
 close_rendering_pane = hide_rendering_pane
@@ -590,6 +598,7 @@ if QtWidgets: # NOQA
             self.inited = False
             self.length = 0 # The length of previous p.b.
             self.locked = False
+            self.pyplot_active = False
             self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
             self.sizes = [] # Saved splitter sizes.
             self.splitter = None
@@ -1115,7 +1124,10 @@ if QtWidgets: # NOQA
             except ImportError:
                 g.es_print('matplotlib imports failed')
                 namespace = {}
-            self.embed_pyplot_widget()
+            # Embedding already works without this!
+                # self.embed_pyplot_widget()
+            self.pyplot_active = True
+                # pyplot will throw RuntimeError if we close the pane.
             c.executeScript(
                 event=None,
                 args=None, p=None,
@@ -1126,7 +1138,8 @@ if QtWidgets: # NOQA
                 silent=False,
                 namespace=namespace,
                 raiseFlag=False)
-        #@+node:ekr.20160928030257.1: *5* vr.embed_pyplot_widget (not ready yet)
+            c.bodyWantsFocusNow()
+        #@+node:ekr.20160928030257.1: *5* vr.embed_pyplot_widget (not used)
         def embed_pyplot_widget(self):
 
             pc = self
