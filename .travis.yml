@@ -1,3 +1,6 @@
 language: python
 install:
     - pip install leo
+script:
+    - pytest test_*.py
+
