@@ -1095,7 +1095,6 @@ if QtWidgets: # NOQA
         def update_pyplot(self, s, keywords):
             '''Get the pyplot script at c.p.b and show it.'''
             c = self.c
-            # To do: show plot in the VR area.
             if not self.pyplot_imported:
                 self.pyplot_imported = True
                 backend = g.os_path_finalize_join(
