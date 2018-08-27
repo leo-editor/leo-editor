@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2"/>
-<globals/>
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
+	<global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -589,6 +592,7 @@
 <v t="ekr.20090212054250.7"><vh>How can I get recent snapshots of Leo?</vh></v>
 </v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
+<v t="matt.20180826201749.1"><vh>How to  Pip install from GitHub?</vh></v>
 <v t="ekr.20090202191501.7"><vh>Leo's installer failed, what do I do?</vh></v>
 <v t="ekr.20150313053238.40"><vh>Common problems</vh></v>
 </v>
@@ -4487,7 +4491,7 @@ What People are Saying about Leo
 </t>
 <t tx="ekr.20050831184021.5"></t>
 <t tx="ekr.20050831195331.1"></t>
-<t tx="ekr.20050831195449" str_leo_pos="7">For instruction about installing Leo see:
+<t tx="ekr.20050831195449">For instruction about installing Leo see:
 http://leoeditor.com/installing.html
 
 For everything a beginner needs to know about Leo see:
@@ -29198,6 +29202,48 @@ The change was to load_session.</t>
 added update_nodes method.
 </t>
 <t tx="ekr.20180824085929.1">https://github.com/leo-editor/leo-editor/issues/967</t>
+<t tx="matt.20180826201749.1">Problem
+-------
+
+When installing Leo from GitHub with
+``pip install https://github.com/leo-editor/leo-editor/archive/devel.zip``
+numerous files are left out.
+
+Solution
+--------
+
+Installing from Github into a new environment must be done in discrete
+steps: download, unpack, and install in editable mode.
+
+Example:
+
+::
+
+   wget https://github.com/leo-editor/leo-editor/archive/devel.zip
+   7z x devel.zip -o C:\apps
+   pip install --editable C:\apps\leo-editor-devel
+
+On Windows there are powershell versions of wget if needed.
+
+For easier upgrading substitute ``git clone`` for ``wget`` &amp; ``7z``
+steps:
+
+::
+
+   git clone --single-branch -b devel --depth=100 https://github.com/leo-editor/leo-editor.git
+   pip install --editable leo-editor
+
+Time passes, upgrade desired:
+
+::
+
+   pushd c:\apps\leo-editor
+   git pull
+
+``single-branch``, ``b`` and ``depth`` are all optional, but will
+dramatically speed up download time as it only grabs the latest
+development branch and skips all but the last couple weeks or months of
+history.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
