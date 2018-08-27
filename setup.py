@@ -1,170 +1,163 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:maphew.20180224170853.1: * @file setup.py
-#@@first
+#@+node:ekr.20141027093638.6: * @file ../../setup.py
 '''setup.py for leo'''
+simple = False # True: avoid all complications.
+trace = False
+import leo.core.leoVersion
+from setuptools import setup, find_packages
+if simple:
+    packages = find_packages()
+else:
+    from distutils.command.install import INSTALL_SCHEMES
+    import os
+    import sys
+if trace: print('packages:...\n%s' % packages)
 #@+others
-#@+node:maphew.20180305124637.1: ** imports
-from codecs import open # To use a consistent encoding
-import os
-from shutil import rmtree
-from setuptools import setup, find_packages # Always prefer setuptools over distutils
-import leo.core.leoGlobals as g
-import leo.core.leoVersion as leoVersion
-#@+node:maphew.20141126230535.3: ** docstring
-'''setup.py for leo
-
-    Nov 2014: strip to bare minimum and rebuild using ONLY
-    https://python-packaging-user-guide.readthedocs.org/en/latest/index.html
-    
-    Oct 2017: Excellent guide "﻿Less known packaging features and tricks"
-    Ionel Cristian Mărieș, @ionelmc
-    https://blog.ionelmc.ro/presentations/packaging/#slide:2
-    https://blog.ionelmc.ro/2014/05/25/python-packaging/
-'''
-
-#@+node:maphew.20180224170140.1: ** get_version
-def get_version(file, version=None):
-    '''Determine current Leo version. Use git if in checkout, else internal Leo'''
-    root = os.path.dirname(os.path.realpath(file))
-    if os.path.exists(os.path.join(root,'.git')):
-        version = git_version(file)
-    else:
-        version = get_semver(leoVersion.version)
-    if not version:
-        version = leoVersion.version
-    return version
-
-#@+node:maphew.20171112223922.1: *3* git_version
-def git_version(file):
-    '''Fetch from Git: {tag} {distance-from-tag} {current commit hash}
-       Return as semantic version string compliant with PEP440'''
-    root = os.path.dirname(os.path.realpath(file))
-    tag, distance, commit = g.gitDescribe(root)
-        # 5.6b2, 55, e1129da
-    ctag = clean_git_tag(tag)
-    version = get_semver(ctag)
-    if int(distance) > 0:
-        version = '{}-dev{}'.format(version, distance)
-    return version
-
-#@+node:maphew.20180224170257.1: *4* clean_git_tag
-def clean_git_tag(tag):
-    '''Return only version number from tag name. Ignore unkown formats.
-       Is specific to tags in Leo's repository.
-            5.7b1          -->	5.7b1
-            Leo-4-4-8-b1   -->	4-4-8-b1
-            v5.3           -->	5.3
-            Fixed-bug-149  -->  Fixed-bug-149
-    '''
-    if tag.lower().startswith('leo-'): tag = tag[4:]
-    if tag.lower().startswith('v'): tag = tag[1:]
-    return tag
-#@+node:maphew.20180224170149.1: *3* get_semver
-def get_semver(tag):
-    '''Return 'Semantic Version' from tag string'''
+#@+node:maphew.20130503222911.1635: ** get_long_description
+def get_long_description():
+    '''Return Leo's description.'''
     try:
-        import semantic_version
-        version = str(semantic_version.Version.coerce(tag, partial=True))
-            # tuple of major, minor, build, pre-release, patch
-            # 5.6b2 --> 5.6-b2
-    except ImportError or ValueError as err:
-        print('\n', err)
-        print('''*** Failed to parse Semantic Version from git tag '{0}'.
-        Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
-        This version can't be uploaded to PyPi.org.'''.format(tag))
-        version = tag
-    return version
-#@+node:maphew.20171006124415.1: ** Get description
-# Get the long description from the README file and convert to reST
-# adapted from https://github.com/BonsaiAI/bonsai-config/blob/0.3.1/setup.py#L7
-# bugfix #773 courtesy @Overdrivr, https://stackoverflow.com/a/35521100/14420
-try:
-    print('\n--- Getting long description ---')
-    from pypandoc import convert_file, convert_text
-    convert_text('#some title', 'rst', format='md') 
-        # fix #847, will raise OSError if pandoc binary not found
-    def read_md(f):
-        rst = convert_file(f, 'rst')
-        rst = rst.replace('\r', '') # fix #773
-        return rst
-except (ImportError, OSError) as err:
-    print('\n', err)
-    print('*** Warning: could not convert Readme.md to .rst (harmless for users)')
-    def read_md(f): return open(f, 'r').read()
-        # disable to obviously fail if markdown conversion fails
-#@+node:maphew.20141126230535.4: ** classifiers
-classifiers = [
-    'Development Status :: 6 - Mature',
-    'Intended Audience :: End Users/Desktop',
-    'Intended Audience :: Developers',
-    'License :: OSI Approved :: MIT License',
-    'Natural Language :: English',
-    'Operating System :: MacOS',
-    'Operating System :: Microsoft :: Windows',
-    'Operating System :: POSIX :: Linux',
-    'Programming Language :: Python',
-    'Topic :: Software Development',
-    'Topic :: Text Editors',
-    'Topic :: Text Processing',
+        return open('README.TXT', 'r').read()
+            # mode was 'rt'
+    except IOError:
+        return """
+Leo is an outline-oriented IDE written in 100% pure Python.
+Leo features a multi-window outlining editor, Python colorizing,
+powerful outline commands and many other things, including
+unlimited Undo/Redo and an integrated Python shell(IDLE) window.
+Leo requires Python 2.6 or above.  Leo works with Python 3.x.
+Requires PyQt and SIP preinstalled.
+"""
+#@+node:ville.20090213231648.3: ** fullsplit (never used)
+def fullsplit(path, result=None):
+    """
+    Split a pathname into components (the opposite of os.path.join) in a
+    platform-neutral way.
+    """
+    if result is None:
+        result = []
+    head, tail = os.path.split(path)
+    if head == '':
+        return [tail] + result
+    if head == path:
+        return result
+    return fullsplit(head, [tail] + result)
+#@+node:ville.20090213231648.4: ** purelib hack
+# Tell distutils to put the data_files in platform-specific installation
+# locations. See here for an explanation:
+# http://groups.google.com/group/comp.lang.python/browse_thread/thread/35ec7b2fed36eaec/2105ee4d9e8042cb
+if not simple:
+    for scheme in list(INSTALL_SCHEMES.values()):
+        scheme['data'] = scheme['purelib']
+#@+node:ville.20090213231648.5: ** collect (and filter) files
+# Compile the list of packages available, because distutils doesn't have
+# an easy way to do this.
+if not simple:
+    packages, data_files = [], []
+    root_dir = os.path.dirname(__file__)
+    if root_dir != '':
+        os.chdir(root_dir)
+    leo_dir = 'leo'
+    # stuff that breaks package (or is redundant)
+    scrub_datafiles = ['leo/extensions', '_build', 'leo/test', 'leo/plugins/test', 'leo/doc/html', '__pycache__']
+    for dirpath, dirnames, filenames in os.walk(leo_dir):
+        # Ignore dirnames that start with '.'
+        for i, dirname in enumerate(dirnames):
+            if dirname.startswith('.'): del dirnames[i]
+        # if '__init__.py' in filenames:
+            # fsplit = fullsplit(dirpath)
+            # packages.append('.'.join(fsplit))
+        if filenames:
+            if not any(pat in dirpath for pat in scrub_datafiles):
+                data_files.append([dirpath, [os.path.join(dirpath, f) for f in filenames]])
+    packages = find_packages()
+    if '--debug' in sys.argv[1:]:
+        import pprint
+        print("data files")
+        pprint.pprint(data_files)
+        print("packages (pre-cleanup)")
+        pprint.pprint(packages)
+    #cleanup unwanted packages
+    # extensions should be provided through repos (packaging)
+    packages = [pa for pa in packages if not pa.startswith('leo.extensions')]
+    if '--debug' in sys.argv[1:]:
+        print("packages (post-cleanup)")
+        pprint.pprint(packages)
+    #cleanup unwanted data files
+#@+node:ville.20090213231648.6: ** bdist_wininst hack
+# Small hack for working with bdist_wininst.
+# See http://mail.python.org/pipermail/distutils-sig/2004-August/004134.html
+if not simple:
+    if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
+        for file_info in data_files:
+            file_info[0] = '\\PURELIB\\%s' % file_info[0]
+#@+node:maphew.20141108212612.19: ** data patterns
+# Note than only *.ui matches now - add asterisks as needed/valid
+if not simple:
+    datapats = [
+        '.tix', '.GIF', '.dbm', '.conf',
+        '.TXT', '.xml', '.gif', '*.leo', '.def',
+        '.svg', '*.ini', '.six', '.bat', '.cat',
+        '.pro', '.sh', '.xsl', '.bmp', '.js', '*.ui',
+        '.rix', '.pmsp', '.pyd', '.png', '.alg', '.php',
+        '.css', '.ico', '*.txt', '.html', '.iix', '.w',
+        '*.json'
     ]
-#@+node:maphew.20180415195922.1: ** Setup requirements
-setup_requires = ['semantic_version']
-    #semantic_version here to force download and making available before installing Leo
-    #Is also in `user_requires` so pip installs it too for general use
-#@+node:maphew.20171120133429.1: ** User requirements
-user_requires = [
-    'PyQt5; python_version >= "3.0"',
-    #'python-qt5; python_version < "3.0" and platform_system=="Windows"',
-        # disabled, pending "pip install from .whl fails conditional dependency check" https://github.com/pypa/pip/issues/4886
-    ## missing: pyqt for Linux python 2.x (doesn't exist on PyPi)
-    'docutils', # used by Sphinx, rST plugin
-    'nbformat', # for Jupyter notebook integration
-    'pylint','pyflakes', # coding syntax standards
-    'pypandoc', # doc format conversion
-    'sphinx', # rST plugin
-    'semantic_version', # Pip packaging    
-    'twine','wheel','keyring' # Pip packaging, uploading to PyPi
-    #'pyenchant', # spell check support ## no wheels for some platforms, e.g. amd64
-    #'pyxml', # xml importing ## no pip package
-    ]
-#@+node:maphew.20171122231442.1: ** clean
-def clean():
-    print('\nRemoving build, dist and egg directories')
-    root = os.path.dirname(os.path.realpath(__file__))
-    for d in ['build', 'dist', 'leo.egg-info', '.eggs']:
-        dpath = os.path.join(root, d)
-        if os.path.isdir(dpath):
-            rmtree(dpath)
-clean()
+#print(data_files)
 #@-others
-
-setup(
-    name='leo',
-    # version = leo.core.leoVersion.version,
-    version=get_version(__file__),
-    author='Edward K. Ream',
-    author_email='edreamleo@gmail.com',
-    url='http://leoeditor.com',
-    license='MIT License',
-    description='An IDE, PIM and Outliner', # becomes 'Summary' in pkg-info
-    long_description=read_md('README.md'),
-    platforms=['Linux', 'Windows', 'MacOS'],
-    download_url='http://leoeditor.com/download.html',
-    classifiers=classifiers,
-    packages=find_packages(),
-    include_package_data=True, # also include MANIFEST files in wheels
-    setup_requires=setup_requires,
-    install_requires=user_requires,
-    entry_points={
-       'console_scripts': ['leo-c = leo.core.runLeo:run_console',
-            'leo-console = leo.core.runLeo:run_console',
-            'leo-m = leo.core.runLeo:run',
-            'leo-messages = leo.core.runLeo:run'],
-        'gui_scripts': ['leo = leo.core.runLeo:run']
-       }
-)
-
 #@@language python
 #@@tabwidth -4
+#@@pagewidth 70
+long_description = get_long_description()
+setup(
+    name='leo',
+    version=leo.core.leoVersion.version,
+    author="Edward K. Ream",
+    author_email='edreamleo@gmail.com',
+    # maintainer = '',
+        # don't use maintainer, else it overwrites author in PKG-INFO
+        # See note 3 @url http://docs.python.org/3/distutils/setupscript.html#additional-meta-data
+    # maintainer_email = '',
+    # keywords = [],
+    # provides = [],
+    # obsoletes= [],
+    url='http://leoeditor.com',
+    license='MIT License',
+    description="Leo: Leonine Editor with Outlines", # becomes "Summary" in pkg-info
+    long_description=long_description,
+    platforms=['linux', 'windows'],
+    download_url='http://sourceforge.net/projects/leo/files/Leo/',
+    # bugtrack_url = 'https://github.com/leo-editor/leo-editor/issues',
+        # pypi still needs this added manually via web form
+    requires=['docutils'],
+        # only include dependencies which can be installed by pip (so not PyQt or SIP)
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Win32 (MS Windows)',
+        'Environment :: X11 Applications :: Qt',
+        'Intended Audience :: End Users/Desktop',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        'Operating System :: MacOS',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 3',
+        'Topic :: Software Development',
+        'Topic :: Text Editors',
+        'Topic :: Text Processing',
+    ],
+    packages=packages,
+    data_files=[] if simple else data_files,
+    package_data={'': datapats},
+        # package_data = {'leo.plugins' : datapats },
+        # no need to restrict to just plugins(?)
+    scripts=['leo-install.py'],
+    zip_safe=False,
+    entry_points={
+        'console_scripts': ['leoc = leo.core.runLeo:run'],
+        'gui_scripts': ['leo = leo.core.runLeo:run'],
+    }
+)
 #@-leo

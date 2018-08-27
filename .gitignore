@@ -45,7 +45,7 @@ leo/test/unittest/rst_write_test.txt
 *.leo_db
 *Thumbs.db
 *.zip
-
+*.*.swp # vim swap files
 ./*.zip
 ./*.exe
 
