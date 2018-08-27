@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -1349,6 +1346,10 @@
 <v t="ekr.20180226153353.1"><vh>Using g.app.backgroundProcessManager</vh></v>
 </v>
 <v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
+<v t="ekr.20180827103758.1"><vh>Using @pyplot and matplotlib</vh>
+<v t="ekr.20180827104847.1"><vh>Overview</vh></v>
+<v t="ekr.20180827105047.1"><vh>Displaying images externally</vh></v>
+</v>
 <v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
 <v t="ekr.20131012060912.16788"><vh>Writing g.es output to other tabs</vh></v>
 </v>
@@ -2197,6 +2198,7 @@
 <v t="ekr.20180821155534.1"><vh>Removed --no-cache &amp; --trace-cache</vh></v>
 </v>
 </v>
+<v t="ekr.20180827103758.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -29202,6 +29204,61 @@ The change was to load_session.</t>
 added update_nodes method.
 </t>
 <t tx="ekr.20180824085929.1">https://github.com/leo-editor/leo-editor/issues/967</t>
+<t tx="ekr.20180827103758.1">
+
+
+
+</t>
+<t tx="ekr.20180827104847.1">Leo's @pyplot nodes support
+`matplotlib &lt;https://matplotlib.org/users/index.html&gt;`_.
+\@pyplot nodes start with @pyplot in the headline.  The rest of the headline is comments. These nodes should contain matplotlib scripts that create figures or animations.  Like this::
+
+    fig2 = plt.figure()
+    x = np.arange(-9, 10)
+    y = np.arange(-9, 10).reshape(-1, 1)
+    base = np.hypot(x, y)
+    images = []
+    for add in np.arange(15):
+        images.append((
+            plt.pcolor(x, y, base+add, norm=plt.Normalize(0, 30)),
+        ))
+    animation = animation.ArtistAnimation(fig2, images,
+        interval=50, repeat_delay=3000, blit=True)
+    g.app.permanentScriptDict['animations'] = animation
+        # Keep a python reference to the animation, so it will complete.
+
+**Notes**
+
+1. If the viewrendered (VR) pane is open, Leo will display the animation in the VR pane whenever the user selects the @pyplot node.  This has been tested only with the viewrendered.py, not the viewrendered2.py plugin.
+
+2. In addition to c, g, and p, the VR code predefines several other vars.  The VR code does the following imports::
+
+    import matplotlib
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import matplotlib.animation as animation
+
+and then predefines the animation, matplotlib, np, numpy and plt vars in the @pyplot script. numpy is also predefined as an alias for np.</t>
+<t tx="ekr.20180827105047.1">To display images and animations in an external window, *don't* put the script in an @pyplot node. Instead, put the script in a regular node, with the following modifications:
+
+1. Add the required imports::
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import matplotlib.animation as animation
+
+2. Place the following at the end of the script::
+
+    plt.ion()
+        # sets interactive mode. Prevents this message:
+        # QCoreApplication::exec: The event loop is already running
+    plt.show()
+    
+**Bugs**
+
+1. Once you use the VR pane to display an image, you can't (at present) display an image externally.
+
+2. The VR plugin will refuse to close the VR pane if it ever displays an @pyplot image or animation. This prevents Leo from hard crashing in the pyplot code. As a workaround, you can  resize the VR pane so it is effectively hidden.</t>
 <t tx="matt.20180826201749.1">Problem
 -------
 
