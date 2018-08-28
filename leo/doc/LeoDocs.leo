@@ -2201,6 +2201,7 @@
 <v t="ekr.20180821155534.1"><vh>Removed --no-cache &amp; --trace-cache</vh></v>
 </v>
 </v>
+<v t="ekr.20050831195331.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18125,7 +18126,7 @@ I'm trying to create a interactive chart in a embedded in a new leo pane using m
 
 I want to create a data processing and visualization tool kit in leo. Like Excel but using nodes instead of columns. Nodes will have data and I want to create new data nodes by applying python functions to data in existing nodes. The thing missing is the visualization within a leo pane (I can easily launch a chart in it's own window).
 
------ Terry Brown
+**Terry Brown**
 
 You can run this script from any body pane::
 
@@ -18161,7 +18162,7 @@ You can run this script from any body pane::
     
     MatplotPaneProvider(c)
 
------ OP
+**OP**
 
 I have managed to get a matplotlib graph embedded within a pane in leo as a widget. I now need some help with how to interact with the widget using scripts in leo. I am unsure about the following:
  
@@ -18842,8 +18843,6 @@ One of Leo's most important developments, @button, came directly from e's dyna_m
 
 </t>
 <t tx="ekr.20150313053238.40">Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console`_. because as a last resort Leo prints error messages to the console.
-
-
 </t>
 <t tx="ekr.20150313053238.44">I just want to provide my own thoughts about the importance of @clean. I look at the posts in this group a fair amount because I find the discussion interesting but I had abandoned leo as a day-to-day tool principally because of the sentinels in @file nodes. Even for solo projects, I just found them visually unappealing and beyond that occasionally confusing when I went to edit files with external editors. I would sometimes start a project in leo, particularly if it was based on code I developed in the past using leo, and then would use the old @nosent to save a version of the code without sentinels and then use my external editor of choice and not use leo at all. I missed many of the features of leo but just couldn't get over the sentinel issue.
 
@@ -29274,22 +29273,18 @@ and then predefines the animation, matplotlib, np, numpy and plt vars in the @py
 
 Removed qtree.update_appearance and qtree.update_appearance_idle.
 </t>
-<t tx="matt.20180826201749.1">Problem
--------
+<t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
 ``pip install https://github.com/leo-editor/leo-editor/archive/devel.zip``
 numerous files are left out.
 
-Solution
---------
+**Solution**
 
 Installing from Github into a new environment must be done in discrete
 steps: download, unpack, and install in editable mode.
 
-Example:
-
-::
+Example::
 
    wget https://github.com/leo-editor/leo-editor/archive/devel.zip
    7z x devel.zip -o C:\apps
@@ -29298,16 +29293,12 @@ Example:
 On Windows there are powershell versions of wget if needed.
 
 For easier upgrading substitute ``git clone`` for ``wget`` &amp; ``7z``
-steps:
-
-::
+steps::
 
    git clone --single-branch -b devel --depth=100 https://github.com/leo-editor/leo-editor.git
    pip install --editable leo-editor
 
-Time passes, upgrade desired:
-
-::
+Time passes, upgrade desired::
 
    pushd c:\apps\leo-editor
    git pull
