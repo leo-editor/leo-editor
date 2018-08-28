@@ -1,8 +1,9 @@
 language: python
 install:
     #- pip install leo
-    - sh build-without-pip.sh
+    #- sh build-without-pip.sh
+    python setup.py install --root=/tmp/packages
 script:
-    - /tmp/packages/home/travis/virtualenv/python2.7.14/bin/leoc --version
+    - /tmp/packages/home/travis/virtualenv/python2.7.14/bin/leo-console --version
     - pytest travis_tests/*
 
