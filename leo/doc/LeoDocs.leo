@@ -1529,6 +1529,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20180821154658.1"><vh>What's new in Leo 5.8</vh></v>
 <v t="ekr.20180527084307.1"><vh>What's new in Leo 5.7.3</vh></v>
 <v t="ekr.20180427130312.1"><vh>What's new in Leo 5.7.2</vh></v>
 <v t="ekr.20180404015558.1"><vh>What's new in Leo 5.7.1</vh>
@@ -2135,9 +2136,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180527084307.1"></v>
-<v t="ekr.20180821154658.1"><vh>What's new in Leo 5.8</vh></v>
-<v t="ekr.20180528114703.1"><vh>Leo 5.8 release notes</vh>
+<v t="ekr.20180821154658.1"></v>
+<v t="ekr.20180528114703.1"><vh>Leo 5.8 b1 release notes</vh>
 <v t="ekr.20180601095122.1"><vh>Bugs</vh>
 <v t="ekr.20180822072454.2"><vh>#841: Python importer does not always handle decorators properly</vh></v>
 <v t="ekr.20180822072454.4"><vh>#893: Python Console gets stuck on IndentationError</vh></v>
@@ -2180,6 +2180,8 @@
 <v t="ekr.20180821062138.134"><vh>Stats: p.copy (after 3)</vh></v>
 </v>
 <v t="ekr.20180821062022.4"><vh>Removed "adjust" and "reassignIndices" kwargs</vh></v>
+<v t="ekr.20180828033232.1"><vh>Removed qtree.update_appearance*</vh></v>
+<v t="ekr.20180828033450.1"><vh>Improved Leo's outline drawing code</vh></v>
 </v>
 <v t="ekr.20180528114740.1"><vh>Features</vh>
 <v t="ekr.20180528114754.1"><vh>#871: A setting to position the icon bar </vh></v>
@@ -2188,6 +2190,7 @@
 <v t="ekr.20180806054424.1"><vh>#949: Smart quotes</vh></v>
 <v t="ekr.20180821062022.35"><vh>#953: better warnings about importing qt</vh></v>
 <v t="ekr.20180821062022.33"><vh>#961: curses gui</vh></v>
+<v t="ekr.20180828032757.1"><vh>#966: Better support for clojurescript</vh></v>
 <v t="ekr.20180821062419.1"><vh>Added --trace-drawing and --trace-startup</vh></v>
 <v t="ekr.20180806085322.1"><vh>Added .sty and .latex entries in extension_dict</vh></v>
 <v t="ekr.20180821062138.107"><vh>Added @nosearch to results of cff</vh></v>
@@ -2198,7 +2201,6 @@
 <v t="ekr.20180821155534.1"><vh>Removed --no-cache &amp; --trace-cache</vh></v>
 </v>
 </v>
-<v t="ekr.20180827103758.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -28146,7 +28148,7 @@ A complete rewrite of the python_terminal plugin.</t>
 - Allow local overrides of all abbreviations.
 - Improved TypeScript importer.</t>
 <t tx="ekr.20180528114703.1">
-Leo 5.8, http://leoeditor.com, is now available on
+Leo 5.8 b1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
@@ -28157,6 +28159,7 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - Leo no longer caches file contents. Removed --no-cache!
 - Leo using ElementTree instead of sax to read .leo files.
 - Refactored and improved Leo's key-handling code.
+- Improved Leo's outline drawing code.
 - The usual minor bug fixes.
 
 **Links**
@@ -29190,7 +29193,12 @@ Commands that *DON'T* use the printer:
 The fix was to getVnodeFromClipboard.
 </t>
 <t tx="ekr.20180821062419.1"></t>
-<t tx="ekr.20180821154658.1"></t>
+<t tx="ekr.20180821154658.1">- Much faster file-read code.
+- Leo no longer caches file contents. Removed --no-cache!
+- Leo using ElementTree instead of sax to read .leo files.
+- Refactored and improved Leo's key-handling code.
+- Improved Leo's outline drawing code.
+- The usual minor bug fixes.</t>
 <t tx="ekr.20180821155534.1"></t>
 <t tx="ekr.20180822072454.2">https://github.com/leo-editor/leo-editor/issues/841
 </t>
@@ -29259,6 +29267,13 @@ and then predefines the animation, matplotlib, np, numpy and plt vars in the @py
 1. Once you use the VR pane to display an image, you can't (at present) display an image externally.
 
 2. The VR plugin will refuse to close the VR pane if it ever displays an @pyplot image or animation. This prevents Leo from hard crashing in the pyplot code. As a workaround, you can  resize the VR pane so it is effectively hidden.</t>
+<t tx="ekr.20180828032757.1">https://github.com/leo-editor/leo-editor/issues/966
+</t>
+<t tx="ekr.20180828033232.1"></t>
+<t tx="ekr.20180828033450.1">Leo now redraws the screen only once during startup.
+
+Removed qtree.update_appearance and qtree.update_appearance_idle.
+</t>
 <t tx="matt.20180826201749.1">Problem
 -------
 
