@@ -2,5 +2,5 @@ language: python
 install:
     - pip install leo
 script:
-    - pytest test_pass.py
+    - pytest travis_tests/*
 
