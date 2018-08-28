@@ -1,0 +1,7 @@
+language: python
+install:
+    - pip install leo
+script:
+    - sh build-without-pip.sh
+    - pytest travis_tests/*
+
