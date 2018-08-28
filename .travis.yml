@@ -2,10 +2,8 @@ language: python
 install:
     #- pip install leo
     #- sh build-without-pip.sh
-    git fetch --tags
-        # fix git describe shallow clone "fatal No names..." error
-        # https://stackoverflow.com/questions/4916492
-    python setup.py install --root=/tmp/packages
+    - git fetch --tags  
+    - python setup.py install --root=/tmp/packages
 script:
     - /tmp/packages/home/travis/virtualenv/python2.7.14/bin/leo-console --version
     - pytest travis_tests/*
