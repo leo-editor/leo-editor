@@ -2139,6 +2139,7 @@
 <v t="ekr.20180821154658.1"></v>
 <v t="ekr.20180528114703.1"><vh>Leo 5.8 b1 release notes</vh>
 <v t="ekr.20180601095122.1"><vh>Bugs</vh>
+<v t="ekr.20180828095555.1"><vh>Fixed in b1</vh>
 <v t="ekr.20180822072454.2"><vh>#841: Python importer does not always handle decorators properly</vh></v>
 <v t="ekr.20180822072454.4"><vh>#893: Python Console gets stuck on IndentationError</vh></v>
 <v t="ekr.20180601095134.1"><vh>#917: System keys on Microsoft keyboard insert unwanted text</vh></v>
@@ -2155,6 +2156,10 @@
 <v t="ekr.20180708081949.1"><vh>Fixed crasher in LeoQtLog.linkClicked</vh></v>
 <v t="ekr.20180708030832.1"><vh>Fixed problems with git-diff command</vh></v>
 <v t="ekr.20180821062138.296"><vh>git-diff now works outside of leo-editor folder</vh></v>
+</v>
+<v t="ekr.20180828095605.1"><vh>Fixed in b2</vh>
+<v t="ekr.20180828095610.1"><vh>#969: Chapter button</vh></v>
+</v>
 </v>
 <v t="ekr.20180608054147.1"><vh>Code</vh>
 <v t="ekr.20180821062138.2"><vh>#296: private plugin directories</vh></v>
@@ -29271,6 +29276,11 @@ and then predefines the animation, matplotlib, np, numpy and plt vars in the @py
 <t tx="ekr.20180828033450.1">Leo now redraws the screen only once during startup.
 
 Removed qtree.update_appearance and qtree.update_appearance_idle.
+</t>
+<t tx="ekr.20180828095555.1"></t>
+<t tx="ekr.20180828095605.1"></t>
+<t tx="ekr.20180828095610.1">https://github.com/leo-editor/leo-editor/issues/969
+The fix: call c.treeWantsFocusNow in tt.selectTab.
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
