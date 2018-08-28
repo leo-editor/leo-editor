@@ -153,6 +153,8 @@
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
+<v t="ekr.20180828095749.1"><vh>Create a -rel *branch* late.</vh></v>
+<v t="ekr.20180828095843.1"><vh>Update verions.py in the -rel branch</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
 <v t="ekr.20180405171433.8"><vh>Publish release</vh></v>
 <v t="ekr.20180405171433.9"><vh>Announcements</vh></v>
@@ -1444,7 +1446,11 @@ c:\Test\LeoAppFolder&gt;
 - twine upload dist/leo*.whl
 </t>
 <t tx="ekr.20180405171433.1">@language rest
-</t>
+
+Overview:
+
+1. Do as much work as possible in "devel".
+2. Update leoVersion.py *after* creating -rel branch.</t>
 <t tx="ekr.20180405171433.2">LeoDocs.leo:
 - Make sure copyright dates are correct.
 - Update the "last updated" text in index.html.
@@ -1464,9 +1470,6 @@ LeoDist.leo:
 - Update readme.md.
 - Check readme.md spelling.
 - Check 'PKG-INFO.TXT'
-
-leoVersion.py:
-- Update version constant.
 
 LeoPyRef.leo and LeoPluginsRef.leo:
 - Regenerate from corresponding local file.
@@ -1680,6 +1683,10 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20180828095749.1"></t>
+<t tx="ekr.20180828095843.1">leoVersion.py:
+- Update version constant.
 </t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
