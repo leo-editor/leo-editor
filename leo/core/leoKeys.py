@@ -725,7 +725,7 @@ class AutoCompleterClass(object):
                 
         completions = [z.name for z in completions]
         completions = [self.add_prefix(prefix, z) for z in completions]
-        ### Retain these for now...
+        # Retain these for now...
             # g.printObj(completions[:5])
             # head = line[:local_column]
             # tail = line[local_column:]
@@ -1669,8 +1669,8 @@ class KeyHandlerClass(object):
             # Set at end of finishCreate.
         self.killedBindings = []
             # A list of commands whose bindings have been set to None in the local file.
-        self.swap_mac_keys = False
-            # How to init this??
+        self.replace_meta_with_alt = False
+            # True: (Mac only) swap Meta and Alt keys.
         self.w = None
             # Note: will be None for NullGui.
         # Generalize...
@@ -1981,7 +1981,7 @@ class KeyHandlerClass(object):
         self.minibuffer_foreground_color = getColor('minibuffer_foreground_color') or 'black'
         self.minibuffer_warning_color = getColor('minibuffer_warning_color') or 'lightgrey'
         self.minibuffer_error_color = getColor('minibuffer_error_color') or 'red'
-        self.swap_mac_keys = getBool('swap_mac_keys')
+        self.replace_meta_with_alt = getBool('replace_meta_with_alt')
         self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
         # Has to be disabled (default) for AltGr support on Windows
         self.enable_alt_ctrl_bindings = c.config.getBool('enable_alt_ctrl_bindings')
@@ -2523,7 +2523,7 @@ class KeyHandlerClass(object):
         # This method must exist, but it never gets called.
         pass
     #@+node:ekr.20061031131434.119: *4* k.printBindings & helper
-    @cmd('print-bindings')
+    @cmd('show-bindings')
     def printBindings(self, event=None):
         '''Print all the bindings presently in effect.'''
         k = self; c = k.c
@@ -2596,7 +2596,7 @@ class KeyHandlerClass(object):
         if data:
             result.append('\n')
     #@+node:ekr.20120520174745.9867: *4* k.printButtons
-    @cmd('print-buttons')
+    @cmd('show-buttons')
     def printButtons(self, event=None):
         '''Print all @button and @command commands, their bindings and their source.'''
         k = self; c = k.c
@@ -2626,7 +2626,7 @@ class KeyHandlerClass(object):
         ])
         put('\n'.join(result))
     #@+node:ekr.20061031131434.121: *4* k.printCommands
-    @cmd('print-commands')
+    @cmd('show-commands')
     def printCommands(self, event=None):
         '''Print all the known commands and their bindings, if any.'''
         k = self; c = k.c; tabName = 'Commands'
@@ -3048,7 +3048,7 @@ class KeyHandlerClass(object):
         k = self
         # Setup...
         if 'keys' in g.app.debug:
-            g.trace(repr(event.char), event.stroke)
+            g.trace(repr(k.state.kind), repr(event.char), event.stroke)
         k.checkKeyEvent(event)
         k.setEventWidget(event)
         k.traceVars(event)
@@ -3546,6 +3546,10 @@ class KeyHandlerClass(object):
         if not event:
             # An empty event is not an error.
             return False
+        # Fix #917.
+        if len(event.char) > 1 and not event.stroke.s:
+            # stroke.s was cleared, but not event.char.
+            return True
         return event.char in g.app.gui.ignoreChars
     #@+node:ekr.20180418024449.1: *5* k.keyboardQuit
     def doKeyboardQuit(self, event):
@@ -4078,8 +4082,8 @@ class KeyHandlerClass(object):
                 else:
                     k.silentMode = False # All silent modes must do --> set-silent-mode.
                     self.initMode(event, nextMode) # Enter another mode.
-    #@+node:ekr.20061031131434.156: *3* k.Modes (changed)
-    #@+node:ekr.20061031131434.163: *4* k.initMode (changed)
+    #@+node:ekr.20061031131434.156: *3* k.Modes
+    #@+node:ekr.20061031131434.163: *4* k.initMode
     def initMode(self, event, modeName):
 
         k = self; c = k.c

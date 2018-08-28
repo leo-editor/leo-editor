@@ -493,7 +493,7 @@ class BaseTangleCommands(object):
         self.initTangleCommand()
         any_marked = False
         while p:
-            is_ignore, i = g.is_special(p.b, 0, "@ignore")
+            is_ignore, i = g.is_special(p.b, "@ignore")
             # Only tangle marked and unvisited nodes.
             if is_ignore:
                 p.moveToNodeAfterTree()
@@ -782,7 +782,7 @@ class BaseTangleCommands(object):
                         #@@c
                         end = p.threadNext()
                         while end and end != afterUnit:
-                            flag, i = g.is_special(end.b, 0, "@root")
+                            flag, i = g.is_special(end.b, "@root")
                             if flag and not p.isAncestorOf(end):
                                 break
                             end.moveToThreadNext()

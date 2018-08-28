@@ -51,12 +51,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def finishCreate(self):
         '''AbbrevCommandsClass.finishCreate.'''
         self.reload_settings()
-        if 0: # Annoying.
-            c = self.c
-            if (not g.app.initing and not g.unitTesting and
-                not g.app.batchMode and not c.gui.isNullGui
-            ):
-                g.red('Abbreviations %s' % ('on' if c.k.abbrevOn else 'off'))
+        # Annoying.
+            # c = self.c
+            # if (not g.app.initing and not g.unitTesting and
+                # not g.app.batchMode and not c.gui.isNullGui
+            # ):
+                # g.red('Abbreviations %s' % ('on' if c.k.abbrevOn else 'off'))
     #@+node:ekr.20170221035644.1: *5* abbrev.reload_settings & helpers
     def reload_settings(self):
         '''Reload all abbreviation settings.'''
@@ -186,29 +186,30 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             #
             # As part of #427, disable all redraws.
             try:
+                old_disable = g.app.disable_redraw
                 g.app.disable_redraw = True
                 self.init_tree_abbrev_helper(d, tree_s)
             finally:
-                g.app.disable_redraw = False
+                g.app.disable_redraw = old_disable
         self.tree_abbrevs_d = d
     #@+node:ekr.20170227062001.1: *7* abbrev.init_tree_abbrev_helper
     def init_tree_abbrev_helper(self, d, tree_s):
 
         c = self.c
-        p = c.fileCommands.getPosFromClipboard(tree_s)
-        if not p:
+        hidden_root = c.fileCommands.getPosFromClipboard(tree_s)
+        if not hidden_root:
             return g.trace('no pasted node')
-        for s in g.splitLines(p.b):
-            if s.strip() and not s.startswith('#'):
-                abbrev_name = s.strip()
-                for child in p.children():
-                    if child.h.strip() == abbrev_name:
-                        abbrev_s = c.fileCommands.putLeoOutline(child)
-                        d[abbrev_name] = abbrev_s
-                        break
-                else:
-                    g.trace('no definition for %s' % abbrev_name)
-
+        for p in hidden_root.children():
+            for s in g.splitLines(p.b):
+                if s.strip() and not s.startswith('#'):
+                    abbrev_name = s.strip()
+                    for child in p.children():
+                        if child.h.strip() == abbrev_name:
+                            abbrev_s = c.fileCommands.putLeoOutline(child)
+                            d[abbrev_name] = abbrev_s
+                            break
+                    else:
+                        g.trace('no definition for %s' % abbrev_name)
     #@+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
     def expandAbbrev(self, event, stroke):
         '''
@@ -223,7 +224,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if not w:
             return False
         ch = self.get_ch(event, stroke, w)
-        if not ch: return False
+        if not ch:
+            return False
         s, i, j, prefixes = self.get_prefixes(w)
         for prefix in prefixes:
             i, tag, word, val = self.match_prefix(ch, i, j, prefix, s)
@@ -238,12 +240,14 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     # Do not call c.endEditing here.
                 break
         else:
+
             return False
         # 448: Add abbreviations for commands.
-        if 0: # This is not worth documenting.
+        if 0: # Not worth documenting.
             val, tag = self.abbrevs.get(word, (None, None))
             if val and c.k.commandExists(val):
-                # Execute the command directly, so as not to call this method recursively.
+                # Execute the command directly,
+                # so as not to call this method recursively.
                 commandName = val
                 func = c.commandsDict.get(commandName)
                 c.doCommand(func, commandName, event)
@@ -411,6 +415,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
             except Exception:
                 g.es_print('exception evaluating', content)
+                g.es_exception()
             finally:
                 self.expanding = False
             x = c.abbrev_subst_env.get('x')

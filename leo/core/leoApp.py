@@ -163,6 +163,8 @@ class LeoApp(object):
             # Set by p.safeMoveToThreadNext.
         self.statsDict = {}
             # dict used by g.stat, g.clear_stats, g.print_stats.
+        self.statsLockout = False
+            # A lockout to prevent unbound recursion while gathering stats.
         self.validate_outline = False
             # True: enables c.validate_outline. (slow)
         #@-<< LeoApp: Debugging & statistics >>
@@ -223,12 +225,18 @@ class LeoApp(object):
         # Most of these are defined in initApp.
         self.backgroundProcessManager = None
             # The singleton BackgroundProcessManager instance.
+        self.commander_cacher = None
+            # The singleton leoCacher.CommanderCacher instance.
+        self.commander_db = None
+            # The singleton db, managed by g.app.commander_cacher.
         self.config = None
             # The singleton leoConfig instance.
         self.db = None
-            # The singleton leoCacher instance.
+            # The singleton global db, managed by g.app.global_cacher.
         self.externalFilesController = None
             # The singleton ExternalFilesController instance.
+        self.global_cacher = None
+            # The singleton leoCacher.GlobalCacher instance.
         self.idleTimeManager = None
             # The singleton IdleTimeManager instance.
         self.ipk = None
@@ -268,7 +276,7 @@ class LeoApp(object):
             # copy of Leo.
         self.dragging = False
             # True: dragging.
-        self.allow_delayed_see = False
+        # self.allow_delayed_see = False
             # True: pqsh.reformat_blocks_helper calls w.seeInsertPoint
         self.inBridge = False
             # True: running from leoBridge module.
@@ -383,7 +391,7 @@ class LeoApp(object):
             "less": "css",
             "hbs": "html",
             "handlebars": "html",
-            "rust": "c", 
+            "rust": "c",
             # "vue": "c",
         }
     #@+node:ekr.20120522160137.9911: *5* app.define_extension_dict
@@ -414,6 +422,8 @@ class LeoApp(object):
             "cfg":      "config",
             "cfm":      "coldfusion",
             "clj":      "clojure", # 2013/09/25: Fix bug 879338.
+            "cljs":     "clojure",
+            "cljc":     "clojure",
             "ch":       "chill", # Other extensions, .c186,.c286
             "coffee":   "coffeescript",
             "conf":     "apacheconf",
@@ -455,6 +465,7 @@ class LeoApp(object):
             # "jsp":      "jsp",
             "ksh":      "kshell",
             "kv":       "kivy", # PeckJ 2014/05/05
+            "latex":    "latex",
             "less":     "css", # McNab
             "lua":      "lua", # ddm 13/02/06
             "ly":       "lilypond",
@@ -509,6 +520,7 @@ class LeoApp(object):
             "sqr":      "sqr",
             "ss":       "ssharp",
             "ssi":      "shtml",
+            "sty":      "latex",
             "tcl":      "tcl", # modes/tcl.py exists.
             # "tcl":    "tcltk",
             "tex":      "latex",
@@ -960,11 +972,11 @@ class LeoApp(object):
                 pass
         else: sysVersion = sys.platform
         branch, commit = g.gitInfo()
-        if not branch or not commit:
+        if not commit:
             app.signon1 = 'Not running from a git repo'
         else:
             app.signon1 = 'Git repo info: branch = %s, commit = %s' % (
-                branch, commit)
+                branch or '(none)', commit)
         app.signon = 'Leo %s' % leoVer
         if build:
             app.signon += ', build '+build
@@ -984,20 +996,28 @@ class LeoApp(object):
             print(app.signon1)
             print(app.signon2)
             print('** isPython3: %s' % g.isPython3)
-            print('** caching %s' % ('enabled' if g.enableDB else 'disabled'))
             print('')
     #@+node:ekr.20100831090251.5838: *4* app.createXGui
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
         try:
+            import _curses
+            assert _curses
+        except Exception:
+            g.es_exception()
+            print('can not import _curses.')
+            if g.isWindows:
+                print('Windows: pip install windows-curses')
+            sys.exit()
+        try:
             import leo.plugins.cursesGui2 as cursesGui2
             ok = cursesGui2.init()
-        except ImportError:
-            ok = False
-        if ok:
-            g.app.gui = cursesGui2.LeoCursesGui()
-        else:
+            if ok:
+                g.app.gui = cursesGui2.LeoCursesGui()
+        except Exception:
+            g.es_exception()
             print('can not create curses gui.')
+            sys.exit()
     #@+node:ekr.20090619065122.8593: *5* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
         """A convenience routines for plugins to create the default gui class."""
@@ -1031,22 +1051,28 @@ class LeoApp(object):
         app = self
         try:
             from leo.core.leoQt import Qt
+            assert Qt
+        except Exception:
+            g.es_exception()
+            print('can not import Qt')
+            sys.exit(1)
+        try:
             import leo.plugins.qt_gui as qt_gui
-            try:
-                from leo.plugins.editpane.editpane import edit_pane_test_open, edit_pane_csv
-                g.command('edit-pane-test-open')(edit_pane_test_open)
-                g.command('edit-pane-csv')(edit_pane_csv)
-            except ImportError:
-                print('Failed to import editpane')
+        except Exception:
+            g.es_exception()
+            print('can not importleo.plugins.qt_gui')
+            sys.exit(1)
+        try:
+            from leo.plugins.editpane.editpane import edit_pane_test_open, edit_pane_csv
+            g.command('edit-pane-test-open')(edit_pane_test_open)
+            g.command('edit-pane-csv')(edit_pane_csv)
         except ImportError:
-            Qt = None
-        if Qt:
-            qt_gui.init()
-            if app.gui and fileName and verbose:
-                print('Qt Gui created in %s' % fileName)
-        else:
-            print('createQtGui: can not create Qt gui.')
-
+            print('Failed to import editpane')
+        #
+        # Complete the initialization.
+        qt_gui.init()
+        if app.gui and fileName and verbose:
+            print('Qt Gui created in %s' % fileName)
     #@+node:ekr.20170419093747.1: *5* app.createTextGui (was createCursesGui)
     def createTextGui(self, fileName='', verbose=False):
         app = self
@@ -1070,8 +1096,10 @@ class LeoApp(object):
         """
         # Fixes bug 670108.
         import leo.core.leoCache as leoCache
-        g.app.cacher = cacher = leoCache.Cacher()
-        g.app.db = cacher.initGlobalDB()
+        g.app.global_cacher = leoCache.GlobalCacher()
+        g.app.db = g.app.global_cacher.db
+        g.app.commander_cacher = leoCache.CommanderCacher()
+        g.app.commander_db = g.app.commander_cacher.db
     #@+node:ekr.20031218072017.1978: *4* app.setLeoID & helpers
     def setLeoID(self, useDialog=True, verbose=True):
         '''Get g.app.leoID from various sources.'''
@@ -1211,14 +1239,12 @@ class LeoApp(object):
             return
         # Write the signon to the log: similar to self.computeSignon().
         p3 = 'isPython3: %s' % g.isPython3
-        caching = 'caching %s' % ('enabled' if g.enableDB else 'disabled')
         table = [
             ('Leo Log Window', 'red'),
             (app.signon, None),
             (app.signon1, None),
             (app.signon2, None),
             (p3, None),
-            (caching, None),
         ]
         table.reverse()
         c.setLog()
@@ -1268,8 +1294,9 @@ class LeoApp(object):
             if veto: return False
         g.app.setLog(None) # no log until we reactive a window.
         g.doHook("close-frame", c=c)
-        c.cacher.commit() # store cache
-            # This may remove frame from the window list.
+        g.app.commander_cacher.commit()
+            # store cache, but don't close it.
+        # This may remove frame from the window list.
         if frame in g.app.windowList:
             g.app.destroyWindow(frame)
             g.app.windowList.remove(frame)
@@ -1310,7 +1337,9 @@ class LeoApp(object):
             g.pr('finishQuit')
         if not g.app.killed:
             g.doHook("end1")
-            g.app.cacher.commit()
+            g.app.global_cacher.commit_and_close()
+            g.app.commander_cacher.commit()
+            g.app.commander_cacher.close()
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         self.destroyAllOpenWithFiles()
@@ -2195,7 +2224,8 @@ class LoadManager(object):
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
         print('') # Give some separation for the coming traces.
-        if not lm.isValidPython(): return
+        if not lm.isValidPython():
+            return
         lm.doPrePluginsInit(fileName, pymacs)
             # sets lm.options and lm.files
         if lm.options.get('version'):
@@ -2203,6 +2233,8 @@ class LoadManager(object):
             return
         if not g.app.gui:
             return
+        g.app.disable_redraw = True
+            # Disable redraw until all files are loaded.
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
         if g.app.killed: return
@@ -2262,6 +2294,8 @@ class LoadManager(object):
                         c = c1 = g.app.windowList[0].c
                     else:
                         c = c1 = None
+        # Enable redraws.
+        g.app.disable_redraw = False
         if not c1 or not g.app.windowList:
             c1 = lm.openEmptyWorkBook()
         # Fix bug #199.
@@ -2281,36 +2315,19 @@ class LoadManager(object):
         # Do the final inits.
         g.app.logInited = True
         g.app.initComplete = True
-        if c: c.setLog()
-        # print('doPostPluginsInit: ***** set log')
+        if c:
+            c.setLog()
+            c.redraw()
         p = c.p if c else None
         g.doHook("start2", c=c, p=p, fileName=fileName)
-        if c: lm.initFocusAndDraw(c, fileName)
+        if c:
+            c.initialFocusHelper()
         screenshot_fn = lm.options.get('screenshot_fn')
         if screenshot_fn:
             lm.make_screen_shot(screenshot_fn)
             return False # Force an immediate exit.
         else:
             return True
-    #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw
-    def initFocusAndDraw(self, c, fileName):
-
-        def init_focus_handler(timer, c=c, p=c.p):
-            '''Idle-time handler for initFocusAndDraw'''
-            c.initialFocusHelper()
-            c.outerUpdate()
-            timer.stop()
-
-        # This must happen after the code in getLeoFile.
-        timer = g.IdleTime(init_focus_handler, delay=0.1, tag='getLeoFile')
-        if timer:
-            timer.start()
-        else:
-            # Default code.
-            c.selectPosition(c.p)
-            c.initialFocusHelper()
-            c.k.showStateAndMode()
-            c.outerUpdate()
     #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
     def make_screen_shot(self, fn):
         '''Create a screenshot of the present Leo outline and save it to path.'''
@@ -2326,6 +2343,8 @@ class LoadManager(object):
         c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
         # Open the cheatsheet, but not in batch mode.
         if not g.app.batchMode and not g.os_path_exists(fn):
+            # #933: Save clipboard.
+            old_clipboard = g.app.gui.getTextFromClipboard()
             # Paste the contents of CheetSheet.leo into c.
             c2 = c.openCheatSheet(redraw=False)
             if c2:
@@ -2348,6 +2367,8 @@ class LoadManager(object):
                     # Settings not parsed the first time.
                 c.setChanged(False)
                 c.redraw()
+            # #933: Restore clipboard
+            g.app.gui.replaceClipboardWith(old_clipboard)
         return c
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
     def doPrePluginsInit(self, fileName, pymacs):
@@ -2366,6 +2387,7 @@ class LoadManager(object):
         verbose = script is None
         # Init the app.
         lm.initApp(verbose)
+        g.app.setGlobalDb()
         lm.reportDirectories(verbose)
         # Read settings *after* setting g.app.config and *before* opening plugins.
         # This means if-gui has effect only in per-file settings.
@@ -2376,7 +2398,6 @@ class LoadManager(object):
         # Read the recent files file.
         localConfigFile = lm.files[0] if lm.files else None
         g.app.recentFilesManager.readRecentFiles(localConfigFile)
-        g.app.setGlobalDb()
         # Create the gui after reading options and settings.
         lm.createGui(pymacs)
         # We can't print the signon until we know the gui.
@@ -2610,6 +2631,9 @@ class LoadManager(object):
     def scanOptions(self, fileName, pymacs):
         '''Handle all options, remove them from sys.argv and set lm.options.'''
         lm = self
+        if '--no-cache' in sys.argv:
+            sys.argv.remove('--no-cache')
+            print('\nIgnoring the deprecated --no-cache option\n')
         lm.old_argv = sys.argv[:]
         parser = optparse.OptionParser(
             usage="usage: launchLeo.py [options] file1, file2, ...")
@@ -2663,7 +2687,6 @@ class LoadManager(object):
         add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
         add_bool('--maximized',     'start maximized')
         add_bool('--minimized',     'start minimized')
-        add_bool('--no-cache',      'disable reading of cached files')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
         add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
@@ -2676,6 +2699,7 @@ class LoadManager(object):
         add_other('--theme',        'use the named theme file', m='NAME')
         add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
         add_bool('--trace-coloring', 'trace syntax coloring')
+        add_bool('--trace-drawing', 'trace outline redraws')
         add_bool('--trace-events',  'trace non-key events')
         add_bool('--trace-focus',   'trace changes of focus')
         add_bool('--trace-gnx',     'trace gnx logic')
@@ -2684,6 +2708,7 @@ class LoadManager(object):
         add_bool('--trace-plugins', 'trace imports of plugins')
         add_other('--trace-setting', 'trace where named setting is set', m="NAME")
         add_bool('--trace-shutdown', 'trace shutdown logic')
+        add_bool('--trace-startup',  'trace startup logic')
         add_bool('--trace-themes',  'trace theme init logic')
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         # Multiple bool values.
@@ -2775,9 +2800,6 @@ class LoadManager(object):
         g.app.start_maximized = options.maximized
         # --minimized
         g.app.start_minimized = options.minimized
-        # --no-cache
-        if options.no_cache:
-            g.enableDB = False
         # --no-plugins
         if options.no_plugins:
             g.app.enablePlugins = False
@@ -2793,7 +2815,9 @@ class LoadManager(object):
         #
         # Most --trace- options append items to g.app.debug.
         table = (
+            # ('cache', options.trace_cache),
             ('coloring', options.trace_coloring),
+            ('drawing', options.trace_drawing),
             ('events', options.trace_events), # New
             ('focus', options.trace_focus),
             ('gnx', options.trace_gnx), # New.
@@ -2801,6 +2825,7 @@ class LoadManager(object):
             ('ipython', options.trace_ipython), # New
             ('plugins', options.trace_plugins),
             ('shutdown', options.trace_shutdown),
+            ('startup', options.trace_startup), # New
             ('themes', options.trace_themes),
         )
         for val, option in table:
@@ -3127,7 +3152,6 @@ class LoadManager(object):
         # New in Leo 4.6: provide an official way for very late initialization.
         c.frame.tree.initAfterLoad()
         c.initAfterLoad()
-        c.redraw()
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
         if c.chapterController: c.chapterController.finishCreate()

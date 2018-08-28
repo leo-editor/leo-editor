@@ -40,7 +40,7 @@ class To_Python(object):
         n_files, n_nodes = 0, 0
         special = ('class ', 'module ', '@file ', '@@file ')
         files = ('@file ', '@@file ')
-        for p in self.p.self_and_subtree():
+        for p in self.p.self_and_subtree(copy=False):
             if p.b:
                 n_nodes += 1
                 if any([p.h.startswith(z) for z in special]):

@@ -533,21 +533,16 @@ class LeoFind(object):
             c.frame.log.selectTab('Find')
     #@+node:ekr.20131117164142.17016: *4* find.changeAllCommand
     def changeAllCommand(self, event=None):
+        c = self.c
         self.setup_command()
         self.changeAll()
-        # Fixes: #722 replace-all leaves unsaved changed files
-        c = self.c
-        dirtyvnodes = [v for v in c.fileCommands.gnxDict.values() if v.isDirty()]
-        
-        def propagate(v):
-            for v1 in v.parents:
-                if not v1.isDirty():
-                    v1.setDirty()
-                    propagate(v1)
-
-        for v in dirtyvnodes:
-            propagate(v)
-        # Fix #880.
+        # Bugs #947, #880 and #722:
+        # Set ancestor @<file> nodes by brute force.
+        for p in c.all_positions():
+            if (p.anyAtFileNodeName() and not p.v.isDirty() and
+                any([p2.v.isDirty() for p2 in p.subtree()])
+            ):
+                p.v.setDirty()
         c.redraw()
     #@+node:ekr.20150629072547.1: *4* find.preloadFindPattern
     def preloadFindPattern(self, w):
@@ -1607,7 +1602,7 @@ class LeoFind(object):
             # Create the clone directly as a child of found.
             p2 = p.copy()
             n = found.numberOfChildren()
-            p2._linkAsNthChild(found, n, adjust=False)
+            p2._linkCopiedAsNthChild(found, n)
         return found
     #@+node:ekr.20031218072017.3073: *4* find.findAll & helpers
     def findAll(self, clone_find_all=False, clone_find_all_flattened=False):
@@ -1694,13 +1689,13 @@ class LeoFind(object):
         status = self.getFindResultStatus(find_all=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
         flat = 'flattened, ' if flattened else ''
-        found.b = '# %s%s\n\n# found %s nodes' % (flat, status, len(clones))
+        found.b = '@nosearch\n\n# %s%s\n\n# found %s nodes' % (flat, status, len(clones))
         # Clone nodes as children of the found node.
         for p in clones:
             # Create the clone directly as a child of found.
             p2 = p.copy()
             n = found.numberOfChildren()
-            p2._linkAsNthChild(found, n, adjust=False)
+            p2._linkCopiedAsNthChild(found, n)
         # Sort the clones in place, without undo.
         found.v.children.sort(key=lambda v: v.h.lower())
         return found
@@ -1720,7 +1715,7 @@ class LeoFind(object):
             p.moveToThreadNext()
         elif found:
             # Don't look at the node or it's descendants.
-            for p2 in p.self_and_subtree():
+            for p2 in p.self_and_subtree(copy=False):
                 skip.add(p2.v)
             p.moveToNodeAfterTree()
         else:
@@ -2531,6 +2526,7 @@ class LeoFind(object):
             w = c.edit_widget(p)
             self.was_in_headline = True # 2015/03/25
         else:
+            # Tricky code.  Do not change without careful thought.
             w = c.frame.body.wrapper
             # *Always* do the full selection logic.
             # This ensures that the body text is inited  and recolored.
@@ -2541,10 +2537,11 @@ class LeoFind(object):
             c.bodyWantsFocusNow()
             w.setSelectionRange(pos, newpos, insert=insert)
             w.see(insert)
-            # Fix bug 78: find-next match not always scrolled into view.
-            # https://github.com/leo-editor/leo-editor/issues/78
-            g.app.allow_delayed_see = True
+                # Fix bug 78: find-next match not always scrolled into view.
+                # https://github.com/leo-editor/leo-editor/issues/78
+            # g.app.allow_delayed_see = True
             c.outerUpdate()
+                # Set the focus immediately.
             if c.vim_mode and c.vimCommands:
                 c.vimCommands.update_selection_after_search()
         # Support for the console gui.

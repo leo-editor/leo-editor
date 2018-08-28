@@ -45,13 +45,14 @@ class NodeIndices(object):
     def check_gnx(self, c, gnx, v):
         '''Check that no vnode exists with the given gnx in fc.gnxDict.'''
         fc = c.fileCommands
-        if fc is None:
-            g.internalError('getNewIndex: fc is None! c:' % c)
-        else:
-            v2 = fc.gnxDict.get(gnx)
-            if v2 and v2 != v:
-                g.internalError(
-                    'getNewIndex: gnx clash %s: v: %s v2: %s' % (gnx, v, v2))
+        if gnx == 'hidden-root-vnode-gnx':
+            # No longer an error.
+            # fast.readWithElementTree always generates a nominal hidden vnode.
+            return 
+        v2 = fc.gnxDict.get(gnx)
+        if v2 and v2 != v:
+            g.internalError(
+                'getNewIndex: gnx clash %s\n v: %s\nv2: %s' % (gnx, v, v2))
     #@+node:ekr.20150302061758.14: *3* ni.compute_last_index
     def compute_last_index(self, c):
         '''Scan the entire leo outline to compute ni.last_index.'''
@@ -294,8 +295,6 @@ class Position(object):
     def __str__(self):
         p = self
         if p.v:
-            # return "<pos %d childIndex: %d lvl: %d [%d] %s>" % (
-                # id(p),p._childIndex,p.level(),len(p.stack),p.cleanHeadString())
             return "<pos %d childIndex: %d lvl: %d key: %s %s>" % (
                 id(p), p._childIndex, p.level(), p.key(), p.cleanHeadString())
         else:
@@ -310,7 +309,7 @@ class Position(object):
             aList = [z._childIndex for z in p.self_and_parents()]
         else:
             aList = []
-            for z in p.self_and_parents():
+            for z in p.self_and_parents(copy=False):
                 if z == root_p:
                     aList.append(0)
                     break
@@ -354,7 +353,7 @@ class Position(object):
         """Convert a positions  suboutline to a string in MORE format."""
         p = self; level1 = p.level()
         array = []
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             array.append(p.moreHead(level1) + '\n')
             body = p.moreBody()
             if body:
@@ -393,29 +392,29 @@ class Position(object):
         return '\n'.join(array)
     #@+node:ekr.20091001141621.6060: *3* p.generators
     #@+node:ekr.20091001141621.6055: *4* p.children
-    def children(self):
+    def children(self, copy=True):
         '''Yield all child positions of p.'''
         p = self
         p = p.firstChild()
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToNext()
 
     # Compatibility with old code...
     children_iter = children
     #@+node:ekr.20091002083910.6102: *4* p.following_siblings
-    def following_siblings(self):
+    def following_siblings(self, copy=True):
         '''Yield all siblings positions that follow p, not including p.'''
         p = self
         p = p.next()
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToNext()
 
     # Compatibility with old code...
     following_siblings_iter = following_siblings
     #@+node:ekr.20161120105707.1: *4* p.nearest_roots
-    def nearest_roots(self, predicate=None):
+    def nearest_roots(self, copy=True, predicate=None):
         '''
         A generator yielding all the root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -435,22 +434,22 @@ class Position(object):
 
         # First, look up the tree.
         p1 = self
-        for p in p1.self_and_parents():
+        for p in p1.self_and_parents(copy=False):
             if predicate(p):
-                yield p.copy() # 2017/02/19
+                yield p.copy() if copy else p
                 return
         # Next, look for all .md files in the tree.
         after = p1.nodeAfterTree()
         p = p1
         while p and p != after:
             if predicate(p):
-                yield p.copy() # 2017/02/19
+                yield p.copy() if copy else p
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
 
     #@+node:ekr.20161120163203.1: *4* p.nearest_unique_roots (aka p.nearest)
-    def nearest_unique_roots(self, predicate=None):
+    def nearest_unique_roots(self, copy=True, predicate=None):
         '''
         A generator yielding all unique root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -471,9 +470,9 @@ class Position(object):
 
         # First, look up the tree.
         p1 = self
-        for p in p1.self_and_parents():
+        for p in p1.self_and_parents(copy=False):
             if predicate(p):
-                yield p.copy() # 2017/02/19
+                yield p.copy() if copy else p
                 return
         # Next, look for all unique .md files in the tree.
         seen = set()
@@ -483,7 +482,7 @@ class Position(object):
             if predicate(p):
                 if p.v not in seen:
                     seen.add(p.v)
-                    yield p.copy() # 2017/02/19
+                    yield p.copy() if copy else p
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -503,61 +502,61 @@ class Position(object):
     tnodes_iter = nodes
     vnodes_iter = nodes
     #@+node:ekr.20091001141621.6058: *4* p.parents
-    def parents(self):
+    def parents(self, copy=True):
         '''Yield all parent positions of p.'''
         p = self
         p = p.parent()
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToParent()
 
     # Compatibility with old code...
     parents_iter = parents
     #@+node:ekr.20091002083910.6099: *4* p.self_and_parents
-    def self_and_parents(self):
+    def self_and_parents(self, copy=True):
         '''Yield p and all parent positions of p.'''
         p = self
         p = p.copy()
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToParent()
 
     # Compatibility with old code...
     self_and_parents_iter = self_and_parents
     #@+node:ekr.20091001141621.6057: *4* p.self_and_siblings
-    def self_and_siblings(self):
+    def self_and_siblings(self, copy=True):
         '''Yield all sibling positions of p including p.'''
         p = self
         p = p.copy()
         while p.hasBack():
             p.moveToBack()
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToNext()
 
     # Compatibility with old code...
     self_and_siblings_iter = self_and_siblings
     #@+node:ekr.20091001141621.6066: *4* p.self_and_subtree
-    def self_and_subtree(self):
+    def self_and_subtree(self, copy=True):
         '''Yield p and all positions in p's subtree.'''
         p = self
         p = p.copy()
         after = p.nodeAfterTree()
         while p and p != after:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToThreadNext()
 
     # Compatibility with old code...
     self_and_subtree_iter = self_and_subtree
     #@+node:ekr.20091001141621.6056: *4* p.subtree
-    def subtree(self):
+    def subtree(self, copy=True):
         '''Yield all positions in p's subtree, but not p.'''
         p = self
         p = p.copy()
         after = p.nodeAfterTree()
         p.moveToThreadNext()
         while p and p != after:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToThreadNext()
 
     # Compatibility with old code...
@@ -567,7 +566,7 @@ class Position(object):
         '''Yield p.v and all unique vnodes in p's subtree.'''
         p = self
         seen = set()
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             if p.v not in seen:
                 seen.add(p.v)
                 yield p.v
@@ -576,7 +575,7 @@ class Position(object):
     unique_tnodes_iter = unique_nodes
     unique_vnodes_iter = unique_nodes
     #@+node:ekr.20091002083910.6103: *4* p.unique_subtree
-    def unique_subtree(self):
+    def unique_subtree(self, copy=True):
         '''Yield p and all other unique positions in p's subtree.'''
         p = self
         seen = set()
@@ -584,7 +583,7 @@ class Position(object):
             if p.v not in seen:
                 seen.add(p.v)
                 # Fixed bug 1255208: p.unique_subtree returns vnodes, not positions.
-                yield p.copy()
+                yield p.copy() if copy else p
 
     # Compatibility with old code...
     subtree_with_unique_tnodes_iter = unique_subtree
@@ -745,15 +744,14 @@ class Position(object):
         with_count - include ',x,y' at end where y zero based count of same headlines
         """
         aList = []
-        for i in self.self_and_parents():
+        for i in self.self_and_parents(copy=False):
             if with_index or with_count:
-                i = i.copy()
                 count = 0
                 ind = 0
                 p = i.copy()
                 while p.hasBack():
                     ind = ind + 1
-                    p = p.back().copy()
+                    p.moveToBack()
                     if i.h == p.h:
                         count = count + 1
                 aList.append(i.h.replace('-->', '--%3E') + ":" + str(ind))
@@ -848,7 +846,7 @@ class Position(object):
         p = self
 
         def visible(p, root=None):
-            for parent in p.parents():
+            for parent in p.parents(copy=False):
                 if parent and parent == root:
                     # Fix bug: https://github.com/leo-editor/leo-editor/issues/12
                     return True
@@ -864,7 +862,7 @@ class Position(object):
             else:
                 return root.isAncestorOf(p) and visible(p, root=root)
         else:
-            for root in c.rootPosition().self_and_siblings():
+            for root in c.rootPosition().self_and_siblings(copy=False):
                 if root == p or root.isAncestorOf(p):
                     return visible(p)
             return False
@@ -920,7 +918,7 @@ class Position(object):
         '''
         p = self
         found, offset = False, 0
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             if p.isAnyAtFileNode():
                 # Ignore parent of @<file> node.
                 found = True
@@ -943,7 +941,7 @@ class Position(object):
     def isOutsideAnyAtFileTree(self):
         '''Select the first clone of target that is outside any @file node.'''
         p = self
-        for parent in p.self_and_parents():
+        for parent in p.self_and_parents(copy=False):
             if parent.isAnyAtFileNode():
                 return False
         return True
@@ -982,29 +980,46 @@ class Position(object):
         if changed:
             p.stack = stack
     #@+node:ekr.20080416161551.214: *4* p._linkAfter
-    def _linkAfter(self, p_after, adjust=True):
+    def _linkAfter(self, p_after):
         '''Link self after p_after.'''
         p = self
         parent_v = p_after._parentVnode()
-            # Returns None if p.v is None
-        # Init the ivars.
         p.stack = p_after.stack[:]
         p._childIndex = p_after._childIndex + 1
-        # Set the links.
         child = p.v
         n = p_after._childIndex + 1
-        child._addLink(n, parent_v, adjust=adjust)
+        child._addLink(n, parent_v)
+    #@+node:ekr.20180709181718.1: *4* p._linkCopiedAfter
+    def _linkCopiedAfter(self, p_after):
+        '''Link self, a newly copied tree, after p_after.'''
+        p = self
+        parent_v = p_after._parentVnode()
+        p.stack = p_after.stack[:]
+        p._childIndex = p_after._childIndex + 1
+        child = p.v
+        n = p_after._childIndex + 1
+        child._addCopiedLink(n, parent_v)
     #@+node:ekr.20080416161551.215: *4* p._linkAsNthChild
-    def _linkAsNthChild(self, parent, n, adjust=True):
-        '''(low-level position method) Link self as the n'th child of the parent.'''
+    def _linkAsNthChild(self, parent, n):
+        '''Link self as the n'th child of the parent.'''
         p = self
         parent_v = parent.v
-        # Init the ivars.
         p.stack = parent.stack[:]
         p.stack.append((parent_v, parent._childIndex),)
         p._childIndex = n
         child = p.v
-        child._addLink(n, parent_v, adjust=adjust)
+        child._addLink(n, parent_v)
+        
+    #@+node:ekr.20180709180140.1: *4* p._linkCopiedAsNthChild
+    def _linkCopiedAsNthChild(self, parent, n):
+        '''Link a copied self as the n'th child of the parent.'''
+        p = self
+        parent_v = parent.v
+        p.stack = parent.stack[:]
+        p.stack.append((parent_v, parent._childIndex),)
+        p._childIndex = n
+        child = p.v
+        child._addCopiedLink(n, parent_v)
     #@+node:ekr.20080416161551.216: *4* p._linkAsRoot
     def _linkAsRoot(self, oldRoot):
         """Link self as the root node."""
@@ -1272,7 +1287,7 @@ class Position(object):
                 if limit and self.checkVisNextLimit(limit,p):
                     return None
                 if p.isVisible(c):
-                    return p.copy()
+                    return p
         return p
     #@+node:ekr.20090715145956.6167: *5* checkVisNextLimit
     def checkVisNextLimit(self, limit, p):
@@ -1288,7 +1303,7 @@ class Position(object):
         if p.v:
             child_v = p.v.children and p.v.children[0]
             if child_v:
-                for parent in p.self_and_parents():
+                for parent in p.self_and_parents(copy=False):
                     if child_v == parent.v:
                         g.app.structure_errors += 1
                         g.error('vnode: %s is its own parent' % child_v)
@@ -1392,25 +1407,29 @@ class Position(object):
         return c.createNodeHierarchy(heads, parent=self, forcecreate=forcecreate)
     #@+node:ekr.20131230090121.16552: *4* p.deleteAllChildren
     def deleteAllChildren(self):
-        '''Delete all children of the receiver.'''
+        '''
+        Delete all children of the receiver and set p.dirty().
+        '''
         p = self
+        p.setDirty() # Mark @file nodes dirty!
         while p.hasChildren():
             p.firstChild().doDelete()
     #@+node:ekr.20040303175026.2: *4* p.doDelete
-    #@+at This is the main delete routine.
-    # It deletes the receiver's entire tree from the screen.
-    # Because of the undo command we never actually delete vnodes or tnodes.
-    #@@c
-
     def doDelete(self, newNode=None):
-        """Deletes position p from the outline."""
+        """
+        Deletes position p from the outline.
+        
+        This is the main delete routine.
+        It deletes the receiver's entire tree from the screen.
+        Because of the undo command we never actually delete vnodes.
+        """
         p = self
         p.setDirty() # Mark @file nodes dirty!
-        # Adjust newNode._childIndex if newNode is a following sibling of p.
         sib = p.copy()
         while sib.hasNext():
             sib.moveToNext()
             if sib == newNode:
+                # Adjust newNode._childIndex if newNode is a following sibling of p.
                 newNode._childIndex -= 1
                 break
         p._unlink()
@@ -1752,11 +1771,11 @@ class Position(object):
     # Compatibility routine for scripts.
 
     def clearVisitedInTree(self):
-        for p in self.self_and_subtree():
+        for p in self.self_and_subtree(copy=False):
             p.clearVisited()
     #@+node:ekr.20031218072017.3388: *5* p.clearAllVisitedInTree
     def clearAllVisitedInTree(self):
-        for p in self.self_and_subtree():
+        for p in self.self_and_subtree(copy=False):
             p.v.clearVisited()
             p.v.clearWriteBit()
     #@+node:ekr.20040305162628: *4* p.Dirty bits
@@ -1773,7 +1792,7 @@ class Position(object):
     def inAtIgnoreRange(self):
         """Returns True if position p or one of p's parents is an @ignore node."""
         p = self
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             if p.isAtIgnoreNode():
                 return True
         return False
@@ -1830,7 +1849,7 @@ class Position(object):
     def in_at_all_tree(self):
         '''Return True if p or one of p's ancestors is an @all node.'''
         p = self
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             if p.is_at_all():
                 return True
         return False
@@ -1843,7 +1862,7 @@ class Position(object):
     def in_at_ignore_tree(self):
         '''Return True if p or one of p's ancestors is an @ignore node.'''
         p = self
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             if g.match_word(p.h, 0, '@ignore'):
                 return True
         return False
@@ -1973,7 +1992,6 @@ class VNodeBase(object):
         assert self.fileIndex, g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__(self):
-        # return "<VNode %7x %s>" % (id(self), self.cleanHeadString())
         return "<VNode %s %s>" % (self.gnx, self.cleanHeadString())
 
     __str__ = __repr__
@@ -2069,7 +2087,7 @@ class VNodeBase(object):
     #@+node:EKR.20040430152000: *4* v.isAtAllNode
     def isAtAllNode(self):
         """Returns True if the receiver contains @others in its body at the start of a line."""
-        flag, i = g.is_special(self._bodyString, 0, "@all")
+        flag, i = g.is_special(self._bodyString, "@all")
         return flag
     #@+node:ekr.20040326031436: *4* v.isAnyAtFileNode
     def isAnyAtFileNode(self):
@@ -2122,12 +2140,12 @@ class VNodeBase(object):
         if g.match_word(self._headString, 0, '@ignore'):
             return True
         else:
-            flag, i = g.is_special(self._bodyString, 0, "@ignore")
+            flag, i = g.is_special(self._bodyString, "@ignore")
             return flag
     #@+node:ekr.20031218072017.3352: *4* v.isAtOthersNode
     def isAtOthersNode(self):
         """Returns True if the receiver contains @others in its body at the start of a line."""
-        flag, i = g.is_special(self._bodyString, 0, "@others")
+        flag, i = g.is_special(self._bodyString, "@others")
         return flag
     #@+node:ekr.20031218072017.3353: *4* v.matchHeadline
     def matchHeadline(self, pattern):
@@ -2177,7 +2195,7 @@ class VNodeBase(object):
         else:
             if not self.body_unicode_warning:
                 self.body_unicode_warning = True
-                g.internalError('not unicode:', repr(self._bodyString))
+                g.internalError('not unicode:', repr(self._bodyString), self._headString)
             return g.toUnicode(self._bodyString)
 
     getBody = bodyString
@@ -2228,10 +2246,10 @@ class VNodeBase(object):
     def headString(self):
         """Return the headline string."""
         # This message should never be printed and we want to avoid crashing here!
-        if not g.isUnicode(self._headString):
+        if not g.isString(self._headString):
             if not self.head_unicode_warning:
                 self.head_unicode_warning = True
-                g.internalError('not unicode', repr(self._headString))
+                g.internalError('not a string', repr(self._headString))
         # Make _sure_ we return a unicode string.
         return g.toUnicode(self._headString)
 
@@ -2390,6 +2408,9 @@ class VNodeBase(object):
     #@+node:ekr.20080429053831.9: *5* v.setWriteBit
     def setWriteBit(self):
         self.statusBits |= self.writeBit
+    #@+node:ville.20120502221057.7499: *4* v.childrenModified
+    def childrenModified(self):
+        g.childrenModifiedSet.add(self)
     #@+node:ekr.20031218072017.3385: *4* v.computeIcon & setIcon
     def computeIcon(self):
         val = 0; v = self
@@ -2401,6 +2422,9 @@ class VNodeBase(object):
 
     def setIcon(self):
         pass # Compatibility routine for old scripts
+    #@+node:ville.20120502221057.7498: *4* v.contentModified
+    def contentModified(self):
+        g.contentModifiedSet.add(self)
     #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll
     # Called only by LeoTree.selectHelper.
 
@@ -2483,12 +2507,6 @@ class VNodeBase(object):
         v = self
         v.selectionStart = start
         v.selectionLength = length
-    #@+node:ville.20120502221057.7498: *4* v.contentModified
-    def contentModified(self):
-        g.contentModifiedSet.add(self)
-    #@+node:ville.20120502221057.7499: *4* v.childrenModified
-    def childrenModified(self):
-        g.childrenModifiedSet.add(self)
     #@+node:ekr.20130524063409.10700: *3* v.Inserting & cloning
     def cloneAsNthChild(self, parent_v, n):
         # Does not check for illegal clones!
@@ -2512,12 +2530,26 @@ class VNodeBase(object):
         assert v.children[n] == v2
         return v2
     #@+node:ekr.20080427062528.9: *3* v.Low level methods
-    #@+node:ekr.20090706110836.6135: *4* v._addLink & helper
-    def _addLink(self, childIndex, parent_v, adjust=True):
+    #@+node:ekr.20180709175203.1: *4* v._addCopiedLink
+    def _addCopiedLink(self, childIndex, parent_v):
         '''Adjust links after adding a link to v.'''
         v = self
         v.context.frame.tree.generation += 1
         parent_v.childrenModified()
+            # For a plugin.
+        # Update parent_v.children & v.parents.
+        parent_v.children.insert(childIndex, v)
+        v.parents.append(parent_v)
+        # Set zodb changed flags.
+        v._p_changed = 1
+        parent_v._p_changed = 1
+    #@+node:ekr.20090706110836.6135: *4* v._addLink & _addParentLinks
+    def _addLink(self, childIndex, parent_v):
+        '''Adjust links after adding a link to v.'''
+        v = self
+        v.context.frame.tree.generation += 1
+        parent_v.childrenModified()
+            # For a plugin.
         # Update parent_v.children & v.parents.
         parent_v.children.insert(childIndex, v)
         v.parents.append(parent_v)
@@ -2527,10 +2559,9 @@ class VNodeBase(object):
         # If v has only one parent, we adjust all
         # the parents links in the descendant tree.
         # This handles clones properly when undoing a delete.
-        if adjust:
-            if len(v.parents) == 1:
-                for child in v.children:
-                    child._addParentLinks(parent=v)
+        if len(v.parents) == 1:
+            for child in v.children:
+                child._addParentLinks(parent=v)
     #@+node:ekr.20090804184658.6129: *5* v._addParentLinks
     def _addParentLinks(self, parent):
 
@@ -2539,7 +2570,7 @@ class VNodeBase(object):
         if len(v.parents) == 1:
             for child in v.children:
                 child._addParentLinks(parent=v)
-    #@+node:ekr.20090804184658.6128: *4* v._cutLink
+    #@+node:ekr.20090804184658.6128: *4* v._cutLink & _cutParentLinks
     def _cutLink(self, childIndex, parent_v):
         '''Adjust links after cutting a link to v.'''
         v = self
@@ -2548,7 +2579,12 @@ class VNodeBase(object):
         assert parent_v.children[childIndex] == v
         del parent_v.children[childIndex]
         if parent_v in v.parents:
-            v.parents.remove(parent_v)
+            try:
+                v.parents.remove(parent_v)
+            except ValueError:
+                g.internalError('%s not in parents of %s' % (parent_v, v))
+                g.trace('v.parents:')
+                g.printObj(v.parents)
         v._p_changed = 1
         parent_v._p_changed = 1
         # If v has no more parents, we adjust all
@@ -2565,7 +2601,24 @@ class VNodeBase(object):
         if not v.parents:
             for child in v.children:
                 child._cutParentLinks(parent=v)
-    #@+node:ekr.20031218072017.3425: *4* v._linkAsNthChild (used by 4.x read logic)
+    #@+node:ekr.20180709064515.1: *4* v._deleteAllChildren
+    def _deleteAllChildren(self):
+        '''
+        Delete all children of self.
+        
+        This is a low-level method, used by the read code.
+        It is not intended as a general replacement for p.doDelete().
+        '''
+        v = self
+        for v2 in v.children:
+            try:
+                v2.parents.remove(v)
+            except ValueError:
+                g.internalError('%s not in parents of %s' % (v, v2))
+                g.trace('v2.parents:')
+                g.printObj(v2.parents)
+        v.children = []
+    #@+node:ekr.20031218072017.3425: *4* v._linkAsNthChild
     def _linkAsNthChild(self, parent_v, n):
         """Links self as the n'th child of VNode pv"""
         v = self # The child node.

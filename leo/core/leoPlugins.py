@@ -419,9 +419,15 @@ class LeoPluginsController(object):
     #@+node:ekr.20100909065501.5949: *4* plugins.regularizeName
     def regularizeName(self, fn):
         '''Return the name used as a key to this modules dictionaries.'''
-        if fn.endswith('.py'):
-            fn = "leo.plugins." + fn[: -3]
-        return fn
+        if not fn.endswith('.py'):
+            return fn
+        #
+        # Allow .leo/plugins
+        path = g.os_path_finalize_join('~', '.leo', 'plugins', fn)
+        if g.os_path_exists(path):
+            return fn[: -3]
+        # Return the default module for leo plugins.
+        return "leo.plugins." + fn[: -3]
     #@+node:ekr.20100909104341.5979: *4* plugins.setLoaded
     def setLoaded(self, fn, m):
         self.loadedModules[self.regularizeName(fn)] = m
@@ -449,7 +455,7 @@ class LeoPluginsController(object):
         for plugin in s.splitlines():
             if plugin.strip() and not plugin.lstrip().startswith('#'):
                 self.loadOnePlugin(plugin.strip(), tag=tag)
-    #@+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin
+    #@+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin & helper functions
     def loadOnePlugin(self, moduleOrFileName, tag='open0', verbose=False):
         '''
         Load one plugin from a file name or module.
@@ -458,99 +464,118 @@ class LeoPluginsController(object):
         Using a module name allows plugins to be loaded from outside the leo/plugins directory.
         '''
         global optional_modules
-            # verbose is no longer used: all traces are verbose
         trace = 'plugins' in g.app.debug
-            # This trace can be useful during unit testing.
-            # The proper way to disable this while running unit tests
-            # externally is to set g.app.trace_plugins off.
 
         def report(message):
-            g.es_print('loadOnePlugin: %s' % message)
+            if (trace or tag == 'open0') and not g.unitTesting:
+                g.es_print('loadOnePlugin: %s' % message)
+                
+        # Define local helper functions.
+        #@+others
+        #@+node:ekr.20180528160855.1: *5* function:callInitFunction
+        def callInitFunction(result):
+            '''True to call the top-level init function.'''
+            try:
+                # Indicate success only if init_result is True.
+                init_result = result.init()
+                    # Careful: this may throw an exception.
+                if init_result not in (True, False):
+                    report('%s.init() did not return a bool' % moduleName)
+                if init_result:
+                    self.loadedModules[moduleName] = result
+                    self.loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
+                else:
+                    report('%s.init() returned False' % moduleName)
+                    result = None
+            except Exception:
+                report('exception loading plugin: %s' % moduleName)
+                g.es_exception()
+                result = None
+            return result
+        #@+node:ekr.20180528162604.1: *5* function:finishImport
+        def finishImport(result):
+            '''Handle last-minute checks.'''
+            if tag == 'unit-test-load':
+                return result # Keep the result, but do no more.
+            if hasattr(result, 'init'):
+                return callInitFunction(result)
+            #
+            # No top-level init function.
+            if g.app.unitTesting:
+                # Do *not* load the module.
+                self.loadedModules[moduleName] = None
+                return None
+            # Guess that the module was loaded correctly.
+            report('fyi: no top-level init() function in %s' % moduleName)
+            self.loadedModules[moduleName] = result
+            return result
+        #@+node:ekr.20180528160744.1: *5* function:loadOnePluginHelper
+        def loadOnePluginHelper(moduleName):
+            result = None
+            try:
+                __import__(moduleName)
+                # Look up through sys.modules, __import__ returns toplevel package
+                result = sys.modules[moduleName]
+            except g.UiTypeException:
+                report('plugin %s does not support %s gui' % (moduleName, g.app.gui.guiName()))
+            except ImportError:
+                report('error importing plugin: %s' % moduleName)
+            # except ModuleNotFoundError:
+                # report('module not found: %s' % moduleName)
+            except SyntaxError:
+                report('syntax error importing plugin: %s' % moduleName)
+            except Exception:
+                report('exception importing plugin: %s' % moduleName)
+                g.es_exception()
+            return result
+        #@+node:ekr.20180528162300.1: *5* function:reportFailedImport
+        def reportFailedImport():
+            '''Report a failed import.'''
+            if g.app.batchMode or g.app.inBridge or g.unitTesting or not trace:
+                return
+            if (
+                self.warn_on_failure and
+                tag == 'open0' and
+                not g.app.gui.guiName().startswith('curses') and
+                moduleName not in optional_modules
+            ):
+                report('can not load enabled plugin: %s' % moduleName)
+        #@-others
 
         if not g.app.enablePlugins:
-            if trace: report('plugins disabled: %s' % moduleOrFileName)
+            report('plugins disabled: %s' % moduleOrFileName)
             return None
         if moduleOrFileName.startswith('@'):
-            if trace: report('ignoring Leo directive: %s' % moduleOrFileName)
+            report('ignoring Leo directive: %s' % moduleOrFileName)
             return None
                 # Return None, not False, to keep pylint happy.
                 # Allow Leo directives in @enabled-plugins nodes.
         moduleName = self.regularizeName(moduleOrFileName)
         if self.isLoaded(moduleName):
             module = self.loadedModules.get(moduleName)
-            if trace: report('already loaded: %s' % moduleName)
             return module
         assert g.app.loadDir
         moduleName = g.toUnicode(moduleName)
-        # This import will typically result in calls to registerHandler.
-        # if the plugin does _not_ use the init top-level function.
-        self.loadingModuleNameStack.append(moduleName)
+        #
+        # Try to load the plugin.
         try:
-            __import__(moduleName)
-            # need to look up through sys.modules, __import__ returns toplevel package
-            result = sys.modules[moduleName]
-        except g.UiTypeException:
-            if trace: report('plugin %s does not support %s gui' % (moduleName, g.app.gui.guiName()))
-            result = None
-        except ImportError:
-            if trace or tag == 'open0': # Just give the warning once.
-                report('error importing plugin: %s' % moduleName)
-                g.es_exception()
-            result = None
-        except SyntaxError:
-            if trace or tag == 'open0': # Just give the warning once.
-                report('syntax error importing plugin: %s' % moduleName)
-                # g.es_exception()
-            result = None
-        except Exception:
-            if trace:
-                report('exception importing plugin: %s' % moduleName)
-                g.es_exception()
-            result = None
-        self.loadingModuleNameStack.pop()
-        if result:
-            self.signonModule = result # for self.plugin_signon.
             self.loadingModuleNameStack.append(moduleName)
-            if tag == 'unit-test-load':
-                pass # Keep the result, but do no more.
-            elif hasattr(result, 'init'):
-                try:
-                    # Indicate success only if init_result is True.
-                    init_result = result.init()
-                    if init_result not in (True, False):
-                        report('%s.init() did not return a bool' % moduleName)
-                    if init_result:
-                        self.loadedModules[moduleName] = result
-                        self.loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
-                    else:
-                        if trace: # not g.app.initing:
-                            report('%s.init() returned False' % moduleName)
-                        result = None
-                except Exception:
-                    if trace:
-                        report('exception loading plugin: %s' % moduleName)
-                        g.es_exception()
-                    result = None
-            else:
-                # No top-level init function.
-                # Guess that the module was loaded correctly,
-                # but do *not* load the plugin if we are unit testing.
-                if g.app.unitTesting:
-                    result = None
-                    self.loadedModules[moduleName] = None
-                else:
-                    if trace: report('fyi: no top-level init() function in %s' % moduleName)
-                    self.loadedModules[moduleName] = result
+            result = loadOnePluginHelper(moduleName)
+        finally:
             self.loadingModuleNameStack.pop()
-        if g.app.batchMode or g.app.inBridge or g.unitTesting:
-            pass
-        elif result:
-            if trace: report('loaded: %s' % moduleName)
-        elif trace or self.warn_on_failure:
-            if trace or tag == 'open0':
-                if not g.app.gui.guiName().startswith('curses'):
-                    if moduleName not in optional_modules:
-                        report('can not load enabled plugin: %s' % moduleName)
+        if not result:
+            reportFailedImport()
+            return None
+        #
+        # Last-minute checks.
+        try:
+            self.loadingModuleNameStack.append(moduleName)
+            result = finishImport(result)
+        finally:
+            self.loadingModuleNameStack.pop()
+        if result:
+            report('loaded: %s' % moduleName)
+        self.signonModule = result # for self.plugin_signon.
         return result
     #@+node:ekr.20031218072017.1318: *4* plugins.plugin_signon
     def plugin_signon(self, module_name, verbose=False):

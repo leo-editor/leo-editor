@@ -82,7 +82,8 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
         self.frame = w = QtWidgets.QFrame()
         w.setLayout(QtWidgets.QVBoxLayout())
         w.layout().addWidget(self.canvas)
-        vc.embed_widget(w)
+        if vc:
+            vc.embed_widget(w)
 
         class DummyWindow:
 

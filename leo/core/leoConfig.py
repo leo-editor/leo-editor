@@ -210,7 +210,7 @@ class ParserBaseClass(object):
                 if not p2.b.endswith('\n'):
                     data.append('\n')
         self.set(p, kind, name, data)
-    #@+node:ekr.20131114051702.16545: *4* doOutlineData & helper (new in Leo 4.11.1)
+    #@+node:ekr.20131114051702.16545: *4* doOutlineData & helper (ParserBaseClass)
     def doOutlineData(self, p, kind, name, val):
         # New in Leo 4.11: do not strip lines.
         data = self.getOutlineDataHelper(p)
@@ -219,7 +219,8 @@ class ParserBaseClass(object):
     #@+node:ekr.20131114051702.16546: *5* getOutlineDataHelper
     def getOutlineDataHelper(self, p):
         c = self.c
-        if not p: return None
+        if not p:
+            return None
         try:
             # Copy the entire tree to s.
             c.fileCommands.leo_file_encoding = 'utf-8'
@@ -792,6 +793,8 @@ class ParserBaseClass(object):
         command-name --> same = binding
         '''
         # c = self.c
+        s = s.replace('\x7f', '')
+            # Can happen on MacOS. Very weird.
         name = val = nextMode = None; nextMode = 'none'
         i = g.skip_ws(s, 0)
         if g.match(s, i, '-->'): # New in 4.4.1 b1: allow mode-entry commands.
@@ -1596,7 +1599,6 @@ class LocalConfigManager(object):
                 strip_comments=strip_comments,
                 strip_data=strip_data,
             )
-            ### g.trace('OLD: %4s %s' % (data0 and len(data0), setting))
         data = self.get(setting, "data")
         # New in Leo 4.11: parser.doData strips only comments now.
         # New in Leo 4.12: parser.doData strips *nothing*.
@@ -1611,7 +1613,6 @@ class LocalConfigManager(object):
                 data.extend(data0)
             else:
                 data = data0
-            ### g.trace('NEW: %4s %s' % (data and len(data), setting))
         return data
     #@+node:ekr.20131114051702.16542: *5* c.config.getOutlineData
     def getOutlineData(self, setting):
@@ -1871,18 +1872,12 @@ class LocalConfigManager(object):
         if i > -1:
             h = h[:i].strip()
         p.h = '%s = %s' % (h, value)
+        #
         # Delay the second redraw until idle time.
-
-        def handler(timer, c=c, p=p):
-            c.setChanged()
-            p.setDirty()
-            c.selectPosition(p)
-            c.redraw_now()
-            timer.stop()
-
-        timer = g.IdleTime(handler, delay=0, tag='c.config.setUserSetting')
-        if timer:
-            timer.start()
+        c.setChanged(redrawFlag=False)
+        p.setDirty()
+        c.redraw_later()
+       
     #@-others
 #@+node:ekr.20041119203941.3: ** class SettingsTreeParser (ParserBaseClass)
 class SettingsTreeParser(ParserBaseClass):

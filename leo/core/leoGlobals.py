@@ -20,20 +20,8 @@ isWindows = sys.platform.startswith('win')
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
-#
-# True unless --no-cache is in effect.
-# Don't even think about eliminating this constant.
-enableDB = True
-#
-# These print statements have been moved to writeWaitingLog.
-# This allows for better --silent operation.
-if 0:
-    print('*** isPython3: %s' % isPython3)
-    if not enableDB:
-        print('** leoGlobals.py: caching disabled')
-#
-# True: Enable SQLite DB.
 SQLITE = True
+    # True: Enable SQLite DB.
 #@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
@@ -173,6 +161,178 @@ cmd_instance_dict = {
     'VimCommands':              ['c', 'vimCommands'],
 }
 #@-<< define global decorator dicts >>
+#@+<< define g.decorators >>
+#@+node:ekr.20150508165324.1: ** << define g.Decorators >>
+#@+others
+#@+node:ekr.20170219173203.1: *3* g.callback
+def callback(func):
+    '''
+    A global decorator that protects Leo against crashes in callbacks.
+
+    This is the recommended way of defining all callback.
+
+        @g.callback
+        def a_callback(...):
+            c = event.get('c')
+            ...
+    '''
+
+    def callback_wrapper(*args, **keys):
+        '''Callback for the @g.callback decorator.'''
+        try:
+            return func(*args, **keys)
+        except Exception:
+            g.es_exception()
+
+    return callback_wrapper
+#@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
+def check_cmd_instance_dict(c, g):
+    '''
+    Check g.check_cmd_instance_dict.
+    This is a permanent unit test, called from c.finishCreate.
+    '''
+    d = cmd_instance_dict
+    for key in d:
+        ivars = d.get(key)
+        obj = ivars2instance(c, g, ivars)
+            # Produces warnings.
+        if obj:
+            name = obj.__class__.__name__
+            if name != key:
+                g.trace('class mismatch', key, name)
+#@+node:ville.20090521164644.5924: *3* g.command (decorator)
+class Command(object):
+    '''
+    A global decorator for creating commands.
+
+    This is the recommended way of defining all new commands, including
+    commands that could befined inside a class. The typical usage is:
+
+        @g.command('command-name')
+        def A_Command(event):
+            c = event.get('c')
+            ...
+
+    g can *not* be used anywhere in this class!
+    '''
+
+    def __init__(self, name, **kwargs):
+        '''Ctor for command decorator class.'''
+        self.name = name
+
+    def __call__(self, func):
+        '''Register command for all future commanders.'''
+        global_commands_dict[self.name] = func
+        if app:
+            for c in app.commanders():
+                c.k.registerCommand(self.name, func)
+        # Inject ivars for plugins_menu.py.
+        func.is_command = True
+        func.command_name = self.name
+        return func
+
+command = Command
+#@+node:ekr.20171124070654.1: *3* g.command_alias
+def command_alias(alias, func):
+    '''Create an alias for the *already defined* method in the Commands class.'''
+    import leo.core.leoCommands as leoCommands
+    assert hasattr(leoCommands.Commands, func.__name__)
+    funcToMethod(func, leoCommands.Commands, alias)
+#@+node:ekr.20171123095526.1: *3* g.commander_command (decorator)
+class CommanderCommand(object):
+    '''
+    A global decorator for creating commander commands, that is, commands
+    that were formerly methods of the Commands class in leoCommands.py.
+    
+    Usage:
+
+        @g.command('command-name')
+        def command_name(self, *args, **kwargs):
+            ...
+        
+    The decorator injects command_name into the Commander class and calls
+    funcToMethod so the ivar will be injected in all future commanders.
+
+    g can *not* be used anywhere in this class!
+    '''
+
+    def __init__(self, name, **kwargs):
+        '''Ctor for command decorator class.'''
+        self.name = name
+
+    def __call__(self, func):
+        '''Register command for all future commanders.'''
+        
+        def commander_command_wrapper(event):
+            c = event.get('c')
+            method = getattr(c, func.__name__, None)
+            method(event=event)
+            
+        # Inject ivars for plugins_menu.py.
+        commander_command_wrapper.__name__ = 'commander_command_wrapper: %s' % self.name
+        commander_command_wrapper.__doc__ = func.__doc__
+        global_commands_dict[self.name] = commander_command_wrapper
+        if app:
+            import leo.core.leoCommands as leoCommands
+            funcToMethod(func, leoCommands.Commands)
+            for c in app.commanders():
+                c.k.registerCommand(self.name, func)
+        # Inject ivars for plugins_menu.py.
+        func.is_command = True
+        func.command_name = self.name
+        return func
+
+commander_command = CommanderCommand
+#@+node:ekr.20150508164812.1: *3* g.ivars2instance
+def ivars2instance(c, g, ivars):
+    '''
+    Return the instance of c given by ivars.
+    ivars is a list of strings.
+    A special case: ivars may be 'g', indicating the leoGlobals module.
+    '''
+    if not ivars:
+        g.trace('can not happen: no ivars')
+        return None
+    ivar = ivars[0]
+    if ivar not in ('c', 'g'):
+        g.trace('can not happen: unknown base', ivar)
+        return None
+    obj = c if ivar == 'c' else g
+    for ivar in ivars[1:]:
+        obj = getattr(obj, ivar, None)
+        if not obj:
+            g.trace('can not happen: unknown attribute', obj, ivar, ivars)
+            break
+    return obj
+#@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator (decorator)
+def new_cmd_decorator(name, ivars):
+    '''
+    Return a new decorator for a command with the given name.
+    Compute the class *instance* using the ivar string or list.
+    '''
+
+    def _decorator(func):
+
+        def new_cmd_wrapper(event):
+            c = event.c
+            self = g.ivars2instance(c, g, ivars)
+            try:
+                func(self, event=event)
+                    # Don't use a keyword for self.
+                    # This allows the VimCommands class to use vc instead.
+            except Exception:
+                g.es_exception()
+
+        new_cmd_wrapper.__name__ = 'wrapper: %s' % name
+        new_cmd_wrapper.__doc__ = func.__doc__
+        global_commands_dict[name] = new_cmd_wrapper
+            # Put the *wrapper* into the global dict.
+        return func
+            # The decorator must return the func itself.
+
+    return _decorator
+#@-others
+#@-<< define g.decorators >>
 tree_popup_handlers = [] # Set later.
 user_dict = {}
     # Non-persistent dictionary for free use by scripts and plugins.
@@ -392,7 +552,7 @@ class KeyStroke(object):
         s = self.finalize_char(s)
             # May change self.mods.
         mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
-        if trace:
+        if trace and 'meta' in self.mods:
             g.trace('%20s:%-20s ==> %s' % (binding, self.mods, mods+s))
         return mods+s
     #@+node:ekr.20180415083926.1: *4* ks.finalize_char & helper
@@ -493,11 +653,14 @@ class KeyStroke(object):
         #
         # pylint: disable=undefined-loop-variable
             # Looks like a pylint bug.
-        if s in (None, 'none'):
-            return ''
+        if s in (None, 'none', 'None'):
+            return 'None'
         if s.lower() in translate_d:
             s = translate_d.get(s.lower())
             return self.strip_shift(s)
+        if len(s) > 1 and s.find(' ') > -1:
+            # #917: not a pure, but should be ignored.
+            return ''
         if s.isalpha():
             if len(s) == 1:
                 if 'shift' in self.mods:
@@ -509,10 +672,13 @@ class KeyStroke(object):
                 elif self.mods:
                     s = s.lower()
             else:
-                # Make sure all special chars are in translate_d.
-                if g.app.gui: # It may not exist yet.
-                    if s.capitalize() in g.app.gui.specialChars:
-                        s = s.capitalize()
+                # 917: Ignore multi-byte alphas not in the table.
+                s = ''
+                if 0:
+                    # Make sure all special chars are in translate_d.
+                    if g.app.gui: # It may not exist yet.
+                        if s.capitalize() in g.app.gui.specialChars:
+                            s = s.capitalize()
             return s
         #
         # Translate shifted keys to their appropriate alternatives.
@@ -2571,19 +2737,53 @@ def printGcVerbose(tag=''):
     g.pr('dicts: %d, sequences: %d' % (dicts, seqs))
     g.pr("%s: %d new, %d total objects" % (tag, len(newObjects), len(objects)))
     g.pr('-' * 40)
+#@+node:ekr.20180528151850.1: *3* g.printTimes
+def printTimes(times):
+    '''
+    Print the differences in the times array.
+    
+    times: an array of times (calls to time.clock()).
+    '''
+    for n, junk in enumerate(times[:-1]):
+        t = times[n+1]-times[n]
+        if t > 0.1:
+            g.trace('*** %s %5.4f sec.' % (n, t))
 #@+node:ekr.20031218072017.3133: *3* g.Statistics
 #@+node:ekr.20031218072017.3134: *4* g.clearStats
 def clearStats():
 
     g.app.statsDict = {}
 #@+node:ekr.20031218072017.3135: *4* g.printStats
-def printStats(name=None):
+@command('show-stats')
+def printStats(event=None, name=None):
+    '''
+    Print all gathered statistics.
+    
+    Here is the recommended code to gather stats for one method/function:
+        
+        if not g.app.statsLockout:
+            g.app.statsLockout = True
+            try:
+                d = g.app.statsDict
+                key = 'g.isUnicode:' + g.callers()
+                d [key] = d.get(key, 0) + 1
+            finally:
+                g.app.statsLockout = False
+    '''
     if name:
         if not isString(name):
             name = repr(name)
     else:
         name = g._callerName(n=2) # Get caller name 2 levels back.
-    g.printDict(g.app.statsDict, tag='statistics at %s' % name)
+    #
+    # Print the stats, organized by number of calls.
+    d = g.app.statsDict
+    if g.isPython3:
+        d2 = {val: key for key, val in d.items()}
+    else:
+        d2 = {val: key for key, val in d.iteritems()}
+    for key in reversed(sorted(d2.keys())):
+        print('%7s %s' % (key, d2.get(key)))
 #@+node:ekr.20031218072017.3136: *4* g.stat
 def stat(name=None):
     """Increments the statistic for name in g.app.statsDict
@@ -2612,174 +2812,6 @@ def printDiffTime(message, start):
 
 def timeSince(start):
     return "%5.2f sec." % (time.time() - start)
-#@+node:ekr.20150508165324.1: ** g.Decorators
-#@+node:ekr.20170219173203.1: *3* g.callback
-def callback(func):
-    '''
-    A global decorator that protects Leo against crashes in callbacks.
-
-    This is the recommended way of defining all callback.
-
-        @g.callback
-        def a_callback(...):
-            c = event.get('c')
-            ...
-    '''
-
-    def callback_wrapper(*args, **keys):
-        '''Callback for the @g.callback decorator.'''
-        try:
-            return func(*args, **keys)
-        except Exception:
-            g.es_exception()
-
-    return callback_wrapper
-#@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
-def check_cmd_instance_dict(c, g):
-    '''
-    Check g.check_cmd_instance_dict.
-    This is a permanent unit test, called from c.finishCreate.
-    '''
-    d = cmd_instance_dict
-    for key in d:
-        ivars = d.get(key)
-        obj = ivars2instance(c, g, ivars)
-            # Produces warnings.
-        if obj:
-            name = obj.__class__.__name__
-            if name != key:
-                g.trace('class mismatch', key, name)
-#@+node:ville.20090521164644.5924: *3* g.command (decorator)
-class Command(object):
-    '''
-    A global decorator for creating commands.
-
-    This is the recommended way of defining all new commands, including
-    commands that could befined inside a class. The typical usage is:
-
-        @g.command('command-name')
-        def A_Command(event):
-            c = event.get('c')
-            ...
-
-    g can *not* be used anywhere in this class!
-    '''
-
-    def __init__(self, name, **kwargs):
-        '''Ctor for command decorator class.'''
-        self.name = name
-
-    def __call__(self, func):
-        '''Register command for all future commanders.'''
-        global_commands_dict[self.name] = func
-        if app:
-            for c in app.commanders():
-                c.k.registerCommand(self.name, func)
-        # Inject ivars for plugins_menu.py.
-        func.is_command = True
-        func.command_name = self.name
-        return func
-
-command = Command
-#@+node:ekr.20171124070654.1: *3* g.command_alias
-def command_alias(alias, func):
-    '''Create an alias for the *already defined* method in the Commands class.'''
-    import leo.core.leoCommands as leoCommands
-    assert hasattr(leoCommands.Commands, func.__name__)
-    funcToMethod(func, leoCommands.Commands, alias)
-#@+node:ekr.20171123095526.1: *3* g.commander_command (decorator)
-class CommanderCommand(object):
-    '''
-    A global decorator for creating commander commands, that is, commands
-    that were formerly methods of the Commands class in leoCommands.py.
-    
-    Usage:
-
-        @g.command('command-name')
-        def command_name(self, *args, **kwargs):
-            ...
-        
-    The decorator injects command_name into the Commander class and calls
-    funcToMethod so the ivar will be injected in all future commanders.
-
-    g can *not* be used anywhere in this class!
-    '''
-
-    def __init__(self, name, **kwargs):
-        '''Ctor for command decorator class.'''
-        self.name = name
-
-    def __call__(self, func):
-        '''Register command for all future commanders.'''
-        
-        def commander_command_wrapper(event):
-            c = event.get('c')
-            method = getattr(c, func.__name__, None)
-            method(event=event)
-            
-        # Inject ivars for plugins_menu.py.
-        commander_command_wrapper.__name__ = 'commander_command_wrapper: %s' % self.name
-        commander_command_wrapper.__doc__ = func.__doc__
-        global_commands_dict[self.name] = commander_command_wrapper
-        if app:
-            import leo.core.leoCommands as leoCommands
-            funcToMethod(func, leoCommands.Commands)
-            for c in app.commanders():
-                c.k.registerCommand(self.name, func)
-        # Inject ivars for plugins_menu.py.
-        func.is_command = True
-        func.command_name = self.name
-        return func
-
-commander_command = CommanderCommand
-#@+node:ekr.20150508164812.1: *3* g.ivars2instance
-def ivars2instance(c, g, ivars):
-    '''
-    Return the instance of c given by ivars.
-    ivars is a list of strings.
-    A special case: ivars may be 'g', indicating the leoGlobals module.
-    '''
-    if not ivars:
-        g.trace('can not happen: no ivars')
-        return None
-    ivar = ivars[0]
-    if ivar not in ('c', 'g'):
-        g.trace('can not happen: unknown base', ivar)
-        return None
-    obj = c if ivar == 'c' else g
-    for ivar in ivars[1:]:
-        obj = getattr(obj, ivar, None)
-        if not obj:
-            g.trace('can not happen: unknown attribute', obj, ivar, ivars)
-            break
-    return obj
-#@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator (decorator)
-def new_cmd_decorator(name, ivars):
-    '''
-    Return a new decorator for a command with the given name.
-    Compute the class *instance* using the ivar string or list.
-    '''
-
-    def _decorator(func):
-
-        def new_cmd_wrapper(event):
-            c = event.c
-            self = g.ivars2instance(c, g, ivars)
-            try:
-                func(self, event=event)
-                    # Don't use a keyword for self.
-                    # This allows the VimCommands class to use vc instead.
-            except Exception:
-                g.es_exception()
-
-        new_cmd_wrapper.__name__ = 'wrapper: %s' % name
-        new_cmd_wrapper.__doc__ = func.__doc__
-        global_commands_dict[name] = new_cmd_wrapper
-            # Put the *wrapper* into the global dict.
-        return func
-            # The decorator must return the func itself.
-
-    return _decorator
 #@+node:ekr.20031218072017.1380: ** g.Directives
 # New in Leo 4.6:
 # g.findAtTabWidthDirectives, g.findLanguageDirectives and
@@ -2823,7 +2855,7 @@ def findTabWidthDirectives(c, p):
         return # c may be None for testing.
     w = None
     # 2009/10/02: no need for copy arg to iter
-    for p in p.self_and_parents():
+    for p in p.self_and_parents(copy=False):
         if w: break
         for s in p.h, p.b:
             if w: break
@@ -2847,8 +2879,7 @@ def findLanguageDirectives(c, p):
     else:
         language = 'python'
     found = False
-    # 2009/10/02: no need for copy arg to iter.
-    for p in p.self_and_parents():
+    for p in p.self_and_parents(copy=False):
         if found: break
         for s in p.h, p.b:
             if found: break
@@ -2872,17 +2903,17 @@ def findReference(name, root):
     and an ancestor is an @root node,
     search all the descendants of the @root node.
     '''
-    for p in root.subtree():
+    for p in root.subtree(copy=False):
         assert(p != root)
         if p.matchHeadline(name) and not p.isAtIgnoreNode():
-            return p
+            return p.copy()
     # New in Leo 4.7: expand the search for @root trees.
-    for p in root.self_and_parents():
+    for p in root.self_and_parents(copy=False):
         d = g.get_directives_dict(p)
         if 'root' in d:
-            for p2 in p.subtree():
+            for p2 in p.subtree(copy=False):
                 if p2.matchHeadline(name) and not p2.isAtIgnoreNode():
-                    return p2
+                    return p2.copy()
     return None
 #@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
 # The caller passes [root_node] or None as the second arg.
@@ -2952,8 +2983,9 @@ def get_directives_dict_list(p):
     the start of each directive"""
     result = []
     p1 = p.copy()
-    for p in p1.self_and_parents():
-        root = None if p.hasParent() else [p.copy()]
+    for p in p1.self_and_parents(copy=False):
+        root = None if p.hasParent() else [p]
+            # No copy necessary: g.get_directives_dict does not change p.
         result.append(g.get_directives_dict(p, root=root))
     return result
 #@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
@@ -2962,7 +2994,7 @@ def getLanguageFromAncestorAtFileNode(p):
     Return the language in effect as determined
     by the file extension of the nearest enclosing @<file> node.
     '''
-    for p in p.self_and_parents():
+    for p in p.self_and_parents(copy=False):
         if p.isAnyAtFileNode():
             name = p.anyAtFileNodeName()
             junk, ext = g.os_path_splitext(name)
@@ -3186,7 +3218,7 @@ def scanForAtIgnore(c, p):
     """Scan position p and its ancestors looking for @ignore directives."""
     if g.app.unitTesting:
         return False # For unit tests.
-    for p in p.self_and_parents():
+    for p in p.self_and_parents(copy=False):
         d = g.get_directives_dict(p)
         if 'ignore' in d:
             return True
@@ -3198,7 +3230,7 @@ def scanForAtLanguage(c, p):
     Returns the language found, or c.target_language."""
     # Unlike the code in x.scanAllDirectives, this code ignores @comment directives.
     if c and p:
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             d = g.get_directives_dict(p)
             if 'language' in d:
                 z = d["language"]
@@ -3208,7 +3240,7 @@ def scanForAtLanguage(c, p):
 #@+node:ekr.20041123094807: *3* g.scanForAtSettings
 def scanForAtSettings(p):
     """Scan position p and its ancestors looking for @settings nodes."""
-    for p in p.self_and_parents():
+    for p in p.self_and_parents(copy=False):
         h = p.h
         h = g.app.config.canonicalizeSettingName(h)
         if h.startswith("@settings"):
@@ -3434,7 +3466,7 @@ def fullPath(c, p, simulate=False):
     path nor the fileName will be created if it does not exist.
     '''
     # Search p and p's parents.
-    for p in p.self_and_parents():
+    for p in p.self_and_parents(copy=False):
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
         fn = p.h if simulate else p.anyAtFileNodeName()
@@ -3933,7 +3965,7 @@ def findRootsWithPredicate(c, root, predicate=None):
             return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
 
     # 1. Search p's tree.
-    for p in root.self_and_subtree():
+    for p in root.self_and_subtree(copy=False):
         if predicate(p) and p.v not in seen:
             seen.append(p.v)
             roots.append(p.copy())
@@ -3945,11 +3977,11 @@ def findRootsWithPredicate(c, root, predicate=None):
             return [p.copy()]
     # 3. Expand the search if root is a clone.
     clones = []
-    for p in root.self_and_parents():
+    for p in root.self_and_parents(copy=False):
         if p.isCloned():
             clones.append(p.v)
     if clones:
-        for p in c.all_positions():
+        for p in c.all_positions(copy=False):
             if predicate(p):
                 # Match if any node in p's tree matches any clone.
                 for p2 in p.self_and_subtree():
@@ -4471,21 +4503,17 @@ def is_c_id(ch):
 #@+node:ekr.20031218072017.3178: *4* is_nl
 def is_nl(s, i):
     return i < len(s) and (s[i] == '\n' or s[i] == '\r')
-#@+node:ekr.20031218072017.3179: *4* is_special
-# We no longer require that the directive appear befor any @c directive or section definition.
-
-def is_special(s, i, directive):
+#@+node:ekr.20031218072017.3179: *4* g.is_special
+def is_special(s, directive):
     '''Return True if the body text contains the @ directive.'''
     assert(directive and directive[0] == '@')
-    # All directives except @others must start the line.
-    skip_flag = directive in ("@others", "@all")
-    while i < len(s):
-        if g.match_word(s, i, directive):
-            return True, i
-        else:
-            i = g.skip_line(s, i)
-            if skip_flag:
-                i = g.skip_ws(s, i)
+    lws = directive in ("@others", "@all")
+        # Most directives must start the line.
+    pattern = r'^\s*(%s\b)' if lws else r'^(%s\b)'
+    pattern = re.compile(pattern % directive, re.MULTILINE)
+    m = re.search(pattern, s)
+    if m:
+        return True, m.start(1)
     return False, -1
 #@+node:ekr.20031218072017.3180: *4* is_ws & is_ws_or_nl
 def is_ws(c):
@@ -4509,26 +4537,23 @@ def match_c_word(s, i, name):
 #@+node:ekr.20031218072017.3183: *4* match_ignoring_case
 def match_ignoring_case(s1, s2):
     return s1 and s2 and s1.lower() == s2.lower()
-#@+node:ekr.20031218072017.3184: *4* match_word
+#@+node:ekr.20031218072017.3184: *4* g.match_word
 def match_word(s, i, pattern):
-    if 0:
-        # Doesn't work (yet).
-        pattern = re.compile('\b' + pattern + '\b')
-        return pattern.match(s, i)
-    else:
-        if pattern is None:
-            return False
-        if i > 0 and g.isWordChar(s[i-1]): # Bug fix: 2017/06/01.
-            return False
-        j = len(pattern)
-        if j == 0:
-            return False
-        if s.find(pattern, i, i + j) != i:
-            return False
-        if i + j >= len(s):
-            return True
-        ch = s[i + j]
-        return not g.isWordChar(ch)
+
+    # Using a regex is surprisingly tricky.
+    if pattern is None:
+        return False
+    if i > 0 and g.isWordChar(s[i-1]): # Bug fix: 2017/06/01.
+        return False
+    j = len(pattern)
+    if j == 0:
+        return False
+    if s.find(pattern, i, i + j) != i:
+        return False
+    if i + j >= len(s):
+        return True
+    ch = s[i + j]
+    return not g.isWordChar(ch)
 #@+node:ekr.20031218072017.3185: *4* skip_blank_lines
 # This routine differs from skip_ws_and_nl in that
 # it does not advance over whitespace at the start
@@ -4895,6 +4920,8 @@ def gitInfo(path=None):
         with open(path) as f:
             s = f.read()
             if not s.startswith('ref'):
+                branch = 'None'
+                commit = s[:7]
                 return branch, commit
         # On a proper branch
         pointer = s.split()[1]
@@ -5119,7 +5146,6 @@ def importModule(moduleName, pluginName=None, verbose=False):
     '''
     # Important: g is Null during startup.
     trace = 'plugins' in g.app.debug
-    # if moduleName == 'rope': g.pdb()
     module = sys.modules.get(moduleName)
     if module:
         return module
@@ -5156,11 +5182,12 @@ def importModule(moduleName, pluginName=None, verbose=False):
                     if v not in exceptions:
                         exceptions.append(v)
             else:
-                #unable to load module, display all exception messages
+                # Unable to load module, display all exception messages
                 if verbose:
                     for e in exceptions:
                         g.warning(e)
-        except Exception: # Importing a module can throw exceptions other than ImportError.
+        except Exception:
+            # Importing a module can throw exceptions other than ImportError.
             if verbose:
                 t, v, tb = sys.exc_info()
                 del tb # don't need the traceback
@@ -5491,12 +5518,17 @@ def getPythonEncodingFromString(s):
     return encoding
 #@+node:ekr.20080816125725.2: *4* g.isBytes/Callable/Int/String/Unicode
 # The syntax of these functions must be valid on Python2K and Python3K.
-#@+node:ekr.20160229070349.2: *5* g.isBytes
-def isBytes(s):
-    '''Return True if s is Python3k bytes type.'''
-    if g.isPython3:
+#@+node:ekr.20160229070349.2: *5* g.isBytes (inlined)
+if isPython3:
+
+    def isBytes(s):
+        '''Return True if s is Python3k bytes type.'''
         return isinstance(s, bytes)
-    else:
+        
+else:
+
+    def isBytes(s):
+        '''Return True if s is Python3k bytes type.'''
         return False
 #@+node:ekr.20160229070349.3: *5* g.isCallable
 def isCallable(obj):
@@ -5522,21 +5554,33 @@ def isList(s):
         return isinstance(s, list)
     else:
         return isinstance(s, types.ListTypes)
-#@+node:ekr.20160229070349.5: *5* g.isString
-def isString(s):
-    '''Return True if s is any string, but not bytes.'''
-    # pylint: disable=no-member
-    if g.isPython3:
+#@+node:ekr.20160229070349.5: *5* g.isString (inlined)
+if isPython3:
+
+    def isString(s):
+        '''Return True if s is any string, but not bytes.'''
+        # pylint: disable=no-member
         return isinstance(s, str)
-    else:
+
+else:
+
+     def isString(s):
+        '''Return True if s is any string, but not bytes.'''
+        # pylint: disable=no-member
         return isinstance(s, types.StringTypes)
-#@+node:ekr.20160229070349.6: *5* g.isUnicode
-def isUnicode(s):
-    '''Return True if s is a unicode string.'''
-    # pylint: disable=no-member
-    if g.isPython3:
+#@+node:ekr.20160229070349.6: *5* g.isUnicode (Inlined)
+if isPython3:
+    
+    def isUnicode(s):
+        '''Return True if s is a unicode string.'''
+        # pylint: disable=no-member
         return isinstance(s, str)
-    else:
+
+else:
+
+    def isUnicode(s):
+        '''Return True if s is a unicode string.'''
+        # pylint: disable=no-member
         return isinstance(s, types.UnicodeType)
 #@+node:ekr.20031218072017.1500: *4* g.isValidEncoding
 def isValidEncoding(encoding):
@@ -5589,6 +5633,40 @@ def stripBOM(s):
             if bom == s[: len(bom)]:
                 return e, s[len(bom):]
     return None, s
+#@+node:ekr.20050208093800.1: *4* g.toUnicode (Inlined)
+# This inlining makes a huge difference.
+# It saves most calls to _toUnicode and g.isUnicode!
+
+if isPython3:
+    def toUnicode(s, encoding='utf-8', reportErrors=False):
+        '''Convert a non-unicode string with the given encoding to unicode.'''
+        # pylint: disable=no-member
+        return s if isinstance(s, str) else _toUnicode(s, encoding, reportErrors)
+else:
+    def toUnicode(s, encoding='utf-8', reportErrors=False):
+        '''Convert a non-unicode string with the given encoding to unicode.'''
+        # pylint: disable=no-member
+        return s if isinstance(s, types.UnicodeType) else _toUnicode(s, encoding, reportErrors)
+            
+def _toUnicode(s, encoding, reportErrors):
+    '''Helper for g.toUnicode.'''
+    if not encoding:
+        encoding = 'utf-8'
+    #
+    # These are the only significant calls to s.decode in Leo.
+    try:
+        s = s.decode(encoding, 'strict')
+    except (UnicodeDecodeError, UnicodeError):
+        # https://wiki.python.org/moin/UnicodeDecodeError
+        s = s.decode(encoding, 'replace')
+        if reportErrors:
+            g.trace(g.callers())
+            g.error("toUnicode: Error converting %s...from %s encoding to unicode" % (
+                s[: 200], encoding))
+    except AttributeError:
+        # May be a QString.
+        s = g.u(s)
+    return s
 #@+node:ekr.20050208093800: *4* g.toEncodedString
 def toEncodedString(s, encoding='utf-8', reportErrors=False):
     '''Convert unicode string to an encoded string.'''
@@ -5606,29 +5684,6 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
     # Tracing these calls directly yields thousands of calls.
     # Never call g.trace here!
         # g.dump_encoded_string(encoding,s)
-    return s
-#@+node:ekr.20050208093800.1: *4* g.toUnicode
-def toUnicode(s, encoding='utf-8', reportErrors=False):
-    '''Connvert a non-unicode string with the given encoding to unicode.'''
-    if g.isUnicode(s):
-        return s
-    if not encoding:
-        encoding = 'utf-8'
-    #
-    # These are the only significant calls to s.decode in Leo.
-    # Tracing these calls directly yields thousands of calls.
-    try:
-        s = s.decode(encoding, 'strict')
-    except (UnicodeDecodeError, UnicodeError):
-        # https://wiki.python.org/moin/UnicodeDecodeError
-        s = s.decode(encoding, 'replace')
-        if reportErrors:
-            g.trace(g.callers())
-            g.error("toUnicode: Error converting %s...from %s encoding to unicode" % (
-                s[: 200], encoding))
-    except AttributeError:
-        # May be a QString.
-        s = g.u(s)
     return s
 #@+node:ekr.20091206161352.6232: *4* g.u & g.ue
 if isPython3: # g.not defined yet.
@@ -6103,7 +6158,7 @@ def es_print(*args, **keys):
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
     g.pr(*args, **keys)
-    if not g.app.unitTesting:
+    if g.app and not g.app.unitTesting:
         g.es(*args, **keys)
 #@+node:ekr.20111107181638.9741: *3* g.es_print_exception
 def es_print_exception(full=True, c=None, color="red"):
@@ -7207,22 +7262,22 @@ def findNodeInTree(c, p, headline, exact=True):
 
 def findNodeAnywhere(c, headline, exact=True):
     h = headline.strip()
-    for p in c.all_unique_positions():
+    for p in c.all_unique_positions(copy=False):
         if p.h.strip() == h:
             return p.copy()
     if not exact:
-        for p in c.all_unique_positions():
+        for p in c.all_unique_positions(copy=False):
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
 
 def findTopLevelNode(c, headline, exact=True):
     h = headline.strip()
-    for p in c.rootPosition().self_and_siblings():
+    for p in c.rootPosition().self_and_siblings(copy=False):
         if p.h.strip() == h:
             return p.copy()
     if not exact:
-        for p in c.rootPosition().self_and_siblings():
+        for p in c.rootPosition().self_and_siblings(copy=False):
             if p.h.strip().startswith(h):
                 return p.copy()
     return None

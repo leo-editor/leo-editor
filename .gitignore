@@ -1,6 +1,7 @@
 # Byte-compiled / optimized / DLL files
-.cache/
+profile.txt
 __pycache__/
+.cache/
 *.py[cod]
 
 # .db files

@@ -59,18 +59,17 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.initBracketMatcher(c)
     #@+node:ekr.20150514063305.190: *3* ec.cache
     @cmd('clear-all-caches')
+    @cmd('clear-cache')
     def clearAllCaches(self, event=None):
         '''Clear all of Leo's file caches.'''
-        c = self.c
-        if c.cacher:
-            c.cacher.clearAllCaches()
-
-    @cmd('clear-cache')
-    def clearCache(self, event=None):
-        '''Clear the outline's file cache.'''
-        c = self.c
-        if c.cacher:
-            c.cacher.clearCache()
+        g.app.global_cacher.clear()
+        g.app.commander_cacher.clear()
+        
+    @cmd('dump-caches')
+    def dumpCaches(self, event=None):
+        '''Dump, all of Leo's file caches.'''
+        g.app.global_cacher.dump()
+        g.app.commander_cacher.dump()
     #@+node:ekr.20150514063305.118: *3* ec.doNothing
     @cmd('do-nothing')
     def doNothing(self, event):
@@ -1524,6 +1523,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         elif ch in ('\r', '\n'):
             ch = '\n'
             self.insertNewlineHelper(w, oldSel, undoType)
+        elif ch in '\'"' and c.config.getBool('smart-quotes'):
+            self.doSmartQuote(action, ch, oldSel, w)
         elif inBrackets and self.autocompleteBrackets:
             self.updateAutomatchBracket(p, w, ch, oldSel)
         elif ch:
@@ -1592,6 +1593,29 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.insert(i, ' ' * n)
             ins = i + n
         w.setSelectionRange(ins, ins, insert=ins)
+    #@+node:ekr.20180806045802.1: *5* ec.doSmartQuote
+    def doSmartQuote(self, action, ch, oldSel, w):
+        '''Convert a straight quote to a curly quote, depending on context.'''
+        i, j = oldSel
+        if i > j:
+            i, j = j, i
+        # Use raw insert/delete to retain the coloring.
+        if i != j:
+            w.delete(i, j)
+        elif action == 'overwrite':
+            w.delete(i)
+        ins = w.getInsertPoint()
+        # Pick the correct curly quote.
+        s = w.getAllText() or ""
+        i2 = g.skip_to_start_of_line(s, max(0,ins-1))
+        open_curly = ins == i2 or ins > i2 and s[ins-1] in ' \t'
+            # not s[ins-1].isalnum()
+        if open_curly:
+            ch = '‘' if ch == "'" else "“"
+        else:
+            ch = '’' if ch == "'" else "”"
+        w.insert(ins, ch)
+        w.setInsertPoint(ins + 1)
     #@+node:ekr.20150514063305.271: *5* ec.flashCharacter
     def flashCharacter(self, w, i):
         '''Flash the character at position i of widget w.'''
@@ -3452,7 +3476,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         for v in self.c.all_unique_nodes():
             v.u = {}
     #@+node:ekr.20150514063305.350: *4* ec.printUas & printAllUas
-    @cmd('print-all-uas')
+    @cmd('show-all-uas')
     def printAllUas(self, event=None):
         '''Print all uA's in the outline.'''
         g.es_print('Dump of uAs...')
@@ -3460,7 +3484,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             if v.u:
                 self.printUas(v=v)
 
-    @cmd('print-node-uas')
+    @cmd('show-node-uas')
     def printUas(self, event=None, v=None):
         '''Print the uA's in the selected node.'''
         c = self.c

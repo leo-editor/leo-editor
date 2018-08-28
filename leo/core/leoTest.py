@@ -675,10 +675,11 @@ class TestManager(object):
                         logger.info('\n'+''.join(stream.aList))
                     logger.removeHandler(handler)
                 # put info to db as well
-                if g.enableDB:
+                if True:
+                    # Used by quicksearch plugin.
                     key = 'unittest/cur/fail'
                     archive = [(t.p.gnx, trace2) for(t, trace2) in result.errors]
-                    c.cacher.db[key] = archive
+                    c.db [key] = archive
             else:
                 g.error('no %s@test or @suite nodes in %s outline' % (
                     'marked ' if marked else '',
@@ -1483,7 +1484,7 @@ class TestManager(object):
     def findNodeAnywhere(self, headline, breakOnError=False):
         # tm = self
         c = self.c
-        for p in c.all_unique_positions():
+        for p in c.all_unique_positions(copy=False):
             h = headline.strip().lower()
             if p.h.strip().lower() == h:
                 return p.copy()

@@ -21,6 +21,7 @@ class Py_Importer(Importer):
             state_class = Python_ScanState,
             strict=True,
         )
+        self.put_decorators = self.c.config.getBool('put_python_decorators_in_imported_headlines')
 
     #@+others
     #@+node:ekr.20161110073751.1: *3* py_i.clean_headline
@@ -28,15 +29,19 @@ class Py_Importer(Importer):
         '''Return a cleaned up headline s.'''
         if p: # Called from clean_all_headlines:
             return self.get_decorator(p) + p.h
-        else:
-            m = re.match(r'\s*def\s+(\w+)', s)
-            if m:
-                return m.group(1)
-            m = re.match(r'\s*class\s+(\w+)', s)
-            return 'class %s' % m.group(1) if m else s.strip()
+        # Handle defs.
+        m = re.match(r'\s*def\s+(\w+)', s)
+        if m:
+            return m.group(1)
+        # Handle classes.
+        #913: Show base classes in python importer.
+        m = re.match(r'\s*class\s+(\w+)\s*(\(\w+\))?', s)
+        if m:
+            return 'class %s%s' % (m.group(1), m.group(2) or '')
+        return s.strip()
 
     def get_decorator(self, p):
-        if g.unitTesting or self.c.config.getBool('put_python_decorators_in_imported_headlines'):
+        if g.unitTesting or self.put_decorators:
             for s in self.get_lines(p):
                 if not s.isspace():
                     m = re.match(r'\s*@\s*([\w\.]+)', s)

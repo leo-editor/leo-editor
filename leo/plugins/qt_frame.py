@@ -60,7 +60,19 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_menubar = None # Set in createMenuBar.
         self.leo_ui = None # Set in construct.
         c._style_deltas = defaultdict(lambda: 0) # for adjusting styles dynamically
+        self.reloadSettings()
 
+    def reloadSettings(self):
+        c = self.leo_c
+        c.registerReloadSettings(self)
+        self.bigTree = c.config.getBool('big_outline_pane')
+        self.show_iconbar = c.config.getBool('show_iconbar', default=True)
+        self.toolbar_orientation = c.config.getString('qt-toolbar-location') or ''
+        if getattr(self, 'iconBar', None):
+            if self.show_iconbar:
+                self.iconBar.show()
+            else:
+                self.iconBar.hide()
     #@+node:ekr.20110605121601.18172: *3* do_leo_spell_btn_*
     def doSpellBtn(self, btn):
         getattr(self.leo_c.spellCommands.handler.tab, btn)()
@@ -95,7 +107,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if not ui_file_name:
             ui_file_name = 'qt_main.ui'
         ui_description_file = g.app.loadDir + "/../plugins/" + ui_file_name
-        # g.pr('DynamicWindw.__init__,ui_description_file)
         assert g.os_path_exists(ui_description_file)
         self.reloadSettings()
         main_splitter, secondary_splitter = self.createMainWindow()
@@ -112,17 +123,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setSplitDirection(main_splitter, secondary_splitter, orientation)
         if hasattr(c, 'styleSheetManager'):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
-
-    def reloadSettings(self):
-        c = self.leo_c
-        c.registerReloadSettings(self)
-        self.bigTree = c.config.getBool('big_outline_pane')
-        self.show_iconbar = c.config.getBool('show_iconbar', default=True)
-        if getattr(self, 'iconBar', None):
-            if self.show_iconbar:
-                self.iconBar.show()
-            else:
-                self.iconBar.hide()
     #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
     def set_icon_bar_orientation(self, c):
         '''Set the orientation of the icon bar based on settings.'''
@@ -132,10 +132,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
             'right': QtCore.Qt.RightToolBarArea,
             'top': QtCore.Qt.TopToolBarArea,
         }
-        where = c.config.getString('qt-toolbar-location')
+        where = self.toolbar_orientation
+        if not where:
+            where = 'top'
+        where = d.get(where.lower())
         if where:
-            where = d.get(where)
-            if where: self.addToolBar(where, self.iconBar)
+            self.addToolBar(where, self.iconBar)
     #@+node:ekr.20110605121601.18141: *3* dw.createMainWindow & helpers
     def createMainWindow(self):
         '''
@@ -2144,7 +2146,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 bg == c.config.getColor('find-not-found-bg')
             ):
                 status = 'fail'
-
             d = self.styleSheetCache
             if status != d.get(w, '__undefined__'):
                 d[w] = status
@@ -2152,6 +2153,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 c.styleSheetManager.mng.add_sclass(w, status)
                 c.styleSheetManager.mng.update_view(w)  # force appearance update
             w.setText(s)
+
         #@+node:chris.20180320072817.1: *4* QtStatusLineClass.update & helper
         def update(self):
             if g.app.killed: return
@@ -2276,6 +2278,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c = self.c
             c.registerReloadSettings(self)
             self.buttonColor = c.config.getString('qt-button-color')
+            self.toolbar_orientation = c.config.getString('qt-toolbar-location')
         #@+node:ekr.20110605121601.18264: *4*  do-nothings (QtIconBarClass)
         # These *are* called from Leo's core.
 
@@ -2747,7 +2750,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     f.hideOutlinePane()
                     c.bodyWantsFocus()
                     break
-    #@+node:ekr.20110605121601.18299: *5* qtFrame.expand/contract/hide...Pane (changed)
+    #@+node:ekr.20110605121601.18299: *5* qtFrame.expand/contract/hide...Pane
     @cmd('contract-body-pane')
     @cmd('expand-outline-pane')
     def contractBodyPane(self, event=None):
@@ -3146,12 +3149,13 @@ class LeoQtLog(leoFrame.LeoLog):
 
         :param QUrl link: link that was clicked
         """
-        url = link.url()
         # see addition of '/' in LeoQtLog.put()
+        url = s = g.toUnicode(link.toString())
         if platform.system() == 'Windows':
             for scheme in 'file', 'unl':
-                if url.startswith(scheme+':///') and url[len(scheme)+5] == ':':
-                    url = url.replace(':///', '://', 1)
+                if s.startswith(scheme+':///') and s[len(scheme)+5] == ':':
+                    url = s.replace(':///', '://', 1)
+                    break
         g.handleUrl(url, c=self.c)
     #@+node:ekr.20120304214900.9940: *3* LeoQtLog.onCurrentChanged
     def onCurrentChanged(self, idx):
@@ -3724,8 +3728,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if not isLeo:
             return
         c.selectPosition(p)
-        pasted = c.fileCommands.getLeoOutlineFromClipboard(
-            s, reassignIndices=True)
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
             # Paste the node after the presently selected node.
         if not pasted:
             return
@@ -3986,8 +3989,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             c2.selectPosition(p2)
             s = c2.fileCommands.putLeoOutline()
             # Paste the outline after the selected node.
-            c.fileCommands.getLeoOutlineFromClipboard(
-                s, reassignIndices=True)
+            c.fileCommands.getLeoOutlineFromClipboard(s)
         dummy_p.doDelete()
         c.selectPosition(p)
         p.v.contract()
@@ -4551,6 +4553,7 @@ class TabbedFrameFactory(object):
                     c.close()
 
         def tab_cycle(offset):
+
             tabw = self.masterFrame
             cur = tabw.currentIndex()
             count = tabw.count()
@@ -4629,14 +4632,19 @@ class TabbedFrameFactory(object):
         tabw = self.masterFrame
         w = tabw.widget(idx)
         f = self.leoFrames.get(w)
-        if f:
-            tabw.setWindowTitle(f.title)
-            if hasattr(g.app.gui, 'findDialogSelectCommander'):
-                g.app.gui.findDialogSelectCommander(f.c)
-            # g.app.selectLeoWindow(f.c)
-                # would break --minimize
-            # Fix bug 690260: correct the log.
-            g.app.log = f.log
+        if not f:
+            return
+        tabw.setWindowTitle(f.title)
+        if hasattr(g.app.gui, 'findDialogSelectCommander'):
+            g.app.gui.findDialogSelectCommander(f.c)
+        # g.app.selectLeoWindow(f.c)
+            # would break --minimize
+        # Fix bug 690260: correct the log.
+        g.app.log = f.log
+        # Redraw the tab.
+        c = f.c
+        if c:
+            c.redraw()
     #@-others
 #@-others
 #@@language python

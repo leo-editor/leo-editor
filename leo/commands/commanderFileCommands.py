@@ -151,6 +151,8 @@ def new(self, event=None, gui=None):
     old_c = self
     # Clean out the update queue so it won't interfere with the new window.
     self.outerUpdate()
+    # Supress redraws until later.
+    g.app.disable_redraw = True
     # Send all log messages to the new frame.
     g.app.setLog(None)
     g.app.lockLog()
@@ -176,6 +178,7 @@ def new(self, event=None, gui=None):
     g.doHook("new", old_c=old_c, c=c, new_c=c)
     c.setLog()
     c.setChanged(False) # Fix #387
+    g.app.disable_redraw = False
     c.redraw()
     return c # For unit tests and scripts.
 #@+node:ekr.20031218072017.2821: *3* c_file.open
@@ -248,11 +251,11 @@ def refreshFromDisk(self, event=None):
         word = p.h[0: i]
         if word == '@auto':
             # This includes @auto-*
-            if shouldDelete: p.deleteAllChildren()
+            if shouldDelete: p.v._deleteAllChildren()
             # Fix #451: refresh-from-disk selects wrong node.
             p = at.readOneAtAutoNode(fn, p)
         elif word in ('@thin', '@file'):
-            if shouldDelete: p.deleteAllChildren()
+            if shouldDelete: p.v._deleteAllChildren()
             at.read(p, force=True)
         elif word in ('@clean',):
             # Wishlist 148: use @auto parser if the node is empty.
@@ -262,10 +265,10 @@ def refreshFromDisk(self, event=None):
                 # Fix #451: refresh-from-disk selects wrong node.
                 p = at.readOneAtAutoNode(fn, p)
         elif word == '@shadow':
-            if shouldDelete: p.deleteAllChildren()
+            if shouldDelete: p.v._deleteAllChildren()
             at.read(p, force=True, atShadow=True)
         elif word == '@edit':
-            if shouldDelete: p.deleteAllChildren()
+            if shouldDelete: p.v._deleteAllChildren()
             at.readOneAtEditNode(fn, p)
         else:
             g.es_print('can not refresh from disk\n%r' % p.h)

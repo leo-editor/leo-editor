@@ -138,6 +138,11 @@ class ExternalFilesController(object):
         if not g.app or g.app.killed:
             return
         self.on_idle_count += 1
+        # New in Leo 5.7: always handle delayed requests.
+        if g.app.windowList:
+            c = g.app.log and g.app.log.c
+            if c:
+                c.outerUpdate()
         if 1:
             # Fix #262: Improve performance of check_for_changed_external_files.
             if self.unchecked_files:
@@ -395,7 +400,7 @@ class ExternalFilesController(object):
                 if ext.startswith(ch): ext = ext.strip(ch)
         if not ext:
             # if node is part of @<file> tree, get ext from file name
-            for p2 in p.self_and_parents():
+            for p2 in p.self_and_parents(copy=False):
                 if p2.isAnyAtFileNode():
                     fn = p2.h.split(None, 1)[1]
                     ext = g.os_path_splitext(fn)[1]
@@ -574,7 +579,7 @@ class ExternalFilesController(object):
         '''Compute the file name when subdirectories mirror the node's hierarchy in Leo.'''
         use_extentions = c.config.getBool('open_with_uses_derived_file_extensions')
         ancestors, found = [], False
-        for p2 in p.self_and_parents():
+        for p2 in p.self_and_parents(copy=False):
             h = p2.anyAtFileNodeName()
             if not h:
                 h = p2.h # Not an @file node: use the entire header

@@ -243,7 +243,7 @@ class Commands(object):
 
         c.fileCommands = DummyFileCommands()
         self.hiddenRootNode = leoNodes.VNode(context=c, gnx=gnx)
-        self.hiddenRootNode.h = "<hidden root vnode>"
+        self.hiddenRootNode.h = g.u('<hidden root vnode>')
         c.fileCommands = None
         # Create the gui frame.
         title = c.computeWindowTitle(c.mFileName)
@@ -261,7 +261,6 @@ class Commands(object):
         import leo.core.leoAtFile as leoAtFile
         import leo.core.leoBeautify as leoBeautify # So decorators are executed.
         assert leoBeautify # for pyflakes.
-        import leo.core.leoCache as leoCache
         import leo.core.leoChapters as leoChapters
         # User commands...
         import leo.commands.abbrevCommands as abbrevCommands
@@ -366,8 +365,7 @@ class Commands(object):
         # Other objects
         c.configurables = c.subCommanders[:]
             # A list of other classes that have a reloadSettings method
-        self.cacher = leoCache.Cacher(c)
-        self.cacher.initFileDB(self.mFileName)
+        c.db = g.app.commander_cacher.get_wrapper(c)
         import leo.plugins.free_layout as free_layout
         self.free_layout = free_layout.FreeLayoutController(c)
         if hasattr(g.app.gui, 'styleSheetManagerClass'):
@@ -549,7 +547,6 @@ class Commands(object):
         c.collapse_nodes_after_move = getBool('collapse_nodes_after_move')
         c.collapse_on_lt_arrow = getBool('collapse_on_lt_arrow', default=True)
         c.contractVisitedNodes = getBool('contractVisitedNodes')
-        c.fixed = getBool('fixedWindow', default=False)
         c.fixedWindowPositionData = getData('fixedWindowPosition')
         c.focus_border_color = getColor('focus_border_color') or 'red'
         c.focus_border_command_state_color = getColor('focus_border_command_state_color') or 'blue'
@@ -737,7 +734,7 @@ class Commands(object):
     def all_unique_nodes(self):
         '''A generator returning each vnode of the outline.'''
         c = self
-        for p in c.all_unique_positions():
+        for p in c.all_unique_positions(copy=False):
             yield p.v
 
     # Compatibility with old code...
@@ -746,19 +743,19 @@ class Commands(object):
     all_unique_tnodes_iter = all_unique_nodes
     all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6044: *5* c.all_positions
-    def all_positions(self):
+    def all_positions(self, copy=True):
         '''A generator return all positions of the outline, in outline order.'''
         c = self
         p = c.rootPosition()
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.moveToThreadNext()
 
     # Compatibility with old code...
     all_positions_iter = all_positions
     allNodes_iter = all_positions
     #@+node:ekr.20161120121226.1: *5* c.all_roots
-    def all_roots(self, predicate=None):
+    def all_roots(self, copy=True, predicate=None):
         '''
         A generator yielding *all* the root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -783,7 +780,7 @@ class Commands(object):
                 p.moveToThreadNext()
 
     #@+node:ekr.20161120125322.1: *5* c.all_unique_roots
-    def all_unique_roots(self, predicate=None):
+    def all_unique_roots(self, copy=True, predicate=None):
         '''
         A generator yielding all unique root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -804,12 +801,12 @@ class Commands(object):
         while p:
             if p.v not in seen and predicate(p):
                 seen.add(p.v)
-                yield p.copy() # 2017/02/19
+                yield p.copy() if copy else p
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20091001141621.6062: *5* c.all_unique_positions
-    def all_unique_positions(self):
+    def all_unique_positions(self, copy=True):
         '''
         A generator return all positions of the outline, in outline order.
         Returns only the first position for each vnode.
@@ -822,14 +819,14 @@ class Commands(object):
                 p.moveToNodeAfterTree()
             else:
                 seen.add(p.v)
-                yield p.copy()
+                yield p.copy() if copy else p
                 p.moveToThreadNext()
 
     # Compatibility with old code...
     all_positions_with_unique_tnodes_iter = all_unique_positions
     all_positions_with_unique_vnodes_iter = all_unique_positions
     #@+node:ekr.20150316175921.5: *5* c.safe_all_positions
-    def safe_all_positions(self):
+    def safe_all_positions(self, copy=True):
         '''
         A generator returning all positions of the outline. This generator does
         *not* assume that vnodes are never their own ancestors.
@@ -837,7 +834,7 @@ class Commands(object):
         c = self
         p = c.rootPosition() # Make one copy.
         while p:
-            yield p.copy()
+            yield p.copy() if copy else p
             p.safeMoveToThreadNext()
     #@+node:ekr.20060906211747: *4* c.Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition
@@ -1139,12 +1136,12 @@ class Commands(object):
     #@+node:ekr.20031218072017.2984: *5* c.clearAllMarked
     def clearAllMarked(self):
         c = self
-        for p in c.all_unique_positions():
+        for p in c.all_unique_positions(copy=False):
             p.v.clearMarked()
     #@+node:ekr.20031218072017.2985: *5* c.clearAllVisited
     def clearAllVisited(self):
         c = self
-        for p in c.all_unique_positions():
+        for p in c.all_unique_positions(copy=False):
             p.v.clearVisited()
             p.v.clearWriteBit()
     #@+node:ekr.20060906211138: *5* c.clearMarked
@@ -1198,18 +1195,19 @@ class Commands(object):
         if not c.frame.top:
             return
         master = hasattr(c.frame.top, 'leo_master') and c.frame.top.leo_master
-        if redrawFlag: # Prevent flash when fixing #387.
-            if master:
-                # Call LeoTabbedTopLevel.setChanged.
-                master.setChanged(c, changedFlag)
-            s = c.frame.getTitle()
-            if len(s) > 2:
-                if changedFlag:
-                    if s[0] != '*':
-                        c.frame.setTitle("* " + s)
-                else:
-                    if s[0: 2] == "* ":
-                        c.frame.setTitle(s[2:])
+        if not redrawFlag: # Prevent flash when fixing #387.
+            return
+        if master:
+            # Call LeoTabbedTopLevel.setChanged.
+            master.setChanged(c, changedFlag)
+        s = c.frame.getTitle()
+        if len(s) > 2:
+            if changedFlag:
+                if s[0] != '*':
+                    c.frame.setTitle("* " + s)
+            else:
+                if s[0: 2] == "* ":
+                    c.frame.setTitle(s[2:])
     #@+node:ekr.20040803140033.1: *5* c.setCurrentPosition
     _currentCount = 0
 
@@ -1330,7 +1328,7 @@ class Commands(object):
             v.fileIndex = ni.getNewIndex(v)
 
         count, gnx_errors = 0, 0
-        for p in c.safe_all_positions():
+        for p in c.safe_all_positions(copy=False):
             count += 1
             v = p.v
             if hasattr(v, "tnodeList"):
@@ -1348,10 +1346,11 @@ class Commands(object):
         for gnx in sorted(d.keys()):
             aList = list(d.get(gnx))
             if len(aList) != 1:
+                print('\nc.checkGnxs...')
                 g.es_print('multiple vnodes with gnx: %r' % (gnx), color='red')
                 for v in aList:
                     gnx_errors += 1
-                    g.es_print('new gnx: %s %s' % (v.fileIndex, v), color='red')
+                    g.es_print('id(v): %s gnx: %s %s' % (id(v), v.fileIndex, v.h), color='red')
                     new_gnx(v)
         ok = not gnx_errors and not g.app.structure_errors
         t2 = time.time()
@@ -1485,13 +1484,13 @@ class Commands(object):
         c = self
         message = "Illegal move or drag: no clone may contain a clone of itself"
         clonedVnodes = {}
-        for ancestor in parent.self_and_parents():
+        for ancestor in parent.self_and_parents(copy=False):
             if ancestor.isCloned():
                 v = ancestor.v
                 clonedVnodes[v] = v
         if not clonedVnodes:
             return True
-        for p in root.self_and_subtree():
+        for p in root.self_and_subtree(copy=False):
             if p.isCloned() and clonedVnodes.get(p.v):
                 if g.app.unitTesting:
                     g.app.unitTestDict['checkMoveWithParentWithWarning'] = True
@@ -1856,7 +1855,7 @@ class Commands(object):
         c = self
         path = g.scanAllAtPathDirectives(c, p)
         name = ''
-        for p in p.self_and_parents():
+        for p in p.self_and_parents(copy=False):
             name = p.anyAtFileNodeName()
             if name: break
         if name:
@@ -2221,6 +2220,7 @@ class Commands(object):
         Backup to base_dir or join(base_dir, sub_dir).
         '''
         c = self
+        old_cwd = os.getcwd()
         join = g.os_path_finalize_join
         if not base_dir:
             if env_key:
@@ -2247,6 +2247,7 @@ class Commands(object):
                 g.es_print('backup_dir not found: %r' % backup_dir)
         else:
             g.es_print('base_dir not found: %r' % base_dir)
+        os.chdir(old_cwd)
     #@+node:ekr.20090103070824.11: *4* c.checkFileTimeStamp
     def checkFileTimeStamp(self, fn):
         '''
@@ -2351,10 +2352,12 @@ class Commands(object):
         c, d = self, {}
         for v in c.all_unique_nodes():
             gnxString = v.fileIndex
-            assert g.isUnicode(gnxString)
-            d[gnxString] = v
-            if 'gnx' in g.app.debug:
-                g.trace(c.shortFileName(), gnxString, v)
+            if g.isString(gnxString):
+                d[gnxString] = v
+                if 'gnx' in g.app.debug:
+                    g.trace(c.shortFileName(), gnxString, v)
+            else:
+                g.internalError('no gnx for vnode: %s' % (v))
         c.fileCommands.gnxDict = d
     #@+node:ekr.20180508111544.1: *3* c.Git
     #@+node:ekr.20180510104805.1: *4* c.diff_file (new)
@@ -2630,10 +2633,17 @@ class Commands(object):
         if c.requestLaterRedraw:
             if c.enableRedrawFlag:
                 c.requestLaterRedraw = False
+                if 'drawing' in g.app.debug and not g.unitTesting:
+                    print('')
+                    g.trace('DELAYED REDRAW')
+                    time.sleep(1.0)
                 c.redraw()
         # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
+            if 'focus' in g.app.debug and not g.unitTesting:
+                print('')
+                g.trace('DELAYED FOCUS', g.callers())
             c.set_focus(w)
             c.requestedFocusWidget = None
         table = (
@@ -2668,7 +2678,7 @@ class Commands(object):
         c = self
         c.enableRedrawFlag = True
     #@+node:ekr.20090110073010.1: *6* c.redraw
-    def redraw(self, p=None, setFocus=False):
+    def redraw(self, p=None):
         '''Redraw the screen immediately.'''
         c = self
         # New in Leo 5.6: clear the redraw request.
@@ -2687,8 +2697,9 @@ class Commands(object):
         # Be careful.  NullTree.redraw returns None.
         # #503: NullTree.redraw(p) now returns p.
         c.selectPosition(p2 or p)
-        if setFocus: c.treeFocusHelper()
-        # New in Leo 5.6: clear the redraw request, again.
+        # Do not call treeFocusHelper here.
+            # c.treeFocusHelper()
+        # Clear the redraw request, again.
         c.requestLaterRedraw = False
 
     # Compatibility with old scripts
@@ -2701,39 +2712,32 @@ class Commands(object):
         c = self
         if c.enableRedrawFlag:
             c.frame.tree.redraw_after_icons_changed()
-            # c.treeFocusHelper()
+            # Do not call treeFocusHelper here.
+                # c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090110131802.2: *6* c.redraw_after_contract
-    def redraw_after_contract(self, p=None, setFocus=False):
+    def redraw_after_contract(self, p=None):
         c = self
-        c.endEditing()
         if c.enableRedrawFlag:
             if p:
                 c.setCurrentPosition(p)
             else:
                 p = c.currentPosition()
-            if p.isCloned():
-                c.redraw(p=p, setFocus=setFocus)
-            else:
-                c.frame.tree.redraw_after_contract(p)
-                if setFocus: c.treeFocusHelper()
+            c.frame.tree.redraw_after_contract(p)
+            c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090112065525.1: *6* c.redraw_after_expand
-    def redraw_after_expand(self, p=None, setFocus=False):
+    def redraw_after_expand(self, p):
         c = self
-        c.endEditing()
         if c.enableRedrawFlag:
             if p:
                 c.setCurrentPosition(p)
             else:
                 p = c.currentPosition()
-            if p.isCloned():
-                c.redraw(p=p, setFocus=setFocus)
-            else:
-                c.frame.tree.redraw_after_expand(p)
-                if setFocus: c.treeFocusHelper()
+            c.frame.tree.redraw_after_expand(p)
+            c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090110073010.2: *6* c.redraw_after_head_changed
@@ -2755,6 +2759,7 @@ class Commands(object):
             flag = c.expandAllAncestors(p)
             if flag:
                 c.frame.tree.redraw_after_select(p)
+                    # This is the same as c.frame.tree.full_redraw().
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20170908081918.1: *6* c.redraw_later
@@ -2766,6 +2771,9 @@ class Commands(object):
         '''
         c = self
         c.requestLaterRedraw = True
+        if 'drawing' in g.app.debug:
+            print('')
+            g.trace(g.callers(8))
     #@+node:ekr.20080514131122.17: *5* c.widget_name
     def widget_name(self, widget):
         # c = self
@@ -2857,20 +2865,23 @@ class Commands(object):
         while p and p.hasParent():
             p.moveToParent()
         if redrawFlag:
-            c.redraw(p, setFocus=True)
+            # Do a *full* redraw.
+            # c.redraw_after_contract(p) only contracts a single position.
+            c.redraw(p)
         c.expansionLevel = 1 # Reset expansion level.
     #@+node:ekr.20031218072017.2910: *5* c.contractSubtree
     def contractSubtree(self, p):
         for p in p.subtree():
             p.contract()
     #@+node:ekr.20031218072017.2911: *5* c.expandSubtree
-    def expandSubtree(self, v):
+    def expandSubtree(self, v, redraw=True):
         c = self
         last = v.lastNode()
         while v and v != last:
             v.expand()
             v = v.threadNext()
-        c.redraw()
+        if redraw:
+            c.redraw()
     #@+node:ekr.20031218072017.2912: *5* c.expandToLevel
     def expandToLevel(self, level):
 
@@ -2878,7 +2889,7 @@ class Commands(object):
         n = c.p.level()
         old_expansion_level = c.expansionLevel
         max_level = 0
-        for p in c.p.self_and_subtree():
+        for p in c.p.self_and_subtree(copy=False):
             if p.level() - n + 1 < level:
                 p.expand()
                 max_level = max(max_level, p.level() - n + 1)
@@ -2899,8 +2910,9 @@ class Commands(object):
         c = self
         w = g.app.gui and g.app.gui.get_focus(c)
         if 'focus' in g.app.debug:
-            g.trace('(c)', repr(w and g.app.gui.widget_name(w)), w)
-            g.callers()
+            print('')
+            g.trace('(c)',  w.__class__.__name__)
+            g.trace(g.callers(6))
         return w
 
     def get_requested_focus(self):
@@ -2911,8 +2923,9 @@ class Commands(object):
         c = self
         if w and g.app.gui:
             if 'focus' in g.app.debug:
-                g.trace('(c)', repr(g.app.gui.widget_name(w)), w)
-                g.callers()
+                print('')
+                g.trace('(c)',  w.__class__.__name__)
+                g.trace(g.callers(6))
             c.requestedFocusWidget = w
 
     def set_focus(self, w, force=False):
@@ -2920,13 +2933,14 @@ class Commands(object):
         c = self
         if w and g.app.gui:
             if trace:
-                g.trace('(c)', repr(w and g.app.gui.widget_name(w)), w)
-                g.callers()
+                print('')
+                g.trace('(c)',  w.__class__.__name__)
+                g.trace(g.callers(6))
             g.app.gui.set_focus(c, w)
         else:
             if trace: g.trace('(c) no w')
         c.requestedFocusWidget = None
-    #@+node:ekr.20080514131122.10: *5* c.invalidateFocus
+    #@+node:ekr.20080514131122.10: *5* c.invalidateFocus (do nothing)
     def invalidateFocus(self):
         '''Indicate that the focus is in an invalid location, or is unknown.'''
         # c = self
@@ -2979,6 +2993,7 @@ class Commands(object):
         if w:
             c.set_focus(w)
             c.requestedFocusWidget = None
+
     # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
 
     def bodyWantsFocusNow(self):
@@ -3380,6 +3395,7 @@ class Commands(object):
             c.selectPosition(p)
             c.redraw_after_select(p)
         c.treeFocusHelper()
+            # This is essential.
     #@+node:ekr.20171123135625.51: *4* c.updateBodyPane (handles changeNodeContents)
     def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview, preserveSel=False):
         '''Handle changed text in the body pane.'''
@@ -3499,7 +3515,7 @@ class Commands(object):
                 if flatten:
                     seen.add(p.v)
                 else:
-                    for p2 in p.self_and_subtree():
+                    for p2 in p.self_and_subtree(copy=False):
                         seen.add(p2.v)
                 clones.append(p.copy())
         if clones:
@@ -3753,14 +3769,13 @@ class Commands(object):
                     if v in parent_v.children:
                         childIndex = parent_v.children.index(v)
                         v._cutLink(childIndex, parent_v)
-        # Bug fix 2014/03/13: Make sure c.hiddenRootNode always has at least one child.
+        # Make sure c.hiddenRootNode always has at least one child.
         if not c.hiddenRootNode.children:
             v = leoNodes.VNode(context=c)
-            v._addLink(childIndex=0, parent_v=c.hiddenRootNode, adjust=False)
+            v._addCopiedLink(childIndex=0, parent_v=c.hiddenRootNode)
         if redraw:
             c.selectPosition(c.rootPosition())
                 # Calls redraw()
-            # c.redraw()
     #@+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
     def doBatchOperations(self, aList=None):
         # Validate aList and create the parents dict
@@ -3867,7 +3882,7 @@ class Commands(object):
             v = target.v
             for p in c.all_positions():
                 if p.v == v:
-                    for parent in p.self_and_parents():
+                    for parent in p.self_and_parents(copy=False):
                         if parent.isAnyAtFileNode():
                             break
                     else:

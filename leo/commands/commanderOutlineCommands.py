@@ -6,15 +6,6 @@
 import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20031218072017.1548: ** c_oc.Cut & Paste Outlines
-#@+node:ekr.20031218072017.1549: *3* c_oc.cutOutline
-@g.commander_command('cut-node')
-def cutOutline(self, event=None):
-    '''Delete the selected outline and send it to the clipboard.'''
-    c = self
-    if c.canDeleteHeadline():
-        c.copyOutline()
-        c.deleteOutline(op_name="Cut Node")
-        c.recolor()
 #@+node:ekr.20031218072017.1550: *3* c_oc.copyOutline
 @g.commander_command('copy-node')
 def copyOutline(self, event=None):
@@ -25,12 +16,19 @@ def copyOutline(self, event=None):
     s = c.fileCommands.putLeoOutline()
     g.app.paste_c = c
     g.app.gui.replaceClipboardWith(s)
-#@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline & helpers
-# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
-
+#@+node:ekr.20031218072017.1549: *3* c_oc.cutOutline
+@g.commander_command('cut-node')
+def cutOutline(self, event=None):
+    '''Delete the selected outline and send it to the clipboard.'''
+    c = self
+    if c.canDeleteHeadline():
+        c.copyOutline()
+        c.deleteOutline(op_name="Cut Node")
+        c.recolor()
+#@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline
 @g.commander_command('paste-node')
-def pasteOutline(self, event=None,
-    reassignIndices=True,
+def pasteOutline(self,
+    event=None,
     redrawFlag=True,
     s=None,
     undoFlag=True
@@ -42,39 +40,26 @@ def pasteOutline(self, event=None,
     c = self
     if s is None:
         s = g.app.gui.getTextFromClipboard()
-    pasteAsClone = not reassignIndices
-    # commenting following block fixes #478
-        # if pasteAsClone and g.app.paste_c != c:
-        #    g.es('illegal paste-retaining-clones', color='red')
-        #    g.es('only valid in same outline.')
-        #    return
     c.endEditing()
     if not s or not c.canPasteOutline(s):
-        return # This should never happen.
+        return None # This should never happen.
     isLeo = g.match(s, 0, g.app.prolog_prefix_string)
-    vnodeInfoDict = computeVnodeInfoDict(c) if pasteAsClone else {}
-    #
+    if not isLeo:
+        return None
     # Get *position* to be pasted.
-    if isLeo:
-        pasted = c.fileCommands.getLeoOutlineFromClipboard(s, reassignIndices)
+    pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
     if not pasted:
         # Leo no longer supports MORE outlines. Use import-MORE-files instead.
         return None
-    #
     # Validate.
     c.validateOutline()
     c.checkOutline()
-    #
     # Handle the "before" data for undo.
     if undoFlag:
-        if pasteAsClone:
-            copiedBunchList = computeCopiedBunchList(c, pasted, vnodeInfoDict)
-        else:
-            copiedBunchList = []
         undoData = c.undoer.beforeInsertNode(c.p,
-            pasteAsClone=pasteAsClone,
-            copiedBunchList=copiedBunchList)
-    #
+            pasteAsClone=False,
+            copiedBunchList=[],
+        )
     # Paste the node into the outline.
     c.selectPosition(pasted)
     pasted.setDirty()
@@ -82,20 +67,66 @@ def pasteOutline(self, event=None,
         # Prevent flash when fixing #387.
     back = pasted.back()
     if back and back.hasChildren() and back.isExpanded():
-        # 2011/06/21: fixed hanger: test back.hasChildren().
         pasted.moveToNthChildOf(back, 0)
-    #
-    # Set dirty bits for ancestors of *all* pasted nodes.
-    # Note: the setDescendentsDirty flag does not do what we want.
-    if pasteAsClone:
-        for p in pasted.self_and_subtree():
-            p.setAllAncestorAtFileNodesDirty(
-                setDescendentsDirty=False)
-    #
     # Finish the command.
     if undoFlag:
-        undoType = 'Paste Node' if reassignIndices else 'Paste As Clone'
-        c.undoer.afterInsertNode(pasted, undoType, undoData)
+        c.undoer.afterInsertNode(pasted, 'Paste Node', undoData)
+    if redrawFlag:
+        c.redraw(pasted)
+        c.recolor()
+    return pasted
+#@+node:EKR.20040610130943: *3* c_oc.pasteOutlineRetainingClones & helpers
+@g.commander_command('paste-retaining-clones')
+def pasteOutlineRetainingClones(self,
+    event=None,
+    redrawFlag=True,
+    s=None,
+    undoFlag=True,
+):
+    '''
+    Paste an outline into the present outline from the clipboard.
+    Nodes *retain* their original identify.
+    '''
+    c = self
+    if s is None:
+        s = g.app.gui.getTextFromClipboard()
+    c.endEditing()
+    if not s or not c.canPasteOutline(s):
+        return None # This should never happen.
+    isLeo = g.match(s, 0, g.app.prolog_prefix_string)
+    if not isLeo:
+        return None
+    # Get *position* to be pasted.
+    pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
+    if not pasted:
+        # Leo no longer supports MORE outlines. Use import-MORE-files instead.
+        return None
+    # Validate.
+    c.validateOutline()
+    c.checkOutline()
+    # Handle the "before" data for undo.
+    if undoFlag:
+        vnodeInfoDict = computeVnodeInfoDict(c)
+        undoData = c.undoer.beforeInsertNode(c.p,
+            pasteAsClone=True,
+            copiedBunchList=computeCopiedBunchList(c, pasted, vnodeInfoDict),
+        )
+    # Paste the node into the outline.
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    c.setChanged(True, redrawFlag=redrawFlag)
+        # Prevent flash when fixing #387.
+    back = pasted.back()
+    if back and back.hasChildren() and back.isExpanded():
+        pasted.moveToNthChildOf(back, 0)
+    # Set dirty bits for ancestors of *all* pasted nodes.
+    # Note: the setDescendentsDirty flag does not do what we want.
+    for p in pasted.self_and_subtree():
+        p.setAllAncestorAtFileNodesDirty(
+            setDescendentsDirty=False)
+    # Finish the command.
+    if undoFlag:
+        c.undoer.afterInsertNode(pasted, 'Paste As Clone', undoData)
     if redrawFlag:
         c.redraw(pasted)
         c.recolor()
@@ -104,7 +135,7 @@ def pasteOutline(self, event=None,
 def computeCopiedBunchList(c, pasted, vnodeInfoDict):
     '''Create a dict containing only copied vnodes.'''
     d = {}
-    for p in pasted.self_and_subtree():
+    for p in pasted.self_and_subtree(copy=False):
         d[p.v] = p.v
     aList = []
     for v in vnodeInfoDict:
@@ -127,13 +158,6 @@ def computeVnodeInfoDict(c):
         if v not in d:
             d[v] = g.Bunch(v=v, head=v.h, body=v.b)
     return d
-#@+node:EKR.20040610130943: *3* c_oc.pasteOutlineRetainingClones
-@g.commander_command('paste-retaining-clones')
-def pasteOutlineRetainingClones(self, event=None):
-    '''Paste an outline into the present outline from the clipboard.
-    Nodes *retain* their original identify.'''
-    c = self
-    return c.pasteOutline(reassignIndices=False)
 #@+node:ekr.20040412060927: ** c_oc.dumpOutline
 @g.commander_command('dump-outline')
 def dumpOutline(self, event=None):
@@ -183,12 +207,12 @@ def contractIfNotCurrent(c, p, leaveOpen):
 @g.commander_command('contract-node')
 def contractNode(self, event=None):
     '''Contract the presently selected node.'''
-    c = self; p = c.p
+    c = self
+    p = c.p
+    c.endEditing()
     p.contract()
-    if p.isCloned():
-        c.redraw() # A full redraw is necessary to handle clones.
-    else:
-        c.redraw_after_contract(p=p, setFocus=True)
+    c.redraw_after_contract(p)
+    c.selectPosition(p)
 #@+node:ekr.20040930064232: *3* c_oc.contractNodeOrGoToParent
 @g.commander_command('contract-or-go-left')
 def contractNodeOrGoToParent(self, event=None):
@@ -200,31 +224,27 @@ def contractNodeOrGoToParent(self, event=None):
     if p.hasChildren() and (p.v.isExpanded() or p.isExpanded()):
         c.contractNode()
     elif parent and parent.isVisible(c):
-        # New in Leo 4.9.1: contract all children first.
+        # Contract all children first.
         if c.collapse_on_lt_arrow:
             for child in parent.children():
                 if child.isExpanded():
                     child.contract()
-                    redraw = True
+                    if child.hasChildren():
+                        redraw = True
         if cc and cc.inChapter and parent.h.startswith('@chapter '):
             pass
         else:
             c.goToParent()
-    # This is a bit off-putting.
-    # elif not parent and not c.hoistStack:
-        # p = c.rootPosition()
-        # while p:
-            # if p.isExpanded():
-                # p.contract()
-                # redraw = True
-            # p.moveToNext()
     if redraw:
+        # A *child* should be collapsed.  Do a *full* redraw.
         c.redraw()
 #@+node:ekr.20031218072017.2902: *3* c_oc.contractParent
 @g.commander_command('contract-parent')
 def contractParent(self, event=None):
     '''Contract the parent of the presently selected node.'''
-    c = self; p = c.p
+    c = self
+    c.endEditing()
+    p = c.p
     parent = p.parent()
     if not parent: return
     parent.contract()
@@ -235,11 +255,12 @@ def expandAllHeadlines(self, event=None):
     '''Expand all headlines.
     Warning: this can take a long time for large outlines.'''
     c = self
+    c.endEditing()
     p = c.rootPosition()
     while p:
-        c.expandSubtree(p)
+        c.expandSubtree(p,redraw=False)
         p.moveToNext()
-    c.redraw_after_expand(p=c.rootPosition(), setFocus=True)
+    c.redraw_after_expand(p=c.rootPosition())
     c.expansionLevel = 0 # Reset expansion level.
 #@+node:ekr.20031218072017.2904: *3* c_oc.expandAllSubheads
 @g.commander_command('expand-all-subheads')
@@ -252,7 +273,7 @@ def expandAllSubheads(self, event=None):
     while child:
         c.expandSubtree(child)
         child = child.next()
-    c.redraw(p, setFocus=True)
+    c.redraw(p)
 #@+node:ekr.20031218072017.2905: *3* c_oc.expandLevel1..9
 @g.commander_command('expand-to-level-1')
 def expandLevel1(self, event=None):
@@ -313,36 +334,39 @@ def expandNextLevel(self, event=None):
 @g.commander_command('expand-node')
 def expandNode(self, event=None):
     '''Expand the presently selected node.'''
-    c = self; p = c.p
+    c = self
+    p = c.p
+    c.endEditing()
     p.expand()
-    if p.isCloned():
-        c.redraw() # Bug fix: 2009/10/03.
-    else:
-        c.redraw_after_expand(p, setFocus=True)
+    c.redraw_after_expand(p)
+    c.selectPosition(p)
 #@+node:ekr.20040930064232.1: *3* c_oc.expandNodeAndGoToFirstChild
 @g.commander_command('expand-and-go-right')
 def expandNodeAndGoToFirstChild(self, event=None):
     """If a node has children, expand it if needed and go to the first child."""
-    c = self; p = c.p
+    c, p = self, self.p
+    c.endEditing()
     if p.hasChildren():
-        if p.isExpanded():
-            c.selectPosition(p.firstChild())
-        else:
+        if not p.isExpanded():
             c.expandNode()
-            # Fix bug 930726
-            # expandNodeAndGoToFirstChild only expands or only goes to first child .
-            c.selectPosition(p.firstChild())
+        c.selectPosition(p.firstChild())
     c.treeFocusHelper()
 #@+node:ekr.20171125082744.1: *3* c_oc.expandNodeOrGoToFirstChild
 @g.commander_command('expand-or-go-right')
 def expandNodeOrGoToFirstChild(self, event=None):
-    """Simulate the Right Arrow Key in folder of Windows Explorer."""
-    c = self; p = c.p
+    """
+    Simulate the Right Arrow Key in folder of Windows Explorer.
+    if c.p has no children, do nothing.
+    Otherwise, if c.p is expanded, select the first child.
+    Otherwise, expand c.p.
+    """
+    c, p = self, self.p
+    c.endEditing()
     if p.hasChildren():
-        if not p.isExpanded():
-            c.expandNode() # Calls redraw_after_expand.
+        if p.isExpanded():
+            c.redraw_after_expand(p.firstChild())
         else:
-            c.redraw_after_expand(p.firstChild(), setFocus=True)
+            c.expandNode()
 #@+node:ekr.20060928062431: *3* c_oc.expandOnlyAncestorsOfNode
 @g.commander_command('expand-ancestors-only')
 def expandOnlyAncestorsOfNode(self, event=None, p=None):
@@ -357,7 +381,6 @@ def expandOnlyAncestorsOfNode(self, event=None, p=None):
     for p in root.parents():
         p.expand()
         level += 1
-    c.redraw(setFocus=True)
     c.expansionLevel = level # Reset expansion level.
 #@+node:ekr.20031218072017.2908: *3* c_oc.expandPrevLevel
 @g.commander_command('expand-prev-level')
@@ -414,10 +437,8 @@ def goToFirstNode(self, event=None):
     '''Select the first node of the entire outline.'''
     c = self
     p = c.rootPosition()
-    c.selectPosition(p)
-    c.expandOnlyAncestorsOfNode()
+    c.expandOnlyAncestorsOfNode(p=p)
     c.redraw()
-    c.treeSelectHelper(p)
 #@+node:ekr.20051012092453: *3* c_oc.goToFirstSibling
 @g.commander_command('goto-first-sibling')
 def goToFirstSibling(self, event=None):
@@ -434,10 +455,8 @@ def goToFirstVisibleNode(self, event=None):
     c = self
     p = c.firstVisible()
     if p:
-        c.selectPosition(p)
-        c.expandOnlyAncestorsOfNode()
-        c.redraw_after_select(p)
-        c.treeSelectHelper(p)
+        c.expandOnlyAncestorsOfNode(p=p)
+        c.redraw()
 #@+node:ekr.20031218072017.2915: *3* c_oc.goToLastNode
 @g.commander_command('goto-last-node')
 def goToLastNode(self, event=None):
@@ -446,9 +465,7 @@ def goToLastNode(self, event=None):
     p = c.rootPosition()
     while p and p.hasThreadNext():
         p.moveToThreadNext()
-    c.selectPosition(p)
-    c.treeSelectHelper(p)
-    c.expandOnlyAncestorsOfNode()
+    c.expandOnlyAncestorsOfNode(p=p)
     c.redraw()
 #@+node:ekr.20051012092847.1: *3* c_oc.goToLastSibling
 @g.commander_command('goto-last-sibling')
@@ -466,10 +483,8 @@ def goToLastVisibleNode(self, event=None):
     c = self
     p = c.lastVisible()
     if p:
-        c.selectPosition(p)
-        c.expandOnlyAncestorsOfNode()
-        c.redraw_after_select(p)
-        c.treeSelectHelper(p)
+        c.expandOnlyAncestorsOfNode(p=p)
+        c.redraw()
 #@+node:ekr.20031218072017.2916: *3* c_oc.goToNextClone
 @g.commander_command('goto-next-clone')
 def goToNextClone(self, event=None):
@@ -498,6 +513,7 @@ def goToNextClone(self, event=None):
             wrapped = True
             p = c.rootPosition()
     if p:
+        c.expandAllAncestors(p)
         if cc:
             # Fix bug #252: goto-next clone activate chapter.
             # https://github.com/leo-editor/leo-editor/issues/252
@@ -505,14 +521,18 @@ def goToNextClone(self, event=None):
             old_name = chapter and chapter.name
             new_name = cc.findChapterNameForPosition(p)
             if new_name == old_name:
-                c.selectPosition(p)
-                c.redraw_after_select(p)
+                # Always do a full redraw.
+                c.redraw(p)
             else:
-                c.selectPosition(p)
-                cc.selectChapterByName(new_name)
+                if 1:
+                    cc.selectChapterByName(new_name)
+                    c.redraw(p)
+                else: ### Old code.
+                    c.selectPosition(p)
+                    cc.selectChapterByName(new_name)
         else:
-            c.selectPosition(p)
-            c.redraw_after_select(p)
+            # Always do a full redraw.
+            c.redraw(p)
     else:
         g.blue('done')
 #@+node:ekr.20071213123942: *3* c_oc.findNextClone
@@ -706,6 +726,7 @@ def clone(self, event=None):
     if c.validateOutline():
         u.afterCloneNode(clone, 'Clone Node', undoData, dirtyVnodeList=dirtyVnodeList)
         c.redraw(clone)
+        c.treeWantsFocus()
         return clone # For mod_labels and chapters plugins.
     else:
         clone.doDelete()
@@ -736,9 +757,7 @@ def cloneToAtSpot(self, event=None):
     undoData = c.undoer.beforeCloneNode(p)
     c.endEditing() # Capture any changes to the headline.
     clone = p.copy()
-    clone._linkAsNthChild(last_spot,
-                          n=last_spot.numberOfChildren(),
-                          adjust=True)
+    clone._linkAsNthChild(last_spot, n=last_spot.numberOfChildren())
     dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
     c.setChanged(True)
     if c.validateOutline():
@@ -905,7 +924,7 @@ def cloneMarked(self, event=None):
                 # Create the clone directly as a child of parent.
                 p2 = p.copy()
                 n = parent.numberOfChildren()
-                p2._linkAsNthChild(parent, n, adjust=True)
+                p2._linkAsNthChild(parent, n)
             p.moveToNodeAfterTree()
             n += 1
         else:
@@ -937,7 +956,7 @@ def copyMarked(self, event=None):
         elif p.isMarked() and p.v not in copied:
             copied.append(p.v)
             p2 = p.copyWithNewVnodes(copyMarked=True)
-            p2._linkAsNthChild(parent, n, adjust=True)
+            p2._linkAsNthChild(parent, n)
             p.moveToNodeAfterTree()
             n += 1
         else:
@@ -1073,7 +1092,7 @@ def markChangedRoots(self, event=None):
     for p in c.all_unique_positions():
         if p.isDirty() and not p.isMarked():
             s = p.b
-            flag, i = g.is_special(s, 0, "@root")
+            flag, i = g.is_special(s, "@root")
             if flag:
                 bunch = u.beforeMark(p, undoType)
                 c.setMarked(p)
@@ -1180,7 +1199,7 @@ def demote(self, event=None):
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
     c.setChanged(True)
     u.afterDemote(p, followingSibs, dirtyVnodeList)
-    c.redraw(p, setFocus=True)
+    c.redraw(p)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1768: *3* c_oc.moveOutlineDown
 @g.commander_command('move-outline-down')
@@ -1237,7 +1256,7 @@ def moveOutlineDown(self, event=None):
             dirtyVnodeList.extend(dirtyVnodeList2)
         c.setChanged(True)
         u.afterMoveNode(p, 'Move Down', undoData, dirtyVnodeList)
-    c.redraw(p, setFocus=True)
+    c.redraw(p)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1770: *3* c_oc.moveOutlineLeft
 @g.commander_command('move-outline-left')
@@ -1269,7 +1288,7 @@ def moveOutlineLeft(self, event=None):
     # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
     if c.collapse_nodes_after_move and c.sparse_move: # New in Leo 4.4.2
         parent.contract()
-    c.redraw(p, setFocus=True)
+    c.redraw(p)
     c.recolor() # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1771: *3* c_oc.moveOutlineRight
 @g.commander_command('move-outline-right')
@@ -1298,7 +1317,7 @@ def moveOutlineRight(self, event=None):
     dirtyVnodeList.extend(dirtyVnodeList2)
     c.setChanged(True)
     u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
-    c.redraw(p, setFocus=True)
+    c.redraw(p)
     c.recolor()
 #@+node:ekr.20031218072017.1772: *3* c_oc.moveOutlineUp
 @g.commander_command('move-outline-up')
@@ -1358,7 +1377,7 @@ def moveOutlineUp(self, event=None):
         dirtyVnodeList.extend(dirtyVnodeList2)
         c.setChanged(True)
         u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
-    c.redraw(p, setFocus=True)
+    c.redraw(p)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1774: *3* c_oc.promote
 @g.commander_command('promote')
@@ -1382,7 +1401,7 @@ def promote(self, event=None, undoFlag=True, redrawFlag=True):
             dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
         u.afterPromote(p, children, dirtyVnodeList)
     if redrawFlag:
-        c.redraw(p, setFocus=True)
+        c.redraw(p)
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
 #@+node:ekr.20071213185710: *3* c_oc.toggleSparseMove
 @g.commander_command('toggle-sparse-move')

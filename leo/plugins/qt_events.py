@@ -220,7 +220,12 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20180419160958.1: *5* filter.doMacTweaks
     def doMacTweaks(self, actual_ch, ch, mods):
         '''Replace MacOS Alt characters.'''
-        if g.isMac and len(mods) == 1 and mods[0] == 'Alt':
+        if not g.isMac:
+            return actual_ch, ch, mods
+        if ch == 'Backspace':
+            # On the Mac, the reported char can be DEL (7F)
+            return '\b', ch, mods
+        if len(mods) == 1 and mods[0] == 'Alt':
             # Patch provided by resi147.
             # See the thread: special characters in MacOSX, like '@'.
             mac_d = {
@@ -295,7 +300,7 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
         '''Return the text version of the modifiers of the key event.'''
-        c = self.c
+        # c = self.c
         qt = QtCore.Qt
         modifiers = event.modifiers()
         #
@@ -309,12 +314,24 @@ class LeoQtEventFilter(QtCore.QObject):
             (qt.KeypadModifier, 'KeyPad'),
         )
         mods = [b for a, b in table if (modifiers & a)]
+        if not g.isMac:
+            return mods
         #
-        # MacOS: optionally convert Meta to Atl.
-        if c.config.getBool('replace-meta-with-alt', default=False):
-            if 'Meta' in mods:
-                mods.remove('Meta')
-                mods.append('Alt')
+        # MacOS: optionally convert Meta (Ctrl key) to Alt.
+        # 945: remove @bool swap-mac-keys and @bool replace-meta-with-alt.
+            # if c.k.replace_meta_with_alt:
+                # if 'Meta' in mods:
+                    # mods.remove('Meta')
+                    # mods.append('Alt')
+            # if c.k.swap_mac_keys:
+                # # Swap the Command (clover) and Control keys.
+                # # That is, swap the meaning of the Control and Meta modifiers.
+                # if 'Meta' in mods and 'Control' not in mods:
+                    # mods.remove('Meta')
+                    # mods.append('Control')
+                # elif 'Control' in mods and 'Meta' not in mods:
+                    # mods.remove('Control')
+                    # mods.append('Meta')
         return mods
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
     #@+node:ekr.20110605121601.18548: *4* filter.traceEvent

@@ -816,10 +816,10 @@ class SpellTabHandler(object):
         redraw = not p.isVisible(c)
         # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
         if c.sparse_spell and not c.p.isAncestorOf(p):
-            for p2 in c.p.self_and_parents():
+            for p2 in c.p.self_and_parents(copy=False):
                 p2.contract()
                 redraw = True
-        for p2 in p.parents():
+        for p2 in p.parents(copy=False):
             if not p2.isExpanded():
                 p2.expand()
                 redraw = True

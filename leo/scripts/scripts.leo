@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="131" left="389" height="1048" width="1183"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -130,13 +130,15 @@ expanded="ekr.20150416062553.1,maphew.20130612230051.2793,maphew.20130611235500.
 <v t="ekr.20170411105625.1"><vh>Script: get git branch name using pygit2</vh></v>
 <v t="ekr.20170804153229.1"><vh>script: find non-tracing g.unitTesting</vh></v>
 </v>
+<v t="ekr.20180529105231.1"><vh>Leo 5.7.4</vh>
+<v t="ekr.20180529105204.1"><vh>script: get-child-headlines</vh></v>
 </v>
-<v t="ekr.20180514075127.1"><vh>Prototype: new read code</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
-<t tx="ekr.20070615131954" str_leo_pos="3"></t>
+<t tx="ekr.20070615131954"></t>
 <t tx="ekr.20141105055521.16">@language python
 
 '''
@@ -1472,108 +1474,10 @@ p.h = 'clone-find-predicate: real use of g.unitTesting'
 p.b = '%s nodes' % p.numberOfChildren()
 </t>
 <t tx="ekr.20170804153254.1"></t>
-<t tx="ekr.20180514075127.1">import re
-import time
-dump = False
-if dump:
-    g.cls()
-fn = g.os_path_finalize_join(g.app.loadDir, 'leoAtFile.py')
-assert fn
-#
-# Read &amp; split
-t1 = time.clock()
-s = g.readFileIntoUnicodeString(fn)
-lines = g.splitLines(s)
-t2 = time.clock()
-#
-# Create nodes list
-#
-# Define patterns. Examples:
-#   #@+node:ekr.20150323150718.1: * @file leoAtFile.py
-#   #@+&lt; &lt; define class constants &gt; &gt;
-#   #@+&lt; &lt; define class constants &gt; &gt;
-#   #@+others
-#   #@-others
-#
-node_s =     r'(\s*)#@\+node\:(.*)\:(.*)$'
-others_s =   r'(\s*)#@(\+|\-)others'
-ref_s =      r'(\s*)#@(\+|\-)%s(.*)$' % g.angleBrackets('(.*)')
-verbatim_s = r'(\s*)#@@(.*)$'
-patterns = (node_s, others_s, ref_s, verbatim_s)
-#
-# Compile the patterns.
-any_pat = re.compile('|'.join(patterns))
-others_pat = re.compile(others_s)
-node_pat = re.compile(node_s)
-ref_pat = re.compile(ref_s)
-verbatim_pat = re.compile(verbatim_s)
-#
-# Define status vars...
-nodes = []
-others_level = 0
-ref_stack = []
-last_i = None
-last_indent = None
-last_gnx = None
-last_h = None
-pat_lines = 0
-#
-# The main line...
-for i, line in enumerate(lines):
-    # A quick test first for speed.
-    m = any_pat.match(line)
-    if not m:
-        continue
-    pat_lines += 1
-    m = node_pat.match(line)
-    if m:
-        if last_i is not None:
-            data = last_i, i-1, last_indent, last_gnx, last_h, others_level
-            nodes.append(data)
-        last_i = i+1
-        last_indent = m.group(1)
-        last_gnx = m.group(2)
-        last_h = h=m.group(3).strip()
-        continue # Nothing else can match
-    m = verbatim_pat.match(line)
-    if m:
-        lines[i] = m.group(1)+'@'+m.group(2)
-        continue
-    m = others_pat.match(line)
-    if m:
-        kind = m.group(2)
-        assert kind in '+-', kind
-        delta = 1 if kind == '+' else -1
-        others_level += delta
-        continue
-    m = ref_pat.match(line)
-    if m:
-        kind = m.group(2)
-        name = m.group(3)
-        tail = m.group(4)
-        assert kind in '+-', kind
-        if kind == '+':
-            ref_stack.append(name)
-        else:
-            ref_stack.pop()
-        # g.trace(kind, g.angleBrackets(name), tail)
-        continue
-#
-# Add the last node.
-if last_i is not None:
-    data = last_i, i-1, last_indent, last_gnx, last_h, others_level
-    nodes.append(data)
-t3 = time.clock()
-#
-# Report results.
-if dump:
-    for n, data in enumerate(nodes):
-        i, j, indent, gnx, h, others_level = data
-        print('\nNode %s: indent: %r, gnx: %s h: %s: @others: %s' % (
-            n, indent, gnx, h, others_level))
-        g.printObj(lines[i:j])
-print('read:  %f sec chars:  %s' % (t2-t1, len(s)))
-print('nodes: %f sec found:  %s' % (t3-t2, len(nodes)))
-print('lines: %s, pat_lines: %s' % (len(lines), pat_lines))</t>
+<t tx="ekr.20180529105204.1">s = p.b
+for child in p.children():
+    s = s + '\n- ' + child.h
+p.b = s</t>
+<t tx="ekr.20180529105231.1"></t>
 </tnodes>
 </leo_file>

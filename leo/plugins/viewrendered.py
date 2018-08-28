@@ -300,6 +300,9 @@ def init():
     g.registerHandler('close-frame', onClose)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
+#@+node:ekr.20180825025924.1: *3* vr.isVisible
+def isVisible():
+    '''Return True if the VR pane is visible.'''
 #@+node:ekr.20110317024548.14376: *3* vr.onCreate
 def onCreate(tag, keys):
     c = keys.get('c')
@@ -364,7 +367,7 @@ def viewrendered(event):
     else:
         h = c.hash()
         controllers[h] = vr = ViewRenderedController(c)
-        layouts[h] = c.cacher.db.get('viewrendered_default_layouts', (None, None))
+        layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
         if hasattr(c, 'free_layout'):
             vr._ns_id = '_leo_viewrendered' # for free_layout load/save
             vr.splitter = splitter = c.free_layout.get_top_splitter()
@@ -419,24 +422,29 @@ def hide_rendering_pane(event):
     '''Close the rendering pane.'''
     global controllers, layouts
     c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if vr:
-            vr.store_layout('open')
-            vr.deactivate()
-            vr.deleteLater()
+    if not c:
+        return
+    vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+    if not vr:
+        return
+    if vr.pyplot_active:
+        g.es_print('can not close VR pane after using pyplot')
+        return
+    vr.store_layout('open')
+    vr.deactivate()
+    vr.deleteLater()
 
-            def at_idle(c=c, _vr=vr):
-                _vr.adjust_layout('closed')
-                c.bodyWantsFocusNow()
+    def at_idle(c=c, _vr=vr):
+        _vr.adjust_layout('closed')
+        c.bodyWantsFocusNow()
 
-            QtCore.QTimer.singleShot(0, at_idle)
-            h = c.hash()
-            c.bodyWantsFocus()
-            if vr == controllers.get(h):
-                del controllers[h]
-            else:
-                g.trace('Can not happen: no controller for %s' % (c))
+    QtCore.QTimer.singleShot(0, at_idle)
+    h = c.hash()
+    c.bodyWantsFocus()
+    if vr == controllers.get(h):
+        del controllers[h]
+    else:
+        g.trace('Can not happen: no controller for %s' % (c))
 # Compatibility
 
 close_rendering_pane = hide_rendering_pane
@@ -558,7 +566,7 @@ class ViewRenderedProvider(object):
             h = c.hash()
             controllers[h] = vr
             if not layouts.get(h):
-                layouts[h] = c.cacher.db.get('viewrendered_default_layouts', (None, None))
+                layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
             # return ViewRenderedController(self.c)
             return vr
     #@-others
@@ -590,6 +598,7 @@ if QtWidgets: # NOQA
             self.inited = False
             self.length = 0 # The length of previous p.b.
             self.locked = False
+            self.pyplot_active = False
             self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
             self.sizes = [] # Saved splitter sizes.
             self.splitter = None
@@ -1086,7 +1095,6 @@ if QtWidgets: # NOQA
         def update_pyplot(self, s, keywords):
             '''Get the pyplot script at c.p.b and show it.'''
             c = self.c
-            # To do: show plot in the VR area.
             if not self.pyplot_imported:
                 self.pyplot_imported = True
                 backend = g.os_path_finalize_join(
@@ -1115,7 +1123,10 @@ if QtWidgets: # NOQA
             except ImportError:
                 g.es_print('matplotlib imports failed')
                 namespace = {}
-            self.embed_pyplot_widget()
+            # Embedding already works without this!
+                # self.embed_pyplot_widget()
+            self.pyplot_active = True
+                # pyplot will throw RuntimeError if we close the pane.
             c.executeScript(
                 event=None,
                 args=None, p=None,
@@ -1126,32 +1137,7 @@ if QtWidgets: # NOQA
                 silent=False,
                 namespace=namespace,
                 raiseFlag=False)
-        #@+node:ekr.20160928030257.1: *5* vr.embed_pyplot_widget (not ready yet)
-        def embed_pyplot_widget(self):
-
-            pc = self
-            c = pc.c
-            # Careful: we may be unit testing.
-            splitter = c.free_layout.get_top_splitter()
-            if not splitter:
-                return
-            if not pc.pyplot_canvas:
-
-                # TODO Create the widgets.
-                w = None
-                ### Ref
-                # pc.gs = QtWidgets.QGraphicsScene(splitter)
-                # pc.gv = QtWidgets.QGraphicsView(pc.gs)
-                # w = pc.gv.viewport() # A QWidget
-                # Embed the widgets.
-                pc.pyplot_canvas = w
-
-                def delete_callback():
-                    pc.pyplot_canvas.deleteLater()
-                    pc.pyplot_canvas = None
-
-            if pc.pyplot_canvas:
-                pc.embed_widget(w, delete_callback=delete_callback)
+            c.bodyWantsFocusNow()
         #@+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
         def update_rst(self, s, keywords):
             '''Update rst in the vr pane.'''
