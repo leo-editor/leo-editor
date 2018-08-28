@@ -2,7 +2,7 @@ language: python
 install:
     #- pip install leo
     #- sh build-without-pip.sh
-    - git fetch --tags  
+    - git fetch --depth=500 
     - python setup.py install --root=/tmp/packages
 script:
     - /tmp/packages/home/travis/virtualenv/python2.7.14/bin/leo-console --version
