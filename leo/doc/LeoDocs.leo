@@ -2201,7 +2201,6 @@
 <v t="ekr.20180821155534.1"><vh>Removed --no-cache &amp; --trace-cache</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
