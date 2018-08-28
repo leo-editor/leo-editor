@@ -1,8 +1,8 @@
 language: python
 install:
     #- sh build-without-pip.sh
-    - pip install --editable .
     - git fetch --depth=500 
+    - pip install --editable .
     - python setup.py install --root=/tmp/packages | grep -v '^copying'
 script:
     - leo-console --version
