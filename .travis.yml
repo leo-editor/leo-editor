@@ -1,10 +1,11 @@
 language: python
 install:
-    #- pip install leo
     #- sh build-without-pip.sh
+    - pip install --editable .
     - git fetch --depth=500 
-    - python setup.py install --root=/tmp/packages
+    - python setup.py install --root=/tmp/packages | grep -v '^copying'
 script:
+    - leo-console --version
     - /tmp/packages/home/travis/virtualenv/python2.7.14/bin/leo-console --version
     - pytest travis_tests/*
 
