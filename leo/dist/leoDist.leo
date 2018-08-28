@@ -1319,10 +1319,10 @@ for fn in files:
             s = f.read()
         s = g.toUnicode(s)
         if s.find('&lt;xml-stylesheet') &gt; -1:
-            print('contains xml-stylesheet element: %s' % (path))
+            g.es_print('contains xml-stylesheet element: %s' % (path))
     else:
-        print('does not exist: %s' % path)
-print('done')
+        g.es_print('does not exist: %s' % path)
+g.es_print('done')
 </t>
 <t tx="ekr.20170911062209.1">files = (
     'config/exampleSettings.leo',
