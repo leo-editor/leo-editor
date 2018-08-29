@@ -2159,6 +2159,7 @@
 </v>
 <v t="ekr.20180828095605.1"><vh>Fixed in b2</vh>
 <v t="ekr.20180828095610.1"><vh>#969: Chapter button</vh></v>
+<v t="ekr.20180829083210.1"><vh>#970: Crash opening mal-formed .leo files</vh></v>
 </v>
 </v>
 <v t="ekr.20180608054147.1"><vh>Code</vh>
@@ -29282,6 +29283,7 @@ Removed qtree.update_appearance and qtree.update_appearance_idle.
 <t tx="ekr.20180828095610.1">https://github.com/leo-editor/leo-editor/issues/969
 The fix: call c.treeWantsFocusNow in tt.selectTab.
 </t>
+<t tx="ekr.20180829083210.1">https://github.com/leo-editor/leo-editor/issues/970</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
