@@ -1,6 +1,13 @@
 language: python
 install:
-    - pip install leo
+    #- sh build-without-pip.sh
+    - git fetch --depth=100
+    - git checkout tags/5.8-b1
+    #- pip install --editable .
 script:
-    - pytest travis_tests/*
+    #- leo-console --version
+    - python setup.py bdist_wheel
+    - pip install dist/*.whl
+    - leo-console --version
 
+    - pytest travis_tests/*
