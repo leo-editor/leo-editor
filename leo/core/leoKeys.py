@@ -543,7 +543,10 @@ class AutoCompleterClass(object):
                     g.es_print('can not import jedi')
                     g.es_print('ignoring @bool use_jedi = True')
             if jedi:
-                aList = self.get_jedi_completions(prefix)
+                aList = (
+                    self.get_jedi_completions(prefix) or
+                        # Prefer the jedi completions.
+                    self.get_leo_completions(prefix))
                 d[prefix] = aList
                 return aList
         #
@@ -557,10 +560,9 @@ class AutoCompleterClass(object):
         aList = d.get(prefix)
         if aList:
             return aList
-        # Always try the Leo completions first.
-        # Fall back to the codewise completions.
         aList = (
             self.get_leo_completions(prefix) or
+                # Prefer the Leo completions.
             self.get_codewise_completions(prefix)
         )
         d[prefix] = aList
@@ -717,25 +719,18 @@ class AutoCompleterClass(object):
                 completions = None
                 g.printObj(source_lines[n0-1:n0+30])
                 print('ERROR', p.h)
-        if completions is None:
+        if not completions:
             return []
         # May be used in traces below.
         assert t3 >= t2 >= t1
-        assert local_column is not None
-                
+        assert local_column is not None  
         completions = [z.name for z in completions]
         completions = [self.add_prefix(prefix, z) for z in completions]
         # Retain these for now...
             # g.printObj(completions[:5])
             # head = line[:local_column]
-            # tail = line[local_column:]
-            # print('%s completions for %r' % (len(completions), head.strip()))
-            # print(' get: %5.4f sec.' % (t2-t1))
-            # print('jedi: %5.4f sec.' % (t3-t2))
-            # print('n0: %s len(source): %s jedi_line: %s' % (n0, len(source), jedi_line))
-            # print('LINE: %r' % line)
-            # print('HEAD: %r' % head)
-            # print('TAIL: %r' % tail)
+            # ch = line[local_column:local_column+1]
+            # g.trace(len(completions), repr(ch), head.strip())
         return completions
     #@+node:ekr.20180526211127.1: *6* ac.add_prefix
     def add_prefix(self, prefix, s):
@@ -863,7 +858,7 @@ class AutoCompleterClass(object):
             self.insert_string(ch)
             common_prefix, prefix, aList = self.compute_completion_list()
             if not aList:
-                if self.forbid_invalid: # 2011/06/17.
+                if self.forbid_invalid:
                     # Delete the character we just inserted.
                     self.do_backspace()
             # @bool auto_tab_complete is deprecated.
