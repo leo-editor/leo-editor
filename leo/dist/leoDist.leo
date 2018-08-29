@@ -186,11 +186,7 @@ SOFTWARE.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-<<<<<<< HEAD
-Version: 5.7.3
-=======
 Version: 5.8
->>>>>>> 5.8-b1-rel
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -210,33 +206,12 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<<<<<<< HEAD
-<t tx="EKR.20040519090846.9">May 28, 2018
-
-Leo 5.7.3, http://leoeditor.com, is now available on
-=======
 <t tx="EKR.20040519090846.9">August 28, 2018
 
-Leo 5.8 b1, http://leoeditor.com, is now available on
->>>>>>> 5.8-b1-rel
-[GitHub](https://github.com/leo-editor/leo-editor).
+Leo 5.8 b1, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-<<<<<<< HEAD
-**The highlights of Leo 5.7.3**
-
-- Added support for Jedi autocompletion.
-- Much improved python_terminal plugin.
-- Much improved recursive import script.
-- New leo_babel plugin.
-- Leo's pylint command writes clickable links.
-- Smart searches for functions and methods.
-- Allow separate bindings for numeric keypad keys
-- Added easy-to-use diff-related wrappers for scripts.
-- Allow local overrides of all abbreviations.
-- Improved TypeScript importer.
-=======
 **The highlights of Leo 5.8**
 
 - Much faster file-read code.
@@ -244,7 +219,6 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - Leo using ElementTree instead of sax to read .leo files.
 - Refactored and improved Leo's key-handling code.
 - Improved Leo's outline drawing code.
->>>>>>> 5.8-b1-rel
 - The usual minor bug fixes.
 
 **Links**
