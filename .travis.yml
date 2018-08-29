@@ -1,12 +1,13 @@
 language: python
 install:
     #- sh build-without-pip.sh
-    - git fetch --depth=500
-    - git checkout tag/5.8-b1
+    - git fetch --tags --depth=500
+    - git checkout 5.8-b1
     #- pip install --editable .
 script:
     #- leo-console --version
-    - python setup.py bdist_wheel
+    # reverse grep to hide excessive 'adding' and 'copying'
+    - python setup.py bdist_wheel | grep -v -e '^adding' -e '^copying'
     - pip install dist/*.whl
     - leo-console --version
 
