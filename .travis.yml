@@ -2,7 +2,7 @@ language: python
 install:
     #- sh build-without-pip.sh
     - git fetch --depth=500
-    - git checkout tags/5.8-b1
+    - git checkout tag/5.8-b1
     #- pip install --editable .
 script:
     #- leo-console --version
