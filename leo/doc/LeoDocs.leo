@@ -2192,6 +2192,7 @@
 <v t="ekr.20180528114740.1"><vh>Features</vh>
 <v t="ekr.20180528114754.1"><vh>#871: A setting to position the icon bar </vh></v>
 <v t="ekr.20180626054937.1"><vh>#913: Show base classes in python importer</vh></v>
+<v t="ekr.20180829160908.1"><vh>#914: Fix jedi completion glitches</vh></v>
 <v t="ekr.20180821062138.38"><vh>#932: use "show" prefix for many commands</vh></v>
 <v t="ekr.20180806054424.1"><vh>#949: Smart quotes</vh></v>
 <v t="ekr.20180821062022.35"><vh>#953: better warnings about importing qt</vh></v>
@@ -29284,6 +29285,8 @@ Removed qtree.update_appearance and qtree.update_appearance_idle.
 The fix: call c.treeWantsFocusNow in tt.selectTab.
 </t>
 <t tx="ekr.20180829083210.1">https://github.com/leo-editor/leo-editor/issues/970</t>
+<t tx="ekr.20180829160908.1">https://github.com/leo-editor/leo-editor/issues/914
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
