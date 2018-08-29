@@ -1,7 +1,7 @@
 language: python
 install:
     #- sh build-without-pip.sh
-    - git fetch --depth=100
+    - git fetch --depth=500
     - git checkout tags/5.8-b1
     #- pip install --editable .
 script:
