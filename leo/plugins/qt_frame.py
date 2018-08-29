@@ -4299,6 +4299,8 @@ class LeoQtTreeTab(object):
         tt, c, cc = self, self.c, self.cc
         tabName = g.u(tabName)
         exists = tabName in self.tabNames
+        c.treeWantsFocusNow()
+            # Fix #969. Somehow this is important.
         if not exists:
             tt.createTab(tabName) # Calls tt.setNames()
         if tt.lockout:

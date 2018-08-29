@@ -388,7 +388,6 @@ class LeoApp(object):
         self.delegate_language_dict = {
             # Keys are new language names.
             # Values are existing languages in leo/modes.
-            'clojure': 'lisp',
             "less": "css",
             "hbs": "html",
             "handlebars": "html",

@@ -1095,7 +1095,6 @@ if QtWidgets: # NOQA
         def update_pyplot(self, s, keywords):
             '''Get the pyplot script at c.p.b and show it.'''
             c = self.c
-            # To do: show plot in the VR area.
             if not self.pyplot_imported:
                 self.pyplot_imported = True
                 backend = g.os_path_finalize_join(
@@ -1139,32 +1138,6 @@ if QtWidgets: # NOQA
                 namespace=namespace,
                 raiseFlag=False)
             c.bodyWantsFocusNow()
-        #@+node:ekr.20160928030257.1: *5* vr.embed_pyplot_widget (not used)
-        def embed_pyplot_widget(self):
-
-            pc = self
-            c = pc.c
-            # Careful: we may be unit testing.
-            splitter = c.free_layout.get_top_splitter()
-            if not splitter:
-                return
-            if not pc.pyplot_canvas:
-
-                # TODO Create the widgets.
-                w = None
-                ### Ref
-                # pc.gs = QtWidgets.QGraphicsScene(splitter)
-                # pc.gv = QtWidgets.QGraphicsView(pc.gs)
-                # w = pc.gv.viewport() # A QWidget
-                # Embed the widgets.
-                pc.pyplot_canvas = w
-
-                def delete_callback():
-                    pc.pyplot_canvas.deleteLater()
-                    pc.pyplot_canvas = None
-
-            if pc.pyplot_canvas:
-                pc.embed_widget(w, delete_callback=delete_callback)
         #@+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
         def update_rst(self, s, keywords):
             '''Update rst in the vr pane.'''

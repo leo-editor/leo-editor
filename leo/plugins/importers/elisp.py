@@ -139,7 +139,7 @@ class Elisp_ScanState:
 importer_dict = {
     'class': Elisp_Importer,
         # Also clojure, clojurescript
-    'extensions': ['.el', '.cljs', '.cljc',],
+    'extensions': ['.el', '.clj', '.cljs', '.cljc',],
 }
 #@@language python
 #@@tabwidth -4

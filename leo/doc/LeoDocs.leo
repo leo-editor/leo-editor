@@ -589,6 +589,7 @@
 <v t="ekr.20090212054250.7"><vh>How can I get recent snapshots of Leo?</vh></v>
 </v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
+<v t="matt.20180826201749.1"><vh>How to  Pip install from GitHub?</vh></v>
 <v t="ekr.20090202191501.7"><vh>Leo's installer failed, what do I do?</vh></v>
 <v t="ekr.20150313053238.40"><vh>Common problems</vh></v>
 </v>
@@ -1345,6 +1346,10 @@
 <v t="ekr.20180226153353.1"><vh>Using g.app.backgroundProcessManager</vh></v>
 </v>
 <v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
+<v t="ekr.20180827103758.1"><vh>Using @pyplot and matplotlib</vh>
+<v t="ekr.20180827104847.1"><vh>Overview</vh></v>
+<v t="ekr.20180827105047.1"><vh>Displaying images externally</vh></v>
+</v>
 <v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
 <v t="ekr.20131012060912.16788"><vh>Writing g.es output to other tabs</vh></v>
 </v>
@@ -1524,6 +1529,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20180821154658.1"><vh>What's new in Leo 5.8</vh></v>
 <v t="ekr.20180527084307.1"><vh>What's new in Leo 5.7.3</vh></v>
 <v t="ekr.20180427130312.1"><vh>What's new in Leo 5.7.2</vh></v>
 <v t="ekr.20180404015558.1"><vh>What's new in Leo 5.7.1</vh>
@@ -2130,10 +2136,10 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180527084307.1"></v>
-<v t="ekr.20180821154658.1"><vh>What's new in Leo 5.8</vh></v>
-<v t="ekr.20180528114703.1"><vh>Leo 5.8 release notes</vh>
+<v t="ekr.20180821154658.1"></v>
+<v t="ekr.20180528114703.1"><vh>Leo 5.8 b1 release notes</vh>
 <v t="ekr.20180601095122.1"><vh>Bugs</vh>
+<v t="ekr.20180828095555.1"><vh>Fixed in b1</vh>
 <v t="ekr.20180822072454.2"><vh>#841: Python importer does not always handle decorators properly</vh></v>
 <v t="ekr.20180822072454.4"><vh>#893: Python Console gets stuck on IndentationError</vh></v>
 <v t="ekr.20180601095134.1"><vh>#917: System keys on Microsoft keyboard insert unwanted text</vh></v>
@@ -2150,6 +2156,10 @@
 <v t="ekr.20180708081949.1"><vh>Fixed crasher in LeoQtLog.linkClicked</vh></v>
 <v t="ekr.20180708030832.1"><vh>Fixed problems with git-diff command</vh></v>
 <v t="ekr.20180821062138.296"><vh>git-diff now works outside of leo-editor folder</vh></v>
+</v>
+<v t="ekr.20180828095605.1"><vh>Fixed in b2</vh>
+<v t="ekr.20180828095610.1"><vh>#969: Chapter button</vh></v>
+</v>
 </v>
 <v t="ekr.20180608054147.1"><vh>Code</vh>
 <v t="ekr.20180821062138.2"><vh>#296: private plugin directories</vh></v>
@@ -2175,6 +2185,8 @@
 <v t="ekr.20180821062138.134"><vh>Stats: p.copy (after 3)</vh></v>
 </v>
 <v t="ekr.20180821062022.4"><vh>Removed "adjust" and "reassignIndices" kwargs</vh></v>
+<v t="ekr.20180828033232.1"><vh>Removed qtree.update_appearance*</vh></v>
+<v t="ekr.20180828033450.1"><vh>Improved Leo's outline drawing code</vh></v>
 </v>
 <v t="ekr.20180528114740.1"><vh>Features</vh>
 <v t="ekr.20180528114754.1"><vh>#871: A setting to position the icon bar </vh></v>
@@ -2183,6 +2195,7 @@
 <v t="ekr.20180806054424.1"><vh>#949: Smart quotes</vh></v>
 <v t="ekr.20180821062022.35"><vh>#953: better warnings about importing qt</vh></v>
 <v t="ekr.20180821062022.33"><vh>#961: curses gui</vh></v>
+<v t="ekr.20180828032757.1"><vh>#966: Better support for clojurescript</vh></v>
 <v t="ekr.20180821062419.1"><vh>Added --trace-drawing and --trace-startup</vh></v>
 <v t="ekr.20180806085322.1"><vh>Added .sty and .latex entries in extension_dict</vh></v>
 <v t="ekr.20180821062138.107"><vh>Added @nosearch to results of cff</vh></v>
@@ -4487,7 +4500,7 @@ What People are Saying about Leo
 </t>
 <t tx="ekr.20050831184021.5"></t>
 <t tx="ekr.20050831195331.1"></t>
-<t tx="ekr.20050831195449" str_leo_pos="7">For instruction about installing Leo see:
+<t tx="ekr.20050831195449">For instruction about installing Leo see:
 http://leoeditor.com/installing.html
 
 For everything a beginner needs to know about Leo see:
@@ -11650,7 +11663,7 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 | screenshot = [http://sourceforge.net/project/screenshots.php?group_id=3458&amp;ssid=22298 Screenshots]
 | caption =
 | developer = Edward K. Ream
-| latest_release_version = 5.7b1
+| latest_release_version = 5.8b1
 | latest_release_date = {{release date and age|2018|01|27}}
 | operating_system = [[Cross-platform]]
 | genre = [[Text editor]], [[Outliner]], [[Integrated development environment|IDE]]
@@ -18117,7 +18130,7 @@ I'm trying to create a interactive chart in a embedded in a new leo pane using m
 
 I want to create a data processing and visualization tool kit in leo. Like Excel but using nodes instead of columns. Nodes will have data and I want to create new data nodes by applying python functions to data in existing nodes. The thing missing is the visualization within a leo pane (I can easily launch a chart in it's own window).
 
------ Terry Brown
+**Terry Brown**
 
 You can run this script from any body pane::
 
@@ -18153,7 +18166,7 @@ You can run this script from any body pane::
     
     MatplotPaneProvider(c)
 
------ OP
+**OP**
 
 I have managed to get a matplotlib graph embedded within a pane in leo as a widget. I now need some help with how to interact with the widget using scripts in leo. I am unsure about the following:
  
@@ -18834,8 +18847,6 @@ One of Leo's most important developments, @button, came directly from e's dyna_m
 
 </t>
 <t tx="ekr.20150313053238.40">Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console`_. because as a last resort Leo prints error messages to the console.
-
-
 </t>
 <t tx="ekr.20150313053238.44">I just want to provide my own thoughts about the importance of @clean. I look at the posts in this group a fair amount because I find the discussion interesting but I had abandoned leo as a day-to-day tool principally because of the sentinels in @file nodes. Even for solo projects, I just found them visually unappealing and beyond that occasionally confusing when I went to edit files with external editors. I would sometimes start a project in leo, particularly if it was based on code I developed in the past using leo, and then would use the old @nosent to save a version of the code without sentinels and then use my external editor of choice and not use leo at all. I missed many of the features of leo but just couldn't get over the sentinel issue.
 
@@ -22411,7 +22422,7 @@ Then run::
 
 You may `download Leo's sources`_ in one of three ways. If the sources
 are zipped, unzip them into a folder in your home directory, say
-~/leo-5.7.
+~/leo-5.8.
 
 You now have several choices.
 
@@ -22419,7 +22430,7 @@ You now have several choices.
 
 2. You can install leo into /usr/local/lib and /usr/local/bin with:
 
-    cd ~/leo-5.7
+    cd ~/leo-5.8
     sudo python setup.py install
 
 See `Running Leo`_ for how to run Leo after installing it.
@@ -26693,7 +26704,7 @@ At all times, anyone can pull stable code from master.
 
 Only the maintainer (EKR) is supposed to work on release or master, so nobody needs to hold back or knows what is going on in them. At all times everyone can happily hack on devel,  or better, their personal feature branches.
 
-To prepare a new release,  the maintainer branches devel to a new branch, say 5.7.x.  The maintainer runs tests on it, and makes any last-minute fixes. To publish the release, the maintainer merges the release to master **and** to devel, then optionally deletes the release branch.
+To prepare a new release,  the maintainer branches devel to a new branch, say 5.8.x.  The maintainer runs tests on it, and makes any last-minute fixes. To publish the release, the maintainer merges the release to master **and** to devel, then optionally deletes the release branch.
 
 This visualization made it all clear to me:
 https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-3.png</t>
@@ -28140,7 +28151,7 @@ A complete rewrite of the python_terminal plugin.</t>
 - Allow local overrides of all abbreviations.
 - Improved TypeScript importer.</t>
 <t tx="ekr.20180528114703.1">
-Leo 5.8, http://leoeditor.com, is now available on
+Leo 5.8 b1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
@@ -28151,6 +28162,7 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - Leo no longer caches file contents. Removed --no-cache!
 - Leo using ElementTree instead of sax to read .leo files.
 - Refactored and improved Leo's key-handling code.
+- Improved Leo's outline drawing code.
 - The usual minor bug fixes.
 
 **Links**
@@ -29184,7 +29196,12 @@ Commands that *DON'T* use the printer:
 The fix was to getVnodeFromClipboard.
 </t>
 <t tx="ekr.20180821062419.1"></t>
-<t tx="ekr.20180821154658.1"></t>
+<t tx="ekr.20180821154658.1">- Much faster file-read code.
+- Leo no longer caches file contents. Removed --no-cache!
+- Leo using ElementTree instead of sax to read .leo files.
+- Refactored and improved Leo's key-handling code.
+- Improved Leo's outline drawing code.
+- The usual minor bug fixes.</t>
 <t tx="ekr.20180821155534.1"></t>
 <t tx="ekr.20180822072454.2">https://github.com/leo-editor/leo-editor/issues/841
 </t>
@@ -29198,6 +29215,107 @@ The change was to load_session.</t>
 added update_nodes method.
 </t>
 <t tx="ekr.20180824085929.1">https://github.com/leo-editor/leo-editor/issues/967</t>
+<t tx="ekr.20180827103758.1">
+
+
+
+</t>
+<t tx="ekr.20180827104847.1">Leo's @pyplot nodes support
+`matplotlib &lt;https://matplotlib.org/users/index.html&gt;`_.
+\@pyplot nodes start with @pyplot in the headline.  The rest of the headline is comments. These nodes should contain matplotlib scripts that create figures or animations.  Like this::
+
+    fig2 = plt.figure()
+    x = np.arange(-9, 10)
+    y = np.arange(-9, 10).reshape(-1, 1)
+    base = np.hypot(x, y)
+    images = []
+    for add in np.arange(15):
+        images.append((
+            plt.pcolor(x, y, base+add, norm=plt.Normalize(0, 30)),
+        ))
+    animation = animation.ArtistAnimation(fig2, images,
+        interval=50, repeat_delay=3000, blit=True)
+    g.app.permanentScriptDict['animations'] = animation
+        # Keep a python reference to the animation, so it will complete.
+
+**Notes**
+
+1. If the viewrendered (VR) pane is open, Leo will display the animation in the VR pane whenever the user selects the @pyplot node.  This has been tested only with the viewrendered.py, not the viewrendered2.py plugin.
+
+2. In addition to c, g, and p, the VR code predefines several other vars.  The VR code does the following imports::
+
+    import matplotlib
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import matplotlib.animation as animation
+
+and then predefines the animation, matplotlib, np, numpy and plt vars in the @pyplot script. numpy is also predefined as an alias for np.</t>
+<t tx="ekr.20180827105047.1">To display images and animations in an external window, *don't* put the script in an @pyplot node. Instead, put the script in a regular node, with the following modifications:
+
+1. Add the required imports::
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import matplotlib.animation as animation
+
+2. Place the following at the end of the script::
+
+    plt.ion()
+        # sets interactive mode. Prevents this message:
+        # QCoreApplication::exec: The event loop is already running
+    plt.show()
+    
+**Bugs**
+
+1. Once you use the VR pane to display an image, you can't (at present) display an image externally.
+
+2. The VR plugin will refuse to close the VR pane if it ever displays an @pyplot image or animation. This prevents Leo from hard crashing in the pyplot code. As a workaround, you can  resize the VR pane so it is effectively hidden.</t>
+<t tx="ekr.20180828032757.1">https://github.com/leo-editor/leo-editor/issues/966
+</t>
+<t tx="ekr.20180828033232.1"></t>
+<t tx="ekr.20180828033450.1">Leo now redraws the screen only once during startup.
+
+Removed qtree.update_appearance and qtree.update_appearance_idle.
+</t>
+<t tx="ekr.20180828095555.1"></t>
+<t tx="ekr.20180828095605.1"></t>
+<t tx="ekr.20180828095610.1">https://github.com/leo-editor/leo-editor/issues/969
+The fix: call c.treeWantsFocusNow in tt.selectTab.
+</t>
+<t tx="matt.20180826201749.1">**Problem**
+
+When installing Leo from GitHub with
+``pip install https://github.com/leo-editor/leo-editor/archive/devel.zip``
+numerous files are left out.
+
+**Solution**
+
+Installing from Github into a new environment must be done in discrete
+steps: download, unpack, and install in editable mode.
+
+Example::
+
+   wget https://github.com/leo-editor/leo-editor/archive/devel.zip
+   7z x devel.zip -o C:\apps
+   pip install --editable C:\apps\leo-editor-devel
+
+On Windows there are powershell versions of wget if needed.
+
+For easier upgrading substitute ``git clone`` for ``wget`` &amp; ``7z``
+steps::
+
+   git clone --single-branch -b devel --depth=100 https://github.com/leo-editor/leo-editor.git
+   pip install --editable leo-editor
+
+Time passes, upgrade desired::
+
+   pushd c:\apps\leo-editor
+   git pull
+
+``single-branch``, ``b`` and ``depth`` are all optional, but will
+dramatically speed up download time as it only grabs the latest
+development branch and skips all but the last couple weeks or months of
+history.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
