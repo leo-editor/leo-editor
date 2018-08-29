@@ -1,6 +1,5 @@
 language: python
 install:
-    #- sh build-without-pip.sh
     - git fetch --tags --depth=500
     - git checkout 5.8-b1
     #- pip install --editable .
@@ -11,4 +10,5 @@ script:
     - pip install dist/*.whl
     - leo-console --version
 
-    - pytest travis_tests/*
+    # There are no travis tests after checking out 5.8-b1 tag
+    #- pytest travis_tests/*
