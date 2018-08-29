@@ -67,6 +67,22 @@ class FastRead (object):
                 s = f.read()
         return self.readWithElementTree(path, s)
     #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
+    minimal_leo_file = """<?xml version="1.0" encoding="utf-8"?>
+    <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+    <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+    <leo_header file_format="2"/>
+    <globals/>
+    <preferences/>
+    <find_panel_settings/>
+    <vnodes>
+    <v t="ekr.20180829082643.3"><vh>Minimal Leo File</vh></v>
+    </vnodes>
+    <tnodes>
+    <t tx="ekr.20180829082643.3"></t>
+    </tnodes>
+    </leo_file>
+    """
+
     def readWithElementTree(self, path, s):
 
         contents = g.toUnicode(s) if g.isPython3 else s
@@ -79,7 +95,8 @@ class FastRead (object):
                 message = 'The clipboard is not a vaild .leo file'
             g.es_print(message, color='red')
             g.es_print(g.toUnicode(e))
-            return None
+            # Parse a minimal file for the rest of Leo.
+            xroot = ElementTree.fromstring(self.minimal_leo_file)
         g_element = xroot.find('globals')
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
