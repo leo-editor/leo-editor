@@ -65,12 +65,21 @@ class FastRead (object):
         if not s:
             with open(path, 'rb') as f:
                 s = f.read()
-        return self.readWithElementTree(s)
+        return self.readWithElementTree(path, s)
     #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
-    def readWithElementTree(self, s):
+    def readWithElementTree(self, path, s):
 
         contents = g.toUnicode(s) if g.isPython3 else s
-        xroot = ElementTree.fromstring(contents)
+        try:
+            xroot = ElementTree.fromstring(contents)
+        except Exception as e:
+            if path:
+                message = 'bad .leo file: %s' % g.shortFileName(path)
+            else:
+                message = 'The clipboard is not a vaild .leo file'
+            g.es_print(message, color='red')
+            g.es_print(g.toUnicode(e))
+            return None
         g_element = xroot.find('globals')
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
