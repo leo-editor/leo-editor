@@ -2137,7 +2137,7 @@
 </v>
 </v>
 <v t="ekr.20180821154658.1"></v>
-<v t="ekr.20180528114703.1"><vh>Leo 5.8 b1 release notes</vh>
+<v t="ekr.20180528114703.1"><vh>Leo 5.8 b2 release notes</vh>
 <v t="ekr.20180601095122.1"><vh>Bugs</vh>
 <v t="ekr.20180828095555.1"><vh>Fixed in b1</vh>
 <v t="ekr.20180822072454.2"><vh>#841: Python importer does not always handle decorators properly</vh></v>
@@ -2159,6 +2159,7 @@
 </v>
 <v t="ekr.20180828095605.1"><vh>Fixed in b2</vh>
 <v t="ekr.20180828095610.1"><vh>#969: Chapter button</vh></v>
+<v t="ekr.20180829083210.1"><vh>#970: Crash opening mal-formed .leo files</vh></v>
 </v>
 </v>
 <v t="ekr.20180608054147.1"><vh>Code</vh>
@@ -28151,7 +28152,7 @@ A complete rewrite of the python_terminal plugin.</t>
 - Allow local overrides of all abbreviations.
 - Improved TypeScript importer.</t>
 <t tx="ekr.20180528114703.1">
-Leo 5.8 b1, http://leoeditor.com, is now available on
+Leo 5.8 b2, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
@@ -29282,6 +29283,7 @@ Removed qtree.update_appearance and qtree.update_appearance_idle.
 <t tx="ekr.20180828095610.1">https://github.com/leo-editor/leo-editor/issues/969
 The fix: call c.treeWantsFocusNow in tt.selectTab.
 </t>
+<t tx="ekr.20180829083210.1">https://github.com/leo-editor/leo-editor/issues/970</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
