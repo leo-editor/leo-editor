@@ -1,9 +1,9 @@
 language: python
 install:
-    - git fetch --tags --depth=500
-    - git checkout 5.8-b2
-    #- pip install --editable .
+    #- git fetch --tags --depth=500
+    #- git checkout 5.8-b2
 script:
+    #- pip install --editable .
     #- leo-console --version
     # reverse grep to hide excessive 'adding' and 'copying'
     - python setup.py bdist_wheel | grep -v -e '^adding' -e '^copying'
@@ -19,5 +19,5 @@ deploy:
     - secure: ii42oxaVaVUxdQXLpkFbcHZwKkjvhuBrlu99N+39TJ7UjHt4R6YJkMH4ZW6JPdhfEdALwUbGdGKIZR5LenFkROyR6Ak+I9WjHtr0CQNgzf+rOMw7S1M/NQUjQPflKXh/f9Cc+HSnBk6h6GIG1Ot9K2KqQ37/HOOb7uYwsGwdImfyVkHQ2P6TVDNGcqyfqqtErWvXFKGESVRd/o9rA7rLA10MOADdl8/kDqYDTnOLiuDq5ggP168mqk8NNUzHk40gM93sWuU7Dui+idajCRWH0YjhJuDV0HWDZt93svKtfZ4Sb+LBtnyxr1bpULzWNhuqTguHZwCbU0NOZuJuoTbm7israUWIIwKEHE6f49oORnFjc8c4mHXHEewbfvlBsDSlY4eClkx2pyubyRPQLjoUNF4jqTtI/f5PSiCgFoBsRWiZC+Rhmfay504Oky6HWjAbDuy+08FcbOmGZzIHpTS97Fo4AXrZwsG77RMdHwA5DillLAcrKWNqZelFkZe6ZeBHpZCYJQpXYKbSFehg4BQApDf5soHapfnIAgEYRsIpLsSEmBe+Zr9fFINDxZxYyu+LhdNAS7t19J4yS9TorN4A79Ts0rR6je7CjTBFfN3Zkq+252iNwydUFUHYzlzB+/bS/2DY0pd0rZ6JSqf7ElcPpeRj4VuLlEs6EXH12sLQLws=
   on:
     tags: true
-    branch: travis
+    branch: master
 
