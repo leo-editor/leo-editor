@@ -29284,7 +29284,18 @@ Removed qtree.update_appearance and qtree.update_appearance_idle.
 <t tx="ekr.20180828095610.1">https://github.com/leo-editor/leo-editor/issues/969
 The fix: call c.treeWantsFocusNow in tt.selectTab.
 </t>
-<t tx="ekr.20180829083210.1">https://github.com/leo-editor/leo-editor/issues/970</t>
+<t tx="ekr.20180829083210.1">https://github.com/leo-editor/leo-editor/issues/970
+
+Fixed #970 with several small, subtle, tweaks:
+    
+fast.readWithElementTree simply returns False if the .leo file is invalid.
+
+This necessitated further tweaks:
+
+- LM.readOpenedLeoFile never closes Leo by setting finish_quit kwarg to True.
+- LM.getPreviousSettings uses global settings if the file is invalid.
+- LM.computeThemeFilePath uses global settings if the file is invalid.
+- fast.getGlobalData is more careful to handle exceptions.</t>
 <t tx="ekr.20180829160908.1">https://github.com/leo-editor/leo-editor/issues/914
 </t>
 <t tx="matt.20180826201749.1">**Problem**
