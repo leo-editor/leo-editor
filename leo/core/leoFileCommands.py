@@ -67,22 +67,6 @@ class FastRead (object):
                 s = f.read()
         return self.readWithElementTree(path, s)
     #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
-    minimal_leo_file = """<?xml version="1.0" encoding="utf-8"?>
-    <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-    <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-    <leo_header file_format="2"/>
-    <globals/>
-    <preferences/>
-    <find_panel_settings/>
-    <vnodes>
-    <v t="ekr.20180829082643.3"><vh>Minimal Leo File</vh></v>
-    </vnodes>
-    <tnodes>
-    <t tx="ekr.20180829082643.3"></t>
-    </tnodes>
-    </leo_file>
-    """
-
     def readWithElementTree(self, path, s):
 
         contents = g.toUnicode(s) if g.isPython3 else s
@@ -93,10 +77,12 @@ class FastRead (object):
                 message = 'bad .leo file: %s' % g.shortFileName(path)
             else:
                 message = 'The clipboard is not a vaild .leo file'
+            print('')
             g.es_print(message, color='red')
             g.es_print(g.toUnicode(e))
-            # Parse a minimal file for the rest of Leo.
-            xroot = ElementTree.fromstring(self.minimal_leo_file)
+            print('')
+            # #970: Just report failure here.
+            return None
         g_element = xroot.find('globals')
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
@@ -206,22 +192,27 @@ class FastRead (object):
     def getGlobalData(self):
         '''Return a dict containing all global data.'''
         c = self.c
-        data = c.db.get('window_position')
-        if data:
-            # pylint: disable=unpacking-non-sequence
-            top, left, height, width = data
-            d = {
+        try:
+            window_pos = c.db.get('window_position')
+            r1 = float(c.db.get('body_outline_ratio', '0.5'))
+            r2 = float(c.db.get('body_secondary_ratio', '0.5'))
+            top, left, height, width = window_pos
+            return {
                 'top': int(top),
                 'left': int(left),
                 'height': int(height),
                 'width': int(width),
+                'r1': r1,
+                'r2': r2,
             }
-        else:
-            # Use reasonable defaults.
-            d = {'top': 50, 'left': 50, 'height': 500, 'width': 800}
-        d ['r1'] = float(c.db.get('body_outline_ratio', '0.5'))
-        d ['r2'] = float(c.db.get('body_secondary_ratio', '0.5'))
-        return d
+        except Exception:
+            pass
+        # Use reasonable defaults.
+        return {
+            'top': 50, 'left': 50,
+            'height': 500, 'width': 800,
+            'r1': 0.5, 'r2': 0.5,
+        }
     #@+node:ekr.20180602062323.8: *5* fast.scanTnodes
     def scanTnodes (self, t_elements):
 
