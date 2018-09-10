@@ -1034,7 +1034,7 @@
 <v t="ekr.20170323095724.1"><vh>@item open-leo-settings-leo</vh></v>
 <v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 </v>
-<v t="ekr.20131213135427.21831"><vh>@menu Recent Files</vh></v>
+<v t="ekr.20131213135427.21831"><vh>@menu Recent &amp;Files</vh></v>
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21834"><vh>@item save-file</vh></v>
 <v t="ekr.20131213135427.21835"><vh>@item save-file-as</vh></v>
