@@ -123,8 +123,8 @@ user_requires = [
     'pylint','pyflakes', # coding syntax standards
     'pypandoc', # doc format conversion
     'sphinx', # rST plugin
-    'semantic_version', # Pip packaging    
-    'twine','wheel','keyring' # Pip packaging, uploading to PyPi
+    #'semantic_version', # Pip packaging    
+    #'twine','wheel','keyring' # Pip packaging, uploading to PyPi
     #'pyenchant', # spell check support ## no wheels for some platforms, e.g. amd64
     #'pyxml', # xml importing ## no pip package
     ]

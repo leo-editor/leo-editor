@@ -1,0 +1,2 @@
+[build-system]
+requires = ["setuptools", "wheel", "twine", "key_ring", "semantic_version"]
