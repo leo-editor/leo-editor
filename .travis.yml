@@ -5,7 +5,7 @@ install:
     #- pip install --editable .
     - pip install docutils nbformat pylint pyflakes pypandoc sphinx
     #- pip install pyqt5
-    - apt install tree python-qt4
+    - sudo apt install tree python-qt4
     - python setup.py install --root=/tmp/packages | grep -v '^copying'
         # hide too verbose 'Copying ...' messages
     
