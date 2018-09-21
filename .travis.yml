@@ -2,10 +2,14 @@ language: python
 install:
     #- sh build-without-pip.sh
     - git fetch --depth=500 
-    - pip install --editable .
+    #- pip install --editable .
     - python setup.py install --root=/tmp/packages | grep -v '^copying'
+        # hide too verbose 'Copying ...' messages
 script:
-    - leo-console --version
+#    - leo-console --version
     - /tmp/packages/home/travis/virtualenv/python2.7.14/bin/leo-console --version
+    - export PYTHONPATH=$PYTHONPATH:/tmp/packages/usr/lib/python2.7.14/site-packages
+    - /tmp/packages/home/travis/virtualenv/python2.7.14/bin/leo-console --version
+    - tree -d /tmp/packages
     - pytest travis_tests/*
 
