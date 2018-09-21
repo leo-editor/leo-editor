@@ -4,10 +4,11 @@ install:
     - git fetch --depth=500 
     #- pip install --editable .
     - pip install docutils nbformat pylint pyflakes pypandoc sphinx
-    - pip install pyqt5
+    #- pip install pyqt5
+    - apt install tree python-qt4
     - python setup.py install --root=/tmp/packages | grep -v '^copying'
         # hide too verbose 'Copying ...' messages
-    - apt install tree
+    
 script:
 #    - leo-console --version
     - /tmp/packages/home/travis/virtualenv/python2.7.14/bin/leo-console --version
