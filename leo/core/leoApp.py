@@ -1265,6 +1265,10 @@ class LeoApp(object):
         app.logWaiting = []
         # Essential when opening multiple files...
         g.app.setLog(None)
+    #@+node:ekr.20180924093227.1: *3* app.c property
+    @property
+    def c (self):
+        return self.log and self.log.c
     #@+node:ekr.20171127111053.1: *3* app.Closing
     #@+node:ekr.20031218072017.2609: *4* app.closeLeoWindow
     def closeLeoWindow(self, frame, new_c=None, finish_quit=True):
