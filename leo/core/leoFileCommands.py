@@ -178,7 +178,11 @@ class FastRead (object):
         '''Get global data from the cache, with reasonable defaults.'''
         c = self.c
         d = self.getGlobalData()
-        w, h = d.get('width'), d.get('height')
+        windowSize = g.app.loadManager.options.get('windowSize')
+        if windowSize is not None:
+            h, w = windowSize # checked in LM.scanOption.
+        else:
+            w, h = d.get('width'), d.get('height')
         x, y = d.get('left'), d.get('top')
         r1, r2 = d.get('r1'), d.get('r2')
         c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
