@@ -3043,7 +3043,7 @@ class KeyHandlerClass(object):
         k = self
         # Setup...
         if 'keys' in g.app.debug:
-            g.trace(repr(k.state.kind), repr(event.char), event.stroke)
+            g.trace(repr(k.state.kind), repr(event.char), repr(event.stroke))
         k.checkKeyEvent(event)
         k.setEventWidget(event)
         k.traceVars(event)
@@ -3251,13 +3251,21 @@ class KeyHandlerClass(object):
             return True
         if state in ('getArg', 'getFileName', 'full-command', 'auto-complete', 'vim-mode'):
             if k.handleMiniBindings(event, state, stroke):
+                g.trace('mini binding')
                 return True
         #
         # Second, honor general modes.
         #
         if state == 'getArg':
-            k.getArg(event, stroke=stroke)
-            return True
+            # New in Leo 5.8: Only call k.getArg for keys it can handle.
+            if k.isPlainKey(stroke):
+                k.getArg(event, stroke=stroke)
+                return True
+            elif stroke.s in ('Escape', 'Tab', 'BackSpace'):
+                k.getArg(event, stroke=stroke)
+                return True
+            else:
+                return False
         if state in ('getFileName', 'get-file-name'):
             k.getFileName(event)
             return True
@@ -3494,6 +3502,7 @@ class KeyHandlerClass(object):
             if result == 'ignore':
                 return False # Let getArg handle it.
             if result == 'found':
+                k.keyboardQuit() # 2018/09/27.
                 return True
         #
         # No binding exists.
