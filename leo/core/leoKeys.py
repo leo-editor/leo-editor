@@ -3251,7 +3251,6 @@ class KeyHandlerClass(object):
             return True
         if state in ('getArg', 'getFileName', 'full-command', 'auto-complete', 'vim-mode'):
             if k.handleMiniBindings(event, state, stroke):
-                g.trace('mini binding')
                 return True
         #
         # Second, honor general modes.
@@ -3261,11 +3260,10 @@ class KeyHandlerClass(object):
             if k.isPlainKey(stroke):
                 k.getArg(event, stroke=stroke)
                 return True
-            elif stroke.s in ('Escape', 'Tab', 'BackSpace'):
+            if stroke.s in ('Escape', 'Tab', 'BackSpace'):
                 k.getArg(event, stroke=stroke)
                 return True
-            else:
-                return False
+            return False 
         if state in ('getFileName', 'get-file-name'):
             k.getFileName(event)
             return True
@@ -3502,7 +3500,7 @@ class KeyHandlerClass(object):
             if result == 'ignore':
                 return False # Let getArg handle it.
             if result == 'found':
-                k.keyboardQuit() # 2018/09/27.
+                # Do not call k.keyboardQuit here!
                 return True
         #
         # No binding exists.
@@ -3542,7 +3540,11 @@ class KeyHandlerClass(object):
             stroke=stroke)
         # Careful: the command could exit.
         if c.exists and not k.silentMode:
-            c.minibufferWantsFocus()
+            # Use the state *after* executing the command.
+            if k.state.kind:
+                c.minibufferWantsFocus()
+            else:
+                c.bodyWantsFocus()
         return 'found'
     #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
     def isSpecialKey(self, event):
