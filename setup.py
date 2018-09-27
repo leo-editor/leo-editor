@@ -144,6 +144,27 @@ def clean():
 clean()
 #@-others
 
+def define_entry_points(entry_points=None):
+    import platform
+    entry_points={
+       'console_scripts': [
+            'leo-c = leo.core.runLeo:run_console',
+            'leo-console = leo.core.runLeo:run_console'],
+        'gui_scripts': ['leo = leo.core.runLeo:run']
+       }                
+    if platform.system() == 'Windows':
+        entry_points={
+           'console_scripts': [
+                'leo-c = leo.core.runLeo:run_console',
+                'leo-console = leo.core.runLeo:run_console',
+                'leo-m = leo.core.runLeo:run',
+                'leo-messages = leo.core.runLeo:run'],
+            'gui_scripts': ['leo = leo.core.runLeo:run']
+        }
+    else:
+        raise OSError('Unknown Operating System: {} {}'.format(platform.os.name, platform.system()))
+    return entry_points
+        
 setup(
     name='leo',
     # version = leo.core.leoVersion.version,
@@ -163,14 +184,10 @@ setup(
     include_package_data=True, # also include MANIFEST files in wheels
     setup_requires=setup_requires,
     install_requires=user_requires,
-    scripts=['leo/dist/leo-install.py'],
-    entry_points={
-       'console_scripts': ['leo-c = leo.core.runLeo:run_console',
-            'leo-console = leo.core.runLeo:run_console',
-            'leo-m = leo.core.runLeo:run',
-            'leo-messages = leo.core.runLeo:run'],
-        'gui_scripts': ['leo = leo.core.runLeo:run']
-       }
+    #scripts=['leo/dist/leo-install.py'],
+        # no longer needed. `entry_points` is the preferred method now
+        # delete the script too, after testing
+    entry_points=define_entry_points()
 )
 
 #@@language python
