@@ -146,6 +146,7 @@ clean()
 
 def define_entry_points(entry_points=None):
     import platform
+    print('Creating entry_points for [OS name - system]: {} - {}'.format(platform.os.name, platform.system()))
     entry_points={
        'console_scripts': [
             'leo-c = leo.core.runLeo:run_console',
@@ -161,8 +162,6 @@ def define_entry_points(entry_points=None):
                 'leo-messages = leo.core.runLeo:run'],
             'gui_scripts': ['leo = leo.core.runLeo:run']
         }
-    else:
-        raise OSError('Unknown Operating System: {} {}'.format(platform.os.name, platform.system()))
     return entry_points
         
 setup(
