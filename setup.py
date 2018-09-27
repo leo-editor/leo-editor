@@ -7,6 +7,7 @@
 #@+node:maphew.20180305124637.1: ** imports
 from codecs import open # To use a consistent encoding
 import os
+import platform
 from shutil import rmtree
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
 import leo.core.leoGlobals as g
@@ -145,7 +146,6 @@ clean()
 #@-others
 
 def define_entry_points(entry_points=None):
-    import platform
     print('Creating entry_points for [OS name - system]: {} - {}'.format(platform.os.name, platform.system()))
     entry_points={
        'console_scripts': [
@@ -154,14 +154,10 @@ def define_entry_points(entry_points=None):
         'gui_scripts': ['leo = leo.core.runLeo:run']
        }                
     if platform.system() == 'Windows':
-        entry_points={
-           'console_scripts': [
-                'leo-c = leo.core.runLeo:run_console',
-                'leo-console = leo.core.runLeo:run_console',
+        entry_points.update({
+            'console_scripts': [
                 'leo-m = leo.core.runLeo:run',
-                'leo-messages = leo.core.runLeo:run'],
-            'gui_scripts': ['leo = leo.core.runLeo:run']
-        }
+                'leo-messages = leo.core.runLeo:run']})
     return entry_points
         
 setup(
