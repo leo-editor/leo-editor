@@ -76,24 +76,29 @@ def get_semver(tag):
         version = tag
     return version
 #@+node:maphew.20171006124415.1: ** Get description
+
+with open('README.md') as f:
+    long_description = f.read()
+
 # Get the long description from the README file and convert to reST
 # adapted from https://github.com/BonsaiAI/bonsai-config/blob/0.3.1/setup.py#L7
 # bugfix #773 courtesy @Overdrivr, https://stackoverflow.com/a/35521100/14420
-try:
-    print('\n--- Getting long description ---')
-    from pypandoc import convert_file, convert_text
-    convert_text('#some title', 'rst', format='md') 
-        # fix #847, will raise OSError if pandoc binary not found
-    def read_md(f):
-        rst = convert_file(f, 'rst')
-        rst = rst.replace('\r', '') # fix #773
-        return rst
-except (ImportError, OSError) as err:
-    print('\n', err)
-    print('*** Warning: could not convert Readme.md to .rst (harmless for users)')
-    def read_md(f): return open(f, 'r').read()
-        # disable to obviously fail if markdown conversion fails
-#@+node:maphew.20141126230535.4: ** classifiers
+# try:
+    # print('\n--- Getting long description ---')
+    # from pypandoc import convert_file, convert_text
+    # convert_text('#some title', 'rst', format='md') 
+        # # fix #847, will raise OSError if pandoc binary not found
+    # def read_md(f):
+        # rst = convert_file(f, 'rst')
+        # rst = rst.replace('\r', '') # fix #773
+        # return rst
+# except (ImportError, OSError) as err:
+    # print('\n', err)
+    # print('*** Warning: could not convert Readme.md to .rst (harmless for users)')
+    # def read_md(f): return open(f, 'r').read()
+        # # disable to obviously fail if markdown conversion fails
+
+        #@+node:maphew.20141126230535.4: ** classifiers
 classifiers = [
     'Development Status :: 6 - Mature',
     'Intended Audience :: End Users/Desktop',
@@ -148,7 +153,9 @@ setup(
     url='http://leoeditor.com',
     license='MIT License',
     description='An IDE, PIM and Outliner', # becomes 'Summary' in pkg-info
-    long_description=read_md('README.md'),
+    #long_description=read_md('README.md'),
+    long_description=long_description,
+    long_description_content_type="text/markdown", # PEP566
     platforms=['Linux', 'Windows', 'MacOS'],
     download_url='http://leoeditor.com/download.html',
     classifiers=classifiers,
