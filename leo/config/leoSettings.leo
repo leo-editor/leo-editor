@@ -2305,6 +2305,7 @@
 </v>
 <v t="ekr.20180411070112.1"></v>
 <v t="ekr.20120205022040.15411"></v>
+<v t="ekr.20150216135059.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -10019,7 +10020,24 @@ False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>
 <t tx="ekr.20141112072219.2"></t>
 <t tx="ekr.20141204160426.5">New.</t>
-<t tx="ekr.20150216135059.1"></t>
+<t tx="ekr.20150216135059.1">With @clean and @file, Leo can store persistent data in nodes. This
+information consists of the node’s gnx (Global Node Index) and the node’s
+uA, (User Attributes).
+
+The gnx gives each node a unique, immutable identity. Gnx’s make clones
+possible. The uA allows scripts and plugins to associate arbitrarily much
+additional data with each node.
+
+By default, Leo’s importers preserve neither gnx’s nor uA’s. This makes
+imported @auto trees second class citizens. To remedy this, if an outline
+contains an @persistence node, Leo will save data in the @persistence tree
+that allows Leo to recover gnx’s and uA’s when re-reading @auto files
+later. This allows clone links and uA’s to persist.
+
+This is an optional feature. The stored data is akin to bookmarks. The data
+can “break” (become inaccessible) if the structure (including
+class/method/function names) changes.
+</t>
 <t tx="ekr.20150227102835.1">True: (Recommended) Make a "Recovered Nodes" node whenever Leo reads a file that has been changed outside of Leo.
 </t>
 <t tx="ekr.20150321090958.1">True: write check messages to Leo's log pane as well as the console.
