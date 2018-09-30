@@ -461,8 +461,7 @@
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
@@ -477,8 +476,6 @@ expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20131030184445.16582"><vh>@rst html/leoLinks.html </vh></v>
 <v t="ekr.20090711120622.10447"><vh>@rst html/screen-shots.html</vh>
 <v t="ekr.20170322084431.1"><vh>Leo's main window</vh></v>
-<v t="ekr.20170322084657.1"><vh>A dark theme</vh></v>
-<v t="ekr.20090811090022.14453"><vh>Leo's main window on Linux</vh></v>
 <v t="ekr.20090811090022.14452"><vh>Leo's rendering pane</vh></v>
 <v t="ekr.20170322084909.1"><vh>Using Leo to manage a PhD thesis</vh></v>
 </v>
@@ -2209,6 +2206,7 @@ expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20180821155534.1"><vh>Removed --no-cache &amp; --trace-cache</vh></v>
 </v>
 </v>
+<v t="ekr.20180929083441.1"><vh>** Screen shots tell a story</vh></v>
 <v t="ekr.20090711120622.10447"></v>
 </vnodes>
 <tnodes>
@@ -7609,6 +7607,9 @@ http://vvtools.googlecode.com/files/Leodocumentation.pdf
 Leo screen shots
 ################
 
+Here are some example screen shots.  The images are reduced in size.
+Click on the screen shots to see an enlarged image.
+
 .. contents:: Contents
     :depth: 2
     :local:
@@ -7656,34 +7657,32 @@ Leo screen shots
     app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
         n1, n2, n3, guiVersion, sysVersion)
 </t>
-<t tx="ekr.20090811090022.14452">.. |renderRST|      image:: screen-shots/render-rst.png
-.. |renderSVGref|   image:: screen-shots/render-svg-movie.png
-.. |renderSVGsrc|   image:: screen-shots/render-svg-sources.png
-.. |renderSplash|   image:: screen-shots/render-splash-screen.png
+<t tx="ekr.20090811090022.14452">The following screenshots show Leo's rendering pane.
+This pane can render `reStructuredText &lt;http://docutils.sourceforge.net/rst.html&gt;`_:
 
-The following screenshots show Leo's rendering pane.  This pane can render `reStructuredText &lt;http://docutils.sourceforge.net/rst.html&gt;`_:
+.. image:: screen-shots/render-rst.png
+   :scale: 40%
+   :alt: Rendering Pane
 
-|renderRST|
+The rendering pane can render svg pictures, including animated pictures.
+Here we see an .svg file included by reference:
 
-The rendering pane can render svg pictures, including animated pictures.  Here we see
-an .svg file included by reference:
-
-|renderSVGref|
+.. image:: screen-shots/render-svg-movie.png
+   :scale: 40%
+   :alt: SVG Reference
 
 The rendering pane can also render svg sources contained in the body pane:
 
-|renderSVGsrc|
+.. image:: screen-shots/render-svg-sources.png
+   :scale: 40%
+   :alt: SVG Source
 
-The rendering pane can show pictures, music and movies.  Here we see Leo's splash screen:
+The rendering pane can show pictures, music and movies.
+Here we see Leo's splash screen:
 
-|renderSplash|
-</t>
-<t tx="ekr.20090811090022.14453">.. |LinuxMainWindow| image:: screen-shots/leo-qt-main-window-linux.png
-
-Here is Leo's main window as it appears on Linux:
-
-|LinuxMainWindow|
-
+.. image:: screen-shots/render-splash-screen.png
+    :scale: 40%
+    :alt: Splash Screen
 </t>
 <t tx="ekr.20091105080104.9031">When using the Qt gui, you specify fonts using the node in leoSettings.leo called::
 
@@ -13932,8 +13931,8 @@ But you don't have to do that.  Instead, use Alt-tab once to change away from Le
 
 Q. When I run the following script I see a window appear and then immediately disappear::
 
-    from PyQt4 import QtGui
-    w = QtGui.QWidget()
+    from leo.core.leoQt import QtWidgets, QtCore
+    w = QtWidgets.QWidget()
     w.resize(250, 150)
     w.move(300, 300)
     w.setWindowTitle('Simple test')
@@ -23806,18 +23805,25 @@ Command-line options::
     --load-type=LOAD_TYPE
     --fail-fast             # sets failfast option in unit tests.
 </t>
-<t tx="ekr.20170322084431.1">.. |leoQtMainWindow| image:: screen-shots/leo-main-window.png
+<t tx="ekr.20170322084431.1">Here is Leo's main window on Windows 7 showing the outline pane (1), the body pane (2), the minibuffer (3), the log pane, showing the find tab (4).
+The body pane shows the contents of the presently selected node in the outline pane:
 
-Here is Leo's main window on Windows 7 showing the outline pane (1), the body pane (2), the minibuffer (3), the log pane, showing the find tab (4).
+.. image:: screen-shots/leo-main-window.png
+   :scale: 40%
+   :alt: Light Main Window
+   
+You can choose a dark theme:
 
-The body pane shows the contents of the presently selected node in the outline pane.
+.. image:: screen-shots/emacs-config.png
+   :scale: 40%
+   :alt: Dark Main Window
+   
+Leo's main window as it appears on Linux:
 
-|leoQtMainWindow|</t>
-<t tx="ekr.20170322084657.1">.. |emacsConfig| image:: screen-shots/emacs-config.png
+.. image:: screen-shots/leo-qt-main-window-linux.png
+   :scale: 40%
+   :alt: Linux Main Window
 
-Here is an example of a dark theme, showing how to manage Emacs config files with Leo.
-
-|emacsConfig|
 </t>
 <t tx="ekr.20170322084909.1">.. |leo-thesis| image:: screen-shots/leo-thesis.png
 
@@ -29302,6 +29308,16 @@ This necessitated further tweaks:
 - LM.computeThemeFilePath uses global settings if the file is invalid.
 - fast.getGlobalData is more careful to handle exceptions.</t>
 <t tx="ekr.20180829160908.1">https://github.com/leo-editor/leo-editor/issues/914
+</t>
+<t tx="ekr.20180929083441.1">@language rest
+@wrap
+
+- Body text and directives.
+- Clones
+- URL's.
+- rst3 command
+- Settings.
+- @button.
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
