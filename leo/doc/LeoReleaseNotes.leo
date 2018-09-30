@@ -6,6 +6,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
+<v t="ekr.20150313053238.38"><vh>Read Me</vh></v>
 <v t="ekr.20150313053238.1"><vh>@settings</vh>
 <v t="ekr.20150313053238.2"><vh>@bool wikiview-active = False</vh></v>
 <v t="ekr.20150313053238.4"><vh>@string target_language = rest</vh></v>
@@ -41,7 +42,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20150313053238.38"><vh>Read Me</vh></v>
 <v t="ekr.20160311184117.1"><vh>Leo 4.x</vh>
 <v t="ekr.20150313054219.4"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="ekr.20150313054219.5"><vh>4.0 final</vh>
