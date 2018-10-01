@@ -7,6 +7,7 @@
 #@+node:ekr.20150514050138.1: ** << imports >> (debugCommands.py)
 import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+# from leo.core.leoGui import LeoKeyEvent
 import bdb
 import os
 import pdb
@@ -321,6 +322,8 @@ class XPdb(pdb.Pdb, threading.Thread):
             d ['xpdb'] = None
             qr = d.get('qr')
             qr.put(['stop-timer'])
+        else:
+            g.trace('already killed')
     #@+node:ekr.20180701090439.1: *3* xpdb.run_path
     def run_path(self, path):
         '''Begin execution of the python file.'''
@@ -364,6 +367,7 @@ class XPdb(pdb.Pdb, threading.Thread):
         filename = frame.f_code.co_filename
         ### filename = self.canonic(frame.f_code.co_filename)
             # Might not work for python 2.
+        ### g.trace(filename)
         d = getattr(g.app, 'debugger_d', {})
         if d:
             qr = d.get('qr')
@@ -435,6 +439,8 @@ def xpdb(event):
     # Use a fixed path for testing.
     # path = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'pylint-leo.py')
     path = 'c:/test/testXPDB.py'
+    os.chdir('c:/test')
+        ###
     if not g.os_path_exists(path):
         return g.trace('not found', path)
     if d is None:
@@ -479,49 +485,45 @@ def listener(timer):
         aList = qr.get() # blocks
         kind = aList[0]
         if kind == 'stop-timer':
-            timer.stop()
-            g.app.debugger_d = None
+            if getattr(g.app, 'debugger_d', None):
+                g.app.debugger_d = None
+                timer.stop()
         elif kind == 'select-line':
-            line, fn = aList[1], aList[2]
-            show_line(line, fn)
-    
-            if 0: # Interferes with show_line?
-                c = g.app.log.c
-                event = {'c': c}
-                
-                def callback(args, c, event):
-                    qc = d.get('qc')
-                    qc.put(args[0])
-        
-                c.k.keyboardQuit()
-                c.interactive(callback,
-                    event=event,
-                    prompts=['Debugger command: '])
+            if getattr(g.app, 'debugger_d', None):
+                line, fn = aList[1], aList[2]
+                show_line(line, fn)
         else:
             g.es('unknown qr request:', aList)
 #@+node:ekr.20180701061957.1: *3* function: show_line
 def show_line(line, fn):
-    '''Put the cursor on the requested line of the given file.'''
+    '''
+    Put the cursor on the requested line of the given file.
+    fn should be a full path to a file.
+    '''
+    ###
+    ### Called only by listener.
+    ###
     # Find the @<file> node.
     c = g.app.log.c
     d = getattr(g.app, 'debugger_d', {})
     if not d:
         return
-    path = fn.replace('\\','/')
+    target = g.os_path_finalize(fn).replace('\\','/')
+    if not g.os_path_exists(fn):
+        g.trace('===== Does not exist', fn)
+        return
+    ### g.trace(line, target)
     for p in c.all_positions():
         if p.isAnyAtFileNode():
-            path2 = g.fullPath(c, p).replace('\\','/')
-            if path2.endswith(path): ### A bad hack. We need the full file name.
+            path = g.fullPath(c, p).replace('\\','/')
+            if target == path:
                 # Select the line.
                 p, offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
-                c.bodyWantsFocusNow()
                 if not ok:
-                    print('===== END DEBUGGER =====')
-                    d ['xpdb'] = None
-                    qr = d.get('qr')
-                    qr.put(['stop-timer'])
+                    xpdb = d.get('xpdb')
+                    xpdb.kill()
                 c.bodyWantsFocusNow()
-            return
-    g.trace('not found:', line, path)
+                return
+    g.trace('NOT FOUND:', line, target)
 #@-others
 #@-leo
