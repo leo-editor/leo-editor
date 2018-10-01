@@ -155,8 +155,10 @@
 <v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
 <v t="ekr.20180828095749.1"><vh>Create a -rel *branch* late.</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update verions.py in the -rel branch</vh></v>
+<v t="ekr.20181001112153.1"><vh>Merge -rel branch into master</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
 <v t="ekr.20180405171433.8"><vh>Publish release</vh></v>
+<v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20180405171433.9"><vh>Announcements</vh></v>
 </v>
 </vnodes>
@@ -1688,6 +1690,8 @@ git push origin x.y-final-rel
 <t tx="ekr.20180828095843.1">leoVersion.py:
 - Update version constant.
 </t>
+<t tx="ekr.20181001112153.1"></t>
+<t tx="ekr.20181001112218.1"></t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
