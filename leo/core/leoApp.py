@@ -50,7 +50,7 @@ class IdleTimeManager(object):
     def add_callback(self, callback):
         '''Add a callback to be called at every idle time.'''
         self.callback_list.append(callback)
-    #@+node:ekr.20161026124810.1: *3* itm.on_idle
+    #@+node:ekr.20161026124810.1: *3* itm.on_idle (changed)
     on_idle_count = 0
 
     def on_idle(self, timer):

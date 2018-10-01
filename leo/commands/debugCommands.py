@@ -207,7 +207,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Tests are run in an external process, so tests *cannot* change the outline.'''
         self.c.testManager.runTestsExternally(all=False, marked=False)
     #@-others
-#@+node:ekr.20180701050839.5: ** class XPdb ((pdb.Pdb, threading.Thread)
+#@+node:ekr.20180701050839.5: ** class XPdb (pdb.Pdb, threading.Thread)
 class XPdb(pdb.Pdb, threading.Thread):
     # Pdb is a subclass of Cmd and Bdb.
 
@@ -314,11 +314,15 @@ class XPdb(pdb.Pdb, threading.Thread):
             # Call the base class method.
     #@+node:ekr.20180701050839.9: *3* xpdb.kill
     def kill(self):
-
-        d = g.app.debugger_d
-        d ['xpdb'] = None
-        qr = d.get('qr')
-        qr.put(['stop-timer'])
+        
+        d = getattr(g.app, 'debugger_d', {})
+        if d:
+            g.trace('===== END DEBUGGER =====')
+            d ['xpdb'] = None
+            qr = d.get('qr')
+            qr.put(['stop-timer'])
+        else:
+            g.trace('not active')
     #@+node:ekr.20180701090439.1: *3* xpdb.run_path
     def run_path(self, path):
         '''Begin execution of the python file.'''
@@ -362,21 +366,29 @@ class XPdb(pdb.Pdb, threading.Thread):
         filename = frame.f_code.co_filename
         ### filename = self.canonic(frame.f_code.co_filename)
             # Might not work for python 2.
-        qr = g.app.debugger_d.get('qr')
-        qr.put(['select-line', lineno, filename])
+        d = getattr(g.app, 'debugger_d', {})
+        if d:
+            qr = d.get('qr')
+            qr.put(['select-line', lineno, filename])
+        else:
+            g.trace('not active')
     #@-others
-            
-    
 #@+node:ekr.20180701050839.4: ** class QueueStdin (obj)
 class QueueStdin(object):
     '''A class to get input from the qc channel.'''
     
     def readline(self):
-        qc = g.app.debugger_d.get('qc')
-        s = qc.get() # blocks
-        print(s) # Correct.
-        return s
-#@+node:ekr.20180702074705.1: ** command: db-* commands
+        d = getattr(g.app, 'debugger_d', None)
+        if d:
+            qc = d.get('qc')
+            s = qc.get() # blocks
+            print(s) # Correct.
+            return s
+        else:
+            g.trace('no g.app.debugger_d')
+            return ''
+#@+node:ekr.20181001054314.1: ** top-level
+#@+node:ekr.20180702074705.1: *3* command: db-* commands
 @g.command('db-c')
 def xpdb_c(event): db_command(event, 'c')
     
@@ -392,13 +404,16 @@ def xpdb_s(event): db_command(event, 's')
 def db_command(event, command):
     c = event.get('c')
     d = getattr(g.app, 'debugger_d', {})
+    if not d:
+        g.es('xpdb not active')
+        return
     xpdb = d.get('xpdb')
     if c and xpdb:
         qc = d.get('qc')
         qc.put(command)
     elif c:
         g.es('xpdb not active')
-#@+node:ekr.20180701050839.2: ** command: 'db-input'
+#@+node:ekr.20180701050839.2: *3* command: 'db-input'
 @g.command('db-input')
 def xpdb_input(event):
     c = event.get('c')
@@ -414,55 +429,14 @@ def xpdb_input(event):
         
     elif c:
         g.es('xpdb not active')
-#@+node:ekr.20180701050839.1: ** command: 'xpdb', listener & show_line
+#@+node:ekr.20180701050839.1: *3* command: 'xpdb'
 @g.command('xpdb')
 def xpdb(event):
     '''Start the external debugger on a toy test program.'''
     d = getattr(g.app, 'debugger_d', None)
-    #@+others
-    #@+node:ekr.20180701050839.3: *3* function: listener
-    def listener(timer):
-        '''Listen (in Leo's main thread) for data on the qr channel.'''
-        d = getattr(g.app, 'debugger_d')
-        if not d:
-            return
-        qr = d.get('qr')
-        while not qr.empty():
-            aList = qr.get() # blocks
-            kind = aList[0]
-            if kind == 'stop-timer':
-                timer.stop()
-            elif kind == 'select-line':
-                line, fn = aList[1], aList[2]
-                show_line(line, fn)
-                if 0: # Interferes with show_line?
-                    c = g.app.log.c
-                    def callback(args, c, event):
-                        qc = d.get('qc')
-                        qc.put(args[0])
-                    c.k.keyboardQuit()
-                    c.interactive(callback, event, prompts=['Debugger command: '])
-            else:
-                g.es('unknown qr request:', aList)
-    #@+node:ekr.20180701061957.1: *3* function: show_line
-    def show_line(line, fn):
-        '''Put the cursor on the requested line.'''
-        # Find the @<file> node.
-        c = g.app.log.c
-        path = fn.replace('\\','/')
-        for p in c.all_positions():
-            if p.isAnyAtFileNode():
-                path2 = g.fullPath(c, p).replace('\\','/')
-                if path2.endswith(path): ### A bad hack. We need the full file name.
-                    # Select the line.
-                    c.gotoCommands.find_file_line(n=line, p=p)
-                    c.bodyWantsFocusNow()
-                    return
-        g.trace('not found:', line, path)
-    #@-others
     # Use a fixed path for testing.
     # path = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'pylint-leo.py')
-    path = 'c:/test/runLeo.py'
+    path = 'c:/test/testXPDB.py'
     if not g.os_path_exists(path):
         return g.trace('not found', path)
     if d is None:
@@ -483,7 +457,7 @@ def xpdb(event):
     d['xpdb'] = xpdb = XPdb(path=path)
     xpdb.start()
     d['timer'].start()
-#@+node:ekr.20180701054344.1: ** command: 'xpdb-kill'
+#@+node:ekr.20180701054344.1: *3* command: 'xpdb-kill'
 @g.command('xpdb-kill')
 def xpdb_kill(event):
     c = event.get('c')
@@ -494,5 +468,62 @@ def xpdb_kill(event):
         qc.put('quit')
     elif c:
         g.es('xpdb not active')
+#@+node:ekr.20180701050839.3: *3* function: listener
+def listener(timer):
+    '''Listen (in Leo's main thread) for data on the qr channel.'''
+    d = getattr(g.app, 'debugger_d', {})
+    if not d:
+        g.trace('not active')
+        return
+    qr = d.get('qr')
+    while not qr.empty():
+        aList = qr.get() # blocks
+        kind = aList[0]
+        if kind == 'stop-timer':
+            timer.stop()
+        elif kind == 'select-line':
+            line, fn = aList[1], aList[2]
+            show_line(line, fn)
+    
+            if 0: # Interferes with show_line?
+                c = g.app.log.c
+                event = {'c': c}
+                
+                def callback(args, c, event):
+                    qc = d.get('qc')
+                    qc.put(args[0])
+        
+                c.k.keyboardQuit()
+                c.interactive(callback,
+                    event=event,
+                    prompts=['Debugger command: '])
+        else:
+            g.es('unknown qr request:', aList)
+#@+node:ekr.20180701061957.1: *3* function: show_line
+def show_line(line, fn):
+    '''Put the cursor on the requested line of the given file.'''
+    # Find the @<file> node.
+    c = g.app.log.c
+    d = getattr(g.app, 'debugger_d', {})
+    if not d:
+        g.trace('not active')
+        return
+    path = fn.replace('\\','/')
+    g.trace(line, fn) ###
+    for p in c.all_positions():
+        if p.isAnyAtFileNode():
+            path2 = g.fullPath(c, p).replace('\\','/')
+            if path2.endswith(path): ### A bad hack. We need the full file name.
+                # Select the line.
+                p, offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
+                c.bodyWantsFocusNow()
+                if not ok:
+                    g.trace('===== END DEBUGGER =====')
+                    d ['xpdb'] = None
+                    qr = d.get('qr')
+                    qr.put(['stop-timer'])
+                c.bodyWantsFocusNow()
+            return
+    g.trace('not found:', line, path)
 #@-others
 #@-leo
