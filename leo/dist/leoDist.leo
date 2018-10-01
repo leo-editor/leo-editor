@@ -208,9 +208,8 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">August 28, 2018
-
-Leo 5.8 b1, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="EKR.20040519090846.9">Leo 5.8 final, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
@@ -1683,7 +1682,9 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
 </t>
-<t tx="ekr.20180828095749.1"></t>
+<t tx="ekr.20180828095749.1">git checkout -b x.y-final-rel
+git push origin x.y-final-rel
+</t>
 <t tx="ekr.20180828095843.1">leoVersion.py:
 - Update version constant.
 </t>

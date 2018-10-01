@@ -16,7 +16,7 @@ Commands (bindable with @settings-->@keys-->@shortcuts):
 
 free-layout-load
     Open context menu for loading a different layout,
-    conventient keyboard shortcut target.
+    convenient keyboard shortcut target.
 free-layout-restore
     Use the layout this outline had when it was opened.
 free-layout-zoom
