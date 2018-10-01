@@ -316,13 +316,11 @@ class XPdb(pdb.Pdb, threading.Thread):
     def kill(self):
         
         d = getattr(g.app, 'debugger_d', {})
-        if d:
+        if d and d.get('xpdb'):
             g.trace('===== END DEBUGGER =====')
             d ['xpdb'] = None
             qr = d.get('qr')
             qr.put(['stop-timer'])
-        else:
-            g.trace('not active')
     #@+node:ekr.20180701090439.1: *3* xpdb.run_path
     def run_path(self, path):
         '''Begin execution of the python file.'''
@@ -405,14 +403,14 @@ def db_command(event, command):
     c = event.get('c')
     d = getattr(g.app, 'debugger_d', {})
     if not d:
-        g.es('xpdb not active')
+        g.trace('xpdb not active')
         return
     xpdb = d.get('xpdb')
     if c and xpdb:
         qc = d.get('qc')
         qc.put(command)
     elif c:
-        g.es('xpdb not active')
+        g.trace('xpdb not active')
 #@+node:ekr.20180701050839.2: *3* command: 'db-input'
 @g.command('db-input')
 def xpdb_input(event):
@@ -466,8 +464,9 @@ def xpdb_kill(event):
     if c and xpdb:
         qc = d.get('qc')
         qc.put('quit')
+            # Results in killed message.
     elif c:
-        g.es('xpdb not active')
+        g.trace('xpdb not active')
 #@+node:ekr.20180701050839.3: *3* function: listener
 def listener(timer):
     '''Listen (in Leo's main thread) for data on the qr channel.'''
@@ -481,6 +480,7 @@ def listener(timer):
         kind = aList[0]
         if kind == 'stop-timer':
             timer.stop()
+            g.app.debugger_d = None
         elif kind == 'select-line':
             line, fn = aList[1], aList[2]
             show_line(line, fn)
@@ -506,10 +506,8 @@ def show_line(line, fn):
     c = g.app.log.c
     d = getattr(g.app, 'debugger_d', {})
     if not d:
-        g.trace('not active')
         return
     path = fn.replace('\\','/')
-    g.trace(line, fn) ###
     for p in c.all_positions():
         if p.isAnyAtFileNode():
             path2 = g.fullPath(c, p).replace('\\','/')
@@ -518,7 +516,7 @@ def show_line(line, fn):
                 p, offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
                 c.bodyWantsFocusNow()
                 if not ok:
-                    g.trace('===== END DEBUGGER =====')
+                    print('===== END DEBUGGER =====')
                     d ['xpdb'] = None
                     qr = d.get('qr')
                     qr.put(['stop-timer'])
