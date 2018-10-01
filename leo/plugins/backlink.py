@@ -693,6 +693,7 @@ class backlinkController(object):
             if dests:
                 self.ui.enableDelete(True)
                 self.showMessage('Click a link to follow it', optional=True)
+                # pylint: disable=cell-var-from-loop
                 for i in dests:
                     
                     def goThere(where = i[1]):

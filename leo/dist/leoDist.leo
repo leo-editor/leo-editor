@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -45,6 +42,7 @@
 </v>
 <v t="EKR.20040519091259"><vh>Announcements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
+<v t="ekr.20180828034134.1"><vh>Leo 5.8 b1 release notes</vh></v>
 <v t="ekr.20180527084946.1"><vh>Leo 5.7.3 release notes</vh>
 <v t="ekr.20180527084946.2"><vh>Bugs</vh>
 <v t="ekr.20180527084946.3"><vh>#841: Python importer does not always handle decorators properly </vh></v>
@@ -155,8 +153,12 @@
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
+<v t="ekr.20180828095749.1"><vh>Create a -rel *branch* late.</vh></v>
+<v t="ekr.20180828095843.1"><vh>Update verions.py in the -rel branch</vh></v>
+<v t="ekr.20181001112153.1"><vh>Merge -rel branch into master</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
 <v t="ekr.20180405171433.8"><vh>Publish release</vh></v>
+<v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20180405171433.9"><vh>Announcements</vh></v>
 </v>
 </vnodes>
@@ -188,7 +190,7 @@ SOFTWARE.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.7.2
+Version: 5.8
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -208,24 +210,18 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">May 28, 2018
-Leo 5.7.3, http://leoeditor.com, is now available on
+<t tx="EKR.20040519090846.9">Leo 5.8 final, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 5.7.3**
+**The highlights of Leo 5.8**
 
-- Added support for Jedi autocompletion.
-- Much improved python_terminal plugin.
-- Much improved recursive import script.
-- New leo_babel plugin.
-- Leo's pylint command writes clickable links.
-- Smart searches for functions and methods.
-- Allow separate bindings for numeric keypad keys
-- Added easy-to-use diff-related wrappers for scripts.
-- Allow local overrides of all abbreviations.
-- Improved TypeScript importer.
+- Much faster file-read code.
+- Leo no longer caches file contents. Removed --no-cache!
+- Leo using ElementTree instead of sax to read .leo files.
+- Refactored and improved Leo's key-handling code.
+- Improved Leo's outline drawing code.
 - The usual minor bug fixes.
 
 **Links**
@@ -1325,10 +1321,10 @@ for fn in files:
             s = f.read()
         s = g.toUnicode(s)
         if s.find('&lt;xml-stylesheet') &gt; -1:
-            print('contains xml-stylesheet element: %s' % (path))
+            g.es_print('contains xml-stylesheet element: %s' % (path))
     else:
-        print('does not exist: %s' % path)
-print('done')
+        g.es_print('does not exist: %s' % path)
+g.es_print('done')
 </t>
 <t tx="ekr.20170911062209.1">files = (
     'config/exampleSettings.leo',
@@ -1450,7 +1446,11 @@ c:\Test\LeoAppFolder&gt;
 - twine upload dist/leo*.whl
 </t>
 <t tx="ekr.20180405171433.1">@language rest
-</t>
+
+Overview:
+
+1. Do as much work as possible in "devel".
+2. Update leoVersion.py *after* creating -rel branch.</t>
 <t tx="ekr.20180405171433.2">LeoDocs.leo:
 - Make sure copyright dates are correct.
 - Update the "last updated" text in index.html.
@@ -1470,9 +1470,6 @@ LeoDist.leo:
 - Update readme.md.
 - Check readme.md spelling.
 - Check 'PKG-INFO.TXT'
-
-leoVersion.py:
-- Update version constant.
 
 LeoPyRef.leo and LeoPluginsRef.leo:
 - Regenerate from corresponding local file.
@@ -1659,6 +1656,42 @@ When present, bpm.put_log uses these as follows::
     nodeLink = "%s,%d" % (unl, -line)
     c.frame.log.put(s + '\n', nodeLink=nodeLink)
 </t>
+<t tx="ekr.20180828034134.1">Leo 5.8 b1, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 5.8**
+
+- Much faster file-read code.
+- Leo no longer caches file contents. Removed --no-cache!
+- Leo using ElementTree instead of sax to read .leo files.
+- Refactored and improved Leo's key-handling code.
+- Improved Leo's outline drawing code.
+- The usual minor bug fixes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20180828095749.1">git checkout -b x.y-final-rel
+git push origin x.y-final-rel
+</t>
+<t tx="ekr.20180828095843.1">leoVersion.py:
+- Update version constant.
+</t>
+<t tx="ekr.20181001112153.1"></t>
+<t tx="ekr.20181001112218.1"></t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 

@@ -34,6 +34,7 @@ import leo.core.leoGlobals as g
 # 5.7.1:  April 6, 2018.
 # 5.7.2:  May 7, 2018.
 # 5.7.3:  May 27, 2018.
+# 5.8b1:  August 28, 2018.
 #@-<< version dates >>
 #@+<< about install hooks >>
 #@+node:ekr.20150409201910.1: ** << about install hooks >>
@@ -47,7 +48,7 @@ import leo.core.leoGlobals as g
 # 
 # The install_hooks.py script copies these two files to leo-editor/.git/hooks.
 #@-<< about install hooks >>
-version = "5.8 devel"
+version = "5.8.1 devel"
 date, build = g.jsonCommitInfo()
 branch = g.gitBranchName()
 #@@language python
