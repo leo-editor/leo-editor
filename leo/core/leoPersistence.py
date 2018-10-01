@@ -103,7 +103,7 @@ class PersistenceDataController(object):
         if uas:
             at_uas = self.find_at_uas_node(root)
             if at_uas.hasChildren():
-                at_uas.deleteAllChildren()
+                at_uas.v._deleteAllChildren()
             for p in uas:
                 p2 = at_uas.insertAsLastChild()
                 p2.h = '@ua:' + p.v.gnx
@@ -118,7 +118,7 @@ class PersistenceDataController(object):
     def delete_at_data_children(self, at_data, root):
         '''Delete all children of the @data node'''
         if at_data.hasChildren():
-            at_data.deleteAllChildren()
+            at_data.v._deleteAllChildren()
     #@+node:ekr.20140711111623.17807: *4* pd.update_after_read_foreign_file & helpers
     def update_after_read_foreign_file(self, root):
         '''Restore gnx's, uAs and clone links using @gnxs nodes and @uas trees.'''
@@ -266,7 +266,7 @@ class PersistenceDataController(object):
             p = data.insertAsLastChild()
             p.h = h
         return p
-    #@+node:ekr.20140711111623.17863: *5* pd.find_at_persistence_node (changed)
+    #@+node:ekr.20140711111623.17863: *5* pd.find_at_persistence_node
     def find_at_persistence_node(self):
         '''
         Find the first @persistence node in the outline.
@@ -284,7 +284,7 @@ class PersistenceDataController(object):
             p.h = h
             g.es_print('created %s node' % h, color='red')
         return p
-    #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node (changed)
+    #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node
     def find_at_uas_node(self, root):
         '''
         Find the @uas node for root, a foreign node.

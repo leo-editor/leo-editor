@@ -220,7 +220,12 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20180419160958.1: *5* filter.doMacTweaks
     def doMacTweaks(self, actual_ch, ch, mods):
         '''Replace MacOS Alt characters.'''
-        if g.isMac and len(mods) == 1 and mods[0] == 'Alt':
+        if not g.isMac:
+            return actual_ch, ch, mods
+        if ch == 'Backspace':
+            # On the Mac, the reported char can be DEL (7F)
+            return '\b', ch, mods
+        if len(mods) == 1 and mods[0] == 'Alt':
             # Patch provided by resi147.
             # See the thread: special characters in MacOSX, like '@'.
             mac_d = {
@@ -295,7 +300,7 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
         '''Return the text version of the modifiers of the key event.'''
-        c = self.c
+        # c = self.c
         qt = QtCore.Qt
         modifiers = event.modifiers()
         #
@@ -313,21 +318,20 @@ class LeoQtEventFilter(QtCore.QObject):
             return mods
         #
         # MacOS: optionally convert Meta (Ctrl key) to Alt.
-        if c.k.replace_meta_with_alt:
-            if 'Meta' in mods:
-                mods.remove('Meta')
-                mods.append('Alt')
-        #
-        # #930: Restore @bool swap_mac_keys.
-        if c.k.swap_mac_keys:
-            # Swap the Command (clover) and Control keys.
-            # That is, swap the meaning of the Control and Meta modifiers.
-            if 'Meta' in mods and 'Control' not in mods:
-                mods.remove('Meta')
-                mods.append('Control')
-            elif 'Control' in mods and 'Meta' not in mods:
-                mods.remove('Control')
-                mods.append('Meta')
+        # 945: remove @bool swap-mac-keys and @bool replace-meta-with-alt.
+            # if c.k.replace_meta_with_alt:
+                # if 'Meta' in mods:
+                    # mods.remove('Meta')
+                    # mods.append('Alt')
+            # if c.k.swap_mac_keys:
+                # # Swap the Command (clover) and Control keys.
+                # # That is, swap the meaning of the Control and Meta modifiers.
+                # if 'Meta' in mods and 'Control' not in mods:
+                    # mods.remove('Meta')
+                    # mods.append('Control')
+                # elif 'Control' in mods and 'Meta' not in mods:
+                    # mods.remove('Control')
+                    # mods.append('Meta')
         return mods
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
     #@+node:ekr.20110605121601.18548: *4* filter.traceEvent

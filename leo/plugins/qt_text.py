@@ -5,6 +5,7 @@
 '''Text classes for the Qt version of Leo'''
 import leo.core.leoGlobals as g
 import time
+assert time
 from leo.core.leoQt import isQt5, QtCore, QtGui, Qsci, QtWidgets
 #@+others
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
@@ -65,8 +66,7 @@ class QTextMixin(object):
         '''
         Update Leo after the body has been changed.
 
-        self.selecting is guaranteed to be True during
-        the entire selection process.
+        tree.tree_select_lockout is True during the entire selection process.
         '''
         # Important: usually w.changingText is True.
         # This method very seldom does anything.
@@ -76,10 +76,7 @@ class QTextMixin(object):
         if w.changingText:
             return
         if tree.tree_select_lockout:
-            return
-        if tree.selecting:
-            return
-        if tree.redrawing:
+            g.trace('*** LOCKOUT', g.callers())
             return
         if not p:
             return
@@ -1455,9 +1452,8 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18096: *4* qtew.setSelectionRange
     def setSelectionRange(self, i, j, insert=None, s=None):
         '''Set the selection range and the insert point.'''
-        traceTime = False and not g.unitTesting
+        #
         # Part 1
-        if traceTime: t1 = time.time()
         w = self.widget
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
@@ -1471,11 +1467,8 @@ class QTextEditWrapper(QTextMixin):
         else:
             ins = self.toPythonIndex(insert)
             ins = max(0, min(ins, n))
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1: g.trace('part1: %2.3f sec' % (delta_t))
+        #
         # Part 2:
-        if traceTime: t2 = time.time()
         # 2010/02/02: Use only tc.setPosition here.
         # Using tc.movePosition doesn't work.
         tc = w.textCursor()
@@ -1494,9 +1487,12 @@ class QTextEditWrapper(QTextMixin):
             tc.setPosition(j)
             tc.setPosition(i, tc.KeepAnchor)
         w.setTextCursor(tc)
+        #
         # Fix bug 218: https://github.com/leo-editor/leo-editor/issues/218
         if hasattr(g.app.gui, 'setClipboardSelection'):
-            g.app.gui.setClipboardSelection(s[i:j])
+            if s[i:j]:
+                g.app.gui.setClipboardSelection(s[i:j])
+        #
         # Remember the values for v.restoreCursorAndScroll.
         v = self.c.p.v # Always accurate.
         v.insertSpot = ins
@@ -1505,12 +1501,6 @@ class QTextEditWrapper(QTextMixin):
         v.selectionStart = i
         v.selectionLength = j - i
         v.scrollBarSpot = w.verticalScrollBar().value()
-        if traceTime:
-            delta_t = time.time() - t2
-            tot_t = time.time() - t1
-            if delta_t > 0.1: g.trace('part2: %2.3f sec' % (delta_t))
-            if tot_t > 0.1: g.trace('total: %2.3f sec' % (tot_t))
-    # setSelectionRangeHelper = setSelectionRange
     #@+node:ekr.20141103061944.40: *4* qtew.setXScrollPosition
     def setXScrollPosition(self, pos):
         '''Set the position of the horizonatl scrollbar.'''

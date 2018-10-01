@@ -280,7 +280,7 @@ class LeoApp(object):
             # copy of Leo.
         self.dragging = False
             # True: dragging.
-        self.allow_delayed_see = False
+        # self.allow_delayed_see = False
             # True: pqsh.reformat_blocks_helper calls w.seeInsertPoint
         self.inBridge = False
             # True: running from leoBridge module.
@@ -395,7 +395,7 @@ class LeoApp(object):
             "less": "css",
             "hbs": "html",
             "handlebars": "html",
-            "rust": "c", 
+            "rust": "c",
             # "vue": "c",
         }
     #@+node:ekr.20120522160137.9911: *5* app.define_extension_dict
@@ -426,6 +426,8 @@ class LeoApp(object):
             "cfg":      "config",
             "cfm":      "coldfusion",
             "clj":      "clojure", # 2013/09/25: Fix bug 879338.
+            "cljs":     "clojure",
+            "cljc":     "clojure",
             "ch":       "chill", # Other extensions, .c186,.c286
             "coffee":   "coffeescript",
             "conf":     "apacheconf",
@@ -467,6 +469,7 @@ class LeoApp(object):
             # "jsp":      "jsp",
             "ksh":      "kshell",
             "kv":       "kivy", # PeckJ 2014/05/05
+            "latex":    "latex",
             "less":     "css", # McNab
             "lua":      "lua", # ddm 13/02/06
             "ly":       "lilypond",
@@ -521,6 +524,7 @@ class LeoApp(object):
             "sqr":      "sqr",
             "ss":       "ssharp",
             "ssi":      "shtml",
+            "sty":      "latex",
             "tcl":      "tcl", # modes/tcl.py exists.
             # "tcl":    "tcltk",
             "tex":      "latex",
@@ -1001,14 +1005,23 @@ class LeoApp(object):
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
         try:
+            import _curses
+            assert _curses
+        except Exception:
+            g.es_exception()
+            print('can not import _curses.')
+            if g.isWindows:
+                print('Windows: pip install windows-curses')
+            sys.exit()
+        try:
             import leo.plugins.cursesGui2 as cursesGui2
             ok = cursesGui2.init()
-        except ImportError:
-            ok = False
-        if ok:
-            g.app.gui = cursesGui2.LeoCursesGui()
-        else:
+            if ok:
+                g.app.gui = cursesGui2.LeoCursesGui()
+        except Exception:
+            g.es_exception()
             print('can not create curses gui.')
+            sys.exit()
     #@+node:ekr.20090619065122.8593: *5* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
         """A convenience routines for plugins to create the default gui class."""
@@ -1042,22 +1055,28 @@ class LeoApp(object):
         app = self
         try:
             from leo.core.leoQt import Qt
+            assert Qt
+        except Exception:
+            g.es_exception()
+            print('can not import Qt')
+            sys.exit(1)
+        try:
             import leo.plugins.qt_gui as qt_gui
-            try:
-                from leo.plugins.editpane.editpane import edit_pane_test_open, edit_pane_csv
-                g.command('edit-pane-test-open')(edit_pane_test_open)
-                g.command('edit-pane-csv')(edit_pane_csv)
-            except ImportError:
-                print('Failed to import editpane')
+        except Exception:
+            g.es_exception()
+            print('can not importleo.plugins.qt_gui')
+            sys.exit(1)
+        try:
+            from leo.plugins.editpane.editpane import edit_pane_test_open, edit_pane_csv
+            g.command('edit-pane-test-open')(edit_pane_test_open)
+            g.command('edit-pane-csv')(edit_pane_csv)
         except ImportError:
-            Qt = None
-        if Qt:
-            qt_gui.init()
-            if app.gui and fileName and verbose:
-                print('Qt Gui created in %s' % fileName)
-        else:
-            print('createQtGui: can not create Qt gui.')
-
+            print('Failed to import editpane')
+        #
+        # Complete the initialization.
+        qt_gui.init()
+        if app.gui and fileName and verbose:
+            print('Qt Gui created in %s' % fileName)
     #@+node:ekr.20170419093747.1: *5* app.createTextGui (was createCursesGui)
     def createTextGui(self, fileName='', verbose=False):
         app = self
@@ -1250,6 +1269,10 @@ class LeoApp(object):
         app.logWaiting = []
         # Essential when opening multiple files...
         g.app.setLog(None)
+    #@+node:ekr.20180924093227.1: *3* app.c property
+    @property
+    def c (self):
+        return self.log and self.log.c
     #@+node:ekr.20171127111053.1: *3* app.Closing
     #@+node:ekr.20031218072017.2609: *4* app.closeLeoWindow
     def closeLeoWindow(self, frame, new_c=None, finish_quit=True):
@@ -1788,28 +1811,30 @@ class LoadManager(object):
         '''Return the absolute path to the theme .leo file.'''
         lm = self
         resolve = self.resolve_theme_path
+        #
         # Step 1: Use the --theme file if it exists
         path = resolve(lm.options.get('theme_path'), tag='--theme')
         if path: return path
+        #
         # Step 2: look for the @string theme-name setting in the first loaded file.
         # This is a hack, but especially useful for test*.leo files in leo/themes.
         path = lm.files and lm.files[0]
         if path and g.os_path_exists(path):
             # Tricky: we must call lm.computeLocalSettings *here*.
             theme_c = lm.openSettingsFile(path)
-            if not theme_c:
-                return None # Fix #843.
-            settings_d, junk_shortcuts_d = lm.computeLocalSettings(
-                c=theme_c,
-                settings_d=lm.globalSettingsDict,
-                bindings_d=lm.globalBindingsDict,
-                localFlag=False,
-            )
-            setting = settings_d.get_string_setting('theme-name')
-            if setting:
-                tag = theme_c.shortFileName()
-                path = resolve(setting, tag=tag)
-                if path: return path
+            if theme_c:
+                settings_d, junk_shortcuts_d = lm.computeLocalSettings(
+                    c=theme_c,
+                    settings_d=lm.globalSettingsDict,
+                    bindings_d=lm.globalBindingsDict,
+                    localFlag=False,
+                )
+                setting = settings_d.get_string_setting('theme-name')
+                if setting:
+                    tag = theme_c.shortFileName()
+                    path = resolve(setting, tag=tag)
+                    if path: return path
+        #
         # Finally, use the setting in myLeoSettings.leo.
         setting = lm.globalSettingsDict.get_string_setting('theme-name')
         tag = 'myLeoSettings.leo'
@@ -1934,10 +1959,12 @@ class LoadManager(object):
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(self, c, localFlag, theme=False):
         import leo.core.leoConfig as leoConfig
-        parser = leoConfig.SettingsTreeParser(c, localFlag)
-            # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
-        shortcutsDict, settingsDict = parser.traverse(theme=theme)
-        return shortcutsDict, settingsDict
+        if c:
+            parser = leoConfig.SettingsTreeParser(c, localFlag)
+                # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
+            shortcutsDict, settingsDict = parser.traverse(theme=theme)
+            return shortcutsDict, settingsDict
+        return None, None
     #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
     def getPreviousSettings(self, fn):
         '''
@@ -1960,14 +1987,18 @@ class LoadManager(object):
                 g.app.preReadFlag = False
             # Merge the settings from c into *copies* of the global dicts.
             d1, d2 = lm.computeLocalSettings(c,
-                lm.globalSettingsDict, lm.globalBindingsDict, localFlag=True)
+                lm.globalSettingsDict,
+                lm.globalBindingsDict,
+                localFlag=True)
                     # d1 and d2 are copies.
             d1.setName(settingsName)
             d2.setName(shortcutsName)
-        else:
-            # Get the settings from the globals settings dicts.
-            d1 = lm.globalSettingsDict.copy(settingsName)
-            d2 = lm.globalBindingsDict.copy(shortcutsName)
+            return PreviousSettings(d1, d2)
+        #
+        # The file does not exist, or is not valid.
+        # Get the settings from the globals settings dicts.
+        d1 = lm.globalSettingsDict.copy(settingsName)
+        d2 = lm.globalBindingsDict.copy(shortcutsName)
         return PreviousSettings(d1, d2)
     #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts(self, c, old_d, new_d, localFlag):
@@ -2209,7 +2240,8 @@ class LoadManager(object):
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
         print('') # Give some separation for the coming traces.
-        if not lm.isValidPython(): return
+        if not lm.isValidPython():
+            return
         lm.doPrePluginsInit(fileName, pymacs)
             # sets lm.options and lm.files
         if lm.options.get('version'):
@@ -2217,6 +2249,8 @@ class LoadManager(object):
             return
         if not g.app.gui:
             return
+        g.app.disable_redraw = True
+            # Disable redraw until all files are loaded.
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
         if g.app.killed: return
@@ -2276,6 +2310,8 @@ class LoadManager(object):
                         c = c1 = g.app.windowList[0].c
                     else:
                         c = c1 = None
+        # Enable redraws.
+        g.app.disable_redraw = False
         if not c1 or not g.app.windowList:
             c1 = lm.openEmptyWorkBook()
         # Fix bug #199.
@@ -2295,36 +2331,19 @@ class LoadManager(object):
         # Do the final inits.
         g.app.logInited = True
         g.app.initComplete = True
-        if c: c.setLog()
-        # print('doPostPluginsInit: ***** set log')
+        if c:
+            c.setLog()
+            c.redraw()
         p = c.p if c else None
         g.doHook("start2", c=c, p=p, fileName=fileName)
-        if c: lm.initFocusAndDraw(c, fileName)
+        if c:
+            c.initialFocusHelper()
         screenshot_fn = lm.options.get('screenshot_fn')
         if screenshot_fn:
             lm.make_screen_shot(screenshot_fn)
             return False # Force an immediate exit.
         else:
             return True
-    #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw
-    def initFocusAndDraw(self, c, fileName):
-
-        def init_focus_handler(timer, c=c, p=c.p):
-            '''Idle-time handler for initFocusAndDraw'''
-            c.initialFocusHelper()
-            c.outerUpdate()
-            timer.stop()
-
-        # This must happen after the code in getLeoFile.
-        timer = g.IdleTime(init_focus_handler, delay=0.1, tag='getLeoFile')
-        if timer:
-            timer.start()
-        else:
-            # Default code.
-            c.selectPosition(c.p)
-            c.initialFocusHelper()
-            c.k.showStateAndMode()
-            c.outerUpdate()
     #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
     def make_screen_shot(self, fn):
         '''Create a screenshot of the present Leo outline and save it to path.'''
@@ -2340,6 +2359,8 @@ class LoadManager(object):
         c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
         # Open the cheatsheet, but not in batch mode.
         if not g.app.batchMode and not g.os_path_exists(fn):
+            # #933: Save clipboard.
+            old_clipboard = g.app.gui.getTextFromClipboard()
             # Paste the contents of CheetSheet.leo into c.
             c2 = c.openCheatSheet(redraw=False)
             if c2:
@@ -2362,6 +2383,8 @@ class LoadManager(object):
                     # Settings not parsed the first time.
                 c.setChanged(False)
                 c.redraw()
+            # #933: Restore clipboard
+            g.app.gui.replaceClipboardWith(old_clipboard)
         return c
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
     def doPrePluginsInit(self, fileName, pymacs):
@@ -2691,8 +2714,8 @@ class LoadManager(object):
         add_bool('--silent',        'disable all log messages')
         add_other('--theme',        'use the named theme file', m='NAME')
         add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
-        add_bool('--trace-cache',   'trace caching in .leo/db')
         add_bool('--trace-coloring', 'trace syntax coloring')
+        add_bool('--trace-drawing', 'trace outline redraws')
         add_bool('--trace-events',  'trace non-key events')
         add_bool('--trace-focus',   'trace changes of focus')
         add_bool('--trace-gnx',     'trace gnx logic')
@@ -2701,6 +2724,7 @@ class LoadManager(object):
         add_bool('--trace-plugins', 'trace imports of plugins')
         add_other('--trace-setting', 'trace where named setting is set', m="NAME")
         add_bool('--trace-shutdown', 'trace shutdown logic')
+        add_bool('--trace-startup',  'trace startup logic')
         add_bool('--trace-themes',  'trace theme init logic')
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         # Multiple bool values.
@@ -2807,8 +2831,9 @@ class LoadManager(object):
         #
         # Most --trace- options append items to g.app.debug.
         table = (
-            ('cache', options.trace_cache),
+            # ('cache', options.trace_cache),
             ('coloring', options.trace_coloring),
+            ('drawing', options.trace_drawing),
             ('events', options.trace_events), # New
             ('focus', options.trace_focus),
             ('gnx', options.trace_gnx), # New.
@@ -2816,6 +2841,7 @@ class LoadManager(object):
             ('ipython', options.trace_ipython), # New
             ('plugins', options.trace_plugins),
             ('shutdown', options.trace_shutdown),
+            ('startup', options.trace_startup), # New
             ('themes', options.trace_themes),
         )
         for val, option in table:
@@ -3072,14 +3098,12 @@ class LoadManager(object):
         # For second read, the settings for the file are *exactly* previousSettings.
         c = g.app.newCommander(fileName=fn, gui=gui,
             previousSettings=previousSettings)
-        assert c
         # Open the file, if possible.
         g.doHook('open0')
         theFile = lm.openLeoOrZipFile(fn)
         if isinstance(theFile, sqlite3.Connection):
             # this commander is associated with sqlite db
             c.sqlite_connection = theFile
-            
         # Enable the log.
         g.app.unlockLog()
         c.frame.log.enable(True)
@@ -3142,7 +3166,6 @@ class LoadManager(object):
         # New in Leo 4.6: provide an official way for very late initialization.
         c.frame.tree.initAfterLoad()
         c.initAfterLoad()
-        c.redraw()
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
         if c.chapterController: c.chapterController.finishCreate()
@@ -3270,7 +3293,8 @@ class LoadManager(object):
                 theDir = c.os_path_finalize(g.os_path_dirname(fn))
                 c.openDirectory = c.frame.openDirectory = theDir
         else:
-            g.app.closeLeoWindow(c.frame, finish_quit=self.more_cmdline_files is False)
+            g.app.closeLeoWindow(c.frame, finish_quit=False)
+                # #970: Never close Leo here.
         return ok
     #@+node:ekr.20160430063406.1: *3* LM.revertCommander
     def revertCommander(self, c):

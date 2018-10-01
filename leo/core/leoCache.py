@@ -69,7 +69,6 @@ class CommanderCacher(object):
         if SQLITE and hasattr(self.db, 'conn'):
             # pylint: disable=no-member
             self.db.conn.commit()
-    #@+node:ekr.20100208062523.5886: *3* cacher.ctor
     #@+node:ekr.20180611054447.1: *3* cacher.dump
     def dump(self):
         '''Dump the indicated cache if --trace-cache is in effect.'''
@@ -244,7 +243,7 @@ class PickleShareDB(object):
             # notfound and permission denied are ok - we
             # lost, the other process wins the conflict
             pass
-    #@+node:ekr.20100208223942.5972: *4* __getitem__
+    #@+node:ekr.20100208223942.5972: *4* __getitem__ (PickleShareDB)
     def __getitem__(self, key):
         """ db['key'] reading """
         fn = join(self.root, key)
@@ -270,7 +269,7 @@ class PickleShareDB(object):
     #@+node:ekr.20100208223942.5974: *4* __repr__
     def __repr__(self):
         return "PickleShareDB('%s')" % self.root
-    #@+node:ekr.20100208223942.5975: *4* __setitem__
+    #@+node:ekr.20100208223942.5975: *4* __setitem__ (PickleShareDB)
     def __setitem__(self, key, value):
         """ db['key'] = 5 """
         fn = join(self.root, key)
@@ -288,7 +287,7 @@ class PickleShareDB(object):
     def _makedirs(self, fn, mode=0o777):
 
         os.makedirs(fn, mode)
-    #@+node:ekr.20100208223942.10458: *3* _openFile
+    #@+node:ekr.20100208223942.10458: *3* _openFile (PickleShareDB)
     def _openFile(self, fn, mode='r'):
         """ Open this file.  Return a file object.
 
@@ -553,7 +552,7 @@ class SqlitePickleShare(object):
     def _makedirs(self, fn, mode=0o777):
 
         os.makedirs(fn, mode)
-    #@+node:vitalije.20170716201700.11: *3* _openFile
+    #@+node:vitalije.20170716201700.11: *3* _openFile (SqlitePickleShare)
     def _openFile(self, fn, mode='r'):
         """ Open this file.  Return a file object.
 
@@ -606,13 +605,14 @@ class SqlitePickleShare(object):
     #@+node:vitalije.20170716201700.16: *3* get
     def get(self, key, default=None):
 
-        if not self.has_key(key):return default
+        if not self.has_key(key):
+            return default
         try:
             val = self[key]
             return val
         except KeyError:
             return default
-    #@+node:vitalije.20170716201700.17: *3* has_key (PickleShareDB)
+    #@+node:vitalije.20170716201700.17: *3* has_key (SqlightPickleShare)
     def has_key(self, key):
         sql = 'select 1 from cachevalues where key=?;'
         for row in self.conn.execute(sql, (key,)):

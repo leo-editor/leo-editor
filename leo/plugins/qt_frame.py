@@ -272,7 +272,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''Create Leo's menu bar.'''
         dw = self
         w = QtWidgets.QMenuBar(dw)
-        w.setNativeMenuBar(False)
+        w.setNativeMenuBar(platform.system() == 'Darwin')
         w.setGeometry(QtCore.QRect(0, 0, 957, 22))
         w.setObjectName("menubar")
         dw.setMenuBar(w)
@@ -2146,7 +2146,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 bg == c.config.getColor('find-not-found-bg')
             ):
                 status = 'fail'
-
             d = self.styleSheetCache
             if status != d.get(w, '__undefined__'):
                 d[w] = status
@@ -2154,6 +2153,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 c.styleSheetManager.mng.add_sclass(w, status)
                 c.styleSheetManager.mng.update_view(w)  # force appearance update
             w.setText(s)
+
         #@+node:chris.20180320072817.1: *4* QtStatusLineClass.update & helper
         def update(self):
             if g.app.killed: return
@@ -2750,7 +2750,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     f.hideOutlinePane()
                     c.bodyWantsFocus()
                     break
-    #@+node:ekr.20110605121601.18299: *5* qtFrame.expand/contract/hide...Pane (changed)
+    #@+node:ekr.20110605121601.18299: *5* qtFrame.expand/contract/hide...Pane
     @cmd('contract-body-pane')
     @cmd('expand-outline-pane')
     def contractBodyPane(self, event=None):
@@ -3056,7 +3056,7 @@ class LeoQtLog(leoFrame.LeoLog):
         # Create the log tab as the leftmost tab.
         # log.selectTab('Log')
         log.createTab('Log')
-        logWidget = self.contentsDict.get('Log')
+        self.logWidget = logWidget = self.contentsDict.get('Log')
         option = QtGui.QTextOption
         logWidget.setWordWrapMode(
             option.WordWrap if self.wrap else option.NoWrap)
@@ -3149,12 +3149,13 @@ class LeoQtLog(leoFrame.LeoLog):
 
         :param QUrl link: link that was clicked
         """
-        url = link.url()
         # see addition of '/' in LeoQtLog.put()
+        url = s = g.toUnicode(link.toString())
         if platform.system() == 'Windows':
             for scheme in 'file', 'unl':
-                if url.startswith(scheme+':///') and url[len(scheme)+5] == ':':
-                    url = url.replace(':///', '://', 1)
+                if s.startswith(scheme+':///') and s[len(scheme)+5] == ':':
+                    url = s.replace(':///', '://', 1)
+                    break
         g.handleUrl(url, c=self.c)
     #@+node:ekr.20120304214900.9940: *3* LeoQtLog.onCurrentChanged
     def onCurrentChanged(self, idx):
@@ -3727,8 +3728,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if not isLeo:
             return
         c.selectPosition(p)
-        pasted = c.fileCommands.getLeoOutlineFromClipboard(
-            s, reassignIndices=True)
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
             # Paste the node after the presently selected node.
         if not pasted:
             return
@@ -3989,8 +3989,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             c2.selectPosition(p2)
             s = c2.fileCommands.putLeoOutline()
             # Paste the outline after the selected node.
-            c.fileCommands.getLeoOutlineFromClipboard(
-                s, reassignIndices=True)
+            c.fileCommands.getLeoOutlineFromClipboard(s)
         dummy_p.doDelete()
         c.selectPosition(p)
         p.v.contract()
@@ -4300,6 +4299,8 @@ class LeoQtTreeTab(object):
         tt, c, cc = self, self.c, self.cc
         tabName = g.u(tabName)
         exists = tabName in self.tabNames
+        c.treeWantsFocusNow()
+            # Fix #969. Somehow this is important.
         if not exists:
             tt.createTab(tabName) # Calls tt.setNames()
         if tt.lockout:
@@ -4554,6 +4555,7 @@ class TabbedFrameFactory(object):
                     c.close()
 
         def tab_cycle(offset):
+
             tabw = self.masterFrame
             cur = tabw.currentIndex()
             count = tabw.count()
@@ -4632,14 +4634,19 @@ class TabbedFrameFactory(object):
         tabw = self.masterFrame
         w = tabw.widget(idx)
         f = self.leoFrames.get(w)
-        if f:
-            tabw.setWindowTitle(f.title)
-            if hasattr(g.app.gui, 'findDialogSelectCommander'):
-                g.app.gui.findDialogSelectCommander(f.c)
-            # g.app.selectLeoWindow(f.c)
-                # would break --minimize
-            # Fix bug 690260: correct the log.
-            g.app.log = f.log
+        if not f:
+            return
+        tabw.setWindowTitle(f.title)
+        if hasattr(g.app.gui, 'findDialogSelectCommander'):
+            g.app.gui.findDialogSelectCommander(f.c)
+        # g.app.selectLeoWindow(f.c)
+            # would break --minimize
+        # Fix bug 690260: correct the log.
+        g.app.log = f.log
+        # Redraw the tab.
+        c = f.c
+        if c:
+            c.redraw()
     #@-others
 #@-others
 #@@language python

@@ -494,7 +494,7 @@ class todoController(object):
     def redrawer(fn):
         """decorator for methods which create the need for a redraw"""
         # pylint: disable=no-self-argument
-        def new(self, *args, **kargs):
+        def todo_redrawer_callback(self, *args, **kargs):
             self.redrawLevels += 1
             try:
                 # pylint: disable=not-callable
@@ -504,17 +504,17 @@ class todoController(object):
                 if self.redrawLevels == 0:
                     self.redraw()
             return ans
-        return new
+        return todo_redrawer_callback
     #@+node:tbrown.20090119215428.14: *3* projectChanger
     def projectChanger(fn):
         """decorator for methods which change projects"""
         # pylint: disable=no-self-argument
-        def new(self, *args, **kargs):
+        def project_changer_callback(self, *args, **kargs):
             # pylint: disable=not-callable
             ans = fn(self,*args, **kargs)
             self.update_project()
             return ans
-        return new
+        return project_changer_callback
     #@+node:tbrown.20090119215428.15: *3* loadAllIcons
     @redrawer
     def loadAllIcons(self, tag=None, k=None, clear=None):
@@ -718,7 +718,9 @@ class todoController(object):
     def redraw(self):
 
         self.updateUI()
-        self.c.redraw()
+        if not g.app.initing:
+            self.c.redraw()
+                # This is disabled (converted to redraw_later) during startup.
     #@+node:tbrown.20090119215428.29: *4* clear_all
     @redrawer
     def clear_all(self, recurse=False, all=False):

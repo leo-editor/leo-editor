@@ -2310,7 +2310,7 @@ class VimCommands(object):
     #@+node:ekr.20180424055522.1: *4* vc.do_trace
     def do_trace(self, blank_line=False):
         
-        if self.trace_flag and not g.unitTesting:
+        if self.stroke and self.trace_flag and not g.unitTesting:
             if blank_line:
                 print('')
             g.es_print('%20s: %r' % (g.caller(), self.stroke))

@@ -614,31 +614,32 @@ class Tabula(QMainWindow):
     def closeEvent(self,event):
 
         self.save_states()
-        g.trace(event)
         event.accept() # EKR: doesn't help: we don't get the event.
-
     #@+node:ekr.20101114061906.5444: *4* create_actions (has all toolbar commands!)
     def create_actions(self):
 
         self.tb = self.addToolBar("toolbar")
         self.tb.setObjectName("toolbar")
         #self.addToolBar(Qt.BottomToolBarArea, self.tb)
+
         def do_tile():
             self.mdi.setViewMode(QMdiArea.SubWindowView)
             self.mdi.tileSubWindows()
+        
         def do_cascade():
             self.mdi.setViewMode(QMdiArea.SubWindowView)
             self.mdi.cascadeSubWindows()
+            
         def do_un_tab():
             if self.mdi.viewMode() == QMdiArea.SubWindowView:
                 self.mdi.setViewMode(QMdiArea.TabbedView)
             else:
                 self.mdi.setViewMode(QMdiArea.SubWindowView)
+
         def do_close_all():
             for i in self.mdi.subWindowList():
                 self.mdi.removeSubWindow(i)
             self.notes = {}
-
 
         def do_go():
             p, _ = self.get_current_pos()
@@ -652,8 +653,9 @@ class Tabula(QMainWindow):
 
         def do_edit_h():
             p, w = self.get_current_pos()
-
-            new, r = QInputDialog.getText(None, "Edit headline", "", QLineEdit.Normal, p.h)
+            new, r = QInputDialog.getText(None,
+                "Edit headline", "", 
+                QLineEdit.Normal, p.h)
             if not r:
                 return
             new = g.u(new)
@@ -701,7 +703,6 @@ class Tabula(QMainWindow):
     #@+node:ekr.20101114061906.5446: *4* on_quit
     def on_quit(self,tag, kw):
 
-        g.trace(tag,kw,self)
         # saving when hidden nukes all
 
         if self.isVisible():
@@ -727,9 +728,11 @@ class Tabula(QMainWindow):
 
     #@+node:ekr.20101114061906.5441: *4* save_states
     def save_states(self):
+        
+        self.update_notes()
 
         # n.parent() because the wrapper QMdiSubWindow holds the geom relative to parent
-        geoms = dict(
+        geoms = dict (
             (gnx, n.parent().saveGeometry())
                 for (gnx, n) in self.notes.items() if n.isVisible())
 
@@ -737,6 +740,21 @@ class Tabula(QMainWindow):
 
         if self.c.db:
             self.c.db['tabulanotes'] = geoms
+    #@+node:ekr.20180822134952.1: *4* update_nodes (new)
+    def update_notes(self):
+        
+        # #940: update self.notes. Ensure note n still exists.
+        visible = []
+        for (gnx, n) in self.notes.items():
+            try:
+                if n.isVisible():
+                    visible.append(gnx)
+            except RuntimeError:
+                pass
+        self.notes = dict (
+            (gnx, n) for (gnx, n) in self.notes.items()
+                if gnx in visible
+        )
     #@-others
 #@-others
 #@@language python

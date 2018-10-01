@@ -48,7 +48,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
             # Inits vim mode too.
         g.es('Done: %s' % command)
     #@+node:ekr.20150514063305.92: *3* print plugins info...
-    @cmd('print-plugin-handlers')
+    @cmd('show-plugin-handlers')
     def printPluginHandlers(self, event=None):
         '''Print the handlers for each plugin.'''
         g.app.pluginsController.printHandlers(self.c)
@@ -62,7 +62,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
         '''
         g.app.pluginsController.printPlugins(self.c)
 
-    @cmd('print-plugins-info')
+    @cmd('show-plugins-info')
     def printPluginsInfo(self, event=None):
         '''
         Print the file name responsible for loading a plugin.

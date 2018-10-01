@@ -552,7 +552,7 @@ class KeyStroke(object):
         s = self.finalize_char(s)
             # May change self.mods.
         mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
-        if trace:
+        if trace and 'meta' in self.mods:
             g.trace('%20s:%-20s ==> %s' % (binding, self.mods, mods+s))
         return mods+s
     #@+node:ekr.20180415083926.1: *4* ks.finalize_char & helper
@@ -2754,7 +2754,7 @@ def clearStats():
 
     g.app.statsDict = {}
 #@+node:ekr.20031218072017.3135: *4* g.printStats
-@command('print-stats')
+@command('show-stats')
 def printStats(event=None, name=None):
     '''
     Print all gathered statistics.
@@ -6158,7 +6158,7 @@ def es_print(*args, **keys):
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
     g.pr(*args, **keys)
-    if not g.app.unitTesting:
+    if g.app and not g.app.unitTesting:
         g.es(*args, **keys)
 #@+node:ekr.20111107181638.9741: *3* g.es_print_exception
 def es_print_exception(full=True, c=None, color="red"):

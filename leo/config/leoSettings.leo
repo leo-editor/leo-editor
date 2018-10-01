@@ -1355,10 +1355,10 @@
 <v t="tbrown.20140814090009.57476"><vh>@item reload-style-sheets</vh></v>
 </v>
 <v t="tbrown.20140814090009.57475"><vh>@menu &amp;Show Settings</vh>
-<v t="ekr.20131213135427.21957"><vh>@item pri&amp;nt-bindings</vh></v>
-<v t="ekr.20131213135427.21958"><vh>@item print-c&amp;ommands</vh></v>
-<v t="ekr.20131213135427.21960"><vh>@item print-&amp;settings</vh></v>
-<v t="ekr.20131213135427.21959"><vh>@item print-&amp;plugins-info</vh></v>
+<v t="ekr.20131213135427.21957"><vh>@item show-&amp;bindings</vh></v>
+<v t="ekr.20131213135427.21958"><vh>@item show-&amp;commands</vh></v>
+<v t="ekr.20131213135427.21960"><vh>@item show-&amp;settings</vh></v>
+<v t="ekr.20131213135427.21959"><vh>@item show-&amp;plugins-info</vh></v>
 </v>
 <v t="ekr.20131215083347.18154"><vh>@menu &amp;Toggle Settings</vh>
 <v t="ekr.20131213135427.22289"><vh>@item toggle-a&amp;utocompleter</vh></v>
@@ -1468,7 +1468,7 @@
 </v>
 <v t="ekr.20131213135427.22045"><vh>@menu &amp;Plugins</vh>
 <v t="ekr.20131213135427.22046"><vh>@item open-leo-plugins-leo</vh></v>
-<v t="ekr.20131213135427.22047"><vh>@item print-plugins-info</vh></v>
+<v t="ekr.20131213135427.22047"><vh>@item show-plugins-info</vh></v>
 <v t="ekr.20131213135427.22048"><vh>@item -</vh></v>
 </v>
 <v t="ekr.20180403122045.1"><vh>@menu Run</vh>
@@ -1490,7 +1490,7 @@
 <v t="ekr.20131213135427.22133"><vh>@item gc-dump-&amp;all-objects</vh></v>
 <v t="ekr.20131213135427.22134"><vh>@item gc-dump-&amp;new-objects</vh></v>
 <v t="ekr.20131213135427.22135"><vh>@item gc-dump-objects-&amp;verbose</vh></v>
-<v t="ekr.20131213135427.22136"><vh>@item gc-print-&amp;summary</vh></v>
+<v t="ekr.20131213135427.22136"><vh>@item gc-show-&amp;summary</vh></v>
 </v>
 <v t="ekr.20131213135427.22194"><vh>@menu &amp;Execute Shell Commands</vh>
 <v t="ekr.20131213135427.22130"><vh>@item &amp;open-python-window</vh></v>
@@ -2305,6 +2305,7 @@
 </v>
 <v t="ekr.20180411070112.1"></v>
 <v t="ekr.20120205022040.15411"></v>
+<v t="ekr.20150216135059.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3048,7 +3049,7 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20060112103537.17">'''Check for commands that exist in some but not all key- binding sets.'''
 g.cls()
 import leo.core.leoConfig as leoConfig
-import leo.core.leoTest as leoTest
+# import leo.core.leoTest as leoTest
 parser = leoConfig.SettingsTreeParser(c)
 # Add these as required to handle commands defined by plugins.
 optionalCommandPrefixes = ['group-operations']
@@ -3115,7 +3116,6 @@ main()
                 allNames[key] = key
         else:
             g.es_print('No setsDict for %s' % (repr(setName)),color='red')
-    k = c.keyHandler
     keys = sorted(allNames.keys())
     # Warn about missing names.
     for setName in ('No bindings',): # setNames:
@@ -4171,7 +4171,7 @@ False: Leo leaves body text alone when writing @nosent trees.</t>
 <t tx="ekr.20070531103454"></t>
 <t tx="ekr.20070604075218">True:  Chapter tabs appear in the outline pane.
 False: Chapter tabs do not appear.</t>
-<t tx="ekr.20070613133747"># These commands do nothing except serve as placeholders for the print-bindings command.
+<t tx="ekr.20070613133747"># These commands do nothing except serve as placeholders for the show-bindings command.
 menu-shortcut = Alt-C # Cmds menu.
 menu-shortcut = Alt-E # Edit menu.
 menu-shortcut = Alt-F # File menu.
@@ -6709,8 +6709,8 @@ paste-retaining-clones          = None
 paste-text                      = None      # Ctrl-V conflicts with scroll-down-page
 previous-line                   = Ctrl-p
 previous-line-extend-selection  = None
-print-bindings                  = None
-print-commands                  = None
+show-bindings                   = None
+show-commands                   = None
 promote                         = Ctrl-{            
 quick-command                   = Ctrl-c
 re-search-backward              = None
@@ -7046,7 +7046,7 @@ gc-collect-garbage                  = None
 gc-dump-all-objects                 = None
 gc-dump-new-objects                 = None
 gc-dump-objects-verbose             = None
-gc-print-summary                    = None
+gc-show-summary                     = None
 # gc-trace-disable                  = None
 # gc-trace-enable                   = None
 get-ipython-results                 = None
@@ -7165,9 +7165,9 @@ paste-retaining-clones              = None
 paste-text                          = None
 previous-line                       = None
 previous-line-extend-selection      = None
-print-bindings                      = None
-print-commands                      = None
-print-focus                         = None
+show-bindings                       = None
+show-commands                       = None
+show-focus                          = None
 promote                             = None
 quick-command                       = None
 re-search-backward                  = None
@@ -10020,7 +10020,24 @@ False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>
 <t tx="ekr.20141112072219.2"></t>
 <t tx="ekr.20141204160426.5">New.</t>
-<t tx="ekr.20150216135059.1"></t>
+<t tx="ekr.20150216135059.1">With @clean and @file, Leo can store persistent data in nodes. This
+information consists of the node’s gnx (Global Node Index) and the node’s
+uA, (User Attributes).
+
+The gnx gives each node a unique, immutable identity. Gnx’s make clones
+possible. The uA allows scripts and plugins to associate arbitrarily much
+additional data with each node.
+
+By default, Leo’s importers preserve neither gnx’s nor uA’s. This makes
+imported @auto trees second class citizens. To remedy this, if an outline
+contains an @persistence node, Leo will save data in the @persistence tree
+that allows Leo to recover gnx’s and uA’s when re-reading @auto files
+later. This allows clone links and uA’s to persist.
+
+This is an optional feature. The stored data is akin to bookmarks. The data
+can “break” (become inaccessible) if the structure (including
+class/method/function names) changes.
+</t>
 <t tx="ekr.20150227102835.1">True: (Recommended) Make a "Recovered Nodes" node whenever Leo reads a file that has been changed outside of Leo.
 </t>
 <t tx="ekr.20150321090958.1">True: write check messages to Leo's log pane as well as the console.

@@ -1195,18 +1195,19 @@ class Commands(object):
         if not c.frame.top:
             return
         master = hasattr(c.frame.top, 'leo_master') and c.frame.top.leo_master
-        if redrawFlag: # Prevent flash when fixing #387.
-            if master:
-                # Call LeoTabbedTopLevel.setChanged.
-                master.setChanged(c, changedFlag)
-            s = c.frame.getTitle()
-            if len(s) > 2:
-                if changedFlag:
-                    if s[0] != '*':
-                        c.frame.setTitle("* " + s)
-                else:
-                    if s[0: 2] == "* ":
-                        c.frame.setTitle(s[2:])
+        if not redrawFlag: # Prevent flash when fixing #387.
+            return
+        if master:
+            # Call LeoTabbedTopLevel.setChanged.
+            master.setChanged(c, changedFlag)
+        s = c.frame.getTitle()
+        if len(s) > 2:
+            if changedFlag:
+                if s[0] != '*':
+                    c.frame.setTitle("* " + s)
+            else:
+                if s[0: 2] == "* ":
+                    c.frame.setTitle(s[2:])
     #@+node:ekr.20040803140033.1: *5* c.setCurrentPosition
     _currentCount = 0
 
@@ -2219,6 +2220,7 @@ class Commands(object):
         Backup to base_dir or join(base_dir, sub_dir).
         '''
         c = self
+        old_cwd = os.getcwd()
         join = g.os_path_finalize_join
         if not base_dir:
             if env_key:
@@ -2245,6 +2247,7 @@ class Commands(object):
                 g.es_print('backup_dir not found: %r' % backup_dir)
         else:
             g.es_print('base_dir not found: %r' % base_dir)
+        os.chdir(old_cwd)
     #@+node:ekr.20090103070824.11: *4* c.checkFileTimeStamp
     def checkFileTimeStamp(self, fn):
         '''
@@ -2630,10 +2633,17 @@ class Commands(object):
         if c.requestLaterRedraw:
             if c.enableRedrawFlag:
                 c.requestLaterRedraw = False
+                if 'drawing' in g.app.debug and not g.unitTesting:
+                    print('')
+                    g.trace('DELAYED REDRAW')
+                    time.sleep(1.0)
                 c.redraw()
         # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
+            if 'focus' in g.app.debug and not g.unitTesting:
+                print('')
+                g.trace('DELAYED FOCUS', g.callers())
             c.set_focus(w)
             c.requestedFocusWidget = None
         table = (
@@ -2668,7 +2678,7 @@ class Commands(object):
         c = self
         c.enableRedrawFlag = True
     #@+node:ekr.20090110073010.1: *6* c.redraw
-    def redraw(self, p=None, setFocus=False):
+    def redraw(self, p=None):
         '''Redraw the screen immediately.'''
         c = self
         # New in Leo 5.6: clear the redraw request.
@@ -2687,8 +2697,9 @@ class Commands(object):
         # Be careful.  NullTree.redraw returns None.
         # #503: NullTree.redraw(p) now returns p.
         c.selectPosition(p2 or p)
-        if setFocus: c.treeFocusHelper()
-        # New in Leo 5.6: clear the redraw request, again.
+        # Do not call treeFocusHelper here.
+            # c.treeFocusHelper()
+        # Clear the redraw request, again.
         c.requestLaterRedraw = False
 
     # Compatibility with old scripts
@@ -2701,39 +2712,32 @@ class Commands(object):
         c = self
         if c.enableRedrawFlag:
             c.frame.tree.redraw_after_icons_changed()
-            # c.treeFocusHelper()
+            # Do not call treeFocusHelper here.
+                # c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090110131802.2: *6* c.redraw_after_contract
-    def redraw_after_contract(self, p=None, setFocus=False):
+    def redraw_after_contract(self, p=None):
         c = self
-        c.endEditing()
         if c.enableRedrawFlag:
             if p:
                 c.setCurrentPosition(p)
             else:
                 p = c.currentPosition()
-            if p.isCloned():
-                c.redraw(p=p, setFocus=setFocus)
-            else:
-                c.frame.tree.redraw_after_contract(p)
-                if setFocus: c.treeFocusHelper()
+            c.frame.tree.redraw_after_contract(p)
+            c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090112065525.1: *6* c.redraw_after_expand
-    def redraw_after_expand(self, p=None, setFocus=False):
+    def redraw_after_expand(self, p):
         c = self
-        c.endEditing()
         if c.enableRedrawFlag:
             if p:
                 c.setCurrentPosition(p)
             else:
                 p = c.currentPosition()
-            if p.isCloned():
-                c.redraw(p=p, setFocus=setFocus)
-            else:
-                c.frame.tree.redraw_after_expand(p)
-                if setFocus: c.treeFocusHelper()
+            c.frame.tree.redraw_after_expand(p)
+            c.treeFocusHelper()
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090110073010.2: *6* c.redraw_after_head_changed
@@ -2755,6 +2759,7 @@ class Commands(object):
             flag = c.expandAllAncestors(p)
             if flag:
                 c.frame.tree.redraw_after_select(p)
+                    # This is the same as c.frame.tree.full_redraw().
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20170908081918.1: *6* c.redraw_later
@@ -2766,6 +2771,9 @@ class Commands(object):
         '''
         c = self
         c.requestLaterRedraw = True
+        if 'drawing' in g.app.debug:
+            print('')
+            g.trace(g.callers(8))
     #@+node:ekr.20080514131122.17: *5* c.widget_name
     def widget_name(self, widget):
         # c = self
@@ -2857,20 +2865,23 @@ class Commands(object):
         while p and p.hasParent():
             p.moveToParent()
         if redrawFlag:
-            c.redraw(p, setFocus=True)
+            # Do a *full* redraw.
+            # c.redraw_after_contract(p) only contracts a single position.
+            c.redraw(p)
         c.expansionLevel = 1 # Reset expansion level.
     #@+node:ekr.20031218072017.2910: *5* c.contractSubtree
     def contractSubtree(self, p):
         for p in p.subtree():
             p.contract()
     #@+node:ekr.20031218072017.2911: *5* c.expandSubtree
-    def expandSubtree(self, v):
+    def expandSubtree(self, v, redraw=True):
         c = self
         last = v.lastNode()
         while v and v != last:
             v.expand()
             v = v.threadNext()
-        c.redraw()
+        if redraw:
+            c.redraw()
     #@+node:ekr.20031218072017.2912: *5* c.expandToLevel
     def expandToLevel(self, level):
 
@@ -2899,8 +2910,9 @@ class Commands(object):
         c = self
         w = g.app.gui and g.app.gui.get_focus(c)
         if 'focus' in g.app.debug:
-            g.trace('(c)', repr(w and g.app.gui.widget_name(w)), w)
-            g.callers()
+            print('')
+            g.trace('(c)',  w.__class__.__name__)
+            g.trace(g.callers(6))
         return w
 
     def get_requested_focus(self):
@@ -2911,8 +2923,9 @@ class Commands(object):
         c = self
         if w and g.app.gui:
             if 'focus' in g.app.debug:
-                g.trace('(c)', repr(g.app.gui.widget_name(w)), w)
-                g.callers()
+                print('')
+                g.trace('(c)',  w.__class__.__name__)
+                g.trace(g.callers(6))
             c.requestedFocusWidget = w
 
     def set_focus(self, w, force=False):
@@ -2920,13 +2933,14 @@ class Commands(object):
         c = self
         if w and g.app.gui:
             if trace:
-                g.trace('(c)', repr(w and g.app.gui.widget_name(w)), w)
-                g.callers()
+                print('')
+                g.trace('(c)',  w.__class__.__name__)
+                g.trace(g.callers(6))
             g.app.gui.set_focus(c, w)
         else:
             if trace: g.trace('(c) no w')
         c.requestedFocusWidget = None
-    #@+node:ekr.20080514131122.10: *5* c.invalidateFocus
+    #@+node:ekr.20080514131122.10: *5* c.invalidateFocus (do nothing)
     def invalidateFocus(self):
         '''Indicate that the focus is in an invalid location, or is unknown.'''
         # c = self
@@ -2979,6 +2993,7 @@ class Commands(object):
         if w:
             c.set_focus(w)
             c.requestedFocusWidget = None
+
     # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
 
     def bodyWantsFocusNow(self):
@@ -3380,6 +3395,7 @@ class Commands(object):
             c.selectPosition(p)
             c.redraw_after_select(p)
         c.treeFocusHelper()
+            # This is essential.
     #@+node:ekr.20171123135625.51: *4* c.updateBodyPane (handles changeNodeContents)
     def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview, preserveSel=False):
         '''Handle changed text in the body pane.'''
@@ -3753,14 +3769,13 @@ class Commands(object):
                     if v in parent_v.children:
                         childIndex = parent_v.children.index(v)
                         v._cutLink(childIndex, parent_v)
-        # Bug fix 2014/03/13: Make sure c.hiddenRootNode always has at least one child.
+        # Make sure c.hiddenRootNode always has at least one child.
         if not c.hiddenRootNode.children:
             v = leoNodes.VNode(context=c)
-            v._addLink(childIndex=0, parent_v=c.hiddenRootNode, adjust=False)
+            v._addCopiedLink(childIndex=0, parent_v=c.hiddenRootNode)
         if redraw:
             c.selectPosition(c.rootPosition())
                 # Calls redraw()
-            # c.redraw()
     #@+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
     def doBatchOperations(self, aList=None):
         # Validate aList and create the parents dict

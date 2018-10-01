@@ -543,7 +543,10 @@ class AutoCompleterClass(object):
                     g.es_print('can not import jedi')
                     g.es_print('ignoring @bool use_jedi = True')
             if jedi:
-                aList = self.get_jedi_completions(prefix)
+                aList = (
+                    self.get_jedi_completions(prefix) or
+                        # Prefer the jedi completions.
+                    self.get_leo_completions(prefix))
                 d[prefix] = aList
                 return aList
         #
@@ -557,10 +560,9 @@ class AutoCompleterClass(object):
         aList = d.get(prefix)
         if aList:
             return aList
-        # Always try the Leo completions first.
-        # Fall back to the codewise completions.
         aList = (
             self.get_leo_completions(prefix) or
+                # Prefer the Leo completions.
             self.get_codewise_completions(prefix)
         )
         d[prefix] = aList
@@ -717,25 +719,18 @@ class AutoCompleterClass(object):
                 completions = None
                 g.printObj(source_lines[n0-1:n0+30])
                 print('ERROR', p.h)
-        if completions is None:
+        if not completions:
             return []
         # May be used in traces below.
         assert t3 >= t2 >= t1
-        assert local_column is not None
-                
+        assert local_column is not None  
         completions = [z.name for z in completions]
         completions = [self.add_prefix(prefix, z) for z in completions]
         # Retain these for now...
             # g.printObj(completions[:5])
             # head = line[:local_column]
-            # tail = line[local_column:]
-            # print('%s completions for %r' % (len(completions), head.strip()))
-            # print(' get: %5.4f sec.' % (t2-t1))
-            # print('jedi: %5.4f sec.' % (t3-t2))
-            # print('n0: %s len(source): %s jedi_line: %s' % (n0, len(source), jedi_line))
-            # print('LINE: %r' % line)
-            # print('HEAD: %r' % head)
-            # print('TAIL: %r' % tail)
+            # ch = line[local_column:local_column+1]
+            # g.trace(len(completions), repr(ch), head.strip())
         return completions
     #@+node:ekr.20180526211127.1: *6* ac.add_prefix
     def add_prefix(self, prefix, s):
@@ -863,7 +858,7 @@ class AutoCompleterClass(object):
             self.insert_string(ch)
             common_prefix, prefix, aList = self.compute_completion_list()
             if not aList:
-                if self.forbid_invalid: # 2011/06/17.
+                if self.forbid_invalid:
                     # Delete the character we just inserted.
                     self.do_backspace()
             # @bool auto_tab_complete is deprecated.
@@ -1671,8 +1666,6 @@ class KeyHandlerClass(object):
             # A list of commands whose bindings have been set to None in the local file.
         self.replace_meta_with_alt = False
             # True: (Mac only) swap Meta and Alt keys.
-        self.swap_mac_keys = False
-            # True: (Mac only) swap Command and Control keys.
         self.w = None
             # Note: will be None for NullGui.
         # Generalize...
@@ -1984,7 +1977,6 @@ class KeyHandlerClass(object):
         self.minibuffer_warning_color = getColor('minibuffer_warning_color') or 'lightgrey'
         self.minibuffer_error_color = getColor('minibuffer_error_color') or 'red'
         self.replace_meta_with_alt = getBool('replace_meta_with_alt')
-        self.swap_mac_keys = getBool('swap_mac_keys')
         self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
         # Has to be disabled (default) for AltGr support on Windows
         self.enable_alt_ctrl_bindings = c.config.getBool('enable_alt_ctrl_bindings')
@@ -2526,7 +2518,7 @@ class KeyHandlerClass(object):
         # This method must exist, but it never gets called.
         pass
     #@+node:ekr.20061031131434.119: *4* k.printBindings & helper
-    @cmd('print-bindings')
+    @cmd('show-bindings')
     def printBindings(self, event=None):
         '''Print all the bindings presently in effect.'''
         k = self; c = k.c
@@ -2599,7 +2591,7 @@ class KeyHandlerClass(object):
         if data:
             result.append('\n')
     #@+node:ekr.20120520174745.9867: *4* k.printButtons
-    @cmd('print-buttons')
+    @cmd('show-buttons')
     def printButtons(self, event=None):
         '''Print all @button and @command commands, their bindings and their source.'''
         k = self; c = k.c
@@ -2629,7 +2621,7 @@ class KeyHandlerClass(object):
         ])
         put('\n'.join(result))
     #@+node:ekr.20061031131434.121: *4* k.printCommands
-    @cmd('print-commands')
+    @cmd('show-commands')
     def printCommands(self, event=None):
         '''Print all the known commands and their bindings, if any.'''
         k = self; c = k.c; tabName = 'Commands'
@@ -3051,7 +3043,7 @@ class KeyHandlerClass(object):
         k = self
         # Setup...
         if 'keys' in g.app.debug:
-            g.trace(repr(event.char), event.stroke)
+            g.trace(repr(k.state.kind), repr(event.char), repr(event.stroke))
         k.checkKeyEvent(event)
         k.setEventWidget(event)
         k.traceVars(event)
@@ -3264,8 +3256,14 @@ class KeyHandlerClass(object):
         # Second, honor general modes.
         #
         if state == 'getArg':
-            k.getArg(event, stroke=stroke)
-            return True
+            # New in Leo 5.8: Only call k.getArg for keys it can handle.
+            if k.isPlainKey(stroke):
+                k.getArg(event, stroke=stroke)
+                return True
+            if stroke.s in ('Escape', 'Tab', 'BackSpace'):
+                k.getArg(event, stroke=stroke)
+                return True
+            return False 
         if state in ('getFileName', 'get-file-name'):
             k.getFileName(event)
             return True
@@ -3502,6 +3500,7 @@ class KeyHandlerClass(object):
             if result == 'ignore':
                 return False # Let getArg handle it.
             if result == 'found':
+                # Do not call k.keyboardQuit here!
                 return True
         #
         # No binding exists.
@@ -3541,7 +3540,11 @@ class KeyHandlerClass(object):
             stroke=stroke)
         # Careful: the command could exit.
         if c.exists and not k.silentMode:
-            c.minibufferWantsFocus()
+            # Use the state *after* executing the command.
+            if k.state.kind:
+                c.minibufferWantsFocus()
+            else:
+                c.bodyWantsFocus()
         return 'found'
     #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
     def isSpecialKey(self, event):
@@ -4085,8 +4088,8 @@ class KeyHandlerClass(object):
                 else:
                     k.silentMode = False # All silent modes must do --> set-silent-mode.
                     self.initMode(event, nextMode) # Enter another mode.
-    #@+node:ekr.20061031131434.156: *3* k.Modes (changed)
-    #@+node:ekr.20061031131434.163: *4* k.initMode (changed)
+    #@+node:ekr.20061031131434.156: *3* k.Modes
+    #@+node:ekr.20061031131434.163: *4* k.initMode
     def initMode(self, event, modeName):
 
         k = self; c = k.c
