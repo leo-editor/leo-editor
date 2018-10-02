@@ -263,7 +263,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
                 line = self.stdin.readline()
                     # QueueStdin.readline.
                     # Get the input from Leo's main thread.
-                line = 'EOF' if not line else line.rstrip('\r\n')
+                line = line.rstrip('\r\n') if line else 'EOF'
             line = self.precmd(line)
                 # Pdb.precmd.
             stop = self.onecmd(line)
@@ -349,12 +349,12 @@ class Xpdb(pdb.Pdb, threading.Thread):
     #@+node:ekr.20180701050839.10: *4* xpdb.set_continue (overrides Bdb)
     def set_continue(self):
         ''' override Bdb.set_continue'''
+        import sys
         # Don't stop except at breakpoints or when finished
         self._set_stopinfo(self.botframe, None, -1)
         if not self.breaks:
             # no breakpoints; run without debugger overhead
             self.kill()
-            import sys
             sys.settrace(None)
             frame = sys._getframe().f_back
             while frame and frame is not self.botframe:
@@ -366,6 +366,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
         if not self.active:
             return
         self.active = False
+        self.path = None
         g.trace('===== END DEBUGGER =====')
         self.qr.put(['stop-timer'])
             # Stop the timer in the main thread.
@@ -426,6 +427,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
         ### filename = self.canonic(frame.f_code.co_filename)
             # Might not work for python 2.
         self.qr.put(['select-line', lineno, filename])
+            # Select the line in the main thread.
     #@+node:ekr.20180701061957.1: *3* xpdb.show_line
     def show_line(self, line, fn):
         '''
