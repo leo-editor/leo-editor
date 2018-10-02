@@ -208,24 +208,44 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Tests are run in an external process, so tests *cannot* change the outline.'''
         self.c.testManager.runTestsExternally(all=False, marked=False)
     #@-others
-#@+node:ekr.20180701050839.5: ** class XPdb (pdb.Pdb, threading.Thread)
-class XPdb(pdb.Pdb, threading.Thread):
+#@+node:ekr.20180701050839.5: ** class Xpdb (pdb.Pdb, threading.Thread)
+class Xpdb(pdb.Pdb, threading.Thread):
     '''
     A debugger running in a separate thread.
     '''
-    def __init__(self, path=None):
+    def __init__(self):
+        
+        self.qc = Queue() # Command queue.
+        self.qr = Queue() # Request queue.
+        self.timer = g.IdleTime(self.listener, delay=0)
+        self.timer.start()
         threading.Thread.__init__(self)
         pdb.Pdb.__init__(self,
-            stdin=QueueStdin(), # Get input from Leo's main thread.
-            readrc=False, # Don't read a .rc file.
+            stdin=self.QueueStdin(qc=self.qc),
+                # Get input from Leo's main thread.
+            readrc=False,
+            # Don't read a .rc file.
         )
         self.daemon = True
-        self.path=path
+        self.path = None
         self.prompt = '(xpdb) '
         self.saved_frame = None
         self.saved_traceback = None
 
     #@+others
+    #@+node:ekr.20180701050839.4: *3* class QueueStdin (obj)
+    class QueueStdin(object):
+        '''
+        A replacement for Python's stdin class containing only readline().
+        '''
+        def __init__(self, qc):
+            self.qc = qc
+
+        def readline(self):
+            '''Return the next line from the qc channel.'''
+            s = self.qc.get() # blocks
+            print(s) # Correct.
+            return s
     #@+node:ekr.20181002053718.1: *3* Overrides
     #@+node:ekr.20181002061627.1: *4* xpdb.cmdloop (overrides Cmd)
     def cmdloop(self, intro=None):
@@ -341,15 +361,25 @@ class XPdb(pdb.Pdb, threading.Thread):
                 frame = frame.f_back
     #@+node:ekr.20180701050839.9: *3* xpdb.kill
     def kill(self):
-        
-        d = getattr(g.app, 'debugger_d', {})
-        if d and d.get('xpdb'):
-            g.trace('===== END DEBUGGER =====')
-            d ['xpdb'] = None
-            qr = d.get('qr')
-            qr.put(['stop-timer'])
-        else:
-            g.trace('already killed')
+        g.trace('===== END DEBUGGER =====')
+        self.qr.put(['stop-timer'])
+    #@+node:ekr.20180701050839.3: *3* xpdb.listener
+    def listener(self, timer):
+        '''
+        Listen, at idle-time, in Leo's main thread, for data on the qr channel.
+        This is set up by the xpdb command.
+        '''
+        while not self.qr.empty():
+            aList = self.qr.get() # blocks
+            kind = aList[0]
+            if kind == 'stop-timer':
+                g.trace('STOP TIMER')
+                self.timer.stop()
+            elif kind == 'select-line':
+                line, fn = aList[1], aList[2]
+                self.show_line(line, fn)
+            else:
+                g.es('unknown qr message:', aList)
     #@+node:ekr.20181002094126.1: *3* xpdb.run
     def run(self):
         '''Start the thread.'''
@@ -389,71 +419,77 @@ class XPdb(pdb.Pdb, threading.Thread):
         filename = frame.f_code.co_filename
         ### filename = self.canonic(frame.f_code.co_filename)
             # Might not work for python 2.
-        ### g.trace(filename)
-        d = getattr(g.app, 'debugger_d', {})
-        if d:
-            qr = d.get('qr')
-            qr.put(['select-line', lineno, filename])
-        else:
-            g.trace('not active')
+        self.qr.put(['select-line', lineno, filename])
+    #@+node:ekr.20180701061957.1: *3* xpdb.show_line
+    def show_line(self, line, fn):
+        '''
+        Put the cursor on the requested line of the given file.
+        fn should be a full path to a file.
+        '''
+        c = g.app.log.c
+        #
+        # It's not clear that this is correct in all cases.
+        # Bdb.canonic caches file names and does os.path.abspath.
+        target = g.os_path_finalize(fn).replace('\\','/')
+        if not g.os_path_exists(fn):
+            g.trace('===== Does not exist', fn)
+            return
+        for p in c.all_positions():
+            if p.isAnyAtFileNode():
+                path = g.fullPath(c, p).replace('\\','/')
+                if target == path:
+                    # Select the line.
+                    p, offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
+                    ### if ok: g.trace(line, g.shortFileName(fn))
+                    if not ok:
+                        self.kill()
+                    c.bodyWantsFocusNow()
+                    return
+        g.trace('NOT FOUND:', line, target)
     #@-others
-#@+node:ekr.20180701050839.4: ** class QueueStdin (obj)
-class QueueStdin(object):
-    '''
-    A replacement for Python's stdin class containing only readline().
-    '''
-    def readline(self):
-        '''Return the next line from the qc channel.'''
-        d = getattr(g.app, 'debugger_d', None)
-        if not d:
-            g.trace('no g.app.debugger_d')
-            return ''
-        qc = d.get('qc')
-        s = qc.get() # blocks
-        print(s) # Correct.
-        return s
-#@+node:ekr.20181001054314.1: ** top-level for XPdb
-#@+node:ekr.20180702074705.1: *3* command: db-* commands
-@g.command('db-c')
-def xpdb_c(event): db_command(event, 'c')
-    
-@g.command('db-l')
-def xpdb_l(event): db_command(event, 'l')
-    
-@g.command('db-n')
-def xpdb_n(event): db_command(event, 'n')
-    
-@g.command('db-s')
-def xpdb_s(event): db_command(event, 's')
-    
+#@+node:ekr.20181001054314.1: ** top-level xpdb commands
 def db_command(event, command):
     c = event.get('c')
-    d = getattr(g.app, 'debugger_d', {})
-    if not d:
-        g.trace('xpdb not active')
+    if not c:
         return
-    xpdb = d.get('xpdb')
-    if c and xpdb:
-        qc = d.get('qc')
-        qc.put(command)
-    elif c:
+    xpdb = getattr(g.app, 'xpdb', None)
+    if xpdb:
+        xpdb.qc.put(command)
+    else:
         g.trace('xpdb not active')
+#@+node:ekr.20180702074705.1: *3* command: db-* commands
+@g.command('db-c')
+def xpdb_c(event):
+    db_command(event, 'c')
+    
+@g.command('db-l')
+def xpdb_l(event):
+    db_command(event, 'l')
+    
+@g.command('db-n')
+def xpdb_n(event):
+    db_command(event, 'n')
+    
+@g.command('db-s')
+def xpdb_s(event):
+    db_command(event, 's')
+    
 #@+node:ekr.20180701050839.2: *3* command: 'db-input'
 @g.command('db-input')
 def xpdb_input(event):
     c = event.get('c')
-    d = getattr(g.app, 'debugger_d', {})
-    xpdb = d.get('xpdb')
-    if c and xpdb:
-    
-        def callback(args, c, event):
-            qc = d.get('qc')
-            qc.put(args[0])
-    
-        c.interactive(callback, event, prompts=['Debugger command: '])
+    xpdb = getattr(g.app, 'xpdb', None)
+    if not c or not xpdb:
+        return g.es_print('xpdb not active')
         
-    elif c:
-        g.es('xpdb not active')
+    def callback(args, c, event):
+        xpdb = getattr(g.app, 'xpdb', None)
+        if xpdb:
+            xpdb.qc.put(args[0])
+        else:
+            g.es_print('xpdb not active')
+
+    c.interactive(callback, event, prompts=['Debugger command: '])
 #@+node:ekr.20180701050839.1: *3* command: 'xpdb'
 @g.command('xpdb')
 def xpdb(event):
@@ -464,103 +500,33 @@ def xpdb(event):
     2. Run 
     
     '''
-    d = getattr(g.app, 'debugger_d', None)
-    # Use a fixed path for testing.
+    ### Use a fixed path for testing.
     path = 'c:/test/testXPDB.py'
     os.chdir('c:/test')
-        ###
     if not g.os_path_exists(path):
         return g.trace('not found', path)
-    if d is None:
-        g.app.debugger_d = d = {
-            # For development, just pick a specific file.
-            'fn': path,
-            # These items never change.
-            'qc': Queue(), # Command queue.
-            'qr': Queue(), # Request queue.
-            'timer': g.IdleTime(listener, delay=0),
-       }
-    # Shut down previous invocations of the debugger.
-    xpdb = d.get('xpdb')
+    #
+    # Reinit.
+    xpdb = getattr(g.app, 'debugger_d', None)
     if xpdb:
         g.es('quitting previous debugger.')
-        xpdb.do_quit(arg=None)
-    # Start the listener and debugger (in a separate thread).
-    d['xpdb'] = xpdb = XPdb(path=path)
+        xpdb.do_quit()
+    else:
+        g.app.xpdb = xpdb = Xpdb()
+    #
+    # Start or restart the debugger in a separate thread.
+    xpdb.path = path
     xpdb.start()
         # This is Threading.start().
         # It runs the debugger in a separate thread.
-    d['timer'].start()
+    
 #@+node:ekr.20180701054344.1: *3* command: 'xpdb-kill'
 @g.command('xpdb-kill')
 def xpdb_kill(event):
-    c = event.get('c')
-    d = getattr(g.app, 'debugger_d', {})
-    xpdb = d.get('xpdb')
-    if c and xpdb:
-        qc = d.get('qc')
-        qc.put('quit')
-            # Results in killed message.
-    elif c:
+    xpdb = getattr(g.app, 'xpdb', None)
+    if xpdb:
+        xpdb.kill()
+    else:
         g.trace('xpdb not active')
-#@+node:ekr.20180701050839.3: *3* function: listener
-def listener(timer):
-    '''
-    Listen, at idle-time, in Leo's main thread, for data on the qr channel.
-    This is set up by the xpdb command.
-    '''
-    d = getattr(g.app, 'debugger_d', {})
-    if not d:
-        g.trace('not active')
-        return
-    qr = d.get('qr')
-    while not qr.empty():
-        aList = qr.get() # blocks
-        kind = aList[0]
-        if kind == 'stop-timer':
-            if getattr(g.app, 'debugger_d', None):
-                g.app.debugger_d = None
-                timer.stop()
-        elif kind == 'select-line':
-            if getattr(g.app, 'debugger_d', None):
-                line, fn = aList[1], aList[2]
-                show_line(line, fn)
-        else:
-            g.es('unknown qr message:', aList)
-#@+node:ekr.20180701061957.1: *3* function: show_line
-def show_line(line, fn):
-    '''
-    Put the cursor on the requested line of the given file.
-    fn should be a full path to a file.
-    '''
-    ###
-    ### Called only by listener.
-    ###
-    # Find the @<file> node.
-    c = g.app.log.c
-    d = getattr(g.app, 'debugger_d', {})
-    if not d:
-        return
-    ###
-    #
-    # It's not clear that this is correct in all cases.
-    # Bdb.canonic caches file names and does os.path.abspath.
-    target = g.os_path_finalize(fn).replace('\\','/')
-    if not g.os_path_exists(fn):
-        g.trace('===== Does not exist', fn)
-        return
-    ### g.trace(line, target)
-    for p in c.all_positions():
-        if p.isAnyAtFileNode():
-            path = g.fullPath(c, p).replace('\\','/')
-            if target == path:
-                # Select the line.
-                p, offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
-                if not ok:
-                    xpdb = d.get('xpdb')
-                    xpdb.kill()
-                c.bodyWantsFocusNow()
-                return
-    g.trace('NOT FOUND:', line, target)
 #@-others
 #@-leo
