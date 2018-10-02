@@ -226,6 +226,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
             readrc=False,
             # Don't read a .rc file.
         )
+        self.active = True
         self.daemon = True
         self.path = None
         self.prompt = '(xpdb) '
@@ -361,8 +362,13 @@ class Xpdb(pdb.Pdb, threading.Thread):
                 frame = frame.f_back
     #@+node:ekr.20180701050839.9: *3* xpdb.kill
     def kill(self):
+        
+        if not self.active:
+            return
+        self.active = False
         g.trace('===== END DEBUGGER =====')
         self.qr.put(['stop-timer'])
+            # Stop the timer in the main thread.
     #@+node:ekr.20180701050839.3: *3* xpdb.listener
     def listener(self, timer):
         '''
@@ -453,7 +459,7 @@ def db_command(event, command):
     if not c:
         return
     xpdb = getattr(g.app, 'xpdb', None)
-    if xpdb:
+    if xpdb and xpdb.active:
         xpdb.qc.put(command)
     else:
         g.trace('xpdb not active')
@@ -497,8 +503,8 @@ def xpdb(event):
     Start the external debugger on a toy test program.
     
     1. Kill any previously running debugger.
-    2. Run 
-    
+    2. Create the singleton debugger if necessary.
+    3. Run the debugger in a separate thread.
     '''
     ### Use a fixed path for testing.
     path = 'c:/test/testXPDB.py'
@@ -506,8 +512,8 @@ def xpdb(event):
     if not g.os_path_exists(path):
         return g.trace('not found', path)
     #
-    # Reinit.
-    xpdb = getattr(g.app, 'debugger_d', None)
+    # Create or re-init the debugger.
+    xpdb = getattr(g.app, 'xpdb', None)
     if xpdb:
         g.es('quitting previous debugger.')
         xpdb.do_quit()
@@ -515,6 +521,7 @@ def xpdb(event):
         g.app.xpdb = xpdb = Xpdb()
     #
     # Start or restart the debugger in a separate thread.
+    xpdb.active = True
     xpdb.path = path
     xpdb.start()
         # This is Threading.start().
