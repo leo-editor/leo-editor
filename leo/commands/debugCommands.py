@@ -210,35 +210,47 @@ class DebugCommandsClass(BaseEditCommandsClass):
     #@-others
 #@+node:ekr.20180701050839.5: ** class XPdb (pdb.Pdb, threading.Thread)
 class XPdb(pdb.Pdb, threading.Thread):
-    # Pdb is a subclass of Cmd and Bdb.
-
+    '''
+    A debugger running in a separate thread.
+    '''
     def __init__(self, path=None):
         threading.Thread.__init__(self)
-        pdb.Pdb.__init__(self, stdin=QueueStdin(), readrc=False)
-        self.path=path
-        self.use_rawinput = False # for cmd.Cmd.
+        pdb.Pdb.__init__(self,
+            stdin=QueueStdin(), # Get input from Leo's main thread.
+            readrc=False, # Don't read a .rc file.
+        )
         self.daemon = True
+        self.path=path
+        self.prompt = '(xpdb) '
         self.saved_frame = None
         self.saved_traceback = None
 
-    def run(self):
-        '''Start the thread.'''
-        # pylint: disable=arguments-differ
-        from leo.core.leoQt import QtCore
-        QtCore.pyqtRemoveInputHook() # From g.pdb
-        if self.path:
-            self.run_path(self.path)
-        else:
-            self.set_trace()
-        
     #@+others
-    #@+node:ekr.20180701150326.1: *3* xpdb.postcmd
-    def postcmd(self, stop, line):
-        """Hook method executed just after a command dispatch is finished."""
-        self.select_line(self.saved_frame, self.saved_traceback)
-        return stop
-
-    #@+node:ekr.20180701050839.6: *3* xpdb.do_clear
+    #@+node:ekr.20181002053718.1: *3* Overrides
+    #@+node:ekr.20181002061627.1: *4* xpdb.cmdloop (overrides Cmd)
+    def cmdloop(self, intro=None):
+        '''Override Cmd.cmdloop.'''
+        assert not intro, repr(intro)
+        stop = None
+        while not stop:
+            if self.cmdqueue:
+                # Pdb.precmd sets cmdqueue.
+                line = self.cmdqueue.pop(0)
+            else:
+                self.stdout.write(self.prompt)
+                self.stdout.flush()
+                line = self.stdin.readline()
+                    # QueueStdin.readline.
+                    # Get the input from Leo's main thread.
+                line = 'EOF' if not line else line.rstrip('\r\n')
+            line = self.precmd(line)
+                # Pdb.precmd.
+            stop = self.onecmd(line)
+                # Pdb.onecmd.
+            # Show the line in Leo.
+            if stop:
+                self.select_line(self.saved_frame, self.saved_traceback)
+    #@+node:ekr.20180701050839.6: *4* xpdb.do_clear (overides Pdb)
     def do_clear(self, arg):
         """cl(ear) filename:lineno\ncl(ear) [bpnumber [bpnumber...]]
         With a space separated list of breakpoint numbers, clear
@@ -293,7 +305,7 @@ class XPdb(pdb.Pdb, threading.Thread):
 
     # complete_clear = self._complete_location
     # complete_cl = self._complete_location
-    #@+node:ekr.20180701050839.7: *3* xpdb.do_quit
+    #@+node:ekr.20180701050839.7: *4* xpdb.do_quit (overrides Pdb)
     def do_quit(self, arg=None):
         """q(uit)\nexit
         Quit from the debugger. The program being executed is aborted.
@@ -305,7 +317,7 @@ class XPdb(pdb.Pdb, threading.Thread):
 
     do_q = do_quit
     do_exit = do_quit
-    #@+node:ekr.20180701050839.8: *3* xpdb.interaction
+    #@+node:ekr.20180701050839.8: *4* xpdb.interaction (overrides Pdb)
     def interaction(self, frame, traceback):
         '''Override.'''
         self.saved_frame = frame
@@ -313,6 +325,20 @@ class XPdb(pdb.Pdb, threading.Thread):
         self.select_line(frame, traceback)
         pdb.Pdb.interaction(self, frame, traceback)
             # Call the base class method.
+    #@+node:ekr.20180701050839.10: *4* xpdb.set_continue (overrides Bdb)
+    def set_continue(self):
+        ''' override Bdb.set_continue'''
+        # Don't stop except at breakpoints or when finished
+        self._set_stopinfo(self.botframe, None, -1)
+        if not self.breaks:
+            # no breakpoints; run without debugger overhead
+            self.kill()
+            import sys
+            sys.settrace(None)
+            frame = sys._getframe().f_back
+            while frame and frame is not self.botframe:
+                del frame.f_trace
+                frame = frame.f_back
     #@+node:ekr.20180701050839.9: *3* xpdb.kill
     def kill(self):
         
@@ -324,6 +350,16 @@ class XPdb(pdb.Pdb, threading.Thread):
             qr.put(['stop-timer'])
         else:
             g.trace('already killed')
+    #@+node:ekr.20181002094126.1: *3* xpdb.run
+    def run(self):
+        '''Start the thread.'''
+        # pylint: disable=arguments-differ
+        from leo.core.leoQt import QtCore
+        QtCore.pyqtRemoveInputHook() # From g.pdb
+        if self.path:
+            self.run_path(self.path)
+        else:
+            self.set_trace()
     #@+node:ekr.20180701090439.1: *3* xpdb.run_path
     def run_path(self, path):
         '''Begin execution of the python file.'''
@@ -345,23 +381,9 @@ class XPdb(pdb.Pdb, threading.Thread):
         finally:
             self.quitting = True
             sys.settrace(None)
-    #@+node:ekr.20180701050839.10: *3* xpdb.set_continue
-    def set_continue(self):
-        ''' override Bdb.set_continue'''
-        # Don't stop except at breakpoints or when finished
-        self._set_stopinfo(self.botframe, None, -1)
-        if not self.breaks:
-            # no breakpoints; run without debugger overhead
-            self.kill()
-            import sys
-            sys.settrace(None)
-            frame = sys._getframe().f_back
-            while frame and frame is not self.botframe:
-                del frame.f_trace
-                frame = frame.f_back
     #@+node:ekr.20180701151233.1: *3* xpdb.select_line
     def select_line(self, frame, traceback):
-
+        '''Select the given line in Leo.'''
         stack, curindex = self.get_stack(frame, traceback)
         frame, lineno = stack[curindex]
         filename = frame.f_code.co_filename
@@ -377,19 +399,20 @@ class XPdb(pdb.Pdb, threading.Thread):
     #@-others
 #@+node:ekr.20180701050839.4: ** class QueueStdin (obj)
 class QueueStdin(object):
-    '''A class to get input from the qc channel.'''
-    
+    '''
+    A replacement for Python's stdin class containing only readline().
+    '''
     def readline(self):
+        '''Return the next line from the qc channel.'''
         d = getattr(g.app, 'debugger_d', None)
-        if d:
-            qc = d.get('qc')
-            s = qc.get() # blocks
-            print(s) # Correct.
-            return s
-        else:
+        if not d:
             g.trace('no g.app.debugger_d')
             return ''
-#@+node:ekr.20181001054314.1: ** top-level
+        qc = d.get('qc')
+        s = qc.get() # blocks
+        print(s) # Correct.
+        return s
+#@+node:ekr.20181001054314.1: ** top-level for XPdb
 #@+node:ekr.20180702074705.1: *3* command: db-* commands
 @g.command('db-c')
 def xpdb_c(event): db_command(event, 'c')
@@ -434,10 +457,15 @@ def xpdb_input(event):
 #@+node:ekr.20180701050839.1: *3* command: 'xpdb'
 @g.command('xpdb')
 def xpdb(event):
-    '''Start the external debugger on a toy test program.'''
+    '''
+    Start the external debugger on a toy test program.
+    
+    1. Kill any previously running debugger.
+    2. Run 
+    
+    '''
     d = getattr(g.app, 'debugger_d', None)
     # Use a fixed path for testing.
-    # path = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'pylint-leo.py')
     path = 'c:/test/testXPDB.py'
     os.chdir('c:/test')
         ###
@@ -460,6 +488,8 @@ def xpdb(event):
     # Start the listener and debugger (in a separate thread).
     d['xpdb'] = xpdb = XPdb(path=path)
     xpdb.start()
+        # This is Threading.start().
+        # It runs the debugger in a separate thread.
     d['timer'].start()
 #@+node:ekr.20180701054344.1: *3* command: 'xpdb-kill'
 @g.command('xpdb-kill')
@@ -475,7 +505,10 @@ def xpdb_kill(event):
         g.trace('xpdb not active')
 #@+node:ekr.20180701050839.3: *3* function: listener
 def listener(timer):
-    '''Listen (in Leo's main thread) for data on the qr channel.'''
+    '''
+    Listen, at idle-time, in Leo's main thread, for data on the qr channel.
+    This is set up by the xpdb command.
+    '''
     d = getattr(g.app, 'debugger_d', {})
     if not d:
         g.trace('not active')
@@ -493,7 +526,7 @@ def listener(timer):
                 line, fn = aList[1], aList[2]
                 show_line(line, fn)
         else:
-            g.es('unknown qr request:', aList)
+            g.es('unknown qr message:', aList)
 #@+node:ekr.20180701061957.1: *3* function: show_line
 def show_line(line, fn):
     '''
@@ -508,6 +541,10 @@ def show_line(line, fn):
     d = getattr(g.app, 'debugger_d', {})
     if not d:
         return
+    ###
+    #
+    # It's not clear that this is correct in all cases.
+    # Bdb.canonic caches file names and does os.path.abspath.
     target = g.os_path_finalize(fn).replace('\\','/')
     if not g.os_path_exists(fn):
         g.trace('===== Does not exist', fn)
