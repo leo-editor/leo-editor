@@ -394,7 +394,6 @@ class Xpdb(pdb.Pdb, threading.Thread):
     #@+node:ekr.20180701050839.9: *3* xpdb.kill
     def kill(self):
 
-        g.trace('===== END DEBUGGER =====')
         self.qr.put(['stop-timer'])
             # Stop the timer in the main thread.
             # The listener clears g.app.xpdb.
@@ -411,7 +410,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
                 message = aList[1].rstrip()
                 g.es(message)
             elif kind == 'stop-timer':
-                g.trace('STOP TIMER')
+                g.trace('===== End Debugger =====')
                 self.timer.stop()
                 g.app.xpdb = None
             elif kind == 'select-line':
