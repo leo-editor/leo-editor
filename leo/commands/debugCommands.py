@@ -493,7 +493,10 @@ def xpdb_input(event):
     def callback(args, c, event):
         xpdb = getattr(g.app, 'xpdb', None)
         if xpdb:
-            xpdb.qc.put(args[0])
+            command = args[0].strip()
+            if not command:
+                command = xpdb.lastcmd
+            xpdb.qc.put(command)
         else:
             g.es_print('xpdb not active')
 
@@ -514,13 +517,14 @@ def xpdb(event):
     if not g.os_path_exists(path):
         return g.trace('not found', path)
     #
-    # Create or re-init the debugger.
+    # Kill the previous debugger.
     xpdb = getattr(g.app, 'xpdb', None)
     if xpdb:
         g.es('quitting previous debugger.')
         xpdb.do_quit()
-    else:
-        g.app.xpdb = xpdb = Xpdb()
+    #
+    # Start the thread.
+    g.app.xpdb = xpdb = Xpdb()
     #
     # Start or restart the debugger in a separate thread.
     xpdb.active = True
