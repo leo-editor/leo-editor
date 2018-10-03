@@ -108,7 +108,7 @@ class GoToCommands(object):
                         return n
                     if node_offset is not None:
                         node_offset += 1
-                # These sentinels change nodes.
+                # These sentinels change nodes...
                 if s2.startswith('@+node'):
                     gnx, h = self.get_script_node_info(s, delim2)
                     node_offset = 0
