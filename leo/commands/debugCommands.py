@@ -9,12 +9,12 @@ import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 # from leo.core.leoGui import LeoKeyEvent
 import bdb
+import queue
 import os
 import pdb
 import subprocess
 import sys
 import threading
-from queue import Queue
 #@-<< imports >>
 
 def cmd(name):
@@ -211,14 +211,31 @@ class DebugCommandsClass(BaseEditCommandsClass):
 #@+node:ekr.20180701050839.5: ** class Xpdb (pdb.Pdb, threading.Thread)
 class Xpdb(pdb.Pdb, threading.Thread):
     '''
-    A debugger running in a separate thread.
+    An external debugger that runs without haning Leo.
+    
+    The xpdb command calls this class's start method, thereby running each
+    instance in a separate thread.
+    
+    The ctor starts the listener method *in the main Leo thread*.
+    
+    Two Queues communicate between the two thread:
+        
+    - self.qc contains commands from the main thread to this thread.
+    - self.qr contains requests from this thread to the main thread.
+    
+    This class overrides the Pdb.stdin ivar so that all input comes from
+    the main thread.
     '''
     def __init__(self):
         
-        self.qc = Queue() # Command queue.
-        self.qr = Queue() # Request queue.
+        self.qc = queue.Queue() # The command queue.
+        self.qr = queue.Queue() # The request queue.
+        #
+        # Start the listener, in the main Leo thread.
         self.timer = g.IdleTime(self.listener, delay=0)
         self.timer.start()
+        #
+        # Init the base classes.
         threading.Thread.__init__(self)
         pdb.Pdb.__init__(self,
             stdin=self.QueueStdin(qc=self.qc),
@@ -502,8 +519,8 @@ def xpdb(event):
     '''
     Start the external debugger on a toy test program.
     
-    1. Kill any previously running debugger.
-    2. Create the singleton debugger if necessary.
+    1. Kill the previously running Xpdb instance.
+    2. Create a new Xpdb instance.
     3. Run the debugger in a separate thread.
     '''
     ### Use a fixed path for testing.
