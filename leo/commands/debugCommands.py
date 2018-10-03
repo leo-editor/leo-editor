@@ -304,7 +304,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
             if stop:
                 self.select_line(self.saved_frame, self.saved_traceback)
     #@+node:ekr.20180701050839.6: *4* xpdb.do_clear (overides Pdb)
-    def do_clear(self, arg):
+    def do_clear(self, arg=None):
         """cl(ear) filename:lineno\ncl(ear) [bpnumber [bpnumber...]]
         With a space separated list of breakpoint numbers, clear
         those breakpoints.  Without argument, clear all breaks (but
@@ -314,17 +314,15 @@ class Xpdb(pdb.Pdb, threading.Thread):
         import bdb
         # Same as pdb.do_clear except uses self.stdin.readline (as it should).
         if not arg:
-            ### Old code. does not support i/o redirection.
-                # try:
-                    # reply = input('Clear all breaks? ')
-                # except EOFError:
-                    # reply = 'no'
-            reply = self.stdin.readline().strip().lower()
-            if reply in ('y', 'yes'):
-                bplist = [bp for bp in bdb.Breakpoint.bpbynumber if bp]
-                self.clear_all_breaks()
-                for bp in bplist:
-                    self.message('Deleted %s' % bp)
+            bplist = [bp for bp in bdb.Breakpoint.bpbynumber if bp]
+            if bplist:
+                print('Clear all breakpoints?')
+                reply = self.stdin.readline().strip().lower()
+                if reply in ('y', 'yes'):
+                    ### bplist = [bp for bp in bdb.Breakpoint.bpbynumber if bp]
+                    self.clear_all_breaks()
+                    for bp in bplist:
+                        self.message('Deleted %s' % bp)
             return
         if ':' in arg:
             # Make sure it works for "clear C:\foo\bar.py:12"
@@ -363,9 +361,10 @@ class Xpdb(pdb.Pdb, threading.Thread):
         """q(uit)\nexit
         Quit from the debugger. The program being executed is aborted.
         """
+        g.trace('=====', g.callers())
         self._user_requested_quit = True
         self.set_quit()
-        self.kill()
+        self.qr.put(['stop-timer'])
         return 1
 
     do_q = do_quit
@@ -385,19 +384,13 @@ class Xpdb(pdb.Pdb, threading.Thread):
         # Don't stop except at breakpoints or when finished
         self._set_stopinfo(self.botframe, None, -1)
         if not self.breaks:
-            # no breakpoints; run without debugger overhead
-            self.kill()
+            # no breakpoints; run without debugger overhead.
+            # Do *not call kill(): only db-kill and db-q do that.
             sys.settrace(None)
             frame = sys._getframe().f_back
             while frame and frame is not self.botframe:
                 del frame.f_trace
                 frame = frame.f_back
-    #@+node:ekr.20180701050839.9: *3* xpdb.kill
-    def kill(self):
-
-        self.qr.put(['stop-timer'])
-            # Stop the timer in the main thread.
-            # The listener clears g.app.xpdb.
     #@+node:ekr.20180701050839.3: *3* xpdb.listener
     def listener(self, timer):
         '''
@@ -467,7 +460,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
         fn should be a full path to a file.
         '''
         c = g.app.log.c
-        #
+        ###
         # It's not clear that this is correct in all cases.
         # Bdb.canonic caches file names and does os.path.abspath.
         target = g.os_path_finalize(fn).replace('\\','/')
@@ -480,9 +473,9 @@ class Xpdb(pdb.Pdb, threading.Thread):
                 if target == path:
                     # Select the line.
                     p, offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
-                    ### if ok: g.trace(line, g.shortFileName(fn))
                     if not ok:
-                        self.kill()
+                        g.trace('===== fail:', g.shortFileName(target))
+                        self.do_quit()
                     c.bodyWantsFocusNow()
                     return
         g.trace('NOT FOUND:', line, target)
@@ -510,6 +503,7 @@ def xpdb_breakpoint(event):
     '''Set the breakpoint at the presently select line in Leo.'''
     c = event.get('c')
     if not c:
+        g.trace('no c')
         return
     p = c.p
     xpdb = getattr(g.app, 'xpdb', None)
@@ -522,11 +516,13 @@ def xpdb_breakpoint(event):
     x = gotoCommands.GoToCommands(c)
     root, fileName = x.find_root(p)
     if not root:
+        g.trace('no root', p.h)
         ### To do.
         return
     path = g.fullPath(c, root)
     n0 = x.find_node_start(p=p)
     if n0 is None:
+        g.trace('no n0')
         return
     c.bodyWantsFocusNow()
     i = w.getInsertPoint()
@@ -561,9 +557,11 @@ def xpdb_s(event):
 def xpdb_input(event):
     '''Prompt the user for a pdb command and execute it.'''
     c = event.get('c')
+    if not c:
+        return g.trace('no c')
     xpdb = getattr(g.app, 'xpdb', None)
-    if not c or not xpdb:
-        return g.es_print('xpdb not active')
+    if not xpdb:
+        return g.trace('xpdb not active')
         
     def callback(args, c, event):
         xpdb = getattr(g.app, 'xpdb', None)
@@ -573,7 +571,7 @@ def xpdb_input(event):
                 command = xpdb.lastcmd
             xpdb.qc.put(command)
         else:
-            g.es_print('xpdb not active')
+            g.trace('xpdb not active')
 
     c.interactive(callback, event, prompts=['Debugger command: '])
 #@+node:ekr.20180701054344.1: *3* db-kill
@@ -582,7 +580,7 @@ def xpdb_kill(event):
     '''Terminate xpdb.'''
     xpdb = getattr(g.app, 'xpdb', None)
     if xpdb:
-        xpdb.kill()
+        xpdb.do_quit()
     else:
         g.trace('xpdb not active')
 #@+node:ekr.20181003015636.1: *3* db-status
@@ -594,13 +592,7 @@ def xpdb_status(event):
 #@+node:ekr.20180701050839.1: *3* xpdb
 @g.command('xpdb')
 def xpdb(event):
-    '''
-    Start the external debugger on a toy test program.
-    
-    1. Kill the previously running Xpdb instance.
-    2. Create a new Xpdb instance.
-    3. Run the debugger in a separate thread.
-    '''
+    '''Start the external debugger on a toy test program.'''
     ### Use a fixed path for testing.
     path = 'c:/test/testXPDB.py'
     os.chdir('c:/test')
@@ -610,19 +602,17 @@ def xpdb(event):
     # Kill the previous debugger.
     xpdb = getattr(g.app, 'xpdb', None)
     if xpdb:
-        g.es('quitting previous debugger.')
-        xpdb.do_quit()
-    #
-    # Start the thread.
-    g.app.xpdb = xpdb = Xpdb()
-    #
-    # Start or restart the debugger in a separate thread.
-    xpdb.path = path
-    xpdb.start()
-        # This is Threading.start().
-        # It runs the debugger in a separate thread.
-        # It also selects the start of the file.
-
-    
+        g.trace('restarting')
+        # Clear all breakpoints.
+        # Only the db-kill command kills the debugger.
+        xpdb.do_clear()
+    else:
+        # Start the debugger in a separate thread.
+        g.app.xpdb = xpdb = Xpdb()
+        xpdb.path = path
+        xpdb.start()
+            # This is Threading.start().
+            # It runs the debugger in a separate thread.
+            # It also selects the start of the file.
 #@-others
 #@-leo
