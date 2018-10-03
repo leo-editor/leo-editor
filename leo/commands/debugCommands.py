@@ -511,22 +511,29 @@ def xpdb_breakpoint(event):
     c = event.get('c')
     if not c:
         return
-    w = c.frame.body.wrapper
-    if not w:
-        return
+    p = c.p
     xpdb = getattr(g.app, 'xpdb', None)
     if not xpdb:
         g.trace('xpdb not active')
         return
-    n0 = gotoCommands.GoToCommands(c).find_node_start(p=c.p)
+    w = c.frame.body.wrapper
+    if not w:
+        return
+    x = gotoCommands.GoToCommands(c)
+    root, fileName = x.find_root(p)
+    if not root:
+        ### To do.
+        return
+    path = g.fullPath(c, root)
+    n0 = x.find_node_start(p=p)
     if n0 is None:
         return
     i = w.getInsertPoint()
     s = w.getAllText()
     row, col = g.convertPythonIndexToRowCol(s, i)
-    n = 1+n0+row
-    g.trace(n)
-    xpdb.qc.put('b %s' % n)
+    n = x.node_offset_to_file_line(row, p, root)
+    if n is not None:
+        xpdb.qc.put('b %s:%s' % (path, n+1))
 #@+node:ekr.20180702074705.1: *3* db-c/l/n/s
 @g.command('db-c')
 def xpdb_c(event):
@@ -613,6 +620,8 @@ def xpdb(event):
     xpdb.start()
         # This is Threading.start().
         # It runs the debugger in a separate thread.
+        # It also selects the start of the file.
+
     
 #@-others
 #@-leo
