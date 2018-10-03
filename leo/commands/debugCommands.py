@@ -530,23 +530,28 @@ def xpdb_breakpoint(event):
 #@+node:ekr.20180702074705.1: *3* db-c/l/n/s
 @g.command('db-c')
 def xpdb_c(event):
+    '''execute the pdb 'continue' command.'''
     db_command(event, 'c')
     
 @g.command('db-l')
 def xpdb_l(event):
+    '''execute the pdb 'list' command.'''
     db_command(event, 'l')
     
 @g.command('db-n')
 def xpdb_n(event):
+    '''execute the pdb 'next' command.'''
     db_command(event, 'n')
     
 @g.command('db-s')
 def xpdb_s(event):
+    '''execute the pdb 'step' command.'''
     db_command(event, 's')
     
 #@+node:ekr.20180701050839.2: *3* db-input
 @g.command('db-input')
 def xpdb_input(event):
+    '''Prompt the user for a pdb command and execute it.'''
     c = event.get('c')
     xpdb = getattr(g.app, 'xpdb', None)
     if not c or not xpdb:
@@ -566,6 +571,7 @@ def xpdb_input(event):
 #@+node:ekr.20180701054344.1: *3* db-kill
 @g.command('db-kill')
 def xpdb_kill(event):
+    '''Terminate xpdb.'''
     xpdb = getattr(g.app, 'xpdb', None)
     if xpdb:
         xpdb.kill()
@@ -574,6 +580,7 @@ def xpdb_kill(event):
 #@+node:ekr.20181003015636.1: *3* db-status
 @g.command('db-status')
 def xpdb_status(event):
+    '''Print whether xpdb is active.'''
     xpdb = getattr(g.app, 'xpdb', None)
     print('active' if xpdb else 'inactive')
 #@+node:ekr.20180701050839.1: *3* xpdb
