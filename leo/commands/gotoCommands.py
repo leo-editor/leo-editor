@@ -95,47 +95,30 @@ class GoToCommands(object):
         '''
         delim1, delim2 = self.get_delims(root)
         file_s = self.get_external_file_with_sentinels(root)
-        gnx, target_gnx = None, target_p.gnx
-        n, node_offset = -1, None
+        gnx, h, n, node_offset, target_gnx = None, None, -1, None, target_p.gnx
         stack = []
         for s in g.splitLines(file_s):
             n += 1 # All lines contribute to the file's line count.
-            ### g.trace('%4s %4r %r %s' % (n, node_offset, gnx, s.rstrip()))
+            # g.trace('%4s %4r %40r %s' % (n, node_offset, h, s.rstrip()))
             if self.is_sentinel(delim1, delim2, s):
                 s2 = s.strip()[len(delim1):]
+                # Common code for the visible sentinels.
+                if s2.startswith(('@+others', '@+<<', '@@'),):
+                    if target_offset == node_offset and gnx == target_gnx:
+                        return n
+                    if node_offset is not None:
+                        node_offset += 1
+                # These sentinels change nodes.
                 if s2.startswith('@+node'):
-                    # Invisible.
                     gnx, h = self.get_script_node_info(s, delim2)
                     node_offset = 0
                 elif s2.startswith('@-node'):
-                    # Invisible.
                     gnx = node_offset = None
-                elif (
-                    s2.startswith('@+others') or
-                    s2.startswith('@+<<')
-                ):
-                    # Visible.
-                    if target_offset == node_offset and gnx == target_gnx:
-                        return n
-                    if node_offset is not None:
-                        node_offset += 1
-                    stack.append([gnx, node_offset])
+                elif s2.startswith(('@+others', '@+<<'),):
+                    stack.append([gnx, h, node_offset])
                     gnx, node_offset = None, None
-                elif (
-                    s2.startswith('@-others') or
-                    s2.startswith('@-<<')
-                ):
-                    # Invisible.
-                    gnx, node_offset = stack.pop()
-                elif s2.startswith('@@'):
-                    # Visible.
-                    if target_offset == node_offset and gnx == target_gnx:
-                        return n
-                    if node_offset is not None:
-                        node_offset += 1
-                else:
-                    # All other sentinels are invisible.
-                    pass
+                elif s2.startswith(('@-others', '@-<<'),):
+                    gnx, h, node_offset = stack.pop()
             else:
                 # All non-sentinel lines are visible.
                 if target_offset == node_offset and gnx == target_gnx:

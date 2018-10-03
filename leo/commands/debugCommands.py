@@ -528,6 +528,7 @@ def xpdb_breakpoint(event):
     n0 = x.find_node_start(p=p)
     if n0 is None:
         return
+    c.bodyWantsFocusNow()
     i = w.getInsertPoint()
     s = w.getAllText()
     row, col = g.convertPythonIndexToRowCol(s, i)
