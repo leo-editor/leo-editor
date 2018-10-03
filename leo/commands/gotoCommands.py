@@ -128,12 +128,13 @@ class GoToCommands(object):
                     # Invisible.
                     gnx, node_offset = stack.pop()
                 elif s2.startswith('@@'):
+                    # Visible.
                     if target_offset == node_offset and gnx == target_gnx:
                         return n
                     if node_offset is not None:
                         node_offset += 1
                 else:
-                    # Invisible.
+                    # All other sentinels are invisible.
                     pass
             else:
                 # All non-sentinel lines are visible.
