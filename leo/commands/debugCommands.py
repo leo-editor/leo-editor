@@ -240,6 +240,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
         pdb.Pdb.__init__(self,
             stdin=self.QueueStdin(qc=self.qc),
                 # Get input from Leo's main thread.
+            ### stdout=self.QueueStdout(qr=self.qr),
             readrc=False,
             # Don't read a .rc file.
         )
@@ -263,6 +264,20 @@ class Xpdb(pdb.Pdb, threading.Thread):
             s = self.qc.get() # blocks
             print(s) # Correct.
             return s
+    #@+node:ekr.20181003020344.1: *3* class QueueStdout (obj)
+    class QueueStdout(object):
+        '''
+        A replacement for Python's stdout class containing only write().
+        '''
+        def __init__(self, qr):
+            self.qr = qr
+            
+        def flush(self):
+            pass
+
+        def write(self, s):
+            '''Write s to the qr channel'''
+            self.qr.put(['put-es', s])
     #@+node:ekr.20181002053718.1: *3* Overrides
     #@+node:ekr.20181002061627.1: *4* xpdb.cmdloop (overrides Cmd)
     def cmdloop(self, intro=None):
@@ -378,7 +393,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
                 frame = frame.f_back
     #@+node:ekr.20180701050839.9: *3* xpdb.kill
     def kill(self):
-        
+
         g.trace('===== END DEBUGGER =====')
         self.qr.put(['stop-timer'])
             # Stop the timer in the main thread.
@@ -392,7 +407,10 @@ class Xpdb(pdb.Pdb, threading.Thread):
         while not self.qr.empty():
             aList = self.qr.get() # blocks
             kind = aList[0]
-            if kind == 'stop-timer':
+            if kind == 'put-es':
+                message = aList[1].rstrip()
+                g.es(message)
+            elif kind == 'stop-timer':
                 g.trace('STOP TIMER')
                 self.timer.stop()
                 g.app.xpdb = None
@@ -477,24 +495,15 @@ def db_command(event, command):
         xpdb.qc.put(command)
     else:
         g.trace('xpdb not active')
-#@+node:ekr.20180702074705.1: *3* command: db-* commands
-@g.command('db-c')
-def xpdb_c(event):
-    db_command(event, 'c')
-    
-@g.command('db-l')
-def xpdb_l(event):
-    db_command(event, 'l')
-    
-@g.command('db-n')
-def xpdb_n(event):
-    db_command(event, 'n')
-    
-@g.command('db-s')
-def xpdb_s(event):
-    db_command(event, 's')
-    
-#@+node:ekr.20180701050839.2: *3* command: 'db-input'
+#@+node:ekr.20181003015017.1: *3* command: db-again
+@g.command('db-again')
+def xpdb_again(event):
+    xpdb = getattr(g.app, 'xpdb', None)
+    if xpdb:
+        xpdb.qc.put(xpdb.lastcmd)
+    else:
+        g.trace('xpdb not active')
+#@+node:ekr.20180701050839.2: *3* command: db-input
 @g.command('db-input')
 def xpdb_input(event):
     c = event.get('c')
@@ -513,7 +522,20 @@ def xpdb_input(event):
             g.es_print('xpdb not active')
 
     c.interactive(callback, event, prompts=['Debugger command: '])
-#@+node:ekr.20180701050839.1: *3* command: 'xpdb'
+#@+node:ekr.20180701054344.1: *3* command: db-kill
+@g.command('db-kill')
+def xpdb_kill(event):
+    xpdb = getattr(g.app, 'xpdb', None)
+    if xpdb:
+        xpdb.kill()
+    else:
+        g.trace('xpdb not active')
+#@+node:ekr.20181003015636.1: *3* command: db-status
+@g.command('db-status')
+def xpdb_status(event):
+    xpdb = getattr(g.app, 'xpdb', None)
+    print('active' if xpdb else 'inactive')
+#@+node:ekr.20180701050839.1: *3* command: xpdb
 @g.command('xpdb')
 def xpdb(event):
     '''
@@ -539,19 +561,27 @@ def xpdb(event):
     g.app.xpdb = xpdb = Xpdb()
     #
     # Start or restart the debugger in a separate thread.
-    xpdb.active = True
     xpdb.path = path
     xpdb.start()
         # This is Threading.start().
         # It runs the debugger in a separate thread.
     
-#@+node:ekr.20180701054344.1: *3* command: 'xpdb-kill'
-@g.command('xpdb-kill')
-def xpdb_kill(event):
-    xpdb = getattr(g.app, 'xpdb', None)
-    if xpdb:
-        xpdb.kill()
-    else:
-        g.trace('xpdb not active')
+#@+node:ekr.20180702074705.1: *3* command: db-*
+@g.command('db-c')
+def xpdb_c(event):
+    db_command(event, 'c')
+    
+@g.command('db-l')
+def xpdb_l(event):
+    db_command(event, 'l')
+    
+@g.command('db-n')
+def xpdb_n(event):
+    db_command(event, 'n')
+    
+@g.command('db-s')
+def xpdb_s(event):
+    db_command(event, 's')
+    
 #@-others
 #@-leo
