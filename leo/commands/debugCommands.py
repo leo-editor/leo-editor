@@ -227,7 +227,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
     This class overrides the Pdb.stdin ivar so that all input comes from
     the main thread.
     '''
-    def __init__(self):
+    def __init__(self, path=None):
         
         self.qc = queue.Queue() # The command queue.
         self.qr = queue.Queue() # The request queue.
@@ -246,7 +246,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
             # Don't read a .rc file.
         )
         self.daemon = True
-        self.path = None
+        self.path = path
         self.prompt = '(xpdb) '
         self.saved_frame = None
         self.saved_traceback = None
@@ -357,11 +357,11 @@ class Xpdb(pdb.Pdb, threading.Thread):
     # complete_clear = self._complete_location
     # complete_cl = self._complete_location
     #@+node:ekr.20180701050839.7: *4* xpdb.do_quit (overrides Pdb)
-    def do_quit(self, arg=None):
+    def do_quit(self, arg=None, message=None):
         """q(uit)\nexit
         Quit from the debugger. The program being executed is aborted.
         """
-        g.trace('=====', g.callers())
+        print('Quitting xpdb')
         self._user_requested_quit = True
         self.set_quit()
         self.qr.put(['stop-timer'])
@@ -404,7 +404,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
                 message = aList[1].rstrip()
                 g.es(message)
             elif kind == 'stop-timer':
-                g.trace('===== End Debugger =====')
+                # g.trace('===== End Debugger =====')
                 self.timer.stop()
                 g.app.xpdb = None
             elif kind == 'select-line':
@@ -414,7 +414,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
                 g.es('unknown qr message:', aList)
     #@+node:ekr.20181002094126.1: *3* xpdb.run
     def run(self):
-        '''Start the thread.'''
+        '''The thread's run method: called via start.'''
         # pylint: disable=arguments-differ
         from leo.core.leoQt import QtCore
         QtCore.pyqtRemoveInputHook() # From g.pdb
@@ -438,8 +438,8 @@ class Xpdb(pdb.Pdb, threading.Thread):
             self.quitting = False
             exec(code, {}, {})
         except bdb.BdbQuit:
-            g.trace('BdbQuit')
-            self.do_quit()
+            if not self.quitting:
+                self.do_quit()
         finally:
             self.quitting = True
             sys.settrace(None)
@@ -531,7 +531,7 @@ def xpdb_breakpoint(event):
     n = x.node_offset_to_file_line(row, p, root)
     if n is not None:
         xpdb.qc.put('b %s:%s' % (path, n+1))
-#@+node:ekr.20180702074705.1: *3* db-c/l/n/s
+#@+node:ekr.20180702074705.1: *3* db-c/l/n/q/r/s
 @g.command('db-c')
 def xpdb_c(event):
     '''execute the pdb 'continue' command.'''
@@ -546,6 +546,16 @@ def xpdb_l(event):
 def xpdb_n(event):
     '''execute the pdb 'next' command.'''
     db_command(event, 'n')
+    
+@g.command('db-q')
+def xpdb_q(event):
+    '''execute the pdb 'quit' command.'''
+    db_command(event, 'q')
+    
+@g.command('db-r')
+def xpdb_r(event):
+    '''execute the pdb 'return' command.'''
+    db_command(event, 'r')
     
 @g.command('db-s')
 def xpdb_s(event):
@@ -598,18 +608,14 @@ def xpdb(event):
     os.chdir('c:/test')
     if not g.os_path_exists(path):
         return g.trace('not found', path)
-    #
-    # Kill the previous debugger.
     xpdb = getattr(g.app, 'xpdb', None)
     if xpdb:
-        g.trace('restarting')
-        # Clear all breakpoints.
-        # Only the db-kill command kills the debugger.
-        xpdb.do_clear()
+        # Kill the previous debugger.
+        # Don't restart until the listener has finished.
+        xpdb.do_quit()
     else:
         # Start the debugger in a separate thread.
-        g.app.xpdb = xpdb = Xpdb()
-        xpdb.path = path
+        g.app.xpdb = xpdb = Xpdb(path)
         xpdb.start()
             # This is Threading.start().
             # It runs the debugger in a separate thread.
