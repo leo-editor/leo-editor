@@ -7,6 +7,7 @@
 #@+node:ekr.20150514050138.1: ** << imports >> (debugCommands.py)
 import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+import leo.commands.gotoCommands as gotoCommands
 # from leo.core.leoGui import LeoKeyEvent
 import bdb
 import queue
@@ -459,7 +460,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
             # Might not work for python 2.
         self.qr.put(['select-line', lineno, filename])
             # Select the line in the main thread.
-    #@+node:ekr.20180701061957.1: *3* xpdb.show_line
+    #@+node:ekr.20180701061957.1: *3* xpdb.show_line (To do: external files)
     def show_line(self, line, fn):
         '''
         Put the cursor on the requested line of the given file.
@@ -497,12 +498,53 @@ def db_command(event, command):
 #@+node:ekr.20181003015017.1: *3* command: db-again
 @g.command('db-again')
 def xpdb_again(event):
+    '''Repeat the previous xpdb command.'''
     xpdb = getattr(g.app, 'xpdb', None)
     if xpdb:
         xpdb.qc.put(xpdb.lastcmd)
     else:
         g.trace('xpdb not active')
-#@+node:ekr.20180701050839.2: *3* command: db-input
+#@+node:ekr.20181003054157.1: *3* db-b
+@g.command('db-b')
+def xpdb_breakpoint(event):
+    '''Set the breakpoint at the presently select line in Leo.'''
+    c = event.get('c')
+    if not c:
+        return
+    w = c.frame.body.wrapper
+    if not w:
+        return
+    xpdb = getattr(g.app, 'xpdb', None)
+    if not xpdb:
+        g.trace('xpdb not active')
+        return
+    n0 = gotoCommands.GoToCommands(c).find_node_start(p=c.p)
+    if n0 is None:
+        return
+    i = w.getInsertPoint()
+    s = w.getAllText()
+    row, col = g.convertPythonIndexToRowCol(s, i)
+    n = 1+n0+row
+    g.trace(n)
+    xpdb.qc.put('b %s' % n)
+#@+node:ekr.20180702074705.1: *3* db-c/l/n/s
+@g.command('db-c')
+def xpdb_c(event):
+    db_command(event, 'c')
+    
+@g.command('db-l')
+def xpdb_l(event):
+    db_command(event, 'l')
+    
+@g.command('db-n')
+def xpdb_n(event):
+    db_command(event, 'n')
+    
+@g.command('db-s')
+def xpdb_s(event):
+    db_command(event, 's')
+    
+#@+node:ekr.20180701050839.2: *3* db-input
 @g.command('db-input')
 def xpdb_input(event):
     c = event.get('c')
@@ -521,7 +563,7 @@ def xpdb_input(event):
             g.es_print('xpdb not active')
 
     c.interactive(callback, event, prompts=['Debugger command: '])
-#@+node:ekr.20180701054344.1: *3* command: db-kill
+#@+node:ekr.20180701054344.1: *3* db-kill
 @g.command('db-kill')
 def xpdb_kill(event):
     xpdb = getattr(g.app, 'xpdb', None)
@@ -529,12 +571,12 @@ def xpdb_kill(event):
         xpdb.kill()
     else:
         g.trace('xpdb not active')
-#@+node:ekr.20181003015636.1: *3* command: db-status
+#@+node:ekr.20181003015636.1: *3* db-status
 @g.command('db-status')
 def xpdb_status(event):
     xpdb = getattr(g.app, 'xpdb', None)
     print('active' if xpdb else 'inactive')
-#@+node:ekr.20180701050839.1: *3* command: xpdb
+#@+node:ekr.20180701050839.1: *3* xpdb
 @g.command('xpdb')
 def xpdb(event):
     '''
@@ -564,23 +606,6 @@ def xpdb(event):
     xpdb.start()
         # This is Threading.start().
         # It runs the debugger in a separate thread.
-    
-#@+node:ekr.20180702074705.1: *3* command: db-*
-@g.command('db-c')
-def xpdb_c(event):
-    db_command(event, 'c')
-    
-@g.command('db-l')
-def xpdb_l(event):
-    db_command(event, 'l')
-    
-@g.command('db-n')
-def xpdb_n(event):
-    db_command(event, 'n')
-    
-@g.command('db-s')
-def xpdb_s(event):
-    db_command(event, 's')
     
 #@-others
 #@-leo
