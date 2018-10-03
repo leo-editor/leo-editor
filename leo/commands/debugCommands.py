@@ -226,7 +226,6 @@ class Xpdb(pdb.Pdb, threading.Thread):
             readrc=False,
             # Don't read a .rc file.
         )
-        self.active = True
         self.daemon = True
         self.path = None
         self.prompt = '(xpdb) '
@@ -363,13 +362,10 @@ class Xpdb(pdb.Pdb, threading.Thread):
     #@+node:ekr.20180701050839.9: *3* xpdb.kill
     def kill(self):
         
-        if not self.active:
-            return
-        self.active = False
-        self.path = None
         g.trace('===== END DEBUGGER =====')
         self.qr.put(['stop-timer'])
             # Stop the timer in the main thread.
+            # The listener clears g.app.xpdb.
     #@+node:ekr.20180701050839.3: *3* xpdb.listener
     def listener(self, timer):
         '''
@@ -382,6 +378,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
             if kind == 'stop-timer':
                 g.trace('STOP TIMER')
                 self.timer.stop()
+                g.app.xpdb = None
             elif kind == 'select-line':
                 line, fn = aList[1], aList[2]
                 self.show_line(line, fn)
@@ -457,11 +454,9 @@ class Xpdb(pdb.Pdb, threading.Thread):
     #@-others
 #@+node:ekr.20181001054314.1: ** top-level xpdb commands
 def db_command(event, command):
-    c = event.get('c')
-    if not c:
-        return
+
     xpdb = getattr(g.app, 'xpdb', None)
-    if xpdb and xpdb.active:
+    if xpdb:
         xpdb.qc.put(command)
     else:
         g.trace('xpdb not active')
