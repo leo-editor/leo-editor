@@ -1831,33 +1831,37 @@ Remove broken releases (still can't re-use identical version numbers and file na
 https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 </t>
 <t tx="matt.20181004031246.1">@language md
-Initiating issue: https://github.com/leo-editor/leo-editor/issues/672
 
-Dashboard: https://travis-ci.org/leo-editor/leo-editor
+_Initiating issue: https://github.com/leo-editor/leo-editor/issues/672_
 
-Everything is controlled by `.travis.yml`.
+Everything is controlled by `.travis.yml`. With this file present every commit
+triggers a travis build and test. Build status and history can be viewed at
+https://travis-ci.org/leo-editor/leo-editor
+
+As currently configured if the commit is a tag AND the branch is `master` travis
+will also attempt to deploy a release automatically to PyPi.org.
+- Deploying to PyPi, https://docs.travis-ci.com/user/deployment/pypi/
+
+The `travis_tests` folder is optional at this point, there are no real tests in
+it. It can be removed, or moved elsewhere. It's there for illustration. Over
+time the testing portion will become more and more important.
 
 Command line client: https://github.com/travis-ci/travis.rb
-Not essential, but useful.
-
-
-Deploying to PyPi: 
-https://docs.travis-ci.com/user/deployment/pypi/
-
-Note: using `travis` command line client in a way that updates yml file will delete any comments within it. (e.g. `travis encrypt ...`)
+Not essential, but useful. Note: using `travis` command line client in a way
+that updates yml file will delete any comments within it. (e.g. `travis encrypt
+...`)
 
 
 #Troubleshooting
-## Pushed a commit but nothing is happening in the dashboard?
 
+**Pushed a commit but nothing is happening in the dashboard?**
 Check the _requests_ log: https://travis-ci.org/leo-editor/leo-editor/requests
 The link is hidden under [more options] at right.
 
-### "Could not parse .travis.yml" requests error
+**"Could not parse .travis.yml" requests error**
 Debug with `travis lint` local client.
 
-
-## Clarification on using `travis encrypt` for passwords
+**Clarification on using `travis encrypt` for passwords**
 https://github.com/travis-ci/travis-ci/issues/10051
 
 </t>
