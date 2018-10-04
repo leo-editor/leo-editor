@@ -241,7 +241,7 @@ class Xdb(pdb.Pdb, threading.Thread):
         pdb.Pdb.__init__(self,
             stdin=self.QueueStdin(qc=self.qc),
                 # Get input from Leo's main thread.
-            ### stdout=self.QueueStdout(qr=self.qr),
+            stdout=self.QueueStdout(qr=self.qr),
             readrc=False,
             # Don't read a .rc file.
         )
@@ -278,7 +278,7 @@ class Xdb(pdb.Pdb, threading.Thread):
 
         def write(self, s):
             '''Write s to the qr channel'''
-            self.qr.put(['put-es', s])
+            self.qr.put(['put-stdout', s])
     #@+node:ekr.20181002053718.1: *3* Overrides
     #@+node:ekr.20181002061627.1: *4* xdb.cmdloop (overrides Cmd)
     def cmdloop(self, intro=None):
@@ -399,11 +399,13 @@ class Xdb(pdb.Pdb, threading.Thread):
         while not self.qr.empty():
             aList = self.qr.get() # blocks
             kind = aList[0]
-            if kind == 'put-es':
-                message = aList[1].rstrip()
-                g.es(message)
+            if kind == 'put-stdout':
+                message = aList[1] # .rstrip()
+                # g.es(message)
+                # print(message)
+                sys.stdout.write(message)
+                sys.stdout.flush()
             elif kind == 'stop-timer':
-                # g.trace('===== End Debugger =====')
                 self.timer.stop()
                 g.app.xdb = None
             elif kind == 'select-line':
@@ -489,7 +491,7 @@ def db_command(event, command):
         g.trace('xdb not active')
 #@+node:ekr.20181003015017.1: *3* command: db-again
 @g.command('db-again')
-def xpdb_again(event):
+def xdb_again(event):
     '''Repeat the previous xdb command.'''
     xdb = getattr(g.app, 'xdb', None)
     if xdb:
@@ -498,7 +500,7 @@ def xpdb_again(event):
         g.trace('xdb not active')
 #@+node:ekr.20181003054157.1: *3* db-b (to do: external files)
 @g.command('db-b')
-def xpdb_breakpoint(event):
+def xdb_breakpoint(event):
     '''Set the breakpoint at the presently select line in Leo.'''
     c = event.get('c')
     if not c:
@@ -530,40 +532,45 @@ def xpdb_breakpoint(event):
     n = x.node_offset_to_file_line(row, p, root)
     if n is not None:
         xdb.qc.put('b %s:%s' % (path, n+1))
-#@+node:ekr.20180702074705.1: *3* db-c/l/n/q/r/s
+#@+node:ekr.20180702074705.1: *3* db-c/h/l/n/q/r/s
 @g.command('db-c')
-def xpdb_c(event):
+def xdb_c(event):
     '''execute the pdb 'continue' command.'''
     db_command(event, 'c')
     
+@g.command('db-h')
+def xdb_h(event):
+    '''execute the pdb 'continue' command.'''
+    db_command(event, 'h')
+    
 @g.command('db-l')
-def xpdb_l(event):
+def xdb_l(event):
     '''execute the pdb 'list' command.'''
     db_command(event, 'l')
     
 @g.command('db-n')
-def xpdb_n(event):
+def xdb_n(event):
     '''execute the pdb 'next' command.'''
     db_command(event, 'n')
     
 @g.command('db-q')
-def xpdb_q(event):
+def xdb_q(event):
     '''execute the pdb 'quit' command.'''
     db_command(event, 'q')
     
 @g.command('db-r')
-def xpdb_r(event):
+def xdb_r(event):
     '''execute the pdb 'return' command.'''
     db_command(event, 'r')
     
 @g.command('db-s')
-def xpdb_s(event):
+def xdb_s(event):
     '''execute the pdb 'step' command.'''
     db_command(event, 's')
     
 #@+node:ekr.20180701050839.2: *3* db-input
 @g.command('db-input')
-def xpdb_input(event):
+def xdb_input(event):
     '''Prompt the user for a pdb command and execute it.'''
     c = event.get('c')
     if not c:
@@ -585,7 +592,7 @@ def xpdb_input(event):
     c.interactive(callback, event, prompts=['Debugger command: '])
 #@+node:ekr.20180701054344.1: *3* db-kill
 @g.command('db-kill')
-def xpdb_kill(event):
+def xdb_kill(event):
     '''Terminate xdb.'''
     xdb = getattr(g.app, 'xdb', None)
     if xdb:
@@ -594,7 +601,7 @@ def xpdb_kill(event):
         g.trace('xdb not active')
 #@+node:ekr.20181003015636.1: *3* db-status
 @g.command('db-status')
-def xpdb_status(event):
+def xdb_status(event):
     '''Print whether xdb is active.'''
     xdb = getattr(g.app, 'xdb', None)
     print('active' if xdb else 'inactive')
