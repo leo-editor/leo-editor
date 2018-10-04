@@ -127,3 +127,4 @@ annotate.txt
 leo/core/leoProjects.txt
 leo/plugins/spellpyx.txt
 
+.eggs/*
