@@ -488,15 +488,15 @@ class Xdb(pdb.Pdb, threading.Thread):
                 path = g.fullPath(c, p).replace('\\','/')
                 if target == path:
                     # Select the line.
-                    p, offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
+                    junk_p, junk_offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
                     if not ok:
-                        g.trace('FAIL:', g.shortFileName(target))
+                        g.trace('FAIL:', target)
                     c.bodyWantsFocusNow()
                     return
         p = self.make_at_auto_node(line, target)
         junk_p, junk_offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
         if not ok:
-            g.trace('FAIL:', g.shortFileName(target))
+            g.trace('FAIL:', target)
     #@-others
 #@+node:ekr.20181001054314.1: ** top-level xdb commands
 def db_command(event, command):
