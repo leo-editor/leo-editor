@@ -209,12 +209,12 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Tests are run in an external process, so tests *cannot* change the outline.'''
         self.c.testManager.runTestsExternally(all=False, marked=False)
     #@-others
-#@+node:ekr.20180701050839.5: ** class Xpdb (pdb.Pdb, threading.Thread)
-class Xpdb(pdb.Pdb, threading.Thread):
+#@+node:ekr.20180701050839.5: ** class Xdb (pdb.Pdb, threading.Thread)
+class Xdb(pdb.Pdb, threading.Thread):
     '''
     An external debugger that runs without haning Leo.
     
-    The xpdb command calls this class's start method, thereby running each
+    The xdb command calls this class's start method, thereby running each
     instance in a separate thread.
     
     The ctor starts the listener method *in the main Leo thread*.
@@ -247,7 +247,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
         )
         self.daemon = True
         self.path = path
-        self.prompt = '(xpdb) '
+        self.prompt = '(xdb) '
         self.saved_frame = None
         self.saved_traceback = None
 
@@ -280,7 +280,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
             '''Write s to the qr channel'''
             self.qr.put(['put-es', s])
     #@+node:ekr.20181002053718.1: *3* Overrides
-    #@+node:ekr.20181002061627.1: *4* xpdb.cmdloop (overrides Cmd)
+    #@+node:ekr.20181002061627.1: *4* xdb.cmdloop (overrides Cmd)
     def cmdloop(self, intro=None):
         '''Override Cmd.cmdloop.'''
         assert not intro, repr(intro)
@@ -303,7 +303,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
             # Show the line in Leo.
             if stop:
                 self.select_line(self.saved_frame, self.saved_traceback)
-    #@+node:ekr.20180701050839.6: *4* xpdb.do_clear (overides Pdb)
+    #@+node:ekr.20180701050839.6: *4* xdb.do_clear (overides Pdb)
     def do_clear(self, arg=None):
         """cl(ear) filename:lineno\ncl(ear) [bpnumber [bpnumber...]]
         With a space separated list of breakpoint numbers, clear
@@ -356,12 +356,11 @@ class Xpdb(pdb.Pdb, threading.Thread):
 
     # complete_clear = self._complete_location
     # complete_cl = self._complete_location
-    #@+node:ekr.20180701050839.7: *4* xpdb.do_quit (overrides Pdb)
-    def do_quit(self, arg=None, message=None):
+    #@+node:ekr.20180701050839.7: *4* xdb.do_quit (overrides Pdb)
+    def do_quit(self, arg=None):
         """q(uit)\nexit
         Quit from the debugger. The program being executed is aborted.
         """
-        print('Quitting xpdb')
         self._user_requested_quit = True
         self.set_quit()
         self.qr.put(['stop-timer'])
@@ -369,7 +368,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
 
     do_q = do_quit
     do_exit = do_quit
-    #@+node:ekr.20180701050839.8: *4* xpdb.interaction (overrides Pdb)
+    #@+node:ekr.20180701050839.8: *4* xdb.interaction (overrides Pdb)
     def interaction(self, frame, traceback):
         '''Override.'''
         self.saved_frame = frame
@@ -377,7 +376,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
         self.select_line(frame, traceback)
         pdb.Pdb.interaction(self, frame, traceback)
             # Call the base class method.
-    #@+node:ekr.20180701050839.10: *4* xpdb.set_continue (overrides Bdb)
+    #@+node:ekr.20180701050839.10: *4* xdb.set_continue (overrides Bdb)
     def set_continue(self):
         ''' override Bdb.set_continue'''
         import sys
@@ -391,11 +390,11 @@ class Xpdb(pdb.Pdb, threading.Thread):
             while frame and frame is not self.botframe:
                 del frame.f_trace
                 frame = frame.f_back
-    #@+node:ekr.20180701050839.3: *3* xpdb.listener
+    #@+node:ekr.20180701050839.3: *3* xdb.listener
     def listener(self, timer):
         '''
         Listen, at idle-time, in Leo's main thread, for data on the qr channel.
-        This is set up by the xpdb command.
+        This is set up by the xdb command.
         '''
         while not self.qr.empty():
             aList = self.qr.get() # blocks
@@ -406,13 +405,13 @@ class Xpdb(pdb.Pdb, threading.Thread):
             elif kind == 'stop-timer':
                 # g.trace('===== End Debugger =====')
                 self.timer.stop()
-                g.app.xpdb = None
+                g.app.xdb = None
             elif kind == 'select-line':
                 line, fn = aList[1], aList[2]
                 self.show_line(line, fn)
             else:
                 g.es('unknown qr message:', aList)
-    #@+node:ekr.20181002094126.1: *3* xpdb.run
+    #@+node:ekr.20181002094126.1: *3* xdb.run
     def run(self):
         '''The thread's run method: called via start.'''
         # pylint: disable=arguments-differ
@@ -422,7 +421,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
             self.run_path(self.path)
         else:
             self.set_trace()
-    #@+node:ekr.20180701090439.1: *3* xpdb.run_path
+    #@+node:ekr.20180701090439.1: *3* xdb.run_path
     def run_path(self, path):
         '''Begin execution of the python file.'''
         source = g.readFileIntoUnicodeString(path)
@@ -443,7 +442,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
         finally:
             self.quitting = True
             sys.settrace(None)
-    #@+node:ekr.20180701151233.1: *3* xpdb.select_line
+    #@+node:ekr.20180701151233.1: *3* xdb.select_line
     def select_line(self, frame, traceback):
         '''Select the given line in Leo.'''
         stack, curindex = self.get_stack(frame, traceback)
@@ -453,7 +452,7 @@ class Xpdb(pdb.Pdb, threading.Thread):
             # Might not work for python 2.
         self.qr.put(['select-line', lineno, filename])
             # Select the line in the main thread.
-    #@+node:ekr.20180701061957.1: *3* xpdb.show_line (To do: external files)
+    #@+node:ekr.20180701061957.1: *3* xdb.show_line (To do: external files)
     def show_line(self, line, fn):
         '''
         Put the cursor on the requested line of the given file.
@@ -480,24 +479,24 @@ class Xpdb(pdb.Pdb, threading.Thread):
                     return
         g.trace('NOT FOUND:', line, target)
     #@-others
-#@+node:ekr.20181001054314.1: ** top-level xpdb commands
+#@+node:ekr.20181001054314.1: ** top-level xdb commands
 def db_command(event, command):
 
-    xpdb = getattr(g.app, 'xpdb', None)
-    if xpdb:
-        xpdb.qc.put(command)
+    xdb = getattr(g.app, 'xdb', None)
+    if xdb:
+        xdb.qc.put(command)
     else:
-        g.trace('xpdb not active')
+        g.trace('xdb not active')
 #@+node:ekr.20181003015017.1: *3* command: db-again
 @g.command('db-again')
 def xpdb_again(event):
-    '''Repeat the previous xpdb command.'''
-    xpdb = getattr(g.app, 'xpdb', None)
-    if xpdb:
-        xpdb.qc.put(xpdb.lastcmd)
+    '''Repeat the previous xdb command.'''
+    xdb = getattr(g.app, 'xdb', None)
+    if xdb:
+        xdb.qc.put(xdb.lastcmd)
     else:
-        g.trace('xpdb not active')
-#@+node:ekr.20181003054157.1: *3* db-b
+        g.trace('xdb not active')
+#@+node:ekr.20181003054157.1: *3* db-b (to do: external files)
 @g.command('db-b')
 def xpdb_breakpoint(event):
     '''Set the breakpoint at the presently select line in Leo.'''
@@ -506,9 +505,9 @@ def xpdb_breakpoint(event):
         g.trace('no c')
         return
     p = c.p
-    xpdb = getattr(g.app, 'xpdb', None)
-    if not xpdb:
-        g.trace('xpdb not active')
+    xdb = getattr(g.app, 'xdb', None)
+    if not xdb:
+        g.trace('xdb not active')
         return
     w = c.frame.body.wrapper
     if not w:
@@ -530,7 +529,7 @@ def xpdb_breakpoint(event):
     row, col = g.convertPythonIndexToRowCol(s, i)
     n = x.node_offset_to_file_line(row, p, root)
     if n is not None:
-        xpdb.qc.put('b %s:%s' % (path, n+1))
+        xdb.qc.put('b %s:%s' % (path, n+1))
 #@+node:ekr.20180702074705.1: *3* db-c/l/n/q/r/s
 @g.command('db-c')
 def xpdb_c(event):
@@ -569,54 +568,59 @@ def xpdb_input(event):
     c = event.get('c')
     if not c:
         return g.trace('no c')
-    xpdb = getattr(g.app, 'xpdb', None)
-    if not xpdb:
-        return g.trace('xpdb not active')
+    xdb = getattr(g.app, 'xdb', None)
+    if not xdb:
+        return g.trace('xdb not active')
         
     def callback(args, c, event):
-        xpdb = getattr(g.app, 'xpdb', None)
-        if xpdb:
+        xdb = getattr(g.app, 'xdb', None)
+        if xdb:
             command = args[0].strip()
             if not command:
-                command = xpdb.lastcmd
-            xpdb.qc.put(command)
+                command = xdb.lastcmd
+            xdb.qc.put(command)
         else:
-            g.trace('xpdb not active')
+            g.trace('xdb not active')
 
     c.interactive(callback, event, prompts=['Debugger command: '])
 #@+node:ekr.20180701054344.1: *3* db-kill
 @g.command('db-kill')
 def xpdb_kill(event):
-    '''Terminate xpdb.'''
-    xpdb = getattr(g.app, 'xpdb', None)
-    if xpdb:
-        xpdb.do_quit()
+    '''Terminate xdb.'''
+    xdb = getattr(g.app, 'xdb', None)
+    if xdb:
+        xdb.do_quit()
     else:
-        g.trace('xpdb not active')
+        g.trace('xdb not active')
 #@+node:ekr.20181003015636.1: *3* db-status
 @g.command('db-status')
 def xpdb_status(event):
-    '''Print whether xpdb is active.'''
-    xpdb = getattr(g.app, 'xpdb', None)
-    print('active' if xpdb else 'inactive')
-#@+node:ekr.20180701050839.1: *3* xpdb
-@g.command('xpdb')
-def xpdb(event):
+    '''Print whether xdb is active.'''
+    xdb = getattr(g.app, 'xdb', None)
+    print('active' if xdb else 'inactive')
+#@+node:ekr.20180701050839.1: *3* xdb
+@g.command('xdb')
+def xdb_command(event):
     '''Start the external debugger on a toy test program.'''
     ### Use a fixed path for testing.
     path = 'c:/test/testXPDB.py'
     os.chdir('c:/test')
     if not g.os_path_exists(path):
         return g.trace('not found', path)
-    xpdb = getattr(g.app, 'xpdb', None)
-    if xpdb:
-        # Kill the previous debugger.
-        # Don't restart until the listener has finished.
-        xpdb.do_quit()
+    xdb = getattr(g.app, 'xdb', None)
+    if xdb:
+        if 1:
+            # Just issue a message.
+            print('xdb active: use db-q to terminate')
+        else:
+            # Killing the previous debugger works,
+            # Provided we don't try to restart xdb!
+            # That would create a race condition on g.app.xdb.
+            xdb.do_quit()
     else:
         # Start the debugger in a separate thread.
-        g.app.xpdb = xpdb = Xpdb(path)
-        xpdb.start()
+        g.app.xdb = xdb = Xdb(path)
+        xdb.start()
             # This is Threading.start().
             # It runs the debugger in a separate thread.
             # It also selects the start of the file.
