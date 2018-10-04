@@ -21,7 +21,7 @@ class leoDebugger (pdb.Pdb):
 #@+<< convenience functions >>
 #@+node:ekr.20060307120812: ** << convenience functions >>
 #@+others
-#@+node:ekr.20060307120812.1: *3* set_trace
+#@+node:ekr.20060307120812.1: *3* leoDebugger.set_trace
 def set_trace(c):
 
     if not c.debugger:
