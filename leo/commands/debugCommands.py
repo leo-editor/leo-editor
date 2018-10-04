@@ -389,7 +389,7 @@ class Xdb(pdb.Pdb, threading.Thread):
             while frame and frame is not self.botframe:
                 del frame.f_trace
                 frame = frame.f_back
-    #@+node:ekr.20181004060517.1: *3* xdb.make_at_file_node
+    #@+node:ekr.20181004060517.1: *3* xdb.make_at_file_node & helper
     def make_at_file_node(self, line, path):
         '''
         Make and populate an @auto node for the given path.
@@ -403,7 +403,6 @@ class Xdb(pdb.Pdb, threading.Thread):
             return
         # Create the new node.
         p = c.lastTopLevel().insertAfter()
-        #
         # Like c.looksLikeDerivedFile, but retaining the contents.
         with open(path, 'r') as f:
             file_s = f.read()
@@ -414,7 +413,6 @@ class Xdb(pdb.Pdb, threading.Thread):
         kind = '@file' if is_derived else '@auto'
         p.h = '%s %s' % (kind, path)
         c.selectPosition(p)
-        ### c.redraw(p)
         c.refreshFromDisk()
         return p
     #@+node:ekr.20181004120344.1: *4* xdb.self.get_gnx_from_file
