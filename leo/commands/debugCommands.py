@@ -7,8 +7,6 @@
 #@+node:ekr.20150514050138.1: ** << imports >> (debugCommands.py)
 import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
-import leo.commands.gotoCommands as gotoCommands
-# from leo.core.leoGui import LeoKeyEvent
 import bdb
 import queue
 import os
@@ -531,7 +529,7 @@ def xdb_breakpoint(event):
     w = c.frame.body.wrapper
     if not w:
         return
-    x = gotoCommands.GoToCommands(c)
+    x = c.gotoCommands
     root, fileName = x.find_root(p)
     if not root:
         g.trace('no root', p.h)
