@@ -34,7 +34,7 @@ import leo.core.leoGlobals as g
 # 5.7.1:  April 6, 2018.
 # 5.7.2:  May 7, 2018.
 # 5.7.3:  May 27, 2018.
-# 5.8b1:  August 28, 2018.
+# 5.8b2:  August 29, 2018.
 #@-<< version dates >>
 #@+<< about install hooks >>
 #@+node:ekr.20150409201910.1: ** << about install hooks >>
