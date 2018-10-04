@@ -390,6 +390,21 @@ class Xdb(pdb.Pdb, threading.Thread):
             while frame and frame is not self.botframe:
                 del frame.f_trace
                 frame = frame.f_back
+    #@+node:ekr.20181004060517.1: *3* xdb.make_at_auto_node
+    def make_at_auto_node(self, line, path):
+        '''
+        Make and populate an @auto node for the given path.
+        '''
+        c = g.app.log.c
+        if not c:
+            return
+        path = g.os_path_finalize(path).replace('\\','/')
+        p = c.lastTopLevel().insertAfter()
+        p.h = '@auto %s' % path
+        c.redraw(p)
+        c.refreshFromDisk()
+        return p
+
     #@+node:ekr.20180701050839.3: *3* xdb.listener
     def listener(self, timer):
         '''
@@ -454,7 +469,7 @@ class Xdb(pdb.Pdb, threading.Thread):
             # Might not work for python 2.
         self.qr.put(['select-line', lineno, filename])
             # Select the line in the main thread.
-    #@+node:ekr.20180701061957.1: *3* xdb.show_line (To do: external files)
+    #@+node:ekr.20180701061957.1: *3* xdb.show_line
     def show_line(self, line, fn):
         '''
         Put the cursor on the requested line of the given file.
@@ -475,11 +490,13 @@ class Xdb(pdb.Pdb, threading.Thread):
                     # Select the line.
                     p, offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
                     if not ok:
-                        g.trace('===== fail:', g.shortFileName(target))
-                        self.do_quit()
+                        g.trace('FAIL:', g.shortFileName(target))
                     c.bodyWantsFocusNow()
                     return
-        g.trace('NOT FOUND:', line, target)
+        p = self.make_at_auto_node(line, target)
+        junk_p, junk_offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
+        if not ok:
+            g.trace('FAIL:', g.shortFileName(target))
     #@-others
 #@+node:ekr.20181001054314.1: ** top-level xdb commands
 def db_command(event, command):
