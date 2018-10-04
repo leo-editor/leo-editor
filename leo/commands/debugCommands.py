@@ -11,6 +11,7 @@ import bdb
 import queue
 import os
 import pdb
+import re
 import subprocess
 import sys
 import threading
@@ -388,8 +389,8 @@ class Xdb(pdb.Pdb, threading.Thread):
             while frame and frame is not self.botframe:
                 del frame.f_trace
                 frame = frame.f_back
-    #@+node:ekr.20181004060517.1: *3* xdb.make_at_auto_node
-    def make_at_auto_node(self, line, path):
+    #@+node:ekr.20181004060517.1: *3* xdb.make_at_file_node
+    def make_at_file_node(self, line, path):
         '''
         Make and populate an @auto node for the given path.
         '''
@@ -397,12 +398,40 @@ class Xdb(pdb.Pdb, threading.Thread):
         if not c:
             return
         path = g.os_path_finalize(path).replace('\\','/')
+        if not g.os_path_exists(path):
+            g.trace('Not found:', repr(path))
+            return
+        # Create the new node.
         p = c.lastTopLevel().insertAfter()
-        p.h = '@auto %s' % path
-        c.redraw(p)
+        #
+        # Like c.looksLikeDerivedFile, but retaining the contents.
+        with open(path, 'r') as f:
+            file_s = f.read()
+            is_derived = file_s.find('@+leo-ver=') > -1
+        if is_derived:
+            # Set p.v.gnx from the derived file.
+            is_derived = self.get_gnx_from_file(file_s, p, path)
+        kind = '@file' if is_derived else '@auto'
+        p.h = '%s %s' % (kind, path)
+        c.selectPosition(p)
+        ### c.redraw(p)
         c.refreshFromDisk()
         return p
-
+    #@+node:ekr.20181004120344.1: *4* xdb.self.get_gnx_from_file
+    def get_gnx_from_file(self, file_s, p, path):
+        '''Set p's gnx from the @file node in the derived file.'''
+        pat = re.compile(r'^#@\+node:(.*): \*+ @file (.+)$')
+        for line in g.splitLines(file_s):
+            m = pat.match(line)
+            if m:
+                gnx, path2 = m.group(1), m.group(2)
+                path2 = path2.replace('\\','/')
+                p.v.fileIndex = gnx
+                if path == path2:
+                    return True
+        g.trace('Not found: @+node for %s' % path)
+        g.trace('Reverting to @auto')
+        return False
     #@+node:ekr.20180701050839.3: *3* xdb.listener
     def listener(self, timer):
         '''
@@ -491,7 +520,7 @@ class Xdb(pdb.Pdb, threading.Thread):
                         g.trace('FAIL:', target)
                     c.bodyWantsFocusNow()
                     return
-        p = self.make_at_auto_node(line, target)
+        p = self.make_at_file_node(line, target)
         junk_p, junk_offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
         if not ok:
             g.trace('FAIL:', target)
