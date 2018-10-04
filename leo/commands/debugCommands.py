@@ -624,9 +624,23 @@ def xdb_status(event):
 @g.command('xdb')
 def xdb_command(event):
     '''Start the external debugger on a toy test program.'''
-    ### Use a fixed path for testing.
-    path = 'c:/test/testXPDB.py'
-    os.chdir('c:/test')
+    c = event.get('c')
+    if not c:
+        g.trace('no c')
+        return
+    # Find nearest ancester @<file> node.
+    for p in c.p.self_and_parents():
+        if p.isAnyAtFileNode():
+            path = g.fullPath(c, p)
+            if g.os_path_exists(path):
+                os.chdir(g.os_path_dirname(path))
+                break
+            else:
+                g.trace('does not exist', repr(path))
+                return
+    else:
+        g.trace('not in in an @<file> node.')
+        return
     if not g.os_path_exists(path):
         return g.trace('not found', path)
     xdb = getattr(g.app, 'xdb', None)
