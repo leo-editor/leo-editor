@@ -39,6 +39,7 @@
 </v>
 <v t="ekr.20161024115257.1"><vh>How to compute the sha256 hash</vh></v>
 </v>
+<v t="matt.20181004031246.1"><vh>Travis Continual Integration</vh></v>
 </v>
 <v t="EKR.20040519091259"><vh>Announcements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
@@ -155,8 +156,10 @@
 <v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
 <v t="ekr.20180828095749.1"><vh>Create a -rel *branch* late.</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update verions.py in the -rel branch</vh></v>
+<v t="ekr.20181001112153.1"><vh>Merge -rel branch into master</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
 <v t="ekr.20180405171433.8"><vh>Publish release</vh></v>
+<v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20180405171433.9"><vh>Announcements</vh></v>
 </v>
 </vnodes>
@@ -1688,6 +1691,8 @@ git push origin x.y-final-rel
 <t tx="ekr.20180828095843.1">leoVersion.py:
 - Update version constant.
 </t>
+<t tx="ekr.20181001112153.1"></t>
+<t tx="ekr.20181001112218.1"></t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
@@ -1824,6 +1829,37 @@ That said, here's my recipe for packaging a new release for Test PyPi:
 
 Remove broken releases (still can't re-use identical version numbers and file names though):
 https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
+</t>
+<t tx="matt.20181004031246.1">@language md
+Initiating issue: https://github.com/leo-editor/leo-editor/issues/672
+
+Dashboard: https://travis-ci.org/leo-editor/leo-editor
+
+Everything is controlled by `.travis.yml`.
+
+Command line client: https://github.com/travis-ci/travis.rb
+Not essential, but useful.
+
+
+Deploying to PyPi: 
+https://docs.travis-ci.com/user/deployment/pypi/
+
+Note: using `travis` command line client in a way that updates yml file will delete any comments within it. (e.g. `travis encrypt ...`)
+
+
+#Troubleshooting
+## Pushed a commit but nothing is happening in the dashboard?
+
+Check the _requests_ log: https://travis-ci.org/leo-editor/leo-editor/requests
+The link is hidden under [more options] at right.
+
+### "Could not parse .travis.yml" requests error
+Debug with `travis lint` local client.
+
+
+## Clarification on using `travis encrypt` for passwords
+https://github.com/travis-ci/travis-ci/issues/10051
+
 </t>
 </tnodes>
 </leo_file>

@@ -28,6 +28,9 @@ var/
 .installed.cfg
 *.egg
 
+# Test results
+/.pytest_cache/
+
 # PyInstaller folders.
 /build/
 /dist/
@@ -123,3 +126,5 @@ annotate.txt
 
 leo/core/leoProjects.txt
 leo/plugins/spellpyx.txt
+
+.eggs/*
