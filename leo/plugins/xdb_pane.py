@@ -68,16 +68,19 @@ if g.app.gui.guiName() == "qt":
         #@+node:ekr.20181005054101.1: *4* create_input_area
         def create_input_area(self, layout):
             
-            #layout2 = QtWidgets.QHBoxLayout(self)
+            layout2 = QtWidgets.QHBoxLayout()
+            # Create the Label
             label = QtWidgets.QLabel()
-            label.setText('Enter command')
-            # Add the widgets
-            layout.addWidget(label)
+            label.setText('Debugger command:')
+            # Create the editor.
             self.line_edit = w = QtWidgets.QLineEdit()
-            w.setFrame(True)
-            layout.addWidget(w)
+            # w.setObjectName('debug-line-edit')
+            w.setStyleSheet('background: white; color: black; border: 3px; border-color: red')
             w.returnPressed.connect(self.debug_input)
-            # layout.addItem(layout2)
+            # Add the widgets.
+            layout2.addWidget(label)
+            layout2.addWidget(w)
+            layout.addLayout(layout2)
         #@+node:ekr.20181004143535.20: *4* get_icon
         def get_icon(self, fn):
             """return the icon from Icons/debug_icons"""
