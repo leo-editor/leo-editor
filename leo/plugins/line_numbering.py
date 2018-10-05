@@ -55,7 +55,6 @@ def toggleLineNumberingOff(event):
 def onSelect (tag, keys):
     c = keys.get('c')
     if not c.hash(): return
-    g.trace(tag)
     ok = c.config.getBool('use-gutter', default=False)
     ok = ok and not c.user_dict.get(LNOFF, False)
     if ok:
