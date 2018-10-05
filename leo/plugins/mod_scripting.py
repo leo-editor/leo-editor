@@ -1194,6 +1194,8 @@ class EvalController(object):
             self.c.vs = self.d
         else:
             self.c.vs = self.globals_d
+        # allow the auto-completer to complete in this namespace
+        self.c.keyHandler.autoCompleter.namespaces.append(self.c.vs)
                 # Updated by do_exec.
         self.last_result = None
         self.old_stderr = None
