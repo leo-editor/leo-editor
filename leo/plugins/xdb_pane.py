@@ -42,19 +42,15 @@ if g.app.gui.guiName() == "qt":
         #@+node:ekr.20181005043209.1: *3* create & helpers
         def create(self):
             '''Create the Debug pane in the Log pane.'''
-            self.set_icons()
-            # u.dueDateEdit.dateChanged.connect(self.whatever)
-        #@+node:ekr.20181004143535.20: *4* get_icon
-        def get_icon(self, fn):
-            """return the icon from Icons/debug_icons"""
-            path = g.os_path_finalize_join(
-                g.app.loadDir, '..', 'Icons', 'debug_icons', fn)
-            return QtGui.QIcon(g.app.gui.getImageImage(path))
-        #@+node:ekr.20181004182608.1: *4* set_icons
-        def set_icons(self):
-            
             layout = QtWidgets.QVBoxLayout(self)
+            self.create_icons(layout)
+            self.create_input_area(layout)
+            layout.addStretch()
             self.setLayout(layout)
+            
+        #@+node:ekr.20181004182608.1: *4* create_icons
+        def create_icons(self, layout):
+            
             for name, fn, func in [
                 ('start', 'pyzo_run_file.png', self.debug_start),
                 ('stop', 'pyzo_debug_quit.png', self.debug_stop),
@@ -69,10 +65,36 @@ if g.app.gui.guiName() == "qt":
                 icon = self.get_icon(fn)
                 w.setIcon(icon)
                 w.clicked.connect(func)
-            layout.addStretch()
+        #@+node:ekr.20181005054101.1: *4* create_input_area
+        def create_input_area(self, layout):
+            
+            #layout2 = QtWidgets.QHBoxLayout(self)
+            label = QtWidgets.QLabel()
+            label.setText('Enter command')
+            # Add the widgets
+            layout.addWidget(label)
+            self.line_edit = w = QtWidgets.QLineEdit()
+            w.setFrame(True)
+            layout.addWidget(w)
+            w.returnPressed.connect(self.debug_input)
+            # layout.addItem(layout2)
+        #@+node:ekr.20181004143535.20: *4* get_icon
+        def get_icon(self, fn):
+            """return the icon from Icons/debug_icons"""
+            path = g.os_path_finalize_join(
+                g.app.loadDir, '..', 'Icons', 'debug_icons', fn)
+            return QtGui.QIcon(g.app.gui.getImageImage(path))
         #@+node:ekr.20181005042637.1: *3* debug_*
         def debug_continue(self, checked):
             self.c.k.simulateCommand('db-c')
+            
+        def debug_input(self):
+            xdb = getattr(g.app, 'xdb', None)
+            if xdb:
+                command = self.line_edit.text()
+                xdb.qc.put(command)
+            else:
+                print('xdb not active')
 
         def debug_next(self, checked):
             self.c.k.simulateCommand('db-n')
