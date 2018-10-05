@@ -48,10 +48,10 @@ if g.app.gui.guiName() == "qt":
         #@+node:ekr.20181004182608.1: *4* create_icons
         def create_icons(self, layout):
             
-            layout2 = QtWidgets.QHBoxLayout()
-            for name, fn, func in [
+            layout2 = QtWidgets.QVBoxLayout()
+            for name, icon_fn, func in [
                 ('start', 'pyzo_run_file.png', self.debug_start),
-                ('stop', 'pyzo_debug_quit.png', self.debug_stop),
+                ('quit', 'pyzo_debug_quit.png', self.debug_stop),
                 ('continue', 'pyzo_debug_continue.png', self.debug_continue),
                 ('next', 'pyzo_debug_next.png', self.debug_next),
                 ('step', 'pyzo_debug_step.png', self.debug_step),
@@ -60,7 +60,7 @@ if g.app.gui.guiName() == "qt":
                 w = QtWidgets.QPushButton(None)
                 layout2.addWidget(w)
                 w.setText(name)
-                # icon = self.get_icon(fn)
+                # icon = self.get_icon(icon_fn)
                 # w.setIcon(icon)
                 w.clicked.connect(func)
             layout.addLayout(layout2)

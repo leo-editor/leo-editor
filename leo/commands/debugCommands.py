@@ -672,14 +672,12 @@ def xdb_command(event):
         return g.trace('not found', path)
     xdb = getattr(g.app, 'xdb', None)
     if xdb:
-        if 1:
-            # Just issue a message.
-            print('xdb active: use db-q to terminate')
-        else:
-            # Killing the previous debugger works,
-            # Provided we don't try to restart xdb!
-            # That would create a race condition on g.app.xdb.
-            xdb.do_quit()
+        # Just issue a message.
+        print('xdb active: use Quit button or db-q to terminate')
+        # Killing the previous debugger works,
+        # *provided* we don't try to restart xdb!
+        # That would create a race condition on g.app.xdb.
+            # xdb.do_quit()
     else:
         # Start the debugger in a separate thread.
         g.app.xdb = xdb = Xdb(path)
