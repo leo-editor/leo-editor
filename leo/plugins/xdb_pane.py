@@ -40,13 +40,13 @@ if g.app.gui.guiName() == "qt":
         def create(self):
             '''Create the Debug pane in the Log pane.'''
             layout = QtWidgets.QVBoxLayout(self)
-            self.create_icons(layout)
+            self.create_buttons(layout)
             self.create_input_area(layout)
             layout.addStretch()
             self.setLayout(layout)
             
-        #@+node:ekr.20181004182608.1: *4* create_icons
-        def create_icons(self, layout):
+        #@+node:ekr.20181004182608.1: *4* create_buttons
+        def create_buttons(self, layout):
             
             layout2 = QtWidgets.QVBoxLayout()
             for name, icon_fn, func in [
@@ -57,7 +57,8 @@ if g.app.gui.guiName() == "qt":
                 ('step', 'pyzo_debug_step.png', self.debug_step),
                 ('return', 'pyzo_debug_return.png', self.debug_return),
             ]:
-                w = QtWidgets.QPushButton(None)
+                w = QtWidgets.QPushButton()
+                w.setMaximumWidth(200)
                 layout2.addWidget(w)
                 w.setText(name)
                 # icon = self.get_icon(icon_fn)
