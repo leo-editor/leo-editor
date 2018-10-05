@@ -726,6 +726,7 @@ class NumberBar(QtWidgets.QFrame):
             # The highest line that is currently visibile.
         # Set the name to gutter so that the QFrame#gutter style sheet applies.
         self.offsets = []
+        self.breakpoints = []
         self.setObjectName('gutter')
         self.reloadSettings()
     #@+node:ekr.20181005093003.1: *3* NumberBar.reloadSettings
@@ -738,6 +739,8 @@ class NumberBar(QtWidgets.QFrame):
             # The y offset of the first line of the gutter.
     #@+node:ekr.20181005085507.1: *3* NumberBar.mousePressEvent
     def mousePressEvent(self, event):
+        
+        c = self.c
 
         def find_line(y):
             last_y = 0
@@ -748,10 +751,18 @@ class NumberBar(QtWidgets.QFrame):
             return n if self.offsets else 0
             
         n = find_line(event.y())
-        g.trace(n)
         xdb = getattr(g.app, 'xdb', None)
         if xdb:
-            xdb.qc.put('b %s' % n)
+            path = g.fullPath(c, c.p)
+            if not path:
+                g.trace('Not in an @<file> tree')
+                return
+            if n in self.breakpoints:
+                self.breakpoints.remove(n)
+                xdb.qc.put('clear %s:%s' % (path, n))
+            else:
+                self.breakpoints.append(n)
+                xdb.qc.put('b %s:%s' % (path, n))
     #@+node:ekr.20150403094706.5: *3* NumberBar.update
     def update(self, *args):
         '''
@@ -813,6 +824,11 @@ class NumberBar(QtWidgets.QFrame):
         painter.drawText(x, y, s)
         if bold:
             self.setBold(painter, False)
+        if n in self.breakpoints:
+            painter.drawEllipse(
+                self.fm.width(s) + 20,
+                top_left.y() + self.y_adjust,
+                10.0, 10.0)
     #@+node:ekr.20150403094706.8: *3* NumberBar.setBold
     def setBold(self, painter, flag):
         '''Set or clear bold facing in the painter, depending on flag.'''

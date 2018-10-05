@@ -532,7 +532,7 @@ def db_command(event, command):
         xdb.qc.put(command)
     else:
         print('xdb not active')
-#@+node:ekr.20181003015017.1: *3* command: db-again
+#@+node:ekr.20181003015017.1: *3* db-again
 @g.command('db-again')
 def xdb_again(event):
     '''Repeat the previous xdb command.'''
@@ -655,21 +655,13 @@ def xdb_command(event):
     c = event.get('c')
     if not c:
         return
-    # Find nearest ancester @<file> node.
-    for p in c.p.self_and_parents():
-        if p.isAnyAtFileNode():
-            path = g.fullPath(c, p)
-            if g.os_path_exists(path):
-                os.chdir(g.os_path_dirname(path))
-                break
-            else:
-                g.trace('does not exist', repr(path))
-                return
-    else:
-        g.trace('not in in an @<file> node.')
+    path = g.fullPath(c, c.p)
+    if not path:
+        g.trace('Not in an @<file> tree')
         return
     if not g.os_path_exists(path):
         return g.trace('not found', path)
+    os.chdir(g.os_path_dirname(path))
     xdb = getattr(g.app, 'xdb', None)
     if xdb:
         # Just issue a message.

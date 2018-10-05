@@ -68,7 +68,7 @@ if g.app.gui.guiName() == "qt":
         #@+node:ekr.20181005054101.1: *4* create_input_area
         def create_input_area(self, layout):
             
-            layout2 = QtWidgets.QHBoxLayout()
+            layout2 = QtWidgets.QVBoxLayout()
             # Create the Label
             label = QtWidgets.QLabel()
             label.setText('Debugger command:')
