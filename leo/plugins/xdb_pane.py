@@ -4,11 +4,8 @@
 Creates a Debug tab in the log pane, containing buttons for common xdb
 commands, and an input area in which the user can type other commands.
 '''
-#@+<< imports >>
-#@+node:ekr.20181004143535.3: ** << imports >>
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtGui,QtWidgets # QtConst,QtCore,
-#@-<< imports >>
 #@+others
 #@+node:ekr.20181005051820.1: ** Top-level functions
 #@+node:ekr.20181004143535.4: *3* init (xdb_pane.py)
