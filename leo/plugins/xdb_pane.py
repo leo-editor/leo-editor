@@ -48,6 +48,7 @@ if g.app.gui.guiName() == "qt":
         #@+node:ekr.20181004182608.1: *4* create_icons
         def create_icons(self, layout):
             
+            layout2 = QtWidgets.QHBoxLayout()
             for name, fn, func in [
                 ('start', 'pyzo_run_file.png', self.debug_start),
                 ('stop', 'pyzo_debug_quit.png', self.debug_stop),
@@ -57,11 +58,12 @@ if g.app.gui.guiName() == "qt":
                 ('return', 'pyzo_debug_return.png', self.debug_return),
             ]:
                 w = QtWidgets.QPushButton(None)
-                layout.addWidget(w)
+                layout2.addWidget(w)
                 w.setText(name)
-                icon = self.get_icon(fn)
-                w.setIcon(icon)
+                # icon = self.get_icon(fn)
+                # w.setIcon(icon)
                 w.clicked.connect(func)
+            layout.addLayout(layout2)
         #@+node:ekr.20181005054101.1: *4* create_input_area
         def create_input_area(self, layout):
             
