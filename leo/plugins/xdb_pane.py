@@ -74,9 +74,7 @@ if g.app.gui.guiName() == "qt":
             label.setText('Debugger command:')
             # Create the editor.
             self.line_edit = w = QtWidgets.QLineEdit()
-            # w.setObjectName('debug-line-edit')
-            w.setStyleSheet('background: white; color: black')
-                # ; border: 3px; border-color: red')
+            w.setStyleSheet('background: white; color: black;')
             w.returnPressed.connect(self.debug_input)
             # Add the widgets.
             layout2.addWidget(label)
