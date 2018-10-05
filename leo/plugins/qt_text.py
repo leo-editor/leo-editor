@@ -380,7 +380,11 @@ class QLineEditWrapper(QTextMixin):
     #@-others
 #@+node:ekr.20150403094619.1: ** class LeoLineTextWidget(QFrame)
 class LeoLineTextWidget(QtWidgets.QFrame):
-    '''A QFrame supporting gutter line numbers. This class *has* a QTextEdit.'''
+    '''
+    A QFrame supporting gutter line numbers.
+    
+    This class *has* a QTextEdit.
+    '''
     #@+others
     #@+node:ekr.20150403094706.9: *3* __init__(LeoLineTextWidget)
     def __init__(self, c, e, *args):
@@ -721,8 +725,10 @@ class NumberBar(QtWidgets.QFrame):
         self.highest_line = 0
             # The highest line that is currently visibile.
         # Set the name to gutter so that the QFrame#gutter style sheet applies.
+        self.offsets = []
         self.setObjectName('gutter')
         self.reloadSettings()
+        
         
     def reloadSettings(self):
         c = self.c
@@ -732,6 +738,22 @@ class NumberBar(QtWidgets.QFrame):
         self.y_adjust = c.config.getInt('gutter-y-adjust') or 10
             # The y offset of the first line of the gutter.
         
+    #@+node:ekr.20181005085507.1: *3* NumberBar.mousePressEvent
+    def mousePressEvent(self, event):
+
+        def find_line(y):
+            last_y = 0
+            for n, y2 in self.offsets:
+                if last_y <= y < y2:
+                    return n
+                last_y = y2
+            return n if self.offsets else 0
+            
+        n = find_line(event.y())
+        g.trace(n)
+        xdb = getattr(g.app, 'xdb', None)
+        if xdb:
+            xdb.qc.put('b %s' % n)
     #@+node:ekr.20150403094706.5: *3* NumberBar.update
     def update(self, *args):
         '''
@@ -763,6 +785,7 @@ class NumberBar(QtWidgets.QFrame):
         n = i = 0
         c = self.c
         translation = c.user_dict.get('line_number_translation', [])
+        self.offsets = []
         while block.isValid():
             i = translation[n] if n < len(translation) else n + 1
             n += 1
@@ -787,6 +810,7 @@ class NumberBar(QtWidgets.QFrame):
         # x = self.width() - self.fm.width(s) - self.w_adjust
         x = 0
         y = round(top_left.y()) - scroll_y + self.fm.ascent() + self.y_adjust
+        self.offsets.append((n, y),)
         painter.drawText(x, y, s)
         if bold:
             self.setBold(painter, False)

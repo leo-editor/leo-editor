@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.66">
-	<global_window_position top="31" left="579" height="1048" width="1109"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -175,6 +172,7 @@
 <v t="ekr.20180318145515.816"><vh>Borders</vh></v>
 <v t="ekr.20180318145515.817"><vh>Buttons</vh></v>
 <v t="ekr.20180318145515.818"><vh>Log</vh></v>
+<v t="ekr.20181005084517.1"><vh>Gutter</vh></v>
 <v t="ekr.20180318145515.819"><vh>Menus</vh></v>
 <v t="ekr.20180318145515.820"><vh>Minibuffer &amp; label</vh></v>
 <v t="ekr.20180318145515.821"><vh>Plugins</vh></v>
@@ -1018,5 +1016,8 @@ QTreeView QLineEdit {
 #80cb07: too bright
 
 #859900: real solarized green. Bad hue</t>
+<t tx="ekr.20181005084517.1">QFrame#gutter {
+  /* background: gray; */
+}</t>
 </tnodes>
 </leo_file>
