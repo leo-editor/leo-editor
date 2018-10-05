@@ -722,6 +722,10 @@ class NumberBar(QtWidgets.QFrame):
             # A QTextDocument.
         self.fm = self.fontMetrics()
             # A QFontMetrics
+        self.image = QtGui.QImage(g.app.gui.getImageImage(
+            g.os_path_finalize_join(g.app.loadDir,
+                '..', 'Icons', 'Tango','16x16', 'actions', 'stop.png')))
+        g.trace(self.image)
         self.highest_line = 0
             # The highest line that is currently visibile.
         # Set the name to gutter so that the QFrame#gutter style sheet applies.
@@ -825,10 +829,21 @@ class NumberBar(QtWidgets.QFrame):
         if bold:
             self.setBold(painter, False)
         if n in self.breakpoints:
-            painter.drawEllipse(
-                self.fm.width(s) + 20,
-                top_left.y() + self.y_adjust,
-                10.0, 10.0)
+            if self.image:
+                source_r = QtCore.QRect(
+                    0.0, 0.0, 16.0, 16.0
+                )
+                target_r = QtCore.QRect(
+                    self.fm.width(s) + 16,
+                    top_left.y() + self.y_adjust - 2,
+                    16.0, 16.0)
+                painter.drawImage(target_r, self.image, source_r)
+            else:
+                r = QtCore.QRect(
+                    self.fm.width(s) + 20,
+                    top_left.y() + self.y_adjust,
+                    10.0, 10.0)
+                painter.drawEllipse(r)
     #@+node:ekr.20150403094706.8: *3* NumberBar.setBold
     def setBold(self, painter, flag):
         '''Set or clear bold facing in the painter, depending on flag.'''
