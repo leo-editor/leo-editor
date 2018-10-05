@@ -731,6 +731,7 @@ class NumberBar(QtWidgets.QFrame):
         # Set the name to gutter so that the QFrame#gutter style sheet applies.
         self.offsets = []
         self.breakpoints = []
+            # A list of tuples (path, n)
         self.setObjectName('gutter')
         self.reloadSettings()
     #@+node:ekr.20181005093003.1: *3* NumberBar.reloadSettings
@@ -829,21 +830,15 @@ class NumberBar(QtWidgets.QFrame):
         if bold:
             self.setBold(painter, False)
         if n in self.breakpoints:
+            target_r = QtCore.QRect(
+                self.fm.width(s) + 16,
+                top_left.y() + self.y_adjust - 2,
+                16.0, 16.0)
             if self.image:
-                source_r = QtCore.QRect(
-                    0.0, 0.0, 16.0, 16.0
-                )
-                target_r = QtCore.QRect(
-                    self.fm.width(s) + 16,
-                    top_left.y() + self.y_adjust - 2,
-                    16.0, 16.0)
+                source_r = QtCore.QRect(0.0, 0.0, 16.0, 16.0)
                 painter.drawImage(target_r, self.image, source_r)
             else:
-                r = QtCore.QRect(
-                    self.fm.width(s) + 20,
-                    top_left.y() + self.y_adjust,
-                    10.0, 10.0)
-                painter.drawEllipse(r)
+                painter.drawEllipse(target_r)
     #@+node:ekr.20150403094706.8: *3* NumberBar.setBold
     def setBold(self, painter, flag):
         '''Set or clear bold facing in the painter, depending on flag.'''
