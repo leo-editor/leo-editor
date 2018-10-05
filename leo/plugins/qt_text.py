@@ -408,7 +408,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):
     def eventFilter(self, obj, event):
         '''
         Update the line numbers for all events on the text edit and the viewport.
-        This is easier than connecting all necessary singals.
+        This is easier than connecting all necessary signals.
         '''
         if obj in (self.edit, self.edit.viewport()):
             self.number_bar.update()
@@ -710,7 +710,7 @@ if QtWidgets:
 #@+node:ekr.20150403094706.2: ** class NumberBar(QFrame)
 class NumberBar(QtWidgets.QFrame):
     #@+others
-    #@+node:ekr.20150403094706.3: *3* NumberBar.__init__& reloadSettings
+    #@+node:ekr.20150403094706.3: *3* NumberBar.__init__
     def __init__(self, c, e, *args):
         '''Ctor for NumberBar class.'''
         QtWidgets.QFrame.__init__(self, *args)
@@ -728,8 +728,7 @@ class NumberBar(QtWidgets.QFrame):
         self.offsets = []
         self.setObjectName('gutter')
         self.reloadSettings()
-        
-        
+    #@+node:ekr.20181005093003.1: *3* NumberBar.reloadSettings
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
@@ -737,7 +736,6 @@ class NumberBar(QtWidgets.QFrame):
             # Extra width for column.
         self.y_adjust = c.config.getInt('gutter-y-adjust') or 10
             # The y offset of the first line of the gutter.
-        
     #@+node:ekr.20181005085507.1: *3* NumberBar.mousePressEvent
     def mousePressEvent(self, event):
 
@@ -785,6 +783,7 @@ class NumberBar(QtWidgets.QFrame):
         n = i = 0
         c = self.c
         translation = c.user_dict.get('line_number_translation', [])
+        ### if translation: g.trace(translation)
         self.offsets = []
         while block.isValid():
             i = translation[n] if n < len(translation) else n + 1
