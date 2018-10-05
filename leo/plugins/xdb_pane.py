@@ -1,21 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20181004143535.1: * @file xdb_pane.py
-#@+<< docstring >>
-#@+node:ekr.20181004143535.2: ** << docstring >> (xdb_pane.py)
-'''Creates the Debug tab in the log pane, for the xdb commands.
-
-@Settings
-=========
-
-To do.
-
 '''
-
-
-#@-<< docstring >>
-
-# pylint: disable=unnecessary-lambda
-
+Creates a Debug tab in the log pane, containing buttons for common xdb
+commands, and an input area in which the user can type other commands.
+'''
 #@+<< imports >>
 #@+node:ekr.20181004143535.3: ** << imports >>
 import leo.core.leoGlobals as g
@@ -66,6 +54,7 @@ if g.app.gui.guiName() == "qt":
         def set_icons(self):
             
             layout = QtWidgets.QVBoxLayout(self)
+            self.setLayout(layout)
             for name, fn, func in [
                 ('start', 'pyzo_run_file.png', self.debug_start),
                 ('stop', 'pyzo_debug_quit.png', self.debug_stop),
@@ -80,6 +69,7 @@ if g.app.gui.guiName() == "qt":
                 icon = self.get_icon(fn)
                 w.setIcon(icon)
                 w.clicked.connect(func)
+            layout.addStretch()
         #@+node:ekr.20181005042637.1: *3* debug_*
         def debug_continue(self, checked):
             self.c.k.simulateCommand('db-c')

@@ -363,6 +363,7 @@ class Xdb(pdb.Pdb, threading.Thread):
         self._user_requested_quit = True
         self.set_quit()
         self.qr.put(['stop-timer'])
+        print('\nEnding xdb')
         return 1
 
     do_q = do_quit
@@ -530,7 +531,7 @@ def db_command(event, command):
     if xdb:
         xdb.qc.put(command)
     else:
-        g.trace('xdb not active')
+        print('xdb not active')
 #@+node:ekr.20181003015017.1: *3* command: db-again
 @g.command('db-again')
 def xdb_again(event):
@@ -539,19 +540,18 @@ def xdb_again(event):
     if xdb:
         xdb.qc.put(xdb.lastcmd)
     else:
-        g.trace('xdb not active')
+        print('xdb not active')
 #@+node:ekr.20181003054157.1: *3* db-b (to do: external files)
 @g.command('db-b')
 def xdb_breakpoint(event):
     '''Set the breakpoint at the presently select line in Leo.'''
     c = event.get('c')
     if not c:
-        g.trace('no c')
         return
     p = c.p
     xdb = getattr(g.app, 'xdb', None)
     if not xdb:
-        g.trace('xdb not active')
+        print('xdb not active')
         return
     w = c.frame.body.wrapper
     if not w:
@@ -619,7 +619,8 @@ def xdb_input(event):
         return g.trace('no c')
     xdb = getattr(g.app, 'xdb', None)
     if not xdb:
-        return g.trace('xdb not active')
+        print('xdb not active')
+        return
         
     def callback(args, c, event):
         xdb = getattr(g.app, 'xdb', None)
@@ -640,7 +641,7 @@ def xdb_kill(event):
     if xdb:
         xdb.do_quit()
     else:
-        g.trace('xdb not active')
+        print('xdb not active')
 #@+node:ekr.20181003015636.1: *3* db-status
 @g.command('db-status')
 def xdb_status(event):
@@ -653,7 +654,6 @@ def xdb_command(event):
     '''Start the external debugger on a toy test program.'''
     c = event.get('c')
     if not c:
-        g.trace('no c')
         return
     # Find nearest ancester @<file> node.
     for p in c.p.self_and_parents():
