@@ -725,7 +725,6 @@ class NumberBar(QtWidgets.QFrame):
         self.image = QtGui.QImage(g.app.gui.getImageImage(
             g.os_path_finalize_join(g.app.loadDir,
                 '..', 'Icons', 'Tango','16x16', 'actions', 'stop.png')))
-        g.trace(self.image)
         self.highest_line = 0
             # The highest line that is currently visibile.
         # Set the name to gutter so that the QFrame#gutter style sheet applies.
@@ -829,7 +828,7 @@ class NumberBar(QtWidgets.QFrame):
         painter.drawText(x, y, s)
         if bold:
             self.setBold(painter, False)
-        if n in self.breakpoints:
+        if n in self.breakpoints: ### Test g.fullPath.
             target_r = QtCore.QRect(
                 self.fm.width(s) + 16,
                 top_left.y() + self.y_adjust - 2,
