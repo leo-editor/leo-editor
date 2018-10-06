@@ -389,6 +389,16 @@ class Xdb(pdb.Pdb, threading.Thread):
             while frame and frame is not self.botframe:
                 del frame.f_trace
                 frame = frame.f_back
+    #@+node:ekr.20181006052604.1: *3* xdb.has_breakpoint & has_breakpoints
+    def has_breakpoint(self, filename, lineno):
+        '''Return True if there is a breakpoint at the given file and line.'''
+        filename = self.canonic(filename)
+        aList = self.breaks.get(filename) or []
+        return lineno in aList
+
+    def has_breakpoints(self):
+        '''Return True if there are any breakpoints.'''
+        return self.breaks
     #@+node:ekr.20181004060517.1: *3* xdb.make_at_file_node & helper
     def make_at_file_node(self, line, path):
         '''

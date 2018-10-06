@@ -729,8 +729,6 @@ class NumberBar(QtWidgets.QFrame):
             # The highest line that is currently visibile.
         # Set the name to gutter so that the QFrame#gutter style sheet applies.
         self.offsets = []
-        self.breakpoints = []
-            # A list of tuples (path, n)
         self.setObjectName('gutter')
         self.reloadSettings()
     #@+node:ekr.20181005093003.1: *3* NumberBar.reloadSettings
@@ -754,21 +752,20 @@ class NumberBar(QtWidgets.QFrame):
                 last_y = y2
             return n if self.offsets else 0
             
-        n = find_line(event.y())
         xdb = getattr(g.app, 'xdb', None)
-        if xdb:
-            path = g.fullPath(c, c.p)
-            if not path:
-                return
-            if not xdb.checkline(path, n):
-                return
-            bp = (path, n),
-            if bp in self.breakpoints:
-                self.breakpoints.remove(bp)
-                xdb.qc.put('clear %s:%s' % (path, n))
-            else:
-                self.breakpoints.append(bp)
-                xdb.qc.put('b %s:%s' % (path, n))
+        if not xdb:
+            return
+        path = xdb.canonic(g.fullPath(c, c.p))
+        if not path:
+            return
+        n = find_line(event.y())
+        if not xdb.checkline(path, n):
+            g.trace('FAIL checkline', path, n)
+            return
+        if xdb.has_breakpoint(path, n):
+            xdb.qc.put('clear %s:%s' % (path, n))
+        else:
+            xdb.qc.put('b %s:%s' % (path, n))
     #@+node:ekr.20150403094706.5: *3* NumberBar.update
     def update(self, *args):
         '''
@@ -831,9 +828,15 @@ class NumberBar(QtWidgets.QFrame):
         painter.drawText(x, y, s)
         if bold:
             self.setBold(painter, False)
+        xdb = getattr(g.app, 'xdb', None)
+        if not xdb:
+            return
+        if not xdb.has_breakpoints():
+            return
         path = g.fullPath(c, c.p)
-        bp = (path, n),
-        if bp in self.breakpoints:
+        ### bp = (path, n),
+        ### if bp in self.breakpoints:
+        if xdb.has_breakpoint(path, n):
             target_r = QtCore.QRect(
                 self.fm.width(s) + 16,
                 top_left.y() + self.y_adjust - 2,
