@@ -42,41 +42,38 @@ if g.app.gui.guiName() == "qt":
             layout = QtWidgets.QVBoxLayout(self)
             self.create_buttons(layout)
             self.create_input_area(layout)
+            self.create_output_area(layout)
             layout.addStretch()
             self.setLayout(layout)
             
         #@+node:ekr.20181004182608.1: *4* create_buttons
         def create_buttons(self, layout):
-            
-            c = self.c
-            QFrame = QtWidgets.QFrame
-            layout2 = QtWidgets.QVBoxLayout()
-            for name, func in [
+            '''Create two rows of buttons.'''
+            vlayout = QtWidgets.QVBoxLayout()
+            table1 = (
                 ('start', self.debug_xdb),
                 ('break', self.debug_break),
                 ('help', self.debug_help),
                 ('list', self.debug_list),
                 ('where', self.debug_where),
-                ('-', None),
+            )
+            table2 = (
                 ('continue', self.debug_continue),
                 ('next', self.debug_next),
                 ('quit', self.debug_quit),
                 ('step', self.debug_step),
                 ('return', self.debug_return),
-            ]:
-                if name == '-':
-                    w = QFrame()
-                    w.setFrameShape(QFrame.HLine)
-                    w.setFrameShadow(QFrame.Sunken)
-                    if c.config.getBool('color_theme_is_dark', default=False):
-                        w.setStyleSheet('background: gray')
-                else:
+            )
+            for table in (table1, table2):
+                hlayout = QtWidgets.QHBoxLayout()
+                for name, func in table:
                     w = QtWidgets.QPushButton()
-                    w.setMaximumWidth(200)
+                    # w.setMaximumWidth(200)
                     w.setText(name)
                     w.clicked.connect(func)
-                layout2.addWidget(w)
-            layout.addLayout(layout2)
+                    hlayout.addWidget(w)
+                vlayout.addLayout(hlayout)
+            layout.addLayout(vlayout)
         #@+node:ekr.20181005054101.1: *4* create_input_area
         def create_input_area(self, layout):
             
@@ -87,6 +84,21 @@ if g.app.gui.guiName() == "qt":
             self.line_edit = w = QtWidgets.QLineEdit()
             w.setStyleSheet('background: white; color: black;')
             w.returnPressed.connect(self.debug_input)
+            # Add the widgets to a new layout.
+            layout2 = QtWidgets.QVBoxLayout()
+            layout2.addWidget(label)
+            layout2.addWidget(w)
+            layout.addLayout(layout2)
+        #@+node:ekr.20181006154605.1: *4* create_output_area
+        def create_output_area(self, layout):
+            
+            # Create the Label
+            label = QtWidgets.QLabel()
+            label.setText('Debugger outpuit:')
+            # Create the editor.
+            self.output_area = w = QtWidgets.QTextEdit()
+            w.setStyleSheet('background: white; color: black;')
+            ### w.returnPressed.connect(self.debug_input)
             # Add the widgets to a new layout.
             layout2 = QtWidgets.QVBoxLayout()
             layout2.addWidget(label)
