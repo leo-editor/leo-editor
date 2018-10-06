@@ -264,7 +264,7 @@ class Xdb(pdb.Pdb, threading.Thread):
             s = self.qc.get() # blocks
             if 1:
                 # Just echo.
-                print(s)
+                print(s.rstrip())
             else:
                 # Use the output area.
                 xdb = getattr(g.app, 'xdb')
@@ -488,30 +488,38 @@ class Xdb(pdb.Pdb, threading.Thread):
         '''
         if g.app.killed:
             return
-        c = g.app.log.c
-        xpd_pane = getattr(c, 'xpd_pane', None)
+        # c = g.app.log.c
+        # xpd_pane = getattr(c, 'xpd_pane', None)
+        kill = False
         while not self.qr.empty():
             aList = self.qr.get() # blocks
             kind = aList[0]
             if kind == 'clear-stdout':
-                if xpd_pane:
-                    xpd_pane.clear()
+                pass
+                # if xpd_pane:
+                    # xpd_pane.clear()
             elif kind == 'put-stdout':
                 message = aList[1]
-                if xpd_pane:
-                    xpd_pane.write(message)
-                # else:
-                    # sys.stdout.write(message)
-                    # sys.stdout.flush()
+                sys.stdout.write(message)
+                sys.stdout.flush()
+                # Don't use the xpd_pane.
+                    # if xpd_pane:
+                        # xpd_pane.write(message)
+                    # else:
+                        # sys.stdout.write(message)
+                        # sys.stdout.flush()
             elif kind == 'stop-xdb':
+                kill = True
                 # Never stop the singleton timer.
                     # self.timer.stop()
-                g.app.xdb = None
             elif kind == 'select-line':
                 line, fn = aList[1], aList[2]
                 self.show_line(line, fn)
             else:
                 g.es('unknown qr message:', aList)
+        if kill:
+            g.app.xdb = None
+
     #@+node:ekr.20181002094126.1: *3* xdb.run
     def run(self):
         '''The thread's run method: called via start.'''
