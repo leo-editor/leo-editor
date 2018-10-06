@@ -534,7 +534,7 @@ def xdb_again(event):
         xdb.qc.put(xdb.lastcmd)
     else:
         print('xdb not active')
-#@+node:ekr.20181003054157.1: *3* db-b (to do: external files)
+#@+node:ekr.20181003054157.1: *3* db-b
 @g.command('db-b')
 def xdb_breakpoint(event):
     '''Set the breakpoint at the presently select line in Leo.'''

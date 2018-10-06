@@ -759,7 +759,8 @@ class NumberBar(QtWidgets.QFrame):
         if xdb:
             path = g.fullPath(c, c.p)
             if not path:
-                g.trace('Not in an @<file> tree')
+                return
+            if not xdb.checkline(path, n):
                 return
             bp = (path, n),
             if bp in self.breakpoints:
