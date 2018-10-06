@@ -34,6 +34,7 @@ if g.app.gui.guiName() == "qt":
         
         def __init__(self, c):
             self.c = c
+            self.output_area = None
             QtWidgets.QWidget.__init__(self)
             self.create()
 
@@ -44,7 +45,7 @@ if g.app.gui.guiName() == "qt":
             layout = QtWidgets.QVBoxLayout(self)
             self.create_buttons(layout)
             self.create_input_area(layout)
-            self.create_output_area(layout)
+            # self.create_output_area(layout)
             layout.addStretch()
             self.setLayout(layout)
             
@@ -151,11 +152,15 @@ if g.app.gui.guiName() == "qt":
         #@+node:ekr.20181006161938.1: *3* write & clear
         def clear(self):
             w = self.output_area
-            w.setPlainText('')
+            if w:
+                w.setPlainText('')
             
         def write(self, s):
             w = self.output_area
-            w.insertPlainText(s)
+            if w:
+                w.insertPlainText(s)
+            else:
+                print(s.rstrip())
         #@-others
 #@-others
 #@@language python

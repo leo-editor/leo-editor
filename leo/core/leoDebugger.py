@@ -262,8 +262,16 @@ class Xdb(pdb.Pdb, threading.Thread):
         def readline(self):
             '''Return the next line from the qc channel.'''
             s = self.qc.get() # blocks
-            ### print(s) # Correct.
-            self.qc.put('put-stdout', s)
+            if 1:
+                # Just echo.
+                print(s)
+            else:
+                # Use the output area.
+                xdb = getattr(g.app, 'xdb')
+                if xdb:
+                    xdb.qr.put(['put-stdout', s])
+                else:
+                    print(s)
             return s
     #@+node:ekr.20181003020344.1: *3* class QueueStdout (obj)
     class QueueStdout(object):
@@ -279,6 +287,7 @@ class Xdb(pdb.Pdb, threading.Thread):
         def write(self, s):
             '''Write s to the qr channel'''
             self.qr.put(['put-stdout', s])
+
     #@+node:ekr.20181006160108.1: *3* xdb.__init__
     def __init__(self, path=None):
             
@@ -391,7 +400,8 @@ class Xdb(pdb.Pdb, threading.Thread):
         self.qr.put(['put-stdout', 'End xdb\n'])
         self._user_requested_quit = True
         self.set_quit()
-        self.qr.put(['stop-timer'])
+        self.qr.put(['stop-xdb'])
+            # Kill xdb *after* all other messages have been sent.
         return 1
 
     do_q = do_quit
@@ -493,10 +503,9 @@ class Xdb(pdb.Pdb, threading.Thread):
                 # else:
                     # sys.stdout.write(message)
                     # sys.stdout.flush()
-            elif kind == 'stop-timer':
-                if xpd_pane:
-                    xpd_pane.write('\nxdb stopped\n')
-                ### self.timer.stop()
+            elif kind == 'stop-xdb':
+                # Never stop the singleton timer.
+                    # self.timer.stop()
                 g.app.xdb = None
             elif kind == 'select-line':
                 line, fn = aList[1], aList[2]
