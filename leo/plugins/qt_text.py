@@ -761,11 +761,12 @@ class NumberBar(QtWidgets.QFrame):
             if not path:
                 g.trace('Not in an @<file> tree')
                 return
-            if n in self.breakpoints:
-                self.breakpoints.remove(n)
+            bp = (path, n),
+            if bp in self.breakpoints:
+                self.breakpoints.remove(bp)
                 xdb.qc.put('clear %s:%s' % (path, n))
             else:
-                self.breakpoints.append(n)
+                self.breakpoints.append(bp)
                 xdb.qc.put('b %s:%s' % (path, n))
     #@+node:ekr.20150403094706.5: *3* NumberBar.update
     def update(self, *args):
@@ -816,6 +817,7 @@ class NumberBar(QtWidgets.QFrame):
     #@+node:ekr.20150403094706.7: *3* NumberBar.paintBlock
     def paintBlock(self, bold, n, painter, top_left, scroll_y):
         '''Paint n, right justified in the line number field.'''
+        c = self.c
         if bold:
             self.setBold(painter, True)
         s = str(n)
@@ -828,7 +830,9 @@ class NumberBar(QtWidgets.QFrame):
         painter.drawText(x, y, s)
         if bold:
             self.setBold(painter, False)
-        if n in self.breakpoints: ### Test g.fullPath.
+        path = g.fullPath(c, c.p)
+        bp = (path, n),
+        if bp in self.breakpoints:
             target_r = QtCore.QRect(
                 self.fm.width(s) + 16,
                 top_left.y() + self.y_adjust - 2,
