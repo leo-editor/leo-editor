@@ -48,6 +48,7 @@ if g.app.gui.guiName() == "qt":
         #@+node:ekr.20181004182608.1: *4* create_buttons
         def create_buttons(self, layout):
             
+            c = self.c
             QFrame = QtWidgets.QFrame
             layout2 = QtWidgets.QVBoxLayout()
             for name, func in [
@@ -65,7 +66,8 @@ if g.app.gui.guiName() == "qt":
                     w = QFrame()
                     w.setFrameShape(QFrame.HLine)
                     w.setFrameShadow(QFrame.Sunken)
-                    w.setStyleSheet('background: red')
+                    if c.config.getBool('color_theme_is_dark', default=False):
+                        w.setStyleSheet('background: gray')
                 else:
                     w = QtWidgets.QPushButton()
                     w.setMaximumWidth(200)
