@@ -48,27 +48,34 @@ if g.app.gui.guiName() == "qt":
         #@+node:ekr.20181004182608.1: *4* create_buttons
         def create_buttons(self, layout):
             
+            QFrame = QtWidgets.QFrame
             layout2 = QtWidgets.QVBoxLayout()
-            for name, icon_fn, func in [
-                ('start', 'pyzo_run_file.png', self.debug_start),
-                ('quit', 'pyzo_debug_quit.png', self.debug_stop),
-                ('continue', 'pyzo_debug_continue.png', self.debug_continue),
-                ('next', 'pyzo_debug_next.png', self.debug_next),
-                ('step', 'pyzo_debug_step.png', self.debug_step),
-                ('return', 'pyzo_debug_return.png', self.debug_return),
+            for name, func in [
+                ('start', self.debug_start),
+                ('quit', self.debug_stop),
+                ('help', self.debug_help),
+                ('-', None),
+                # ('break', self.debug_break),
+                ('continue', self.debug_continue),
+                ('next', self.debug_next),
+                ('step', self.debug_step),
+                ('return', self.debug_return),
             ]:
-                w = QtWidgets.QPushButton()
-                w.setMaximumWidth(200)
+                if name is '-':
+                    w = QFrame()
+                    w.setFrameShape(QFrame.HLine)
+                    w.setFrameShadow(QFrame.Sunken)
+                    w.setStyleSheet('background: red')
+                else:
+                    w = QtWidgets.QPushButton()
+                    w.setMaximumWidth(200)
+                    w.setText(name)
+                    w.clicked.connect(func)
                 layout2.addWidget(w)
-                w.setText(name)
-                # icon = self.get_icon(icon_fn)
-                # w.setIcon(icon)
-                w.clicked.connect(func)
             layout.addLayout(layout2)
         #@+node:ekr.20181005054101.1: *4* create_input_area
         def create_input_area(self, layout):
             
-            layout2 = QtWidgets.QVBoxLayout()
             # Create the Label
             label = QtWidgets.QLabel()
             label.setText('Debugger command:')
@@ -76,7 +83,8 @@ if g.app.gui.guiName() == "qt":
             self.line_edit = w = QtWidgets.QLineEdit()
             w.setStyleSheet('background: white; color: black;')
             w.returnPressed.connect(self.debug_input)
-            # Add the widgets.
+            # Add the widgets to a new layout.
+            layout2 = QtWidgets.QVBoxLayout()
             layout2.addWidget(label)
             layout2.addWidget(w)
             layout.addLayout(layout2)
@@ -87,8 +95,14 @@ if g.app.gui.guiName() == "qt":
                 g.app.loadDir, '..', 'Icons', 'debug_icons', fn)
             return QtGui.QIcon(g.app.gui.getImageImage(path))
         #@+node:ekr.20181005042637.1: *3* debug_*
+        def debug_break(self, checked):
+            self.c.k.simulateCommand('db-b')
+            
         def debug_continue(self, checked):
             self.c.k.simulateCommand('db-c')
+            
+        def debug_help(self, checked):
+            self.c.k.simulateCommand('db-h')
             
         def debug_input(self):
             xdb = getattr(g.app, 'xdb', None)
