@@ -10,7 +10,6 @@ controllers = {}
     # Keys are 
 #@+others
 #@+node:ekr.20181005051820.1: ** Top-level functions
-#@+node:ekr.20181006161459.1: *3* get_pane
 #@+node:ekr.20181004143535.4: *3* init (xdb_pane.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
