@@ -6,8 +6,11 @@ commands, and an input area in which the user can type other commands.
 '''
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtGui,QtWidgets # QtConst,QtCore,
+controllers = {}
+    # Keys are 
 #@+others
 #@+node:ekr.20181005051820.1: ** Top-level functions
+#@+node:ekr.20181006161459.1: *3* get_pane
 #@+node:ekr.20181004143535.4: *3* init (xdb_pane.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
@@ -23,7 +26,7 @@ def init():
 #@+node:ekr.20181004143535.5: *3* onCreate (xdb_pane.py)
 def onCreate (tag,key):
     c = key.get('c')
-    w = XdbPane(c)
+    c.xpd_pane = w = XdbPane(c)
     c.frame.log.createTab('Debug',widget=w)
 #@+node:ekr.20181004143535.7: ** class XdbPane
 if g.app.gui.guiName() == "qt":
@@ -52,15 +55,15 @@ if g.app.gui.guiName() == "qt":
             vlayout = QtWidgets.QVBoxLayout()
             table1 = (
                 ('start', self.debug_xdb),
-                ('break', self.debug_break),
+                ('quit', self.debug_quit),
                 ('help', self.debug_help),
                 ('list', self.debug_list),
                 ('where', self.debug_where),
             )
             table2 = (
+                ('break', self.debug_break),
                 ('continue', self.debug_continue),
                 ('next', self.debug_next),
-                ('quit', self.debug_quit),
                 ('step', self.debug_step),
                 ('return', self.debug_return),
             )
@@ -68,7 +71,6 @@ if g.app.gui.guiName() == "qt":
                 hlayout = QtWidgets.QHBoxLayout()
                 for name, func in table:
                     w = QtWidgets.QPushButton()
-                    # w.setMaximumWidth(200)
                     w.setText(name)
                     w.clicked.connect(func)
                     hlayout.addWidget(w)
@@ -95,15 +97,14 @@ if g.app.gui.guiName() == "qt":
             # Create the Label
             label = QtWidgets.QLabel()
             label.setText('Debugger outpuit:')
-            # Create the editor.
+            # Create the output area.
             self.output_area = w = QtWidgets.QTextEdit()
             w.setStyleSheet('background: white; color: black;')
-            ### w.returnPressed.connect(self.debug_input)
             # Add the widgets to a new layout.
-            layout2 = QtWidgets.QVBoxLayout()
-            layout2.addWidget(label)
-            layout2.addWidget(w)
-            layout.addLayout(layout2)
+            vlayout = QtWidgets.QVBoxLayout()
+            vlayout.addWidget(label)
+            vlayout.addWidget(w)
+            layout.addLayout(vlayout)
         #@+node:ekr.20181004143535.20: *4* get_icon
         def get_icon(self, fn):
             """return the icon from Icons/debug_icons"""
@@ -148,6 +149,14 @@ if g.app.gui.guiName() == "qt":
             
         def debug_xdb(self, *args):
             self.c.k.simulateCommand('xdb')
+        #@+node:ekr.20181006161938.1: *3* write & clear
+        def clear(self):
+            w = self.output_area
+            w.setPlainText('')
+            
+        def write(self, s):
+            w = self.output_area
+            w.insertPlainText(s)
         #@-others
 #@-others
 #@@language python
