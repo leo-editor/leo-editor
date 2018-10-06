@@ -318,7 +318,6 @@ class Xdb(pdb.Pdb, threading.Thread):
                 print('Clear all breakpoints?')
                 reply = self.stdin.readline().strip().lower()
                 if reply in ('y', 'yes'):
-                    ### bplist = [bp for bp in bdb.Breakpoint.bpbynumber if bp]
                     self.clear_all_breaks()
                     for bp in bplist:
                         self.message('Deleted %s' % bp)
@@ -441,9 +440,7 @@ class Xdb(pdb.Pdb, threading.Thread):
             aList = self.qr.get() # blocks
             kind = aList[0]
             if kind == 'put-stdout':
-                message = aList[1] # .rstrip()
-                # g.es(message)
-                # print(message)
+                message = aList[1]
                 sys.stdout.write(message)
                 sys.stdout.flush()
             elif kind == 'stop-timer':
@@ -485,16 +482,6 @@ class Xdb(pdb.Pdb, threading.Thread):
         finally:
             self.quitting = True
             sys.settrace(None)
-    #@+node:ekr.20180701151233.1: *3* xdb.select_line
-    def select_line(self, frame, traceback):
-        '''Select the given line in Leo.'''
-        stack, curindex = self.get_stack(frame, traceback)
-        frame, lineno = stack[curindex]
-        filename = frame.f_code.co_filename
-        ### filename = self.canonic(frame.f_code.co_filename)
-            # Might not work for python 2.
-        self.qr.put(['select-line', lineno, filename])
-            # Select the line in the main thread.
     #@+node:ekr.20180701061957.1: *3* xdb.show_line
     def show_line(self, line, fn):
         '''
@@ -502,9 +489,6 @@ class Xdb(pdb.Pdb, threading.Thread):
         fn should be a full path to a file.
         '''
         c = g.app.log.c
-        ###
-        # It's not clear that this is correct in all cases.
-        # Bdb.canonic caches file names and does os.path.abspath.
         target = g.os_path_finalize(fn).replace('\\','/')
         if not g.os_path_exists(fn):
             g.trace('===== Does not exist', fn)
@@ -523,6 +507,15 @@ class Xdb(pdb.Pdb, threading.Thread):
         junk_p, junk_offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
         if not ok:
             g.trace('FAIL:', target)
+    #@+node:ekr.20180701151233.1: *3* xdb.select_line
+    def select_line(self, frame, traceback):
+        '''Select the given line in Leo.'''
+        stack, curindex = self.get_stack(frame, traceback)
+        frame, lineno = stack[curindex]
+        filename = frame.f_code.co_filename
+        self.qr.put(['select-line', lineno, filename])
+            # Select the line in the main thread.
+            # xdb.show_line finalizes the file name.
     #@-others
 #@+node:ekr.20181001054314.1: ** top-level xdb commands
 def db_command(event, command):
@@ -560,7 +553,6 @@ def xdb_breakpoint(event):
     root, fileName = x.find_root(p)
     if not root:
         g.trace('no root', p.h)
-        ### To do.
         return
     path = g.fullPath(c, root)
     n0 = x.find_node_start(p=p)
