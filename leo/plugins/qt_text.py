@@ -745,7 +745,7 @@ class NumberBar(QtWidgets.QFrame):
         c = self.c
 
         def find_line(y):
-            last_y = 0
+            n, last_y = 0, 0
             for n, y2 in self.offsets:
                 if last_y <= y < y2:
                     return n
