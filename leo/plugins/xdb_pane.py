@@ -52,17 +52,19 @@ if g.app.gui.guiName() == "qt":
             QFrame = QtWidgets.QFrame
             layout2 = QtWidgets.QVBoxLayout()
             for name, func in [
-                ('start', self.debug_start),
-                ('quit', self.debug_stop),
+                ('start', self.debug_xdb),
+                ('break', self.debug_break),
                 ('help', self.debug_help),
+                ('list', self.debug_list),
+                ('where', self.debug_where),
                 ('-', None),
-                # ('break', self.debug_break),
                 ('continue', self.debug_continue),
                 ('next', self.debug_next),
+                ('quit', self.debug_quit),
                 ('step', self.debug_step),
                 ('return', self.debug_return),
             ]:
-                if name is '-':
+                if name == '-':
                     w = QFrame()
                     w.setFrameShape(QFrame.HLine)
                     w.setFrameShadow(QFrame.Sunken)
@@ -113,21 +115,27 @@ if g.app.gui.guiName() == "qt":
                 xdb.qc.put(command)
             else:
                 print('xdb not active')
+                
+        def debug_list(self, checked):
+            self.c.k.simulateCommand('db-l')
 
         def debug_next(self, checked):
             self.c.k.simulateCommand('db-n')
             
+        def debug_quit(self, *args):
+            self.c.k.simulateCommand('db-q')
+            
         def debug_return(self, *args):
             self.c.k.simulateCommand('db-r')
-            
-        def debug_start(self, *args):
-            self.c.k.simulateCommand('xdb')
             
         def debug_step(self, *args):
             self.c.k.simulateCommand('db-s')
             
-        def debug_stop(self, *args):
-            self.c.k.simulateCommand('db-kill')
+        def debug_where(self, *args):
+            self.c.k.simulateCommand('db-w')
+            
+        def debug_xdb(self, *args):
+            self.c.k.simulateCommand('xdb')
         #@-others
 #@-others
 #@@language python

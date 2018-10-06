@@ -2,7 +2,72 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150514040118.1: * @file ../commands/debugCommands.py
 #@@first
-'''Leo's debug commands.'''
+'''
+Leo's debug commands.
+
+Leo's integrated debugger supports the xdb and various db-* commands,
+corresponding to the pdb commands:
+
+**Commands**
+
+xdb: Start a Leo's integrated debugger.
+The presently-selected node should be within an @<file> tree.
+
+Now you are ready to execute all the db-* commands. You can execute these
+commands from the minibuffer, or from the the Debug pane. The following
+correspond to the pdb commands::
+
+    db-b: Set a breakpoint at the line shown in Leo. It should be an executable line.
+    db-c: Continue, that is, run until the next breakpoint.
+    db-h: Print the help message (in the console, for now)
+    db-l: List a few lines around present location.
+    db-n: Execute the next line.
+    db-q: End the debugger.
+    db-r: Return from the present function/method.
+    db-s: Step into the next line.
+    db-w: Print the stack.
+
+There are two additional commands::
+
+    db-again: Run the previous db-command.
+    db-input: Prompt for any pdb command, then execute it.
+
+The db-input command allows you can enter any pdb command at all. For
+example: "print c". But you don't have to run these commands from the
+minibuffer, as discussed next.
+
+**Setting breakpoints in the gutter**
+
+When @bool use_gutter = True, Leo shows a border in the body pane. By
+default, the line-numbering.py plugin is enabled, and if so, the gutter
+shows correct line number in the external file.
+
+After executing the xdb command, you can set a breakpoint on any executable
+line by clicking in the gutter to the right of the line number. You can
+also set a breakpoint any time the debugger is stopped.
+
+Using the gutter is optional. You can also set breakpoints with the db-b
+command or by typing "d line-number" or "d file-name:line-number" using the
+db-input command, or by using the Debug pane (see below)
+
+**The Debug pane**
+
+The xdb_pane.py plugin creates the Debug pane in the Log pane. The pane
+contains buttons for all the commands listed above. In addition, there is
+an input area in which you can enter pdb commands. This is a bit easier to
+use than the db-input command.
+
+**Summary**
+
+The xdb and db-* commands are always available. They correspond to pdb
+commands.
+
+When xdb is active you may set breakpoints by clicking in the gutter next
+to any executable line. The line_numbering plugin must be enabled and @bool
+use_gutter must be True.
+
+The xdb_pane plugin creates the Debug pane in the Log window.
+'''
 #@+<< imports >>
 #@+node:ekr.20150514050138.1: ** << imports >> (debugCommands.py)
 import leo.core.leoGlobals as g
@@ -576,7 +641,30 @@ def xdb_breakpoint(event):
     n = x.node_offset_to_file_line(row, p, root)
     if n is not None:
         xdb.qc.put('b %s:%s' % (path, n+1))
-#@+node:ekr.20180702074705.1: *3* db-c/h/l/n/q/r/s
+#@+node:ekr.20180701050839.2: *3* db-input
+@g.command('db-input')
+def xdb_input(event):
+    '''Prompt the user for a pdb command and execute it.'''
+    c = event.get('c')
+    if not c:
+        return g.trace('no c')
+    xdb = getattr(g.app, 'xdb', None)
+    if not xdb:
+        print('xdb not active')
+        return
+        
+    def callback(args, c, event):
+        xdb = getattr(g.app, 'xdb', None)
+        if xdb:
+            command = args[0].strip()
+            if not command:
+                command = xdb.lastcmd
+            xdb.qc.put(command)
+        else:
+            g.trace('xdb not active')
+
+    c.interactive(callback, event, prompts=['Debugger command: '])
+#@+node:ekr.20180702074705.1: *3* db-c/h/l/n/q/r/s/w
 @g.command('db-c')
 def xdb_c(event):
     '''execute the pdb 'continue' command.'''
@@ -612,38 +700,10 @@ def xdb_s(event):
     '''execute the pdb 'step' command.'''
     db_command(event, 's')
     
-#@+node:ekr.20180701050839.2: *3* db-input
-@g.command('db-input')
-def xdb_input(event):
-    '''Prompt the user for a pdb command and execute it.'''
-    c = event.get('c')
-    if not c:
-        return g.trace('no c')
-    xdb = getattr(g.app, 'xdb', None)
-    if not xdb:
-        print('xdb not active')
-        return
-        
-    def callback(args, c, event):
-        xdb = getattr(g.app, 'xdb', None)
-        if xdb:
-            command = args[0].strip()
-            if not command:
-                command = xdb.lastcmd
-            xdb.qc.put(command)
-        else:
-            g.trace('xdb not active')
-
-    c.interactive(callback, event, prompts=['Debugger command: '])
-#@+node:ekr.20180701054344.1: *3* db-kill
-@g.command('db-kill')
-def xdb_kill(event):
-    '''Terminate xdb.'''
-    xdb = getattr(g.app, 'xdb', None)
-    if xdb:
-        xdb.do_quit()
-    else:
-        print('xdb not active')
+@g.command('db-w')
+def xdb_w(event):
+    '''execute the pdb 'where' command.'''
+    db_command(event, 'w')
 #@+node:ekr.20181003015636.1: *3* db-status
 @g.command('db-status')
 def xdb_status(event):
