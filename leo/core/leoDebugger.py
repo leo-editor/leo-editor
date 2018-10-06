@@ -388,7 +388,7 @@ class Xdb(pdb.Pdb, threading.Thread):
         """q(uit)\nexit
         Quit from the debugger. The program being executed is aborted.
         """
-        self.qr.put(['put-stdout', 'q\nEnd xdb\n'])
+        self.qr.put(['put-stdout', 'End xdb\n'])
         self._user_requested_quit = True
         self.set_quit()
         self.qr.put(['stop-timer'])
