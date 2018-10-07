@@ -46,7 +46,7 @@ if g.app.gui.guiName() == "qt":
             layout = QtWidgets.QVBoxLayout(self)
             self.create_buttons(layout)
             self.create_input_area(layout)
-            if c.config.getBool('use_xdp_pane_output_area', default=True):
+            if c.config.getBool('use_xdb_pane_output_area', default=True):
                 self.create_output_area(layout)
             else:
                 self.output_area = None

@@ -250,7 +250,7 @@ class Xdb(pdb.Pdb, threading.Thread):
     Settings
     --------
     
-    When @bool use_xdp_pane_output_area is True, all debugger
+    When @bool use_xdb_pane_output_area is True, all debugger
     output is sent to an output area in the Debug pane.
     '''
     #@+others
