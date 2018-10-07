@@ -834,8 +834,6 @@ class NumberBar(QtWidgets.QFrame):
         if not xdb.has_breakpoints():
             return
         path = g.fullPath(c, c.p)
-        ### bp = (path, n),
-        ### if bp in self.breakpoints:
         if xdb.has_breakpoint(path, n):
             target_r = QtCore.QRect(
                 self.fm.width(s) + 16,
