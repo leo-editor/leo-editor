@@ -146,7 +146,8 @@ class Xdb(pdb.Pdb, threading.Thread):
             
         self.qc = queue.Queue() # The command queue.
         self.qr = queue.Queue() # The request queue.
-        #
+        stdin_q = self.QueueStdin(qc=self.qc)
+        stdout_q = self.QueueStdout(qr=self.qr)
         # Start the singleton listener, in the main Leo thread.
         timer = getattr(g.app, 'xdb_timer', None)
         if timer:
@@ -154,16 +155,15 @@ class Xdb(pdb.Pdb, threading.Thread):
         else:
             self.timer = g.IdleTime(listener, delay=0)
             self.timer.start()
-        #
         # Init the base classes.
         threading.Thread.__init__(self)
         pdb.Pdb.__init__(self,
-            stdin=self.QueueStdin(qc=self.qc),
-                # Get input from Leo's main thread.
-            stdout=self.QueueStdout(qr=self.qr),
+            stdin=stdin_q,
+            stdout=stdout_q,
             readrc=False,
-            # Don't read a .rc file.
+                # Don't read a .rc file.
         )
+        sys.stdout = stdout_q
         self.daemon = True
         self.path = path
         self.prompt = '(xdb) '
@@ -391,6 +391,7 @@ def listener(timer):
             g.es('unknown qr message:', aList)
     if kill:
         g.app.xdb = None
+        sys.stdout = sys.__stdout__
         # Never stop the singleton timer.
             # self.timer.stop()
 #@+node:ekr.20181004060517.1: *3* function: make_at_file_node
