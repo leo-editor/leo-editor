@@ -166,6 +166,7 @@ if g.app.gui.guiName() == "qt":
             w = self.output_area
             if w:
                 w.insertPlainText(s)
+                w.moveCursor(QtGui.QTextCursor.End)
             else:
                 print(s.rstrip())
         #@-others
