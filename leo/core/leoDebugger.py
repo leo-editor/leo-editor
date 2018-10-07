@@ -217,9 +217,7 @@ def xdb_command(event):
     xdb = getattr(g.app, 'xdb', None)
     if xdb:
         # Just issue a message.
-        xdb.qr.put(['put-stdout',
-            'xdb active: use Quit button or db-q to terminate'
-        ])
+        xdb.write('xdb active: use Quit button or db-q to terminate')
         # Killing the previous debugger works,
         # *provided* we don't try to restart xdb!
         # That would create a race condition on g.app.xdb.
@@ -269,7 +267,7 @@ class Xdb(pdb.Pdb, threading.Thread):
                 # Use the output area.
                 xdb = getattr(g.app, 'xdb')
                 if xdb:
-                    xdb.qr.put(['put-stdout', s])
+                    xdb.write(s)
                 else:
                     print(s)
             return s
@@ -287,7 +285,6 @@ class Xdb(pdb.Pdb, threading.Thread):
         def write(self, s):
             '''Write s to the qr channel'''
             self.qr.put(['put-stdout', s])
-
     #@+node:ekr.20181006160108.1: *3* xdb.__init__
     def __init__(self, path=None):
             
@@ -397,7 +394,7 @@ class Xdb(pdb.Pdb, threading.Thread):
         """q(uit)\nexit
         Quit from the debugger. The program being executed is aborted.
         """
-        self.qr.put(['put-stdout', 'End xdb\n'])
+        self.write('End xdb\n')
         self._user_requested_quit = True
         self.set_quit()
         self.qr.put(['stop-xdb'])
@@ -423,7 +420,7 @@ class Xdb(pdb.Pdb, threading.Thread):
         if not self.breaks:
             # no breakpoints; run without debugger overhead.
             # Do *not call kill(): only db-kill and db-q do that.
-            # self.qr.put(['put-stdout', 'clearing sys.settrace\n'])
+            # self.write('clearing sys.settrace\n')
             sys.settrace(None)
             frame = sys._getframe().f_back
             while frame and frame is not self.botframe:
@@ -488,30 +485,24 @@ class Xdb(pdb.Pdb, threading.Thread):
         '''
         if g.app.killed:
             return
-        # c = g.app.log.c
-        # xpd_pane = getattr(c, 'xpd_pane', None)
+        c = g.app.log.c
+        xpd_pane = getattr(c, 'xpd_pane', None)
         kill = False
         while not self.qr.empty():
             aList = self.qr.get() # blocks
             kind = aList[0]
             if kind == 'clear-stdout':
-                pass
-                # if xpd_pane:
-                    # xpd_pane.clear()
+                if xpd_pane:
+                    xpd_pane.clear()
             elif kind == 'put-stdout':
                 message = aList[1]
-                sys.stdout.write(message)
-                sys.stdout.flush()
-                # Don't use the xpd_pane.
-                    # if xpd_pane:
-                        # xpd_pane.write(message)
-                    # else:
-                        # sys.stdout.write(message)
-                        # sys.stdout.flush()
+                if xpd_pane:
+                    xpd_pane.write(message)
+                else:
+                    sys.stdout.write(message)
+                    sys.stdout.flush()
             elif kind == 'stop-xdb':
                 kill = True
-                # Never stop the singleton timer.
-                    # self.timer.stop()
             elif kind == 'select-line':
                 line, fn = aList[1], aList[2]
                 self.show_line(line, fn)
@@ -519,7 +510,8 @@ class Xdb(pdb.Pdb, threading.Thread):
                 g.es('unknown qr message:', aList)
         if kill:
             g.app.xdb = None
-
+            # Never stop the singleton timer.
+                # self.timer.stop()
     #@+node:ekr.20181002094126.1: *3* xdb.run
     def run(self):
         '''The thread's run method: called via start.'''
@@ -585,6 +577,10 @@ class Xdb(pdb.Pdb, threading.Thread):
         self.qr.put(['select-line', lineno, filename])
             # Select the line in the main thread.
             # xdb.show_line finalizes the file name.
+    #@+node:ekr.20181007044254.1: *3* xdb.write
+    def write(self, s):
+        '''Write s to the output stream.'''
+        self.qr.put(['put-stdout', s])
     #@-others
 #@-others
 #@@language python
