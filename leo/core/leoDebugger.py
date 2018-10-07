@@ -233,20 +233,25 @@ def xdb_command(event):
 #@+node:ekr.20180701050839.5: ** class Xdb (pdb.Pdb, threading.Thread)
 class Xdb(pdb.Pdb, threading.Thread):
     '''
-    An external debugger that runs without haning Leo.
+    An debugger, a subclass of Pdb, that runs in a separate thread without
+    hanging Leo. Only one debugger, g.app.xdb, can be active at any time.
     
-    The xdb command calls this class's start method, thereby running each
-    instance in a separate thread.
+    A singleton listener method, g.app,xdb_timer, runs in the main Leo
+    thread. The listener runs until Leo exists.
     
-    The ctor starts the listener method *in the main Leo thread*.
-    
-    Two Queues communicate between the two thread:
+    Two Queues communicate between the threads:
         
-    - self.qc contains commands from the main thread to this thread.
-    - self.qr contains requests from this thread to the main thread.
+    - xdb.qc contains commands from the main thread to this thread.
+      All xdb/pdb input comes from this queue.
     
-    This class overrides the Pdb.stdin ivar so that all input comes from
-    the main thread.
+    - xdb.qr contains requests from the xdb thread to the main thread.
+      All xdb/pdb output goes to this queue.
+    
+    Settings
+    --------
+    
+    When @bool use_xdp_pane_output_area is True, all debugger
+    output is sent to an output area in the Debug pane.
     '''
     #@+others
     #@+node:ekr.20180701050839.4: *3* class QueueStdin (obj)

@@ -31,6 +31,7 @@ def onCreate (tag,key):
 if g.app.gui.guiName() == "qt":
 
     class XdbPane(QtWidgets.QWidget):
+        '''Create the contents of the Debug pane.'''
         
         def __init__(self, c):
             self.c = c
@@ -40,7 +41,7 @@ if g.app.gui.guiName() == "qt":
         #@+others
         #@+node:ekr.20181005043209.1: *3* create & helpers
         def create(self):
-            '''Create the Debug pane in the Log pane.'''
+            '''Create the Debug tab in the Log pane.'''
             c = self.c
             layout = QtWidgets.QVBoxLayout(self)
             self.create_buttons(layout)
@@ -51,7 +52,6 @@ if g.app.gui.guiName() == "qt":
                 self.output_area = None
             layout.addStretch()
             self.setLayout(layout)
-            
         #@+node:ekr.20181004182608.1: *4* create_buttons
         def create_buttons(self, layout):
             '''Create two rows of buttons.'''
@@ -156,11 +156,13 @@ if g.app.gui.guiName() == "qt":
             self.c.k.simulateCommand('xdb')
         #@+node:ekr.20181006161938.1: *3* write & clear
         def clear(self):
+            '''Clear the output area.'''
             w = self.output_area
             if w:
                 w.setPlainText('')
             
         def write(self, s):
+            '''Write the line s to the output area, or print it.'''
             w = self.output_area
             if w:
                 w.insertPlainText(s)
