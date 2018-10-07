@@ -5,7 +5,7 @@ Creates a Debug tab in the log pane, containing buttons for common xdb
 commands, and an input area in which the user can type other commands.
 '''
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtGui,QtWidgets # QtConst,QtCore,
+from leo.core.leoQt import QtCore,QtGui,QtWidgets # QtConst
 controllers = {}
     # Keys are 
 #@+others
@@ -34,7 +34,6 @@ if g.app.gui.guiName() == "qt":
         
         def __init__(self, c):
             self.c = c
-            self.output_area = None
             QtWidgets.QWidget.__init__(self)
             self.create()
 
@@ -42,10 +41,14 @@ if g.app.gui.guiName() == "qt":
         #@+node:ekr.20181005043209.1: *3* create & helpers
         def create(self):
             '''Create the Debug pane in the Log pane.'''
+            c = self.c
             layout = QtWidgets.QVBoxLayout(self)
             self.create_buttons(layout)
             self.create_input_area(layout)
-            # self.create_output_area(layout)
+            if c.config.getBool('use_xdp_pane_output_area', default=True):
+                self.create_output_area(layout)
+            else:
+                self.output_area = None
             layout.addStretch()
             self.setLayout(layout)
             
@@ -100,6 +103,8 @@ if g.app.gui.guiName() == "qt":
             # Create the output area.
             self.output_area = w = QtWidgets.QTextEdit()
             w.setStyleSheet('background: white; color: black;')
+            w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+            w.setWordWrapMode(QtGui.QTextOption.NoWrap)
             # Add the widgets to a new layout.
             vlayout = QtWidgets.QVBoxLayout()
             vlayout.addWidget(label)
