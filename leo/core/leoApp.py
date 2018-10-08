@@ -50,13 +50,17 @@ class IdleTimeManager(object):
     def add_callback(self, callback):
         '''Add a callback to be called at every idle time.'''
         self.callback_list.append(callback)
-    #@+node:ekr.20161026124810.1: *3* itm.on_idle
+    #@+node:ekr.20161026124810.1: *3* itm.on_idle (changed)
     on_idle_count = 0
 
     def on_idle(self, timer):
         '''IdleTimeManager: Run all idle-time callbacks.'''
         if not g.app: return
         if g.app.killed: return
+        if not g.app.pluginsController:
+            g.trace('No g.app.pluginsController', g.callers())
+            timer.stop()
+            return # For debugger.
         self.on_idle_count += 1
         # Handle the registered callbacks.
         for callback in self.callback_list:
@@ -1265,6 +1269,10 @@ class LeoApp(object):
         app.logWaiting = []
         # Essential when opening multiple files...
         g.app.setLog(None)
+    #@+node:ekr.20180924093227.1: *3* app.c property
+    @property
+    def c (self):
+        return self.log and self.log.c
     #@+node:ekr.20171127111053.1: *3* app.Closing
     #@+node:ekr.20031218072017.2609: *4* app.closeLeoWindow
     def closeLeoWindow(self, frame, new_c=None, finish_quit=True):
@@ -1803,28 +1811,30 @@ class LoadManager(object):
         '''Return the absolute path to the theme .leo file.'''
         lm = self
         resolve = self.resolve_theme_path
+        #
         # Step 1: Use the --theme file if it exists
         path = resolve(lm.options.get('theme_path'), tag='--theme')
         if path: return path
+        #
         # Step 2: look for the @string theme-name setting in the first loaded file.
         # This is a hack, but especially useful for test*.leo files in leo/themes.
         path = lm.files and lm.files[0]
         if path and g.os_path_exists(path):
             # Tricky: we must call lm.computeLocalSettings *here*.
             theme_c = lm.openSettingsFile(path)
-            if not theme_c:
-                return None # Fix #843.
-            settings_d, junk_shortcuts_d = lm.computeLocalSettings(
-                c=theme_c,
-                settings_d=lm.globalSettingsDict,
-                bindings_d=lm.globalBindingsDict,
-                localFlag=False,
-            )
-            setting = settings_d.get_string_setting('theme-name')
-            if setting:
-                tag = theme_c.shortFileName()
-                path = resolve(setting, tag=tag)
-                if path: return path
+            if theme_c:
+                settings_d, junk_shortcuts_d = lm.computeLocalSettings(
+                    c=theme_c,
+                    settings_d=lm.globalSettingsDict,
+                    bindings_d=lm.globalBindingsDict,
+                    localFlag=False,
+                )
+                setting = settings_d.get_string_setting('theme-name')
+                if setting:
+                    tag = theme_c.shortFileName()
+                    path = resolve(setting, tag=tag)
+                    if path: return path
+        #
         # Finally, use the setting in myLeoSettings.leo.
         setting = lm.globalSettingsDict.get_string_setting('theme-name')
         tag = 'myLeoSettings.leo'
@@ -1949,10 +1959,12 @@ class LoadManager(object):
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(self, c, localFlag, theme=False):
         import leo.core.leoConfig as leoConfig
-        parser = leoConfig.SettingsTreeParser(c, localFlag)
-            # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
-        shortcutsDict, settingsDict = parser.traverse(theme=theme)
-        return shortcutsDict, settingsDict
+        if c:
+            parser = leoConfig.SettingsTreeParser(c, localFlag)
+                # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
+            shortcutsDict, settingsDict = parser.traverse(theme=theme)
+            return shortcutsDict, settingsDict
+        return None, None
     #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
     def getPreviousSettings(self, fn):
         '''
@@ -1975,14 +1987,18 @@ class LoadManager(object):
                 g.app.preReadFlag = False
             # Merge the settings from c into *copies* of the global dicts.
             d1, d2 = lm.computeLocalSettings(c,
-                lm.globalSettingsDict, lm.globalBindingsDict, localFlag=True)
+                lm.globalSettingsDict,
+                lm.globalBindingsDict,
+                localFlag=True)
                     # d1 and d2 are copies.
             d1.setName(settingsName)
             d2.setName(shortcutsName)
-        else:
-            # Get the settings from the globals settings dicts.
-            d1 = lm.globalSettingsDict.copy(settingsName)
-            d2 = lm.globalBindingsDict.copy(shortcutsName)
+            return PreviousSettings(d1, d2)
+        #
+        # The file does not exist, or is not valid.
+        # Get the settings from the globals settings dicts.
+        d1 = lm.globalSettingsDict.copy(settingsName)
+        d2 = lm.globalBindingsDict.copy(shortcutsName)
         return PreviousSettings(d1, d2)
     #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts(self, c, old_d, new_d, localFlag):
@@ -3082,14 +3098,12 @@ class LoadManager(object):
         # For second read, the settings for the file are *exactly* previousSettings.
         c = g.app.newCommander(fileName=fn, gui=gui,
             previousSettings=previousSettings)
-        assert c
         # Open the file, if possible.
         g.doHook('open0')
         theFile = lm.openLeoOrZipFile(fn)
         if isinstance(theFile, sqlite3.Connection):
             # this commander is associated with sqlite db
             c.sqlite_connection = theFile
-            
         # Enable the log.
         g.app.unlockLog()
         c.frame.log.enable(True)
@@ -3279,7 +3293,8 @@ class LoadManager(object):
                 theDir = c.os_path_finalize(g.os_path_dirname(fn))
                 c.openDirectory = c.frame.openDirectory = theDir
         else:
-            g.app.closeLeoWindow(c.frame, finish_quit=self.more_cmdline_files is False)
+            g.app.closeLeoWindow(c.frame, finish_quit=False)
+                # #970: Never close Leo here.
         return ok
     #@+node:ekr.20160430063406.1: *3* LM.revertCommander
     def revertCommander(self, c):

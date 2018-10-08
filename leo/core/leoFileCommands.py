@@ -65,12 +65,24 @@ class FastRead (object):
         if not s:
             with open(path, 'rb') as f:
                 s = f.read()
-        return self.readWithElementTree(s)
+        return self.readWithElementTree(path, s)
     #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
-    def readWithElementTree(self, s):
+    def readWithElementTree(self, path, s):
 
         contents = g.toUnicode(s) if g.isPython3 else s
-        xroot = ElementTree.fromstring(contents)
+        try:
+            xroot = ElementTree.fromstring(contents)
+        except Exception as e:
+            if path:
+                message = 'bad .leo file: %s' % g.shortFileName(path)
+            else:
+                message = 'The clipboard is not a vaild .leo file'
+            print('')
+            g.es_print(message, color='red')
+            g.es_print(g.toUnicode(e))
+            print('')
+            # #970: Just report failure here.
+            return None
         g_element = xroot.find('globals')
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
@@ -166,7 +178,11 @@ class FastRead (object):
         '''Get global data from the cache, with reasonable defaults.'''
         c = self.c
         d = self.getGlobalData()
-        w, h = d.get('width'), d.get('height')
+        windowSize = g.app.loadManager.options.get('windowSize')
+        if windowSize is not None:
+            h, w = windowSize # checked in LM.scanOption.
+        else:
+            w, h = d.get('width'), d.get('height')
         x, y = d.get('left'), d.get('top')
         r1, r2 = d.get('r1'), d.get('r2')
         c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
@@ -180,22 +196,27 @@ class FastRead (object):
     def getGlobalData(self):
         '''Return a dict containing all global data.'''
         c = self.c
-        data = c.db.get('window_position')
-        if data:
-            # pylint: disable=unpacking-non-sequence
-            top, left, height, width = data
-            d = {
+        try:
+            window_pos = c.db.get('window_position')
+            r1 = float(c.db.get('body_outline_ratio', '0.5'))
+            r2 = float(c.db.get('body_secondary_ratio', '0.5'))
+            top, left, height, width = window_pos
+            return {
                 'top': int(top),
                 'left': int(left),
                 'height': int(height),
                 'width': int(width),
+                'r1': r1,
+                'r2': r2,
             }
-        else:
-            # Use reasonable defaults.
-            d = {'top': 50, 'left': 50, 'height': 500, 'width': 800}
-        d ['r1'] = float(c.db.get('body_outline_ratio', '0.5'))
-        d ['r2'] = float(c.db.get('body_secondary_ratio', '0.5'))
-        return d
+        except Exception:
+            pass
+        # Use reasonable defaults.
+        return {
+            'top': 50, 'left': 50,
+            'height': 500, 'width': 800,
+            'r1': 0.5, 'r2': 0.5,
+        }
     #@+node:ekr.20180602062323.8: *5* fast.scanTnodes
     def scanTnodes (self, t_elements):
 

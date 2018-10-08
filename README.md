@@ -1,21 +1,15 @@
-May 28, 2018
-Leo 5.7.3, http://leoeditor.com, is now available on
+Leo 5.8 final, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 5.7.3**
+**The highlights of Leo 5.8**
 
-- Added support for Jedi autocompletion.
-- Much improved python_terminal plugin.
-- Much improved recursive import script.
-- New leo_babel plugin.
-- Leo's pylint command writes clickable links.
-- Smart searches for functions and methods.
-- Allow separate bindings for numeric keypad keys
-- Added easy-to-use diff-related wrappers for scripts.
-- Allow local overrides of all abbreviations.
-- Improved TypeScript importer.
+- Much faster file-read code.
+- Leo no longer caches file contents. Removed --no-cache!
+- Leo using ElementTree instead of sax to read .leo files.
+- Refactored and improved Leo's key-handling code.
+- Improved Leo's outline drawing code.
 - The usual minor bug fixes.
 
 **Links**

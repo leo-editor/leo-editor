@@ -303,11 +303,11 @@ class ExternalFilesController(object):
         '''
         if g.unitTesting:
             return False
-
+        if c not in g.app.commanders():
+            return False
         if self.yesno_all_time + 3 >= time.time() and self.yesno_all_answer:
             self.yesno_all_time = time.time()  # Still reloading?  Extend time.
             return bool('yes' in self.yesno_all_answer.lower())
-
         if not p:
             for ef in self.files:
                 if ef.path == path:

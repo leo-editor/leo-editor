@@ -3056,7 +3056,7 @@ class LeoQtLog(leoFrame.LeoLog):
         # Create the log tab as the leftmost tab.
         # log.selectTab('Log')
         log.createTab('Log')
-        logWidget = self.contentsDict.get('Log')
+        self.logWidget = logWidget = self.contentsDict.get('Log')
         option = QtGui.QTextOption
         logWidget.setWordWrapMode(
             option.WordWrap if self.wrap else option.NoWrap)
@@ -4299,6 +4299,8 @@ class LeoQtTreeTab(object):
         tt, c, cc = self, self.c, self.cc
         tabName = g.u(tabName)
         exists = tabName in self.tabNames
+        c.treeWantsFocusNow()
+            # Fix #969. Somehow this is important.
         if not exists:
             tt.createTab(tabName) # Calls tt.setNames()
         if tt.lockout:
