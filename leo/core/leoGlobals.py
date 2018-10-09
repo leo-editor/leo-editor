@@ -2450,8 +2450,10 @@ def objToString(obj, indent='', printCaller=False, tag=None):
         prefix = g.caller() if printCaller else tag
     else:
         prefix = None
-    return '%s...\n%s\n' % (prefix, s) if prefix else s
-
+    if prefix:
+        sep = '\n' if '\n' in s else ' '
+        return '%s:%s%s' % (prefix, sep, s)
+    return s
 toString = objToString
 #@+node:ekr.20140401054342.16844: *4* g.run_pylint
 def run_pylint(fn, rc,
