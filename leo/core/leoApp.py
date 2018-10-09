@@ -1342,7 +1342,7 @@ class LeoApp(object):
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
         if 'shutdown' in g.app.debug:
-            g.pr('finishQuit')
+            g.pr('finishQuit: killed:', g.app.killed)
         if not g.app.killed:
             g.doHook("end1")
             g.app.global_cacher.commit_and_close()
@@ -1351,7 +1351,6 @@ class LeoApp(object):
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         self.destroyAllOpenWithFiles()
-        # if trace: g.pr('app.finishQuit: setting g.app.killed: %s' % g.callers())
         g.app.killed = True
             # Disable all further hooks and events.
             # Alas, "idle" events can still be called
@@ -1440,8 +1439,7 @@ class LeoApp(object):
             if trace:
                 g.pr('forgetOpenFile: %s' % g.shortFileName(fn))
             d[tag] = aList
-        else:
-            if trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
+        # elif trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
     def rememberOpenFile(self, fn):
         
