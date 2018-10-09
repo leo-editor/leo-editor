@@ -13,7 +13,6 @@ controller = leoBridge.controller(gui='nullGui',
     loadPlugins=False, readSettings=True,
     silent=False, verbose=False)
 g = controller.globals()
-assert g.app.gui.guiName() == 'nullGui', g.app.gui.guiName()
 c = controller.openLeoFile(path)
 try:
     # Run all unit tests locally.
@@ -32,10 +31,10 @@ try:
             test = None
         elif tm.isTestNode(p):
             test = tm.makeTestCase(p, setup_script)
-        elif tm.isSuiteNode(p): # @suite
+        elif tm.isSuiteNode(p):
             test = tm.makeTestSuite(p, setup_script)
         elif tm.isTestClassNode(p):
-            test = tm.makeTestClass(p) # A suite of tests.
+            test = tm.makeTestClass(p)
         else:
             test = None
         if test:
@@ -45,12 +44,9 @@ try:
         print('No unit tests')
         sys.exit(1)
     runner = unittest.TextTestRunner(
-        failfast=True, ###
-        verbosity=1,
-    )
+        failfast=True, verbosity=1)
     try:
         result = runner.run(suite)
-        ### g.printObj(g.app.unitTestDict, tag='g.app.unitTestDict')
         if result.errors or result.failures:
             print('errors: %s, failures: %s' % (
                 len(result.errors), len(result.failures)))
