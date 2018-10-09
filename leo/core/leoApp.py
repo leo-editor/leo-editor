@@ -2242,10 +2242,9 @@ class LoadManager(object):
         lm.doPrePluginsInit(fileName, pymacs)
             # sets lm.options and lm.files
         g.app.computeSignon()
+        g.app.printSignon()
         if lm.options.get('version'):
-            g.app.printSignon(verbose=True)
             return
-        g.app.printSignon(verbose=False)
         if not g.app.gui:
             return
         g.app.disable_redraw = True
