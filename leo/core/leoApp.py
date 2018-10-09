@@ -18,7 +18,7 @@ import optparse
 import subprocess
 import string
 import sys
-# import time
+import time
 import traceback
 import zipfile
 import platform
@@ -948,7 +948,7 @@ class LeoApp(object):
         '''Command decorator for the LeoApp class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['g', 'app'])
-    #@+node:ekr.20090717112235.6007: *4* app.computeSignon
+    #@+node:ekr.20090717112235.6007: *4* app.computeSignon & printSignon
     def computeSignon(self):
         import leo.core.leoVersion as leoVersion
         app = self
@@ -988,19 +988,22 @@ class LeoApp(object):
             app.signon += ', '+date
         app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
             n1, n2, n3, guiVersion, sysVersion)
-        # Leo 5.6: print the signon immediately:
-        if not app.silentMode:
+            
+    def printSignon(self):
+        '''Print a minimal sigon to the log.'''
+        app = self
+        if app.silentMode:
+            return
+        if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+            print('Note: sys.stdout.encoding is not UTF-8')
+            print('Encoding is: %r' % sys.stdout.encoding)
+            print('See: https://stackoverflow.com/questions/14109024')
             print('')
-            if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
-                print('Note: sys.stdout.encoding is not UTF-8')
-                print('Encoding is: %r' % sys.stdout.encoding)
-                print('See: https://stackoverflow.com/questions/14109024')
-                print('')
-            print(app.signon)
-            print(app.signon1)
-            print(app.signon2)
-            print('** isPython3: %s' % g.isPython3)
-            print('')
+        print(app.signon)
+        # print(app.signon1)
+        # print(app.signon2)
+        # print('** isPython3: %s' % g.isPython3)
+        # print('')
     #@+node:ekr.20100831090251.5838: *4* app.createXGui
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
@@ -2122,24 +2125,20 @@ class LoadManager(object):
         The caller must init the c.config object.
         '''
         lm = self
-        if not fn: return None
-        giveMessage = (
-            not g.app.unitTesting and
-            not g.app.silentMode and
-            not g.app.batchMode)
-            # and not g.app.inBridge
-
-        def message(s):
-            # This occurs early in startup, so use the following.
-            if giveMessage:
-                if not g.isPython3:
-                    s = g.toEncodedString(s, 'ascii')
-                g.blue(s)
-
+        if not fn:
+            return None
         theFile = lm.openLeoOrZipFile(fn)
         if not theFile:
             return None # Fix #843.
-        message('reading settings in %s' % (fn))
+        if not any([g.app.unitTesting, g.app.silentMode, g.app.batchMode]):
+            # This occurs early in startup, so use the following.
+            s = 'reading settings in %s' % (fn)
+            if not g.isPython3:
+                    s = g.toEncodedString(s, 'ascii')
+            # Not useful: it's in the log.
+                # if 'startup' in g.app.debug:
+                    # print(s)
+            g.es(s, color='blue')
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
@@ -2235,6 +2234,7 @@ class LoadManager(object):
     def load(self, fileName=None, pymacs=None):
         '''Load the indicated file'''
         lm = self
+        t1 = time.clock()
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
         print('') # Give some separation for the coming traces.
@@ -2251,7 +2251,8 @@ class LoadManager(object):
             # Disable redraw until all files are loaded.
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
-        if g.app.killed: return
+        if g.app.killed:
+            return
         g.app.idleTimeManager.start()
         # Phase 3: after loading plugins. Create one or more frames.
         if lm.options.get('script') and not self.files:
@@ -2262,13 +2263,17 @@ class LoadManager(object):
             g.app.makeAllBindings()
             if ok and g.app.diff:
                 lm.doDiff()
-        if ok:
-            g.es('') # Clears horizontal scrolling in the log pane.
-            if g.app.listen_to_log_flag:
-                g.app.listenToLog()
-            g.app.gui.runMainLoop()
-            # For scripts, the gui is a nullGui.
-            # and the gui.setScript has already been called.
+        if not ok:
+            return
+        g.es('') # Clears horizontal scrolling in the log pane.
+        if g.app.listen_to_log_flag:
+            g.app.listenToLog()
+        if 'startup' in g.app.debug:
+            t2 = time.clock()
+            g.es_print('startup time: %5.2f sec' % (t2-t1))
+        g.app.gui.runMainLoop()
+        # For scripts, the gui is a nullGui.
+        # and the gui.setScript has already been called.
     #@+node:ekr.20150225133846.7: *4* LM.doDiff
     def doDiff(self):
         '''Support --diff option after loading Leo.'''
@@ -2396,6 +2401,7 @@ class LoadManager(object):
             # also sets lm.files.
         if options.get('version'):
             g.app.computeSignon()
+            g.app.printSignon()
             return
         script = options.get('script')
         verbose = script is None
@@ -2416,6 +2422,7 @@ class LoadManager(object):
         lm.createGui(pymacs)
         # We can't print the signon until we know the gui.
         g.app.computeSignon() # Set app.signon/signon2 for commanders.
+        g.app.printSignon()
     #@+node:ekr.20170302093006.1: *5* LM.createAllImporetersData & helpers (new)
     def createAllImporetersData(self):
         '''
