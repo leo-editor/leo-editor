@@ -75,7 +75,7 @@ class LeoQtTree(leoFrame.LeoTree):
             w.headerItem().setHidden(True)
         except Exception:
             pass
-        n = c.config.getInt('icon-height')
+        n = c.config.getInt('icon-height') or 16
         w.setIconSize(QtCore.QSize(160, n))
     #@+node:ekr.20110605121601.17866: *4* qtree.get_name
     def getName(self):

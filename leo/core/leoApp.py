@@ -18,7 +18,7 @@ import optparse
 import subprocess
 import string
 import sys
-# import time
+import time
 import traceback
 import zipfile
 import platform
@@ -118,10 +118,14 @@ class LeoApp(object):
             # True: load files as theme files (ignore myLeoSettings.leo).
         self.listen_to_log_flag = False
             # True: execute listen-to-log command.
+        self.load_config = False
+            # True: load settings from the cache, not config files.
         self.qt_use_tabs = False
             # True: allow tabbed main window.
         self.restore_session = False
             # True: restore session on startup.
+        self.save_config = False
+            # True: save settings to a cache.
         self.save_session = False
             # True: save session on close.
         self.silentMode = False
@@ -1300,6 +1304,12 @@ class LeoApp(object):
             veto = frame.promptForSave()
             c.promptingForClose = False
             if veto: return False
+        # Write cached data, but only for the last window.
+        if len(g.app.windowList) == 1:
+            g.app.saveConfig()
+            if g.app.save_session and g.app.sessionManager:
+                g.app.sessionManager.save_snapshot()
+                g.app.save_session = False
         g.app.setLog(None) # no log until we reactive a window.
         g.doHook("close-frame", c=c)
         g.app.commander_cacher.commit()
@@ -1390,8 +1400,10 @@ class LeoApp(object):
         '''Exit Leo, prompting to save unsaved outlines first.'''
         g.app.quitting = True
         # if trace: print('onQuit',g.app.save_session,g.app.sessionManager)
+        g.app.saveConfig()
         if g.app.save_session and g.app.sessionManager:
             g.app.sessionManager.save_snapshot()
+            g.app.save_session = False
         while g.app.windowList:
             w = g.app.windowList[0]
             if not g.app.closeLeoWindow(w):
@@ -1564,6 +1576,28 @@ class LeoApp(object):
         # This takes about 3/4 sec when called by the leoBridge module.
         import leo.core.leoCommands as leoCommands
         return leoCommands.Commands(fileName, relativeFileName, gui, previousSettings)
+    #@+node:ekr.20181008134339.1: *3* app.saveConfig (TODO)
+    def saveConfig(self):
+        ### lm = g.app.loadManager
+        c = g.app.log and g.app.log.c
+        if not c:
+            g.trace('========== no c')
+            return
+        if g.app.save_config:
+            table = (
+                ('settings-cache', c.config.settingsDict),
+                ('shortcuts-cache', c.config.shortcutsDict),
+            )
+            for key, d in table:
+                g.app.db [key] = d
+                g.trace('=====', key, len(d.d.keys()))
+            g.app.save_config = False
+            ### g.app.global_cacher.dump()
+            ### g.app.commander_cacher.dump()
+        else:
+            del g.app.db ['config-cache']
+            del g.app.db ['settings-cache']
+            del g.app.db ['shortcuts-cache']
     #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
     def selectLeoWindow(self, c):
         frame = c.frame
@@ -2211,6 +2245,17 @@ class LoadManager(object):
         for c in commanders:
             if c not in old_commanders:
                 g.app.forgetOpenFile(c.fileName())
+    #@+node:ekr.20181008130104.1: *4* LM.readCachedSettings (TODO)
+    def readCachedSettings(self):
+        '''Read the cached settings as if they all were global settings.'''
+        lm = self
+        ####### Only works when clicking close button!
+        settings_d, bindings_d = lm.createDefaultSettingsDicts()
+        lm.globalSettingsDict = d = g.app.db.get('settings-cache') or settings_d
+        g.trace('===== settings', len(d.d.keys()))
+        lm.globalBindingsDict = d = g.app.db.get('shortcuts-cache') or bindings_d
+        g.trace('===== shortcuts', len(d.d.keys()))
+        ### return PreviousSettings(settings_d, bindings_d)
     #@+node:ekr.20120214165710.10838: *4* LM.traceSettingsDict
     def traceSettingsDict(self, d, verbose=False):
         if verbose:
@@ -2236,6 +2281,7 @@ class LoadManager(object):
     #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
     def load(self, fileName=None, pymacs=None):
         '''Load the indicated file'''
+        t1 = time.clock()
         lm = self
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
@@ -2268,6 +2314,8 @@ class LoadManager(object):
             g.es('') # Clears horizontal scrolling in the log pane.
             if g.app.listen_to_log_flag:
                 g.app.listenToLog()
+            t2 = time.clock()
+            g.trace('%5.2f sec' % (t2-t1))
             g.app.gui.runMainLoop()
             # For scripts, the gui is a nullGui.
             # and the gui.setScript has already been called.
@@ -2405,12 +2453,16 @@ class LoadManager(object):
         lm.initApp(verbose)
         g.app.setGlobalDb()
         lm.reportDirectories(verbose)
-        # Read settings *after* setting g.app.config and *before* opening plugins.
-        # This means if-gui has effect only in per-file settings.
-        lm.readGlobalSettingsFiles()
-            # reads only standard settings files, using a null gui.
-            # uses lm.files[0] to compute the local directory
-            # that might contain myLeoSettings.leo.
+        g.trace(g.app.load_config)
+        if g.app.load_config:
+            lm.readCachedSettings()
+        else:
+            # Read settings *after* setting g.app.config and *before* opening plugins.
+            # This means if-gui has effect only in per-file settings.
+            lm.readGlobalSettingsFiles()
+                # reads only standard settings files, using a null gui.
+                # uses lm.files[0] to compute the local directory
+                # that might contain myLeoSettings.leo.
         # Read the recent files file.
         localConfigFile = lm.files[0] if lm.files else None
         g.app.recentFilesManager.readRecentFiles(localConfigFile)
@@ -2701,10 +2753,12 @@ class LoadManager(object):
         add_other('--gui',          'gui to use (qt/qttabs/console/null)')
         add_bool('--listen-to-log', 'start log_listener.py on startup')
         add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
+        add_bool('--load-config',   'Load cached config values')
         add_bool('--maximized',     'start maximized')
         add_bool('--minimized',     'start minimized')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
+        add_bool('--save-config',   'Save config values to a cache')
         add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
         add_other('--script',       'execute a script and then exit', m="PATH")
         add_bool('--script-window', 'execute script using default gui')
@@ -2808,10 +2862,12 @@ class LoadManager(object):
         g.app.start_fullscreen = options.fullscreen
         # --git-diff
         g.app.diff = options.diff
-        # --listen-to-log
-        g.app.listen_to_log_flag = options.listen_to_log
         # --ipython
         g.app.useIpython = options.ipython
+        # --listen-to-log
+        g.app.listen_to_log_flag = options.listen_to_log
+        # --load-config
+        g.app.load_config = options.load_config
         # --maximized
         g.app.start_maximized = options.maximized
         # --minimized
@@ -2823,6 +2879,8 @@ class LoadManager(object):
         g.app.use_splash_screen = (
             not options.no_splash and
             not options.minimized)
+        # --save-config
+        g.app.save_config = True
         # --session-restore & --session-save
         g.app.restore_session = bool(options.session_restore)
         g.app.save_session = bool(options.session_save)

@@ -56,7 +56,7 @@ class CommanderCacher(object):
             g.trace('unexpected exception')
             g.es_exception()
             self.db = {}
-    #@+node:ekr.20180627062431.1: *3* cacher.close (new)
+    #@+node:ekr.20180627062431.1: *3* cacher.close
     def close(self):
         # Careful: self.db may be a dict.
         if SQLITE and hasattr(self.db, 'conn'):

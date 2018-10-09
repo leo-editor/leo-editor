@@ -446,7 +446,9 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting: return None
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
-        d.setStyleSheet(c.active_stylesheet)
+        stylesheet = getattr(c, 'active_stylesheet', None)
+        if stylesheet:
+            d.setStyleSheet(c.active_stylesheet)
         d.setWindowTitle(title)
         if message: d.setText(message)
         d.setIcon(b.Information)
@@ -468,7 +470,9 @@ class LeoQtGui(leoGui.LeoGui):
             return None
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
-        d.setStyleSheet(c.active_stylesheet)
+        stylesheet = getattr(c, 'active_stylesheet', None)
+        if stylesheet:
+            d.setStyleSheet(c.active_stylesheet)
         if message: d.setText(message)
         d.setIcon(b.Warning)
         d.setWindowTitle(title)
