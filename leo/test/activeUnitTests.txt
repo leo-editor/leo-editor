@@ -796,7 +796,8 @@ if g.app.gui.guiName() == 'tkinter':
         'title','top','tree',
         #'treeBar', # leo_treeBar is now injected into frame.canvas.
     )
-else: ivars = ()
+else:
+    ivars = ()
 for ivar in ivars:
     assert hasattr(f,ivar), 'missing frame ivar: %s' % ivar
     val = getattr(f,ivar)
@@ -819,7 +820,8 @@ assert hasattr(g.app,'homeDir') # May well be None.
 
 ivars = (
     # Global managers.
-    'config','externalFilesController',
+    'config',
+    ### 'externalFilesController',
     'loadManager','pluginsController','recentFilesManager',
     # Official ivars.
     'gui',
@@ -5534,13 +5536,16 @@ assert not x.enabledPluginsFileName
 #@+node:ekr.20100203103015.5353: *4* @test efc.ask
 # Not a perfect test, but stil significant.
 efc = g.app.externalFilesController
+if not efc:
+    self.skipTest('no externalFilesController')
 result = efc.ask(c,p.h)
 assert result in (True, False),result
 #@+node:ekr.20100203103015.5355: *4* @test efc.get_ext
 @language python
 
 efc = g.app.externalFilesController
-
+if not efc:
+    self.skipTest('no externalFilesController')
 table = (
     # (None,'.py'),
     # ('','.py'),
@@ -5554,6 +5559,8 @@ for ext,result in table:
         repr(ext),repr(result),repr(result2))
 #@+node:ekr.20100203103015.5354: *4* @test efc.temp_file_path
 efc = g.app.externalFilesController
+if not efc:
+    self.skipTest('no externalFilesController')
 s = efc.temp_file_path(c,p,'.py')
 assert s.endswith('.py')
 #@+node:ville.20090602190735.4770: *4* @test g.command decorator
@@ -8059,7 +8066,7 @@ def spam:
 #@+node:ekr.20170401123840.4: *6* @test find_file_line: @auto-md
 import sys
 # Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
 elif sys.platform.startswith('win'):
     trace = False
@@ -8081,7 +8088,7 @@ else:
     self.skipTest('Skip on Linux')
 #@+node:ekr.20170401123840.5: *6* @test find_file_line: @auto-org
 # Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
 else:
     trace = False
@@ -8101,7 +8108,7 @@ else:
             break
 #@+node:ekr.20170401123840.6: *6* @test find_file_line: @auto-otl
 # Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
 else:
     trace = False
@@ -8122,7 +8129,7 @@ else:
 #@+node:ekr.20170401123840.7: *6* @test find_file_line: @auto-py
 import sys
 # Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
 elif sys.platform.startswith('win'):
     trace = False
@@ -8146,7 +8153,7 @@ else:
     self.skipTest('Skip on Linux')
 #@+node:ekr.20170401123840.8: *6* @@@test find_file_line: @auto-rst
 # Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
 else:
     trace = False
@@ -8170,7 +8177,7 @@ else:
             break
 #@+node:ekr.20170401123840.9: *6* @test find_file_line: @clean-c
 # Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
 else:
     trace = False
@@ -8209,7 +8216,7 @@ else:
     assert not found
 #@+node:ekr.20170401123840.10: *6* @test find_file_line: @clean-python
 # Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
 else:
     trace = False
@@ -8230,7 +8237,7 @@ else:
             break
 #@+node:ekr.20170401123840.11: *6* @test find_file_line: @file-c
 # Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
 else:
     trace = False
@@ -8251,7 +8258,7 @@ else:
             break
 #@+node:ekr.20170401123840.12: *6* @test find_file_line: @file-python
 # Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
 else:
     trace = False
@@ -8272,7 +8279,7 @@ else:
             break
 #@+node:ekr.20170401123840.13: *6* @test find_file_line: @nosent-python
 # Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
 else:
     trace = False
@@ -8293,7 +8300,7 @@ else:
             break
 #@+node:ekr.20170401123840.14: *6* @test find_gnx @file
 # Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
 else:
     root = p.parent().parent()
@@ -11172,56 +11179,53 @@ wName = g.app.gui.widget_name(w)
 assert 'body' in wName, 'focus: %s = %s, expected %s = %s' % (
     w,wName,wrapper,g.app.gui.widget_name(wrapper))
 #@+node:ekr.20060130151716.3: *4* @test minibuffer find commands
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
-else:
-    table = (
-        're-search-forward',
-        're-search-backward',
-        'search-forward',
-        'search-backward',
-        'word-search-forward',
-        'word-search-backward',
-    )
-    
-    for command in table:
-        # This is not a full test.  We must use keyboardQuit here!
-        c.k.simulateCommand(command)
-        c.k.keyboardQuit(None)
+table = (
+    're-search-forward',
+    're-search-backward',
+    'search-forward',
+    'search-backward',
+    'word-search-forward',
+    'word-search-backward',
+)
+
+for command in table:
+    # This is not a full test.  We must use keyboardQuit here!
+    c.k.simulateCommand(command)
+    c.k.keyboardQuit(None)
 #@+node:ekr.20060130151716.2: *4* @test set find mode commands
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
-else:
-    table = (
-        'set-find-everywhere',
-        'set-find-node-only',
-        'set-find-suboutline-only',
-    )
-    # show-find-tab-options     = Ctrl-o
-    # show-find-options         = o
-    for command in table:
-        c.k.simulateCommand(command)
+table = (
+    'set-find-everywhere',
+    'set-find-node-only',
+    'set-find-suboutline-only',
+)
+# show-find-tab-options     = Ctrl-o
+# show-find-options         = o
+for command in table:
+    c.k.simulateCommand(command)
 #@+node:ekr.20060130151716.4: *4* @test show-find-options
 c.k.simulateCommand('show-find-options')
 #@+node:ekr.20060130151716.1: *4* @test toggle find options commands
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
-else:
-    table = (
-        # 'toggle-find-clone-find-all-option',
-        'toggle-find-ignore-case-option',
-        'toggle-find-in-body-option',
-        'toggle-find-in-headline-option',
-        'toggle-find-mark-changes-option',
-        'toggle-find-mark-finds-option',
-        'toggle-find-regex-option',
-        # 'toggle-find-reverse-option',
-        'toggle-find-word-option',
-        'toggle-find-wrap-around-option',
-    )
-    for command in table:
-        c.k.simulateCommand(command)
-        c.k.simulateCommand(command)
+table = (
+    # 'toggle-find-clone-find-all-option',
+    'toggle-find-ignore-case-option',
+    'toggle-find-in-body-option',
+    'toggle-find-in-headline-option',
+    'toggle-find-mark-changes-option',
+    'toggle-find-mark-finds-option',
+    'toggle-find-regex-option',
+    # 'toggle-find-reverse-option',
+    'toggle-find-word-option',
+    'toggle-find-wrap-around-option',
+)
+for command in table:
+    c.k.simulateCommand(command)
+    c.k.simulateCommand(command)
 #@+node:ekr.20071113202153: *4* @test zz end of leoFind tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoFind tests.')
@@ -12380,6 +12384,18 @@ else:
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoGui tests.')
 #@+node:ekr.20090529141856.4682: *3* leoImport
+#@+node:ekr.20181009102459.1: *4* @test setup importer tests
+# A big hack for the travis-ci tests.
+# Init the importer class.
+if g.in_bridge:
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.c
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.c)
+    imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
 #@+node:ekr.20090529141856.4684: *4* Export tests
 @language python
 @tabwidth -4
@@ -12404,7 +12420,7 @@ suite = c.testManager.makeImportExportSuite("importTests",doImport=True)
 c.contractAllHeadlines()
 #@+node:ekr.20090529141856.4717: *5* C tests
 #@+node:ekr.20090529141856.4718: *6* @test c class 1
-if 0: # Preamble
+if False: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
@@ -12451,6 +12467,9 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20090529141856.4719: *6* @test c class--underindented line
+if g.in_bridge:
+    self.skipTest('In bridge')
+
 if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
@@ -16327,6 +16346,19 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20181009103052.29: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20181009103052.30: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 
 #@+node:ekr.20161204042938.1: *6* @@test print('end python tests')
@@ -18057,7 +18089,7 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
-#@+node:ekr.20180929060128.139: *7* @@file @test python top-level later decl
+#@+node:ekr.20181009103052.166: *7* @@file @test python top-level later decl
 #!/usr/bin/env python3
 
 @others
@@ -18065,21 +18097,21 @@ if __name__=="__main__":
     main()
 @language python
 @tabwidth -4
-#@+node:ekr.20180929060128.140: *8* Declarations
+#@+node:ekr.20181009103052.167: *8* Declarations
 import os
 import re
 
-#@+node:ekr.20180929060128.141: *8* merge_value
+#@+node:ekr.20181009103052.168: *8* merge_value
 def merge_value(v1, v2):
     return v
 
-#@+node:ekr.20180929060128.142: *8* class MainDisplay(object)
+#@+node:ekr.20181009103052.169: *8* class MainDisplay(object)
 class MainDisplay(object):
 
     @others
 ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
 
-#@+node:ekr.20180929060128.143: *9* save_file
+#@+node:ekr.20181009103052.170: *9* save_file
 def save_file(self):
     """Write the file out to disk."""
     with open(self.save_name, "w") as f:
@@ -18087,7 +18119,7 @@ def save_file(self):
             f.write(newline)
 
 # This line should be included at the end of the class node.
-#@+node:ekr.20180929060128.144: *8* retab
+#@+node:ekr.20181009103052.171: *8* retab
 def retab(s, tabsize):
     return ''.join(pieces)
 
@@ -29293,6 +29325,9 @@ if hasattr(c,'theScriptingController'):
 # Print does not work: it is redirected.
 g.pr('\nEnd of plugins unit tests')
 #@+node:ekr.20090306091634.1: ** @test print redraw count
+if g.in_bridge:
+    # No need for this extra output.
+    self.skipTest('In bridge')
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
     g.pr('%s: %s' % (p.h,tree.redrawCount))
@@ -29304,7 +29339,9 @@ if 0:
 # Print does not work: it is redirected.
 g.pr('all unit tests done',color='blue')
 #@+node:ekr.20140822063016.4474: ** @test zzz force a quit
-g.app.forceShutdown()
-    # Now works with curses gui.
+import sys
+if not g.app.inBridge:
+    g.app.forceShutdown()
+        # Now works with curses gui.
 #@-all
 #@-leo

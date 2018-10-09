@@ -3009,7 +3009,9 @@ class KeyHandlerClass(object):
             else:
                 return None
         elif g.app.unitTesting:
-            raise AttributeError
+            raise AttributeError('no such command: %s' % commandName)
+        elif g.app.inBridge:
+            raise AttributeError('no such command: %s' % commandName)
         else:
             g.error('simulateCommand: no command for %s' % (commandName))
             return None
