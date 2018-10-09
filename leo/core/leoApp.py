@@ -953,7 +953,7 @@ class LeoApp(object):
         import leo.core.leoVersion as leoVersion
         app = self
         build, date = leoVersion.build, leoVersion.date
-        guiVersion = app.gui.getFullVersion() if app.gui else 'no gui!'
+        guiVersion = ', ' + app.gui.getFullVersion() if app.gui else ''
         leoVer = leoVersion.version
         n1, n2, n3, junk, junk = sys.version_info
         if sys.platform.startswith('win'):
@@ -986,10 +986,10 @@ class LeoApp(object):
             app.signon += ', build '+build
         if date:
             app.signon += ', '+date
-        app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
+        app.signon2 = 'Python %s.%s.%s%s\n%s' % (
             n1, n2, n3, guiVersion, sysVersion)
             
-    def printSignon(self):
+    def printSignon(self, verbose=False):
         '''Print a minimal sigon to the log.'''
         app = self
         if app.silentMode:
@@ -1000,10 +1000,10 @@ class LeoApp(object):
             print('See: https://stackoverflow.com/questions/14109024')
             print('')
         print(app.signon)
-        # print(app.signon1)
-        # print(app.signon2)
-        # print('** isPython3: %s' % g.isPython3)
-        # print('')
+        if verbose:
+            print(app.signon1)
+            print(app.signon2)
+            print('** isPython3: %s' % g.isPython3)
     #@+node:ekr.20100831090251.5838: *4* app.createXGui
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
@@ -2241,9 +2241,11 @@ class LoadManager(object):
             return
         lm.doPrePluginsInit(fileName, pymacs)
             # sets lm.options and lm.files
+        g.app.computeSignon()
         if lm.options.get('version'):
-            print(g.app.signon)
+            g.app.printSignon(verbose=True)
             return
+        g.app.printSignon(verbose=False)
         if not g.app.gui:
             return
         g.app.disable_redraw = True
@@ -2399,8 +2401,6 @@ class LoadManager(object):
         lm.options = options = lm.scanOptions(fileName, pymacs)
             # also sets lm.files.
         if options.get('version'):
-            g.app.computeSignon()
-            g.app.printSignon()
             return
         script = options.get('script')
         verbose = script is None
@@ -2421,7 +2421,6 @@ class LoadManager(object):
         lm.createGui(pymacs)
         # We can't print the signon until we know the gui.
         g.app.computeSignon() # Set app.signon/signon2 for commanders.
-        g.app.printSignon()
     #@+node:ekr.20170302093006.1: *5* LM.createAllImporetersData & helpers (new)
     def createAllImporetersData(self):
         '''
