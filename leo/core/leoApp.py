@@ -2135,9 +2135,8 @@ class LoadManager(object):
             s = 'reading settings in %s' % (fn)
             if not g.isPython3:
                     s = g.toEncodedString(s, 'ascii')
-            # Not useful: it's in the log.
-                # if 'startup' in g.app.debug:
-                    # print(s)
+            if 'startup' in g.app.debug:
+                print(s)
             g.es(s, color='blue')
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
