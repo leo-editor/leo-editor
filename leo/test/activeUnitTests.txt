@@ -410,8 +410,6 @@ tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
     g.pr('%s: %s' % (p.h,tree.redrawCount))
 #@+node:ekr.20100210222021.5388: *3* @test save new file
-# if not g.app.gui.guiName().startswith('qt'):
-    # self.skipTest('Requires Qt')
 if g.in_bridge:
     self.skipTest('Not for TravisCI')
 import os
@@ -553,6 +551,8 @@ def removeFile(path):
         if trace:
             print("@test batch mode: removeFile: not found:",test_file)
 #@+node:ekr.20160419061017.1: *3* @test event classes
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
 import leo.core.leoGui as leoGui # LeoKeyEvent
 import leo.core.leoVim as leoVim # VimEvent.
 import leo.plugins.qt_frame as qt_frame # EventWrapper
