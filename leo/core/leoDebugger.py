@@ -73,7 +73,10 @@ The xdb_pane plugin creates the Debug pane in the Log window.
 #@+node:ekr.20181006100604.1: ** << leoDebugger.py imports >>
 import leo.core.leoGlobals as g
 import bdb
-import queue
+if g.isPython3:
+    import queue
+else:
+    import Queue as queue
 import os
 import pdb
 import re
@@ -161,12 +164,15 @@ class Xdb(pdb.Pdb, threading.Thread):
             self.timer.start()
         # Init the base classes.
         threading.Thread.__init__(self)
-        pdb.Pdb.__init__(self,
-            stdin=stdin_q,
-            stdout=stdout_q,
-            readrc=False,
-                # Don't read a .rc file.
-        )
+        if g.isPython3:
+            pdb.Pdb.__init__(self,
+                stdin=stdin_q,
+                stdout=stdout_q,
+                readrc=False,
+                    # Don't read a .rc file.
+            )
+        else:
+             pdb.Pdb.__init__(self, stdin=stdin_q, stdout=stdout_q)
         sys.stdout = stdout_q
         self.daemon = True
         self.path = path
