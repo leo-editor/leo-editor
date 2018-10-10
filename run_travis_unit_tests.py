@@ -58,7 +58,6 @@ try:
         print('Unexpected exception')
         g.es_exception()
         sys.exit(1)
-
 except Exception as e:
     print('Unexpected exception 2', e)
     sys.exit(1)
