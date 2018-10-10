@@ -721,10 +721,8 @@ for ivar,setting_type,default in g.app.config.ivarsData:
 k = c.k
 getBool  = c.config.getBool
 getColor = c.config.getColor
-
 bg = getColor('body_text_background_color') or 'white'
 fg = getColor('body_text_foreground_color') or 'black'
-
 table = (
     ('command_mode_bg_color',           getColor('command_mode_bg_color') or bg),
     ('command_mode_fg_color',           getColor('command_mode_fg_color') or fg),
@@ -745,7 +743,6 @@ table = (
     ('unselected_body_fg_color',        getColor('unselected_body_fg_color') or bg),
     ('warn_about_redefined_shortcuts',  getBool('warn_about_redefined_shortcuts')),
 )
-
 for ivar,setting in table:
     assert hasattr(k,ivar),ivar
     val = getattr(k,ivar)
@@ -817,7 +814,6 @@ for ivar in ivars:
 
 assert hasattr(g.app,'homeDir') # May well be None.
 #@+node:ekr.20100131171342.5482: *4* @test official g.app ivars
-
 ivars = (
     # Global managers.
     'config',
@@ -840,12 +836,10 @@ ivars = (
     'searchDict','scriptDict',
     'use_psyco',
 )
-
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.in_bridge:
     mayBeNone = ('hookFunction','idleTimeHook','log','openWithInstance')
 else:
     mayBeNone = ('hookFunction','openWithInstance')
-
 for ivar in ivars:
     assert hasattr(g.app,ivar), 'missing app ivar: %s %r' % (ivar,g.app)
     if ivar not in mayBeNone:
@@ -5537,7 +5531,7 @@ assert not x.enabledPluginsFileName
 # Not a perfect test, but stil significant.
 efc = g.app.externalFilesController
 if not efc:
-    self.skipTest('no externalFilesController')
+    self.skipTest('No externalFilesController')
 result = efc.ask(c,p.h)
 assert result in (True, False),result
 #@+node:ekr.20100203103015.5355: *4* @test efc.get_ext
@@ -5545,14 +5539,13 @@ assert result in (True, False),result
 
 efc = g.app.externalFilesController
 if not efc:
-    self.skipTest('no externalFilesController')
+    self.skipTest('No externalFilesController')
 table = (
     # (None,'.py'),
     # ('','.py'),
     ('txt','.txt'),
     ('.txt','.txt'),
 )
-
 for ext,result in table:
     result2 = efc.get_ext(c,p,ext)
     assert result==result2,'ext: %s, expected %s, got %s' % (
@@ -8068,24 +8061,23 @@ import sys
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
-elif sys.platform.startswith('win'):
-    trace = False
-    h = '@auto unittest/at-auto-md-line-number-test.md'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % (n+1))
-            assert n == 8, n
-            break
-else:
-    self.skipTest('Skip on Linux')
+if not sys.platform.startswith('win'):
+    self.skipTest('Requires Windows')
+trace = False
+h = '@auto unittest/at-auto-md-line-number-test.md'
+root = g.findNodeAnywhere(c, h)
+assert root
+s = c.gotoCommands.get_external_file_with_sentinels(root)
+if trace:
+    print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
+for n in range(20):
+    p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
+    if found:
+        if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
+    else:
+        if trace: print('not found: %s' % (n+1))
+        assert n == 8, n
+        break
 #@+node:ekr.20170401123840.5: *6* @test find_file_line: @auto-org
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest or g.in_bridge:
@@ -11299,24 +11291,20 @@ The proper keyword argument is insert=i.
 
 c.frame.body.updateEditors()
 #@+node:ekr.20111121142012.4030: *4* @test c.frame.log relationships
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Qt Required')
 from leo.core.leoQt import QtGui,QtWidgets
 log = c.frame.log
 name = log.__class__.__name__
-
-if g.app.isExternalUnitTest:
-    assert name == 'NullLog',name
-elif g.app.gui.guiName().startswith('qt'):
-    assert name == 'LeoQtLog',name
-    assert log.logCtrl.__class__.__name__ == 'QTextEditWrapper',log.logCtrl
-    assert not issubclass(log.logCtrl.__class__,QtWidgets.QWidget.__class__)
-        # leoQTextEditWidget us a poor name: it is not a Qt widget.
-    assert log.logCtrl.widget.__class__.__name__ == 'LeoQTextBrowser'
-    assert hasattr(log.logCtrl,'widget') and log.logCtrl.widget
-    assert hasattr(log.logCtrl.widget,'leo_log_wrapper')
-    wrapper = log.logCtrl.widget.leo_log_wrapper
-    assert wrapper == log.logCtrl
-else:
-    self.skipTest('Requires Qt Gui')
+assert name == 'LeoQtLog',name
+assert log.logCtrl.__class__.__name__ == 'QTextEditWrapper',log.logCtrl
+assert not issubclass(log.logCtrl.__class__,QtWidgets.QWidget.__class__)
+    # leoQTextEditWidget us a poor name: it is not a Qt widget.
+assert log.logCtrl.widget.__class__.__name__ == 'LeoQTextBrowser'
+assert hasattr(log.logCtrl,'widget') and log.logCtrl.widget
+assert hasattr(log.logCtrl.widget,'leo_log_wrapper')
+wrapper = log.logCtrl.widget.leo_log_wrapper
+assert wrapper == log.logCtrl
 #@+node:ekr.20111121081052.3908: *4* @test c.frame.log.numberOfVisibleTabs
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -12283,58 +12271,59 @@ for ivar in ('c','g','p'):
 g.pr('\nEnd of leoGlobals tests.')
 #@+node:ekr.20100131171342.5599: *3* leoGui & leoQtGui
 #@+node:ekr.20111120124051.3992: *4* @test Ctrl-I inserts only one headline
-from leo.core.leoQt import QtCore,QtGui,QtWidgets
-import leo.plugins.qt_events as qt_events
 import sys
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif sys.platform.startswith('linux'):
-    self.skipTest('linux test')
-elif g.app.gui.guiName().startswith('qt'):
-    def setup(p):
-        delete_children(p)
-        p2 = p.insertAsLastChild()
-        c.selectPosition(p2)
-        p2.h = 'first-child'
-    
-    def delete_children(p):
-        while p.hasChildren():
-            p.firstChild().doDelete()
-    
-    app = g.app.gui.qtApp
-    assert issubclass(app.__class__,QtWidgets.QApplication)
-    wrapper = c.frame.body.wrapper
-    w = wrapper.widget
-    assert g.isTextWrapper(wrapper),wrapper
-    assert g.isTextWidget(w),w
-    # w_name = w.__class__.__name__
-    # bassert w_name in('QsciScintilla','LeoQTextBrowser'),w_name
-    p1 = p.copy()
-    filter_obj = qt_events.LeoQtEventFilter(c,w=w)
-    g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
-    try:
-        ev = QtCore.QEvent
-        table = (
-            ev.KeyPress,
-            # ev.KeyRelease, # Ignored except in QLineEdit's.
-            # ev.ShortcutOverride, # Ignored everywhere.
-        )
-        for theType in table:
-            # Create the event.
-            setup(p1)
-            e = QtGui.QKeyEvent(theType,ord('i'),QtCore.Qt.ControlModifier)
-            # Pass it to eventFilter.
-            filter_obj.eventFilter(w,e)
-            # Check the results.
-            c.redraw()
-            n = p1.numberOfChildren()
-            assert n==2,'%s children' % (n)
-            delete_children(p1)
-    finally:
-        delete_children(p1)
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Qt not available in TravisCI')
+if sys.platform.startswith('linux'):
+    self.skipTest('Linux test')
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Qt not available')
+from leo.core.leoQt import QtCore,QtGui,QtWidgets
+
+import leo.plugins.qt_events as qt_events
+
+def setup(p):
+    delete_children(p)
+    p2 = p.insertAsLastChild()
+    c.selectPosition(p2)
+    p2.h = 'first-child'
+
+def delete_children(p):
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+app = g.app.gui.qtApp
+assert issubclass(app.__class__,QtWidgets.QApplication)
+wrapper = c.frame.body.wrapper
+w = wrapper.widget
+assert g.isTextWrapper(wrapper),wrapper
+assert g.isTextWidget(w),w
+# w_name = w.__class__.__name__
+# bassert w_name in('QsciScintilla','LeoQTextBrowser'),w_name
+p1 = p.copy()
+filter_obj = qt_events.LeoQtEventFilter(c,w=w)
+g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
+try:
+    ev = QtCore.QEvent
+    table = (
+        ev.KeyPress,
+        # ev.KeyRelease, # Ignored except in QLineEdit's.
+        # ev.ShortcutOverride, # Ignored everywhere.
+    )
+    for theType in table:
+        # Create the event.
+        setup(p1)
+        e = QtGui.QKeyEvent(theType,ord('i'),QtCore.Qt.ControlModifier)
+        # Pass it to eventFilter.
+        filter_obj.eventFilter(w,e)
+        # Check the results.
         c.redraw()
-else:
-    self.skipTest('Requires Qt Gui')
+        n = p1.numberOfChildren()
+        assert n==2,'%s children' % (n)
+        delete_children(p1)
+finally:
+    delete_children(p1)
+    c.redraw()
 #@+node:ekr.20111003145300.3466: *4* @test illegal drag gives warning
 '''Test that dragging this node onto the child node generates a warning.'''
 import sys
@@ -12353,33 +12342,30 @@ else:
             assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
 #@+node:ekr.20111003145300.3467: *5* a
 #@+node:ekr.20111123214629.3941: *4* @@test unbound Alt-9 key is completely ignored
+import sys
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Qt not available in TravisCI')
+if sys.platform.startswith('linux'):
+    self.skipTest('Linux test')
 from leo.core.leoQt import QtCore,QtGui,QtWidgets
 import leo.plugins.qt_events as qt_events
-import sys
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif sys.platform.startswith('linux'):
-    self.skipTest('linux test')
-elif g.app.gui.guiName().startswith('qt'):
-    wrapper = c.frame.body.wrapper
-    w = wrapper.widget
-    assert g.isTextWrapper(wrapper),wrapper
-    assert g.isTextWidget(w),w
-    filter_obj = qt_events.LeoQtEventFilter(c,w=w)
-    g.app.unitTestDict[p.h] = filter_obj
-        # keep a pointer to the filter.
-    for z in c.k.bindingsDict.keys():
-        if z.s == 'Alt+Key-9':
-            self.skipTest('Alt-Key-9 is bound')
-    if 0: # Too dangerous, and not useful enough.
-        # Create an Alt-9 key event.
-        ev = QtCore.QEvent
-        e = QtGui.QKeyEvent(ev.KeyPress,ord('9'),QtCore.Qt.AltModifier)
-        filter_obj.eventFilter(w,e)
-        # Assert that handleUnboundChar actually ignored it.
-        assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
-else:
-     self.skipTest('Requires Qt Gui')
+wrapper = c.frame.body.wrapper
+w = wrapper.widget
+assert g.isTextWrapper(wrapper),wrapper
+assert g.isTextWidget(w),w
+filter_obj = qt_events.LeoQtEventFilter(c,w=w)
+g.app.unitTestDict[p.h] = filter_obj
+    # keep a pointer to the filter.
+for z in c.k.bindingsDict.keys():
+    if z.s == 'Alt+Key-9':
+        self.skipTest('Alt-Key-9 is bound')
+if 0: # Too dangerous, and not useful enough.
+    # Create an Alt-9 key event.
+    ev = QtCore.QEvent
+    e = QtGui.QKeyEvent(ev.KeyPress,ord('9'),QtCore.Qt.AltModifier)
+    filter_obj.eventFilter(w,e)
+    # Assert that handleUnboundChar actually ignored it.
+    assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
 #@+node:ekr.20100131171342.5603: *4* @test zz end of leoGui tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoGui tests.')
