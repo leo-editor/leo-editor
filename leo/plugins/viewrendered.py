@@ -206,7 +206,7 @@ try:
     import leo.plugins.free_layout as free_layout
     from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
-except ImportError:
+except Exception:
     QtWidgets = False
 try:
     import docutils
