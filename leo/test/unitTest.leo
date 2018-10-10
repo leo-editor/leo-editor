@@ -703,13 +703,19 @@
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31312e3471017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e332e31362e3671057d71065808000000616e6e6f7461746571077d7108735809000000302e332e31372e333571097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e332e32352e34710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20181010092114.1"><vh>---- Still failing with TravisCI</vh></v>
+<v t="ekr.20160419061017.1"><vh>@test event classes</vh></v>
 <v t="ekr.20170201143435.1"><vh>@test bc.scanLanguageDirectives</vh>
 <v t="ekr.20170201143435.2"><vh>&lt;&lt; scanLanguageDirectives test tables &gt;&gt;</vh></v>
 <v t="ekr.20170201143435.3"><vh>test-child</vh>
 <v t="ekr.20170201143435.4"><vh>test-grandchild</vh></v>
 </v>
 </v>
-<v t="ekr.20160419061017.1"><vh>@test event classes</vh></v>
+<v t="ekr.20170201175441.1"><vh>@test bc.useSyntaxColoring</vh>
+<v t="ekr.20170201175441.2"><vh>&lt;&lt; useSyntaxColoring test tables &gt;&gt;</vh></v>
+<v t="ekr.20170201175441.3"><vh>test-child</vh>
+<v t="ekr.20170201175441.4"><vh>test-grandchild</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -5449,6 +5455,65 @@ finally:
 @language python
 </t>
 <t tx="ekr.20170201143435.4"></t>
+<t tx="ekr.20170201175441.1">@language python
+
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+
+import leo.core.leoColorizer as leoColorizer
+# import imp
+# imp.reload(leoColorizer)
+wrapper = c.frame.body.wrapper
+widget = c.frame.body.widget
+x = leoColorizer.JEditColorizer(c, widget, wrapper)
+tables = p.firstChild()
+tables_s = tables.b
+child = p.firstChild().next()
+assert child.h == 'test-child'
+grand = child.firstChild()
+&lt;&lt; useSyntaxColoring test tables &gt;&gt;
+try:
+    for i, data in enumerate(language_table):
+        expected, child_s, grand_s = data
+        child.b = child_s
+        grand.b = grand_s
+        got = x.useSyntaxColoring(grand)
+        assert got == expected, '%s expected %r, got %r child.b %r' % (
+            i, expected, got, child.b)
+finally:
+    tables.b = tables_s
+    
+</t>
+<t tx="ekr.20170201175441.2">language_table = [
+    (True, '', ''),
+    # Ambiguous parent.
+    (True, '@color \n@nocolor\n', ''),
+    (True, '@nocolor \n@color\n', ''),
+    # Unambiguous parent.
+    (True, '@nocolor-node', ''), # Does not apply to descendants.
+    (False, '@nocolor', ''),
+    (False, '@killcolor', ''),
+    #
+    # Note: the following tests don't matter because
+    # jedit.recolor ignores the self.enabled flag.
+    # As a result, *all* color directives, including @nocolor-node,
+    # Apply from the directive to the next color directive.
+    #
+    # Unambiguous child.
+    (False, '', '@killcolor\n'),
+    (True, '', '@color\n'),
+    # @nocolor-node rules node.
+    (False, '', '@nocolor-node\n'),
+    (False, '', '@color\n@nocolor-node\n'),
+    # Ambiguous node: defer to ancestors.
+    (True, '', '@color\n@nocolor'),
+    (True, '', '@nocolor\n@color'),
+]
+</t>
+<t tx="ekr.20170201175441.3"></t>
+<t tx="ekr.20170201175441.4">@nocolor
+@color
+</t>
 <t tx="ekr.20170302110925.1"># This was part of the ill-fated leoViews project.
 import sys
 if sys.platform.startswith('linux'):

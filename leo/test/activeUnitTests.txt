@@ -2124,6 +2124,10 @@ language_table = [
 #@+node:ekr.20170201143435.4: *6* test-grandchild
 #@+node:ekr.20170201175441.1: *4* @test bc.useSyntaxColoring
 @language python
+
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+
 import leo.core.leoColorizer as leoColorizer
 # import imp
 # imp.reload(leoColorizer)
