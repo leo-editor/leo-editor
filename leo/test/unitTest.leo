@@ -11,40 +11,7 @@
 <v t="ekr.20161123080832.1"><vh>@button make-table</vh></v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
-<v t="ekr.20150216110251.11"><vh>@persistence</vh>
-<v t="ekr.20170818044949.1"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170818044949.2"><vh>@data:#@auto</vh>
-<v t="ekr.20170818044949.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170818044949.4"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170818044949.5"><vh>@data:#@auto</vh>
-<v t="ekr.20170818044949.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20171230052539.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20171230171407.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20171230164813.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.otl</vh>
-<v t="ekr.20171230171407.7"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20171230170021.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20181010071732.10"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20171230171343.1"><vh>@data:@auto unittest/at-auto-line-number-test.py</vh>
-<v t="ekr.20171230171407.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20171230171343.4"><vh>@data:@auto unittest/at-auto-test.py</vh>
-<v t="ekr.20171230171407.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20171230171343.6"><vh>@data:@auto unittest/at-auto-unit-test.py</vh>
-<v t="ekr.20171230171407.4"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20171230171343.8"><vh>@data:@auto-ctext unittest/at-auto-ctext-test.txt</vh>
-<v t="ekr.20171230171407.5"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20171230171343.12"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.txt</vh>
-<v t="ekr.20171230171407.8"><vh>@gnxs</vh></v>
-</v>
-</v>
+<v t="ekr.20150216110251.11"><vh>@persistence</vh></v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
 <v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
 <v t="ekr.20161011095551.1"><vh>@bool allow_section_references_in_at_auto = True</vh></v>
@@ -112,6 +79,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20181010082831.1"><vh>@ignore Docs and unused tests</vh>
 <v t="ekr.20051012104957"><vh>@ignore Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -157,6 +125,377 @@
 </v>
 <v t="ekr.20111125183140.3952"><vh>@test ic.createOutline changes back-slashes to slashes</vh></v>
 <v t="ekr.20111125182408.3947"><vh>@test ic.createImportParent changes back-slashes to slashes</vh></v>
+</v>
+</v>
+<v t="ekr.20181010081924.1"><vh>@ignore old tests</vh>
+<v t="ekr.20150216070628.11"><vh>@@suite @nosent with javascript</vh>
+<v t="ekr.20150216070628.12"><vh>@shadow-tests</vh>
+<v t="ekr.20150216070628.168"><vh>@shadow-test equal @nosent @doc</vh>
+<v t="ekr.20150216070628.14"><vh>old</vh>
+<v t="ekr.20150216070628.15"><vh>node 1</vh></v>
+</v>
+<v t="ekr.20150216070628.16"><vh>new</vh>
+<v t="ekr.20150216070628.17"><vh>node 1</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.18"><vh>@shadow-test replace in node new &lt; old</vh>
+<v t="ekr.20150216070628.19"><vh>old</vh>
+<v t="ekr.20150216070628.20"><vh>node 1</vh></v>
+</v>
+<v t="ekr.20150216070628.21"><vh>new</vh>
+<v t="ekr.20150216070628.22"><vh>node 1</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.23"><vh>@shadow-test change middle line</vh>
+<v t="ekr.20150216070628.24"><vh>old</vh></v>
+<v t="ekr.20150216070628.25"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.26"><vh>@shadow-test change first line</vh>
+<v t="ekr.20150216070628.27"><vh>old</vh></v>
+<v t="ekr.20150216070628.28"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.29"><vh>@shadow-test change last line</vh>
+<v t="ekr.20150216070628.30"><vh>old</vh></v>
+<v t="ekr.20150216070628.31"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.32"><vh>@shadow-test delete first line</vh>
+<v t="ekr.20150216070628.33"><vh>old</vh></v>
+<v t="ekr.20150216070628.34"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.35"><vh>@shadow-test delete middle line</vh>
+<v t="ekr.20150216070628.36"><vh>old</vh></v>
+<v t="ekr.20150216070628.37"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.38"><vh>@shadow-test delete last line</vh>
+<v t="ekr.20150216070628.39"><vh>old</vh></v>
+<v t="ekr.20150216070628.40"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.41"><vh>@shadow-test insert before first line</vh>
+<v t="ekr.20150216070628.42"><vh>old</vh></v>
+<v t="ekr.20150216070628.43"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.44"><vh>@shadow-test insert middle line (after first line)</vh>
+<v t="ekr.20150216070628.45"><vh>old</vh></v>
+<v t="ekr.20150216070628.46"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.47"><vh>@shadow-test insert middle line (before last line)</vh>
+<v t="ekr.20150216070628.48"><vh>old</vh></v>
+<v t="ekr.20150216070628.49"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.50"><vh>@shadow-test insert after last line</vh>
+<v t="ekr.20150216070628.51"><vh>old</vh></v>
+<v t="ekr.20150216070628.52"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.53"><vh>@shadow-test-lax insert between nodes: at end of prev node</vh>
+<v t="ekr.20150216070628.54"><vh>old</vh>
+<v t="ekr.20150216070628.55"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.56"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.57"><vh>new</vh>
+<v t="ekr.20150216070628.58"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.59"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.60"><vh>@shadow-test delete between nodes: at end of prev node</vh>
+<v t="ekr.20150216070628.61"><vh>old</vh>
+<v t="ekr.20150216070628.62"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.63"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.64"><vh>new</vh>
+<v t="ekr.20150216070628.65"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.66"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.67"><vh>@shadow-test delete between nodes: at start of next node</vh>
+<v t="ekr.20150216070628.68"><vh>old</vh>
+<v t="ekr.20150216070628.69"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.70"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.71"><vh>new</vh>
+<v t="ekr.20150216070628.72"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.73"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.74"><vh>@shadow-test change end of prev node</vh>
+<v t="ekr.20150216070628.75"><vh>old</vh>
+<v t="ekr.20150216070628.76"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.77"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.78"><vh>new</vh>
+<v t="ekr.20150216070628.79"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.80"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.81"><vh>@shadow-test change start of next node</vh>
+<v t="ekr.20150216070628.82"><vh>old</vh>
+<v t="ekr.20150216070628.83"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.84"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.85"><vh>new</vh>
+<v t="ekr.20150216070628.86"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.87"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.88"><vh>@shadow-test-lax multiple-line insert between nodes: at end of prev node</vh>
+<v t="ekr.20150216070628.89"><vh>old</vh>
+<v t="ekr.20150216070628.90"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.91"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.92"><vh>new</vh>
+<v t="ekr.20150216070628.93"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.94"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.95"><vh>@shadow-test multiple-line change end of prev node</vh>
+<v t="ekr.20150216070628.96"><vh>old</vh>
+<v t="ekr.20150216070628.97"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.98"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.99"><vh>new</vh>
+<v t="ekr.20150216070628.100"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.101"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.102"><vh>@shadow-test multiple-line change start of next node</vh>
+<v t="ekr.20150216070628.103"><vh>old</vh>
+<v t="ekr.20150216070628.104"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.105"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.106"><vh>new</vh>
+<v t="ekr.20150216070628.107"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.108"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.109"><vh>@shadow-test multiple-NODE changes</vh>
+<v t="ekr.20150216070628.110"><vh>old</vh>
+<v t="ekr.20150216070628.111"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.112"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.113"><vh>new</vh>
+<v t="ekr.20150216070628.114"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.115"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.116"><vh>@shadow-test multiple-line delete between nodes: at end of prev node</vh>
+<v t="ekr.20150216070628.117"><vh>old</vh>
+<v t="ekr.20150216070628.118"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.119"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.120"><vh>new</vh>
+<v t="ekr.20150216070628.121"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.122"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.123"><vh>@shadow-test multiple-line delete between nodes: at start of next node</vh>
+<v t="ekr.20150216070628.124"><vh>old</vh>
+<v t="ekr.20150216070628.125"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.126"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.127"><vh>new</vh>
+<v t="ekr.20150216070628.128"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.129"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.130"><vh>@shadow-test verbatim sentinels-delete verbatim line</vh>
+<v t="ekr.20150216070628.131"><vh>old</vh>
+<v t="ekr.20150216070628.132"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.133"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.134"><vh>new</vh>
+<v t="ekr.20150216070628.135"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.136"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.137"><vh>@shadow-test verbatim sentinels-delete verbatim line: at start of node</vh>
+<v t="ekr.20150216070628.138"><vh>old</vh>
+<v t="ekr.20150216070628.139"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.140"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.141"><vh>new</vh>
+<v t="ekr.20150216070628.142"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.143"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.144"><vh>@shadow-test verbatim sentinels-no change</vh>
+<v t="ekr.20150216070628.145"><vh>old</vh>
+<v t="ekr.20150216070628.146"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.147"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.148"><vh>new</vh>
+<v t="ekr.20150216070628.149"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.150"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.151"><vh>@shadow-test verbatim sentinels-delete verbatim line: at end of node</vh>
+<v t="ekr.20150216070628.152"><vh>old</vh>
+<v t="ekr.20150216070628.153"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.154"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.155"><vh>new</vh>
+<v t="ekr.20150216070628.156"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.157"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.158"><vh>@shadow-test verbatim sentinels-add verbatim line</vh>
+<v t="ekr.20150216070628.159"><vh>old</vh>
+<v t="ekr.20150216070628.160"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.161"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.162"><vh>new</vh>
+<v t="ekr.20150216070628.163"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.164"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.165"><vh>@shadow-test no change, no ending newline</vh>
+<v t="ekr.20150216070628.166"><vh>old</vh></v>
+<v t="ekr.20150216070628.167"><vh>new</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20050218015346"><vh>@@suite run all plugin test routines</vh>
+<v t="ekr.20050218015346.11"><vh>&lt;&lt; class testRoutineTestCase &gt;&gt;</vh>
+<v t="ekr.20050218015346.12"><vh>__init__</vh></v>
+<v t="ekr.20050218015346.13"><vh> fail</vh></v>
+<v t="ekr.20050218015346.16"><vh>runTest</vh></v>
+<v t="ekr.20050218015346.17"><vh>shortDescription</vh></v>
+</v>
+<v t="ekr.20050218015346.18"><vh>addTestRoutinesInPluginToSuite</vh></v>
+<v t="ekr.20050218015346.19"><vh>findTestsInModule</vh>
+<v t="ekr.20050218015346.20"><vh>&lt;&lt; print classes, methods &amp; functions &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20050218015346.22"><vh>removeLeadingWs</vh></v>
+</v>
+<v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
+<v t="ekr.20040712101754.103"><vh>@@test @file no newline</vh>
+<v t="ekr.20040712101754.104"><vh>#@file</vh></v>
+<v t="ekr.20040712101754.105"><vh>Output</vh></v>
+</v>
+<v t="ekr.20040712101754.106"><vh>@@test @file one newline</vh>
+<v t="ekr.20040712101754.107"><vh>#@file</vh></v>
+<v t="ekr.20040712101754.108"><vh>Output</vh></v>
+</v>
+<v t="ekr.20040712101754.109"><vh>@@test @file two newlines</vh>
+<v t="ekr.20040712101754.110"><vh>#@file</vh></v>
+<v t="ekr.20040712101754.111"><vh>Output</vh></v>
+</v>
+<v t="ekr.20090704085350.5010"><vh>@@test @file: shape of tree</vh></v>
+<v t="ekr.20090704085350.5018"><vh>@@test @shadow: shape of tree</vh></v>
+<v t="ekr.20060912091510.1"><vh>@@test add-editor &amp; delete-editor</vh></v>
+<v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
+<v t="ekr.20100802220019.5795"><vh>@@test at.deleteUnvistedNodes</vh></v>
+<v t="ekr.20110524091618.3488"><vh>@@test at.massageDocPart</vh></v>
+<v t="ekr.20050208051854"><vh>@@test atFile.printError</vh></v>
+<v t="ekr.20111118125141.3879"><vh>@@test bodyCtrl property</vh></v>
+<v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
+<v t="ekr.20040712101813"><vh>@@test c.checkAllPythonCode</vh></v>
+<v t="ekr.20090104053806.1"><vh>@@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
+<v t="ekr.20100203103015.5356"><vh>@@test c.openTempFileInExternalEditor</vh></v>
+<v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
+<v t="ekr.20090608174319.4791"><vh>@@test delete-editor</vh></v>
+<v t="ekr.20100131171342.5497"><vh>@@test detect_urls.py</vh></v>
+<v t="ekr.20100209155559.5386"><vh>@@test efc.create_temp_file</vh></v>
+<v t="ekr.20100206165505.5386"><vh>@@test fc.handleNodeConflicts</vh></v>
+<v t="ekr.20071007120750.4"><vh>@@test fill-region (one paragraph)</vh>
+<v t="ekr.20071007121312.1"><vh>work</vh></v>
+<v t="ekr.20071007121312.2"><vh>before sel=1.0,9.7</vh></v>
+<v t="ekr.20071007121312.3"><vh>after sel=6.7,6.7</vh></v>
+</v>
+<v t="ekr.20071007124202"><vh>@@test fill-region (three paragraphs)</vh>
+<v t="ekr.20071007124202.1"><vh>work</vh></v>
+<v t="ekr.20071007124202.2"><vh>before sel=1.0,24.78</vh></v>
+<v t="ekr.20071007124202.3"><vh>after sel=18.19,18.19</vh></v>
+</v>
+<v t="ekr.20051107115231.29"><vh>@@test Find keeps focus in body &amp; shows selected text</vh></v>
+<v t="ekr.20170401123840.8"><vh>@@test find_file_line: @auto-rst</vh></v>
+<v t="ville.20090312195309.2"><vh>@@test find_h / find_b / filter_h / filter_b</vh></v>
+<v t="ekr.20120201125738.3958"><vh>@@test g.app.config.getShortcuts works when no local shortcuts</vh></v>
+<v t="ekr.20071113145804.20"><vh>@@test g.es_exception (heroic)</vh></v>
+<v t="ekr.20071113145804.23"><vh>@@test g.reportBadChars</vh></v>
+<v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
+<v t="ekr.20111214100515.3921"><vh>@@test ic.createOutline: at-auto with lines that look like section references</vh></v>
+<v t="ekr.20140206132559.4567"><vh>@@test ic.parse-body</vh>
+<v t="ekr.20150919073819.1"><vh>copy</vh></v>
+<v t="ekr.20140206132559.4560"><vh>before</vh>
+<v t="ekr.20161112061414.1"><vh>class aClass</vh>
+<v t="ekr.20161112061414.2"><vh>__init__</vh></v>
+<v t="ekr.20161112061414.3"><vh>spam</vh></v>
+</v>
+<v t="ekr.20161112061414.4"><vh>bClass = aClass</vh></v>
+</v>
+<v t="ekr.20140206132559.4564"><vh>expected</vh>
+<v t="ekr.20150919074321.1"><vh>class aClass</vh>
+<v t="ekr.20150919074321.2"><vh>__init__</vh></v>
+<v t="ekr.20150919074321.3"><vh>spam</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20150919074122.1"><vh>@@test ic.parse-body mypy</vh>
+<v t="ekr.20150919074220.1"><vh>copy</vh></v>
+<v t="ekr.20150919074132.1"><vh>before</vh>
+<v t="ekr.20161112061406.1"><vh>class TypeJoinVisitor</vh></v>
+</v>
+<v t="ekr.20150919074154.1"><vh>expected</vh>
+<v t="ekr.20150919074211.1"><vh>class TypeJoinVisitor</vh>
+<v t="ekr.20150919074211.2"><vh>__init__</vh></v>
+<v t="ekr.20150919074211.3"><vh>visit_unbound_type</vh></v>
+<v t="ekr.20150919074211.4"><vh>visit_union_type</vh></v>
+<v t="ekr.20150919074211.5"><vh>visit_error_type</vh></v>
+<v t="ekr.20150919074211.6"><vh>visit_type_list</vh></v>
+<v t="ekr.20150919074211.7"><vh>visit_any</vh></v>
+<v t="ekr.20150919074211.8"><vh>visit_void</vh></v>
+<v t="ekr.20150919074211.9"><vh>visit_none_type</vh></v>
+<v t="ekr.20150919074211.10"><vh>visit_erased_type</vh></v>
+<v t="ekr.20150919074211.11"><vh>visit_type_var</vh></v>
+<v t="ekr.20150919074211.12"><vh>visit_instance</vh></v>
+<v t="ekr.20150919074211.13"><vh>visit_callable_type</vh></v>
+<v t="ekr.20150919074211.14"><vh>visit_overloaded</vh></v>
+<v t="ekr.20150919074211.15"><vh>visit_tuple_type</vh></v>
+<v t="ekr.20150919074211.16"><vh>join</vh></v>
+<v t="ekr.20150919074211.17"><vh>default</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20060325071703.2"><vh>@@test ifgui</vh></v>
+<v t="ekr.20100131171342.5505"><vh>@@test item2position</vh></v>
+<v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
+<v t="ekr.20100131171342.5606"><vh>@@test k.autoCompleterClass.calltip</vh></v>
+<v t="ekr.20100131171342.5500"><vh>@@test macros.parameterize</vh></v>
+<v t="ekr.20080310073711.1"><vh>@@test nodeIndices.toString(None) allocates a new index</vh></v>
+<v t="ekr.20040712101754.175"><vh>@@test p.t == p.v</vh></v>
+<v t="ekr.20140712142620.4537"><vh>@@test pd.find_absolute_unl_node</vh></v>
+<v t="ekr.20140712142620.4583"><vh>@@test pd.pack &amp; pd.unpack</vh>
+<v t="ekr.20140712142620.4587"><vh>clone</vh></v>
+<v t="ekr.20140712142620.4585"><vh>@view test</vh>
+<v t="ekr.20140712142620.4586"><vh>not a clone</vh></v>
+<v t="ekr.20140712142620.4587"></v>
+</v>
+</v>
+<v t="ekr.20170302110925.1"><vh>@@test pd.prepass</vh></v>
+<v t="ekr.20140716115306.4345"><vh>@@test pd.recovery_ua_for_gnx</vh></v>
+<v t="ekr.20170123053430.1"><vh>@@test print calls to jedit.setTag</vh></v>
+<v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
+<v t="ekr.20161204042916.1"><vh>@@test print('start python tests')</vh></v>
+<v t="ekr.20100813100841.5825"><vh>@@test show_doc_parts_in_rst_mode</vh></v>
+<v t="ekr.20090529141856.4793"><vh>@@test test imports for modes</vh></v>
+<v t="ekr.20100131171342.5486"><vh>@@test that all @test nodes in derived files start with if g.unitTesting</vh>
+<v t="ekr.20100131171342.5487"><vh>checkFile</vh></v>
+</v>
+<v t="ekr.20040712101754.200"><vh>@@test that clones share subtrees</vh></v>
+<v t="ekr.20111123214629.3941"><vh>@@test unbound Alt-9 key is completely ignored</vh></v>
+<v t="ekr.20070611071101"><vh>@@test visback</vh>
+<v t="ekr.20070611071101.1"><vh>a</vh>
+<v t="ekr.20070611071101.2"><vh>b</vh>
+<v t="ekr.20070611071101.3"><vh>c2</vh></v>
+</v>
+</v>
+<v t="ekr.20070611071101.4"><vh>limit</vh>
+<v t="ekr.20070611071101.5"><vh>d</vh></v>
+</v>
+<v t="ekr.20070611071954"><vh>e</vh></v>
+</v>
+<v t="ekr.20090529115704.4555"><vh>@@test x.rename</vh></v>
+<v t="ekr.20070131171218.1"><vh>@@test zap-to-chararacter</vh>
+<v t="ekr.20070131171218.2"><vh>work</vh></v>
 </v>
 </v>
 <v t="ekr.20071113203234"><vh>@ignore Test files</vh>
@@ -269,75 +608,57 @@
 <v t="ekr.20170101134417.1"><vh>@ignore Slow tests</vh>
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
-<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3871057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343171097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20181010074101.1"><vh>@ignore Qt-only tests (do not delete!)</vh>
+<v t="ekr.20111221062755.3909"><vh>@test all top-level read/write commands give proper read/write error dialogs</vh>
+<v t="ekr.20111221062755.3910"><vh>child</vh></v>
 </v>
-<v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
-<v t="ekr.20161130041921.1"></v>
-<v t="ekr.20161228071915.1"><vh>@@auto c:\test\bug-354-test.py</vh>
-<v t="ekr.20161228072352.1"><vh>bug-354-test declarations</vh></v>
+<v t="ekr.20111121142012.4030"><vh>@test c.frame.log relationships</vh></v>
+<v t="ekr.20111121081052.3908"><vh>@test c.frame.log.numberOfVisibleTabs</vh></v>
+<v t="ekr.20111121140833.3917"><vh>@test c.frame.log.put &amp; putNl</vh></v>
+<v t="ekr.20111107065245.3833"><vh>@test c.frame.minimize-all</vh></v>
+<v t="ekr.20061104172236.22"><vh>@test c.frame.pasteText</vh></v>
+<v t="ekr.20071113145804.33"><vh>@test c.frame.pasteText 2</vh></v>
+<v t="ekr.20111107065530.3833"><vh>@test c.frame.resize-to-screen</vh></v>
+<v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh></v>
+<v t="ekr.20111120124051.3994"><vh>@test cycle-all-focus</vh></v>
+<v t="ekr.20111121164644.3928"><vh>@test cycle-tab-focus</vh></v>
+<v t="ekr.20100830113702.5969"><vh>@test delete-word (no selection)</vh>
+<v t="ekr.20100830113702.5970"><vh>work</vh></v>
+<v t="ekr.20100830113702.5971"><vh>before sel=1.10,1.10</vh></v>
+<v t="ekr.20100830113702.5972"><vh>after sel=1.10,1.10</vh></v>
 </v>
-<v t="ekr.20150626093653.1"><vh>@@test find_file_line: @auto-rst</vh></v>
-<v t="ekr.20160403143643.1"><vh>@@test find_file_line: @clean-c</vh></v>
-<v t="ekr.20160403143655.1"><vh>@@test find_file_line: @clean-python</vh></v>
-<v t="ekr.20161130051657.1"><vh>@test ctext</vh></v>
-<v t="ekr.20150626101920.1"><vh>@test find_file_line: @auto-md</vh></v>
-<v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
-<v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
-<v t="ekr.20140206132559.4567"><vh>@@@test ic.parse-body</vh>
-<v t="ekr.20150919073819.1"><vh>copy</vh></v>
-<v t="ekr.20140206132559.4560"><vh>before</vh>
-<v t="ekr.20161112061414.1"><vh>class aClass</vh>
-<v t="ekr.20161112061414.2"><vh>__init__</vh></v>
-<v t="ekr.20161112061414.3"><vh>spam</vh></v>
+<v t="ekr.20100830113702.5977"><vh>@test delete-word (selection)</vh>
+<v t="ekr.20100830113702.5978"><vh>work</vh></v>
+<v t="ekr.20100830113702.5979"><vh>before sel=1.7,1.12</vh></v>
+<v t="ekr.20100830113702.5980"><vh>after sel=1.7,1.7</vh></v>
 </v>
-<v t="ekr.20161112061414.4"><vh>bClass = aClass</vh></v>
+<v t="ekr.20051109091333"><vh>@test deleting the last body character text redraws the screen (and icon)</vh></v>
+<v t="ekr.20051107115231.15"><vh>@test editLabel selects entire headline</vh></v>
+<v t="ekr.20100223123103.5382"><vh>@test expand/contract-pane</vh></v>
+<v t="ekr.20111110073834.3843"><vh>@test g.es_print</vh></v>
+<v t="ekr.20071113145804.22"><vh>@test g.es_trace</vh></v>
+<v t="ekr.20111110073528.3843"><vh>@test g.pr</vh></v>
+<v t="ekr.20141223125432.11"><vh>@test g.toUnicode(QString)</vh></v>
+<v t="ekr.20111110072415.3841"><vh>@test g.trace</vh></v>
+<v t="ekr.20111003145300.3466"><vh>@test illegal drag gives warning</vh>
+<v t="ekr.20111003145300.3467"><vh>a</vh></v>
 </v>
-<v t="ekr.20140206132559.4564"><vh>expected</vh>
-<v t="ekr.20150919074321.1"><vh>class aClass</vh>
-<v t="ekr.20150919074321.2"><vh>__init__</vh></v>
-<v t="ekr.20150919074321.3"><vh>spam</vh></v>
+<v t="ekr.20140904060337.4476"><vh>@test interfaces using API classes</vh></v>
+<v t="ekr.20111121224307.3934"><vh>@test k.handleDefaultChar from log pane</vh></v>
+<v t="ekr.20111006064419.3493"><vh>@test move-marked-nodes</vh>
+<v t="ekr.20181010081750.1"><vh>data</vh></v>
 </v>
+<v t="ekr.20041013062906"><vh>@test onHyperLinkControlClick</vh></v>
+<v t="ekr.20060208072307"><vh>@test paste from menu into body sticks</vh></v>
+<v t="ekr.20051107115231.24"><vh>@test paste from menu to body recolors the body</vh></v>
+<v t="ekr.20100204173354.5375"><vh>@test toggle-find-x</vh></v>
+<v t="ekr.20060208072358"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
 </v>
-</v>
-<v t="ekr.20150919074122.1"><vh>@@@test ic.parse-body mypy</vh>
-<v t="ekr.20150919074220.1"><vh>copy</vh></v>
-<v t="ekr.20150919074132.1"><vh>before</vh>
-<v t="ekr.20161112061406.1"><vh>class TypeJoinVisitor</vh></v>
-</v>
-<v t="ekr.20150919074154.1"><vh>expected</vh>
-<v t="ekr.20150919074211.1"><vh>class TypeJoinVisitor</vh>
-<v t="ekr.20150919074211.2"><vh>__init__</vh></v>
-<v t="ekr.20150919074211.3"><vh>visit_unbound_type</vh></v>
-<v t="ekr.20150919074211.4"><vh>visit_union_type</vh></v>
-<v t="ekr.20150919074211.5"><vh>visit_error_type</vh></v>
-<v t="ekr.20150919074211.6"><vh>visit_type_list</vh></v>
-<v t="ekr.20150919074211.7"><vh>visit_any</vh></v>
-<v t="ekr.20150919074211.8"><vh>visit_void</vh></v>
-<v t="ekr.20150919074211.9"><vh>visit_none_type</vh></v>
-<v t="ekr.20150919074211.10"><vh>visit_erased_type</vh></v>
-<v t="ekr.20150919074211.11"><vh>visit_type_var</vh></v>
-<v t="ekr.20150919074211.12"><vh>visit_instance</vh></v>
-<v t="ekr.20150919074211.13"><vh>visit_callable_type</vh></v>
-<v t="ekr.20150919074211.14"><vh>visit_overloaded</vh></v>
-<v t="ekr.20150919074211.15"><vh>visit_tuple_type</vh></v>
-<v t="ekr.20150919074211.16"><vh>join</vh></v>
-<v t="ekr.20150919074211.17"><vh>default</vh></v>
-</v>
-</v>
-</v>
-</v>
+<v t="ekr.20170504122245.1"><vh>@ignore Unit tests that fail for others</vh>
+<v t="ekr.20170712045644.1"><vh>Terry's failures</vh>
 <v t="ekr.20090529115704.4557"><vh>@test x.makeShadowDirectory</vh>
 <v t="ekr.20090529115704.4558"><vh>deleteShadowDir</vh></v>
 </v>
-</v>
-<v t="ekr.20170504122245.1"><vh>@ignore recent</vh>
-<v t="ekr.20170712045534.1"><vh>#512: Unit tests that fail for others</vh>
-<v t="ekr.20170712053944.1"><vh>Vitalije</vh>
-<v t="ekr.20111121224307.3934"><vh>@test k.handleDefaultChar from log pane</vh></v>
-</v>
-<v t="ekr.20170712045644.1"><vh>Terry's failures</vh>
-<v t="ekr.20090529115704.4557"></v>
 <v t="ekr.20100131171342.5485"><vh>@test all commands have an event arg</vh></v>
 <v t="ekr.20170712132824.1"><vh>add/delete comments</vh>
 <v t="ekr.20120309155126.3949"><vh>@test add comments with multiple @language directives</vh>
@@ -375,21 +696,11 @@
 </v>
 <v t="ekr.20170712140759.1"><vh>xgid failures</vh>
 <v t="ekr.20111124090010.3939"><vh>@test g.app.config @buttons and @commands logic</vh></v>
-<v t="ekr.20111123214629.3941"><vh>@@test unbound Alt-9 key is completely ignored</vh></v>
-</v>
-<v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
-</v>
-<v t="ekr.20171126172628.1"><vh>Tests that fail with console gui</vh>
-<v t="ekr.20140822063016.4474"><vh>@test zzz force a quit</vh></v>
-<v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
 </v>
-<v t="ekr.20181009101123.1"><vh>===== These failed with travis-ci tests</vh>
-<v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
-<v t="ekr.20100203103015.5353"><vh>@test efc.ask</vh></v>
-<v t="ekr.20100203103015.5355"><vh>@test efc.get_ext</vh></v>
-<v t="ekr.20111124090010.3939"></v>
-<v t="ekr.20170401123840.4"><vh>@test find_file_line: @auto-md</vh></v>
+</v>
+<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31312e3471017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e332e31362e3671057d71065808000000616e6e6f7461746571077d7108735809000000302e332e31372e333571097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e332e32352e34710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -414,8 +725,293 @@ code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
 </t>
+<t tx="ekr.20040712101754.103">c.testManager.runAtFileTest(p)
+</t>
+<t tx="ekr.20040712101754.104">Line 1
+
+@last last line 1: no newline
+</t>
+<t tx="ekr.20040712101754.105">#@+leo-ver=4
+#@+node:#@file
+Line 1
+
+#@@last
+#@nonl
+#@-node:#@file
+#@-leo
+last line 1: no newline
+</t>
+<t tx="ekr.20040712101754.106">c.testManager.runAtFileTest(p)
+</t>
+<t tx="ekr.20040712101754.107">Line 1
+
+@last last line 1: newline
+</t>
+<t tx="ekr.20040712101754.108">#@+leo-ver=4
+#@+node:#@file
+Line 1
+
+#@@last
+#@-node:#@file
+#@-leo
+last line 1: newline
+</t>
+<t tx="ekr.20040712101754.109">c.testManager.runAtFileTest(p)
+</t>
+<t tx="ekr.20040712101754.110">Line 1
+
+@last last line 1: two trailing newlines
+</t>
+<t tx="ekr.20040712101754.111">#@+leo-ver=4
+#@+node:#@file
+Line 1
+
+#@@last
+#@-node:#@file
+#@-leo
+last line 1: two trailing newlines
+</t>
+<t tx="ekr.20040712101754.175"># p.__getattr__ must be enabled for this test to work.
+
+for p in c.all_positions():
+    assert(p.t == p.v)
+</t>
+<t tx="ekr.20040712101754.200">for p in c.all_positions():
+    if p.isCloned() and p.hasChildren():
+        childv = p.firstChild().v
+        firstChild = p.v.children[0]
+        assert childv == firstChild
+</t>
+<t tx="ekr.20040712101813">result = c.checkAllPythonCode(unittest=True,ignoreAtIgnore=True)
+
+assert result=="ok", "checkPythonCode returns: %s" % result
+</t>
+<t tx="ekr.20041013062906"># This hack is needed only for tkinter gui.
+if not g.app.gui.guiName() == 'tkinter':
+    self.skipTest('Only for tkinter')
+
+p.OnHyperLinkControlClick(event=None)
+</t>
 <t tx="ekr.20041121151002"># Many of these are required for unit tests.
 # Do not change them without running all unit tests.</t>
+<t tx="ekr.20050208051854">@first # -*- coding: utf-8 -*-
+
+at = c.atFileCommands
+at.errors = 0
+
+if g.isPython3:
+    # Do not call g.ue: it will crash.
+    s = 'La Peña'
+else:
+    s = g.ue('La Peña','utf-8')
+
+at.printError('test of at.printError:',s)
+
+# important: this test will fail if sitecustomize.py
+# does not contain sys.setdefaultencoding('utf-8')
+</t>
+<t tx="ekr.20050218015346"># This test, if run at all, should be run elsewhere:
+# Actually importing plugins affects other unit tests.
+
+import glob
+import inspect
+import unittest
+
+changed = c.isChanged() ; p1 = c.p
+&lt;&lt; class testRoutineTestCase &gt;&gt;
+@others
+
+plugins = getAllPlugins()
+
+# g.printList(plugins)
+
+print('@suite run all plugin test routines')
+
+if 1:
+    g.app.unitTestDict["fail"] = False
+    suite = unittest.makeSuite(unittest.TestCase)
+    for plugin in plugins:
+        n = addTestRoutinesInPluginToSuite(c,g,plugin,suite)
+        if n:
+            plural = g.choose(n==1,'','s')
+            s = 'found %2d test routine%s for %s' % (n,plural,plugin)
+            g.es_print(s)
+    # if 1: # For @suite nodes.  Better for unit testing.
+        # g.app.scriptDict['suite'] = suite
+    # else: # For script button nodes.  Good for testing.
+        # # Verbosity: 1: print just dots.
+        # unittest.TextTestRunner(verbosity=1).run(suite)
+        # c.setChanged(changed) # Restore changed state.
+        # c.selectVnode(p1) # N.B. Restore the selected node.
+</t>
+<t tx="ekr.20050218015346.11">class testRoutineTestCase(unittest.TestCase):
+
+    """Create a unit test from a snippet of code."""
+
+    @others
+</t>
+<t tx="ekr.20050218015346.12">def __init__ (self,c,g,moduleName,theClass,f,code,verbose=False):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.moduleName = moduleName
+    self.theClass = theClass
+    self.f = f
+    self.g = g
+    self.code = code
+    self.p = c.p.copy()
+    self.verbose = verbose
+</t>
+<t tx="ekr.20050218015346.13">def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    g.app.unitTestDict["fail"] = g.callerName(2)
+</t>
+<t tx="ekr.20050218015346.16">def runTest (self):
+
+    f = self.f ; name = f.__name__ ; theClass = self.theClass
+
+    d = {'c':self.c,'g':self.g,'p':self.p}
+
+    if 1: # Use dead text to ensure a clean environment.
+        # The present code assumes all leading whitespace is consistent.
+        code = removeLeadingWs(self.code)
+        # The code is a def statement.  We concoct a call to the function or method.
+        if theClass:
+            s = '%s\n%s(self=None)\n' % (code,name)
+        else:
+            s = '%s\n%s()\n' % (code,name)
+
+        if self.verbose:
+            g.trace('executing...\n\n%s' % s)
+
+        exec(s,d) # Execute s in a environment containing c, g and p.
+
+    else: # Use live objects.
+        if theClass:
+            # Create a subclass of f's original class.
+            class __dummyClass(theClass):
+                # Create a ctor with a known signature.
+                def __init__(self): pass
+            # Make f a method of the dummyClass with name 'f'.
+            # N.B. f is still a method of theClass, and must be called as such!
+            if 0: # Override the method with f's actual name.
+                g.funcToMethod(f,__dummyClass,name)
+                obj = __dummyClass()
+                f = getattr(obj,name)
+                f(obj)
+            else:
+                # Use the name 'f' for f's name.
+                g.funcToMethod(f,__dummyClass,'f')
+                # Create an instance of __dummyClass and call it's f method.
+                obj = __dummyClass()
+                obj.f()
+        else: # Execute a plain function.
+            f(**keys)
+</t>
+<t tx="ekr.20050218015346.17">def shortDescription (self):
+
+    return 'test function',repr(self.f)
+</t>
+<t tx="ekr.20050218015346.18">def addTestRoutinesInPluginToSuite (c,g,pluginName,suite):
+
+    path = g.os_path_abspath(g.os_path_join(g.app.loadDir,"..","plugins"))
+
+    plugin = g.importFromPath(pluginName,path,verbose=True)
+    if not plugin:
+        return len([])
+
+    tests = findTestsInModule(plugin,pluginName)
+
+    for test in tests:
+        theClass,f = test
+        code = inspect.getsource(f)
+        testCase = testRoutineTestCase(c,g,pluginName,theClass,f,code,verbose=False)
+        suite.addTest(testCase)
+
+    return len(tests)
+</t>
+<t tx="ekr.20050218015346.19">def findTestsInModule (module,moduleName):
+
+    # g.trace(moduleName)
+
+    toString = g.listToString
+    try:
+        functions = inspect.getmembers(module,inspect.isfunction)
+    except Exception:
+        g.trace('Exception in inspect.getmembers(module,inspect.isfunction) for %s' % moduleName)
+        functions = []
+    try:
+        classes = inspect.getmembers(module,inspect.isclass)
+    except Exception:
+        g.trace('Exception in inspect.getmembers(module,inspect.isclass) for %s' % moduleName)
+        classes = []
+
+    # Ignore subclasses of TestCase.
+    classes = [theClass for className,theClass in classes
+        if not issubclass(theClass,unittest.TestCase)]
+
+    allMethods = []
+    for theClass in classes:
+        try:
+            methods = inspect.getmembers(theClass,inspect.ismethod)
+        except Exception:
+            # This looks like a bug in inspect: The zodb classes have no methods.
+            # g.trace('Exception in inspect.getmembers(theClass,inspect.ismethod) for %s' % moduleName)
+            methods = []
+        # print('\nmethods of class %s...\n\n%s' % (theClass,toString(methods)))
+        methods = [(theClass,f) for name,f in methods if name.startswith('test_')]
+        allMethods.extend(methods)
+
+    # Hack: remove duplicate tests from leoGlobals.py.
+    functions = [(None,f) for name,f in functions
+        if name.startswith('test_') and not name.startswith('test_g_')]
+    if 0:
+        &lt;&lt; print classes, methods &amp; functions &gt;&gt;
+    result = functions
+    result.extend(allMethods)
+    return result
+</t>
+<t tx="ekr.20050218015346.20">print('=' * 40)
+
+if classes:
+    print('classes in %s...\n%s' % (moduleName,toString(classes)))
+else:
+    print('no classes in %s' % (moduleName))
+if allMethods:
+    print('test methods in %s...\n%s'   % (moduleName,toString(allMethods)))
+else:
+    print('no test methods in %s' % (moduleName))
+if functions:
+    print('test functions in %s...\n%s' % (moduleName,toString(functions)))
+else:
+    print('no test functions in %s' % (moduleName))
+</t>
+<t tx="ekr.20050218015346.22">def removeLeadingWs (code):
+
+    if not code.strip():
+        return ''
+    lines = g.splitLines(code)
+    line = lines[0]
+    i = g.skip_ws(line,0)
+    ws = line[0:i]
+    if not ws:
+        return code
+    result = [] ; n = len(ws)
+    for line in lines:
+        if line.startswith(ws):
+            result.append(line[n:])
+        elif not line.strip() and line.endswith('\n'):
+            result.append('\n')
+        else:
+            print('unitTest.leo:underindented line:%s' % repr(line))
+            result.append(line)
+    result = ''.join(result)
+    return result
+</t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
@@ -655,8 +1251,197 @@ Instead of a dot denoting success, we get an 'F' denoting a failure on the line 
 It also includes a trace back, but for AssertionErrors, it does not seem to offer much added value to me right now. On second thought: when you have multiple asserts in a test, the trace back can tell you which assert function failed. Still, I would choose for only one assert function per test and get rid of this trace back altogether. This would keep the console much cleaner, IMHO.</t>
 <t tx="ekr.20050618061835.9">@color
 assert('Spam' == 'Ham')</t>
-<t tx="ekr.20051012104957"></t>
+<t tx="ekr.20051012104957">@nosearch</t>
 <t tx="ekr.20051013162226"></t>
+<t tx="ekr.20051107115231.15">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+
+k = c.keyHandler
+frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+h = '@test editLabel selects entire headline'
+p = c.testManager.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redraw(p) # To make node visible
+tree.editLabel(p)
+w = c.edit_widget(p)
+assert w
+s = w.getAllText()
+selectAll = c.config.getBool('select_all_text_when_editing_headlines')
+i,j = w.getSelectionRange()
+if selectAll:
+    assert i == 0 and j == len(s),('oops1',i,j,len(s))
+else:
+    assert i == len(s) and j == len(s),('oops2',i,j,len(s))
+</t>
+<t tx="ekr.20051107115231.24"># Should be a comment
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+
+h = 'Test headline abc'
+p = c.testManager.findNodeAnywhere(h)
+w = c.frame.body.wrapper
+n = c.frame.body.colorizer.recolorCount
+# print(c.frame.body.colorizer)
+assert p,'node not found: %s' % h
+c.selectPosition(p)
+c.bodyWantsFocus()
+paste = '# Should be a comment'
+g.app.gui.replaceClipboardWith(paste)
+c.outerUpdate()
+event = g.app.gui.create_key_event(c,w=c.frame.body.wrapper)
+c.frame.pasteText(event)
+try:
+    assert c.frame.body.colorizer.recolorCount &gt; n
+finally:
+    if 1:
+        c.setBodyString(p,'')
+        c.redraw(p)
+</t>
+<t tx="ekr.20051107115231.29">import leo.core.leoEditCommands as leoEditCommands
+s = 'foo' ; wrapper = c.frame.body.wrapper
+c.searchCommands.openFindTab()
+h = c.searchCommands.findTabHandler
+w = h.find_ctrl
+w.setAllText(s)
+c.bodyWantsFocus()
+wrapper.setInsertPoint(0)
+c.searchCommands.findTabFindNext()
+w = c.get_focus()
+wName = g.app.gui.widget_name(w)
+assert 'body' in wName, 'focus: %s = %s, expected %s = %s' % (
+    w,wName,wrapper,g.app.gui.widget_name(wrapper))
+</t>
+<t tx="ekr.20051109091333">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+
+h = 'Test headline abc'
+p = c.testManager.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.selectPosition(p)
+c.setBodyString(p,'a')
+c.redraw_now() # To make node visible and to set the icon.
+try:
+    c.bodyWantsFocus()
+    n = c.frame.tree.redrawCount
+    w = c.frame.body.wrapper
+    w.setInsertPoint('end')
+    g.app.gui.event_generate(c,'\b','BackSpace',w)
+    n2 = c.frame.tree.redrawCount
+    if not g.app.isExternalUnitTest:
+        # This test is meaningless with a nullGui.
+        assert n2 == n + 1,'too many or too few redraws: %d' % (n2-n)
+finally:
+    if 1:
+        c.setBodyString(p,'')
+        c.redraw_now()
+</t>
+<t tx="ekr.20060208072307">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+if c.k.defaultUnboundKeyAction != 'insert':
+    self.skipTest('Wrong binding')
+    
+h = 'Test headline abc'
+p = c.testManager.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redraw(p)
+c.bodyWantsFocus()
+paste = 'ABC'
+g.app.gui.replaceClipboardWith(paste)
+event = g.app.gui.create_key_event(c,w=c.frame.body.wrapper)
+c.frame.pasteText(event)
+
+# Move around and and make sure it doesn't change.
+try:
+    assert p.b == paste, 'paste1 failed'
+    c.selectPosition(p.threadBack())
+    assert p.b == paste, 'stick failed'
+    c.selectPosition(p)
+    assert p.b == paste, 'revisit failed'
+finally:
+    if 1:
+        c.setBodyString(p,'')
+        c.redraw(p)
+</t>
+<t tx="ekr.20060208072358">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+import sys
+if sys.platform.startswith('linux'):
+    # Fails for strange reasons.
+    self.skipTest('Not for Linux')
+
+
+h = 'Test headline abc'
+p = c.testManager.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.selectPosition(p)
+c.bodyWantsFocus()
+c.redraw(p) # To make node visible
+n = c.frame.tree.redrawCount
+assert not p.b, 'oops1'
+try:
+    assert p == c.p,'position has changed!'
+    w = c.frame.body.wrapper
+    if c.vim_mode and c.vimCommands:
+        if c.vimCommands.state == 'normal':
+            # Enter insert mode ;-)
+            g.app.gui.event_generate(c,'i','i',w)
+    g.app.gui.event_generate(c,'a','a',w)
+    assert p.b == 'a', 'expected "a", got: %s' % repr(p.b)
+    if g.app.gui.guiName() != 'nullGui':
+        n2 = c.frame.tree.redrawCount
+        c.outerUpdate() # Force the coloring before doing the test.
+        assert n2 == n + 1,'too many or too few redraws: expected 1: got: %d' % (n2-n)
+finally:
+    if 1:
+        c.setBodyString(p,'')
+        c.redraw(p)
+</t>
+<t tx="ekr.20060325071703.2">guiname = g.app.gui.guiName()
+
+tkinter = c.config.getBool('test_tkinter_setting')
+wx      = c.config.getBool('test_wxWindows_setting')
+
+print(guiname)
+
+if guiname == 'tkinter':
+    assert(tkinter)
+    assert(not wx)
+
+if guiname == 'wxWindows':
+    assert(not tkinter)
+    assert(wx)
+</t>
+<t tx="ekr.20060912091510.1">import time
+
+c.frame.body.addEditor()
+
+time.sleep(0.5)
+
+c.frame.body.deleteEditor()
+
+time.sleep(0.5)
+</t>
+<t tx="ekr.20061104172236.22"># target.
+
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+try:
+    w = c.frame.body.wrapper
+    s = w.getAllText()
+    w.setInsertPoint(len(s))
+    c.k.previousSelection = 2,8
+    event = g.app.gui.create_key_event(c,w=w)
+    c.frame.pasteText(event=event,middleButton=True)
+    s2 = w.getAllText()
+    assert len(s2) == len(s) + len('target')
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    # g.trace(repr(s))
+    c.recolor()
+
+# end
+</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -672,6 +1457,14 @@ if not g.os_path_exists(s):
     f.close()
     g.pr('created chinese file')
     
+</t>
+<t tx="ekr.20070131171218.1"></t>
+<t tx="ekr.20070131171218.2">first line
+line 1
+    line a
+        line b
+line c
+last line
 </t>
 <t tx="ekr.20070217065840">@nocolor-node
 
@@ -811,6 +1604,52 @@ else:
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
+<t tx="ekr.20070611071101">p1 = p.copy()
+a = p.firstChild()
+b = a.firstChild()
+c2 = b.firstChild()
+limit = a.next()
+d = limit.firstChild()
+e = limit.next()
+assert e.h == 'e'
+for p2,h in ((a,'a'),(b,'b'),(c2,'c2'),(d,'d'),(limit,'limit')):
+    p2.expand()
+    assert p2.h==h,'headString mismatch'
+
+try: # Tests without hoist...
+    p1.expand()
+    assert not c.hoistStack
+    c.selectPosition(limit)
+    result = limit.copy().moveToVisBack(c)
+    assert result==c2,'visBack != c2: %s' % result
+    #
+    result = limit.copy().moveToVisNext(c)
+    assert result==d,'visNext != d: %s' % result
+finally:
+    p1.contract()
+
+try: # Tests with hoist.
+    p1.expand()
+    c.selectPosition(limit)
+    c.hoist()
+    result = limit.copy().moveToVisBack(c)
+    assert not result,'limited visBack: %s' % result
+    #
+    result = limit.copy().moveToVisNext(c)
+    assert result==d,'limited visNext !=d: %s' % result
+finally:
+    c.dehoist()
+    c.selectPosition(p1)
+    p1.contract()
+    c.redraw_now()
+
+</t>
+<t tx="ekr.20070611071101.1"></t>
+<t tx="ekr.20070611071101.2"></t>
+<t tx="ekr.20070611071101.3"></t>
+<t tx="ekr.20070611071101.4"></t>
+<t tx="ekr.20070611071101.5"></t>
+<t tx="ekr.20070611071954"></t>
 <t tx="ekr.20070627082044.808"># A file that contains functions with errors in them.
 # This is used to test error reporting in scripts
 
@@ -846,6 +1685,152 @@ except Exception:
     g.es_exception()
 assert g.os_path_exists(path), 'batchTest.py failed'
 </t>
+<t tx="ekr.20071007120750.4">@pagewidth 80
+    # Required for external unit test.
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20071007121312.1">Americans live in the most severe weather-prone country on Earth. Each year,
+Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+weather impacts every American. Communities can now rely on the National Weather
+Service’s StormReady program to help them guard against the ravages of Mother
+Nature.
+
+Some 90% of all presidentially declared disasters are weather related,
+leading to around 500 deaths per year and nearly
+$14 billion in damage.
+StormReady, a program started in 1999 in Tulsa,
+OK, helps arm America's communities with the communication
+and safety skills needed to save lives and property– before and during the event.
+StormReady helps community leaders
+and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared
+to save lives from the onslaught of severe
+weather through better planning, education, and awareness.
+No community is storm proof,
+but
+StormReady can help communities save lives. Does StormReady make a difference?
+</t>
+<t tx="ekr.20071007121312.2">Americans live in the most severe weather-prone country on Earth. Each year,
+Americans cope with an average of 10,000 thunderstorms,
+2,500 floods, 1,000
+tornadoes, as well as an average of 6 deadly hurricanes.
+Potentially deadly
+weather impacts every American.
+Communities can now rely on the National Weather
+Service’s StormReady program to help them guard against the ravages of Mother
+Nature.
+
+Some 90% of all presidentially declared disasters are weather related,
+leading to around 500 deaths per year and nearly
+$14 billion in damage.
+StormReady, a program started in 1999 in Tulsa,
+OK, helps arm America's communities with the communication
+and safety skills needed to save lives and property– before and during the event.
+StormReady helps community leaders
+and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared
+to save lives from the onslaught of severe
+weather through better planning, education, and awareness.
+No community is storm proof,
+but
+StormReady can help communities save lives. Does StormReady make a difference?
+</t>
+<t tx="ekr.20071007121312.3">Americans live in the most severe weather-prone country on Earth. Each year,
+Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+weather impacts every American. Communities can now rely on the National Weather
+Service’s StormReady program to help them guard against the ravages of Mother
+Nature.
+
+Some 90% of all presidentially declared disasters are weather related,
+leading to around 500 deaths per year and nearly
+$14 billion in damage.
+StormReady, a program started in 1999 in Tulsa,
+OK, helps arm America's communities with the communication
+and safety skills needed to save lives and property– before and during the event.
+StormReady helps community leaders
+and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared
+to save lives from the onslaught of severe
+weather through better planning, education, and awareness.
+No community is storm proof,
+but
+StormReady can help communities save lives. Does StormReady make a difference?
+</t>
+<t tx="ekr.20071007124202">@pagewidth 80
+    # Required for external unit test.
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20071007124202.1">Americans live in the most severe weather-prone country on Earth. Each year,
+Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+weather impacts every American. Communities can now rely on the National Weather
+Service’s StormReady program to help them guard against the ravages of Mother
+Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading
+to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK, helps arm America's communities with the
+communication and safety skills needed to save lives and property– before and
+during the event. StormReady helps community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of
+severe weather through better planning, education, and awareness. No community
+is storm proof, but StormReady can help communities save lives. Does StormReady
+make a difference?
+</t>
+<t tx="ekr.20071007124202.2">Americans live in the most severe weather-prone country on Earth. Each year,
+Americans cope with an average of 10,000 thunderstorms,
+2,500 floods, 1,000
+tornadoes, as well as an average of 6 deadly hurricanes.
+Potentially deadly
+weather impacts every American.
+Communities can now rely on the National Weather
+Service’s StormReady program to help them guard against the ravages of Mother
+Nature.
+
+Some 90% of all presidentially declared disasters are weather related,
+leading to around 500 deaths per year and nearly
+$14 billion in damage.
+StormReady, a program started in 1999 in Tulsa,
+OK, helps arm America's communities with the communication
+and safety skills needed to save lives and property– before and during the event.
+StormReady helps community leaders
+and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared
+to save lives from the onslaught of severe
+weather through better planning, education, and awareness.
+No community is storm proof,
+but
+StormReady can help communities save lives. Does StormReady make a difference?
+</t>
+<t tx="ekr.20071007124202.3">Americans live in the most severe weather-prone country on Earth. Each year,
+Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+weather impacts every American. Communities can now rely on the National Weather
+Service’s StormReady program to help them guard against the ravages of Mother
+Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading
+to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK, helps arm America's communities with the
+communication and safety skills needed to save lives and property– before and
+during the event. StormReady helps community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of
+severe weather through better planning, education, and awareness. No community
+is storm proof, but StormReady can help communities save lives. Does StormReady
+make a difference?
+</t>
 <t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
 assert g.os_path_exists(fn),fn
 c1 = c
@@ -871,7 +1856,90 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
-<t tx="ekr.20071113203234"></t>
+<t tx="ekr.20071113145804.20">if c.config.redirect_execute_script_output_to_log_pane:
+    pass # Test doesn't work when redirection is on.
+else:
+    try:
+        import sys
+        # Catch the output of g.es_exception.
+        # We catch the AssertionError, so nothing gets written to stderr.
+        sys.stdout = fo = g.fileLikeObject()
+        try: # Create an exception to catch.
+            assert False, 'Assert False in test_g_es_exception'
+        except AssertionError:
+            g.es_exception(color='suppress')
+            result = fo.get()
+            s1 = 'Traceback (most recent call last):'
+            s2 = 'AssertionError: Assert False in test_g_es_exception'
+            assert result.find(s1) &gt; -1, 'No traceback line: %s' % repr(result)
+            assert result.find(s2) &gt; -1, 'No AssertionError line: %s' % repr(result)
+    finally:
+        # Not needed unless we execute this script as selected text.
+        sys.stdout = sys.__stdout__
+</t>
+<t tx="ekr.20071113145804.22">@first # -*- coding: utf-8 -*-
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+
+import sys
+s = 'test ɯ'
+
+def test():
+    g.es_trace(s,color='red')
+
+try:
+    # Don't worry about the exact output.
+    # Just test that it doesn't throw an exception.
+    sys.stdout = g.fileLikeObject()
+    test()
+finally:
+    sys.stdout = sys.__stdout__
+</t>
+<t tx="ekr.20071113145804.23">@first # -*- coding: utf-8 -*-
+
+# g.reportBadChars no longer exists.
+
+table = (
+    ('aĂbĂ',                    'ascii'),
+    (g.ue('aĂbĂ','utf-8'),      'ascii'),
+    ('炰',                       'ascii'),
+    (g.ue('炰','utf-8'),         'ascii'),
+    ('aĂbĂ',                     'utf-8'),
+    (g.ue('aĂbĂ','utf-8'),       'utf-8'),
+    ('炰',                       'utf-8'),
+    (g.ue('炰','utf-8'),         'utf-8'),
+)
+for s,encoding in table:
+    g.reportBadChars(s,encoding)
+</t>
+<t tx="ekr.20071113145804.33"># target
+
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+
+try:
+    w = c.frame.body.wrapper
+    s2 = p.b
+    s = w.getAllText()
+    assert s == s2, 'w.getAllText() != p.b: len(w)=%d, len(p)=%d' % (len(s),len(s2))
+    w.setInsertPoint(len(s))
+    c.k.previousSelection = 2,8
+    event = g.app.gui.create_key_event(c,w=w)
+    c.frame.pasteText(event=event,middleButton=True)
+    s2 = w.getAllText()
+    assert len(s2) == len(s) + len('target')
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    c.recolor()
+
+# end5target
+</t>
+<t tx="ekr.20071113203234">@nosearch</t>
+<t tx="ekr.20080310073711.1">gnx = g.app.nodeIndices.toString(None)
+assert(gnx not in (None,'None'))
+assert(len(gnx) &gt; 1)
+</t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
@@ -904,12 +1972,54 @@ Important: this may cause crashes on some platforms.
 <t tx="ekr.20080907123324.3">def spam(): # line 2
     pass
 </t>
-<t tx="ekr.20090306091634.1">if g.in_bridge:
-    # No need for this extra output.
-    self.skipTest('In bridge')
-tree = c.frame.tree
-if hasattr(tree,'redrawCount'):
-    g.pr('%s: %s' % (p.h,tree.redrawCount))
+<t tx="ekr.20090104053806.1"># Disabled because modifying errorTest.py creates annoying bzr conflicts.
+
+import os
+
+path = g.os_path_finalize_join(g.app.testDir,'unittest','errorTest.py')
+assert g.os_path_exists(path),path
+timeStamp = c.timeStampDict.get(path)
+val = c.checkFileTimeStamp(path)
+assert val == True
+
+f = open(path)
+s = f.read()
+lines = g.splitLines(s)
+result = [] ; found = False
+tag = '# timestamp:'
+for line in lines:
+    if line.startswith(tag):
+        timeStamp = os.path.getmtime(path)
+        result.append('%s %s\n' % (tag,timeStamp))
+        found = True
+    else:
+        result.append(line)
+f.close()
+
+assert found,' no line starts with "%s"' % tag
+
+f = open(path,'w')
+f.write(''.join(result))
+f.close()
+
+timeStamp2 = os.path.getmtime(path)
+assert timeStamp != timeStamp2
+val = c.checkFileTimeStamp(path)
+assert not val,repr(val)
+c.setFileTimeStamp(path)
+val = c.checkFileTimeStamp(path)
+assert val,repr(val)
+</t>
+<t tx="ekr.20090529115704.4555">if 0: # x.rename no longer exists
+    x = c.shadowController
+
+    filename = x.pathName('xyzzy')
+    assert not g.os_path_exists(filename)
+    n = x.errors
+    x.rename('xyzzy','xyzzy2',silent=True)
+    assert x.errors == n+1
+    assert x.last_error.startswith('can not rename')
+    # print(x.last_error)
 </t>
 <t tx="ekr.20090529115704.4557">import glob
 import os
@@ -940,6 +2050,85 @@ deleteShadowDir(shadow_dir)
         # g.trace(shadow_dir)
         os.rmdir(shadow_dir)
         assert not os.path.exists(shadow_dir),'still exists: %s' % shadow_dir
+</t>
+<t tx="ekr.20090529115704.4560">x = c.shadowController
+
+lines1 = ('a','b','c')
+lines2 = ('a','x','c')
+
+x.show_error(
+    lines1,lines2,
+    message = "Test of x.show_error",
+    lines1_message = "lines1",
+    lines2_message = "lines2")
+</t>
+<t tx="ekr.20090529141856.4730">import sys
+
+if sys.platform.lower().startswith('win'):
+
+    fileName = g.os_path_abspath(g.os_path_join(
+        g.app.loadDir,'..','test','big-c#-test.c#'))
+    f = open(fileName)
+    s = f.read()
+    f.close()
+    c.importCommands.cSharpUnitTest(p,s=s,fileName=fileName,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4769">import sys
+
+if sys.platform.lower().startswith('win'):
+
+    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','constants.java'))
+
+    f = open(fileName)
+    s = f.read()
+    f.close()
+
+    c.importCommands.javaUnitTest(p,s=None,fileName=fileName,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4771">import sys
+
+if sys.platform.lower().startswith('win'):
+
+
+    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','AdminPermission.java'))
+
+    f = open(fileName)
+    s = f.read()
+    f.close()
+
+    c.importCommands.javaUnitTest(p,s=s,fileName=fileName,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4777">s = '''\
+
+// Convert a string to it's JSON representation by encoding control characters, double quotes and backslash. See json.org
+String.prototype.toJSONString = function()
+{
+	var m = {
+		'\\b': '\\\\b',
+		'\\f': '\\\\f',
+		'\\n': '\\\\n',
+		'\\r': '\\\\r',
+		'\\t': '\\\\t',
+		'"' : '\\\\"',
+		'\\\\': '\\\\\\\\'
+		};
+	var replaceFn = function(a,b) {
+		var c = m[b];
+		if(c)
+			return c;
+		c = b.charCodeAt();
+		return '\\u00' + Math.floor(c / 16).toString(16) + (c % 16).toString(16);
+		};
+    if(/["\\\\\\x00-\\x1f]/.test(this))
+		return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
+
+	return '"' + this + '"';
+};
+
+'''
+
+
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4785">import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
@@ -1238,7 +2427,67 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 </t>
+<t tx="ekr.20090529141856.4793">d = g.app.extra_extension_dict
+
+for ext in g.app.extension_dict.keys():
+    language =  c.importCommands.languageForExtension(ext)
+    language2 = c.importCommands.languageForExtension('.'+ext)
+    assert language == language2
+
+    # Now a many-one relationship.
+    if language:
+        # Do not test extensions that have 'none' as the value of d.get(ext)
+        # Otherwise, test only d.get(ext).
+        language2 = d.get(ext)
+        if language2 in ('None','none'):  continue
+        if language2: language = language2
+        # Made-up languages do not have mode files.
+        if not language.endswith('_language') and language not in ('autohotkey','rest','rst','typescript',):
+            path = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
+            assert g.os_path_exists(path), 'for ext=%s does not exist: %s' % (ext,path)
+
+    if 0:
+        if language is None:
+            print('no language for ext=%s' % (ext))
+</t>
+<t tx="ekr.20090608174319.4791"># This causes trouble if executed quickly after the add-editor command.
+# Presumably this is a timing condition that will never happen in practice.
+
+if 0:
+    c.frame.body.deleteEditor()
+</t>
+<t tx="ekr.20090704085350.5010">h = '@file ../test/unittest/at-file-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p
+assert not p.isDirty(),p.h # Do not ignore this failure!
+
+table = (
+    (p.firstChild(),'spam'),
+    (p.firstChild().next(),'eggs')
+)
+
+for p2,h2 in table:
+    assert p2.h == h2
+    assert len(p2.b) &gt; 10
+</t>
 <t tx="ekr.20090704085350.5014">@others</t>
+<t tx="ekr.20090704085350.5018"># Not valid for external tests: uses @&lt;file&gt; node.
+if not g.app.isExternalUnitTest:
+
+    h = '@shadow ../test/unittest/at-shadow-test.py'
+    p = g.findNodeAnywhere(c,h)
+    assert p
+    
+    table = (
+        (p.firstChild(),'spam'),
+        (p.firstChild().next(),'eggs')
+    )
+    
+    assert not p.isDirty(),p.h # Do not ignore this failure!
+    
+    for p2,h2 in table:
+        assert len(p2.h) == len(h2)
+</t>
 <t tx="ekr.20090704085350.5022">@language python
 @others
 </t>
@@ -1475,38 +2724,6 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
-<t tx="ekr.20100131171342.5482">ivars = (
-    # Global managers.
-    'config',
-    ### 'externalFilesController',
-    'loadManager','pluginsController','recentFilesManager',
-    # Official ivars.
-    'gui',
-    'initing','killed','quitting',
-    'leoID','log','logIsLocked','logWaiting',
-    'nodeIndices',
-    'unitTesting','unitTestDict',
-    'windowList',
-    # Less-official and might be removed...
-    'batchMode',
-    # 'debugSwitch',
-    'disableSave',
-    'hookError','hookFunction',
-    'numberOfUntitledWindows',
-    'realMenuNameDict',
-    'searchDict','scriptDict',
-    'use_psyco',
-)
-if g.app.isExternalUnitTest or g.in_bridge:
-    mayBeNone = ('hookFunction','idleTimeHook','log','openWithInstance')
-else:
-    mayBeNone = ('hookFunction','openWithInstance')
-for ivar in ivars:
-    assert hasattr(g.app,ivar), 'missing app ivar: %s %r' % (ivar,g.app)
-    if ivar not in mayBeNone:
-        val = getattr(g.app,ivar)
-        assert val is not None, 'null app ivar: %s %r'% (ivar,g.app)
-</t>
 <t tx="ekr.20100131171342.5485">import inspect
 
 d = c.commandsDict
@@ -1533,28 +2750,223 @@ for key in keys:
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected, message
 </t>
-<t tx="ekr.20100203103015.5353"># Not a perfect test, but stil significant.
-efc = g.app.externalFilesController
-if not efc:
-    self.skipTest('No externalFilesController')
-result = efc.ask(c,p.h)
-assert result in (True, False),result
-</t>
-<t tx="ekr.20100203103015.5355">@language python
+<t tx="ekr.20100131171342.5486"># print('-' * 30)
 
-efc = g.app.externalFilesController
-if not efc:
-    self.skipTest('No externalFilesController')
+@others
+
+# This can't be run externally,
+# And it is no longer an effective test.
+
+p = c.rootPosition()
+ok = True
+while p and ok:
+    if p.isAnyAtFileNode():
+        h = p.h
+        if h.endswith('.py'):
+            ok = checkFile(p)
+        p.moveToNodeAfterTree()
+    else:
+        p.moveToThreadNext()
+assert ok
+</t>
+<t tx="ekr.20100131171342.5487">def checkFile(p):
+
+    # print('checking',p.h)
+    # Check all the descendant nodes.
+    ok = True
+    for p2 in p.subtree_iter():
+        h = p2.h
+        for tag in ('@test','@suite'):
+            if h.startswith(tag):
+                s = p2.b
+                lines = g.splitLines(s)
+                for line in lines:
+                    # print('line',line)
+                    if not line.strip() or line.startswith('#'):
+                        continue
+                    elif line.startswith('if g.unitTesting:'):
+                        break
+                    else:
+                        print('in %s' % p.h)
+                        print('missing "if g.unitTesting:" %s' % h)
+                        ok = False
+    return ok
+</t>
+<t tx="ekr.20100131171342.5497">import leo.plugins.detect_urls as detect_urls
+
+# print(c.frame.body.wrapper)
+w = c.frame.body.wrapper
+s = w.getAllText()
+
+# s will be empty when running unit tests dynamically.
+if s:
+    if s.endswith('\n'): s = s[:-1]
+    w.setInsertPoint(len(s))
+    url = detect_urls.openURL(tag='test',keywords={'c':c})
+    assert url == 'http://webpages.charter.net/edreamleo/front.html','Got:%s' % repr(url)
+    
+@ The last line is the url
+http://webpages.charter.net/edreamleo/front.html
+</t>
+<t tx="ekr.20100131171342.5500">import leo.plugins.macros as macros
+
+controller = macros.ParamClass(c)
+controller.parameterize()
+    # Not much will happen because there are no children.
+    # However, this does test recent changes.
+</t>
+<t tx="ekr.20100131171342.5505"># This test is no longer valid because of per-position node expansions.
+def test_sibs(parent_p,parent_item):
+    trace = False
+    tree = c.frame.tree
+    sib_items = tree.childItems(parent_item)
+    sibs = [z.copy() for z in parent_p.self_and_siblings_iter()]
+    assert len(sib_items) == len(sibs),(
+        'child_items: %s, children: %s' % (
+            g.listToString(sib_items),g.listToString(sibs)))
+    for item,p in zip(sib_items,sibs):
+        p2 = tree.item2position(item)
+        if trace: print (id(item),p2 and p2.headString() or not p2 and '**None**')
+        assert p == p2, 'item: %s, p: %s, p2: %s' % (id(item),p,p2)
+        # Recursively test.
+        child = p.firstChild()
+        if child.isVisible(c):
+            test_sibs(child,parent_item=item)
+if hasattr(c.frame.tree,'item2position'):
+    c.redraw()
+    test_sibs(c.rootPosition(),None)
+</t>
+<t tx="ekr.20100131171342.5606"># This test is difficult to get right on all platforms.
+# It's not worth doing.
+
+try:
+    k = c.k
+    w = c.frame.body.wrapper
+    ac = k.autoCompleter
+    # Set the insertion point.
+    s = w.getAllText()
+    w.setInsertPoint(len(s)-1)
+    # Just test that this doesn't crash.
+    ac.w = w
+    ac.calltip()
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    c.recolor()
+
+# c.frame
+</t>
+<t tx="ekr.20100203103015.5356">arg = ''
+arg0 = 'one'
+fn = '&lt;fn&gt;'
+filename = '' # g.os.path.basename(arg)
+vtuple = [arg0,fn]
+
 table = (
-    # (None,'.py'),
-    # ('','.py'),
-    ('txt','.txt'),
-    ('.txt','.txt'),
+    #('os.system',       'os.system(%s)' % (arg+fn)),
+    #('os.startfile',    'os.startfile(%s)' % (arg+fn)),
+    #('exec',            'exec(%s)' % (arg+fn)),
+    #('os.spawnl',       'os.spawnl(%s,%s,%s)' % (arg,filename,fn)),
+    #('os.spawnv',       'os.spawnv(%s,%s)' % (arg0,vtuple)),
+    ('subprocess.Popen','subprocess.Popen(%s)' % vtuple),
+    ('huh?',            'bad command:'+'huh?'),
 )
-for ext,result in table:
-    result2 = efc.get_ext(c,p,ext)
-    assert result==result2,'ext: %s, expected %s, got %s' % (
-        repr(ext),repr(result),repr(result2))
+
+for openType,result in table:
+    if openType in ('os.spawnv','subprocess.Popen'):
+        arg2 = ['one']
+    else:
+        arg2 = None
+    result2 = c.openTempFileInExternalEditor(
+        arg2,fn,openType,testing=True)
+    assert result==result2,'expected %s, got %s' % (
+        repr(result),repr(result2))
+</t>
+<t tx="ekr.20100204173354.5375">if g.in_bridge:
+    self.skipTest('Not for TravisCI')
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+table = (
+    # ('ignore_case','toggle-find-ignore-case-option'),
+        # This option now can be set automagically.
+    ('search_body','toggle-find-in-body-option'),
+    ('search_headline','toggle-find-in-headline-option'),
+    ('mark_changes','toggle-find-mark-changes-option'),
+    ('mark_finds','toggle-find-mark-finds-option'),
+    ('pattern_match','toggle-find-regex-option'),
+    # ('reverse','toggle-find-reverse-option'),
+    ('whole_word','toggle-find-word-option'),
+    ('wrap','toggle-find-wrap-around-option'),
+)
+fc = c.findCommands
+for ivar,command in table:
+    val1 = getattr(fc,ivar)
+    try:
+        c.k.simulateCommand(command)
+        val2 = getattr(fc,ivar)
+        assert val2 == (not val1),'failed 1 %s' % command
+        c.k.simulateCommand(command)
+        val3 = getattr(fc,ivar)
+        assert val3 == val1,'failed 2 %s' % command
+    finally:
+        setattr(fc,ivar,val1)
+</t>
+<t tx="ekr.20100206165505.5386"># More suitable as a hand test:
+# it makes no effort to delete the 'Recovered Nodes' node.
+
+c.nodeConflictList = []
+
+for i in range(2):
+    c.nodeConflictList.append(g.bunch(
+        tag='(uncached)',
+        gnx='gnx %s' % (i),
+        fileName ='filename %s' % (i),
+        b_old='old body %s' % (i),
+        b_new='new body %s' % (i),
+        h_old='head %s' % (i),
+        h_new='head %s' % (i),
+    ))
+
+c.fileCommands.handleNodeConflicts()
+
+c.nodeConflictList = []
+
+c.redraw()
+</t>
+<t tx="ekr.20100209155559.5386">efc = g.app.externalFilesController
+d = {'ext':'.py',}
+fn = efc.create_temp_file(c,d,p)
+assert g.os_path_exists(fn),fn
+efc.shut_down()
+assert not g.os_path_exists(fn),fn
+</t>
+<t tx="ekr.20100223123103.5382">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+import leo.core.leoFrame as leoFrame
+assert not isinstance(c.frame,leoFrame.NullFrame)
+def closeEnough(f1,f2):
+    return abs(f1-f2) &lt; 0.01
+f = c.frame
+ratio,ratio2 = f.ratio,f.secondary_ratio
+table = (
+    c.bodyWantsFocusNow,
+    c.logWantsFocusNow,
+    c.treeWantsFocusNow,
+)
+for func in table:
+    name = func.__name__
+    func()
+    f.contractPane()
+    if func == c.logWantsFocusNow:
+        assert ratio2 != f.secondary_ratio,'fail 1'
+    else:
+        assert ratio != f.ratio,'fail 2: %s, %s: %s' % (ratio,f.ratio,name)
+    func()
+    f.expandPane()
+    assert closeEnough(ratio,f.ratio),'fail 3 %s != %s: %s' % (
+        ratio,f.ratio,name)
+    assert closeEnough(ratio2,f.secondary_ratio),'fail 4 %s != %s: %s' % (
+        ratio2,f.secondary_ratio,name)
 </t>
 <t tx="ekr.20100731163237.5782">@language html
 
@@ -1563,6 +2975,105 @@ for ext,result in table:
 after.
 </t>
 <t tx="ekr.20100731163237.5783">&lt;p&gt; a paragraph. &lt;/p&gt;
+</t>
+<t tx="ekr.20100802220019.5795">self.skipTest('at.deleteUnvisitedNodes not used')
+
+def clone (p,parent,n):
+    p2 = p.clone()
+    p2.moveToNthChildOf(parent,n)
+    return p2
+
+def make (parent,n,h):
+    child = parent.insertAsNthChild(n)
+    child.h = h
+    return child
+
+def delete_r():
+    '''Delete all 'Resurrected Nodes' nodes.'''
+    while True:
+        r = g.findNodeAnywhere(c,'Resurrected Nodes')
+        if r: r.doDelete(newNode=p)
+        else: break
+
+def delete_children():
+    # Delete all children of p.
+    while p.hasChildren():
+        p.firstChild().doDelete(newNode=p)
+
+def test(p,h,tag):
+    assert p,'p'
+    assert p.h == 'From root','p.h %s' % tag
+    assert p.numberOfChildren() == 1,'number of children %s' % tag
+    assert p.firstChild().h == h,'child.h %s' % tag
+
+delete_r()
+delete_children()
+
+# Create some children.
+root = make(p,0,'root')
+child1 = make(root,0,'child1')
+child2 = make(root,1,'child2')
+child3 = make(root,2,'child3')
+child11 = make(child1,0,'child11')
+child21 = make(child2,0,'child21')
+child31 = make(child3,0,'child31')
+# Create some clones.
+if 0:
+    child4 = clone(child31,root,3)
+# Set all bits except for child2 &amp; child31.
+for z in root.self_and_subtree():
+    z.setVisited()
+for z in child2,child31: # These should be moved.
+    z.clearVisited()
+if 1:
+    c.atFileCommands.deleteUnvisitedNodes(root)
+    c.redraw()
+if 1:
+    r = g.findNodeAnywhere(c,'Resurrected Nodes')
+    assert r,'r'
+    r1 = r.firstChild()
+    r2 = r1.next()
+    # r3 = r2.next()
+    test(r1,'child31','r1')
+    test(r2,'child2','r2')
+    # assert root.numberOfChildren() == 3,'root.n'
+if 1:
+    delete_r()
+if 1:
+    delete_children()
+c.redraw()
+</t>
+<t tx="ekr.20100813100841.5825"># Applies to options doc parts as well.
+</t>
+<t tx="ekr.20100830113702.5969">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('Not for Linux')
+exec(g.findTestScript(c,'@common leoEditCommands test code'))
+runEditCommandTest(c,p,inHeadline=False)
+runEditCommandTest(c,p,inHeadline=True)
+</t>
+<t tx="ekr.20100830113702.5970">aaaa bbbb cccc dddd
+</t>
+<t tx="ekr.20100830113702.5971">aaaa bbbb cccc dddd
+</t>
+<t tx="ekr.20100830113702.5972">aaaa bbbb dddd
+</t>
+<t tx="ekr.20100830113702.5977">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+if sys.platform.startswith('linux'):
+    self.skipTest('Not for Linux')
+import sys
+exec(g.findTestScript(c,'@common leoEditCommands test code'))
+runEditCommandTest(c,p,inHeadline=False)
+runEditCommandTest(c,p,inHeadline=True)
+</t>
+<t tx="ekr.20100830113702.5978">aaaa bbcc dddd
+</t>
+<t tx="ekr.20100830113702.5979">aaaa bbbb cccc dddd
+</t>
+<t tx="ekr.20100830113702.5980">aaaa bbcc dddd
 </t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
@@ -1578,11 +3089,24 @@ False:
 # Nov. 2017: 916 tests, 25 skipped.
 
 # Some tests are disabled when g.app.isExternalUnitTest is True.
-# Using self.skipTest(reason) is now preferred.</t>
+# Using self.skipTest(reason) is now preferred.
+</t>
 <t tx="ekr.20110521073115.3494"></t>
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
+</t>
+<t tx="ekr.20110524091618.3488">at = c.atFileCommands
+
+# A mininimal test.
+
+at.startSentinelComment = '&lt;!--'
+at.endSentinelComment = '--&gt;'
+
+s1 = '&lt;!--\nline 2.\n--&gt;\n'
+s2 = at.massageAtDocPart(s1)
+
+assert s2 == 'line 2.\n',repr(s2)
 </t>
 <t tx="ekr.20110610122533.3407">@others
 @language python
@@ -1590,6 +3114,53 @@ False:
 </t>
 <t tx="ekr.20110615130436.3317"># This was used by @test writing a .leo file retains orphan bits.
 # but this test is moot because Leo no longer writes orphan bits.</t>
+<t tx="ekr.20111003145300.3466">'''Test that dragging this node onto the child node generates a warning.'''
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('Not for Linux')
+
+fn = '&lt;file name&gt;'
+p2 = p.firstChild()
+tree = c.frame.tree
+if hasattr(tree,'treeWidget'):
+    w = tree.treeWidget
+    for w.was_control_drag in (True,False):
+        tree.treeWidget.intraFileDrop(fn,p,p2)
+        assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
+</t>
+<t tx="ekr.20111003145300.3467"></t>
+<t tx="ekr.20111006064419.3493">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+
+exec(g.findTestScript(c,'@common x-marked-nodes test code'))
+
+def test(p):
+    setup_test(p)
+    n = p.numberOfChildren()
+    assert n == 4 ,'delete: children: %s' % (n)
+    c.moveMarked()
+    assert c.p.h == 'Moved marked nodes'
+    n = p.numberOfChildren()
+    assert n == 2 ,'delete: children: %s' % (n)
+    if 0:
+        # The new move-marked-nodes command doesn't
+        # leave the result in the root node.
+        root = c.rootPosition()
+        assert root.h == 'Moved marked nodes',root.h
+    if 0: # The move-marked-nodes command is no longer undoable.
+        c.undoer.undo()
+        n = p.numberOfChildren()
+        assert n == 4,'undo: children: %s' % (n)
+        c.undoer.redo()
+        n = p.numberOfChildren()
+        assert n == 2 ,'delete: children: %s' % (n)
+try:
+    test(p)
+finally:
+    tear_down(p,'Moved marked nodes')
+</t>
 <t tx="ekr.20111021115306.3697">\begin{document}
 &lt;&lt; Document &gt;&gt;
 % hidden comment
@@ -1606,6 +3177,107 @@ div
 table
 nodeA
 nodeB
+</t>
+<t tx="ekr.20111107065245.3833">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+d = g.app.unitTestDict
+tag = 'minimize-all'
+assert not d.get(tag)
+c.frame.minimizeAll()
+assert d.get(tag) is True
+</t>
+<t tx="ekr.20111107065530.3833"># The actual code contains the unit test.
+# This test will have effect only when run locally.
+
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+
+d = g.app.unitTestDict
+tag = 'resize-to-screen'
+assert not d.get(tag)
+c.frame.resizeToScreen()
+assert d.get(tag) is True
+</t>
+<t tx="ekr.20111107102431.3849"># A good test, but we don't want this large a file included in the distro.
+
+# fn = r'c:\recent\data4.html'
+fn = r'c:\recent\data.html'
+
+root = p.copy()
+
+# Fails with more tags: a newline gets inserted between tags.
+
+html_tags = ('body','head','html','table','xxx',)
+setting = 'import_html_tags'
+
+# Settings now work when run externally.
+c.config.set(setting,'data',html_tags)
+tags = c.config.getData(setting)
+assert tags == html_tags,len(tags)
+try:
+    c.importCommands.importFilesCommand(files=[fn],treeType='@file')
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        c.redraw()
+    assert not root.hasChildren()
+fail = g.app.unitTestDict.get('fail')
+assert not fail
+</t>
+<t tx="ekr.20111110072415.3841">'''Make sure that g.trace doesn't add an extra newline.'''
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+
+import sys
+
+def test():
+    g.trace('a')
+    g.trace('b')
+
+try:
+    sys.stdout = g.fileLikeObject()
+    test()
+    result = sys.stdout.get()
+    assert result == 'test a\ntest b\n',repr(result)
+finally:
+    sys.stdout = sys.__stdout__
+</t>
+<t tx="ekr.20111110073528.3843">'''Make sure that g.trace doesn't add an extra newline.'''
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+
+import sys
+
+def test():
+    g.pr('a')
+    g.pr('b')
+
+try:
+    sys.stdout = g.fileLikeObject()
+    test()
+    result = sys.stdout.get()
+    assert result == 'a\nb\n',repr(result)
+finally:
+    sys.stdout = sys.__stdout__
+</t>
+<t tx="ekr.20111110073834.3843">'''Make sure that g.trace doesn't add an extra newline.'''
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+
+import sys
+
+def test():
+    g.es_print('a')
+    g.es_print('b')
+
+try:
+    sys.stdout = g.fileLikeObject()
+    test()
+    result = sys.stdout.get()
+    assert result == 'a\nb\n',repr(result)
+finally:
+    sys.stdout = sys.__stdout__
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
@@ -1660,27 +3332,156 @@ finally:
 &lt;/html&gt;
 </t>
 <t tx="ekr.20111115080347.3872"></t>
-<t tx="ekr.20111121224307.3934">if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
+<t tx="ekr.20111118125141.3879"># Test that changing c.frame.body.bodyCtrl also changes c.frame.body.wrapper.
+if 0:
+    # A very dangerous test.
+    # A failure here will destroy all following tests!
+    # Furthermore, it is not needed.  bodyCtrl exists nowhere in Leo.
+    body = c.frame.body
+    old_w = body.wrapper
+    try:
+        assert old_w is not None
+        body.bodyCtrl = None
+        assert body.wrapper is None
+    finally:
+        body.wrapper = old_w
+    assert hasattr(c.frame.body,'bodyCtrl')
+    assert hasattr(c.frame.log,'logCtrl')
+</t>
+<t tx="ekr.20111120124051.3992">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('Not for Linux')
+from leo.core.leoQt import QtCore,QtGui,QtWidgets
+
+import leo.plugins.qt_events as qt_events
+
+def setup(p):
+    delete_children(p)
+    p2 = p.insertAsLastChild()
+    c.selectPosition(p2)
+    p2.h = 'first-child'
+
+def delete_children(p):
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+app = g.app.gui.qtApp
+assert issubclass(app.__class__,QtWidgets.QApplication)
+wrapper = c.frame.body.wrapper
+w = wrapper.widget
+assert g.isTextWrapper(wrapper),wrapper
+assert g.isTextWidget(w),w
+# w_name = w.__class__.__name__
+# bassert w_name in('QsciScintilla','LeoQTextBrowser'),w_name
+p1 = p.copy()
+filter_obj = qt_events.LeoQtEventFilter(c,w=w)
+g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
+try:
+    ev = QtCore.QEvent
+    table = (
+        ev.KeyPress,
+        # ev.KeyRelease, # Ignored except in QLineEdit's.
+        # ev.ShortcutOverride, # Ignored everywhere.
+    )
+    for theType in table:
+        # Create the event.
+        setup(p1)
+        e = QtGui.QKeyEvent(theType,ord('i'),QtCore.Qt.ControlModifier)
+        # Pass it to eventFilter.
+        filter_obj.eventFilter(w,e)
+        # Check the results.
+        c.redraw()
+        n = p1.numberOfChildren()
+        assert n==2,'%s children' % (n)
+        delete_children(p1)
+finally:
+    delete_children(p1)
+    c.redraw()
+</t>
+<t tx="ekr.20111120124051.3994">'''Test that cycle-all-focus cycles through all tabs.'''
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+log = c.frame.log
+c.bodyWantsFocusNow()
+w_name = g.app.gui.widget_name
+w = c.frame.body
+seen = []
+while w:
+    event = g.bunch(widget=w)
+    c.editCommands.cycleAllFocus(event=event)
+    w = g.app.gui.get_focus()
+    if w in seen: break
+    seen.append(w)
+assert len(seen) &gt;2, "expected &gt;2, got %s" % len(seen)
+</t>
+<t tx="ekr.20111121081052.3908">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+log = c.frame.log
+d = log.contentsDict
+keys = list(d.keys())
+tabs = log.orderedTabNames()
+n = len(keys)
+n2 = log.numberOfVisibleTabs()
+n3 = len(tabs)
+assert n == n2,'n: %s n2: %s' % (n,n2)
+# The spell tab may not be in d.keys.
+assert n &lt;= n3,'n: %s len(log.orederedTabNames() %s): %s' % (n,n3,tabs)
+</t>
+<t tx="ekr.20111121140833.3917">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+log = c.frame.log
+log.put(p.h)
+log.putnl()
+</t>
+<t tx="ekr.20111121142012.4030">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Qt Required')
+from leo.core.leoQt import QtGui,QtWidgets
+log = c.frame.log
+name = log.__class__.__name__
+assert name == 'LeoQtLog',name
+assert log.logCtrl.__class__.__name__ == 'QTextEditWrapper',log.logCtrl
+assert not issubclass(log.logCtrl.__class__,QtWidgets.QWidget.__class__)
+    # leoQTextEditWidget us a poor name: it is not a Qt widget.
+assert log.logCtrl.widget.__class__.__name__ == 'LeoQTextBrowser'
+assert hasattr(log.logCtrl,'widget') and log.logCtrl.widget
+assert hasattr(log.logCtrl.widget,'leo_log_wrapper')
+wrapper = log.logCtrl.widget.leo_log_wrapper
+assert wrapper == log.logCtrl
+</t>
+<t tx="ekr.20111121164644.3928">'''Test that cycle-all-focus cycles through all tabs.'''
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+log = c.frame.log
+tabs = log.orderedTabNames()[1:]
+tabs.append('Log')
+# Set up the initial state.
+c.k.keyboardQuit()
+c.bodyWantsFocusNow()
+for tab in tabs:
+    log.cycleTabFocus(event=None)
+    assert log.tabName == tab,'expected %s, got %s' % (tab,log.tabName)
+</t>
+<t tx="ekr.20111121224307.3934">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
 if 'Find' not in c.frame.log.frameDict:
     self.skipTest('No Find tab')
-elif g.app.gui.guiName().startswith('qt'):
-    tabs = ('Log', 'Find')
-    log = c.frame.log
-    c.bodyWantsFocusNow()
-    last_widget = c.frame.body
-    for tab in tabs:
-        # A small hack: fudge up the widget to pass to the command.
-        event = g.bunch(widget=last_widget)
-        c.editCommands.cycleAllFocus(event=event)
-        assert log.tabName == tab,'expected %s, got %s' % (
-            tab,log.tabName)
-        last_widget = log.contentsDict.get(tab)
-        event = g.bunch(widget=last_widget)
-        # This throws exception: LeoQTextBrowser has no attribute logCtrl.
-        c.k.handleDefaultChar(event, stroke='a')
-else:
-    self.skipTest('Requires Qt Gui')
+
+tabs = ('Log', 'Find')
+log = c.frame.log
+c.bodyWantsFocusNow()
+last_widget = c.frame.body
+for tab in tabs:
+    # A small hack: fudge up the widget to pass to the command.
+    event = g.bunch(widget=last_widget)
+    c.editCommands.cycleAllFocus(event=event)
+    assert log.tabName == tab,'expected %s, got %s' % (
+        tab,log.tabName)
+    last_widget = log.contentsDict.get(tab)
+    event = g.bunch(widget=last_widget)
+    # This throws exception: LeoQTextBrowser has no attribute logCtrl.
+    c.k.handleDefaultChar(event, stroke='a')
 </t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
 
@@ -1789,10 +3590,87 @@ finally:
 
 # End
 </t>
+<t tx="ekr.20111214100515.3921"># Disabled: this now fails *regardless* of python.v2 switch
+
+ic = c.importCommands
+
+def setup(p):
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+fn = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','at-auto-section-ref-test.py')
+# fn = r'c:\Users\edreamleo\at-auto-test.py'
+assert g.os_path_exists(fn),fn
+
+try:
+    setup(p)
+    child = p.insertAsNthChild(0)
+    child.h = 'child'
+    assert child
+
+    ic.errors = 0
+    ic.createOutline (fn,parent=child,s=None,ext=None)
+    assert ic.errors == 0
+finally:
+    setup(p)
+    c.redraw(p)
+</t>
 <t tx="ekr.20111214104615.3942">@language python
 @tabwidth -4
 @others
 # end.
+</t>
+<t tx="ekr.20111221062755.3909">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+child = p.firstChild()
+assert child
+assert child.h == 'child',child.h
+c.selectPosition(child)
+table = (
+    'import-file',
+    'open-outline',
+    'read-at-auto-nodes',
+    'read-at-file-nodes',
+    'read-at-shadow-nodes',
+   # 'read-file-into-node',
+   # 'read-outline-only',
+   'save-file',
+   'save-file-as',
+   'save-file-to',
+    'write-at-auto-nodes',
+    'write-at-file-nodes',
+    'write-at-shadow-nodes',
+    'write-dirty-at-auto-nodes',
+    'write-dirty-at-file-nodes',
+    'write-dirty-at-shadow-nodes',
+    #'write-file-from-node',
+    'write-missing-at-file-nodes',
+    #'write-outline-only',
+)
+tags = (
+    ('init_error_dialogs',2),
+    ('raise_error_dialogs',1),
+)
+d = g.app.unitTestDict
+for commandName in table:
+    for tag,n in tags:
+        d[tag] = 0
+    c.k.simulateCommand(commandName)
+    for tag,n in tags:
+        assert d.get(tag) == n,'commandName: %s,tag: %s, n: %s' % (commandName,tag,d.get(tag))
+</t>
+<t tx="ekr.20111221062755.3910"></t>
+<t tx="ekr.20120201125738.3958"># This tests is valid only if not g.new_config.
+
+sd = g.app.config.localShortcutsDict
+d = sd.get(c.hash(),{})
+try:
+    sd[c.hash()] = {}
+    key,aList = c.config.getShortcut('new')
+    # print(key,aList)
+    assert aList,'key: %s' % (key)
+finally:
+    sd[c.hash()] = d
 </t>
 <t tx="ekr.20120309155126.3949">w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'rest and python')
@@ -2133,6 +4011,81 @@ finally:
     c.redraw()
 </t>
 <t tx="ekr.20140217055617.4231"># For a unit test.</t>
+<t tx="ekr.20140712142620.4537">pd = c.persistenceController
+root = c.rootPosition().insertAfter()
+root.h = 'root'
+child1 = root.insertAsLastChild()
+child1.h = 'child1'
+child2 = child1.insertAfter()
+child2.h = 'child2'
+child11 = child1.insertAsLastChild()
+child11.h = 'child11'
+try:
+    for unl in ('root','root--&gt;child1','root--&gt;child2','root--&gt;child1--&gt;child11'):
+        p = pd.find_absolute_unl_node(unl)
+        parts = unl.split('--&gt;')
+        assert p,unl
+        assert p.h == parts[-1],p.h
+finally:
+    root.doDelete()
+    c.selectPosition(p)
+    c.redraw()
+</t>
+<t tx="ekr.20140712142620.4583"># At present, neither the pack nor the unpack commands exist.
+pd = c.persistenceController
+persistence = pd.find_at_persistence_node()
+assert persistence
+persistence.deleteAllChildren()
+view = g.findNodeInTree(c,p,'@view test')
+assert view
+assert c.positionExists(view)
+try:
+    c.selectPosition(view)
+    v_b = view.b
+    pd.pack()
+    assert c.p.v == view.v
+    pd.unpack()
+    assert view.b == v_b,view.b
+    assert view.lastChild().isCloned()
+finally:
+    # views.deleteAllChildren()
+    c.undoer.clearUndoState()
+    c.redraw()
+</t>
+<t tx="ekr.20140712142620.4585">view body
+</t>
+<t tx="ekr.20140712142620.4586">not a clone text
+</t>
+<t tx="ekr.20140712142620.4587">clone body
+</t>
+<t tx="ekr.20140716115306.4345">pd = c.persistenceController
+at_persistence = pd.find_at_persistence_node()
+assert at_persistence
+at_persistence.deleteAllChildren()
+root = at_persistence.insertAsLastChild()
+root.h = 'test root'
+root.b = root.gnx
+at_data = pd.find_at_data_node(root)
+assert at_data
+try:
+    at_uas = at_data.insertAsLastChild()
+    at_uas.h = '@uas'
+    at_ua = at_uas.insertAsLastChild()
+    at_ua.h = '@ua:dummy-gnx'
+    at_ua.b = 'unl:dummy-unl\nua:dummy-ua'
+    at_recovery = pd.find_at_recovery_node(root)
+    if at_recovery:
+        at_recovery.deleteAllChildren()
+    pd.recover_ua_for_gnx('dummy-gnx',root,'dummy-unl')
+    assert at_recovery
+    at_ua2 = g.findNodeInTree(c,at_recovery,'@ua:dummy-gnx')
+    assert at_ua2
+    assert at_ua2.h == at_ua.h
+    assert at_ua2.b == at_ua.b,repr(at_ua2.b)
+finally:
+    pass # root.doDelete()
+
+</t>
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140725132959.4593">import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
@@ -2168,12 +4121,60 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20140822063016.4474">import sys
-if not g.app.inBridge:
-    g.app.forceShutdown()
-        # Now works with curses gui.
-</t>
 <t tx="ekr.20140902101931.4478"></t>
+<t tx="ekr.20140904060337.4476">if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+import leo.core.leoFrame as leoFrame
+import leo.plugins.qt_text as qt_text
+from leo.core.leoQt import Qsci,QtWidgets
+if Qsci:
+    w = Qsci.QsciScintilla()
+    q = qt_text.QScintillaWrapper(widget=w,c=c,name='test')
+    q_list = [z for z in sorted(dir(q)) if not z.startswith('__')]
+# Check the text wrappers.
+W = leoFrame.WrapperAPI(c)
+tw = QtWidgets.QTextBrowser()
+t = qt_text.QTextEditWrapper(widget=tw,name='test2')
+W_list = [z for z in sorted(dir(W)) if not z.startswith('__')]
+t_list = [z for z in sorted(dir(t)) if not z.startswith('__')]
+ignore = [
+    'set_focus', # synonym for setFocus
+    'mutable_methods', # maybe for unit test, not actually used.
+]
+for z in W_list:
+    if z not in t_list and z not in ignore:
+        assert False,'In WrapperAPI but not in QTextEditWrapper: %s' % z
+if Qsci:
+    for z in W_list:
+        if z not in q_list and z not in ignore:
+            assert False,'In WrapperAPI but not in QScintillaWrapper: %s' % z
+# Check Null classes that are not subclasses of a base type:
+table = (
+    ('NullIconBarClass',leoFrame.NullIconBarClass(c,None),
+     # 'c.frame.iconBar',c.frame.iconBar,
+     'IconBarAPI',leoFrame.IconBarAPI(c,None),
+    ),
+    ('NullStatusLineClass',leoFrame.NullStatusLineClass(c,None),
+     # 'c.frame.statusLine',c.frame.statusLine,
+     'StatusLineAPI',leoFrame.StatusLineAPI(c,None)
+    )
+)
+for name1,L,name2,W in table:
+    W_list = [z for z in sorted(dir(W)) if not z.startswith('__')]
+    L_list = [z for z in sorted(dir(L)) if not z.startswith('__')]
+    for z in W_list:
+        assert z in L_list,'In %s but not in %s: %s' % (name2,name1,z)
+</t>
+<t tx="ekr.20141223125432.11">if g.isPython3:
+    self.skipTest('Requires Python 2')
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+
+import leo.core.leoQt as leoQt
+QString = leoQt.QString
+s = g.toUnicode(QString('abc'))
+assert s == 'abc',repr(s)
+</t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -2186,36 +4187,456 @@ if not g.app.inBridge:
 </t>
 <t tx="ekr.20150208213643.19"># node 2 text B.
 </t>
+<t tx="ekr.20150216070628.100">node 1 line 1
+node 1 line 2 changed
+node 1 line 3 changed
+</t>
+<t tx="ekr.20150216070628.101">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.102"></t>
+<t tx="ekr.20150216070628.103">@others
+</t>
+<t tx="ekr.20150216070628.104">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.105">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.106">@others
+</t>
+<t tx="ekr.20150216070628.107">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.108">node 2 line 1 changed
+node 2 line 2 changed
+</t>
+<t tx="ekr.20150216070628.109"></t>
+<t tx="ekr.20150216070628.11">import unittest
+import leo.core.leoShadow as leoShadow
+# Possible: replace this suite with individual @test nodes
+# exec(g.findTestScript(c,'@common @shadow test code'))
+x = c.shadowController
+suite = unittest.makeSuite(unittest.TestCase)
+root = g.findNodeInTree(c,p,'@shadow-tests')
+assert root, 'Node not found: @shadow-tests'
+delims = '//','',''
+for p in root.children_iter():
+    h = p.h.strip()
+    if h.startswith('@shadow-test'):
+        test = x.AtShadowTestCase(c,p,x,delims=delims,trace=False)
+        suite.addTest(test)
+</t>
+<t tx="ekr.20150216070628.110">@others
+</t>
+<t tx="ekr.20150216070628.111">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.112">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.113">@others
+</t>
+<t tx="ekr.20150216070628.114">node 1 line 1
+node 1 line 2 changed
+</t>
+<t tx="ekr.20150216070628.115">node 2 line 1 changed
+node 2 line 2 changed
+</t>
+<t tx="ekr.20150216070628.116"></t>
+<t tx="ekr.20150216070628.117">@others
+</t>
+<t tx="ekr.20150216070628.118">node 1 line 1
+node 1 line 2
+node 1 line 3
+</t>
+<t tx="ekr.20150216070628.119">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.12">@
+
+All the tags should be tested at least once (equal, replace, delete, insert).
+
+The replace, delete, insert operations should happen at least once:
+    1. At the beginning of a node.
+    2. In the middle of a node.
+    3. At the end of a node.
+
+For the delete and replace operators we must also test the case that the
+deletion or replacement spans more than one block.
+</t>
+<t tx="ekr.20150216070628.120">@others
+</t>
+<t tx="ekr.20150216070628.121">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.122">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.123"></t>
+<t tx="ekr.20150216070628.124">@others
+</t>
+<t tx="ekr.20150216070628.125">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.126">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20150216070628.127">@others
+</t>
+<t tx="ekr.20150216070628.128">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.129">node 2 line 3
+</t>
+<t tx="ekr.20150216070628.130"></t>
+<t tx="ekr.20150216070628.131">@others
+</t>
+<t tx="ekr.20150216070628.132">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+line 1 line 3
+</t>
+<t tx="ekr.20150216070628.133">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20150216070628.134">@others
+</t>
+<t tx="ekr.20150216070628.135">node 1 line 1
+line 1 line 3
+</t>
+<t tx="ekr.20150216070628.136">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20150216070628.137"></t>
+<t tx="ekr.20150216070628.138">@others
+</t>
+<t tx="ekr.20150216070628.139">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.14">@others
+</t>
+<t tx="ekr.20150216070628.140">@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.141">@others
+</t>
+<t tx="ekr.20150216070628.142">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.143">node 2 line 2
+</t>
+<t tx="ekr.20150216070628.144"></t>
+<t tx="ekr.20150216070628.145">@others
+</t>
+<t tx="ekr.20150216070628.146">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+line 1 line 3
+</t>
+<t tx="ekr.20150216070628.147">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20150216070628.148">@others
+</t>
+<t tx="ekr.20150216070628.149">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+line 1 line 3
+</t>
+<t tx="ekr.20150216070628.15">@
+node 1 old line 1
+node 1 old line 2
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.150">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20150216070628.151"></t>
+<t tx="ekr.20150216070628.152">@others
+</t>
+<t tx="ekr.20150216070628.153">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+</t>
+<t tx="ekr.20150216070628.154">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.155">@others
+</t>
+<t tx="ekr.20150216070628.156">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.157">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.158"># This fails because the @all read logic inserts a second verbatim, I think.
+</t>
+<t tx="ekr.20150216070628.159">@others
+</t>
+<t tx="ekr.20150216070628.16">@others
+</t>
+<t tx="ekr.20150216070628.160">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.161">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.162">@others
+</t>
+<t tx="ekr.20150216070628.163">node 1 line 1
+@verbatim
+#@ should be handled by verbatim
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.164">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.165"></t>
+<t tx="ekr.20150216070628.166">line
+</t>
+<t tx="ekr.20150216070628.167">line
+</t>
+<t tx="ekr.20150216070628.168"></t>
+<t tx="ekr.20150216070628.17">@
+node 1 old line 1
+node 1 old line 2
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.18"></t>
+<t tx="ekr.20150216070628.19">@others
+</t>
+<t tx="ekr.20150216070628.20">node 1 line 1
+node 1 old line 1
+node 1 old line 2
+node 1 old line 3
+node 1 old line 4
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.21">@others
+</t>
+<t tx="ekr.20150216070628.22">node 1 line 1
+node 1 new line 1
+node 1 new line 2
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.23"></t>
+<t tx="ekr.20150216070628.24">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.25">line 1
+line 2 changed
+line 3
+</t>
+<t tx="ekr.20150216070628.26"></t>
+<t tx="ekr.20150216070628.27">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.28">line 1 changed
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.29"></t>
+<t tx="ekr.20150216070628.30">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.31">line 1
+line 2
+line 3 changed
+</t>
+<t tx="ekr.20150216070628.32"></t>
+<t tx="ekr.20150216070628.33">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.34">line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.35"></t>
+<t tx="ekr.20150216070628.36">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.37">line 1
+line 3
+</t>
+<t tx="ekr.20150216070628.38"></t>
+<t tx="ekr.20150216070628.39">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.40">line 1
+line 2
+</t>
+<t tx="ekr.20150216070628.41"></t>
+<t tx="ekr.20150216070628.42">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.43">inserted line
+line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.44"></t>
+<t tx="ekr.20150216070628.45">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.46">line 1
+inserted line
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.47"></t>
+<t tx="ekr.20150216070628.48">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.49">line 1
+line 2
+inserted line
+line 3
+</t>
+<t tx="ekr.20150216070628.50"></t>
+<t tx="ekr.20150216070628.51">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.52">line 1
+line 2
+line 3
+inserted line
+</t>
+<t tx="ekr.20150216070628.53"></t>
+<t tx="ekr.20150216070628.54">@others
+</t>
+<t tx="ekr.20150216070628.55">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.56">node 2 line 1
+</t>
+<t tx="ekr.20150216070628.57">@others
+</t>
+<t tx="ekr.20150216070628.58">node 1 line 1
+inserted node at end of node 1
+</t>
+<t tx="ekr.20150216070628.59">node 2 line 1
+</t>
+<t tx="ekr.20150216070628.60"></t>
+<t tx="ekr.20150216070628.61">@others
+</t>
+<t tx="ekr.20150216070628.62">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.63">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.64">@others
+</t>
+<t tx="ekr.20150216070628.65">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.66">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.67"></t>
+<t tx="ekr.20150216070628.68">@others
+</t>
+<t tx="ekr.20150216070628.69">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.70">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.71">@others
+</t>
+<t tx="ekr.20150216070628.72">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.73">node 2 line 2
+</t>
+<t tx="ekr.20150216070628.74"></t>
+<t tx="ekr.20150216070628.75">@others
+</t>
+<t tx="ekr.20150216070628.76">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.77">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.78">@others
+</t>
+<t tx="ekr.20150216070628.79">node 1 line 1
+node 1 line 1 changed
+</t>
+<t tx="ekr.20150216070628.80">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.81"></t>
+<t tx="ekr.20150216070628.82">@others
+</t>
+<t tx="ekr.20150216070628.83">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.84">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.85">@others
+</t>
+<t tx="ekr.20150216070628.86">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.87">node 2 line 1 changed
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.88"></t>
+<t tx="ekr.20150216070628.89">@others
+</t>
+<t tx="ekr.20150216070628.90">node 1 line 1
+inserted node 1 at end of node 1
+inserted node 2 at end of node 1
+</t>
+<t tx="ekr.20150216070628.91">node 2 line 1
+</t>
+<t tx="ekr.20150216070628.92">@others
+</t>
+<t tx="ekr.20150216070628.93">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.94">node 2 line 1
+</t>
+<t tx="ekr.20150216070628.95"></t>
+<t tx="ekr.20150216070628.96">@others
+</t>
+<t tx="ekr.20150216070628.97">node 1 line 1
+node 1 line 2
+node 1 line 3
+</t>
+<t tx="ekr.20150216070628.98">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.99">@others
+</t>
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
 <t tx="ekr.20150321155210.11"></t>
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
-<t tx="ekr.20150626093653.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = True
-    h = '@auto-rst unittest/at-auto-rst-line-number-test.rst'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    assert root.isAtAutoRstNode(), root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        # g.cls()
-        print('get_external_file_with_sentinels returns...')
-        # print(''.join(['%3s %r' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-        g.printList(g.splitLines(s))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 9, n
-            break
-</t>
 <t tx="ekr.20150626093745.1">@language rest
 @tabwidth -4
 </t>
@@ -2229,30 +4650,6 @@ Introduction line 2.
 </t>
 <t tx="ekr.20150626101842.1">@language md
 @tabwidth -4
-</t>
-<t tx="ekr.20150626101920.1">import sys
-# Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif sys.platform.startswith('win'):
-    trace = False
-    h = '@auto unittest/at-auto-md-line-number-test.md'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        # g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 7, n
-            break
-else:
-    self.skipTest('Skip on Linux')
 </t>
 <t tx="ekr.20150919073819.1">class aClass:
     def __init__(self):
@@ -2624,89 +5021,6 @@ def __init__(self, s: Type) -&gt; None:
 @others
 # Last line: line 6
 </t>
-<t tx="ekr.20160403143643.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@clean unittest/at-clean-line-number-test.c'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    lines = g.splitLines(s)
-    g.printList(lines)
-    stripped_lines = [z for z in lines if not z.startswith('//@')]
-    g.printList(stripped_lines)
-    if trace:
-        # g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
-    table = (
-        # n is the 1-based offset
-        (3, 4,  '// before @others // line 1'),
-        (2, 8,  'def spam(): // line 2'),
-        (3, 9,  '    pass'),
-        (1, 11, 'def eggs(): // line 4'),
-        (2, 12, '    pass'),
-        (5, 14, '// last line: line 6'),
-    )
-    for i, data in enumerate(table):
-        expected_offset, target_offset, expected_line = data
-        p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
-        assert expected_offset == offset, (
-            'i: %s expected offset %s, got %s' % (i, expected_offset, offset))
-        expected_line = expected_line.rstrip()
-        got_line = stripped_lines[i].rstrip()
-        assert expected_line == got_line, 'i: %s expected line:\n%s\ngot line:\n%s' % (
-            i, expected_line, got_line)
-        got_line2 = lines[target_offset].rstrip()
-        assert expected_line == got_line2, 'i: %s expected line:\n%s\ngot line2:\n%s' % (
-            i, expected_line, got_line)
-    i = len(table)
-    p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
-    assert not found
-</t>
-<t tx="ekr.20160403143655.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@clean unittest/at-clean-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    lines = g.splitLines(s)
-    stripped_lines = [z for z in lines if not z.startswith('#@')]
-    if trace:
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
-        # print('')
-        # print(''.join(['%3s %s' % (i, s) for i, s in enumerate(stripped_lines)]))
-    table = (
-        # n is the 1-based offset
-        (3, 4,  '# Before @others: line 1'),
-        (2, 8,  'def spam(): # line 2'),
-        (3, 9,  '    pass'),
-        (1, 11, 'def eggs(): # line 4'),
-        (2, 12, '    pass'),
-        (5, 14, '# Last line: line 6'),
-    )
-    for i, data in enumerate(table):
-        expected_offset, target_offset, expected_line = data
-        p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
-        assert expected_offset == offset, (
-            'i: %s expected offset %s, got %s' % (i, expected_offset, offset))
-        expected_line = expected_line.rstrip()
-        got_line = stripped_lines[i].rstrip()
-        assert expected_line == got_line, 'i: %s expected line:\n%s\ngot line:\n%s' % (
-            i, expected_line, got_line)
-        got_line2 = lines[target_offset].rstrip()
-        assert expected_line == got_line2, 'i: %s expected line:\n%s\ngot line2:\n%s' % (
-            i, expected_line, got_line)
-    i = len(table)
-    p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
-    assert not found
-</t>
 <t tx="ekr.20160403150121.1">def eggs(): // line 4
     pass
 </t>
@@ -2718,18 +5032,6 @@ else:
 </t>
 <t tx="ekr.20160403152507.1">def eggs(): # line 4
     pass</t>
-<t tx="ekr.20160523094102.1"># Great ast docs: http://greentreesnakes.readthedocs.io/en/latest/nodes.html
-
-import leo.core.leoAst as leoAst
-leoAst.unit_test(raise_on_fail=True)
-
-import leo.external.make_stub_files as msf
-msf.unit_test(raise_on_fail=True)
-
-import leo.external.py2cs as py2cs
-py2cs.unit_test(raise_on_fail=True)
-
-</t>
 <t tx="ekr.20161011092326.7"># ~/at-auto-test.py
 
 # This is valid Python, but it looks like a section reference.
@@ -2739,7 +5041,6 @@ a = b &lt;&lt; c &gt;&gt; d
 <t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
 False: (Legacy):      The @auto write code ignores section references.
 </t>
-<t tx="ekr.20161103075725.1"># These fail with the NEW (strict) import tests and the OLD scanners.</t>
 <t tx="ekr.20161112061406.1">class TypeJoinVisitor(TypeVisitor[Type]):
     """Implementation of the least upper bound algorithm.
 
@@ -2987,51 +5288,13 @@ Sec 2.
 @tabwidth -4
 @ignore
 </t>
-<t tx="ekr.20161130051657.1">s = '''\
-Leading text in root node of subtree
-
-Etc. etc.
-
-### A level one node ######################################################
-
-This would be the text in this level one node.
-
-And this.
-
-### Another level one node ################################################
-
-Another one
-
-#### A level 2 node #######################################################
-
-See what we did there - one more '#' - this is a subnode.
-'''
-ic = c.importCommands
-ic.ctextUnitTest(p,fileName='@auto-ctext test.txt',s=s,showTree=True)</t>
 <t tx="ekr.20161130052935.1">Leading text in root node of subtree
 
 Etc. etc.
 </t>
-<t tx="ekr.20161130053149.1">Leading text in root node of subtree
-
-Etc. etc.
-
-### A level one node ######################################################
-
-This would be the text in this level one node.
-
-And this.
-
-### Another level one node ################################################
-
-Another one
-
-#### A level 2 node #######################################################
-
-See what we did there - one more '#' - this is a subnode.
-
+<t tx="ekr.20161204042916.1">print('start python tests')
 </t>
-<t tx="ekr.20161204040924.1"># Alt-G works.  The tests themselves are erroneous.
+<t tx="ekr.20161204042938.1">print('end python tests')
 </t>
 <t tx="ekr.20161224111342.1">import glob
 import os
@@ -3113,25 +5376,25 @@ else:
     return builtins.unicode(s) # Suppress pyflakes complaint.</t>
 <t tx="ekr.20161228071905.1">def ue(s, encoding):
     return builtins.unicode(s, encoding)</t>
-<t tx="ekr.20161228071915.1">@language python
-@tabwidth -4
-@others
+<t tx="ekr.20170101134417.1">@nosearch</t>
+<t tx="ekr.20170123053430.1">print('calls to jedit.setTag: %s' %
+     c.frame.body.colorizer.highlighter.colorer.n_setTag)
 </t>
-<t tx="ekr.20161228072352.1">if isPython3: # g.not defined yet.
-    def u(s):
-        '''Return s, converted to unicode from Qt widgets.'''
-        return s
-    def ue(s, encoding):
-        return s if g.isUnicode(s) else str(s, encoding)
-else:
-    def u(s):
-        '''Return s, converted to unicode from Qt widgets.'''
-        return builtins.unicode(s) # Suppress pyflakes complaint.
-    def ue(s, encoding):
-        return builtins.unicode(s, encoding)
-</t>
-<t tx="ekr.20170101134417.1"></t>
 <t tx="ekr.20170128023431.1">@language html
+</t>
+<t tx="ekr.20170302110925.1"># This was part of the ill-fated leoViews project.
+import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    pd = c.persistenceController
+    h = '@persistence'
+    p1 = pd.find_at_persistence_node()
+    assert p1
+    p2 = pd.has_at_persistence_node()
+    assert p1 == p2,(p1,p2)
+    print(p1.h)
+    pd.prepass(p2)
 </t>
 <t tx="ekr.20170401122024.7">@language cweb
 @ % This file is part of CWEB.
@@ -6658,27 +8921,29 @@ correspond to where the identifier was declared. Error messages, control
 sequences put into the output, and a few
 other things like ``recursion'' are indexed here too.
 </t>
-<t tx="ekr.20170401123840.4">import sys
-# Not valid for external tests: uses @&lt;file&gt; node.
+<t tx="ekr.20170401123840.8"># Not valid for external tests: uses @&lt;file&gt; node.
 if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
-if not sys.platform.startswith('win'):
-    self.skipTest('Requires Windows')
-trace = False
-h = '@auto unittest/at-auto-md-line-number-test.md'
-root = g.findNodeAnywhere(c, h)
-assert root
-s = c.gotoCommands.get_external_file_with_sentinels(root)
-if trace:
-    print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-for n in range(20):
-    p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
-    if found:
-        if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-    else:
-        if trace: print('not found: %s' % (n+1))
-        assert n == 8, n
-        break
+else:
+    trace = False
+    h = '@auto-rst unittest/at-auto-rst-line-number-test.txt'
+        # This must not be a python file
+    root = g.findNodeAnywhere(c, h)
+    assert root
+    assert root.isAtAutoRstNode(), root
+    s = c.gotoCommands.get_external_file_with_sentinels(root)
+    if trace:
+        print('get_external_file_with_sentinels returns...')
+        # print(''.join(['%3s %r' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+        g.printList(g.splitLines(s))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
+        if found:
+            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
+        else:
+            if trace: print('not found: %s' % (n+1))
+            assert n == 9, n
+            break
 </t>
 <t tx="ekr.20170415084531.1"># lowercase xml tags, one per line.
 
@@ -6690,7 +8955,7 @@ table
 nodeA
 nodeB
 </t>
-<t tx="ekr.20170504122245.1"></t>
+<t tx="ekr.20170504122245.1"># See https://github.com/leo-editor/leo-editor/issues/512</t>
 <t tx="ekr.20170504122721.1">def at_auto_child():
     pass
 </t>
@@ -6745,7 +9010,6 @@ And this.
 # last line
 </t>
 <t tx="ekr.20170701153730.1"></t>
-<t tx="ekr.20170712045534.1"></t>
 <t tx="ekr.20170712045644.1">======================================================================
 ERROR: runTest (leo.core.leoTest.GeneralTestCase)
 @test x.makeShadowDirectory
@@ -6774,7 +9038,6 @@ Traceback (most recent call last):
   File "/mnt/usr1/usr1/home/tbrown/t/Package/leo/git/leo-editor/leo/core/leoTest.py", line 85, in editBody
     compareHeadlines=False), '%s: before undo1' % commandName
 AssertionError: addComments: before undo1</t>
-<t tx="ekr.20170712053944.1"></t>
 <t tx="ekr.20170712132824.1"></t>
 <t tx="ekr.20170712132900.1">w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'html')
@@ -6987,99 +9250,76 @@ FAILED (failures=3, skipped=11)
 
 
 </t>
-<t tx="ekr.20170818044949.1">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170818044949.2">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170818044949.3">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20170818044949.4">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170818044949.5">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170818044949.6">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
 <t tx="ekr.20171126152936.1"># Required for unit tests: See #577.</t>
 <t tx="ekr.20171126153044.1"># Required for unit tests: See #577.</t>
 <t tx="ekr.20171126153138.1">See #577: https://github.com/leo-editor/leo-editor/issues/577
 </t>
-<t tx="ekr.20171126172628.1"></t>
-<t tx="ekr.20171230052539.1">gnx: ekr.20150626101627.1
-</t>
-<t tx="ekr.20171230164813.1">gnx: ekr.20150626100719.1
-</t>
-<t tx="ekr.20171230170021.1">gnx: ekr.20150626101842.1
-</t>
 <t tx="ekr.20171230171138.1">Header line.
 
 </t>
-<t tx="ekr.20171230171343.1">gnx: ekr.20080904084223.1
-</t>
-<t tx="ekr.20171230171343.12">gnx: ekr.20150626093745.1
-</t>
-<t tx="ekr.20171230171343.4">gnx: ekr.20090704085350.5056
-</t>
-<t tx="ekr.20171230171343.6">gnx: ekr.20110610122533.3407
-</t>
-<t tx="ekr.20171230171343.8">gnx: ekr.20161130052935.1
-</t>
 <t tx="ekr.20171230171355.20"></t>
-<t tx="ekr.20171230171407.1">gnx: ekr.20170504122721.1
-unl: at_auto_child
-</t>
-<t tx="ekr.20171230171407.3">gnx: ekr.20170504122721.4
-unl: spam
-gnx: ekr.20170504122721.5
-unl: eggs
-</t>
-<t tx="ekr.20171230171407.4">gnx: ekr.20170504122721.6
-unl: class class1
-gnx: ekr.20170504122721.7
-unl: class class1--&gt;class1_method1
-gnx: ekr.20170504122721.8
-unl: class class1--&gt;class1_method2
-gnx: ekr.20170504122721.9
-unl: class class2
-gnx: ekr.20170504122721.10
-unl: class class2--&gt;class2_method1
-gnx: ekr.20170504122721.11
-unl: class class2--&gt;class2_method2
-</t>
-<t tx="ekr.20171230171407.5">gnx: ekr.20170504122721.12
-unl: A level one node
-gnx: ekr.20170504122721.13
-unl: Another level one node
-gnx: ekr.20170504122721.14
-unl: Another level one node--&gt;A level 2 node
-</t>
-<t tx="ekr.20171230171407.6">gnx: ekr.20170504122721.15
-unl: section 1
-gnx: ekr.20170504122721.16
-unl: section 2
-</t>
-<t tx="ekr.20171230171407.7">gnx: ekr.20171230171355.20
-unl: First line.
-gnx: ekr.20170504122721.17
-unl: section 1
-gnx: ekr.20170504122721.18
-unl: section 2
-</t>
-<t tx="ekr.20171230171407.8"></t>
 <t tx="ekr.20180214042153.1">False is the legacy value.</t>
-<t tx="ekr.20181009101123.1">if g.app.isExternalUnitTest or g.in_bridge:
-    self.skipTest('Qt not available in TravisCI')</t>
-<t tx="ekr.20181010071732.10">gnx: ekr.20171230171138.1
-unl: !Declarations
-gnx: ekr.20170504122721.2
-unl: section 1
-gnx: ekr.20170504122721.3
-unl: section 2
+<t tx="ekr.20181010074101.1"># Don't even think about deleting these tests.
+# They are extremely important when developing or changing a gui.
+</t>
+<t tx="ekr.20181010081750.1"></t>
+<t tx="ekr.20181010081924.1">###@nosearch</t>
+<t tx="ekr.20181010082831.1"></t>
+<t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
+# adjust accordingly
+
+# These seem to fail if various nodes are cloned.
+import random,fnmatch
+
+all_h = [z.copy().h for z in c.find_h('.')]
+
+assert len(all_h) &gt; 1000,'fail 1'
+
+sample = random.sample(all_h, 20)    
+
+# Test that all nodes are found at least once.
+for h in sample:
+    pat = fnmatch.translate(h)
+    pl = c.find_h(pat)
+    assert len(pl) &gt; 0 and len(pl) &lt; len(all_h),'fail 2'
+
+tests = c.find_h('@test(.*)')
+
+bm = tests.filter_b('(.*)all_positions')
+forloops = 0
+for node in bm:   
+    # many of these are for loops
+    for m in node.matchiter:
+        if 'for' in m.group(1):
+            forloops += 1
+
+assert forloops &gt; 10,'fail for'
+
+# all of these should also be found by find_b
+all_bm = c.find_b('(.*)all_positions')
+assert len(all_bm) &gt;= len(bm),'fail len'
+
+assert set(el.h for el in bm).issubset(set(el.h for el in all_bm)),'fail set'
+
+itertest = c.find_h('@test p.iters and v.iters')
+assert len(itertest) &gt;= 1,'fail 3'
+tn = itertest[0]
+assert tn.h == '@test p.iters and v.iters','fail h'
+assert len(itertest.filter_b('notfound, really')) == 0,'fail 4'
+assert len(itertest.filter_b('leoNodes')) == 1,'fail 5'
+chi = itertest.children().filter_h('child?')
+assert chi[0].h == 'child1','fail 6'
+assert chi[1].h == 'child2','fail 7'
+# twice, in clones
+chi_b = chi.children().filter_h('a').children().filter_h('b')
+
+if 0:
+    assert len(chi_b) == 2,'fail len 2: %s: %s' % (chi_b,len(chi_b))
+    assert chi_b[0].h == chi_b[1].h == 'b'
+    chi_e = chi.children().filter_h('d').children().filter_h('e')
+    assert len(chi_e) == 1,'fail 8'
+    assert chi_e[0].h == 'e','fail 9'
+
 </t>
 </tnodes>
 </leo_file>
