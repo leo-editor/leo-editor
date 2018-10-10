@@ -56,18 +56,20 @@ from leo.core.leoQt import QtWidgets,QtCore
 
 #@+others
 #@+node:peckj.20150428142729.3: ** class MyInterpreter
-class MyInterpreter(QtWidgets.QWidget):
+if QtWidgets:
     
-    def __init__(self, parent, c):
-        super(MyInterpreter, self).__init__(parent)
-        hBox = QtWidgets.QHBoxLayout()
-        self.setLayout(hBox)
-        self.textEdit = PyInterp(self, c)
-        # this is how you pass in locals to the interpreter
-        self.textEdit.initInterpreter(locals())
-        hBox.addWidget(self.textEdit)
-        hBox.setContentsMargins(0,0,0,0)
-        hBox.setSpacing(0)
+    class MyInterpreter(QtWidgets.QWidget):
+    
+        def __init__(self, parent, c):
+            super(MyInterpreter, self).__init__(parent)
+            hBox = QtWidgets.QHBoxLayout()
+            self.setLayout(hBox)
+            self.textEdit = PyInterp(self, c)
+            # this is how you pass in locals to the interpreter
+            self.textEdit.initInterpreter(locals())
+            hBox.addWidget(self.textEdit)
+            hBox.setContentsMargins(0,0,0,0)
+            hBox.setSpacing(0)
 #@+node:peckj.20150428142729.5: ** class PyInterp (QTextEdit)
 if QtWidgets:
     
