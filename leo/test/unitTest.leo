@@ -702,6 +702,13 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31312e3471017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e332e31362e3671057d71065808000000616e6e6f7461746571077d7108735809000000302e332e31372e333571097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e332e32352e34710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20181010092114.1"><vh>---- Still failing with TravisCI</vh></v>
+<v t="ekr.20170201143435.1"><vh>@test bc.scanLanguageDirectives</vh>
+<v t="ekr.20170201143435.2"><vh>&lt;&lt; scanLanguageDirectives test tables &gt;&gt;</vh></v>
+<v t="ekr.20170201143435.3"><vh>test-child</vh>
+<v t="ekr.20170201143435.4"><vh>test-grandchild</vh></v>
+</v>
+</v>
 <v t="ekr.20160419061017.1"><vh>@test event classes</vh></v>
 </vnodes>
 <tnodes>
@@ -5403,6 +5410,45 @@ else:
 </t>
 <t tx="ekr.20170128023431.1">@language html
 </t>
+<t tx="ekr.20170201143435.1">@language python
+
+if not g.app.gui.guiName().startswith('qt'):
+    self.skipTest('Requires Qt')
+
+import leo.core.leoColorizer as leoColorizer
+# import imp
+# imp.reload(leoColorizer)
+wrapper = c.frame.body.wrapper
+widget = c.frame.body.widget
+x = leoColorizer.JEditColorizer(c, widget, wrapper)
+tables = p.firstChild()
+tables_s = tables.b
+child = p.firstChild().next()
+assert child.h == 'test-child'
+grand = child.firstChild()
+&lt;&lt; scanLanguageDirectives test tables &gt;&gt;
+try:
+    for i, data in enumerate(language_table):
+        language, child_s, grand_s = data
+        child.b = child_s
+        grand.b = grand_s
+        got = x.scanLanguageDirectives(grand)
+        assert got == language, '%s expected %r, got %r child.b %r' % (
+            i, language, got, child.b)
+finally:
+    tables.b = tables_s
+    
+</t>
+<t tx="ekr.20170201143435.2">language_table = [
+    ('python', '@language rest\n@language python\n', ''),
+    ('rest', '@language rest', ''),
+    ('python', '@language rest\n@language python\n', ''),
+]
+</t>
+<t tx="ekr.20170201143435.3">@language rest
+@language python
+</t>
+<t tx="ekr.20170201143435.4"></t>
 <t tx="ekr.20170302110925.1"># This was part of the ill-fated leoViews project.
 import sys
 if sys.platform.startswith('linux'):
@@ -9286,6 +9332,7 @@ FAILED (failures=3, skipped=11)
 <t tx="ekr.20181010081750.1"></t>
 <t tx="ekr.20181010081924.1">###@nosearch</t>
 <t tx="ekr.20181010082831.1"></t>
+<t tx="ekr.20181010092114.1"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
