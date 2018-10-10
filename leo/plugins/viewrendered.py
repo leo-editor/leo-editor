@@ -291,6 +291,9 @@ def decorate_window(w):
 #@+node:tbrown.20100318101414.5995: *3* vr.init
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    if not g.app.gui.guiName().startswith('qt'):
+        g.es_print('viewrendered requires Qt')
+        return False
     global got_docutils
     if not got_docutils:
         g.es_print('Warning: viewrendered.py running without docutils.')
