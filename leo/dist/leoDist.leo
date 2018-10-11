@@ -39,7 +39,9 @@
 </v>
 <v t="ekr.20161024115257.1"><vh>How to compute the sha256 hash</vh></v>
 </v>
-<v t="matt.20181004031246.1"><vh>Travis Continual Integration</vh></v>
+<v t="matt.20181004031246.1"><vh>Travis Continual Integration</vh>
+<v t="maphew.20181010205346.1"><vh>Troubleshooting</vh></v>
+</v>
 </v>
 <v t="EKR.20040519091259"><vh>Announcements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
@@ -1830,6 +1832,26 @@ That said, here's my recipe for packaging a new release for Test PyPi:
 Remove broken releases (still can't re-use identical version numbers and file names though):
 https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 </t>
+<t tx="maphew.20181010205346.1">**Pushed a commit but nothing is happening in the dashboard?**
+Check the _requests_ log: https://travis-ci.org/leo-editor/leo-editor/requests
+The link is hidden under [more options] at right.
+
+**"Could not parse .travis.yml" requests error**
+Debug with `travis lint` local client.
+
+**Clarification on using `travis encrypt` for passwords**
+https://github.com/travis-ci/travis-ci/issues/10051
+
+**fatal: No names found, cannot describe anything**
+The git clone is too shallow and `git describe --tags` doesn't include a tag. Increase the depth in `.travis.yml`:
+
+    git:
+      depth: 100
+
+Or from command line:
+
+    git fetch --depth=100
+</t>
 <t tx="matt.20181004031246.1">@language md
 
 _Initiating issue: https://github.com/leo-editor/leo-editor/issues/672_
@@ -1852,17 +1874,6 @@ that updates yml file will delete any comments within it. (e.g. `travis encrypt
 ...`)
 
 
-#Troubleshooting
-
-**Pushed a commit but nothing is happening in the dashboard?**
-Check the _requests_ log: https://travis-ci.org/leo-editor/leo-editor/requests
-The link is hidden under [more options] at right.
-
-**"Could not parse .travis.yml" requests error**
-Debug with `travis lint` local client.
-
-**Clarification on using `travis encrypt` for passwords**
-https://github.com/travis-ci/travis-ci/issues/10051
 
 </t>
 </tnodes>
