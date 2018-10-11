@@ -23,29 +23,29 @@ import leo.core.leoVersion as leoVersion
     https://blog.ionelmc.ro/2014/05/25/python-packaging/
 '''
 
-#@+node:maphew.20180224170140.1: ** get_version
+#@+node:maphew.20181010203342.385: ** get_version
 def get_version(file, version=None):
     '''Determine current Leo version. Use git if in checkout, else internal Leo'''
     root = os.path.dirname(os.path.realpath(file))
     if os.path.exists(os.path.join(root,'.git')):
         version = git_version(file)
-    else:
-        version = get_semver(leoVersion.version)
     if not version:
-        version = leoVersion.version
+        version = get_semver(leoVersion.version)
     return version
-
-#@+node:maphew.20171112223922.1: *3* git_version
+#@+node:maphew.20181010203342.386: *3* git_version
 def git_version(file):
     '''Fetch from Git: {tag} {distance-from-tag} {current commit hash}
        Return as semantic version string compliant with PEP440'''
     root = os.path.dirname(os.path.realpath(file))
-    tag, distance, commit = g.gitDescribe(root)
-        # 5.6b2, 55, e1129da
-    ctag = clean_git_tag(tag)
-    version = get_semver(ctag)
-    if int(distance) > 0:
-        version = '{}-dev{}'.format(version, distance)
+    try:
+        tag, distance, commit = g.gitDescribe(root)
+            # 5.6b2, 55, e1129da
+        ctag = clean_git_tag(tag)
+        version = get_semver(ctag)
+        if int(distance) > 0:
+            version = '{}-dev{}'.format(version, distance)
+    except IndexError:
+        version = None
     return version
 
 #@+node:maphew.20180224170257.1: *4* clean_git_tag
