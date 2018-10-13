@@ -1851,6 +1851,15 @@ The git clone is too shallow and `git describe --tags` doesn't include a tag. In
 Or from command line:
 
     git fetch --depth=100
+
+**Build only dependencies don't get installed**
+Signified by error like `('\n', ImportError('No module named
+semantic_version',))` in Travis report log even though module is listed in
+`pyproject.toml`. Is because travis pip version in Oct 2018 is v9 and v10+ is
+needed to leverage PEP-518. Fix: upgrade pip in `.travis.yml`
+
+    python -m pip install --upgrade pip
+
 </t>
 <t tx="matt.20181004031246.1">@language md
 

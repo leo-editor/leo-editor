@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -191,6 +188,8 @@
 </v>
 <v t="ekr.20160124165611.1"><vh>@file ../../launchLeo-unified.spec</vh></v>
 <v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
+<v t="maphew.20181013162818.1"><vh>@edit ../../.travis.yml</vh></v>
+<v t="maphew.20181013162837.1"><vh>@edit ../../pyproject.toml</vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
 </v>
 <v t="ekr.20180225010913.1"><vh>In leo/core</vh>
