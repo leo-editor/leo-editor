@@ -702,6 +702,7 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31312e3471017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e332e31362e3671057d71065808000000616e6e6f7461746571077d7108735809000000302e332e31372e333571097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e332e32352e34710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20181014093423.1"><vh>@test run pytests</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -9265,6 +9266,33 @@ FAILED (failures=3, skipped=11)
 <t tx="ekr.20181010081750.1"></t>
 <t tx="ekr.20181010081924.1">###@nosearch</t>
 <t tx="ekr.20181010082831.1"></t>
+<t tx="ekr.20181014093423.1">import subprocess
+loadDir = g.app.loadDir
+join = g.os_path_finalize_join
+prog = join(loadDir, '..', '..', 'run_pytest_tests.py')
+paths = (
+    # join(loadDir, '..', 'core'),
+    # join(loadDir, '..', 'test'),
+    # join(loadDir, '..', 'plugins', 'test'),
+    join(loadDir, '..'),
+)
+fails = []
+for path in paths:
+    assert g.os_path_exists(path), repr(path)
+    proc = subprocess.Popen(
+        r'python %s %s' % (prog, path),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=g.isWindows,
+    )
+    out, err = proc.communicate()
+    if out:
+        for line in g.splitLines(out):
+            g.pr(g.toUnicode(line.rstrip()))
+    if err:
+        fails.append(g.toUnicode(err).strip())
+assert not fails, '\n'+'\n'.join(fails)
+</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

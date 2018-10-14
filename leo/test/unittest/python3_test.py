@@ -4,15 +4,19 @@
 
 # Keywords, etc, in base-class...
 
-class Foo1(metaclass=MyMetaClass):
-    pass
-    
-    
-class Foo2(base1, base2, metaclass=mymeta):
+class MyMetaClass(object):
     pass
 
-class Foo(*bases, **kwds):
-    pass
+# These all fail to import.
+
+# class Foo1(metaclass=MyMetaClass):
+ #   pass
+
+# class Foo2(base1, base2, metaclass=MyMetaClass):
+ #   pass
+
+# class Foo(*bases, **kwds):
+#    pass
     
 # Function args & annotions...
 
