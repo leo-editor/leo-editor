@@ -1,7 +1,11 @@
 language: python
+git:
+    ## Clone depth, must be big enough to include a tag
+    depth: 100
 install:
-    #- git fetch --tags --depth=500
-    #- git checkout 5.8-b2
+    ## Using PEP-518 (pypoject.toml) requires pip >v10 
+    - python -m pip install --upgrade pip
+    - pip --version
 script:
     #- pip install --editable .
     #- leo-console --version
