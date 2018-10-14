@@ -9271,10 +9271,11 @@ loadDir = g.app.loadDir
 join = g.os_path_finalize_join
 prog = join(loadDir, '..', '..', 'run_pytest_tests.py')
 paths = (
-    # join(loadDir, '..', 'core'),
+    join(loadDir, '..', 'core'),
     # join(loadDir, '..', 'test'),
-    # join(loadDir, '..', 'plugins', 'test'),
-    join(loadDir, '..'),
+        # Creates a and b files!
+    join(loadDir, '..', 'plugins', 'test'),
+    # join(loadDir, '..'),
 )
 fails = []
 for path in paths:
