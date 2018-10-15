@@ -10257,7 +10257,9 @@ assert not module,repr(module)
 #@+node:ekr.20141208130803.11: *4* @test g.importModule
 assert g.importModule('codewise',verbose=False)
     # Top-level .py file.
-assert g.importModule('rope',verbose=False)
+
+# The leo/external/rope folder no longer exists.
+# assert g.importModule('rope',verbose=False)
     # In a folder.
 #@+node:ekr.20170122164330.1: *4* @test g.isDirective
 # Do not try to reload g.
