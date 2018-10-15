@@ -27,8 +27,9 @@ def fn(a: "first argument", b: int, *, c=2) -> "result":
 # 2: generates two With nodes.
 # 3: generates one With node and two withitem nodes.
 
-with open('a', 'w') as f1, open('b', 'w') as f2:
-    pass
+if 0: # Do not execute this code! It creates the 'a' and 'b' files.
+    with open('a', 'w') as f1, open('b', 'w') as f2:
+        pass
 
 # nonlocal...
 
