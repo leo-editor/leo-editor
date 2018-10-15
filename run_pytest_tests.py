@@ -1,8 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20181014073705.1: * @file ../../run_pytest_tests.py
-import os
-import sys
 import pytest
+import sys
 path = sys.argv[-1]
 args = [
     '--quiet',
