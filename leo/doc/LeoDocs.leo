@@ -1080,7 +1080,6 @@
 <v t="ekr.20150318110552.74"><vh>Abbreviation commands</vh></v>
 <v t="ekr.20150318110552.8"><vh>Cursor movement commands</vh></v>
 <v t="ekr.20150323185921.1"><vh>Emacs text formatting</vh></v>
-<v t="ekr.20150323185151.1"><vh>Macro commands</vh></v>
 <v t="ekr.20150323103115.1"><vh>Rectangle commands</vh></v>
 <v t="ekr.20150318110552.56"><vh>Scrolling the outline pane</vh></v>
 <v t="ekr.20150323185611.1"><vh>Yank, kill &amp; delete commands</vh></v>
@@ -2281,6 +2280,7 @@
 </v>
 </v>
 <v t="ekr.20170804153108.2"></v>
+<v t="ekr.20050901101608.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18853,7 +18853,6 @@ I'll probably never be able to recreate a clearer picture of how the Aha came to
         find-       find commands
         gc-         garbage collection
         isearch-    incremental search
-        macro-      macro expansion
         print-      print information
         rectangle-  rectangle commands
         register    register commands
@@ -20345,20 +20344,6 @@ Regardless of focus::
 
 **Shift keys**: Adding the Shift key modifier to any of the keys above moves the cursor and extends the selected text.
 
-</t>
-<t tx="ekr.20150323185151.1">.. _`Emacs macro commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Keyboard-Macros.html#Keyboard-Macros
-
-The following commands emulate the `Emacs macro commands`_::
-
-    macro-call
-    macro-call-last
-    macro-end-recording
-    macro-load-all
-    macro-name-last
-    macro-print-all
-    macro-print-last
-    macro-save-all
-    macro-start-recording
 </t>
 <t tx="ekr.20150323185514.1">.. contents:: Contents
     :depth: 2
