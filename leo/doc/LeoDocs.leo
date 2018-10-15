@@ -19072,7 +19072,9 @@ These commands work with either headline or body text.</t>
 - If Python is the present language, Leo inserts an additional tab if the previous line ends with a colon.  When the ``smart_auto_indent setting`` is True, Leo uses Emacs-style auto-indentation instead.  This style of auto-indent aligns newly created lines with unmatched ``( [{`` brackets in the previous line.
 </t>
 <t tx="ekr.20150318110552.23">``add-comments (Ctrl-))``
-    Adds comments to the selected lines, using single-line comments if possible.
+    Adds comments to the selected lines, according to the @language
+    directive in effect. These commands usesingle-line comments if
+    possible. It's not necessary to select all of the first or last lines.
 ``delete-comments (Ctrl-()``
     Deletes comments in the selected lines.
 </t>
