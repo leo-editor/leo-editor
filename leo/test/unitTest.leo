@@ -79,7 +79,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20181010082831.1"><vh>@ignore Docs and unused tests</vh>
 <v t="ekr.20051012104957"><vh>@ignore Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -127,6 +126,7 @@
 <v t="ekr.20111125182408.3947"><vh>@test ic.createImportParent changes back-slashes to slashes</vh></v>
 </v>
 </v>
+<v t="ekr.20181010082831.1"><vh>@ignore Unused tests</vh>
 <v t="ekr.20181010081924.1"><vh>@ignore old tests</vh>
 <v t="ekr.20150216070628.11"><vh>@@suite @nosent with javascript</vh>
 <v t="ekr.20150216070628.12"><vh>@shadow-tests</vh>
@@ -651,6 +651,7 @@
 <v t="ekr.20041013062906"><vh>@test onHyperLinkControlClick</vh></v>
 <v t="ekr.20060208072307"><vh>@test paste from menu into body sticks</vh></v>
 <v t="ekr.20051107115231.24"><vh>@test paste from menu to body recolors the body</vh></v>
+<v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20100204173354.5375"><vh>@test toggle-find-x</vh></v>
 <v t="ekr.20060208072358"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
 </v>
@@ -2010,6 +2011,13 @@ assert not val,repr(val)
 c.setFileTimeStamp(path)
 val = c.checkFileTimeStamp(path)
 assert val,repr(val)
+</t>
+<t tx="ekr.20090306091634.1">if g.in_bridge:
+    # No need for this extra output.
+    self.skipTest('In bridge')
+tree = c.frame.tree
+if hasattr(tree,'redrawCount'):
+    g.pr('%s: %s' % (p.h,tree.redrawCount))
 </t>
 <t tx="ekr.20090529115704.4555">if 0: # x.rename no longer exists
     x = c.shadowController
@@ -9272,10 +9280,9 @@ join = g.os_path_finalize_join
 prog = join(loadDir, '..', '..', 'run_pytest_tests.py')
 paths = (
     join(loadDir, '..', 'core'),
-    # join(loadDir, '..', 'test'),
-        # Creates a and b files!
+    join(loadDir, '..', 'test'),
     join(loadDir, '..', 'plugins', 'test'),
-    # join(loadDir, '..'),
+    join(loadDir, '..'),
 )
 fails = []
 for path in paths:

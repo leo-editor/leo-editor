@@ -295,7 +295,8 @@ def decorate_window(w):
 def init():
     '''Return True if the plugin has loaded successfully.'''
     if not QtWidgets or not g.app.gui.guiName().startswith('qt'):
-        g.es_print('viewrendered requires Qt')
+        if not g.unitTesting and not g.app.batchMode:
+            g.es_print('viewrendered requires Qt')
         return False
     global got_docutils
     if not got_docutils:

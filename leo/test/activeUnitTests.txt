@@ -402,13 +402,6 @@ exclude = [
     'leoBridgeTest.py',
 ]
 #@+node:ekr.20100131171342.5471: ** General
-#@+node:ekr.20090306091634.1: *3* @test print redraw count
-if g.in_bridge:
-    # No need for this extra output.
-    self.skipTest('In bridge')
-tree = c.frame.tree
-if hasattr(tree,'redrawCount'):
-    g.pr('%s: %s' % (p.h,tree.redrawCount))
 #@+node:ekr.20100210222021.5388: *3* @test save new file
 if g.in_bridge:
     self.skipTest('Not for TravisCI')
