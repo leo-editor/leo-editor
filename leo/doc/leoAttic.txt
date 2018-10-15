@@ -3536,6 +3536,42 @@ def embed_pyplot_widget(self):
 
     if pc.pyplot_canvas:
         pc.embed_widget(w, delete_callback=delete_callback)
+#@+node:ekr.20181008060101.1: ** #986: caching settings
+https://github.com/leo-editor/leo-editor/issues/986
+This is not going to happen. There is no significant speedup.
+#@+node:ekr.20181008134339.1: *3* COPY app.saveConfig (TODO)
+def saveConfig(self):
+    ### lm = g.app.loadManager
+    c = g.app.log and g.app.log.c
+    if not c:
+        g.trace('========== no c')
+        return
+    if g.app.save_config:
+        table = (
+            ('settings-cache', c.config.settingsDict),
+            ('shortcuts-cache', c.config.shortcutsDict),
+        )
+        for key, d in table:
+            g.app.db [key] = d
+            g.trace('=====', key, len(d.d.keys()))
+        g.app.save_config = False
+        ### g.app.global_cacher.dump()
+        ### g.app.commander_cacher.dump()
+    else:
+        del g.app.db ['config-cache']
+        del g.app.db ['settings-cache']
+        del g.app.db ['shortcuts-cache']
+#@+node:ekr.20181009024609.1: *3* COPY LM.readCachedSettings (TODO)
+def readCachedSettings(self):
+    '''Read the cached settings as if they all were global settings.'''
+    lm = self
+    ####### Only works when clicking close button!
+    settings_d, bindings_d = lm.createDefaultSettingsDicts()
+    lm.globalSettingsDict = d = g.app.db.get('settings-cache') or settings_d
+    g.trace('===== settings', len(d.d.keys()))
+    lm.globalBindingsDict = d = g.app.db.get('shortcuts-cache') or bindings_d
+    g.trace('===== shortcuts', len(d.d.keys()))
+    ### return PreviousSettings(settings_d, bindings_d)
 #@-all
 #@@nosearch
 #@-leo
