@@ -5,7 +5,8 @@ import sys
 path = sys.argv[-1]
 args = [
     '--quiet',
-    '-x', # Exit on first error.
+    # '--setup-plan',
+    # '-x', # Exit on first error.
     path, # File or directory
 ]
 ignore_paths = [
