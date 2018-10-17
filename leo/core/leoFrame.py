@@ -769,14 +769,14 @@ class LeoFrame(object):
         s = c.config.get("initial_split_orientation", "string")
         verticalFlag = s is None or (s != "h" and s != "horizontal")
         if verticalFlag:
-            r = c.config.getRatio("initial_vertical_ratio")
+            r = c.config.getRatio("initial-vertical-ratio")
             if r is None or r < 0.0 or r > 1.0: r = 0.5
-            r2 = c.config.getRatio("initial_vertical_secondary_ratio")
+            r2 = c.config.getRatio("initial-vertical-secondary-ratio")
             if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         else:
-            r = c.config.getRatio("initial_horizontal_ratio")
+            r = c.config.getRatio("initial-horizontal-ratio")
             if r is None or r < 0.0 or r > 1.0: r = 0.3
-            r2 = c.config.getRatio("initial_horizontal_secondary_ratio")
+            r2 = c.config.getRatio("initial-horizontal-secondary-ratio")
             if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         return verticalFlag, r, r2
     #@+node:ekr.20031218072017.3690: *4* LeoFrame.longFileName & shortFileName

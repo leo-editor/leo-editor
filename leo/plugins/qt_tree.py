@@ -107,7 +107,7 @@ class LeoQtTree(leoFrame.LeoTree):
         '''LeoQtTree.'''
         c = self.c
         self.auto_edit = c.config.getBool('single-click-auto-edits-headline', False)
-        self.enable_drag_messages = c.config.getBool("enable_drag_messages")
+        self.enable_drag_messages = c.config.getBool("enable-drag-messages")
         self.select_all_text_when_editing_headlines = c.config.getBool(
             'select_all_text_when_editing_headlines')
         self.stayInTree = c.config.getBool('stayInTreeAfterSelect')

@@ -1667,11 +1667,11 @@ class Commands(object):
         default_format = "%m/%d/%Y %H:%M:%S" # E.g., 1/30/2003 8:31:55
         # Try to get the format string from settings.
         if body:
-            format = c.config.getString("body_time_format_string")
-            gmt = c.config.getBool("body_gmt_time")
+            format = c.config.getString("body-time-format-string")
+            gmt = c.config.getBool("body-gmt-time")
         else:
-            format = c.config.getString("headline_time_format_string")
-            gmt = c.config.getBool("headline_gmt_time")
+            format = c.config.getString("headline-time-format-string")
+            gmt = c.config.getBool("headline-gmt-time")
         if format is None:
             format = default_format
         try:
@@ -1903,7 +1903,7 @@ class Commands(object):
             'language':language,
             'delims':g.set_delims_from_language(language),
         }
-        wrap = c.config.getBool("body_pane_wraps")
+        wrap = c.config.getBool("body-pane-wraps")
         table = (
             ('encoding',    None,           g.scanAtEncodingDirectives),
             ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),

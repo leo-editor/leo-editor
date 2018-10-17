@@ -280,23 +280,23 @@ def init():
 def getGlobalConfiguration():
     """read config."""
     # timeout.
-    newtimeout = g.app.config.getInt("http_timeout")
+    newtimeout = g.app.config.getInt("http-timeout")
     if newtimeout is not None:
         config.http_timeout = newtimeout / 1000.0
     # ip.
-    newip = g.app.config.getString("http_ip")
+    newip = g.app.config.getString("http-ip")
     if newip:
         config.http_ip = newip
     # port.
-    newport = g.app.config.getInt("http_port")
+    newport = g.app.config.getInt("http-port")
     if newport:
         config.http_port = newport
     # active.
-    newactive = g.app.config.getBool("http_active")
+    newactive = g.app.config.getBool("http-active")
     if newactive is not None:
         config.http_active = newactive
     # attribute name.
-    new_rst2_http_attributename = g.app.config.getString("rst2_http_attributename")
+    new_rst2_http_attributename = g.app.config.getString("rst2-http-attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
 #@+node:EKR.20040517080250.45: *3* plugin_wrapper
@@ -323,19 +323,19 @@ def onFileOpen(tag, keywords):
 def getConfiguration(c):
     """Called when the user opens a new file."""
     # timeout.
-    newtimeout = c.config.getInt("http_timeout")
+    newtimeout = c.config.getInt("http-timeout")
     if newtimeout is not None:
         config.http_timeout = newtimeout / 1000.0
     # port.
-    newport = c.config.getInt("http_port")
+    newport = c.config.getInt("http-port")
     if newport:
         config.http_port = newport
     # active.
-    newactive = c.config.getBool("http_active")
+    newactive = c.config.getBool("http-active")
     if newactive is not None:
         config.http_active = newactive
     # attribute name.
-    new_rst2_http_attributename = c.config.getString("rst2_http_attributename")
+    new_rst2_http_attributename = c.config.getString("rst2-http-attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
 #@+node:ekr.20161003140938.1: ** getData
@@ -912,7 +912,7 @@ class ExecHandler(object):
         """Return the file like 'f' that leo_interface.send_head makes"""
         # self.request_handler.path.startswith('/_/exec/')
 
-        if not g.app.config.getBool("http_allow_remote_exec"):
+        if not g.app.config.getBool("http-allow-remote-exec"):
             return None  # fail deliberately
 
         parsed_url = urlparse.urlparse(self.request_handler.path)

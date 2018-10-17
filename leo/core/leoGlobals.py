@@ -3205,7 +3205,7 @@ def scanAtWrapDirectives(aList, issue_error_flag=False):
 def scanAllAtWrapDirectives(c, p):
     '''Scan p and all ancestors looking for @wrap/@nowrap directives.'''
     if c and p:
-        default = c and c.config.getBool("body_pane_wraps")
+        default = c and c.config.getBool("body-pane-wraps")
         aList = g.get_directives_dict_list(p)
         val = g.scanAtWrapDirectives(aList)
         ret = default if val is None else val
@@ -6112,13 +6112,13 @@ def es_dump(s, n=30, title=None):
 def es_error(*args, **keys):
     color = keys.get('color')
     if color is None and g.app.config:
-        keys['color'] = g.app.config.getColor("log_error_color") or 'red'
+        keys['color'] = g.app.config.getColor("log-error-color") or 'red'
     g.es(*args, **keys)
 
 def es_print_error(*args, **keys):
     color = keys.get('color')
     if color is None and g.app.config:
-        keys['color'] = g.app.config.getColor("log_error_color") or 'red'
+        keys['color'] = g.app.config.getColor("log-error-color") or 'red'
     g.es_print(*args, **keys)
 #@+node:ekr.20031218072017.3111: *3* g.es_event_exception
 def es_event_exception(eventName, full=False):

@@ -3426,8 +3426,8 @@ class RecentFilesManager(object):
         i = 0
         n = len(accel_ch)
         # see if we're grouping when files occur in more than one place
-        rf_group = c.config.getBool("recent_files_group")
-        rf_always = c.config.getBool("recent_files_group_always")
+        rf_group = c.config.getBool("recent-files-group")
+        rf_always = c.config.getBool("recent-files-group-always")
         groupedEntries = rf_group or rf_always
         if groupedEntries: # if so, make dict of groups
             dirCount = {}

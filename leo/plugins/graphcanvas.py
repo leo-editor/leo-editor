@@ -367,7 +367,7 @@ class nodeRect(nodeBase):
         self.text = self.text_item()
         # .text must be first for nodeComment, see its bg_item()
         self.bg = self.bg_item()
-        if g.app.config.getBool("color_theme_is_dark"):
+        if g.app.config.getBool("color-theme-is-dark"):
             bgcolor = QtGui.QColor(30,50,30)
         else:
             bgcolor = QtGui.QColor(200,240,200)

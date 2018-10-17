@@ -662,7 +662,7 @@ class BookMarkDisplay(object):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.dark = c.config.getBool("color_theme_is_dark")
+        self.dark = c.config.getBool("color-theme-is-dark")
         mod_map = c.config.getData("bookmarks-modifiers")
         if not mod_map:
             mod_map = """

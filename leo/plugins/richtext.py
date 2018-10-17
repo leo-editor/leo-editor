@@ -130,7 +130,7 @@ if QtWidgets:
             c.registerReloadSettings(self)
             # read autosave preference
             if not hasattr(self.c, '_ckeeditor_autosave'):
-                auto = self.c.config.getBool("richtext_cke_autosave") or False
+                auto = self.c.config.getBool("richtext-cke-autosave") or False
                 self.c._ckeeditor_autosave = auto
                 if auto:
                     g.es("NOTE: automatic saving of rich text edits")

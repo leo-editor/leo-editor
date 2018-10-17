@@ -1948,7 +1948,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         
     def reloadSettings(self):
         c = self.c
-        self.cursorStay = c.config.getBool("cursor_stay_on_paste", default=True)
+        self.cursorStay = c.config.getBool("cursor-stay-on-paste", default=True)
         self.use_chapters = c.config.getBool('use-chapters')
         self.use_chapter_tabs = c.config.getBool('use-chapter-tabs')
     #@+node:ekr.20110605121601.18248: *5* qtFrame.setIvars
@@ -2488,11 +2488,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def configureBar(self, bar, verticalFlag):
         c = self.c
         # Get configuration settings.
-        w = c.config.getInt("split_bar_width")
+        w = c.config.getInt("split-bar-width")
         if not w or w < 1: w = 7
         relief = c.config.get("split_bar_relief", "relief")
         if not relief: relief = "flat"
-        color = c.config.getColor("split_bar_color")
+        color = c.config.getColor("split-bar-color")
         if not color: color = "LightSteelBlue2"
         try:
             if verticalFlag:
@@ -2514,11 +2514,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18276: *4* qtFrame.configureBarsFromConfig
     def configureBarsFromConfig(self):
         c = self.c
-        w = c.config.getInt("split_bar_width")
+        w = c.config.getInt("split-bar-width")
         if not w or w < 1: w = 7
         relief = c.config.get("split_bar_relief", "relief")
         if not relief or relief == "": relief = "flat"
-        color = c.config.getColor("split_bar_color")
+        color = c.config.getColor("split-bar-color")
         if not color or color == "": color = "LightSteelBlue2"
         if self.splitVerticalFlag:
             bar1, bar2 = self.bar1, self.bar2
@@ -2542,10 +2542,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def setInitialWindowGeometry(self):
         """Set the position and size of the frame to config params."""
         c = self.c
-        h = c.config.getInt("initial_window_height") or 500
-        w = c.config.getInt("initial_window_width") or 600
-        x = c.config.getInt("initial_window_left") or 10
-        y = c.config.getInt("initial_window_top") or 10
+        h = c.config.getInt("initial-window-height") or 500
+        w = c.config.getInt("initial-window-width") or 600
+        x = c.config.getInt("initial-window-left") or 10
+        y = c.config.getInt("initial-window-top") or 10
         if h and w and x and y:
             self.setTopGeometry(w, h, x, y)
     #@+node:ekr.20110605121601.18279: *4* qtFrame.setTabWidth
@@ -2560,14 +2560,14 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def reconfigurePanes(self):
         c, f = self.c, self
         if f.splitVerticalFlag:
-            r = c.config.getRatio("initial_vertical_ratio")
+            r = c.config.getRatio("initial-vertical-ratio")
             if r is None or r < 0.0 or r > 1.0: r = 0.5
-            r2 = c.config.getRatio("initial_vertical_secondary_ratio")
+            r2 = c.config.getRatio("initial-vertical-secondary-ratio")
             if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         else:
-            r = c.config.getRatio("initial_horizontal_ratio")
+            r = c.config.getRatio("initial-horizontal-ratio")
             if r is None or r < 0.0 or r > 1.0: r = 0.3
-            r2 = c.config.getRatio("initial_horizontal_secondary_ratio")
+            r2 = c.config.getRatio("initial-horizontal-secondary-ratio")
             if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         f.resizePanesToRatio(r, r2)
     #@+node:ekr.20110605121601.18282: *4* qtFrame.resizePanesToRatio

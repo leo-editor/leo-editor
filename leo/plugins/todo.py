@@ -257,7 +257,7 @@ if g.app.gui.guiName() == "qt":
             # else:
                 # self.connect(self.UI.butDetails, QtCore.SIGNAL("clicked()"),
                     # lambda: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
-            if self.owner.c.config.getBool("todo_compact_interface"):
+            if self.owner.c.config.getBool("todo-compact-interface"):
                 self.UI.frmDetails.setVisible(False)
 
             if True: ### isQt5:
@@ -279,8 +279,8 @@ if g.app.gui.guiName() == "qt":
                 # self.connect(self.UI.butApplyOffset, QtCore.SIGNAL("clicked()"),
                     # lambda: o.set_date_offset(field='nextworkdate'))
 
-            n = g.app.config.getInt("todo_calendar_n")
-            cols = g.app.config.getInt("todo_calendar_cols")
+            n = g.app.config.getInt("todo-calendar-n")
+            cols = g.app.config.getInt("todo-calendar-cols")
             if n or cols:
                 self.UI.dueDateEdit.calendarWidget().build(n or 3, cols or 3)
                 self.UI.nxtwkDateEdit.calendarWidget().build(n or 3, cols or 3)
