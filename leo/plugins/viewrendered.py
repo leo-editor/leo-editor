@@ -862,7 +862,7 @@ if QtWidgets: # NOQA
             c = pc.c
             if pc.must_change_widget(QtWebKitWidgets.QWebView):
                 w = QtWebKitWidgets.QWebView()
-                n = c.config.getInt('qweb_view_font_size')
+                n = c.config.getInt('qweb-view-font-size')
                 if n:
                     settings = w.settings()
                     settings.setFontSize(settings.DefaultFontSize, n)
@@ -909,7 +909,7 @@ if QtWidgets: # NOQA
             c = pc.c
             if pc.must_change_widget(QtWebKitWidgets.QWebView):
                 w = QtWebKitWidgets.QWebView()
-                n = c.config.getInt('qweb_view_font_size')
+                n = c.config.getInt('qweb-view-font-size')
                 if n:
                     settings = w.settings()
                     settings.setFontSize(settings.DefaultFontSize, n)
@@ -965,7 +965,7 @@ if QtWidgets: # NOQA
             else:
                 if pc.must_change_widget(QtWebKitWidgets.QWebView):
                     w = QtWebKitWidgets.QWebView()
-                    n = c.config.getInt('qweb_view_font_size')
+                    n = c.config.getInt('qweb-view-font-size')
                     if n:
                         settings = w.settings()
                         settings.setFontSize(settings.DefaultFontSize, n)

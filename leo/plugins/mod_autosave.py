@@ -42,7 +42,7 @@ def onCreate(tag, keywords):
     d = gDict.get(c.hash())
     if not d:
         active = c.config.getBool('mod_autosave_active',default=False)
-        interval = c.config.getInt('mod_autosave_interval')
+        interval = c.config.getInt('mod-autosave-interval')
         if active:
             # Create an entry in the global settings dict.
             gDict[c.hash()] = {

@@ -541,7 +541,7 @@ class attrib_edit_Controller(object):
         for i in self.handlers:
             g.registerHandler(i[0], i[1])
         # 'body' or 'tab' mode
-        # self.guiMode = c.config.getString('attrib_edit_placement') or 'tab'
+        # self.guiMode = c.config.getString('attrib-edit-placement') or 'tab'
         self.guiMode = 'tab'
         # body mode in not compatible with nested_splitter, causes hard crash
         if self.guiMode == 'body':

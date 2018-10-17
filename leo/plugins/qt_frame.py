@@ -107,7 +107,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if not ui_file_name:
             ui_file_name = 'qt_main.ui'
         ui_description_file = g.app.loadDir + "/../plugins/" + ui_file_name
-        assert g.os_path_exists(ui_description_file)
+        if not g.os_path_exists(ui_description_file):
+            g.trace('File not found: %s' % ui_description_file)
         self.reloadSettings()
         main_splitter, secondary_splitter = self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")

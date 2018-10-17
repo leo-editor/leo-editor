@@ -62,6 +62,7 @@
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
 </v>
 </v>
+<v t="ekr.20181017163559.1"><vh>script: regularize settings</vh></v>
 <v t="ekr.20041119035137"><vh>About this file, leoSettings.leo</vh>
 <v t="ekr.20041122163623"><vh>About settings names</vh></v>
 <v t="ekr.20041119035704"><vh> Basic setting nodes</vh>
@@ -104,20 +105,20 @@
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
 <v t="ekr.20180308050150.1"><vh>Logical colors</vh>
-<v t="ekr.20180308050150.2"><vh>@color log_black_color = black</vh></v>
-<v t="ekr.20180308050150.3"><vh>@color log_blue_color = blue</vh></v>
-<v t="ekr.20180308050150.15"><vh>@color log_cyan_color = cyan</vh></v>
-<v t="ekr.20180308050150.4"><vh>@color log_error_color = red</vh></v>
-<v t="ekr.20180308050150.5"><vh>@color log_green_color = green</vh></v>
-<v t="ekr.20180308050150.6"><vh>@color log_info_color = blue</vh></v>
-<v t="ekr.20180308050150.7"><vh>@color log_magenta_color = magenta</vh></v>
-<v t="ekr.20180308050150.8"><vh>@color log_note_color = blue</vh></v>
-<v t="ekr.20180308050150.9"><vh>@color log_orange_color = orange</vh></v>
-<v t="ekr.20180308050150.10"><vh>@color log_red_color = red</vh></v>
-<v t="ekr.20180308050150.11"><vh>@color log_violet_color = violet</vh></v>
-<v t="ekr.20180306155628.1"><vh>@color log_warning_color = red</vh></v>
-<v t="ekr.20180308050150.13"><vh>@color log_white_color = white</vh></v>
-<v t="ekr.20180308050150.14"><vh>@color log_yellow_color = yellow</vh></v>
+<v t="ekr.20180308050150.2"><vh>@color log-black-color = black</vh></v>
+<v t="ekr.20180308050150.3"><vh>@color log-blue-color = blue</vh></v>
+<v t="ekr.20180308050150.15"><vh>@color log-cyan-color = cyan</vh></v>
+<v t="ekr.20180308050150.4"><vh>@color log-error-color = red</vh></v>
+<v t="ekr.20180308050150.5"><vh>@color log-green-color = green</vh></v>
+<v t="ekr.20180308050150.6"><vh>@color log-info-color = blue</vh></v>
+<v t="ekr.20180308050150.7"><vh>@color log-magenta-color = magenta</vh></v>
+<v t="ekr.20180308050150.8"><vh>@color log-note-color = blue</vh></v>
+<v t="ekr.20180308050150.9"><vh>@color log-orange-color = orange</vh></v>
+<v t="ekr.20180308050150.10"><vh>@color log-red-color = red</vh></v>
+<v t="ekr.20180308050150.11"><vh>@color log-violet-color = violet</vh></v>
+<v t="ekr.20180306155628.1"><vh>@color log-warning-color = red</vh></v>
+<v t="ekr.20180308050150.13"><vh>@color log-white-color = white</vh></v>
+<v t="ekr.20180308050150.14"><vh>@color log-yellow-color = yellow</vh></v>
 </v>
 <v t="ekr.20180307005648.1"><vh>Solarized color definitions</vh>
 <v t="ekr.20180307005648.7"><vh>@color solarized-base0 = #839496</vh></v>
@@ -416,38 +417,38 @@
 <v t="ekr.20140915194122.23440"><vh>Plugins</vh>
 <v t="ekr.20140912075503.19355"><vh>bookmarks.py plugin</vh>
 <v t="ekr.20140915194122.24259"><vh>bookmarks base</vh>
-<v t="tbrown.20140101093550.25136"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
-<v t="ekr.20140912075503.19358"><vh>@string bookmarks_base_border = "none"</vh></v>
-<v t="tbrown.20140101093550.25140"><vh>@string bookmarks_base_decoration = "none"</vh></v>
-<v t="ekr.20140915194122.24263"><vh>@string bookmarks_base_family = @font-family</vh></v>
-<v t="ekr.20140912075503.19356"><vh>@string bookmarks_base_margin = 0</vh></v>
-<v t="ekr.20140912075503.19357"><vh>@string bookmarks_base_padding = 1</vh></v>
-<v t="tbrown.20140101093550.25165"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
-<v t="ekr.20140915194122.24265"><vh>@string bookmarks_base_style = normal</vh></v>
-<v t="tbrown.20140101093550.25138"><vh>@string bookmarks_base_weight = regular</vh></v>
+<v t="tbrown.20140101093550.25136"><vh>@color bookmarks-base-color = @text-foreground</vh></v>
+<v t="ekr.20140912075503.19358"><vh>@string bookmarks-base-border = "none"</vh></v>
+<v t="tbrown.20140101093550.25140"><vh>@string bookmarks-base-decoration = "none"</vh></v>
+<v t="ekr.20140915194122.24263"><vh>@string bookmarks-base-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19356"><vh>@string bookmarks-base-margin = 0</vh></v>
+<v t="ekr.20140912075503.19357"><vh>@string bookmarks-base-padding = 1</vh></v>
+<v t="tbrown.20140101093550.25165"><vh>@string bookmarks-base-size = @bookmarks-font-size</vh></v>
+<v t="ekr.20140915194122.24265"><vh>@string bookmarks-base-style = normal</vh></v>
+<v t="tbrown.20140101093550.25138"><vh>@string bookmarks-base-weight = regular</vh></v>
 </v>
 <v t="ekr.20140915194122.24260"><vh>bookmarks children</vh>
-<v t="tbrown.20140101093550.25162"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
-<v t="tbrown.20140101093550.25164"><vh>@string bookmarks_children_decoration = underline</vh></v>
-<v t="ekr.20140915194122.24264"><vh>@string bookmarks_children_family = @font-family</vh></v>
-<v t="tbrown.20140101093550.25171"><vh>@string bookmarks_children_size = ignore</vh></v>
-<v t="ekr.20140915194122.24266"><vh>@string bookmarks_children_style = ignore</vh></v>
-<v t="tbrown.20140101093550.25163"><vh>@string bookmarks_children_weight = ignore</vh></v>
+<v t="tbrown.20140101093550.25162"><vh>@color bookmarks-children-color = @text-foreground</vh></v>
+<v t="tbrown.20140101093550.25164"><vh>@string bookmarks-children-decoration = underline</vh></v>
+<v t="ekr.20140915194122.24264"><vh>@string bookmarks-children-family = @font-family</vh></v>
+<v t="tbrown.20140101093550.25171"><vh>@string bookmarks-children-size = ignore</vh></v>
+<v t="ekr.20140915194122.24266"><vh>@string bookmarks-children-style = ignore</vh></v>
+<v t="tbrown.20140101093550.25163"><vh>@string bookmarks-children-weight = ignore</vh></v>
 </v>
 <v t="ekr.20140915194122.24261"><vh>bookmarks current</vh>
-<v t="tbrown.20140101093550.25146"><vh>@color bookmarks_current_color = blue</vh></v>
-<v t="tbrown.20140101093550.25148"><vh>@string bookmarks_current_decoration = "none"</vh></v>
-<v t="ekr.20180317175351.1"><vh>@string bookmarks_current_size = @bookmarks_font_size</vh></v>
-<v t="ekr.20140915194122.24267"><vh>@string bookmarks_current_style = "none"</vh></v>
-<v t="tbrown.20140101093550.25147"><vh>@string bookmarks_current_weight = bold</vh></v>
+<v t="tbrown.20140101093550.25146"><vh>@color bookmarks-current-color = blue</vh></v>
+<v t="tbrown.20140101093550.25148"><vh>@string bookmarks-current-decoration = "none"</vh></v>
+<v t="ekr.20180317175351.1"><vh>@string bookmarks-current-size = @bookmarks-font-size</vh></v>
+<v t="ekr.20140915194122.24267"><vh>@string bookmarks-current-style = "none"</vh></v>
+<v t="tbrown.20140101093550.25147"><vh>@string bookmarks-current-weight = bold</vh></v>
 </v>
 <v t="ekr.20140915194122.24262"><vh>bookmarks expanded</vh>
-<v t="tbrown.20140101093550.25154"><vh>@color bookmarks_expanded_color = @text-foreground</vh></v>
-<v t="tbrown.20140101093550.25156"><vh>@string bookmarks_expanded_decoration = underline</vh></v>
-<v t="tbrown.20140101093550.25169"><vh>@string bookmarks_expanded_size = ignore</vh></v>
-<v t="ekr.20140915194122.24268"><vh>@string bookmarks_expanded_style = ignore</vh></v>
-<v t="tbrown.20140101093550.25155"><vh>@string bookmarks_expanded_weight = bold</vh></v>
-<v t="tbrown.20140101093550.25173"><vh>@string bookmarks_font_size = 11pt</vh></v>
+<v t="tbrown.20140101093550.25154"><vh>@color bookmarks-expanded-color = @text-foreground</vh></v>
+<v t="tbrown.20140101093550.25156"><vh>@string bookmarks-expanded-decoration = underline</vh></v>
+<v t="tbrown.20140101093550.25169"><vh>@string bookmarks-expanded-size = ignore</vh></v>
+<v t="ekr.20140915194122.24268"><vh>@string bookmarks-expanded-style = ignore</vh></v>
+<v t="tbrown.20140101093550.25155"><vh>@string bookmarks-expanded-weight = bold</vh></v>
+<v t="tbrown.20140101093550.25173"><vh>@string bookmarks-font-size = 11pt</vh></v>
 </v>
 </v>
 <v t="ekr.20140912075503.19359"><vh>screencast.py plugin</vh>
@@ -488,39 +489,39 @@
 </v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
 <v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
-<v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = True</vh></v>
+<v t="ekr.20110512085854.14461"><vh>@bool auto-tab-complete = True</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
-<v t="ekr.20060216170801"><vh>@bool enable_calltips_initially = False</vh></v>
-<v t="ekr.20110617081407.14760"><vh>@bool forbid_invalid_completions = False</vh></v>
-<v t="ekr.20180525053145.1"><vh>@bool use_jedi = False</vh></v>
-<v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
+<v t="ekr.20060216170801"><vh>@bool enable-calltips-initially = False</vh></v>
+<v t="ekr.20110617081407.14760"><vh>@bool forbid-invalid-completions = False</vh></v>
+<v t="ekr.20180525053145.1"><vh>@bool use-jedi = False</vh></v>
+<v t="ekr.20110510071925.14589"><vh>@bool use-qcompleter = True</vh></v>
 </v>
 <v t="ekr.20140916113003.20415"><vh>Bracket matching</vh>
-<v t="ekr.20060627084739"><vh>@bool flash_matching_brackets = True</vh></v>
-<v t="ekr.20060627121646"><vh>@color flash_brackets_background_color = DodgerBlue1</vh></v>
-<v t="ekr.20060627121646.1"><vh>@color flash_brackets_foreground_color = white</vh></v>
-<v t="ekr.20060627121646.2"><vh>@int flash_brackets_count = 2</vh></v>
+<v t="ekr.20060627084739"><vh>@bool flash-matching-brackets = True</vh></v>
+<v t="ekr.20060627121646"><vh>@color flash-brackets-background-color = DodgerBlue1</vh></v>
+<v t="ekr.20060627121646.1"><vh>@color flash-brackets-foreground-color = white</vh></v>
+<v t="ekr.20060627121646.2"><vh>@int flash-brackets-count = 2</vh></v>
 <v t="ekr.20060627121646.3"><vh>@int flash-brackets-delay = 75</vh></v>
 </v>
 <v t="ekr.20110611092035.16489"><vh>Chapters</vh>
-<v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
-<v t="ekr.20070318065601"><vh>@bool use_chapters = True</vh></v>
+<v t="ekr.20070604075218"><vh>@bool use-chapter-tabs = True</vh></v>
+<v t="ekr.20070318065601"><vh>@bool use-chapters = True</vh></v>
 </v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
-<v t="ekr.20131112150804.18737"><vh>@bool force_execute_entire_body = False</vh></v>
-<v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
-<v t="ekr.20150227102835.1"><vh>@bool make_node_conflicts_node = True</vh></v>
+<v t="ekr.20131112150804.18737"><vh>@bool force-execute-entire-body = False</vh></v>
+<v t="ekr.20111115083813.12518"><vh>@bool indent-added-comments = True</vh></v>
+<v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
 <v t="ekr.20180117074230.1"><vh>@bool show-tips = True</vh></v>
 <v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
 <v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
-<v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
+<v t="ekr.20041119041019.1"><vh>@string remove-sentinels-extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
-<v t="ekr.20150602160413.1"><vh>@bool tidy_autobeautify = False</vh></v>
-<v t="ekr.20141010095448.19779"><vh>@bool tidy_keep_blank_lines = True</vh></v>
+<v t="ekr.20150602160413.1"><vh>@bool tidy-autobeautify = False</vh></v>
+<v t="ekr.20141010095448.19779"><vh>@bool tidy-keep-blank-lines = True</vh></v>
 </v>
 <v t="ekr.20110611092035.16488"><vh>Bracket matching</vh>
-<v t="ekr.20060804095015.1"><vh>@string close_flash_brackets = )]}</vh></v>
-<v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
+<v t="ekr.20060804095015.1"><vh>@string close-flash-brackets = )]}</vh></v>
+<v t="ekr.20060804095015"><vh>@string open-flash-brackets = ([{</vh></v>
 </v>
 <v t="ekr.20110917104720.9414"><vh>c-to-python settings</vh>
 <v t="ekr.20110917104720.9415"><vh>@data c-to-python-class-list</vh></v>
@@ -528,12 +529,12 @@
 <v t="ekr.20110917104720.9417"><vh>@data c-to-python-ivars-dict</vh></v>
 </v>
 <v t="ekr.20110611092035.16479"><vh>Emacs-like commands</vh>
-<v t="ekr.20071006153053"><vh>@bool add_ws_to_kill_ring = False</vh></v>
+<v t="ekr.20071006153053"><vh>@bool add-ws-to-kill-ring = False</vh></v>
 <v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
 </v>
 <v t="ekr.20110611092035.16482"><vh>Headline commands</vh>
-<v t="ekr.20041119050749.11"><vh>@string headline_gmt_time = None</vh></v>
-<v t="ekr.20041119050749.10"><vh>@string headline_time_format_string = %m/%d</vh></v>
+<v t="ekr.20041119050749.11"><vh>@string headline-gmt-time = None</vh></v>
+<v t="ekr.20041119050749.10"><vh>@string headline-time-format-string = %m/%d</vh></v>
 </v>
 <v t="ekr.20160127043440.1"><vh>make-stub-files</vh>
 <v t="ekr.20160127051552.1"><vh>@bool stub-overwrite = False</vh></v>
@@ -554,53 +555,53 @@
 </v>
 <v t="ekr.20071213060239"><vh>rst3 command</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
-<v t="ekr.20071213061454"><vh>@bool rst3_clear_http_attributes = False</vh></v>
-<v t="ekr.20071213061454.1"><vh>@bool rst3_http_server_support = False</vh></v>
-<v t="ekr.20071213061454.2"><vh>@string rst3_http_attributename = rst_http_attribute</vh></v>
-<v t="ekr.20071213061454.3"><vh>@string rst3_node_begin_marker = http-node-marker-</vh></v>
+<v t="ekr.20071213061454"><vh>@bool rst3-clear-http-attributes = False</vh></v>
+<v t="ekr.20071213061454.1"><vh>@bool rst3-http-server-support = False</vh></v>
+<v t="ekr.20071213061454.2"><vh>@string rst3-http-attributename = rst-http-attribute</vh></v>
+<v t="ekr.20071213061454.3"><vh>@string rst3-node-begin-marker = http-node-marker-</vh></v>
 </v>
 <v t="ekr.20071213060239.2"><vh>rst3 path options</vh>
-<v t="ekr.20131027064821.18683"><vh>@string rst3_write_intermediate_extension = .txt</vh></v>
-<v t="ekr.20071213061504"><vh>@string rst3_default_path = None</vh></v>
-<v t="ekr.20071213061504.1"><vh>@string rst3_stylesheet_name = default.css</vh></v>
-<v t="ekr.20071213061504.2"><vh>@string rst3_stylesheet_path = None</vh></v>
-<v t="ekr.20071213061504.3"><vh>@string rst3_publish_argv_for_missing_stylesheets = None</vh></v>
+<v t="ekr.20131027064821.18683"><vh>@string rst3-write-intermediate-extension = .txt</vh></v>
+<v t="ekr.20071213061504"><vh>@string rst3-default-path = None</vh></v>
+<v t="ekr.20071213061504.1"><vh>@string rst3-stylesheet-name = default.css</vh></v>
+<v t="ekr.20071213061504.2"><vh>@string rst3-stylesheet-path = None</vh></v>
+<v t="ekr.20071213061504.3"><vh>@string rst3-publish-argv-for-missing-stylesheets = None</vh></v>
 </v>
 <v t="ekr.20071213060514"><vh>rst3 global options</vh>
-<v t="ekr.20131009050634.17656"><vh>@bool rst3_call_docutils = True</vh></v>
-<v t="ekr.20071213061811"><vh>@bool rst3_number_code_lines = True</vh></v>
-<v t="ekr.20071213061811.1"><vh>@string rst3_underline_characters = #=+*^~`-:&gt;&lt;_</vh></v>
-<v t="ekr.20071213061811.2"><vh>@bool rst3_verbose = True</vh></v>
-<v t="ekr.20071213061811.3"><vh>@bool rst3_write_intermediate_file = True</vh></v>
+<v t="ekr.20131009050634.17656"><vh>@bool rst3-call-docutils = True</vh></v>
+<v t="ekr.20071213061811"><vh>@bool rst3-number-code-lines = True</vh></v>
+<v t="ekr.20071213061811.1"><vh>@string rst3-underline-characters = #=+*^~`-:&gt;&lt;-</vh></v>
+<v t="ekr.20071213061811.2"><vh>@bool rst3-verbose = True</vh></v>
+<v t="ekr.20071213061811.3"><vh>@bool rst3-write-intermediate-file = True</vh></v>
 </v>
 <v t="ekr.20071213060514.1"><vh>rst3 mode options</vh>
-<v t="ekr.20071213061923"><vh>@bool rst3_code_mode = False</vh></v>
-<v t="ekr.20071213061923.1"><vh>@bool rst3_doc_only_mode = False</vh></v>
-<v t="ekr.20071213061923.2"><vh>@bool rst3_generate_rst = True</vh></v>
-<v t="ekr.20090430075506.7"><vh>@bool rst3_generate_rst_header_comment = True</vh></v>
+<v t="ekr.20071213061923"><vh>@bool rst3-code-mode = False</vh></v>
+<v t="ekr.20071213061923.1"><vh>@bool rst3-doc-only-mode = False</vh></v>
+<v t="ekr.20071213061923.2"><vh>@bool rst3-generate-rst = True</vh></v>
+<v t="ekr.20090430075506.7"><vh>@bool rst3-generate-rst-header-comment = True</vh></v>
 </v>
 <v t="ekr.20071213060514.2"><vh>rst3 formatting options</vh>
-<v t="ekr.20071213061930.1"><vh>@bool rst3_show_headlines = True</vh></v>
-<v t="ekr.20071213061930.2"><vh>@bool rst3_show_organizer_nodes = True</vh></v>
-<v t="ekr.20071213061930.3"><vh>@bool rst3_show_options_nodes = False</vh></v>
-<v t="ekr.20071213061930.4"><vh>@bool rst3_strip_at_file_prefixes = True</vh></v>
+<v t="ekr.20071213061930.1"><vh>@bool rst3-show-headlines = True</vh></v>
+<v t="ekr.20071213061930.2"><vh>@bool rst3-show-organizer-nodes = True</vh></v>
+<v t="ekr.20071213061930.3"><vh>@bool rst3-show-options-nodes = False</vh></v>
+<v t="ekr.20071213061930.4"><vh>@bool rst3-strip-at-file-prefixes = True</vh></v>
 </v>
 <v t="ekr.20071213061923.3"><vh>rst3 formatting options (code mode only)</vh>
-<v t="ekr.20071213062019"><vh>@bool rst3_show_doc_parts_as_paragraphs = False</vh></v>
-<v t="ekr.20071213062019.1"><vh>@bool rst3_show_leo_directives = True</vh></v>
-<v t="ekr.20071213062019.2"><vh>@bool rst3_show_markup_doc_parts = False</vh></v>
-<v t="ekr.20071213062019.3"><vh>@bool rst3_show_options_doc_parts = False</vh></v>
+<v t="ekr.20071213062019"><vh>@bool rst3-show-doc-parts-as-paragraphs = False</vh></v>
+<v t="ekr.20071213062019.1"><vh>@bool rst3-show-leo-directives = True</vh></v>
+<v t="ekr.20071213062019.2"><vh>@bool rst3-show-markup-doc-parts = False</vh></v>
+<v t="ekr.20071213062019.3"><vh>@bool rst3-show-options-doc-parts = False</vh></v>
 <v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
 </v>
 </v>
 <v t="ekr.20110611092035.16478"><vh>Tangle/Untange</vh>
-<v t="ekr.20041119034357.14"><vh>@bool at_root_bodies_start_in_doc_mode = True</vh></v>
-<v t="ekr.20041119034357.29"><vh>@directory default_tangle_directory = None</vh></v>
+<v t="ekr.20041119034357.14"><vh>@bool at-root-bodies-start-in-doc-mode = True</vh></v>
+<v t="ekr.20041119034357.29"><vh>@directory default-tangle-directory = None</vh></v>
 </v>
 <v t="ekr.20110611092035.16477"><vh>Undo</vh>
-<v t="ekr.20060127050605"><vh>@int max_undo_stack_size = 0</vh></v>
-<v t="ekr.20041119041019.2"><vh>@bool save_clears_undo_buffer = False</vh></v>
-<v t="ekr.20050126083026"><vh>@string undo_granularity = None</vh></v>
+<v t="ekr.20060127050605"><vh>@int max-undo-stack-size = 0</vh></v>
+<v t="ekr.20041119041019.2"><vh>@bool save-clears-undo-buffer = False</vh></v>
+<v t="ekr.20050126083026"><vh>@string undo-granularity = None</vh></v>
 </v>
 </v>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
@@ -611,46 +612,46 @@
 </v>
 <v t="ekr.20041119034357.16"><vh>Compare panel</vh>
 <v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
-<v t="ekr.20041119043902"><vh>@string compare_file_1 = None</vh></v>
-<v t="ekr.20041119043902.1"><vh>@string compare_file_2 = None</vh></v>
-<v t="ekr.20041119043902.2"><vh>@string output_file = None</vh></v>
-<v t="ekr.20041119043902.3"><vh>@bool append_output_to_output_file = False</vh></v>
-<v t="ekr.20041119034357.18"><vh>@string limit_directory_search_extension = .py</vh></v>
+<v t="ekr.20041119043902"><vh>@string compare-file-1 = None</vh></v>
+<v t="ekr.20041119043902.1"><vh>@string compare-file-2 = None</vh></v>
+<v t="ekr.20041119043902.2"><vh>@string output-file = None</vh></v>
+<v t="ekr.20041119043902.3"><vh>@bool append-output-to-output-file = False</vh></v>
+<v t="ekr.20041119034357.18"><vh>@string limit-directory-search-extension = .py</vh></v>
 </v>
 <v t="ekr.20041119034357.19"><vh>file compare options</vh>
-<v t="ekr.20041119043902.4"><vh>@bool ignore_blank_lines = True</vh></v>
-<v t="ekr.20041119043902.5"><vh>@bool ignore_first_line_of_file_1 = False</vh></v>
-<v t="ekr.20041119043902.6"><vh>@bool ignore_first_line_of_file_2 = False</vh></v>
-<v t="ekr.20041119043902.7"><vh>@bool ignore_interior_whitespace = False</vh></v>
-<v t="ekr.20041119043902.8"><vh>@bool ignore_leading_whitespace = False</vh></v>
-<v t="ekr.20041119043902.9"><vh>@bool ignore_sentinel_lines = False</vh></v>
+<v t="ekr.20041119043902.4"><vh>@bool ignore-blank-lines = True</vh></v>
+<v t="ekr.20041119043902.5"><vh>@bool ignore-first-line-of-file-1 = False</vh></v>
+<v t="ekr.20041119043902.6"><vh>@bool ignore-first-line-of-file-2 = False</vh></v>
+<v t="ekr.20041119043902.7"><vh>@bool ignore-interior-whitespace = False</vh></v>
+<v t="ekr.20041119043902.8"><vh>@bool ignore-leading-whitespace = False</vh></v>
+<v t="ekr.20041119043902.9"><vh>@bool ignore-sentinel-lines = False</vh></v>
 </v>
 <v t="ekr.20041119050105"><vh>output options</vh>
-<v t="ekr.20041119043902.10"><vh>@int limit_count = 9</vh></v>
-<v t="ekr.20041119043902.11"><vh>@bool make_whitespace_visible = False</vh></v>
-<v t="ekr.20041119043902.12"><vh>@bool print_both_lines_for_matches = False</vh></v>
-<v t="ekr.20041119043902.13"><vh>@bool print_matching_lines = False</vh></v>
-<v t="ekr.20041119043902.14"><vh>@bool print_mismatching_lines = True</vh></v>
-<v t="ekr.20041119043902.15"><vh>@bool print_trailing_lines = True</vh></v>
+<v t="ekr.20041119043902.10"><vh>@int limit-count = 9</vh></v>
+<v t="ekr.20041119043902.11"><vh>@bool make-whitespace-visible = False</vh></v>
+<v t="ekr.20041119043902.12"><vh>@bool print-both-lines-for-matches = False</vh></v>
+<v t="ekr.20041119043902.13"><vh>@bool print-matching-lines = False</vh></v>
+<v t="ekr.20041119043902.14"><vh>@bool print-mismatching-lines = True</vh></v>
+<v t="ekr.20041119043902.15"><vh>@bool print-trailing-lines = True</vh></v>
 </v>
 </v>
 <v t="ekr.20060524151415"><vh>Debugger</vh>
-<v t="ekr.20070115134125"><vh>@bool write_script_file = True</vh></v>
+<v t="ekr.20070115134125"><vh>@bool write-script-file = True</vh></v>
 <v t="ekr.20070115134125.1"><vh>@@string script_file_path = ../test/scriptFile.py</vh></v>
-<v t="ekr.20060524151415.1"><vh>@string debugger_kind = winpdb</vh></v>
-<v t="ekr.20060521132401"><vh>@string debugger_path = None</vh></v>
+<v t="ekr.20060524151415.1"><vh>@string debugger-kind = winpdb</vh></v>
+<v t="ekr.20060521132401"><vh>@string debugger-path = None</vh></v>
 </v>
 <v t="ekr.20051126062243"><vh>Debugging</vh>
-<v t="ekr.20060408090018"><vh>@bool added_setting = True</vh></v>
-<v t="ekr.20060323131801"><vh>@bool warn_about_missing_settings = False</vh></v>
-<v t="ekr.20060521134125"><vh>@string debugger_default_target = None</vh></v>
-<v t="ekr.20060521134125.1"><vh>@string debugger_force_target = None</vh></v>
+<v t="ekr.20060408090018"><vh>@bool added-setting = True</vh></v>
+<v t="ekr.20060323131801"><vh>@bool warn-about-missing-settings = False</vh></v>
+<v t="ekr.20060521134125"><vh>@string debugger-default-target = None</vh></v>
+<v t="ekr.20060521134125.1"><vh>@string debugger-force-target = None</vh></v>
 <v t="ekr.20060325071916"><vh>For unit tests</vh>
 <v t="ekr.20060325071042"><vh>@ifplatform win32</vh>
-<v t="ekr.20060325071042.1"><vh>@bool test_win32_setting = True</vh></v>
+<v t="ekr.20060325071042.1"><vh>@bool test-win32-setting = True</vh></v>
 </v>
 <v t="ekr.20060325071042.2"><vh>@ifplatform darwin</vh>
-<v t="ekr.20060325071042.3"><vh>@bool test_darwin_setting = True</vh></v>
+<v t="ekr.20060325071042.3"><vh>@bool test-darwin-setting = True</vh></v>
 </v>
 </v>
 </v>
@@ -674,103 +675,103 @@
 <v t="chris.20180320083521.1"><vh>@bool word-count = False</vh></v>
 </v>
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
-<v t="ekr.20170706103545.1"><vh>@bool report_unchanged_files = True</vh></v>
-<v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
+<v t="ekr.20170706103545.1"><vh>@bool report-unchanged-files = True</vh></v>
+<v t="ekr.20061210091932"><vh>@bool chdir-to-relative-path = False</vh></v>
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
-<v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
-<v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
-<v t="ekr.20170718054928.1"><vh>@bool log_show_save_time = False</vh></v>
-<v t="ekr.20170718054951.1"><vh>@string log_timestamp_format = %H:%M:%S</vh></v>
-<v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
+<v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
+<v t="ekr.20041119034357.5"><vh>@bool read-only = False</vh></v>
+<v t="ekr.20170718054928.1"><vh>@bool log-show-save-time = False</vh></v>
+<v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
+<v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
-<v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
-<v t="ekr.20150403055250.1"><vh>@bool check_for_changed_external_files = True</vh></v>
-<v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
+<v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
+<v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
+<v t="ekr.20090514111518.8379"><vh>@bool check-python-code-on-write = True</vh></v>
 <v t="ekr.20161021095001.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
-<v t="ekr.20150321090958.1"><vh>@bool verbose_check_outline = False</vh></v>
+<v t="ekr.20150321090958.1"><vh>@bool verbose-check-outline = False</vh></v>
 <v t="ekr.20150710084507.1"><vh>@bool syntax-error-popup = False</vh></v>
 </v>
 <v t="ekr.20041119034357.12"><vh>External files</vh>
-<v t="ekr.20070419103554"><vh>@bool force_newlines_in_at_nosent_bodies = True</vh></v>
-<v t="ekr.20041119041747.4"><vh>@bool write_strips_blank_lines = True</vh></v>
-<v t="ekr.20041119041747"><vh>@string output_newline = nl</vh></v>
-<v t="ekr.20041119041747.1"><vh>@string trailing_body_newlines = one</vh></v>
+<v t="ekr.20070419103554"><vh>@bool force-newlines-in-at-nosent-bodies = True</vh></v>
+<v t="ekr.20041119041747.4"><vh>@bool write-strips-blank-lines = True</vh></v>
+<v t="ekr.20041119041747"><vh>@string output-newline = nl</vh></v>
+<v t="ekr.20041119041747.1"><vh>@string trailing-body-newlines = one</vh></v>
 <v t="ekr.20081216090156.5"><vh>@string underindent-escape-string = \\-</vh></v>
 </v>
 <v t="ekr.20041119034357.7"><vh>Leo files</vh>
-<v t="ekr.20101009103953.8642"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
-<v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
+<v t="ekr.20101009103953.8642"><vh>@bool put-expansion-bits-in-leo-files = True</vh></v>
+<v t="ekr.20041119034357.8"><vh>@string output-initial-comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = </vh></v>
-<v t="ekr.20080921060401.3"><vh>@string default_leo_file = ~/.leo/workbook.leo</vh></v>
-<v t="vitalije.20170811125150.1"><vh>@string default_leo_extension = .leo</vh></v>
+<v t="ekr.20080921060401.3"><vh>@string default-leo-file = ~/.leo/workbook.leo</vh></v>
+<v t="vitalije.20170811125150.1"><vh>@string default-leo-extension = .leo</vh></v>
 </v>
 <v t="ekr.20110611092035.16474"><vh>Recent files</vh>
-<v t="tbrown.20081003103821.1"><vh>@bool recent_files_group = False</vh></v>
-<v t="tbrown.20081003103821.2"><vh>@bool recent_files_group_always = False</vh></v>
-<v t="ekr.20061009190510"><vh>@bool write_recent_files_as_needed = True</vh></v>
+<v t="tbrown.20081003103821.1"><vh>@bool recent-files-group = False</vh></v>
+<v t="tbrown.20081003103821.2"><vh>@bool recent-files-group-always = False</vh></v>
+<v t="ekr.20061009190510"><vh>@bool write-recent-files-as-needed = True</vh></v>
 <v t="tbrown.20180212145842.1"><vh>@data path-demangle</vh></v>
 </v>
 <v t="ekr.20060730101451"><vh>Shadow files</vh>
-<v t="ekr.20060730101451.3"><vh>@string shadow_prefix = x</vh></v>
-<v t="ekr.20060730101451.5"><vh>@string shadow_subdir = .leo_shadow</vh></v>
+<v t="ekr.20060730101451.3"><vh>@string shadow-prefix = x</vh></v>
+<v t="ekr.20060730101451.5"><vh>@string shadow-subdir = .leo-shadow</vh></v>
 </v>
 </v>
 <v t="ekr.20041119034357.20"><vh>Find/replace options</vh>
 <v t="ekr.20141024165714.1"><vh>@bool auto-scroll-find-tab = True</vh></v>
 <v t="ekr.20150619190137.1"><vh>@bool close-find-dialog-after-search = False</vh></v>
 <v t="ekr.20150629172742.1"><vh>@bool find-ignore-duplicates = False</vh></v>
-<v t="ekr.20131119143342.20107"><vh>@bool minibuffer_find_mode = False</vh></v>
+<v t="ekr.20131119143342.20107"><vh>@bool minibuffer-find-mode = False</vh></v>
 <v t="tbrown.20151010094807.1"><vh>@bool show-find-result-in-status = True</vh></v>
 <v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
 <v t="ekr.20150710065036.1"><vh>@bool preload-find-pattern = False</vh></v>
-<v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
-<v t="ekr.20060125104049"><vh>@bool show_only_find_tab_options = True</vh></v>
-<v t="ekr.20150618105435.1"><vh>@bool use_find_dialog = False</vh></v>
-<v t="ekr.20041119050105.1"><vh>@string change_text = None</vh></v>
-<v t="ekr.20041119050105.2"><vh>@string find_text = None</vh></v>
+<v t="ekr.20041120152900.2"><vh>@bool script-search = None</vh></v>
+<v t="ekr.20060125104049"><vh>@bool show-only-find-tab-options = True</vh></v>
+<v t="ekr.20150618105435.1"><vh>@bool use-find-dialog = False</vh></v>
+<v t="ekr.20041119050105.1"><vh>@string change-text = None</vh></v>
+<v t="ekr.20041119050105.2"><vh>@string find-text = None</vh></v>
 <v t="ekr.20131119143342.20108"><vh>Find panel defaults</vh>
 <v t="ekr.20041119050105.3"><vh>Checkboxes in the Find panel</vh>
 <v t="ekr.20041119050105.4"><vh>@bool batch = False</vh></v>
-<v t="ekr.20041119050105.5"><vh>@bool ignore_case = True</vh></v>
-<v t="ekr.20041119050105.6"><vh>@bool mark_changes = False</vh></v>
-<v t="ekr.20041119050105.7"><vh>@bool mark_finds = False</vh></v>
+<v t="ekr.20041119050105.5"><vh>@bool ignore-case = True</vh></v>
+<v t="ekr.20041119050105.6"><vh>@bool mark-changes = False</vh></v>
+<v t="ekr.20041119050105.7"><vh>@bool mark-finds = False</vh></v>
 <v t="ekr.20041119050105.9"><vh>@bool reverse = False</vh></v>
-<v t="ekr.20041119050105.8"><vh>@bool pattern_match = False</vh></v>
-<v t="ekr.20041120152657"><vh>@bool script_change = None</vh></v>
-<v t="ekr.20041119050105.14"><vh>@bool search_body = True</vh></v>
-<v t="ekr.20041119050105.15"><vh>@bool search_headline = True</vh></v>
-<v t="ekr.20041119050105.10"><vh>@bool whole_word = False</vh></v>
+<v t="ekr.20041119050105.8"><vh>@bool pattern-match = False</vh></v>
+<v t="ekr.20041120152657"><vh>@bool script-change = None</vh></v>
+<v t="ekr.20041119050105.14"><vh>@bool search-body = True</vh></v>
+<v t="ekr.20041119050105.15"><vh>@bool search-headline = True</vh></v>
+<v t="ekr.20041119050105.10"><vh>@bool whole-word = False</vh></v>
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
 <v t="ekr.20110611092035.16476"><vh>Radio buttons in the Find panel</vh>
-<v t="ekr.20041119050105.12"><vh>@bool node_only = False</vh></v>
-<v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
+<v t="ekr.20041119050105.12"><vh>@bool node-only = False</vh></v>
+<v t="ekr.20041119050105.16"><vh>@bool suboutline-only = False</vh></v>
 </v>
 </v>
 </v>
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
 <v t="ekr.20161011090731.1"><vh>Retired: @bool allow_section_references_in_at_auto = False</vh></v>
 <v t="tbrown.20180525163032.1"><vh>@bool add-context-to-headlines = True</vh></v>
-<v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
-<v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
-<v t="ekr.20161010085256.1"><vh>@bool js_importer_clean_lws = True</vh></v>
-<v t="ekr.20170617135317.1"><vh>@bool put_python_decorators_in_imported_headlines = False</vh></v>
-<v t="ekr.20161010172424.1"><vh>@int js_importer_min_rescan_size = 0</vh></v>
-<v t="ekr.20161010172441.1"><vh>@int js_importer_min_scan_size = 0</vh></v>
-<v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
+<v t="ekr.20101104191857.8345"><vh>@bool at-auto-separate-non-def-nodes = False</vh></v>
+<v t="ekr.20070803082435"><vh>@bool full-import-checks = True</vh></v>
+<v t="ekr.20161010085256.1"><vh>@bool js-importer-clean-lws = True</vh></v>
+<v t="ekr.20170617135317.1"><vh>@bool put-python-decorators-in-imported-headlines = False</vh></v>
+<v t="ekr.20161010172424.1"><vh>@int js-importer-min-rescan-size = 0</vh></v>
+<v t="ekr.20161010172441.1"><vh>@int js-importer-min-scan-size = 0</vh></v>
+<v t="ekr.20080811105020.2"><vh>@bool suppress-import-parsing = False</vh></v>
 <v t="ekr.20170825083426.1"><vh>@data c_import_typedefs</vh></v>
 <v t="ekr.20111029055127.16616"><vh>@data import_html_tags</vh></v>
 <v t="ekr.20111029055127.16614"><vh>@data import_xml_tags</vh></v>
 </v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20180411070112.1"><vh>@bool replace-meta-with-alt = False</vh></v>
-<v t="ekr.20160504145653.1"><vh>@bool plain_key_outline_search = True</vh></v>
-<v t="ekr.20120205022040.15410"><vh>@bool enable_alt_ctrl_bindings = True</vh></v>
-<v t="ekr.20131007055150.13034"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
+<v t="ekr.20160504145653.1"><vh>@bool plain-key-outline-search = True</vh></v>
+<v t="ekr.20120205022040.15410"><vh>@bool enable-alt-ctrl-bindings = True</vh></v>
+<v t="ekr.20131007055150.13034"><vh>@bool ignore-unbound-non-ascii-keys = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
-<v t="ekr.20120205022040.15411"><vh>@bool swap_mac_keys = False</vh></v>
+<v t="ekr.20120205022040.15411"><vh>@bool swap-mac-keys = False</vh></v>
 <v t="ekr.20131112161153.4420"><vh>@bool vim-mode = False</vh></v>
-<v t="ekr.20060926161207.1"><vh>@bool warn_about_redefined_shortcuts = True</vh></v>
+<v t="ekr.20060926161207.1"><vh>@bool warn-about-redefined-shortcuts = True</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
 <v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
@@ -811,7 +812,7 @@
 <v t="ekr.20140721165014.19163"><vh>Vim settings</vh>
 <v t="ekr.20140721165014.19164"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 <v t="ekr.20140721165014.19165"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
-<v t="ekr.20140721165014.19166"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
+<v t="ekr.20140721165014.19166"><vh>@bool outline-pane-has-initial-focus = True</vh></v>
 <v t="ekr.20140721165014.19167"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 </v>
 <v t="ekr.20140721165014.19168"><vh>@shortcuts - vi miscellaneous</vh>
@@ -1006,8 +1007,8 @@
 </v>
 </v>
 <v t="ekr.20110611092035.16491"><vh>Leo Directives</vh>
-<v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
-<v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
+<v t="ekr.20041119034357.32"><vh>@int page-width = 80</vh></v>
+<v t="ekr.20041119034357.31"><vh>@int tab-width = -4</vh></v>
 </v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
@@ -1713,10 +1714,10 @@
 <v t="ekr.20070411101857.2"><vh>@openwith Word = Alt+Shift+Ctrl+W </vh></v>
 <v t="ekr.20171206102759.6"><vh>@@openwith Wordpad = Alt+Shift+Ctrl+T</vh></v>
 </v>
-<v t="TL.20080702085131.2"><vh>@bool open_with_save_on_update = True</vh></v>
-<v t="TL.20080702085131.3"><vh>@bool open_with_goto_node_on_update = True</vh></v>
-<v t="TL.20080702085131.4"><vh>@bool open_with_clean_filenames = False</vh></v>
-<v t="TL.20080702085131.5"><vh>@bool open_with_uses_derived_file_extensions = False</vh></v>
+<v t="TL.20080702085131.2"><vh>@bool open-with-save-on-update = True</vh></v>
+<v t="TL.20080702085131.3"><vh>@bool open-with-goto-node-on-update = True</vh></v>
+<v t="TL.20080702085131.4"><vh>@bool open-with-clean-filenames = False</vh></v>
+<v t="TL.20080702085131.5"><vh>@bool open-with-uses-derived-file-extensions = False</vh></v>
 </v>
 <v t="tbrown.20150821171510.1"><vh>@outline-data settings-finder-menu</vh>
 <v t="tbrown.20150821171510.2"><vh>Colors</vh>
@@ -1973,54 +1974,54 @@
 </v>
 </v>
 <v t="ekr.20110611092035.16492"><vh>Mouse</vh>
-<v t="ekr.20080324105006.6"><vh>@bool allow_middle_button_paste = False</vh></v>
+<v t="ekr.20080324105006.6"><vh>@bool allow-middle-button-paste = False</vh></v>
 </v>
 <v t="ekr.20051123100536"><vh>Plugins</vh>
-<v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
-<v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
+<v t="ekr.20041119034357.13"><vh>@bool use-plugins = True</vh></v>
+<v t="ekr.20071113084330"><vh>@bool warn-when-plugins-fail-to-load = True</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
 <v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
-<v t="tbrown.20091129085043.11790"><vh>@string active_path_attype = auto</vh></v>
-<v t="tbrown.20091129085043.11792"><vh>@string active_path_event = headdclick1</vh></v>
+<v t="tbrown.20091129085043.11790"><vh>@string active-path-attype = auto</vh></v>
+<v t="tbrown.20091129085043.11792"><vh>@string active-path-event = headdclick1</vh></v>
 <v t="tbrown.20091129085043.11793"><vh>@data active_path_ignore</vh></v>
 <v t="tbrown.20111114201921.23020"><vh>@data active_path_bin_open</vh></v>
 <v t="tbrown.20091129085043.11795"><vh>@data active_path_autoload</vh></v>
-<v t="tbrown.20100304170159.5189"><vh>@bool active_path_load_docstring = False</vh></v>
-<v t="tbrown.20100401100336.16108"><vh>@float active_path_timeout_seconds = 10.</vh></v>
-<v t="tbrown.20100401100336.31583"><vh>@int active_path_max_size = 1000000</vh></v>
+<v t="tbrown.20100304170159.5189"><vh>@bool active-path-load-docstring = False</vh></v>
+<v t="tbrown.20100401100336.16108"><vh>@float active-path-timeout-seconds = 10.</vh></v>
+<v t="tbrown.20100401100336.31583"><vh>@int active-path-max-size = 1000000</vh></v>
 </v>
 <v t="vitalije.20100306144625.8944"><vh>autosave plugin</vh>
-<v t="vitalije.20100306144625.8945"><vh>@bool mod_autosave_active = True</vh></v>
-<v t="vitalije.20100306144625.8946"><vh>@int mod_autosave_interval = 300</vh></v>
+<v t="vitalije.20100306144625.8945"><vh>@bool mod-autosave-active = True</vh></v>
+<v t="vitalije.20100306144625.8946"><vh>@int mod-autosave-interval = 300</vh></v>
 </v>
 <v t="tbrown.20110430104941.30247"><vh>backlink</vh>
-<v t="tbrown.20110430104941.30250"><vh>@int backlink_name_levels = 0</vh></v>
+<v t="tbrown.20110430104941.30250"><vh>@int backlink-name-levels = 0</vh></v>
 </v>
 <v t="tbrown.20140102100730.27777"><vh>bookmarks</vh>
-<v t="tbrown.20140102100730.27778"><vh>@int bookmarks_levels = 1</vh></v>
+<v t="tbrown.20140102100730.27778"><vh>@int bookmarks-levels = 1</vh></v>
 <v t="tbrown.20171128211219.1"><vh>@data bookmarks-modifiers</vh></v>
 </v>
 <v t="ekr.20060807103220"><vh>datenodes plugin</vh>
-<v t="ekr.20060807103220.1"><vh>@string datenodes_body_text = To do...</vh></v>
-<v t="ekr.20060807103220.2"><vh>@string datenodes_day_node_headline = %Y-%m-%d</vh></v>
-<v t="ekr.20060807103220.3"><vh>@string datenodes_month_node_day_headline = %d: %A</vh></v>
-<v t="ekr.20060807103220.4"><vh>@string datenodes_month_node_month_headline = %B %Y</vh></v>
-<v t="ekr.20060807103220.5"><vh>@bool datenodes_month_node_omit_saturdays = True</vh></v>
-<v t="ekr.20060807103220.6"><vh>@bool datenodes_month_node_omit_sundays = True</vh></v>
-<v t="ekr.20060807103220.7"><vh>@string datenodes_year_node_day_headline = %d: %A</vh></v>
-<v t="ekr.20060807103220.8"><vh>@string datenodes_year_node_month_headline = %B</vh></v>
-<v t="ekr.20060807103220.9"><vh>@string datenodes_year_node_year_headline = %Y</vh></v>
-<v t="ekr.20060807103220.10"><vh>@bool datenodes_year_node_omit_saturdays = True</vh></v>
-<v t="ekr.20060807103220.11"><vh>@bool datenodes_year_node_omit_sundays = True</vh></v>
+<v t="ekr.20060807103220.1"><vh>@string datenodes-body-text = To do...</vh></v>
+<v t="ekr.20060807103220.2"><vh>@string datenodes-day-node-headline = %Y-%m-%d</vh></v>
+<v t="ekr.20060807103220.3"><vh>@string datenodes-month-node-day-headline = %d: %A</vh></v>
+<v t="ekr.20060807103220.4"><vh>@string datenodes-month-node-month-headline = %B %Y</vh></v>
+<v t="ekr.20060807103220.5"><vh>@bool datenodes-month-node-omit-saturdays = True</vh></v>
+<v t="ekr.20060807103220.6"><vh>@bool datenodes-month-node-omit-sundays = True</vh></v>
+<v t="ekr.20060807103220.7"><vh>@string datenodes-year-node-day-headline = %d: %A</vh></v>
+<v t="ekr.20060807103220.8"><vh>@string datenodes-year-node-month-headline = %B</vh></v>
+<v t="ekr.20060807103220.9"><vh>@string datenodes-year-node-year-headline = %Y</vh></v>
+<v t="ekr.20060807103220.10"><vh>@bool datenodes-year-node-omit-saturdays = True</vh></v>
+<v t="ekr.20060807103220.11"><vh>@bool datenodes-year-node-omit-sundays = True</vh></v>
 </v>
 <v t="ekr.20100907092300.6957"><vh>Inkscape options</vh>
 <v t="ekr.20100907092300.6958"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
 <v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
 <v t="ekr.20111003085631.15488"><vh>mod_http plugin</vh>
-<v t="ekr.20111003085631.15489"><vh>@bool http_active = True</vh></v>
-<v t="btheado.20131124162237.2493"><vh>@string http_ip = 127.0.0.1</vh></v>
-<v t="ekr.20111003085631.15490"><vh>@int http_port = 8130</vh></v>
+<v t="ekr.20111003085631.15489"><vh>@bool http-active = True</vh></v>
+<v t="btheado.20131124162237.2493"><vh>@string http-ip = 127.0.0.1</vh></v>
+<v t="ekr.20111003085631.15490"><vh>@int http-port = 8130</vh></v>
 <v t="ekr.20111003104518.15499"><vh>@@string http_bookmark_unl = Bookmarks</vh></v>
 <v t="ekr.20161003141513.1"><vh>mod_http stylesheet</vh>
 <v t="ekr.20161003141513.2"><vh>@data http_stylesheet</vh></v>
@@ -2031,35 +2032,35 @@
 </v>
 </v>
 <v t="ekr.20110611092035.16483"><vh>mod_scripting plugin</vh>
-<v t="tbrown.20100524101550.4704"><vh>@string mod_scripting_subtext = ▼</vh></v>
+<v t="tbrown.20100524101550.4704"><vh>@string mod-scripting-subtext = ▼</vh></v>
 </v>
 <v t="TL.20090225102340.33"><vh>nodeActions plugin</vh>
-<v t="TL.20090225102340.34"><vh>@bool nodeActions_save_atFile_nodes = False</vh></v>
-<v t="TL.20090303191843.1"><vh>@int nodeActions_message_level = 1</vh></v>
+<v t="TL.20090225102340.34"><vh>@bool nodeActions-save-atFile-nodes = False</vh></v>
+<v t="TL.20090303191843.1"><vh>@int nodeActions-message-level = 1</vh></v>
 </v>
 <v t="peckj.20140113150237.4603"><vh>nodediff plugin</vh>
 <v t="peckj.20140113150237.4604"><vh>@string node-diff-style = compare</vh></v>
 </v>
 <v t="peckj.20131101143409.5814"><vh>nodewatch plugin</vh>
-<v t="peckj.20131101143409.5816"><vh>@bool nodewatch_autoexecute_scripts = False</vh></v>
+<v t="peckj.20131101143409.5816"><vh>@bool nodewatch-autoexecute-scripts = False</vh></v>
 </v>
 <v t="ekr.20060919171527"><vh>opml plugin</vh>
-<v t="ekr.20060921080239"><vh>@bool opml_read_derived_files = True</vh></v>
-<v t="ekr.20060919171527.1"><vh>@bool opml_use_outline_elements = True</vh></v>
-<v t="ekr.20060919195145"><vh>@string opml_version = 2.0</vh></v>
-<v t="ekr.20060919181622"><vh>@bool opml_write_body_text = True</vh></v>
-<v t="ekr.20060921080239.1"><vh>@bool opml_write_derived_files = True</vh></v>
-<v t="ekr.20060919173031"><vh>@bool opml_write_leo_details = True</vh></v>
-<v t="ekr.20060919173031.1"><vh>@bool opml_write_leo_globals_attributes = True</vh></v>
-<v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
-<v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
+<v t="ekr.20060921080239"><vh>@bool opml-read-derived-files = True</vh></v>
+<v t="ekr.20060919171527.1"><vh>@bool opml-use-outline-elements = True</vh></v>
+<v t="ekr.20060919195145"><vh>@string opml-version = 2.0</vh></v>
+<v t="ekr.20060919181622"><vh>@bool opml-write-body-text = True</vh></v>
+<v t="ekr.20060921080239.1"><vh>@bool opml-write-derived-files = True</vh></v>
+<v t="ekr.20060919173031"><vh>@bool opml-write-leo-details = True</vh></v>
+<v t="ekr.20060919173031.1"><vh>@bool opml-write-leo-globals-attributes = True</vh></v>
+<v t="ekr.20060922110220"><vh>@bool opml-write-uAs = True</vh></v>
+<v t="ekr.20060919171527.2"><vh>@string opml-namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
 <v t="peckj.20130514082859.5599"><vh>printing plugin</vh>
 <v t="peckj.20130514082859.5600"><vh>@string printing-font-size = 12</vh></v>
 <v t="peckj.20130514082859.5601"><vh>@string printing-font-family = DejaVu Sans Mono</vh></v>
 </v>
 <v t="tbrown.20130813134319.7223"><vh>richtext plugin</vh>
-<v t="tbrown.20130813134319.7224"><vh>@bool richtext_cke_autosave = False</vh></v>
+<v t="tbrown.20130813134319.7224"><vh>@bool richtext-cke-autosave = False</vh></v>
 <v t="tbrown.20130813181208.23979"><vh>@data richtext_cke_config</vh></v>
 </v>
 <v t="peckj.20131012154112.5294"><vh>rss plugin</vh>
@@ -2086,23 +2087,23 @@
 <v t="peckj.20140218151502.4820"><vh>@bool sftp-cache-credentials = True</vh></v>
 </v>
 <v t="tbrown.20130310101647.34743"><vh>valuespace plugin</vh>
-<v t="tbrown.20130310101647.34744"><vh>@bool valuespace_vs_eval_redirect = True</vh></v>
+<v t="tbrown.20130310101647.34744"><vh>@bool valuespace-vs-eval-redirect = True</vh></v>
 </v>
 <v t="ekr.20051123100536.1"><vh>vim plugin</vh>
 <v t="ekr.20051123100536.2"><vh>@@string vim_cmd = c:\Program Files\vim\vim63\gvim --servername LEO</vh></v>
 <v t="ekr.20051123100536.3"><vh>@@string vim_exe = c:\Program Files\vim\vim63\gvim</vh></v>
-<v t="ekr.20150327002834.1"><vh>@bool vim_plugin_trace = False</vh></v>
-<v t="ekr.20071114072753"><vh>@bool vim_plugin_opens_url_nodes = False</vh></v>
+<v t="ekr.20150327002834.1"><vh>@bool vim-plugin-trace = False</vh></v>
+<v t="ekr.20071114072753"><vh>@bool vim-plugin-opens-url-nodes = False</vh></v>
 </v>
 <v t="tbrown.20141101105337.1"><vh>wikiview plugin</vh>
 <v t="tbrown.20141101105337.2"><vh>@data wikiview-link-patterns</vh></v>
 <v t="tbrown.20141101105337.3"><vh>@bool wikiview-active = True</vh></v>
 </v>
 <v t="ekr.20090202191501.10"><vh>xemacs plugin</vh>
-<v t="ekr.20090202191501.11"><vh>@string xemacs_exe = c:\XEmacs\XEmacs-21.4.21\i586-pc-win32\xemacs.exe</vh></v>
+<v t="ekr.20090202191501.11"><vh>@string xemacs-exe = c:\XEmacs\XEmacs-21.4.21\i586-pc-win32\xemacs.exe</vh></v>
 </v>
 <v t="ekr.20060904211808"><vh>zodb plugin</vh>
-<v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
+<v t="ekr.20060904211808.1"><vh>@string zodb-storage-file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
 <v t="ekr.20140916113003.19609"><vh>Qt Gui Misc settings</vh>
@@ -2114,59 +2115,59 @@
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
 </v>
 <v t="ekr.20110611092035.16481"><vh>Scripting</vh>
-<v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
-<v t="ekr.20061029091403"><vh>@bool show_full_tracebacks_in_scripts = False</vh></v>
+<v t="ekr.20041119041019"><vh>@bool redirect-execute-script-output-to-log-pane = False</vh></v>
+<v t="ekr.20061029091403"><vh>@bool show-full-tracebacks-in-scripts = False</vh></v>
 </v>
 <v t="ekr.20051025084017"><vh>Spell checking</vh>
-<v t="ekr.20100904095239.8440"><vh>@string enchant_language = en_US</vh></v>
-<v t="ekr.20100904095239.8441"><vh>@string enchant_local_dictionary = None</vh></v>
+<v t="ekr.20100904095239.8440"><vh>@string enchant-language = en-US</vh></v>
+<v t="ekr.20100904095239.8441"><vh>@string enchant-local-dictionary = None</vh></v>
 </v>
 <v t="ekr.20041119034357.70"><vh>Syntax coloring</vh>
 <v t="ekr.20170202104705.1"><vh>@bool color-doc-parts-as-rest = True</vh></v>
 <v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="ekr.20111024091133.16650"><vh>Colors for Leo constructs</vh>
-<v t="ekr.20111004182631.15542"><vh>@color doc_part_color = firebrick3</vh></v>
-<v t="ekr.20111004182631.15546"><vh>@color leo_keyword_color = #00aa00</vh></v>
-<v t="ekr.20111004182631.15548"><vh>@color section_name_color = red</vh></v>
-<v t="ekr.20111004182631.15549"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
-<v t="ekr.20111004182631.15550"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
-<v t="ekr.20111004182631.15552"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20111024091133.16671"><vh>@color url_color = purple</vh></v>
+<v t="ekr.20111004182631.15542"><vh>@color doc-part-color = firebrick3</vh></v>
+<v t="ekr.20111004182631.15546"><vh>@color leo-keyword-color = #00aa00</vh></v>
+<v t="ekr.20111004182631.15548"><vh>@color section-name-color = red</vh></v>
+<v t="ekr.20111004182631.15549"><vh>@color show-invisibles-space-color = #E5E5E5</vh></v>
+<v t="ekr.20111004182631.15550"><vh>@color show-invisibles-tab-color = #CCCCCC</vh></v>
+<v t="ekr.20111004182631.15552"><vh>@color undefined-section-name-color = red</vh></v>
+<v t="ekr.20111024091133.16671"><vh>@color url-color = purple</vh></v>
 </v>
 <v t="ekr.20111024091133.16651"><vh>Colors for standard jEdit tags</vh>
-<v t="ekr.20060504140351"><vh>@color comment1_color = firebrick3</vh></v>
-<v t="ekr.20060504140408"><vh>@color comment2_color = firebrick3</vh></v>
-<v t="ekr.20060504140408.1"><vh>@color comment3_color = plum3</vh></v>
-<v t="ekr.20060504140408.2"><vh>@color comment4_color = orchid1</vh></v>
-<v t="ekr.20060504131831.1"><vh>@color keyword1_color = blue</vh></v>
-<v t="ekr.20060827102902"><vh>@color keyword2_color = blue</vh></v>
-<v t="ekr.20060827102902.1"><vh>@color keyword3_color = blue</vh></v>
-<v t="ekr.20060827102902.2"><vh>@color keyword4_color = blue</vh></v>
-<v t="ekr.20060704090341"><vh>@color label_color = red</vh></v>
-<v t="ekr.20060504131831.2"><vh>@color literal1_color = #00aa00</vh></v>
-<v t="ekr.20060504134056"><vh>@color literal2_color = #00aa00</vh></v>
-<v t="ekr.20060504134056.1"><vh>@color literal3_color = #00aa00</vh></v>
-<v t="ekr.20060504134056.2"><vh>@color literal4_color = #00aa00</vh></v>
-<v t="ekr.20060826152759"><vh>@color markup_color = blue</vh></v>
-<v t="ekr.20060713101831"><vh>@color operator_color = None</vh></v>
+<v t="ekr.20060504140351"><vh>@color comment1-color = firebrick3</vh></v>
+<v t="ekr.20060504140408"><vh>@color comment2-color = firebrick3</vh></v>
+<v t="ekr.20060504140408.1"><vh>@color comment3-color = plum3</vh></v>
+<v t="ekr.20060504140408.2"><vh>@color comment4-color = orchid1</vh></v>
+<v t="ekr.20060504131831.1"><vh>@color keyword1-color = blue</vh></v>
+<v t="ekr.20060827102902"><vh>@color keyword2-color = blue</vh></v>
+<v t="ekr.20060827102902.1"><vh>@color keyword3-color = blue</vh></v>
+<v t="ekr.20060827102902.2"><vh>@color keyword4-color = blue</vh></v>
+<v t="ekr.20060704090341"><vh>@color label-color = red</vh></v>
+<v t="ekr.20060504131831.2"><vh>@color literal1-color = #00aa00</vh></v>
+<v t="ekr.20060504134056"><vh>@color literal2-color = #00aa00</vh></v>
+<v t="ekr.20060504134056.1"><vh>@color literal3-color = #00aa00</vh></v>
+<v t="ekr.20060504134056.2"><vh>@color literal4-color = #00aa00</vh></v>
+<v t="ekr.20060826152759"><vh>@color markup-color = blue</vh></v>
+<v t="ekr.20060713101831"><vh>@color operator-color = None</vh></v>
 </v>
 </v>
 <v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
 <v t="ekr.20170819113555.1"><vh>patch</vh>
-<v t="ekr.20170819113555.2"><vh>@color patch_keyword1_color = green</vh></v>
-<v t="ekr.20170819113555.3"><vh>@color patch_keyword2_color = red</vh></v>
-<v t="ekr.20170819170521.1"><vh>@color patch_keyword3_color = blue</vh></v>
-<v t="ekr.20170819113555.4"><vh>@color patch_literal1_color = blue</vh></v>
-<v t="ekr.20170819113555.5"><vh>@color patch_literal2_color = blue</vh></v>
+<v t="ekr.20170819113555.2"><vh>@color patch-keyword1-color = green</vh></v>
+<v t="ekr.20170819113555.3"><vh>@color patch-keyword2-color = red</vh></v>
+<v t="ekr.20170819170521.1"><vh>@color patch-keyword3-color = blue</vh></v>
+<v t="ekr.20170819113555.4"><vh>@color patch-literal1-color = blue</vh></v>
+<v t="ekr.20170819113555.5"><vh>@color patch-literal2-color = blue</vh></v>
 </v>
 <v t="ekr.20060828110551.2"><vh>php</vh>
-<v t="ekr.20060828110551.3"><vh>@color php_operator_color = DodgerBlue1</vh></v>
+<v t="ekr.20060828110551.3"><vh>@color php-operator-color = DodgerBlue1</vh></v>
 <v t="ekr.20060828145228.1"><vh>@font php keyword fonts</vh></v>
 </v>
 <v t="ekr.20080703111151.18"><vh>Forth fonts, colors &amp; settings</vh>
-<v t="ekr.20080703111151.21"><vh>@color forth_keyword3_color = black</vh></v>
-<v t="ekr.20080703111151.22"><vh>@color forth_keyword4_color = black</vh></v>
-<v t="ekr.20080703111151.23"><vh>@color forth_keyword5_color = black</vh></v>
+<v t="ekr.20080703111151.21"><vh>@color forth-keyword3-color = black</vh></v>
+<v t="ekr.20080703111151.22"><vh>@color forth-keyword4-color = black</vh></v>
+<v t="ekr.20080703111151.23"><vh>@color forth-keyword5-color = black</vh></v>
 <v t="ekr.20080705064822.2"><vh>@data forth-bold-italic-words</vh></v>
 <v t="ekr.20080705064822.3"><vh>@data forth-bold-words</vh></v>
 <v t="ekr.20080705064822.1"><vh>@data forth-defwords</vh></v>
@@ -2181,72 +2182,72 @@
 </v>
 </v>
 <v t="ekr.20111004182631.15533"><vh>Options</vh>
-<v t="ekr.20111004182631.15534"><vh>@bool color_cweb_comments_with_latex = True</vh></v>
-<v t="ekr.20111004182631.15535"><vh>@bool color_cweb_doc_parts_with_latex = True</vh></v>
-<v t="ekr.20111004182631.15536"><vh>@bool color_directives_in_plain_text = True</vh></v>
-<v t="tbrown.20170710093248.1"><vh>@bool color_trailing_whitespace = True</vh></v>
+<v t="ekr.20111004182631.15534"><vh>@bool color-cweb-comments-with-latex = True</vh></v>
+<v t="ekr.20111004182631.15535"><vh>@bool color-cweb-doc-parts-with-latex = True</vh></v>
+<v t="ekr.20111004182631.15536"><vh>@bool color-directives-in-plain-text = True</vh></v>
+<v t="tbrown.20170710093248.1"><vh>@bool color-trailing-whitespace = True</vh></v>
 <v t="ekr.20100102121150.6344"><vh>@bool show-invisibles-by-default = False</vh></v>
-<v t="ekr.20111004182631.15537"><vh>@bool underline_undefined_section_names = True</vh></v>
-<v t="ekr.20111004182631.15538"><vh>@bool use_hyperlinks = False</vh></v>
-<v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
-<v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 0</vh></v>
+<v t="ekr.20111004182631.15537"><vh>@bool underline-undefined-section-names = True</vh></v>
+<v t="ekr.20111004182631.15538"><vh>@bool use-hyperlinks = False</vh></v>
+<v t="ekr.20060201111002"><vh>@bool use-syntax-coloring = True</vh></v>
+<v t="ekr.20090724102842.2492"><vh>@int qt-max-colorized-chars = 0</vh></v>
 </v>
 </v>
 <v t="ekr.20110611092035.16463"><vh>Tree operation</vh>
-<v t="nh910.20110621123823.3423"><vh>@bool collapse_nodes_after_move = True</vh></v>
-<v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
-<v t="ekr.20080315083057.7"><vh>@bool collapse_nodes_while_spelling = True</vh></v>
-<v t="ekr.20111109104336.12503"><vh>@bool collapse_on_lt_arrow = True</vh></v>
+<v t="nh910.20110621123823.3423"><vh>@bool collapse-nodes-after-move = True</vh></v>
+<v t="ekr.20060930085532"><vh>@bool collapse-nodes-during-finds = True</vh></v>
+<v t="ekr.20080315083057.7"><vh>@bool collapse-nodes-while-spelling = True</vh></v>
+<v t="ekr.20111109104336.12503"><vh>@bool collapse-on-lt-arrow = True</vh></v>
 <v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
 <v t="tbnorth.20160414102131.1"><vh>@bool drag-alt-drag-expands = True</vh></v>
-<v t="ekr.20041119050749.4"><vh>@bool enable_drag_messages = False</vh></v>
-<v t="ekr.20131008181812.17533"><vh>@bool enable_tree_dragging = True</vh></v>
-<v t="ekr.20061012122620"><vh>@bool insert_new_nodes_at_end = False</vh></v>
-<v t="tbrown.20110212091818.20118"><vh>@bool inter_outline_drag_moves = False</vh></v>
+<v t="ekr.20041119050749.4"><vh>@bool enable-drag-messages = False</vh></v>
+<v t="ekr.20131008181812.17533"><vh>@bool enable-tree-dragging = True</vh></v>
+<v t="ekr.20061012122620"><vh>@bool insert-new-nodes-at-end = False</vh></v>
+<v t="tbrown.20110212091818.20118"><vh>@bool inter-outline-drag-moves = False</vh></v>
 <v t="ekr.20100107060708.6390"><vh>@bool qt-tree-multiple-selection = True</vh></v>
-<v t="ekr.20110601103939.19339"><vh>@bool single_click_auto_edits_headline = False</vh></v>
-<v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = False</vh></v>
+<v t="ekr.20110601103939.19339"><vh>@bool single-click-auto-edits-headline = False</vh></v>
+<v t="ekr.20061007211759"><vh>@bool sparse-move-outline-left = False</vh></v>
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
-<v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
+<v t="ekr.20061002115414.1"><vh>@float outline-nav-extend-delay = 2.0</vh></v>
 <v t="chris.20180324074923.1"><vh>@int icon-height = 16</vh></v>
 </v>
 <v t="ekr.20041119034357.15"><vh>Unicode options</vh>
-<v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
-<v t="ekr.20041119042929.9"><vh>@string default_derived_file_encoding = utf-8</vh></v>
-<v t="ekr.20041119042929.10"><vh>@string new_leo_file_encoding = utf-8</vh></v>
+<v t="ekr.20080212084020"><vh>@string default-at-auto-file-encoding = utf-8</vh></v>
+<v t="ekr.20041119042929.9"><vh>@string default-derived-file-encoding = utf-8</vh></v>
+<v t="ekr.20041119042929.10"><vh>@string new-leo-file-encoding = utf-8</vh></v>
 <v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
 </v>
 <v t="ekr.20050203090810"><vh>Unit test option</vh>
-<v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
+<v t="ekr.20050203085250"><vh>@int global-setting-for-unit-tests = 132</vh></v>
 </v>
 <v t="ekr.20110611092035.16471"><vh>Widget colors</vh>
-<v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
-<v t="ekr.20130705090546.10663"><vh>@int colorer_delay = 200</vh></v>
-<v t="ekr.20130705090546.10662"><vh>@int colorer_max_lines = 100</vh></v>
-<v t="ekr.20080326060254.3"><vh>@string target_language = plain</vh></v>
+<v t="ekr.20041119034357.67"><vh>@color split-bar-color = LightSteelBlue2</vh></v>
+<v t="ekr.20130705090546.10663"><vh>@int colorer-delay = 200</vh></v>
+<v t="ekr.20130705090546.10662"><vh>@int colorer-max-lines = 100</vh></v>
+<v t="ekr.20080326060254.3"><vh>@string target-language = plain</vh></v>
 <v t="ekr.20041213105007.2"><vh>Body pane colors (deprecated)</vh>
-<v t="ekr.20041119034357.41"><vh>@color body_cursor_background_color = None</vh></v>
-<v t="ekr.20041119034357.40"><vh>@color body_cursor_foreground_color = None</vh></v>
-<v t="ekr.20041119034357.50"><vh>@color body_insertion_cursor_color = None</vh></v>
-<v t="ekr.20041119034357.49"><vh>@color body_text_background_color = None</vh></v>
-<v t="ekr.20041119034357.48"><vh>@color body_text_foreground_color = None</vh></v>
-<v t="ekr.20060605081712"><vh>@color command_mode_bg_color = #f2fdff</vh></v>
-<v t="ekr.20060822101942.1"><vh>@color command_mode_fg_color = None</vh></v>
-<v t="ekr.20080514082950.2"><vh>@color insert_mode_bg_color = #fdf5f5</vh></v>
-<v t="ekr.20060605081712.3"><vh>@color insert_mode_fg_color = black</vh></v>
-<v t="ekr.20060606085536"><vh>@color overwrite_mode_bg_color = azure2</vh></v>
-<v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = black</vh></v>
-<v t="ekr.20080511041907.1"><vh>@color unselected_body_bg_color = #ffffef</vh></v>
-<v t="ekr.20080511041907.2"><vh>@color unselected_body_fg_color = black</vh></v>
+<v t="ekr.20041119034357.41"><vh>@color body-cursor-background-color = None</vh></v>
+<v t="ekr.20041119034357.40"><vh>@color body-cursor-foreground-color = None</vh></v>
+<v t="ekr.20041119034357.50"><vh>@color body-insertion-cursor-color = None</vh></v>
+<v t="ekr.20041119034357.49"><vh>@color body-text-background-color = None</vh></v>
+<v t="ekr.20041119034357.48"><vh>@color body-text-foreground-color = None</vh></v>
+<v t="ekr.20060605081712"><vh>@color command-mode-bg-color = #f2fdff</vh></v>
+<v t="ekr.20060822101942.1"><vh>@color command-mode-fg-color = None</vh></v>
+<v t="ekr.20080514082950.2"><vh>@color insert-mode-bg-color = #fdf5f5</vh></v>
+<v t="ekr.20060605081712.3"><vh>@color insert-mode-fg-color = black</vh></v>
+<v t="ekr.20060606085536"><vh>@color overwrite-mode-bg-color = azure2</vh></v>
+<v t="ekr.20060606085536.1"><vh>@color overwrite-mode-fg-color = black</vh></v>
+<v t="ekr.20080511041907.1"><vh>@color unselected-body-bg-color = #ffffef</vh></v>
+<v t="ekr.20080511041907.2"><vh>@color unselected-body-fg-color = black</vh></v>
 </v>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
-<v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
-<v t="ekr.20120928142052.11488"><vh>@color log_warning_color = blue</vh></v>
-<v t="ekr.20041119052015.2"><vh>@color log_text_foreground_color = None</vh></v>
-<v t="ekr.20041119053445"><vh>@color log_text_background_color = None</vh></v>
-<v t="ekr.20041217184352.2"><vh>@color log_pane_background_color = #f2fdff</vh></v>
-<v t="ekr.20051020125928"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
-<v t="ekr.20051025070845"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
+<v t="ekr.20041119052015"><vh>@color log-error-color = red</vh></v>
+<v t="ekr.20120928142052.11488"><vh>@color log-warning-color = blue</vh></v>
+<v t="ekr.20041119052015.2"><vh>@color log-text-foreground-color = None</vh></v>
+<v t="ekr.20041119053445"><vh>@color log-text-background-color = None</vh></v>
+<v t="ekr.20041217184352.2"><vh>@color log-pane-background-color = #f2fdff</vh></v>
+<v t="ekr.20051020125928"><vh>@color log-pane-Find-tab-background-color = #d6c7d3</vh></v>
+<v t="ekr.20051025070845"><vh>@color log-pane-Spell-tab-background-color = MistyRose1</vh></v>
 </v>
 <v t="ekr.20100313080341.8368"><vh>Minibuffer background colors</vh>
 <v t="ekr.20100313080341.8369"><vh>@color minibuffer-background-color = lightblue</vh></v>
@@ -2262,50 +2263,228 @@
 <v t="ekr.20041213105954"><vh>Windows</vh>
 <v t="ekr.20080412115752.1"><vh>@data fixedWindowPosition</vh></v>
 <v t="ekr.20041119034357.38"><vh>Body pane options</vh>
-<v t="jlunz.20151119171553.1"><vh>@bool cursor_stay_on_paste = True</vh></v>
-<v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
-<v t="ekr.20060531094310"><vh>@bool autoindent_in_nocolor_mode = True</vh></v>
-<v t="ekr.20041119034357.43"><vh>@bool body_gmt_time = False</vh></v>
-<v t="jlunz.20151120072157.1"><vh>@bool body_pane_wraps = True</vh></v>
-<v t="ekr.20060216135834"><vh>@bool enable_autocompleter_initially = False</vh></v>
-<v t="ekr.20060603070801"><vh>@bool enable_calltips_initially = False</vh></v>
-<v t="ekr.20041119034357.44"><vh>@bool smart_auto_indent = False</vh></v>
-<v t="ekr.20090213065933.11"><vh>@bool smart_tab = True</vh></v>
+<v t="jlunz.20151119171553.1"><vh>@bool cursor-stay-on-paste = True</vh></v>
+<v t="ekr.20061010111324"><vh>@bool select-all-text-when-editing-headlines = False</vh></v>
+<v t="ekr.20060531094310"><vh>@bool autoindent-in-nocolor-mode = True</vh></v>
+<v t="ekr.20041119034357.43"><vh>@bool body-gmt-time = False</vh></v>
+<v t="jlunz.20151120072157.1"><vh>@bool body-pane-wraps = True</vh></v>
+<v t="ekr.20060216135834"><vh>@bool enable-autocompleter-initially = False</vh></v>
+<v t="ekr.20060603070801"><vh>@bool enable-calltips-initially = False</vh></v>
+<v t="ekr.20041119034357.44"><vh>@bool smart-auto-indent = False</vh></v>
+<v t="ekr.20090213065933.11"><vh>@bool smart-tab = True</vh></v>
 <v t="ekr.20041119034357.53"><vh>@@@int additional_body_text_border = 0</vh></v>
-<v t="ekr.20041119034357.42"><vh>@string body_time_format_string = %m/%d/%Y %H:%M:%S</vh></v>
-<v t="ekr.20060620085654"><vh>@string editor_orientation = horizontal</vh></v>
+<v t="ekr.20041119034357.42"><vh>@string body-time-format-string = %m/%d/%Y %H:%M:%S</vh></v>
+<v t="ekr.20060620085654"><vh>@string editor-orientation = horizontal</vh></v>
 </v>
 <v t="ekr.20080930072519.3"><vh>Icon bar options</vh>
-<v t="ekr.20160918113150.1"><vh>@bool show_iconbar = True</vh></v>
-<v t="ekr.20080930072519.4"><vh>@int icon_bar_widgets_per_row = 20</vh></v>
+<v t="ekr.20160918113150.1"><vh>@bool show-iconbar = True</vh></v>
+<v t="ekr.20080930072519.4"><vh>@int icon-bar-widgets-per-row = 20</vh></v>
 </v>
 <v t="ekr.20041213105954.1"><vh>Log pane options</vh>
-<v t="ekr.20041119052015.1"><vh>@bool log_pane_wraps = False</vh></v>
+<v t="ekr.20041119052015.1"><vh>@bool log-pane-wraps = False</vh></v>
 </v>
 <v t="ekr.20041119034357.56"><vh>Options for new windows</vh>
-<v t="ekr.20071024145953"><vh>@bool big_outline_pane = False</vh></v>
-<v t="ekr.20060930085332"><vh>@bool outline_pane_has_initial_focus = False</vh></v>
-<v t="ekr.20041119034357.57"><vh>@ratio initial_horizontal_ratio = 0.4</vh></v>
-<v t="ekr.20041119034357.58"><vh>@ratio initial_horizontal_secondary_ratio = 0.8</vh></v>
-<v t="ekr.20041119034357.60"><vh>@ratio initial_vertical_ratio = 0.5</vh></v>
-<v t="ekr.20041119034357.61"><vh>@ratio initial_vertical_secondary_ratio = 0.65</vh></v>
-<v t="ekr.20041119034357.62"><vh>@int initial_window_height = 600</vh></v>
-<v t="ekr.20041119034357.63"><vh>@int initial_window_left =  20</vh></v>
-<v t="ekr.20041119034357.64"><vh>@int initial_window_top = 20</vh></v>
-<v t="ekr.20041119034357.65"><vh>@int initial_window_width = 800</vh></v>
+<v t="ekr.20071024145953"><vh>@bool big-outline-pane = False</vh></v>
+<v t="ekr.20060930085332"><vh>@bool outline-pane-has-initial-focus = False</vh></v>
+<v t="ekr.20041119034357.57"><vh>@ratio initial-horizontal-ratio = 0.4</vh></v>
+<v t="ekr.20041119034357.58"><vh>@ratio initial-horizontal-secondary-ratio = 0.8</vh></v>
+<v t="ekr.20041119034357.60"><vh>@ratio initial-vertical-ratio = 0.5</vh></v>
+<v t="ekr.20041119034357.61"><vh>@ratio initial-vertical-secondary-ratio = 0.65</vh></v>
+<v t="ekr.20041119034357.62"><vh>@int initial-window-height = 600</vh></v>
+<v t="ekr.20041119034357.63"><vh>@int initial-window-left =  20</vh></v>
+<v t="ekr.20041119034357.64"><vh>@int initial-window-top = 20</vh></v>
+<v t="ekr.20041119034357.65"><vh>@int initial-window-width = 800</vh></v>
 </v>
 <v t="ekr.20041213105954.2"><vh>Splitter options</vh>
-<v t="ekr.20041119034357.69"><vh>@int split_bar_width = 6</vh></v>
-<v t="edward.20081129091117.12"><vh>@string initial_split_orientation = vertical</vh></v>
-<v t="ekr.20041119034357.68"><vh>@string split_bar_relief = groove</vh></v>
-<v t="tbrown.20130916082438.55678"><vh>@string status_line_split_sizes = 1 2</vh></v>
+<v t="ekr.20041119034357.69"><vh>@int split-bar-width = 6</vh></v>
+<v t="edward.20081129091117.12"><vh>@string initial-split-orientation = vertical</vh></v>
+<v t="ekr.20041119034357.68"><vh>@string split-bar-relief = groove</vh></v>
+<v t="tbrown.20130916082438.55678"><vh>@string status-line-split-sizes = 1 2</vh></v>
 </v>
-<v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
+<v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
 <v t="ekr.20180411070112.1"></v>
 <v t="ekr.20120205022040.15411"></v>
 <v t="ekr.20150216135059.1"></v>
+<v t="ekr.20181017165331.1"><vh>git diff HEAD </vh>
+<v t="ekr.20181017165331.2"><vh>leo/plugins/active_path.py</vh>
+<v t="ekr.20181017165331.9"><vh>Changed</vh>
+<v t="ekr.20181017165331.10"><vh>attachToCommander</vh>
+<v t="ekr.20181017165331.11"><vh>Old:attachToCommander</vh></v>
+<v t="ekr.20181017165331.12"><vh>New:attachToCommander</vh></v>
+</v>
+<v t="ekr.20181017165331.13"><vh>createFile</vh>
+<v t="ekr.20181017165331.14"><vh>Old:createFile</vh></v>
+<v t="ekr.20181017165331.15"><vh>New:createFile</vh></v>
+</v>
+<v t="ekr.20181017165331.16"><vh>openFile</vh>
+<v t="ekr.20181017165331.17"><vh>Old:openFile</vh></v>
+<v t="ekr.20181017165331.18"><vh>New:openFile</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165331.19"><vh>leo/plugins/attrib_edit.py</vh>
+<v t="ekr.20181017165331.26"><vh>Changed</vh>
+<v t="ekr.20181017165331.27"><vh>__init__ &amp; reloadSettings (attrib_edit_Controller)</vh>
+<v t="ekr.20181017165331.28"><vh>Old:__init__ &amp; reloadSettings (attrib_edit_Controller)</vh></v>
+<v t="ekr.20181017165331.29"><vh>New:__init__ &amp; reloadSettings (attrib_edit_Controller)</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165331.30"><vh>leo/plugins/backlink.py</vh>
+<v t="ekr.20181017165331.37"><vh>Changed</vh>
+<v t="ekr.20181017165331.38"><vh>__init__ &amp; reloadSettings (backlinkController)</vh>
+<v t="ekr.20181017165331.39"><vh>Old:__init__ &amp; reloadSettings (backlinkController)</vh></v>
+<v t="ekr.20181017165331.40"><vh>New:__init__ &amp; reloadSettings (backlinkController)</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165331.41"><vh>leo/plugins/bigdash.py</vh>
+<v t="ekr.20181017165331.48"><vh>Changed</vh>
+<v t="ekr.20181017165331.49"><vh>global-search command (bigdash.py)</vh>
+<v t="ekr.20181017165331.50"><vh>Old:global-search command (bigdash.py)</vh></v>
+<v t="ekr.20181017165331.51"><vh>New:global-search command (bigdash.py)</vh></v>
+</v>
+<v t="ekr.20181017165331.52"><vh>__init__(GlobalSearch)</vh>
+<v t="ekr.20181017165331.53"><vh>Old:__init__(GlobalSearch)</vh></v>
+<v t="ekr.20181017165331.54"><vh>New:__init__(GlobalSearch)</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165331.55"><vh>leo/plugins/importers/python.py</vh>
+<v t="ekr.20181017165331.62"><vh>Changed</vh>
+<v t="ekr.20181017165331.63"><vh>class Py_Importer(Importer)</vh>
+<v t="ekr.20181017165331.64"><vh>Old:class Py_Importer(Importer)</vh></v>
+<v t="ekr.20181017165331.65"><vh>New:class Py_Importer(Importer)</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165331.66"><vh>leo/plugins/leoOPML.py</vh>
+<v t="ekr.20181017165331.73"><vh>Changed</vh>
+<v t="ekr.20181017165331.74"><vh>oc.__init__&amp; reloadSettings</vh>
+<v t="ekr.20181017165331.75"><vh>Old:oc.__init__&amp; reloadSettings</vh></v>
+<v t="ekr.20181017165331.76"><vh>New:oc.__init__&amp; reloadSettings</vh></v>
+</v>
+<v t="ekr.20181017165331.77"><vh>putOPMLProlog</vh>
+<v t="ekr.20181017165331.78"><vh>Old:putOPMLProlog</vh></v>
+<v t="ekr.20181017165331.79"><vh>New:putOPMLProlog</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165331.80"><vh>leo/plugins/leo_to_html.py</vh>
+<v t="ekr.20181017165332.5"><vh>Changed</vh>
+<v t="ekr.20181017165332.6"><vh>createExportMenus</vh>
+<v t="ekr.20181017165332.7"><vh>Old:createExportMenus</vh></v>
+<v t="ekr.20181017165332.8"><vh>New:createExportMenus</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165332.9"><vh>leo/plugins/leoscreen.py</vh>
+<v t="ekr.20181017165332.16"><vh>Changed</vh>
+<v t="ekr.20181017165332.17"><vh>__init__&amp; reloadSettings (leoscreen_Controller)</vh>
+<v t="ekr.20181017165332.18"><vh>Old:__init__&amp; reloadSettings (leoscreen_Controller)</vh></v>
+<v t="ekr.20181017165332.19"><vh>New:__init__&amp; reloadSettings (leoscreen_Controller)</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165332.20"><vh>leo/plugins/mime.py</vh>
+<v t="ekr.20181017165332.27"><vh>Changed</vh>
+<v t="ekr.20181017165332.28"><vh>open_mimetype</vh>
+<v t="ekr.20181017165332.29"><vh>Old:open_mimetype</vh></v>
+<v t="ekr.20181017165332.30"><vh>New:open_mimetype</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165332.31"><vh>leo/plugins/mod_autosave.py</vh>
+<v t="ekr.20181017165332.38"><vh>Changed</vh>
+<v t="ekr.20181017165332.39"><vh>onCreate (mod_autosave.py)</vh>
+<v t="ekr.20181017165332.40"><vh>Old:onCreate (mod_autosave.py)</vh></v>
+<v t="ekr.20181017165332.41"><vh>New:onCreate (mod_autosave.py)</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165332.42"><vh>leo/plugins/mod_http.py</vh>
+<v t="ekr.20181017165332.49"><vh>Changed</vh>
+<v t="ekr.20181017165332.50"><vh>__init__(LeoActions)</vh>
+<v t="ekr.20181017165332.51"><vh>Old:__init__(LeoActions)</vh></v>
+<v t="ekr.20181017165332.52"><vh>New:__init__(LeoActions)</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165332.53"><vh>leo/plugins/mod_scripting.py</vh>
+<v t="ekr.20181017165332.60"><vh>Changed</vh>
+<v t="ekr.20181017165332.61"><vh> sc.ctor</vh>
+<v t="ekr.20181017165332.62"><vh>Old: sc.ctor</vh></v>
+<v t="ekr.20181017165332.63"><vh>New: sc.ctor</vh></v>
+</v>
+<v t="ekr.20181017165332.64"><vh>eval.redirect &amp; unredirect</vh>
+<v t="ekr.20181017165332.65"><vh>Old:eval.redirect &amp; unredirect</vh></v>
+<v t="ekr.20181017165332.66"><vh>New:eval.redirect &amp; unredirect</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165332.67"><vh>leo/plugins/nodeActions.py</vh>
+<v t="ekr.20181017165332.74"><vh>Changed</vh>
+<v t="ekr.20181017165332.75"><vh>doNodeAction</vh>
+<v t="ekr.20181017165332.76"><vh>Old:doNodeAction</vh></v>
+<v t="ekr.20181017165332.77"><vh>New:doNodeAction</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165332.78"><vh>leo/plugins/quickMove.py</vh>
+<v t="ekr.20181017165332.85"><vh>Changed</vh>
+<v t="ekr.20181017165332.86"><vh>addButton (quickMove.py)</vh>
+<v t="ekr.20181017165332.87"><vh>Old:addButton (quickMove.py)</vh></v>
+<v t="ekr.20181017165332.88"><vh>New:addButton (quickMove.py)</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165332.89"><vh>leo/plugins/todo.py</vh>
+<v t="ekr.20181017165332.96"><vh>Changed</vh>
+<v t="ekr.20181017165332.97"><vh>ctor</vh>
+<v t="ekr.20181017165332.98"><vh>Old:ctor</vh></v>
+<v t="ekr.20181017165332.99"><vh>New:ctor</vh></v>
+</v>
+<v t="ekr.20181017165332.100"><vh>reloadSettings (todoController)</vh>
+<v t="ekr.20181017165332.101"><vh>Old:reloadSettings (todoController)</vh></v>
+<v t="ekr.20181017165332.102"><vh>New:reloadSettings (todoController)</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165332.103"><vh>leo/plugins/viewrendered.py</vh>
+<v t="ekr.20181017165332.110"><vh>Changed</vh>
+<v t="ekr.20181017165332.111"><vh>vr.update_html</vh>
+<v t="ekr.20181017165332.112"><vh>Old:vr.update_html</vh></v>
+<v t="ekr.20181017165332.113"><vh>New:vr.update_html</vh></v>
+</v>
+<v t="ekr.20181017165332.114"><vh>vr.update_jupyter &amp; helper</vh>
+<v t="ekr.20181017165332.115"><vh>Old:vr.update_jupyter &amp; helper</vh></v>
+<v t="ekr.20181017165332.116"><vh>New:vr.update_jupyter &amp; helper</vh></v>
+</v>
+<v t="ekr.20181017165332.117"><vh>vr.update_latex &amp; helper</vh>
+<v t="ekr.20181017165332.118"><vh>Old:vr.update_latex &amp; helper</vh></v>
+<v t="ekr.20181017165332.119"><vh>New:vr.update_latex &amp; helper</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165332.120"><vh>leo/plugins/vim.py</vh>
+<v t="ekr.20181017165332.127"><vh>Changed</vh>
+<v t="ekr.20181017165332.128"><vh> vim.ctor</vh>
+<v t="ekr.20181017165332.129"><vh>Old: vim.ctor</vh></v>
+<v t="ekr.20181017165332.130"><vh>New: vim.ctor</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20181017165332.131"><vh>leo/plugins/xemacs.py</vh>
+<v t="ekr.20181017165332.138"><vh>Changed</vh>
+<v t="ekr.20181017165332.139"><vh>xemacs.open_in_emacs_helper</vh>
+<v t="ekr.20181017165332.140"><vh>Old:xemacs.open_in_emacs_helper</vh></v>
+<v t="ekr.20181017165332.141"><vh>New:xemacs.open_in_emacs_helper</vh></v>
+</v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11791,6 +11970,2788 @@ True:  Replace the Meta key with the Alt Key.
 <t tx="ekr.20180511075115.1"></t>
 <t tx="ekr.20180525053145.1">True: use jedi for autocompletion if available.
 See https://jedi.readthedocs.io/en/latest/index.html
+</t>
+<t tx="ekr.20181017163559.1"># Replace underscore by - in settings names.
+# g.cls()
+print('=====')
+kinds = (
+    '@bool ', '@color ', '@directory ', '@encoding ',
+    '@float ', '@int ', '@path ', '@ratio ',
+    '@string ',
+)
+changed = False
+for p in c.all_positions():
+    if p.h.startswith(kinds) and '_' in p.h:
+        changed = True
+        i = p.h.find('=')
+        if i &gt; -1:
+            s = p.h[:i].replace('_','-') + p.h[i:]
+        else:
+            s = p.h.replace('_','-')
+        if s != p.h:
+            changed = True
+            p.h = s
+            print(p.h)
+if changed:
+    c.setChanged()
+    c.redraw()     
+</t>
+<t tx="ekr.20181017165331.1">@nosearch
+HEAD=822d4f5a9</t>
+<t tx="ekr.20181017165331.10">@language patch
+--- HEAD
++++ uncommitted
+@@ -1,7 +1,7 @@
+ # defer binding event until c exists
+ def attachToCommander(t,k):
+     c = k.get('c')
+-    event = c.config.getString('active_path_event') or "headdclick1"
++    event = c.config.getString('active-path-event') or "headdclick1"
+     # pylint: disable=unnecessary-lambda
+     g.registerHandler(event, lambda t,k: onSelect(t,k))
+ 
+@@ -17,18 +17,18 @@
+         c.__active_path['autoload'] = [re.compile(i, re.IGNORECASE)
+             for i in c.config.getData('active_path_autoload')]
+ 
+-    if c.config.getBool('active_path_load_docstring'):
++    if c.config.getBool('active-path-load-docstring'):
+         c.__active_path['load_docstring'] = True
+     else:
+         c.__active_path['load_docstring'] = False
+ 
+-    if c.config.getFloat('active_path_timeout_seconds'):
+-        c.__active_path['timeout'] = c.config.getFloat('active_path_timeout_seconds')
++    if c.config.getFloat('active-path-timeout-seconds'):
++        c.__active_path['timeout'] = c.config.getFloat('active-path-timeout-seconds')
+     else:
+         c.__active_path['timeout'] = 10.
+ 
+-    if c.config.getInt('active_path_max_size'):
+-        c.__active_path['max_size'] = c.config.getInt('active_path_max_size')
++    if c.config.getInt('active-path-max-size'):
++        c.__active_path['max_size'] = c.config.getInt('active-path-max-size')
+     else:
+         c.__active_path['max_size'] = 1000000
+ 
+@language python
+</t>
+<t tx="ekr.20181017165331.11"># defer binding event until c exists
+def attachToCommander(t,k):
+    c = k.get('c')
+    event = c.config.getString('active_path_event') or "headdclick1"
+    # pylint: disable=unnecessary-lambda
+    g.registerHandler(event, lambda t,k: onSelect(t,k))
+
+    # not using a proper class, so
+    c.__active_path = {'ignore': [], 'autoload': [],
+        'do_autoload': c.config.getBool('active_path_do_autoload', default=True)}
+
+    if c.config.getData('active_path_ignore'):
+        c.__active_path['ignore'] = [re.compile(i, re.IGNORECASE)
+            for i in c.config.getData('active_path_ignore')]
+
+    if c.config.getData('active_path_autoload'):
+        c.__active_path['autoload'] = [re.compile(i, re.IGNORECASE)
+            for i in c.config.getData('active_path_autoload')]
+
+    if c.config.getBool('active_path_load_docstring'):
+        c.__active_path['load_docstring'] = True
+    else:
+        c.__active_path['load_docstring'] = False
+
+    if c.config.getFloat('active_path_timeout_seconds'):
+        c.__active_path['timeout'] = c.config.getFloat('active_path_timeout_seconds')
+    else:
+        c.__active_path['timeout'] = 10.
+
+    if c.config.getInt('active_path_max_size'):
+        c.__active_path['max_size'] = c.config.getInt('active_path_max_size')
+    else:
+        c.__active_path['max_size'] = 1000000
+
+    c.__active_path['DS_SENTINEL'] = "@language rest # AUTOLOADED DOCSTRING"
+</t>
+<t tx="ekr.20181017165331.12"># defer binding event until c exists
+def attachToCommander(t,k):
+    c = k.get('c')
+    event = c.config.getString('active-path-event') or "headdclick1"
+    # pylint: disable=unnecessary-lambda
+    g.registerHandler(event, lambda t,k: onSelect(t,k))
+
+    # not using a proper class, so
+    c.__active_path = {'ignore': [], 'autoload': [],
+        'do_autoload': c.config.getBool('active_path_do_autoload', default=True)}
+
+    if c.config.getData('active_path_ignore'):
+        c.__active_path['ignore'] = [re.compile(i, re.IGNORECASE)
+            for i in c.config.getData('active_path_ignore')]
+
+    if c.config.getData('active_path_autoload'):
+        c.__active_path['autoload'] = [re.compile(i, re.IGNORECASE)
+            for i in c.config.getData('active_path_autoload')]
+
+    if c.config.getBool('active-path-load-docstring'):
+        c.__active_path['load_docstring'] = True
+    else:
+        c.__active_path['load_docstring'] = False
+
+    if c.config.getFloat('active-path-timeout-seconds'):
+        c.__active_path['timeout'] = c.config.getFloat('active-path-timeout-seconds')
+    else:
+        c.__active_path['timeout'] = 10.
+
+    if c.config.getInt('active-path-max-size'):
+        c.__active_path['max_size'] = c.config.getInt('active-path-max-size')
+    else:
+        c.__active_path['max_size'] = 1000000
+
+    c.__active_path['DS_SENTINEL'] = "@language rest # AUTOLOADED DOCSTRING"
+</t>
+<t tx="ekr.20181017165331.13">@language patch
+--- HEAD
++++ uncommitted
+@@ -6,7 +6,7 @@
+         return False
+ 
+     d = os.path.basename(d)
+-    atType = c.config.getString('active_path_attype') or 'auto'
++    atType = c.config.getString('active-path-attype') or 'auto'
+     ok = g.app.gui.runAskYesNoDialog(c, 'Create / load file?',
+         'Create file @'+atType+' '+d+'?')
+     if ok == 'no':
+@language python
+</t>
+<t tx="ekr.20181017165331.14">def createFile(c,parent,d):
+    """Ask if we should create a new file"""
+    directory = os.path.dirname(d)
+    if not os.path.isdir(directory):
+        g.error('Create parent directories first')
+        return False
+
+    d = os.path.basename(d)
+    atType = c.config.getString('active_path_attype') or 'auto'
+    ok = g.app.gui.runAskYesNoDialog(c, 'Create / load file?',
+        'Create file @'+atType+' '+d+'?')
+    if ok == 'no':
+        return False
+    c.setHeadString(parent, '@'+atType+' '+d)
+    c.bodyWantsFocus()
+    return True
+</t>
+<t tx="ekr.20181017165331.15">def createFile(c,parent,d):
+    """Ask if we should create a new file"""
+    directory = os.path.dirname(d)
+    if not os.path.isdir(directory):
+        g.error('Create parent directories first')
+        return False
+
+    d = os.path.basename(d)
+    atType = c.config.getString('active-path-attype') or 'auto'
+    ok = g.app.gui.runAskYesNoDialog(c, 'Create / load file?',
+        'Create file @'+atType+' '+d+'?')
+    if ok == 'no':
+        return False
+    c.setHeadString(parent, '@'+atType+' '+d)
+    c.bodyWantsFocus()
+    return True
+</t>
+<t tx="ekr.20181017165331.16">@language patch
+--- HEAD
++++ uncommitted
+@@ -34,7 +34,7 @@
+     if autoload and oversize:
+         return
+ 
+-    atType = c.config.getString('active_path_attype') or 'auto'
++    atType = c.config.getString('active-path-attype') or 'auto'
+     parent.h = '@' + atType + ' ' + parent.h
+     c.selectPosition(parent)
+     if atType == 'asis':
+@language python
+</t>
+<t tx="ekr.20181017165331.17">def openFile(c,parent,d, autoload=False):
+    """Open an existing file"""
+
+    path = getPath(c, parent)
+
+    if not os.path.isfile(path):
+        return
+
+    oversize = os.stat(path).st_size &gt; c.__active_path['max_size']
+
+    if not autoload:
+        binary_open = g.os_path_splitext(path)[-1].lower() in (
+            c.config.getData('active_path_bin_open') or '')
+
+        if not binary_open:
+            start = open(path).read(100)
+            for i in start:
+                if ord(i) == 0:
+                    binary_open = True
+                    break
+
+        if binary_open:
+            g.es('Treating file as binary')
+            g.handleUrl('file://' + path,c=c)
+            # if not query(c, "File may be binary, continue?"):
+            #     return
+            return
+
+        if oversize:
+            if not query(c, "File size greater than %d bytes, continue?" %
+              c.__active_path['max_size']):
+                return
+
+    if autoload and oversize:
+        return
+
+    atType = c.config.getString('active_path_attype') or 'auto'
+    parent.h = '@' + atType + ' ' + parent.h
+    c.selectPosition(parent)
+    if atType == 'asis':
+        parent.b = open(d).read()
+    else:
+        c.refreshFromDisk()
+    c.bodyWantsFocus()
+</t>
+<t tx="ekr.20181017165331.18">def openFile(c,parent,d, autoload=False):
+    """Open an existing file"""
+
+    path = getPath(c, parent)
+
+    if not os.path.isfile(path):
+        return
+
+    oversize = os.stat(path).st_size &gt; c.__active_path['max_size']
+
+    if not autoload:
+        binary_open = g.os_path_splitext(path)[-1].lower() in (
+            c.config.getData('active_path_bin_open') or '')
+
+        if not binary_open:
+            start = open(path).read(100)
+            for i in start:
+                if ord(i) == 0:
+                    binary_open = True
+                    break
+
+        if binary_open:
+            g.es('Treating file as binary')
+            g.handleUrl('file://' + path,c=c)
+            # if not query(c, "File may be binary, continue?"):
+            #     return
+            return
+
+        if oversize:
+            if not query(c, "File size greater than %d bytes, continue?" %
+              c.__active_path['max_size']):
+                return
+
+    if autoload and oversize:
+        return
+
+    atType = c.config.getString('active-path-attype') or 'auto'
+    parent.h = '@' + atType + ' ' + parent.h
+    c.selectPosition(parent)
+    if atType == 'asis':
+        parent.b = open(d).read()
+    else:
+        c.refreshFromDisk()
+    c.bodyWantsFocus()
+</t>
+<t tx="ekr.20181017165331.19">@language patch
+--- HEAD
++++ uncommitted
+@@ -541,7 +541,7 @@
+         for i in self.handlers:
+             g.registerHandler(i[0], i[1])
+         # 'body' or 'tab' mode
+-        # self.guiMode = c.config.getString('attrib_edit_placement') or 'tab'
++        # self.guiMode = c.config.getString('attrib-edit-placement') or 'tab'
+         self.guiMode = 'tab'
+         # body mode in not compatible with nested_splitter, causes hard crash
+         if self.guiMode == 'body':
+@language python
+</t>
+<t tx="ekr.20181017165331.2">@language patch
+--- HEAD
++++ uncommitted
+@@ -133,7 +133,7 @@
+ # defer binding event until c exists
+ def attachToCommander(t,k):
+     c = k.get('c')
+-    event = c.config.getString('active_path_event') or "headdclick1"
++    event = c.config.getString('active-path-event') or "headdclick1"
+     # pylint: disable=unnecessary-lambda
+     g.registerHandler(event, lambda t,k: onSelect(t,k))
+ 
+@@ -149,18 +149,18 @@
+         c.__active_path['autoload'] = [re.compile(i, re.IGNORECASE)
+             for i in c.config.getData('active_path_autoload')]
+ 
+-    if c.config.getBool('active_path_load_docstring'):
++    if c.config.getBool('active-path-load-docstring'):
+         c.__active_path['load_docstring'] = True
+     else:
+         c.__active_path['load_docstring'] = False
+ 
+-    if c.config.getFloat('active_path_timeout_seconds'):
+-        c.__active_path['timeout'] = c.config.getFloat('active_path_timeout_seconds')
++    if c.config.getFloat('active-path-timeout-seconds'):
++        c.__active_path['timeout'] = c.config.getFloat('active-path-timeout-seconds')
+     else:
+         c.__active_path['timeout'] = 10.
+ 
+-    if c.config.getInt('active_path_max_size'):
+-        c.__active_path['max_size'] = c.config.getInt('active_path_max_size')
++    if c.config.getInt('active-path-max-size'):
++        c.__active_path['max_size'] = c.config.getInt('active-path-max-size')
+     else:
+         c.__active_path['max_size'] = 1000000
+ 
+@@ -412,7 +412,7 @@
+         return False
+ 
+     d = os.path.basename(d)
+-    atType = c.config.getString('active_path_attype') or 'auto'
++    atType = c.config.getString('active-path-attype') or 'auto'
+     ok = g.app.gui.runAskYesNoDialog(c, 'Create / load file?',
+         'Create file @'+atType+' '+d+'?')
+     if ok == 'no':
+@@ -457,7 +457,7 @@
+     if autoload and oversize:
+         return
+ 
+-    atType = c.config.getString('active_path_attype') or 'auto'
++    atType = c.config.getString('active-path-attype') or 'auto'
+     parent.h = '@' + atType + ' ' + parent.h
+     c.selectPosition(parent)
+     if atType == 'asis':
+@language python
+</t>
+<t tx="ekr.20181017165331.26"></t>
+<t tx="ekr.20181017165331.27">@language patch
+--- HEAD
++++ uncommitted
+@@ -11,7 +11,7 @@
+     for i in self.handlers:
+         g.registerHandler(i[0], i[1])
+     # 'body' or 'tab' mode
+-    # self.guiMode = c.config.getString('attrib_edit_placement') or 'tab'
++    # self.guiMode = c.config.getString('attrib-edit-placement') or 'tab'
+     self.guiMode = 'tab'
+     # body mode in not compatible with nested_splitter, causes hard crash
+     if self.guiMode == 'body':
+@language python
+</t>
+<t tx="ekr.20181017165331.28">def __init__ (self, c):
+
+    self.c = c
+    c.attribEditor = self
+    self.pname = "_attrib_edit_frame"  # used to tag out panel
+    self.reloadSettings()
+    self.attrPaths = set()  # set of tuples (getter-class, path)
+    self.handlers = [
+       ('select3', self.updateEditor),
+    ]
+    for i in self.handlers:
+        g.registerHandler(i[0], i[1])
+    # 'body' or 'tab' mode
+    # self.guiMode = c.config.getString('attrib_edit_placement') or 'tab'
+    self.guiMode = 'tab'
+    # body mode in not compatible with nested_splitter, causes hard crash
+    if self.guiMode == 'body':
+        self.holder = QtWidgets.QSplitter(QtCore.Qt.Vertical)
+        self.holder.setMinimumWidth(300)
+        parent = c.frame.top.leo_body_frame.parent()
+        self.holder.addWidget(c.frame.top.leo_body_frame)
+        parent.addWidget(self.holder)
+        self.parent = self.holder
+    elif self.guiMode == 'tab':
+        self.parent = QtWidgets.QFrame()
+        self.holder = QtWidgets.QHBoxLayout()
+        self.parent.setLayout(self.holder)
+        c.frame.log.createTab('Attribs', widget = self.parent)
+        
+def reloadSettings(self):
+    c = self.c
+    c.registerReloadSettings(self)
+    active = c.config.getData('attrib_edit_active_modes') or []
+    self.getsetters = []
+    for i in AttributeGetter.implementations:
+        s = i(c)
+        self.getsetters.append([s, (s.name() in active) ])
+    if not active:
+        self.getsetters[0][1] = True  # turn on the first one
+</t>
+<t tx="ekr.20181017165331.29">def __init__ (self, c):
+
+    self.c = c
+    c.attribEditor = self
+    self.pname = "_attrib_edit_frame"  # used to tag out panel
+    self.reloadSettings()
+    self.attrPaths = set()  # set of tuples (getter-class, path)
+    self.handlers = [
+       ('select3', self.updateEditor),
+    ]
+    for i in self.handlers:
+        g.registerHandler(i[0], i[1])
+    # 'body' or 'tab' mode
+    # self.guiMode = c.config.getString('attrib-edit-placement') or 'tab'
+    self.guiMode = 'tab'
+    # body mode in not compatible with nested_splitter, causes hard crash
+    if self.guiMode == 'body':
+        self.holder = QtWidgets.QSplitter(QtCore.Qt.Vertical)
+        self.holder.setMinimumWidth(300)
+        parent = c.frame.top.leo_body_frame.parent()
+        self.holder.addWidget(c.frame.top.leo_body_frame)
+        parent.addWidget(self.holder)
+        self.parent = self.holder
+    elif self.guiMode == 'tab':
+        self.parent = QtWidgets.QFrame()
+        self.holder = QtWidgets.QHBoxLayout()
+        self.parent.setLayout(self.holder)
+        c.frame.log.createTab('Attribs', widget = self.parent)
+        
+def reloadSettings(self):
+    c = self.c
+    c.registerReloadSettings(self)
+    active = c.config.getData('attrib_edit_active_modes') or []
+    self.getsetters = []
+    for i in AttributeGetter.implementations:
+        s = i(c)
+        self.getsetters.append([s, (s.name() in active) ])
+    if not active:
+        self.getsetters[0][1] = True  # turn on the first one
+</t>
+<t tx="ekr.20181017165331.30">@language patch
+--- HEAD
++++ uncommitted
+@@ -111,7 +111,7 @@
+     def reloadSettings(self):
+         c = self.c
+         c.registerReloadSettings(self)
+-        self.name_levels = c.config.getInt('backlink_name_levels') or 0
++        self.name_levels = c.config.getInt('backlink-name-levels') or 0
+     #@+node:tbrown.20091005145931.5227: *3* fixIDs
+     def fixIDs(self, c):
+@language python
+</t>
+<t tx="ekr.20181017165331.37"></t>
+<t tx="ekr.20181017165331.38">@language patch
+--- HEAD
++++ uncommitted
+@@ -21,4 +21,4 @@
+ def reloadSettings(self):
+     c = self.c
+     c.registerReloadSettings(self)
+-    self.name_levels = c.config.getInt('backlink_name_levels') or 0
++    self.name_levels = c.config.getInt('backlink-name-levels') or 0
+@language python
+</t>
+<t tx="ekr.20181017165331.39">def __init__ (self,c):
+    '''Ctor for backlinkController class.'''
+    self.c = c
+    self.c.backlinkController = self
+    self.initIvars()
+    self.reloadSettings()
+    self.fixIDs(c)
+    if Tk:
+        self.ui = backlinkTkUI(self)
+    elif Qt:
+        self.ui = backlinkQtUI(self)
+    else:
+        # Fix part of #509. Ignore missing attributes.
+        self.ui = g.NullObject()
+    g.registerHandler('select3', self.updateTab)
+    g.registerHandler('open2', self.loadLinks)
+    # already missed initial 'open2' because of after-create-leo-frame, so
+    self.loadLinksInt()
+    self.updateTabInt()
+    
+def reloadSettings(self):
+    c = self.c
+    c.registerReloadSettings(self)
+    self.name_levels = c.config.getInt('backlink_name_levels') or 0
+</t>
+<t tx="ekr.20181017165331.40">def __init__ (self,c):
+    '''Ctor for backlinkController class.'''
+    self.c = c
+    self.c.backlinkController = self
+    self.initIvars()
+    self.reloadSettings()
+    self.fixIDs(c)
+    if Tk:
+        self.ui = backlinkTkUI(self)
+    elif Qt:
+        self.ui = backlinkQtUI(self)
+    else:
+        # Fix part of #509. Ignore missing attributes.
+        self.ui = g.NullObject()
+    g.registerHandler('select3', self.updateTab)
+    g.registerHandler('open2', self.loadLinks)
+    # already missed initial 'open2' because of after-create-leo-frame, so
+    self.loadLinksInt()
+    self.updateTabInt()
+    
+def reloadSettings(self):
+    c = self.c
+    c.registerReloadSettings(self)
+    self.name_levels = c.config.getInt('backlink-name-levels') or 0
+</t>
+<t tx="ekr.20181017165331.41">@language patch
+--- HEAD
++++ uncommitted
+@@ -65,7 +65,7 @@
+     """
+     c = event['c']
+     if hasattr(g.app,'_global_search'):
+-        g.app._global_search.fts_max_hits = c.config.getInt('fts_max_hits') or 30
++        g.app._global_search.fts_max_hits = c.config.getInt('fts-max-hits') or 30
+             # Use the per-commander setting.
+         g.app._global_search.show()
+ #@+node:ville.20120302233106.3580: *3* init (bigdash.py)
+@@ -185,7 +185,7 @@
+     #@+node:ekr.20140919160020.17898: *3* __init__(GlobalSearch)
+     def __init__(self):
+         '''Ctor for GlobalSearch class.'''
+-        self.fts_max_hits = g.app.config.getInt('fts_max_hits') or 30
++        self.fts_max_hits = g.app.config.getInt('fts-max-hits') or 30
+             # A default: will be overridden by the global-search command.
+         self.bd = BigDash()
+         self.gnxcache = GnxCache()
+@language python
+</t>
+<t tx="ekr.20181017165331.48"></t>
+<t tx="ekr.20181017165331.49">@language patch
+--- HEAD
++++ uncommitted
+@@ -8,6 +8,6 @@
+     """
+     c = event['c']
+     if hasattr(g.app,'_global_search'):
+-        g.app._global_search.fts_max_hits = c.config.getInt('fts_max_hits') or 30
++        g.app._global_search.fts_max_hits = c.config.getInt('fts-max-hits') or 30
+             # Use the per-commander setting.
+         g.app._global_search.show()
+@language python
+</t>
+<t tx="ekr.20181017165331.50">@g.command("global-search")
+def global_search_f(event):
+    """
+    Do global search.
+    To restore the original appearance of the window, type help.
+
+    The per-commander @int fts_max_hits setting controls the maximum hits returned.
+    """
+    c = event['c']
+    if hasattr(g.app,'_global_search'):
+        g.app._global_search.fts_max_hits = c.config.getInt('fts_max_hits') or 30
+            # Use the per-commander setting.
+        g.app._global_search.show()
+</t>
+<t tx="ekr.20181017165331.51">@g.command("global-search")
+def global_search_f(event):
+    """
+    Do global search.
+    To restore the original appearance of the window, type help.
+
+    The per-commander @int fts_max_hits setting controls the maximum hits returned.
+    """
+    c = event['c']
+    if hasattr(g.app,'_global_search'):
+        g.app._global_search.fts_max_hits = c.config.getInt('fts-max-hits') or 30
+            # Use the per-commander setting.
+        g.app._global_search.show()
+</t>
+<t tx="ekr.20181017165331.52">@language patch
+--- HEAD
++++ uncommitted
+@@ -1,6 +1,6 @@
+ def __init__(self):
+     '''Ctor for GlobalSearch class.'''
+-    self.fts_max_hits = g.app.config.getInt('fts_max_hits') or 30
++    self.fts_max_hits = g.app.config.getInt('fts-max-hits') or 30
+         # A default: will be overridden by the global-search command.
+     self.bd = BigDash()
+     self.gnxcache = GnxCache()
+@language python
+</t>
+<t tx="ekr.20181017165331.53">def __init__(self):
+    '''Ctor for GlobalSearch class.'''
+    self.fts_max_hits = g.app.config.getInt('fts_max_hits') or 30
+        # A default: will be overridden by the global-search command.
+    self.bd = BigDash()
+    self.gnxcache = GnxCache()
+    #self.bd.show()
+    self.bd.add_cmd_handler(self.do_search)
+    if whoosh:
+        self.fts = LeoFts(self.gnxcache,g.app.homeLeoDir + "/fts_index")
+        self.bd.add_cmd_handler(self.do_fts)
+        self.bd.add_cmd_handler(self.do_stats)
+    else:
+        self.fts = None
+    self.anchors = {}
+</t>
+<t tx="ekr.20181017165331.54">def __init__(self):
+    '''Ctor for GlobalSearch class.'''
+    self.fts_max_hits = g.app.config.getInt('fts-max-hits') or 30
+        # A default: will be overridden by the global-search command.
+    self.bd = BigDash()
+    self.gnxcache = GnxCache()
+    #self.bd.show()
+    self.bd.add_cmd_handler(self.do_search)
+    if whoosh:
+        self.fts = LeoFts(self.gnxcache,g.app.homeLeoDir + "/fts_index")
+        self.bd.add_cmd_handler(self.do_fts)
+        self.bd.add_cmd_handler(self.do_stats)
+    else:
+        self.fts = None
+    self.anchors = {}
+</t>
+<t tx="ekr.20181017165331.55">@language patch
+--- HEAD
++++ uncommitted
+@@ -21,7 +21,7 @@
+             state_class = Python_ScanState,
+             strict=True,
+         )
+-        self.put_decorators = self.c.config.getBool('put_python_decorators_in_imported_headlines')
++        self.put_decorators = self.c.config.getBool('put-python-decorators-in-imported-headlines')
+ 
+     #@+others
+     #@+node:ekr.20161110073751.1: *3* py_i.clean_headline
+@language python
+</t>
+<t tx="ekr.20181017165331.62"></t>
+<t tx="ekr.20181017165331.63">@language patch
+--- HEAD
++++ uncommitted
+@@ -10,6 +10,6 @@
+             state_class = Python_ScanState,
+             strict=True,
+         )
+-        self.put_decorators = self.c.config.getBool('put_python_decorators_in_imported_headlines')
++        self.put_decorators = self.c.config.getBool('put-python-decorators-in-imported-headlines')
+ 
+     @others
+@language python
+</t>
+<t tx="ekr.20181017165331.64">class Py_Importer(Importer):
+    '''A class to store and update scanning state.'''
+
+    def __init__(self, importCommands, **kwargs):
+        '''Py_Importer.ctor.'''
+        # Init the base class.
+        Importer.__init__(self,
+            importCommands,
+            language='python',
+            state_class = Python_ScanState,
+            strict=True,
+        )
+        self.put_decorators = self.c.config.getBool('put_python_decorators_in_imported_headlines')
+
+    @others
+</t>
+<t tx="ekr.20181017165331.65">class Py_Importer(Importer):
+    '''A class to store and update scanning state.'''
+
+    def __init__(self, importCommands, **kwargs):
+        '''Py_Importer.ctor.'''
+        # Init the base class.
+        Importer.__init__(self,
+            importCommands,
+            language='python',
+            state_class = Python_ScanState,
+            strict=True,
+        )
+        self.put_decorators = self.c.config.getBool('put-python-decorators-in-imported-headlines')
+
+    @others
+</t>
+<t tx="ekr.20181017165331.66">@language patch
+--- HEAD
++++ uncommitted
+@@ -153,8 +153,8 @@
+     def reloadSettings(self):
+         c = self.c
+         c.registerReloadSettings(self)
+-        self.opml_read_derived_files = c.config.getBool('opml_read_derived_files')
+-        self.opml_write_derived_files = c.config.getBool('opml_write_derived_files')
++        self.opml_read_derived_files = c.config.getBool('opml-read-derived-files')
++        self.opml_write_derived_files = c.config.getBool('opml-write-derived-files')
+ 
+     #@+node:ekr.20060914163456: *3* oc.createVnodes &amp; helpers
+     def createVnodes(self, c, dummyRoot):
+@@ -443,8 +443,8 @@
+         self.putOPMLPostlog()
+     #@+node:ekr.20060919172012.3: *3* putOPMLProlog
+     def putOPMLProlog(self):
+-        s = self.c.config.getString('opml_namespace') or 'leo:com:leo-opml'
+-        ver = self.c.config.getString('opml_version') or '2.0'
++        s = self.c.config.getString('opml-namespace') or 'leo:com:leo-opml'
++        ver = self.c.config.getString('opml-version') or '2.0'
+         self.put('&lt;opml version="%s" xmlns:leo="%s"&gt;' % (ver, s))
+     #@+node:ekr.20060919172012.4: *3* putOPMLHeader
+     def putOPMLHeader(self):
+@language python
+</t>
+<t tx="ekr.20181017165331.73"></t>
+<t tx="ekr.20181017165331.74">@language patch
+--- HEAD
++++ uncommitted
+@@ -12,6 +12,6 @@
+ def reloadSettings(self):
+     c = self.c
+     c.registerReloadSettings(self)
+-    self.opml_read_derived_files = c.config.getBool('opml_read_derived_files')
+-    self.opml_write_derived_files = c.config.getBool('opml_write_derived_files')
++    self.opml_read_derived_files = c.config.getBool('opml-read-derived-files')
++    self.opml_write_derived_files = c.config.getBool('opml-write-derived-files')
+ 
+@language python
+</t>
+<t tx="ekr.20181017165331.75">def __init__(self, c):
+    '''Ctor for OpmlController class.'''
+    self.c = c
+    c.opmlCommands = self
+    c.k.registerCommand('read-opml-file', self.readOpmlCommand)
+    c.k.registerCommand('write-opml-file', self.writeOpmlCommand)
+    self.currentVnode = None
+    self.topVnode = None
+    self.generated_gnxs = {} # Keys are gnx's (strings).  Values are vnodes.
+    self.reloadSettings()
+    
+def reloadSettings(self):
+    c = self.c
+    c.registerReloadSettings(self)
+    self.opml_read_derived_files = c.config.getBool('opml_read_derived_files')
+    self.opml_write_derived_files = c.config.getBool('opml_write_derived_files')
+
+</t>
+<t tx="ekr.20181017165331.76">def __init__(self, c):
+    '''Ctor for OpmlController class.'''
+    self.c = c
+    c.opmlCommands = self
+    c.k.registerCommand('read-opml-file', self.readOpmlCommand)
+    c.k.registerCommand('write-opml-file', self.writeOpmlCommand)
+    self.currentVnode = None
+    self.topVnode = None
+    self.generated_gnxs = {} # Keys are gnx's (strings).  Values are vnodes.
+    self.reloadSettings()
+    
+def reloadSettings(self):
+    c = self.c
+    c.registerReloadSettings(self)
+    self.opml_read_derived_files = c.config.getBool('opml-read-derived-files')
+    self.opml_write_derived_files = c.config.getBool('opml-write-derived-files')
+
+</t>
+<t tx="ekr.20181017165331.77">@language patch
+--- HEAD
++++ uncommitted
+@@ -1,4 +1,4 @@
+ def putOPMLProlog(self):
+-    s = self.c.config.getString('opml_namespace') or 'leo:com:leo-opml'
+-    ver = self.c.config.getString('opml_version') or '2.0'
++    s = self.c.config.getString('opml-namespace') or 'leo:com:leo-opml'
++    ver = self.c.config.getString('opml-version') or '2.0'
+     self.put('&lt;opml version="%s" xmlns:leo="%s"&gt;' % (ver, s))
+@language python
+</t>
+<t tx="ekr.20181017165331.78">def putOPMLProlog(self):
+    s = self.c.config.getString('opml_namespace') or 'leo:com:leo-opml'
+    ver = self.c.config.getString('opml_version') or '2.0'
+    self.put('&lt;opml version="%s" xmlns:leo="%s"&gt;' % (ver, s))
+</t>
+<t tx="ekr.20181017165331.79">def putOPMLProlog(self):
+    s = self.c.config.getString('opml-namespace') or 'leo:com:leo-opml'
+    ver = self.c.config.getString('opml-version') or '2.0'
+    self.put('&lt;opml version="%s" xmlns:leo="%s"&gt;' % (ver, s))
+</t>
+<t tx="ekr.20181017165331.80">@language patch
+--- HEAD
++++ uncommitted
+@@ -228,7 +228,7 @@
+     # pylint: disable=undefined-variable
+     # c *is* defined.
+     c = keywords.get("c")
+-    if c.config.getBool('leo_to_html_no_menus'):
++    if c.config.getBool('leo-to-html-no-menus'):
+         return
+     for item, cmd in (
+         ('Show Node as HTML', 'show-html-node'),
+@language python
+</t>
+<t tx="ekr.20181017165331.9"></t>
+<t tx="ekr.20181017165332.100">@language patch
+--- HEAD
++++ uncommitted
+@@ -1,7 +1,7 @@
+ def reloadSettings(self):
+     c = self.c
+     c.registerReloadSettings(self)
+-    self.time_name = c.config.getString('todo_time_name') or 'days'
+-    self.icon_location = c.config.getString('todo_icon_location') or 'beforeHeadline'
+-    self.prog_location = c.config.getString('todo_prog_location') or 'beforeHeadline'
+-    self.icon_order = c.config.getString('todo_icon_order') or 'pri-first'
++    self.time_name = c.config.getString('todo-time-name') or 'days'
++    self.icon_location = c.config.getString('todo-icon-location') or 'beforeHeadline'
++    self.prog_location = c.config.getString('todo-prog-location') or 'beforeHeadline'
++    self.icon_order = c.config.getString('todo-icon-order') or 'pri-first'
+@language python
+</t>
+<t tx="ekr.20181017165332.101">def reloadSettings(self):
+    c = self.c
+    c.registerReloadSettings(self)
+    self.time_name = c.config.getString('todo_time_name') or 'days'
+    self.icon_location = c.config.getString('todo_icon_location') or 'beforeHeadline'
+    self.prog_location = c.config.getString('todo_prog_location') or 'beforeHeadline'
+    self.icon_order = c.config.getString('todo_icon_order') or 'pri-first'
+</t>
+<t tx="ekr.20181017165332.102">def reloadSettings(self):
+    c = self.c
+    c.registerReloadSettings(self)
+    self.time_name = c.config.getString('todo-time-name') or 'days'
+    self.icon_location = c.config.getString('todo-icon-location') or 'beforeHeadline'
+    self.prog_location = c.config.getString('todo-prog-location') or 'beforeHeadline'
+    self.icon_order = c.config.getString('todo-icon-order') or 'pri-first'
+</t>
+<t tx="ekr.20181017165332.103">@language patch
+--- HEAD
++++ uncommitted
+@@ -862,7 +862,7 @@
+             c = pc.c
+             if pc.must_change_widget(QtWebKitWidgets.QWebView):
+                 w = QtWebKitWidgets.QWebView()
+-                n = c.config.getInt('qweb_view_font_size')
++                n = c.config.getInt('qweb-view-font-size')
+                 if n:
+                     settings = w.settings()
+                     settings.setFontSize(settings.DefaultFontSize, n)
+@@ -909,7 +909,7 @@
+             c = pc.c
+             if pc.must_change_widget(QtWebKitWidgets.QWebView):
+                 w = QtWebKitWidgets.QWebView()
+-                n = c.config.getInt('qweb_view_font_size')
++                n = c.config.getInt('qweb-view-font-size')
+                 if n:
+                     settings = w.settings()
+                     settings.setFontSize(settings.DefaultFontSize, n)
+@@ -965,7 +965,7 @@
+             else:
+                 if pc.must_change_widget(QtWebKitWidgets.QWebView):
+                     w = QtWebKitWidgets.QWebView()
+-                    n = c.config.getInt('qweb_view_font_size')
++                    n = c.config.getInt('qweb-view-font-size')
+                     if n:
+                         settings = w.settings()
+                         settings.setFontSize(settings.DefaultFontSize, n)
+@language python
+</t>
+<t tx="ekr.20181017165332.110"></t>
+<t tx="ekr.20181017165332.111">@language patch
+--- HEAD
++++ uncommitted
+@@ -6,7 +6,7 @@
+     c = pc.c
+     if pc.must_change_widget(QtWebKitWidgets.QWebView):
+         w = QtWebKitWidgets.QWebView()
+-        n = c.config.getInt('qweb_view_font_size')
++        n = c.config.getInt('qweb-view-font-size')
+         if n:
+             settings = w.settings()
+             settings.setFontSize(settings.DefaultFontSize, n)
+@language python
+</t>
+<t tx="ekr.20181017165332.112">update_html_count = 0
+
+def update_html(self, s, keywords):
+    '''Update html in the vr pane.'''
+    pc = self
+    c = pc.c
+    if pc.must_change_widget(QtWebKitWidgets.QWebView):
+        w = QtWebKitWidgets.QWebView()
+        n = c.config.getInt('qweb_view_font_size')
+        if n:
+            settings = w.settings()
+            settings.setFontSize(settings.DefaultFontSize, n)
+        pc.embed_widget(w)
+        assert(w == pc.w)
+    else:
+        w = pc.w
+    if isQt5:
+        w.hide() # This forces a proper update.
+    w.setHtml(s)
+    w.show()
+    c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20181017165332.113">update_html_count = 0
+
+def update_html(self, s, keywords):
+    '''Update html in the vr pane.'''
+    pc = self
+    c = pc.c
+    if pc.must_change_widget(QtWebKitWidgets.QWebView):
+        w = QtWebKitWidgets.QWebView()
+        n = c.config.getInt('qweb-view-font-size')
+        if n:
+            settings = w.settings()
+            settings.setFontSize(settings.DefaultFontSize, n)
+        pc.embed_widget(w)
+        assert(w == pc.w)
+    else:
+        w = pc.w
+    if isQt5:
+        w.hide() # This forces a proper update.
+    w.setHtml(s)
+    w.show()
+    c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20181017165332.114">@language patch
+--- HEAD
++++ uncommitted
+@@ -6,7 +6,7 @@
+     c = pc.c
+     if pc.must_change_widget(QtWebKitWidgets.QWebView):
+         w = QtWebKitWidgets.QWebView()
+-        n = c.config.getInt('qweb_view_font_size')
++        n = c.config.getInt('qweb-view-font-size')
+         if n:
+             settings = w.settings()
+             settings.setFontSize(settings.DefaultFontSize, n)
+@language python
+</t>
+<t tx="ekr.20181017165332.115">update_jupyter_count = 0
+
+def update_jupyter(self, s, keywords):
+    '''Update @jupyter node in the vr pane.'''
+    pc = self
+    c = pc.c
+    if pc.must_change_widget(QtWebKitWidgets.QWebView):
+        w = QtWebKitWidgets.QWebView()
+        n = c.config.getInt('qweb_view_font_size')
+        if n:
+            settings = w.settings()
+            settings.setFontSize(settings.DefaultFontSize, n)
+        pc.embed_widget(w)
+        assert(w == pc.w)
+    else:
+        w = pc.w
+    s = self.get_jupyter_source(c)
+    if isQt5:
+        w.hide() # This forces a proper update.
+    w.setHtml(s)
+    w.show()
+    c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20181017165332.116">update_jupyter_count = 0
+
+def update_jupyter(self, s, keywords):
+    '''Update @jupyter node in the vr pane.'''
+    pc = self
+    c = pc.c
+    if pc.must_change_widget(QtWebKitWidgets.QWebView):
+        w = QtWebKitWidgets.QWebView()
+        n = c.config.getInt('qweb-view-font-size')
+        if n:
+            settings = w.settings()
+            settings.setFontSize(settings.DefaultFontSize, n)
+        pc.embed_widget(w)
+        assert(w == pc.w)
+    else:
+        w = pc.w
+    s = self.get_jupyter_source(c)
+    if isQt5:
+        w.hide() # This forces a proper update.
+    w.setHtml(s)
+    w.show()
+    c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20181017165332.117">@language patch
+--- HEAD
++++ uncommitted
+@@ -12,7 +12,7 @@
+     else:
+         if pc.must_change_widget(QtWebKitWidgets.QWebView):
+             w = QtWebKitWidgets.QWebView()
+-            n = c.config.getInt('qweb_view_font_size')
++            n = c.config.getInt('qweb-view-font-size')
+             if n:
+                 settings = w.settings()
+                 settings.setFontSize(settings.DefaultFontSize, n)
+@language python
+</t>
+<t tx="ekr.20181017165332.118">def update_latex(self, s, keywords):
+    '''Update latex in the vr pane.'''
+    import sys
+    pc = self
+    c = pc.c
+    if g.isPython3 and sys.platform.startswith('win'):
+        g.es_print('latex rendering not ready for Python 3')
+        w = pc.ensure_text_widget()
+        pc.show()
+        w.setPlainText(s)
+        c.bodyWantsFocusNow()
+    else:
+        if pc.must_change_widget(QtWebKitWidgets.QWebView):
+            w = QtWebKitWidgets.QWebView()
+            n = c.config.getInt('qweb_view_font_size')
+            if n:
+                settings = w.settings()
+                settings.setFontSize(settings.DefaultFontSize, n)
+            pc.embed_widget(w)
+            assert(w == pc.w)
+        else:
+            w = pc.w
+        w.hide() # This forces a proper update.
+        s = self.create_latex_html(s)
+        w.setHtml(s)
+        w.show()
+        c.bodyWantsFocusNow()
+
+</t>
+<t tx="ekr.20181017165332.119">def update_latex(self, s, keywords):
+    '''Update latex in the vr pane.'''
+    import sys
+    pc = self
+    c = pc.c
+    if g.isPython3 and sys.platform.startswith('win'):
+        g.es_print('latex rendering not ready for Python 3')
+        w = pc.ensure_text_widget()
+        pc.show()
+        w.setPlainText(s)
+        c.bodyWantsFocusNow()
+    else:
+        if pc.must_change_widget(QtWebKitWidgets.QWebView):
+            w = QtWebKitWidgets.QWebView()
+            n = c.config.getInt('qweb-view-font-size')
+            if n:
+                settings = w.settings()
+                settings.setFontSize(settings.DefaultFontSize, n)
+            pc.embed_widget(w)
+            assert(w == pc.w)
+        else:
+            w = pc.w
+        w.hide() # This forces a proper update.
+        s = self.create_latex_html(s)
+        w.setHtml(s)
+        w.show()
+        c.bodyWantsFocusNow()
+
+</t>
+<t tx="ekr.20181017165332.120">@language patch
+--- HEAD
++++ uncommitted
+@@ -221,11 +221,11 @@
+         self.entire_file = entire_file
+         # compute settings.
+         getBool, getString = c.config.getBool, c.config.getString
+-        self.open_url_nodes = getBool('vim_plugin_opens_url_nodes')
+-        self.trace = False or getBool('vim_plugin_trace')
+-        self.uses_tab = getBool('vim_plugin_uses_tab_feature')
+-        self.vim_cmd = getString('vim_cmd') or _vim_cmd
+-        self.vim_exe = getString('vim_exe') or _vim_exe
++        self.open_url_nodes = getBool('vim-plugin-opens-url-nodes')
++        self.trace = False or getBool('vim-plugin-trace')
++        self.uses_tab = getBool('vim-plugin-uses-tab-feature')
++        self.vim_cmd = getString('vim-cmd') or _vim_cmd
++        self.vim_exe = getString('vim-exe') or _vim_exe
+         # Give messages.
+         global locationMessageGiven
+         if self.trace and not locationMessageGiven:
+@language python
+</t>
+<t tx="ekr.20181017165332.127"></t>
+<t tx="ekr.20181017165332.128">@language patch
+--- HEAD
++++ uncommitted
+@@ -4,11 +4,11 @@
+     self.entire_file = entire_file
+     # compute settings.
+     getBool, getString = c.config.getBool, c.config.getString
+-    self.open_url_nodes = getBool('vim_plugin_opens_url_nodes')
+-    self.trace = False or getBool('vim_plugin_trace')
+-    self.uses_tab = getBool('vim_plugin_uses_tab_feature')
+-    self.vim_cmd = getString('vim_cmd') or _vim_cmd
+-    self.vim_exe = getString('vim_exe') or _vim_exe
++    self.open_url_nodes = getBool('vim-plugin-opens-url-nodes')
++    self.trace = False or getBool('vim-plugin-trace')
++    self.uses_tab = getBool('vim-plugin-uses-tab-feature')
++    self.vim_cmd = getString('vim-cmd') or _vim_cmd
++    self.vim_exe = getString('vim-exe') or _vim_exe
+     # Give messages.
+     global locationMessageGiven
+     if self.trace and not locationMessageGiven:
+@language python
+</t>
+<t tx="ekr.20181017165332.129">def __init__(self, c, entire_file):
+    '''Ctor for the VimCommander class.'''
+    self.c = c
+    self.entire_file = entire_file
+    # compute settings.
+    getBool, getString = c.config.getBool, c.config.getString
+    self.open_url_nodes = getBool('vim_plugin_opens_url_nodes')
+    self.trace = False or getBool('vim_plugin_trace')
+    self.uses_tab = getBool('vim_plugin_uses_tab_feature')
+    self.vim_cmd = getString('vim_cmd') or _vim_cmd
+    self.vim_exe = getString('vim_exe') or _vim_exe
+    # Give messages.
+    global locationMessageGiven
+    if self.trace and not locationMessageGiven:
+        locationMessageGiven = True
+        print('vim_cmd: %s' % self.vim_cmd)
+        print('vim_exe: %s' % self.vim_exe)
+    self.open_in_vim()
+</t>
+<t tx="ekr.20181017165332.130">def __init__(self, c, entire_file):
+    '''Ctor for the VimCommander class.'''
+    self.c = c
+    self.entire_file = entire_file
+    # compute settings.
+    getBool, getString = c.config.getBool, c.config.getString
+    self.open_url_nodes = getBool('vim-plugin-opens-url-nodes')
+    self.trace = False or getBool('vim-plugin-trace')
+    self.uses_tab = getBool('vim-plugin-uses-tab-feature')
+    self.vim_cmd = getString('vim-cmd') or _vim_cmd
+    self.vim_exe = getString('vim-exe') or _vim_exe
+    # Give messages.
+    global locationMessageGiven
+    if self.trace and not locationMessageGiven:
+        locationMessageGiven = True
+        print('vim_cmd: %s' % self.vim_cmd)
+        print('vim_exe: %s' % self.vim_exe)
+    self.open_in_vim()
+</t>
+<t tx="ekr.20181017165332.131">@language patch
+--- HEAD
++++ uncommitted
+@@ -98,7 +98,7 @@
+     # Search the open-files list for a file corresponding to v.
+     efc = g.app.externalFilesController
+     path = efc and efc.find_path_for_node(p)
+-    emacs_cmd = c.config.getString('xemacs_exe') or _emacs_cmd
++    emacs_cmd = c.config.getString('xemacs-exe') or _emacs_cmd
+         # 2010/01/18: found by pylint.
+     if (
+         not path or
+@language python
+</t>
+<t tx="ekr.20181017165332.138"></t>
+<t tx="ekr.20181017165332.139">@language patch
+--- HEAD
++++ uncommitted
+@@ -11,7 +11,7 @@
+     # Search the open-files list for a file corresponding to v.
+     efc = g.app.externalFilesController
+     path = efc and efc.find_path_for_node(p)
+-    emacs_cmd = c.config.getString('xemacs_exe') or _emacs_cmd
++    emacs_cmd = c.config.getString('xemacs-exe') or _emacs_cmd
+         # 2010/01/18: found by pylint.
+     if (
+         not path or
+@language python
+</t>
+<t tx="ekr.20181017165332.140">def open_in_emacs_helper(c, p):
+    global contextmenu_message_given
+    v = p.v
+    # Load contextmenu plugin if required.
+    contextMenu = g.loadOnePlugin('contextmenu.py', verbose=True)
+    if not contextMenu:
+        if not contextmenu_message_given:
+            contextmenu_message_given = True
+            g.trace('can not load contextmenu.py')
+        return
+    # Search the open-files list for a file corresponding to v.
+    efc = g.app.externalFilesController
+    path = efc and efc.find_path_for_node(p)
+    emacs_cmd = c.config.getString('xemacs_exe') or _emacs_cmd
+        # 2010/01/18: found by pylint.
+    if (
+        not path or
+        not g.os_path_exists(path) or
+        not hasattr(v, 'OpenWithOldBody') or
+        v.b != v.OpenWithOldBody
+    ):
+        # Open a new temp file.
+        if path:
+            ### Don't do this: it prevents efc from reopening paths.
+            ### efc = g.app.externalFilesController
+            ### if efc: efc.forget_path(path)
+            os.remove(path)
+            os.system(emacs_cmd)
+        v.OpenWithOldBody = v.b # Remember the old contents
+        # open the node in emacs (note the space after _emacs_cmd)
+        # data = "os.spawnl", emacs_cmd, None
+        d = {'kind': 'os.spawnl', 'args': [emacs_cmd], 'ext': None}
+        c.openWith(d=d)
+    else:
+        # Reopen the old temp file.
+        os.system(emacs_cmd)
+</t>
+<t tx="ekr.20181017165332.141">def open_in_emacs_helper(c, p):
+    global contextmenu_message_given
+    v = p.v
+    # Load contextmenu plugin if required.
+    contextMenu = g.loadOnePlugin('contextmenu.py', verbose=True)
+    if not contextMenu:
+        if not contextmenu_message_given:
+            contextmenu_message_given = True
+            g.trace('can not load contextmenu.py')
+        return
+    # Search the open-files list for a file corresponding to v.
+    efc = g.app.externalFilesController
+    path = efc and efc.find_path_for_node(p)
+    emacs_cmd = c.config.getString('xemacs-exe') or _emacs_cmd
+        # 2010/01/18: found by pylint.
+    if (
+        not path or
+        not g.os_path_exists(path) or
+        not hasattr(v, 'OpenWithOldBody') or
+        v.b != v.OpenWithOldBody
+    ):
+        # Open a new temp file.
+        if path:
+            ### Don't do this: it prevents efc from reopening paths.
+            ### efc = g.app.externalFilesController
+            ### if efc: efc.forget_path(path)
+            os.remove(path)
+            os.system(emacs_cmd)
+        v.OpenWithOldBody = v.b # Remember the old contents
+        # open the node in emacs (note the space after _emacs_cmd)
+        # data = "os.spawnl", emacs_cmd, None
+        d = {'kind': 'os.spawnl', 'args': [emacs_cmd], 'ext': None}
+        c.openWith(d=d)
+    else:
+        # Reopen the old temp file.
+        os.system(emacs_cmd)
+</t>
+<t tx="ekr.20181017165332.16"></t>
+<t tx="ekr.20181017165332.17">@language patch
+--- HEAD
++++ uncommitted
+@@ -24,6 +24,6 @@
+     c = self.c
+     c.registerReloadSettings(self)
+     # line prefix for pasting results into leo (#, --, //, C, etc.)
+-    x = self.c.config.getString('leoscreen_prefix')
++    x = self.c.config.getString('leoscreen-prefix')
+     self.get_line_prefix = x.replace('SPACE', ' ') if x else ''
+-    self.time_fmt = self.c.config.getString('leoscreen_time_fmt') or '%Y-%m-%d %H:%M:%S'
++    self.time_fmt = self.c.config.getString('leoscreen-time-fmt') or '%Y-%m-%d %H:%M:%S'
+@language python
+</t>
+<t tx="ekr.20181017165332.18">def __init__ (self, c):
+    """set up vars., prepare temporary file"""
+    self.c = c
+    c.leo_screen = self
+    self.use_screen = None  # to select a particular screen session
+    # skip line -1, which is usually a prompt and not interesting
+    self.first_line = -2
+    # pulling in lines from output, this is the next one to get
+    self.next_unread_line = self.first_line
+    # output from last command
+    self.output = []
+    self.old_output = []
+    # file name for hardcopy and paste commands
+    fd, self.tmpfile = tempfile.mkstemp()
+    os.close(fd)
+    # Settings
+    self.reloadSettings()
+    self._get_output()  # prime output diffing system
+    self.popups = []  # store references to popup windows
+    self.stack_frame = 0
+        # used by jump to error commands, 0 = innermost frame
+    
+def reloadSettings(self):
+    c = self.c
+    c.registerReloadSettings(self)
+    # line prefix for pasting results into leo (#, --, //, C, etc.)
+    x = self.c.config.getString('leoscreen_prefix')
+    self.get_line_prefix = x.replace('SPACE', ' ') if x else ''
+    self.time_fmt = self.c.config.getString('leoscreen_time_fmt') or '%Y-%m-%d %H:%M:%S'
+</t>
+<t tx="ekr.20181017165332.19">def __init__ (self, c):
+    """set up vars., prepare temporary file"""
+    self.c = c
+    c.leo_screen = self
+    self.use_screen = None  # to select a particular screen session
+    # skip line -1, which is usually a prompt and not interesting
+    self.first_line = -2
+    # pulling in lines from output, this is the next one to get
+    self.next_unread_line = self.first_line
+    # output from last command
+    self.output = []
+    self.old_output = []
+    # file name for hardcopy and paste commands
+    fd, self.tmpfile = tempfile.mkstemp()
+    os.close(fd)
+    # Settings
+    self.reloadSettings()
+    self._get_output()  # prime output diffing system
+    self.popups = []  # store references to popup windows
+    self.stack_frame = 0
+        # used by jump to error commands, 0 = innermost frame
+    
+def reloadSettings(self):
+    c = self.c
+    c.registerReloadSettings(self)
+    # line prefix for pasting results into leo (#, --, //, C, etc.)
+    x = self.c.config.getString('leoscreen-prefix')
+    self.get_line_prefix = x.replace('SPACE', ' ') if x else ''
+    self.time_fmt = self.c.config.getString('leoscreen-time-fmt') or '%Y-%m-%d %H:%M:%S'
+</t>
+<t tx="ekr.20181017165332.20">@language patch
+--- HEAD
++++ uncommitted
+@@ -111,7 +111,7 @@
+             return True
+ 
+         # user-specified command string, or sys.platform-determined string
+-        mime_cmd = c.config.getString('mime_open_cmd') or _mime_open_cmd
++        mime_cmd = c.config.getString('mime-open-cmd') or _mime_open_cmd
+         if mime_cmd:
+             if '%s' not in mime_cmd:
+                 mime_cmd += ' %s'
+@language python
+</t>
+<t tx="ekr.20181017165332.27"></t>
+<t tx="ekr.20181017165332.28">@language patch
+--- HEAD
++++ uncommitted
+@@ -29,7 +29,7 @@
+             return True
+ 
+         # user-specified command string, or sys.platform-determined string
+-        mime_cmd = c.config.getString('mime_open_cmd') or _mime_open_cmd
++        mime_cmd = c.config.getString('mime-open-cmd') or _mime_open_cmd
+         if mime_cmd:
+             if '%s' not in mime_cmd:
+                 mime_cmd += ' %s'
+@language python
+</t>
+<t tx="ekr.20181017165332.29">def open_mimetype(tag, keywords, val=None):
+    '''Simulate double-clicking on the filename in a file manager.  Order of
+    preference is:
+
+        1) @string mime_open_cmd setting
+        2) _mime_open_cmd, defined per sys.platform detection
+        3) open_func(fpath), defined per sys.platform detection
+        4) mailcap file for mimetype handling
+    '''
+
+    global open_func
+
+    c = keywords.get('c')
+    p = keywords.get('p')
+    if not c or not p:
+        return
+
+    if p.h.startswith('@mime'):
+        fname = p.h[6:]
+
+        # honor @path
+        d = c.scanAllDirectives(p)
+        path = d.get('path')
+        fpath = g.os_path_finalize_join(path, fname)
+
+        # stop here if the file doesn't exist
+        if not g.os_path_exists(fpath):
+            g.error('@mime: file does not exist, %s' % fpath)
+            return True
+
+        # user-specified command string, or sys.platform-determined string
+        mime_cmd = c.config.getString('mime_open_cmd') or _mime_open_cmd
+        if mime_cmd:
+            if '%s' not in mime_cmd:
+                mime_cmd += ' %s'
+            open_func = exec_string_cmd(mime_cmd)
+
+        #no special handler function specified (unknown platform),
+        #try mailcap/mimetype entries explicitly
+        if open_func is None:
+            (ftype, encoding) = mimetypes.guess_type(fname)
+            if ftype:
+                caps = mailcap.getcaps()
+                (fullcmd, entry) = mailcap.findmatch(caps, ftype,
+                                                     filename=fpath,
+                                                     key='view')
+                if fullcmd:
+                    # create a function which merely executes the fullcmd in
+                    # a shell for e.g. PATH access
+                    open_func = exec_full_cmd(fullcmd)
+                else:
+                    g.error('@mime: no mailcap entry for %s: %s' % (ftype, fname))
+                g.trace('mailcap command:', fullcmd)
+            else:
+                g.error('@mime: unknown file type: %s' % fname)
+
+
+        # use the custom open_func to open external file viewer
+        if open_func:
+            open_func(fpath)
+        else:
+            g.error('@mime: no known way to open %s' % fname)
+
+        # block execution of e.g. vim plugin
+        return True
+
+    # not an @mime node
+    return val
+
+</t>
+<t tx="ekr.20181017165332.30">def open_mimetype(tag, keywords, val=None):
+    '''Simulate double-clicking on the filename in a file manager.  Order of
+    preference is:
+
+        1) @string mime_open_cmd setting
+        2) _mime_open_cmd, defined per sys.platform detection
+        3) open_func(fpath), defined per sys.platform detection
+        4) mailcap file for mimetype handling
+    '''
+
+    global open_func
+
+    c = keywords.get('c')
+    p = keywords.get('p')
+    if not c or not p:
+        return
+
+    if p.h.startswith('@mime'):
+        fname = p.h[6:]
+
+        # honor @path
+        d = c.scanAllDirectives(p)
+        path = d.get('path')
+        fpath = g.os_path_finalize_join(path, fname)
+
+        # stop here if the file doesn't exist
+        if not g.os_path_exists(fpath):
+            g.error('@mime: file does not exist, %s' % fpath)
+            return True
+
+        # user-specified command string, or sys.platform-determined string
+        mime_cmd = c.config.getString('mime-open-cmd') or _mime_open_cmd
+        if mime_cmd:
+            if '%s' not in mime_cmd:
+                mime_cmd += ' %s'
+            open_func = exec_string_cmd(mime_cmd)
+
+        #no special handler function specified (unknown platform),
+        #try mailcap/mimetype entries explicitly
+        if open_func is None:
+            (ftype, encoding) = mimetypes.guess_type(fname)
+            if ftype:
+                caps = mailcap.getcaps()
+                (fullcmd, entry) = mailcap.findmatch(caps, ftype,
+                                                     filename=fpath,
+                                                     key='view')
+                if fullcmd:
+                    # create a function which merely executes the fullcmd in
+                    # a shell for e.g. PATH access
+                    open_func = exec_full_cmd(fullcmd)
+                else:
+                    g.error('@mime: no mailcap entry for %s: %s' % (ftype, fname))
+                g.trace('mailcap command:', fullcmd)
+            else:
+                g.error('@mime: unknown file type: %s' % fname)
+
+
+        # use the custom open_func to open external file viewer
+        if open_func:
+            open_func(fpath)
+        else:
+            g.error('@mime: no known way to open %s' % fname)
+
+        # block execution of e.g. vim plugin
+        return True
+
+    # not an @mime node
+    return val
+
+</t>
+<t tx="ekr.20181017165332.31">@language patch
+--- HEAD
++++ uncommitted
+@@ -42,7 +42,7 @@
+     d = gDict.get(c.hash())
+     if not d:
+         active = c.config.getBool('mod_autosave_active',default=False)
+-        interval = c.config.getInt('mod_autosave_interval')
++        interval = c.config.getInt('mod-autosave-interval')
+         if active:
+             # Create an entry in the global settings dict.
+             gDict[c.hash()] = {
+@language python
+</t>
+<t tx="ekr.20181017165332.38"></t>
+<t tx="ekr.20181017165332.39">@language patch
+--- HEAD
++++ uncommitted
+@@ -8,7 +8,7 @@
+     d = gDict.get(c.hash())
+     if not d:
+         active = c.config.getBool('mod_autosave_active',default=False)
+-        interval = c.config.getInt('mod_autosave_interval')
++        interval = c.config.getInt('mod-autosave-interval')
+         if active:
+             # Create an entry in the global settings dict.
+             gDict[c.hash()] = {
+@language python
+</t>
+<t tx="ekr.20181017165332.40">def onCreate(tag, keywords):
+    """Handle the per-Leo-file settings."""
+    global gDict
+    c = keywords.get('c')
+    if g.app.unitTesting or g.app.killed or not c or not c.exists:
+        return
+    # Do nothing here if we already have registered the idle-time hook.
+    d = gDict.get(c.hash())
+    if not d:
+        active = c.config.getBool('mod_autosave_active',default=False)
+        interval = c.config.getInt('mod_autosave_interval')
+        if active:
+            # Create an entry in the global settings dict.
+            gDict[c.hash()] = {
+                'last':time.time(),
+                'interval':interval,
+            }
+            message = "auto save %s sec. after changes" % (interval)
+            g.registerHandler('idle',onIdle)
+        else:
+            message = "@bool mod_autosave_active=False"
+        g.es(message, color='orange')
+</t>
+<t tx="ekr.20181017165332.41">def onCreate(tag, keywords):
+    """Handle the per-Leo-file settings."""
+    global gDict
+    c = keywords.get('c')
+    if g.app.unitTesting or g.app.killed or not c or not c.exists:
+        return
+    # Do nothing here if we already have registered the idle-time hook.
+    d = gDict.get(c.hash())
+    if not d:
+        active = c.config.getBool('mod_autosave_active',default=False)
+        interval = c.config.getInt('mod-autosave-interval')
+        if active:
+            # Create an entry in the global settings dict.
+            gDict[c.hash()] = {
+                'last':time.time(),
+                'interval':interval,
+            }
+            message = "auto save %s sec. after changes" % (interval)
+            g.registerHandler('idle',onIdle)
+        else:
+            message = "@bool mod_autosave_active=False"
+        g.es(message, color='orange')
+</t>
+<t tx="ekr.20181017165332.42">@language patch
+--- HEAD
++++ uncommitted
+@@ -689,7 +689,7 @@
+     #@+node:tbrown.20110930220448.18077: *3* __init__(LeoActions)
+     def __init__(self, request_handler):
+         self.request_handler = request_handler
+-        self.bookmark_unl = g.app.commanders()[0].config.getString('http_bookmark_unl')
++        self.bookmark_unl = g.app.commanders()[0].config.getString('http-bookmark-unl')
+         self.exec_handler = ExecHandler(request_handler)
+     #@+node:tbrown.20110930220448.18075: *3* add_bookmark
+     def add_bookmark(self):
+@language python
+</t>
+<t tx="ekr.20181017165332.49"></t>
+<t tx="ekr.20181017165332.5"></t>
+<t tx="ekr.20181017165332.50">@language patch
+--- HEAD
++++ uncommitted
+@@ -1,4 +1,4 @@
+ def __init__(self, request_handler):
+     self.request_handler = request_handler
+-    self.bookmark_unl = g.app.commanders()[0].config.getString('http_bookmark_unl')
++    self.bookmark_unl = g.app.commanders()[0].config.getString('http-bookmark-unl')
+     self.exec_handler = ExecHandler(request_handler)
+@language python
+</t>
+<t tx="ekr.20181017165332.51">def __init__(self, request_handler):
+    self.request_handler = request_handler
+    self.bookmark_unl = g.app.commanders()[0].config.getString('http_bookmark_unl')
+    self.exec_handler = ExecHandler(request_handler)
+</t>
+<t tx="ekr.20181017165332.52">def __init__(self, request_handler):
+    self.request_handler = request_handler
+    self.bookmark_unl = g.app.commanders()[0].config.getString('http-bookmark-unl')
+    self.exec_handler = ExecHandler(request_handler)
+</t>
+<t tx="ekr.20181017165332.53">@language patch
+--- HEAD
++++ uncommitted
+@@ -396,7 +396,7 @@
+         self.gui = c.frame.gui
+         getBool = c.config.getBool
+         self.scanned = False
+-        kind = c.config.getString('debugger_kind') or 'idle'
++        kind = c.config.getString('debugger-kind') or 'idle'
+         self.buttonsDict = {} # Keys are buttons, values are button names (strings).
+         self.debuggerKind = kind.lower()
+         self.atButtonNodes = getBool('scripting-at-button-nodes')
+@@ -1439,7 +1439,7 @@
+     #@+node:ekr.20180328130526.1: *5* eval.redirect &amp; unredirect
+     def redirect(self):
+         c = self.c
+-        if c.config.getBool('eval_redirect'):
++        if c.config.getBool('eval-redirect'):
+             self.old_stderr = g.stdErrIsRedirected()
+             self.old_stdout = g.stdOutIsRedirected()
+             if not self.old_stderr:
+@@ -1449,7 +1449,7 @@
+ 
+     def unredirect(self):
+         c = self.c
+-        if c.config.getBool('eval_redirect'):
++        if c.config.getBool('eval-redirect'):
+             if not self.old_stderr:
+                 g.restoreStderr()
+             if not self.old_stdout:
+@language python
+</t>
+<t tx="ekr.20181017165332.6">@language patch
+--- HEAD
++++ uncommitted
+@@ -13,7 +13,7 @@
+     # pylint: disable=undefined-variable
+     # c *is* defined.
+     c = keywords.get("c")
+-    if c.config.getBool('leo_to_html_no_menus'):
++    if c.config.getBool('leo-to-html-no-menus'):
+         return
+     for item, cmd in (
+         ('Show Node as HTML', 'show-html-node'),
+@language python
+</t>
+<t tx="ekr.20181017165332.60"></t>
+<t tx="ekr.20181017165332.61">@language patch
+--- HEAD
++++ uncommitted
+@@ -3,7 +3,7 @@
+     self.gui = c.frame.gui
+     getBool = c.config.getBool
+     self.scanned = False
+-    kind = c.config.getString('debugger_kind') or 'idle'
++    kind = c.config.getString('debugger-kind') or 'idle'
+     self.buttonsDict = {} # Keys are buttons, values are button names (strings).
+     self.debuggerKind = kind.lower()
+     self.atButtonNodes = getBool('scripting-at-button-nodes')
+@language python
+</t>
+<t tx="ekr.20181017165332.62">def __init__(self, c, iconBar=None):
+    self.c = c
+    self.gui = c.frame.gui
+    getBool = c.config.getBool
+    self.scanned = False
+    kind = c.config.getString('debugger_kind') or 'idle'
+    self.buttonsDict = {} # Keys are buttons, values are button names (strings).
+    self.debuggerKind = kind.lower()
+    self.atButtonNodes = getBool('scripting-at-button-nodes')
+        # True: adds a button for every @button node.
+    self.atCommandsNodes = getBool('scripting-at-commands-nodes')
+        # True: define a minibuffer command for every @command node.
+    self.atRclickNodes = getBool('scripting-at-rclick-nodes')
+        # True: define a minibuffer command for every @rclick node.
+    self.atPluginNodes = getBool('scripting-at-plugin-nodes')
+        # True: dynamically loads plugins in @plugins nodes when a window is created.
+    self.atScriptNodes = getBool('scripting-at-script-nodes')
+        # True: dynamically executes script in @script nodes when a window is created.
+        # DANGEROUS!
+    # Do not allow this setting to be changed in local (non-settings) .leo files.
+    if self.atScriptNodes and c.config.isLocalSetting('scripting-at-script-nodes', 'bool'):
+        g.es('Security warning! Ignoring...', color='red')
+        g.es('@bool scripting-at-script-nodes = True', color='red')
+        g.es('This setting can be True only in')
+        g.es('leoSettings.leo or myLeoSettings.leo')
+        # Restore the value in myLeoSettings.leo
+        val = g.app.config.valueInMyLeoSettings('scripting-at-script-nodes')
+        if val is None: val = False
+        g.es('Restoring value to', val, color='red')
+        self.atScriptNodes = val
+    self.createDebugButton = getBool('scripting-create-debug-button')
+        # True: create Debug Script button.
+    self.createRunScriptButton = getBool('scripting-create-run-script-button')
+        # True: create Run Script button.
+    self.createScriptButtonButton = getBool('scripting-create-script-button-button')
+        # True: create Script Button button.
+    self.maxButtonSize = c.config.getInt('scripting-max-button-size') or 18
+        # Maximum length of button names.
+    if not iconBar:
+        self.iconBar = c.frame.getIconBarObject()
+    else:
+        self.iconBar = iconBar
+    self.seen = set()
+        # Fix bug 74: problems with @button if defined in myLeoSettings.leo
+        # Set of gnx's (not vnodes!) that created buttons or commands.
+</t>
+<t tx="ekr.20181017165332.63">def __init__(self, c, iconBar=None):
+    self.c = c
+    self.gui = c.frame.gui
+    getBool = c.config.getBool
+    self.scanned = False
+    kind = c.config.getString('debugger-kind') or 'idle'
+    self.buttonsDict = {} # Keys are buttons, values are button names (strings).
+    self.debuggerKind = kind.lower()
+    self.atButtonNodes = getBool('scripting-at-button-nodes')
+        # True: adds a button for every @button node.
+    self.atCommandsNodes = getBool('scripting-at-commands-nodes')
+        # True: define a minibuffer command for every @command node.
+    self.atRclickNodes = getBool('scripting-at-rclick-nodes')
+        # True: define a minibuffer command for every @rclick node.
+    self.atPluginNodes = getBool('scripting-at-plugin-nodes')
+        # True: dynamically loads plugins in @plugins nodes when a window is created.
+    self.atScriptNodes = getBool('scripting-at-script-nodes')
+        # True: dynamically executes script in @script nodes when a window is created.
+        # DANGEROUS!
+    # Do not allow this setting to be changed in local (non-settings) .leo files.
+    if self.atScriptNodes and c.config.isLocalSetting('scripting-at-script-nodes', 'bool'):
+        g.es('Security warning! Ignoring...', color='red')
+        g.es('@bool scripting-at-script-nodes = True', color='red')
+        g.es('This setting can be True only in')
+        g.es('leoSettings.leo or myLeoSettings.leo')
+        # Restore the value in myLeoSettings.leo
+        val = g.app.config.valueInMyLeoSettings('scripting-at-script-nodes')
+        if val is None: val = False
+        g.es('Restoring value to', val, color='red')
+        self.atScriptNodes = val
+    self.createDebugButton = getBool('scripting-create-debug-button')
+        # True: create Debug Script button.
+    self.createRunScriptButton = getBool('scripting-create-run-script-button')
+        # True: create Run Script button.
+    self.createScriptButtonButton = getBool('scripting-create-script-button-button')
+        # True: create Script Button button.
+    self.maxButtonSize = c.config.getInt('scripting-max-button-size') or 18
+        # Maximum length of button names.
+    if not iconBar:
+        self.iconBar = c.frame.getIconBarObject()
+    else:
+        self.iconBar = iconBar
+    self.seen = set()
+        # Fix bug 74: problems with @button if defined in myLeoSettings.leo
+        # Set of gnx's (not vnodes!) that created buttons or commands.
+</t>
+<t tx="ekr.20181017165332.64">@language patch
+--- HEAD
++++ uncommitted
+@@ -1,6 +1,6 @@
+ def redirect(self):
+     c = self.c
+-    if c.config.getBool('eval_redirect'):
++    if c.config.getBool('eval-redirect'):
+         self.old_stderr = g.stdErrIsRedirected()
+         self.old_stdout = g.stdOutIsRedirected()
+         if not self.old_stderr:
+@@ -10,7 +10,7 @@
+ 
+ def unredirect(self):
+     c = self.c
+-    if c.config.getBool('eval_redirect'):
++    if c.config.getBool('eval-redirect'):
+         if not self.old_stderr:
+             g.restoreStderr()
+         if not self.old_stdout:
+@language python
+</t>
+<t tx="ekr.20181017165332.65">def redirect(self):
+    c = self.c
+    if c.config.getBool('eval_redirect'):
+        self.old_stderr = g.stdErrIsRedirected()
+        self.old_stdout = g.stdOutIsRedirected()
+        if not self.old_stderr:
+            g.redirectStderr()
+        if not self.old_stdout:
+            g.redirectStdout()
+
+def unredirect(self):
+    c = self.c
+    if c.config.getBool('eval_redirect'):
+        if not self.old_stderr:
+            g.restoreStderr()
+        if not self.old_stdout:
+            g.restoreStdout()
+</t>
+<t tx="ekr.20181017165332.66">def redirect(self):
+    c = self.c
+    if c.config.getBool('eval-redirect'):
+        self.old_stderr = g.stdErrIsRedirected()
+        self.old_stdout = g.stdOutIsRedirected()
+        if not self.old_stderr:
+            g.redirectStderr()
+        if not self.old_stdout:
+            g.redirectStdout()
+
+def unredirect(self):
+    c = self.c
+    if c.config.getBool('eval-redirect'):
+        if not self.old_stderr:
+            g.restoreStderr()
+        if not self.old_stdout:
+            g.restoreStdout()
+</t>
+<t tx="ekr.20181017165332.67">@language patch
+--- HEAD
++++ uncommitted
+@@ -264,13 +264,13 @@
+     #    3 = log 1,2 &amp; 'no match to pattern'
+     #    4 = log 1,2,3, &amp; any code debugging messages,
+     #              matched pattern's 'directives', and '@file saved' settings
+-    messageLevel = c.config.getInt('nodeActions_message_level')
++    messageLevel = c.config.getInt('nodeActions-message-level')
+ 
+     if messageLevel &gt;= 1:
+         g.es( "nodeActions: triggered" )
+ 
+     #Save @file type nodes before running script if enabled
+-    saveAtFile = c.config.getBool('nodeActions_save_atFile_nodes')
++    saveAtFile = c.config.getBool('nodeActions-save-atFile-nodes')
+     if messageLevel &gt;= 4:
+         g.blue( "nA: Global nodeActions_save_atFile_nodes=",saveAtFile)
+     #Find the "nodeActions" node
+@language python
+</t>
+<t tx="ekr.20181017165332.7">def createExportMenus (tag,keywords):
+
+    """Create menu items in File -&gt; Export menu.
+
+    Menu's will not be created if the following appears in an @setting tree::
+
+        @bool leo_to_html_no_menus = True
+
+    This is so that the user can use @menu to decide which commands will
+    appear in the menu and where.
+
+    """
+    # pylint: disable=undefined-variable
+    # c *is* defined.
+    c = keywords.get("c")
+    if c.config.getBool('leo_to_html_no_menus'):
+        return
+    for item, cmd in (
+        ('Show Node as HTML', 'show-html-node'),
+        ('Show Outline as HTML', 'show-html'),
+        ('Save Node as HTML', 'export-html-node'),
+        ('Save Outline as HTML', 'export-html'),
+    ):
+        c.frame.menu.insert('Export...', 3,
+            label = item,
+            command = lambda c = c, cmd=cmd: c.k.simulateCommand(cmd)
+        )
+</t>
+<t tx="ekr.20181017165332.74"></t>
+<t tx="ekr.20181017165332.75">@language patch
+--- HEAD
++++ uncommitted
+@@ -9,13 +9,13 @@
+     #    3 = log 1,2 &amp; 'no match to pattern'
+     #    4 = log 1,2,3, &amp; any code debugging messages,
+     #              matched pattern's 'directives', and '@file saved' settings
+-    messageLevel = c.config.getInt('nodeActions_message_level')
++    messageLevel = c.config.getInt('nodeActions-message-level')
+ 
+     if messageLevel &gt;= 1:
+         g.es( "nodeActions: triggered" )
+ 
+     #Save @file type nodes before running script if enabled
+-    saveAtFile = c.config.getBool('nodeActions_save_atFile_nodes')
++    saveAtFile = c.config.getBool('nodeActions-save-atFile-nodes')
+     if messageLevel &gt;= 4:
+         g.blue( "nA: Global nodeActions_save_atFile_nodes=",saveAtFile)
+     #Find the "nodeActions" node
+@language python
+</t>
+<t tx="ekr.20181017165332.76">def doNodeAction(pClicked, c):
+
+    hClicked = pClicked.h.strip()
+
+    #Display messages based on 'messageLevel'.  Valid values:
+    #    0 = log no messages
+    #    1 = log that the plugin was triggered and each matched patterns
+    #    2 = log 1 &amp; 'event passed'
+    #    3 = log 1,2 &amp; 'no match to pattern'
+    #    4 = log 1,2,3, &amp; any code debugging messages,
+    #              matched pattern's 'directives', and '@file saved' settings
+    messageLevel = c.config.getInt('nodeActions_message_level')
+
+    if messageLevel &gt;= 1:
+        g.es( "nodeActions: triggered" )
+
+    #Save @file type nodes before running script if enabled
+    saveAtFile = c.config.getBool('nodeActions_save_atFile_nodes')
+    if messageLevel &gt;= 4:
+        g.blue( "nA: Global nodeActions_save_atFile_nodes=",saveAtFile)
+    #Find the "nodeActions" node
+    pNA = g.findNodeAnywhere(c,"nodeActions")
+    if not pNA:
+        pNA = g.findNodeAnywhere(c,"NodeActions")
+
+    if pNA:
+        #Found "nodeActions" node
+        foundPattern = False
+        passEventExternal = False  #No pass to next plugin after pattern matched
+        #Check entire subtree under the "nodeActions" node for pattern
+        for pScript in pNA.subtree():
+
+            #Nodes with subnodes are not tested for a match
+            if pScript.hasChildren():
+                continue
+
+            #Don't trigger on double click of a nodeActions' pattern node
+            if pClicked == pScript:
+                continue
+
+            pattern = pScript.h.strip()    #Pattern node's header
+            if messageLevel &gt;= 4:
+                g.blue( "nA: Checking pattern '" + pattern)
+
+            #if directives exist, parse them and set directive flags for later use
+            # pylint: disable=anomalous-backslash-in-string
+            directiveExists = re.search( " \[[V&gt;X],?[V&gt;X]?,?[V&gt;X]?]$", pattern )
+            if directiveExists:
+                directives = directiveExists.group(0)
+            else:
+                directives = "[]"
+            #What directives exist?
+            useRegEx = re.search("X", directives) is not None
+            passEventInternal = re.search("V", directives) is not None
+            if not passEventExternal: #don't disable once enabled.
+                passEventExternal = re.search("&gt;", directives) is not None
+            #Remove the directives from the end of the pattern (if they exist)
+            pattern = re.sub( " \[.*]$", "", pattern, 1)
+            if messageLevel &gt;= 4:
+                g.blue( "nA:    Pattern='" + pattern + "' " + "(after directives removed)")
+
+            #Keep copy of pattern without directives for message log
+            patternOriginal = pattern
+
+            #if pattern begins with "@files" and clicked node is an @file type
+            #node then replace "@files" in pattern with clicked node's @file type
+            patternBeginsWithAtFiles = re.search( "^@files ", pattern )
+            clickedAtFileTypeNode = False #assume @file type node not clicked
+            if patternBeginsWithAtFiles:
+                #Check if first word in clicked header is in list of @file types
+                firstWordInClickedHeader = hClicked.split()[0]
+                if firstWordInClickedHeader in atFileTypes:
+                    clickedAtFileTypeNode = True #Tell "write @file type nodes" code
+                    #Replace "@files" in pattern with clicked node's @file type
+                    pattern = re.sub( "^@files", firstWordInClickedHeader, pattern)
+                    if messageLevel &gt;= 4:
+                        g.blue( "nA:    Pattern='" + pattern + "' " + "(after @files substitution)")
+
+            #Check for pattern match to clicked node's header
+            if useRegEx:
+                match = re.search(pattern, hClicked)
+            else:
+                match = fnmatch.fnmatchcase(hClicked, pattern)
+            if match:
+                if messageLevel &gt;= 1:
+                    g.blue( "nA: Matched pattern '" + patternOriginal + "'")
+                if messageLevel &gt;= 4:
+                    g.blue( "nA:    Directives: X=",useRegEx, "V=",passEventInternal,
+                          "&gt;=",passEventExternal,)
+                #if @file type node, save node to disk (if configured)
+                if clickedAtFileTypeNode:
+                    if saveAtFile:
+                        #Problem - No way found to just save clicked node, saving all
+                        c.fileCommands.writeAtFileNodes()
+                        ### c.requestRedrawFlag = True
+                        c.redraw()
+                        if messageLevel &gt;= 3:
+                            g.blue( "nA:    Saved '" + hClicked + "'")
+                #Run the script
+                applyNodeAction(pScript, pClicked, c)
+                #Indicate that at least one pattern was matched
+                foundPattern = True
+                #Don't trigger more patterns unless enabled in patterns' headline
+                if not passEventInternal:
+                    break
+            else:
+                if messageLevel &gt;= 3:
+                    g.blue("nA: Did not match '" + patternOriginal + "'")
+
+        #Finished checking headline against patterns
+        if not foundPattern:
+            #no match to any pattern, always pass event to next plugin
+            if messageLevel &gt;= 1:
+                g.blue("nA: No patterns matched to """ + hClicked + '"')
+            return False #TL - Inform onIconDoubleClick that no action was taken
+        elif passEventExternal:
+            #last matched pattern has directive to pass event to next plugin
+            if messageLevel &gt;= 2:
+                g.blue("nA: Event passed to next plugin")
+            return False #TL - Inform onIconDoubleClick to pass double-click event
+        else:
+            #last matched pattern did not have directive to pass event to plugin
+            if messageLevel &gt;= 2:
+                g.blue("nA: Event not passed to next plugin")
+            return True #TL - Inform onIconDoubleClick to not pass double-click
+    else:
+        #nodeActions plugin enabled without a 'nodeActions' node
+        if messageLevel &gt;= 4:
+            g.blue("nA: The ""nodeActions"" node does not exist")
+        return False #TL - Inform onIconDoubleClick that no action was taken
+</t>
+<t tx="ekr.20181017165332.77">def doNodeAction(pClicked, c):
+
+    hClicked = pClicked.h.strip()
+
+    #Display messages based on 'messageLevel'.  Valid values:
+    #    0 = log no messages
+    #    1 = log that the plugin was triggered and each matched patterns
+    #    2 = log 1 &amp; 'event passed'
+    #    3 = log 1,2 &amp; 'no match to pattern'
+    #    4 = log 1,2,3, &amp; any code debugging messages,
+    #              matched pattern's 'directives', and '@file saved' settings
+    messageLevel = c.config.getInt('nodeActions-message-level')
+
+    if messageLevel &gt;= 1:
+        g.es( "nodeActions: triggered" )
+
+    #Save @file type nodes before running script if enabled
+    saveAtFile = c.config.getBool('nodeActions-save-atFile-nodes')
+    if messageLevel &gt;= 4:
+        g.blue( "nA: Global nodeActions_save_atFile_nodes=",saveAtFile)
+    #Find the "nodeActions" node
+    pNA = g.findNodeAnywhere(c,"nodeActions")
+    if not pNA:
+        pNA = g.findNodeAnywhere(c,"NodeActions")
+
+    if pNA:
+        #Found "nodeActions" node
+        foundPattern = False
+        passEventExternal = False  #No pass to next plugin after pattern matched
+        #Check entire subtree under the "nodeActions" node for pattern
+        for pScript in pNA.subtree():
+
+            #Nodes with subnodes are not tested for a match
+            if pScript.hasChildren():
+                continue
+
+            #Don't trigger on double click of a nodeActions' pattern node
+            if pClicked == pScript:
+                continue
+
+            pattern = pScript.h.strip()    #Pattern node's header
+            if messageLevel &gt;= 4:
+                g.blue( "nA: Checking pattern '" + pattern)
+
+            #if directives exist, parse them and set directive flags for later use
+            # pylint: disable=anomalous-backslash-in-string
+            directiveExists = re.search( " \[[V&gt;X],?[V&gt;X]?,?[V&gt;X]?]$", pattern )
+            if directiveExists:
+                directives = directiveExists.group(0)
+            else:
+                directives = "[]"
+            #What directives exist?
+            useRegEx = re.search("X", directives) is not None
+            passEventInternal = re.search("V", directives) is not None
+            if not passEventExternal: #don't disable once enabled.
+                passEventExternal = re.search("&gt;", directives) is not None
+            #Remove the directives from the end of the pattern (if they exist)
+            pattern = re.sub( " \[.*]$", "", pattern, 1)
+            if messageLevel &gt;= 4:
+                g.blue( "nA:    Pattern='" + pattern + "' " + "(after directives removed)")
+
+            #Keep copy of pattern without directives for message log
+            patternOriginal = pattern
+
+            #if pattern begins with "@files" and clicked node is an @file type
+            #node then replace "@files" in pattern with clicked node's @file type
+            patternBeginsWithAtFiles = re.search( "^@files ", pattern )
+            clickedAtFileTypeNode = False #assume @file type node not clicked
+            if patternBeginsWithAtFiles:
+                #Check if first word in clicked header is in list of @file types
+                firstWordInClickedHeader = hClicked.split()[0]
+                if firstWordInClickedHeader in atFileTypes:
+                    clickedAtFileTypeNode = True #Tell "write @file type nodes" code
+                    #Replace "@files" in pattern with clicked node's @file type
+                    pattern = re.sub( "^@files", firstWordInClickedHeader, pattern)
+                    if messageLevel &gt;= 4:
+                        g.blue( "nA:    Pattern='" + pattern + "' " + "(after @files substitution)")
+
+            #Check for pattern match to clicked node's header
+            if useRegEx:
+                match = re.search(pattern, hClicked)
+            else:
+                match = fnmatch.fnmatchcase(hClicked, pattern)
+            if match:
+                if messageLevel &gt;= 1:
+                    g.blue( "nA: Matched pattern '" + patternOriginal + "'")
+                if messageLevel &gt;= 4:
+                    g.blue( "nA:    Directives: X=",useRegEx, "V=",passEventInternal,
+                          "&gt;=",passEventExternal,)
+                #if @file type node, save node to disk (if configured)
+                if clickedAtFileTypeNode:
+                    if saveAtFile:
+                        #Problem - No way found to just save clicked node, saving all
+                        c.fileCommands.writeAtFileNodes()
+                        ### c.requestRedrawFlag = True
+                        c.redraw()
+                        if messageLevel &gt;= 3:
+                            g.blue( "nA:    Saved '" + hClicked + "'")
+                #Run the script
+                applyNodeAction(pScript, pClicked, c)
+                #Indicate that at least one pattern was matched
+                foundPattern = True
+                #Don't trigger more patterns unless enabled in patterns' headline
+                if not passEventInternal:
+                    break
+            else:
+                if messageLevel &gt;= 3:
+                    g.blue("nA: Did not match '" + patternOriginal + "'")
+
+        #Finished checking headline against patterns
+        if not foundPattern:
+            #no match to any pattern, always pass event to next plugin
+            if messageLevel &gt;= 1:
+                g.blue("nA: No patterns matched to """ + hClicked + '"')
+            return False #TL - Inform onIconDoubleClick that no action was taken
+        elif passEventExternal:
+            #last matched pattern has directive to pass event to next plugin
+            if messageLevel &gt;= 2:
+                g.blue("nA: Event passed to next plugin")
+            return False #TL - Inform onIconDoubleClick to pass double-click event
+        else:
+            #last matched pattern did not have directive to pass event to plugin
+            if messageLevel &gt;= 2:
+                g.blue("nA: Event not passed to next plugin")
+            return True #TL - Inform onIconDoubleClick to not pass double-click
+    else:
+        #nodeActions plugin enabled without a 'nodeActions' node
+        if messageLevel &gt;= 4:
+            g.blue("nA: The ""nodeActions"" node does not exist")
+        return False #TL - Inform onIconDoubleClick that no action was taken
+</t>
+<t tx="ekr.20181017165332.78">@language patch
+--- HEAD
++++ uncommitted
+@@ -389,7 +389,7 @@
+             b = None
+             mb.has_parent = True
+             # New code.
+-            t = c.config.getString('mod_scripting_subtext') or ''
++            t = c.config.getString('mod-scripting-subtext') or ''
+             t2 = g.u(pb.text())
+             if not t.endswith(t):
+                 pb.setText(t2+t)
+@language python
+</t>
+<t tx="ekr.20181017165332.8">def createExportMenus (tag,keywords):
+
+    """Create menu items in File -&gt; Export menu.
+
+    Menu's will not be created if the following appears in an @setting tree::
+
+        @bool leo_to_html_no_menus = True
+
+    This is so that the user can use @menu to decide which commands will
+    appear in the menu and where.
+
+    """
+    # pylint: disable=undefined-variable
+    # c *is* defined.
+    c = keywords.get("c")
+    if c.config.getBool('leo-to-html-no-menus'):
+        return
+    for item, cmd in (
+        ('Show Node as HTML', 'show-html-node'),
+        ('Show Outline as HTML', 'show-html'),
+        ('Save Node as HTML', 'export-html-node'),
+        ('Save Outline as HTML', 'export-html'),
+    ):
+        c.frame.menu.insert('Export...', 3,
+            label = item,
+            command = lambda c = c, cmd=cmd: c.k.simulateCommand(cmd)
+        )
+</t>
+<t tx="ekr.20181017165332.85"></t>
+<t tx="ekr.20181017165332.86">@language patch
+--- HEAD
++++ uncommitted
+@@ -30,7 +30,7 @@
+         b = None
+         mb.has_parent = True
+         # New code.
+-        t = c.config.getString('mod_scripting_subtext') or ''
++        t = c.config.getString('mod-scripting-subtext') or ''
+         t2 = g.u(pb.text())
+         if not t.endswith(t):
+             pb.setText(t2+t)
+@language python
+</t>
+<t tx="ekr.20181017165332.87">def addButton (self, which, type_="move", v=None, parent=None):
+    '''Add a button that creates a target for future moves.'''
+    c = self.c
+    p = c.p
+    if v is None:
+        v = p.v
+    sc = scriptingController(c)
+    mb = quickMoveButton(self,v,which,type_=type_)
+    txt=self.txts[type_]
+
+    if parent:  # find parent button
+        for i in self.buttons:
+            if i[0].target.gnx == parent:
+                parent = i[1]
+                break
+        else:
+            g.es('Move to button parent not found, placing at top level')
+            parent = None
+
+    header = v.anyAtFileNodeName() or v.h  # drop @auto etc.
+
+    text = txt + ":" + header if txt else header
+    # createButton truncates text.
+
+    if parent and g.app.gui.guiName().startswith("qt"):
+        pb = parent.button
+        rc = QtWidgets.QAction(text, pb)
+        rc.triggered.connect(mb.moveCurrentNodeToTarget)
+        pb.insertAction(pb.actions()[0], rc) # insert at top
+        b = None
+        mb.has_parent = True
+        # New code.
+        t = c.config.getString('mod_scripting_subtext') or ''
+        t2 = g.u(pb.text())
+        if not t.endswith(t):
+            pb.setText(t2+t)
+    else:
+        b = sc.createIconButton(
+            args=None,
+            text=text,
+            command = mb.moveCurrentNodeToTarget,
+            statusLine = '%s current node to %s child of %s' % (
+                type_.title(), which, v.h),
+            kind = "quick-move"
+        )
+        if g.app.gui.guiName() == "qt":
+
+            def cb_goto_target(checked, c=c, v=v):
+                p = c.vnode2position(v)
+                c.selectPosition(p)
+                c.redraw()
+
+            def cb_set_parent(checked, c=c, v=v, first=which, type_=type_):
+                c.quickMove.set_parent(v, first, type_)
+
+            def cb_permanent(checked, c=c, v=v, type_=type_, first=which):
+                c.quickMove.permanentButton(v=v, type_=type_, first=first)
+
+            # def cb_clear(event=None, c=c, v=v):
+            #     c.quickMove.clearButton(v)
+
+            for cb, txt in [
+                (cb_goto_target, 'Goto target'),
+                (cb_permanent, 'Make permanent'),
+                # (cb_clear, 'Clear permanent'),
+                (cb_set_parent, 'Set parent'),
+            ]:
+                but = b.button
+                rc = QtWidgets.QAction(txt, but)
+                rc.triggered.connect(cb)
+                but.insertAction(but.actions()[-1], rc)
+                    # insert rc before Remove Button
+
+    self.buttons.append((mb,b))
+</t>
+<t tx="ekr.20181017165332.88">def addButton (self, which, type_="move", v=None, parent=None):
+    '''Add a button that creates a target for future moves.'''
+    c = self.c
+    p = c.p
+    if v is None:
+        v = p.v
+    sc = scriptingController(c)
+    mb = quickMoveButton(self,v,which,type_=type_)
+    txt=self.txts[type_]
+
+    if parent:  # find parent button
+        for i in self.buttons:
+            if i[0].target.gnx == parent:
+                parent = i[1]
+                break
+        else:
+            g.es('Move to button parent not found, placing at top level')
+            parent = None
+
+    header = v.anyAtFileNodeName() or v.h  # drop @auto etc.
+
+    text = txt + ":" + header if txt else header
+    # createButton truncates text.
+
+    if parent and g.app.gui.guiName().startswith("qt"):
+        pb = parent.button
+        rc = QtWidgets.QAction(text, pb)
+        rc.triggered.connect(mb.moveCurrentNodeToTarget)
+        pb.insertAction(pb.actions()[0], rc) # insert at top
+        b = None
+        mb.has_parent = True
+        # New code.
+        t = c.config.getString('mod-scripting-subtext') or ''
+        t2 = g.u(pb.text())
+        if not t.endswith(t):
+            pb.setText(t2+t)
+    else:
+        b = sc.createIconButton(
+            args=None,
+            text=text,
+            command = mb.moveCurrentNodeToTarget,
+            statusLine = '%s current node to %s child of %s' % (
+                type_.title(), which, v.h),
+            kind = "quick-move"
+        )
+        if g.app.gui.guiName() == "qt":
+
+            def cb_goto_target(checked, c=c, v=v):
+                p = c.vnode2position(v)
+                c.selectPosition(p)
+                c.redraw()
+
+            def cb_set_parent(checked, c=c, v=v, first=which, type_=type_):
+                c.quickMove.set_parent(v, first, type_)
+
+            def cb_permanent(checked, c=c, v=v, type_=type_, first=which):
+                c.quickMove.permanentButton(v=v, type_=type_, first=first)
+
+            # def cb_clear(event=None, c=c, v=v):
+            #     c.quickMove.clearButton(v)
+
+            for cb, txt in [
+                (cb_goto_target, 'Goto target'),
+                (cb_permanent, 'Make permanent'),
+                # (cb_clear, 'Clear permanent'),
+                (cb_set_parent, 'Set parent'),
+            ]:
+                but = b.button
+                rc = QtWidgets.QAction(txt, but)
+                rc.triggered.connect(cb)
+                but.insertAction(but.actions()[-1], rc)
+                    # insert rc before Remove Button
+
+    self.buttons.append((mb,b))
+</t>
+<t tx="ekr.20181017165332.89">@language patch
+--- HEAD
++++ uncommitted
+@@ -114,7 +114,7 @@
+             # change dir to get themed icons, needed for uic resources
+             # 20180327 this is working, these are icons for todo UI, not
+             # the tree.
+-            theme = g.app.config.getString('color_theme')
++            theme = g.app.config.getString('color-theme')
+             if theme:
+                 testPath = g.os_path_join(
+                     g.app.homeLeoDir, 'themes', theme, 'Icons', 'cleo')
+@@ -403,10 +403,10 @@
+     def reloadSettings(self):
+         c = self.c
+         c.registerReloadSettings(self)
+-        self.time_name = c.config.getString('todo_time_name') or 'days'
+-        self.icon_location = c.config.getString('todo_icon_location') or 'beforeHeadline'
+-        self.prog_location = c.config.getString('todo_prog_location') or 'beforeHeadline'
+-        self.icon_order = c.config.getString('todo_icon_order') or 'pri-first'
++        self.time_name = c.config.getString('todo-time-name') or 'days'
++        self.icon_location = c.config.getString('todo-icon-location') or 'beforeHeadline'
++        self.prog_location = c.config.getString('todo-prog-location') or 'beforeHeadline'
++        self.icon_order = c.config.getString('todo-icon-order') or 'pri-first'
+     #@+node:tbrown.20090522142657.7894: *3* __del__
+     def __del__(self):
+         for i in self.handlers:
+@language python
+</t>
+<t tx="ekr.20181017165332.9">@language patch
+--- HEAD
++++ uncommitted
+@@ -202,9 +202,9 @@
+         c = self.c
+         c.registerReloadSettings(self)
+         # line prefix for pasting results into leo (#, --, //, C, etc.)
+-        x = self.c.config.getString('leoscreen_prefix')
++        x = self.c.config.getString('leoscreen-prefix')
+         self.get_line_prefix = x.replace('SPACE', ' ') if x else ''
+-        self.time_fmt = self.c.config.getString('leoscreen_time_fmt') or '%Y-%m-%d %H:%M:%S'
++        self.time_fmt = self.c.config.getString('leoscreen-time-fmt') or '%Y-%m-%d %H:%M:%S'
+     #@+node:tbrown.20100226095909.12785: *3* __del__
+     def __del__(self):
+         """remove temporary file"""
+@language python
+</t>
+<t tx="ekr.20181017165332.96"></t>
+<t tx="ekr.20181017165332.97">@language patch
+--- HEAD
++++ uncommitted
+@@ -6,7 +6,7 @@
+     # change dir to get themed icons, needed for uic resources
+     # 20180327 this is working, these are icons for todo UI, not
+     # the tree.
+-    theme = g.app.config.getString('color_theme')
++    theme = g.app.config.getString('color-theme')
+     if theme:
+         testPath = g.os_path_join(
+             g.app.homeLeoDir, 'themes', theme, 'Icons', 'cleo')
+@language python
+</t>
+<t tx="ekr.20181017165332.98">def __init__(self, owner, logTab=True):
+
+    self.owner = owner
+    QtWidgets.QWidget.__init__(self)
+    uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
+    # change dir to get themed icons, needed for uic resources
+    # 20180327 this is working, these are icons for todo UI, not
+    # the tree.
+    theme = g.app.config.getString('color_theme')
+    if theme:
+        testPath = g.os_path_join(
+            g.app.homeLeoDir, 'themes', theme, 'Icons', 'cleo')
+        if g.os_path_exists(testPath):
+            iconPath = g.os_path_dirname(testPath)
+        else:
+            testPath = g.os_path_join(
+                g.app.loadDir, '..', 'themes', theme, 'Icons', 'cleo')
+            if g.os_path_exists(testPath):
+                iconPath = g.os_path_dirname(testPath)
+            else:
+                iconPath = g.os_path_join(g.app.leoDir, 'Icons')
+    else:
+        iconPath = g.os_path_join(g.app.leoDir, 'Icons')
+    os.chdir(iconPath)
+    form_class, base_class = uic.loadUiType(uiPath)
+    if logTab:
+        self.owner.c.frame.log.createTab('Task', widget = self)
+    self.UI = form_class()
+    self.UI.setupUi(self)
+    u = self.UI
+    o = self.owner
+    self.menu = QtWidgets.QMenu()
+    self.populateMenu(self.menu, o)
+    u.butMenu.setMenu(self.menu)
+    if True: ### isQt5:
+        u.butHelp.clicked.connect(lambda checked: o.showHelp())
+        u.butClrProg.clicked.connect(lambda checked: o.progress_clear())
+        u.butClrTime.clicked.connect(lambda checked: o.clear_time_req())
+        u.butPriClr.clicked.connect(lambda checked: o.priority_clear())
+        # if live update is too slow change valueChanged(*) to editingFinished()
+        u.spinTime.valueChanged.connect(
+            lambda v: o.set_time_req(val=u.spinTime.value()))
+        u.spinProg.valueChanged.connect(
+            lambda v: o.set_progress(val=u.spinProg.value()))
+    # else:
+        # self.connect(u.butHelp, QtCore.SIGNAL("clicked()"), o.showHelp)
+        # self.connect(u.butClrProg, QtCore.SIGNAL("clicked()"),
+            # o.progress_clear)
+        # self.connect(u.butClrTime, QtCore.SIGNAL("clicked()"),
+            # o.clear_time_req)
+        # self.connect(u.butPriClr, QtCore.SIGNAL("clicked()"),
+            # o.priority_clear)
+        # # if live update is too slow change valueChanged(*) to editingFinished()
+        # self.connect(u.spinTime, QtCore.SIGNAL("valueChanged(double)"),
+            # lambda v: o.set_time_req(val=u.spinTime.value()))
+        # self.connect(u.spinProg, QtCore.SIGNAL("valueChanged(int)"),
+            # lambda v: o.set_progress(val=u.spinProg.value()))
+
+    u.dueDateEdit.dateChanged.connect(
+        lambda v: o.set_due_date(val=u.dueDateEdit.date()))
+    u.dueTimeEdit.timeChanged.connect(
+        lambda v: o.set_due_time(val=u.dueTimeEdit.time()))
+
+    u.nxtwkDateEdit.dateChanged.connect(
+        lambda v: o.set_due_date(val=u.nxtwkDateEdit.date(), field='nextworkdate'))
+    u.nxtwkTimeEdit.timeChanged.connect(
+        lambda v: o.set_due_time(val=u.nxtwkTimeEdit.time(), field='nextworktime'))
+
+    u.dueDateToggle.stateChanged.connect(
+        lambda v: o.set_due_date(val=u.dueDateEdit.date(), mode='check'))
+    u.dueTimeToggle.stateChanged.connect(
+        lambda v: o.set_due_time(val=u.dueTimeEdit.time(), mode='check'))
+    u.nxtwkDateToggle.stateChanged.connect(
+        lambda v: o.set_due_date(val=u.nxtwkDateEdit.date(), mode='check', field='nextworkdate'))
+    u.nxtwkTimeToggle.stateChanged.connect(
+        lambda v: o.set_due_time(val=u.nxtwkTimeEdit.time(), mode='check', field='nextworktime'))
+
+    for but in ["butPri1", "butPri6", "butPriChk", "butPri2",
+        "butPri4", "butPri5", "butPri8", "butPri9", "butPri0",
+        "butPriToDo", "butPriXgry", "butPriBang", "butPriX",
+        "butPriQuery", "butPriBullet", "butPri7",
+        "butPri3"
+    ]:
+        w = getattr(u, but)
+        # w.property() seems to give QVariant in python 2.x and int in 3.x!?
+        try:
+            pri = int(w.property('priority'))
+        except (TypeError, ValueError):
+            try:
+                pri, ok = w.property('priority').toInt()
+            except (TypeError, ValueError):
+                pri = -1
+
+        # pylint: disable=cell-var-from-loop
+        # pylint: disable=undefined-variable
+        # 'setter' *is* defined.
+        def setter(pri=pri):
+            o.setPri(pri)
+
+        if True: ### isQt5:
+            w.clicked.connect(lambda checked, setter=setter: setter())
+        # else:
+            # self.connect(w, QtCore.SIGNAL("clicked()"), setter)
+
+    offsets = self.owner.c.config.getData('todo_due_date_offsets')
+    if not offsets:
+        offsets = '+7 +0 +1 +2 +3 +4 +5 +6 +10 +14 +21 +28 +42 +60 +90 +120 +150 ' \
+                  '&gt;7 &lt;7 &lt;14 &gt;14 &lt;28 &gt;28'.split()
+    self.date_offset_default = int(offsets[0].strip('&gt;').replace('&lt;', '-'))
+    offsets = sorted(set(offsets), key=lambda x: (x[0],int(x[1:].strip('&gt;').replace('&lt;', '-'))))
+    u.dueDateOffset.addItems(offsets)
+    u.dueDateOffset.setCurrentIndex(self.date_offset_default)
+
+    if True: ### isQt5:
+        self.UI.dueDateOffset.activated.connect(
+            lambda v: o.set_date_offset(field='duedate'))
+    # else:
+        # self.connect(self.UI.dueDateOffset, QtCore.SIGNAL("activated(int)"),
+            # lambda v: o.set_date_offset(field='duedate'))
+    u.nxtwkDateOffset.addItems(offsets)
+    u.nxtwkDateOffset.setCurrentIndex(self.date_offset_default)
+
+    if True: ### isQt5:
+        self.UI.nxtwkDateOffset.activated.connect(
+            lambda v: o.set_date_offset(field='nextworkdate'))
+    # else:
+        # self.connect(self.UI.nxtwkDateOffset, QtCore.SIGNAL("activated(int)"),
+            # lambda v: o.set_date_offset(field='nextworkdate'))
+
+    self.setDueDate = self.make_func(self.UI.dueDateEdit,
+        self.UI.dueDateToggle, 'setDate',
+        datetime.date.today() + datetime.timedelta(self.date_offset_default))
+
+    self.setDueTime = self.make_func(self.UI.dueTimeEdit,
+        self.UI.dueTimeToggle, 'setTime',
+        datetime.datetime.now().time())
+
+    self.setNextWorkDate = self.make_func(self.UI.nxtwkDateEdit,
+        self.UI.nxtwkDateToggle, 'setDate',
+        datetime.date.today() + datetime.timedelta(self.date_offset_default))
+
+    self.setNextWorkTime = self.make_func(self.UI.nxtwkTimeEdit,
+        self.UI.nxtwkTimeToggle, 'setTime',
+        datetime.datetime.now().time())
+
+    if True: ### isQt5:
+        self.UI.butDetails.clicked.connect(
+            lambda checked: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
+    # else:
+        # self.connect(self.UI.butDetails, QtCore.SIGNAL("clicked()"),
+            # lambda: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
+    if self.owner.c.config.getBool("todo_compact_interface"):
+        self.UI.frmDetails.setVisible(False)
+
+    if True: ### isQt5:
+        self.UI.butNext.clicked.connect(
+            lambda checked: self.owner.c.selectVisNext())
+        self.UI.butNextTodo.clicked.connect(
+            lambda checked: self.owner.find_todo())
+        self.UI.butApplyDueOffset.clicked.connect(
+            lambda checked: o.set_date_offset(field='duedate'))
+        self.UI.butApplyOffset.clicked.connect(
+            lambda checked: o.set_date_offset(field='nextworkdate'))
+    # else:
+        # self.connect(self.UI.butNext, QtCore.SIGNAL("clicked()"),
+            # lambda: self.owner.c.selectVisNext())
+        # self.connect(self.UI.butNextTodo, QtCore.SIGNAL("clicked()"),
+            # self.owner.find_todo)
+        # self.connect(self.UI.butApplyDueOffset, QtCore.SIGNAL("clicked()"),
+            # lambda: o.set_date_offset(field='duedate'))
+        # self.connect(self.UI.butApplyOffset, QtCore.SIGNAL("clicked()"),
+            # lambda: o.set_date_offset(field='nextworkdate'))
+
+    n = g.app.config.getInt("todo_calendar_n")
+    cols = g.app.config.getInt("todo_calendar_cols")
+    if n or cols:
+        self.UI.dueDateEdit.calendarWidget().build(n or 3, cols or 3)
+        self.UI.nxtwkDateEdit.calendarWidget().build(n or 3, cols or 3)
+</t>
+<t tx="ekr.20181017165332.99">def __init__(self, owner, logTab=True):
+
+    self.owner = owner
+    QtWidgets.QWidget.__init__(self)
+    uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
+    # change dir to get themed icons, needed for uic resources
+    # 20180327 this is working, these are icons for todo UI, not
+    # the tree.
+    theme = g.app.config.getString('color-theme')
+    if theme:
+        testPath = g.os_path_join(
+            g.app.homeLeoDir, 'themes', theme, 'Icons', 'cleo')
+        if g.os_path_exists(testPath):
+            iconPath = g.os_path_dirname(testPath)
+        else:
+            testPath = g.os_path_join(
+                g.app.loadDir, '..', 'themes', theme, 'Icons', 'cleo')
+            if g.os_path_exists(testPath):
+                iconPath = g.os_path_dirname(testPath)
+            else:
+                iconPath = g.os_path_join(g.app.leoDir, 'Icons')
+    else:
+        iconPath = g.os_path_join(g.app.leoDir, 'Icons')
+    os.chdir(iconPath)
+    form_class, base_class = uic.loadUiType(uiPath)
+    if logTab:
+        self.owner.c.frame.log.createTab('Task', widget = self)
+    self.UI = form_class()
+    self.UI.setupUi(self)
+    u = self.UI
+    o = self.owner
+    self.menu = QtWidgets.QMenu()
+    self.populateMenu(self.menu, o)
+    u.butMenu.setMenu(self.menu)
+    if True: ### isQt5:
+        u.butHelp.clicked.connect(lambda checked: o.showHelp())
+        u.butClrProg.clicked.connect(lambda checked: o.progress_clear())
+        u.butClrTime.clicked.connect(lambda checked: o.clear_time_req())
+        u.butPriClr.clicked.connect(lambda checked: o.priority_clear())
+        # if live update is too slow change valueChanged(*) to editingFinished()
+        u.spinTime.valueChanged.connect(
+            lambda v: o.set_time_req(val=u.spinTime.value()))
+        u.spinProg.valueChanged.connect(
+            lambda v: o.set_progress(val=u.spinProg.value()))
+    # else:
+        # self.connect(u.butHelp, QtCore.SIGNAL("clicked()"), o.showHelp)
+        # self.connect(u.butClrProg, QtCore.SIGNAL("clicked()"),
+            # o.progress_clear)
+        # self.connect(u.butClrTime, QtCore.SIGNAL("clicked()"),
+            # o.clear_time_req)
+        # self.connect(u.butPriClr, QtCore.SIGNAL("clicked()"),
+            # o.priority_clear)
+        # # if live update is too slow change valueChanged(*) to editingFinished()
+        # self.connect(u.spinTime, QtCore.SIGNAL("valueChanged(double)"),
+            # lambda v: o.set_time_req(val=u.spinTime.value()))
+        # self.connect(u.spinProg, QtCore.SIGNAL("valueChanged(int)"),
+            # lambda v: o.set_progress(val=u.spinProg.value()))
+
+    u.dueDateEdit.dateChanged.connect(
+        lambda v: o.set_due_date(val=u.dueDateEdit.date()))
+    u.dueTimeEdit.timeChanged.connect(
+        lambda v: o.set_due_time(val=u.dueTimeEdit.time()))
+
+    u.nxtwkDateEdit.dateChanged.connect(
+        lambda v: o.set_due_date(val=u.nxtwkDateEdit.date(), field='nextworkdate'))
+    u.nxtwkTimeEdit.timeChanged.connect(
+        lambda v: o.set_due_time(val=u.nxtwkTimeEdit.time(), field='nextworktime'))
+
+    u.dueDateToggle.stateChanged.connect(
+        lambda v: o.set_due_date(val=u.dueDateEdit.date(), mode='check'))
+    u.dueTimeToggle.stateChanged.connect(
+        lambda v: o.set_due_time(val=u.dueTimeEdit.time(), mode='check'))
+    u.nxtwkDateToggle.stateChanged.connect(
+        lambda v: o.set_due_date(val=u.nxtwkDateEdit.date(), mode='check', field='nextworkdate'))
+    u.nxtwkTimeToggle.stateChanged.connect(
+        lambda v: o.set_due_time(val=u.nxtwkTimeEdit.time(), mode='check', field='nextworktime'))
+
+    for but in ["butPri1", "butPri6", "butPriChk", "butPri2",
+        "butPri4", "butPri5", "butPri8", "butPri9", "butPri0",
+        "butPriToDo", "butPriXgry", "butPriBang", "butPriX",
+        "butPriQuery", "butPriBullet", "butPri7",
+        "butPri3"
+    ]:
+        w = getattr(u, but)
+        # w.property() seems to give QVariant in python 2.x and int in 3.x!?
+        try:
+            pri = int(w.property('priority'))
+        except (TypeError, ValueError):
+            try:
+                pri, ok = w.property('priority').toInt()
+            except (TypeError, ValueError):
+                pri = -1
+
+        # pylint: disable=cell-var-from-loop
+        # pylint: disable=undefined-variable
+        # 'setter' *is* defined.
+        def setter(pri=pri):
+            o.setPri(pri)
+
+        if True: ### isQt5:
+            w.clicked.connect(lambda checked, setter=setter: setter())
+        # else:
+            # self.connect(w, QtCore.SIGNAL("clicked()"), setter)
+
+    offsets = self.owner.c.config.getData('todo_due_date_offsets')
+    if not offsets:
+        offsets = '+7 +0 +1 +2 +3 +4 +5 +6 +10 +14 +21 +28 +42 +60 +90 +120 +150 ' \
+                  '&gt;7 &lt;7 &lt;14 &gt;14 &lt;28 &gt;28'.split()
+    self.date_offset_default = int(offsets[0].strip('&gt;').replace('&lt;', '-'))
+    offsets = sorted(set(offsets), key=lambda x: (x[0],int(x[1:].strip('&gt;').replace('&lt;', '-'))))
+    u.dueDateOffset.addItems(offsets)
+    u.dueDateOffset.setCurrentIndex(self.date_offset_default)
+
+    if True: ### isQt5:
+        self.UI.dueDateOffset.activated.connect(
+            lambda v: o.set_date_offset(field='duedate'))
+    # else:
+        # self.connect(self.UI.dueDateOffset, QtCore.SIGNAL("activated(int)"),
+            # lambda v: o.set_date_offset(field='duedate'))
+    u.nxtwkDateOffset.addItems(offsets)
+    u.nxtwkDateOffset.setCurrentIndex(self.date_offset_default)
+
+    if True: ### isQt5:
+        self.UI.nxtwkDateOffset.activated.connect(
+            lambda v: o.set_date_offset(field='nextworkdate'))
+    # else:
+        # self.connect(self.UI.nxtwkDateOffset, QtCore.SIGNAL("activated(int)"),
+            # lambda v: o.set_date_offset(field='nextworkdate'))
+
+    self.setDueDate = self.make_func(self.UI.dueDateEdit,
+        self.UI.dueDateToggle, 'setDate',
+        datetime.date.today() + datetime.timedelta(self.date_offset_default))
+
+    self.setDueTime = self.make_func(self.UI.dueTimeEdit,
+        self.UI.dueTimeToggle, 'setTime',
+        datetime.datetime.now().time())
+
+    self.setNextWorkDate = self.make_func(self.UI.nxtwkDateEdit,
+        self.UI.nxtwkDateToggle, 'setDate',
+        datetime.date.today() + datetime.timedelta(self.date_offset_default))
+
+    self.setNextWorkTime = self.make_func(self.UI.nxtwkTimeEdit,
+        self.UI.nxtwkTimeToggle, 'setTime',
+        datetime.datetime.now().time())
+
+    if True: ### isQt5:
+        self.UI.butDetails.clicked.connect(
+            lambda checked: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
+    # else:
+        # self.connect(self.UI.butDetails, QtCore.SIGNAL("clicked()"),
+            # lambda: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
+    if self.owner.c.config.getBool("todo_compact_interface"):
+        self.UI.frmDetails.setVisible(False)
+
+    if True: ### isQt5:
+        self.UI.butNext.clicked.connect(
+            lambda checked: self.owner.c.selectVisNext())
+        self.UI.butNextTodo.clicked.connect(
+            lambda checked: self.owner.find_todo())
+        self.UI.butApplyDueOffset.clicked.connect(
+            lambda checked: o.set_date_offset(field='duedate'))
+        self.UI.butApplyOffset.clicked.connect(
+            lambda checked: o.set_date_offset(field='nextworkdate'))
+    # else:
+        # self.connect(self.UI.butNext, QtCore.SIGNAL("clicked()"),
+            # lambda: self.owner.c.selectVisNext())
+        # self.connect(self.UI.butNextTodo, QtCore.SIGNAL("clicked()"),
+            # self.owner.find_todo)
+        # self.connect(self.UI.butApplyDueOffset, QtCore.SIGNAL("clicked()"),
+            # lambda: o.set_date_offset(field='duedate'))
+        # self.connect(self.UI.butApplyOffset, QtCore.SIGNAL("clicked()"),
+            # lambda: o.set_date_offset(field='nextworkdate'))
+
+    n = g.app.config.getInt("todo_calendar_n")
+    cols = g.app.config.getInt("todo_calendar_cols")
+    if n or cols:
+        self.UI.dueDateEdit.calendarWidget().build(n or 3, cols or 3)
+        self.UI.nxtwkDateEdit.calendarWidget().build(n or 3, cols or 3)
 </t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 

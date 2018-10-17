@@ -21,7 +21,7 @@ class Py_Importer(Importer):
             state_class = Python_ScanState,
             strict=True,
         )
-        self.put_decorators = self.c.config.getBool('put_python_decorators_in_imported_headlines')
+        self.put_decorators = self.c.config.getBool('put-python-decorators-in-imported-headlines')
 
     #@+others
     #@+node:ekr.20161110073751.1: *3* py_i.clean_headline

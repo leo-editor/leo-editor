@@ -396,7 +396,7 @@ class ScriptingController(object):
         self.gui = c.frame.gui
         getBool = c.config.getBool
         self.scanned = False
-        kind = c.config.getString('debugger_kind') or 'idle'
+        kind = c.config.getString('debugger-kind') or 'idle'
         self.buttonsDict = {} # Keys are buttons, values are button names (strings).
         self.debuggerKind = kind.lower()
         self.atButtonNodes = getBool('scripting-at-button-nodes')
@@ -1439,7 +1439,7 @@ class EvalController(object):
     #@+node:ekr.20180328130526.1: *5* eval.redirect & unredirect
     def redirect(self):
         c = self.c
-        if c.config.getBool('eval_redirect'):
+        if c.config.getBool('eval-redirect'):
             self.old_stderr = g.stdErrIsRedirected()
             self.old_stdout = g.stdOutIsRedirected()
             if not self.old_stderr:
@@ -1449,7 +1449,7 @@ class EvalController(object):
 
     def unredirect(self):
         c = self.c
-        if c.config.getBool('eval_redirect'):
+        if c.config.getBool('eval-redirect'):
             if not self.old_stderr:
                 g.restoreStderr()
             if not self.old_stdout:

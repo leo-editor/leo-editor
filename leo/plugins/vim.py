@@ -221,11 +221,11 @@ class VimCommander(object):
         self.entire_file = entire_file
         # compute settings.
         getBool, getString = c.config.getBool, c.config.getString
-        self.open_url_nodes = getBool('vim_plugin_opens_url_nodes')
-        self.trace = False or getBool('vim_plugin_trace')
-        self.uses_tab = getBool('vim_plugin_uses_tab_feature')
-        self.vim_cmd = getString('vim_cmd') or _vim_cmd
-        self.vim_exe = getString('vim_exe') or _vim_exe
+        self.open_url_nodes = getBool('vim-plugin-opens-url-nodes')
+        self.trace = False or getBool('vim-plugin-trace')
+        self.uses_tab = getBool('vim-plugin-uses-tab-feature')
+        self.vim_cmd = getString('vim-cmd') or _vim_cmd
+        self.vim_exe = getString('vim-exe') or _vim_exe
         # Give messages.
         global locationMessageGiven
         if self.trace and not locationMessageGiven:

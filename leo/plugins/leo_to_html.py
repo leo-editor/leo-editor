@@ -228,7 +228,7 @@ def createExportMenus (tag,keywords):
     # pylint: disable=undefined-variable
     # c *is* defined.
     c = keywords.get("c")
-    if c.config.getBool('leo_to_html_no_menus'):
+    if c.config.getBool('leo-to-html-no-menus'):
         return
     for item, cmd in (
         ('Show Node as HTML', 'show-html-node'),

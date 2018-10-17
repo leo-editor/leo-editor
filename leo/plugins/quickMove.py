@@ -389,7 +389,7 @@ class quickMove(object):
             b = None
             mb.has_parent = True
             # New code.
-            t = c.config.getString('mod_scripting_subtext') or ''
+            t = c.config.getString('mod-scripting-subtext') or ''
             t2 = g.u(pb.text())
             if not t.endswith(t):
                 pb.setText(t2+t)
