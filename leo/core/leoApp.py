@@ -118,14 +118,10 @@ class LeoApp(object):
             # True: load files as theme files (ignore myLeoSettings.leo).
         self.listen_to_log_flag = False
             # True: execute listen-to-log command.
-        self.load_config = False
-            # True: load settings from the cache, not config files.
         self.qt_use_tabs = False
             # True: allow tabbed main window.
         self.restore_session = False
             # True: restore session on startup.
-        self.save_config = False
-            # True: save settings to a cache.
         self.save_session = False
             # True: save session on close.
         self.silentMode = False
@@ -952,12 +948,12 @@ class LeoApp(object):
         '''Command decorator for the LeoApp class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['g', 'app'])
-    #@+node:ekr.20090717112235.6007: *4* app.computeSignon
+    #@+node:ekr.20090717112235.6007: *4* app.computeSignon & printSignon
     def computeSignon(self):
         import leo.core.leoVersion as leoVersion
         app = self
         build, date = leoVersion.build, leoVersion.date
-        guiVersion = app.gui.getFullVersion() if app.gui else 'no gui!'
+        guiVersion = ', ' + app.gui.getFullVersion() if app.gui else ''
         leoVer = leoVersion.version
         n1, n2, n3, junk, junk = sys.version_info
         if sys.platform.startswith('win'):
@@ -990,21 +986,24 @@ class LeoApp(object):
             app.signon += ', build '+build
         if date:
             app.signon += ', '+date
-        app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
+        app.signon2 = 'Python %s.%s.%s%s\n%s' % (
             n1, n2, n3, guiVersion, sysVersion)
-        # Leo 5.6: print the signon immediately:
-        if not app.silentMode:
+            
+    def printSignon(self, verbose=False):
+        '''Print a minimal sigon to the log.'''
+        app = self
+        if app.silentMode:
+            return
+        if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+            print('Note: sys.stdout.encoding is not UTF-8')
+            print('Encoding is: %r' % sys.stdout.encoding)
+            print('See: https://stackoverflow.com/questions/14109024')
             print('')
-            if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
-                print('Note: sys.stdout.encoding is not UTF-8')
-                print('Encoding is: %r' % sys.stdout.encoding)
-                print('See: https://stackoverflow.com/questions/14109024')
-                print('')
-            print(app.signon)
+        print(app.signon)
+        if verbose:
             print(app.signon1)
             print(app.signon2)
             print('** isPython3: %s' % g.isPython3)
-            print('')
     #@+node:ekr.20100831090251.5838: *4* app.createXGui
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
@@ -1304,12 +1303,6 @@ class LeoApp(object):
             veto = frame.promptForSave()
             c.promptingForClose = False
             if veto: return False
-        # Write cached data, but only for the last window.
-        if len(g.app.windowList) == 1:
-            g.app.saveConfig()
-            if g.app.save_session and g.app.sessionManager:
-                g.app.sessionManager.save_snapshot()
-                g.app.save_session = False
         g.app.setLog(None) # no log until we reactive a window.
         g.doHook("close-frame", c=c)
         g.app.commander_cacher.commit()
@@ -1352,7 +1345,7 @@ class LeoApp(object):
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
         if 'shutdown' in g.app.debug:
-            g.pr('finishQuit')
+            g.pr('finishQuit: killed:', g.app.killed)
         if not g.app.killed:
             g.doHook("end1")
             g.app.global_cacher.commit_and_close()
@@ -1361,7 +1354,6 @@ class LeoApp(object):
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         self.destroyAllOpenWithFiles()
-        # if trace: g.pr('app.finishQuit: setting g.app.killed: %s' % g.callers())
         g.app.killed = True
             # Disable all further hooks and events.
             # Alas, "idle" events can still be called
@@ -1400,10 +1392,8 @@ class LeoApp(object):
         '''Exit Leo, prompting to save unsaved outlines first.'''
         g.app.quitting = True
         # if trace: print('onQuit',g.app.save_session,g.app.sessionManager)
-        g.app.saveConfig()
         if g.app.save_session and g.app.sessionManager:
             g.app.sessionManager.save_snapshot()
-            g.app.save_session = False
         while g.app.windowList:
             w = g.app.windowList[0]
             if not g.app.closeLeoWindow(w):
@@ -1452,8 +1442,7 @@ class LeoApp(object):
             if trace:
                 g.pr('forgetOpenFile: %s' % g.shortFileName(fn))
             d[tag] = aList
-        else:
-            if trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
+        # elif trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
     def rememberOpenFile(self, fn):
         
@@ -1576,28 +1565,6 @@ class LeoApp(object):
         # This takes about 3/4 sec when called by the leoBridge module.
         import leo.core.leoCommands as leoCommands
         return leoCommands.Commands(fileName, relativeFileName, gui, previousSettings)
-    #@+node:ekr.20181008134339.1: *3* app.saveConfig (TODO)
-    def saveConfig(self):
-        ### lm = g.app.loadManager
-        c = g.app.log and g.app.log.c
-        if not c:
-            g.trace('========== no c')
-            return
-        if g.app.save_config:
-            table = (
-                ('settings-cache', c.config.settingsDict),
-                ('shortcuts-cache', c.config.shortcutsDict),
-            )
-            for key, d in table:
-                g.app.db [key] = d
-                g.trace('=====', key, len(d.d.keys()))
-            g.app.save_config = False
-            ### g.app.global_cacher.dump()
-            ### g.app.commander_cacher.dump()
-        else:
-            del g.app.db ['config-cache']
-            del g.app.db ['settings-cache']
-            del g.app.db ['shortcuts-cache']
     #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
     def selectLeoWindow(self, c):
         frame = c.frame
@@ -2158,24 +2125,19 @@ class LoadManager(object):
         The caller must init the c.config object.
         '''
         lm = self
-        if not fn: return None
-        giveMessage = (
-            not g.app.unitTesting and
-            not g.app.silentMode and
-            not g.app.batchMode)
-            # and not g.app.inBridge
-
-        def message(s):
-            # This occurs early in startup, so use the following.
-            if giveMessage:
-                if not g.isPython3:
-                    s = g.toEncodedString(s, 'ascii')
-                g.blue(s)
-
+        if not fn:
+            return None
         theFile = lm.openLeoOrZipFile(fn)
         if not theFile:
             return None # Fix #843.
-        message('reading settings in %s' % (fn))
+        if not any([g.app.unitTesting, g.app.silentMode, g.app.batchMode]):
+            # This occurs early in startup, so use the following.
+            s = 'reading settings in %s' % (fn)
+            if not g.isPython3:
+                    s = g.toEncodedString(s, 'ascii')
+            if 'startup' in g.app.debug:
+                print(s)
+            g.es(s, color='blue')
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
@@ -2245,17 +2207,6 @@ class LoadManager(object):
         for c in commanders:
             if c not in old_commanders:
                 g.app.forgetOpenFile(c.fileName())
-    #@+node:ekr.20181008130104.1: *4* LM.readCachedSettings (TODO)
-    def readCachedSettings(self):
-        '''Read the cached settings as if they all were global settings.'''
-        lm = self
-        ####### Only works when clicking close button!
-        settings_d, bindings_d = lm.createDefaultSettingsDicts()
-        lm.globalSettingsDict = d = g.app.db.get('settings-cache') or settings_d
-        g.trace('===== settings', len(d.d.keys()))
-        lm.globalBindingsDict = d = g.app.db.get('shortcuts-cache') or bindings_d
-        g.trace('===== shortcuts', len(d.d.keys()))
-        ### return PreviousSettings(settings_d, bindings_d)
     #@+node:ekr.20120214165710.10838: *4* LM.traceSettingsDict
     def traceSettingsDict(self, d, verbose=False):
         if verbose:
@@ -2281,8 +2232,8 @@ class LoadManager(object):
     #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
     def load(self, fileName=None, pymacs=None):
         '''Load the indicated file'''
-        t1 = time.clock()
         lm = self
+        t1 = time.clock()
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
         print('') # Give some separation for the coming traces.
@@ -2290,8 +2241,9 @@ class LoadManager(object):
             return
         lm.doPrePluginsInit(fileName, pymacs)
             # sets lm.options and lm.files
+        g.app.computeSignon()
+        g.app.printSignon()
         if lm.options.get('version'):
-            print(g.app.signon)
             return
         if not g.app.gui:
             return
@@ -2299,7 +2251,8 @@ class LoadManager(object):
             # Disable redraw until all files are loaded.
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
-        if g.app.killed: return
+        if g.app.killed:
+            return
         g.app.idleTimeManager.start()
         # Phase 3: after loading plugins. Create one or more frames.
         if lm.options.get('script') and not self.files:
@@ -2310,15 +2263,17 @@ class LoadManager(object):
             g.app.makeAllBindings()
             if ok and g.app.diff:
                 lm.doDiff()
-        if ok:
-            g.es('') # Clears horizontal scrolling in the log pane.
-            if g.app.listen_to_log_flag:
-                g.app.listenToLog()
+        if not ok:
+            return
+        g.es('') # Clears horizontal scrolling in the log pane.
+        if g.app.listen_to_log_flag:
+            g.app.listenToLog()
+        if 'startup' in g.app.debug:
             t2 = time.clock()
-            g.trace('%5.2f sec' % (t2-t1))
-            g.app.gui.runMainLoop()
-            # For scripts, the gui is a nullGui.
-            # and the gui.setScript has already been called.
+            g.es_print('startup time: %5.2f sec' % (t2-t1))
+        g.app.gui.runMainLoop()
+        # For scripts, the gui is a nullGui.
+        # and the gui.setScript has already been called.
     #@+node:ekr.20150225133846.7: *4* LM.doDiff
     def doDiff(self):
         '''Support --diff option after loading Leo.'''
@@ -2445,7 +2400,6 @@ class LoadManager(object):
         lm.options = options = lm.scanOptions(fileName, pymacs)
             # also sets lm.files.
         if options.get('version'):
-            g.app.computeSignon()
             return
         script = options.get('script')
         verbose = script is None
@@ -2453,16 +2407,12 @@ class LoadManager(object):
         lm.initApp(verbose)
         g.app.setGlobalDb()
         lm.reportDirectories(verbose)
-        g.trace(g.app.load_config)
-        if g.app.load_config:
-            lm.readCachedSettings()
-        else:
-            # Read settings *after* setting g.app.config and *before* opening plugins.
-            # This means if-gui has effect only in per-file settings.
-            lm.readGlobalSettingsFiles()
-                # reads only standard settings files, using a null gui.
-                # uses lm.files[0] to compute the local directory
-                # that might contain myLeoSettings.leo.
+        # Read settings *after* setting g.app.config and *before* opening plugins.
+        # This means if-gui has effect only in per-file settings.
+        lm.readGlobalSettingsFiles()
+            # reads only standard settings files, using a null gui.
+            # uses lm.files[0] to compute the local directory
+            # that might contain myLeoSettings.leo.
         # Read the recent files file.
         localConfigFile = lm.files[0] if lm.files else None
         g.app.recentFilesManager.readRecentFiles(localConfigFile)
@@ -2753,12 +2703,10 @@ class LoadManager(object):
         add_other('--gui',          'gui to use (qt/qttabs/console/null)')
         add_bool('--listen-to-log', 'start log_listener.py on startup')
         add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
-        add_bool('--load-config',   'Load cached config values')
         add_bool('--maximized',     'start maximized')
         add_bool('--minimized',     'start minimized')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
-        add_bool('--save-config',   'Save config values to a cache')
         add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
         add_other('--script',       'execute a script and then exit', m="PATH")
         add_bool('--script-window', 'execute script using default gui')
@@ -2862,12 +2810,10 @@ class LoadManager(object):
         g.app.start_fullscreen = options.fullscreen
         # --git-diff
         g.app.diff = options.diff
-        # --ipython
-        g.app.useIpython = options.ipython
         # --listen-to-log
         g.app.listen_to_log_flag = options.listen_to_log
-        # --load-config
-        g.app.load_config = options.load_config
+        # --ipython
+        g.app.useIpython = options.ipython
         # --maximized
         g.app.start_maximized = options.maximized
         # --minimized
@@ -2879,8 +2825,6 @@ class LoadManager(object):
         g.app.use_splash_screen = (
             not options.no_splash and
             not options.minimized)
-        # --save-config
-        g.app.save_config = True
         # --session-restore & --session-save
         g.app.restore_session = bool(options.session_restore)
         g.app.save_session = bool(options.session_save)
@@ -3826,6 +3770,15 @@ def openUrl(event=None):
 def openUrlUnderCursor(event=None):
     '''Open the url under the cursor.'''
     return g.openUrlOnClick(event)
+#@+node:ekr.20181016103706.1: ** pytest tests (leoApp.py)
+def test1():
+    assert True
+    
+def test2():
+    assert False
+    
+def third_test():
+    assert True
 #@-others
 #@@language python
 #@@tabwidth -4

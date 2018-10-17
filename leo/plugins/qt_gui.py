@@ -448,7 +448,7 @@ class LeoQtGui(leoGui.LeoGui):
         d = b(c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
         if stylesheet:
-            d.setStyleSheet(c.active_stylesheet)
+            d.setStyleSheet(stylesheet)
         d.setWindowTitle(title)
         if message: d.setText(message)
         d.setIcon(b.Information)
@@ -472,7 +472,7 @@ class LeoQtGui(leoGui.LeoGui):
         d = b(c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
         if stylesheet:
-            d.setStyleSheet(c.active_stylesheet)
+            d.setStyleSheet(stylesheet)
         if message: d.setText(message)
         d.setIcon(b.Warning)
         d.setWindowTitle(title)

@@ -2454,7 +2454,6 @@ def objToString(obj, indent='', printCaller=False, tag=None):
         sep = '\n' if '\n' in s else ' '
         return '%s:%s%s' % (prefix, sep, s)
     return s
-
 toString = objToString
 #@+node:ekr.20140401054342.16844: *4* g.run_pylint
 def run_pylint(fn, rc,
