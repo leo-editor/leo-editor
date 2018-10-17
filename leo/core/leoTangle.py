@@ -418,10 +418,10 @@ class BaseTangleCommands(object):
         
     def reload_settings(self):
         c = self.c
-        self.output_doc_flag = c.config.getBool('output_doc_flag')
-        self.tangle_batch_flag = c.config.getBool('tangle_batch_flag')
-        self.untangle_batch_flag = c.config.getBool('untangle_batch_flag')
-        self.use_header_flag = c.config.getBool('use_header_flag')
+        self.output_doc_flag = c.config.getBool('output-doc-flag')
+        self.tangle_batch_flag = c.config.getBool('tangle-batch-flag')
+        self.untangle_batch_flag = c.config.getBool('untangle-batch-flag')
+        self.use_header_flag = c.config.getBool('use-header-flag')
         
     reloadSettings = reload_settings
     #@+node:ekr.20031218072017.3467: *3* top level

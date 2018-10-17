@@ -32,7 +32,7 @@ class ChapterController(object):
         
     def reloadSettings(self):
         c = self.c
-        self.use_tabs = c.config.getBool('use_chapter_tabs')
+        self.use_tabs = c.config.getBool('use-chapter-tabs')
     #@+node:ekr.20160402024827.1: *4* cc.createIcon
     def createIcon(self):
         '''Create chapter-selection Qt ListBox in the icon area.'''

@@ -1968,34 +1968,34 @@ class KeyHandlerClass(object):
         c = self.c
         getBool = c.config.getBool
         getColor = c.config.getColor
-        self.enable_autocompleter = getBool('enable_autocompleter_initially')
-        self.enable_calltips = getBool('enable_calltips_initially')
-        self.ignore_caps_lock = getBool('ignore_caps_lock')
-        self.ignore_unbound_non_ascii_keys = getBool('ignore_unbound_non_ascii_keys')
-        self.minibuffer_background_color = getColor('minibuffer_background_color') or 'lightblue'
-        self.minibuffer_foreground_color = getColor('minibuffer_foreground_color') or 'black'
-        self.minibuffer_warning_color = getColor('minibuffer_warning_color') or 'lightgrey'
-        self.minibuffer_error_color = getColor('minibuffer_error_color') or 'red'
-        self.replace_meta_with_alt = getBool('replace_meta_with_alt')
-        self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
+        self.enable_autocompleter = getBool('enable-autocompleter-initially')
+        self.enable_calltips = getBool('enable-calltips-initially')
+        self.ignore_caps_lock = getBool('ignore-caps-lock')
+        self.ignore_unbound_non_ascii_keys = getBool('ignore-unbound-non-ascii-keys')
+        self.minibuffer_background_color = getColor('minibuffer-background-color') or 'lightblue'
+        self.minibuffer_foreground_color = getColor('minibuffer-foreground-color') or 'black'
+        self.minibuffer_warning_color = getColor('minibuffer-warning-color') or 'lightgrey'
+        self.minibuffer_error_color = getColor('minibuffer-error-color') or 'red'
+        self.replace_meta_with_alt = getBool('replace-meta-with-alt')
+        self.warn_about_redefined_shortcuts = getBool('warn-about-redefined-shortcuts')
         # Has to be disabled (default) for AltGr support on Windows
-        self.enable_alt_ctrl_bindings = c.config.getBool('enable_alt_ctrl_bindings')
+        self.enable_alt_ctrl_bindings = c.config.getBool('enable-alt-ctrl-bindings')
         # Part 2: These were in finishCreate.
         # Set mode colors used by k.setInputState.
-        bg = c.config.getColor('body_text_background_color') or 'white'
-        fg = c.config.getColor('body_text_foreground_color') or 'black'
-        self.command_mode_bg_color = getColor('command_mode_bg_color') or bg
-        self.command_mode_fg_color = getColor('command_mode_fg_color') or fg
-        self.insert_mode_bg_color = getColor('insert_mode_bg_color') or bg
-        self.insert_mode_fg_color = getColor('insert_mode_fg_color') or fg
-        self.overwrite_mode_bg_color = getColor('overwrite_mode_bg_color') or bg
-        self.overwrite_mode_fg_color = getColor('overwrite_mode_fg_color') or fg
-        self.unselected_body_bg_color = getColor('unselected_body_bg_color') or bg
-        self.unselected_body_fg_color = getColor('unselected_body_fg_color') or bg
+        bg = c.config.getColor('body-text-background-color') or 'white'
+        fg = c.config.getColor('body-text-foreground-color') or 'black'
+        self.command_mode_bg_color = getColor('command-mode-bg-color') or bg
+        self.command_mode_fg_color = getColor('command-mode-fg-color') or fg
+        self.insert_mode_bg_color = getColor('insert-mode-bg-color') or bg
+        self.insert_mode_fg_color = getColor('insert-mode-fg-color') or fg
+        self.overwrite_mode_bg_color = getColor('overwrite-mode-bg-color') or bg
+        self.overwrite_mode_fg_color = getColor('overwrite-mode-fg-color') or fg
+        self.unselected_body_bg_color = getColor('unselected-body-bg-color') or bg
+        self.unselected_body_fg_color = getColor('unselected-body-fg-color') or bg
     #@+node:ekr.20110209093958.15413: *4* k.setDefaultEditingKeyAction (New)
     def setDefaultEditingAction(self):
         k = self; c = k.c
-        action = c.config.getString('default_editing_state') or 'insert'
+        action = c.config.getString('default-editing-state') or 'insert'
         action.lower()
         if action not in ('command', 'insert', 'overwrite'):
             g.trace('ignoring default_editing_state: %s' % (action))
@@ -2004,7 +2004,7 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.82: *4* k.setDefaultUnboundKeyAction
     def setDefaultUnboundKeyAction(self, allowCommandState=True):
         k = self; c = k.c
-        defaultAction = c.config.getString('top_level_unbound_key_action') or 'insert'
+        defaultAction = c.config.getString('top-level-unbound-key-action') or 'insert'
         defaultAction.lower()
         if defaultAction == 'command' and not allowCommandState:
             self.unboundKeyAction = 'insert'
@@ -2161,7 +2161,7 @@ class KeyHandlerClass(object):
         '''Print warnings if commands do not have any @shortcut entry.
         The entry may be `None`, of course.'''
         k = self; c = k.c
-        if not c.config.getBool('warn_about_missing_settings'): return
+        if not c.config.getBool('warn-about-missing-settings'): return
         for name in sorted(c.commandsDict):
             abbrev = k.abbreviationsDict.get(name)
             key = c.frame.menu.canonicalizeMenuName(abbrev or name)
@@ -2226,7 +2226,7 @@ class KeyHandlerClass(object):
     def initSpecialIvars(self):
         '''Set ivars for special keystrokes from previously-existing bindings.'''
         c, k = self.c, self
-        warn = c.config.getBool('warn_about_missing_settings')
+        warn = c.config.getBool('warn-about-missing-settings')
         for ivar, commandName in (
             ('fullCommandKey', 'full-command'),
             ('abortAllModesKey', 'keyboard-quit'),
@@ -2694,7 +2694,7 @@ class KeyHandlerClass(object):
     def toggleInputState(self, event=None):
         '''The toggle-input-state command.'''
         k = self; c = k.c
-        default = c.config.getString('top_level_unbound_key_action') or 'insert'
+        default = c.config.getString('top-level-unbound-key-action') or 'insert'
         state = k.unboundKeyAction
         if default == 'insert':
             state = 'command' if state == 'insert' else 'insert'

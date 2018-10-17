@@ -65,7 +65,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def reloadSettings(self):
         c = self.leo_c
         c.registerReloadSettings(self)
-        self.bigTree = c.config.getBool('big_outline_pane')
+        self.bigTree = c.config.getBool('big-outline-pane')
         self.show_iconbar = c.config.getBool('show_iconbar', default=True)
         self.toolbar_orientation = c.config.getString('qt-toolbar-location') or ''
         if getattr(self, 'iconBar', None):
@@ -102,7 +102,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # A LeoTabbedTopLevel for tabbed windows.
             # None for non-tabbed windows.
         # Init the base class.
-        ui_file_name = c.config.getString('qt_ui_file_name')
+        ui_file_name = c.config.getString('qt-ui-file-name')
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         if not ui_file_name:
             ui_file_name = 'qt_main.ui'
@@ -119,7 +119,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_menubar = self.menuBar()
         self.statusBar = QtWidgets.QStatusBar()
         self.setStatusBar(self.statusBar)
-        orientation = c.config.getString('initial_split_orientation')
+        orientation = c.config.getString('initial-split-orientation')
         self.setSplitDirection(main_splitter, secondary_splitter, orientation)
         if hasattr(c, 'styleSheetManager'):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
@@ -1351,7 +1351,7 @@ class LeoQtBody(leoFrame.LeoBody):
     def reloadSettings(self):
         c = self.c
         self.useScintilla = c.config.getBool('qt-use-scintilla')
-        self.use_chapters = c.config.getBool('use_chapters')
+        self.use_chapters = c.config.getBool('use-chapters')
     #@+node:ekr.20160309074124.1: *5* LeoQtBody.set_invisibles
     def set_invisibles(self, c):
         '''Set the show-invisibles bit in the document.'''
@@ -1948,8 +1948,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def reloadSettings(self):
         c = self.c
         self.cursorStay = c.config.getBool("cursor_stay_on_paste", default=True)
-        self.use_chapters = c.config.getBool('use_chapters')
-        self.use_chapter_tabs = c.config.getBool('use_chapter_tabs')
+        self.use_chapters = c.config.getBool('use-chapters')
+        self.use_chapter_tabs = c.config.getBool('use-chapter-tabs')
     #@+node:ekr.20110605121601.18248: *5* qtFrame.setIvars
     def setIvars(self):
         # "Official ivars created in createLeoFrame and its allies.
@@ -2079,7 +2079,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             w2.setReadOnly(True)
             splitter = QtWidgets.QSplitter()
             self.statusBar.addWidget(splitter, True)
-            sizes = c.config.getString('status_line_split_sizes') or '1 2'
+            sizes = c.config.getString('status-line-split-sizes') or '1 2'
             sizes = [int(i) for i in sizes.replace(',', ' ').split()]
             # pylint: disable=consider-using-ternary
             for n, i in enumerate(sizes):
@@ -2479,7 +2479,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     action_container.actions()[top_offset], act)
                 action_container.setText(
                     g.u(action_container.text()) +
-                    (c.config.getString('mod_scripting_subtext') or '')
+                    (c.config.getString('mod-scripting-subtext') or '')
                 )
         #@-others
     #@+node:ekr.20110605121601.18274: *3* qtFrame.Configuration
@@ -3035,7 +3035,7 @@ class LeoQtLog(leoFrame.LeoLog):
         
     def reloadSettings(self):
         c = self.c
-        self.wrap = bool(c.config.getBool('log_pane_wraps'))
+        self.wrap = bool(c.config.getBool('log-pane-wraps'))
         
     #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self):
@@ -3183,7 +3183,7 @@ class LeoQtLog(leoFrame.LeoLog):
             color = leoColor.getColor(color)
         if not color:
             # #788: First, fall back to 'log_black_color', not 'black.
-            color = c.config.getColor('log_black_color')
+            color = c.config.getColor('log-black-color')
             if not color:
                 # Should never be necessary.
                 color = 'black'
@@ -3732,7 +3732,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             # Paste the node after the presently selected node.
         if not pasted:
             return
-        if c.config.getBool('inter_outline_drag_moves'):
+        if c.config.getBool('inter-outline-drag-moves'):
             src_c, src_p = g.app.drag_source
             if src_p.hasVisNext(src_c):
                 nxt = src_p.getVisNext(src_c).v

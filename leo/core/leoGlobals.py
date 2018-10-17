@@ -3015,7 +3015,7 @@ def getLanguageAtPosition(c, p):
     language = (
         d and d.get('language') or
         g.getLanguageFromAncestorAtFileNode(p) or
-        c.config.getString('target_language') or
+        c.config.getString('target-language') or
         'python'
     )
     return language.lower()
@@ -3453,7 +3453,7 @@ def create_temp_file(textMode=False):
 #@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
 def defaultLeoFileExtension(c=None):
     conf = c.config if c else g.app.config
-    return conf.getString('default_leo_extension') or '.leo'
+    return conf.getString('default-leo-extension') or '.leo'
 #@+node:ekr.20031218072017.3118: *3* g.ensure_extension
 def ensure_extension(name, ext):
     theFile, old_ext = g.os_path_splitext(name)
@@ -3500,7 +3500,7 @@ def getBaseDirectory(c):
     if base and g.os_path_isabs(base):
         # Set c.chdir_to_relative_path as needed.
         if not hasattr(c, 'chdir_to_relative_path'):
-            c.chdir_to_relative_path = c.config.getBool('chdir_to_relative_path')
+            c.chdir_to_relative_path = c.config.getBool('chdir-to-relative-path')
         # Call os.chdir if requested.
         if c.chdir_to_relative_path:
             os.chdir(base)
@@ -3532,7 +3532,7 @@ def guessExternalEditor(c=None):
         os.environ.get("LEO_EDITOR") or
         os.environ.get("EDITOR") or
         g.app.db and g.app.db.get("LEO_EDITOR") or
-        c and c.config.getString('external_editor'))
+        c and c.config.getString('external-editor'))
     if editor: return editor
     # fallbacks
     platform = sys.platform.lower()
@@ -6459,17 +6459,17 @@ def actualColor(color):
     # #788: Translate colors to theme-defined colors.
     if color is None:
         # Prefer text_foreground_color'
-        color2 = c.config.getColor('log_text_foreground_color')
+        color2 = c.config.getColor('log-text-foreground-color')
         if color2: return color2
         # Fall back to log_black_color.
-        color2 = c.config.getColor('log_black_color')
+        color2 = c.config.getColor('log-black-color')
         return color2 or 'black'
     if color == 'black':
         # Prefer log_black_color.
-        color2 = c.config.getColor('log_black_color')
+        color2 = c.config.getColor('log-black-color')
         if color2: return color2
         # Fall back to log_text_foreground_color.
-        color2 = c.config.getColor('log_text_foreground_color')
+        color2 = c.config.getColor('log-text-foreground-color')
         return color2 or 'black'
     color2 = c.config.getColor('log_%s_color' % color)
     return color2 or color
@@ -7359,7 +7359,7 @@ def extractExecutableString(c, p, s, language='python'):
 #@+node:ekr.20060624085200: *3* g.handleScriptException
 def handleScriptException(c, p, script, script1):
     g.warning("exception executing script")
-    full = c.config.getBool('show_full_tracebacks_in_scripts')
+    full = c.config.getBool('show-full-tracebacks-in-scripts')
     fileName, n = g.es_exception(full=full)
     # Careful: this test is no longer guaranteed.
     if p.v.context == c:

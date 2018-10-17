@@ -545,33 +545,33 @@ class Commands(object):
         getData = c.config.getData
         getInt = c.config.getInt
         # c.allow_at_in_paragraphs = getBool('allow-at-in-paragraphs', default=False)
-        c.autoindent_in_nocolor = getBool('autoindent_in_nocolor_mode')
-        c.collapse_nodes_after_move = getBool('collapse_nodes_after_move')
+        c.autoindent_in_nocolor = getBool('autoindent-in-nocolor-mode')
+        c.collapse_nodes_after_move = getBool('collapse-nodes-after-move')
         c.collapse_on_lt_arrow = getBool('collapse_on_lt_arrow', default=True)
         c.contractVisitedNodes = getBool('contractVisitedNodes')
         c.fixedWindowPositionData = getData('fixedWindowPosition')
-        c.focus_border_color = getColor('focus_border_color') or 'red'
-        c.focus_border_command_state_color = getColor('focus_border_command_state_color') or 'blue'
-        c.focus_border_overwrite_state_color = getColor('focus_border_overwrite_state_color') or 'green'
-        c.focus_border_width = getInt('focus_border_width') or 1 # pixels
+        c.focus_border_color = getColor('focus-border-color') or 'red'
+        c.focus_border_command_state_color = getColor('focus-border-command-state-color') or 'blue'
+        c.focus_border_overwrite_state_color = getColor('focus-border-overwrite-state-color') or 'green'
+        c.focus_border_width = getInt('focus-border-width') or 1 # pixels
         c.forceExecuteEntireBody = getBool('force_execute_entire_body', default=False)
         c.make_node_conflicts_node = getBool('make-node-conflicts-node', default=True)
         c.max_pre_loaded_body_chars = c.config.getInt('max-pre-loaded-body-chars') or 0
-        c.outlineHasInitialFocus = getBool('outline_pane_has_initial_focus')
-        c.page_width = getInt('page_width') or 132
+        c.outlineHasInitialFocus = getBool('outline-pane-has-initial-focus')
+        c.page_width = getInt('page-width') or 132
         c.putBitsFlag = getBool('put_expansion_bits_in_leo_files', default=True)
-        c.sparse_move = getBool('sparse_move_outline_left')
-        c.sparse_find = getBool('collapse_nodes_during_finds')
-        c.sparce_spell = getBool('collapse_nodes_while_spelling')
+        c.sparse_move = getBool('sparse-move-outline-left')
+        c.sparse_find = getBool('collapse-nodes-during-finds')
+        c.sparce_spell = getBool('collapse-nodes-while-spelling')
         c.stayInTreeAfterSelect = getBool('stayInTreeAfterSelect')
-        c.smart_tab = getBool('smart_tab')
-        c.tab_width = getInt('tab_width') or -4
+        c.smart_tab = getBool('smart-tab')
+        c.tab_width = getInt('tab-width') or -4
         # c.use_body_focus_border = getBool('use_body_focus_border', default=True)
         # c.use_focus_border = getBool('use_focus_border', default=True)
             # Not used: replaced by stylesheet settings.
         c.verbose_check_outline = getBool('verbose_check_outline', default=False)
         c.vim_mode = getBool('vim_mode', default=False)
-        c.write_script_file = getBool('write_script_file')
+        c.write_script_file = getBool('write-script-file')
     #@+node:ekr.20090213065933.7: *4* c.setWindowPosition
     def setWindowPosition(self):
         c = self
@@ -2147,7 +2147,7 @@ class Commands(object):
 
         # Get the path to the file.
         c = self
-        path = c.config.getString('script_file_path')
+        path = c.config.getString('script-file-path')
         if path:
             isAbsPath = os.path.isabs(path)
             driveSpec, path = os.path.splitdrive(path)
@@ -2178,7 +2178,7 @@ class Commands(object):
             g.es_exception()
             g.es("Failed to write script to %s" % path)
             # g.es("Check your configuration of script_file_path, currently %s" %
-                # c.config.getString('script_file_path'))
+                # c.config.getString('script-file-path'))
             path = None
         return path
     #@+node:ekr.20171124101444.1: *3* c.File
@@ -2789,7 +2789,7 @@ class Commands(object):
         if not event or not event.char or not event.char.isalnum():
             return
         c = self; p = c.p; p1 = p.copy()
-        invisible = c.config.getBool('invisible_outline_navigation')
+        invisible = c.config.getBool('invisible-outline-navigation')
         ch = event.char if event else ''
         allFlag = ch.isupper() and invisible # all is a global (!?)
         if not invisible: ch = ch.lower()
@@ -2827,7 +2827,7 @@ class Commands(object):
 
         Returns False if @float outline_nav_extend_delay setting is 0.0 or unspecified.'''
         c = self
-        deltaTime = c.config.getFloat('outline_nav_extend_delay')
+        deltaTime = c.config.getFloat('outline-nav-extend-delay')
         if deltaTime in (None, 0.0):
             return False
         else:

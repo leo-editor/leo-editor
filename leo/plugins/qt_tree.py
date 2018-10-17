@@ -111,7 +111,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.select_all_text_when_editing_headlines = c.config.getBool(
             'select_all_text_when_editing_headlines')
         self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
-        self.use_chapters = c.config.getBool('use_chapters')
+        self.use_chapters = c.config.getBool('use-chapters')
         self.use_declutter = c.config.getBool('tree-declutter', default=False)
 
     #@+node:ekr.20110605121601.17940: *4* qtree.wrapQLineEdit

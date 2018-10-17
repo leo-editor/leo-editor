@@ -2602,7 +2602,7 @@ class LoadManager(object):
     #@+node:ekr.20120219154958.10482: *5* LM.getDefaultFile
     def getDefaultFile(self):
         # Get the name of the workbook.
-        fn = g.app.config.getString('default_leo_file')
+        fn = g.app.config.getString('default-leo-file')
         fn = g.os_path_finalize(fn)
         if not fn: return
         if g.os_path_exists(fn):
@@ -3224,7 +3224,7 @@ class LoadManager(object):
         c.frame.setTitle(c.frame.title)
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
-        if c.config.getBool('use_chapters') and c.chapterController:
+        if c.config.getBool('use-chapters') and c.chapterController:
             c.chapterController.finishCreate()
         frame.c.setChanged(False)
             # Mark the outline clean.

@@ -867,7 +867,7 @@ def insertHeadlineHelper(c,
         (c.hoistStack and current == c.hoistStack[-1].p)
     ):
         # Make sure the new node is visible when hoisting.
-        if c.config.getBool('insert_new_nodes_at_end'):
+        if c.config.getBool('insert-new-nodes-at-end'):
             p = current.insertAsLastChild()
         else:
             p = current.insertAsNthChild(0)
