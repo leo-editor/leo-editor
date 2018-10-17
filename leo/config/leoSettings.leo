@@ -759,9 +759,9 @@
 <v t="ekr.20161010172424.1"><vh>@int js-importer-min-rescan-size = 0</vh></v>
 <v t="ekr.20161010172441.1"><vh>@int js-importer-min-scan-size = 0</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress-import-parsing = False</vh></v>
-<v t="ekr.20170825083426.1"><vh>@data c_import_typedefs</vh></v>
-<v t="ekr.20111029055127.16616"><vh>@data import_html_tags</vh></v>
-<v t="ekr.20111029055127.16614"><vh>@data import_xml_tags</vh></v>
+<v t="ekr.20170825083426.1"><vh>@data c-import-typedefs</vh></v>
+<v t="ekr.20111029055127.16616"><vh>@data import-html-tags</vh></v>
+<v t="ekr.20111029055127.16614"><vh>@data import-xml-tags</vh></v>
 </v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20180411070112.1"><vh>@bool replace-meta-with-alt = False</vh></v>
@@ -1701,7 +1701,7 @@
 </v>
 </v>
 <v t="ville.20091008201813.3909"><vh>Qt context menu</vh>
-<v t="ville.20091008201813.3911"><vh>@data contextmenu_commands</vh></v>
+<v t="ville.20091008201813.3911"><vh>@data contextmenu-commands</vh></v>
 </v>
 <v t="ekr.20070411101857"><vh>Open With menu</vh>
 <v t="ekr.20171206102715.1"><vh>@ifplatform linux, linux2</vh>
@@ -1983,9 +1983,9 @@
 <v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active-path-attype = auto</vh></v>
 <v t="tbrown.20091129085043.11792"><vh>@string active-path-event = headdclick1</vh></v>
-<v t="tbrown.20091129085043.11793"><vh>@data active_path_ignore</vh></v>
-<v t="tbrown.20111114201921.23020"><vh>@data active_path_bin_open</vh></v>
-<v t="tbrown.20091129085043.11795"><vh>@data active_path_autoload</vh></v>
+<v t="tbrown.20091129085043.11793"><vh>@data active-path-ignore</vh></v>
+<v t="tbrown.20111114201921.23020"><vh>@data active-path-bin-open</vh></v>
+<v t="tbrown.20091129085043.11795"><vh>@data active-path-autoload</vh></v>
 <v t="tbrown.20100304170159.5189"><vh>@bool active-path-load-docstring = False</vh></v>
 <v t="tbrown.20100401100336.16108"><vh>@float active-path-timeout-seconds = 10.</vh></v>
 <v t="tbrown.20100401100336.31583"><vh>@int active-path-max-size = 1000000</vh></v>
@@ -2024,11 +2024,11 @@
 <v t="ekr.20111003085631.15490"><vh>@int http-port = 8130</vh></v>
 <v t="ekr.20111003104518.15499"><vh>@@string http_bookmark_unl = Bookmarks</vh></v>
 <v t="ekr.20161003141513.1"><vh>mod_http stylesheet</vh>
-<v t="ekr.20161003141513.2"><vh>@data http_stylesheet</vh></v>
+<v t="ekr.20161003141513.2"><vh>@data http-stylesheet</vh></v>
 <v t="ekr.20161011130632.1"><vh>@@data http_stylesheet</vh></v>
 </v>
 <v t="ekr.20161003141448.1"><vh>mod_http script</vh>
-<v t="ekr.20161003141448.2"><vh>@data http_script</vh></v>
+<v t="ekr.20161003141448.2"><vh>@data http-script</vh></v>
 </v>
 </v>
 <v t="ekr.20110611092035.16483"><vh>mod_scripting plugin</vh>
@@ -2061,7 +2061,7 @@
 </v>
 <v t="tbrown.20130813134319.7223"><vh>richtext plugin</vh>
 <v t="tbrown.20130813134319.7224"><vh>@bool richtext-cke-autosave = False</vh></v>
-<v t="tbrown.20130813181208.23979"><vh>@data richtext_cke_config</vh></v>
+<v t="tbrown.20130813181208.23979"><vh>@data richtext-cke-config</vh></v>
 </v>
 <v t="peckj.20131012154112.5294"><vh>rss plugin</vh>
 <v t="peckj.20131012154112.5295"><vh>@string rss-headline-format = [&lt;date&gt;] &lt;title&gt;</vh></v>
@@ -11794,7 +11794,7 @@ See https://jedi.readthedocs.io/en/latest/index.html
 # g.cls()
 print('=====')
 kinds = (
-    '@bool ', '@color ', '@directory ', '@encoding ',
+    '@bool ', '@color ', '@data ', '@directory ', '@encoding ',
     '@float ', '@int ', '@path ', '@ratio ',
     '@string ',
 )
