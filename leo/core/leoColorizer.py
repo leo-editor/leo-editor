@@ -2108,7 +2108,7 @@ class QScintillaColorizer(BaseColorizer):
             
     def reloadSettings(self):
         c = self.c
-        self.enabled = c.config.getBool('use_syntax_coloring')
+        self.enabled = c.config.getBool('use-syntax-coloring')
     #@+node:ekr.20170128141158.1: *3* qsc.scanColorDirectives (over-ride)
     def scanColorDirectives(self, p):
         '''

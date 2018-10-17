@@ -60,7 +60,7 @@ class Undoer(object):
         self.debug_Undoer = False # True: enable debugging code in new undo scheme.
         self.debug_print = False # True: enable print statements in debug code.
         self.granularity = None # Set in reloadSettings.
-        self.max_undo_stack_size = c.config.getInt('max_undo_stack_size') or 0
+        self.max_undo_stack_size = c.config.getInt('max-undo-stack-size') or 0
         # Statistics comparing old and new ways (only if self.debug_Undoer is on).
         self.new_mem = 0
         self.old_mem = 0
@@ -123,7 +123,7 @@ class Undoer(object):
     def reloadSettings(self):
         '''Undoer.reloadSettings.'''
         c = self.c
-        self.granularity = c.config.getString('undo_granularity')
+        self.granularity = c.config.getString('undo-granularity')
         if self.granularity:
             self.granularity = self.granularity.lower()
         if self.granularity not in ('node', 'line', 'word', 'char'):

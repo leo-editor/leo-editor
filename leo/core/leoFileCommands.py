@@ -1117,7 +1117,7 @@ class FileCommands(object):
         c = self.c
         # #531: Optionally report timestamp...
         if c.config.getBool('log_show_save_time', default=False):
-            format = c.config.getString('log_timestamp_format') or "%H:%M:%S"
+            format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
             timestamp = time.strftime(format) + ' '
         else:
             timestamp = ''

@@ -220,9 +220,9 @@ class ExternalFilesController(object):
             g.blue('updated %s' % p.h)
             s, e = g.readFileIntoString(ef.path)
             p.b = s
-            if c.config.getBool('open_with_goto_node_on_update'):
+            if c.config.getBool('open-with-goto-node-on-update'):
                 c.selectPosition(p)
-            if c.config.getBool('open_with_save_on_update'):
+            if c.config.getBool('open-with-save-on-update'):
                 c.save()
             else:
                 p.setDirty()
@@ -569,7 +569,7 @@ class ExternalFilesController(object):
     #@+node:ekr.20031218072017.2832: *4* efc.temp_file_path & helpers
     def temp_file_path(self, c, p, ext):
         '''Return the path to the temp file for p and ext.'''
-        if c.config.getBool('open_with_clean_filenames'):
+        if c.config.getBool('open-with-clean-filenames'):
             path = self.clean_file_name(c, ext, p)
         else:
             path = self.legacy_file_name(c, ext, p)
@@ -577,7 +577,7 @@ class ExternalFilesController(object):
     #@+node:ekr.20150406055221.2: *5* efc.clean_file_name
     def clean_file_name(self, c, ext, p):
         '''Compute the file name when subdirectories mirror the node's hierarchy in Leo.'''
-        use_extentions = c.config.getBool('open_with_uses_derived_file_extensions')
+        use_extentions = c.config.getBool('open-with-uses-derived-file-extensions')
         ancestors, found = [], False
         for p2 in p.self_and_parents(copy=False):
             h = p2.anyAtFileNodeName()

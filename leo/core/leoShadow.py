@@ -69,8 +69,8 @@ class ShadowController(object):
     def reloadSettings(self):
         '''ShadowController.reloadSettings.'''
         c = self.c
-        self.shadow_subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
-        self.shadow_prefix = c.config.getString('shadow_prefix') or ''
+        self.shadow_subdir = c.config.getString('shadow-subdir') or '.leo_shadow'
+        self.shadow_prefix = c.config.getString('shadow-prefix') or ''
         self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir', default=False)
         self.shadow_subdir = g.os_path_normpath(self.shadow_subdir)
     #@+node:ekr.20080711063656.1: *3* x.File utils

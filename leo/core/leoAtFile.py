@@ -2902,7 +2902,7 @@ class AtFile(object):
             at.targetFileName = g.os_path_realpath(at.targetFileName)
         # #531: Optionally report timestamp...
         if c.config.getBool('log_show_save_time', default=False):
-            format = c.config.getString('log_timestamp_format') or "%H:%M:%S"
+            format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
             timestamp = time.strftime(format) + ' '
         else:
             timestamp = ''

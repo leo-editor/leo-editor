@@ -527,7 +527,7 @@ class LeoBody(object):
         c = self.c
         cc = c.chapterController
         # Was in ctor.
-        use_chapters = c.config.getBool('use_chapters')
+        use_chapters = c.config.getBool('use-chapters')
         if cc and use_chapters:
             w.leo_chapter = cc.getSelectedChapter()
         else:
@@ -1585,7 +1585,7 @@ class LeoTree(object):
             # This is now done in set_body_text_after_select.
         c.frame.scanForTabWidth(p)
             #GS I believe this should also get into the select1 hook
-        use_chapters = c.config.getBool('use_chapters')
+        use_chapters = c.config.getBool('use-chapters')
         if use_chapters:
             cc = c.chapterController
             theChapter = cc and cc.getSelectedChapter()
