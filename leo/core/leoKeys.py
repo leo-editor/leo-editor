@@ -185,10 +185,10 @@ class AutoCompleterClass(object):
         
     def reloadSettings(self):
         c = self.c
-        self.auto_tab = c.config.getBool('auto_tab_complete', True)
-        self.forbid_invalid = c.config.getBool('forbid_invalid_completions', False)
-        self.use_jedi = c.config.getBool('use_jedi', False)
-        self.use_qcompleter = c.config.getBool('use_qcompleter', False)
+        self.auto_tab = c.config.getBool('auto-tab-complete', True)
+        self.forbid_invalid = c.config.getBool('forbid-invalid-completions', False)
+        self.use_jedi = c.config.getBool('use-jedi', False)
+        self.use_qcompleter = c.config.getBool('use-qcompleter', False)
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
     #@+node:ekr.20061031131434.8: *3* ac.Top level
@@ -965,7 +965,7 @@ class AutoCompleterClass(object):
     def start(self, event):
         # We don't need to clear this now that we don't use ContextSniffer.
         c = self.c
-        if c.config.getBool('use_jedi', default=True):
+        if c.config.getBool('use-jedi', default=True):
             self.completionsDict = {}
         if self.use_qcompleter:
             self.init_qcompleter(event)

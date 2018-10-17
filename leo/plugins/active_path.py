@@ -139,7 +139,7 @@ def attachToCommander(t,k):
 
     # not using a proper class, so
     c.__active_path = {'ignore': [], 'autoload': [],
-        'do_autoload': c.config.getBool('active_path_do_autoload', default=True)}
+        'do_autoload': c.config.getBool('active-path-do-autoload', default=True)}
 
     if c.config.getData('active_path_ignore'):
         c.__active_path['ignore'] = [re.compile(i, re.IGNORECASE)

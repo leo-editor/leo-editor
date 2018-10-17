@@ -41,7 +41,7 @@ def onCreate(tag, keywords):
     # Do nothing here if we already have registered the idle-time hook.
     d = gDict.get(c.hash())
     if not d:
-        active = c.config.getBool('mod_autosave_active',default=False)
+        active = c.config.getBool('mod-autosave-active',default=False)
         interval = c.config.getInt('mod-autosave-interval')
         if active:
             # Create an entry in the global settings dict.

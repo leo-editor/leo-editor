@@ -713,7 +713,7 @@
 </v>
 <v t="ekr.20060730101451"><vh>Shadow files</vh>
 <v t="ekr.20060730101451.3"><vh>@string shadow-prefix = x</vh></v>
-<v t="ekr.20060730101451.5"><vh>@string shadow-subdir = .leo-shadow</vh></v>
+<v t="ekr.20060730101451.5"><vh>@string shadow-subdir = .leo_shadow</vh></v>
 </v>
 </v>
 <v t="ekr.20041119034357.20"><vh>Find/replace options</vh>

@@ -46,7 +46,7 @@ def addComments(self, event=None):
     else:
         openDelim, closeDelim = d2 + ' ', ' ' + d3
     # Comment out non-blank lines.
-    indent = c.config.getBool('indent_added_comments', default=True)
+    indent = c.config.getBool('indent-added-comments', default=True)
     result = []
     for line in lines:
         if line.strip():

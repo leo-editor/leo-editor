@@ -547,30 +547,30 @@ class Commands(object):
         # c.allow_at_in_paragraphs = getBool('allow-at-in-paragraphs', default=False)
         c.autoindent_in_nocolor = getBool('autoindent-in-nocolor-mode')
         c.collapse_nodes_after_move = getBool('collapse-nodes-after-move')
-        c.collapse_on_lt_arrow = getBool('collapse_on_lt_arrow', default=True)
+        c.collapse_on_lt_arrow = getBool('collapse-on-lt-arrow', default=True)
         c.contractVisitedNodes = getBool('contractVisitedNodes')
         c.fixedWindowPositionData = getData('fixedWindowPosition')
         c.focus_border_color = getColor('focus-border-color') or 'red'
         c.focus_border_command_state_color = getColor('focus-border-command-state-color') or 'blue'
         c.focus_border_overwrite_state_color = getColor('focus-border-overwrite-state-color') or 'green'
         c.focus_border_width = getInt('focus-border-width') or 1 # pixels
-        c.forceExecuteEntireBody = getBool('force_execute_entire_body', default=False)
+        c.forceExecuteEntireBody = getBool('force-execute-entire-body', default=False)
         c.make_node_conflicts_node = getBool('make-node-conflicts-node', default=True)
         c.max_pre_loaded_body_chars = c.config.getInt('max-pre-loaded-body-chars') or 0
         c.outlineHasInitialFocus = getBool('outline-pane-has-initial-focus')
         c.page_width = getInt('page-width') or 132
-        c.putBitsFlag = getBool('put_expansion_bits_in_leo_files', default=True)
+        c.putBitsFlag = getBool('put-expansion-bits-in-leo-files', default=True)
         c.sparse_move = getBool('sparse-move-outline-left')
         c.sparse_find = getBool('collapse-nodes-during-finds')
         c.sparce_spell = getBool('collapse-nodes-while-spelling')
         c.stayInTreeAfterSelect = getBool('stayInTreeAfterSelect')
         c.smart_tab = getBool('smart-tab')
         c.tab_width = getInt('tab-width') or -4
-        # c.use_body_focus_border = getBool('use_body_focus_border', default=True)
-        # c.use_focus_border = getBool('use_focus_border', default=True)
+        # c.use_body_focus_border = getBool('use-body-focus-border', default=True)
+        # c.use_focus_border = getBool('use-focus-border', default=True)
             # Not used: replaced by stylesheet settings.
-        c.verbose_check_outline = getBool('verbose_check_outline', default=False)
-        c.vim_mode = getBool('vim_mode', default=False)
+        c.verbose_check_outline = getBool('verbose-check-outline', default=False)
+        c.vim_mode = getBool('vim-mode', default=False)
         c.write_script_file = getBool('write-script-file')
     #@+node:ekr.20090213065933.7: *4* c.setWindowPosition
     def setWindowPosition(self):

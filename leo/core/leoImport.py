@@ -672,7 +672,7 @@ class LeoImportCommands(object):
         # Call the scanning function.
         if g.unitTesting:
             assert func or ext in ('.txt', '.w', '.xxx'), (ext, p.h)
-        if func and not c.config.getBool('suppress_import_parsing', default=False):
+        if func and not c.config.getBool('suppress-import-parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
             # func is actually a factory: it instantiates the importer class.

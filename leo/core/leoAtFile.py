@@ -1258,7 +1258,7 @@ class AtFile(object):
         if not g.unitTesting:
             if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
                 if writtenFiles:
-                    report = c.config.getBool('report_unchanged_files', default=True)
+                    report = c.config.getBool('report-unchanged-files', default=True)
                     if report:
                         g.es("finished")
                     elif at.sameFiles:
@@ -2846,7 +2846,7 @@ class AtFile(object):
             if s is None:
                 return False
             if s == s2:
-                report = c.config.getBool('report_unchanged_files', default=True)
+                report = c.config.getBool('report-unchanged-files', default=True)
                 if report and not g.unitTesting:
                     g.es('unchanged:', fn)
                 return False
@@ -2901,7 +2901,7 @@ class AtFile(object):
         if at.targetFileName:
             at.targetFileName = g.os_path_realpath(at.targetFileName)
         # #531: Optionally report timestamp...
-        if c.config.getBool('log_show_save_time', default=False):
+        if c.config.getBool('log-show-save-time', default=False):
             format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
             timestamp = time.strftime(format) + ' '
         else:
@@ -2914,7 +2914,7 @@ class AtFile(object):
                 ignoreBlankLines=ignoreBlankLines
             ):
                 # Files are identical.
-                report = c.config.getBool('report_unchanged_files', default=True)
+                report = c.config.getBool('report-unchanged-files', default=True)
                 at.sameFiles += 1
                 if report and not g.unitTesting:
                     g.es('%sunchanged: %s' % (timestamp, at.shortFileName))

@@ -197,7 +197,7 @@ class RstCommands(object):
 
     def reloadSettings(self):
         '''RstCommand.reloadSettings'''
-        self.debug = self.c.config.getBool('rst3_debug', default=False)
+        self.debug = self.c.config.getBool('rst3-debug', default=False)
         
     #@+node:ekr.20150509035745.1: *4* rst.cmd (decorator)
     def cmd(name):

@@ -66,7 +66,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         c = self.leo_c
         c.registerReloadSettings(self)
         self.bigTree = c.config.getBool('big-outline-pane')
-        self.show_iconbar = c.config.getBool('show_iconbar', default=True)
+        self.show_iconbar = c.config.getBool('show-iconbar', default=True)
         self.toolbar_orientation = c.config.getString('qt-toolbar-location') or ''
         if getattr(self, 'iconBar', None):
             if self.show_iconbar:
@@ -233,7 +233,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         findTab.setObjectName('findTab')
         # Fix #516:
         use_minibuffer = c.config.getBool('minibuffer-find-mode', default=False)
-        use_dialog = c.config.getBool('use_find_dialog', default=False)
+        use_dialog = c.config.getBool('use-find-dialog', default=False)
         if not use_minibuffer and not use_dialog:
             tabWidget.addTab(findScrollArea, 'Find')
         # Do this later, in LeoFind.finishCreate
@@ -4501,7 +4501,7 @@ class TabbedFrameFactory(object):
         # Work around the problem with missing dirty indicator
         # by always showing the tab.
         tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
-        tabw.setTabsClosable(c.config.getBool('outline_tabs_show_close', True))
+        tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
         dw.show()
         tabw.show()
         return dw

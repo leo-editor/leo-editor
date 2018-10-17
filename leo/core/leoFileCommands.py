@@ -1116,7 +1116,7 @@ class FileCommands(object):
     def putSavedMessage(self, fileName):
         c = self.c
         # #531: Optionally report timestamp...
-        if c.config.getBool('log_show_save_time', default=False):
+        if c.config.getBool('log-show-save-time', default=False):
             format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
             timestamp = time.strftime(format) + ' '
         else:

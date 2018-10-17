@@ -471,7 +471,7 @@ class ExternalFilesController(object):
         d = self.enabled_d
         val = d.get(c)
         if val is None:
-            val = c.config.getBool('check_for_changed_external_files', default=False)
+            val = c.config.getBool('check-for-changed-external-files', default=False)
             d[c] = val
         return val
     #@+node:ekr.20150404083049.1: *4* efc.join

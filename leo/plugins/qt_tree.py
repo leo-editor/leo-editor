@@ -106,7 +106,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def reloadSettings(self):
         '''LeoQtTree.'''
         c = self.c
-        self.auto_edit = c.config.getBool('single_click_auto_edits_headline', False)
+        self.auto_edit = c.config.getBool('single-click-auto-edits-headline', False)
         self.enable_drag_messages = c.config.getBool("enable_drag_messages")
         self.select_all_text_when_editing_headlines = c.config.getBool(
             'select_all_text_when_editing_headlines')
