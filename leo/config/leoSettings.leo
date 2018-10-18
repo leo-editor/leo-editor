@@ -2304,6 +2304,9 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20111006212449.11850"></v>
+<v t="ekr.20181017194841.1"><vh>*** settings are used in stylesheets</vh></v>
+<v t="ekr.20111007043902.15697"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5377,12 +5380,13 @@ Controller(c).run()</t>
 </t>
 <t tx="ekr.20111006212449.11852">def check (self,configs_d,settings_d):
 
-    table = ('Bool','Color','Int','Float',# 'Font',
+    table = (
+        'Bool','Color','Int','Float', # 'Font',
         'Ratio','Path','String',
     )
     format = '%40s %s'
 
-    if 1: # Less important: print missing settings.
+    if 0: # Less important: print missing settings.
         for kind in table:
             config_key = 'get%s' % kind
             settings_key = '@%s' % kind.lower()
@@ -5390,13 +5394,13 @@ Controller(c).run()</t>
             settings_list = settings_d.get(settings_key,[])
             munged_config_list =   [self.munge(s) for s in config_list]
             munged_settings_list = [self.munge(s) for s in settings_list]
-            print('\nmissing %s settings...' % settings_key)
             missing = set()
             for s in munged_config_list:
                 # Ignore plugins settings.
                 if s not in munged_settings_list:
                     missing.add(s)
             if missing:
+                print('\nmissing %s settings...' % settings_key)
                 print(format % ('Canonical','Actual'))
                 print(format % ('=' * len('Canonical'),'=' * len('Actual')))
                 for s in sorted(list(missing)):
@@ -5412,12 +5416,12 @@ Controller(c).run()</t>
             settings_list = settings_d.get(settings_key,[])
             munged_config_list =   [self.munge(s) for s in config_list]
             munged_settings_list = [self.munge(s) for s in settings_list]
-            print('\nmissing config.%s calls...' % config_key)
             missing = set()
             for s in munged_settings_list:
                 if s not in munged_config_list:
                     missing.add(s)
             if missing:
+                print('\nmissing config.%s calls...' % config_key)
                 print(format % ('Canonical','Actual'))
                 print(format % ('=' * len('Canonical'),'=' * len('Actual')))
                 for s in sorted(list(missing)):
@@ -5604,15 +5608,30 @@ Controller(c).run()</t>
     '''Print the canonical name, followed by the list of names that match.'''
     assert munged_s in munged_in_list,munged_s
     assert munged_s not in munged_out_list,munged_s
-    if 0: # These should not be necessary.  Something is wrong.
-        # Ignore plugins settings and global switches.
-        for prefix in ('color','datenodes','http','opml','rst3','todo','trace','vim','zodb'):
+    if 1:
+        # Stylesheets use these settings.
+        for pattern in (
+            'bg', 'border', 'color', 'fg', 'font',
+            'margin', 'solarized', 'textforeground',
+        ):
+            if munged_s.find(pattern) &gt; -1:
+                return
+    if 1:
+        # These plugins/use settings in non-standard ways.
+        for prefix in (
+            'bookmarks', 'datenodes', 'http', 'opml',
+            'rst3', 'todo', 'vim', 'zodb'
+        ):
             if munged_s.startswith(prefix):
                 return
-    # Ignore color settings.  They are handled differently...
-    for suffix in ('color',):
-        if munged_s.endswith(suffix):
-            return
+    if 1:
+        # Find settings are defined in non-standard ways.
+        for setting in (
+            'batch', 'ignorecase', 'markchanges', 'markfinds', 'nodeonly', 'patternmatch',
+            'reverse', 'searchbody', 'searchheadline', 'suboutlineonly', 'wholeword',
+        ):
+            if munged_s == setting:
+                return
     match_list = [s for s in in_list if self.munge(s) == munged_s]
     print(format % (munged_s,match_list))</t>
 <t tx="ekr.20111017082630.16080">'''This script reports commands that exist in some but not all key- binding
@@ -11814,6 +11833,15 @@ for p in c.all_positions():
 if changed:
     c.setChanged()
     c.redraw()     
+</t>
+<t tx="ekr.20181017194841.1">@language rest
+@wrap
+
+- get_configs could scan for @xxx in stylesheets.
+  For example, gutter-bg is used in @data qt-gui-plugin-style-sheet
+  
+- Or it could ignore settings containing font, bookmarks, datenodes, etc.
+
 </t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
