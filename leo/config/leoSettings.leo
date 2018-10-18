@@ -38,8 +38,8 @@
 <v t="ekr.20111006212449.11850"><vh>@button check-settings</vh>
 <v t="ekr.20111006212449.11851"><vh>ctor</vh></v>
 <v t="ekr.20111006212449.11852"><vh>check &amp; helpers</vh>
-<v t="ekr.20111007043902.15697"><vh>print_missing_get_x</vh></v>
-<v t="ekr.20181018053940.1"><vh>print_missing_user_config</vh></v>
+<v t="ekr.20181018060340.1"><vh>filter_missing_get_x</vh></v>
+<v t="ekr.20181018065113.1"><vh>filter_missing_user_config</vh></v>
 </v>
 <v t="ekr.20111006212449.11853"><vh>error</vh></v>
 <v t="ekr.20111006212449.11854"><vh>get_commanders</vh></v>
@@ -2246,6 +2246,10 @@
 </v>
 <v t="ekr.20181017213058.1"><vh>==== </vh></v>
 <v t="ekr.20111006212449.11850"></v>
+<v t="ekr.20181018064910.1"><vh>unused code</vh>
+<v t="ekr.20111007043902.15697"><vh>print_missing_get_x</vh></v>
+<v t="ekr.20181018053940.1"><vh>print_missing_user_config</vh></v>
+</v>
 <v t="ekr.20111006212449.11852"></v>
 <v t="ekr.20181017205207.1"><vh>===== Retired settings</vh>
 <v t="ekr.20060408090018"><vh>@bool added-setting = True</vh></v>
@@ -2303,7 +2307,9 @@
 <v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
 </v>
-<v t="ekr.20181018054935.1"><vh>Report</vh></v>
+<v t="ekr.20181018054935.1"><vh>Old Report</vh></v>
+<v t="ekr.20181018064822.1"><vh>New Report</vh></v>
+<v t="ekr.20181018070655.1"><vh>Newest report</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5358,6 +5364,8 @@ gray90: #E5E5E5
 </t>
 <t tx="ekr.20111006212449.11850">'''Check the consistency of all settings.'''
 
+# https://github.com/leo-editor/leo-editor/issues/993
+
 class Controller:
     @others
 
@@ -5374,54 +5382,52 @@ Controller(c).run()</t>
 </t>
 <t tx="ekr.20111006212449.11852">def check (self,configs_d,settings_d):
 
-    table = (
-        'Bool','Color','Int','Float', # 'Font',
-        'Ratio','Path','String',
-    )
-    format = '%40s %s'
-
+    munge = self.munge
+    table = ('Bool','Int','Float','Ratio','Path','String',)
+        # 'Color', 'Font',
     if 1: # Less important: print missing settings.
+        print('\nMissing user settings...')
         for kind in table:
             config_key = 'get%s' % kind
             settings_key = '@%s' % kind.lower()
             config_list = configs_d.get(config_key,[])
             settings_list = settings_d.get(settings_key,[])
-            munged_config_list =   [self.munge(s) for s in config_list]
-            munged_settings_list = [self.munge(s) for s in settings_list]
+            munged_config_list =   [munge(s) for s in config_list]
+            munged_settings_list = [munge(s) for s in settings_list]
             missing = set()
             for s in munged_config_list:
-                # Ignore plugins settings.
                 if s not in munged_settings_list:
                     missing.add(s)
             if missing:
-                print('\nmissing %s settings...' % settings_key)
-                print(format % ('Canonical','Actual'))
-                print(format % ('=' * len('Canonical'),'=' * len('Actual')))
-                for s in sorted(list(missing)):
-                    self.print_missing_user_config(format,s,
-                        config_list,settings_list,
-                        munged_config_list,munged_settings_list)
-    # More important: print missing calls to c.config.getX
-    if 1:
+                aList = [self.filter_missing_user_config(z) for z in missing]
+                aList = [z for z in aList if z is not None]
+                if aList:
+                    print('\nmissing %s %s settings...' % (len(aList), settings_key))
+                    for z in sorted(aList):
+                        aList2 = [z2 for z2 in config_list if munge(z2) == munge(z)]
+                        g.printObj(aList2)
+    if 1: # More important: print missing calls to c.config.getX
+        print('\nMissing calls to c.config.get*...\n')
         for kind in table:
             config_key = 'get%s' % kind
             settings_key = '@%s' % kind.lower()
             config_list = configs_d.get(config_key,[])
             settings_list = settings_d.get(settings_key,[])
-            munged_config_list =   [self.munge(s) for s in config_list]
-            munged_settings_list = [self.munge(s) for s in settings_list]
+            munged_config_list =   [munge(s) for s in config_list]
+            munged_settings_list = [munge(s) for s in settings_list]
             missing = set()
             for s in munged_settings_list:
                 if s not in munged_config_list:
                     missing.add(s)
             if missing:
-                print('\nmissing config.%s calls...' % config_key)
-                print(format % ('Canonical','Actual'))
-                print(format % ('=' * len('Canonical'),'=' * len('Actual')))
-                for s in sorted(list(missing)):
-                    self.print_missing_get_x(format,s,
-                        settings_list,config_list,
-                        munged_settings_list,munged_config_list)</t>
+                aList = [self.filter_missing_get_x(z) for z in missing]
+                aList = [z for z in aList if z is not None]
+                if aList:
+                    print('\nmissing %s config.%s calls...' % (len(aList), config_key))
+                    for z in sorted(aList):
+                        aList2 = [z2 for z2 in settings_list if munge(z2) == munge(z)]
+                        g.printObj(aList2)
+              </t>
 <t tx="ekr.20111006212449.11853">def error (self,s):
 
     print(s)
@@ -5525,16 +5531,12 @@ Controller(c).run()</t>
     '''Return a dict containing a representation
     of all settings in leoSettings.leo.
     '''
-
     trace = False
     c,d = self.settings,{}
-
     print('scanning: %s' % c.shortFileName())
-
     settings_node = g.findNodeAnywhere(c,'@settings')
     if not settings_node:
         return self.error('no @settings node')
-
     for p in settings_node.subtree():
         if self.is_setting(p):
             kind,name = self.parse_setting(p)
@@ -5546,7 +5548,6 @@ Controller(c).run()</t>
                 d [kind] = aList
             else:
                 self.error('no name for %s' % (kind))
-
     if trace:
         keys = list(d.keys())
         for key in sorted(keys):
@@ -5554,7 +5555,6 @@ Controller(c).run()</t>
             aList = d.get(key)
             for name in sorted(aList):
                 print('  ' + name)
-
     return d</t>
 <t tx="ekr.20111006212449.11859">def is_setting (self,p):
 
@@ -5581,23 +5581,17 @@ Controller(c).run()</t>
     name = s[i:j]
     return kind,name</t>
 <t tx="ekr.20111006212449.11861">def munge (self,s):
-
     '''Return the canonicalized name for settings and arguments to c.config.getX.'''
-
     s = s.replace('-','').replace('_','').lower()
     return g.toUnicode(s)
 </t>
 <t tx="ekr.20111006212449.11862">def run(self):
-
-    import os ; os.system('cls')
-
+    g.cls()
     self.get_commanders()
     configs = self.get_configs()
     settings = self.get_settings()
-
     if self.errors == 0:
         self.check(configs,settings)
-
     g.trace('done')</t>
 <t tx="ekr.20111007043902.15697">def print_missing_get_x(self,format,munged_s,in_list,out_list,munged_in_list,munged_out_list):
     '''Print missing calls to config.get_x,'''
@@ -11978,6 +11972,262 @@ missing @string settings...
                  viewrendereddefaultkind ['view-rendered-default-kind']
                 viewrenderedmdextensions ['view-rendered-md-extensions']
                              zimnodename ['zim-node-name']
+</t>
+<t tx="ekr.20181018060340.1">def filter_missing_get_x(self, setting):
+    
+    # These *ivars* are set by the GlobalConfigManager class.
+    # There *should* be settings for all of these.
+    table = (
+        # encodingIvarsDict...
+            "default_at_auto_file_encoding",
+            "default_derived_file_encoding",
+            "new_leo_file_encoding",
+            ### "defaultEncoding",
+        # defaultsDict...
+            "color_directives_in_plain_text",
+            "output_doc_chunks",
+            "page_width",
+            "tab_width",
+            "tangle_outputs_header",
+            "target_language",
+            "underline_undefined_section_names",
+        # ivarsDict
+            "at_root_bodies_start_in_doc_mode",
+            "create_nonexistent_directories",
+            "output_initial_comment",
+            "output_newline",
+            "page_width",
+            "read_only",
+            "redirect_execute_script_output_to_log_pane",
+            "relative_path_base_directory",
+            "remove_sentinels_extension",
+            "save_clears_undo_buffer",
+            "stylesheet",
+            "tab_width",
+            "target_language",
+            "trailing_body_newlines",
+            "use_plugins",
+            "undo_granularity",
+            "write_strips_blank_lines",
+    )
+    table = [z.replace('_','') for z in table]
+    if setting in table:
+        return None
+
+    # unitTest.leo tests test-darwin-setting and test-win32-setting
+    if setting in ('testdarwinsetting', 'testwin32setting'):
+        return None
+
+    # Stylesheets use these settings.
+    for pattern in (
+        'bg', 'border', 'color', 'fg', 'font',
+        'leogreen', 'leoyello',
+        'margin', 'padding', 'relief',
+        'solarized', 'split-bar', 'text-foreground', 'tree-image',
+    ):
+        if setting.find(pattern.replace('-','')) &gt; -1:
+            return None
+
+    # These plugins/use settings in non-standard ways.
+    if setting.startswith(
+        ('bookmarks', 'datenodes', 'http', 'opml',
+        'rst3', 'todo', 'vim', 'zodb'),
+    ):
+        return None
+   
+    # Find settings are defined in non-standard ways.
+    for pattern in (
+        'batch', 'change-text', 'find-text', 'ignore-case',
+        'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
+        'reverse', 'search-body', 'search-headline', 'suboutline-only',
+        'whole-word', 'wrap',
+    ):
+        if setting == pattern.replace('-',''):
+            return None
+    return setting
+</t>
+<t tx="ekr.20181018064822.1">scanning: leoPy.leo
+scanning: leoPlugins.leo
+scanning: leoSettings.leo
+
+missing 24 @bool settings...
+['active-path-do-autoload']
+['auto-set-ignore-case']
+['eval-redirect']
+['find-def-creates-clones']
+['graph-manual-layout']
+['headline-gmt-time']
+['ignore-caps-lock']
+['invisible-outline-navigation']
+['legacy-eval']
+['Leo-Babel-Node-Creation-Default']
+['leo-to-html-no-menus']
+['output-doc-flag']
+['shadow-in-home-dir']
+['smart-quotes']
+['stub-verbose']
+['stub-warn']
+['suppress-all-plugin-menus']
+['suppress-datenodes-menus']
+['tangle-batch-flag']
+['untangle-batch-flag']
+['use-header-flag']
+['use-xdb-pane-output-area']
+['view-rendered-auto-create']
+['warn_when_plugins_fail_to_load']
+
+missing 3 @int settings...
+['fts-max-hits']
+['qt-rich-text-zoom-in']
+['rst-level']
+
+missing 19 @string settings...
+['default-editing-state']
+['external-editor']
+['initial-chooser-directory']
+['leoscreen-prefix']
+['leoscreen-time-fmt']
+['leo_to_html_%s']
+['main-spelling-dictionary']
+['mime-open-cmd']
+['path-to-zim']
+['pytest-path']
+['rst2-http-attributename']
+['rst-type']
+['screen-capture-save-path']
+['script-file-path']
+['theme-name']
+['top-level-unbound-key-action']
+['view-rendered-default-kind']
+['view-rendered-md-extensions']
+['zim-node-name']
+run done
+</t>
+<t tx="ekr.20181018064910.1">format = '%40s %s'
+
+print('\nmissing %s settings...' % settings_key)
+print(format % ('Canonical','Actual'))
+print(format % ('=' * len('Canonical'),'=' * len('Actual')))
+for s in sorted(list(missing)):
+    self.print_missing_user_config(format,s,
+        config_list,settings_list,
+        munged_config_list,munged_settings_list)
+        
+===========
+
+print('\nmissing config.%s calls...' % config_key)
+print(format % ('Canonical','Actual'))
+print(format % ('=' * len('Canonical'),'=' * len('Actual')))
+for s in sorted(list(missing)):
+    self.print_missing_get_x(format,s,
+        settings_list,config_list,
+        munged_settings_list,munged_config_list)
+</t>
+<t tx="ekr.20181018065113.1">def filter_missing_user_config(self, setting):
+    
+    # unitTest.leo tests test-darwin-setting and test-win32-setting
+    if setting in ('testdarwinsetting', 'testwin32setting'):
+        return None
+
+    # Stylesheets use these settings.
+    for pattern in (
+        'bg', 'border', 'color', 'fg', 'font',
+        'leogreen', 'leoyello',
+        'margin', 'padding', 'relief',
+        'solarized', 'split-bar', 'text-foreground', 'tree-image',
+    ):
+        if setting.find(pattern.replace('-','')) &gt; -1:
+            return None
+
+    # These plugins/use settings in non-standard ways.
+    if setting.startswith(
+        ('bookmarks', 'datenodes', 'http', 'opml',
+        'rst3', 'todo', 'vim', 'zodb'),
+    ):
+        return None
+   
+    # Find settings are defined in non-standard ways.
+    for pattern in (
+        'batch', 'change-text', 'find-text', 'ignore-case',
+        'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
+        'reverse', 'search-body', 'search-headline', 'suboutline-only',
+        'whole-word', 'wrap',
+    ):
+        if setting == pattern.replace('-',''):
+            return None
+    return setting
+</t>
+<t tx="ekr.20181018070655.1">scanning: leoPy.leo
+scanning: leoPlugins.leo
+scanning: leoSettings.leo
+
+missing 24 @bool settings...
+['active-path-do-autoload']
+['auto-set-ignore-case']
+['eval-redirect']
+['find-def-creates-clones']
+['graph-manual-layout']
+['headline-gmt-time']
+['ignore-caps-lock']
+['invisible-outline-navigation']
+['legacy-eval']
+['Leo-Babel-Node-Creation-Default']
+['leo-to-html-no-menus']
+['output-doc-flag']
+['shadow-in-home-dir']
+['smart-quotes']
+['stub-verbose']
+['stub-warn']
+['suppress-all-plugin-menus']
+['suppress-datenodes-menus']
+['tangle-batch-flag']
+['untangle-batch-flag']
+['use-header-flag']
+['use-xdb-pane-output-area']
+['view-rendered-auto-create']
+['warn_when_plugins_fail_to_load']
+
+missing 3 @int settings...
+['fts-max-hits']
+['qt-rich-text-zoom-in']
+['rst-level']
+
+missing 19 @string settings...
+['default-editing-state']
+['external-editor']
+['initial-chooser-directory']
+['leoscreen-prefix']
+['leoscreen-time-fmt']
+['leo_to_html_%s']
+['main-spelling-dictionary']
+['mime-open-cmd']
+['path-to-zim']
+['pytest-path']
+['rst2-http-attributename']
+['rst-type']
+['screen-capture-save-path']
+['script-file-path']
+['theme-name']
+['top-level-unbound-key-action']
+['view-rendered-default-kind']
+['view-rendered-md-extensions']
+['zim-node-name']
+
+missing 3 config.getBool calls...
+['at-root-bodies-start-in-doc-mode']
+['create-nonexistent-directories']
+['save-clears-undo-buffer']
+
+missing 8 config.getString calls...
+['default-at-auto-file-encoding']
+['default-derived-file-encoding']
+['new-leo-file-encoding']
+['output-initial-comment']
+['output-newline']
+['relative-path-base-directory']
+['remove-sentinels-extension']
+['trailing-body-newlines']
+run done
 </t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
