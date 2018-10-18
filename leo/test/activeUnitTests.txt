@@ -583,7 +583,6 @@ table = (
     ('enable_alt_ctrl_bindings',        getBool('enable_alt_ctrl_bindings')),
     ('enable_autocompleter',            getBool('enable_autocompleter_initially')),
     ('enable_calltips',                 getBool('enable_calltips_initially')),
-    ('ignore_caps_lock',                getBool('ignore_caps_lock')),
     ('ignore_unbound_non_ascii_keys',   getBool('ignore_unbound_non_ascii_keys')),
     ('insert_mode_bg_color',            getColor('insert_mode_bg_color') or bg),
     ('insert_mode_fg_color',            getColor('insert_mode_fg_color') or fg),

@@ -1970,7 +1970,6 @@ class KeyHandlerClass(object):
         getColor = c.config.getColor
         self.enable_autocompleter = getBool('enable-autocompleter-initially')
         self.enable_calltips = getBool('enable-calltips-initially')
-        self.ignore_caps_lock = getBool('ignore-caps-lock')
         self.ignore_unbound_non_ascii_keys = getBool('ignore-unbound-non-ascii-keys')
         self.minibuffer_background_color = getColor('minibuffer-background-color') or 'lightblue'
         self.minibuffer_foreground_color = getColor('minibuffer-foreground-color') or 'black'

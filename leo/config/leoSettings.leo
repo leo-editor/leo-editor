@@ -101,6 +101,63 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
+<v t="ekr.20181017205207.1"><vh>===== Retired settings</vh>
+<v t="ekr.20060408090018"><vh>@bool added-setting = True</vh></v>
+<v t="ekr.20080324105006.6"><vh>@bool allow-middle-button-paste = False</vh></v>
+<v t="ekr.20161011090731.1"><vh>@bool allow_section_references_in_at_auto = False</vh></v>
+<v t="ekr.20041119043902.3"><vh>@bool append-output-to-output-file = False</vh></v>
+<v t="ekr.20101104191857.8345"><vh>@bool at-auto-separate-non-def-nodes = False</vh></v>
+<v t="ekr.20070803082435"><vh>@bool full-import-checks = True</vh></v>
+<v t="ekr.20041119043902.4"><vh>@bool ignore-blank-lines = True</vh></v>
+<v t="ekr.20161010085256.1"><vh>@bool js-importer-clean-lws = True</vh></v>
+<v t="ekr.20041119043902.11"><vh>@bool make-whitespace-visible = False</vh></v>
+<v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
+<v t="ekr.20041119034357.5"><vh>@bool read-only = False</vh></v>
+<v t="ekr.20041119041019"><vh>@bool redirect-execute-script-output-to-log-pane = False</vh></v>
+<v t="ekr.20041120152657"><vh>@bool script-change = None</vh></v>
+<v t="ekr.20041120152900.2"><vh>@bool script-search = None</vh></v>
+<v t="ekr.20060125104049"><vh>@bool show-only-find-tab-options = True</vh></v>
+<v t="ekr.20140721165014.19165"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
+<v t="ekr.20120205022040.15411"><vh>@bool swap-mac-keys = False</vh></v>
+<v t="ekr.20041119034357.13"><vh>@bool use-plugins = True</vh></v>
+<v t="ekr.20071113084330"><vh>@bool warn-when-plugins-fail-to-load = True</vh></v>
+<v t="ekr.20061009190510"><vh>@bool write-recent-files-as-needed = True</vh></v>
+<v t="ekr.20041119041747.4"><vh>@bool write-strips-blank-lines = True</vh></v>
+<v t="ekr.20050203085250"><vh>@int global-setting-for-unit-tests = 132</vh></v>
+<v t="ekr.20080930072519.4"><vh>@int icon-bar-widgets-per-row = 20</vh></v>
+<v t="ekr.20161010172424.1"><vh>@int js-importer-min-rescan-size = 0</vh></v>
+<v t="ekr.20161010172441.1"><vh>@int js-importer-min-scan-size = 0</vh></v>
+<v t="ekr.20060521134125"><vh>@string debugger-default-target = None</vh></v>
+<v t="ekr.20060521134125.1"><vh>@string debugger-force-target = None</vh></v>
+<v t="ekr.20041119034357.29"><vh>@string default-tangle-directory = None</vh></v>
+<v t="ekr.20060620085654"><vh>@string editor-orientation = horizontal</vh></v>
+<v t="ekr.20041119050749.11"><vh>@string headline-gmt-time = None</vh></v>
+<v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
+<v t="ekr.20041119034357.16"><vh>Retired: all Compare panel options</vh>
+<v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
+<v t="ekr.20041119043902.5"><vh>@bool ignore-first-line-of-file-1 = False</vh></v>
+<v t="ekr.20041119043902.6"><vh>@bool ignore-first-line-of-file-2 = False</vh></v>
+<v t="ekr.20041119043902.7"><vh>@bool ignore-interior-whitespace = False</vh></v>
+<v t="ekr.20041119043902.8"><vh>@bool ignore-leading-whitespace = False</vh></v>
+<v t="ekr.20041119043902.9"><vh>@bool ignore-sentinel-lines = False</vh></v>
+<v t="ekr.20041119043902"><vh>@string compare-file-1 = None</vh></v>
+<v t="ekr.20041119043902.1"><vh>@string compare-file-2 = None</vh></v>
+<v t="ekr.20041119034357.18"><vh>@string limit-directory-search-extension = .py</vh></v>
+<v t="ekr.20041119043902.2"><vh>@string output-file = None</vh></v>
+</v>
+<v t="ekr.20041119050105"><vh>output options</vh>
+<v t="ekr.20041119043902.10"><vh>@int limit-count = 9</vh></v>
+<v t="ekr.20041119043902.12"><vh>@bool print-both-lines-for-matches = False</vh></v>
+<v t="ekr.20041119043902.13"><vh>@bool print-matching-lines = False</vh></v>
+<v t="ekr.20041119043902.14"><vh>@bool print-mismatching-lines = True</vh></v>
+<v t="ekr.20041119043902.15"><vh>@bool print-trailing-lines = True</vh></v>
+</v>
+</v>
+<v t="ekr.20100907092300.6957"><vh>Retired: all Inkscape options</vh>
+<v t="ekr.20100907092300.6958"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
+<v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
+</v>
+</v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
@@ -535,6 +592,7 @@
 <v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
 </v>
 <v t="ekr.20110611092035.16482"><vh>Headline commands</vh>
+<v t="ekr.20181018105904.1"><vh>@bool headline-gmt-time = False</vh></v>
 <v t="ekr.20041119050749.10"><vh>@string headline-time-format-string = %m/%d</vh></v>
 </v>
 <v t="ekr.20160127043440.1"><vh>make-stub-files</vh>
@@ -544,6 +602,8 @@
 <v t="ekr.20160318061607.6"><vh>@bool stub-trace-reduce = False</vh></v>
 <v t="ekr.20160318061607.5"><vh>@bool stub-trace-visitors = False</vh></v>
 <v t="ekr.20160318061607.7"><vh>@bool stub-update = False</vh></v>
+<v t="ekr.20181018103813.1"><vh>@bool stub-verbose = False</vh></v>
+<v t="ekr.20181018103757.1"><vh>@bool stub-warn = False</vh></v>
 <v t="ekr.20160127043520.1"><vh>@data stub-def-name-patterns</vh></v>
 <v t="ekr.20160130145944.1"><vh>@data stub-general-patterns</vh></v>
 <v t="ekr.20160112111247.1"><vh>@data stub-prefix-lines</vh></v>
@@ -668,6 +728,7 @@
 <v t="tbrown.20180212145842.1"><vh>@data path-demangle</vh></v>
 </v>
 <v t="ekr.20060730101451"><vh>Shadow files</vh>
+<v t="ekr.20181018110022.1"><vh>@bool shadow-in-home-dir = False</vh></v>
 <v t="ekr.20060730101451.3"><vh>@string shadow-prefix = x</vh></v>
 <v t="ekr.20060730101451.5"><vh>@string shadow-subdir = .leo_shadow</vh></v>
 </v>
@@ -716,11 +777,12 @@
 </v>
 </v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
-<v t="ekr.20180411070112.1"><vh>@bool replace-meta-with-alt = False</vh></v>
-<v t="ekr.20160504145653.1"><vh>@bool plain-key-outline-search = True</vh></v>
 <v t="ekr.20120205022040.15410"><vh>@bool enable-alt-ctrl-bindings = True</vh></v>
 <v t="ekr.20131007055150.13034"><vh>@bool ignore-unbound-non-ascii-keys = False</vh></v>
+<v t="ekr.20160504145653.1"><vh>@bool plain-key-outline-search = True</vh></v>
+<v t="ekr.20180411070112.1"><vh>@bool replace-meta-with-alt = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
+<v t="ekr.20181018104056.1"><vh>@bool smart-quotes = False</vh></v>
 <v t="ekr.20131112161153.4420"><vh>@bool vim-mode = False</vh></v>
 <v t="ekr.20060926161207.1"><vh>@bool warn-about-redefined-shortcuts = True</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
@@ -1925,6 +1987,7 @@
 </v>
 <v t="ekr.20110611092035.16492"><vh>Mouse</vh></v>
 <v t="ekr.20051123100536"><vh>Plugins</vh>
+<v t="ekr.20181018110051.1"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
 <v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active-path-attype = auto</vh></v>
@@ -1951,6 +2014,7 @@
 <v t="tbrown.20171128211219.1"><vh>@data bookmarks-modifiers</vh></v>
 </v>
 <v t="ekr.20060807103220"><vh>datenodes plugin</vh>
+<v t="ekr.20181018105625.1"><vh>@bool suppress-datenodes-menus = False</vh></v>
 <v t="ekr.20060807103220.1"><vh>@string datenodes-body-text = To do...</vh></v>
 <v t="ekr.20060807103220.2"><vh>@string datenodes-day-node-headline = %Y-%m-%d</vh></v>
 <v t="ekr.20060807103220.3"><vh>@string datenodes-month-node-day-headline = %d: %A</vh></v>
@@ -1962,6 +2026,15 @@
 <v t="ekr.20060807103220.9"><vh>@string datenodes-year-node-year-headline = %Y</vh></v>
 <v t="ekr.20060807103220.10"><vh>@bool datenodes-year-node-omit-saturdays = True</vh></v>
 <v t="ekr.20060807103220.11"><vh>@bool datenodes-year-node-omit-sundays = True</vh></v>
+</v>
+<v t="ekr.20181018105433.1"><vh>graphcanvas plugin</vh>
+<v t="ekr.20181018105440.1"><vh>@bool graph-manual-layout = False</vh></v>
+</v>
+<v t="ekr.20181018105515.1"><vh>leo_babel plugin</vh>
+<v t="ekr.20181018105529.1"><vh>@bool Leo-Babel-Node-Creation-Default = True</vh></v>
+</v>
+<v t="ekr.20181018105551.1"><vh>leo_to_html plugin</vh>
+<v t="ekr.20181018105559.1"><vh>@bool leo-to-html-no-menus = False</vh></v>
 </v>
 <v t="ekr.20111003085631.15488"><vh>mod_http plugin</vh>
 <v t="ekr.20111003085631.15489"><vh>@bool http-active = True</vh></v>
@@ -1978,6 +2051,8 @@
 </v>
 <v t="ekr.20110611092035.16483"><vh>mod_scripting plugin</vh>
 <v t="tbrown.20100524101550.4704"><vh>@string mod-scripting-subtext = ▼</vh></v>
+<v t="ekr.20181018105342.1"><vh>@bool eval-redirect = False</vh></v>
+<v t="ekr.20181018105355.1"><vh>@bool legacy-eval = False</vh></v>
 </v>
 <v t="TL.20090225102340.33"><vh>nodeActions plugin</vh>
 <v t="TL.20090225102340.34"><vh>@bool nodeActions-save-atFile-nodes = False</vh></v>
@@ -2034,6 +2109,9 @@
 <v t="tbrown.20130310101647.34743"><vh>valuespace plugin</vh>
 <v t="tbrown.20130310101647.34744"><vh>@bool valuespace-vs-eval-redirect = True</vh></v>
 </v>
+<v t="ekr.20181018105748.1"><vh>viewrendered plugin</vh>
+<v t="ekr.20181018105800.1"><vh>@bool view-rendered-auto-create</vh></v>
+</v>
 <v t="ekr.20051123100536.1"><vh>vim plugin</vh>
 <v t="ekr.20051123100536.2"><vh>@@string vim_cmd = c:\Program Files\vim\vim63\gvim --servername LEO</vh></v>
 <v t="ekr.20051123100536.3"><vh>@@string vim_exe = c:\Program Files\vim\vim63\gvim</vh></v>
@@ -2043,6 +2121,9 @@
 <v t="tbrown.20141101105337.1"><vh>wikiview plugin</vh>
 <v t="tbrown.20141101105337.2"><vh>@data wikiview-link-patterns</vh></v>
 <v t="tbrown.20141101105337.3"><vh>@bool wikiview-active = True</vh></v>
+</v>
+<v t="ekr.20181018105650.1"><vh>xdb_pane plugin</vh>
+<v t="ekr.20181018105704.1"><vh>@bool use-xdb-pane-output-area</vh></v>
 </v>
 <v t="ekr.20090202191501.10"><vh>xemacs plugin</vh>
 <v t="ekr.20090202191501.11"><vh>@string xemacs-exe = c:\XEmacs\XEmacs-21.4.21\i586-pc-win32\xemacs.exe</vh></v>
@@ -2148,6 +2229,7 @@
 <v t="ekr.20131008181812.17533"><vh>@bool enable-tree-dragging = True</vh></v>
 <v t="ekr.20061012122620"><vh>@bool insert-new-nodes-at-end = False</vh></v>
 <v t="tbrown.20110212091818.20118"><vh>@bool inter-outline-drag-moves = False</vh></v>
+<v t="ekr.20181018105945.1"><vh>@bool invisible-outline-navigation = False</vh></v>
 <v t="ekr.20100107060708.6390"><vh>@bool qt-tree-multiple-selection = True</vh></v>
 <v t="ekr.20110601103939.19339"><vh>@bool single-click-auto-edits-headline = False</vh></v>
 <v t="ekr.20061007211759"><vh>@bool sparse-move-outline-left = False</vh></v>
@@ -2252,63 +2334,6 @@
 </v>
 <v t="ekr.20111006212449.11850"></v>
 <v t="ekr.20111006212449.11852"></v>
-<v t="ekr.20181017205207.1"><vh>===== Retired settings</vh>
-<v t="ekr.20060408090018"><vh>@bool added-setting = True</vh></v>
-<v t="ekr.20080324105006.6"><vh>@bool allow-middle-button-paste = False</vh></v>
-<v t="ekr.20161011090731.1"><vh>@bool allow_section_references_in_at_auto = False</vh></v>
-<v t="ekr.20041119043902.3"><vh>@bool append-output-to-output-file = False</vh></v>
-<v t="ekr.20101104191857.8345"><vh>@bool at-auto-separate-non-def-nodes = False</vh></v>
-<v t="ekr.20070803082435"><vh>@bool full-import-checks = True</vh></v>
-<v t="ekr.20041119043902.4"><vh>@bool ignore-blank-lines = True</vh></v>
-<v t="ekr.20161010085256.1"><vh>@bool js-importer-clean-lws = True</vh></v>
-<v t="ekr.20041119043902.11"><vh>@bool make-whitespace-visible = False</vh></v>
-<v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
-<v t="ekr.20041119034357.5"><vh>@bool read-only = False</vh></v>
-<v t="ekr.20041119041019"><vh>@bool redirect-execute-script-output-to-log-pane = False</vh></v>
-<v t="ekr.20041120152657"><vh>@bool script-change = None</vh></v>
-<v t="ekr.20041120152900.2"><vh>@bool script-search = None</vh></v>
-<v t="ekr.20060125104049"><vh>@bool show-only-find-tab-options = True</vh></v>
-<v t="ekr.20140721165014.19165"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
-<v t="ekr.20120205022040.15411"><vh>@bool swap-mac-keys = False</vh></v>
-<v t="ekr.20041119034357.13"><vh>@bool use-plugins = True</vh></v>
-<v t="ekr.20071113084330"><vh>@bool warn-when-plugins-fail-to-load = True</vh></v>
-<v t="ekr.20061009190510"><vh>@bool write-recent-files-as-needed = True</vh></v>
-<v t="ekr.20041119041747.4"><vh>@bool write-strips-blank-lines = True</vh></v>
-<v t="ekr.20050203085250"><vh>@int global-setting-for-unit-tests = 132</vh></v>
-<v t="ekr.20080930072519.4"><vh>@int icon-bar-widgets-per-row = 20</vh></v>
-<v t="ekr.20161010172424.1"><vh>@int js-importer-min-rescan-size = 0</vh></v>
-<v t="ekr.20161010172441.1"><vh>@int js-importer-min-scan-size = 0</vh></v>
-<v t="ekr.20060521134125"><vh>@string debugger-default-target = None</vh></v>
-<v t="ekr.20060521134125.1"><vh>@string debugger-force-target = None</vh></v>
-<v t="ekr.20041119034357.29"><vh>@string default-tangle-directory = None</vh></v>
-<v t="ekr.20060620085654"><vh>@string editor-orientation = horizontal</vh></v>
-<v t="ekr.20041119050749.11"><vh>@string headline-gmt-time = None</vh></v>
-<v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
-<v t="ekr.20041119034357.16"><vh>Retired: all Compare panel options</vh>
-<v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
-<v t="ekr.20041119043902.5"><vh>@bool ignore-first-line-of-file-1 = False</vh></v>
-<v t="ekr.20041119043902.6"><vh>@bool ignore-first-line-of-file-2 = False</vh></v>
-<v t="ekr.20041119043902.7"><vh>@bool ignore-interior-whitespace = False</vh></v>
-<v t="ekr.20041119043902.8"><vh>@bool ignore-leading-whitespace = False</vh></v>
-<v t="ekr.20041119043902.9"><vh>@bool ignore-sentinel-lines = False</vh></v>
-<v t="ekr.20041119043902"><vh>@string compare-file-1 = None</vh></v>
-<v t="ekr.20041119043902.1"><vh>@string compare-file-2 = None</vh></v>
-<v t="ekr.20041119034357.18"><vh>@string limit-directory-search-extension = .py</vh></v>
-<v t="ekr.20041119043902.2"><vh>@string output-file = None</vh></v>
-</v>
-<v t="ekr.20041119050105"><vh>output options</vh>
-<v t="ekr.20041119043902.10"><vh>@int limit-count = 9</vh></v>
-<v t="ekr.20041119043902.12"><vh>@bool print-both-lines-for-matches = False</vh></v>
-<v t="ekr.20041119043902.13"><vh>@bool print-matching-lines = False</vh></v>
-<v t="ekr.20041119043902.14"><vh>@bool print-mismatching-lines = True</vh></v>
-<v t="ekr.20041119043902.15"><vh>@bool print-trailing-lines = True</vh></v>
-</v>
-</v>
-<v t="ekr.20100907092300.6957"><vh>Retired: all Inkscape options</vh>
-<v t="ekr.20100907092300.6958"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
-<v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
-</v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11872,9 +11897,14 @@ if changed:
     if setting in ('testdarwinsetting', 'testwin32setting'):
         return None
     #
-    # This setting is commented out for now.
-    if setting == 'qt-rich-text-zoom-in'.replace('-',''):
-        return
+    # These settings are commented out for now.
+    for ignore in (
+        'auto-set-ignore-case',
+        'find-def-creates-clones',
+        'qt-rich-text-zoom-in',
+    ):
+        if setting == ignore.replace('-',''):
+            return None
     #
     # Stylesheets use these settings.
     for pattern in (
@@ -11921,6 +11951,27 @@ if changed:
 <t tx="ekr.20181018075857.3"></t>
 <t tx="ekr.20181018080337.1"></t>
 <t tx="ekr.20181018080344.1"></t>
+<t tx="ekr.20181018103757.1">
+</t>
+<t tx="ekr.20181018103813.1">True: use verbose mode.</t>
+<t tx="ekr.20181018104056.1">True: use smart quotes when typing.</t>
+<t tx="ekr.20181018105342.1"></t>
+<t tx="ekr.20181018105355.1"></t>
+<t tx="ekr.20181018105433.1"></t>
+<t tx="ekr.20181018105440.1"></t>
+<t tx="ekr.20181018105515.1"></t>
+<t tx="ekr.20181018105529.1"></t>
+<t tx="ekr.20181018105551.1"></t>
+<t tx="ekr.20181018105559.1"></t>
+<t tx="ekr.20181018105625.1"></t>
+<t tx="ekr.20181018105650.1"></t>
+<t tx="ekr.20181018105704.1"></t>
+<t tx="ekr.20181018105748.1"></t>
+<t tx="ekr.20181018105800.1"></t>
+<t tx="ekr.20181018105904.1"></t>
+<t tx="ekr.20181018105945.1"></t>
+<t tx="ekr.20181018110022.1"></t>
+<t tx="ekr.20181018110051.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
