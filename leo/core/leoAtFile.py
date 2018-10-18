@@ -62,12 +62,12 @@ class AtFile(object):
     def reloadSettings(self):
         '''AtFile.reloadSettings'''
         c = self.c
-        self.checkPythonCodeOnWrite = c.config.getBool(
-            'check-python-code-on-write', default=True)
-        self.runPyFlakesOnWrite = c.config.getBool(
-            'run-pyflakes-on-write', default=False)
-        self.underindentEscapeString = c.config.getString(
-            'underindent-escape-string') or '\\-'
+        self.checkPythonCodeOnWrite = \
+            c.config.getBool('check-python-code-on-write', default=True)
+        self.runPyFlakesOnWrite = \
+            c.config.getBool('run-pyflakes-on-write', default=False)
+        self.underindentEscapeString = \
+            c.config.getString('underindent-escape-string') or '\\-'
     #@+node:ekr.20150509194251.1: *4* at.cmd (decorator)
     def cmd(name):
         '''Command decorator for the AtFileCommands class.'''
@@ -188,8 +188,8 @@ class AtFile(object):
         # at.explicitLineEnding # True: an @lineending directive specifies the ending.
             # Set by scanAllDirectives() below.
         at.fileChangedFlag = False # True: the file has actually been updated.
-        at.force_newlines_in_at_nosent_bodies = c.config.getBool(
-            'force_newlines_in_at_nosent_bodies')
+        at.force_newlines_in_at_nosent_bodies = \
+            c.config.getBool('force_newlines_in_at_nosent_bodies')
         # at.language:      set by scanAllDirectives() below.
         # at.outputFile:    set below.
         # at.outputNewline: set below.

@@ -595,7 +595,6 @@
 </v>
 </v>
 <v t="ekr.20110611092035.16478"><vh>Tangle/Untange</vh>
-<v t="ekr.20041119034357.14"><vh>@bool at-root-bodies-start-in-doc-mode = True</vh></v>
 <v t="ekr.20041119034357.29"><vh>@directory default-tangle-directory = None</vh></v>
 </v>
 <v t="ekr.20110611092035.16477"><vh>Undo</vh>
@@ -615,11 +614,9 @@
 <v t="ekr.20041119043902"><vh>@string compare-file-1 = None</vh></v>
 <v t="ekr.20041119043902.1"><vh>@string compare-file-2 = None</vh></v>
 <v t="ekr.20041119043902.2"><vh>@string output-file = None</vh></v>
-<v t="ekr.20041119043902.3"><vh>@bool append-output-to-output-file = False</vh></v>
 <v t="ekr.20041119034357.18"><vh>@string limit-directory-search-extension = .py</vh></v>
 </v>
 <v t="ekr.20041119034357.19"><vh>file compare options</vh>
-<v t="ekr.20041119043902.4"><vh>@bool ignore-blank-lines = True</vh></v>
 <v t="ekr.20041119043902.5"><vh>@bool ignore-first-line-of-file-1 = False</vh></v>
 <v t="ekr.20041119043902.6"><vh>@bool ignore-first-line-of-file-2 = False</vh></v>
 <v t="ekr.20041119043902.7"><vh>@bool ignore-interior-whitespace = False</vh></v>
@@ -642,7 +639,6 @@
 <v t="ekr.20060521132401"><vh>@string debugger-path = None</vh></v>
 </v>
 <v t="ekr.20051126062243"><vh>Debugging</vh>
-<v t="ekr.20060408090018"><vh>@bool added-setting = True</vh></v>
 <v t="ekr.20060323131801"><vh>@bool warn-about-missing-settings = False</vh></v>
 <v t="ekr.20060521134125"><vh>@string debugger-default-target = None</vh></v>
 <v t="ekr.20060521134125.1"><vh>@string debugger-force-target = None</vh></v>
@@ -678,8 +674,6 @@
 <v t="ekr.20170706103545.1"><vh>@bool report-unchanged-files = True</vh></v>
 <v t="ekr.20061210091932"><vh>@bool chdir-to-relative-path = False</vh></v>
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
-<v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
-<v t="ekr.20041119034357.5"><vh>@bool read-only = False</vh></v>
 <v t="ekr.20170718054928.1"><vh>@bool log-show-save-time = False</vh></v>
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
@@ -724,7 +718,6 @@
 <v t="tbrown.20151010094807.1"><vh>@bool show-find-result-in-status = True</vh></v>
 <v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
 <v t="ekr.20150710065036.1"><vh>@bool preload-find-pattern = False</vh></v>
-<v t="ekr.20041120152900.2"><vh>@bool script-search = None</vh></v>
 <v t="ekr.20060125104049"><vh>@bool show-only-find-tab-options = True</vh></v>
 <v t="ekr.20150618105435.1"><vh>@bool use-find-dialog = False</vh></v>
 <v t="ekr.20041119050105.1"><vh>@string change-text = None</vh></v>
@@ -737,7 +730,6 @@
 <v t="ekr.20041119050105.7"><vh>@bool mark-finds = False</vh></v>
 <v t="ekr.20041119050105.9"><vh>@bool reverse = False</vh></v>
 <v t="ekr.20041119050105.8"><vh>@bool pattern-match = False</vh></v>
-<v t="ekr.20041120152657"><vh>@bool script-change = None</vh></v>
 <v t="ekr.20041119050105.14"><vh>@bool search-body = True</vh></v>
 <v t="ekr.20041119050105.15"><vh>@bool search-headline = True</vh></v>
 <v t="ekr.20041119050105.10"><vh>@bool whole-word = False</vh></v>
@@ -750,10 +742,7 @@
 </v>
 </v>
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
-<v t="ekr.20161011090731.1"><vh>Retired: @bool allow_section_references_in_at_auto = False</vh></v>
 <v t="tbrown.20180525163032.1"><vh>@bool add-context-to-headlines = True</vh></v>
-<v t="ekr.20101104191857.8345"><vh>@bool at-auto-separate-non-def-nodes = False</vh></v>
-<v t="ekr.20070803082435"><vh>@bool full-import-checks = True</vh></v>
 <v t="ekr.20161010085256.1"><vh>@bool js-importer-clean-lws = True</vh></v>
 <v t="ekr.20170617135317.1"><vh>@bool put-python-decorators-in-imported-headlines = False</vh></v>
 <v t="ekr.20161010172424.1"><vh>@int js-importer-min-rescan-size = 0</vh></v>
@@ -1973,12 +1962,9 @@
 </v>
 </v>
 </v>
-<v t="ekr.20110611092035.16492"><vh>Mouse</vh>
-<v t="ekr.20080324105006.6"><vh>@bool allow-middle-button-paste = False</vh></v>
-</v>
+<v t="ekr.20110611092035.16492"><vh>Mouse</vh></v>
 <v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="ekr.20041119034357.13"><vh>@bool use-plugins = True</vh></v>
-<v t="ekr.20071113084330"><vh>@bool warn-when-plugins-fail-to-load = True</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
 <v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active-path-attype = auto</vh></v>
@@ -2304,9 +2290,27 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20181017213058.1"><vh>==== </vh></v>
 <v t="ekr.20111006212449.11850"></v>
-<v t="ekr.20181017194841.1"><vh>*** settings are used in stylesheets</vh></v>
 <v t="ekr.20111007043902.15697"></v>
+<v t="ekr.20111006212449.11857"></v>
+<v t="ekr.20181018040200.1"><vh>Missing @ settings</vh></v>
+<v t="ekr.20181017205207.1"><vh>===== Retired settings</vh>
+<v t="ekr.20060408090018"><vh>@bool added-setting = True</vh></v>
+<v t="ekr.20080324105006.6"><vh>@bool allow-middle-button-paste = False</vh></v>
+<v t="ekr.20041119043902.3"><vh>@bool append-output-to-output-file = False</vh></v>
+<v t="ekr.20101104191857.8345"><vh>@bool at-auto-separate-non-def-nodes = False</vh></v>
+<v t="ekr.20041119034357.14"><vh>@bool at-root-bodies-start-in-doc-mode = True</vh></v>
+<v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
+<v t="ekr.20070803082435"><vh>@bool full-import-checks = True</vh></v>
+<v t="ekr.20041119043902.4"><vh>@bool ignore-blank-lines = True</vh></v>
+<v t="ekr.20041119034357.5"><vh>@bool read-only = False</vh></v>
+<v t="ekr.20041120152657"><vh>@bool script-change = None</vh></v>
+<v t="ekr.20041120152900.2"><vh>@bool script-search = None</vh></v>
+<v t="ekr.20071113084330"><vh>@bool warn-when-plugins-fail-to-load = True</vh></v>
+<v t="ekr.20161011090731.1"><vh>Retired: @bool allow_section_references_in_at_auto = False</vh></v>
+</v>
+<v t="ekr.20181018035659.1"><vh>MISSING get* calls</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5386,7 +5390,7 @@ Controller(c).run()</t>
     )
     format = '%40s %s'
 
-    if 0: # Less important: print missing settings.
+    if 1: # Less important: print missing settings.
         for kind in table:
             config_key = 'get%s' % kind
             settings_key = '@%s' % kind.lower()
@@ -5472,7 +5476,6 @@ Controller(c).run()</t>
     '''Scan the outline for all calls to x.config.getX
     and add items to d.
     '''
-
     trace = False
     for p in c.all_positions():
         self.scan_for_configs(p,d)
@@ -5486,14 +5489,16 @@ Controller(c).run()</t>
 <t tx="ekr.20111006212449.11857">def scan_for_configs (self,p,d):
 
     '''Scan the body text of p, finding all calls to getX.'''
-    kinds = ('getBool','getColor','getInt','getFloat',
+    kinds = (
+        'getBool', 'getColor', 'getInt', 'getFloat',
         # '@font', # special case.
-        'getRatio','getPath','getString',
+        'getPath', 'getRatio', 'getString',
     )
     i,s = 0,p.b
     while i &lt; len(s):
         progress = i
         ch = s[i]
+        ### if p.h == 'at.autoBeautify': g.trace(i, ch, s[i:i+10])
         if (
             ch == '@' and
             (g.match(s,i,'@ ') or g.match(s,i,'@\n')) and
@@ -5504,7 +5509,7 @@ Controller(c).run()</t>
         elif ch == '#':
             i = g.skip_to_end_of_line(s,i)
         elif ch in ('"',"'"):
-            i = g.skip_string(s,i,verbose=False)
+            i = g.skip_python_string(s, i, verbose=False)
         elif ch == '_' or ch.isalpha():
             j = g.skip_id(s,i)
             kind = s[i:j]
@@ -5519,6 +5524,9 @@ Controller(c).run()</t>
                         if name not in aList:
                             aList.append(name)
                         d [kind] = aList
+                        ### if name.find('tidy') &gt; -1: g.trace(kind, name) ###
+                else:
+                    j = i
             i = j
         else:
             i += 1
@@ -5612,9 +5620,11 @@ Controller(c).run()</t>
         # Stylesheets use these settings.
         for pattern in (
             'bg', 'border', 'color', 'fg', 'font',
-            'margin', 'solarized', 'textforeground',
+            'leogreen', 'leoyello',
+            'margin', 'padding', 'relief',
+            'solarized', 'text-foreground', 'tree-image',
         ):
-            if munged_s.find(pattern) &gt; -1:
+            if munged_s.find(pattern.replace('-','')) &gt; -1:
                 return
     if 1:
         # These plugins/use settings in non-standard ways.
@@ -5627,10 +5637,12 @@ Controller(c).run()</t>
     if 1:
         # Find settings are defined in non-standard ways.
         for setting in (
-            'batch', 'ignorecase', 'markchanges', 'markfinds', 'nodeonly', 'patternmatch',
-            'reverse', 'searchbody', 'searchheadline', 'suboutlineonly', 'wholeword',
+            'batch', 'change-text', 'find-text', 'ignore-case',
+            'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
+            'reverse', 'search-body', 'search-headline', 'suboutline-only',
+            'whole-word', 'wrap',
         ):
-            if munged_s == setting:
+            if munged_s == setting.replace('-',''):
                 return
     match_list = [s for s in in_list if self.munge(s) == munged_s]
     print(format % (munged_s,match_list))</t>
@@ -11834,15 +11846,134 @@ if changed:
     c.setChanged()
     c.redraw()     
 </t>
-<t tx="ekr.20181017194841.1">@language rest
-@wrap
+<t tx="ekr.20181017205207.1"></t>
+<t tx="ekr.20181017213058.1"></t>
+<t tx="ekr.20181018035659.1">scanning: leoPy.leo
+scanning: leoPlugins.leo
+scanning: leoSettings.leo
 
-- get_configs could scan for @xxx in stylesheets.
-  For example, gutter-bg is used in @data qt-gui-plugin-style-sheet
-  
-- Or it could ignore settings containing font, bookmarks, datenodes, etc.
 
+missing config.getBool calls...
+                               Canonical Actual
+                               ========= ======
+                        ignoreblanklines ['ignore-blank-lines']
+                  ignorefirstlineoffile1 ['ignore-first-line-of-file-1']
+                  ignorefirstlineoffile2 ['ignore-first-line-of-file-2']
+                ignoreinteriorwhitespace ['ignore-interior-whitespace']
+                 ignoreleadingwhitespace ['ignore-leading-whitespace']
+                     ignoresentinellines ['ignore-sentinel-lines']
+                      jsimportercleanlws ['js-importer-clean-lws']
+                   makewhitespacevisible ['make-whitespace-visible']
+           minibuffersearchesshowfindtab ['minibufferSearchesShowFindTab']
+                printbothlinesformatches ['print-both-lines-for-matches']
+                      printmatchinglines ['print-matching-lines']
+                   printmismatchinglines ['print-mismatching-lines']
+                      printtrailinglines ['print-trailing-lines']
+    redirectexecutescriptoutputtologpane ['redirect-execute-script-output-to-log-pane']
+                    saveclearsundobuffer ['save-clears-undo-buffer']
+                  showonlyfindtaboptions ['show-only-find-tab-options']
+             stayintreeaftereditheadline ['stayInTreeAfterEditHeadline']
+                             swapmackeys ['swap-mac-keys']
+                       testdarwinsetting ['test-darwin-setting']
+                        testwin32setting ['test-win32-setting']
+                              useplugins ['use-plugins']
+                writerecentfilesasneeded ['write-recent-files-as-needed']
+                   writestripsblanklines ['write-strips-blank-lines']
+
+missing config.getColor calls...
+                               Canonical Actual
+                               ========= ======
+
+missing config.getInt calls...
+                               Canonical Actual
+                               ========= ======
+               globalsettingforunittests ['global-setting-for-unit-tests']
+                    iconbarwidgetsperrow ['icon-bar-widgets-per-row']
+                 jsimporterminrescansize ['js-importer-min-rescan-size']
+                   jsimporterminscansize ['js-importer-min-scan-size']
+                              limitcount ['limit-count']
+
+missing config.getString calls...
+                               Canonical Actual
+                               ========= ======
+                            comparefile1 ['compare-file-1']
+                            comparefile2 ['compare-file-2']
+                   debuggerdefaulttarget ['debugger-default-target']
+                     debuggerforcetarget ['debugger-force-target']
+               defaultatautofileencoding ['default-at-auto-file-encoding']
+              defaultderivedfileencoding ['default-derived-file-encoding']
+                       editororientation ['editor-orientation']
+                         headlinegmttime ['headline-gmt-time']
+                             inkscapebin ['inkscape-bin']
+                        inkscapetemplate ['inkscape-template']
+           limitdirectorysearchextension ['limit-directory-search-extension']
+                      newleofileencoding ['new-leo-file-encoding']
+                              outputfile ['output-file']
+                    outputinitialcomment ['output-initial-comment']
+                           outputnewline ['output-newline']
+                       qtdefaultencoding ['qt-default-encoding']
+               relativepathbasedirectory ['relative-path-base-directory']
+                removesentinelsextension ['remove-sentinels-extension']
+                    trailingbodynewlines ['trailing-body-newlines']
+run done
 </t>
+<t tx="ekr.20181018040200.1">missing @bool settings...
+                               Canonical Actual
+                               ========= ======
+                    activepathdoautoload ['active-path-do-autoload']
+                       autosetignorecase ['auto-set-ignore-case']
+                            evalredirect ['eval-redirect']
+                    finddefcreatesclones ['find-def-creates-clones']
+                       graphmanuallayout ['graph-manual-layout']
+                         headlinegmttime ['headline-gmt-time']
+                          ignorecapslock ['ignore-caps-lock']
+              invisibleoutlinenavigation ['invisible-outline-navigation']
+                              legacyeval ['legacy-eval']
+             leobabelnodecreationdefault ['Leo-Babel-Node-Creation-Default']
+                        leotohtmlnomenus ['leo-to-html-no-menus']
+                           outputdocflag ['output-doc-flag']
+                         shadowinhomedir ['shadow-in-home-dir']
+                             smartquotes ['smart-quotes']
+                             stubverbose ['stub-verbose']
+                                stubwarn ['stub-warn']
+                  suppressallpluginmenus ['suppress-all-plugin-menus']
+                  suppressdatenodesmenus ['suppress-datenodes-menus']
+                         tanglebatchflag ['tangle-batch-flag']
+                       untanglebatchflag ['untangle-batch-flag']
+                           useheaderflag ['use-header-flag']
+                    usexdbpaneoutputarea ['use-xdb-pane-output-area']
+                  viewrenderedautocreate ['view-rendered-auto-create']
+
+
+missing @int settings...
+                               Canonical Actual
+                               ========= ======
+                              ftsmaxhits ['fts-max-hits'] # in bigdash plugin
+                        qtrichtextzoomin ['qt-rich-text-zoom-in'] # disabled in qtew.set_config 
+                                rstlevel ['rst-level'] # in ZimImportController.
+
+missing @string settings...
+                               Canonical Actual
+                               ========= ======
+                     defaulteditingstate ['default-editing-state']
+                          externaleditor ['external-editor']
+                 initialchooserdirectory ['initial-chooser-directory']
+                         leoscreenprefix ['leoscreen-prefix']
+                        leoscreentimefmt ['leoscreen-time-fmt']
+                             leotohtml%s ['leo_to_html_%s']
+                  mainspellingdictionary ['main-spelling-dictionary']
+                             mimeopencmd ['mime-open-cmd']
+                               pathtozim ['path-to-zim']
+                              pytestpath ['pytest-path']
+                   rst2httpattributename ['rst2-http-attributename']
+                                 rsttype ['rst-type']
+                   screencapturesavepath ['screen-capture-save-path']
+                          scriptfilepath ['script-file-path']
+                               themename ['theme-name']
+                toplevelunboundkeyaction ['top-level-unbound-key-action']
+                 viewrendereddefaultkind ['view-rendered-default-kind']
+                viewrenderedmdextensions ['view-rendered-md-extensions']
+                             zimnodename ['zim-node-name']</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

@@ -157,8 +157,8 @@ class Importer(object):
         c = self.c
         c.registerReloadSettings(self)
         # self.at_auto_separate_non_def_nodes = False
-        self.at_auto_warns_about_leading_whitespace = c.config.getBool(
-            'at_auto_warns_about_leading_whitespace')
+        self.at_auto_warns_about_leading_whitespace = \
+            c.config.getBool('at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
     #@+node:ekr.20161110042512.1: *3* i.API for setting body text
     # All code in passes 1 and 2 *must* use this API to change body text.
