@@ -201,10 +201,13 @@ trace = False
 #@+<< imports >>
 #@+node:tbrown.20100318101414.5993: ** << imports >> (vr)
 import leo.core.leoGlobals as g
-import leo.plugins.qt_text as qt_text
-import leo.plugins.free_layout as free_layout
-from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
-from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
+try:
+    import leo.plugins.qt_text as qt_text
+    import leo.plugins.free_layout as free_layout
+    from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+    from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
+except Exception:
+    QtWidgets = False
 try:
     import docutils
     import docutils.core
@@ -291,6 +294,10 @@ def decorate_window(w):
 #@+node:tbrown.20100318101414.5995: *3* vr.init
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    if not QtWidgets or not g.app.gui.guiName().startswith('qt'):
+        if not g.unitTesting and not g.app.batchMode:
+            g.es_print('viewrendered requires Qt')
+        return False
     global got_docutils
     if not got_docutils:
         g.es_print('Warning: viewrendered.py running without docutils.')

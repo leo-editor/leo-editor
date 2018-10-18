@@ -1,23 +1,31 @@
 language: python
+git:
+    ## Clone depth, must be big enough to include a tag
+    depth: 100
 install:
-    - git fetch --depth=500
-        # increase clone depth to ensure recent tags are present
-
-    # install Leo dependencies
-    - pip install docutils nbformat pylint pyflakes pypandoc sphinx
-    - sudo apt install tree python-qt4
-
-    # Install Leo in "distribution maintainer" mode
-    - python setup.py install --root=/tmp/packages | grep -v '^copying'
-        # hide too verbose 'Copying ...' messages
-
+    ## Using PEP-518 (pypoject.toml) requires pip >v10 
+    - python -m pip install --upgrade pip
+    - pip --version
 script:
-    # ensure python knows where to find distrib-Leo
-    - export PYTHONPATH=$PYTHONPATH:/tmp/packages/usr/lib/python2.7.14/site-packages
+    #- pip install --editable .
+    #- leo-console --version
+    
+    ## Test: Build python wheel, install, and run Leo in console mode
+    # reverse grep to hide excessive 'adding' and 'copying'
+    - python setup.py bdist_wheel | grep -v -e '^adding' -e '^copying'
+    - pip install dist/*.whl
+    - leo-console --version
+    
+    ## Test: Unit tests
+    - python run_travis_unit_tests.py
 
-    # Does distrib-Leo run?
-    - /tmp/packages/home/travis/virtualenv/python2.7.14/bin/leo-console --version
-
-    #- tree -d /tmp/packages
-    - pytest travis_tests/*
-
+    # There are no travis tests after checking out release tag
+    #- pytest travis_tests/*
+deploy:
+  provider: pypi
+  user: maphew
+  password:
+    secure: qkVZbj0W7OFIJ6bfcqD6Tm5Lp6qQl1QFHlFyDNZuCXPDNWkrY5e0RDZJsotlYaj811a9kqR+oz+QGbhRWk+ckLc+WLBrluY9ppG0C+KB0lbD53DPq1EfcE/Ug6GPptOcHtlFCY796QHwM3LXpYPSBH3WVn2qEqR1b1o1hkmBoZtIdZDeM4Wdxz3tf5tJlxNZihuidCIHCN5dEVuXZTI0697skUux90cGqpMBKX/RsV+6kuGy1lG41NPYPIhS7qhOwtZJrXA6NWPh6xO1pGsxNFy2aeFMeFS8odMZNRj9d9IQdG5kzvw+8dMs40XxWThwd600famWsNrODoDLOCYiOZxE3eMYI9u4l+A743ftqwqwCb5kBbAiwzGqM3rb6fYZySZr/2PQiMAEwibVYwqEq85M5cL7QchaC1WQw6lipC37CsPZQR3hQeBvGAQ58F0H1KK/UGldDZnYzXDYE5D+0cGbUKdVFSPTkXVLDSmIV0qmoxTFclW5IH2Knr565sAoQTIiSyWCvpN2U+nulKeqeYy/rXn54Q/T6nXZ61rqgONJ4XRxPBO2yekWgSFA+HFcbKPy9qczawsbuTUB5niL82+92vsua2Tx9YmUDS4G2PTwd2wvZtjfG8Y59aP+K/sNFUGFnb0MurzIDwZuKpSjEmojTuKLXw4GAW+mx0aZsro=
+  on:
+    tags: true
+    branch: master

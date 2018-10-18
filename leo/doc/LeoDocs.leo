@@ -1080,7 +1080,6 @@
 <v t="ekr.20150318110552.74"><vh>Abbreviation commands</vh></v>
 <v t="ekr.20150318110552.8"><vh>Cursor movement commands</vh></v>
 <v t="ekr.20150323185921.1"><vh>Emacs text formatting</vh></v>
-<v t="ekr.20150323185151.1"><vh>Macro commands</vh></v>
 <v t="ekr.20150323103115.1"><vh>Rectangle commands</vh></v>
 <v t="ekr.20150318110552.56"><vh>Scrolling the outline pane</vh></v>
 <v t="ekr.20150323185611.1"><vh>Yank, kill &amp; delete commands</vh></v>
@@ -1418,6 +1417,7 @@
 <v t="ekr.20131015035606.16800"><vh>Moving outline nodes</vh></v>
 <v t="ekr.20131015035606.16780"><vh>Moving the cursor</vh></v>
 </v>
+<v t="ekr.20181015144118.7"><vh>Executing minibuffer commands</vh></v>
 <v t="ekr.20131015035606.16801"><vh>Frequently used commands</vh></v>
 <v t="ekr.20160428104050.1"><vh>Gathering find commands</vh></v>
 <v t="ekr.20131015035606.16786"><vh>Leo directives</vh></v>
@@ -1435,9 +1435,27 @@
 <v t="ekr.20131019061259.16692"><vh>leo.core.leoGlobals module</vh></v>
 <v t="ekr.20170311120214.1"><vh>Test driven development</vh></v>
 <v t="ekr.20170403185500.1"><vh>Performance gotchas</vh></v>
-<v t="ekr.20170314164228.1"><vh>About names</vh></v>
+<v t="ekr.20181015144118.25"><vh>Prompting for command arguments</vh>
+<v t="ekr.20181015144118.26"><vh>Example 1: Prompt for one arg</vh></v>
+<v t="ekr.20181015144118.27"><vh>Example 2: Prompt for 2 args</vh></v>
+<v t="ekr.20181015144118.28"><vh>Example 3: Prompt for 3 args</vh></v>
+</v>
+<v t="ekr.20181015144118.29"><vh>Naming conventions in Leo's core</vh>
+<v t="ekr.20181015144118.30"><vh>Official ivars</vh></v>
+</v>
+<v t="ekr.20181015144118.31"><vh>Widgets and wrappers</vh></v>
 </v>
 <v t="ekr.20131028213522.17138"><vh>Command-line options</vh></v>
+<v t="ekr.20181015144118.33"><vh>Learning to be a Leo developer</vh>
+<v t="ekr.20181015144118.34"><vh>Code academy</vh>
+<v t="ekr.20181015144118.35"><vh>CA: uA's</vh></v>
+<v t="ekr.20181015144118.36"><vh>CA: icons</vh></v>
+<v t="ekr.20181015144118.37"><vh>CA: using git</vh></v>
+<v t="ekr.20181015144118.38"><vh>CA: finding nodes with c.cloneFindByPredicate</vh></v>
+</v>
+<v t="ekr.20181015144118.39"><vh>Leo University</vh></v>
+<v t="ekr.20181015144118.40"><vh>Architecture</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20150312080344.67"><vh>History of Leo</vh>
@@ -3532,6 +3550,7 @@ The following deserve special thanks:
 - The late Bernhard Mulder invented the fundamental @shadow algorithm, a stroke of genius. Bernhard also inspired Leo's generators and position class. The one-node world could not have happened without Bernhard.
 - Joe Orr created tutorials and XSLT stylesheets for Leo: http://www.jserv.com/jk_orr/xml/leo.htm.
 - John K. Ousterhout created tcl/Tk, used in early versions of Leo.
+- Виталије Милошевић, (Vitalije Milosevic) rewrote Leo's read code, thereby allowing Leo to do without file caching.
 - Tsuchi Noko created transparent icons.
 - Neal Norwitz wrote PyChecker.
 - Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
@@ -15239,14 +15258,15 @@ Leo has hundreds of commands, described in `Leo's Command Reference`_. Please fe
 <t tx="ekr.20131007143750.16070">#################
 Leo's Cheat Sheet
 #################
-   
+
+This Cheat Sheet contains a summary of many of Leo's important features.
 **Important**: The easiest way to find documentation is to search LeoDocs.leo.
 
 .. contents:: Contents
     :depth: 4
     :local:
 </t>
-<t tx="ekr.20131007143750.16074">This section lists the ivars, properties, functions and methods most commonly used in Leo scripts.
+<t tx="ekr.20131007143750.16074">This section lists the ivars (instance variables), properties, functions and methods most commonly used in Leo scripts.
 
 **Very important**: use Alt-1 (toggle-autocompleter) and Alt-2 (toggle-calltips) to recreate these lists as you type.
 </t>
@@ -18851,7 +18871,6 @@ I'll probably never be able to recreate a clearer picture of how the Aha came to
         find-       find commands
         gc-         garbage collection
         isearch-    incremental search
-        macro-      macro expansion
         print-      print information
         rectangle-  rectangle commands
         register    register commands
@@ -19071,7 +19090,9 @@ These commands work with either headline or body text.</t>
 - If Python is the present language, Leo inserts an additional tab if the previous line ends with a colon.  When the ``smart_auto_indent setting`` is True, Leo uses Emacs-style auto-indentation instead.  This style of auto-indent aligns newly created lines with unmatched ``( [{`` brackets in the previous line.
 </t>
 <t tx="ekr.20150318110552.23">``add-comments (Ctrl-))``
-    Adds comments to the selected lines, using single-line comments if possible.
+    Adds comments to the selected lines, according to the @language
+    directive in effect. These commands usesingle-line comments if
+    possible. It's not necessary to select all of the first or last lines.
 ``delete-comments (Ctrl-()``
     Deletes comments in the selected lines.
 </t>
@@ -20343,20 +20364,6 @@ Regardless of focus::
 
 **Shift keys**: Adding the Shift key modifier to any of the keys above moves the cursor and extends the selected text.
 
-</t>
-<t tx="ekr.20150323185151.1">.. _`Emacs macro commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Keyboard-Macros.html#Keyboard-Macros
-
-The following commands emulate the `Emacs macro commands`_::
-
-    macro-call
-    macro-call-last
-    macro-end-recording
-    macro-load-all
-    macro-name-last
-    macro-print-all
-    macro-print-last
-    macro-save-all
-    macro-start-recording
 </t>
 <t tx="ekr.20150323185514.1">.. contents:: Contents
     :depth: 2
@@ -23801,8 +23808,6 @@ The **@all** directive tells Leo to write the nodes of an **@file tree** to the 
 <t tx="ekr.20170314092158.1">Adds utilities for asynchronous operation of commands.
 </t>
 <t tx="ekr.20170314092222.1">Adds commands for importing and exporting xml to and from Leo outlines.
-</t>
-<t tx="ekr.20170314164228.1">Scripts may safely assume that most names defined in Leo's core will never change. Names used outside their defining module *can't* be changed, because doing so would impact existing user scripts. This includes virtually everything in leoGlobals.py, and many names in leoCommands.py and other files. The only names that might change are unlikely every to be of use to scripts anyway. For example, helper functions.
 </t>
 <t tx="ekr.20170315020214.1">**Ivars**::
 
@@ -30392,6 +30397,260 @@ The change was to load_session.</t>
 <t tx="ekr.20180930062430.1"></t>
 <t tx="ekr.20180930062538.1">This is the presently active commander, that is, g.app.log.c.
 </t>
+<t tx="ekr.20181015144118.25"></t>
+<t tx="ekr.20181015144118.26">::
+
+    @g.command('i1')
+    def i1_command(event):
+        c = event.get('c')
+        if not c: return
+            
+        def callback(args, c, event):
+            g.trace(args)
+            c.bodyWantsFocus()
+    
+        c.interactive(callback, event, prompts=['Prompt: '])</t>
+<t tx="ekr.20181015144118.27">::
+
+    @g.command('i2')
+    def i2_command(event):
+        c = event.get('c')
+        if not c: return
+            
+        def callback(args, c, event):
+            g.trace(args)
+            c.bodyWantsFocus()
+    
+        c.interactive(callback, event,
+            prompts=['Find: ', ' Replace: '])
+</t>
+<t tx="ekr.20181015144118.28">::
+
+    @g.command('i3')
+    def i3_command(event):
+        c = event.get('c')
+        if not c: return
+            
+        def callback(args, c, event):
+            g.trace(args)
+            c.bodyWantsFocus()
+    
+        c.interactive(callback, event,
+            prompts=['One: ', ' Two: ', ' Three: '])
+</t>
+<t tx="ekr.20181015144118.29">LeoPyRef.leo contains all of Leo's core source code.
+
+Leo's code uses the following conventions throughout:
+
+c:  a commander.
+ch: a character.
+d:  a dialog or a dict.
+f:  an open file.
+fn: a file name.
+g:  the leoGlobals module.
+i, j, k: indices into a string.
+p:  a Position.
+s:  a string.
+t:  a text widget.
+u:  an undoer.
+w:  a gui widget.
+v:  a Vnode
+z:  a local temp.
+
+In more limited contexts, the following conventions apply:
+
+si:     a g.ShortcutInfo object.
+ks:     a g.KeyStroke object
+stroke: a KeyStroke object.
+
+btw:    leoFrame.BaseTextWrapper
+stw:    leoFrame.StringTextWrapper
+
+bqtw:   qt_text.BaseQTextWrapper
+lqtb:   qt_text.LeoQTextBrowser
+qhlw:   qt_text.QHeadlineWrapper
+qmbw:   qt_text.QMinibufferWrapper
+qlew:   qt_text.QLineEditWrapper
+qsciw:  qt_text.QScintiallaWrapper
+qtew:   qt_text.QTextEditWrapper
+
+Names defined in Leo's core are unlikely to change, especially names used outside their defining module. This includes virtually everything in leoGlobals.py, and many names in leoCommands.py and other files. </t>
+<t tx="ekr.20181015144118.30">The following 'official' ivars (instance vars) will always exist:
+
+c.frame                 The frame containing the log,body,tree, etc.
+c.frame.body            The body pane.
+c.frame.body.widget     The gui widget for the body pane.
+c.frame.body.wrapper    The high level interface for the body widget.
+c.frame.iconBar         The icon bar.
+c.frame.log             The log pane.
+c.frame.log.widget      The gui widget for the log pane.
+c.frame.log.wrapper     The high-level interface for the log pane.
+c.frame.tree            The tree pane.
+
+The following were official ivars that no longer exist:
+
+c.frame.body.bodyCtrl   Use c.frame.body.wrapper instead.
+c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
+</t>
+<t tx="ekr.20181015144118.31">A **widget** is an actual Qt widget. Leo's core seldom accesses widgets directly.  Instead, a  **wrapper class** defines a standard api that hides the details of the underlying gui **text** widgets.
+
+Leo's core uses the wrapper api almost exclusively. That is, Leo's core code treats wrappers *as if* they were only text widgets there are!
+
+A back door exists for special cases. All wrapper classes define an official ``widget`` ivar, so core or plugin code can gain access to the real Qt widget using wrapper.widget. Searching for wrapper.widget will find all gui-dependent snippets of code in Leo's core.
+</t>
+<t tx="ekr.20181015144118.33"></t>
+<t tx="ekr.20181015144118.34">Leo's Code Academy posts discuss how to do useful things in Leo. The following are distilled from online discussions about Leo's scripting.</t>
+<t tx="ekr.20181015144118.35">uA's (user Attributes) associate arbitrary data with any vnode. uA's are dictionaries of dictionaries--an **outer dictionary** and zero or more **inner dictionaries**. The outer dictionary associates plugin names (or Leo's core) with inner dictionaries. The inner dictionaries carry the actual data.
+
+The v.u or p.v properties get and set uA's. You can think of p.u as a synonym for p.v.unknownAttributes on both sides of an assignment. For example::
+
+    plugin_name = 'test_plugin'
+    d = p.u.get(plugin_name,{})
+    d ['n'] = 8
+    p.u [plugin_name] = d
+
+p.u is the outer dictionary. p.u.get.(plugin_name, {}) is the inner dictionary. The last line is all that is needed to update the outer dictionary!
+
+It is easy to search for particular uA's. The following script prints all the keys in the outer-level uA dictionaries:
+
+    for p in c.all_unique_positions():
+        if p.u:
+            print(p.h, sorted(p.u.keys()))
+
+This is a typical usage of Leo's generators.  Generators visit each position (or node) quickly. Even if you aren't going to program much, you should be aware of how easy it is to get and set the data in each node. In fact, now would be a great time to read Leo's Scripting Tutorial again :-) This will allow you to "dream bigger" with Leo.
+
+The following script creates a list of all positions having an icon, that is, an outer uA dict with a 'icon' key.
+
+    aList = [p.copy() for p in c.all_unique_positions() if 'icon' in p.u]
+    print('\n'.join([p.h for p in aList]))
+
+*Important*: If you don't understand these lines, please study Python's list comprehensions.  They are incredibly useful. '\n'.join(aList) is a great idiom to know.  str.join is one of python's most useful string methods. It converts between lists and strings.
+</t>
+<t tx="ekr.20181015144118.36">@language rest
+
+This script inserts three icons in the current outline node. Running the script again will insert three more::
+
+@language python
+
+    table = (
+        'edittrash.png',
+        'connect_no.png',
+        'error.png',
+    )
+    for icon in table:
+        fn = g.os_path_finalize_join(g.app.loadDir,
+            '..', 'Icons', 'Tango', '16x16', 'status', icon)
+        if g.os_path_exists(fn):
+            c.editCommands.insertIconFromFile(path=fn)
+        
+@language rest
+        
+This deletes all icons of the node at position p::
+
+    c.editCommands.deleteNodeIcons(p=p)
+</t>
+<t tx="ekr.20181015144118.37">Using Leo’s latest sources from GitHub is highly recommended. Once git is installed, the following gets the latest Leo sources::
+
+    git clone https://github.com/leo-editor/leo-editor.git
+
+Thereafter, you can update Leo's sources with::
+
+    git pull
+
+Git is great in tracking history and reverting unwanted changes. And it has many other benefits.
+
+Using git is very similar to using bzr or hg or any other SCCS.  To change Leo, you add files, you commit files, and you push files.  That's about it.
+</t>
+<t tx="ekr.20181015144118.38">c.cloneFindByPredicate is a powerful new addition to Leo.  Here is its docstring::
+
+    Traverse the tree given using the generator, cloning all positions for
+    which predicate(p) is True. Undoably move all clones to a new node, created
+    as the last top-level node. Returns the newly-created node. Arguments:
+
+    generator,      The generator used to traverse the tree.
+    predicate,      A function of one argument p returning true if 
+                    p should be included.
+    failMsg=None,   Message given if nothing found. Default is no message.
+    flatten=False,  True: Move all node to be parents of the root node.
+    iconPath=None,  Full path to icon to attach to all matches.
+    redraw=True,    True: redraw the screen.
+    undo_type=None, The undo/redo name shown in the Edit:Undo menu.
+                    The default is 'clone-find-predicate'
+                    
+For example, clone-find-all-marked command is essentially::
+    
+    @cmd('clone-find-all-marked')
+    def cloneFindMarked(self, flatten):
+        
+        def isMarked(p):
+            return p.isMarked()
+            
+        self.cloneFindByPredicate(
+            generator = self.all_unique_positions,
+            predicate = isMarked,
+            failMsg = 'nothing found',
+            flatten = flatten,
+            undoType = 'clone-find-marked',
+        )
+        
+The predicate could filter on an attribute or *combination* of attributes. For example, the predicate could return p has attributes A and B but *not* attribute C. This instantly gives Leo full database query capabilities. If we then hoist the resulting node we see *all and only* those nodes satisfying the query.
+
+These following position methods make it easy to skip @ignore trees or @&lt;file&gt; trees containing @all::
+        
+    p.is_at_all()          True if p is an @&lt;file&gt; node containing an @all directive.
+    p.in_at_all()          True if p is in an @&lt;file&gt; tree whose root contains @all.
+    p.is_at_ignore()       True if p is an @ignore node
+    p.in_at_ignore_tree()  True if p is in an @ignore tree.
+
+For example, here is how to gather only those marked nodes that lie outside any @ignore tree::
+
+    def isMarked(p):
+        return p.isMarked() and not p.in_at_ignore_tree()
+      
+    c.cloneFindByPredicate(
+        generator = self.all_unique_positions,
+        predicate = isMarked,
+        flatten = flatten,
+        undoType = 'gather-marked',
+    )
+</t>
+<t tx="ekr.20181015144118.39">Leo University is a project devoted to help people become Leo developers.
+
+Here is the main page.  It contains links to individual lessons.
+https://github.com/leo-editor/leo-editor/issues/816
+</t>
+<t tx="ekr.20181015144118.40">Leo uses a model/view/controller architecture.
+
+- Controller: The Commands class and its helpers in leoCommands.py and leoEditCommands.py.
+
+- Model: The VNode and Position classes in leoNodes.py.
+
+- View: The gui-independent base classes are in the node "Gui Base Classes". The Qt-Specific subclasses are in the node "Qt gui".
+
+**Important**: The general organization of these classes have changed hardly at all in Leo's 20+ year history.  The reason is that what each class does is fairly obvious.  How the gets the job done may have changed drastically, but *that's an internal implementation detail of the class itself*.  This is the crucial design principle that allows Leo's code to remain stable.  *Classes do not know or meddle in the internal details of other classes*.  As a result, nobody, including EKR, needs to remember internal details.
+</t>
+<t tx="ekr.20181015144118.7">Alt-X puts focus in the minibuffer. Ctrl-G escapes from the minibuffer.
+
+Once there, you can use tab completion to reduce typing. For example, &lt;Alt-X&gt;open&lt;tab&gt; shows all commands that start with open.
+
+Hit &lt;Enter&gt; to run a complete command.
+
+Ctrl-P (repeat-complex-command) repeat the last command entered from the minibuffer.
+
+Leo maintains a **command history list** of all minibuffer commands you have entered.
+
+When focus is in the minibuffer, UpArrow shows the previous minibuffer command, and DnArrow show the commands before that.
+
+The body text of an @data history-list *setting node* preloads commands into the command history list, ignoring lines starting with '#'. For example::
+
+    run-pylint
+    beautify-tree
+    cff
+    sort-lines
+    # show-data
+    check-clones
+    expand-log-pane
+    contract-log-pane</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with

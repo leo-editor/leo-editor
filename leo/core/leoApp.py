@@ -18,7 +18,7 @@ import optparse
 import subprocess
 import string
 import sys
-# import time
+import time
 import traceback
 import zipfile
 import platform
@@ -50,13 +50,17 @@ class IdleTimeManager(object):
     def add_callback(self, callback):
         '''Add a callback to be called at every idle time.'''
         self.callback_list.append(callback)
-    #@+node:ekr.20161026124810.1: *3* itm.on_idle
+    #@+node:ekr.20161026124810.1: *3* itm.on_idle (changed)
     on_idle_count = 0
 
     def on_idle(self, timer):
         '''IdleTimeManager: Run all idle-time callbacks.'''
         if not g.app: return
         if g.app.killed: return
+        if not g.app.pluginsController:
+            g.trace('No g.app.pluginsController', g.callers())
+            timer.stop()
+            return # For debugger.
         self.on_idle_count += 1
         # Handle the registered callbacks.
         for callback in self.callback_list:
@@ -944,12 +948,12 @@ class LeoApp(object):
         '''Command decorator for the LeoApp class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['g', 'app'])
-    #@+node:ekr.20090717112235.6007: *4* app.computeSignon
+    #@+node:ekr.20090717112235.6007: *4* app.computeSignon & printSignon
     def computeSignon(self):
         import leo.core.leoVersion as leoVersion
         app = self
         build, date = leoVersion.build, leoVersion.date
-        guiVersion = app.gui.getFullVersion() if app.gui else 'no gui!'
+        guiVersion = ', ' + app.gui.getFullVersion() if app.gui else ''
         leoVer = leoVersion.version
         n1, n2, n3, junk, junk = sys.version_info
         if sys.platform.startswith('win'):
@@ -982,21 +986,24 @@ class LeoApp(object):
             app.signon += ', build '+build
         if date:
             app.signon += ', '+date
-        app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
+        app.signon2 = 'Python %s.%s.%s%s\n%s' % (
             n1, n2, n3, guiVersion, sysVersion)
-        # Leo 5.6: print the signon immediately:
-        if not app.silentMode:
+            
+    def printSignon(self, verbose=False):
+        '''Print a minimal sigon to the log.'''
+        app = self
+        if app.silentMode:
+            return
+        if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+            print('Note: sys.stdout.encoding is not UTF-8')
+            print('Encoding is: %r' % sys.stdout.encoding)
+            print('See: https://stackoverflow.com/questions/14109024')
             print('')
-            if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
-                print('Note: sys.stdout.encoding is not UTF-8')
-                print('Encoding is: %r' % sys.stdout.encoding)
-                print('See: https://stackoverflow.com/questions/14109024')
-                print('')
-            print(app.signon)
+        print(app.signon)
+        if verbose:
             print(app.signon1)
             print(app.signon2)
             print('** isPython3: %s' % g.isPython3)
-            print('')
     #@+node:ekr.20100831090251.5838: *4* app.createXGui
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
@@ -1338,7 +1345,7 @@ class LeoApp(object):
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
         if 'shutdown' in g.app.debug:
-            g.pr('finishQuit')
+            g.pr('finishQuit: killed:', g.app.killed)
         if not g.app.killed:
             g.doHook("end1")
             g.app.global_cacher.commit_and_close()
@@ -1347,7 +1354,6 @@ class LeoApp(object):
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         self.destroyAllOpenWithFiles()
-        # if trace: g.pr('app.finishQuit: setting g.app.killed: %s' % g.callers())
         g.app.killed = True
             # Disable all further hooks and events.
             # Alas, "idle" events can still be called
@@ -1436,8 +1442,7 @@ class LeoApp(object):
             if trace:
                 g.pr('forgetOpenFile: %s' % g.shortFileName(fn))
             d[tag] = aList
-        else:
-            if trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
+        # elif trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
     def rememberOpenFile(self, fn):
         
@@ -2120,24 +2125,19 @@ class LoadManager(object):
         The caller must init the c.config object.
         '''
         lm = self
-        if not fn: return None
-        giveMessage = (
-            not g.app.unitTesting and
-            not g.app.silentMode and
-            not g.app.batchMode)
-            # and not g.app.inBridge
-
-        def message(s):
-            # This occurs early in startup, so use the following.
-            if giveMessage:
-                if not g.isPython3:
-                    s = g.toEncodedString(s, 'ascii')
-                g.blue(s)
-
+        if not fn:
+            return None
         theFile = lm.openLeoOrZipFile(fn)
         if not theFile:
             return None # Fix #843.
-        message('reading settings in %s' % (fn))
+        if not any([g.app.unitTesting, g.app.silentMode, g.app.batchMode]):
+            # This occurs early in startup, so use the following.
+            s = 'reading settings in %s' % (fn)
+            if not g.isPython3:
+                    s = g.toEncodedString(s, 'ascii')
+            if 'startup' in g.app.debug:
+                print(s)
+            g.es(s, color='blue')
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
@@ -2233,6 +2233,7 @@ class LoadManager(object):
     def load(self, fileName=None, pymacs=None):
         '''Load the indicated file'''
         lm = self
+        t1 = time.clock()
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
         print('') # Give some separation for the coming traces.
@@ -2240,8 +2241,9 @@ class LoadManager(object):
             return
         lm.doPrePluginsInit(fileName, pymacs)
             # sets lm.options and lm.files
+        g.app.computeSignon()
+        g.app.printSignon()
         if lm.options.get('version'):
-            print(g.app.signon)
             return
         if not g.app.gui:
             return
@@ -2249,7 +2251,8 @@ class LoadManager(object):
             # Disable redraw until all files are loaded.
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
-        if g.app.killed: return
+        if g.app.killed:
+            return
         g.app.idleTimeManager.start()
         # Phase 3: after loading plugins. Create one or more frames.
         if lm.options.get('script') and not self.files:
@@ -2260,13 +2263,17 @@ class LoadManager(object):
             g.app.makeAllBindings()
             if ok and g.app.diff:
                 lm.doDiff()
-        if ok:
-            g.es('') # Clears horizontal scrolling in the log pane.
-            if g.app.listen_to_log_flag:
-                g.app.listenToLog()
-            g.app.gui.runMainLoop()
-            # For scripts, the gui is a nullGui.
-            # and the gui.setScript has already been called.
+        if not ok:
+            return
+        g.es('') # Clears horizontal scrolling in the log pane.
+        if g.app.listen_to_log_flag:
+            g.app.listenToLog()
+        if 'startup' in g.app.debug:
+            t2 = time.clock()
+            g.es_print('startup time: %5.2f sec' % (t2-t1))
+        g.app.gui.runMainLoop()
+        # For scripts, the gui is a nullGui.
+        # and the gui.setScript has already been called.
     #@+node:ekr.20150225133846.7: *4* LM.doDiff
     def doDiff(self):
         '''Support --diff option after loading Leo.'''
@@ -2393,7 +2400,6 @@ class LoadManager(object):
         lm.options = options = lm.scanOptions(fileName, pymacs)
             # also sets lm.files.
         if options.get('version'):
-            g.app.computeSignon()
             return
         script = options.get('script')
         verbose = script is None
@@ -3764,6 +3770,15 @@ def openUrl(event=None):
 def openUrlUnderCursor(event=None):
     '''Open the url under the cursor.'''
     return g.openUrlOnClick(event)
+#@+node:ekr.20181016103706.1: ** pytest tests (leoApp.py)
+def test1():
+    assert True
+    
+def test2():
+    assert False
+    
+def third_test():
+    assert True
 #@-others
 #@@language python
 #@@tabwidth -4

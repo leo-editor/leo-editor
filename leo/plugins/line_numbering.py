@@ -25,6 +25,7 @@ def init():
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.registerHandler('select1', onSelect)
+        g.registerHandler('start2', onSelect)
         g.plugin_signon(__name__)
     return ok
 #@+node:vitalije.20170727222624.1: ** Commands
@@ -56,8 +57,8 @@ def onSelect (tag, keys):
     if not c.hash(): return
     ok = c.config.getBool('use-gutter', default=False)
     ok = ok and not c.user_dict.get(LNOFF, False)
-    if  ok:
-        new_p = keys.get('new_p')
+    if ok:
+        new_p = keys.get('new_p') or c.p
         nums = NUMBERINGS.get(c.hash() + new_p.gnx, tuple())
         request_update(c)
         c.user_dict[LNT] = nums

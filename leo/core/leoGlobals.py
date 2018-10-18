@@ -2450,8 +2450,10 @@ def objToString(obj, indent='', printCaller=False, tag=None):
         prefix = g.caller() if printCaller else tag
     else:
         prefix = None
-    return '%s...\n%s\n' % (prefix, s) if prefix else s
-
+    if prefix:
+        sep = '\n' if '\n' in s else ' '
+        return '%s:%s%s' % (prefix, sep, s)
+    return s
 toString = objToString
 #@+node:ekr.20140401054342.16844: *4* g.run_pylint
 def run_pylint(fn, rc,
@@ -3448,6 +3450,10 @@ def create_temp_file(textMode=False):
         g.es_exception()
         theFile, theFileName = None, ''
     return theFile, theFileName
+#@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
+def defaultLeoFileExtension(c=None):
+    conf = c.config if c else g.app.config
+    return conf.getString('default_leo_extension') or '.leo'
 #@+node:ekr.20031218072017.3118: *3* g.ensure_extension
 def ensure_extension(name, ext):
     theFile, old_ext = g.os_path_splitext(name)
@@ -3459,6 +3465,12 @@ def ensure_extension(name, ext):
         return name
     else:
         return name + ext
+#@+node:vitalije.20170714085317.1: *3* g.fileFilters
+def fileFilters(key):
+    if key == 'LEOFILES' and g.SQLITE:
+        return ("Leo files", "*.leo *.db")
+    elif key == 'LEOFILES':
+        return ("Leo files", "*.leo")
 #@+node:ekr.20150403150655.1: *3* g.fullPath
 def fullPath(c, p, simulate=False):
     '''
@@ -3910,16 +3922,6 @@ def utils_stat(fileName):
     except Exception:
         mode = None
     return mode
-#@+node:vitalije.20170714085317.1: *3* g.fileFilters
-def fileFilters(key):
-    if key == 'LEOFILES' and g.SQLITE:
-        return ("Leo files", "*.leo *.db")
-    elif key == 'LEOFILES':
-        return ("Leo files", "*.leo")
-#@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
-def defaultLeoFileExtension(c=None):
-    conf = c.config if c else g.app.config
-    return conf.getString('default_leo_extension') or '.leo'
 #@+node:ekr.20031218072017.3151: ** g.Finding & Scanning
 #@+node:ekr.20140602083643.17659: *3* g.find_word
 def find_word(s, word, i=0):

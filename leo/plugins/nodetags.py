@@ -215,228 +215,230 @@ class TagController(object):
         self.update_taglist(tag)
     #@-others
 #@+node:peckj.20140804114520.15199: ** class LeoTagWidget
-class LeoTagWidget(QtWidgets.QWidget):
-    #@+others
-    #@+node:peckj.20140804114520.15200: *3* __init__
-    def __init__(self,c,parent=None):
-        QtWidgets.QWidget.__init__(self, parent)
-        self.c = c
-        self.tc = self.c.theTagController
-        self.initUI()
-        self.registerCallbacks()
-        self.mapping = {}
-        # pylint: disable=anomalous-backslash-in-string
-        #self.search_chars = ['&','|','-','^']
-        self.search_re = '(&|\||-|\^)'
-        self.custom_searches = []
-        g.registerHandler('select2', self.select2_hook)
-        g.registerHandler('create-node', self.command2_hook) # fix tag jumplist positions after new node insertion
-        g.registerHandler('command2', self.command2_hook)
-    #@+node:peckj.20140804114520.15202: *4* initUI
-    def initUI(self):
-        # create GUI components
-        ## this code is atrocious... don't look too closely
-        self.setObjectName("LeoTagWidget")
+if QtWidgets:
 
-        # verticalLayout_2: contains
-        # verticalLayout
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
-        self.verticalLayout_2.setContentsMargins(0,1,0,1)
-        self.verticalLayout_2.setObjectName("nodetags-verticalLayout_2")
+    class LeoTagWidget(QtWidgets.QWidget):
+        #@+others
+        #@+node:peckj.20140804114520.15200: *3* __init__
+        def __init__(self,c,parent=None):
+            QtWidgets.QWidget.__init__(self, parent)
+            self.c = c
+            self.tc = self.c.theTagController
+            self.initUI()
+            self.registerCallbacks()
+            self.mapping = {}
+            # pylint: disable=anomalous-backslash-in-string
+            #self.search_chars = ['&','|','-','^']
+            self.search_re = '(&|\||-|\^)'
+            self.custom_searches = []
+            g.registerHandler('select2', self.select2_hook)
+            g.registerHandler('create-node', self.command2_hook) # fix tag jumplist positions after new node insertion
+            g.registerHandler('command2', self.command2_hook)
+        #@+node:peckj.20140804114520.15202: *4* initUI
+        def initUI(self):
+            # create GUI components
+            ## this code is atrocious... don't look too closely
+            self.setObjectName("LeoTagWidget")
 
-        # horizontalLayout: contains
-        # "Refresh" button
-        # comboBox
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setContentsMargins(0,0,0,0)
-        self.horizontalLayout.setObjectName("nodetags-horizontalLayout")
+            # verticalLayout_2: contains
+            # verticalLayout
+            self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
+            self.verticalLayout_2.setContentsMargins(0,1,0,1)
+            self.verticalLayout_2.setObjectName("nodetags-verticalLayout_2")
 
-        # horizontalLayout2: contains
-        # label2
-        # not much by default -- it's a place to add buttons for current tags
-        self.horizontalLayout2 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout2.setContentsMargins(0,0,0,0)
-        self.horizontalLayout2.setObjectName("nodetags-horizontalLayout2")
-        label2 = QtWidgets.QLabel(self)
-        label2.setObjectName("nodetags-label2")
-        label2.setText("Tags for current node:")
-        self.horizontalLayout2.addWidget(label2)
+            # horizontalLayout: contains
+            # "Refresh" button
+            # comboBox
+            self.horizontalLayout = QtWidgets.QHBoxLayout()
+            self.horizontalLayout.setContentsMargins(0,0,0,0)
+            self.horizontalLayout.setObjectName("nodetags-horizontalLayout")
 
-        # verticalLayout: contains
-        # horizontalLayout
-        # listWidget
-        # horizontalLayout2
-        # label
-        self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setObjectName("nodetags-verticalLayout")
+            # horizontalLayout2: contains
+            # label2
+            # not much by default -- it's a place to add buttons for current tags
+            self.horizontalLayout2 = QtWidgets.QHBoxLayout()
+            self.horizontalLayout2.setContentsMargins(0,0,0,0)
+            self.horizontalLayout2.setObjectName("nodetags-horizontalLayout2")
+            label2 = QtWidgets.QLabel(self)
+            label2.setObjectName("nodetags-label2")
+            label2.setText("Tags for current node:")
+            self.horizontalLayout2.addWidget(label2)
 
-        self.comboBox = QtWidgets.QComboBox(self)
-        self.comboBox.setObjectName("nodetags-comboBox")
-        self.comboBox.setEditable(True)
-        self.horizontalLayout.addWidget(self.comboBox)
+            # verticalLayout: contains
+            # horizontalLayout
+            # listWidget
+            # horizontalLayout2
+            # label
+            self.verticalLayout = QtWidgets.QVBoxLayout()
+            self.verticalLayout.setObjectName("nodetags-verticalLayout")
 
-        self.pushButton = QtWidgets.QPushButton("+", self)
-        self.pushButton.setObjectName("nodetags-pushButton")
-        self.pushButton.setMinimumSize(24,24)
-        self.pushButton.setMaximumSize(24,24)
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.verticalLayout.addLayout(self.horizontalLayout)
-        self.listWidget = QtWidgets.QListWidget(self)
-        self.listWidget.setObjectName("nodetags-listWidget")
-        self.verticalLayout.addWidget(self.listWidget)
-        self.verticalLayout.addLayout(self.horizontalLayout2)
-        self.label = QtWidgets.QLabel(self)
-        self.label.setObjectName("nodetags-label")
-        self.label.setText("Total: 0 items")
-        self.verticalLayout.addWidget(self.label)
-        self.verticalLayout_2.addLayout(self.verticalLayout)
-        QtCore.QMetaObject.connectSlotsByName(self)
-    #@+node:peckj.20140804114520.15203: *4* registerCallbacks
-    def registerCallbacks(self):
-        self.listWidget.itemSelectionChanged.connect(self.item_selected)
-        self.listWidget.itemClicked.connect(self.item_selected)
-        self.comboBox.currentIndexChanged.connect(self.update_list)
-        self.pushButton.clicked.connect(self.add_tag)
-    #@+node:peckj.20140804114520.15204: *3* updates + interaction
-    #@+node:peckj.20140804114520.15205: *4* item_selected
-    def item_selected(self):
-        c = self.c
-        key = id(self.listWidget.currentItem())
-        v = self.mapping[key]
-        if isinstance(v, leoNodes.VNode):
-            p = c.vnode2position(v)
-        assert isinstance(p, leoNodes.Position), repr(p)
-        self.update_current_tags(p)
-        c.selectPosition(p)
-        c.redraw()
-    #@+node:peckj.20140804192343.6568: *5* update_current_tags
-    def update_current_tags(self, p):
-        # clear out the horizontalLayout2
-        hl2 = self.horizontalLayout2
-        while hl2.count():
-            child = hl2.takeAt(0)
-            child.widget().deleteLater()
-        label = QtWidgets.QLabel(self)
-        label.setObjectName("nodetags-label2")
-        label.setText('Tags for current node:')
-        hl2.addWidget(label)
-        tags = self.tc.get_tags(p)
-        # add tags
-        for tag in tags:
-            l = QtWidgets.QLabel(self)
-            l.setText(tag)
-            l.setObjectName('nodetags-label3')
-            hl2.addWidget(l)
-            l.mouseReleaseEvent = self.callback_factory(tag)
-    #@+node:peckj.20140804194839.6569: *6* callback_factory
-    def callback_factory(self, tag):
-        c = self.c
+            self.comboBox = QtWidgets.QComboBox(self)
+            self.comboBox.setObjectName("nodetags-comboBox")
+            self.comboBox.setEditable(True)
+            self.horizontalLayout.addWidget(self.comboBox)
 
-        def callback(event):
-            p = c.p
-            tc = c.theTagController
-            ui = tc.ui
-            # right click on a tag to remove it from the node
-            if event.button() == QtCore.Qt.RightButton:
-                tc.remove_tag(p,tag)
-            # other clicks make the jumplist open that tag for browsing
+            self.pushButton = QtWidgets.QPushButton("+", self)
+            self.pushButton.setObjectName("nodetags-pushButton")
+            self.pushButton.setMinimumSize(24,24)
+            self.pushButton.setMaximumSize(24,24)
+            self.horizontalLayout.addWidget(self.pushButton)
+            self.verticalLayout.addLayout(self.horizontalLayout)
+            self.listWidget = QtWidgets.QListWidget(self)
+            self.listWidget.setObjectName("nodetags-listWidget")
+            self.verticalLayout.addWidget(self.listWidget)
+            self.verticalLayout.addLayout(self.horizontalLayout2)
+            self.label = QtWidgets.QLabel(self)
+            self.label.setObjectName("nodetags-label")
+            self.label.setText("Total: 0 items")
+            self.verticalLayout.addWidget(self.label)
+            self.verticalLayout_2.addLayout(self.verticalLayout)
+            QtCore.QMetaObject.connectSlotsByName(self)
+        #@+node:peckj.20140804114520.15203: *4* registerCallbacks
+        def registerCallbacks(self):
+            self.listWidget.itemSelectionChanged.connect(self.item_selected)
+            self.listWidget.itemClicked.connect(self.item_selected)
+            self.comboBox.currentIndexChanged.connect(self.update_list)
+            self.pushButton.clicked.connect(self.add_tag)
+        #@+node:peckj.20140804114520.15204: *3* updates + interaction
+        #@+node:peckj.20140804114520.15205: *4* item_selected
+        def item_selected(self):
+            c = self.c
+            key = id(self.listWidget.currentItem())
+            v = self.mapping[key]
+            if isinstance(v, leoNodes.VNode):
+                p = c.vnode2position(v)
+            assert isinstance(p, leoNodes.Position), repr(p)
+            self.update_current_tags(p)
+            c.selectPosition(p)
+            c.redraw()
+        #@+node:peckj.20140804192343.6568: *5* update_current_tags
+        def update_current_tags(self, p):
+            # clear out the horizontalLayout2
+            hl2 = self.horizontalLayout2
+            while hl2.count():
+                child = hl2.takeAt(0)
+                child.widget().deleteLater()
+            label = QtWidgets.QLabel(self)
+            label.setObjectName("nodetags-label2")
+            label.setText('Tags for current node:')
+            hl2.addWidget(label)
+            tags = self.tc.get_tags(p)
+            # add tags
+            for tag in tags:
+                l = QtWidgets.QLabel(self)
+                l.setText(tag)
+                l.setObjectName('nodetags-label3')
+                hl2.addWidget(l)
+                l.mouseReleaseEvent = self.callback_factory(tag)
+        #@+node:peckj.20140804194839.6569: *6* callback_factory
+        def callback_factory(self, tag):
+            c = self.c
+
+            def callback(event):
+                p = c.p
+                tc = c.theTagController
+                ui = tc.ui
+                # right click on a tag to remove it from the node
+                if event.button() == QtCore.Qt.RightButton:
+                    tc.remove_tag(p,tag)
+                # other clicks make the jumplist open that tag for browsing
+                else:
+                    idx = ui.comboBox.findText(tag)
+                    ui.comboBox.setCurrentIndex(idx)
+                ui.update_all()
+
+            return callback
+        #@+node:peckj.20140804114520.15206: *4* update_combobox
+        def update_combobox(self):
+            self.comboBox.clear()
+            tags = self.tc.get_all_tags()
+            self.comboBox.addItems(tags)
+            self.comboBox.addItems(self.custom_searches)
+
+        #@+node:peckj.20140804114520.15207: *4* update_list
+        def update_list(self):
+            c = self.c; gnxDict = c.fileCommands.gnxDict
+            key = str(self.comboBox.currentText()).strip()
+            current_tags = self.tc.get_all_tags()
+            if key not in current_tags and key not in self.custom_searches:
+                if len(re.split(self.search_re, key)) > 1:
+                    self.custom_searches.append(key)
+
+            query = re.split(self.search_re, key)
+            tags = []
+            operations = []
+            for i, s in enumerate(query):
+                if i % 2 == 0:
+                    tags.append(s.strip())
+                else:
+                    operations.append(s.strip())
+            tags.reverse()
+            operations.reverse()
+
+            resultset = set(self.tc.get_tagged_gnxes(tags.pop()))
+            while operations:
+                op = operations.pop()
+                nodes = set(self.tc.get_tagged_gnxes(tags.pop()))
+                if op == '&':
+                    resultset &= nodes
+                elif op == '|':
+                    resultset |= nodes
+                elif op == '-':
+                    resultset -= nodes
+                elif op == '^':
+                    resultset ^= nodes
+
+            self.listWidget.clear()
+            self.mapping = {}
+            for gnx in resultset:
+                n = gnxDict.get(gnx)
+                if n is not None:
+                    item = QtWidgets.QListWidgetItem(n.h)
+                    self.listWidget.addItem(item)
+                    self.mapping[id(item)] = n
+            count = self.listWidget.count()
+            self.label.clear()
+            self.label.setText("Total: %s nodes" % count)
+        #@+node:peckj.20140804114520.15208: *4* update_all
+        def update_all(self):
+            ''' updates the tag GUI '''
+            key = str(self.comboBox.currentText())
+            self.update_combobox()
+            if key:
+                idx = self.comboBox.findText(key)
+                if idx == -1: idx = 0
             else:
-                idx = ui.comboBox.findText(tag)
-                ui.comboBox.setCurrentIndex(idx)
-            ui.update_all()
-
-        return callback
-    #@+node:peckj.20140804114520.15206: *4* update_combobox
-    def update_combobox(self):
-        self.comboBox.clear()
-        tags = self.tc.get_all_tags()
-        self.comboBox.addItems(tags)
-        self.comboBox.addItems(self.custom_searches)
-
-    #@+node:peckj.20140804114520.15207: *4* update_list
-    def update_list(self):
-        c = self.c; gnxDict = c.fileCommands.gnxDict
-        key = str(self.comboBox.currentText()).strip()
-        current_tags = self.tc.get_all_tags()
-        if key not in current_tags and key not in self.custom_searches:
-            if len(re.split(self.search_re, key)) > 1:
-                self.custom_searches.append(key)
-
-        query = re.split(self.search_re, key)
-        tags = []
-        operations = []
-        for i, s in enumerate(query):
-            if i % 2 == 0:
-                tags.append(s.strip())
+                idx = 0
+            self.comboBox.setCurrentIndex(idx)
+            self.update_list()
+            self.update_current_tags(self.c.p)
+        #@+node:peckj.20140806145948.6579: *4* add_tag
+        def add_tag(self, event=None):
+            p = self.c.p
+            tag = str(self.comboBox.currentText()).strip()
+            if not tag:
+                return # no error message, probably an honest mistake
+            elif len(re.split(self.search_re,tag)) > 1:
+                g.es('Cannot add tags containing any of these characters: &|^-', color='red')
+                return # don't add unsearchable tags
             else:
-                operations.append(s.strip())
-        tags.reverse()
-        operations.reverse()
+                self.tc.add_tag(p,tag)
+        #@+node:peckj.20140811082039.6623: *3* event hooks
+        #@+node:peckj.20140804195456.13487: *4* select2_hook
+        def select2_hook(self, tag, keywords):
+            self.update_current_tags(self.c.p)
 
-        resultset = set(self.tc.get_tagged_gnxes(tags.pop()))
-        while operations:
-            op = operations.pop()
-            nodes = set(self.tc.get_tagged_gnxes(tags.pop()))
-            if op == '&':
-                resultset &= nodes
-            elif op == '|':
-                resultset |= nodes
-            elif op == '-':
-                resultset -= nodes
-            elif op == '^':
-                resultset ^= nodes
-
-        self.listWidget.clear()
-        self.mapping = {}
-        for gnx in resultset:
-            n = gnxDict.get(gnx)
-            if n is not None:
-                item = QtWidgets.QListWidgetItem(n.h)
-                self.listWidget.addItem(item)
-                self.mapping[id(item)] = n
-        count = self.listWidget.count()
-        self.label.clear()
-        self.label.setText("Total: %s nodes" % count)
-    #@+node:peckj.20140804114520.15208: *4* update_all
-    def update_all(self):
-        ''' updates the tag GUI '''
-        key = str(self.comboBox.currentText())
-        self.update_combobox()
-        if key:
-            idx = self.comboBox.findText(key)
-            if idx == -1: idx = 0
-        else:
-            idx = 0
-        self.comboBox.setCurrentIndex(idx)
-        self.update_list()
-        self.update_current_tags(self.c.p)
-    #@+node:peckj.20140806145948.6579: *4* add_tag
-    def add_tag(self, event=None):
-        p = self.c.p
-        tag = str(self.comboBox.currentText()).strip()
-        if not tag:
-            return # no error message, probably an honest mistake
-        elif len(re.split(self.search_re,tag)) > 1:
-            g.es('Cannot add tags containing any of these characters: &|^-', color='red')
-            return # don't add unsearchable tags
-        else:
-            self.tc.add_tag(p,tag)
-    #@+node:peckj.20140811082039.6623: *3* event hooks
-    #@+node:peckj.20140804195456.13487: *4* select2_hook
-    def select2_hook(self, tag, keywords):
-        self.update_current_tags(self.c.p)
-
-    #@+node:peckj.20140806101020.14006: *4* command2_hook
-    def command2_hook(self, tag, keywords):
-        paste_cmds = ['paste-node',
-                      'pasteOutlineRetainingClones', # strange that this one isn't canonicalized
-                      'paste-retaining-clones']
-        if keywords.get('label') in paste_cmds:
-            self.tc.initialize_taglist()
-            self.update_all()
-    #@+node:tbnorth.20170313095036.1: *5* sf.find_setting
-    #Plugins:2-->User interface:21-->@file settings_finder.py:11-->class SettingsFinder:2-->sf.find_setting:5
-    #@-others
+        #@+node:peckj.20140806101020.14006: *4* command2_hook
+        def command2_hook(self, tag, keywords):
+            paste_cmds = ['paste-node',
+                          'pasteOutlineRetainingClones', # strange that this one isn't canonicalized
+                          'paste-retaining-clones']
+            if keywords.get('label') in paste_cmds:
+                self.tc.initialize_taglist()
+                self.update_all()
+        #@+node:tbnorth.20170313095036.1: *5* sf.find_setting
+        #Plugins:2-->User interface:21-->@file settings_finder.py:11-->class SettingsFinder:2-->sf.find_setting:5
+        #@-others
 #@-others
 #@@language python
 #@@tabwidth -4

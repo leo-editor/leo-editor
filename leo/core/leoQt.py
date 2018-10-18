@@ -20,26 +20,24 @@ Callers are expected to use the *PyQt5* spellings of modules:
 import leo.core.leoGlobals as g
 strict = False
 trace = False
-fail = g.in_bridge
-if fail:
-    pass
-else:
+fail = False
+    # New for TravisCI tests: allow imports from the Leo Bridge.
+try:
+    isQt5 = True
+    from PyQt5 import Qt
+except ImportError:
+    isQt5 = False
     try:
-        isQt5 = True
-        from PyQt5 import Qt
+        from PyQt4 import Qt
+        assert Qt # for pyflakes
     except ImportError:
-        isQt5 = False
-        try:
-            from PyQt4 import Qt
-            assert Qt # for pyflakes
-        except ImportError:
-            if strict:
-                print('leoQt.py: can not import either PyQt4 or PyQt5.')
-                g.es_exception() # PR #339.
-                print('')
-                raise
-            else:
-                fail = True
+        if strict:
+            print('leoQt.py: can not import either PyQt4 or PyQt5.')
+            g.es_exception() # PR #339.
+            print('')
+            raise
+        else:
+            fail = True
 # Complete the imports.
 if fail:
     isQt5 = False
