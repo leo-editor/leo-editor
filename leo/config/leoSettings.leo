@@ -595,9 +595,6 @@
 <v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
 </v>
 </v>
-<v t="ekr.20110611092035.16478"><vh>Tangle/Untange</vh>
-<v t="ekr.20041119034357.29"><vh>@directory default-tangle-directory = None</vh></v>
-</v>
 <v t="ekr.20110611092035.16477"><vh>Undo</vh>
 <v t="ekr.20041119041019.2"><vh>@bool save-clears-undo-buffer = False</vh></v>
 <v t="ekr.20060127050605"><vh>@int max-undo-stack-size = 0</vh></v>
@@ -711,6 +708,12 @@
 <v t="ekr.20170825083426.1"><vh>@data c-import-typedefs</vh></v>
 <v t="ekr.20111029055127.16616"><vh>@data import-html-tags</vh></v>
 <v t="ekr.20111029055127.16614"><vh>@data import-xml-tags</vh></v>
+<v t="ekr.20181018075844.1"><vh>zim importer options</vh>
+<v t="ekr.20181018075857.1"><vh>@int zim-rst-level = 0</vh></v>
+<v t="ekr.20181018075747.1"><vh>@string path-to-zim = None</vh></v>
+<v t="ekr.20181018075857.3"><vh>@string zim-node-name = Imported Zim Tree</vh></v>
+<v t="ekr.20181018075857.2"><vh>@string zim-rst-type = rst</vh></v>
+</v>
 </v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20180411070112.1"><vh>@bool replace-meta-with-alt = False</vh></v>
@@ -1940,6 +1943,9 @@
 <v t="tbrown.20110430104941.30247"><vh>backlink</vh>
 <v t="tbrown.20110430104941.30250"><vh>@int backlink-name-levels = 0</vh></v>
 </v>
+<v t="ekr.20181018080337.1"><vh>bigdash</vh>
+<v t="ekr.20181018080344.1"><vh>@int fts-max-hits = 30</vh></v>
+</v>
 <v t="tbrown.20140102100730.27777"><vh>bookmarks</vh>
 <v t="tbrown.20140102100730.27778"><vh>@int bookmarks-levels = 1</vh></v>
 <v t="tbrown.20171128211219.1"><vh>@data bookmarks-modifiers</vh></v>
@@ -2244,12 +2250,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20181017213058.1"><vh>==== </vh></v>
 <v t="ekr.20111006212449.11850"></v>
-<v t="ekr.20181018064910.1"><vh>unused code</vh>
-<v t="ekr.20111007043902.15697"><vh>print_missing_get_x</vh></v>
-<v t="ekr.20181018053940.1"><vh>print_missing_user_config</vh></v>
-</v>
 <v t="ekr.20111006212449.11852"></v>
 <v t="ekr.20181017205207.1"><vh>===== Retired settings</vh>
 <v t="ekr.20060408090018"><vh>@bool added-setting = True</vh></v>
@@ -2279,6 +2280,7 @@
 <v t="ekr.20161010172441.1"><vh>@int js-importer-min-scan-size = 0</vh></v>
 <v t="ekr.20060521134125"><vh>@string debugger-default-target = None</vh></v>
 <v t="ekr.20060521134125.1"><vh>@string debugger-force-target = None</vh></v>
+<v t="ekr.20041119034357.29"><vh>@string default-tangle-directory = None</vh></v>
 <v t="ekr.20060620085654"><vh>@string editor-orientation = horizontal</vh></v>
 <v t="ekr.20041119050749.11"><vh>@string headline-gmt-time = None</vh></v>
 <v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
@@ -2307,9 +2309,6 @@
 <v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
 </v>
-<v t="ekr.20181018054935.1"><vh>Old Report</vh></v>
-<v t="ekr.20181018064822.1"><vh>New Report</vh></v>
-<v t="ekr.20181018070655.1"><vh>Newest report</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5087,10 +5086,10 @@ This setting is no longer used!</t>
 <t tx="ekr.20110611092035.16474"></t>
 <t tx="ekr.20110611092035.16476">If neither is checked, Leo searches the entire outline.</t>
 <t tx="ekr.20110611092035.16477"></t>
-<t tx="ekr.20110611092035.16478">These commands are deprecated</t>
 <t tx="ekr.20110611092035.16479"></t>
 <t tx="ekr.20110611092035.16480">@language rest
 @wrap
+
 </t>
 <t tx="ekr.20110611092035.16481"></t>
 <t tx="ekr.20110611092035.16482"></t>
@@ -5593,84 +5592,6 @@ Controller(c).run()</t>
     if self.errors == 0:
         self.check(configs,settings)
     g.trace('done')</t>
-<t tx="ekr.20111007043902.15697">def print_missing_get_x(self,format,munged_s,in_list,out_list,munged_in_list,munged_out_list):
-    '''Print missing calls to config.get_x,'''
-    assert munged_s in munged_in_list,munged_s
-    assert munged_s not in munged_out_list,munged_s
-    if 1:
-        # These *ivars* are set by the GlobalConfigManager class.
-        # There *should* be settings for all of these.
-        table = (
-            # encodingIvarsDict...
-                "default_at_auto_file_encoding",
-                "default_derived_file_encoding",
-                "new_leo_file_encoding",
-                ### "defaultEncoding",
-            # defaultsDict...
-                "color_directives_in_plain_text",
-                "output_doc_chunks",
-                "page_width",
-                "tab_width",
-                "tangle_outputs_header",
-                "target_language",
-                "underline_undefined_section_names",
-            # ivarsDict
-                "at_root_bodies_start_in_doc_mode",
-                "create_nonexistent_directories",
-                "output_initial_comment",
-                "output_newline",
-                "page_width",
-                "read_only",
-                "redirect_execute_script_output_to_log_pane",
-                "relative_path_base_directory",
-                "remove_sentinels_extension",
-                "save_clears_undo_buffer",
-                "stylesheet",
-                "tab_width",
-                "target_language",
-                "trailing_body_newlines",
-                "use_plugins",
-                "undo_granularity",
-                "write_strips_blank_lines",
-        )
-        for setting in table:
-            if munged_s == setting.replace('_',''):
-                return
-        # Defaults to None so it doesn'
-    if 1:
-        # unitTest.leo tests test-darwin-setting and test-win32-setting
-        if munged_s in ('testdarwinsetting', 'testwin32setting'):
-            return
-    if 1:
-        # Stylesheets use these settings.
-        for pattern in (
-            'bg', 'border', 'color', 'fg', 'font',
-            'leogreen', 'leoyello',
-            'margin', 'padding', 'relief',
-            'solarized', 'split-bar', 'text-foreground', 'tree-image',
-        ):
-            if munged_s.find(pattern.replace('-','')) &gt; -1:
-                return
-    if 1:
-        # These plugins/use settings in non-standard ways.
-        for prefix in (
-            'bookmarks', 'datenodes', 'http', 'opml',
-            'rst3', 'todo', 'vim', 'zodb'
-        ):
-            if munged_s.startswith(prefix):
-                return
-    if 1:
-        # Find settings are defined in non-standard ways.
-        for setting in (
-            'batch', 'change-text', 'find-text', 'ignore-case',
-            'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
-            'reverse', 'search-body', 'search-headline', 'suboutline-only',
-            'whole-word', 'wrap',
-        ):
-            if munged_s == setting.replace('-',''):
-                return
-    match_list = [s for s in in_list if self.munge(s) == munged_s]
-    print(format % (munged_s,match_list))</t>
 <t tx="ekr.20111017082630.16080">'''This script reports commands that exist in some but not all key- binding
 sets. setNames is a list of the roots of all such sets.'''
 
@@ -11871,108 +11792,6 @@ if changed:
     c.redraw()     
 </t>
 <t tx="ekr.20181017205207.1"></t>
-<t tx="ekr.20181017213058.1"></t>
-<t tx="ekr.20181018053940.1">def print_missing_user_config(self,format,munged_s,in_list,out_list,munged_in_list,munged_out_list):
-
-    '''Print the canonical name, followed by the list of names that match.'''
-    assert munged_s in munged_in_list,munged_s
-    assert munged_s not in munged_out_list,munged_s
-    if 1:
-        # unitTest.leo tests test-darwin-setting and test-win32-setting
-        if munged_s in ('testdarwinsetting', 'testwin32setting'):
-            return
-    if 1:
-        # Stylesheets use these settings.
-        for pattern in (
-            'bg', 'border', 'color', 'fg', 'font',
-            'leogreen', 'leoyello',
-            'margin', 'padding', 'relief',
-            'solarized', 'split-bar', 'text-foreground', 'tree-image',
-        ):
-            if munged_s.find(pattern.replace('-','')) &gt; -1:
-                return
-    if 1:
-        # These plugins/use settings in non-standard ways.
-        for prefix in (
-            'bookmarks', 'datenodes', 'http', 'opml',
-            'rst3', 'todo', 'vim', 'zodb'
-        ):
-            if munged_s.startswith(prefix):
-                return
-    if 1:
-        # Find settings are defined in non-standard ways.
-        for setting in (
-            'batch', 'change-text', 'find-text', 'ignore-case',
-            'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
-            'reverse', 'search-body', 'search-headline', 'suboutline-only',
-            'whole-word', 'wrap',
-        ):
-            if munged_s == setting.replace('-',''):
-                return
-    match_list = [s for s in in_list if self.munge(s) == munged_s]
-    print(format % (munged_s,match_list))</t>
-<t tx="ekr.20181018054935.1">scanning: leoPy.leo
-scanning: leoPlugins.leo
-scanning: leoSettings.leo
-
-missing @bool settings...
-                               Canonical Actual
-                               ========= ======
-                    activepathdoautoload ['active-path-do-autoload']
-                       autosetignorecase ['auto-set-ignore-case']
-                            evalredirect ['eval-redirect']
-                    finddefcreatesclones ['find-def-creates-clones']
-                       graphmanuallayout ['graph-manual-layout']
-                         headlinegmttime ['headline-gmt-time']
-                          ignorecapslock ['ignore-caps-lock']
-              invisibleoutlinenavigation ['invisible-outline-navigation']
-                              legacyeval ['legacy-eval']
-             leobabelnodecreationdefault ['Leo-Babel-Node-Creation-Default']
-                        leotohtmlnomenus ['leo-to-html-no-menus']
-                           outputdocflag ['output-doc-flag']
-                         shadowinhomedir ['shadow-in-home-dir']
-                             smartquotes ['smart-quotes']
-                             stubverbose ['stub-verbose']
-                                stubwarn ['stub-warn']
-                  suppressallpluginmenus ['suppress-all-plugin-menus']
-                  suppressdatenodesmenus ['suppress-datenodes-menus']
-                         tanglebatchflag ['tangle-batch-flag']
-                       untanglebatchflag ['untangle-batch-flag']
-                           useheaderflag ['use-header-flag']
-                    usexdbpaneoutputarea ['use-xdb-pane-output-area']
-                  viewrenderedautocreate ['view-rendered-auto-create']
-               warnwhenpluginsfailtoload ['warn_when_plugins_fail_to_load']
-
-missing @int settings...
-                               Canonical Actual
-                               ========= ======
-                              ftsmaxhits ['fts-max-hits']
-                        qtrichtextzoomin ['qt-rich-text-zoom-in']
-                                rstlevel ['rst-level']
-
-missing @string settings...
-                               Canonical Actual
-                               ========= ======
-                     defaulteditingstate ['default-editing-state']
-                          externaleditor ['external-editor']
-                 initialchooserdirectory ['initial-chooser-directory']
-                         leoscreenprefix ['leoscreen-prefix']
-                        leoscreentimefmt ['leoscreen-time-fmt']
-                             leotohtml%s ['leo_to_html_%s']
-                  mainspellingdictionary ['main-spelling-dictionary']
-                             mimeopencmd ['mime-open-cmd']
-                               pathtozim ['path-to-zim']
-                              pytestpath ['pytest-path']
-                   rst2httpattributename ['rst2-http-attributename']
-                                 rsttype ['rst-type']
-                   screencapturesavepath ['screen-capture-save-path']
-                          scriptfilepath ['script-file-path']
-                               themename ['theme-name']
-                toplevelunboundkeyaction ['top-level-unbound-key-action']
-                 viewrendereddefaultkind ['view-rendered-default-kind']
-                viewrenderedmdextensions ['view-rendered-md-extensions']
-                             zimnodename ['zim-node-name']
-</t>
 <t tx="ekr.20181018060340.1">def filter_missing_get_x(self, setting):
     
     # These *ivars* are set by the GlobalConfigManager class.
@@ -12046,89 +11865,17 @@ missing @string settings...
             return None
     return setting
 </t>
-<t tx="ekr.20181018064822.1">scanning: leoPy.leo
-scanning: leoPlugins.leo
-scanning: leoSettings.leo
-
-missing 24 @bool settings...
-['active-path-do-autoload']
-['auto-set-ignore-case']
-['eval-redirect']
-['find-def-creates-clones']
-['graph-manual-layout']
-['headline-gmt-time']
-['ignore-caps-lock']
-['invisible-outline-navigation']
-['legacy-eval']
-['Leo-Babel-Node-Creation-Default']
-['leo-to-html-no-menus']
-['output-doc-flag']
-['shadow-in-home-dir']
-['smart-quotes']
-['stub-verbose']
-['stub-warn']
-['suppress-all-plugin-menus']
-['suppress-datenodes-menus']
-['tangle-batch-flag']
-['untangle-batch-flag']
-['use-header-flag']
-['use-xdb-pane-output-area']
-['view-rendered-auto-create']
-['warn_when_plugins_fail_to_load']
-
-missing 3 @int settings...
-['fts-max-hits']
-['qt-rich-text-zoom-in']
-['rst-level']
-
-missing 19 @string settings...
-['default-editing-state']
-['external-editor']
-['initial-chooser-directory']
-['leoscreen-prefix']
-['leoscreen-time-fmt']
-['leo_to_html_%s']
-['main-spelling-dictionary']
-['mime-open-cmd']
-['path-to-zim']
-['pytest-path']
-['rst2-http-attributename']
-['rst-type']
-['screen-capture-save-path']
-['script-file-path']
-['theme-name']
-['top-level-unbound-key-action']
-['view-rendered-default-kind']
-['view-rendered-md-extensions']
-['zim-node-name']
-run done
-</t>
-<t tx="ekr.20181018064910.1">format = '%40s %s'
-
-print('\nmissing %s settings...' % settings_key)
-print(format % ('Canonical','Actual'))
-print(format % ('=' * len('Canonical'),'=' * len('Actual')))
-for s in sorted(list(missing)):
-    self.print_missing_user_config(format,s,
-        config_list,settings_list,
-        munged_config_list,munged_settings_list)
-        
-===========
-
-print('\nmissing config.%s calls...' % config_key)
-print(format % ('Canonical','Actual'))
-print(format % ('=' * len('Canonical'),'=' * len('Actual')))
-for s in sorted(list(missing)):
-    self.print_missing_get_x(format,s,
-        settings_list,config_list,
-        munged_settings_list,munged_config_list)
-</t>
 <t tx="ekr.20181018065113.1">def filter_missing_user_config(self, setting):
-    
+    '''Return the setting or None if the setting need not exist in leoSettings.leo'''
+    #
     # unitTest.leo tests test-darwin-setting and test-win32-setting
     if setting in ('testdarwinsetting', 'testwin32setting'):
         return None
-
+    #
+    # This setting is commented out for now.
+    if setting == 'qt-rich-text-zoom-in'.replace('-',''):
+        return
+    #
     # Stylesheets use these settings.
     for pattern in (
         'bg', 'border', 'color', 'fg', 'font',
@@ -12138,14 +11885,14 @@ for s in sorted(list(missing)):
     ):
         if setting.find(pattern.replace('-','')) &gt; -1:
             return None
-
-    # These plugins/use settings in non-standard ways.
+    #
+    # These plugins use settings in non-standard ways.
     if setting.startswith(
-        ('bookmarks', 'datenodes', 'http', 'opml',
+        ('activepath', 'bookmarks', 'datenodes', 'http', 'opml',
         'rst3', 'todo', 'vim', 'zodb'),
     ):
         return None
-   
+    #
     # Find settings are defined in non-standard ways.
     for pattern in (
         'batch', 'change-text', 'find-text', 'ignore-case',
@@ -12155,80 +11902,25 @@ for s in sorted(list(missing)):
     ):
         if setting == pattern.replace('-',''):
             return None
+    #
+    # Tangle/untagle settings are deprecated.
+    for pattern in (
+        'output-doc-flag', 'tangle-batch-flag',
+        'untangle-batch-flag', 'use-header-flag',
+    ):
+        if setting == pattern.replace('-',''):
+            return None
+    #
+    # The setting should exist in leoSettings.leo.
     return setting
 </t>
-<t tx="ekr.20181018070655.1">scanning: leoPy.leo
-scanning: leoPlugins.leo
-scanning: leoSettings.leo
-
-missing 24 @bool settings...
-['active-path-do-autoload']
-['auto-set-ignore-case']
-['eval-redirect']
-['find-def-creates-clones']
-['graph-manual-layout']
-['headline-gmt-time']
-['ignore-caps-lock']
-['invisible-outline-navigation']
-['legacy-eval']
-['Leo-Babel-Node-Creation-Default']
-['leo-to-html-no-menus']
-['output-doc-flag']
-['shadow-in-home-dir']
-['smart-quotes']
-['stub-verbose']
-['stub-warn']
-['suppress-all-plugin-menus']
-['suppress-datenodes-menus']
-['tangle-batch-flag']
-['untangle-batch-flag']
-['use-header-flag']
-['use-xdb-pane-output-area']
-['view-rendered-auto-create']
-['warn_when_plugins_fail_to_load']
-
-missing 3 @int settings...
-['fts-max-hits']
-['qt-rich-text-zoom-in']
-['rst-level']
-
-missing 19 @string settings...
-['default-editing-state']
-['external-editor']
-['initial-chooser-directory']
-['leoscreen-prefix']
-['leoscreen-time-fmt']
-['leo_to_html_%s']
-['main-spelling-dictionary']
-['mime-open-cmd']
-['path-to-zim']
-['pytest-path']
-['rst2-http-attributename']
-['rst-type']
-['screen-capture-save-path']
-['script-file-path']
-['theme-name']
-['top-level-unbound-key-action']
-['view-rendered-default-kind']
-['view-rendered-md-extensions']
-['zim-node-name']
-
-missing 3 config.getBool calls...
-['at-root-bodies-start-in-doc-mode']
-['create-nonexistent-directories']
-['save-clears-undo-buffer']
-
-missing 8 config.getString calls...
-['default-at-auto-file-encoding']
-['default-derived-file-encoding']
-['new-leo-file-encoding']
-['output-initial-comment']
-['output-newline']
-['relative-path-base-directory']
-['remove-sentinels-extension']
-['trailing-body-newlines']
-run done
-</t>
+<t tx="ekr.20181018075747.1"></t>
+<t tx="ekr.20181018075844.1"></t>
+<t tx="ekr.20181018075857.1"></t>
+<t tx="ekr.20181018075857.2"></t>
+<t tx="ekr.20181018075857.3"></t>
+<t tx="ekr.20181018080337.1"></t>
+<t tx="ekr.20181018080344.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

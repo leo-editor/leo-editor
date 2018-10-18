@@ -2232,8 +2232,8 @@ class ZimImportController(object):
         '''Ctor for ZimImportController class.'''
         self.c = c
         self.pathToZim = c.config.getString('path-to-zim')
-        self.rstLevel = c.config.getInt('rst-level') or 0
-        self.rstType = c.config.getString('rst-type') or 'rst'
+        self.rstLevel = c.config.getInt('zim-rst-level') or 0
+        self.rstType = c.config.getString('zim-rst-type') or 'rst'
         self.zimNodeName = c.config.getString('zim-node-name') or 'Imported Zim Tree'
     #@+node:ekr.20141210051628.28: *3* zic.parseZimIndex
     def parseZimIndex(self):
