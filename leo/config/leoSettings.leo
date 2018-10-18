@@ -37,8 +37,9 @@
 <v t="ekr.20090203131919.1"><vh>@button check-menus-cmds</vh></v>
 <v t="ekr.20111006212449.11850"><vh>@button check-settings</vh>
 <v t="ekr.20111006212449.11851"><vh>ctor</vh></v>
-<v t="ekr.20111006212449.11852"><vh>check &amp; helper</vh>
-<v t="ekr.20111007043902.15697"><vh>print_missing</vh></v>
+<v t="ekr.20111006212449.11852"><vh>check &amp; helpers</vh>
+<v t="ekr.20111007043902.15697"><vh>print_missing_get_x</vh></v>
+<v t="ekr.20181018053940.1"><vh>print_missing_user_config</vh></v>
 </v>
 <v t="ekr.20111006212449.11853"><vh>error</vh></v>
 <v t="ekr.20111006212449.11854"><vh>get_commanders</vh></v>
@@ -534,7 +535,6 @@
 <v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
 </v>
 <v t="ekr.20110611092035.16482"><vh>Headline commands</vh>
-<v t="ekr.20041119050749.11"><vh>@string headline-gmt-time = None</vh></v>
 <v t="ekr.20041119050749.10"><vh>@string headline-time-format-string = %m/%d</vh></v>
 </v>
 <v t="ekr.20160127043440.1"><vh>make-stub-files</vh>
@@ -599,6 +599,7 @@
 <v t="ekr.20041119034357.29"><vh>@directory default-tangle-directory = None</vh></v>
 </v>
 <v t="ekr.20110611092035.16477"><vh>Undo</vh>
+<v t="ekr.20041119041019.2"><vh>@bool save-clears-undo-buffer = False</vh></v>
 <v t="ekr.20060127050605"><vh>@int max-undo-stack-size = 0</vh></v>
 <v t="ekr.20050126083026"><vh>@string undo-granularity = None</vh></v>
 </v>
@@ -635,10 +636,11 @@
 <v t="chris.20180320083521.1"><vh>@bool word-count = False</vh></v>
 </v>
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
-<v t="ekr.20170706103545.1"><vh>@bool report-unchanged-files = True</vh></v>
 <v t="ekr.20061210091932"><vh>@bool chdir-to-relative-path = False</vh></v>
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
+<v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
 <v t="ekr.20170718054928.1"><vh>@bool log-show-save-time = False</vh></v>
+<v t="ekr.20170706103545.1"><vh>@bool report-unchanged-files = True</vh></v>
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
@@ -650,6 +652,7 @@
 <v t="ekr.20150710084507.1"><vh>@bool syntax-error-popup = False</vh></v>
 </v>
 <v t="ekr.20041119034357.12"><vh>External files</vh>
+<v t="ekr.20041119034357.14"><vh>@bool at-root-bodies-start-in-doc-mode = True</vh></v>
 <v t="ekr.20070419103554"><vh>@bool force-newlines-in-at-nosent-bodies = True</vh></v>
 <v t="ekr.20041119041747"><vh>@string output-newline = nl</vh></v>
 <v t="ekr.20041119041747.1"><vh>@string trailing-body-newlines = one</vh></v>
@@ -1954,10 +1957,6 @@
 <v t="ekr.20060807103220.10"><vh>@bool datenodes-year-node-omit-saturdays = True</vh></v>
 <v t="ekr.20060807103220.11"><vh>@bool datenodes-year-node-omit-sundays = True</vh></v>
 </v>
-<v t="ekr.20100907092300.6957"><vh>Inkscape options</vh>
-<v t="ekr.20100907092300.6958"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
-<v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
-</v>
 <v t="ekr.20111003085631.15488"><vh>mod_http plugin</vh>
 <v t="ekr.20111003085631.15489"><vh>@bool http-active = True</vh></v>
 <v t="btheado.20131124162237.2493"><vh>@string http-ip = 127.0.0.1</vh></v>
@@ -2152,7 +2151,8 @@
 </v>
 <v t="ekr.20041119034357.15"><vh>Unicode options</vh>
 <v t="ekr.20041119042929.10"><vh>@string new-leo-file-encoding = utf-8</vh></v>
-<v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
+<v t="ekr.20080212084020"><vh>@string default-at-auto-file-encoding = utf-8</vh></v>
+<v t="ekr.20041119042929.9"><vh>@string default-derived-file-encoding = utf-8</vh></v>
 </v>
 <v t="ekr.20050203090810"><vh>Unit test option</vh>
 <v t="ekr.20060325071042"><vh>@ifplatform win32</vh>
@@ -2246,17 +2246,13 @@
 </v>
 <v t="ekr.20181017213058.1"><vh>==== </vh></v>
 <v t="ekr.20111006212449.11850"></v>
-<v t="ekr.20111007043902.15697"></v>
-<v t="ekr.20111006212449.11857"></v>
-<v t="ekr.20181018040200.1"><vh>Missing @ settings</vh></v>
+<v t="ekr.20111006212449.11852"></v>
 <v t="ekr.20181017205207.1"><vh>===== Retired settings</vh>
 <v t="ekr.20060408090018"><vh>@bool added-setting = True</vh></v>
 <v t="ekr.20080324105006.6"><vh>@bool allow-middle-button-paste = False</vh></v>
 <v t="ekr.20161011090731.1"><vh>@bool allow_section_references_in_at_auto = False</vh></v>
 <v t="ekr.20041119043902.3"><vh>@bool append-output-to-output-file = False</vh></v>
 <v t="ekr.20101104191857.8345"><vh>@bool at-auto-separate-non-def-nodes = False</vh></v>
-<v t="ekr.20041119034357.14"><vh>@bool at-root-bodies-start-in-doc-mode = True</vh></v>
-<v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
 <v t="ekr.20070803082435"><vh>@bool full-import-checks = True</vh></v>
 <v t="ekr.20041119043902.4"><vh>@bool ignore-blank-lines = True</vh></v>
 <v t="ekr.20161010085256.1"><vh>@bool js-importer-clean-lws = True</vh></v>
@@ -2264,7 +2260,6 @@
 <v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
 <v t="ekr.20041119034357.5"><vh>@bool read-only = False</vh></v>
 <v t="ekr.20041119041019"><vh>@bool redirect-execute-script-output-to-log-pane = False</vh></v>
-<v t="ekr.20041119041019.2"><vh>@bool save-clears-undo-buffer = False</vh></v>
 <v t="ekr.20041120152657"><vh>@bool script-change = None</vh></v>
 <v t="ekr.20041120152900.2"><vh>@bool script-search = None</vh></v>
 <v t="ekr.20060125104049"><vh>@bool show-only-find-tab-options = True</vh></v>
@@ -2280,9 +2275,9 @@
 <v t="ekr.20161010172441.1"><vh>@int js-importer-min-scan-size = 0</vh></v>
 <v t="ekr.20060521134125"><vh>@string debugger-default-target = None</vh></v>
 <v t="ekr.20060521134125.1"><vh>@string debugger-force-target = None</vh></v>
-<v t="ekr.20080212084020"><vh>@string default-at-auto-file-encoding = utf-8</vh></v>
-<v t="ekr.20041119042929.9"><vh>@string default-derived-file-encoding = utf-8</vh></v>
 <v t="ekr.20060620085654"><vh>@string editor-orientation = horizontal</vh></v>
+<v t="ekr.20041119050749.11"><vh>@string headline-gmt-time = None</vh></v>
+<v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
 <v t="ekr.20041119034357.16"><vh>Retired: all Compare panel options</vh>
 <v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
 <v t="ekr.20041119043902.5"><vh>@bool ignore-first-line-of-file-1 = False</vh></v>
@@ -2303,8 +2298,12 @@
 <v t="ekr.20041119043902.15"><vh>@bool print-trailing-lines = True</vh></v>
 </v>
 </v>
+<v t="ekr.20100907092300.6957"><vh>Retired: all Inkscape options</vh>
+<v t="ekr.20100907092300.6958"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
+<v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
-<v t="ekr.20181018035659.1"><vh>MISSING get* calls</vh></v>
+</v>
+<v t="ekr.20181018054935.1"><vh>Report</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5399,7 +5398,7 @@ Controller(c).run()</t>
                 print(format % ('Canonical','Actual'))
                 print(format % ('=' * len('Canonical'),'=' * len('Actual')))
                 for s in sorted(list(missing)):
-                    self.print_missing(format,s,
+                    self.print_missing_user_config(format,s,
                         config_list,settings_list,
                         munged_config_list,munged_settings_list)
     # More important: print missing calls to c.config.getX
@@ -5420,7 +5419,7 @@ Controller(c).run()</t>
                 print(format % ('Canonical','Actual'))
                 print(format % ('=' * len('Canonical'),'=' * len('Actual')))
                 for s in sorted(list(missing)):
-                    self.print_missing(format,s,
+                    self.print_missing_get_x(format,s,
                         settings_list,config_list,
                         munged_settings_list,munged_config_list)</t>
 <t tx="ekr.20111006212449.11853">def error (self,s):
@@ -5600,11 +5599,50 @@ Controller(c).run()</t>
         self.check(configs,settings)
 
     g.trace('done')</t>
-<t tx="ekr.20111007043902.15697">def print_missing(self,format,munged_s,in_list,out_list,munged_in_list,munged_out_list):
-
-    '''Print the canonical name, followed by the list of names that match.'''
+<t tx="ekr.20111007043902.15697">def print_missing_get_x(self,format,munged_s,in_list,out_list,munged_in_list,munged_out_list):
+    '''Print missing calls to config.get_x,'''
     assert munged_s in munged_in_list,munged_s
     assert munged_s not in munged_out_list,munged_s
+    if 1:
+        # These *ivars* are set by the GlobalConfigManager class.
+        # There *should* be settings for all of these.
+        table = (
+            # encodingIvarsDict...
+                "default_at_auto_file_encoding",
+                "default_derived_file_encoding",
+                "new_leo_file_encoding",
+                ### "defaultEncoding",
+            # defaultsDict...
+                "color_directives_in_plain_text",
+                "output_doc_chunks",
+                "page_width",
+                "tab_width",
+                "tangle_outputs_header",
+                "target_language",
+                "underline_undefined_section_names",
+            # ivarsDict
+                "at_root_bodies_start_in_doc_mode",
+                "create_nonexistent_directories",
+                "output_initial_comment",
+                "output_newline",
+                "page_width",
+                "read_only",
+                "redirect_execute_script_output_to_log_pane",
+                "relative_path_base_directory",
+                "remove_sentinels_extension",
+                "save_clears_undo_buffer",
+                "stylesheet",
+                "tab_width",
+                "target_language",
+                "trailing_body_newlines",
+                "use_plugins",
+                "undo_granularity",
+                "write_strips_blank_lines",
+        )
+        for setting in table:
+            if munged_s == setting.replace('_',''):
+                return
+        # Defaults to None so it doesn'
     if 1:
         # unitTest.leo tests test-darwin-setting and test-win32-setting
         if munged_s in ('testdarwinsetting', 'testwin32setting'):
@@ -5615,7 +5653,7 @@ Controller(c).run()</t>
             'bg', 'border', 'color', 'fg', 'font',
             'leogreen', 'leoyello',
             'margin', 'padding', 'relief',
-            'solarized', 'text-foreground', 'tree-image',
+            'solarized', 'split-bar', 'text-foreground', 'tree-image',
         ):
             if munged_s.find(pattern.replace('-','')) &gt; -1:
                 return
@@ -11840,23 +11878,50 @@ if changed:
 </t>
 <t tx="ekr.20181017205207.1"></t>
 <t tx="ekr.20181017213058.1"></t>
-<t tx="ekr.20181018035659.1">missing config.getString calls...
-                               Canonical Actual
-                               ========= ======
-                       editororientation ['editor-orientation']
-                         headlinegmttime ['headline-gmt-time']
-                             inkscapebin ['inkscape-bin']
-                        inkscapetemplate ['inkscape-template']
-                      newleofileencoding ['new-leo-file-encoding']
-                    outputinitialcomment ['output-initial-comment']
-                           outputnewline ['output-newline']
-                       qtdefaultencoding ['qt-default-encoding']
-               relativepathbasedirectory ['relative-path-base-directory']
-                removesentinelsextension ['remove-sentinels-extension']
-                    trailingbodynewlines ['trailing-body-newlines']
-run done
-</t>
-<t tx="ekr.20181018040200.1">missing @bool settings...
+<t tx="ekr.20181018053940.1">def print_missing_user_config(self,format,munged_s,in_list,out_list,munged_in_list,munged_out_list):
+
+    '''Print the canonical name, followed by the list of names that match.'''
+    assert munged_s in munged_in_list,munged_s
+    assert munged_s not in munged_out_list,munged_s
+    if 1:
+        # unitTest.leo tests test-darwin-setting and test-win32-setting
+        if munged_s in ('testdarwinsetting', 'testwin32setting'):
+            return
+    if 1:
+        # Stylesheets use these settings.
+        for pattern in (
+            'bg', 'border', 'color', 'fg', 'font',
+            'leogreen', 'leoyello',
+            'margin', 'padding', 'relief',
+            'solarized', 'split-bar', 'text-foreground', 'tree-image',
+        ):
+            if munged_s.find(pattern.replace('-','')) &gt; -1:
+                return
+    if 1:
+        # These plugins/use settings in non-standard ways.
+        for prefix in (
+            'bookmarks', 'datenodes', 'http', 'opml',
+            'rst3', 'todo', 'vim', 'zodb'
+        ):
+            if munged_s.startswith(prefix):
+                return
+    if 1:
+        # Find settings are defined in non-standard ways.
+        for setting in (
+            'batch', 'change-text', 'find-text', 'ignore-case',
+            'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
+            'reverse', 'search-body', 'search-headline', 'suboutline-only',
+            'whole-word', 'wrap',
+        ):
+            if munged_s == setting.replace('-',''):
+                return
+    match_list = [s for s in in_list if self.munge(s) == munged_s]
+    print(format % (munged_s,match_list))</t>
+<t tx="ekr.20181018054935.1">scanning: leoPy.leo
+scanning: leoPlugins.leo
+scanning: leoSettings.leo
+
+missing @bool settings...
                                Canonical Actual
                                ========= ======
                     activepathdoautoload ['active-path-do-autoload']
@@ -11882,14 +11947,14 @@ run done
                            useheaderflag ['use-header-flag']
                     usexdbpaneoutputarea ['use-xdb-pane-output-area']
                   viewrenderedautocreate ['view-rendered-auto-create']
-
+               warnwhenpluginsfailtoload ['warn_when_plugins_fail_to_load']
 
 missing @int settings...
                                Canonical Actual
                                ========= ======
-                              ftsmaxhits ['fts-max-hits'] # in bigdash plugin
-                        qtrichtextzoomin ['qt-rich-text-zoom-in'] # disabled in qtew.set_config 
-                                rstlevel ['rst-level'] # in ZimImportController.
+                              ftsmaxhits ['fts-max-hits']
+                        qtrichtextzoomin ['qt-rich-text-zoom-in']
+                                rstlevel ['rst-level']
 
 missing @string settings...
                                Canonical Actual
@@ -11912,7 +11977,8 @@ missing @string settings...
                 toplevelunboundkeyaction ['top-level-unbound-key-action']
                  viewrendereddefaultkind ['view-rendered-default-kind']
                 viewrenderedmdextensions ['view-rendered-md-extensions']
-                             zimnodename ['zim-node-name']</t>
+                             zimnodename ['zim-node-name']
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
