@@ -132,6 +132,7 @@
 <v t="ekr.20041119034357.29"><vh>@string default-tangle-directory = None</vh></v>
 <v t="ekr.20060620085654"><vh>@string editor-orientation = horizontal</vh></v>
 <v t="ekr.20041119050749.11"><vh>@string headline-gmt-time = None</vh></v>
+<v t="ekr.20111003104518.15499"><vh>@string http_bookmark_unl = Bookmarks</vh></v>
 <v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
 <v t="ekr.20041119034357.16"><vh>Retired: all Compare panel options</vh>
 <v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
@@ -691,6 +692,7 @@
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
 <v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
 <v t="chris.20180320083521.1"><vh>@bool word-count = False</vh></v>
+<v t="ekr.20181018113730.1"><vh>@string external-editor</vh></v>
 </v>
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
 <v t="ekr.20061210091932"><vh>@bool chdir-to-relative-path = False</vh></v>
@@ -700,6 +702,9 @@
 <v t="ekr.20170706103545.1"><vh>@bool report-unchanged-files = True</vh></v>
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
+<v t="ekr.20181018113812.1"><vh>@string initial-chooser-directory = None</vh></v>
+<v t="ekr.20181018113813.1"><vh>@string script-file-path = None</vh></v>
+<v t="ekr.20181018113813.2"><vh>newHeadline</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
 <v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
 <v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
@@ -785,6 +790,8 @@
 <v t="ekr.20181018104056.1"><vh>@bool smart-quotes = False</vh></v>
 <v t="ekr.20131112161153.4420"><vh>@bool vim-mode = False</vh></v>
 <v t="ekr.20060926161207.1"><vh>@bool warn-about-redefined-shortcuts = True</vh></v>
+<v t="ekr.20181018113612.1"><vh>@string default-editing-state = insert</vh></v>
+<v t="ekr.20181018113656.1"><vh>@string top-level-unbound-key-action = insert</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
 <v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
@@ -2036,17 +2043,24 @@
 <v t="ekr.20181018105551.1"><vh>leo_to_html plugin</vh>
 <v t="ekr.20181018105559.1"><vh>@bool leo-to-html-no-menus = False</vh></v>
 </v>
+<v t="ekr.20181018112756.1"><vh>leoscreen plugin</vh>
+<v t="ekr.20181018112805.1"><vh>@string leoscreen-prefix = None</vh></v>
+<v t="ekr.20181018112823.1"><vh>@string leoscreen-time-fmt = %Y-%m-%d %H:%M:%S</vh></v>
+</v>
+<v t="ekr.20181018113203.1"><vh>mime plugin</vh>
+<v t="ekr.20181018113210.1"><vh>@string mime-open-cmd = None</vh></v>
+</v>
 <v t="ekr.20111003085631.15488"><vh>mod_http plugin</vh>
 <v t="ekr.20111003085631.15489"><vh>@bool http-active = True</vh></v>
-<v t="btheado.20131124162237.2493"><vh>@string http-ip = 127.0.0.1</vh></v>
 <v t="ekr.20111003085631.15490"><vh>@int http-port = 8130</vh></v>
-<v t="ekr.20111003104518.15499"><vh>@@string http_bookmark_unl = Bookmarks</vh></v>
+<v t="btheado.20131124162237.2493"><vh>@string http-ip = 127.0.0.1</vh></v>
+<v t="ekr.20181018113243.1"><vh>@string rst2-http-attributename = None</vh></v>
+<v t="ekr.20161003141448.1"><vh>mod_http script</vh>
+<v t="ekr.20161003141448.2"><vh>@data http-script</vh></v>
+</v>
 <v t="ekr.20161003141513.1"><vh>mod_http stylesheet</vh>
 <v t="ekr.20161003141513.2"><vh>@data http-stylesheet</vh></v>
 <v t="ekr.20161011130632.1"><vh>@@data http_stylesheet</vh></v>
-</v>
-<v t="ekr.20161003141448.1"><vh>mod_http script</vh>
-<v t="ekr.20161003141448.2"><vh>@data http-script</vh></v>
 </v>
 </v>
 <v t="ekr.20110611092035.16483"><vh>mod_scripting plugin</vh>
@@ -2089,7 +2103,10 @@
 <v t="peckj.20131012154112.5297"><vh>@string rss-date-format = %Y-%m-%d %I:%M %p</vh></v>
 <v t="peckj.20131012154112.5298"><vh>@bool rss-sort-newest-first = True</vh></v>
 </v>
-<v t="ekr.20100910115903.8297"><vh>screenshot settings</vh>
+<v t="ekr.20181018113409.1"><vh>screencapture plugin</vh>
+<v t="ekr.20181018113416.1"><vh>@string screen-capture-save-path = None</vh></v>
+</v>
+<v t="ekr.20100910115903.8297"><vh>screenshot plugin</vh>
 <v t="ekr.20100910115903.8299"><vh>@string screenshot-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
 <v t="ekr.20060930111325"><vh>scripting plugin</vh>
@@ -2110,7 +2127,9 @@
 <v t="tbrown.20130310101647.34744"><vh>@bool valuespace-vs-eval-redirect = True</vh></v>
 </v>
 <v t="ekr.20181018105748.1"><vh>viewrendered plugin</vh>
-<v t="ekr.20181018105800.1"><vh>@bool view-rendered-auto-create</vh></v>
+<v t="ekr.20181018105800.1"><vh>@bool view-rendered-auto-create = False</vh></v>
+<v t="ekr.20181018113446.1"><vh>@string view-rendered-default-kind = rst</vh></v>
+<v t="ekr.20181018113502.1"><vh>@string view-rendered-md-extensions = extra</vh></v>
 </v>
 <v t="ekr.20051123100536.1"><vh>vim plugin</vh>
 <v t="ekr.20051123100536.2"><vh>@@string vim_cmd = c:\Program Files\vim\vim63\gvim --servername LEO</vh></v>
@@ -2146,6 +2165,7 @@
 <v t="ekr.20051025084017"><vh>Spell checking</vh>
 <v t="ekr.20100904095239.8440"><vh>@string enchant-language = en-US</vh></v>
 <v t="ekr.20100904095239.8441"><vh>@string enchant-local-dictionary = None</vh></v>
+<v t="ekr.20181018113857.1"><vh>@string main-spelling-dictionary = None</vh></v>
 </v>
 <v t="ekr.20041119034357.70"><vh>Syntax coloring</vh>
 <v t="ekr.20170202104705.1"><vh>@bool color-doc-parts-as-rest = True</vh></v>
@@ -2333,7 +2353,6 @@
 </v>
 </v>
 <v t="ekr.20111006212449.11850"></v>
-<v t="ekr.20111006212449.11852"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11902,6 +11921,9 @@ if changed:
         'auto-set-ignore-case',
         'find-def-creates-clones',
         'qt-rich-text-zoom-in',
+        'theme-name',
+        'pytest-path', # In a (disabled) @button node
+        'leo-to-html-%s', # Loads multiple settings from an .ini file.
     ):
         if setting == ignore.replace('-',''):
             return None
@@ -11972,6 +11994,24 @@ if changed:
 <t tx="ekr.20181018105945.1"></t>
 <t tx="ekr.20181018110022.1"></t>
 <t tx="ekr.20181018110051.1"></t>
+<t tx="ekr.20181018112756.1"></t>
+<t tx="ekr.20181018112805.1"></t>
+<t tx="ekr.20181018112823.1"></t>
+<t tx="ekr.20181018113203.1"></t>
+<t tx="ekr.20181018113210.1"></t>
+<t tx="ekr.20181018113243.1"></t>
+<t tx="ekr.20181018113409.1"></t>
+<t tx="ekr.20181018113416.1"></t>
+<t tx="ekr.20181018113446.1"></t>
+<t tx="ekr.20181018113502.1"></t>
+<t tx="ekr.20181018113612.1"></t>
+<t tx="ekr.20181018113656.1"></t>
+<t tx="ekr.20181018113730.1"></t>
+<t tx="ekr.20181018113812.1">
+</t>
+<t tx="ekr.20181018113813.1"></t>
+<t tx="ekr.20181018113813.2"></t>
+<t tx="ekr.20181018113857.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
