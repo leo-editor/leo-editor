@@ -512,8 +512,9 @@
 <v t="ekr.20111115083813.12518"><vh>@bool indent-added-comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
 <v t="ekr.20180117074230.1"><vh>@bool show-tips = True</vh></v>
-<v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
+<v t="ekr.20060323131801"><vh>@bool warn-about-missing-settings = False</vh></v>
 <v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
+<v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove-sentinels-extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
 <v t="ekr.20150602160413.1"><vh>@bool tidy-autobeautify = False</vh></v>
@@ -599,7 +600,6 @@
 </v>
 <v t="ekr.20110611092035.16477"><vh>Undo</vh>
 <v t="ekr.20060127050605"><vh>@int max-undo-stack-size = 0</vh></v>
-<v t="ekr.20041119041019.2"><vh>@bool save-clears-undo-buffer = False</vh></v>
 <v t="ekr.20050126083026"><vh>@string undo-granularity = None</vh></v>
 </v>
 </v>
@@ -609,47 +609,11 @@
 <v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
 <v t="ekr.20080312075451.2"><vh>@commands</vh></v>
 </v>
-<v t="ekr.20041119034357.16"><vh>Compare panel</vh>
-<v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
-<v t="ekr.20041119043902"><vh>@string compare-file-1 = None</vh></v>
-<v t="ekr.20041119043902.1"><vh>@string compare-file-2 = None</vh></v>
-<v t="ekr.20041119043902.2"><vh>@string output-file = None</vh></v>
-<v t="ekr.20041119034357.18"><vh>@string limit-directory-search-extension = .py</vh></v>
-</v>
-<v t="ekr.20041119034357.19"><vh>file compare options</vh>
-<v t="ekr.20041119043902.5"><vh>@bool ignore-first-line-of-file-1 = False</vh></v>
-<v t="ekr.20041119043902.6"><vh>@bool ignore-first-line-of-file-2 = False</vh></v>
-<v t="ekr.20041119043902.7"><vh>@bool ignore-interior-whitespace = False</vh></v>
-<v t="ekr.20041119043902.8"><vh>@bool ignore-leading-whitespace = False</vh></v>
-<v t="ekr.20041119043902.9"><vh>@bool ignore-sentinel-lines = False</vh></v>
-</v>
-<v t="ekr.20041119050105"><vh>output options</vh>
-<v t="ekr.20041119043902.10"><vh>@int limit-count = 9</vh></v>
-<v t="ekr.20041119043902.11"><vh>@bool make-whitespace-visible = False</vh></v>
-<v t="ekr.20041119043902.12"><vh>@bool print-both-lines-for-matches = False</vh></v>
-<v t="ekr.20041119043902.13"><vh>@bool print-matching-lines = False</vh></v>
-<v t="ekr.20041119043902.14"><vh>@bool print-mismatching-lines = True</vh></v>
-<v t="ekr.20041119043902.15"><vh>@bool print-trailing-lines = True</vh></v>
-</v>
-</v>
 <v t="ekr.20060524151415"><vh>Debugger</vh>
 <v t="ekr.20070115134125"><vh>@bool write-script-file = True</vh></v>
 <v t="ekr.20070115134125.1"><vh>@@string script_file_path = ../test/scriptFile.py</vh></v>
 <v t="ekr.20060524151415.1"><vh>@string debugger-kind = winpdb</vh></v>
 <v t="ekr.20060521132401"><vh>@string debugger-path = None</vh></v>
-</v>
-<v t="ekr.20051126062243"><vh>Debugging</vh>
-<v t="ekr.20060323131801"><vh>@bool warn-about-missing-settings = False</vh></v>
-<v t="ekr.20060521134125"><vh>@string debugger-default-target = None</vh></v>
-<v t="ekr.20060521134125.1"><vh>@string debugger-force-target = None</vh></v>
-<v t="ekr.20060325071916"><vh>For unit tests</vh>
-<v t="ekr.20060325071042"><vh>@ifplatform win32</vh>
-<v t="ekr.20060325071042.1"><vh>@bool test-win32-setting = True</vh></v>
-</v>
-<v t="ekr.20060325071042.2"><vh>@ifplatform darwin</vh>
-<v t="ekr.20060325071042.3"><vh>@bool test-darwin-setting = True</vh></v>
-</v>
-</v>
 </v>
 <v t="ekr.20171121100639.1"><vh>Declutter</vh>
 <v t="tbrown.20150807123339.1"><vh>@bool tree-declutter = False</vh></v>
@@ -687,7 +651,6 @@
 </v>
 <v t="ekr.20041119034357.12"><vh>External files</vh>
 <v t="ekr.20070419103554"><vh>@bool force-newlines-in-at-nosent-bodies = True</vh></v>
-<v t="ekr.20041119041747.4"><vh>@bool write-strips-blank-lines = True</vh></v>
 <v t="ekr.20041119041747"><vh>@string output-newline = nl</vh></v>
 <v t="ekr.20041119041747.1"><vh>@string trailing-body-newlines = one</vh></v>
 <v t="ekr.20081216090156.5"><vh>@string underindent-escape-string = \\-</vh></v>
@@ -702,7 +665,6 @@
 <v t="ekr.20110611092035.16474"><vh>Recent files</vh>
 <v t="tbrown.20081003103821.1"><vh>@bool recent-files-group = False</vh></v>
 <v t="tbrown.20081003103821.2"><vh>@bool recent-files-group-always = False</vh></v>
-<v t="ekr.20061009190510"><vh>@bool write-recent-files-as-needed = True</vh></v>
 <v t="tbrown.20180212145842.1"><vh>@data path-demangle</vh></v>
 </v>
 <v t="ekr.20060730101451"><vh>Shadow files</vh>
@@ -716,9 +678,7 @@
 <v t="ekr.20150629172742.1"><vh>@bool find-ignore-duplicates = False</vh></v>
 <v t="ekr.20131119143342.20107"><vh>@bool minibuffer-find-mode = False</vh></v>
 <v t="tbrown.20151010094807.1"><vh>@bool show-find-result-in-status = True</vh></v>
-<v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
 <v t="ekr.20150710065036.1"><vh>@bool preload-find-pattern = False</vh></v>
-<v t="ekr.20060125104049"><vh>@bool show-only-find-tab-options = True</vh></v>
 <v t="ekr.20150618105435.1"><vh>@bool use-find-dialog = False</vh></v>
 <v t="ekr.20041119050105.1"><vh>@string change-text = None</vh></v>
 <v t="ekr.20041119050105.2"><vh>@string find-text = None</vh></v>
@@ -743,10 +703,7 @@
 </v>
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
 <v t="tbrown.20180525163032.1"><vh>@bool add-context-to-headlines = True</vh></v>
-<v t="ekr.20161010085256.1"><vh>@bool js-importer-clean-lws = True</vh></v>
 <v t="ekr.20170617135317.1"><vh>@bool put-python-decorators-in-imported-headlines = False</vh></v>
-<v t="ekr.20161010172424.1"><vh>@int js-importer-min-rescan-size = 0</vh></v>
-<v t="ekr.20161010172441.1"><vh>@int js-importer-min-scan-size = 0</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress-import-parsing = False</vh></v>
 <v t="ekr.20170825083426.1"><vh>@data c-import-typedefs</vh></v>
 <v t="ekr.20111029055127.16616"><vh>@data import-html-tags</vh></v>
@@ -758,7 +715,6 @@
 <v t="ekr.20120205022040.15410"><vh>@bool enable-alt-ctrl-bindings = True</vh></v>
 <v t="ekr.20131007055150.13034"><vh>@bool ignore-unbound-non-ascii-keys = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
-<v t="ekr.20120205022040.15411"><vh>@bool swap-mac-keys = False</vh></v>
 <v t="ekr.20131112161153.4420"><vh>@bool vim-mode = False</vh></v>
 <v t="ekr.20060926161207.1"><vh>@bool warn-about-redefined-shortcuts = True</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
@@ -800,7 +756,6 @@
 <v t="ekr.20140721165014.19162"><vh>Vim Developer Documentation</vh></v>
 <v t="ekr.20140721165014.19163"><vh>Vim settings</vh>
 <v t="ekr.20140721165014.19164"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
-<v t="ekr.20140721165014.19165"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
 <v t="ekr.20140721165014.19166"><vh>@bool outline-pane-has-initial-focus = True</vh></v>
 <v t="ekr.20140721165014.19167"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 </v>
@@ -1964,7 +1919,6 @@
 </v>
 <v t="ekr.20110611092035.16492"><vh>Mouse</vh></v>
 <v t="ekr.20051123100536"><vh>Plugins</vh>
-<v t="ekr.20041119034357.13"><vh>@bool use-plugins = True</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
 <v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active-path-attype = auto</vh></v>
@@ -2101,7 +2055,6 @@
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
 </v>
 <v t="ekr.20110611092035.16481"><vh>Scripting</vh>
-<v t="ekr.20041119041019"><vh>@bool redirect-execute-script-output-to-log-pane = False</vh></v>
 <v t="ekr.20061029091403"><vh>@bool show-full-tracebacks-in-scripts = False</vh></v>
 </v>
 <v t="ekr.20051025084017"><vh>Spell checking</vh>
@@ -2198,13 +2151,16 @@
 <v t="chris.20180324074923.1"><vh>@int icon-height = 16</vh></v>
 </v>
 <v t="ekr.20041119034357.15"><vh>Unicode options</vh>
-<v t="ekr.20080212084020"><vh>@string default-at-auto-file-encoding = utf-8</vh></v>
-<v t="ekr.20041119042929.9"><vh>@string default-derived-file-encoding = utf-8</vh></v>
 <v t="ekr.20041119042929.10"><vh>@string new-leo-file-encoding = utf-8</vh></v>
 <v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
 </v>
 <v t="ekr.20050203090810"><vh>Unit test option</vh>
-<v t="ekr.20050203085250"><vh>@int global-setting-for-unit-tests = 132</vh></v>
+<v t="ekr.20060325071042"><vh>@ifplatform win32</vh>
+<v t="ekr.20060325071042.1"><vh>@bool test-win32-setting = True</vh></v>
+</v>
+<v t="ekr.20060325071042.2"><vh>@ifplatform darwin</vh>
+<v t="ekr.20060325071042.3"><vh>@bool test-darwin-setting = True</vh></v>
+</v>
 </v>
 <v t="ekr.20110611092035.16471"><vh>Widget colors</vh>
 <v t="ekr.20041119034357.67"><vh>@color split-bar-color = LightSteelBlue2</vh></v>
@@ -2260,11 +2216,9 @@
 <v t="ekr.20090213065933.11"><vh>@bool smart-tab = True</vh></v>
 <v t="ekr.20041119034357.53"><vh>@@@int additional_body_text_border = 0</vh></v>
 <v t="ekr.20041119034357.42"><vh>@string body-time-format-string = %m/%d/%Y %H:%M:%S</vh></v>
-<v t="ekr.20060620085654"><vh>@string editor-orientation = horizontal</vh></v>
 </v>
 <v t="ekr.20080930072519.3"><vh>Icon bar options</vh>
 <v t="ekr.20160918113150.1"><vh>@bool show-iconbar = True</vh></v>
-<v t="ekr.20080930072519.4"><vh>@int icon-bar-widgets-per-row = 20</vh></v>
 </v>
 <v t="ekr.20041213105954.1"><vh>Log pane options</vh>
 <v t="ekr.20041119052015.1"><vh>@bool log-pane-wraps = False</vh></v>
@@ -2298,17 +2252,57 @@
 <v t="ekr.20181017205207.1"><vh>===== Retired settings</vh>
 <v t="ekr.20060408090018"><vh>@bool added-setting = True</vh></v>
 <v t="ekr.20080324105006.6"><vh>@bool allow-middle-button-paste = False</vh></v>
+<v t="ekr.20161011090731.1"><vh>@bool allow_section_references_in_at_auto = False</vh></v>
 <v t="ekr.20041119043902.3"><vh>@bool append-output-to-output-file = False</vh></v>
 <v t="ekr.20101104191857.8345"><vh>@bool at-auto-separate-non-def-nodes = False</vh></v>
 <v t="ekr.20041119034357.14"><vh>@bool at-root-bodies-start-in-doc-mode = True</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
 <v t="ekr.20070803082435"><vh>@bool full-import-checks = True</vh></v>
 <v t="ekr.20041119043902.4"><vh>@bool ignore-blank-lines = True</vh></v>
+<v t="ekr.20161010085256.1"><vh>@bool js-importer-clean-lws = True</vh></v>
+<v t="ekr.20041119043902.11"><vh>@bool make-whitespace-visible = False</vh></v>
+<v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
 <v t="ekr.20041119034357.5"><vh>@bool read-only = False</vh></v>
+<v t="ekr.20041119041019"><vh>@bool redirect-execute-script-output-to-log-pane = False</vh></v>
+<v t="ekr.20041119041019.2"><vh>@bool save-clears-undo-buffer = False</vh></v>
 <v t="ekr.20041120152657"><vh>@bool script-change = None</vh></v>
 <v t="ekr.20041120152900.2"><vh>@bool script-search = None</vh></v>
+<v t="ekr.20060125104049"><vh>@bool show-only-find-tab-options = True</vh></v>
+<v t="ekr.20140721165014.19165"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
+<v t="ekr.20120205022040.15411"><vh>@bool swap-mac-keys = False</vh></v>
+<v t="ekr.20041119034357.13"><vh>@bool use-plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn-when-plugins-fail-to-load = True</vh></v>
-<v t="ekr.20161011090731.1"><vh>Retired: @bool allow_section_references_in_at_auto = False</vh></v>
+<v t="ekr.20061009190510"><vh>@bool write-recent-files-as-needed = True</vh></v>
+<v t="ekr.20041119041747.4"><vh>@bool write-strips-blank-lines = True</vh></v>
+<v t="ekr.20050203085250"><vh>@int global-setting-for-unit-tests = 132</vh></v>
+<v t="ekr.20080930072519.4"><vh>@int icon-bar-widgets-per-row = 20</vh></v>
+<v t="ekr.20161010172424.1"><vh>@int js-importer-min-rescan-size = 0</vh></v>
+<v t="ekr.20161010172441.1"><vh>@int js-importer-min-scan-size = 0</vh></v>
+<v t="ekr.20060521134125"><vh>@string debugger-default-target = None</vh></v>
+<v t="ekr.20060521134125.1"><vh>@string debugger-force-target = None</vh></v>
+<v t="ekr.20080212084020"><vh>@string default-at-auto-file-encoding = utf-8</vh></v>
+<v t="ekr.20041119042929.9"><vh>@string default-derived-file-encoding = utf-8</vh></v>
+<v t="ekr.20060620085654"><vh>@string editor-orientation = horizontal</vh></v>
+<v t="ekr.20041119034357.16"><vh>Retired: all Compare panel options</vh>
+<v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
+<v t="ekr.20041119043902.5"><vh>@bool ignore-first-line-of-file-1 = False</vh></v>
+<v t="ekr.20041119043902.6"><vh>@bool ignore-first-line-of-file-2 = False</vh></v>
+<v t="ekr.20041119043902.7"><vh>@bool ignore-interior-whitespace = False</vh></v>
+<v t="ekr.20041119043902.8"><vh>@bool ignore-leading-whitespace = False</vh></v>
+<v t="ekr.20041119043902.9"><vh>@bool ignore-sentinel-lines = False</vh></v>
+<v t="ekr.20041119043902"><vh>@string compare-file-1 = None</vh></v>
+<v t="ekr.20041119043902.1"><vh>@string compare-file-2 = None</vh></v>
+<v t="ekr.20041119034357.18"><vh>@string limit-directory-search-extension = .py</vh></v>
+<v t="ekr.20041119043902.2"><vh>@string output-file = None</vh></v>
+</v>
+<v t="ekr.20041119050105"><vh>output options</vh>
+<v t="ekr.20041119043902.10"><vh>@int limit-count = 9</vh></v>
+<v t="ekr.20041119043902.12"><vh>@bool print-both-lines-for-matches = False</vh></v>
+<v t="ekr.20041119043902.13"><vh>@bool print-matching-lines = False</vh></v>
+<v t="ekr.20041119043902.14"><vh>@bool print-mismatching-lines = True</vh></v>
+<v t="ekr.20041119043902.15"><vh>@bool print-trailing-lines = True</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20181018035659.1"><vh>MISSING get* calls</vh></v>
 </vnodes>
@@ -2407,7 +2401,6 @@ This way makes @root trees more compatible with @file trees.</t>
 
 None  Compares all files when comparing directories.
 .py   Compares only .py files when comparing directories.</t>
-<t tx="ekr.20041119034357.19">These options have no effect when comparing directories.</t>
 <t tx="ekr.20041119034357.20">
 </t>
 <t tx="ekr.20041119034357.29">DEPRECATED
@@ -3050,7 +3043,6 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 </t>
 <t tx="ekr.20051123100536.2"></t>
 <t tx="ekr.20051123100536.3"></t>
-<t tx="ekr.20051126062243"></t>
 <t tx="ekr.20060112103537.17">'''Check for commands that exist in some but not all key- binding sets.'''
 g.cls()
 import leo.core.leoConfig as leoConfig
@@ -3506,7 +3498,6 @@ word-search-forward</t>
 <t tx="ekr.20060325071042.1"></t>
 <t tx="ekr.20060325071042.2"></t>
 <t tx="ekr.20060325071042.3"></t>
-<t tx="ekr.20060325071916"></t>
 <t tx="ekr.20060408090018"></t>
 <t tx="ekr.20060504131831.1"></t>
 <t tx="ekr.20060504131831.2"></t>
@@ -5498,7 +5489,6 @@ Controller(c).run()</t>
     while i &lt; len(s):
         progress = i
         ch = s[i]
-        ### if p.h == 'at.autoBeautify': g.trace(i, ch, s[i:i+10])
         if (
             ch == '@' and
             (g.match(s,i,'@ ') or g.match(s,i,'@\n')) and
@@ -5524,7 +5514,6 @@ Controller(c).run()</t>
                         if name not in aList:
                             aList.append(name)
                         d [kind] = aList
-                        ### if name.find('tidy') &gt; -1: g.trace(kind, name) ###
                 else:
                     j = i
             i = j
@@ -5616,6 +5605,10 @@ Controller(c).run()</t>
     '''Print the canonical name, followed by the list of names that match.'''
     assert munged_s in munged_in_list,munged_s
     assert munged_s not in munged_out_list,munged_s
+    if 1:
+        # unitTest.leo tests test-darwin-setting and test-win32-setting
+        if munged_s in ('testdarwinsetting', 'testwin32setting'):
+            return
     if 1:
         # Stylesheets use these settings.
         for pattern in (
@@ -7561,7 +7554,6 @@ Vim Modeline (used by Vim for file specific settings)
 		Leo Configuration:
 		| The following configuration was used for all testing:
 			@strings top_level_unbound_key_action = command
-			@bool stayInTreeAfterEditHeadline = True
 			@bool stayInTreeAfterSelect = True
 			@bool outline_pane_has_initial_focus = True
 		
@@ -11848,67 +11840,14 @@ if changed:
 </t>
 <t tx="ekr.20181017205207.1"></t>
 <t tx="ekr.20181017213058.1"></t>
-<t tx="ekr.20181018035659.1">scanning: leoPy.leo
-scanning: leoPlugins.leo
-scanning: leoSettings.leo
-
-
-missing config.getBool calls...
+<t tx="ekr.20181018035659.1">missing config.getString calls...
                                Canonical Actual
                                ========= ======
-                        ignoreblanklines ['ignore-blank-lines']
-                  ignorefirstlineoffile1 ['ignore-first-line-of-file-1']
-                  ignorefirstlineoffile2 ['ignore-first-line-of-file-2']
-                ignoreinteriorwhitespace ['ignore-interior-whitespace']
-                 ignoreleadingwhitespace ['ignore-leading-whitespace']
-                     ignoresentinellines ['ignore-sentinel-lines']
-                      jsimportercleanlws ['js-importer-clean-lws']
-                   makewhitespacevisible ['make-whitespace-visible']
-           minibuffersearchesshowfindtab ['minibufferSearchesShowFindTab']
-                printbothlinesformatches ['print-both-lines-for-matches']
-                      printmatchinglines ['print-matching-lines']
-                   printmismatchinglines ['print-mismatching-lines']
-                      printtrailinglines ['print-trailing-lines']
-    redirectexecutescriptoutputtologpane ['redirect-execute-script-output-to-log-pane']
-                    saveclearsundobuffer ['save-clears-undo-buffer']
-                  showonlyfindtaboptions ['show-only-find-tab-options']
-             stayintreeaftereditheadline ['stayInTreeAfterEditHeadline']
-                             swapmackeys ['swap-mac-keys']
-                       testdarwinsetting ['test-darwin-setting']
-                        testwin32setting ['test-win32-setting']
-                              useplugins ['use-plugins']
-                writerecentfilesasneeded ['write-recent-files-as-needed']
-                   writestripsblanklines ['write-strips-blank-lines']
-
-missing config.getColor calls...
-                               Canonical Actual
-                               ========= ======
-
-missing config.getInt calls...
-                               Canonical Actual
-                               ========= ======
-               globalsettingforunittests ['global-setting-for-unit-tests']
-                    iconbarwidgetsperrow ['icon-bar-widgets-per-row']
-                 jsimporterminrescansize ['js-importer-min-rescan-size']
-                   jsimporterminscansize ['js-importer-min-scan-size']
-                              limitcount ['limit-count']
-
-missing config.getString calls...
-                               Canonical Actual
-                               ========= ======
-                            comparefile1 ['compare-file-1']
-                            comparefile2 ['compare-file-2']
-                   debuggerdefaulttarget ['debugger-default-target']
-                     debuggerforcetarget ['debugger-force-target']
-               defaultatautofileencoding ['default-at-auto-file-encoding']
-              defaultderivedfileencoding ['default-derived-file-encoding']
                        editororientation ['editor-orientation']
                          headlinegmttime ['headline-gmt-time']
                              inkscapebin ['inkscape-bin']
                         inkscapetemplate ['inkscape-template']
-           limitdirectorysearchextension ['limit-directory-search-extension']
                       newleofileencoding ['new-leo-file-encoding']
-                              outputfile ['output-file']
                     outputinitialcomment ['output-initial-comment']
                            outputnewline ['output-newline']
                        qtdefaultencoding ['qt-default-encoding']
