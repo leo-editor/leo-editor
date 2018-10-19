@@ -63,7 +63,6 @@
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20181017163559.1"><vh>script: regularize settings</vh></v>
 <v t="ekr.20041119035137"><vh>About this file, leoSettings.leo</vh>
 <v t="ekr.20041122163623"><vh>About settings names</vh></v>
 <v t="ekr.20041119035704"><vh> Basic setting nodes</vh>
@@ -11782,31 +11781,6 @@ True:  Replace the Meta key with the Alt Key.
 <t tx="ekr.20180511075115.1"></t>
 <t tx="ekr.20180525053145.1">True: use jedi for autocompletion if available.
 See https://jedi.readthedocs.io/en/latest/index.html
-</t>
-<t tx="ekr.20181017163559.1"># Replace underscore by - in settings names.
-# g.cls()
-print('=====')
-kinds = (
-    '@bool ', '@color ', '@data ', '@directory ', '@encoding ',
-    '@float ', '@int ', '@path ', '@ratio ',
-    '@string ',
-)
-changed = False
-for p in c.all_positions():
-    if p.h.startswith(kinds) and '_' in p.h:
-        changed = True
-        i = p.h.find('=')
-        if i &gt; -1:
-            s = p.h[:i].replace('_','-') + p.h[i:]
-        else:
-            s = p.h.replace('_','-')
-        if s != p.h:
-            changed = True
-            p.h = s
-            print(p.h)
-if changed:
-    c.setChanged()
-    c.redraw()     
 </t>
 <t tx="ekr.20181017205207.1"></t>
 <t tx="ekr.20181018060340.1">def filter_get_x(self, setting):
