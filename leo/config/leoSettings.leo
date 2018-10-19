@@ -38,8 +38,8 @@
 <v t="ekr.20111006212449.11850"><vh>@button check-settings</vh>
 <v t="ekr.20111006212449.11851"><vh>ctor</vh></v>
 <v t="ekr.20111006212449.11852"><vh>check &amp; helpers</vh>
-<v t="ekr.20181018060340.1"><vh>filter_missing_get_x</vh></v>
-<v t="ekr.20181018065113.1"><vh>filter_missing_user_config</vh></v>
+<v t="ekr.20181018060340.1"><vh>filter_get_x</vh></v>
+<v t="ekr.20181018065113.1"><vh>filter_user_config</vh></v>
 </v>
 <v t="ekr.20111006212449.11853"><vh>error</vh></v>
 <v t="ekr.20111006212449.11854"><vh>get_commanders</vh></v>
@@ -2352,6 +2352,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20111006212449.11850"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5405,189 +5406,174 @@ gray90: #E5E5E5
 <t tx="ekr.20111004182631.15552">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
 </t>
 <t tx="ekr.20111006212449.11850">'''Check the consistency of all settings.'''
-
 # https://github.com/leo-editor/leo-editor/issues/993
 
 class Controller:
     @others
 
-Controller(c).run()</t>
-<t tx="ekr.20111006212449.11851">def __init__ (self,c):
-    self.c = c
-
-    self.errors = 0
-
-    # Commanders.
-    self.core = None # Commander for leoPy.leo.
-    self.plugins = None # Commander for leoPlugins.leo.
-    self.settings = None # Commander for leoSettings.leo.
+Controller(c).run()
 </t>
-<t tx="ekr.20111006212449.11852">def check (self,configs_d,settings_d):
-
+<t tx="ekr.20111006212449.11851">def __init__(self, c):
+    self.c = c
+    self.errors = 0
+    # Commanders...
+    self.core = None # leoPy.leo.
+    self.plugins = None # leoPlugins.leo.
+    self.settings = None # leoSettings.leo.
+</t>
+<t tx="ekr.20111006212449.11852">def check(self, configs_d, settings_d):
     munge = self.munge
-    table = ('Bool','Int','Float','Ratio','Path','String',)
+    table = ('Bool', 'Int', 'Float', 'Ratio', 'Path', 'String',)
         # 'Color', 'Font',
-    if 1: # Less important: print missing settings.
-        print('\nMissing user settings...')
-        for kind in table:
-            config_key = 'get%s' % kind
-            settings_key = '@%s' % kind.lower()
-            config_list = configs_d.get(config_key,[])
-            settings_list = settings_d.get(settings_key,[])
-            munged_config_list =   [munge(s) for s in config_list]
-            munged_settings_list = [munge(s) for s in settings_list]
-            missing = set()
-            for s in munged_config_list:
-                if s not in munged_settings_list:
-                    missing.add(s)
-            if missing:
-                aList = [self.filter_missing_user_config(z) for z in missing]
-                aList = [z for z in aList if z is not None]
-                if aList:
-                    print('\nmissing %s %s settings...' % (len(aList), settings_key))
-                    for z in sorted(aList):
-                        aList2 = [z2 for z2 in config_list if munge(z2) == munge(z)]
-                        g.printObj(aList2)
-    if 1: # More important: print missing calls to c.config.getX
-        print('\nMissing calls to c.config.get*...\n')
-        for kind in table:
-            config_key = 'get%s' % kind
-            settings_key = '@%s' % kind.lower()
-            config_list = configs_d.get(config_key,[])
-            settings_list = settings_d.get(settings_key,[])
-            munged_config_list =   [munge(s) for s in config_list]
-            munged_settings_list = [munge(s) for s in settings_list]
-            missing = set()
-            for s in munged_settings_list:
-                if s not in munged_config_list:
-                    missing.add(s)
-            if missing:
-                aList = [self.filter_missing_get_x(z) for z in missing]
-                aList = [z for z in aList if z is not None]
-                if aList:
-                    print('\nmissing %s config.%s calls...' % (len(aList), config_key))
-                    for z in sorted(aList):
-                        aList2 = [z2 for z2 in settings_list if munge(z2) == munge(z)]
-                        g.printObj(aList2)
-              </t>
-<t tx="ekr.20111006212449.11853">def error (self,s):
-
+    #
+    # Less important: print missing user settings.
+    print('\nMissing user settings...')
+    for kind in table:
+        config_key = 'get%s' % kind
+        settings_key = '@%s' % kind.lower()
+        config_list = configs_d.get(config_key, [])
+        settings_list = settings_d.get(settings_key, [])
+        munged_config_list = [munge(s) for s in config_list]
+        munged_settings_list = [munge(s) for s in settings_list]
+        missing = set()
+        for s in munged_config_list:
+            if s not in munged_settings_list:
+                missing.add(s)
+        if missing:
+            aList = [z for z in missing if self.filter_user_config(z)]
+            if aList:
+                print('\nmissing %s %s settings...' % (len(aList), settings_key))
+                for z in sorted(aList):
+                    aList2 = [z2 for z2 in config_list if munge(z2) == munge(z)]
+                    g.printObj(aList2)
+    #
+    # More important: print missing calls to c.config.getX
+    print('\nMissing calls to c.config.get*...\n')
+    for kind in table:
+        config_key = 'get%s' % kind
+        settings_key = '@%s' % kind.lower()
+        config_list = configs_d.get(config_key, [])
+        settings_list = settings_d.get(settings_key, [])
+        munged_config_list = [munge(s) for s in config_list]
+        munged_settings_list = [munge(s) for s in settings_list]
+        missing = set()
+        for s in munged_settings_list:
+            if s not in munged_config_list:
+                missing.add(s)
+        if missing:
+            aList = [z for z in missing if self.filter_get_x(z)]
+            if aList:
+                print('\nmissing %s config.%s calls...' % (len(aList), config_key))
+                for z in sorted(aList):
+                    aList2 = [z2 for z2 in settings_list if munge(z2) == munge(z)]
+                    g.printObj(aList2)
+</t>
+<t tx="ekr.20111006212449.11853">def error(self, s):
     print(s)
     self.errors += 1
 </t>
-<t tx="ekr.20111006212449.11854">def get_commanders (self):
-
+<t tx="ekr.20111006212449.11854">def get_commanders(self):
     '''Open files as needed and set the commander ivars.'''
 
     def open_commander(fn):
-        c = g.openWithFileName(fn,old_c=self.c,gui=g.app.nullGui)
-        if c: return c
-        else:
+        c = g.openWithFileName(fn, old_c=self.c, gui=g.app.nullGui)
+        if not c:
             self.error('not found: %s' % fn)
+        return c
 
-    self.core = open_commander(
-        g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
-
-    self.plugins = open_commander(
-        g.os_path_join(g.app.loadDir,'..','plugins','leoPlugins.leo'))
-
-    self.settings = open_commander(
-        g.os_path_join(g.app.loadDir,'..','config','leoSettings.leo'))
-
-    # g.trace('\n%s\n%s\n%s' % (self.core,self.plugins,self.settings))
+    join, loadDir = g.os_path_join, g.app.loadDir
+    self.core = open_commander(join(loadDir, '..', 'core', 'leoPy.leo'))
+        # Opening LeoPyRef.leo would be slower.
+    self.plugins = open_commander(join(loadDir, '..', 'plugins', 'leoPlugins.leo'))
+    self.settings = open_commander(join(loadDir, '..', 'config', 'leoSettings.leo'))
 </t>
 <t tx="ekr.20111006212449.11855">def get_configs(self):
-
-    '''Return a dict containing a representation
-    of all calls to x.config.getX.
     '''
-
+    Return a dict containing a representation of all calls to x.config.getX.
+    '''
     d = {}
-
-    for c in (self.core,self.plugins):
+    for c in (self.core, self.plugins):
         print('scanning: %s' % c.shortFileName())
-        self.get_configs_from_outline(c,d)
-
-    return d</t>
-<t tx="ekr.20111006212449.11856">def get_configs_from_outline (self,c,d):
-
-    '''Scan the outline for all calls to x.config.getX
-    and add items to d.
+        self.get_configs_from_outline(c, d)
+    return d
+</t>
+<t tx="ekr.20111006212449.11856">def get_configs_from_outline(self, c, d):
     '''
-    trace = False
+    Scan the outline for all calls to x.config.getX and add items to d.
+    '''
     for p in c.all_positions():
-        self.scan_for_configs(p,d)
-    if trace:
-        for key in sorted(list(d.keys())):
-            print(key)
-            aList = d.get(key)
-            for name in sorted(aList):
-                print('  ' + name)
-    return d</t>
-<t tx="ekr.20111006212449.11857">def scan_for_configs (self,p,d):
-
-    '''Scan the body text of p, finding all calls to getX.'''
+        self.scan_for_configs(p, d)
+    return d
+</t>
+<t tx="ekr.20111006212449.11857">def scan_for_configs(self, p, d):
+    '''
+    Scan the body text of p, finding all calls to config.getX.
+    
+    This code does not know about `if 0`, but does know about comments.
+    '''
     kinds = (
         'getBool', 'getColor', 'getInt', 'getFloat',
         # '@font', # special case.
         'getPath', 'getRatio', 'getString',
     )
-    i,s = 0,p.b
+    i, s = 0, p.b
     while i &lt; len(s):
         progress = i
         ch = s[i]
         if (
             ch == '@' and
-            (g.match(s,i,'@ ') or g.match(s,i,'@\n')) and
-            (i == 0 or s[i-1] == '\n')
+            (g.match(s, i, '@ ') or g.match(s, i, '@\n')) and
+            (i == 0 or s[i - 1] == '\n')
         ):
-            i = s.find('\n@c',i)
+            # Skip the @doc part.
+            i = s.find('\n@c', i)
             if i == -1: break
         elif ch == '#':
-            i = g.skip_to_end_of_line(s,i)
-        elif ch in ('"',"'"):
+            i = g.skip_to_end_of_line(s, i)
+        elif ch in ('"', "'"):
             i = g.skip_python_string(s, i, verbose=False)
         elif ch == '_' or ch.isalpha():
-            j = g.skip_id(s,i)
-            kind = s[i:j]
+            j = g.skip_id(s, i)
+            kind = s[i: j]
             if kind in kinds:
-                i = g.skip_ws(s,j)
-                if g.match(s,i,'('):
-                    i = g.skip_ws(s,i+1)
-                    if g.match(s,i,'"') or g.match(s,i,"'"):
-                        j = g.skip_string(s,i)
-                        name = s[i+1:j-1]
-                        aList = d.get(kind,[])
+                # We have found a call to getBool, etc.
+                i = g.skip_ws(s, j)
+                if g.match(s, i, '('):
+                    i = g.skip_ws(s, i + 1)
+                    if g.match(s, i, '"') or g.match(s, i, "'"):
+                        j = g.skip_string(s, i)
+                        name = s[i + 1: j - 1]
+                        aList = d.get(kind, [])
                         if name not in aList:
                             aList.append(name)
-                        d [kind] = aList
+                        d[kind] = aList
                 else:
                     j = i
             i = j
         else:
             i += 1
         assert progress &lt; i
-    return d</t>
-<t tx="ekr.20111006212449.11858">def get_settings (self):
-
+    return d
+</t>
+<t tx="ekr.20111006212449.11858">def get_settings(self):
     '''Return a dict containing a representation
     of all settings in leoSettings.leo.
     '''
     trace = False
-    c,d = self.settings,{}
+    c, d = self.settings, {}
     print('scanning: %s' % c.shortFileName())
-    settings_node = g.findNodeAnywhere(c,'@settings')
+    settings_node = g.findNodeAnywhere(c, '@settings')
     if not settings_node:
         return self.error('no @settings node')
     for p in settings_node.subtree():
         if self.is_setting(p):
-            kind,name = self.parse_setting(p)
+            kind, name = self.parse_setting(p)
             if name:
                 # name = self.munge(name)
-                aList = d.get(kind,[])
+                aList = d.get(kind, [])
                 if name not in aList:
                     aList.append(name)
-                d [kind] = aList
+                d[kind] = aList
             else:
                 self.error('no name for %s' % (kind))
     if trace:
@@ -5597,35 +5583,34 @@ Controller(c).run()</t>
             aList = d.get(key)
             for name in sorted(aList):
                 print('  ' + name)
-    return d</t>
-<t tx="ekr.20111006212449.11859">def is_setting (self,p):
-
+    return d
+</t>
+<t tx="ekr.20111006212449.11859">def is_setting(self, p):
     # For now, these are enough
     table = (
-        '@bool','@color','@int','@float',
+        '@bool', '@color', '@int', '@float',
         # '@font', # special case.
-        '@ratio','@path','@string',
+        '@ratio', '@path', '@string',
     )
-
     for s in table:
-        if g.match_word(p.h,0,s):
+        if g.match_word(p.h, 0, s):
             return True
-    return False</t>
-<t tx="ekr.20111006212449.11860">def parse_setting (self,p):
-
+    return False
+</t>
+<t tx="ekr.20111006212449.11860">def parse_setting(self, p):
     s = p.h
     assert s[0] == '@'
-    i = g.skip_id(s,1)
-    kind = s[:i]
+    i = g.skip_id(s, 1)
+    kind = s[: i]
     assert kind
-    i = g.skip_ws(s,i)
-    j = g.skip_id(s,i,chars='-')
-    name = s[i:j]
-    return kind,name</t>
-<t tx="ekr.20111006212449.11861">def munge (self,s):
+    i = g.skip_ws(s, i)
+    j = g.skip_id(s, i, chars='-')
+    name = s[i: j]
+    return kind, name
+</t>
+<t tx="ekr.20111006212449.11861">def munge(self, s):
     '''Return the canonicalized name for settings and arguments to c.config.getX.'''
-    s = s.replace('-','').replace('_','').lower()
-    return g.toUnicode(s)
+    return g.toUnicode(s.replace('-', '').replace('_', '').lower())
 </t>
 <t tx="ekr.20111006212449.11862">def run(self):
     g.cls()
@@ -5633,8 +5618,9 @@ Controller(c).run()</t>
     configs = self.get_configs()
     settings = self.get_settings()
     if self.errors == 0:
-        self.check(configs,settings)
-    g.trace('done')</t>
+        self.check(configs, settings)
+    g.trace('done')
+</t>
 <t tx="ekr.20111017082630.16080">'''This script reports commands that exist in some but not all key- binding
 sets. setNames is a list of the roots of all such sets.'''
 
@@ -11835,16 +11821,21 @@ if changed:
     c.redraw()     
 </t>
 <t tx="ekr.20181017205207.1"></t>
-<t tx="ekr.20181018060340.1">def filter_missing_get_x(self, setting):
+<t tx="ekr.20181018060340.1">def filter_get_x(self, setting):
+    '''
+    Return False if we can safely ignore a missing call to config.get(setting).
     
+    Everything here is a hack. Some are bigger than others.
+    '''
+    munge = self.munge
+    #
     # These *ivars* are set by the GlobalConfigManager class.
-    # There *should* be settings for all of these.
+    # There *should* be settings for all of these, despite missing config.get calls.
     table = (
         # encodingIvarsDict...
             "default_at_auto_file_encoding",
             "default_derived_file_encoding",
             "new_leo_file_encoding",
-            ### "defaultEncoding",
         # defaultsDict...
             "color_directives_in_plain_text",
             "output_doc_chunks",
@@ -11872,14 +11863,14 @@ if changed:
             "undo_granularity",
             "write_strips_blank_lines",
     )
-    table = [z.replace('_','') for z in table]
+    table = [munge(z) for z in table]
     if setting in table:
-        return None
-
+        return False
+    #
     # unitTest.leo tests test-darwin-setting and test-win32-setting
     if setting in ('testdarwinsetting', 'testwin32setting'):
-        return None
-
+        return False
+    #
     # Stylesheets use these settings.
     for pattern in (
         'bg', 'border', 'color', 'fg', 'font',
@@ -11887,16 +11878,16 @@ if changed:
         'margin', 'padding', 'relief',
         'solarized', 'split-bar', 'text-foreground', 'tree-image',
     ):
-        if setting.find(pattern.replace('-','')) &gt; -1:
-            return None
-
+        if setting.find(munge(pattern)) &gt; -1:
+            return False
+    #
     # These plugins/use settings in non-standard ways.
     if setting.startswith(
         ('bookmarks', 'datenodes', 'http', 'opml',
         'rst3', 'todo', 'vim', 'zodb'),
     ):
-        return None
-   
+        return False
+    #
     # Find settings are defined in non-standard ways.
     for pattern in (
         'batch', 'change-text', 'find-text', 'ignore-case',
@@ -11904,18 +11895,26 @@ if changed:
         'reverse', 'search-body', 'search-headline', 'suboutline-only',
         'whole-word', 'wrap',
     ):
-        if setting == pattern.replace('-',''):
-            return None
-    return setting
+        if setting == munge(pattern):
+            return False
+    #
+    # Issue a warning.
+    return True
 </t>
-<t tx="ekr.20181018065113.1">def filter_missing_user_config(self, setting):
-    '''Return the setting or None if the setting need not exist in leoSettings.leo'''
+<t tx="ekr.20181018065113.1">def filter_user_config(self, setting):
+    '''
+    Return False if we can safely ignore a setting that does not exist in leoSettings.leo.
+    
+    Everything here is a hack. Some are bigger than others.
+    '''
+    munge = self.munge
     #
     # unitTest.leo tests test-darwin-setting and test-win32-setting
     if setting in ('testdarwinsetting', 'testwin32setting'):
-        return None
+        return False
     #
-    # These settings are commented out for now.
+    # The calls to config.get* are commented out in the code,
+    # but get_configs isn't smart enough to know that.
     for ignore in (
         'auto-set-ignore-case',
         'find-def-creates-clones',
@@ -11924,25 +11923,27 @@ if changed:
         'pytest-path', # In a (disabled) @button node
         'leo-to-html-%s', # Loads multiple settings from an .ini file.
     ):
-        if setting == ignore.replace('-',''):
-            return None
+        if setting == munge(ignore):
+            return False
     #
     # Stylesheets use these settings.
+    # It would be a major project to discover what settings
+    # are actually used in the present stylesheet.
     for pattern in (
         'bg', 'border', 'color', 'fg', 'font',
         'leogreen', 'leoyello',
         'margin', 'padding', 'relief',
         'solarized', 'split-bar', 'text-foreground', 'tree-image',
     ):
-        if setting.find(pattern.replace('-','')) &gt; -1:
-            return None
+        if setting.find(munge(pattern)) &gt; -1:
+            return False
     #
     # These plugins use settings in non-standard ways.
     if setting.startswith(
         ('activepath', 'bookmarks', 'datenodes', 'http', 'opml',
         'rst3', 'todo', 'vim', 'zodb'),
     ):
-        return None
+        return False
     #
     # Find settings are defined in non-standard ways.
     for pattern in (
@@ -11951,19 +11952,19 @@ if changed:
         'reverse', 'search-body', 'search-headline', 'suboutline-only',
         'whole-word', 'wrap',
     ):
-        if setting == pattern.replace('-',''):
-            return None
+        if setting == munge(pattern):
+            return False
     #
-    # Tangle/untagle settings are deprecated.
+    # Tangle/untagle settings are deprecated and imo should not exist.
     for pattern in (
         'output-doc-flag', 'tangle-batch-flag',
         'untangle-batch-flag', 'use-header-flag',
     ):
-        if setting == pattern.replace('-',''):
-            return None
+        if setting == munge(pattern):
+            return False
     #
-    # The setting should exist in leoSettings.leo.
-    return setting
+    # Issue a warning.
+    return True
 </t>
 <t tx="ekr.20181018075747.1"></t>
 <t tx="ekr.20181018075844.1"></t>
