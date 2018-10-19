@@ -2352,7 +2352,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20111006212449.11850"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5423,50 +5422,39 @@ Controller(c).run()
 </t>
 <t tx="ekr.20111006212449.11852">def check(self, configs_d, settings_d):
     munge = self.munge
-    table = ('Bool', 'Int', 'Float', 'Ratio', 'Path', 'String',)
-        # 'Color', 'Font',
+    table = ('Bool', 'Int', 'Float', 'Ratio', 'Path', 'String',) # 'Color', 'Font',
     #
-    # Less important: print missing user settings.
-    print('\nMissing user settings...')
+    # Print missing user settings...
     for kind in table:
         config_key = 'get%s' % kind
         settings_key = '@%s' % kind.lower()
-        config_list = configs_d.get(config_key, [])
-        settings_list = settings_d.get(settings_key, [])
-        munged_config_list = [munge(s) for s in config_list]
-        munged_settings_list = [munge(s) for s in settings_list]
-        missing = set()
-        for s in munged_config_list:
-            if s not in munged_settings_list:
-                missing.add(s)
-        if missing:
-            aList = [z for z in missing if self.filter_user_config(z)]
-            if aList:
-                print('\nmissing %s %s settings...' % (len(aList), settings_key))
-                for z in sorted(aList):
-                    aList2 = [z2 for z2 in config_list if munge(z2) == munge(z)]
-                    g.printObj(aList2)
+        configs = configs_d.get(config_key, [])
+        settings = settings_d.get(settings_key, [])
+        m_configs = [munge(z) for z in configs]
+        m_settings = [munge(z) for z in settings]
+        missing = set([z for z in m_configs if not z in m_settings])
+        aList = [z for z in missing if self.filter_user_config(z)]
+        if aList:
+            print('\nmissing %s %s settings...\n' % (len(aList), settings_key))
+            for z in sorted(aList):
+                aList2 = [z2 for z2 in configs if munge(z2) == munge(z)]
+                g.printObj(aList2)
     #
-    # More important: print missing calls to c.config.getX
-    print('\nMissing calls to c.config.get*...\n')
+    # Print missing calls to c.config.getX...
     for kind in table:
         config_key = 'get%s' % kind
         settings_key = '@%s' % kind.lower()
-        config_list = configs_d.get(config_key, [])
-        settings_list = settings_d.get(settings_key, [])
-        munged_config_list = [munge(s) for s in config_list]
-        munged_settings_list = [munge(s) for s in settings_list]
-        missing = set()
-        for s in munged_settings_list:
-            if s not in munged_config_list:
-                missing.add(s)
-        if missing:
-            aList = [z for z in missing if self.filter_get_x(z)]
-            if aList:
-                print('\nmissing %s config.%s calls...' % (len(aList), config_key))
-                for z in sorted(aList):
-                    aList2 = [z2 for z2 in settings_list if munge(z2) == munge(z)]
-                    g.printObj(aList2)
+        configs = configs_d.get(config_key, [])
+        settings = settings_d.get(settings_key, [])
+        m_configs = [munge(z) for z in configs]
+        m_settings = [munge(z) for z in settings]
+        missing = set([z for z in m_settings if not z in m_configs])
+        aList = [z for z in missing if self.filter_get_x(z)]
+        if aList:
+            print('\nmissing %s config.%s calls...\n' % (len(aList), config_key))
+            for z in sorted(aList):
+                aList2 = [z2 for z2 in settings if munge(z2) == munge(z)]
+                g.printObj(aList2)
 </t>
 <t tx="ekr.20111006212449.11853">def error(self, s):
     print(s)
