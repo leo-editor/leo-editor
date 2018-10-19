@@ -101,7 +101,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20181017205207.1"><vh>===== Retired settings</vh>
+<v t="ekr.20181017205207.1"><vh>Retired settings</vh>
 <v t="ekr.20060408090018"><vh>@bool added-setting = True</vh></v>
 <v t="ekr.20080324105006.6"><vh>@bool allow-middle-button-paste = False</vh></v>
 <v t="ekr.20161011090731.1"><vh>@bool allow_section_references_in_at_auto = False</vh></v>
@@ -2352,7 +2352,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20111006212449.11850"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
