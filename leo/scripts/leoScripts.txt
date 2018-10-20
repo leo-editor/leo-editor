@@ -5988,6 +5988,41 @@ def run(self):
     if self.errors == 0:
         self.check(configs, settings)
     g.trace('done')
+#@+node:ekr.20181020064400.1: *3* @ignore at-button nodes in leoPlugins.leo
+#@+node:ekr.20181020064321.1: *4* @button make-md-test
+'''Make an @test node for the importer whose name is given.'''
+name = 'markdown'
+d = g.app.permanentScriptDict
+tag = 'make_test_%s_n' % name
+n = d.get(tag, 0) + 1
+d [tag] = n
+d = {'cap_name': name.capitalize(), 'n': n, 'name': name}
+<< define preamble >>
+p = c.lastTopLevel().insertAfter()
+p.b = preamble
+p.h = '@test %(name)s importer-%(n)s' % d
+c.redraw()
+c.selectPosition(p)
+c.bodyWantsFocusNow()
+c.frame.body.wrapper.setInsertPoint(len(p.b))
+#@+node:ekr.20181020064321.2: *5* << define preamble >>
+preamble = '''\
+if 1:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.markdown as markdown
+    # Reload all.
+    import imp
+    imp.reload(linescanner)
+    imp.reload(markdown)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+    x = markdown.Markdown_Importer(ic, atAuto=False)   
+# insert test for %(name)s here.
+''' % d
 #@+node:ekr.20160308173429.1: ** Docstrings
 #@+node:ekr.20120525155800.10870: *3* Print all docstrings from a module (obsolete)
 import leo.core.leoTest as leoTest

@@ -20,8 +20,7 @@
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
-<v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d71005806000000302e382e323371017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a71156573732e"
-expanded="ekr.20111017085134.16069,"><vh>@file leoScripts.txt</vh></v>
+<v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d71005806000000302e382e323371017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a71156573732e"><vh>@file leoScripts.txt</vh></v>
 </v>
 <v t="ekr.20111017085134.16069"><vh>@ignore @button nodes</vh>
 <v t="ekr.20111017085134.16072"><vh>@button check-dirty</vh></v>
@@ -327,6 +326,22 @@ expanded="ekr.20111017085134.16069,"><vh>@file leoScripts.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20170303064120.1"><vh>What's new in this file</vh>
+<v t="ekr.20181020061554.1"><vh>Curses gui stuff</vh>
+<v t="ekr.20181020061600.1"><vh>@test to_key</vh></v>
+<v t="ekr.20181020061502.1"><vh>script: verify links (to check curses gui)</vh></v>
+</v>
+<v t="ekr.20181019042505.1"><vh>Developing &amp; maintaining Leo</vh>
+<v t="ekr.20181019042544.1"><vh>script: regularize settings names</vh></v>
+<v t="ekr.20181019043251.1"><vh>@ignore at-button nodes in leoPy.leo</vh>
+<v t="ekr.20181019043237.1"><vh>@button backup-repo</vh></v>
+</v>
+<v t="ekr.20181019042717.1"></v>
+<v t="ekr.20181020064400.1"><vh>@ignore at-button nodes in leoPlugins.leo</vh>
+<v t="ekr.20181020064321.1"><vh>@button make-md-test</vh>
+<v t="ekr.20181020064321.2"><vh>&lt;&lt; define preamble &gt;&gt;</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20170303064128.1"><vh>Leo 5.5</vh>
 <v t="ekr.20160923133728.1"><vh>Remove tabs from leo/modes/*.py</vh></v>
 <v t="ekr.20161017063308.1"><vh>Find problems in pylint-leo-rc.txt</vh></v>
@@ -340,15 +355,6 @@ expanded="ekr.20111017085134.16069,"><vh>@file leoScripts.txt</vh></v>
 </v>
 <v t="ekr.20180529105231.1"><vh>Leo 5.7.4</vh>
 <v t="ekr.20180529105204.1"><vh>script: get-child-headlines</vh></v>
-</v>
-<v t="ekr.20181019042401.1"><vh>Leo 5.8</vh>
-<v t="ekr.20181019042505.1"><vh>Developing &amp; maintaining Leo</vh>
-<v t="ekr.20181019042544.1"><vh>script: regularize settings names</vh></v>
-<v t="ekr.20181019043251.1"><vh>@ignore at-button nodes in leoPy.leo</vh>
-<v t="ekr.20181019043237.1"><vh>@button backup-repo</vh></v>
-</v>
-<v t="ekr.20181019042717.1"></v>
-</v>
 </v>
 </v>
 </vnodes>
@@ -3544,7 +3550,6 @@ for child in p.children():
     s = s + '\n- ' + child.h
 p.b = s</t>
 <t tx="ekr.20180529105231.1"></t>
-<t tx="ekr.20181019042401.1"></t>
 <t tx="ekr.20181019042505.1"></t>
 <t tx="ekr.20181019042544.1"># Replace underscore by - in settings names.
 # See https://github.com/leo-editor/leo-editor/issues/993
@@ -3584,7 +3589,8 @@ for kind in kinds:
             p.b = s
             p.v.setDirty()
 c.setChanged()
-c.redraw()     </t>
+c.redraw()     
+</t>
 <t tx="ekr.20181019042717.1"></t>
 <t tx="ekr.20181019042808.1">'''Check the consistency of all settings.'''
 # https://github.com/leo-editor/leo-editor/issues/993
@@ -4148,5 +4154,72 @@ os.chdir(old_dir)
 print('done! wrote %s' % fn)
 </t>
 <t tx="ekr.20181019043251.1"></t>
+<t tx="ekr.20181020061502.1">g.cls()
+table = (
+    ('c.frame', c.frame),
+    ('c.frame.tree', c.frame.tree),
+    ('c.frame.tree.canvas', c.frame.tree.canvas),
+    ('c.frame.tree.treeWidget', c.frame.tree.treeWidget), # Qt only.
+    ('-----', None),
+    ('c.frame.body', c.frame.body),
+    ('c.frame.body.widget', c.frame.body.widget),
+    ('c.frame.body.wrapper', c.frame.body.wrapper),
+)
+for tag, obj in table:
+    print('%30s %s' % (tag, obj.__class__.__name__ if obj else ''))
+</t>
+<t tx="ekr.20181020061554.1"></t>
+<t tx="ekr.20181020061600.1"># Tests curses gui.
+g.cls()
+import imp
+import curses.ascii as a
+import leo.plugins.cursesGui2 as cursesGui2
+imp.reload(cursesGui2)
+h = cursesGui2.CursesKeyHandler()
+for i in range(255):
+    char, shortcut = h.to_key(i)
+    s = a.controlnames[i] if i &lt;= 32 else a.unctrl(i)
+    print('%3s %-8s %-7r %r' % (i, s, char, shortcut))
+for i in range(352):
+    if i &gt; 255:
+        char, shortcut = h.to_key(i)
+        # s = a.controlnames[i] if i &lt;= 32 else a.unctrl(i)
+        print('%3s %-7r %r' % (i, char, shortcut))
+</t>
+<t tx="ekr.20181020064321.1">'''Make an @test node for the importer whose name is given.'''
+name = 'markdown'
+d = g.app.permanentScriptDict
+tag = 'make_test_%s_n' % name
+n = d.get(tag, 0) + 1
+d [tag] = n
+d = {'cap_name': name.capitalize(), 'n': n, 'name': name}
+&lt;&lt; define preamble &gt;&gt;
+p = c.lastTopLevel().insertAfter()
+p.b = preamble
+p.h = '@test %(name)s importer-%(n)s' % d
+c.redraw()
+c.selectPosition(p)
+c.bodyWantsFocusNow()
+c.frame.body.wrapper.setInsertPoint(len(p.b))
+</t>
+<t tx="ekr.20181020064321.2">preamble = '''\
+if 1:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.markdown as markdown
+    # Reload all.
+    import imp
+    imp.reload(linescanner)
+    imp.reload(markdown)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+    x = markdown.Markdown_Importer(ic, atAuto=False)   
+# insert test for %(name)s here.
+''' % d
+</t>
+<t tx="ekr.20181020064400.1"></t>
 </tnodes>
 </leo_file>
