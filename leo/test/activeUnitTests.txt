@@ -26376,7 +26376,7 @@ f.close()
 assert g.os_path_exists(name)
 #@+node:ekr.20081111150402.11: ** @test zz end of all tests
 # Print does not work: it is redirected.
-g.pr('all unit tests done',color='blue')
+g.pr('\nall unit tests done',color='blue')
 #@+node:ekr.20140822063016.4474: ** @test zzz force a quit
 import sys
 if not g.app.inBridge:

@@ -158,6 +158,8 @@ class GeneralTestCase(unittest.TestCase):
         """Mark a unit test as having failed."""
         import leo.core.leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
+        raise self.failureException(msg)
+            # Fix # 1002. Raise an exception, as in TestCase.fail()
     #@+node:ekr.20051104075904.9: *3* tearDown
     def tearDown(self):
         # Restore the outline.
