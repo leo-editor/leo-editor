@@ -10759,7 +10759,6 @@ c.contractAllHeadlines()
 #@+node:ekr.20090529141856.4717: *5* C tests
 #@+node:ekr.20090529141856.4718: *6* @test c class 1
 if False: # Preamble
-    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -10809,7 +10808,6 @@ if g.in_bridge:
     self.skipTest('In bridge')
 
 if 0: # Preamble
-    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -10858,7 +10856,6 @@ finally:
     c.redraw()
 #@+node:ekr.20090529141856.4721: *6* @test c comment follows arg list
 if 0: # Preamble
-    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -10910,7 +10907,6 @@ finally:
     c.redraw()
 #@+node:ekr.20090529141856.4722: *6* @test c comment follows block delim
 if 0: # Preamble
-    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -10962,7 +10958,6 @@ finally:
     c.redraw()
 #@+node:ekr.20090529141856.4723: *6* @test c intermixed blanks and tabs
 if 0: # Preamble
-    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -11005,7 +11000,6 @@ finally:
     c.redraw()
 #@+node:ekr.20090529141856.4724: *6* @test c old-style decl 1
 if 0: # Preamble
-    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -11048,7 +11042,6 @@ finally:
     c.redraw()
 #@+node:ekr.20090529141856.4725: *6* @test c old-style decl 2
 if 0: # Preamble
-    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -11089,7 +11082,6 @@ finally:
     c.redraw()
 #@+node:ekr.20090529141856.4726: *6* @test c extern
 if 0: # Preamble
-    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -12150,7 +12142,6 @@ finally:
 #@+node:ekr.20090529141856.4733: *6* @test elisp
 if 0:
     # The preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -12665,7 +12656,6 @@ finally:
 #@+node:ekr.20090529141856.4766: *5* Java tests
 #@+node:ekr.20090529141856.4770: *6* @test from AdminPermission.java
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -12721,7 +12711,6 @@ finally:
     # Must be in this node when run externally.
     
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -12806,7 +12795,6 @@ finally:
     c.redraw()
 #@+node:ekr.20090529141856.4767: *6* @test java interface test1
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -12847,7 +12835,6 @@ finally:
     c.redraw()
 #@+node:ekr.20090529141856.4768: *6* @test java interface test2
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -13111,6 +13098,22 @@ require([
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161123202857.1: *5* org tests
+#@+node:ekr.20181020062526.1: *6* @test org_pattern
+if c.isChanged(): c.save()
+import imp
+import leo.plugins.importers.org as org
+imp.reload(org)
+x = org.Org_Importer(c.importCommands, atAuto=False)    
+pattern = x.org_pattern
+table = (
+    # 'body * line',
+    '* line 1',
+    '** level 2',
+)
+for line in table:
+    m = pattern.match(line)
+    # print('%20s ==> (%r)(%r)' % (line, m and m.group(1), m and m.group(2)))
+    assert m, repr(line)
 #@+node:ekr.20161123202924.1: *6* @test org-1
 s = '''\
 * Section 1
@@ -13222,7 +13225,79 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
+#@+node:ekr.20181020062632.1: *6* @test org-placeholder
+if 1:
+    # The preamble...
+    if c.isChanged(): c.save()
+    # import leo.core.leoCommands as leoCommands
+    import leo.plugins.importers.linescanner as linescanner
+    # imp.reload(leoCommands)
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.org as org
+    # Reload all.
+    import imp
+    imp.reload(linescanner)
+    imp.reload(org)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+    x = org.Org_Importer(ic, atAuto=False)
+# insert test for org here.
+s = '''\
+* Section 1
+Sec 1.
+* Section 2
+Sec 2.
+** Section 2-1
+Sec 2.1
+*** Section 2-1-1
+Sec 2.1.1
+* Section 3
+****** Section 3-1-1-1-1-1
+: Sec 3-1-1-1-1-1
+** Section 3.1
+Sec 3.1
+'''
+table = (
+    'Section 1',
+    'Section 2', 'Section 2-1', 'Section 2-1-1',
+    'Section 3', 'Section 3.1',
+)
+try:
+    if 1:
+        g.app.suppressImportChecks = True
+        ic.orgUnitTest(p,s=s,showTree=True)
+    else:
+        c.importCommands.orgUnitTest(p,s=s,showTree=True)
+            # Uses old Org_Importer...
+    if 0:
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+
 #@+node:ekr.20161124040933.1: *5* otl (vim-outline) tests
+#@+node:ekr.20181020062334.1: *6* @test otl (vim-outline) mode
+if c.isChanged(): c.save()
+import imp
+import leo.plugins.importers.otl as otl
+imp.reload(otl)
+x = otl.Otl_Importer(c.importCommands, atAuto=False)    
+pattern = x.otl_pattern
+table = (
+    'body line',
+    '\tline 1',
+    '  \tlevel 2',
+)
+for line in table:
+    m = pattern.match(line)
+    # print('%20r ==> (%r)(%r)' % (
+        # line, m and m.group(1), m and m.group(2)))
+    assert m
 #@+node:ekr.20161124040933.2: *6* @test otl-1
 @tabwidth 4 # Required
 s = '''\
@@ -13262,7 +13337,6 @@ finally:
 #@+node:ekr.20090529141856.4735: *6* @test pascal-to-delphi interface
 if 0:
     # The preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -13441,7 +13515,6 @@ finally:
 #@+node:ekr.20161119032623.1: *6* @test perl regex-2
 if 0:
     # The preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -14615,10 +14688,126 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20181020062739.89: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20181020062739.90: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20181020062827.98: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20181020062827.99: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20181020062918.108: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20181020062918.109: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20181020063224.15: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20181020063224.16: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20181020063517.108: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20181020063517.109: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20181020064007.92: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20181020064007.93: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20181020072920.108: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20181020072920.109: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20181020073356.108: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20181020073356.109: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20181020074639.79: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20181020074639.80: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 
 #@+node:ekr.20161115092708.1: *6* @test i.scan_state (for python)
-# g.cls()
 import leo.plugins.importers.python as python
 # import imp
 # imp.reload(python)
@@ -14654,7 +14843,6 @@ else:
     self.skipTest('Skipping test for new python importer')
 #@+node:ekr.20161224145026.1: *6* @test leoApp fail
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -14750,7 +14938,6 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.34: *6* @test python basic nesting test
 # Was unittest/at_auto-unit-test.py
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -14812,7 +14999,6 @@ finally:
 @tabwidth -4
     # Required when running unit tests externally.
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -14880,7 +15066,6 @@ finally:
     c.redraw()
 #@+node:ekr.20161228070933.1: *6* @test python bug #354
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -14934,7 +15119,6 @@ finally:
     c.redraw()
 #@+node:ekr.20170122033034.1: *6* @test python bug #357
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -15425,7 +15609,6 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 @tabwidth -4
     # Required when running unit tests externally.
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -15473,7 +15656,6 @@ finally:
 @tabwidth -4
     # Required when running unit tests externally.
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -15550,7 +15732,6 @@ finally:
 @tabwidth -4
     # Required when running unit tests externally.
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -15684,7 +15865,6 @@ finally:
 @tabwidth -4
     # Required when running unit tests externally.
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -15737,7 +15917,6 @@ finally:
 @tabwidth -4
     # Required when running unit tests externally.
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -15799,7 +15978,6 @@ finally:
 @tabwidth -4
     # Required when running unit tests externally.
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -15888,7 +16066,6 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 @tabwidth -4
     # Required when running unit tests externally.
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -15967,7 +16144,6 @@ finally:
     c.redraw()
 #@+node:ekr.20161117000902.1: *6* @test python leoImport.py (small)
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -16169,7 +16345,6 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 @tabwidth -4
     # Required when running unit tests externally.
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -16274,7 +16449,6 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161222064421.1: *6* @test python top-level later decl
 # From xo.py.
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -16341,7 +16515,7 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
-#@+node:ekr.20181010090008.68: *7* @@file @test python top-level later decl
+#@+node:ekr.20181020074640.26: *7* @@file @test python top-level later decl
 #!/usr/bin/env python3
 
 @others
@@ -16349,21 +16523,21 @@ if __name__=="__main__":
     main()
 @language python
 @tabwidth -4
-#@+node:ekr.20181010090008.69: *8* Declarations
+#@+node:ekr.20181020074640.27: *8* Declarations
 import os
 import re
 
-#@+node:ekr.20181010090008.70: *8* merge_value
+#@+node:ekr.20181020074640.28: *8* merge_value
 def merge_value(v1, v2):
     return v
 
-#@+node:ekr.20181010090008.71: *8* class MainDisplay(object)
+#@+node:ekr.20181020074640.29: *8* class MainDisplay(object)
 class MainDisplay(object):
 
     @others
 ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
 
-#@+node:ekr.20181010090008.72: *9* save_file
+#@+node:ekr.20181020074640.30: *9* save_file
 def save_file(self):
     """Write the file out to disk."""
     with open(self.save_name, "w") as f:
@@ -16371,7 +16545,7 @@ def save_file(self):
             f.write(newline)
 
 # This line should be included at the end of the class node.
-#@+node:ekr.20181010090008.73: *8* retab
+#@+node:ekr.20181020074640.31: *8* retab
 def retab(s, tabsize):
     return ''.join(pieces)
 
@@ -16419,7 +16593,6 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 @tabwidth -4
     # Required when running unit tests externally.
 if 0: # Preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -17128,7 +17301,6 @@ finally:
 << define s >>
 if 0:
     # The preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -17667,7 +17839,6 @@ Section 3, line 1
 << define s >>
 if 0:
     # The preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -18471,7 +18642,6 @@ section 3, line 1
 #@+node:ekr.20161125134815.1: *5* @test markdown importer-basic
 if 0:
     # The preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -18529,7 +18699,6 @@ finally:
 #@+node:ekr.20161126111517.1: *5* @test markdown importer-implicit section
 if 0:
     # The preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -18596,7 +18765,6 @@ finally:
 #@+node:ekr.20161216141315.1: *5* @test markdown importer-@@-section-name
 if 0:
     # The preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -18668,7 +18836,6 @@ finally:
     # Required (Python 2 only) because test contains ```.
 if 0:
     # The preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -18725,7 +18892,6 @@ if leoImport.docutils is None:
     self.skipTest('no docutils')
 
 if 0: # Preamble
-    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -18845,7 +19011,6 @@ if leoImport.docutils is None:
     self.skipTest('no docutils')
 
 if 0: # Preamble
-    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -18930,7 +19095,6 @@ if leoImport.docutils is None:
     self.skipTest('no docutils')
 
 if 0: # Preamble
-    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -18975,7 +19139,6 @@ if leoImport.docutils is None:
     self.skipTest('no docutils')
 
 if 0: # Preamble
-    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -19057,7 +19220,6 @@ if leoImport.docutils is None:
 
 if 0:
     # The preamble...
-    # g.cls()
     if c.isChanged(): c.save()
     import leo
     import leo.core.leoImport as leoImport
@@ -19110,7 +19272,7 @@ finally:
     if 1:
         p.deleteAllChildren()
         c.redraw()
-#@+node:ekr.20161204041557.1: *4* All other tests
+#@+node:ekr.20161204041557.1: *4* All other importer tests
 #@+node:ekr.20140723134017.4464: *5* @test @auto importers
 # This causes problems!
 import glob
@@ -19123,7 +19285,6 @@ for fn in glob.glob(pattern):
     m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
     assert m
 #@+node:ekr.20161109065940.1: *5* @test Importer.get_leading_indent
-# g.cls()
 import leo.plugins.importers.linescanner as linescanner
 # import imp
 # imp.reload(linescanner)
@@ -19157,7 +19318,6 @@ importer = linescanner.Importer(c.importCommands, language='python')
 for val, s in table:
     assert val == importer.get_str_lws(s), (val, repr(s))
 #@+node:ekr.20161109065949.1: *5* @test Importer.is_ws_line
-# g.cls()
 import leo.plugins.importers.linescanner as linescanner
 # import imp
 # imp.reload(linescanner)
@@ -19170,6 +19330,60 @@ table = [
 importer = linescanner.Importer(c.importCommands, language = 'python')
 for val, s in table:
     assert val == importer.is_ws_line(s), (val, repr(s))
+#@+node:ekr.20181020063007.2: *5* @test importers.coffee.scan_line
+import imp
+import leo.plugins.importers.coffeescript as cs
+imp.reload(cs)
+<< define table >>
+x = cs.CS_Importer(c.importCommands, atAuto=True)
+assert x.single_comment == '#', x.single_comment
+for new_state, line in table:
+    print('%5s %r' % (new_state, line))
+if 0:
+    for line in lines_table:
+        lines = [line]
+        n = importer.get_leading_indent(lines, 0)
+        # print('%s %r' % (n, line))
+#@+node:ekr.20181020063007.3: *6* << define table >>
+table = [
+    # State after line, line
+
+]
+#@+node:ekr.20181020063656.1: *5* @test importers.dart.clean_headline
+if c.isChanged(): c.save()
+import imp
+import leo.plugins.importers.dart as dart
+imp.reload(dart)
+x = dart.Dart_Importer(c.importCommands, atAuto=False)    
+table = (
+    ('func(abc) {', 'func'),
+    ('void foo() {', 'void foo'),
+)
+for s, expected in table:
+    # print('%20s ==> %s' % (s, x.clean_headline(s)))
+    got = x.clean_headline(s)
+    assert got == expected
+#@+node:ekr.20170407065952.1: *5* @test importers.javascript.op_pattern
+import imp
+import leo.plugins.importers.javascript as js
+imp.reload(js)
+importer = js.JS_Importer(c.importCommands)
+pattern = importer.op_pattern
+table = (
+    '++', '--', '&&', '||', '~', '>>', '<<', 
+    # '>>=',  '<<=',
+    # '>>>', '>>>=',
+    # '<<<', '<<<=',
+    '<', '<=', '>', '>=',
+    '+', '+=', '-', '-=',
+    '/', '/=', '*', '*=', 
+    '%', '%=', '&', '&=',
+    '|', '|=',
+)
+for s in table:
+    m = pattern.match(s)
+    assert m, s
+    assert m.group(0) == s, (s, m.group(0))
 #@+node:ekr.20161011052016.1: *5* @test importers.javascript.scan_line
 import imp
 import leo.plugins.importers.javascript as js
@@ -19197,27 +19411,146 @@ for base, result, s in table:
         new_state.parens == parens and
         new_state.context == context)
     assert ok, '\nnew_state: %s\n        s: %s' % (new_state, s)
-#@+node:ekr.20170407065952.1: *5* @test importers.javascript.op_pattern
-import imp
-import leo.plugins.importers.javascript as js
-imp.reload(js)
-importer = js.JS_Importer(c.importCommands)
-pattern = importer.op_pattern
+#@+node:ekr.20181020064529.1: *5* @test importers.markdown.is_hash
+import leo.plugins.importers.markdown as markdown
+if 0: # Preamble.
+    import leo
+    import leo.core.leoImport as leoImport
+    import imp
+    imp.reload(markdown)
+    imp.reload(leoImport)
+    ic = leo.core.leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+x = markdown.Markdown_Importer(ic, atAuto=False)   
+# insert test for markdown here.
+assert x.md_pattern_table
 table = (
-    '++', '--', '&&', '||', '~', '>>', '<<', 
-    # '>>=',  '<<=',
-    # '>>>', '>>>=',
-    # '<<<', '<<<=',
-    '<', '<=', '>', '>=',
-    '+', '+=', '-', '-=',
-    '/', '/=', '*', '*=', 
-    '%', '%=', '&', '&=',
-    '|', '|=',
+    (1, 'name',     '# name\n'),
+    (2, 'a test',   '## a test\n'),
+    (3, 'a test',   '### a test\n'),
 )
-for s in table:
-    m = pattern.match(s)
-    assert m, s
-    assert m.group(0) == s, (s, m.group(0))
+for data in table:
+    level, name, line = data
+    level2, name2 = x.is_hash(line)
+    assert level == level2
+    assert name == name2
+level3, name = x.is_hash('Not a hash')
+assert level3 == None
+assert name == None
+#@+node:ekr.20181020071052.1: *5* @test importers.markdown.is_underline
+import leo.plugins.importers.markdown as markdown
+if 0: # Preamble.
+    import leo
+    import leo.core.leoImport as leoImport
+    import imp
+    imp.reload(markdown)
+    imp.reload(leoImport)
+    ic = leo.core.leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+x = markdown.Markdown_Importer(ic, atAuto=False)
+for line in ('----\n', '-----\n', '====\n', '====\n'):
+    got = x.is_underline(line)
+    assert got, repr(line)
+for line in ('-\n', '--\n', '---\n', '==\n', '===\n', '===\n','==-==\n', 'abc\n'):
+    got = x.is_underline(line)
+    assert not got, repr(line)
+#@+node:ekr.20181020072106.1: *5* @test importers.pascal methods
+import leo.plugins.importers.pascal as pascal
+if 0: # Preamble.
+    import imp
+    imp.reload(pascal)
+x = pascal.Pascal_Importer(c.importCommands, atAuto=False)    
+table = (
+    ('procedure TForm1.FormCreate(Sender: TObject);\n', 'procedure TForm1.FormCreate'),
+)
+state = g.Bunch(context='')
+for line, cleaned in table:
+    assert x.starts_block(0, [line], state, state)
+    assert x.clean_headline(line) == cleaned
+
+#@+node:ekr.20181020063007.4: *5* @test importers.python.test_scan_state
+if c.isChanged(): c.save()
+import imp
+import leo.plugins.importers.linescanner as linescanner
+import leo.plugins.importers.python as py
+imp.reload(linescanner)
+imp.reload(py)
+State = py.Python_ScanState
+<< define python tests >>
+if 1:
+    importer = py.Py_Importer(c.importCommands, atAuto=True)
+    importer.test_scan_state(tests, State)
+#@+node:ekr.20181020063007.5: *6* << define python tests >>
+# A list of dictionaries.
+if 0:
+    tests = [
+        g.Bunch(line='s = "\\""', ctx=('', '')),
+    ]
+else:
+    tests = [
+        g.Bunch(line='\n'),
+        g.Bunch(line='\\\n'),
+        g.Bunch(line='s = "\\""', ctx=('', '')),
+        g.Bunch(line="s = '\\''", ctx=('', '')),
+        g.Bunch(line='# comment'),
+        g.Bunch(line='  # comment'),
+        g.Bunch(line='    # comment'),
+        g.Bunch(line='a = "string"'),
+        g.Bunch(line='a = "Continued string', ctx=('', '"')),
+        g.Bunch(line='end of continued string"', ctx=('"', '')),
+        g.Bunch(line='a = """Continued docstring', ctx=('', '"""')),
+        g.Bunch(line='a = """#', ctx=('', '"""')),
+        g.Bunch(line='end of continued string"""', ctx=('"""', '')),
+        g.Bunch(line="a = '''Continued docstring", ctx=('', "'''")),
+        g.Bunch(line="end of continued string'''", ctx=("'''", '')),
+        g.Bunch(line='a = {[(')
+    ]
+#@+node:ekr.20181020074227.2: *5* @test importers.xml.is_ws_line
+import leo.plugins.importers.xml as xml
+if 0: # Prefix
+    import imp
+    import leo.plugins.importers.linescanner as linescanner
+    imp.reload(linescanner)
+    imp.reload(xml)
+x = xml.Xml_Importer(importCommands = c.importCommands, atAuto = False)
+table = (
+   (1, ' \n'),
+   (1, '\n'),
+   (1, ' '),
+   (1, '<!-- comment -->'),
+   (0, '  <!-- comment --> Help'),
+   (0, 'x <!-- comment -->'),
+   (0, 'Help'),
+)
+for expected, line in table:
+    got = x.is_ws_line(line)
+    assert expected == got, (expected, int(got), repr(line))
+#@+node:ekr.20181020074227.3: *5* @test importesrs.xml.scan line
+import leo.plugins.importers.xml as xml
+if 0: # Preamble
+    import imp
+    import leo.plugins.importers.linescanner as linescanner
+    imp.reload(linescanner)
+    imp.reload(xml)
+x = xml.Xml_Importer(importCommands = c.importCommands, atAuto = False)
+table = (
+    (0, '<tag>'),
+    (0, '<tag></tag'),
+    (1, '<html'),
+    (1, '<html attrib="<">'),
+    (0, '<html attrib="<" />'),
+    (0, '<html>x</html>'),
+    (0, '</br>'), # Tag underflow
+    (0, '<br />'),
+    (0, '<br/>'),
+)
+for level, line in table:
+    prev_state = x.state_class()
+    assert prev_state.tag_level == 0
+    new_state = x.scan_line(line, prev_state)
+    assert new_state.tag_level == level, (new_state, repr(line))
 #@+node:ekr.20140724164600.4590: *4* @test zz end of leoImport tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoImport tests.')
