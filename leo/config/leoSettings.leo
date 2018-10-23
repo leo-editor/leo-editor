@@ -10651,8 +10651,9 @@ False: (Legacy):      The @auto write code ignores section references.
 2. The new @auto write code writes expands section references if they exist.  Otherwise, the write code writes the line as is, without any complaint. As a result, there should be no problem if an imported code contains something that looks like a section reference but isn't.
 </t>
 <t tx="ekr.20161011130632.1">/*
-From Chris George:
-https://groups.google.com/d/msg/leo-editor/ALxuMy-rmv8/rXsbe28KAgAJ
+    The main .css stylesheet for the mod_http.py plugin.
+    From Chris George:
+    https://groups.google.com/d/msg/leo-editor/ALxuMy-rmv8/rXsbe28KAgAJ
 */
 ul {
     font-family: "Sans-serif";
