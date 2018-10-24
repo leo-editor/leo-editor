@@ -536,7 +536,7 @@ class GitDiffController:
             branch1 ,
             branch2,
         ))
-        diff_list.insert(0, '@language patch\n')
+        diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
         self.file_node = self.create_file_node(diff_list, fn)
         if c.looksLikeDerivedFile(fn):
             c1 = self.make_at_file_outline(fn, s1, branch1)
@@ -568,7 +568,7 @@ class GitDiffController:
         # Create the root node.
         self.root = c.lastTopLevel().insertAfter()
         self.root.h = 'git diff revs: %s %s' % (rev1, rev2)
-        self.root.b = '@nosearch\n'
+        self.root.b = '@ignore\n@nosearch\n'
         # Create diffs of all files.
         for fn in files:
             self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
@@ -622,7 +622,7 @@ class GitDiffController:
             rev1 or 'uncommitted',
             rev2 or 'uncommitted',
         ))
-        diff_list.insert(0, '@language patch\n')
+        diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
         self.file_node = self.create_file_node(diff_list, fn)
         if c.looksLikeDerivedFile(fn):
             c1 = self.make_at_file_outline(fn, s1, rev1)
@@ -660,7 +660,7 @@ class GitDiffController:
                     rev2 or 'uncommitted',
                 ))
                 if ''.join(body).strip():
-                    body.insert(0, '@language patch\n')
+                    body.insert(0, '@ignore\n@nosearch\n@language patch\n')
                     body.append('@language %s\n' % (c2.target_language))
                 else:
                     body = ['Only headline has changed']
@@ -822,7 +822,7 @@ class GitDiffController:
         r1, r2 = rev1 or '', rev2 or ''
         p = c.lastTopLevel().insertAfter()
         p.h = 'git diff %s %s' % (r1, r2)
-        p.b = '@nosearch\n'
+        p.b = '@ignore\n@nosearch\n'
         if r1 and r2:
             p.b += '%s=%s\n%s=%s' % (
                 r1, self.get_revno(r1),
