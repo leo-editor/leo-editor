@@ -13228,10 +13228,7 @@ finally:
 #@+node:ekr.20181020062632.1: *6* @test org-placeholder
 if 1:
     # The preamble...
-    if c.isChanged(): c.save()
-    # import leo.core.leoCommands as leoCommands
     import leo.plugins.importers.linescanner as linescanner
-    # imp.reload(leoCommands)
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.org as org
     # Reload all.
@@ -13240,7 +13237,7 @@ if 1:
     imp.reload(org)
     imp.reload(leoImport)
     ic = leoImport.LeoImportCommands(c)
-    x = org.Org_Importer(ic, atAuto=False)
+    ### x = org.Org_Importer(ic, atAuto=False)
 # insert test for org here.
 s = '''\
 * Section 1
@@ -13263,12 +13260,8 @@ table = (
     'Section 3', 'Section 3.1',
 )
 try:
-    if 1:
-        g.app.suppressImportChecks = True
-        ic.orgUnitTest(p,s=s,showTree=True)
-    else:
-        c.importCommands.orgUnitTest(p,s=s,showTree=True)
-            # Uses old Org_Importer...
+    g.app.suppressImportChecks = True
+    ic.orgUnitTest(p,s=s,showTree=True)
     if 0:
         root = c.p.firstChild()
         p2 = root.firstChild()

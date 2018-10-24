@@ -1603,6 +1603,7 @@
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
+<v t="ekr.20181020062632.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -18264,10 +18265,7 @@ for line in table:
 </t>
 <t tx="ekr.20181020062632.1">if 1:
     # The preamble...
-    if c.isChanged(): c.save()
-    # import leo.core.leoCommands as leoCommands
     import leo.plugins.importers.linescanner as linescanner
-    # imp.reload(leoCommands)
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.org as org
     # Reload all.
@@ -18276,7 +18274,7 @@ for line in table:
     imp.reload(org)
     imp.reload(leoImport)
     ic = leoImport.LeoImportCommands(c)
-    x = org.Org_Importer(ic, atAuto=False)
+    ### x = org.Org_Importer(ic, atAuto=False)
 # insert test for org here.
 s = '''\
 * Section 1
@@ -18299,12 +18297,8 @@ table = (
     'Section 3', 'Section 3.1',
 )
 try:
-    if 1:
-        g.app.suppressImportChecks = True
-        ic.orgUnitTest(p,s=s,showTree=True)
-    else:
-        c.importCommands.orgUnitTest(p,s=s,showTree=True)
-            # Uses old Org_Importer...
+    g.app.suppressImportChecks = True
+    ic.orgUnitTest(p,s=s,showTree=True)
     if 0:
         root = c.p.firstChild()
         p2 = root.firstChild()
