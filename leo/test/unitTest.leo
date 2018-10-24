@@ -18263,7 +18263,7 @@ for line in table:
     # print('%20s ==&gt; (%r)(%r)' % (line, m and m.group(1), m and m.group(2)))
     assert m, repr(line)
 </t>
-<t tx="ekr.20181020062632.1">if 1:
+<t tx="ekr.20181020062632.1">if 0:
     # The preamble...
     import leo.plugins.importers.linescanner as linescanner
     import leo.core.leoImport as leoImport
@@ -18274,7 +18274,8 @@ for line in table:
     imp.reload(org)
     imp.reload(leoImport)
     ic = leoImport.LeoImportCommands(c)
-    ### x = org.Org_Importer(ic, atAuto=False)
+else:
+    ic = c.importCommands 
 # insert test for org here.
 s = '''\
 * Section 1
@@ -18294,18 +18295,20 @@ Sec 3.1
 table = (
     'Section 1',
     'Section 2', 'Section 2-1', 'Section 2-1-1',
-    'Section 3', 'Section 3.1',
+    'Section 3',
+    'placeholder', 'placeholder', 'placeholder', 'placeholder',
+    'Section 3-1-1-1-1-1',
+    'Section 3.1',
 )
 try:
     g.app.suppressImportChecks = True
     ic.orgUnitTest(p,s=s,showTree=True)
-    if 0:
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+    root = c.p.firstChild()
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
     if 1:
         p.deleteAllChildren()
