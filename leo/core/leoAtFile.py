@@ -659,7 +659,7 @@ class AtFile(object):
         else:
             new_private_lines = []
             root.b = ''.join(new_public_lines)
-            root.clearOrphan()
+            root.clearOrphan() ###
             return True
         if new_private_lines == old_private_lines:
             return True
@@ -669,7 +669,7 @@ class AtFile(object):
         gnx2vnode = at.fileCommands.gnxDict
         contents = ''.join(new_private_lines)
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
-        root.clearOrphan()
+        root.clearOrphan() ###
         return True # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
     def dump(self, lines, tag):
@@ -969,7 +969,7 @@ class AtFile(object):
         return isThin
     #@+node:ekr.20041005105605.132: *3* at.Writing
     #@+node:ekr.20041005105605.133: *4* Writing (top level)
-    #@+node:ekr.20041005105605.154: *5* at.asisWrite & helper
+    #@+node:ekr.20041005105605.154: *5* at.asisWrite & helper (comment changed)
     def asisWrite(self, root, toString=False):
         at = self; c = at.c
         c.endEditing() # Capture the current headline.
@@ -991,9 +991,10 @@ class AtFile(object):
                 else:
                     g.es("not written:", eventualFileName)
                     return
-            if at.errors: return
+            if at.errors:
+                return
             if not at.openFileForWriting(root, targetFileName, toString):
-                # openFileForWriting calls root.setDirty() if there are errors.
+                # Calls at.addAtIgnore() if there are errors.
                 return
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
@@ -1019,7 +1020,7 @@ class AtFile(object):
             s = g.toEncodedString(s, at.encoding, reportErrors=True)
             at.outputStringWithLineEndings(s)
 
-    #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper
+    #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper (changed)
     def openFileForWriting(self, root, fileName, toString):
         at = self
         at.outputFile = None
@@ -1029,16 +1030,17 @@ class AtFile(object):
             at.outputFile = g.FileLikeObject()
         else:
             ok = at.openFileForWritingHelper(fileName)
-            # New in Leo 4.4.8: set dirty bit if there are errors.
             if not ok:
                 at.outputFile = None
-        # New in 4.3 b2: root may be none when writing from a string.
-        if root:
-            if at.outputFile:
-                root.clearOrphan()
-            else:
-                root.setOrphan()
-                root.setDirty()
+                at.addAtIgnore(root) ###
+        ###
+            # New in 4.3 b2: root may be none when writing from a string.
+            # if root:
+                # if at.outputFile:
+                    # root.clearOrphan()
+                # else:
+                    # root.setOrphan()
+                    # root.setDirty()
         return at.outputFile is not None
     #@+node:ekr.20041005105605.143: *6* at.openFileForWritingHelper & helper
     def openFileForWritingHelper(self, fileName):
@@ -1111,7 +1113,7 @@ class AtFile(object):
                 g.error('openForWrite: exception opening file: %s' % (open_file_name))
                 g.es_exception()
             return 'error', None
-    #@+node:ekr.20041005105605.144: *5* at.write & helpers
+    #@+node:ekr.20041005105605.144: *5* at.write & helper (changed)
     def write(self,
         root,
         kind='@unknown', # Should not happen.
@@ -1142,10 +1144,11 @@ class AtFile(object):
                     at.rememberReadPath(eventualFileName, root)
                 else:
                     g.es("not written:", eventualFileName)
-                    at.setDirtyOrphanBits(root)
+                    at.addAtIgnore(root)
+                    ### at.setDirtyOrphanBits(root)
                     return
         if not at.openFileForWriting(root, at.targetFileName, toString):
-            # openFileForWriting calls root.setDirty() if there are errors.
+            # Calls at.addAtIgnore() if there are errors.
             return
         try:
             at.writeOpenFile(root, nosentinels=nosentinels, toString=toString)
@@ -1160,14 +1163,24 @@ class AtFile(object):
                 root.v._p_changed = True
             else:
                 at.closeWriteFile()
-                if at.errors > 0 or root.isOrphan():
-                    at.setDirtyOrphanBits(root)
+                if at.errors > 0: ### or root.isOrphan():
+                    ### at.setDirtyOrphanBits(root)
                     g.es("not written:", g.shortFileName(at.targetFileName))
+                    at.addAtIgnore(root)
                 else:
                     # Fix bug 889175: Remember the full fileName.
                     at.rememberReadPath(eventualFileName, root)
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
+                ###
+                    # if at.errors > 0 or root.isOrphan():
+                        # at.setDirtyOrphanBits(root)
+                        # g.es("not written:", g.shortFileName(at.targetFileName))
+                    # else:
+                        # # Fix bug 889175: Remember the full fileName.
+                        # at.rememberReadPath(eventualFileName, root)
+                        # at.replaceTargetFileIfDifferent(root)
+                            # # Sets/clears dirty and orphan bits.
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
@@ -1184,18 +1197,6 @@ class AtFile(object):
             at.targetFileName = "<string-file>"
         else:
             at.targetFileName = root.anyAtFileNodeName()
-    #@+node:ekr.20140630081820.16723: *6* at.setDirtyOrphanBits
-    def setDirtyOrphanBits(self, root):
-        '''
-        Setting the orphan and dirty flags tells Leo to write the tree.
-        However, the dirty bits get cleared if we are called from the save command.
-        '''
-        at = self
-        root.setOrphan()
-        root.setDirty()
-        # Delete the temp file.
-        if at.outputFileName:
-            self.remove(at.outputFileName)
     #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
     def writeAll(self,
         writeAtFileNodesFlag=False,
@@ -1223,7 +1224,7 @@ class AtFile(object):
             root = c.rootPosition()
             p = c.rootPosition()
             after = None
-        at.clearAllOrphanBits(p)
+        ### at.clearAllOrphanBits(p)
         # Leo 5.6: write files only once.
         seen = set()
         while p and p != after:
@@ -1271,16 +1272,6 @@ class AtFile(object):
         if c.isChanged():
             # Save the outline if only persistence data nodes are dirty.
             self.saveOutlineIfPossible()
-    #@+node:ekr.20041005105605.148: *6* at.clearAllOrphanBits
-    def clearAllOrphanBits(self, p):
-        '''Clear orphan bits for all nodes *except* orphan @file nodes.'''
-        # 2011/06/15: Important bug fix: retain orphan bits for @file nodes.
-        for p2 in p.self_and_subtree(copy=False):
-            if p2.isOrphan():
-                if p2.isAnyAtFileNode():
-                    pass
-                else:
-                    p2.clearOrphan()
     #@+node:ekr.20041005105605.149: *6* at.writeAllHelper & helper
     def writeAllHelper(self, p, root,
         force, toString, writeAtFileNodesFlag, writtenFiles
@@ -1317,7 +1308,7 @@ class AtFile(object):
                 else:
                     return
         if (p.v.isDirty() or
-            # p.v.isOrphan() or # 2011/06/17.
+            ### p.v.isOrphan() or # 2011/06/17.
             pathChanged or
             writeAtFileNodesFlag or
             p.v in writtenFiles
@@ -1422,7 +1413,7 @@ class AtFile(object):
                 g.es("no dirty @auto nodes in the selected tree")
             else:
                 g.es("no @auto nodes in the selected tree")
-    #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
+    #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers (changed)
     def writeOneAtAutoNode(self,
         p,
         force=False,
@@ -1462,41 +1453,48 @@ class AtFile(object):
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting(root, fileName=fileName, toString=toString)
-        if ok:
-            # Dispatch the proper writer.
-            junk, ext = g.os_path_splitext(fileName)
-            writer = at.dispatch(ext, root)
-            if writer:
-                writer(root)
-            elif root.isAtAutoRstNode():
-                # An escape hatch: fall back to the theRst writer
-                # if there is no rst writer plugin.
-                ok2 = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
-                if not ok2: at.errors += 1
-            else:
-                # leo 5.6: allow undefined section references in all @auto files.
-                ivar = 'allow_undefined_refs'
-                try:
-                    setattr(at, ivar, True)
-                    at.writeOpenFile(root, nosentinels=True, toString=toString)
-                finally:
-                    if hasattr(at, ivar):
-                        delattr(at, ivar)
-            at.closeWriteFile()
-                # Sets stringOutput if toString is True.
-            if at.errors == 0:
-                isAtAutoRst = root.isAtAutoRstNode()
-                at.replaceTargetFileIfDifferent(root, ignoreBlankLines=isAtAutoRst)
-                    # Sets/clears dirty and orphan bits.
-            else:
+            # Calls at.addAtIgnore() if there are errors.
+        if not ok:
+            if not toString:
                 g.es("not written:", fileName)
-                root.setDirty() # New in Leo 4.4.8.
-                root.setOrphan() # 2010/10/22.
-        elif not toString:
-            root.setDirty() # Make _sure_ we try to rewrite this file.
-            root.setOrphan() # 2010/10/22.
+                at.addAtIgnore(root)
+                ###
+                    # root.setDirty()
+                    # root.setOrphan()
+            return False
+        #
+        # Dispatch the proper writer.
+        junk, ext = g.os_path_splitext(fileName)
+        writer = at.dispatch(ext, root)
+        if writer:
+            writer(root)
+        elif root.isAtAutoRstNode():
+            # An escape hatch: fall back to the theRst writer
+            # if there is no rst writer plugin.
+            ok2 = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
+            if not ok2: at.errors += 1
+        else:
+            # leo 5.6: allow undefined section references in all @auto files.
+            ivar = 'allow_undefined_refs'
+            try:
+                setattr(at, ivar, True)
+                at.writeOpenFile(root, nosentinels=True, toString=toString)
+            finally:
+                if hasattr(at, ivar):
+                    delattr(at, ivar)
+        at.closeWriteFile()
+            # Sets stringOutput if toString is True.
+        if at.errors == 0:
+            isAtAutoRst = root.isAtAutoRstNode()
+            at.replaceTargetFileIfDifferent(root, ignoreBlankLines=isAtAutoRst)
+                # Sets/clears dirty and orphan bits.
+        else:
             g.es("not written:", fileName)
-        return ok
+            at.addAtIgnore(root)
+            ###
+                # root.setDirty() # New in Leo 4.4.8.
+                # root.setOrphan() # 2010/10/22.
+        return at.errors == 0
     #@+node:ekr.20140728040812.17993: *7* at.dispatch & helpers
     def dispatch(self, ext, p):
         '''Return the correct writer function for p, an @auto node.'''
@@ -1585,7 +1583,7 @@ class AtFile(object):
             else:
                 g.es("no @shadow nodes in the selected tree")
         return found
-    #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helpers
+    #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helpers (changed)
     def writeOneAtShadowNode(self, p, toString, force):
         '''
         Write p, an @shadow node.
@@ -1661,12 +1659,14 @@ class AtFile(object):
             at.replaceFileWithString(fn, at.public_s)
         self.checkPythonCode(root, s=at.private_s, targetFn=fn)
         if at.errors == 0:
-            root.clearOrphan()
+            root.clearOrphan() ###
             root.clearDirty()
         else:
             g.error("not written:", at.outputFileName)
-            root.setDirty()
-            root.setOrphan()
+            at.addAtIgnore(root)
+            ###
+                # root.setDirty()
+                # root.setOrphan()
         return at.errors == 0
     #@+node:ekr.20080819075811.13: *7* adjustTargetLanguage
     def adjustTargetLanguage(self, fn):
@@ -1683,7 +1683,7 @@ class AtFile(object):
             else:
                 # An unknown language.
                 pass # Use the default language, **not** 'unknown_language'
-    #@+node:ekr.20050506084734: *5* at.writeFromString
+    #@+node:ekr.20050506084734: *5* at.writeFromString (comment changed)
     def writeFromString(self, root, s, forcePythonSentinels=True, useSentinels=True):
         """
         Write a 4.x derived file from a string.
@@ -1700,6 +1700,7 @@ class AtFile(object):
         )
         try:
             ok = at.openFileForWriting(root, at.targetFileName, toString=True)
+                # Calls at.addAtIgnore() if there are errors.
             if g.app.unitTesting:
                 assert ok, 'writeFromString' # string writes never fail.
             # Simulate writing the entire file so error recovery works.
@@ -1718,7 +1719,7 @@ class AtFile(object):
         except Exception:
             at.exception("exception preprocessing script")
         return at.stringOutput
-    #@+node:ekr.20041005105605.151: *5* at.writeMissing & helper
+    #@+node:ekr.20041005105605.151: *5* at.writeMissing & helper (comment changed)
     def writeMissing(self, p, toString=False):
         at = self; c = at.c
         writtenFiles = False
@@ -1733,7 +1734,7 @@ class AtFile(object):
                         self.default_directory, at.targetFileName)
                     if not g.os_path_exists(at.targetFileName):
                         ok = at.openFileForWriting(p, at.targetFileName, toString)
-                                # calls p.setDirty() if there are errors.
+                            # Calls at.addAtIgnore() if there are errors.
                         if ok:
                             at.writeMissingNode(p)
                             writtenFiles = True
@@ -1761,7 +1762,7 @@ class AtFile(object):
             at.write(p, kind='@file')
         else:
             g.trace('can not happen: unknown @file node')
-    #@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode
+    #@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode (changed)
     def writeOneAtEditNode(self, p, toString, force=False):
         '''Write one @edit node.'''
         at = self; c = at.c
@@ -1800,15 +1801,19 @@ class AtFile(object):
             at.stringOutput = contents
             return True
         ok = at.openFileForWriting(root, fileName=fn, toString=False)
+            # Calls at.addAtIgnore() if there are errors.
         if ok:
             self.os(contents)
             at.closeWriteFile()
-        if ok and at.errors == 0:
-            at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
-        else:
-            g.es("not written:", at.targetFileName) # 2010/10/22
-            root.setDirty()
-            root.setOrphan() # 2010/10/22
+            if at.errors:
+                g.es("not written:", at.targetFileName)
+                at.addAtIgnore(root)
+                ###
+                    # root.setDirty()
+                    # root.setOrphan()
+            else:
+                at.replaceTargetFileIfDifferent(root)
+                    # calls at.addAtIgnore if there are errors.
         c.raise_error_dialogs(kind='write')
         return ok
     #@+node:ekr.20041005105605.157: *5* at.writeOpenFile
@@ -2392,6 +2397,24 @@ class AtFile(object):
                 at.os(at.endSentinelComment)
             at.onl()
     #@+node:ekr.20041005105605.196: *4* Writing 4.x utils...
+    #@+node:ekr.20181024134823.1: *5* at.addAtIgnore (new)
+    def addAtIgnore(self, root):
+        '''Add an @ignore directive to the root node.'''
+        if not root:
+            g.error('can not happen, no root')
+            return
+        if root.isAtIgnoreNode():
+            g.trace('already contains @ignore', root.h)
+        elif not g.unitTesting:
+            g.trace('=====', g.callers())
+            s = root.b.rstrip()
+            if s:
+                root.b = s + '\n@ignore\n'
+            else:
+                root.b = '@ignore\n'
+            # The dirty bit may be cleared later.
+            root.setDirty()
+            g.es('adding @ignore to', root.h)
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
     def checkPythonCode(self, root, s=None, targetFn=None, pyflakes_errors_only=False):
         '''Perform python-related checks on root.'''
@@ -2876,7 +2899,7 @@ class AtFile(object):
             at.error('unexpected exception writing file: %s' % (fn))
             g.es_exception()
             return False
-    #@+node:ekr.20041005105605.212: *5* at.replaceTargetFileIfDifferent
+    #@+node:ekr.20041005105605.212: *5* at.replaceTargetFileIfDifferent (changed)
     def replaceTargetFileIfDifferent(self, root, ignoreBlankLines=False):
         '''Create target file as follows:
         1. If target file does not exist, rename output file to target file.
@@ -2893,7 +2916,7 @@ class AtFile(object):
             return False
         if root:
             # The default: may be changed later.
-            root.clearOrphan()
+            root.clearOrphan() ###
             root.clearDirty()
         # Fix bug 1132821: Leo replaces a soft link with a real file.
         if at.outputFileName:
@@ -2941,9 +2964,14 @@ class AtFile(object):
                 else:
                     g.error('error writing', at.shortFileName)
                     g.es('not written:', at.shortFileName)
-                    if root:
-                        root.setDirty() # New in 4.4.8.
-                        root.setOrphan() # 2010/10/22.
+                    at.addAtIgnore(root)
+                    ###
+                        # g.error('error writing', at.shortFileName)
+                        # g.es('not written:', at.shortFileName)
+                        # at.
+                        # if root:
+                            # root.setDirty() # New in 4.4.8.
+                            # root.setOrphan() # 2010/10/22.
                 at.checkPythonCode(root)
                     # Bug fix: check *after* writing the file.
                 at.fileChangedFlag = ok
@@ -2960,9 +2988,11 @@ class AtFile(object):
                     at.rememberReadPath(at.targetFileName, root)
             else:
                 # at.rename gives the error.
-                if root:
-                    root.setDirty() # New in 4.4.8.
-                    root.setOrphan() # 2010/10/22.
+                at.addAtIgnore(root)
+                ###
+                    # if root:
+                        # root.setDirty()
+                        # root.setOrphan()
             # No original file to change. Return value tested by a unit test.
             at.fileChangedFlag = False
             at.checkPythonCode(root)
@@ -2989,16 +3019,18 @@ class AtFile(object):
                 if p.isAtIgnoreNode():
                     at.writeError("@ignore node: " + p.h)
                 p.moveToThreadNext()
-    #@+node:ekr.20041005105605.217: *5* at.writeError
+    #@+node:ekr.20041005105605.217: *5* at.writeError (changed)
     def writeError(self, message=None):
         '''Issue an error while writing an @<file> node.'''
         at = self
         if at.errors == 0:
             g.es_error("errors writing: " + at.targetFileName)
         at.error(message)
-        at.root.setDirty()
-        at.root.setOrphan()
-    #@+node:ekr.20041005105605.218: *5* at.writeException
+        at.addAtIgnore(at.root)
+        ###
+            # at.root.setDirty()
+            # at.root.setOrphan()
+    #@+node:ekr.20041005105605.218: *5* at.writeException (changed)
     def writeException(self, root=None):
         at = self
         g.error("exception writing:", at.targetFileName)
@@ -3009,10 +3041,12 @@ class AtFile(object):
             at.outputFile = None
         if at.outputFileName:
             at.remove(at.outputFileName)
-        if root:
-            # Make sure we try to rewrite this file.
-            root.setOrphan()
-            root.setDirty()
+        at.addAtIgnore(at.root)
+        ###
+            # if root:
+                # # Make sure we try to rewrite this file.
+                # root.setOrphan()
+                # root.setDirty()
     #@+node:ekr.20041005105605.219: *3* at.Utilites
     #@+node:ekr.20041005105605.220: *4* at.error & printError
     def error(self, *args):

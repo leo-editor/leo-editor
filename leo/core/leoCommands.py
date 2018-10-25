@@ -2434,7 +2434,7 @@ class Commands(object):
         '''Helper for various help commands.'''
         c = self
         g.app.gui.put_help(c, s, short_title)
-    #@+node:ekr.20111217154130.10285: *5* c.raise_error_dialogs
+    #@+node:ekr.20111217154130.10285: *5* c.raise_error_dialogs (changed)
     def raise_error_dialogs(self, kind='read'):
         '''Warn abouit read/write failures.'''
         c = self
@@ -2445,31 +2445,37 @@ class Commands(object):
             d[tag] = 1 + d.get(tag, 0)
             # This trace catches all too-many-calls failures.
                 # g.trace(g.callers())
-        else:
-            # Issue one or two dialogs or messages.
-            if c.import_error_nodes or c.ignored_at_file_nodes:
-                g.app.gui.dismiss_splash_screen()
-            if c.import_error_nodes:
-                files = '\n'.join(sorted(set(c.import_error_nodes)))
-                if use_dialogs:
-                    g.app.gui.runAskOkDialog(c,
-                        title='Import errors',
-                        message='The following were not imported properly. '
-                        '@ignore was inserted:\n%s' % (files))
-                else:
-                    g.es('import errors...', color='red')
-                    g.es('\n'.join(sorted(files)), color='blue')
-            if c.ignored_at_file_nodes:
-                files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))
-                kind = 'read' if kind.startswith('read') else 'written'
-                if use_dialogs:
-                    g.app.gui.runAskOkDialog(c,
-                        title='Not read',
-                        message='The following were not %s because they contain @ignore:\n%s' % (
-                            kind, files))
-                else:
-                    g.es('not %s (@ignore)...' % (kind), color='red')
-                    g.es(files, color='blue')
+            c.init_error_dialogs()
+            return
+        #
+        # Issue one or two dialogs or messages.
+        saved_body = c.rootPosition().b
+            # Save the root's body. Somehow the dialog destroys it!
+        if c.import_error_nodes or c.ignored_at_file_nodes:
+            g.app.gui.dismiss_splash_screen()
+        if c.import_error_nodes:
+            files = '\n'.join(sorted(set(c.import_error_nodes)))
+            if use_dialogs:
+                g.app.gui.runAskOkDialog(c,
+                    title='Import errors',
+                    message='The following were not imported properly. '
+                    '@ignore was inserted:\n%s' % (files))
+            else:
+                g.es('import errors...', color='red')
+                g.es('\n'.join(sorted(files)), color='blue')
+        if c.ignored_at_file_nodes:
+            files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))
+            kind = 'read' if kind.startswith('read') else 'written'
+            if use_dialogs:
+                g.app.gui.runAskOkDialog(c,
+                    title='Not read',
+                    message='The following were not %s because they contain @ignore:\n%s' % (
+                        kind, files))
+            else:
+                g.es('not %s (@ignore)...' % (kind), color='red')
+                g.es(files, color='blue')
+        # Restore the root position.
+        c.rootPosition().b = saved_body
         c.init_error_dialogs()
     #@+node:ekr.20150710083827.1: *5* c.syntaxErrorDialog
     def syntaxErrorDialog(self):
