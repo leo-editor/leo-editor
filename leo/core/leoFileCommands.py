@@ -1314,25 +1314,13 @@ class FileCommands(object):
             forceWrite = False
         else:
             forceWrite = True
-        ###
-            # isOrphan = p.isOrphan()
-            # if isOrphan:
-                # g.trace('===== unexpected orphan bit:', p.h)
-            # if not isIgnore:
-                # isIgnore = p.isAtIgnoreNode()
-            # # 2010/10/22: force writes of orphan @edit, @auto and @shadow trees.
-            # if isIgnore: forceWrite = True # Always write full @ignore trees.
-            # elif isAuto: forceWrite = isOrphan # Force write of orphan @auto trees.
-            # elif isEdit: forceWrite = isOrphan # Force write of orphan @edit trees.
-            # elif isFile: forceWrite = isOrphan # Force write of orphan @file trees.
-            # elif isShadow: forceWrite = isOrphan # Force write of @shadow trees.
-            # elif isThin: forceWrite = isOrphan # Force write of  orphan @thin trees.
-            # else: forceWrite = True # Write all other @<file> trees.
-
+        #
+        # Set the write bit if necessary.
         gnx = v.fileIndex
         if forceWrite or self.usingClipboard:
             v.setWriteBit() # 4.2: Indicate we wrote the body text.
         attrs = fc.compute_attribute_bits(forceWrite, p)
+        #
         # Write the node.
         v_head = '<v t="%s"%s>' % (gnx, attrs)
         if gnx in fc.vnodesDict:
