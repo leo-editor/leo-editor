@@ -1032,15 +1032,7 @@ class AtFile(object):
             ok = at.openFileForWritingHelper(fileName)
             if not ok:
                 at.outputFile = None
-                at.addAtIgnore(root) ###
-        ###
-            # New in 4.3 b2: root may be none when writing from a string.
-            # if root:
-                # if at.outputFile:
-                    # root.clearOrphan()
-                # else:
-                    # root.setOrphan()
-                    # root.setDirty()
+                at.addAtIgnore(root)
         return at.outputFile is not None
     #@+node:ekr.20041005105605.143: *6* at.openFileForWritingHelper & helper
     def openFileForWritingHelper(self, fileName):
@@ -1145,7 +1137,6 @@ class AtFile(object):
                 else:
                     g.es("not written:", eventualFileName)
                     at.addAtIgnore(root)
-                    ### at.setDirtyOrphanBits(root)
                     return
         if not at.openFileForWriting(root, at.targetFileName, toString):
             # Calls at.addAtIgnore() if there are errors.
@@ -1163,8 +1154,7 @@ class AtFile(object):
                 root.v._p_changed = True
             else:
                 at.closeWriteFile()
-                if at.errors > 0: ### or root.isOrphan():
-                    ### at.setDirtyOrphanBits(root)
+                if at.errors > 0:
                     g.es("not written:", g.shortFileName(at.targetFileName))
                     at.addAtIgnore(root)
                 else:
@@ -1172,15 +1162,6 @@ class AtFile(object):
                     at.rememberReadPath(eventualFileName, root)
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
-                ###
-                    # if at.errors > 0 or root.isOrphan():
-                        # at.setDirtyOrphanBits(root)
-                        # g.es("not written:", g.shortFileName(at.targetFileName))
-                    # else:
-                        # # Fix bug 889175: Remember the full fileName.
-                        # at.rememberReadPath(eventualFileName, root)
-                        # at.replaceTargetFileIfDifferent(root)
-                            # # Sets/clears dirty and orphan bits.
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
@@ -1224,7 +1205,6 @@ class AtFile(object):
             root = c.rootPosition()
             p = c.rootPosition()
             after = None
-        ### at.clearAllOrphanBits(p)
         # Leo 5.6: write files only once.
         seen = set()
         while p and p != after:
@@ -1308,7 +1288,6 @@ class AtFile(object):
                 else:
                     return
         if (p.v.isDirty() or
-            ### p.v.isOrphan() or # 2011/06/17.
             pathChanged or
             writeAtFileNodesFlag or
             p.v in writtenFiles
@@ -1458,9 +1437,6 @@ class AtFile(object):
             if not toString:
                 g.es("not written:", fileName)
                 at.addAtIgnore(root)
-                ###
-                    # root.setDirty()
-                    # root.setOrphan()
             return False
         #
         # Dispatch the proper writer.
@@ -1491,9 +1467,6 @@ class AtFile(object):
         else:
             g.es("not written:", fileName)
             at.addAtIgnore(root)
-            ###
-                # root.setDirty() # New in Leo 4.4.8.
-                # root.setOrphan() # 2010/10/22.
         return at.errors == 0
     #@+node:ekr.20140728040812.17993: *7* at.dispatch & helpers
     def dispatch(self, ext, p):
@@ -1664,9 +1637,6 @@ class AtFile(object):
         else:
             g.error("not written:", at.outputFileName)
             at.addAtIgnore(root)
-            ###
-                # root.setDirty()
-                # root.setOrphan()
         return at.errors == 0
     #@+node:ekr.20080819075811.13: *7* adjustTargetLanguage
     def adjustTargetLanguage(self, fn):
@@ -1808,9 +1778,6 @@ class AtFile(object):
             if at.errors:
                 g.es("not written:", at.targetFileName)
                 at.addAtIgnore(root)
-                ###
-                    # root.setDirty()
-                    # root.setOrphan()
             else:
                 at.replaceTargetFileIfDifferent(root)
                     # calls at.addAtIgnore if there are errors.
@@ -2965,13 +2932,6 @@ class AtFile(object):
                     g.error('error writing', at.shortFileName)
                     g.es('not written:', at.shortFileName)
                     at.addAtIgnore(root)
-                    ###
-                        # g.error('error writing', at.shortFileName)
-                        # g.es('not written:', at.shortFileName)
-                        # at.
-                        # if root:
-                            # root.setDirty() # New in 4.4.8.
-                            # root.setOrphan() # 2010/10/22.
                 at.checkPythonCode(root)
                     # Bug fix: check *after* writing the file.
                 at.fileChangedFlag = ok
@@ -2989,10 +2949,6 @@ class AtFile(object):
             else:
                 # at.rename gives the error.
                 at.addAtIgnore(root)
-                ###
-                    # if root:
-                        # root.setDirty()
-                        # root.setOrphan()
             # No original file to change. Return value tested by a unit test.
             at.fileChangedFlag = False
             at.checkPythonCode(root)
@@ -3027,9 +2983,6 @@ class AtFile(object):
             g.es_error("errors writing: " + at.targetFileName)
         at.error(message)
         at.addAtIgnore(at.root)
-        ###
-            # at.root.setDirty()
-            # at.root.setOrphan()
     #@+node:ekr.20041005105605.218: *5* at.writeException (changed)
     def writeException(self, root=None):
         at = self
@@ -3042,11 +2995,6 @@ class AtFile(object):
         if at.outputFileName:
             at.remove(at.outputFileName)
         at.addAtIgnore(at.root)
-        ###
-            # if root:
-                # # Make sure we try to rewrite this file.
-                # root.setOrphan()
-                # root.setDirty()
     #@+node:ekr.20041005105605.219: *3* at.Utilites
     #@+node:ekr.20041005105605.220: *4* at.error & printError
     def error(self, *args):
@@ -3931,8 +3879,8 @@ class FastAtRead (object):
         lines = g.splitLines(contents)
         data = self.scan_header(lines)
         if data:
-            ### Clear all children.
-            ### Previously, this had been done in readOpenFile.
+            # Clear all children.
+            # Previously, this had been done in readOpenFile.
             root.v._deleteAllChildren()
             delims, first_lines, start_i = data
             self.scan_lines(
