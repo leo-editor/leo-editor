@@ -1302,8 +1302,7 @@ class FileCommands(object):
         # Precompute constants.
         isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
         isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
-            # @edit nodes must not have children.
-            # If they do, the entire tree is written to the outline.
+            # Write the entire @edit tree if it has children.
         isFile = p.isAtFileNode()
         isShadow = p.isAtShadowFileNode()
         isThin = p.isAtThinFileNode()

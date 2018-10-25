@@ -2434,7 +2434,7 @@ class Commands(object):
         '''Helper for various help commands.'''
         c = self
         g.app.gui.put_help(c, s, short_title)
-    #@+node:ekr.20111217154130.10285: *5* c.raise_error_dialogs (changed)
+    #@+node:ekr.20111217154130.10285: *5* c.raise_error_dialogs
     def raise_error_dialogs(self, kind='read'):
         '''Warn abouit read/write failures.'''
         c = self

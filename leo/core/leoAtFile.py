@@ -960,7 +960,7 @@ class AtFile(object):
         return isThin
     #@+node:ekr.20041005105605.132: *3* at.Writing
     #@+node:ekr.20041005105605.133: *4* Writing (top level)
-    #@+node:ekr.20041005105605.154: *5* at.asisWrite & helper (comment changed)
+    #@+node:ekr.20041005105605.154: *5* at.asisWrite & helper
     def asisWrite(self, root, toString=False):
         at = self; c = at.c
         c.endEditing() # Capture the current headline.
@@ -1011,7 +1011,7 @@ class AtFile(object):
             s = g.toEncodedString(s, at.encoding, reportErrors=True)
             at.outputStringWithLineEndings(s)
 
-    #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper (changed)
+    #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper
     def openFileForWriting(self, root, fileName, toString):
         at = self
         at.outputFile = None
@@ -1096,7 +1096,7 @@ class AtFile(object):
                 g.error('openForWrite: exception opening file: %s' % (open_file_name))
                 g.es_exception()
             return 'error', None
-    #@+node:ekr.20041005105605.144: *5* at.write & helper (changed)
+    #@+node:ekr.20041005105605.144: *5* at.write & helper
     def write(self,
         root,
         kind='@unknown', # Should not happen.
@@ -1383,7 +1383,7 @@ class AtFile(object):
                 g.es("no dirty @auto nodes in the selected tree")
             else:
                 g.es("no @auto nodes in the selected tree")
-    #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers (changed)
+    #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
     def writeOneAtAutoNode(self,
         p,
         force=False,
@@ -1547,7 +1547,7 @@ class AtFile(object):
             else:
                 g.es("no @shadow nodes in the selected tree")
         return found
-    #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helpers (changed)
+    #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helpers
     def writeOneAtShadowNode(self, p, toString, force):
         '''
         Write p, an @shadow node.
@@ -1643,7 +1643,7 @@ class AtFile(object):
             else:
                 # An unknown language.
                 pass # Use the default language, **not** 'unknown_language'
-    #@+node:ekr.20050506084734: *5* at.writeFromString (comment changed)
+    #@+node:ekr.20050506084734: *5* at.writeFromString
     def writeFromString(self, root, s, forcePythonSentinels=True, useSentinels=True):
         """
         Write a 4.x derived file from a string.
@@ -1679,7 +1679,7 @@ class AtFile(object):
         except Exception:
             at.exception("exception preprocessing script")
         return at.stringOutput
-    #@+node:ekr.20041005105605.151: *5* at.writeMissing & helper (comment changed)
+    #@+node:ekr.20041005105605.151: *5* at.writeMissing & helper
     def writeMissing(self, p, toString=False):
         at = self; c = at.c
         writtenFiles = False
@@ -1722,7 +1722,7 @@ class AtFile(object):
             at.write(p, kind='@file')
         else:
             g.trace('can not happen: unknown @file node')
-    #@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode (changed)
+    #@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode
     def writeOneAtEditNode(self, p, toString, force=False):
         '''Write one @edit node.'''
         at = self; c = at.c
@@ -2354,7 +2354,7 @@ class AtFile(object):
                 at.os(at.endSentinelComment)
             at.onl()
     #@+node:ekr.20041005105605.196: *4* Writing 4.x utils...
-    #@+node:ekr.20181024134823.1: *5* at.addAtIgnore (new)
+    #@+node:ekr.20181024134823.1: *5* at.addAtIgnore
     def addAtIgnore(self, root):
         '''Add an @ignore directive to the root node.'''
         if not root:
@@ -2856,7 +2856,7 @@ class AtFile(object):
             at.error('unexpected exception writing file: %s' % (fn))
             g.es_exception()
             return False
-    #@+node:ekr.20041005105605.212: *5* at.replaceTargetFileIfDifferent (changed)
+    #@+node:ekr.20041005105605.212: *5* at.replaceTargetFileIfDifferent
     def replaceTargetFileIfDifferent(self, root, ignoreBlankLines=False):
         '''Create target file as follows:
         1. If target file does not exist, rename output file to target file.
@@ -2963,7 +2963,7 @@ class AtFile(object):
                 if p.isAtIgnoreNode():
                     at.writeError("@ignore node: " + p.h)
                 p.moveToThreadNext()
-    #@+node:ekr.20041005105605.217: *5* at.writeError (changed)
+    #@+node:ekr.20041005105605.217: *5* at.writeError
     def writeError(self, message=None):
         '''Issue an error while writing an @<file> node.'''
         at = self
@@ -2971,7 +2971,7 @@ class AtFile(object):
             g.es_error("errors writing: " + at.targetFileName)
         at.error(message)
         at.addAtIgnore(at.root)
-    #@+node:ekr.20041005105605.218: *5* at.writeException (changed)
+    #@+node:ekr.20041005105605.218: *5* at.writeException
     def writeException(self, root=None):
         at = self
         g.error("exception writing:", at.targetFileName)
