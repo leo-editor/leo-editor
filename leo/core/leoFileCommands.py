@@ -1306,6 +1306,8 @@ class FileCommands(object):
         isShadow = p.isAtShadowFileNode()
         isThin = p.isAtThinFileNode()
         isOrphan = p.isOrphan()
+        if isOrphan:
+            g.trace('===== unexpected orphan bit:', p.h)
         if not isIgnore:
             isIgnore = p.isAtIgnoreNode()
         # 2010/10/22: force writes of orphan @edit, @auto and @shadow trees.
