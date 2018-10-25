@@ -1298,26 +1298,38 @@ class FileCommands(object):
         """Write a <v> element corresponding to a VNode."""
         fc = self
         v = p.v
+        #
+        # Precompute constants.
         isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
         isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
-            # 2010/09/02: @edit nodes must not have children.
+            # @edit nodes must not have children.
             # If they do, the entire tree is written to the outline.
         isFile = p.isAtFileNode()
         isShadow = p.isAtShadowFileNode()
         isThin = p.isAtThinFileNode()
-        isOrphan = p.isOrphan()
-        if isOrphan:
-            g.trace('===== unexpected orphan bit:', p.h)
-        if not isIgnore:
-            isIgnore = p.isAtIgnoreNode()
-        # 2010/10/22: force writes of orphan @edit, @auto and @shadow trees.
-        if isIgnore: forceWrite = True # Always write full @ignore trees.
-        elif isAuto: forceWrite = isOrphan # Force write of orphan @auto trees.
-        elif isEdit: forceWrite = isOrphan # Force write of orphan @edit trees.
-        elif isFile: forceWrite = isOrphan # Force write of orphan @file trees.
-        elif isShadow: forceWrite = isOrphan # Force write of @shadow trees.
-        elif isThin: forceWrite = isOrphan # Force write of  orphan @thin trees.
-        else: forceWrite = True # Write all other @<file> trees.
+        #
+        # Set forcewrite.
+        if isIgnore or p.isAtIgnoreNode():
+            forceWrite = True
+        elif isAuto or isEdit or isFile or isShadow or isThin:
+            forceWrite = False
+        else:
+            forceWrite = True
+        ###
+            # isOrphan = p.isOrphan()
+            # if isOrphan:
+                # g.trace('===== unexpected orphan bit:', p.h)
+            # if not isIgnore:
+                # isIgnore = p.isAtIgnoreNode()
+            # # 2010/10/22: force writes of orphan @edit, @auto and @shadow trees.
+            # if isIgnore: forceWrite = True # Always write full @ignore trees.
+            # elif isAuto: forceWrite = isOrphan # Force write of orphan @auto trees.
+            # elif isEdit: forceWrite = isOrphan # Force write of orphan @edit trees.
+            # elif isFile: forceWrite = isOrphan # Force write of orphan @file trees.
+            # elif isShadow: forceWrite = isOrphan # Force write of @shadow trees.
+            # elif isThin: forceWrite = isOrphan # Force write of  orphan @thin trees.
+            # else: forceWrite = True # Write all other @<file> trees.
+
         gnx = v.fileIndex
         if forceWrite or self.usingClipboard:
             v.setWriteBit() # 4.2: Indicate we wrote the body text.
