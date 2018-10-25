@@ -333,28 +333,21 @@ class AtFile(object):
         """Read an @thin or @file tree."""
         at, c = self, self.c
         fileName = at.initFileName(fromString, importFileName, root)
-        # sfn = g.shortFileName(fileName)
         if not fileName:
             at.error("Missing file name.  Restoring @file tree from .leo file.")
             return False
         at.rememberReadPath(g.fullPath(c, root), root)
             # Fix bug 760531: always mark the root as read, even if there was an error.
             # Fix bug 889175: Remember the full fileName.
-        ### root.clearOrphan()
-            # Clear the bit and continue so that the
-            # outline can be updated from the external file.
         at.initReadIvars(root, fileName,
             importFileName=importFileName, atShadow=atShadow)
-
         at.fromString = fromString
         if at.errors:
             return False
-
         fileName, file_s = at.openFileForReading(fromString=fromString)
             # For @shadow files, calls x.updatePublicAndPrivateFiles.
             # Calls at.initReadLine(s), where s is the file contents.
             # This will be used only if not cached.
-        
         #
         # Set the time stamp.
         if fileName and at.inputFile:
@@ -659,7 +652,6 @@ class AtFile(object):
         else:
             new_private_lines = []
             root.b = ''.join(new_public_lines)
-            ### root.clearOrphan()
             return True
         if new_private_lines == old_private_lines:
             return True
@@ -669,7 +661,6 @@ class AtFile(object):
         gnx2vnode = at.fileCommands.gnxDict
         contents = ''.join(new_private_lines)
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
-        ### root.clearOrphan()
         return True # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
     def dump(self, lines, tag):
@@ -1632,7 +1623,6 @@ class AtFile(object):
             at.replaceFileWithString(fn, at.public_s)
         self.checkPythonCode(root, s=at.private_s, targetFn=fn)
         if at.errors == 0:
-            ### root.clearOrphan()
             root.clearDirty()
         else:
             g.error("not written:", at.outputFileName)
@@ -2882,8 +2872,6 @@ class AtFile(object):
             at.fileChangedFlag = False
             return False
         if root:
-            # The default: may be changed later.
-            ### root.clearOrphan()
             root.clearDirty()
         # Fix bug 1132821: Leo replaces a soft link with a real file.
         if at.outputFileName:
