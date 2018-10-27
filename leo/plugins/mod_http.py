@@ -344,8 +344,8 @@ def getData(setting):
     # Plug an important security hole.
     c = g.app and g.app.log and g.app.log.c
     key = g.app.config.munge(setting)
-    if c and key == 'modhttpscript' and c.config.isLocalSetting(key, 'data'):
-        g.issueSecurityWarning('@data mod-http-script')
+    if c and key == 'httpscript' and c.config.isLocalSetting(key, 'data'):
+        g.issueSecurityWarning('@data http-script')
         return ""
     aList = g.app.config.getData(
         key,
