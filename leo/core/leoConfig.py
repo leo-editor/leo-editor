@@ -1776,6 +1776,8 @@ class LocalConfigManager(object):
         key = g.app.config.munge(setting)
         if key is None:
             return False
+        if not self.settingsDict:
+            return False ###
         gs = self.settingsDict.get(key)
         if not gs:
             return False

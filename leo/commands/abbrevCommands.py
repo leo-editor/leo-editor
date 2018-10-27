@@ -157,7 +157,14 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.config.getBool('scripting-at-script-nodes') or
             c.config.getBool('scripting-abbreviations'))
         self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
-        self.subst_env = c.config.getData('abbreviations-subst-env', strip_data=False)
+        # @data abbreviations-subst-env must *only* be defined in leoSettings.leo or myLeoSettings.leo!
+        if c.config:
+            key = 'abbreviations-subst-env'
+            if c.config.isLocalSetting(key, 'data'):
+                g.issueSecurityWarning('@data %s' % key)
+                self.subst_env = ""
+            else:
+                self.subst_env = c.config.getData(key, strip_data=False)
     #@+node:ekr.20150514043850.9: *6* abbrev.init_tree_abbrev
     def init_tree_abbrev(self):
         '''Init tree_abbrevs_d from @data tree-abbreviations nodes.'''
