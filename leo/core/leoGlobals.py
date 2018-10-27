@@ -6609,6 +6609,12 @@ def input_(message='', c=None):
 #@+node:ekr.20110609125359.16493: *3* g.isMacOS
 def isMacOS():
     return sys.platform == 'darwin'
+#@+node:ekr.20181027133311.1: *3* g.issueSecurityWarning
+def issueSecurityWarning(setting):
+    g.es('Security warning! Ignoring...',color='red')
+    g.es(setting, color='red')
+    g.es('This setting can be set only in')
+    g.es('leoSettings.leo or myLeoSettings.leo')
 #@+node:ekr.20031218072017.3144: *3* g.makeDict (Python Cookbook)
 # From the Python cookbook.
 

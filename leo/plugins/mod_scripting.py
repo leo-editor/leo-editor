@@ -412,10 +412,7 @@ class ScriptingController(object):
             # DANGEROUS!
         # Do not allow this setting to be changed in local (non-settings) .leo files.
         if self.atScriptNodes and c.config.isLocalSetting('scripting-at-script-nodes', 'bool'):
-            g.es('Security warning! Ignoring...', color='red')
-            g.es('@bool scripting-at-script-nodes = True', color='red')
-            g.es('This setting can be True only in')
-            g.es('leoSettings.leo or myLeoSettings.leo')
+            g.issueSecurityWarning('@bool scripting-at-script-nodes')
             # Restore the value in myLeoSettings.leo
             val = g.app.config.valueInMyLeoSettings('scripting-at-script-nodes')
             if val is None: val = False

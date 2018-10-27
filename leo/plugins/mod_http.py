@@ -341,8 +341,14 @@ def getConfiguration(c):
 #@+node:ekr.20161003140938.1: ** getData
 def getData(setting):
     '''Return the given @data node.'''
+    # Plug an important security hole.
+    c = g.app and g.app.log and g.app.log.c
+    key = g.app.config.munge(setting)
+    if c and key == 'modhttpscript' and c.config.isLocalSetting(key, 'data'):
+        g.issueSecurityWarning('@data mod-http-script')
+        return ""
     aList = g.app.config.getData(
-        setting,
+        key,
         strip_comments=False,
         strip_data=False,
     )
@@ -350,6 +356,7 @@ def getData(setting):
     return s
 #@+node:bwmulder.20050326191345: ** class config
 class config(object):
+    enabled = None # True when security check re http-allow-remote-exec passes.
     http_active = False
     http_timeout = 0
     http_ip = '127.0.0.1'
@@ -914,6 +921,14 @@ class ExecHandler(object):
 
         if not g.app.config.getBool("http-allow-remote-exec"):
             return None  # fail deliberately
+            
+        c = g.app and g.app.log and g.app.log.c
+        if c and config.enable is None:
+            if c.config.isLocalSetting('http-allow-remote-exec', 'bool'):
+                g.issueSecurityWarning('@bool http-allow-remote-exec')
+                config.enable = False
+            else:
+                config.enable = True
 
         parsed_url = urlparse.urlparse(self.request_handler.path)
         query = urlparse.parse_qs(parsed_url.query)
