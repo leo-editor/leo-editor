@@ -114,7 +114,7 @@ $(document).ready(function(){
 """
 #@-<< leowapp_js >>
 browser_encoding = 'utf-8'
-  ### To do: query browser.
+  ### To do: query browser: var x = document.characterSet; 
 sockets_to_close = []
 #@+others
 #@+node:ekr.20181028154356.1: ** class Config
@@ -318,8 +318,8 @@ class LeoInterface(object):
     <title>%(title)s</title>
     </head>
     """ % {
-        'default-stylesheet': getData('leowapp-stylesheet'),
-        'user-stylesheet': getData('leowapp-user-_stylesheet'),
+        'default-stylesheet': get_data('leowapp-stylesheet'),
+        'user-stylesheet': get_data('leowapp-user-_stylesheet'),
         'leowapp_js': leowapp_js,
         'title': escape(window.shortFileName())
     })
@@ -389,8 +389,8 @@ class LeoInterface(object):
         <hr />
         <ul>
     ''' % {
-        'default-stylesheet': getData('leowapp-stylesheet'),
-        'user-stylesheet': getData('leowapp-user-stylesheet'),
+        'default-stylesheet': get_data('leowapp-stylesheet'),
+        'user-stylesheet': get_data('leowapp-user-stylesheet'),
     })
         for w in g.app.windowList:
             f.write('<li><a href="%(sfn)s">"%(sfn)s"</a></li>' % {
@@ -607,106 +607,23 @@ class Server(asyncore.dispatcher):
         # on the incoming connexion
         self.handler(conn, addr, self)
     #@-others
-#@+node:ekr.20181028052650.64: ** functions
-#@+node:ekr.20181028052650.65: *3* a_read (asynchore override)
-def a_read(obj):
-    try:
-        obj.handle_read_event()
-    except asyncore.ExitNow:
-        raise
-    except Exception:
-        obj.handle_error()
+#@+node:ekr.20181028052650.64: ** top-level functions
 #@+node:ekr.20181028052650.66: *3* escape
 def escape(s):
-    s = s.replace('&', "&amp;")
-    s = s.replace('<', "&lt;")
-    s = s.replace('>', "&gt;")
-    # is there a more elegant way to do this?
-    # Replaces blanks with &nbsp; id they are in
-    # the beginning of the line.
-    lines = s.split('\n')
-    result = []
-    blank = chr(32)
-    for line in lines:
-        if line.startswith(blank):
-            resultchars = []
-            startline = True
-            for char in line:
-                if char == blank:
-                    if startline:
-                        resultchars.append('&nbsp;')
-                    else:
-                        resultchars.append(' ')
-                else:
-                    startline = False
-                    resultchars.append(char)
-            result.append(''.join(resultchars))
-        else:
-            result.append(line)
-    s = '\n'.join(result)
-    s = s.replace('\n', '<br />')
-    s = s.replace(chr(9), '&nbsp;&nbsp;&nbsp;&nbsp;')
-    # 8/9/2007
-    # s = g.toEncodedString(s,encoding=browser_encoding,reportErrors=False)
-    # StringIO.write(self, s)
-    return s
-#@+node:ekr.20181028052650.67: *3* loop (asynchore override)
-def loop(timeout=5.0, use_poll=0, map=None):
-    """
-    Override the loop function of asynchore.
-    We poll only until there is not read or
-    write request pending.
-    """
-    return poll(timeout)
-#@+node:ekr.20181028052650.69: *3* poll
-def poll(timeout=0.0):
-    global sockets_to_close
-    map = asyncore.socket_map
-    if not map:
-        return False
-    while 1:
-        r = []; w = []; e = []
-        for fd, obj in map.items():
-            if obj.readable():
-                r.append(fd)
-            if obj.writable():
-                w.append(fd)
-        if not sockets_to_close: # Set by writeable()
-            break
-        for s in sockets_to_close:
-            s.close()
-        sockets_to_close = []
-    if [] == r == w == e:
-        time.sleep(timeout)
-    else:
-        #@+<< try r, w, e = select.select >>
-        #@+node:ekr.20181028052650.70: *4* << try r, w, e = select.select >>
-        try:
-            r, w, e = select.select(r, w, e, timeout)
-        except select.error: # as err:
-            # if err[0] != EINTR:
-                # raise
-            # else:
-                # return False
-            return False # EKR: EINTR is undefined.
-        #@-<< try r, w, e = select.select >>
-    for fd in r:
-        #@+<< asyncore.read(map.get(fd)) >>
-        #@+node:ekr.20181028052650.71: *4* << asyncore.read(map.get(fd)) >>
-        obj = map.get(fd)
-        if obj is not None:
-            asyncore.read(obj)
-        #@-<< asyncore.read(map.get(fd)) >>
-    for fd in w:
-        #@+<< asyncore.write(map.get(fd)) >>
-        #@+node:ekr.20181028052650.72: *4* << asyncore.write(map.get(fd)) >>
-        obj = map.get(fd)
-        if obj is not None:
-            asyncore.write(obj)
-        #@-<< asyncore.write(map.get(fd)) >>
-    return len(r) > 0 or len(w) > 0
-#@+node:ekr.20181028052650.10: *3* getData
-def getData(setting):
+    '''
+    Do the standard xml escapes, replacing tabs by four spaces.
+    
+    There is no need to convert leading blanks to &nbsp; because the body
+    and log panes use <pre> elements.
+    '''
+    from xml.sax.saxutils import escape as esc
+
+    return esc(s, {
+         '\n': '<br />',
+         '\t': '&nbsp;&nbsp;&nbsp;&nbsp;',
+    })
+#@+node:ekr.20181028052650.10: *3* get_data
+def get_data(setting):
     '''Return the given @data node.'''
     aList = g.app.config.getData(
         setting,
@@ -715,7 +632,7 @@ def getData(setting):
     )
     s = ''.join(aList or [])
     return s
-#@+node:ekr.20181028052650.5: ** init (leowapp.py)
+#@+node:ekr.20181028052650.5: *3* init (leowapp.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
     try:
@@ -737,6 +654,71 @@ def init():
     g.es("leowapp serving at %s:%s" % (config.ip, config.port), color="purple")
     g.plugin_signon(__name__)
     return True
+#@+node:ekr.20181028161536.1: ** overrides
+#@+node:ekr.20181028052650.65: *3* a_read (asynchore override)
+def a_read(obj):
+    try:
+        obj.handle_read_event()
+    except asyncore.ExitNow:
+        raise
+    except Exception:
+        obj.handle_error()
+#@+node:ekr.20181028052650.67: *3* loop (asynchore override) & poll
+def loop(timeout=5.0, use_poll=0, map=None):
+    """
+    Override the loop function of asynchore.
+    We poll only until there is not read or
+    write request pending.
+    """
+    return poll(timeout)
+#@+node:ekr.20181028052650.69: *4* poll
+def poll(timeout=0.0):
+
+    global sockets_to_close
+    map = asyncore.socket_map
+    if not map:
+        return False
+    while 1:
+        r = []; w = []; e = []
+        for fd, obj in map.items():
+            if obj.readable():
+                r.append(fd)
+            if obj.writable():
+                w.append(fd)
+        if not sockets_to_close: # Set by writeable()
+            break
+        for s in sockets_to_close:
+            s.close()
+        sockets_to_close = []
+    if [] == r == w == e:
+        time.sleep(timeout)
+    else:
+        #@+<< try r, w, e = select.select >>
+        #@+node:ekr.20181028052650.70: *5* << try r, w, e = select.select >>
+        try:
+            r, w, e = select.select(r, w, e, timeout)
+        except select.error: # as err:
+            # if err[0] != EINTR:
+                # raise
+            # else:
+                # return False
+            return False # EKR: EINTR is undefined.
+        #@-<< try r, w, e = select.select >>
+    for fd in r:
+        #@+<< asyncore.read(map.get(fd)) >>
+        #@+node:ekr.20181028052650.71: *5* << asyncore.read(map.get(fd)) >>
+        obj = map.get(fd)
+        if obj is not None:
+            asyncore.read(obj)
+        #@-<< asyncore.read(map.get(fd)) >>
+    for fd in w:
+        #@+<< asyncore.write(map.get(fd)) >>
+        #@+node:ekr.20181028052650.72: *5* << asyncore.write(map.get(fd)) >>
+        obj = map.get(fd)
+        if obj is not None:
+            asyncore.write(obj)
+        #@-<< asyncore.write(map.get(fd)) >>
+    return len(r) > 0 or len(w) > 0
 #@-others
 #@@language python
 #@@tabwidth -4
