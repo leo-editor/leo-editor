@@ -11,30 +11,19 @@
 **Now**: enable the leowapp.py plugin.
 **Later**: StartLeo with the --gui=browser command-line option.
 
-Open localhost:8100 in your browser.
-
-Use refresh to update the web page after opening or closing files.
-
-The web page contains::
-
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
-    <script src="<a fixed script, defined in this file"></script>
-    <style src="leowapp_default.css">
-    <style src="leowapp_user.css">
+Open localhost:8100 in your browser. Refresh the web page after opening or closing files.
 
 Settings
 --------
 
 ``@string leowapp_ip = 127.0.0.1``
-    address to bind to, see notes below
     
-    IP address 127.0.0.1 is accessible by all users logged into your local
-    machine. That means while Leo and mod_http is running anyone logged
-    into your machine will be able to browse all your leo outlines.
-
-    If you want all other network accessible machines to have access
-    to your mod_http instance, then use @string leowapp_ip = 0.0.0.0.
-
+    IP address 127.0.0.1 gives anyone logged into your machine access to
+    all your Leo outlines.
+    
+    IP address 0.0.0.0 gives all network accessible machines access to
+    your Leo outlines.
+    
 ``@int  leowapp_port = 8100``
     The port.
     
@@ -43,6 +32,16 @@ Settings
     
 ``@data leowapp_user_stylesheet``
     Additional .css for this page.
+    
+HTML
+----
+
+The web page contains::
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+    <script src="<a fixed script, defined in this file"></script>
+    <style src="leowapp_default.css">
+    <style src="leowapp_user.css">
 '''
 #@-<< docstring >>
 #@+<< imports >>
@@ -53,7 +52,7 @@ import leo.core.leoGlobals as g
 import asynchat
 import asyncore
 import cgi
-import json
+### import json
 if g.isPython3:
     import http.server
     SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
@@ -74,7 +73,8 @@ if g.isPython3:
     import urllib.parse as urlparse
 else:
     import urlparse
-import os
+assert urlparse ###
+### import os
 import select
 import shutil
 import socket
@@ -174,84 +174,23 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
             sockets_to_close.append(self)
         return result
     #@-others
-#@+node:ekr.20181028052650.40: ** class ExecHandler
-class ExecHandler(object):
-    """
-    Quasi-RPC GET based interface
-    """
-    #@+others
-    #@+node:ekr.20181028052650.41: *3* __init__
-    def __init__(self, request_handler):
-        self.request_handler = request_handler
-    #@+node:ekr.20181028052650.42: *3* get_response
-    def get_response(self):
-        """Return the file like 'f' that leo_interface.send_head makes"""
-        # self.request_handler.path.startswith('/_/exec/')
-
-        if not g.app.config.getBool("http-allow-remote-exec"):
-            return None  # fail deliberately
-            
-        c = g.app and g.app.log and g.app.log.c
-        if c and config.enable is None:
-            if c.config.isLocalSetting('http-allow-remote-exec', 'bool'):
-                g.issueSecurityWarning('@bool http-allow-remote-exec')
-                config.enable = False
-            else:
-                config.enable = True
-
-        parsed_url = urlparse.urlparse(self.request_handler.path)
-        query = urlparse.parse_qs(parsed_url.query)
-
-        enc = query.get("enc", ["str"])[0]
-
-        if parsed_url.path.startswith('/_/exec/commanders/'):
-            ans = [i.fileName() for i in g.app.commanders()]
-            if enc != 'json':
-                ans = '\n'.join(ans)
-        else:
-            ans = self.proc_cmds()
-
-        f = StringIO()
-        f.mime_type = query.get("mime_type", ["text/plain"])[0]
-        enc = query.get("enc", ["str"])[0]
-        if enc == 'json':
-            f.write(json.dumps(ans))
-        elif enc == 'repr':
-            f.write(repr(ans))
-        else:
-            f.write(str(ans))
-        return f
-
-    #@+node:ekr.20181028052650.43: *3* proc_cmds (mod_http.py)
-    def proc_cmds(self):
-
-        parsed_url = urlparse.urlparse(self.request_handler.path)
-        query = urlparse.parse_qs(parsed_url.query)
-        # work out which commander to use, zero index int, full path name, or file name
-        c_idx = query.get('c', [0])[0]
-        if c_idx is not 0:
-            try:
-                c_idx = int(c_idx)
-            except ValueError:
-                paths = [i.fileName() for i in g.app.commanders()]
-                if c_idx in paths:
-                    c_idx = paths.index(c_idx)
-                else:
-                    paths = [os.path.basename(i) for i in paths]
-                    c_idx = paths.index(c_idx)
-        ans = None
-        c = g.app.commanders()[c_idx]
-        if c and c.evalController:
-            for cmd in query['cmd']:
-                ans = c.evalController.eval_text(cmd)
-        return ans  # the last answer, if multiple commands run
-    #@-others
 #@+node:ekr.20181028052650.18: ** class leo_interface
 class leo_interface(object):
     # pylint: disable=no-member
         # .path, .send_error, .send_response and .end_headers
         # appear to be undefined.
     #@+others
+    #@+node:ekr.20181028081759.1: *3* get_favicon
+    def get_favicon(self):
+        path = g.os_path_join(g.computeLeoDir(), 'Icons', 'LeoApp16.ico')
+        try:
+            f = StringIO()
+            f2 = open(path)
+            s = f2.read()
+            f.write(s)
+            return f
+        except Exception:
+            return None
     #@+node:ekr.20181028052650.19: *3* send_head & helpers
     def send_head(self):
         """Common code for GET and HEAD commands.
@@ -267,12 +206,11 @@ class leo_interface(object):
         try:
             # self.path is provided by the RequestHandler class.
             path = self.split_leo_path(self.path)
-            if path[0] == '_':
-                f = self.leo_actions.get_response()
-            ###
-                # elif len(path) == 1 and path[0] == 'favicon.ico':
-                    # f = self.leo_actions.get_favicon()
-            elif path == '/':
+            if len(path) == 1 and path[0] == 'favicon.ico':
+                return None
+                ### f = self.get_favicon()
+            g.trace(path)
+            if path == '/':
                 f = self.write_leo_windowlist()
             else:
                 try:
@@ -331,7 +269,7 @@ class leo_interface(object):
         return path.split('/')
     #@+node:ekr.20181028052650.22: *4* write_leo_tree & helpers
     def write_leo_tree(self, f, window, root):
-        '''Wriite the entire html file to f.'''
+        '''Write the entire html file to f.'''
         root = root.copy()
         self.write_head(f, root.h, window)
         f.write('<body>')
@@ -346,15 +284,26 @@ class leo_interface(object):
         f.write('</body></html>')
     #@+node:ekr.20181028052650.23: *5* write_body_pane
     def write_body_pane(self, f, p):
-
-        f.write('<div class="bodypane">')
-        f.write('<pre class="body-text">')
-        f.write('<code class="body-code">%s</code>' % escape(p.b))
-            # This isn't correct when put in a triple string.
-            # We might be able to use g.adjustTripleString, but this works.
-        f.write('</pre></div>')
+        #
+        # The javascript sets the body-code element when the user changes nodes:
+        #    $(".body-code").text($(e.target).attr("b"));
+        #
+        table = (
+            '<div class="bodypane">',
+            '<pre>',
+            '<code class="body-code">%s</code>' % escape(p.b),
+                # This isn't correct when put in a triple string.
+                # We might be able to use g.adjustTripleString, but this works.
+            '</pre>',
+            '</div>',
+        )
+        for z in table:
+            f.write(z)
     #@+node:ekr.20181028052650.24: *5* write_head
     def write_head(self, f, headString, window):
+        
+        ### g.trace('=====')
+        ### g.printObj(g.splitLines(getData('leowapp-stylesheet')))
         
         f.write("""\
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -369,8 +318,8 @@ class leo_interface(object):
         <title>%(title)s</title>
     </head>
     """ % {
-        'default-stylesheet': getData('leowapp_stylesheet'),
-        'user-stylesheet': getData('leowapp_user_stylesheet'),
+        'default-stylesheet': getData('leowapp-stylesheet'),
+        'user-stylesheet': getData('leowapp-user-_stylesheet'),
         'leowapp_js': leowapp_js,
         'title': escape(window.shortFileName() + ":" + headString)
     })
@@ -395,23 +344,24 @@ class leo_interface(object):
     #@+node:ekr.20181028052650.26: *4* write_leo_windowlist
     def write_leo_windowlist(self):
         f = StringIO()
-        f.write('''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        f.write('''\
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
     <html>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-        <style>%s</style>
-        <style>%s</style>
+        <style>%(default-stylesheet)s</style>
+        <style>%(user-stylesheet)s</style>
         <title>ROOT for LEO HTTP plugin</title>
     </head>
     <body>
         <h1>Windowlist</h1>
         <hr />
         <ul>
-    ''' % (
-        getData('leowapp_stylesheet'),
-        getData('leowapp_user_stylesheet'),
-    ))
+    ''' % {
+        'default-stylesheet': getData('leowapp-stylesheet'),
+        'user-stylesheet': getData('leowapp-user-stylesheet'),
+    })
         a = g.app # get the singleton application instance.
         windows = a.windowList # get the list of all open frames.
         for w in windows:
@@ -532,226 +482,6 @@ class leo_interface(object):
             f.write(escape(result[-1]))
             f.write("</h2>\n")
     #@-others
-#@+node:ekr.20181028052650.33: ** class LeoActions
-class LeoActions(object):
-    """
-    A place to collect other URL based actions like saving bookmarks from
-    the browser. Conceptually this stuff could go in class leo_interface
-    but putting it here for separation for now.
-    """
-    #@+others
-    #@+node:ekr.20181028052650.34: *3* __init__(LeoActions)
-    def __init__(self, request_handler):
-        self.request_handler = request_handler
-        self.bookmark_unl = g.app.commanders()[0].config.getString('http-bookmark-unl')
-        self.exec_handler = ExecHandler(request_handler)
-    #@+node:ekr.20181028052650.35: *3* add_bookmark
-    def add_bookmark(self):
-        """Return the file like 'f' that leo_interface.send_head makes
-
-        """
-        parsed_url = urlparse.urlparse(self.request_handler.path)
-        query = urlparse.parse_qs(parsed_url.query)
-        # print(parsed_url.query)
-        # print(query)
-        name = query.get('name', ['NO TITLE'])[0]
-        url = query['url'][0]
-        one_tab_links = []
-        if 'www.one-tab.com' in url.lower():
-            one_tab_links = query.get('ln', [''])[0]
-            one_tab_links = json.loads(one_tab_links)
-        c = None # outline for bookmarks
-        previous = None # previous bookmark for adding selections
-        parent = None # parent node for new bookmarks
-        using_root = False
-        path = self.bookmark_unl
-        if path:
-            parsed = urlparse.urlparse(path)
-            leo_path = os.path.expanduser(parsed.path)
-            c = g.openWithFileName(leo_path, old_c=None)
-            if c:
-                g.es_print("Opened '%s' for bookmarks" % path)
-                if parsed.fragment:
-                    g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
-                parent = c.currentPosition()
-                if parent.hasChildren():
-                    previous = parent.getFirstChild()
-            else:
-                g.es_print("Failed to open '%s' for bookmarks" % self.bookmark_unl)
-        if c is None:
-            using_root = True
-            c = g.app.commanders()[0]
-            parent = c.rootPosition()
-            previous = c.rootPosition()
-        f = StringIO()
-        if previous and url == previous.b.split('\n', 1)[0]:
-            # another marking of the same page, just add selection
-            self.add_bookmark_selection(
-                previous, query.get('selection', [''])[0])
-            c.selectPosition(previous) # required for body text redraw
-            c.redraw()
-            f.write("""
-    <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
-    <p>Selection added</p></body>"""         )
-            return f
-        if '_form' in query:
-            # got extra details, save to new node
-            f.write("""
-    <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
-    <p>Bookmark saved</p></body>"""         )
-            if using_root:
-                nd = parent.insertAfter()
-                nd.moveToRoot(c.rootPosition())
-            else:
-                nd = parent.insertAsNthChild(0)
-            if g.pluginIsLoaded('leo.plugins.bookmarks'):
-                nd.h = name
-            else:
-                nd.h = '@url ' + name
-            selection = query.get('selection', [''])[0]
-            if selection:
-                selection = '\n\n"""\n' + selection + '\n"""'
-            tags = query.get('tags', [''])[0]
-            if one_tab_links:
-                if tags:
-                    tags += ', OneTabList'
-                else:
-                    tags = 'OneTabList'
-                self.get_one_tab(one_tab_links, nd)
-            nd.b = "%s\n\nTags: %s\n\n%s\n\nCollected: %s%s\n\n%s" % (
-                url,
-                tags,
-                query.get('_name', [''])[0],
-                time.strftime("%c"),
-                selection,
-                query.get('description', [''])[0],
-            )
-            c.setChanged(True)
-            c.selectPosition(nd) # required for body text redraw
-            c.redraw()
-            return f
-        # send form to collect extra details
-        f.write("""
-    <html>
-    <head>
-        <style>
-            body {font-family:mono; font-size: 80%%;}
-            th {text-align:right}
-        </style>
-        <style>%s</style>
-    <title>Leo Add Bookmark</title>
-    </head>
-    <body onload='document.getElementById("tags").focus();'>
-        <form method='GET' action='/_/add/bkmk/'>
-            <input type='hidden' name='_form' value='1'/>
-            <input type='hidden' name='_name' value=%s/>
-            <input type='hidden' name='selection' value=%s/>
-            <input type='hidden' name='ln' value=%s/>
-            <table>
-            <tr><th>Tags:</th><td><input id='tags' name='tags' size='60'/>(comma sep.)</td></tr>
-            <tr><th>Title:</th><td><input name='name' value=%s size='60'/></td></tr>
-            <tr><th>URL:</th><td><input name='url' value=%s size='60'/></td></tr>
-            <tr><th>Notes:</th><td><textarea name='description' cols='60' rows='6'></textarea></td></tr>
-            </table>
-            <input type='submit' value='Save'/><br/>
-        </form>
-    </body>
-    </html>""" % (
-            getData('user_bookmark_stylesheet'),  # EKR: Add config.css to style.
-            quoteattr(name),
-            quoteattr(query.get('selection', [''])[0]),
-            quoteattr(json.dumps(one_tab_links)),
-            quoteattr(name),
-            quoteattr(url)))
-        return f
-    #@+node:ekr.20181028052650.36: *3* get_one_tab
-    def get_one_tab(self, links, nd):
-        """get_one_tab - Add child bookmarks from OneTab chrome extension
-
-        :Parameters:
-        - `links`: list of {'txt':, 'url':} dicts
-        - `nd`: node under which to put child nodes
-        """
-        for link in links:
-            if 'url' in link and 'www.one-tab.com' not in link['url'].lower():
-                nnd = nd.insertAsLastChild()
-                nnd.h = link['txt']
-                nnd.b = "%s\n\nTags: %s\n\n%s\n\nCollected: %s%s\n\n%s" % (
-                    link['url'],
-                    'OneTabTab',
-                    link['txt'],
-                    time.strftime("%c"),
-                    '',
-                    '',
-                )
-    #@+node:ekr.20181028052650.37: *3* add_bookmark_selection
-    def add_bookmark_selection(self, node, text):
-        '''Insert the selected text into the bookmark node,
-        after any earlier selections but before the users comments.
-
-            http://example.com/
-
-            Tags: tags, are here
-
-            Full title of the page
-
-            Collected: timestamp
-
-            """
-            The first saved selection
-            """
-
-            """
-            The second saved selection
-            """
-
-            Users comments
-
-        i.e. just above the "Users comments" line.
-        '''
-        b = node.b.split('\n')
-        insert = ['', '"""', text, '"""']
-        collected = None
-        tri_quotes = []
-        for n, i in enumerate(b):
-            if collected is None and i.startswith('Collected: '):
-                collected = n
-            if i == '"""':
-                tri_quotes.append(n)
-        if collected is None:
-            # not a regularly formatted text, just append
-            b.extend(insert)
-        elif len(tri_quotes) >= 2:
-            # insert after the last balanced pair of tri quotes
-            x = tri_quotes[len(tri_quotes) - len(tri_quotes) % 2 - 1] + 1
-            b[x: x] = insert
-        else:
-            # found Collected but no tri quotes
-            b[collected + 1: collected + 1] = insert
-        node.b = '\n'.join(b)
-        node.setDirty()
-    #@+node:ekr.20181028052650.38: *3* get_favicon
-    def get_favicon(self):
-        path = g.os_path_join(g.computeLeoDir(), 'Icons', 'LeoApp16.ico')
-        try:
-            f = StringIO()
-            f2 = open(path)
-            s = f2.read()
-            f.write(s)
-            return f
-        except Exception:
-            return None
-    #@+node:ekr.20181028052650.39: *3* get_response
-    def get_response(self):
-        """Return the file like 'f' that leo_interface.send_head makes"""
-        if self.request_handler.path.startswith('/_/add/bkmk/'):
-            return self.add_bookmark()
-        if self.request_handler.path.startswith('/_/exec/'):
-            return self.exec_handler.get_response()
-        f = StringIO()
-        f.write("Unknown URL in LeoActions.get_response()")
-        return f
-    #@-others
 #@+node:ekr.20181028052650.44: ** class nodeNotFound
 class nodeNotFound(Exception):
     pass
@@ -774,7 +504,7 @@ class RequestHandler(
     #@+node:ekr.20181028052650.47: *3* __init__
     def __init__(self, conn, addr, server):
         
-        self.leo_actions = LeoActions(self)
+        ### self.leo_actions = LeoActions(self)
         asynchat.async_chat.__init__(self, conn)
         self.client_address = addr
         self.connection = conn
@@ -1124,7 +854,7 @@ def onFileOpen(tag, keywords):
     Server('', config.leowapp_port, RequestHandler)
     asyncore.read = a_read
     g.registerHandler("idle", plugin_wrapper)
-    g.es("http serving enabled on port %s, " % (
+    g.es("leowapp serving on port %s, " % (
         config.leowapp_port),
         color="purple")
 #@+node:ekr.20181028052650.9: *3* getConfiguration (not used)
