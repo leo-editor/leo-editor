@@ -276,16 +276,19 @@ class leo_interface(object):
         f.write('</body></html>')
     #@+node:ekr.20181028052650.23: *5* write_body_pane
     def write_body_pane(self, f, p):
-        #
-        # The javascript sets the body-code element when the user changes nodes:
-        #    $(".body-code").text($(e.target).attr("b"));
-        #
+        '''
+        Write (just once) a *template* for the body pane.
+        
+        There is no need to write the actual text because the javascript sets
+        the body-code element when the user changes nodes::
+            
+             $(".body-code").text($(e.target).attr("b"));
+        '''
+        # Don't use a triple string here: it would insert whitespace.
         table = (
             '<div class="bodypane">',
             '<pre>',
-            '<code class="body-code">%s</code>' % escape(p.b),
-                # This isn't correct when put in a triple string.
-                # We might be able to use g.adjustTripleString, but this works.
+            '<code class="body-code"></code>',
             '</pre>',
             '</div>',
         )
