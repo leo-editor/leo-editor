@@ -172,7 +172,7 @@ class leo_interface(object):
         # .path, .send_error, .send_response and .end_headers
         # appear to be undefined.
     #@+others
-    #@+node:ekr.20181028081759.1: *3* get_favicon
+    #@+node:ekr.20181028081759.1: *3* leo_i.get_favicon (not used)
     def get_favicon(self):
         path = g.os_path_join(g.computeLeoDir(), 'Icons', 'LeoApp16.ico')
         try:
@@ -183,7 +183,7 @@ class leo_interface(object):
             return f
         except Exception:
             return None
-    #@+node:ekr.20181028052650.19: *3* send_head & helpers
+    #@+node:ekr.20181028052650.19: *3* leo_i.send_head & helpers
     def send_head(self):
         """Common code for GET and HEAD commands.
 
@@ -236,7 +236,7 @@ class leo_interface(object):
             import traceback
             traceback.print_exc()
             raise
-    #@+node:ekr.20181028052650.20: *4* find_window_and_root
+    #@+node:ekr.20181028052650.20: *4* leo_i.find_window_and_root
     def find_window_and_root(self, path):
         """
         given a path of the form:
@@ -251,7 +251,7 @@ class leo_interface(object):
             if w.shortFileName() == path[0]:
                 return w, w.c.rootPosition()
         return None, None
-    #@+node:ekr.20181028052650.21: *4* split_leo_path
+    #@+node:ekr.20181028052650.21: *4* leo_i.split_leo_path
     def split_leo_path(self, path):
         '''Split self.path.'''
         if path == '/':
@@ -259,7 +259,7 @@ class leo_interface(object):
         if path.startswith("/"):
             path = path[1:]
         return path.split('/')
-    #@+node:ekr.20181028052650.22: *4* write_leo_tree & helpers
+    #@+node:ekr.20181028052650.22: *4* leo_i.write_leo_tree & helpers
     def write_leo_tree(self, f, window, root):
         '''Write the entire html file to f.'''
         root = root.copy()
@@ -280,7 +280,7 @@ class leo_interface(object):
         self.write_minibuffer_pane(f)
         f.write('</div>')  # End of containerpane.
         f.write('</body></html>')
-    #@+node:ekr.20181028052650.23: *5* write_body_pane
+    #@+node:ekr.20181028052650.23: *5* leo_i.write_body_pane
     def write_body_pane(self, f):
         '''
         Write (just once) a *template* for the body pane.
@@ -300,7 +300,7 @@ class leo_interface(object):
         )
         for z in table:
             f.write(z)
-    #@+node:ekr.20181028052650.24: *5* write_head
+    #@+node:ekr.20181028052650.24: *5* leo_i.write_head
     def write_head(self, f, headString, window):
 
         f.write("""\
@@ -316,9 +316,9 @@ class leo_interface(object):
         'default-stylesheet': getData('leowapp-stylesheet'),
         'user-stylesheet': getData('leowapp-user-_stylesheet'),
         'leowapp_js': leowapp_js,
-        'title': escape(window.shortFileName() + ":" + headString)
+        'title': escape(window.shortFileName())
     })
-    #@+node:ekr.20181028131729.1: *5* write_log_pane
+    #@+node:ekr.20181028131729.1: *5* leo_i.write_log_pane
     def write_log_pane(self, f):
         '''
         Write the html for the log pane.
@@ -333,7 +333,7 @@ class leo_interface(object):
         )
         for z in table:
             f.write(z)
-    #@+node:ekr.20181028133546.1: *5* write_minibuffer_pane
+    #@+node:ekr.20181028133546.1: *5* leo_i.write_minibuffer_pane
     def write_minibuffer_pane(self, f):
         '''
         Write the html for the log pane.
@@ -348,7 +348,7 @@ class leo_interface(object):
         )
         for z in table:
             f.write(z)
-    #@+node:ekr.20181028052650.25: *5* write_node_and_subtree
+    #@+node:ekr.20181028052650.25: *5* leo_i.write_node_and_subtree
     def write_node_and_subtree(self, f, p):
 
         # This organization, with <headline> elements in <node> elements,
@@ -366,7 +366,7 @@ class leo_interface(object):
         for child in p.children():
             self.write_node_and_subtree(f, child)
         f.write('</div>')
-    #@+node:ekr.20181028052650.26: *4* write_leo_windowlist
+    #@+node:ekr.20181028052650.26: *4* leo_i.write_leo_windowlist
     def write_leo_windowlist(self):
         f = StringIO()
         f.write('''\
@@ -377,7 +377,7 @@ class leo_interface(object):
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
         <style>%(default-stylesheet)s</style>
         <style>%(user-stylesheet)s</style>
-        <title>ROOT for LEO HTTP plugin</title>
+        <title>LeoWapp</title>
     </head>
     <body>
         <h1>Windowlist</h1>
@@ -387,12 +387,10 @@ class leo_interface(object):
         'default-stylesheet': getData('leowapp-stylesheet'),
         'user-stylesheet': getData('leowapp-user-stylesheet'),
     })
-        a = g.app # get the singleton application instance.
-        windows = a.windowList # get the list of all open frames.
-        for w in windows:
-            shortfilename = w.shortFileName()
-            f.write('<li><a href="%s">"file name: %s"</a></li>' % (
-                shortfilename, shortfilename))
+        for w in g.app.windowList:
+            f.write('<li><a href="%(sfn)s">"%(sfn)s"</a></li>' % {
+                'sfn': w.shortFileName(),
+            })
         f.write('</ul><hr /></body></html>')
         return f
     #@+node:ekr.20181028052650.27: *3* node_reference & helpers
