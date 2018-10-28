@@ -263,6 +263,10 @@ class leo_interface(object):
     def write_leo_tree(self, f, window, root):
         '''Write the entire html file to f.'''
         root = root.copy()
+        # Write the prolog.
+        f.write('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"')
+        f.write('"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">')
+        f.write('<html>')
         self.write_head(f, root.h, window)
         f.write('<body>')
         f.write('<div class="container">')
@@ -270,9 +274,11 @@ class leo_interface(object):
         f.write('<h1>%s</h1>' % window.shortFileName())
         for sib in root.self_and_siblings():
             self.write_node_and_subtree(f, sib)
-        f.write('</div>')
-        f.write('</div>')
+        f.write('</div>') # End of outlinepane
         self.write_body_pane(f)
+        self.write_log_pane(f)
+        self.write_minibuffer_pane(f)
+        f.write('</div>')  # End of containerpane.
         f.write('</body></html>')
     #@+node:ekr.20181028052650.23: *5* write_body_pane
     def write_body_pane(self, f):
@@ -298,16 +304,13 @@ class leo_interface(object):
     def write_head(self, f, headString, window):
 
         f.write("""\
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    <html>
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-        <style>%(default-stylesheet)s</style>
-        <style>%(user-stylesheet)s</style>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script>%(leowapp_js)s</script>
-        <title>%(title)s</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <style>%(default-stylesheet)s</style>
+    <style>%(user-stylesheet)s</style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script>%(leowapp_js)s</script>
+    <title>%(title)s</title>
     </head>
     """ % {
         'default-stylesheet': getData('leowapp-stylesheet'),
@@ -315,6 +318,36 @@ class leo_interface(object):
         'leowapp_js': leowapp_js,
         'title': escape(window.shortFileName() + ":" + headString)
     })
+    #@+node:ekr.20181028131729.1: *5* write_log_pane
+    def write_log_pane(self, f):
+        '''
+        Write the html for the log pane.
+        '''
+        # Don't use a triple string here: it would insert whitespace.
+        table = (
+            '<div class="logpane">',
+            '<pre>',
+            '<code class="log-code"></code>',
+            '</pre>',
+            '</div>',
+        )
+        for z in table:
+            f.write(z)
+    #@+node:ekr.20181028133546.1: *5* write_minibuffer_pane
+    def write_minibuffer_pane(self, f):
+        '''
+        Write the html for the log pane.
+        '''
+        # Don't use a triple string here: it would insert whitespace.
+        table = (
+            '<div class="minibufferpane">',
+            '<pre>',
+            '<code class="minibuffer-code"></code>',
+            '</pre>',
+            '</div>',
+        )
+        for z in table:
+            f.write(z)
     #@+node:ekr.20181028052650.25: *5* write_node_and_subtree
     def write_node_and_subtree(self, f, p):
 
