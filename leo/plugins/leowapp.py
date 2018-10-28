@@ -113,25 +113,24 @@ $(document).ready(function(){
 });
 """
 #@-<< leowapp_js >>
-#@+<< data >>
-#@+node:ekr.20181028151228.1: ** << data >>
 browser_encoding = 'utf-8'
   ### To do: query browser.
-config = g.Bunch(
-    ip='127.0.0.1',
-    port = 8100,
-    timeout = 0
-)
-for ivar, val in (
-    ('ip', g.app.config.getString("leowapp-ip")),
-    ('port', g.app.config.getInt("leowapp-port")),
-    ('timeout', g.app.config.getInt("leowapp-timeout")),
-):
-    if val is not None:
-        config[ivar] = val
 sockets_to_close = []
-#@-<< data >>
 #@+others
+#@+node:ekr.20181028154356.1: ** class Config
+class Config (object):
+    
+    ip = g.app.config.getString("leowapp-ip") or '127.0.0.1'
+    port = g.app.config.getInt("leowapp-port") or 8100
+    timeout = g.app.config.getInt("leowapp-timeout") or 0
+    
+    def __init__(self):
+        if self.timeout > 0:
+            self.timeout = self.timeout / 1000.0
+
+# Create a singleton instance.
+# The initial values probably should not be changed. 
+config = Config()
 #@+node:ekr.20181028052650.12: ** class delayedSocketStream
 class delayedSocketStream(asyncore.dispatcher_with_send):
     #@+others
@@ -166,6 +165,7 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
         ### pass
     #@+node:ekr.20181028052650.17: *3* writable
     def writable(self):
+        global sockets_to_close
         result = (not self.connected) or len(self.out_buffer)
         if not result:
             sockets_to_close.append(self)
@@ -840,6 +840,8 @@ def init():
     except socket.error as e:
         g.es("leowapp server initialization failed (%s:%s): %s" % (config.ip, config.port, e))
         return False
+    #
+    # Monkey patch a method.
     asyncore.read = a_read
     
     def plugin_wrapper(tag, keywords):
