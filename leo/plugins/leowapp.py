@@ -64,7 +64,7 @@ if g.isPython3:
     BytesIO = io.BytesIO
 else:
     import io
-    import StringIO # Python 2.x
+    import StringIO
     StringIO = StringIO.StringIO
     BytesIO = io.BytesIO
 import select
@@ -200,7 +200,7 @@ class leo_interface(object):
             path = self.split_leo_path(self.path)
             if len(path) == 1 and path[0] == 'favicon.ico':
                 return None
-                ### f = self.get_favicon()
+                # f = self.get_favicon()
             g.trace(path)
             if path == '/':
                 f = self.write_leo_windowlist()
