@@ -8,12 +8,12 @@
 #@@wrap
 '''Leo as a web app: contains python and javascript sides.
 
-StartLeo with the --gui=browser command-line option. This will show a
-"chooser page" in your default browser, showing one link for every open
-.leo file.
+**Now**: enable the leowapp.py plugin.
+**Later**: StartLeo with the --gui=browser command-line option.
 
-You can use the browser's refresh button to update the top-level view in
-the browser after you have opened or closed files.
+Open localhost:8100 in your browser.
+
+Use refresh to update the web page after opening or closing files.
 
 The web page contains::
 
@@ -81,15 +81,6 @@ import socket
 import time
 from xml.sax.saxutils import quoteattr
 #@-<< imports >>
-#@+<< data >>
-#@+node:ekr.20181028052650.4: ** << data >>
-browser_encoding = 'utf-8'
-    # To do: Can we query the browser for this?
-    # This encoding must match the character encoding used in your browser.
-    # If it does not, non-ascii characters will look very strange.
-
-sockets_to_close = []
-#@-<< data >>
 #@+<< leowapp_js >>
 #@+node:ekr.20181028071923.1: ** << leowapp_js >>
 #@@language javascript
@@ -130,6 +121,11 @@ $(document).ready(function(){
 });
 """
 #@-<< leowapp_js >>
+browser_encoding = 'utf-8'
+    ### Query the browser for this, using document.characterSet.
+        # This encoding must match the character encoding used in your browser.
+        # If it does not, non-ascii characters will look very strange.
+sockets_to_close = []
 #@+others
 #@+node:ekr.20181028052650.11: ** class config
 class config(object):
@@ -359,26 +355,25 @@ class leo_interface(object):
         f.write('</pre></div>')
     #@+node:ekr.20181028052650.24: *5* write_head
     def write_head(self, f, headString, window):
-
+        
         f.write("""\
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
     <html>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-        <style>%s</style>
-        <style>%s</style>
+        <style>%(default-stylesheet)s</style>
+        <style>%(user-stylesheet)s</style>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script>%s</script>
-        <title>%s</title>
+        <script>%(leowapp_js)s</script>
+        <title>%(title)s</title>
     </head>
-    """ % (
-        getData('leowapp_stylesheet'),
-        getData('leowapp_user_stylesheet'),
-        leowapp_js,
-        (escape(window.shortFileName() + ":" + headString)))
-    )
-
+    """ % {
+        'default-stylesheet': getData('leowapp_stylesheet'),
+        'user-stylesheet': getData('leowapp_user_stylesheet'),
+        'leowapp_js': leowapp_js,
+        'title': escape(window.shortFileName() + ":" + headString)
+    })
     #@+node:ekr.20181028052650.25: *5* write_node_and_subtree
     def write_node_and_subtree(self, f, p):
 
