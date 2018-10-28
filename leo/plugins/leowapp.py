@@ -52,7 +52,6 @@ import leo.core.leoGlobals as g
 import asynchat
 import asyncore
 import cgi
-### import json
 if g.isPython3:
     import http.server
     SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
@@ -68,13 +67,6 @@ else:
     import StringIO # Python 2.x
     StringIO = StringIO.StringIO
     BytesIO = io.BytesIO
-if g.isPython3:
-    # pylint: disable=no-name-in-module
-    import urllib.parse as urlparse
-else:
-    import urlparse
-assert urlparse ###
-### import os
 import select
 import shutil
 import socket
@@ -301,10 +293,7 @@ class leo_interface(object):
             f.write(z)
     #@+node:ekr.20181028052650.24: *5* write_head
     def write_head(self, f, headString, window):
-        
-        ### g.trace('=====')
-        ### g.printObj(g.splitLines(getData('leowapp-stylesheet')))
-        
+
         f.write("""\
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -504,7 +493,6 @@ class RequestHandler(
     #@+node:ekr.20181028052650.47: *3* __init__
     def __init__(self, conn, addr, server):
         
-        ### self.leo_actions = LeoActions(self)
         asynchat.async_chat.__init__(self, conn)
         self.client_address = addr
         self.connection = conn
@@ -515,8 +503,7 @@ class RequestHandler(
         self.term = g.toEncodedString('\r\n\r\n')
         self.set_terminator(self.term)
         self.buffer = BytesIO()
-        ### Set self.use_encoding and self.encoding.
-        ### This is used by asyn_chat.
+        # async_chat uses the use_encoding and encoding ivars.
         self.use_encoding = True
         self.encoding = 'utf-8'
     #@+node:ekr.20181028052650.48: *3* copyfile
@@ -809,7 +796,7 @@ def getData(setting):
 #@+node:ekr.20181028052650.5: ** init & helpers (leowapp.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    getGlobalConfiguration() ###
+    getGlobalConfiguration()
     try:
         Server(config.leowapp_ip, config.leowapp_port, RequestHandler)
     except socket.error as e:
@@ -849,7 +836,6 @@ def plugin_wrapper(tag, keywords):
 def onFileOpen(tag, keywords):
     c = keywords.get("new_c")
     g.trace('c',repr(c))
-    ### wasactive = config.leowapp_active
     getConfiguration(c)
     Server('', config.leowapp_port, RequestHandler)
     asyncore.read = a_read
