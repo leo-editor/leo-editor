@@ -272,10 +272,10 @@ class leo_interface(object):
             self.write_node_and_subtree(f, sib)
         f.write('</div>')
         f.write('</div>')
-        self.write_body_pane(f, root)
+        self.write_body_pane(f)
         f.write('</body></html>')
     #@+node:ekr.20181028052650.23: *5* write_body_pane
-    def write_body_pane(self, f, p):
+    def write_body_pane(self, f):
         '''
         Write (just once) a *template* for the body pane.
         
