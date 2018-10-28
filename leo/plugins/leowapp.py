@@ -116,16 +116,20 @@ $(document).ready(function(){
 #@+<< data >>
 #@+node:ekr.20181028151228.1: ** << data >>
 browser_encoding = 'utf-8'
-    ### Query the browser for this, using document.characterSet.
-        # This encoding must match the character encoding used in your browser.
-        # If it does not, non-ascii characters will look very strange.
+  ### To do: query browser.
 config = g.Bunch(
-    ip = '127.0.0.1',
+    ip='127.0.0.1',
     port = 8100,
-    timeout = 0,
-)   
+    timeout = 0
+)
+for ivar, val in (
+    ('ip', g.app.config.getString("leowapp-ip")),
+    ('port', g.app.config.getInt("leowapp-port")),
+    ('timeout', g.app.config.getInt("leowapp-timeout")),
+):
+    if val is not None:
+        config[ivar] = val
 sockets_to_close = []
-
 #@-<< data >>
 #@+others
 #@+node:ekr.20181028052650.12: ** class delayedSocketStream
@@ -828,10 +832,9 @@ def getData(setting):
     )
     s = ''.join(aList or [])
     return s
-#@+node:ekr.20181028052650.5: ** init & helpers (leowapp.py)
+#@+node:ekr.20181028052650.5: ** init (leowapp.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    update_config()
     try:
         Server(config.ip, config.port, RequestHandler)
     except socket.error as e:
@@ -849,22 +852,6 @@ def init():
     g.es("leowapp serving at %s:%s" % (config.ip, config.port), color="purple")
     g.plugin_signon(__name__)
     return True
-#@+node:ekr.20181028152828.1: *3* update_config
-def update_config():
-    
-    # ip.
-    ip = g.app.config.getString("leowapp-ip")
-    if ip:
-        config.ip = ip 
-    # port.
-    port = g.app.config.getInt("leowapp-port")
-    if port:
-        config.port = port
-    timeout = g.app.config.getInt("leowapp-timeout")
-    if timeout is not None:
-        config.timeout = timeout / 1000.0
-
-    
 #@-others
 #@@language python
 #@@tabwidth -4
