@@ -113,20 +113,21 @@ $(document).ready(function(){
 });
 """
 #@-<< leowapp_js >>
+#@+<< data >>
+#@+node:ekr.20181028151228.1: ** << data >>
 browser_encoding = 'utf-8'
     ### Query the browser for this, using document.characterSet.
         # This encoding must match the character encoding used in your browser.
         # If it does not, non-ascii characters will look very strange.
+config = g.Bunch(
+    ip = '127.0.0.1',
+    port = 8100,
+    timeout = 0,
+)   
 sockets_to_close = []
+
+#@-<< data >>
 #@+others
-#@+node:ekr.20181028052650.11: ** class config
-class config(object):
-
-    leowapp_timeout = 0
-    leowapp_ip = '127.0.0.1'
-    leowapp_port = 8100
-    ### We must have two ports
-
 #@+node:ekr.20181028052650.12: ** class delayedSocketStream
 class delayedSocketStream(asyncore.dispatcher_with_send):
     #@+others
@@ -166,8 +167,8 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
             sockets_to_close.append(self)
         return result
     #@-others
-#@+node:ekr.20181028052650.18: ** class leo_interface
-class leo_interface(object):
+#@+node:ekr.20181028052650.18: ** class LeoInterface
+class LeoInterface(object):
     # pylint: disable=no-member
         # .path, .send_error, .send_response and .end_headers
         # appear to be undefined.
@@ -517,7 +518,7 @@ class noLeoNodePath(Exception):
     pass
 #@+node:ekr.20181028052650.46: ** class RequestHandler
 class RequestHandler(
-    leo_interface,
+    LeoInterface,
     asynchat.async_chat,
     SimpleHTTPRequestHandler
 ):
@@ -769,7 +770,7 @@ def node_reference(vnode):
     """
     Use by the rst3 plugin.
     """
-    return leo_interface().node_reference(vnode)
+    return LeoInterface().node_reference(vnode)
 #@+node:ekr.20181028052650.69: *3* poll
 def poll(timeout=0.0):
     global sockets_to_close
@@ -830,64 +831,40 @@ def getData(setting):
 #@+node:ekr.20181028052650.5: ** init & helpers (leowapp.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    getGlobalConfiguration()
+    update_config()
     try:
-        Server(config.leowapp_ip, config.leowapp_port, RequestHandler)
+        Server(config.ip, config.port, RequestHandler)
     except socket.error as e:
-        g.es("mod_http server initialization failed (%s:%s): %s" % (
-            config.leowapp_ip, config.leowapp_port, e))
+        g.es("leowapp server initialization failed (%s:%s): %s" % (config.ip, config.port, e))
         return False
     asyncore.read = a_read
+    
+    def plugin_wrapper(tag, keywords):
+        if g.app.killed:
+            return
+        while loop(config.timeout):
+            pass
+
     g.registerHandler("idle", plugin_wrapper)
-    g.es("leowapp serving at %s:%s" % (
-        config.leowapp_ip,
-        config.leowapp_port), color="purple")
+    g.es("leowapp serving at %s:%s" % (config.ip, config.port), color="purple")
     g.plugin_signon(__name__)
     return True
-#@+node:ekr.20181028052650.6: *3* getGlobalConfiguration
-def getGlobalConfiguration():
-    """read config."""
-    # timeout.
-    newtimeout = g.app.config.getInt("leowapp-timeout")
-    if newtimeout is not None:
-        config.leowapp_timeout = newtimeout / 1000.0
+#@+node:ekr.20181028152828.1: *3* update_config
+def update_config():
+    
     # ip.
-    newip = g.app.config.getString("leowapp-ip")
-    if newip:
-        config.leowapp_ip = newip
+    ip = g.app.config.getString("leowapp-ip")
+    if ip:
+        config.ip = ip 
     # port.
-    newport = g.app.config.getInt("leowapp-port")
-    if newport:
-        config.leowapp_port = newport
-#@+node:ekr.20181028052650.7: *3* plugin_wrapper
-def plugin_wrapper(tag, keywords):
-    if g.app.killed:
-        return
-    # first = True
-    while loop(config.leowapp_timeout):
-        pass
-#@+node:ekr.20181028052650.8: *3* onFileOpen (not used)
-def onFileOpen(tag, keywords):
-    c = keywords.get("new_c")
-    g.trace('c',repr(c))
-    getConfiguration(c)
-    Server('', config.leowapp_port, RequestHandler)
-    asyncore.read = a_read
-    g.registerHandler("idle", plugin_wrapper)
-    g.es("leowapp serving on port %s, " % (
-        config.leowapp_port),
-        color="purple")
-#@+node:ekr.20181028052650.9: *3* getConfiguration (not used)
-def getConfiguration(c):
-    """Called when the user opens a new file."""
-    # timeout.
-    newtimeout = c.config.getInt("leowapp-timeout")
-    if newtimeout is not None:
-        config.leowapp_timeout = newtimeout / 1000.0
-    # port.
-    newport = c.config.getInt("leowapp-port")
-    if newport:
-        config.leowapp_port = newport
+    port = g.app.config.getInt("leowapp-port")
+    if port:
+        config.port = port
+    timeout = g.app.config.getInt("leowapp-timeout")
+    if timeout is not None:
+        config.timeout = timeout / 1000.0
+
+    
 #@-others
 #@@language python
 #@@tabwidth -4
