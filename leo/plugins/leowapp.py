@@ -48,36 +48,36 @@ The web page contains::
 #@+node:ekr.20181028052650.3: ** << imports >>
 # pylint: disable=deprecated-method
     # parse_qs
+
 import leo.core.leoGlobals as g
-import asynchat
-import asyncore
-import cgi
 if g.isPython3:
-    import http.server
-    SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
+    import asynchat
+    import asyncore
+    import cgi
+    from http.server import SimpleHTTPRequestHandler
+    from io import BytesIO, StringIO
+    import select
+    import shutil
+    import socket
+    import time
+    from xml.sax.saxutils import quoteattr
+    from xml.sax.saxutils import escape as esc
 else:
-    import SimpleHTTPServer
-    SimpleHTTPRequestHandler = SimpleHTTPServer.SimpleHTTPRequestHandler
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-    BytesIO = io.BytesIO
-else:
-    import io
-    import StringIO
-    StringIO = StringIO.StringIO
-    BytesIO = io.BytesIO
-import select
-import shutil
-import socket
-import time
-from xml.sax.saxutils import quoteattr
+    print('leowapp.py requires Python 3')
 #@-<< imports >>
 #@+<< leowapp_js >>
 #@+node:ekr.20181028071923.1: ** << leowapp_js >>
 #@@language javascript
 
 leowapp_js = """\
+
+socket= new WebSocket('127.0.0.1:8001/');
+    // https://stackoverflow.com/questions/1736382/how-to-use-sockets-in-javascript-html
+
+// require(http)
+    // ReferenceError: require is not defined
+    //https://stackoverflow.com/questions/19059580
+
 $(document).ready(function(){
     // Toggle (hide) all but top-level *nodes*.
     // Headlines are *always* visible.
@@ -93,22 +93,41 @@ $(document).ready(function(){
     $("div.headline").click(function(e){
         e.stopImmediatePropagation()
             // Google: jquery click event called twice.
+        //
         // Toggle the expansion state.
         $(e.target).parent().children("div.node").toggle()
+        //
         // Set the body text.
         $(".body-code").text($(e.target).attr("b"));
+        //
         // Set the border
         $("div.headline").removeClass('borderclass');
         $("div.headline").addClass('unborderclass');
         $(e.target).removeClass('unborderclass');
         $(e.target).addClass('borderclass');
-        // console.clear();
-        // console.log($(e.target));
-        // console.log($(e.target).children("div.node").length);
-        // console.log($(e.target).children("div.node").children("div.headline").length);
-        //console.log($(e.target).attr("b").length);
-        //console.log($(e.target).children(":first"));
-        //console.log($(e.target).children(":first").is(":visible"));
+        //
+        // POST to the python server.
+        var x = new XMLHttpRequest();
+        x.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                // document.getElementById("demo").innerHTML = this.responseText;
+                window.alert(this.responseText);
+           }
+        };
+        x.open("GET", "clicked.txt", true);
+        // POST isn't handled properly in the Python.
+        // x.open("POST", "clicked.py", true);
+        x.send();
+        
+        //
+            //window.alert($(e.target));
+            //console.clear();
+            //console.log($(e.target));
+            // console.log($(e.target).children("div.node").length);
+            // console.log($(e.target).children("div.node").children("div.headline").length);
+            //console.log($(e.target).attr("b").length);
+            //console.log($(e.target).children(":first"));
+            //console.log($(e.target).children(":first").is(":visible"));
     });
 });
 """
@@ -418,7 +437,7 @@ class RequestHandler(
     # pylint: disable=too-many-ancestors
     # pylint: disable=super-init-not-called
     #@+others
-    #@+node:ekr.20181028052650.47: *3* __init__
+    #@+node:ekr.20181028052650.47: *3* req.__init__
     def __init__(self, conn, addr, server):
         
         asynchat.async_chat.__init__(self, conn)
@@ -434,7 +453,7 @@ class RequestHandler(
         # async_chat uses the use_encoding and encoding ivars.
         self.use_encoding = True
         self.encoding = 'utf-8'
-    #@+node:ekr.20181028052650.48: *3* copyfile
+    #@+node:ekr.20181028052650.48: *3* req.copyfile
     def copyfile(self, source, outputfile):
         """Copy all data between two file objects.
 
@@ -449,7 +468,7 @@ class RequestHandler(
         to copy binary data as well.
          """
         shutil.copyfileobj(source, outputfile, length=255)
-    #@+node:ekr.20181028052650.49: *3* log_message
+    #@+node:ekr.20181028052650.49: *3* req.log_message
     def log_message(self, format, *args):
         """Log an arbitrary message.
 
@@ -471,34 +490,43 @@ class RequestHandler(
             self.log_date_time_string(),
             format % args)
         g.es(message)
-    #@+node:ekr.20181028052650.50: *3* collect_incoming_data
+    #@+node:ekr.20181028052650.50: *3* req.collect_incoming_data
     def collect_incoming_data(self, data):
         """Collects the data arriving on the connexion"""
         self.buffer.write(data)
-    #@+node:ekr.20181028052650.51: *3* prepare_POST
+    #@+node:ekr.20181028052650.51: *3* req.prepare_POST
     def prepare_POST(self):
         """Prepare to read the request body"""
-        bytesToRead = int(self.headers.getheader('content-length'))
+        try:
+            bytesToRead = int(self.headers.getheader('content-length'))
+        except Exception:
+            g.trace(self.headers)
+            g.es_exception()
+            return
         # set terminator to length (will read bytesToRead bytes)
         self.set_terminator(bytesToRead)
         self.buffer = StringIO()
         # control will be passed to a new found_terminator
         self.found_terminator = self.handle_post_data
-    #@+node:ekr.20181028052650.52: *3* handle_post_data
+    #@+node:ekr.20181028052650.52: *3* req.handle_post_data
     def handle_post_data(self):
         """Called when a POST request body has been read"""
         self.rfile = StringIO(self.buffer.getvalue())
         self.do_POST()
         self.finish()
-    #@+node:ekr.20181028052650.53: *3* do_GET
+    #@+node:ekr.20181028052650.53: *3* req.do_GET
     def do_GET(self):
         """Begins serving a GET request"""
         # nothing more to do before handle_data()
         self.handle_data()
-    #@+node:ekr.20181028052650.54: *3* do_POST
+    #@+node:ekr.20181028052650.54: *3* req.do_POST
     def do_POST(self):
-        """Begins serving a POST request. The request data must be readable
-         on a file-like object called self.rfile"""
+        """
+        Begins serving a POST request.
+        
+        The request data must be readable on a file-like object called
+        self.rfile
+        """
         ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
         length = int(self.headers.getheader('content-length'))
         if ctype == 'multipart/form-data':
@@ -514,7 +542,7 @@ class RequestHandler(
             self.rfile.read(2)
         self.QUERY.update(self.query(query))
         self.handle_data()
-    #@+node:ekr.20181028052650.55: *3* query
+    #@+node:ekr.20181028052650.55: *3* req.query
     def query(self, parsedQuery):
         """Returns the QUERY dictionary, similar to the result of cgi.parse_qs
          except that :
@@ -529,47 +557,45 @@ class RequestHandler(
             else:
                 res[item] = value[0] if value else ''
         return res
-    #@+node:ekr.20181028052650.56: *3* handle_data
+    #@+node:ekr.20181028052650.56: *3* req.handle_data
     def handle_data(self):
         """Class to override"""
         f = self.send_head()
         if f:
             self.copyfile(f, self.wfile)
-    #@+node:ekr.20181028052650.57: *3* handle_read_event (NEW)
+    #@+node:ekr.20181028052650.57: *3* req.handle_read_event (NEW)
     def handle_read_event(self):
         '''Over-ride SimpleHTTPRequestHandler.handle_read_event.'''
         asynchat.async_chat.handle_read_event(self)
-    #@+node:ekr.20181028052650.58: *3* handle_request_line (aka found_terminator)
+    #@+node:ekr.20181028052650.58: *3* req.handle_request_line (aka found_terminator)
     def handle_request_line(self):
         """Called when the http request line and headers have been received"""
         # prepare attributes needed in parse_request()
         self.rfile = BytesIO(self.buffer.getvalue())
         self.raw_requestline = self.rfile.readline()
         self.parse_request()
-        # if there is a Query String, decodes it in a QUERY dictionary
+        #
+        # if there is a Query String, decode it in a QUERY dictionary
         self.path_without_qs, self.qs = self.path, ''
         if self.path.find('?') >= 0:
             self.qs = self.path[self.path.find('?') + 1:]
             self.path_without_qs = self.path[: self.path.find('?')]
         self.QUERY = self.query(cgi.parse_qs(self.qs, 1))
-        if self.command in ['GET', 'HEAD']:
-            # if method is GET or HEAD, call do_GET or do_HEAD and finish
-            method = "do_" + self.command
-            if hasattr(self, method):
-                f = getattr(self, method)
-                f()
-                self.finish()
+        if self.QUERY: g.trace(self.QUERY) ###
+        if self.command in ('GET', 'HEAD'):
+            f = getattr(self, "do_" + self.command, None)
+            f()
+            self.finish()
         elif self.command == "POST":
-            # if method is POST, call prepare_POST, don't finish before
             self.prepare_POST()
         else:
             self.send_error(501, "Unsupported method (%s)" % self.command)
-    #@+node:ekr.20181028052650.59: *3* found_terminator
+    #@+node:ekr.20181028052650.59: *3* req.found_terminator
     def found_terminator(self):
         # pylint: disable=method-hidden
         # Control may be passed to another found_terminator.
         self.handle_request_line()
-    #@+node:ekr.20181028052650.60: *3* finish
+    #@+node:ekr.20181028052650.60: *3* req.finish
     def finish(self):
         """Reset terminator (required after POST method), then close"""
         self.set_terminator(self.term)
@@ -616,8 +642,6 @@ def escape(s):
     There is no need to convert leading blanks to &nbsp; because the body
     and log panes use <pre> elements.
     '''
-    from xml.sax.saxutils import escape as esc
-
     return esc(s, {
          '\n': '<br />',
          '\t': '&nbsp;&nbsp;&nbsp;&nbsp;',
@@ -635,6 +659,11 @@ def get_data(setting):
 #@+node:ekr.20181028052650.5: *3* init (leowapp.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    #
+    # LeoWapp should require Python 3, for safety and convenience.
+    if not g.isPython3:
+        return False
+    
     try:
         Server(config.ip, config.port, RequestHandler)
     except socket.error as e:
@@ -645,9 +674,8 @@ def init():
     asyncore.read = a_read
     
     def plugin_wrapper(tag, keywords):
-        if g.app.killed:
-            return
-        while loop(config.timeout):
+        global config
+        while not g.app.killed and loop(config.timeout):
             pass
 
     g.registerHandler("idle", plugin_wrapper)
