@@ -107,10 +107,8 @@ $(document).ready(function(){
     'port': config.port,
 }
 #@-<< javascript >>
-browser_encoding = 'utf-8'
-    ### To do: query browser: var x = document.characterSet; 
-sockets_to_close = []
-    ### To be deleted.
+# browser_encoding = 'utf-8'
+    # To do: query browser: var x = document.characterSet; 
 #@+others
 #@+node:ekr.20181028052650.5: ** init (leowapp.py)
 def init():
