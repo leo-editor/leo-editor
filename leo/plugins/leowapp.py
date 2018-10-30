@@ -2,6 +2,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20181028052650.1: * @file leowapp.py
 #@@first
+#@@language python
+#@@tabwidth -4
 #@+<< docstring >>
 #@+node:ekr.20181028052650.2: ** << docstring >>
 #@@language rest
@@ -153,6 +155,4 @@ def ws_server():
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()
 #@-others
-#@@language python
-#@@tabwidth -4
 #@-leo
