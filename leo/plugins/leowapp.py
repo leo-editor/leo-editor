@@ -79,43 +79,48 @@ class Config (object):
     # ip = g.app.config.getString("leowapp-ip") or '127.0.0.1'
     # port = g.app.config.getInt("leowapp-port") or 8100
     # timeout = g.app.config.getInt("leowapp-timeout") or 0
+    # if timeout > 0: timeout = timeout / 1000.0
     
     ip = '127.0.0.1'
-    port = 80
+    port = 8100
     timeout = 0
-    
-    def __init__(self):
-        if self.timeout > 0:
-            self.timeout = self.timeout / 1000.0
 
 # Create a singleton instance.
 # The initial values probably should not be changed. 
 config = Config()
 #@-<< config >>
-#@+<< leowapp_js >>
-#@+node:ekr.20181028071923.1: ** << leowapp_js >>
-#@@language javascript
+use_websockets = False
+if use_websockets:
+    #@+<< leowapp_js (websockets) >>
+    #@+node:ekr.20181028071923.1: ** << leowapp_js (websockets) >>
+    #@@language javascript
 
-leowapp_js = """\
+    leowapp_js = """\
 
-$(document).ready(function(){
+    // var ws = new WebSocket("ws://127.0.0.1:5678/"),
+        // messages = document.createElement('ul');
 
-    // ws uses port 80, wss uses port 443.
-    // https://websockets.readthedocs.io/en/stable/intro.html
-    if (1) {
-        ws = new WebSocket('ws://%(ip)s:%(port)s/')
-        // , messages = document.createElement('ul');
-        // ws.onmessage = function (event) {
-            // window.alert(event.data)
-            // // var messages = document.getElementsByTagName('ul')[0],
-                // // message = document.createElement('li'),
-                // // content = document.createTextNode(event.data);
-            // // message.appendChild(content);
-            // // messages.appendChild(message);
-        // };
-        // document.body.appendChild(messages);
-            // // TypeError: document.body is null
-    } else {
+    $(document).ready(function(){
+        
+        var ws = new WebSocket("ws://127.0.0.1:5678/"),
+            messages = document.createElement('ul');
+        ws.onmessage = function (event) {
+            var messages = document.getElementsByTagName('ul')[0],
+                message = document.createElement('li'),
+                content = document.createTextNode(event.data);
+            message.appendChild(content);
+            messages.appendChild(message);
+        };
+        document.body.appendChild(messages);
+    };
+    """
+    #@-<< leowapp_js (websockets) >>
+else:
+    #@+<< leowapp_js (mod_http) >>
+    #@+node:ekr.20181030042807.1: ** << leowapp_js (mod_http) >>
+    #@@language javascript
+    leowapp_js = """\
+    $(document).ready(function(){
         // $("headline").attr("icon_url", "http://leoeditor.com/box" + $("headline").attr("icon") + ".GIF")
             // Works, but I haven't found how to use it.
         // Toggle (hide) all but top-level *nodes*.
@@ -146,15 +151,10 @@ $(document).ready(function(){
             //console.log($(e.target).attr("b").length);
             //console.log($(e.target).children(":first"));
             //console.log($(e.target).children(":first").is(":visible"));
-        });
-    }; // end else.
-}); // end ready.
-""" % {
-    'ip': config.ip,
-    'port': config.port,
-}
-
-#@-<< leowapp_js >>
+        }); // end click
+    });
+    """
+    #@-<< leowapp_js (mod_http) >>
 browser_encoding = 'utf-8'
     ### To do: query browser: var x = document.characterSet; 
 sockets_to_close = []
@@ -248,7 +248,10 @@ class LeoInterface(object):
                         self.send_error(404, "No root node")
                         return None
                     f = StringIO()
-                    self.write_leo_tree(f, window, root)
+                    if use_websockets:
+                        self.write_minimal_html(f)
+                    else:
+                        self.write_leo_tree(f, window, root)
                 except nodeNotFound:
                     self.send_error(404, "Node not found")
                     return None
@@ -427,6 +430,26 @@ class LeoInterface(object):
             })
         f.write('</ul><hr /></body></html>')
         return f
+    #@+node:ekr.20181030044605.1: *4* leo_i.write_minimal_html
+    def write_minimal_html(self, f):
+        
+        table = (
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"',
+            '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
+            '<html>',
+            '<head>',
+                '<meta http-equiv="content-type" content="text/html; charset=UTF-8" />',
+                # '<style>%(default-stylesheet)s</style>',
+                # '<style>%(user-stylesheet)s</style>',
+                # '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>',
+                '<script>%s</script>' % leowapp_js,
+                '<title>%(title)s</title>',
+            '</head>',
+            '<body></body>',
+            '</html>',
+        )
+        for s in table:
+            f.write(s)
     #@-others
 #@+node:ekr.20181028052650.44: ** class nodeNotFound
 class nodeNotFound(Exception):
