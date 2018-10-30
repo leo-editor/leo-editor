@@ -62,86 +62,27 @@ if g.isPython3:
     import time
     from xml.sax.saxutils import quoteattr
     from xml.sax.saxutils import escape as esc
+    try:
+        import websockets
+        assert websockets
+    except ImportError:
+        websockets = None
+        print('leowapp.py requires websockets')
+        print('pip install websockets')
 else:
     print('leowapp.py requires Python 3')
 #@-<< imports >>
-#@+<< leowapp_js >>
-#@+node:ekr.20181028071923.1: ** << leowapp_js >>
-#@@language javascript
-
-leowapp_js = """\
-
-socket= new WebSocket('127.0.0.1:8001/');
-    // https://stackoverflow.com/questions/1736382/how-to-use-sockets-in-javascript-html
-
-// require(http)
-    // ReferenceError: require is not defined
-    //https://stackoverflow.com/questions/19059580
-
-$(document).ready(function(){
-    // Toggle (hide) all but top-level *nodes*.
-    // Headlines are *always* visible.
-    $("div.node").hide()
-    $(".outlinepane").children("div.node").show();
-    // Attach borders to *headlines*.
-    $("div.headline").addClass('unborderclass')
-    $(".outlinepane").children("div.node").children("div.headline:first").removeClass('unborderclass');
-    $(".outlinepane").children("div.node").children("div.headline:first").addClass('borderclass');
-    // Set h attributes for css
-    // $("headline").attr("icon_url", "http://leoeditor.com/box" + $("headline").attr("icon") + ".GIF")
-        // Works, but I haven't found how to use it.
-    $("div.headline").click(function(e){
-        e.stopImmediatePropagation()
-            // Google: jquery click event called twice.
-        //
-        // Toggle the expansion state.
-        $(e.target).parent().children("div.node").toggle()
-        //
-        // Set the body text.
-        $(".body-code").text($(e.target).attr("b"));
-        //
-        // Set the border
-        $("div.headline").removeClass('borderclass');
-        $("div.headline").addClass('unborderclass');
-        $(e.target).removeClass('unborderclass');
-        $(e.target).addClass('borderclass');
-        //
-        // POST to the python server.
-        var x = new XMLHttpRequest();
-        x.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                // document.getElementById("demo").innerHTML = this.responseText;
-                window.alert(this.responseText);
-           }
-        };
-        x.open("GET", "clicked.txt", true);
-        // POST isn't handled properly in the Python.
-        // x.open("POST", "clicked.py", true);
-        x.send();
-        
-        //
-            //window.alert($(e.target));
-            //console.clear();
-            //console.log($(e.target));
-            // console.log($(e.target).children("div.node").length);
-            // console.log($(e.target).children("div.node").children("div.headline").length);
-            //console.log($(e.target).attr("b").length);
-            //console.log($(e.target).children(":first"));
-            //console.log($(e.target).children(":first").is(":visible"));
-    });
-});
-"""
-#@-<< leowapp_js >>
-browser_encoding = 'utf-8'
-  ### To do: query browser: var x = document.characterSet; 
-sockets_to_close = []
-#@+others
-#@+node:ekr.20181028154356.1: ** class Config
+#@+<< config >>
+#@+node:ekr.20181029070405.1: ** << config >>
 class Config (object):
     
-    ip = g.app.config.getString("leowapp-ip") or '127.0.0.1'
-    port = g.app.config.getInt("leowapp-port") or 8100
-    timeout = g.app.config.getInt("leowapp-timeout") or 0
+    # ip = g.app.config.getString("leowapp-ip") or '127.0.0.1'
+    # port = g.app.config.getInt("leowapp-port") or 8100
+    # timeout = g.app.config.getInt("leowapp-timeout") or 0
+    
+    ip = '127.0.0.1'
+    port = 80
+    timeout = 0
     
     def __init__(self):
         if self.timeout > 0:
@@ -150,6 +91,75 @@ class Config (object):
 # Create a singleton instance.
 # The initial values probably should not be changed. 
 config = Config()
+#@-<< config >>
+#@+<< leowapp_js >>
+#@+node:ekr.20181028071923.1: ** << leowapp_js >>
+#@@language javascript
+
+leowapp_js = """\
+
+$(document).ready(function(){
+
+    // ws uses port 80, wss uses port 443.
+    // https://websockets.readthedocs.io/en/stable/intro.html
+    if (1) {
+        ws = new WebSocket('ws://%(ip)s:%(port)s/')
+        // , messages = document.createElement('ul');
+        // ws.onmessage = function (event) {
+            // window.alert(event.data)
+            // // var messages = document.getElementsByTagName('ul')[0],
+                // // message = document.createElement('li'),
+                // // content = document.createTextNode(event.data);
+            // // message.appendChild(content);
+            // // messages.appendChild(message);
+        // };
+        // document.body.appendChild(messages);
+            // // TypeError: document.body is null
+    } else {
+        // $("headline").attr("icon_url", "http://leoeditor.com/box" + $("headline").attr("icon") + ".GIF")
+            // Works, but I haven't found how to use it.
+        // Toggle (hide) all but top-level *nodes*.
+        $("div.node").hide()
+        $(".outlinepane").children("div.node").show();
+        // Attach borders to *headlines*.
+        $("div.headline").addClass('unborderclass')
+        $(".outlinepane").children("div.node").children("div.headline:first").removeClass('unborderclass');
+        $(".outlinepane").children("div.node").children("div.headline:first").addClass('borderclass');
+        // Set h attributes for css
+        $("div.headline").click(function(e){
+            // Prevent jquery click event from being called twice.
+            e.stopImmediatePropagation()
+            // Toggle the expansion state.
+            $(e.target).parent().children("div.node").toggle()
+            // Set the body text.
+            $(".body-code").text($(e.target).attr("b"));
+            // Set the border
+            $("div.headline").removeClass('borderclass');
+            $("div.headline").addClass('unborderclass');
+            $(e.target).removeClass('unborderclass');
+            $(e.target).addClass('borderclass');
+            //window.alert($(e.target));
+            //console.clear();
+            //console.log($(e.target));
+            // console.log($(e.target).children("div.node").length);
+            // console.log($(e.target).children("div.node").children("div.headline").length);
+            //console.log($(e.target).attr("b").length);
+            //console.log($(e.target).children(":first"));
+            //console.log($(e.target).children(":first").is(":visible"));
+        });
+    }; // end else.
+}); // end ready.
+""" % {
+    'ip': config.ip,
+    'port': config.port,
+}
+
+#@-<< leowapp_js >>
+browser_encoding = 'utf-8'
+    ### To do: query browser: var x = document.characterSet; 
+sockets_to_close = []
+    ### To be deleted.
+#@+others
 #@+node:ekr.20181028052650.12: ** class delayedSocketStream
 class delayedSocketStream(asyncore.dispatcher_with_send):
     #@+others
@@ -663,7 +673,8 @@ def init():
     # LeoWapp should require Python 3, for safety and convenience.
     if not g.isPython3:
         return False
-    
+    if not websockets:
+        return False
     try:
         Server(config.ip, config.port, RequestHandler)
     except socket.error as e:
