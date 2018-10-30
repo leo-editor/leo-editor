@@ -164,6 +164,10 @@
 <v t="tbrown.20110428144124.29061"><vh>@file xml_edit.py</vh></v>
 <v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
 </v>
+<v t="ekr.20181030041210.1"><vh>Gui</vh>
+<v t="ekr.20150107090324.1"><vh>@file cursesGui.py</vh></v>
+<v t="ekr.20170419092835.1"><vh>@file cursesGui2.py</vh></v>
+</v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>
 <v t="ekr.20140723122936.17926"><vh>@file importers/c.py</vh></v>
@@ -187,8 +191,7 @@
 <v t="ekr.20140723122936.18147"><vh>@file importers/pascal.py</vh></v>
 <v t="ekr.20161027100313.1"><vh>@file importers/perl.py</vh></v>
 <v t="ekr.20140723122936.18148"><vh>@file importers/php.py</vh></v>
-<v t="ekr.20140723122936.18149"
-expanded="ekr.20161119083054.1,"><vh>@file importers/python.py</vh></v>
+<v t="ekr.20140723122936.18149"><vh>@file importers/python.py</vh></v>
 <v t="ekr.20170615153639.2"><vh>@file importers/tcl.py</vh></v>
 <v t="ekr.20180201203240.2"><vh>@file importers/treepad.py</vh></v>
 <v t="ekr.20140723122936.18152"><vh>@file importers/typescript.py</vh></v>
@@ -2898,6 +2901,7 @@ print('done! wrote %s' % fn)
 <t tx="ekr.20180504191650.68"></t>
 <t tx="ekr.20180504192522.1"></t>
 <t tx="ekr.20180504193756.1"></t>
+<t tx="ekr.20181030041210.1"></t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
 </tnodes>
