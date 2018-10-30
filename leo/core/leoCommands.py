@@ -2453,6 +2453,10 @@ class Commands(object):
             # Save the root's body. Somehow the dialog destroys it!
         if c.import_error_nodes or c.ignored_at_file_nodes:
             g.app.gui.dismiss_splash_screen()
+        else:
+            # #1007: Exit now, so we don't have to restore c.rootPosition().b.
+            c.init_error_dialogs()
+            return
         if c.import_error_nodes:
             files = '\n'.join(sorted(set(c.import_error_nodes)))
             if use_dialogs:
@@ -2474,8 +2478,9 @@ class Commands(object):
             else:
                 g.es('not %s (@ignore)...' % (kind), color='red')
                 g.es(files, color='blue')
-        # Restore the root position.
-        c.rootPosition().b = saved_body
+        # Restore the root position's body.
+        c.rootPosition().v.b = saved_body
+            # #1007: just set v.b.
         c.init_error_dialogs()
     #@+node:ekr.20150710083827.1: *5* c.syntaxErrorDialog
     def syntaxErrorDialog(self):
