@@ -1525,16 +1525,17 @@ finally:
 #@+node:ekr.20130912092638.4151: *4* @test utf-16 encoding
 import sys
 if g.app.isExternalUnitTest:
-    if sys.platform.startswith('linux'):
-        self.skipTest('external linux test')
-    else:
-        path = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','utf-16-test.txt')
-        assert g.os_path_exists(path)
-        f = open(path,'r')
-        s = f.read()
-        f.close()
-        s = g.toUnicode(s,encoding='utf-16')
-        assert s.find('Test of utf-16.') > -1,s
+    self.skipTest('external test')
+    # if sys.platform.startswith('linux'):
+        # self.skipTest('external linux test')
+    # else:
+        # path = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','utf-16-test.txt')
+        # assert g.os_path_exists(path)
+        # f = open(path,'r')
+        # s = f.read()
+        # f.close()
+        # s = g.toUnicode(s,encoding='utf-16')
+        # assert s.find('Test of utf-16.') > -1,s
 else:
     h = '@file unittest/utf-16-test.txt'
     p = g.findNodeAnywhere(c,h)
@@ -4777,6 +4778,9 @@ finally:
 #@+node:ekr.20111124090010.3939: *4* @test g.app.config @buttons and @commands logic
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+if getattr(g.app, 'isBrowserTest', None):
+    # Set only in test_browser_gui.py.
+    self.skipTest('Browser Gui test')
 d = g.app.config.unitTestDict # Always created for this unit test.
 keys = ('config.doButtons-file-names','config.doCommands-file-names')
 for key in keys:
@@ -4786,6 +4790,8 @@ for key in keys:
             if base+ext in aList:
                 break
         else:
+            print('key', key, 'ext', ext, 'base', base)
+            g.printObj(aList)
             assert False,'%s not in unitTestDict[%s]' % (base,key)
 #@+node:ekr.20050203084930.1: *4* @test g.app.config.get
 w = g.app.config.get('global_setting_for_unit_tests','int')
@@ -25768,13 +25774,11 @@ assert x.last_error.startswith('can not delete xyzzy'), x.last_error
 #@+node:ekr.20100131171342.5612: *3* leoTest
 #@+node:ekr.20111102122424.3975: *4* @test all unit tests have access to sources
 if c.shortFileName() == 'dynamicUnitTest.leo':
-    
-    setting = 'c.write_script_file'
-    assert c.write_script_file is True,'fail1: %s should be hard set' % (setting)
-    
+    setting = 'c.write-script-file'
+    assert c.write_script_file,'fail 1: %s should be hard set' % (setting)
 else:
-    setting = "c.config.getBool('write_script_file')"
-    assert c.write_script_file is True,'fail2: check %s' % (setting)
+    setting = "c.config.getBool('write-script-file')"
+    assert c.write_script_file,'fail 2: check %s' % (setting)
 #@+node:ekr.20111105221757.3833: *4* @test TM.findAllUnitTestNodes
 p1 = p.copy()
 

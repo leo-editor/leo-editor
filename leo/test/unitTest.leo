@@ -11,40 +11,78 @@
 <v t="ekr.20161123080832.1"><vh>@button make-table</vh></v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
-<v t="ekr.20150216110251.11"><vh>@persistence</vh></v>
+<v t="ekr.20150216110251.11"><vh>@persistence</vh>
+<v t="ekr.20181031152735.1"><vh>@data:#@auto</vh></v>
+<v t="ekr.20181031152735.2"><vh>@data:#@auto</vh>
+<v t="ekr.20181031152735.3"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20181031152735.4"><vh>@data:#@auto</vh></v>
+<v t="ekr.20181031152735.5"><vh>@data:#@auto</vh>
+<v t="ekr.20181031152735.6"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20181031152738.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
+<v t="ekr.20181031152738.11"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20181031152738.12"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.org</vh>
+<v t="ekr.20181031152738.20"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20181031152738.21"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.otl</vh>
+<v t="ekr.20181031152738.28"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20181031152738.29"><vh>@data:@auto unittest/at-auto-unit-test.py</vh>
+<v t="ekr.20181031152738.43"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20181031154748.1"><vh>@data:#@auto</vh></v>
+<v t="ekr.20181031154748.2"><vh>@data:#@auto</vh>
+<v t="ekr.20181031154748.3"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20181031154748.4"><vh>@data:#@auto</vh></v>
+<v t="ekr.20181031154748.5"><vh>@data:#@auto</vh>
+<v t="ekr.20181031154748.6"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20181031154902.1"><vh>@data:#@auto</vh></v>
+<v t="ekr.20181031154902.2"><vh>@data:#@auto</vh>
+<v t="ekr.20181031154902.3"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20181031154902.4"><vh>@data:#@auto</vh></v>
+<v t="ekr.20181031154902.5"><vh>@data:#@auto</vh>
+<v t="ekr.20181031154902.6"><vh>@gnxs</vh></v>
+</v>
+</v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
-<v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
-<v t="ekr.20161011095551.1"><vh>@bool allow_section_references_in_at_auto = True</vh></v>
-<v t="ekr.20101009105124.6195"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
+<v t="ekr.20080324133327.2"><vh>@bool allow-middle-button-paste = True</vh></v>
+<v t="ekr.20161011095551.1"><vh>@bool allow-section-references-in-at-auto = True</vh></v>
+<v t="ekr.20101009105124.6195"><vh>@bool put-expansion-bits-in-leo-files = True</vh></v>
 <v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20161129030232.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
 <v t="ekr.20140217055617.4231"><vh>@bool scriptingatscriptnodes = True</vh></v>
 <v t="ekr.20180214042153.1"><vh>@bool select-next-after-delete = False</vh></v>
-<v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
-<v t="ekr.20150602215639.1"><vh>@bool tidy_autobeautify = False</vh></v>
-<v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
-<v t="ekr.20150321155210.11"><vh>@bool verbose_check_outline = False</vh></v>
-<v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
-<v t="ekr.20170415084531.1"><vh>@data import_html_tags</vh></v>
-<v t="ekr.20111026111009.3972"><vh>@data import_xml_tags</vh></v>
+<v t="ekr.20051013162226"><vh>@bool test-setting = True</vh></v>
+<v t="ekr.20150602215639.1"><vh>@bool tidy-autobeautify = False</vh></v>
+<v t="ekr.20070503064257"><vh>@bool use-chapters = True</vh></v>
+<v t="ekr.20150321155210.11"><vh>@bool verbose-check-outline = False</vh></v>
+<v t="ekr.20070528100318"><vh>@bool write-strips-blank-lines = False</vh></v>
+<v t="ekr.20181031152556.1"><vh>@bool write-script-file = True</vh></v>
+<v t="ekr.20170415084531.1"><vh>@data import-html-tags</vh></v>
+<v t="ekr.20111026111009.3972"><vh>@data import-xml-tags</vh></v>
 <v t="ekr.20111123042627.6654"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20050328101834"><vh>@page http plugin</vh>
-<v t="ekr.20050328101834.1"><vh>@bool http_active = False</vh></v>
+<v t="ekr.20050328101834.1"><vh>@bool http-active = False</vh></v>
 <v t="ekr.20050328101834.2"><vh>@int port = 8080</vh></v>
-<v t="ekr.20050328101834.3"><vh>@string rst_http_attributename = ''</vh></v>
+<v t="ekr.20050328101834.3"><vh>@string rst-http-attributename = ''</vh></v>
 </v>
 <v t="ekr.20111112093605.4679"><vh>@shortcuts</vh></v>
 <v t="ekr.20110521073115.3494"><vh>colorizer colors</vh>
-<v t="ekr.20110521073115.3495"><vh>@@color keyword3_color = orange</vh></v>
-<v t="ekr.20110521073115.3496"><vh>@@color keyword4_color = pink</vh></v>
+<v t="ekr.20110521073115.3495"><vh>@@color keyword3-color = orange</vh></v>
+<v t="ekr.20110521073115.3496"><vh>@@color keyword4-color = pink</vh></v>
 </v>
 <v t="ekr.20111124094121.3941"><vh>Empty @buttons and @commands nodes</vh>
 <v t="ekr.20111124094121.3942"><vh>@buttons</vh></v>
 <v t="ekr.20111124094121.3943"><vh>@commands</vh></v>
 </v>
 <v t="ekr.20171126153138.1"><vh>Required for reformat-paragraph tests</vh>
-<v t="ekr.20171126152936.1"><vh>@int page_width = 80</vh></v>
-<v t="ekr.20171126153044.1"><vh>@int tab_width = -4</vh></v>
+<v t="ekr.20171126152936.1"><vh>@int page-width = 80</vh></v>
+<v t="ekr.20171126153044.1"><vh>@int tab-width = -4</vh></v>
 </v>
 <v t="ekr.20131111155830.4249"><vh>Vim settings</vh>
 <v t="ekr.20131111155830.4250"><vh>@@@data vim-control-character-commands</vh></v>
@@ -705,6 +743,11 @@
 </v>
 <v t="ekr.20181014093423.1"><vh>@test run pytests</vh></v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
+<v t="ekr.20181031155108.1"><vh>Tweaks for test_browser_gui.py</vh>
+<v t="ekr.20111102122424.3975"><vh>@test all unit tests have access to sources</vh></v>
+<v t="ekr.20130912092638.4151"><vh>@test utf-16 encoding</vh></v>
+<v t="ekr.20111124090010.3939"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3213,6 +3256,13 @@ table
 nodeA
 nodeB
 </t>
+<t tx="ekr.20111102122424.3975">if c.shortFileName() == 'dynamicUnitTest.leo':
+    setting = 'c.write-script-file'
+    assert c.write_script_file,'fail 1: %s should be hard set' % (setting)
+else:
+    setting = "c.config.getBool('write-script-file')"
+    assert c.write_script_file,'fail 2: check %s' % (setting)
+</t>
 <t tx="ekr.20111107065245.3833">if not g.app.gui.guiName().startswith('qt'):
     self.skipTest('Requires Qt')
 d = g.app.unitTestDict
@@ -3564,6 +3614,9 @@ if 0: # Too dangerous, and not useful enough.
 </t>
 <t tx="ekr.20111124090010.3939">if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+if getattr(g.app, 'isBrowserTest', None):
+    # Set only in test_browser_gui.py.
+    self.skipTest('Browser Gui test')
 d = g.app.config.unitTestDict # Always created for this unit test.
 keys = ('config.doButtons-file-names','config.doCommands-file-names')
 for key in keys:
@@ -3573,6 +3626,8 @@ for key in keys:
             if base+ext in aList:
                 break
         else:
+            print('key', key, 'ext', ext, 'base', base)
+            g.printObj(aList)
             assert False,'%s not in unitTestDict[%s]' % (base,key)
 </t>
 <t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
@@ -3754,6 +3809,29 @@ def spam():
 @encoding utf-16
 
 Test of utf-16.
+</t>
+<t tx="ekr.20130912092638.4151">import sys
+if g.app.isExternalUnitTest:
+    self.skipTest('external test')
+    # if sys.platform.startswith('linux'):
+        # self.skipTest('external linux test')
+    # else:
+        # path = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','utf-16-test.txt')
+        # assert g.os_path_exists(path)
+        # f = open(path,'r')
+        # s = f.read()
+        # f.close()
+        # s = g.toUnicode(s,encoding='utf-16')
+        # assert s.find('Test of utf-16.') &gt; -1,s
+else:
+    h = '@file unittest/utf-16-test.txt'
+    p = g.findNodeAnywhere(c,h)
+    s = 'Test of utf-16.'
+    assert p,h
+    # It's hard to test the utf-16 text directly.
+    assert p.b
+    assert p.b.find(s) &gt; -1
+    assert len(p.b)==66,len(p.b)
 </t>
 <t tx="ekr.20131111155830.4249"></t>
 <t tx="ekr.20131111155830.4250"># Not yet...
@@ -9326,6 +9404,102 @@ for path in paths:
         fails.append(g.toUnicode(err).strip())
 assert not fails, '\n'+'\n'.join(fails)
 </t>
+<t tx="ekr.20181031152556.1"></t>
+<t tx="ekr.20181031152735.1">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20181031152735.2">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20181031152735.3">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20181031152735.4">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20181031152735.5">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20181031152735.6">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
+<t tx="ekr.20181031152738.1">gnx: ekr.20150626101842.1
+</t>
+<t tx="ekr.20181031152738.11">gnx: ekr.20171230171138.1
+unl: !Declarations
+gnx: ekr.20170504122721.2
+unl: section 1
+gnx: ekr.20170504122721.3
+unl: section 2
+</t>
+<t tx="ekr.20181031152738.12">gnx: ekr.20150626101627.1
+</t>
+<t tx="ekr.20181031152738.20">gnx: ekr.20170504122721.15
+unl: section 1
+gnx: ekr.20170504122721.16
+unl: section 2
+</t>
+<t tx="ekr.20181031152738.21">gnx: ekr.20150626100719.1
+</t>
+<t tx="ekr.20181031152738.28">gnx: ekr.20171230171355.20
+unl: First line.
+gnx: ekr.20170504122721.17
+unl: section 1
+gnx: ekr.20170504122721.18
+unl: section 2
+</t>
+<t tx="ekr.20181031152738.29">gnx: ekr.20110610122533.3407
+</t>
+<t tx="ekr.20181031152738.43">gnx: ekr.20170504122721.6
+unl: class class1
+gnx: ekr.20170504122721.7
+unl: class class1--&gt;class1_method1
+gnx: ekr.20170504122721.8
+unl: class class1--&gt;class1_method2
+gnx: ekr.20170504122721.9
+unl: class class2
+gnx: ekr.20170504122721.10
+unl: class class2--&gt;class2_method1
+gnx: ekr.20170504122721.11
+unl: class class2--&gt;class2_method2
+</t>
+<t tx="ekr.20181031154748.1">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20181031154748.2">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20181031154748.3">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20181031154748.4">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20181031154748.5">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20181031154748.6">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
+<t tx="ekr.20181031154902.1">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20181031154902.2">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20181031154902.3">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20181031154902.4">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20181031154902.5">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20181031154902.6">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
+<t tx="ekr.20181031155108.1"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
