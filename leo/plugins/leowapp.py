@@ -16,10 +16,12 @@
 #@+<< imports >>
 #@+node:ekr.20181028052650.3: ** << imports >>
 import leo.core.leoGlobals as g
+import leo.core.leoGui as leoGui
 if g.isPython3:
     # import asyncio
     # import datetime
     # import random
+    import sys
     try:
         import websockets
         assert websockets
@@ -73,5 +75,25 @@ def escape(s):
         '\n': '<br />',
         '\t': '&nbsp;&nbsp;&nbsp;&nbsp;',
     })
+#@+node:ekr.20181031160042.1: ** getattr (TODO)
+#@+node:ekr.20181031162039.1: ** class BrowserGui (leoGui.LeoGui)
+class BrowserGui(leoGui.LeoGui):
+    #@+others
+    #@+node:ekr.20181031162620.1: *3* bg.__init__
+    def __init__(self):
+        
+        # init the base class
+        leoGui.LeoGui.__init__(self, guiName='browser')
+        
+    #@+node:ekr.20181031162454.1: *3* bg.runMainLoop
+    def runMainLoop(self, fileName):
+        
+        if fileName:
+            print('LeoWapp running: %s...' % g.shortFileName(fileName))
+        else:
+            print('LeoWapp running...')
+        print('calling sys.exit(0)')
+        sys.exit(0)
+    #@-others
 #@-others
 #@-leo

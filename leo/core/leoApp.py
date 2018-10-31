@@ -1025,6 +1025,18 @@ class LeoApp(object):
             g.es_exception()
             print('can not create curses gui.')
             sys.exit()
+    #@+node:ekr.20181031160401.1: *5* app.createBrowserGui
+    def createBrowserGui(self, fileName='', verbose=False):
+        app = self
+        try:
+            import leo.plugins.leowapp as leowapp
+            if leowapp.init():
+                app.gui = leowapp.BrowserGui()
+                app.gui.runMainLoop(fileName)
+        except Exception:
+            g.es_exception()
+            print('can not import leo.plugins.leowapp')
+            sys.exit(1)
     #@+node:ekr.20090619065122.8593: *5* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
         """A convenience routines for plugins to create the default gui class."""
@@ -1039,6 +1051,8 @@ class LeoApp(object):
             app.createQtGui(fileName, verbose=verbose)
         elif argName == 'null':
             g.app.gui = g.app.nullGui
+        elif argName == 'browser':
+            app.createBrowserGui()
         elif argName in ('console', 'curses'):
             app.createCursesGui()
         elif argName == 'text':
@@ -1067,7 +1081,7 @@ class LeoApp(object):
             import leo.plugins.qt_gui as qt_gui
         except Exception:
             g.es_exception()
-            print('can not importleo.plugins.qt_gui')
+            print('can not import leo.plugins.qt_gui')
             sys.exit(1)
         try:
             from leo.plugins.editpane.editpane import edit_pane_test_open, edit_pane_csv
@@ -2758,7 +2772,7 @@ class LoadManager(object):
             gui = gui.lower()
             if gui == 'qttabs':
                 g.app.qt_use_tabs = True
-            elif gui in ('console', 'curses', 'text', 'qt', 'null'):
+            elif gui in ('browser', 'console', 'curses', 'text', 'qt', 'null'):
                     # text: cursesGui.py, curses: cursesGui2.py.
                 g.app.qt_use_tabs = False
             else:
