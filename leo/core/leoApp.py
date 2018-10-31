@@ -2797,7 +2797,10 @@ class LoadManager(object):
         script = options.script
         if script:
             fn = g.os_path_finalize_join(g.app.loadDir, script)
-            script, e = g.readFileIntoString(fn, kind='script:')
+            script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
+            if not script:
+                print('script not found:%s' % fn)
+                sys.exit(1)
         else:
             script = None
         return script

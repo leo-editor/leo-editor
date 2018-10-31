@@ -3710,6 +3710,7 @@ def readFileIntoEncodedString(fn, silent=False):
 def readFileIntoString(fn,
     encoding='utf-8', # BOM may override this.
     kind=None, # @file, @edit, ...
+    verbose=True,
 ):
     '''Return the contents of the file whose full path is fn.
 
@@ -3722,16 +3723,13 @@ def readFileIntoString(fn,
     - None, which typically means 'utf-8'.
     '''
     if not fn:
-        g.trace('no fn arg given')
-        g.trace(g.callers())
+        if verbose: g.trace('no fn arg given')
         return None, None
     if g.os_path_isdir(fn):
-        g.trace('not a file:', fn)
-        g.trace(g.callers())
+        if verbose: g.trace('not a file:', fn)
         return None, None
     if not g.os_path_exists(fn):
-        g.error('file not found:', fn)
-        g.trace(g.callers())
+        if verbose: g.error('file not found:', fn)
         return None, None
     try:
         e = None
@@ -3752,9 +3750,9 @@ def readFileIntoString(fn,
     except IOError:
         # Translate 'can not open' and kind, but not fn.
         if kind:
-            g.error('can not open', '', kind, fn)
+            if verbose: g.error('can not open', '', kind, fn)
         else:
-            g.error('can not open', fn)
+            if verbose: g.error('can not open', fn)
     except Exception:
         g.error('readFileIntoString: unexpected exception reading %s' % (fn))
         g.es_exception()
