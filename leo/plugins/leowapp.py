@@ -10,51 +10,16 @@
 #@@wrap
 '''Leo as a web app: contains python and javascript sides.
 
-**Now**: enable the leowapp.py plugin.
-**Later**: StartLeo with the --gui=browser command-line option.
 
-Open localhost:8100 in your browser. Refresh the web page after opening or closing files.
-
-Settings
---------
-
-``@string leowapp_ip = 127.0.0.1``
-    
-    IP address 127.0.0.1 gives anyone logged into your machine access to
-    all your Leo outlines.
-    
-    IP address 0.0.0.0 gives all network accessible machines access to
-    your Leo outlines.
-    
-``@int  leowapp_port = 8100``
-    The port.
-    
-``@data leowapp_stylesheet``
-    The default .css for this page.
-    
-``@data leowapp_user_stylesheet``
-    Additional .css for this page.
-    
-HTML
-----
-
-The web page contains::
-
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
-    <script src="<a fixed script, defined in this file"></script>
-    <style src="leowapp_default.css">
-    <style src="leowapp_user.css">
 '''
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20181028052650.3: ** << imports >>
 import leo.core.leoGlobals as g
 if g.isPython3:
-    import asyncio
-    import datetime
-    import random
-    import subprocess
-    assert subprocess
+    # import asyncio
+    # import datetime
+    # import random
     try:
         import websockets
         assert websockets
@@ -84,31 +49,6 @@ class Config (object):
 # The initial values probably should not be changed. 
 config = Config()
 #@-<< config >>
-#@+<< javascript >>
-#@+node:ekr.20181028071923.1: ** << javascript >>
-#@@language javascript
-
-leowapp_js = """\
-
-$(document).ready(function(){
-    
-    var ws = new WebSocket("ws://%(ip)s:%(port)s/"),
-        messages = document.createElement('ul');
-    ws.onmessage = function (event) {
-        var messages = document.getElementsByTagName('ul')[0],
-            message = document.createElement('li'),
-            content = document.createTextNode(event.data);
-        message.appendChild(content);
-        messages.appendChild(message);
-    };
-    document.body.appendChild(messages);
-};
-
-""" % {
-    'ip': config.ip,
-    'port': config.port,
-}
-#@-<< javascript >>
 # browser_encoding = 'utf-8'
     # To do: query browser: var x = document.characterSet; 
 #@+others
@@ -121,38 +61,17 @@ def init():
     if not websockets:
         return False
     # ws_server hangs Leo!
-    # subprocess.Popen(command, shell=True)
-    ws_server()
+    # ws_server()
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20181030103048.2: ** escape
 def escape(s):
     '''
-    Do the standard xml escapes, replacing tabs by four spaces.
+    Do the standard xml escapes, and replace newlines and tabs.
     '''
     return saxutils.escape(s, {
-         '\n': '<br />',
-         '\t': '&nbsp;&nbsp;&nbsp;&nbsp;',
+        '\n': '<br />',
+        '\t': '&nbsp;&nbsp;&nbsp;&nbsp;',
     })
-#@+node:ekr.20181030092144.1: ** ws_server
-def ws_server():
-    '''
-    WS server that sends messages at random intervals.
-    https://websockets.readthedocs.io/en/stable/intro.html#browser-based-example
-    '''
-    print('Serving random messages at:', config.port)
-    
-    async def time(websocket, path):
-        while True:
-            now = datetime.datetime.utcnow().isoformat() + 'Z'
-            try:
-                await websocket.send(now)
-            except websockets.exceptions.ConnectionClosed:
-                print('closed connection')
-            await asyncio.sleep(random.random() * 3)
-            
-    start_server = websockets.serve(time, '127.0.0.1', config.port)
-    asyncio.get_event_loop().run_until_complete(start_server)
-    asyncio.get_event_loop().run_forever()
 #@-others
 #@-leo
