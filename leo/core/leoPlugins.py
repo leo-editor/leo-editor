@@ -466,7 +466,11 @@ class LeoPluginsController(object):
         trace = 'plugins' in g.app.debug
 
         def report(message):
-            if (trace or tag == 'open0') and not g.unitTesting:
+            if (
+                (trace or tag == 'open0') and
+                not g.unitTesting and
+                g.app.gui.guiName() != 'browser'
+            ):
                 g.es_print('loadOnePlugin: %s' % message)
                 
         # Define local helper functions.

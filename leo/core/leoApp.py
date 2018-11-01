@@ -1031,8 +1031,7 @@ class LeoApp(object):
         try:
             import leo.plugins.leowapp as leowapp
             if leowapp.init():
-                app.gui = leowapp.BrowserGui()
-                app.gui.runMainLoop(fileName)
+                app.gui = leowapp.BrowserGui()  
         except Exception:
             g.es_exception()
             print('can not import leo.plugins.leowapp')

@@ -8,7 +8,8 @@
 #@+node:ekr.20181028052650.2: ** << docstring >>
 #@@language rest
 #@@wrap
-'''Leo as a web app: contains python and javascript sides.
+'''
+Leo as a web app: contains python and javascript sides.
 
 
 '''
@@ -16,6 +17,7 @@
 #@+<< imports >>
 #@+node:ekr.20181028052650.3: ** << imports >>
 import leo.core.leoGlobals as g
+import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
 if g.isPython3:
     # import asyncio
@@ -54,6 +56,15 @@ config = Config()
 # browser_encoding = 'utf-8'
     # To do: query browser: var x = document.characterSet; 
 #@+others
+#@+node:ekr.20181030103048.2: ** escape
+def escape(s):
+    '''
+    Do the standard xml escapes, and replace newlines and tabs.
+    '''
+    return saxutils.escape(s, {
+        '\n': '<br />',
+        '\t': '&nbsp;&nbsp;&nbsp;&nbsp;',
+    })
 #@+node:ekr.20181028052650.5: ** init (leowapp.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
@@ -66,32 +77,58 @@ def init():
     # ws_server()
     g.plugin_signon(__name__)
     return True
-#@+node:ekr.20181030103048.2: ** escape
-def escape(s):
-    '''
-    Do the standard xml escapes, and replace newlines and tabs.
-    '''
-    return saxutils.escape(s, {
-        '\n': '<br />',
-        '\t': '&nbsp;&nbsp;&nbsp;&nbsp;',
-    })
-#@+node:ekr.20181031160042.1: ** getattr (TODO)
 #@+node:ekr.20181031162039.1: ** class BrowserGui (leoGui.LeoGui)
-class BrowserGui(leoGui.LeoGui):
+class BrowserGui(leoGui.NullGui):
     #@+others
+    #@+node:ekr.20181031160042.1: *3* bg.__getattr__
+    def __getattr__ (self, attr):
+        '''Handle an missing attribute.'''
+        if attr in (
+            'set_minibuffer_label',
+        ):
+            raise AttributeError
+        return self.message(attr)
     #@+node:ekr.20181031162620.1: *3* bg.__init__
     def __init__(self):
         
-        # init the base class
-        leoGui.LeoGui.__init__(self, guiName='browser')
+        g.trace('===== (BrowserGui)')
+        leoGui.NullGui.__init__(self, guiName='browser')
+        self.styleSheetManagerClass = g.NullObject ###
+        ### self.ftm = g.NullObject
+        ### self.globalFindTabManager = g.NullObject
         
+        ###
+            # leoGui.LeoGui.__init__(self, guiName='browser')
+                # # Init the base class
+            # self.clipboardContents = ''
+            # self.enablePlugins = False ###
+            # self.focusWidget = None
+            # self.isNullGui = True ###
+            # self.script = None
+            # self.idleTimeClass = g.NullObject
+            # self.styleSheetManagerClass = g.NullObject ###
+    #@+node:ekr.20181101034427.1: *3* bg.createLeoFrame
+    def createLeoFrame(self, c, title):
+
+        return leoFrame.NullFrame(c, title='NullFrame', gui=self)
+    #@+node:ekr.20181101025053.1: *3* bg.message
+    def message (self, func):
+        '''
+        Send a message to the framework.
+        '''
+        g.trace('=====', func, g.callers())
     #@+node:ekr.20181031162454.1: *3* bg.runMainLoop
-    def runMainLoop(self, fileName):
-        
+    def runMainLoop(self, fileName=None):
+        '''The main loop for the browser gui.'''
         if fileName:
             print('LeoWapp running: %s...' % g.shortFileName(fileName))
         else:
             print('LeoWapp running...')
+        if 1: # Run all unit tests.
+            path = g.os_path_finalize_join(
+                g.app.loadDir, '..', 'test', 'unittest.leo')
+            c = g.openWithFileName(path, gui=self)
+            c.debugCommands.runAllUnitTestsLocally()
         print('calling sys.exit(0)')
         sys.exit(0)
     #@-others
