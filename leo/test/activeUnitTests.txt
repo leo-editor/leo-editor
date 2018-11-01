@@ -4776,6 +4776,8 @@ finally:
         p.h = h
         c.redraw()
 #@+node:ekr.20111124090010.3939: *4* @test g.app.config @buttons and @commands logic
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 if getattr(g.app, 'isBrowserTest', None):
@@ -25773,6 +25775,8 @@ assert x.last_error.startswith('can not delete xyzzy'), x.last_error
 
 #@+node:ekr.20100131171342.5612: *3* leoTest
 #@+node:ekr.20111102122424.3975: *4* @test all unit tests have access to sources
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
 if c.shortFileName() == 'dynamicUnitTest.leo':
     setting = 'c.write-script-file'
     assert c.write_script_file,'fail 1: %s should be hard set' % (setting)

@@ -741,9 +741,9 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31312e3471017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e332e31362e3671057d71065808000000616e6e6f7461746571077d7108735809000000302e332e31372e333571097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e332e32352e34710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20181014093423.1"><vh>@test run pytests</vh></v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 <v t="ekr.20181031155108.1"><vh>Tweaks for test_browser_gui.py</vh>
+<v t="ekr.20181014093423.1"><vh>@test run pytests</vh></v>
 <v t="ekr.20111102122424.3975"><vh>@test all unit tests have access to sources</vh></v>
 <v t="ekr.20130912092638.4151"><vh>@test utf-16 encoding</vh></v>
 <v t="ekr.20111124090010.3939"></v>
@@ -3256,7 +3256,9 @@ table
 nodeA
 nodeB
 </t>
-<t tx="ekr.20111102122424.3975">if c.shortFileName() == 'dynamicUnitTest.leo':
+<t tx="ekr.20111102122424.3975">if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
+if c.shortFileName() == 'dynamicUnitTest.leo':
     setting = 'c.write-script-file'
     assert c.write_script_file,'fail 1: %s should be hard set' % (setting)
 else:
@@ -3612,7 +3614,9 @@ if 0: # Too dangerous, and not useful enough.
     # Assert that handleUnboundChar actually ignored it.
     assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
 </t>
-<t tx="ekr.20111124090010.3939">if g.app.isExternalUnitTest:
+<t tx="ekr.20111124090010.3939">if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
+if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 if getattr(g.app, 'isBrowserTest', None):
     # Set only in test_browser_gui.py.
@@ -9377,7 +9381,10 @@ FAILED (failures=3, skipped=11)
 <t tx="ekr.20181010081750.1"></t>
 <t tx="ekr.20181010081924.1">###@nosearch</t>
 <t tx="ekr.20181010082831.1"></t>
-<t tx="ekr.20181014093423.1">import subprocess
+<t tx="ekr.20181014093423.1">if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
+
+import subprocess
 loadDir = g.app.loadDir
 join = g.os_path_finalize_join
 prog = join(loadDir, '..', '..', 'run_pytest_tests.py')
