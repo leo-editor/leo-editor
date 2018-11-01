@@ -84,8 +84,10 @@ class BrowserGui(leoGui.NullGui):
     def __getattr__ (self, attr):
         '''Handle an missing attribute.'''
         if attr in (
+            'frameFactory',
             'set_minibuffer_label',
         ):
+            # These are optional ivars.
             raise AttributeError
         return self.message(attr)
     #@+node:ekr.20181031162620.1: *3* bg.__init__
@@ -94,6 +96,7 @@ class BrowserGui(leoGui.NullGui):
         g.trace('===== (BrowserGui)')
         leoGui.NullGui.__init__(self, guiName='browser')
         self.styleSheetManagerClass = g.NullObject ###
+        self.log = leoFrame.NullLog()
         ### self.ftm = g.NullObject
         ### self.globalFindTabManager = g.NullObject
         
@@ -128,6 +131,8 @@ class BrowserGui(leoGui.NullGui):
             path = g.os_path_finalize_join(
                 g.app.loadDir, '..', 'test', 'unittest.leo')
             c = g.openWithFileName(path, gui=self)
+            c.findCommands.ftm = g.NullObject()
+                # A hack. Maybe the NullGui should do this.
             c.debugCommands.runAllUnitTestsLocally()
         print('calling sys.exit(0)')
         sys.exit(0)
