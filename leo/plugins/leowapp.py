@@ -78,29 +78,27 @@ def init():
     # ws_server()
     g.plugin_signon(__name__)
     return True
-#@+node:ekr.20181031162039.1: ** class BrowserGui (leoGui.LeoGui)
+#@+node:ekr.20181031162039.1: ** class BrowserGui (leoGui.NullGui)
 class BrowserGui(leoGui.NullGui):
-    #@+others
-    #@+node:ekr.20181031162620.1: *3* bg.__init__
+
     def __init__(self):
-        
+
         g.trace('===== (BrowserGui)')
-        ### leoGui.LeoGui.__init__(self, guiName='browser')
         leoGui.NullGui.__init__(self, guiName='browser')
         # Set by LeoGui...
             ### self.consoleOnly = False
-        
         # Others
         # self.styleSheetManagerClass = g.NullObject
         # self.log = leoFrame.NullLog()
         # self.isNullGui = True
-
         ###
             # self.clipboardContents = ''
             # self.enablePlugins = False ###
             # self.focusWidget = None
             # self.script = None
             # self.idleTimeClass = g.NullObject
+
+    #@+others
     #@+node:ekr.20181101072605.1: *3* bg.oops
     oops_d = {}
 
