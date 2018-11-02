@@ -2855,15 +2855,15 @@ for tag,aList in table:
     'searchDict','scriptDict',
     'use_psyco',
 )
-if g.app.isExternalUnitTest or g.in_bridge:
+if g.app.isExternalUnitTest or g.in_bridge or g.app.gui.guiName() == 'browser':
     mayBeNone = ('hookFunction','idleTimeHook','log','openWithInstance')
 else:
     mayBeNone = ('hookFunction','openWithInstance')
 fails = []
 for ivar in ivars:
-    assert hasattr(g.app,ivar), 'missing app ivar: %s %r' % (ivar,g.app)
+    assert hasattr(g.app, ivar), 'missing app ivar: %s %r' % (ivar,g.app)
     if ivar not in mayBeNone:
-        val = getattr(g.app,ivar)
+        val = getattr(g.app, ivar)
         if val is None:
             fails.append(ivar)
 assert not fails, 'null g.app ivars in %s...\n%s' % (
