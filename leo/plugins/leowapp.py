@@ -80,21 +80,26 @@ def init():
     return True
 #@+node:ekr.20181031162039.1: ** class BrowserGui (leoGui.NullGui)
 class BrowserGui(leoGui.NullGui):
-    
-    guiName = 'browser'
 
     # def __init__(self):
-
         # leoGui.NullGui.__init__(self, guiName='browser')
-            # The NullGui has the following ivars:
-            # self.clipboardContents = ''
-            # self.focusWidget = None
-            # self.script = None
-            # self.lastFrame = None
-            # self.isNullGui = True
-            # self.idleTimeClass = g.NullObject
+            
+    def destroySelf(self):
+        pass
+        
+    def guiName(self):
+        return 'browser'
+            
+    def finishCreate(self):
+        pass
 
     #@+others
+    #@+node:ekr.20181101025053.1: *3* bg.message
+    def message (self, func, payload=None):
+        '''
+        Send a message to the framework.
+        '''
+        g.trace('=====', func, payload)
     #@+node:ekr.20181101072605.1: *3* bg.oops
     oops_d = {}
 
@@ -104,21 +109,7 @@ class BrowserGui(leoGui.NullGui):
             if callers not in self.oops_d:
                 g.trace(callers)
                 self.oops_d [callers] = callers
-    #@+node:ekr.20181101073740.1: *3* bg.overrides of LeoGui methods
-    def dismiss_splash_screen(self):
-        pass
-
-    def guiName(self):
-        return 'browser'
-        
-    def isTextWidget(self, w):
-        return True # Must be True for unit tests.
-
-    def isTextWrapper(self, w):
-        '''Return True if w is a Text widget suitable for text-oriented commands.'''
-        return w and getattr(w, 'supportsHighLevelInterface', None)
-    #@+node:ekr.20181102073938.1: *3* bg.overrides of NullGui methods
-    #@+node:ekr.20181102073746.4: *4* bg.clipboard & focus
+    #@+node:ekr.20181102073746.4: *3* bg.clipboard & focus
     def get_focus(self, *args, **kwargs):
         return self.focusWidget
 
@@ -130,7 +121,10 @@ class BrowserGui(leoGui.NullGui):
 
     def set_focus(self, commander, widget):
         self.focusWidget = widget
-    #@+node:ekr.20181102073957.1: *4* bg.dialogs
+    #@+node:ekr.20181102073957.1: *3* bg.dialogs & alerts
+    def alert(self, message):
+        pass
+
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         return self.do_dialog("aboutLeoDialog", None)
 
@@ -183,10 +177,31 @@ class BrowserGui(leoGui.NullGui):
     ):
         return self.do_dialog("yesNoCancelDialog", "cancel")
 
-    #@+node:ekr.20181102074018.1: *4* bg.do_dialog
+    #@+node:ekr.20181102074018.1: *3* bg.do_dialog
     def do_dialog(self, key, defaultVal):
         return defaultVal
-    #@+node:ekr.20181102073746.8: *4* bg.panels
+    #@+node:ekr.20181102080116.1: *3* bg.events
+    def onActivateEvent(self, *args, **keys):
+        pass
+
+    def onDeactivateEvent(self, *args, **keys):
+        pass
+    #@+node:ekr.20181102080014.1: *3* bg.fonts, icons and images
+    def attachLeoIcon(self, window):
+        pass
+        
+    def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
+        return g.app.config.defaultFont
+
+    def getIconImage(self, name):
+        return None
+
+    def getImageImage(self, name):
+        return None
+
+    def getTreeImage(self, c, path):
+        return None
+    #@+node:ekr.20181102073746.8: *3* bg.gui elements
     def createComparePanel(self, c):
         """Create Compare panel."""
         return None
@@ -198,18 +213,27 @@ class BrowserGui(leoGui.NullGui):
     def createLeoFrame(self, c, title):
         """Create a null Leo Frame."""
         return leoFrame.NullFrame(c, title=title, gui=self)
-    #@+node:ekr.20181101025053.1: *3* bg.message
-    def message (self, func, payload=None):
-        '''
-        Send a message to the framework.
-        '''
-        g.trace('=====', func, payload)
+            ### To do: Define BrowserFrame, that sends messages.
+            
+    def dismiss_splash_screen(self):
+        pass
+
+    def get_window_info(self, window):
+        return 600, 500, 20, 20
+        
+    def isTextWidget(self, w):
+        return True # Must be True for unit tests.
+
+    def isTextWrapper(self, w):
+        '''Return True if w is a Text widget suitable for text-oriented commands.'''
+        return w and getattr(w, 'supportsHighLevelInterface', None)
     #@+node:ekr.20181031162454.1: *3* bg.runMainLoop
     def runMainLoop(self):
         '''The main loop for the browser gui.'''
         print('LeoWapp running...')
         c = g.app.log.c
         if 1: # Run all unit tests.
+            assert g.app.gui.guiName() == 'browser'
             g.app.failFast = True
             path = g.os_path_finalize_join(
                 g.app.loadDir, '..', 'test', 'unittest.leo')
