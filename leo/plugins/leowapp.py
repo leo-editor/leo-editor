@@ -127,7 +127,7 @@ class BrowserGui(leoGui.NullGui):
             print('LeoWapp running: %s...' % g.shortFileName(fileName))
         else:
             print('LeoWapp running...')
-        if 1: # Run all unit tests.
+        if 0: # Run all unit tests.
             path = g.os_path_finalize_join(
                 g.app.loadDir, '..', 'test', 'unittest.leo')
             c = g.openWithFileName(path, gui=self)
