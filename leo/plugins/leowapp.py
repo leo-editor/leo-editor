@@ -19,6 +19,7 @@ Leo as a web app: contains python and javascript sides.
 import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
+assert leoGui ###
 if g.isPython3:
     # import asyncio
     # import datetime
@@ -80,62 +81,207 @@ def init():
 #@+node:ekr.20181031162039.1: ** class BrowserGui (leoGui.LeoGui)
 class BrowserGui(leoGui.NullGui):
     #@+others
-    #@+node:ekr.20181031160042.1: *3* bg.__getattr__
-    def __getattr__ (self, attr):
-        '''Handle an missing attribute.'''
-        if attr in (
-            'frameFactory',
-            'set_minibuffer_label',
-        ):
-            # These are optional ivars.
-            raise AttributeError
-        return self.message(attr)
     #@+node:ekr.20181031162620.1: *3* bg.__init__
     def __init__(self):
         
         g.trace('===== (BrowserGui)')
+        ### leoGui.LeoGui.__init__(self, guiName='browser')
         leoGui.NullGui.__init__(self, guiName='browser')
+        # Set by LeoGui...
+            ### self.consoleOnly = False
+        
+        # Others
         self.styleSheetManagerClass = g.NullObject ###
         self.log = leoFrame.NullLog()
-        ### self.ftm = g.NullObject
-        ### self.globalFindTabManager = g.NullObject
-        
+        self.isNullGui = True ###
+
         ###
-            # leoGui.LeoGui.__init__(self, guiName='browser')
-                # # Init the base class
             # self.clipboardContents = ''
             # self.enablePlugins = False ###
             # self.focusWidget = None
-            # self.isNullGui = True ###
             # self.script = None
             # self.idleTimeClass = g.NullObject
-            # self.styleSheetManagerClass = g.NullObject ###
     #@+node:ekr.20181101034427.1: *3* bg.createLeoFrame
     def createLeoFrame(self, c, title):
 
         return leoFrame.NullFrame(c, title='NullFrame', gui=self)
     #@+node:ekr.20181101025053.1: *3* bg.message
-    def message (self, func):
+    def message (self, func, payload=None):
         '''
         Send a message to the framework.
         '''
-        g.trace('=====', func, g.callers())
+        g.trace('=====', func, payload)
+    #@+node:ekr.20181101072605.1: *3* bg.oops
+    oops_d = {}
+
+    def oops(self):
+        if 0:
+            callers = g.callers()
+            if callers not in self.oops_d:
+                g.trace(callers)
+                self.oops_d [callers] = callers
     #@+node:ekr.20181031162454.1: *3* bg.runMainLoop
-    def runMainLoop(self, fileName=None):
+    def runMainLoop(self):
         '''The main loop for the browser gui.'''
-        if fileName:
-            print('LeoWapp running: %s...' % g.shortFileName(fileName))
-        else:
-            print('LeoWapp running...')
+        print('LeoWapp running...')
+        c = g.app.log.c
+        print('g.app.windowList', g.app.windowList)
+        print(repr(g.app.log.c))
+        print(c.frame)
+        print(c.frame.body)
+        print(c.frame.log)
+        print(c.frame.tree)
         if 1: # Run all unit tests.
+            g.app.failFast = False
             path = g.os_path_finalize_join(
                 g.app.loadDir, '..', 'test', 'unittest.leo')
             c = g.openWithFileName(path, gui=self)
             c.findCommands.ftm = g.NullObject()
-                # A hack. Maybe the NullGui should do this.
+                # A hack. Some other class should do this.
+                # This looks like a bug.
             c.debugCommands.runAllUnitTestsLocally()
         print('calling sys.exit(0)')
         sys.exit(0)
+    #@+node:ekr.20181101075334.1: *3* bg.create_key_event
+    #@+node:ekr.20181101073740.1: *3* Defined in LeoGui
+    def dismiss_splash_screen(self):
+        pass
+
+    def guiName(self):
+        return 'browser'
+        
+    def isTextWidget(self, w):
+        return True # Must be True for unit tests.
+
+    def isTextWrapper(self, w):
+        '''Return True if w is a Text widget suitable for text-oriented commands.'''
+        return w and getattr(w, 'supportsHighLevelInterface', None)
+    #@+node:ekr.20181101072524.1: *3* Must be defined in subclasses
+    #@+node:ekr.20181101072524.2: *4* LeoGui.destroySelf
+    def destroySelf(self):
+        self.oops()
+
+
+    #@+node:ekr.20181101072524.3: *4* LeoGui.dialogs
+    def runAboutLeoDialog(self, c, version, theCopyright, url, email):
+        """Create and run Leo's About Leo dialog."""
+        self.oops()
+
+    def runAskLeoIDDialog(self):
+        """Create and run a dialog to get g.app.LeoID."""
+        self.oops()
+
+    def runAskOkDialog(self, c, title, message=None, text="Ok"):
+        """Create and run an askOK dialog ."""
+        self.oops()
+
+    def runAskOkCancelNumberDialog(self, c, title, message, cancelButtonText=None, okButtonText=None):
+        """Create and run askOkCancelNumber dialog ."""
+        self.oops()
+
+    def runAskOkCancelStringDialog(self, c, title, message, cancelButtonText=None,
+                                   okButtonText=None, default="", wide=False):
+        """Create and run askOkCancelString dialog ."""
+        self.oops()
+
+    def runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):
+        """Create and run an askYesNo dialog."""
+        self.oops()
+
+    def runAskYesNoCancelDialog(self, c, title,
+        message=None, yesMessage="Yes", noMessage="No",
+        yesToAllMessage=None, defaultButton="Yes", cancelMessage=None,
+    ):
+        """Create and run an askYesNoCancel dialog ."""
+        self.oops()
+
+    def runPropertiesDialog(self, title='Properties', data=None, callback=None, buttons=None):
+        """Dispay a modal TkPropertiesDialog"""
+        self.oops()
+    #@+node:ekr.20181101072524.4: *4* LeoGui.file dialogs
+    def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
+        """Create and run an open file dialog ."""
+        self.oops()
+
+    def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
+        """Create and run a save file dialog ."""
+        self.oops()
+    #@+node:ekr.20181101072524.5: *4* LeoGui.panels
+    def createColorPanel(self, c):
+        """Create a color panel"""
+        self.oops()
+
+    def createComparePanel(self, c):
+        """Create Compare panel."""
+        self.oops()
+
+    def createFindTab(self, c, parentFrame):
+        """Create a find tab in the indicated frame."""
+        self.oops()
+
+    def createFontPanel(self, c):
+        """Create a hidden Font panel."""
+        self.oops()
+    #@+node:ekr.20181101072524.7: *4* LeoGui.utils
+    #@+at Subclasses are expected to subclass all of the following methods.
+    # 
+    # These are all do-nothing methods: callers are expected to check for
+    # None returns.
+    # 
+    # The type of commander passed to methods depends on the type of frame
+    # or dialog being created. The commander may be a Commands instance or
+    # one of its subcommanders.
+    #@+node:ekr.20181101072524.8: *5* LeoGui.Clipboard
+    def replaceClipboardWith(self, s):
+        self.oops()
+
+    def getTextFromClipboard(self):
+        self.oops()
+    #@+node:ekr.20181101072524.9: *5* LeoGui.Dialog utils
+    def attachLeoIcon(self, window):
+        """Attach the Leo icon to a window."""
+        self.oops()
+
+    def center_dialog(self, dialog):
+        """Center a dialog."""
+        self.oops()
+
+    def create_labeled_frame(self, parent, caption=None, relief="groove", bd=2, padx=0, pady=0):
+        """Create a labeled frame."""
+        self.oops()
+
+    def get_window_info(self, window):
+        """Return the window information."""
+        self.oops()
+    #@+node:ekr.20181101072524.10: *5* LeoGui.Focus
+    def get_focus(self, *args, **kwargs):
+        """Return the widget that has focus, or the body widget if None."""
+        self.oops()
+
+    def set_focus(self, commander, widget):
+        """Set the focus of the widget in the given commander if it needs to be changed."""
+        self.oops()
+    #@+node:ekr.20181101072524.11: *5* LeoGui.Font
+    def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
+
+        self.oops()
+    #@+node:ekr.20181101072524.12: *5* LeoGui.getFullVersion
+    def getFullVersion(self, c=None):
+        return 'LeoGui: dummy version'
+    #@+node:ekr.20181101072524.13: *5* LeoGui.makeScriptButton
+    def makeScriptButton(self, c,
+        args=None,
+        p=None,
+        script=None,
+        buttonText=None,
+        balloonText='Script Button',
+        shortcut=None,
+        bg='LightSteelBlue1',
+        define_g=True,
+        define_name='__main__',
+        silent=False,
+    ):
+        self.oops()
     #@-others
 #@-others
 #@-leo
