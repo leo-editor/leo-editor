@@ -85,6 +85,7 @@ class BrowserFrame(leoFrame.LeoFrame):
         '''Ctor for the BrowserFrame class.'''
         leoFrame.LeoFrame.__init__(self, c, gui)
             # Init the base class.
+        c.frame = self
         assert self.c
         self.wrapper = None
             # was BrowserIconBarClass(self.c, self)
@@ -95,10 +96,10 @@ class BrowserFrame(leoFrame.LeoFrame):
         self.top = None # Always None.
         # Create the component objects.
         self.body = BrowserBody(frame=self)
-        self.iconBar = BrowserIconBar(c=self.c, parentFrame=self)
+        self.iconBar = BrowserIconBar(c=c, parentFrame=self)
         self.log = BrowserLog(frame=self)
         self.menu = BrowserMenu(frame=self)
-        self.statusLine = BrowserStatusLine(frame=self)
+        self.statusLine = BrowserStatusLine(c=c, parentFrame=self)
             ### self.statusLineClass = StatusLineClass
         self.tree = BrowserTree(frame=self)
         # Default window position.
@@ -363,7 +364,7 @@ class BrowserIconBar(leoFrame.NullIconBarClass):
 
     def __init__(self, c, parentFrame):
         leoFrame.NullIconBarClass.__init__(self,
-            c = self.c, parentFrame=parentFrame)
+            c=c, parentFrame=parentFrame)
 #@+node:ekr.20181102084250.1: *4* class BrowserLog (leoFrame.NullLog)
 class BrowserLog(leoFrame.NullLog):
     
@@ -378,14 +379,13 @@ class BrowserMenu(leoMenu.NullMenu):
 #@+node:ekr.20181102084201.1: *4* class BrowserStatus(Line leoFrame.NullStatusLineClass)
 class BrowserStatusLine(leoFrame.NullStatusLineClass):
     
-    def __init__(self, frame):
+    def __init__(self, c, parentFrame):
         leoFrame.NullStatusLineClass.__init__(self,
-            frame=frame, parentFrame=None)
+            c=c, parentFrame=parentFrame)
 #@+node:ekr.20181102084258.1: *4* class BrowserTree (leoFrame.NullTree)
 class BrowserTree(leoFrame.NullTree):
 
     def __init__(self, frame):
-        leoFrame.NullTree.__init__(self,
-            frame=frame, parentFrame=None)
+        leoFrame.NullTree.__init__(self, frame=frame)
 #@-others
 #@-leo
