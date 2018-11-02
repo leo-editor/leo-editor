@@ -591,73 +591,54 @@ class TestManager(object):
         c = self.c
         p1 = c.p.copy()
             # Always restore the selected position.
-        # This seems a bit risky when run in unitTest.leo.
+        #
+        # Don't auto-save unitTest.leo.
         if not c.fileName().endswith('unitTest.leo'):
             if c.isChanged():
                 c.save() # Eliminate the need for ctrl-s.
         try:
             changed = c.isChanged()
+            g.unitTesting = g.app.unitTesting = True
+            g.app.runningAllUnitTests = all and not marked
             self.do_tests_helper(all, marked, verbosity)
         finally:
-            c.setChanged(changed) # Restore changed state.
+            # Allow unit tests to kill the console gui.
+            if g.app.killed:
+                if 'shutdown' in g.app.debug:
+                    g.trace('calling sys.exit(0) after unit test')
+                sys.exit(0)
             g.unitTesting = g.app.unitTesting = False
-            if True: # g.app.unitTestDict.get('restoreSelectedNode', True):
-                # This is more natural, and more useful.
-                c.contractAllHeadlines()
-                c.redraw(p1)
-            else:
-                c.recolor() # Needed when coloring is disabled in unit tests.
+            c.setChanged(changed)
+            c.contractAllHeadlines()
+            c.redraw(p1)
     #@+node:ekr.20181102023828.1: *5* do_tests_helper
     def do_tests_helper(self, all, marked, verbosity):
 
-        c, tm = self.c, self
-        g.unitTesting = g.app.unitTesting = True
-        g.app.runningAllUnitTests = all and not marked # Bug fix: 2012/12/20
-        g.app.unitTestDict["fail"] = False
-        g.app.unitTestDict['c'] = c
-        g.app.unitTestDict['g'] = g
-        g.app.unitTestDict['p'] = c.p.copy()
-        # c.undoer.clearUndoState() # New in 4.3.1.
-        ### changed = c.isChanged()
-        suite = unittest.makeSuite(unittest.TestCase)
-        aList = tm.findAllUnitTestNodes(all, marked)
-        setup_script = None
-        found = False
-        for p in aList:
-            if tm.isTestSetupNode(p):
-                setup_script = p.b
-                test = None
-            elif tm.isTestNode(p):
-                test = tm.makeTestCase(p, setup_script)
-            elif tm.isSuiteNode(p): # @suite
-                test = tm.makeTestSuite(p, setup_script)
-            elif tm.isTestClassNode(p):
-                test = tm.makeTestClass(p) # A suite of tests.
-            else:
-                test = None
-            if test:
-                suite.addTest(test)
-                found = True
-        if not found:
-            # 2011/10/30: run the body of p as a unit test.
-            test = tm.makeTestCase(c.p, setup_script)
-            if test:
-                suite.addTest(test)
-                found = True
-        if not found:
+        c = self.c
+        suite = self.make_test_suite(all, marked)
+        if not suite:
             g.error('no %s@test or @suite nodes in %s outline' % (
                 'marked ' if marked else '',
                 'entire' if all else 'selected'))
             return
         #
+        # New in Leo 5.8.1: re-init the dict.
+        g.app.unitTestDict = {
+            'fail': False, 'c': c, 'g': g, 'p': c.p.copy(),
+        }
+        ###
+            # g.app.unitTestDict["fail"] = False
+            # g.app.unitTestDict['c'] = c
+            # g.app.unitTestDict['g'] = g
+            # g.app.unitTestDict['p'] = c.p.copy()
+        #
         # 1. Set logger, handler, stream, runner
-        #    Verbosity: 1: print just dots.
-        gui_name = g.app.gui.guiName()
+        gui_name = g.app.gui.guiName().lower()
         if gui_name == 'curses':
             logger, handler, stream = self.create_logging_stream()
             runner = unittest.TextTestRunner(
                 failfast=g.app.failFast,
-                stream=stream,
+                stream=stream, # Implies we are running Python 3.
                 verbosity=verbosity,
             )
         else:
@@ -668,7 +649,7 @@ class TestManager(object):
                 verbosity=verbosity,
             )
         #
-        # 2. Run the unit test, with the NullGui or BrowserGui.
+        # 2. Run the unit tests, with the NullGui or BrowserGui.
         g.app.old_gui = old_gui = g.app.gui
         if gui_name == 'browser':
             from leo.plugins.leowapp import BrowserGui
@@ -690,11 +671,6 @@ class TestManager(object):
             g.app.gui = old_gui
             c.frame = old_frame
             c.k.w = old_k_w
-            # Allow unit tests to kill the console gui.
-            if g.app.killed:
-                if 'shutdown' in g.app.debug:
-                    g.trace('calling sys.exit(0) after unit test')
-                sys.exit(0)
         #
         # 3. Clean up.
         if stream:
@@ -703,12 +679,43 @@ class TestManager(object):
                     # This may be a pylint issue.
                 logger.info('\n'+''.join(stream.aList))
             logger.removeHandler(handler)
-        # put info to db as well
-        if gui_name != 'browser':
-            # Used by quicksearch plugin.
+        #
+        # 4. Support for the quicksearch plugin.
+        if gui_name not in ('browser', 'curses'):
             key = 'unittest/cur/fail'
             archive = [(t.p.gnx, trace2) for(t, trace2) in result.errors]
             c.db [key] = archive
+    #@+node:ekr.20181102030001.1: *5* make_test_suite
+    def make_test_suite(self, all, marked):
+        '''Return the test suite or None.'''
+        c, tm = self.c, self
+        suite = unittest.makeSuite(unittest.TestCase)
+        aList = tm.findAllUnitTestNodes(all, marked)
+        setup_script = None
+        found = False
+        for p in aList:
+            if tm.isTestSetupNode(p):
+                setup_script = p.b
+                test = None
+            elif tm.isTestNode(p):
+                test = tm.makeTestCase(p, setup_script)
+            elif tm.isSuiteNode(p): # @suite
+                test = tm.makeTestSuite(p, setup_script)
+            elif tm.isTestClassNode(p):
+                test = tm.makeTestClass(p) # A suite of tests.
+            else:
+                test = None
+            if test:
+                suite.addTest(test)
+                found = True
+        if not found:
+            # Run the body of p as a unit test.
+            test = tm.makeTestCase(c.p, setup_script)
+            if test:
+                suite.addTest(test)
+                found = True
+        return suite if found else None
+        
     #@+node:ekr.20170504130531.1: *5* class LoggingLog
     class LoggingStream:
         '''A class that can searve as a logging stream.'''
