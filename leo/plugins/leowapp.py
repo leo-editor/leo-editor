@@ -132,7 +132,7 @@ class BrowserGui(leoGui.NullGui):
             print(c.frame.body)
             print(c.frame.log)
             print(c.frame.tree)
-        if 0: # Run all unit tests.
+        if 1: # Run all unit tests.
             g.app.failFast = False
             path = g.os_path_finalize_join(
                 g.app.loadDir, '..', 'test', 'unittest.leo')
