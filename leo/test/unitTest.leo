@@ -739,6 +739,14 @@
 </v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
+<v t="ekr.20181102063435.1"><vh>Fails...</vh>
+<v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
+<v t="ekr.20080501121449.3"><vh>@test insert node</vh>
+<v t="ekr.20181010090014.9"><vh>A</vh></v>
+<v t="ekr.20181010090014.11"><vh>newHeadline</vh></v>
+<v t="ekr.20181010090014.10"><vh>B</vh></v>
+</v>
+</v>
 <v t="edward.20160314170027.56"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
@@ -748,13 +756,7 @@
 <v t="ekr.20130912092638.4151"><vh>@test utf-16 encoding</vh></v>
 <v t="ekr.20111124090010.3939"></v>
 </v>
-<v t="ekr.20181102063435.1"><vh>Fails...</vh></v>
-<v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
-<v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20181010090014.9"><vh>A</vh></v>
-<v t="ekr.20181010090014.11"><vh>newHeadline</vh></v>
-<v t="ekr.20181010090014.10"><vh>B</vh></v>
-</v>
+<v t="ekr.20181102063435.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -9607,7 +9609,7 @@ gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
 <t tx="ekr.20181031155108.1"></t>
-<t tx="ekr.20181102063435.1"></t>
+<t tx="ekr.20181102063435.1"># These are first, to save time.</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
