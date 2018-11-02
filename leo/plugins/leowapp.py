@@ -125,6 +125,19 @@ class BrowserGui(leoGui.NullGui):
             c.debugCommands.runAllUnitTestsLocally()
         print('calling sys.exit(0)')
         sys.exit(0)
+    #@+node:ekr.20181101073740.1: *3* Defined in LeoGui
+    def dismiss_splash_screen(self):
+        pass
+
+    def guiName(self):
+        return 'browser'
+        
+    def isTextWidget(self, w):
+        return True # Must be True for unit tests.
+
+    def isTextWrapper(self, w):
+        '''Return True if w is a Text widget suitable for text-oriented commands.'''
+        return w and getattr(w, 'supportsHighLevelInterface', None)
     #@+node:ekr.20181102063012.1: *3* not yet...
     if 0:
         #@+others
@@ -140,19 +153,6 @@ class BrowserGui(leoGui.NullGui):
             '''
             g.trace('=====', func, payload)
         #@+node:ekr.20181101075334.1: *4* bg.create_key_event
-        #@+node:ekr.20181101073740.1: *4* Defined in LeoGui
-        def dismiss_splash_screen(self):
-            pass
-
-        def guiName(self):
-            return 'browser'
-            
-        def isTextWidget(self, w):
-            return True # Must be True for unit tests.
-
-        def isTextWrapper(self, w):
-            '''Return True if w is a Text widget suitable for text-oriented commands.'''
-            return w and getattr(w, 'supportsHighLevelInterface', None)
         #@+node:ekr.20181101072524.1: *4* Must be defined in subclasses
         #@+node:ekr.20181101072524.2: *5* LeoGui.destroySelf
         def destroySelf(self):
