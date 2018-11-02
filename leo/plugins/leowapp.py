@@ -85,6 +85,7 @@ class BrowserGui(leoGui.NullGui):
 
         leoGui.NullGui.__init__(self, guiName='browser')
         g.trace('===== (BrowserGui)')
+        self.focusWidget = None
         
         # Set by LeoGui...
             ### self.consoleOnly = False
@@ -95,7 +96,6 @@ class BrowserGui(leoGui.NullGui):
         ###
             # self.clipboardContents = ''
             # self.enablePlugins = False ###
-            # self.focusWidget = None
             # self.script = None
             # self.idleTimeClass = g.NullObject
 
@@ -123,6 +123,18 @@ class BrowserGui(leoGui.NullGui):
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
         return w and getattr(w, 'supportsHighLevelInterface', None)
     #@+node:ekr.20181102073938.1: *3* bg.overrides of NullGui methods
+    #@+node:ekr.20181102073746.4: *4* bg.clipboard & focus
+    def get_focus(self, *args, **kwargs):
+        return self.focusWidget
+
+    def getTextFromClipboard(self):
+        return self.clipboardContents
+
+    def replaceClipboardWith(self, s):
+        self.clipboardContents = s
+
+    def set_focus(self, commander, widget):
+        self.focusWidget = widget
     #@+node:ekr.20181102073957.1: *4* bg.dialogs
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         return self.do_dialog("aboutLeoDialog", None)
