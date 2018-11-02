@@ -748,6 +748,13 @@
 <v t="ekr.20130912092638.4151"><vh>@test utf-16 encoding</vh></v>
 <v t="ekr.20111124090010.3939"></v>
 </v>
+<v t="ekr.20181102063435.1"><vh>Fails...</vh></v>
+<v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
+<v t="ekr.20080501121449.3"><vh>@test insert node</vh>
+<v t="ekr.20181010090014.9"><vh>A</vh></v>
+<v t="ekr.20181010090014.11"><vh>newHeadline</vh></v>
+<v t="ekr.20181010090014.10"><vh>B</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1990,6 +1997,58 @@ assert(len(gnx) &gt; 1)
 
 Important: this may cause crashes on some platforms.
 </t>
+<t tx="ekr.20080501121449.3"># This test requires @bool select-next-after-delete = False
+assert p.h == '@test insert node',repr(p.h)
+root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+try:
+    assert p.h == '@test insert node',repr(p.h)
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p.expand()
+    c.setCurrentPosition(p2)
+    p4 = c.insertHeadline()
+    assert p4 == c.p
+    p = c.p
+    assert p,'no p'
+    p.setHeadString('inserted')
+    assert p.back(),'no p.back(): %s' % (p)
+    assert p.back().h == 'A', 'fail 1'
+    assert p.next().h == 'B', 'fail 2'
+    c.undoer.undo()
+    # With the new undo logic, it takes 2 undoes.
+    # The first undo undoes the headline changes,
+    # the second undo undoes the insert node.
+    if g.app.isExternalUnitTest or g.app.gui.guiName() == 'nullGui':
+        # The situation is different in a null Gui.
+        pass
+    else:
+        c.undoer.undo() 
+    p = c.p
+    assert p == p2,         'fail 3:\n p: %s\np2: %s' % (p,p2)
+    assert p.next() == p3,  'fail 4'
+    c.undoer.redo()
+    p = c.p
+    assert p.back(),          'fail 0-2'
+    assert p.back().h == 'A', 'fail 1-2'
+    assert p.next().h == 'B', 'fail 2-2'
+    c.undoer.undo()
+    p = c.p
+    assert p == p2,         'fail 3-2'
+    assert p.next() == p3,  'fail 3-2'
+    c.undoer.redo()
+    p = c.p
+    assert p.back().h == 'A', 'fail 1-3'
+    assert p.next().h == 'B', 'fail 2-3'
+finally:
+    if 0:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now(root)
+</t>
 <t tx="ekr.20080904084223.1"># changed.
 @others
 @language python
@@ -2772,6 +2831,45 @@ for tag,aList in table:
         d1 = inspect.getargspec(func)
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
+</t>
+<t tx="ekr.20100131171342.5482">ivars = (
+    # Global managers.
+    'config',
+    ### 'externalFilesController',
+    'loadManager','pluginsController','recentFilesManager',
+    # Official ivars.
+    'gui',
+    'initing','killed','quitting',
+    'leoID',
+    'log','logIsLocked','logWaiting',
+    'nodeIndices',
+    'unitTesting','unitTestDict',
+    'windowList',
+    # Less-official and might be removed...
+    'batchMode',
+    # 'debugSwitch',
+    'disableSave',
+    'hookError','hookFunction',
+    'numberOfUntitledWindows',
+    'realMenuNameDict',
+    'searchDict','scriptDict',
+    'use_psyco',
+)
+if g.app.isExternalUnitTest or g.in_bridge:
+    mayBeNone = ('hookFunction','idleTimeHook','log','openWithInstance')
+else:
+    mayBeNone = ('hookFunction','openWithInstance')
+fails = []
+for ivar in ivars:
+    assert hasattr(g.app,ivar), 'missing app ivar: %s %r' % (ivar,g.app)
+    if ivar not in mayBeNone:
+        val = getattr(g.app,ivar)
+        if val is None:
+            fails.append(ivar)
+        # assert val is not None, 'null app ivar: %s %r'% (ivar,g.app)
+assert not fails, 'null g.app ivars in %s...\n%s' % (
+    g.app, g.objToString(fails))
+        
 </t>
 <t tx="ekr.20100131171342.5485">import inspect
 
@@ -9381,6 +9479,9 @@ FAILED (failures=3, skipped=11)
 <t tx="ekr.20181010081750.1"></t>
 <t tx="ekr.20181010081924.1">###@nosearch</t>
 <t tx="ekr.20181010082831.1"></t>
+<t tx="ekr.20181010090014.10"></t>
+<t tx="ekr.20181010090014.11"></t>
+<t tx="ekr.20181010090014.9"></t>
 <t tx="ekr.20181014093423.1">if g.app.gui.guiName() == 'browser':
     self.skipTest('browser gui')
 
@@ -9507,6 +9608,7 @@ gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
 <t tx="ekr.20181031155108.1"></t>
+<t tx="ekr.20181102063435.1"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
