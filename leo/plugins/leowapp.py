@@ -94,21 +94,6 @@ class BrowserGui(leoGui.NullGui):
         pass
 
     #@+others
-    #@+node:ekr.20181101025053.1: *3* bg.message
-    def message (self, func, payload=None):
-        '''
-        Send a message to the framework.
-        '''
-        g.trace('=====', func, payload)
-    #@+node:ekr.20181101072605.1: *3* bg.oops
-    oops_d = {}
-
-    def oops(self):
-        if 0:
-            callers = g.callers()
-            if callers not in self.oops_d:
-                g.trace(callers)
-                self.oops_d [callers] = callers
     #@+node:ekr.20181102073746.4: *3* bg.clipboard & focus
     def get_focus(self, *args, **kwargs):
         return self.focusWidget
@@ -227,6 +212,22 @@ class BrowserGui(leoGui.NullGui):
     def isTextWrapper(self, w):
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
         return w and getattr(w, 'supportsHighLevelInterface', None)
+    #@+node:ekr.20181101025053.1: *3* bg.message
+    def message (self, func, payload=None):
+        '''
+        Send a message to the framework.
+        '''
+        g.trace('=====', func, payload)
+    #@+node:ekr.20181101072605.1: *3* bg.oops
+    oops_d = {}
+
+    def oops(self):
+        callers = g.callers()
+        if callers not in self.oops_d:
+            g.trace(callers)
+            self.oops_d [callers] = callers
+            if g.unitTesting:
+                assert False, repr(callers)
     #@+node:ekr.20181031162454.1: *3* bg.runMainLoop
     def runMainLoop(self):
         '''The main loop for the browser gui.'''
