@@ -83,7 +83,7 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     name = g.app.gui.guiName()
     if name != "qt":
-        if name not in ('curses', 'nullGui'):
+        if name not in ('browser', 'curses', 'nullGui'):
             print('todo.py plugin not loading because gui is not Qt')
         return False
     g.registerHandler('after-create-leo-frame',onCreate)
