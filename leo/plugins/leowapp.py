@@ -125,13 +125,14 @@ class BrowserGui(leoGui.NullGui):
         '''The main loop for the browser gui.'''
         print('LeoWapp running...')
         c = g.app.log.c
-        print('g.app.windowList', g.app.windowList)
-        print(repr(g.app.log.c))
-        print(c.frame)
-        print(c.frame.body)
-        print(c.frame.log)
-        print(c.frame.tree)
-        if 1: # Run all unit tests.
+        if 0:
+            print('g.app.windowList', g.app.windowList)
+            print(repr(g.app.log.c))
+            print(c.frame)
+            print(c.frame.body)
+            print(c.frame.log)
+            print(c.frame.tree)
+        if 0: # Run all unit tests.
             g.app.failFast = False
             path = g.os_path_finalize_join(
                 g.app.loadDir, '..', 'test', 'unittest.leo')
