@@ -83,8 +83,9 @@ class BrowserGui(leoGui.NullGui):
 
     def __init__(self):
 
-        g.trace('===== (BrowserGui)')
         leoGui.NullGui.__init__(self, guiName='browser')
+        g.trace('===== (BrowserGui)')
+        
         # Set by LeoGui...
             ### self.consoleOnly = False
         # Others
@@ -113,15 +114,8 @@ class BrowserGui(leoGui.NullGui):
         '''The main loop for the browser gui.'''
         print('LeoWapp running...')
         c = g.app.log.c
-        if 0:
-            print('g.app.windowList', g.app.windowList)
-            print(repr(g.app.log.c))
-            print(c.frame)
-            print(c.frame.body)
-            print(c.frame.log)
-            print(c.frame.tree)
         if 1: # Run all unit tests.
-            g.app.failFast = False
+            g.app.failFast = True
             path = g.os_path_finalize_join(
                 g.app.loadDir, '..', 'test', 'unittest.leo')
             c = g.openWithFileName(path, gui=self)
@@ -137,6 +131,7 @@ class BrowserGui(leoGui.NullGui):
         #@+node:ekr.20181101034427.1: *4* bg.createLeoFrame
         def createLeoFrame(self, c, title):
 
+            g.trace(g.callers())
             return leoFrame.NullFrame(c, title='NullFrame', gui=self)
         #@+node:ekr.20181101025053.1: *4* bg.message
         def message (self, func, payload=None):
