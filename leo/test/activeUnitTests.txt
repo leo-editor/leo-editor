@@ -20594,7 +20594,7 @@ try:
     # With the new undo logic, it takes 2 undoes.
     # The first undo undoes the headline changes,
     # the second undo undoes the insert node.
-    if g.app.isExternalUnitTest or g.app.gui.guiName() == 'nullGui':
+    if g.app.isExternalUnitTest or g.app.gui.guiName() in ('browser', 'nullGui'):
         # The situation is different in a null Gui.
         pass
     else:
