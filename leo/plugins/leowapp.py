@@ -17,7 +17,7 @@ Leo as a web app: contains python and javascript sides.
 #@+<< imports >>
 #@+node:ekr.20181028052650.3: ** << imports >>
 import leo.core.leoGlobals as g
-### import leo.core.leoFrame as leoFrame
+import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
 ### assert leoGui ###
 if g.isPython3:
@@ -80,23 +80,18 @@ def init():
     return True
 #@+node:ekr.20181031162039.1: ** class BrowserGui (leoGui.NullGui)
 class BrowserGui(leoGui.NullGui):
+    
+    guiName = 'browser'
 
-    def __init__(self):
+    # def __init__(self):
 
-        leoGui.NullGui.__init__(self, guiName='browser')
-        g.trace('===== (BrowserGui)')
-        self.focusWidget = None
-        
-        # Set by LeoGui...
-            ### self.consoleOnly = False
-        # Others
-        # self.styleSheetManagerClass = g.NullObject
-        # self.log = leoFrame.NullLog()
-        # self.isNullGui = True
-        ###
+        # leoGui.NullGui.__init__(self, guiName='browser')
+            # The NullGui has the following ivars:
             # self.clipboardContents = ''
-            # self.enablePlugins = False ###
+            # self.focusWidget = None
             # self.script = None
+            # self.lastFrame = None
+            # self.isNullGui = True
             # self.idleTimeClass = g.NullObject
 
     #@+others
@@ -191,6 +186,18 @@ class BrowserGui(leoGui.NullGui):
     #@+node:ekr.20181102074018.1: *4* bg.do_dialog
     def do_dialog(self, key, defaultVal):
         return defaultVal
+    #@+node:ekr.20181102073746.8: *4* bg.panels
+    def createComparePanel(self, c):
+        """Create Compare panel."""
+        return None
+
+    def createFindTab(self, c, parentFrame):
+        """Create a find tab in the indicated frame."""
+        return None
+
+    def createLeoFrame(self, c, title):
+        """Create a null Leo Frame."""
+        return leoFrame.NullFrame(c, title=title, gui=self)
     #@+node:ekr.20181101025053.1: *3* bg.message
     def message (self, func, payload=None):
         '''
