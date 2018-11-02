@@ -685,10 +685,9 @@ for ivar in ivars:
         val = getattr(g.app,ivar)
         if val is None:
             fails.append(ivar)
-        # assert val is not None, 'null app ivar: %s %r'% (ivar,g.app)
 assert not fails, 'null g.app ivars in %s...\n%s' % (
     g.app, g.objToString(fails))
-        
+
 #@+node:ekr.20071113194858: ** Organized by file
 # All the following files have problems when run with Alt-5.
 #@+node:ekr.20100131171342.5506: *3* leoApp

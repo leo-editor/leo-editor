@@ -2866,10 +2866,9 @@ for ivar in ivars:
         val = getattr(g.app,ivar)
         if val is None:
             fails.append(ivar)
-        # assert val is not None, 'null app ivar: %s %r'% (ivar,g.app)
 assert not fails, 'null g.app ivars in %s...\n%s' % (
     g.app, g.objToString(fails))
-        
+
 </t>
 <t tx="ekr.20100131171342.5485">import inspect
 
