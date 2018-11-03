@@ -29,7 +29,7 @@ if g.isPython3:
         websockets = None
         print('leowapp.py requires websockets')
         print('>pip install websockets')
-    import xml.sax.saxutils as saxutils
+    # import xml.sax.saxutils as saxutils
 else:
     print('leowapp.py requires Python 3')
 #@-<< imports >>
@@ -54,7 +54,19 @@ config = Config()
 # browser_encoding = 'utf-8'
     # To do: query browser: var x = document.characterSet; 
 #@+others
-#@+node:ekr.20181102084242.1: ** class BrowserBody (NullBody)
+#@+node:ekr.20181028052650.5: **  init (leowapp.py)
+def init():
+    '''Return True if the plugin has loaded successfully.'''
+    # LeoWapp requires Python 3, for safety and convenience.
+    if not g.isPython3:
+        return False
+    if not websockets:
+        return False
+    # ws_server hangs Leo!
+    # ws_server()
+    g.plugin_signon(__name__)
+    return True
+#@+node:ekr.20181102084242.1: ** class BrowserBody
 class BrowserBody(leoFrame.NullBody):
    
     def __init__(self, frame):
@@ -108,7 +120,7 @@ class BrowserBody(leoFrame.NullBody):
     def setFocus(self):
         self.message('set-focus-to-body')
     #@-others
-#@+node:ekr.20181102081803.1: ** class BrowserFrame (LeoFrame)
+#@+node:ekr.20181102081803.1: ** class BrowserFrame
 class BrowserFrame(leoFrame.LeoFrame):
     
     #@+others
@@ -212,7 +224,7 @@ class BrowserFrame(leoFrame.LeoFrame):
     def update(self):
         pass
     #@-others
-#@+node:ekr.20181031162039.1: ** class BrowserGui (NullGui)
+#@+node:ekr.20181031162039.1: ** class BrowserGui
 class BrowserGui(leoGui.NullGui):
 
     # def __init__(self):
@@ -242,6 +254,7 @@ class BrowserGui(leoGui.NullGui):
         self.clipboardContents = s
 
     def set_focus(self, commander, widget):
+        # Not really correct.
         self.message('set-focus',
             commander=commander.shortFileName(),
             widget=self.widget_name(widget),
@@ -392,7 +405,7 @@ class BrowserGui(leoGui.NullGui):
         print('calling sys.exit(0)')
         sys.exit(0)
     #@-others
-#@+node:ekr.20181102083641.1: ** class BrowserIconBar (NullIconBarClass)
+#@+node:ekr.20181102083641.1: ** class BrowserIconBar
 class BrowserIconBar(leoFrame.NullIconBarClass):
 
     def __init__(self, c, parentFrame):
@@ -404,7 +417,7 @@ class BrowserIconBar(leoFrame.NullIconBarClass):
             # self.iconFrame = None
             # self.parentFrame = parentFrame
             # self.w = g.NullObject()
-#@+node:ekr.20181102084250.1: ** class BrowserLog (NullLog)
+#@+node:ekr.20181102084250.1: ** class BrowserLog
 class BrowserLog(leoFrame.NullLog):
     
     def __init__(self, frame):
@@ -472,18 +485,18 @@ def put(self, s,
 def putnl(self, tabName='Log'):
     if self.enabled:
         self.message('put-nl', tabName=tabName)
-#@+node:ekr.20181102084314.1: ** class BrowserMenu (NullMenu)
+#@+node:ekr.20181102084314.1: ** class BrowserMenu
 class BrowserMenu(leoMenu.NullMenu):
     
     def __init__(self, frame):
         leoMenu.NullMenu.__init__(self, frame=frame)
-#@+node:ekr.20181102084201.1: ** class BrowserStatusLine (NullStatusLineClass)
+#@+node:ekr.20181102084201.1: ** class BrowserStatusLine
 class BrowserStatusLine(leoFrame.NullStatusLineClass):
     
     def __init__(self, c, parentFrame):
         leoFrame.NullStatusLineClass.__init__(self,
             c=c, parentFrame=parentFrame)
-#@+node:ekr.20181102151431.1: ** class BrowserStringTextWrapper (object)
+#@+node:ekr.20181102151431.1: ** class BrowserStringTextWrapper
 class BrowserStringTextWrapper(object):
     '''
     A class that represents text as a Python string.
@@ -685,7 +698,7 @@ class BrowserStringTextWrapper(object):
         row, col = g.convertPythonIndexToRowCol(s, i)
         return i, row, col
     #@-others
-#@+node:ekr.20181102084258.1: ** class BrowserTree (NullTree)
+#@+node:ekr.20181102084258.1: ** class BrowserTree
 class BrowserTree(leoFrame.NullTree):
 
     def __init__(self, frame):
@@ -784,27 +797,5 @@ def setHeadline(self, p, s):
         self.revertHeadline = s
     else:
         g.trace('-' * 20, 'oops')
-#@+node:ekr.20181102125422.1: ** Top-level
-#@+node:ekr.20181030103048.2: *3* escape
-def escape(s):
-    '''
-    Do the standard xml escapes, and replace newlines and tabs.
-    '''
-    return saxutils.escape(s, {
-        '\n': '<br />',
-        '\t': '&nbsp;&nbsp;&nbsp;&nbsp;',
-    })
-#@+node:ekr.20181028052650.5: *3* init (leowapp.py)
-def init():
-    '''Return True if the plugin has loaded successfully.'''
-    # LeoWapp requires Python 3, for safety and convenience.
-    if not g.isPython3:
-        return False
-    if not websockets:
-        return False
-    # ws_server hangs Leo!
-    # ws_server()
-    g.plugin_signon(__name__)
-    return True
 #@-others
 #@-leo
