@@ -364,7 +364,6 @@ class BrowserGui(leoGui.NullGui):
     #@+node:ekr.20181101025053.1: *3* bg.message
     def message (self, kind, **payload):
         '''Send a message to the framework.'''
-        assert kind not in payload, (payload, g.callers())
         # Unit tests call only these messages!
         if kind not in (
             'body-get-all-text',
