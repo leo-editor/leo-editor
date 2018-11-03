@@ -51,26 +51,21 @@ class Config (object):
 # The initial values probably should not be changed. 
 config = Config()
 #@-<< config >>
-# browser_encoding = 'utf-8'
-    # To do: query browser: var x = document.characterSet; 
 #@+others
 #@+node:ekr.20181028052650.5: **  init (leowapp.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    # LeoWapp requires Python 3, for safety and convenience.
+    # LeoWapp requires Python 3.
     if not g.isPython3:
         return False
     if not websockets:
         return False
-    # ws_server hangs Leo!
-    # ws_server()
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20181102084242.1: ** class BrowserBody
 class BrowserBody(leoFrame.NullBody):
    
     def __init__(self, frame):
-        # g.trace('(BrowserBody)', g.callers())
         leoFrame.NullBody.__init__(self,
             frame=frame, parentFrame=None)
         self.message = g.app.gui.message
@@ -416,7 +411,6 @@ class BrowserGui(leoGui.NullGui):
 class BrowserIconBar(leoFrame.NullIconBarClass):
 
     def __init__(self, c, parentFrame):
-        # g.trace('(BrowserIconBar)')
         leoFrame.NullIconBarClass.__init__(self,
             c=c, parentFrame=parentFrame)
         ###
