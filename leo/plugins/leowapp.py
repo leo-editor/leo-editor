@@ -356,10 +356,9 @@ class BrowserGui(leoGui.NullGui):
         '''Send a message to the framework.'''
         assert kind not in payload, (payload, g.callers())
         if 1:
-            # print('')
             payload2 = payload.copy()
-            if 's' in payload2:
-                payload2 ['s'] = g.truncate(payload2['s'], 20).strip()
+            if 's' in payload:
+                payload2 ['s'] = g.truncate(payload['s'], 20).strip()
             g.trace('%20s %s' % (kind, payload2))
         payload ['kind'] = kind
     #@+node:ekr.20181101072605.1: *3* bg.oops
