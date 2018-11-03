@@ -370,7 +370,14 @@ class BrowserGui(leoGui.NullGui):
     def message (self, kind, **payload):
         '''Send a message to the framework.'''
         assert kind not in payload, (payload, g.callers())
-        if 1:
+        # Unit tests call only these messages!
+        if kind not in (
+            'body-get-all-text',
+            'do-dialog',
+            'get-clipboard', 'set-clipboard',
+            'get-focus', 'set-focus',
+            'get-y-scroll',
+        ):
             payload2 = payload.copy()
             if 's' in payload:
                 payload2 ['s'] = g.truncate(payload['s'], 20).strip()
@@ -524,11 +531,11 @@ class BrowserStringTextWrapper(object):
     #@+others
     #@+node:ekr.20181102151431.3: *3* bstw.Clipboard
     def clipboard_clear(self):
-        self.message('clipboard-clear')
+        # gui gives message.
         g.app.gui.replaceClipboardWith('')
 
     def clipboard_append(self, s):
-        self.message('clipboard-append', s=s)
+        # gui gives message.
         s1 = g.app.gui.getTextFromClipboard()
         g.app.gui.replaceClipboardWith(s1 + s)
     #@+node:ekr.20181103055241.1: *3* bstw.Config
