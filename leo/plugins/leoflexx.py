@@ -7,6 +7,11 @@
 #@@tabwidth -4
 from flexx import flx
 #@+others
+#@+node:ekr.20181103151350.1: ** init
+def init():
+    # At present, leoflexx is not a true plugin.
+    # I am executing leoflexx.py from an external script.
+    return False
 #@+node:ekr.20181103102131.1: ** class TreeExample
 """
 An example with a tree widget, demonstrating e.g. theming, checkable items,
