@@ -242,8 +242,10 @@ class BrowserGui(leoGui.NullGui):
         self.clipboardContents = s
 
     def set_focus(self, commander, widget):
-        self.message('set-focus', commander=commander, widget=widget)
-            ### Not correct.
+        self.message('set-focus',
+            commander=commander.shortFileName(),
+            widget=self.widget_name(widget),
+        )
         self.focusWidget = widget
     #@+node:ekr.20181102073957.1: *3* bg.dialogs & alerts
     def alert(self, message):
