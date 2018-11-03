@@ -107,9 +107,7 @@ class BrowserBody(leoFrame.NullBody):
     #@+node:ekr.20181102122653.1: *3* bb.setFocus
     def setFocus(self):
         # g.trace('(BrowserBody)', g.callers())
-        g.app.gui.message({
-            'kind': 'set-focus-to-body',
-        })
+        g.app.gui.message('set-focus-to-body')
     #@-others
 #@+node:ekr.20181102081803.1: ** class BrowserFrame (LeoFrame)
 class BrowserFrame(leoFrame.LeoFrame):
@@ -305,11 +303,7 @@ class BrowserGui(leoGui.NullGui):
     def do_dialog(self, key, defaultVal):
         
         # g.trace('(BrowserGui)', g.callers())
-        self.message({
-            'kind': 'do-dialog',
-            'defaultVal': defaultVal,
-            'key': key
-        })
+        self.message('do-dialog', defaultVal=defaultVal, key=key)
         return defaultVal
     #@+node:ekr.20181102080116.1: *3* bg.events
     def onActivateEvent(self, *args, **keys):
@@ -358,13 +352,16 @@ class BrowserGui(leoGui.NullGui):
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
         return w and getattr(w, 'supportsHighLevelInterface', None)
     #@+node:ekr.20181101025053.1: *3* bg.message
-    def message (self, payload):
+    def message (self, kind, **payload):
         '''Send a message to the framework.'''
-        if 0:
-            print('')
-            g.trace('(BrowserGui) =====')
-            g.printObj(payload)
-            print('')
+        assert kind not in payload, payload
+        if 1:
+            # print('')
+            payload2 = payload.copy()
+            if 's' in payload2:
+                payload2 ['s'] = g.truncate(payload2['s'], 20).strip()
+            g.trace('%20s %s' % (kind, payload2))
+        payload ['kind'] = kind
     #@+node:ekr.20181101072605.1: *3* bg.oops
     oops_d = {}
 
@@ -468,20 +465,11 @@ def put(self, s,
     nodeLink=None,
 ):
     if self.enabled:
-        # g.trace('(BrowserLog)', g.callers())
-        g.app.gui.message({
-            'kind': 'put',
-            's': g.toUnicode(s),
-            'tabName': tabName,
-        })
+        g.app.gui.message('put', s=s, tabName=tabName)
 
 def putnl(self, tabName='Log'):
     if self.enabled:
-        # g.trace('(BrowserLog)', g.callers())
-        g.app.gui.message({
-            'kind': 'putnl',
-            'tabName': tabName,
-        })
+        g.app.gui.message('put-nl', tabName=tabName)
 #@+node:ekr.20181102084314.1: ** class BrowserMenu (NullMenu)
 class BrowserMenu(leoMenu.NullMenu):
     
@@ -574,12 +562,7 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
         self.s = self.s + s
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
-        # g.trace('(BrowserStringTextWrapper)')
-        g.app.gui.message({
-            'kind': 'body-append-text',
-            's': s,
-        })
-        
+        g.app.gui.message('body-append-text', s=s)
     #@+node:ekr.20181102151431.7: *4* bstw.delete
     def delete(self, i, j=None):
         '''BrowserStringTextWrapper.'''
@@ -593,11 +576,9 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
         # Bug fix: 2011/11/13: Significant in external tests.
         self.setSelectionRange(i, i, insert=i)
         # g.trace('(BrowserStringTextWrapper)')
-        g.app.gui.message({
-            'kind': 'body-delete-text',
-            's': s[: i] + s[j:],
-            'sel': (i, i, i)
-        })
+        g.app.gui.message('body-delete-text',
+            s=s[:i]+s[j:],
+            sel=(i,i,i))
     #@+node:ekr.20181102151431.8: *4* bstw.deleteTextSelection
     def deleteTextSelection(self):
         '''BrowserStringTextWrapper.'''
@@ -607,28 +588,22 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
     def get(self, i, j=None):
         '''BrowserStringTextWrapper.'''
         i = self.toPythonIndex(i)
-        if j is None: j = i + 1
+        if j is None:
+            j = i + 1
         j = self.toPythonIndex(j)
         s = self.s[i: j]
-        # g.trace('(BrowserStringTextWrapper)')
-        g.app.gui.message({
-            'kind': 'body-get-text',
-            's': s,
-        })
+        g.app.gui.message('body-get-text', s=s)
         return g.toUnicode(s)
     #@+node:ekr.20181102151431.10: *4* bstw.getAllText
     def getAllText(self):
         '''BrowserStringTextWrapper.'''
         s = self.s
-        # g.trace('(BrowserStringTextWrapper)')
-        g.app.gui.message({
-            'kind': 'body-get-all-text',
-            's': s,
-        })
+        g.app.gui.message('body-get-all-text', s=s)
         return g.toUnicode(s)
     #@+node:ekr.20181102151431.11: *4* bstw.getInsertPoint
     def getInsertPoint(self):
         '''BrowserStringTextWrapper.'''
+        ### g.app.gui.message('body-get-insert-point')
         i = self.ins
         if i is None:
             if self.virtualInsertPoint is None:
@@ -636,54 +611,32 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
             else:
                 i = self.virtualInsertPoint
         self.virtualInsertPoint = i
-        ###
-            # g.trace('(BrowserStringTextWrapper)')
-            # g.app.gui.message({
-                # 'kind': 'body-get-insert-point',
-            # })
         return i
     #@+node:ekr.20181102151431.12: *4* bstw.getSelectedText
     def getSelectedText(self):
         '''BrowserStringTextWrapper.'''
+        ### g.app.gui.message('body-get-selected-text')
         i, j = self.sel
         s = self.s[i: j]
-        ###
-            # g.trace('(BrowserStringTextWrapper)')
-            # g.app.gui.message({
-                # 'kind': 'body-get-selected-text',
-            # })
         return g.toUnicode(s)
     #@+node:ekr.20181102151431.13: *4* bstw.getSelectionRange
     def getSelectionRange(self, sort=True):
         '''BrowserStringTextWrapper'''
+        ### g.app.gui.message('body-get-selection-range')
         sel = self.sel
         if len(sel) == 2 and sel[0] >= 0 and sel[1] >= 0:
             i, j = sel
             if sort and i > j:
-                sel = j, i # Bug fix: 10/5/07
-            ###
-                # g.trace('(BrowserStringTextWrapper)')
-                # g.app.gui.message({
-                    # 'kind': 'body-get-selection-range',
-                # })
+                sel = j, i
             return sel
         else:
             i = self.ins
-            ###
-                # g.trace('(BrowserStringTextWrapper)')
-                # g.app.gui.message({
-                    # 'kind': 'body-get-selection-range',
-                # })
             return i, i
     #@+node:ekr.20181102151431.14: *4* bstw.hasSelection
     def hasSelection(self):
         '''BrowserStringTextWrapper.'''
+        ### g.app.gui.message('body-has-selection')
         i, j = self.getSelectionRange()
-        ###
-            # g.trace('(BrowserStringTextWrapper)')
-            # g.app.gui.message({
-                # 'kind': 'body-has-selection',
-            # })
         return i != j
     #@+node:ekr.20181102151431.15: *4* bstw.insert
     def insert(self, i, s):
@@ -773,18 +726,11 @@ if 0:
     
 #@+node:ekr.20181102124307.1: *3* bt.drawIcon
 def drawIcon(self, p):
-    # g.trace('(BrowserTree)', g.callers())
-    g.app.gui.message({
-        'kind': 'draw-icon',
-        'p': p and p.gnx,
-    })
+
+    g.app.gui.message('draw-icon', gnx=p.gnx)
 #@+node:ekr.20181102123625.3: *3* bt.edit_widget
 def edit_widget(self, p):
-    # g.trace('(BrowserTree)', g.callers())
-    g.app.gui.message({
-        'kind': 'edit-widget',
-        'p': p and p.gnx,
-    })
+    g.app.gui.message('edit-widget', gnx=p.gnx)
     d = self.editWidgetsDict
     if not p or not p.v:
         return None
@@ -798,12 +744,8 @@ def edit_widget(self, p):
 #@+node:ekr.20181102123625.4: *3* bt.editLabel
 def editLabel(self, p, selectAll=False, selection=None):
     '''Start editing p's headline.'''
+    g.app.gui.message('edit-label', gnx=p.gnx)
     self.endEditLabel()
-    # g.trace('(BrowserTree)', g.callers())
-    g.app.gui.message({
-        'kind': 'edit-label',
-        'p': p and p.gnx,
-    })
     if p:
         self.revertHeadline = p.h
             # New in 4.4b2: helps undo.
@@ -821,12 +763,7 @@ def redraw(self, p=None):
 redraw_now = redraw
 #@+node:ekr.20181102124332.1: *3* bt.scrollTo
 def scrollTo(self, p):
-    # g.trace('(BrowserTree)', g.callers())
-    g.app.gui.message({
-        'kind': 'scroll-tree',
-        'p': p and p.gnx,
-    })
-
+    g.app.gui.message('scroll-tree', gnx=p.gnx)
 #@+node:ekr.20181102123625.7: *3* bt.setHeadline
 def setHeadline(self, p, s):
     '''
@@ -834,12 +771,7 @@ def setHeadline(self, p, s):
 
     This is called from the undo/redo logic to change the text before redrawing.
     '''
-    # g.trace('(BrowserTree)', g.callers())
-    g.app.gui.message({
-        'kind': 'set-headline',
-        'p': p and p.gnx,
-        's': s,
-    })
+    g.app.gui.message('set-headline', gnx=p.gnx, s=s)
     w = self.edit_widget(p)
     if w:
         w.delete(0, 'end')
