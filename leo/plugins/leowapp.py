@@ -61,6 +61,7 @@ class BrowserBody(leoFrame.NullBody):
         # g.trace('(BrowserBody)', g.callers())
         leoFrame.NullBody.__init__(self,
             frame=frame, parentFrame=None)
+        self.message = g.app.gui.message
         self.wrapper = BrowserStringTextWrapper(c=self.c, name='body')
         ###
             # self.insertPoint = 0
@@ -70,44 +71,42 @@ class BrowserBody(leoFrame.NullBody):
             # self.editorWidgets['1'] = wrapper
             # self.colorizer = NullColorizer(self.c)
     #@+others
-    #@+node:ekr.20181102122447.1: *3* bb.not used
-    if 0:
-        #@+others
-        #@+node:ekr.20181102122257.3: *4* BrowserBody interface
-        # Birth, death...
-        def createControl(self, parentFrame, p):
-            pass
-        # Editors...
-        def addEditor(self, event=None):
-            pass
-        def assignPositionToEditor(self, p):
-            pass
-        def createEditorFrame(self, w):
-            return None
-        def cycleEditorFocus(self, event=None):
-            pass
-        def deleteEditor(self, event=None):
-            pass
-        def selectEditor(self, w):
-            pass
-        def selectLabel(self, w):
-            pass
-        def setEditorColors(self, bg, fg):
-            pass
-        def unselectLabel(self, w):
-            pass
-        def updateEditors(self):
-            pass
-        # Events...
-        def forceFullRecolor(self):
-            pass
-        def scheduleIdleTimeRoutine(self, function, *args, **keys):
-            pass
-        #@-others
+    #@+node:ekr.20181102122257.3: *3* BrowserBody interface
+    # At present theses do not issue messages.
+
+    # Birth, death...
+    def createControl(self, parentFrame, p):
+        pass
+
+    # Editors...
+    def addEditor(self, event=None):
+        pass
+    def assignPositionToEditor(self, p):
+        pass
+    def createEditorFrame(self, w):
+        return None
+    def cycleEditorFocus(self, event=None):
+        pass
+    def deleteEditor(self, event=None):
+        pass
+    def selectEditor(self, w):
+        pass
+    def selectLabel(self, w):
+        pass
+    def setEditorColors(self, bg, fg):
+        pass
+    def unselectLabel(self, w):
+        pass
+    def updateEditors(self):
+        pass
+    # Events...
+    def forceFullRecolor(self):
+        pass
+    def scheduleIdleTimeRoutine(self, function, *args, **keys):
+        pass
     #@+node:ekr.20181102122653.1: *3* bb.setFocus
     def setFocus(self):
-        # g.trace('(BrowserBody)', g.callers())
-        g.app.gui.message('set-focus-to-body')
+        self.message('set-focus-to-body')
     #@-others
 #@+node:ekr.20181102081803.1: ** class BrowserFrame (LeoFrame)
 class BrowserFrame(leoFrame.LeoFrame):
@@ -138,14 +137,12 @@ class BrowserFrame(leoFrame.LeoFrame):
         self.w, self.h, self.x, self.y = 600, 500, 40, 40
     #@+node:ekr.20181102082044.4: *3* bf.finishCreate
     def finishCreate(self):
-        
-        # #503: Use string/null gui for unit tests.
         self.createFirstTreeNode()
             # Call the base LeoFrame method.
     #@+node:ekr.20181102083502.1: *3* bf.oops
     def oops(self):
         g.trace("BrowserFrame", g.callers(4))
-    #@+node:ekr.20181102082044.3: *3* bf.redirectors
+    #@+node:ekr.20181102082044.3: *3* bf.redirectors (To do: add messages)
     def bringToFront(self):
         pass
     def cascade(self, event=None):
@@ -233,15 +230,20 @@ class BrowserGui(leoGui.NullGui):
     #@+others
     #@+node:ekr.20181102073746.4: *3* bg.clipboard & focus
     def get_focus(self, *args, **kwargs):
+        self.message('get-focus')
         return self.focusWidget
 
     def getTextFromClipboard(self):
+        self.message('get-clipboard')
         return self.clipboardContents
 
     def replaceClipboardWith(self, s):
+        self.message('set-clipboard', s=s)
         self.clipboardContents = s
 
     def set_focus(self, commander, widget):
+        self.message('set-focus', commander=commander, widget=widget)
+            ### Not correct.
         self.focusWidget = widget
     #@+node:ekr.20181102073957.1: *3* bg.dialogs & alerts
     def alert(self, message):
@@ -299,10 +301,8 @@ class BrowserGui(leoGui.NullGui):
     ):
         return self.do_dialog("yesNoCancelDialog", "cancel")
 
-    #@+node:ekr.20181102074018.1: *3* bg.do_dialog
+    #@+node:ekr.20181102074018.1: *4* bg.do_dialog
     def do_dialog(self, key, defaultVal):
-        
-        # g.trace('(BrowserGui)', g.callers())
         self.message('do-dialog', defaultVal=defaultVal, key=key)
         return defaultVal
     #@+node:ekr.20181102080116.1: *3* bg.events
@@ -408,7 +408,8 @@ class BrowserLog(leoFrame.NullLog):
     def __init__(self, frame):
         leoFrame.NullLog.__init__(self,
             frame=frame, parentFrame=None)
-        assert self.enabled 
+        assert self.enabled
+        self.message = g.app.gui.message
     ###
         # self.isNull = True
         # self.logNumber = 0
@@ -464,22 +465,20 @@ def put(self, s,
     nodeLink=None,
 ):
     if self.enabled:
-        g.app.gui.message('put', s=s, tabName=tabName)
+        self.message('put', s=s, tabName=tabName)
 
 def putnl(self, tabName='Log'):
     if self.enabled:
-        g.app.gui.message('put-nl', tabName=tabName)
+        self.message('put-nl', tabName=tabName)
 #@+node:ekr.20181102084314.1: ** class BrowserMenu (NullMenu)
 class BrowserMenu(leoMenu.NullMenu):
     
     def __init__(self, frame):
-        # g.trace('(BrowserMenu)')
         leoMenu.NullMenu.__init__(self, frame=frame)
 #@+node:ekr.20181102084201.1: ** class BrowserStatusLine (NullStatusLineClass)
 class BrowserStatusLine(leoFrame.NullStatusLineClass):
     
     def __init__(self, c, parentFrame):
-        # g.trace('(BrowserStatusLine)')
         leoFrame.NullStatusLineClass.__init__(self,
             c=c, parentFrame=parentFrame)
 #@+node:ekr.20181102151431.1: ** class BrowserStringTextWrapper (object)
@@ -688,8 +687,8 @@ class BrowserStringTextWrapper(object):
 class BrowserTree(leoFrame.NullTree):
 
     def __init__(self, frame):
-        # g.trace('(BrowserTree)', g.callers())
         leoFrame.NullTree.__init__(self, frame=frame)
+        self.message = g.app.gui.message
     ###
         # self.c = frame.c
         # self.editWidgetsDict = {}
@@ -728,11 +727,10 @@ if 0:
     
 #@+node:ekr.20181102124307.1: *3* bt.drawIcon
 def drawIcon(self, p):
-
-    g.app.gui.message('draw-icon', gnx=p.gnx)
+    self.message('draw-icon', gnx=p.gnx)
 #@+node:ekr.20181102123625.3: *3* bt.edit_widget
 def edit_widget(self, p):
-    g.app.gui.message('edit-widget', gnx=p.gnx)
+    self.message('edit-widget', gnx=p.gnx)
     d = self.editWidgetsDict
     if not p or not p.v:
         return None
@@ -746,7 +744,7 @@ def edit_widget(self, p):
 #@+node:ekr.20181102123625.4: *3* bt.editLabel
 def editLabel(self, p, selectAll=False, selection=None):
     '''Start editing p's headline.'''
-    g.app.gui.message('edit-label', gnx=p.gnx)
+    self.message('edit-label', gnx=p.gnx)
     self.endEditLabel()
     if p:
         self.revertHeadline = p.h
@@ -758,6 +756,7 @@ def editLabel(self, p, selectAll=False, selection=None):
         return None, None
 #@+node:ekr.20181102124041.1: *3* bt.redraw
 def redraw(self, p=None):
+    self.message('redraw-tree')
     self.redrawCount += 1
     return p
         # Support for #503: Use string/null gui for unit tests
@@ -765,7 +764,7 @@ def redraw(self, p=None):
 redraw_now = redraw
 #@+node:ekr.20181102124332.1: *3* bt.scrollTo
 def scrollTo(self, p):
-    g.app.gui.message('scroll-tree', gnx=p.gnx)
+    self.message('scroll-tree', gnx=p.gnx)
 #@+node:ekr.20181102123625.7: *3* bt.setHeadline
 def setHeadline(self, p, s):
     '''
@@ -773,7 +772,7 @@ def setHeadline(self, p, s):
 
     This is called from the undo/redo logic to change the text before redrawing.
     '''
-    g.app.gui.message('set-headline', gnx=p.gnx, s=s)
+    self.message('set-headline', gnx=p.gnx, s=s)
     w = self.edit_widget(p)
     if w:
         w.delete(0, 'end')
