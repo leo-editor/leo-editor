@@ -122,7 +122,7 @@ class BrowserFrame(leoFrame.LeoFrame):
         assert self.c
         self.wrapper = None
             # was BrowserIconBarClass(self.c, self)
-        self.isNullFrame = True ### Should this be False ???
+        self.isNullFrame = True
         self.outerFrame = None
         self.ratio = self.secondary_ratio = 0.5
         self.title = title
@@ -483,7 +483,7 @@ class BrowserStatusLine(leoFrame.NullStatusLineClass):
         leoFrame.NullStatusLineClass.__init__(self,
             c=c, parentFrame=parentFrame)
 #@+node:ekr.20181102151431.1: ** class BrowserStringTextWrapper (object)
-class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
+class BrowserStringTextWrapper(object):
     '''
     A class that represents text as a Python string.
     This class forwards messages to the browser.
@@ -530,12 +530,11 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
             bg=bg, fg=fg, flashes=flashes, delay=delay)
     #@+node:ekr.20181103054825.1: *3* bstw.Focus
     def getFocus(self):
-        ### This isn't in StringTextWrapper.
+        # This isn't in StringTextWrapper.
         self.message('get-focus')
 
     def setFocus(self):
         self.message('set-focus')
-
     #@+node:ekr.20181102151431.4: *3* bstw.Insert Point
     def see(self, i):
         self.message('see-position', i=i)
@@ -601,12 +600,12 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
     def getAllText(self):
         '''BrowserStringTextWrapper.'''
         s = self.s
-        self.message('body-get-all-text', s=s)
+        self.message('body-get-all-text')
         return g.toUnicode(s)
     #@+node:ekr.20181102151431.11: *4* bstw.getInsertPoint
     def getInsertPoint(self):
         '''BrowserStringTextWrapper.'''
-        ### self.message('body-get-insert-point')
+        # self.message('body-get-insert-point')
         i = self.ins
         if i is None:
             if self.virtualInsertPoint is None:
@@ -618,14 +617,14 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
     #@+node:ekr.20181102151431.12: *4* bstw.getSelectedText
     def getSelectedText(self):
         '''BrowserStringTextWrapper.'''
-        ### self.message('body-get-selected-text')
+        # self.message('body-get-selected-text')
         i, j = self.sel
         s = self.s[i: j]
         return g.toUnicode(s)
     #@+node:ekr.20181102151431.13: *4* bstw.getSelectionRange
     def getSelectionRange(self, sort=True):
         '''BrowserStringTextWrapper'''
-        ### self.message('body-get-selection-range')
+        # self.message('body-get-selection-range')
         sel = self.sel
         if len(sel) == 2 and sel[0] >= 0 and sel[1] >= 0:
             i, j = sel
@@ -638,7 +637,7 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
     #@+node:ekr.20181102151431.14: *4* bstw.hasSelection
     def hasSelection(self):
         '''BrowserStringTextWrapper.'''
-        ### self.message('body-has-selection')
+        # self.message('body-has-selection')
         i, j = self.getSelectionRange()
         return i != j
     #@+node:ekr.20181102151431.15: *4* bstw.insert
