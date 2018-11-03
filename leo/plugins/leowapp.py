@@ -493,6 +493,7 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
         self.c = c
         self.name = name
         self.ins = 0
+        self.message = g.app.gui.message
         self.sel = 0, 0
         self.s = ''
         self.supportsHighLevelInterface = True
@@ -504,56 +505,59 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
     def getName(self):
         '''BrowserStringTextWrapper.'''
         return self.name # Essential.
+        
     
     #@+others
     #@+node:ekr.20181102151431.3: *3* bstw.Clipboard
     def clipboard_clear(self):
+        self.message('clipboard-clear')
         g.app.gui.replaceClipboardWith('')
 
     def clipboard_append(self, s):
+        self.message('clipboard-append', s=s)
         s1 = g.app.gui.getTextFromClipboard()
         g.app.gui.replaceClipboardWith(s1 + s)
-    #@+node:ekr.20181102161537.1: *3* bstw.Getters (Maybe)
-    def getFocus(self):
-        pass ### This isn't in StringTextWrapper.
+    #@+node:ekr.20181103055241.1: *3* bstw.Config
+    def setStyleClass(self, name):
+        self.message('set-style', name=name)
 
+    def tag_configure(self, colorName, **kwargs):
+        kwargs['color-name'] = colorName
+        self.message('configure-tag', keys=kwargs)
+    #@+node:ekr.20181102161648.1: *3* bstw.flashCharacter
+    def flashCharacter(self, i, bg='white', fg='red', flashes=3, delay=75):
+        self.message('flash-character', i=i,
+            bg=bg, fg=fg, flashes=flashes, delay=delay)
+    #@+node:ekr.20181103054825.1: *3* bstw.Focus
+    def getFocus(self):
+        ### This isn't in StringTextWrapper.
+        self.message('get-focus')
+
+    def setFocus(self):
+        self.message('set-focus')
+
+    #@+node:ekr.20181102151431.4: *3* bstw.Insert Point
+    def see(self, i):
+        self.message('see-position', i=i)
+
+    def seeInsertPoint(self):
+        self.message('see-insert-point')
+        
+    #@+node:ekr.20181103054937.1: *3* bstw.Scrolling
     def getXScrollPosition(self):
+        self.message('get-x-scroll')
         return 0
 
     def getYScrollPosition(self):
+        self.message('get-y-scroll')
         return 0
         
-    #@+node:ekr.20181102151431.4: *3* bstw.Setters (To do)
-    #@+node:ekr.20181102161648.1: *4* bstw.flashCharacter
-    def flashCharacter(self, i, bg='white', fg='red', flashes=3, delay=75):
-        pass
-    #@+node:ekr.20181102161651.1: *4* bstw.see
-    def see(self, i):
-        pass
-
-    #@+node:ekr.20181102161651.2: *4* bstw.seeInsertPoint
-    def seeInsertPoint(self):
-        pass
-        
-    #@+node:ekr.20181102161651.3: *4* bstw.setFocus
-    def setFocus(self):
-        pass
-
-    #@+node:ekr.20181102161651.4: *4* bstw.setStyleClass
-    def setStyleClass(self, name):
-        pass ###
-
-    #@+node:ekr.20181102161652.1: *4* bstw.setXScrollPosition
     def setXScrollPosition(self, i):
-        pass ###
+        self.message('set-x-scroll', i=i)
         
-    #@+node:ekr.20181102161652.2: *4* bstw.setYScrollPosition
     def setYScrollPosition(self, i):
-        pass ###
+        self.message('set-y-scroll', i=i)
         
-    #@+node:ekr.20181102161652.3: *4* bstw.tag_configure
-    def tag_configure(self, colorName, **keys):
-        pass ###
     #@+node:ekr.20181102151431.5: *3* bstw.Text
     #@+node:ekr.20181102151431.6: *4* bstw.appendText
     def appendText(self, s):
@@ -561,7 +565,7 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
         self.s = self.s + s
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
-        g.app.gui.message('body-append-text', s=s)
+        self.message('body-append-text', s=s)
     #@+node:ekr.20181102151431.7: *4* bstw.delete
     def delete(self, i, j=None):
         '''BrowserStringTextWrapper.'''
@@ -575,7 +579,7 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
         # Bug fix: 2011/11/13: Significant in external tests.
         self.setSelectionRange(i, i, insert=i)
         # g.trace('(BrowserStringTextWrapper)')
-        g.app.gui.message('body-delete-text',
+        self.message('body-delete-text',
             s=s[:i]+s[j:],
             sel=(i,i,i))
     #@+node:ekr.20181102151431.8: *4* bstw.deleteTextSelection
@@ -591,18 +595,18 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
             j = i + 1
         j = self.toPythonIndex(j)
         s = self.s[i: j]
-        g.app.gui.message('body-get-text', s=s)
+        self.message('body-get-text', s=s)
         return g.toUnicode(s)
     #@+node:ekr.20181102151431.10: *4* bstw.getAllText
     def getAllText(self):
         '''BrowserStringTextWrapper.'''
         s = self.s
-        g.app.gui.message('body-get-all-text', s=s)
+        self.message('body-get-all-text', s=s)
         return g.toUnicode(s)
     #@+node:ekr.20181102151431.11: *4* bstw.getInsertPoint
     def getInsertPoint(self):
         '''BrowserStringTextWrapper.'''
-        ### g.app.gui.message('body-get-insert-point')
+        ### self.message('body-get-insert-point')
         i = self.ins
         if i is None:
             if self.virtualInsertPoint is None:
@@ -614,14 +618,14 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
     #@+node:ekr.20181102151431.12: *4* bstw.getSelectedText
     def getSelectedText(self):
         '''BrowserStringTextWrapper.'''
-        ### g.app.gui.message('body-get-selected-text')
+        ### self.message('body-get-selected-text')
         i, j = self.sel
         s = self.s[i: j]
         return g.toUnicode(s)
     #@+node:ekr.20181102151431.13: *4* bstw.getSelectionRange
     def getSelectionRange(self, sort=True):
         '''BrowserStringTextWrapper'''
-        ### g.app.gui.message('body-get-selection-range')
+        ### self.message('body-get-selection-range')
         sel = self.sel
         if len(sel) == 2 and sel[0] >= 0 and sel[1] >= 0:
             i, j = sel
@@ -634,7 +638,7 @@ class BrowserStringTextWrapper(object): ### (leoFrame.StringTextWrapper)
     #@+node:ekr.20181102151431.14: *4* bstw.hasSelection
     def hasSelection(self):
         '''BrowserStringTextWrapper.'''
-        ### g.app.gui.message('body-has-selection')
+        ### self.message('body-has-selection')
         i, j = self.getSelectionRange()
         return i != j
     #@+node:ekr.20181102151431.15: *4* bstw.insert
