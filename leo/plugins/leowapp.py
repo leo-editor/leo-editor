@@ -354,7 +354,7 @@ class BrowserGui(leoGui.NullGui):
     #@+node:ekr.20181101025053.1: *3* bg.message
     def message (self, kind, **payload):
         '''Send a message to the framework.'''
-        assert kind not in payload, payload
+        assert kind not in payload, (payload, g.callers())
         if 1:
             # print('')
             payload2 = payload.copy()
