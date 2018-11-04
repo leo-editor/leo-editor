@@ -114,12 +114,12 @@ class LeoBody(flx.Widget):
 
 class LeoLog(flx.Widget):
 
-    # CSS = """
-    # .flx-CodeEditor > .ace {
-        # width: 100%;
-        # height: 100%;
-    # }
-    # """
+    CSS = """
+    .flx-CodeEditor > .ace {
+        width: 100%;
+        height: 100%;
+    }
+    """
 
     def init(self):
         global window
