@@ -107,14 +107,19 @@ class LeoBody(flx.Widget):
     def __on_size(self, *events):
         self.ace.resize()
 #@+node:ekr.20181104082149.1: ** class LeoLog
+### Kinda works
+    # class LeoLog(flx.Label):
+        # def init(self, flex=1, style='overflow-y: scroll;'):
+            # pass
+
 class LeoLog(flx.Widget):
-    
-    CSS = """
-    .flx-CodeEditor > .ace {
-        width: 100%;
-        height: 100%;
-    }
-    """
+
+    # CSS = """
+    # .flx-CodeEditor > .ace {
+        # width: 100%;
+        # height: 100%;
+    # }
+    # """
 
     def init(self):
         global window
@@ -123,7 +128,7 @@ class LeoLog(flx.Widget):
         ### self.ace.setValue("import os\n\ndirs = os.walk")
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
-        self.ace.getSession().setMode("ace/mode/python")
+        ### self.ace.getSession().setMode("ace/mode/python")
 
     @flx.reaction('size')
     def __on_size(self, *events):
