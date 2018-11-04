@@ -4,7 +4,12 @@
 #@@first
 #@@language python
 #@@tabwidth -4
-'''A Stand-alone prototype for Leo using flexx.'''
+'''
+A Stand-alone prototype for Leo using flexx.
+
+Flexx docs: testers, demos, howtos
+https://flexx.readthedocs.io/en/stable/examples/
+'''
 import leo.core.leoGlobals as g
 assert g
 from flexx import flx
@@ -14,14 +19,24 @@ def init():
     # At present, leoflexx is not a true plugin.
     # I am executing leoflexx.py from an external script.
     return False
-#@+node:ekr.20181104080854.1: ** class LeoWapp
-"""
-A prototype of Leo as a webb app.
-"""
-# Based on the tree example, for a short while.
-# https://flexx.readthedocs.io/en/stable/examples/tree_src.html#tree-py
-
-class LeoWapp(flx.Widget):
+#@+node:ekr.20181104082130.1: ** class LeoMainWindow
+class LeoMainWindow(flx.Widget):
+    
+    def init(self):
+        with flx.VBox():
+            with flx.HBox(flex=1):
+                flx.Label(text='Tree')
+                LeoTree(flex=1)
+                flx.Label(text='Log')
+                LeoLog(flex=1)
+            flx.Label(text='Body')
+            LeoBody(flex=1)
+            flx.Label(text='Minibuffer')
+            LeoMiniBuffer()
+            flx.Label(text='Status Line')
+            LeoStatusLine()
+#@+node:ekr.20181104082138.1: ** class LeoTree
+class LeoTree(flx.Widget):
 
     CSS = '''
     .flx-TreeWidget {
@@ -31,7 +46,7 @@ class LeoWapp(flx.Widget):
     '''
     
     #@+others
-    #@+node:ekr.20181104080854.2: *3* te.init
+    #@+node:ekr.20181104080854.2: *3* tree.init
     def init(self):
         with flx.HSplit():
             self.label = flx.Label(flex=1, style='overflow-y: scroll;')
@@ -46,7 +61,7 @@ class LeoWapp(flx.Widget):
                                     flx.TreeItem(title='B', text='more info on B')
 
         
-    #@+node:ekr.20181104080854.3: *3* te.on_event
+    #@+node:ekr.20181104080854.3: *3* tree.on_event
     @flx.reaction(
         'tree.children**.checked',
         'tree.children**.selected',
@@ -60,15 +75,26 @@ class LeoWapp(flx.Widget):
             text = '%10s: %s' % (id_, kind + ev.type)
             self.label.set_html(text + '<br />' + self.label.html)
     #@-others
+#@+node:ekr.20181104082144.1: ** class LeoBody
+class LeoBody(flx.Widget):
+    pass
+#@+node:ekr.20181104082149.1: ** class LeoLog
+class LeoLog(flx.Widget):
+    pass
+#@+node:ekr.20181104082154.1: ** class LeoMiniBuffer
+class LeoMiniBuffer(flx.Widget):
+    pass
+#@+node:ekr.20181104082201.1: ** class LeoStatusLine
+class LeoStatusLine(flx.Widget):
+    pass
 #@-others
 if __name__ == '__main__':
-    if 1:
-        # Use `--flexx-webruntime=browser` to run in browser.
-        flx.launch(LeoWapp)
-        flx.run()
-    else:
-        # Runs in browser.  F-12 works.
-        # `python -m flexx stop 49190` stops the server.
-        flx.App(LeoWapp).launch('firefox-browser')
-        flx.start()
+    # Use `--flexx-webruntime=browser` to run in browser.
+    flx.launch(LeoMainWindow)
+    flx.run()
+    ###
+        # # Runs in browser.
+        # # `python -m flexx stop 49190` stops the server.
+        # flx.App(LeoWapp).launch('firefox-browser')
+        # flx.start()
 #@-leo
