@@ -2,9 +2,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20181103094900.1: * @file leoflexx.py
 #@@first
-'''A Stand-alone prototype of flexx.'''
 #@@language python
 #@@tabwidth -4
+'''A Stand-alone prototype for Leo using flexx.'''
+import leo.core.leoGlobals as g
+assert g
 from flexx import flx
 #@+others
 #@+node:ekr.20181103151350.1: ** init
@@ -12,6 +14,46 @@ def init():
     # At present, leoflexx is not a true plugin.
     # I am executing leoflexx.py from an external script.
     return False
+#@+node:ekr.20181103173556.1: ** class PythonExample and helper classes
+class UserInput(flx.PyComponent):
+
+    def init(self):
+        with flx.VBox():
+            self.edit = flx.LineEdit(placeholder_text='Your name')
+            flx.Widget(flex=1)
+
+    @flx.reaction('edit.user_done')
+    def update_user(self, *events):
+        self.root.store.set_username(self.edit.text)
+
+class SomeInfoWidget(flx.PyComponent):
+
+    def init(self):
+        with flx.FormLayout():
+            self.label = flx.Label(title='name:')
+            flx.Widget(flex=1)
+
+    @flx.reaction
+    def update_label(self):
+        self.label.set_text(self.root.store.username)
+
+class Store(flx.PyComponent):
+
+    username = flx.StringProp(settable=True)
+
+class PythonExample(flx.PyComponent):
+
+    store = flx.ComponentProp()
+
+    def init(self):
+        # Create our store instance
+        self._mutate_store(Store())
+        # Imagine this being a large application with many sub-widgets,
+        # and the UserInput and SomeInfoWidget being used somewhere inside it.
+        with flx.HSplit():
+            UserInput()
+            flx.Widget(style='background:#eee;')
+            SomeInfoWidget()
 #@+node:ekr.20181103102131.1: ** class TreeExample
 """
 An example with a tree widget, demonstrating e.g. theming, checkable items,
@@ -52,10 +94,10 @@ class TreeExample(flx.Widget):
     )
     def on_event(self, *events):
         for ev in events:
-            id = ev.source.title or ev.source.text
+            print(ev.source, ev.type)
+            id_ = ev.source.title or ev.source.text
             kind = '' if ev.new_value else 'un-'
-            text = '%10s: %s' % (id, kind + ev.type)
-            print(repr(text))
+            text = '%10s: %s' % (id_, kind + ev.type)
             self.label.set_html(text + '<br />' + self.label.html)
     #@-others
 #@+node:ekr.20181103095416.1: ** class Drawing
@@ -67,14 +109,14 @@ class Drawing(flx.CanvasWidget):
     .flx-Drawing {background: #fff; border: 5px solid #000;}
     """
 
+    #@+others
+    #@+node:ekr.20181103154903.1: *3* drawing.init
     def init(self):
         super().init()
         self.ctx = self.node.getContext('2d')
         self._last_pos = {}
         self.set_capture_mouse(1)
         self.label = flx.Label()
-
-    #@+others
     #@+node:ekr.20181103095629.1: *3* show_event
     def show_event(self, ev):
         if -1 in ev.touches:  # Mouse
@@ -129,8 +171,8 @@ class Drawing(flx.CanvasWidget):
                 self.ctx.arc(x, y, 3, 0, 6.2831)
                 self.ctx.fill()
     #@-others
-#@+node:ekr.20181103095521.1: ** class Main
-class Main(flx.Widget):
+#@+node:ekr.20181103095521.1: ** class MainDrawing
+class MainDrawing(flx.Widget):
     """ Embed in larger widget to test offset.
     """
 
@@ -148,12 +190,16 @@ class Main(flx.Widget):
             flx.Widget(flex=1)
 #@-others
 if __name__ == '__main__':
-    if 1: # tree
-        # Server exits when browser closes.
-        flx.launch(TreeExample)
+    example = TreeExample # PythonExample, TreeExample, MainDrawing
+    if 1:
+        # Use `--flexx-webruntime=browser` to run in browser.
+        # F12 appears to be different from Shift-Ctrl-C.
+        # Otherwise, uses webruntime environment.
+        flx.launch(example)
         flx.run()
-    else: # drawing
-        # Server never exits.
-        flx.App(Main).launch('firefox-browser')
+    else:
+        # Runs in browser.  F-12 works.
+        # `python -m flexx stop 49190` stops the server.
+        flx.App(example).launch('firefox-browser')
         flx.start()
 #@-leo
