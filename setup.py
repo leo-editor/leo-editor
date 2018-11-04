@@ -127,7 +127,7 @@ user_requires = [
     'docutils', # used by Sphinx, rST plugin
     'nbformat', # for Jupyter notebook integration
     'pylint','pyflakes', # coding syntax standards
-    'pypandoc', # doc format conversion
+    #'pypandoc', # doc format conversion
     'sphinx', # rST plugin
     #'semantic_version', # Pip packaging    
     #'twine','wheel','keyring' # Pip packaging, uploading to PyPi
