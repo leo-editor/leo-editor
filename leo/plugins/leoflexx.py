@@ -49,7 +49,7 @@ class LeoTree(flx.Widget):
     #@+node:ekr.20181104080854.2: *3* tree.init
     def init(self):
         with flx.HSplit():
-            self.label = flx.Label(flex=1, style='overflow-y: scroll;')
+            ### self.label = flx.Label(flex=1, style='overflow-y: scroll;')
             with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
                 for t in ['foo', 'bar', 'spam', 'eggs']:
                     with flx.TreeItem(text=t, checked=None):
@@ -69,11 +69,12 @@ class LeoTree(flx.Widget):
     )
     def on_event(self, *events):
         for ev in events:
-            print(ev.source, ev.type)
+            # print(ev.source, ev.type)
             id_ = ev.source.title or ev.source.text
             kind = '' if ev.new_value else 'un-'
             text = '%10s: %s' % (id_, kind + ev.type)
-            self.label.set_html(text + '<br />' + self.label.html)
+            assert text
+            ### self.label.set_html(text + '<br />' + self.label.html)
     #@-others
 #@+node:ekr.20181104082144.1: ** class LeoBody
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
@@ -107,12 +108,31 @@ class LeoBody(flx.Widget):
         self.ace.resize()
 #@+node:ekr.20181104082149.1: ** class LeoLog
 class LeoLog(flx.Widget):
-    pass
+    
+    CSS = """
+    .flx-CodeEditor > .ace {
+        width: 100%;
+        height: 100%;
+    }
+    """
+
+    def init(self):
+        global window
+        # https://ace.c9.io/#nav=api
+        self.ace = window.ace.edit(self.node, "editor")
+        ### self.ace.setValue("import os\n\ndirs = os.walk")
+        self.ace.navigateFileEnd()  # otherwise all lines highlighted
+        self.ace.setTheme("ace/theme/solarized_dark")
+        self.ace.getSession().setMode("ace/mode/python")
+
+    @flx.reaction('size')
+    def __on_size(self, *events):
+        self.ace.resize()
 #@+node:ekr.20181104082154.1: ** class LeoMiniBuffer
-class LeoMiniBuffer(flx.Widget):
+class LeoMiniBuffer(flx.LineEdit):
     pass
 #@+node:ekr.20181104082201.1: ** class LeoStatusLine
-class LeoStatusLine(flx.Widget):
+class LeoStatusLine(flx.LineEdit):
     pass
 #@-others
 if __name__ == '__main__':
