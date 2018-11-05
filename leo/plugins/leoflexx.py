@@ -38,7 +38,7 @@ def open_bridge():
         print('Error opening leoBridge')
         return
     g = bridge.globals()
-    path = r'c:\Users\edreamleo\ekr.leo'
+    path = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'LeoPy.leo')
     if not os.path.exists(path):
         print('open_bridge: does not exist:', path)
         return
@@ -55,17 +55,6 @@ def make_outline_list():
             body = p.b
             break
     return [(p.gnx, p.h) for p in top_list]
-
-    # print(p.h)
-    # if result is None:
-        # result = []
-    # if not p:
-        # return result
-    # result.append((p.gnx, p.h),)
-    # if p.hasChildren():
-        # aList = [make_outline_list(child, result) for child in p.children()]
-        # result.append(aList)
-    # return result
 #@+node:ekr.20181104082144.1: ** class LeoBody
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
 flx.assets.associate_asset(__name__, base_url + 'ace.js')
