@@ -197,28 +197,16 @@ class LeoTree(base_class):
     def make(self):
         
         global outline_list
+        stack = []
         for archivedPosition, h in outline_list:
-            if len(archivedPosition) == 1:
-                flx.TreeItem(text=h, checked=None, collapsed=True)
-        ###
-            # for t in ['foo', 'bar', 'spam', 'eggs']:
-                # with flx.TreeItem(text=t, checked=None, collapsed=True):
-                    # for i in range(4):
-                        # item2 = flx.TreeItem(
-                            # text=t + ' %i' % i,
-                            # checked=False,
-                            # collapsed=False,
-                        # )
-                        # if i == 2:
-                            # with item2:
-                                # flx.TreeItem(title='A',
-                                    # # text='A text',
-                                    # collapsed=False,
-                                # )
-                                # flx.TreeItem(title='B',
-                                    # # text='more info on B',
-                                    # collapsed=False,
-                                # )
+            n = len(archivedPosition)
+            if n == 1:
+                item = flx.TreeItem(text=h, checked=None, collapsed=True)
+                stack = [item]
+            elif n == 2:
+                with stack[0]:
+                    item = flx.TreeItem(text=h, checked=None, collapsed=True)
+                    stack.append(item)
     #@+node:ekr.20181104080854.3: *3* tree.on_event
     if not lean_python:
 
