@@ -10,51 +10,54 @@ A Stand-alone prototype for Leo using flexx.
 import os
 from flexx import flx
 import leo.core.leoBridge as leoBridge
-# import leo.core.leoGlobals as g
-# assert g
-lean_python = False
+lean_python = True
 base_class = flx.PyComponent if lean_python else flx.Widget
-# Globals...
-body, c, g, node_list, main_window = None, None, None, None, None
 #@+others
-#@+node:ekr.20181105091529.1: **  top-level functions
-#@+node:ekr.20181103151350.1: *3* init
+#@+node:ekr.20181103151350.1: ** init
 def init():
     # At present, leoflexx is not a true plugin.
     # I am executing leoflexx.py from an external script.
     return False
-#@+node:ekr.20181105091545.1: *3* open_bridge
-def open_bridge():
+#@+node:ekr.20181105091529.1: ** class LeoUtils
+class LeoUtils(object):
     
-    global body, c, g, node_list
-    bridge = leoBridge.controller(gui = None,
-        loadPlugins = False,
-        readSettings = False,
-        silent = False,
-        tracePlugins = False,
-        verbose = True, # True: prints log messages.
-    )
-    if not bridge.isOpen():
-        print('Error opening leoBridge')
-        return
-    g = bridge.globals()
-    path = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'LeoPy.leo')
-    if not os.path.exists(path):
-        print('open_bridge: does not exist:', path)
-        return
-    c = bridge.openLeoFile(path)
-    node_list = make_outline_list()
-    ### runUnitTests(c, g)
-#@+node:ekr.20181105095150.1: *3* make_outline_list
-def make_outline_list():
+    c = None
+    g = None
+    node_list = []
     
-    global body, c
-    top_list = list(c.p.self_and_siblings())
-    for p in top_list:
-        if p.b.strip():
-            body = p.b
-            break
-    return [(p.gnx, p.h) for p in top_list]
+    #@+others
+    #@+node:ekr.20181105091545.1: *3* open_bridge
+    def open_bridge(self):
+        
+        global utils
+        bridge = leoBridge.controller(gui = None,
+            loadPlugins = False,
+            readSettings = False,
+            silent = False,
+            tracePlugins = False,
+            verbose = False, # True: prints log messages.
+        )
+        if not bridge.isOpen():
+            print('Error opening leoBridge')
+            return
+        self.g = g = bridge.globals()
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'LeoPy.leo')
+        if not os.path.exists(path):
+            print('open_bridge: does not exist:', path)
+            return
+        self.c = bridge.openLeoFile(path)
+        self.node_list = self.make_outline_list()
+        ### runUnitTests(c, g)
+    #@+node:ekr.20181105095150.1: *3* make_outline_list
+    def make_outline_list(self):
+        
+        top_list = list(self.c.p.self_and_siblings())
+        for p in top_list:
+            if p.b.strip():
+                self.body = p.b
+                break
+        return [(p.archivedPosition(), p.h) for p in top_list]
+    #@-others
 #@+node:ekr.20181104082144.1: ** class LeoBody
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
 flx.assets.associate_asset(__name__, base_url + 'ace.js')
@@ -72,7 +75,7 @@ class LeoBody(base_class):
         height: 100%;
     }
     """
-    if 0:
+    if lean_python:
         def init(self):
             flx.Widget(flex=1).apply_style('background: blue')
     else:
@@ -80,7 +83,7 @@ class LeoBody(base_class):
             global window
             self.ace = window.ace.edit(self.node, "editor")
             ### self.ace.setValue("import os\n\ndirs = os.walk")
-            self.ace.setValue(body)
+            self.ace.setValue(utils.body)
             self.ace.navigateFileEnd()  # otherwise all lines highlighted
             self.ace.setTheme("ace/theme/solarized_dark")
             self.ace.getSession().setMode("ace/mode/python")
@@ -119,7 +122,7 @@ class LeoLog(base_class):
         height: 100%;
     }
     """
-    if 0:
+    if lean_python:
         def init(self):
             flx.Widget(flex=1).apply_style('background: red') # 'overflow-y: scroll;'
     else:
@@ -141,16 +144,22 @@ class LeoMainWindow(base_class):
     def init(self):
         global main_window
         main_window = self
-        # Create dummy g.
-        # global g
-        # g = G()
-        with flx.VBox():
-            with flx.HBox(flex=1):
-                self.tree = LeoTree(flex=1)
-                self.log = LeoLog(flex=1)
-            self.body = LeoBody(flex=1)
-            self.minibuffer = LeoMiniBuffer()
-            self.status_line = LeoStatusLine()
+        if lean_python:
+            with flx.VBox():
+                with flx.HBox(flex=1):
+                    self.tree = LeoTree()
+                    self.log = LeoLog()
+                self.body = LeoBody()
+                self.minibuffer = LeoMiniBuffer()
+                self.status_line = LeoStatusLine()
+        else:
+            with flx.VBox():
+                with flx.HBox(flex=1):
+                    self.tree = LeoTree(flex=1)
+                    self.log = LeoLog(flex=1)
+                self.body = LeoBody(flex=1)
+                self.minibuffer = LeoMiniBuffer()
+                self.status_line = LeoStatusLine()
 #@+node:ekr.20181104082154.1: ** class LeoMiniBuffer
 class LeoMiniBuffer(base_class):
     
@@ -183,7 +192,6 @@ class LeoTree(base_class):
     }
     '''
     def init(self):
-
         with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
             self.make()
         if 0: # Items don't become visible right away.
@@ -194,8 +202,8 @@ class LeoTree(base_class):
     #@+node:ekr.20181105045657.1: *3* tree.make
     def make(self):
         
-        ### global node_list
-        for gnx, h in node_list:
+        global utils
+        for gnx, h in utils.node_list:
             flx.TreeItem(text=h, checked=None, collapsed=True)
         ###
             # for t in ['foo', 'bar', 'spam', 'eggs']:
@@ -217,24 +225,25 @@ class LeoTree(base_class):
                                     # collapsed=False,
                                 # )
     #@+node:ekr.20181104080854.3: *3* tree.on_event
-    @flx.reaction(
-        'tree.children**.checked',
-        'tree.children**.selected',
-        'tree.children**.collapsed',
-    )
-    def on_event(self, *events):
-        for ev in events:
-            # print(ev.source, ev.type)
-            id_ = ev.source.title or ev.source.text
-            kind = '' if ev.new_value else 'un-'
-            text = '%10s: %s' % (id_, kind + ev.type)
-            assert text
-            ### self.label.set_html(text + '<br />' + self.label.html)
+    if not lean_python:
+
+        @flx.reaction(
+            'tree.children**.checked',
+            'tree.children**.selected',
+            'tree.children**.collapsed',
+        )
+        def on_event(self, *events):
+            for ev in events:
+                id_ = ev.source.title or ev.source.text
+                kind = '' if ev.new_value else 'un-'
+                text = '%10s: %s' % (id_, kind + ev.type)
+                assert text
+                ### self.label.set_html(text + '<br />' + self.label.html)
     #@-others
 #@-others
 if __name__ == '__main__':
-    open_bridge()
-        # Sets body, c, g, node_list.
+    utils = LeoUtils()
+    utils.open_bridge()
     flx.launch(LeoMainWindow, runtime='firefox-browser')
     flx.run()
 #@-leo
