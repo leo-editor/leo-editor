@@ -241,8 +241,8 @@ if __name__ == '__main__':
     c, g = open_bridge()
     outline_list = make_outline_list(c)
     body = find_body(c)
-    # Start the JS code.
     main_window = None
+    # Start the JS code.
     flx.launch(LeoMainWindow, runtime='firefox-browser')
     flx.run()
 #@-leo
