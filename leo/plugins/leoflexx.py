@@ -198,13 +198,15 @@ class LeoTree(base_class):
         
         global outline_list
         stack = []
-        for archivedPosition, h in outline_list:
-            n = len(archivedPosition)
+        for archived_position, h in outline_list:
+            n = len(archived_position)
             if n == 1:
                 item = flx.TreeItem(text=h, checked=None, collapsed=True)
                 stack = [item]
-            elif n == 2:
-                with stack[0]:
+            elif n in (2, 3):
+                # Fully expanding the stack takes too long.
+                stack = stack[:n-1]
+                with stack[-1]:
                     item = flx.TreeItem(text=h, checked=None, collapsed=True)
                     stack.append(item)
     #@+node:ekr.20181104080854.3: *3* tree.on_event
