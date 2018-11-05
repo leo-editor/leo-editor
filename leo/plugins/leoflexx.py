@@ -10,6 +10,7 @@ A Stand-alone prototype for Leo using flexx.
 import os
 from flexx import flx
 lean_python = False
+    # It doesn't seem likely that lean_python will be useful.
 base_class = flx.PyComponent if lean_python else flx.Widget
 #@+others
 #@+node:ekr.20181105154956.1: **  functions
@@ -124,6 +125,7 @@ class LeoMainWindow(base_class):
         global main_window
         main_window = self
         if lean_python:
+            # flex is not a valid kwarg for PyComponents.
             with flx.VBox():
                 with flx.HBox(flex=1):
                     self.tree = LeoTree()
@@ -148,7 +150,6 @@ class LeoMiniBuffer(base_class):
             self.widget = flx.LineEdit(
                 flex=1, placeholder_text='Enter command')
         self.widget.apply_style('background: yellow')
-
 #@+node:ekr.20181104082201.1: ** class LeoStatusLine
 class LeoStatusLine(base_class):
     
@@ -157,7 +158,6 @@ class LeoStatusLine(base_class):
             flx.Label(text='Status Line')
             self.widget = flx.LineEdit(flex=1, placeholder_text='Status')
         self.widget.apply_style('background: green')
-
 #@+node:ekr.20181104082138.1: ** class LeoTree
 class LeoTree(base_class):
 
@@ -173,9 +173,6 @@ class LeoTree(base_class):
     def init(self):
         with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
             self.make()
-        if 0: # Items don't become visible right away.
-            for item in self.tree.get_all_items():
-                item.set_collapsed()
 
     #@+others
     #@+node:ekr.20181105045657.1: *3* tree.make
@@ -217,7 +214,7 @@ if __name__ == '__main__':
     outline_list = make_outline_list(c)
     body = find_body(c)
     main_window = None
-    # Start the JS code.
+    # Start the JS code. c not allowed.
     flx.launch(LeoMainWindow, runtime='firefox-browser')
     flx.run()
 #@-leo
