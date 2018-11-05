@@ -7,24 +7,67 @@
 '''
 A Stand-alone prototype for Leo using flexx.
 '''
+import os
 from flexx import flx
-import leo.core.leoGlobals as g
-assert g
+import leo.core.leoBridge as leoBridge
+# import leo.core.leoGlobals as g
+# assert g
+lean_python = False
+base_class = flx.PyComponent if lean_python else flx.Widget
+# Globals...
+c, g, node_list, main_window = None, None, None, None
 #@+others
-#@+node:ekr.20181104134654.1: ** class G
-# class G (flx.PyComponent):
-
-    # def trace(*args, **kwargs):
-        # print('g.trace', ', '.join(args))
+#@+node:ekr.20181105091529.1: **  top-level functions
+#@+node:ekr.20181103151350.1: *3* init
+def init():
+    # At present, leoflexx is not a true plugin.
+    # I am executing leoflexx.py from an external script.
+    return False
+#@+node:ekr.20181105091545.1: *3* open_bridge
+def open_bridge():
     
-# g = G()
+    global c, g, node_list
+    bridge = leoBridge.controller(gui = None,
+        loadPlugins = False,
+        readSettings = False,
+        silent = False,
+        tracePlugins = False,
+        verbose = True, # True: prints log messages.
+    )
+    if not bridge.isOpen():
+        print('Error opening leoBridge')
+        return
+    g = bridge.globals()
+    path = r'c:\Users\edreamleo\ekr.leo'
+    if not os.path.exists(path):
+        print('open_bridge: does not exist:', path)
+        return
+    c = bridge.openLeoFile(path)
+    node_list = make_outline_list()
+    ### runUnitTests(c, g)
+#@+node:ekr.20181105095150.1: *3* make_outline_list
+def make_outline_list():
+    
+    global c
+    return [(p2.gnx, p2.h) for p2 in c.p.self_and_siblings()]
+
+    # print(p.h)
+    # if result is None:
+        # result = []
+    # if not p:
+        # return result
+    # result.append((p.gnx, p.h),)
+    # if p.hasChildren():
+        # aList = [make_outline_list(child, result) for child in p.children()]
+        # result.append(aList)
+    # return result
 #@+node:ekr.20181104082144.1: ** class LeoBody
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
 flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 
-class LeoBody(flx.PyComponent):
+class LeoBody(base_class):
     
     """ A CodeEditor widget based on Ace.
     """
@@ -35,12 +78,9 @@ class LeoBody(flx.PyComponent):
         height: 100%;
     }
     """
-    
-    if 1:
-
+    if 0:
         def init(self):
-            with flx.HBox():
-                flx.Label(text='Body')
+            flx.Widget(flex=1).apply_style('background: blue')
     else:
         def init(self):
 
@@ -55,8 +95,8 @@ class LeoBody(flx.PyComponent):
         @flx.reaction('size')
         def __on_size(self, *events):
             self.ace.resize()
-#@+node:ekr.20181104174357.1: ** class LeoGui (can't instantiate)
-class LeoGui (flx.PyComponent):
+#@+node:ekr.20181104174357.1: ** class LeoGui
+class LeoGui (object):
     
     def runMainLoop(self):
         '''The main loop for the flexx gui.'''
@@ -78,12 +118,7 @@ class LeoGui (flx.PyComponent):
         # sys.exit(0)
         
 #@+node:ekr.20181104082149.1: ** class LeoLog
-### Kinda works
-    # class LeoLog(flx.Label):
-        # def init(self, flex=1, style='overflow-y: scroll;'):
-            # pass
-
-class LeoLog(flx.PyComponent):
+class LeoLog(base_class):
 
     CSS = """
     .flx-CodeEditor > .ace {
@@ -91,10 +126,9 @@ class LeoLog(flx.PyComponent):
         height: 100%;
     }
     """
-    
-    if 1:
+    if 0:
         def init(self):
-            flx.Widget(flex=1).apply_style('background: red')
+            flx.Widget(flex=1).apply_style('background: red') # 'overflow-y: scroll;'
     else:
         def init(self):
             global window
@@ -104,26 +138,28 @@ class LeoLog(flx.PyComponent):
             self.ace.navigateFileEnd()  # otherwise all lines highlighted
             self.ace.setTheme("ace/theme/solarized_dark")
             ### self.ace.getSession().setMode("ace/mode/python")
-            print('window', window)
 
         @flx.reaction('size')
         def __on_size(self, *events):
             self.ace.resize()
 #@+node:ekr.20181104082130.1: ** class LeoMainWindow
-class LeoMainWindow(flx.PyComponent): # flx.Widget):
+class LeoMainWindow(base_class):
     
     def init(self):
+        global main_window
+        main_window = self
+        # Create dummy g.
+        # global g
+        # g = G()
         with flx.VBox():
             with flx.HBox(flex=1):
-                LeoTree()
-                LeoLog()
-            LeoBody()
-            LeoMiniBuffer()
-            LeoStatusLine()
-        # print('tree', self.tree)
-        # print('log', self.log)
+                self.tree = LeoTree(flex=1)
+                self.log = LeoLog(flex=1)
+            self.body = LeoBody(flex=1)
+            self.minibuffer = LeoMiniBuffer()
+            self.status_line = LeoStatusLine()
 #@+node:ekr.20181104082154.1: ** class LeoMiniBuffer
-class LeoMiniBuffer(flx.PyComponent):
+class LeoMiniBuffer(base_class):
     
     def init(self): 
         with flx.HBox():
@@ -133,7 +169,7 @@ class LeoMiniBuffer(flx.PyComponent):
         self.widget.apply_style('background: yellow')
 
 #@+node:ekr.20181104082201.1: ** class LeoStatusLine
-class LeoStatusLine(flx.PyComponent):
+class LeoStatusLine(base_class):
     
     def init(self):
         with flx.HBox():
@@ -142,52 +178,70 @@ class LeoStatusLine(flx.PyComponent):
         self.widget.apply_style('background: green')
 
 #@+node:ekr.20181104082138.1: ** class LeoTree
-class LeoTree(flx.PyComponent):
+class LeoTree(base_class):
 
     CSS = '''
     .flx-TreeWidget {
         background: #000;
-        color: #afa;
+        color: white;
+        /* background: #ffffec; */
+        /* Leo Yellow */
+        /* color: #afa; */
     }
     '''
     def init(self):
+
         with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
             self.make()
+        if 0: # Items don't become visible right away.
+            for item in self.tree.get_all_items():
+                item.set_collapsed()
 
     #@+others
     #@+node:ekr.20181105045657.1: *3* tree.make
     def make(self):
-        for t in ['foo', 'bar', 'spam', 'eggs']:
-            with flx.TreeItem(text=t, checked=None):
-                for i in range(4):
-                    item2 = flx.TreeItem(text=t + ' %i' % i, checked=False)
-                    if i == 2:
-                        with item2:
-                            flx.TreeItem(title='A', text='more info on A')
-                            flx.TreeItem(title='B', text='more info on B')
+        
+        ### global node_list
+        for gnx, h in node_list:
+            flx.TreeItem(text=h, checked=None, collapsed=True)
+        ###
+            # for t in ['foo', 'bar', 'spam', 'eggs']:
+                # with flx.TreeItem(text=t, checked=None, collapsed=True):
+                    # for i in range(4):
+                        # item2 = flx.TreeItem(
+                            # text=t + ' %i' % i,
+                            # checked=False,
+                            # collapsed=False,
+                        # )
+                        # if i == 2:
+                            # with item2:
+                                # flx.TreeItem(title='A',
+                                    # # text='A text',
+                                    # collapsed=False,
+                                # )
+                                # flx.TreeItem(title='B',
+                                    # # text='more info on B',
+                                    # collapsed=False,
+                                # )
     #@+node:ekr.20181104080854.3: *3* tree.on_event
-    if 0:
-        @flx.reaction(
-            'tree.children**.checked',
-            'tree.children**.selected',
-            'tree.children**.collapsed',
-        )
-        def on_event(self, *events):
-            for ev in events:
-                # print(ev.source, ev.type)
-                id_ = ev.source.title or ev.source.text
-                kind = '' if ev.new_value else 'un-'
-                text = '%10s: %s' % (id_, kind + ev.type)
-                assert text
-                ### self.label.set_html(text + '<br />' + self.label.html)
+    @flx.reaction(
+        'tree.children**.checked',
+        'tree.children**.selected',
+        'tree.children**.collapsed',
+    )
+    def on_event(self, *events):
+        for ev in events:
+            # print(ev.source, ev.type)
+            id_ = ev.source.title or ev.source.text
+            kind = '' if ev.new_value else 'un-'
+            text = '%10s: %s' % (id_, kind + ev.type)
+            assert text
+            ### self.label.set_html(text + '<br />' + self.label.html)
     #@-others
-#@+node:ekr.20181103151350.1: ** init
-def init():
-    # At present, leoflexx is not a true plugin.
-    # I am executing leoflexx.py from an external script.
-    return False
 #@-others
 if __name__ == '__main__':
+    open_bridge()
+        # Sets globals c, node_list.
     flx.launch(LeoMainWindow, runtime='firefox-browser')
     flx.run()
         # # Runs in browser.
