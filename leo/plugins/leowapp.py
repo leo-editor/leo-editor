@@ -393,7 +393,7 @@ class BrowserGui(leoGui.NullGui):
         print('LeoWapp running...')
         c = g.app.log.c
         assert g.app.gui.guiName() == 'browser'
-        if 1: # Run all unit tests.
+        if 0: # Run all unit tests.
             g.app.failFast = True
             path = g.os_path_finalize_join(
                 g.app.loadDir, '..', 'test', 'unittest.leo')
