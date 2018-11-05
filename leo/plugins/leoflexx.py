@@ -24,7 +24,7 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 
-class LeoBody(flx.Widget):
+class LeoBody(flx.PyComponent):
     
     """ A CodeEditor widget based on Ace.
     """
@@ -35,19 +35,26 @@ class LeoBody(flx.Widget):
         height: 100%;
     }
     """
+    
+    if 1:
 
-    def init(self):
-        global window
-        # https://ace.c9.io/#nav=api
-        self.ace = window.ace.edit(self.node, "editor")
-        self.ace.setValue("import os\n\ndirs = os.walk")
-        self.ace.navigateFileEnd()  # otherwise all lines highlighted
-        self.ace.setTheme("ace/theme/solarized_dark")
-        self.ace.getSession().setMode("ace/mode/python")
+        def init(self):
+            with flx.HBox():
+                flx.Label(text='Body')
+    else:
+        def init(self):
 
-    @flx.reaction('size')
-    def __on_size(self, *events):
-        self.ace.resize()
+            global window
+            # https://ace.c9.io/#nav=api
+            self.ace = window.ace.edit(self.node, "editor")
+            self.ace.setValue("import os\n\ndirs = os.walk")
+            self.ace.navigateFileEnd()  # otherwise all lines highlighted
+            self.ace.setTheme("ace/theme/solarized_dark")
+            self.ace.getSession().setMode("ace/mode/python")
+
+        @flx.reaction('size')
+        def __on_size(self, *events):
+            self.ace.resize()
 #@+node:ekr.20181104174357.1: ** class LeoGui (can't instantiate)
 class LeoGui (flx.PyComponent):
     
@@ -76,7 +83,7 @@ class LeoGui (flx.PyComponent):
         # def init(self, flex=1, style='overflow-y: scroll;'):
             # pass
 
-class LeoLog(flx.Widget):
+class LeoLog(flx.PyComponent):
 
     CSS = """
     .flx-CodeEditor > .ace {
@@ -84,46 +91,58 @@ class LeoLog(flx.Widget):
         height: 100%;
     }
     """
+    
+    if 1:
+        def init(self):
+            flx.Widget(flex=1).apply_style('background: red')
+    else:
+        def init(self):
+            global window
+            # https://ace.c9.io/#nav=api
+            self.ace = window.ace.edit(self.node, "editor")
+            ### self.ace.setValue("import os\n\ndirs = os.walk")
+            self.ace.navigateFileEnd()  # otherwise all lines highlighted
+            self.ace.setTheme("ace/theme/solarized_dark")
+            ### self.ace.getSession().setMode("ace/mode/python")
+            print('window', window)
 
-    def init(self):
-        global window
-        # https://ace.c9.io/#nav=api
-        self.ace = window.ace.edit(self.node, "editor")
-        ### self.ace.setValue("import os\n\ndirs = os.walk")
-        self.ace.navigateFileEnd()  # otherwise all lines highlighted
-        self.ace.setTheme("ace/theme/solarized_dark")
-        ### self.ace.getSession().setMode("ace/mode/python")
-        print('window', window)
-
-    @flx.reaction('size')
-    def __on_size(self, *events):
-        self.ace.resize()
+        @flx.reaction('size')
+        def __on_size(self, *events):
+            self.ace.resize()
 #@+node:ekr.20181104082130.1: ** class LeoMainWindow
-class LeoMainWindow(flx.Widget):
+class LeoMainWindow(flx.PyComponent): # flx.Widget):
     
     def init(self):
         with flx.VBox():
             with flx.HBox(flex=1):
-                flx.Label(text='Tree')
-                self.tree = LeoTree(flex=1)
-                flx.Label(text='Log')
-                self.log = LeoLog(flex=1)
-            flx.Label(text='Body')
-            LeoBody(flex=1)
-            flx.Label(text='Minibuffer')
+                LeoTree()
+                LeoLog()
+            LeoBody()
             LeoMiniBuffer()
-            flx.Label(text='Status Line')
             LeoStatusLine()
         # print('tree', self.tree)
         # print('log', self.log)
 #@+node:ekr.20181104082154.1: ** class LeoMiniBuffer
-class LeoMiniBuffer(flx.LineEdit):
-    pass
+class LeoMiniBuffer(flx.PyComponent):
+    
+    def init(self): 
+        with flx.HBox():
+            flx.Label(text='Minibuffer')
+            self.widget = flx.LineEdit(
+                flex=1, placeholder_text='Enter command')
+        self.widget.apply_style('background: yellow')
+
 #@+node:ekr.20181104082201.1: ** class LeoStatusLine
-class LeoStatusLine(flx.LineEdit):
-    pass
+class LeoStatusLine(flx.PyComponent):
+    
+    def init(self):
+        with flx.HBox():
+            flx.Label(text='Status Line')
+            self.widget = flx.LineEdit(flex=1, placeholder_text='Status')
+        self.widget.apply_style('background: green')
+
 #@+node:ekr.20181104082138.1: ** class LeoTree
-class LeoTree(flx.Widget):
+class LeoTree(flx.PyComponent):
 
     CSS = '''
     .flx-TreeWidget {
@@ -131,37 +150,36 @@ class LeoTree(flx.Widget):
         color: #afa;
     }
     '''
-    
-    #@+others
-    #@+node:ekr.20181104080854.2: *3* tree.init
     def init(self):
-        with flx.HSplit():
-            ### self.label = flx.Label(flex=1, style='overflow-y: scroll;')
-            with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
-                for t in ['foo', 'bar', 'spam', 'eggs']:
-                    with flx.TreeItem(text=t, checked=None):
-                        for i in range(4):
-                            item2 = flx.TreeItem(text=t + ' %i' % i, checked=False)
-                            if i == 2:
-                                with item2:
-                                    flx.TreeItem(title='A', text='more info on A')
-                                    flx.TreeItem(title='B', text='more info on B')
+        with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
+            self.make()
 
-        
+    #@+others
+    #@+node:ekr.20181105045657.1: *3* tree.make
+    def make(self):
+        for t in ['foo', 'bar', 'spam', 'eggs']:
+            with flx.TreeItem(text=t, checked=None):
+                for i in range(4):
+                    item2 = flx.TreeItem(text=t + ' %i' % i, checked=False)
+                    if i == 2:
+                        with item2:
+                            flx.TreeItem(title='A', text='more info on A')
+                            flx.TreeItem(title='B', text='more info on B')
     #@+node:ekr.20181104080854.3: *3* tree.on_event
-    @flx.reaction(
-        'tree.children**.checked',
-        'tree.children**.selected',
-        'tree.children**.collapsed',
-    )
-    def on_event(self, *events):
-        for ev in events:
-            # print(ev.source, ev.type)
-            id_ = ev.source.title or ev.source.text
-            kind = '' if ev.new_value else 'un-'
-            text = '%10s: %s' % (id_, kind + ev.type)
-            assert text
-            ### self.label.set_html(text + '<br />' + self.label.html)
+    if 0:
+        @flx.reaction(
+            'tree.children**.checked',
+            'tree.children**.selected',
+            'tree.children**.collapsed',
+        )
+        def on_event(self, *events):
+            for ev in events:
+                # print(ev.source, ev.type)
+                id_ = ev.source.title or ev.source.text
+                kind = '' if ev.new_value else 'un-'
+                text = '%10s: %s' % (id_, kind + ev.type)
+                assert text
+                ### self.label.set_html(text + '<br />' + self.label.html)
     #@-others
 #@+node:ekr.20181103151350.1: ** init
 def init():
