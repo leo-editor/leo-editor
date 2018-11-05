@@ -9,7 +9,6 @@ A Stand-alone prototype for Leo using flexx.
 '''
 import os
 from flexx import flx
-import leo.core.leoBridge as leoBridge
 lean_python = False
 base_class = flx.PyComponent if lean_python else flx.Widget
 #@+others
@@ -22,6 +21,7 @@ def init():
 #@+node:ekr.20181105091545.1: *3* open_bridge
 def open_bridge():
     '''Can't be in JS.'''
+    import leo.core.leoBridge as leoBridge
     bridge = leoBridge.controller(gui = None,
         loadPlugins = False,
         readSettings = False,
@@ -91,22 +91,7 @@ class LeoGui (object):
     def runMainLoop(self):
         '''The main loop for the flexx gui.'''
 
-        # print('LeoFlex running...')
-        # c = g.app.log.c
-        # assert g.app.gui.guiName() == 'browser'
-        # if 0: # Run all unit tests.
-            # g.app.failFast = True
-            # path = g.os_path_finalize_join(
-                # g.app.loadDir, '..', 'test', 'unittest.leo')
-            # c = g.openWithFileName(path, gui=self)
-            # c.findCommands.ftm = g.NullObject()
-                # # A hack. Some other class should do this.
-                # # This looks like a bug.
-            # c.debugCommands.runAllUnitTestsLocally()
-                # # This calls sys.exit(0)
-        # print('calling sys.exit(0)')
-        # sys.exit(0)
-        
+       
 #@+node:ekr.20181104082149.1: ** class LeoLog
 class LeoLog(base_class):
 
