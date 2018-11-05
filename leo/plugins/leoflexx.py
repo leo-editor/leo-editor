@@ -15,7 +15,7 @@ import leo.core.leoBridge as leoBridge
 lean_python = False
 base_class = flx.PyComponent if lean_python else flx.Widget
 # Globals...
-c, g, node_list, main_window = None, None, None, None
+body, c, g, node_list, main_window = None, None, None, None, None
 #@+others
 #@+node:ekr.20181105091529.1: **  top-level functions
 #@+node:ekr.20181103151350.1: *3* init
@@ -26,7 +26,7 @@ def init():
 #@+node:ekr.20181105091545.1: *3* open_bridge
 def open_bridge():
     
-    global c, g, node_list
+    global body, c, g, node_list
     bridge = leoBridge.controller(gui = None,
         loadPlugins = False,
         readSettings = False,
@@ -48,8 +48,13 @@ def open_bridge():
 #@+node:ekr.20181105095150.1: *3* make_outline_list
 def make_outline_list():
     
-    global c
-    return [(p2.gnx, p2.h) for p2 in c.p.self_and_siblings()]
+    global body, c
+    top_list = list(c.p.self_and_siblings())
+    for p in top_list:
+        if p.b.strip():
+            body = p.b
+            break
+    return [(p.gnx, p.h) for p in top_list]
 
     # print(p.h)
     # if result is None:
@@ -83,11 +88,10 @@ class LeoBody(base_class):
             flx.Widget(flex=1).apply_style('background: blue')
     else:
         def init(self):
-
             global window
-            # https://ace.c9.io/#nav=api
             self.ace = window.ace.edit(self.node, "editor")
-            self.ace.setValue("import os\n\ndirs = os.walk")
+            ### self.ace.setValue("import os\n\ndirs = os.walk")
+            self.ace.setValue(body)
             self.ace.navigateFileEnd()  # otherwise all lines highlighted
             self.ace.setTheme("ace/theme/solarized_dark")
             self.ace.getSession().setMode("ace/mode/python")
@@ -241,14 +245,7 @@ class LeoTree(base_class):
 #@-others
 if __name__ == '__main__':
     open_bridge()
-        # Sets globals c, node_list.
+        # Sets body, c, g, node_list.
     flx.launch(LeoMainWindow, runtime='firefox-browser')
     flx.run()
-        # # Runs in browser.
-        # # `python -m flexx stop 49190` stops the server.
-        # flx.App(LeoWapp).launch('firefox-browser')
-        # flx.start()
-
-    ### RuntimeError: Cannot instantiate a PyComponent from JS.
-    ### g.app.gui = LeoGui()
 #@-leo
