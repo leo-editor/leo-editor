@@ -17,11 +17,18 @@ def init():
     # At present, leoflexx is not a true plugin.
     # I am executing leoflexx.py from an external script.
     return False
-#@+node:ekr.20181106133100.1: **  pad
-def pad(s, width=0):
+#@+node:ekr.20181106133100.1: **  lpad & rpad
+def lpad(s, width=0):
     '''Return s padded to the left to the given width.'''
     padding = max(0, width-len(s))
     return ' '*padding + s
+    
+def rpad(s, width=0):
+    '''Return s padded to the left to the given width.'''
+    padding = max(0, width-len(s))
+    return s+' '*padding
+
+
 #@+node:ekr.20181106070010.1: ** Python side classes
 #@+node:ekr.20181104174357.1: *3* class LeoGui (object)
 class LeoGui (object): ### flx.PyComponent):
@@ -207,7 +214,7 @@ class LeoTree(flx.Widget):
             id_ = ev.source.title or ev.source.text
             kind = '' if ev.new_value else 'un-'
             s = kind + ev.type
-            main_window.log.put('%s: %s' % (pad(s, 15), id_))
+            main_window.log.put('%s: %s' % (lpad(s, 15), id_))
     #@-others
 #@-others
 if __name__ == '__main__':
