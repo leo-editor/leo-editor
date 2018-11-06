@@ -8,6 +8,7 @@
 A Stand-alone prototype for Leo using flexx.
 '''
 import os
+import sys
 from flexx import flx
 #@+others
 #@+node:ekr.20181103151350.1: **  init
@@ -16,8 +17,8 @@ def init():
     # I am executing leoflexx.py from an external script.
     return False
 #@+node:ekr.20181106070010.1: ** Python side classes
-#@+node:ekr.20181104174357.1: *3* class LeoGui (object)
-class LeoGui (object):
+#@+node:ekr.20181104174357.1: *3* class LeoGui
+class LeoGui (object): ### flx.PyComponent):
     '''
     A class representing Leo's Browser gui and
     utils for converting data between Python and JS.
@@ -196,8 +197,9 @@ class LeoTree(flx.Widget):
     #@-others
 #@-others
 if __name__ == '__main__':
-    # Define globals in Python.
+    # Create the gui class. JS can *not* use gui if it derives from object.
     gui = LeoGui()
+    # Create the *python* globals.
     c, g = gui.open_bridge()
     outline_list = gui.make_outline_list(c)
     body = gui.find_body(c)
@@ -205,5 +207,10 @@ if __name__ == '__main__':
     # Start the JS code.
     # JS can not access Leo's c and p vars!
     flx.launch(LeoMainWindow, runtime='firefox-browser')
-    flx.run()
+        # Create the session.
+        # LeoGui must have a session if it is a subclass of PyComponent.
+    if c and g:
+        flx.run()
+    else:
+        sys.exit(1)
 #@-leo
