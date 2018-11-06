@@ -202,7 +202,10 @@ class LeoTree(flx.Widget):
         for ev in events:
             id_ = ev.source.title or ev.source.text
             kind = '' if ev.new_value else 'un-'
-            main_window.log.put('%s: %s' % (kind + ev.type, id_))
+            s = kind + ev.type
+            pad = max(0, 15-len(s))
+            s = '%s%s: %s' % (pad*' ', s, id_)
+            main_window.log.put(s)
     #@-others
 #@-others
 if __name__ == '__main__':
