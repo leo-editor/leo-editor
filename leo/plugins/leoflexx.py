@@ -48,10 +48,14 @@ def find_body(c):
     return ''
 #@+node:ekr.20181105095150.1: *3* make_outline_list
 def make_outline_list(c):
-    result = []
-    for p in c.all_positions():
-        result.append((p.archivedPosition(), p.h),)
-    return result
+    
+    if 1: # OK for the python side.
+        return [(p.archivedPosition(), p.gnx, p.h) for p in c.all_positions()]
+    else: # Required for the JS side.
+        result = []
+        for p in c.all_positions():
+            result.append((p.archivedPosition(), p.h),)
+        return result
 #@+node:ekr.20181104082144.1: ** class LeoBody
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
 flx.assets.associate_asset(__name__, base_url + 'ace.js')
@@ -102,7 +106,7 @@ class LeoLog(base_class):
         height: 100%;
     }
     """
-    if lean_python:
+    if False: # lean_python:
         # def init(self):
             # flx.Widget(flex=1).apply_style('background: red') # 'overflow-y: scroll;'
         def init(self):
@@ -190,7 +194,7 @@ class LeoTree(base_class):
         
         global outline_list
         stack = []
-        for archived_position, h in outline_list:
+        for archived_position, gnx, h in outline_list:
             n = len(archived_position)
             if n == 1:
                 item = flx.TreeItem(text=h, checked=None, collapsed=True)
@@ -224,7 +228,8 @@ if __name__ == '__main__':
     outline_list = make_outline_list(c)
     body = find_body(c)
     main_window = None
-    # Start the JS code. c not allowed.
+    # Start the JS code.
+    # JS can not access Leo's c and p vars!
     flx.launch(LeoMainWindow, runtime='firefox-browser')
     flx.run()
 #@-leo
