@@ -10,6 +10,7 @@ A Stand-alone prototype for Leo using flexx.
 import os
 import sys
 from flexx import flx
+# import pscript ; assert pscript
 #@+others
 #@+node:ekr.20181103151350.1: **  init
 def init():
@@ -17,7 +18,7 @@ def init():
     # I am executing leoflexx.py from an external script.
     return False
 #@+node:ekr.20181106070010.1: ** Python side classes
-#@+node:ekr.20181104174357.1: *3* class LeoGui
+#@+node:ekr.20181104174357.1: *3* class LeoGui (object)
 class LeoGui (object): ### flx.PyComponent):
     '''
     A class representing Leo's Browser gui and
@@ -67,6 +68,9 @@ class LeoGui (object): ### flx.PyComponent):
     #@-others
 
        
+#@+node:ekr.20181106073959.1: *3* class LeoStore (PyComponent)
+class LeoStore(flx.PyComponent):
+    pass
 #@+node:ekr.20181104082144.1: ** class LeoBody
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
 flx.assets.associate_asset(__name__, base_url + 'ace.js')
@@ -108,12 +112,17 @@ class LeoLog(flx.Widget):
 
     def init(self):
         global window
-        # https://ace.c9.io/#nav=api
         self.ace = window.ace.edit(self.node, "editor")
-        ### self.ace.setValue("import os\n\ndirs = os.walk")
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
+        # pscript.RawJS('''
+            # var el = $(the_element);
+            # var editor = el.data('ace').editor;
+            # editor.$blockScrolling = Infinity;
+        # ''')
         self.ace.setTheme("ace/theme/solarized_dark")
-        ### self.ace.getSession().setMode("ace/mode/python")
+        
+    def put(self, s):
+        self.ace.setValue(self.ace.getValue() + '\n' + s)
 
     @flx.reaction('size')
     def __on_size(self, *events):
@@ -162,11 +171,11 @@ class LeoTree(flx.Widget):
     '''
     def init(self):
         with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
-            self.make()
+            self.make_tree()
 
     #@+others
-    #@+node:ekr.20181105045657.1: *3* tree.make
-    def make(self):
+    #@+node:ekr.20181105045657.1: *3* tree.make_tree
+    def make_tree(self):
         
         global outline_list
         stack = []
@@ -188,16 +197,17 @@ class LeoTree(flx.Widget):
         'tree.children**.collapsed',
     )
     def on_event(self, *events):
+        
+        global main_window
         for ev in events:
             id_ = ev.source.title or ev.source.text
             kind = '' if ev.new_value else 'un-'
-            text = '%10s: %s' % (id_, kind + ev.type)
-            assert text
-            ### self.label.set_html(text + '<br />' + self.label.html)
+            main_window.log.put('%s: %s' % (kind + ev.type, id_))
     #@-others
 #@-others
 if __name__ == '__main__':
-    # Create the gui class. JS can *not* use gui if it derives from object.
+    # Create the gui class.
+    # JS can *not* use gui if LeoGui derives from object!
     gui = LeoGui()
     # Create the *python* globals.
     c, g = gui.open_bridge()
