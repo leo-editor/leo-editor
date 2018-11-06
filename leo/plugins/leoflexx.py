@@ -10,7 +10,6 @@ A Stand-alone prototype for Leo using flexx.
 import os
 from flexx import flx
 lean_python = False
-    # It doesn't seem likely that lean_python will be useful.
 base_class = flx.PyComponent if lean_python else flx.Widget
 #@+others
 #@+node:ekr.20181105154956.1: **  functions
@@ -71,6 +70,7 @@ class LeoBody(base_class):
     }
     """
     if lean_python:
+        
         def init(self):
             flx.Widget(flex=1).apply_style('background: blue')
     else:
@@ -86,7 +86,7 @@ class LeoBody(base_class):
         @flx.reaction('size')
         def __on_size(self, *events):
             self.ace.resize()
-#@+node:ekr.20181104174357.1: ** class LeoGui
+#@+node:ekr.20181104174357.1: ** class LeoGui (stub)
 class LeoGui (object):
     
     def runMainLoop(self):
@@ -103,8 +103,18 @@ class LeoLog(base_class):
     }
     """
     if lean_python:
+        # def init(self):
+            # flx.Widget(flex=1).apply_style('background: red') # 'overflow-y: scroll;'
         def init(self):
-            flx.Widget(flex=1).apply_style('background: red') # 'overflow-y: scroll;'
+            # global window
+            from pscript import window
+            # print('WINDOW', repr(window))
+            # https://ace.c9.io/#nav=api
+            self.ace = window.ace.edit(self.node, "editor")
+            ### self.ace.setValue("import os\n\ndirs = os.walk")
+            self.ace.navigateFileEnd()  # otherwise all lines highlighted
+            self.ace.setTheme("ace/theme/solarized_dark")
+            ### self.ace.getSession().setMode("ace/mode/python")
     else:
         def init(self):
             global window
