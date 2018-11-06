@@ -10,56 +10,60 @@ A Stand-alone prototype for Leo using flexx.
 import os
 from flexx import flx
 #@+others
-#@+node:ekr.20181105154956.1: **  functions
-#@+node:ekr.20181103151350.1: *3* init
+#@+node:ekr.20181103151350.1: **  init
 def init():
     # At present, leoflexx is not a true plugin.
     # I am executing leoflexx.py from an external script.
     return False
-#@+node:ekr.20181105091545.1: *3* open_bridge
-def open_bridge():
-    '''Can't be in JS.'''
-    import leo.core.leoBridge as leoBridge
-    bridge = leoBridge.controller(gui = None,
-        loadPlugins = False,
-        readSettings = False,
-        silent = False,
-        tracePlugins = False,
-        verbose = False, # True: prints log messages.
-    )
-    if not bridge.isOpen():
-        print('Error opening leoBridge')
-        return
-    g = bridge.globals()
-    path = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'LeoPy.leo')
-    if not os.path.exists(path):
-        print('open_bridge: does not exist:', path)
-        return
-    c = bridge.openLeoFile(path)
-    ### runUnitTests(c, g)
-    return c, g
-#@+node:ekr.20181105160448.1: *3* find_body
-def find_body(c):
-    for p in c.p.self_and_siblings():
-        if p.b.strip():
-            return p.b
-    return ''
-#@+node:ekr.20181105095150.1: *3* make_outline_list
-def make_outline_list(c):
-    
-    if 1: # OK for the python side.
-        return [(p.archivedPosition(), p.gnx, p.h) for p in c.all_positions()]
-    else: # Required for the JS side.
-        result = []
-        for p in c.all_positions():
-            result.append((p.archivedPosition(), p.h),)
-        return result
 #@+node:ekr.20181106070010.1: ** Python side classes
-#@+node:ekr.20181104174357.1: *3* class LeoGui (stub)
+#@+node:ekr.20181104174357.1: *3* class LeoGui (object)
 class LeoGui (object):
-    
+    '''
+    A class representing Leo's Browser gui and
+    utils for converting data between Python and JS.
+    '''
+   
+    #@+others
+    #@+node:ekr.20181106070704.1: *4* gui.runMainLoop
     def runMainLoop(self):
         '''The main loop for the flexx gui.'''
+            
+    #@+node:ekr.20181105091545.1: *4* gui.open_bridge
+    def open_bridge(self):
+        '''Can't be in JS.'''
+        import leo.core.leoBridge as leoBridge
+        bridge = leoBridge.controller(gui = None,
+            loadPlugins = False,
+            readSettings = False,
+            silent = False,
+            tracePlugins = False,
+            verbose = False, # True: prints log messages.
+        )
+        if not bridge.isOpen():
+            print('Error opening leoBridge')
+            return
+        g = bridge.globals()
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'LeoPy.leo')
+        if not os.path.exists(path):
+            print('open_bridge: does not exist:', path)
+            return
+        c = bridge.openLeoFile(path)
+        ### runUnitTests(c, g)
+        return c, g
+    #@+node:ekr.20181105160448.1: *4* gui.find_body
+    def find_body(self, c):
+        for p in c.p.self_and_siblings():
+            if p.b.strip():
+                return p.b
+        return ''
+    #@+node:ekr.20181105095150.1: *4* gui.make_outline_list
+    def make_outline_list(self, c):
+        '''
+        Make a serializable representation of the outline for the LeoTree
+        class.
+        '''
+        return [(p.archivedPosition(), p.gnx, p.h) for p in c.all_positions()]
+    #@-others
 
        
 #@+node:ekr.20181104082144.1: ** class LeoBody
@@ -193,9 +197,10 @@ class LeoTree(flx.Widget):
 #@-others
 if __name__ == '__main__':
     # Define globals in Python.
-    c, g = open_bridge()
-    outline_list = make_outline_list(c)
-    body = find_body(c)
+    gui = LeoGui()
+    c, g = gui.open_bridge()
+    outline_list = gui.make_outline_list(c)
+    body = gui.find_body(c)
     main_window = None
     # Start the JS code.
     # JS can not access Leo's c and p vars!
