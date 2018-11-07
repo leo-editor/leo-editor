@@ -36,7 +36,7 @@ class LeoApp(flx.PyComponent):
     def init(self):
         self.gui = LeoGui()
             # LeoGui.init has not yet been called.
-        self.js_main_window = LeoMainWindow()
+        self.js_main_window = LeoMainWindow(outline=self.gui.outline)
             # LeoMainWindow.init has not yet been called.
 #@+node:ekr.20181104174357.1: *3* class LeoGui (PyComponent)
 class LeoGui (flx.PyComponent):
@@ -45,22 +45,30 @@ class LeoGui (flx.PyComponent):
     utils for converting data between Python and JS.
     '''
 
-    # @flx.reaction
-    # def update_label(self):
-        # self.label.set_text(self.root.store.username)
-
     #@+others
     #@+node:ekr.20181107092119.1: *4* gui.init
-    name = flx.StringProp('John Doe', settable=True)
-    outline = flx.ListProp(settable=True)
+    body = flx.StringProp('<EMPTY BODY>', settable=True)
+    outline = flx.ListProp(['<Empty OUTLINE>'], settable=True)
 
     def init(self):
-        print('LeoGui.init', repr(self.name))
+        #
+        # Open the outline.
         self.c, self.g = self.open_bridge()
-        self.body = self.find_body()
-        self.outline_list = self.get_outline_list()
-        self._mutate_outline(self.outline_list)
-        print('LeoGui.init', repr(len(self.outline)))
+        #
+        # Set the body property.
+        self._mutate_body(self.find_body())
+        ### print('LeoGui.init: len(body):', len(self.body))
+        #
+        # Set the outline property.
+        self._mutate_outline(self.get_outline_list())
+        ### print('LeoGui.init: len(outline):', len(self.outline))
+
+    ### Not used yet.
+    # @flx.action
+    # def get_outline(self):
+        # print('action.get_outline')
+        # return self.outline
+        
     #@+node:ekr.20181106070704.1: *4* gui.runMainLoop
     def runMainLoop(self):
         '''The main loop for the flexx gui.'''
@@ -165,20 +173,16 @@ class LeoLog(flx.Widget):
 #@+node:ekr.20181104082130.1: *3* class LeoMainWindow
 class LeoMainWindow(flx.Widget):
     
-    # def __init__(self, *init_args, **kwargs):
-        # self.leo_gui = kwargs ['leo_gui']
-        # del kwargs ['leo_gui']
-        # print('LeoMainWindow.__init__:leo_gui', repr(self.leo_gui))
-        # if 0:
-            # for z in self.leo_gui.__class__:
-                # print(z, self.leo_gui [z])
-        # super().__init__(*init_args, **kwargs)
+    def __init__(self, *init_args, **kwargs):
+        self.leo_outline = kwargs ['outline']
+        del kwargs ['outline']
+        super().__init__(*init_args, **kwargs)
     
-    def init(self):
+    def init(self, outline=None):
         # Set the JS global.
         global js_main_window
         js_main_window = self
-        print('LeoMainWindow.init')
+        ### print('LeoMainWindow.init: self.leo_outline', len(self.leo_outline))
         with flx.VBox():
             with flx.HBox(flex=1):
                 self.tree = LeoTree(flex=1)
@@ -217,6 +221,7 @@ class LeoTree(flx.Widget):
     '''
 
     def init(self):
+        ### print('LeoTree.init', repr(outline))
         with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
             self.make_tree()
 
@@ -224,14 +229,14 @@ class LeoTree(flx.Widget):
     #@+node:ekr.20181105045657.1: *4* tree.make_tree
     def make_tree(self):
         
-        if 1:
+        global js_main_window
+        if 0:
             flx.TreeItem(text='TEST', checked=None, collapsed=True)
         else:
-            ### aList = js_main_window.leo_gui.get_outline_list()
-                # JS: TypeError: js_main_window.leo_gui.get_outline_list is not a function
-            global py_outline_list
+            outline = js_main_window.leo_outline
+            ### print('make_tree: len(outline)', len(outline))
             stack = []
-            for archived_position, gnx, h in py_outline_list:
+            for archived_position, gnx, h in outline: ### py_outline_list:
                 n = len(archived_position)
                 if n == 1:
                     item = flx.TreeItem(text=h, checked=None, collapsed=True)
@@ -262,9 +267,7 @@ class LeoTree(flx.Widget):
 if __name__ == '__main__':
     # Define globals.
     js_main_window = None
-    # Start the JS code.
-    # JS can not access Leo's c and p vars!
+    # Start the app.
     flx.launch(LeoApp, runtime='firefox-browser')
-    print('AFTER flx.launch')
     flx.run()
 #@-leo
