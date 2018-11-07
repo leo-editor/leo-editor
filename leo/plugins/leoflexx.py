@@ -34,38 +34,18 @@ class LeoApp(flx.PyComponent):
     The Leo Application.
     This is self.root for all flx.Widget objects!
     '''
-    gui = flx.AnyProp(settable=True)
+
     main_window = flx.AnyProp(settable=True)
 
     # https://github.com/flexxui/flexx/issues/489
     def init(self):
-        # This code does *not* call the init methods!
-        gui = LeoGui()
-        self._mutate_gui(gui)
-        main_window = LeoMainWindow(gui.body, gui.outline)
+        self.c, self.g = self.open_bridge()
+        body = self.find_body()
+        outline = self.get_outline_list()
+        main_window = LeoMainWindow(body, outline)
         self._mutate_main_window(main_window)
         
-    # @flx.action
-    # def set_main_window(self, main_window):
-        # print('app.set_main_window: main_window', main_window)
-        # self._mutate_main_window(main_window)
-
-#@+node:ekr.20181104174357.1: *3* class LeoGui
-class LeoGui (flx.PyComponent):
-    '''A class representing Leo's Browser gui.'''
-    
-    body = flx.StringProp('<Empty body>', settable=True)
-    outline = flx.ListProp(['<Empty outline>'], settable=True)
-    
-    def init(self):
-        self.c, self.g = self.open_bridge()
-        self._mutate_body(self.find_body())
-        self._mutate_outline(self.get_outline_list())
-
     #@+others
-    #@+node:ekr.20181106070704.1: *4* gui.runMainLoop
-    def runMainLoop(self):
-        '''The main loop for the flexx gui.'''
     #@+node:ekr.20181105091545.1: *4* gui.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
@@ -165,15 +145,6 @@ class LeoLog(flx.Widget):
         self.ace.resize()
 #@+node:ekr.20181104082130.1: *3* class LeoMainWindow
 class LeoMainWindow(flx.Widget):
-    
-    ###
-        # def __init__(self, *init_args, **kwargs):
-            # # Inject the leo_outline *property*.
-            # self.leo_body = kwargs ['body']
-            # del kwargs ['body']
-            # self.leo_outline = kwargs ['outline']
-            # del kwargs ['outline']
-            # super().__init__(*init_args, **kwargs)
 
     def init(self, body, outline):
         with flx.VBox():
