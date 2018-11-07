@@ -33,10 +33,11 @@ class LeoApp(flx.PyComponent):
 
     # https://github.com/flexxui/flexx/issues/489
     def init(self):
+        # This code does not cause the init methods to be called.
         self.gui = LeoGui()
-        self.js_main_window = LeoMainWindow(leo_gui=self.gui)
-        # LeoGui.init & LeoMainWindow.init have *not* been called here!.
-#@+node:ekr.20181104174357.1: *3* class LeoGui
+        self.js_main_window = LeoMainWindow(
+            body=self.gui.body, outline=self.gui.outline)
+#@+node:ekr.20181104174357.1: *3* class LeoGui (PyComponent)
 class LeoGui (flx.PyComponent):
     '''
     A class representing Leo's Browser gui and
@@ -122,7 +123,7 @@ class LeoBody(flx.Widget):
     def init(self):
         global js_main_window, window
         self.ace = window.ace.edit(self.node, "editor")
-        self.ace.setValue(js_main_window.leo_gui.body)
+        self.ace.setValue(js_main_window.leo_body)
             # Trying to access global body yields:
             # JS: TypeError: e.match is not a function
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
@@ -163,9 +164,11 @@ class LeoLog(flx.Widget):
 class LeoMainWindow(flx.Widget):
     
     def __init__(self, *init_args, **kwargs):
-        # Inject the leo_gui ivar.
-        self.leo_gui = kwargs ['leo_gui']
-        del kwargs ['leo_gui']
+        # Inject the leo_outline *property*.
+        self.leo_body = kwargs ['body']
+        del kwargs ['body']
+        self.leo_outline = kwargs ['outline']
+        del kwargs ['outline']
         super().__init__(*init_args, **kwargs)
     
     def init(self, outline=None):
@@ -219,7 +222,7 @@ class LeoTree(flx.Widget):
 
         ### flx.TreeItem(text='TEST', checked=None, collapsed=True)
         global js_main_window
-        outline = js_main_window.leo_gui.outline
+        outline = js_main_window.leo_outline
         stack = []
         for archived_position, gnx, h in outline:
             n = len(archived_position)
