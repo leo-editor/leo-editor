@@ -16,17 +16,17 @@ def init():
     # I am executing leoflexx.py from an external script.
     return False
 #@+node:ekr.20181106133100.1: **  lpad & rpad
+# pscript does not support alignment, like %20s, in string formatting.
+
 def lpad(s, width=0):
-    '''Return s padded to the left to the given width.'''
+    '''Return s padded to the left.'''
     padding = max(0, width-len(s))
     return ' '*padding + s
     
 def rpad(s, width=0):
-    '''Return s padded to the left to the given width.'''
+    '''Return s padded to the right.'''
     padding = max(0, width-len(s))
-    return s+' '*padding
-
-
+    return s + ' '*padding
 #@+node:ekr.20181107053436.1: ** Py side
 #@+node:ekr.20181107052522.1: *3* class LeoApp (PyComponent)
 class LeoApp(flx.PyComponent):
