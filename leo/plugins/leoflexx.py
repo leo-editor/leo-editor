@@ -35,24 +35,32 @@ class LeoApp(flx.PyComponent):
     # https://github.com/flexxui/flexx/issues/489
     def init(self):
         self.gui = LeoGui()
+            # LeoGui.init has not yet been called.
         self.js_main_window = LeoMainWindow()
+            # LeoMainWindow.init has not yet been called.
 #@+node:ekr.20181104174357.1: *3* class LeoGui (PyComponent)
 class LeoGui (flx.PyComponent):
     '''
     A class representing Leo's Browser gui and
     utils for converting data between Python and JS.
     '''
-    
-    def init(self):
-        self.c, self.g = self.open_bridge()
-        self.body = self.find_body()
-        self.outline_list = self.get_outline_list()
 
     # @flx.reaction
     # def update_label(self):
         # self.label.set_text(self.root.store.username)
 
     #@+others
+    #@+node:ekr.20181107092119.1: *4* gui.init
+    name = flx.StringProp('John Doe', settable=True)
+    outline = flx.ListProp(settable=True)
+
+    def init(self):
+        print('LeoGui.init', repr(self.name))
+        self.c, self.g = self.open_bridge()
+        self.body = self.find_body()
+        self.outline_list = self.get_outline_list()
+        self._mutate_outline(self.outline_list)
+        print('LeoGui.init', repr(len(self.outline)))
     #@+node:ekr.20181106070704.1: *4* gui.runMainLoop
     def runMainLoop(self):
         '''The main loop for the flexx gui.'''
@@ -170,6 +178,7 @@ class LeoMainWindow(flx.Widget):
         # Set the JS global.
         global js_main_window
         js_main_window = self
+        print('LeoMainWindow.init')
         with flx.VBox():
             with flx.HBox(flex=1):
                 self.tree = LeoTree(flex=1)
@@ -256,5 +265,6 @@ if __name__ == '__main__':
     # Start the JS code.
     # JS can not access Leo's c and p vars!
     flx.launch(LeoApp, runtime='firefox-browser')
+    print('AFTER flx.launch')
     flx.run()
 #@-leo
