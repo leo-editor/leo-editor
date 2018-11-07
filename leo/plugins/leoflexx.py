@@ -51,17 +51,9 @@ class LeoGui (flx.PyComponent):
     outline = flx.ListProp(['<Empty OUTLINE>'], settable=True)
 
     def init(self):
-        #
-        # Open the outline.
         self.c, self.g = self.open_bridge()
-        #
-        # Set the body property.
         self._mutate_body(self.find_body())
-        ### print('LeoGui.init: len(body):', len(self.body))
-        #
-        # Set the outline property.
         self._mutate_outline(self.get_outline_list())
-        ### print('LeoGui.init: len(outline):', len(self.outline))
 
     ### Not used yet.
     # @flx.action
@@ -174,6 +166,7 @@ class LeoLog(flx.Widget):
 class LeoMainWindow(flx.Widget):
     
     def __init__(self, *init_args, **kwargs):
+        # Inject the leo_outline *property*.
         self.leo_outline = kwargs ['outline']
         del kwargs ['outline']
         super().__init__(*init_args, **kwargs)
@@ -182,7 +175,6 @@ class LeoMainWindow(flx.Widget):
         # Set the JS global.
         global js_main_window
         js_main_window = self
-        ### print('LeoMainWindow.init: self.leo_outline', len(self.leo_outline))
         with flx.VBox():
             with flx.HBox(flex=1):
                 self.tree = LeoTree(flex=1)
@@ -221,7 +213,6 @@ class LeoTree(flx.Widget):
     '''
 
     def init(self):
-        ### print('LeoTree.init', repr(outline))
         with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
             self.make_tree()
 
@@ -229,24 +220,21 @@ class LeoTree(flx.Widget):
     #@+node:ekr.20181105045657.1: *4* tree.make_tree
     def make_tree(self):
         
+        ### flx.TreeItem(text='TEST', checked=None, collapsed=True)
         global js_main_window
-        if 0:
-            flx.TreeItem(text='TEST', checked=None, collapsed=True)
-        else:
-            outline = js_main_window.leo_outline
-            ### print('make_tree: len(outline)', len(outline))
-            stack = []
-            for archived_position, gnx, h in outline: ### py_outline_list:
-                n = len(archived_position)
-                if n == 1:
+        outline = js_main_window.leo_outline
+        stack = []
+        for archived_position, gnx, h in outline: ### py_outline_list:
+            n = len(archived_position)
+            if n == 1:
+                item = flx.TreeItem(text=h, checked=None, collapsed=True)
+                stack = [item]
+            elif n in (2, 3):
+                # Fully expanding the stack takes too long.
+                stack = stack[:n-1]
+                with stack[-1]:
                     item = flx.TreeItem(text=h, checked=None, collapsed=True)
-                    stack = [item]
-                elif n in (2, 3):
-                    # Fully expanding the stack takes too long.
-                    stack = stack[:n-1]
-                    with stack[-1]:
-                        item = flx.TreeItem(text=h, checked=None, collapsed=True)
-                        stack.append(item)
+                    stack.append(item)
     #@+node:ekr.20181104080854.3: *4* tree.on_event
     @flx.reaction(
         'tree.children**.checked',
