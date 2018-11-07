@@ -33,13 +33,10 @@ class LeoApp(flx.PyComponent):
 
     # https://github.com/flexxui/flexx/issues/489
     def init(self):
+        # This code does not cause the init methods to be called.
         self.gui = LeoGui()
-            # LeoGui.init has not yet been called.
         self.js_main_window = LeoMainWindow(
-            body= self.gui.body,
-            outline=self.gui.outline,
-        )
-            # LeoMainWindow.init has not yet been called.
+            body=self.gui.body, outline=self.gui.outline)
 #@+node:ekr.20181104174357.1: *3* class LeoGui (PyComponent)
 class LeoGui (flx.PyComponent):
     '''
