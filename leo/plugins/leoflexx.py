@@ -36,7 +36,10 @@ class LeoApp(flx.PyComponent):
     def init(self):
         self.gui = LeoGui()
             # LeoGui.init has not yet been called.
-        self.js_main_window = LeoMainWindow(outline=self.gui.outline)
+        self.js_main_window = LeoMainWindow(
+            body= self.gui.body,
+            outline=self.gui.outline,
+        )
             # LeoMainWindow.init has not yet been called.
 #@+node:ekr.20181104174357.1: *3* class LeoGui (PyComponent)
 class LeoGui (flx.PyComponent):
@@ -123,11 +126,11 @@ class LeoBody(flx.Widget):
     """
 
     def init(self):
-        global window
+        global js_main_window, window
         self.ace = window.ace.edit(self.node, "editor")
-        # Trying to access global body yields:
+        self.ace.setValue(js_main_window.leo_body)
+            # Trying to access global body yields:
             # JS: TypeError: e.match is not a function
-        ### self.ace.setValue(body)
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
         self.ace.getSession().setMode("ace/mode/python")
@@ -167,6 +170,8 @@ class LeoMainWindow(flx.Widget):
     
     def __init__(self, *init_args, **kwargs):
         # Inject the leo_outline *property*.
+        self.leo_body = kwargs ['body']
+        del kwargs ['body']
         self.leo_outline = kwargs ['outline']
         del kwargs ['outline']
         super().__init__(*init_args, **kwargs)
@@ -219,12 +224,12 @@ class LeoTree(flx.Widget):
     #@+others
     #@+node:ekr.20181105045657.1: *4* tree.make_tree
     def make_tree(self):
-        
+
         ### flx.TreeItem(text='TEST', checked=None, collapsed=True)
         global js_main_window
         outline = js_main_window.leo_outline
         stack = []
-        for archived_position, gnx, h in outline: ### py_outline_list:
+        for archived_position, gnx, h in outline:
             n = len(archived_position)
             if n == 1:
                 item = flx.TreeItem(text=h, checked=None, collapsed=True)
