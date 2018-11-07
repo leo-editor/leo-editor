@@ -30,25 +30,24 @@ def rpad(s, width=0):
 #@+node:ekr.20181107053436.1: ** Py side: flx.PyComponents
 #@+node:ekr.20181107052522.1: *3* class LeoApp
 class LeoApp(flx.PyComponent):
+    
+    store = flx.ComponentProp()
 
     # https://github.com/flexxui/flexx/issues/489
     def init(self):
-        # This code does not cause the init methods to be called.
+        # This code does *not* call the init methods!
+        self._mutate_store(LeoStore())
         self.gui = LeoGui()
         self.js_main_window = LeoMainWindow(
-            body=self.gui.body, outline=self.gui.outline)
+            body=self.gui.body,
+            outline=self.gui.outline)
 #@+node:ekr.20181104174357.1: *3* class LeoGui (PyComponent)
 class LeoGui (flx.PyComponent):
-    '''
-    A class representing Leo's Browser gui and
-    utils for converting data between Python and JS.
-    '''
-
-    #@+others
-    #@+node:ekr.20181107092119.1: *4* gui.init
-    body = flx.StringProp('<EMPTY BODY>', settable=True)
-    outline = flx.ListProp(['<Empty OUTLINE>'], settable=True)
-
+    '''A class representing Leo's Browser gui.'''
+    
+    body = flx.StringProp('<Empty body>', settable=True)
+    outline = flx.ListProp(['<Empty outline>'], settable=True)
+    
     def init(self):
         self.c, self.g = self.open_bridge()
         self._mutate_body(self.find_body())
@@ -59,7 +58,8 @@ class LeoGui (flx.PyComponent):
     # def get_outline(self):
         # print('action.get_outline')
         # return self.outline
-        
+
+    #@+others
     #@+node:ekr.20181106070704.1: *4* gui.runMainLoop
     def runMainLoop(self):
         '''The main loop for the flexx gui.'''
@@ -101,7 +101,22 @@ class LeoGui (flx.PyComponent):
         c = self.c
         return [(p.archivedPosition(), p.gnx, p.h) for p in c.all_positions()]
     #@-others
-#@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
+#@+node:ekr.20181107052700.1: ** Js side: flx.Widgets & flx.JsComponent
+#@+node:ekr.20181107155744.1: *3* class LeoStore
+class LeoStore(flx.JsComponent):
+    '''
+    A central store for data.
+    https://flexx.readthedocs.io/en/stable/guide/patterns.html#use-of-a-central-data-store
+    '''
+    #
+    ### Temp properties.
+    body = flx.StringProp(settable=True)
+    outline = flx.ListProp(settable=True)
+    #
+    # These properties are likely to exist always.
+    commanders = flx.ListProp(settable=True)
+    gui = flx.AnyProp(settable=True)
+    main_window = flx.AnyProp(settable=True)
 #@+node:ekr.20181104082144.1: *3* class LeoBody
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
 flx.assets.associate_asset(__name__, base_url + 'ace.js')
@@ -170,11 +185,12 @@ class LeoMainWindow(flx.Widget):
         self.leo_outline = kwargs ['outline']
         del kwargs ['outline']
         super().__init__(*init_args, **kwargs)
-    
+
     def init(self, outline=None):
         # Set the JS global.
         global js_main_window
         js_main_window = self
+        print('LeoMainWindow.init')
         with flx.VBox():
             with flx.HBox(flex=1):
                 self.tree = LeoTree(flex=1)
@@ -257,5 +273,6 @@ if __name__ == '__main__':
     js_main_window = None
     # Start the app.
     flx.launch(LeoApp, runtime='firefox-browser')
+    print('after launch')
     flx.run()
 #@-leo
