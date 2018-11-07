@@ -30,18 +30,27 @@ def rpad(s, width=0):
 #@+node:ekr.20181107053436.1: ** Py side: flx.PyComponents
 #@+node:ekr.20181107052522.1: *3* class LeoApp
 class LeoApp(flx.PyComponent):
-    
-    store = flx.ComponentProp()
+    '''
+    The Leo Application.
+    This is self.root for all flx.Widget objects!
+    '''
+    gui = flx.AnyProp(settable=True)
+    main_window = flx.AnyProp(settable=True)
 
     # https://github.com/flexxui/flexx/issues/489
     def init(self):
         # This code does *not* call the init methods!
-        self._mutate_store(LeoStore())
-        self.gui = LeoGui()
-        self.js_main_window = LeoMainWindow(
-            body=self.gui.body,
-            outline=self.gui.outline)
-#@+node:ekr.20181104174357.1: *3* class LeoGui (PyComponent)
+        gui = LeoGui()
+        self._mutate_gui(gui)
+        main_window = LeoMainWindow(gui.body, gui.outline)
+        self._mutate_main_window(main_window)
+        
+    # @flx.action
+    # def set_main_window(self, main_window):
+        # print('app.set_main_window: main_window', main_window)
+        # self._mutate_main_window(main_window)
+
+#@+node:ekr.20181104174357.1: *3* class LeoGui
 class LeoGui (flx.PyComponent):
     '''A class representing Leo's Browser gui.'''
     
@@ -52,12 +61,6 @@ class LeoGui (flx.PyComponent):
         self.c, self.g = self.open_bridge()
         self._mutate_body(self.find_body())
         self._mutate_outline(self.get_outline_list())
-
-    ### Not used yet.
-    # @flx.action
-    # def get_outline(self):
-        # print('action.get_outline')
-        # return self.outline
 
     #@+others
     #@+node:ekr.20181106070704.1: *4* gui.runMainLoop
@@ -101,22 +104,7 @@ class LeoGui (flx.PyComponent):
         c = self.c
         return [(p.archivedPosition(), p.gnx, p.h) for p in c.all_positions()]
     #@-others
-#@+node:ekr.20181107052700.1: ** Js side: flx.Widgets & flx.JsComponent
-#@+node:ekr.20181107155744.1: *3* class LeoStore
-class LeoStore(flx.JsComponent):
-    '''
-    A central store for data.
-    https://flexx.readthedocs.io/en/stable/guide/patterns.html#use-of-a-central-data-store
-    '''
-    #
-    ### Temp properties.
-    body = flx.StringProp(settable=True)
-    outline = flx.ListProp(settable=True)
-    #
-    # These properties are likely to exist always.
-    commanders = flx.ListProp(settable=True)
-    gui = flx.AnyProp(settable=True)
-    main_window = flx.AnyProp(settable=True)
+#@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181104082144.1: *3* class LeoBody
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
 flx.assets.associate_asset(__name__, base_url + 'ace.js')
@@ -135,10 +123,10 @@ class LeoBody(flx.Widget):
     }
     """
 
-    def init(self):
-        global js_main_window, window
+    def init(self, body):
+        global window
         self.ace = window.ace.edit(self.node, "editor")
-        self.ace.setValue(js_main_window.leo_body)
+        self.ace.setValue(body)
             # Trying to access global body yields:
             # JS: TypeError: e.match is not a function
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
@@ -178,24 +166,21 @@ class LeoLog(flx.Widget):
 #@+node:ekr.20181104082130.1: *3* class LeoMainWindow
 class LeoMainWindow(flx.Widget):
     
-    def __init__(self, *init_args, **kwargs):
-        # Inject the leo_outline *property*.
-        self.leo_body = kwargs ['body']
-        del kwargs ['body']
-        self.leo_outline = kwargs ['outline']
-        del kwargs ['outline']
-        super().__init__(*init_args, **kwargs)
+    ###
+        # def __init__(self, *init_args, **kwargs):
+            # # Inject the leo_outline *property*.
+            # self.leo_body = kwargs ['body']
+            # del kwargs ['body']
+            # self.leo_outline = kwargs ['outline']
+            # del kwargs ['outline']
+            # super().__init__(*init_args, **kwargs)
 
-    def init(self, outline=None):
-        # Set the JS global.
-        global js_main_window
-        js_main_window = self
-        print('LeoMainWindow.init')
+    def init(self, body, outline):
         with flx.VBox():
             with flx.HBox(flex=1):
-                self.tree = LeoTree(flex=1)
+                self.tree = LeoTree(outline, flex=1)
                 self.log = LeoLog(flex=1)
-            self.body = LeoBody(flex=1)
+            self.body = LeoBody(body, flex=1)
             self.minibuffer = LeoMiniBuffer()
             self.status_line = LeoStatusLine()
 #@+node:ekr.20181104082154.1: *3* class LeoMiniBuffer
@@ -228,17 +213,15 @@ class LeoTree(flx.Widget):
     }
     '''
 
-    def init(self):
+    def init(self, outline):
+        print('LeoTree.root', repr(self.root))
         with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
-            self.make_tree()
+            self.make_tree(outline)
 
     #@+others
     #@+node:ekr.20181105045657.1: *4* tree.make_tree
-    def make_tree(self):
+    def make_tree(self, outline):
 
-        ### flx.TreeItem(text='TEST', checked=None, collapsed=True)
-        global js_main_window
-        outline = js_main_window.leo_outline
         stack = []
         for archived_position, gnx, h in outline:
             n = len(archived_position)
@@ -259,20 +242,16 @@ class LeoTree(flx.Widget):
     )
     def on_event(self, *events):
         
-        global js_main_window
         for ev in events:
             id_ = ev.source.title or ev.source.text
             kind = '' if ev.new_value else 'un-'
             s = kind + ev.type
             assert s, id_
-            js_main_window.log.put('%s: %s' % (lpad(s, 15), id_))
+            self.root.main_window.log.put('%s: %s' % (lpad(s, 15), id_))
     #@-others
 #@-others
 if __name__ == '__main__':
-    # Define globals.
-    js_main_window = None
-    # Start the app.
     flx.launch(LeoApp, runtime='firefox-browser')
-    print('after launch')
+    print('After flx.launch')
     flx.run()
 #@-leo
