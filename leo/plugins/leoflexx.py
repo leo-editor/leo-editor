@@ -28,24 +28,14 @@ def rpad(s, width=0):
     return s+' '*padding
 
 
-#@+node:ekr.20181107053436.1: ** PyComponents
+#@+node:ekr.20181107053436.1: ** Py side
 #@+node:ekr.20181107052522.1: *3* class LeoApp (PyComponent)
 class LeoApp(flx.PyComponent):
 
     # https://github.com/flexxui/flexx/issues/489
     def init(self):
-        global app
-        # app = self
-        # print('LeoApp.app', app)
-        # self.gui = gui = LeoGui()
-        # print('LeoApp.gui', gui)
-        # self.main_window = main_window = LeoMainWindow()
         self.gui = LeoGui()
-        self.main_window = LeoMainWindow()
-        #
-        # Inject the leo_gui ivar.
-        ### w.leo_gui = self.gui
-        app = self
+        self.js_main_window = LeoMainWindow()
 #@+node:ekr.20181104174357.1: *3* class LeoGui (PyComponent)
 class LeoGui (flx.PyComponent):
     '''
@@ -54,8 +44,13 @@ class LeoGui (flx.PyComponent):
     '''
     
     def init(self):
-        print('LeoGui.init', self)
         self.c, self.g = self.open_bridge()
+        self.body = self.find_body()
+        self.outline_list = self.get_outline_list()
+
+    # @flx.reaction
+    # def update_label(self):
+        # self.label.set_text(self.root.store.username)
 
     #@+others
     #@+node:ekr.20181106070704.1: *4* gui.runMainLoop
@@ -91,16 +86,16 @@ class LeoGui (flx.PyComponent):
             if p.b.strip():
                 return p.b
         return ''
-    #@+node:ekr.20181105095150.1: *4* gui.outline_list
-    def outline_list(self):
+    #@+node:ekr.20181105095150.1: *4* gui.get_outline_list
+    def get_outline_list(self):
         '''
-        Make a serializable representation of the outline for the LeoTree
+        Return a serializable representation of the outline for the LeoTree
         class.
         '''
         c = self.c
         return [(p.archivedPosition(), p.gnx, p.h) for p in c.all_positions()]
     #@-others
-#@+node:ekr.20181107052700.1: ** Widgets
+#@+node:ekr.20181107052700.1: ** Js side
 #@+node:ekr.20181104082144.1: *3* class LeoBody
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
 flx.assets.associate_asset(__name__, base_url + 'ace.js')
@@ -162,10 +157,19 @@ class LeoLog(flx.Widget):
 #@+node:ekr.20181104082130.1: *3* class LeoMainWindow
 class LeoMainWindow(flx.Widget):
     
+    # def __init__(self, *init_args, **kwargs):
+        # self.leo_gui = kwargs ['leo_gui']
+        # del kwargs ['leo_gui']
+        # print('LeoMainWindow.__init__:leo_gui', repr(self.leo_gui))
+        # if 0:
+            # for z in self.leo_gui.__class__:
+                # print(z, self.leo_gui [z])
+        # super().__init__(*init_args, **kwargs)
+    
     def init(self):
-        global main_window
-        print('SET main_window')
-        main_window = self
+        # Set the JS global.
+        global js_main_window
+        js_main_window = self
         with flx.VBox():
             with flx.HBox(flex=1):
                 self.tree = LeoTree(flex=1)
@@ -202,6 +206,7 @@ class LeoTree(flx.Widget):
         /* color: #afa; */
     }
     '''
+
     def init(self):
         with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
             self.make_tree()
@@ -210,23 +215,24 @@ class LeoTree(flx.Widget):
     #@+node:ekr.20181105045657.1: *4* tree.make_tree
     def make_tree(self):
         
-        print('make_tree')
-        flx.TreeItem(text='TEST', checked=None, collapsed=True)
-        ###
-            # global gui
-            # stack = []
-            # ### for archived_position, gnx, h in outline_list:
-            # for archived_position, gnx, h in gui.outline_list():
-                # n = len(archived_position)
-                # if n == 1:
-                    # item = flx.TreeItem(text=h, checked=None, collapsed=True)
-                    # stack = [item]
-                # elif n in (2, 3):
-                    # # Fully expanding the stack takes too long.
-                    # stack = stack[:n-1]
-                    # with stack[-1]:
-                        # item = flx.TreeItem(text=h, checked=None, collapsed=True)
-                        # stack.append(item)
+        if 1:
+            flx.TreeItem(text='TEST', checked=None, collapsed=True)
+        else:
+            ### aList = js_main_window.leo_gui.get_outline_list()
+                # JS: TypeError: js_main_window.leo_gui.get_outline_list is not a function
+            global py_outline_list
+            stack = []
+            for archived_position, gnx, h in py_outline_list:
+                n = len(archived_position)
+                if n == 1:
+                    item = flx.TreeItem(text=h, checked=None, collapsed=True)
+                    stack = [item]
+                elif n in (2, 3):
+                    # Fully expanding the stack takes too long.
+                    stack = stack[:n-1]
+                    with stack[-1]:
+                        item = flx.TreeItem(text=h, checked=None, collapsed=True)
+                        stack.append(item)
     #@+node:ekr.20181104080854.3: *4* tree.on_event
     @flx.reaction(
         'tree.children**.checked',
@@ -235,23 +241,18 @@ class LeoTree(flx.Widget):
     )
     def on_event(self, *events):
         
-        global app
-        global main_window
-        print('on_event.app', repr(app))
-        print('on_event.main_window', repr(main_window))
+        global js_main_window
         for ev in events:
             id_ = ev.source.title or ev.source.text
             kind = '' if ev.new_value else 'un-'
             s = kind + ev.type
             assert s, id_
-            main_window.log.put('%s: %s' % (lpad(s, 15), id_))
+            js_main_window.log.put('%s: %s' % (lpad(s, 15), id_))
     #@-others
 #@-others
 if __name__ == '__main__':
-    # Define globals
-    app = None
-    main_window = None
-    #
+    # Define globals.
+    js_main_window = None
     # Start the JS code.
     # JS can not access Leo's c and p vars!
     flx.launch(LeoApp, runtime='firefox-browser')
