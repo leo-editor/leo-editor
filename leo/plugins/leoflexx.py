@@ -145,6 +145,12 @@ class LeoLog(flx.Widget):
         self.ace.resize()
 #@+node:ekr.20181104082130.1: *3* class LeoMainWindow
 class LeoMainWindow(flx.Widget):
+    
+    '''
+    Leo's main window, that is, root.main_window.
+    
+    Each ivar x below is accessible as root.main_window.x.
+    '''
 
     def init(self, body, outline):
         with flx.VBox():
