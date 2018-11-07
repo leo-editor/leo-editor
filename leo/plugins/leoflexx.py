@@ -27,8 +27,8 @@ def rpad(s, width=0):
     '''Return s padded to the right.'''
     padding = max(0, width-len(s))
     return s + ' '*padding
-#@+node:ekr.20181107053436.1: ** Py side
-#@+node:ekr.20181107052522.1: *3* class LeoApp (PyComponent)
+#@+node:ekr.20181107053436.1: ** Py side: flx.PyComponents
+#@+node:ekr.20181107052522.1: *3* class LeoApp
 class LeoApp(flx.PyComponent):
 
     # https://github.com/flexxui/flexx/issues/489
@@ -36,7 +36,7 @@ class LeoApp(flx.PyComponent):
         self.gui = LeoGui()
         self.js_main_window = LeoMainWindow(leo_gui=self.gui)
         # LeoGui.init & LeoMainWindow.init have *not* been called here!.
-#@+node:ekr.20181104174357.1: *3* class LeoGui (PyComponent)
+#@+node:ekr.20181104174357.1: *3* class LeoGui
 class LeoGui (flx.PyComponent):
     '''
     A class representing Leo's Browser gui and
@@ -100,7 +100,7 @@ class LeoGui (flx.PyComponent):
         c = self.c
         return [(p.archivedPosition(), p.gnx, p.h) for p in c.all_positions()]
     #@-others
-#@+node:ekr.20181107052700.1: ** Js side
+#@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181104082144.1: *3* class LeoBody
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
 flx.assets.associate_asset(__name__, base_url + 'ace.js')
