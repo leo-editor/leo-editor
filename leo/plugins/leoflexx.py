@@ -7,9 +7,8 @@
 '''
 A Stand-alone prototype for Leo using flexx.
 '''
-import os
+import leo.core.leoBridge as leoBridge
 from flexx import flx
-# import pscript ; assert pscript
 #@+others
 #@+node:ekr.20181103151350.1: **  init
 def init():
@@ -70,7 +69,6 @@ class LeoGui (flx.PyComponent):
     #@+node:ekr.20181105091545.1: *4* gui.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
-        import leo.core.leoBridge as leoBridge
         bridge = leoBridge.controller(gui = None,
             loadPlugins = False,
             readSettings = False,
@@ -83,7 +81,7 @@ class LeoGui (flx.PyComponent):
             return
         g = bridge.globals()
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'LeoPy.leo')
-        if not os.path.exists(path):
+        if not g.os_path_exists(path):
             print('open_bridge: does not exist:', path)
             return
         c = bridge.openLeoFile(path)
