@@ -191,14 +191,13 @@ class LeoTree(flx.Widget):
     '''
 
     def init(self, outline):
-        print('LeoTree.root', repr(self.root))
         with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
             self.make_tree(outline)
 
     #@+others
     #@+node:ekr.20181105045657.1: *4* tree.make_tree
     def make_tree(self, outline):
-
+        '''Populate the outline from a list of tuples.'''
         stack = []
         for archived_position, gnx, h in outline:
             n = len(archived_position)
@@ -219,12 +218,12 @@ class LeoTree(flx.Widget):
     )
     def on_event(self, *events):
         
+        log = self.root.main_window.log
         for ev in events:
             id_ = ev.source.title or ev.source.text
             kind = '' if ev.new_value else 'un-'
             s = kind + ev.type
-            assert s, id_
-            self.root.main_window.log.put('%s: %s' % (lpad(s, 15), id_))
+            log.put('%s: %s' % (lpad(s, 15), id_))
     #@-others
 #@-others
 if __name__ == '__main__':
