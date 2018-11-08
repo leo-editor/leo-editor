@@ -28,6 +28,7 @@ def rpad(s, width=0):
     padding = max(0, width-len(s))
     return s + ' '*padding
 #@+node:ekr.20181107053436.1: ** Py side: flx.PyComponents
+# pscript never converts flx.PyComponents to JS.
 #@+node:ekr.20181107052522.1: *3* class LeoApp
 class LeoApp(flx.PyComponent):
     '''
