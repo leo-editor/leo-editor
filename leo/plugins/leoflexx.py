@@ -149,17 +149,28 @@ class LeoMainWindow(flx.Widget):
     '''
     Leo's main window, that is, root.main_window.
     
-    Each ivar x below is accessible as root.main_window.x.
+    Each property x below is accessible as root.main_window.x.
     '''
+    
+    body = flx.AnyProp(settable=True)
+    log = flx.AnyProp(settable=True)
+    minibuffer = flx.AnyProp(settable=True)
+    status_line = flx.AnyProp(settable=True)
+    tree = flx.AnyProp(settable=True)
 
     def init(self, body, outline):
         with flx.VBox():
             with flx.HBox(flex=1):
-                self.tree = LeoTree(outline, flex=1)
-                self.log = LeoLog(flex=1)
-            self.body = LeoBody(body, flex=1)
-            self.minibuffer = LeoMiniBuffer()
-            self.status_line = LeoStatusLine()
+                tree = LeoTree(outline, flex=1)
+                log = LeoLog(flex=1)
+            body = LeoBody(body, flex=1)
+            minibuffer = LeoMiniBuffer()
+            status_line = LeoStatusLine()
+        self._mutate_body(body)
+        self._mutate_log(log)
+        self._mutate_minibuffer(minibuffer)
+        self._mutate_status_line(status_line)
+        self._mutate_tree(tree)
 #@+node:ekr.20181104082154.1: *3* class LeoMiniBuffer
 class LeoMiniBuffer(flx.Widget):
     
