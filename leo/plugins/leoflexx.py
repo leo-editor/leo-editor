@@ -37,6 +37,7 @@ class LeoApp(flx.PyComponent):
     '''
 
     main_window = flx.AnyProp(settable=True)
+    outline = flx.AnyProp(settable=True)
 
     # https://github.com/flexxui/flexx/issues/489
     def init(self):
@@ -44,6 +45,7 @@ class LeoApp(flx.PyComponent):
         body = self.find_body()
         outline = self.get_outline_list()
         main_window = LeoMainWindow(body, outline)
+        self._mutate_outline(outline)
         self._mutate_main_window(main_window)
         
     #@+others
