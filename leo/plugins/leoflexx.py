@@ -61,7 +61,7 @@ class LeoApp(flx.PyComponent):
             print('Error opening leoBridge')
             return
         g = bridge.globals()
-        path = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'LeoPy.leo')
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'LeoPyRef.leo')
         if not g.os_path_exists(path):
             print('open_bridge: does not exist:', path)
             return
