@@ -9,6 +9,9 @@ A Stand-alone prototype for Leo using flexx.
 '''
 import leo.core.leoBridge as leoBridge
 from flexx import flx
+import pscript
+assert pscript
+# pylint: disable=no-member, arguments-differ
 #@+others
 #@+node:ekr.20181103151350.1: **  init
 def init():
@@ -95,6 +98,8 @@ class LeoBody(flx.Widget):
     """
 
     def init(self, body):
+        # pylint: disable=undefined-variable
+            # window
         global window
         self.ace = window.ace.edit(self.node, "editor")
         self.ace.setValue(body)
@@ -118,13 +123,15 @@ class LeoLog(flx.Widget):
     """
 
     def init(self):
+        # pylint: disable=undefined-variable
+            # window
         global window
         self.ace = window.ace.edit(self.node, "editor")
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         # pscript.RawJS('''
-            # var el = $(the_element);
+            # var el = this.node;
             # var editor = el.data('ace').editor;
-            # editor.$blockScrolling = Infinity;
+            # editor.blockScrolling = Infinity;
         # ''')
         self.ace.setTheme("ace/theme/solarized_dark")
         
