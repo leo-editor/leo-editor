@@ -28,6 +28,8 @@ class LeoApp(flx.PyComponent):
 
     main_window = flx.ComponentProp(settable=True)
     outline = flx.ListProp(settable=True)
+    p_to_gnx = flx.DictProp(settable=True)
+    gnx_to_p_list = flx.DictProp(settable=True)
 
     # https://github.com/flexxui/flexx/issues/489
     def init(self):
@@ -35,13 +37,18 @@ class LeoApp(flx.PyComponent):
         body = self.find_body()
         outline = self.get_outline_list()
         main_window = LeoMainWindow(body, outline)
-        self._mutate('outline', outline)
-        self._mutate('main_window', main_window)
-        
+        for name, prop in (
+            ('main_window', main_window),
+            ('outline', outline),
+            ('p_to_gnx', {}), ### Not ready yet.
+            ('gnx_to_p_list', {}), ### Not ready yet.
+        ):
+            self._mutate(name, prop)
+
     @flx.reaction('!ask_for_children')
     def ask_for_children(self, *events):
         print('===== app.ask_for_children')
-        self.get_children({'children', 'CHILDREN'})
+        ### self.get_children({'children', 'CHILDREN'})
         
     # Emitters should return a dictionary.
     # Event type is the name of the emitter.
@@ -267,11 +274,9 @@ class LeoTree(flx.Widget):
                 h = ev.source.title or ev.source.text
                 main.log.put('select gnx: %s %s' % (gnx.ljust(30), h))
                 self.ask_for_children(gnx)
-                ### flx.Component.emit('ask_for_children', {'gnx', gnx})
 
-    # Emitters can have any number of arguments.
-    # Emitters should return a dictionary, which will get emitted as an event,
-    # with the event type matching the name of the emitter.
+    # Emitters should return a dictionary.
+    # Event type is the name of the emitter.
     @flx.emitter
     def ask_for_children(self, gnx):
         print('tree.ask_for_children')
@@ -306,7 +311,7 @@ class LeoTreeItem(flx.TreeItem):
         self._mutate('leo_position', leo_position)
 #@-others
 if __name__ == '__main__':
-    flx.launch(LeoApp)
-    print('After flx.launch')
+    app = flx.launch(LeoApp)
+    print('After flx.launch', repr(app))
     flx.run()
 #@-leo
