@@ -150,8 +150,8 @@ class LeoMainWindow(flx.Widget):
     tree = flx.AnyProp(settable=True)
 
     def init(self, body, outline):
-        with flx.VBox():
-            with flx.HBox(flex=1):
+        with flx.VSplit():
+            with flx.HSplit(flex=1):
                 tree = LeoTree(outline, flex=1)
                 log = LeoLog(flex=1)
             body = LeoBody(body, flex=1)
