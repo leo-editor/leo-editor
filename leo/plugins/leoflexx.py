@@ -10,8 +10,7 @@ A Stand-alone prototype for Leo using flexx.
 import leo.core.leoBridge as leoBridge
 from flexx import flx
 import pscript
-assert pscript
-# pylint: disable=no-member, arguments-differ
+assert pscript # To suppress pyflakes complaint.
 #@+others
 #@+node:ekr.20181103151350.1: **  init
 def init():
@@ -36,9 +35,21 @@ class LeoApp(flx.PyComponent):
         body = self.find_body()
         outline = self.get_outline_list()
         main_window = LeoMainWindow(body, outline)
-        self._mutate_outline(outline)
-        self._mutate_main_window(main_window)
-    
+        self._mutate('outline', outline)
+        self._mutate('main_window', main_window)
+        
+    @flx.reaction('!ask_for_children')
+    def ask_for_children(self, *events):
+        print('===== app.ask_for_children')
+        self.get_children({'children', 'CHILDREN'})
+        
+    # Emitters should return a dictionary.
+    # Event type is the name of the emitter.
+    @flx.emitter
+    def get_children(self, d):
+        print('===== app.get_children', repr(d))
+        return d
+
     #@+others
     #@+node:ekr.20181105091545.1: *4* gui.open_bridge
     def open_bridge(self):
@@ -98,6 +109,7 @@ class LeoBody(flx.Widget):
     """
 
     def init(self, body):
+        # pylint: disable=arguments-differ
         # pylint: disable=undefined-variable
             # window
         global window
@@ -157,6 +169,7 @@ class LeoMainWindow(flx.Widget):
     tree = flx.ComponentProp(settable=True)
 
     def init(self, body, outline):
+        # pylint: disable=arguments-differ
         with flx.VSplit():
             with flx.HSplit(flex=1):
                 tree = LeoTree(outline, flex=1)
@@ -164,11 +177,12 @@ class LeoMainWindow(flx.Widget):
             body = LeoBody(body, flex=1)
             minibuffer = LeoMiniBuffer()
             status_line = LeoStatusLine()
-        self._mutate_body(body)
-        self._mutate_log(log)
-        self._mutate_minibuffer(minibuffer)
-        self._mutate_status_line(status_line)
-        self._mutate_tree(tree)
+        for name, prop in (
+            ('body', body), ('log', log), ('tree', tree),
+            ('minibuffer', minibuffer),
+            ('status_line', status_line),
+        ):
+            self._mutate(name, prop)
 #@+node:ekr.20181104082154.1: *3* class LeoMiniBuffer
 class LeoMiniBuffer(flx.Widget):
     
@@ -179,7 +193,7 @@ class LeoMiniBuffer(flx.Widget):
             flx.Label(text='Minibuffer')
             widget = flx.LineEdit(flex=1, placeholder_text='Enter command')
         widget.apply_style('background: yellow')
-        self._mutate_widget(widget)
+        self._mutate('widget', widget)
 #@+node:ekr.20181104082201.1: *3* class LeoStatusLine
 class LeoStatusLine(flx.Widget):
     
@@ -190,7 +204,7 @@ class LeoStatusLine(flx.Widget):
             flx.Label(text='Status Line')
             widget = flx.LineEdit(flex=1, placeholder_text='Status')
         widget.apply_style('background: green')
-        self._mutate_widget(widget)
+        self._mutate('widget', widget)
 #@+node:ekr.20181104082138.1: *3* class LeoTree
 class LeoTree(flx.Widget):
 
@@ -205,6 +219,7 @@ class LeoTree(flx.Widget):
     '''
     
     def init(self, outline):
+        # pylint: disable=arguments-differ
         with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
             self.make_tree(outline)
 
@@ -232,7 +247,7 @@ class LeoTree(flx.Widget):
                 # stack = stack[:n-1]
                 # with stack[-1]:
                     # stack.append(tree_item(gnx, h, p))
-    #@+node:ekr.20181104080854.3: *4* tree.reactions
+    #@+node:ekr.20181104080854.3: *4* tree.on_tree_event
     # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
     @flx.reaction(
         'tree.children**.checked',
@@ -242,15 +257,32 @@ class LeoTree(flx.Widget):
     def on_tree_event(self, *events):
         for ev in events:
             self.show_event(ev)
-            
+    #@+node:ekr.20181109083659.1: *4* tree.on_selected_event
     @flx.reaction('tree.children**.selected')
     def on_selected_event(self, *events):
-        log = self.root.main_window.log
+        main = self.root.main_window
         for ev in events:
             if ev.new_value:
                 gnx = ev.source.leo_gnx
                 h = ev.source.title or ev.source.text
-                log.put('select gnx: %s %s' % (gnx.ljust(30), h))
+                main.log.put('select gnx: %s %s' % (gnx.ljust(30), h))
+                self.ask_for_children(gnx)
+                ### flx.Component.emit('ask_for_children', {'gnx', gnx})
+
+    # Emitters can have any number of arguments.
+    # Emitters should return a dictionary, which will get emitted as an event,
+    # with the event type matching the name of the emitter.
+    @flx.emitter
+    def ask_for_children(self, gnx):
+        print('tree.ask_for_children')
+        return {'gnx': gnx}
+
+    @flx.reaction('!get_children')
+    def get_children(self, *events):
+        print('tree.get_children')
+        for ev in events:
+            print(repr(ev))
+        ### main.log.put('children: %r' % children)
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
@@ -268,9 +300,10 @@ class LeoTreeItem(flx.TreeItem):
         # Archived positions are lists of ints.
     
     def init(self, leo_gnx, leo_position):
+        # pylint: disable=arguments-differ
         super().init()
-        self._mutate_leo_gnx(leo_gnx)
-        self._mutate_leo_position(leo_position)
+        self._mutate('leo_gnx', leo_gnx)
+        self._mutate('leo_position', leo_position)
 #@-others
 if __name__ == '__main__':
     flx.launch(LeoApp)
