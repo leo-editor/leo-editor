@@ -203,7 +203,7 @@ class LeoTree(flx.Widget):
         /* color: #afa; */
     }
     '''
-
+    
     def init(self, outline):
         with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
             self.make_tree(outline)
@@ -213,34 +213,57 @@ class LeoTree(flx.Widget):
     def make_tree(self, outline):
         '''Populate the outline from a list of tuples.'''
         stack = []
+        
+        def tree_item(gnx):
+            ### item = flx.TreeItem(text=h, checked=None, collapsed=True)
+            item = LeoTreeItem(gnx, text=h, checked=None, collapsed=True)
+            return item
+
         for archived_position, gnx, h in outline:
             n = len(archived_position)
             if n == 1:
-                item = flx.TreeItem(text=h, checked=None, collapsed=True)
-                stack = [item]
+                stack = [tree_item(gnx)]
             elif n in (2, 3):
                 # Fully expanding the stack takes too long.
                 stack = stack[:n-1]
                 with stack[-1]:
-                    item = flx.TreeItem(text=h, checked=None, collapsed=True)
-                    stack.append(item)
-    #@+node:ekr.20181104080854.3: *4* tree.on_event
+                    stack.append(tree_item(gnx))
+    #@+node:ekr.20181104080854.3: *4* tree.reactions
     # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
     @flx.reaction(
         'tree.children**.checked',
-        'tree.children**.selected',
         'tree.children**.collapsed',
         'tree.children**.visible', # Never seems to fire.
     )
-    def on_event(self, *events):
-        
+    def on_tree_event(self, *events):
+        for ev in events:
+            self.show_event(ev)
+            
+    @flx.reaction('tree.children**.selected')
+    def on_selected_event(self, *events):
         log = self.root.main_window.log
         for ev in events:
-            id_ = ev.source.title or ev.source.text
-            kind = '' if ev.new_value else 'un-'
-            s = kind + ev.type
-            log.put('%s: %s' % (s.rjust(15), id_))
+            # self.show_event(ev)
+            if ev.new_value:
+                gnx = ev.source.leo_gnx
+                log.put('select gnx: ' + gnx)
+    #@+node:ekr.20181108232118.1: *4* tree.show_event
+    def show_event(self, ev):
+        '''Put a description of the event to the log.'''
+        log = self.root.main_window.log
+        id_ = ev.source.title or ev.source.text
+        kind = '' if ev.new_value else 'un-'
+        s = kind + ev.type
+        log.put('%s: %s' % (s.rjust(15), id_))
     #@-others
+#@+node:ekr.20181108233657.1: *3* class LeoTreeItem
+class LeoTreeItem(flx.TreeItem):
+
+    leo_gnx = flx.AnyProp(settable=True)
+    
+    def init(self, leo_gnx):
+        super().init()
+        self._mutate_leo_gnx(leo_gnx)
 #@-others
 if __name__ == '__main__':
     flx.launch(LeoApp, runtime='firefox-browser')
