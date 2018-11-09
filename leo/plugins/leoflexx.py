@@ -165,20 +165,25 @@ class LeoMainWindow(flx.Widget):
 #@+node:ekr.20181104082154.1: *3* class LeoMiniBuffer
 class LeoMiniBuffer(flx.Widget):
     
+    widget = flx.AnyProp(settable=True)
+    
     def init(self): 
         with flx.HBox():
             flx.Label(text='Minibuffer')
-            self.widget = flx.LineEdit(
-                flex=1, placeholder_text='Enter command')
-        self.widget.apply_style('background: yellow')
+            widget = flx.LineEdit(flex=1, placeholder_text='Enter command')
+        widget.apply_style('background: yellow')
+        self._mutate_widget(widget)
 #@+node:ekr.20181104082201.1: *3* class LeoStatusLine
 class LeoStatusLine(flx.Widget):
+    
+    widget = flx.AnyProp(settable=True)
     
     def init(self):
         with flx.HBox():
             flx.Label(text='Status Line')
-            self.widget = flx.LineEdit(flex=1, placeholder_text='Status')
-        self.widget.apply_style('background: green')
+            widget = flx.LineEdit(flex=1, placeholder_text='Status')
+        widget.apply_style('background: green')
+        self._mutate_widget(widget)
 #@+node:ekr.20181104082138.1: *3* class LeoTree
 class LeoTree(flx.Widget):
 
