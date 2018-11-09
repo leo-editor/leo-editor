@@ -34,10 +34,11 @@ class LeoApp(flx.PyComponent):
     # https://github.com/flexxui/flexx/issues/489
     def init(self):
         self.c, self.g = self.open_bridge()
-        main_window = LeoMainWindow(
-            self.find_body(),
-            self.get_outline_list(),
-        )
+        body = self.find_body()
+        outline = self.get_outline_list()
+            # This is only the initial outline.
+            # It should be recalculated dynamically.
+        main_window = LeoMainWindow(body, outline)
         for name, prop in (
             ('main_window', main_window),
             ### ('outline', outline),
