@@ -27,19 +27,20 @@ class LeoApp(flx.PyComponent):
     '''
 
     main_window = flx.ComponentProp(settable=True)
-    outline = flx.ListProp(settable=True)
+    ### outline = flx.ListProp(settable=True)
     p_to_gnx = flx.DictProp(settable=True)
     gnx_to_p_list = flx.DictProp(settable=True)
 
     # https://github.com/flexxui/flexx/issues/489
     def init(self):
         self.c, self.g = self.open_bridge()
-        body = self.find_body()
-        outline = self.get_outline_list()
-        main_window = LeoMainWindow(body, outline)
+        main_window = LeoMainWindow(
+            self.find_body(),
+            self.get_outline_list(),
+        )
         for name, prop in (
             ('main_window', main_window),
-            ('outline', outline),
+            ### ('outline', outline),
             ('p_to_gnx', {}), ### Not ready yet.
             ('gnx_to_p_list', {}), ### Not ready yet.
         ):
