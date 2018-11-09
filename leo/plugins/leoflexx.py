@@ -264,7 +264,7 @@ class LeoTreeItem(flx.TreeItem):
         self._mutate_leo_gnx(leo_gnx)
 #@-others
 if __name__ == '__main__':
-    flx.launch(LeoApp, runtime='firefox-browser')
+    flx.launch(LeoApp) ###, runtime='firefox-browser')
     print('After flx.launch')
     flx.run()
 #@-leo
