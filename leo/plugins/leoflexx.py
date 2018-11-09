@@ -15,18 +15,6 @@ def init():
     # At present, leoflexx is not a true plugin.
     # I am executing leoflexx.py from an external script.
     return False
-#@+node:ekr.20181106133100.1: **  lpad & rpad
-# pscript does not support alignment, like %20s, in string formatting.
-
-def lpad(s, width=0):
-    '''Return s padded to the left.'''
-    padding = max(0, width-len(s))
-    return ' '*padding + s
-    
-def rpad(s, width=0):
-    '''Return s padded to the right.'''
-    padding = max(0, width-len(s))
-    return s + ' '*padding
 #@+node:ekr.20181107053436.1: ** Py side: flx.PyComponents
 # pscript never converts flx.PyComponents to JS.
 #@+node:ekr.20181107052522.1: *3* class LeoApp
@@ -237,7 +225,7 @@ class LeoTree(flx.Widget):
             id_ = ev.source.title or ev.source.text
             kind = '' if ev.new_value else 'un-'
             s = kind + ev.type
-            log.put('%s: %s' % (lpad(s, 15), id_))
+            log.put('%s: %s' % (s.rjust(15), id_))
     #@-others
 #@-others
 if __name__ == '__main__':
