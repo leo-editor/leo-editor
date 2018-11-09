@@ -27,8 +27,8 @@ class LeoApp(flx.PyComponent):
     This is self.root for all flx.Widget objects!
     '''
 
-    main_window = flx.AnyProp(settable=True)
-    outline = flx.AnyProp(settable=True)
+    main_window = flx.ComponentProp(settable=True)
+    outline = flx.ListProp(settable=True)
 
     # https://github.com/flexxui/flexx/issues/489
     def init(self):
@@ -38,7 +38,7 @@ class LeoApp(flx.PyComponent):
         main_window = LeoMainWindow(body, outline)
         self._mutate_outline(outline)
         self._mutate_main_window(main_window)
-        
+    
     #@+others
     #@+node:ekr.20181105091545.1: *4* gui.open_bridge
     def open_bridge(self):
@@ -150,11 +150,11 @@ class LeoMainWindow(flx.Widget):
     Each property x below is accessible as root.main_window.x.
     '''
     
-    body = flx.AnyProp(settable=True)
-    log = flx.AnyProp(settable=True)
-    minibuffer = flx.AnyProp(settable=True)
-    status_line = flx.AnyProp(settable=True)
-    tree = flx.AnyProp(settable=True)
+    body = flx.ComponentProp(settable=True)
+    log = flx.ComponentProp(settable=True)
+    minibuffer = flx.ComponentProp(settable=True)
+    status_line = flx.ComponentProp(settable=True)
+    tree = flx.ComponentProp(settable=True)
 
     def init(self, body, outline):
         with flx.VSplit():
@@ -172,7 +172,7 @@ class LeoMainWindow(flx.Widget):
 #@+node:ekr.20181104082154.1: *3* class LeoMiniBuffer
 class LeoMiniBuffer(flx.Widget):
     
-    widget = flx.AnyProp(settable=True)
+    widget = flx.ComponentProp(settable=True)
     
     def init(self): 
         with flx.HBox():
@@ -183,7 +183,7 @@ class LeoMiniBuffer(flx.Widget):
 #@+node:ekr.20181104082201.1: *3* class LeoStatusLine
 class LeoStatusLine(flx.Widget):
     
-    widget = flx.AnyProp(settable=True)
+    widget = flx.ComponentProp(settable=True)
     
     def init(self):
         with flx.HBox():
@@ -257,7 +257,7 @@ class LeoTree(flx.Widget):
 #@+node:ekr.20181108233657.1: *3* class LeoTreeItem
 class LeoTreeItem(flx.TreeItem):
 
-    leo_gnx = flx.AnyProp(settable=True)
+    leo_gnx = flx.StringProp(settable=True)
     
     def init(self, leo_gnx):
         super().init()
