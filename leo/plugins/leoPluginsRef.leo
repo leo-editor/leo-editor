@@ -199,10 +199,10 @@
 </v>
 <v t="ekr.20180504192522.1"><vh>leo_babel</vh>
 <v t="ekr.20180504193756.1"><vh>Top-level</vh>
-<v t="ekr.20180504191650.17"><vh>@file babel_kill.py</vh></v>
-<v t="bob.20170716140541.1"><vh>@file babel_api.py</vh></v>
-<v t="bob.20170311140807.1"><vh>@file babel.py</vh></v>
-<v t="bob.20170726143458.1"><vh>@file babel_lib.py</vh></v>
+<v t="ekr.20180504191650.17"><vh>@file leo_babel/babel_kill.py</vh></v>
+<v t="bob.20170716140541.1"><vh>@file leo_babel/babel_api.py</vh></v>
+<v t="bob.20170311140807.1"><vh>@file leo_babel/babel.py</vh></v>
+<v t="bob.20170726143458.1"><vh>@file leo_babel/babel_lib.py</vh></v>
 </v>
 <v t="ekr.20180504191650.34"><vh>@clean leo_babel/__init__.py</vh></v>
 <v t="ekr.20180504191650.36"><vh>examples</vh>
