@@ -215,9 +215,7 @@ class LeoTree(flx.Widget):
         stack = []
         
         def tree_item(gnx):
-            ### item = flx.TreeItem(text=h, checked=None, collapsed=True)
-            item = LeoTreeItem(gnx, text=h, checked=None, collapsed=True)
-            return item
+            return LeoTreeItem(gnx, text=h, checked=None, collapsed=True)
 
         for archived_position, gnx, h in outline:
             n = len(archived_position)
@@ -243,10 +241,10 @@ class LeoTree(flx.Widget):
     def on_selected_event(self, *events):
         log = self.root.main_window.log
         for ev in events:
-            # self.show_event(ev)
             if ev.new_value:
                 gnx = ev.source.leo_gnx
-                log.put('select gnx: ' + gnx)
+                h = ev.source.title or ev.source.text
+                log.put('select gnx: %s %s' % (gnx.ljust(30), h))
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
