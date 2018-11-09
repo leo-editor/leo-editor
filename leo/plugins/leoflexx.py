@@ -218,10 +218,12 @@ class LeoTree(flx.Widget):
                     item = flx.TreeItem(text=h, checked=None, collapsed=True)
                     stack.append(item)
     #@+node:ekr.20181104080854.3: *4* tree.on_event
+    # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
     @flx.reaction(
         'tree.children**.checked',
         'tree.children**.selected',
         'tree.children**.collapsed',
+        'tree.children**.visible', # Never seems to fire.
     )
     def on_event(self, *events):
         
