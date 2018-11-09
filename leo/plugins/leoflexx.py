@@ -212,20 +212,26 @@ class LeoTree(flx.Widget):
     #@+node:ekr.20181105045657.1: *4* tree.make_tree
     def make_tree(self, outline):
         '''Populate the outline from a list of tuples.'''
-        stack = []
-        
-        def tree_item(gnx, h, p):
-            return LeoTreeItem(gnx, p, text=h, checked=None, collapsed=True)
-
         for p, gnx, h in outline:
-            n = len(p) # p is an archived position, a list of ints.
-            if n == 1:
-                stack = [tree_item(gnx, h, p)]
-            elif n in (2, 3):
-                # Fully expanding the stack takes too long.
-                stack = stack[:n-1]
-                with stack[-1]:
-                    stack.append(tree_item(gnx, h, p))
+            # p is an archived position, a list of ints.
+            if len(p) == 1:
+                LeoTreeItem(gnx, p, text=h, checked=None, collapsed=True)
+
+        ### Old code.
+        # stack = []
+        
+        # def tree_item(gnx, h, p):
+            # return LeoTreeItem(gnx, p, text=h, checked=None, collapsed=True)
+
+        # for p, gnx, h in outline:
+            # n = len(p) # p is an archived position, a list of ints.
+            # if n == 1:
+                # stack = [tree_item(gnx, h, p)]
+            # elif n in (2, 3):
+                # # Fully expanding the stack takes too long.
+                # stack = stack[:n-1]
+                # with stack[-1]:
+                    # stack.append(tree_item(gnx, h, p))
     #@+node:ekr.20181104080854.3: *4* tree.reactions
     # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
     @flx.reaction(
@@ -259,6 +265,7 @@ class LeoTreeItem(flx.TreeItem):
 
     leo_gnx = flx.StringProp(settable=True)
     leo_position = flx.ListProp(settable=True)
+        # Archived positions are lists of ints.
     
     def init(self, leo_gnx, leo_position):
         super().init()
