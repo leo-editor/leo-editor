@@ -11,6 +11,8 @@ import leo.core.leoBridge as leoBridge
 from flexx import flx
 import pscript
 assert pscript # To suppress pyflakes complaint.
+import time
+assert time
 #@+others
 #@+node:ekr.20181103151350.1: **  init
 def init():
@@ -25,8 +27,10 @@ class LeoApp(flx.PyComponent):
     The Leo Application.
     This is self.root for all flx.Widget objects!
     '''
+    ap_to_gnx = flx.DictProp(settable=True)
     gnx_to_children = flx.DictProp(settable=True)
     gnx_to_node = flx.DictProp(settable=True)
+    gnx_to_parents = flx.DictProp(settable=True)
     main_window = flx.ComponentProp(settable=True)
     outline = flx.ListProp(settable=True)
 
@@ -34,15 +38,18 @@ class LeoApp(flx.PyComponent):
         self.c, self.g = self.open_bridge()
         body = self.find_body()
         outline = self.get_outline_list()
-            # This is only the initial outline.
-            # It should be recalculated dynamically.
+        ap_to_gnx = self.compute_archived_position_to_gnx(outline)
         gnx_to_node = self.compute_gnx_to_node(outline)
-            # Do this first, for tracing.
-        gnx_to_children = self.compute_gnx_to_children(gnx_to_node, outline)
+        gnx_to_parents = self.compute_gnx_to_parents(
+            ap_to_gnx, gnx_to_node, outline)
+        gnx_to_children = self.compute_gnx_to_children(
+            ap_to_gnx, gnx_to_node, gnx_to_parents, outline)
         main_window = LeoMainWindow(body, outline)
         for name, prop in (
+            ('ap_to_gnx', ap_to_gnx),
             ('gnx_to_children', gnx_to_children),
             ('gnx_to_node', gnx_to_node),
+            ('gnx_to_parents', gnx_to_parents),
             ('main_window', main_window),
             ('outline', outline),
         ):
@@ -58,8 +65,23 @@ class LeoApp(flx.PyComponent):
         })
 
     #@+others
+    #@+node:ekr.20181110090611.1: *4* app.ap_to_string
+    def ap_to_string(self, ap):
+        '''
+        Convert an archived position (list of ints) to a string if necessary.
+        '''
+        if isinstance(ap, (list, tuple)):
+            return '.'.join([str(z) for z in ap])
+        assert isinstance(ap, str), repr(ap)
+        return ap
+    #@+node:ekr.20181110084838.1: *4* app.compute_archived_position_to_gnx
+    def compute_archived_position_to_gnx (self, outline):
+        '''
+        Return a dict: keys are *stringized* archived positions. values are gnx's.
+        '''
+        return { self.ap_to_string(ap): gnx for (ap, gnx, headline) in outline }
     #@+node:ekr.20181110064454.1: *4* app.compute_gnx_to_children
-    def compute_gnx_to_children(self, gnx_to_node, outline):
+    def compute_gnx_to_children(self, archived_position_to_gnx, gnx_to_node, gnx_to_parent, outline):
         '''
         Return a dictionary whose keys are gnx's and whose values
         are lists of tuples (archived_position, gnx, headline) of all children.
@@ -97,10 +119,47 @@ class LeoApp(flx.PyComponent):
         return d
     #@+node:ekr.20181110063009.1: *4* app.compute_gnx_to_node
     def compute_gnx_to_node (self, outline):
-        
+        '''
+        Return a dict whose keys are gnx's and values are
+        tuples (archived_position, gnx, headline).
+        '''
         return { gnx: (archived_position, gnx, headline)
             for archived_position, gnx, headline in outline
         }
+    #@+node:ekr.20181110084346.1: *4* app.compute_gnx_to_parents
+    def compute_gnx_to_parents(self, ap_to_gnx, gnx_to_node, outline):
+        '''
+        Return a dictionary whose keys are gnx's and whose values are lists of
+        tuples (archived_position, gnx, headline) of all parents.
+        '''
+        d = {}
+        for ap, gnx, headline in outline:
+            aList = d.get(gnx, [])
+            parent_ap = ap[:-1]
+            if parent_ap:
+                parent_gnx = ap_to_gnx.get(self.ap_to_string(parent_ap))
+                assert parent_gnx, repr(parent_ap)
+                parent_data = gnx_to_node.get(parent_gnx)
+                assert parent_data, gnx
+                aList.append(parent_data)
+            d [gnx] = aList
+        if 0: # Debugging.
+            for ap, gnx, headline in outline[:20]:
+                aList = d.get(gnx)
+                # Print the node.
+                data = gnx_to_node.get(gnx)
+                assert data, gnx
+                ap, gnx, h = data
+                print(self.ap_to_string(ap).ljust(17), gnx.ljust(15), h)
+                # Print the parents.
+                if aList:
+                    print(len(aList), 'parent%s...' % self.g.plural(len(aList)))
+                    for ap, gnx, h in aList:
+                        print(self.ap_to_string(ap).rjust(17), gnx.ljust(15), h)
+                else:
+                    print('no parents')
+                print('-----')
+        return d
     #@+node:ekr.20181105160448.1: *4* app.find_body
     def find_body(self):
         
