@@ -295,6 +295,15 @@ class LeoMainWindow(flx.Widget):
             ('status_line', status_line),
         ):
             self._mutate(name, prop)
+            
+    #@+others
+    #@+node:ekr.20181110125347.1: *4* LeoMainWindow.format_node_tuple
+    def format_node_tuple(self, node_tuple):
+        assert isinstance(node_tuple, (list, tuple)), repr(node_tuple)
+        ap, gnx, headline = node_tuple
+        s = '.'.join([str(z) for z in ap])
+        return 'p: %s %s %s' % (s.ljust(15), gnx.ljust(30), headline)
+    #@-others
 #@+node:ekr.20181104082154.1: *3* class LeoMiniBuffer
 class LeoMiniBuffer(flx.Widget):
     
@@ -371,12 +380,6 @@ class LeoTree(flx.Widget):
         for ev in events:
             self.show_event(ev)
     #@+node:ekr.20181109083659.1: *4* tree.on_selected_event
-    def format_node(self, node_tuple):
-        assert isinstance(node_tuple, (list, tuple)), repr(node_tuple)
-        ap, gnx, headline = node_tuple
-        s = '.'.join([str(z) for z in ap])
-        return 'p: %s %s %s' % (s.ljust(15), gnx.ljust(30), headline)
-
     @flx.reaction('tree.children**.selected')
     def on_selected_event(self, *events):
         main = self.root.main_window
@@ -390,13 +393,14 @@ class LeoTree(flx.Widget):
 
     @flx.action
     def receive_children(self, d):
+        format_node_tuple = self.root.main_window.format_node_tuple
         ap, gnx, headline = d.get('parent')
         assert gnx == d.get('gnx'), (repr(gnx), repr(d.get('gnx')))
         print('tree.receive_children: parent...')
-        print(self.format_node(d.get('parent')))
+        print(format_node_tuple(d.get('parent')))
         print('tree.receive_children: children...')
         for node_tuple in d.get('children'):
-            print(self.format_node(node_tuple))
+            print(format_node_tuple(node_tuple))
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
