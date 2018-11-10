@@ -25,28 +25,100 @@ class LeoApp(flx.PyComponent):
     The Leo Application.
     This is self.root for all flx.Widget objects!
     '''
+    gnx_to_children = flx.DictProp(settable=True)
+    gnx_to_node = flx.DictProp(settable=True)
     main_window = flx.ComponentProp(settable=True)
+    outline = flx.ListProp(settable=True)
 
-    # https://github.com/flexxui/flexx/issues/489
     def init(self):
         self.c, self.g = self.open_bridge()
         body = self.find_body()
         outline = self.get_outline_list()
             # This is only the initial outline.
             # It should be recalculated dynamically.
+        gnx_to_node = self.compute_gnx_to_node(outline)
+            # Do this first, for tracing.
+        gnx_to_children = self.compute_gnx_to_children(gnx_to_node, outline)
         main_window = LeoMainWindow(body, outline)
         for name, prop in (
+            ('gnx_to_children', gnx_to_children),
+            ('gnx_to_node', gnx_to_node),
             ('main_window', main_window),
+            ('outline', outline),
         ):
             self._mutate(name, prop)
 
     @flx.action
     def send_children(self, gnx):
         print('===== app.send_children', gnx)
-        self.main_window.tree.receive_children({'children': []})
+        ### self._mutate('gnx_to_children', self.get_children(gnx))
+        self.main_window.tree.receive_children({
+            'children': self.gnx_to_children[gnx],
+            'gnx': gnx,
+        })
 
     #@+others
-    #@+node:ekr.20181105091545.1: *4* gui.open_bridge
+    #@+node:ekr.20181110064454.1: *4* app.compute_gnx_to_children
+    def compute_gnx_to_children(self, gnx_to_node, outline):
+        '''
+        Return a dictionary whose keys are gnx's and whose values
+        are lists of tuples (archived_position, gnx, headline) of all children.
+        '''
+        d = {}
+        for i, data in enumerate(outline):
+            ap, gnx, headline = data
+            # Scan for children at outline[i+1]...
+            aList = d.get(gnx, [])
+            child_len = len(ap) + 1
+            # Stop the sub-scan asap, so the algorithm remains roughly O(N).
+            for j, data2 in enumerate(outline[i+1:]):
+                ap2, gnx2, headline2 = data2
+                if len(ap2) < child_len:
+                    break
+                if len(ap2) == child_len:
+                    assert ap2 [:-1] == ap, (ap, ap2)
+                    aList.append(data2)
+            d [gnx] = aList
+        if 0: # Debugging.
+            for gnx in list(d.keys())[:100]:
+                aList = d.get(gnx)
+                # Print the parent.
+                data = gnx_to_node.get(gnx)
+                assert data, gnx
+                print(data)
+                # Print the children.
+                for ap, gnx, h in aList:
+                    print('  ', ap, gnx, h)
+        return d
+    #@+node:ekr.20181110063009.1: *4* app.compute_gnx_to_node
+    def compute_gnx_to_node (self, outline):
+        
+        return { gnx: (archived_position, gnx, headline)
+            for archived_position, gnx, headline in outline
+        }
+    #@+node:ekr.20181105160448.1: *4* app.find_body
+    def find_body(self):
+        
+        c = self.c
+        for p in c.p.self_and_siblings():
+            if p.b.strip():
+                return p.b
+        return ''
+    #@+node:ekr.20181110062107.1: *4* app.get_children
+    def get_children(self, gnx):
+        '''
+        Return the list of tuples (archived_position, gnx, headline)
+        for the node whose gnx is given.
+        '''
+    #@+node:ekr.20181105095150.1: *4* app.get_outline_list
+    def get_outline_list(self):
+        '''
+        Return a serializable representation of the outline for the LeoTree
+        class.
+        '''
+        c = self.c
+        return [(p.archivedPosition(), p.gnx, p.h) for p in c.all_positions()]
+    #@+node:ekr.20181105091545.1: *4* app.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
         bridge = leoBridge.controller(gui = None,
@@ -67,22 +139,6 @@ class LeoApp(flx.PyComponent):
         c = bridge.openLeoFile(path)
         ### runUnitTests(c, g)
         return c, g
-    #@+node:ekr.20181105160448.1: *4* gui.find_body
-    def find_body(self):
-        
-        c = self.c
-        for p in c.p.self_and_siblings():
-            if p.b.strip():
-                return p.b
-        return ''
-    #@+node:ekr.20181105095150.1: *4* gui.get_outline_list
-    def get_outline_list(self):
-        '''
-        Return a serializable representation of the outline for the LeoTree
-        class.
-        '''
-        c = self.c
-        return [(p.archivedPosition(), p.gnx, p.h) for p in c.all_positions()]
     #@-others
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181104082144.1: *3* class LeoBody
