@@ -27,12 +27,15 @@ class LeoApp(flx.PyComponent):
     The Leo Application.
     This is self.root for all flx.Widget objects!
     '''
-    ap_to_gnx = flx.DictProp(settable=True)
-    gnx_to_children = flx.DictProp(settable=True)
-    gnx_to_node = flx.DictProp(settable=True)
-    gnx_to_parents = flx.DictProp(settable=True)
+    # The main_window component must exist, because other components use it.
     main_window = flx.ComponentProp(settable=True)
-    outline = flx.ListProp(settable=True)
+    #
+    # These components are probably optional.
+        # ap_to_gnx = flx.DictProp(settable=True)
+        # gnx_to_children = flx.DictProp(settable=True)
+        # gnx_to_node = flx.DictProp(settable=True)
+        # gnx_to_parents = flx.DictProp(settable=True)
+        # outline = flx.ListProp(settable=True)
 
     def init(self):
         self.c, self.g = self.open_bridge()
@@ -46,20 +49,24 @@ class LeoApp(flx.PyComponent):
         gnx_to_children = self.compute_gnx_to_children(
             gnx_to_node, gnx_to_parents, outline)
         main_window = LeoMainWindow(body, outline)
-        for name, prop in (
+        # Set ivars immediately.
+        for ivar, val in (
             ('ap_to_gnx', ap_to_gnx),
             ('gnx_to_children', gnx_to_children),
             ('gnx_to_node', gnx_to_node),
             ('gnx_to_parents', gnx_to_parents),
-            ('main_window', main_window),
             ('outline', outline),
+        ):
+            setattr(self, ivar, val)
+        # Set properties.
+        for name, prop in (
+            ('main_window', main_window),
         ):
             self._mutate(name, prop)
 
     @flx.action
     def send_children(self, gnx):
-        print('===== app.send_children', gnx)
-        ### self._mutate('gnx_to_children', self.get_children(gnx))
+        # print('===== app.send_children', gnx)
         self.main_window.tree.receive_children({
             'gnx': gnx,
             'parent': self.gnx_to_node[gnx],
@@ -343,7 +350,6 @@ class LeoTree(flx.Widget):
         # pylint: disable=arguments-differ
         with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
             self.make_tree(outline)
-        ### print('tree: event_types:', self.get_event_types())
 
     #@+others
     #@+node:ekr.20181105045657.1: *4* tree.make_tree
