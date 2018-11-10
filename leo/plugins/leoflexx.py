@@ -49,15 +49,14 @@ class LeoApp(flx.PyComponent):
         gnx_to_children = self.compute_gnx_to_children(
             gnx_to_node, gnx_to_parents, outline)
         main_window = LeoMainWindow(body, outline)
-        # Set ivars immediately.
-        for ivar, val in (
-            ('ap_to_gnx', ap_to_gnx),
-            ('gnx_to_children', gnx_to_children),
-            ('gnx_to_node', gnx_to_node),
-            ('gnx_to_parents', gnx_to_parents),
-            ('outline', outline),
-        ):
-            setattr(self, ivar, val)
+        #
+        # Set ivars immediately (and explicitly, for pylint).
+        self.ap_to_gnx = ap_to_gnx
+        self.gnx_to_children = gnx_to_children
+        self.gnx_to_node = gnx_to_node
+        self.gnx_to_parents = gnx_to_parents
+        self.outline = outline
+        #
         # Set properties.
         for name, prop in (
             ('main_window', main_window),
@@ -66,7 +65,7 @@ class LeoApp(flx.PyComponent):
 
     @flx.action
     def send_children(self, gnx):
-        # print('===== app.send_children', gnx)
+        '''Send the children of the node with the given gnx to the tree.'''
         self.main_window.tree.receive_children({
             'gnx': gnx,
             'parent': self.gnx_to_node[gnx],
@@ -419,7 +418,7 @@ class LeoTree(flx.Widget):
     #@-others
 #@+node:ekr.20181108233657.1: *3* class LeoTreeItem
 class LeoTreeItem(flx.TreeItem):
-
+    
     def init(self, leo_gnx, leo_position):
         # pylint: disable=arguments-differ
         super().init()
