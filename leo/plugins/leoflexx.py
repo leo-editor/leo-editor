@@ -61,8 +61,9 @@ class LeoApp(flx.PyComponent):
         print('===== app.send_children', gnx)
         ### self._mutate('gnx_to_children', self.get_children(gnx))
         self.main_window.tree.receive_children({
-            'children': self.gnx_to_children[gnx],
             'gnx': gnx,
+            'parent': self.gnx_to_node[gnx],
+            'children': self.gnx_to_children[gnx],
         })
 
     #@+others
@@ -81,7 +82,7 @@ class LeoApp(flx.PyComponent):
         ap, gnx, headline = aTuple
         s = self.ap_to_string(ap)
         s = s.ljust(17) if ljust else s.rjust(17)
-        return '%s %s %s' % (s, gnx.ljust(15), headline)
+        return '%s %s %s' % (s, gnx.ljust(30), headline)
     #@+node:ekr.20181110084838.1: *4* app.compute_archived_position_to_gnx
     def compute_archived_position_to_gnx (self, outline):
         '''
@@ -170,12 +171,6 @@ class LeoApp(flx.PyComponent):
             if p.b.strip():
                 return p.b
         return ''
-    #@+node:ekr.20181110062107.1: *4* app.get_children
-    def get_children(self, gnx):
-        '''
-        Return the list of tuples (archived_position, gnx, headline)
-        for the node whose gnx is given.
-        '''
     #@+node:ekr.20181105095150.1: *4* app.get_outline_list
     def get_outline_list(self):
         '''
@@ -389,7 +384,10 @@ class LeoTree(flx.Widget):
 
     @flx.action
     def receive_children(self, d):
-        print('tree.receive_children', repr(d))
+        print('tree.receive_children of', d.get('gnx'))
+        for ap, gnx, headline in d.get('children'):
+            s = '.'.join([str(z) for z in ap])
+            print('%s %s %s' % (s.rjust(15), gnx.ljust(30), headline))
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
