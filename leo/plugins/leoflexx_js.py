@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20181103094900.1: * @file leoflexx.py
+#@+node:ekr.201811100000000.1: * @file leoflexx_js.py
 #@@first
 #@@language python
 #@@tabwidth -4
@@ -11,6 +11,11 @@ from flexx import flx
 import leo.core.leoGlobals as g
 assert g
 #@+others
+#@+node:ekr.20181110170337.1: **  init
+def init():
+    # At present, leoflexx is not a true plugin.
+    # I am executing leoflexx.py from an external script.
+    return False
 #@+node:ekr.20181104134654.1: ** class G
 # class G (flx.PyComponent):
 
@@ -18,7 +23,7 @@ assert g
         # print('g.trace', ', '.join(args))
     
 # g = G()
-#@+node:ekr.20181104082144.1: ** class LeoBody
+#@+node:ekr.20181110170220.1: ** class LeoBody
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
 flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
@@ -70,7 +75,7 @@ class LeoGui (flx.PyComponent):
         # print('calling sys.exit(0)')
         # sys.exit(0)
         
-#@+node:ekr.20181104082149.1: ** class LeoLog
+#@+node:ekr.20181110170235.1: ** class LeoLog
 ### Kinda works
     # class LeoLog(flx.Label):
         # def init(self, flex=1, style='overflow-y: scroll;'):
@@ -98,7 +103,7 @@ class LeoLog(flx.Widget):
     @flx.reaction('size')
     def __on_size(self, *events):
         self.ace.resize()
-#@+node:ekr.20181104082130.1: ** class LeoMainWindow
+#@+node:ekr.20181110170304.1: ** class LeoMainWindow
 class LeoMainWindow(flx.Widget):
     
     def init(self):
@@ -116,13 +121,13 @@ class LeoMainWindow(flx.Widget):
             LeoStatusLine()
         # print('tree', self.tree)
         # print('log', self.log)
-#@+node:ekr.20181104082154.1: ** class LeoMiniBuffer
+#@+node:ekr.20181110170402.1: ** class LeoMiniBuffer
 class LeoMiniBuffer(flx.LineEdit):
     pass
-#@+node:ekr.20181104082201.1: ** class LeoStatusLine
+#@+node:ekr.20181110170409.1: ** class LeoStatusLine
 class LeoStatusLine(flx.LineEdit):
     pass
-#@+node:ekr.20181104082138.1: ** class LeoTree
+#@+node:ekr.20181110170328.1: ** class LeoTree
 class LeoTree(flx.Widget):
 
     CSS = '''
@@ -133,7 +138,7 @@ class LeoTree(flx.Widget):
     '''
     
     #@+others
-    #@+node:ekr.20181104080854.2: *3* tree.init
+    #@+node:ekr.20181110170328.2: *3* tree.init
     def init(self):
         with flx.HSplit():
             ### self.label = flx.Label(flex=1, style='overflow-y: scroll;')
@@ -148,7 +153,7 @@ class LeoTree(flx.Widget):
                                     flx.TreeItem(title='B', text='more info on B')
 
         
-    #@+node:ekr.20181104080854.3: *3* tree.on_event
+    #@+node:ekr.20181110170328.3: *3* tree.on_event
     @flx.reaction(
         'tree.children**.checked',
         'tree.children**.selected',
@@ -163,20 +168,12 @@ class LeoTree(flx.Widget):
             assert text
             ### self.label.set_html(text + '<br />' + self.label.html)
     #@-others
-#@+node:ekr.20181103151350.1: ** init
-def init():
-    # At present, leoflexx is not a true plugin.
-    # I am executing leoflexx.py from an external script.
-    return False
 #@-others
 if __name__ == '__main__':
-    flx.launch(LeoMainWindow, runtime='firefox-browser')
+    flx.launch(LeoMainWindow)
     flx.run()
         # # Runs in browser.
         # # `python -m flexx stop 49190` stops the server.
         # flx.App(LeoWapp).launch('firefox-browser')
         # flx.start()
-
-    ### RuntimeError: Cannot instantiate a PyComponent from JS.
-    ### g.app.gui = LeoGui()
 #@-leo
