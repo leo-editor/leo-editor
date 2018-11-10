@@ -420,15 +420,12 @@ class LeoTree(flx.Widget):
 #@+node:ekr.20181108233657.1: *3* class LeoTreeItem
 class LeoTreeItem(flx.TreeItem):
 
-    leo_gnx = flx.StringProp(settable=True)
-    leo_position = flx.ListProp(settable=True)
-        # Archived positions are lists of ints.
-    
     def init(self, leo_gnx, leo_position):
         # pylint: disable=arguments-differ
         super().init()
-        self._mutate('leo_gnx', leo_gnx)
-        self._mutate('leo_position', leo_position)
+        # These will probably never need to be properties.
+        self.leo_gnx = leo_gnx
+        self.leo_position = leo_position
 #@-others
 if __name__ == '__main__':
     flx.launch(LeoApp)
