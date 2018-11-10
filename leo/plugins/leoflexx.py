@@ -25,11 +25,7 @@ class LeoApp(flx.PyComponent):
     The Leo Application.
     This is self.root for all flx.Widget objects!
     '''
-    ### outline = flx.ListProp(settable=True)
-    ### children = flx.ListProp(settable=True)
     main_window = flx.ComponentProp(settable=True)
-    p_to_gnx = flx.DictProp(settable=True)
-    gnx_to_p_list = flx.DictProp(settable=True)
 
     # https://github.com/flexxui/flexx/issues/489
     def init(self):
@@ -41,11 +37,8 @@ class LeoApp(flx.PyComponent):
         main_window = LeoMainWindow(body, outline)
         for name, prop in (
             ('main_window', main_window),
-            ('p_to_gnx', {}), ### Not ready yet.
-            ('gnx_to_p_list', {}), ### Not ready yet.
         ):
             self._mutate(name, prop)
-        ### print('app.event_types:', self.get_event_types())
 
     @flx.action
     def send_children(self, gnx):
@@ -269,6 +262,7 @@ class LeoTree(flx.Widget):
                 gnx = ev.source.leo_gnx
                 h = ev.source.title or ev.source.text
                 main.log.put('select gnx: %s %s' % (gnx.ljust(30), h))
+                # https://github.com/flexxui/flexx/issues/517
                 self.root.send_children(gnx)
 
     @flx.action
