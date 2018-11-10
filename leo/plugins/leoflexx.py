@@ -37,6 +37,7 @@ class LeoApp(flx.PyComponent):
     def init(self):
         self.c, self.g = self.open_bridge()
         body = self.find_body()
+        t1 = time.clock()
         outline = self.get_outline_list()
         ap_to_gnx = self.compute_archived_position_to_gnx(outline)
         gnx_to_node = self.compute_gnx_to_node(outline)
@@ -44,6 +45,8 @@ class LeoApp(flx.PyComponent):
             ap_to_gnx, gnx_to_node, outline)
         gnx_to_children = self.compute_gnx_to_children(
             ap_to_gnx, gnx_to_node, gnx_to_parents, outline)
+        t2 = time.clock()
+        print('create dicts in %5.2f sec.' % (t2-t1))
         main_window = LeoMainWindow(body, outline)
         for name, prop in (
             ('ap_to_gnx', ap_to_gnx),
@@ -81,7 +84,7 @@ class LeoApp(flx.PyComponent):
         '''
         return { self.ap_to_string(ap): gnx for (ap, gnx, headline) in outline }
     #@+node:ekr.20181110064454.1: *4* app.compute_gnx_to_children
-    def compute_gnx_to_children(self, archived_position_to_gnx, gnx_to_node, gnx_to_parent, outline):
+    def compute_gnx_to_children(self, ap_to_gnx, gnx_to_node, gnx_to_parent, outline):
         '''
         Return a dictionary whose keys are gnx's and whose values
         are lists of tuples (archived_position, gnx, headline) of all children.
@@ -411,7 +414,7 @@ class LeoTreeItem(flx.TreeItem):
         self._mutate('leo_position', leo_position)
 #@-others
 if __name__ == '__main__':
-    app = flx.launch(LeoApp)
-    print('After flx.launch', repr(app))
+    flx.launch(LeoApp)
+    print('After flx.launch')
     flx.run()
 #@-leo
