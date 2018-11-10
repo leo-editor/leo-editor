@@ -112,7 +112,8 @@ class BabelCmdr(object):
         self.colorStdout = _getColor(cmdr, 'Leo-Babel-stdout', default='#00ff00')
         self.colorStderr = _getColor(cmdr, 'Leo-Babel-stderr', default='#A020F0')
         self.colorCompletion = _getColor(cmdr, 'Leo-Babel-completion', default='#FFD700')
-        self.nodeCreationDefault = cmdr.config.getBool('Leo-Babel-Node-Creation-Default', default=True)
+        self.nodeCreationDefault = \
+            cmdr.config.getBool('Leo-Babel-Node-Creation-Default', default=True)
         self.interpreterPython = _getString(cmdr, 'Leo-Babel-Python', default='python3')
         self.interpreterShell = _getString(cmdr, 'Leo-Babel-Shell', default='bash')
 
