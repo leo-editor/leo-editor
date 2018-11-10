@@ -64,13 +64,18 @@ class LeoApp(flx.PyComponent):
         Return a dictionary whose keys are gnx's and whose values
         are lists of tuples (archived_position, gnx, headline) of all children.
         '''
+        # The double enumeration below is roughly O(N).
+        # On a fast machine this takes about 0.1 sec for LeoPyRef.leo.
+        #
+        # We could simplify the code if we had an archived_position_to_node dict.
+        # I'll do that only if there is another use for archived_position_to_node.
         d = {}
         for i, data in enumerate(outline):
             ap, gnx, headline = data
             # Scan for children at outline[i+1]...
             aList = d.get(gnx, [])
             child_len = len(ap) + 1
-            # Stop the sub-scan asap, so the algorithm remains roughly O(N).
+            # Stop the second enumeration **asap**!
             for j, data2 in enumerate(outline[i+1:]):
                 ap2, gnx2, headline2 = data2
                 if len(ap2) < child_len:
