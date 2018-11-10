@@ -396,9 +396,10 @@ class LeoTree(flx.Widget):
         format_node_tuple = self.root.main_window.format_node_tuple
         ap, gnx, headline = d.get('parent')
         assert gnx == d.get('gnx'), (repr(gnx), repr(d.get('gnx')))
-        print('tree.receive_children: parent...')
-        print(format_node_tuple(d.get('parent')))
-        print('tree.receive_children: children...')
+        if 0: # Debugging.
+            print('tree.receive_children: parent...')
+            print(format_node_tuple(d.get('parent')))
+            print('tree.receive_children: children...')
         for node_tuple in d.get('children'):
             print(format_node_tuple(node_tuple))
     #@+node:ekr.20181108232118.1: *4* tree.show_event
