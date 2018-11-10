@@ -37,16 +37,14 @@ class LeoApp(flx.PyComponent):
     def init(self):
         self.c, self.g = self.open_bridge()
         body = self.find_body()
-        t1 = time.clock()
+        # On my home machine it takes 0.15 sec to create these dicts for LeoPyRef.leo.
         outline = self.get_outline_list()
         ap_to_gnx = self.compute_archived_position_to_gnx(outline)
         gnx_to_node = self.compute_gnx_to_node(outline)
         gnx_to_parents = self.compute_gnx_to_parents(
             ap_to_gnx, gnx_to_node, outline)
         gnx_to_children = self.compute_gnx_to_children(
-            ap_to_gnx, gnx_to_node, gnx_to_parents, outline)
-        t2 = time.clock()
-        print('create dicts in %5.2f sec.' % (t2-t1))
+            gnx_to_node, gnx_to_parents, outline)
         main_window = LeoMainWindow(body, outline)
         for name, prop in (
             ('ap_to_gnx', ap_to_gnx),
@@ -77,6 +75,13 @@ class LeoApp(flx.PyComponent):
             return '.'.join([str(z) for z in ap])
         assert isinstance(ap, str), repr(ap)
         return ap
+    #@+node:ekr.20181110101328.1: *4* app.node_tuple_to_string
+    def node_tuple_to_string(self, aTuple, ljust=False):
+
+        ap, gnx, headline = aTuple
+        s = self.ap_to_string(ap)
+        s = s.ljust(17) if ljust else s.rjust(17)
+        return '%s %s %s' % (s, gnx.ljust(15), headline)
     #@+node:ekr.20181110084838.1: *4* app.compute_archived_position_to_gnx
     def compute_archived_position_to_gnx (self, outline):
         '''
@@ -84,41 +89,35 @@ class LeoApp(flx.PyComponent):
         '''
         return { self.ap_to_string(ap): gnx for (ap, gnx, headline) in outline }
     #@+node:ekr.20181110064454.1: *4* app.compute_gnx_to_children
-    def compute_gnx_to_children(self, ap_to_gnx, gnx_to_node, gnx_to_parent, outline):
+    def compute_gnx_to_children(self, gnx_to_node, gnx_to_parents, outline):
         '''
         Return a dictionary whose keys are gnx's and whose values
         are lists of tuples (archived_position, gnx, headline) of all children.
         '''
-        # The double enumeration below is roughly O(N).
-        # On a fast machine this takes about 0.1 sec for LeoPyRef.leo.
-        #
-        # We could simplify the code if we had an archived_position_to_node dict.
-        # I'll do that only if there is another use for archived_position_to_node.
         d = {}
-        for i, data in enumerate(outline):
+        for data in outline:
             ap, gnx, headline = data
-            # Scan for children at outline[i+1]...
-            aList = d.get(gnx, [])
-            child_len = len(ap) + 1
-            # Stop the second enumeration **asap**!
-            for j, data2 in enumerate(outline[i+1:]):
-                ap2, gnx2, headline2 = data2
-                if len(ap2) < child_len:
-                    break
-                if len(ap2) == child_len:
-                    assert ap2 [:-1] == ap, (ap, ap2)
-                    aList.append(data2)
-            d [gnx] = aList
+            aList = gnx_to_parents.get(gnx, [])
+            for parent_data in aList:
+                # Add the node to the parents list.
+                ap2, gnx2, headline2 = parent_data
+                children = d.get(gnx2, [])
+                children.append(data)
+                d [gnx2] = children
         if 0: # Debugging.
-            for gnx in list(d.keys())[:100]:
-                aList = d.get(gnx)
+            for data in outline[:20]:
+                ap, gnx, headline = data
                 # Print the parent.
-                data = gnx_to_node.get(gnx)
-                assert data, gnx
-                print(data)
+                print(self.node_tuple_to_string(data, ljust=True))
                 # Print the children.
-                for ap, gnx, h in aList:
-                    print('  ', ap, gnx, h)
+                children = d.get(gnx)
+                if children:
+                    print('children...')
+                    for data2 in children:
+                        print(' ' + self.node_tuple_to_string(data2, ljust=False))
+                else:
+                    print('no children')
+                print('-----')
         return d
     #@+node:ekr.20181110063009.1: *4* app.compute_gnx_to_node
     def compute_gnx_to_node (self, outline):
