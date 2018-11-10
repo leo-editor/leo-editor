@@ -43,7 +43,7 @@ class LeoApp(flx.PyComponent):
     @flx.action
     def send_children(self, gnx):
         print('===== app.send_children', gnx)
-        self.root.main_window.tree.receive_children({'children': []})
+        self.main_window.tree.receive_children({'children': []})
 
     #@+others
     #@+node:ekr.20181105091545.1: *4* gui.open_bridge
