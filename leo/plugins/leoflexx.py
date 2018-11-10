@@ -25,9 +25,9 @@ class LeoApp(flx.PyComponent):
     The Leo Application.
     This is self.root for all flx.Widget objects!
     '''
-
-    main_window = flx.ComponentProp(settable=True)
     ### outline = flx.ListProp(settable=True)
+    ### children = flx.ListProp(settable=True)
+    main_window = flx.ComponentProp(settable=True)
     p_to_gnx = flx.DictProp(settable=True)
     gnx_to_p_list = flx.DictProp(settable=True)
 
@@ -41,23 +41,16 @@ class LeoApp(flx.PyComponent):
         main_window = LeoMainWindow(body, outline)
         for name, prop in (
             ('main_window', main_window),
-            ### ('outline', outline),
             ('p_to_gnx', {}), ### Not ready yet.
             ('gnx_to_p_list', {}), ### Not ready yet.
         ):
             self._mutate(name, prop)
+        ### print('app.event_types:', self.get_event_types())
 
-    @flx.reaction('!ask_for_children')
-    def ask_for_children(self, *events):
-        print('===== app.ask_for_children')
-        ### self.get_children({'children', 'CHILDREN'})
-        
-    # Emitters should return a dictionary.
-    # Event type is the name of the emitter.
-    @flx.emitter
-    def get_children(self, d):
-        print('===== app.get_children', repr(d))
-        return d
+    @flx.action
+    def send_children(self, gnx):
+        print('===== app.send_children', gnx)
+        self.root.main_window.tree.receive_children({'children': []})
 
     #@+others
     #@+node:ekr.20181105091545.1: *4* gui.open_bridge
@@ -231,6 +224,7 @@ class LeoTree(flx.Widget):
         # pylint: disable=arguments-differ
         with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
             self.make_tree(outline)
+        ### print('tree: event_types:', self.get_event_types())
 
     #@+others
     #@+node:ekr.20181105045657.1: *4* tree.make_tree
@@ -275,21 +269,11 @@ class LeoTree(flx.Widget):
                 gnx = ev.source.leo_gnx
                 h = ev.source.title or ev.source.text
                 main.log.put('select gnx: %s %s' % (gnx.ljust(30), h))
-                self.ask_for_children(gnx)
+                self.root.send_children(gnx)
 
-    # Emitters should return a dictionary.
-    # Event type is the name of the emitter.
-    @flx.emitter
-    def ask_for_children(self, gnx):
-        print('tree.ask_for_children')
-        return {'gnx': gnx}
-
-    @flx.reaction('!get_children')
-    def get_children(self, *events):
-        print('tree.get_children')
-        for ev in events:
-            print(repr(ev))
-        ### main.log.put('children: %r' % children)
+    @flx.action
+    def receive_children(self, d):
+        print('tree.receive_children', repr(d))
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
