@@ -477,7 +477,7 @@ if __name__ == '__main__':
     # A hack: suppress the "Automatically scrolling cursor into view" messages
     # Be careful to allow most important messages.
     if 1:
-        allowed = r'(Error|Warning|Leo|Session|Starting|Stopping)'
+        allowed = r'(Critical|Error|Leo|Session|Starting|Stopping|Warning)'
         pattern = re.compile(allowed, re.IGNORECASE)
         flx.set_log_level('INFO', pattern)
         flx.logger.info('LeoApp: after flx.launch')
