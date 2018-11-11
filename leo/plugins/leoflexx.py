@@ -67,7 +67,7 @@ class LeoApp(flx.PyComponent):
     #@+node:ekr.20181111142921.1: *5* app.action: do_command
     @flx.action
     def do_command(self, command):
-        print('app.do_command', repr(command))
+        self.main_window.log.put('app.do_command: %r' % command)
     #@+node:ekr.20181111095640.1: *5* app.action: send_children_to_tree
     @flx.action
     def send_children_to_tree(self, gnx):
