@@ -335,14 +335,15 @@ class LeoMiniBuffer(flx.Widget):
 #@+node:ekr.20181104082201.1: *3* class LeoStatusLine
 class LeoStatusLine(flx.Widget):
     
-    widget = flx.ComponentProp(settable=True)
-    
     def init(self):
         with flx.HBox():
             flx.Label(text='Status Line')
-            widget = flx.LineEdit(flex=1, placeholder_text='Status')
-        widget.apply_style('background: green')
-        self._mutate('widget', widget)
+            self.widget = flx.LineEdit(flex=1, placeholder_text='Status')
+        self.widget.apply_style('background: green')
+
+    @flx.action
+    def set_text(self, s):
+        self.widget.set_text(s)
 #@+node:ekr.20181104082138.1: *3* class LeoTree
 class LeoTree(flx.Widget):
 
