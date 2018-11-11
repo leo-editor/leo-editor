@@ -307,7 +307,7 @@ class LeoMainWindow(flx.Widget):
             
     #@+others
     #@+node:ekr.20181111001813.1: *4* JS versions of LeoApp utils
-    #@+node:ekr.20181111001833.1: *4* LeoMainWindow.ap_to_string
+    #@+node:ekr.20181111001833.1: *5* LeoMainWindow.ap_to_string
     def ap_to_string(self, ap):
         '''
         Convert an archived position (list of ints) to a string if necessary.
@@ -316,7 +316,7 @@ class LeoMainWindow(flx.Widget):
             return '.'.join([str(z) for z in ap])
         assert isinstance(ap, str), repr(ap)
         return ap
-    #@+node:ekr.20181110125347.1: *4* LeoMainWindow.format_node_tuple
+    #@+node:ekr.20181110125347.1: *5* LeoMainWindow.format_node_tuple
     def format_node_tuple(self, node_tuple):
         assert isinstance(node_tuple, (list, tuple)), repr(node_tuple)
         ap, gnx, headline = node_tuple
@@ -415,24 +415,29 @@ class LeoTree(flx.Widget):
         '''
         Update the tree and body text when the user selects a new tree node.
         '''
-        main_window = self.root.main_window
+        ### main_window = self.root.main_window
         for ev in events:
             if ev.new_value:
                 # We are selecting a node, not de-selecting it.
                 gnx = ev.source.leo_gnx
                 self.leo_selected_gnx = gnx
                     # Track the change.
-                ap = ev.source.leo_position
-                ap_s = main_window.ap_to_string(ap)
-                if 0: # Debugging
-                    headline = ev.source.title or ev.source.text
-                    main_window.log.put('select %s %s %s' % (ap_s.ljust(17), gnx.ljust(30), headline))
                 self.root.set_body(gnx)
                     # Set the body text directly.
-                main_window.status_line.set_text('position: %s gnx: %s' % (ap_s, gnx))
-                    # Set the status line directly.
+                ap = ev.source.leo_position
+                self.set_status_line(ap, gnx)
                 self.root.send_children_to_tree(gnx)
                     # Send the children back to us.
+    #@+node:ekr.20181111084036.1: *4* tree.set_status_line
+    def set_status_line(self, ap, gnx):
+        
+        if 1: # works
+            main_window = self.root.main_window
+            ap_s = main_window.ap_to_string(ap)
+            main_window.status_line.set_text('position: %s gnx: %s' % (ap_s, gnx))
+        else: # Not yet.
+            self.root.set_status_line(ap, gnx)
+            # Set the status line directly.
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
