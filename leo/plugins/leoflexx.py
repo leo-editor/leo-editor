@@ -36,6 +36,9 @@ class LeoApp(flx.PyComponent):
     The Leo Application.
     This is self.root for all flx.Widget objects!
     '''
+    # This may be optional, but it doesn't hurt.
+    main_window = flx.ComponentProp(settable=True)
+    
     def init(self):
         self.c, self.g = self.open_bridge()
         #
@@ -55,7 +58,8 @@ class LeoApp(flx.PyComponent):
         # Create the main window and all its components.
         first_gnx = self.outline[0][1]
         body = self.gnx_to_body[first_gnx]
-        self.main_window = LeoMainWindow(body, self.outline)
+        main_window = LeoMainWindow(body, self.outline)
+        self._mutate('main_window', main_window)
 
     #@+others
     #@+node:ekr.20181111095640.1: *4* app.action: send_children_to_tree
@@ -291,7 +295,7 @@ class LeoMainWindow(flx.Widget):
     
     Each property x below is accessible as root.main_window.x.
     '''
-    # These properties *are* needed.
+    # All these properties *are* needed.
     body = flx.ComponentProp(settable=True)
     log = flx.ComponentProp(settable=True)
     minibuffer = flx.ComponentProp(settable=True)
