@@ -30,7 +30,7 @@ class LeoApp(flx.PyComponent):
     # The main_window component must exist, because other components use it.
     main_window = flx.ComponentProp(settable=True)
     #
-    # These components are probably optional.
+    # These components are not needed.
         # ap_to_gnx = flx.DictProp(settable=True)
         # gnx_to_children = flx.DictProp(settable=True)
         # gnx_to_node = flx.DictProp(settable=True)
@@ -415,13 +415,16 @@ class LeoTree(flx.Widget):
     #@+node:ekr.20181109083659.1: *4* tree.on_selected_event
     @flx.reaction('tree.children**.selected')
     def on_selected_event(self, *events):
+        '''
+        Update the tree and body text when the user selects a new tree node.
+        '''
         main = self.root.main_window
         for ev in events:
             if ev.new_value:
                 # We are selecting a node, not de-selecting it.
                 gnx = ev.source.leo_gnx
                 headline = ev.source.title or ev.source.text
-                main.log.put('select gnx: %s %s' % (gnx.ljust(30), headline))
+                main.log.put('select gnx: %s %s' % (gnx.ljust(25), headline))
                 self.root.set_body(gnx)
                     # Set the body text directly.
                 self.root.send_children_to_tree(gnx)
