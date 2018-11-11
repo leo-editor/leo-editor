@@ -40,7 +40,8 @@ class LeoApp(flx.PyComponent):
     main_window = flx.ComponentProp(settable=True)
     
     def init(self):
-        self.c, self.g = self.open_bridge()
+        c, g = self.open_bridge()
+        self.c, self.g = c, g
         #
         # Compute data structures. On my machine, it takes 0.15 sec.
         t1 = time.clock()
@@ -58,7 +59,7 @@ class LeoApp(flx.PyComponent):
         # Create the main window and all its components.
         first_gnx = self.outline[0][1]
         body = self.gnx_to_body[first_gnx]
-        signon = 'signon1\nsingon2'
+        signon = '%s\n%s' % (g.app.signon, g.app.signon2)
         main_window = LeoMainWindow(body, self.outline, signon)
         self._mutate('main_window', main_window)
 
