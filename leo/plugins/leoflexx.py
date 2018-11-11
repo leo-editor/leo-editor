@@ -65,13 +65,7 @@ class LeoApp(flx.PyComponent):
         self._mutate('main_window', main_window)
 
     #@+others
-    #@+node:ekr.20181110175039.1: *4* app.actions
-    @flx.action
-    def set_body(self, gnx):
-        '''Set the body text in LeoBody to the body text of indicated node.'''
-        body = self.gnx_to_body[gnx]
-        self.main_window.body.set_body(body)
-
+    #@+node:ekr.20181111095640.1: *4* app.action: send_children_to_tree
     @flx.action
     def send_children_to_tree(self, gnx):
         '''Send the children of the node with the given gnx to the tree.'''
@@ -82,15 +76,26 @@ class LeoApp(flx.PyComponent):
             'children': children,
         })
         
+    #@+node:ekr.20181111095637.1: *4* app.action: set_body
+    @flx.action
+    def set_body(self, gnx):
+        '''Set the body text in LeoBody to the body text of indicated node.'''
+        body = self.gnx_to_body[gnx]
+        self.main_window.body.set_body(body)
+
+    #@+node:ekr.20181111095640.2: *4* app.action: set_status_to_unl
     @flx.action
     def set_status_to_unl(self, ap, gnx):
+        c, g = self.c, self.g
         unls = []
         for i in range(len(ap)):
             ap_s = self.ap_to_string(ap[:i+1])
             gnx = self.ap_to_gnx.get(ap_s)
             data = self.gnx_to_node.get(gnx, [])
             unls.append(data[2] if data else '<not found: %s>' % ap_s)
-        self.main_window.status_line.set_text('->'.join(unls))
+        fn = g.shortFileName(c.fileName())
+        fn = fn + '#' if fn else ''
+        self.main_window.status_line.set_text(fn + '->'.join(unls))
     #@+node:ekr.20181110090611.1: *4* app.ap_to_string
     def ap_to_string(self, ap):
         '''
@@ -100,25 +105,18 @@ class LeoApp(flx.PyComponent):
             return '.'.join([str(z) for z in ap])
         assert isinstance(ap, str), repr(ap)
         return ap
-    #@+node:ekr.20181110101328.1: *4* app.node_tuple_to_string
-    def node_tuple_to_string(self, aTuple, ljust=False):
-
-        ap, gnx, headline = aTuple
-        s = self.ap_to_string(ap)
-        s = s.ljust(17) if ljust else s.rjust(17)
-        return '%s %s %s' % (s, gnx.ljust(30), headline)
-    #@+node:ekr.20181111002718.1: *4* app.compute_gnx_to_body
-    def compute_gnx_to_body(self, outline):
-        '''
-        Return a dict: keys are gnx's. values are body strings.
-        '''
-        return { v.gnx: v.b for v in self.c.all_unique_nodes() }
     #@+node:ekr.20181110084838.1: *4* app.compute_ap_to_gnx
     def compute_ap_to_gnx (self, outline):
         '''
         Return a dict: keys are *stringized* archived positions. values are gnx's.
         '''
         return { self.ap_to_string(ap): gnx for (ap, gnx, headline) in outline }
+    #@+node:ekr.20181111002718.1: *4* app.compute_gnx_to_body
+    def compute_gnx_to_body(self, outline):
+        '''
+        Return a dict: keys are gnx's. values are body strings.
+        '''
+        return { v.gnx: v.b for v in self.c.all_unique_nodes() }
     #@+node:ekr.20181110064454.1: *4* app.compute_gnx_to_children
     def compute_gnx_to_children(self, gnx_to_node, gnx_to_parents, outline):
         '''
@@ -201,6 +199,13 @@ class LeoApp(flx.PyComponent):
         '''
         c = self.c
         return [(p.archivedPosition(), p.gnx, p.h) for p in c.all_positions()]
+    #@+node:ekr.20181110101328.1: *4* app.node_tuple_to_string
+    def node_tuple_to_string(self, aTuple, ljust=False):
+
+        ap, gnx, headline = aTuple
+        s = self.ap_to_string(ap)
+        s = s.ljust(17) if ljust else s.rjust(17)
+        return '%s %s %s' % (s, gnx.ljust(30), headline)
     #@+node:ekr.20181105091545.1: *4* app.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
