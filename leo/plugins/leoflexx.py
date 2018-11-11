@@ -29,50 +29,31 @@ class LeoApp(flx.PyComponent):
     '''
     # The main_window component must exist, because other components use it.
     main_window = flx.ComponentProp(settable=True)
-    #
-    # These components are not needed.
-        # ap_to_gnx = flx.DictProp(settable=True)
-        # gnx_to_body = flx.DictProp(settable=True)
-        # gnx_to_children = flx.DictProp(settable=True)
-        # gnx_to_node = flx.DictProp(settable=True)
-        # gnx_to_parents = flx.DictProp(settable=True)
-        # outline = flx.ListProp(settable=True)
 
     def init(self):
         self.c, self.g = self.open_bridge()
         #
         # Compute data structures. On my machine, it takes 0.15 sec.
         t1 = time.clock()
-        outline = self.get_outline_list()
-        ap_to_gnx = self.compute_ap_to_gnx(outline)
-        gnx_to_body = self.compute_gnx_to_body(outline)
-        gnx_to_node = self.compute_gnx_to_node(outline)
-        gnx_to_parents = self.compute_gnx_to_parents(
-            ap_to_gnx, gnx_to_node, outline)
-        gnx_to_children = self.compute_gnx_to_children(
-            gnx_to_node, gnx_to_parents, outline)
+        self.outline = self.get_outline_list()
+        self.ap_to_gnx = self.compute_ap_to_gnx(self.outline)
+        self.gnx_to_body = self.compute_gnx_to_body(self.outline)
+        self.gnx_to_node = self.compute_gnx_to_node(self.outline)
+        self.gnx_to_parents = self.compute_gnx_to_parents(
+            self.ap_to_gnx, self.gnx_to_node, self.outline)
+        self.gnx_to_children = self.compute_gnx_to_children(
+            self.gnx_to_node, self.gnx_to_parents, self.outline)
         t2 = time.clock()
         if 1:
             print('LeoApp.init: %5.2f sec.' % (t2-t1))
         #
         # Create the main window and all its components.
-        body = gnx_to_body[outline[0][1]]
-            # Get the body text of the first outline node.
-        main_window = LeoMainWindow(body, outline)
-        #
-        # Set ivars immediately (and explicitly, for pylint).
-        self.ap_to_gnx = ap_to_gnx
-        self.gnx_to_body = gnx_to_body
-        self.gnx_to_children = gnx_to_children
-        self.gnx_to_node = gnx_to_node
-        self.gnx_to_parents = gnx_to_parents
-        self.outline = outline
+        first_gnx = self.outline[0][1]
+        body = self.gnx_to_body[first_gnx]
+        main_window = LeoMainWindow(body, self.outline)
         #
         # Set properties.
-        for name, prop in (
-            ('main_window', main_window),
-        ):
-            self._mutate(name, prop)
+        self._mutate('main_window', main_window)
 
     #@+others
     #@+node:ekr.20181110175039.1: *4* app.actions
