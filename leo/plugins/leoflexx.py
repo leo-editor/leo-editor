@@ -418,6 +418,7 @@ class LeoTree(flx.Widget):
         main = self.root.main_window
         for ev in events:
             if ev.new_value:
+                # We are selecting a node, not de-selecting it.
                 gnx = ev.source.leo_gnx
                 h = ev.source.title or ev.source.text
                 main.log.put('select gnx: %s %s' % (gnx.ljust(30), h))
@@ -425,7 +426,6 @@ class LeoTree(flx.Widget):
                     # Set the body text directly.
                 self.root.send_children_to_tree(gnx)
                     # Send the children back to us so.
-
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
