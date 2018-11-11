@@ -379,6 +379,20 @@ class LeoTree(flx.Widget):
             print('tree.receive_children: children...')
             for node_tuple in d.get('children'):
                 print(format_node_tuple(node_tuple))
+        if 0:
+            print('SELF', repr(self))
+            items = self.get_all_items
+            for item in items:
+                print(repr(item))
+        # Get the selected item.
+        if 0:
+            item = self.highlight_get
+            print('item.text:', item.text())
+            children = item.children or []
+        if 0:
+            print('tree.receive_children: existing children...')
+            for child in children:
+                print(repr(child))
     #@+node:ekr.20181105045657.1: *4* tree.make_tree
     def make_tree(self, outline):
         '''Populate the outline from a list of tuples.'''
