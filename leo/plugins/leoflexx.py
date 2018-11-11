@@ -420,8 +420,8 @@ class LeoTree(flx.Widget):
             if ev.new_value:
                 # We are selecting a node, not de-selecting it.
                 gnx = ev.source.leo_gnx
-                h = ev.source.title or ev.source.text
-                main.log.put('select gnx: %s %s' % (gnx.ljust(30), h))
+                headline = ev.source.title or ev.source.text
+                main.log.put('select gnx: %s %s' % (gnx.ljust(30), headline))
                 self.root.set_body(gnx)
                     # Set the body text directly.
                 self.root.send_children_to_tree(gnx)
