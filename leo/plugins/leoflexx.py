@@ -232,8 +232,9 @@ class LeoBody(flx.Widget):
         self.ace.setValue(body)
             # Trying to access global body yields:
             # JS: TypeError: e.match is not a function
-        if 0:
-            pscript.RawJS('require(ace.js)')
+        ###
+            # This fails in the *compiler*, that is in py2js.
+            # pscript.RawJS('require(ace.js)')
             # '''
                 # var el = this.node;
                 # // var editor = el.data('ace').editor;
