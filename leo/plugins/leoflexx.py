@@ -323,15 +323,16 @@ class LeoMainWindow(flx.Widget):
     #@-others
 #@+node:ekr.20181104082154.1: *3* class LeoMiniBuffer
 class LeoMiniBuffer(flx.Widget):
-    
-    widget = flx.ComponentProp(settable=True)
-    
+
     def init(self): 
         with flx.HBox():
             flx.Label(text='Minibuffer')
-            widget = flx.LineEdit(flex=1, placeholder_text='Enter command')
-        widget.apply_style('background: yellow')
-        self._mutate('widget', widget)
+            self.widget = flx.LineEdit(flex=1, placeholder_text='Enter command')
+        self.widget.apply_style('background: yellow')
+    
+    @flx.action
+    def set_text(self, s):
+        self.widget.set_text(s)
 #@+node:ekr.20181104082201.1: *3* class LeoStatusLine
 class LeoStatusLine(flx.Widget):
     
