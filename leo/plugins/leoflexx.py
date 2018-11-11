@@ -66,10 +66,14 @@ class LeoApp(flx.PyComponent):
     @flx.action
     def send_children_to_tree(self, gnx):
         '''Send the children of the node with the given gnx to the tree.'''
+        try:
+            children = self.gnx_to_children[gnx]
+        except KeyError:
+            children = []
         self.main_window.tree.receive_children({
             'gnx': gnx,
             'parent': self.gnx_to_node[gnx],
-            'children': self.gnx_to_children[gnx],
+            'children': children,
         })
     #@+node:ekr.20181110090611.1: *4* app.ap_to_string
     def ap_to_string(self, ap):
@@ -360,60 +364,42 @@ class LeoTree(flx.Widget):
     
     def init(self, outline):
         # pylint: disable=arguments-differ
+        self.leo_items = {}
+            # Keys are gnx's, values are LeoTreeItems.
+        self.leo_populated_dict = {}
+            # Keys are gnx's, values are True.
+        self.leo_selected_gnx = outline[0][1]
+            # The gnx of the selected tree item.
         with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
             self.make_tree(outline)
 
     #@+others
-    #@+node:ekr.20181110175222.1: *4* tree.actions
+    #@+node:ekr.20181111011928.1: *4* tree.populate_children
+    def populate_children(self, children, parent_gnx):
+        '''Populate parent with the children if necessary.'''
+        if parent_gnx in self.leo_populated_dict:
+            return
+        self.leo_populated_dict [parent_gnx] = True
+        assert parent_gnx in self.leo_items, (parent_gnx, repr(self.leo_items))
+        with self.leo_items[parent_gnx]:
+            for ap, gnx, headline in children:
+                item = LeoTreeItem(gnx, ap, text=headline, checked=None, collapsed=True)
+                self.leo_items [gnx] = item
+    #@+node:ekr.20181110175222.1: *4* tree.receive_children
     @flx.action
     def receive_children(self, d):
-        format_node_tuple = self.root.main_window.format_node_tuple
-        ap, gnx, headline = d.get('parent')
-        assert gnx == d.get('gnx'), (repr(gnx), repr(d.get('gnx')))
-        if 0: # Debugging.
-            print('tree.receive_children: parent...')
-            print(format_node_tuple(d.get('parent')))
-        if 1:
-            print('tree.receive_children: children...')
-            for node_tuple in d.get('children'):
-                print(format_node_tuple(node_tuple))
-        if 0:
-            print('SELF', repr(self))
-            items = self.get_all_items
-            for item in items:
-                print(repr(item))
-        # Get the selected item.
-        if 0:
-            item = self.highlight_get
-            print('item.text:', item.text())
-            children = item.children or []
-        if 0:
-            print('tree.receive_children: existing children...')
-            for child in children:
-                print(repr(child))
+        parent_ap, parent_gnx, parent_headline = d.get('parent')
+        assert parent_gnx == d.get('gnx'), (repr(parent_gnx), repr(d.get('gnx')))
+        children = d.get('children')
+        self.populate_children(children, parent_gnx)
     #@+node:ekr.20181105045657.1: *4* tree.make_tree
     def make_tree(self, outline):
         '''Populate the outline from a list of tuples.'''
-        for p, gnx, h in outline:
-            # p is an archived position, a list of ints.
-            if len(p) == 1:
-                LeoTreeItem(gnx, p, text=h, checked=None, collapsed=True)
-
-        ### Old code.
-        # stack = []
-        
-        # def tree_item(gnx, h, p):
-            # return LeoTreeItem(gnx, p, text=h, checked=None, collapsed=True)
-
-        # for p, gnx, h in outline:
-            # n = len(p) # p is an archived position, a list of ints.
-            # if n == 1:
-                # stack = [tree_item(gnx, h, p)]
-            # elif n in (2, 3):
-                # # Fully expanding the stack takes too long.
-                # stack = stack[:n-1]
-                # with stack[-1]:
-                    # stack.append(tree_item(gnx, h, p))
+        for ap, gnx, h in outline:
+            # ap is an archived position, a list of ints.
+            if len(ap) == 1:
+                item = LeoTreeItem(gnx, ap, text=h, checked=None, collapsed=True)
+                self.leo_items [gnx] = item
     #@+node:ekr.20181104080854.3: *4* tree.on_tree_event
     # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
     @flx.reaction(
@@ -423,28 +409,32 @@ class LeoTree(flx.Widget):
     )
     def on_tree_event(self, *events):
         for ev in events:
-            self.show_event(ev)
+            if 0: # Debugging only.
+                self.show_event(ev)
     #@+node:ekr.20181109083659.1: *4* tree.on_selected_event
     @flx.reaction('tree.children**.selected')
     def on_selected_event(self, *events):
         '''
         Update the tree and body text when the user selects a new tree node.
         '''
-        main = self.root.main_window
+        main_window = self.root.main_window
         for ev in events:
             if ev.new_value:
                 # We are selecting a node, not de-selecting it.
                 gnx = ev.source.leo_gnx
+                self.leo_selected_gnx = gnx
+                    # Track the change.
                 ap = ev.source.leo_position
-                ap_s = main.ap_to_string(ap)
-                headline = ev.source.title or ev.source.text
-                main.log.put('select %s %s %s' % (ap_s.ljust(17), gnx.ljust(30), headline))
+                ap_s = main_window.ap_to_string(ap)
+                if 0: # Debugging
+                    headline = ev.source.title or ev.source.text
+                    main_window.log.put('select %s %s %s' % (ap_s.ljust(17), gnx.ljust(30), headline))
                 self.root.set_body(gnx)
                     # Set the body text directly.
-                main.status_line.set_text('position: %s gnx: %s' % (ap_s, gnx))
+                main_window.status_line.set_text('position: %s gnx: %s' % (ap_s, gnx))
                     # Set the status line directly.
                 self.root.send_children_to_tree(gnx)
-                    # Send the children back to us so.
+                    # Send the children back to us.
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
