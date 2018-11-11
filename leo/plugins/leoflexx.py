@@ -53,8 +53,7 @@ class LeoApp(flx.PyComponent):
         self.gnx_to_children = self.compute_gnx_to_children(
             self.gnx_to_node, self.gnx_to_parents, self.outline)
         t2 = time.clock()
-        if 1:
-            print('LeoApp.init: %5.2f sec.' % (t2-t1))
+        flx.logger.info('LeoApp.init: %5.2f sec.' % (t2-t1))
         #
         # Create the main window and all its components.
         first_gnx = self.outline[0][1]
@@ -81,11 +80,6 @@ class LeoApp(flx.PyComponent):
             'parent': self.gnx_to_node[gnx],
             'children': children,
         })
-
-    # @flx.action
-    # def set_log_level(self):
-        # print('app.set_log_level')
-        # flx.set_log_level('WARNING')
     #@+node:ekr.20181110090611.1: *4* app.ap_to_string
     def ap_to_string(self, ap):
         '''
@@ -207,12 +201,12 @@ class LeoApp(flx.PyComponent):
             verbose = False, # True: prints log messages.
         )
         if not bridge.isOpen():
-            print('Error opening leoBridge')
+            flx.logger.error('Error opening leoBridge')
             return
         g = bridge.globals()
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'LeoPyRef.leo')
         if not g.os_path_exists(path):
-            print('open_bridge: does not exist:', path)
+            flx.logger.error('open_bridge: does not exist: %r' % path)
             return
         c = bridge.openLeoFile(path)
         ### runUnitTests(c, g)
@@ -459,10 +453,10 @@ class LeoTreeItem(flx.TreeItem):
 #@-others
 if __name__ == '__main__':
     flx.launch(LeoApp)
-    print('After flx.launch')
     # A hack: suppress the "Automatically scrolling cursor into view" messages
     # Be careful to allow most important messages.
     pattern = re.compile(r'(Error|Leo|[Ss]ession|Starting|Stopping)')
     flx.set_log_level('INFO', pattern)
+    flx.logger.info('LeoApp: after flx.launch')
     flx.run()
 #@-leo
