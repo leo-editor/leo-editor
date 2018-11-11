@@ -39,15 +39,19 @@ class LeoApp(flx.PyComponent):
 
     def init(self):
         self.c, self.g = self.open_bridge()
-        body = self.find_body()
-        # On my home machine it takes 0.15 sec to create these dicts for LeoPyRef.leo.
+        #
+        # Compute data structures. On my machine, it takes 0.15 sec.
         outline = self.get_outline_list()
+        body = self.find_body(gnx=outline[0][1])
+            # Get the body text of the first outline node.
         ap_to_gnx = self.compute_archived_position_to_gnx(outline)
         gnx_to_node = self.compute_gnx_to_node(outline)
         gnx_to_parents = self.compute_gnx_to_parents(
             ap_to_gnx, gnx_to_node, outline)
         gnx_to_children = self.compute_gnx_to_children(
             gnx_to_node, gnx_to_parents, outline)
+        #
+        # Create the main window and all its components.
         main_window = LeoMainWindow(body, outline)
         #
         # Set ivars immediately (and explicitly, for pylint).
@@ -63,16 +67,24 @@ class LeoApp(flx.PyComponent):
         ):
             self._mutate(name, prop)
 
+    #@+others
+    #@+node:ekr.20181110175039.1: *4* app.actions
     @flx.action
-    def send_children(self, gnx):
+    def send_body_to_tree(self, gnx):
+        '''Send the body text of the node with the given gnx to the tree.'''
+        self.main_window.tree.receive_body({
+            'gnx': gnx,
+            'body': 'DUMMY BODY',
+        })
+        
+    @flx.action
+    def send_children_to_tree(self, gnx):
         '''Send the children of the node with the given gnx to the tree.'''
         self.main_window.tree.receive_children({
             'gnx': gnx,
             'parent': self.gnx_to_node[gnx],
             'children': self.gnx_to_children[gnx],
         })
-
-    #@+others
     #@+node:ekr.20181110090611.1: *4* app.ap_to_string
     def ap_to_string(self, ap):
         '''
@@ -170,13 +182,13 @@ class LeoApp(flx.PyComponent):
                 print('-----')
         return d
     #@+node:ekr.20181105160448.1: *4* app.find_body
-    def find_body(self):
+    def find_body(self, gnx):
         
         c = self.c
-        for p in c.p.self_and_siblings():
-            if p.b.strip():
-                return p.b
-        return ''
+        for v in c.all_nodes():
+            if v.gnx == gnx:
+                return v.b
+        return 'app.find_body: NOT FOUND: %r' % (gnx)
     #@+node:ekr.20181105095150.1: *4* app.get_outline_list
     def get_outline_list(self):
         '''
@@ -351,6 +363,25 @@ class LeoTree(flx.Widget):
             self.make_tree(outline)
 
     #@+others
+    #@+node:ekr.20181110175222.1: *4* tree.actions
+    @flx.action
+    def receive_body(self, d):
+        
+        print('gnx', d.get('gnx'))
+        print('body', d.get('body'))
+
+    @flx.action
+    def receive_children(self, d):
+        format_node_tuple = self.root.main_window.format_node_tuple
+        ap, gnx, headline = d.get('parent')
+        assert gnx == d.get('gnx'), (repr(gnx), repr(d.get('gnx')))
+        if 0: # Debugging.
+            print('tree.receive_children: parent...')
+            print(format_node_tuple(d.get('parent')))
+        if 1:
+            print('tree.receive_children: children...')
+            for node_tuple in d.get('children'):
+                print(format_node_tuple(node_tuple))
     #@+node:ekr.20181105045657.1: *4* tree.make_tree
     def make_tree(self, outline):
         '''Populate the outline from a list of tuples.'''
@@ -394,19 +425,8 @@ class LeoTree(flx.Widget):
                 h = ev.source.title or ev.source.text
                 main.log.put('select gnx: %s %s' % (gnx.ljust(30), h))
                 # https://github.com/flexxui/flexx/issues/517
-                self.root.send_children(gnx)
-
-    @flx.action
-    def receive_children(self, d):
-        format_node_tuple = self.root.main_window.format_node_tuple
-        ap, gnx, headline = d.get('parent')
-        assert gnx == d.get('gnx'), (repr(gnx), repr(d.get('gnx')))
-        if 0: # Debugging.
-            print('tree.receive_children: parent...')
-            print(format_node_tuple(d.get('parent')))
-            print('tree.receive_children: children...')
-        for node_tuple in d.get('children'):
-            print(format_node_tuple(node_tuple))
+                self.root.send_body_to_tree(gnx)
+                self.root.send_children_to_tree(gnx)
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
