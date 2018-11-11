@@ -66,10 +66,7 @@ class LeoApp(flx.PyComponent):
     @flx.action
     def send_children_to_tree(self, gnx):
         '''Send the children of the node with the given gnx to the tree.'''
-        try:
-            children = self.gnx_to_children[gnx]
-        except KeyError:
-            children = []
+        children = self.gnx_to_children.get(gnx)
         self.main_window.tree.receive_children({
             'gnx': gnx,
             'parent': self.gnx_to_node[gnx],
