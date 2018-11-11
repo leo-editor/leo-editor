@@ -58,11 +58,17 @@ class LeoApp(flx.PyComponent):
         # Create the main window and all its components.
         first_gnx = self.outline[0][1]
         body = self.gnx_to_body[first_gnx]
-        main_window = LeoMainWindow(body, self.outline)
+        signon = 'signon1\nsingon2'
+        main_window = LeoMainWindow(body, self.outline, signon)
         self._mutate('main_window', main_window)
 
     #@+others
-    #@+node:ekr.20181111095640.1: *4* app.action: send_children_to_tree
+    #@+node:ekr.20181111152542.1: *4* app.actions
+    #@+node:ekr.20181111142921.1: *5* app.action: do_command
+    @flx.action
+    def do_command(self, command):
+        print('app.do_command', repr(command))
+    #@+node:ekr.20181111095640.1: *5* app.action: send_children_to_tree
     @flx.action
     def send_children_to_tree(self, gnx):
         '''Send the children of the node with the given gnx to the tree.'''
@@ -73,14 +79,14 @@ class LeoApp(flx.PyComponent):
             'children': children,
         })
         
-    #@+node:ekr.20181111095637.1: *4* app.action: set_body
+    #@+node:ekr.20181111095637.1: *5* app.action: set_body
     @flx.action
     def set_body(self, gnx):
         '''Set the body text in LeoBody to the body text of indicated node.'''
         body = self.gnx_to_body[gnx]
         self.main_window.body.set_body(body)
 
-    #@+node:ekr.20181111095640.2: *4* app.action: set_status_to_unl
+    #@+node:ekr.20181111095640.2: *5* app.action: set_status_to_unl
     @flx.action
     def set_status_to_unl(self, ap, gnx):
         c, g = self.c, self.g
@@ -273,14 +279,16 @@ class LeoLog(flx.Widget):
     }
     """
 
-    def init(self):
+    def init(self, signon):
         # pylint: disable=undefined-variable
             # window
         global window
         self.ace = window.ace.edit(self.node, "editor")
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
+        self.ace.setValue(signon)
         
+    @flx.action
     def put(self, s):
         self.ace.setValue(self.ace.getValue() + '\n' + s)
 
@@ -302,12 +310,12 @@ class LeoMainWindow(flx.Widget):
     status_line = flx.ComponentProp(settable=True)
     tree = flx.ComponentProp(settable=True)
 
-    def init(self, body, outline):
+    def init(self, body, outline, signon):
         # pylint: disable=arguments-differ
         with flx.VSplit():
             with flx.HSplit(flex=1):
                 tree = LeoTree(outline, flex=1)
-                log = LeoLog(flex=1)
+                log = LeoLog(signon, flex=1)
             body = LeoBody(body, flex=1)
             minibuffer = LeoMiniBuffer()
             status_line = LeoStatusLine()
@@ -348,6 +356,14 @@ class LeoMiniBuffer(flx.Widget):
     @flx.action
     def set_text(self, s):
         self.widget.set_text(s)
+        
+    @flx.reaction('widget.user_done')
+    def on_event(self, *events):
+        for ev in events:
+            command = self.widget.text
+            if command.strip():
+                self.widget.set_text('')
+                self.root.do_command(command)
 #@+node:ekr.20181104082201.1: *3* class LeoStatusLine
 class LeoStatusLine(flx.Widget):
     
@@ -385,44 +401,14 @@ class LeoTree(flx.Widget):
             self.make_tree(outline)
 
     #@+others
-    #@+node:ekr.20181111011928.1: *4* tree.populate_children
-    def populate_children(self, children, parent_gnx):
-        '''Populate parent with the children if necessary.'''
-        if parent_gnx in self.leo_populated_dict:
-            return
-        self.leo_populated_dict [parent_gnx] = True
-        assert parent_gnx in self.leo_items, (parent_gnx, repr(self.leo_items))
-        with self.leo_items[parent_gnx]:
-            for ap, gnx, headline in children:
-                item = LeoTreeItem(gnx, ap, text=headline, checked=None, collapsed=True)
-                self.leo_items [gnx] = item
-    #@+node:ekr.20181110175222.1: *4* tree.receive_children
+    #@+node:ekr.20181110175222.1: *4*  tree.action: receive_children
     @flx.action
     def receive_children(self, d):
         parent_ap, parent_gnx, parent_headline = d.get('parent')
         assert parent_gnx == d.get('gnx'), (repr(parent_gnx), repr(d.get('gnx')))
         children = d.get('children', [])
         self.populate_children(children, parent_gnx)
-    #@+node:ekr.20181105045657.1: *4* tree.make_tree
-    def make_tree(self, outline):
-        '''Populate the outline from a list of tuples.'''
-        for ap, gnx, h in outline:
-            # ap is an archived position, a list of ints.
-            if len(ap) == 1:
-                item = LeoTreeItem(gnx, ap, text=h, checked=None, collapsed=True)
-                self.leo_items [gnx] = item
-    #@+node:ekr.20181104080854.3: *4* tree.on_tree_event
-    # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
-    @flx.reaction(
-        'tree.children**.checked',
-        'tree.children**.collapsed',
-        'tree.children**.visible', # Never seems to fire.
-    )
-    def on_tree_event(self, *events):
-        for ev in events:
-            if 0: # Debugging only.
-                self.show_event(ev)
-    #@+node:ekr.20181109083659.1: *4* tree.on_selected_event
+    #@+node:ekr.20181109083659.1: *4*  tree.reaction: on_selected_event
     @flx.reaction('tree.children**.selected')
     def on_selected_event(self, *events):
         '''
@@ -441,6 +427,36 @@ class LeoTree(flx.Widget):
                     # Set the status line directly.
                 self.root.send_children_to_tree(gnx)
                     # Send the children back to us.
+    #@+node:ekr.20181104080854.3: *4*  tree.reaction: on_tree_event
+    # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
+    @flx.reaction(
+        'tree.children**.checked',
+        'tree.children**.collapsed',
+        'tree.children**.visible', # Never seems to fire.
+    )
+    def on_tree_event(self, *events):
+        for ev in events:
+            if 0: # Debugging only.
+                self.show_event(ev)
+    #@+node:ekr.20181105045657.1: *4* tree.make_tree
+    def make_tree(self, outline):
+        '''Populate the outline from a list of tuples.'''
+        for ap, gnx, h in outline:
+            # ap is an archived position, a list of ints.
+            if len(ap) == 1:
+                item = LeoTreeItem(gnx, ap, text=h, checked=None, collapsed=True)
+                self.leo_items [gnx] = item
+    #@+node:ekr.20181111011928.1: *4* tree.populate_children
+    def populate_children(self, children, parent_gnx):
+        '''Populate parent with the children if necessary.'''
+        if parent_gnx in self.leo_populated_dict:
+            return
+        self.leo_populated_dict [parent_gnx] = True
+        assert parent_gnx in self.leo_items, (parent_gnx, repr(self.leo_items))
+        with self.leo_items[parent_gnx]:
+            for ap, gnx, headline in children:
+                item = LeoTreeItem(gnx, ap, text=headline, checked=None, collapsed=True)
+                self.leo_items [gnx] = item
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
