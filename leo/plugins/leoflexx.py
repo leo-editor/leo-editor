@@ -255,11 +255,6 @@ class LeoBody(flx.Widget):
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
         self.ace.getSession().setMode("ace/mode/python")
-        # RawJS('''
-        # var el = this.node;
-            # var editor = el.data('ace').editor;
-            # editor.blockScrolling = Infinity;
-        # ''')
         self.set_body(body)
 
     @flx.reaction('size')
@@ -320,12 +315,14 @@ class LeoMainWindow(flx.Widget):
             minibuffer = LeoMiniBuffer()
             status_line = LeoStatusLine()
         for name, prop in (
-            ('body', body), ('log', log), ('tree', tree),
+            ('body', body),
+            ('log', log),
             ('minibuffer', minibuffer),
             ('status_line', status_line),
+            ('tree', tree),
         ):
             self._mutate(name, prop)
-            
+
     #@+others
     #@+node:ekr.20181111001813.1: *4* JS versions of LeoApp utils
     #@+node:ekr.20181111001833.1: *5* LeoMainWindow.ap_to_string
