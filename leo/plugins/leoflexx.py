@@ -10,9 +10,10 @@ A Stand-alone prototype for Leo using flexx.
 import leo.core.leoBridge as leoBridge
 from flexx import flx
 import pscript
-assert pscript # To suppress pyflakes complaint.
+import re
 import time
-assert time
+assert pscript and re and time
+    # Suppress pyflakes complaints
 #@+others
 #@+node:ekr.20181103151350.1: **  init
 def init():
@@ -29,6 +30,7 @@ class LeoApp(flx.PyComponent):
     '''
     # The main_window component must exist, because other components use it.
     main_window = flx.ComponentProp(settable=True)
+    leo_logger = flx.ComponentProp(settable=True)
 
     def init(self):
         self.c, self.g = self.open_bridge()
@@ -72,6 +74,11 @@ class LeoApp(flx.PyComponent):
             'parent': self.gnx_to_node[gnx],
             'children': children,
         })
+
+    # @flx.action
+    # def set_log_level(self):
+        # print('app.set_log_level')
+        # flx.set_log_level('WARNING')
     #@+node:ekr.20181110090611.1: *4* app.ap_to_string
     def ap_to_string(self, ap):
         '''
@@ -229,20 +236,15 @@ class LeoBody(flx.Widget):
             # window
         global window
         self.ace = window.ace.edit(self.node, "editor")
-        self.ace.setValue(body)
-            # Trying to access global body yields:
-            # JS: TypeError: e.match is not a function
-        ###
-            # This fails in the *compiler*, that is in py2js.
-            # pscript.RawJS('require(ace.js)')
-            # '''
-                # var el = this.node;
-                # // var editor = el.data('ace').editor;
-                # // editor.blockScrolling = Infinity;
-            # ''')
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
         self.ace.getSession().setMode("ace/mode/python")
+        # pscript.RawJS('''
+        # var el = this.node;
+            # var editor = el.data('ace').editor;
+            # editor.blockScrolling = Infinity;
+        # ''')
+        self.set_body(body)
 
     @flx.reaction('size')
     def __on_size(self, *events):
@@ -455,5 +457,9 @@ class LeoTreeItem(flx.TreeItem):
 if __name__ == '__main__':
     flx.launch(LeoApp)
     print('After flx.launch')
+    # A hack: suppress the "Automatically scrolling cursor into view" messages
+    # Be careful to allow most important messages.
+    pattern = re.compile(r'(Error|Leo|[Ss]ession|Starting|Stopping)')
+    flx.set_log_level('INFO', pattern)
     flx.run()
 #@-leo
