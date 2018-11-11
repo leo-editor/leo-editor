@@ -239,7 +239,7 @@ class LeoBody(flx.Widget):
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
         self.ace.getSession().setMode("ace/mode/python")
-        # pscript.RawJS('''
+        # RawJS('''
         # var el = this.node;
             # var editor = el.data('ace').editor;
             # editor.blockScrolling = Infinity;
