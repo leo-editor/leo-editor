@@ -13,6 +13,14 @@ import re
 import time
 assert re and time
     # Suppress pyflakes complaints
+#@+<< ace assets >>
+#@+node:ekr.20181111074958.1: ** << ace assets >>
+# Assets for ace, embedded in the LeoBody and LeoLog classes.
+base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
+flx.assets.associate_asset(__name__, base_url + 'ace.js')
+flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
+flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
+#@-<< ace assets >>
 #@+others
 #@+node:ekr.20181103151350.1: **  init
 def init():
@@ -212,10 +220,6 @@ class LeoApp(flx.PyComponent):
     #@-others
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181104082144.1: *3* class LeoBody
-base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
-flx.assets.associate_asset(__name__, base_url + 'ace.js')
-flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
-flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 
 class LeoBody(flx.Widget):
     
