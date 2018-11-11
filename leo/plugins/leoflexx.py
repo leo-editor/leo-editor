@@ -74,7 +74,7 @@ class LeoApp(flx.PyComponent):
         '''Send the body text of the node with the given gnx to the tree.'''
         self.main_window.tree.receive_body({
             'gnx': gnx,
-            'body': 'DUMMY BODY',
+            'body': self.find_body(gnx),
         })
         
     @flx.action
@@ -254,6 +254,10 @@ class LeoBody(flx.Widget):
     @flx.reaction('size')
     def __on_size(self, *events):
         self.ace.resize()
+        
+    def set_body(self, body):
+        print('LeoBody.set_body', repr(body))
+        self.ace.setValue(body)
 #@+node:ekr.20181104082149.1: *3* class LeoLog
 class LeoLog(flx.Widget):
 
@@ -367,8 +371,14 @@ class LeoTree(flx.Widget):
     @flx.action
     def receive_body(self, d):
         
-        print('gnx', d.get('gnx'))
-        print('body', d.get('body'))
+        body = d.get('body', 'NO BODY')
+        if 1: # Debugging.
+            print('gnx', d.get('gnx'))
+            lines = body.split('\n')
+            print('body...')
+            for i, s in enumerate(lines):
+                print('%s %s' % (str(i).ljust(4), s.rstrip()))
+        self.root.main_window.body.set_body(body)
 
     @flx.action
     def receive_children(self, d):
