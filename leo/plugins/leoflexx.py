@@ -28,9 +28,9 @@ def init():
     # At present, leoflexx is not a true plugin.
     # I am executing leoflexx.py from an external script.
     return False
-#@+node:ekr.20181107053436.1: ** Py side: flx.PyComponents
+#@+node:ekr.20181107052522.1: ** class LeoApp(PyComponent)
 # pscript never converts flx.PyComponents to JS.
-#@+node:ekr.20181107052522.1: *3* class LeoApp
+
 class LeoApp(flx.PyComponent):
     '''
     The Leo Application.
@@ -64,12 +64,12 @@ class LeoApp(flx.PyComponent):
         self._mutate('main_window', main_window)
 
     #@+others
-    #@+node:ekr.20181111152542.1: *4* app.actions
-    #@+node:ekr.20181111142921.1: *5* app.action: do_command
+    #@+node:ekr.20181111152542.1: *3* app.actions
+    #@+node:ekr.20181111142921.1: *4* app.action: do_command
     @flx.action
     def do_command(self, command):
         self.main_window.log.put('app.do_command: %r' % command)
-    #@+node:ekr.20181111095640.1: *5* app.action: send_children_to_tree
+    #@+node:ekr.20181111095640.1: *4* app.action: send_children_to_tree
     @flx.action
     def send_children_to_tree(self, gnx):
         '''Send the children of the node with the given gnx to the tree.'''
@@ -80,14 +80,14 @@ class LeoApp(flx.PyComponent):
             'children': children,
         })
         
-    #@+node:ekr.20181111095637.1: *5* app.action: set_body
+    #@+node:ekr.20181111095637.1: *4* app.action: set_body
     @flx.action
     def set_body(self, gnx):
         '''Set the body text in LeoBody to the body text of indicated node.'''
         body = self.gnx_to_body[gnx]
         self.main_window.body.set_body(body)
 
-    #@+node:ekr.20181111095640.2: *5* app.action: set_status_to_unl
+    #@+node:ekr.20181111095640.2: *4* app.action: set_status_to_unl
     @flx.action
     def set_status_to_unl(self, ap, gnx):
         c, g = self.c, self.g
@@ -100,15 +100,7 @@ class LeoApp(flx.PyComponent):
         fn = g.shortFileName(c.fileName())
         fn = fn + '#' if fn else ''
         self.main_window.status_line.set_text(fn + '->'.join(unls))
-    #@+node:ekr.20181110090611.1: *4* app.ap_to_string
-    def ap_to_string(self, ap):
-        '''
-        Convert an archived position (list of ints) to a string if necessary.
-        '''
-        if isinstance(ap, (list, tuple)):
-            return '.'.join([str(z) for z in ap])
-        assert isinstance(ap, str), repr(ap)
-        return ap
+    #@+node:ekr.20181111155422.1: *3* app.compute outline data...
     #@+node:ekr.20181110084838.1: *4* app.compute_ap_to_gnx
     def compute_ap_to_gnx (self, outline):
         '''
@@ -203,6 +195,16 @@ class LeoApp(flx.PyComponent):
         '''
         c = self.c
         return [(p.archivedPosition(), p.gnx, p.h) for p in c.all_positions()]
+    #@+node:ekr.20181111155525.1: *3* app.utils
+    #@+node:ekr.20181110090611.1: *4* app.ap_to_string
+    def ap_to_string(self, ap):
+        '''
+        Convert an archived position (list of ints) to a string if necessary.
+        '''
+        if isinstance(ap, (list, tuple)):
+            return '.'.join([str(z) for z in ap])
+        assert isinstance(ap, str), repr(ap)
+        return ap
     #@+node:ekr.20181110101328.1: *4* app.node_tuple_to_string
     def node_tuple_to_string(self, aTuple, ljust=False):
 
@@ -210,7 +212,7 @@ class LeoApp(flx.PyComponent):
         s = self.ap_to_string(ap)
         s = s.ljust(17) if ljust else s.rjust(17)
         return '%s %s %s' % (s, gnx.ljust(30), headline)
-    #@+node:ekr.20181105091545.1: *4* app.open_bridge
+    #@+node:ekr.20181105091545.1: *3* app.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
         bridge = leoBridge.controller(gui = None,
