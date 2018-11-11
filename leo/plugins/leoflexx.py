@@ -32,6 +32,7 @@ class LeoApp(flx.PyComponent):
     #
     # These components are not needed.
         # ap_to_gnx = flx.DictProp(settable=True)
+        # gnx_to_body = flx.DictProp(settable=True)
         # gnx_to_children = flx.DictProp(settable=True)
         # gnx_to_node = flx.DictProp(settable=True)
         # gnx_to_parents = flx.DictProp(settable=True)
@@ -42,6 +43,7 @@ class LeoApp(flx.PyComponent):
         #
         # Compute data structures. On my machine, it takes 0.15 sec.
         outline = self.get_outline_list()
+        
         body = self.find_body(gnx=outline[0][1])
             # Get the body text of the first outline node.
         ap_to_gnx = self.compute_archived_position_to_gnx(outline)
@@ -318,6 +320,16 @@ class LeoMainWindow(flx.Widget):
             self._mutate(name, prop)
             
     #@+others
+    #@+node:ekr.20181111001813.1: *4* JS versions of LeoApp utils
+    #@+node:ekr.20181111001833.1: *4* LeoMainWindow.ap_to_string
+    def ap_to_string(self, ap):
+        '''
+        Convert an archived position (list of ints) to a string if necessary.
+        '''
+        if isinstance(ap, (list, tuple)):
+            return '.'.join([str(z) for z in ap])
+        assert isinstance(ap, str), repr(ap)
+        return ap
     #@+node:ekr.20181110125347.1: *4* LeoMainWindow.format_node_tuple
     def format_node_tuple(self, node_tuple):
         assert isinstance(node_tuple, (list, tuple)), repr(node_tuple)
@@ -437,8 +449,10 @@ class LeoTree(flx.Widget):
             if ev.new_value:
                 # We are selecting a node, not de-selecting it.
                 gnx = ev.source.leo_gnx
+                ap = ev.source.leo_position
+                ap_s = main.ap_to_string(ap)
                 headline = ev.source.title or ev.source.text
-                main.log.put('select %s %s' % (gnx.ljust(25), headline))
+                main.log.put('select %s %s %s' % (ap_s.ljust(17), gnx.ljust(30), headline))
                 self.root.set_body(gnx)
                     # Set the body text directly.
                 self.root.send_children_to_tree(gnx)
@@ -457,7 +471,6 @@ class LeoTreeItem(flx.TreeItem):
     
     def init(self, leo_gnx, leo_position):
         # pylint: disable=arguments-differ
-        super().init()
         # These will probably never need to be properties.
         self.leo_gnx = leo_gnx
         self.leo_position = leo_position
