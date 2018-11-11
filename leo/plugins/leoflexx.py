@@ -232,6 +232,13 @@ class LeoBody(flx.Widget):
         self.ace.setValue(body)
             # Trying to access global body yields:
             # JS: TypeError: e.match is not a function
+        if 0:
+            pscript.RawJS('require(ace.js)')
+            # '''
+                # var el = this.node;
+                # // var editor = el.data('ace').editor;
+                # // editor.blockScrolling = Infinity;
+            # ''')
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
         self.ace.getSession().setMode("ace/mode/python")
@@ -242,7 +249,6 @@ class LeoBody(flx.Widget):
         
     @flx.action
     def set_body(self, body):
-        # print('LeoBody.set_body', repr(body))
         self.ace.setValue(body)
 #@+node:ekr.20181104082149.1: *3* class LeoLog
 class LeoLog(flx.Widget):
@@ -260,11 +266,6 @@ class LeoLog(flx.Widget):
         global window
         self.ace = window.ace.edit(self.node, "editor")
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
-        # pscript.RawJS('''
-            # var el = this.node;
-            # var editor = el.data('ace').editor;
-            # editor.blockScrolling = Infinity;
-        # ''')
         self.ace.setTheme("ace/theme/solarized_dark")
         
     def put(self, s):
