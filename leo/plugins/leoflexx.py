@@ -440,7 +440,7 @@ class LeoTree(flx.Widget):
                 main.log.put('select %s %s %s' % (ap_s.ljust(17), gnx.ljust(30), headline))
                 self.root.set_body(gnx)
                     # Set the body text directly.
-                main.status_line.widget.set_text('position: %s gnx: %s' % (ap_s, gnx))
+                main.status_line.set_text('position: %s gnx: %s' % (ap_s, gnx))
                     # Set the status line directly.
                 self.root.send_children_to_tree(gnx)
                     # Send the children back to us so.
