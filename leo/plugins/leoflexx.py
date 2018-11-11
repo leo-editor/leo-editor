@@ -291,7 +291,7 @@ class LeoMainWindow(flx.Widget):
     
     Each property x below is accessible as root.main_window.x.
     '''
-    
+    # These properties *are* needed.
     body = flx.ComponentProp(settable=True)
     log = flx.ComponentProp(settable=True)
     minibuffer = flx.ComponentProp(settable=True)
