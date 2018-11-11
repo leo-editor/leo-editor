@@ -9,10 +9,9 @@ A Stand-alone prototype for Leo using flexx.
 '''
 import leo.core.leoBridge as leoBridge
 from flexx import flx
-import pscript
 import re
 import time
-assert pscript and re and time
+assert re and time
     # Suppress pyflakes complaints
 #@+others
 #@+node:ekr.20181103151350.1: **  init
