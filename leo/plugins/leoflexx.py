@@ -7,6 +7,7 @@
 '''
 A Stand-alone prototype for Leo using flexx.
 '''
+# pylint: disable=logging-not-lazy
 import leo.core.leoBridge as leoBridge
 from flexx import flx
 import re
@@ -74,12 +75,22 @@ class LeoApp(flx.PyComponent):
     @flx.action
     def send_children_to_tree(self, gnx):
         '''Send the children of the node with the given gnx to the tree.'''
-        children = self.gnx_to_children.get(gnx)
+        children = self.gnx_to_children.get(gnx) or []
         self.main_window.tree.receive_children({
             'gnx': gnx,
             'parent': self.gnx_to_node[gnx],
             'children': children,
         })
+        
+    @flx.action
+    def set_status_to_unl(self, ap, gnx):
+        unls = []
+        for i in range(len(ap)):
+            ap_s = self.ap_to_string(ap[:i+1])
+            gnx = self.ap_to_gnx.get(ap_s)
+            data = self.gnx_to_node.get(gnx, [])
+            unls.append(data[2] if data else '<not found: %s>' % ap_s)
+        self.main_window.status_line.set_text('->'.join(unls))
     #@+node:ekr.20181110090611.1: *4* app.ap_to_string
     def ap_to_string(self, ap):
         '''
@@ -388,7 +399,7 @@ class LeoTree(flx.Widget):
     def receive_children(self, d):
         parent_ap, parent_gnx, parent_headline = d.get('parent')
         assert parent_gnx == d.get('gnx'), (repr(parent_gnx), repr(d.get('gnx')))
-        children = d.get('children')
+        children = d.get('children', [])
         self.populate_children(children, parent_gnx)
     #@+node:ekr.20181105045657.1: *4* tree.make_tree
     def make_tree(self, outline):
@@ -415,7 +426,6 @@ class LeoTree(flx.Widget):
         '''
         Update the tree and body text when the user selects a new tree node.
         '''
-        ### main_window = self.root.main_window
         for ev in events:
             if ev.new_value:
                 # We are selecting a node, not de-selecting it.
@@ -425,19 +435,10 @@ class LeoTree(flx.Widget):
                 self.root.set_body(gnx)
                     # Set the body text directly.
                 ap = ev.source.leo_position
-                self.set_status_line(ap, gnx)
+                self.root.set_status_to_unl(ap, gnx)
+                    # Set the status line directly.
                 self.root.send_children_to_tree(gnx)
                     # Send the children back to us.
-    #@+node:ekr.20181111084036.1: *4* tree.set_status_line
-    def set_status_line(self, ap, gnx):
-        
-        if 1: # works
-            main_window = self.root.main_window
-            ap_s = main_window.ap_to_string(ap)
-            main_window.status_line.set_text('position: %s gnx: %s' % (ap_s, gnx))
-        else: # Not yet.
-            self.root.set_status_line(ap, gnx)
-            # Set the status line directly.
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
@@ -460,8 +461,9 @@ if __name__ == '__main__':
     flx.launch(LeoApp)
     # A hack: suppress the "Automatically scrolling cursor into view" messages
     # Be careful to allow most important messages.
-    pattern = re.compile(r'(Error|Leo|[Ss]ession|Starting|Stopping)')
-    flx.set_log_level('INFO', pattern)
-    flx.logger.info('LeoApp: after flx.launch')
+    if 1:
+        pattern = re.compile(r'(Error|Leo|[Ss]ession|Starting|Stopping)')
+        flx.set_log_level('INFO', pattern)
+        flx.logger.info('LeoApp: after flx.launch')
     flx.run()
 #@-leo
