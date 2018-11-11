@@ -42,22 +42,27 @@ class LeoApp(flx.PyComponent):
         self.c, self.g = self.open_bridge()
         #
         # Compute data structures. On my machine, it takes 0.15 sec.
+        t1 = time.clock()
         outline = self.get_outline_list()
-        
-        body = self.find_body(gnx=outline[0][1])
-            # Get the body text of the first outline node.
-        ap_to_gnx = self.compute_archived_position_to_gnx(outline)
+        ap_to_gnx = self.compute_ap_to_gnx(outline)
+        gnx_to_body = self.compute_gnx_to_body(outline)
         gnx_to_node = self.compute_gnx_to_node(outline)
         gnx_to_parents = self.compute_gnx_to_parents(
             ap_to_gnx, gnx_to_node, outline)
         gnx_to_children = self.compute_gnx_to_children(
             gnx_to_node, gnx_to_parents, outline)
+        t2 = time.clock()
+        if 1:
+            print('LeoApp.init: %5.2f sec.' % (t2-t1))
         #
         # Create the main window and all its components.
+        body = gnx_to_body[outline[0][1]]
+            # Get the body text of the first outline node.
         main_window = LeoMainWindow(body, outline)
         #
         # Set ivars immediately (and explicitly, for pylint).
         self.ap_to_gnx = ap_to_gnx
+        self.gnx_to_body = gnx_to_body
         self.gnx_to_children = gnx_to_children
         self.gnx_to_node = gnx_to_node
         self.gnx_to_parents = gnx_to_parents
@@ -74,9 +79,9 @@ class LeoApp(flx.PyComponent):
     @flx.action
     def set_body(self, gnx):
         '''Set the body text in LeoBody to the body text of indicated node.'''
-        body = self.find_body(gnx)
+        body = self.gnx_to_body[gnx]
         self.main_window.body.set_body(body)
-        
+
     @flx.action
     def send_children_to_tree(self, gnx):
         '''Send the children of the node with the given gnx to the tree.'''
@@ -101,8 +106,14 @@ class LeoApp(flx.PyComponent):
         s = self.ap_to_string(ap)
         s = s.ljust(17) if ljust else s.rjust(17)
         return '%s %s %s' % (s, gnx.ljust(30), headline)
-    #@+node:ekr.20181110084838.1: *4* app.compute_archived_position_to_gnx
-    def compute_archived_position_to_gnx (self, outline):
+    #@+node:ekr.20181111002718.1: *4* app.compute_gnx_to_body
+    def compute_gnx_to_body(self, outline):
+        '''
+        Return a dict: keys are gnx's. values are body strings.
+        '''
+        return { v.gnx: v.b for v in self.c.all_unique_nodes() }
+    #@+node:ekr.20181110084838.1: *4* app.compute_ap_to_gnx
+    def compute_ap_to_gnx (self, outline):
         '''
         Return a dict: keys are *stringized* archived positions. values are gnx's.
         '''
@@ -181,14 +192,6 @@ class LeoApp(flx.PyComponent):
                     print('no parents')
                 print('-----')
         return d
-    #@+node:ekr.20181105160448.1: *4* app.find_body
-    def find_body(self, gnx):
-        
-        c = self.c
-        for v in c.all_nodes():
-            if v.gnx == gnx:
-                return v.b
-        return 'app.find_body: NOT FOUND: %r' % (gnx)
     #@+node:ekr.20181105095150.1: *4* app.get_outline_list
     def get_outline_list(self):
         '''
