@@ -69,13 +69,19 @@ class LeoApp(flx.PyComponent):
 
     #@+others
     #@+node:ekr.20181110175039.1: *4* app.actions
+    # @flx.action
+    # def send_body_to_tree(self, gnx):
+        # '''Send the body text of the node with the given gnx to the tree.'''
+        # self.main_window.tree.receive_body({
+            # 'gnx': gnx,
+            # 'body': self.find_body(gnx),
+        # })
+        
     @flx.action
-    def send_body_to_tree(self, gnx):
-        '''Send the body text of the node with the given gnx to the tree.'''
-        self.main_window.tree.receive_body({
-            'gnx': gnx,
-            'body': self.find_body(gnx),
-        })
+    def set_body(self, gnx):
+        '''Set the body text to the indicated node.'''
+        body = self.find_body(gnx)
+        self.main_window.body.set_body(body)
         
     @flx.action
     def send_children_to_tree(self, gnx):
@@ -255,8 +261,9 @@ class LeoBody(flx.Widget):
     def __on_size(self, *events):
         self.ace.resize()
         
+    @flx.action
     def set_body(self, body):
-        print('LeoBody.set_body', repr(body))
+        # print('LeoBody.set_body', repr(body))
         self.ace.setValue(body)
 #@+node:ekr.20181104082149.1: *3* class LeoLog
 class LeoLog(flx.Widget):
@@ -368,17 +375,17 @@ class LeoTree(flx.Widget):
 
     #@+others
     #@+node:ekr.20181110175222.1: *4* tree.actions
-    @flx.action
-    def receive_body(self, d):
+    # @flx.action
+    # def receive_body(self, d):
         
-        body = d.get('body', 'NO BODY')
-        if 1: # Debugging.
-            print('gnx', d.get('gnx'))
-            lines = body.split('\n')
-            print('body...')
-            for i, s in enumerate(lines):
-                print('%s %s' % (str(i).ljust(4), s.rstrip()))
-        self.root.main_window.body.set_body(body)
+        # body = d.get('body', 'NO BODY')
+        # if 1: # Debugging.
+            # print('gnx', d.get('gnx'))
+            # lines = body.split('\n')
+            # print('body...')
+            # for i, s in enumerate(lines):
+                # print('%s %s' % (str(i).ljust(4), s.rstrip()))
+        # self.root.main_window.body.set_body(body)
 
     @flx.action
     def receive_children(self, d):
@@ -435,7 +442,8 @@ class LeoTree(flx.Widget):
                 h = ev.source.title or ev.source.text
                 main.log.put('select gnx: %s %s' % (gnx.ljust(30), h))
                 # https://github.com/flexxui/flexx/issues/517
-                self.root.send_body_to_tree(gnx)
+                ### self.root.send_body_to_tree(gnx)
+                self.root.set_body(gnx)
                 self.root.send_children_to_tree(gnx)
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
