@@ -78,12 +78,14 @@ class LeoApp(flx.PyComponent):
         elif command == 'make':
             tree.make_tree(self.outline)
         else:
-            self.root.logger_info('Leo: app.do_command: unknown command: %r' % command)
-    #@+node:ekr.20181112165240.1: *4* app.action: logger_info
+            self.root.info('app.do_command: unknown command: %r' % command)
+    #@+node:ekr.20181112165240.1: *4* app.action: info
     @flx.action
-    def logger_info (self, s):
+    def info (self, s):
         '''Send the string s to the flex logger, at level info.'''
-        flx.logger.info(s)
+        flx.logger.info('Leo: ' + s)
+            # A hack: automatically add the "Leo" prefix so
+            # the top-level suppression logic will not delete this message.
     #@+node:ekr.20181111202747.1: *4* app.action: select_ap
     @flx.action
     def select_ap(self, ap):
@@ -453,7 +455,7 @@ class LeoTree(flx.Widget):
         '''
         for item in self.leo_items.values():
             if debug and debug_tree:
-                self.root.logger_info('Leo: clear_tree: dispose: %r' % item)
+                self.root.info('clear_tree: dispose: %r' % item)
             item.dispose()
         self.leo_items = {}
             # Keys are gnx's, values are LeoTreeItems.
@@ -469,7 +471,7 @@ class LeoTree(flx.Widget):
                 if len(ap) == 1:
                     item = LeoTreeItem(gnx, ap, text=h, checked=None, collapsed=True)
                     if debug and debug_tree:
-                        self.root.logger_info('Leo: make.tree: item: %r' % item)
+                        self.root.info('make.tree: item: %r' % item)
                     self.leo_items [gnx] = item
     #@+node:ekr.20181110175222.1: *5* tree.action: receive_children
     @flx.action
@@ -515,10 +517,10 @@ class LeoTree(flx.Widget):
         if parent_gnx in self.leo_populated_dict:
             return
         if debug and debug_tree:
-            info = self.root.logger_info
-            info('Leo: tree.populate_children...')
+            info = self.root.info
+            info('tree.populate_children...')
             for child in children:
-                info('Leo:  child: %s' % child)
+                info('  child: %s' % child)
         self.leo_populated_dict [parent_gnx] = True
         assert parent_gnx in self.leo_items, (parent_gnx, repr(self.leo_items))
         with self.leo_items[parent_gnx]:
@@ -535,7 +537,7 @@ class LeoTree(flx.Widget):
         message = '%s: %s' % (s.rjust(15), id_)
         w.log.put(message)
         if debug and debug_tree:
-            self.root.logger_info('Leo: tree.show_event: ' + message)
+            self.root.info('tree.show_event: ' + message)
 
         
     #@-others
