@@ -22,6 +22,8 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
+debug = False
+debug_tree = True
 #@+others
 #@+node:ekr.20181103151350.1: **  init
 def init():
@@ -68,7 +70,20 @@ class LeoApp(flx.PyComponent):
     #@+node:ekr.20181111142921.1: *4* app.action: do_command
     @flx.action
     def do_command(self, command):
-        self.main_window.log.put('app.do_command: %r' % command)
+
+        w = self.main_window
+        tree = w.tree
+        if command == 'clear':
+            tree.clear_tree()
+        elif command == 'make':
+            tree.make_tree(self.outline)
+        else:
+            self.root.logger_info('Leo: app.do_command: unknown command: %r' % command)
+    #@+node:ekr.20181112165240.1: *4* app.action: logger_info
+    @flx.action
+    def logger_info (self, s):
+        '''Send the string s to the flex logger, at level info.'''
+        flx.logger.info(s)
     #@+node:ekr.20181111202747.1: *4* app.action: select_ap
     @flx.action
     def select_ap(self, ap):
@@ -204,6 +219,7 @@ class LeoApp(flx.PyComponent):
     #@+node:ekr.20181111155525.1: *3* app.utils
     #@+node:ekr.20181111204659.1: *4* app.p_to_ap
     def p_to_ap(self, p):
+        '''Convert an archived position to a true Leo position.'''
         aList = [p._childIndex]
         while p.stack:
             v, child_index = p.stack.pop()
@@ -419,24 +435,51 @@ class LeoTree(flx.Widget):
     
     def init(self, outline):
         # pylint: disable=arguments-differ
+        self.tree = flx.TreeWidget(flex=1, max_selected=1)
+        self.clear_tree()
+        self.leo_selected_gnx = outline[0][1]
+            # The gnx of the selected tree item.
+        self.make_tree(outline)
+
+    #@+others
+    #@+node:ekr.20181112163222.1: *4* tree.actions
+    #@+node:ekr.20181112163252.1: *5* tree.action: clear_tree
+    @flx.action
+    def clear_tree(self):
+        '''
+        Completely clear the tree, preparing to recreate it.
+        
+        Important: we do *not* clear self.tree itself!
+        '''
+        for item in self.leo_items.values():
+            if debug and debug_tree:
+                self.root.logger_info('Leo: clear_tree: dispose: %r' % item)
+            item.dispose()
         self.leo_items = {}
             # Keys are gnx's, values are LeoTreeItems.
         self.leo_populated_dict = {}
             # Keys are gnx's, values are True.
-        self.leo_selected_gnx = outline[0][1]
-            # The gnx of the selected tree item.
-        with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
-            self.make_tree(outline)
-
-    #@+others
-    #@+node:ekr.20181110175222.1: *4*  tree.action: receive_children
+    #@+node:ekr.20181105045657.1: *5* tree.action: make_tree
+    @flx.action
+    def make_tree(self, outline):
+        '''Populate the outline from a list of tuples.'''
+        with self.tree:
+            for ap, gnx, h in outline:
+                # ap is an archived position, a list of ints.
+                if len(ap) == 1:
+                    item = LeoTreeItem(gnx, ap, text=h, checked=None, collapsed=True)
+                    if debug and debug_tree:
+                        self.root.logger_info('Leo: make.tree: item: %r' % item)
+                    self.leo_items [gnx] = item
+    #@+node:ekr.20181110175222.1: *5* tree.action: receive_children
     @flx.action
     def receive_children(self, d):
         parent_ap, parent_gnx, parent_headline = d.get('parent')
         assert parent_gnx == d.get('gnx'), (repr(parent_gnx), repr(d.get('gnx')))
         children = d.get('children', [])
         self.populate_children(children, parent_gnx)
-    #@+node:ekr.20181109083659.1: *4*  tree.reaction: on_selected_event
+    #@+node:ekr.20181112172518.1: *4* tree.reactions
+    #@+node:ekr.20181109083659.1: *5* tree.reaction: on_selected_event
     @flx.reaction('tree.children**.selected')
     def on_selected_event(self, *events):
         '''
@@ -455,7 +498,7 @@ class LeoTree(flx.Widget):
                     # Set the status line directly.
                 self.root.send_children_to_tree(gnx)
                     # Send the children back to us.
-    #@+node:ekr.20181104080854.3: *4*  tree.reaction: on_tree_event
+    #@+node:ekr.20181104080854.3: *5* tree.reaction: on_tree_event
     # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
     @flx.reaction(
         'tree.children**.checked',
@@ -464,21 +507,18 @@ class LeoTree(flx.Widget):
     )
     def on_tree_event(self, *events):
         for ev in events:
-            if 0: # Debugging only.
+            if debug:
                 self.show_event(ev)
-    #@+node:ekr.20181105045657.1: *4* tree.make_tree
-    def make_tree(self, outline):
-        '''Populate the outline from a list of tuples.'''
-        for ap, gnx, h in outline:
-            # ap is an archived position, a list of ints.
-            if len(ap) == 1:
-                item = LeoTreeItem(gnx, ap, text=h, checked=None, collapsed=True)
-                self.leo_items [gnx] = item
     #@+node:ekr.20181111011928.1: *4* tree.populate_children
     def populate_children(self, children, parent_gnx):
         '''Populate parent with the children if necessary.'''
         if parent_gnx in self.leo_populated_dict:
             return
+        if debug and debug_tree:
+            info = self.root.logger_info
+            info('Leo: tree.populate_children...')
+            for child in children:
+                info('Leo:  child: %s' % child)
         self.leo_populated_dict [parent_gnx] = True
         assert parent_gnx in self.leo_items, (parent_gnx, repr(self.leo_items))
         with self.leo_items[parent_gnx]:
@@ -488,11 +528,16 @@ class LeoTree(flx.Widget):
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
-        log = self.root.main_window.log
+        w = self.root.main_window
         id_ = ev.source.title or ev.source.text
         kind = '' if ev.new_value else 'un-'
         s = kind + ev.type
-        log.put('%s: %s' % (s.rjust(15), id_))
+        message = '%s: %s' % (s.rjust(15), id_)
+        w.log.put(message)
+        if debug and debug_tree:
+            self.root.logger_info('Leo: tree.show_event: ' + message)
+
+        
     #@-others
 #@+node:ekr.20181108233657.1: *3* class LeoTreeItem
 class LeoTreeItem(flx.TreeItem):
@@ -505,9 +550,9 @@ class LeoTreeItem(flx.TreeItem):
 #@-others
 if __name__ == '__main__':
     flx.launch(LeoApp)
-    # A hack: suppress the "Automatically scrolling cursor into view" messages
-    # Be careful to allow most important messages.
-    if 1:
+    if not debug:
+        # Suppress the "Automatically scrolling cursor into view" messages
+        # by *allowing* only important messages.
         allowed = r'(Critical|Error|Leo|Session|Starting|Stopping|Warning)'
         pattern = re.compile(allowed, re.IGNORECASE)
         flx.set_log_level('INFO', pattern)
