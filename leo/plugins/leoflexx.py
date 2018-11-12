@@ -97,23 +97,24 @@ class LeoApp(flx.PyComponent):
     @flx.action
     def send_children_to_tree(self, gnx):
         '''Send the children of the node with the given gnx to the tree.'''
+        w = self.main_window
         children = self.gnx_to_children.get(gnx) or []
-        self.main_window.tree.receive_children({
+        w.tree.receive_children({
             'gnx': gnx,
             'parent': self.gnx_to_node[gnx],
             'children': children,
         })
-        
     #@+node:ekr.20181111095637.1: *4* app.action: set_body
     @flx.action
     def set_body(self, gnx):
         '''Set the body text in LeoBody to the body text of indicated node.'''
+        w = self.main_window
         body = self.gnx_to_body[gnx]
-        self.main_window.body.set_body(body)
+        w.body.set_body(body)
     #@+node:ekr.20181111095640.2: *4* app.action: set_status_to_unl
     @flx.action
     def set_status_to_unl(self, ap, gnx):
-        c, g = self.c, self.g
+        c, g, w = self.c, self.g, self.main_window
         unls = []
         for i in range(len(ap)):
             ap_s = self.ap_to_string(ap[:i+1])
@@ -122,7 +123,7 @@ class LeoApp(flx.PyComponent):
             unls.append(data[2] if data else '<not found: %s>' % ap_s)
         fn = g.shortFileName(c.fileName())
         fn = fn + '#' if fn else ''
-        self.main_window.status_line.set_text(fn + '->'.join(unls))
+        w.status_line.set_text(fn + '->'.join(unls))
     #@+node:ekr.20181111155422.1: *3* app.compute outline data...
     #@+node:ekr.20181110084838.1: *4* app.compute_ap_to_gnx
     def compute_ap_to_gnx (self, outline):
@@ -538,8 +539,6 @@ class LeoTree(flx.Widget):
         w.log.put(message)
         if debug and debug_tree:
             self.root.info('tree.show_event: ' + message)
-
-        
     #@-others
 #@+node:ekr.20181108233657.1: *3* class LeoTreeItem
 class LeoTreeItem(flx.TreeItem):
