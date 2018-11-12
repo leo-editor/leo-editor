@@ -56,7 +56,7 @@ class LeoApp(flx.PyComponent):
         self.gnx_to_children = self.compute_gnx_to_children(
             self.gnx_to_node, self.gnx_to_parents, self.outline)
         t2 = time.clock()
-        flx.logger.info('LeoApp.init: %5.2f sec.' % (t2-t1))
+        self.info('LeoApp.init: %5.2f sec.' % (t2-t1))
         #
         # Create the main window and all its components.
         first_gnx = self.outline[0][1]
