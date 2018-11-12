@@ -69,6 +69,13 @@ class LeoApp(flx.PyComponent):
     @flx.action
     def do_command(self, command):
         self.main_window.log.put('app.do_command: %r' % command)
+    #@+node:ekr.20181111202747.1: *4* app.action: select_ap
+    @flx.action
+    def select_ap(self, ap):
+        '''Select the position in Leo's core corresponding to the archived position.'''
+        c = self.c
+        p = self.ap_to_p(ap)
+        c.frame.tree.select(p)
     #@+node:ekr.20181111095640.1: *4* app.action: send_children_to_tree
     @flx.action
     def send_children_to_tree(self, gnx):
@@ -86,7 +93,6 @@ class LeoApp(flx.PyComponent):
         '''Set the body text in LeoBody to the body text of indicated node.'''
         body = self.gnx_to_body[gnx]
         self.main_window.body.set_body(body)
-
     #@+node:ekr.20181111095640.2: *4* app.action: set_status_to_unl
     @flx.action
     def set_status_to_unl(self, ap, gnx):
@@ -196,6 +202,27 @@ class LeoApp(flx.PyComponent):
         c = self.c
         return [(p.archivedPosition(), p.gnx, p.h) for p in c.all_positions()]
     #@+node:ekr.20181111155525.1: *3* app.utils
+    #@+node:ekr.20181111204659.1: *4* app.p_to_ap
+    def p_to_ap(self, p):
+        aList = [p._childIndex]
+        while p.stack:
+            v, child_index = p.stack.pop()
+            aList.append(child_index)
+        return list(reversed(aList))
+    #@+node:ekr.20181111203114.1: *4* app.ap_to_p
+    def ap_to_p (self, ap):
+        '''Return the position in the Leo outline corresponding to ap.'''
+        import leo.core.leoNodes as leoNodes
+        c = self.c
+        parent = c.hiddenRootNode
+        stack = [] # stack entries are tuples (v, childIndex).
+        # The top of the stack is the position's parent.
+        for child_index in ap:
+            v = parent.children[child_index]
+            stack.append(v, child_index)
+            parent = v
+        v, child_index = stack.pop()
+        return leoNodes.position(v, child_index, stack)
     #@+node:ekr.20181110090611.1: *4* app.ap_to_string
     def ap_to_string(self, ap):
         '''
@@ -278,6 +305,7 @@ class LeoLog(flx.Widget):
     """
 
     def init(self, signon):
+        # pylint: disable=arguments-differ
         # pylint: disable=undefined-variable
             # window
         global window
