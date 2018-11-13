@@ -306,9 +306,11 @@ class LeoApp(flx.PyComponent):
         self.clear_data()
         aList = []
         p = c.rootPosition()
+        ### Testing: forcibly expand the first node.
+        p.expand()
         while p:
             self.info('make_redraw_dict: %r' % p)
-            print(p.isVisible(c), p.level(), p.h)
+            ### print(p.isVisible(c), p.level(), p.h)
             if p.level() == 0 or p.isVisible():
                 aList.append(self.make_dict_for_position(p))
                 p.moveToNodeAfterTree()
@@ -318,7 +320,6 @@ class LeoApp(flx.PyComponent):
         if 1: ###
             t2 = time.clock()
             self.info('make_redraw_dict: %5.2f sec' % (t2-t1))
-        if 1: ###
             self.dump_redraw_dict(d)
             
         return d
@@ -339,9 +340,10 @@ class LeoApp(flx.PyComponent):
         print('redraw dict...')
         for i, item in enumerate(d ['items']):
             self.dump_redraw_item(i, item, level=0)
+            print('')
             
     def dump_redraw_item(self, i, item, level):
-        
+        '''Pretty print one item in the redraw dict.'''
         padding = ' '*4*level
         # Print most of the item.
         print('%s%s gnx: %s body: %s %s' % (
@@ -363,11 +365,22 @@ class LeoApp(flx.PyComponent):
             padding = padding + ' '*4
             for stack_item in ap ['stack']:
                 gnx, childIndex = stack_item
-                print('%s%s %s' % (padding, childIndex.ljust(2), gnx))
+                print('%s%s %s' % (padding, str(childIndex).ljust(2), gnx))
         else:
             print('%sap: childIndex: %s v: %s stack: []' % (
                 padding, str(ap ['childIndex']).ljust(2), ap['v']))
-        print('')
+        # Print children...
+        children = item ['children']
+        if children:
+            print('%sChildren...' % padding)
+            print('%s[' % padding)
+            padding = padding + ' '*4
+            for j, child in enumerate(children):
+                index = '%s.%s' % (i, j)
+                self.dump_redraw_item(index, child, level+1)
+            padding = padding[:-4]
+            print('%s]' % padding)
+        # print('')
     #@+node:ekr.20181113044701.1: *5* app.make_dict_for_position
     def make_dict_for_position(self, p):
         '''
