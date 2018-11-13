@@ -28,7 +28,7 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
 debug = True
 debug_tree = True
-new_tree = True # Use the new tree scheme.
+new_tree = False # Use the new tree scheme.
 #@+others
 #@+node:ekr.20181103151350.1: **  init
 def init():
@@ -749,12 +749,28 @@ class LeoTree(flx.Widget):
     def redraw_from_dict(self, redraw_dict):
         '''
         Recursively create LeoTreeItems from all items in the redraw_list.
+        
+        The tree has already been cleared.
         '''
+        d = redraw_dict
         if debug_tree:
             info = self.root.info
             info('tree.redraw_from_list')
-            self.root.dump_redraw_dict(redraw_dict)
-        
+            self.root.dump_redraw_dict(d)
+        #
+        # Set the selected node.
+        ap = d ['c.p']
+        self.leo_selected_gnx = ap ['gnx']
+        #
+        ### Code like populate_children
+        ### self.leo_populated_dict [parent_gnx] = True
+        ###with self.leo_items[parent_gnx]:
+        with self.tree:
+            for item in d ['items']:
+                print(repr(item))
+            # for ap, gnx, headline in children:
+                # item = LeoTreeItem(gnx, ap, text=headline, checked=None, collapsed=True)
+                # self.leo_items [gnx] = item
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
