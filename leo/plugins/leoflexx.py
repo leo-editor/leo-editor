@@ -28,7 +28,7 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
 debug = True
 debug_tree = True
-new_tree = True # Use the new tree scheme.
+new_tree = False # Use the new tree scheme.
 #@+others
 #@+node:ekr.20181103151350.1: **  init
 def init():
@@ -58,26 +58,36 @@ class LeoApp(flx.PyComponent):
     def init(self):
         c, g = self.open_bridge()
         self.c, self.g = c, g
-        #
-        # Compute data structures. On my machine, it takes 0.15 sec.
         t1 = time.clock()
-        self.outline = self.get_outline_list()
-        self.ap_to_gnx = self.compute_ap_to_gnx(self.outline)
-        self.gnx_to_body = self.compute_gnx_to_body(self.outline)
-        self.gnx_to_node = self.compute_gnx_to_node(self.outline)
-        self.gnx_to_parents = self.compute_gnx_to_parents(
-            self.ap_to_gnx, self.gnx_to_node, self.outline)
-        self.gnx_to_children = self.compute_gnx_to_children(
-            self.gnx_to_node, self.gnx_to_parents, self.outline)
-        self.gnx_to_vnode = {} ### Not ready yet.
+        if new_tree:
+            pass
+        else:
+            # Compute data structures. On my machine, it takes 0.15 sec.
+            self.outline = self.get_outline_list()
+            self.ap_to_gnx = self.compute_ap_to_gnx(self.outline)
+            self.gnx_to_body = self.compute_gnx_to_body(self.outline)
+            self.gnx_to_node = self.compute_gnx_to_node(self.outline)
+            self.gnx_to_parents = self.compute_gnx_to_parents(
+                self.ap_to_gnx, self.gnx_to_node, self.outline)
+            self.gnx_to_children = self.compute_gnx_to_children(
+                self.gnx_to_node, self.gnx_to_parents, self.outline)
+            self.gnx_to_vnode = {} ### Not ready yet.
+            # Huh?
+            first_gnx = self.outline[0][1]
+            body = self.gnx_to_body[first_gnx]
         t2 = time.clock()
         self.info('LeoApp.init: %5.2f sec.' % (t2-t1))
-        #
-        # Create the main window and all its components.
-        first_gnx = self.outline[0][1]
-        body = self.gnx_to_body[first_gnx]
+            #
+            # Create the main window and all its components.
         signon = '%s\n%s' % (g.app.signon, g.app.signon2)
-        main_window = LeoMainWindow(body, self.outline, signon)
+        if new_tree:
+            body = c.rootPosition().b
+            outline = None
+            redraw_dict = self.make_redraw_dict()
+            main_window = LeoMainWindow(body, outline, redraw_dict, signon)
+        else:
+            outline, redraw_dict = self.outline, None
+        main_window = LeoMainWindow(body, outline, redraw_dict, signon)
         self._mutate('main_window', main_window)
 
     #@+others
@@ -99,6 +109,71 @@ class LeoApp(flx.PyComponent):
         else:
             self.root.info('app.do_command: unknown command: %r' % command)
             ### To do: pass the command on to Leo's core.
+    #@+node:ekr.20181113053154.1: *4* app.action: dump_redraw_dict & helpers
+    @flx.action
+    def dump_redraw_dict(self, d):
+        '''Pretty print the redraw dict.'''
+        print('app.dump_redraw dict...')
+        self.dump_ap(d ['c.p'], tag='c.p')
+        for i, item in enumerate(d ['items']):
+            self.dump_redraw_item(i, item, level=0)
+            print('')
+    #@+node:ekr.20181113085722.1: *5* app.dump_ap
+    def dump_ap (self, ap, padding=None, tag=None):
+        '''Print an archived position fully.'''
+        stack = ap ['stack']
+        if not padding:
+            padding = ''
+        padding = padding + ' '*4 
+        if stack:
+            print('%s%s:...' % (padding, tag or 'ap'))
+            padding = padding + ' '*4
+            print('%schildIndex: %s v: %s %s stack...' % (
+                padding,
+                str(ap ['childIndex']),
+                ap['v'], ### .ljust(25),
+                ap['headline'],
+            ))
+            padding = padding + ' '*4
+            for stack_item in ap ['stack']:
+                gnx, childIndex, headline = stack_item
+                print('%s%s %s %s' % (
+                    padding,
+                    str(childIndex).ljust(2),
+                    gnx, ### .ljust(25),
+                    headline,
+                ))
+        else:
+            print('%s%s: childIndex: %s v: %s stack: [] %s' % (
+                padding, tag or 'ap',
+                str(ap ['childIndex']).ljust(2),
+                ap['v'], ### .ljust(25),
+                ap['headline'],
+            ))
+    #@+node:ekr.20181113091522.1: *5* app.redraw_item
+    def dump_redraw_item(self, i, item, level):
+        '''Pretty print one item in the redraw dict.'''
+        padding = ' '*4*level
+        # Print most of the item.
+        print('%s%s gnx: %s body: %s %s' % (
+            padding,
+            str(i).ljust(3),
+            item ['gnx'].ljust(25),
+            str(len(item ['body'])).ljust(4),
+            item ['headline'],
+        ))
+        self.dump_ap(item ['ap'], padding=padding)
+        # Print children...
+        children = item ['children']
+        if children:
+            print('%sChildren...' % padding)
+            print('%s[' % padding)
+            padding = padding + ' '*4
+            for j, child in enumerate(children):
+                index = '%s.%s' % (i, j)
+                self.dump_redraw_item(index, child, level+1)
+            padding = padding[:-4]
+            print('%s]' % padding)
     #@+node:ekr.20181112165240.1: *4* app.action: info
     @flx.action
     def info (self, s):
@@ -338,70 +413,6 @@ class LeoApp(flx.PyComponent):
         self.gnx_to_vnode = {}
         self.outline = []
             ### Aha: this won't be necessary!
-    #@+node:ekr.20181113053154.1: *5* app.dump_redraw_dict
-    def dump_redraw_dict(self, d):
-        '''Pretty print the redraw dict.'''
-        print('redraw dict...')
-        self.dump_ap(d ['c.p'], tag='c.p')
-        for i, item in enumerate(d ['items']):
-            self.dump_redraw_item(i, item, level=0)
-            print('')
-            
-    def dump_redraw_item(self, i, item, level):
-        '''Pretty print one item in the redraw dict.'''
-        padding = ' '*4*level
-        # Print most of the item.
-        print('%s%s gnx: %s body: %s %s' % (
-            padding,
-            str(i).ljust(3),
-            item ['gnx'].ljust(25),
-            str(len(item ['body'])).ljust(4),
-            item ['headline'],
-        ))
-        self.dump_ap(item ['ap'], padding=padding)
-        # Print children...
-        children = item ['children']
-        if children:
-            print('%sChildren...' % padding)
-            print('%s[' % padding)
-            padding = padding + ' '*4
-            for j, child in enumerate(children):
-                index = '%s.%s' % (i, j)
-                self.dump_redraw_item(index, child, level+1)
-            padding = padding[:-4]
-            print('%s]' % padding)
-    #@+node:ekr.20181113085722.1: *5* app.dump_ap
-    def dump_ap (self, ap, padding=None, tag=None):
-        '''Print an archived position fully.'''
-        stack = ap ['stack']
-        if not padding:
-            padding = ''
-        padding = padding + ' '*4 
-        if stack:
-            print('%s%s:...' % (padding, tag or 'ap'))
-            padding = padding + ' '*4
-            print('%schildIndex: %s v: %s %s stack...' % (
-                padding,
-                str(ap ['childIndex']),
-                ap['v'], ### .ljust(25),
-                ap['headline'],
-            ))
-            padding = padding + ' '*4
-            for stack_item in ap ['stack']:
-                gnx, childIndex, headline = stack_item
-                print('%s%s %s %s' % (
-                    padding,
-                    str(childIndex).ljust(2),
-                    gnx, ### .ljust(25),
-                    headline,
-                ))
-        else:
-            print('%s%s: childIndex: %s v: %s stack: [] %s' % (
-                padding, tag or 'ap',
-                str(ap ['childIndex']).ljust(2),
-                ap['v'], ### .ljust(25),
-                ap['headline'],
-            ))
     #@+node:ekr.20181113044701.1: *5* app.make_dict_for_position
     def make_dict_for_position(self, p):
         '''
@@ -547,13 +558,13 @@ class LeoMainWindow(flx.Widget):
     status_line = flx.ComponentProp(settable=True)
     tree = flx.ComponentProp(settable=True)
 
-    def init(self, body, outline, signon):
+    def init(self, body_s, outline, redraw_dict, signon):
         # pylint: disable=arguments-differ
         with flx.VSplit():
             with flx.HSplit(flex=1):
-                tree = LeoTree(outline, flex=1)
+                tree = LeoTree(outline, redraw_dict, flex=1)
                 log = LeoLog(signon, flex=1)
-            body = LeoBody(body, flex=1)
+            body = LeoBody(body_s, flex=1)
             minibuffer = LeoMiniBuffer()
             status_line = LeoStatusLine()
         for name, prop in (
@@ -628,13 +639,16 @@ class LeoTree(flx.Widget):
     }
     '''
     
-    def init(self, outline):
+    def init(self, outline, redraw_dict):
         # pylint: disable=arguments-differ
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
         self.clear_tree()
-        self.leo_selected_gnx = outline[0][1]
             # The gnx of the selected tree item.
-        self.make_tree(outline)
+        if new_tree:
+            self.redraw(redraw_dict)
+        else:
+            self.leo_selected_gnx = outline[0][1]
+            self.make_tree(outline)
 
     #@+others
     #@+node:ekr.20181112163222.1: *4* tree.actions
@@ -676,12 +690,12 @@ class LeoTree(flx.Widget):
         self.populate_children(children, parent_gnx)
     #@+node:ekr.20181113043004.1: *5* tree.action: redraw
     @flx.action
-    def redraw(self, redraw_list):
+    def redraw(self, redraw_dict):
         '''
         Clear the present tree and redraw using the redraw_list.
         '''
         self.clear_tree()
-        self.redraw_from_list(redraw_list)
+        self.redraw_from_dict(redraw_dict)
     #@+node:ekr.20181112172518.1: *4* tree.reactions
     #@+node:ekr.20181109083659.1: *5* tree.reaction: on_selected_event
     @flx.reaction('tree.children**.selected')
@@ -731,16 +745,14 @@ class LeoTree(flx.Widget):
             for ap, gnx, headline in children:
                 item = LeoTreeItem(gnx, ap, text=headline, checked=None, collapsed=True)
                 self.leo_items [gnx] = item
-    #@+node:ekr.20181113043131.1: *4* tree.redraw_from_list
-    def redraw_from_list(self, redraw_list):
+    #@+node:ekr.20181113043131.1: *4* tree.redraw_from_dict
+    def redraw_from_dict(self, redraw_dict):
         '''
         Recursively create LeoTreeItems from all items in the redraw_list.
         '''
         if 1: ### debug
             info = self.root.info
             info('tree.redraw_from_list')
-            for aList in redraw_list:
-                info(aList)
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
