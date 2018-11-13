@@ -280,8 +280,10 @@ class LeoApp(flx.PyComponent):
         '''Convert an archived position to a true Leo position.'''
         return {
             'childIndex': p._childIndex,
+            'headline': p.h, # For dumps.
             'v': p.v.gnx,
-            'stack': [(v.gnx, childIndex) for (v, childIndex) in p.stack],
+            'stack': [(v.gnx, childIndex, v.h) for (v, childIndex) in p.stack],
+                # the v.h entry is for dumps.
         }
     #@+node:ekr.20181111203114.1: *4* app.ap_to_p
     def ap_to_p (self, ap):
@@ -349,7 +351,7 @@ class LeoApp(flx.PyComponent):
         print('%s%s gnx: %s body: %s %s' % (
             padding,
             str(i).ljust(3),
-            item ['gnx'].ljust(15),
+            item ['gnx'].ljust(25),
             str(len(item ['body'])).ljust(4),
             item ['headline'],
         ))
@@ -360,15 +362,28 @@ class LeoApp(flx.PyComponent):
         if stack:
             print('%sap:...' % (padding))
             padding = padding + ' '*4
-            print('%schildIndex: %s v: %s stack...' % (
-                padding, str(ap ['childIndex']), ap['v']))
+            print('%schildIndex: %s v: %s %s stack...' % (
+                padding,
+                str(ap ['childIndex']),
+                ap['v'], ### .ljust(25),
+                ap['headline'],
+            ))
             padding = padding + ' '*4
             for stack_item in ap ['stack']:
-                gnx, childIndex = stack_item
-                print('%s%s %s' % (padding, str(childIndex).ljust(2), gnx))
+                gnx, childIndex, headline = stack_item
+                print('%s%s %s %s' % (
+                    padding,
+                    str(childIndex).ljust(2),
+                    gnx, ### .ljust(25),
+                    headline,
+                ))
         else:
-            print('%sap: childIndex: %s v: %s stack: []' % (
-                padding, str(ap ['childIndex']).ljust(2), ap['v']))
+            print('%sap: childIndex: %s v: %s stack: [] %s' % (
+                padding,
+                str(ap ['childIndex']).ljust(2),
+                ap['v'], ### .ljust(25),
+                ap['headline'],
+            ))
         # Print children...
         children = item ['children']
         if children:
@@ -380,7 +395,6 @@ class LeoApp(flx.PyComponent):
                 self.dump_redraw_item(index, child, level+1)
             padding = padding[:-4]
             print('%s]' % padding)
-        # print('')
     #@+node:ekr.20181113044701.1: *5* app.make_dict_for_position
     def make_dict_for_position(self, p):
         '''
