@@ -103,6 +103,23 @@ class LeoApp(flx.PyComponent):
         flx.logger.info('Leo: ' + s)
             # A hack: automatically add the "Leo" prefix so
             # the top-level suppression logic will not delete this message.
+    #@+node:ekr.20181113042549.1: *4* app.action: redraw
+    def redraw (self):
+        '''
+        Send a **redraw list** to the tree.
+        
+        This is a recusive list lists of items (ap, gnx, headline) describing
+        all and *only* the presently visible nodes in the tree.
+        
+        As a side effect, app.make_redraw_list updates all internal dicts.
+        '''
+        w = self.main_window
+        aList = self.make_redraw_list()
+        w.tree.redraw(aList)
+
+        
+        
+        
     #@+node:ekr.20181111202747.1: *4* app.action: select_ap
     @flx.action
     def select_ap(self, ap):
@@ -271,6 +288,55 @@ class LeoApp(flx.PyComponent):
                 (self.gnx_to_vnode[gnx], childIndex) 
                     for gnx, childIndex in ap.get('stack', [])
             ])
+    #@+node:ekr.20181113043539.1: *4* app.make_redraw_list & helpers
+    def make_redraw_list(self):
+        '''
+        Return a recursive, archivable, list of lists describing all and only
+        the visible nodes of the tree.
+        
+        As a side effect, all LeoApp data are recomputed.
+        '''
+        self.clear_data()
+        aList = []
+        p = self.c.rootPosition()
+        while p:
+            if p.level() == 0 or p.isVisible():
+                self.make_list_for_position(p, aList)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        return aList
+    #@+node:ekr.20181113044217.1: *5* app.clear_data
+    def clear_data(self):
+        '''Clear all the date describing the tree.'''
+        self.ap_to_gnx = {}
+        self.gnx_to_body = {}
+        self.gnx_to_children = {}
+        self.gnx_to_node = {}
+        self.gnx_to_parents = {}
+        self.gnx_to_vnode = {}
+        self.outline = []
+    #@+node:ekr.20181113044701.1: *5* app.make_list_for_position
+    def make_list_for_position(self, p, aList):
+        '''
+        Recursively add a sublist for p and all its visible nodes.
+        
+        Update all data structures for p.
+        '''
+        if 1: ### debug
+            info = self.root.info
+            info('tree.make_list_for_position: %s %s' % (p.gnx.ljust(17), p.h))
+        self.update_data(p)
+    #@+node:ekr.20181113045154.1: *5* app.update_data
+    def update_data(self, p):
+        '''Update all data for the visible position p.'''
+        # self.ap_to_gnx = {}
+        # self.gnx_to_body = {}
+        # self.gnx_to_children = {}
+        # self.gnx_to_node = {}
+        # self.gnx_to_parents = {}
+        # self.gnx_to_vnode = {}
+        # self.outline = []
     #@+node:ekr.20181105091545.1: *3* app.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
@@ -510,6 +576,13 @@ class LeoTree(flx.Widget):
         assert parent_gnx == d.get('gnx'), (repr(parent_gnx), repr(d.get('gnx')))
         children = d.get('children', [])
         self.populate_children(children, parent_gnx)
+    #@+node:ekr.20181113043004.1: *5* tree.action: redraw
+    def redraw(self, redraw_list):
+        '''
+        Clear the present tree and redraw using the redraw_list.
+        '''
+        self.clear_tree()
+        self.redraw_from_list(redraw_list)
     #@+node:ekr.20181112172518.1: *4* tree.reactions
     #@+node:ekr.20181109083659.1: *5* tree.reaction: on_selected_event
     @flx.reaction('tree.children**.selected')
@@ -559,6 +632,16 @@ class LeoTree(flx.Widget):
             for ap, gnx, headline in children:
                 item = LeoTreeItem(gnx, ap, text=headline, checked=None, collapsed=True)
                 self.leo_items [gnx] = item
+    #@+node:ekr.20181113043131.1: *4* tree.redraw_from_list
+    def redraw_from_list(self, redraw_list):
+        '''
+        Recursively create LeoTreeItems from all items in the redraw_list.
+        '''
+        if 1: ### debug
+            info = self.root.info
+            info('tree.redraw_from_list')
+            for aList in redraw_list:
+                info(aList)
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
