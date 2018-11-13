@@ -101,7 +101,8 @@ class LeoApp(flx.PyComponent):
         elif command == 'make':
             tree.make_tree(self.outline)
         elif command == 'redraw':
-            self.root.redraw()
+            d = self.root.redraw()
+            self.root.dump_redraw_dict(d)
         elif command == 'test':
             self.test()
         else:
@@ -198,6 +199,7 @@ class LeoApp(flx.PyComponent):
         ### w = self.main_window
         d = self.make_redraw_dict()
         assert d
+        return d ### For testing
         ### w.tree.redraw(d)
 
         
@@ -208,27 +210,35 @@ class LeoApp(flx.PyComponent):
         c = self.c
         p = self.ap_to_p(ap)
         c.frame.tree.select(p)
-    #@+node:ekr.20181111095640.1: *4* app.action: send_children_to_tree
+    #@+node:ekr.20181111095640.1: *4* app.action: send_children_to_tree (CHANGE)
     @flx.action
     def send_children_to_tree(self, gnx):
         '''Send the children of the node with the given gnx to the tree.'''
-        if new_tree:
-            print('app.send_children_to_tree', gnx)
         w = self.main_window
-        children = self.gnx_to_children.get(gnx) or []
+        if new_tree:
+            ### print('app.send_children_to_tree: ap:', repr(gnx))
+            ### gnx should be an AP.
+            ### Translate it to a true position p, and use p.children().
+            children = [] ### Not ready yet.
+            parent = None
+        else:
+            children = self.gnx_to_children.get(gnx) or []
+            parent = self.gnx_to_node[gnx]
         w.tree.receive_children({
+            ### 'ap': ap, 
             'gnx': gnx,
-            'parent': self.gnx_to_node[gnx],
+            'parent': parent,
             'children': children,
         })
-    #@+node:ekr.20181111095637.1: *4* app.action: set_body
+    #@+node:ekr.20181111095637.1: *4* app.action: set_body (CHANGE)
     @flx.action
     def set_body(self, gnx):
         '''Set the body text in LeoBody to the body text of indicated node.'''
         w = self.main_window
         if new_tree:
             ### The gnx should be an AP.
-            print('===== app.set_body', gnx)
+            ### print('===== app.set_body', repr(gnx))
+            body = ''
         else:
             body = self.gnx_to_body[gnx]
         w.body.set_body(body)
@@ -672,9 +682,11 @@ class LeoTree(flx.Widget):
                     if new_tree:
                         self.root.info('make.tree: item: %r' % item)
                     self.leo_items [gnx] = item
-    #@+node:ekr.20181110175222.1: *5* tree.action: receive_children
+    #@+node:ekr.20181110175222.1: *5* tree.action: receive_children (CHANGE)
     @flx.action
     def receive_children(self, d):
+        if new_tree:
+            return ### The following code crashes in JS.
         parent_ap, parent_gnx, parent_headline = d.get('parent')
         assert parent_gnx == d.get('gnx'), (repr(parent_gnx), repr(d.get('gnx')))
         children = d.get('children', [])
@@ -699,8 +711,8 @@ class LeoTree(flx.Widget):
                 # We are selecting a node, not de-selecting it.
                 gnx = ev.source.leo_gnx
                 ap = ev.source.leo_position
-                if new_tree:
-                    print('----- tree.on_selected_event', gnx)
+                # if new_tree:
+                    # print('----- tree.on_selected_event', repr(gnx))
                 self.leo_selected_gnx = gnx
                     # Track the change.
                 if new_tree:
