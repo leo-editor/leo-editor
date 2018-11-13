@@ -28,7 +28,7 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
 debug = True
 debug_tree = True
-new_tree = False # Use the new tree scheme.
+new_tree = True # Use the new tree scheme.
 #@+others
 #@+node:ekr.20181103151350.1: **  init
 def init():
@@ -400,7 +400,7 @@ class LeoApp(flx.PyComponent):
         if 1: ###
             t2 = time.clock()
             self.info('app.make_redraw_dict: %5.3f sec' % (t2-t1))
-            self.dump_redraw_dict(d)
+            ### self.dump_redraw_dict(d)
         return d
     #@+node:ekr.20181113044217.1: *5* app.clear_data
     def clear_data(self):
@@ -750,9 +750,11 @@ class LeoTree(flx.Widget):
         '''
         Recursively create LeoTreeItems from all items in the redraw_list.
         '''
-        if 1: ### debug
+        if debug_tree:
             info = self.root.info
             info('tree.redraw_from_list')
+            self.root.dump_redraw_dict(redraw_dict)
+        
     #@+node:ekr.20181108232118.1: *4* tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
