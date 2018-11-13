@@ -26,8 +26,8 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
-new_tree = False # Use the new tree scheme.
-debug = new_tree
+new_tree = True # Use the new tree scheme.
+debug = True or new_tree ###
 debug_tree = True
 print('===== new_tree', new_tree)
 #@+others
@@ -60,7 +60,7 @@ class LeoApp(flx.PyComponent):
         c, g = self.open_bridge()
         self.c, self.g = c, g
         t1 = time.clock()
-        if True:
+        if not new_tree:
             # Compute data structures. On my machine, it takes 0.15 sec.
             self.outline = self.get_outline_list()
             self.ap_to_gnx = self.compute_ap_to_gnx(self.outline)
@@ -70,6 +70,7 @@ class LeoApp(flx.PyComponent):
                 self.ap_to_gnx, self.gnx_to_node, self.outline)
             self.gnx_to_children = self.compute_gnx_to_children(
                 self.gnx_to_node, self.gnx_to_parents, self.outline)
+                # Used by send_children_to_tree.
             self.gnx_to_vnode = {}
         t2 = time.clock()
         self.info('LeoApp.init: %5.2f sec.' % (t2-t1))
@@ -78,13 +79,11 @@ class LeoApp(flx.PyComponent):
         signon = '%s\n%s' % (g.app.signon, g.app.signon2)
         if new_tree:
             body = c.rootPosition().b
-            outline = None
-            redraw_dict = self.make_redraw_dict()
-        else:
-            first_gnx = self.outline[0][1]
-            body = self.gnx_to_body[first_gnx]
-            outline, redraw_dict = self.outline, None
-        main_window = LeoMainWindow(body, outline, redraw_dict, signon)
+            data = self.make_redraw_dict()
+        else: 
+            body = self.gnx_to_body[self.outline[0][1]]
+            data = self.outline
+        main_window = LeoMainWindow(body, data, signon)
         self._mutate('main_window', main_window)
 
     #@+others
@@ -195,11 +194,10 @@ class LeoApp(flx.PyComponent):
         
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
-        ### w = self.main_window
+        print('app.redraw')
+        w = self.main_window
         d = self.make_redraw_dict()
-        assert d
-        return d ### For testing
-        ### w.tree.redraw(d)
+        w.tree.redraw(d)
 
         
     #@+node:ekr.20181111202747.1: *4* app.action: select_ap
@@ -213,14 +211,15 @@ class LeoApp(flx.PyComponent):
     @flx.action
     def send_children_to_tree(self, gnx):
         '''Send the children of the node with the given gnx to the tree.'''
+        if new_tree:
+            print('app.send_children_to_tree: NOT READY')
+            return
         w = self.main_window
-        if gnx not in self.gnx_to_children:
-            print('===== app.send_children_to_tree: not in gnx_to_children:', gnx)
-        children = self.gnx_to_children.get(gnx) or []
+        children = self.gnx_to_children.get(gnx)
+        if not children:
+            return # not an error.
         parent = self.gnx_to_node[gnx]
-        ### print('tree.send_children_to_tree', len(children), parent)
         w.tree.receive_children({
-            ### 'ap': ap, 
             'gnx': gnx,
             'parent': parent,
             'children': children,
@@ -230,8 +229,11 @@ class LeoApp(flx.PyComponent):
     def set_body(self, gnx):
         '''Set the body text in LeoBody to the body text of indicated node.'''
         w = self.main_window
-        body = self.gnx_to_body[gnx]
-        w.body.set_body(body)
+        if new_tree:
+            print('app.set_body: NOT READY')
+        else:
+            body = self.gnx_to_body[gnx]
+            w.body.set_body(body)
     #@+node:ekr.20181111095640.2: *4* app.action: set_status_to_unl (CHANGE)
     @flx.action
     def set_status_to_unl(self, ap, gnx):
@@ -370,7 +372,7 @@ class LeoApp(flx.PyComponent):
             'stack': [(v.gnx, childIndex, v.h) for (v, childIndex) in p.stack],
                 # the v.h entry is for dumps.
         }
-    #@+node:ekr.20181111203114.1: *4* app.ap_to_p
+    #@+node:ekr.20181111203114.1: *4* app.ap_to_p (uses gnx_to_vnode)
     def ap_to_p (self, ap):
         '''Return the position in the Leo outline corresponding to ap.'''
         return leoNodes.position(
@@ -390,7 +392,8 @@ class LeoApp(flx.PyComponent):
         '''
         c = self.c
         t1 = time.clock()
-        ###### self.clear_data()
+        self.clear_data()
+            # This is correct. We are about to fully redraw the screen.
         aList = []
         p = c.rootPosition()
         ### Testing: forcibly expand the first node.
@@ -413,14 +416,15 @@ class LeoApp(flx.PyComponent):
     def clear_data(self):
         '''Clear all the date describing the tree.'''
         print('===== tree.clear_data')
-        self.ap_to_gnx = {}
+        # These *are* necessary.
         self.gnx_to_body = {}
-        self.gnx_to_children = {}
-        self.gnx_to_node = {}
-        self.gnx_to_parents = {}
         self.gnx_to_vnode = {}
-        self.outline = []
-            ### Aha: this won't be necessary!
+        ###
+            # self.ap_to_gnx = {}
+            # self.gnx_to_children = {}
+            # self.gnx_to_node = {}
+            # self.gnx_to_parents = {}
+            # self.outline = []
     #@+node:ekr.20181113044701.1: *5* app.make_dict_for_position
     def make_dict_for_position(self, p):
         '''
@@ -553,11 +557,11 @@ class LeoMainWindow(flx.Widget):
     status_line = flx.ComponentProp(settable=True)
     tree = flx.ComponentProp(settable=True)
 
-    def init(self, body_s, outline, redraw_dict, signon):
+    def init(self, body_s, data, signon):
         # pylint: disable=arguments-differ
         with flx.VSplit():
             with flx.HSplit(flex=1):
-                tree = LeoTree(outline, redraw_dict, flex=1)
+                tree = LeoTree(data, flex=1)
                 log = LeoLog(signon, flex=1)
             body = LeoBody(body_s, flex=1)
             minibuffer = LeoMiniBuffer()
@@ -634,7 +638,7 @@ class LeoTree(flx.Widget):
     }
     '''
     
-    def init(self, outline, redraw_dict):
+    def init(self, data):
         # pylint: disable=arguments-differ
         self.leo_items = {}
             # Keys are gnx's, values are LeoTreeItems.
@@ -644,10 +648,10 @@ class LeoTree(flx.Widget):
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
             # The gnx of the selected tree item.
         if new_tree:
-            self.redraw_from_dict(redraw_dict)
+            self.redraw_from_dict(data)
         else:
-            self.leo_selected_gnx = outline[0][1]
-            self.make_tree(outline)
+            self.leo_selected_gnx = data[0][1]
+            self.make_tree(data)
 
     #@+others
     #@+node:ekr.20181112163222.1: *4* tree.actions
@@ -670,16 +674,16 @@ class LeoTree(flx.Widget):
                 # Keys are gnx's, values are LeoTreeItems.
             self.leo_populated_dict = {}
                 # Keys are gnx's, values are True.
-    #@+node:ekr.20181105045657.1: *5* tree.action: make_tree
+    #@+node:ekr.20181105045657.1: *5* tree.action: make_tree (to be removed)
     @flx.action
     def make_tree(self, outline):
-        '''Populate the outline from a list of tuples.'''
+        '''Populate the top-level of the outline from a list of tuples.'''
         with self.tree:
             for ap, gnx, h in outline:
                 # ap is an archived position, a list of ints.
                 if len(ap) == 1:
                     item = LeoTreeItem(gnx, ap, text=h, checked=None, collapsed=True)
-                    print('make.tree: item: %r' % item)
+                    ### print('make.tree: item: %r' % item)
                     self.leo_items [gnx] = item
     #@+node:ekr.20181110175222.1: *5* tree.action: receive_children (CHANGE)
     @flx.action
@@ -733,14 +737,15 @@ class LeoTree(flx.Widget):
         for ev in events:
             if 0:
                 self.show_event(ev)
-    #@+node:ekr.20181111011928.1: *4* tree.populate_children
+    #@+node:ekr.20181111011928.1: *4* tree.populate_children (Change)
     def populate_children(self, children, parent_gnx):
         '''Populate parent with the children if necessary.'''
-        if parent_gnx in self.leo_populated_dict:
-            print('===== already populated', parent_gnx)
-            return
-        if debug:
+        if new_tree:
             print('tree.populate_children...')
+        if debug and new_tree:
+            if parent_gnx in self.leo_populated_dict:
+                print('===== already populated', parent_gnx)
+                return
             print('parent', repr(self.leo_items[parent_gnx]))
             for child in children:
                 print('  child: %r' % child)
