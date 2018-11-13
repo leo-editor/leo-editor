@@ -26,7 +26,7 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
-debug = True
+debug = False
 debug_tree = True
 new_tree = False # Use the new tree scheme.
 #@+others
@@ -71,10 +71,7 @@ class LeoApp(flx.PyComponent):
                 self.ap_to_gnx, self.gnx_to_node, self.outline)
             self.gnx_to_children = self.compute_gnx_to_children(
                 self.gnx_to_node, self.gnx_to_parents, self.outline)
-            self.gnx_to_vnode = {} ### Not ready yet.
-            # Huh?
-            first_gnx = self.outline[0][1]
-            body = self.gnx_to_body[first_gnx]
+            self.gnx_to_vnode = {}
         t2 = time.clock()
         self.info('LeoApp.init: %5.2f sec.' % (t2-t1))
             #
@@ -84,8 +81,9 @@ class LeoApp(flx.PyComponent):
             body = c.rootPosition().b
             outline = None
             redraw_dict = self.make_redraw_dict()
-            main_window = LeoMainWindow(body, outline, redraw_dict, signon)
         else:
+            first_gnx = self.outline[0][1]
+            body = self.gnx_to_body[first_gnx]
             outline, redraw_dict = self.outline, None
         main_window = LeoMainWindow(body, outline, redraw_dict, signon)
         self._mutate('main_window', main_window)
@@ -114,12 +112,14 @@ class LeoApp(flx.PyComponent):
     def dump_redraw_dict(self, d):
         '''Pretty print the redraw dict.'''
         print('app.dump_redraw dict...')
-        self.dump_ap(d ['c.p'], tag='c.p')
+        padding, tag = None, 'c.p'
+        self.dump_ap(d ['c.p'], padding, tag)
+        level = 0
         for i, item in enumerate(d ['items']):
-            self.dump_redraw_item(i, item, level=0)
+            self.dump_redraw_item(i, item, level)
             print('')
-    #@+node:ekr.20181113085722.1: *5* app.dump_ap
-    def dump_ap (self, ap, padding=None, tag=None):
+    #@+node:ekr.20181113085722.1: *5* app.action: dump_ap
+    def dump_ap (self, ap, padding, tag):
         '''Print an archived position fully.'''
         stack = ap ['stack']
         if not padding:
@@ -150,7 +150,8 @@ class LeoApp(flx.PyComponent):
                 ap['v'], ### .ljust(25),
                 ap['headline'],
             ))
-    #@+node:ekr.20181113091522.1: *5* app.redraw_item
+    #@+node:ekr.20181113091522.1: *4* app.action: redraw_item
+    @flx.action
     def dump_redraw_item(self, i, item, level):
         '''Pretty print one item in the redraw dict.'''
         padding = ' '*4*level
@@ -162,7 +163,8 @@ class LeoApp(flx.PyComponent):
             str(len(item ['body'])).ljust(4),
             item ['headline'],
         ))
-        self.dump_ap(item ['ap'], padding=padding)
+        tag = None
+        self.dump_ap(item ['ap'], padding, tag)
         # Print children...
         children = item ['children']
         if children:
@@ -194,12 +196,10 @@ class LeoApp(flx.PyComponent):
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
         ### w = self.main_window
-        aList = self.make_redraw_dict()
-        assert aList
-        ### w.tree.redraw(aList)
+        d = self.make_redraw_dict()
+        assert d
+        ### w.tree.redraw(d)
 
-        
-        
         
     #@+node:ekr.20181111202747.1: *4* app.action: select_ap
     @flx.action
@@ -641,11 +641,11 @@ class LeoTree(flx.Widget):
     
     def init(self, outline, redraw_dict):
         # pylint: disable=arguments-differ
-        self.tree = flx.TreeWidget(flex=1, max_selected=1)
         self.clear_tree()
+        self.tree = flx.TreeWidget(flex=1, max_selected=1)
             # The gnx of the selected tree item.
         if new_tree:
-            self.redraw(redraw_dict)
+            self.redraw_from_dict(redraw_dict)
         else:
             self.leo_selected_gnx = outline[0][1]
             self.make_tree(outline)
@@ -661,6 +661,8 @@ class LeoTree(flx.Widget):
         Important: we do *not* clear self.tree itself!
         '''
         # pylint: disable=access-member-before-definition
+        if new_tree:
+            print('============ tree.clear_tree')
         for item in self.leo_items.values():
             if debug or debug_tree:
                 self.root.info('clear_tree: dispose: %r' % item)
@@ -678,7 +680,7 @@ class LeoTree(flx.Widget):
                 # ap is an archived position, a list of ints.
                 if len(ap) == 1:
                     item = LeoTreeItem(gnx, ap, text=h, checked=None, collapsed=True)
-                    if debug or debug_tree:
+                    if new_tree:
                         self.root.info('make.tree: item: %r' % item)
                     self.leo_items [gnx] = item
     #@+node:ekr.20181110175222.1: *5* tree.action: receive_children
@@ -734,7 +736,7 @@ class LeoTree(flx.Widget):
         '''Populate parent with the children if necessary.'''
         if parent_gnx in self.leo_populated_dict:
             return
-        if debug or debug_tree:
+        if new_tree and debug_tree:
             info = self.root.info
             info('tree.populate_children...')
             for child in children:
@@ -755,19 +757,28 @@ class LeoTree(flx.Widget):
         d = redraw_dict
         if debug_tree:
             info = self.root.info
-            info('tree.redraw_from_list')
-            self.root.dump_redraw_dict(d)
+            info('===== tree.redraw_from_dict')
+            ### self.root.dump_redraw_dict(d)
         #
         # Set the selected node.
         ap = d ['c.p']
         self.leo_selected_gnx = ap ['gnx']
-        #
         ### Code like populate_children
         ### self.leo_populated_dict [parent_gnx] = True
         ###with self.leo_items[parent_gnx]:
+        items = d ['items']
+        level = 0 ; assert level is not None ###
         with self.tree:
-            for item in d ['items']:
-                print(repr(item))
+            for i, item in enumerate(items):
+                gnx = item ['ap']['v']
+                if gnx in self.leo_populated_dict:
+                    print('-----tree.redraw_from_dict: seen: %r' % gnx)
+                    continue
+                self.leo_populated_dict [gnx] = True
+                # self.root.dump_redraw_item(i, item, level)
+                print('-----', gnx)
+                print('\n')
+            
             # for ap, gnx, headline in children:
                 # item = LeoTreeItem(gnx, ap, text=headline, checked=None, collapsed=True)
                 # self.leo_items [gnx] = item
