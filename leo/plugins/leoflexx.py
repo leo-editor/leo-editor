@@ -9,6 +9,7 @@ A Stand-alone prototype for Leo using flexx.
 '''
 # pylint: disable=logging-not-lazy
 import leo.core.leoBridge as leoBridge
+import leo.core.leoNodes as leoNodes
 from flexx import flx
 import re
 import time
@@ -55,6 +56,7 @@ class LeoApp(flx.PyComponent):
             self.ap_to_gnx, self.gnx_to_node, self.outline)
         self.gnx_to_children = self.compute_gnx_to_children(
             self.gnx_to_node, self.gnx_to_parents, self.outline)
+        self.gnx_to_vnode = {} ### Not ready yet.
         t2 = time.clock()
         self.info('LeoApp.init: %5.2f sec.' % (t2-t1))
         #
@@ -238,6 +240,24 @@ class LeoApp(flx.PyComponent):
         s = self.ap_to_string(ap)
         s = s.ljust(17) if ljust else s.rjust(17)
         return '%s %s %s' % (s, gnx.ljust(30), headline)
+    #@+node:ekr.20181111204659.1: *4* app.p_to_ap
+    def p_to_ap(self, p):
+        '''Convert an archived position to a true Leo position.'''
+        return {
+            'childIndex': p._childIndex,
+            'v': p.v.gnx,
+            'stack': [(v.gnx, childIndex) for (v, childIndex) in p.stack],
+        }
+    #@+node:ekr.20181111203114.1: *4* app.ap_to_p
+    def ap_to_p (self, ap):
+        '''Return the position in the Leo outline corresponding to ap.'''
+        return leoNodes.position(
+            childIndex = ap.get('childIndex'),
+            v = self.gnx_to_vnode[ap.get('v')],
+            stack = [
+                (self.gnx_to_vnode[gnx], childIndex) 
+                    for gnx, childIndex in ap.get('stack', [])
+            ])
     #@+node:ekr.20181105091545.1: *3* app.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
@@ -257,7 +277,6 @@ class LeoApp(flx.PyComponent):
             flx.logger.error('open_bridge: does not exist: %r' % path)
             return
         c = bridge.openLeoFile(path)
-        ### runUnitTests(c, g)
         return c, g
     #@+node:ekr.20181112182636.1: *3* app.test
     def test (self):
@@ -265,6 +284,7 @@ class LeoApp(flx.PyComponent):
         Run all unit tests from the bridge using the browser gui.
         '''
         self.info('app.test: not ready yet')
+        ### runUnitTests(self.c, self.g)
     #@-others
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181104082144.1: *3* class LeoBody
@@ -440,6 +460,7 @@ class LeoTree(flx.Widget):
         
         Important: we do *not* clear self.tree itself!
         '''
+        # pylint: disable=access-member-before-definition
         for item in self.leo_items.values():
             if debug and debug_tree:
                 self.root.info('clear_tree: dispose: %r' % item)
@@ -483,6 +504,8 @@ class LeoTree(flx.Widget):
                 self.root.set_body(gnx)
                     # Set the body text directly.
                 ap = ev.source.leo_position
+                ### To do:
+                    ### self.root.select_position(ap)
                 self.root.set_status_to_unl(ap, gnx)
                     # Set the status line directly.
                 self.root.send_children_to_tree(gnx)
