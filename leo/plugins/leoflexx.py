@@ -8,6 +8,8 @@
 A Stand-alone prototype for Leo using flexx.
 '''
 # pylint: disable=logging-not-lazy
+#@+<< leoflexx imports >>
+#@+node:ekr.20181113041314.1: ** << leoflexx imports >>
 import leo.core.leoBridge as leoBridge
 import leo.core.leoNodes as leoNodes
 from flexx import flx
@@ -15,6 +17,7 @@ import re
 import time
 assert re and time
     # Suppress pyflakes complaints
+#@-<< leoflexx imports >>
 #@+<< ace assets >>
 #@+node:ekr.20181111074958.1: ** << ace assets >>
 # Assets for ace, embedded in the LeoBody and LeoLog classes.
@@ -31,6 +34,15 @@ def init():
     # At present, leoflexx is not a true plugin.
     # I am executing leoflexx.py from an external script.
     return False
+#@+node:ekr.20181113041410.1: **  suppress_unwanted_log_messages
+def suppress_unwanted_log_messages():
+    '''
+    Suppress the "Automatically scrolling cursor into view" messages by
+    *allowing* only important messages.
+    '''
+    allowed = r'(Critical|Error|Leo|Session|Starting|Stopping|Warning)'
+    pattern = re.compile(allowed, re.IGNORECASE)
+    flx.set_log_level('INFO', pattern)
 #@+node:ekr.20181107052522.1: ** class LeoApp(PyComponent)
 # pscript never converts flx.PyComponents to JS.
 
@@ -83,6 +95,7 @@ class LeoApp(flx.PyComponent):
             self.test()
         else:
             self.root.info('app.do_command: unknown command: %r' % command)
+            ### To do: pass the command on to Leo's core.
     #@+node:ekr.20181112165240.1: *4* app.action: info
     @flx.action
     def info (self, s):
@@ -286,6 +299,15 @@ class LeoApp(flx.PyComponent):
         self.info('app.test: not ready yet')
         ### runUnitTests(self.c, self.g)
     #@-others
+#@+node:ekr.20181113041113.1: ** class LeoGui(PyComponent)
+class LeoGui(flx.PyComponent):
+    '''
+    Leo's Browser Gui.
+    
+    This should be a subclass of leo.core.leoGui.LeoGui, but pscript does
+    not support multiple inheritance.
+    '''
+    pass
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181104082144.1: *3* class LeoBody
 
@@ -560,12 +582,8 @@ class LeoTreeItem(flx.TreeItem):
 #@-others
 if __name__ == '__main__':
     flx.launch(LeoApp)
+    flx.logger.info('LeoApp: after flx.launch')
     if not debug:
-        # Suppress the "Automatically scrolling cursor into view" messages
-        # by *allowing* only important messages.
-        allowed = r'(Critical|Error|Leo|Session|Starting|Stopping|Warning)'
-        pattern = re.compile(allowed, re.IGNORECASE)
-        flx.set_log_level('INFO', pattern)
-        flx.logger.info('LeoApp: after flx.launch')
+        suppress_unwanted_log_messages()
     flx.run()
 #@-leo
