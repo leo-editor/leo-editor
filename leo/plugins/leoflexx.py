@@ -359,14 +359,14 @@ class LeoApp(flx.PyComponent):
             print('%sap:...' % (padding))
             padding = padding + ' '*4
             print('%schildIndex: %s v: %s stack...' % (
-                padding, str(ap ['childIndex']),  ap['v']))
+                padding, str(ap ['childIndex']), ap['v']))
             padding = padding + ' '*4
             for stack_item in ap ['stack']:
                 gnx, childIndex = stack_item
-                print('%s%s %s' % (padding, childIndex.ljust(4), gnx))
+                print('%s%s %s' % (padding, childIndex.ljust(2), gnx))
         else:
             print('%sap: childIndex: %s v: %s stack: []' % (
-                padding, str(ap ['childIndex']),  ap['v']))
+                padding, str(ap ['childIndex']).ljust(2), ap['v']))
         print('')
     #@+node:ekr.20181113044701.1: *5* app.make_dict_for_position
     def make_dict_for_position(self, p):
