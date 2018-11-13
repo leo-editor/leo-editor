@@ -28,6 +28,7 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
 debug = True
 debug_tree = True
+new_tree = True # Use the new tree scheme.
 #@+others
 #@+node:ekr.20181103151350.1: **  init
 def init():
@@ -312,18 +313,19 @@ class LeoApp(flx.PyComponent):
         p.expand()
         while p:
             self.info('make_redraw_dict: %r' % p)
-            ### print(p.isVisible(c), p.level(), p.h)
             if p.level() == 0 or p.isVisible():
                 aList.append(self.make_dict_for_position(p))
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        d = { 'items': aList }
+        d = {
+            'c.p': self.p_to_ap(c.p),
+            'items': aList,
+        }
         if 1: ###
             t2 = time.clock()
             self.info('app.make_redraw_dict: %5.3f sec' % (t2-t1))
             self.dump_redraw_dict(d)
-            
         return d
     #@+node:ekr.20181113044217.1: *5* app.clear_data
     def clear_data(self):
@@ -340,6 +342,7 @@ class LeoApp(flx.PyComponent):
     def dump_redraw_dict(self, d):
         '''Pretty print the redraw dict.'''
         print('redraw dict...')
+        self.dump_ap(d ['c.p'], tag='c.p')
         for i, item in enumerate(d ['items']):
             self.dump_redraw_item(i, item, level=0)
             print('')
@@ -355,12 +358,27 @@ class LeoApp(flx.PyComponent):
             str(len(item ['body'])).ljust(4),
             item ['headline'],
         ))
-        # Print ap...
-        ap = item ['ap']
+        self.dump_ap(item ['ap'], padding=padding)
+        # Print children...
+        children = item ['children']
+        if children:
+            print('%sChildren...' % padding)
+            print('%s[' % padding)
+            padding = padding + ' '*4
+            for j, child in enumerate(children):
+                index = '%s.%s' % (i, j)
+                self.dump_redraw_item(index, child, level+1)
+            padding = padding[:-4]
+            print('%s]' % padding)
+    #@+node:ekr.20181113085722.1: *5* app.dump_ap
+    def dump_ap (self, ap, padding=None, tag=None):
+        '''Print an archived position fully.'''
         stack = ap ['stack']
-        padding = padding + ' '*4
+        if not padding:
+            padding = ''
+        padding = padding + ' '*4 
         if stack:
-            print('%sap:...' % (padding))
+            print('%s%s:...' % (padding, tag or 'ap'))
             padding = padding + ' '*4
             print('%schildIndex: %s v: %s %s stack...' % (
                 padding,
@@ -378,23 +396,12 @@ class LeoApp(flx.PyComponent):
                     headline,
                 ))
         else:
-            print('%sap: childIndex: %s v: %s stack: [] %s' % (
-                padding,
+            print('%s%s: childIndex: %s v: %s stack: [] %s' % (
+                padding, tag or 'ap',
                 str(ap ['childIndex']).ljust(2),
                 ap['v'], ### .ljust(25),
                 ap['headline'],
             ))
-        # Print children...
-        children = item ['children']
-        if children:
-            print('%sChildren...' % padding)
-            print('%s[' % padding)
-            padding = padding + ' '*4
-            for j, child in enumerate(children):
-                index = '%s.%s' % (i, j)
-                self.dump_redraw_item(index, child, level+1)
-            padding = padding[:-4]
-            print('%s]' % padding)
     #@+node:ekr.20181113044701.1: *5* app.make_dict_for_position
     def make_dict_for_position(self, p):
         '''
@@ -641,7 +648,7 @@ class LeoTree(flx.Widget):
         '''
         # pylint: disable=access-member-before-definition
         for item in self.leo_items.values():
-            if debug and debug_tree:
+            if debug or debug_tree:
                 self.root.info('clear_tree: dispose: %r' % item)
             item.dispose()
         self.leo_items = {}
@@ -657,7 +664,7 @@ class LeoTree(flx.Widget):
                 # ap is an archived position, a list of ints.
                 if len(ap) == 1:
                     item = LeoTreeItem(gnx, ap, text=h, checked=None, collapsed=True)
-                    if debug and debug_tree:
+                    if debug or debug_tree:
                         self.root.info('make.tree: item: %r' % item)
                     self.leo_items [gnx] = item
     #@+node:ekr.20181110175222.1: *5* tree.action: receive_children
@@ -713,7 +720,7 @@ class LeoTree(flx.Widget):
         '''Populate parent with the children if necessary.'''
         if parent_gnx in self.leo_populated_dict:
             return
-        if debug and debug_tree:
+        if debug or debug_tree:
             info = self.root.info
             info('tree.populate_children...')
             for child in children:
