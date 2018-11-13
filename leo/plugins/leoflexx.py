@@ -321,7 +321,7 @@ class LeoApp(flx.PyComponent):
         d = { 'items': aList }
         if 1: ###
             t2 = time.clock()
-            self.info('make_redraw_dict: %5.2f sec' % (t2-t1))
+            self.info('app.make_redraw_dict: %5.3f sec' % (t2-t1))
             self.dump_redraw_dict(d)
             
         return d
