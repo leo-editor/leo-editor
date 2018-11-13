@@ -77,6 +77,8 @@ class LeoApp(flx.PyComponent):
             tree.clear_tree()
         elif command == 'make':
             tree.make_tree(self.outline)
+        elif command == 'test':
+            self.test()
         else:
             self.root.info('app.do_command: unknown command: %r' % command)
     #@+node:ekr.20181112165240.1: *4* app.action: info
@@ -220,28 +222,6 @@ class LeoApp(flx.PyComponent):
         c = self.c
         return [(p.archivedPosition(), p.gnx, p.h) for p in c.all_positions()]
     #@+node:ekr.20181111155525.1: *3* app.utils
-    #@+node:ekr.20181111204659.1: *4* app.p_to_ap
-    def p_to_ap(self, p):
-        '''Convert an archived position to a true Leo position.'''
-        aList = [p._childIndex]
-        while p.stack:
-            v, child_index = p.stack.pop()
-            aList.append(child_index)
-        return list(reversed(aList))
-    #@+node:ekr.20181111203114.1: *4* app.ap_to_p
-    def ap_to_p (self, ap):
-        '''Return the position in the Leo outline corresponding to ap.'''
-        import leo.core.leoNodes as leoNodes
-        c = self.c
-        parent = c.hiddenRootNode
-        stack = [] # stack entries are tuples (v, childIndex).
-        # The top of the stack is the position's parent.
-        for child_index in ap:
-            v = parent.children[child_index]
-            stack.append(v, child_index)
-            parent = v
-        v, child_index = stack.pop()
-        return leoNodes.position(v, child_index, stack)
     #@+node:ekr.20181110090611.1: *4* app.ap_to_string
     def ap_to_string(self, ap):
         '''
@@ -279,6 +259,12 @@ class LeoApp(flx.PyComponent):
         c = bridge.openLeoFile(path)
         ### runUnitTests(c, g)
         return c, g
+    #@+node:ekr.20181112182636.1: *3* app.test
+    def test (self):
+        '''
+        Run all unit tests from the bridge using the browser gui.
+        '''
+        self.info('app.test: not ready yet')
     #@-others
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181104082144.1: *3* class LeoBody
