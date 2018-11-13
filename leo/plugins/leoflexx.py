@@ -26,7 +26,7 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
-debug = False
+debug = True
 debug_tree = True
 #@+others
 #@+node:ekr.20181103151350.1: **  init
@@ -91,6 +91,8 @@ class LeoApp(flx.PyComponent):
             tree.clear_tree()
         elif command == 'make':
             tree.make_tree(self.outline)
+        elif command == 'redraw':
+            self.root.redraw()
         elif command == 'test':
             self.test()
         else:
@@ -100,6 +102,8 @@ class LeoApp(flx.PyComponent):
     @flx.action
     def info (self, s):
         '''Send the string s to the flex logger, at level info.'''
+        if not isinstance(s, str):
+            s = repr(s)
         flx.logger.info('Leo: ' + s)
             # A hack: automatically add the "Leo" prefix so
             # the top-level suppression logic will not delete this message.
@@ -111,11 +115,12 @@ class LeoApp(flx.PyComponent):
         This is a recusive list lists of items (ap, gnx, headline) describing
         all and *only* the presently visible nodes in the tree.
         
-        As a side effect, app.make_redraw_list updates all internal dicts.
+        As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
-        w = self.main_window
-        aList = self.make_redraw_list()
-        w.tree.redraw(aList)
+        ### w = self.main_window
+        aList = self.make_redraw_dict()
+        assert aList
+        ### w.tree.redraw(aList)
 
         
         
@@ -288,24 +293,35 @@ class LeoApp(flx.PyComponent):
                 (self.gnx_to_vnode[gnx], childIndex) 
                     for gnx, childIndex in ap.get('stack', [])
             ])
-    #@+node:ekr.20181113043539.1: *4* app.make_redraw_list & helpers
-    def make_redraw_list(self):
+    #@+node:ekr.20181113043539.1: *4* app.make_redraw_dict & helpers
+    def make_redraw_dict(self):
         '''
         Return a recursive, archivable, list of lists describing all and only
         the visible nodes of the tree.
         
         As a side effect, all LeoApp data are recomputed.
         '''
+        c = self.c
+        t1 = time.clock()
         self.clear_data()
         aList = []
-        p = self.c.rootPosition()
+        p = c.rootPosition()
         while p:
+            self.info('make_redraw_dict: %r' % p)
+            print(p.isVisible(c), p.level(), p.h)
             if p.level() == 0 or p.isVisible():
-                self.make_list_for_position(p, aList)
+                aList.append(self.make_dict_for_position(p))
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        return aList
+        d = { 'items': aList }
+        if 1: ###
+            t2 = time.clock()
+            self.info('make_redraw_dict: %5.2f sec' % (t2-t1))
+        if 1: ###
+            self.dump_redraw_dict(d)
+            
+        return d
     #@+node:ekr.20181113044217.1: *5* app.clear_data
     def clear_data(self):
         '''Clear all the date describing the tree.'''
@@ -316,17 +332,65 @@ class LeoApp(flx.PyComponent):
         self.gnx_to_parents = {}
         self.gnx_to_vnode = {}
         self.outline = []
-    #@+node:ekr.20181113044701.1: *5* app.make_list_for_position
-    def make_list_for_position(self, p, aList):
+            ### Aha: this won't be necessary!
+    #@+node:ekr.20181113053154.1: *5* app.dump_redraw_dict
+    def dump_redraw_dict(self, d):
+        '''Pretty print the redraw dict.'''
+        print('redraw dict...')
+        for i, item in enumerate(d ['items']):
+            self.dump_redraw_item(i, item, level=0)
+            
+    def dump_redraw_item(self, i, item, level):
+        
+        padding = ' '*4*level
+        # Print most of the item.
+        print('%s%s gnx: %s body: %s %s' % (
+            padding,
+            str(i).ljust(3),
+            item ['gnx'].ljust(15),
+            str(len(item ['body'])).ljust(4),
+            item ['headline'],
+        ))
+        # Print ap...
+        ap = item ['ap']
+        stack = ap ['stack']
+        padding = padding + ' '*4
+        if stack:
+            print('%sap:...' % (padding))
+            padding = padding + ' '*4
+            print('%schildIndex: %s v: %s stack...' % (
+                padding, str(ap ['childIndex']),  ap['v']))
+            padding = padding + ' '*4
+            for stack_item in ap ['stack']:
+                gnx, childIndex = stack_item
+                print('%s%s %s' % (padding, childIndex.ljust(4), gnx))
+        else:
+            print('%sap: childIndex: %s v: %s stack: []' % (
+                padding, str(ap ['childIndex']),  ap['v']))
+        print('')
+    #@+node:ekr.20181113044701.1: *5* app.make_dict_for_position
+    def make_dict_for_position(self, p):
         '''
         Recursively add a sublist for p and all its visible nodes.
         
         Update all data structures for p.
         '''
+        c = self.c
         if 1: ### debug
             info = self.root.info
             info('tree.make_list_for_position: %s %s' % (p.gnx.ljust(17), p.h))
+        children = []
         self.update_data(p)
+        for child in p.children():
+            if child.isVisible(c):
+                children.append(self.make_dict_for_position(child))
+        return {
+            'ap': self.p_to_ap(p),
+            'body': p.b,
+            'children': children,
+            'gnx': p.v.gnx,
+            'headline': p.h,
+        }
     #@+node:ekr.20181113045154.1: *5* app.update_data
     def update_data(self, p):
         '''Update all data for the visible position p.'''
@@ -577,6 +641,7 @@ class LeoTree(flx.Widget):
         children = d.get('children', [])
         self.populate_children(children, parent_gnx)
     #@+node:ekr.20181113043004.1: *5* tree.action: redraw
+    @flx.action
     def redraw(self, redraw_list):
         '''
         Clear the present tree and redraw using the redraw_list.
