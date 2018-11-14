@@ -79,7 +79,7 @@ class LeoApp(flx.PyComponent):
             self.test_new_tree()
             self.run_all_unit_tests()
         else:
-            self.root.info('app.do_command: unknown command: %r' % command)
+            print('app.do_command: unknown command: %r' % command)
             ### To do: pass the command on to Leo's core.
     #@+node:ekr.20181113053154.1: *4* app.action: dump_redraw_dict & helpers
     @flx.action
@@ -182,7 +182,7 @@ class LeoApp(flx.PyComponent):
         c = self.c
         p = self.ap_to_p(ap)
         c.frame.tree.select(p)
-    #@+node:ekr.20181111095640.1: *4* app.action: send_children_to_tree (Test)
+    #@+node:ekr.20181111095640.1: *4* app.action: send_children_to_tree
     @flx.action
     def send_children_to_tree(self, parent_ap):
         '''
@@ -229,12 +229,10 @@ class LeoApp(flx.PyComponent):
     def create_all_data(self):
         '''Compute the initial values all data structures.'''
         t1 = time.clock()
-        #
-        # gnx_to_vnode must never be cleared.
-        # app.p_to_ap adds missing entries as needed.
-        self.gnx_to_vnode = { 'gnx': v.gnx for v in self.c.all_unique_nodes() }
+        self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
         t2 = time.clock()
-        self.info('app.create_all_data: %5.2f sec.' % (t2-t1))
+        print('app.create_all_data: %5.2f sec. %s entries' % (
+            (t2-t1), len(list(self.gnx_to_vnode.keys()))))
     #@+node:ekr.20181111155525.1: *3* app.utils
     #@+node:ekr.20181110090611.1: *4* app.ap_to_string
     def ap_to_string(self, ap):
@@ -259,7 +257,8 @@ class LeoApp(flx.PyComponent):
         '''
         gnx = p.v.gnx
         if gnx not in self.gnx_to_vnode:
-            print('=== update gnx_to_vnode', gnx.ljust(15), p.h)
+            print('=== update gnx_to_vnode', gnx.ljust(15), p.h,
+                len(list(self.gnx_to_vnode.keys())))
             self.gnx_to_vnode [gnx] = p.v
         return {
             'childIndex': p._childIndex,
@@ -307,9 +306,9 @@ class LeoApp(flx.PyComponent):
         }
         if debug_tree:
             t2 = time.clock()
-            self.info('app.make_redraw_dict: %5.4f sec' % (t2-t1))
+            print('app.make_redraw_dict: %5.4f sec' % (t2-t1))
         return d
-    #@+node:ekr.20181113044701.1: *5* app.make_dict_for_position (MAKES DATA)
+    #@+node:ekr.20181113044701.1: *5* app.make_dict_for_position
     def make_dict_for_position(self, p):
         '''
         Recursively add a sublist for p and all its visible nodes.
@@ -355,7 +354,7 @@ class LeoApp(flx.PyComponent):
         '''
         Run all unit tests from the bridge using the browser gui.
         '''
-        self.info('app.test: not ready yet')
+        print('app.test: not ready yet')
         ### runUnitTests(self.c, self.g)
     #@+node:ekr.20181113180246.1: *3* app.test_new_tree
     def test_new_tree(self):
@@ -564,13 +563,13 @@ class LeoTree(flx.Widget):
         print('===== tree.clear_tree')
         for item in self.leo_items.values():
             if debug or debug_tree:
-                self.root.info('clear_tree: dispose: %r' % item)
+                print('tree.clear_tree: dispose: %r' % item)
             item.dispose()
         self.leo_items = {}
             # Keys are gnx's, values are LeoTreeItems.
         self.leo_populated_dict = {}
             # Keys are ap's, values are True.
-    #@+node:ekr.20181110175222.1: *5* tree.action: receive_children (Test)
+    #@+node:ekr.20181110175222.1: *5* tree.action: receive_children
     @flx.action
     def receive_children(self, d):
         '''
@@ -627,7 +626,7 @@ class LeoTree(flx.Widget):
         for ev in events:
             if 0:
                 self.show_event(ev)
-    #@+node:ekr.20181111011928.1: *4* tree.populate_children (test)
+    #@+node:ekr.20181111011928.1: *4* tree.populate_children (crashes)
     def populate_children(self, children, parent_ap):
         '''Populate parent with the children if necessary.'''
         if debug:
@@ -679,7 +678,7 @@ class LeoTree(flx.Widget):
         message = '%s: %s' % (s.rjust(15), id_)
         w.log.put(message)
         if debug and debug_tree:
-            self.root.info('tree.show_event: ' + message)
+            print('tree.show_event: ' + message)
     #@-others
 #@+node:ekr.20181108233657.1: *3* class LeoTreeItem
 class LeoTreeItem(flx.TreeItem):
