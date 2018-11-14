@@ -93,7 +93,8 @@ class LeoApp(flx.PyComponent):
             self.dump_redraw_item(i, item, level)
             print('')
     #@+node:ekr.20181113085722.1: *5* app.action: dump_ap
-    def dump_ap (self, ap, padding, tag):
+    @flx.action
+    def dump_ap (self, ap, padding=None, tag=None):
         '''Print an archived position fully.'''
         stack = ap ['stack']
         if not padding:
@@ -105,23 +106,22 @@ class LeoApp(flx.PyComponent):
             print('%schildIndex: %s v: %s %s stack...' % (
                 padding,
                 str(ap ['childIndex']),
-                ap['v'], ### .ljust(25),
+                ap['gnx'],
                 ap['headline'],
             ))
             padding = padding + ' '*4
-            for stack_item in ap ['stack']:
-                gnx, childIndex, headline = stack_item
+            for d in ap ['stack']:
                 print('%s%s %s %s' % (
                     padding,
-                    str(childIndex).ljust(2),
-                    gnx, ### .ljust(25),
-                    headline,
+                    str(d ['childIndex']).ljust(3),
+                    d ['gnx'],
+                    d ['headline'],
                 ))
         else:
             print('%s%s: childIndex: %s v: %s stack: [] %s' % (
                 padding, tag or 'ap',
-                str(ap ['childIndex']).ljust(2),
-                ap['v'], ### .ljust(25),
+                str(ap ['childIndex']).ljust(3),
+                ap['gnx'],
                 ap['headline'],
             ))
     #@+node:ekr.20181113091522.1: *4* app.action: redraw_item
@@ -229,6 +229,7 @@ class LeoApp(flx.PyComponent):
     def create_all_data(self):
         '''Compute the initial values all data structures.'''
         t1 = time.clock()
+        # This is likely the only data that ever will be needed.
         self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
         t2 = time.clock()
         print('app.create_all_data: %5.2f sec. %s entries' % (
@@ -543,7 +544,8 @@ class LeoTree(flx.Widget):
         self.leo_items = {}
             # Keys are gnx's, values are LeoTreeItems.
         self.leo_populated_dict = {}
-            # Keys are ap's, values are True.
+            # Keys are ap keys, created by tree.ap_to_key.
+            # values are ap's.
         self.clear_tree()
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
             # The gnx of the selected tree item.
@@ -568,7 +570,8 @@ class LeoTree(flx.Widget):
         self.leo_items = {}
             # Keys are gnx's, values are LeoTreeItems.
         self.leo_populated_dict = {}
-            # Keys are ap's, values are True.
+            # Keys are ap keys, created by tree.ap_to_key.
+            # values are ap's.
     #@+node:ekr.20181110175222.1: *5* tree.action: receive_children
     @flx.action
     def receive_children(self, d):
@@ -579,10 +582,6 @@ class LeoTree(flx.Widget):
                 'children': [ap1, ap2, ...],
             }
         '''
-        print('tree.receive_children')
-        if 0: ###
-            for key, value in d.items():
-                print(key, repr(value))
         parent_ap = d ['parent']
         children = d ['children']
         self.populate_children(children, parent_ap)
@@ -594,6 +593,23 @@ class LeoTree(flx.Widget):
         '''
         self.clear_tree()
         self.redraw_from_dict(redraw_dict)
+    #@+node:ekr.20181114072307.1: *4* tree.ap_to_key
+    def ap_to_key(self, ap):
+        '''Produce a key for the given ap.'''
+        childIndex = ap ['childIndex']
+        gnx = ap ['gnx']
+        stack = ap ['stack']
+        stack_s = '::'.join([
+            'childIndex: %s, gnx: %s' % (z ['childIndex'], z ['gnx'])
+                for z in stack
+        ])
+        key = 'Tree key<childIndex: %s, gnx: %s, stack: %s>' % (
+            childIndex, gnx, stack_s or '[]')
+        if 0: ### debug:
+            print('tree.ap_to_key')
+            self.root.dump_ap(ap, None, 'ap')
+            print('key', key)
+        return key
     #@+node:ekr.20181112172518.1: *4* tree.reactions
     #@+node:ekr.20181109083659.1: *5* tree.reaction: on_selected_event
     @flx.reaction('tree.children**.selected')
@@ -605,8 +621,6 @@ class LeoTree(flx.Widget):
             if ev.new_value:
                 # We are selecting a node, not de-selecting it.
                 ap = ev.source.leo_ap
-                if debug: ###
-                    print('----- tree.on_selected_event', repr(ap))
                 self.leo_selected_ap = ap
                     # Track the change.
                 self.root.set_body(ap)
@@ -626,26 +640,26 @@ class LeoTree(flx.Widget):
         for ev in events:
             if 0:
                 self.show_event(ev)
-    #@+node:ekr.20181111011928.1: *4* tree.populate_children (crashes)
+    #@+node:ekr.20181111011928.1: *4* tree.populate_children (test)
     def populate_children(self, children, parent_ap):
         '''Populate parent with the children if necessary.'''
+        key = self.ap_to_key(parent_ap)
+        if key in self.leo_populated_dict:
+            print('===== tree.populate_children: already populated')
+            # print('key: %r' % key)
+            # self.root.dump_ap(parent_ap, None, 'parent_ap')
+            return
         if debug:
             print('tree.populate_children...')
-            if parent_ap in self.leo_populated_dict:
-                print('===== already populated', parent_ap)
-                return
-            print('parent', repr(self.leo_items[parent_ap]))
-            for child in children:
-                print('  child: %r' % child)
-        self.leo_populated_dict [parent_ap] = True
+            self.root.dump_ap(parent_ap, None, 'parent_ap')
+        self.leo_populated_dict [key] = parent_ap
+            # This is the only place that the dict is populated.
         assert parent_ap in self.leo_items, (parent_ap, repr(self.leo_items))
         with self.leo_items[parent_ap]:
-            ### for ap, gnx, headline in children:
             for ap in children:
-                gnx = ap ['gnx']
                 headline = ap ['headline']
                 item = LeoTreeItem(ap, text=headline, checked=None, collapsed=True)
-                self.leo_items [gnx] = item
+                self.leo_items [ap] = item
     #@+node:ekr.20181113043131.1: *4* tree.redraw_from_dict & helper
     def redraw_from_dict(self, d):
         '''
@@ -660,11 +674,10 @@ class LeoTree(flx.Widget):
         '''Create a tree item for item and all its visible children.'''
         with parent:
             ap = item ['ap']
-            gnx = ap ['gnx']
             headline = ap ['headline']
             # Create the tree item.
             tree_item = LeoTreeItem(ap, text=headline, checked=None, collapsed=True)
-            self.leo_items [gnx] = tree_item
+            self.leo_items [ap] = tree_item
             # Create the item's children...
             for child in item ['children']:
                 self.create_item_with_parent(child, tree_item)
