@@ -491,12 +491,16 @@ class LeoApp(flx.PyComponent):
         '''Test the round tripping of p_to_ap and ap_to_p.'''
         c = self.c
         old_d = self.gnx_to_vnode.copy()
+        t1 = time.clock()
         # Create a full gnx_to_vnode.
         self.gnx_to_vnode = { p.v.gnx: p.v for p in c.all_positions() }
         for p in c.all_positions():
             ap = self.p_to_ap(p)
             p2 = self.ap_to_p(ap)
             assert p == p2, (repr(p), repr(p2), repr(ap))
+        t2 = time.clock()
+        if 1:
+            print('app.test_new_tree: %5.3f sec' % (t2-t1))
         self.gnx_to_vnode = old_d
     #@-others
 #@+node:ekr.20181113041113.1: ** class LeoGui(PyComponent)
