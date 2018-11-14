@@ -76,7 +76,7 @@ class LeoApp(flx.PyComponent):
             d = self.make_redraw_dict()
             self.root.dump_redraw_dict(d)
         elif command == 'test':
-            self.test_new_tree()
+            self.test_round_trip_positions()
             self.run_all_unit_tests()
         else:
             print('app.do_command: unknown command: %r' % command)
@@ -202,7 +202,7 @@ class LeoApp(flx.PyComponent):
         elif debug: ###
             # Not an error.
             print('app.send_children_to_tree: no children', p.h)
-    #@+node:ekr.20181111095637.1: *4* app.action: set_body (Test)
+    #@+node:ekr.20181111095637.1: *4* app.action: set_body
     @flx.action
     def set_body(self, ap):
         '''Set the body text in LeoBody to the body text of indicated node.'''
@@ -231,6 +231,8 @@ class LeoApp(flx.PyComponent):
         t2 = time.clock()
         print('app.create_all_data: %5.2f sec. %s entries' % (
             (t2-t1), len(list(self.gnx_to_vnode.keys()))))
+        if debug:
+            self.test_round_trip_positions()
     #@+node:ekr.20181111155525.1: *3* app.utils
     #@+node:ekr.20181111204659.1: *4* app.p_to_ap (updates app.gnx_to_vnode)
     def p_to_ap(self, p):
@@ -339,14 +341,11 @@ class LeoApp(flx.PyComponent):
         '''
         print('app.test: not ready yet')
         ### runUnitTests(self.c, self.g)
-    #@+node:ekr.20181113180246.1: *3* app.test_new_tree
-    def test_new_tree(self):
+    #@+node:ekr.20181113180246.1: *3* app.test_round_trip_positions
+    def test_round_trip_positions(self):
         '''Test the round tripping of p_to_ap and ap_to_p.'''
         c = self.c
-        old_d = self.gnx_to_vnode.copy()
         t1 = time.clock()
-        # Create a full gnx_to_vnode.
-        self.gnx_to_vnode = { p.v.gnx: p.v for p in c.all_positions() }
         for p in c.all_positions():
             ap = self.p_to_ap(p)
             p2 = self.ap_to_p(ap)
@@ -354,7 +353,6 @@ class LeoApp(flx.PyComponent):
         t2 = time.clock()
         if 1:
             print('app.test_new_tree: %5.3f sec' % (t2-t1))
-        self.gnx_to_vnode = old_d
     #@-others
 #@+node:ekr.20181113041113.1: ** class LeoGui(PyComponent)
 class LeoGui(flx.PyComponent):
