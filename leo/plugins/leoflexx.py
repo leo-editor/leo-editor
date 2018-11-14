@@ -374,11 +374,11 @@ class LeoApp(flx.PyComponent):
         return '%s %s %s' % (s, gnx.ljust(30), headline)
     #@+node:ekr.20181111204659.1: *4* app.p_to_ap
     def p_to_ap(self, p):
-        '''Convert an archived position to a true Leo position.'''
+        '''Convert a true Leo position to a serializable archived position.'''
         return {
             'childIndex': p._childIndex,
+            'gnx': p.v.gnx,
             'headline': p.h, # For dumps.
-            'v': p.v.gnx,
             'stack': [{
                 'gnx': v.gnx,
                 'childIndex': childIndex,
@@ -387,9 +387,9 @@ class LeoApp(flx.PyComponent):
         }
     #@+node:ekr.20181111203114.1: *4* app.ap_to_p (uses gnx_to_vnode)
     def ap_to_p (self, ap):
-        '''Return the position in the Leo outline corresponding to ap.'''
+        '''Convert an archived position to a true Leo position.'''
         childIndex = ap ['childIndex']
-        v = self.gnx_to_vnode [ap ['v']]
+        v = self.gnx_to_vnode [ap ['gnx']]
         stack = [
             (self.gnx_to_vnode [d ['gnx']], d ['childIndex'])
                 for d in ap ['stack']
@@ -794,7 +794,7 @@ class LeoTree(flx.Widget):
         '''Create a tree item for item and all its visible children.'''
         with parent:
             ap = item ['ap']
-            gnx = ap ['v']
+            gnx = ap ['gnx']
             headline = ap ['headline']
             # Create the tree item.
             tree_item = LeoTreeItem(gnx, ap, text=headline, checked=None, collapsed=True)
