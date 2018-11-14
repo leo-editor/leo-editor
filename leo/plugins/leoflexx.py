@@ -208,12 +208,12 @@ class LeoApp(flx.PyComponent):
         '''Set the body text in LeoBody to the body text of indicated node.'''
         w = self.main_window
         gnx = ap ['gnx']
-        v = self.gnx_to_vnode(gnx)
+        v = self.gnx_to_vnode [gnx]
         assert v, repr(ap)
         w.body.set_body(v.b)
-    #@+node:ekr.20181111095640.2: *4* app.action: set_status_to_unl (CHANGE)
+    #@+node:ekr.20181111095640.2: *4* app.action: set_status_to_unl (Rewrite)
     @flx.action
-    def set_status_to_unl(self, ap, gnx):
+    def set_status_to_unl(self, ap):
         ### c, g, w = self.c, self.g, self.main_window
         ### unls = []
         print('===== app.set_status_to_unl: not ready yet:') ###, repr(ap))
@@ -229,6 +229,7 @@ class LeoApp(flx.PyComponent):
     def create_all_data(self):
         '''Compute the initial values all data structures.'''
         t1 = time.clock()
+        #
         # gnx_to_vnode must never be cleared.
         # app.p_to_ap adds missing entries as needed.
         self.gnx_to_vnode = { 'gnx': v.gnx for v in self.c.all_unique_nodes() }
@@ -251,12 +252,18 @@ class LeoApp(flx.PyComponent):
         s = self.ap_to_string(ap)
         s = s.ljust(17) if ljust else s.rjust(17)
         return '%s %s %s' % (s, gnx.ljust(30), headline)
-    #@+node:ekr.20181111204659.1: *4* app.p_to_ap
+    #@+node:ekr.20181111204659.1: *4* app.p_to_ap (updates app.gnx_to_vnode)
     def p_to_ap(self, p):
-        '''Convert a true Leo position to a serializable archived position.'''
+        '''
+        Convert a true Leo position to a serializable archived position.
+        '''
+        gnx = p.v.gnx
+        if gnx not in self.gnx_to_vnode:
+            print('=== update gnx_to_vnode', gnx.ljust(15), p.h)
+            self.gnx_to_vnode [gnx] = p.v
         return {
             'childIndex': p._childIndex,
-            'gnx': p.v.gnx,
+            'gnx': gnx,
             'headline': p.h, # For dumps.
             'stack': [{
                 'gnx': v.gnx,
@@ -284,8 +291,6 @@ class LeoApp(flx.PyComponent):
         '''
         c = self.c
         t1 = time.clock()
-        self.clear_data()
-            # This is correct. We are about to fully redraw the screen.
         aList = []
         p = c.rootPosition()
         ### Testing: forcibly expand the first node.
@@ -304,19 +309,6 @@ class LeoApp(flx.PyComponent):
             t2 = time.clock()
             self.info('app.make_redraw_dict: %5.4f sec' % (t2-t1))
         return d
-    #@+node:ekr.20181113044217.1: *5* app.clear_data
-    def clear_data(self):
-        '''Clear all the date describing the tree.'''
-        print('===== tree.clear_data')
-        # These *are* necessary.
-        self.gnx_to_body = {}
-        self.gnx_to_vnode = {}
-        ###
-            # self.ap_to_gnx = {}
-            # self.gnx_to_children = {}
-            # self.gnx_to_node = {}
-            # self.gnx_to_parents = {}
-            # self.outline = []
     #@+node:ekr.20181113044701.1: *5* app.make_dict_for_position (MAKES DATA)
     def make_dict_for_position(self, p):
         '''
@@ -552,7 +544,7 @@ class LeoTree(flx.Widget):
         self.leo_items = {}
             # Keys are gnx's, values are LeoTreeItems.
         self.leo_populated_dict = {}
-            # Keys are gnx's, values are True.
+            # Keys are ap's, values are True.
         self.clear_tree()
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
             # The gnx of the selected tree item.
@@ -577,28 +569,24 @@ class LeoTree(flx.Widget):
         self.leo_items = {}
             # Keys are gnx's, values are LeoTreeItems.
         self.leo_populated_dict = {}
-            # Keys are gnx's, values are True.
+            # Keys are ap's, values are True.
     #@+node:ekr.20181110175222.1: *5* tree.action: receive_children (Test)
     @flx.action
     def receive_children(self, d):
         '''
         d has the form:
-        {
-            'parent': ap
-            'children': a list
-                NEW: [ap1, ap2, ...]
-                OLD: [ (ap, gnx, headline), ...]
-        }
+            {
+                'parent': ap,
+                'children': [ap1, ap2, ...],
+            }
         '''
-        if 1: ###
-            print('tree.receive_children')
+        print('tree.receive_children')
+        if 0: ###
             for key, value in d.items():
                 print(key, repr(value))
-        ### parent_ap, parent_gnx, parent_headline = d.get('parent')
-        ### assert parent_gnx == d.get('gnx'), (repr(parent_gnx), repr(d.get('gnx')))
-        parent_gnx = d ['parent'] ['gnx']
+        parent_ap = d ['parent']
         children = d ['children']
-        self.populate_children(children, parent_gnx)
+        self.populate_children(children, parent_ap)
     #@+node:ekr.20181113043004.1: *5* tree.action: redraw
     @flx.action
     def redraw(self, redraw_dict):
@@ -639,20 +627,20 @@ class LeoTree(flx.Widget):
         for ev in events:
             if 0:
                 self.show_event(ev)
-    #@+node:ekr.20181111011928.1: *4* tree.populate_children (Change)
-    def populate_children(self, children, parent_gnx):
+    #@+node:ekr.20181111011928.1: *4* tree.populate_children (test)
+    def populate_children(self, children, parent_ap):
         '''Populate parent with the children if necessary.'''
         if debug:
             print('tree.populate_children...')
-            if parent_gnx in self.leo_populated_dict:
-                print('===== already populated', parent_gnx)
+            if parent_ap in self.leo_populated_dict:
+                print('===== already populated', parent_ap)
                 return
-            print('parent', repr(self.leo_items[parent_gnx]))
+            print('parent', repr(self.leo_items[parent_ap]))
             for child in children:
                 print('  child: %r' % child)
-        self.leo_populated_dict [parent_gnx] = True
-        assert parent_gnx in self.leo_items, (parent_gnx, repr(self.leo_items))
-        with self.leo_items[parent_gnx]:
+        self.leo_populated_dict [parent_ap] = True
+        assert parent_ap in self.leo_items, (parent_ap, repr(self.leo_items))
+        with self.leo_items[parent_ap]:
             ### for ap, gnx, headline in children:
             for ap in children:
                 gnx = ap ['gnx']
