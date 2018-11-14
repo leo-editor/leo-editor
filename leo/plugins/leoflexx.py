@@ -150,7 +150,7 @@ class LeoApp(flx.PyComponent):
                 self.dump_redraw_item(index, child, level+1)
             padding = padding[:-4]
             print('%s]' % padding)
-    #@+node:ekr.20181112165240.1: *4* app.action: info
+    #@+node:ekr.20181112165240.1: *4* app.action: info (deprecated)
     @flx.action
     def info (self, s):
         '''Send the string s to the flex logger, at level info.'''
@@ -232,22 +232,6 @@ class LeoApp(flx.PyComponent):
         print('app.create_all_data: %5.2f sec. %s entries' % (
             (t2-t1), len(list(self.gnx_to_vnode.keys()))))
     #@+node:ekr.20181111155525.1: *3* app.utils
-    #@+node:ekr.20181110090611.1: *4* app.ap_to_string
-    def ap_to_string(self, ap):
-        '''
-        Convert an archived position (list of ints) to a string if necessary.
-        '''
-        if isinstance(ap, (list, tuple)):
-            return '.'.join([str(z) for z in ap])
-        assert isinstance(ap, str), repr(ap)
-        return ap
-    #@+node:ekr.20181110101328.1: *4* app.node_tuple_to_string
-    def node_tuple_to_string(self, aTuple, ljust=False):
-
-        ap, gnx, headline = aTuple
-        s = self.ap_to_string(ap)
-        s = s.ljust(17) if ljust else s.rjust(17)
-        return '%s %s %s' % (s, gnx.ljust(30), headline)
     #@+node:ekr.20181111204659.1: *4* app.p_to_ap (updates app.gnx_to_vnode)
     def p_to_ap(self, p):
         '''
@@ -475,22 +459,6 @@ class LeoMainWindow(flx.Widget):
             self._mutate(name, prop)
 
     #@+others
-    #@+node:ekr.20181111001813.1: *4* JS versions of LeoApp utils
-    #@+node:ekr.20181111001833.1: *5* LeoMainWindow.ap_to_string
-    def ap_to_string(self, ap):
-        '''
-        Convert an archived position (list of ints) to a string if necessary.
-        '''
-        if isinstance(ap, (list, tuple)):
-            return '.'.join([str(z) for z in ap])
-        assert isinstance(ap, str), repr(ap)
-        return ap
-    #@+node:ekr.20181110125347.1: *5* LeoMainWindow.format_node_tuple
-    def format_node_tuple(self, node_tuple):
-        assert isinstance(node_tuple, (list, tuple)), repr(node_tuple)
-        ap, gnx, headline = node_tuple
-        s = '.'.join([str(z) for z in ap])
-        return 'p: %s %s %s' % (s.ljust(15), gnx.ljust(30), headline)
     #@-others
 #@+node:ekr.20181104082154.1: *3* class LeoMiniBuffer
 class LeoMiniBuffer(flx.Widget):
