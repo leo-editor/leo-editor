@@ -60,7 +60,9 @@ class LeoApp(flx.PyComponent):
         c, g = self.open_bridge()
         self.c, self.g = c, g
         t1 = time.clock()
-        if not new_tree:
+        if new_tree:
+            self.gnx_to_vnode = {}
+        else:
             # Compute data structures. On my machine, it takes 0.15 sec.
             self.outline = self.get_outline_list()
             self.ap_to_gnx = self.compute_ap_to_gnx(self.outline)
@@ -84,6 +86,8 @@ class LeoApp(flx.PyComponent):
             body = self.gnx_to_body[self.outline[0][1]]
             data = self.outline
         main_window = LeoMainWindow(body, data, signon)
+        if new_tree:
+            self.test_new_tree()
         self._mutate('main_window', main_window)
 
     #@+others
@@ -211,14 +215,20 @@ class LeoApp(flx.PyComponent):
     @flx.action
     def send_children_to_tree(self, gnx):
         '''Send the children of the node with the given gnx to the tree.'''
+        w = self.main_window
         if new_tree:
+            parent_vnode = self.gnx_to_vnode[gnx]
+            children = parent_vnode.children
+            assert children is not None
             print('app.send_children_to_tree: NOT READY')
             return
-        w = self.main_window
-        children = self.gnx_to_children.get(gnx)
+            ### parent = parent_ap, parent_gnx, parent_headline
+        else:
+            parent = self.gnx_to_node[gnx]
+            children = self.gnx_to_children.get(gnx)
         if not children:
+            if debug: print('app.send_children_to_tree: no children')
             return # not an error.
-        parent = self.gnx_to_node[gnx]
         w.tree.receive_children({
             'gnx': gnx,
             'parent': parent,
@@ -369,19 +379,22 @@ class LeoApp(flx.PyComponent):
             'childIndex': p._childIndex,
             'headline': p.h, # For dumps.
             'v': p.v.gnx,
-            'stack': [(v.gnx, childIndex, v.h) for (v, childIndex) in p.stack],
-                # the v.h entry is for dumps.
+            'stack': [{
+                'gnx': v.gnx,
+                'childIndex': childIndex,
+                'headline': v.h, # For dumps & debugging.
+            } for (v, childIndex) in p.stack ],
         }
     #@+node:ekr.20181111203114.1: *4* app.ap_to_p (uses gnx_to_vnode)
     def ap_to_p (self, ap):
         '''Return the position in the Leo outline corresponding to ap.'''
-        return leoNodes.position(
-            childIndex = ap.get('childIndex'),
-            v = self.gnx_to_vnode[ap.get('v')],
-            stack = [
-                (self.gnx_to_vnode[gnx], childIndex) 
-                    for gnx, childIndex in ap.get('stack', [])
-            ])
+        childIndex = ap ['childIndex']
+        v = self.gnx_to_vnode [ap ['v']]
+        stack = [
+            (self.gnx_to_vnode [d ['gnx']], d ['childIndex'])
+                for d in ap ['stack']
+        ]
+        return leoNodes.position(v, childIndex, stack)
     #@+node:ekr.20181113043539.1: *4* app.make_redraw_dict & helpers
     def make_redraw_dict(self):
         '''
@@ -425,7 +438,7 @@ class LeoApp(flx.PyComponent):
             # self.gnx_to_node = {}
             # self.gnx_to_parents = {}
             # self.outline = []
-    #@+node:ekr.20181113044701.1: *5* app.make_dict_for_position
+    #@+node:ekr.20181113044701.1: *5* app.make_dict_for_position (MAKES DATA)
     def make_dict_for_position(self, p):
         '''
         Recursively add a sublist for p and all its visible nodes.
@@ -433,6 +446,7 @@ class LeoApp(flx.PyComponent):
         Update all data structures for p.
         '''
         c = self.c
+        self.gnx_to_vnode[p.v.gnx] = p.v
         children = [
             self.make_dict_for_position(child)
                 for child in p.children()
@@ -472,6 +486,18 @@ class LeoApp(flx.PyComponent):
         '''
         self.info('app.test: not ready yet')
         ### runUnitTests(self.c, self.g)
+    #@+node:ekr.20181113180246.1: *3* app.test_new_tree
+    def test_new_tree(self):
+        '''Test the round tripping of p_to_ap and ap_to_p.'''
+        c = self.c
+        old_d = self.gnx_to_vnode.copy()
+        # Create a full gnx_to_vnode.
+        self.gnx_to_vnode = { p.v.gnx: p.v for p in c.all_positions() }
+        for p in c.all_positions():
+            ap = self.p_to_ap(p)
+            p2 = self.ap_to_p(ap)
+            assert p == p2, (repr(p), repr(p2), repr(ap))
+        self.gnx_to_vnode = old_d
     #@-others
 #@+node:ekr.20181113041113.1: ** class LeoGui(PyComponent)
 class LeoGui(flx.PyComponent):
@@ -665,30 +691,29 @@ class LeoTree(flx.Widget):
         '''
         # pylint: disable=access-member-before-definition
         print('===== tree.clear_tree')
-        if 1:
-            for item in self.leo_items.values():
-                if debug or debug_tree:
-                    self.root.info('clear_tree: dispose: %r' % item)
-                item.dispose()
-            self.leo_items = {}
-                # Keys are gnx's, values are LeoTreeItems.
-            self.leo_populated_dict = {}
-                # Keys are gnx's, values are True.
-    #@+node:ekr.20181105045657.1: *5* tree.action: make_tree (to be removed)
+        for item in self.leo_items.values():
+            if debug or debug_tree:
+                self.root.info('clear_tree: dispose: %r' % item)
+            item.dispose()
+        self.leo_items = {}
+            # Keys are gnx's, values are LeoTreeItems.
+        self.leo_populated_dict = {}
+            # Keys are gnx's, values are True.
+    #@+node:ekr.20181105045657.1: *5* tree.action: make_tree (OLD TREE ONLY)
     @flx.action
     def make_tree(self, outline):
         '''Populate the top-level of the outline from a list of tuples.'''
+        assert not new_tree
         with self.tree:
             for ap, gnx, h in outline:
                 # ap is an archived position, a list of ints.
                 if len(ap) == 1:
                     item = LeoTreeItem(gnx, ap, text=h, checked=None, collapsed=True)
-                    ### print('make.tree: item: %r' % item)
                     self.leo_items [gnx] = item
     #@+node:ekr.20181110175222.1: *5* tree.action: receive_children (CHANGE)
     @flx.action
     def receive_children(self, d):
-        if 0: ###
+        if new_tree: ###
             print('tree.receive_children')
             for key, value in d.items():
                 print(key, repr(value))
