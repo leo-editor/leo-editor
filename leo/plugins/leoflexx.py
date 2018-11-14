@@ -640,7 +640,7 @@ class LeoTree(flx.Widget):
         for ev in events:
             if 0:
                 self.show_event(ev)
-    #@+node:ekr.20181111011928.1: *4* tree.populate_children (test)
+    #@+node:ekr.20181111011928.1: *4* tree.populate_children
     def populate_children(self, children, parent_ap):
         '''Populate parent with the children if necessary.'''
         key = self.ap_to_key(parent_ap)
