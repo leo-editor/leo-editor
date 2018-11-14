@@ -26,7 +26,7 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
-debug = True
+debug = False
 debug_tree = True
 #@+others
 #@+node:ekr.20181103151350.1: **  init
@@ -290,8 +290,9 @@ class LeoApp(flx.PyComponent):
         t1 = time.clock()
         aList = []
         p = c.rootPosition()
-        ### Testing: forcibly expand the first node.
-        p.expand()
+        ### Don't do this: it messes up tree redraw.
+            # Testing: forcibly expand the first node.
+            # p.expand()
         while p:
             if p.level() == 0 or p.isVisible():
                 aList.append(self.make_dict_for_position(p))
@@ -539,7 +540,8 @@ class LeoTree(flx.Widget):
     def init(self, redraw_dict):
         # pylint: disable=arguments-differ
         self.leo_items = {}
-            # Keys are gnx's, values are LeoTreeItems.
+            # Keys are ap keys, created by tree.ap_to_key.
+            # values are LeoTreeItems.
         self.leo_populated_dict = {}
             # Keys are ap keys, created by tree.ap_to_key.
             # values are ap's.
@@ -559,16 +561,18 @@ class LeoTree(flx.Widget):
         Important: we do *not* clear self.tree itself!
         '''
         # pylint: disable=access-member-before-definition
-        print('===== tree.clear_tree')
+        #
+        # print('===== tree.clear_tree')
+        #
+        # Clear all tree items.
         for item in self.leo_items.values():
             if debug or debug_tree:
                 print('tree.clear_tree: dispose: %r' % item)
             item.dispose()
+        #
+        # Clear the internal data structures.
         self.leo_items = {}
-            # Keys are gnx's, values are LeoTreeItems.
         self.leo_populated_dict = {}
-            # Keys are ap keys, created by tree.ap_to_key.
-            # values are ap's.
     #@+node:ekr.20181110175222.1: *5* tree.action: receive_children
     @flx.action
     def receive_children(self, d):
@@ -595,16 +599,17 @@ class LeoTree(flx.Widget):
         '''Produce a key for the given ap.'''
         childIndex = ap ['childIndex']
         gnx = ap ['gnx']
+        headline = ap ['headline'] # Important for debugging.
         stack = ap ['stack']
         stack_s = '::'.join([
             'childIndex: %s, gnx: %s' % (z ['childIndex'], z ['gnx'])
                 for z in stack
         ])
-        key = 'Tree key<childIndex: %s, gnx: %s, stack: %s>' % (
-            childIndex, gnx, stack_s or '[]')
-        if 0: ### debug:
-            print('tree.ap_to_key')
-            self.root.dump_ap(ap, None, 'ap')
+        key = 'Tree key<childIndex: %s, gnx: %s, %s <stack: %s>>' % (
+            childIndex, gnx, headline, stack_s or '[]')
+        if False and key not in self.leo_populated_dict:
+            print('')
+            print('tree.ap_to_key: new key', ap ['headline'])
             print('key', key)
         return key
     #@+node:ekr.20181112172518.1: *4* tree.reactions
@@ -640,30 +645,44 @@ class LeoTree(flx.Widget):
     #@+node:ekr.20181111011928.1: *4* tree.populate_children
     def populate_children(self, children, parent_ap):
         '''Populate parent with the children if necessary.'''
-        key = self.ap_to_key(parent_ap)
-        if key in self.leo_populated_dict:
-            print('===== tree.populate_children: already populated')
+        trace = False
+        if trace: print('tree.populate_children...')
+        parent_key = self.ap_to_key(parent_ap)
+        if parent_key in self.leo_populated_dict:
+            print('===== tree.populate_children: already populated', parent_ap ['headline'])
             # print('key: %r' % key)
             # self.root.dump_ap(parent_ap, None, 'parent_ap')
             return
-        if debug:
-            print('tree.populate_children...')
+        #
+        # Set the key once, here.
+        self.leo_populated_dict [parent_key] = parent_ap
+        #
+        # Populate the items.
+        if parent_key not in self.leo_items:
+            print('tree.populate_children: can not happen')
             self.root.dump_ap(parent_ap, None, 'parent_ap')
-        self.leo_populated_dict [key] = parent_ap
-            # This is the only place that the dict is populated.
-        assert parent_ap in self.leo_items, (parent_ap, repr(self.leo_items))
-        with self.leo_items[parent_ap]:
-            for ap in children:
-                headline = ap ['headline']
-                item = LeoTreeItem(ap, text=headline, checked=None, collapsed=True)
-                self.leo_items [ap] = item
+            for item in self.leo_items:
+                print(item)
+            return
+        if trace:
+            print('tree.populate_children:', len(children))
+            print('parent_ap', repr(parent_ap))
+            print('parent item:', repr(self.leo_items[parent_ap]))
+        with self.leo_items[parent_key]:
+            for child_ap in children:
+                headline = child_ap ['headline']
+                child_key = self.ap_to_key(child_ap)
+                child_item = LeoTreeItem(child_ap, text=headline, checked=None, collapsed=True)
+                self.leo_items [child_key] = child_item
     #@+node:ekr.20181113043131.1: *4* tree.redraw_from_dict & helper
     def redraw_from_dict(self, d):
         '''
         Create LeoTreeItems from all items in the redraw_dict.
         The tree has already been cleared.
         '''
+        # print('==== tree.redraw_from_dict')
         self.leo_selected_ap = d ['c.p']
+            # Usually set in on_selected_event.
         for item in d ['items']:
             self.create_item_with_parent(item, self.tree)
            
@@ -674,7 +693,8 @@ class LeoTree(flx.Widget):
             headline = ap ['headline']
             # Create the tree item.
             tree_item = LeoTreeItem(ap, text=headline, checked=None, collapsed=True)
-            self.leo_items [ap] = tree_item
+            key = self.ap_to_key(ap)
+            self.leo_items [key] = tree_item
             # Create the item's children...
             for child in item ['children']:
                 self.create_item_with_parent(child, tree_item)
