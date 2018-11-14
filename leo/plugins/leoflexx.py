@@ -211,32 +211,17 @@ class LeoApp(flx.PyComponent):
         v = self.gnx_to_vnode [gnx]
         assert v, repr(ap)
         w.body.set_body(v.b)
-    #@+node:ekr.20181111095640.2: *4* app.action: set_status_to_unl (Rewrite)
+    #@+node:ekr.20181111095640.2: *4* app.action: set_status_to_unl
     @flx.action
     def set_status_to_unl(self, ap):
+        '''Output the status line corresponding to ap.'''
         c, g, w = self.c, self.g, self.main_window
-        print('===== app.set_status_to_unl')
-        headline = ap ['headline']
-        stack = ap ['stack']
-        parent_gnxs = [z ['gnx'] for z in stack]
-        parent_vnodes = [self.gnx_to_vnode[z] for z in parent_gnxs]
-        parent_headlines = [v.h for v in parent_vnodes]
-        parent_headlines.append(headline)
+        gnxs = [z ['gnx'] for z in ap ['stack']]
+        vnodes = [self.gnx_to_vnode[z] for z in gnxs]
+        headlines = [v.h for v in vnodes]
+        headlines.append(ap ['headline'])
         fn = g.shortFileName(c.fileName())
-        for z in parent_headlines:
-            print(z)
-        w.status_line.set_text(fn + '->'.join(parent_headlines))
-        
-        # self.root.dump_ap(ap, None, 'ap')
-        # v = self.gnx
-        # for i in range(len(ap)):
-            # ap_s = self.ap_to_string(ap[:i+1])
-            # gnx = self.ap_to_gnx.get(ap_s)
-            # data = self.gnx_to_node.get(gnx, [])
-            # unls.append(data[2] if data else '<not found: %s>' % ap_s)
-        # fn = g.shortFileName(c.fileName())
-        # fn = fn + '#' if fn else ''
-        # w.status_line.set_text(fn + '->'.join(unls))
+        w.status_line.set_text('%s#%s' % (fn, '->'.join(headlines)))
     #@+node:ekr.20181114015356.1: *3* app.create_all_data
     def create_all_data(self):
         '''Compute the initial values all data structures.'''
