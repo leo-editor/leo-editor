@@ -528,7 +528,7 @@ class LeoBrowserFrame(flx.PyComponent): ### leoFrame.LeoFrame):
     def update(self):
         pass
     #@-others
-#@+node:ekr.20181113041113.1: *3* class LeoBrowserGui(PyComponent)
+#@+node:ekr.20181113041113.1: *3* class LeoBrowserGui(test)
 class LeoBrowserGui(flx.PyComponent):
     '''
     Leo's Browser Gui.
@@ -856,33 +856,242 @@ class LeoBrowserStatusLine(flx.PyComponent): ###leoFrame.NullStatusLineClass):
         # pylint: disable=arguments-differ
         self.c = c
         self.g = g
-#@+node:ekr.20181115092337.57: *3* class LeoBrowserTree
-class LeoBrowserTree(flx.PyComponent): ### leoFrame.NullTree):
+#@+node:ekr.20181115092337.57: *3* class LeoBrowserTree (test)
+class LeoBrowserTree(flx.PyComponent):
     
     def init(self, c, g):
         # pylint: disable=arguments-differ
         self.c = c
         self.g = g
-    
-    ###
-        # self.editWidgetsDict = {}
+        self.edit_text_dict = {}
+        self.editWidgetsDict = {}
             # Keys are tnodes, values are StringTextWidgets.
-        # self.font = None
-        # self.fontName = None
-        # self.canvas = None
-        # self.redrawCount = 0
-        # self.updateCount = 0
-#@+node:ekr.20181115092337.58: *4*  bt.not used
-if 0:
+        self.redrawCount = 0
+            
     #@+others
-    #@+node:ekr.20181115092337.59: *5* bt.printWidgets
-    def printWidgets(self):
+    #@+node:ekr.20181115111153.1: *4* LeoTree.Must be defined in base class
+    ### To do: delegate all these to Leo's core???
+    if 0:
+        #@+others
+        #@+node:ekr.20181115111153.2: *5* LeoTree.endEditLabel
+        def endEditLabel(self):
+            '''End editing of a headline and update p.h.'''
+            c = self.c; k = c.k; p = c.p
+            # Important: this will redraw if necessary.
+            self.onHeadChanged(p)
+            if 0:
+                # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
+                k.setDefaultInputState()
+                k.showStateAndMode()
+            if 0:
+                # This interferes with the find command and interferes with focus generally!
+                c.bodyWantsFocus()
+        #@+node:ekr.20181115111153.3: *5* LeoTree.getEditTextDict
+        def getEditTextDict(self, v):
+            # New in 4.2: the default is an empty list.
+            return self.edit_text_dict.get(v, [])
+        #@+node:ekr.20181115111153.4: *5* LeoTree.injectCallbacks
+        def injectCallbacks(self):
+            c, g = self.c, self.g
+            #@+<< define callbacks to be injected in the position class >>
+            #@+node:ekr.20181115111153.5: *6* << define callbacks to be injected in the position class >>
+            # **Important:: These VNode methods are entitled to know about gui-level code.
+            #@+others
+            #@+node:ekr.20181115111153.6: *7* OnHyperLinkControlClick
+            def OnHyperLinkControlClick(self, event=None, c=c):
+                '''Callback injected into position class.'''
+                p = self
+                if c and c.exists:
+                    try:
+                        if not g.doHook("hypercclick1", c=c, p=p, event=event):
+                            c.selectPosition(p)
+                            c.redraw()
+                            c.frame.body.wrapper.setInsertPoint(0)
+                        g.doHook("hypercclick2", c=c, p=p, event=event)
+                    except Exception:
+                        g.es_event_exception("hypercclick")
+            #@+node:ekr.20181115111153.7: *7* OnHyperLinkEnter
+            def OnHyperLinkEnter(self, event=None, c=c):
+                '''Callback injected into position class.'''
+                try:
+                    p = self
+                    g.doHook("hyperenter1", c=c, p=p, event=event)
+                    g.doHook("hyperenter2", c=c, p=p, event=event)
+                except Exception:
+                    g.es_event_exception("hyperenter")
+            #@+node:ekr.20181115111153.8: *7* OnHyperLinkLeave
+            def OnHyperLinkLeave(self, event=None, c=c):
+                '''Callback injected into position class.'''
+                try:
+                    p = self
+                    g.doHook("hyperleave1", c=c, p=p, event=event)
+                    g.doHook("hyperleave2", c=c, p=p, event=event)
+                except Exception:
+                    g.es_event_exception("hyperleave")
+            #@-others
+            #@-<< define callbacks to be injected in the position class >>
+            for f in (OnHyperLinkControlClick, OnHyperLinkEnter, OnHyperLinkLeave):
+                g.funcToMethod(f, leoNodes.position)
+        #@+node:ekr.20181115111153.9: *5* LeoTree.onHeadlineKey
+        def onHeadlineKey(self, event):
+            '''Handle a key event in a headline.'''
+            w = event.widget if event else None
+            ch = event.char if event else ''
+            # This test prevents flashing in the headline when the control key is held down.
+            if ch:
+                self.updateHead(event, w)
+        #@+node:ekr.20181115111153.10: *5* LeoTree.OnIconCtrlClick (@url)
+        def OnIconCtrlClick(self, p):
+            self.g.openUrl(p)
+        #@+node:ekr.20181115111153.11: *5* LeoTree.OnIconDoubleClick (do nothing)
+        def OnIconDoubleClick(self, p):
+            pass
+        #@+node:ekr.20181115111153.12: *5* LeoTree.updateHead
+        def updateHead(self, event, w):
+            '''Update a headline from an event.
+
+            The headline officially changes only when editing ends.
+            '''
+            k = self.c.k
+            ch = event.char if event else ''
+            i, j = w.getSelectionRange()
+            ins = w.getInsertPoint()
+            if i != j:
+                ins = i
+            if ch in ('\b', 'BackSpace'):
+                if i != j:
+                    w.delete(i, j)
+                    # Bug fix: 2018/04/19.
+                    w.setSelectionRange(i, i, insert=i)
+                elif i > 0:
+                    i -= 1
+                    w.delete(i)
+                    w.setSelectionRange(i, i, insert=i)
+                else:
+                    w.setSelectionRange(0, 0, insert=0)
+            elif ch and ch not in ('\n', '\r'):
+                if i != j:
+                    w.delete(i, j)
+                elif k.unboundKeyAction == 'overwrite':
+                    w.delete(i, i + 1)
+                w.insert(ins, ch)
+                w.setSelectionRange(ins + 1, ins + 1, insert=ins + 1)
+            s = w.getAllText()
+            if s.endswith('\n'):
+                s = s[: -1]
+            # 2011/11/14: Not used at present.
+                # w.setWidth(self.headWidth(s=s))
+            if ch in ('\n', '\r'):
+                self.endEditLabel() # Now calls self.onHeadChanged.
+        #@-others
+    #@+node:ekr.20181115111037.1: *4* bt.oops
+    def oops(self):
+        g = self.g
+        print("LeoTree oops:", g.callers(4), "should be overridden in subclass")
+    #@+node:ekr.20181115092337.61: *4* bt.drawIcon
+    def drawIcon(self, p):
+        pass
+        ### self.message('draw-icon', gnx=p.gnx)
+    #@+node:ekr.20181115092337.62: *4* bt.edit_widget
+    def edit_widget(self, p):
+        ### self.message('edit-widget', gnx=p.gnx)
         d = self.editWidgetsDict
-        for key in d:
-            # keys are vnodes, values are StringTextWidgets.
-            w = d.get(key)
-            print('w', w, 'v.h:', key.headString, 's:', repr(w.s))
-    #@+node:ekr.20181115092337.60: *5* bt.Drawing & scrolling
+        if not p or not p.v:
+            return None
+        w = d.get(p.v)
+        if not w:
+            d[p.v] = w = StringTextWrapper(
+                c=self.c,
+                name='head-%d' % (1 + len(list(d.keys()))))
+            w.setAllText(p.h)
+        return w
+    #@+node:ekr.20181115092337.63: *4* bt.editLabel
+    def editLabel(self, p, selectAll=False, selection=None):
+        '''Start editing p's headline.'''
+        ### self.message('edit-label', gnx=p.gnx)
+        self.endEditLabel()
+        if p:
+            self.revertHeadline = p.h
+                # New in 4.4b2: helps undo.
+            wrapper = StringTextWrapper(c=self.c, g=self.g, name='head-wrapper')
+            e = None
+            return e, wrapper
+        else:
+            return None, None
+    #@+node:ekr.20181115111104.1: *4* bt.onHeadChanged (Used by the leoBridge module)
+    # Tricky code: do not change without careful thought and testing.
+    # Important: This code *is* used by the leoBridge module.
+    # See also, nativeTree.onHeadChanged.
+
+    def onHeadChanged(self, p, undoType='Typing', s=None, e=None): # e used in qt_tree.py.
+        '''
+        Officially change a headline.
+        Set the old undo text to the previous revert point.
+        '''
+        c, g = self.c, self.g
+        u = c.undoer
+        w = self.edit_widget(p)
+        if c.suppressHeadChanged:
+            return
+        if not w:
+            return
+        ch = '\n' # New in 4.4: we only report the final keystroke.
+        if s is None: s = w.getAllText()
+        #@+<< truncate s if it has multiple lines >>
+        #@+node:ekr.20181115111104.2: *5* << truncate s if it has multiple lines >>
+        # Remove trailing newlines before warning of truncation.
+        while s and s[-1] == '\n':
+            s = s[: -1]
+        # Warn if there are multiple lines.
+        i = s.find('\n')
+        if i > -1:
+            g.warning("truncating headline to one line")
+            s = s[: i]
+        limit = 1000
+        if len(s) > limit:
+            g.warning("truncating headline to", limit, "characters")
+            s = s[: limit]
+        s = g.toUnicode(s or '')
+
+        #@-<< truncate s if it has multiple lines >>
+        # Make the change official, but undo to the *old* revert point.
+        oldRevert = self.revertHeadline
+        changed = s != oldRevert
+        self.revertHeadline = s
+        p.initHeadString(s)
+        if g.doHook("headkey1", c=c, p=p, ch=ch, changed=changed):
+            return # The hook claims to have handled the event.
+        if changed:
+            undoData = u.beforeChangeNodeContents(p, oldHead=oldRevert)
+            if not c.changed: c.setChanged(True)
+            # New in Leo 4.4.5: we must recolor the body because
+            # the headline may contain directives.
+            c.frame.scanForTabWidth(p)
+            c.frame.body.recolor(p)
+            dirtyVnodeList = p.setDirty()
+            u.afterChangeNodeContents(p, undoType, undoData,
+                dirtyVnodeList=dirtyVnodeList, inHead=True)
+        if changed:
+            c.redraw_after_head_changed()
+            # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
+        g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
+    #@+node:ekr.20181115092337.59: *4* bt.printWidgets (not used)
+    if 0:
+        def printWidgets(self):
+            d = self.editWidgetsDict
+            for key in d:
+                # keys are vnodes, values are StringTextWidgets.
+                w = d.get(key)
+                print('w', w, 'v.h:', key.headString, 's:', repr(w.s))
+    #@+node:ekr.20181115092337.64: *4* bt.redraw (to do)
+    def redraw(self, p=None):
+        ### self.message('redraw-tree')
+        self.redrawCount += 1
+        return p
+            # Support for #503: Use string/null gui for unit tests
+            
+    redraw_now = redraw
+
     def redraw_after_contract(self, p):
         self.redraw()
 
@@ -897,67 +1106,46 @@ if 0:
 
     def redraw_after_select(self, p=None):
         self.redraw()
-    #@-others
-    
-#@+node:ekr.20181115092337.61: *4* bt.drawIcon
-def drawIcon(self, p):
-    pass
-    ### self.message('draw-icon', gnx=p.gnx)
-#@+node:ekr.20181115092337.62: *4* bt.edit_widget
-def edit_widget(self, p):
-    ### self.message('edit-widget', gnx=p.gnx)
-    d = self.editWidgetsDict
-    if not p or not p.v:
-        return None
-    w = d.get(p.v)
-    if not w:
-        d[p.v] = w = StringTextWrapper(
-            c=self.c,
-            name='head-%d' % (1 + len(list(d.keys()))))
-        w.setAllText(p.h)
-    return w
-#@+node:ekr.20181115092337.63: *4* bt.editLabel
-def editLabel(self, p, selectAll=False, selection=None):
-    '''Start editing p's headline.'''
-    ### self.message('edit-label', gnx=p.gnx)
-    self.endEditLabel()
-    if p:
-        self.revertHeadline = p.h
-            # New in 4.4b2: helps undo.
-        wrapper = StringTextWrapper(c=self.c, g=self.g, name='head-wrapper')
-        e = None
-        return e, wrapper
-    else:
-        return None, None
-#@+node:ekr.20181115092337.64: *4* bt.redraw
-def redraw(self, p=None):
-    ### self.message('redraw-tree')
-    self.redrawCount += 1
-    return p
-        # Support for #503: Use string/null gui for unit tests
-        
-redraw_now = redraw
-#@+node:ekr.20181115092337.65: *4* bt.scrollTo
-def scrollTo(self, p):
-    pass
-    ### self.message('scroll-tree', gnx=p.gnx)
-#@+node:ekr.20181115092337.66: *4* bt.setHeadline
-def setHeadline(self, p, s):
-    '''
-    Set the actual text of the headline widget.
 
-    This is called from the undo/redo logic to change the text before redrawing.
-    '''
-    ### self.message('set-headline', gnx=p.gnx, s=s)
-    w = self.edit_widget(p)
-    if w:
-        w.delete(0, 'end')
-        if s.endswith('\n') or s.endswith('\r'):
-            s = s[: -1]
-        w.insert(0, s)
-        self.revertHeadline = s
-    else:
-        print('-' * 20, 'oops')
+    #@+node:ekr.20181115092337.65: *4* bt.scrollTo
+    def scrollTo(self, p):
+        pass
+        ### self.message('scroll-tree', gnx=p.gnx)
+    #@+node:ekr.20181115092337.66: *4* bt.setHeadline
+    def setHeadline(self, p, s):
+        '''
+        Set the actual text of the headline widget.
+
+        This is called from the undo/redo logic to change the text before redrawing.
+        '''
+        ### self.message('set-headline', gnx=p.gnx, s=s)
+        w = self.edit_widget(p)
+        if w:
+            w.delete(0, 'end')
+            if s.endswith('\n') or s.endswith('\r'):
+                s = s[: -1]
+            w.insert(0, s)
+            self.revertHeadline = s
+        else:
+            print('-' * 20, 'oops')
+    #@-others
+    #
+    ### From LeoTree
+            # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
+        # "public" ivars: correspond to setters & getters.
+        # self.frame = frame
+        # self.drag_p = None
+        # self.generation = 0
+            # Leo 5.6: low-level vnode methods increment
+            # this count whenever the tree changes.
+        # self.revertHeadline = None
+        # self.use_chapters = False
+    #
+    ### From NullTree
+        # self.font = None
+        # self.fontName = None
+        # self.canvas = None
+        # self.updateCount = 0
 #@+node:ekr.20181115092337.33: *3* class StringTextWrapper (test)
 class StringTextWrapper(flx.PyComponent):
     '''
