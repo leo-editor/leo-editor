@@ -761,19 +761,84 @@ class LeoBrowserGui(flx.PyComponent):
     def put_help(self, c, s, short_title):
         pass
     #@-others
-#@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
-class LeoBrowserIconBar(flx.PyComponent): ### leoFrame.NullIconBarClass):
+#@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar (test)
+class LeoBrowserIconBar(flx.PyComponent):
 
     def init(self, c, g):
         # pylint: disable=arguments-differ
-        pass
-        # leoFrame.NullIconBarClass.__init__(self,
-            # c=c, parentFrame=parentFrame)
+        self.c = c
+        self.g = g
+        self.w = g.NullObject()
         ###
-            # self.c = c
             # self.iconFrame = None
             # self.parentFrame = parentFrame
-            # self.w = g.NullObject()
+            
+    #@+others
+    #@+node:ekr.20181115114726.3: *4*  NullIconBarClass.Do nothing
+    def addRow(self, height=None):
+        pass
+
+    def addRowIfNeeded(self):
+        pass
+
+    def addWidget(self, w):
+        pass
+
+    def createChaptersIcon(self):
+        pass
+
+    def deleteButton(self, w):
+        pass
+
+    def getNewFrame(self): return None
+
+    def hide(self):
+        pass
+
+    def show(self): pass
+    #@+node:ekr.20181115114726.4: *4* NullIconBarClass.add
+    def add(self, *args, **keys):
+        '''Add a (virtual) button to the (virtual) icon bar.'''
+        pass ###
+        ###
+            # command = keys.get('command')
+            # text = keys.get('text')
+            # try:
+                # g.app.iconWidgetCount += 1
+            # except Exception:
+                # g.app.iconWidgetCount = 1
+            # n = g.app.iconWidgetCount
+            # name = 'nullButtonWidget %d' % n
+            # if not command:
+        
+                # def commandCallback(name=name):
+                    # g.pr("command for %s" % (name))
+        
+                # command = commandCallback
+        
+            # class nullButtonWidget:
+        
+                # def __init__(self, c, command, name, text):
+                    # self.c = c
+                    # self.command = command
+                    # self.name = name
+                    # self.text = text
+        
+                # def __repr__(self):
+                    # return self.name
+        
+            # b = nullButtonWidget(self.c, command, name, text)
+            # return b
+    #@+node:ekr.20181115114726.5: *4* NullIconBarClass.clear
+    def clear(self):
+        pass
+        ### g.app.iconWidgetCount = 0
+        ### g.app.iconImageRefs = []
+    #@+node:ekr.20181115114726.6: *4* NullIconBarClass.setCommandForButton
+    def setCommandForButton(self, button, command, command_p, controller, gnx, script):
+        pass ###
+        ### button.command = command
+    #@-others
 #@+node:ekr.20181115092337.22: *3* class LeoBrowserLog (test)
 class LeoBrowserLog(flx.PyComponent):
     
