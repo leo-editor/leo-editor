@@ -57,6 +57,7 @@ class LeoApp(flx.PyComponent):
 
     def init(self):
         c, g = self.open_bridge()
+        print('app.init: c.frame', repr(c.frame))
         self.c, self.g = c, g
         self.gui = LeoBrowserGui(g)
         # Create all data-related ivars.
@@ -335,6 +336,8 @@ class LeoApp(flx.PyComponent):
     #@+node:ekr.20181105091545.1: *3* app.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
+        ### Monkey-Patch leoBridge.createGui???
+        
         bridge = leoBridge.controller(gui = None,
             loadPlugins = False,
             readSettings = False,
