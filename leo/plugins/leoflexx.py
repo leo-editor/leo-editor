@@ -365,6 +365,169 @@ class LeoApp(flx.PyComponent):
         ### runUnitTests(self.c, self.g)
     #@-others
 #@+node:ekr.20181115071559.1: ** Python side wrappers
+#@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
+class LeoBrowserBody(flx.PyComponent): ### leoFrame.NullBody):
+   
+    def init(self, c, g, frame):
+        # pylint: disable=arguments-differ
+        self.c = c
+        self.g = g
+        self.wrapper = StringTextWrapper(c=self.c, name='body')
+        ###
+            # self.insertPoint = 0
+            # self.selection = 0, 0
+            # self.s = "" # The body text
+            # self.widget = None
+            # self.editorWidgets['1'] = wrapper
+            # self.colorizer = NullColorizer(self.c)
+    #@+others
+    #@+node:ekr.20181115092337.4: *4* LeoBrowserBody interface
+    # At present theses do not issue messages.
+
+    # Birth, death...
+    def createControl(self, parentFrame, p):
+        pass
+
+    # Editors...
+    def addEditor(self, event=None):
+        pass
+    def assignPositionToEditor(self, p):
+        pass
+    def createEditorFrame(self, w):
+        return None
+    def cycleEditorFocus(self, event=None):
+        pass
+    def deleteEditor(self, event=None):
+        pass
+    def selectEditor(self, w):
+        pass
+    def selectLabel(self, w):
+        pass
+    def setEditorColors(self, bg, fg):
+        pass
+    def unselectLabel(self, w):
+        pass
+    def updateEditors(self):
+        pass
+    # Events...
+    def forceFullRecolor(self):
+        pass
+    def scheduleIdleTimeRoutine(self, function, *args, **keys):
+        pass
+    #@+node:ekr.20181115092337.5: *4* bb.setFocus
+    def setFocus(self):
+        pass
+        ### self.message('set-focus-to-body')
+    #@-others
+#@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
+class LeoBrowserFrame(flx.PyComponent): ### leoFrame.LeoFrame):
+    
+    def init(self, c, g, title, gui):
+        '''Ctor for the LeoBrowserFrame class.'''
+        # pylint: disable=arguments-differ
+        self.c = c
+        self.g = g
+        c.frame = self
+        assert self.c
+        self.wrapper = None
+            # was BrowserIconBarClass(self.c, self)
+        self.isNullFrame = True
+        self.outerFrame = None
+        self.ratio = self.secondary_ratio = 0.5
+        self.title = title
+        self.top = None # Always None.
+        # Create the component objects.
+        self.body = LeoBrowserBody(frame=self)
+        self.iconBar = LeoBrowserIconBar(c=c, parentFrame=self)
+        self.log = LeoBrowserLog(frame=self)
+        self.menu = LeoBrowserMenu(frame=self)
+        self.statusLine = LeoBrowserStatusLine(c=c, parentFrame=self)
+        self.tree = LeoBrowserTree(frame=self)
+        # Default window position.
+        self.w, self.h, self.x, self.y = 600, 500, 40, 40
+    
+    #@+others
+    #@+node:ekr.20181115092337.7: *4* bf.init
+
+    #@+node:ekr.20181115092337.8: *4* bf.finishCreate
+    def finishCreate(self):
+        pass
+        ### self.createFirstTreeNode()
+            # Call the base LeoFrame method.
+    #@+node:ekr.20181115092337.9: *4* bf.oops
+    def oops(self):
+        g = self.c
+        g.trace("LeoBrowserFrame", g.callers(4))
+    #@+node:ekr.20181115092337.10: *4* bf.redirectors (To do: add messages)
+    def bringToFront(self):
+        pass
+    def cascade(self, event=None):
+        pass
+    def contractBodyPane(self, event=None):
+        pass
+    def contractLogPane(self, event=None):
+        pass
+    def contractOutlinePane(self, event=None):
+        pass
+    def contractPane(self, event=None):
+        pass
+    def deiconify(self):
+        pass
+    def destroySelf(self):
+        pass
+    def equalSizedPanes(self, event=None):
+        pass
+    def expandBodyPane(self, event=None):
+        pass
+    def expandLogPane(self, event=None):
+        pass
+    def expandOutlinePane(self, event=None):
+        pass
+    def expandPane(self, event=None):
+        pass
+    def fullyExpandBodyPane(self, event=None):
+        pass
+    def fullyExpandLogPane(self, event=None):
+        pass
+    def fullyExpandOutlinePane(self, event=None):
+        pass
+    def fullyExpandPane(self, event=None):
+        pass
+    def get_window_info(self):
+        return 600, 500, 20, 20
+    def hideBodyPane(self, event=None):
+        pass
+    def hideLogPane(self, event=None):
+        pass
+    def hideLogWindow(self, event=None):
+        pass
+    def hideOutlinePane(self, event=None):
+        pass
+    def hidePane(self, event=None):
+        pass
+    def leoHelp(self, event=None):
+        pass
+    def lift(self):
+        pass
+    def minimizeAll(self, event=None):
+        pass
+    def resizePanesToRatio(self, ratio, secondary_ratio):
+        pass
+    def resizeToScreen(self, event=None):
+        pass
+    def setInitialWindowGeometry(self):
+        pass
+    def setTopGeometry(self, w, h, x, y, adjustSize=True):
+        return 0, 0, 0, 0
+    def setWrap(self, flag, force=False):
+        pass
+    def toggleActivePane(self, event=None):
+        pass
+    def toggleSplitDirection(self, event=None):
+        pass
+    def update(self):
+        pass
+    #@-others
 #@+node:ekr.20181113041113.1: *3* class LeoBrowserGui(PyComponent)
 class LeoBrowserGui(flx.PyComponent):
     '''
@@ -597,174 +760,10 @@ class LeoBrowserGui(flx.PyComponent):
     def put_help(self, c, s, short_title):
         pass
     #@-others
-#@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
-class LeoBrowserBody(flx.PyComponent): ### leoFrame.NullBody):
-   
-    def init(self, c, g, frame):
-        # pylint: disable=arguments-differ
-        self.c = c
-        self.g = g
-        ### self.message = g.app.gui.message
-        self.wrapper = StringTextWrapper(c=self.c, name='body')
-        ###
-            # self.insertPoint = 0
-            # self.selection = 0, 0
-            # self.s = "" # The body text
-            # self.widget = None
-            # self.editorWidgets['1'] = wrapper
-            # self.colorizer = NullColorizer(self.c)
-    #@+others
-    #@+node:ekr.20181115092337.4: *4* LeoBrowserBody interface
-    # At present theses do not issue messages.
-
-    # Birth, death...
-    def createControl(self, parentFrame, p):
-        pass
-
-    # Editors...
-    def addEditor(self, event=None):
-        pass
-    def assignPositionToEditor(self, p):
-        pass
-    def createEditorFrame(self, w):
-        return None
-    def cycleEditorFocus(self, event=None):
-        pass
-    def deleteEditor(self, event=None):
-        pass
-    def selectEditor(self, w):
-        pass
-    def selectLabel(self, w):
-        pass
-    def setEditorColors(self, bg, fg):
-        pass
-    def unselectLabel(self, w):
-        pass
-    def updateEditors(self):
-        pass
-    # Events...
-    def forceFullRecolor(self):
-        pass
-    def scheduleIdleTimeRoutine(self, function, *args, **keys):
-        pass
-    #@+node:ekr.20181115092337.5: *4* bb.setFocus
-    def setFocus(self):
-        pass
-        ### self.message('set-focus-to-body')
-    #@-others
-#@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
-class LeoBrowserFrame(flx.PyComponent): ### leoFrame.LeoFrame):
-    
-    def init(self, c, g, title, gui):
-        '''Ctor for the LeoBrowserFrame class.'''
-        # pylint: disable=arguments-differ
-        self.c = c
-        self.g = g
-        c.frame = self
-        assert self.c
-        self.wrapper = None
-            # was BrowserIconBarClass(self.c, self)
-        self.isNullFrame = True
-        self.outerFrame = None
-        self.ratio = self.secondary_ratio = 0.5
-        self.title = title
-        self.top = None # Always None.
-        # Create the component objects.
-        self.body = LeoBrowserBody(frame=self)
-        self.iconBar = LeoBrowserIconBar(c=c, parentFrame=self)
-        self.log = LeoBrowserLog(frame=self)
-        self.menu = LeoBrowserMenu(frame=self)
-        self.statusLine = LeoBrowserStatusLine(c=c, parentFrame=self)
-        self.tree = LeoBrowserTree(frame=self)
-        # Default window position.
-        self.w, self.h, self.x, self.y = 600, 500, 40, 40
-    
-    #@+others
-    #@+node:ekr.20181115092337.7: *4* bf.init
-
-    #@+node:ekr.20181115092337.8: *4* bf.finishCreate
-    def finishCreate(self):
-        pass
-        ### self.createFirstTreeNode()
-            # Call the base LeoFrame method.
-    #@+node:ekr.20181115092337.9: *4* bf.oops
-    def oops(self):
-        g = self.c
-        g.trace("LeoBrowserFrame", g.callers(4))
-    #@+node:ekr.20181115092337.10: *4* bf.redirectors (To do: add messages)
-    def bringToFront(self):
-        pass
-    def cascade(self, event=None):
-        pass
-    def contractBodyPane(self, event=None):
-        pass
-    def contractLogPane(self, event=None):
-        pass
-    def contractOutlinePane(self, event=None):
-        pass
-    def contractPane(self, event=None):
-        pass
-    def deiconify(self):
-        pass
-    def destroySelf(self):
-        pass
-    def equalSizedPanes(self, event=None):
-        pass
-    def expandBodyPane(self, event=None):
-        pass
-    def expandLogPane(self, event=None):
-        pass
-    def expandOutlinePane(self, event=None):
-        pass
-    def expandPane(self, event=None):
-        pass
-    def fullyExpandBodyPane(self, event=None):
-        pass
-    def fullyExpandLogPane(self, event=None):
-        pass
-    def fullyExpandOutlinePane(self, event=None):
-        pass
-    def fullyExpandPane(self, event=None):
-        pass
-    def get_window_info(self):
-        return 600, 500, 20, 20
-    def hideBodyPane(self, event=None):
-        pass
-    def hideLogPane(self, event=None):
-        pass
-    def hideLogWindow(self, event=None):
-        pass
-    def hideOutlinePane(self, event=None):
-        pass
-    def hidePane(self, event=None):
-        pass
-    def leoHelp(self, event=None):
-        pass
-    def lift(self):
-        pass
-    def minimizeAll(self, event=None):
-        pass
-    def resizePanesToRatio(self, ratio, secondary_ratio):
-        pass
-    def resizeToScreen(self, event=None):
-        pass
-    def setInitialWindowGeometry(self):
-        pass
-    def setTopGeometry(self, w, h, x, y, adjustSize=True):
-        return 0, 0, 0, 0
-    def setWrap(self, flag, force=False):
-        pass
-    def toggleActivePane(self, event=None):
-        pass
-    def toggleSplitDirection(self, event=None):
-        pass
-    def update(self):
-        pass
-    #@-others
 #@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
 class LeoBrowserIconBar(flx.PyComponent): ### leoFrame.NullIconBarClass):
 
-    def init(self, c, parentFrame):
+    def init(self, c, g):
         # pylint: disable=arguments-differ
         pass
         # leoFrame.NullIconBarClass.__init__(self,
@@ -777,12 +776,12 @@ class LeoBrowserIconBar(flx.PyComponent): ### leoFrame.NullIconBarClass):
 #@+node:ekr.20181115092337.22: *3* class LeoBrowserLog
 class LeoBrowserLog(flx.PyComponent): ### leoFrame.NullLog):
     
-    def init(self, frame, g):
+    def init(self, c, g):
         # pylint: disable=arguments-differ
+        self.c = c
         self.g = g
-        ### assert self.enabled
-        ### self.message = g.app.gui.message
     ###
+        # self.enabled = True
         # self.isNull = True
         # self.logNumber = 0
         # self.widget = self.createControl(parentFrame)
@@ -837,23 +836,129 @@ def put(self, s,
     from_redirect=False,
     nodeLink=None,
 ):
-    if self.enabled:
-        self.message('put', s=s, tabName=tabName)
+    print(s) ###
+    ##self.message('put', s=s, tabName=tabName)
 
 def putnl(self, tabName='Log'):
-    if self.enabled:
-        self.message('put-nl', tabName=tabName)
+    print('') ###
+    ### self.message('put-nl', tabName=tabName)
 #@+node:ekr.20181115092337.31: *3* class LeoBrowserMenu
 class LeoBrowserMenu(flx.PyComponent): ### leoMenu.NullMenu):
     
-    def init(self):
-        pass ###
+    def init(self, c, g):
+        # pylint: disable=arguments-differ
+        self.c = c
+        self.g = g
 #@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine
 class LeoBrowserStatusLine(flx.PyComponent): ###leoFrame.NullStatusLineClass):
     
-    def init(self):
-        pass ###
-#@+node:ekr.20181115092337.33: *3* class StringTextWrapper
+    def init(self, c, g):
+        # pylint: disable=arguments-differ
+        self.c = c
+        self.g = g
+#@+node:ekr.20181115092337.57: *3* class LeoBrowserTree
+class LeoBrowserTree(flx.PyComponent): ### leoFrame.NullTree):
+    
+    def init(self, c, g):
+        # pylint: disable=arguments-differ
+        self.c = c
+        self.g = g
+    
+    ###
+        # self.editWidgetsDict = {}
+            # Keys are tnodes, values are StringTextWidgets.
+        # self.font = None
+        # self.fontName = None
+        # self.canvas = None
+        # self.redrawCount = 0
+        # self.updateCount = 0
+#@+node:ekr.20181115092337.58: *4*  bt.not used
+if 0:
+    #@+others
+    #@+node:ekr.20181115092337.59: *5* bt.printWidgets
+    def printWidgets(self):
+        d = self.editWidgetsDict
+        for key in d:
+            # keys are vnodes, values are StringTextWidgets.
+            w = d.get(key)
+            print('w', w, 'v.h:', key.headString, 's:', repr(w.s))
+    #@+node:ekr.20181115092337.60: *5* bt.Drawing & scrolling
+    def redraw_after_contract(self, p):
+        self.redraw()
+
+    def redraw_after_expand(self, p):
+        self.redraw()
+
+    def redraw_after_head_changed(self):
+        self.redraw()
+
+    def redraw_after_icons_changed(self):
+        self.redraw()
+
+    def redraw_after_select(self, p=None):
+        self.redraw()
+    #@-others
+    
+#@+node:ekr.20181115092337.61: *4* bt.drawIcon
+def drawIcon(self, p):
+    pass
+    ### self.message('draw-icon', gnx=p.gnx)
+#@+node:ekr.20181115092337.62: *4* bt.edit_widget
+def edit_widget(self, p):
+    ### self.message('edit-widget', gnx=p.gnx)
+    d = self.editWidgetsDict
+    if not p or not p.v:
+        return None
+    w = d.get(p.v)
+    if not w:
+        d[p.v] = w = StringTextWrapper(
+            c=self.c,
+            name='head-%d' % (1 + len(list(d.keys()))))
+        w.setAllText(p.h)
+    return w
+#@+node:ekr.20181115092337.63: *4* bt.editLabel
+def editLabel(self, p, selectAll=False, selection=None):
+    '''Start editing p's headline.'''
+    ### self.message('edit-label', gnx=p.gnx)
+    self.endEditLabel()
+    if p:
+        self.revertHeadline = p.h
+            # New in 4.4b2: helps undo.
+        wrapper = StringTextWrapper(c=self.c, g=self.g, name='head-wrapper')
+        e = None
+        return e, wrapper
+    else:
+        return None, None
+#@+node:ekr.20181115092337.64: *4* bt.redraw
+def redraw(self, p=None):
+    ### self.message('redraw-tree')
+    self.redrawCount += 1
+    return p
+        # Support for #503: Use string/null gui for unit tests
+        
+redraw_now = redraw
+#@+node:ekr.20181115092337.65: *4* bt.scrollTo
+def scrollTo(self, p):
+    pass
+    ### self.message('scroll-tree', gnx=p.gnx)
+#@+node:ekr.20181115092337.66: *4* bt.setHeadline
+def setHeadline(self, p, s):
+    '''
+    Set the actual text of the headline widget.
+
+    This is called from the undo/redo logic to change the text before redrawing.
+    '''
+    ### self.message('set-headline', gnx=p.gnx, s=s)
+    w = self.edit_widget(p)
+    if w:
+        w.delete(0, 'end')
+        if s.endswith('\n') or s.endswith('\r'):
+            s = s[: -1]
+        w.insert(0, s)
+        self.revertHeadline = s
+    else:
+        print('-' * 20, 'oops')
+#@+node:ekr.20181115092337.33: *3* class StringTextWrapper (test)
 class StringTextWrapper(flx.PyComponent):
     '''
     A class that represents text as a Python string.
@@ -863,17 +968,16 @@ class StringTextWrapper(flx.PyComponent):
         '''Ctor for the StringTextWrapper class.'''
         # pylint: disable=arguments-differ
         self.c = c
-        self.g = g ###
+        self.g = g
         self.name = name
         self.ins = 0
-        ### self.message = g.app.gui.message
         self.sel = 0, 0
         self.s = ''
         self.supportsHighLevelInterface = True
-        self.widget = None # This ivar must exist, and be None.
+        self.widget = None # This ivar must exist, and must be None.
     
     def __repr__(self):
-        return '<StringTextWrapper: %s %s>' % (id(self), self.name)
+        return '<StringTextWrapper: %s>' % (self.name)
     
     def getName(self):
         '''StringTextWrapper.'''
@@ -1068,107 +1172,6 @@ class StringTextWrapper(flx.PyComponent):
         row, col = g.convertPythonIndexToRowCol(s, i)
         return i, row, col
     #@-others
-#@+node:ekr.20181115092337.57: *3* class LeoBrowserTree
-class LeoBrowserTree(flx.PyComponent): ### leoFrame.NullTree):
-    
-    pass ###
-
-    # def __init__(self, frame):
-        # leoFrame.NullTree.__init__(self, frame=frame)
-        ### self.message = g.app.gui.message
-    ###
-        # self.c = frame.c
-        # self.editWidgetsDict = {}
-            # Keys are tnodes, values are StringTextWidgets.
-        # self.font = None
-        # self.fontName = None
-        # self.canvas = None
-        # self.redrawCount = 0
-        # self.updateCount = 0
-#@+node:ekr.20181115092337.58: *4*  bt.not used
-if 0:
-    #@+others
-    #@+node:ekr.20181115092337.59: *5* bt.printWidgets
-    def printWidgets(self):
-        d = self.editWidgetsDict
-        for key in d:
-            # keys are vnodes, values are StringTextWidgets.
-            w = d.get(key)
-            print('w', w, 'v.h:', key.headString, 's:', repr(w.s))
-    #@+node:ekr.20181115092337.60: *5* bt.Drawing & scrolling
-    def redraw_after_contract(self, p):
-        self.redraw()
-
-    def redraw_after_expand(self, p):
-        self.redraw()
-
-    def redraw_after_head_changed(self):
-        self.redraw()
-
-    def redraw_after_icons_changed(self):
-        self.redraw()
-
-    def redraw_after_select(self, p=None):
-        self.redraw()
-    #@-others
-    
-#@+node:ekr.20181115092337.61: *4* bt.drawIcon
-def drawIcon(self, p):
-    self.message('draw-icon', gnx=p.gnx)
-#@+node:ekr.20181115092337.62: *4* bt.edit_widget
-def edit_widget(self, p):
-    self.message('edit-widget', gnx=p.gnx)
-    d = self.editWidgetsDict
-    if not p or not p.v:
-        return None
-    w = d.get(p.v)
-    if not w:
-        d[p.v] = w = StringTextWrapper(
-            c=self.c,
-            name='head-%d' % (1 + len(list(d.keys()))))
-        w.setAllText(p.h)
-    return w
-#@+node:ekr.20181115092337.63: *4* bt.editLabel
-def editLabel(self, p, selectAll=False, selection=None):
-    '''Start editing p's headline.'''
-    self.message('edit-label', gnx=p.gnx)
-    self.endEditLabel()
-    if p:
-        self.revertHeadline = p.h
-            # New in 4.4b2: helps undo.
-        wrapper = StringTextWrapper(c=self.c, g=self.g, name='head-wrapper')
-        e = None
-        return e, wrapper
-    else:
-        return None, None
-#@+node:ekr.20181115092337.64: *4* bt.redraw
-def redraw(self, p=None):
-    self.message('redraw-tree')
-    self.redrawCount += 1
-    return p
-        # Support for #503: Use string/null gui for unit tests
-        
-redraw_now = redraw
-#@+node:ekr.20181115092337.65: *4* bt.scrollTo
-def scrollTo(self, p):
-    self.message('scroll-tree', gnx=p.gnx)
-#@+node:ekr.20181115092337.66: *4* bt.setHeadline
-def setHeadline(self, p, s):
-    '''
-    Set the actual text of the headline widget.
-
-    This is called from the undo/redo logic to change the text before redrawing.
-    '''
-    self.message('set-headline', gnx=p.gnx, s=s)
-    w = self.edit_widget(p)
-    if w:
-        w.delete(0, 'end')
-        if s.endswith('\n') or s.endswith('\r'):
-            s = s[: -1]
-        w.insert(0, s)
-        self.revertHeadline = s
-    else:
-        print('-' * 20, 'oops')
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181104082144.1: *3* class LeoFlexxBody
 
