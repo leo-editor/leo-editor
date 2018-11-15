@@ -365,10 +365,10 @@ class LeoApp(flx.PyComponent):
         ### runUnitTests(self.c, self.g)
     #@-others
 #@+node:ekr.20181115071559.1: ** Python wrappers
-#@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
-class LeoBrowserBody(flx.PyComponent): ### leoFrame.NullBody):
+#@+node:ekr.20181115092337.3: *3* class LeoBrowserBody (test)
+class LeoBrowserBody(flx.PyComponent):
    
-    def init(self, c, g, frame):
+    def init(self, c, g):
         # pylint: disable=arguments-differ
         self.c = c
         self.g = g
@@ -420,16 +420,16 @@ class LeoBrowserBody(flx.PyComponent): ### leoFrame.NullBody):
         pass
         ### self.message('set-focus-to-body')
     #@-others
-#@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
+#@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame (test)
 class LeoBrowserFrame(flx.PyComponent):
     
-    def init(self, c, g, title, gui):
+    def init(self, c, g):
         '''Ctor for the LeoBrowserFrame class.'''
         # pylint: disable=arguments-differ
         self.c = c
         self.g = g
-        self.gui = gui
-        self.title = title
+        ### self.gui = gui
+        ### self.title = title
         #
         #
         c.frame = self
@@ -565,25 +565,19 @@ class LeoBrowserFrame(flx.PyComponent):
     #@-others
 #@+node:ekr.20181113041113.1: *3* class LeoBrowserGui(test)
 class LeoBrowserGui(flx.PyComponent):
-    '''
-    Leo's Browser Gui.
+    '''Leo's Browser Gui.'''
     
-    This should be a subclass of leo.core.leoGui.LeoGui, but pscript does
-    not support multiple inheritance.
-    
-    The following methods are a meld of the NullGui and LeoGui classes.
-    '''
-    #@+others
-    #@+node:ekr.20181115042955.1: *4* gui.init
-    def init (self, g):
+    def init (self, c, g):
         '''The ctor for the LeoBroswerGui class.'''
         # pylint: disable=arguments-differ
-        #
-        # New ivars.
+        self.c = c
         self.g = g
-        #
-        # From LeoGui, except ivars set in NullGui...
-        ### Not used.
+        self.mGuiName = 'BrowserGui'
+        self.clipboardContents = ''
+        self.isNullGui = True
+        self.last_frame = LeoBrowserFrame(c, g)
+        ###
+            # From LeoGui.
             # self.FKeys = [] # The representation of F-keys.
             # self.ScriptingControllerClass = NullScriptingControllerClass
             # self.globalFindDialog = None
@@ -596,16 +590,13 @@ class LeoBrowserGui(flx.PyComponent):
             # self.specialChars = [] # A list of characters/keys to be handle specially.
             # self.splashScreen = None
             # self.utils = None
-        #
-        # From NullGui...
-        ### Not used.
+            #
+            # From NullGui...
             # self.focusWidget = None
             # self.idleTimeClass = g.NullObject
-            # self.lastFrame = None
             # self.script = None
-        self.mGuiName = 'BrowserGui'
-        self.clipboardContents = ''
-        self.isNullGui = True
+
+    #@+others
     #@+node:ekr.20181115044516.1: *4* Overrides (to do)
     #@+node:ekr.20181115042835.4: *5* gui.create_key_event
     def create_key_event(self, c,
@@ -622,6 +613,12 @@ class LeoBrowserGui(flx.PyComponent):
         g = self.g
         g.trace(g.callers())
         return leoGui.LeoKeyEvent(c, char, event, binding, w, x, y, x_root, y_root)
+    #@+node:ekr.20181115042835.7: *5* gui.event_generate (Needed?)
+    def event_generate(self, c, char, shortcut, w):
+        print('gui.event_generated', self.g.callers())
+        event = self.create_key_event(c, binding=shortcut, char=char, w=w)
+        c.k.masterKeyHandler(event)
+        c.outerUpdate()
     #@+node:ekr.20181115042835.5: *5* gui.guiName
     def guiName(self):
         
@@ -660,12 +657,6 @@ class LeoBrowserGui(flx.PyComponent):
             return w._name
         else:
             return repr(w)
-    #@+node:ekr.20181115042835.7: *5* gui.event_generate (Needed?)
-    def event_generate(self, c, char, shortcut, w):
-        print('gui.event_generated', self.g.callers())
-        event = self.create_key_event(c, binding=shortcut, char=char, w=w)
-        c.k.masterKeyHandler(event)
-        c.outerUpdate()
     #@+node:ekr.20181115042908.1: *4* From NullGui
     #@+node:ekr.20181115042930.3: *5* NullGui.dialogs
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
@@ -774,24 +765,22 @@ class LeoBrowserGui(flx.PyComponent):
             # self.lastFrame = leoFrame.NullFrame(c, title, gui)
             # return self.lastFrame
     #@+node:ekr.20181115042828.1: *4* From LeoGui
-    #@+node:ekr.20181115042835.6: *5* LeoGui.setScript
     def setScript(self, script=None, scriptFileName=None):
+        pass
+        ###
+            # self.script = script
+            # self.scriptFileName = scriptFileName
 
-        self.script = script
-        self.scriptFileName = scriptFileName
-    #@+node:ekr.20181115042835.22: *5* LeoGui.dismiss_spash_screen
     def dismiss_splash_screen(self):
-        pass # May be overridden in subclasses.
-    #@+node:ekr.20181115042835.23: *5* LeoGui.ensure_commander_visible
+        pass
+
     def ensure_commander_visible(self, c):
         """E.g. if commanders are in tabs, make sure c's tab is visible"""
         pass
-    #@+node:ekr.20181115042835.25: *5* LeoGui.killPopupMenu & postPopupMenu
-    # These definitions keep pylint happy.
 
     def postPopupMenu(self, *args, **keys):
         pass
-    #@+node:ekr.20181115042835.27: *5* LeoGui.put_help
+        
     def put_help(self, c, s, short_title):
         pass
     #@-others
