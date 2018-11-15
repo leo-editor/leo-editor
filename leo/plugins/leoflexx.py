@@ -364,7 +364,7 @@ class LeoApp(flx.PyComponent):
         print('app.test: not ready yet')
         ### runUnitTests(self.c, self.g)
     #@-others
-#@+node:ekr.20181115071559.1: ** Python side wrappers
+#@+node:ekr.20181115071559.1: ** Python wrappers
 #@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
 class LeoBrowserBody(flx.PyComponent): ### leoFrame.NullBody):
    
@@ -380,6 +380,7 @@ class LeoBrowserBody(flx.PyComponent): ### leoFrame.NullBody):
             # self.widget = None
             # self.editorWidgets['1'] = wrapper
             # self.colorizer = NullColorizer(self.c)
+
     #@+others
     #@+node:ekr.20181115092337.4: *4* LeoBrowserBody interface
     # At present theses do not issue messages.
@@ -774,74 +775,77 @@ class LeoBrowserIconBar(flx.PyComponent): ### leoFrame.NullIconBarClass):
             # self.parentFrame = parentFrame
             # self.w = g.NullObject()
 #@+node:ekr.20181115092337.22: *3* class LeoBrowserLog
-class LeoBrowserLog(flx.PyComponent): ### leoFrame.NullLog):
+class LeoBrowserLog(flx.PyComponent):
     
     def init(self, c, g):
         # pylint: disable=arguments-differ
         self.c = c
         self.g = g
+        self.isNull = False
+        self.logNumber = 0
+        self.widget = None ### self.createControl(parentFrame)
     ###
         # self.enabled = True
-        # self.isNull = True
-        # self.logNumber = 0
-        # self.widget = self.createControl(parentFrame)
-#@+node:ekr.20181115092337.23: *4*  bl.not used
-if 0:
+
     #@+others
-    #@+node:ekr.20181115092337.24: *5* bl.createControl
-    def createControl(self, parentFrame):
-        return self.createTextWidget(parentFrame)
-    #@+node:ekr.20181115092337.25: *5* bl.finishCreate
-    def finishCreate(self):
-        pass
-    #@+node:ekr.20181115092337.26: *5* bl.isLogWidget
-    def isLogWidget(self, w):
-        return False
-    #@+node:ekr.20181115092337.27: *5* bl.tabs
-    def clearTab(self, tabName, wrap='none'):
-        pass
+    #@+node:ekr.20181115092337.23: *4*  bl.not used
+    if 0:
+        #@+others
+        #@+node:ekr.20181115092337.24: *5* bl.createControl
+        def createControl(self, parentFrame):
+            return self.createTextWidget(parentFrame)
+        #@+node:ekr.20181115092337.25: *5* bl.finishCreate
+        def finishCreate(self):
+            pass
+        #@+node:ekr.20181115092337.26: *5* bl.isLogWidget
+        def isLogWidget(self, w):
+            return False
+        #@+node:ekr.20181115092337.27: *5* bl.tabs
+        def clearTab(self, tabName, wrap='none'):
+            pass
 
-    def createCanvas(self, tabName):
-        pass
+        def createCanvas(self, tabName):
+            pass
 
-    def createTab(self, tabName, createText=True, widget=None, wrap='none'):
-        pass
+        def createTab(self, tabName, createText=True, widget=None, wrap='none'):
+            pass
 
-    def deleteTab(self, tabName, force=False): pass
+        def deleteTab(self, tabName, force=False): pass
 
-    def getSelectedTab(self): return None
+        def getSelectedTab(self): return None
 
-    def lowerTab(self, tabName): pass
+        def lowerTab(self, tabName): pass
 
-    def raiseTab(self, tabName): pass
+        def raiseTab(self, tabName): pass
 
-    def renameTab(self, oldName, newName): pass
+        def renameTab(self, oldName, newName): pass
 
-    def selectTab(self, tabName, createText=True, widget=None, wrap='none'): pass
+        def selectTab(self, tabName, createText=True, widget=None, wrap='none'): pass
+        #@-others
+    #@+node:ekr.20181115092337.28: *4* bl.createTextWidget
+    def createTextWidget(self, parentFrame):
+        self.logNumber += 1
+        c = self.c
+        log = StringTextWrapper(c=c, name="log-%d" % self.logNumber)
+        return log
+    #@+node:ekr.20181115092337.29: *4* bl.oops
+    def oops(self):
+        g = self.g
+        g.trace("LeoBrowserLog:", g.callers(4))
+    #@+node:ekr.20181115092337.30: *4* bl.put and putnl
+    def put(self, s,
+        color=None,
+        tabName='Log',
+        from_redirect=False,
+        nodeLink=None,
+    ):
+        print(s) ###
+        ##self.message('put', s=s, tabName=tabName)
+
+    def putnl(self, tabName='Log'):
+        print('') ###
+        ### self.message('put-nl', tabName=tabName)
     #@-others
-#@+node:ekr.20181115092337.28: *4* bl.createTextWidget
-def createTextWidget(self, parentFrame):
-    self.logNumber += 1
-    c = self.c
-    log = StringTextWrapper(c=c, name="log-%d" % self.logNumber)
-    return log
-#@+node:ekr.20181115092337.29: *4* bl.oops
-def oops(self):
-    g = self.g
-    g.trace("LeoBrowserLog:", g.callers(4))
-#@+node:ekr.20181115092337.30: *4* bl.put and putnl
-def put(self, s,
-    color=None,
-    tabName='Log',
-    from_redirect=False,
-    nodeLink=None,
-):
-    print(s) ###
-    ##self.message('put', s=s, tabName=tabName)
-
-def putnl(self, tabName='Log'):
-    print('') ###
-    ### self.message('put-nl', tabName=tabName)
 #@+node:ekr.20181115092337.31: *3* class LeoBrowserMenu
 class LeoBrowserMenu(flx.PyComponent): ### leoMenu.NullMenu):
     
@@ -849,13 +853,55 @@ class LeoBrowserMenu(flx.PyComponent): ### leoMenu.NullMenu):
         # pylint: disable=arguments-differ
         self.c = c
         self.g = g
-#@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine
-class LeoBrowserStatusLine(flx.PyComponent): ###leoFrame.NullStatusLineClass):
+#@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine (test)
+class LeoBrowserStatusLine(flx.PyComponent):
     
     def init(self, c, g):
         # pylint: disable=arguments-differ
         self.c = c
         self.g = g
+        ### self.enabled = True
+        self.textWidget = StringTextWrapper(c, name='status-line')
+        # Set the official ivars.
+        c.frame.statusFrame = None
+        c.frame.statusLabel = None
+        c.frame.statusText = self.textWidget
+        
+    #@+others
+    #@+node:ekr.20181115112320.2: *4* NullStatusLineClass.methods
+    def disable(self, background=None):
+        pass
+        ### self.enabled = False
+        ### self.c.bodyWantsFocus()
+
+    def enable(self, background="white"):
+        pass
+        ### self.c.widgetWantsFocus(self.textWidget)
+        ### self.enabled = True
+
+    def clear(self):
+        pass
+        ### self.textWidget.delete(0, 'end')
+
+    def get(self):
+        return ''
+        ### return self.textWidget.getAllText()
+
+    def isEnabled(self):
+        return True
+        ### return self.enabled
+
+    def put(self, s, bg=None, fg=None):
+        pass ### To do.
+        ### self.message('insert-at-end', s)
+        ### self.textWidget.insert('end', s)
+
+    def setFocus(self):
+        pass
+
+    def update(self):
+        pass
+    #@-others
 #@+node:ekr.20181115092337.57: *3* class LeoBrowserTree (test)
 class LeoBrowserTree(flx.PyComponent):
     
@@ -867,7 +913,24 @@ class LeoBrowserTree(flx.PyComponent):
         self.editWidgetsDict = {}
             # Keys are tnodes, values are StringTextWidgets.
         self.redrawCount = 0
-            
+    #
+    ### From LeoTree
+            # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
+        # "public" ivars: correspond to setters & getters.
+        # self.frame = frame
+        # self.drag_p = None
+        # self.generation = 0
+            # Leo 5.6: low-level vnode methods increment
+            # this count whenever the tree changes.
+        # self.revertHeadline = None
+        # self.use_chapters = False
+    #
+    ### From NullTree
+        # self.font = None
+        # self.fontName = None
+        # self.canvas = None
+        # self.updateCount = 0
+        
     #@+others
     #@+node:ekr.20181115111153.1: *4* LeoTree.Must be defined in base class
     ### To do: delegate all these to Leo's core???
@@ -1129,23 +1192,6 @@ class LeoBrowserTree(flx.PyComponent):
         else:
             print('-' * 20, 'oops')
     #@-others
-    #
-    ### From LeoTree
-            # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
-        # "public" ivars: correspond to setters & getters.
-        # self.frame = frame
-        # self.drag_p = None
-        # self.generation = 0
-            # Leo 5.6: low-level vnode methods increment
-            # this count whenever the tree changes.
-        # self.revertHeadline = None
-        # self.use_chapters = False
-    #
-    ### From NullTree
-        # self.font = None
-        # self.fontName = None
-        # self.canvas = None
-        # self.updateCount = 0
 #@+node:ekr.20181115092337.33: *3* class StringTextWrapper (test)
 class StringTextWrapper(flx.PyComponent):
     '''
