@@ -21,7 +21,7 @@ assert re and time
 #@-<< leoflexx imports >>
 #@+<< ace assets >>
 #@+node:ekr.20181111074958.1: ** << ace assets >>
-# Assets for ace, embedded in the LeoBody and LeoLog classes.
+# Assets for ace, embedded in the LeoFlexxBody and LeoFlexxLog classes.
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
 flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
@@ -66,7 +66,7 @@ class LeoApp(flx.PyComponent):
         signon = '%s\n%s' % (g.app.signon, g.app.signon2)
         body = c.rootPosition().b
         redraw_dict = self.make_redraw_dict()
-        main_window = LeoMainWindow(body, redraw_dict, signon)
+        main_window = LeoFlexxMainWindow(body, redraw_dict, signon)
         self._mutate('main_window', main_window)
 
     #@+others
@@ -212,7 +212,7 @@ class LeoApp(flx.PyComponent):
     #@+node:ekr.20181111095637.1: *4* app.action: set_body
     @flx.action
     def set_body(self, ap):
-        '''Set the body text in LeoBody to the body text of indicated node.'''
+        '''Set the body text in LeoFlexxBody to the body text of indicated node.'''
         w = self.main_window
         gnx = ap ['gnx']
         v = self.gnx_to_vnode [gnx]
@@ -596,9 +596,9 @@ class LeoBrowserGui(flx.PyComponent):
         pass
     #@-others
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
-#@+node:ekr.20181104082144.1: *3* class LeoBody
+#@+node:ekr.20181104082144.1: *3* class LeoFlexxBody
 
-class LeoBody(flx.Widget):
+class LeoFlexxBody(flx.Widget):
     
     """ A CodeEditor widget based on Ace.
     """
@@ -628,8 +628,8 @@ class LeoBody(flx.Widget):
     @flx.action
     def set_body(self, body):
         self.ace.setValue(body)
-#@+node:ekr.20181104082149.1: *3* class LeoLog
-class LeoLog(flx.Widget):
+#@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
+class LeoFlexxLog(flx.Widget):
 
     CSS = """
     .flx-CodeEditor > .ace {
@@ -655,8 +655,8 @@ class LeoLog(flx.Widget):
     @flx.reaction('size')
     def __on_size(self, *events):
         self.ace.resize()
-#@+node:ekr.20181104082130.1: *3* class LeoMainWindow
-class LeoMainWindow(flx.Widget):
+#@+node:ekr.20181104082130.1: *3* class LeoFlexxMainWindow
+class LeoFlexxMainWindow(flx.Widget):
     
     '''
     Leo's main window, that is, root.main_window.
@@ -674,11 +674,11 @@ class LeoMainWindow(flx.Widget):
         # pylint: disable=arguments-differ
         with flx.VSplit():
             with flx.HSplit(flex=1):
-                tree = LeoTree(data, flex=1)
-                log = LeoLog(signon, flex=1)
-            body = LeoBody(body_s, flex=1)
-            minibuffer = LeoMiniBuffer()
-            status_line = LeoStatusLine()
+                tree = LeoFlexxTree(data, flex=1)
+                log = LeoFlexxLog(signon, flex=1)
+            body = LeoFlexxBody(body_s, flex=1)
+            minibuffer = LeoFlexxMiniBuffer()
+            status_line = LeoFlexxStatusLine()
         for name, prop in (
             ('body', body),
             ('log', log),
@@ -690,8 +690,8 @@ class LeoMainWindow(flx.Widget):
 
     #@+others
     #@-others
-#@+node:ekr.20181104082154.1: *3* class LeoMiniBuffer
-class LeoMiniBuffer(flx.Widget):
+#@+node:ekr.20181104082154.1: *3* class LeoFlexxMiniBuffer
+class LeoFlexxMiniBuffer(flx.Widget):
 
     def init(self): 
         with flx.HBox():
@@ -710,8 +710,8 @@ class LeoMiniBuffer(flx.Widget):
             if command.strip():
                 self.widget.set_text('')
                 self.root.do_command(command)
-#@+node:ekr.20181104082201.1: *3* class LeoStatusLine
-class LeoStatusLine(flx.Widget):
+#@+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
+class LeoFlexxStatusLine(flx.Widget):
     
     def init(self):
         with flx.HBox():
@@ -722,8 +722,8 @@ class LeoStatusLine(flx.Widget):
     @flx.action
     def set_text(self, s):
         self.widget.set_text(s)
-#@+node:ekr.20181104082138.1: *3* class LeoTree
-class LeoTree(flx.Widget):
+#@+node:ekr.20181104082138.1: *3* class LeoFlexxTree
+class LeoFlexxTree(flx.Widget):
 
     CSS = '''
     .flx-TreeWidget {
@@ -870,7 +870,7 @@ class LeoTree(flx.Widget):
             for child_ap in children:
                 headline = child_ap ['headline']
                 child_key = self.ap_to_key(child_ap)
-                child_item = LeoTreeItem(child_ap, text=headline, checked=None, collapsed=True)
+                child_item = LeoFlexxTreeItem(child_ap, text=headline, checked=None, collapsed=True)
                 self.leo_items [child_key] = child_item
     #@+node:ekr.20181113043131.1: *4* tree.redraw_from_dict & helper
     def redraw_from_dict(self, d):
@@ -890,7 +890,7 @@ class LeoTree(flx.Widget):
             ap = item ['ap']
             headline = ap ['headline']
             # Create the tree item.
-            tree_item = LeoTreeItem(ap, text=headline, checked=None, collapsed=True)
+            tree_item = LeoFlexxTreeItem(ap, text=headline, checked=None, collapsed=True)
             key = self.ap_to_key(ap)
             self.leo_items [key] = tree_item
             # Create the item's children...
@@ -908,8 +908,8 @@ class LeoTree(flx.Widget):
         if debug and debug_tree:
             print('tree.show_event: ' + message)
     #@-others
-#@+node:ekr.20181108233657.1: *3* class LeoTreeItem
-class LeoTreeItem(flx.TreeItem):
+#@+node:ekr.20181108233657.1: *3* class LeoFlexxTreeItem
+class LeoFlexxTreeItem(flx.TreeItem):
     
     def init(self, leo_ap):
         # pylint: disable=arguments-differ
