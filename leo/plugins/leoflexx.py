@@ -11,6 +11,7 @@ A Stand-alone prototype for Leo using flexx.
 #@+<< leoflexx imports >>
 #@+node:ekr.20181113041314.1: ** << leoflexx imports >>
 import leo.core.leoBridge as leoBridge
+import leo.core.leoGui as leoGui
 import leo.core.leoNodes as leoNodes
 from flexx import flx
 import re
@@ -57,6 +58,7 @@ class LeoApp(flx.PyComponent):
     def init(self):
         c, g = self.open_bridge()
         self.c, self.g = c, g
+        self.gui = LeoBrowserGui(g)
         # Create all data-related ivars.
         self.create_all_data()
         # Create the main window and all its components.
@@ -190,11 +192,11 @@ class LeoApp(flx.PyComponent):
     @flx.action
     def send_children_to_tree(self, parent_ap):
         '''
-        Call w.tree.receive_children(d), where d is:
-        {
-            'parent': parent_ap,
-            'children': [ap1, ap2, ...],
-        }
+        Call w.tree.receive_children(d), where d has the form:
+            {
+                'parent': parent_ap,
+                'children': [ap1, ap2, ...],
+            }
         '''
         w = self.main_window
         p = self.ap_to_p(parent_ap)
@@ -358,15 +360,238 @@ class LeoApp(flx.PyComponent):
         print('app.test: not ready yet')
         ### runUnitTests(self.c, self.g)
     #@-others
-#@+node:ekr.20181113041113.1: ** class LeoGui(PyComponent)
-class LeoGui(flx.PyComponent):
+#@+node:ekr.20181113041113.1: ** class LeoBrowserGui(PyComponent)
+class LeoBrowserGui(flx.PyComponent):
     '''
     Leo's Browser Gui.
     
     This should be a subclass of leo.core.leoGui.LeoGui, but pscript does
     not support multiple inheritance.
+    
+    The following methods are a meld of the NullGui and LeoGui classes.
     '''
-    pass
+    #@+others
+    #@+node:ekr.20181115042955.1: *3* gui.init
+    def init (self, g):
+        '''The ctor for the LeoBroswerGui class.'''
+        # pylint: disable=arguments-differ
+        #
+        # New ivars.
+        self.g = g
+        #
+        # From LeoGui, except ivars set in NullGui...
+        ### Not used.
+            # self.FKeys = [] # The representation of F-keys.
+            # self.ScriptingControllerClass = NullScriptingControllerClass
+            # self.globalFindDialog = None
+            # self.globalFindTab = None
+            # self.globalFindTabManager = None
+            # self.ignoreChars = [] # Keys that are always to be ignore.
+            # self.leoIcon = None
+            # self.mainLoop = None
+            # self.root = None
+            # self.specialChars = [] # A list of characters/keys to be handle specially.
+            # self.splashScreen = None
+            # self.utils = None
+        #
+        # From NullGui...
+        ### Not used.
+            # self.focusWidget = None
+            # self.idleTimeClass = g.NullObject
+            # self.lastFrame = None
+            # self.script = None
+        self.mGuiName = 'BrowserGui'
+        self.clipboardContents = ''
+        self.isNullGui = True
+    #@+node:ekr.20181115044516.1: *3* Overrides (to do)
+    #@+node:ekr.20181115042835.4: *4* gui.create_key_event
+    def create_key_event(self, c,
+        binding=None,
+        char=None,
+        event=None,
+        w=None,
+        x=None, x_root=None,
+        y=None, y_root=None,
+    ):
+        # Do not call strokeFromSetting here!
+        # For example, this would wrongly convert Ctrl-C to Ctrl-c,
+        # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
+        g = self.g
+        g.trace(g.callers())
+        return leoGui.LeoKeyEvent(c, char, event, binding, w, x, y, x_root, y_root)
+    #@+node:ekr.20181115042835.5: *4* gui.guiName
+    def guiName(self):
+        
+        return self.mGuiName
+    #@+node:ekr.20181115042930.6: *4* gui.isTextWidget & isTextWrapper
+    def isTextWidget(self, w):
+        return True # Must be True for unit tests.
+
+    def isTextWrapper(self, w):
+        '''Return True if w is a Text widget suitable for text-oriented commands.'''
+        return w and getattr(w, 'supportsHighLevelInterface', None)
+    #@+node:ekr.20181115042753.1: *4* gui.oops
+    def oops(self):
+        print("LeoBrowserGui.oops", self.g.callers(4))
+    #@+node:ekr.20181115042930.9: *4* gui.runMainLoop
+    def runMainLoop(self):
+        """Run the null gui's main loop."""
+        print('gui.runMainLoop: not ready yet.')
+        ###
+            # g = self.g
+            # if self.script:
+                # frame = self.lastFrame
+                # g.app.log = frame.log
+                # self.lastFrame.c.executeScript(script=self.script)
+            # else:
+                # print('**** NullGui.runMainLoop: terminating Leo.')
+            # # Getting here will terminate Leo.
+    #@+node:ekr.20181115042835.28: *4* gui.widget_name (To do)
+    def widget_name(self, w):
+        # First try the widget's getName method.
+        if not 'w':
+            return '<no widget>'
+        elif hasattr(w, 'getName'):
+            return w.getName()
+        elif hasattr(w, '_name'):
+            return w._name
+        else:
+            return repr(w)
+    #@+node:ekr.20181115042835.7: *4* gui.event_generate (Needed?)
+    def event_generate(self, c, char, shortcut, w):
+        print('gui.event_generated', self.g.callers())
+        event = self.create_key_event(c, binding=shortcut, char=char, w=w)
+        c.k.masterKeyHandler(event)
+        c.outerUpdate()
+    #@+node:ekr.20181115042908.1: *3* From NullGui
+    #@+node:ekr.20181115042930.3: *4* NullGui.dialogs
+    def runAboutLeoDialog(self, c, version, theCopyright, url, email):
+        return self.simulateDialog("aboutLeoDialog", None)
+
+    def runAskLeoIDDialog(self):
+        return self.simulateDialog("leoIDDialog", None)
+
+    def runAskOkDialog(self, c, title, message=None, text="Ok"):
+        return self.simulateDialog("okDialog", "Ok")
+
+    def runAskOkCancelNumberDialog(self, c, title, message,
+        cancelButtonText=None,
+        okButtonText=None,
+    ):
+        return self.simulateDialog("numberDialog", -1)
+
+    def runAskOkCancelStringDialog(self, c, title, message,
+        cancelButtonText=None,
+        okButtonText=None,
+        default="",
+        wide=False,
+    ):
+        return self.simulateDialog("stringDialog", '')
+
+    def runCompareDialog(self, c):
+        return self.simulateDialog("compareDialog", '')
+
+    def runOpenFileDialog(self, c, title, filetypes, defaultextension,
+        multiple=False,
+        startpath=None,
+    ):
+        return self.simulateDialog("openFileDialog", None)
+
+    def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
+        return self.simulateDialog("saveFileDialog", None)
+
+    def runAskYesNoDialog(self, c, title,
+        message=None,
+        yes_all=False,
+        no_all=False,
+    ):
+        return self.simulateDialog("yesNoDialog", "no")
+
+    def runAskYesNoCancelDialog(self, c, title,
+        message=None,
+        yesMessage="Yes",
+        noMessage="No",
+        yesToAllMessage=None,
+        defaultButton="Yes",
+        cancelMessage=None,
+    ):
+        return self.simulateDialog("yesNoCancelDialog", "cancel")
+
+    def simulateDialog(self, key, defaultVal):
+        return defaultVal
+    #@+node:ekr.20181115042930.4: *4* NullGui.clipboard & focus
+    def get_focus(self, *args, **kwargs):
+        return self.focusWidget
+
+    def getTextFromClipboard(self):
+        return self.clipboardContents
+
+    def replaceClipboardWith(self, s):
+        self.clipboardContents = s
+
+    def set_focus(self, commander, widget):
+        self.focusWidget = widget
+    #@+node:ekr.20181115042930.5: *4* NullGui.do nothings
+    def alert(self, message):
+        pass
+    def attachLeoIcon(self, window):
+        pass
+    def destroySelf(self):
+        pass
+    def finishCreate(self): 
+        pass
+    def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
+        return self.g.app.config.defaultFont
+    def getIconImage(self, name):
+        return None
+    def getImageImage(self, name):
+        return None
+    def getTreeImage(self, c, path):
+        return None
+    def get_window_info(self, window):
+        return 600, 500, 20, 20
+    def onActivateEvent(self, *args, **keys): 
+        pass
+    def onDeactivateEvent(self, *args, **keys): 
+        pass
+    #@+node:ekr.20181115042930.8: *4* NullGui.panels
+    def createComparePanel(self, c):
+        """Create Compare panel."""
+        self.oops()
+
+    def createFindTab(self, c, parentFrame):
+        """Create a find tab in the indicated frame."""
+        pass # Now always done during startup.
+
+    def createLeoFrame(self, c, title):
+        """Create a null Leo Frame."""
+        self.oops()
+        ###
+            # gui = self
+            # self.lastFrame = leoFrame.NullFrame(c, title, gui)
+            # return self.lastFrame
+    #@+node:ekr.20181115042828.1: *3* From LeoGui
+    #@+node:ekr.20181115042835.6: *4* LeoGui.setScript
+    def setScript(self, script=None, scriptFileName=None):
+
+        self.script = script
+        self.scriptFileName = scriptFileName
+    #@+node:ekr.20181115042835.22: *4* LeoGui.dismiss_spash_screen
+    def dismiss_splash_screen(self):
+        pass # May be overridden in subclasses.
+    #@+node:ekr.20181115042835.23: *4* LeoGui.ensure_commander_visible
+    def ensure_commander_visible(self, c):
+        """E.g. if commanders are in tabs, make sure c's tab is visible"""
+        pass
+    #@+node:ekr.20181115042835.25: *4* LeoGui.killPopupMenu & postPopupMenu
+    # These definitions keep pylint happy.
+
+    def postPopupMenu(self, *args, **keys):
+        pass
+    #@+node:ekr.20181115042835.27: *4* LeoGui.put_help
+    def put_help(self, c, s, short_title):
+        pass
+    #@-others
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181104082144.1: *3* class LeoBody
 
@@ -547,7 +772,7 @@ class LeoTree(flx.Widget):
     @flx.action
     def receive_children(self, d):
         '''
-        d has the form:
+        Using d, populate the children of ap. d has the form:
             {
                 'parent': ap,
                 'children': [ap1, ap2, ...],
