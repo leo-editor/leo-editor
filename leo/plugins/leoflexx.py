@@ -60,7 +60,7 @@ class LeoApp(flx.PyComponent):
         c, g = self.open_bridge()
         print('app.init: c.frame', repr(c.frame))
         self.c, self.g = c, g
-        self.gui = LeoBrowserGui(g)
+        self.gui = LeoBrowserGui(c, g)
         # Create all data-related ivars.
         self.create_all_data()
         # Create the main window and all its components.
@@ -365,14 +365,14 @@ class LeoApp(flx.PyComponent):
         ### runUnitTests(self.c, self.g)
     #@-others
 #@+node:ekr.20181115071559.1: ** Python wrappers
-#@+node:ekr.20181115092337.3: *3* class LeoBrowserBody (test)
+#@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
 class LeoBrowserBody(flx.PyComponent):
    
     def init(self, c, g):
         # pylint: disable=arguments-differ
         self.c = c
         self.g = g
-        self.wrapper = StringTextWrapper(c=self.c, name='body')
+        self.wrapper = StringTextWrapper(c, g, 'body')
         ###
             # self.insertPoint = 0
             # self.selection = 0, 0
@@ -420,7 +420,7 @@ class LeoBrowserBody(flx.PyComponent):
         pass
         ### self.message('set-focus-to-body')
     #@-others
-#@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame (test)
+#@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
 class LeoBrowserFrame(flx.PyComponent):
     
     def init(self, c, g):
@@ -563,7 +563,7 @@ class LeoBrowserFrame(flx.PyComponent):
         # # pylint: disable=no-self-argument
         # return g.new_cmd_decorator(name, ['c', 'frame',])
     #@-others
-#@+node:ekr.20181113041113.1: *3* class LeoBrowserGui(test)
+#@+node:ekr.20181113041113.1: *3* class LeoBrowserGui
 class LeoBrowserGui(flx.PyComponent):
     '''Leo's Browser Gui.'''
     
@@ -784,7 +784,7 @@ class LeoBrowserGui(flx.PyComponent):
     def put_help(self, c, s, short_title):
         pass
     #@-others
-#@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar (test)
+#@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
 class LeoBrowserIconBar(flx.PyComponent):
 
     def init(self, c, g):
@@ -862,7 +862,7 @@ class LeoBrowserIconBar(flx.PyComponent):
         pass ###
         ### button.command = command
     #@-others
-#@+node:ekr.20181115092337.22: *3* class LeoBrowserLog (test)
+#@+node:ekr.20181115092337.22: *3* class LeoBrowserLog
 class LeoBrowserLog(flx.PyComponent):
     
     def init(self, c, g):
@@ -934,7 +934,7 @@ class LeoBrowserLog(flx.PyComponent):
         print('') ###
         ### self.message('put-nl', tabName=tabName)
     #@-others
-#@+node:ekr.20181115092337.31: *3* class LeoBrowserMenu (test)
+#@+node:ekr.20181115092337.31: *3* class LeoBrowserMenu
 class LeoBrowserMenu(flx.PyComponent):
     
     def init(self, c, g):
@@ -1529,7 +1529,7 @@ class LeoBrowserMenu(flx.PyComponent):
     def setMenuLabel(self, menu, name, label, underline=-1):
         self.oops()
     #@-others
-#@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer (TODO)
+#@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer
 class LeoBrowserMinibuffer (flx.PyComponent):
     
     def init(self, c, g):
@@ -1539,19 +1539,20 @@ class LeoBrowserMinibuffer (flx.PyComponent):
         
     #@+others
     #@-others
-#@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine (test)
+#@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine
 class LeoBrowserStatusLine(flx.PyComponent):
     
     def init(self, c, g):
         # pylint: disable=arguments-differ
         self.c = c
         self.g = g
-        ### self.enabled = True
-        self.textWidget = StringTextWrapper(c, name='status-line')
+        self.textWidget = StringTextWrapper(c, g, 'status-line')
         # Set the official ivars.
         c.frame.statusFrame = None
         c.frame.statusLabel = None
         c.frame.statusText = self.textWidget
+        ###
+            # self.enabled = True
         
     #@+others
     #@+node:ekr.20181115112320.2: *4* NullStatusLineClass.methods
@@ -1588,7 +1589,7 @@ class LeoBrowserStatusLine(flx.PyComponent):
     def update(self):
         pass
     #@-others
-#@+node:ekr.20181115092337.57: *3* class LeoBrowserTree (test)
+#@+node:ekr.20181115092337.57: *3* class LeoBrowserTree
 class LeoBrowserTree(flx.PyComponent):
     
     def init(self, c, g):
@@ -1878,7 +1879,7 @@ class LeoBrowserTree(flx.PyComponent):
         else:
             print('-' * 20, 'oops')
     #@-others
-#@+node:ekr.20181115092337.33: *3* class StringTextWrapper (test)
+#@+node:ekr.20181115092337.33: *3* class StringTextWrapper
 class StringTextWrapper(flx.PyComponent):
     '''
     A class that represents text as a Python string.
@@ -2344,9 +2345,7 @@ class LeoFlexxTree(flx.Widget):
         if trace: print('tree.populate_children...')
         parent_key = self.ap_to_key(parent_ap)
         if parent_key in self.leo_populated_dict:
-            print('===== tree.populate_children: already populated', parent_ap ['headline'])
-            # print('key: %r' % key)
-            # self.root.dump_ap(parent_ap, None, 'parent_ap')
+            # print('tree.populate_children: already populated', parent_ap ['headline'])
             return
         #
         # Set the key once, here.
