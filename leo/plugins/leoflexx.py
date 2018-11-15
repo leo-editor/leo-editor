@@ -53,7 +53,7 @@ class LeoApp(flx.PyComponent):
     '''
     # This may be optional, but it doesn't hurt.
     main_window = flx.ComponentProp(settable=True)
-    
+
     def init(self):
         c, g = self.open_bridge()
         self.c, self.g = c, g
@@ -72,9 +72,13 @@ class LeoApp(flx.PyComponent):
     @flx.action
     def do_command(self, command):
 
+        w = self.main_window
         if command == 'redraw':
             d = self.make_redraw_dict()
-            self.root.dump_redraw_dict(d)
+            if 1:
+                w.tree.redraw(d)
+            else: # works.
+                self.dump_redraw_dict(d)
         elif command == 'test':
             self.test_round_trip_positions()
             self.run_all_unit_tests()
@@ -233,7 +237,7 @@ class LeoApp(flx.PyComponent):
             (t2-t1), len(list(self.gnx_to_vnode.keys()))))
         if debug:
             self.test_round_trip_positions()
-    #@+node:ekr.20181111155525.1: *3* app.utils
+    #@+node:ekr.20181111155525.1: *3* app.archived positions
     #@+node:ekr.20181111204659.1: *4* app.p_to_ap (updates app.gnx_to_vnode)
     def p_to_ap(self, p):
         '''
@@ -314,6 +318,18 @@ class LeoApp(flx.PyComponent):
             'gnx': p.v.gnx,
             'headline': p.h,
         }
+    #@+node:ekr.20181113180246.1: *4* app.test_round_trip_positions
+    def test_round_trip_positions(self):
+        '''Test the round tripping of p_to_ap and ap_to_p.'''
+        c = self.c
+        t1 = time.clock()
+        for p in c.all_positions():
+            ap = self.p_to_ap(p)
+            p2 = self.ap_to_p(ap)
+            assert p == p2, (repr(p), repr(p2), repr(ap))
+        t2 = time.clock()
+        if 1:
+            print('app.test_new_tree: %5.3f sec' % (t2-t1))
     #@+node:ekr.20181105091545.1: *3* app.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
@@ -341,18 +357,6 @@ class LeoApp(flx.PyComponent):
         '''
         print('app.test: not ready yet')
         ### runUnitTests(self.c, self.g)
-    #@+node:ekr.20181113180246.1: *3* app.test_round_trip_positions
-    def test_round_trip_positions(self):
-        '''Test the round tripping of p_to_ap and ap_to_p.'''
-        c = self.c
-        t1 = time.clock()
-        for p in c.all_positions():
-            ap = self.p_to_ap(p)
-            p2 = self.ap_to_p(ap)
-            assert p == p2, (repr(p), repr(p2), repr(ap))
-        t2 = time.clock()
-        if 1:
-            print('app.test_new_tree: %5.3f sec' % (t2-t1))
     #@-others
 #@+node:ekr.20181113041113.1: ** class LeoGui(PyComponent)
 class LeoGui(flx.PyComponent):
