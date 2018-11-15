@@ -421,35 +421,64 @@ class LeoBrowserBody(flx.PyComponent): ### leoFrame.NullBody):
         ### self.message('set-focus-to-body')
     #@-others
 #@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
-class LeoBrowserFrame(flx.PyComponent): ### leoFrame.LeoFrame):
+class LeoBrowserFrame(flx.PyComponent):
     
     def init(self, c, g, title, gui):
         '''Ctor for the LeoBrowserFrame class.'''
         # pylint: disable=arguments-differ
         self.c = c
         self.g = g
+        self.gui = gui
+        self.title = title
+        #
+        #
         c.frame = self
         assert self.c
-        self.wrapper = None
-            # was BrowserIconBarClass(self.c, self)
-        self.isNullFrame = True
-        self.outerFrame = None
+        self.isNullFrame = False
         self.ratio = self.secondary_ratio = 0.5
-        self.title = title
         self.top = None # Always None.
+        #
         # Create the component objects.
-        self.body = LeoBrowserBody(frame=self)
-        self.iconBar = LeoBrowserIconBar(c=c, parentFrame=self)
-        self.log = LeoBrowserLog(frame=self)
-        self.menu = LeoBrowserMenu(frame=self)
-        self.statusLine = LeoBrowserStatusLine(c=c, parentFrame=self)
-        self.tree = LeoBrowserTree(frame=self)
-        # Default window position.
+        self.body = LeoBrowserBody(c, g)
+        self.iconBar = LeoBrowserIconBar(c, g)
+        self.log = LeoBrowserLog(c, g)
+        self.menu = LeoBrowserMenu(c, g)
+        self.miniBufferWidget = LeoBrowserMinibuffer(c, g)
+        self.statusLine = LeoBrowserStatusLine(c, g)
+        self.tree = LeoBrowserTree(c, g)
+        #
+        # Official component ivars.
+        self.colorPanel = None
+        self.comparePanel = None
+        self.findPanel = None
+        self.fontPanel = None
+        # self.keys = None
+        self.outerFrame = None
+        self.prefsPanel = None
+        self.wrapper = None
+        #
+        # Other ivars
+        self.tab_width = 0
         self.w, self.h, self.x, self.y = 600, 500, 40, 40
+            # Default window position.
+        #
+        ### From LeoFrame
+            # # Objects attached to this frame.
+            # self.useMiniBufferWidget = False
+            # #
+            # # Gui-independent data
+            # #
+            # self.cursorStay = True # May be overridden in subclass.reloadSettings.
+            # self.componentsDict = {} # Keys are names, values are componentClass instances.
+            # self.es_newlines = 0 # newline count for this log stream
+            # self.openDirectory = ""
+            # self.saved = False # True if ever saved
+            # self.splitVerticalFlag = True
+                # # Set by initialRatios later.
+            # self.startupWindow = False # True if initially opened window
+            # self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
     
     #@+others
-    #@+node:ekr.20181115092337.7: *4* bf.init
-
     #@+node:ekr.20181115092337.8: *4* bf.finishCreate
     def finishCreate(self):
         pass
@@ -528,6 +557,11 @@ class LeoBrowserFrame(flx.PyComponent): ### leoFrame.LeoFrame):
         pass
     def update(self):
         pass
+    #@+node:ekr.20181115115225.4: *4* LeoFrame.cmd (decorator)
+    # def cmd(name):
+        # '''Command decorator for the LeoFrame class.'''
+        # # pylint: disable=no-self-argument
+        # return g.new_cmd_decorator(name, ['c', 'frame',])
     #@-others
 #@+node:ekr.20181113041113.1: *3* class LeoBrowserGui(test)
 class LeoBrowserGui(flx.PyComponent):
@@ -1505,6 +1539,16 @@ class LeoBrowserMenu(flx.PyComponent):
 
     def setMenuLabel(self, menu, name, label, underline=-1):
         self.oops()
+    #@-others
+#@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer (TODO)
+class LeoBrowserMinibuffer (flx.PyComponent):
+    
+    def init(self, c, g):
+        # pylint: disable=arguments-differ
+        self.c = c
+        self.g = g
+        
+    #@+others
     #@-others
 #@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine (test)
 class LeoBrowserStatusLine(flx.PyComponent):
