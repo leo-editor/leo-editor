@@ -356,13 +356,18 @@ class LeoApp(flx.PyComponent):
             return
         c = bridge.openLeoFile(path)
         return c, g
+    #@+node:ekr.20181115171220.1: *3* app.message
+    def message(self, s):
+        '''For testing.'''
+        print('app.message: %s' % s)
     #@+node:ekr.20181112182636.1: *3* app.run_all_unit_tests
     def run_all_unit_tests (self):
         '''
         Run all unit tests from the bridge using the browser gui.
         '''
-        print('app.test: not ready yet')
-        ### runUnitTests(self.c, self.g)
+        print('===== app.run_all_unit_tests')
+        self.c.debugCommands.runAllUnitTestsLocally()
+        print('===== app.run_all_unit_tests DONE')
     #@-others
 #@+node:ekr.20181115071559.1: ** Python wrappers
 #@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
@@ -372,7 +377,22 @@ class LeoBrowserBody(flx.PyComponent):
         # pylint: disable=arguments-differ
         self.c = c
         self.g = g
+        self.colorizer = None
+        self.use_chapters = False
+        self.widget = None
         self.wrapper = StringTextWrapper(c, g, 'body')
+        ### From LeoBody
+            # frame.body = self
+            # self.editorWidgets = {} # keys are pane names, values are text widgets
+            # self.frame = frame
+            # self.parentFrame = parentFrame # New in Leo 4.6.
+            # self.totalNumberOfEditors = 0
+            #
+            # May be overridden in subclasses...
+            # self.numberOfEditors = 1
+            # self.pb = None # paned body widget.
+    
+
         ###
             # self.insertPoint = 0
             # self.selection = 0, 0
@@ -415,10 +435,165 @@ class LeoBrowserBody(flx.PyComponent):
         pass
     def scheduleIdleTimeRoutine(self, function, *args, **keys):
         pass
+        
+    # Coloring...
+    def recolor(self, p):
+        pass
+    recolor_now = recolor
     #@+node:ekr.20181115092337.5: *4* bb.setFocus
     def setFocus(self):
         pass
         ### self.message('set-focus-to-body')
+    #@+node:ekr.20181115174333.3: *4* LeoBody.cmd (decorator)
+    # def cmd(name):
+        # '''Command decorator for the c.frame.body class.'''
+        # # pylint: disable=no-self-argument
+        # return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
+    #@+node:ekr.20181115174333.25: *4* LeoBody.Text
+    #@+node:ekr.20181115174333.26: *5* LeoBody.getInsertLines
+    def getInsertLines(self):
+        '''
+        Return before,after where:
+
+        before is all the lines before the line containing the insert point.
+        sel is the line containing the insert point.
+        after is all the lines after the line containing the insert point.
+
+        All lines end in a newline, except possibly the last line.
+        '''
+        g = self.g
+        body = self
+        w = body.wrapper
+        s = w.getAllText()
+        insert = w.getInsertPoint()
+        i, j = g.getLine(s, insert)
+        before = s[0: i]
+        ins = s[i: j]
+        after = s[j:]
+        before = g.toUnicode(before)
+        ins = g.toUnicode(ins)
+        after = g.toUnicode(after)
+        return before, ins, after
+    #@+node:ekr.20181115174333.27: *5* LeoBody.getSelectionAreas
+    def getSelectionAreas(self):
+        '''
+        Return before,sel,after where:
+
+        before is the text before the selected text
+        (or the text before the insert point if no selection)
+        sel is the selected text (or "" if no selection)
+        after is the text after the selected text
+        (or the text after the insert point if no selection)
+        '''
+        g = self.g
+        body = self
+        w = body.wrapper
+        s = w.getAllText()
+        i, j = w.getSelectionRange()
+        if i == j: j = i + 1
+        before = s[0: i]
+        sel = s[i: j]
+        after = s[j:]
+        before = g.toUnicode(before)
+        sel = g.toUnicode(sel)
+        after = g.toUnicode(after)
+        return before, sel, after
+    #@+node:ekr.20181115174333.28: *5* LeoBody.getSelectionLines
+    def getSelectionLines(self):
+        '''
+        Return before,sel,after where:
+
+        before is the all lines before the selected text
+        (or the text before the insert point if no selection)
+        sel is the selected text (or "" if no selection)
+        after is all lines after the selected text
+        (or the text after the insert point if no selection)
+        '''
+        g = self.g
+        if g.app.batchMode:
+            return '', '', ''
+        # At present, called only by c.getBodyLines.
+        body = self
+        w = body.wrapper
+        s = w.getAllText()
+        i, j = w.getSelectionRange()
+        if i == j:
+            i, j = g.getLine(s, i)
+        else:
+            i, junk = g.getLine(s, i)
+            junk, j = g.getLine(s, j)
+        before = g.toUnicode(s[0: i])
+        sel = g.toUnicode(s[i: j])
+        after = g.toUnicode(s[j: len(s)])
+        return before, sel, after # 3 strings.
+    #@+node:ekr.20181115174333.29: *5* LeoBody.onBodyChanged
+    # This is the only key handler for the body pane.
+
+    def onBodyChanged(self, undoType, oldSel=None, oldText=None, oldYview=None):
+        '''Update Leo after the body has been changed.'''
+        c, g = self.c, self.g
+        body, w = self, self.wrapper
+        p = c.p
+        insert = w.getInsertPoint()
+        ch = '' if insert == 0 else w.get(insert - 1)
+        ch = g.toUnicode(ch)
+        newText = w.getAllText() # Note: getAllText converts to unicode.
+        newSel = w.getSelectionRange()
+        if not oldText:
+            oldText = p.b; changed = True
+        else:
+            changed = oldText != newText
+        if not changed: return
+        c.undoer.setUndoTypingParams(p, undoType,
+            oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
+        p.v.setBodyString(newText)
+        p.v.insertSpot = w.getInsertPoint()
+        #@+<< recolor the body >>
+        #@+node:ekr.20181115174333.30: *6* << recolor the body >>
+        c.frame.scanForTabWidth(p)
+        body.recolor(p)
+        if g.app.unitTesting:
+            g.app.unitTestDict['colorized'] = True
+        #@-<< recolor the body >>
+        if not c.changed: c.setChanged(True)
+        self.updateEditors()
+        p.v.contentModified()
+        #@+<< update icons if necessary >>
+        #@+node:ekr.20181115174333.31: *6* << update icons if necessary >>
+        redraw_flag = False
+        # Update dirty bits.
+        # p.setDirty() sets all cloned and @file dirty bits.
+        if not p.isDirty() and p.setDirty():
+            redraw_flag = True
+        # Update icons. p.v.iconVal may not exist during unit tests.
+        val = p.computeIcon()
+        if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
+            p.v.iconVal = val
+            redraw_flag = True
+        if redraw_flag:
+            c.redraw_after_icons_changed()
+        #@-<< update icons if necessary >>
+    #@+node:ekr.20181115174333.32: *5* LeoBody.setSelectionAreas
+    def setSelectionAreas(self, before, sel, after):
+        '''
+        Replace the body text by before + sel + after and
+        set the selection so that the sel text is selected.
+        '''
+        body = self
+        w = body.wrapper
+        # 2012/02/05: save/restore Yscroll position.
+        pos = w.getYScrollPosition()
+        s = w.getAllText()
+        before = before or ''
+        sel = sel or ''
+        after = after or ''
+        w.delete(0, len(s))
+        w.insert(0, before + sel + after)
+        i = len(before)
+        j = max(i, len(before) + len(sel) - 1)
+        w.setSelectionRange(i, j, insert=j)
+        w.setYScrollPosition(pos)
+        return i, j
     #@-others
 #@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
 class LeoBrowserFrame(flx.PyComponent):
@@ -429,7 +604,7 @@ class LeoBrowserFrame(flx.PyComponent):
         self.c = c
         self.g = g
         ### self.gui = gui
-        ### self.title = title
+        self.title = '<LeoBrowserFrame.title>'
         #
         #
         c.frame = self
@@ -458,6 +633,7 @@ class LeoBrowserFrame(flx.PyComponent):
         self.wrapper = None
         #
         # Other ivars
+        self.cursorStay = True
         self.tab_width = 0
         self.w, self.h, self.x, self.y = 600, 500, 40, 40
             # Default window position.
@@ -468,7 +644,7 @@ class LeoBrowserFrame(flx.PyComponent):
             # #
             # # Gui-independent data
             # #
-            # self.cursorStay = True # May be overridden in subclass.reloadSettings.
+            # 
             # self.componentsDict = {} # Keys are names, values are componentClass instances.
             # self.es_newlines = 0 # newline count for this log stream
             # self.openDirectory = ""
@@ -562,6 +738,368 @@ class LeoBrowserFrame(flx.PyComponent):
         # '''Command decorator for the LeoFrame class.'''
         # # pylint: disable=no-self-argument
         # return g.new_cmd_decorator(name, ['c', 'frame',])
+    #@+node:ekr.20181115172556.1: *4* LeoFrame.Must be defined in base class
+    #@+node:ekr.20181115172556.2: *5* LeoFrame.initialRatios
+    def initialRatios(self):
+        c = self.c
+        s = c.config.get("initial_split_orientation", "string")
+        verticalFlag = s is None or (s != "h" and s != "horizontal")
+        if verticalFlag:
+            r = c.config.getRatio("initial-vertical-ratio")
+            if r is None or r < 0.0 or r > 1.0: r = 0.5
+            r2 = c.config.getRatio("initial-vertical-secondary-ratio")
+            if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+        else:
+            r = c.config.getRatio("initial-horizontal-ratio")
+            if r is None or r < 0.0 or r > 1.0: r = 0.3
+            r2 = c.config.getRatio("initial-horizontal-secondary-ratio")
+            if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+        return verticalFlag, r, r2
+    #@+node:ekr.20181115172556.3: *5* LeoFrame.longFileName & shortFileName
+    def longFileName(self):
+        return self.c.mFileName
+
+    def shortFileName(self):
+        g = self.c
+        return g.shortFileName(self.c.mFileName)
+    #@+node:ekr.20181115172556.5: *5* LeoFrame.promptForSave
+    def promptForSave(self):
+        '''
+        Prompt the user to save changes.
+        Return True if the user vetos the quit or save operation.
+        '''
+        c, g = self.c, self.g
+        theType = "quitting?" if g.app.quitting else "closing?"
+        # See if we are in quick edit/save mode.
+        root = c.rootPosition()
+        quick_save = not c.mFileName and not root.next() and root.isAtEditNode()
+        if quick_save:
+            name = g.shortFileName(root.atEditNodeName())
+        else:
+            name = c.mFileName if c.mFileName else self.title
+        answer = g.app.gui.runAskYesNoCancelDialog(c,
+            title="Confirm",
+            message='Save changes to %s before %s' % (
+                g.splitLongFileName(name), theType))
+        if answer == "cancel":
+            return True # Veto.
+        if answer == "no":
+            return False # Don't save and don't veto.
+        if not c.mFileName:
+            root = c.rootPosition()
+            if not root.next() and root.isAtEditNode():
+                # There is only a single @edit node in the outline.
+                # A hack to allow "quick edit" of non-Leo files.
+                # See https://bugs.launchpad.net/leo-editor/+bug/381527
+                # Write the @edit node if needed.
+                if root.isDirty():
+                    c.atFileCommands.writeOneAtEditNode(root,
+                        toString=False, force=True)
+                return False # Don't save and don't veto.
+            else:
+                c.mFileName = g.app.gui.runSaveFileDialog(c,
+                    initialfile='',
+                    title="Save",
+                    filetypes=[("Leo files", "*.leo")],
+                    defaultextension=".leo")
+                c.bringToFront()
+        if c.mFileName:
+            if g.app.gui.guiName() == 'curses':
+                g.pr('Saving: %s' % c.mFileName)
+            ok = c.fileCommands.save(c.mFileName)
+            return not ok # New in 4.2: Veto if the save did not succeed.
+        else:
+            return True # Veto.
+    #@+node:ekr.20181115172556.6: *5* LeoFrame.frame.scanForTabWidth
+    def scanForTabWidth(self, p):
+        '''Return the tab width in effect at p.'''
+        c = self.c
+        tab_width = c.getTabWidth(p)
+        c.frame.setTabWidth(tab_width)
+    #@+node:ekr.20181115172556.7: *5* LeoFrame.Icon area convenience methods
+    def addIconButton(self, *args, **keys):
+        if self.iconBar: return self.iconBar.add(*args, **keys)
+        else: return None
+
+    def addIconRow(self):
+        if self.iconBar: return self.iconBar.addRow()
+
+    def addIconWidget(self, w):
+        pass
+        ### if self.iconBar: return self.iconBar.addWidget(w)
+
+    def clearIconBar(self):
+        pass
+        ### if self.iconBar: self.iconBar.clear()
+
+    def createIconBar(self):
+        return None
+        ###
+            # c = self.c
+            # if not self.iconBar:
+                # self.iconBar = self.iconBarClass(c, self.outerFrame)
+            # return self.iconBar
+
+    def getIconBar(self):
+        return None
+        ###
+            # if not self.iconBar:
+                # self.iconBar = self.iconBarClass(self.c, self.outerFrame)
+            # return self.iconBar
+
+    getIconBarObject = getIconBar
+
+    def getNewIconFrame(self):
+        return None
+        ###
+            # if not self.iconBar:
+                # self.iconBar = self.iconBarClass(self.c, self.outerFrame)
+            # return self.iconBar.getNewFrame()
+
+    def hideIconBar(self):
+        pass
+        ### if self.iconBar: self.iconBar.hide()
+
+    def showIconBar(self):
+        pass
+        ### if self.iconBar: self.iconBar.show()
+    #@+node:ekr.20181115172556.8: *5* LeoFrame.Status line convenience methods
+    def createStatusLine(self):
+        pass
+        ###
+            # if not self.statusLine:
+                # self.statusLine = self.statusLineClass(self.c, self.outerFrame)
+            # return self.statusLine
+
+    def clearStatusLine(self):
+        self.statusLine.clear()
+        ###if self.statusLine: self.statusLine.clear()
+
+    def disableStatusLine(self, background=None):
+        pass
+        ### if self.statusLine: self.statusLine.disable(background)
+
+    def enableStatusLine(self, background="white"):
+        pass
+        ### if self.statusLine: self.statusLine.enable(background)
+
+    def getStatusLine(self):
+        return self.statusLine
+
+    getStatusObject = getStatusLine
+
+    def putStatusLine(self, s, bg=None, fg=None):
+        if self.statusLine: self.statusLine.put(s, bg, fg)
+
+    def setFocusStatusLine(self):
+        self.statusLine.setFocus()
+        ### if self.statusLine: self.statusLine.setFocus()
+
+    def statusLineIsEnabled(self):
+        return True
+        ###
+            # if self.statusLine: return self.statusLine.isEnabled()
+            # else: return False
+
+    def updateStatusLine(self):
+        self.statusLine.update()
+        ### if self.statusLine: self.statusLine.update()
+    #@+node:ekr.20181115172556.9: *5* LeoFrame.Cut/Copy/Paste
+    #@+node:ekr.20181115172556.10: *6* LeoFrame.copyText
+    ### @cmd('copy-text')
+    def copyText(self, event=None):
+        '''Copy the selected text from the widget to the clipboard.'''
+        # f = self
+        g = self.g
+        w = event and event.widget
+        # wname = c.widget_name(w)
+        if not w or not g.isTextWrapper(w):
+            return
+        # Set the clipboard text.
+        i, j = w.getSelectionRange()
+        if i == j:
+            ins = w.getInsertPoint()
+            i, j = g.getLine(w.getAllText(), ins)
+        # 2016/03/27: Fix a recent buglet.
+        # Don't clear the clipboard if we hit ctrl-c by mistake.
+        s = w.get(i,j)
+        if s:
+            g.app.gui.replaceClipboardWith(s)
+
+    OnCopyFromMenu = copyText
+    #@+node:ekr.20181115172556.11: *6* LeoFrame.cutText
+    ### @cmd('cut-text')
+    def cutText(self, event=None):
+        '''Invoked from the mini-buffer and from shortcuts.'''
+        c, g = self.c, self.g
+        ### f = self
+        w = event and event.widget
+        if not w or not g.isTextWrapper(w):
+            return
+        name = c.widget_name(w)
+        oldSel = w.getSelectionRange()
+        oldText = w.getAllText()
+        i, j = w.getSelectionRange()
+        # Update the widget and set the clipboard text.
+        s = w.get(i, j)
+        if i != j:
+            w.delete(i, j)
+            w.see(i) # 2016/01/19: important
+            g.app.gui.replaceClipboardWith(s)
+        else:
+            ins = w.getInsertPoint()
+            i, j = g.getLine(oldText, ins)
+            s = w.get(i,j)
+            w.delete(i,j)
+            w.see(i) # 2016/01/19: important
+            g.app.gui.replaceClipboardWith(s)
+        if name.startswith('body'):
+            c.frame.body.onBodyChanged('Cut', oldSel=oldSel, oldText=oldText)
+        elif name.startswith('head'):
+            # The headline is not officially changed yet.
+            # p.initHeadString(s)
+            s = w.getAllText()
+            # 2011/11/14: Not used at present.
+            # width = f.tree.headWidth(p=None,s=s)
+            # w.setWidth(width)
+        else: pass
+
+    OnCutFromMenu = cutText
+    #@+node:ekr.20181115172556.12: *6* LeoFrame.pasteText
+    ### @cmd('paste-text')
+    def pasteText(self, event=None, middleButton=False):
+        '''
+        Paste the clipboard into a widget.
+        If middleButton is True, support x-windows middle-mouse-button easter-egg.
+        '''
+        c, g = self.c, self.g
+        w = event and event.widget
+        wname = c.widget_name(w)
+        if not w or not g.isTextWrapper(w):
+            return
+        if self.cursorStay and wname.startswith('body'):
+            tCurPosition = w.getInsertPoint()
+        i, j = oldSel = w.getSelectionRange()
+            # Returns insert point if no selection.
+        oldText = w.getAllText()
+        if middleButton and c.k.previousSelection is not None:
+            start, end = c.k.previousSelection
+            s = w.getAllText()
+            s = s[start: end]
+            c.k.previousSelection = None
+        else:
+            s = g.app.gui.getTextFromClipboard()
+        s = g.toUnicode(s)
+        singleLine = wname.startswith('head') or wname.startswith('minibuffer')
+        if singleLine:
+            # Strip trailing newlines so the truncation doesn't cause confusion.
+            while s and s[-1] in ('\n', '\r'):
+                s = s[: -1]
+        # Save the horizontal scroll position.
+        if hasattr(w, 'getXScrollPosition'):
+            x_pos = w.getXScrollPosition()
+        # Update the widget.
+        if i != j:
+            w.delete(i, j)
+        w.insert(i, s)
+        w.see(i + len(s) + 2)
+        if wname.startswith('body'):
+            if self.cursorStay:
+                if tCurPosition == j:
+                    offset = len(s)-(j-i)
+                else:
+                    offset = 0
+                newCurPosition = tCurPosition + offset
+                w.setSelectionRange(i=newCurPosition, j=newCurPosition)
+            c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
+        elif singleLine:
+            s = w.getAllText()
+            while s and s[-1] in ('\n', '\r'):
+                s = s[: -1]
+            # 2011/11/14: headline width methods do nothing at present.
+            # if wname.startswith('head'):
+                # The headline is not officially changed yet.
+                # p.initHeadString(s)
+                # width = f.tree.headWidth(p=None,s=s)
+                # w.setWidth(width)
+        else:
+            pass
+        # Never scroll horizontally.
+        if hasattr(w, 'getXScrollPosition'):
+            w.setXScrollPosition(x_pos)
+
+    OnPasteFromMenu = pasteText
+    #@+node:ekr.20181115172556.13: *6* LeoFrame.OnPaste (support middle-button paste)
+    def OnPaste(self, event=None):
+        return self.pasteText(event=event, middleButton=True)
+    #@+node:ekr.20181115172556.14: *5* LeoFrame.Edit Menu
+    #@+node:ekr.20181115172556.15: *6* LeoFrame.abortEditLabelCommand
+    ### @cmd('abort-edit-headline')
+    def abortEditLabelCommand(self, event=None):
+        '''End editing of a headline and revert to its previous value.'''
+        c, g = self.c, self.g
+        tree = self.tree
+        p = c.p
+        if g.app.batchMode:
+            c.notValidInBatchMode("Abort Edit Headline")
+            return
+        # Revert the headline text.
+        # Calling c.setHeadString is required.
+        # Otherwise c.redraw would undo the change!
+        c.setHeadString(p, tree.revertHeadline)
+        c.redraw(p)
+    #@+node:ekr.20181115172556.16: *6* LeoFrame.endEditLabelCommand
+    ### @cmd('end-edit-headline')
+    def endEditLabelCommand(self, event=None, p=None):
+        '''End editing of a headline and move focus to the body pane.'''
+        c, g = self.c, self.g
+        ### frame = self
+        k = c.k
+        if g.app.batchMode:
+            c.notValidInBatchMode("End Edit Headline")
+        else:
+            w = c.get_focus()
+            w_name = g.app.gui.widget_name(w)
+            if w_name.startswith('head'):
+                c.endEditing()
+                c.treeWantsFocus()
+            else:
+                # c.endEditing()
+                c.bodyWantsFocus()
+                k.setDefaultInputState()
+                # Recolor the *body* text, **not** the headline.
+                k.showStateAndMode(w=c.frame.body.wrapper)
+    #@+node:ekr.20181115173057.1: *4* LeoFrame.May be defined in subclasses
+    #@+node:ekr.20181115173057.2: *5* LeoFrame.event handlers
+    def OnBodyClick(self, event=None):
+        pass
+
+    def OnBodyRClick(self, event=None):
+        pass
+    #@+node:ekr.20181115173057.3: *5* LeoFrame.getTitle & setTitle
+    def getTitle(self):
+        return self.title
+
+    def setTitle(self, title):
+        self.title = title
+    #@+node:ekr.20181115173057.4: *5* LeoFrame.initAfterLoad  & initCompleteHint
+    def initAfterLoad(self):
+        '''Provide offical hooks for late inits of components of Leo frames.'''
+        ###
+            # frame = self
+            # frame.body.initAfterLoad()
+            # frame.log.initAfterLoad()
+            # frame.menu.initAfterLoad()
+            # # if frame.miniBufferWidget: frame.miniBufferWidget.initAfterLoad()
+            # frame.tree.initAfterLoad()
+
+    def initCompleteHint(self):
+        pass
+    #@+node:ekr.20181115173057.5: *5* LeoFrame.setTabWidth
+    def setTabWidth(self, w):
+        '''Set the tab width in effect for this frame.'''
+        # Subclasses may override this to affect drawing.
+        self.tab_width = w
     #@-others
 #@+node:ekr.20181113041113.1: *3* class LeoBrowserGui
 class LeoBrowserGui(flx.PyComponent):
@@ -877,44 +1415,42 @@ class LeoBrowserLog(flx.PyComponent):
 
     #@+others
     #@+node:ekr.20181115092337.23: *4*  bl.not used
-    if 0:
-        #@+others
-        #@+node:ekr.20181115092337.24: *5* bl.createControl
-        def createControl(self, parentFrame):
-            return self.createTextWidget(parentFrame)
-        #@+node:ekr.20181115092337.25: *5* bl.finishCreate
-        def finishCreate(self):
-            pass
-        #@+node:ekr.20181115092337.26: *5* bl.isLogWidget
-        def isLogWidget(self, w):
-            return False
-        #@+node:ekr.20181115092337.27: *5* bl.tabs
-        def clearTab(self, tabName, wrap='none'):
-            pass
+    #@+node:ekr.20181115092337.24: *5* bl.createControl
+    def createControl(self, parentFrame):
+        return self.createTextWidget() ### parentFrame)
+    #@+node:ekr.20181115092337.25: *5* bl.finishCreate
+    def finishCreate(self):
+        pass
+    #@+node:ekr.20181115092337.26: *5* bl.isLogWidget
+    def isLogWidget(self, w):
+        return False
+    #@+node:ekr.20181115092337.27: *5* bl.tabs
+    def clearTab(self, tabName, wrap='none'):
+        pass
 
-        def createCanvas(self, tabName):
-            pass
+    def createCanvas(self, tabName):
+        pass
 
-        def createTab(self, tabName, createText=True, widget=None, wrap='none'):
-            pass
+    def createTab(self, tabName, createText=True, widget=None, wrap='none'):
+        pass
 
-        def deleteTab(self, tabName, force=False): pass
+    def deleteTab(self, tabName, force=False): pass
 
-        def getSelectedTab(self): return None
+    def getSelectedTab(self): return None
 
-        def lowerTab(self, tabName): pass
+    def lowerTab(self, tabName): pass
 
-        def raiseTab(self, tabName): pass
+    def raiseTab(self, tabName): pass
 
-        def renameTab(self, oldName, newName): pass
+    def renameTab(self, oldName, newName): pass
 
-        def selectTab(self, tabName, createText=True, widget=None, wrap='none'): pass
-        #@-others
+    def selectTab(self, tabName, createText=True, widget=None, wrap='none'): pass
     #@+node:ekr.20181115092337.28: *4* bl.createTextWidget
-    def createTextWidget(self, parentFrame):
+    def createTextWidget(self): ### , parentFrame):
         self.logNumber += 1
-        c = self.c
-        log = StringTextWrapper(c=c, name="log-%d" % self.logNumber)
+        c, g = self.c, self.g
+        name="log-%d" % self.logNumber
+        log = StringTextWrapper(c, g, name)
         return log
     #@+node:ekr.20181115092337.29: *4* bl.oops
     def oops(self):
@@ -962,515 +1498,507 @@ class LeoBrowserMenu(flx.PyComponent):
         g = self.g
         print('LeoMenu.oops', g.callers())
     #@+node:ekr.20181115113707.5: *4* LeoMenu.Gui-independent menu routines
-    ### Should we use Leo's core ???
-    if 0:
-        #@+others
-        #@+node:ekr.20181115113707.6: *5* LeoMenu.capitalizeMinibufferMenuName
-        #@@nobeautify
+    #@+node:ekr.20181115113707.6: *5* LeoMenu.capitalizeMinibufferMenuName
+    #@@nobeautify
 
-        def capitalizeMinibufferMenuName(self, s, removeHyphens):
-            result = []
-            for i, ch in enumerate(s):
-                prev =     s[i - 1] if i > 0 else ''
-                prevprev = s[i - 2] if i > 1 else ''
-                if (
-                    i == 0 or
-                    i == 1 and prev == '&' or
-                    prev == '-' or
-                    prev == '&' and prevprev == '-'
-                ):
-                    result.append(ch.capitalize())
-                elif removeHyphens and ch == '-':
-                    result.append(' ')
-                else:
-                    result.append(ch)
-            return ''.join(result)
-        #@+node:ekr.20181115113707.7: *5* LeoMenu.createMenusFromTables & helpers
-        def createMenusFromTables(self):
-            '''(leoMenu) Usually over-ridden.'''
-            c, g = self.c, self.g
-            aList = c.config.getMenusList()
-            if aList:
-                self.createMenusFromConfigList(aList)
+    def capitalizeMinibufferMenuName(self, s, removeHyphens):
+        result = []
+        for i, ch in enumerate(s):
+            prev =     s[i - 1] if i > 0 else ''
+            prevprev = s[i - 2] if i > 1 else ''
+            if (
+                i == 0 or
+                i == 1 and prev == '&' or
+                prev == '-' or
+                prev == '&' and prevprev == '-'
+            ):
+                result.append(ch.capitalize())
+            elif removeHyphens and ch == '-':
+                result.append(' ')
             else:
-                g.es_print('No @menu setting found')
-        #@+node:ekr.20181115113707.8: *6* LeoMenu.createMenusFromConfigList & helpers
-        def createMenusFromConfigList(self, aList):
-            '''
-            Create menus from aList.
-            The 'top' menu has already been created.
-            '''
-            # Called from createMenuBar.
-            c, g = self.c, self.g
-            for z in aList:
-                kind, val, val2 = z
-                if kind.startswith('@menu'):
-                    name = kind[len('@menu'):].strip()
-                    if not self.handleSpecialMenus(name, parentName=None):
-                        # Fix #528: Don't create duplicate menu items.
-                        menu = self.createNewMenu(name)
-                            # Create top-level menu.
-                        if menu:
-                            self.createMenuFromConfigList(name, val, level=0)
-                        else:
-                            g.trace('no menu', name)
-                else:
-                    self.error('%s %s not valid outside @menu tree' % (kind, val))
-            aList = c.config.getOpenWith()
-            if aList:
-                # a list of dicts.
-                self.createOpenWithMenuFromTable(aList)
-        #@+node:ekr.20181115113707.9: *7* LeoMenu.createMenuFromConfigList
-        def createMenuFromConfigList(self, parentName, aList, level=0):
-            """Build menu based on nested list
-
-            List entries are either:
-
-                ['@item', 'command-name', 'optional-view-name']
-
-            or:
-
-                ['@menu Submenu name', <nested list>, None]
-
-            :param str parentName: name of menu under which to place this one
-            :param list aList: list of entries as described above
-            """
-            g = self.g
-            parentMenu = self.getMenu(parentName)
-            table = []
-            for z in aList:
-                kind, val, val2 = z
-                if kind.startswith('@menu'):
-                    # Menu names can be unicode without any problem.
-                    name = kind[5:].strip()
-                    if table:
-                        self.createMenuEntries(parentMenu, table)
-                    if not self.handleSpecialMenus(name, parentName,
-                        alt_name=val2, #848.
-                        table=table,
-                    ):
-                        menu = self.createNewMenu(name, parentName)
-                            # Create submenu of parent menu.
-                        if menu:
-                            # Partial fix for #528.
-                            self.createMenuFromConfigList(name, val, level + 1)
-                    table = []
-                elif kind == '@item':
-                    name = str(val) # Item names must always be ascii.
-                    if val2:
-                        # Translated names can be unicode.
-                        table.append((val2, name),)
+                result.append(ch)
+        return ''.join(result)
+    #@+node:ekr.20181115113707.7: *5* LeoMenu.createMenusFromTables & helpers
+    def createMenusFromTables(self):
+        '''(leoMenu) Usually over-ridden.'''
+        c, g = self.c, self.g
+        aList = c.config.getMenusList()
+        if aList:
+            self.createMenusFromConfigList(aList)
+        else:
+            g.es_print('No @menu setting found')
+    #@+node:ekr.20181115113707.8: *6* LeoMenu.createMenusFromConfigList & helpers
+    def createMenusFromConfigList(self, aList):
+        '''
+        Create menus from aList.
+        The 'top' menu has already been created.
+        '''
+        # Called from createMenuBar.
+        c, g = self.c, self.g
+        for z in aList:
+            kind, val, val2 = z
+            if kind.startswith('@menu'):
+                name = kind[len('@menu'):].strip()
+                if not self.handleSpecialMenus(name, parentName=None):
+                    # Fix #528: Don't create duplicate menu items.
+                    menu = self.createNewMenu(name)
+                        # Create top-level menu.
+                    if menu:
+                        self.createMenuFromConfigList(name, val, level=0)
                     else:
-                        table.append(name)
-                else:
-                    g.trace('can not happen: bad kind:', kind)
-            if table:
-                self.createMenuEntries(parentMenu, table)
-        #@+node:ekr.20181115113707.10: *7* LeoMenu.handleSpecialMenus
-        def handleSpecialMenus(self, name, parentName, alt_name=None, table=None):
-            '''
-            Handle a special menu if name is the name of a special menu.
-            return True if this method handles the menu.
-            '''
-            c, g = self.c, self.g
-            if table is None: table = []
-            name2 = name.replace('&', '').replace(' ', '').lower()
-            if name2 == 'plugins':
-                # Create the plugins menu using a hook.
-                g.doHook("create-optional-menus", c=c)
-                return True
-            elif name2.startswith('recentfiles'):
-                # Just create the menu.
-                # createRecentFilesMenuItems will create the contents later.
-                g.app.recentFilesManager.recentFilesMenuName = alt_name or name
-                    #848
-                self.createNewMenu(alt_name or name, parentName)
-                return True
-            elif name2 == 'help' and g.isMac:
-                helpMenu = self.getMacHelpMenu(table)
-                return helpMenu is not None
+                        g.trace('no menu', name)
             else:
-                return False
-        #@+node:ekr.20181115113707.11: *5* LeoMenu.hasSelection
-        # Returns True if text in the outline or body text is selected.
+                self.error('%s %s not valid outside @menu tree' % (kind, val))
+        aList = c.config.getOpenWith()
+        if aList:
+            # a list of dicts.
+            self.createOpenWithMenuFromTable(aList)
+    #@+node:ekr.20181115113707.9: *7* LeoMenu.createMenuFromConfigList
+    def createMenuFromConfigList(self, parentName, aList, level=0):
+        """Build menu based on nested list
 
-        def hasSelection(self):
-            c = self.c; w = c.frame.body.wrapper
-            if c.frame.body:
-                first, last = w.getSelectionRange()
-                return first != last
+        List entries are either:
+
+            ['@item', 'command-name', 'optional-view-name']
+
+        or:
+
+            ['@menu Submenu name', <nested list>, None]
+
+        :param str parentName: name of menu under which to place this one
+        :param list aList: list of entries as described above
+        """
+        g = self.g
+        parentMenu = self.getMenu(parentName)
+        table = []
+        for z in aList:
+            kind, val, val2 = z
+            if kind.startswith('@menu'):
+                # Menu names can be unicode without any problem.
+                name = kind[5:].strip()
+                if table:
+                    self.createMenuEntries(parentMenu, table)
+                if not self.handleSpecialMenus(name, parentName,
+                    alt_name=val2, #848.
+                    table=table,
+                ):
+                    menu = self.createNewMenu(name, parentName)
+                        # Create submenu of parent menu.
+                    if menu:
+                        # Partial fix for #528.
+                        self.createMenuFromConfigList(name, val, level + 1)
+                table = []
+            elif kind == '@item':
+                name = str(val) # Item names must always be ascii.
+                if val2:
+                    # Translated names can be unicode.
+                    table.append((val2, name),)
+                else:
+                    table.append(name)
             else:
-                return False
-        #@-others
+                g.trace('can not happen: bad kind:', kind)
+        if table:
+            self.createMenuEntries(parentMenu, table)
+    #@+node:ekr.20181115113707.10: *7* LeoMenu.handleSpecialMenus
+    def handleSpecialMenus(self, name, parentName, alt_name=None, table=None):
+        '''
+        Handle a special menu if name is the name of a special menu.
+        return True if this method handles the menu.
+        '''
+        c, g = self.c, self.g
+        if table is None: table = []
+        name2 = name.replace('&', '').replace(' ', '').lower()
+        if name2 == 'plugins':
+            # Create the plugins menu using a hook.
+            g.doHook("create-optional-menus", c=c)
+            return True
+        elif name2.startswith('recentfiles'):
+            # Just create the menu.
+            # createRecentFilesMenuItems will create the contents later.
+            g.app.recentFilesManager.recentFilesMenuName = alt_name or name
+                #848
+            self.createNewMenu(alt_name or name, parentName)
+            return True
+        elif name2 == 'help' and g.isMac:
+            helpMenu = self.getMacHelpMenu(table)
+            return helpMenu is not None
+        else:
+            return False
+    #@+node:ekr.20181115113707.11: *5* LeoMenu.hasSelection
+    # Returns True if text in the outline or body text is selected.
+
+    def hasSelection(self):
+        c = self.c; w = c.frame.body.wrapper
+        if c.frame.body:
+            first, last = w.getSelectionRange()
+            return first != last
+        else:
+            return False
     #@+node:ekr.20181115113707.12: *4* LeoMenu.Helpers
-    ### Should we use Leo's core ???
-    if 0:
-        #@+others
-        #@+node:ekr.20181115113707.13: *5* LeoMenu.canonicalizeMenuName & cononicalizeTranslatedMenuName
-        def canonicalizeMenuName(self, name):
-            return ''.join([ch for ch in name.lower() if ch.isalnum()])
+    #@+node:ekr.20181115113707.13: *5* LeoMenu.canonicalizeMenuName & cononicalizeTranslatedMenuName
+    def canonicalizeMenuName(self, name):
+        return ''.join([ch for ch in name.lower() if ch.isalnum()])
 
-        def canonicalizeTranslatedMenuName(self, name):
-            return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
-        #@+node:ekr.20181115113707.14: *5* LeoMenu.computeOldStyleShortcutKey
-        def computeOldStyleShortcutKey(self, s):
-            '''Compute the old-style shortcut key for @shortcuts entries.'''
-            return ''.join([ch for ch in s.strip().lower() if ch.isalnum()])
-        #@+node:ekr.20181115113707.15: *5* LeoMenu.createMenuEntries & helpers
-        def createMenuEntries(self, menu, table, dynamicMenu=False):
-            '''Create a menu entry from the table.
-            New in 4.4: this method shows the shortcut in the menu,
-            but this method **never** binds any shortcuts.'''
-            c, g = self.c, self.g
-            if g.app.unitTesting: return
-            if not menu: return
-            self.traceMenuTable(table)
-            for data in table:
-                label, command, done = self.getMenuEntryInfo(data, menu)
-                if done: continue
-                commandName = self.getMenuEntryBindings(command, dynamicMenu, label)
-                if not commandName: continue
-                masterMenuCallback = self.createMasterMenuCallback(
-                    dynamicMenu, command, commandName)
-                realLabel = self.getRealMenuName(label)
-                amp_index = realLabel.find("&")
-                realLabel = realLabel.replace("&", "")
-                # c.add_command ensures that c.outerUpdate is called.
-                c.add_command(menu, label=realLabel,
-                    accelerator='', # The accelerator is now computed dynamically.
-                    command=masterMenuCallback,
-                    commandName=commandName,
-                    underline=amp_index)
-        #@+node:ekr.20181115113707.16: *6* LeoMenu.createMasterMenuCallback
-        def createMasterMenuCallback(self, dynamicMenu, command, commandName):
+    def canonicalizeTranslatedMenuName(self, name):
+        return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
+    #@+node:ekr.20181115113707.14: *5* LeoMenu.computeOldStyleShortcutKey
+    def computeOldStyleShortcutKey(self, s):
+        '''Compute the old-style shortcut key for @shortcuts entries.'''
+        return ''.join([ch for ch in s.strip().lower() if ch.isalnum()])
+    #@+node:ekr.20181115113707.15: *5* LeoMenu.createMenuEntries & helpers
+    def createMenuEntries(self, menu, table, dynamicMenu=False):
+        '''Create a menu entry from the table.
+        New in 4.4: this method shows the shortcut in the menu,
+        but this method **never** binds any shortcuts.'''
+        c, g = self.c, self.g
+        if g.app.unitTesting: return
+        if not menu: return
+        self.traceMenuTable(table)
+        for data in table:
+            label, command, done = self.getMenuEntryInfo(data, menu)
+            if done: continue
+            commandName = self.getMenuEntryBindings(command, dynamicMenu, label)
+            if not commandName: continue
+            masterMenuCallback = self.createMasterMenuCallback(
+                dynamicMenu, command, commandName)
+            realLabel = self.getRealMenuName(label)
+            amp_index = realLabel.find("&")
+            realLabel = realLabel.replace("&", "")
+            # c.add_command ensures that c.outerUpdate is called.
+            c.add_command(menu, label=realLabel,
+                accelerator='', # The accelerator is now computed dynamically.
+                command=masterMenuCallback,
+                commandName=commandName,
+                underline=amp_index)
+    #@+node:ekr.20181115113707.16: *6* LeoMenu.createMasterMenuCallback
+    def createMasterMenuCallback(self, dynamicMenu, command, commandName):
 
-            c, g = self.c, self.g
+        c, g = self.c, self.g
 
-            def setWidget():
-                w = c.frame.getFocus()
-                if w and g.isMac:
-                     # 2012/01/11: redirect (MacOS only).
-                    wname = c.widget_name(w)
-                    if wname.startswith('head'):
-                        w = c.frame.tree.edit_widget(c.p)
-                # 2015/05/14: return a wrapper if possible.
-                if not g.isTextWrapper(w):
-                    w = getattr(w, 'wrapper', w)
-                return w
+        def setWidget():
+            w = c.frame.getFocus()
+            if w and g.isMac:
+                 # 2012/01/11: redirect (MacOS only).
+                wname = c.widget_name(w)
+                if wname.startswith('head'):
+                    w = c.frame.tree.edit_widget(c.p)
+            # 2015/05/14: return a wrapper if possible.
+            if not g.isTextWrapper(w):
+                w = getattr(w, 'wrapper', w)
+            return w
 
-            if dynamicMenu:
-                if command:
+        if dynamicMenu:
+            if command:
 
-                    def masterDynamicMenuCallback(c=c, command=command):
-                        # 2012/01/07: set w here.
-                        w = setWidget()
-                        event = g.app.gui.create_key_event(c, w=w)
-                        return c.k.masterCommand(func=command, event=event)
-
-                    return masterDynamicMenuCallback
-                else:
-                    g.internalError('no callback for dynamic menu item.')
-
-                    def dummyMasterMenuCallback():
-                        pass
-
-                    return dummyMasterMenuCallback
-            else:
-
-                def masterStaticMenuCallback(c=c, commandName=commandName):
-                    # 2011/10/28: Use only the command name to dispatch the command.
-                    # 2012/01/07: Bug fix: set w here.
+                def masterDynamicMenuCallback(c=c, command=command):
+                    # 2012/01/07: set w here.
                     w = setWidget()
                     event = g.app.gui.create_key_event(c, w=w)
-                    return c.k.masterCommand(commandName=commandName, event=event)
+                    return c.k.masterCommand(func=command, event=event)
 
-                return masterStaticMenuCallback
-        #@+node:ekr.20181115113707.17: *6* LeoMenu.getMenuEntryBindings
-        def getMenuEntryBindings(self, command, dynamicMenu, label):
-            '''Compute commandName from command.'''
-            c, g = self.c, self.g
-            if g.isString(command):
-                # Command is really a command name.
-                commandName = command
+                return masterDynamicMenuCallback
             else:
-                # First, get the old-style name.
-                commandName = self.computeOldStyleShortcutKey(label)
-            command = c.commandsDict.get(commandName)
-            return commandName
-        #@+node:ekr.20181115113707.18: *6* LeoMenu.getMenuEntryInfo
-        def getMenuEntryInfo(self, data, menu):
-            g = self.g
-            done = False
-            if g.isString(data):
-                # A single string is both the label and the command.
-                s = data
-                removeHyphens = s and s[0] == '*'
-                if removeHyphens: s = s[1:]
-                label = self.capitalizeMinibufferMenuName(s, removeHyphens)
-                command = s.replace('&', '').lower()
-                if label == '-':
+                g.internalError('no callback for dynamic menu item.')
+
+                def dummyMasterMenuCallback():
+                    pass
+
+                return dummyMasterMenuCallback
+        else:
+
+            def masterStaticMenuCallback(c=c, commandName=commandName):
+                # 2011/10/28: Use only the command name to dispatch the command.
+                # 2012/01/07: Bug fix: set w here.
+                w = setWidget()
+                event = g.app.gui.create_key_event(c, w=w)
+                return c.k.masterCommand(commandName=commandName, event=event)
+
+            return masterStaticMenuCallback
+    #@+node:ekr.20181115113707.17: *6* LeoMenu.getMenuEntryBindings
+    def getMenuEntryBindings(self, command, dynamicMenu, label):
+        '''Compute commandName from command.'''
+        c, g = self.c, self.g
+        if g.isString(command):
+            # Command is really a command name.
+            commandName = command
+        else:
+            # First, get the old-style name.
+            commandName = self.computeOldStyleShortcutKey(label)
+        command = c.commandsDict.get(commandName)
+        return commandName
+    #@+node:ekr.20181115113707.18: *6* LeoMenu.getMenuEntryInfo
+    def getMenuEntryInfo(self, data, menu):
+        g = self.g
+        done = False
+        if g.isString(data):
+            # A single string is both the label and the command.
+            s = data
+            removeHyphens = s and s[0] == '*'
+            if removeHyphens: s = s[1:]
+            label = self.capitalizeMinibufferMenuName(s, removeHyphens)
+            command = s.replace('&', '').lower()
+            if label == '-':
+                self.add_separator(menu)
+                done = True # That's all.
+        else:
+            ok = isinstance(data, (list, tuple)) and len(data) in (2, 3)
+            if ok:
+                if len(data) == 2:
+                    # Command can be a minibuffer-command name.
+                    label, command = data
+                else:
+                    # Ignore shortcuts bound in menu tables.
+                    label, junk, command = data
+                if label in (None, '-'):
                     self.add_separator(menu)
                     done = True # That's all.
             else:
-                ok = isinstance(data, (list, tuple)) and len(data) in (2, 3)
-                if ok:
-                    if len(data) == 2:
-                        # Command can be a minibuffer-command name.
-                        label, command = data
-                    else:
-                        # Ignore shortcuts bound in menu tables.
-                        label, junk, command = data
-                    if label in (None, '-'):
-                        self.add_separator(menu)
-                        done = True # That's all.
-                else:
-                    g.trace('bad data in menu table: %s' % repr(data))
-                    done = True # Ignore bad data
-            return label, command, done
-        #@+node:ekr.20181115113707.19: *6* LeoMenu.traceMenuTable
-        def traceMenuTable(self, table):
+                g.trace('bad data in menu table: %s' % repr(data))
+                done = True # Ignore bad data
+        return label, command, done
+    #@+node:ekr.20181115113707.19: *6* LeoMenu.traceMenuTable
+    def traceMenuTable(self, table):
 
-            g = self.g
-            trace = False and not g.unitTesting
-            if not trace: return
-            format = '%40s %s'
-            g.trace('*' * 40)
-            for data in table:
-                if isinstance(data, (list, tuple)):
-                    n = len(data)
-                    if n == 2:
-                        print(format % (data[0], data[1]))
-                    elif n == 3:
-                        name, junk, func = data
-                        print(format % (name, func and func.__name__ or '<NO FUNC>'))
-                else:
-                    print(format % (data, ''))
-        #@+node:ekr.20181115113707.20: *5* LeoMenu.createMenuItemsFromTable
-        def createMenuItemsFromTable(self, menuName, table, dynamicMenu=False):
-            g = self.g
-            if g.app.gui.isNullGui:
+        g = self.g
+        trace = False and not g.unitTesting
+        if not trace: return
+        format = '%40s %s'
+        g.trace('*' * 40)
+        for data in table:
+            if isinstance(data, (list, tuple)):
+                n = len(data)
+                if n == 2:
+                    print(format % (data[0], data[1]))
+                elif n == 3:
+                    name, junk, func = data
+                    print(format % (name, func and func.__name__ or '<NO FUNC>'))
+            else:
+                print(format % (data, ''))
+    #@+node:ekr.20181115113707.20: *5* LeoMenu.createMenuItemsFromTable
+    def createMenuItemsFromTable(self, menuName, table, dynamicMenu=False):
+        g = self.g
+        if g.app.gui.isNullGui:
+            return
+        try:
+            menu = self.getMenu(menuName)
+            if menu is None:
                 return
-            try:
-                menu = self.getMenu(menuName)
-                if menu is None:
-                    return
-                self.createMenuEntries(menu, table, dynamicMenu=dynamicMenu)
-            except Exception:
-                g.es_print("exception creating items for", menuName, "menu")
-                g.es_exception()
-            g.app.menuWarningsGiven = True
-        #@+node:ekr.20181115113707.21: *5* LeoMenu.createNewMenu
-        def createNewMenu(self, menuName, parentName="top", before=None):
-            g = self.g
-            try:
-                parent = self.getMenu(parentName) # parent may be None.
-                menu = self.getMenu(menuName)
-                if menu:
-                    # Not an error.
-                    # g.error("menu already exists:", menuName)
-                    return None # Fix #528.
+            self.createMenuEntries(menu, table, dynamicMenu=dynamicMenu)
+        except Exception:
+            g.es_print("exception creating items for", menuName, "menu")
+            g.es_exception()
+        g.app.menuWarningsGiven = True
+    #@+node:ekr.20181115113707.21: *5* LeoMenu.createNewMenu
+    def createNewMenu(self, menuName, parentName="top", before=None):
+        g = self.g
+        try:
+            parent = self.getMenu(parentName) # parent may be None.
+            menu = self.getMenu(menuName)
+            if menu:
+                # Not an error.
+                # g.error("menu already exists:", menuName)
+                return None # Fix #528.
+            else:
+                menu = self.new_menu(parent, tearoff=0, label=menuName)
+                self.setMenu(menuName, menu)
+                label = self.getRealMenuName(menuName)
+                amp_index = label.find("&")
+                label = label.replace("&", "")
+                if before: # Insert the menu before the "before" menu.
+                    index_label = self.getRealMenuName(before)
+                    amp_index = index_label.find("&")
+                    index_label = index_label.replace("&", "")
+                    index = parent.index(index_label)
+                    self.insert_cascade(parent, index=index, label=label, menu=menu, underline=amp_index)
                 else:
-                    menu = self.new_menu(parent, tearoff=0, label=menuName)
-                    self.setMenu(menuName, menu)
-                    label = self.getRealMenuName(menuName)
-                    amp_index = label.find("&")
-                    label = label.replace("&", "")
-                    if before: # Insert the menu before the "before" menu.
-                        index_label = self.getRealMenuName(before)
-                        amp_index = index_label.find("&")
-                        index_label = index_label.replace("&", "")
-                        index = parent.index(index_label)
-                        self.insert_cascade(parent, index=index, label=label, menu=menu, underline=amp_index)
-                    else:
-                        self.add_cascade(parent, label=label, menu=menu, underline=amp_index)
-                    return menu
-            except Exception:
-                g.es("exception creating", menuName, "menu")
-                g.es_exception()
-                return None
-        #@+node:ekr.20181115113707.22: *5* LeoMenu.createOpenWithMenuFromTable & helpers
-        def createOpenWithMenuFromTable(self, table):
-            '''
-            Table is a list of dictionaries, created from @openwith settings nodes.
+                    self.add_cascade(parent, label=label, menu=menu, underline=amp_index)
+                return menu
+        except Exception:
+            g.es("exception creating", menuName, "menu")
+            g.es_exception()
+            return None
+    #@+node:ekr.20181115113707.22: *5* LeoMenu.createOpenWithMenuFromTable & helpers
+    def createOpenWithMenuFromTable(self, table):
+        '''
+        Table is a list of dictionaries, created from @openwith settings nodes.
 
-            This menu code uses these keys:
+        This menu code uses these keys:
 
-                'name':     menu label.
-                'shortcut': optional menu shortcut.
-
-            efc.open_temp_file uses these keys:
-
-                'args':     the command-line arguments to be used to open the file.
-                'ext':      the file extension.
-                'kind':     the method used to open the file, such as subprocess.Popen.
-            '''
-            g, k = self.g, self.c.k
-            if not table: return
-            g.app.openWithTable = table # Override any previous table.
-            # Delete the previous entry.
-            parent = self.getMenu("File")
-            if not parent:
-                if not g.app.batchMode:
-                    g.error('', 'createOpenWithMenuFromTable:', 'no File menu')
-                return
-            label = self.getRealMenuName("Open &With...")
-            amp_index = label.find("&")
-            label = label.replace("&", "")
-            try:
-                index = parent.index(label)
-                parent.delete(index)
-            except Exception:
-                try:
-                    index = parent.index("Open With...")
-                    parent.delete(index)
-                except Exception:
-                    g.trace('unexpected exception')
-                    g.es_exception()
-                    return
-            # Create the Open With menu.
-            openWithMenu = self.createOpenWithMenu(parent, label, index, amp_index)
-            if not openWithMenu:
-                g.trace('openWithMenu returns None')
-                return
-            self.setMenu("Open With...", openWithMenu)
-            # Create the menu items in of the Open With menu.
-            self.createOpenWithMenuItemsFromTable(openWithMenu, table)
-            for d in table:
-                k.bindOpenWith(d)
-        #@+node:ekr.20181115113707.23: *6* LeoMenu.createOpenWithMenuItemsFromTable & callback
-        def createOpenWithMenuItemsFromTable(self, menu, table):
-            '''
-            Create an entry in the Open with Menu from the table, a list of dictionaries.
-
-            Each dictionary d has the following keys:
-
-            'args':     the command-line arguments used to open the file.
-            'ext':      not used here: used by efc.open_temp_file.
-            'kind':     not used here: used by efc.open_temp_file.
             'name':     menu label.
             'shortcut': optional menu shortcut.
-            '''
-            c, g = self.c, self.g
-            if g.app.unitTesting: return
-            for d in table:
-                label = d.get('name')
-                args = d.get('args', [])
-                accel = d.get('shortcut') or ''
-                if label and args:
-                    realLabel = self.getRealMenuName(label)
-                    underline = realLabel.find("&")
-                    realLabel = realLabel.replace("&", "")
-                    callback = self.defineOpenWithMenuCallback(d)
-                    c.add_command(menu,
-                        label=realLabel,
-                        accelerator=accel,
-                        command=callback,
-                        underline=underline)
-        #@+node:ekr.20181115113707.24: *7* LeoMenu.defineOpenWithMenuCallback
-        def defineOpenWithMenuCallback(self, d):
+
+        efc.open_temp_file uses these keys:
+
+            'args':     the command-line arguments to be used to open the file.
+            'ext':      the file extension.
+            'kind':     the method used to open the file, such as subprocess.Popen.
+        '''
+        g, k = self.g, self.c.k
+        if not table: return
+        g.app.openWithTable = table # Override any previous table.
+        # Delete the previous entry.
+        parent = self.getMenu("File")
+        if not parent:
+            if not g.app.batchMode:
+                g.error('', 'createOpenWithMenuFromTable:', 'no File menu')
+            return
+        label = self.getRealMenuName("Open &With...")
+        amp_index = label.find("&")
+        label = label.replace("&", "")
+        try:
+            index = parent.index(label)
+            parent.delete(index)
+        except Exception:
+            try:
+                index = parent.index("Open With...")
+                parent.delete(index)
+            except Exception:
+                g.trace('unexpected exception')
+                g.es_exception()
+                return
+        # Create the Open With menu.
+        openWithMenu = self.createOpenWithMenu(parent, label, index, amp_index)
+        if not openWithMenu:
+            g.trace('openWithMenu returns None')
+            return
+        self.setMenu("Open With...", openWithMenu)
+        # Create the menu items in of the Open With menu.
+        self.createOpenWithMenuItemsFromTable(openWithMenu, table)
+        for d in table:
+            k.bindOpenWith(d)
+    #@+node:ekr.20181115113707.23: *6* LeoMenu.createOpenWithMenuItemsFromTable & callback
+    def createOpenWithMenuItemsFromTable(self, menu, table):
+        '''
+        Create an entry in the Open with Menu from the table, a list of dictionaries.
+
+        Each dictionary d has the following keys:
+
+        'args':     the command-line arguments used to open the file.
+        'ext':      not used here: used by efc.open_temp_file.
+        'kind':     not used here: used by efc.open_temp_file.
+        'name':     menu label.
+        'shortcut': optional menu shortcut.
+        '''
+        c, g = self.c, self.g
+        if g.app.unitTesting: return
+        for d in table:
+            label = d.get('name')
+            args = d.get('args', [])
+            accel = d.get('shortcut') or ''
+            if label and args:
+                realLabel = self.getRealMenuName(label)
+                underline = realLabel.find("&")
+                realLabel = realLabel.replace("&", "")
+                callback = self.defineOpenWithMenuCallback(d)
+                c.add_command(menu,
+                    label=realLabel,
+                    accelerator=accel,
+                    command=callback,
+                    underline=underline)
+    #@+node:ekr.20181115113707.24: *7* LeoMenu.defineOpenWithMenuCallback
+    def defineOpenWithMenuCallback(self, d):
+        # The first parameter must be event, and it must default to None.
+
+        def openWithMenuCallback(event=None, self=self, d=d):
+            return self.c.openWith(d=d)
+
+        return openWithMenuCallback
+    #@+node:ekr.20181115113707.25: *5* LeoMenu.deleteRecentFilesMenuItems
+    def deleteRecentFilesMenuItems(self, menu):
+        """Delete recent file menu entries"""
+        g = self.g
+        rf = g.app.recentFilesManager
+        # Why not just delete all the entries?
+        recentFiles = rf.getRecentFiles()
+        toDrop = len(recentFiles) + len(rf.getRecentFilesTable())
+        self.delete_range(menu, 0, toDrop)
+        for i in rf.groupedMenus:
+            menu = self.getMenu(i)
+            if menu:
+                self.destroy(menu)
+                self.destroyMenu(i)
+    #@+node:ekr.20181115113707.26: *5* LeoMenu.defineMenuCallback
+    def defineMenuCallback(self, command, name, minibufferCommand):
+        c, g = self.c, self.g
+        if minibufferCommand:
+            # Create a dummy event as a signal to doCommand.
+            event = g.app.gui.create_key_event(c)
             # The first parameter must be event, and it must default to None.
 
-            def openWithMenuCallback(event=None, self=self, d=d):
-                return self.c.openWith(d=d)
+            def minibufferMenuCallback(event=event, self=self, command=command, label=name):
+                c = self.c
+                return c.doCommand(command, label, event)
 
-            return openWithMenuCallback
-        #@+node:ekr.20181115113707.25: *5* LeoMenu.deleteRecentFilesMenuItems
-        def deleteRecentFilesMenuItems(self, menu):
-            """Delete recent file menu entries"""
-            g = self.g
-            rf = g.app.recentFilesManager
-            # Why not just delete all the entries?
-            recentFiles = rf.getRecentFiles()
-            toDrop = len(recentFiles) + len(rf.getRecentFilesTable())
-            self.delete_range(menu, 0, toDrop)
-            for i in rf.groupedMenus:
-                menu = self.getMenu(i)
-                if menu:
-                    self.destroy(menu)
-                    self.destroyMenu(i)
-        #@+node:ekr.20181115113707.26: *5* LeoMenu.defineMenuCallback
-        def defineMenuCallback(self, command, name, minibufferCommand):
-            c, g = self.c, self.g
-            if minibufferCommand:
-                # Create a dummy event as a signal to doCommand.
-                event = g.app.gui.create_key_event(c)
-                # The first parameter must be event, and it must default to None.
+            return minibufferMenuCallback
+        else:
+            # The first parameter must be event, and it must default to None.
 
-                def minibufferMenuCallback(event=event, self=self, command=command, label=name):
-                    c = self.c
-                    return c.doCommand(command, label, event)
+            def legacyMenuCallback(event=None, self=self, command=command, label=name):
+                c = self.c # 2012/03/04.
+                c.check_event(event)
+                return c.doCommand(command, label)
 
-                return minibufferMenuCallback
+            return legacyMenuCallback
+    #@+node:ekr.20181115113707.27: *5* LeoMenu.deleteMenu
+    def deleteMenu(self, menuName):
+        g = self.g
+        try:
+            menu = self.getMenu(menuName)
+            if menu:
+                self.destroy(menu)
+                self.destroyMenu(menuName)
             else:
-                # The first parameter must be event, and it must default to None.
+                g.es("can't delete menu:", menuName)
+        except Exception:
+            g.es("exception deleting", menuName, "menu")
+            g.es_exception()
+    #@+node:ekr.20181115113707.28: *5* LeoMenu.deleteMenuItem
+    def deleteMenuItem(self, itemName, menuName="top"):
+        """Delete itemName from the menu whose name is menuName."""
+        g = self.g
+        try:
+            menu = self.getMenu(menuName)
+            if menu:
+                realItemName = self.getRealMenuName(itemName)
+                self.delete(menu, realItemName)
+            else:
+                g.es("menu not found:", menuName)
+        except Exception:
+            g.es("exception deleting", itemName, "from", menuName, "menu")
+            g.es_exception()
+    #@+node:ekr.20181115113707.29: *5* LeoMenu.get/setRealMenuName & setRealMenuNamesFromTable
+    # Returns the translation of a menu name or an item name.
 
-                def legacyMenuCallback(event=None, self=self, command=command, label=name):
-                    c = self.c # 2012/03/04.
-                    c.check_event(event)
-                    return c.doCommand(command, label)
+    def getRealMenuName(self, menuName):
+        g = self.g
+        cmn = self.canonicalizeTranslatedMenuName(menuName)
+        return g.app.realMenuNameDict.get(cmn, menuName)
 
-                return legacyMenuCallback
-        #@+node:ekr.20181115113707.27: *5* LeoMenu.deleteMenu
-        def deleteMenu(self, menuName):
-            g = self.g
-            try:
-                menu = self.getMenu(menuName)
-                if menu:
-                    self.destroy(menu)
-                    self.destroyMenu(menuName)
-                else:
-                    g.es("can't delete menu:", menuName)
-            except Exception:
-                g.es("exception deleting", menuName, "menu")
-                g.es_exception()
-        #@+node:ekr.20181115113707.28: *5* LeoMenu.deleteMenuItem
-        def deleteMenuItem(self, itemName, menuName="top"):
-            """Delete itemName from the menu whose name is menuName."""
-            g = self.g
-            try:
-                menu = self.getMenu(menuName)
-                if menu:
-                    realItemName = self.getRealMenuName(itemName)
-                    self.delete(menu, realItemName)
-                else:
-                    g.es("menu not found:", menuName)
-            except Exception:
-                g.es("exception deleting", itemName, "from", menuName, "menu")
-                g.es_exception()
-        #@+node:ekr.20181115113707.29: *5* LeoMenu.get/setRealMenuName & setRealMenuNamesFromTable
-        # Returns the translation of a menu name or an item name.
+    def setRealMenuName(self, untrans, trans):
+        g = self.g
+        cmn = self.canonicalizeTranslatedMenuName(untrans)
+        g.app.realMenuNameDict[cmn] = trans
 
-        def getRealMenuName(self, menuName):
-            g = self.g
-            cmn = self.canonicalizeTranslatedMenuName(menuName)
-            return g.app.realMenuNameDict.get(cmn, menuName)
+    def setRealMenuNamesFromTable(self, table):
+        g = self.g
+        try:
+            for untrans, trans in table:
+                self.setRealMenuName(untrans, trans)
+        except Exception:
+            g.es("exception in", "setRealMenuNamesFromTable")
+            g.es_exception()
+    #@+node:ekr.20181115113707.30: *5* LeoMenu.getMenu, setMenu, destroyMenu
+    def getMenu(self, menuName):
+        cmn = self.canonicalizeMenuName(menuName)
+        return self.menus.get(cmn)
 
-        def setRealMenuName(self, untrans, trans):
-            g = self.g
-            cmn = self.canonicalizeTranslatedMenuName(untrans)
-            g.app.realMenuNameDict[cmn] = trans
+    def setMenu(self, menuName, menu):
+        cmn = self.canonicalizeMenuName(menuName)
+        self.menus[cmn] = menu
 
-        def setRealMenuNamesFromTable(self, table):
-            g = self.g
-            try:
-                for untrans, trans in table:
-                    self.setRealMenuName(untrans, trans)
-            except Exception:
-                g.es("exception in", "setRealMenuNamesFromTable")
-                g.es_exception()
-        #@+node:ekr.20181115113707.30: *5* LeoMenu.getMenu, setMenu, destroyMenu
-        def getMenu(self, menuName):
-            cmn = self.canonicalizeMenuName(menuName)
-            return self.menus.get(cmn)
-
-        def setMenu(self, menuName, menu):
-            cmn = self.canonicalizeMenuName(menuName)
-            self.menus[cmn] = menu
-
-        def destroyMenu(self, menuName):
-            cmn = self.canonicalizeMenuName(menuName)
-            del self.menus[cmn]
-        #@-others
+    def destroyMenu(self, menuName):
+        cmn = self.canonicalizeMenuName(menuName)
+        del self.menus[cmn]
     #@+node:ekr.20181115113707.31: *4* LeoMenu.Must be overridden in menu subclasses
     #@+node:ekr.20181115113707.32: *5* LeoMenu.9 Routines with Tk spellings
     def add_cascade(self, parent, label, menu, underline):
@@ -1600,6 +2128,7 @@ class LeoBrowserTree(flx.PyComponent):
         self.editWidgetsDict = {}
             # Keys are tnodes, values are StringTextWidgets.
         self.redrawCount = 0
+        self.revertHeadline = None
     #
     ### From LeoTree
             # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
@@ -1609,7 +2138,6 @@ class LeoBrowserTree(flx.PyComponent):
         # self.generation = 0
             # Leo 5.6: low-level vnode methods increment
             # this count whenever the tree changes.
-        # self.revertHeadline = None
         # self.use_chapters = False
     #
     ### From NullTree
@@ -1619,155 +2147,10 @@ class LeoBrowserTree(flx.PyComponent):
         # self.updateCount = 0
         
     #@+others
-    #@+node:ekr.20181115111153.1: *4* LeoTree.Must be defined in base class
-    ### To do: delegate all these to Leo's core???
-    if 0:
-        #@+others
-        #@+node:ekr.20181115111153.2: *5* LeoTree.endEditLabel
-        def endEditLabel(self):
-            '''End editing of a headline and update p.h.'''
-            c = self.c; k = c.k; p = c.p
-            # Important: this will redraw if necessary.
-            self.onHeadChanged(p)
-            if 0:
-                # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
-                k.setDefaultInputState()
-                k.showStateAndMode()
-            if 0:
-                # This interferes with the find command and interferes with focus generally!
-                c.bodyWantsFocus()
-        #@+node:ekr.20181115111153.3: *5* LeoTree.getEditTextDict
-        def getEditTextDict(self, v):
-            # New in 4.2: the default is an empty list.
-            return self.edit_text_dict.get(v, [])
-        #@+node:ekr.20181115111153.4: *5* LeoTree.injectCallbacks
-        def injectCallbacks(self):
-            c, g = self.c, self.g
-            #@+<< define callbacks to be injected in the position class >>
-            #@+node:ekr.20181115111153.5: *6* << define callbacks to be injected in the position class >>
-            # **Important:: These VNode methods are entitled to know about gui-level code.
-            #@+others
-            #@+node:ekr.20181115111153.6: *7* OnHyperLinkControlClick
-            def OnHyperLinkControlClick(self, event=None, c=c):
-                '''Callback injected into position class.'''
-                p = self
-                if c and c.exists:
-                    try:
-                        if not g.doHook("hypercclick1", c=c, p=p, event=event):
-                            c.selectPosition(p)
-                            c.redraw()
-                            c.frame.body.wrapper.setInsertPoint(0)
-                        g.doHook("hypercclick2", c=c, p=p, event=event)
-                    except Exception:
-                        g.es_event_exception("hypercclick")
-            #@+node:ekr.20181115111153.7: *7* OnHyperLinkEnter
-            def OnHyperLinkEnter(self, event=None, c=c):
-                '''Callback injected into position class.'''
-                try:
-                    p = self
-                    g.doHook("hyperenter1", c=c, p=p, event=event)
-                    g.doHook("hyperenter2", c=c, p=p, event=event)
-                except Exception:
-                    g.es_event_exception("hyperenter")
-            #@+node:ekr.20181115111153.8: *7* OnHyperLinkLeave
-            def OnHyperLinkLeave(self, event=None, c=c):
-                '''Callback injected into position class.'''
-                try:
-                    p = self
-                    g.doHook("hyperleave1", c=c, p=p, event=event)
-                    g.doHook("hyperleave2", c=c, p=p, event=event)
-                except Exception:
-                    g.es_event_exception("hyperleave")
-            #@-others
-            #@-<< define callbacks to be injected in the position class >>
-            for f in (OnHyperLinkControlClick, OnHyperLinkEnter, OnHyperLinkLeave):
-                g.funcToMethod(f, leoNodes.position)
-        #@+node:ekr.20181115111153.9: *5* LeoTree.onHeadlineKey
-        def onHeadlineKey(self, event):
-            '''Handle a key event in a headline.'''
-            w = event.widget if event else None
-            ch = event.char if event else ''
-            # This test prevents flashing in the headline when the control key is held down.
-            if ch:
-                self.updateHead(event, w)
-        #@+node:ekr.20181115111153.10: *5* LeoTree.OnIconCtrlClick (@url)
-        def OnIconCtrlClick(self, p):
-            self.g.openUrl(p)
-        #@+node:ekr.20181115111153.11: *5* LeoTree.OnIconDoubleClick (do nothing)
-        def OnIconDoubleClick(self, p):
-            pass
-        #@+node:ekr.20181115111153.12: *5* LeoTree.updateHead
-        def updateHead(self, event, w):
-            '''Update a headline from an event.
-
-            The headline officially changes only when editing ends.
-            '''
-            k = self.c.k
-            ch = event.char if event else ''
-            i, j = w.getSelectionRange()
-            ins = w.getInsertPoint()
-            if i != j:
-                ins = i
-            if ch in ('\b', 'BackSpace'):
-                if i != j:
-                    w.delete(i, j)
-                    # Bug fix: 2018/04/19.
-                    w.setSelectionRange(i, i, insert=i)
-                elif i > 0:
-                    i -= 1
-                    w.delete(i)
-                    w.setSelectionRange(i, i, insert=i)
-                else:
-                    w.setSelectionRange(0, 0, insert=0)
-            elif ch and ch not in ('\n', '\r'):
-                if i != j:
-                    w.delete(i, j)
-                elif k.unboundKeyAction == 'overwrite':
-                    w.delete(i, i + 1)
-                w.insert(ins, ch)
-                w.setSelectionRange(ins + 1, ins + 1, insert=ins + 1)
-            s = w.getAllText()
-            if s.endswith('\n'):
-                s = s[: -1]
-            # 2011/11/14: Not used at present.
-                # w.setWidth(self.headWidth(s=s))
-            if ch in ('\n', '\r'):
-                self.endEditLabel() # Now calls self.onHeadChanged.
-        #@-others
     #@+node:ekr.20181115111037.1: *4* bt.oops
     def oops(self):
         g = self.g
         print("LeoTree oops:", g.callers(4), "should be overridden in subclass")
-    #@+node:ekr.20181115092337.61: *4* bt.drawIcon
-    def drawIcon(self, p):
-        pass
-        ### self.message('draw-icon', gnx=p.gnx)
-    #@+node:ekr.20181115092337.62: *4* bt.edit_widget
-    def edit_widget(self, p):
-        ### self.message('edit-widget', gnx=p.gnx)
-        d = self.editWidgetsDict
-        if not p or not p.v:
-            return None
-        w = d.get(p.v)
-        if not w:
-            d[p.v] = w = StringTextWrapper(
-                c=self.c,
-                name='head-%d' % (1 + len(list(d.keys()))))
-            w.setAllText(p.h)
-        return w
-    #@+node:ekr.20181115092337.63: *4* bt.editLabel
-    def editLabel(self, p, selectAll=False, selection=None):
-        '''Start editing p's headline.'''
-        ### self.message('edit-label', gnx=p.gnx)
-        self.endEditLabel()
-        if p:
-            self.revertHeadline = p.h
-                # New in 4.4b2: helps undo.
-            wrapper = StringTextWrapper(c=self.c, g=self.g, name='head-wrapper')
-            e = None
-            return e, wrapper
-        else:
-            return None, None
     #@+node:ekr.20181115111104.1: *4* bt.onHeadChanged (Used by the leoBridge module)
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used by the leoBridge module.
@@ -1833,34 +2216,6 @@ class LeoBrowserTree(flx.PyComponent):
                 # keys are vnodes, values are StringTextWidgets.
                 w = d.get(key)
                 print('w', w, 'v.h:', key.headString, 's:', repr(w.s))
-    #@+node:ekr.20181115092337.64: *4* bt.redraw (to do)
-    def redraw(self, p=None):
-        ### self.message('redraw-tree')
-        self.redrawCount += 1
-        return p
-            # Support for #503: Use string/null gui for unit tests
-            
-    redraw_now = redraw
-
-    def redraw_after_contract(self, p):
-        self.redraw()
-
-    def redraw_after_expand(self, p):
-        self.redraw()
-
-    def redraw_after_head_changed(self):
-        self.redraw()
-
-    def redraw_after_icons_changed(self):
-        self.redraw()
-
-    def redraw_after_select(self, p=None):
-        self.redraw()
-
-    #@+node:ekr.20181115092337.65: *4* bt.scrollTo
-    def scrollTo(self, p):
-        pass
-        ### self.message('scroll-tree', gnx=p.gnx)
     #@+node:ekr.20181115092337.66: *4* bt.setHeadline
     def setHeadline(self, p, s):
         '''
@@ -1878,14 +2233,319 @@ class LeoBrowserTree(flx.PyComponent):
             self.revertHeadline = s
         else:
             print('-' * 20, 'oops')
+    #@+node:ekr.20181115175557.1: *4* From LeoTree
+    #@+node:ekr.20181115111153.1: *5* LeoTree.Must be defined in base class
+    #@+node:ekr.20181115111153.2: *6* LeoTree.endEditLabel
+    def endEditLabel(self):
+        '''End editing of a headline and update p.h.'''
+        c = self.c; k = c.k; p = c.p
+        # Important: this will redraw if necessary.
+        self.onHeadChanged(p)
+        if 0:
+            # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
+            k.setDefaultInputState()
+            k.showStateAndMode()
+        if 0:
+            # This interferes with the find command and interferes with focus generally!
+            c.bodyWantsFocus()
+    #@+node:ekr.20181115111153.3: *6* LeoTree.getEditTextDict
+    def getEditTextDict(self, v):
+        # New in 4.2: the default is an empty list.
+        return self.edit_text_dict.get(v, [])
+    #@+node:ekr.20181115111153.4: *6* LeoTree.injectCallbacks
+    def injectCallbacks(self):
+        c, g = self.c, self.g
+        #@+<< define callbacks to be injected in the position class >>
+        #@+node:ekr.20181115111153.5: *7* << define callbacks to be injected in the position class >>
+        # **Important:: These VNode methods are entitled to know about gui-level code.
+        #@+others
+        #@+node:ekr.20181115111153.6: *8* OnHyperLinkControlClick
+        def OnHyperLinkControlClick(self, event=None, c=c):
+            '''Callback injected into position class.'''
+            p = self
+            if c and c.exists:
+                try:
+                    if not g.doHook("hypercclick1", c=c, p=p, event=event):
+                        c.selectPosition(p)
+                        c.redraw()
+                        c.frame.body.wrapper.setInsertPoint(0)
+                    g.doHook("hypercclick2", c=c, p=p, event=event)
+                except Exception:
+                    g.es_event_exception("hypercclick")
+        #@+node:ekr.20181115111153.7: *8* OnHyperLinkEnter
+        def OnHyperLinkEnter(self, event=None, c=c):
+            '''Callback injected into position class.'''
+            try:
+                p = self
+                g.doHook("hyperenter1", c=c, p=p, event=event)
+                g.doHook("hyperenter2", c=c, p=p, event=event)
+            except Exception:
+                g.es_event_exception("hyperenter")
+        #@+node:ekr.20181115111153.8: *8* OnHyperLinkLeave
+        def OnHyperLinkLeave(self, event=None, c=c):
+            '''Callback injected into position class.'''
+            try:
+                p = self
+                g.doHook("hyperleave1", c=c, p=p, event=event)
+                g.doHook("hyperleave2", c=c, p=p, event=event)
+            except Exception:
+                g.es_event_exception("hyperleave")
+        #@-others
+        #@-<< define callbacks to be injected in the position class >>
+        for f in (OnHyperLinkControlClick, OnHyperLinkEnter, OnHyperLinkLeave):
+            g.funcToMethod(f, leoNodes.position)
+    #@+node:ekr.20181115111153.9: *6* LeoTree.onHeadlineKey
+    def onHeadlineKey(self, event):
+        '''Handle a key event in a headline.'''
+        w = event.widget if event else None
+        ch = event.char if event else ''
+        # This test prevents flashing in the headline when the control key is held down.
+        if ch:
+            self.updateHead(event, w)
+    #@+node:ekr.20181115111153.10: *6* LeoTree.OnIconCtrlClick (@url)
+    def OnIconCtrlClick(self, p):
+        self.g.openUrl(p)
+    #@+node:ekr.20181115111153.11: *6* LeoTree.OnIconDoubleClick (do nothing)
+    def OnIconDoubleClick(self, p):
+        pass
+    #@+node:ekr.20181115111153.12: *6* LeoTree.updateHead
+    def updateHead(self, event, w):
+        '''Update a headline from an event.
+
+        The headline officially changes only when editing ends.
+        '''
+        k = self.c.k
+        ch = event.char if event else ''
+        i, j = w.getSelectionRange()
+        ins = w.getInsertPoint()
+        if i != j:
+            ins = i
+        if ch in ('\b', 'BackSpace'):
+            if i != j:
+                w.delete(i, j)
+                # Bug fix: 2018/04/19.
+                w.setSelectionRange(i, i, insert=i)
+            elif i > 0:
+                i -= 1
+                w.delete(i)
+                w.setSelectionRange(i, i, insert=i)
+            else:
+                w.setSelectionRange(0, 0, insert=0)
+        elif ch and ch not in ('\n', '\r'):
+            if i != j:
+                w.delete(i, j)
+            elif k.unboundKeyAction == 'overwrite':
+                w.delete(i, i + 1)
+            w.insert(ins, ch)
+            w.setSelectionRange(ins + 1, ins + 1, insert=ins + 1)
+        s = w.getAllText()
+        if s.endswith('\n'):
+            s = s[: -1]
+        # 2011/11/14: Not used at present.
+            # w.setWidth(self.headWidth(s=s))
+        if ch in ('\n', '\r'):
+            self.endEditLabel() # Now calls self.onHeadChanged.
+    #@+node:ekr.20181115175557.3: *5* LeoTree.May be defined in subclasses
+    # These are new in Leo 4.6.
+
+    def initAfterLoad(self):
+        '''Do late initialization. Called in g.openWithFileName after a successful load.'''
+
+    # Hints for optimization. The proper default is c.redraw()
+
+    def redraw_after_contract(self, p):
+        self.c.redraw()
+
+    def redraw_after_expand(self, p):
+        self.c.redraw()
+
+    def redraw_after_head_changed(self):
+        self.c.redraw()
+
+    def redraw_after_icons_changed(self):
+        self.c.redraw()
+
+    def redraw_after_select(self, p=None):
+        self.c.redraw()
+    #@+node:ekr.20181115175557.18: *5* LeoTree.Must be defined in subclasses
+    # Drawing & scrolling.
+    def drawIcon(self, p):
+        self.oops()
+
+    def redraw(self, p=None):
+        self.oops()
+    redraw_now = redraw
+
+    def scrollTo(self, p): self.oops()
+
+    # Headlines.
+    def editLabel(self, p, selectAll=False, selection=None):
+        self.oops()
+
+    def edit_widget(self, p):
+        self.oops()
+    #@+node:ekr.20181115175557.19: *5* LeoTree.select & helpers
+    tree_select_lockout = False
+
+    def select(self, p):
+        '''
+        Select a node.
+        Never redraws outline, but may change coloring of individual headlines.
+        The scroll argument is used by the gui to suppress scrolling while dragging.
+        '''
+        g = self.c
+        if g.app.killed or self.tree_select_lockout: # Essential.
+            return None
+        try:
+            c = self.c
+            self.tree_select_lockout = True
+            self.prev_v = c.p.v
+            self.selectHelper(p)
+        finally:
+            self.tree_select_lockout = False
+            if c.enableRedrawFlag:
+                p = c.p
+                # Don't redraw during unit testing: an important speedup.
+                if c.expandAllAncestors(p) and not g.unitTesting:
+                    # This can happen when doing goto-next-clone.
+                    c.redraw_later()
+                        # This *does* happen sometimes.
+                else:
+                    c.outerUpdate() # Bring the tree up to date.
+                    if hasattr(self, 'setItemForCurrentPosition'):
+                        # pylint: disable=no-member
+                        self.setItemForCurrentPosition()
+            else:
+                c.requestLaterRedraw = True
+    #@+node:ekr.20181115175557.20: *6* selectHelper (LeoTree) & helpers
+    def selectHelper(self, p):
+        '''
+        A helper function for leoTree.select.
+        Do **not** "optimize" this by returning if p==c.p!
+        '''
+        g = self.c
+        if not p:
+            # This is not an error! We may be changing roots.
+            # Do *not* test c.positionExists(p) here!
+            return
+        c = self.c
+        if not c.frame.body.wrapper:
+            return # Defensive.
+        assert p.v.context == c
+            # Selecting a foreign position will not be pretty.
+        old_p = c.p
+        call_event_handlers = p != old_p
+        # Order is important...
+        self.unselect_helper(old_p, p)
+        self.select_new_node(old_p, p)
+        self.change_current_position(old_p, p)
+        self.scroll_cursor(p)
+        self.set_status_line(p)
+        if call_event_handlers:
+            g.doHook("select2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+            g.doHook("select3", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+    #@+node:ekr.20181115175557.21: *7* LeoTree.is_qt_body (not used)
+    if 0:
+
+        def is_qt_body(self):
+            '''Return True if the body widget is a QTextEdit.'''
+            c = self.c
+            import leo.plugins.qt_text as qt_text
+            w = c.frame.body.wrapper.widget
+            val = isinstance(w, qt_text.LeoQTextBrowser)
+                # c.frame.body.wrapper.widget is a LeoQTextBrowser.
+                # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
+            return val
+    #@+node:ekr.20181115175557.22: *7* 1. LeoTree.unselect_helper & helper
+    def unselect_helper(self, old_p, p):
+        '''Unselect the old node, calling the unselect hooks.'''
+        c, g = self.c, self.g
+        call_event_handlers = p != old_p
+        if call_event_handlers:
+            unselect = not g.doHook("unselect1", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+        else:
+            unselect = True
+        if unselect and old_p != p:
+            # Actually unselect the old node.
+            self.endEditLabel()
+        if call_event_handlers:
+            g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+    #@+node:ekr.20181115175557.23: *7* 2. LeoTree.select_new_node & helper
+    def select_new_node(self, old_p, p):
+        '''Select the new node, part 1.'''
+        c, g = self.c, self.g
+        call_event_handlers = p != old_p
+        if call_event_handlers:
+            select = not g.doHook("select1",
+                c=c, new_p=p, old_p=old_p,
+                new_v=p, old_v=old_p)
+        else:
+            select = True
+        if select:
+            self.revertHeadline = p.h
+            # Not that expensive
+            c.frame.setWrap(p)
+            self.set_body_text_after_select(p, old_p)
+            c.nodeHistory.update(p)
+    #@+node:ekr.20181115175557.24: *8* LeoTree.set_body_text_after_select
+    def set_body_text_after_select(self, p, old_p, force=False):
+        '''Set the text after selecting a node.'''
+        c = self.c
+        w = c.frame.body.wrapper
+        s = p.v.b # Guaranteed to be unicode.
+        # Part 1: get the old text.
+        old_s = w.getAllText()
+        if not force and p and p == old_p and s == old_s:
+            return
+        # Part 2: set the new text. This forces a recolor.
+        c.setCurrentPosition(p)
+            # Important: do this *before* setting text,
+            # so that the colorizer will have the proper c.p.
+        w.setAllText(s)
+        # This is now done after c.p has been changed.
+            # p.restoreCursorAndScroll()
+    #@+node:ekr.20181115175557.25: *7* 3. LeoTree.change_current_position
+    def change_current_position(self, old_p, p):
+        '''Select the new node, part 2.'''
+        c = self.c
+        # c.setCurrentPosition(p)
+            # This is now done in set_body_text_after_select.
+        c.frame.scanForTabWidth(p)
+            #GS I believe this should also get into the select1 hook
+        use_chapters = c.config.getBool('use-chapters')
+        if use_chapters:
+            cc = c.chapterController
+            theChapter = cc and cc.getSelectedChapter()
+            if theChapter:
+                theChapter.p = p.copy()
+        # Do not call treeFocusHelper here!
+            # c.treeFocusHelper()
+        c.undoer.onSelect(old_p, p)
+    #@+node:ekr.20181115175557.26: *7* 4. LeoTree.scroll_cursor
+    def scroll_cursor(self, p):
+        '''Scroll the cursor.'''
+        p.restoreCursorAndScroll()
+            # Was in setBodyTextAfterSelect
+    #@+node:ekr.20181115175557.27: *7* 5. LeoTree.set_status_line
+    def set_status_line(self, p):
+        '''Update the status line.'''
+        c = self.c
+        c.frame.body.assignPositionToEditor(p)
+            # New in Leo 4.4.1.
+        c.frame.updateStatusLine()
+            # New in Leo 4.4.1.
+        c.frame.clearStatusLine()
+        verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
+        if p and p.v:
+            c.frame.putStatusLine(p.get_UNL(with_proto=verbose, with_index=verbose))
     #@-others
-#@+node:ekr.20181115092337.33: *3* class StringTextWrapper
-class StringTextWrapper(flx.PyComponent):
+#@+node:ekr.20181115092337.33: *3* class StringTextWrapper (object)
+class StringTextWrapper(object):
     '''
     A class that represents text as a Python string.
     This class forwards messages to the browser.
     '''
-    def init(self, c, g, name):
+    def __init__(self, c, g, name):
         '''Ctor for the StringTextWrapper class.'''
         # pylint: disable=arguments-differ
         self.c = c
@@ -1901,7 +2561,6 @@ class StringTextWrapper(flx.PyComponent):
         return '<StringTextWrapper: %s>' % (self.name)
     
     def getName(self):
-        '''StringTextWrapper.'''
         return self.name # Essential.
 
     #@+others
