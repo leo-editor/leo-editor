@@ -28,7 +28,7 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
-debug = False
+debug = True
 debug_tree = True
 #@+others
 #@+node:ekr.20181103151350.1: **  init
@@ -635,26 +635,18 @@ class LeoBrowserFrame(flx.PyComponent):
         #
         # Other ivars
         self.cursorStay = True
+        self.componentsDict = {} # Keys are names, values are componentClass instances.
+        self.es_newlines = 0 # newline count for this log stream
+        self.openDirectory = ""
+        self.saved = False # True if ever saved
+        self.splitVerticalFlag = True
+            # Set by initialRatios later.
+        self.startupWindow = False # True if initially opened window
+        self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0
         self.w, self.h, self.x, self.y = 600, 500, 40, 40
             # Default window position.
-        #
-        ### From LeoFrame
-            # # Objects attached to this frame.
-            # self.useMiniBufferWidget = False
-            # #
-            # # Gui-independent data
-            # #
-            # 
-            # self.componentsDict = {} # Keys are names, values are componentClass instances.
-            # self.es_newlines = 0 # newline count for this log stream
-            # self.openDirectory = ""
-            # self.saved = False # True if ever saved
-            # self.splitVerticalFlag = True
-                # # Set by initialRatios later.
-            # self.startupWindow = False # True if initially opened window
-            # self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
-    
+
     #@+others
     #@+node:ekr.20181115092337.8: *4* bf.finishCreate
     def finishCreate(self):
@@ -2394,7 +2386,7 @@ class LeoBrowserTree(flx.PyComponent):
         Never redraws outline, but may change coloring of individual headlines.
         The scroll argument is used by the gui to suppress scrolling while dragging.
         '''
-        g = self.c
+        g = self.g
         if g.app.killed or self.tree_select_lockout: # Essential.
             return None
         try:
@@ -2424,7 +2416,7 @@ class LeoBrowserTree(flx.PyComponent):
         A helper function for leoTree.select.
         Do **not** "optimize" this by returning if p==c.p!
         '''
-        g = self.c
+        g = self.g
         if not p:
             # This is not an error! We may be changing roots.
             # Do *not* test c.positionExists(p) here!
