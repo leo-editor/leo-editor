@@ -82,6 +82,7 @@ class LeoApp(flx.PyComponent):
         if command.startswith('echo'):
             print('app.do_command: %s' % command)
             self.gui.echo()
+            self.gui.tree_echo()
         elif command == 'redraw':
             d = self.make_redraw_dict()
             if 1:
@@ -630,6 +631,9 @@ class LeoBrowserGui(leoGui.NullGui):
         
     def echo(self):
         self.root.echo('From LeoBrowser Gui')
+        
+    def tree_echo(self):
+        self.root.main_window.tree.echo('From LeoBrowser Gui')
 #@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
 class LeoBrowserIconBar(flx.PyComponent):
 
@@ -2236,6 +2240,10 @@ class LeoFlexxTree(flx.Widget):
         # Clear the internal data structures.
         self.leo_items = {}
         self.leo_populated_dict = {}
+    #@+node:ekr.20181116054402.1: *5* tree.action: echo
+    @flx.action
+    def echo (self, message=None):
+        print('===== tree echo =====', message or '<Empty Message>')
     #@+node:ekr.20181110175222.1: *5* tree.action: receive_children
     @flx.action
     def receive_children(self, d):
