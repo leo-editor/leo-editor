@@ -350,7 +350,8 @@ class LeoApp(flx.PyComponent):
             flx.logger.error('Error opening leoBridge')
             return
         g = bridge.globals()
-        path = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'LeoPyRef.leo')
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unitTest.leo')
+            ### 'core', 'LeoPyRef.leo')
         if not g.os_path_exists(path):
             flx.logger.error('open_bridge: does not exist: %r' % path)
             return
