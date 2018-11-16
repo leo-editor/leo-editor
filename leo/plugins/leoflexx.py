@@ -738,11 +738,32 @@ class LeoFlexxTree(flx.Widget):
         '''
         self.clear_tree()
         self.redraw_from_dict(redraw_dict)
-    #@+node:ekr.20181116083916.1: *5* tree.action: select_ap (To do)
+    #@+node:ekr.20181116083916.1: *5* tree.action: select_ap
     @flx.action
     def select_ap(self, ap):
-        print('tree.select_ap')
-        self.root.dump_ap(ap)
+        #
+        # Unselect.
+        if self.leo_selected_ap:
+            old_key = self.ap_to_key(self.leo_selected_ap)
+            old_item = self.leo_items.get(old_key)
+            if old_item:
+                # print('tree.select_ap: un-select:')
+                old_item.set_selected(False)
+            else:
+                print('===== tree.select_ap: error: no item to unselect')
+        else:
+            print('tree.select_ap: no previously selected item.')
+        #
+        # Select.
+        new_key = self.ap_to_key(ap)
+        new_item = self.leo_items.get(new_key)
+        if new_item:
+            # print('tree.select_ap: select:')
+            new_item.set_selected(True)
+            self.leo_selected_ap = ap
+        else:
+            print('===== tree.select_ap: error: no item for ap:')
+            self.leo_selected_ap = None
     #@+node:ekr.20181114072307.1: *4* tree.ap_to_key
     def ap_to_key(self, ap):
         '''Produce a key for the given ap.'''
@@ -869,9 +890,7 @@ class Root(flx.PyComponent):
     '''
     This class allows *plain* python classes to access *component* classes.
     '''
-        
     def __getattr__ (self, attr):
-        # print('===== Root.__getattr__', repr(self.root), attr)
         return getattr(self.root, attr)
 #@-others
 if __name__ == '__main__':
