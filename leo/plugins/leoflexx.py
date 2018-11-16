@@ -397,8 +397,15 @@ class LeoApp(flx.PyComponent):
     def run_all_unit_tests (self):
         '''Run all unit tests from the bridge.'''
         print('===== app.run_all_unit_tests: Start')
-        self.c.debugCommands.runAllUnitTestsLocally()
-        print('===== app.run_all_unit_tests: Done')
+        c = self.c
+        h = 'Active Unit Tests'
+        p = g.findTopLevelNode(c, h, exact=True)
+        if p:
+            self.gui.frame.tree.select(p)
+            c.debugCommands.runSelectedUnitTestsLocally()
+            print('===== app.run_all_unit_tests: Done')
+        else:
+            print('do_command: select: not found: %s' % h)
     #@-others
 #@+node:ekr.20181115071559.1: ** Python wrappers
 #@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
@@ -730,7 +737,7 @@ class LeoFlexxTree(flx.Widget):
         '''
         self.clear_tree()
         self.redraw_from_dict(redraw_dict)
-    #@+node:ekr.20181116083916.1: *5* tree.action: select_ap
+    #@+node:ekr.20181116083916.1: *5* tree.action: select_ap (To do)
     @flx.action
     def select_ap(self, ap):
         print('tree.select_ap')
