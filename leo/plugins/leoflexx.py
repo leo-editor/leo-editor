@@ -10,8 +10,9 @@ A Stand-alone prototype for Leo using flexx.
 # pylint: disable=logging-not-lazy
 #@+<< leoflexx imports >>
 #@+node:ekr.20181113041314.1: ** << leoflexx imports >>
-# import leo.core.leoGlobals as g
+import leo.core.leoGlobals as g
 import leo.core.leoBridge as leoBridge
+import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
 import leo.core.leoNodes as leoNodes
 from flexx import flx
@@ -42,7 +43,7 @@ def suppress_unwanted_log_messages():
     Suppress the "Automatically scrolling cursor into view" messages by
     *allowing* only important messages.
     '''
-    allowed = r'(Critical|Error|Leo|Session|Starting|Stopping|Warning)'
+    allowed = r'(Traceback|Critical|Error|Leo|Session|Starting|Stopping|Warning)'
     pattern = re.compile(allowed, re.IGNORECASE)
     flx.set_log_level('INFO', pattern)
 #@+node:ekr.20181107052522.1: ** class LeoApp(PyComponent)
@@ -77,8 +78,8 @@ class LeoApp(flx.PyComponent):
     def do_command(self, command):
 
         w = self.main_window
-        if command == 'echo':
-            print('app.do_command: echo')
+        if command.startswith('echo'):
+            print('app.do_command: %s' % command)
         elif command == 'redraw':
             d = self.make_redraw_dict()
             if 1:
@@ -597,502 +598,18 @@ class LeoBrowserBody(flx.PyComponent):
         return i, j
     #@-others
 #@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
-class LeoBrowserFrame(flx.PyComponent):
+class LeoBrowserFrame(leoFrame.NullFrame):
     
-    def init(self, c, g):
+    def __init__(self, c, g, root):
         '''Ctor for the LeoBrowserFrame class.'''
         # pylint: disable=arguments-differ
+        super().__init__(c, title='<LeoBrowserFrame.title>', gui=None)
         self.c = c
         self.g = g
-        ### self.gui = gui
-        self.title = '<LeoBrowserFrame.title>'
-        #
-        #
-        c.frame = self
-        assert self.c
-        self.isNullFrame = False
-        self.ratio = self.secondary_ratio = 0.5
-        self.top = None # Always None.
-        #
-        # Create the component objects.
-        self.body = LeoBrowserBody(c, g)
-        self.iconBar = LeoBrowserIconBar(c, g)
-        self.log = LeoBrowserLog(c, g)
-        self.menu = LeoBrowserMenu(c, g)
-        self.miniBufferWidget = LeoBrowserMinibuffer(c, g)
-        self.statusLine = LeoBrowserStatusLine(c, g)
-        self.tree = LeoBrowserTree(c, g)
-        #
-        # Official component ivars.
-        self.colorPanel = None
-        self.comparePanel = None
-        self.findPanel = None
-        self.fontPanel = None
-        # self.keys = None
-        self.outerFrame = None
-        self.prefsPanel = None
-        self.wrapper = None
-        #
-        # Other ivars
-        self.cursorStay = True
-        self.componentsDict = {} # Keys are names, values are componentClass instances.
-        self.es_newlines = 0 # newline count for this log stream
-        self.openDirectory = ""
-        self.saved = False # True if ever saved
-        self.splitVerticalFlag = True
-            # Set by initialRatios later.
-        self.startupWindow = False # True if initially opened window
-        self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
-        self.tab_width = 0
-        self.w, self.h, self.x, self.y = 600, 500, 40, 40
-            # Default window position.
+        self.root = Root(root)
+        self.root.echo('LeoBrowserFrame')
 
     #@+others
-    #@+node:ekr.20181115092337.8: *4* bf.finishCreate
-    def finishCreate(self):
-        pass
-        ### self.createFirstTreeNode()
-            # Call the base LeoFrame method.
-    #@+node:ekr.20181115092337.9: *4* bf.oops
-    def oops(self):
-        g = self.c
-        g.trace("LeoBrowserFrame", g.callers(4))
-    #@+node:ekr.20181115092337.10: *4* bf.redirectors (To do: add messages)
-    def bringToFront(self):
-        pass
-    def cascade(self, event=None):
-        pass
-    def contractBodyPane(self, event=None):
-        pass
-    def contractLogPane(self, event=None):
-        pass
-    def contractOutlinePane(self, event=None):
-        pass
-    def contractPane(self, event=None):
-        pass
-    def deiconify(self):
-        pass
-    def destroySelf(self):
-        pass
-    def equalSizedPanes(self, event=None):
-        pass
-    def expandBodyPane(self, event=None):
-        pass
-    def expandLogPane(self, event=None):
-        pass
-    def expandOutlinePane(self, event=None):
-        pass
-    def expandPane(self, event=None):
-        pass
-    def fullyExpandBodyPane(self, event=None):
-        pass
-    def fullyExpandLogPane(self, event=None):
-        pass
-    def fullyExpandOutlinePane(self, event=None):
-        pass
-    def fullyExpandPane(self, event=None):
-        pass
-    def get_window_info(self):
-        return 600, 500, 20, 20
-    def hideBodyPane(self, event=None):
-        pass
-    def hideLogPane(self, event=None):
-        pass
-    def hideLogWindow(self, event=None):
-        pass
-    def hideOutlinePane(self, event=None):
-        pass
-    def hidePane(self, event=None):
-        pass
-    def leoHelp(self, event=None):
-        pass
-    def lift(self):
-        pass
-    def minimizeAll(self, event=None):
-        pass
-    def resizePanesToRatio(self, ratio, secondary_ratio):
-        pass
-    def resizeToScreen(self, event=None):
-        pass
-    def setInitialWindowGeometry(self):
-        pass
-    def setTopGeometry(self, w, h, x, y, adjustSize=True):
-        return 0, 0, 0, 0
-    def setWrap(self, flag, force=False):
-        pass
-    def toggleActivePane(self, event=None):
-        pass
-    def toggleSplitDirection(self, event=None):
-        pass
-    def update(self):
-        pass
-    #@+node:ekr.20181115115225.4: *4* LeoFrame.cmd (decorator)
-    # def cmd(name):
-        # '''Command decorator for the LeoFrame class.'''
-        # # pylint: disable=no-self-argument
-        # return g.new_cmd_decorator(name, ['c', 'frame',])
-    #@+node:ekr.20181115172556.1: *4* LeoFrame.Must be defined in base class
-    #@+node:ekr.20181115172556.2: *5* LeoFrame.initialRatios
-    def initialRatios(self):
-        c = self.c
-        s = c.config.get("initial_split_orientation", "string")
-        verticalFlag = s is None or (s != "h" and s != "horizontal")
-        if verticalFlag:
-            r = c.config.getRatio("initial-vertical-ratio")
-            if r is None or r < 0.0 or r > 1.0: r = 0.5
-            r2 = c.config.getRatio("initial-vertical-secondary-ratio")
-            if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
-        else:
-            r = c.config.getRatio("initial-horizontal-ratio")
-            if r is None or r < 0.0 or r > 1.0: r = 0.3
-            r2 = c.config.getRatio("initial-horizontal-secondary-ratio")
-            if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
-        return verticalFlag, r, r2
-    #@+node:ekr.20181115172556.3: *5* LeoFrame.longFileName & shortFileName
-    def longFileName(self):
-        return self.c.mFileName
-
-    def shortFileName(self):
-        g = self.c
-        return g.shortFileName(self.c.mFileName)
-    #@+node:ekr.20181115172556.5: *5* LeoFrame.promptForSave
-    def promptForSave(self):
-        '''
-        Prompt the user to save changes.
-        Return True if the user vetos the quit or save operation.
-        '''
-        c, g = self.c, self.g
-        theType = "quitting?" if g.app.quitting else "closing?"
-        # See if we are in quick edit/save mode.
-        root = c.rootPosition()
-        quick_save = not c.mFileName and not root.next() and root.isAtEditNode()
-        if quick_save:
-            name = g.shortFileName(root.atEditNodeName())
-        else:
-            name = c.mFileName if c.mFileName else self.title
-        answer = g.app.gui.runAskYesNoCancelDialog(c,
-            title="Confirm",
-            message='Save changes to %s before %s' % (
-                g.splitLongFileName(name), theType))
-        if answer == "cancel":
-            return True # Veto.
-        if answer == "no":
-            return False # Don't save and don't veto.
-        if not c.mFileName:
-            root = c.rootPosition()
-            if not root.next() and root.isAtEditNode():
-                # There is only a single @edit node in the outline.
-                # A hack to allow "quick edit" of non-Leo files.
-                # See https://bugs.launchpad.net/leo-editor/+bug/381527
-                # Write the @edit node if needed.
-                if root.isDirty():
-                    c.atFileCommands.writeOneAtEditNode(root,
-                        toString=False, force=True)
-                return False # Don't save and don't veto.
-            else:
-                c.mFileName = g.app.gui.runSaveFileDialog(c,
-                    initialfile='',
-                    title="Save",
-                    filetypes=[("Leo files", "*.leo")],
-                    defaultextension=".leo")
-                c.bringToFront()
-        if c.mFileName:
-            if g.app.gui.guiName() == 'curses':
-                g.pr('Saving: %s' % c.mFileName)
-            ok = c.fileCommands.save(c.mFileName)
-            return not ok # New in 4.2: Veto if the save did not succeed.
-        else:
-            return True # Veto.
-    #@+node:ekr.20181115172556.6: *5* LeoFrame.frame.scanForTabWidth
-    def scanForTabWidth(self, p):
-        '''Return the tab width in effect at p.'''
-        c = self.c
-        tab_width = c.getTabWidth(p)
-        c.frame.setTabWidth(tab_width)
-    #@+node:ekr.20181115172556.7: *5* LeoFrame.Icon area convenience methods
-    def addIconButton(self, *args, **keys):
-        if self.iconBar: return self.iconBar.add(*args, **keys)
-        else: return None
-
-    def addIconRow(self):
-        if self.iconBar: return self.iconBar.addRow()
-
-    def addIconWidget(self, w):
-        pass
-        ### if self.iconBar: return self.iconBar.addWidget(w)
-
-    def clearIconBar(self):
-        pass
-        ### if self.iconBar: self.iconBar.clear()
-
-    def createIconBar(self):
-        return None
-        ###
-            # c = self.c
-            # if not self.iconBar:
-                # self.iconBar = self.iconBarClass(c, self.outerFrame)
-            # return self.iconBar
-
-    def getIconBar(self):
-        return None
-        ###
-            # if not self.iconBar:
-                # self.iconBar = self.iconBarClass(self.c, self.outerFrame)
-            # return self.iconBar
-
-    getIconBarObject = getIconBar
-
-    def getNewIconFrame(self):
-        return None
-        ###
-            # if not self.iconBar:
-                # self.iconBar = self.iconBarClass(self.c, self.outerFrame)
-            # return self.iconBar.getNewFrame()
-
-    def hideIconBar(self):
-        pass
-        ### if self.iconBar: self.iconBar.hide()
-
-    def showIconBar(self):
-        pass
-        ### if self.iconBar: self.iconBar.show()
-    #@+node:ekr.20181115172556.8: *5* LeoFrame.Status line convenience methods
-    def createStatusLine(self):
-        pass
-        ###
-            # if not self.statusLine:
-                # self.statusLine = self.statusLineClass(self.c, self.outerFrame)
-            # return self.statusLine
-
-    def clearStatusLine(self):
-        self.statusLine.clear()
-        ###if self.statusLine: self.statusLine.clear()
-
-    def disableStatusLine(self, background=None):
-        pass
-        ### if self.statusLine: self.statusLine.disable(background)
-
-    def enableStatusLine(self, background="white"):
-        pass
-        ### if self.statusLine: self.statusLine.enable(background)
-
-    def getStatusLine(self):
-        return self.statusLine
-
-    getStatusObject = getStatusLine
-
-    def putStatusLine(self, s, bg=None, fg=None):
-        if self.statusLine: self.statusLine.put(s, bg, fg)
-
-    def setFocusStatusLine(self):
-        self.statusLine.setFocus()
-        ### if self.statusLine: self.statusLine.setFocus()
-
-    def statusLineIsEnabled(self):
-        return True
-        ###
-            # if self.statusLine: return self.statusLine.isEnabled()
-            # else: return False
-
-    def updateStatusLine(self):
-        self.statusLine.update()
-        ### if self.statusLine: self.statusLine.update()
-    #@+node:ekr.20181115172556.9: *5* LeoFrame.Cut/Copy/Paste
-    #@+node:ekr.20181115172556.10: *6* LeoFrame.copyText
-    ### @cmd('copy-text')
-    def copyText(self, event=None):
-        '''Copy the selected text from the widget to the clipboard.'''
-        # f = self
-        g = self.g
-        w = event and event.widget
-        # wname = c.widget_name(w)
-        if not w or not g.isTextWrapper(w):
-            return
-        # Set the clipboard text.
-        i, j = w.getSelectionRange()
-        if i == j:
-            ins = w.getInsertPoint()
-            i, j = g.getLine(w.getAllText(), ins)
-        # 2016/03/27: Fix a recent buglet.
-        # Don't clear the clipboard if we hit ctrl-c by mistake.
-        s = w.get(i,j)
-        if s:
-            g.app.gui.replaceClipboardWith(s)
-
-    OnCopyFromMenu = copyText
-    #@+node:ekr.20181115172556.11: *6* LeoFrame.cutText
-    ### @cmd('cut-text')
-    def cutText(self, event=None):
-        '''Invoked from the mini-buffer and from shortcuts.'''
-        c, g = self.c, self.g
-        ### f = self
-        w = event and event.widget
-        if not w or not g.isTextWrapper(w):
-            return
-        name = c.widget_name(w)
-        oldSel = w.getSelectionRange()
-        oldText = w.getAllText()
-        i, j = w.getSelectionRange()
-        # Update the widget and set the clipboard text.
-        s = w.get(i, j)
-        if i != j:
-            w.delete(i, j)
-            w.see(i) # 2016/01/19: important
-            g.app.gui.replaceClipboardWith(s)
-        else:
-            ins = w.getInsertPoint()
-            i, j = g.getLine(oldText, ins)
-            s = w.get(i,j)
-            w.delete(i,j)
-            w.see(i) # 2016/01/19: important
-            g.app.gui.replaceClipboardWith(s)
-        if name.startswith('body'):
-            c.frame.body.onBodyChanged('Cut', oldSel=oldSel, oldText=oldText)
-        elif name.startswith('head'):
-            # The headline is not officially changed yet.
-            # p.initHeadString(s)
-            s = w.getAllText()
-            # 2011/11/14: Not used at present.
-            # width = f.tree.headWidth(p=None,s=s)
-            # w.setWidth(width)
-        else: pass
-
-    OnCutFromMenu = cutText
-    #@+node:ekr.20181115172556.12: *6* LeoFrame.pasteText
-    ### @cmd('paste-text')
-    def pasteText(self, event=None, middleButton=False):
-        '''
-        Paste the clipboard into a widget.
-        If middleButton is True, support x-windows middle-mouse-button easter-egg.
-        '''
-        c, g = self.c, self.g
-        w = event and event.widget
-        wname = c.widget_name(w)
-        if not w or not g.isTextWrapper(w):
-            return
-        if self.cursorStay and wname.startswith('body'):
-            tCurPosition = w.getInsertPoint()
-        i, j = oldSel = w.getSelectionRange()
-            # Returns insert point if no selection.
-        oldText = w.getAllText()
-        if middleButton and c.k.previousSelection is not None:
-            start, end = c.k.previousSelection
-            s = w.getAllText()
-            s = s[start: end]
-            c.k.previousSelection = None
-        else:
-            s = g.app.gui.getTextFromClipboard()
-        s = g.toUnicode(s)
-        singleLine = wname.startswith('head') or wname.startswith('minibuffer')
-        if singleLine:
-            # Strip trailing newlines so the truncation doesn't cause confusion.
-            while s and s[-1] in ('\n', '\r'):
-                s = s[: -1]
-        # Save the horizontal scroll position.
-        if hasattr(w, 'getXScrollPosition'):
-            x_pos = w.getXScrollPosition()
-        # Update the widget.
-        if i != j:
-            w.delete(i, j)
-        w.insert(i, s)
-        w.see(i + len(s) + 2)
-        if wname.startswith('body'):
-            if self.cursorStay:
-                if tCurPosition == j:
-                    offset = len(s)-(j-i)
-                else:
-                    offset = 0
-                newCurPosition = tCurPosition + offset
-                w.setSelectionRange(i=newCurPosition, j=newCurPosition)
-            c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
-        elif singleLine:
-            s = w.getAllText()
-            while s and s[-1] in ('\n', '\r'):
-                s = s[: -1]
-            # 2011/11/14: headline width methods do nothing at present.
-            # if wname.startswith('head'):
-                # The headline is not officially changed yet.
-                # p.initHeadString(s)
-                # width = f.tree.headWidth(p=None,s=s)
-                # w.setWidth(width)
-        else:
-            pass
-        # Never scroll horizontally.
-        if hasattr(w, 'getXScrollPosition'):
-            w.setXScrollPosition(x_pos)
-
-    OnPasteFromMenu = pasteText
-    #@+node:ekr.20181115172556.13: *6* LeoFrame.OnPaste (support middle-button paste)
-    def OnPaste(self, event=None):
-        return self.pasteText(event=event, middleButton=True)
-    #@+node:ekr.20181115172556.14: *5* LeoFrame.Edit Menu
-    #@+node:ekr.20181115172556.15: *6* LeoFrame.abortEditLabelCommand
-    ### @cmd('abort-edit-headline')
-    def abortEditLabelCommand(self, event=None):
-        '''End editing of a headline and revert to its previous value.'''
-        c, g = self.c, self.g
-        tree = self.tree
-        p = c.p
-        if g.app.batchMode:
-            c.notValidInBatchMode("Abort Edit Headline")
-            return
-        # Revert the headline text.
-        # Calling c.setHeadString is required.
-        # Otherwise c.redraw would undo the change!
-        c.setHeadString(p, tree.revertHeadline)
-        c.redraw(p)
-    #@+node:ekr.20181115172556.16: *6* LeoFrame.endEditLabelCommand
-    ### @cmd('end-edit-headline')
-    def endEditLabelCommand(self, event=None, p=None):
-        '''End editing of a headline and move focus to the body pane.'''
-        c, g = self.c, self.g
-        ### frame = self
-        k = c.k
-        if g.app.batchMode:
-            c.notValidInBatchMode("End Edit Headline")
-        else:
-            w = c.get_focus()
-            w_name = g.app.gui.widget_name(w)
-            if w_name.startswith('head'):
-                c.endEditing()
-                c.treeWantsFocus()
-            else:
-                # c.endEditing()
-                c.bodyWantsFocus()
-                k.setDefaultInputState()
-                # Recolor the *body* text, **not** the headline.
-                k.showStateAndMode(w=c.frame.body.wrapper)
-    #@+node:ekr.20181115173057.1: *4* LeoFrame.May be defined in subclasses
-    #@+node:ekr.20181115173057.2: *5* LeoFrame.event handlers
-    def OnBodyClick(self, event=None):
-        pass
-
-    def OnBodyRClick(self, event=None):
-        pass
-    #@+node:ekr.20181115173057.3: *5* LeoFrame.getTitle & setTitle
-    def getTitle(self):
-        return self.title
-
-    def setTitle(self, title):
-        self.title = title
-    #@+node:ekr.20181115173057.4: *5* LeoFrame.initAfterLoad  & initCompleteHint
-    def initAfterLoad(self):
-        '''Provide offical hooks for late inits of components of Leo frames.'''
-        ###
-            # frame = self
-            # frame.body.initAfterLoad()
-            # frame.log.initAfterLoad()
-            # frame.menu.initAfterLoad()
-            # # if frame.miniBufferWidget: frame.miniBufferWidget.initAfterLoad()
-            # frame.tree.initAfterLoad()
-
-    def initCompleteHint(self):
-        pass
-    #@+node:ekr.20181115173057.5: *5* LeoFrame.setTabWidth
-    def setTabWidth(self, w):
-        '''Set the tab width in effect for this frame.'''
-        # Subclasses may override this to affect drawing.
-        self.tab_width = w
     #@-others
 #@+node:ekr.20181113041113.1: *3* class LeoBrowserGui
 class LeoBrowserGui(leoGui.NullGui):
@@ -1105,14 +622,11 @@ class LeoBrowserGui(leoGui.NullGui):
         self.c = c
         self.g = g
         self.isNullGui = False # Override
-        self.last_frame = LeoBrowserFrame(c, g)
-        self.component = pc = PythonComponent(c, g, root)
+        self.last_frame = LeoBrowserFrame(c, g, root)
+        self.root = Root(root)
         # These must be pc actions.  Can't call root actions directly here.
-        pc.test()
-        pc.echo()
-        
-    #@+others
-    #@-others
+        self.root.test()
+        self.root.echo('LeoBrowserGui')
 #@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
 class LeoBrowserIconBar(flx.PyComponent):
 
@@ -2860,25 +2374,22 @@ class LeoFlexxTreeItem(flx.TreeItem):
     def init(self, leo_ap):
         # pylint: disable=arguments-differ
         self.leo_ap = leo_ap
-#@+node:ekr.20181115191638.1: ** class PythonComponent
-class PythonComponent(flx.PyComponent):
+#@+node:ekr.20181115191638.1: ** class Root
+class Root(flx.PyComponent):
     
     root = flx.ComponentProp(settable=True)
 
-    def init(self, c, g, root):
-        # pylint: disable=arguments-differ
-        self.c = c
-        self.g = g
+    def init(self, root):
         self._mutate('root', root)
 
     flx.action
     def test(self):
-        self.g.trace('PythonComponent')
+        g.trace('PythonComponent')
         self.root.message('from PythonComponent')
         
     flx.action
-    def echo(self):
-        self.root.do_command('echo')
+    def echo(self, s=''):
+        self.root.do_command('echo: %s' % s)
 #@-others
 if __name__ == '__main__':
     flx.launch(LeoApp)
