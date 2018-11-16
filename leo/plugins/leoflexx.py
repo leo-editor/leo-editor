@@ -80,6 +80,7 @@ class LeoApp(flx.PyComponent):
     def do_command(self, command):
 
         w = self.main_window
+        c = self.c
         if command.startswith('echo'):
             print('app.do_command: %s' % command)
             self.gui.echo()
@@ -90,13 +91,21 @@ class LeoApp(flx.PyComponent):
                 w.tree.redraw(d)
             else: # works.
                 self.dump_redraw_dict(d)
+        elif command.startswith('sel'):
+            # Test LeoBrowserTree.select.
+            h = 'Active Unit Tests'
+            p = g.findTopLevelNode(c, h, exact=True)
+            if p:
+                self.gui.frame.tree.select(p)
+            else:
+                print('do_command: select: not found: %s' % h)
         elif command == 'test':
             self.test_round_trip_positions()
             self.run_all_unit_tests()
         else:
             print('app.do_command: unknown command: %r' % command)
             ### To do: pass the command on to Leo's core.
-    #@+node:ekr.20181113053154.1: *4* app.action: dump_redraw_dict & helpers
+    #@+node:ekr.20181113053154.1: *4* app.action: dump_redraw_dict
     @flx.action
     def dump_redraw_dict(self, d):
         '''Pretty print the redraw dict.'''
@@ -107,7 +116,7 @@ class LeoApp(flx.PyComponent):
         for i, item in enumerate(d ['items']):
             self.dump_redraw_item(i, item, level)
             print('')
-    #@+node:ekr.20181113085722.1: *5* app.action: dump_ap
+    #@+node:ekr.20181113085722.1: *4* app.action: dump_ap
     @flx.action
     def dump_ap (self, ap, padding=None, tag=None):
         '''Print an archived position fully.'''
@@ -194,13 +203,25 @@ class LeoApp(flx.PyComponent):
         w.tree.redraw(d)
 
         
-    #@+node:ekr.20181111202747.1: *4* app.action: select_ap
+    #@+node:ekr.20181111202747.1: *4* app.action: select_ap & select_p
     @flx.action
     def select_ap(self, ap):
         '''Select the position in Leo's core corresponding to the archived position.'''
         c = self.c
         p = self.ap_to_p(ap)
         c.frame.tree.select(p)
+
+    @flx.action
+    def select_p(self, p):
+        '''
+        Select the position in the tree.
+        
+        Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
+        '''
+        print('app.select_p', repr(p.h))
+        w = self.main_window
+        ap = self.p_to_ap(p)
+        w.tree.select_ap(ap)
     #@+node:ekr.20181111095640.1: *4* app.action: send_children_to_tree
     @flx.action
     def send_children_to_tree(self, parent_ap):
@@ -402,6 +423,10 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         super().__init__(c, title='<LeoBrowserFrame.title>', gui=None)
         assert self.c == c
         self.root = Root()
+        self.body = LeoBrowserBody(c)
+        self.tree = LeoBrowserTree(c)
+        self.log = LeoBrowserLog(c)
+        
 
     #@+others
     #@-others
@@ -412,7 +437,8 @@ class LeoBrowserGui(leoGui.NullGui):
         # pylint: disable=arguments-differ
         super().__init__(guiName='BrowserGui')
         self.c = c
-        self.last_frame = LeoBrowserFrame(c)
+        self.frame = LeoBrowserFrame(c)
+        self.last_frame = None
         self.root = Root()
         
     def echo(self):
@@ -490,11 +516,18 @@ class LeoBrowserTree(leoFrame.NullTree):
     
     def __init__(self, c):
         # pylint: disable=arguments-differ
-        super().__init__(c, parentFrame=None)
-        assert self.c == c
+        super().__init__(frame=None)
+        self.c = c
         self.root = Root()
-        
+
     #@+others
+    #@+node:ekr.20181116081421.1: *4* LeoBrowserTree.select
+    def select(self, p):
+        '''Override NullTree.select, which is actually LeoTree.select.'''
+        # Call LeoTree.select.'''
+        super().select(p)
+        # Call app.select_position.
+        self.root.select_p(p)
     #@-others
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181104082144.1: *3* class LeoFlexxBody
@@ -697,6 +730,11 @@ class LeoFlexxTree(flx.Widget):
         '''
         self.clear_tree()
         self.redraw_from_dict(redraw_dict)
+    #@+node:ekr.20181116083916.1: *5* tree.action: select_ap
+    @flx.action
+    def select_ap(self, ap):
+        print('tree.select_ap')
+        self.root.dump_ap(ap)
     #@+node:ekr.20181114072307.1: *4* tree.ap_to_key
     def ap_to_key(self, ap):
         '''Produce a key for the given ap.'''
