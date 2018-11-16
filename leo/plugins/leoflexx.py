@@ -363,12 +363,10 @@ class LeoApp(flx.PyComponent):
         print('app.message: %s' % s)
     #@+node:ekr.20181112182636.1: *3* app.run_all_unit_tests
     def run_all_unit_tests (self):
-        '''
-        Run all unit tests from the bridge using the browser gui.
-        '''
-        print('===== app.run_all_unit_tests')
+        '''Run all unit tests from the bridge.'''
+        print('===== app.run_all_unit_tests: Start')
         self.c.debugCommands.runAllUnitTestsLocally()
-        print('===== app.run_all_unit_tests DONE')
+        print('===== app.run_all_unit_tests: Done')
     #@-others
 #@+node:ekr.20181115071559.1: ** Python wrappers
 #@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
