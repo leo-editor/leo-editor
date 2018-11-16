@@ -60,8 +60,9 @@ class LeoApp(flx.PyComponent):
     def init(self):
         c, g = self.open_bridge()
         print('app.init: c.frame', repr(c.frame))
-        self.c, self.g = c, g
-        self.gui = LeoBrowserGui(c, g, self.root)
+        ### self.c, self.g = c, g
+        self.c = c
+        self.gui = LeoBrowserGui(c, self.root)
         # Create all data-related ivars.
         self.create_all_data()
         # Create the main window and all its components.
@@ -80,6 +81,7 @@ class LeoApp(flx.PyComponent):
         w = self.main_window
         if command.startswith('echo'):
             print('app.do_command: %s' % command)
+            self.gui.echo()
         elif command == 'redraw':
             d = self.make_redraw_dict()
             if 1:
@@ -135,6 +137,10 @@ class LeoApp(flx.PyComponent):
                 ap['gnx'],
                 ap['headline'],
             ))
+    #@+node:ekr.20181116053210.1: *4* app.action: echo
+    @flx.action
+    def echo (self, message=None):
+        print('===== echo =====', message or '<Empty Message>')
     #@+node:ekr.20181113091522.1: *4* app.action: redraw_item
     @flx.action
     def dump_redraw_item(self, i, item, level):
@@ -600,14 +606,12 @@ class LeoBrowserBody(flx.PyComponent):
 #@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
 class LeoBrowserFrame(leoFrame.NullFrame):
     
-    def __init__(self, c, g, root):
+    def __init__(self, c, root):
         '''Ctor for the LeoBrowserFrame class.'''
         # pylint: disable=arguments-differ
         super().__init__(c, title='<LeoBrowserFrame.title>', gui=None)
-        self.c = c
-        self.g = g
-        self.root = Root(root)
-        self.root.echo('LeoBrowserFrame')
+        assert self.c == c
+        self.root = Root()
 
     #@+others
     #@-others
@@ -615,18 +619,17 @@ class LeoBrowserFrame(leoFrame.NullFrame):
 class LeoBrowserGui(leoGui.NullGui):
     '''Leo's Browser Gui.'''
 
-    def __init__ (self, c, g, root):
+    def __init__ (self, c, root):
         # pylint: disable=arguments-differ
         g.trace('LeoBrowserGui')
         super().__init__(guiName='BrowserGui')
         self.c = c
-        self.g = g
         self.isNullGui = False # Override
-        self.last_frame = LeoBrowserFrame(c, g, root)
-        self.root = Root(root)
-        # These must be pc actions.  Can't call root actions directly here.
-        self.root.test()
-        self.root.echo('LeoBrowserGui')
+        self.last_frame = LeoBrowserFrame(c, root)
+        self.root = Root()
+        
+    def echo(self):
+        self.root.echo('From LeoBrowser Gui')
 #@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
 class LeoBrowserIconBar(flx.PyComponent):
 
@@ -2377,19 +2380,14 @@ class LeoFlexxTreeItem(flx.TreeItem):
 #@+node:ekr.20181115191638.1: ** class Root
 class Root(flx.PyComponent):
     
-    root = flx.ComponentProp(settable=True)
-
-    def init(self, root):
-        self._mutate('root', root)
-
-    flx.action
-    def test(self):
-        g.trace('PythonComponent')
-        self.root.message('from PythonComponent')
+    '''
+    A class that allows *plain* python classes to access *component*
+    classes self.root property.
+    '''
         
-    flx.action
-    def echo(self, s=''):
-        self.root.do_command('echo: %s' % s)
+    def __getattr__ (self, attr):
+        print('===== Root.__getattr__', repr(self.root), attr)
+        return getattr(self.root, attr)
 #@-others
 if __name__ == '__main__':
     flx.launch(LeoApp)
