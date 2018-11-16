@@ -5,7 +5,7 @@
 #@@language python
 #@@tabwidth -4
 '''
-A Stand-alone prototype for Leo using flexx.
+A stand-alone prototype for Leo using flexx.
 '''
 # pylint: disable=logging-not-lazy
 #@+<< leoflexx imports >>
@@ -812,6 +812,23 @@ class LeoFlexxTree(flx.Widget):
         for ev in events:
             if 0:
                 self.show_event(ev)
+    #@+node:ekr.20181116172300.1: *5* tree.reaction: key_down
+    @flx.reaction('tree.key_press')
+    def on_key_press(self, *events):
+        '''
+        https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
+        
+        \n 'Enter', \t  'Tab'
+        Arrows: ArrowUp, ArrowDown, ArrowRight, ArrowLeft
+        
+        Mods: 
+        '''
+
+        # print('tree.on_key_up: event', repr(events))
+        for ev in events:
+            # ev is a dict, keys are type, source, key, modifiers
+            key, mods = ev ['key'], ev ['modifiers']
+            print(mods, repr(key))
     #@+node:ekr.20181111011928.1: *4* tree.populate_children
     def populate_children(self, children, parent_ap):
         '''Populate parent with the children if necessary.'''
