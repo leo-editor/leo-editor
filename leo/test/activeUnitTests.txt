@@ -20620,9 +20620,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20181010090014.9: *6* A
-#@+node:ekr.20181010090014.11: *6* newHeadline
-#@+node:ekr.20181010090014.10: *6* B
+#@+node:ekr.20181116142414.1: *6* A
+#@+node:ekr.20181116142414.3: *6* newHeadline
+#@+node:ekr.20181116142414.2: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():

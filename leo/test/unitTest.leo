@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
@@ -47,6 +47,14 @@
 <v t="ekr.20181031154902.4"><vh>@data:#@auto</vh></v>
 <v t="ekr.20181031154902.5"><vh>@data:#@auto</vh>
 <v t="ekr.20181031154902.6"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20181116142416.1"><vh>@data:#@auto</vh></v>
+<v t="ekr.20181116142416.2"><vh>@data:#@auto</vh>
+<v t="ekr.20181116142416.3"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20181116142416.4"><vh>@data:#@auto</vh></v>
+<v t="ekr.20181116142416.5"><vh>@data:#@auto</vh>
+<v t="ekr.20181116142416.6"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
@@ -742,12 +750,13 @@
 <v t="ekr.20181102063435.1"><vh>Fails...</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20181010090014.9"><vh>A</vh></v>
-<v t="ekr.20181010090014.11"><vh>newHeadline</vh></v>
-<v t="ekr.20181010090014.10"><vh>B</vh></v>
+<v t="ekr.20181116142414.1"><vh>A</vh></v>
+<v t="ekr.20181116142414.3"><vh>newHeadline</vh></v>
+<v t="ekr.20181116142414.2"><vh>B</vh></v>
 </v>
 </v>
-<v t="edward.20160314170027.56"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"
+expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20161108034116.1,ekr.20161123115047.1,ekr.20090529141856.4731,ekr.20111029112647.4099,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4774,ekr.20161123202857.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 <v t="ekr.20181031155108.1"><vh>Tweaks for test_browser_gui.py</vh>
@@ -3906,8 +3915,7 @@ rest text.
 @language python
 def spam():
     # pass
-# after
-</t>
+# after</t>
 <t tx="ekr.20130912092638.4150">@first # -*- coding: utf-16 -*-
 @encoding utf-16
 
@@ -9337,8 +9345,7 @@ finally:
 def spam():
 #     pass
 
-# after
-</t>
+# after</t>
 <t tx="ekr.20170712134948.1">w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'python')
 assert p,'not found: python'
@@ -9379,8 +9386,7 @@ finally:
 def spam():
     pass
 
-# after
-</t>
+# after</t>
 <t tx="ekr.20170712135224.1">w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'rest and python')
 assert p,'not found: rest and python'
@@ -9422,8 +9428,7 @@ rest text.
 @language python
 def spam():
     pass
-# after
-</t>
+# after</t>
 <t tx="ekr.20170712140759.1">@language rest
 @wrap
 
@@ -9480,9 +9485,6 @@ FAILED (failures=3, skipped=11)
 <t tx="ekr.20181010081750.1"></t>
 <t tx="ekr.20181010081924.1">###@nosearch</t>
 <t tx="ekr.20181010082831.1"></t>
-<t tx="ekr.20181010090014.10"></t>
-<t tx="ekr.20181010090014.11"></t>
-<t tx="ekr.20181010090014.9"></t>
 <t tx="ekr.20181014093423.1">if g.app.gui.guiName() == 'browser':
     self.skipTest('browser gui')
 
@@ -9610,6 +9612,27 @@ unl: cheese
 </t>
 <t tx="ekr.20181031155108.1"></t>
 <t tx="ekr.20181102063435.1"># These are first, to save time.</t>
+<t tx="ekr.20181116142414.1"></t>
+<t tx="ekr.20181116142414.2"></t>
+<t tx="ekr.20181116142414.3"></t>
+<t tx="ekr.20181116142416.1">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20181116142416.2">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20181116142416.3">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20181116142416.4">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20181116142416.5">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20181116142416.6">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
