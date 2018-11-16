@@ -433,7 +433,13 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         self.body = LeoBrowserBody(c)
         self.tree = LeoBrowserTree(c)
         self.log = LeoBrowserLog(c)
+        self.status_line = LeoBrowserStatusLine(c)
+            # NullFrame does not do this.
         
+    def finishCreate(self):
+        '''Override NullFrame.finishCreate.'''
+        # Do not call self.createFirstTreeNode.
+        pass
 
     #@+others
     #@-others
@@ -510,11 +516,6 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         super().__init__(c, parentFrame=None)
         assert self.c == c
         self.root = Root()
-        self.textWidget = leoFrame.StringTextWrapper(c, 'status-line')
-        # Set the official ivars.
-        c.frame.statusFrame = None
-        c.frame.statusLabel = None
-        c.frame.statusText = self.textWidget
 
     #@+others
     #@-others
