@@ -444,6 +444,7 @@ class LeoBrowserLog(leoFrame.NullLog):
         self.c = c
         self.isNull = False
         self.logNumber = 0
+        self.root = Root()
         self.widget = None ### self.createControl(parentFrame)
 
     #@+others
@@ -455,6 +456,7 @@ class LeoBrowserMenu(leoMenu.NullMenu):
         # pylint: disable=arguments-differ
         super().__init__(frame=None)
         self.c = c
+        self.root = Root()
 
     #@+others
     #@-others
@@ -463,6 +465,7 @@ class LeoBrowserMinibuffer (object):
     
     def __init__(self, c):
         self.c = c
+        self.root = Root()
         
     #@+others
     #@-others
@@ -473,6 +476,7 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         # pylint: disable=arguments-differ
         super().__init__(c, parentFrame=None)
         assert self.c == c
+        self.root = Root()
         self.textWidget = leoFrame.StringTextWrapper(c, 'status-line')
         # Set the official ivars.
         c.frame.statusFrame = None
@@ -488,6 +492,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         # pylint: disable=arguments-differ
         super().__init__(c, parentFrame=None)
         assert self.c == c
+        self.root = Root()
         
     #@+others
     #@-others
