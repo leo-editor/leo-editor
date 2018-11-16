@@ -60,7 +60,7 @@ class LeoApp(flx.PyComponent):
         c, g = self.open_bridge()
         print('app.init: c.frame', repr(c.frame))
         self.c, self.g = c, g
-        self.gui = LeoBrowserGui(c, g)
+        self.gui = LeoBrowserGui(c, g, self.root)
         # Create all data-related ivars.
         self.create_all_data()
         # Create the main window and all its components.
@@ -77,7 +77,9 @@ class LeoApp(flx.PyComponent):
     def do_command(self, command):
 
         w = self.main_window
-        if command == 'redraw':
+        if command == 'echo':
+            print('app.do_command: echo')
+        elif command == 'redraw':
             d = self.make_redraw_dict()
             if 1:
                 w.tree.redraw(d)
@@ -1093,225 +1095,23 @@ class LeoBrowserFrame(flx.PyComponent):
         self.tab_width = w
     #@-others
 #@+node:ekr.20181113041113.1: *3* class LeoBrowserGui
-class LeoBrowserGui(flx.PyComponent):
+class LeoBrowserGui(leoGui.NullGui):
     '''Leo's Browser Gui.'''
-    
-    def init (self, c, g):
-        '''The ctor for the LeoBroswerGui class.'''
+
+    def __init__ (self, c, g, root):
         # pylint: disable=arguments-differ
+        g.trace('LeoBrowserGui')
+        super().__init__(guiName='BrowserGui')
         self.c = c
         self.g = g
-        self.mGuiName = 'BrowserGui'
-        self.clipboardContents = ''
-        self.isNullGui = True
+        self.isNullGui = False # Override
         self.last_frame = LeoBrowserFrame(c, g)
-        ###
-            # From LeoGui.
-            # self.FKeys = [] # The representation of F-keys.
-            # self.ScriptingControllerClass = NullScriptingControllerClass
-            # self.globalFindDialog = None
-            # self.globalFindTab = None
-            # self.globalFindTabManager = None
-            # self.ignoreChars = [] # Keys that are always to be ignore.
-            # self.leoIcon = None
-            # self.mainLoop = None
-            # self.root = None
-            # self.specialChars = [] # A list of characters/keys to be handle specially.
-            # self.splashScreen = None
-            # self.utils = None
-            #
-            # From NullGui...
-            # self.focusWidget = None
-            # self.idleTimeClass = g.NullObject
-            # self.script = None
-
+        self.component = pc = PythonComponent(c, g, root)
+        # These must be pc actions.  Can't call root actions directly here.
+        pc.test()
+        pc.echo()
+        
     #@+others
-    #@+node:ekr.20181115044516.1: *4* Overrides (to do)
-    #@+node:ekr.20181115042835.4: *5* gui.create_key_event
-    def create_key_event(self, c,
-        binding=None,
-        char=None,
-        event=None,
-        w=None,
-        x=None, x_root=None,
-        y=None, y_root=None,
-    ):
-        # Do not call strokeFromSetting here!
-        # For example, this would wrongly convert Ctrl-C to Ctrl-c,
-        # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
-        g = self.g
-        g.trace(g.callers())
-        return leoGui.LeoKeyEvent(c, char, event, binding, w, x, y, x_root, y_root)
-    #@+node:ekr.20181115042835.7: *5* gui.event_generate (Needed?)
-    def event_generate(self, c, char, shortcut, w):
-        print('gui.event_generated', self.g.callers())
-        event = self.create_key_event(c, binding=shortcut, char=char, w=w)
-        c.k.masterKeyHandler(event)
-        c.outerUpdate()
-    #@+node:ekr.20181115042835.5: *5* gui.guiName
-    def guiName(self):
-        
-        return self.mGuiName
-    #@+node:ekr.20181115042930.6: *5* gui.isTextWidget & isTextWrapper
-    def isTextWidget(self, w):
-        return True # Must be True for unit tests.
-
-    def isTextWrapper(self, w):
-        '''Return True if w is a Text widget suitable for text-oriented commands.'''
-        return w and getattr(w, 'supportsHighLevelInterface', None)
-    #@+node:ekr.20181115042753.1: *5* gui.oops
-    def oops(self):
-        print("LeoBrowserGui.oops", self.g.callers(4))
-    #@+node:ekr.20181115042930.9: *5* gui.runMainLoop
-    def runMainLoop(self):
-        """Run the null gui's main loop."""
-        print('gui.runMainLoop: not ready yet.')
-        ###
-            # g = self.g
-            # if self.script:
-                # frame = self.lastFrame
-                # g.app.log = frame.log
-                # self.lastFrame.c.executeScript(script=self.script)
-            # else:
-                # print('**** NullGui.runMainLoop: terminating Leo.')
-            # # Getting here will terminate Leo.
-    #@+node:ekr.20181115042835.28: *5* gui.widget_name (To do)
-    def widget_name(self, w):
-        # First try the widget's getName method.
-        if not 'w':
-            return '<no widget>'
-        elif hasattr(w, 'getName'):
-            return w.getName()
-        elif hasattr(w, '_name'):
-            return w._name
-        else:
-            return repr(w)
-    #@+node:ekr.20181115042908.1: *4* From NullGui
-    #@+node:ekr.20181115042930.3: *5* NullGui.dialogs
-    def runAboutLeoDialog(self, c, version, theCopyright, url, email):
-        return self.simulateDialog("aboutLeoDialog", None)
-
-    def runAskLeoIDDialog(self):
-        return self.simulateDialog("leoIDDialog", None)
-
-    def runAskOkDialog(self, c, title, message=None, text="Ok"):
-        return self.simulateDialog("okDialog", "Ok")
-
-    def runAskOkCancelNumberDialog(self, c, title, message,
-        cancelButtonText=None,
-        okButtonText=None,
-    ):
-        return self.simulateDialog("numberDialog", -1)
-
-    def runAskOkCancelStringDialog(self, c, title, message,
-        cancelButtonText=None,
-        okButtonText=None,
-        default="",
-        wide=False,
-    ):
-        return self.simulateDialog("stringDialog", '')
-
-    def runCompareDialog(self, c):
-        return self.simulateDialog("compareDialog", '')
-
-    def runOpenFileDialog(self, c, title, filetypes, defaultextension,
-        multiple=False,
-        startpath=None,
-    ):
-        return self.simulateDialog("openFileDialog", None)
-
-    def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
-        return self.simulateDialog("saveFileDialog", None)
-
-    def runAskYesNoDialog(self, c, title,
-        message=None,
-        yes_all=False,
-        no_all=False,
-    ):
-        return self.simulateDialog("yesNoDialog", "no")
-
-    def runAskYesNoCancelDialog(self, c, title,
-        message=None,
-        yesMessage="Yes",
-        noMessage="No",
-        yesToAllMessage=None,
-        defaultButton="Yes",
-        cancelMessage=None,
-    ):
-        return self.simulateDialog("yesNoCancelDialog", "cancel")
-
-    def simulateDialog(self, key, defaultVal):
-        return defaultVal
-    #@+node:ekr.20181115042930.4: *5* NullGui.clipboard & focus
-    def get_focus(self, *args, **kwargs):
-        return self.focusWidget
-
-    def getTextFromClipboard(self):
-        return self.clipboardContents
-
-    def replaceClipboardWith(self, s):
-        self.clipboardContents = s
-
-    def set_focus(self, commander, widget):
-        self.focusWidget = widget
-    #@+node:ekr.20181115042930.5: *5* NullGui.do nothings
-    def alert(self, message):
-        pass
-    def attachLeoIcon(self, window):
-        pass
-    def destroySelf(self):
-        pass
-    def finishCreate(self): 
-        pass
-    def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
-        return self.g.app.config.defaultFont
-    def getIconImage(self, name):
-        return None
-    def getImageImage(self, name):
-        return None
-    def getTreeImage(self, c, path):
-        return None
-    def get_window_info(self, window):
-        return 600, 500, 20, 20
-    def onActivateEvent(self, *args, **keys): 
-        pass
-    def onDeactivateEvent(self, *args, **keys): 
-        pass
-    #@+node:ekr.20181115042930.8: *5* NullGui.panels
-    def createComparePanel(self, c):
-        """Create Compare panel."""
-        self.oops()
-
-    def createFindTab(self, c, parentFrame):
-        """Create a find tab in the indicated frame."""
-        pass # Now always done during startup.
-
-    def createLeoFrame(self, c, title):
-        """Create a null Leo Frame."""
-        self.oops()
-        ###
-            # gui = self
-            # self.lastFrame = leoFrame.NullFrame(c, title, gui)
-            # return self.lastFrame
-    #@+node:ekr.20181115042828.1: *4* From LeoGui
-    def setScript(self, script=None, scriptFileName=None):
-        pass
-        ###
-            # self.script = script
-            # self.scriptFileName = scriptFileName
-
-    def dismiss_splash_screen(self):
-        pass
-
-    def ensure_commander_visible(self, c):
-        """E.g. if commanders are in tabs, make sure c's tab is visible"""
-        pass
-
-    def postPopupMenu(self, *args, **keys):
-        pass
-        
-    def put_help(self, c, s, short_title):
-        pass
     #@-others
 #@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
 class LeoBrowserIconBar(flx.PyComponent):
@@ -3060,6 +2860,25 @@ class LeoFlexxTreeItem(flx.TreeItem):
     def init(self, leo_ap):
         # pylint: disable=arguments-differ
         self.leo_ap = leo_ap
+#@+node:ekr.20181115191638.1: ** class PythonComponent
+class PythonComponent(flx.PyComponent):
+    
+    root = flx.ComponentProp(settable=True)
+
+    def init(self, c, g, root):
+        # pylint: disable=arguments-differ
+        self.c = c
+        self.g = g
+        self._mutate('root', root)
+
+    flx.action
+    def test(self):
+        self.g.trace('PythonComponent')
+        self.root.message('from PythonComponent')
+        
+    flx.action
+    def echo(self):
+        self.root.do_command('echo')
 #@-others
 if __name__ == '__main__':
     flx.launch(LeoApp)
