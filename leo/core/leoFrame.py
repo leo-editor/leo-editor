@@ -213,8 +213,12 @@ class LeoBody(object):
     #@+node:ekr.20031218072017.3657: *3* LeoBody.__init__
     def __init__(self, frame, parentFrame):
         '''Ctor for LeoBody class.'''
-        c = frame.c
-        frame.body = self
+        if frame:
+            c = frame.c
+            frame.body = self
+        else:
+            # Support for flexx.
+            c = None
         self.c = c
         self.editorWidgets = {} # keys are pane names, values are text widgets
         self.frame = frame
@@ -1242,8 +1246,12 @@ class LeoTree(object):
     #@+node:ekr.20031218072017.3705: *3* LeoTree.__init__
     def __init__(self, frame):
         '''Ctor for the LeoTree class.'''
-        self.frame = frame
-        self.c = frame.c
+        if frame:
+            # Support for flexx.
+            self.frame = frame
+            self.c = frame.c
+        else:
+            self.c = None
         self.edit_text_dict = {}
             # New in 3.12: keys vnodes, values are edit_widgets.
             # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
@@ -1953,8 +1961,12 @@ class NullTree(LeoTree):
     def __init__(self, frame):
         '''Ctor for NullTree class.'''
         LeoTree.__init__(self, frame) # Init the base class.
-        assert(self.frame)
-        self.c = frame.c
+        if frame:
+            # Support for flexx.
+            assert(self.frame)
+            self.c = frame.c
+        else:
+            self.c = None
         self.editWidgetsDict = {} # Keys are tnodes, values are StringTextWidgets.
         self.font = None
         self.fontName = None
