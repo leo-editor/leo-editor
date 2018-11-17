@@ -105,6 +105,13 @@ class LeoApp(flx.PyComponent):
                 c.frame.tree.select(p)
             else:
                 g.trace('not found: %s' % h)
+        elif command == 'status':
+            if 1:
+                c.frame.statusLine.put('Test 1 Status')
+                c.frame.statusLine.put1('Test 2 Status')
+            else: # Als works.
+                w.status_line.put('Test 1 Status')
+                w.status_line.put2('Test 2 Status')
         elif command == 'test':
             self.test_round_trip_positions()
             self.run_all_unit_tests()
@@ -267,7 +274,7 @@ class LeoApp(flx.PyComponent):
         headlines = [v.h for v in vnodes]
         headlines.append(ap ['headline'])
         fn = g.shortFileName(c.fileName())
-        w.status_line.set_text('%s#%s' % (fn, '->'.join(headlines)))
+        w.status_line.put2('%s#%s' % (fn, '->'.join(headlines)))
     #@+node:ekr.20181114015356.1: *3* app.create_all_data
     def create_all_data(self):
         '''Compute the initial values all data structures.'''
@@ -510,8 +517,22 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         super().__init__(c, parentFrame)
         self.root = Root()
 
-    #@+others
-    #@-others
+    def clear(self):
+        self.put('')
+    
+    def get(self):
+        g.trace('(LeoBrowserStatusLine): NOT READY')
+        return ''
+    
+    def put(self, s, bg=None, fg=None):
+        w = self.root.main_window
+        # g.trace('(LeoBrowserStatusLine)', s)
+        w.status_line.put(s, bg, fg)
+    
+    def put1(self, s, bg=None, fg=None):
+        w = self.root.main_window
+        # g.trace('(LeoBrowserStatusLine)', s)
+        w.status_line.put2(s, bg, fg)
 #@+node:ekr.20181115092337.57: *3* class LeoBrowserTree
 class LeoBrowserTree(leoFrame.NullTree):
     
@@ -580,7 +601,7 @@ class LeoFlexxLog(flx.Widget):
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
         self.ace.setValue(signon)
-        
+
     @flx.action
     def put(self, s):
         self.ace.setValue(self.ace.getValue() + '\n' + s)
@@ -605,13 +626,15 @@ class LeoFlexxMainWindow(flx.Widget):
 
     def init(self, body_s, data, signon):
         # pylint: disable=arguments-differ
-        with flx.VSplit():
-            with flx.HSplit(flex=1):
-                tree = LeoFlexxTree(data, flex=1)
-                log = LeoFlexxLog(signon, flex=1)
-            body = LeoFlexxBody(body_s, flex=1)
-            minibuffer = LeoFlexxMiniBuffer()
-            status_line = LeoFlexxStatusLine()
+        ###with flx.TabLayout():
+        if 1:
+            with flx.VSplit():
+                with flx.HSplit(flex=1):
+                    tree = LeoFlexxTree(data, flex=1)
+                    log = LeoFlexxLog(signon, flex=1)
+                body = LeoFlexxBody(body_s, flex=1)
+                minibuffer = LeoFlexxMiniBuffer()
+                status_line = LeoFlexxStatusLine()
         for name, prop in (
             ('body', body),
             ('log', log),
@@ -649,12 +672,18 @@ class LeoFlexxStatusLine(flx.Widget):
     def init(self):
         with flx.HBox():
             flx.Label(text='Status Line')
-            self.widget = flx.LineEdit(flex=1, placeholder_text='Status')
+            self.widget = flx.LineEdit(flex=1, placeholder_text='Status area 1')
+            self.widget2 = flx.LineEdit(flex=1, placeholder_text='Status area 2')
         self.widget.apply_style('background: green')
+        self.widget2.apply_style('background: green')
 
     @flx.action
-    def set_text(self, s):
+    def put(self, s, bg, fg):
         self.widget.set_text(s)
+        
+    @flx.action
+    def put2(self, s, bg, fg):
+        self.widget2.set_text(s)
 #@+node:ekr.20181104082138.1: *3* class LeoFlexxTree
 class LeoFlexxTree(flx.Widget):
 
