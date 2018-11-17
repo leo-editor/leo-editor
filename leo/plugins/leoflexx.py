@@ -63,9 +63,10 @@ class LeoApp(flx.PyComponent):
         c, g = self.open_bridge()
         print('app.init: c.frame', repr(c.frame))
         self.c = c
-        self.gui = LeoBrowserGui()
-        self.gui.createLeoFrame(c, title=c.computeWindowTitle(c.mFileName))
-            # NullGui.createLeoFrame.
+        self.gui = gui = LeoBrowserGui()
+        title = c.computeWindowTitle(c.mFileName)
+        c.frame = gui.lastFrame = LeoBrowserFrame(c, title, gui)
+            # similar to NullGui.createLeoFrame.
         # Create all data-related ivars.
         self.create_all_data()
         # Create the main window and all its components.
@@ -84,7 +85,7 @@ class LeoApp(flx.PyComponent):
         w = self.main_window
         c = self.c
         if command.startswith('echo'):
-            print('app.do_command: %s' % command)
+            g.trace(command)
             self.gui.echo()
             self.gui.tree_echo()
         elif command == 'redraw':
@@ -98,15 +99,14 @@ class LeoApp(flx.PyComponent):
             h = 'Active Unit Tests'
             p = g.findTopLevelNode(c, h, exact=True)
             if p:
-                ### self.gui.frame.tree.select(p)
                 c.frame.tree.select(p)
             else:
-                print('do_command: select: not found: %s' % h)
+                g.trace('not found: %s' % h)
         elif command == 'test':
             self.test_round_trip_positions()
             self.run_all_unit_tests()
         else:
-            print('app.do_command: unknown command: %r' % command)
+            g.trace('unknown command: %r' % command)
             ### To do: pass the command on to Leo's core.
     #@+node:ekr.20181113053154.1: *4* app.action: dump_redraw_dict
     @flx.action
@@ -433,7 +433,7 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         self.log = LeoBrowserLog(frame)
         self.menu = LeoBrowserMenu(frame)
         self.iconBar = LeoBrowserIconBar(c, frame)
-        self.statusLine = LeoBrowserStatusLine(frame)
+        self.statusLine = LeoBrowserStatusLine(c, frame)
             # NullFrame does this in createStatusLine.
         
     def finishCreate(self):
@@ -503,8 +503,8 @@ class LeoBrowserMinibuffer (object):
 #@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine
 class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
     
-    def __init__(self, parentFrame):
-        super().__init__(parentFrame)
+    def __init__(self, c, parentFrame):
+        super().__init__(c, parentFrame)
         self.root = Root()
 
     #@+others
@@ -513,7 +513,7 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
 class LeoBrowserTree(leoFrame.NullTree):
     
     def __init__(self, frame):
-        super().__init__(frame=None)
+        super().__init__(frame)
         self.root = Root()
 
     #@+others
