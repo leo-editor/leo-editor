@@ -63,7 +63,9 @@ class LeoApp(flx.PyComponent):
         c, g = self.open_bridge()
         print('app.init: c.frame', repr(c.frame))
         self.c = c
-        self.gui = LeoBrowserGui(c)
+        self.gui = LeoBrowserGui()
+        self.gui.createLeoFrame(c, title=c.computeWindowTitle(c.mFileName))
+            # NullGui.createLeoFrame.
         # Create all data-related ivars.
         self.create_all_data()
         # Create the main window and all its components.
@@ -96,7 +98,8 @@ class LeoApp(flx.PyComponent):
             h = 'Active Unit Tests'
             p = g.findTopLevelNode(c, h, exact=True)
             if p:
-                self.gui.frame.tree.select(p)
+                ### self.gui.frame.tree.select(p)
+                c.frame.tree.select(p)
             else:
                 print('do_command: select: not found: %s' % h)
         elif command == 'test':
@@ -239,7 +242,7 @@ class LeoApp(flx.PyComponent):
                 'parent': parent_ap,
                 'children': [self.p_to_ap(z) for z in p.children()],
             })
-        elif debug: ###
+        elif debug:
             # Not an error.
             print('app.send_children_to_tree: no children', p.h)
     #@+node:ekr.20181111095637.1: *4* app.action: set_body
@@ -369,8 +372,6 @@ class LeoApp(flx.PyComponent):
     #@+node:ekr.20181105091545.1: *3* app.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
-        ### Monkey-Patch leoBridge.createGui???
-        
         bridge = leoBridge.controller(gui = None,
             loadPlugins = False,
             readSettings = False,
@@ -383,7 +384,6 @@ class LeoApp(flx.PyComponent):
             return
         g = bridge.globals()
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unitTest.leo')
-            ### 'core', 'LeoPyRef.leo')
         if not g.os_path_exists(path):
             flx.logger.error('open_bridge: does not exist: %r' % path)
             return
@@ -401,7 +401,8 @@ class LeoApp(flx.PyComponent):
         h = 'Active Unit Tests'
         p = g.findTopLevelNode(c, h, exact=True)
         if p:
-            self.gui.frame.tree.select(p)
+            ### self.gui.frame.tree.select(p)
+            c.frame.tree.select(p)
             c.debugCommands.runSelectedUnitTestsLocally()
             print('===== app.run_all_unit_tests: Done')
         else:
@@ -411,30 +412,29 @@ class LeoApp(flx.PyComponent):
 #@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
 class LeoBrowserBody(leoFrame.NullBody):
    
-    def __init__(self, c):
-        # pylint: disable=arguments-differ
-        super().__init__(frame=None, parentFrame=None)
-        self.c = c
+    def __init__(self, frame):
+        super().__init__(frame, parentFrame=None)
         self.root = Root()
         self.widget = None
-        self.wrapper = leoFrame.StringTextWrapper(c, 'body')
 
     #@+others
     #@-others
 #@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
 class LeoBrowserFrame(leoFrame.NullFrame):
     
-    def __init__(self, c):
+    def __init__(self, c, title, gui):
         '''Ctor for the LeoBrowserFrame class.'''
-        # pylint: disable=arguments-differ
-        super().__init__(c, title='<LeoBrowserFrame.title>', gui=None)
+        super().__init__(c, title, gui)
         assert self.c == c
+        frame = self
         self.root = Root()
-        self.body = LeoBrowserBody(c)
-        self.tree = LeoBrowserTree(c)
-        self.log = LeoBrowserLog(c)
-        self.status_line = LeoBrowserStatusLine(c)
-            # NullFrame does not do this.
+        self.body = LeoBrowserBody(frame)
+        self.tree = LeoBrowserTree(frame)
+        self.log = LeoBrowserLog(frame)
+        self.menu = LeoBrowserMenu(frame)
+        self.iconBar = LeoBrowserIconBar(c, frame)
+        self.statusLine = LeoBrowserStatusLine(frame)
+            # NullFrame does this in createStatusLine.
         
     def finishCreate(self):
         '''Override NullFrame.finishCreate.'''
@@ -446,12 +446,9 @@ class LeoBrowserFrame(leoFrame.NullFrame):
 #@+node:ekr.20181113041113.1: *3* class LeoBrowserGui
 class LeoBrowserGui(leoGui.NullGui):
 
-    def __init__ (self, c):
-        # pylint: disable=arguments-differ
+    def __init__ (self, guiName='nullGui'):
         super().__init__(guiName='BrowserGui')
-        self.c = c
-        self.frame = LeoBrowserFrame(c)
-        self.last_frame = None
+        ### self.last_frame = None
         self.root = Root()
         
     def echo(self):
@@ -465,22 +462,18 @@ class LeoBrowserGui(leoGui.NullGui):
 #@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
 class LeoBrowserIconBar(leoFrame.NullIconBarClass):
 
-    def __init__(self, c):
-        # pylint: disable=arguments-differ
-        super().__init__(c, parentFrame=None)
+    def __init__(self, c, parentFrame):
+        super().__init__(c, parentFrame)
         assert self.c == c
         self.root = Root()
-        self.w = g.NullObject() ###
             
     #@+others
     #@-others
 #@+node:ekr.20181115092337.22: *3* class LeoBrowserLog
 class LeoBrowserLog(leoFrame.NullLog):
     
-    def __init__(self, c):
-        # pylint: disable=arguments-differ
-        super().__init__(frame=None, parentFrame=None)
-        self.c = c
+    def __init__(self, frame, parentFrame=None):
+        super().__init__(frame, parentFrame)
         self.isNull = False
         self.logNumber = 0
         self.root = Root()
@@ -491,19 +484,18 @@ class LeoBrowserLog(leoFrame.NullLog):
 #@+node:ekr.20181115092337.31: *3* class LeoBrowserMenu
 class LeoBrowserMenu(leoMenu.NullMenu):
     
-    def __init__(self, c):
-        # pylint: disable=arguments-differ
-        super().__init__(frame=None)
-        self.c = c
+    def __init__(self, frame):
+        super().__init__(frame)
         self.root = Root()
 
     #@+others
     #@-others
-#@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer
+#@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer (not used)
 class LeoBrowserMinibuffer (object):
     
-    def __init__(self, c):
+    def __init__(self, c, frame):
         self.c = c
+        self.frame = frame
         self.root = Root()
         
     #@+others
@@ -511,10 +503,8 @@ class LeoBrowserMinibuffer (object):
 #@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine
 class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
     
-    def __init__(self, c):
-        # pylint: disable=arguments-differ
-        super().__init__(c, parentFrame=None)
-        assert self.c == c
+    def __init__(self, parentFrame):
+        super().__init__(parentFrame)
         self.root = Root()
 
     #@+others
@@ -522,10 +512,8 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
 #@+node:ekr.20181115092337.57: *3* class LeoBrowserTree
 class LeoBrowserTree(leoFrame.NullTree):
     
-    def __init__(self, c):
-        # pylint: disable=arguments-differ
+    def __init__(self, frame):
         super().__init__(frame=None)
-        self.c = c
         self.root = Root()
 
     #@+others
