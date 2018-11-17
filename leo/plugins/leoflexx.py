@@ -47,20 +47,25 @@ def suppress_unwanted_log_messages():
     allowed = r'(Traceback|Critical|Error|Leo|Session|Starting|Stopping|Warning)'
     pattern = re.compile(allowed, re.IGNORECASE)
     flx.set_log_level('INFO', pattern)
-#@+node:ekr.20181107052522.1: ** class LeoApp(PyComponent)
+#@+node:ekr.20181107052522.1: ** class LeoBrowserApp(PyComponent)
 # pscript never converts flx.PyComponents to JS.
 
-class LeoApp(flx.PyComponent):
+class LeoBrowserApp(flx.PyComponent):
     '''
-    The Leo Application.
+    The browser component of Leo in the browser.
     This is self.root for all flx.Widget objects!
+    This is *not* g.app. Leo's core defines g.app.
     '''
     # This may be optional, but it doesn't hurt.
     main_window = flx.ComponentProp(settable=True)
 
     def init(self):
         c, g = self.open_bridge()
-        print('app.init: c.frame', repr(c.frame))
+        g.app.debug = ['keys',]
+            # For k.masterKeyHandler.
+        g.trace('(LeoBrowserApp) c.frame', repr(c.frame))
+        g.trace('(LeoBrowserApp) g.app', repr(g.app))
+        g.trace('(LeoBrowserApp) g.app.gui', repr(g.app.gui))
         self.c = c
         self.gui = gui = LeoBrowserGui()
         title = c.computeWindowTitle(c.mFileName)
@@ -118,6 +123,35 @@ class LeoApp(flx.PyComponent):
         else:
             g.trace('unknown command: %r' % command)
             ### To do: pass the command on to Leo's core.
+    #@+node:ekr.20181117163223.1: *4* app.action: do_key
+    @flx.action
+    def do_key (self, ev, kind):
+        '''
+        https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
+        See Widget._create_key_event in flexx/ui/_widget.py:
+            
+        Modifiers: 'Alt', 'Shift', 'Ctrl', 'Meta'
+            
+        Keys: 'Enter', 'Tab', 'Escape', 'Delete'
+              'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp',
+        
+        '''
+        c = self.c
+        # ev is a dict, keys are type, source, key, modifiers
+        # mods is a list.
+        key, mods = ev ['key'], ev ['modifiers']
+        g.trace(repr(mods), repr(key))
+        char = None
+        binding = key ### not correct.
+        event = { 'c': c }
+        g.trace('binding', binding)
+        widget = getattr(c.frame, kind)
+        g.trace('widget', widget)
+        key_event = leoGui.LeoKeyEvent(c, char, event, binding, widget)
+            # # x=None, y=None, x_root=None, y_root=None
+        g.trace(key_event)
+        c.k.masterKeyHandler(key_event)
+      
     #@+node:ekr.20181113053154.1: *4* app.action: dump_redraw_dict
     @flx.action
     def dump_redraw_dict(self, d):
@@ -517,12 +551,18 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         super().__init__(c, parentFrame)
         self.root = Root()
 
+    #
+    # Overrides.
     def clear(self):
         self.put('')
     
     def get(self):
         g.trace('(LeoBrowserStatusLine): NOT READY')
         return ''
+        
+    def update(self):
+        g.trace('(LeoBrowserStatusLine)')
+        super().update()
     
     def put(self, s, bg=None, fg=None):
         w = self.root.main_window
@@ -676,6 +716,9 @@ class LeoFlexxStatusLine(flx.Widget):
             self.widget2 = flx.LineEdit(flex=1, placeholder_text='Status area 2')
         self.widget.apply_style('background: green')
         self.widget2.apply_style('background: green')
+        
+    #@+others
+    #@-others
 
     @flx.action
     def put(self, s, bg, fg):
@@ -835,20 +878,8 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181116172300.1: *5* tree.reaction: key_down
     @flx.reaction('tree.key_press')
     def on_key_press(self, *events):
-        '''
-        https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
-        
-        \n 'Enter', \t  'Tab'
-        Arrows: ArrowUp, ArrowDown, ArrowRight, ArrowLeft
-        
-        Mods: 
-        '''
-
-        # print('tree.on_key_up: event', repr(events))
         for ev in events:
-            # ev is a dict, keys are type, source, key, modifiers
-            key, mods = ev ['key'], ev ['modifiers']
-            print(mods, repr(key))
+            self.root.do_key(ev, 'tree')
     #@+node:ekr.20181111011928.1: *4* tree.populate_children
     def populate_children(self, children, parent_ap):
         '''Populate parent with the children if necessary.'''
@@ -931,7 +962,7 @@ class Root(flx.PyComponent):
         return getattr(self.root, attr)
 #@-others
 if __name__ == '__main__':
-    flx.launch(LeoApp)
+    flx.launch(LeoBrowserApp)
     flx.logger.info('LeoApp: after flx.launch')
     if not debug:
         suppress_unwanted_log_messages()
