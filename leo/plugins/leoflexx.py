@@ -32,7 +32,6 @@ flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
 debug = True
-debug_tree = True
 #@+others
 #@+node:ekr.20181103151350.1: **  init
 def init():
@@ -85,9 +84,13 @@ class LeoApp(flx.PyComponent):
         w = self.main_window
         c = self.c
         if command.startswith('echo'):
-            g.trace(command)
             self.gui.echo()
             self.gui.tree_echo()
+        elif command == 'log':
+            w.log.put('Test message to LeoFlexxLog.put')
+                # Test LeoFlexxLog.put.
+            c.frame.log.put('Test message to LeoBrowserLog.put')
+                # Test LeoBrowserLog.put.
         elif command == 'redraw':
             d = self.make_redraw_dict()
             if 1:
@@ -332,7 +335,7 @@ class LeoApp(flx.PyComponent):
             'c.p': self.p_to_ap(c.p),
             'items': aList,
         }
-        if debug_tree:
+        if 0:
             t2 = time.clock()
             print('app.make_redraw_dict: %5.4f sec' % (t2-t1))
         return d
@@ -448,7 +451,6 @@ class LeoBrowserGui(leoGui.NullGui):
 
     def __init__ (self, guiName='nullGui'):
         super().__init__(guiName='BrowserGui')
-        ### self.last_frame = None
         self.root = Root()
         
     def echo(self):
@@ -474,13 +476,14 @@ class LeoBrowserLog(leoFrame.NullLog):
     
     def __init__(self, frame, parentFrame=None):
         super().__init__(frame, parentFrame)
-        self.isNull = False
-        self.logNumber = 0
         self.root = Root()
-        self.widget = None ### self.createControl(parentFrame)
 
-    #@+others
-    #@-others
+    # Overrides.
+    def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
+        self.root.main_window.log.put(s)
+    
+    def putnl(self, tabName='Log'):
+        self.root.main_window.log.put('')
 #@+node:ekr.20181115092337.31: *3* class LeoBrowserMenu
 class LeoBrowserMenu(leoMenu.NullMenu):
     
@@ -694,7 +697,7 @@ class LeoFlexxTree(flx.Widget):
         #
         # Clear all tree items.
         for item in self.leo_items.values():
-            if debug or debug_tree:
+            if 0: ###
                 print('tree.clear_tree: dispose: %r' % item)
             item.dispose()
         #
@@ -880,7 +883,7 @@ class LeoFlexxTree(flx.Widget):
         s = kind + ev.type
         message = '%s: %s' % (s.rjust(15), id_)
         w.log.put(message)
-        if debug and debug_tree:
+        if 0: ###
             print('tree.show_event: ' + message)
     #@-others
 #@+node:ekr.20181108233657.1: *3* class LeoFlexxTreeItem
