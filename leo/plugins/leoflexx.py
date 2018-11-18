@@ -32,6 +32,7 @@ flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
 debug = True
+print('\n===== debug: %s =====\n' % debug)
 #@+others
 #@+node:ekr.20181103151350.1: **  init
 def init():
@@ -99,11 +100,7 @@ class LeoBrowserApp(flx.PyComponent):
             c.frame.log.put('Test message to LeoBrowserLog.put')
                 # Test LeoBrowserLog.put.
         elif command == 'redraw':
-            d = self.make_redraw_dict()
-            if 1:
-                w.tree.redraw(d)
-            else: # works.
-                self.dump_redraw_dict(d)
+            self.redraw()
         elif command.startswith('sel'):
             # Test LeoBrowserTree.select.
             h = 'Active Unit Tests'
@@ -138,7 +135,7 @@ class LeoBrowserApp(flx.PyComponent):
               'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp',
         '''
         # ev is a dict, keys are type, source, key, modifiers
-        trace = True
+        trace = False and not g.unitTesting
         c = self.c
         key, mods = ev ['key'], ev ['modifiers']
         d = {
@@ -265,22 +262,23 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
-        print('app.redraw')
+        if debug: print('app.redraw')
         w = self.main_window
         d = self.make_redraw_dict()
         w.tree.redraw(d)
 
-        
     #@+node:ekr.20181111202747.1: *4* app.action: select_ap & select_p
     @flx.action
     def select_ap(self, ap):
         '''Select the position in Leo's core corresponding to the archived position.'''
+        trace = False and not g.unitTesting
         c = self.c
         p = self.ap_to_p(ap)
         c.frame.tree.super_select(p)
             # call LeoTree.select, but not self.select_p.
             # This hack prevents an unbounded recursion.
-        g.trace('(LeoBrowserApp)  after: c.p.h: ', c.p.h)
+        if trace:
+            print('app.select_ap: after: c.p.h: ', c.p.h)
 
     @flx.action
     def select_p(self, p):
@@ -289,7 +287,7 @@ class LeoBrowserApp(flx.PyComponent):
         
         Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
         '''
-        # g.trace('(LeoBrowserApp) select_p', repr(p.h))
+        # print'app.select_p', p.h)
         w = self.main_window
         ap = self.p_to_ap(p)
         w.tree.select_ap(ap)
@@ -340,8 +338,9 @@ class LeoBrowserApp(flx.PyComponent):
         # This is likely the only data that ever will be needed.
         self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
         t2 = time.clock()
-        print('app.create_all_data: %5.2f sec. %s entries' % (
-            (t2-t1), len(list(self.gnx_to_vnode.keys()))))
+        if debug:
+            print('app.create_all_data: %5.2f sec. %s entries' % (
+                (t2-t1), len(list(self.gnx_to_vnode.keys()))))
         if debug:
             self.test_round_trip_positions()
     #@+node:ekr.20181111155525.1: *3* app.archived positions
@@ -580,23 +579,23 @@ class LeoBrowserLog(leoFrame.NullLog):
         self.root.main_window.log.put('')
 #@+node:ekr.20181115092337.31: *3* class LeoBrowserMenu
 class LeoBrowserMenu(leoMenu.NullMenu):
-    
-    def __init__(self, frame):
-        super().__init__(frame)
-        self.root = Root()
+    '''Browser wrapper for menus.'''
 
-    #@+others
-    #@-others
+    # def __init__(self, frame):
+        # super().__init__(frame)
+        # self.root = Root()
+
+    # @others
 #@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer (not used)
 class LeoBrowserMinibuffer (object):
+    '''Browser wrapper for minibuffer.'''
     
-    def __init__(self, c, frame):
-        self.c = c
-        self.frame = frame
-        self.root = Root()
+    # def __init__(self, c, frame):
+        # self.c = c
+        # self.frame = frame
+        # self.root = Root()
         
-    #@+others
-    #@-others
+    # @others
 #@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine
 class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
     
@@ -614,6 +613,7 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         return ''
         
     def update(self):
+        # pylint: disable=useless-super-delegation
         # g.trace('(LeoBrowserStatusLine)')
         super().update()
     
@@ -649,6 +649,10 @@ class LeoBrowserTree(leoFrame.NullTree):
     def super_select(self, p):
         '''Call only LeoTree.select.'''
         super().select(p)
+    #@+node:ekr.20181118052203.1: *4* LeoBrowserTree.redraw
+    def redraw(self, p=None):
+        print('===== browser-tree.redraw', g.callers())
+        self.root.redraw()
     #@-others
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181104082144.1: *3* class LeoFlexxBody
@@ -818,7 +822,7 @@ class LeoFlexxTree(flx.Widget):
         self.clear_tree()
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
             # The gnx of the selected tree item.
-        self.redraw_from_dict(redraw_dict)
+        self.redraw_with_dict(redraw_dict)
         
     #@+others
     #@+node:ekr.20181112163222.1: *4* tree.actions
@@ -832,10 +836,9 @@ class LeoFlexxTree(flx.Widget):
         '''
         # pylint: disable=access-member-before-definition
         #
-        print('===== tree.clear_tree')
+        if debug: print('===== tree.clear_tree')
         #
         # Clear all tree items.
-        print('tree.clear')
         for item in self.leo_items.values():
             if 0: ###
                 print('tree.clear_tree: dispose: %r' % item)
@@ -858,7 +861,7 @@ class LeoFlexxTree(flx.Widget):
                 'children': [ap1, ap2, ...],
             }
         '''
-        print('tree.receive_children')
+        if debug: print('tree.receive_children')
         parent_ap = d ['parent']
         children = d ['children']
         self.populate_children(children, parent_ap)
@@ -868,12 +871,13 @@ class LeoFlexxTree(flx.Widget):
         '''
         Clear the present tree and redraw using the redraw_list.
         '''
-        print('===== tree.redraw')
+        if debug: print('===== tree.redraw')
         self.clear_tree()
-        self.redraw_from_dict(redraw_dict)
+        self.redraw_with_dict(redraw_dict)
     #@+node:ekr.20181116083916.1: *5* tree.action: select_ap
     @flx.action
     def select_ap(self, ap):
+        trace = False and not g.unitTesting
         #
         # Unselect.
         if self.leo_selected_ap:
@@ -891,11 +895,11 @@ class LeoFlexxTree(flx.Widget):
         new_key = self.ap_to_key(ap)
         new_item = self.leo_items.get(new_key)
         if new_item:
-            print('tree.select_ap: select:')
+            if trace: print('tree.select_ap: select:')
             new_item.set_selected(True)
             self.leo_selected_ap = ap
         else:
-            print('===== tree.select_ap: error: no item for ap:')
+            if trace: print('===== tree.select_ap: error: no item for ap:')
             self.leo_selected_ap = None
     #@+node:ekr.20181114072307.1: *4* tree.ap_to_key
     def ap_to_key(self, ap):
@@ -955,7 +959,7 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181111011928.1: *4* tree.populate_children
     def populate_children(self, children, parent_ap):
         '''Populate parent with the children if necessary.'''
-        trace = True
+        trace = debug and not g.unitTesting
         parent_key = self.ap_to_key(parent_ap)
         if parent_key in self.leo_populated_dict:
             # print('tree.populate_children: already populated', parent_ap ['headline'])
@@ -973,22 +977,23 @@ class LeoFlexxTree(flx.Widget):
             return
         if trace:
             print('tree.populate_children:', len(children))
-            print('parent_ap', repr(parent_ap))
-            parent_key = self.ap_to_key(parent_ap)
-            print('parent item:', repr(self.leo_items[parent_key]))
+            if 0:
+                print('parent_ap', repr(parent_ap))
+                parent_key = self.ap_to_key(parent_ap)
+                print('parent item:', repr(self.leo_items[parent_key]))
         with self.leo_items[parent_key]:
             for child_ap in children:
                 headline = child_ap ['headline']
                 child_item = LeoFlexxTreeItem(child_ap, text=headline, checked=None, collapsed=True)
                 child_key = self.ap_to_key(child_ap)
                 self.leo_items [child_key] = child_item
-    #@+node:ekr.20181113043131.1: *4* tree.redraw_from_dict & helper
-    def redraw_from_dict(self, d):
+    #@+node:ekr.20181113043131.1: *4* tree.redraw_with_dict & helper
+    def redraw_with_dict(self, d):
         '''
         Create LeoTreeItems from all items in the redraw_dict.
         The tree has already been cleared.
         '''
-        print('==== tree.redraw_from_dict')
+        if debug: print('===== tree.redraw_from_dict')
         self.leo_selected_ap = d ['c.p']
             # Usually set in on_selected_event.
         for item in d ['items']:
