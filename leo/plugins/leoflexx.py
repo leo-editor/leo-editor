@@ -61,10 +61,11 @@ class LeoBrowserApp(flx.PyComponent):
 
     def init(self):
         c, g = self.open_bridge()
-        g.trace('(LeoBrowserApp) id(g)', repr(id(g)))
-        g.trace('(LeoBrowserApp) c.frame', repr(c.frame))
-        g.trace('(LeoBrowserApp) g.app', repr(g.app))
-        g.trace('(LeoBrowserApp) g.app.gui', repr(g.app.gui))
+        ###
+            # g.trace('(LeoBrowserApp) id(g)', repr(id(g)))
+            # g.trace('(LeoBrowserApp) c.frame', repr(c.frame))
+            # g.trace('(LeoBrowserApp) g.app', repr(g.app))
+            # g.trace('(LeoBrowserApp) g.app.gui', repr(g.app.gui))
         self.c = c
         self.gui = gui = LeoBrowserGui()
         # Inject the newly-created gui into g.app.
@@ -275,7 +276,10 @@ class LeoBrowserApp(flx.PyComponent):
         '''Select the position in Leo's core corresponding to the archived position.'''
         c = self.c
         p = self.ap_to_p(ap)
-        c.frame.tree.select(p)
+        c.frame.tree.super_select(p)
+            # call LeoTree.select, but not self.select_p.
+            # This hack prevents an unbounded recursion.
+        g.trace('(LeoBrowserApp)  after: c.p.h: ', c.p.h)
 
     @flx.action
     def select_p(self, p):
@@ -284,7 +288,7 @@ class LeoBrowserApp(flx.PyComponent):
         
         Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
         '''
-        print('app.select_p', repr(p.h))
+        # g.trace('(LeoBrowserApp) select_p', repr(p.h))
         w = self.main_window
         ap = self.p_to_ap(p)
         w.tree.select_ap(ap)
@@ -633,13 +637,17 @@ class LeoBrowserTree(leoFrame.NullTree):
         return 'canvas(tree)' # Required for proper pane bindings.
 
     #@+others
-    #@+node:ekr.20181116081421.1: *4* LeoBrowserTree.select
+    #@+node:ekr.20181116081421.1: *4* LeoBrowserTree.select & super_select
     def select(self, p):
         '''Override NullTree.select, which is actually LeoTree.select.'''
-        # Call LeoTree.select.'''
         super().select(p)
-        # Call app.select_position.
+            # Call LeoTree.select.'''
         self.root.select_p(p)
+            # Call app.select_position.
+
+    def super_select(self, p):
+        '''Call only LeoTree.select.'''
+        super().select(p)
     #@-others
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181104082144.1: *3* class LeoFlexxBody
@@ -922,6 +930,8 @@ class LeoFlexxTree(flx.Widget):
                     # Set the status line directly.
                 self.root.send_children_to_tree(ap)
                     # Send the children back to us.
+                self.root.select_ap(ap)
+                    # Actually select the node!
     #@+node:ekr.20181104080854.3: *5* tree.reaction: on_tree_event
     # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
     @flx.reaction(
