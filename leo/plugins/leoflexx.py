@@ -11,7 +11,7 @@ A stand-alone prototype for Leo using flexx.
 #@+<< leoflexx imports >>
 #@+node:ekr.20181113041314.1: ** << leoflexx imports >>
 import leo.core.leoGlobals as g
-    # **Note**: JS code can not use g.trace or g.callers.
+    # **Note**: JS code can not use g.trace, g.callers, g.pdb.
 import leo.core.leoBridge as leoBridge
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
@@ -61,13 +61,14 @@ class LeoBrowserApp(flx.PyComponent):
 
     def init(self):
         c, g = self.open_bridge()
-        g.app.debug = ['keys',]
-            # For k.masterKeyHandler.
+        g.trace('(LeoBrowserApp) id(g)', repr(id(g)))
         g.trace('(LeoBrowserApp) c.frame', repr(c.frame))
         g.trace('(LeoBrowserApp) g.app', repr(g.app))
         g.trace('(LeoBrowserApp) g.app.gui', repr(g.app.gui))
         self.c = c
         self.gui = gui = LeoBrowserGui()
+        # Inject the newly-created gui into g.app.
+        g.app.gui = gui
         title = c.computeWindowTitle(c.mFileName)
         c.frame = gui.lastFrame = LeoBrowserFrame(c, title, gui)
             # similar to NullGui.createLeoFrame.
@@ -134,24 +135,42 @@ class LeoBrowserApp(flx.PyComponent):
             
         Keys: 'Enter', 'Tab', 'Escape', 'Delete'
               'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp',
-        
         '''
-        c = self.c
         # ev is a dict, keys are type, source, key, modifiers
-        # mods is a list.
+        trace = True
+        c = self.c
         key, mods = ev ['key'], ev ['modifiers']
-        g.trace(repr(mods), repr(key))
-        char = None
-        binding = key ### not correct.
-        event = { 'c': c }
-        g.trace('binding', binding)
+        d = {
+            'ArrowDown':'Down',
+            'ArrowLeft':'Left',
+            'ArrowRight': 'Right',
+            'ArrowUp': 'Up',
+            'PageDown': 'Next',
+            'PageUp': 'Prior',
+        }
+        char = d.get(key, key)
+        if 'Ctrl' in mods:
+            mods.remove('Ctrl')
+            mods.append('Control')
+        binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), key)
         widget = getattr(c.frame, kind)
-        g.trace('widget', widget)
-        key_event = leoGui.LeoKeyEvent(c, char, event, binding, widget)
-            # # x=None, y=None, x_root=None, y_root=None
-        g.trace(key_event)
+        key_event = leoGui.LeoKeyEvent(c,
+            char = char,
+            event = { 'c': c },
+            binding = binding,
+            w = widget.wrapper,
+            # x=None, y=None, x_root=None, y_root=None
+        )
+        if trace:
+            g.app.debug = ['keys',]
+                # For k.masterKeyHandler.
+            g.trace('%r %r ==> %r %r IN %r' % (
+                mods, key, char, binding,  widget.wrapper.getName()))
+            g.trace('before:', c.p.h)
         c.k.masterKeyHandler(key_event)
-      
+        if trace:
+            g.app.debug = []
+            g.trace(' after:', c.p.h)
     #@+node:ekr.20181113053154.1: *4* app.action: dump_redraw_dict
     @flx.action
     def dump_redraw_dict(self, d):
@@ -458,6 +477,7 @@ class LeoBrowserBody(leoFrame.NullBody):
    
     def __init__(self, frame):
         super().__init__(frame, parentFrame=None)
+        assert self.wrapper.getName().startswith('body')
         self.root = Root()
         self.widget = None
 
@@ -482,8 +502,7 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         
     def finishCreate(self):
         '''Override NullFrame.finishCreate.'''
-        # Do not call self.createFirstTreeNode.
-        pass
+        pass # Do not call self.createFirstTreeNode.
 
     #@+others
     #@-others
@@ -501,6 +520,29 @@ class LeoBrowserGui(leoGui.NullGui):
         self.root.main_window.tree.echo('From LeoBrowser Gui')
         
     #@+others
+    #@+node:ekr.20181118020756.1: *4* LeoBrowserGui.insertKeyEvent
+    def insertKeyEvent(self, event, i):
+        '''Insert the key given by event in location i of widget event.w.'''
+        g.trace('(LeoBrowserGui)', g.callers())
+        ### From qt_gui.insertKeyEvent
+            # import leo.core.leoGui as leoGui
+            # assert isinstance(event, leoGui.LeoKeyEvent)
+            # qevent = event.event
+            # assert isinstance(qevent, QtGui.QKeyEvent)
+            # qw = getattr(event.w, 'widget', None)
+            # if qw and isinstance(qw, QtWidgets.QTextEdit):
+                # if 1:
+                    # # Assume that qevent.text() *is* the desired text.
+                    # # This means we don't have to hack eventFilter.
+                    # qw.insertPlainText(qevent.text())
+                # else:
+                    # # Make no such assumption.
+                    # # We would like to use qevent to insert the character,
+                    # # but this would invoke eventFilter again!
+                    # # So set this flag for eventFilter, which will
+                    # # return False, indicating that the widget must handle
+                    # # qevent, which *presumably* is the best that can be done.
+                    # g.app.gui.insert_char_flag = True
     #@-others
 #@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
 class LeoBrowserIconBar(leoFrame.NullIconBarClass):
@@ -518,6 +560,12 @@ class LeoBrowserLog(leoFrame.NullLog):
     def __init__(self, frame, parentFrame=None):
         super().__init__(frame, parentFrame)
         self.root = Root()
+        self.logCtrl = self
+            # Required
+        self.wrapper = self
+            
+    def getName(self):
+        return 'log' # Required for proper pane bindings.
 
     # Overrides.
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
@@ -561,7 +609,7 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         return ''
         
     def update(self):
-        g.trace('(LeoBrowserStatusLine)')
+        # g.trace('(LeoBrowserStatusLine)')
         super().update()
     
     def put(self, s, bg=None, fg=None):
@@ -579,6 +627,10 @@ class LeoBrowserTree(leoFrame.NullTree):
     def __init__(self, frame):
         super().__init__(frame)
         self.root = Root()
+        self.wrapper = self
+        
+    def getName(self):
+        return 'canvas(tree)' # Required for proper pane bindings.
 
     #@+others
     #@+node:ekr.20181116081421.1: *4* LeoBrowserTree.select
@@ -614,6 +666,12 @@ class LeoFlexxBody(flx.Widget):
         self.ace.setTheme("ace/theme/solarized_dark")
         self.ace.getSession().setMode("ace/mode/python")
         self.set_body(body)
+        
+    @flx.reaction('key_press')
+    def on_key_press(self, *events):
+        print('body.on_key_press')
+        for ev in events:
+            self.root.do_key(ev, 'body')
 
     @flx.reaction('size')
     def __on_size(self, *events):
@@ -952,6 +1010,9 @@ class LeoFlexxTreeItem(flx.TreeItem):
     def init(self, leo_ap):
         # pylint: disable=arguments-differ
         self.leo_ap = leo_ap
+        
+    def getName(self):
+        return 'head' # Required, for proper pane bindings.
 #@+node:ekr.20181115191638.1: ** class Root
 class Root(flx.PyComponent):
     
