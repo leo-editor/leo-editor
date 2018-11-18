@@ -153,20 +153,21 @@ class LeoBrowserApp(flx.PyComponent):
         if 'Ctrl' in mods:
             mods.remove('Ctrl')
             mods.append('Control')
-        binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), key)
+        binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
         widget = getattr(c.frame, kind)
+        w = widget.wrapper
         key_event = leoGui.LeoKeyEvent(c,
             char = char,
             event = { 'c': c },
             binding = binding,
-            w = widget.wrapper,
+            w = w,
             # x=None, y=None, x_root=None, y_root=None
         )
         if trace:
             g.app.debug = ['keys',]
                 # For k.masterKeyHandler.
-            g.trace('%r %r ==> %r %r IN %r' % (
-                mods, key, char, binding,  widget.wrapper.getName()))
+            g.trace('%r %r ==> %r %r IN %r = %r' % (
+                mods, key, char, binding,  widget.wrapper.getName(), c.widget_name(w)))
             g.trace('before:', c.p.h)
         c.k.masterKeyHandler(key_event)
         if trace:
@@ -441,7 +442,7 @@ class LeoBrowserApp(flx.PyComponent):
         '''Can't be in JS.'''
         bridge = leoBridge.controller(gui = None,
             loadPlugins = False,
-            readSettings = False,
+            readSettings = True, # Required to get bindings!
             silent = False,
             tracePlugins = False,
             verbose = False, # True: prints log messages.
