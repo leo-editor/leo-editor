@@ -164,14 +164,14 @@ class LeoBrowserApp(flx.PyComponent):
             # x=None, y=None, x_root=None, y_root=None
         )
         if trace:
-            g.app.debug = ['keys',]
+            # g.app.debug = ['keys',]
                 # For k.masterKeyHandler.
             g.trace('%r %r ==> %r %r IN %r = %r' % (
                 mods, key, char, binding,  widget.wrapper.getName(), c.widget_name(w)))
             g.trace('before:', c.p.h)
         c.k.masterKeyHandler(key_event)
         if trace:
-            g.app.debug = []
+            # g.app.debug = []
             g.trace(' after:', c.p.h)
     #@+node:ekr.20181113053154.1: *4* app.action: dump_redraw_dict
     @flx.action
@@ -832,9 +832,10 @@ class LeoFlexxTree(flx.Widget):
         '''
         # pylint: disable=access-member-before-definition
         #
-        # print('===== tree.clear_tree')
+        print('===== tree.clear_tree')
         #
         # Clear all tree items.
+        print('tree.clear')
         for item in self.leo_items.values():
             if 0: ###
                 print('tree.clear_tree: dispose: %r' % item)
@@ -857,6 +858,7 @@ class LeoFlexxTree(flx.Widget):
                 'children': [ap1, ap2, ...],
             }
         '''
+        print('tree.receive_children')
         parent_ap = d ['parent']
         children = d ['children']
         self.populate_children(children, parent_ap)
@@ -866,6 +868,7 @@ class LeoFlexxTree(flx.Widget):
         '''
         Clear the present tree and redraw using the redraw_list.
         '''
+        print('===== tree.redraw')
         self.clear_tree()
         self.redraw_from_dict(redraw_dict)
     #@+node:ekr.20181116083916.1: *5* tree.action: select_ap
@@ -888,7 +891,7 @@ class LeoFlexxTree(flx.Widget):
         new_key = self.ap_to_key(ap)
         new_item = self.leo_items.get(new_key)
         if new_item:
-            # print('tree.select_ap: select:')
+            print('tree.select_ap: select:')
             new_item.set_selected(True)
             self.leo_selected_ap = ap
         else:
@@ -952,8 +955,7 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181111011928.1: *4* tree.populate_children
     def populate_children(self, children, parent_ap):
         '''Populate parent with the children if necessary.'''
-        trace = False
-        if trace: print('tree.populate_children...')
+        trace = True
         parent_key = self.ap_to_key(parent_ap)
         if parent_key in self.leo_populated_dict:
             # print('tree.populate_children: already populated', parent_ap ['headline'])
@@ -972,12 +974,13 @@ class LeoFlexxTree(flx.Widget):
         if trace:
             print('tree.populate_children:', len(children))
             print('parent_ap', repr(parent_ap))
-            print('parent item:', repr(self.leo_items[parent_ap]))
+            parent_key = self.ap_to_key(parent_ap)
+            print('parent item:', repr(self.leo_items[parent_key]))
         with self.leo_items[parent_key]:
             for child_ap in children:
                 headline = child_ap ['headline']
-                child_key = self.ap_to_key(child_ap)
                 child_item = LeoFlexxTreeItem(child_ap, text=headline, checked=None, collapsed=True)
+                child_key = self.ap_to_key(child_ap)
                 self.leo_items [child_key] = child_item
     #@+node:ekr.20181113043131.1: *4* tree.redraw_from_dict & helper
     def redraw_from_dict(self, d):
@@ -985,7 +988,7 @@ class LeoFlexxTree(flx.Widget):
         Create LeoTreeItems from all items in the redraw_dict.
         The tree has already been cleared.
         '''
-        # print('==== tree.redraw_from_dict')
+        print('==== tree.redraw_from_dict')
         self.leo_selected_ap = d ['c.p']
             # Usually set in on_selected_event.
         for item in d ['items']:
