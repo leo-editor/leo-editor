@@ -262,24 +262,54 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
-        if debug: print('app.redraw')
+        if debug: print('app.redraw', g.callers())
         w = self.main_window
         d = self.make_redraw_dict()
         w.tree.redraw(d)
 
-    #@+node:ekr.20181111202747.1: *4* app.action: select_ap & select_p
+    #@+node:ekr.20181111202747.1: *4* app.action: select_ap & helpers
     @flx.action
     def select_ap(self, ap):
         '''Select the position in Leo's core corresponding to the archived position.'''
-        trace = False and not g.unitTesting
-        c = self.c
+        trace = True and not g.unitTesting
+        c, w = self.c, self.main_window
         p = self.ap_to_p(ap)
         c.frame.tree.super_select(p)
             # call LeoTree.select, but not self.select_p.
             # This hack prevents an unbounded recursion.
+        w.body.set_body(p.v.b)
+        self.set_status_to_unl(p)
+        self.send_children_to_tree(ap, p)
         if trace:
             print('app.select_ap: after: c.p.h: ', c.p.h)
-
+    #@+node:ekr.20181111095640.2: *5* app.action: set_status_to_unl
+    def set_status_to_unl(self, p):
+        '''Output the status line corresponding to ap.'''
+        c, w = self.c, self.main_window
+        headlines = [z.h for z in p.stack]
+        headlines.append(p.h)
+        fn = g.shortFileName(c.fileName())
+        w.status_line.put('') ###
+        w.status_line.put2('%s#%s' % (fn, '->'.join(headlines)))
+    #@+node:ekr.20181111095640.1: *5* app.action: send_children_to_tree
+    def send_children_to_tree(self, parent_ap, p):
+        '''
+        Call w.tree.receive_children(d), where d has the form:
+            {
+                'parent': parent_ap,
+                'children': [ap1, ap2, ...],
+            }
+        '''
+        w = self.main_window
+        if p.hasChildren():
+            w.tree.receive_children({
+                'parent': parent_ap,
+                'children': [self.p_to_ap(z) for z in p.children()],
+            })
+        elif debug:
+            # Not an error.
+            print('app.send_children_to_tree: no children', p.h)
+    #@+node:ekr.20181118061020.1: *4* app.action: select_p
     @flx.action
     def select_p(self, p):
         '''
@@ -291,46 +321,6 @@ class LeoBrowserApp(flx.PyComponent):
         w = self.main_window
         ap = self.p_to_ap(p)
         w.tree.select_ap(ap)
-    #@+node:ekr.20181111095640.1: *4* app.action: send_children_to_tree
-    @flx.action
-    def send_children_to_tree(self, parent_ap):
-        '''
-        Call w.tree.receive_children(d), where d has the form:
-            {
-                'parent': parent_ap,
-                'children': [ap1, ap2, ...],
-            }
-        '''
-        w = self.main_window
-        p = self.ap_to_p(parent_ap)
-        if p.hasChildren():
-            w.tree.receive_children({
-                'parent': parent_ap,
-                'children': [self.p_to_ap(z) for z in p.children()],
-            })
-        elif debug:
-            # Not an error.
-            print('app.send_children_to_tree: no children', p.h)
-    #@+node:ekr.20181111095637.1: *4* app.action: set_body
-    @flx.action
-    def set_body(self, ap):
-        '''Set the body text in LeoFlexxBody to the body text of indicated node.'''
-        w = self.main_window
-        gnx = ap ['gnx']
-        v = self.gnx_to_vnode [gnx]
-        assert v, repr(ap)
-        w.body.set_body(v.b)
-    #@+node:ekr.20181111095640.2: *4* app.action: set_status_to_unl
-    @flx.action
-    def set_status_to_unl(self, ap):
-        '''Output the status line corresponding to ap.'''
-        c, w = self.c, self.main_window
-        gnxs = [z ['gnx'] for z in ap ['stack']]
-        vnodes = [self.gnx_to_vnode[z] for z in gnxs]
-        headlines = [v.h for v in vnodes]
-        headlines.append(ap ['headline'])
-        fn = g.shortFileName(c.fileName())
-        w.status_line.put2('%s#%s' % (fn, '->'.join(headlines)))
     #@+node:ekr.20181114015356.1: *3* app.create_all_data
     def create_all_data(self):
         '''Compute the initial values all data structures.'''
@@ -930,16 +920,12 @@ class LeoFlexxTree(flx.Widget):
             if ev.new_value:
                 # We are selecting a node, not de-selecting it.
                 ap = ev.source.leo_ap
-                self.leo_selected_ap = ap
+                    # Get the ap from the LeoTreeItem.
+                if debug: print('tree.on_selection_event', repr(ap))
+                ### self.leo_selected_ap = ap
+                    ### Do this in tree.select_ap !!!
                     # Track the change.
-                self.root.set_body(ap)
-                    # Set the body text directly.
-                self.root.set_status_to_unl(ap)
-                    # Set the status line directly.
-                self.root.send_children_to_tree(ap)
-                    # Send the children back to us.
                 self.root.select_ap(ap)
-                    # Actually select the node!
     #@+node:ekr.20181104080854.3: *5* tree.reaction: on_tree_event
     # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
     @flx.reaction(
@@ -949,7 +935,7 @@ class LeoFlexxTree(flx.Widget):
     )
     def on_tree_event(self, *events):
         for ev in events:
-            if 0:
+            if 1:
                 self.show_event(ev)
     #@+node:ekr.20181116172300.1: *5* tree.reaction: key_down
     @flx.reaction('tree.key_press')
