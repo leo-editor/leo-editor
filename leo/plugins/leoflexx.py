@@ -286,7 +286,7 @@ class LeoBrowserApp(flx.PyComponent):
     def set_status_to_unl(self, p):
         '''Output the status line corresponding to ap.'''
         c, w = self.c, self.main_window
-        headlines = [z.h for z in p.stack]
+        headlines = [v.h for (v, childIndex) in p.stack]
         headlines.append(p.h)
         fn = g.shortFileName(c.fileName())
         w.status_line.put('') ###
@@ -321,6 +321,11 @@ class LeoBrowserApp(flx.PyComponent):
         w = self.main_window
         ap = self.p_to_ap(p)
         w.tree.select_ap(ap)
+    #@+node:ekr.20181118064309.1: *4* app.action: set_body
+    @flx.action
+    def set_body(self, s):
+        w = self.main_window
+        w.body.set_body(s)
     #@+node:ekr.20181114015356.1: *3* app.create_all_data
     def create_all_data(self):
         '''Compute the initial values all data structures.'''
@@ -472,11 +477,16 @@ class LeoBrowserBody(leoFrame.NullBody):
     def __init__(self, frame):
         super().__init__(frame, parentFrame=None)
         assert self.wrapper.getName().startswith('body')
+        self.c = frame.c
+        assert self.c
         self.root = Root()
         self.widget = None
-
-    #@+others
-    #@-others
+        
+    def onBodyChanged(self, *args, **keys):
+        c = self.c
+        g.trace('body-wrapper', c.p.h)
+        super().onBodyChanged(*args, **keys)
+        self.root.set_body(c.p.b)
 #@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
 class LeoBrowserFrame(leoFrame.NullFrame):
     
