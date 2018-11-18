@@ -851,7 +851,7 @@ class LeoFlexxTree(flx.Widget):
                 'children': [ap1, ap2, ...],
             }
         '''
-        if debug: print('tree.receive_children')
+        # if debug: print('tree.receive_children')
         parent_ap = d ['parent']
         children = d ['children']
         self.populate_children(children, parent_ap)
@@ -921,10 +921,6 @@ class LeoFlexxTree(flx.Widget):
                 # We are selecting a node, not de-selecting it.
                 ap = ev.source.leo_ap
                     # Get the ap from the LeoTreeItem.
-                if debug: print('tree.on_selection_event', repr(ap))
-                ### self.leo_selected_ap = ap
-                    ### Do this in tree.select_ap !!!
-                    # Track the change.
                 self.root.select_ap(ap)
     #@+node:ekr.20181104080854.3: *5* tree.reaction: on_tree_event
     # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
@@ -945,7 +941,7 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181111011928.1: *4* tree.populate_children
     def populate_children(self, children, parent_ap):
         '''Populate parent with the children if necessary.'''
-        trace = debug and not g.unitTesting
+        trace = False and not g.unitTesting
         parent_key = self.ap_to_key(parent_ap)
         if parent_key in self.leo_populated_dict:
             # print('tree.populate_children: already populated', parent_ap ['headline'])
@@ -979,7 +975,7 @@ class LeoFlexxTree(flx.Widget):
         Create LeoTreeItems from all items in the redraw_dict.
         The tree has already been cleared.
         '''
-        if debug: print('===== tree.redraw_from_dict')
+        # if debug: print('===== tree.redraw_from_dict')
         self.leo_selected_ap = d ['c.p']
             # Usually set in on_selected_event.
         for item in d ['items']:
