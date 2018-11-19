@@ -95,38 +95,59 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181111142921.1: *4* app.action: do_command
     @flx.action
     def do_command(self, command):
-
         w = self.main_window
         c = self.c
-        if command.startswith('echo'):
+        
+        #@+others # define test_log & test_select.
+        #@+node:ekr.20181119103144.1: *5* tests
+        def test_echo():
+            print('testing echo...')
             self.gui.echo()
             self.gui.tree_echo()
-        elif command == 'log':
+
+        def test_log():
+            print('testing log...')
             w.log.put('Test message to LeoFlexxLog.put')
                 # Test LeoFlexxLog.put.
             c.frame.log.put('Test message to LeoBrowserLog.put')
                 # Test LeoBrowserLog.put.
-        elif command == 'redraw':
+                
+        def test_positions():
+            print('testing positions...')
+            self.test_round_trip_positions()
+                
+        def test_redraw():
+            print('testing redraw...')
             self.redraw()
-        elif command.startswith('sel'):
-            # Test LeoBrowserTree.select.
+                
+        def test_select():
+            print('testing select...')
             h = 'Active Unit Tests'
             p = g.findTopLevelNode(c, h, exact=True)
             if p:
                 c.frame.tree.select(p)
+                # LeoBrowserTree.select.
             else:
                 g.trace('not found: %s' % h)
+        #@-others
+
+        if command.startswith('echo'):
+            test_echo()
+        elif command == 'log':
+            test_log()
+        elif command == 'redraw':
+            test_redraw()
+        elif command.startswith('sel'):
+            test_select()
         elif command == 'status':
-            if 1:
-                self.update_status_line()
-            elif 1: # works.
-                c.frame.statusLine.put('Test 1 Status')
-                c.frame.statusLine.put1('Test 2 Status')
-            else: # Also works.
-                w.status_line.put('Test 1 Status')
-                w.status_line.put2('Test 2 Status')
-        elif command == 'test':
-            self.test_round_trip_positions()
+            self.update_status_line()
+        elif command == 'test': # All except unit tests.
+            test_echo()
+            test_log()
+            test_positions()
+            test_redraw()
+            test_select()
+        elif command == 'unit':
             self.run_all_unit_tests()
         else:
             g.trace('unknown command: %r' % command)
@@ -513,8 +534,8 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         self.iconBar = LeoBrowserIconBar(c, frame)
         self.statusLine = LeoBrowserStatusLine(c, frame)
             # NullFrame does this in createStatusLine.
-        self.top = NullObject()
-            # Use the local NullObject class for better tracing.
+        self.top = TracingNullObject() if debug else g.NullObject()
+            # Use the TracingNullObject class for better tracing.
         
     def finishCreate(self):
         '''Override NullFrame.finishCreate.'''
@@ -693,7 +714,7 @@ class LeoBrowserTree(leoFrame.NullTree):
 #@+node:ekr.20181119094122.1: *3* class NullObject
 #@@nobeautify
 
-class NullObject(object):
+class TracingNullObject(object):
     '''A tracing version of g.NullObject.'''
     def __init__(self, *args, **keys):
         pass
