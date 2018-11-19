@@ -550,36 +550,24 @@ class LeoBrowserGui(leoGui.NullGui):
         super().__init__(guiName='BrowserGui')
         self.root = Root()
         
+    def isTextWrapper(self, w):
+        '''Return True if w is supposedly a text widget.'''
+        g.trace('==========', repr(w))
+        return True ####
+        
+    def insertKeyEvent(self, event, i):
+        '''Insert the key given by event in location i of widget event.w.'''
+        # Mysterious...
+        assert False, g.callers()
+        
+    # Testing only...
     def echo(self):
         self.root.echo('From LeoBrowser Gui')
         
     def tree_echo(self):
         self.root.main_window.tree.echo('From LeoBrowser Gui')
-        
+
     #@+others
-    #@+node:ekr.20181118020756.1: *4* LeoBrowserGui.insertKeyEvent
-    def insertKeyEvent(self, event, i):
-        '''Insert the key given by event in location i of widget event.w.'''
-        g.trace('(LeoBrowserGui)', g.callers())
-        ### From qt_gui.insertKeyEvent
-            # import leo.core.leoGui as leoGui
-            # assert isinstance(event, leoGui.LeoKeyEvent)
-            # qevent = event.event
-            # assert isinstance(qevent, QtGui.QKeyEvent)
-            # qw = getattr(event.w, 'widget', None)
-            # if qw and isinstance(qw, QtWidgets.QTextEdit):
-                # if 1:
-                    # # Assume that qevent.text() *is* the desired text.
-                    # # This means we don't have to hack eventFilter.
-                    # qw.insertPlainText(qevent.text())
-                # else:
-                    # # Make no such assumption.
-                    # # We would like to use qevent to insert the character,
-                    # # but this would invoke eventFilter again!
-                    # # So set this flag for eventFilter, which will
-                    # # return False, indicating that the widget must handle
-                    # # qevent, which *presumably* is the best that can be done.
-                    # g.app.gui.insert_char_flag = True
     #@-others
 #@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
 class LeoBrowserIconBar(leoFrame.NullIconBarClass):
@@ -601,10 +589,14 @@ class LeoBrowserLog(leoFrame.NullLog):
             # Required
         self.wrapper = self
             
+    # Overrides...
     def getName(self):
         return 'log' # Required for proper pane bindings.
+        
+    def hasSelection(self):
+        # A bug: this should be in the NullGui class.
+        return self.widget.hasSelection()
 
-    # Overrides.
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         self.root.main_window.log.put(s)
     
@@ -711,7 +703,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         ### print('===== browser-tree.redraw', g.callers())
         self.root.redraw()
     #@-others
-#@+node:ekr.20181119094122.1: *3* class NullObject
+#@+node:ekr.20181119094122.1: *3* class TracingNullObject
 #@@nobeautify
 
 class TracingNullObject(object):
@@ -874,6 +866,14 @@ class LeoFlexxMainWindow(flx.Widget):
             ('tree', tree),
         ):
             self._mutate(name, prop)
+            
+    @flx.emitter
+    def key_press(self, e):
+        ev = self._create_key_event(e)
+        print('===== main.key_down.emitter', repr(ev))
+        if ev ['modifiers']:
+            e.preventDefault()
+        return ev
 
     #@+others
     #@-others
@@ -885,6 +885,14 @@ class LeoFlexxMiniBuffer(flx.Widget):
             flx.Label(text='Minibuffer')
             self.widget = flx.LineEdit(flex=1, placeholder_text='Enter command')
         self.widget.apply_style('background: yellow')
+        
+    @flx.emitter
+    def key_press(self, e):
+        ev = self._create_key_event(e)
+        print('===== minibuffer.key_down.emitter', repr(ev))
+        if ev ['modifiers']:
+            e.preventDefault()
+        return ev
     
     @flx.action
     def set_text(self, s):
@@ -910,6 +918,14 @@ class LeoFlexxStatusLine(flx.Widget):
         self.widget2.set_text(status_rt)
         self.widget.apply_style('background: green')
         self.widget2.apply_style('background: green')
+        
+    @flx.emitter
+    def key_press(self, e):
+        ev = self._create_key_event(e)
+        print('===== status line.key_down.emitter', repr(ev))
+        if ev ['modifiers']:
+            e.preventDefault()
+        return ev
 
     @flx.action
     def put(self, s, bg, fg):
@@ -1153,6 +1169,14 @@ class LeoFlexxTreeItem(flx.TreeItem):
         
     def getName(self):
         return 'head' # Required, for proper pane bindings.
+        
+    @flx.emitter
+    def key_press(self, e):
+        ev = self._create_key_event(e)
+        print('===== tree-item.key_down.emitter', repr(ev))
+        if ev ['modifiers']:
+            e.preventDefault()
+        return ev
 #@+node:ekr.20181115191638.1: ** class Root
 class Root(flx.PyComponent):
     
