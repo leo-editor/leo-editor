@@ -77,11 +77,14 @@ class LeoBrowserApp(flx.PyComponent):
         # Create all data-related ivars.
         self.create_all_data()
         # Create the main window and all its components.
-        p = c.rootPosition()
+        ### p = c.rootPosition()
+        c.selectPosition(c.rootPosition()) ### A temp hack.
+        p = c.p
         signon = '%s\n%s' % (g.app.signon, g.app.signon2)
+        status_lt, status_rt = c.frame.statusLine.update()
         body = p.b
         redraw_dict = self.make_redraw_dict()
-        main_window = LeoFlexxMainWindow(body, redraw_dict, signon)
+        main_window = LeoFlexxMainWindow(body, redraw_dict, signon, status_lt, status_rt)
         self._mutate('main_window', main_window)
 
     #@+others
@@ -267,9 +270,10 @@ class LeoBrowserApp(flx.PyComponent):
         '''
         if debug: print('app.redraw', g.callers())
         w = self.main_window
-        d = self.make_redraw_dict()
-        w.tree.redraw(d)
-
+        # Be careful during startup.
+        if w and w.tree:
+            d = self.make_redraw_dict()
+            w.tree.redraw(d)
     #@+node:ekr.20181111202747.1: *4* app.action: select_ap & helpers
     @flx.action
     def select_ap(self, ap):
@@ -313,8 +317,10 @@ class LeoBrowserApp(flx.PyComponent):
         '''
         # print'app.select_p', p.h)
         w = self.main_window
-        ap = self.p_to_ap(p)
-        w.tree.select_ap(ap)
+        # Be careful during startup.
+        if w and w.tree:
+            ap = self.p_to_ap(p)
+            w.tree.select_ap(ap)
     #@+node:ekr.20181118064309.1: *4* app.action: set_body
     @flx.action
     def set_body(self, s):
@@ -608,12 +614,11 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
     def __init__(self, c, parentFrame):
         super().__init__(c, parentFrame)
         self.root = Root()
-        self.root.update_status_line()
         
     #@+others
     #@+node:ekr.20181119045430.1: *4* status_line.clear & get
     def clear(self):
-            self.put('')
+        pass
         
     def get(self):
         g.trace('(LeoBrowserStatusLine): NOT READY')
@@ -621,13 +626,15 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
     #@+node:ekr.20181119045343.1: *4* status_line.put and put1
     def put(self, s, bg=None, fg=None):
         w = self.root.main_window
-        # g.trace('(LeoBrowserStatusLine)', s)
-        w.status_line.put(s, bg, fg)
+        # Be careful during startup.
+        if w and w.status_line:
+            w.status_line.put(s, bg, fg)
 
     def put1(self, s, bg=None, fg=None):
         w = self.root.main_window
-        # g.trace('(LeoBrowserStatusLine)', s)
-        w.status_line.put2(s, bg, fg)
+        # Be careful during startup.
+        if w and w.status_line:
+            w.status_line.put2(s, bg, fg)
     #@+node:ekr.20181119042937.1: *4* status_line.update & helpers
     # Parts of this shouild probably be in Leo's core.
     # The following code is based on QtStatusLineClass.update.
@@ -637,23 +644,25 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         Update the status line, based on the contents of the body.
         
         Called from LeoTree.select, and should also be called from the JS side.
+        
+        Returns (lt_part, rt_part) for LeoBrowserApp.init.
         '''
         if g.app.killed:
             return
         c, p = self.c, self.c.p
         if not p:
             return
-        #
-        # Update the left area.
+        # Calculate lt_part
         row, col = 0, 0 ### To do.
         fcol = c.gotoCommands.find_node_start(p)
-        self.put("line: %2d col: %2d fcol: %s" % (row, col, fcol or ''))
-        #
-        # Update the right area
+        lt_part = "line: %2d col: %2d fcol: %s" % (row, col, fcol or '')
+        # Calculate rt_part.
         headlines = [v.h for (v, childIndex) in p.stack] + [p.h]
-        self.put1('%s#%s' % (
-            g.shortFileName(c.fileName()),
-            '->'.join(headlines)))
+        rt_part = '%s#%s' % (g.shortFileName(c.fileName()), '->'.join(headlines))
+        # Update the status area.
+        self.put(lt_part)
+        self.put1(rt_part)
+        return lt_part, rt_part
     #@-others
 #@+node:ekr.20181115092337.57: *3* class LeoBrowserTree
 class LeoBrowserTree(leoFrame.NullTree):
@@ -765,7 +774,7 @@ class LeoFlexxMainWindow(flx.Widget):
     status_line = flx.ComponentProp(settable=True)
     tree = flx.ComponentProp(settable=True)
 
-    def init(self, body_s, data, signon):
+    def init(self, body_s, data, signon, status_lt, status_rt):
         # pylint: disable=arguments-differ
         ###with flx.TabLayout():
         if 1:
@@ -775,7 +784,7 @@ class LeoFlexxMainWindow(flx.Widget):
                     log = LeoFlexxLog(signon, flex=1)
                 body = LeoFlexxBody(body_s, flex=1)
                 minibuffer = LeoFlexxMiniBuffer()
-                status_line = LeoFlexxStatusLine()
+                status_line = LeoFlexxStatusLine(status_lt, status_rt)
         for name, prop in (
             ('body', body),
             ('log', log),
@@ -810,16 +819,15 @@ class LeoFlexxMiniBuffer(flx.Widget):
 #@+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
 class LeoFlexxStatusLine(flx.Widget):
     
-    def init(self):
+    def init(self, status_lt, status_rt):
         with flx.HBox():
             flx.Label(text='Status Line')
-            self.widget = flx.LineEdit(flex=1, placeholder_text='Status area 1')
-            self.widget2 = flx.LineEdit(flex=1, placeholder_text='Status area 2')
+            self.widget = flx.LineEdit(flex=1)
+            self.widget2 = flx.LineEdit(flex=1)
+        self.widget.set_text(status_lt)
+        self.widget2.set_text(status_rt)
         self.widget.apply_style('background: green')
         self.widget2.apply_style('background: green')
-        
-    #@+others
-    #@-others
 
     @flx.action
     def put(self, s, bg, fg):
