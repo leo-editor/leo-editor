@@ -634,6 +634,7 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
     def __init__(self, c, parentFrame):
         super().__init__(c, parentFrame)
         self.root = Root()
+        self.w = self # Required.
         
     #@+others
     #@+node:ekr.20181119045430.1: *4* status_line.clear & get
