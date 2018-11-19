@@ -3657,6 +3657,9 @@ class KeyHandlerClass(object):
             if not func:
                 return
         commandName = commandName or func and func.__name__ or '<no function>'
+        if 'keys' in g.app.debug:
+            # A very important trace.
+            g.trace(commandName, 'stroke', stroke)
         k.funcReturn = None # For unit testing.
         #
         # Remember the key.
