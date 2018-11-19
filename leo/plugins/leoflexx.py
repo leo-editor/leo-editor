@@ -74,6 +74,8 @@ class LeoBrowserApp(flx.PyComponent):
         title = c.computeWindowTitle(c.mFileName)
         c.frame = gui.lastFrame = LeoBrowserFrame(c, title, gui)
             # Instantiate all wrappers first.
+        # Force minibuffer find mode.
+        c.findCommands.minibuffer_mode = True
         # Create all data-related ivars.
         self.create_all_data()
         # Create the main window and all its components.
