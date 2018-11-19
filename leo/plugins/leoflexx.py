@@ -80,11 +80,11 @@ class LeoBrowserApp(flx.PyComponent):
         ### p = c.rootPosition()
         c.selectPosition(c.rootPosition()) ### A temp hack.
         p = c.p
+        g.trace('app.init: c.p.h:', c.p.h)
         signon = '%s\n%s' % (g.app.signon, g.app.signon2)
-        status_lt, status_rt = c.frame.statusLine.update()
-        body = p.b
+        status_lt, status_rt = c.frame.statusLine.update(p.b, 0)
         redraw_dict = self.make_redraw_dict()
-        main_window = LeoFlexxMainWindow(body, redraw_dict, signon, status_lt, status_rt)
+        main_window = LeoFlexxMainWindow(p.b, redraw_dict, signon, status_lt, status_rt)
         self._mutate('main_window', main_window)
 
     #@+others
@@ -268,7 +268,7 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
-        if debug: print('app.redraw', g.callers())
+        # print('app.redraw', g.callers())
         w = self.main_window
         # Be careful during startup.
         if w and w.tree:
@@ -328,13 +328,13 @@ class LeoBrowserApp(flx.PyComponent):
         w.body.set_body(s)
     #@+node:ekr.20181119044723.1: *4* app.action: update_status_line
     @flx.action
-    def update_status_line(self):
+    def update_status_line(self, body_text=None, insert_point=0):
         '''Update both fields of the status area.'''
         w = self.main_window
         c = self.c
         # Be careful during startup.
         if getattr(w, 'status_line', None):
-            c.frame.statusLine.update()
+            c.frame.statusLine.update(insert_point=insert_point)
         else:
             g.trace('===== status line not instantiated', g.callers())
     #@+node:ekr.20181114015356.1: *3* app.create_all_data
@@ -636,10 +636,7 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         if w and w.status_line:
             w.status_line.put2(s, bg, fg)
     #@+node:ekr.20181119042937.1: *4* status_line.update & helpers
-    # Parts of this shouild probably be in Leo's core.
-    # The following code is based on QtStatusLineClass.update.
-
-    def update(self):
+    def update(self, body_text='', insert_point=0):
         '''
         Update the status line, based on the contents of the body.
         
@@ -653,7 +650,7 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         if not p:
             return
         # Calculate lt_part
-        row, col = 0, 0 ### To do.
+        row, col = g.convertPythonIndexToRowCol(body_text, insert_point)
         fcol = c.gotoCommands.find_node_start(p)
         lt_part = "line: %2d col: %2d fcol: %s" % (row, col, fcol or '')
         # Calculate rt_part.
@@ -731,7 +728,8 @@ class LeoFlexxBody(flx.Widget):
     @flx.action
     def set_body(self, body):
         self.ace.setValue(body)
-        self.root.update_status_line()
+        self.root.update_status_line(body_text=body, insert_point=0)
+
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
 class LeoFlexxLog(flx.Widget):
 
