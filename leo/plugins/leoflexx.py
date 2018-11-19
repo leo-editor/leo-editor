@@ -32,6 +32,7 @@ flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
 debug = True
+debug_focus = True
 debug_keys = True
 debug_tree = False
 print('\n===== debug: %s =====\n' % debug)
@@ -73,6 +74,8 @@ class LeoBrowserApp(flx.PyComponent):
         self.gui = gui = LeoBrowserGui()
         # Inject the newly-created gui into g.app.
         g.app.gui = gui
+        if debug_focus:
+            g.app.debug = ['focus',]
         title = c.computeWindowTitle(c.mFileName)
         c.frame = gui.lastFrame = LeoBrowserFrame(c, title, gui)
             # Instantiate all wrappers first.
@@ -105,6 +108,9 @@ class LeoBrowserApp(flx.PyComponent):
             print('testing echo...')
             self.gui.echo()
             self.gui.tree_echo()
+            
+        def test_focus():
+            print('testing focus...')
 
         def test_log():
             print('testing log...')
@@ -134,6 +140,8 @@ class LeoBrowserApp(flx.PyComponent):
 
         if command.startswith('echo'):
             test_echo()
+        elif command == 'focus':
+            test_focus()
         elif command == 'log':
             test_log()
         elif command == 'redraw':
@@ -538,6 +546,7 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         self.tree = LeoBrowserTree(frame)
         self.log = LeoBrowserLog(frame)
         self.menu = LeoBrowserMenu(frame)
+        self.miniBufferWidget = LeoBrowserMinibuffer(c, frame)
         self.iconBar = LeoBrowserIconBar(c, frame)
         self.statusLine = LeoBrowserStatusLine(c, frame)
             # NullFrame does this in createStatusLine.
@@ -575,6 +584,14 @@ class LeoBrowserGui(leoGui.NullGui):
         '''Return True if w is supposedly a text widget.'''
         name = w.getName() if hasattr(w, 'getName') else None
         return name in ('body', 'log')
+    #@+node:ekr.20181119153936.1: *4* gui.focus...
+    def get_focus(self, *args, **kwargs):
+        g.trace('(gui)', repr(self.focusWidget), g.callers())
+        return self.focusWidget
+
+    def set_focus(self, commander, widget):
+        self.focusWidget = widget
+        g.trace('(gui)', repr(self.focusWidget), g.callers())
     #@-others
 #@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
 class LeoBrowserIconBar(leoFrame.NullIconBarClass):
@@ -600,9 +617,10 @@ class LeoBrowserLog(leoFrame.NullLog):
     def getName(self):
         return 'log' # Required for proper pane bindings.
         
-    def hasSelection(self):
-        # A bug: this should be in the NullGui class.
-        return self.widget.hasSelection()
+    ### Bug has been fixed.
+    # def hasSelection(self):
+        # # A bug: this should be in the NullGui class.
+        # return self.widget.hasSelection()
 
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         self.root.main_window.log.put(s)
@@ -618,16 +636,20 @@ class LeoBrowserMenu(leoMenu.NullMenu):
         # self.root = Root()
 
     # @others
-#@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer (not used)
+#@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer
 class LeoBrowserMinibuffer (object):
     '''Browser wrapper for minibuffer.'''
     
-    # def __init__(self, c, frame):
-        # self.c = c
-        # self.frame = frame
-        # self.root = Root()
-        
-    # @others
+    def __init__(self, c, frame):
+        self.c = c
+        self.frame = frame
+        self.root = Root()
+    
+    # Overrides.
+    def setFocus(self):
+        g.trace('(minibuffer)', g.callers())
+        self.root.main_window.minibuffer.on_pointer_click()
+    
 #@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine
 class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
     
@@ -656,7 +678,11 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         # Be careful during startup.
         if w and w.status_line:
             w.status_line.put2(s, bg, fg)
-    #@+node:ekr.20181119042937.1: *4* status_line.update & helpers
+    #@+node:ekr.20181119154422.1: *4* status_line.setFocus
+    def setFocus(self):
+        g.trace('status_line', g.callers())
+        self.root.status_line.set_focus()
+    #@+node:ekr.20181119042937.1: *4* status_line.update
     def update(self, body_text='', insert_point=0):
         '''
         Update the status line, based on the contents of the body.
@@ -778,7 +804,7 @@ class LeoFlexxBody(flx.Widget):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        print('===== body.key_down.emitter', repr(ev))
+        # print('===== body.key_down.emitter', repr(ev))
         if ev ['modifiers']:
             e.preventDefault()
         return ev
@@ -822,7 +848,7 @@ class LeoFlexxLog(flx.Widget):
         """Overload key_press emitter to override browser commands."""
         ev = self._create_key_event(e)
         mods = ev ['modifiers']
-        print('===== log.key_down.emitter', repr(ev))
+        # print('===== log.key_down.emitter', repr(ev))
         if mods:
             e.preventDefault()
         return ev
@@ -878,7 +904,7 @@ class LeoFlexxMainWindow(flx.Widget):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        print('===== main.key_down.emitter', repr(ev))
+        ### print('===== main.key_down.emitter', repr(ev))
         if ev ['modifiers']:
             e.preventDefault()
         return ev
@@ -897,17 +923,29 @@ class LeoFlexxMiniBuffer(flx.Widget):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        print('===== minibuffer.key_down.emitter', repr(ev))
+        ### print('===== minibuffer.key_down.emitter', repr(ev))
         if ev ['modifiers']:
             e.preventDefault()
         return ev
-    
+        
+    @flx.action
+    def set_focus(self):
+        print('minibuffer.set_focus')
+        ### RawJS('''document.getElementById("myAnchor").focus();''')
+
     @flx.action
     def set_text(self, s):
         self.widget.set_text(s)
         
+    @flx.reaction('widget.pointer_click')
+    def on_pointer_click(self, *events):
+        print('on_pointer_click')
+        for ev in events:
+            print(repr(ev))
+
     @flx.reaction('widget.user_done')
-    def on_event(self, *events):
+    def on_user_done(self, *events):
+        print('on_user_done')
         for ev in events:
             command = self.widget.text
             if command.strip():
@@ -930,7 +968,7 @@ class LeoFlexxStatusLine(flx.Widget):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        print('===== status line.key_down.emitter', repr(ev))
+        ### print('===== status line.key_down.emitter', repr(ev))
         if ev ['modifiers']:
             e.preventDefault()
         return ev
@@ -971,7 +1009,7 @@ class LeoFlexxTree(flx.Widget):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        print('===== tree.key_down.emitter', repr(ev))
+        ### print('===== tree.key_down.emitter', repr(ev))
         if ev ['modifiers']:
             e.preventDefault()
         return ev
@@ -1181,7 +1219,7 @@ class LeoFlexxTreeItem(flx.TreeItem):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        print('===== tree-item.key_down.emitter', repr(ev))
+        ### print('===== tree-item.key_down.emitter', repr(ev))
         if ev ['modifiers']:
             e.preventDefault()
         return ev
