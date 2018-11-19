@@ -73,12 +73,13 @@ class LeoBrowserApp(flx.PyComponent):
         g.app.gui = gui
         title = c.computeWindowTitle(c.mFileName)
         c.frame = gui.lastFrame = LeoBrowserFrame(c, title, gui)
-            # similar to NullGui.createLeoFrame.
+            # Instantiate all wrappers first.
         # Create all data-related ivars.
         self.create_all_data()
         # Create the main window and all its components.
+        p = c.rootPosition()
         signon = '%s\n%s' % (g.app.signon, g.app.signon2)
-        body = c.rootPosition().b
+        body = p.b
         redraw_dict = self.make_redraw_dict()
         main_window = LeoFlexxMainWindow(body, redraw_dict, signon)
         self._mutate('main_window', main_window)
@@ -111,9 +112,11 @@ class LeoBrowserApp(flx.PyComponent):
                 g.trace('not found: %s' % h)
         elif command == 'status':
             if 1:
+                self.update_status_line()
+            elif 1: # works.
                 c.frame.statusLine.put('Test 1 Status')
                 c.frame.statusLine.put1('Test 2 Status')
-            else: # Als works.
+            else: # Also works.
                 w.status_line.put('Test 1 Status')
                 w.status_line.put2('Test 2 Status')
         elif command == 'test':
@@ -278,19 +281,10 @@ class LeoBrowserApp(flx.PyComponent):
             # call LeoTree.select, but not self.select_p.
             # This hack prevents an unbounded recursion.
         w.body.set_body(p.v.b)
-        self.set_status_to_unl(p)
+        self.update_status_line()
         self.send_children_to_tree(ap, p)
         if trace:
             print('app.select_ap: after: c.p.h: ', c.p.h)
-    #@+node:ekr.20181111095640.2: *5* app.action: set_status_to_unl
-    def set_status_to_unl(self, p):
-        '''Output the status line corresponding to ap.'''
-        c, w = self.c, self.main_window
-        headlines = [v.h for (v, childIndex) in p.stack]
-        headlines.append(p.h)
-        fn = g.shortFileName(c.fileName())
-        w.status_line.put('') ###
-        w.status_line.put2('%s#%s' % (fn, '->'.join(headlines)))
     #@+node:ekr.20181111095640.1: *5* app.action: send_children_to_tree
     def send_children_to_tree(self, parent_ap, p):
         '''
@@ -326,6 +320,17 @@ class LeoBrowserApp(flx.PyComponent):
     def set_body(self, s):
         w = self.main_window
         w.body.set_body(s)
+    #@+node:ekr.20181119044723.1: *4* app.action: update_status_line
+    @flx.action
+    def update_status_line(self):
+        '''Update both fields of the status area.'''
+        w = self.main_window
+        c = self.c
+        # Be careful during startup.
+        if getattr(w, 'status_line', None):
+            c.frame.statusLine.update()
+        else:
+            g.trace('===== status line not instantiated', g.callers())
     #@+node:ekr.20181114015356.1: *3* app.create_all_data
     def create_all_data(self):
         '''Compute the initial values all data structures.'''
@@ -482,11 +487,12 @@ class LeoBrowserBody(leoFrame.NullBody):
         self.root = Root()
         self.widget = None
         
-    def onBodyChanged(self, *args, **keys):
-        c = self.c
-        g.trace('body-wrapper', c.p.h)
-        super().onBodyChanged(*args, **keys)
-        self.root.set_body(c.p.b)
+    ### This destroys the body text!
+    # def onBodyChanged(self, *args, **keys):
+        # c = self.c
+        # g.trace('body-wrapper', c.p.h)
+        # super().onBodyChanged(*args, **keys)
+        # ### self.root.set_body(c.p.b)
 #@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
 class LeoBrowserFrame(leoFrame.NullFrame):
     
@@ -602,30 +608,53 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
     def __init__(self, c, parentFrame):
         super().__init__(c, parentFrame)
         self.root = Root()
-
-    #
-    # Overrides.
+        self.root.update_status_line()
+        
+    #@+others
+    #@+node:ekr.20181119045430.1: *4* status_line.clear & get
     def clear(self):
-        self.put('')
-    
+            self.put('')
+        
     def get(self):
         g.trace('(LeoBrowserStatusLine): NOT READY')
         return ''
-        
-    def update(self):
-        # pylint: disable=useless-super-delegation
-        # g.trace('(LeoBrowserStatusLine)')
-        super().update()
-    
+    #@+node:ekr.20181119045343.1: *4* status_line.put and put1
     def put(self, s, bg=None, fg=None):
         w = self.root.main_window
         # g.trace('(LeoBrowserStatusLine)', s)
         w.status_line.put(s, bg, fg)
-    
+
     def put1(self, s, bg=None, fg=None):
         w = self.root.main_window
         # g.trace('(LeoBrowserStatusLine)', s)
         w.status_line.put2(s, bg, fg)
+    #@+node:ekr.20181119042937.1: *4* status_line.update & helpers
+    # Parts of this shouild probably be in Leo's core.
+    # The following code is based on QtStatusLineClass.update.
+
+    def update(self):
+        '''
+        Update the status line, based on the contents of the body.
+        
+        Called from LeoTree.select, and should also be called from the JS side.
+        '''
+        if g.app.killed:
+            return
+        c, p = self.c, self.c.p
+        if not p:
+            return
+        #
+        # Update the left area.
+        row, col = 0, 0 ### To do.
+        fcol = c.gotoCommands.find_node_start(p)
+        self.put("line: %2d col: %2d fcol: %s" % (row, col, fcol or ''))
+        #
+        # Update the right area
+        headlines = [v.h for (v, childIndex) in p.stack] + [p.h]
+        self.put1('%s#%s' % (
+            g.shortFileName(c.fileName()),
+            '->'.join(headlines)))
+    #@-others
 #@+node:ekr.20181115092337.57: *3* class LeoBrowserTree
 class LeoBrowserTree(leoFrame.NullTree):
     
@@ -693,6 +722,7 @@ class LeoFlexxBody(flx.Widget):
     @flx.action
     def set_body(self, body):
         self.ace.setValue(body)
+        self.root.update_status_line()
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
 class LeoFlexxLog(flx.Widget):
 
@@ -941,7 +971,7 @@ class LeoFlexxTree(flx.Widget):
     )
     def on_tree_event(self, *events):
         for ev in events:
-            if 1:
+            if 0:
                 self.show_event(ev)
     #@+node:ekr.20181116172300.1: *5* tree.reaction: key_down
     @flx.reaction('tree.key_press')
