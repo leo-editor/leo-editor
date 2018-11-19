@@ -557,24 +557,24 @@ class LeoBrowserGui(leoGui.NullGui):
         super().__init__(guiName='BrowserGui')
         self.root = Root()
         
-    def isTextWrapper(self, w):
-        '''Return True if w is supposedly a text widget.'''
-        g.trace('==========', repr(w))
-        return True ####
-        
     def insertKeyEvent(self, event, i):
         '''Insert the key given by event in location i of widget event.w.'''
         # Mysterious...
         assert False, g.callers()
-        
+
+    #@+others
+    #@+node:ekr.20181119141540.1: *4* gui.echo and tree_echo (testing)
     # Testing only...
     def echo(self):
         self.root.echo('From LeoBrowser Gui')
         
     def tree_echo(self):
         self.root.main_window.tree.echo('From LeoBrowser Gui')
-
-    #@+others
+    #@+node:ekr.20181119141542.1: *4* gui.isTextWrapper
+    def isTextWrapper(self, w):
+        '''Return True if w is supposedly a text widget.'''
+        name = w.getName() if hasattr(w, 'getName') else None
+        return name in ('body', 'log')
     #@-others
 #@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
 class LeoBrowserIconBar(leoFrame.NullIconBarClass):
