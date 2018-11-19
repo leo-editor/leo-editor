@@ -1844,7 +1844,7 @@ class NullIconBarClass(object):
 class NullLog(LeoLog):
     '''A do-nothing log class.'''
     #@+others
-    #@+node:ekr.20070302095500: *3* Birth
+    #@+node:ekr.20070302095500: *3* NullLog.Birth
     #@+node:ekr.20041012083237: *4* NullLog.__init__
     def __init__(self, frame=None, parentFrame=None):
         # Init the base class.
@@ -1853,25 +1853,28 @@ class NullLog(LeoLog):
         self.logNumber = 0
         self.widget = self.createControl(parentFrame)
             # self.logCtrl is now a property of the base LeoLog class.
-    #@+node:ekr.20120216123546.10951: *4* finishCreate (NullLog)
+    #@+node:ekr.20120216123546.10951: *4* NullLog.finishCreate
     def finishCreate(self):
         pass
-    #@+node:ekr.20041012083237.1: *4* createControl
+    #@+node:ekr.20041012083237.1: *4* NullLog.createControl
     def createControl(self, parentFrame):
         return self.createTextWidget(parentFrame)
-    #@+node:ekr.20070302095121: *4* createTextWidget (NullLog)
+    #@+node:ekr.20070302095121: *4* NullLog.createTextWidge
     def createTextWidget(self, parentFrame):
         self.logNumber += 1
         c = self.c
         log = StringTextWrapper(c=c, name="log-%d" % self.logNumber)
         return log
-    #@+node:ekr.20111119145033.10186: *3* isLogWidget (NullLog)
+    #@+node:ekr.20181119135041.1: *3* NullLog.hasSelection
+    def hasSelection(self):
+        return self.widget.hasSelection()
+    #@+node:ekr.20111119145033.10186: *3* NullLog.isLogWidget
     def isLogWidget(self, w):
         return False
-    #@+node:ekr.20041012083237.2: *3* oops
+    #@+node:ekr.20041012083237.2: *3* NullLog.oops
     def oops(self):
         g.trace("NullLog:", g.callers(4))
-    #@+node:ekr.20041012083237.3: *3* put and putnl (NullLog)
+    #@+node:ekr.20041012083237.3: *3* NullLog.put and putnl
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         # print('(nullGui) print',repr(s))
         if self.enabled:
@@ -1884,7 +1887,7 @@ class NullLog(LeoLog):
     def putnl(self, tabName='Log'):
         if self.enabled:
             g.pr('')
-    #@+node:ekr.20060124085830: *3* tabs (NullLog)
+    #@+node:ekr.20060124085830: *3* NullLog.tabs
     def clearTab(self, tabName, wrap='none'): pass
 
     def createCanvas(self, tabName): pass
