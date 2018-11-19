@@ -513,6 +513,8 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         self.iconBar = LeoBrowserIconBar(c, frame)
         self.statusLine = LeoBrowserStatusLine(c, frame)
             # NullFrame does this in createStatusLine.
+        self.top = NullObject()
+            # Use the local NullObject class for better tracing.
         
     def finishCreate(self):
         '''Override NullFrame.finishCreate.'''
@@ -642,6 +644,7 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         
         Returns (lt_part, rt_part) for LeoBrowserApp.init.
         '''
+        # pylint: disable=arguments-differ
         if g.app.killed:
             return
         c, p = self.c, self.c.p
@@ -687,6 +690,44 @@ class LeoBrowserTree(leoFrame.NullTree):
         ### print('===== browser-tree.redraw', g.callers())
         self.root.redraw()
     #@-others
+#@+node:ekr.20181119094122.1: *3* class NullObject
+#@@nobeautify
+
+class NullObject(object):
+    '''A tracing version of g.NullObject.'''
+    def __init__(self, *args, **keys):
+        pass
+
+    def __call__(self, *args, **keys):
+        return self
+
+    def __repr__(self):
+        return "NullObject"
+
+    def __str__(self):
+        return "NullObject"
+
+    def __bool__(self):
+        return False
+
+    def __delattr__(self, attr):
+        print('')
+        print('NullObject.__delattr__', attr, g.callers())
+        print('')
+        return self
+
+    def __getattr__(self, attr):
+        print('')
+        print('NullObject.__getattr__', attr, g.callers())
+        print('')
+        return self
+
+    def __setattr__(self, attr, val):
+        print('')
+        print('NullObject.__setattr__', attr, g.callers())
+        print('')
+        return self
+
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181104082144.1: *3* class LeoFlexxBody
 
@@ -839,6 +880,7 @@ class LeoFlexxMiniBuffer(flx.Widget):
 class LeoFlexxStatusLine(flx.Widget):
     
     def init(self, status_lt, status_rt):
+        # pylint: disable=arguments-differ
         with flx.HBox():
             flx.Label(text='Status Line')
             self.widget = flx.LineEdit(flex=1)
