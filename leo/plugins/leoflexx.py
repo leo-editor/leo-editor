@@ -32,6 +32,7 @@ flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
 debug = True
+debug_keys = True
 debug_tree = False
 print('\n===== debug: %s =====\n' % debug)
 #@+others
@@ -165,8 +166,7 @@ class LeoBrowserApp(flx.PyComponent):
               'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp',
         '''
         # ev is a dict, keys are type, source, key, modifiers
-        trace = False and not g.unitTesting
-        trace_master_key_handler = False
+        trace = debug_keys and not g.unitTesting
         c = self.c
         key, mods = ev ['key'], ev ['modifiers']
         d = {
@@ -181,18 +181,25 @@ class LeoBrowserApp(flx.PyComponent):
         if 'Ctrl' in mods:
             mods.remove('Ctrl')
             mods.append('Control')
+        ###
+            # # Required by Leo's core.  Big sigh.
+            # if mods and key.isalpha() and len(key) == 1:
+                # binding_char = key.upper()
+            # else:
+                # binding_char = key
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
         widget = getattr(c.frame, kind)
         w = widget.wrapper
         key_event = leoGui.LeoKeyEvent(c,
             char = char, event = { 'c': c }, binding = binding, w = w)
-        if trace and trace_master_key_handler:
+        if trace:
             g.app.debug = ['keys',]
-        c.k.masterKeyHandler(key_event)
-        if trace and trace_master_key_handler:
+        try:
+            c.k.masterKeyHandler(key_event)
+        finally:
             g.app.debug = []
         if trace:
-             g.trace('mods: %r key: %r ==> %r %r IN %6r %s' % (
+            g.trace('mods: %r key: %r ==> %r %r IN %6r %s' % (
                 mods, key, char, binding, widget.wrapper.getName(), c.p.h))
     #@+node:ekr.20181113053154.1: *4* app.action: dump_redraw_dict
     @flx.action
