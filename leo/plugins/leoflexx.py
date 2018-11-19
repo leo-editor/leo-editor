@@ -144,7 +144,7 @@ class LeoBrowserApp(flx.PyComponent):
               'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp',
         '''
         # ev is a dict, keys are type, source, key, modifiers
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         trace_master_key_handler = False
         c = self.c
         key, mods = ev ['key'], ev ['modifiers']
@@ -713,6 +713,14 @@ class LeoFlexxBody(flx.Widget):
         self.ace.getSession().setMode("ace/mode/python")
         self.set_body(body)
         
+    @flx.emitter
+    def key_press(self, e):
+        ev = self._create_key_event(e)
+        print('===== body.key_down.emitter', repr(ev))
+        if ev ['modifiers']:
+            e.preventDefault()
+        return ev
+        
     @flx.reaction('key_press')
     def on_key_press(self, *events):
         for ev in events:
@@ -746,6 +754,16 @@ class LeoFlexxLog(flx.Widget):
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
         self.ace.setValue(signon)
+        
+    @flx.emitter
+    def key_press(self, e):
+        """Overload key_press emitter to override browser commands."""
+        ev = self._create_key_event(e)
+        mods = ev ['modifiers']
+        print('===== log.key_down.emitter', repr(ev))
+        if mods:
+            e.preventDefault()
+        return ev
 
     @flx.action
     def put(self, s):
@@ -862,6 +880,14 @@ class LeoFlexxTree(flx.Widget):
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
             # The gnx of the selected tree item.
         self.redraw_with_dict(redraw_dict)
+        
+    @flx.emitter
+    def key_press(self, e):
+        ev = self._create_key_event(e)
+        print('===== tree.key_down.emitter', repr(ev))
+        if ev ['modifiers']:
+            e.preventDefault()
+        return ev
         
     #@+others
     #@+node:ekr.20181112163222.1: *4* tree.actions
