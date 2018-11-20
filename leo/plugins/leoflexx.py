@@ -58,24 +58,21 @@ class LeoBrowserApp(flx.PyComponent):
     '''
     The browser component of Leo in the browser.
     This is self.root for all flx.Widget objects!
-    This is *not* g.app. Leo's core defines g.app.
+    This is *not* g.app. The LeoBride defines g.app.
     '''
     # This may be optional, but it doesn't hurt.
     main_window = flx.ComponentProp(settable=True)
 
     def init(self):
         c, g = self.open_bridge()
-        ###
-            # g.trace('(LeoBrowserApp) id(g)', repr(id(g)))
-            # g.trace('(LeoBrowserApp) c.frame', repr(c.frame))
-            # g.trace('(LeoBrowserApp) g.app', repr(g.app))
-            # g.trace('(LeoBrowserApp) g.app.gui', repr(g.app.gui))
         self.c = c
         self.gui = gui = LeoBrowserGui()
         # Inject the newly-created gui into g.app.
         g.app.gui = gui
         if debug_focus:
-            g.app.debug = ['key', 'focus',]
+            g.app.debug.append('focus')
+        if debug_keys:
+            g.app.debug.append('key')
         title = c.computeWindowTitle(c.mFileName)
         c.frame = gui.lastFrame = LeoBrowserFrame(c, title, gui)
             # Instantiate all wrappers first.
@@ -515,7 +512,7 @@ class LeoBrowserApp(flx.PyComponent):
         else:
             print('do_command: select: not found: %s' % h)
     #@-others
-#@+node:ekr.20181115071559.1: ** Python wrappers
+#@+node:ekr.20181115071559.1: ** Py side: wrapper classes
 #@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
 class LeoBrowserBody(leoFrame.NullBody):
    
