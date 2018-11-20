@@ -107,7 +107,13 @@ class LeoBrowserApp(flx.PyComponent):
             self.gui.tree_echo()
             
         def test_focus():
+            w = self.root.main_window
             print('testing focus...')
+            # print('calling c.minibufferWantsFocusNow')
+            # c.minibufferWantsFocusNow()
+            # c.outerUpdate()
+            print('calling flx.log.set_focus')
+            w.log.set_focus()
 
         def test_log():
             print('testing log...')
@@ -496,9 +502,14 @@ class LeoBrowserApp(flx.PyComponent):
         h = 'Active Unit Tests'
         p = g.findTopLevelNode(c, h, exact=True)
         if p:
-            c.frame.tree.select(p)
-            c.debugCommands.runSelectedUnitTestsLocally()
-            print('===== app.run_all_unit_tests: Done')
+            try:
+                old_debug = g.app.debug
+                g.app.debug = []
+                c.frame.tree.select(p)
+                c.debugCommands.runSelectedUnitTestsLocally()
+                print('===== app.run_all_unit_tests: Done')
+            finally:
+                g.app.debug = old_debug
         else:
             print('do_command: select: not found: %s' % h)
     #@-others
@@ -562,7 +573,8 @@ class LeoBrowserFrame(leoFrame.NullFrame):
 class LeoBrowserGui(leoGui.NullGui):
 
     def __init__ (self, guiName='nullGui'):
-        super().__init__(guiName='BrowserGui')
+        super().__init__(guiName='browser')
+            # leoTest.doTest special-cases the name "browser".
         self.root = Root()
         
     def insertKeyEvent(self, event, i):
@@ -876,6 +888,9 @@ class LeoFlexxLog(flx.Widget):
     @flx.action
     def set_focus(self):
         print('===== flx.log')
+        ### self.on_pointer_click()
+            # JS: TypeError: this.on_pointer_click is not a function - stack trace in browser console (hit F12).
+
     #@+node:ekr.20181120060353.1: *4* log.emitters
     @flx.emitter
     def key_press(self, e):
@@ -955,12 +970,13 @@ class LeoFlexxMiniBuffer(flx.Widget):
     @flx.action
     def set_focus(self):
         print('flx.minibuffer.set_focus')
+        self.on_pointer_click()
         ### RawJS('''document.getElementById("myAnchor").focus();''')
 
     @flx.action
     def set_text(self, s):
+        print('flx.minibuffer.set_text')
         self.widget.set_text(s)
-        
     #@+node:ekr.20181120060856.1: *4* minibuffer.emitters
     @flx.emitter
     def key_press(self, e):
@@ -972,13 +988,13 @@ class LeoFlexxMiniBuffer(flx.Widget):
     #@+node:ekr.20181120060849.1: *4* minibuffer.reactions
     @flx.reaction('widget.pointer_click')
     def on_pointer_click(self, *events):
-        print('on_pointer_click')
+        print('flx.minibuffer: on_pointer_click')
         for ev in events:
             print(repr(ev))
 
     @flx.reaction('widget.user_done')
     def on_user_done(self, *events):
-        print('on_user_done')
+        print('flx.minibuffer: on_user_done')
         for ev in events:
             command = self.widget.text
             if command.strip():
@@ -1178,7 +1194,7 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181120063735.1: *5* tree.action: set_focus
     @flx.action
     def set_focus(self):
-        print('===== flx.tree')
+        print('===== flx.tree.set_focus')
     #@+node:ekr.20181120061140.1: *4* tree.emitters
     @flx.emitter
     def key_press(self, e):

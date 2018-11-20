@@ -21611,6 +21611,10 @@ assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
 # A kludge: run the test in 
 openDirectory = c.frame.openDirectory
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
@@ -22183,6 +22187,8 @@ hr { /* EKR */
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
@@ -22777,6 +22783,8 @@ This is the body of the section.</p>
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
@@ -23369,6 +23377,8 @@ This is the body of the section.</p>
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
@@ -23959,6 +23969,8 @@ This is the body of the section.</p>
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
@@ -24559,6 +24571,8 @@ This is the body of the section.</p>
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
