@@ -51,7 +51,7 @@ def suppress_unwanted_log_messages():
     allowed = r'(Traceback|Critical|Error|Leo|Session|Starting|Stopping|Warning)'
     pattern = re.compile(allowed, re.IGNORECASE)
     flx.set_log_level('INFO', pattern)
-#@+node:ekr.20181107052522.1: ** class LeoBrowserApp(PyComponent)
+#@+node:ekr.20181107052522.1: ** class LeoBrowserApp
 # pscript never converts flx.PyComponents to JS.
 
 class LeoBrowserApp(flx.PyComponent):
@@ -60,7 +60,7 @@ class LeoBrowserApp(flx.PyComponent):
     This is self.root for all flx.Widget objects!
     This is *not* g.app. The LeoBride defines g.app.
     '''
-    # This may be optional, but it doesn't hurt.
+
     main_window = flx.ComponentProp(settable=True)
 
     def init(self):
@@ -527,18 +527,21 @@ class LeoBrowserBody(leoFrame.NullBody):
         assert isinstance(self.wrapper, leoFrame.StringTextWrapper)
         assert self.wrapper.getName().startswith('body')
         self.wrapper.setFocus = self.setFocus
-
+        
+    #@+others
+    #@+node:ekr.20181120062831.1: *4* body_wrapper.setFocus
     def setFocus(self):
         w = self.root.main_window
         g.trace('(body wrapper)')
         w.body.set_focus()
-        
+    #@+node:ekr.20181120063244.1: *4* body_wrapper.onBodyChanged
     def onBodyChanged(self, *args, **keys):
         c = self.c
         g.trace('body-wrapper', c.p.h)
         ### These can destroy the body text.
             # super().onBodyChanged(*args, **keys)
             # self.root.set_body(c.p.b)
+    #@-others
 #@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
 class LeoBrowserFrame(leoFrame.NullFrame):
     
@@ -626,20 +629,22 @@ class LeoBrowserLog(leoFrame.NullLog):
         assert self.wrapper.getName().startswith('log')
         self.wrapper.setFocus = self.setFocus
         
+    def getName(self):
+        return 'log' # Required for proper pane bindings.
+
+    #@+others
+    #@+node:ekr.20181120063043.1: *4* log_wrapper.setFocus
     def setFocus(self):
         w = self.root.main_window
         g.trace('(log wrapper)')
         w.log.set_focus()
-            
-    # Overrides...
-    def getName(self):
-        return 'log' # Required for proper pane bindings.
-
+    #@+node:ekr.20181120063111.1: *4* log_wrapper.put & putnl
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         self.root.main_window.log.put(s)
-    
+
     def putnl(self, tabName='Log'):
         self.root.main_window.log.put('')
+    #@-others
 #@+node:ekr.20181115092337.31: *3* class LeoBrowserMenu
 class LeoBrowserMenu(leoMenu.NullMenu):
     '''Browser wrapper for menus.'''
@@ -662,6 +667,9 @@ class LeoBrowserMinibuffer (object):
     def setFocus(self):
         g.trace('===== (minibuffer)', g.callers())
         self.root.main_window.minibuffer.on_pointer_click()
+        
+    #@+others
+    #@-others
 #@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine
 class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
     
@@ -671,14 +679,14 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         self.w = self # Required.
         
     #@+others
-    #@+node:ekr.20181119045430.1: *4* status_line.clear & get
+    #@+node:ekr.20181119045430.1: *4* status_line_wrapper.clear & get
     def clear(self):
         pass
         
     def get(self):
         g.trace('(LeoBrowserStatusLine): NOT READY')
         return ''
-    #@+node:ekr.20181119045343.1: *4* status_line.put and put1
+    #@+node:ekr.20181119045343.1: *4* status_line_wrapper.put and put1
     def put(self, s, bg=None, fg=None):
         w = self.root.main_window
         # Be careful during startup.
@@ -690,11 +698,11 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         # Be careful during startup.
         if w and w.status_line:
             w.status_line.put2(s, bg, fg)
-    #@+node:ekr.20181119154422.1: *4* status_line.setFocus
+    #@+node:ekr.20181119154422.1: *4* status_line_wrapper.setFocus
     def setFocus(self):
         g.trace('(status_line)', g.callers())
         self.root.status_line.set_focus()
-    #@+node:ekr.20181119042937.1: *4* status_line.update
+    #@+node:ekr.20181119042937.1: *4* status_line_wrapper.update
     def update(self, body_text='', insert_point=0):
         '''
         Update the status line, based on the contents of the body.
@@ -733,7 +741,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         return 'canvas(tree)' # Required for proper pane bindings.
 
     #@+others
-    #@+node:ekr.20181116081421.1: *4* LeoBrowserTree.select & super_select
+    #@+node:ekr.20181116081421.1: *4* tree_wrapper.select & super_select
     def select(self, p):
         '''Override NullTree.select, which is actually LeoTree.select.'''
         super().select(p)
@@ -744,10 +752,15 @@ class LeoBrowserTree(leoFrame.NullTree):
     def super_select(self, p):
         '''Call only LeoTree.select.'''
         super().select(p)
-    #@+node:ekr.20181118052203.1: *4* LeoBrowserTree.redraw
+    #@+node:ekr.20181118052203.1: *4* tree_wrapper.redraw
     def redraw(self, p=None):
         ### print('===== browser-tree.redraw', g.callers())
         self.root.redraw()
+    #@+node:ekr.20181120063844.1: *4* tree_wrapper.setFocus
+    def setFocus(self):
+        w = self.root.main_window
+        g.trace('(tree wrapper)')
+        w.tree.set_focus()
     #@-others
 #@+node:ekr.20181119094122.1: *3* class TracingNullObject
 #@@nobeautify
@@ -786,7 +799,6 @@ class TracingNullObject(object):
         print('NullObject.__setattr__', attr, g.callers())
         print('')
         return self
-
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181104082144.1: *3* class LeoFlexxBody
 
@@ -952,7 +964,7 @@ class LeoFlexxMiniBuffer(flx.Widget):
     #@+node:ekr.20181120060827.1: *4* minibuffer.actions
     @flx.action
     def set_focus(self):
-        print('minibuffer.set_focus')
+        print('flx.minibuffer.set_focus')
         ### RawJS('''document.getElementById("myAnchor").focus();''')
 
     @flx.action
@@ -1173,6 +1185,10 @@ class LeoFlexxTree(flx.Widget):
         else:
             print('===== tree.select_ap: error: no item for ap:')
             self.leo_selected_ap = None
+    #@+node:ekr.20181120063735.1: *5* tree.action: set_focus
+    @flx.action
+    def set_focus(self):
+        print('===== flx.tree')
     #@+node:ekr.20181120061140.1: *4* tree.emitters
     @flx.emitter
     def key_press(self, e):
