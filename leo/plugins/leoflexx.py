@@ -186,12 +186,6 @@ class LeoBrowserApp(flx.PyComponent):
         if 'Ctrl' in mods:
             mods.remove('Ctrl')
             mods.append('Control')
-        ###
-            # # Required by Leo's core.  Big sigh.
-            # if mods and key.isalpha() and len(key) == 1:
-                # binding_char = key.upper()
-            # else:
-                # binding_char = key
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
         widget = getattr(c.frame, kind)
         w = widget.wrapper
@@ -365,9 +359,6 @@ class LeoBrowserApp(flx.PyComponent):
         # Be careful during startup.
         if w and getattr(w, 'status_line', None):
             c.frame.statusLine.update(insert_point=insert_point)
-        ###
-            # else:
-                # g.trace('===== status line not instantiated', g.callers())
     #@+node:ekr.20181114015356.1: *3* app.create_all_data
     def create_all_data(self):
         '''Compute the initial values all data structures.'''
@@ -505,7 +496,6 @@ class LeoBrowserApp(flx.PyComponent):
         h = 'Active Unit Tests'
         p = g.findTopLevelNode(c, h, exact=True)
         if p:
-            ### self.gui.frame.tree.select(p)
             c.frame.tree.select(p)
             c.debugCommands.runSelectedUnitTestsLocally()
             print('===== app.run_all_unit_tests: Done')
