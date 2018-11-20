@@ -67,6 +67,8 @@ class LeoBrowserApp(flx.PyComponent):
         c, g = self.open_bridge()
         self.c = c
         self.gui = gui = LeoBrowserGui()
+        assert gui.guiName() == 'browser'
+            # Important: the leoTest module special cases this name.
         # Inject the newly-created gui into g.app.
         g.app.gui = gui
         if debug_focus:
