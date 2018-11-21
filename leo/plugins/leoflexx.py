@@ -115,28 +115,22 @@ class LeoBrowserApp(flx.PyComponent):
         c = self.c
         
         #@+others # define test_log & test_select.
-        #@+node:ekr.20181119103144.1: *5* tests
+        #@+node:ekr.20181119103144.1: *5* app.tests
         def test_echo():
             print('testing echo...')
             self.gui.echo()
             self.gui.tree_echo()
             
         def test_focus():
-            # w = self.root.main_window
-            print('testing focus...')
             old_debug = g.app.debug
             try:
-                g.app.debug = ['focus',]
-                # print('calling flx.log.set_focus')
-                # w.log.set_focus()
-                print('\ncalling c.set_focus(c.frame.body)')
-                c.set_focus(c.frame.body)
-                print('\ncalling c.set_focus(c.frame.body.widget)')
-                c.set_focus(c.frame.body.widget)
-                print('\ncalling c.set_focus(c.frame.log)')
-                c.set_focus(c.frame.log)
-                print('\ncalling c.set_focus(c.frame.log.widget')
-                c.set_focus(c.frame.log.widget)
+                g.app.debug = [] # 'focus',]
+                if 0:
+                    print('\ncalling c.set_focus(c.frame.body.widget)')
+                    c.set_focus(c.frame.body.widget)
+                if 1:
+                    print('\ncalling c.set_focus(c.frame.log.widget')
+                    c.set_focus(c.frame.log.widget)
             finally:
                 g.app.debug = old_debug
 
@@ -571,7 +565,7 @@ class LeoBrowserBody(leoFrame.NullBody):
     #@+node:ekr.20181120062831.1: *4* body_wrapper.setFocus
     def setFocus(self):
         w = self.root.main_window
-        g.trace('(body wrapper)', g.callers())
+        # g.trace('(body wrapper)')
         w.body.set_focus()
     #@+node:ekr.20181120063244.1: *4* body_wrapper.onBodyChanged
     def onBodyChanged(self, *args, **keys):
@@ -679,7 +673,7 @@ class LeoBrowserLog(leoFrame.NullLog):
     #@+node:ekr.20181120063043.1: *4* log_wrapper.setFocus
     def setFocus(self):
         w = self.root.main_window
-        g.trace('(log wrapper)', g.callers())
+        # g.trace('(log wrapper)')
         w.log.set_focus()
     #@+node:ekr.20181120063111.1: *4* log_wrapper.put & putnl
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
@@ -743,7 +737,7 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
             w.status_line.put2(s, bg, fg)
     #@+node:ekr.20181119154422.1: *4* status_line_wrapper.setFocus
     def setFocus(self):
-        g.trace('(status_line)', g.callers())
+        # g.trace('(status_line)', g.callers())
         self.root.status_line.set_focus()
     #@+node:ekr.20181119042937.1: *4* status_line_wrapper.update
     def update(self, body_text='', insert_point=0):
@@ -806,7 +800,7 @@ class LeoBrowserTree(leoFrame.NullTree):
     #@+node:ekr.20181120063844.1: *4* tree_wrapper.setFocus
     def setFocus(self):
         w = self.root.main_window
-        g.trace('(tree wrapper)', g.callers())
+        # g.trace('(tree wrapper)', g.callers())
         w.tree.set_focus()
     #@-others
 #@+node:ekr.20181119094122.1: *3* class TracingNullObject
@@ -936,6 +930,7 @@ class LeoFlexxLog(flx.Widget):
         ### self.on_pointer_click()
             # JS: TypeError: this.on_pointer_click is not a function - stack trace in browser console (hit F12).
 
+
     #@+node:ekr.20181120060353.1: *4* log.emitters
     @flx.emitter
     def key_press(self, e):
@@ -946,6 +941,7 @@ class LeoFlexxLog(flx.Widget):
         if mods:
             e.preventDefault()
         return ev
+
     #@+node:ekr.20181120060416.1: *4* log.reactions
     @flx.reaction('size')
     def __on_size(self, *events):
