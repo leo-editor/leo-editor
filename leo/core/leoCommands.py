@@ -2936,8 +2936,7 @@ class Commands(object):
         if w and g.app.gui:
             if 'focus' in g.app.debug:
                 print('')
-                g.trace('(c)',  w.__class__.__name__)
-                g.trace(g.callers(6))
+                g.trace('(c)', repr(w))
             c.requestedFocusWidget = w
 
     def set_focus(self, w, force=False):
@@ -2946,8 +2945,7 @@ class Commands(object):
         if w and g.app.gui:
             if trace:
                 print('')
-                g.trace('(c)',  w.__class__.__name__)
-                g.trace(g.callers(6))
+                g.trace('(c)', repr(w))
             g.app.gui.set_focus(c, w)
         else:
             if trace: g.trace('(c) no w')
