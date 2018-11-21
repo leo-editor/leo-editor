@@ -611,7 +611,50 @@ class TestManager(object):
             c.setChanged(changed)
             c.contractAllHeadlines()
             c.redraw(p1)
-    #@+node:ekr.20181102023828.1: *5* do_tests_helper
+    #@+node:ekr.20170504130531.1: *5* class LoggingLog
+    class LoggingStream:
+        '''A class that can searve as a logging stream.'''
+
+        def __init__(self, logger):
+            self.aList = []
+            self.logger = logger
+
+        def write(self, s):
+            '''Called from pr and also unittest.addSuccess/addFailure.'''
+            if 0: # Write everything on a new line.
+                if not s.isspace():
+                    self.logger.info(s.rstrip())
+            else:
+                s = s.strip()
+                if len(s) == 1:
+                    self.aList.append(s)
+                elif s:
+                    if self.aList:
+                        self.logger.info(''.join(self.aList))
+                        self.aList = []
+                    self.logger.info(s.rstrip())
+        def flush(self):
+            pass
+
+    #@+node:ekr.20170504130408.1: *5* tm.create_logging_stream
+    def create_logging_stream(self):
+
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
+
+            # Don't use debug: it includes Qt debug messages.
+        for handler in logger.handlers or []:
+            if isinstance(handler, logging.handlers.SocketHandler):
+                break
+        else:
+            handler = logging.handlers.SocketHandler(
+                'localhost',
+                logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+            )
+            logger.addHandler(handler)
+        stream = self.LoggingStream(logger)
+        return logger, handler, stream
+    #@+node:ekr.20181102023828.1: *5* tm.do_tests_helper
     def do_tests_helper(self, all, marked, verbosity):
 
         c = self.c
@@ -626,11 +669,6 @@ class TestManager(object):
         g.app.unitTestDict = {
             'fail': False, 'c': c, 'g': g, 'p': c.p.copy(),
         }
-        ###
-            # g.app.unitTestDict["fail"] = False
-            # g.app.unitTestDict['c'] = c
-            # g.app.unitTestDict['g'] = g
-            # g.app.unitTestDict['p'] = c.p.copy()
         #
         # 1. Set logger, handler, stream, runner
         gui_name = g.app.gui.guiName().lower()
@@ -651,11 +689,8 @@ class TestManager(object):
         #
         # 2. Run the unit tests, with the NullGui or BrowserGui.
         g.app.old_gui = old_gui = g.app.gui
-        if gui_name == 'browser':
-            from leo.plugins.leowapp import BrowserGui
-            new_gui = BrowserGui()
-        else:
-            new_gui = leoGui.NullGui()
+        new_gui = self.instantiate_gui()
+            # New in Leo 5.8.1.
         old_frame = c.frame
         old_k_w = c.k.w
         try:
@@ -685,7 +720,35 @@ class TestManager(object):
             key = 'unittest/cur/fail'
             archive = [(t.p.gnx, trace2) for(t, trace2) in result.errors]
             c.db [key] = archive
-    #@+node:ekr.20181102030001.1: *5* make_test_suite
+    #@+node:ekr.20120912094259.10549: *5* tm.get_suite_script
+    def get_suite_script(self):
+        s = '''
+
+    try:
+        g.app.scriptDict['suite'] = suite
+    except NameError:
+        pass
+
+    '''
+        return g.adjustTripleString(s, self.c.tab_width)
+    #@+node:ekr.20120912094259.10547: *5* tm.get_test_class_script
+    def get_test_class_script(self):
+        s = '''
+
+    try:
+        g.app.scriptDict['testclass'] = testclass
+    except NameError:
+        pass
+
+    '''
+        return g.adjustTripleString(s, self.c.tab_width)
+    #@+node:ekr.20181121030240.1: *5* tm.instantiate_gui
+    def instantiate_gui(self):
+        '''
+        Subclasses may override to provide a "live" gui instance.
+        '''
+        return leoGui.NullGui()
+    #@+node:ekr.20181102030001.1: *5* tm.make_test_suite
     def make_test_suite(self, all, marked):
         '''Return the test suite or None.'''
         c, tm = self.c, self
@@ -716,72 +779,7 @@ class TestManager(object):
                 found = True
         return suite if found else None
         
-    #@+node:ekr.20170504130531.1: *5* class LoggingLog
-    class LoggingStream:
-        '''A class that can searve as a logging stream.'''
-
-        def __init__(self, logger):
-            self.aList = []
-            self.logger = logger
-
-        def write(self, s):
-            '''Called from pr and also unittest.addSuccess/addFailure.'''
-            if 0: # Write everything on a new line.
-                if not s.isspace():
-                    self.logger.info(s.rstrip())
-            else:
-                s = s.strip()
-                if len(s) == 1:
-                    self.aList.append(s)
-                elif s:
-                    if self.aList:
-                        self.logger.info(''.join(self.aList))
-                        self.aList = []
-                    self.logger.info(s.rstrip())
-        def flush(self):
-            pass
-
-    #@+node:ekr.20170504130408.1: *5* create_logging_stream
-    def create_logging_stream(self):
-
-        logger = logging.getLogger()
-        logger.setLevel(logging.INFO)
-
-            # Don't use debug: it includes Qt debug messages.
-        for handler in logger.handlers or []:
-            if isinstance(handler, logging.handlers.SocketHandler):
-                break
-        else:
-            handler = logging.handlers.SocketHandler(
-                'localhost',
-                logging.handlers.DEFAULT_TCP_LOGGING_PORT,
-            )
-            logger.addHandler(handler)
-        stream = self.LoggingStream(logger)
-        return logger, handler, stream
-    #@+node:ekr.20120912094259.10549: *5* get_suite_script
-    def get_suite_script(self):
-        s = '''
-
-    try:
-        g.app.scriptDict['suite'] = suite
-    except NameError:
-        pass
-
-    '''
-        return g.adjustTripleString(s, self.c.tab_width)
-    #@+node:ekr.20120912094259.10547: *5* get_test_class_script
-    def get_test_class_script(self):
-        s = '''
-
-    try:
-        g.app.scriptDict['testclass'] = testclass
-    except NameError:
-        pass
-
-    '''
-        return g.adjustTripleString(s, self.c.tab_width)
-    #@+node:ekr.20051104075904.13: *5* makeTestCase
+    #@+node:ekr.20051104075904.13: *5* tm.makeTestCase
     def makeTestCase(self, p, setup_script):
         c = self.c
         p = p.copy()
@@ -789,7 +787,7 @@ class TestManager(object):
             return GeneralTestCase(c, p, setup_script)
         else:
             return None
-    #@+node:ekr.20120912094259.10546: *5* makeTestClass
+    #@+node:ekr.20120912094259.10546: *5* tm.makeTestClass
     def makeTestClass(self, p):
         """Create a subclass of unittest.TestCase"""
         c, tm = self.c, self
@@ -830,7 +828,7 @@ class TestManager(object):
             print('\n%s: exception creating test class in %s' % (fname, p.h))
             g.es_print_exception()
             return None
-    #@+node:ekr.20051104075904.12: *5* makeTestSuite
+    #@+node:ekr.20051104075904.12: *5* tm.makeTestSuite
     # This code executes the script in an @suite node.
     # This code assumes that the script sets the 'suite' var to the test suite.
 
