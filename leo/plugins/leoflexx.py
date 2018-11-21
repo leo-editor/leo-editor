@@ -861,14 +861,31 @@ class LeoFlexxBody(flx.Widget):
         # pylint: disable=undefined-variable
             # window
         global window
-        self.ace = window.ace.edit(self.node, "editor")
+        self.ace = window.ace.edit(self.node, "body editor")
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
         self.ace.getSession().setMode("ace/mode/python")
         self.set_body(body)
+        
+    @flx.reaction('size')
+    def __on_size(self, *events):
+        self.ace.resize()
 
     #@+others
-    #@+node:ekr.20181120054826.1: *4* body.actions
+    #@+node:ekr.20181121072246.1: *4* flx_body.key_press
+    @flx.emitter
+    def key_press(self, e):
+        ev = self._create_key_event(e)
+        # print('===== body.key_down.emitter', repr(ev))
+        if ev ['modifiers']:
+            e.preventDefault()
+        return ev
+
+    @flx.reaction('key_press')
+    def on_key_press(self, *events):
+        for ev in events:
+            self.root.do_key(ev, 'body')
+    #@+node:ekr.20181120054826.1: *4* flx_body.overrides
     @flx.action
     def set_body(self, body):
         self.ace.setValue(body)
@@ -877,23 +894,7 @@ class LeoFlexxBody(flx.Widget):
     @flx.action
     def set_focus(self):
         print('===== flx.body.set_focus')
-    #@+node:ekr.20181120054950.1: *4* body.emitters
-    @flx.emitter
-    def key_press(self, e):
-        ev = self._create_key_event(e)
-        # print('===== body.key_down.emitter', repr(ev))
-        if ev ['modifiers']:
-            e.preventDefault()
-        return ev
-    #@+node:ekr.20181120054910.1: *4* body.reactions
-    @flx.reaction('key_press')
-    def on_key_press(self, *events):
-        for ev in events:
-            self.root.do_key(ev, 'body')
-
-    @flx.reaction('size')
-    def __on_size(self, *events):
-        self.ace.resize()
+        self.ace.focus()
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
 class LeoFlexxLog(flx.Widget):
@@ -913,25 +914,21 @@ class LeoFlexxLog(flx.Widget):
         # pylint: disable=undefined-variable
             # window
         global window
-        self.ace = window.ace.edit(self.node, "editor")
+        self.ace = window.ace.edit(self.node, "log editor")
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
         self.ace.setValue(signon)
         
+    @flx.reaction('size')
+    def __on_size(self, *events):
+        self.ace.resize()
+
     #@+others
-    #@+node:ekr.20181120060348.1: *4* log.actions
-    @flx.action
-    def put(self, s):
-        self.ace.setValue(self.ace.getValue() + '\n' + s)
-        
-    @flx.action
-    def set_focus(self):
-        print('===== flx.log.set_focus')
-        ### self.on_pointer_click()
-            # JS: TypeError: this.on_pointer_click is not a function - stack trace in browser console (hit F12).
+    #@+node:ekr.20181121071956.1: *4* flx.log.key_press
+    # Emitters can have any number of arguments.
+    # should return a dictionary, which will get emitted as an event,
+    # with the event type matching the name of the emitter.
 
-
-    #@+node:ekr.20181120060353.1: *4* log.emitters
     @flx.emitter
     def key_press(self, e):
         """Overload key_press emitter to override browser commands."""
@@ -942,15 +939,19 @@ class LeoFlexxLog(flx.Widget):
             e.preventDefault()
         return ev
 
-    #@+node:ekr.20181120060416.1: *4* log.reactions
-    @flx.reaction('size')
-    def __on_size(self, *events):
-        self.ace.resize()
-        
     @flx.reaction('key_press')
     def on_key_press(self, *events):
         for ev in events:
             self.root.do_key(ev, 'log')
+    #@+node:ekr.20181120060348.1: *4* flx.log.overrides
+    @flx.action
+    def put(self, s):
+        self.ace.setValue(self.ace.getValue() + '\n' + s)
+        
+    @flx.action
+    def set_focus(self):
+        # print('===== flx.log.set_focus')
+        self.ace.focus()
     #@-others
         
 #@+node:ekr.20181104082130.1: *3* class LeoFlexxMainWindow
@@ -984,7 +985,7 @@ class LeoFlexxMainWindow(flx.Widget):
         self._mutate('tree', tree)
 
     #@+others
-    #@+node:ekr.20181120060557.1: *4* MainWindow.emitters
+    #@+node:ekr.20181120060557.1: *4* MainWindow.key_press
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
@@ -1003,7 +1004,15 @@ class LeoFlexxMiniBuffer(flx.Widget):
         self.widget.apply_style('background: yellow')
 
     #@+others
-    #@+node:ekr.20181120060827.1: *4* minibuffer.actions
+    #@+node:ekr.20181120060856.1: *4* flx_minibuffer.key_press
+    @flx.emitter
+    def key_press(self, e):
+        ev = self._create_key_event(e)
+        ### print('===== minibuffer.key_down.emitter', repr(ev))
+        if ev ['modifiers']:
+            e.preventDefault()
+        return ev
+    #@+node:ekr.20181120060827.1: *4* flx_minibuffer.overrides
     @flx.action
     def set_focus(self):
         print('flx.minibuffer.set_focus')
@@ -1014,21 +1023,7 @@ class LeoFlexxMiniBuffer(flx.Widget):
     def set_text(self, s):
         print('flx.minibuffer.set_text')
         self.widget.set_text(s)
-    #@+node:ekr.20181120060856.1: *4* minibuffer.emitters
-    @flx.emitter
-    def key_press(self, e):
-        ev = self._create_key_event(e)
-        ### print('===== minibuffer.key_down.emitter', repr(ev))
-        if ev ['modifiers']:
-            e.preventDefault()
-        return ev
-    #@+node:ekr.20181120060849.1: *4* minibuffer.reactions
-    @flx.reaction('widget.pointer_click')
-    def on_pointer_click(self, *events):
-        # print('flx.minibuffer: on_pointer_click')
-        for ev in events:
-            pass # print('on_pointer_click', repr(ev))
-
+    #@+node:ekr.20181120060849.1: *4* flx_minibuffer.on_user_done
     @flx.reaction('widget.user_done')
     def on_user_done(self, *events):
         # print('flx.minibuffer: on_user_done')
@@ -1037,6 +1032,14 @@ class LeoFlexxMiniBuffer(flx.Widget):
             if command.strip():
                 self.widget.set_text('')
                 self.root.do_command(command)
+    #@+node:ekr.20181121072845.1: *4* flx_minibuffer.on_pointer_click (to do)
+    @flx.reaction('widget.pointer_click')
+    def on_pointer_click(self, *events):
+        pass
+        ### To do: enter minibuffer mode.
+            # print('flx.minibuffer: on_pointer_click')
+            # for ev in events:
+                # pass
     #@-others
 #@+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
 class LeoFlexxStatusLine(flx.Widget):
@@ -1053,7 +1056,7 @@ class LeoFlexxStatusLine(flx.Widget):
         self.widget2.apply_style('background: green')
         
     #@+others
-    #@+node:ekr.20181120060957.1: *4* status_line.actions
+    #@+node:ekr.20181120060957.1: *4* flx_status_line.put & put2
     @flx.action
     def put(self, s, bg, fg):
         self.widget.set_text(s)
@@ -1061,7 +1064,7 @@ class LeoFlexxStatusLine(flx.Widget):
     @flx.action
     def put2(self, s, bg, fg):
         self.widget2.set_text(s)
-    #@+node:ekr.20181120060950.1: *4* status_line.emitters
+    #@+node:ekr.20181120060950.1: *4* flx_status_line.key_press
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
@@ -1102,7 +1105,7 @@ class LeoFlexxTree(flx.Widget):
         self.redraw_with_dict(redraw_dict)
 
     #@+others
-    #@+node:ekr.20181114072307.1: *4*  tree.ap_to_key
+    #@+node:ekr.20181114072307.1: *4* flx_tree.ap_to_key
     def ap_to_key(self, ap):
         '''Produce a key for the given ap.'''
         childIndex = ap ['childIndex']
@@ -1120,8 +1123,8 @@ class LeoFlexxTree(flx.Widget):
             print('tree.ap_to_key: new key', ap ['headline'])
             print('key', key)
         return key
-    #@+node:ekr.20181112163222.1: *4* tree.actions
-    #@+node:ekr.20181112163252.1: *5* tree.action: clear_tree
+    #@+node:ekr.20181121073246.1: *4* flx_tree.drawing & selecting
+    #@+node:ekr.20181112163252.1: *5* flx_tree.clear_tree
     @flx.action
     def clear_tree(self):
         '''
@@ -1141,11 +1144,7 @@ class LeoFlexxTree(flx.Widget):
         # Clear the internal data structures.
         self.leo_items = {}
         self.leo_populated_dict = {}
-    #@+node:ekr.20181116054402.1: *5* tree.action: echo
-    @flx.action
-    def echo (self, message=None):
-        print('===== tree echo =====', message or '<Empty Message>')
-    #@+node:ekr.20181110175222.1: *5* tree.action: receive_children & helper
+    #@+node:ekr.20181110175222.1: *5* flx_tree.receive_children & helper
     @flx.action
     def receive_children(self, d):
         '''
@@ -1189,7 +1188,7 @@ class LeoFlexxTree(flx.Widget):
                 child_item = LeoFlexxTreeItem(child_ap, text=headline, checked=None, collapsed=True)
                 child_key = self.ap_to_key(child_ap)
                 self.leo_items [child_key] = child_item
-    #@+node:ekr.20181113043004.1: *5* tree.action: redraw
+    #@+node:ekr.20181113043004.1: *5* flx_tree.redraw
     @flx.action
     def redraw(self, redraw_dict):
         '''
@@ -1199,7 +1198,34 @@ class LeoFlexxTree(flx.Widget):
             print('===== flx.tree.redraw')
         self.clear_tree()
         self.redraw_with_dict(redraw_dict)
-    #@+node:ekr.20181116083916.1: *5* tree.action: select_ap
+    #@+node:ekr.20181113043131.1: *5* flx_tree.redraw_with_dict & helper
+    def redraw_with_dict(self, d):
+        '''
+        Create LeoTreeItems from all items in the redraw_dict.
+        The tree has already been cleared.
+        '''
+        if debug_tree:
+            print('===== tree.redraw_with_dict')
+        self.leo_selected_ap = d ['c.p']
+            # Usually set in on_selected_event.
+        for item in d ['items']:
+            self.create_item_with_parent(item, self.tree)
+
+    def create_item_with_parent(self, item, parent):
+        '''Create a tree item for item and all its visible children.'''
+        with parent:
+            ap = item ['ap']
+            headline = ap ['headline']
+            # Create the tree item.
+            tree_item = LeoFlexxTreeItem(ap, text=headline, checked=None, collapsed=True)
+            key = self.ap_to_key(ap)
+            self.leo_items [key] = tree_item
+            # Create the item's children...
+            if debug_tree and headline == 'Startup':
+                print('create_item_with_parent: key', key, 'ap', ap)
+            for child in item ['children']:
+                self.create_item_with_parent(child, tree_item)
+    #@+node:ekr.20181116083916.1: *5* flx_tree.select_ap
     @flx.action
     def select_ap(self, ap):
         #
@@ -1227,11 +1253,7 @@ class LeoFlexxTree(flx.Widget):
             # This is not necessarily an error???
             print('===== tree.select_ap: error: no item for ap:', repr(ap))
             self.leo_selected_ap = None
-    #@+node:ekr.20181120063735.1: *5* tree.action: set_focus
-    @flx.action
-    def set_focus(self):
-        print('===== flx.tree.set_focus')
-    #@+node:ekr.20181120061140.1: *4* tree.emitters
+    #@+node:ekr.20181120061140.1: *4* flx_tree.key_press
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
@@ -1239,7 +1261,12 @@ class LeoFlexxTree(flx.Widget):
         if ev ['modifiers']:
             e.preventDefault()
         return ev
-    #@+node:ekr.20181112172518.1: *4* tree.reactions
+    #@+node:ekr.20181121073529.1: *4* flx_tree.overrides
+    #@+node:ekr.20181120063735.1: *5* flx_tree.set_focus
+    @flx.action
+    def set_focus(self):
+        print('===== flx.tree.set_focus')
+    #@+node:ekr.20181112172518.1: *4* flx_tree.reactions
     #@+node:ekr.20181109083659.1: *5* tree.reaction: on_selected_event
     @flx.reaction('tree.children**.selected')
     def on_selected_event(self, *events):
@@ -1268,34 +1295,7 @@ class LeoFlexxTree(flx.Widget):
     def on_key_press(self, *events):
         for ev in events:
             self.root.do_key(ev, 'tree')
-    #@+node:ekr.20181113043131.1: *4* tree.redraw_with_dict & helper
-    def redraw_with_dict(self, d):
-        '''
-        Create LeoTreeItems from all items in the redraw_dict.
-        The tree has already been cleared.
-        '''
-        if debug_tree:
-            print('===== tree.redraw_with_dict')
-        self.leo_selected_ap = d ['c.p']
-            # Usually set in on_selected_event.
-        for item in d ['items']:
-            self.create_item_with_parent(item, self.tree)
-
-    def create_item_with_parent(self, item, parent):
-        '''Create a tree item for item and all its visible children.'''
-        with parent:
-            ap = item ['ap']
-            headline = ap ['headline']
-            # Create the tree item.
-            tree_item = LeoFlexxTreeItem(ap, text=headline, checked=None, collapsed=True)
-            key = self.ap_to_key(ap)
-            self.leo_items [key] = tree_item
-            # Create the item's children...
-            if debug_tree and headline == 'Startup':
-                print('create_item_with_parent: key', key, 'ap', ap)
-            for child in item ['children']:
-                self.create_item_with_parent(child, tree_item)
-    #@+node:ekr.20181108232118.1: *4* tree.show_event
+    #@+node:ekr.20181108232118.1: *4* flx_tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
         w = self.root.main_window
@@ -1306,6 +1306,10 @@ class LeoFlexxTree(flx.Widget):
         w.log.put(message)
         if 0: ###
             print('tree.show_event: ' + message)
+    #@+node:ekr.20181116054402.1: *4* flx_tree.testing (to be removed)
+    @flx.action
+    def echo (self, message=None):
+        print('===== tree echo =====', message or '<Empty Message>')
     #@-others
 #@+node:ekr.20181108233657.1: *3* class LeoFlexxTreeItem
 class LeoFlexxTreeItem(flx.TreeItem):
