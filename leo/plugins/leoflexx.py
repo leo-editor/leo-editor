@@ -122,11 +122,11 @@ class LeoBrowserApp(flx.PyComponent):
         
         #@+others # define test_log & test_select.
         #@+node:ekr.20181119103144.1: *5* app.tests
-        def test_echo():
-            print('testing echo...')
-            self.gui.echo()
-            self.gui.tree_echo()
-            
+        # def test_echo():
+            # print('testing echo...')
+            # self.gui.echo()
+            # self.gui.tree_echo()
+
         def test_focus():
             old_debug = g.app.debug
             try:
@@ -164,8 +164,6 @@ class LeoBrowserApp(flx.PyComponent):
 
         if command == 'clear':
             g.cls()
-        elif command.startswith('echo'):
-            test_echo()
         elif command == 'focus':
             test_focus()
         elif command == 'log':
@@ -177,7 +175,6 @@ class LeoBrowserApp(flx.PyComponent):
         elif command == 'status':
             self.update_status_line()
         elif command == 'test': # All except unit tests.
-            test_echo()
             test_log()
             test_positions()
             test_redraw()
@@ -624,13 +621,6 @@ class LeoBrowserGui(leoGui.NullGui):
         assert False, g.callers()
 
     #@+others
-    #@+node:ekr.20181119141540.1: *4* gui.echo and tree_echo (testing)
-    # Testing only...
-    def echo(self):
-        self.root.echo('From LeoBrowser Gui')
-        
-    def tree_echo(self):
-        self.root.main_window.tree.echo('From LeoBrowser Gui')
     #@+node:ekr.20181119141542.1: *4* gui.isTextWrapper
     def isTextWrapper(self, w):
         '''Return True if w is supposedly a text widget.'''
