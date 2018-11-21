@@ -206,6 +206,7 @@ class LeoBrowserApp(flx.PyComponent):
             'ArrowLeft':'Left',
             'ArrowRight': 'Right',
             'ArrowUp': 'Up',
+            'Enter': '\n', # For k.fullCommand, etc.
             'PageDown': 'Next',
             'PageUp': 'Prior',
         }
@@ -542,7 +543,7 @@ class LeoBrowserApp(flx.PyComponent):
             try:
                 old_debug = g.app.debug
                 g.app.failFast = False
-                # g.app.debug = ['focus', 'keys',]
+                g.app.debug = [] # ['focus', 'keys',]
                 c.frame.tree.select(p)
                 tm = BrowserTestManager(c)
                 # Run selected tests locallyk.
@@ -691,24 +692,29 @@ class LeoBrowserMenu(leoMenu.NullMenu):
         # self.root = get_root()
 
     # @others
-#@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer
-class LeoBrowserMinibuffer (object):
+#@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer (StringTextWrapper)
+# Leo's core doesn't define a NullMinibuffer class.
+
+class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
     '''Browser wrapper for minibuffer.'''
     
     def __init__(self, c, frame):
-        self.c = c
+        super().__init__(c, name='minibuffer')
+            # Name must be minibuffer, for gui.isTextWrapper().
+        assert self.c == c, repr(self.c)
+        assert self.widget is None, repr(self.widget)
+        assert self.getName() == 'minibuffer'
         self.frame = frame
         self.root = get_root()
         self.widget = self
         self.wrapper = self
+        # Hook this class up to the key handler.
+        c.k.w = self
     
     # Overrides.
     def setFocus(self):
-        g.trace('===== (minibuffer)')
+        g.trace('===== (minibuffer wrapper)')
         self.root.main_window.minibuffer.set_focus()
-        
-    def getName(self):
-        return 'minibuffer' # For gui.isTextWrapper.
         
     #@+others
     #@-others
