@@ -543,7 +543,7 @@ class LeoBrowserApp(flx.PyComponent):
             try:
                 old_debug = g.app.debug
                 g.app.failFast = False
-                g.app.debug = []
+                g.app.debug = ['key',]
                 c.frame.tree.select(p)
                 tm = BrowserTestManager(c)
                 # Run selected tests locallyk.
@@ -631,11 +631,20 @@ class LeoBrowserGui(leoGui.NullGui):
         
     def tree_echo(self):
         self.root.main_window.tree.echo('From LeoBrowser Gui')
+    #@+node:ekr.20181121104046.1: *4* gui.event_generate
+    def event_generate(self, c, char, shortcut, w):
+        ### Testing only.  This is supposed to be defined only in the base LeoGui class.
+        if 1: ###
+            print('')
+            g.trace('(LeoBrowserGui)', shortcut, w)
+        event = self.create_key_event(c, binding=shortcut, char=char, w=w)
+        c.k.masterKeyHandler(event)
+        c.outerUpdate()
     #@+node:ekr.20181119141542.1: *4* gui.isTextWrapper
     def isTextWrapper(self, w):
         '''Return True if w is supposedly a text widget.'''
         name = w.getName() if hasattr(w, 'getName') else None
-        return name in ('body', 'log')
+        return name in ('body', 'log') or name.startswith('head')
     #@+node:ekr.20181119153936.1: *4* gui.focus...
     def get_focus(self, *args, **kwargs):
         ### g.trace('(gui)', repr(self.focusWidget), g.callers())
@@ -790,9 +799,6 @@ class LeoBrowserTree(leoFrame.NullTree):
         return 'canvas(tree)' # Required for proper pane bindings.
 
     #@+others
-    #@+node:ekr.20181121102237.1: *4* tree_wrapper.endEditLabel
-    def endEditLabel(self):
-        g.trace('===== tree wrapper', self.c.p.h)
     #@+node:ekr.20181116081421.1: *4* tree_wrapper.select & super_select
     def select(self, p):
         '''Override NullTree.select, which is actually LeoTree.select.'''
