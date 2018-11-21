@@ -32,8 +32,9 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
-debug_focus = False
-debug_keys = True
+warnings_only = False
+debug_focus = True # puts 'focus' in g.app.debug.
+debug_keys = True # puts 'keys' in g.app.debug.
 debug_tree = True
 #@+others
 #@+node:ekr.20181121040901.1: **  top-level functions
@@ -93,7 +94,7 @@ class LeoBrowserApp(flx.PyComponent):
         if debug_focus:
             g.app.debug.append('focus')
         if debug_keys:
-            g.app.debug.append('key')
+            g.app.debug.append('keys')
         title = c.computeWindowTitle(c.mFileName)
         c.frame = gui.lastFrame = LeoBrowserFrame(c, title, gui)
             # Instantiate all wrappers first.
@@ -130,7 +131,7 @@ class LeoBrowserApp(flx.PyComponent):
         def test_focus():
             old_debug = g.app.debug
             try:
-                g.app.debug = [] # 'focus',
+                g.app.debug = ['focus', 'keys',]
                 print('\ncalling c.set_focus(c.frame.miniBufferWidget.widget')
                 c.set_focus(c.frame.miniBufferWidget.widget)
             finally:
@@ -220,9 +221,10 @@ class LeoBrowserApp(flx.PyComponent):
         if trace:
             g.app.debug = ['keys',]
         try:
+            old_debug = g.app.debug
             c.k.masterKeyHandler(key_event)
         finally:
-            g.app.debug = []
+            g.app.debug = old_debug
         if trace:
             g.trace('mods: %r key: %r ==> %r %r IN %6r %s' % (
                 mods, key, char, binding, widget.wrapper.getName(), c.p.h))
@@ -540,7 +542,7 @@ class LeoBrowserApp(flx.PyComponent):
             try:
                 old_debug = g.app.debug
                 g.app.failFast = False
-                # g.app.debug = ['key',]
+                # g.app.debug = ['focus', 'keys',]
                 c.frame.tree.select(p)
                 tm = BrowserTestManager(c)
                 # Run selected tests locallyk.
@@ -625,7 +627,7 @@ class LeoBrowserGui(leoGui.NullGui):
     def isTextWrapper(self, w):
         '''Return True if w is supposedly a text widget.'''
         name = w.getName() if hasattr(w, 'getName') else None
-        return name in ('body', 'log') or name.startswith('head')
+        return name in ('body', 'log', 'minibuffer') or name.startswith('head')
     #@+node:ekr.20181119153936.1: *4* gui.focus...
     def get_focus(self, *args, **kwargs):
         ### g.trace('(gui)', repr(self.focusWidget), g.callers())
@@ -704,6 +706,9 @@ class LeoBrowserMinibuffer (object):
     def setFocus(self):
         g.trace('===== (minibuffer)')
         self.root.main_window.minibuffer.set_focus()
+        
+    def getName(self):
+        return 'minibuffer' # For gui.isTextWrapper.
         
     #@+others
     #@-others
@@ -1012,13 +1017,11 @@ class LeoFlexxMiniBuffer(flx.Widget):
         if ev ['modifiers']:
             e.preventDefault()
         return ev
-    #@+node:ekr.20181120060827.1: *4* flx_minibuffer.overrides
+    #@+node:ekr.20181120060827.1: *4* flx_minibuffer.set_focus & set_text
     @flx.action
     def set_focus(self):
         print('flx.minibuffer.set_focus')
         self.widget.emit('pointer_click')
-        ### self.on_pointer_click()
-        ### RawJS('''document.getElementById("myAnchor").focus();''')
 
     @flx.action
     def set_text(self, s):
@@ -1345,6 +1348,7 @@ class BrowserTestManager (leoTest.TestManager):
 if __name__ == '__main__':
     flx.launch(LeoBrowserApp)
     flx.logger.info('LeoApp: after flx.launch')
-    flx.set_log_level('ERROR')
+    flx.set_log_level('ERROR' if warnings_only else 'INFO')
+        # Debug produces too many messages, in general.
     flx.run()
 #@-leo
