@@ -131,8 +131,8 @@ class LeoBrowserApp(flx.PyComponent):
             old_debug = g.app.debug
             try:
                 g.app.debug = [] # 'focus',
-                print('\ncalling c.set_focus(c.frame.miniBufferWidget')
-                c.set_focus(c.frame.miniBufferWidget)
+                print('\ncalling c.set_focus(c.frame.miniBufferWidget.widget')
+                c.set_focus(c.frame.miniBufferWidget.widget)
             finally:
                 g.app.debug = old_debug
 
@@ -633,7 +633,7 @@ class LeoBrowserGui(leoGui.NullGui):
 
     def set_focus(self, commander, widget):
         self.focusWidget = widget
-        if isinstance(widget, leoFrame.StringTextWrapper):
+        if isinstance(widget, (LeoBrowserMinibuffer, leoFrame.StringTextWrapper)):
             # g.trace('(gui):', repr(widget))
             if not g.unitTesting:
                 widget.setFocus()
@@ -698,11 +698,12 @@ class LeoBrowserMinibuffer (object):
         self.frame = frame
         self.root = get_root()
         self.widget = self
+        self.wrapper = self
     
     # Overrides.
     def setFocus(self):
-        g.trace('===== (minibuffer)', g.callers())
-        self.root.main_window.minibuffer.on_pointer_click()
+        g.trace('===== (minibuffer)')
+        self.root.main_window.minibuffer.set_focus()
         
     #@+others
     #@-others
@@ -1015,7 +1016,8 @@ class LeoFlexxMiniBuffer(flx.Widget):
     @flx.action
     def set_focus(self):
         print('flx.minibuffer.set_focus')
-        self.on_pointer_click()
+        self.widget.emit('pointer_click')
+        ### self.on_pointer_click()
         ### RawJS('''document.getElementById("myAnchor").focus();''')
 
     @flx.action
@@ -1031,14 +1033,6 @@ class LeoFlexxMiniBuffer(flx.Widget):
             if command.strip():
                 self.widget.set_text('')
                 self.root.do_command(command)
-    #@+node:ekr.20181121072845.1: *4* flx_minibuffer.on_pointer_click (to do)
-    @flx.reaction('widget.pointer_click')
-    def on_pointer_click(self, *events):
-        pass
-        ### To do: enter minibuffer mode.
-            # print('flx.minibuffer: on_pointer_click')
-            # for ev in events:
-                # pass
     #@-others
 #@+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
 class LeoFlexxStatusLine(flx.Widget):
