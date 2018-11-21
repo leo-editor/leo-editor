@@ -38,12 +38,24 @@ debug_keys = True
 debug_tree = False
 print('\n===== debug: %s =====\n' % debug)
 #@+others
-#@+node:ekr.20181103151350.1: **  init
+#@+node:ekr.20181121040901.1: **  top-level functions
+#@+node:ekr.20181103151350.1: *3* init
 def init():
     # At present, leoflexx is not a true plugin.
     # I am executing leoflexx.py from an external script.
     return False
-#@+node:ekr.20181113041410.1: **  suppress_unwanted_log_messages
+#@+node:ekr.20181121040857.1: *3* get_root
+def get_root():
+    '''
+    Return the LeoBrowserApp instance.
+    
+    This is the same as self.root for any flx.Component.
+    '''
+    root = flx.loop.get_active_component().root
+        # Only called at startup, so this will never be None.
+    assert isinstance(root, LeoBrowserApp), repr(root)
+    return root
+#@+node:ekr.20181113041410.1: *3* suppress_unwanted_log_messages
 def suppress_unwanted_log_messages():
     '''
     Suppress the "Automatically scrolling cursor into view" messages by
@@ -141,7 +153,7 @@ class LeoBrowserApp(flx.PyComponent):
                 
         def test_redraw():
             print('testing redraw...')
-            self.redraw()
+            self.redraw(c.p)
                 
         def test_select():
             print('testing select...')
@@ -547,7 +559,7 @@ class LeoBrowserBody(leoFrame.NullBody):
         super().__init__(frame, parentFrame=None)
         self.c = frame.c
         assert self.c
-        self.root = Root()
+        self.root = get_root()
         self.widget = self.wrapper
         #
         # Monkey-patch self.wrapper, a StringTextWrapper.
@@ -563,6 +575,7 @@ class LeoBrowserBody(leoFrame.NullBody):
         w.body.set_focus()
     #@+node:ekr.20181120063244.1: *4* body_wrapper.onBodyChanged
     def onBodyChanged(self, *args, **keys):
+        # pylint: disable=arguments-differ
         c = self.c
         g.trace('body-wrapper', c.p.h)
         ### These can destroy the body text.
@@ -577,7 +590,7 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         super().__init__(c, title, gui)
         assert self.c == c
         frame = self
-        self.root = Root()
+        self.root = get_root()
         self.body = LeoBrowserBody(frame)
         self.tree = LeoBrowserTree(frame)
         self.log = LeoBrowserLog(frame)
@@ -601,7 +614,7 @@ class LeoBrowserGui(leoGui.NullGui):
     def __init__ (self, guiName='nullGui'):
         super().__init__(guiName='browser')
             # leoTest.doTest special-cases the name "browser".
-        self.root = Root()
+        self.root = get_root()
         
     def insertKeyEvent(self, event, i):
         '''Insert the key given by event in location i of widget event.w.'''
@@ -641,7 +654,7 @@ class LeoBrowserIconBar(leoFrame.NullIconBarClass):
     def __init__(self, c, parentFrame):
         super().__init__(c, parentFrame)
         assert self.c == c
-        self.root = Root()
+        self.root = get_root()
             
     #@+others
     #@-others
@@ -650,7 +663,7 @@ class LeoBrowserLog(leoFrame.NullLog):
     
     def __init__(self, frame, parentFrame=None):
         super().__init__(frame, parentFrame)
-        self.root = Root()
+        self.root = get_root()
         assert isinstance(self.widget, leoFrame.StringTextWrapper)
         self.logCtrl = self.widget
         self.wrapper = self.widget
@@ -681,7 +694,7 @@ class LeoBrowserMenu(leoMenu.NullMenu):
 
     # def __init__(self, frame):
         # super().__init__(frame)
-        # self.root = Root()
+        # self.root = get_root()
 
     # @others
 #@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer
@@ -691,7 +704,7 @@ class LeoBrowserMinibuffer (object):
     def __init__(self, c, frame):
         self.c = c
         self.frame = frame
-        self.root = Root()
+        self.root = get_root()
     
     # Overrides.
     def setFocus(self):
@@ -705,7 +718,7 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
     
     def __init__(self, c, parentFrame):
         super().__init__(c, parentFrame)
-        self.root = Root()
+        self.root = get_root()
         self.w = self # Required.
         
     #@+others
@@ -764,10 +777,11 @@ class LeoBrowserTree(leoFrame.NullTree):
     
     def __init__(self, frame):
         super().__init__(frame)
-        self.root = Root()
+        self.root = get_root()
+        # pylint: disable=no-member
+            # The point is that there isn't a member ;-)
         assert not hasattr(self, 'widget'), repr(self.widget)
         assert not hasattr(self, 'wrapper'), repr(self.wrapper)
-        ### self.wrapper = self
 
     def getName(self):
         return 'canvas(tree)' # Required for proper pane bindings.
@@ -951,15 +965,11 @@ class LeoFlexxMainWindow(flx.Widget):
     
     Each property is accessible as root.main_window.x.
     '''
-    #@+<< MainWindow properties >>
-    #@+node:ekr.20181120060549.1: *4* << MainWindow properties >>
-    # All these properties *are* needed.
     body = flx.ComponentProp(settable=True)
     log = flx.ComponentProp(settable=True)
     minibuffer = flx.ComponentProp(settable=True)
     status_line = flx.ComponentProp(settable=True)
     tree = flx.ComponentProp(settable=True)
-    #@-<< MainWindow properties >>
 
     def init(self, body_s, data, signon, status_lt, status_rt):
         # pylint: disable=arguments-differ
@@ -971,11 +981,11 @@ class LeoFlexxMainWindow(flx.Widget):
             body = LeoFlexxBody(body_s, flex=1)
             minibuffer = LeoFlexxMiniBuffer()
             status_line = LeoFlexxStatusLine(status_lt, status_rt)
-        self._mutate('body', body),
-        self._mutate('log', log),
-        self._mutate('minibuffer', minibuffer),
-        self._mutate('status_line', status_line),
-        self._mutate('tree', tree),
+        self._mutate('body', body)
+        self._mutate('log', log)
+        self._mutate('minibuffer', minibuffer)
+        self._mutate('status_line', status_line)
+        self._mutate('tree', tree)
 
     #@+others
     #@+node:ekr.20181120060557.1: *4* MainWindow.emitters
@@ -1318,14 +1328,6 @@ class LeoFlexxTreeItem(flx.TreeItem):
         if ev ['modifiers']:
             e.preventDefault()
         return ev
-#@+node:ekr.20181115191638.1: ** class Root
-class Root(flx.PyComponent):
-    
-    '''
-    This class allows *plain* python classes to access *component* classes.
-    '''
-    def __getattr__ (self, attr):
-        return getattr(self.root, attr)
 #@+node:ekr.20181121031304.1: ** class BrowserTestManager
 class BrowserTestManager (leoTest.TestManager):
     '''Run tests using the browser gui.'''
@@ -1338,7 +1340,5 @@ if __name__ == '__main__':
     flx.launch(LeoBrowserApp)
     flx.logger.info('LeoApp: after flx.launch')
     flx.set_log_level('ERROR')
-    ### if not debug:
-        ### suppress_unwanted_log_messages()
     flx.run()
 #@-leo
