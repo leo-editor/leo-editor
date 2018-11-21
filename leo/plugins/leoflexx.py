@@ -11,12 +11,13 @@ A stand-alone prototype for Leo using flexx.
 #@+<< leoflexx imports >>
 #@+node:ekr.20181113041314.1: ** << leoflexx imports >>
 import leo.core.leoGlobals as g
-    # **Note**: JS code can not use g.trace, g.callers, g.pdb.
+    # **Note**: JS code can not use g.trace, g.callers.
 import leo.core.leoBridge as leoBridge
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
 import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
+import leo.core.leoTest as leoTest
 from flexx import flx
 import re
 import time
@@ -34,7 +35,7 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 debug = True
 debug_focus = True
 debug_keys = True
-debug_tree = True
+debug_tree = False
 print('\n===== debug: %s =====\n' % debug)
 #@+others
 #@+node:ekr.20181103151350.1: **  init
@@ -398,7 +399,8 @@ class LeoBrowserApp(flx.PyComponent):
         Convert a true Leo position to a serializable archived position.
         '''
         if not p.v:
-            g.trace('===== Invalid cloned node', repr(p))
+            if debug_tree:
+                g.trace('===== no p.v', repr(p))
             return {
                 'childIndex': 0,
                 'gnx': None,
@@ -520,18 +522,18 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181112182636.1: *3* app.run_all_unit_tests
     def run_all_unit_tests (self):
         '''Run all unit tests from the bridge.'''
-        print('===== app.run_all_unit_tests: Start')
         c = self.c
         h = 'Active Unit Tests'
         p = g.findTopLevelNode(c, h, exact=True)
         if p:
             try:
                 old_debug = g.app.debug
-                ### g.app.debug = []
+                g.app.failFast = False
+                g.app.debug = []
                 c.frame.tree.select(p)
-                ############## This won't work ################
-                c.debugCommands.runSelectedUnitTestsLocally()
-                print('===== app.run_all_unit_tests: Done')
+                tm = BrowserTestManager(c)
+                # Run selected tests locallyk.
+                tm.doTests(all=False, marked=False)
             finally:
                 g.app.debug = old_debug
         else:
@@ -627,8 +629,9 @@ class LeoBrowserGui(leoGui.NullGui):
     def set_focus(self, commander, widget):
         self.focusWidget = widget
         if isinstance(widget, leoFrame.StringTextWrapper):
-            g.trace('(gui):', repr(widget))
-            widget.setFocus()
+            # g.trace('(gui):', repr(widget))
+            if not g.unitTesting:
+                widget.setFocus()
         else:
             g.trace('(gui): unknown widget', repr(widget))
     #@-others
@@ -1016,13 +1019,13 @@ class LeoFlexxMiniBuffer(flx.Widget):
     #@+node:ekr.20181120060849.1: *4* minibuffer.reactions
     @flx.reaction('widget.pointer_click')
     def on_pointer_click(self, *events):
-        print('flx.minibuffer: on_pointer_click')
+        # print('flx.minibuffer: on_pointer_click')
         for ev in events:
-            print(repr(ev))
+            pass # print('on_pointer_click', repr(ev))
 
     @flx.reaction('widget.user_done')
     def on_user_done(self, *events):
-        print('flx.minibuffer: on_user_done')
+        # print('flx.minibuffer: on_user_done')
         for ev in events:
             command = self.widget.text
             if command.strip():
@@ -1121,12 +1124,12 @@ class LeoFlexxTree(flx.Widget):
         Important: we do *not* clear self.tree itself!
         '''
         # pylint: disable=access-member-before-definition
-        trace = False
-        if trace: print('===== flx.tree.clear_tree')
+        #
+        # print('===== flx.tree.clear_tree')
         #
         # Clear all tree items.
         for item in self.leo_items.values():
-            if trace: print('flx.tree.clear_tree: dispose: %r' % item)
+            # print('flx.tree.clear_tree: dispose: %r' % item)
             item.dispose()
         #
         # Clear the internal data structures.
@@ -1166,7 +1169,7 @@ class LeoFlexxTree(flx.Widget):
             print('flx.tree.populate_children: can not happen')
             self.root.dump_ap(parent_ap, None, 'parent_ap')
             for item in self.leo_items:
-                print(item)
+                print(repr(item))
             return
         if trace:
             print('flx.tree.populate_children:', len(children))
@@ -1201,7 +1204,7 @@ class LeoFlexxTree(flx.Widget):
             if old_item:
                 # print('tree.select_ap: un-select:')
                 old_item.set_selected(False)
-            else:
+            elif debug_tree:
                 print('===== tree.select_ap: error: no item to unselect')
         else:
             print('tree.select_ap: no previously selected item.')
@@ -1211,7 +1214,7 @@ class LeoFlexxTree(flx.Widget):
         new_item = self.leo_items.get(new_key)
         if new_item:
             if debug_tree:
-                print('tree.select_ap: select:')
+                print('tree.select_ap: select:', repr(new_item))
             new_item.set_selected(True)
             self.leo_selected_ap = ap
         else:
@@ -1265,7 +1268,8 @@ class LeoFlexxTree(flx.Widget):
         Create LeoTreeItems from all items in the redraw_dict.
         The tree has already been cleared.
         '''
-        print('===== tree.redraw_from_dict')
+        if debug_tree:
+            print('===== tree.redraw_with_dict')
         self.leo_selected_ap = d ['c.p']
             # Usually set in on_selected_event.
         for item in d ['items']:
@@ -1281,7 +1285,7 @@ class LeoFlexxTree(flx.Widget):
             key = self.ap_to_key(ap)
             self.leo_items [key] = tree_item
             # Create the item's children...
-            if headline == 'Startup':
+            if debug_tree and headline == 'Startup':
                 print('create_item_with_parent: key', key, 'ap', ap)
             for child in item ['children']:
                 self.create_item_with_parent(child, tree_item)
@@ -1322,6 +1326,13 @@ class Root(flx.PyComponent):
     '''
     def __getattr__ (self, attr):
         return getattr(self.root, attr)
+#@+node:ekr.20181121031304.1: ** class BrowserTestManager
+class BrowserTestManager (leoTest.TestManager):
+    '''Run tests using the browser gui.'''
+    
+    def instantiate_gui(self):
+        assert isinstance(g.app.gui, LeoBrowserGui)
+        return g.app.gui
 #@-others
 if __name__ == '__main__':
     flx.launch(LeoBrowserApp)
