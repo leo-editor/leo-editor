@@ -32,11 +32,9 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
-debug = True
-debug_focus = True
+debug_focus = False
 debug_keys = True
-debug_tree = False
-print('\n===== debug: %s =====\n' % debug)
+debug_tree = True
 #@+others
 #@+node:ekr.20181121040901.1: **  top-level functions
 #@+node:ekr.20181103151350.1: *3* init
@@ -389,10 +387,10 @@ class LeoBrowserApp(flx.PyComponent):
         # This is likely the only data that ever will be needed.
         self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
         t2 = time.clock()
-        if debug:
+        if debug_tree:
             print('app.create_all_data: %5.2f sec. %s entries' % (
                 (t2-t1), len(list(self.gnx_to_vnode.keys()))))
-        if debug:
+        if debug_tree:
             self.test_round_trip_positions()
     #@+node:ekr.20181111155525.1: *3* app.archived positions
     #@+node:ekr.20181111204659.1: *4* app.p_to_ap (updates app.gnx_to_vnode)
@@ -589,7 +587,7 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         self.iconBar = LeoBrowserIconBar(c, frame)
         self.statusLine = LeoBrowserStatusLine(c, frame)
             # NullFrame does this in createStatusLine.
-        self.top = TracingNullObject() if debug else g.NullObject()
+        self.top = TracingNullObject() ### if debug else g.NullObject()
             # Use the TracingNullObject class for better tracing.
         
     def finishCreate(self):
