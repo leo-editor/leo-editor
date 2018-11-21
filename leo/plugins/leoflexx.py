@@ -124,13 +124,9 @@ class LeoBrowserApp(flx.PyComponent):
         def test_focus():
             old_debug = g.app.debug
             try:
-                g.app.debug = [] # 'focus',]
-                if 0:
-                    print('\ncalling c.set_focus(c.frame.body.widget)')
-                    c.set_focus(c.frame.body.widget)
-                if 1:
-                    print('\ncalling c.set_focus(c.frame.log.widget')
-                    c.set_focus(c.frame.log.widget)
+                g.app.debug = [] # 'focus',
+                print('\ncalling c.set_focus(c.frame.miniBufferWidget')
+                c.set_focus(c.frame.miniBufferWidget)
             finally:
                 g.app.debug = old_debug
 
@@ -699,6 +695,7 @@ class LeoBrowserMinibuffer (object):
         self.c = c
         self.frame = frame
         self.root = get_root()
+        self.widget = self
     
     # Overrides.
     def setFocus(self):
