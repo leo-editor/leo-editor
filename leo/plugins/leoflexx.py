@@ -37,6 +37,14 @@ debug_keys = True
 debug_tree = True
 #@+others
 #@+node:ekr.20181121040901.1: **  top-level functions
+#@+node:ekr.20181121091633.1: *3* dump_event
+def dump_event (ev):
+    '''Print a description of the event.'''
+    id_ = ev.source.title or ev.source.text
+    kind = '' if ev.new_value else 'un-'
+    s = kind + ev.type
+    message = '%s: %s' % (s.rjust(15), id_)
+    print('dump_event: ' + message)
 #@+node:ekr.20181103151350.1: *3* init
 def init():
     # At present, leoflexx is not a true plugin.
@@ -1269,6 +1277,11 @@ class LeoFlexxTree(flx.Widget):
     def set_focus(self):
         print('===== flx.tree.set_focus')
     #@+node:ekr.20181112172518.1: *4* flx_tree.reactions
+    #@+node:ekr.20181116172300.1: *5* tree.reaction: on_key_press
+    @flx.reaction('tree.key_press')
+    def on_key_press(self, *events):
+        for ev in events:
+            self.root.do_key(ev, 'tree')
     #@+node:ekr.20181109083659.1: *5* tree.reaction: on_selected_event
     @flx.reaction('tree.children**.selected')
     def on_selected_event(self, *events):
@@ -1292,11 +1305,6 @@ class LeoFlexxTree(flx.Widget):
         for ev in events:
             if 0:
                 self.show_event(ev)
-    #@+node:ekr.20181116172300.1: *5* tree.reaction: key_down
-    @flx.reaction('tree.key_press')
-    def on_key_press(self, *events):
-        for ev in events:
-            self.root.do_key(ev, 'tree')
     #@+node:ekr.20181108232118.1: *4* flx_tree.show_event
     def show_event(self, ev):
         '''Put a description of the event to the log.'''
@@ -1319,6 +1327,7 @@ class LeoFlexxTreeItem(flx.TreeItem):
     def init(self, leo_ap):
         # pylint: disable=arguments-differ
         self.leo_ap = leo_ap
+            # Gives access to cloned, marked, expanded fields.
         
     def getName(self):
         return 'head' # Required, for proper pane bindings.
@@ -1330,6 +1339,12 @@ class LeoFlexxTreeItem(flx.TreeItem):
         if ev ['modifiers']:
             e.preventDefault()
         return ev
+        
+    @flx.reaction('pointer_double_click')
+    def on_pointer_double_click(self, *events):
+        for ev in events:
+            print('tree-item.pointer_double_click')
+            ### dump_event(ev)
 #@+node:ekr.20181121031304.1: ** class BrowserTestManager
 class BrowserTestManager (leoTest.TestManager):
     '''Run tests using the browser gui.'''
