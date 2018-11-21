@@ -403,8 +403,11 @@ class LeoBrowserApp(flx.PyComponent):
                 g.trace('===== no p.v', repr(p))
             return {
                 'childIndex': 0,
+                'cloned': False,
+                'expanded': False,
                 'gnx': None,
                 'headline': '<Invalid clone>', # For dumps.
+                'marked': False,
                 'stack': []
             }
         # g.trace(p.h, p._childIndex, p.v)
@@ -415,8 +418,11 @@ class LeoBrowserApp(flx.PyComponent):
             self.gnx_to_vnode [gnx] = p.v
         return {
             'childIndex': p._childIndex,
+            'cloned': p.isCloned(),
+            'expanded': p.isExpanded(),
             'gnx': gnx,
             'headline': p.h, # For dumps.
+            'marked': p.isMarked(),
             'stack': [{
                 'gnx': v.gnx,
                 'childIndex': childIndex,
@@ -1216,8 +1222,9 @@ class LeoFlexxTree(flx.Widget):
             key = self.ap_to_key(ap)
             self.leo_items [key] = tree_item
             # Create the item's children...
-            if debug_tree and headline == 'Startup':
-                print('create_item_with_parent: key', key, 'ap', ap)
+            ###
+                # if debug_tree and headline == 'Startup':
+                    # print('create_item_with_parent: key', key, 'ap', ap)
             for child in item ['children']:
                 self.create_item_with_parent(child, tree_item)
     #@+node:ekr.20181116083916.1: *5* flx_tree.select_ap
