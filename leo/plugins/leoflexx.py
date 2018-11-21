@@ -790,6 +790,9 @@ class LeoBrowserTree(leoFrame.NullTree):
         return 'canvas(tree)' # Required for proper pane bindings.
 
     #@+others
+    #@+node:ekr.20181121102237.1: *4* tree_wrapper.endEditLabel
+    def endEditLabel(self):
+        g.trace('===== tree wrapper', self.c.p.h)
     #@+node:ekr.20181116081421.1: *4* tree_wrapper.select & super_select
     def select(self, p):
         '''Override NullTree.select, which is actually LeoTree.select.'''
@@ -1328,7 +1331,7 @@ class LeoFlexxTreeItem(flx.TreeItem):
         # pylint: disable=arguments-differ
         self.leo_ap = leo_ap
             # Gives access to cloned, marked, expanded fields.
-        
+
     def getName(self):
         return 'head' # Required, for proper pane bindings.
         
@@ -1344,7 +1347,12 @@ class LeoFlexxTreeItem(flx.TreeItem):
     def on_pointer_double_click(self, *events):
         for ev in events:
             print('tree-item.pointer_double_click')
-            ### dump_event(ev)
+            dump_event(ev)
+            #
+            # The _render_title() and _render_text() methods can be overloaded to 
+            # display items in richer ways.
+            # See Widget._render_dom() for details.
+            # https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget._render_dom
 #@+node:ekr.20181121031304.1: ** class BrowserTestManager
 class BrowserTestManager (leoTest.TestManager):
     '''Run tests using the browser gui.'''
