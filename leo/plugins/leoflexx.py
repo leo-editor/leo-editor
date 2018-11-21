@@ -34,7 +34,7 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 debug = True
 debug_focus = True
 debug_keys = True
-debug_tree = False
+debug_tree = True
 print('\n===== debug: %s =====\n' % debug)
 #@+others
 #@+node:ekr.20181103151350.1: **  init
@@ -86,10 +86,10 @@ class LeoBrowserApp(flx.PyComponent):
         ### p = c.rootPosition()
         c.selectPosition(c.rootPosition()) ### A temp hack.
         p = c.p
-        g.trace('app.init: c.p.h:', c.p.h)
+        g.trace('app.init: c.p.h:', p.h)
         signon = '%s\n%s' % (g.app.signon, g.app.signon2)
         status_lt, status_rt = c.frame.statusLine.update(p.b, 0)
-        redraw_dict = self.make_redraw_dict()
+        redraw_dict = self.make_redraw_dict(p)
         main_window = LeoFlexxMainWindow(p.b, redraw_dict, signon, status_lt, status_rt)
         self._mutate('main_window', main_window)
 
@@ -109,13 +109,23 @@ class LeoBrowserApp(flx.PyComponent):
             self.gui.tree_echo()
             
         def test_focus():
-            w = self.root.main_window
+            # w = self.root.main_window
             print('testing focus...')
-            # print('calling c.minibufferWantsFocusNow')
-            # c.minibufferWantsFocusNow()
-            # c.outerUpdate()
-            print('calling flx.log.set_focus')
-            w.log.set_focus()
+            old_debug = g.app.debug
+            try:
+                g.app.debug = ['focus',]
+                # print('calling flx.log.set_focus')
+                # w.log.set_focus()
+                print('\ncalling c.set_focus(c.frame.body)')
+                c.set_focus(c.frame.body)
+                print('\ncalling c.set_focus(c.frame.body.widget)')
+                c.set_focus(c.frame.body.widget)
+                print('\ncalling c.set_focus(c.frame.log)')
+                c.set_focus(c.frame.log)
+                print('\ncalling c.set_focus(c.frame.log.widget')
+                c.set_focus(c.frame.log.widget)
+            finally:
+                g.app.debug = old_debug
 
         def test_log():
             print('testing log...')
@@ -143,7 +153,9 @@ class LeoBrowserApp(flx.PyComponent):
                 g.trace('not found: %s' % h)
         #@-others
 
-        if command.startswith('echo'):
+        if command == 'clear':
+            g.cls()
+        elif command.startswith('echo'):
             test_echo()
         elif command == 'focus':
             test_focus()
@@ -291,7 +303,7 @@ class LeoBrowserApp(flx.PyComponent):
             # A hack: automatically add the "Leo" prefix so
             # the top-level suppression logic will not delete this message.
     #@+node:ekr.20181113042549.1: *4* app.action: redraw
-    def redraw (self):
+    def redraw (self, p):
         '''
         Send a **redraw list** to the tree.
         
@@ -304,7 +316,7 @@ class LeoBrowserApp(flx.PyComponent):
         w = self.main_window
         # Be careful during startup.
         if w and w.tree:
-            d = self.make_redraw_dict()
+            d = self.make_redraw_dict(p)
             w.tree.redraw(d)
     #@+node:ekr.20181111202747.1: *4* app.action: select_ap & helpers
     @flx.action
@@ -320,7 +332,7 @@ class LeoBrowserApp(flx.PyComponent):
         self.update_status_line()
         self.send_children_to_tree(ap, p)
         if trace:
-            print('app.select_ap: after: c.p.h: ', c.p.h)
+            print('app.select_ap:', c.p.h)
     #@+node:ekr.20181111095640.1: *5* app.action: send_children_to_tree
     def send_children_to_tree(self, parent_ap, p):
         '''
@@ -336,7 +348,7 @@ class LeoBrowserApp(flx.PyComponent):
                 'parent': parent_ap,
                 'children': [self.p_to_ap(z) for z in p.children()],
             })
-        elif debug:
+        elif debug_tree:
             # Not an error.
             print('app.send_children_to_tree: no children', p.h)
     #@+node:ekr.20181118061020.1: *4* app.action: select_p
@@ -385,6 +397,15 @@ class LeoBrowserApp(flx.PyComponent):
         '''
         Convert a true Leo position to a serializable archived position.
         '''
+        if not p.v:
+            g.trace('===== Invalid cloned node', repr(p))
+            return {
+                'childIndex': 0,
+                'gnx': None,
+                'headline': '<Invalid clone>', # For dumps.
+                'stack': []
+            }
+        # g.trace(p.h, p._childIndex, p.v)
         gnx = p.v.gnx
         if gnx not in self.gnx_to_vnode:
             print('=== update gnx_to_vnode', gnx.ljust(15), p.h,
@@ -411,7 +432,7 @@ class LeoBrowserApp(flx.PyComponent):
         ]
         return leoNodes.position(v, childIndex, stack)
     #@+node:ekr.20181113043539.1: *4* app.make_redraw_dict & helpers
-    def make_redraw_dict(self):
+    def make_redraw_dict(self, p):
         '''
         Return a recursive, archivable, list of lists describing all and only
         the visible nodes of the tree.
@@ -432,7 +453,7 @@ class LeoBrowserApp(flx.PyComponent):
             else:
                 p.moveToThreadNext()
         d = {
-            'c.p': self.p_to_ap(c.p),
+            'c.p': self.p_to_ap(p),
             'items': aList,
         }
         if 0:
@@ -506,8 +527,9 @@ class LeoBrowserApp(flx.PyComponent):
         if p:
             try:
                 old_debug = g.app.debug
-                g.app.debug = []
+                ### g.app.debug = []
                 c.frame.tree.select(p)
+                ############## This won't work ################
                 c.debugCommands.runSelectedUnitTestsLocally()
                 print('===== app.run_all_unit_tests: Done')
             finally:
@@ -524,7 +546,7 @@ class LeoBrowserBody(leoFrame.NullBody):
         self.c = frame.c
         assert self.c
         self.root = Root()
-        self.widget = None
+        self.widget = self.wrapper
         #
         # Monkey-patch self.wrapper, a StringTextWrapper.
         assert isinstance(self.wrapper, leoFrame.StringTextWrapper)
@@ -535,7 +557,7 @@ class LeoBrowserBody(leoFrame.NullBody):
     #@+node:ekr.20181120062831.1: *4* body_wrapper.setFocus
     def setFocus(self):
         w = self.root.main_window
-        g.trace('(body wrapper)')
+        g.trace('(body wrapper)', g.callers())
         w.body.set_focus()
     #@+node:ekr.20181120063244.1: *4* body_wrapper.onBodyChanged
     def onBodyChanged(self, *args, **keys):
@@ -605,6 +627,7 @@ class LeoBrowserGui(leoGui.NullGui):
     def set_focus(self, commander, widget):
         self.focusWidget = widget
         if isinstance(widget, leoFrame.StringTextWrapper):
+            g.trace('(gui):', repr(widget))
             widget.setFocus()
         else:
             g.trace('(gui): unknown widget', repr(widget))
@@ -640,7 +663,7 @@ class LeoBrowserLog(leoFrame.NullLog):
     #@+node:ekr.20181120063043.1: *4* log_wrapper.setFocus
     def setFocus(self):
         w = self.root.main_window
-        g.trace('(log wrapper)')
+        g.trace('(log wrapper)', g.callers())
         w.log.set_focus()
     #@+node:ekr.20181120063111.1: *4* log_wrapper.put & putnl
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
@@ -739,8 +762,10 @@ class LeoBrowserTree(leoFrame.NullTree):
     def __init__(self, frame):
         super().__init__(frame)
         self.root = Root()
-        self.wrapper = self
-        
+        assert not hasattr(self, 'widget'), repr(self.widget)
+        assert not hasattr(self, 'wrapper'), repr(self.wrapper)
+        ### self.wrapper = self
+
     def getName(self):
         return 'canvas(tree)' # Required for proper pane bindings.
 
@@ -758,12 +783,13 @@ class LeoBrowserTree(leoFrame.NullTree):
         super().select(p)
     #@+node:ekr.20181118052203.1: *4* tree_wrapper.redraw
     def redraw(self, p=None):
-        ### print('===== browser-tree.redraw', g.callers())
-        self.root.redraw()
+        c = self.c
+        ### print('===== browser-tree.redraw', p.h, g.callers())
+        self.root.redraw(p or c.p)
     #@+node:ekr.20181120063844.1: *4* tree_wrapper.setFocus
     def setFocus(self):
         w = self.root.main_window
-        g.trace('(tree wrapper)')
+        g.trace('(tree wrapper)', g.callers())
         w.tree.set_focus()
     #@-others
 #@+node:ekr.20181119094122.1: *3* class TracingNullObject
@@ -839,7 +865,7 @@ class LeoFlexxBody(flx.Widget):
         
     @flx.action
     def set_focus(self):
-        print('===== flx.body')
+        print('===== flx.body.set_focus')
     #@+node:ekr.20181120054950.1: *4* body.emitters
     @flx.emitter
     def key_press(self, e):
@@ -889,7 +915,7 @@ class LeoFlexxLog(flx.Widget):
         
     @flx.action
     def set_focus(self):
-        print('===== flx.log')
+        print('===== flx.log.set_focus')
         ### self.on_pointer_click()
             # JS: TypeError: this.on_pointer_click is not a function - stack trace in browser console (hit F12).
 
@@ -1095,14 +1121,12 @@ class LeoFlexxTree(flx.Widget):
         Important: we do *not* clear self.tree itself!
         '''
         # pylint: disable=access-member-before-definition
-        #
-        if debug_tree:
-            print('===== tree.clear_tree')
+        trace = False
+        if trace: print('===== flx.tree.clear_tree')
         #
         # Clear all tree items.
         for item in self.leo_items.values():
-            if debug_tree:
-                print('tree.clear_tree: dispose: %r' % item)
+            if trace: print('flx.tree.clear_tree: dispose: %r' % item)
             item.dispose()
         #
         # Clear the internal data structures.
@@ -1139,13 +1163,13 @@ class LeoFlexxTree(flx.Widget):
         #
         # Populate the items.
         if parent_key not in self.leo_items:
-            print('tree.populate_children: can not happen')
+            print('flx.tree.populate_children: can not happen')
             self.root.dump_ap(parent_ap, None, 'parent_ap')
             for item in self.leo_items:
                 print(item)
             return
         if trace:
-            print('tree.populate_children:', len(children))
+            print('flx.tree.populate_children:', len(children))
             if 0:
                 print('parent_ap', repr(parent_ap))
                 parent_key = self.ap_to_key(parent_ap)
@@ -1163,7 +1187,7 @@ class LeoFlexxTree(flx.Widget):
         Clear the present tree and redraw using the redraw_list.
         '''
         if debug_tree:
-            print('===== tree.redraw')
+            print('===== flx.tree.redraw')
         self.clear_tree()
         self.redraw_with_dict(redraw_dict)
     #@+node:ekr.20181116083916.1: *5* tree.action: select_ap
@@ -1191,7 +1215,8 @@ class LeoFlexxTree(flx.Widget):
             new_item.set_selected(True)
             self.leo_selected_ap = ap
         else:
-            print('===== tree.select_ap: error: no item for ap:')
+            # This is not necessarily an error???
+            print('===== tree.select_ap: error: no item for ap:', repr(ap))
             self.leo_selected_ap = None
     #@+node:ekr.20181120063735.1: *5* tree.action: set_focus
     @flx.action
@@ -1240,12 +1265,12 @@ class LeoFlexxTree(flx.Widget):
         Create LeoTreeItems from all items in the redraw_dict.
         The tree has already been cleared.
         '''
-        # if debug: print('===== tree.redraw_from_dict')
+        print('===== tree.redraw_from_dict')
         self.leo_selected_ap = d ['c.p']
             # Usually set in on_selected_event.
         for item in d ['items']:
             self.create_item_with_parent(item, self.tree)
-           
+
     def create_item_with_parent(self, item, parent):
         '''Create a tree item for item and all its visible children.'''
         with parent:
@@ -1256,6 +1281,8 @@ class LeoFlexxTree(flx.Widget):
             key = self.ap_to_key(ap)
             self.leo_items [key] = tree_item
             # Create the item's children...
+            if headline == 'Startup':
+                print('create_item_with_parent: key', key, 'ap', ap)
             for child in item ['children']:
                 self.create_item_with_parent(child, tree_item)
     #@+node:ekr.20181108232118.1: *4* tree.show_event
@@ -1299,7 +1326,8 @@ class Root(flx.PyComponent):
 if __name__ == '__main__':
     flx.launch(LeoBrowserApp)
     flx.logger.info('LeoApp: after flx.launch')
-    if not debug:
-        suppress_unwanted_log_messages()
+    flx.set_log_level('ERROR')
+    ### if not debug:
+        ### suppress_unwanted_log_messages()
     flx.run()
 #@-leo
