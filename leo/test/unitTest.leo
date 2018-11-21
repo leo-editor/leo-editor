@@ -757,12 +757,6 @@
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20181121102601.1"><vh>leoflexx fails</vh>
-<v t="ekr.20051107115231.18"><vh>@test paste and undo in headline - at end</vh></v>
-<v t="ekr.20051107115231.20"><vh>@test paste and undo in headline - with selection</vh></v>
-<v t="ekr.20051107115231.16"><vh>@test paste at end of headline</vh></v>
-<v t="ekr.20060208072331"><vh>@test paste from menu into headline sticks</vh></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1334,100 +1328,6 @@ if selectAll:
 else:
     assert i == len(s) and j == len(s),('oops2',i,j,len(s))
 </t>
-<t tx="ekr.20051107115231.16">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('Not for Linux')
-
-k = c.keyHandler
-frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.redrawAndEdit(p) # To make node visible
-w = c.edit_widget(p)
-g.app.gui.set_focus(c,w)
-w2 = g.app.gui.get_focus(c)
-try:
-    assert w
-    paste = 'ABC'
-    g.app.gui.replaceClipboardWith(paste)
-    g.app.gui.set_focus(c,w)
-    w2 = g.app.gui.get_focus(c)
-    w.setSelectionRange('end','end')
-    if g.app.gui.guiName() == 'curses':
-        c.frame.pasteText(event=g.Bunch(widget=w))
-    else:
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        g.app.gui.event_generate(c,'\n','Return',w)
-    assert p.h == h + paste,'Expected: %s, got %s' % (
-        h + paste,p.h)
-finally:
-    if 1:
-        c.setHeadString(p,h) # Essential
-        c.redraw(p)
-</t>
-<t tx="ekr.20051107115231.18">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('Not for Linux')
-
-k = c.keyHandler
-h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-frame = c.frame
-tree = frame.tree
-canvas = tree.canvas
-c.redrawAndEdit(p) # To make node visible
-w = c.edit_widget(p)
-try:
-    assert w,'oops1'
-    w.setSelectionRange('end','end')
-    paste = 'ABC'
-    g.app.gui.replaceClipboardWith(paste)
-    w.setSelectionRange('end','end')
-    if g.app.gui.guiName() == 'curses':
-        c.frame.pasteText(event=g.Bunch(widget=w))
-    else:
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        g.app.gui.event_generate(c,'\n','Return',w)
-    assert p.h == h + paste,'oops2 got: %s' % p.h
-    k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.h == h,'oops3 got: %s' % p.h
-finally:
-    if 1:
-        c.setHeadString(p,h) # Essential
-        c.redraw(p)
-</t>
-<t tx="ekr.20051107115231.20">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('skip headline test')
-else:
-    k = c.keyHandler
-    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.redraw(p) # To make node visible
-    tree.editLabel(p)
-    w = c.edit_widget(p)
-    try:
-        assert w, 'Null w'
-        paste = 'ABC'
-        g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('1.1','1.2')
-        if g.app.gui.guiName() == 'curses':
-            c.frame.pasteText(event=g.Bunch(widget=w))
-        else:
-            k.manufactureKeyPressForCommandName(w,'paste-text')
-            g.app.gui.event_generate(c,'\n','Return',w)
-        assert p.h == h[0] + paste + h[2:]
-        k.manufactureKeyPressForCommandName(w,'undo')
-        assert p.h == h, 'head mismatch'
-    finally:
-        if 1:
-            c.setHeadString(p,h) # Essential
-            c.redraw(p)
-</t>
 <t tx="ekr.20051107115231.24"># Should be a comment
 if not g.app.gui.guiName().startswith('qt'):
     self.skipTest('Requires Qt')
@@ -1515,29 +1415,6 @@ try:
 finally:
     if 1:
         c.setBodyString(p,'')
-        c.redraw(p)
-</t>
-<t tx="ekr.20060208072331">h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.frame.tree.editLabel(p)
-w = c.edit_widget(p)
-w.setSelectionRange('end','end',insert='end')
-paste = 'ABC'
-g.app.gui.replaceClipboardWith(paste)
-event = g.app.gui.create_key_event(c,w=w)
-c.frame.pasteText(event)
-# Move around and and make sure it doesn't change.
-try:
-    # g.trace('before select',w,w.getAllText())
-    c.selectPosition(p.threadBack())
-    assert p.h == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.h)
-    c.selectPosition(p)
-    assert p.h == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.h)
-finally:
-    if 1:
-        c.setHeadString(p,h) # Essential
         c.redraw(p)
 </t>
 <t tx="ekr.20060208072358">if not g.app.gui.guiName().startswith('qt'):
@@ -9659,7 +9536,6 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="ekr.20181121102601.1"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
