@@ -253,7 +253,10 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
-        print('===== app.redraw', g.callers())
+        if debug_tree:
+            print('')
+            print('===== app.redraw', g.callers())
+            print('')
         w = self.main_window
         # Be careful during startup.
         if w and w.tree:
@@ -269,17 +272,23 @@ class LeoBrowserApp(flx.PyComponent):
         As a side effect, recreate gnx_to_vnode.
         '''
         c = self.c
-        aList, p = [], c.rootPosition()
-        # Ensure that c.p will be shown.
         if debug_tree:
             print('')
             g.trace(c.p.h)
             print('')
+        # Ensure that c.p will be shown.
         c.expandAllAncestors(c.p)
-        while p:
-            if p.level() == 0 or p.isVisible(c):
-                aList.append(self.make_dict_for_position(p))
-            p.moveToNodeAfterTree()
+        if 1:
+            aList = [
+                self.make_dict_for_position(p)
+                    for p in c.rootPosition().self_and_siblings()
+            ]
+        else:
+            aList, p = [], c.rootPosition()
+            while p:
+                if p.level() == 0 or p.isVisible(c):
+                    aList.append(self.make_dict_for_position(p))
+                p.moveToNodeAfterTree()
         d = {
             'c.p': self.p_to_ap(c.p),
             'items': aList,
@@ -1259,7 +1268,7 @@ class LeoFlexxTree(flx.Widget):
         # Populate the items.
         if parent_key not in self.leo_items:
             print('flx.tree.populate_children: can not happen')
-            self.root.dump_ap(parent_ap, None, 'parent_ap')
+            self.dump_ap(parent_ap, None, 'parent_ap')
             for item in self.leo_items:
                 print(repr(item))
             return
