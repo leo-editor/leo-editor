@@ -56,11 +56,6 @@ def dump_event (ev):
     s = kind + ev.type
     message = '%s: %s' % (s.rjust(15), id_)
     print('dump_event: ' + message)
-#@+node:ekr.20181103151350.1: *3* init
-def init():
-    # At present, leoflexx is not a true plugin.
-    # I am executing leoflexx.py from an external script.
-    return False
 #@+node:ekr.20181121040857.1: *3* get_root
 def get_root():
     '''
@@ -72,7 +67,20 @@ def get_root():
         # Only called at startup, so this will never be None.
     assert isinstance(root, LeoBrowserApp), repr(root)
     return root
-#@+node:ekr.20181113041410.1: *3* suppress_unwanted_log_messages
+#@+node:ekr.20181112165240.1: *3* info (deprecated)
+def info (s):
+    '''Send the string s to the flex logger, at level info.'''
+    if not isinstance(s, str):
+        s = repr(s)
+    flx.logger.info('Leo: ' + s)
+        # A hack: automatically add the "Leo" prefix so
+        # the top-level suppression logic will not delete this message.
+#@+node:ekr.20181103151350.1: *3* init
+def init():
+    # At present, leoflexx is not a true plugin.
+    # I am executing leoflexx.py from an external script.
+    return False
+#@+node:ekr.20181113041410.1: *3* suppress_unwanted_log_messages (not used)
 def suppress_unwanted_log_messages():
     '''
     Suppress the "Automatically scrolling cursor into view" messages by
@@ -124,7 +132,7 @@ class LeoBrowserApp(flx.PyComponent):
         self._mutate('main_window', main_window)
 
     #@+others
-    #@+node:ekr.20181111152542.1: *3* app.actions
+    #@+node:ekr.20181111152542.1: *3*  app.actions
     #@+node:ekr.20181111142921.1: *4* app.action: do_command
     @flx.action
     def do_command(self, command):
@@ -239,127 +247,6 @@ class LeoBrowserApp(flx.PyComponent):
         if trace:
             g.trace('mods: %r key: %r ==> %r %r IN %6r %s' % (
                 mods, key, char, binding, widget.wrapper.getName(), c.p.h))
-    #@+node:ekr.20181116053210.1: *4* app.action: echo
-    @flx.action
-    def echo (self, message=None):
-        print('===== echo =====', message or '<Empty Message>')
-    #@+node:ekr.20181112165240.1: *4* app.action: info (deprecated)
-    @flx.action
-    def info (self, s):
-        '''Send the string s to the flex logger, at level info.'''
-        if not isinstance(s, str):
-            s = repr(s)
-        flx.logger.info('Leo: ' + s)
-            # A hack: automatically add the "Leo" prefix so
-            # the top-level suppression logic will not delete this message.
-    #@+node:ekr.20181113042549.1: *4* app.action: redraw & helper
-    def redraw (self):
-        '''
-        Send a **redraw list** to the tree.
-        
-        This is a recusive list lists of items (ap, gnx, headline) describing
-        all and *only* the presently visible nodes in the tree.
-        
-        As a side effect, app.make_redraw_dict updates all internal dicts.
-        '''
-        # banner('===== app.redraw: %s' % g.callers())
-        w = self.main_window
-        # Be careful during startup.
-        if w and w.tree:
-            d = self.make_redraw_dict()
-            w.tree.redraw_with_dict(d)
-            ### w.tree.set_redraw_dict(d)
-    #@+node:ekr.20181113043539.1: *5* app.make_redraw_dict & helpers
-    def make_redraw_dict(self):
-        '''
-        Return a recursive, archivable, list of lists describing all the
-        visible nodes of the tree.
-        
-        As a side effect, recreate gnx_to_vnode.
-        '''
-        c = self.c
-        banner('app.make_redraw_dict: %s' % c.p.h)
-        # Ensure that c.p will be shown.
-        c.expandAllAncestors(c.p)
-        return {
-            'c.p': self.p_to_ap(c.p),
-            'items': [
-                self.make_dict_for_position(p)
-                    for p in c.rootPosition().self_and_siblings()
-            ],
-        }
-    #@+node:ekr.20181113044701.1: *6* app.make_dict_for_position
-    def make_dict_for_position(self, p):
-        ''' Recursively add a sublist for p and all its visible nodes.'''
-        level = p.level()
-        trace = True and level == 0 and not g.unitTesting
-        c = self.c
-        assert p.v
-        self.gnx_to_vnode[p.v.gnx] = p.v
-        if trace:
-            print('%s%2s children %s' % (
-                '  '*level, len(list(p.children())), p.h))
-            if 0:
-                for child in p.children():
-                    level = child.level()
-                    print('%s%3s: %s' % (' '*level, level, child.h))
-        children = [
-            self.make_dict_for_position(child)
-                for child in p.children()
-                    if child.isVisible(c)
-        ]
-        return {
-            'ap': self.p_to_ap(p),
-            'body': p.b,
-            'children': children,
-            'gnx': p.v.gnx,
-            'headline': p.h,
-        }
-    #@+node:ekr.20181111202747.1: *4* app.action: select_ap & helpers
-    @flx.action
-    def select_ap(self, ap):
-        '''Select the position in Leo's core corresponding to the archived position.'''
-        c, w = self.c, self.main_window
-        p = self.ap_to_p(ap)
-        c.frame.tree.super_select(p)
-            # call LeoTree.select, but not self.select_p.
-            # This hack prevents an unbounded recursion.
-        w.body.set_body(p.v.b)
-        self.update_status_line()
-        self.send_children_to_tree(ap, p)
-        # print('app.select_ap:', c.p.h)
-    #@+node:ekr.20181111095640.1: *5* app.action: send_children_to_tree
-    def send_children_to_tree(self, parent_ap, p):
-        '''
-        Call w.tree.receive_children(d), where d has the form:
-            {
-                'parent': parent_ap,
-                'children': [ap1, ap2, ...],
-            }
-        '''
-        w = self.main_window
-        if p.hasChildren():
-            w.tree.receive_children({
-                'parent': parent_ap,
-                'children': [self.p_to_ap(z) for z in p.children()],
-            })
-        elif debug_tree:
-            # Not an error.
-            print('app.send_children_to_tree: no children', p.h)
-    #@+node:ekr.20181118061020.1: *4* app.action: select_p
-    @flx.action
-    def select_p(self, p):
-        '''
-        Select the position in the tree.
-        
-        Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
-        '''
-        # print'app.select_p', p.h)
-        w = self.main_window
-        # Be careful during startup.
-        if w and w.tree:
-            ap = self.p_to_ap(p)
-            w.tree.select_ap(ap)
     #@+node:ekr.20181118064309.1: *4* app.action: set_body
     @flx.action
     def set_body(self, s):
@@ -374,7 +261,118 @@ class LeoBrowserApp(flx.PyComponent):
         # Be careful during startup.
         if w and getattr(w, 'status_line', None):
             c.frame.statusLine.update(insert_point=insert_point)
-    #@+node:ekr.20181111155525.1: *3* app.archived positions
+    #@+node:ekr.20181122132345.1: *3* app.Drawing & selecting
+    #@+node:ekr.20181113042549.1: *4* app.action.redraw
+    def redraw (self):
+        '''
+        Send a **redraw list** to the tree.
+        
+        This is a recusive list lists of items (ap, gnx, headline) describing
+        all and *only* the presently visible nodes in the tree.
+        
+        As a side effect, app.make_redraw_dict updates all internal dicts.
+        '''
+        # banner('===== app.redraw: %s' % g.callers())
+        w = self.main_window
+        # Be careful during startup.
+        if w and w.tree:
+            d = self.make_redraw_dict()
+            if tree_props:
+                w.tree.set_redraw_dict(d)
+            else:
+                w.tree.redraw_with_dict(d)
+    #@+node:ekr.20181111202747.1: *4* app.action.select_ap
+    @flx.action
+    def select_ap(self, ap):
+        '''Select the position in Leo's core corresponding to the archived position.'''
+        c, w = self.c, self.main_window
+        p = self.ap_to_p(ap)
+        c.frame.tree.super_select(p)
+            # call LeoTree.select, but not self.select_p.
+            # This hack prevents an unbounded recursion.
+        w.body.set_body(p.v.b)
+        self.update_status_line()
+        self.send_children_to_tree(ap, p)
+        # print('app.select_ap:', c.p.h)
+    #@+node:ekr.20181118061020.1: *4* app.action.select_p
+    @flx.action
+    def select_p(self, p):
+        '''
+        Select the position in the tree.
+        
+        Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
+        '''
+        # print'app.select_p', p.h)
+        w = self.main_window
+        # Be careful during startup.
+        if w and w.tree:
+            ap = self.p_to_ap(p)
+            w.tree.select_ap(ap)
+    #@+node:ekr.20181111203114.1: *4* app.ap_to_p
+    def ap_to_p (self, ap):
+        '''Convert an archived position to a true Leo position.'''
+        childIndex = ap ['childIndex']
+        v = self.gnx_to_vnode [ap ['gnx']]
+        stack = [
+            (self.gnx_to_vnode [d ['gnx']], d ['childIndex'])
+                for d in ap ['stack']
+        ]
+        return leoNodes.position(v, childIndex, stack)
+    #@+node:ekr.20181114015356.1: *4* app.create_all_data
+    def create_all_data(self):
+        '''Compute the initial values all data structures.'''
+        t1 = time.clock()
+        # This is likely the only data that ever will be needed.
+        self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
+        t2 = time.clock()
+        if debug_tree:
+            print('app.create_all_data: %5.2f sec. %s entries' % (
+                (t2-t1), len(list(self.gnx_to_vnode.keys()))))
+        if debug_tree:
+            self.test_round_trip_positions()
+    #@+node:ekr.20181113043539.1: *4* app.make_redraw_dict & helpers
+    def make_redraw_dict(self):
+        '''
+        Return a **recursive**, archivable, list of lists describing all the
+        visible nodes of the tree.
+        
+        As a side effect, recreate gnx_to_vnode.
+        '''
+        c = self.c
+        # banner('app.make_redraw_dict: %s' % c.p.h)
+        # Ensure that c.p will be shown.
+        c.expandAllAncestors(c.p)
+        return {
+            'c.p': self.p_to_ap(c.p),
+            'items': [
+                self.make_dict_for_position(p)
+                    for p in c.rootPosition().self_and_siblings()
+            ],
+        }
+    #@+node:ekr.20181113044701.1: *5* app.make_dict_for_position
+    def make_dict_for_position(self, p):
+        ''' Recursively add a sublist for p and all its visible nodes.'''
+        level = p.level()
+        trace = True and not g.unitTesting
+        c = self.c
+        assert p.v
+        self.gnx_to_vnode[p.v.gnx] = p.v
+        if trace:
+            if p == c.rootPosition():
+                print('===== make_dict_for_position')
+            print('%s%s' % ('  '*level, p.h))
+        children = [
+            self.make_dict_for_position(child)
+                for child in p.children()
+                    if level == 0 or child.isVisible(c)
+        ]
+        return {
+            'ap': self.p_to_ap(p),
+            'body': p.b,
+            'children': children,
+            'gnx': p.v.gnx,
+            'headline': p.h,
+        }
     #@+node:ekr.20181111204659.1: *4* app.p_to_ap (updates app.gnx_to_vnode)
     def p_to_ap(self, p):
         '''
@@ -404,44 +402,26 @@ class LeoBrowserApp(flx.PyComponent):
                 'headline': stack_v.h,
             } for (stack_v, stack_childIndex) in p.stack ],
         }
-    #@+node:ekr.20181111203114.1: *4* app.ap_to_p (uses gnx_to_vnode)
-    def ap_to_p (self, ap):
-        '''Convert an archived position to a true Leo position.'''
-        childIndex = ap ['childIndex']
-        v = self.gnx_to_vnode [ap ['gnx']]
-        stack = [
-            (self.gnx_to_vnode [d ['gnx']], d ['childIndex'])
-                for d in ap ['stack']
-        ]
-        return leoNodes.position(v, childIndex, stack)
-    #@+node:ekr.20181113180246.1: *4* app.test_round_trip_positions
-    def test_round_trip_positions(self):
-        '''Test the round tripping of p_to_ap and ap_to_p.'''
-        c = self.c
-        # Bug fix: p_to_ap updates app.gnx_to_vnode. Save and restore it.
-        old_d = self.gnx_to_vnode.copy()
-        old_len = len(list(self.gnx_to_vnode.keys()))
-        # t1 = time.clock()
-        for p in c.all_positions():
-            ap = self.p_to_ap(p)
-            p2 = self.ap_to_p(ap)
-            assert p == p2, (repr(p), repr(p2), repr(ap))
-        self.gnx_to_vnode = old_d
-        new_len = len(list(self.gnx_to_vnode.keys()))
-        assert old_len == new_len, (old_len, new_len)
-        # print('app.test_round_trip_positions: %5.3f sec' % (time.clock()-t1))
-    #@+node:ekr.20181114015356.1: *3* app.create_all_data
-    def create_all_data(self):
-        '''Compute the initial values all data structures.'''
-        t1 = time.clock()
-        # This is likely the only data that ever will be needed.
-        self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
-        t2 = time.clock()
-        if debug_tree:
-            print('app.create_all_data: %5.2f sec. %s entries' % (
-                (t2-t1), len(list(self.gnx_to_vnode.keys()))))
-        if debug_tree:
-            self.test_round_trip_positions()
+    #@+node:ekr.20181111095640.1: *4* app.send_children_to_tree
+    def send_children_to_tree(self, parent_ap, p):
+        '''
+        Call w.tree.receive_children(d), where d has the form:
+            {
+                'parent': parent_ap,
+                'children': [ap1, ap2, ...],
+            }
+        '''
+        if debug_tree and not g.unitTesting:
+            print('===== send_children_to_tree')
+            for child in p.children():
+                print('  ' + child.h)
+        w = self.main_window
+        if p.hasChildren():
+            w.tree.receive_children({
+                'parent': parent_ap,
+                'children': [self.p_to_ap(z) for z in p.children()],
+            })
+        # else: print('app.send_children_to_tree: no children', p.h)
     #@+node:ekr.20181115171220.1: *3* app.message
     def message(self, s):
         '''For testing.'''
@@ -466,7 +446,8 @@ class LeoBrowserApp(flx.PyComponent):
             return
         c = bridge.openLeoFile(path)
         return c, g
-    #@+node:ekr.20181112182636.1: *3* app.run_all_unit_tests
+    #@+node:ekr.20181122132009.1: *3* app.Testing...
+    #@+node:ekr.20181112182636.1: *4* app.run_all_unit_tests
     def run_all_unit_tests (self):
         '''Run all unit tests from the bridge.'''
         c = self.c
@@ -485,6 +466,22 @@ class LeoBrowserApp(flx.PyComponent):
                 g.app.debug = old_debug
         else:
             print('do_command: select: not found: %s' % h)
+    #@+node:ekr.20181113180246.1: *4* app.test_round_trip_positions
+    def test_round_trip_positions(self):
+        '''Test the round tripping of p_to_ap and ap_to_p.'''
+        c = self.c
+        # Bug fix: p_to_ap updates app.gnx_to_vnode. Save and restore it.
+        old_d = self.gnx_to_vnode.copy()
+        old_len = len(list(self.gnx_to_vnode.keys()))
+        # t1 = time.clock()
+        for p in c.all_positions():
+            ap = self.p_to_ap(p)
+            p2 = self.ap_to_p(ap)
+            assert p == p2, (repr(p), repr(p2), repr(ap))
+        self.gnx_to_vnode = old_d
+        new_len = len(list(self.gnx_to_vnode.keys()))
+        assert old_len == new_len, (old_len, new_len)
+        # print('app.test_round_trip_positions: %5.3f sec' % (time.clock()-t1))
     #@-others
 #@+node:ekr.20181115071559.1: ** Py side: wrapper classes
 #@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
@@ -1075,7 +1072,7 @@ class LeoFlexxTree(flx.Widget):
             banner('flx.tree.ap_to_key: new key: %s %s' % (key, ap ['headline']))
         return key
     #@+node:ekr.20181121073246.1: *4* flx_tree.drawing
-    #@+node:ekr.20181112163252.1: *5* flx_tree.clear_tree
+    #@+node:ekr.20181112163252.1: *5* flx_tree.action.clear_tree
     @flx.action
     def clear_tree(self):
         '''
@@ -1094,6 +1091,38 @@ class LeoFlexxTree(flx.Widget):
         self.leo_gnx_dict = {}
         self.leo_items = {}
         self.leo_populated_dict = {}
+    #@+node:ekr.20181110175222.1: *5* flx_tree.action.receive_children
+    @flx.action
+    def receive_children(self, d):
+        '''
+        Using d, populate the direct descendants of ap. d has the form:
+            {
+                'parent': ap,
+                'children': [ap1, ap2, ...],
+            }
+        '''
+        parent_ap = d ['parent']
+        children = d ['children']
+        # banner('flx.tree.receive_children: %s' % len(children))
+        self.populate_children(children, parent_ap)
+    #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
+    @flx.action
+    def redraw_with_dict(self, d):
+        '''Clear the present tree and redraw using the **recursive** redraw_list.'''
+        self.clear_tree()
+        # banner('flx.tree.redraw_with_dict: %s items: %s' % (d ['c.p']['headline'], len(d ['items'])))
+        self.leo_selected_ap = d ['c.p']
+        for item in d ['items']:
+            self.create_item_with_parent(item, self.tree)
+    #@+node:ekr.20181113043131.1: *6* flx_tree.create_item_with_parent
+    def create_item_with_parent(self, item, parent):
+        '''Create a tree item for item and all its visible children.'''
+        ap = item ['ap']
+        item = self.create_item_for_ap(ap, parent)
+        if item:
+            # Not a clone: Create the item's children...
+            for child in item ['children']:
+                self.create_item_with_parent(child, item)
     #@+node:ekr.20181122072344.1: *5* flx_tree.create_item_for_ap
     def create_item_for_ap(self, ap, parent):
         '''Create or reuse a tree items (for already-created clones).'''
@@ -1144,32 +1173,18 @@ class LeoFlexxTree(flx.Widget):
                 ap['gnx'],
                 ap['headline'],
             ))
-    #@+node:ekr.20181110175222.1: *5* flx_tree.receive_children & populate_children
-    @flx.action
-    def receive_children(self, d):
-        '''
-        Using d, populate the children of ap. d has the form:
-            {
-                'parent': ap,
-                'children': [ap1, ap2, ...],
-            }
-        '''
-        parent_ap = d ['parent']
-        children = d ['children']
-        # banner('flx.tree.receive_children: %s' % len(children))
-        if children:
-            self.populate_children(children, parent_ap)
-    #@+node:ekr.20181111011928.1: *6* flx_tree.populate_children
+    #@+node:ekr.20181111011928.1: *5* flx_tree.populate_children
     def populate_children(self, children, parent_ap):
-        '''Populate parent with the children if necessary.'''
+        '''
+        Populate parent with the children if necessary.
+        Regardless of children, enter parent_ap into the populated dict.
+        '''
         parent_key = self.ap_to_key(parent_ap)
         if parent_key in self.leo_populated_dict:
-            # banner('tree.populate_children: already populated: %s' % (parent_ap ['headline']))
+            print('flx.tree.populate_children: already populated: %s' % (parent_ap ['headline']))
             return
-        #
         # Set the key once, here.
         self.leo_populated_dict [parent_key] = parent_ap
-        #
         # Populate the items.
         if parent_key not in self.leo_items:
             banner('flx.tree.populate_children: can not happen')
@@ -1178,33 +1193,11 @@ class LeoFlexxTree(flx.Widget):
                 print(repr(item))
             return
         # banner('flx.tree.populate_children: %s' % len(children))
-        if 0:
-            print('parent_ap', repr(parent_ap))
-            parent_key = self.ap_to_key(parent_ap)
-            print('parent item:', repr(self.leo_items[parent_key]))
         # Create the items.
         parent = self.leo_items[parent_key]
         for child_ap in children:
             self.create_item_for_ap(child_ap, parent)
         
-    #@+node:ekr.20181113043004.1: *5* flx_tree.redraw_with_dict & helper
-    @flx.action
-    def redraw_with_dict(self, d):
-        '''Clear the present tree and redraw using the redraw_list.'''
-        self.clear_tree()
-        # banner('flx.tree.redraw_with_dict: %s items: %s' % (d ['c.p']['headline'], len(d ['items'])))
-        self.leo_selected_ap = d ['c.p']
-        for item in d ['items']:
-            self.create_item_with_parent(item, self.tree)
-    #@+node:ekr.20181113043131.1: *6* flx_tree.create_item_with_parent
-    def create_item_with_parent(self, item, parent):
-        '''Create a tree item for item and all its visible children.'''
-        ap = item ['ap']
-        item = self.create_item_for_ap(ap, parent)
-        if item:
-            # Not a clone: Create the item's children...
-            for child in item ['children']:
-                self.create_item_with_parent(child, item)
     #@+node:ekr.20181120061140.1: *4* flx_tree.key_press
     @flx.emitter
     def key_press(self, e):
