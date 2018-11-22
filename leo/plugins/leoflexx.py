@@ -163,7 +163,7 @@ class LeoBrowserApp(flx.PyComponent):
                 g.trace('not found: %s' % h)
         #@-others
 
-        if command == 'clear':
+        if command == 'cls':
             g.cls()
         elif command == 'focus':
             test_focus()
@@ -896,7 +896,7 @@ class LeoFlexxBody(flx.Widget):
     def on_key_press(self, *events):
         for ev in events:
             self.root.do_key(ev, 'body')
-    #@+node:ekr.20181120054826.1: *4* flx_body.overrides
+    #@+node:ekr.20181120054826.1: *4* flx_body.set_body & set_focus
     @flx.action
     def set_body(self, body):
         self.ace.setValue(body)
@@ -954,7 +954,7 @@ class LeoFlexxLog(flx.Widget):
     def on_key_press(self, *events):
         for ev in events:
             self.root.do_key(ev, 'log')
-    #@+node:ekr.20181120060348.1: *4* flx.log.overrides
+    #@+node:ekr.20181120060348.1: *4* flx.log.put & set_focus
     @flx.action
     def put(self, s):
         self.ace.setValue(self.ace.getValue() + '\n' + s)
@@ -1026,8 +1026,21 @@ class LeoFlexxMiniBuffer(flx.Widget):
     #@+node:ekr.20181120060827.1: *4* flx_minibuffer.set_focus & set_text
     @flx.action
     def set_focus(self):
-        print('flx.minibuffer.set_focus')
-        self.widget.emit('pointer_click')
+        print('flx.minibuffer.set_focus', repr(self.widget))
+        # https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.pointer_click
+        # See also: Widget._create_pointer_event.
+        e = {
+            'button': 0,
+            'buttons': [],
+            'modifiers': [],
+            'page_pos': (0.0, 0.0),
+            'pos': (0.0, 0.0),
+            'touches': {-1: 1},
+        }
+        if 0: # Crashes.
+            self.widget.pointer_click(e)
+        else: # Doesn't work.
+            self.widget.emit('pointer_click', e)
 
     @flx.action
     def set_text(self, s):
@@ -1233,18 +1246,22 @@ class LeoFlexxTree(flx.Widget):
     def select_ap(self, ap):
         #
         # Unselect.
-        if self.leo_selected_ap:
-            old_key = self.ap_to_key(self.leo_selected_ap)
-            old_item = self.leo_items.get(old_key)
-            if old_item:
-                # print('tree.select_ap: un-select:')
-                old_item.set_selected(False)
-            elif debug_tree:
-                print('===== tree.select_ap: error: no item to unselect')
-        else:
-            print('tree.select_ap: no previously selected item.')
+        ### # This seems to cause more harm than good.
+            # if self.leo_selected_ap:
+                # old_key = self.ap_to_key(self.leo_selected_ap)
+                # old_item = self.leo_items.get(old_key)
+                # if old_item:
+                    # # print('tree.select_ap: un-select:')
+                    # old_item.set_selected(False)
+                # elif debug_tree:
+                    # print('===== tree.select_ap: error: no item to unselect')
+            # else:
+                # print('tree.select_ap: no previously selected item.')
         #
         # Select.
+        if ap == self.leo_selected_ap:
+            print('tree.select_ap: already selected')
+            return
         new_key = self.ap_to_key(ap)
         new_item = self.leo_items.get(new_key)
         if new_item:
@@ -1253,7 +1270,7 @@ class LeoFlexxTree(flx.Widget):
             new_item.set_selected(True)
             self.leo_selected_ap = ap
         else:
-            # This is not necessarily an error???
+            # Is this an error? It may be due to clone problems.
             print('===== tree.select_ap: error: no item for ap:', repr(ap))
             self.leo_selected_ap = None
     #@+node:ekr.20181120061140.1: *4* flx_tree.key_press
@@ -1281,11 +1298,22 @@ class LeoFlexxTree(flx.Widget):
         '''
         Update the tree and body text when the user selects a new tree node.
         '''
+        if debug_tree: print('\n===== tree.on_selected_event\n')
         for ev in events:
-            if ev.new_value:
-                # We are selecting a node, not de-selecting it.
-                ap = ev.source.leo_ap
-                    # Get the ap from the LeoTreeItem.
+            if not ev.new_value:
+                # We are deselecting a node.
+                if debug_tree: print('tree.on_selected_event: IGNORE 1')
+                ### e.preventDefault()
+                continue
+            ap = ev.source.leo_ap
+                # Get the ap from the LeoTreeItem.
+            print('----- ev.source.leo_ap\n', repr(ap))
+            print('------ leo_selected_ap\n', repr(self.leo_selected_ap))
+            if ap == self.leo_selected_ap:
+                if debug_tree: print('tree.on_selected_event: IGNORE 2')
+                ### ev.preventDefault()
+            else:
+                if debug_tree: print('tree.on_selected_event: SELECT')
                 self.root.select_ap(ap)
     #@+node:ekr.20181104080854.3: *5* tree.reaction: on_tree_event
     # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
