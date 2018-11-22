@@ -1244,21 +1244,7 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181116083916.1: *5* flx_tree.select_ap
     @flx.action
     def select_ap(self, ap):
-        #
-        # Unselect.
-        ### # This seems to cause more harm than good.
-            # if self.leo_selected_ap:
-                # old_key = self.ap_to_key(self.leo_selected_ap)
-                # old_item = self.leo_items.get(old_key)
-                # if old_item:
-                    # # print('tree.select_ap: un-select:')
-                    # old_item.set_selected(False)
-                # elif debug_tree:
-                    # print('===== tree.select_ap: error: no item to unselect')
-            # else:
-                # print('tree.select_ap: no previously selected item.')
-        #
-        # Select.
+        '''Select the tree item corresponding to the given ap.'''
         if ap == self.leo_selected_ap:
             print('tree.select_ap: already selected')
             return
