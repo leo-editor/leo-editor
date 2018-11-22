@@ -103,8 +103,8 @@ class LeoBrowserApp(flx.PyComponent):
         # Create all data-related ivars.
         self.create_all_data()
         # Create the main window and all its components.
-        ### p = c.rootPosition()
         c.selectPosition(c.rootPosition()) ### A temp hack.
+        assert c.p, repr(c.b)
         p = c.p
         g.trace('app.init: c.p.h:', p.h)
         signon = '%s\n%s' % (g.app.signon, g.app.signon2)
@@ -407,18 +407,22 @@ class LeoBrowserApp(flx.PyComponent):
         Convert a true Leo position to a serializable archived position.
         '''
         if not p.v:
-            if debug_tree:
-                g.trace('===== no p.v', repr(p))
-            return {
-                'childIndex': 0,
-                'cloned': False,
-                'expanded': False,
-                'gnx': None,
-                'headline': '<Invalid clone>', # For dumps.
-                'marked': False,
-                'stack': []
-            }
-        # g.trace(p.h, p._childIndex, p.v)
+            print('')
+            g.trace('===== no p.v', repr(p), g.callers())
+            print('')
+            assert False, g.callers()
+            ###
+                # return {
+                    # 'childIndex': 0,
+                    # 'cloned': False,
+                    # 'expanded': False,
+                    # 'gnx': None,
+                    # 'headline': '<None>', # For dumps.
+                    # 'marked': False,
+                    # 'stack': []
+                # }
+
+        ### g.trace(p.h, p._childIndex, p.v)
         gnx = p.v.gnx
         if gnx not in self.gnx_to_vnode:
             print('=== update gnx_to_vnode', gnx.ljust(15), p.h,
@@ -455,26 +459,26 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, all LeoApp data are recomputed.
         '''
+        # t1 = time.clock()
         c = self.c
-        t1 = time.clock()
-        aList = []
-        p = c.rootPosition()
+        p = p.copy() # Bug fix: Don't change p in the caller.
+        c_p_ap = self.p_to_ap(p) # Bug fix: calculate p's ap now.
+        #
         ### Don't do this: it messes up tree redraw.
             # Testing: forcibly expand the first node.
             # p.expand()
+        aList = []
         while p:
-            if p.level() == 0 or p.isVisible():
+            if p.level() == 0 or p.isVisible(c):
                 aList.append(self.make_dict_for_position(p))
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
         d = {
-            'c.p': self.p_to_ap(p),
+            'c.p': c_p_ap,
             'items': aList,
         }
-        if 0:
-            t2 = time.clock()
-            print('app.make_redraw_dict: %5.4f sec' % (t2-t1))
+        # print('app.make_redraw_dict: %5.4f sec' % (time.clock()-t1))
         return d
     #@+node:ekr.20181113044701.1: *5* app.make_dict_for_position
     def make_dict_for_position(self, p):
@@ -501,14 +505,18 @@ class LeoBrowserApp(flx.PyComponent):
     def test_round_trip_positions(self):
         '''Test the round tripping of p_to_ap and ap_to_p.'''
         c = self.c
-        t1 = time.clock()
+        # Bug fix: p_to_ap updates app.gnx_to_vnode. Save and restore it.
+        old_d = self.gnx_to_vnode.copy()
+        old_len = len(list(self.gnx_to_vnode.keys()))
+        # t1 = time.clock()
         for p in c.all_positions():
             ap = self.p_to_ap(p)
             p2 = self.ap_to_p(ap)
             assert p == p2, (repr(p), repr(p2), repr(ap))
-        t2 = time.clock()
-        if 1:
-            print('app.test_new_tree: %5.3f sec' % (t2-t1))
+        self.gnx_to_vnode = old_d
+        new_len = len(list(self.gnx_to_vnode.keys()))
+        assert old_len == new_len, (old_len, new_len)
+        # print('app.test_round_trip_positions: %5.3f sec' % (time.clock()-t1))
     #@+node:ekr.20181105091545.1: *3* app.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
