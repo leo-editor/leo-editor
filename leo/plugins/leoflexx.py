@@ -35,7 +35,6 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 debug_focus = True # puts 'focus' in g.app.debug.
 debug_keys = True # puts 'keys' in g.app.debug.
 debug_tree = True
-new_clones = True
 tree_props = True
 warnings_only = True
 #@+others
@@ -1107,7 +1106,6 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181122072344.1: *5* flx_tree.create_item_for_ap
     def create_item_for_ap(self, ap, parent):
         '''Create or reuse a tree items (for already-created clones).'''
-        assert new_clones
         cloned, gnx, headline = ap ['cloned'], ap ['gnx'], ap ['headline']
         key = self.ap_to_key(ap)
         old_item = self.leo_gnx_dict.get(gnx)
