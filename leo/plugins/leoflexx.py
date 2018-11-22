@@ -293,7 +293,7 @@ class LeoBrowserApp(flx.PyComponent):
         self.gnx_to_vnode[p.v.gnx] = p.v
         if debug_tree:
             level = p.level()
-            print('%s%s children %s' % (
+            print('%s%2s children %s' % (
                 '  '*level, len(list(p.children())), p.h))
             if 0:
                 for child in p.children():
@@ -1171,10 +1171,11 @@ class LeoFlexxTree(flx.Widget):
     @flx.action
     def redraw_with_dict(self, d):
         '''Clear the present tree and redraw using the redraw_list.'''
+        trace = debug_tree and not g.unitTesting
         self.clear_tree()
         c_p_ap = d ['c.p']
         items = d ['items']
-        if debug_tree:
+        if trace:
             print('')
             print('===== flx.tree.redraw_with_dict')
             print('c.p ["headline"] ', repr(c_p_ap ['headline']))
@@ -1187,7 +1188,7 @@ class LeoFlexxTree(flx.Widget):
             # Usually set in on_selected_event.
         self.leo_selected_ap = c_p_ap
         for item in items:
-            if debug_tree:
+            if trace:
                 print('  ', item ['headline'])
             self.create_item_with_parent(item, self.tree)
     #@+node:ekr.20181113043131.1: *6* flx_tree.create_item_with_parent
@@ -1209,6 +1210,8 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181113053154.1: *5* flx_tree.dump_redraw_dict & helpers
     def dump_redraw_dict(self, d, top_level_only=False):
         '''Pretty print the redraw dict.'''
+        ########### Weird: this gets the wrong dict. ###########
+        ### Could this be a kwargs problem ??
         padding, tag = None, 'c.p'
         print('')
         print('flx_tree.dump_redraw_dict')
