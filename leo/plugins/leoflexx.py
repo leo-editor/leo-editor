@@ -32,7 +32,7 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
-new_clones = False
+new_clones = True
 warnings_only = False
 debug_focus = True # puts 'focus' in g.app.debug.
 debug_keys = True # puts 'keys' in g.app.debug.
@@ -280,12 +280,6 @@ class LeoBrowserApp(flx.PyComponent):
             if p.level() == 0 or p.isVisible(c):
                 aList.append(self.make_dict_for_position(p))
             p.moveToNodeAfterTree()
-                # The entire tree should be handled.
-                
-            ### OLD
-                    # p.moveToNodeAfterTree()
-                # else:
-                    # p.moveToThreadNext()
         d = {
             'c.p': self.p_to_ap(c.p),
             'items': aList,
@@ -297,6 +291,7 @@ class LeoBrowserApp(flx.PyComponent):
         level = p.level()
         trace = True and level == 0 and not g.unitTesting
         c = self.c
+        assert p.v
         self.gnx_to_vnode[p.v.gnx] = p.v
         if trace:
             print('%s%2s children %s' % (
@@ -389,7 +384,7 @@ class LeoBrowserApp(flx.PyComponent):
             g.trace('===== no p.v', repr(p), g.callers())
             print('')
             assert False, g.callers()
-        ### g.trace(p.h, p._childIndex, v)
+        ### g.trace(p.h, p._childIndex, p.v)
         p_gnx = p.v.gnx
         if p_gnx not in self.gnx_to_vnode:
             print('=== update gnx_to_vnode',
@@ -1125,13 +1120,13 @@ class LeoFlexxTree(flx.Widget):
         Create or reuse a tree items (for already-created clones)
         '''
         assert new_clones
-        trace = debug_tree and not g.unitTesting
+        trace = False and debug_tree and not g.unitTesting
         cloned = ap ['cloned']
         gnx = ap ['gnx']
-        headline = ap ['ap']
+        headline = ap ['headline']
         key = self.ap_to_key(ap)
-        tree_item = self.leo_gnx_dict.get(gnx)
-        if False and tree_item and cloned:
+        old_item = self.leo_gnx_dict.get(gnx)
+        if old_item and cloned:
             if trace:
                 print('')
                 print('Using clone: %s %s' % (gnx.rjust(30), headline))
@@ -1139,8 +1134,17 @@ class LeoFlexxTree(flx.Widget):
             assert key in self.leo_items, repr(key)
             return None
         else:
+            if trace:
+                print('')
+                print('create_item_for_ap:     ap:\n', repr(ap))
+                print('')
+                print('create_item_for_ap: parent:', repr(parent))
             with parent:
                 tree_item = LeoFlexxTreeItem(ap, text=headline, checked=None, collapsed=True)
+            if trace:
+                print('')
+                print('===== tree_item', repr(tree_item))
+                print('')
             self.leo_items [key] = tree_item
             self.leo_gnx_dict [gnx] = tree_item
         return tree_item
@@ -1280,7 +1284,7 @@ class LeoFlexxTree(flx.Widget):
     @flx.action
     def redraw_with_dict(self, d):
         '''Clear the present tree and redraw using the redraw_list.'''
-        trace = debug_tree and not g.unitTesting
+        trace = False and debug_tree and not g.unitTesting
         self.clear_tree()
         c_p_ap = d ['c.p']
         items = d ['items']
@@ -1306,7 +1310,7 @@ class LeoFlexxTree(flx.Widget):
             tree_item = self.create_item_for_ap(ap, parent)
             if tree_item:
                 # Not a clone: Create the item's children...
-                for child in item ['children']:
+                for child in tree_item ['children']:
                     self.create_item_with_parent(child, tree_item)
         else:
             ### OLD CODE: works, but has problems with clones.
@@ -1427,6 +1431,7 @@ class LeoFlexxTreeItem(flx.TreeItem):
     
     def init(self, leo_ap):
         # pylint: disable=arguments-differ
+        ### print('===== LeoFlexxTreeItem.CTOR', repr(leo_ap))
         self.leo_ap = leo_ap
             # Gives access to cloned, marked, expanded fields.
 
