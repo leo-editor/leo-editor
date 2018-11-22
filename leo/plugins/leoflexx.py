@@ -1114,6 +1114,7 @@ class LeoFlexxTree(flx.Widget):
             # Keys are ap **keys**, values are LeoTreeItems.
         self.leo_populated_dict = {}
             # Keys are ap **keys**, values are ap's.
+        self.leo_selected_ap = None
         #
         # Init the widget.
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
@@ -1138,7 +1139,7 @@ class LeoFlexxTree(flx.Widget):
             print('tree.ap_to_key: new key', ap ['headline'])
             print('key', key)
         return key
-    #@+node:ekr.20181121073246.1: *4* flx_tree.drawing & selecting
+    #@+node:ekr.20181121073246.1: *4* flx_tree.drawing
     #@+node:ekr.20181112163252.1: *5* flx_tree.clear_tree
     @flx.action
     def clear_tree(self):
@@ -1241,6 +1242,7 @@ class LeoFlexxTree(flx.Widget):
                     # print('create_item_with_parent: key', key, 'ap', ap)
             for child in item ['children']:
                 self.create_item_with_parent(child, tree_item)
+    #@+node:ekr.20181121195235.1: *4* flx_tree.selecting
     #@+node:ekr.20181116083916.1: *5* flx_tree.select_ap
     @flx.action
     def select_ap(self, ap):
@@ -1259,25 +1261,6 @@ class LeoFlexxTree(flx.Widget):
             # Is this an error? It may be due to clone problems.
             print('===== tree.select_ap: error: no item for ap:', repr(ap))
             self.leo_selected_ap = None
-    #@+node:ekr.20181120061140.1: *4* flx_tree.key_press
-    @flx.emitter
-    def key_press(self, e):
-        ev = self._create_key_event(e)
-        ### print('===== tree.key_down.emitter', repr(ev))
-        if ev ['modifiers']:
-            e.preventDefault()
-        return ev
-    #@+node:ekr.20181121073529.1: *4* flx_tree.overrides
-    #@+node:ekr.20181120063735.1: *5* flx_tree.set_focus
-    @flx.action
-    def set_focus(self):
-        print('===== flx.tree.set_focus')
-    #@+node:ekr.20181112172518.1: *4* flx_tree.reactions
-    #@+node:ekr.20181116172300.1: *5* tree.reaction: on_key_press
-    @flx.reaction('tree.key_press')
-    def on_key_press(self, *events):
-        for ev in events:
-            self.root.do_key(ev, 'tree')
     #@+node:ekr.20181109083659.1: *5* tree.reaction: on_selected_event
     @flx.reaction('tree.children**.selected')
     def on_selected_event(self, *events):
@@ -1301,6 +1284,24 @@ class LeoFlexxTree(flx.Widget):
             else:
                 if debug_tree: print('tree.on_selected_event: SELECT')
                 self.root.select_ap(ap)
+    #@+node:ekr.20181120061140.1: *4* flx_tree.key_press
+    @flx.emitter
+    def key_press(self, e):
+        ev = self._create_key_event(e)
+        ### print('===== tree.key_down.emitter', repr(ev))
+        if ev ['modifiers']:
+            e.preventDefault()
+        return ev
+    #@+node:ekr.20181120063735.1: *4* flx_tree.set_focus
+    @flx.action
+    def set_focus(self):
+        print('===== flx.tree.set_focus')
+    #@+node:ekr.20181112172518.1: *4* flx_tree.reactions
+    #@+node:ekr.20181116172300.1: *5* tree.reaction: on_key_press
+    @flx.reaction('tree.key_press')
+    def on_key_press(self, *events):
+        for ev in events:
+            self.root.do_key(ev, 'tree')
     #@+node:ekr.20181104080854.3: *5* tree.reaction: on_tree_event
     # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
     @flx.reaction(
@@ -1323,10 +1324,6 @@ class LeoFlexxTree(flx.Widget):
         w.log.put(message)
         if 0: ###
             print('tree.show_event: ' + message)
-    #@+node:ekr.20181116054402.1: *4* flx_tree.testing (to be removed)
-    @flx.action
-    def echo (self, message=None):
-        print('===== tree echo =====', message or '<Empty Message>')
     #@-others
 #@+node:ekr.20181108233657.1: *3* class LeoFlexxTreeItem
 class LeoFlexxTreeItem(flx.TreeItem):
@@ -1342,11 +1339,34 @@ class LeoFlexxTreeItem(flx.TreeItem):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        ### print('===== tree-item.key_down.emitter', repr(ev))
         if ev ['modifiers']:
             e.preventDefault()
         return ev
         
+    @flx.emitter
+    def user_selected(self, e):
+        ev = super().user_selected(e)
+        tree_selected_ap = self.root.main_window.tree.leo_selected_ap
+        if debug_tree:
+            print('')
+            print('===== flx_tree_item.user_selected')
+            print('               e:', repr(e))
+            print('              ev:', repr(ev))
+            print('     self.leo_ap:', repr(self.leo_ap))
+            print('tree.selected_ap:', repr(tree_selected_ap))
+            if self.leo_ap ==tree_selected_ap:
+                print('----- already selected')
+            else:
+                print('----- SEL:', repr(ev.new_value))
+            print('')
+        ###### This test is never True. #######
+        ###### The headline is <Invalid clone>. set by app.p_to_ap.
+        if self.leo_ap ==tree_selected_ap:
+            self.set_selected(True)
+        else:
+            self.set_selected(ev.new_value)
+        return ev
+ 
     @flx.reaction('pointer_double_click')
     def on_pointer_double_click(self, *events):
         for ev in events:
