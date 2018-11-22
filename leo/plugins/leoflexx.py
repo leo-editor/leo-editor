@@ -1144,7 +1144,7 @@ class LeoFlexxTree(flx.Widget):
                 ap['gnx'],
                 ap['headline'],
             ))
-    #@+node:ekr.20181110175222.1: *5* flx_tree.receive_children & helper
+    #@+node:ekr.20181110175222.1: *5* flx_tree.receive_children & populate_children
     @flx.action
     def receive_children(self, d):
         '''
@@ -1226,12 +1226,12 @@ class LeoFlexxTree(flx.Widget):
             print('===== on_change_redraw_dict', len(self.redraw_dict ['items']))
             self.redraw_with_dict(self.redraw_dict)
     #@+node:ekr.20181112172518.1: *4* flx_tree.reactions
-    #@+node:ekr.20181116172300.1: *5* tree.reaction: on_key_press
+    #@+node:ekr.20181116172300.1: *5* flx_tree.reaction: on_key_press
     @flx.reaction('tree.key_press')
     def on_key_press(self, *events):
         for ev in events:
             self.root.do_key(ev, 'tree')
-    #@+node:ekr.20181104080854.3: *5* tree.reaction: on_tree_event
+    #@+node:ekr.20181104080854.3: *5* flx_tree.reaction: on_tree_event
     # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
     @flx.reaction(
         'tree.children**.checked',
@@ -1263,7 +1263,7 @@ class LeoFlexxTree(flx.Widget):
         banner('===== ERROR ===== tree.select_ap: no item for ap: %r' % (ap))
         ### Leave the selection alone?
         ### self.leo_selected_ap = None
-    #@+node:ekr.20181109083659.1: *5* tree.reaction: on_selected_event
+    #@+node:ekr.20181109083659.1: *5* flx_tree.reaction: on_selected_event
     @flx.reaction('tree.children**.selected')
     def on_selected_event(self, *events):
         '''
