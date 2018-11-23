@@ -354,7 +354,7 @@ class LeoBrowserApp(flx.PyComponent):
             w.tree.set_redraw_dict_prop(d)
         else:
             print('===== app.redraw: no tree =====', g.callers())
-    #@+node:ekr.20181111202747.1: *4* app.action.select_ap *****
+    #@+node:ekr.20181111202747.1: *4* app.action.select_ap
     @flx.action
     def select_ap(self, ap):
         '''Select the position in Leo's core corresponding to the archived position.'''
@@ -822,7 +822,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         super().select(p)
     #@+node:ekr.20181118052203.1: *4* tree_wrapper.redraw
     def redraw(self, p=None):
-        print('===== tree_wrapper.redraw', p.h)
+        print('===== tree_wrapper.redraw')
         self.root.redraw()
     #@+node:ekr.20181120063844.1: *4* tree_wrapper.setFocus
     def setFocus(self):
