@@ -413,8 +413,8 @@ class LeoBrowserApp(flx.PyComponent):
         '''
         c = self.c
         # banner('app.make_redraw_dict: %s' % c.p.h)
-        # Ensure that c.p will be shown.
         c.expandAllAncestors(c.p)
+            # Ensure that c.p will be shown.
         return {
             'c.p': self.p_to_ap(c.p),
             'items': [
@@ -467,6 +467,7 @@ class LeoBrowserApp(flx.PyComponent):
             'cloned': p.isCloned(),
             'expanded': p.isExpanded(),
             'gnx': p.v.gnx,
+            'level': p.level(),
             'headline': p.h,
             'marked': p.isMarked(),
             'stack': [{
