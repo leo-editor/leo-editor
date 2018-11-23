@@ -345,7 +345,7 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
-        # banner('===== app.redraw: %s' % g.callers())
+        print('===== app.redraw')
         w = self.main_window
         # Be careful during startup.
         if w and w.tree:
@@ -412,7 +412,8 @@ class LeoBrowserApp(flx.PyComponent):
         As a side effect, recreate gnx_to_vnode.
         '''
         c = self.c
-        # banner('app.make_redraw_dict: %s' % c.p.h)
+        print('===== app.make_redraw_dict: %s direct children' % (
+            len(list(c.rootPosition().self_and_siblings()))))
         c.expandAllAncestors(c.p)
             # Ensure that c.p will be shown.
         return {
@@ -426,7 +427,7 @@ class LeoBrowserApp(flx.PyComponent):
     def make_dict_for_position(self, p):
         ''' Recursively add a sublist for p and all its visible nodes.'''
         level = p.level()
-        trace = True and not g.unitTesting
+        trace = False and debug_tree and not g.unitTesting
             # A superb trace. There are similar traces in:
             # - flx_tree.redraw_with_dict  and its helper, flx_tree.create_item_with_parent.
             # - flx_tree.populate_children and its helper, flx_tree.create_item_for_ap
@@ -434,8 +435,6 @@ class LeoBrowserApp(flx.PyComponent):
         assert p.v
         self.gnx_to_vnode[p.v.gnx] = p.v
         if trace:
-            if p == c.rootPosition():
-                print('===== app.make_redraw_dict')
             print('%s%s' % ('  '*level, p.h))
         children = [
             self.make_dict_for_position(child)
@@ -489,11 +488,11 @@ class LeoBrowserApp(flx.PyComponent):
             }
         '''
         if debug_tree and not g.unitTesting:
-            # There is a similar trace in:
-            # flx.tree.receive_children, and its helper, flx_tree.populate_children.
-            print('===== send_children_to_tree')
-            for child in p.children():
-                print('  ' + child.h)
+            # There is a similar trace in flx.tree.receive_children.
+            print('===== send_children_to_tree: %s children' % len(list(p.children())))
+            if 0: # Corresponds to the trace in flx_tree.populate_children.
+                for child in p.children():
+                    print('  ' + child.h)
         w = self.main_window
         if p.hasChildren():
             w.tree.receive_children({
@@ -1113,6 +1112,7 @@ class LeoFlexxTree(flx.Widget):
     
     if tree_props:
         redraw_dict = flx.DictProp(settable=True)
+        selected_ap = flx.DictProp(settable=True)
 
     def init(self, redraw_dict):
         # pylint: disable=arguments-differ
@@ -1125,13 +1125,14 @@ class LeoFlexxTree(flx.Widget):
             # Keys are ap **keys**, values are LeoTreeItems.
         self.leo_populated_dict = {}
             # Keys are ap **keys**, values are ap's.
-        self.leo_selected_ap = None
         # Init the widget.
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
         if tree_props:
             self._mutate('redraw_dict', redraw_dict)
+            self._mutate('selected_ap', {})
         else:
             self.redraw_with_dict(redraw_dict)
+            self.leo_selected_ap = None
 
     #@+others
     #@+node:ekr.20181114072307.1: *4* flx_tree.ap_to_key
@@ -1180,9 +1181,11 @@ class LeoFlexxTree(flx.Widget):
                 'children': [ap1, ap2, ...],
             }
         '''
+        trace = True and debug_tree and not g.unitTesting
         parent_ap = d ['parent']
         children = d ['children']
-        print('===== flx.tree.receive_children')
+        if trace:
+            print('===== flx.tree.receive_children: %s children' % (len(children)))
         self.populate_children(children, parent_ap)
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
@@ -1191,7 +1194,7 @@ class LeoFlexxTree(flx.Widget):
         trace = debug_tree and not g.unitTesting
         self.clear_tree()
         if trace:
-            print('===== flx.tree.redraw_with_dict')
+            print('===== flx.tree.redraw_with_dict: %s direct children' % len(d ['items']))
             if 0: # Demonstrated the bug in create_item_with_parent.
                 print('dump of d')
                 for i, item in enumerate(d ['items']):
@@ -1206,7 +1209,7 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181113043131.1: *6* flx_tree.create_item_with_parent
     def create_item_with_parent(self, item, parent):
         '''Create a tree item for item and all its visible children.'''
-        trace = debug_tree and not g.unitTesting
+        trace = False and debug_tree and not g.unitTesting
         ap = item ['ap']
         if trace:
             headline, level = ap['headline'] ,ap ['level']
@@ -1275,7 +1278,7 @@ class LeoFlexxTree(flx.Widget):
         Populate parent with the children if necessary.
         Regardless of children, enter parent_ap into the populated dict.
         '''
-        trace = debug_tree and not g.unitTesting
+        trace = False and debug_tree and not g.unitTesting
         parent_key = self.ap_to_key(parent_ap)
         if parent_key in self.leo_populated_dict:
             if trace:
@@ -1298,6 +1301,8 @@ class LeoFlexxTree(flx.Widget):
         # Create the items.
         parent = self.leo_items[parent_key]
         for child_ap in children:
+            if trace:
+                print('%s%s' % ('  '*child_ap['level'], child_ap['headline']))
             self.create_item_for_ap(child_ap, parent)
 
     #@+node:ekr.20181120061140.1: *4* flx_tree.key_press
@@ -1311,6 +1316,7 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181122114509.1: *4* flx_tree.properties
     if tree_props:
 
+        ### None of these seem to be called!
         @flx.action
         def set_redraw_dict(self, d):
             print('===== set_redraw_dict', repr(d.keys()))
@@ -1320,6 +1326,13 @@ class LeoFlexxTree(flx.Widget):
         def on_change_redraw_dict(self):
             print('===== on_change_redraw_dict', len(self.redraw_dict ['items']))
             self.redraw_with_dict(self.redraw_dict)
+            
+        @flx.action
+        def set_selected_ap(self, d):
+            print('===== set_selected_ap')
+            self.selected_ap = d
+            
+        
     #@+node:ekr.20181112172518.1: *4* flx_tree.reactions
     #@+node:ekr.20181116172300.1: *5* flx_tree.reaction: on_key_press
     @flx.reaction('tree.key_press')
@@ -1356,6 +1369,7 @@ class LeoFlexxTree(flx.Widget):
         #
         # This is a serious error.
         banner('===== ERROR ===== tree.select_ap: no item for ap: %r' % (ap))
+        assert False
         ### Leave the selection alone?
         ### self.leo_selected_ap = None
     #@+node:ekr.20181109083659.1: *5* flx_tree.reaction: on_selected_event
