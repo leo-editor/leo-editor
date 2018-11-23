@@ -427,12 +427,15 @@ class LeoBrowserApp(flx.PyComponent):
         ''' Recursively add a sublist for p and all its visible nodes.'''
         level = p.level()
         trace = True and not g.unitTesting
+            # A superb trace. There are similar traces in:
+            # - flx_tree.redraw_with_dict  and its helper, flx_tree.create_item_with_parent.
+            # - flx_tree.populate_children and its helper, flx_tree.create_item_for_ap
         c = self.c
         assert p.v
         self.gnx_to_vnode[p.v.gnx] = p.v
         if trace:
             if p == c.rootPosition():
-                print('===== make_dict_for_position')
+                print('===== app.make_redraw_dict')
             print('%s%s' % ('  '*level, p.h))
         children = [
             self.make_dict_for_position(child)
@@ -486,6 +489,8 @@ class LeoBrowserApp(flx.PyComponent):
             }
         '''
         if debug_tree and not g.unitTesting:
+            # There is a similar trace in:
+            # flx.tree.receive_children, and its helper, flx_tree.populate_children.
             print('===== send_children_to_tree')
             for child in p.children():
                 print('  ' + child.h)
@@ -1177,40 +1182,57 @@ class LeoFlexxTree(flx.Widget):
         '''
         parent_ap = d ['parent']
         children = d ['children']
-        # banner('flx.tree.receive_children: %s' % len(children))
+        print('===== flx.tree.receive_children')
         self.populate_children(children, parent_ap)
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
     def redraw_with_dict(self, d):
         '''Clear the present tree and redraw using the **recursive** redraw_list.'''
+        trace = debug_tree and not g.unitTesting
         self.clear_tree()
-        # banner('flx.tree.redraw_with_dict: %s items: %s' % (d ['c.p']['headline'], len(d ['items'])))
+        if trace:
+            print('===== flx.tree.redraw_with_dict')
+            if 0: # Demonstrated the bug in create_item_with_parent.
+                print('dump of d')
+                for i, item in enumerate(d ['items']):
+                    print('')
+                    print('item', i)
+                    print(repr(item))
+                print('')
+                print('----- end of dump')
         self.leo_selected_ap = d ['c.p']
         for item in d ['items']:
             self.create_item_with_parent(item, self.tree)
     #@+node:ekr.20181113043131.1: *6* flx_tree.create_item_with_parent
     def create_item_with_parent(self, item, parent):
         '''Create a tree item for item and all its visible children.'''
+        trace = debug_tree and not g.unitTesting
         ap = item ['ap']
-        item = self.create_item_for_ap(ap, parent)
-        if item:
+        if trace:
+            headline, level = ap['headline'] ,ap ['level']
+            print('%s%s' % ('  '*level, headline))
+        tree_item = self.create_item_for_ap(ap, parent)
+        if tree_item:
             # Not a clone: Create the item's children...
             for child in item ['children']:
-                self.create_item_with_parent(child, item)
+                self.create_item_with_parent(child, tree_item)
     #@+node:ekr.20181122072344.1: *5* flx_tree.create_item_for_ap
     def create_item_for_ap(self, ap, parent):
         '''Create or reuse a tree items (for already-created clones).'''
+        trace = False and debug_tree and not g.unitTesting
         cloned, gnx, headline = ap ['cloned'], ap ['gnx'], ap ['headline']
         key = self.ap_to_key(ap)
         old_item = self.leo_gnx_dict.get(gnx)
         if old_item and cloned:
-            banner('create_item_for_ap: CLONE: %s %s' % (gnx, headline))
+            if trace:
+                banner('create_item_for_ap: CLONE: %s %s' % (gnx, headline))
             assert key in self.leo_items, repr(key)
             return None
         # banner('flx.tree.create_item_for_ap:\nap: %r\nparent: %r' % (ap, parent))
         with parent:
             item = LeoFlexxTreeItem(ap, text=headline, checked=None, collapsed=True)
-        # banner('flx.tree.create_item_for_ap: item: %r' % (item))
+        if trace:
+            print('flx.tree.create_item_for_ap: item: %r' % (item))
         self.leo_items [key] = item
         self.leo_gnx_dict [gnx] = item
         return item
@@ -1253,25 +1275,31 @@ class LeoFlexxTree(flx.Widget):
         Populate parent with the children if necessary.
         Regardless of children, enter parent_ap into the populated dict.
         '''
+        trace = debug_tree and not g.unitTesting
         parent_key = self.ap_to_key(parent_ap)
         if parent_key in self.leo_populated_dict:
-            print('flx.tree.populate_children: already populated: %s' % (parent_ap ['headline']))
+            if trace:
+                print('flx.tree.populate_children: already populated: %s' % (parent_ap ['headline']))
             return
         # Set the key once, here.
         self.leo_populated_dict [parent_key] = parent_ap
         # Populate the items.
         if parent_key not in self.leo_items:
-            banner('flx.tree.populate_children: can not happen')
+            banner('flx.tree.populate_children: can not happen: parent_key not in leo_items')
+            print('parent_key', parent_key)
             self.dump_ap(parent_ap, 0, 'parent_ap')
-            for item in self.leo_items:
-                print(repr(item))
+            # leo_items: Keys are ap keys, values are ap's.
+            print('dump of leo_items...')
+            for key, val in self.leo_items.items():
+                print(key)
+                print(val)
             return
         # banner('flx.tree.populate_children: %s' % len(children))
         # Create the items.
         parent = self.leo_items[parent_key]
         for child_ap in children:
             self.create_item_for_ap(child_ap, parent)
-        
+
     #@+node:ekr.20181120061140.1: *4* flx_tree.key_press
     @flx.emitter
     def key_press(self, e):
