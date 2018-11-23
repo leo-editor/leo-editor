@@ -4,9 +4,82 @@
 #@@first
 #@@language python
 #@@tabwidth -4
+#@+<< flexx.py docstring >>
+#@+node:ekr.20181122215342.1: ** << flexx.py docstring >>
+#@@language md
+#@@wrap
 '''
-A stand-alone prototype for Leo using flexx.
+flexx.py: A stand-alone prototype for Leo using flexx.
+
+This file, not leowapp.py or leoflexx.jx, is the main line of the LeoWapp project.
+https://github.com/leo-editor/leo-editor/issues/1005
+
+# Prerequites
+
+Install flexx: https://flexx.readthedocs.io/en/stable/start.html
+
+# Running
+
+You should run leoflexx.py from a console:
+
+    python <path to>leoflexx.py --flexx-webruntime=firefox-browser​
+
+The --flex-webruntime command-line arg is optional. If omitted, you'll use
+the webruntime environment.
+
+You should see the flexx (Tornado) server start up in the console.
+Something that looks like Leo should appear in the browser.
+
+The startup code uses Leo's bridge module to load unitTest.leo. You should
+see the top-level nodes of this file in the tree pane. Everything you see
+is real, and most of it is "live".
+
+# The tree pane
+
+The tree pane is mostly functional, but you may see "can't happen"
+messages. I'm working on it.
+
+- Selecting a node selects the proper body text.
+
+- Moving nodes with Ctrl-U/Ctrl-D work.
+
+- You can expand/contract nodes by clicking on them.
+
+- You can *not* edit headlines. It will take some doing to make this
+  happen, but a workaround is coming soon.
+  
+# Key handling
+
+Many keystrokes work.
+
+- Ctrl-S will save the file but I don't recommend doing that yet!
+
+- Alt-X does not work yet.
+
+- Ctrl-F does not work yet: the browser (Mozilla) grabs the keystroke.
+
+# Minibuffer Easter Eggs
+
+You can execute test commands by clicking in the Minibuffer, typing the
+command and hitting return.
+
+See app.do_command (in this file) for a full list. The notable commands:
+
+- cls: clears the console.
+
+- unit: runs all unit tests. They all pass for me.
+
+Coming soon:
+
+- mini: Simulate Alt-x. You will be prompted for a minibuffer command.
+
+- find: Simulate Ctrl-F in minibuffer find mode.
+
+- head: Simulate editing the headline. You will be prompted for headline
+  text. Hitting return will replace c.p.h by what you type.
+
 '''
+#@-<< flexx.py docstring >>
 # pylint: disable=logging-not-lazy
 #@+<< leoflexx imports >>
 #@+node:ekr.20181113041314.1: ** << leoflexx imports >>
