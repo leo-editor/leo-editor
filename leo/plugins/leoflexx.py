@@ -390,13 +390,12 @@ class LeoBrowserApp(flx.PyComponent):
     def create_all_data(self):
         '''Compute the initial values all data structures.'''
         t1 = time.clock()
-        # This is likely the only data that ever will be needed.
         self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
+            # This is likely the only data that ever will be needed.
         t2 = time.clock()
         if debug_tree:
             print('app.create_all_data: %5.2f sec. %s entries' % (
                 (t2-t1), len(list(self.gnx_to_vnode.keys()))))
-        if debug_tree:
             self.test_round_trip_positions()
     #@+node:ekr.20181113043539.1: *5* app.make_redraw_dict & helpers
     def make_redraw_dict(self):
