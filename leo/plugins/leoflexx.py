@@ -212,120 +212,7 @@ class LeoBrowserApp(flx.PyComponent):
         self._mutate('main_window', main_window)
 
     #@+others
-    #@+node:ekr.20181111152542.1: *4*  app.actions
-    #@+node:ekr.20181124054536.1: *5* app.action: cls
-    @flx.action
-    def cls(self):
-        '''Clear the console'''
-        g.cls()
-    #@+node:ekr.20181111142921.1: *5* app.action: do_command
-    @flx.action
-    def do_command(self, command):
-        w = self.main_window
-        c = self.c
-        
-        #@+others # define test_log & test_select.
-        #@+node:ekr.20181119103144.1: *6* app.tests
-        def test_focus():
-            old_debug = g.app.debug
-            try:
-                g.app.debug = ['focus', 'keys',]
-                print('\ncalling c.set_focus(c.frame.miniBufferWidget.widget')
-                c.set_focus(c.frame.miniBufferWidget.widget)
-            finally:
-                g.app.debug = old_debug
-
-        def test_log():
-            print('testing log...')
-            w.log.put('Test message to LeoFlexxLog.put')
-                # Test LeoFlexxLog.put.
-            c.frame.log.put('Test message to LeoBrowserLog.put')
-                # Test LeoBrowserLog.put.
-                
-        def test_positions():
-            print('testing positions...')
-            self.test_round_trip_positions()
-                
-        def test_redraw():
-            print('testing redraw...')
-            self.redraw()
-                
-        def test_select():
-            print('testing select...')
-            h = 'Active Unit Tests'
-            p = g.findTopLevelNode(c, h, exact=True)
-            if p:
-                c.frame.tree.select(p)
-                # LeoBrowserTree.select.
-            else:
-                g.trace('not found: %s' % h)
-        #@-others
-
-        if command == 'cls':
-            g.cls()
-        elif command == 'focus':
-            test_focus()
-        elif command == 'log':
-            test_log()
-        elif command == 'redraw':
-            test_redraw()
-        elif command.startswith('sel'):
-            test_select()
-        elif command == 'test': # All except unit tests.
-            test_log()
-            test_positions()
-            test_redraw()
-            test_select()
-        elif command == 'unit':
-            self.run_all_unit_tests()
-        else:
-            g.trace('unknown command: %r' % command)
-            ### To do: pass the command on to Leo's core.
-    #@+node:ekr.20181117163223.1: *5* app.action: do_key
-    @flx.action
-    def do_key (self, ev, kind):
-        '''
-        https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
-        See Widget._create_key_event in flexx/ui/_widget.py:
-            
-        Modifiers: 'Alt', 'Shift', 'Ctrl', 'Meta'
-            
-        Keys: 'Enter', 'Tab', 'Escape', 'Delete'
-              'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp',
-        '''
-        # ev is a dict, keys are type, source, key, modifiers
-        trace = False and debug_keys and not g.unitTesting
-        c = self.c
-        key, mods = ev ['key'], ev ['modifiers']
-        d = {
-            'ArrowDown':'Down',
-            'ArrowLeft':'Left',
-            'ArrowRight': 'Right',
-            'ArrowUp': 'Up',
-            'Enter': '\n', # For k.fullCommand, etc.
-            'PageDown': 'Next',
-            'PageUp': 'Prior',
-        }
-        char = d.get(key, key)
-        if 'Ctrl' in mods:
-            mods.remove('Ctrl')
-            mods.append('Control')
-        binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
-        widget = getattr(c.frame, kind)
-        w = widget.wrapper
-        key_event = leoGui.LeoKeyEvent(c,
-            char = char, event = { 'c': c }, binding = binding, w = w)
-        if trace:
-            g.app.debug = ['keys',]
-        try:
-            old_debug = g.app.debug
-            c.k.masterKeyHandler(key_event)
-        finally:
-            g.app.debug = old_debug
-        if trace:
-            g.trace('mods: %r key: %r ==> %r %r IN %6r %s' % (
-                mods, key, char, binding, widget.wrapper.getName(), c.p.h))
-    #@+node:ekr.20181122132345.1: *4* app.Drawing & selecting
+    #@+node:ekr.20181122132345.1: *4* app.Drawing...
     #@+node:ekr.20181124074707.1: *5* app.action.expand_and_redraw
     @flx.action
     def expand_and_redraw(self, ap):
@@ -341,39 +228,6 @@ class LeoBrowserApp(flx.PyComponent):
         if trace: print('========== app.redraw_and_expand: REDRAWING', p.h)
         p.expand()
         self.redraw(p=p)
-    #@+node:ekr.20181111202747.1: *5* app.action.select_ap
-    @flx.action
-    def select_ap(self, ap):
-        '''
-        Select the position in Leo's core corresponding to the archived position.
-        Nothin in the flx.tree needs to be updated.
-        '''
-        trace = debug_select and not g.unitTesting
-        if trace: print('===== app.action.select_ap')
-        c, w = self.c, self.main_window
-        p = self.ap_to_p(ap)
-        assert p, repr(ap)
-        c.frame.tree.super_select(p)
-            # call LeoTree.select, but not self.select_p.
-        lt, rt = c.frame.statusLine.update()
-        w.status_line.update(lt, rt)
-            # Set the property.
-        ### self.send_children_to_tree(ap, p)
-    #@+node:ekr.20181118061020.1: *5* app.action.select_p
-    @flx.action
-    def select_p(self, p):
-        '''
-        Select the position in the tree.
-        
-        Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
-        '''
-        trace = debug_select and not g.unitTesting
-        w = self.main_window
-        ap = self.p_to_ap(p)
-        if trace: print('===== app.action.select_p', p.h)
-        # Be careful during startup.
-        if w and w.tree:
-            w.tree.set_ap(ap)
     #@+node:ekr.20181111203114.1: *5* app.ap_to_p
     def ap_to_p (self, ap):
         '''Convert an archived position to a true Leo position.'''
@@ -457,36 +311,6 @@ class LeoBrowserApp(flx.PyComponent):
             'gnx': p.v.gnx,
             'headline': p.h,
         }
-    #@+node:ekr.20181111204659.1: *5* app.p_to_ap (updates app.gnx_to_vnode)
-    def p_to_ap(self, p):
-        '''
-        Convert a true Leo position to a serializable archived position.
-        '''
-        if not p.v:
-            banner('app.p_to_ap: no p.v: %r %s' % (p, g.callers()))
-            assert False, g.callers()
-        p_gnx = p.v.gnx
-        if p_gnx not in self.gnx_to_vnode:
-            print('=== update gnx_to_vnode',
-                p_gnx.ljust(15),
-                p.h,
-                len(list(self.gnx_to_vnode.keys())),
-            )
-            self.gnx_to_vnode [p_gnx] = p.v
-        return {
-            'childIndex': p._childIndex,
-            'cloned': p.isCloned(),
-            'expanded': p.isExpanded(),
-            'gnx': p.v.gnx,
-            'level': p.level(),
-            'headline': p.h,
-            'marked': p.isMarked(),
-            'stack': [{
-                'gnx': stack_v.gnx,
-                'childIndex': stack_childIndex,
-                'headline': stack_v.h,
-            } for (stack_v, stack_childIndex) in p.stack ],
-        }
     #@+node:ekr.20181113042549.1: *5* app.redraw
     def redraw (self, p=None):
         '''
@@ -533,10 +357,50 @@ class LeoBrowserApp(flx.PyComponent):
                 'children': [self.p_to_ap(z) for z in p.children()],
             })
         # else: print('app.send_children_to_tree: no children', p.h)
-    #@+node:ekr.20181115171220.1: *4* app.message
-    def message(self, s):
-        '''For testing.'''
-        print('app.message: %s' % s)
+    #@+node:ekr.20181117163223.1: *4* app.Key handling
+    @flx.action
+    def do_key (self, ev, kind):
+        '''
+        https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
+        See Widget._create_key_event in flexx/ui/_widget.py:
+            
+        Modifiers: 'Alt', 'Shift', 'Ctrl', 'Meta'
+            
+        Keys: 'Enter', 'Tab', 'Escape', 'Delete'
+              'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp',
+        '''
+        # ev is a dict, keys are type, source, key, modifiers
+        trace = False and debug_keys and not g.unitTesting
+        c = self.c
+        key, mods = ev ['key'], ev ['modifiers']
+        d = {
+            'ArrowDown':'Down',
+            'ArrowLeft':'Left',
+            'ArrowRight': 'Right',
+            'ArrowUp': 'Up',
+            'Enter': '\n', # For k.fullCommand, etc.
+            'PageDown': 'Next',
+            'PageUp': 'Prior',
+        }
+        char = d.get(key, key)
+        if 'Ctrl' in mods:
+            mods.remove('Ctrl')
+            mods.append('Control')
+        binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
+        widget = getattr(c.frame, kind)
+        w = widget.wrapper
+        key_event = leoGui.LeoKeyEvent(c,
+            char = char, event = { 'c': c }, binding = binding, w = w)
+        if trace:
+            g.app.debug = ['keys',]
+        try:
+            old_debug = g.app.debug
+            c.k.masterKeyHandler(key_event)
+        finally:
+            g.app.debug = old_debug
+        if trace:
+            g.trace('mods: %r key: %r ==> %r %r IN %6r %s' % (
+                mods, key, char, binding, widget.wrapper.getName(), c.p.h))
     #@+node:ekr.20181105091545.1: *4* app.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
@@ -557,7 +421,134 @@ class LeoBrowserApp(flx.PyComponent):
             return
         c = bridge.openLeoFile(path)
         return c, g
+    #@+node:ekr.20181124095316.1: *4* app.Selecting...
+    #@+node:ekr.20181111204659.1: *5* app.p_to_ap (updates app.gnx_to_vnode)
+    def p_to_ap(self, p):
+        '''
+        Convert a true Leo position to a serializable archived position.
+        '''
+        if not p.v:
+            banner('app.p_to_ap: no p.v: %r %s' % (p, g.callers()))
+            assert False, g.callers()
+        p_gnx = p.v.gnx
+        if p_gnx not in self.gnx_to_vnode:
+            print('=== update gnx_to_vnode',
+                p_gnx.ljust(15),
+                p.h,
+                len(list(self.gnx_to_vnode.keys())),
+            )
+            self.gnx_to_vnode [p_gnx] = p.v
+        return {
+            'childIndex': p._childIndex,
+            'cloned': p.isCloned(),
+            'expanded': p.isExpanded(),
+            'gnx': p.v.gnx,
+            'level': p.level(),
+            'headline': p.h,
+            'marked': p.isMarked(),
+            'stack': [{
+                'gnx': stack_v.gnx,
+                'childIndex': stack_childIndex,
+                'headline': stack_v.h,
+            } for (stack_v, stack_childIndex) in p.stack ],
+        }
+    #@+node:ekr.20181118061020.1: *5* app.action.select_p
+    @flx.action
+    def select_p(self, p):
+        '''
+        Select the position in the tree.
+        
+        Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
+        '''
+        trace = debug_select and not g.unitTesting
+        w = self.main_window
+        ap = self.p_to_ap(p)
+        if trace: print('===== app.action.select_p', p.h)
+        # Be careful during startup.
+        if w and w.tree:
+            w.tree.set_ap(ap)
+    #@+node:ekr.20181111202747.1: *5* app.action.select_ap
+    @flx.action
+    def select_ap(self, ap):
+        '''
+        Select the position in Leo's core corresponding to the archived position.
+        Nothin in the flx.tree needs to be updated.
+        '''
+        trace = debug_select and not g.unitTesting
+        if trace: print('===== app.action.select_ap')
+        c, w = self.c, self.main_window
+        p = self.ap_to_p(ap)
+        assert p, repr(ap)
+        c.frame.tree.super_select(p)
+            # call LeoTree.select, but not self.select_p.
+        lt, rt = c.frame.statusLine.update()
+        w.status_line.update(lt, rt)
+            # Set the property.
+        ### self.send_children_to_tree(ap, p)
     #@+node:ekr.20181122132009.1: *4* app.Testing...
+    #@+node:ekr.20181111142921.1: *5* app.action: do_command
+    @flx.action
+    def do_command(self, command):
+        w = self.main_window
+        c = self.c
+        
+        #@+others # define test_log & test_select.
+        #@+node:ekr.20181119103144.1: *6* app.tests
+        def test_focus():
+            old_debug = g.app.debug
+            try:
+                g.app.debug = ['focus', 'keys',]
+                print('\ncalling c.set_focus(c.frame.miniBufferWidget.widget')
+                c.set_focus(c.frame.miniBufferWidget.widget)
+            finally:
+                g.app.debug = old_debug
+
+        def test_log():
+            print('testing log...')
+            w.log.put('Test message to LeoFlexxLog.put')
+                # Test LeoFlexxLog.put.
+            c.frame.log.put('Test message to LeoBrowserLog.put')
+                # Test LeoBrowserLog.put.
+                
+        def test_positions():
+            print('testing positions...')
+            self.test_round_trip_positions()
+                
+        def test_redraw():
+            print('testing redraw...')
+            self.redraw()
+                
+        def test_select():
+            print('testing select...')
+            h = 'Active Unit Tests'
+            p = g.findTopLevelNode(c, h, exact=True)
+            if p:
+                c.frame.tree.select(p)
+                # LeoBrowserTree.select.
+            else:
+                g.trace('not found: %s' % h)
+        #@-others
+
+        if command == 'cls':
+            g.cls()
+        elif command == 'focus':
+            test_focus()
+        elif command == 'log':
+            test_log()
+        elif command == 'redraw':
+            test_redraw()
+        elif command.startswith('sel'):
+            test_select()
+        elif command == 'test': # All except unit tests.
+            test_log()
+            test_positions()
+            test_redraw()
+            test_select()
+        elif command == 'unit':
+            self.run_all_unit_tests()
+        else:
+            g.trace('unknown command: %r' % command)
+            ### To do: pass the command on to Leo's core.
     #@+node:ekr.20181112182636.1: *5* app.run_all_unit_tests
     def run_all_unit_tests (self):
         '''Run all unit tests from the bridge.'''
@@ -593,6 +584,15 @@ class LeoBrowserApp(flx.PyComponent):
         new_len = len(list(self.gnx_to_vnode.keys()))
         assert old_len == new_len, (old_len, new_len)
         # print('app.test_round_trip_positions: %5.3f sec' % (time.clock()-t1))
+    #@+node:ekr.20181124054536.1: *4* app.Utils
+    @flx.action
+    def cls(self):
+        '''Clear the console'''
+        g.cls()
+
+    def message(self, s):
+        '''For testing.'''
+        print('app.message: %s' % s)
     #@-others
 #@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
 class LeoBrowserBody(leoFrame.NullBody):
