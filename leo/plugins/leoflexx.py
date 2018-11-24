@@ -209,6 +209,11 @@ class LeoBrowserApp(flx.PyComponent):
 
     #@+others
     #@+node:ekr.20181111152542.1: *4*  app.actions
+    #@+node:ekr.20181124054536.1: *5* app.action: cls
+    @flx.action
+    def cls(self):
+        '''Clear the console'''
+        g.cls()
     #@+node:ekr.20181111142921.1: *5* app.action: do_command
     @flx.action
     def do_command(self, command):
@@ -1274,6 +1279,9 @@ class LeoFlexxTree(flx.Widget):
 
     @flx.action
     def set_ap(self, ap):
+        '''
+        Mutate self.selected_ap. Call *only* from app.select_ap.
+        '''
         assert ap
         self._mutate('selected_ap', ap)
             
@@ -1282,16 +1290,18 @@ class LeoFlexxTree(flx.Widget):
     @flx.reaction('selected_ap') # don't use mode='greedy'
     def on_selected_ap(self):
         assert self.selected_ap
-        print('========== flx_tree.REACTION.on_selected_ap')
+        print('===== flx_tree.REACTION.on_selected_ap', self.selected_ap['headline'])
         self.select_ap(self.selected_ap)
     #@+node:ekr.20181116083916.1: *5* flx_tree.select_ap
     @flx.action
     def select_ap(self, ap):
         '''
         Select the tree item corresponding to the given ap.
+        
+        Called from the mutator, and also on_selected_event.
         '''
-        print('===== flx.tree.select_ap')
-        assert ap == self.selected_ap
+        print('===== flx.tree.select_ap', ap ['headline'])
+        # assert ap == self.selected_ap
             # Because only the on_selected_ap REACTION calls this method.
         key = self.ap_to_key(ap)
         item = self.tree_items_dict.get(key)
@@ -1300,17 +1310,35 @@ class LeoFlexxTree(flx.Widget):
                 # Set the item's selected property.
         else:
             print('===== ERROR ===== flx.tree.select_ap: no item for ap: %r' % (ap))
-    #@+node:ekr.20181109083659.1: *5* flx_tree.reaction.on_selected_event
+    #@+node:ekr.20181109083659.1: *5* flx_tree.reaction.on_selected_event (changed)
     @flx.reaction('tree.children**.selected') # don't use mode="greedy" here!
     def on_selected_event(self, *events):
-        '''Update c.p and c.p.b when the user selects a new tree node.'''
-        # print('========== tree.on_selected_event')
+        '''
+        Update c.p and c.p.b when the user selects a new tree node.
+        
+        This also gets fired on *unselection* events, which causes problems.
+        '''
+        trace = True and not g.unitTesting
+        if trace: print('='*20)
+        #
+        # Reselect the present ap if there are no selection events.
+        # This ensures that clicking a headline twice has no effect.
+        if not any([ev.new_value for ev in events]):
+            self.select_ap(self.selected_ap)
+            return
+        #
+        # handle selection events.
         for ev in events:
             if ev.new_value: # A selection event.
                 ap = ev.source.leo_ap
+                if trace: print('select:', ap['headline'])
                 # self.dump_ap(ap)
                 self.root.select_ap(ap)
                     # This *only* sets c.p. and updated c.p.b.
+                self.select_ap(ap)
+                    # Selects the corresponding LeoTreeItem.
+                self.set_ap(ap)
+                    # Mutates selected_ap property *later*.
     #@+node:ekr.20181120061140.1: *4* flx_tree.key_press
     @flx.emitter
     def key_press(self, e):
@@ -1332,7 +1360,7 @@ class LeoFlexxTree(flx.Widget):
         'tree.children**.checked',
         'tree.children**.collapsed',
         'tree.children**.visible', # Never seems to fire.
-        mode='greedy',
+        ### mode='greedy',
     )
     def on_tree_event(self, *events):
         for ev in events:
