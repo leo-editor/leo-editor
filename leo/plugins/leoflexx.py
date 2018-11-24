@@ -1138,27 +1138,24 @@ class LeoFlexxTree(flx.Widget):
     '''
     #@-<< tree css >>
     
-    gnx_dict = flx.DictProp(settable=True,
-        doc = "Keys are gnx's, values are the LeoTreeItem for that gnx.")
-    redraw_dict = flx.DictProp(settable=True,
-        doc = "For receive_children action.")
-    tree_items_dict = flx.DictProp(settable=True,
-        doc = "Keys are ap **keys**, values are LeoTreeItems")
-    populated_dict = flx.DictProp(settable=True,
-        doc = "Keys are ap **keys**, values are ap's.")
-        # Not used, but defined to keep pylint happy.
-    selected_ap = flx.DictProp(settable=True,
-        doc = "The archived position corresponding to c.p")
+    do_redraw = flx.BoolProp(settable=True)
 
     def init(self, redraw_dict, selected_ap):
         # pylint: disable=arguments-differ
         self.widget = self
         self.wrapper = self
-        # Init the data.
+        # Init local data: not used outside this class.
+        self.gnx_dict = {}
+        self.populated_dict = {}
+        self.redraw_dict = redraw_dict
+        self.selected_ap = {}
         # Init the widget.
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
-        self._mutate('redraw_dict', redraw_dict)
-        self._mutate('selected_ap', selected_ap)
+        self._mutate('do_redraw', True)
+        
+    @flx.reaction('do_redraw', mode="greedy")
+    def on_redraw(self):
+        self.redraw_with_dict(self.redraw_dict)
 
     #@+others
     #@+node:ekr.20181121073246.1: *4* flx_tree.Drawing...
@@ -1178,8 +1175,9 @@ class LeoFlexxTree(flx.Widget):
         # Clear all tree items.
         for item in self.tree_items_dict.values():
             item.dispose()
-        self._mutate('tree_items_dict', {})
-        self._mutate('gnx_dict', {})
+        self.tree_items_dict = {}
+        self.gnx_dict = {}
+        ### self._mutate('tree_items_dict', {})
         ### self._mutate('populated_dict', {})
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
@@ -1192,11 +1190,13 @@ class LeoFlexxTree(flx.Widget):
             print('===== flx.tree.redraw_with_dict: %s direct children' % len(d ['items']))
         for item in d ['items']:
             self.create_item_with_parent(item, self.tree)
+        # Update local data.
+        self.gnx_dict = {}
+        self.selected_ap = {}
         # Update tree properties!
-        self._mutate('selected_ap', d ['c.p'])
-        self._mutate('gnx_dict', self.gnx_dict)
-        self._mutate('tree_items_dict', self.tree_items_dict)
-        ### self._mutate('populated_dict', self.populated_dict)
+            ### self._mutate('selected_ap', d ['c.p'])
+            ### self._mutate('tree_items_dict', self.tree_items_dict)
+            ### self._mutate('populated_dict', self.populated_dict)
     #@+node:ekr.20181113043131.1: *6* flx_tree.create_item_with_parent
     def create_item_with_parent(self, item, parent):
         '''Create a tree item for item and all its visible children.'''
@@ -1243,10 +1243,12 @@ class LeoFlexxTree(flx.Widget):
         key = self.ap_to_key(ap)
         old_item = self.gnx_dict.get(gnx)
         if old_item and cloned:
-            if trace:
-                banner('create_item_for_ap: CLONE: %s %s' % (gnx, headline))
-            assert key in self.tree_items_dict, repr(key)
-            return None
+            if trace: print('===== create_item_for_ap: CLONE: %s %s' % (gnx, headline))
+            # ap depends on position, so we do *not* expect it to be in the tree_items_dict.
+            assert key not in self.tree_items_dict, repr(key)
+            # Link the previous node into the tree.
+            
+            return old_item
         # banner('flx.tree.create_item_for_ap:\nap: %r\nparent: %r' % (ap, parent))
         with parent:
             item = LeoFlexxTreeItem(ap, text=headline, checked=None, collapsed=True)
@@ -1322,15 +1324,16 @@ class LeoFlexxTree(flx.Widget):
     @flx.action
     def set_redraw_dict(self, d):
         # print('=====  flx_tree.ACTION.set_redraw_dict', repr(d.keys()))
-        self._mutate('redraw_dict', d)
+        ### self._mutate('redraw_dict', d)
+        self.redraw_with_dict(d)
 
     # This must exist, because LeoTree.init mutates redraw_dict.
-
-    @flx.reaction('redraw_dict', mode='greedy')
-    def on_redraw_dict(self):
-        d = self.redraw_dict
-        # print('===== flx_tree.REACTION.on_redraw_dict', len(d ['items']))
-        self.redraw_with_dict(d)
+    ###
+        # @flx.reaction('redraw_dict', mode='greedy')
+        # def on_redraw_dict(self):
+            # d = self.redraw_dict
+            # # print('===== flx_tree.REACTION.on_redraw_dict', len(d ['items']))
+            # self.redraw_with_dict(d)
     #@+node:ekr.20181120063735.1: *4* flx_tree.Focus
     @flx.action
     def set_focus(self):
@@ -1384,9 +1387,9 @@ class LeoFlexxTree(flx.Widget):
         if trace:
             print('===== flx.tree.receive_children: %s children' % (len(children)))
         self.populate_children(children, parent_ap)
+       
         # Update tree properties!
         # self._mutate('selected_ap', ...) # This does not change.
-        self._mutate('gnx_dict', self.gnx_dict)
         ### self._mutate('populated_dict', self.populated_dict)
         ### self._mutate('tree_items_dict', self.tree_items_dict)
     #@+node:ekr.20181123164508.1: *5* flx_tree.selected_ap.action/reaction (not used)
@@ -1417,16 +1420,18 @@ class LeoFlexxTree(flx.Widget):
         Mutate self.selected_ap. Call *only* from app.select_ap.
         '''
         assert ap
-        self._mutate('selected_ap', ap)
+        self.selected_ap = ap
+        ### self._mutate('selected_ap', ap)
+        self.select_ap(self.selected_ap)
             
     # This must exist, because LeoTree.init mutates selected_ap.
 
-    @flx.reaction('selected_ap') # don't use mode='greedy'
-    def on_selected_ap(self):
-        assert self.selected_ap
-        trace = debug_select and not g.unitTesting
-        if trace: print('===== flx_tree.REACTION.on_selected_ap', self.selected_ap['headline'])
-        self.select_ap(self.selected_ap)
+    # @flx.reaction('selected_ap') # don't use mode='greedy'
+    # def on_selected_ap(self):
+        # assert self.selected_ap
+        # trace = debug_select and not g.unitTesting
+        # if trace: print('===== flx_tree.REACTION.on_selected_ap', self.selected_ap['headline'])
+        # self.select_ap(self.selected_ap)
     #@+node:ekr.20181116083916.1: *5* flx_tree.select_ap
     @flx.action
     def select_ap(self, ap):
@@ -1473,7 +1478,8 @@ class LeoFlexxTree(flx.Widget):
                 self.select_ap(ap)
                     # Selects the corresponding LeoTreeItem.
                 self.set_ap(ap)
-                    # Mutates selected_ap property *later*.
+                    # Sets selected_ap NOW
+                    # Formerly: Mutates selected_ap property *later*.
     #@+node:ekr.20181120061140.1: *4* flx_tree.Key handling
     @flx.emitter
     def key_press(self, e):
@@ -1496,11 +1502,11 @@ class LeoFlexxTreeItem(flx.TreeItem):
         self.leo_ap = leo_ap
             # Immutable: Gives access to cloned, marked, expanded fields.
 
-
     def getName(self):
         return 'head' # Required, for proper pane bindings.
         
-    ### Keep it simple, for now.
+    #@+others
+    #@+node:ekr.20181124123647.1: *4* flx.tree_item.Key Handling
     # @flx.emitter
     # def key_press(self, e):
         # ev = self._create_key_event(e)
@@ -1513,17 +1519,12 @@ class LeoFlexxTreeItem(flx.TreeItem):
         # ev = super().user_selected(e)
         # tree_selected_ap = self.root.main_window.tree.leo_selected_ap
         # return ev
- 
+
     # @flx.reaction('pointer_double_click')
     # def on_pointer_double_click(self, *events):
         # for ev in events:
             # print('tree-item.pointer_double_click')
-            # dump_event(ev)
-            # #
-            # # The _render_title() and _render_text() methods can be overloaded to 
-            # # display items in richer ways.
-            # # See Widget._render_dom() for details.
-            # # https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget._render_dom
+    #@-others
 #@+node:ekr.20181121031304.1: ** class BrowserTestManager
 class BrowserTestManager (leoTest.TestManager):
     '''Run tests using the browser gui.'''
