@@ -107,6 +107,7 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
 debug_focus = True # puts 'focus' in g.app.debug.
 debug_keys = True # puts 'keys' in g.app.debug.
+debug_redraw = False
 debug_tree = True
 warnings_only = True
 #@+others
@@ -327,7 +328,7 @@ class LeoBrowserApp(flx.PyComponent):
             g.trace('mods: %r key: %r ==> %r %r IN %6r %s' % (
                 mods, key, char, binding, widget.wrapper.getName(), c.p.h))
     #@+node:ekr.20181122132345.1: *4* app.Drawing & selecting
-    #@+node:ekr.20181113042549.1: *5* app.action.redraw
+    #@+node:ekr.20181113042549.1: *5* app.redraw
     def redraw (self):
         '''
         Send a **redraw list** to the tree.
@@ -337,10 +338,11 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
+        trace = debug_redraw and not g.unitTesting
         w = self.main_window
         # Be careful during startup.
         if w and w.tree:
-            print('===== app.redraw')
+            if trace: print('===== app.redraw')
             d = self.make_redraw_dict()
             w.tree.set_redraw_dict(d)
         else:
@@ -375,10 +377,9 @@ class LeoBrowserApp(flx.PyComponent):
         
         Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
         '''
-        # print'app.select_p', p.h)
         w = self.main_window
         ap = self.p_to_ap(p)
-        print('===== app.action.select_p', p.h)
+        # print('===== app.action.select_p', p.h)
         # Be careful during startup.
         if w and w.tree:
             w.tree.set_ap(ap)
@@ -412,9 +413,11 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, recreate gnx_to_vnode.
         '''
+        trace = debug_redraw and not g.unitTesting
         c = self.c
-        print('===== app.make_redraw_dict: %s direct children' % (
-            len(list(c.rootPosition().self_and_siblings()))))
+        if trace:
+            print('===== app.make_redraw_dict: %s direct children' % (
+                len(list(c.rootPosition().self_and_siblings()))))
         c.expandAllAncestors(c.p)
             # Ensure that c.p will be shown.
         return {
@@ -815,7 +818,8 @@ class LeoBrowserTree(leoFrame.NullTree):
         super().select(p)
     #@+node:ekr.20181118052203.1: *4* tree_wrapper.redraw
     def redraw(self, p=None):
-        print('===== tree_wrapper.redraw')
+        trace = debug_redraw and not g.unitTesting
+        if trace: print('===== tree_wrapper.redraw')
         self.root.redraw()
     #@+node:ekr.20181120063844.1: *4* tree_wrapper.setFocus
     def setFocus(self):
@@ -1138,7 +1142,10 @@ class LeoFlexxTree(flx.Widget):
         Important: we do *not* clear self.tree itself!
         '''
         # pylint: disable=access-member-before-definition
-        print('===== flx.tree.clear_tree: %s items' % len(self.tree_items_dict.keys()))
+        trace = debug_redraw and not g.unitTesting
+        if trace:
+            print('===== flx.tree.clear_tree: %s items' % 
+                len(self.tree_items_dict.keys()))
         # Clear all tree items.
         for item in self.tree_items_dict.values():
             item.dispose()
@@ -1149,7 +1156,7 @@ class LeoFlexxTree(flx.Widget):
     @flx.action
     def redraw_with_dict(self, d):
         '''Clear the present tree and redraw using the **recursive** redraw_list.'''
-        trace = debug_tree and not g.unitTesting
+        trace = debug_redraw and not g.unitTesting
         if not d:
             print('===== flx.tree.redraw_with_dict: EMPTY')
             return
@@ -1263,7 +1270,7 @@ class LeoFlexxTree(flx.Widget):
 
     @flx.action
     def set_redraw_dict(self, d):
-        print('========== flx_tree.ACTION.set_redraw_dict', repr(d.keys()))
+        # print('=====  flx_tree.ACTION.set_redraw_dict', repr(d.keys()))
         self._mutate('redraw_dict', d)
 
     # This must exist, because LeoTree.init mutates redraw_dict.
@@ -1271,7 +1278,7 @@ class LeoFlexxTree(flx.Widget):
     @flx.reaction('redraw_dict', mode='greedy')
     def on_redraw_dict(self):
         d = self.redraw_dict
-        print('========== flx_tree.REACTION.on_redraw_dict', len(d ['items']))
+        # print('===== flx_tree.REACTION.on_redraw_dict', len(d ['items']))
         self.redraw_with_dict(d)
     #@+node:ekr.20181121195235.1: *4*  flx_tree.Selecting
     #@+node:ekr.20181123171958.1: *5* flx_tree.selected_ap.action/reaction
@@ -1290,7 +1297,7 @@ class LeoFlexxTree(flx.Widget):
     @flx.reaction('selected_ap') # don't use mode='greedy'
     def on_selected_ap(self):
         assert self.selected_ap
-        print('===== flx_tree.REACTION.on_selected_ap', self.selected_ap['headline'])
+        # print('===== flx_tree.REACTION.on_selected_ap', self.selected_ap['headline'])
         self.select_ap(self.selected_ap)
     #@+node:ekr.20181116083916.1: *5* flx_tree.select_ap
     @flx.action
@@ -1300,9 +1307,7 @@ class LeoFlexxTree(flx.Widget):
         
         Called from the mutator, and also on_selected_event.
         '''
-        print('===== flx.tree.select_ap', ap ['headline'])
-        # assert ap == self.selected_ap
-            # Because only the on_selected_ap REACTION calls this method.
+        # print('===== flx.tree.select_ap', ap ['headline'])
         key = self.ap_to_key(ap)
         item = self.tree_items_dict.get(key)
         if item:
@@ -1310,7 +1315,7 @@ class LeoFlexxTree(flx.Widget):
                 # Set the item's selected property.
         else:
             print('===== ERROR ===== flx.tree.select_ap: no item for ap: %r' % (ap))
-    #@+node:ekr.20181109083659.1: *5* flx_tree.reaction.on_selected_event (changed)
+    #@+node:ekr.20181109083659.1: *5* flx_tree.reaction.on_selected_event
     @flx.reaction('tree.children**.selected') # don't use mode="greedy" here!
     def on_selected_event(self, *events):
         '''
@@ -1318,7 +1323,7 @@ class LeoFlexxTree(flx.Widget):
         
         This also gets fired on *unselection* events, which causes problems.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace: print('='*20)
         #
         # Reselect the present ap if there are no selection events.
@@ -1363,8 +1368,8 @@ class LeoFlexxTree(flx.Widget):
         ### mode='greedy',
     )
     def on_tree_event(self, *events):
-        for ev in events:
-            if 0:
+        if 0:
+            for ev in events:
                 self.show_event(ev)
     #@+node:ekr.20181120063735.1: *4* flx_tree.set_focus
     @flx.action
