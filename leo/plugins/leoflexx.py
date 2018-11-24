@@ -306,7 +306,7 @@ class LeoBrowserApp(flx.PyComponent):
         ]
         return {
             'ap': self.p_to_ap(p),
-            ### 'body': p.b, ### Too slow
+            # 'body': p.b, # This would transfer much too much data.
             'children': children,
             'gnx': p.v.gnx,
             'headline': p.h,
@@ -670,7 +670,7 @@ class LeoBrowserGui(leoGui.NullGui):
         return name in ('body', 'log', 'minibuffer') or name.startswith('head')
     #@+node:ekr.20181119153936.1: *4* gui.focus...
     def get_focus(self, *args, **kwargs):
-        ### g.trace('(gui)', repr(self.focusWidget), g.callers())
+        # g.trace('(gui)', repr(self.focusWidget), g.callers())
         return self.focusWidget
 
     def set_focus(self, commander, widget):
@@ -824,11 +824,6 @@ class LeoBrowserTree(leoFrame.NullTree):
         self.root = get_root()
         self.widget = self
         self.wrapper = self
-        ###
-            # # pylint: disable=no-member
-                # # The point is that there isn't a member ;-)
-            # assert not hasattr(self, 'widget'), repr(self.widget)
-            # assert not hasattr(self, 'wrapper'), repr(self.wrapper)
 
     def getName(self):
         return 'canvas(tree)' # Required for proper pane bindings.
@@ -1034,7 +1029,7 @@ class LeoFlexxMainWindow(flx.Widget):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        ### print('===== main.key_down.emitter', repr(ev))
+        # print('===== main.key_down.emitter', repr(ev))
         if ev ['modifiers']:
             e.preventDefault()
         return ev
@@ -1053,7 +1048,7 @@ class LeoFlexxMiniBuffer(flx.Widget):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        ### print('===== minibuffer.key_down.emitter', repr(ev))
+        # print('===== minibuffer.key_down.emitter', repr(ev))
         if ev ['modifiers']:
             e.preventDefault()
         return ev
@@ -1115,7 +1110,7 @@ class LeoFlexxStatusLine(flx.Widget):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        ### print('===== status line.key_down.emitter', repr(ev))
+        # print('===== status line.key_down.emitter', repr(ev))
         if ev ['modifiers']:
             e.preventDefault()
         return ev
@@ -1177,8 +1172,6 @@ class LeoFlexxTree(flx.Widget):
             item.dispose()
         self.tree_items_dict = {}
         self.gnx_dict = {}
-        ### self._mutate('tree_items_dict', {})
-        ### self._mutate('populated_dict', {})
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
     def redraw_with_dict(self, d):
@@ -1193,10 +1186,6 @@ class LeoFlexxTree(flx.Widget):
         # Update local data.
         self.gnx_dict = {}
         self.selected_ap = {}
-        # Update tree properties!
-            ### self._mutate('selected_ap', d ['c.p'])
-            ### self._mutate('tree_items_dict', self.tree_items_dict)
-            ### self._mutate('populated_dict', self.populated_dict)
     #@+node:ekr.20181113043131.1: *6* flx_tree.create_item_with_parent
     def create_item_with_parent(self, item, parent):
         '''Create a tree item for item and all its visible children.'''
@@ -1215,13 +1204,18 @@ class LeoFlexxTree(flx.Widget):
                 # Set the expansion bit.
             for child in item ['children']:
                 self.create_item_with_parent(child, tree_item)
+    #@+node:ekr.20181122114509.1: *5* flx_tree.action.set_redraw_dict
+    # This must exist, so app.redraw can call it.
+
+    @flx.action
+    def set_redraw_dict(self, d):
+        # print('=====  flx_tree.ACTION.set_redraw_dict', repr(d.keys()))
+        self.redraw_with_dict(d)
+
     #@+node:ekr.20181114072307.1: *5* flx_tree.ap_to_key
     def ap_to_key(self, ap):
         '''Produce a key for the given ap.'''
-        if not ap:
-            print('===== ERROR ===== empty ap')
-            return None
-        # print('===== flx.ap_to_key', repr(ap))
+        assert ap
         childIndex = ap ['childIndex']
         gnx = ap ['gnx']
         headline = ap ['headline']
@@ -1232,8 +1226,6 @@ class LeoFlexxTree(flx.Widget):
         ])
         key = 'Tree key<childIndex: %s, gnx: %s, %s <stack: %s>>' % (
             childIndex, gnx, headline, stack_s or '[]')
-        ### if False and key not in self.populated_dict:
-        ###     banner('flx.tree.ap_to_key: new key: %s %s' % (key, ap ['headline']))
         return key
     #@+node:ekr.20181122072344.1: *5* flx_tree.create_item_for_ap
     def create_item_for_ap(self, ap, parent):
@@ -1247,16 +1239,10 @@ class LeoFlexxTree(flx.Widget):
             # ap depends on position, so we do *not* expect it to be in the tree_items_dict.
             assert key not in self.tree_items_dict, repr(key)
             # Link the previous node into the tree.
-            
+            ### To do ###
             return old_item
-        # banner('flx.tree.create_item_for_ap:\nap: %r\nparent: %r' % (ap, parent))
         with parent:
             item = LeoFlexxTreeItem(ap, text=headline, checked=None, collapsed=True)
-        ###
-        ### This is done in create_item_for_parent.
-            # if trace:
-                # headline, level = ap['headline'] ,ap ['level']
-                # print('%s%s' % ('  '*level,  headline))
         self.tree_items_dict [key] = item
         self.gnx_dict [gnx] = item
         return item
@@ -1299,7 +1285,6 @@ class LeoFlexxTree(flx.Widget):
         'tree.children**.checked',
         'tree.children**.collapsed',
         'tree.children**.visible', # Never seems to fire.
-        ### mode='greedy',
     )
     def on_tree_event(self, *events):
         for ev in events:
@@ -1318,22 +1303,6 @@ class LeoFlexxTree(flx.Widget):
                         # c.p may already be expanded,
                         # In which case this call does nothing.
         
-    #@+node:ekr.20181122114509.1: *5* flx_tree.redraw_dict.action/reaction
-    # This must exist, so app.redraw can call it.
-
-    @flx.action
-    def set_redraw_dict(self, d):
-        # print('=====  flx_tree.ACTION.set_redraw_dict', repr(d.keys()))
-        ### self._mutate('redraw_dict', d)
-        self.redraw_with_dict(d)
-
-    # This must exist, because LeoTree.init mutates redraw_dict.
-    ###
-        # @flx.reaction('redraw_dict', mode='greedy')
-        # def on_redraw_dict(self):
-            # d = self.redraw_dict
-            # # print('===== flx_tree.REACTION.on_redraw_dict', len(d ['items']))
-            # self.redraw_with_dict(d)
     #@+node:ekr.20181120063735.1: *4* flx_tree.Focus
     @flx.action
     def set_focus(self):
@@ -1387,31 +1356,8 @@ class LeoFlexxTree(flx.Widget):
         if trace:
             print('===== flx.tree.receive_children: %s children' % (len(children)))
         self.populate_children(children, parent_ap)
-       
-        # Update tree properties!
-        # self._mutate('selected_ap', ...) # This does not change.
-        ### self._mutate('populated_dict', self.populated_dict)
-        ### self._mutate('tree_items_dict', self.tree_items_dict)
-    #@+node:ekr.20181123164508.1: *5* flx_tree.selected_ap.action/reaction (not used)
-    ### 
-    ### This gets mutated only via the redraw dict.
-    # @flx.action
-    # def set_selected_ap(self, d):
-        # if d:
-            # self._mutate('selected_ap', d)
-        # else:
-            # print('========== flx_tree.ACTION.set_selected_ap: EMPTY', repr(d))
-        # ####### self.select_ap(d)
-
-
-    # @flx.reaction('selected_ap', mode='greedy')
-    # def on_selected_ap(self):
-        # if self.selected_ap:
-            # self.select_ap(self.selected_ap)
-        # else:
-            # print('========== flx_tree.REACTION.on_selected_ap EMPTY', repr(self.selected_ap))
     #@+node:ekr.20181121195235.1: *4* flx_tree.Selecting...
-    #@+node:ekr.20181123171958.1: *5* flx_tree.selected_ap.action/reaction
+    #@+node:ekr.20181123171958.1: *5* flx_tree.action.set_ap
     # This must exist so app.select_p can call it.
 
     @flx.action
@@ -1421,17 +1367,8 @@ class LeoFlexxTree(flx.Widget):
         '''
         assert ap
         self.selected_ap = ap
-        ### self._mutate('selected_ap', ap)
         self.select_ap(self.selected_ap)
             
-    # This must exist, because LeoTree.init mutates selected_ap.
-
-    # @flx.reaction('selected_ap') # don't use mode='greedy'
-    # def on_selected_ap(self):
-        # assert self.selected_ap
-        # trace = debug_select and not g.unitTesting
-        # if trace: print('===== flx_tree.REACTION.on_selected_ap', self.selected_ap['headline'])
-        # self.select_ap(self.selected_ap)
     #@+node:ekr.20181116083916.1: *5* flx_tree.select_ap
     @flx.action
     def select_ap(self, ap):
@@ -1484,7 +1421,7 @@ class LeoFlexxTree(flx.Widget):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        ### print('===== tree.key_down.emitter', repr(ev))
+        # print('===== tree.key_down.emitter', repr(ev))
         if ev ['modifiers']:
             e.preventDefault()
         return ev
