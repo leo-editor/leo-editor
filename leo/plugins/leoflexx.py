@@ -202,16 +202,29 @@ class LeoBrowserApp(flx.PyComponent):
         c.selectPosition(c.rootPosition()) ### A temp hack.
         assert c.p, repr(c.b)
         p = c.p
-        # self.dump_top_level()
         g.trace('app.init: c.p.h:', p.h)
-        signon = '%s\n%s' % (g.app.signon, g.app.signon2)
-        status_lt, status_rt = c.frame.statusLine.update(p.b, 0)
-        selected_ap = self.p_to_ap(p)
-        redraw_dict = self.make_redraw_dict()
-        main_window = LeoFlexxMainWindow(p.b, redraw_dict, selected_ap, signon, status_lt, status_rt)
+        main_window = LeoFlexxMainWindow()
         self._mutate('main_window', main_window)
 
     #@+others
+    #@+node:ekr.20181124133513.1: *4* app.Initing...
+    @flx.action
+    def sign_on (self):
+        w = self.main_window
+        w.log.put('%s\n%s' % (g.app.signon, g.app.signon2))
+        
+    @flx.action
+    def set_body(self):
+        '''Set the body text in the body pane.'''
+        w = self.main_window
+        w.body.set_body(self.c.p.b)
+
+    @flx.action
+    def set_status(self):
+        c = self.c
+        w = self.main_window
+        lt, rt = c.frame.statusLine.update(c.p.b, 0)
+        w.status_line.update(lt, rt)
     #@+node:ekr.20181122132345.1: *4* app.Drawing...
     #@+node:ekr.20181124074707.1: *5* app.action.expand_and_redraw
     @flx.action
@@ -228,6 +241,31 @@ class LeoBrowserApp(flx.PyComponent):
         if trace: print('========== app.redraw_and_expand: REDRAWING', p.h)
         p.expand()
         self.redraw(p=p)
+    #@+node:ekr.20181113042549.1: *5* app.action.redraw
+    @flx.action
+    def redraw (self, p=None):
+        '''
+        Send a **redraw list** to the tree.
+        
+        This is a recusive list lists of items (ap, gnx, headline) describing
+        all and *only* the presently visible nodes in the tree.
+        
+        As a side effect, app.make_redraw_dict updates all internal dicts.
+        '''
+        trace = debug_redraw and not g.unitTesting
+        c = self.c
+        p = p or c.p
+        w = self.main_window
+        # Be careful during startup.
+        if w and w.tree:
+            if trace: print('===== app.redraw', p.h)
+            d = self.make_redraw_dict(p)
+            w.tree.set_redraw_dict(d)
+            # self.dump_top_level()
+            ap = self.p_to_ap(p)
+            w.tree.select_ap(ap)
+        else:
+            print('===== app.redraw: no tree =====', g.callers())
     #@+node:ekr.20181111203114.1: *5* app.ap_to_p
     def ap_to_p (self, ap):
         '''Convert an archived position to a true Leo position.'''
@@ -311,30 +349,6 @@ class LeoBrowserApp(flx.PyComponent):
             'gnx': p.v.gnx,
             'headline': p.h,
         }
-    #@+node:ekr.20181113042549.1: *5* app.redraw
-    def redraw (self, p=None):
-        '''
-        Send a **redraw list** to the tree.
-        
-        This is a recusive list lists of items (ap, gnx, headline) describing
-        all and *only* the presently visible nodes in the tree.
-        
-        As a side effect, app.make_redraw_dict updates all internal dicts.
-        '''
-        trace = debug_redraw and not g.unitTesting
-        c = self.c
-        p = p or c.p
-        w = self.main_window
-        # Be careful during startup.
-        if w and w.tree:
-            if trace: print('===== app.redraw', p.h)
-            d = self.make_redraw_dict(p)
-            w.tree.set_redraw_dict(d)
-            # self.dump_top_level()
-            ap = self.p_to_ap(p)
-            w.tree.select_ap(ap)
-        else:
-            print('===== app.redraw: no tree =====', g.callers())
     #@+node:ekr.20181111095640.1: *5* app.send_children_to_tree
     def send_children_to_tree(self, parent_ap, p):
         '''
@@ -897,9 +911,10 @@ class LeoFlexxBody(flx.Widget):
     }
     """
     #@-<< body css >>
+    
+    do_init = flx.BoolProp(settable=True)
 
-    def init(self, body_text):
-        # pylint: disable=arguments-differ
+    def init(self):
         # pylint: disable=undefined-variable
             # window
         global window
@@ -907,7 +922,11 @@ class LeoFlexxBody(flx.Widget):
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
         self.ace.getSession().setMode("ace/mode/python")
-        self.set_body(body_text)
+        self._mutate('do_init', True)
+        
+    @flx.reaction('do_init', mode="greedy")
+    def on_init(self):
+        self.root.set_body()
         
     @flx.reaction('size')
     def __on_size(self, *events):
@@ -935,7 +954,6 @@ class LeoFlexxBody(flx.Widget):
     @flx.action
     def set_body(self, body_text):
         self.ace.setValue(body_text)
-        ### self.root.update_status_line(body_text=body, insert_point=0)
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
 class LeoFlexxLog(flx.Widget):
@@ -949,17 +967,22 @@ class LeoFlexxLog(flx.Widget):
     }
     """
     #@-<< log css >>
+    
+    do_init = flx.BoolProp(settable=True)
 
-    def init(self, signon):
-        # pylint: disable=arguments-differ
+    def init(self):
         # pylint: disable=undefined-variable
             # window
         global window
         self.ace = window.ace.edit(self.node, "log editor")
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
-        self.ace.setValue(signon)
+        self._mutate('do_init', True)
         
+    @flx.reaction('do_init', mode="greedy")
+    def on_init(self):
+        self.root.sign_on()
+
     @flx.reaction('size')
     def __on_size(self, *events):
         self.ace.resize()
@@ -1008,16 +1031,15 @@ class LeoFlexxMainWindow(flx.Widget):
     status_line = flx.ComponentProp(settable=True)
     tree = flx.ComponentProp(settable=True)
 
-    def init(self, body_s, redraw_dict, selected_ap, signon, status_lt, status_rt):
-        # pylint: disable=arguments-differ
+    def init(self):
         ### with flx.TabLayout():
         with flx.VSplit():
             with flx.HSplit(flex=1):
-                tree = LeoFlexxTree(redraw_dict, selected_ap, flex=1)
-                log = LeoFlexxLog(signon, flex=1)
-            body = LeoFlexxBody(body_s, flex=1)
+                tree = LeoFlexxTree(flex=1)
+                log = LeoFlexxLog(flex=1)
+            body = LeoFlexxBody(flex=1)
             minibuffer = LeoFlexxMiniBuffer()
-            status_line = LeoFlexxStatusLine(status_lt, status_rt)
+            status_line = LeoFlexxStatusLine()
         self._mutate('body', body)
         self._mutate('log', log)
         self._mutate('minibuffer', minibuffer)
@@ -1076,28 +1098,29 @@ class LeoFlexxMiniBuffer(flx.Widget):
 #@+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
 class LeoFlexxStatusLine(flx.Widget):
     
-    lt = flx.StringProp(settable=True)
-    rt = flx.StringProp(settable=True)
+    do_init = flx.BoolProp(settable=True)
     
-    def init(self, lt, rt):
-        # pylint: disable=arguments-differ
+    def init(self):
         with flx.HBox():
             flx.Label(text='Status Line')
             self.widget = flx.LineEdit(flex=1)
             self.widget2 = flx.LineEdit(flex=1)
         self.widget.apply_style('background: green')
         self.widget2.apply_style('background: green')
-        self.widget.set_text(lt)
-        self.widget2.set_text(rt)
-        self._mutate('lt', lt)
-        self._mutate('rt', rt)
+        self._mutate('do_init', True)
+        
+    @flx.reaction('do_init', mode="greedy")
+    def on_init(self):
+        self.root.set_status()
 
     #@+others
     #@+node:ekr.20181123043015.1: *4* flx.status_line.action.update
     @flx.action
     def update(self, lt, rt):
-        self._mutate('lt', lt)
-        self._mutate('rt', rt)
+        # self._mutate('lt', lt)
+        # self._mutate('rt', rt)
+        self.put(lt)
+        self.put2(rt)
     #@+node:ekr.20181120060957.1: *4* flx_status_line.action.put & put2
     @flx.action
     def put(self, s, bg, fg):
@@ -1133,24 +1156,24 @@ class LeoFlexxTree(flx.Widget):
     '''
     #@-<< tree css >>
     
-    do_redraw = flx.BoolProp(settable=True)
+    do_init = flx.BoolProp(settable=True)
 
-    def init(self, redraw_dict, selected_ap):
+    def init(self):
         # pylint: disable=arguments-differ
         self.widget = self
         self.wrapper = self
         # Init local data: not used outside this class.
         self.gnx_dict = {}
         self.populated_dict = {}
-        self.redraw_dict = redraw_dict
+        self.redraw_dict = {}
         self.selected_ap = {}
         # Init the widget.
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
-        self._mutate('do_redraw', True)
+        self._mutate('do_init', True)
         
-    @flx.reaction('do_redraw', mode="greedy")
-    def on_redraw(self):
-        self.redraw_with_dict(self.redraw_dict)
+    @flx.reaction('do_init', mode="greedy")
+    def on_init(self):
+        self.root.redraw()
 
     #@+others
     #@+node:ekr.20181121073246.1: *4* flx_tree.Drawing...
@@ -1386,7 +1409,6 @@ class LeoFlexxTree(flx.Widget):
                 # Set the item's selected property.
         else:
             pass # We may be in the middle of a redraw.
-            # print('===== ERROR ===== flx.tree.select_ap: no item for ap: %r' % (ap))
     #@+node:ekr.20181109083659.1: *5* flx_tree.reaction.on_selected_event
     @flx.reaction('tree.children**.selected') # don't use mode="greedy" here!
     def on_selected_event(self, *events):
@@ -1415,8 +1437,11 @@ class LeoFlexxTree(flx.Widget):
                 self.select_ap(ap)
                     # Selects the corresponding LeoTreeItem.
                 self.set_ap(ap)
-                    # Sets selected_ap NOW
-                    # Formerly: Mutates selected_ap property *later*.
+                    # Sets self.selected_ap.
+                self.root.set_body()
+                    # Update the body text.
+                self.root.set_status()
+                    # Update the status line.
     #@+node:ekr.20181120061140.1: *4* flx_tree.Key handling
     @flx.emitter
     def key_press(self, e):
