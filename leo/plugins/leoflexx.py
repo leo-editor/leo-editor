@@ -108,6 +108,7 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 debug_focus = True # puts 'focus' in g.app.debug.
 debug_keys = True # puts 'keys' in g.app.debug.
 debug_redraw = False
+debug_select = False
 debug_tree = True
 warnings_only = True
 #@+others
@@ -223,11 +224,6 @@ class LeoBrowserApp(flx.PyComponent):
         
         #@+others # define test_log & test_select.
         #@+node:ekr.20181119103144.1: *6* app.tests
-        # def test_echo():
-            # print('testing echo...')
-            # self.gui.echo()
-            # self.gui.tree_echo()
-
         def test_focus():
             old_debug = g.app.debug
             try:
@@ -354,17 +350,13 @@ class LeoBrowserApp(flx.PyComponent):
         Select the position in Leo's core corresponding to the archived position.
         Nothin in the flx.tree needs to be updated.
         '''
-        # print('===== app.action.select_ap')
+        trace = debug_select and not g.unitTesting
+        if trace: print('===== app.action.select_ap')
         c, w = self.c, self.main_window
         p = self.ap_to_p(ap)
         assert p, repr(ap)
         c.frame.tree.super_select(p)
             # call LeoTree.select, but not self.select_p.
-            # This hack prevents an unbounded recursion.
-        ### w.tree.set_selected_ap(ap)
-            # Set the property.
-        ### w.body.set_body(p.v.b)
-            # Set the property.
         lt, rt = c.frame.statusLine.update()
         w.status_line.update(lt, rt)
             # Set the property.
@@ -377,9 +369,10 @@ class LeoBrowserApp(flx.PyComponent):
         
         Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
         '''
+        trace = debug_select and not g.unitTesting
         w = self.main_window
         ap = self.p_to_ap(p)
-        # print('===== app.action.select_p', p.h)
+        if trace: print('===== app.action.select_p', p.h)
         # Be careful during startup.
         if w and w.tree:
             w.tree.set_ap(ap)
@@ -966,7 +959,6 @@ class LeoFlexxLog(flx.Widget):
         
     @flx.action
     def set_focus(self):
-        # print('===== flx.log.set_focus')
         self.ace.focus()
     #@-others
         
@@ -1072,7 +1064,6 @@ class LeoFlexxStatusLine(flx.Widget):
     #@+node:ekr.20181123043015.1: *4* flx.status_line.action.update
     @flx.action
     def update(self, lt, rt):
-        # print('===== flx.status_line.action.update', repr(lt), repr(rt))
         self._mutate('lt', lt)
         self._mutate('rt', rt)
     #@+node:ekr.20181120060957.1: *4* flx_status_line.action.put & put2
@@ -1297,7 +1288,8 @@ class LeoFlexxTree(flx.Widget):
     @flx.reaction('selected_ap') # don't use mode='greedy'
     def on_selected_ap(self):
         assert self.selected_ap
-        # print('===== flx_tree.REACTION.on_selected_ap', self.selected_ap['headline'])
+        trace = debug_select and not g.unitTesting
+        if trace: print('===== flx_tree.REACTION.on_selected_ap', self.selected_ap['headline'])
         self.select_ap(self.selected_ap)
     #@+node:ekr.20181116083916.1: *5* flx_tree.select_ap
     @flx.action
@@ -1307,7 +1299,8 @@ class LeoFlexxTree(flx.Widget):
         
         Called from the mutator, and also on_selected_event.
         '''
-        # print('===== flx.tree.select_ap', ap ['headline'])
+        trace = debug_select and not g.unitTesting
+        if trace: print('===== flx.tree.select_ap', ap ['headline'])
         key = self.ap_to_key(ap)
         item = self.tree_items_dict.get(key)
         if item:
@@ -1392,10 +1385,9 @@ class LeoFlexxTreeItem(flx.TreeItem):
     
     def init(self, leo_ap):
         # pylint: disable=arguments-differ
-        ### print('===== LeoFlexxTreeItem.CTOR', repr(leo_ap))
         self.leo_ap = leo_ap
-            # Gives access to cloned, marked, expanded fields.
-            # Immutable.
+            # Immutable: Gives access to cloned, marked, expanded fields.
+
 
     def getName(self):
         return 'head' # Required, for proper pane bindings.
@@ -1412,24 +1404,6 @@ class LeoFlexxTreeItem(flx.TreeItem):
     # def user_selected(self, e):
         # ev = super().user_selected(e)
         # tree_selected_ap = self.root.main_window.tree.leo_selected_ap
-        # if debug_tree:
-            # print('')
-            # print('===== flx_tree_item.user_selected')
-            # print('               e:', repr(e))
-            # print('              ev:', repr(ev))
-            # print('     self.leo_ap:', repr(self.leo_ap))
-            # print('tree.selected_ap:', repr(tree_selected_ap))
-            # if self.leo_ap ==tree_selected_ap:
-                # print('----- already selected')
-            # else:
-                # print('----- SEL:', repr(ev.new_value))
-            # print('')
-        # ###### This test is never True. #######
-        # ###### The headline is <Invalid clone>. set by app.p_to_ap.
-        # if self.leo_ap ==tree_selected_ap:
-            # self.set_selected(True)
-        # else:
-            # self.set_selected(ev.new_value)
         # return ev
  
     # @flx.reaction('pointer_double_click')
