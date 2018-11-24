@@ -110,6 +110,7 @@ debug_keys = False # puts 'keys' in g.app.debug.
 debug_redraw = False
 debug_select = False
 debug_tree = False
+verbose_debug_tree = False
 warnings_only = True
 #@+others
 #@+node:ekr.20181121040901.1: **  top-level functions
@@ -435,7 +436,7 @@ class LeoBrowserApp(flx.PyComponent):
     def make_dict_for_position(self, p):
         ''' Recursively add a sublist for p and all its visible nodes.'''
         level = p.level()
-        trace = False and debug_tree and not g.unitTesting
+        trace = debug_tree and verbose_debug_tree and not g.unitTesting
             # A superb trace. There are similar traces in:
             # - flx_tree.redraw_with_dict  and its helper, flx_tree.create_item_with_parent.
             # - flx_tree.populate_children and its helper, flx_tree.create_item_for_ap
@@ -1198,14 +1199,14 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181113043131.1: *6* flx_tree.create_item_with_parent
     def create_item_with_parent(self, item, parent):
         '''Create a tree item for item and all its visible children.'''
-        trace = False and debug_tree and not g.unitTesting
+        trace = debug_tree and verbose_debug_tree and not g.unitTesting
         ap = item ['ap']
         tree_item = self.create_item_for_ap(ap, parent)
         if tree_item:
             expanded = ap['expanded']
             if trace:
                 headline, level = ap['headline'] ,ap ['level']
-                print('%s%s %s' % ('  '*level, int(expanded), headline))
+                print('%s%s' % ('  '*level, headline))
             # Not a clone: Create the item's children...
             tree_item.set_collapsed(not expanded)
                 # Set the expansion bit.
@@ -1234,7 +1235,7 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181122072344.1: *5* flx_tree.create_item_for_ap
     def create_item_for_ap(self, ap, parent):
         '''Create or reuse a tree items (for already-created clones).'''
-        trace = False and debug_tree and not g.unitTesting
+        trace = debug_tree and not g.unitTesting
         cloned, gnx, headline = ap ['cloned'], ap ['gnx'], ap ['headline']
         key = self.ap_to_key(ap)
         old_item = self.gnx_dict.get(gnx)
@@ -1246,8 +1247,11 @@ class LeoFlexxTree(flx.Widget):
         # banner('flx.tree.create_item_for_ap:\nap: %r\nparent: %r' % (ap, parent))
         with parent:
             item = LeoFlexxTreeItem(ap, text=headline, checked=None, collapsed=True)
-        if trace:
-            print('flx.tree.create_item_for_ap: item: %r' % (item))
+        ###
+        ### This is done in create_item_for_parent.
+            # if trace:
+                # headline, level = ap['headline'] ,ap ['level']
+                # print('%s%s' % ('  '*level,  headline))
         self.tree_items_dict [key] = item
         self.gnx_dict [gnx] = item
         return item
