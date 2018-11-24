@@ -1117,19 +1117,17 @@ class LeoFlexxStatusLine(flx.Widget):
     #@+node:ekr.20181123043015.1: *4* flx.status_line.action.update
     @flx.action
     def update(self, lt, rt):
-        # self._mutate('lt', lt)
-        # self._mutate('rt', rt)
         self.put(lt)
         self.put2(rt)
     #@+node:ekr.20181120060957.1: *4* flx_status_line.action.put & put2
     @flx.action
-    def put(self, s, bg, fg):
+    def put(self, s, bg=None, fg=None):
         self.widget.set_text(s)
         
     @flx.action
-    def put2(self, s, bg, fg):
+    def put2(self, s, bg=None, fg=None):
         self.widget2.set_text(s)
-    #@+node:ekr.20181120060950.1: *4* flx_status_line.action.key_press
+    #@+node:ekr.20181120060950.1: *4* flx_status_line.emitter.key_press
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
@@ -1137,7 +1135,6 @@ class LeoFlexxStatusLine(flx.Widget):
         if ev ['modifiers']:
             e.preventDefault()
         return ev
-
     #@-others
 #@+node:ekr.20181104082138.1: *3* class LeoFlexxTree
 class LeoFlexxTree(flx.Widget):
