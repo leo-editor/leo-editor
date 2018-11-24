@@ -106,10 +106,10 @@ flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
 debug_focus = True # puts 'focus' in g.app.debug.
-debug_keys = True # puts 'keys' in g.app.debug.
+debug_keys = False # puts 'keys' in g.app.debug.
 debug_redraw = False
 debug_select = False
-debug_tree = True
+debug_tree = False
 warnings_only = True
 #@+others
 #@+node:ekr.20181121040901.1: **  top-level functions
@@ -201,6 +201,7 @@ class LeoBrowserApp(flx.PyComponent):
         c.selectPosition(c.rootPosition()) ### A temp hack.
         assert c.p, repr(c.b)
         p = c.p
+        # self.dump_top_level()
         g.trace('app.init: c.p.h:', p.h)
         signon = '%s\n%s' % (g.app.signon, g.app.signon2)
         status_lt, status_rt = c.frame.statusLine.update(p.b, 0)
@@ -335,12 +336,16 @@ class LeoBrowserApp(flx.PyComponent):
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
         trace = debug_redraw and not g.unitTesting
+        c = self.c
         w = self.main_window
         # Be careful during startup.
         if w and w.tree:
             if trace: print('===== app.redraw')
             d = self.make_redraw_dict()
             w.tree.set_redraw_dict(d)
+            # self.dump_top_level()
+            ap = self.p_to_ap(c.p)
+            w.tree.select_ap(ap)
         else:
             print('===== app.redraw: no tree =====', g.callers())
     #@+node:ekr.20181111202747.1: *5* app.action.select_ap
@@ -397,6 +402,20 @@ class LeoBrowserApp(flx.PyComponent):
             print('app.create_all_data: %5.2f sec. %s entries' % (
                 (t2-t1), len(list(self.gnx_to_vnode.keys()))))
             self.test_round_trip_positions()
+    #@+node:ekr.20181124071215.1: *5* app.dump_top_level
+    def dump_top_level(self):
+        '''Dump the top-level nodes.'''
+        trace = debug_tree and not g.unitTesting
+        if trace:
+            c = self.c
+            banner('===== app.dump_top_level...')
+            # print('root:', c.rootPosition().h)
+            # print(' c.p:', c.p.h)
+            # print('')
+            # print('Top-level nodes...')
+            for p in c.rootPosition().self_and_siblings():
+                print('  %5s %s' % (p.isExpanded(), p.h))
+            print('')
     #@+node:ekr.20181113043539.1: *5* app.make_redraw_dict & helpers
     def make_redraw_dict(self):
         '''
@@ -810,8 +829,9 @@ class LeoBrowserTree(leoFrame.NullTree):
         super().select(p)
     #@+node:ekr.20181118052203.1: *4* tree_wrapper.redraw
     def redraw(self, p=None):
+        '''Called from Leo's core.'''
         trace = debug_redraw and not g.unitTesting
-        if trace: print('===== tree_wrapper.redraw')
+        if trace: print('===== c.frame.tree.redraw (tree_wrapper.redraw)')
         self.root.redraw()
     #@+node:ekr.20181120063844.1: *4* tree_wrapper.setFocus
     def setFocus(self):
@@ -1174,12 +1194,15 @@ class LeoFlexxTree(flx.Widget):
         '''Create a tree item for item and all its visible children.'''
         trace = False and debug_tree and not g.unitTesting
         ap = item ['ap']
-        if trace:
-            headline, level = ap['headline'] ,ap ['level']
-            print('%s%s' % ('  '*level, headline))
         tree_item = self.create_item_for_ap(ap, parent)
         if tree_item:
+            expanded = ap['expanded']
+            if trace:
+                headline, level = ap['headline'] ,ap ['level']
+                print('%s%s %s' % ('  '*level, int(expanded), headline))
             # Not a clone: Create the item's children...
+            tree_item.set_collapsed(not expanded)
+                # Set the expansion bit.
             for child in item ['children']:
                 self.create_item_with_parent(child, tree_item)
     #@+node:ekr.20181114072307.1: *5* flx_tree.ap_to_key
@@ -1306,7 +1329,8 @@ class LeoFlexxTree(flx.Widget):
             item.set_selected(True)
                 # Set the item's selected property.
         else:
-            print('===== ERROR ===== flx.tree.select_ap: no item for ap: %r' % (ap))
+            pass # We may be in the middle of a redraw.
+            # print('===== ERROR ===== flx.tree.select_ap: no item for ap: %r' % (ap))
     #@+node:ekr.20181109083659.1: *5* flx_tree.reaction.on_selected_event
     @flx.reaction('tree.children**.selected') # don't use mode="greedy" here!
     def on_selected_event(self, *events):
