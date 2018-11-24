@@ -105,9 +105,9 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
-debug_focus = True # puts 'focus' in g.app.debug.
+debug_focus = False # puts 'focus' in g.app.debug.
 debug_keys = False # puts 'keys' in g.app.debug.
-debug_redraw = True
+debug_redraw = False
 debug_select = False
 debug_tree = False
 warnings_only = True
@@ -327,13 +327,19 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181122132345.1: *4* app.Drawing & selecting
     #@+node:ekr.20181124074707.1: *5* app.action.expand_and_redraw
     @flx.action
-    def expand_and_redraw(self):
+    def expand_and_redraw(self, ap):
         '''Expand c.p if necessary and redraw the outline.'''
-        c = self.c
-        if not c.p.hasChildren() or c.p.isExpanded():
+        trace = (debug_redraw or debug_tree) and not g.unitTesting
+        p = self.ap_to_p(ap)
+        if not p.hasChildren():
+            if trace: print('===== app.redraw_and_expand: no children:', p.h)
             return
-        c.p.expand()
-        self.redraw()
+        if p.isExpanded():
+            if trace: print('===== app.redraw_and_expand: expanded:', p.h)
+            return
+        if trace: print('========== app.redraw_and_expand: REDRAWING', p.h)
+        p.expand()
+        self.redraw(p=p)
     #@+node:ekr.20181111202747.1: *5* app.action.select_ap
     @flx.action
     def select_ap(self, ap):
@@ -403,7 +409,7 @@ class LeoBrowserApp(flx.PyComponent):
                 print('  %5s %s' % (p.isExpanded(), p.h))
             print('')
     #@+node:ekr.20181113043539.1: *5* app.make_redraw_dict & helpers
-    def make_redraw_dict(self):
+    def make_redraw_dict(self, p=None):
         '''
         Return a **recursive**, archivable, list of lists describing all the
         visible nodes of the tree.
@@ -412,13 +418,14 @@ class LeoBrowserApp(flx.PyComponent):
         '''
         trace = debug_redraw and not g.unitTesting
         c = self.c
+        p = p or c.p
         if trace:
             print('===== app.make_redraw_dict: %s direct children' % (
                 len(list(c.rootPosition().self_and_siblings()))))
         c.expandAllAncestors(c.p)
             # Ensure that c.p will be shown.
         return {
-            'c.p': self.p_to_ap(c.p),
+            'c.p': self.p_to_ap(p),
             'items': [
                 self.make_dict_for_position(p)
                     for p in c.rootPosition().self_and_siblings()
@@ -480,7 +487,7 @@ class LeoBrowserApp(flx.PyComponent):
             } for (stack_v, stack_childIndex) in p.stack ],
         }
     #@+node:ekr.20181113042549.1: *5* app.redraw
-    def redraw (self):
+    def redraw (self, p=None):
         '''
         Send a **redraw list** to the tree.
         
@@ -491,14 +498,15 @@ class LeoBrowserApp(flx.PyComponent):
         '''
         trace = debug_redraw and not g.unitTesting
         c = self.c
+        p = p or c.p
         w = self.main_window
         # Be careful during startup.
         if w and w.tree:
-            if trace: print('===== app.redraw')
-            d = self.make_redraw_dict()
+            if trace: print('===== app.redraw', p.h)
+            d = self.make_redraw_dict(p)
             w.tree.set_redraw_dict(d)
             # self.dump_top_level()
-            ap = self.p_to_ap(c.p)
+            ap = self.p_to_ap(p)
             w.tree.select_ap(ap)
         else:
             print('===== app.redraw: no tree =====', g.callers())
@@ -1383,13 +1391,21 @@ class LeoFlexxTree(flx.Widget):
     )
     def on_tree_event(self, *events):
         for ev in events:
+            trace = (debug_tree or debug_redraw) and not g.unitTesting
             expand = not ev.new_value
             if expand:
-                ### To do: don't redraw if the LeoTreeItem has children.
-                self.root.expand_and_redraw()
-                    # c.p may already be expanded,
-                    # In which case this call does nothing.
-
+                # Don't redraw if the LeoTreeItem has children.
+                tree_item = ev.source
+                ap = tree_item.leo_ap
+                if ap['expanded']:
+                    if trace: print('===== flx.tree.on_tree_event: already expanded', ap['headline'])
+                else:
+                    ap['expanded'] = True
+                    # print(list(ev.keys()))
+                    self.root.expand_and_redraw(ap)
+                        # c.p may already be expanded,
+                        # In which case this call does nothing.
+        
     #@+node:ekr.20181120063735.1: *4* flx_tree.set_focus
     @flx.action
     def set_focus(self):
