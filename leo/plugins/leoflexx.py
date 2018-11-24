@@ -1167,21 +1167,10 @@ class LeoFlexxTree(flx.Widget):
     def redraw_with_dict(self, d):
         '''Clear the present tree and redraw using the **recursive** redraw_list.'''
         trace = debug_redraw and not g.unitTesting
-        if not d:
-            print('===== flx.tree.redraw_with_dict: EMPTY')
-            return
+        assert d
         self.clear_tree()
         if trace:
             print('===== flx.tree.redraw_with_dict: %s direct children' % len(d ['items']))
-            # print('selected_ap', repr(d ['c.p']))
-            if 0: # Demonstrated the bug in create_item_with_parent.
-                print('dump of d')
-                for i, item in enumerate(d ['items']):
-                    print('')
-                    print('item', i)
-                    print(repr(item))
-                print('')
-                print('----- end of dump')
         for item in d ['items']:
             self.create_item_with_parent(item, self.tree)
         # Update tree properties!
