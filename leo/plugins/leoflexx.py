@@ -107,7 +107,7 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
 debug_focus = True # puts 'focus' in g.app.debug.
 debug_keys = False # puts 'keys' in g.app.debug.
-debug_redraw = False
+debug_redraw = True
 debug_select = False
 debug_tree = False
 warnings_only = True
@@ -325,29 +325,15 @@ class LeoBrowserApp(flx.PyComponent):
             g.trace('mods: %r key: %r ==> %r %r IN %6r %s' % (
                 mods, key, char, binding, widget.wrapper.getName(), c.p.h))
     #@+node:ekr.20181122132345.1: *4* app.Drawing & selecting
-    #@+node:ekr.20181113042549.1: *5* app.redraw
-    def redraw (self):
-        '''
-        Send a **redraw list** to the tree.
-        
-        This is a recusive list lists of items (ap, gnx, headline) describing
-        all and *only* the presently visible nodes in the tree.
-        
-        As a side effect, app.make_redraw_dict updates all internal dicts.
-        '''
-        trace = debug_redraw and not g.unitTesting
+    #@+node:ekr.20181124074707.1: *5* app.action.expand_and_redraw
+    @flx.action
+    def expand_and_redraw(self):
+        '''Expand c.p if necessary and redraw the outline.'''
         c = self.c
-        w = self.main_window
-        # Be careful during startup.
-        if w and w.tree:
-            if trace: print('===== app.redraw')
-            d = self.make_redraw_dict()
-            w.tree.set_redraw_dict(d)
-            # self.dump_top_level()
-            ap = self.p_to_ap(c.p)
-            w.tree.select_ap(ap)
-        else:
-            print('===== app.redraw: no tree =====', g.callers())
+        if not c.p.hasChildren() or c.p.isExpanded():
+            return
+        c.p.expand()
+        self.redraw()
     #@+node:ekr.20181111202747.1: *5* app.action.select_ap
     @flx.action
     def select_ap(self, ap):
@@ -493,6 +479,29 @@ class LeoBrowserApp(flx.PyComponent):
                 'headline': stack_v.h,
             } for (stack_v, stack_childIndex) in p.stack ],
         }
+    #@+node:ekr.20181113042549.1: *5* app.redraw
+    def redraw (self):
+        '''
+        Send a **redraw list** to the tree.
+        
+        This is a recusive list lists of items (ap, gnx, headline) describing
+        all and *only* the presently visible nodes in the tree.
+        
+        As a side effect, app.make_redraw_dict updates all internal dicts.
+        '''
+        trace = debug_redraw and not g.unitTesting
+        c = self.c
+        w = self.main_window
+        # Be careful during startup.
+        if w and w.tree:
+            if trace: print('===== app.redraw')
+            d = self.make_redraw_dict()
+            w.tree.set_redraw_dict(d)
+            # self.dump_top_level()
+            ap = self.p_to_ap(c.p)
+            w.tree.select_ap(ap)
+        else:
+            print('===== app.redraw: no tree =====', g.callers())
     #@+node:ekr.20181111095640.1: *5* app.send_children_to_tree
     def send_children_to_tree(self, parent_ap, p):
         '''
@@ -1373,24 +1382,18 @@ class LeoFlexxTree(flx.Widget):
         ### mode='greedy',
     )
     def on_tree_event(self, *events):
-        if 0:
-            for ev in events:
-                self.show_event(ev)
+        for ev in events:
+            expand = not ev.new_value
+            if expand:
+                ### To do: don't redraw if the LeoTreeItem has children.
+                self.root.expand_and_redraw()
+                    # c.p may already be expanded,
+                    # In which case this call does nothing.
+
     #@+node:ekr.20181120063735.1: *4* flx_tree.set_focus
     @flx.action
     def set_focus(self):
         print('===== flx.tree.set_focus')
-    #@+node:ekr.20181108232118.1: *4* flx_tree.show_event
-    def show_event(self, ev):
-        '''Put a description of the event to the log.'''
-        w = self.root.main_window
-        id_ = ev.source.title or ev.source.text
-        kind = '' if ev.new_value else 'un-'
-        s = kind + ev.type
-        message = '%s: %s' % (s.rjust(15), id_)
-        w.log.put(message)
-        if 0: ###
-            print('tree.show_event: ' + message)
     #@-others
 #@+node:ekr.20181108233657.1: *3* class LeoFlexxTreeItem
 class LeoFlexxTreeItem(flx.TreeItem):
