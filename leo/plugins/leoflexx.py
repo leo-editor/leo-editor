@@ -205,24 +205,6 @@ class LeoBrowserApp(flx.PyComponent):
         self._mutate('main_window', main_window)
 
     #@+others
-    #@+node:ekr.20181124133513.1: *4* app.Initing...
-    @flx.action
-    def sign_on (self):
-        w = self.main_window
-        w.log.put('%s\n%s' % (g.app.signon, g.app.signon2))
-        
-    @flx.action
-    def set_body(self):
-        '''Set the body text in the body pane.'''
-        w = self.main_window
-        w.body.set_body(self.c.p.b)
-
-    @flx.action
-    def set_status(self):
-        c = self.c
-        w = self.main_window
-        lt, rt = c.frame.statusLine.update(c.p.b, 0)
-        w.status_line.update(lt, rt)
     #@+node:ekr.20181122132345.1: *4* app.Drawing...
     #@+node:ekr.20181124074707.1: *5* app.action.expand_and_redraw
     @flx.action
@@ -367,6 +349,25 @@ class LeoBrowserApp(flx.PyComponent):
                 'children': [self.p_to_ap(z) for z in p.children()],
             })
         # else: print('app.send_children_to_tree: no children', p.h)
+    #@+node:ekr.20181124133513.1: *4* app.finish_create
+    @flx.action
+    def finish_create(self):
+        '''
+        Initialize all widgets.
+        
+        Called after all flx.Widgets have been fully inited!
+        '''
+        c = self.c
+        w = self.main_window
+        # Init the log pane.
+        w.log.put('%s\n%s' % (g.app.signon, g.app.signon2))
+        # Init the body pane.
+        w.body.set_body(c.p.b)
+        # Init the status line.
+        lt, rt = c.frame.statusLine.update(c.p.b, 0)
+        w.status_line.update(lt, rt)
+        # Init the tree.
+        self.redraw(c.p)
     #@+node:ekr.20181117163223.1: *4* app.Key handling
     @flx.action
     def do_key (self, ev, kind):
@@ -910,7 +911,7 @@ class LeoFlexxBody(flx.Widget):
     """
     #@-<< body css >>
     
-    do_init = flx.BoolProp(settable=True)
+    # do_init = flx.BoolProp(settable=True)
 
     def init(self):
         # pylint: disable=undefined-variable
@@ -920,11 +921,11 @@ class LeoFlexxBody(flx.Widget):
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
         self.ace.getSession().setMode("ace/mode/python")
-        self._mutate('do_init', True)
+        ###self._mutate('do_init', True)
         
-    @flx.reaction('do_init', mode="greedy")
-    def on_init(self):
-        self.root.set_body()
+    # @flx.reaction('do_init', mode="greedy")
+    # def on_init(self):
+        # self.root.set_body()
         
     @flx.reaction('size')
     def __on_size(self, *events):
@@ -966,7 +967,7 @@ class LeoFlexxLog(flx.Widget):
     """
     #@-<< log css >>
     
-    do_init = flx.BoolProp(settable=True)
+    ### do_init = flx.BoolProp(settable=True)
 
     def init(self):
         # pylint: disable=undefined-variable
@@ -975,11 +976,11 @@ class LeoFlexxLog(flx.Widget):
         self.ace = window.ace.edit(self.node, "log editor")
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
-        self._mutate('do_init', True)
+        ### self._mutate('do_init', True)
         
-    @flx.reaction('do_init', mode="greedy")
-    def on_init(self):
-        self.root.sign_on()
+    # @flx.reaction('do_init', mode="greedy")
+    # def on_init(self):
+        # self.root.sign_on()
 
     @flx.reaction('size')
     def __on_size(self, *events):
@@ -1028,6 +1029,8 @@ class LeoFlexxMainWindow(flx.Widget):
     minibuffer = flx.ComponentProp(settable=True)
     status_line = flx.ComponentProp(settable=True)
     tree = flx.ComponentProp(settable=True)
+    
+    do_init = flx.BoolProp(settable=True)
 
     def init(self):
         ### with flx.TabLayout():
@@ -1043,6 +1046,11 @@ class LeoFlexxMainWindow(flx.Widget):
         self._mutate('minibuffer', minibuffer)
         self._mutate('status_line', status_line)
         self._mutate('tree', tree)
+        self._mutate('do_init', True)
+        
+    @flx.reaction('do_init', mode="greedy")
+    def after_init(self):
+        self.root.finish_create()
 
     #@+others
     #@+node:ekr.20181120060557.1: *4* MainWindow.key_press
@@ -1096,7 +1104,7 @@ class LeoFlexxMiniBuffer(flx.Widget):
 #@+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
 class LeoFlexxStatusLine(flx.Widget):
     
-    do_init = flx.BoolProp(settable=True)
+    # do_init = flx.BoolProp(settable=True)
     
     def init(self):
         with flx.HBox():
@@ -1105,11 +1113,11 @@ class LeoFlexxStatusLine(flx.Widget):
             self.widget2 = flx.LineEdit(flex=1)
         self.widget.apply_style('background: green')
         self.widget2.apply_style('background: green')
-        self._mutate('do_init', True)
+        # self._mutate('do_init', True)
         
-    @flx.reaction('do_init', mode="greedy")
-    def on_init(self):
-        self.root.set_status()
+    # @flx.reaction('do_init', mode="greedy")
+    # def on_init(self):
+        # self.root.set_status()
 
     #@+others
     #@+node:ekr.20181123043015.1: *4* flx.status_line.action.update
@@ -1151,7 +1159,7 @@ class LeoFlexxTree(flx.Widget):
     '''
     #@-<< tree css >>
     
-    do_init = flx.BoolProp(settable=True)
+    # do_init = flx.BoolProp(settable=True)
 
     def init(self):
         # pylint: disable=arguments-differ
@@ -1168,11 +1176,11 @@ class LeoFlexxTree(flx.Widget):
             # Use only to recycle tree items
         # Init the widget.
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
-        self._mutate('do_init', True)
+        # self._mutate('do_init', True)
         
-    @flx.reaction('do_init', mode="greedy")
-    def on_init(self):
-        self.root.redraw(None)
+    # @flx.reaction('do_init', mode="greedy")
+    # def on_init(self):
+        # self.root.redraw(None)
 
     #@+others
     #@+node:ekr.20181121073246.1: *4* flx_tree.Drawing...
