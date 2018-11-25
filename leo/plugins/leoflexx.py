@@ -206,21 +206,6 @@ class LeoBrowserApp(flx.PyComponent):
 
     #@+others
     #@+node:ekr.20181122132345.1: *4* app.Drawing...
-    #@+node:ekr.20181124074707.1: *5* app.action.expand_and_redraw
-    @flx.action
-    def expand_and_redraw(self, ap):
-        '''Expand c.p if necessary and redraw the outline.'''
-        trace = (debug_redraw or debug_tree) and not g.unitTesting
-        p = self.ap_to_p(ap)
-        if not p.hasChildren():
-            if trace: print('===== app.redraw_and_expand: no children:', p.h)
-            return
-        if p.isExpanded():
-            if trace: print('===== app.redraw_and_expand: expanded:', p.h)
-            return
-        if trace: print('========== app.redraw_and_expand: REDRAWING', p.h)
-        p.expand()
-        self.redraw(p)
     #@+node:ekr.20181113042549.1: *5* app.action.redraw
     @flx.action
     def redraw (self, p):
@@ -232,18 +217,59 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
-        trace = debug_redraw and not g.unitTesting
+        trace = False and (debug_redraw or debug_tree) and not g.unitTesting
         c = self.c
         p = p or c.p
         w = self.main_window
-        # Be careful during startup.
+        #
+        # A hack. Do nothing if we are called from Leo's core.
+        callers = g.callers().split(',')
+        if 'outerUpdate' in callers:
+            return
+        # Be careful: c.frame.redraw can be called before app.finish_create.
         if w and w.tree:
-            if trace: print('===== app.redraw', p.h)
-            d = self.make_redraw_dict(p)
-            w.tree.set_redraw_dict(d)
-            # self.dump_top_level()
             ap = self.p_to_ap(p)
+            if trace: print('===== app.redraw:', p.h, g.callers())
             w.tree.select_ap(ap)
+            d = self.make_redraw_dict(p)
+            w.tree.redraw_or_repopulate(d)
+    #@+node:ekr.20181111095640.1: *5* app.action.send_children_to_tree
+    @flx.action
+    def send_children_to_tree(self, parent_ap):
+        '''
+        Call w.tree.receive_children(d), where d is compatible with make_redraw_dict:
+            {
+                'parent_ap': parent_ap,
+                'items': [
+                    self.make_dict_for_position(p)
+                        for p in for p in p.children()
+                ],
+            }
+        '''
+        trace = False and debug_tree and not g.unitTesting
+        verbose = False
+        p = self.ap_to_p(parent_ap)
+        assert p, repr(parent_ap)
+        if trace:
+            # There is a similar trace in flx.tree.receive_children.
+            print('===== send_children_to_tree: %s children' % len(list(p.children())))
+            if verbose: # Corresponds to the trace in flx_tree.populate_children.
+                for child in p.children():
+                    print('  ' + child.h)
+        #
+        # Always respond, even if there are no children.
+        # This allows the tree widget to reset state properly.
+        w = self.main_window
+        # assert parent_ap == self.p_to_ap(p), '\n%r\n%r' % (parent_ap, self.p_to_ap(p))
+            # This assert can fail because the expansion bits don't match.
+        w.tree.receive_children({
+            'parent_ap': parent_ap,
+            'items': [
+                self.make_dict_for_position(p)
+                    for p in p.children()
+                # For compatibility with flx.tree.create_item_with_parent.
+            ],
+        })
     #@+node:ekr.20181111203114.1: *5* app.ap_to_p
     def ap_to_p (self, ap):
         '''Convert an archived position to a true Leo position.'''
@@ -327,28 +353,6 @@ class LeoBrowserApp(flx.PyComponent):
             'gnx': p.v.gnx,
             'headline': p.h,
         }
-    #@+node:ekr.20181111095640.1: *5* app.send_children_to_tree
-    def send_children_to_tree(self, parent_ap, p):
-        '''
-        Call w.tree.receive_children(d), where d has the form:
-            {
-                'parent': parent_ap,
-                'children': [ap1, ap2, ...],
-            }
-        '''
-        if debug_tree and not g.unitTesting:
-            # There is a similar trace in flx.tree.receive_children.
-            print('===== send_children_to_tree: %s children' % len(list(p.children())))
-            if 0: # Corresponds to the trace in flx_tree.populate_children.
-                for child in p.children():
-                    print('  ' + child.h)
-        w = self.main_window
-        if p.hasChildren():
-            w.tree.receive_children({
-                'parent': parent_ap,
-                'children': [self.p_to_ap(z) for z in p.children()],
-            })
-        # else: print('app.send_children_to_tree: no children', p.h)
     #@+node:ekr.20181124133513.1: *4* app.finish_create
     @flx.action
     def finish_create(self):
@@ -357,17 +361,28 @@ class LeoBrowserApp(flx.PyComponent):
         
         Called after all flx.Widgets have been fully inited!
         '''
-        c = self.c
-        w = self.main_window
+        c, w = self.c, self.main_window
         # Init the log pane.
         w.log.put('%s\n%s' % (g.app.signon, g.app.signon2))
         # Init the body pane.
-        w.body.set_body(c.p.b)
+        self.set_body()
         # Init the status line.
-        lt, rt = c.frame.statusLine.update(c.p.b, 0)
-        w.status_line.update(lt, rt)
+        self.set_status()
         # Init the tree.
         self.redraw(c.p)
+        
+    # These must be separate because they are called from the tree logic.
+        
+    @flx.action
+    def set_status(self):
+        c, w = self.c, self.main_window
+        lt, rt = c.frame.statusLine.update(c.p.b, 0)
+        w.status_line.update(lt, rt)
+        
+    @flx.action
+    def set_body(self):
+        c, w = self.c, self.main_window
+        w.body.set_body(c.p.b)
     #@+node:ekr.20181117163223.1: *4* app.Key handling
     @flx.action
     def do_key (self, ev, kind):
@@ -487,16 +502,15 @@ class LeoBrowserApp(flx.PyComponent):
         '''
         trace = debug_select and not g.unitTesting
         assert ap, g.callers()
-        if trace: print('===== app.action.select_ap')
         c, w = self.c, self.main_window
         p = self.ap_to_p(ap)
-        assert p, repr(ap)
-        c.frame.tree.super_select(p)
-            # call LeoTree.select, but not self.select_p.
+        assert p, (repr(ap), g.callers())
         lt, rt = c.frame.statusLine.update()
         w.status_line.update(lt, rt)
-            # Set the property.
-        ### self.send_children_to_tree(ap, p)
+        if trace: print('===== app.select_ap', repr(ap))
+        w.tree.select_ap(ap)
+        c.frame.tree.super_select(p)
+            # call LeoTree.select, but not self.select_p.
     #@+node:ekr.20181122132009.1: *4* app.Testing...
     #@+node:ekr.20181111142921.1: *5* app.action: do_command
     @flx.action
@@ -945,6 +959,7 @@ class LeoFlexxBody(flx.Widget):
     #@+node:ekr.20181120054826.1: *4* flx_body.set_body
     @flx.action
     def set_body(self, body_text):
+        ### print('flx.body.set_body', repr(body_text))
         self.ace.setValue(body_text)
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
@@ -1143,17 +1158,23 @@ class LeoFlexxTree(flx.Widget):
         # pylint: disable=arguments-differ
         self.widget = self
         self.wrapper = self
-        # Init local data: not used outside this class.
-        self.populated_dict = {}
-            # Not used at present.
-        self.redraw_dict = {}
+        # Init local ivars...
+        self.populated_items_dict = {}
+            # Keys are ap **keys**, values are True.
+        self.populating_tree_item = None
+            # The LeoTreeItem whose children are to be populated.
         self.selected_ap = {}
+            # The ap of the presently selected node.
         self.tree_items_dict = {}
-            # Not used at present.
-        self.tree_items_list = []
-            # Use only to recycle tree items
+            # Keys are ap's. Values are LeoTreeItems.
         # Init the widget.
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
+
+    def assert_exists(self, obj):
+        # pylint: disable=undefined-variable
+            # undefined
+        global undefined
+        assert obj not in (undefined, None, {}), repr(obj)
 
     #@+others
     #@+node:ekr.20181121073246.1: *4* flx_tree.Drawing...
@@ -1167,16 +1188,39 @@ class LeoFlexxTree(flx.Widget):
         '''
         # pylint: disable=access-member-before-definition
         trace = debug_redraw and not g.unitTesting
+        items = list(self.tree_items_dict.values())
         if trace:
-            print('===== flx.tree.clear_tree: %s items' % len(self.tree_items_list))
+            print('===== flx.tree.clear_tree: %s items' % (len(items)))
         # Clear all tree items.
-        for item in self.tree_items_list:
+        for item in items:
+            # print(repr(item))
             item.dispose()
-        self.tree_items_list = []
+        self.tree_items_dict = {}
+    #@+node:ekr.20181125094843.1: *5* flx_tree.action.redraw_or_repopulate
+    @flx.action
+    def redraw_or_repopulate(self, redraw_dict):
+        
+        trace = False and debug_tree and not g.unitTesting
+        if trace: tag = 'flx.tree.redraw_or_repopulate'
+        if self.populating_tree_item:
+            if trace: print('%s: REPOPULATING' % tag)
+        else:
+            if trace: print('%s: FULL REDRAW' % tag)
+            self.redraw_with_dict(redraw_dict)
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
     def redraw_with_dict(self, d):
-        '''Clear the present tree and redraw using the **recursive** redraw_list.'''
+        '''
+        Clear the present tree and redraw using the **recursive** redraw_list.
+        d has the form:
+            {
+                'c.p': self.p_to_ap(p),
+                'items': [
+                    self.make_dict_for_position(p)
+                        for p in c.rootPosition().self_and_siblings()
+                ],
+            }
+        '''
         trace = debug_redraw and not g.unitTesting
         assert d
         self.clear_tree()
@@ -1191,17 +1235,28 @@ class LeoFlexxTree(flx.Widget):
         # pylint: disable=no-member
             # set_collapsed is in the base class.
         trace = debug_tree and verbose_debug_tree and not g.unitTesting
+        verbose = True
         ap = item ['ap']
-        if trace: # An effective, lengthy, trace.
+        if trace and verbose: # An effective, lengthy, trace.
             print('%s%s' % ('  '*ap ['level'], ap['headline']))
         #
         # Create the node.
         with parent:
             tree_item = LeoFlexxTreeItem(ap, text=ap['headline'], checked=None, collapsed=True)
         tree_item.set_collapsed(not ap['expanded'])
-        self.tree_items_list.append(tree_item)
         #
-        # Create the children
+        # Set the data.
+        key = self.ap_to_key(ap)
+        self.tree_items_dict [key] = tree_item
+        # Children are *not* necessarily sent, so set the populated 'bit' only if they are.
+        if item['children']:
+            if trace: print('create_item_with_parent: **populated**', ap['headline'])
+            self.populated_items_dict[key] = True
+        if hasattr(parent, 'leo_children'):
+            # print('create_item_with_parent', parent.leo_ap['headline'], ap['headline'])
+            parent.leo_children.append(tree_item)
+        #
+        # Create the children.
         for child in item ['children']:
             self.create_item_with_parent(child, tree_item)
     #@+node:ekr.20181122114509.1: *5* flx_tree.action.set_redraw_dict
@@ -1211,11 +1266,10 @@ class LeoFlexxTree(flx.Widget):
     def set_redraw_dict(self, d):
         # print('=====  flx_tree.ACTION.set_redraw_dict', repr(d.keys()))
         self.redraw_with_dict(d)
-
     #@+node:ekr.20181114072307.1: *5* flx_tree.ap_to_key
     def ap_to_key(self, ap):
         '''Produce a key for the given ap.'''
-        assert ap
+        self.assert_exists(ap)
         childIndex = ap ['childIndex']
         gnx = ap ['gnx']
         headline = ap ['headline']
@@ -1269,7 +1323,7 @@ class LeoFlexxTree(flx.Widget):
     )
     def on_tree_event(self, *events):
         for ev in events:
-            trace = (debug_tree or debug_redraw) and not g.unitTesting
+            trace = False and (debug_tree or debug_redraw) and not g.unitTesting
             expand = not ev.new_value
             if expand:
                 # Don't redraw if the LeoTreeItem has children.
@@ -1279,10 +1333,10 @@ class LeoFlexxTree(flx.Widget):
                     if trace: print('===== flx.tree.on_tree_event: already expanded', ap['headline'])
                 else:
                     ap['expanded'] = True
-                    # print(list(ev.keys()))
-                    self.root.expand_and_redraw(ap)
-                        # c.p may already be expanded,
-                        # In which case this call does nothing.
+                    ### self.root.expand_and_redraw(ap)
+                    self.start_populating_children(ap, tree_item)
+                    # Populate children, if necessary.
+
         
     #@+node:ekr.20181120063735.1: *4* flx_tree.Focus
     @flx.action
@@ -1290,50 +1344,67 @@ class LeoFlexxTree(flx.Widget):
         print('===== flx.tree.set_focus')
     #@+node:ekr.20181123165819.1: *4* flx_tree.Incremental Drawing...
     # This are not used, at present, but they may come back.
-    #@+node:ekr.20181111011928.1: *5* flx_tree.populate_children (not used)
+    #@+node:ekr.20181125051244.1: *5* flx_tree.populate_children
     def populate_children(self, children, parent_ap):
         '''
-        Populate parent with the children if necessary.
-        Regardless of children, enter parent_ap into the populated dict.
+        Populate the children of the given parent.
+        
+        self.populating_tree_item is the LeoFlexxTreeItem to be populated.
+
+        children is a list of ap's.
         '''
         trace = False and debug_tree and not g.unitTesting
-        parent_key = self.ap_to_key(parent_ap)
-        if parent_key in self.populated_dict:
-            if trace:
-                print('flx.tree.populate_children: already populated: %s' % (parent_ap ['headline']))
-            return
-        # Set the key once, here.
-        self.populated_dict [parent_key] = parent_ap
-        # Populate the items.
-        if parent_key not in self.tree_items_dict:
-            banner('flx.tree.populate_children: can not happen: parent_key not in tree_items_dict')
-            print('parent_key', parent_key)
-            self.dump_ap(parent_ap, 0, 'parent_ap')
-            # tree_items_dict: Keys are ap keys, values are ap's.
-            print('dump of tree_items_dict...')
-            for key, val in self.tree_items_dict.items():
-                print(key)
-                print(val)
-            return
-        if trace: print('flx.tree.populate_children: %s' % len(children))
-        # Create the items.
-        parent = self.tree_items_dict[parent_key]
+        parent = self.populating_tree_item
+        assert parent
+        assert parent_ap == parent.leo_ap
+            # The expansion bit may have changed?
+        if trace:
+            print('flx.tree.populate_children: parent: %r %s children' % (parent, len(children)))
         for child_ap in children:
             self.create_item_with_parent(child_ap, parent)
-                ### To do: debug ###
-    #@+node:ekr.20181110175222.1: *5* flx_tree.action.receive_children (not used)
+        self.populating_tree_item = False
+    #@+node:ekr.20181111011928.1: *5* flx_tree.start_populating_children
+    def start_populating_children(self, parent_ap, parent_tree_item):
+        '''
+        Populate the parent tree item with the children if necessary.
+        
+        app.send_children_to_tree should send an empty list
+        '''
+        trace = False and debug_tree and not g.unitTesting
+        if trace:
+            headline = parent_tree_item.leo_ap ['headline']
+            tag = 'flx.tree.start_populating_children'
+        self.assert_exists(parent_ap)
+        self.assert_exists(parent_tree_item)
+        headline = parent_ap ['headline']
+        key = self.ap_to_key(parent_ap)
+        if key in self.populated_items_dict:
+            # if trace: print('%s: already populated: %s' % (tag, headline))
+            return
+        if trace: print(tag, headline)
+        assert isinstance(parent_tree_item, LeoFlexxTreeItem)
+        # Remember the parent_tree_item.
+        self.populating_tree_item = parent_tree_item
+        #
+        # Ask for the items.
+        if trace: print('%s: calling app.send_children_to_tree' % (tag))
+        self.root.send_children_to_tree(parent_ap)
+    #@+node:ekr.20181110175222.1: *5* flx_tree.action.receive_children
     @flx.action
     def receive_children(self, d):
         '''
-        Using d, populate the direct descendants of ap. d has the form:
+        Populate the direct descendants of ap. d is compatible with make_redraw_dict:
             {
-                'parent': ap,
-                'children': [ap1, ap2, ...],
+                'parent_ap': parent_ap,
+                'items': [
+                    self.make_dict_for_position(p)
+                        for p in for p in p.children()
+                ],
             }
         '''
-        trace = True and debug_tree and not g.unitTesting
-        parent_ap = d ['parent']
-        children = d ['children']
+        trace = False and debug_tree and not g.unitTesting
+        parent_ap = d ['parent_ap']
+        children = d ['items']
         if trace:
             print('===== flx.tree.receive_children: %s children' % (len(children)))
         self.populate_children(children, parent_ap)
@@ -1343,13 +1414,10 @@ class LeoFlexxTree(flx.Widget):
 
     @flx.action
     def set_ap(self, ap):
-        '''
-        Mutate self.selected_ap. Call *only* from app.select_ap.
-        '''
+        '''self.selected_ap. Called from app.select_ap.'''
         assert ap
         self.selected_ap = ap
         self.select_ap(self.selected_ap)
-            
     #@+node:ekr.20181116083916.1: *5* flx_tree.select_ap
     @flx.action
     def select_ap(self, ap):
@@ -1358,13 +1426,12 @@ class LeoFlexxTree(flx.Widget):
         
         Called from the mutator, and also on_selected_event.
         '''
-        trace = debug_select and not g.unitTesting
-        if trace: print('===== flx.tree.select_ap', ap ['headline'])
-        assert ap
+        # print('===== flx.tree.select_ap', repr(ap), ap ['headline'])
         key = self.ap_to_key(ap)
         item = self.tree_items_dict.get(key)
         if item:
             item.set_selected(True)
+            self.selected_ap = ap
                 # Set the item's selected property.
         else:
             pass # We may be in the middle of a redraw.
@@ -1376,20 +1443,24 @@ class LeoFlexxTree(flx.Widget):
         
         This also gets fired on *unselection* events, which causes problems.
         '''
-        trace = False and not g.unitTesting
-        if trace: print('='*20)
+        trace = False and debug_tree and not g.unitTesting
         #
         # Reselect the present ap if there are no selection events.
         # This ensures that clicking a headline twice has no effect.
         if not any([ev.new_value for ev in events]):
-            self.select_ap(self.selected_ap)
+            ev = events[0]
+            self.assert_exists(ev)
+            ap = ev.source.leo_ap
+            self.assert_exists(ap)
+            self.select_ap(ap)
             return
         #
         # handle selection events.
+        if trace: print('='*20)
         for ev in events:
             if ev.new_value: # A selection event.
                 ap = ev.source.leo_ap
-                if trace: print('select:', ap['headline'])
+                if trace: print('on_selected_event: select:', ap['headline'])
                 # self.dump_ap(ap)
                 self.root.select_ap(ap)
                     # This *only* sets c.p. and updated c.p.b.
@@ -1417,15 +1488,16 @@ class LeoFlexxTree(flx.Widget):
     #@-others
 #@+node:ekr.20181108233657.1: *3* class LeoFlexxTreeItem
 class LeoFlexxTreeItem(flx.TreeItem):
-    
+
     def init(self, leo_ap):
         # pylint: disable=arguments-differ
         self.leo_ap = leo_ap
             # Immutable: Gives access to cloned, marked, expanded fields.
+        self.leo_children = []
 
     def getName(self):
         return 'head' # Required, for proper pane bindings.
-        
+
     #@+others
     #@+node:ekr.20181124123647.1: *4* flx.tree_item.Key Handling
     # @flx.emitter
