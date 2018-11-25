@@ -485,6 +485,7 @@ class LeoBrowserApp(flx.PyComponent):
         Nothin in the flx.tree needs to be updated.
         '''
         trace = debug_select and not g.unitTesting
+        assert ap, g.callers()
         if trace: print('===== app.action.select_ap')
         c, w = self.c, self.main_window
         p = self.ap_to_p(ap)
@@ -628,9 +629,10 @@ class LeoBrowserBody(leoFrame.NullBody):
     #@+node:ekr.20181120063244.1: *4* body_wrapper.onBodyChanged
     def onBodyChanged(self, *args, **keys):
         # pylint: disable=arguments-differ
-        c = self.c
-        g.trace('body-wrapper', c.p.h)
-        ### These can destroy the body text.
+        if 0:
+            c = self.c
+            g.trace('body-wrapper', c.p.h)
+            ### These can destroy the body text.
             # super().onBodyChanged(*args, **keys)
     #@-others
 #@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
@@ -1156,10 +1158,14 @@ class LeoFlexxTree(flx.Widget):
         self.widget = self
         self.wrapper = self
         # Init local data: not used outside this class.
-        self.gnx_dict = {}
         self.populated_dict = {}
+            # Not used at present.
         self.redraw_dict = {}
         self.selected_ap = {}
+        self.tree_items_dict = {}
+            # Not used at present.
+        self.tree_items_list = []
+            # Use only to recycle tree items
         # Init the widget.
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
         self._mutate('do_init', True)
@@ -1181,13 +1187,11 @@ class LeoFlexxTree(flx.Widget):
         # pylint: disable=access-member-before-definition
         trace = debug_redraw and not g.unitTesting
         if trace:
-            print('===== flx.tree.clear_tree: %s items' % 
-                len(self.tree_items_dict.keys()))
+            print('===== flx.tree.clear_tree: %s items' % len(self.tree_items_list))
         # Clear all tree items.
-        for item in self.tree_items_dict.values():
+        for item in self.tree_items_list:
             item.dispose()
-        self.tree_items_dict = {}
-        self.gnx_dict = {}
+        self.tree_items_list = []
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
     def redraw_with_dict(self, d):
@@ -1207,17 +1211,14 @@ class LeoFlexxTree(flx.Widget):
             # set_collapsed is in the base class.
         trace = debug_tree and verbose_debug_tree and not g.unitTesting
         ap = item ['ap']
-        gnx, headline, level = ap ['gnx'], ap['headline'], ap ['level']
-        if trace: print('%s%s' % ('  '*level, headline))
-            # An effective, lengthy, trace.
+        if trace: # An effective, lengthy, trace.
+            print('%s%s' % ('  '*ap ['level'], ap['headline']))
         #
         # Create the node.
         with parent:
-            tree_item = LeoFlexxTreeItem(ap, text=headline, checked=None, collapsed=True)
-        key = self.ap_to_key(ap)
-        self.tree_items_dict [key] = tree_item
-        self.gnx_dict [gnx] = tree_item
+            tree_item = LeoFlexxTreeItem(ap, text=ap['headline'], checked=None, collapsed=True)
         tree_item.set_collapsed(not ap['expanded'])
+        self.tree_items_list.append(tree_item)
         #
         # Create the children
         for child in item ['children']:
@@ -1378,6 +1379,7 @@ class LeoFlexxTree(flx.Widget):
         '''
         trace = debug_select and not g.unitTesting
         if trace: print('===== flx.tree.select_ap', ap ['headline'])
+        assert ap
         key = self.ap_to_key(ap)
         item = self.tree_items_dict.get(key)
         if item:
