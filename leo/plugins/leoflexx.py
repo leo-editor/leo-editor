@@ -92,6 +92,7 @@ import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
 import leo.core.leoTest as leoTest
 from flexx import flx
+import difflib
 import re
 import time
 assert re and time
@@ -281,7 +282,7 @@ class LeoBrowserApp(flx.PyComponent):
         w.tree.select_ap(ap)
         redraw_dict = self.make_redraw_dict(p)
         new_flattened_outline = self.flatten_outline()
-        redraw_instructions = self.make_redraw_instructions(
+        redraw_instructions = self.make_redraw_list(
             self.old_flattened_outline, new_flattened_outline)
         w.tree.redraw_with_dict(redraw_dict, redraw_instructions)
             ### To do: pass both redraw_dict and 
@@ -351,10 +352,10 @@ class LeoBrowserApp(flx.PyComponent):
             for p in c.rootPosition().self_and_siblings():
                 print('  %5s %s' % (p.isExpanded(), p.h))
             print('')
-    #@+node:ekr.20181126083055.1: *5* app.flatten_outline & helper
+    #@+node:ekr.20181126083055.1: *5* app.flatten_outline
     def flatten_outline (self):
         '''Return a flat list of strings "level:gnx" for all *visible* positions.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         t1 = time.clock()
         c, aList = self.c, []
         for p in c.rootPosition().self_and_siblings():
@@ -367,7 +368,7 @@ class LeoBrowserApp(flx.PyComponent):
             
     def extend_flattened_outline(self, aList, p):
         '''Add p and all p's visible descendants to aList.'''
-        aList.append('%s:%s' % (p.level(), p.gnx))
+        aList.append('%2s:%25s:%s\n' % (p.level(), p.gnx, p.h))
         if p.isExpanded():
             for child in p.children():
                 self.extend_flattened_outline(aList, child)
@@ -379,7 +380,7 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, recreate gnx_to_vnode.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         p = p or c.p
         t1 = time.clock()
@@ -425,13 +426,45 @@ class LeoBrowserApp(flx.PyComponent):
             'gnx': p.v.gnx,
             'headline': p.h,
         }
-    #@+node:ekr.20181126094040.1: *5* app.make_redraw_instructions
-    def make_redraw_instructions(self, old_outline_list, new_outline_list):
+    #@+node:ekr.20181126094040.1: *5* app.make_redraw_list ***
+    def make_redraw_list(self, a, b):
         '''
-        Diff the old and new outline lists, then optimize the diffs to create a
-        redraw instruction list.
+        Diff the a (old) and b (new) outline lists.
+        Then optimize the diffs to create a redraw instruction list.
         '''
-        g.trace(len(old_outline_list), len(new_outline_list))
+        
+        if a == b:
+            g.trace('no changes: len(a) == len(b) == %s', len(a))
+            return []
+            
+        def summarize(aList):
+            pat = re.compile(r'.*:.*:(.*)')
+            return ', '.join([pat.match(z).group(1) for z in aList])
+
+        d = difflib.SequenceMatcher(None, a, b)
+        #
+        # These opcodes supposedly tell how to turn a into b. (b never changes)
+        # https://docs.python.org/3/library/difflib.html#difflib.SequenceMatcher.get_opcodes
+        #
+        # Actually, they tell how to recreate b from an *empty* starting point.
+        g.trace()
+        print('')
+        result = []
+        for tag, i1, i2, j1, j2 in list(d.get_opcodes()):
+            if tag == 'equal':
+                print('%7s at %s:%s (both) ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+            elif tag == 'insert':
+                print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+            elif tag == 'delete':
+                print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
+            elif tag == 'replace':
+                print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
+                print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+            else:
+                print('unknown tag')
+            result.extend(b[j1:j2])
+        assert b == result, (summarize(a), summarize(b))
+        print('')
         return []
     #@+node:ekr.20181117163223.1: *4* app.Key handling
     @flx.action
@@ -657,9 +690,9 @@ class LeoBrowserApp(flx.PyComponent):
         self.make_redraw_dict(p)
             # Call this only for timing stats.
         new_flattened_outline = self.flatten_outline()
-        redraw_instructions = self.make_redraw_instructions(
+        redraw_instructions = self.make_redraw_list(
             self.old_flattened_outline, new_flattened_outline)
-        assert redraw_instructions is not None ### Temp, for pyflakes.
+        assert redraw_instructions is not None # For pyflakes.
         #
         # Restore the tree.
         for p2 in c.all_positions(copy=False):
