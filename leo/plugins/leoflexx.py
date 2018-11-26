@@ -287,10 +287,9 @@ class LeoBrowserApp(flx.PyComponent):
         self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
             # This is likely the only data that ever will be needed.
         t2 = time.clock()
-        if debug_tree:
-            print('app.create_all_data: %5.2f sec. %s entries' % (
-                (t2-t1), len(list(self.gnx_to_vnode.keys()))))
-            self.test_round_trip_positions()
+        print('app.create_all_data: %5.3f sec. %s entries' % (
+            (t2-t1), len(list(self.gnx_to_vnode.keys()))))
+        self.test_round_trip_positions()
     #@+node:ekr.20181124071215.1: *5* app.dump_top_level
     def dump_top_level(self):
         '''Dump the top-level nodes.'''
@@ -305,7 +304,7 @@ class LeoBrowserApp(flx.PyComponent):
             for p in c.rootPosition().self_and_siblings():
                 print('  %5s %s' % (p.isExpanded(), p.h))
             print('')
-    #@+node:ekr.20181113043539.1: *5* app.make_redraw_dict & helpers
+    #@+node:ekr.20181113043539.1: *5* app.make_redraw_dict & helper
     def make_redraw_dict(self, p=None):
         '''
         Return a **recursive**, archivable, list of lists describing all the
@@ -313,39 +312,45 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, recreate gnx_to_vnode.
         '''
-        trace = debug_redraw and not g.unitTesting
+        trace = (True or debug_redraw) and not g.unitTesting
         c = self.c
         p = p or c.p
-        if trace:
-            print('===== app.make_redraw_dict: %s direct children' % (
-                len(list(c.rootPosition().self_and_siblings()))))
+        t1 = time.clock()
         c.expandAllAncestors(c.p)
             # Ensure that c.p will be shown.
-        return {
+        d = {
             'c.p': self.p_to_ap(p),
             'items': [
                 self.make_dict_for_position(p)
                     for p in c.rootPosition().self_and_siblings()
             ],
         }
+        t2 = time.clock()
+        if trace:
+            print('===== app.make_redraw_dict: %s direct children %7.5f sec.' % (
+                len(list(c.rootPosition().self_and_siblings())), (t2-t1)))
+        return d
     #@+node:ekr.20181113044701.1: *6* app.make_dict_for_position
     def make_dict_for_position(self, p):
-        ''' Recursively add a sublist for p and all its visible nodes.'''
-        level = p.level()
+        ''' 
+        Recursively add a sublist for p and all its visible nodes.
+        It is already known that p itself is visible.
+        '''
         trace = debug_tree and verbose_debug_tree and not g.unitTesting
-            # A superb trace. There are similar traces in:
-            # - flx_tree.redraw_with_dict  and its helper, flx_tree.create_item_with_parent.
-            # - flx_tree.populate_children and its helper, flx_tree.create_item_for_ap
-        c = self.c
         assert p.v
         self.gnx_to_vnode[p.v.gnx] = p.v
         if trace:
-            print('%s%s' % ('  '*level, p.h))
-        children = [
-            self.make_dict_for_position(child)
-                for child in p.children()
-                    if level == 0 or child.isVisible(c)
-        ]
+            print('%s%s' % ('  '*p.level(), p.h))
+                # A superb trace. There are similar traces in:
+                # - flx_tree.redraw_with_dict  and its helper, flx_tree.create_item_with_parent.
+                # - flx_tree.populate_children and its helper, flx_tree.create_item_for_ap
+        if p.isExpanded(): # Do not use p.v.isExpanded().
+            children = [
+                self.make_dict_for_position(child)
+                    for child in p.children()
+            ]
+        else:
+            children = []
         return {
             'ap': self.p_to_ap(p),
             # 'body': p.b, # This would transfer much too much data.
@@ -616,9 +621,9 @@ class LeoBrowserApp(flx.PyComponent):
         '''Clear the console'''
         g.cls()
 
-    def message(self, s):
-        '''For testing.'''
-        print('app.message: %s' % s)
+    # def message(self, s):
+        # '''For testing.'''
+        # print('app.message: %s' % s)
     #@-others
 #@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
 class LeoBrowserBody(leoFrame.NullBody):
