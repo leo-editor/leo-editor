@@ -196,7 +196,11 @@ class LeoBrowserApp(flx.PyComponent):
             # Instantiate all wrappers first.
         # Force minibuffer find mode.
         c.findCommands.minibuffer_mode = True
+        # Init all ivars
         self.create_gnx_to_vnode()
+        self.old_flattened_outline = []
+        self.old_redraw_dict = {}
+        self.redraw_generation = 0
         # Create the main window and all its components.
         c.selectPosition(c.rootPosition()) ### A temp hack.
         c.contractAllHeadlines()
@@ -648,7 +652,7 @@ class LeoBrowserApp(flx.PyComponent):
             p2.expand()
         #
         # Test the code.
-        self.make_redraw_dict(p, trace=True)
+        self.make_redraw_dict(p)
             # Call this only for timing stats.
         new_flattened_outline = self.flatten_outline()
         redraw_instructions = self.make_redraw_instructions(
