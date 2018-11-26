@@ -436,7 +436,7 @@ class LeoBrowserApp(flx.PyComponent):
         trace = True and not g.unitTesting
         
         if a == b:
-            g.trace('no changes: len(a) == len(b) == %s', len(a))
+            if trace: g.trace('no changes: len(a) == len(b) == %s', len(a))
             return []
             
         def summarize(aList):
@@ -455,8 +455,9 @@ class LeoBrowserApp(flx.PyComponent):
         # https://docs.python.org/3/library/difflib.html#difflib.SequenceMatcher.get_opcodes
         #
         # Actually, they tell how to recreate b from an *empty* starting point.
-        g.trace('len(a): %s, len(b): %s' % (len(a), len(b)))
-        print('')
+        if trace:
+            g.trace('len(a): %s, len(b): %s' % (len(a), len(b)))
+            print('')
         instruction_list, result = [], []
         for tag, i1, i2, j1, j2 in list(d.get_opcodes()):
             if tag == 'equal':
