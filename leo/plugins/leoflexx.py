@@ -229,10 +229,34 @@ class LeoBrowserApp(flx.PyComponent):
         # Be careful: c.frame.redraw can be called before app.finish_create.
         if w and w.tree:
             ap = self.p_to_ap(p)
-            if trace: print('===== app.redraw:', p.h, g.callers())
+            if 1: # For development of make_redraw_instruction_list
+                g.trace(g.callers())
+                #
+                # Don't call c.expandAllHeadlines: it calls c.redraw.
+                for p2 in c.all_positions(copy=False):
+                    p2.expand()
+                t1 = time.clock()
+                d = self.make_redraw_dict(p)
+                new_flattened_outline = self.flatten_outline()
+                ### redraw_instructions = self.make_redraw_instructions(old_outline, new_outline)
+                ### assert redraw_instructions is not None # for pyflakes.
+                t2 = time.clock()
+                #
+                # Do a normal redraw.
+                for p2 in c.all_positions(copy=False):
+                    p2.contract()
+                c.expandAllAncestors(p)
+                    # Does not do a redraw.
+                if trace:
+                    print('===== app.redraw: len(list): %s %7.5f sec. %s' % (
+                        len(new_flattened_outline), (t2-t1), p.h))
+            # else:
+                # if trace: print('===== app.redraw:', p.h, g.callers())
+                ### w.tree.redraw_or_repopulate(d)
             w.tree.select_ap(ap)
             d = self.make_redraw_dict(p)
-            w.tree.redraw_or_repopulate(d)
+            w.tree.redraw_with_dict(d)
+
     #@+node:ekr.20181111095640.1: *5* app.action.send_children_to_tree
     @flx.action
     def send_children_to_tree(self, parent_ap):
@@ -304,6 +328,24 @@ class LeoBrowserApp(flx.PyComponent):
             for p in c.rootPosition().self_and_siblings():
                 print('  %5s %s' % (p.isExpanded(), p.h))
             print('')
+    #@+node:ekr.20181126083055.1: *5* app.flatten_outline & helper
+    def flatten_outline (self):
+        '''Return a flat list of strings "level:gnx" for all *visible* positions.'''
+        t1 = time.clock()
+        c, aList = self.c, []
+        for p in c.rootPosition().self_and_siblings():
+            self.extend_flattened_outline(aList, p)
+        t2 = time.clock()
+        print('app.flatten_outline: %s entries %5.3f sec.' % (
+            len(aList), (t2-t1)))
+        return aList
+            
+    def extend_flattened_outline(self, aList, p):
+        '''Add p and all p's visible descendants to aList.'''
+        aList.append('%s:%s' % (p.level(), p.gnx))
+        if p.isExpanded():
+            for child in p.children():
+                self.extend_flattened_outline(aList, child)
     #@+node:ekr.20181113043539.1: *5* app.make_redraw_dict & helper
     def make_redraw_dict(self, p=None):
         '''
@@ -327,7 +369,7 @@ class LeoBrowserApp(flx.PyComponent):
         }
         t2 = time.clock()
         if trace:
-            print('===== app.make_redraw_dict: %s direct children %7.5f sec.' % (
+            print('app.make_redraw_dict: %s direct children %5.3f sec.' % (
                 len(list(c.rootPosition().self_and_siblings())), (t2-t1)))
         return d
     #@+node:ekr.20181113044701.1: *6* app.make_dict_for_position
@@ -358,6 +400,13 @@ class LeoBrowserApp(flx.PyComponent):
             'gnx': p.v.gnx,
             'headline': p.h,
         }
+    #@+node:ekr.20181126094040.1: *5* app.make_redraw_instructions
+    def make_redraw_instructions(self, old_outline_list, new_outline_list):
+        '''
+        Diff the old and new outline lists, then optimize the diffs to create a
+        redraw instruction list.
+        '''
+        return []
     #@+node:ekr.20181124133513.1: *4* app.finish_create
     @flx.action
     def finish_create(self):
