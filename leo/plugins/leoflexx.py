@@ -279,10 +279,12 @@ class LeoBrowserApp(flx.PyComponent):
         # Redraw only the visible nodes.
         ap = self.p_to_ap(p)
         w.tree.select_ap(ap)
-        new_flattened_outline = self.flatten_outline()
         redraw_dict = self.make_redraw_dict(p)
-        w.tree.redraw_with_dict(redraw_dict,)
-            ### w.tree.redraw_or_repopulate(d)
+        new_flattened_outline = self.flatten_outline()
+        redraw_instructions = self.make_redraw_instructions(
+            self.old_flattened_outline, new_flattened_outline)
+        w.tree.redraw_with_dict(redraw_dict, redraw_instructions)
+            ### To do: pass both redraw_dict and 
         #
         # Move to the next redraw generation.
         self.old_flattened_outline = new_flattened_outline
@@ -1266,20 +1268,9 @@ class LeoFlexxTree(flx.Widget):
             # print(repr(item))
             item.dispose()
         self.tree_items_dict = {}
-    #@+node:ekr.20181125094843.1: *5* flx_tree.action.redraw_or_repopulate
-    @flx.action
-    def redraw_or_repopulate(self, redraw_dict):
-        
-        trace = False and debug_tree and not g.unitTesting
-        if trace: tag = 'flx.tree.redraw_or_repopulate'
-        if self.populating_tree_item:
-            if trace: print('%s: REPOPULATING' % tag)
-        else:
-            if trace: print('%s: FULL REDRAW' % tag)
-            self.redraw_with_dict(redraw_dict)
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
-    def redraw_with_dict(self, d):
+    def redraw_with_dict(self, redraw_dict, redraw_instructions):
         '''
         Clear the present tree and redraw using the **recursive** redraw_list.
         d has the form:
@@ -1292,9 +1283,9 @@ class LeoFlexxTree(flx.Widget):
             }
         '''
         trace = debug_redraw and not g.unitTesting
-        assert d
+        assert redraw_dict
         self.clear_tree()
-        items = d ['items']
+        items = redraw_dict ['items']
         if trace:
             print('===== flx.tree.redraw_with_dict: %s direct children' % len(items))
         for item in items:
@@ -1329,13 +1320,6 @@ class LeoFlexxTree(flx.Widget):
         # Create the children.
         for child in item ['children']:
             self.create_item_with_parent(child, tree_item)
-    #@+node:ekr.20181122114509.1: *5* flx_tree.action.set_redraw_dict
-    # This must exist, so app.redraw can call it.
-
-    @flx.action
-    def set_redraw_dict(self, d):
-        # print('=====  flx_tree.ACTION.set_redraw_dict', repr(d.keys()))
-        self.redraw_with_dict(d)
     #@+node:ekr.20181114072307.1: *5* flx_tree.ap_to_key
     def ap_to_key(self, ap):
         '''Produce a key for the given ap.'''
