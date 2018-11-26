@@ -368,7 +368,8 @@ class LeoBrowserApp(flx.PyComponent):
             
     def extend_flattened_outline(self, aList, p):
         '''Add p and all p's visible descendants to aList.'''
-        aList.append('%2s:%25s:%s\n' % (p.level(), p.gnx, p.h))
+        aList.append('%s:%s:%s\n' % (p.level(), p.gnx, p.h))
+            # Padding the fields causes problems later.
         if p.isExpanded():
             for child in p.children():
                 self.extend_flattened_outline(aList, child)
@@ -426,7 +427,7 @@ class LeoBrowserApp(flx.PyComponent):
             'gnx': p.v.gnx,
             'headline': p.h,
         }
-    #@+node:ekr.20181126094040.1: *5* app.make_redraw_list ***
+    #@+node:ekr.20181126094040.1: *5* app.make_redraw_list
     def make_redraw_list(self, a, b):
         '''
         Diff the a (old) and b (new) outline lists.
@@ -440,6 +441,12 @@ class LeoBrowserApp(flx.PyComponent):
         def summarize(aList):
             pat = re.compile(r'.*:.*:(.*)')
             return ', '.join([pat.match(z).group(1) for z in aList])
+            
+        def gnxs(aList):
+            # pat = re.compile(r'.*\:(.*)\:.*')
+            # return ', '.join([pat.match(z).group(1).strip() for z in aList])
+            return ', '.join([z for z in aList])
+                # Testing.
 
         d = difflib.SequenceMatcher(None, a, b)
         #
@@ -447,25 +454,32 @@ class LeoBrowserApp(flx.PyComponent):
         # https://docs.python.org/3/library/difflib.html#difflib.SequenceMatcher.get_opcodes
         #
         # Actually, they tell how to recreate b from an *empty* starting point.
-        g.trace()
+        g.trace('len(a): %s, len(b): %s' % (len(a), len(b)))
         print('')
-        result = []
+        instruction_list, result = [], []
         for tag, i1, i2, j1, j2 in list(d.get_opcodes()):
             if tag == 'equal':
                 print('%7s at %s:%s (both) ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
             elif tag == 'insert':
                 print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+                instruction_list.append(('insert', i1, gnxs(b[j1:j2])),)
             elif tag == 'delete':
                 print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
+                instruction_list.append(('delete', i1, gnxs(a[i1:i2])),)
             elif tag == 'replace':
                 print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
                 print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+                instruction_list.append(('replace', i1, gnxs(a[i1:i2]), gnxs(b[j1:j2])),)
             else:
                 print('unknown tag')
             result.extend(b[j1:j2])
         assert b == result, (summarize(a), summarize(b))
         print('')
-        return []
+        print('instruction list...')
+        for z in instruction_list:
+            print(z)
+        print('')
+        return result
     #@+node:ekr.20181117163223.1: *4* app.Key handling
     @flx.action
     def do_key (self, ev, kind):
