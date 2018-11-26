@@ -272,11 +272,11 @@ class LeoBrowserApp(flx.PyComponent):
         if not w or not w.tree:
             return
         #
-        # For development of make_redraw_instruction_list
+        # Profile times when all nodes are expanded.
         if 0:
             self.test_full_outline(p)
         #
-        # Now do a normal redraw.
+        # Redraw only the visible nodes.
         ap = self.p_to_ap(p)
         w.tree.select_ap(ap)
         new_flattened_outline = self.flatten_outline()
