@@ -196,8 +196,7 @@ class LeoBrowserApp(flx.PyComponent):
             # Instantiate all wrappers first.
         # Force minibuffer find mode.
         c.findCommands.minibuffer_mode = True
-        # Create all data-related ivars.
-        self.create_all_data()
+        self.create_gnx_to_vnode()
         # Create the main window and all its components.
         c.selectPosition(c.rootPosition()) ### A temp hack.
         c.contractAllHeadlines()
@@ -205,6 +204,50 @@ class LeoBrowserApp(flx.PyComponent):
         self._mutate('main_window', main_window)
 
     #@+others
+    #@+node:ekr.20181126103604.1: *4*  app.Initing
+    #@+node:ekr.20181114015356.1: *5* app.create_all_data
+    def create_gnx_to_vnode(self):
+        t1 = time.clock()
+        self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
+            # This is likely the only data that ever will be needed.
+        t2 = time.clock()
+        print('app.create_all_data: %5.3f sec. %s entries' % (
+            (t2-t1), len(list(self.gnx_to_vnode.keys()))))
+        self.test_round_trip_positions()
+    #@+node:ekr.20181124133513.1: *5* app.finish_create
+    @flx.action
+    def finish_create(self):
+        '''
+        Initialize all ivars and widgets.
+        
+        Called after all flx.Widgets have been fully inited!
+        '''
+        c, w = self.c, self.main_window
+        # Init g.app data
+        self.old_flattened_outline = self.flatten_outline()
+        self.old_redraw_dict = self.make_redraw_dict(c.p)
+        self.redraw_generation = 0
+        # Init the log pane.
+        w.log.put('%s\n%s' % (g.app.signon, g.app.signon2))
+        # Init the body pane.
+        self.set_body()
+        # Init the status line.
+        self.set_status()
+        # Init the tree.
+        self.redraw(c.p)
+        
+    # These must be separate because they are called from the tree logic.
+        
+    @flx.action
+    def set_status(self):
+        c, w = self.c, self.main_window
+        lt, rt = c.frame.statusLine.update(c.p.b, 0)
+        w.status_line.update(lt, rt)
+        
+    @flx.action
+    def set_body(self):
+        c, w = self.c, self.main_window
+        w.body.set_body(c.p.b)
     #@+node:ekr.20181122132345.1: *4* app.Drawing...
     #@+node:ekr.20181113042549.1: *5* app.action.redraw
     @flx.action
@@ -217,46 +260,30 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
-        trace = False and (debug_redraw or debug_tree) and not g.unitTesting
         c = self.c
         p = p or c.p
         w = self.main_window
         #
-        # A hack. Do nothing if we are called from Leo's core.
-        callers = g.callers().split(',')
-        if 'outerUpdate' in callers:
-            return
         # Be careful: c.frame.redraw can be called before app.finish_create.
-        if w and w.tree:
-            ap = self.p_to_ap(p)
-            if 1: # For development of make_redraw_instruction_list
-                g.trace(g.callers())
-                #
-                # Don't call c.expandAllHeadlines: it calls c.redraw.
-                for p2 in c.all_positions(copy=False):
-                    p2.expand()
-                t1 = time.clock()
-                d = self.make_redraw_dict(p)
-                new_flattened_outline = self.flatten_outline()
-                ### redraw_instructions = self.make_redraw_instructions(old_outline, new_outline)
-                ### assert redraw_instructions is not None # for pyflakes.
-                t2 = time.clock()
-                #
-                # Do a normal redraw.
-                for p2 in c.all_positions(copy=False):
-                    p2.contract()
-                c.expandAllAncestors(p)
-                    # Does not do a redraw.
-                if trace:
-                    print('===== app.redraw: len(list): %s %7.5f sec. %s' % (
-                        len(new_flattened_outline), (t2-t1), p.h))
-            # else:
-                # if trace: print('===== app.redraw:', p.h, g.callers())
-                ### w.tree.redraw_or_repopulate(d)
-            w.tree.select_ap(ap)
-            d = self.make_redraw_dict(p)
-            w.tree.redraw_with_dict(d)
-
+        if not w or not w.tree:
+            return
+        #
+        # For development of make_redraw_instruction_list
+        if 0:
+            self.test_full_outline(p)
+        #
+        # Now do a normal redraw.
+        ap = self.p_to_ap(p)
+        w.tree.select_ap(ap)
+        new_flattened_outline = self.flatten_outline()
+        redraw_dict = self.make_redraw_dict(p)
+        w.tree.redraw_with_dict(redraw_dict,)
+            ### w.tree.redraw_or_repopulate(d)
+        #
+        # Move to the next redraw generation.
+        self.old_flattened_outline = new_flattened_outline
+        self.old_redraw_dict = redraw_dict
+        self.redraw_generation += 1
     #@+node:ekr.20181111095640.1: *5* app.action.send_children_to_tree
     @flx.action
     def send_children_to_tree(self, parent_ap):
@@ -304,16 +331,6 @@ class LeoBrowserApp(flx.PyComponent):
                 for d in ap ['stack']
         ]
         return leoNodes.position(v, childIndex, stack)
-    #@+node:ekr.20181114015356.1: *5* app.create_all_data
-    def create_all_data(self):
-        '''Compute the initial values all data structures.'''
-        t1 = time.clock()
-        self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
-            # This is likely the only data that ever will be needed.
-        t2 = time.clock()
-        print('app.create_all_data: %5.3f sec. %s entries' % (
-            (t2-t1), len(list(self.gnx_to_vnode.keys()))))
-        self.test_round_trip_positions()
     #@+node:ekr.20181124071215.1: *5* app.dump_top_level
     def dump_top_level(self):
         '''Dump the top-level nodes.'''
@@ -331,13 +348,15 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181126083055.1: *5* app.flatten_outline & helper
     def flatten_outline (self):
         '''Return a flat list of strings "level:gnx" for all *visible* positions.'''
+        trace = True and not g.unitTesting
         t1 = time.clock()
         c, aList = self.c, []
         for p in c.rootPosition().self_and_siblings():
             self.extend_flattened_outline(aList, p)
-        t2 = time.clock()
-        print('app.flatten_outline: %s entries %5.3f sec.' % (
-            len(aList), (t2-t1)))
+        if trace:
+            t2 = time.clock()
+            print('app.flatten_outline: %s entries %5.3f sec.' % (
+                len(aList), (t2-t1)))
         return aList
             
     def extend_flattened_outline(self, aList, p):
@@ -354,7 +373,7 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, recreate gnx_to_vnode.
         '''
-        trace = (True or debug_redraw) and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c
         p = p or c.p
         t1 = time.clock()
@@ -406,37 +425,8 @@ class LeoBrowserApp(flx.PyComponent):
         Diff the old and new outline lists, then optimize the diffs to create a
         redraw instruction list.
         '''
+        g.trace(len(old_outline_list), len(new_outline_list))
         return []
-    #@+node:ekr.20181124133513.1: *4* app.finish_create
-    @flx.action
-    def finish_create(self):
-        '''
-        Initialize all widgets.
-        
-        Called after all flx.Widgets have been fully inited!
-        '''
-        c, w = self.c, self.main_window
-        # Init the log pane.
-        w.log.put('%s\n%s' % (g.app.signon, g.app.signon2))
-        # Init the body pane.
-        self.set_body()
-        # Init the status line.
-        self.set_status()
-        # Init the tree.
-        self.redraw(c.p)
-        
-    # These must be separate because they are called from the tree logic.
-        
-    @flx.action
-    def set_status(self):
-        c, w = self.c, self.main_window
-        lt, rt = c.frame.statusLine.update(c.p.b, 0)
-        w.status_line.update(lt, rt)
-        
-    @flx.action
-    def set_body(self):
-        c, w = self.c, self.main_window
-        w.body.set_body(c.p.b)
     #@+node:ekr.20181117163223.1: *4* app.Key handling
     @flx.action
     def do_key (self, ev, kind):
@@ -648,6 +638,28 @@ class LeoBrowserApp(flx.PyComponent):
                 g.app.debug = old_debug
         else:
             print('do_command: select: not found: %s' % h)
+    #@+node:ekr.20181126104843.1: *5* app.test_full_outline
+    def test_full_outline(self, p):
+        '''Exercise the new diff-based redraw code on a fully-expanded outline.'''
+        c = self.c
+        p = p.copy()
+        # Don't call c.expandAllHeadlines: it calls c.redraw.
+        for p2 in c.all_positions(copy=False):
+            p2.expand()
+        #
+        # Test the code.
+        self.make_redraw_dict(p, trace=True)
+            # Call this only for timing stats.
+        new_flattened_outline = self.flatten_outline()
+        redraw_instructions = self.make_redraw_instructions(
+            self.old_flattened_outline, new_flattened_outline)
+        assert redraw_instructions is not None ### Temp, for pyflakes.
+        #
+        # Restore the tree.
+        for p2 in c.all_positions(copy=False):
+            p2.contract()
+        c.expandAllAncestors(p)
+            # Does not do a redraw.
     #@+node:ekr.20181113180246.1: *5* app.test_round_trip_positions
     def test_round_trip_positions(self):
         '''Test the round tripping of p_to_ap and ap_to_p.'''
