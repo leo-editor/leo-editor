@@ -1281,9 +1281,6 @@ class LeoFlexxMiniBuffer(flx.Widget):
             flx.Label(text='Minibuffer')
             self.widget = AceMinibuffer(flex=1)
             self.ace = self.widget.ace
-            ### Pathetic.
-                # self.widget = flx.LineEdit(flex=1, placeholder_text='Enter command')
-                # self.widget.apply_style('background: yellow')
 
     #@+others
     #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
@@ -1316,9 +1313,18 @@ class LeoFlexxMiniBuffer(flx.Widget):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        print('===== minibuffer.key_down.emitter', repr(ev))
+        # print('===== minibuffer.key_down.emitter', repr(ev))
         if ev ['modifiers']:
             e.preventDefault()
+        elif ev.key == 'Enter':
+            command = self.ace.getValue()
+            print('===== flx_minibuffer.key_press: Enter', repr(command))
+            if command.strip():
+                tag = 'full-command:'
+                if command.startswith(tag):
+                    command = command[len(tag):].strip()
+                self.set_text('')
+                self.root.do_command(command)
         return ev
     #@-others
 #@+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
