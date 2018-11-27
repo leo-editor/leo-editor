@@ -1264,13 +1264,26 @@ class LeoFlexxMainWindow(flx.Widget):
         return ev
     #@-others
 #@+node:ekr.20181104082154.1: *3* class LeoFlexxMiniBuffer
+class AceMinibuffer(flx.Widget):
+
+    def init(self):
+        # pylint: disable=undefined-variable
+        global window # Looks undefined to pylint.
+        self.ace = window.ace.edit(self.node, "minibuffer")
+        self.ace.navigateFileEnd()  # otherwise all lines highlighted
+        self.ace.setTheme("ace/theme/solarized_dark")
+        ### self.ace.getSession().setMode("ace/mode/python")
+
 class LeoFlexxMiniBuffer(flx.Widget):
 
     def init(self): 
         with flx.HBox():
             flx.Label(text='Minibuffer')
-            self.widget = flx.LineEdit(flex=1, placeholder_text='Enter command')
-        self.widget.apply_style('background: yellow')
+            self.widget = AceMinibuffer(flex=1)
+            self.ace = self.widget.ace
+            ### Pathetic.
+                # self.widget = flx.LineEdit(flex=1, placeholder_text='Enter command')
+                # self.widget.apply_style('background: yellow')
 
     #@+others
     #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
@@ -1298,24 +1311,15 @@ class LeoFlexxMiniBuffer(flx.Widget):
     @flx.action
     def set_text(self, s):
         print('===== flx.minibuffer.set_text')
-        self.widget.set_text(s)
+        self.ace.setValue(s)
     #@+node:ekr.20181120060856.1: *4* flx_minibuffer.key_press
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        # print('===== minibuffer.key_down.emitter', repr(ev))
+        print('===== minibuffer.key_down.emitter', repr(ev))
         if ev ['modifiers']:
             e.preventDefault()
         return ev
-    #@+node:ekr.20181120060849.1: *4* flx_minibuffer.on_user_done
-    @flx.reaction('widget.user_done')
-    def on_user_done(self, *events):
-        # print('flx.minibuffer: on_user_done')
-        for ev in events:
-            command = self.widget.text
-            if command.strip():
-                self.widget.set_text('')
-                self.root.do_command(command)
     #@-others
 #@+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
 class LeoFlexxStatusLine(flx.Widget):
