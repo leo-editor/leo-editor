@@ -448,11 +448,6 @@ class LeoBrowserApp(flx.PyComponent):
                 # Testing.
 
         d = difflib.SequenceMatcher(None, a, b)
-        #
-        # These opcodes supposedly tell how to turn a into b. (b never changes)
-        # https://docs.python.org/3/library/difflib.html#difflib.SequenceMatcher.get_opcodes
-        #
-        # Actually, they tell how to recreate b from an *empty* starting point.
         op_codes = list(d.get_opcodes())
         if trace and trace_ops:
             self.dump_op_codes(a, b, op_codes)
