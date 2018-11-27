@@ -440,7 +440,6 @@ class LeoBrowserApp(flx.PyComponent):
         trace_ops = False
         
         if a == b:
-            if trace: g.trace('no changes: len(a) == len(b) == %s', len(a))
             return []
             
         def summarize(aList):
@@ -459,34 +458,41 @@ class LeoBrowserApp(flx.PyComponent):
         # https://docs.python.org/3/library/difflib.html#difflib.SequenceMatcher.get_opcodes
         #
         # Actually, they tell how to recreate b from an *empty* starting point.
-        if trace:
-            g.trace('len(a): %s, len(b): %s' % (len(a), len(b)))
-        instruction_list, result = [], []
-        for tag, i1, i2, j1, j2 in list(d.get_opcodes()):
-            if tag == 'equal':
-                if trace and trace_ops:
+        op_codes = list(d.get_opcodes())
+        #
+        # Traces.
+        if trace and trace_ops:
+            for tag, i1, i2, j1, j2 in op_codes:
+                if tag == 'equal':
                     print('%7s at %s:%s (both) ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
-            elif tag == 'insert':
-                if trace and trace_ops:
+                elif tag == 'insert':
                     print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+                elif tag == 'delete':
+                    print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
+                elif tag == 'replace':
+                    print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
+                    print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+                else:
+                    print('unknown tag')
+        #
+        # Generate the instruction list, and verify the result.
+        instruction_list, result = [], []
+        for tag, i1, i2, j1, j2 in op_codes:
+            if tag == 'equal':
+                pass
+            elif tag == 'insert':
                 instruction_list.append(['insert', i1, gnxs(b[j1:j2])])
             elif tag == 'delete':
-                if trace and trace_ops:
-                    print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
                 instruction_list.append(['delete', i1, gnxs(a[i1:i2])])
             elif tag == 'replace':
-                if trace and trace_ops:
-                    print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
-                    print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
                 instruction_list.append(['replace', i1, gnxs(a[i1:i2]), gnxs(b[j1:j2])])
-            else:
-                print('unknown tag')
             result.extend(b[j1:j2])
         assert b == result, (summarize(a), summarize(b))
+        #
+        # Run the peephole.
         instruction_list = self.peep_hole(instruction_list)
         if trace:
-            print('')
-            print('instruction list after peephole...')
+            print('app.make_redraw_list: instruction list after peephole...')
             for z in instruction_list:
                 kind = z[0]
                 if kind == 'replace':
@@ -500,7 +506,6 @@ class LeoBrowserApp(flx.PyComponent):
                     print('  [%s]' % ',\n    '.join(gnxs))
                 else:
                     print(z)
-            print('')
         return instruction_list
     #@+node:ekr.20181126154357.1: *5* app.peep_hole
     def peep_hole(self, instruction_list):
