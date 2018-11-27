@@ -265,6 +265,7 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
+        trace = False and not g.unitTesting
         c = self.c
         p = p or c.p
         w = self.main_window
@@ -287,8 +288,8 @@ class LeoBrowserApp(flx.PyComponent):
             self.old_flattened_outline, new_flattened_outline)
         w.tree.redraw_with_dict(redraw_dict, redraw_instructions)
         t2 = time.clock()
-        g.trace('%5.3f sec.' % (t2-t1))
-            ### To do: pass both redraw_dict and 
+        if trace:
+            g.trace('%5.3f sec.' % (t2-t1))
         #
         # Move to the next redraw generation.
         self.old_flattened_outline = new_flattened_outline
@@ -436,8 +437,7 @@ class LeoBrowserApp(flx.PyComponent):
         Diff the a (old) and b (new) outline lists.
         Then optimize the diffs to create a redraw instruction list.
         '''
-        trace = True and not g.unitTesting
-        trace_ops = False
+        trace = False and not g.unitTesting
         if a == b:
             return []
 
@@ -447,8 +447,7 @@ class LeoBrowserApp(flx.PyComponent):
 
         d = difflib.SequenceMatcher(None, a, b)
         op_codes = list(d.get_opcodes())
-        if trace and trace_ops:
-            self.dump_op_codes(a, b, op_codes)
+        # self.dump_op_codes(a, b, op_codes)
         #
         # Generate the instruction list, and verify the result.
         opcodes, result = [], []
@@ -543,7 +542,7 @@ class LeoBrowserApp(flx.PyComponent):
               'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp',
         '''
         # ev is a dict, keys are type, source, key, modifiers
-        trace = False and debug_keys and not g.unitTesting
+        trace = debug_keys and not g.unitTesting
         c = self.c
         key, mods = ev ['key'], ev ['modifiers']
         d = {
@@ -562,6 +561,7 @@ class LeoBrowserApp(flx.PyComponent):
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
         widget = getattr(c.frame, kind)
         w = widget.wrapper
+            ### This is a StringTextWidget!
         key_event = leoGui.LeoKeyEvent(c,
             char = char, event = { 'c': c }, binding = binding, w = w)
         if trace:
@@ -859,6 +859,9 @@ class LeoBrowserGui(leoGui.NullGui):
         assert False, g.callers()
         
     def alert(self, c, message):
+        # pylint: disable=arguments-differ
+            # This is the signature for QtGui.Alert.
+            # The signature in NullGui is wrong.
         print('')
         print('Alert:', message)
         print('')
@@ -956,6 +959,28 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
         g.trace('===== (minibuffer wrapper)')
         self.root.main_window.minibuffer.set_focus()
         
+    # Override the methods called by k.minibuffer methods:
+    # setStyleClass
+    # delete
+    def setAllText(self, s):
+        w = self.root.main_window
+        print('===== (minibuffer wrapper)', s)
+        super().setAllText(s)
+        w.minibuffer.set_text(s)
+        
+    def setSelectionRange(self, i, j, insert=None):
+        w = self.root.main_window
+        print('===== (minibuffer wrapper)', i, j, repr(insert))
+        super().setSelectionRange(i, j, insert)
+        w.minibuffer.set_selection(i,j)
+        if insert is not None:
+            w.minibuffer.set_insert(insert)
+            
+    def setStyleClass(self, style):
+        w = self.root.main_window
+        print('===== (minibuffer wrapper)', repr(style))
+        w.minibuffer.set_style(style)
+
     #@+others
     #@-others
 #@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine
@@ -1248,6 +1273,32 @@ class LeoFlexxMiniBuffer(flx.Widget):
         self.widget.apply_style('background: yellow')
 
     #@+others
+    #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
+    # The high-level interface methods, called from LeoBrowserMinibuffer.
+    # self.widget is a flx.LineEdit.
+
+    @flx.action
+    def set_focus(self):
+        # https://github.com/flexxui/flexx/issues/526
+        print('===== flx.minibuffer.set_focus')
+        self.widget.node.focus()
+        
+    @flx.action
+    def set_insert(self, i):
+        print('===== flx.minibuffer.set_insert', i)
+
+    @flx.action
+    def set_selection(self, i, j):
+        print('===== flx.minibuffer.set_selection', i, j)
+        
+    @flx.action
+    def set_style(self, style):
+        print('===== flx.minibuffer.set_style', repr(style))
+        
+    @flx.action
+    def set_text(self, s):
+        print('===== flx.minibuffer.set_text')
+        self.widget.set_text(s)
     #@+node:ekr.20181120060856.1: *4* flx_minibuffer.key_press
     @flx.emitter
     def key_press(self, e):
@@ -1256,17 +1307,6 @@ class LeoFlexxMiniBuffer(flx.Widget):
         if ev ['modifiers']:
             e.preventDefault()
         return ev
-    #@+node:ekr.20181120060827.1: *4* flx_minibuffer.set_focus & set_text
-    @flx.action
-    def set_focus(self):
-        # https://github.com/flexxui/flexx/issues/526
-        print('===== flx.minibuffer.set_focus')
-        self.widget.node.focus()
-        
-    @flx.action
-    def set_text(self, s):
-        print('===== flx.minibuffer.set_text')
-        self.widget.set_text(s)
     #@+node:ekr.20181120060849.1: *4* flx_minibuffer.on_user_done
     @flx.reaction('widget.user_done')
     def on_user_done(self, *events):
