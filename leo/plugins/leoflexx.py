@@ -525,8 +525,7 @@ class LeoBrowserApp(flx.PyComponent):
                     instructions.remove(op0)
                     instructions.remove(op1)
                     instructions.append(move_op)
-            else:
-                i += 1
+            i += 1
         return instructions
     #@+node:ekr.20181117163223.1: *4* app.Key handling
     @flx.action
