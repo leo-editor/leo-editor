@@ -508,39 +508,25 @@ class LeoBrowserApp(flx.PyComponent):
                 print(z)
     #@+node:ekr.20181126154357.1: *5* app.peep_hole
     def peep_hole(self, instructions):
-        
-        trace = False and not g.unitTesting
-        if trace: g.trace()
-        #
-        # The gnx_dict contains a list of all instructions having that gnx.
-        gnx_dict = {}
-        for op_code in instructions:
-            # For now, we'll ignore 'replace' opcodes, with length 4.
-            if len(op_code) == 3:
-                gnx = op_code[2][0]
-                aList = gnx_dict.get(gnx, [])
-                aList.append(op_code)
-                gnx_dict[gnx] = aList
-        #
-        # Find gnx's with multiple opcodes.
-        for gnx, aList in gnx_dict.items():
-            if len(aList) == 2:
-                if trace:
-                    print('gnx', gnx)
-                    for op_code in aList:
-                        if trace: print('  '+str(op_code))
-                op0, op1 = aList[0], aList[1]
+        '''Scan the list of instructions, merging adjacent op-codes.'''
+        i = 0
+        while i+1 < len(instructions):
+            op0, op1 = instructions[i], instructions[i+1]
+            kind0, kind1 = op0[0], op1[0]
+            # Merge adjacent insert/delete instructions with the same gnx.
+            if (
+                kind0 == 'insert' and kind1 == 'delete' or
+                kind0 == 'delete' and kind1 == 'insert'
+            ):
                 kind0, index0, gnxs0 = op0
                 kind1, index1, gnxs1 = op1
-                if (
-                    kind0 == 'insert' and kind1 == 'delete' or
-                    kind0 == 'delete' and kind1 == 'insert'
-                ):
-                    gnx_dict [gnx] = []
-                    move_op = ['move', index0, index1, gnx]
+                if gnxs0[0] == gnxs1[0]:
+                    move_op = ['move', index0, index1, gnxs0, gnxs1]
                     instructions.remove(op0)
                     instructions.remove(op1)
                     instructions.append(move_op)
+            else:
+                i += 1
         return instructions
     #@+node:ekr.20181117163223.1: *4* app.Key handling
     @flx.action
