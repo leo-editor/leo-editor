@@ -460,9 +460,7 @@ class LeoBrowserApp(flx.PyComponent):
         # Generate the instruction list, and verify the result.
         instructions, result = [], []
         for tag, i1, i2, j1, j2 in op_codes:
-            if tag == 'equal':
-                pass
-            elif tag == 'insert':
+            if tag == 'insert':
                 instructions.append(['insert', i1, gnxs(b[j1:j2])])
             elif tag == 'delete':
                 instructions.append(['delete', i1, gnxs(a[i1:i2])])
