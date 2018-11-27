@@ -278,6 +278,7 @@ class LeoBrowserApp(flx.PyComponent):
             self.test_full_outline(p)
         #
         # Redraw only the visible nodes.
+        t1 = time.clock()
         ap = self.p_to_ap(p)
         w.tree.select_ap(ap)
         redraw_dict = self.make_redraw_dict(p)
@@ -285,6 +286,8 @@ class LeoBrowserApp(flx.PyComponent):
         redraw_instructions = self.make_redraw_list(
             self.old_flattened_outline, new_flattened_outline)
         w.tree.redraw_with_dict(redraw_dict, redraw_instructions)
+        t2 = time.clock()
+        g.trace('%5.3f sec.' % (t2-t1))
             ### To do: pass both redraw_dict and 
         #
         # Move to the next redraw generation.
@@ -491,6 +494,10 @@ class LeoBrowserApp(flx.PyComponent):
                     print(kind, i1)
                     print('  a: [%s]' % ',\n    '.join(gnxs1))
                     print('  b: [%s]' % ',\n    '.join(gnxs2))
+                elif kind == 'insert':
+                    kind, i1, gnxs = z
+                    print(kind, i1)
+                    print('  [%s]' % ',\n    '.join(gnxs))
                 else:
                     print(z)
             print('')
