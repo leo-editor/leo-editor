@@ -525,9 +525,10 @@ class LeoBrowserApp(flx.PyComponent):
                 if gnxs0[0] == gnxs1[0]:
                     result.append(['move', index0, index1, gnxs0, gnxs1])
                     i += 2 # Don't scan either op again!
-            else:
-                result.append(op0)
-                i += 1
+                    break
+            # The default is to retain the opcode.
+            result.append(op0)
+            i += 1
         return result
     #@+node:ekr.20181117163223.1: *4* app.Key handling
     @flx.action
