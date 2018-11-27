@@ -976,10 +976,10 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
         if insert is not None:
             w.minibuffer.set_insert(insert)
             
-    def setStyleClass(self, style):
+    def setStyleClass(self, name):
         w = self.root.main_window
-        print('===== (minibuffer wrapper)', repr(style))
-        w.minibuffer.set_style(style)
+        print('===== (minibuffer wrapper)', repr(name))
+        w.minibuffer.set_style(name)
 
     #@+others
     #@-others
@@ -1268,7 +1268,7 @@ class AceMinibuffer(flx.Widget):
 
     def init(self):
         # pylint: disable=undefined-variable
-        global window # Looks undefined to pylint.
+        global window
         self.ace = window.ace.edit(self.node, "minibuffer")
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
