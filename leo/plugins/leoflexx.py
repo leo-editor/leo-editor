@@ -494,7 +494,7 @@ class LeoBrowserApp(flx.PyComponent):
                     print(kind, i1)
                     print('  a: [%s]' % ',\n    '.join(gnxs1))
                     print('  b: [%s]' % ',\n    '.join(gnxs2))
-                elif kind == 'insert':
+                elif kind in ('delete', 'insert'):
                     kind, i1, gnxs = z
                     print(kind, i1)
                     print('  [%s]' % ',\n    '.join(gnxs))
