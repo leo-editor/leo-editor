@@ -465,7 +465,7 @@ class LeoBrowserApp(flx.PyComponent):
         # Run the peephole.
         opcodes = self.peep_hole(opcodes)
         if trace:
-            print('app.make_redraw_list: instruction list after peephole...')
+            print('app.make_redraw_list: opcodes after peephole...')
             self.opcodes(opcodes)
         return opcodes
     #@+node:ekr.20181126183815.1: *6* app.dump_op_codes
