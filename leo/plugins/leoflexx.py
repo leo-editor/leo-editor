@@ -430,7 +430,7 @@ class LeoBrowserApp(flx.PyComponent):
             'gnx': p.v.gnx,
             'headline': p.h,
         }
-    #@+node:ekr.20181126094040.1: *5* app.make_redraw_list
+    #@+node:ekr.20181126094040.1: *5* app.make_redraw_list & helpers
     def make_redraw_list(self, a, b):
         '''
         Diff the a (old) and b (new) outline lists.
@@ -438,13 +438,8 @@ class LeoBrowserApp(flx.PyComponent):
         '''
         trace = True and not g.unitTesting
         trace_ops = False
-        
         if a == b:
             return []
-            
-        def summarize(aList):
-            pat = re.compile(r'.*:.*:(.*)')
-            return ', '.join([pat.match(z).group(1) for z in aList])
             
         def gnxs(aList):
             # pat = re.compile(r'.*\:(.*)\:.*')
@@ -459,63 +454,74 @@ class LeoBrowserApp(flx.PyComponent):
         #
         # Actually, they tell how to recreate b from an *empty* starting point.
         op_codes = list(d.get_opcodes())
-        #
-        # Traces.
         if trace and trace_ops:
-            for tag, i1, i2, j1, j2 in op_codes:
-                if tag == 'equal':
-                    print('%7s at %s:%s (both) ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
-                elif tag == 'insert':
-                    print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
-                elif tag == 'delete':
-                    print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
-                elif tag == 'replace':
-                    print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
-                    print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
-                else:
-                    print('unknown tag')
+            self.dump_op_codes(a, b, op_codes)
         #
         # Generate the instruction list, and verify the result.
-        instruction_list, result = [], []
+        instructions, result = [], []
         for tag, i1, i2, j1, j2 in op_codes:
             if tag == 'equal':
                 pass
             elif tag == 'insert':
-                instruction_list.append(['insert', i1, gnxs(b[j1:j2])])
+                instructions.append(['insert', i1, gnxs(b[j1:j2])])
             elif tag == 'delete':
-                instruction_list.append(['delete', i1, gnxs(a[i1:i2])])
+                instructions.append(['delete', i1, gnxs(a[i1:i2])])
             elif tag == 'replace':
-                instruction_list.append(['replace', i1, gnxs(a[i1:i2]), gnxs(b[j1:j2])])
+                instructions.append(['replace', i1, gnxs(a[i1:i2]), gnxs(b[j1:j2])])
             result.extend(b[j1:j2])
-        assert b == result, (summarize(a), summarize(b))
+        assert b == result, (a, b)
         #
         # Run the peephole.
-        instruction_list = self.peep_hole(instruction_list)
+        instructions = self.peep_hole(instructions)
         if trace:
             print('app.make_redraw_list: instruction list after peephole...')
-            for z in instruction_list:
-                kind = z[0]
-                if kind == 'replace':
-                    kind, i1, gnxs1, gnxs2 = z
-                    print(kind, i1)
-                    print('  a: [%s]' % ',\n    '.join(gnxs1))
-                    print('  b: [%s]' % ',\n    '.join(gnxs2))
-                elif kind in ('delete', 'insert'):
-                    kind, i1, gnxs = z
-                    print(kind, i1)
-                    print('  [%s]' % ',\n    '.join(gnxs))
-                else:
-                    print(z)
-        return instruction_list
+            self.dump_instructions(instructions)
+        return instructions
+    #@+node:ekr.20181126183815.1: *6* app.dump_op_codes
+    def dump_op_codes(self, a, b, op_codes):
+        '''Dump the opcodes returned by difflib.SequenceMatcher.'''
+        
+        def summarize(aList):
+            pat = re.compile(r'.*:.*:(.*)')
+            return ', '.join([pat.match(z).group(1) for z in aList])
+            
+        for tag, i1, i2, j1, j2 in op_codes:
+            if tag == 'equal':
+                print('%7s at %s:%s (both) ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+            elif tag == 'insert':
+                print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+            elif tag == 'delete':
+                print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
+            elif tag == 'replace':
+                print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
+                print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+            else:
+                print('unknown tag')
+    #@+node:ekr.20181126183817.1: *6* app.dump_instructions
+    def dump_instructions(self, instructions):
+        '''Dump the instructions returned by app.peep_hole and app.make_redraw_list.'''
+        for z in instructions:
+            kind = z[0]
+            if kind == 'replace':
+                kind, i1, gnxs1, gnxs2 = z
+                print(kind, i1)
+                print('  a: [%s]' % ',\n    '.join(gnxs1))
+                print('  b: [%s]' % ',\n    '.join(gnxs2))
+            elif kind in ('delete', 'insert'):
+                kind, i1, gnxs = z
+                print(kind, i1)
+                print('  [%s]' % ',\n    '.join(gnxs))
+            else:
+                print(z)
     #@+node:ekr.20181126154357.1: *5* app.peep_hole
-    def peep_hole(self, instruction_list):
+    def peep_hole(self, instructions):
         
         trace = False and not g.unitTesting
         if trace: g.trace()
         #
         # The gnx_dict contains a list of all instructions having that gnx.
         gnx_dict = {}
-        for op_code in instruction_list:
+        for op_code in instructions:
             # For now, we'll ignore 'replace' opcodes, with length 4.
             if len(op_code) == 3:
                 gnx = op_code[2][0]
@@ -539,10 +545,10 @@ class LeoBrowserApp(flx.PyComponent):
                 ):
                     gnx_dict [gnx] = []
                     move_op = ['move', index0, index1, gnx]
-                    instruction_list.remove(op0)
-                    instruction_list.remove(op1)
-                    instruction_list.append(move_op)
-        return instruction_list
+                    instructions.remove(op0)
+                    instructions.remove(op1)
+                    instructions.append(move_op)
+        return instructions
     #@+node:ekr.20181117163223.1: *4* app.Key handling
     @flx.action
     def do_key (self, ev, kind):
