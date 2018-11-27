@@ -440,12 +440,10 @@ class LeoBrowserApp(flx.PyComponent):
         trace_ops = False
         if a == b:
             return []
-            
+
         def gnxs(aList):
-            # pat = re.compile(r'.*\:(.*)\:.*')
-            # return ', '.join([pat.match(z).group(1).strip() for z in aList])
+            '''Return the gnx list. Do not try to remove this!'''
             return [z.strip() for z in aList]
-                # Testing.
 
         d = difflib.SequenceMatcher(None, a, b)
         op_codes = list(d.get_opcodes())
