@@ -166,6 +166,112 @@ def suppress_unwanted_log_messages():
     pattern = re.compile(allowed, re.IGNORECASE)
     flx.set_log_level('INFO', pattern)
 #@+node:ekr.20181115071559.1: ** Py side: App & wrapper classes
+#@+node:ekr.20181127151027.1: *3* class AceWrapper (object)
+class AceWrapper (object):
+    '''
+    A *replacement* for StringTextWrapper, adapted for the ace widget.
+    
+    It would be wrong to used strings. Use the ace widget directly.
+    '''
+    
+    def __init__(self, c, name):
+        assert name in ('body', 'log', 'minibuffer'), repr(name)
+            # These are the ace widgets.
+        self.c = c
+        self.tag = '(AceWrapper: %s)' % name
+        self.name = name
+        self.root = get_root()
+        
+    def setFocus(self):
+        ### w = self.root.main_window
+        ### w.body.set_focus()
+        g.trace(self.tag)
+        self.ace_widget.focus()
+
+    #@+others
+    #@+node:ekr.20181127152850.1: *4* AceWrapper.indices (Are they used?)
+    def toPythonIndex(self, index):
+        g.trace(self.tag, index)
+        s = self.getAllText()
+        return g.toPythonIndex(s, index)
+        
+    def toPythonIndexRowCol(self, index):
+        g.trace(self.tag, index)
+        s = self.getAllText()
+        i = g.toPythonIndex(s, index)
+        row, col = g.convertPythonIndexToRowCol(s, i)
+        return i, row, col
+    #@+node:ekr.20181127123148.1: *4* AceWrapper.Text Getters (to do)
+    def get(self, i, j=None):
+        # g.trace(self.tag)
+        #return self.ace_widget.get(i, j)
+        return ''
+        
+    def getAllText(self):
+        # g.trace(self.tag)
+        #return self.ace_widget.getAllText()
+        return ''
+
+    def getInsertPoint(self):
+        # g.trace(self.tag)
+        # return self.ace_widget.getInsertPoint()
+        return 0
+        
+    def getSelectedText(self):
+        # g.trace(self.tag)
+        # return self.ace_widget.getInsertPoint()
+        return ''
+        
+    def getSelectionRange(self, sort=True):
+        # g.trace(self.tag)
+        # return self.ace_widget.getSelectionRange(sort)
+        return 0, 0
+        
+    def getYScrollPosition(self):
+        # g.trace(self.tag)
+        return 0
+        
+    def hasSelection(self):
+        # g.trace(self.tag)
+        # return self.ace_widget.hasSelection()
+        return False
+        
+    #@+node:ekr.20181127121642.1: *4* AceWrapper.Text Setters (to do)
+    # Override StringTextWrapper setters to update flx.body widget.
+
+    def appendText(self, s):
+        g.trace(self.tag)
+        self.ace_widget.appendText(s)
+
+    def delete(self, i, j=None):
+        g.trace(self.tag)
+        # self.ace_widget.delete(i, j)
+
+    def deleteTextSelection(self):
+        g.trace(self.tag)
+        # self.ace_widget.deleteTextSelection()
+        
+    def insert(self, i, s):
+        g.trace(self.tag)
+        # self.ace_widget.insert(i, s)
+
+    def selectAllText(self, insert=None):
+        g.trace(self.tag)
+        #self.ace_widget.setSelectionRange(0, 'end', insert)
+
+    def setAllText(self, s):
+        g.trace(self.tag)
+        # self.ace_widget.setAllText(s)
+
+    def setInsertPoint(self, pos, s=None):
+        g.trace(self.tag)
+        # self.ace_widget.setInsertPoint(pos, s)
+
+    def setSelectionRange(self, i, j, insert=None):
+        g.trace(self.tag)
+        # self.ace_widget.setSelectionRange(i, j, insert)
+        
+    #@-others
 #@+node:ekr.20181107052522.1: *3* class LeoBrowserApp
 # pscript never converts flx.PyComponents to JS.
 
@@ -235,14 +341,19 @@ class LeoBrowserApp(flx.PyComponent):
         # Init the log pane.
         w.log.put('%s\n%s' % (g.app.signon, g.app.signon2))
         # Init the body pane.
-        self.set_body()
+        ### No chance.
+        ### Wrappers must use getattr(self.root, self.name)
+            # assert isinstance(c.frame.body, LeoBrowserBody), repr(c.frame.body)
+            # assert isinstance(c.frame.body.wrapper, AceWrapper), repr(c.frame.body.wrapper)
+            # assert isinstance(w.body, LeoFlexxBody), repr(w.body)
+        self.set_body_text()
         # Init the status line.
         self.set_status()
         # Init the tree.
         self.redraw(c.p)
         
     # These must be separate because they are called from the tree logic.
-        
+
     @flx.action
     def set_status(self):
         c, w = self.c, self.main_window
@@ -250,9 +361,9 @@ class LeoBrowserApp(flx.PyComponent):
         w.status_line.update(lt, rt)
         
     @flx.action
-    def set_body(self):
+    def set_body_text(self):
         c, w = self.c, self.main_window
-        w.body.set_body(c.p.b)
+        w.body.set_text(c.p.b)
     #@+node:ekr.20181122132345.1: *4* app.Drawing...
     #@+node:ekr.20181113042549.1: *5* app.action.redraw
     @flx.action
@@ -530,7 +641,7 @@ class LeoBrowserApp(flx.PyComponent):
             i += 1
         return result
     #@+node:ekr.20181127070836.1: *4* app.do_command
-    #@+node:ekr.20181117163223.1: *4* app.Key handling
+    #@+node:ekr.20181117163223.1: *4* app.do_key (k.masterKeyHandler should update c.p.b!)
     @flx.action
     def do_key (self, ev, kind):
         '''
@@ -543,7 +654,7 @@ class LeoBrowserApp(flx.PyComponent):
               'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp',
         '''
         # ev is a dict, keys are type, source, key, modifiers
-        trace = debug_keys and not g.unitTesting
+        trace = (False or debug_keys) and not g.unitTesting
         c = self.c
         key, mods = ev ['key'], ev ['modifiers']
         d = {
@@ -560,21 +671,32 @@ class LeoBrowserApp(flx.PyComponent):
             mods.remove('Ctrl')
             mods.append('Control')
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
-        widget = getattr(c.frame, kind)
-        w = widget.wrapper
+        browser_wrapper = getattr(c.frame, kind)
+        assert isinstance(browser_wrapper, (
+            LeoBrowserBody,
+            LeoBrowserFrame,
+            LeoBrowserLog,
+            LeoBrowserMinibuffer,
+            LeoBrowserTree,
+        )), repr(browser_wrapper)
+        
+        ### g.trace('===== c.frame.%s: %r' % (kind, browser_wrapper))
+        w = browser_wrapper
+        ### w = widget.wrapper
             ### This is a StringTextWidget!
         key_event = leoGui.LeoKeyEvent(c,
             char = char, event = { 'c': c }, binding = binding, w = w)
         if trace:
             g.app.debug = ['keys',]
+        if trace:
+            g.trace(w.__class__.__name__)
+            g.trace('mods: %r key: %r ==> %r %r w: %6r c.p.h: %s' % (
+                mods, key, char, binding, w.getName(), c.p.h))
         try:
             old_debug = g.app.debug
             c.k.masterKeyHandler(key_event)
         finally:
             g.app.debug = old_debug
-        if trace:
-            g.trace('mods: %r key: %r ==> %r %r IN %6r %s' % (
-                mods, key, char, binding, widget.wrapper.getName(), c.p.h))
     #@+node:ekr.20181105091545.1: *4* app.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
@@ -725,7 +847,7 @@ class LeoBrowserApp(flx.PyComponent):
             self.execute_minibuffer_command(command)
 
             
-    #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command
+    #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command (to do: tab completion)
     def execute_minibuffer_command(self, commandName):
         '''Execute a minibuffer command.'''
         # This code is all a hack.
@@ -840,34 +962,25 @@ class LeoBrowserApp(flx.PyComponent):
     #@-others
 #@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
 class LeoBrowserBody(leoFrame.NullBody):
+    
+    attributes = set()
    
     def __init__(self, frame):
         super().__init__(frame, parentFrame=None)
-        self.c = frame.c
+        self.c = c = frame.c
         assert self.c
         self.root = get_root()
-        self.widget = self.wrapper
-        #
-        # Monkey-patch self.wrapper, a StringTextWrapper.
+        # Replace the StringTextWrapper with the ace wrapper.
         assert isinstance(self.wrapper, leoFrame.StringTextWrapper)
-        assert self.wrapper.getName().startswith('body')
-        self.wrapper.setFocus = self.setFocus
-        
-    #@+others
-    #@+node:ekr.20181120062831.1: *4* body_wrapper.setFocus
-    def setFocus(self):
-        w = self.root.main_window
-        # g.trace('(body wrapper)')
-        w.body.set_focus()
-    #@+node:ekr.20181120063244.1: *4* body_wrapper.onBodyChanged
-    def onBodyChanged(self, *args, **keys):
-        # pylint: disable=arguments-differ
-        if 0:
-            c = self.c
-            g.trace('body-wrapper', c.p.h)
-            ### These can destroy the body text.
-            # super().onBodyChanged(*args, **keys)
-    #@-others
+        self.wrapper = AceWrapper(c, 'body')
+            
+    # The Ace Wrapper does almost everything.
+    def __getattr__ (self, attr):
+        return getattr(self.wrapper, attr)
+
+    def getName(self):
+        return 'body' # Required for proper pane bindings.
+
 #@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
 class LeoBrowserFrame(leoFrame.NullFrame):
     
@@ -929,7 +1042,14 @@ class LeoBrowserGui(leoGui.NullGui):
 
     def set_focus(self, commander, widget):
         self.focusWidget = widget
-        if isinstance(widget, (LeoBrowserMinibuffer, leoFrame.StringTextWrapper)):
+        if isinstance(widget, (
+            LeoBrowserBody,
+            LeoBrowserFrame,
+            LeoBrowserLog,
+            LeoBrowserMinibuffer,
+            LeoBrowserTree,
+            ### leoFrame.StringTextWrapper,
+        )):
             # g.trace('(gui):', repr(widget))
             if not g.unitTesting:
                 widget.setFocus()
@@ -1179,25 +1299,29 @@ class LeoFlexxBody(flx.Widget):
         # pylint: disable=undefined-variable
             # window
         global window
-        self.ace = window.ace.edit(self.node, "body editor")
-        self.ace.navigateFileEnd()  # otherwise all lines highlighted
-        self.ace.setTheme("ace/theme/solarized_dark")
-        self.ace.getSession().setMode("ace/mode/python")
-        
+        self.tag = '===== (flx.body)'
+        self.ace = ace = window.ace.edit(self.node, "body editor")
+        ace.navigateFileEnd()  # otherwise all lines highlighted
+        ace.setTheme("ace/theme/solarized_dark")
+        ace.getSession().setMode("ace/mode/python")
+        ### Not needed: Use AceWrapper instead.
+            # self.wrapper = None
+            # self.widget = None
+
     @flx.reaction('size')
     def __on_size(self, *events):
         self.ace.resize()
-        
+
     @flx.action
     def set_focus(self):
         self.ace.focus()
 
     #@+others
-    #@+node:ekr.20181121072246.1: *4* flx_body.key_press
+    #@+node:ekr.20181121072246.1: *4* flx_body.key_press (to do: update c.p.b)
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        # print('===== body.key_down.emitter', repr(ev))
+        print('===== body.emitter.key_press', repr(ev))
         if ev ['modifiers']:
             e.preventDefault()
         return ev
@@ -1205,10 +1329,15 @@ class LeoFlexxBody(flx.Widget):
     @flx.reaction('key_press')
     def on_key_press(self, *events):
         for ev in events:
+            # ev.keys(): key, modifiers, type: "key_press", source: LeoFlexxBody_Njs
+            print('===== body.reaction.key_press')
+            if 0:
+                for key, val in ev.items():
+                    print(key, repr(val))
             self.root.do_key(ev, 'body')
-    #@+node:ekr.20181120054826.1: *4* flx_body.set_body
+    #@+node:ekr.20181120054826.1: *4* flx_body.set_text
     @flx.action
-    def set_body(self, body_text):
+    def set_text(self, body_text):
         ### print('flx.body.set_body', repr(body_text))
         self.ace.setValue(body_text)
     #@-others
@@ -1319,6 +1448,7 @@ class AceMinibuffer(flx.Widget):
 
     def init(self):
         # pylint: disable=undefined-variable
+            # window
         global window
         self.ace = window.ace.edit(self.node, "minibuffer")
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
@@ -1364,6 +1494,8 @@ class LeoFlexxMiniBuffer(flx.Widget):
     #@+node:ekr.20181120060856.1: *4* flx_minibuffer.key_press
     @flx.emitter
     def key_press(self, e):
+        # pylint: disable=no-member
+            # ev.key
         ev = self._create_key_event(e)
         # print('===== minibuffer.key_down.emitter', repr(ev))
         if ev ['modifiers']:
@@ -1726,7 +1858,7 @@ class LeoFlexxTree(flx.Widget):
                     # Selects the corresponding LeoTreeItem.
                 self.set_ap(ap)
                     # Sets self.selected_ap.
-                self.root.set_body()
+                self.root.set_body_text()
                     # Update the body text.
                 self.root.set_status()
                     # Update the status line.
