@@ -903,6 +903,7 @@ class LeoBrowserGui(leoGui.NullGui):
         super().__init__(guiName='browser')
             # leoTest.doTest special-cases the name "browser".
         self.root = get_root()
+        self.consoleOnly = False # Console is separate from the log.
         
     def insertKeyEvent(self, event, i):
         '''Insert the key given by event in location i of widget event.w.'''
