@@ -451,23 +451,23 @@ class LeoBrowserApp(flx.PyComponent):
             self.dump_op_codes(a, b, op_codes)
         #
         # Generate the instruction list, and verify the result.
-        instructions, result = [], []
+        opcodes, result = [], []
         for tag, i1, i2, j1, j2 in op_codes:
             if tag == 'insert':
-                instructions.append(['insert', i1, gnxs(b[j1:j2])])
+                opcodes.append(['insert', i1, gnxs(b[j1:j2])])
             elif tag == 'delete':
-                instructions.append(['delete', i1, gnxs(a[i1:i2])])
+                opcodes.append(['delete', i1, gnxs(a[i1:i2])])
             elif tag == 'replace':
-                instructions.append(['replace', i1, gnxs(a[i1:i2]), gnxs(b[j1:j2])])
+                opcodes.append(['replace', i1, gnxs(a[i1:i2]), gnxs(b[j1:j2])])
             result.extend(b[j1:j2])
         assert b == result, (a, b)
         #
         # Run the peephole.
-        instructions = self.peep_hole(instructions)
+        opcodes = self.peep_hole(opcodes)
         if trace:
             print('app.make_redraw_list: instruction list after peephole...')
-            self.dump_instructions(instructions)
-        return instructions
+            self.opcodes(opcodes)
+        return opcodes
     #@+node:ekr.20181126183815.1: *6* app.dump_op_codes
     def dump_op_codes(self, a, b, op_codes):
         '''Dump the opcodes returned by difflib.SequenceMatcher.'''
@@ -488,10 +488,10 @@ class LeoBrowserApp(flx.PyComponent):
                 print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
             else:
                 print('unknown tag')
-    #@+node:ekr.20181126183817.1: *6* app.dump_instructions
-    def dump_instructions(self, instructions):
-        '''Dump the instructions returned by app.peep_hole and app.make_redraw_list.'''
-        for z in instructions:
+    #@+node:ekr.20181126183817.1: *6* app.opcodes
+    def opcodes(self, opcodes):
+        '''Dump the opcodes returned by app.peep_hole and app.make_redraw_list.'''
+        for z in opcodes:
             kind = z[0]
             if kind == 'replace':
                 kind, i1, gnxs1, gnxs2 = z
@@ -505,17 +505,17 @@ class LeoBrowserApp(flx.PyComponent):
             else:
                 print(z)
     #@+node:ekr.20181126154357.1: *5* app.peep_hole
-    def peep_hole(self, instructions):
-        '''Scan the list of instructions, merging adjacent op-codes.'''
+    def peep_hole(self, opcodes):
+        '''Scan the list of opcodes, merging adjacent op-codes.'''
         i, result = 0, []
-        while i < len(instructions):
-            op0 = instructions[i]
-            if i == len(instructions)-1:
+        while i < len(opcodes):
+            op0 = opcodes[i]
+            if i == len(opcodes)-1:
                 result.append(op0)
                 break
-            op1 = instructions[i+1]
+            op1 = opcodes[i+1]
             kind0, kind1 = op0[0], op1[0]
-            # Merge adjacent insert/delete instructions with the same gnx.
+            # Merge adjacent insert/delete opcodes with the same gnx.
             if (
                 kind0 == 'insert' and kind1 == 'delete' or
                 kind0 == 'delete' and kind1 == 'insert'
