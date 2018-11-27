@@ -529,6 +529,7 @@ class LeoBrowserApp(flx.PyComponent):
             result.append(op0)
             i += 1
         return result
+    #@+node:ekr.20181127070836.1: *4* app.do_command
     #@+node:ekr.20181117163223.1: *4* app.Key handling
     @flx.action
     def do_key (self, ev, kind):
@@ -720,8 +721,58 @@ class LeoBrowserApp(flx.PyComponent):
         elif command == 'unit':
             self.run_all_unit_tests()
         else:
-            g.trace('unknown command: %r' % command)
-            ### To do: pass the command on to Leo's core.
+            # g.trace('unknown command: %r' % command)
+            self.execute_minibuffer_command(command)
+
+            
+    #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command
+    def execute_minibuffer_command(self, commandName):
+        '''Execute a minibuffer command.'''
+        # This code is all a hack.
+        # It is a copy of k.callAltXFunction
+        g.trace('=====', commandName)
+        c, k = self.c, self.c.k
+        event = g.Bunch(c=c, widget=c.frame.miniBufferWidget) ####### Another hack.
+        k.functionTail = None ### Changed.
+        if commandName and commandName.isdigit():
+            # The line number Easter Egg.
+            def func(event=None):
+                c.gotoCommands.find_file_line(n=int(commandName))
+        else:
+            func = c.commandsDict.get(commandName)
+        k.newMinibufferWidget = None
+        if func:
+            # These must be done *after* getting the command.
+            k.clearState()
+            k.resetLabel()
+            if commandName != 'repeat-complex-command':
+                k.mb_history.insert(0, commandName)
+            w = event and event.widget
+            if hasattr(w, 'permanent') and not w.permanent:
+                # In a headline that is being edited.
+                # g.es('Can not execute commands from headlines')
+                c.endEditing()
+                c.bodyWantsFocusNow()
+                # Change the event widget so we don't refer to the to-be-deleted headline widget.
+                event.w = event.widget = c.frame.body.wrapper.widget
+                c.executeAnyCommand(func, event)
+            else:
+                c.widgetWantsFocusNow(event and event.widget)
+                    # Important, so cut-text works, e.g.
+                c.executeAnyCommand(func, event)
+            k.endCommand(commandName)
+            return True
+        return False
+        ###
+        # else:
+            # # Show possible completions if the command does not exist.
+            # if 1: # Useful.
+                # k.doTabCompletion(list(c.commandsDict.keys()))
+            # else: # Annoying.
+                # k.keyboardQuit()
+                # k.setStatusLabel('Command does not exist: %s' % commandName)
+                # c.bodyWantsFocus()
+            # return False
     #@+node:ekr.20181112182636.1: *5* app.run_all_unit_tests
     def run_all_unit_tests (self):
         '''Run all unit tests from the bridge.'''
