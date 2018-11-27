@@ -964,13 +964,13 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
     # delete
     def setAllText(self, s):
         w = self.root.main_window
-        print('===== (minibuffer wrapper)', s)
+        print('===== (minibuffer wrapper) setAllText:', s)
         super().setAllText(s)
         w.minibuffer.set_text(s)
         
     def setSelectionRange(self, i, j, insert=None):
         w = self.root.main_window
-        print('===== (minibuffer wrapper)', i, j, repr(insert))
+        print('===== (minibuffer wrapper) setSelectionRange:', i, j, repr(insert))
         super().setSelectionRange(i, j, insert)
         w.minibuffer.set_selection(i,j)
         if insert is not None:
@@ -978,7 +978,7 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
             
     def setStyleClass(self, name):
         w = self.root.main_window
-        print('===== (minibuffer wrapper)', repr(name))
+        print('===== (minibuffer wrapper) setStyleClass:', repr(name))
         w.minibuffer.set_style(name)
 
     #@+others
@@ -1289,9 +1289,8 @@ class LeoFlexxMiniBuffer(flx.Widget):
 
     @flx.action
     def set_focus(self):
-        # https://github.com/flexxui/flexx/issues/526
         print('===== flx.minibuffer.set_focus')
-        self.widget.node.focus()
+        self.ace.focus()
         
     @flx.action
     def set_insert(self, i):
@@ -1304,6 +1303,8 @@ class LeoFlexxMiniBuffer(flx.Widget):
     @flx.action
     def set_style(self, style):
         print('===== flx.minibuffer.set_style', repr(style))
+        # A hack. Also set focus.
+        self.ace.focus()
         
     @flx.action
     def set_text(self, s):
