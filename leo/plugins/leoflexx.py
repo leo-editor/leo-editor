@@ -507,9 +507,15 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181126154357.1: *5* app.peep_hole
     def peep_hole(self, instructions):
         '''Scan the list of instructions, merging adjacent op-codes.'''
-        i = 0
-        while i+1 < len(instructions):
-            op0, op1 = instructions[i], instructions[i+1]
+        result = []
+        for i, op0 in enumerate(instructions):
+        ### i = 0
+        ###while i+1 < len(instructions):
+            ###op0, op1 = instructions[i], instructions[i+1]
+            if i == len(instructions) -1:
+                result.append(op0)
+                break
+            op1 = instructions[i+1]
             kind0, kind1 = op0[0], op1[0]
             # Merge adjacent insert/delete instructions with the same gnx.
             if (
@@ -519,11 +525,13 @@ class LeoBrowserApp(flx.PyComponent):
                 kind0, index0, gnxs0 = op0
                 kind1, index1, gnxs1 = op1
                 if gnxs0[0] == gnxs1[0]:
-                    move_op = ['move', index0, index1, gnxs0, gnxs1]
-                    instructions.remove(op0)
-                    instructions.remove(op1)
-                    instructions.append(move_op)
-            i += 1
+                    ### move_op = ['move', index0, index1, gnxs0, gnxs1]
+                    ### instructions.remove(op0)
+                    ### instructions.remove(op1)
+                    ### instructions.append(move_op)
+                    result.append(['move', index0, index1, gnxs0, gnxs1])
+            else:
+                result.append(op0)
         return instructions
     #@+node:ekr.20181117163223.1: *4* app.Key handling
     @flx.action
