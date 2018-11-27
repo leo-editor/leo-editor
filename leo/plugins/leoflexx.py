@@ -762,17 +762,15 @@ class LeoBrowserApp(flx.PyComponent):
                 c.executeAnyCommand(func, event)
             k.endCommand(commandName)
             return True
+        if 0: ### Not ready yet
+            # Show possible completions if the command does not exist.
+            if 1: # Useful.
+                k.doTabCompletion(list(c.commandsDict.keys()))
+            else: # Annoying.
+                k.keyboardQuit()
+                k.setStatusLabel('Command does not exist: %s' % commandName)
+                c.bodyWantsFocus()
         return False
-        ###
-        # else:
-            # # Show possible completions if the command does not exist.
-            # if 1: # Useful.
-                # k.doTabCompletion(list(c.commandsDict.keys()))
-            # else: # Annoying.
-                # k.keyboardQuit()
-                # k.setStatusLabel('Command does not exist: %s' % commandName)
-                # c.bodyWantsFocus()
-            # return False
     #@+node:ekr.20181112182636.1: *5* app.run_all_unit_tests
     def run_all_unit_tests (self):
         '''Run all unit tests from the bridge.'''
@@ -1008,21 +1006,22 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
     
     # Overrides.
     def setFocus(self):
-        g.trace('===== (minibuffer wrapper)')
+        # g.trace('===== (minibuffer wrapper)')
         self.root.main_window.minibuffer.set_focus()
         
     # Override the methods called by k.minibuffer methods:
-    # setStyleClass
-    # delete
+        
+    ###  delete
+
     def setAllText(self, s):
         w = self.root.main_window
-        print('===== (minibuffer wrapper) setAllText:', s)
+        # print('===== (minibuffer wrapper) setAllText:', s)
         super().setAllText(s)
         w.minibuffer.set_text(s)
         
     def setSelectionRange(self, i, j, insert=None):
         w = self.root.main_window
-        print('===== (minibuffer wrapper) setSelectionRange:', i, j, repr(insert))
+        # print('===== (minibuffer wrapper) setSelectionRange:', i, j, repr(insert))
         super().setSelectionRange(i, j, insert)
         w.minibuffer.set_selection(i,j)
         if insert is not None:
@@ -1030,7 +1029,7 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
             
     def setStyleClass(self, name):
         w = self.root.main_window
-        print('===== (minibuffer wrapper) setStyleClass:', repr(name))
+        # print('===== (minibuffer wrapper) setStyleClass:', repr(name))
         w.minibuffer.set_style(name)
 
     #@+others
@@ -1341,7 +1340,7 @@ class LeoFlexxMiniBuffer(flx.Widget):
 
     @flx.action
     def set_focus(self):
-        print('===== flx.minibuffer.set_focus')
+        # print('===== flx.minibuffer.set_focus')
         self.ace.focus()
         
     @flx.action
@@ -1354,13 +1353,13 @@ class LeoFlexxMiniBuffer(flx.Widget):
         
     @flx.action
     def set_style(self, style):
-        print('===== flx.minibuffer.set_style', repr(style))
+        # print('===== flx.minibuffer.set_style', repr(style))
         # A hack. Also set focus.
         self.ace.focus()
         
     @flx.action
     def set_text(self, s):
-        print('===== flx.minibuffer.set_text')
+        # print('===== flx.minibuffer.set_text')
         self.ace.setValue(s)
     #@+node:ekr.20181120060856.1: *4* flx_minibuffer.key_press
     @flx.emitter
