@@ -1371,7 +1371,7 @@ class LeoFlexxBody(flx.Widget):
     def set_text(self, s):
         '''Set the entire text'''
         print(self.tag, 'set_text')
-        print(repr(s))
+        print(repr(g.truncate(s, 50)))
         self.ace.setValue(s)
             # This works, but the insert point is always at the end.
     #@-others
