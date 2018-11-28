@@ -234,35 +234,39 @@ class AceWrapper (leoFrame.StringTextWrapper):
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
         self.c.p.v.setBodyString(self.s)
-        self.flx_wrapper().set_text(self.s)
-        self.flx_wrapper().set_insert_point(self.ins)
+        ### self.flx_wrapper().set_text(self.s)
+        ### self.flx_wrapper().set_insert_point(self.ins)
 
     def delete(self, i, j=None):
         print(self.tag, 'delete', repr(i), repr(j))
         super().delete(i, j)
         self.c.p.v.setBodyString(self.s)
-        self.flx_wrapper().set_text(self.s)
-        self.flx_wrapper().set_insert_point(self.ins)
+        ### self.flx_wrapper().set_text(self.s)
+        ### self.flx_wrapper().set_insert_point(self.ins)
 
     def deleteTextSelection(self):
         print(self.tag, 'deleteTextSelection')
         super().deleteTextSelection()
         self.c.p.v.setBodyString(self.s)
-        self.flx_wrapper().set_text(self.s)
-        self.flx_wrapper().set_insert_point(self.ins)
+        ### self.flx_wrapper().set_text(self.s)
+        ### self.flx_wrapper().set_insert_point(self.ins)
         
     def insert(self, i, s):
         '''Called from Leo's core on every keystroke.'''
         # doPlainChar, insertNewlineHelper, etc.
         print(self.tag, 'insert', i, g.callers(1))
-        self.s = self.s[: i] + s + self.s[i:]
-        i += len(s)
+        if 1: # Put it at the end.
+            self.s = self.s + s
+            i = len(self.s)
+        else:
+            self.s = self.s[: i] + s + self.s[i:]
+            i += len(s)
         self.ins = i
         self.sel = i, i
         print(repr(g.truncate(self.s, 60)))
         self.c.p.v.setBodyString(self.s)
-        self.flx_wrapper().set_text(self.s)
-        self.flx_wrapper().set_insert_point(self.ins)
+        self.flx_wrapper().insert(s)
+        ### self.flx_wrapper().set_insert_point(self.ins)
 
     def setAllText(self, s):
         # Called by set_body_text_after_select.
@@ -1309,17 +1313,11 @@ class LeoFlexxBody(flx.Widget):
         ace.navigateFileEnd()  # otherwise all lines highlighted
         ace.setTheme("ace/theme/solarized_dark")
         ace.getSession().setMode("ace/mode/python")
-        ### Not needed: Use AceWrapper instead.
-            # self.wrapper = None
-            # self.widget = None
 
     @flx.reaction('size')
     def __on_size(self, *events):
         self.ace.resize()
-        
-    # @flx.reaction('change')
-    # def __on_change(self, *events):
-        # print(self.tag, 'changed')
+
 
     #@+others
     #@+node:ekr.20181121072246.1: *4* flx_body.key_press
@@ -1345,11 +1343,16 @@ class LeoFlexxBody(flx.Widget):
     #@+node:ekr.20181128061524.1: *4* flx_body setters
     @flx.action
     def see_insert_point(self):
-        print(self.tag, 'see_insert_point')
+        if 0: print(self.tag, 'see_insert_point')
+        
+    @flx.action
+    def insert(self, s):
+        print(self.tag, 'insert', repr(s))
+        self.ace.insert(s)
 
     @flx.action
     def select_all_text(self):
-        print(self.tag, 'select_all_text')
+        if 0: print(self.tag, 'select_all_text')
         
     @flx.action
     def set_focus(self):
