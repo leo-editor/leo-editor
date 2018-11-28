@@ -166,7 +166,7 @@ def suppress_unwanted_log_messages():
     pattern = re.compile(allowed, re.IGNORECASE)
     flx.set_log_level('INFO', pattern)
 #@+node:ekr.20181115071559.1: ** Py side: App & wrapper classes
-#@+node:ekr.20181127151027.1: *3* class AceWrapper (object)
+#@+node:ekr.20181127151027.1: *3* class AceWrapper (StringTextWrapper)
 class AceWrapper (leoFrame.StringTextWrapper):
     '''
     A wrapper class that implements the high-level interface for the ace widget.
@@ -188,66 +188,90 @@ class AceWrapper (leoFrame.StringTextWrapper):
         if self.root.inited:
             w = self.root.main_window
             return getattr(w, self.name)
-        # g.trace('===== app not inited')
-        return TracingNullObject()
+        # print(self.vtag, 'app not inited', g.callers())
+        return g.NullObject()
+        
+    def setFocus(self):
+        print(self.tag, 'setAllText')
+        self.flx_wrapper().set_focus()
 
     # No need to override getters.
     #@+others
-    #@+node:ekr.20181127121642.1: *4* AceWrapper.Setters
-    # Override StringTextWrapper setters to update flx.body widget.
-
-    def appendText(self, s):
-        print(self.tag, 'appendText', len(s))
-        super().appendText(s)
-        self.flx_wrapper().set_text(s)
-
-    def delete(self, i, j=None):
-        print(self.tag, 'delete', repr(i), repr(j))
-        super().delete(i, j)
-        self.flx_wrapper().set_text(self.getAllText())
-
-    def deleteTextSelection(self):
-        print(self.tag, 'deleteTextSelection')
-        super().deleteTextSelection()
-        self.flx_wrapper().set_text(self.getAllText())
-        
-    def insert(self, i, s):
-        print(self.tag, 'insert', i, len(self.getAllText()), repr(s), g.callers(1))
-        super().insert(i, s)
-        self.flx_wrapper().set_text(self.getAllText())
-        
+    #@+node:ekr.20181128101421.1: *4* AceWrapper.Selection Setters
     def seeInsertPoint(self):
         # print(self.tag, 'seeInsertPoint')
         self.flx_wrapper().see_insert_point()
 
     def selectAllText(self, insert=None):
         print(self.tag, 'selectAllText', repr(insert))
-        super().selectAllText(insert)
+        self.sel = 0, len(self.s)
+        self.ins = len(self.s) if insert is None else insert
         self.flx_wrapper().select_all_text()
         if insert is not None:
             self.flx_wrapper().set_insert_point(insert)
 
-    # Called by set_body_text_after_select.
-    def setAllText(self, s):
-        print(self.tag, 'setAllText', len(s), g.callers(1))
-        super().setAllText(s)
-        self.flx_wrapper().set_text(s)
-        
-    def setFocus(self):
-        print(self.tag, 'setAllText')
-        self.flx_wrapper().set_focus()
-
     def setInsertPoint(self, pos, s=None):
-        print(self.tag, 'setInsertPoint', pos, len(s) if s else 0, g.callers(1))
-        super().setInsertPoint(pos, s)
+        # print(self.tag, 'setInsertPoint', pos, len(s) if s else 0, g.callers(1))
+        self.virtualInsertPoint = pos
+        self.ins = pos
+        self.sel = pos, pos
         self.flx_wrapper().set_insert_point(pos)
 
     def setSelectionRange(self, i, j, insert=None):
         print(self.tag, 'setSelectionRange', i, j, repr(insert))
-        super().setSelectionRange(i, j, insert)
+        self.sel = i, j
         self.flx_wrapper().set_selection_range(i, j)
         if insert is not None:
+            self.ins = insert
             self.flx_wrapper().set_insert_point(insert)
+    #@+node:ekr.20181127121642.1: *4* AceWrapper.Text Setters
+    # Override StringTextWrapper setters to update flx.body widget.
+    # Careful: do not set c.p.b or similar here.
+
+    def appendText(self, s):
+        print(self.tag, 'appendText', len(s))
+        self.s = self.s + s
+        self.ins = len(self.s)
+        self.sel = self.ins, self.ins
+        self.c.p.v.setBodyString(self.s)
+        self.flx_wrapper().set_text(self.s)
+        self.flx_wrapper().set_insert_point(self.ins)
+
+    def delete(self, i, j=None):
+        print(self.tag, 'delete', repr(i), repr(j))
+        super().delete(i, j)
+        self.c.p.v.setBodyString(self.s)
+        self.flx_wrapper().set_text(self.s)
+        self.flx_wrapper().set_insert_point(self.ins)
+
+    def deleteTextSelection(self):
+        print(self.tag, 'deleteTextSelection')
+        super().deleteTextSelection()
+        self.c.p.v.setBodyString(self.s)
+        self.flx_wrapper().set_text(self.s)
+        self.flx_wrapper().set_insert_point(self.ins)
+        
+    def insert(self, i, s):
+        '''Called from Leo's core on every keystroke.'''
+        # doPlainChar, insertNewlineHelper, etc.
+        print(self.tag, 'insert', i, g.callers(1))
+        self.s = self.s[: i] + s + self.s[i:]
+        i += len(s)
+        self.ins = i
+        self.sel = i, i
+        print(repr(g.truncate(self.s, 60)))
+        self.c.p.v.setBodyString(self.s)
+        self.flx_wrapper().set_text(self.s)
+        self.flx_wrapper().set_insert_point(self.ins)
+
+    def setAllText(self, s):
+        # Called by set_body_text_after_select.
+        print(self.tag, 'setAllText', g.callers(1))
+        print(repr(g.truncate(s, 60)))
+        self.s = s
+        self.c.p.v.setBodyString(s)
+        self.flx_wrapper().set_text(s)
+        self.flx_wrapper().set_insert_point(self.ins)
     #@-others
 #@+node:ekr.20181107052522.1: *3* class LeoBrowserApp
 # pscript never converts flx.PyComponents to JS.
@@ -1293,18 +1317,20 @@ class LeoFlexxBody(flx.Widget):
     def __on_size(self, *events):
         self.ace.resize()
         
-    @flx.reaction('change')
-    def on_body_changed(self, *events):
-        print(self.tag)
+    # @flx.reaction('change')
+    # def __on_change(self, *events):
+        # print(self.tag, 'changed')
 
     #@+others
-    #@+node:ekr.20181121072246.1: *4* flx_body.key_press (to do: update c.p.b)
+    #@+node:ekr.20181121072246.1: *4* flx_body.key_press
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
         # print('body.emitter.key_press', repr(ev))
-        if ev ['modifiers']:
-            e.preventDefault()
+        ### ev ['modifiers']:
+            ### Leo's core will insert the character!
+        e.preventDefault()
+            # Let Leo handle everything. Or so we hope.
         return ev
 
     @flx.reaction('key_press')
@@ -1316,7 +1342,7 @@ class LeoFlexxBody(flx.Widget):
                 for key, val in ev.items():
                     print(key, repr(val))
             self.root.do_key(ev, 'body')
-    #@+node:ekr.20181128061524.1: *4* flx_body setters (TEST)
+    #@+node:ekr.20181128061524.1: *4* flx_body setters
     @flx.action
     def see_insert_point(self):
         print(self.tag, 'see_insert_point')
@@ -1332,16 +1358,19 @@ class LeoFlexxBody(flx.Widget):
 
     @flx.action
     def set_insert_point(self, i):
-        print(self.tag, 'set_insert_point', i)
+        if 0: print(self.tag, 'set_insert_point', i)
         
     @flx.action
     def set_selection_range(self, i, j):
-        print(self.tag, 'set_selection_range', i, j)
+        if 0: print(self.tag, 'set_selection_range', i, j)
         
     @flx.action
     def set_text(self, s):
-        print(self.tag, 'set_text', len(s))
+        '''Set the entire text'''
+        print(self.tag, 'set_text')
+        print(repr(s))
         self.ace.setValue(s)
+            # This works, but the insert point is always at the end.
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
 class LeoFlexxLog(flx.Widget):
