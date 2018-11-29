@@ -106,7 +106,7 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
-debug_focus = False # puts 'focus' in g.app.debug.
+debug_focus = True # puts 'focus' in g.app.debug.
 debug_keys = True # puts 'keys' in g.app.debug.
 debug_redraw = False
 debug_select = False
@@ -350,16 +350,13 @@ class LeoBrowserApp(flx.PyComponent):
         # Init the log pane.
         w.log.put('%s\n%s' % (g.app.signon, g.app.signon2))
         # Init the body pane.
-        ### No chance.
-        ### Wrappers must use getattr(self.root, self.name)
-            # assert isinstance(c.frame.body, LeoBrowserBody), repr(c.frame.body)
-            # assert isinstance(c.frame.body.wrapper, AceWrapper), repr(c.frame.body.wrapper)
-            # assert isinstance(w.body, LeoFlexxBody), repr(w.body)
         self.set_body_text()
         # Init the status line.
         self.set_status()
         # Init the tree.
         self.redraw(c.p)
+        # Init the focus.
+        self.gui.set_focus(c, c.frame.tree)
         w.tree.set_focus()
         
     # These must be separate because they are called from the tree logic.
@@ -1072,12 +1069,15 @@ class LeoBrowserGui(leoGui.NullGui):
         return name in ('body', 'log', 'minibuffer') or name.startswith('head')
     #@+node:ekr.20181119153936.1: *4* gui.focus...
     def get_focus(self, *args, **kwargs):
-        # g.trace('(gui)', repr(self.focusWidget), g.callers())
-        return self.focusWidget
+        trace = debug_focus and not g.unitTesting
+        w = self.focusWidget
+        if trace:
+            w_tag = w.tag if w else "NO WIDGET"
+            print('%s: get_focus: %s %s' % (self.tag, w_tag,  g.callers(2)))
+        return w
 
     def set_focus(self, commander, widget):
         trace = debug_focus and not g.unitTesting
-        self.focusWidget = widget
         if isinstance(widget, (
             LeoBrowserBody,
             LeoBrowserFrame,
@@ -1085,9 +1085,11 @@ class LeoBrowserGui(leoGui.NullGui):
             LeoBrowserMinibuffer,
             LeoBrowserTree,
         )):
-            if trace: g.trace(self.tag, widget.tag)
+            if trace:
+                print(self.tag, 'set_focus', widget.tag)
             if not g.unitTesting:
                 widget.setFocus()
+            self.focusWidget = widget
         else:
             g.trace('(gui): unknown widget', repr(widget))
     #@-others
