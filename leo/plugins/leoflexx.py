@@ -356,8 +356,13 @@ class LeoBrowserApp(flx.PyComponent):
         # Init the tree.
         self.redraw(c.p)
         # Init the focus.
-        self.gui.set_focus(c, c.frame.tree)
-        w.tree.set_focus()
+        # It's debatable:
+        if 1:
+            self.gui.set_focus(c, c.frame.tree)
+            w.tree.set_focus()
+        else:
+            self.gui.set_focus(c, c.frame.body)
+            w.body.set_focus()
         
     # These must be separate because they are called from the tree logic.
 
