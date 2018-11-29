@@ -376,6 +376,84 @@ class LeoBrowserApp(flx.PyComponent):
     def set_body_text(self):
         c, w = self.c, self.main_window
         w.body.set_text(c.p.b)
+    #@+node:ekr.20181117163223.1: *4* app.do_key (k.masterKeyHandler should update c.p.b!)
+    # https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
+    # See Widget._create_key_event in flexx/ui/_widget.py:
+
+    @flx.action
+    def do_key (self, ev, kind):
+        '''
+        LeoBrowserApp.do_key: The central key handler.
+        
+        Will be called *in addition* to any inner key handlers,
+        unless the inner key handler calls e.preventDefault()
+        '''
+        trace = debug_keys and not g.unitTesting
+        trace_master_key_handler = False
+        c = self.c
+        browser_wrapper = getattr(c.frame, kind)
+        #@+<< check browser_wrapper >>
+        #@+node:ekr.20181129073812.1: *5* << check browser_wrapper >>
+        assert isinstance(browser_wrapper, (
+            LeoBrowserBody,
+            LeoBrowserFrame,
+            LeoBrowserLog,
+            LeoBrowserMinibuffer,
+            LeoBrowserTree,
+        )), repr(browser_wrapper)
+        #@-<< check browser_wrapper >>
+        key, mods = ev ['key'], ev ['modifiers']
+            # ev is a dict, keys are type, source, key, modifiers
+            # mods in ('Alt', 'Shift', 'Ctrl', 'Meta')
+        #@+<< set char to the translated key name >>
+        #@+node:ekr.20181129073905.1: *5* << set char to the translated key name >>
+        d = {
+            'ArrowDown':'Down',
+            'ArrowLeft':'Left',
+            'ArrowRight': 'Right',
+            'ArrowUp': 'Up',
+            'Enter': '\n', # For k.fullCommand, etc.
+            'PageDown': 'Next',
+            'PageUp': 'Prior',
+        }
+        char = d.get(key, key)
+        if 'Ctrl' in mods:
+            mods.remove('Ctrl')
+            mods.append('Control')
+        #@-<< set char to the translated key name >>
+        binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
+        #@+<< trace the binding >>
+        #@+node:ekr.20181129074732.1: *5* << trace the binding >>
+        if trace:
+            if 1: # Less verbose:
+                g.trace('%s from %s: %r c.p.h: %s' % (
+                    self.tag, browser_wrapper.tag, binding, c.p.h))
+            else:
+                g.trace('%s from %s: mods: %r key: %r ==> %r %r c.p.h: %s' % (
+                    self.tag, browser_wrapper.tag, mods, key, char, binding, c.p.h))
+        #@-<< trace the binding >>
+        #@+<< create key_event >>
+        #@+node:ekr.20181129073734.1: *5* << create key_event >>
+        # create the key event, but don't bother tracing it.
+        old_debug = g.app.debug
+        try:
+            g.app.debug = []
+            key_event = leoGui.LeoKeyEvent(c,
+                char = char,
+                binding = binding,
+                event = { 'c': c },
+                w = browser_wrapper,
+            )
+        finally:
+            g.app.debug = old_debug
+        #@-<< create key_event >>
+        old_debug = g.app.debug
+        try:
+            if not trace_master_key_handler:
+                g.app.debug = []
+            c.k.masterKeyHandler(key_event)
+        finally:
+            g.app.debug = old_debug
     #@+node:ekr.20181122132345.1: *4* app.Drawing...
     #@+node:ekr.20181113042549.1: *5* app.action.redraw
     @flx.action
@@ -652,85 +730,17 @@ class LeoBrowserApp(flx.PyComponent):
             result.append(op0)
             i += 1
         return result
-    #@+node:ekr.20181127070836.1: *4* app.do_command
-    #@+node:ekr.20181117163223.1: *4* app.do_key (k.masterKeyHandler should update c.p.b!)
-    # https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
-    # See Widget._create_key_event in flexx/ui/_widget.py:
-
-    @flx.action
-    def do_key (self, ev, kind):
-        '''
-        LeoBrowserApp.do_key: The central key handler.
+    #@+node:ekr.20181129122147.1: *4* app.Edit headline...
+    def edit_headline(self):
+        '''Simulate editing the headline in the minibuffer.'''
+        c, w = self.c, self.root.main_window
+        mb = w.minibuffer
+        g.trace(mb, c.p.h)
+        mb.set_text('Enter Headline: ')
+        mb.set_focus()
         
-        Will be called *in addition* to any inner key handlers,
-        unless the inner key handler calls e.preventDefault()
-        '''
-        trace = debug_keys and not g.unitTesting
-        trace_master_key_handler = False
-        c = self.c
-        browser_wrapper = getattr(c.frame, kind)
-        #@+<< check browser_wrapper >>
-        #@+node:ekr.20181129073812.1: *5* << check browser_wrapper >>
-        assert isinstance(browser_wrapper, (
-            LeoBrowserBody,
-            LeoBrowserFrame,
-            LeoBrowserLog,
-            LeoBrowserMinibuffer,
-            LeoBrowserTree,
-        )), repr(browser_wrapper)
-        #@-<< check browser_wrapper >>
-        key, mods = ev ['key'], ev ['modifiers']
-            # ev is a dict, keys are type, source, key, modifiers
-            # mods in ('Alt', 'Shift', 'Ctrl', 'Meta')
-        #@+<< set char to the translated key name >>
-        #@+node:ekr.20181129073905.1: *5* << set char to the translated key name >>
-        d = {
-            'ArrowDown':'Down',
-            'ArrowLeft':'Left',
-            'ArrowRight': 'Right',
-            'ArrowUp': 'Up',
-            'Enter': '\n', # For k.fullCommand, etc.
-            'PageDown': 'Next',
-            'PageUp': 'Prior',
-        }
-        char = d.get(key, key)
-        if 'Ctrl' in mods:
-            mods.remove('Ctrl')
-            mods.append('Control')
-        #@-<< set char to the translated key name >>
-        binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
-        #@+<< trace the binding >>
-        #@+node:ekr.20181129074732.1: *5* << trace the binding >>
-        if trace:
-            if 1: # Less verbose:
-                g.trace('%s from %s: %r c.p.h: %s' % (
-                    self.tag, browser_wrapper.tag, binding, c.p.h))
-            else:
-                g.trace('%s from %s: mods: %r key: %r ==> %r %r c.p.h: %s' % (
-                    self.tag, browser_wrapper.tag, mods, key, char, binding, c.p.h))
-        #@-<< trace the binding >>
-        #@+<< create key_event >>
-        #@+node:ekr.20181129073734.1: *5* << create key_event >>
-        # create the key event, but don't bother tracing it.
-        old_debug = g.app.debug
-        try:
-            g.app.debug = []
-            key_event = leoGui.LeoKeyEvent(c,
-                char = char,
-                binding = binding,
-                event = { 'c': c },
-                w = browser_wrapper,
-            )
-        finally:
-            g.app.debug = old_debug
-        #@-<< create key_event >>
-        old_debug = g.app.debug
-        try:
-            if not trace_master_key_handler:
-                g.app.debug = []
-            c.k.masterKeyHandler(key_event)
-        finally:
-            g.app.debug = old_debug
+    def edit_headline_completer(self, headline):
+        g.trace(headline)
     #@+node:ekr.20181105091545.1: *4* app.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
@@ -877,8 +887,6 @@ class LeoBrowserApp(flx.PyComponent):
         else:
             # g.trace('unknown command: %r' % command)
             self.execute_minibuffer_command(command)
-
-            
     #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command (to do: tab completion)
     def execute_minibuffer_command(self, commandName):
         '''Execute a minibuffer command.'''
@@ -1565,13 +1573,16 @@ class LeoFlexxMiniBuffer(flx.Widget):
             e.preventDefault()
         elif ev.key == 'Enter':
             command = self.ace.getValue()
-            print('===== flx_minibuffer.key_press: Enter', repr(command))
+            print(self.tag, 'key_press: Enter', repr(command))
             if command.strip():
-                tag = 'full-command:'
-                if command.startswith(tag):
-                    command = command[len(tag):].strip()
+                if command.startswith('full-command:'):
+                    command = command[len('full-command:'):].strip()
+                    self.root.do_command(command)
+                elif command.startswith('Enter Headline:'):
+                    headline = command[len('Enter Headline:'):].strip()
+                    self.root.edit_headline_completer(headline)
                 self.set_text('')
-                self.root.do_command(command)
+                return None
         return ev
     #@-others
 #@+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
