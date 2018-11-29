@@ -107,7 +107,7 @@ flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
 debug_focus = False # puts 'focus' in g.app.debug.
-debug_keys = False # puts 'keys' in g.app.debug.
+debug_keys = True # puts 'keys' in g.app.debug.
 debug_redraw = False
 debug_select = False
 debug_tree = False
@@ -254,7 +254,6 @@ class AceWrapper (leoFrame.StringTextWrapper):
     def insert(self, i, s):
         '''Called from Leo's core on every keystroke.'''
         # doPlainChar, insertNewlineHelper, etc.
-        print(self.tag, 'insert', i, g.callers(1))
         if 1: # Put it at the end.
             self.s = self.s + s
             i = len(self.s)
@@ -263,15 +262,16 @@ class AceWrapper (leoFrame.StringTextWrapper):
             i += len(s)
         self.ins = i
         self.sel = i, i
-        print(repr(g.truncate(self.s, 60)))
+        print(self.tag, 'insert', i, g.callers(1), 'self.s:', repr(g.truncate(self.s, 60)))
         self.c.p.v.setBodyString(self.s)
         self.flx_wrapper().insert(s)
         ### self.flx_wrapper().set_insert_point(self.ins)
 
     def setAllText(self, s):
         # Called by set_body_text_after_select.
-        print(self.tag, 'setAllText', g.callers(1))
-        print(repr(g.truncate(s, 60)))
+        if 0:
+            print(self.tag, 'setAllText', g.callers(1))
+            print(repr(g.truncate(s, 60)))
         self.s = s
         self.c.p.v.setBodyString(s)
         self.flx_wrapper().set_text(s)
@@ -298,6 +298,8 @@ class LeoBrowserApp(flx.PyComponent):
         assert gui.guiName() == 'browser'
             # Important: the leoTest module special cases this name.
         self.inited = False
+            # Set by app.finish_create.
+        self.tag = '(app wrapper)'
         # Inject the newly-created gui into g.app.
         g.app.gui = gui
         if debug_focus:
@@ -358,6 +360,7 @@ class LeoBrowserApp(flx.PyComponent):
         self.set_status()
         # Init the tree.
         self.redraw(c.p)
+        w.tree.set_focus()
         
     # These must be separate because they are called from the tree logic.
 
@@ -649,21 +652,36 @@ class LeoBrowserApp(flx.PyComponent):
         return result
     #@+node:ekr.20181127070836.1: *4* app.do_command
     #@+node:ekr.20181117163223.1: *4* app.do_key (k.masterKeyHandler should update c.p.b!)
+    # https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
+    # See Widget._create_key_event in flexx/ui/_widget.py:
+
     @flx.action
     def do_key (self, ev, kind):
         '''
-        https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
-        See Widget._create_key_event in flexx/ui/_widget.py:
-            
-        Modifiers: 'Alt', 'Shift', 'Ctrl', 'Meta'
-            
-        Keys: 'Enter', 'Tab', 'Escape', 'Delete'
-              'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp',
+        LeoBrowserApp.do_key: The central key handler.
+        
+        Will be called *in addition* to any inner key handlers,
+        unless the inner key handler calls e.preventDefault()
         '''
-        # ev is a dict, keys are type, source, key, modifiers
-        trace = (False or debug_keys) and not g.unitTesting
+        trace = debug_keys and not g.unitTesting
+        trace_master_key_handler = False
         c = self.c
+        browser_wrapper = getattr(c.frame, kind)
+        #@+<< check browser_wrapper >>
+        #@+node:ekr.20181129073812.1: *5* << check browser_wrapper >>
+        assert isinstance(browser_wrapper, (
+            LeoBrowserBody,
+            LeoBrowserFrame,
+            LeoBrowserLog,
+            LeoBrowserMinibuffer,
+            LeoBrowserTree,
+        )), repr(browser_wrapper)
+        #@-<< check browser_wrapper >>
         key, mods = ev ['key'], ev ['modifiers']
+            # ev is a dict, keys are type, source, key, modifiers
+            # mods in ('Alt', 'Shift', 'Ctrl', 'Meta')
+        #@+<< set char to the translated key name >>
+        #@+node:ekr.20181129073905.1: *5* << set char to the translated key name >>
         d = {
             'ArrowDown':'Down',
             'ArrowLeft':'Left',
@@ -677,30 +695,37 @@ class LeoBrowserApp(flx.PyComponent):
         if 'Ctrl' in mods:
             mods.remove('Ctrl')
             mods.append('Control')
+        #@-<< set char to the translated key name >>
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
-        browser_wrapper = getattr(c.frame, kind)
-        assert isinstance(browser_wrapper, (
-            LeoBrowserBody,
-            LeoBrowserFrame,
-            LeoBrowserLog,
-            LeoBrowserMinibuffer,
-            LeoBrowserTree,
-        )), repr(browser_wrapper)
-        
-        ### g.trace('===== c.frame.%s: %r' % (kind, browser_wrapper))
-        w = browser_wrapper
-        ### w = widget.wrapper
-            ### This is a StringTextWidget!
-        key_event = leoGui.LeoKeyEvent(c,
-            char = char, event = { 'c': c }, binding = binding, w = w)
+        #@+<< trace the binding >>
+        #@+node:ekr.20181129074732.1: *5* << trace the binding >>
         if trace:
-            g.app.debug = ['keys',]
-        if trace:
-            g.trace(w.__class__.__name__)
-            g.trace('mods: %r key: %r ==> %r %r w: %6r c.p.h: %s' % (
-                mods, key, char, binding, w.getName(), c.p.h))
+            if 1: # Less verbose:
+                g.trace('%s from %s: %r c.p.h: %s' % (
+                    self.tag, browser_wrapper.tag, binding, c.p.h))
+            else:
+                g.trace('%s from %s: mods: %r key: %r ==> %r %r c.p.h: %s' % (
+                    self.tag, browser_wrapper.tag, mods, key, char, binding, c.p.h))
+        #@-<< trace the binding >>
+        #@+<< create key_event >>
+        #@+node:ekr.20181129073734.1: *5* << create key_event >>
+        # create the key event, but don't bother tracing it.
+        old_debug = g.app.debug
         try:
-            old_debug = g.app.debug
+            g.app.debug = []
+            key_event = leoGui.LeoKeyEvent(c,
+                char = char,
+                binding = binding,
+                event = { 'c': c },
+                w = browser_wrapper,
+            )
+        finally:
+            g.app.debug = old_debug
+        #@-<< create key_event >>
+        old_debug = g.app.debug
+        try:
+            if not trace_master_key_handler:
+                g.app.debug = []
             c.k.masterKeyHandler(key_event)
         finally:
             g.app.debug = old_debug
@@ -735,11 +760,8 @@ class LeoBrowserApp(flx.PyComponent):
             assert False, g.callers()
         p_gnx = p.v.gnx
         if p_gnx not in self.gnx_to_vnode:
-            print('=== update gnx_to_vnode',
-                p_gnx.ljust(15),
-                p.h,
-                len(list(self.gnx_to_vnode.keys())),
-            )
+            # print('=== update gnx_to_vnode', p_gnx, p.h)
+                # len(list(self.gnx_to_vnode.keys())
             self.gnx_to_vnode [p_gnx] = p.v
         return {
             'childIndex': p._childIndex,
@@ -766,9 +788,10 @@ class LeoBrowserApp(flx.PyComponent):
         trace = debug_select and not g.unitTesting
         w = self.main_window
         ap = self.p_to_ap(p)
-        if trace: print('===== app.action.select_p', p.h)
         # Be careful during startup.
         if w and w.tree:
+            if trace:
+                print('%s: action.select_p: %s' % (self.tag, p.h))
             w.tree.set_ap(ap)
     #@+node:ekr.20181111202747.1: *5* app.action.select_ap
     @flx.action
@@ -976,6 +999,7 @@ class LeoBrowserBody(leoFrame.NullBody):
         super().__init__(frame, parentFrame=None)
         self.c = c = frame.c
         self.root = get_root()
+        self.tag = '(body wrapper)'
         # Replace the StringTextWrapper with the ace wrapper.
         assert isinstance(self.wrapper, leoFrame.StringTextWrapper)
         self.wrapper = AceWrapper(c, 'body')
@@ -998,6 +1022,9 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         assert self.c == c
         frame = self
         self.root = get_root()
+        self.tag = '(frame wrapper)'
+        #
+        # Instantiate the other wrappers.
         self.body = LeoBrowserBody(frame)
         self.tree = LeoBrowserTree(frame)
         self.log = LeoBrowserLog(frame)
@@ -1006,8 +1033,7 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         self.iconBar = LeoBrowserIconBar(c, frame)
         self.statusLine = LeoBrowserStatusLine(c, frame)
             # NullFrame does this in createStatusLine.
-        self.top = TracingNullObject() ### if debug else g.NullObject()
-            # Use the TracingNullObject class for better tracing.
+        self.top = TracingNullObject()
         
     def finishCreate(self):
         '''Override NullFrame.finishCreate.'''
@@ -1022,6 +1048,7 @@ class LeoBrowserGui(leoGui.NullGui):
         super().__init__(guiName='browser')
             # leoTest.doTest special-cases the name "browser".
         self.root = get_root()
+        self.tag = '(browser gui)'
         self.consoleOnly = False # Console is separate from the log.
         
     def insertKeyEvent(self, event, i):
@@ -1049,6 +1076,7 @@ class LeoBrowserGui(leoGui.NullGui):
         return self.focusWidget
 
     def set_focus(self, commander, widget):
+        trace = debug_focus and not g.unitTesting
         self.focusWidget = widget
         if isinstance(widget, (
             LeoBrowserBody,
@@ -1056,9 +1084,8 @@ class LeoBrowserGui(leoGui.NullGui):
             LeoBrowserLog,
             LeoBrowserMinibuffer,
             LeoBrowserTree,
-            ### leoFrame.StringTextWrapper,
         )):
-            # g.trace('(gui):', repr(widget))
+            if trace: g.trace(self.tag, widget.tag)
             if not g.unitTesting:
                 widget.setFocus()
         else:
@@ -1071,6 +1098,7 @@ class LeoBrowserIconBar(leoFrame.NullIconBarClass):
         super().__init__(c, parentFrame)
         assert self.c == c
         self.root = get_root()
+        self.tag = '(icon bar wrapper)'
             
     #@+others
     #@-others
@@ -1080,6 +1108,7 @@ class LeoBrowserLog(leoFrame.NullLog):
     def __init__(self, frame, parentFrame=None):
         super().__init__(frame, parentFrame)
         self.root = get_root()
+        self.tag = '(log wrapper)'
         assert isinstance(self.widget, leoFrame.StringTextWrapper)
         self.logCtrl = self.widget
         self.wrapper = self.widget
@@ -1111,6 +1140,7 @@ class LeoBrowserMenu(leoMenu.NullMenu):
     # def __init__(self, frame):
         # super().__init__(frame)
         # self.root = get_root()
+        # self.tag = '(menu wrapper)'
 
     # @others
 #@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer (StringTextWrapper)
@@ -1127,6 +1157,7 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
         assert self.getName() == 'minibuffer'
         self.frame = frame
         self.root = get_root()
+        self.tag = '(minibuffer wrapper)'
         self.widget = self
         self.wrapper = self
         # Hook this class up to the key handler.
@@ -1168,6 +1199,7 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
     def __init__(self, c, parentFrame):
         super().__init__(c, parentFrame)
         self.root = get_root()
+        self.tag = '(status line wrapper)'
         self.w = self # Required.
         
     #@+others
@@ -1227,6 +1259,7 @@ class LeoBrowserTree(leoFrame.NullTree):
     def __init__(self, frame):
         super().__init__(frame)
         self.root = get_root()
+        self.tag = '(tree wrapper)'
         self.widget = self
         self.wrapper = self
 
@@ -1234,7 +1267,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         return 'canvas(tree)' # Required for proper pane bindings.
 
     #@+others
-    #@+node:ekr.20181116081421.1: *4* tree_wrapper.select & super_select
+    #@+node:ekr.20181116081421.1: *4* tree_wrapper.select, super_select, endEditLabel
     def select(self, p):
         '''Override NullTree.select, which is actually LeoTree.select.'''
         super().select(p)
@@ -1245,11 +1278,16 @@ class LeoBrowserTree(leoFrame.NullTree):
     def super_select(self, p):
         '''Call only LeoTree.select.'''
         super().select(p)
+
+    # def endEditLabel(self):
+        # # Called from super_select.
+        # if 0: print(self.tag, 'endEditLabel', g.callers())
     #@+node:ekr.20181118052203.1: *4* tree_wrapper.redraw
     def redraw(self, p=None):
-        '''Called from Leo's core.'''
+        '''This is c.frame.tree.redraw!'''
         trace = debug_redraw and not g.unitTesting
-        if trace: print('===== c.frame.tree.redraw (tree_wrapper.redraw)')
+        if trace:
+            print(self.tag, '(c.frame.tree) redraw')
         self.root.redraw(p)
     #@+node:ekr.20181120063844.1: *4* tree_wrapper.setFocus
     def setFocus(self):
@@ -1307,7 +1345,7 @@ class LeoFlexxBody(flx.Widget):
         # pylint: disable=undefined-variable
             # window
         global window
-        self.tag = '(flx.body)'
+        self.tag = '(flx body)'
         self.vtag = '===== (flx.body)'
         self.ace = ace = window.ace.edit(self.node, "body editor")
         ace.navigateFileEnd()  # otherwise all lines highlighted
@@ -1320,26 +1358,6 @@ class LeoFlexxBody(flx.Widget):
 
 
     #@+others
-    #@+node:ekr.20181121072246.1: *4* flx_body.key_press
-    @flx.emitter
-    def key_press(self, e):
-        ev = self._create_key_event(e)
-        # print('body.emitter.key_press', repr(ev))
-        ### ev ['modifiers']:
-            ### Leo's core will insert the character!
-        e.preventDefault()
-            # Let Leo handle everything. Or so we hope.
-        return ev
-
-    @flx.reaction('key_press')
-    def on_key_press(self, *events):
-        for ev in events:
-            # ev.keys(): key, modifiers, type: "key_press", source: LeoFlexxBody_Njs
-            if 0:
-                print('body.reaction.key_press')
-                for key, val in ev.items():
-                    print(key, repr(val))
-            self.root.do_key(ev, 'body')
     #@+node:ekr.20181128061524.1: *4* flx_body setters
     @flx.action
     def see_insert_point(self):
@@ -1356,7 +1374,8 @@ class LeoFlexxBody(flx.Widget):
         
     @flx.action
     def set_focus(self):
-        print(self.tag, 'set_focus')
+        trace = debug_focus and not g.unitTesting
+        if trace: print(self.tag, 'set_focus')
         self.ace.focus()
 
     @flx.action
@@ -1370,8 +1389,9 @@ class LeoFlexxBody(flx.Widget):
     @flx.action
     def set_text(self, s):
         '''Set the entire text'''
-        print(self.tag, 'set_text')
-        print(repr(g.truncate(s, 50)))
+        if 0:
+            print(self.tag, 'set_text')
+            print(repr(g.truncate(s, 50)))
         self.ace.setValue(s)
             # This works, but the insert point is always at the end.
     #@-others
@@ -1392,6 +1412,7 @@ class LeoFlexxLog(flx.Widget):
         # pylint: disable=undefined-variable
             # window
         global window
+        self.tag = '(flx log)'
         self.ace = window.ace.edit(self.node, "log editor")
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
@@ -1401,25 +1422,6 @@ class LeoFlexxLog(flx.Widget):
         self.ace.resize()
 
     #@+others
-    #@+node:ekr.20181121071956.1: *4* flx.log.key_press
-    # Emitters can have any number of arguments.
-    # should return a dictionary, which will get emitted as an event,
-    # with the event type matching the name of the emitter.
-
-    @flx.emitter
-    def key_press(self, e):
-        """Overload key_press emitter to override browser commands."""
-        ev = self._create_key_event(e)
-        mods = ev ['modifiers']
-        # print('===== log.key_down.emitter', repr(ev))
-        if mods:
-            e.preventDefault()
-        return ev
-
-    @flx.reaction('key_press')
-    def on_key_press(self, *events):
-        for ev in events:
-            self.root.do_key(ev, 'log')
     #@+node:ekr.20181120060348.1: *4* flx.log.put & set_focus
     @flx.action
     def put(self, s):
@@ -1427,6 +1429,8 @@ class LeoFlexxLog(flx.Widget):
         
     @flx.action
     def set_focus(self):
+        trace = debug_focus and not g.unitTesting
+        if trace: print(self.tag, 'ace.focus()')
         self.ace.focus()
     #@-others
         
@@ -1448,6 +1452,7 @@ class LeoFlexxMainWindow(flx.Widget):
         # https://github.com/flexxui/flexx/issues/531
 
     def init(self):
+        self.tag = '(flx main window)'
         ### with flx.TabLayout():
         with flx.VSplit():
             with flx.HSplit(flex=1):
@@ -1471,11 +1476,26 @@ class LeoFlexxMainWindow(flx.Widget):
     #@+node:ekr.20181120060557.1: *4* MainWindow.key_press
     @flx.emitter
     def key_press(self, e):
+        trace = debug_keys and not g.unitTesting
         ev = self._create_key_event(e)
-        # print('===== main.key_down.emitter', repr(ev))
-        if ev ['modifiers']:
+        if trace:
+            print('')
+            print(self.tag, 'key_press', repr(ev))
+        f_key = not ev['modifiers'] and ev['key'].startswith('F')
+        if not f_key:
+            # Leo's core will insert the character!
             e.preventDefault()
         return ev
+
+    @flx.reaction('key_press')
+    def on_key_press(self, *events):
+        trace = debug_keys and not g.unitTesting
+        for ev in events:
+            if trace:
+                # ev.keys(): key, modifiers, type: "key_press", source: LeoFlexxBody_Njs
+                print('%s on_key_press: mods: %r key: %r' % (
+                    self.tag, ev['modifiers'], ev['key']))
+            self.root.do_key(ev, 'body')
     #@-others
 #@+node:ekr.20181104082154.1: *3* class LeoFlexxMiniBuffer
 class AceMinibuffer(flx.Widget):
@@ -1491,7 +1511,8 @@ class AceMinibuffer(flx.Widget):
 
 class LeoFlexxMiniBuffer(flx.Widget):
 
-    def init(self): 
+    def init(self):
+        self.tag = '(flx minibuffer)'
         with flx.HBox():
             flx.Label(text='Minibuffer')
             self.widget = AceMinibuffer(flex=1)
@@ -1504,7 +1525,8 @@ class LeoFlexxMiniBuffer(flx.Widget):
 
     @flx.action
     def set_focus(self):
-        # print('===== flx.minibuffer.set_focus')
+        trace = debug_focus and not g.unitTesting
+        if trace: print(self.tag, 'ace.focus()')
         self.ace.focus()
         
     @flx.action
@@ -1525,7 +1547,7 @@ class LeoFlexxMiniBuffer(flx.Widget):
     def set_text(self, s):
         # print('===== flx.minibuffer.set_text')
         self.ace.setValue(s)
-    #@+node:ekr.20181120060856.1: *4* flx_minibuffer.key_press
+    #@+node:ekr.20181120060856.1: *4* flx_minibuffer.key_press (special case)
     @flx.emitter
     def key_press(self, e):
         # pylint: disable=no-member
@@ -1549,6 +1571,7 @@ class LeoFlexxMiniBuffer(flx.Widget):
 class LeoFlexxStatusLine(flx.Widget):
     
     def init(self):
+        self.tag = '(flx status line)'
         with flx.HBox():
             flx.Label(text='Status Line')
             self.widget = flx.LineEdit(flex=1)
@@ -1570,14 +1593,6 @@ class LeoFlexxStatusLine(flx.Widget):
     @flx.action
     def put2(self, s, bg=None, fg=None):
         self.widget2.set_text(s)
-    #@+node:ekr.20181120060950.1: *4* flx_status_line.emitter.key_press
-    @flx.emitter
-    def key_press(self, e):
-        ev = self._create_key_event(e)
-        # print('===== status line.key_down.emitter', repr(ev))
-        if ev ['modifiers']:
-            e.preventDefault()
-        return ev
     #@-others
 #@+node:ekr.20181104082138.1: *3* class LeoFlexxTree
 class LeoFlexxTree(flx.Widget):
@@ -1597,9 +1612,9 @@ class LeoFlexxTree(flx.Widget):
     #@-<< tree css >>
 
     def init(self):
-        # pylint: disable=arguments-differ
         self.widget = self
         self.wrapper = self
+        self.tag = '(flx tree)'
         # Init local ivars...
         self.populated_items_dict = {}
             # Keys are ap **keys**, values are True.
@@ -1611,6 +1626,7 @@ class LeoFlexxTree(flx.Widget):
             # Keys are ap's. Values are LeoTreeItems.
         # Init the widget.
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
+            # The max_selected property does not seem to work.
 
     def assert_exists(self, obj):
         # pylint: disable=undefined-variable
@@ -1652,14 +1668,20 @@ class LeoFlexxTree(flx.Widget):
                 ],
             }
         '''
-        trace = debug_redraw and not g.unitTesting
+        trace_redraw = debug_redraw and not g.unitTesting
+        trace_select = debug_select and not g.unitTesting
+        tag = '%s: redraw_with_dict' % self.tag
         assert redraw_dict
         self.clear_tree()
         items = redraw_dict ['items']
-        if trace:
-            print('===== flx.tree.redraw_with_dict: %s direct children' % len(items))
+        if trace_redraw:
+            print('%s: %s direct children' % (tag, len(items)))
         for item in items:
             self.create_item_with_parent(item, self.tree)
+        # Select c.p.
+        if trace_select:
+            print('%s: select: %s' % (tag, redraw_dict['c.p']['headline']))
+        self.select_ap(redraw_dict['c.p'])
     #@+node:ekr.20181124194248.1: *6* tree.create_item_with_parent
     def create_item_with_parent(self, item, parent):
         '''Create a tree item for item and all its visible children.'''
@@ -1760,12 +1782,12 @@ class LeoFlexxTree(flx.Widget):
                     ### self.root.expand_and_redraw(ap)
                     self.start_populating_children(ap, tree_item)
                     # Populate children, if necessary.
-
-        
     #@+node:ekr.20181120063735.1: *4* flx_tree.Focus
     @flx.action
     def set_focus(self):
-        print('===== flx.tree.set_focus')
+        trace = debug_focus and not g.unitTesting
+        if trace: print(self.tag, 'self.node.ace.focus()')
+        self.node.focus()
     #@+node:ekr.20181123165819.1: *4* flx_tree.Incremental Drawing...
     # This are not used, at present, but they may come back.
     #@+node:ekr.20181125051244.1: *5* flx_tree.populate_children
@@ -1896,19 +1918,6 @@ class LeoFlexxTree(flx.Widget):
                     # Update the body text.
                 self.root.set_status()
                     # Update the status line.
-    #@+node:ekr.20181120061140.1: *4* flx_tree.Key handling
-    @flx.emitter
-    def key_press(self, e):
-        ev = self._create_key_event(e)
-        # print('===== tree.key_down.emitter', repr(ev))
-        if ev ['modifiers']:
-            e.preventDefault()
-        return ev
-
-    @flx.reaction('tree.key_press')
-    def on_key_press(self, *events):
-        for ev in events:
-            self.root.do_key(ev, 'tree')
     #@-others
 #@+node:ekr.20181108233657.1: *3* class LeoFlexxTreeItem
 class LeoFlexxTreeItem(flx.TreeItem):
@@ -1923,24 +1932,6 @@ class LeoFlexxTreeItem(flx.TreeItem):
         return 'head' # Required, for proper pane bindings.
 
     #@+others
-    #@+node:ekr.20181124123647.1: *4* flx.tree_item.Key Handling
-    # @flx.emitter
-    # def key_press(self, e):
-        # ev = self._create_key_event(e)
-        # if ev ['modifiers']:
-            # e.preventDefault()
-        # return ev
-        
-    # @flx.emitter
-    # def user_selected(self, e):
-        # ev = super().user_selected(e)
-        # tree_selected_ap = self.root.main_window.tree.leo_selected_ap
-        # return ev
-
-    # @flx.reaction('pointer_double_click')
-    # def on_pointer_double_click(self, *events):
-        # for ev in events:
-            # print('tree-item.pointer_double_click')
     #@-others
 #@+node:ekr.20181121031304.1: ** class BrowserTestManager
 class BrowserTestManager (leoTest.TestManager):
