@@ -276,12 +276,8 @@ class AceWrapper (leoFrame.StringTextWrapper):
             if debug_changed: print('body.ace_wrapper.insert: BODY CHANGED')
             c.setChanged()
         # doPlainChar, insertNewlineHelper, etc.
-        if 1: # Put it at the end.
-            self.s = self.s + s
-            i = len(self.s)
-        else:
-            self.s = self.s[: i] + s + self.s[i:]
-            i += len(s)
+        self.s = self.s[: i] + s + self.s[i:]
+        i += len(s)
         self.ins = i
         self.sel = i, i
         print(self.tag, 'insert', i, g.callers(1), 'self.s:', repr(g.truncate(self.s, 60)))
