@@ -1141,6 +1141,7 @@ class LeoBrowserGui(leoGui.NullGui):
 
     def set_focus(self, commander, widget):
         trace = debug_focus and not g.unitTesting
+        c = self.root.c
         if isinstance(widget, (
             LeoBrowserBody,
             LeoBrowserFrame,
@@ -1153,8 +1154,17 @@ class LeoBrowserGui(leoGui.NullGui):
             if not g.unitTesting:
                 widget.setFocus()
             self.focusWidget = widget
-        else:
-            g.trace('(gui): unknown widget', repr(widget))
+        elif isinstance(widget, AceWrapper):
+            # This does not get executed.
+            print('===== %s set_focus: redirect ace body wrapper to LeoBrowserBody')
+            assert isinstance(c.frame.body, LeoBrowserBody), repr(c.frame.body)
+            assert widget.name == 'body', repr(widget.name)
+            if not g.unitTesting:
+                c.frame.body.setFocus()
+        elif not g.unitTesting:
+            # This gets called when reloading the page (reopening the .leo file) after Ctrl-F.
+            # It also gets called during unit tests.
+            g.trace('(gui): unknown widget', repr(widget), g.callers(6))
     #@-others
 #@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
 class LeoBrowserIconBar(leoFrame.NullIconBarClass):
@@ -1615,26 +1625,27 @@ class LeoFlexxMiniBuffer(flx.Widget):
     @flx.action
     def set_focus(self):
         trace = debug_focus and not g.unitTesting
-        if trace: print(self.tag, 'ace.focus()')
+        if trace: print(self.tag, 'minibuffer.ace.focus()')
         self.ace.focus()
         
     @flx.action
     def set_insert(self, i):
-        print('===== flx.minibuffer.set_insert', i)
+        if 0: print('===== flx.minibuffer.set_insert', i)
 
     @flx.action
     def set_selection(self, i, j):
-        print('===== flx.minibuffer.set_selection', i, j)
+        if 0: print('===== flx.minibuffer.set_selection', i, j)
         
     @flx.action
     def set_style(self, style):
-        # print('===== flx.minibuffer.set_style', repr(style))
+        trace = debug_focus and not g.unitTesting
+        if trace: print(self.tag, 'set_style: minibuffer.ace.focus()')
         # A hack. Also set focus.
         self.ace.focus()
         
     @flx.action
     def set_text(self, s):
-        # print('===== flx.minibuffer.set_text')
+        if 0: print('===== flx.minibuffer.set_text')
         self.ace.setValue(s)
     #@+node:ekr.20181120060856.1: *4* flx_minibuffer.Key handling
     @flx.emitter
@@ -1679,6 +1690,8 @@ class LeoFlexxMiniBuffer(flx.Widget):
             elif command.startswith('Enter Headline:'):
                 headline = command[len('Enter Headline:'):].strip()
                 self.root.edit_headline_completer(headline)
+            else:
+                self.root.do_command(command)
             self.set_text('')
     #@-others
 #@+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
