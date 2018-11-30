@@ -106,8 +106,8 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
-debug_focus = True # puts 'focus' in g.app.debug.
-debug_keys = True # puts 'keys' in g.app.debug.
+debug_focus = False # puts 'focus' in g.app.debug.
+debug_keys = False # puts 'keys' in g.app.debug.
 debug_redraw = False
 debug_select = False
 debug_tree = False
@@ -329,9 +329,10 @@ class LeoBrowserApp(flx.PyComponent):
         t1 = time.clock()
         self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
             # This is likely the only data that ever will be needed.
-        t2 = time.clock()
-        print('app.create_all_data: %5.3f sec. %s entries' % (
-            (t2-t1), len(list(self.gnx_to_vnode.keys()))))
+        if 0:
+            t2 = time.clock()
+            print('app.create_all_data: %5.3f sec. %s entries' % (
+                (t2-t1), len(list(self.gnx_to_vnode.keys()))))
         self.test_round_trip_positions()
     #@+node:ekr.20181124133513.1: *5* app.finish_create
     @flx.action
@@ -376,12 +377,12 @@ class LeoBrowserApp(flx.PyComponent):
     def set_body_text(self):
         c, w = self.c, self.main_window
         w.body.set_text(c.p.b)
-    #@+node:ekr.20181117163223.1: *4* app.do_key (k.masterKeyHandler should update c.p.b!)
+    #@+node:ekr.20181117163223.1: *4* app.do_key
     # https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
     # See Widget._create_key_event in flexx/ui/_widget.py:
 
     @flx.action
-    def do_key (self, ev, kind):
+    def do_key (self, ev, ivar):
         '''
         LeoBrowserApp.do_key: The central key handler.
         
@@ -391,14 +392,16 @@ class LeoBrowserApp(flx.PyComponent):
         trace = debug_keys and not g.unitTesting
         trace_master_key_handler = False
         c = self.c
-        browser_wrapper = getattr(c.frame, kind)
+        browser_wrapper = getattr(c.frame, ivar)
+            # Essential: there is no way to pass the actual wrapper.
         #@+<< check browser_wrapper >>
         #@+node:ekr.20181129073812.1: *5* << check browser_wrapper >>
         assert isinstance(browser_wrapper, (
             LeoBrowserBody,
-            LeoBrowserFrame,
+            ### LeoBrowserFrame,
             LeoBrowserLog,
             LeoBrowserMinibuffer,
+            LeoBrowserStatusLine,
             LeoBrowserTree,
         )), repr(browser_wrapper)
         #@-<< check browser_wrapper >>
@@ -422,16 +425,9 @@ class LeoBrowserApp(flx.PyComponent):
             mods.append('Control')
         #@-<< set char to the translated key name >>
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
-        #@+<< trace the binding >>
-        #@+node:ekr.20181129074732.1: *5* << trace the binding >>
         if trace:
-            if 1: # Less verbose:
-                g.trace('%s from %s: %r c.p.h: %s' % (
-                    self.tag, browser_wrapper.tag, binding, c.p.h))
-            else:
-                g.trace('%s from %s: mods: %r key: %r ==> %r %r c.p.h: %s' % (
-                    self.tag, browser_wrapper.tag, mods, key, char, binding, c.p.h))
-        #@-<< trace the binding >>
+            g.trace('%s from %s: %r c.p.h: %s' % (
+                self.tag, browser_wrapper.tag, binding, c.p.h))
         #@+<< create key_event >>
         #@+node:ekr.20181129073734.1: *5* << create key_event >>
         # create the key event, but don't bother tracing it.
@@ -730,7 +726,7 @@ class LeoBrowserApp(flx.PyComponent):
             result.append(op0)
             i += 1
         return result
-    #@+node:ekr.20181129122147.1: *4* app.Edit headline...
+    #@+node:ekr.20181129122147.1: *4* app.edit_headline & helper
     def edit_headline(self):
         '''Simulate editing the headline in the minibuffer.'''
         c, w = self.c, self.root.main_window
@@ -1043,7 +1039,9 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         self.iconBar = LeoBrowserIconBar(c, frame)
         self.statusLine = LeoBrowserStatusLine(c, frame)
             # NullFrame does this in createStatusLine.
-        self.top = TracingNullObject()
+        self.top = g.NullObject()
+            # This is the DynamicWindow object.
+            # There is no need to implement its methods now.
         
     def finishCreate(self):
         '''Override NullFrame.finishCreate.'''
@@ -1078,8 +1076,21 @@ class LeoBrowserGui(leoGui.NullGui):
     #@+node:ekr.20181119141542.1: *4* gui.isTextWrapper
     def isTextWrapper(self, w):
         '''Return True if w is supposedly a text widget.'''
-        name = w.getName() if hasattr(w, 'getName') else None
-        return name in ('body', 'log', 'minibuffer') or name.startswith('head')
+        # isinstance is much more pythonic than using getName.
+        return isinstance(w, (
+            LeoBrowserBody,
+            LeoBrowserLog,
+            LeoBrowserMinibuffer,
+            # LeoFlexxTreeItem,
+                # At present, Leo's core can not edit tree items.
+            LeoBrowserStatusLine,
+        ))
+            
+        ### Old code:
+            # if not hasattr(w, 'getName'):
+                # return False
+            # name = w.getName() if hasattr(w, 'getName') else None
+            # return name in ('body', 'log', 'minibuffer') or name.startswith('head')
     #@+node:ekr.20181119153936.1: *4* gui.focus...
     def get_focus(self, *args, **kwargs):
         trace = debug_focus and not g.unitTesting
@@ -1373,6 +1384,26 @@ class LeoFlexxBody(flx.Widget):
 
 
     #@+others
+    #@+node:ekr.20181121072246.1: *4* flx_body.Key handling
+    @flx.emitter
+    def key_press(self, e):
+        trace = debug_keys and not g.unitTesting
+        ev = self._create_key_event(e)
+        if trace: print('\nBODY: key_press', repr(ev))
+        f_key = not ev['modifiers'] and ev['key'].startswith('F')
+        if not f_key:
+            # Leo's core will insert the character!
+            e.preventDefault()
+        return ev
+
+    @flx.reaction('key_press')
+    def on_key_press(self, *events):
+        trace = debug_keys and not g.unitTesting
+        # Pass *everything* to k.masterKeyHandler.
+        for ev in events:
+            if trace:
+                print('\nBODY: on_key_press', repr(ev ['modifiers']), repr(ev['key']))
+            self.root.do_key(ev, 'body')
     #@+node:ekr.20181128061524.1: *4* flx_body setters
     @flx.action
     def see_insert_point(self):
@@ -1447,6 +1478,31 @@ class LeoFlexxLog(flx.Widget):
         trace = debug_focus and not g.unitTesting
         if trace: print(self.tag, 'ace.focus()')
         self.ace.focus()
+    #@+node:ekr.20181121071956.1: *4* flx.log.Key handling
+    @flx.emitter
+    def key_press(self, e):
+        trace = debug_keys and not g.unitTesting
+        ev = self._create_key_event(e)
+        if trace: print('\nLOG: key_press', repr(ev))
+        mods = ev ['modifiers']
+        if 'Shift' in mods:
+            mods.remove('Shift')
+        if mods:
+            e.preventDefault()
+        # F12 does not work in the log.
+        return ev
+
+    @flx.reaction('key_press')
+    def on_key_press(self, *events):
+        trace = debug_keys and not g.unitTesting
+        for ev in events:
+            key, mods = ev['key'], ev ['modifiers']
+            if trace: print('\nLOG: on_key_press', repr(mods), repr(key))
+            if 'Shift' in mods:
+                mods.remove('Shift')
+            if mods:
+                # Send all ctrl, alt, meta keys to k.masterKeyHandler.
+                self.root.do_key(ev, 'log')
     #@-others
         
 #@+node:ekr.20181104082130.1: *3* class LeoFlexxMainWindow
@@ -1488,29 +1544,6 @@ class LeoFlexxMainWindow(flx.Widget):
         self.root.finish_create()
 
     #@+others
-    #@+node:ekr.20181120060557.1: *4* MainWindow.key_press
-    @flx.emitter
-    def key_press(self, e):
-        trace = debug_keys and not g.unitTesting
-        ev = self._create_key_event(e)
-        if trace:
-            print('')
-            print(self.tag, 'key_press', repr(ev))
-        f_key = not ev['modifiers'] and ev['key'].startswith('F')
-        if not f_key:
-            # Leo's core will insert the character!
-            e.preventDefault()
-        return ev
-
-    @flx.reaction('key_press')
-    def on_key_press(self, *events):
-        trace = debug_keys and not g.unitTesting
-        for ev in events:
-            if trace:
-                # ev.keys(): key, modifiers, type: "key_press", source: LeoFlexxBody_Njs
-                print('%s on_key_press: mods: %r key: %r' % (
-                    self.tag, ev['modifiers'], ev['key']))
-            self.root.do_key(ev, 'body')
     #@-others
 #@+node:ekr.20181104082154.1: *3* class LeoFlexxMiniBuffer
 class AceMinibuffer(flx.Widget):
@@ -1562,28 +1595,50 @@ class LeoFlexxMiniBuffer(flx.Widget):
     def set_text(self, s):
         # print('===== flx.minibuffer.set_text')
         self.ace.setValue(s)
-    #@+node:ekr.20181120060856.1: *4* flx_minibuffer.key_press (special case)
+    #@+node:ekr.20181120060856.1: *4* flx_minibuffer.Key handling
     @flx.emitter
     def key_press(self, e):
-        # pylint: disable=no-member
-            # ev.key
+        trace = debug_keys and not g.unitTesting
         ev = self._create_key_event(e)
-        # print('===== minibuffer.key_down.emitter', repr(ev))
-        if ev ['modifiers']:
+        if trace: print('\nMINIBUFFER: key_press', repr(ev))
+        key, mods = ev ['key'], ev ['modifiers']
+        if key == 'Enter' and not mods:
+            self.do_enter_key()
+            return None
+        if 'Shift' in mods:
+            mods.remove('Shift')
+        if mods:
+            # k.masterKeyHandler will handle everything.
             e.preventDefault()
-        elif ev.key == 'Enter':
-            command = self.ace.getValue()
-            print(self.tag, 'key_press: Enter', repr(command))
-            if command.strip():
-                if command.startswith('full-command:'):
-                    command = command[len('full-command:'):].strip()
-                    self.root.do_command(command)
-                elif command.startswith('Enter Headline:'):
-                    headline = command[len('Enter Headline:'):].strip()
-                    self.root.edit_headline_completer(headline)
-                self.set_text('')
-                return None
+        # F12 does not work in the minibuffer.
         return ev
+        
+    @flx.reaction('key_press')
+    def on_key_press(self, *events):
+        trace = debug_keys and not g.unitTesting
+        for ev in events:
+            key, mods = ev['key'], ev ['modifiers']
+            if trace: print('\nMINIBUFFER: on_key_press', repr(mods), repr(key))
+            if 'Shift' in mods:
+                mods.remove('Shift')
+            if mods:
+                self.root.do_key(ev, 'minibufferWidget')
+    #@+node:ekr.20181129174405.1: *4* flx_minibuffer.do_enter_key (Easter Eggs)
+    def do_enter_key(self):
+        '''
+        Handle the enter key in the minibuffer.
+        This will only be called if the user has entered the minibuffer via a click.
+        '''
+        command = self.ace.getValue()
+        print('\nMinibuffer: key_press: Enter', repr(command))
+        if command.strip():
+            if command.startswith('full-command:'):
+                command = command[len('full-command:'):].strip()
+                self.root.do_command(command)
+            elif command.startswith('Enter Headline:'):
+                headline = command[len('Enter Headline:'):].strip()
+                self.root.edit_headline_completer(headline)
+            self.set_text('')
     #@-others
 #@+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
 class LeoFlexxStatusLine(flx.Widget):
@@ -1611,6 +1666,30 @@ class LeoFlexxStatusLine(flx.Widget):
     @flx.action
     def put2(self, s, bg=None, fg=None):
         self.widget2.set_text(s)
+    #@+node:ekr.20181120060950.1: *4* flx_status_line.Key handling
+    @flx.emitter
+    def key_press(self, e):
+        trace = debug_keys and not g.unitTesting
+        ev = self._create_key_event(e)
+        if trace: print('\nStatus Line: key_press', repr(ev))
+        mods = ev ['modifiers']
+        if 'Shift' in mods:
+            mods.remove('Shift')
+        if mods:
+            e.preventDefault()
+        #### F12 does not work in the status line.
+        return ev
+        
+    @flx.reaction('key_press')
+    def on_key_press(self, *events):
+        trace = debug_keys and not g.unitTesting
+        for ev in events:
+            key, mods = ev['key'], ev ['modifiers']
+            if trace: print('\nSTATUS LINE: on_key_press', repr(mods), repr(key))
+            if 'Shift' in mods:
+                mods.remove('Shift')
+            if mods:
+                self.root.do_key(ev, 'statusLine')
     #@-others
 #@+node:ekr.20181104082138.1: *3* class LeoFlexxTree
 class LeoFlexxTree(flx.Widget):
@@ -1872,6 +1951,22 @@ class LeoFlexxTree(flx.Widget):
         if trace:
             print('===== flx.tree.receive_children: %s children' % (len(children)))
         self.populate_children(children, parent_ap)
+    #@+node:ekr.20181120061140.1: *4* flx_tree.Key handling
+    @flx.emitter
+    def key_press(self, e):
+        trace = debug_keys and not g.unitTesting
+        ev = self._create_key_event(e)
+        if trace: print('\nTREE: key_press', repr(ev))
+        f_key = not ev['modifiers'] and ev['key'].startswith('F')
+        if not f_key:
+            e.preventDefault()
+        return ev
+
+    @flx.reaction('tree.key_press')
+    def on_key_press(self, *events):
+        print('===== flx.TREE.key_press')
+        for ev in events:
+            self.root.do_key(ev, 'tree')
     #@+node:ekr.20181121195235.1: *4* flx_tree.Selecting...
     #@+node:ekr.20181123171958.1: *5* flx_tree.action.set_ap
     # This must exist so app.select_p can call it.
