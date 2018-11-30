@@ -230,30 +230,51 @@ class AceWrapper (leoFrame.StringTextWrapper):
     # Careful: do not set c.p.b or similar here.
 
     def appendText(self, s):
+        c = self.c
         print(self.tag, 'appendText', len(s))
+        if s and self.name == 'body':
+            if debug_changed: print('body.ace_wrapper.appendText: BODY CHANGED')
+            c.setChanged()
         self.s = self.s + s
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
-        self.c.p.v.setBodyString(self.s)
+        c.p.v.setBodyString(self.s)
         ### self.flx_wrapper().set_text(self.s)
         ### self.flx_wrapper().set_insert_point(self.ins)
 
     def delete(self, i, j=None):
+        c = self.c
         print(self.tag, 'delete', repr(i), repr(j))
         super().delete(i, j)
-        self.c.p.v.setBodyString(self.s)
+        if self.name == 'body':
+            if debug_changed: print('body.ace_wrapper.delete: BODY CHANGED')
+            c.setChanged()
+        c.p.v.setBodyString(self.s)
         ### self.flx_wrapper().set_text(self.s)
         ### self.flx_wrapper().set_insert_point(self.ins)
 
     def deleteTextSelection(self):
+        c = self.c
         print(self.tag, 'deleteTextSelection')
+        i, j = super().getSelectionRange()
+        if i == j:
+            return
+        if self.name == 'body':
+            if debug_changed: print('body.ace_wrapper.deleteTextSelection.BODY CHANGED')
+            c.setChanged()
         super().deleteTextSelection()
-        self.c.p.v.setBodyString(self.s)
+        c.p.v.setBodyString(self.s)
         ### self.flx_wrapper().set_text(self.s)
         ### self.flx_wrapper().set_insert_point(self.ins)
         
     def insert(self, i, s):
+        c = self.c
         '''Called from Leo's core on every keystroke.'''
+        if not s:
+            return
+        if self.name == 'body':
+            if debug_changed: print('body.ace_wrapper.insert: BODY CHANGED')
+            c.setChanged()
         # doPlainChar, insertNewlineHelper, etc.
         if 1: # Put it at the end.
             self.s = self.s + s
@@ -264,17 +285,18 @@ class AceWrapper (leoFrame.StringTextWrapper):
         self.ins = i
         self.sel = i, i
         print(self.tag, 'insert', i, g.callers(1), 'self.s:', repr(g.truncate(self.s, 60)))
-        self.c.p.v.setBodyString(self.s)
+        c.p.v.setBodyString(self.s)
         self.flx_wrapper().insert(s)
         ### self.flx_wrapper().set_insert_point(self.ins)
 
     def setAllText(self, s):
         # Called by set_body_text_after_select.
+        c = self.c
         if 0:
             print(self.tag, 'setAllText', g.callers(1))
             print(repr(g.truncate(s, 60)))
         self.s = s
-        self.c.p.v.setBodyString(s)
+        c.p.v.setBodyString(s)
         self.flx_wrapper().set_text(s)
         self.flx_wrapper().set_insert_point(self.ins)
     #@-others
