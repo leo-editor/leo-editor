@@ -98,22 +98,37 @@ import time
 assert re and time
     # Suppress pyflakes complaints
 #@-<< leoflexx imports >>
+debug_body = True
+debug_changed = False # Trace c.changed()
+debug_focus = False # puts 'focus' in g.app.debug.
+debug_keys = True # puts 'keys' in g.app.debug.
+debug_redraw = False
+debug_select = False
+debug_tree = False
+verbose_debug_tree = False
+use_ace = False # False: use Code Mirror.
+warnings_only = True
+# For now, always include ace assets: they are used in the log, etc.
 #@+<< ace assets >>
 #@+node:ekr.20181111074958.1: ** << ace assets >>
-# Assets for ace, embedded in the LeoFlexxBody and LeoFlexxLog classes.
+# Assets for ace JS editor.
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
 flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
-debug_changed = False # Trace c.changed()
-debug_focus = False # puts 'focus' in g.app.debug.
-debug_keys = False # puts 'keys' in g.app.debug.
-debug_redraw = False
-debug_select = False
-debug_tree = False
-verbose_debug_tree = False
-warnings_only = True
+if not use_ace:
+    #@+<< CodeMirror assets >>
+    #@+node:ekr.20181130082321.1: ** << CodeMirror assets >>
+    # Assets for CodeMirror JS editor.
+    base_url = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/'
+    flx.assets.associate_asset(__name__, base_url + '5.21.0/codemirror.min.css')
+    flx.assets.associate_asset(__name__, base_url + '5.21.0/codemirror.min.js')
+    flx.assets.associate_asset(__name__, base_url + '5.21.0/mode/python/python.js')
+    flx.assets.associate_asset(__name__, base_url + '5.21.0/theme/solarized.css')
+    flx.assets.associate_asset(__name__, base_url + '5.21.0/addon/selection/active-line.js')
+    flx.assets.associate_asset(__name__, base_url + '5.21.0/addon/edit/matchbrackets.js')
+    #@-<< CodeMirror assets >>
 #@+others
 #@+node:ekr.20181121040901.1: **  top-level functions
 #@+node:ekr.20181122102523.1: *3* banner
@@ -320,7 +335,7 @@ class LeoBrowserApp(flx.PyComponent):
 
     **Important**: This is *not* g.app. The LeoBride defines g.app.
     '''
-
+    
     main_window = flx.ComponentProp(settable=True)
 
     def init(self):
@@ -376,6 +391,8 @@ class LeoBrowserApp(flx.PyComponent):
         '''
         c, w = self.c, self.main_window
         self.inited = True
+        # Monkey-patch the FindTabManager
+        c.findCommands.ftm = g.NullObject()
         # Init g.app data
         self.old_flattened_outline = self.flatten_outline()
         self.old_redraw_dict = self.make_redraw_dict(c.p)
@@ -1420,17 +1437,54 @@ class LeoFlexxBody(flx.Widget):
         global window
         self.tag = '(flx body)'
         self.vtag = '===== (flx.body)'
-        self.ace = ace = window.ace.edit(self.node, "body editor")
-        ace.navigateFileEnd()  # otherwise all lines highlighted
-        ace.setTheme("ace/theme/solarized_dark")
-        ace.getSession().setMode("ace/mode/python")
+        if use_ace:
+            self.ace = ace = window.ace.edit(self.node, "body editor")
+            ace.navigateFileEnd()  # otherwise all lines highlighted
+            ace.setTheme("ace/theme/solarized_dark")
+            ace.getSession().setMode("ace/mode/python")
+                # This sets soft tabs.
+        else:
+            options = dict(
+                value='',
+                ### value='import os\n\ndirs = os.walk',
+                mode='python',
+                theme='solarized dark',
+                autofocus=True,
+                styleActiveLine=True,
+                matchBrackets=True,
+                indentUnit=4,
+                smartIndent=True,
+                lineWrapping=True,
+                lineNumbers=True,
+                firstLineNumber=1,
+                readOnly=False,
+            )
+            self.cm = window.CodeMirror(self.node, options)
 
     @flx.reaction('size')
     def __on_size(self, *events):
-        self.ace.resize()
+        if use_ace:
+            self.ace.resize()
+        else:
+            pass ### self.cm.resize()
         
-    ####### Create flx.reaction('changed')
-
+    @flx.reaction('onCursorChange')
+    def __on_change_cursor(self, *events):
+        print('ace body: CURSOR changed')
+        for ev in events:
+            print(repr(ev))
+            
+    @flx.reaction('onSelectionChange')
+    def __on_change_selection(self, *events):
+        print('ace body: SELECTION changed')
+        for ev in events:
+            print(repr(ev))
+            
+    @flx.reaction('onDocumentChange')
+    def __on_change_edit(self, *events):
+        print('ace body: EDITOR changed')
+        for ev in events:
+            print(repr(ev))
 
     #@+others
     #@+node:ekr.20181121072246.1: *4* flx_body.Key handling
@@ -1438,9 +1492,10 @@ class LeoFlexxBody(flx.Widget):
     def key_press(self, e):
         trace = debug_keys and not g.unitTesting
         ev = self._create_key_event(e)
-        if trace: print('\nBODY: key_press', repr(ev))
         f_key = not ev['modifiers'] and ev['key'].startswith('F')
-        if not f_key:
+        if trace: print('\nBODY: key_press', repr(ev), 'preventDefault', not f_key)
+            # Unlike the tree, this never gets called for Ctrl-F.
+        if True: ### not f_key:
             # Leo's core will insert the character!
             e.preventDefault()
         return ev
@@ -1463,34 +1518,50 @@ class LeoFlexxBody(flx.Widget):
         trace = debug_keys and not g.unitTesting
         if trace:
             print(self.tag, 'insert', repr(s))
-        self.ace.insert(s)
+        if use_ace:
+            self.ace.insert(s)
+        else:
+            print('NOT READY')
+            ### self.cm.insert(s) ##############
 
     @flx.action
     def select_all_text(self):
-        if 0: print(self.tag, 'select_all_text')
+        if debug_body: print(self.tag, 'select_all_text')
         
     @flx.action
     def set_focus(self):
         trace = debug_focus and not g.unitTesting
         if trace: print(self.tag, 'set_focus')
-        self.ace.focus()
+        if use_ace:
+            self.ace.focus()
+        else:
+            self.cm.focus() ###
 
     @flx.action
     def set_insert_point(self, i):
-        if 0: print(self.tag, 'set_insert_point', i)
-        
+        if 0: # This would work, if i were correct.
+            s = self.ace.getValue()
+            row, col = g.convertPythonIndexToRowCol(s,i)
+            if debug_body: print('%s: set_insert_point: i: %s len(s): %s row: %s col: %s' % (
+                self.tag, i, len(s), row, col))
+            self.ace.moveCursorTo(row, col)
+
     @flx.action
     def set_selection_range(self, i, j):
-        if 0: print(self.tag, 'set_selection_range', i, j)
-        
+        if debug_body: print(self.tag, 'set_selection_range', i, j)
+        print(self.ace.getSession()) ###
+
     @flx.action
     def set_text(self, s):
         '''Set the entire text'''
-        if 0:
-            print(self.tag, 'set_text')
-            print(repr(g.truncate(s, 50)))
-        self.ace.setValue(s)
-            # The insert point is always at the end.
+        if debug_body:
+            print(self.tag, 'set_text', repr(g.truncate(s, 50)))
+        if use_ace:
+            self.ace.setValue(s)
+                # The insert point is always at the end.
+        else:
+            self.cm.setValue(s)
+
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
 class LeoFlexxLog(flx.Widget):
@@ -2010,8 +2081,8 @@ class LeoFlexxTree(flx.Widget):
     def key_press(self, e):
         trace = debug_keys and not g.unitTesting
         ev = self._create_key_event(e)
-        if trace: print('\nTREE: key_press', repr(ev))
         f_key = not ev['modifiers'] and ev['key'].startswith('F')
+        if trace: print('\nTREE: key_press', repr(ev), 'preventDefault', not f_key)
         if not f_key:
             e.preventDefault()
         return ev
