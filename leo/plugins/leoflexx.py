@@ -106,8 +106,9 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
+debug_changed = True # Trace c.changed()
 debug_focus = False # puts 'focus' in g.app.debug.
-debug_keys = False # puts 'keys' in g.app.debug.
+debug_keys = True # puts 'keys' in g.app.debug.
 debug_redraw = False
 debug_select = False
 debug_tree = False
@@ -480,10 +481,17 @@ class LeoBrowserApp(flx.PyComponent):
         ap = self.p_to_ap(p)
         w.tree.select_ap(ap)
         redraw_dict = self.make_redraw_dict(p)
+            # Needed to compare generations, even if there are no changes.
         new_flattened_outline = self.flatten_outline()
         redraw_instructions = self.make_redraw_list(
             self.old_flattened_outline, new_flattened_outline)
         w.tree.redraw_with_dict(redraw_dict, redraw_instructions)
+            # At present, this does a full redraw using redraw_dict.
+            # The redraw instructions are not used.
+        # Set c.changed if there are any redraw instructions.
+        if redraw_instructions:
+            if debug_changed: print('app.redraw: C CHANGED')
+            c.setChanged()
         t2 = time.clock()
         if trace:
             g.trace('%5.3f sec.' % (t2-t1))
