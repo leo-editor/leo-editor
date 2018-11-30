@@ -1116,20 +1116,18 @@ class LeoBrowserGui(leoGui.NullGui):
     def isTextWrapper(self, w):
         '''Return True if w is supposedly a text widget.'''
         # isinstance is much more pythonic than using getName.
-        return isinstance(w, (
+        if isinstance(w, (
             LeoBrowserBody,
             LeoBrowserLog,
             LeoBrowserMinibuffer,
             # LeoFlexxTreeItem,
                 # At present, Leo's core can not edit tree items.
             LeoBrowserStatusLine,
-        ))
-            
-        ### Old code:
-            # if not hasattr(w, 'getName'):
-                # return False
-            # name = w.getName() if hasattr(w, 'getName') else None
-            # return name in ('body', 'log', 'minibuffer') or name.startswith('head')
+        )):
+            return True
+        if g.unitTesting and isinstance(w, leoFrame.StringTextWrapper):
+            return True
+        return False
     #@+node:ekr.20181119153936.1: *4* gui.focus...
     def get_focus(self, *args, **kwargs):
         trace = debug_focus and not g.unitTesting
@@ -1430,6 +1428,8 @@ class LeoFlexxBody(flx.Widget):
     @flx.reaction('size')
     def __on_size(self, *events):
         self.ace.resize()
+        
+    ####### Create flx.reaction('changed')
 
 
     #@+others
@@ -1490,7 +1490,7 @@ class LeoFlexxBody(flx.Widget):
             print(self.tag, 'set_text')
             print(repr(g.truncate(s, 50)))
         self.ace.setValue(s)
-            # This works, but the insert point is always at the end.
+            # The insert point is always at the end.
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
 class LeoFlexxLog(flx.Widget):
