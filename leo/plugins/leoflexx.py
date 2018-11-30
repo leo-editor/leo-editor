@@ -2018,7 +2018,8 @@ class LeoFlexxTree(flx.Widget):
 
     @flx.reaction('tree.key_press')
     def on_key_press(self, *events):
-        print('===== flx.TREE.key_press')
+        trace = debug_keys and not g.unitTesting
+        if trace: print('===== flx.TREE.key_press')
         for ev in events:
             self.root.do_key(ev, 'tree')
     #@+node:ekr.20181121195235.1: *4* flx_tree.Selecting...
