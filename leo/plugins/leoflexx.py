@@ -106,9 +106,9 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< ace assets >>
-debug_changed = True # Trace c.changed()
+debug_changed = False # Trace c.changed()
 debug_focus = False # puts 'focus' in g.app.debug.
-debug_keys = True # puts 'keys' in g.app.debug.
+debug_keys = False # puts 'keys' in g.app.debug.
 debug_redraw = False
 debug_select = False
 debug_tree = False
@@ -230,10 +230,12 @@ class AceWrapper (leoFrame.StringTextWrapper):
     # Careful: do not set c.p.b or similar here.
 
     def appendText(self, s):
+        trace = debug_keys and not g.unitTesting
+        trace_changed = debug_changed and not g.unitTesting
+        if trace: print(self.tag, 'appendText', len(s))
         c = self.c
-        print(self.tag, 'appendText', len(s))
         if s and self.name == 'body':
-            if debug_changed: print('body.ace_wrapper.appendText: BODY CHANGED')
+            if trace_changed: print('body.ace_wrapper.appendText: BODY CHANGED')
             c.setChanged()
         self.s = self.s + s
         self.ins = len(self.s)
@@ -243,24 +245,31 @@ class AceWrapper (leoFrame.StringTextWrapper):
         ### self.flx_wrapper().set_insert_point(self.ins)
 
     def delete(self, i, j=None):
+        # trace = debug_keys and not g.unitTesting
+        trace_changed = debug_changed and not g.unitTesting
         c = self.c
         print(self.tag, 'delete', repr(i), repr(j))
         super().delete(i, j)
         if self.name == 'body':
-            if debug_changed: print('body.ace_wrapper.delete: BODY CHANGED')
+            if trace_changed:
+                print('body.ace_wrapper.delete: BODY CHANGED')
             c.setChanged()
         c.p.v.setBodyString(self.s)
         ### self.flx_wrapper().set_text(self.s)
         ### self.flx_wrapper().set_insert_point(self.ins)
 
     def deleteTextSelection(self):
+        trace = debug_keys and not g.unitTesting
+        trace_changed = debug_changed and not g.unitTesting
         c = self.c
-        print(self.tag, 'deleteTextSelection')
+        if trace:
+            print(self.tag, 'deleteTextSelection')
         i, j = super().getSelectionRange()
         if i == j:
             return
         if self.name == 'body':
-            if debug_changed: print('body.ace_wrapper.deleteTextSelection.BODY CHANGED')
+            if trace_changed:
+                print('body.ace_wrapper.deleteTextSelection.BODY CHANGED')
             c.setChanged()
         super().deleteTextSelection()
         c.p.v.setBodyString(self.s)
@@ -268,19 +277,23 @@ class AceWrapper (leoFrame.StringTextWrapper):
         ### self.flx_wrapper().set_insert_point(self.ins)
         
     def insert(self, i, s):
+        trace = debug_keys and not g.unitTesting
+        trace_changed = debug_changed and not g.unitTesting
         c = self.c
         '''Called from Leo's core on every keystroke.'''
         if not s:
             return
         if self.name == 'body':
-            if debug_changed: print('body.ace_wrapper.insert: BODY CHANGED')
+            if trace_changed:
+                print('body.ace_wrapper.insert: BODY CHANGED')
             c.setChanged()
         # doPlainChar, insertNewlineHelper, etc.
         self.s = self.s[: i] + s + self.s[i:]
         i += len(s)
         self.ins = i
         self.sel = i, i
-        print(self.tag, 'insert', i, g.callers(1), 'self.s:', repr(g.truncate(self.s, 60)))
+        if trace:
+            print(self.tag, 'insert', i, g.callers(1), 'self.s:', repr(g.truncate(self.s, 60)))
         c.p.v.setBodyString(self.s)
         self.flx_wrapper().insert(s)
         ### self.flx_wrapper().set_insert_point(self.ins)
@@ -1437,7 +1450,9 @@ class LeoFlexxBody(flx.Widget):
         
     @flx.action
     def insert(self, s):
-        print(self.tag, 'insert', repr(s))
+        trace = debug_keys and not g.unitTesting
+        if trace:
+            print(self.tag, 'insert', repr(s))
         self.ace.insert(s)
 
     @flx.action
