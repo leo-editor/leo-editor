@@ -106,7 +106,7 @@ debug_redraw = False
 debug_select = False
 debug_tree = False
 verbose_debug_tree = False
-use_ace = False # False: use Code Mirror.
+use_ace = True # False: use Code Mirror.
 warnings_only = False
 print('\nuse_ace', use_ace, '\n')
 # For now, always include ace assets: they are used in the log, etc.
@@ -1535,27 +1535,39 @@ class LeoFlexxBody(flx.Widget):
         # The JS editor has already** handled the key!
         trace = debug_keys and not g.unitTesting
         for ev in events:
+            editor = self.editor
+            selector = editor.selection if use_ace else editor
+            text = editor.getValue()
+            cursor = selector.getCursor()
+            if use_ace:
+                row, col = cursor['row'], cursor['column']
+            else:
+                row, col = cursor['line'], cursor['ch']
             if trace:
-                editor = self.editor
-                selector = editor.selection if use_ace else editor
                 print('\nBODY: on_key_press', repr(ev ['modifiers']), repr(ev['key']))
-                print('  text:', repr(editor.getValue()))
-                print('cursor:', repr(selector.getCursor()))
-                    # cm:  cursor: {"line":0,"ch":1}
-                    # ace: cursor: {"row":0,"column":10}
+                print('  text:', repr(text))
+                print('cursor:', row, col)
+            ### self.root.update_body(text, row, col)
             
     @flx.reaction('pointer_click')
     def on_click(self, *events):
         trace = debug_keys and not g.unitTesting
         for ev in events:
+            editor = self.editor
+            selector = editor.selection if use_ace else editor
+            text = editor.getValue()
+            cursor = selector.getCursor()
+            if use_ace:
+                row, col = cursor['row'], cursor['column']
+            else:
+                row, col = cursor['line'], cursor['ch']
             if trace:
                 editor = self.editor
                 selector = editor.selection if use_ace else editor
                 print('\nBODY: on_click')
-                print('  text:', repr(editor.getValue()))
-                print('cursor:', repr(selector.getCursor()))
-                    # cm:  cursor: {"line":0,"ch":6,"xRel":0}
-                    # ace: cursor: {"row":0,"column":4}
+                print('  text:', repr(text))
+                print('cursor:', row, col)
+            ### self.root.update_body(text, row, col)
     #@+node:ekr.20181201081444.1: *4* flx_body.should_be_leo_key
     def should_be_leo_key(self, ev):
         return False
