@@ -1523,7 +1523,6 @@ class LeoFlexxBody(flx.Widget):
             print(self.tag, 'set_text', repr(g.truncate(s, 50)))
         self.editor.setValue(s)
     #@+node:ekr.20181121072246.1: *4* flx_body.Keys & clicks
-
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
@@ -1544,8 +1543,6 @@ class LeoFlexxBody(flx.Widget):
                 print('cursor:', repr(selector.getCursor()))
                     # cm:  cursor: {"line":0,"ch":1}
                     # ace: cursor: {"row":0,"column":10}
-            ###
-            ### self.root.do_key(ev, 'body')
             
     @flx.reaction('pointer_click')
     def on_click(self, *events):
@@ -1562,7 +1559,6 @@ class LeoFlexxBody(flx.Widget):
     #@+node:ekr.20181201081444.1: *4* flx_body.should_be_leo_key
     def should_be_leo_key(self, ev):
         return False
-        
         ### f_key = not ev['modifiers'] and ev['key'].startswith('F')
         ### return not f_key:
     #@-others
