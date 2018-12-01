@@ -1418,8 +1418,137 @@ class TracingNullObject(object):
         banner('NullObject.__setattr__ %r %s' % (attr, g.callers()))
         return self
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
+#@+node:ekr.20181201125953.1: *3* class JSEditorWidget
+class JSEditorWidget(flx.Widget):
+    '''The base class for all classes using a JS editor.'''
+    
+    def init(self, name, flex=1):
+        # pylint: disable=arguments-differ
+        assert name in ('body', 'log', 'minibuffer'), repr(name)
+        self.name = name
+        self.tag = '(flx %s)' % name
+        self.editor = self.make_editor()
+    
+    @flx.reaction('size')
+    def __on_size(self, *events):
+        if use_ace:
+            self.editor.resize()
+        else:
+            self.editor.refresh()
+    
+    #@+others
+    #@+node:ekr.20181121072246.1: *4* jse.Keys & clicks
+    @flx.emitter
+    def key_press(self, e):
+        ev = self._create_key_event(e)
+        if self.should_be_leo_key(ev):
+            e.preventDefault()
+        return ev
+
+    @flx.reaction('key_press')
+    def on_key_press(self, *events):
+        # The JS editor has already** handled the key!
+        trace = debug_keys and not g.unitTesting
+        for ev in events:
+            editor = self.editor
+            selector = editor.selection if use_ace else editor
+            text = editor.getValue()
+            cursor = selector.getCursor()
+            if use_ace:
+                row, col = cursor['row'], cursor['column']
+            else:
+                row, col = cursor['line'], cursor['ch']
+            if trace:
+                print('\nBODY: on_key_press', repr(ev ['modifiers']), repr(ev['key']))
+                print('  text:', repr(text))
+                print('cursor:', row, col)
+            if self.should_be_leo_key(ev):
+                print('===== call app.do_key')
+                self.root.do_key(ev, self.name)
+            ### self.root.update_body(text, row, col)
+            
+    @flx.reaction('pointer_click')
+    def on_click(self, *events):
+        trace = debug_keys and not g.unitTesting
+        for ev in events:
+            editor = self.editor
+            selector = editor.selection if use_ace else editor
+            text = editor.getValue()
+            cursor = selector.getCursor()
+            if use_ace:
+                row, col = cursor['row'], cursor['column']
+            else:
+                row, col = cursor['line'], cursor['ch']
+            if trace:
+                editor = self.editor
+                selector = editor.selection if use_ace else editor
+                print('\nBODY: on_click')
+                print('  text:', repr(text))
+                print('cursor:', row, col)
+            ###
+                # if self.name == 'body':
+                    # self.root.update_body(text, row, col)
+    #@+node:ekr.20181201081645.1: *4* jse.make_editor
+    def make_editor(self):
+        '''Instantiate the JS editor, either ace or CodeMirror'''
+        # pylint: disable=undefined-variable
+            # window looks undefined.
+        global window 
+        is_body = self.name == 'body'
+        print('===== jse.make_editor', self.name)
+        if use_ace:
+            ace = window.ace.edit(self.node, "editor")
+            ace.navigateFileEnd()  # otherwise all lines highlighted
+            ace.setTheme("ace/theme/solarized_dark")
+            if self.name == 'body':
+                ace.getSession().setMode("ace/mode/python")
+                    # This sets soft tabs.
+            return ace
+        #
+        # Use CodeMirror
+        options = dict(
+            value='',
+            mode='python' if is_body else None,
+            theme='solarized dark',
+            autofocus=True,
+            styleActiveLine=True,
+            matchBrackets=True,
+            indentUnit=4,
+            smartIndent=True,
+            lineWrapping=True,
+            lineNumbers=True,
+            firstLineNumber=1,
+            readOnly=False,
+        )
+        return window.CodeMirror(self.node, options)
+    #@+node:ekr.20181201081444.1: *4* jse.should_be_leo_key
+    def should_be_leo_key(self, ev):
+        trace = debug_keys and not g.unitTesting
+        key, mods, tag = ev['key'], ev['modifiers'],'flx_body.should_be_leo_key:'
+        #
+        # The widget handles F-keys.
+        if not mods and key.startswith('F'):
+            if trace: print(tag, 'Send F-Keys to body', repr(key), repr(mods))
+            return False
+        mods2 = mods
+        if 'Shift' in mods2:
+            mods2.remove('Shift')
+        #
+        # Send only Ctrl-Arrow keys to body.
+        if mods2 == ['Ctrl'] and key in ('RtArrow', 'LtArrow', 'UpArrow', 'DownArrow'):
+            # This never fires: Neither editor widget emis Ctrl/Arrow keys or Alt-Arrow keys.
+            if trace: print(tag, 'Arrow key: send to to body', repr(key), repr(mods))
+            return False
+        #
+        # Leo should handle all other modified keys.
+        if mods2:
+            if trace: print(tag, '  modified: send to Leo', repr(key), repr(mods))
+        else:
+            if trace: print(tag, 'unmodified: send to Body', repr(key), repr(mods))
+        return mods
+    #@-others
 #@+node:ekr.20181104082144.1: *3* class LeoFlexxBody
-class LeoFlexxBody(flx.Widget):
+class LeoFlexxBody(JSEditorWidget):
     '''A CodeEditor widget based on Ace.'''
 
     #@+<< body css >>
@@ -1433,48 +1562,13 @@ class LeoFlexxBody(flx.Widget):
     #@-<< body css >>
 
     def init(self):
-        self.tag = '(flx body)'
-        self.vtag = '===== (flx.body)'
-        self.editor = self.make_editor()
+        # pylint: disable=arguments-differ
+        super().init('body')
+        ### self.name = name
+        ### self.tag = '(flx %s)' % name
+        ### self.editor = self.make_editor()
 
-    @flx.reaction('size')
-    def __on_size(self, *events):
-        if use_ace:
-            self.editor.resize()
-        else:
-            self.editor.refresh()
-    
     #@+others
-    #@+node:ekr.20181201081645.1: *4*  flx_body.make_editor
-    def make_editor(self):
-        '''Instantiate the JS editor, either ace or CodeMirror'''
-        # pylint: disable=undefined-variable
-            # window looks undefined.
-        global window 
-        if use_ace:
-            ace = window.ace.edit(self.node, "editor")
-            ace.navigateFileEnd()  # otherwise all lines highlighted
-            ace.setTheme("ace/theme/solarized_dark")
-            ace.getSession().setMode("ace/mode/python")
-                # This sets soft tabs.
-            return ace
-        #
-        # Use CodeMirror
-        options = dict(
-            value='',
-            mode='python',
-            theme='solarized dark',
-            autofocus=True,
-            styleActiveLine=True,
-            matchBrackets=True,
-            indentUnit=4,
-            smartIndent=True,
-            lineWrapping=True,
-            lineNumbers=True,
-            firstLineNumber=1,
-            readOnly=False,
-        )
-        return window.CodeMirror(self.node, options)
     #@+node:ekr.20181128061524.1: *4* flx_body setters (These may not be needed!)
     @flx.action
     def see_insert_point(self):
@@ -1522,83 +1616,9 @@ class LeoFlexxBody(flx.Widget):
         if debug_body:
             print(self.tag, 'set_text', repr(g.truncate(s, 50)))
         self.editor.setValue(s)
-    #@+node:ekr.20181121072246.1: *4* flx_body.Keys & clicks
-    @flx.emitter
-    def key_press(self, e):
-        ev = self._create_key_event(e)
-        if self.should_be_leo_key(ev):
-            e.preventDefault()
-        return ev
-
-    @flx.reaction('key_press')
-    def on_key_press(self, *events):
-        # The JS editor has already** handled the key!
-        trace = debug_keys and not g.unitTesting
-        for ev in events:
-            editor = self.editor
-            selector = editor.selection if use_ace else editor
-            text = editor.getValue()
-            cursor = selector.getCursor()
-            if use_ace:
-                row, col = cursor['row'], cursor['column']
-            else:
-                row, col = cursor['line'], cursor['ch']
-            if trace:
-                print('\nBODY: on_key_press', repr(ev ['modifiers']), repr(ev['key']))
-                print('  text:', repr(text))
-                print('cursor:', row, col)
-            if self.should_be_leo_key(ev):
-                print('===== call app.do_key')
-                self.root.do_key(ev, 'body')
-            ### self.root.update_body(text, row, col)
-            
-    @flx.reaction('pointer_click')
-    def on_click(self, *events):
-        trace = debug_keys and not g.unitTesting
-        for ev in events:
-            editor = self.editor
-            selector = editor.selection if use_ace else editor
-            text = editor.getValue()
-            cursor = selector.getCursor()
-            if use_ace:
-                row, col = cursor['row'], cursor['column']
-            else:
-                row, col = cursor['line'], cursor['ch']
-            if trace:
-                editor = self.editor
-                selector = editor.selection if use_ace else editor
-                print('\nBODY: on_click')
-                print('  text:', repr(text))
-                print('cursor:', row, col)
-            ### self.root.update_body(text, row, col)
-    #@+node:ekr.20181201081444.1: *4* flx_body.should_be_leo_key
-    def should_be_leo_key(self, ev):
-        trace = debug_keys and not g.unitTesting
-        key, mods, tag = ev['key'], ev['modifiers'],'flx_body.should_be_leo_key:'
-        #
-        # The widget handles F-keys.
-        if not mods and key.startswith('F'):
-            if trace: print(tag, 'Send F-Keys to body', repr(key), repr(mods))
-            return False
-        mods2 = mods
-        if 'Shift' in mods2:
-            mods2.remove('Shift')
-        #
-        # Send only Ctrl-Arrow keys to body.
-        if mods2 == ['Ctrl'] and key in ('RtArrow', 'LtArrow', 'UpArrow', 'DownArrow'):
-            # This never fires: Neither editor widget emis Ctrl/Arrow keys or Alt-Arrow keys.
-            if trace: print(tag, 'Arrow key: send to to body', repr(key), repr(mods))
-            return False
-        #
-        # Leo should handle all other modified keys.
-        if mods2:
-            if trace: print(tag, '  modified: send to Leo', repr(key), repr(mods))
-        else:
-            if trace: print(tag, 'unmodified: send to Body', repr(key), repr(mods))
-        return mods
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
-class LeoFlexxLog(flx.Widget):
+class LeoFlexxLog(JSEditorWidget):
     
     #@+<< log css >>
     #@+node:ekr.20181120060336.1: *4* << log css >>
@@ -1609,56 +1629,36 @@ class LeoFlexxLog(flx.Widget):
     }
     """
     #@-<< log css >>
-
+    
     def init(self):
-        # pylint: disable=undefined-variable
-            # window
-        global window
-        self.tag = '(flx log)'
-        self.ace = window.ace.edit(self.node, "log editor")
-        self.ace.navigateFileEnd()  # otherwise all lines highlighted
-        self.ace.setTheme("ace/theme/solarized_dark")
+        # pylint: disable=arguments-differ
+        super().init('log')
 
-    @flx.reaction('size')
-    def __on_size(self, *events):
-        self.ace.resize()
+    ### 
+        # def init(self):
+            # # pylint: disable=undefined-variable
+                # # window
+            # global window
+            # self.tag = '(flx log)'
+            # self.ace = window.ace.edit(self.node, "log editor")
+            # self.ace.navigateFileEnd()  # otherwise all lines highlighted
+            # self.ace.setTheme("ace/theme/solarized_dark")
+    
+        # @flx.reaction('size')
+        # def __on_size(self, *events):
+            # self.ace.resize()
 
     #@+others
     #@+node:ekr.20181120060348.1: *4* flx.log.put & set_focus
     @flx.action
     def put(self, s):
-        self.ace.setValue(self.ace.getValue() + '\n' + s)
+        self.editor.setValue(self.editor.getValue() + '\n' + s)
         
     @flx.action
     def set_focus(self):
         trace = debug_focus and not g.unitTesting
         if trace: print(self.tag, 'ace.focus()')
-        self.ace.focus()
-    #@+node:ekr.20181121071956.1: *4* flx.log.Key handling
-    @flx.emitter
-    def key_press(self, e):
-        trace = debug_keys and not g.unitTesting
-        ev = self._create_key_event(e)
-        if trace: print('\nLOG: key_press', repr(ev))
-        mods = ev ['modifiers']
-        if 'Shift' in mods:
-            mods.remove('Shift')
-        if mods:
-            e.preventDefault()
-        # F12 does not work in the log.
-        return ev
-
-    @flx.reaction('key_press')
-    def on_key_press(self, *events):
-        trace = debug_keys and not g.unitTesting
-        for ev in events:
-            key, mods = ev['key'], ev ['modifiers']
-            if trace: print('\nLOG: on_key_press', repr(mods), repr(key))
-            if 'Shift' in mods:
-                mods.remove('Shift')
-            if mods:
-                # Send all ctrl, alt, meta keys to k.masterKeyHandler.
-                self.root.do_key(ev, 'log')
+        self.editor.focus()
     #@-others
         
 #@+node:ekr.20181104082130.1: *3* class LeoFlexxMainWindow
@@ -1702,25 +1702,29 @@ class LeoFlexxMainWindow(flx.Widget):
     #@+others
     #@-others
 #@+node:ekr.20181104082154.1: *3* class LeoFlexxMiniBuffer
-class AceMinibuffer(flx.Widget):
+# class AceMinibuffer(flx.Widget):
 
+    # def init(self):
+        # # pylint: disable=undefined-variable
+            # # window
+        # global window
+        # self.ace = window.ace.edit(self.node, "minibuffer")
+        # self.ace.navigateFileEnd()  # otherwise all lines highlighted
+        # self.ace.setTheme("ace/theme/solarized_dark")
+
+class LeoFlexxMiniBuffer(JSEditorWidget):
+    
     def init(self):
-        # pylint: disable=undefined-variable
-            # window
-        global window
-        self.ace = window.ace.edit(self.node, "minibuffer")
-        self.ace.navigateFileEnd()  # otherwise all lines highlighted
-        self.ace.setTheme("ace/theme/solarized_dark")
-        ### self.ace.getSession().setMode("ace/mode/python")
+        # pylint: disable=arguments-differ
+        super().init('minibuffer')
 
-class LeoFlexxMiniBuffer(flx.Widget):
-
-    def init(self):
-        self.tag = '(flx minibuffer)'
-        with flx.HBox():
-            flx.Label(text='Minibuffer')
-            self.widget = AceMinibuffer(flex=1)
-            self.ace = self.widget.ace
+    # def init(self):
+        # self.tag = '(flx minibuffer)'
+        # with flx.HBox():
+            # flx.Label(text='Minibuffer')
+            # ### self.widget = AceMinibuffer(flex=1)
+            # self.widget = JSEditorWidget('minibuffer')
+            # self.editor = self.widget.editor
 
     #@+others
     #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
@@ -1731,7 +1735,7 @@ class LeoFlexxMiniBuffer(flx.Widget):
     def set_focus(self):
         trace = debug_focus and not g.unitTesting
         if trace: print(self.tag, 'minibuffer.ace.focus()')
-        self.ace.focus()
+        self.editor.focus()
         
     @flx.action
     def set_insert(self, i):
@@ -1746,47 +1750,19 @@ class LeoFlexxMiniBuffer(flx.Widget):
         trace = debug_focus and not g.unitTesting
         if trace: print(self.tag, 'set_style: minibuffer.ace.focus()')
         # A hack. Also set focus.
-        self.ace.focus()
+        self.editor.focus()
         
     @flx.action
     def set_text(self, s):
         if 0: print('===== flx.minibuffer.set_text')
-        self.ace.setValue(s)
-    #@+node:ekr.20181120060856.1: *4* flx_minibuffer.Key handling
-    @flx.emitter
-    def key_press(self, e):
-        trace = debug_keys and not g.unitTesting
-        ev = self._create_key_event(e)
-        if trace: print('\nMINIBUFFER: key_press', repr(ev))
-        key, mods = ev ['key'], ev ['modifiers']
-        if key == 'Enter' and not mods:
-            self.do_enter_key()
-            return None
-        if 'Shift' in mods:
-            mods.remove('Shift')
-        if mods:
-            # k.masterKeyHandler will handle everything.
-            e.preventDefault()
-        # F12 does not work in the minibuffer.
-        return ev
-        
-    @flx.reaction('key_press')
-    def on_key_press(self, *events):
-        trace = debug_keys and not g.unitTesting
-        for ev in events:
-            key, mods = ev['key'], ev ['modifiers']
-            if trace: print('\nMINIBUFFER: on_key_press', repr(mods), repr(key))
-            if 'Shift' in mods:
-                mods.remove('Shift')
-            if mods:
-                self.root.do_key(ev, 'minibufferWidget')
+        self.editor.setValue(s)
     #@+node:ekr.20181129174405.1: *4* flx_minibuffer.do_enter_key (Easter Eggs)
     def do_enter_key(self):
         '''
         Handle the enter key in the minibuffer.
         This will only be called if the user has entered the minibuffer via a click.
         '''
-        command = self.ace.getValue()
+        command = self.editor.getValue()
         print('\nMinibuffer: key_press: Enter', repr(command))
         if command.strip():
             if command.startswith('full-command:'):
