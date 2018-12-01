@@ -1449,6 +1449,7 @@ class JSEditorWidget(flx.Widget):
     def on_key_press(self, *events):
         # The JS editor has already** handled the key!
         trace = debug_keys and not g.unitTesting
+        tag = self.name.upper()
         for ev in events:
             editor = self.editor
             selector = editor.selection if use_ace else editor
@@ -1459,7 +1460,8 @@ class JSEditorWidget(flx.Widget):
             else:
                 row, col = cursor['line'], cursor['ch']
             if trace:
-                print('\nBODY: on_key_press', repr(ev ['modifiers']), repr(ev['key']))
+                print('')
+                print(tag, ': on_key_press', repr(ev ['modifiers']), repr(ev['key']))
                 print('  text:', repr(text))
                 print('cursor:', row, col)
             if self.should_be_leo_key(ev):
@@ -1470,6 +1472,7 @@ class JSEditorWidget(flx.Widget):
     @flx.reaction('pointer_click')
     def on_click(self, *events):
         trace = debug_keys and not g.unitTesting
+        tag = self.name.upper()
         for ev in events:
             editor = self.editor
             selector = editor.selection if use_ace else editor
@@ -1482,7 +1485,8 @@ class JSEditorWidget(flx.Widget):
             if trace:
                 editor = self.editor
                 selector = editor.selection if use_ace else editor
-                print('\nBODY: on_click')
+                print('')
+                print(tag, ': on_click')
                 print('  text:', repr(text))
                 print('cursor:', row, col)
             ###
@@ -1495,7 +1499,7 @@ class JSEditorWidget(flx.Widget):
             # window looks undefined.
         global window 
         is_body = self.name == 'body'
-        print('===== jse.make_editor', self.name)
+        print('===== JSE.make_editor', self.name)
         if use_ace:
             ace = window.ace.edit(self.node, "editor")
             ace.navigateFileEnd()  # otherwise all lines highlighted
@@ -1524,7 +1528,7 @@ class JSEditorWidget(flx.Widget):
     #@+node:ekr.20181201081444.1: *4* jse.should_be_leo_key
     def should_be_leo_key(self, ev):
         trace = debug_keys and not g.unitTesting
-        key, mods, tag = ev['key'], ev['modifiers'],'flx_body.should_be_leo_key:'
+        key, mods, tag = ev['key'], ev['modifiers'], 'JSE.should_be_leo_key:'
         #
         # The widget handles F-keys.
         if not mods and key.startswith('F'):
