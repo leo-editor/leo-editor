@@ -107,7 +107,7 @@ debug_select = False
 debug_tree = False
 verbose_debug_tree = False
 use_ace = True # False: use Code Mirror.
-warnings_only = False
+warnings_only = False # False is better for debugging.
 print('\nuse_ace', use_ace, '\n')
 # For now, always include ace assets: they are used in the log, etc.
 #@+<< ace assets >>
@@ -1547,6 +1547,9 @@ class LeoFlexxBody(flx.Widget):
                 print('\nBODY: on_key_press', repr(ev ['modifiers']), repr(ev['key']))
                 print('  text:', repr(text))
                 print('cursor:', row, col)
+            if self.should_be_leo_key(ev):
+                print('===== call app.do_key')
+                self.root.do_key(ev, 'body')
             ### self.root.update_body(text, row, col)
             
     @flx.reaction('pointer_click')
@@ -1570,9 +1573,29 @@ class LeoFlexxBody(flx.Widget):
             ### self.root.update_body(text, row, col)
     #@+node:ekr.20181201081444.1: *4* flx_body.should_be_leo_key
     def should_be_leo_key(self, ev):
-        return False
-        ### f_key = not ev['modifiers'] and ev['key'].startswith('F')
-        ### return not f_key:
+        trace = debug_keys and not g.unitTesting
+        key, mods, tag = ev['key'], ev['modifiers'],'flx_body.should_be_leo_key:'
+        #
+        # The widget handles F-keys.
+        if not mods and key.startswith('F'):
+            if trace: print(tag, 'Send F-Keys to body', repr(key), repr(mods))
+            return False
+        mods2 = mods
+        if 'Shift' in mods2:
+            mods2.remove('Shift')
+        #
+        # Send only Ctrl-Arrow keys to body.
+        if mods2 == ['Ctrl'] and key in ('RtArrow', 'LtArrow', 'UpArrow', 'DownArrow'):
+            # This never fires: Neither editor widget emis Ctrl/Arrow keys or Alt-Arrow keys.
+            if trace: print(tag, 'Arrow key: send to to body', repr(key), repr(mods))
+            return False
+        #
+        # Leo should handle all other modified keys.
+        if mods2:
+            if trace: print(tag, '  modified: send to Leo', repr(key), repr(mods))
+        else:
+            if trace: print(tag, 'unmodified: send to Body', repr(key), repr(mods))
+        return mods
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
 class LeoFlexxLog(flx.Widget):
@@ -2194,7 +2217,7 @@ class BrowserTestManager (leoTest.TestManager):
 if __name__ == '__main__':
     flx.launch(LeoBrowserApp)
     flx.logger.info('LeoApp: after flx.launch')
-    flx.set_log_level('ERROR' if warnings_only else 'INFO')
+    flx.set_log_level('ERROR' if warnings_only and use_ace else 'INFO')
         # Debug produces too many messages, in general.
     flx.run()
 #@-leo
