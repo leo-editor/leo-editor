@@ -1488,24 +1488,25 @@ class LeoFlexxBody(flx.Widget):
     def on_key_press(self, *events):
         # The JS editor has already** handled the key!
         trace = debug_keys and not g.unitTesting
-        editor = self.editor
-        selector = editor.selection if use_ace else editor
         for ev in events:
             if trace:
+                editor = self.editor
+                selector = editor.selection if use_ace else editor
                 print('\nBODY: on_key_press', repr(ev ['modifiers']), repr(ev['key']))
                 print('  text:', repr(editor.getValue()))
                 print('cursor:', repr(selector.getCursor()))
                     # cm:  cursor: {"line":0,"ch":1}
                     # ace: cursor: {"row":0,"column":10}
+            ###
             ### self.root.do_key(ev, 'body')
             
     @flx.reaction('pointer_click')
     def on_click(self, *events):
         trace = debug_keys and not g.unitTesting
-        editor = self.editor
-        selector = editor.selection if use_ace else editor
         for ev in events:
             if trace:
+                editor = self.editor
+                selector = editor.selection if use_ace else editor
                 print('\nBODY: on_click')
                 print('  text:', repr(editor.getValue()))
                 print('cursor:', repr(selector.getCursor()))
