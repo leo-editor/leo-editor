@@ -107,7 +107,7 @@ debug_select = False
 debug_tree = False
 verbose_debug_tree = False
 use_ace = True # False: use Code Mirror.
-warnings_only = False # False is better for debugging.
+warnings_only = True # False is better for debugging.
 print('\nuse_ace', use_ace, '\n')
 # For now, always include ace assets: they are used in the log, etc.
 #@+<< ace assets >>
@@ -198,14 +198,12 @@ class AceWrapper (leoFrame.StringTextWrapper):
         assert self.c == c
         assert self.name == name
         self.tag = '(AceWrapper: %s)' % name
-        self.vtag = '===== (AceWrapper: %s)' % name
         self.root = get_root()
         
     def flx_wrapper(self):
         if self.root.inited:
             w = self.root.main_window
             return getattr(w, self.name)
-        # print(self.vtag, 'app not inited', g.callers())
         return g.NullObject()
         
     def setFocus(self):
@@ -1172,7 +1170,7 @@ class LeoBrowserGui(leoGui.NullGui):
             self.focusWidget = widget
         elif isinstance(widget, AceWrapper):
             # This does not get executed.
-            print('===== %s set_focus: redirect ace body wrapper to LeoBrowserBody')
+            print('===== %s set_focus: redirect AceeWrapper to LeoBrowserBody')
             assert isinstance(c.frame.body, LeoBrowserBody), repr(c.frame.body)
             assert widget.name == 'body', repr(widget.name)
             if not g.unitTesting:
