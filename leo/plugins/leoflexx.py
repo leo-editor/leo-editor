@@ -1428,7 +1428,7 @@ class JSEditorWidget(flx.Widget):
         self.name = name
         self.tag = '(flx %s)' % name
         self.editor = self.make_editor()
-    
+
     @flx.reaction('size')
     def __on_size(self, *events):
         if use_ace:
@@ -1466,7 +1466,9 @@ class JSEditorWidget(flx.Widget):
                 print('cursor:', row, col)
             if self.should_be_leo_key(ev):
                 print('===== call app.do_key')
-                self.root.do_key(ev, self.name)
+                ivar = 'minibufferWidget' if self.name == 'minibuffer' else self.name
+                    ### Maybe do_key should do this.
+                self.root.do_key(ev, ivar)
             ### self.root.update_body(text, row, col)
             
     @flx.reaction('pointer_click')
@@ -1499,7 +1501,7 @@ class JSEditorWidget(flx.Widget):
             # window looks undefined.
         global window 
         is_body = self.name == 'body'
-        print('===== JSE.make_editor', self.name)
+        ### print('===== JSE.make_editor', self.name)
         if use_ace:
             ace = window.ace.edit(self.node, "editor")
             ace.navigateFileEnd()  # otherwise all lines highlighted
@@ -1532,7 +1534,7 @@ class JSEditorWidget(flx.Widget):
         #
         # The widget handles F-keys.
         if not mods and key.startswith('F'):
-            if trace: print(tag, 'Send F-Keys to body', repr(key), repr(mods))
+            if trace: print(tag, 'Send F-Keys to body', repr(mods), repr(key))
             return False
         mods2 = mods
         if 'Shift' in mods2:
@@ -1541,14 +1543,14 @@ class JSEditorWidget(flx.Widget):
         # Send only Ctrl-Arrow keys to body.
         if mods2 == ['Ctrl'] and key in ('RtArrow', 'LtArrow', 'UpArrow', 'DownArrow'):
             # This never fires: Neither editor widget emis Ctrl/Arrow keys or Alt-Arrow keys.
-            if trace: print(tag, 'Arrow key: send to to body', repr(key), repr(mods))
+            if trace: print(tag, 'Arrow key: send to to body', repr(mods), repr(key))
             return False
         #
         # Leo should handle all other modified keys.
         if mods2:
-            if trace: print(tag, '  modified: send to Leo', repr(key), repr(mods))
+            if trace: print(tag, '  modified: send to Leo', repr(mods), repr(key))
         else:
-            if trace: print(tag, 'unmodified: send to Body', repr(key), repr(mods))
+            if trace: print(tag, 'unmodified: send to Body', repr(mods), repr(key))
         return mods
     #@-others
 #@+node:ekr.20181104082144.1: *3* class LeoFlexxBody
@@ -1568,9 +1570,6 @@ class LeoFlexxBody(JSEditorWidget):
     def init(self):
         # pylint: disable=arguments-differ
         super().init('body')
-        ### self.name = name
-        ### self.tag = '(flx %s)' % name
-        ### self.editor = self.make_editor()
 
     #@+others
     #@+node:ekr.20181128061524.1: *4* flx_body setters (These may not be needed!)
@@ -1587,7 +1586,7 @@ class LeoFlexxBody(JSEditorWidget):
             self.editor.insert(s)
         else:
             print('NOT READY')
-            ### self.cm.insert(s) ##############
+            ### self.editor.insert(s) ##############
 
     @flx.action
     def select_all_text(self):
@@ -1638,20 +1637,6 @@ class LeoFlexxLog(JSEditorWidget):
         # pylint: disable=arguments-differ
         super().init('log')
 
-    ### 
-        # def init(self):
-            # # pylint: disable=undefined-variable
-                # # window
-            # global window
-            # self.tag = '(flx log)'
-            # self.ace = window.ace.edit(self.node, "log editor")
-            # self.ace.navigateFileEnd()  # otherwise all lines highlighted
-            # self.ace.setTheme("ace/theme/solarized_dark")
-    
-        # @flx.reaction('size')
-        # def __on_size(self, *events):
-            # self.ace.resize()
-
     #@+others
     #@+node:ekr.20181120060348.1: *4* flx.log.put & set_focus
     @flx.action
@@ -1664,7 +1649,6 @@ class LeoFlexxLog(JSEditorWidget):
         if trace: print(self.tag, 'ace.focus()')
         self.editor.focus()
     #@-others
-        
 #@+node:ekr.20181104082130.1: *3* class LeoFlexxMainWindow
 class LeoFlexxMainWindow(flx.Widget):
     
@@ -1706,29 +1690,11 @@ class LeoFlexxMainWindow(flx.Widget):
     #@+others
     #@-others
 #@+node:ekr.20181104082154.1: *3* class LeoFlexxMiniBuffer
-# class AceMinibuffer(flx.Widget):
-
-    # def init(self):
-        # # pylint: disable=undefined-variable
-            # # window
-        # global window
-        # self.ace = window.ace.edit(self.node, "minibuffer")
-        # self.ace.navigateFileEnd()  # otherwise all lines highlighted
-        # self.ace.setTheme("ace/theme/solarized_dark")
-
 class LeoFlexxMiniBuffer(JSEditorWidget):
     
     def init(self):
         # pylint: disable=arguments-differ
         super().init('minibuffer')
-
-    # def init(self):
-        # self.tag = '(flx minibuffer)'
-        # with flx.HBox():
-            # flx.Label(text='Minibuffer')
-            # ### self.widget = AceMinibuffer(flex=1)
-            # self.widget = JSEditorWidget('minibuffer')
-            # self.editor = self.widget.editor
 
     #@+others
     #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
