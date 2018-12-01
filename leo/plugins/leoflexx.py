@@ -106,7 +106,7 @@ debug_redraw = False
 debug_select = False
 debug_tree = False
 verbose_debug_tree = False
-use_ace = False # False: use Code Mirror.
+use_ace = True # False: use Code Mirror.
 warnings_only = False
 print('\nuse_ace', use_ace, '\n')
 # For now, always include ace assets: they are used in the log, etc.
@@ -1470,7 +1470,7 @@ class LeoFlexxBody(flx.Widget):
             self.editor.refresh()
     
     #@+others
-    #@+node:ekr.20181121072246.1: *4* flx_body.Key handling
+    #@+node:ekr.20181121072246.1: *4* flx_body.Keys & clicks
     if 0:
         @flx.emitter
         def key_press(self, e):
@@ -1486,23 +1486,31 @@ class LeoFlexxBody(flx.Widget):
 
     @flx.reaction('key_press')
     def on_key_press(self, *events):
-        '''
-        The key handler for the body pane.
-        
-        Unless the emitter calls preventDefault(), the JS editor has
-        **already** handled the key!
-        '''
+        # The JS editor has already** handled the key!
         trace = debug_keys and not g.unitTesting
         editor = self.editor
         selector = editor.selection if use_ace else editor
         for ev in events:
             if trace:
-                print('BODY: on_key_press', repr(ev ['modifiers']), repr(ev['key']))
+                print('\nBODY: on_key_press', repr(ev ['modifiers']), repr(ev['key']))
                 print('  text:', repr(editor.getValue()))
                 print('cursor:', repr(selector.getCursor()))
                     # cm:  cursor: {"line":0,"ch":1}
                     # ace: cursor: {"row":0,"column":10}
             ### self.root.do_key(ev, 'body')
+            
+    @flx.reaction('pointer_click')
+    def on_click(self, *events):
+        trace = debug_keys and not g.unitTesting
+        editor = self.editor
+        selector = editor.selection if use_ace else editor
+        for ev in events:
+            if trace:
+                print('\nBODY: on_click')
+                print('  text:', repr(editor.getValue()))
+                print('cursor:', repr(selector.getCursor()))
+                    # cm:  cursor: {"line":0,"ch":6,"xRel":0}
+                    # ace: cursor: {"row":0,"column":4}
     #@+node:ekr.20181128061524.1: *4* flx_body setters (These may not be needed!)
     @flx.action
     def see_insert_point(self):
