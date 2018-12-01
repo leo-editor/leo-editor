@@ -107,7 +107,8 @@ debug_select = False
 debug_tree = False
 verbose_debug_tree = False
 use_ace = False # False: use Code Mirror.
-warnings_only = True
+warnings_only = False
+print('\nuse_ace', use_ace, '\n')
 # For now, always include ace assets: they are used in the log, etc.
 #@+<< ace assets >>
 #@+node:ekr.20181111074958.1: ** << ace assets >>
@@ -292,10 +293,10 @@ class AceWrapper (leoFrame.StringTextWrapper):
         ### self.flx_wrapper().set_insert_point(self.ins)
         
     def insert(self, i, s):
+        '''Called from Leo's core on every keystroke.'''
         trace = debug_keys and not g.unitTesting
         trace_changed = debug_changed and not g.unitTesting
         c = self.c
-        '''Called from Leo's core on every keystroke.'''
         if not s:
             return
         if self.name == 'body':
@@ -619,7 +620,7 @@ class LeoBrowserApp(flx.PyComponent):
             self.extend_flattened_outline(aList, p)
         if trace:
             t2 = time.clock()
-            print('app.flatten_outline: %s entries %5.3f sec.' % (
+            print('app.flatten_outline: %s entries %6.4f sec.' % (
                 len(aList), (t2-t1)))
         return aList
             
@@ -1438,7 +1439,7 @@ class LeoFlexxBody(flx.Widget):
         self.tag = '(flx body)'
         self.vtag = '===== (flx.body)'
         if use_ace:
-            self.ace = ace = window.ace.edit(self.node, "body editor")
+            self.editor = ace = window.ace.edit(self.node, "editor")
             ace.navigateFileEnd()  # otherwise all lines highlighted
             ace.setTheme("ace/theme/solarized_dark")
             ace.getSession().setMode("ace/mode/python")
@@ -1459,56 +1460,50 @@ class LeoFlexxBody(flx.Widget):
                 firstLineNumber=1,
                 readOnly=False,
             )
-            self.cm = window.CodeMirror(self.node, options)
+            self.editor = window.CodeMirror(self.node, options)
 
     @flx.reaction('size')
     def __on_size(self, *events):
         if use_ace:
-            self.ace.resize()
+            self.editor.resize()
         else:
-            pass ### self.cm.resize()
-        
-    @flx.reaction('onCursorChange')
-    def __on_change_cursor(self, *events):
-        print('ace body: CURSOR changed')
-        for ev in events:
-            print(repr(ev))
-            
-    @flx.reaction('onSelectionChange')
-    def __on_change_selection(self, *events):
-        print('ace body: SELECTION changed')
-        for ev in events:
-            print(repr(ev))
-            
-    @flx.reaction('onDocumentChange')
-    def __on_change_edit(self, *events):
-        print('ace body: EDITOR changed')
-        for ev in events:
-            print(repr(ev))
-
+            self.editor.refresh()
+    
     #@+others
     #@+node:ekr.20181121072246.1: *4* flx_body.Key handling
-    @flx.emitter
-    def key_press(self, e):
-        trace = debug_keys and not g.unitTesting
-        ev = self._create_key_event(e)
-        f_key = not ev['modifiers'] and ev['key'].startswith('F')
-        if trace: print('\nBODY: key_press', repr(ev), 'preventDefault', not f_key)
-            # Unlike the tree, this never gets called for Ctrl-F.
-        if True: ### not f_key:
-            # Leo's core will insert the character!
-            e.preventDefault()
-        return ev
+    if 0:
+        @flx.emitter
+        def key_press(self, e):
+            trace = debug_keys and not g.unitTesting
+            ev = self._create_key_event(e)
+            f_key = not ev['modifiers'] and ev['key'].startswith('F')
+            if trace: print('\nBODY: key_press', repr(ev), 'preventDefault', not f_key)
+                # Unlike the tree, this never gets called for Ctrl-F.
+            if False: ### not f_key:
+                # Leo's core will insert the character!
+                e.preventDefault()
+            return ev
 
     @flx.reaction('key_press')
     def on_key_press(self, *events):
+        '''
+        The key handler for the body pane.
+        
+        Unless the emitter calls preventDefault(), the JS editor has
+        **already** handled the key!
+        '''
         trace = debug_keys and not g.unitTesting
-        # Pass *everything* to k.masterKeyHandler.
+        editor = self.editor
+        selector = editor.selection if use_ace else editor
         for ev in events:
             if trace:
-                print('\nBODY: on_key_press', repr(ev ['modifiers']), repr(ev['key']))
-            self.root.do_key(ev, 'body')
-    #@+node:ekr.20181128061524.1: *4* flx_body setters
+                print('BODY: on_key_press', repr(ev ['modifiers']), repr(ev['key']))
+                print('  text:', repr(editor.getValue()))
+                print('cursor:', repr(selector.getCursor()))
+                    # cm:  cursor: {"line":0,"ch":1}
+                    # ace: cursor: {"row":0,"column":10}
+            ### self.root.do_key(ev, 'body')
+    #@+node:ekr.20181128061524.1: *4* flx_body setters (These may not be needed!)
     @flx.action
     def see_insert_point(self):
         if 0: print(self.tag, 'see_insert_point')
@@ -1519,7 +1514,7 @@ class LeoFlexxBody(flx.Widget):
         if trace:
             print(self.tag, 'insert', repr(s))
         if use_ace:
-            self.ace.insert(s)
+            self.editor.insert(s)
         else:
             print('NOT READY')
             ### self.cm.insert(s) ##############
@@ -1532,36 +1527,29 @@ class LeoFlexxBody(flx.Widget):
     def set_focus(self):
         trace = debug_focus and not g.unitTesting
         if trace: print(self.tag, 'set_focus')
-        if use_ace:
-            self.ace.focus()
-        else:
-            self.cm.focus() ###
+        self.editor.focus()
 
     @flx.action
     def set_insert_point(self, i):
         if 0: # This would work, if i were correct.
-            s = self.ace.getValue()
+            s = self.editor.getValue()
             row, col = g.convertPythonIndexToRowCol(s,i)
             if debug_body: print('%s: set_insert_point: i: %s len(s): %s row: %s col: %s' % (
                 self.tag, i, len(s), row, col))
-            self.ace.moveCursorTo(row, col)
+            if use_ace:
+                self.editor.moveCursorTo(row, col)
 
     @flx.action
     def set_selection_range(self, i, j):
         if debug_body: print(self.tag, 'set_selection_range', i, j)
-        print(self.ace.getSession()) ###
+        ### print(self.editor.getSession()) ###
 
     @flx.action
     def set_text(self, s):
         '''Set the entire text'''
         if debug_body:
             print(self.tag, 'set_text', repr(g.truncate(s, 50)))
-        if use_ace:
-            self.ace.setValue(s)
-                # The insert point is always at the end.
-        else:
-            self.cm.setValue(s)
-
+        self.editor.setValue(s)
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
 class LeoFlexxLog(flx.Widget):
