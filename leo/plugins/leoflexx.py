@@ -1059,7 +1059,6 @@ class LeoBrowserGui(leoGui.NullGui):
         self.root = None # Will be set later.
         self.tag = '(browser gui)'
         self.specific_browser = gui_name.lstrip('browser').lstrip(':').lstrip('-').strip()
-        g.trace(self.specific_browser)
         self.consoleOnly = False # Console is separate from the log.
         
     def insertKeyEvent(self, event, i):
@@ -1131,7 +1130,6 @@ class LeoBrowserGui(leoGui.NullGui):
     def runMainLoop(self):
         '''Run the main loop from within Leo's core.'''
         runtime = self.specific_browser or 'webruntime'
-        g.trace('RUNTIME', runtime)
         flx.launch(LeoBrowserApp, runtime)
         flx.logger.info('LeoApp: after flx.launch')
         flx.set_log_level('ERROR' if use_ace and warnings_only else 'INFO')
