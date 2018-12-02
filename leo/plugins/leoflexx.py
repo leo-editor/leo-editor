@@ -86,17 +86,15 @@ Coming soon:
 import leo.core.leoGlobals as g
     # **Note**: JS code can not use g.trace, g.callers.
 import leo.core.leoBridge as leoBridge
+import leo.core.leoFastRedraw as leoFastRedraw
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
 import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
 import leo.core.leoTest as leoTest
 from flexx import flx
-import difflib
 import re
 import time
-assert re and time
-    # Suppress pyflakes complaints
 #@-<< leoflexx imports >>
 debug_body = True
 debug_changed = False # Trace c.changed()
@@ -362,6 +360,7 @@ class LeoBrowserApp(flx.PyComponent):
         self.old_flattened_outline = []
         self.old_redraw_dict = {}
         self.redraw_generation = 0
+        self.fast_redrawer = leoFastRedraw.FastRedraw()
         # Create the main window and all its components.
         c.selectPosition(c.rootPosition()) ### A temp hack.
         c.contractAllHeadlines()
@@ -393,7 +392,7 @@ class LeoBrowserApp(flx.PyComponent):
         # Monkey-patch the FindTabManager
         c.findCommands.ftm = g.NullObject()
         # Init g.app data
-        self.old_flattened_outline = self.flatten_outline()
+        self.old_flattened_outline = self.fast_redrawer.flatten_outline(c)
         self.old_redraw_dict = self.make_redraw_dict(c.p)
         self.redraw_generation = 0
         # Init the log pane.
@@ -513,6 +512,7 @@ class LeoBrowserApp(flx.PyComponent):
         trace = False and not g.unitTesting
         c = self.c
         p = p or c.p
+        redrawer = self.fast_redrawer
         w = self.main_window
         #
         # Be careful: c.frame.redraw can be called before app.finish_create.
@@ -529,9 +529,11 @@ class LeoBrowserApp(flx.PyComponent):
         w.tree.select_ap(ap)
         redraw_dict = self.make_redraw_dict(p)
             # Needed to compare generations, even if there are no changes.
-        new_flattened_outline = self.flatten_outline()
-        redraw_instructions = self.make_redraw_list(
-            self.old_flattened_outline, new_flattened_outline)
+        new_flattened_outline = redrawer.flatten_outline(c)
+        redraw_instructions = redrawer.make_redraw_list(
+            self.old_flattened_outline,
+            new_flattened_outline,
+        )
         w.tree.redraw_with_dict(redraw_dict, redraw_instructions)
             # At present, this does a full redraw using redraw_dict.
             # The redraw instructions are not used.
@@ -608,27 +610,6 @@ class LeoBrowserApp(flx.PyComponent):
             for p in c.rootPosition().self_and_siblings():
                 print('  %5s %s' % (p.isExpanded(), p.h))
             print('')
-    #@+node:ekr.20181126083055.1: *5* app.flatten_outline
-    def flatten_outline (self):
-        '''Return a flat list of strings "level:gnx" for all *visible* positions.'''
-        trace = False and not g.unitTesting
-        t1 = time.clock()
-        c, aList = self.c, []
-        for p in c.rootPosition().self_and_siblings():
-            self.extend_flattened_outline(aList, p)
-        if trace:
-            t2 = time.clock()
-            print('app.flatten_outline: %s entries %6.4f sec.' % (
-                len(aList), (t2-t1)))
-        return aList
-            
-    def extend_flattened_outline(self, aList, p):
-        '''Add p and all p's visible descendants to aList.'''
-        aList.append('%s:%s:%s\n' % (p.level(), p.gnx, p.h))
-            # Padding the fields causes problems later.
-        if p.isExpanded():
-            for child in p.children():
-                self.extend_flattened_outline(aList, child)
     #@+node:ekr.20181113043539.1: *5* app.make_redraw_dict & helper
     def make_redraw_dict(self, p=None):
         '''
@@ -683,104 +664,6 @@ class LeoBrowserApp(flx.PyComponent):
             'gnx': p.v.gnx,
             'headline': p.h,
         }
-    #@+node:ekr.20181126094040.1: *5* app.make_redraw_list & helpers
-    def make_redraw_list(self, a, b):
-        '''
-        Diff the a (old) and b (new) outline lists.
-        Then optimize the diffs to create a redraw instruction list.
-        '''
-        trace = False and not g.unitTesting
-        if a == b:
-            return []
-
-        def gnxs(aList):
-            '''Return the gnx list. Do not try to remove this!'''
-            return [z.strip() for z in aList]
-
-        d = difflib.SequenceMatcher(None, a, b)
-        op_codes = list(d.get_opcodes())
-        # self.dump_op_codes(a, b, op_codes)
-        #
-        # Generate the instruction list, and verify the result.
-        opcodes, result = [], []
-        for tag, i1, i2, j1, j2 in op_codes:
-            if tag == 'insert':
-                opcodes.append(['insert', i1, gnxs(b[j1:j2])])
-            elif tag == 'delete':
-                opcodes.append(['delete', i1, gnxs(a[i1:i2])])
-            elif tag == 'replace':
-                opcodes.append(['replace', i1, gnxs(a[i1:i2]), gnxs(b[j1:j2])])
-            result.extend(b[j1:j2])
-        assert b == result, (a, b)
-        #
-        # Run the peephole.
-        opcodes = self.peep_hole(opcodes)
-        if trace:
-            print('app.make_redraw_list: opcodes after peephole...')
-            self.opcodes(opcodes)
-        return opcodes
-    #@+node:ekr.20181126183815.1: *6* app.dump_op_codes
-    def dump_op_codes(self, a, b, op_codes):
-        '''Dump the opcodes returned by difflib.SequenceMatcher.'''
-        
-        def summarize(aList):
-            pat = re.compile(r'.*:.*:(.*)')
-            return ', '.join([pat.match(z).group(1) for z in aList])
-            
-        for tag, i1, i2, j1, j2 in op_codes:
-            if tag == 'equal':
-                print('%7s at %s:%s (both) ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
-            elif tag == 'insert':
-                print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
-            elif tag == 'delete':
-                print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
-            elif tag == 'replace':
-                print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
-                print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
-            else:
-                print('unknown tag')
-    #@+node:ekr.20181126183817.1: *6* app.opcodes
-    def opcodes(self, opcodes):
-        '''Dump the opcodes returned by app.peep_hole and app.make_redraw_list.'''
-        for z in opcodes:
-            kind = z[0]
-            if kind == 'replace':
-                kind, i1, gnxs1, gnxs2 = z
-                print(kind, i1)
-                print('  a: [%s]' % ',\n    '.join(gnxs1))
-                print('  b: [%s]' % ',\n    '.join(gnxs2))
-            elif kind in ('delete', 'insert'):
-                kind, i1, gnxs = z
-                print(kind, i1)
-                print('  [%s]' % ',\n    '.join(gnxs))
-            else:
-                print(z)
-    #@+node:ekr.20181126154357.1: *5* app.peep_hole
-    def peep_hole(self, opcodes):
-        '''Scan the list of opcodes, merging adjacent op-codes.'''
-        i, result = 0, []
-        while i < len(opcodes):
-            op0 = opcodes[i]
-            if i == len(opcodes)-1:
-                result.append(op0)
-                break
-            op1 = opcodes[i+1]
-            kind0, kind1 = op0[0], op1[0]
-            # Merge adjacent insert/delete opcodes with the same gnx.
-            if (
-                kind0 == 'insert' and kind1 == 'delete' or
-                kind0 == 'delete' and kind1 == 'insert'
-            ):
-                kind0, index0, gnxs0 = op0
-                kind1, index1, gnxs1 = op1
-                if gnxs0[0] == gnxs1[0]:
-                    result.append(['move', index0, index1, gnxs0, gnxs1])
-                    i += 2 # Don't scan either op again!
-                    break
-            # The default is to retain the opcode.
-            result.append(op0)
-            i += 1
-        return result
     #@+node:ekr.20181129122147.1: *4* app.edit_headline & helper
     def edit_headline(self):
         '''Simulate editing the headline in the minibuffer.'''
@@ -1008,6 +891,7 @@ class LeoBrowserApp(flx.PyComponent):
         '''Exercise the new diff-based redraw code on a fully-expanded outline.'''
         c = self.c
         p = p.copy()
+        redrawer = self.fast_redrawer
         # Don't call c.expandAllHeadlines: it calls c.redraw.
         for p2 in c.all_positions(copy=False):
             p2.expand()
@@ -1015,9 +899,11 @@ class LeoBrowserApp(flx.PyComponent):
         # Test the code.
         self.make_redraw_dict(p)
             # Call this only for timing stats.
-        new_flattened_outline = self.flatten_outline()
-        redraw_instructions = self.make_redraw_list(
-            self.old_flattened_outline, new_flattened_outline)
+        new_flattened_outline = redrawer.flatten_outline(c)
+        redraw_instructions = redrawer.make_redraw_list(
+            self.old_flattened_outline,
+            new_flattened_outline,
+        )
         assert redraw_instructions is not None # For pyflakes.
         #
         # Restore the tree.
