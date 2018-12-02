@@ -123,6 +123,7 @@ class BrowserGui(leoGui.NullGui):
     #@+node:ekr.20181031162454.1: *3* bg.runMainLoop
     def runMainLoop(self, fileName=None):
         '''The main loop for the browser gui.'''
+        # pylint: disable=arguments-differ
         if fileName:
             print('LeoWapp running: %s...' % g.shortFileName(fileName))
         else:
