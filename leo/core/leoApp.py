@@ -1027,7 +1027,7 @@ class LeoApp(object):
             sys.exit()
     #@+node:ekr.20181031160401.1: *5* app.createBrowserGui
     def createBrowserGui(self, fileName='', verbose=False):
-        # app = self
+        app = self
         try:
             from flexx import flx
             assert flx
@@ -1042,7 +1042,7 @@ class LeoApp(object):
             g.es_exception()
             print('can not import leo.plugins.leoflexx')
             sys.exit(1)
-        g.app.gui = leoflexx.LeoBrowserGui()
+        g.app.gui = leoflexx.LeoBrowserGui(gui_name=app.guiArgName)
     #@+node:ekr.20090619065122.8593: *5* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
         """A convenience routines for plugins to create the default gui class."""
@@ -1057,7 +1057,7 @@ class LeoApp(object):
             app.createQtGui(fileName, verbose=verbose)
         elif argName == 'null':
             g.app.gui = g.app.nullGui
-        elif argName == 'browser':
+        elif argName.startswith('browser'):
             app.createBrowserGui()
         elif argName in ('console', 'curses'):
             app.createCursesGui()
@@ -2778,7 +2778,9 @@ class LoadManager(object):
             gui = gui.lower()
             if gui == 'qttabs':
                 g.app.qt_use_tabs = True
-            elif gui in ('browser', 'console', 'curses', 'text', 'qt', 'null'):
+            elif gui.startswith('browser'):
+                g.app.qt_use_tabs = False
+            elif gui in ('console', 'curses', 'text', 'qt', 'null'):
                     # text: cursesGui.py, curses: cursesGui2.py.
                 g.app.qt_use_tabs = False
             else:

@@ -372,7 +372,7 @@ class LeoBrowserApp(flx.PyComponent):
         global g # always use the imported g.
         if g.app and isinstance(g.app.gui, LeoBrowserGui):
             print('')
-            print('Running from --gui=browser')
+            print('Running from --gui=%s' % g.app.gui.gui_name)
             print('')
             self.gui = gui = g.app.gui
             self.c = c = g.app.log.c
@@ -1051,11 +1051,15 @@ class LeoBrowserFrame(leoFrame.NullFrame):
 #@+node:ekr.20181113041113.1: *3* class LeoBrowserGui
 class LeoBrowserGui(leoGui.NullGui):
 
-    def __init__ (self):
+    def __init__ (self, gui_name='browser'):
         super().__init__(guiName='browser')
             # leoTest.doTest special-cases the name "browser".
+        self.gui_name = gui_name # May specify the actual browser.
+        assert gui_name.startswith('browser')
         self.root = None # Will be set later.
         self.tag = '(browser gui)'
+        self.specific_browser = gui_name.lstrip('browser').lstrip(':').lstrip('-').strip()
+        g.trace(self.specific_browser)
         self.consoleOnly = False # Console is separate from the log.
         
     def insertKeyEvent(self, event, i):
@@ -1126,7 +1130,9 @@ class LeoBrowserGui(leoGui.NullGui):
     #@+node:ekr.20181202083305.1: *4* gui.runMainLoop
     def runMainLoop(self):
         '''Run the main loop from within Leo's core.'''
-        flx.launch(LeoBrowserApp)
+        runtime = self.specific_browser or 'webruntime'
+        g.trace('RUNTIME', runtime)
+        flx.launch(LeoBrowserApp, runtime)
         flx.logger.info('LeoApp: after flx.launch')
         flx.set_log_level('ERROR' if use_ace and warnings_only else 'INFO')
             # DEBUG produces way too many messages.
