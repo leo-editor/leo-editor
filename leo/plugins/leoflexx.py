@@ -1566,6 +1566,9 @@ class LeoFlexxMainWindow(flx.Widget):
         self._mutate('status_line', status_line)
         self._mutate('tree', tree)
         self._mutate('do_init', True)
+        global alert # for pyflakes.
+        # pylint: disable=undefined-variable
+        alert('LeoWapp is pre-alpha code.\n\nUse at your own risk')
         
     @flx.reaction('do_init', mode="greedy")
     def after_init(self):
@@ -2047,7 +2050,7 @@ class BrowserTestManager (leoTest.TestManager):
 if __name__ == '__main__':
     flx.launch(LeoBrowserApp)
     flx.logger.info('LeoApp: after flx.launch')
-    flx.set_log_level('ERROR' if warnings_only and use_ace else 'INFO')
-        # Debug produces too many messages, in general.
+    flx.set_log_level('ERROR' if use_ace and warnings_only else 'INFO')
+        # DEBUG produces way too many messages.
     flx.run()
 #@-leo
