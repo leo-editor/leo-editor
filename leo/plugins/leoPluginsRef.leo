@@ -167,6 +167,7 @@
 <v t="ekr.20181030041210.1"><vh>Gui</vh>
 <v t="ekr.20150107090324.1"><vh>@file cursesGui.py</vh></v>
 <v t="ekr.20170419092835.1"><vh>@file cursesGui2.py</vh></v>
+<v t="ekr.20181103094900.1"><vh>@file leoflexx.py</vh></v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>
