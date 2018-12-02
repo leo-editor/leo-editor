@@ -1027,15 +1027,22 @@ class LeoApp(object):
             sys.exit()
     #@+node:ekr.20181031160401.1: *5* app.createBrowserGui
     def createBrowserGui(self, fileName='', verbose=False):
-        app = self
+        # app = self
         try:
-            import leo.plugins.leowapp as leowapp
-            if leowapp.init():
-                app.gui = leowapp.BrowserGui()  
+            from flexx import flx
+            assert flx
         except Exception:
             g.es_exception()
-            print('can not import leo.plugins.leowapp')
+            print('can not import flexx')
             sys.exit(1)
+        try:
+            import leo.plugins.leoflexx as leoflexx
+            assert leoflexx
+        except Exception:
+            g.es_exception()
+            print('can not import leo.plugins.leoflexx')
+            sys.exit(1)
+        g.app.gui = leoflexx.LeoBrowserGui()
     #@+node:ekr.20090619065122.8593: *5* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
         """A convenience routines for plugins to create the default gui class."""

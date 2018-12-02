@@ -4,8 +4,8 @@
 #@@first
 #@@language python
 #@@tabwidth -4
-#@+<< flexx.py docstring >>
-#@+node:ekr.20181122215342.1: ** << flexx.py docstring >>
+#@+<< leoflexx: docstring >>
+#@+node:ekr.20181122215342.1: ** << leoflexx: docstring >>
 #@@language md
 #@@wrap
 '''
@@ -79,10 +79,10 @@ Coming soon:
   text. Hitting return will replace c.p.h by what you type.
 
 '''
-#@-<< flexx.py docstring >>
+#@-<< leoflexx: docstring >>
 # pylint: disable=logging-not-lazy
-#@+<< leoflexx imports >>
-#@+node:ekr.20181113041314.1: ** << leoflexx imports >>
+#@+<< leoflexx: imports >>
+#@+node:ekr.20181113041314.1: ** << leoflexx: imports >>
 import leo.core.leoGlobals as g
     # **Note**: JS code can not use g.trace, g.callers.
 import leo.core.leoBridge as leoBridge
@@ -92,10 +92,15 @@ import leo.core.leoGui as leoGui
 import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
 import leo.core.leoTest as leoTest
-from flexx import flx
+try:
+    from flexx import flx
+except Exception:
+    flx = None
 import re
 import time
-#@-<< leoflexx imports >>
+#@-<< leoflexx: imports >>
+#@+<< leoflexx: switches and other globals >>
+#@+node:ekr.20181202105852.1: ** << leoflexx: switches and other globals >>
 debug_body = True
 debug_changed = False # Trace c.changed()
 debug_focus = False # puts 'focus' in g.app.debug.
@@ -106,19 +111,18 @@ debug_tree = False
 verbose_debug_tree = False
 use_ace = True # False: use Code Mirror.
 warnings_only = True # False is better for debugging.
+
 print('\nuse_ace', use_ace, '\n')
-# For now, always include ace assets: they are used in the log, etc.
-#@+<< ace assets >>
-#@+node:ekr.20181111074958.1: ** << ace assets >>
-# Assets for ace JS editor.
-base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
-flx.assets.associate_asset(__name__, base_url + 'ace.js')
-flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
-flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
-#@-<< ace assets >>
-if not use_ace:
-    #@+<< CodeMirror assets >>
-    #@+node:ekr.20181130082321.1: ** << CodeMirror assets >>
+#@-<< leoflexx: switches and other globals >>
+#@+<< leoflexx: assets >>
+#@+node:ekr.20181111074958.1: ** << leoflexx: assets >>
+if use_ace:
+    # Assets for ace JS editor.
+    base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
+    flx.assets.associate_asset(__name__, base_url + 'ace.js')
+    flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
+    flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
+else:
     # Assets for CodeMirror JS editor.
     base_url = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/'
     flx.assets.associate_asset(__name__, base_url + '5.21.0/codemirror.min.css')
@@ -127,7 +131,7 @@ if not use_ace:
     flx.assets.associate_asset(__name__, base_url + '5.21.0/theme/solarized.css')
     flx.assets.associate_asset(__name__, base_url + '5.21.0/addon/selection/active-line.js')
     flx.assets.associate_asset(__name__, base_url + '5.21.0/addon/edit/matchbrackets.js')
-    #@-<< CodeMirror assets >>
+#@-<< leoflexx: assets >>
 #@+others
 #@+node:ekr.20181121040901.1: **  top-level functions
 #@+node:ekr.20181122102523.1: *3* banner
@@ -168,9 +172,7 @@ def info (s):
         # the top-level suppression logic will not delete this message.
 #@+node:ekr.20181103151350.1: *3* init
 def init():
-    # At present, leoflexx is not a true plugin.
-    # I am executing leoflexx.py from an external script.
-    return False
+    return flx
 #@+node:ekr.20181113041410.1: *3* suppress_unwanted_log_messages (not used)
 def suppress_unwanted_log_messages():
     '''
@@ -312,10 +314,9 @@ class AceWrapper (leoFrame.StringTextWrapper):
 
     def setAllText(self, s):
         # Called by set_body_text_after_select.
+        trace = debug_keys and not g.unitTesting
         c = self.c
-        if 0:
-            print(self.tag, 'setAllText', g.callers(1))
-            print(repr(g.truncate(s, 60)))
+        if trace: print(self.tag, 'setAllText', g.callers(1), repr(g.truncate(s, 60)))
         self.s = s
         c.p.v.setBodyString(s)
         self.flx_wrapper().set_text(s)
@@ -330,17 +331,30 @@ class LeoBrowserApp(flx.PyComponent):
 
     **Important**: This is self.root for all flexx components.
 
-    **Important**: This is *not* g.app. The LeoBride defines g.app.
+    **Important**: This is *not* g.app. The LeoBridge defines g.app.
     '''
     
     main_window = flx.ComponentProp(settable=True)
 
     def init(self):
-        c, g = self.open_bridge()
-        self.c = c
-        self.gui = gui = LeoBrowserGui()
+        # Open the bridge only if Leo's core hasn't already set the gui.
+        global g # always use the imported g.
+        if g.app and isinstance(g.app.gui, LeoBrowserGui):
+            print('')
+            print('Running from --gui=browser')
+            print('')
+            self.gui = gui = g.app.gui
+            self.c = c = g.app.log.c
+            assert c
+        else:
+            c, g = self.open_bridge()
+            self.c = c
+            self.gui = gui = LeoBrowserGui()
         assert gui.guiName() == 'browser'
             # Important: the leoTest module special cases this name.
+        # 
+        # When running from Leo's core, we must wait until now to set LeoBrowserGui.root.
+        gui.root = get_root()
         self.inited = False
             # Set by app.finish_create.
         self.tag = '(app wrapper)'
@@ -362,7 +376,8 @@ class LeoBrowserApp(flx.PyComponent):
         self.redraw_generation = 0
         self.fast_redrawer = leoFastRedraw.FastRedraw()
         # Create the main window and all its components.
-        c.selectPosition(c.rootPosition()) ### A temp hack.
+        c.selectPosition(c.rootPosition())
+            ### A temp hack.
         c.contractAllHeadlines()
         main_window = LeoFlexxMainWindow()
         self._mutate('main_window', main_window)
@@ -445,7 +460,6 @@ class LeoBrowserApp(flx.PyComponent):
         #@+node:ekr.20181129073812.1: *5* << check browser_wrapper >>
         assert isinstance(browser_wrapper, (
             LeoBrowserBody,
-            ### LeoBrowserFrame,
             LeoBrowserLog,
             LeoBrowserMinibuffer,
             LeoBrowserStatusLine,
@@ -509,7 +523,6 @@ class LeoBrowserApp(flx.PyComponent):
         w.s = text
         w.ins = i
         ### To do: set: w.sel.
-
     #@+node:ekr.20181122132345.1: *4* app.Drawing...
     #@+node:ekr.20181113042549.1: *5* app.action.redraw
     @flx.action
@@ -841,7 +854,8 @@ class LeoBrowserApp(flx.PyComponent):
         # It is a copy of k.callAltXFunction
         g.trace('=====', commandName)
         c, k = self.c, self.c.k
-        event = g.Bunch(c=c, widget=c.frame.miniBufferWidget) ####### Another hack.
+        event = g.Bunch(c=c, widget=c.frame.miniBufferWidget)
+            # Another hack.
         k.functionTail = None ### Changed.
         if commandName and commandName.isdigit():
             # The line number Easter Egg.
@@ -1006,10 +1020,10 @@ class LeoBrowserFrame(leoFrame.NullFrame):
 #@+node:ekr.20181113041113.1: *3* class LeoBrowserGui
 class LeoBrowserGui(leoGui.NullGui):
 
-    def __init__ (self, guiName='nullGui'):
+    def __init__ (self):
         super().__init__(guiName='browser')
             # leoTest.doTest special-cases the name "browser".
-        self.root = get_root()
+        self.root = None # Will be set later.
         self.tag = '(browser gui)'
         self.consoleOnly = False # Console is separate from the log.
         
@@ -1054,6 +1068,9 @@ class LeoBrowserGui(leoGui.NullGui):
 
     def set_focus(self, commander, widget):
         trace = debug_focus and not g.unitTesting
+        # Be careful during startup.
+        if not self.root:
+            return
         c = self.root.c
         if isinstance(widget, (
             LeoBrowserBody,
@@ -1078,6 +1095,14 @@ class LeoBrowserGui(leoGui.NullGui):
             # This gets called when reloading the page (reopening the .leo file) after Ctrl-F.
             # It also gets called during unit tests.
             g.trace('(gui): unknown widget', repr(widget), g.callers(6))
+    #@+node:ekr.20181202083305.1: *4* gui.runMainLoop
+    def runMainLoop(self):
+        '''Run the main loop from within Leo's core.'''
+        flx.launch(LeoBrowserApp)
+        flx.logger.info('LeoApp: after flx.launch')
+        flx.set_log_level('ERROR' if use_ace and warnings_only else 'INFO')
+            # DEBUG produces way too many messages.
+        flx.run()
     #@-others
 #@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
 class LeoBrowserIconBar(leoFrame.NullIconBarClass):
@@ -1470,7 +1495,7 @@ class LeoFlexxBody(JSEditorWidget):
         super().init('body')
 
     #@+others
-    #@+node:ekr.20181128061524.1: *4* flx_body setters (These may not be needed!)
+    #@+node:ekr.20181128061524.1: *4* flx_body setters
     @flx.action
     def see_insert_point(self):
         if 0: print(self.tag, 'see_insert_point')
