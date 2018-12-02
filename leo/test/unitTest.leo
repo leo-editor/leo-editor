@@ -48,6 +48,14 @@
 <v t="ekr.20181031154902.5"><vh>@data:#@auto</vh>
 <v t="ekr.20181031154902.6"><vh>@gnxs</vh></v>
 </v>
+<v t="ekr.20181116142416.1"><vh>@data:#@auto</vh></v>
+<v t="ekr.20181116142416.2"><vh>@data:#@auto</vh>
+<v t="ekr.20181116142416.3"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20181116142416.4"><vh>@data:#@auto</vh></v>
+<v t="ekr.20181116142416.5"><vh>@data:#@auto</vh>
+<v t="ekr.20181116142416.6"><vh>@gnxs</vh></v>
+</v>
 </v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
 <v t="ekr.20080324133327.2"><vh>@bool allow-middle-button-paste = True</vh></v>
@@ -739,15 +747,17 @@
 </v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20181102063435.1"><vh>Fails...</vh>
+<v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
+<v t="ekr.20080501121449.3"><vh>@test insert node</vh>
+<v t="ekr.20181116142414.1"><vh>A</vh></v>
+<v t="ekr.20181116142414.3"><vh>newHeadline</vh></v>
+<v t="ekr.20181116142414.2"><vh>B</vh></v>
 </v>
-<v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
-<v t="ekr.20181031155108.1"><vh>Tweaks for test_browser_gui.py</vh>
-<v t="ekr.20181014093423.1"><vh>@test run pytests</vh></v>
-<v t="ekr.20111102122424.3975"><vh>@test all unit tests have access to sources</vh></v>
-<v t="ekr.20130912092638.4151"><vh>@test utf-16 encoding</vh></v>
-<v t="ekr.20111124090010.3939"></v>
 </v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
+</v>
+<v t="ekr.20181102063435.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1990,6 +2000,58 @@ assert(len(gnx) &gt; 1)
 
 Important: this may cause crashes on some platforms.
 </t>
+<t tx="ekr.20080501121449.3"># This test requires @bool select-next-after-delete = False
+assert p.h == '@test insert node',repr(p.h)
+root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+try:
+    assert p.h == '@test insert node',repr(p.h)
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p.expand()
+    c.setCurrentPosition(p2)
+    p4 = c.insertHeadline()
+    assert p4 == c.p
+    p = c.p
+    assert p,'no p'
+    p.setHeadString('inserted')
+    assert p.back(),'no p.back(): %s' % (p)
+    assert p.back().h == 'A', 'fail 1'
+    assert p.next().h == 'B', 'fail 2'
+    c.undoer.undo()
+    # With the new undo logic, it takes 2 undoes.
+    # The first undo undoes the headline changes,
+    # the second undo undoes the insert node.
+    if g.app.isExternalUnitTest or g.app.gui.guiName() in ('browser', 'nullGui'):
+        # The situation is different in a null Gui.
+        pass
+    else:
+        c.undoer.undo() 
+    p = c.p
+    assert p == p2,         'fail 3:\n p: %s\np2: %s' % (p,p2)
+    assert p.next() == p3,  'fail 4'
+    c.undoer.redo()
+    p = c.p
+    assert p.back(),          'fail 0-2'
+    assert p.back().h == 'A', 'fail 1-2'
+    assert p.next().h == 'B', 'fail 2-2'
+    c.undoer.undo()
+    p = c.p
+    assert p == p2,         'fail 3-2'
+    assert p.next() == p3,  'fail 3-2'
+    c.undoer.redo()
+    p = c.p
+    assert p.back().h == 'A', 'fail 1-3'
+    assert p.next().h == 'B', 'fail 2-3'
+finally:
+    if 0:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now(root)
+</t>
 <t tx="ekr.20080904084223.1"># changed.
 @others
 @language python
@@ -2773,6 +2835,44 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
+<t tx="ekr.20100131171342.5482">ivars = (
+    # Global managers.
+    'config',
+    ### 'externalFilesController',
+    'loadManager','pluginsController','recentFilesManager',
+    # Official ivars.
+    'gui',
+    'initing','killed','quitting',
+    'leoID',
+    'log','logIsLocked','logWaiting',
+    'nodeIndices',
+    'unitTesting','unitTestDict',
+    'windowList',
+    # Less-official and might be removed...
+    'batchMode',
+    # 'debugSwitch',
+    'disableSave',
+    'hookError','hookFunction',
+    'numberOfUntitledWindows',
+    'realMenuNameDict',
+    'searchDict','scriptDict',
+    'use_psyco',
+)
+if g.app.isExternalUnitTest or g.in_bridge or g.app.gui.guiName() == 'browser':
+    mayBeNone = ('hookFunction','idleTimeHook','log','openWithInstance')
+else:
+    mayBeNone = ('hookFunction','openWithInstance')
+fails = []
+for ivar in ivars:
+    assert hasattr(g.app, ivar), 'missing app ivar: %s %r' % (ivar,g.app)
+    if ivar not in mayBeNone:
+        val = getattr(g.app, ivar)
+        if val is None:
+            fails.append(ivar)
+assert not fails, 'null g.app ivars in %s...\n%s' % (
+    g.app, g.objToString(fails))
+
+</t>
 <t tx="ekr.20100131171342.5485">import inspect
 
 d = c.commandsDict
@@ -2959,35 +3059,6 @@ for ivar,command in table:
         assert val3 == val1,'failed 2 %s' % command
     finally:
         setattr(fc,ivar,val1)
-</t>
-<t tx="ekr.20100205235740.5392">import glob
-failed,n = [],0
-skip_tuples3 = (
-    ('extensions','asciidoc.py'),
-)
-skip_tuples2 = (
-    ('test', 'python3_test.py'),
-    ('plugins', 'leowapp.py'),
-)
-join = g.os_path_finalize_join
-skip_tuples = skip_tuples3 if g.isPython3 else skip_tuples2
-skip_list = [join(g.app.loadDir,'..',a,b) for a,b in skip_tuples]
-for theDir in ('core','external','extensions','plugins','scripts','test'):
-    path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
-    assert g.os_path_exists(path),path
-    aList = glob.glob(g.os_path_join(path,'*.py'))
-    if g.isWindows:
-        aList = [z.replace('\\','/') for z in aList]
-    for z in aList:
-        if z in skip_list:
-            pass # print('%s: skipped: %s' % (p.h,z))
-        else:
-            n += 1
-            fn = g.shortFileName(z)
-            s,e = g.readFileIntoString(z)
-            if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
-                failed.append(z)
-assert not failed,'failed %s\n' % g.listToString(failed)
 </t>
 <t tx="ekr.20100206165505.5386"># More suitable as a hand test:
 # it makes no effort to delete the 'Recovered Nodes' node.
@@ -3255,15 +3326,6 @@ div
 table
 nodeA
 nodeB
-</t>
-<t tx="ekr.20111102122424.3975">if g.app.gui.guiName() == 'browser':
-    self.skipTest('browser gui')
-if c.shortFileName() == 'dynamicUnitTest.leo':
-    setting = 'c.write-script-file'
-    assert c.write_script_file,'fail 1: %s should be hard set' % (setting)
-else:
-    setting = "c.config.getBool('write-script-file')"
-    assert c.write_script_file,'fail 2: check %s' % (setting)
 </t>
 <t tx="ekr.20111107065245.3833">if not g.app.gui.guiName().startswith('qt'):
     self.skipTest('Requires Qt')
@@ -3813,29 +3875,6 @@ def spam():
 @encoding utf-16
 
 Test of utf-16.
-</t>
-<t tx="ekr.20130912092638.4151">import sys
-if g.app.isExternalUnitTest:
-    self.skipTest('external test')
-    # if sys.platform.startswith('linux'):
-        # self.skipTest('external linux test')
-    # else:
-        # path = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','utf-16-test.txt')
-        # assert g.os_path_exists(path)
-        # f = open(path,'r')
-        # s = f.read()
-        # f.close()
-        # s = g.toUnicode(s,encoding='utf-16')
-        # assert s.find('Test of utf-16.') &gt; -1,s
-else:
-    h = '@file unittest/utf-16-test.txt'
-    p = g.findNodeAnywhere(c,h)
-    s = 'Test of utf-16.'
-    assert p,h
-    # It's hard to test the utf-16 text directly.
-    assert p.b
-    assert p.b.find(s) &gt; -1
-    assert len(p.b)==66,len(p.b)
 </t>
 <t tx="ekr.20131111155830.4249"></t>
 <t tx="ekr.20131111155830.4250"># Not yet...
@@ -9381,36 +9420,6 @@ FAILED (failures=3, skipped=11)
 <t tx="ekr.20181010081750.1"></t>
 <t tx="ekr.20181010081924.1">###@nosearch</t>
 <t tx="ekr.20181010082831.1"></t>
-<t tx="ekr.20181014093423.1">if g.app.gui.guiName() == 'browser':
-    self.skipTest('browser gui')
-
-import subprocess
-loadDir = g.app.loadDir
-join = g.os_path_finalize_join
-prog = join(loadDir, '..', '..', 'run_pytest_tests.py')
-paths = (
-    join(loadDir, '..', 'core'),
-    join(loadDir, '..', 'test'),
-    join(loadDir, '..', 'plugins', 'test'),
-    join(loadDir, '..'),
-)
-fails = []
-for path in paths:
-    assert g.os_path_exists(path), repr(path)
-    proc = subprocess.Popen(
-        r'python %s %s' % (prog, path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        shell=g.isWindows,
-    )
-    out, err = proc.communicate()
-    if out:
-        for line in g.splitLines(out):
-            g.pr(g.toUnicode(line.rstrip()))
-    if err:
-        fails.append(g.toUnicode(err).strip())
-assert not fails, '\n'+'\n'.join(fails)
-</t>
 <t tx="ekr.20181031152556.1"></t>
 <t tx="ekr.20181031152735.1">gnx: ekr.20090627070131.4975
 </t>
@@ -9506,7 +9515,28 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="ekr.20181031155108.1"></t>
+<t tx="ekr.20181102063435.1"># These are first, to save time.</t>
+<t tx="ekr.20181116142414.1"></t>
+<t tx="ekr.20181116142414.2"></t>
+<t tx="ekr.20181116142414.3"></t>
+<t tx="ekr.20181116142416.1">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20181116142416.2">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20181116142416.3">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20181116142416.4">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20181116142416.5">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20181116142416.6">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

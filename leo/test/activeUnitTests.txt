@@ -674,15 +674,20 @@ ivars = (
     'searchDict','scriptDict',
     'use_psyco',
 )
-if g.app.isExternalUnitTest or g.in_bridge:
+if g.app.isExternalUnitTest or g.in_bridge or g.app.gui.guiName() == 'browser':
     mayBeNone = ('hookFunction','idleTimeHook','log','openWithInstance')
 else:
     mayBeNone = ('hookFunction','openWithInstance')
+fails = []
 for ivar in ivars:
-    assert hasattr(g.app,ivar), 'missing app ivar: %s %r' % (ivar,g.app)
+    assert hasattr(g.app, ivar), 'missing app ivar: %s %r' % (ivar,g.app)
     if ivar not in mayBeNone:
-        val = getattr(g.app,ivar)
-        assert val is not None, 'null app ivar: %s %r'% (ivar,g.app)
+        val = getattr(g.app, ivar)
+        if val is None:
+            fails.append(ivar)
+assert not fails, 'null g.app ivars in %s...\n%s' % (
+    g.app, g.objToString(fails))
+
 #@+node:ekr.20071113194858: ** Organized by file
 # All the following files have problems when run with Alt-5.
 #@+node:ekr.20100131171342.5506: *3* leoApp
@@ -20589,7 +20594,7 @@ try:
     # With the new undo logic, it takes 2 undoes.
     # The first undo undoes the headline changes,
     # the second undo undoes the insert node.
-    if g.app.isExternalUnitTest or g.app.gui.guiName() == 'nullGui':
+    if g.app.isExternalUnitTest or g.app.gui.guiName() in ('browser', 'nullGui'):
         # The situation is different in a null Gui.
         pass
     else:
@@ -20615,9 +20620,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20181010090014.9: *6* A
-#@+node:ekr.20181010090014.11: *6* newHeadline
-#@+node:ekr.20181010090014.10: *6* B
+#@+node:ekr.20181116142414.1: *6* A
+#@+node:ekr.20181116142414.3: *6* newHeadline
+#@+node:ekr.20181116142414.2: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
@@ -21606,6 +21611,10 @@ assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
 # A kludge: run the test in 
 openDirectory = c.frame.openDirectory
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
@@ -22178,6 +22187,8 @@ hr { /* EKR */
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
@@ -22772,6 +22783,8 @@ This is the body of the section.</p>
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
@@ -23364,6 +23377,8 @@ This is the body of the section.</p>
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
@@ -23954,6 +23969,8 @@ This is the body of the section.</p>
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
@@ -24554,6 +24571,8 @@ This is the body of the section.</p>
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
