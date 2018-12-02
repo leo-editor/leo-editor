@@ -1064,9 +1064,6 @@ class LeoBrowserGui(leoGui.NullGui):
         assert False, g.callers()
         
     def alert(self, c, message):
-        # pylint: disable=arguments-differ
-            # This is the signature for QtGui.Alert.
-            # The signature in NullGui is wrong.
         print('')
         print('Alert:', message)
         print('')
