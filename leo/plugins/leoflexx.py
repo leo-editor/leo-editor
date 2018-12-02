@@ -80,7 +80,6 @@ Coming soon:
 
 '''
 #@-<< leoflexx: docstring >>
-# pylint: disable=logging-not-lazy
 #@+<< leoflexx: imports >>
 #@+node:ekr.20181113041314.1: ** << leoflexx: imports >>
 import leo.core.leoGlobals as g
@@ -132,6 +131,38 @@ else:
     flx.assets.associate_asset(__name__, base_url + '5.21.0/addon/selection/active-line.js')
     flx.assets.associate_asset(__name__, base_url + '5.21.0/addon/edit/matchbrackets.js')
 #@-<< leoflexx: assets >>
+#@+<< leoflexx: to-do >>
+#@+node:ekr.20181202114904.1: ** << leoflexx: to-do >>
+#@@language rest
+#@@wrap
+#@+at
+# 
+# First:
+# - Suppress imports when using the browser gui.
+# - Added a setting telling the value of the --flexx-webruntime command-line argument.
+# 
+# Next:
+# - Complete AceWrapper.Text Setters, but do *not* update flx.body.
+# - Complete flx_body setters. 
+# 
+# Later:
+# - Handle selection range, not just insert point.
+# - Gui focus does not select in inner text widget?
+# - Crash, when doing Ctrl-S in status line (see child).
+# - Ctrl-H should edit c.p.h in minibuffer.
+# - Monkey-patch Alt-4 so it calls app.run_all_unit_tests()
+# - Increase the default number of lines when using CodeMirror.
+# - Warn if closing dirty windows: (catch close-window events)
+# - Get Ctrl-F working (see child) (test on other browsers)
+# - Arrow keys select multiple tree nodes.
+# * Return in tree does not put focus in body.
+# * Arrow keys do not work until a mouse click.
+#   (getFocus misleads leo's core.)
+# * Fix unit tests.
+# * Test with other browsers.
+#@-<< leoflexx: to-do >>
+#
+# pylint: disable=logging-not-lazy
 #@+others
 #@+node:ekr.20181121040901.1: **  top-level functions
 #@+node:ekr.20181122102523.1: *3* banner
