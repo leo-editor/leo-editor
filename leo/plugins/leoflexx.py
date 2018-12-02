@@ -137,10 +137,6 @@ else:
 #@@wrap
 #@+at
 # 
-# In devel:
-# - Suppress imports when using the browser gui.
-# - Added a setting telling the value of the --flexx-webruntime command-line argument.
-# 
 # In skeleton:
 # - Complete AceWrapper.Text Setters, but do *not* update flx.body.
 # - Complete flx_body setters. 
