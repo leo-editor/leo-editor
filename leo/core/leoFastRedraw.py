@@ -3,7 +3,11 @@
 #@+node:ekr.20181202062518.1: * @file leoFastRedraw.py
 #@@first
 '''
-Gui-independent fast-redraw code
+Gui-independent fast-redraw code.
+
+For an explanation, see this thread:
+https://groups.google.com/forum/#!topic/leo-editor/hpHyHU2sWtM
+
 '''
 import leo.core.leoGlobals as g
 import difflib
