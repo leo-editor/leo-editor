@@ -424,7 +424,7 @@ class LeoBrowserApp(flx.PyComponent):
     def set_body_text(self):
         c, w = self.c, self.main_window
         w.body.set_text(c.p.b)
-    #@+node:ekr.20181117163223.1: *4* app.do_key
+    #@+node:ekr.20181117163223.1: *4* app.action.do_key
     # https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
     # See Widget._create_key_event in flexx/ui/_widget.py:
 
@@ -497,6 +497,19 @@ class LeoBrowserApp(flx.PyComponent):
             c.k.masterKeyHandler(key_event)
         finally:
             g.app.debug = old_debug
+    #@+node:ekr.20181202074931.1: *4* app.action.update_body
+    @flx.action
+    def update_body(self, text, row, col):
+        
+        c = self.c
+        w = c.frame.body.wrapper
+        assert isinstance(w, AceWrapper), repr(w)
+        i = g.convertRowColToPythonIndex(text, row, col, lines=None)
+        print(self.tag, ': update_body row: %s col: %s => index: %s %s' % (row, col, i, repr(text)))
+        w.s = text
+        w.ins = i
+        ### To do: set: w.sel.
+
     #@+node:ekr.20181122132345.1: *4* app.Drawing...
     #@+node:ekr.20181113042549.1: *5* app.action.redraw
     @flx.action
@@ -1321,7 +1334,30 @@ class JSEditorWidget(flx.Widget):
             self.editor.refresh()
     
     #@+others
-    #@+node:ekr.20181121072246.1: *4* jse.Keys & clicks
+    #@+node:ekr.20181202075105.1: *4* jse.Clicks
+    @flx.reaction('pointer_click')
+    def on_click(self, *events):
+        trace = debug_keys and not g.unitTesting
+        tag = self.name.upper()
+        for ev in events:
+            editor = self.editor
+            selector = editor.selection if use_ace else editor
+            text = editor.getValue()
+            cursor = selector.getCursor()
+            if use_ace:
+                row, col = cursor['row'], cursor['column']
+            else:
+                row, col = cursor['line'], cursor['ch']
+            if trace:
+                editor = self.editor
+                selector = editor.selection if use_ace else editor
+                print('')
+                print(tag, ': on_click')
+                print('  text:', repr(text))
+                print('cursor:', row, col)
+            if self.name == 'body':
+                self.root.update_body(text, row, col)
+    #@+node:ekr.20181121072246.1: *4* jse.Keys
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
@@ -1353,31 +1389,9 @@ class JSEditorWidget(flx.Widget):
                 ivar = 'minibufferWidget' if self.name == 'minibuffer' else self.name
                     ### Maybe do_key should do this.
                 self.root.do_key(ev, ivar)
-            ### self.root.update_body(text, row, col)
+            if self.name == 'body':
+                self.root.update_body(text, row, col)
             
-    @flx.reaction('pointer_click')
-    def on_click(self, *events):
-        trace = debug_keys and not g.unitTesting
-        tag = self.name.upper()
-        for ev in events:
-            editor = self.editor
-            selector = editor.selection if use_ace else editor
-            text = editor.getValue()
-            cursor = selector.getCursor()
-            if use_ace:
-                row, col = cursor['row'], cursor['column']
-            else:
-                row, col = cursor['line'], cursor['ch']
-            if trace:
-                editor = self.editor
-                selector = editor.selection if use_ace else editor
-                print('')
-                print(tag, ': on_click')
-                print('  text:', repr(text))
-                print('cursor:', row, col)
-            ###
-                # if self.name == 'body':
-                    # self.root.update_body(text, row, col)
     #@+node:ekr.20181201081645.1: *4* jse.make_editor
     def make_editor(self):
         '''Instantiate the JS editor, either ace or CodeMirror'''
