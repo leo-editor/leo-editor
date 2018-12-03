@@ -111,6 +111,7 @@ debug_select = False
 debug_tree = False
 verbose_debug_tree = False
 use_ace = True # False: use Code Mirror.
+warn_about_code = False # True: raise alert on startup about pre-alpha code.
 warnings_only = True # False is better for debugging.
 
 print('\nuse_ace', use_ace, '\n')
@@ -1157,11 +1158,13 @@ class LeoBrowserMenu(leoMenu.NullMenu):
 
 class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
     '''Browser wrapper for minibuffer.'''
-    
+
     def __init__(self, c, frame):
         super().__init__(c, name='minibuffer')
             # Name must be minibuffer, for gui.isTextWrapper().
         assert self.c == c, repr(self.c)
+        # assert c.frame == frame, (repr(c.frame), repr(frame))
+            # c.frame is a NullFrame.  frame is a LeoBrowserFrame.
         assert self.widget is None, repr(self.widget)
         assert self.getName() == 'minibuffer'
         self.frame = frame
@@ -1171,6 +1174,8 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
         self.wrapper = self
         # Hook this class up to the key handler.
         c.k.w = self
+        frame.minibufferWidget = self
+        
     
     # Overrides.
     def setFocus(self):
@@ -1362,6 +1367,7 @@ class JSEditorWidget(flx.Widget):
         tag = self.name.upper()
         for ev in events:
             editor = self.editor
+            self.editor.focus() ###
             selector = editor.selection if use_ace else editor
             text = editor.getValue()
             cursor = selector.getCursor()
@@ -1412,6 +1418,8 @@ class JSEditorWidget(flx.Widget):
                 self.root.do_key(ev, ivar)
             if self.name == 'body':
                 self.root.update_body(text, row, col)
+            if self.name == 'minibuffer':
+                self.do_enter_key()
             
     #@+node:ekr.20181201081645.1: *4* jse.make_editor
     def make_editor(self):
@@ -1420,13 +1428,17 @@ class JSEditorWidget(flx.Widget):
             # window looks undefined.
         global window 
         is_body = self.name == 'body'
+        editor_name = '%s-editor' % self.name
         if use_ace:
-            ace = window.ace.edit(self.node, "editor")
+            ace = window.ace.edit(self.node, editor_name)
             ace.navigateFileEnd()  # otherwise all lines highlighted
             ace.setTheme("ace/theme/solarized_dark")
             if self.name == 'body':
                 ace.getSession().setMode("ace/mode/python")
                     # This sets soft tabs.
+            if self.name == 'minibuffer':
+                pass ### Disable line numbers.
+                
             return ace
         #
         # Use CodeMirror
@@ -1598,18 +1610,20 @@ class LeoFlexxMainWindow(flx.Widget):
             with flx.HSplit(flex=1):
                 tree = LeoFlexxTree(flex=1)
                 log = LeoFlexxLog(flex=1)
-            body = LeoFlexxBody(flex=1)
-            minibuffer = LeoFlexxMiniBuffer()
-            status_line = LeoFlexxStatusLine()
+            with flx.VBox(flex=1):
+                body = LeoFlexxBody(flex=1)
+                minibuffer = LeoFlexxMiniBuffer(flex=0.1)
+                status_line = LeoFlexxStatusLine()
         self._mutate('body', body)
         self._mutate('log', log)
         self._mutate('minibuffer', minibuffer)
         self._mutate('status_line', status_line)
         self._mutate('tree', tree)
         self._mutate('do_init', True)
-        global alert # for pyflakes.
-        # pylint: disable=undefined-variable
-        alert('LeoWapp is pre-alpha code.\n\nUse at your own risk')
+        if warn_about_code:
+            global alert # for pyflakes.
+            # pylint: disable=undefined-variable
+            alert('LeoWapp is pre-alpha code.\n\nUse at your own risk')
         
     @flx.reaction('do_init', mode="greedy")
     def after_init(self):
@@ -1625,11 +1639,9 @@ class LeoFlexxMiniBuffer(JSEditorWidget):
         ### super().init('minibuffer')
         self.name = 'minibuffer'
         self.tag = '(flx %s)' % self.name
-        self.tag = '(flx.minibuffer)'
         with flx.HBox(flex=1):
-            flx.Label(text='Minibuffer')
-            with flx.Widget(flex=1):
-                self.editor = self.make_editor()
+            # flx.Label(text='Minibuffer',flex=0)
+            self.editor = self.make_editor()
 
     #@+others
     #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
