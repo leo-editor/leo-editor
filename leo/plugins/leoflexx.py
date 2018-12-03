@@ -137,8 +137,6 @@ else:
 #@@wrap
 #@+at
 # 
-# - Complete AceWrapper.Text Setters and flx_body setters.
-#   Don't update the body during unit tests.
 # - Handle selection range, not just insert point.
 # - Warn if closing dirty windows: (catch close-window events)
 # 
@@ -209,21 +207,18 @@ def suppress_unwanted_log_messages():
     pattern = re.compile(allowed, re.IGNORECASE)
     flx.set_log_level('INFO', pattern)
 #@+node:ekr.20181115071559.1: ** Py side: App & wrapper classes
-#@+node:ekr.20181127151027.1: *3* class AceWrapper (StringTextWrapper)
-class AceWrapper (leoFrame.StringTextWrapper):
+#@+node:ekr.20181127151027.1: *3* class API_Wrapper (StringTextWrapper)
+class API_Wrapper (leoFrame.StringTextWrapper):
     '''
-    A wrapper class that implements the high-level interface for the ace widget.
-    
-    See: https://ace.c9.io/#nav=api
+    A wrapper class that implements the high-level interface.
     '''
 
     def __init__(self, c, name):
         assert name in ('body', 'log', 'minibuffer'), repr(name)
-            # These are the Leo widgets that use ace widgets.
         super().__init__(c, name)
         assert self.c == c
         assert self.name == name
-        self.tag = '(AceWrapper: %s)' % name
+        self.tag = '(API_Wrapper: %s)' % name
         self.root = get_root()
         
     def flx_wrapper(self):
@@ -238,7 +233,7 @@ class AceWrapper (leoFrame.StringTextWrapper):
 
     # No need to override getters.
     #@+others
-    #@+node:ekr.20181128101421.1: *4* AceWrapper.Selection Setters
+    #@+node:ekr.20181128101421.1: *4* API_Wrapper.Selection Setters
     def seeInsertPoint(self):
         # print(self.tag, 'seeInsertPoint')
         self.flx_wrapper().see_insert_point()
@@ -265,9 +260,25 @@ class AceWrapper (leoFrame.StringTextWrapper):
         if insert is not None:
             self.ins = insert
             self.flx_wrapper().set_insert_point(insert)
-    #@+node:ekr.20181127121642.1: *4* AceWrapper.Text Setters
-    # Override StringTextWrapper setters to update flx.body widget.
-    # Careful: do not set c.p.b or similar here.
+    #@+node:ekr.20181127121642.1: *4* API_Wrapper.Text Setters
+    #@@language rest
+    #@@wrap
+    #@+at
+    # These methods implement Leo's high-level api for the body pane.
+    # 
+    # Consider Leo's sort-lines command. sort-lines knows nothing about which gui
+    # is in effect. It updates the body pane using *only* the high-level api.
+    # 
+    # These methods must do two things:
+    #     
+    # 1. Update self.s, self.i and self.ins.
+    # 2. Call the corresponding flx_body methods to update the flx_body widget,
+    #    except during unit testing.
+    # 
+    # **Warning** p.b = s will cause an unbounded recursion.
+    #             Use p.v.setBodyString(s) instead.
+    #@@c
+    #@@language python
 
     def appendText(self, s):
         trace = debug_keys and not g.unitTesting
@@ -281,8 +292,9 @@ class AceWrapper (leoFrame.StringTextWrapper):
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
         c.p.v.setBodyString(self.s)
-        ### self.flx_wrapper().set_text(self.s)
-        ### self.flx_wrapper().set_insert_point(self.ins)
+        if not g.unitTesting:
+            self.flx_wrapper().set_text(self.s)
+            self.flx_wrapper().set_insert_point(self.ins)
 
     def delete(self, i, j=None):
         # trace = debug_keys and not g.unitTesting
@@ -295,8 +307,9 @@ class AceWrapper (leoFrame.StringTextWrapper):
                 print('body.ace_wrapper.delete: BODY CHANGED')
             c.setChanged()
         c.p.v.setBodyString(self.s)
-        ### self.flx_wrapper().set_text(self.s)
-        ### self.flx_wrapper().set_insert_point(self.ins)
+        if not g.unitTesting:
+            self.flx_wrapper().set_text(self.s)
+            self.flx_wrapper().set_insert_point(self.ins)
 
     def deleteTextSelection(self):
         trace = debug_keys and not g.unitTesting
@@ -313,8 +326,10 @@ class AceWrapper (leoFrame.StringTextWrapper):
             c.setChanged()
         super().deleteTextSelection()
         c.p.v.setBodyString(self.s)
-        ### self.flx_wrapper().set_text(self.s)
-        ### self.flx_wrapper().set_insert_point(self.ins)
+            # p.b = self.s would cause an unbounded recursion.
+        if not g.unitTesting:
+            self.flx_wrapper().set_text(self.s)
+            self.flx_wrapper().set_insert_point(self.ins)
         
     def insert(self, i, s):
         '''Called from Leo's core on every keystroke.'''
@@ -327,16 +342,20 @@ class AceWrapper (leoFrame.StringTextWrapper):
             if trace_changed:
                 print('body.ace_wrapper.insert: BODY CHANGED')
             c.setChanged()
-        # doPlainChar, insertNewlineHelper, etc.
+        #
+        # Called from doPlainChar, insertNewlineHelper, etc.
         self.s = self.s[: i] + s + self.s[i:]
         i += len(s)
         self.ins = i
         self.sel = i, i
         if trace:
-            print(self.tag, 'insert', i, g.callers(1), 'self.s:', repr(g.truncate(self.s, 60)))
+            print('%s: insert: %s %s self.s: %r' % (
+                self.tag, i, g.callers(1), g.truncate(self.s, 60)))
         c.p.v.setBodyString(self.s)
-        self.flx_wrapper().insert(s)
-        ### self.flx_wrapper().set_insert_point(self.ins)
+            # p.b = self.s would cause an unbounded recursion.
+        if not g.unitTesting:
+            self.flx_wrapper().insert(s)
+            self.flx_wrapper().set_insert_point(self.ins)
 
     def setAllText(self, s):
         # Called by set_body_text_after_select.
@@ -345,8 +364,10 @@ class AceWrapper (leoFrame.StringTextWrapper):
         if trace: print(self.tag, 'setAllText', g.callers(1), repr(g.truncate(s, 60)))
         self.s = s
         c.p.v.setBodyString(s)
-        self.flx_wrapper().set_text(s)
-        self.flx_wrapper().set_insert_point(self.ins)
+            # p.b = s would cause an unbounded recursion.
+        if not g.unitTesting:
+            self.flx_wrapper().set_text(s)
+            self.flx_wrapper().set_insert_point(self.ins)
     #@-others
 #@+node:ekr.20181107052522.1: *3* class LeoBrowserApp
 # pscript never converts flx.PyComponents to JS.
@@ -543,9 +564,10 @@ class LeoBrowserApp(flx.PyComponent):
         
         c = self.c
         w = c.frame.body.wrapper
-        assert isinstance(w, AceWrapper), repr(w)
+        assert isinstance(w, API_Wrapper), repr(w)
         i = g.convertRowColToPythonIndex(text, row, col, lines=None)
-        print(self.tag, ': update_body row: %s col: %s => index: %s %s' % (row, col, i, repr(text)))
+        print('%s: update_body row: %s col: %s => index: %s\n%r' % (
+            self.tag, row, col, i, text), g.callers())
         w.s = text
         w.ins = i
         ### To do: set: w.sel.
@@ -1002,7 +1024,7 @@ class LeoBrowserBody(leoFrame.NullBody):
         self.tag = '(body wrapper)'
         # Replace the StringTextWrapper with the ace wrapper.
         assert isinstance(self.wrapper, leoFrame.StringTextWrapper)
-        self.wrapper = AceWrapper(c, 'body')
+        self.wrapper = API_Wrapper(c, 'body')
             
     # The Ace Wrapper does almost everything.
     def __getattr__ (self, attr):
@@ -1110,7 +1132,7 @@ class LeoBrowserGui(leoGui.NullGui):
             if not g.unitTesting:
                 widget.setFocus()
             self.focusWidget = widget
-        elif isinstance(widget, AceWrapper):
+        elif isinstance(widget, API_Wrapper):
             # This does not get executed.
             print('===== %s set_focus: redirect AceeWrapper to LeoBrowserBody')
             assert isinstance(c.frame.body, LeoBrowserBody), repr(c.frame.body)
