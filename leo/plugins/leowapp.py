@@ -2,17 +2,17 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20181028052650.1: * @file leowapp.py
 #@@first
-#@@language python
-#@@tabwidth -4
+'''
+This file is deprecated/obsolete. It may be removed soon.
+
+leoflexx.py implements LeoWapp using flexx.
+
+'''
 #@+<< docstring >>
 #@+node:ekr.20181028052650.2: ** << docstring >>
 #@@language rest
 #@@wrap
-'''
-Leo as a web app: contains python and javascript sides.
 
-
-'''
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20181028052650.3: ** << imports >>
@@ -139,4 +139,6 @@ class BrowserGui(leoGui.NullGui):
         sys.exit(0)
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo
