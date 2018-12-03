@@ -101,9 +101,11 @@ import time
 #@+<< leoflexx: switches and other globals >>
 #@+node:ekr.20181202105852.1: ** << leoflexx: switches and other globals >>
 debug_body = True
-debug_changed = False # Trace c.changed()
+    # Shows calls to flx_body setters.
+debug_events = False
 debug_focus = False # puts 'focus' in g.app.debug.
-debug_keys = True # puts 'keys' in g.app.debug.
+debug_keys = False # puts 'keys' in g.app.debug.
+    # Shows only keys passed to Leo.
 debug_redraw = False
 debug_select = False
 debug_tree = False
@@ -271,87 +273,48 @@ class API_Wrapper (leoFrame.StringTextWrapper):
     # 
     # These methods must do two things:
     #     
-    # 1. Update self.s, self.i and self.ins.
+    # 1. Call the corresponding super() method to update self.s, self.i and self.ins.
     # 2. Call the corresponding flx_body methods to update the flx_body widget,
-    #    except during unit testing.
-    # 
-    # **Warning** p.b = s will cause an unbounded recursion.
-    #             Use p.v.setBodyString(s) instead.
+    #    except while unit testing.
     #@@c
     #@@language python
 
-    def appendText(self, s):
+    def finish_setter(self, tag):
+        '''The common setter code.'''
         trace = debug_keys and not g.unitTesting
         c = self.c
-        super().appendText(s)
-        if s and self.name == 'body':
+        # At present, self.name is always 'body'.
+        if self.name == 'body':
             c.p.v.setBodyString(self.s)
+                # p.b = self.s will cause an unbounded recursion.
         if trace:
-            print('%s: appendText: len(s) %s len(self.s): %s' % (
-                self.tag, len(s), len(self.s)))
+            print('%s: %s: len(self.s): %s' % (
+                self.tag, self.tag, len(self.s)))
         if not g.unitTesting:
             self.flx_wrapper().set_text(self.s)
             self.flx_wrapper().set_insert_point(self.ins)
+
+    def appendText(self, s):
+        super().appendText(s)
+        self.finish_setter('appendText')
 
     def delete(self, i, j=None):
-        trace = debug_keys and not g.unitTesting
-        c = self.c
         super().delete(i, j)
-        if self.name == 'body':
-            c.p.v.setBodyString(self.s)
-        if trace:
-            print('%s: delete: %r %r len(self.s) %s' % (
-                self.tag, i, j, len(self.s)))
-        if not g.unitTesting:
-            self.flx_wrapper().set_text(self.s)
-            self.flx_wrapper().set_insert_point(self.ins)
+        self.finish_setter('delete')
 
     def deleteTextSelection(self):
-        trace = debug_keys and not g.unitTesting
-        c = self.c
         super().deleteTextSelection()
-        if self.name == 'body':
-            c.p.v.setBodyString(self.s)
-                # p.b = self.s would cause an unbounded recursion.
-        if trace:
-            print('%s: deleteTextSelection: len(self.s): %s' % (
-                self.tag, len(self.s)))
-        if not g.unitTesting:
-            self.flx_wrapper().set_text(self.s)
-            self.flx_wrapper().set_insert_point(self.ins)
+        self.finish_setter('deleteTextSelection')
         
     def insert(self, i, s):
-        '''
-        Called from Leo's core (doPlainChar, insertNewlineHelper, etc.) on every keystroke.
-        '''
-        trace = debug_keys and not g.unitTesting
-        c = self.c
+        # Called from doPlainChar, insertNewlineHelper, etc. on every keystroke.
         super().insert(i, s)
-        if self.name == 'body':
-            c.p.v.setBodyString(self.s)
-                # p.b = self.s would cause an unbounded recursion.
-        if trace:
-            print('%s: insert: %s %s len(s): %s len(self.s): %s' % (
-                self.tag, i, g.callers(1), len(s), len(self.s))) # g.truncate(self.s, 60)
-        if not g.unitTesting:
-            self.flx_wrapper().insert(s)
-            self.flx_wrapper().set_insert_point(self.ins)
+        self.finish_setter('insert')
 
     def setAllText(self, s):
         # Called by set_body_text_after_select.
-        trace = debug_keys and not g.unitTesting
-        c = self.c
         super().setAllText(s)
-            # Sets self.s, self.ins and self.sel.
-        if self.name == 'body':
-            c.p.v.setBodyString(s)
-                # p.b = s would cause an unbounded recursion.
-        if trace:
-            print('%s: setAllText: caller: %s len(s): %s' % (
-                self.tag, g.callers(1), len(s))) # g.truncate(s, 60)
-        if not g.unitTesting:
-            self.flx_wrapper().set_text(s)
-            self.flx_wrapper().set_insert_point(self.ins)
+        self.finish_setter('insert')
     #@-others
 #@+node:ekr.20181107052522.1: *3* class LeoBrowserApp
 # pscript never converts flx.PyComponents to JS.
@@ -546,15 +509,17 @@ class LeoBrowserApp(flx.PyComponent):
     @flx.action
     def update_body(self, text, row, col):
         
+        trace = debug_body and not g.unitTesting
         c = self.c
         w = c.frame.body.wrapper
         assert isinstance(w, API_Wrapper), repr(w)
         i = g.convertRowColToPythonIndex(text, row, col, lines=None)
-        print('%s: update_body row: %s col: %s => index: %s len(text): %s' % (
-            self.tag, row, col, i, len(text)), g.callers()) # g.truncate(text, 60)
+        if trace:
+            print('%s: update_body row: %s col: %s => index: %s len(text): %s' % (
+                self.tag, row, col, i, len(text)), g.callers()) # g.truncate(text, 60)
         w.s = text
         w.ins = i
-        ### To do: set: w.sel.
+        w.sel = i, i
     #@+node:ekr.20181122132345.1: *4* app.Drawing...
     #@+node:ekr.20181113042549.1: *5* app.action.redraw
     @flx.action
@@ -595,10 +560,12 @@ class LeoBrowserApp(flx.PyComponent):
         w.tree.redraw_with_dict(redraw_dict, redraw_instructions)
             # At present, this does a full redraw using redraw_dict.
             # The redraw instructions are not used.
-        # Set c.changed if there are any redraw instructions.
-        if redraw_instructions:
-            if debug_changed: print('app.redraw: C CHANGED')
-            c.setChanged()
+        ###
+            # Wrong: only Leo's core should call c.setChanged().
+            # Set c.changed if there are any redraw instructions.
+            # if redraw_instructions:
+                # if debug_changed: print('app.redraw: C CHANGED')
+                # c.setChanged()
         t2 = time.clock()
         if trace:
             g.trace('%5.3f sec.' % (t2-t1))
@@ -1099,7 +1066,7 @@ class LeoBrowserGui(leoGui.NullGui):
         return w
 
     def set_focus(self, commander, widget):
-        trace = debug_focus and not g.unitTesting
+        trace = (debug_focus or debug_events) and not g.unitTesting
         # Be careful during startup.
         if not self.root:
             return
@@ -1395,7 +1362,7 @@ class JSEditorWidget(flx.Widget):
     #@+node:ekr.20181202075105.1: *4* jse.Clicks
     @flx.reaction('pointer_click')
     def on_click(self, *events):
-        trace = debug_keys and not g.unitTesting
+        trace = debug_events and not g.unitTesting
         tag = self.name.upper()
         for ev in events:
             editor = self.editor
@@ -1426,7 +1393,7 @@ class JSEditorWidget(flx.Widget):
     @flx.reaction('key_press')
     def on_key_press(self, *events):
         # The JS editor has already** handled the key!
-        trace = debug_keys and not g.unitTesting
+        trace = debug_events and not g.unitTesting
         tag = self.name.upper()
         for ev in events:
             editor = self.editor
@@ -1485,7 +1452,7 @@ class JSEditorWidget(flx.Widget):
         return window.CodeMirror(self.node, options)
     #@+node:ekr.20181201081444.1: *4* jse.should_be_leo_key
     def should_be_leo_key(self, ev):
-        trace = debug_keys and not g.unitTesting
+        trace = (debug_keys and debug_events) and not g.unitTesting
         key, mods, tag = ev['key'], ev['modifiers'], 'JSE.should_be_leo_key:'
         #
         # The widget handles F-keys.
@@ -1748,7 +1715,7 @@ class LeoFlexxStatusLine(flx.Widget):
         
     @flx.reaction('key_press')
     def on_key_press(self, *events):
-        trace = debug_keys and not g.unitTesting
+        trace = debug_events and not g.unitTesting
         for ev in events:
             key, mods = ev['key'], ev ['modifiers']
             if trace: print('\nSTATUS LINE: on_key_press', repr(mods), repr(key))
@@ -1932,7 +1899,7 @@ class LeoFlexxTree(flx.Widget):
     )
     def on_tree_event(self, *events):
         for ev in events:
-            trace = False and (debug_tree or debug_redraw) and not g.unitTesting
+            trace = debug_events and not g.unitTesting
             expand = not ev.new_value
             if expand:
                 # Don't redraw if the LeoTreeItem has children.
@@ -2030,7 +1997,7 @@ class LeoFlexxTree(flx.Widget):
 
     @flx.reaction('tree.key_press')
     def on_key_press(self, *events):
-        trace = debug_keys and not g.unitTesting
+        trace = debug_events and not g.unitTesting
         if trace: print('===== flx.TREE.key_press')
         for ev in events:
             self.root.do_key(ev, 'tree')
@@ -2069,7 +2036,7 @@ class LeoFlexxTree(flx.Widget):
         
         This also gets fired on *unselection* events, which causes problems.
         '''
-        trace = False and debug_tree and not g.unitTesting
+        trace = debug_events and not g.unitTesting
         #
         # Reselect the present ap if there are no selection events.
         # This ensures that clicking a headline twice has no effect.
