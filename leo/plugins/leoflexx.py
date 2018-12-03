@@ -309,9 +309,6 @@ class API_Wrapper (leoFrame.StringTextWrapper):
     def deleteTextSelection(self):
         trace = debug_keys and not g.unitTesting
         c = self.c
-        i, j = super().getSelectionRange()
-        if i == j:
-            return
         super().deleteTextSelection()
         if self.name == 'body':
             c.p.v.setBodyString(self.s)
@@ -329,15 +326,13 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         '''
         trace = debug_keys and not g.unitTesting
         c = self.c
-        if not s:
-            return
         super().insert(i, s)
         if self.name == 'body':
             c.p.v.setBodyString(self.s)
                 # p.b = self.s would cause an unbounded recursion.
         if trace:
-            print('%s: insert: %s %s len(self.s): %s' % (
-                self.tag, i, g.callers(1), len(self.s))) # g.truncate(self.s, 60)
+            print('%s: insert: %s %s len(s): %s len(self.s): %s' % (
+                self.tag, i, g.callers(1), len(s), len(self.s))) # g.truncate(self.s, 60)
         if not g.unitTesting:
             self.flx_wrapper().insert(s)
             self.flx_wrapper().set_insert_point(self.ins)
@@ -346,14 +341,14 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         # Called by set_body_text_after_select.
         trace = debug_keys and not g.unitTesting
         c = self.c
-        if trace:
-            print('%s: setAllText: caller: %s len(s): %s' % (
-                self.tag, g.callers(1), len(s))) # g.truncate(s, 60)
-        self.s = s
-            # Same as super().setAllText(s)
+        super().setAllText(s)
+            # Sets self.s, self.ins and self.sel.
         if self.name == 'body':
             c.p.v.setBodyString(s)
                 # p.b = s would cause an unbounded recursion.
+        if trace:
+            print('%s: setAllText: caller: %s len(s): %s' % (
+                self.tag, g.callers(1), len(s))) # g.truncate(s, 60)
         if not g.unitTesting:
             self.flx_wrapper().set_text(s)
             self.flx_wrapper().set_insert_point(self.ins)
