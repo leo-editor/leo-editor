@@ -349,8 +349,8 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         self.ins = i
         self.sel = i, i
         if trace:
-            print('%s: insert: %s %s self.s: %r' % (
-                self.tag, i, g.callers(1), g.truncate(self.s, 60)))
+            print('%s: insert: %s %s len(self.s): %s' % (
+                self.tag, i, g.callers(1), len(self.s))) # g.truncate(self.s, 60)
         c.p.v.setBodyString(self.s)
             # p.b = self.s would cause an unbounded recursion.
         if not g.unitTesting:
@@ -361,7 +361,9 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         # Called by set_body_text_after_select.
         trace = debug_keys and not g.unitTesting
         c = self.c
-        if trace: print(self.tag, 'setAllText', g.callers(1), repr(g.truncate(s, 60)))
+        if trace:
+            print('%s: setAllText: caller: %s len(s): %s' % (
+                self.tag, g.callers(1), len(s))) # g.truncate(s, 60)
         self.s = s
         c.p.v.setBodyString(s)
             # p.b = s would cause an unbounded recursion.
@@ -566,8 +568,8 @@ class LeoBrowserApp(flx.PyComponent):
         w = c.frame.body.wrapper
         assert isinstance(w, API_Wrapper), repr(w)
         i = g.convertRowColToPythonIndex(text, row, col, lines=None)
-        print('%s: update_body row: %s col: %s => index: %s\n%r' % (
-            self.tag, row, col, i, text), g.callers())
+        print('%s: update_body row: %s col: %s => index: %s len(text): %s' % (
+            self.tag, row, col, i, len(text)), g.callers()) # g.truncate(text, 60)
         w.s = text
         w.ins = i
         ### To do: set: w.sel.
@@ -1589,7 +1591,7 @@ class LeoFlexxBody(JSEditorWidget):
     def set_text(self, s):
         '''Set the entire text'''
         if debug_body:
-            print(self.tag, 'set_text', repr(g.truncate(s, 50)))
+            print('%s: set_text: len(s): %s' % (self.tag, len(s))) # g.truncate(s, 60)
         self.editor.setValue(s)
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
