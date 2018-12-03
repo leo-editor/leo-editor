@@ -1336,7 +1336,7 @@ class TracingNullObject(object):
         banner('NullObject.__setattr__ %r %s' % (attr, g.callers()))
         return self
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
-#@+node:ekr.20181201125953.1: *3* class JSEditorWidget
+#@+node:ekr.20181201125953.1: *3* class JSEditorWidget (flx.Widget)
 class JSEditorWidget(flx.Widget):
     '''The base class for all classes using a JS editor.'''
     
@@ -1420,7 +1420,6 @@ class JSEditorWidget(flx.Widget):
             # window looks undefined.
         global window 
         is_body = self.name == 'body'
-        ### print('===== JSE.make_editor', self.name)
         if use_ace:
             ace = window.ace.edit(self.node, "editor")
             ace.navigateFileEnd()  # otherwise all lines highlighted
@@ -1623,7 +1622,14 @@ class LeoFlexxMiniBuffer(JSEditorWidget):
     
     def init(self):
         # pylint: disable=arguments-differ
-        super().init('minibuffer')
+        ### super().init('minibuffer')
+        self.name = 'minibuffer'
+        self.tag = '(flx %s)' % self.name
+        self.tag = '(flx.minibuffer)'
+        with flx.HBox(flex=1):
+            flx.Label(text='Minibuffer')
+            with flx.Widget(flex=1):
+                self.editor = self.make_editor()
 
     #@+others
     #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
