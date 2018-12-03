@@ -1383,8 +1383,8 @@ class JSEditorWidget(flx.Widget):
         # pylint: disable=arguments-differ
         assert name in ('body', 'log', 'minibuffer'), repr(name)
         self.name = name
-        self.tag = '(flx %s)' % name
-        self.editor = self.make_editor()
+        self.tag = '(flx.%s)' % name
+        self.editor = make_editor_function(self.name, self.node)
 
     @flx.reaction('size')
     def __on_size(self, *events):
@@ -1452,42 +1452,6 @@ class JSEditorWidget(flx.Widget):
                 self.root.do_key(ev, ivar)
             if self.name == 'body':
                 self.root.update_body(text, row, col)
-    #@+node:ekr.20181201081645.1: *4* jse.make_editor
-    def make_editor(self):
-        '''Instantiate the JS editor, either ace or CodeMirror'''
-        # pylint: disable=undefined-variable
-            # window looks undefined.
-        global window 
-        is_body = self.name == 'body'
-        editor_name = '%s-editor' % self.name
-        if use_ace:
-            ace = window.ace.edit(self.node, editor_name)
-            ace.navigateFileEnd()  # otherwise all lines highlighted
-            ace.setTheme("ace/theme/solarized_dark")
-            if self.name == 'body':
-                ace.getSession().setMode("ace/mode/python")
-                    # This sets soft tabs.
-            if self.name == 'minibuffer':
-                pass ### Disable line numbers.
-                
-            return ace
-        #
-        # Use CodeMirror
-        options = dict(
-            value='',
-            mode='python' if is_body else None,
-            theme='solarized dark',
-            autofocus=True,
-            styleActiveLine=True,
-            matchBrackets=True,
-            indentUnit=4,
-            smartIndent=True,
-            lineWrapping=True,
-            lineNumbers=True,
-            firstLineNumber=1,
-            readOnly=False,
-        )
-        return window.CodeMirror(self.node, options)
     #@+node:ekr.20181201081444.1: *4* jse.should_be_leo_key
     def should_be_leo_key(self, ev):
         trace = (debug_keys and debug_events) and not g.unitTesting
