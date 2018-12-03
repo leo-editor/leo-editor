@@ -236,32 +236,28 @@ class API_Wrapper (leoFrame.StringTextWrapper):
     # No need to override getters.
     #@+others
     #@+node:ekr.20181128101421.1: *4* API_Wrapper.Selection Setters
+    def finish_set_insert(self, tag):
+        '''Common helper for selection setters.'''
+        trace = debug_select and not g.unitTesting
+        if trace:
+            print('%s: %s insert_point: %s' % (self.tag, tag, self.ins))
+        self.flx_wrapper().set_insert_point(self.ins, self.sel)
+
     def seeInsertPoint(self):
         # print(self.tag, 'seeInsertPoint')
         self.flx_wrapper().see_insert_point()
 
     def selectAllText(self, insert=None):
-        print(self.tag, 'selectAllText', repr(insert))
-        self.sel = 0, len(self.s)
-        self.ins = len(self.s) if insert is None else insert
-        self.flx_wrapper().select_all_text()
-        if insert is not None:
-            self.flx_wrapper().set_insert_point(insert)
+        super().selectAllText(insert)
+        self.finish_set_insert('selectAllText')
 
     def setInsertPoint(self, pos, s=None):
-        # print(self.tag, 'setInsertPoint', pos, len(s) if s else 0, g.callers(1))
-        self.virtualInsertPoint = pos
-        self.ins = pos
-        self.sel = pos, pos
-        self.flx_wrapper().set_insert_point(pos)
+        super().setInsertPoint(pos, s)
+        self.finish_set_insert('setInsertPoint')
 
     def setSelectionRange(self, i, j, insert=None):
-        print(self.tag, 'setSelectionRange', i, j, repr(insert))
-        self.sel = i, j
-        self.flx_wrapper().set_selection_range(i, j)
-        if insert is not None:
-            self.ins = insert
-            self.flx_wrapper().set_insert_point(insert)
+        super().setSelectionRange(i, j, insert)
+        self.finish_set_insert('setSelectionRange')
     #@+node:ekr.20181127121642.1: *4* API_Wrapper.Text Setters
     #@@language rest
     #@@wrap
@@ -1522,27 +1518,32 @@ class LeoFlexxBody(JSEditorWidget):
         self.editor.focus()
 
     @flx.action
-    def set_insert_point(self, i):
+    def set_insert_point(self, insert, sel):
+        trace = debug_body and not g.unitTesting
         s = self.editor.getValue()
-        row, col = g.convertPythonIndexToRowCol(s,i)
-        if debug_body: print('%s: set_insert_point: i: %s len(s): %s row: %s col: %s' % (
-            self.tag, i, len(s), row, col))
+        row, col = g.convertPythonIndexToRowCol(s, insert)
+        if trace: print('%s: set_insert_point: i: %s len(s): %s row: %s col: %s' % (
+            self.tag, insert, len(s), row, col))
         if use_ace:
             self.editor.moveCursorTo(row, col)
         else:
             print('flx.wrapper: set_insert_point: NOT READY') ###
+        ### To do: set selection range using sel kwarg.
 
     @flx.action
     def set_selection_range(self, i, j):
-        if debug_body:
+        trace = debug_body and not g.unitTesting
+        if trace:
             print(self.tag, 'set_selection_range', i, j)
         ### print(self.editor.getSession()) ###
 
     @flx.action
     def set_text(self, s):
         '''Set the entire text'''
-        if debug_body:
-            print('%s: set_text: len(s): %s' % (self.tag, len(s))) # g.truncate(s, 60)
+        trace = debug_body and not g.unitTesting
+        if trace:
+            print('%s: set_text: len(s): %s' % (
+                self.tag, len(s))) # g.truncate(s, 60)
         self.editor.setValue(s)
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
