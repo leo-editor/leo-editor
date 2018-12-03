@@ -282,77 +282,71 @@ class API_Wrapper (leoFrame.StringTextWrapper):
 
     def appendText(self, s):
         trace = debug_keys and not g.unitTesting
-        trace_changed = debug_changed and not g.unitTesting
-        if trace: print(self.tag, 'appendText', len(s))
         c = self.c
+        super().appendText(s)
         if s and self.name == 'body':
-            if trace_changed: print('body.ace_wrapper.appendText: BODY CHANGED')
-            c.setChanged()
-        self.s = self.s + s
-        self.ins = len(self.s)
-        self.sel = self.ins, self.ins
-        c.p.v.setBodyString(self.s)
+            ### c.setChanged() ### Should be done in Leo's core.
+            c.p.v.setBodyString(self.s)
+        if trace:
+            print('%s: appendText: len(s) %s len(self.s): %s' % (
+                self.tag, len(s), len(self.s)))
         if not g.unitTesting:
             self.flx_wrapper().set_text(self.s)
             self.flx_wrapper().set_insert_point(self.ins)
 
     def delete(self, i, j=None):
-        # trace = debug_keys and not g.unitTesting
-        trace_changed = debug_changed and not g.unitTesting
+        trace = debug_keys and not g.unitTesting
         c = self.c
-        print(self.tag, 'delete', repr(i), repr(j))
         super().delete(i, j)
         if self.name == 'body':
-            if trace_changed:
-                print('body.ace_wrapper.delete: BODY CHANGED')
-            c.setChanged()
-        c.p.v.setBodyString(self.s)
+            ### c.setChanged() ### Should be done in Leo's core.
+            c.p.v.setBodyString(self.s)
+        if trace:
+            print('%s: delete: %r %r len(self.s) %s' % (
+                self.tag, i, j, len(self.s)))
         if not g.unitTesting:
             self.flx_wrapper().set_text(self.s)
             self.flx_wrapper().set_insert_point(self.ins)
 
     def deleteTextSelection(self):
         trace = debug_keys and not g.unitTesting
-        trace_changed = debug_changed and not g.unitTesting
         c = self.c
-        if trace:
-            print(self.tag, 'deleteTextSelection')
         i, j = super().getSelectionRange()
         if i == j:
             return
-        if self.name == 'body':
-            if trace_changed:
-                print('body.ace_wrapper.deleteTextSelection.BODY CHANGED')
-            c.setChanged()
         super().deleteTextSelection()
-        c.p.v.setBodyString(self.s)
-            # p.b = self.s would cause an unbounded recursion.
+        if self.name == 'body':
+            ### c.setChanged() ### Should be done in Leo's core.
+            c.p.v.setBodyString(self.s)
+                # p.b = self.s would cause an unbounded recursion.
+        if trace:
+            print('%s: deleteTextSelection: len(self.s): %s' % (
+                self.tag, len(self.s)))
         if not g.unitTesting:
             self.flx_wrapper().set_text(self.s)
             self.flx_wrapper().set_insert_point(self.ins)
         
     def insert(self, i, s):
-        '''Called from Leo's core on every keystroke.'''
+        '''
+        Called from Leo's core (doPlainChar, insertNewlineHelper, etc.) on every keystroke.
+        '''
         trace = debug_keys and not g.unitTesting
-        trace_changed = debug_changed and not g.unitTesting
         c = self.c
         if not s:
             return
+        super().insert(i, s)
+        ###
+            # self.s = self.s[: i] + s + self.s[i:]
+            # i += len(s)
+            # self.ins = i
+            # self.sel = i, i
         if self.name == 'body':
-            if trace_changed:
-                print('body.ace_wrapper.insert: BODY CHANGED')
-            c.setChanged()
-        #
-        # Called from doPlainChar, insertNewlineHelper, etc.
-        self.s = self.s[: i] + s + self.s[i:]
-        i += len(s)
-        self.ins = i
-        self.sel = i, i
+            ### c.setChanged() ### Should be done in Leo's core.
+            c.p.v.setBodyString(self.s)
+                # p.b = self.s would cause an unbounded recursion.
         if trace:
             print('%s: insert: %s %s len(self.s): %s' % (
                 self.tag, i, g.callers(1), len(self.s))) # g.truncate(self.s, 60)
-        c.p.v.setBodyString(self.s)
-            # p.b = self.s would cause an unbounded recursion.
         if not g.unitTesting:
             self.flx_wrapper().insert(s)
             self.flx_wrapper().set_insert_point(self.ins)
@@ -365,8 +359,11 @@ class API_Wrapper (leoFrame.StringTextWrapper):
             print('%s: setAllText: caller: %s len(s): %s' % (
                 self.tag, g.callers(1), len(s))) # g.truncate(s, 60)
         self.s = s
-        c.p.v.setBodyString(s)
-            # p.b = s would cause an unbounded recursion.
+            # Same as super().setAllText(s)
+        if self.name == 'body':
+            ### c.setChanged() ### Should be done in Leo's core.
+            c.p.v.setBodyString(s)
+                # p.b = s would cause an unbounded recursion.
         if not g.unitTesting:
             self.flx_wrapper().set_text(s)
             self.flx_wrapper().set_insert_point(self.ins)
@@ -1546,7 +1543,7 @@ class LeoFlexxBody(JSEditorWidget):
         super().init('body')
 
     #@+others
-    #@+node:ekr.20181128061524.1: *4* flx_body setters
+    #@+node:ekr.20181128061524.1: *4* flx_body setters (finish)
     @flx.action
     def see_insert_point(self):
         if 0: print(self.tag, 'see_insert_point')
@@ -1559,7 +1556,7 @@ class LeoFlexxBody(JSEditorWidget):
         if use_ace:
             self.editor.insert(s)
         else:
-            print('NOT READY')
+            print('flx.Body: NOT READY')
             ### self.editor.insert(s) ##############
 
     @flx.action
@@ -1574,17 +1571,19 @@ class LeoFlexxBody(JSEditorWidget):
 
     @flx.action
     def set_insert_point(self, i):
-        if 0: # This would work, if i were correct.
-            s = self.editor.getValue()
-            row, col = g.convertPythonIndexToRowCol(s,i)
-            if debug_body: print('%s: set_insert_point: i: %s len(s): %s row: %s col: %s' % (
-                self.tag, i, len(s), row, col))
-            if use_ace:
-                self.editor.moveCursorTo(row, col)
+        s = self.editor.getValue()
+        row, col = g.convertPythonIndexToRowCol(s,i)
+        if debug_body: print('%s: set_insert_point: i: %s len(s): %s row: %s col: %s' % (
+            self.tag, i, len(s), row, col))
+        if use_ace:
+            self.editor.moveCursorTo(row, col)
+        else:
+            print('flx.wrapper: set_insert_point: NOT READY') ###
 
     @flx.action
     def set_selection_range(self, i, j):
-        if debug_body: print(self.tag, 'set_selection_range', i, j)
+        if debug_body:
+            print(self.tag, 'set_selection_range', i, j)
         ### print(self.editor.getSession()) ###
 
     @flx.action
