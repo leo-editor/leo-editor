@@ -1377,11 +1377,13 @@ class TracingNullObject(object):
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181201125953.1: *3* class JSEditorWidget (flx.Widget)
 class JSEditorWidget(flx.Widget):
-    '''The base class for all classes using a JS editor.'''
+    '''
+    The base class for the body and log panes.
+    '''
     
     def init(self, name, flex=1):
         # pylint: disable=arguments-differ
-        assert name in ('body', 'log', 'minibuffer'), repr(name)
+        assert name in ('body', 'log'), repr(name)
         self.name = name
         self.tag = '(flx.%s)' % name
         self.editor = make_editor_function(self.name, self.node)
@@ -1639,7 +1641,7 @@ class MinibufferEditor(flx.Widget):
     def init(self):
         self.editor = make_editor_function('minibuffer', self.node)
 
-class LeoFlexxMiniBuffer(flx.Widget): ### JSEditorWidget):
+class LeoFlexxMiniBuffer(flx.Widget):
     
     def init(self):
         self.tag = '(flx.minibuffer)'
@@ -1648,6 +1650,13 @@ class LeoFlexxMiniBuffer(flx.Widget): ### JSEditorWidget):
             flx.Label(text='Minibuffer')
             w = MinibufferEditor(flex=1)
             self.editor = w.editor
+            
+    @flx.reaction('size')
+    def __on_size(self, *events):
+        if use_ace:
+            self.editor.resize()
+        else:
+            self.editor.refresh()
 
     #@+others
     #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
