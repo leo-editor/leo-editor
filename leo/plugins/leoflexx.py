@@ -214,8 +214,7 @@ def make_editor_function(name, node):
             ace.getSession().setMode("ace/mode/python")
                 # This sets soft tabs.
         if name == 'minibuffer':
-            pass ### Disable line numbers.
-            
+            pass ### Disable line numbers. 
         return ace
     #
     # Use CodeMirror
