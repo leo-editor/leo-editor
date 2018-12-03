@@ -137,18 +137,17 @@ else:
 #@@wrap
 #@+at
 # 
-# In skeleton:
-# - Complete AceWrapper.Text Setters, but do *not* update flx.body.
-# - Complete flx_body setters. 
+# - Complete AceWrapper.Text Setters and flx_body setters.
+#   Don't update the body during unit tests.
+# - Handle selection range, not just insert point.
+# - Warn if closing dirty windows: (catch close-window events)
 # 
 # Later:
-# - Handle selection range, not just insert point.
 # - Gui focus does not select in inner text widget?
 # - Crash, when doing Ctrl-S in status line (see child).
 # - Ctrl-H should edit c.p.h in minibuffer.
 # - Monkey-patch Alt-4 so it calls app.run_all_unit_tests()
 # - Increase the default number of lines when using CodeMirror.
-# - Warn if closing dirty windows: (catch close-window events)
 # - Get Ctrl-F working (see child) (test on other browsers)
 # - Arrow keys select multiple tree nodes.
 # * Return in tree does not put focus in body.
