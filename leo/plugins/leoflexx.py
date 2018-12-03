@@ -1082,7 +1082,7 @@ class LeoBrowserGui(leoGui.NullGui):
             self.focusWidget = widget
         elif isinstance(widget, API_Wrapper):
             # This does not get executed.
-            print('===== %s set_focus: redirect AceeWrapper to LeoBrowserBody')
+            print('===== %s set_focus: redirect AceWrapper to LeoBrowserBody')
             assert isinstance(c.frame.body, LeoBrowserBody), repr(c.frame.body)
             assert widget.name == 'body', repr(widget.name)
             if not g.unitTesting:
@@ -1418,9 +1418,6 @@ class JSEditorWidget(flx.Widget):
                 self.root.do_key(ev, ivar)
             if self.name == 'body':
                 self.root.update_body(text, row, col)
-            if self.name == 'minibuffer':
-                self.do_enter_key()
-            
     #@+node:ekr.20181201081645.1: *4* jse.make_editor
     def make_editor(self):
         '''Instantiate the JS editor, either ace or CodeMirror'''
@@ -1610,10 +1607,17 @@ class LeoFlexxMainWindow(flx.Widget):
             with flx.HSplit(flex=1):
                 tree = LeoFlexxTree(flex=1)
                 log = LeoFlexxLog(flex=1)
-            with flx.VBox(flex=1):
-                body = LeoFlexxBody(flex=1)
-                minibuffer = LeoFlexxMiniBuffer(flex=0.1)
-                status_line = LeoFlexxStatusLine()
+            body = LeoFlexxBody(flex=1)
+            minibuffer = LeoFlexxMiniBuffer()
+            status_line = LeoFlexxStatusLine()
+            # with flx.VSplit():
+                # with flx.HSplit(flex=1):
+                    # tree = LeoFlexxTree(flex=1)
+                    # log = LeoFlexxLog(flex=1)
+                # with flx.VBox(flex=1):
+                    # body = LeoFlexxBody(flex=1)
+                    # minibuffer = LeoFlexxMiniBuffer(flex=0.1)
+                    # status_line = LeoFlexxStatusLine()
         self._mutate('body', body)
         self._mutate('log', log)
         self._mutate('minibuffer', minibuffer)
@@ -1632,16 +1636,36 @@ class LeoFlexxMainWindow(flx.Widget):
     #@+others
     #@-others
 #@+node:ekr.20181104082154.1: *3* class LeoFlexxMiniBuffer
-class LeoFlexxMiniBuffer(JSEditorWidget):
+class MinibufferEditor(flx.Widget):
+
+    def init(self):
+        # pylint: disable=undefined-variable
+            # window
+        global window
+        ace = window.ace.edit(self.node, "minibuffer")
+        ace.navigateFileEnd()  # otherwise all lines highlighted
+        ace.setTheme("ace/theme/solarized_dark")
+        ### self.ace.getSession().setMode("ace/mode/python")
+        self.editor = ace
+
+class LeoFlexxMiniBuffer(flx.Widget): ### JSEditorWidget):
     
     def init(self):
+        self.tag = '(flx minibuffer)'
+        self.name = 'minibuffer'
+        with flx.HBox():
+            flx.Label(text='Minibuffer')
+            w = MinibufferEditor(flex=1)
+            self.editor = w.editor
+    
+    # def init(self):
         # pylint: disable=arguments-differ
         ### super().init('minibuffer')
-        self.name = 'minibuffer'
-        self.tag = '(flx %s)' % self.name
-        with flx.HBox(flex=1):
-            # flx.Label(text='Minibuffer',flex=0)
-            self.editor = self.make_editor()
+        # self.name = 'minibuffer'
+        # self.tag = '(flx %s)' % self.name
+        # with flx.HBox(flex=1):
+            # # flx.Label(text='Minibuffer',flex=0)
+            # self.editor = self.make_editor()
 
     #@+others
     #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
@@ -1673,6 +1697,34 @@ class LeoFlexxMiniBuffer(JSEditorWidget):
     def set_text(self, s):
         if 0: print('===== flx.minibuffer.set_text')
         self.editor.setValue(s)
+    #@+node:ekr.20181203150409.1: *4* flx_minibuffer.Key handling (OLD)
+    @flx.emitter
+    def key_press(self, e):
+        trace = debug_keys and not g.unitTesting
+        ev = self._create_key_event(e)
+        if trace: print('\nMINIBUFFER: key_press', repr(ev))
+        key, mods = ev ['key'], ev ['modifiers']
+        if key == 'Enter' and not mods:
+            self.do_enter_key()
+            return None
+        if 'Shift' in mods:
+            mods.remove('Shift')
+        if mods:
+            # k.masterKeyHandler will handle everything.
+            e.preventDefault()
+        # F12 does not work in the minibuffer.
+        return ev
+        
+    @flx.reaction('key_press')
+    def on_key_press(self, *events):
+        trace = debug_keys and not g.unitTesting
+        for ev in events:
+            key, mods = ev['key'], ev ['modifiers']
+            if trace: print('\nMINIBUFFER: on_key_press', repr(mods), repr(key))
+            if 'Shift' in mods:
+                mods.remove('Shift')
+            if mods:
+                self.root.do_key(ev, 'minibufferWidget')
     #@+node:ekr.20181129174405.1: *4* flx_minibuffer.do_enter_key (Easter Eggs)
     def do_enter_key(self):
         '''
