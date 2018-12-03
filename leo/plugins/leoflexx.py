@@ -285,7 +285,6 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         c = self.c
         super().appendText(s)
         if s and self.name == 'body':
-            ### c.setChanged() ### Should be done in Leo's core.
             c.p.v.setBodyString(self.s)
         if trace:
             print('%s: appendText: len(s) %s len(self.s): %s' % (
@@ -299,7 +298,6 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         c = self.c
         super().delete(i, j)
         if self.name == 'body':
-            ### c.setChanged() ### Should be done in Leo's core.
             c.p.v.setBodyString(self.s)
         if trace:
             print('%s: delete: %r %r len(self.s) %s' % (
@@ -316,7 +314,6 @@ class API_Wrapper (leoFrame.StringTextWrapper):
             return
         super().deleteTextSelection()
         if self.name == 'body':
-            ### c.setChanged() ### Should be done in Leo's core.
             c.p.v.setBodyString(self.s)
                 # p.b = self.s would cause an unbounded recursion.
         if trace:
@@ -335,13 +332,7 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         if not s:
             return
         super().insert(i, s)
-        ###
-            # self.s = self.s[: i] + s + self.s[i:]
-            # i += len(s)
-            # self.ins = i
-            # self.sel = i, i
         if self.name == 'body':
-            ### c.setChanged() ### Should be done in Leo's core.
             c.p.v.setBodyString(self.s)
                 # p.b = self.s would cause an unbounded recursion.
         if trace:
@@ -361,7 +352,6 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         self.s = s
             # Same as super().setAllText(s)
         if self.name == 'body':
-            ### c.setChanged() ### Should be done in Leo's core.
             c.p.v.setBodyString(s)
                 # p.b = s would cause an unbounded recursion.
         if not g.unitTesting:
@@ -1557,7 +1547,7 @@ class LeoFlexxBody(JSEditorWidget):
             self.editor.insert(s)
         else:
             print('flx.Body: NOT READY')
-            ### self.editor.insert(s) ##############
+            ### self.editor.insert(s) ###
 
     @flx.action
     def select_all_text(self):
