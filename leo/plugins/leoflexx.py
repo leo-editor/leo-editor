@@ -200,6 +200,40 @@ def info (s):
 #@+node:ekr.20181103151350.1: *3* init
 def init():
     return flx
+#@+node:ekr.20181203151314.1: *3* make_editor_function
+def make_editor_function(name, node):
+    '''Instantiate the JS editor, either ace or CodeMirror'''
+    # pylint: disable=undefined-variable
+        # window looks undefined.
+    global window 
+    if use_ace:
+        ace = window.ace.edit(node, 'editor')
+        ace.navigateFileEnd()  # otherwise all lines highlighted
+        ace.setTheme("ace/theme/solarized_dark")
+        if name == 'body':
+            ace.getSession().setMode("ace/mode/python")
+                # This sets soft tabs.
+        if name == 'minibuffer':
+            pass ### Disable line numbers.
+            
+        return ace
+    #
+    # Use CodeMirror
+    options = dict(
+        value='',
+        mode='python' if name == 'body' else None,
+        theme='solarized dark',
+        autofocus=True,
+        styleActiveLine=True,
+        matchBrackets=True,
+        indentUnit=4,
+        smartIndent=True,
+        lineWrapping=True,
+        lineNumbers=True,
+        firstLineNumber=1,
+        readOnly=False,
+    )
+    return window.CodeMirror(node, options)
 #@+node:ekr.20181113041410.1: *3* suppress_unwanted_log_messages (not used)
 def suppress_unwanted_log_messages():
     '''
@@ -1639,33 +1673,17 @@ class LeoFlexxMainWindow(flx.Widget):
 class MinibufferEditor(flx.Widget):
 
     def init(self):
-        # pylint: disable=undefined-variable
-            # window
-        global window
-        ace = window.ace.edit(self.node, "minibuffer")
-        ace.navigateFileEnd()  # otherwise all lines highlighted
-        ace.setTheme("ace/theme/solarized_dark")
-        ### self.ace.getSession().setMode("ace/mode/python")
-        self.editor = ace
+        self.editor = make_editor_function('minibuffer', self.node)
 
 class LeoFlexxMiniBuffer(flx.Widget): ### JSEditorWidget):
     
     def init(self):
-        self.tag = '(flx minibuffer)'
+        self.tag = '(flx.minibuffer)'
         self.name = 'minibuffer'
         with flx.HBox():
             flx.Label(text='Minibuffer')
             w = MinibufferEditor(flex=1)
             self.editor = w.editor
-    
-    # def init(self):
-        # pylint: disable=arguments-differ
-        ### super().init('minibuffer')
-        # self.name = 'minibuffer'
-        # self.tag = '(flx %s)' % self.name
-        # with flx.HBox(flex=1):
-            # # flx.Label(text='Minibuffer',flex=0)
-            # self.editor = self.make_editor()
 
     #@+others
     #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
