@@ -1636,7 +1636,7 @@ class LeoFlexxMainWindow(flx.Widget):
 
     #@+others
     #@-others
-#@+node:ekr.20181104082154.1: *3* class LeoFlexxMiniBuffer
+#@+node:ekr.20181104082154.1: *3* class LeoFlexxMiniBuffer (JS_Editor)
 class MinibufferEditor(flx.Widget):
 
     def init(self):
