@@ -200,6 +200,39 @@ def info (s):
 #@+node:ekr.20181103151350.1: *3* init
 def init():
     return flx
+#@+node:ekr.20181203151314.1: *3* make_editor_function
+def make_editor_function(name, node):
+    '''Instantiate the JS editor, either ace or CodeMirror'''
+    # pylint: disable=undefined-variable
+        # window looks undefined.
+    global window 
+    if use_ace:
+        ace = window.ace.edit(node, 'editor')
+        ace.navigateFileEnd()  # otherwise all lines highlighted
+        ace.setTheme("ace/theme/solarized_dark")
+        if name == 'body':
+            ace.getSession().setMode("ace/mode/python")
+                # This sets soft tabs.
+        if name == 'minibuffer':
+            pass ### Disable line numbers. 
+        return ace
+    #
+    # Use CodeMirror
+    options = dict(
+        value='',
+        mode='python' if name == 'body' else None,
+        theme='solarized dark',
+        autofocus=True,
+        styleActiveLine=True,
+        matchBrackets=True,
+        indentUnit=4,
+        smartIndent=True,
+        lineWrapping=True,
+        lineNumbers=True,
+        firstLineNumber=1,
+        readOnly=False,
+    )
+    return window.CodeMirror(node, options)
 #@+node:ekr.20181113041410.1: *3* suppress_unwanted_log_messages (not used)
 def suppress_unwanted_log_messages():
     '''
@@ -1341,18 +1374,18 @@ class TracingNullObject(object):
         banner('NullObject.__setattr__ %r %s' % (attr, g.callers()))
         return self
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
-#@+node:ekr.20181201125953.1: *3* class JS_Editor (flx.Widget)
-class JS_Editor(flx.Widget):
+#@+node:ekr.20181201125953.1: *3* class JSEditorWidget (flx.Widget)
+class JSEditorWidget(flx.Widget):
     '''
     The base class for the body and log panes.
     '''
     
     def init(self, name, flex=1):
         # pylint: disable=arguments-differ
-        assert name in ('body', 'log', 'minibuffer'), repr(name)
+        assert name in ('body', 'log'), repr(name)
         self.name = name
         self.tag = '(flx.%s)' % name
-        self.editor = None # Set in subclasses.
+        self.editor = make_editor_function(self.name, self.node)
 
     @flx.reaction('size')
     def __on_size(self, *events):
@@ -1420,40 +1453,6 @@ class JS_Editor(flx.Widget):
                 self.root.do_key(ev, ivar)
             if self.name == 'body':
                 self.root.update_body(text, row, col)
-    #@+node:ekr.20181204042835.1: *4* jse.make_editor
-    def make_editor(self):
-        '''Instantiate the JS editor, either ace or CodeMirror'''
-        # pylint: disable=undefined-variable
-            # window looks undefined.
-        global window
-        name, node = self.name, self.node
-        if use_ace:
-            ace = window.ace.edit(node, 'editor')
-            ace.navigateFileEnd()  # otherwise all lines highlighted
-            ace.setTheme("ace/theme/solarized_dark")
-            if name == 'body':
-                ace.getSession().setMode("ace/mode/python")
-                    # This sets soft tabs.
-            if name == 'minibuffer':
-                pass ### Disable line numbers. 
-            return ace
-        #
-        # Use CodeMirror
-        options = dict(
-            value='',
-            mode='python' if name == 'body' else None,
-            theme='solarized dark',
-            autofocus=True,
-            styleActiveLine=True,
-            matchBrackets=True,
-            indentUnit=4,
-            smartIndent=True,
-            lineWrapping=True,
-            lineNumbers=True,
-            firstLineNumber=1,
-            readOnly=False,
-        )
-        return window.CodeMirror(node, options)
     #@+node:ekr.20181201081444.1: *4* jse.should_be_leo_key
     def should_be_leo_key(self, ev):
         trace = (debug_keys and debug_events) and not g.unitTesting
@@ -1480,8 +1479,8 @@ class JS_Editor(flx.Widget):
             if trace: print(tag, 'unmodified: send to Body', repr(mods), repr(key))
         return mods
     #@-others
-#@+node:ekr.20181104082144.1: *3* class LeoFlexxBody (JS_Editor)
-class LeoFlexxBody(JS_Editor):
+#@+node:ekr.20181104082144.1: *3* class LeoFlexxBody
+class LeoFlexxBody(JSEditorWidget):
     '''A CodeEditor widget based on Ace.'''
 
     #@+<< body css >>
@@ -1497,7 +1496,6 @@ class LeoFlexxBody(JS_Editor):
     def init(self):
         # pylint: disable=arguments-differ
         super().init('body')
-        self.editor = self.make_editor()
 
     #@+others
     #@+node:ekr.20181128061524.1: *4* flx_body setters (finish)
@@ -1555,8 +1553,8 @@ class LeoFlexxBody(JS_Editor):
                 self.tag, len(s))) # g.truncate(s, 60)
         self.editor.setValue(s)
     #@-others
-#@+node:ekr.20181104082149.1: *3* class LeoFlexxLog (JS_Editor)
-class LeoFlexxLog(JS_Editor):
+#@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
+class LeoFlexxLog(JSEditorWidget):
     
     #@+<< log css >>
     #@+node:ekr.20181120060336.1: *4* << log css >>
@@ -1571,7 +1569,6 @@ class LeoFlexxLog(JS_Editor):
     def init(self):
         # pylint: disable=arguments-differ
         super().init('log')
-        self.editor = self.make_editor()
 
     #@+others
     #@+node:ekr.20181120060348.1: *4* flx.log.put & set_focus
@@ -1612,6 +1609,14 @@ class LeoFlexxMainWindow(flx.Widget):
             body = LeoFlexxBody(flex=1)
             minibuffer = LeoFlexxMiniBuffer()
             status_line = LeoFlexxStatusLine()
+            # with flx.VSplit():
+                # with flx.HSplit(flex=1):
+                    # tree = LeoFlexxTree(flex=1)
+                    # log = LeoFlexxLog(flex=1)
+                # with flx.VBox(flex=1):
+                    # body = LeoFlexxBody(flex=1)
+                    # minibuffer = LeoFlexxMiniBuffer(flex=0.1)
+                    # status_line = LeoFlexxStatusLine()
         self._mutate('body', body)
         self._mutate('log', log)
         self._mutate('minibuffer', minibuffer)
@@ -1629,30 +1634,29 @@ class LeoFlexxMainWindow(flx.Widget):
 
     #@+others
     #@-others
-#@+node:ekr.20181104082154.1: *3* class LeoFlexxMiniBuffer (JS_Editor)
+#@+node:ekr.20181104082154.1: *3* class LeoFlexxMiniBuffer
+class MinibufferEditor(flx.Widget):
+
+    def init(self):
+        self.editor = make_editor_function('minibuffer', self.node)
+
 class LeoFlexxMiniBuffer(flx.Widget):
-    '''The minibuffer as seen externally.'''
     
     def init(self):
+        self.tag = '(flx.minibuffer)'
+        self.name = 'minibuffer'
         with flx.HBox():
             flx.Label(text='Minibuffer')
-            self.widget = MinibufferEditor(flex=1)
-            self.editor = self.widget.editor
+            w = MinibufferEditor(flex=1)
+            self.editor = w.editor
             
-    # The JS_Editor does almost everything.
-    if 0:
-        def __getattr__ (self, attr):
-            if hasattr(self, 'widget'):
-                return getattr(self.widget, attr)
-            raise AttributeError
+    @flx.reaction('size')
+    def __on_size(self, *events):
+        if use_ace:
+            self.editor.resize()
+        else:
+            self.editor.refresh()
 
-class MinibufferEditor(JS_Editor):
-
-    def init(self):
-        # pylint: disable=arguments-differ
-        super().init('minibuffer')
-        self.editor = self.make_editor()
-        
     #@+others
     #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
     # The high-level interface methods, called from LeoBrowserMinibuffer.
