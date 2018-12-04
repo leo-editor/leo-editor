@@ -9,75 +9,44 @@
 #@@language md
 #@@wrap
 '''
-flexx.py: A stand-alone prototype for Leo using flexx.
+flexx.py: LeoWapp (Leo as a web browser), implemented using flexx:
+https://flexx.readthedocs.io/en/stable/
 
-This file, not leowapp.py or leoflexx.jx, is the main line of the LeoWapp project.
-https://github.com/leo-editor/leo-editor/issues/1005
+This file is the main line of the LeoWapp project.
+https://github.com/leo-editor/leo-editor/issues/1005.
+
+See #1005 for a status report and list of to-do's.
 
 # Prerequites
 
 Install flexx: https://flexx.readthedocs.io/en/stable/start.html
 
-# Running
+# Running stand-alone
 
-You should run leoflexx.py from a console:
+You can run leoflexx.py in stand-alone mode from a console:
 
     python <path to>leoflexx.py --flexx-webruntime=firefox-browser​
 
 The --flex-webruntime command-line arg is optional. If omitted, you'll use
 the webruntime environment.
 
-You should see the flexx (Tornado) server start up in the console.
-Something that looks like Leo should appear in the browser.
+When running stand-alone, the startup code uses Leo's bridge module to load
+unitTest.leo.
 
-The startup code uses Leo's bridge module to load unitTest.leo. You should
-see the top-level nodes of this file in the tree pane. Everything you see
-is real, and most of it is "live".
+# Running as Leo's gui
 
-# The tree pane
+You can also run leoflexx.py as Leo's gui:
 
-The tree pane is mostly functional, but you may see "can't happen"
-messages. I'm working on it.
+    leo --gui=browser
+    leo --gui=browser-firefox-browser​
+    
+# What you should see
+    
+However you start leoflexx.py you should see the flexx (Tornado) server
+start up in the console.
 
-- Selecting a node selects the proper body text.
-
-- Moving nodes with Ctrl-U/Ctrl-D work.
-
-- You can expand/contract nodes by clicking on them.
-
-- You can *not* edit headlines. It will take some doing to make this
-  happen, but a workaround is coming soon.
-  
-# Key handling
-
-Many keystrokes work.
-
-- Ctrl-S will save the file but I don't recommend doing that yet!
-
-- Alt-X does not work yet.
-
-- Ctrl-F does not work yet: the browser (Mozilla) grabs the keystroke.
-
-# Minibuffer Easter Eggs
-
-You can execute test commands by clicking in the Minibuffer, typing the
-command and hitting return.
-
-See app.do_command (in this file) for a full list. The notable commands:
-
-- cls: clears the console.
-
-- unit: runs all unit tests. They all pass for me.
-
-Coming soon:
-
-- mini: Simulate Alt-x. You will be prompted for a minibuffer command.
-
-- find: Simulate Ctrl-F in minibuffer find mode.
-
-- head: Simulate editing the headline. You will be prompted for headline
-  text. Hitting return will replace c.p.h by what you type.
-
+Something that looks like Leo should then appear in the browser. Everything
+you see is real, and most of it is "live".
 '''
 #@-<< leoflexx: docstring >>
 #@+<< leoflexx: imports >>
