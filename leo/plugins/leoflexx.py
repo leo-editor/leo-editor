@@ -1385,7 +1385,7 @@ class JSEditorWidget(flx.Widget):
         assert name in ('body', 'log'), repr(name)
         self.name = name
         self.tag = '(flx.%s)' % name
-        self.editor = make_editor_function(self.name, self.node)
+        self.editor = None # Now done in subclasses.
 
     @flx.reaction('size')
     def __on_size(self, *events):
@@ -1496,6 +1496,7 @@ class LeoFlexxBody(JSEditorWidget):
     def init(self):
         # pylint: disable=arguments-differ
         super().init('body')
+        self.editor = make_editor_function(self.name, self.node)
 
     #@+others
     #@+node:ekr.20181128061524.1: *4* flx_body setters (finish)
@@ -1569,6 +1570,7 @@ class LeoFlexxLog(JSEditorWidget):
     def init(self):
         # pylint: disable=arguments-differ
         super().init('log')
+        self.editor = make_editor_function(self.name, self.node)
 
     #@+others
     #@+node:ekr.20181120060348.1: *4* flx.log.put & set_focus
