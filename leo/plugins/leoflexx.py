@@ -202,7 +202,12 @@ def init():
     return flx
 #@+node:ekr.20181203151314.1: *3* make_editor_function
 def make_editor_function(name, node):
-    '''Instantiate the JS editor, either ace or CodeMirror'''
+    '''
+    Instantiate the JS editor, either ace or CodeMirror.
+    
+    Due to init difficulties, it is difficult/impossible to make this a
+    method of either the LeoBrowserApp or JS_Editor classes.
+    '''
     # pylint: disable=undefined-variable
         # window looks undefined.
     global window 
