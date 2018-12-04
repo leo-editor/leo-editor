@@ -1374,8 +1374,8 @@ class TracingNullObject(object):
         banner('NullObject.__setattr__ %r %s' % (attr, g.callers()))
         return self
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
-#@+node:ekr.20181201125953.1: *3* class JSEditorWidget (flx.Widget)
-class JSEditorWidget(flx.Widget):
+#@+node:ekr.20181201125953.1: *3* class JS_Editor (flx.Widget)
+class JS_Editor(flx.Widget):
     '''
     The base class for the body and log panes.
     '''
@@ -1479,8 +1479,8 @@ class JSEditorWidget(flx.Widget):
             if trace: print(tag, 'unmodified: send to Body', repr(mods), repr(key))
         return mods
     #@-others
-#@+node:ekr.20181104082144.1: *3* class LeoFlexxBody
-class LeoFlexxBody(JSEditorWidget):
+#@+node:ekr.20181104082144.1: *3* class LeoFlexxBody (JS_Editor)
+class LeoFlexxBody(JS_Editor):
     '''A CodeEditor widget based on Ace.'''
 
     #@+<< body css >>
@@ -1554,8 +1554,8 @@ class LeoFlexxBody(JSEditorWidget):
                 self.tag, len(s))) # g.truncate(s, 60)
         self.editor.setValue(s)
     #@-others
-#@+node:ekr.20181104082149.1: *3* class LeoFlexxLog
-class LeoFlexxLog(JSEditorWidget):
+#@+node:ekr.20181104082149.1: *3* class LeoFlexxLog (JS_Editor)
+class LeoFlexxLog(JS_Editor):
     
     #@+<< log css >>
     #@+node:ekr.20181120060336.1: *4* << log css >>
