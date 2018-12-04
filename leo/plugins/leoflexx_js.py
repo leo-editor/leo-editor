@@ -42,6 +42,7 @@ class LeoBody(flx.Widget):
     """
 
     def init(self):
+        # pylint: disable=undefined-variable
         global window
         # https://ace.c9.io/#nav=api
         self.ace = window.ace.edit(self.node, "editor")
@@ -91,6 +92,7 @@ class LeoLog(flx.Widget):
     """
 
     def init(self):
+        # pylint: disable=undefined-variable
         global window
         # https://ace.c9.io/#nav=api
         self.ace = window.ace.edit(self.node, "editor")
