@@ -103,29 +103,6 @@ else:
     flx.assets.associate_asset(__name__, base_url + '5.21.0/addon/selection/active-line.js')
     flx.assets.associate_asset(__name__, base_url + '5.21.0/addon/edit/matchbrackets.js')
 #@-<< leoflexx: assets >>
-#@+<< leoflexx: to-do >>
-#@+node:ekr.20181202114904.1: ** << leoflexx: to-do >>
-#@@language rest
-#@@wrap
-#@+at
-# 
-# - Handle selection range, not just insert point.
-# - Warn if closing dirty windows: (catch close-window events)
-# 
-# Later:
-# - Gui focus does not select in inner text widget?
-# - Crash, when doing Ctrl-S in status line (see child).
-# - Ctrl-H should edit c.p.h in minibuffer.
-# - Monkey-patch Alt-4 so it calls app.run_all_unit_tests()
-# - Increase the default number of lines when using CodeMirror.
-# - Get Ctrl-F working (see child) (test on other browsers)
-# - Arrow keys select multiple tree nodes.
-# * Return in tree does not put focus in body.
-# * Arrow keys do not work until a mouse click.
-#   (getFocus misleads leo's core.)
-# * Fix unit tests.
-# * Test with other browsers.
-#@-<< leoflexx: to-do >>
 #
 # pylint: disable=logging-not-lazy
 #@+others
