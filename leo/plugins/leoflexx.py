@@ -1382,7 +1382,7 @@ class JS_Editor(flx.Widget):
     
     def init(self, name, flex=1):
         # pylint: disable=arguments-differ
-        assert name in ('body', 'log'), repr(name)
+        assert name in ('body', 'log', 'minibuffer'), repr(name)
         self.name = name
         self.tag = '(flx.%s)' % name
         self.editor = None # Now done in subclasses.
@@ -1642,22 +1642,15 @@ class MinibufferEditor(flx.Widget):
     def init(self):
         self.editor = make_editor_function('minibuffer', self.node)
 
-class LeoFlexxMiniBuffer(flx.Widget):
+class LeoFlexxMiniBuffer(JS_Editor):
     
     def init(self):
-        self.tag = '(flx.minibuffer)'
-        self.name = 'minibuffer'
+        # pylint: disable=arguments-differ
+        super().init('minibuffer')
         with flx.HBox():
             flx.Label(text='Minibuffer')
             w = MinibufferEditor(flex=1)
             self.editor = w.editor
-            
-    @flx.reaction('size')
-    def __on_size(self, *events):
-        if use_ace:
-            self.editor.resize()
-        else:
-            self.editor.refresh()
 
     #@+others
     #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
