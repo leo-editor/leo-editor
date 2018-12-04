@@ -1646,6 +1646,7 @@ class MinibufferEditor(flx.Widget):
 
     def init(self):
         self.editor = make_editor_function('minibuffer', self.node)
+            # Unlike in components, this call happens immediately.
 
 class LeoFlexxMiniBuffer(JS_Editor):
     
