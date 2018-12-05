@@ -151,8 +151,8 @@ def make_editor_function(name, node):
     '''
     Instantiate the JS editor, either ace or CodeMirror.
     
-    Due to init difficulties, it is difficult/impossible to make this a
-    method of either the LeoBrowserApp or JS_Editor classes.
+    Making this a top-level function avoids the need to create a common
+    base class that only defines this as a method.
     '''
     # pylint: disable=undefined-variable
         # window looks undefined.
@@ -1450,7 +1450,7 @@ class LeoFlexxBody(JS_Editor):
         self.editor = make_editor_function(self.name, self.node)
 
     #@+others
-    #@+node:ekr.20181128061524.1: *4* flx_body setters (finish)
+    #@+node:ekr.20181128061524.1: *4* flx_body setters
     @flx.action
     def see_insert_point(self):
         if 0: print(self.tag, 'see_insert_point')
