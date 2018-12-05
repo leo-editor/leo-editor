@@ -34,7 +34,7 @@ def get_version(file, version=None):
         version = get_semver(leoVersion.version)
     return version
 #@+node:maphew.20181010203342.386: *3* git_version
-def git_version(file):
+def git_version(file, version=None):
     '''Fetch from Git: {tag} {distance-from-tag} {current commit hash}
        Return as semantic version string compliant with PEP440'''
     root = os.path.dirname(os.path.realpath(file))
@@ -47,7 +47,9 @@ def git_version(file):
         if int(distance) > 0:
             version = '{}-dev{}'.format(version, distance)
     except IndexError:
-        version = None
+        print('Attempt to `git describe` failed with IndexError')
+    except FileNotFoundError:
+        print('Attempt to `git describe` failed with FileNotFoundError')
     return version
 
 #@+node:maphew.20180224170257.1: *4* clean_git_tag
@@ -125,6 +127,7 @@ user_requires = [
         # disabled, pending "pip install from .whl fails conditional dependency check" https://github.com/pypa/pip/issues/4886
     ## missing: pyqt for Linux python 2.x (doesn't exist on PyPi)
     'docutils', # used by Sphinx, rST plugin
+    'flexx', # for LeoWapp browser gui
     'nbformat', # for Jupyter notebook integration
     'pylint','pyflakes', # coding syntax standards
     #'pypandoc', # doc format conversion
