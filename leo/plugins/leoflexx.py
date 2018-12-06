@@ -78,7 +78,7 @@ import leo.core.leoTest as leoTest
 #@-<< leoflexx: imports >>
 #@+<< leoflexx: switches and other globals >>
 #@+node:ekr.20181202105852.1: ** << leoflexx: switches and other globals >>
-debug_body = True
+debug_body = False
     # Shows calls to flx_body setters.
 debug_events = False
 debug_focus = False # puts 'focus' in g.app.debug.
