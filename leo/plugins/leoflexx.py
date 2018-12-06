@@ -94,7 +94,7 @@ use_ace = True # False: use Code Mirror.
 warn_about_code = False # True: raise alert on startup about pre-alpha code.
 warnings_only = True # False is better for debugging.
 
-print('\nuse_ace', use_ace, '\n')
+# print('\nuse_ace', use_ace, '\n')
 #@-<< leoflexx: switches and other globals >>
 #@+<< leoflexx: assets >>
 #@+node:ekr.20181111074958.1: ** << leoflexx: assets >>
@@ -1012,6 +1012,7 @@ class LeoBrowserGui(leoGui.NullGui):
         assert gui_name.startswith('browser')
         self.logWaiting = []
         self.root = None # Will be set later.
+        self.silentMode = True # Don't print a single signon line.
         self.tag = '(browser gui)'
         self.specific_browser = gui_name.lstrip('browser').lstrip(':').lstrip('-').strip()
         if not self.specific_browser:
@@ -1019,7 +1020,6 @@ class LeoBrowserGui(leoGui.NullGui):
         self.consoleOnly = False # Console is separate from the log.
         #
         # Monkey-patch g.app.writeWaitingLog to be a do-nothing.
-        # LeoBrowserApp.finish_create will actuall write the log.
         # This allows us to write the log much later.
         g.app.writeWaitingLog = self.writeWaitingLog1
         
