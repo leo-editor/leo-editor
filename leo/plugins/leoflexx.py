@@ -1671,15 +1671,10 @@ class LeoFlexxMainWindow(flx.Widget):
         RawJS("""\
         // Called from Mozilla, but not webruntime.
         window.onbeforeunload = function(){
-            console.log("window.onbeforeunload")
+            // console.log("window.onbeforeunload")
             return "Are you sure?"
         };
         """)
-
-        # window.addEventListener("beforeunload", function(event) {
-            # console.log("window.onbeforeunload")
-            # event.returnValue = "Are you sure?";
-
         #@-<< define unload action >>
         self._mutate('body', body)
         self._mutate('log', log)
