@@ -1721,27 +1721,14 @@ class LeoFlexxStatusLine(flx.Widget):
     #@+node:ekr.20181120060950.1: *4* flx_status_line.Key handling
     @flx.emitter
     def key_press(self, e):
-        trace = debug_keys and not g.unitTesting
+        '''Prevent control keys from having any effect.  F12 *does* work.'''
         ev = self._create_key_event(e)
-        if trace: print('\nStatus Line: key_press', repr(ev))
         mods = ev ['modifiers']
         if 'Shift' in mods:
             mods.remove('Shift')
         if mods:
             e.preventDefault()
-        #### F12 does not work in the status line.
         return ev
-        
-    @flx.reaction('key_press')
-    def on_key_press(self, *events):
-        trace = debug_events and not g.unitTesting
-        for ev in events:
-            key, mods = ev['key'], ev ['modifiers']
-            if trace: print('\nSTATUS LINE: on_key_press', repr(mods), repr(key))
-            if 'Shift' in mods:
-                mods.remove('Shift')
-            if mods:
-                self.root.do_key(ev, 'statusLine')
     #@-others
 #@+node:ekr.20181104082138.1: *3* class LeoFlexxTree
 class LeoFlexxTree(flx.Widget):
