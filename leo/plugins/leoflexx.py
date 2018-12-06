@@ -118,14 +118,6 @@ else:
 # pylint: disable=logging-not-lazy
 #@+others
 #@+node:ekr.20181121040901.1: **  top-level functions
-#@+node:ekr.20181122102523.1: *3* banner
-def banner(s):
-    '''Print s so it stands out.'''
-    if g.unitTesting:
-        return
-    print('')
-    print(s)
-    print('')
 #@+node:ekr.20181121091633.1: *3* dump_event
 def dump_event (ev):
     '''Print a description of the event.'''
@@ -332,6 +324,8 @@ class LeoBrowserApp(flx.PyComponent):
             self.c = c = g.app.log.c
             assert c
         else:
+            # We are running stand-alone.
+            # This is for testing only, and is deprecated.
             c, g = self.open_bridge()
             self.c = c
             self.gui = gui = LeoBrowserGui()
@@ -638,7 +632,7 @@ class LeoBrowserApp(flx.PyComponent):
         trace = debug_tree and not g.unitTesting
         if trace:
             c = self.c
-            banner('===== app.dump_top_level...')
+            print('===== app.dump_top_level...')
             # print('root:', c.rootPosition().h)
             # print(' c.p:', c.p.h)
             # print('')
@@ -718,7 +712,7 @@ class LeoBrowserApp(flx.PyComponent):
         Convert a true Leo position to a serializable archived position.
         '''
         if not p.v:
-            banner('app.p_to_ap: no p.v: %r %s' % (p, g.callers()))
+            print('app.p_to_ap: no p.v: %r %s' % (p, g.callers()))
             assert False, g.callers()
         p_gnx = p.v.gnx
         if p_gnx not in self.gnx_to_vnode:
@@ -1369,15 +1363,15 @@ class TracingNullObject(object):
         return False
 
     def __delattr__(self, attr):
-        banner('NullObject.__delattr__ %r %s' % (attr, g.callers()))
+        print('NullObject.__delattr__ %r %s' % (attr, g.callers()))
         return self
 
     def __getattr__(self, attr):
-        banner('NullObject.__getattr__ %r %s' % (attr, g.callers()))
+        print('NullObject.__getattr__ %r %s' % (attr, g.callers()))
         return self
 
     def __setattr__(self, attr, val):
-        banner('NullObject.__setattr__ %r %s' % (attr, g.callers()))
+        print('NullObject.__setattr__ %r %s' % (attr, g.callers()))
         return self
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181201125953.1: *3* class JS_Editor (flx.Widget)
