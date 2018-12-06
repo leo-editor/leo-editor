@@ -1211,6 +1211,13 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         self.tag = '(status line wrapper)'
         self.w = self # Required.
         
+    def getName(self):
+        return 'status line' # Value not important.
+        
+    # Pretend that this widget supports the high-level interface.
+    def __getattr__(self, attr):
+        return g.NullObject()
+        
     #@+others
     #@+node:ekr.20181119045430.1: *4* status_line_wrapper.clear & get
     def clear(self):
@@ -1721,14 +1728,27 @@ class LeoFlexxStatusLine(flx.Widget):
     #@+node:ekr.20181120060950.1: *4* flx_status_line.Key handling
     @flx.emitter
     def key_press(self, e):
-        '''Prevent control keys from having any effect.  F12 *does* work.'''
+        '''Allow only F-keys, Ctrl-C and Ctrl-S.'''
         ev = self._create_key_event(e)
-        mods = ev ['modifiers']
-        if 'Shift' in mods:
-            mods.remove('Shift')
-        if mods:
-            e.preventDefault()
+        key, mods = ev['key'], ev ['modifiers']
+        print('flx.status_line:', repr(mods), repr(key))
+        if not mods and key.startswith('F'):
+            return ev
+        if mods == ['Ctrl'] and key in 'cs':
+            # We don't always get Ctrl-S from the browser.
+            return ev
+        # Prevent everything else.
+        e.preventDefault()
         return ev
+
+    @flx.reaction('key_press')
+    def on_key_press(self, *events):
+        '''Pass Ctrl-S to Leo.'''
+        for ev in events:
+            key, mods = ev['key'], ev ['modifiers']
+            if mods == ['Ctrl'] and key == 's':
+                self.root.do_key(ev, 'statusLine')
+            return ev
     #@-others
 #@+node:ekr.20181104082138.1: *3* class LeoFlexxTree
 class LeoFlexxTree(flx.Widget):
