@@ -67,7 +67,7 @@ if path not in sys.path:
     sys.path.append(path)
 
 import leo.core.leoGlobals as g
-    # **Note**: JS code can not use g.trace, g.callers.
+    # **Note**: JS code can not use g.trace, g.callers or g.pdb.
 import leo.core.leoBridge as leoBridge
 import leo.core.leoFastRedraw as leoFastRedraw
 import leo.core.leoFrame as leoFrame
