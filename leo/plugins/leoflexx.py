@@ -299,6 +299,17 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         super().setAllText(s)
         self.finish_setter('insert')
     #@-others
+#@+node:ekr.20181206153831.1: *3* class DummyFrame
+class DummyFrame (leoFrame.NullFrame):
+    '''
+    A frame to keep Leo's core happy until we can call app.finish_create.
+    '''
+    
+    def __repr__(self):
+        return 'DummyFrame: %r' % self.c.shortFileName()
+
+    __str__ = __repr__
+
 #@+node:ekr.20181107052522.1: *3* class LeoBrowserApp
 # pscript never converts flx.PyComponents to JS.
 
@@ -317,7 +328,10 @@ class LeoBrowserApp(flx.PyComponent):
         # Open the bridge only if Leo's core hasn't already set the gui.
         global g # always use the imported g.
         if g.app and isinstance(g.app.gui, LeoBrowserGui):
+            #
+            # We are running Leo --gui=browser.
             self.gui = gui = g.app.gui
+            assert isinstance(g.app.log, leoFrame.NullLog)
             self.c = c = g.app.log.c
             assert c
         else:
@@ -334,6 +348,7 @@ class LeoBrowserApp(flx.PyComponent):
         self.inited = False
             # Set by app.finish_create.
         self.tag = '(app wrapper)'
+        #
         # Inject the newly-created gui into g.app.
         g.app.gui = gui
         if debug_focus:
@@ -341,6 +356,13 @@ class LeoBrowserApp(flx.PyComponent):
         if debug_keys:
             g.app.debug.append('keys')
         title = c.computeWindowTitle(c.mFileName)
+        assert g.app.windowList
+        for frame in g.app.windowList:
+            assert isinstance(frame, DummyFrame), repr(frame)
+        print('')
+        print('===== LeoBrowserApp.init: g.app.windowList...')
+        g.printObj(g.app.windowList)
+        print('')
         c.frame = gui.lastFrame = LeoBrowserFrame(c, title, gui)
             # Instantiate all wrappers first.
         # Force minibuffer find mode.
@@ -355,6 +377,8 @@ class LeoBrowserApp(flx.PyComponent):
         c.selectPosition(c.rootPosition())
             ### A temp hack.
         c.contractAllHeadlines()
+        #
+        # The main window will be created (much) later.
         main_window = LeoFlexxMainWindow()
         self._mutate('main_window', main_window)
 
@@ -998,7 +1022,7 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         
     def finishCreate(self):
         '''Override NullFrame.finishCreate.'''
-        pass # Do not call self.createFirstTreeNode.
+        # Do not call self.createFirstTreeNode.
 
     #@+others
     #@-others
@@ -1008,6 +1032,9 @@ class LeoBrowserGui(leoGui.NullGui):
     def __init__ (self, gui_name='browser'):
         super().__init__(guiName='browser')
             # leoTest.doTest special-cases the name "browser".
+        print('')
+        print('===== LeoBrowserGui.__init__ =====')
+        print('')
         self.gui_name = gui_name # May specify the actual browser.
         assert gui_name.startswith('browser')
         self.logWaiting = []
@@ -1034,6 +1061,25 @@ class LeoBrowserGui(leoGui.NullGui):
         print('')
 
     #@+others
+    #@+node:ekr.20181206153033.1: *4* gui.createLeoFrame
+    def createLeoFrame(self, c, title):
+        '''
+        Override NullGui.createLeoFrame.
+        
+        We can't create a real flx.Frame until much later.
+        
+        We create a placeholder in g.app.windowList, for app.finish_create.
+        '''
+        gui = self
+        print('')
+        print('===== LeoBrowserGui.createLeoFrame =====', c.shortFileName())
+        print('')
+        ### self.lastFrame = LeoBrowserFrame(c, title, gui)
+        self.lastFrame = DummyFrame(c, title, gui)
+        g.app.windowList.append(self.lastFrame)
+            # A buglet in Leo's core: this is necessary.
+            # LM.doPostPluginsInit tests g.app.windowList, maybe when it shouldn't.
+        return self.lastFrame
     #@+node:ekr.20181119141542.1: *4* gui.isTextWrapper
     def isTextWrapper(self, w):
         '''Return True if w is supposedly a text widget.'''
@@ -1149,6 +1195,11 @@ class LeoBrowserLog(leoFrame.NullLog):
         # Monkey-patch self.wrapper, a StringTextWrapper.
         assert self.wrapper.getName().startswith('log')
         self.wrapper.setFocus = self.setFocus
+        
+    def __repr__(self):
+        return 'LeoBrowserLog'
+        
+    __str__ = __repr__
         
     def getName(self):
         return 'log' # Required for proper pane bindings.
