@@ -1008,6 +1008,8 @@ class LeoBrowserGui(leoGui.NullGui):
         self.root = None # Will be set later.
         self.tag = '(browser gui)'
         self.specific_browser = gui_name.lstrip('browser').lstrip(':').lstrip('-').strip()
+        if not self.specific_browser:
+            self.specific_browser = 'browser'
         self.consoleOnly = False # Console is separate from the log.
         
     def insertKeyEvent(self, event, i):
