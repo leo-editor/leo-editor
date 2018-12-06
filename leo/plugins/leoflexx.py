@@ -317,9 +317,6 @@ class LeoBrowserApp(flx.PyComponent):
         # Open the bridge only if Leo's core hasn't already set the gui.
         global g # always use the imported g.
         if g.app and isinstance(g.app.gui, LeoBrowserGui):
-            print('')
-            print('Running from --gui=%s' % g.app.gui.gui_name)
-            print('')
             self.gui = gui = g.app.gui
             self.c = c = g.app.log.c
             assert c
@@ -424,10 +421,14 @@ class LeoBrowserApp(flx.PyComponent):
         bridge = leoBridge.controller(gui = None,
             loadPlugins = False,
             readSettings = True, # Required to get bindings!
-            silent = False, # Use silentmode to keep queuing log message.
+            silent = True, # Use silentmode to keep queuing log message.
             tracePlugins = False,
             verbose = True, # True: prints log messages.
         )
+        print('')
+        print('Stand-alone operation of leoflexx.py is for testing only.')
+        print('Opening unitTest.leo...')
+        print('')
         if not bridge.isOpen():
             flx.logger.error('Error opening leoBridge')
             return
@@ -1090,7 +1091,6 @@ class LeoBrowserGui(leoGui.NullGui):
     #@+node:ekr.20181206090210.1: *4* gui.writeWaitingLog1/2
     def writeWaitingLog1(self, c=None):
         '''Monkey-patched do-nothing version of g.app.writeWaitingLog.'''
-        # print('app.write_waiting_log1')
         
     def writeWaitingLog2(self, c=None):
         w = self.root.main_window
@@ -1104,15 +1104,12 @@ class LeoBrowserGui(leoGui.NullGui):
         ]
         for message, color in table:
             w.log.put(message.rstrip())
-        ### c.setLog()
-        g.app.logInited = True # Prevent recursive call.
+        #
         # Write all the queued log entries.
+            # c.setLog()
+        g.app.logInited = True # Prevent recursive call.
         for msg in g.app.logWaiting:
             s, color, newline = msg[:3]
-            ### kwargs = {} if len(msg) < 4 else msg[3]
-            ### kwargs = {k:v for k,v in kwargs.items() if k not in ('color', 'newline')}
-            ### g.es('', s, color=color, newline=newline, **kwargs)
-            ### g.es('', s, color=color, newline=newline, **kwargs)
             w.log.put(s.rstrip())
         g.app.logWaiting = []
         g.app.setLog(None)
