@@ -359,10 +359,11 @@ class LeoBrowserApp(flx.PyComponent):
         assert g.app.windowList
         for frame in g.app.windowList:
             assert isinstance(frame, DummyFrame), repr(frame)
-        print('')
-        print('===== LeoBrowserApp.init: g.app.windowList...')
-        g.printObj(g.app.windowList)
-        print('')
+        if 0:
+            print('')
+            print('===== LeoBrowserApp.init: g.app.windowList...')
+            g.printObj(g.app.windowList)
+            print('')
         c.frame = gui.lastFrame = LeoBrowserFrame(c, title, gui)
             # Instantiate all wrappers first.
         # Force minibuffer find mode.
@@ -1032,9 +1033,10 @@ class LeoBrowserGui(leoGui.NullGui):
     def __init__ (self, gui_name='browser'):
         super().__init__(guiName='browser')
             # leoTest.doTest special-cases the name "browser".
-        print('')
-        print('===== LeoBrowserGui.__init__ =====')
-        print('')
+        if 0:
+            print('')
+            print('===== LeoBrowserGui.__init__ =====')
+            print('')
         self.gui_name = gui_name # May specify the actual browser.
         assert gui_name.startswith('browser')
         self.logWaiting = []
@@ -1071,10 +1073,10 @@ class LeoBrowserGui(leoGui.NullGui):
         We create a placeholder in g.app.windowList, for app.finish_create.
         '''
         gui = self
-        print('')
-        print('===== LeoBrowserGui.createLeoFrame =====', c.shortFileName())
-        print('')
-        ### self.lastFrame = LeoBrowserFrame(c, title, gui)
+        if 0:
+            print('')
+            print('===== LeoBrowserGui.createLeoFrame =====', c.shortFileName())
+            print('')
         self.lastFrame = DummyFrame(c, title, gui)
         g.app.windowList.append(self.lastFrame)
             # A buglet in Leo's core: this is necessary.
