@@ -53,6 +53,8 @@ you see is real, and most of it is "live".
 #@+node:ekr.20181113041314.1: ** << leoflexx: imports >>
 try:
     from flexx import flx
+    from pscript import RawJS
+    assert RawJS
 except Exception:
     flx = None
 import os
@@ -121,10 +123,9 @@ def banner(s):
     '''Print s so it stands out.'''
     if g.unitTesting:
         return
-    if debug_focus or debug_keys or debug_tree:
-        print('')
-        print(s)
-        print('')
+    print('')
+    print(s)
+    print('')
 #@+node:ekr.20181121091633.1: *3* dump_event
 def dump_event (ev):
     '''Print a description of the event.'''
@@ -395,7 +396,7 @@ class LeoBrowserApp(flx.PyComponent):
         self.old_redraw_dict = self.make_redraw_dict(c.p)
         self.redraw_generation = 0
         # Init the log pane.
-        w.log.put('%s\n%s' % (g.app.signon, g.app.signon2))
+        g.app.gui.writeWaitingLog2()
         # Init the body pane.
         self.set_body_text()
         # Init the status line.
@@ -423,6 +424,26 @@ class LeoBrowserApp(flx.PyComponent):
     def set_body_text(self):
         c, w = self.c, self.main_window
         w.body.set_text(c.p.b)
+    #@+node:ekr.20181105091545.1: *5* app.open_bridge
+    def open_bridge(self):
+        '''Can't be in JS.'''
+        bridge = leoBridge.controller(gui = None,
+            loadPlugins = False,
+            readSettings = True, # Required to get bindings!
+            silent = False, # Use silentmode to keep queuing log message.
+            tracePlugins = False,
+            verbose = True, # True: prints log messages.
+        )
+        if not bridge.isOpen():
+            flx.logger.error('Error opening leoBridge')
+            return
+        g = bridge.globals()
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unitTest.leo')
+        if not g.os_path_exists(path):
+            flx.logger.error('open_bridge: does not exist: %r' % path)
+            return
+        c = bridge.openLeoFile(path)
+        return c, g
     #@+node:ekr.20181117163223.1: *4* app.action.do_key
     # https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
     # See Widget._create_key_event in flexx/ui/_widget.py:
@@ -690,26 +711,6 @@ class LeoBrowserApp(flx.PyComponent):
         
     def edit_headline_completer(self, headline):
         g.trace(headline)
-    #@+node:ekr.20181105091545.1: *4* app.open_bridge
-    def open_bridge(self):
-        '''Can't be in JS.'''
-        bridge = leoBridge.controller(gui = None,
-            loadPlugins = False,
-            readSettings = True, # Required to get bindings!
-            silent = False,
-            tracePlugins = False,
-            verbose = False, # True: prints log messages.
-        )
-        if not bridge.isOpen():
-            flx.logger.error('Error opening leoBridge')
-            return
-        g = bridge.globals()
-        path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unitTest.leo')
-        if not g.os_path_exists(path):
-            flx.logger.error('open_bridge: does not exist: %r' % path)
-            return
-        c = bridge.openLeoFile(path)
-        return c, g
     #@+node:ekr.20181124095316.1: *4* app.Selecting...
     #@+node:ekr.20181111204659.1: *5* app.p_to_ap (updates app.gnx_to_vnode)
     def p_to_ap(self, p):
@@ -1014,12 +1015,18 @@ class LeoBrowserGui(leoGui.NullGui):
             # leoTest.doTest special-cases the name "browser".
         self.gui_name = gui_name # May specify the actual browser.
         assert gui_name.startswith('browser')
+        self.logWaiting = []
         self.root = None # Will be set later.
         self.tag = '(browser gui)'
         self.specific_browser = gui_name.lstrip('browser').lstrip(':').lstrip('-').strip()
         if not self.specific_browser:
             self.specific_browser = 'browser'
         self.consoleOnly = False # Console is separate from the log.
+        #
+        # Monkey-patch g.app.writeWaitingLog to be a do-nothing.
+        # LeoBrowserApp.finish_create will actuall write the log.
+        # This allows us to write the log much later.
+        g.app.writeWaitingLog = self.writeWaitingLog1
         
     def insertKeyEvent(self, event, i):
         '''Insert the key given by event in location i of widget event.w.'''
@@ -1086,6 +1093,36 @@ class LeoBrowserGui(leoGui.NullGui):
             # This gets called when reloading the page (reopening the .leo file) after Ctrl-F.
             # It also gets called during unit tests.
             g.trace('(gui): unknown widget', repr(widget), g.callers(6))
+    #@+node:ekr.20181206090210.1: *4* gui.writeWaitingLog1/2
+    def writeWaitingLog1(self, c=None):
+        '''Monkey-patched do-nothing version of g.app.writeWaitingLog.'''
+        # print('app.write_waiting_log1')
+        
+    def writeWaitingLog2(self, c=None):
+        w = self.root.main_window
+        #
+        # Print the signon.
+        table = [
+            ('Leo Log Window', 'red'),
+            (g.app.signon, None),
+            (g.app.signon1, None),
+            (g.app.signon2, None),
+        ]
+        for message, color in table:
+            w.log.put(message.rstrip())
+        ### c.setLog()
+        g.app.logInited = True # Prevent recursive call.
+        # Write all the queued log entries.
+        for msg in g.app.logWaiting:
+            s, color, newline = msg[:3]
+            ### kwargs = {} if len(msg) < 4 else msg[3]
+            ### kwargs = {k:v for k,v in kwargs.items() if k not in ('color', 'newline')}
+            ### g.es('', s, color=color, newline=newline, **kwargs)
+            ### g.es('', s, color=color, newline=newline, **kwargs)
+            w.log.put(s.rstrip())
+        g.app.logWaiting = []
+        g.app.setLog(None)
+            # Essential when opening multiple files...
     #@+node:ekr.20181202083305.1: *4* gui.runMainLoop
     def runMainLoop(self):
         '''Run the main loop from within Leo's core.'''
@@ -1545,7 +1582,11 @@ class LeoFlexxLog(JS_Editor):
     #@+node:ekr.20181120060348.1: *4* flx.log.put & set_focus
     @flx.action
     def put(self, s):
-        self.editor.setValue(self.editor.getValue() + '\n' + s)
+        prev = self.editor.getValue()
+        if prev:
+            self.editor.setValue(prev + '\n' + s)
+        else:
+            self.editor.setValue(s)
         
     @flx.action
     def set_focus(self):
@@ -1580,14 +1621,21 @@ class LeoFlexxMainWindow(flx.Widget):
             body = LeoFlexxBody(flex=1)
             minibuffer = LeoFlexxMiniBuffer()
             status_line = LeoFlexxStatusLine()
-            # with flx.VSplit():
-                # with flx.HSplit(flex=1):
-                    # tree = LeoFlexxTree(flex=1)
-                    # log = LeoFlexxLog(flex=1)
-                # with flx.VBox(flex=1):
-                    # body = LeoFlexxBody(flex=1)
-                    # minibuffer = LeoFlexxMiniBuffer(flex=0.1)
-                    # status_line = LeoFlexxStatusLine()
+        #@+<< define unload action >>
+        #@+node:ekr.20181206044554.1: *4* << define unload action >>
+        RawJS("""\
+        // Called from Mozilla, but not webruntime.
+        window.onbeforeunload = function(){
+            console.log("window.onbeforeunload")
+            return "Are you sure?"
+        };
+        """)
+
+        # window.addEventListener("beforeunload", function(event) {
+            # console.log("window.onbeforeunload")
+            # event.returnValue = "Are you sure?";
+
+        #@-<< define unload action >>
         self._mutate('body', body)
         self._mutate('log', log)
         self._mutate('minibuffer', minibuffer)
