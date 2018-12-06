@@ -88,6 +88,7 @@ debug_keys = False # puts 'keys' in g.app.debug.
     # Shows only keys passed to Leo.
 debug_redraw = False
 debug_select = False
+debug_startup = False
 debug_tree = False
 verbose_debug_tree = False
 use_ace = True # False: use Code Mirror.
@@ -359,7 +360,7 @@ class LeoBrowserApp(flx.PyComponent):
         assert g.app.windowList
         for frame in g.app.windowList:
             assert isinstance(frame, DummyFrame), repr(frame)
-        if 0:
+        if debug_startup:
             print('')
             print('===== LeoBrowserApp.init: g.app.windowList...')
             g.printObj(g.app.windowList)
@@ -1033,9 +1034,9 @@ class LeoBrowserGui(leoGui.NullGui):
     def __init__ (self, gui_name='browser'):
         super().__init__(guiName='browser')
             # leoTest.doTest special-cases the name "browser".
-        if 0:
+        if debug_startup:
             print('')
-            print('===== LeoBrowserGui.__init__ =====')
+            print('===== LeoBrowserGui.__init__')
             print('')
         self.gui_name = gui_name # May specify the actual browser.
         assert gui_name.startswith('browser')
@@ -1073,7 +1074,7 @@ class LeoBrowserGui(leoGui.NullGui):
         We create a placeholder in g.app.windowList, for app.finish_create.
         '''
         gui = self
-        if 0:
+        if debug_startup:
             print('')
             print('===== LeoBrowserGui.createLeoFrame =====', c.shortFileName())
             print('')
