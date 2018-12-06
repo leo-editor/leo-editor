@@ -64,8 +64,16 @@ try:
     from flexx import flx
 except Exception:
     flx = None
+import os
 import re
+import sys
 import time
+
+# This is what Leo typically does.
+path = os.getcwd()
+if path not in sys.path:
+    print('appending %s to sys.path' % path)
+    sys.path.append(path)
 #@-<< leoflexx: imports >>
 #@+<< leoflexx: switches and other globals >>
 #@+node:ekr.20181202105852.1: ** << leoflexx: switches and other globals >>
