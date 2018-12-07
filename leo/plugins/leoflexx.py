@@ -333,37 +333,35 @@ class LeoBrowserApp(flx.PyComponent):
     main_window = flx.ComponentProp(settable=True)
 
     def init(self):
-        # Open the bridge only if Leo's core hasn't already set the gui.
+        # Set the ivars.
         global g # always use the imported g.
+        self.inited = False
+        self.tag = '(app wrapper)'
+        #
+        # Open or get the first file.
         if g.app and isinstance(g.app.gui, LeoBrowserGui):
-            #
             # We are running Leo --gui=browser.
-            self.gui = gui = g.app.gui
             assert isinstance(g.app.log, leoFrame.NullLog)
-            self.c = c = g.app.log.c
-            assert c
+            c = g.app.log.c
         else:
             # We are running stand-alone.
+            # Use the bridge to open a single file.
             # This is for testing only, and is deprecated.
             c, g = self.open_bridge()
-            self.c = c
-            self.gui = gui = LeoBrowserGui()
-        assert gui.guiName() == 'browser'
+            g.app.gui = LeoBrowserGui()
+        #
+        # self.gui must be a synonym for g.app.gui.
+        self.c = c
+        self.gui = gui = g.app.gui
+        # Make sure everything is as expected.
+        assert self.c and c == self.c
+        assert g.app.gui.guiName() == 'browser'
             # Important: the leoTest module special cases this name.
         # 
         # When running from Leo's core, we must wait until now to set LeoBrowserGui.root.
         gui.root = get_root()
-        self.inited = False
-            # Set by app.finish_create.
-        self.tag = '(app wrapper)'
         #
-        # Inject the newly-created gui into g.app.
-        g.app.gui = gui
-        if debug_focus:
-            g.app.debug.append('focus')
-        if debug_keys:
-            g.app.debug.append('keys')
-        title = c.computeWindowTitle(c.mFileName)
+        # Check g.app.ivars.
         assert g.app.windowList
         for frame in g.app.windowList:
             assert isinstance(frame, DummyFrame), repr(frame)
@@ -372,20 +370,16 @@ class LeoBrowserApp(flx.PyComponent):
             print('===== LeoBrowserApp.init: g.app.windowList...')
             g.printObj(g.app.windowList)
             print('')
+        #
+        # Set g.app ivars.
+        if debug_focus:
+            g.app.debug.append('focus')
+        if debug_keys:
+            g.app.debug.append('keys')
+        #
+        # Instantiate all wrappers here, not in app.finish_create.
+        title = c.computeWindowTitle(c.mFileName)
         c.frame = gui.lastFrame = LeoBrowserFrame(c, title, gui)
-            # Instantiate all wrappers first.
-        # Force minibuffer find mode.
-        c.findCommands.minibuffer_mode = True
-        # Init all ivars
-        self.create_gnx_to_vnode()
-        self.old_flattened_outline = []
-        self.old_redraw_dict = {}
-        self.redraw_generation = 0
-        self.fast_redrawer = leoFastRedraw.FastRedraw()
-        # Create the main window and all its components.
-        c.selectPosition(c.rootPosition())
-            ### A temp hack.
-        c.contractAllHeadlines()
         #
         # The main window will be created (much) later.
         main_window = LeoFlexxMainWindow()
@@ -411,43 +405,36 @@ class LeoBrowserApp(flx.PyComponent):
         
         Called after all flx.Widgets have been fully inited!
         '''
-        c, w = self.c, self.main_window
+        w = self.main_window
         self.inited = True
-        # Monkey-patch the FindTabManager
-        c.findCommands.ftm = g.NullObject()
-        # Init g.app data
+        self.c = c = g.app.log.c
+        assert c
+        # Init all redraw ivars
+        self.create_gnx_to_vnode()
+        self.old_flattened_outline = []
+        self.old_redraw_dict = {}
+        self.redraw_generation = 0
+        self.fast_redrawer = leoFastRedraw.FastRedraw()
         self.old_flattened_outline = self.fast_redrawer.flatten_outline(c)
         self.old_redraw_dict = self.make_redraw_dict(c.p)
-        self.redraw_generation = 0
-        # Init the log pane.
+        # Select the proper position.
+        c.contractAllHeadlines()
+        c.selectPosition(c.p or c.rootPosition())
+        # Monkey-patch the FindTabManager
+        c.findCommands.minibuffer_mode = True
+        c.findCommands.ftm = g.NullObject()
+        # Init the log, body, status line and tree.
         g.app.gui.writeWaitingLog2()
-        # Init the body pane.
         self.set_body_text()
-        # Init the status line.
         self.set_status()
-        # Init the tree.
         self.redraw(c.p)
-        # Init the focus.
-        # It's debatable:
+        # Init the focus. It's debatable...
         if 1:
             self.gui.set_focus(c, c.frame.tree)
             w.tree.set_focus()
         else:
             self.gui.set_focus(c, c.frame.body)
             w.body.set_focus()
-        
-    # These must be separate because they are called from the tree logic.
-
-    @flx.action
-    def set_status(self):
-        c, w = self.c, self.main_window
-        lt, rt = c.frame.statusLine.update(c.p.b, 0)
-        w.status_line.update(lt, rt)
-        
-    @flx.action
-    def set_body_text(self):
-        c, w = self.c, self.main_window
-        w.body.set_text(c.p.b)
     #@+node:ekr.20181105091545.1: *5* app.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
@@ -544,6 +531,20 @@ class LeoBrowserApp(flx.PyComponent):
             c.k.masterKeyHandler(key_event)
         finally:
             g.app.debug = old_debug
+    #@+node:ekr.20181207080933.1: *4* app.action.set_body_text & set_status
+    # These must be separate because they are called from the tree logic.
+
+    @flx.action
+    def set_body_text(self):
+        c, w = self.c, self.main_window
+        w.body.set_text(c.p.b)
+
+    @flx.action
+    def set_status(self):
+        c, w = self.c, self.main_window
+        lt, rt = c.frame.statusLine.update(c.p.b, 0)
+        w.status_line.update(lt, rt)
+        
     #@+node:ekr.20181202074931.1: *4* app.action.update_body
     @flx.action
     def update_body(self, text, row, col):
@@ -1149,6 +1150,7 @@ class LeoBrowserGui(leoGui.NullGui):
         '''Monkey-patched do-nothing version of g.app.writeWaitingLog.'''
         
     def writeWaitingLog2(self, c=None):
+        '''Called from app.finish_create.'''
         w = self.root.main_window
         #
         # Print the signon.
