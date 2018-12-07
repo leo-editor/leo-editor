@@ -807,7 +807,7 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181122132009.1: *4* app.Testing...
     #@+node:ekr.20181111142921.1: *5* app.action: do_command
     @flx.action
-    def do_command(self, command):
+    def do_command(self, command, key, mods):
         w = self.main_window
         c = self.c
         
@@ -867,15 +867,21 @@ class LeoBrowserApp(flx.PyComponent):
             self.run_all_unit_tests()
         else:
             # g.trace('unknown command: %r' % command)
-            self.execute_minibuffer_command(command)
+            self.execute_minibuffer_command(command, key, mods)
     #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command (to do: tab completion)
-    def execute_minibuffer_command(self, commandName):
+    def execute_minibuffer_command(self, commandName, char, mods):
         '''Execute a minibuffer command.'''
         # This code is all a hack.
         # It is a copy of k.callAltXFunction
-        g.trace('=====', commandName)
         c, k = self.c, self.c.k
-        event = g.Bunch(c=c, widget=c.frame.miniBufferWidget)
+        binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
+            # Same as in app.do_key.
+        g.trace('=====', commandName, binding)
+        event = g.Bunch(
+            c=c,
+            char=char,
+            stroke=binding,
+            widget=c.frame.miniBufferWidget)
             # Another hack.
         k.functionTail = None ### Changed.
         if commandName and commandName.isdigit():
@@ -933,7 +939,7 @@ class LeoBrowserApp(flx.PyComponent):
             finally:
                 g.app.debug = old_debug
         else:
-            print('do_command: select: not found: %s' % h)
+            print('app.run_all_unit_tests: select: not found: %s' % h)
     #@+node:ekr.20181126104843.1: *5* app.test_full_outline
     def test_full_outline(self, p):
         '''Exercise the new diff-based redraw code on a fully-expanded outline.'''
@@ -1759,7 +1765,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
         if trace: print('\nMINIBUFFER: key_press', repr(ev))
         key, mods = ev ['key'], ev ['modifiers']
         if key == 'Enter' and not mods:
-            self.do_enter_key()
+            self.do_enter_key(key, mods)
             return None
         if 'Shift' in mods:
             mods.remove('Shift')
@@ -1780,7 +1786,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
             if mods:
                 self.root.do_key(ev, 'minibufferWidget')
     #@+node:ekr.20181129174405.1: *4* flx_minibuffer.do_enter_key (Easter Eggs)
-    def do_enter_key(self):
+    def do_enter_key(self, key, mods):
         '''
         Handle the enter key in the minibuffer.
         This will only be called if the user has entered the minibuffer via a click.
@@ -1795,7 +1801,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
                 headline = command[len('Enter Headline:'):].strip()
                 self.root.edit_headline_completer(headline)
             else:
-                self.root.do_command(command)
+                self.root.do_command(command, key, mods)
             self.set_text('')
     #@-others
 #@+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
