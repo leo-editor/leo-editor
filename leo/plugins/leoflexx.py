@@ -1669,9 +1669,6 @@ class LeoFlexxMainWindow(flx.Widget):
     minibuffer = flx.ComponentProp(settable=True)
     status_line = flx.ComponentProp(settable=True)
     tree = flx.ComponentProp(settable=True)
-    
-    do_init = flx.BoolProp(settable=True)
-        # https://github.com/flexxui/flexx/issues/531
 
     def init(self):
         self.tag = '(flx main window)'
@@ -1698,13 +1695,13 @@ class LeoFlexxMainWindow(flx.Widget):
         self._mutate('minibuffer', minibuffer)
         self._mutate('status_line', status_line)
         self._mutate('tree', tree)
-        self._mutate('do_init', True)
+        self.emit('do_init')
         if warn_about_code:
             global alert # for pyflakes.
             # pylint: disable=undefined-variable
             alert('LeoWapp is pre-alpha code.\n\nUse at your own risk')
         
-    @flx.reaction('do_init', mode="greedy")
+    @flx.reaction('!do_init')
     def after_init(self):
         self.root.finish_create()
 
@@ -1757,7 +1754,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
     def set_text(self, s):
         if 0: print('===== flx.minibuffer.set_text')
         self.editor.setValue(s)
-    #@+node:ekr.20181203150409.1: *4* flx_minibuffer.Key handling (OLD)
+    #@+node:ekr.20181203150409.1: *4* flx_minibuffer.Key handling
     @flx.emitter
     def key_press(self, e):
         trace = debug_keys and not g.unitTesting
