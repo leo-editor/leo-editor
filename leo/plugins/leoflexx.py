@@ -340,15 +340,17 @@ class LeoBrowserApp(flx.PyComponent):
         #
         # Open or get the first file.
         if g.app and isinstance(g.app.gui, LeoBrowserGui):
-            # We are running Leo --gui=browser.
+            # We are running with --gui=browser.
             assert isinstance(g.app.log, leoFrame.NullLog)
             c = g.app.log.c
         else:
             # We are running stand-alone.
             # Use the bridge to open a single file.
-            # This is for testing only, and is deprecated.
+            # This is only for testing, and will likely be removed.
             c, g = self.open_bridge()
-            g.app.gui = LeoBrowserGui()
+            g.app.gui = gui = LeoBrowserGui()
+            title = c.computeWindowTitle(c.mFileName)
+            g.app.windowList = [DummyFrame(c, title, gui)]
         #
         # self.gui must be a synonym for g.app.gui.
         self.c = c
@@ -371,7 +373,7 @@ class LeoBrowserApp(flx.PyComponent):
             g.printObj(g.app.windowList)
             print('')
         #
-        # Set g.app ivars.
+        # Set g.app debugging ivars.
         if debug_focus:
             g.app.debug.append('focus')
         if debug_keys:
