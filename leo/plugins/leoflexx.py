@@ -84,7 +84,7 @@ debug_body = False
     # Shows calls to flx_body setters.
 debug_events = False
 debug_focus = False # puts 'focus' in g.app.debug.
-debug_keys = False # puts 'keys' in g.app.debug.
+debug_keys = True # puts 'keys' in g.app.debug.
     # Shows only keys passed to Leo.
 debug_redraw = False
 debug_select = False
@@ -431,10 +431,10 @@ class LeoBrowserApp(flx.PyComponent):
         self.set_status()
         self.redraw(c.p)
         # Init the focus. It's debatable...
-        if 1:
+        if 0:
             self.gui.set_focus(c, c.frame.tree)
             w.tree.set_focus()
-        else:
+        else: # This definitely shows focus in the editor.
             self.gui.set_focus(c, c.frame.body)
             w.body.set_focus()
     #@+node:ekr.20181105091545.1: *5* app.open_bridge
@@ -474,7 +474,6 @@ class LeoBrowserApp(flx.PyComponent):
         unless the inner key handler calls e.preventDefault()
         '''
         trace = debug_keys and not g.unitTesting
-        trace_master_key_handler = False
         c = self.c
         browser_wrapper = getattr(c.frame, ivar)
             # Essential: there is no way to pass the actual wrapper.
@@ -528,8 +527,6 @@ class LeoBrowserApp(flx.PyComponent):
         #@-<< create key_event >>
         old_debug = g.app.debug
         try:
-            if not trace_master_key_handler:
-                g.app.debug = []
             c.k.masterKeyHandler(key_event)
         finally:
             g.app.debug = old_debug
@@ -868,6 +865,9 @@ class LeoBrowserApp(flx.PyComponent):
         else:
             # g.trace('unknown command: %r' % command)
             self.execute_minibuffer_command(command, key, mods)
+        c = g.app.log.c
+        c.k.keyboardQuit()
+        w.body.set_focus()
     #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command (to do: tab completion)
     def execute_minibuffer_command(self, commandName, char, mods):
         '''Execute a minibuffer command.'''
@@ -1143,8 +1143,8 @@ class LeoBrowserGui(leoGui.NullGui):
                 widget.setFocus()
             self.focusWidget = widget
         elif isinstance(widget, API_Wrapper):
-            # This does not get executed.
-            print('===== %s set_focus: redirect AceWrapper to LeoBrowserBody')
+            # This does sometimes get executed.
+            print('===== gui.set_focus: redirect AceWrapper to LeoBrowserBody', g.callers())
             assert isinstance(c.frame.body, LeoBrowserBody), repr(c.frame.body)
             assert widget.name == 'body', repr(widget.name)
             if not g.unitTesting:
@@ -1269,37 +1269,49 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
         # Hook this class up to the key handler.
         c.k.w = self
         frame.minibufferWidget = self
-        
-    
+
     # Overrides.
     def setFocus(self):
         # g.trace('===== (minibuffer wrapper)')
         self.root.main_window.minibuffer.set_focus()
         
-    # Override the methods called by k.minibuffer methods:
+    #@+others
+    #@+node:ekr.20181208062449.1: *4* mini.called by k.minibuffer
+    # Override the methods called by k.minibuffer:
         
-    ###  delete
+    def update(self, tag):
+        w = self.root.main_window
+        i, j = self.sel
+        # print('===== mini.%-20s sel: %2s %2s ins: %2s %r' % (tag+':', i, j, self.ins, self.s))
+        w.minibuffer.set_text(self.s)
+        w.minibuffer.set_selection(i, j)
+        w.minibuffer.set_insert(self.ins)
+            
+    def delete(self, i, j):
+        super().delete(i,j)
+        self.update('delete')
+        
+    def getAllText(self):
+        # i, j = self.sel
+        # print('===== mini.%-20s sel: %2s %2s ins: %2s %r' % ('getAllText:', i, j, self.ins, self.s))
+        return self.s
+
+    def insert(self, i, s):
+        super().insert(i, s)
+        self.update('insert')
 
     def setAllText(self, s):
-        w = self.root.main_window
-        # print('===== (minibuffer wrapper) setAllText:', s)
         super().setAllText(s)
-        w.minibuffer.set_text(s)
+        self.update('setAllText')
         
     def setSelectionRange(self, i, j, insert=None):
-        w = self.root.main_window
-        # print('===== (minibuffer wrapper) setSelectionRange:', i, j, repr(insert))
         super().setSelectionRange(i, j, insert)
-        w.minibuffer.set_selection(i,j)
-        if insert is not None:
-            w.minibuffer.set_insert(insert)
+        self.update('setSelectionRange')
             
     def setStyleClass(self, name):
         w = self.root.main_window
-        # print('===== (minibuffer wrapper) setStyleClass:', repr(name))
         w.minibuffer.set_style(name)
-
-    #@+others
+        self.update('setStyleClass:%r' % name)
     #@-others
 #@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine
 class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
@@ -1727,61 +1739,61 @@ class LeoFlexxMiniBuffer(JS_Editor):
     #@+others
     #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
     # The high-level interface methods, called from LeoBrowserMinibuffer.
-    # self.widget is a flx.LineEdit.
 
     @flx.action
     def set_focus(self):
-        trace = debug_focus and not g.unitTesting
-        if trace: print(self.tag, 'minibuffer.ace.focus()')
+        if 0: print('===== flx.mini.set_focus')
         self.editor.focus()
         
     @flx.action
     def set_insert(self, i):
-        if 0: print('===== flx.minibuffer.set_insert', i)
+        if 0: print('===== flx.mini.set_insert', i)
 
     @flx.action
     def set_selection(self, i, j):
-        if 0: print('===== flx.minibuffer.set_selection', i, j)
+        if 0: print('===== flx.mini.set_selection', i, j)
         
     @flx.action
     def set_style(self, style):
-        trace = debug_focus and not g.unitTesting
-        if trace: print(self.tag, 'set_style: minibuffer.ace.focus()')
+        if 0: print('===== flx.mini.set_style: %r %r' % (style, self.editor.getValue()))
         # A hack. Also set focus.
         self.editor.focus()
         
     @flx.action
     def set_text(self, s):
-        if 0: print('===== flx.minibuffer.set_text')
+        if 0: print('===== flx.minibuffer.set_text', repr(s))
         self.editor.setValue(s)
     #@+node:ekr.20181203150409.1: *4* flx_minibuffer.Key handling
     @flx.emitter
     def key_press(self, e):
+        '''Pass *all* keys except Enter and F12 to Leo's core.'''
+        # Backspace is not emitted.
         trace = debug_keys and not g.unitTesting
         ev = self._create_key_event(e)
-        if trace: print('\nMINIBUFFER: key_press', repr(ev))
         key, mods = ev ['key'], ev ['modifiers']
-        if key == 'Enter' and not mods:
-            self.do_enter_key(key, mods)
-            return None
-        if 'Shift' in mods:
-            mods.remove('Shift')
+        if trace:
+            print('\nmini.key_press: %r %r' % (mods, key))
         if mods:
-            # k.masterKeyHandler will handle everything.
             e.preventDefault()
-        # F12 does not work in the minibuffer.
+            return ev
+        if key == 'F12':
+            return ev
+        if key == 'Enter':
+            self.do_enter_key(key, mods)
+            e.preventDefault()
+            return ev
+        # k.masterKeyHandler will handle everything.
+        e.preventDefault()
         return ev
         
     @flx.reaction('key_press')
     def on_key_press(self, *events):
+        '''Pass *all* keys Leo's core.'''
         trace = debug_keys and not g.unitTesting
         for ev in events:
-            key, mods = ev['key'], ev ['modifiers']
-            if trace: print('\nMINIBUFFER: on_key_press', repr(mods), repr(key))
-            if 'Shift' in mods:
-                mods.remove('Shift')
-            if mods:
-                self.root.do_key(ev, 'minibufferWidget')
+            if trace:
+                print('\nmini.on_key_press: %r %r' % (ev ['modifiers'], ev['key']))
+            self.root.do_key(ev, 'minibufferWidget')
     #@+node:ekr.20181129174405.1: *4* flx_minibuffer.do_enter_key (Easter Eggs)
     def do_enter_key(self, key, mods):
         '''
@@ -1793,13 +1805,12 @@ class LeoFlexxMiniBuffer(JS_Editor):
         if command.strip():
             if command.startswith('full-command:'):
                 command = command[len('full-command:'):].strip()
-                self.root.do_command(command)
+                self.root.do_command(command, 'Enter', [])
             elif command.startswith('Enter Headline:'):
                 headline = command[len('Enter Headline:'):].strip()
                 self.root.edit_headline_completer(headline)
             else:
                 self.root.do_command(command, key, mods)
-            self.set_text('')
     #@-others
 #@+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
 class LeoFlexxStatusLine(flx.Widget):
