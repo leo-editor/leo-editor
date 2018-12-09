@@ -1764,6 +1764,15 @@ class LeoFlexxMiniBuffer(JS_Editor):
         if 0: print('===== flx.minibuffer.set_text', repr(s))
         self.editor.setValue(s)
     #@+node:ekr.20181203150409.1: *4* flx_minibuffer.Key handling
+    if 0: ### Reference only.
+
+        RawJS("""\
+    window.onbeforeunload = function(){
+        // console.log("window.onbeforeunload")
+        return "Are you sure?"
+    };""")
+
+
     @flx.emitter
     def key_press(self, e):
         '''Pass *all* keys except Enter and F12 to Leo's core.'''
