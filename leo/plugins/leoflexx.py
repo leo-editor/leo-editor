@@ -92,7 +92,7 @@ debug_startup = False
 debug_tree = False
 verbose_debug_tree = False
 use_ace = True # False: use Code Mirror.
-warn_about_code = False # True: raise alert on startup about pre-alpha code.
+warn_about_code = True # True: raise alert on startup about pre-alpha code.
 warnings_only = True # False is better for debugging.
 
 # print('\nuse_ace', use_ace, '\n')
