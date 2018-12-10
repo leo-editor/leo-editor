@@ -11,6 +11,7 @@
 <v t="ekr.20050407144417"><vh>@settings</vh>
 <v t="ekr.20150318043636.16"><vh>@bool check_outline_after_read = True</vh></v>
 <v t="ekr.20150318043636.17"><vh>@bool check_outline_before_save = True</vh></v>
+<v t="mhw.20181210130810.1"><vh>@bool put-expansion-bits-in-leo-files = False</vh></v>
 <v t="ekr.20141117065749.3"><vh>@bool wikiview-active = False</vh></v>
 <v t="ekr.20111108052738.5507"><vh>@shortcuts</vh></v>
 <v t="ekr.20130816100419.17299"><vh>@string target_language = rest</vh></v>
@@ -30685,6 +30686,14 @@ Time passes, upgrade desired::
 dramatically speed up download time as it only grabs the latest
 development branch and skips all but the last couple weeks or months of
 history.</t>
+<t tx="mhw.20181210130810.1">True (recommended):
+    Write "E" attribute bits in &lt;v&gt; elements.
+    Leo outlines will record the expansion state of all nodes.
+    
+False: (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in &lt;v&gt; elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

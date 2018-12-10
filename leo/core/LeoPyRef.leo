@@ -9,6 +9,7 @@
 <v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
 <v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
+<v t="mhw.20181210130945.1"><vh>@bool put-expansion-bits-in-leo-files = False</vh></v>
 <v t="ekr.20150531102337.1"><vh>@bool tidy-keep-blank-lines = False</vh></v>
 <v t="ekr.20150617060607.1"><vh>@bool tidy_autobeautify = False</vh></v>
 <v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
@@ -2042,5 +2043,13 @@ if s.strip():
 else:
     g.es_print('no text selected')
 </t>
+<t tx="mhw.20181210130945.1">True (recommended):
+    Write "E" attribute bits in &lt;v&gt; elements.
+    Leo outlines will record the expansion state of all nodes.
+    
+False: (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in &lt;v&gt; elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.</t>
 </tnodes>
 </leo_file>
