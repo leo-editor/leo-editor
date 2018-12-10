@@ -836,7 +836,6 @@ class LeoBrowserApp(flx.PyComponent):
         w.body.set_focus()
     #@+node:ekr.20181210055704.1: *6* app.do_find & helpers
     def do_find(self):
-        g.trace('=====')
         c = self.c
         event = leoGui.LeoKeyEvent(c,
             binding = '',
@@ -853,14 +852,36 @@ class LeoBrowserApp(flx.PyComponent):
     def terminate_do_find(self):
         '''Never called.'''
     #@+node:ekr.20181210092900.1: *7* app.end_find
-    def end_find(self, h):
+    def end_find(self, pattern):
         c = self.c
-        w = self.root.main_window
-        g.trace('-----', h)
-        ### To do.
-        c.k.keyboardQuit()
-        c.redraw()
-        w.body.set_focus()
+        fc = c.findCommands
+        g.trace('-----', pattern)
+        
+        class DummyFTM:
+            def getFindText(self):
+                return pattern
+            def getReplaceText(self):
+                return ''
+
+        # Init the search.
+        if 1:
+            fc.ftm = DummyFTM()
+        if 1:
+            fc.find_text = pattern
+            fc.change_text = ''
+            fc.find_seen = set()
+            fc.pattern_match = False
+            fc.in_headline = False
+            fc.search_body = True
+            fc.was_in_headline = False
+            fc.wrapping = False
+        # Do the search.
+        fc.findNext()
+        if 1: ### Testing only???
+            w = self.root.main_window
+            c.k.keyboardQuit()
+            c.redraw()
+            w.body.set_focus()
     #@+node:ekr.20181119103144.1: *6* app.do_focus
     def do_focus(self):
         c = self.c
