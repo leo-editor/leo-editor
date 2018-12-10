@@ -84,7 +84,7 @@ debug_body = False
     # Shows calls to flx_body setters.
 debug_events = False
 debug_focus = False # puts 'focus' in g.app.debug.
-debug_keys = True # puts 'keys' in g.app.debug.
+debug_keys = False # puts 'keys' in g.app.debug.
     # Shows only keys passed to Leo.
 debug_redraw = False
 debug_select = False
@@ -272,8 +272,7 @@ class API_Wrapper (leoFrame.StringTextWrapper):
             c.p.v.setBodyString(self.s)
                 # p.b = self.s will cause an unbounded recursion.
         if trace:
-            print('%s: %s: len(self.s): %s' % (
-                self.tag, self.tag, len(self.s)))
+            print('%s: %s: len(self.s): %s' % (self.tag, tag, len(self.s)))
         if not g.unitTesting:
             self.flx_wrapper().set_text(self.s)
             self.flx_wrapper().set_insert_point(self.ins)
@@ -474,6 +473,7 @@ class LeoBrowserApp(flx.PyComponent):
         unless the inner key handler calls e.preventDefault()
         '''
         trace = debug_keys and not g.unitTesting
+        if trace: g.trace('=====', g.callers(6))
         c = self.c
         browser_wrapper = getattr(c.frame, ivar)
             # Essential: there is no way to pass the actual wrapper.
@@ -490,6 +490,11 @@ class LeoBrowserApp(flx.PyComponent):
         key, mods = ev ['key'], ev ['modifiers']
             # ev is a dict, keys are type, source, key, modifiers
             # mods in ('Alt', 'Shift', 'Ctrl', 'Meta')
+        # Special case Ctrl-H and Ctrl-F.
+        if mods == ['Ctrl'] and key in 'fh':
+            command = 'find' if key == 'f' else 'head'
+            self.do_command(command, key, mods)
+            return
         #@+<< set char to the translated key name >>
         #@+node:ekr.20181129073905.1: *5* << set char to the translated key name >>
         d = {
@@ -507,9 +512,9 @@ class LeoBrowserApp(flx.PyComponent):
             mods.append('Control')
         #@-<< set char to the translated key name >>
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
-        if trace:
-            g.trace('%s from %s: %r c.p.h: %s' % (
-                self.tag, browser_wrapper.tag, binding, c.p.h))
+        # if trace:
+            # g.trace('%s from %s: %r c.p.h: %s' % (
+                # self.tag, browser_wrapper.tag, binding, c.p.h))
         #@+<< create key_event >>
         #@+node:ekr.20181129073734.1: *5* << create key_event >>
         # create the key event, but don't bother tracing it.
@@ -525,11 +530,8 @@ class LeoBrowserApp(flx.PyComponent):
         finally:
             g.app.debug = old_debug
         #@-<< create key_event >>
-        old_debug = g.app.debug
-        try:
-            c.k.masterKeyHandler(key_event)
-        finally:
-            g.app.debug = old_debug
+        c.k.masterKeyHandler(key_event)
+       
     #@+node:ekr.20181207080933.1: *4* app.action.set_body_text & set_status
     # These must be separate because they are called from the tree logic.
 
@@ -802,72 +804,142 @@ class LeoBrowserApp(flx.PyComponent):
         c.frame.tree.super_select(p)
             # call LeoTree.select, but not self.select_p.
     #@+node:ekr.20181122132009.1: *4* app.Testing...
-    #@+node:ekr.20181111142921.1: *5* app.action: do_command
+    #@+node:ekr.20181111142921.1: *5* app.action: do_command & helpers
     @flx.action
     def do_command(self, command, key, mods):
-        w = self.main_window
         c = self.c
-        
-        #@+others # define test_log & test_select.
-        #@+node:ekr.20181119103144.1: *6* app.tests
-        def test_focus():
-            old_debug = g.app.debug
-            try:
-                g.app.debug = ['focus', 'keys',]
-                print('\ncalling c.set_focus(c.frame.miniBufferWidget.widget')
-                c.set_focus(c.frame.miniBufferWidget.widget)
-            finally:
-                g.app.debug = old_debug
-
-        def test_log():
-            print('testing log...')
-            w.log.put('Test message to LeoFlexxLog.put')
-                # Test LeoFlexxLog.put.
-            c.frame.log.put('Test message to LeoBrowserLog.put')
-                # Test LeoBrowserLog.put.
-                
-        def test_positions():
-            print('testing positions...')
-            self.test_round_trip_positions()
-                
-        def test_redraw():
-            print('testing redraw...')
-            self.redraw(None)
-                
-        def test_select():
-            print('testing select...')
-            h = 'Active Unit Tests'
-            p = g.findTopLevelNode(c, h, exact=True)
-            if p:
-                c.frame.tree.select(p)
-                # LeoBrowserTree.select.
-            else:
-                g.trace('not found: %s' % h)
-        #@-others
-
-        if command == 'cls':
-            g.cls()
-        elif command == 'focus':
-            test_focus()
-        elif command == 'log':
-            test_log()
-        elif command == 'redraw':
-            test_redraw()
-        elif command.startswith('sel'):
-            test_select()
-        elif command == 'test': # All except unit tests.
-            test_log()
-            test_positions()
-            test_redraw()
-            test_select()
-        elif command == 'unit':
-            self.run_all_unit_tests()
+        w = self.main_window
+        #
+        # Intercept in-progress commands.
+        h1 = 'Set headline: '
+        if command.startswith(h1):
+            self.end_set_headline(command[len(h1):])
+            return
+        h2 = 'Find: '
+        if command.startswith(h2):
+            self.end_find(command[len(h2):])
+            return
+        func = getattr(self, 'do_'+command, None)
+        if func:
+            func()
         else:
-            # g.trace('unknown command: %r' % command)
+            g.trace('===== unknown command: %r' % command)
             self.execute_minibuffer_command(command, key, mods)
-        c = g.app.log.c
+            c.k.keyboardQuit()
+            w.body.set_focus()
+    #@+node:ekr.20181210054910.1: *6* app.do_cls
+    def do_cls(self):
+        c = self.c
+        w = self.root.main_window
+        g.cls()
         c.k.keyboardQuit()
         w.body.set_focus()
+    #@+node:ekr.20181210055704.1: *6* app.do_find & helpers
+    def do_find(self):
+        g.trace('=====')
+        c = self.c
+        event = leoGui.LeoKeyEvent(c,
+            binding = '',
+            char = '',
+            event = { 'c': c },
+            w = c.frame.miniBufferWidget,
+        )
+        c.interactive(
+            callback = self.terminate_do_find,
+            event = event,
+            prompts=['Find: ',],
+        )
+        
+    def terminate_do_find(self):
+        '''Never called.'''
+    #@+node:ekr.20181210092900.1: *7* app.end_find
+    def end_find(self, h):
+        c = self.c
+        w = self.root.main_window
+        g.trace('-----', h)
+        ### To do.
+        c.k.keyboardQuit()
+        c.redraw()
+        w.body.set_focus()
+    #@+node:ekr.20181119103144.1: *6* app.do_focus
+    def do_focus(self):
+        c = self.c
+        old_debug = g.app.debug
+        try:
+            g.app.debug = ['focus', 'keys',]
+            print('\ncalling c.set_focus(c.frame.miniBufferWidget.widget')
+            c.set_focus(c.frame.miniBufferWidget.widget)
+        finally:
+            g.app.debug = old_debug
+
+
+            
+    #@+node:ekr.20181210055648.1: *6* app.do_head & helpers
+    def do_head(self):
+        c = self.c
+        g.trace('=====')
+        event = leoGui.LeoKeyEvent(c,
+            binding = '',
+            char = '',
+            event = { 'c': c },
+            w = c.frame.miniBufferWidget,
+        )
+        c.interactive(
+            callback = self.terminate_do_head,
+            event = event,
+            prompts=['Set headline: ',],
+        )
+
+    def terminate_do_head(self, args, c, event):
+        '''never actually called.'''
+    #@+node:ekr.20181210092817.1: *7* app.end_set_headline
+    def end_set_headline(self, h):
+        c, p, u = self.c, self.c.p, self.c.undoer
+        w = self.root.main_window
+        g.trace('-----', h)
+        # Undoably set the head. Like leoTree.onHeadChanged.
+        oldHead = p.h
+        p.initHeadString(h)
+        if True: ### changed:
+            undoType = 'Typing'
+            undoData = u.beforeChangeNodeContents(p, oldHead=oldHead)
+            if not c.changed: c.setChanged(True)
+            dirtyVnodeList = p.setDirty()
+            u.afterChangeNodeContents(p, undoType, undoData,
+                dirtyVnodeList=dirtyVnodeList, inHead=True)
+        c.k.keyboardQuit()
+        c.redraw()
+        w.body.set_focus()
+    #@+node:ekr.20181210054631.1: *6* app.do_redraw
+    def do_redraw(self):
+        print('testing redraw...')
+        self.redraw(None)
+    #@+node:ekr.20181210054631.2: *6* app.do_select
+    def do_select(self):
+        print('testing select...')
+        c = self.c
+        h = 'Active Unit Tests'
+        p = g.findTopLevelNode(c, h, exact=True)
+        if p:
+            c.frame.tree.select(p)
+            # LeoBrowserTree.select.
+        else:
+            g.trace('not found: %s' % h)
+    #@+node:ekr.20181210054516.1: *6* app.do_test
+    def do_test(self):
+        c = self.c
+        w = self.root.main_window
+        print('testing positions...')
+        self.test_round_trip_positions()
+        self.do_select()
+        c.k.keyboardQuit()
+        c.redraw()
+        w.body.set_focus()
+
+    #@+node:ekr.20181210055110.1: *6* app.do_unit
+    def do_unit(self):
+        # This ends up exiting.
+        self.run_all_unit_tests()
     #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command (to do: tab completion)
     def execute_minibuffer_command(self, commandName, char, mods):
         '''Execute a minibuffer command.'''
@@ -1144,7 +1216,7 @@ class LeoBrowserGui(leoGui.NullGui):
             self.focusWidget = widget
         elif isinstance(widget, API_Wrapper):
             # This does sometimes get executed.
-            print('===== gui.set_focus: redirect AceWrapper to LeoBrowserBody', g.callers())
+            if trace: print('===== gui.set_focus: redirect AceWrapper to LeoBrowserBody', g.callers())
             assert isinstance(c.frame.body, LeoBrowserBody), repr(c.frame.body)
             assert widget.name == 'body', repr(widget.name)
             if not g.unitTesting:
@@ -1287,7 +1359,7 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
         w.minibuffer.set_selection(i, j)
         w.minibuffer.set_insert(self.ins)
             
-    def delete(self, i, j):
+    def delete(self, i, j=None):
         super().delete(i,j)
         self.update('delete')
         
@@ -1502,7 +1574,10 @@ class JS_Editor(flx.Widget):
     #@+node:ekr.20181121072246.1: *4* jse.Keys
     @flx.emitter
     def key_press(self, e):
+        trace = (debug_keys or debug_events) and not g.unitTesting
         ev = self._create_key_event(e)
+        if trace:
+            print('===== JS_Editor.key_press: %s %r' % (self.name, ev))
         if self.should_be_leo_key(ev):
             e.preventDefault()
         return ev
@@ -1510,7 +1585,7 @@ class JS_Editor(flx.Widget):
     @flx.reaction('key_press')
     def on_key_press(self, *events):
         # The JS editor has already** handled the key!
-        trace = debug_events and not g.unitTesting
+        trace = (debug_keys or debug_events) and not g.unitTesting
         tag = self.name.upper()
         for ev in events:
             editor = self.editor
@@ -1790,7 +1865,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
         if key == 'Enter':
             self.do_enter_key(key, mods)
             e.preventDefault()
-            return ev
+            return None ###
         # k.masterKeyHandler will handle everything.
         e.preventDefault()
         return ev
@@ -1809,8 +1884,9 @@ class LeoFlexxMiniBuffer(JS_Editor):
         Handle the enter key in the minibuffer.
         This will only be called if the user has entered the minibuffer via a click.
         '''
+        trace = debug_keys and not g.unitTesting
         command = self.editor.getValue()
-        print('\nMinibuffer: key_press: Enter', repr(command))
+        if trace: print('===== mini.do_enter_key', repr(command))
         if command.strip():
             if command.startswith('full-command:'):
                 command = command[len('full-command:'):].strip()
