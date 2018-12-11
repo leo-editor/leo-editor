@@ -8,6 +8,7 @@
 <vnodes>
 <v t="ekr.20050315084904"><vh>Startup</vh>
 <v t="ekr.20141117135127.2"><vh>@settings</vh>
+<v t="mhw.20181210130836.1"><vh>@bool put-expansion-bits-in-leo-files = False</vh></v>
 <v t="ekr.20141117135127.3"><vh>@bool wikiview-active = False</vh></v>
 </v>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
@@ -164,6 +165,7 @@
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20180405171433.9"><vh>Announcements</vh></v>
 </v>
+<v t="DSR.20181126072740.2"><vh>@file git_install.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -1885,5 +1887,13 @@ that updates yml file will delete any comments within it. (e.g. `travis encrypt
 
 
 </t>
+<t tx="mhw.20181210130836.1">True (recommended):
+    Write "E" attribute bits in &lt;v&gt; elements.
+    Leo outlines will record the expansion state of all nodes.
+    
+False: (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in &lt;v&gt; elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.</t>
 </tnodes>
 </leo_file>
