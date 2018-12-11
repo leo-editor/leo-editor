@@ -1361,7 +1361,7 @@ class FileCommands(object):
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # Fix #526: do this for @auto nodes as well.
             attrs.append(self.putDescendentVnodeUas(p))
-            # Fix #1023: never puit marked/expanded bits.
+            # Fix #1023: never put marked/expanded bits.
                 # attrs.append(self.putDescendentAttributes(p))
         return ''.join(attrs)
     #@+node:ekr.20031218072017.1579: *5* fc.putVnodes
