@@ -90,7 +90,6 @@ debug_redraw = False
 debug_select = False
 debug_startup = False
 debug_tree = False
-verbose_debug_tree = False
 use_ace = True # False: use Code Mirror.
 warn_about_code = True # True: raise alert on startup about pre-alpha code.
 warnings_only = True # False is better for debugging.
@@ -684,7 +683,7 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, recreate gnx_to_vnode.
         '''
-        trace = False and not g.unitTesting
+        trace = debug_redraw and not g.unitTesting
         c = self.c
         p = p or c.p
         t1 = time.clock()
@@ -693,8 +692,8 @@ class LeoBrowserApp(flx.PyComponent):
         d = {
             'c.p': self.p_to_ap(p),
             'items': [
-                self.make_dict_for_position(p)
-                    for p in c.rootPosition().self_and_siblings()
+                self.make_dict_for_position(p2)
+                    for p2 in c.rootPosition().self_and_siblings()
             ],
         }
         t2 = time.clock()
@@ -708,11 +707,11 @@ class LeoBrowserApp(flx.PyComponent):
         Recursively add a sublist for p and all its visible nodes.
         It is already known that p itself is visible.
         '''
-        trace = debug_tree and verbose_debug_tree and not g.unitTesting
+        trace = debug_redraw and not g.unitTesting
         assert p.v
         self.gnx_to_vnode[p.v.gnx] = p.v
         if trace:
-            print('%s%s' % ('  '*p.level(), p.h))
+            print('make_dict_for_position: %s%s' % ('  '*p.level(), p.v.h))
                 # A superb trace. There are similar traces in:
                 # - flx_tree.redraw_with_dict  and its helper, flx_tree.create_item_with_parent.
                 # - flx_tree.populate_children and its helper, flx_tree.create_item_for_ap
@@ -728,7 +727,7 @@ class LeoBrowserApp(flx.PyComponent):
             # 'body': p.b, # This would transfer much too much data.
             'children': children,
             'gnx': p.v.gnx,
-            'headline': p.h,
+            'headline': p.v.h,
         }
     #@+node:ekr.20181129122147.1: *4* app.edit_headline & helper
     def edit_headline(self):
@@ -915,20 +914,21 @@ class LeoBrowserApp(flx.PyComponent):
         '''never actually called.'''
     #@+node:ekr.20181210092817.1: *7* app.end_set_headline
     def end_set_headline(self, h):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c, k, p, u = self.c, self.c.k, self.c.p, self.c.undoer
         w = self.root.main_window
-        g.trace('-----', h)
-        # Undoably set the head. Like leoTree.onHeadChanged.
+        g.trace('-----', p.v.h, '==>', h)
+        # Undoably set the head. Like leoTree.onHeadChanged, called LeoTree.endEditLabel.
         oldHead = p.h
-        p.initHeadString(h)
-        if True: ### changed:
+        p.v.setHeadString(h)
+        g.trace(c.rootPosition())
+        if True: # was changed:
             undoType = 'Typing'
             undoData = u.beforeChangeNodeContents(p, oldHead=oldHead)
             if not c.changed: c.setChanged(True)
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p, undoType, undoData,
                 dirtyVnodeList=dirtyVnodeList, inHead=True)
-        c.k.keyboardQuit()
+        k.keyboardQuit()
         c.redraw()
         w.body.set_focus()
     #@+node:ekr.20181210054631.1: *6* app.do_redraw
@@ -1499,9 +1499,14 @@ class LeoBrowserTree(leoFrame.NullTree):
         '''Call only LeoTree.select.'''
         super().select(p)
 
-    # def endEditLabel(self):
-        # # Called from super_select.
-        # if 0: print(self.tag, 'endEditLabel', g.callers())
+    def endEditLabel(self):
+        '''
+        End editing.
+
+        This must be a do-nothing, because app.end_set_headline takes its place.
+        '''
+        # print(self.tag, 'endEditLabel', g.callers())
+        
     #@+node:ekr.20181118052203.1: *4* tree_wrapper.redraw
     def redraw(self, p=None):
         '''This is c.frame.tree.redraw!'''
@@ -2052,6 +2057,8 @@ class LeoFlexxTree(flx.Widget):
         if trace_redraw:
             print('%s: %s direct children' % (tag, len(items)))
         for item in items:
+            if trace_redraw:
+                print('  item', repr(item['headline']))
             self.create_item_with_parent(item, self.tree)
         # Select c.p.
         if trace_select:
@@ -2062,7 +2069,7 @@ class LeoFlexxTree(flx.Widget):
         '''Create a tree item for item and all its visible children.'''
         # pylint: disable=no-member
             # set_collapsed is in the base class.
-        trace = debug_tree and verbose_debug_tree and not g.unitTesting
+        trace = False and debug_tree and not g.unitTesting
         verbose = True
         ap = item ['ap']
         if trace and verbose: # An effective, lengthy, trace.
