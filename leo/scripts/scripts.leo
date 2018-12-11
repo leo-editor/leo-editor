@@ -7,7 +7,9 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070615131954"><vh>Startup</vh>
-<v t="ekr.20150302053516.3"><vh>@settings</vh></v>
+<v t="ekr.20150302053516.3"><vh>@settings</vh>
+<v t="mhw.20181210131101.1"><vh>@bool put-expansion-bits-in-leo-files = False</vh></v>
+</v>
 <v t="ekr.20070427110751"><vh>@chapters</vh></v>
 <v t="ekr.20141116105945.2"><vh>@persistence</vh>
 <v t="ekr.20141116105945.3"><vh>@data:@auto create-leobat.bat</vh>
@@ -4221,5 +4223,13 @@ if 1:
 ''' % d
 </t>
 <t tx="ekr.20181020064400.1"></t>
+<t tx="mhw.20181210131101.1">True (recommended):
+    Write "E" attribute bits in &lt;v&gt; elements.
+    Leo outlines will record the expansion state of all nodes.
+    
+False: (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in &lt;v&gt; elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.</t>
 </tnodes>
 </leo_file>

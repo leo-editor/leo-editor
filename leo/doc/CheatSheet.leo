@@ -10,6 +10,7 @@
 <v t="ekr.20131030071311.18741"><vh>@button make-sphinx</vh></v>
 <v t="ekr.20131030071311.17126"><vh>@settings</vh>
 <v t="ekr.20181015143002.1"><vh>@bool body_pane_wraps = True</vh></v>
+<v t="mhw.20181210130732.1"><vh>@bool put-expansion-bits-in-leo-files = False</vh></v>
 <v t="ekr.20131030071311.18671"><vh>@string target_language = rest</vh></v>
 <v t="ekr.20131030071311.17128"><vh>For rst3 command</vh>
 <v t="ekr.20131030071311.17127"><vh>@bool rst3_call_docutils = True</vh></v>
@@ -1708,5 +1709,13 @@ c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
 <t tx="ekr.20181015143002.1">True: Wrap body text.
 
 </t>
+<t tx="mhw.20181210130732.1">True (recommended):
+    Write "E" attribute bits in &lt;v&gt; elements.
+    Leo outlines will record the expansion state of all nodes.
+    
+False: (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in &lt;v&gt; elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.</t>
 </tnodes>
 </leo_file>
