@@ -1361,7 +1361,8 @@ class FileCommands(object):
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # Fix #526: do this for @auto nodes as well.
             attrs.append(self.putDescendentVnodeUas(p))
-            attrs.append(self.putDescendentAttributes(p))
+            # Fix #1023: never puit marked/expanded bits.
+                # attrs.append(self.putDescendentAttributes(p))
         return ''.join(attrs)
     #@+node:ekr.20031218072017.1579: *5* fc.putVnodes
     def putVnodes(self, p=None):
@@ -1845,26 +1846,6 @@ class FileCommands(object):
             g.error("fc.pickle: unexpected exception in", torv)
             g.es_exception()
             return ''
-    #@+node:ekr.20040701065235.2: *4* fc.putDescendentAttributes
-    def putDescendentAttributes(self, p):
-
-        # Create lists of all tnodes whose vnodes are marked or expanded.
-        marks = []; expanded = []
-        for p in p.subtree():
-            v = p.v
-            if p.isMarked() and p.v not in marks:
-                marks.append(v)
-            if p.hasChildren() and p.isExpanded() and v not in expanded:
-                expanded.append(v)
-        result = []
-        for theList, tag in ((marks, "marks"), (expanded, "expanded")):
-            if theList:
-                sList = []
-                for v in theList:
-                    sList.append("%s," % v.fileIndex)
-                s = ''.join(sList)
-                result.append('\n%s="%s"' % (tag, s))
-        return ''.join(result)
     #@+node:ekr.20080805071954.2: *4* fc.putDescendentVnodeUas
     def putDescendentVnodeUas(self, p):
         '''
