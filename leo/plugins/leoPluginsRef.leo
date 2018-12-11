@@ -47,7 +47,6 @@
 </v>
 <v t="ekr.20160122104400.1"><vh>@settings</vh>
 <v t="ekr.20170709095709.1"><vh>@@bool minibuffer_find_mode = True</vh></v>
-<v t="mhw.20181210130906.1"><vh>@bool put-expansion-bits-in-leo-files = False</vh></v>
 <v t="ekr.20160122104357.1"><vh>@data history-list</vh></v>
 </v>
 <v t="ekr.20170420085814.1"><vh>Recursive import script</vh></v>
@@ -2904,14 +2903,6 @@ print('done! wrote %s' % fn)
 <t tx="ekr.20180504192522.1"></t>
 <t tx="ekr.20180504193756.1"></t>
 <t tx="ekr.20181030041210.1"></t>
-<t tx="mhw.20181210130906.1">True (recommended):
-    Write "E" attribute bits in &lt;v&gt; elements.
-    Leo outlines will record the expansion state of all nodes.
-    
-False: (Good for files like unitTest.leo)
-    Suppress "E" attribute bits in &lt;v&gt; elements.
-    Only the ancestors of the presently selected node will
-    be expanded when Leo opens an outline.</t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
 </tnodes>

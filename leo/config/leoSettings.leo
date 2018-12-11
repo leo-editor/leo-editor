@@ -111,6 +111,7 @@
 <v t="ekr.20161010085256.1"><vh>@bool js-importer-clean-lws = True</vh></v>
 <v t="ekr.20041119043902.11"><vh>@bool make-whitespace-visible = False</vh></v>
 <v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
+<v t="ekr.20101009103953.8642"><vh>@bool put-expansion-bits-in-leo-files = True</vh></v>
 <v t="ekr.20041119034357.5"><vh>@bool read-only = False</vh></v>
 <v t="ekr.20041119041019"><vh>@bool redirect-execute-script-output-to-log-pane = False</vh></v>
 <v t="ekr.20041120152657"><vh>@bool script-change = None</vh></v>
@@ -720,7 +721,6 @@
 <v t="ekr.20081216090156.5"><vh>@string underindent-escape-string = \\-</vh></v>
 </v>
 <v t="ekr.20041119034357.7"><vh>Leo files</vh>
-<v t="ekr.20101009103953.8642"><vh>@bool put-expansion-bits-in-leo-files = True</vh></v>
 <v t="ekr.20041119034357.8"><vh>@string output-initial-comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = </vh></v>
 <v t="ekr.20080921060401.3"><vh>@string default-leo-file = ~/.leo/workbook.leo</vh></v>
