@@ -164,6 +164,7 @@
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20180405171433.9"><vh>Announcements</vh></v>
 </v>
+<v t="DSR.20181126072740.2"><vh>@file git_install.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
