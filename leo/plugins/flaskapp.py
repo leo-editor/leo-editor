@@ -47,6 +47,10 @@ tasks = [
 ]
 #@-<< define tasks >>
 #@+others
+#@+node:ekr.20181212042856.1: ** init
+def init():
+    '''Dummy top-level init for Leo's unit tests and TravisCI.'''
+    return False
 #@+node:ekr.20181209123709.1: ** @app.errorhandler(404, 405)
 @app.errorhandler(404)
 def not_found(error):
