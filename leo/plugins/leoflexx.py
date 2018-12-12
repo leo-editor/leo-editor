@@ -155,10 +155,16 @@ def make_editor_function(name, node):
     Making this a top-level function avoids the need to create a common
     base class that only defines this as a method.
     '''
+    # print('make_editor_function: node: %r' % node.__class__)
+        # node.__class__ is HTMLDivElementPrototype
     if use_ace:
         editor = make_ace_editor(name, node)
     else:
         editor = make_cm_editor(name, node)
+    if 0:
+        print('make_editor_function: editor:...') #  %r' % editor.__class__)
+        for key in sorted(editor.__class__.keys()):
+            print(key)
     return editor
 #@+node:ekr.20181212051103.1: *4* function: make_ace_editor
 def make_ace_editor(name, node):
@@ -1588,21 +1594,29 @@ class JS_Editor(flx.Widget):
         print('JS_Editor.finish_create', self.name)
         if 0: # Testing.
             if self.name == 'body':
+                # getElementsByClassName returns an HTML collection.
+                # HTMLTextAreaElement
                 RawJS("""
-                alert("body");
-                var editor = document.getElementById("editor");
-                alert(editor)
+                    var x = document.getElementsByTagName("TEXTAREA");
+                    for (var i = 0; i < x.length; i++) {
+                        x[i].onkeypress = function(){alert("KEY PRESSED")}
+                    }
                 """)
-            elif self.name == 'log':
-                 RawJS("""alert("log");""")
-            else:
-                RawJS("""alert("minibuffer");""")
-            
-        # document.getElementById("editor").onkeypress = function() {on_key_press()};
-
-        # function on_key_press() {
-            # alert("on key press");
-        # }
+            # elif self.name == 'log':
+                 # RawJS("""alert("log");""")
+            # else:
+                # RawJS("""alert("minibuffer");""")
+                
+    if 0: # works
+       RawJS("""
+            var x = document.getElementsByTagName("TEXTAREA");
+            var n = x.length;
+            alert(n);
+            var i;
+            for (i = 0; i < n; i++) {
+                x[i].onkeypress = function(){alert("KEY PRESSED")}
+            }
+        """)
     #@+node:ekr.20181202075105.1: *4* jse.Clicks
     @flx.reaction('pointer_click')
     def on_click(self, *events):
