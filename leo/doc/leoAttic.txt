@@ -3587,6 +3587,26 @@ def readCachedSettings(self):
     lm.globalBindingsDict = d = g.app.db.get('shortcuts-cache') or bindings_d
     g.trace('===== shortcuts', len(d.d.keys()))
     ### return PreviousSettings(settings_d, bindings_d)
+#@+node:ekr.20040701065235.2: ** fc.putDescendentAttributes (no longer used)
+def putDescendentAttributes(self, p):
+
+    # Create lists of all tnodes whose vnodes are marked or expanded.
+    marks = []; expanded = []
+    for p in p.subtree():
+        v = p.v
+        if p.isMarked() and p.v not in marks:
+            marks.append(v)
+        if p.hasChildren() and p.isExpanded() and v not in expanded:
+            expanded.append(v)
+    result = []
+    for theList, tag in ((marks, "marks"), (expanded, "expanded")):
+        if theList:
+            sList = []
+            for v in theList:
+                sList.append("%s," % v.fileIndex)
+            s = ''.join(sList)
+            result.append('\n%s="%s"' % (tag, s))
+    return ''.join(result)
 #@-all
 #@@nosearch
 #@-leo

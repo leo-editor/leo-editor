@@ -60,7 +60,6 @@
 <v t="ekr.20041121151002"><vh>@settings</vh>
 <v t="ekr.20080324133327.2"><vh>@bool allow-middle-button-paste = True</vh></v>
 <v t="ekr.20161011095551.1"><vh>@bool allow-section-references-in-at-auto = True</vh></v>
-<v t="ekr.20101009105124.6195"><vh>@bool put-expansion-bits-in-leo-files = True</vh></v>
 <v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20161129030232.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
 <v t="ekr.20140217055617.4231"><vh>@bool scriptingatscriptnodes = True</vh></v>
@@ -3223,16 +3222,6 @@ runEditCommandTest(c,p,inHeadline=True)
 <t tx="ekr.20100830113702.5979">aaaa bbbb cccc dddd
 </t>
 <t tx="ekr.20100830113702.5980">aaaa bbcc dddd
-</t>
-<t tx="ekr.20101009105124.6195">True (recommended):
-    Write "E" attribute bits in &lt;v&gt; elements.
-    Leo outlines will record the expansion state of all nodes.
-
-False:
-    (Good for files like unitTest.leo)
-    Suppress "E" attribute bits in &lt;v&gt; elements.
-    Only the ancestors of the presently selected node will
-    be expanded when Leo opens an outline.
 </t>
 <t tx="ekr.20101220161557.6016"># Nov. 2016: 878 tests.
 # Nov. 2017: 916 tests, 25 skipped.
