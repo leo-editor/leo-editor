@@ -1904,7 +1904,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
             if trace:
                 print('\nmini.on_key_press: %r %r' % (ev ['modifiers'], ev['key']))
             self.root.do_key(ev, 'minibufferWidget')
-    #@+node:ekr.20181129174405.1: *4* flx_minibuffer.do_enter_key (Easter Eggs)
+    #@+node:ekr.20181129174405.1: *4* flx_minibuffer.do_enter_key
     def do_enter_key(self, key, mods):
         '''
         Handle the enter key in the minibuffer.
