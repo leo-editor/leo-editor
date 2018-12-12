@@ -54,7 +54,6 @@ you see is real, and most of it is "live".
 try:
     from flexx import flx
     from pscript import RawJS
-    assert RawJS
 except Exception:
     flx = None
 import os
@@ -148,7 +147,7 @@ def info (s):
 #@+node:ekr.20181103151350.1: *3* init
 def init():
     return flx
-#@+node:ekr.20181203151314.1: *3* make_editor_function
+#@+node:ekr.20181203151314.1: *3* make_editor_function & helpers
 def make_editor_function(name, node):
     '''
     Instantiate the JS editor, either ace or CodeMirror.
@@ -156,21 +155,32 @@ def make_editor_function(name, node):
     Making this a top-level function avoids the need to create a common
     base class that only defines this as a method.
     '''
+    if use_ace:
+        editor = make_ace_editor(name, node)
+    else:
+        editor = make_cm_editor(name, node)
+    make_js_bindings(editor, name, node)
+    return editor
+#@+node:ekr.20181212051103.1: *4* function: make_ace_editor
+def make_ace_editor(name, node):
+    '''Return an instance of the ace editor.'''
     # pylint: disable=undefined-variable
         # window looks undefined.
     global window 
-    if use_ace:
-        ace = window.ace.edit(node, 'editor')
-        ace.navigateFileEnd()  # otherwise all lines highlighted
-        ace.setTheme("ace/theme/solarized_dark")
-        if name == 'body':
-            ace.getSession().setMode("ace/mode/python")
-                # This sets soft tabs.
-        if name == 'minibuffer':
-            pass ### Disable line numbers. 
-        return ace
-    #
-    # Use CodeMirror
+    ace = window.ace.edit(node, 'editor')
+    ace.navigateFileEnd()  # otherwise all lines highlighted
+    ace.setTheme("ace/theme/solarized_dark")
+    if name == 'body':
+        ace.getSession().setMode("ace/mode/python")
+            # This sets soft tabs.
+    if name == 'minibuffer':
+        pass ### Disable line numbers.
+    return ace
+#@+node:ekr.20181212051213.1: *4* function: make_cm_editor
+def make_cm_editor(name, node):
+    '''Return a new instance of the CodeMirror editor.'''
+    # pylint: disable=undefined-variable
+        # window looks undefined.
     options = dict(
         value='',
         mode='python' if name == 'body' else None,
@@ -186,6 +196,19 @@ def make_editor_function(name, node):
         readOnly=False,
     )
     return window.CodeMirror(node, options)
+#@+node:ekr.20181212051413.1: *4* function: make_js_bindings
+def make_js_bindings(editor, name, node):
+    
+    if 0:
+        RawJS("""\
+        
+document.getElementById("demo").onkeypress = function() {myFunction()};
+
+function myFunction() {
+    document.getElementById("demo").style.backgroundColor = "red";
+}
+
+""")
 #@+node:ekr.20181113041410.1: *3* suppress_unwanted_log_messages (not used)
 def suppress_unwanted_log_messages():
     '''
