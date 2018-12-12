@@ -1166,11 +1166,6 @@ class LeoBrowserGui(leoGui.NullGui):
         '''Insert the key given by event in location i of widget event.w.'''
         # Mysterious...
         assert False, g.callers()
-        
-    def alert(self, c, message):
-        print('')
-        print('Alert:', message)
-        print('')
 
     #@+others
     #@+node:ekr.20181206153033.1: *4* gui.createLeoFrame
