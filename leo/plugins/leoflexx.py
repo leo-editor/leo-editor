@@ -159,11 +159,11 @@ def make_editor_function(name, node):
         editor = make_ace_editor(name, node)
     else:
         editor = make_cm_editor(name, node)
-    make_js_bindings(editor, name, node)
     return editor
 #@+node:ekr.20181212051103.1: *4* function: make_ace_editor
 def make_ace_editor(name, node):
     '''Return an instance of the ace editor.'''
+    # https://ace.c9.io/#nav=api
     # pylint: disable=undefined-variable
         # window looks undefined.
     global window 
@@ -196,19 +196,6 @@ def make_cm_editor(name, node):
         readOnly=False,
     )
     return window.CodeMirror(node, options)
-#@+node:ekr.20181212051413.1: *4* function: make_js_bindings
-def make_js_bindings(editor, name, node):
-    
-    if 0:
-        RawJS("""\
-        
-document.getElementById("demo").onkeypress = function() {myFunction()};
-
-function myFunction() {
-    document.getElementById("demo").style.backgroundColor = "red";
-}
-
-""")
 #@+node:ekr.20181113041410.1: *3* suppress_unwanted_log_messages (not used)
 def suppress_unwanted_log_messages():
     '''
@@ -451,6 +438,10 @@ class LeoBrowserApp(flx.PyComponent):
         self.set_body_text()
         self.set_status()
         self.redraw(c.p)
+        # Set the JS event handlers.
+        w.body.finish_create()
+        w.log.finish_create()
+        w.minibuffer.finish_create()
         # Init the focus. It's debatable...
         if 0:
             self.gui.set_focus(c, c.frame.tree)
@@ -1591,6 +1582,27 @@ class JS_Editor(flx.Widget):
             self.editor.refresh()
     
     #@+others
+    #@+node:ekr.20181212052716.1: *4* jse.finish_create
+    @flx.action
+    def finish_create(self, *events):
+        print('JS_Editor.finish_create', self.name)
+        if 0: # Testing.
+            if self.name == 'body':
+                RawJS("""
+                alert("body");
+                var editor = document.getElementById("editor");
+                alert(editor)
+                """)
+            elif self.name == 'log':
+                 RawJS("""alert("log");""")
+            else:
+                RawJS("""alert("minibuffer");""")
+            
+        # document.getElementById("editor").onkeypress = function() {on_key_press()};
+
+        # function on_key_press() {
+            # alert("on key press");
+        # }
     #@+node:ekr.20181202075105.1: *4* jse.Clicks
     @flx.reaction('pointer_click')
     def on_click(self, *events):
