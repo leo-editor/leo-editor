@@ -85,13 +85,14 @@ debug_focus = False # True: put 'focus' in g.app.debug.
 debug_keys = False # True: put 'keys' in g.app.debug.
 #
 # Other switches: may be deleted.
+debug = False
+    # For whatever traces are interesting at a particular time.
 debug_events = False
 debug_redraw = False
-debug_select = False
 debug_startup = False
 debug_tree = False
 use_ace = True # False: use Code Mirror.
-warn_about_code = True # True: raise alert on startup about pre-alpha code.
+warn_about_code = False # True: raise alert on startup about pre-alpha code.
 
 # print('\nuse_ace', use_ace, '\n')
 #@-<< leoflexx: switches and other globals >>
@@ -241,13 +242,11 @@ class API_Wrapper (leoFrame.StringTextWrapper):
     #@+node:ekr.20181128101421.1: *4* API_Wrapper.Selection Setters
     def finish_set_insert(self, tag):
         '''Common helper for selection setters.'''
-        trace = debug_select and not g.unitTesting
-        if trace:
-            print('%s: %s insert_point: %s' % (self.tag, tag, self.ins))
+        if debug:
+            print('%s: %s: %s %r' % (self.tag, tag, self.ins, self.sel)) # debug_select
         self.flx_wrapper().set_insert_point(self.ins, self.sel)
 
     def seeInsertPoint(self):
-        # print(self.tag, 'seeInsertPoint')
         self.flx_wrapper().see_insert_point()
 
     def selectAllText(self, insert=None):
@@ -280,18 +279,14 @@ class API_Wrapper (leoFrame.StringTextWrapper):
 
     def finish_setter(self, tag):
         '''The common setter code.'''
-        trace = debug_keys and not g.unitTesting
         c = self.c
         # At present, self.name is always 'body'.
-        if debug_keys:
-            print('%s: %s: before: len(self.s): %s ins: %s sel: %r' % (
-                self.tag, tag, len(self.s), self.ins, self.sel))
         if self.name == 'body':
             c.p.v.setBodyString(self.s)
                 # p.b = self.s will cause an unbounded recursion.
-        if trace:
-             print('%s: %s:  after: len(self.s): %s ins: %s sel: %r' % (
-                self.tag, tag, len(self.s), self.ins, self.sel))
+        if debug:
+            print('%s: %s:  len(self.s): %s ins: %s sel: %r' % (
+                self.tag, tag, len(self.s), self.ins, self.sel)) # debug_focus
         if not g.unitTesting:
             self.flx_wrapper().set_text(self.s)
             self.flx_wrapper().set_insert_point(self.ins)
@@ -413,9 +408,8 @@ class LeoBrowserApp(flx.PyComponent):
         self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
             # This is likely the only data that ever will be needed.
         if 0:
-            t2 = time.clock()
             print('app.create_all_data: %5.3f sec. %s entries' % (
-                (t2-t1), len(list(self.gnx_to_vnode.keys()))))
+                (time.clock()-t1), len(list(self.gnx_to_vnode.keys()))))
         self.test_round_trip_positions()
     #@+node:ekr.20181124133513.1: *5* app.finish_create
     @flx.action
@@ -443,8 +437,6 @@ class LeoBrowserApp(flx.PyComponent):
         # Monkey-patch the FindTabManager
         c.findCommands.minibuffer_mode = True
         c.findCommands.ftm = g.NullObject()
-        # Monkey-patch leoTree.select
-        ### c.frame.tree.select = self.select
         # Init the log, body, status line and tree.
         g.app.gui.writeWaitingLog2()
         self.set_body_text()
@@ -497,9 +489,7 @@ class LeoBrowserApp(flx.PyComponent):
         Will be called *in addition* to any inner key handlers,
         unless the inner key handler calls e.preventDefault()
         '''
-        trace = debug_keys and not g.unitTesting
-        if trace:
-            g.trace('=====', self.tag, g.callers(6))
+        # debug_keys
         c = self.c
         browser_wrapper = getattr(c.frame, ivar)
             # Essential: there is no way to pass the actual wrapper.
@@ -560,8 +550,11 @@ class LeoBrowserApp(flx.PyComponent):
 
     @flx.action
     def set_body_text(self):
-        c, w = self.c, self.main_window
-        w.body.set_text(c.p.b)
+        ### c, w = self.c, self.main_window
+        ### w.body.set_text(c.p.b)
+        c = self.c
+        c.frame.body.wrapper.setAllText(c.p.b)
+            ### Using the wrapper sets the text *and* the insert point and selection range.
 
     @flx.action
     def set_status(self):
@@ -572,15 +565,16 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181202074931.1: *4* app.action.update_body
     @flx.action
     def update_body(self, text, row, col):
-
-        trace = debug_keys and not g.unitTesting
+        '''
+        Update the wrapper's text, ins & sel after a click at the given flx.Widget row & col.
+        '''
         c = self.c
         w = c.frame.body.wrapper
         assert isinstance(w, API_Wrapper), repr(w)
         i = g.convertRowColToPythonIndex(text, row, col, lines=None)
-        if trace:
-            print('%s: update_body row: %s col: %s => index: %s len(text): %s' % (
-                self.tag, row, col, i, len(text)), g.callers()) # g.truncate(text, 60)
+        if debug:
+            print('%s: update_body: len(text): %3s row: %s col: %s => ins: %s' % (
+                self.tag, len(text), row, col, i)) # debug_select
         w.s = text
         w.ins = i
         w.sel = i, i
@@ -607,8 +601,7 @@ class LeoBrowserApp(flx.PyComponent):
             return
         #
         # Profile times when all nodes are expanded.
-        if 0:
-            self.test_full_outline(p)
+            # self.test_full_outline(p)
         #
         # Redraw only the visible nodes.
         t1 = time.clock()
@@ -765,13 +758,6 @@ class LeoBrowserApp(flx.PyComponent):
     def edit_headline_completer(self, headline):
         g.trace(headline)
     #@+node:ekr.20181124095316.1: *4* app.Selecting...
-    #@+node:ekr.20181213065518.1: *5* app.select (override leoTree.select) NOT USED
-    def select (self, p):
-        
-        c = self.c
-        g.trace(self.tag, p and p.h)
-        g.trace(self.tag, c.frame.body.wrapper)
-        c.frame.tree.select(p)
     #@+node:ekr.20181111204659.1: *5* app.p_to_ap (updates app.gnx_to_vnode)
     def p_to_ap(self, p):
         '''
@@ -807,18 +793,12 @@ class LeoBrowserApp(flx.PyComponent):
         
         Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
         '''
-        trace = debug_select and not g.unitTesting
         w = self.main_window
         ap = self.p_to_ap(p)
         # Be careful during startup.
         if w and w.tree:
-            if trace:
-                c = self.c
-                body = c.frame.body.wrapper
-                print('%s: action.select_p: %s' % (self.tag, p.h))
-                print('%s: select_p: len(body): %s ins: %s sel: %r' % (
-                    self.tag, len(body.s), body.ins, body.sel))
             w.tree.set_ap(ap)
+            self.restore_body_focus()
     #@+node:ekr.20181111202747.1: *5* app.action.select_ap
     @flx.action
     def select_ap(self, ap):
@@ -836,6 +816,21 @@ class LeoBrowserApp(flx.PyComponent):
         w.tree.select_ap(ap)
         c.frame.tree.super_select(p)
             # call LeoTree.select, but not self.select_p.
+    #@+node:ekr.20181213094816.1: *5* app.restore_body_focus
+    def restore_body_focus(self):
+        '''
+        Restore focus, insert point and selection range in the flx.body Widget.
+        
+        This happens when executing a minibuffer command and when switching nodes.
+        '''
+        c = self.c
+        body = c.frame.body.wrapper
+        w = self.root.main_window.body
+        if debug:
+            print('%s: restore_body_focus: len(body): %s ins: %s sel: %r' % (
+                self.tag, len(body.s), body.ins, body.sel)) # debug_focus
+        w.set_insert_point(body.ins, body.sel)
+        w.set_focus()
     #@+node:ekr.20181122132009.1: *4* app.Testing...
     #@+node:ekr.20181111142921.1: *5* app.action: do_command & helpers
     @flx.action
@@ -998,8 +993,11 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command (to do: tab completion)
     def execute_minibuffer_command(self, commandName, char, mods):
         '''Execute a minibuffer command.'''
-        # This code is all a hack.
-        # It is a copy of k.callAltXFunction
+        #
+        # First, restore focus and selection range in the body.
+        self.restore_body_focus()
+        #
+        # This code is a hack. It is a copy of k.callAltXFunction
         c, k = self.c, self.c.k
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
             # Same as in app.do_key.
@@ -1614,6 +1612,7 @@ class JS_Editor(flx.Widget):
             # self.editor.node is undefined.
             
             def callback():
+                # pylint: disable=undefined-variable
                 alert('KEY PRESSED')
 
             self._addEventListener(
@@ -1651,11 +1650,9 @@ class JS_Editor(flx.Widget):
     #@+node:ekr.20181202075105.1: *4* jse.Clicks
     @flx.reaction('pointer_click')
     def on_click(self, *events):
-        trace = debug_events and not g.unitTesting
-        tag = self.name.upper()
         for ev in events:
             editor = self.editor
-            self.editor.focus() ###
+            self.editor.focus()
             selector = editor.selection if use_ace else editor
             text = editor.getValue()
             cursor = selector.getCursor()
@@ -1663,13 +1660,6 @@ class JS_Editor(flx.Widget):
                 row, col = cursor['row'], cursor['column']
             else:
                 row, col = cursor['line'], cursor['ch']
-            if trace:
-                editor = self.editor
-                selector = editor.selection if use_ace else editor
-                print('')
-                print(tag, ': on_click')
-                print('  text:', repr(text))
-                print('cursor:', row, col)
             if self.name == 'body':
                 self.root.update_body(text, row, col)
     #@+node:ekr.20181121072246.1: *4* jse.Keys
@@ -1686,7 +1676,6 @@ class JS_Editor(flx.Widget):
     @flx.reaction('key_press')
     def on_key_press(self, *events):
         # The JS editor has already** handled the key!
-        trace = (debug_keys or debug_events) and not g.unitTesting
         tag = self.name.upper()
         for ev in events:
             editor = self.editor
@@ -1695,9 +1684,10 @@ class JS_Editor(flx.Widget):
             cursor = selector.getCursor()
             if use_ace:
                 row, col = cursor['row'], cursor['column']
+                row = max(0, row-1)
             else:
                 row, col = cursor['line'], cursor['ch']
-            if trace:
+            if debug: # debug_keys.
                 print('')
                 print(tag, ': on_key_press', repr(ev ['modifiers']), repr(ev['key']))
                 print('  text:', repr(text))
@@ -1712,15 +1702,14 @@ class JS_Editor(flx.Widget):
                 self.root.update_body(text, row, col)
     #@+node:ekr.20181201081444.1: *4* jse.should_be_leo_key
     def should_be_leo_key(self, ev):
-        trace = (debug_keys and debug_events) and not g.unitTesting
         key, mods, tag = ev['key'], ev['modifiers'], 'JSE.should_be_leo_key:'
         #
         # The widget handles F-keys.
         if not mods and key.startswith('F'):
-            if trace: print(tag, 'Send F-Keys to body', repr(mods), repr(key))
+            if 0: print(tag, 'Send F-Keys to body', repr(mods), repr(key))
             return False
         if 1: ### Experimental.
-            if trace: print(tag, repr(mods), repr(key))
+            if 0: print(tag, repr(mods), repr(key))
             return True
         else:
             mods2 = mods
@@ -1730,14 +1719,14 @@ class JS_Editor(flx.Widget):
             # Send only Ctrl-Arrow keys to body.
             if mods2 == ['Ctrl'] and key in ('RtArrow', 'LtArrow', 'UpArrow', 'DownArrow'):
                 # This never fires: Neither editor widget emis Ctrl/Arrow keys or Alt-Arrow keys.
-                if trace: print(tag, 'Arrow key: send to to body', repr(mods), repr(key))
+                if 0: print(tag, 'Arrow key: send to to body', repr(mods), repr(key))
                 return False
             #
             # Leo should handle all other modified keys.
             if mods2:
-                if trace: print(tag, '  modified: send to Leo', repr(mods), repr(key))
+                if 0: print(tag, '  modified: send to Leo', repr(mods), repr(key))
             else:
-                if trace: print(tag, 'unmodified: send to Body', repr(mods), repr(key))
+                if 0: print(tag, 'unmodified: send to Body', repr(mods), repr(key))
             return mods
     #@-others
 #@+node:ekr.20181104082144.1: *3* class LeoFlexxBody (JS_Editor)
@@ -1767,9 +1756,8 @@ class LeoFlexxBody(JS_Editor):
         
     @flx.action
     def insert(self, s):
-        trace = debug_keys and not g.unitTesting
-        if trace:
-            print(self.tag, 'insert', repr(s))
+        if debug:
+            print(self.tag, 'insert', repr(s)) # debug_select.
         if use_ace:
             self.editor.insert(s)
         else:
@@ -1777,23 +1765,22 @@ class LeoFlexxBody(JS_Editor):
 
     @flx.action
     def select_all_text(self):
-        if debug_keys: print(self.tag, 'select_all_text')
+        if 0: print(self.tag, 'select_all_text') # debug_select.
         
     @flx.action
     def set_focus(self):
-        trace = debug_focus and not g.unitTesting
-        if trace: print(self.tag, 'set_focus')
+        if debug:
+            print(self.tag, 'set_focus') # debug_focus
         self.editor.focus()
 
     @flx.action
     def set_insert_point(self, insert, sel):
-        trace = debug_keys and not g.unitTesting
         s = self.editor.getValue()
         row, col = g.convertPythonIndexToRowCol(s, insert)
         row = max(0, row-1)
-            # Bug fix: 2018/12/13.
-        if trace: print('%s: set_insert_point: i: %s len(s): %s row: %s col: %s' % (
-            self.tag, insert, len(s), row, col))
+        if debug:
+            print('%s: set_insert_point: i: %s = (%s, %s)' % (
+                self.tag, str(insert).ljust(3), row, col)) # debug_focus, debug_select.
         if use_ace:
             self.editor.moveCursorTo(row, col)
         else:
@@ -1802,12 +1789,12 @@ class LeoFlexxBody(JS_Editor):
     @flx.action
     def set_selection_range(self, i, j):
         print(self.tag, 'set_selection_range: NOT READY', i, j)
-        ### print(self.editor.getSession())
 
     @flx.action
     def set_text(self, s):
         '''Set the entire text'''
-        # print('%s: set_text: len(s): %s' % (self.tag, len(s)))
+        if debug:
+            print('%s: set_text: len(s): %s' % (self.tag, len(s))) # debug_select
         self.editor.setValue(s)
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog (JS_Editor)
@@ -2124,7 +2111,6 @@ class LeoFlexxTree(flx.Widget):
             }
         '''
         trace_redraw = debug_redraw and not g.unitTesting
-        trace_select = debug_select and not g.unitTesting
         tag = '%s: redraw_with_dict' % self.tag
         assert redraw_dict
         self.clear_tree()
@@ -2135,9 +2121,10 @@ class LeoFlexxTree(flx.Widget):
             if trace_redraw:
                 print('  item', repr(item['headline']))
             self.create_item_with_parent(item, self.tree)
+        #
         # Select c.p.
-        if trace_select:
-            print('%s: select: %s' % (tag, redraw_dict['c.p']['headline']))
+        # print('%s: select: %s' % (tag, redraw_dict['c.p']['headline']))
+            # debug_select
         self.select_ap(redraw_dict['c.p'])
     #@+node:ekr.20181124194248.1: *6* tree.create_item_with_parent
     def create_item_with_parent(self, item, parent):
