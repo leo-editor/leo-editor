@@ -282,9 +282,9 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         if self.name == 'body':
             c.p.v.setBodyString(self.s)
                 # p.b = self.s will cause an unbounded recursion.
-        if debug:
+        if debug or debug_focus:
             print('%s: %s:  len(self.s): %s ins: %s sel: %r' % (
-                self.tag, tag, len(self.s), self.ins, self.sel)) # debug_focus
+                self.tag, tag, len(self.s), self.ins, self.sel)) 
         if not g.unitTesting:
             self.flx_wrapper().set_text(self.s)
             self.flx_wrapper().set_insert_point(self.ins)
@@ -588,7 +588,6 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         p = p or c.p
         redrawer = self.fast_redrawer
@@ -621,9 +620,8 @@ class LeoBrowserApp(flx.PyComponent):
             # if redraw_instructions:
                 # if debug_changed: print('app.redraw: C CHANGED')
                 # c.setChanged()
-        t2 = time.clock()
-        if trace:
-            g.trace('%5.3f sec.' % (t2-t1))
+        if 0:
+            g.trace('%5.3f sec.' % (time.clock()-t1))
         #
         # Move to the next redraw generation.
         self.old_flattened_outline = new_flattened_outline
@@ -744,7 +742,7 @@ class LeoBrowserApp(flx.PyComponent):
         '''Simulate editing the headline in the minibuffer.'''
         c, w = self.c, self.root.main_window
         mb = w.minibuffer
-        g.trace(mb, c.p.h)
+        if 0: g.trace(mb, c.p.h)
         mb.set_text('Enter Headline: ')
         mb.set_focus()
         
@@ -819,9 +817,9 @@ class LeoBrowserApp(flx.PyComponent):
         c = self.c
         body = c.frame.body.wrapper
         w = self.root.main_window.body
-        if debug:
+        if debug or debug_focus:
             print('%s: restore_body_focus: len(body): %s ins: %s sel: %r' % (
-                self.tag, len(body.s), body.ins, body.sel)) # debug_focus
+                self.tag, len(body.s), body.ins, body.sel))
         w.set_insert_point(body.ins, body.sel)
         w.set_focus()
     #@+node:ekr.20181122132009.1: *4* app.Testing...
@@ -843,11 +841,12 @@ class LeoBrowserApp(flx.PyComponent):
         func = getattr(self, 'do_'+command, None)
         if func:
             func()
-        else:
-            g.trace('===== unknown command: %r' % command)
-            self.execute_minibuffer_command(command, key, mods)
-            c.k.keyboardQuit()
-            w.body.set_focus()
+            return
+        #
+        # Pass all other commands to Leo.
+        self.execute_minibuffer_command(command, key, mods)
+        c.k.keyboardQuit()
+        w.body.set_focus()
     #@+node:ekr.20181210054910.1: *6* app.do_cls
     def do_cls(self):
         c = self.c
@@ -876,7 +875,6 @@ class LeoBrowserApp(flx.PyComponent):
     def end_find(self, pattern):
         c = self.c
         fc = c.findCommands
-        g.trace('-----', pattern)
         
         class DummyFTM:
             def getFindText(self):
@@ -919,7 +917,6 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181210055648.1: *6* app.do_head & helpers
     def do_head(self):
         c = self.c
-        g.trace('=====')
         event = leoGui.LeoKeyEvent(c,
             binding = '',
             char = '',
@@ -938,11 +935,11 @@ class LeoBrowserApp(flx.PyComponent):
     def end_set_headline(self, h):
         c, k, p, u = self.c, self.c.k, self.c.p, self.c.undoer
         w = self.root.main_window
-        g.trace('-----', p.v.h, '==>', h)
+        ### g.trace('-----', p.v.h, '==>', h)
         # Undoably set the head. Like leoTree.onHeadChanged, called LeoTree.endEditLabel.
         oldHead = p.h
         p.v.setHeadString(h)
-        g.trace(c.rootPosition())
+        ### g.trace(c.rootPosition())
         if True: # was changed:
             undoType = 'Typing'
             undoData = u.beforeChangeNodeContents(p, oldHead=oldHead)
@@ -1230,9 +1227,8 @@ class LeoBrowserGui(leoGui.NullGui):
         return False
     #@+node:ekr.20181119153936.1: *4* gui.focus...
     def get_focus(self, *args, **kwargs):
-        trace = debug_focus and not g.unitTesting
         w = self.focusWidget
-        if trace:
+        if debug_focus:
             w_tag = w.tag if w else "NO WIDGET"
             print('%s: get_focus: %s %s' % (self.tag, w_tag,  g.callers(2)))
         return w
@@ -1339,7 +1335,6 @@ class LeoBrowserLog(leoFrame.NullLog):
     #@+node:ekr.20181120063043.1: *4* log_wrapper.setFocus
     def setFocus(self):
         w = self.root.main_window
-        # g.trace('(log wrapper)')
         w.log.set_focus()
     #@+node:ekr.20181120063111.1: *4* log_wrapper.put & putnl
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
@@ -1383,9 +1378,8 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
 
     # Overrides.
     def setFocus(self):
-        # g.trace('===== (minibuffer wrapper)')
         self.root.main_window.minibuffer.set_focus()
-        
+
     #@+others
     #@+node:ekr.20181208062449.1: *4* mini.called by k.minibuffer
     # Override the methods called by k.minibuffer:
@@ -1462,7 +1456,6 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
             w.status_line.put2(s, bg, fg)
     #@+node:ekr.20181119154422.1: *4* status_line_wrapper.setFocus
     def setFocus(self):
-        # g.trace('(status_line)', g.callers())
         self.root.status_line.set_focus()
     #@+node:ekr.20181119042937.1: *4* status_line_wrapper.update
     def update(self, body_text='', insert_point=0):
@@ -1533,7 +1526,6 @@ class LeoBrowserTree(leoFrame.NullTree):
     #@+node:ekr.20181120063844.1: *4* tree_wrapper.setFocus
     def setFocus(self):
         w = self.root.main_window
-        # g.trace('(tree wrapper)', g.callers())
         w.tree.set_focus()
     #@-others
 #@+node:ekr.20181119094122.1: *3* class TracingNullObject
@@ -1756,8 +1748,8 @@ class LeoFlexxBody(JS_Editor):
         
     @flx.action
     def set_focus(self):
-        if debug:
-            print(self.tag, 'set_focus') # debug_focus
+        if debug or debug_focus:
+            print(self.tag, 'set_focus')
         self.editor.focus()
 
     @flx.action
@@ -1765,9 +1757,9 @@ class LeoFlexxBody(JS_Editor):
         s = self.editor.getValue()
         row, col = g.convertPythonIndexToRowCol(s, insert)
         row = max(0, row-1)
-        if debug:
+        if debug or debug_focus:
             print('%s: set_insert_point: i: %s = (%s, %s)' % (
-                self.tag, str(insert).ljust(3), row, col)) # debug_focus, debug_select.
+                self.tag, str(insert).ljust(3), row, col))
         if use_ace:
             self.editor.moveCursorTo(row, col)
         else:
@@ -1781,7 +1773,7 @@ class LeoFlexxBody(JS_Editor):
     def set_text(self, s):
         '''Set the entire text'''
         if debug:
-            print('%s: set_text: len(s): %s' % (self.tag, len(s))) # debug_select
+            print('%s: set_text: len(s): %s' % (self.tag, len(s)))
         self.editor.setValue(s)
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog (JS_Editor)
@@ -1814,8 +1806,8 @@ class LeoFlexxLog(JS_Editor):
         
     @flx.action
     def set_focus(self):
-        trace = debug_focus and not g.unitTesting
-        if trace: print(self.tag, 'ace.focus()')
+        if debug_focus:
+            print(self.tag, 'ace.focus()')
         self.editor.focus()
     #@-others
 #@+node:ekr.20181104082130.1: *3* class LeoFlexxMainWindow
@@ -2205,8 +2197,8 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181120063735.1: *4* flx_tree.Focus
     @flx.action
     def set_focus(self):
-        trace = debug_focus and not g.unitTesting
-        if trace: print(self.tag, 'self.node.ace.focus()')
+        if debug_focus:
+            print(self.tag, 'self.node.ace.focus()')
         self.node.focus()
     #@+node:ekr.20181123165819.1: *4* flx_tree.Incremental Drawing...
     # This are not used, at present, but they may come back.
