@@ -79,6 +79,8 @@ import leo.core.leoTest as leoTest
 #@-<< leoflexx: imports >>
 #@+<< leoflexx: switches and other globals >>
 #@+node:ekr.20181202105852.1: ** << leoflexx: switches and other globals >>
+warn_about_changed = False
+    # True: raise alert about changed outline.
 warn_about_code = True
     # True: raise alert on startup about pre-alpha code.
     # Should be set for all pushed code.
@@ -86,7 +88,7 @@ debug = False
     # Enable traces of interest at the moment.
 debug_focus = False
     # True: put 'focus' in g.app.debug.
-debug_keys = True
+debug_keys = False
     # True: put 'keys' in g.app.debug.
 debug_startup = False
     # Debug startup code.
@@ -537,7 +539,6 @@ class LeoBrowserApp(flx.PyComponent):
             g.app.debug = old_debug
         #@-<< create key_event >>
         c.k.masterKeyHandler(key_event)
-       
     #@+node:ekr.20181207080933.1: *4* app.action.set_body_text & set_status
     # These must be separate because they are called from the tree logic.
 
@@ -555,22 +556,6 @@ class LeoBrowserApp(flx.PyComponent):
         lt, rt = c.frame.statusLine.update(c.p.b, 0)
         w.status_line.update(lt, rt)
         
-    #@+node:ekr.20181202074931.1: *4* app.action.update_body
-    @flx.action
-    def update_body(self, text, row, col):
-        '''
-        Update the wrapper's text, ins & sel after a click at the given flx.Widget row & col.
-        '''
-        c = self.c
-        w = c.frame.body.wrapper
-        assert isinstance(w, API_Wrapper), repr(w)
-        i = g.convertRowColToPythonIndex(text, row, col, lines=None)
-        if debug:
-            print('%s: update_body: len(text): %3s row: %s col: %s => ins: %s' % (
-                self.tag, len(text), row, col, i)) # debug_select
-        w.s = text
-        w.ins = i
-        w.sel = i, i
     #@+node:ekr.20181122132345.1: *4* app.Drawing...
     #@+node:ekr.20181113042549.1: *5* app.action.redraw
     @flx.action
@@ -779,12 +764,14 @@ class LeoBrowserApp(flx.PyComponent):
         
         Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
         '''
+        c = self.c
         w = self.main_window
         ap = self.p_to_ap(p)
         # Be careful during startup.
         if w and w.tree:
             w.tree.set_ap(ap)
-            self.restore_body_focus()
+            body = c.frame.body.wrapper
+            w.body.set_insert_point(body.ins, body.sel)
     #@+node:ekr.20181111202747.1: *5* app.action.select_ap
     @flx.action
     def select_ap(self, ap):
@@ -802,21 +789,6 @@ class LeoBrowserApp(flx.PyComponent):
         w.tree.select_ap(ap)
         c.frame.tree.super_select(p)
             # call LeoTree.select, but not self.select_p.
-    #@+node:ekr.20181213094816.1: *5* app.restore_body_focus (should synch)
-    def restore_body_focus(self):
-        '''
-        Restore focus, insert point and selection range in the flx.body Widget.
-        
-        This happens when executing a minibuffer command and when switching nodes.
-        '''
-        c = self.c
-        body = c.frame.body.wrapper
-        w = self.root.main_window.body
-        if debug: # debug_focus
-            print('%s: restore_body_focus: len(body): %s ins: %s sel: %r' % (
-                self.tag, len(body.s), body.ins, body.sel))
-        w.set_insert_point(body.ins, body.sel)
-        w.set_focus()
     #@+node:ekr.20181122132009.1: *4* app.Testing...
     #@+node:ekr.20181111142921.1: *5* app.action: do_command & helpers
     @flx.action
@@ -977,13 +949,26 @@ class LeoBrowserApp(flx.PyComponent):
         self.run_all_unit_tests()
     #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command (to do: tab completion)
     def execute_minibuffer_command(self, commandName, char, mods):
-        '''Execute a minibuffer command.'''
+        '''
+        Start the execution of a minibuffer command by calling the flx.body.sync_before_command action.
+        
+        sync_before_command calls app.do_minibuffer_command to complete the command.
+        '''
+        g.trace('=====', commandName)
+        w = self.root.main_window
+        w.body.sync_before_command({'commandName': commandName, 'char': char, 'mods': mods})
+            
+    @flx.action
+    def do_minibuffer_command(self, d):
+        '''Complete the minibuffer command.'''
+        c = self.c
+        k, w = c.k, c.frame.body.wrapper
         #
-        # First, restore focus and selection range in the body.
-        self.restore_body_focus()
+        # Update Leo's internal data structures.
+        w.ins, w.sel, w.s = d['ins'], d['sel'], d['s']
         #
-        # This code is a hack. It is a copy of k.callAltXFunction
-        c, k = self.c, self.c.k
+        # Do the minibuffer command: like k.callAltXFunction.
+        commandName, char, mods = d['commandName'], d['char'], d['mods']
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
             # Same as in app.do_key.
         g.trace('=====', commandName, binding)
@@ -1567,6 +1552,15 @@ class JS_Editor(flx.Widget):
         self.name = name
         self.tag = '(flx.%s)' % name
         self.editor = None # Now done in subclasses.
+        
+    @flx.action
+    def see_insert_point(self):
+        if 0: print(self.tag, 'see_insert_point')
+        
+    @flx.action
+    def set_focus(self):
+        if debug_focus: print(self.tag, 'set_focus')
+        self.editor.focus()
 
     @flx.reaction('size')
     def __on_size(self, *events):
@@ -1576,21 +1570,6 @@ class JS_Editor(flx.Widget):
             self.editor.refresh()
     
     #@+others
-    #@+node:ekr.20181202075105.1: *4* jse.Clicks
-    @flx.reaction('pointer_click')
-    def on_click(self, *events):
-        for ev in events:
-            editor = self.editor
-            self.editor.focus()
-            selector = editor.selection if use_ace else editor
-            text = editor.getValue()
-            cursor = selector.getCursor()
-            if use_ace:
-                row, col = cursor['row'], cursor['column']
-            else:
-                row, col = cursor['line'], cursor['ch']
-            if self.name == 'body':
-                self.root.update_body(text, row, col)
     #@+node:ekr.20181121072246.1: *4* jse.Keys
     @flx.emitter
     def key_press(self, e):
@@ -1604,55 +1583,124 @@ class JS_Editor(flx.Widget):
     @flx.reaction('key_press')
     def on_key_press(self, *events):
         # The JS editor has already** handled the key!
-        tag = self.name.upper()
         for ev in events:
-            editor = self.editor
-            selector = editor.selection if use_ace else editor
-            text = editor.getValue()
-            cursor = selector.getCursor()
-            if use_ace:
-                row, col = cursor['row'], cursor['column']
-                row = max(0, row-1)
-            else:
-                row, col = cursor['line'], cursor['ch']
-            if debug_keys:
-                print('%s: on_key_press: %r %r' % (tag, ev ['modifiers'], ev['key']))
+            ###
+                # tag = self.name.upper()
+                # text = self.get_text()
+                # cursor = self.get_cursor()
+                # text = self.get_text()
+                # editor = self.editor
+                # selector = editor.selection if use_ace else editor
+                # text = editor.getValue()
+                # cursor = selector.getCursor()
+                # if use_ace:
+                    # row, col = cursor['row'], cursor['column']
+                    # row = max(0, row-1)
+                # else:
+                    # row, col = cursor['line'], cursor['ch']
+                # if debug_keys:
+                    # print('%s: on_key_press: %r %r' % (tag, ev ['modifiers'], ev['key']))
             if self.should_be_leo_key(ev):
-                print('===== call app.do_key')
                 ivar = 'minibufferWidget' if self.name == 'minibuffer' else self.name
-                    ### Maybe do_key should do this.
                 self.root.do_key(ev, ivar)
-                return ### Expermintal.
-            if self.name == 'body':
-                self.root.update_body(text, row, col)
     #@+node:ekr.20181201081444.1: *4* jse.should_be_leo_key
     def should_be_leo_key(self, ev):
+        '''
+        Return True if Leo should handle the key.
+        Leo handles only modified keys, not F-keys or plain keys.
+        '''
         key, mods, tag = ev['key'], ev['modifiers'], 'JSE.should_be_leo_key:'
         #
         # The widget handles F-keys.
         if not mods and key.startswith('F'):
             if 0: print(tag, 'Send F-Keys to body', repr(mods), repr(key))
             return False
-        if 1: ### Experimental.
-            if 0: print(tag, repr(mods), repr(key))
-            return True
+        mods2 = mods
+        if 'Shift' in mods2:
+            mods2.remove('Shift')
+        #
+        # Send only Ctrl-Arrow keys to body.
+        if mods2 == ['Ctrl'] and key in ('RtArrow', 'LtArrow', 'UpArrow', 'DownArrow'):
+            # This never fires: Neither editor widget emis Ctrl/Arrow keys or Alt-Arrow keys.
+            if 0: print(tag, 'Arrow key: send to to body', repr(mods), repr(key))
+            return False
+        #
+        # Leo should handle all other modified keys.
+        if mods2:
+            if 0: print(tag, '  modified: send to Leo', repr(mods), repr(key))
         else:
-            mods2 = mods
-            if 'Shift' in mods2:
-                mods2.remove('Shift')
-            #
-            # Send only Ctrl-Arrow keys to body.
-            if mods2 == ['Ctrl'] and key in ('RtArrow', 'LtArrow', 'UpArrow', 'DownArrow'):
-                # This never fires: Neither editor widget emis Ctrl/Arrow keys or Alt-Arrow keys.
-                if 0: print(tag, 'Arrow key: send to to body', repr(mods), repr(key))
-                return False
-            #
-            # Leo should handle all other modified keys.
-            if mods2:
-                if 0: print(tag, '  modified: send to Leo', repr(mods), repr(key))
+            if 0: print(tag, 'unmodified: send to Body', repr(mods), repr(key))
+        return mods
+    #@+node:ekr.20181215061810.1: *4* jse.text getters
+    def get_ins(self):
+        if use_ace:
+            # d = self.editor.selection.getCursor()
+            # row, col = d ['row'], d['column']
+            # s = self.get_text()
+            # ins = g.convertRowColToPythonIndex(s, row, col)
+            ins = 0 #####
+        else:
+            print('%s: get_ins: NOT READY YET' % self.tag)
+            ins = 0
+        if debug: print('%s: get_ins: %r' % (self.tag, ins))
+        return ins
+        
+    def get_sel(self):
+        if use_ace:
+            ### get_sel: {"start":{"row":0,"column":0},"end":{"row":5,"column":0}}
+            selections = self.editor.selection.getAllRanges()
+            if selections:
+                sel = selections[0]
             else:
-                if 0: print(tag, 'unmodified: send to Body', repr(mods), repr(key))
-            return mods
+                i = self.get_ins()
+                sel = i, i
+            if debug: print('%s: get_sel: %r' % (self.tag, sel))
+            return sel
+        else:
+            print('%s: get_sel: NOT READY YET' % self.tag)
+        
+    def get_text(self):
+        editor = self.editor
+        s = editor.getValue()
+        if debug: print('%s: get_text: %s' % (self.tag, len(s)))
+        return s
+    #@+node:ekr.20181128061524.1: *4* jse.text setters (sync before incremental setters?)
+    @flx.action
+    def insert(self, s):
+        if debug:
+            print(self.tag, 'insert', repr(s)) # debug_select.
+        if use_ace:
+            self.editor.insert(s)
+        else:
+            print('flx.Body: NOT READY')
+
+    @flx.action
+    def select_all_text(self):
+        if 0: print(self.tag, 'select_all_text') # debug_select.
+
+    @flx.action
+    def set_insert_point(self, insert, sel):
+        s = self.editor.getValue()
+        row, col = g.convertPythonIndexToRowCol(s, insert)
+        row = max(0, row-1)
+        if 0:
+            print('%s: set_insert_point: i: %s = (%s, %s)' % (
+                self.tag, str(insert).ljust(3), row, col))
+        if use_ace:
+            self.editor.moveCursorTo(row, col)
+        else:
+            print('flx.wrapper: set_insert_point: NOT READY')
+
+    @flx.action
+    def set_selection_range(self, i, j):
+        print(self.tag, 'set_selection_range: NOT READY', i, j)
+
+    @flx.action
+    def set_text(self, s):
+        '''Set the entire text'''
+        if debug:
+            print('%s: set_text: len(s): %s' % (self.tag, len(s)))
+        self.editor.setValue(s)
     #@-others
 #@+node:ekr.20181104082144.1: *3* class LeoFlexxBody (JS_Editor)
 class LeoFlexxBody(JS_Editor):
@@ -1674,53 +1722,23 @@ class LeoFlexxBody(JS_Editor):
         self.editor = make_editor_function(self.name, self.node)
 
     #@+others
-    #@+node:ekr.20181128061524.1: *4* flx_body setters
+    #@+node:ekr.20181215061402.1: *4* flx_body.sync_before_command
     @flx.action
-    def see_insert_point(self):
-        if 0: print(self.tag, 'see_insert_point')
+    def sync_before_command(self, d):
+        '''
+        Add ins, sel and s keys to d, then call app.do_minibuffer_command action.
         
-    @flx.action
-    def insert(self, s):
+        These are the only getters for the JS editor widgets.
+        '''
+        d ['ins'] = str(self.get_ins())
+        d ['sel'] = [0, 0] ### self.get_sel()
+        d ['s'] = self.get_text()
         if debug:
-            print(self.tag, 'insert', repr(s)) # debug_select.
-        if use_ace:
-            self.editor.insert(s)
-        else:
-            print('flx.Body: NOT READY')
-
-    @flx.action
-    def select_all_text(self):
-        if 0: print(self.tag, 'select_all_text') # debug_select.
-        
-    @flx.action
-    def set_focus(self):
-        if debug_focus:
-            print(self.tag, 'set_focus')
-        self.editor.focus()
-
-    @flx.action
-    def set_insert_point(self, insert, sel):
-        s = self.editor.getValue()
-        row, col = g.convertPythonIndexToRowCol(s, insert)
-        row = max(0, row-1)
-        if debug:
-            print('%s: set_insert_point: i: %s = (%s, %s)' % (
-                self.tag, str(insert).ljust(3), row, col))
-        if use_ace:
-            self.editor.moveCursorTo(row, col)
-        else:
-            print('flx.wrapper: set_insert_point: NOT READY')
-
-    @flx.action
-    def set_selection_range(self, i, j):
-        print(self.tag, 'set_selection_range: NOT READY', i, j)
-
-    @flx.action
-    def set_text(self, s):
-        '''Set the entire text'''
-        if debug:
-            print('%s: set_text: len(s): %s' % (self.tag, len(s)))
-        self.editor.setValue(s)
+            print('%s: ===== sync_before_command...' % self.tag)
+            for key in d:
+                val = d.get(key)
+                print('%s: %r' % (key, len(val) if key == 's' else val))
+        self.root.do_minibuffer_command(d)
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog (JS_Editor)
 class LeoFlexxLog(JS_Editor):
@@ -1782,13 +1800,14 @@ class LeoFlexxMainWindow(flx.Widget):
             status_line = LeoFlexxStatusLine()
         #@+<< define unload action >>
         #@+node:ekr.20181206044554.1: *4* << define unload action >>
-        RawJS("""\
-        // Called from Mozilla, but not webruntime.
-        window.onbeforeunload = function(){
-            // console.log("window.onbeforeunload")
-            return "Are you sure?"
-        };
-        """)
+        if warn_about_changed:
+            RawJS("""\
+            // Called from Mozilla, but not webruntime.
+            window.onbeforeunload = function(){
+                // console.log("window.onbeforeunload")
+                return "Are you sure?"
+            };
+            """)
         #@-<< define unload action >>
         self._mutate('body', body)
         self._mutate('log', log)
