@@ -86,7 +86,7 @@ debug = False
     # Enable traces of interest at the moment.
 debug_focus = False
     # True: put 'focus' in g.app.debug.
-debug_keys = False
+debug_keys = True
     # True: put 'keys' in g.app.debug.
 debug_startup = False
     # Debug startup code.
@@ -282,7 +282,7 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         if self.name == 'body':
             c.p.v.setBodyString(self.s)
                 # p.b = self.s will cause an unbounded recursion.
-        if debug or debug_focus:
+        if debug:
             print('%s: %s:  len(self.s): %s ins: %s sel: %r' % (
                 self.tag, tag, len(self.s), self.ins, self.sel)) 
         if not g.unitTesting:
@@ -440,10 +440,6 @@ class LeoBrowserApp(flx.PyComponent):
         self.set_body_text()
         self.set_status()
         self.redraw(c.p)
-        # Set the JS event handlers.
-        w.body.finish_create()
-        w.log.finish_create()
-        w.minibuffer.finish_create()
         # Init the focus. It's debatable...
         if 0:
             self.gui.set_focus(c, c.frame.tree)
@@ -487,7 +483,6 @@ class LeoBrowserApp(flx.PyComponent):
         Will be called *in addition* to any inner key handlers,
         unless the inner key handler calls e.preventDefault()
         '''
-        # debug_keys
         c = self.c
         browser_wrapper = getattr(c.frame, ivar)
             # Essential: there is no way to pass the actual wrapper.
@@ -807,7 +802,7 @@ class LeoBrowserApp(flx.PyComponent):
         w.tree.select_ap(ap)
         c.frame.tree.super_select(p)
             # call LeoTree.select, but not self.select_p.
-    #@+node:ekr.20181213094816.1: *5* app.restore_body_focus
+    #@+node:ekr.20181213094816.1: *5* app.restore_body_focus (should synch)
     def restore_body_focus(self):
         '''
         Restore focus, insert point and selection range in the flx.body Widget.
@@ -817,7 +812,7 @@ class LeoBrowserApp(flx.PyComponent):
         c = self.c
         body = c.frame.body.wrapper
         w = self.root.main_window.body
-        if debug or debug_focus:
+        if debug: # debug_focus
             print('%s: restore_body_focus: len(body): %s ins: %s sel: %r' % (
                 self.tag, len(body.s), body.ins, body.sel))
         w.set_insert_point(body.ins, body.sel)
@@ -1581,53 +1576,6 @@ class JS_Editor(flx.Widget):
             self.editor.refresh()
     
     #@+others
-    #@+node:ekr.20181212052716.1: *4* jse.finish_create
-    @flx.action
-    def finish_create(self, *events):
-
-        # print('JS_Editor.finish_create: name: %s node: %r' % (self.name, self.node))
-
-        if 0: # Testing:
-            
-            # self.node exists because this is a flx.Widget.
-            # self.editor.node is undefined.
-            
-            def callback():
-                # pylint: disable=undefined-variable
-                alert('KEY PRESSED')
-
-            self._addEventListener(
-                self.editor,
-                "onkeypress",
-                callback,
-                capture=False,
-            )
-
-        if 0: # Testing.
-            if self.name == 'body':
-                # getElementsByClassName returns an HTML collection.
-                # HTMLTextAreaElement
-                RawJS("""
-                    var x = document.getElementsByTagName("TEXTAREA");
-                    for (var i = 0; i < x.length; i++) {
-                        x[i].onkeypress = function(){alert("KEY PRESSED")}
-                    }
-                """)
-            # elif self.name == 'log':
-                 # RawJS("""alert("log");""")
-            # else:
-                # RawJS("""alert("minibuffer");""")
-                
-    if 0: # works
-       RawJS("""
-            var x = document.getElementsByTagName("TEXTAREA");
-            var n = x.length;
-            alert(n);
-            var i;
-            for (i = 0; i < n; i++) {
-                x[i].onkeypress = function(){alert("KEY PRESSED")}
-            }
-        """)
     #@+node:ekr.20181202075105.1: *4* jse.Clicks
     @flx.reaction('pointer_click')
     def on_click(self, *events):
@@ -1647,7 +1595,8 @@ class JS_Editor(flx.Widget):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        if 0: print('===== JS_Editor.key_press: %s %r' % (self.name, ev)) # debug_keys, debug_events
+        if debug_keys:
+            print('JS_Editor.key_press: %s %r' % (self.name, ev))
         if self.should_be_leo_key(ev):
             e.preventDefault()
         return ev
@@ -1666,11 +1615,8 @@ class JS_Editor(flx.Widget):
                 row = max(0, row-1)
             else:
                 row, col = cursor['line'], cursor['ch']
-            if debug: # debug_keys.
-                print('')
-                print(tag, ': on_key_press', repr(ev ['modifiers']), repr(ev['key']))
-                print('  text:', repr(text))
-                print('cursor:', row, col)
+            if debug_keys:
+                print('%s: on_key_press: %r %r' % (tag, ev ['modifiers'], ev['key']))
             if self.should_be_leo_key(ev):
                 print('===== call app.do_key')
                 ivar = 'minibufferWidget' if self.name == 'minibuffer' else self.name
@@ -1748,7 +1694,7 @@ class LeoFlexxBody(JS_Editor):
         
     @flx.action
     def set_focus(self):
-        if debug or debug_focus:
+        if debug_focus:
             print(self.tag, 'set_focus')
         self.editor.focus()
 
@@ -1757,7 +1703,7 @@ class LeoFlexxBody(JS_Editor):
         s = self.editor.getValue()
         row, col = g.convertPythonIndexToRowCol(s, insert)
         row = max(0, row-1)
-        if debug or debug_focus:
+        if debug:
             print('%s: set_insert_point: i: %s = (%s, %s)' % (
                 self.tag, str(insert).ljust(3), row, col))
         if use_ace:
@@ -1919,11 +1865,10 @@ class LeoFlexxMiniBuffer(JS_Editor):
     def key_press(self, e):
         '''Pass *all* keys except Enter and F12 to Leo's core.'''
         # Backspace is not emitted.
-        trace = debug_keys and not g.unitTesting
         ev = self._create_key_event(e)
         key, mods = ev ['key'], ev ['modifiers']
-        if trace:
-            print('\nmini.key_press: %r %r' % (mods, key))
+        if debug_keys:
+            print('mini.key_press: %r %r' % (mods, key))
         if mods:
             e.preventDefault()
             return ev
@@ -1940,10 +1885,9 @@ class LeoFlexxMiniBuffer(JS_Editor):
     @flx.reaction('key_press')
     def on_key_press(self, *events):
         '''Pass *all* keys Leo's core.'''
-        trace = debug_keys and not g.unitTesting
         for ev in events:
-            if trace:
-                print('\nmini.on_key_press: %r %r' % (ev ['modifiers'], ev['key']))
+            if debug_keys:
+                print('mini.on_key_press: %r %r' % (ev ['modifiers'], ev['key']))
             self.root.do_key(ev, 'minibufferWidget')
     #@+node:ekr.20181129174405.1: *4* flx_minibuffer.do_enter_key
     def do_enter_key(self, key, mods):
@@ -1951,9 +1895,9 @@ class LeoFlexxMiniBuffer(JS_Editor):
         Handle the enter key in the minibuffer.
         This will only be called if the user has entered the minibuffer via a click.
         '''
-        trace = debug_keys and not g.unitTesting
         command = self.editor.getValue()
-        if trace: print('===== mini.do_enter_key', repr(command))
+        if debug_keys:
+            print('mini.do_enter_key', repr(command))
         if command.strip():
             if command.startswith('full-command:'):
                 command = command[len('full-command:'):].strip()
@@ -2259,17 +2203,17 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181120061140.1: *4* flx_tree.Key handling
     @flx.emitter
     def key_press(self, e):
-        trace = debug_keys and not g.unitTesting
         ev = self._create_key_event(e)
         f_key = not ev['modifiers'] and ev['key'].startswith('F')
-        if trace: print('\nTREE: key_press', repr(ev), 'preventDefault', not f_key)
+        if debug_keys:
+            print('flx.TREE: key_press: %r preventDefault: %s', (ev, not f_key))
         if not f_key:
             e.preventDefault()
         return ev
 
     @flx.reaction('tree.key_press')
     def on_key_press(self, *events):
-        if 0: print('===== flx.TREE.key_press')
+        if 0: print('flx.TREE.key_press')
         for ev in events:
             self.root.do_key(ev, 'tree')
     #@+node:ekr.20181121195235.1: *4* flx_tree.Selecting...
