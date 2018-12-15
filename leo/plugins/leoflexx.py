@@ -79,9 +79,9 @@ import leo.core.leoTest as leoTest
 #@-<< leoflexx: imports >>
 #@+<< leoflexx: switches and other globals >>
 #@+node:ekr.20181202105852.1: ** << leoflexx: switches and other globals >>
-warn_about_changed = True
+warn_about_changed = False
     # True: raise alert about changed outline.
-warn_about_code = True
+warn_about_code = False
     # True: raise alert on startup about pre-alpha code.
     # Should be set for all pushed code.
 #
@@ -790,6 +790,24 @@ class LeoBrowserApp(flx.PyComponent):
         w.tree.select_ap(ap)
         c.frame.tree.super_select(p)
             # call LeoTree.select, but not self.select_p.
+    #@+node:ekr.20181215154640.1: *5* app.update_body_from_dict
+    def update_body_from_dict(self, d):
+        '''Update p.b, etc, using d.'''
+        c = self.c
+        w = c.frame.body.wrapper
+        # Compute the insert point.
+        s = d['s']
+        col, row = d['ins_col'], d['ins_row'], 
+        ins = g.convertRowColToPythonIndex(s, row, col)
+        # Compute the selection range.
+        col1, row1 =  d ['sel_col1'], d ['sel_row1']
+        col2, row2 =  d ['sel_col2'], d ['sel_row2']
+        sel1 = g.convertRowColToPythonIndex(s, row1, col1)
+        sel2 = g.convertRowColToPythonIndex(s, row2, col2)
+        sel = (sel1, sel2)
+        # Update Leo's internal data structures.
+        w.ins, w.sel, w.s = ins, sel, s
+        if 1: g.trace('ins: %s sel: (%s, %s) len(s): %s' % (ins, sel[0], sel[1], len(s)))
     #@+node:ekr.20181122132009.1: *4* app.Testing...
     #@+node:ekr.20181111142921.1: *5* app.action: do_command & helpers
     @flx.action
@@ -959,24 +977,11 @@ class LeoBrowserApp(flx.PyComponent):
         '''Called from flx.body.sync_before_command to complete the minibuffer command.'''
         c = self.c
         k, w = c.k, c.frame.body.wrapper
-        # Compute the insert point.
-        s = d['s']
-        col, row = d['ins_col'], d['ins_row'], 
-        ins = g.convertRowColToPythonIndex(s, row, col)
-        # Compute the selection range.
-        col1, row1 =  d ['sel_col1'], d ['sel_row1']
-        col2, row2 =  d ['sel_col2'], d ['sel_row2']
-        sel1 = g.convertRowColToPythonIndex(s, row1, col1)
-        sel2 = g.convertRowColToPythonIndex(s, row2, col2)
-        sel = (sel1, sel2)
-        # Update Leo's internal data structures.
-        w.ins, w.sel, w.s = ins, sel, s
+        self.update_body_from_dict(d)
         # Do the minibuffer command: like k.callAltXFunction.
         commandName, char, mods = d['commandName'], d['char'], d['mods']
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
             # Same as in app.do_key.
-        if 0:
-            g.trace('===== %s ins: %s, sel: %s, len(s): %s' % (commandName, ins, sel, len(s)))
         event = g.Bunch(
             c=c,
             char=char,
@@ -1487,6 +1492,20 @@ class LeoBrowserTree(leoFrame.NullTree):
     #@+node:ekr.20181116081421.1: *4* tree_wrapper.select, super_select, endEditLabel
     def select(self, p):
         '''Override NullTree.select, which is actually LeoTree.select.'''
+        if 1: ### OLD code
+            super().select(p)
+                # Call LeoTree.select.'''
+            self.root.select_p(p)
+                # Call app.select_position.
+        else: # New code
+            w = self.root.main_window
+            w.body.sync_before_select_node({'ap': self.root.p_to_ap(p)})
+                # The callback is self.complete_select_node.
+            
+    def complete_select_node(self, d):
+        self.root.update_body_from_dict(d)
+            # Complete the syncing of the body pane.
+        p = self.root.ap_to_p(d ['ap'])
         super().select(p)
             # Call LeoTree.select.'''
         self.root.select_p(p)
@@ -1711,22 +1730,28 @@ class LeoFlexxBody(JS_Editor):
         self.editor = make_editor_function(self.name, self.node)
 
     #@+others
-    #@+node:ekr.20181215061402.1: *4* flx_body.sync_before_command
+    #@+node:ekr.20181215061402.1: *4* flx_body.sync_*
     @flx.action
     def sync_before_command(self, d):
-        '''
-        Add keys to d, then call app.complete_minibuffer_command action.
-        '''
-        d ['s'] = self.get_text()
-        row, col = self.get_ins()
-        d ['ins_col'] = col
-        d ['ins_row'] = row
-        row1, col1, row2, col2 = self.get_sel()
-        d ['sel_col1'] = col1
-        d ['sel_col2'] = col2
-        d ['sel_row1'] = row1
-        d ['sel_row2'] = row2
+        '''Update p.b, etc. before executing a minibuffer command..'''
+        self.update_dict(d)
         self.root.complete_minibuffer_command(d)
+        
+    @flx.action
+    def sync_before_select_node(self, d):
+        '''Update p.b, etc. before selecting a new node.'''
+        # Careful during startup.
+        if self.root and self.root.tree:
+            self.update_dict(d)
+            self.root.tree.complete_select_node(d)
+        
+    def update_dict(self, d):
+        '''Add keys to d describing the body pane.'''
+        d ['s'] = self.get_text()
+        d ['ins_row'], d ['ins_col'] = self.get_ins()
+        row1, col1, row2, col2 = self.get_sel()
+        d ['sel_row1'], d ['sel_col1'] = row1, col1
+        d ['sel_row2'], d ['sel_col2'] = row2, col2
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog (JS_Editor)
 class LeoFlexxLog(JS_Editor):
