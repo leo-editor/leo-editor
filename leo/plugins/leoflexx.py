@@ -84,7 +84,7 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< leoflexx: assets >>
 #
 # Switches.
-is_public = True # True: public code issues various alerts.
+is_public = False # True: public code issues various alerts.
 debug_focus = False # True: put 'focus' in g.app.debug.
 debug_keys = False # True: put 'keys' in g.app.debug.
 #
@@ -1414,6 +1414,7 @@ class LeoBrowserTree(leoFrame.NullTree):
     #@+node:ekr.20181116081421.1: *4* tree_wrapper.select, super_select, endEditLabel
     def select(self, p):
         '''Override NullTree.select, which is actually LeoTree.select.'''
+        print('tree.select: %r' % (p and p.h))
         if 1: ### OLD code
             super().select(p)
                 # Call LeoTree.select.'''
@@ -1421,13 +1422,15 @@ class LeoBrowserTree(leoFrame.NullTree):
                 # Call app.select_position.
         else: # New code
             w = self.root.main_window
-            w.body.sync_before_select_node({'ap': self.root.p_to_ap(p)})
-                # The callback is self.complete_select_node.
+            w.body.sync_before_select({'ap': self.root.p_to_ap(p)})
+                # The callback is self.complete_select.
             
-    def complete_select_node(self, d):
+    def complete_select(self, d):
         self.root.update_body_from_dict(d)
             # Complete the syncing of the body pane.
         p = self.root.ap_to_p(d ['ap'])
+        print('tree.complete_select: p: %r' % (p))
+        print('tree.complete_select: d: %r' % (d))
         super().select(p)
             # Call LeoTree.select.'''
         self.root.select_p(p)
@@ -1636,22 +1639,23 @@ class LeoFlexxBody(JS_Editor):
         self.editor = make_editor_function(self.name, self.node)
 
     #@+others
-    #@+node:ekr.20181215061402.1: *4* flx_body.sync_*
+    #@+node:ekr.20181215061402.1: *4* flx_body.sync_before_command/select
     @flx.action
     def sync_before_command(self, d):
         '''Update p.b, etc. before executing a minibuffer command..'''
-        self.update_dict(d)
+        self.update_body_dict(d)
         self.root.complete_minibuffer_command(d)
         
     @flx.action
-    def sync_before_select_node(self, d):
+    def sync_before_select(self, d):
         '''Update p.b, etc. before selecting a new node.'''
         # Careful during startup.
         if self.root and self.root.tree:
-            self.update_dict(d)
-            self.root.tree.complete_select_node(d)
+            self.update_body_dict(d)
+            if 1: print('flx_body.sync_before_select: d: %r' % d)
+            self.root.tree.complete_select(d)
         
-    def update_dict(self, d):
+    def update_body_dict(self, d):
         '''Add keys to d describing the body pane.'''
         d ['s'] = self.get_text()
         d ['ins_row'], d ['ins_col'] = self.get_ins()
