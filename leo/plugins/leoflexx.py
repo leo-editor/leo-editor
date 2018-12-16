@@ -1207,9 +1207,7 @@ class LeoBrowserGui(leoGui.NullGui):
         '''Run the main loop from within Leo's core.'''
         runtime = self.specific_browser or 'webruntime'
         flx.launch(LeoBrowserApp, runtime)
-        flx.logger.info('LeoApp: after flx.launch')
         flx.set_log_level('ERROR') #  'INFO'
-            # DEBUG produces way too many messages.
         flx.run()
     #@-others
 #@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
@@ -2235,9 +2233,10 @@ class LeoFlexxTreeItem(flx.TreeItem):
     #@-others
 #@-others
 if __name__ == '__main__':
+    #
+    # Stand-alone mode.
+    # gui.runMainLoop executes similar code when using --gui=browser.
     flx.launch(LeoBrowserApp)
-    flx.logger.info('LeoApp: after flx.launch')
-    flx.set_log_level('ERROR') # 'INFO'
-        # DEBUG produces way too many messages.
+    flx.set_log_level('ERROR')
     flx.run()
 #@-leo
