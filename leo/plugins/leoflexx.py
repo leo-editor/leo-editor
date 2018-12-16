@@ -87,7 +87,6 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 debug_focus = False # True: put 'focus' in g.app.debug.
 debug_keys = False # True: put 'keys' in g.app.debug.
 is_public = True # True: public code issues various alerts.
-debug = not is_public
 #
 # pylint: disable=logging-not-lazy
 #@+others
@@ -698,15 +697,15 @@ class LeoBrowserApp(flx.PyComponent):
         if w and w.tree:
             w.tree.set_ap(ap)
             body = c.frame.body.wrapper
-            if debug: print('===== app.select_p: sel: %r %s' % (body.sel, p.h), g.callers())
+            if 0: print('===== app.select_p: sel: %r %s' % (body.sel, p.h))
             w.body.set_text(body.s)
-                ###
             w.body.set_insert_point(body.ins, body.sel)
-    #@+node:ekr.20181216051109.1: *5* app.action.select helpers NEW
+    #@+node:ekr.20181216051109.1: *5* app.action.select helpers
     @flx.action
-    def complete_select(self, d):
+    def complete_unselect(self, d):
         '''A helper action, called from flx_body.sync_before_select.'''
-        self.c.frame.tree.complete_select(d)
+        if 0: g.trace(d ['headline'])
+        self.c.frame.tree.complete_unselect(d)
 
     @flx.action
     def select_tree_using_ap(self, ap):
@@ -745,6 +744,8 @@ class LeoBrowserApp(flx.PyComponent):
     def update_body_from_dict(self, d):
         '''Update p.b, etc, using d.'''
         c = self.c
+        v = c.p.v
+        assert v, g.callers()
         w = c.frame.body.wrapper
         # Compute the insert point.
         s = d['s']
@@ -756,9 +757,12 @@ class LeoBrowserApp(flx.PyComponent):
         sel1 = g.convertRowColToPythonIndex(s, row1, col1)
         sel2 = g.convertRowColToPythonIndex(s, row2, col2)
         sel = (sel1, sel2)
-        # Update Leo's internal data structures.
+        # Update v's ivars, *and* the body text's ivars (for minibuffer commands).
+        v.setBodyString(s)
+        v.insertSpot = ins
+        v.sel = sel
         w.ins, w.sel, w.s = ins, sel, s
-        if debug: print('===== app.update_body_from_dict: ins: %s sel: (%s, %s) p: %s ==> %s' % (
+        if 0: print('===== app.update_body_from_dict: %s (%s, %s) p: %s ==> %s' % (
                     ins, sel[0], sel[1], c.p.h, d['headline']))
     #@+node:ekr.20181122132009.1: *4* app.Testing...
     #@+node:ekr.20181111142921.1: *5* app.action: do_command & helpers
@@ -1437,17 +1441,17 @@ class LeoBrowserTree(leoFrame.NullTree):
         return 'canvas(tree)' # Required for proper pane bindings.
 
     #@+others
-    #@+node:ekr.20181116081421.1: *4* tree_wrapper.select, super_select, endEditLabel
+    #@+node:ekr.20181116081421.1: *4* tree.select, super_select, endEditLabel
     def select(self, p):
         '''Override NullTree.select, which is actually LeoTree.select.'''
         if self.root.inited:
-            if debug: print('tree.select: new p: %r' % p.h)
+            if 0: print('===== tree.select: %r ==> %r' % (self.root.c.p.h, p.h))
             w = self.root.main_window
             w.body.sync_before_select({
                 'ap': self.root.p_to_ap(p),
                 'headline': p.h, # Debugging.
             })
-                # The callback is self.complete_select.
+                # The callback is self.complete_unselect.
         else:
             # Don't sync the body pane.
             super().select(p)
@@ -1455,20 +1459,20 @@ class LeoBrowserTree(leoFrame.NullTree):
             self.root.select_p(p)
                 # Call app.select_position.
 
-    def complete_select(self, d):
+    def complete_unselect(self, d):
+        '''Complete the unselection of the old node.'''
         self.root.update_body_from_dict(d)
             # Complete the syncing of the body pane.
         p = self.root.ap_to_p(d ['ap'])
-        if debug: print('tree.complete_select: p: %r' % (p.h))
-        if 0: print('tree.complete_select: d: %r' % (d))
+        if 0: print('tree.complete_unselect: p: %r ==> %r' % (self.root.c.p.h, p.h))
         super().select(p)
             # Call LeoTree.select.'''
         self.root.select_p(p)
             # Call app.select_position.
             
-    def select_ap(self, ap): ### New, experimental.
+    def select_ap(self, ap):
         p = self.root.ap_to_p(ap)
-        if debug: print('tree.select_ap: p: %r' % (p))
+        if 0: print('===== tree.select_ap: p: %r' % (p))
         self.select(p)
 
     def super_select(self, p):
@@ -1483,12 +1487,12 @@ class LeoBrowserTree(leoFrame.NullTree):
         '''
         # print(self.tag, 'endEditLabel', g.callers())
         
-    #@+node:ekr.20181118052203.1: *4* tree_wrapper.redraw
+    #@+node:ekr.20181118052203.1: *4* tree.redraw
     def redraw(self, p=None):
         '''This is c.frame.tree.redraw!'''
         if 0: print(self.tag, '(c.frame.tree) redraw')
         self.root.redraw(p)
-    #@+node:ekr.20181120063844.1: *4* tree_wrapper.setFocus
+    #@+node:ekr.20181120063844.1: *4* tree.setFocus
     def setFocus(self):
         w = self.root.main_window
         w.tree.set_focus()
@@ -1678,16 +1682,16 @@ class LeoFlexxBody(JS_Editor):
     @flx.action
     def sync_before_command(self, d):
         '''Update p.b, etc. before executing a minibuffer command..'''
-        if debug: print('flx_body.sync_before_command')
+        if 0: print('flx_body.sync_before_command')
         self.update_body_dict(d)
         self.root.complete_minibuffer_command(d)
         
     @flx.action
     def sync_before_select(self, d):
         '''Update p.b, etc. before selecting a new node.'''
-        if debug: print('===== flx_body.sync_before_select')
+        if 0: print('===== flx_body.sync_before_select')
         self.update_body_dict(d)
-        self.root.complete_select(d)
+        self.root.complete_unselect(d)
         
     def update_body_dict(self, d):
         '''Add keys to d describing the body pane.'''
@@ -2242,31 +2246,18 @@ class LeoFlexxTree(flx.Widget):
         for ev in events:
             if ev.new_value: # A selection event.
                 ap = ev.source.leo_ap
-                if debug: print('===== on_selected_event: select:', ap['headline'])
-                # self.dump_ap(ap)
-                if 1:
-                    self.select_ap(ap)
-                        # Selects the corresponding LeoTreeItem.
-                    self.set_ap(ap)
-                        # Sets self.selected_ap.
-                    self.root.select_tree_using_ap(ap)
-                        ### New: calls tree.select.
-                    if 0: ### should not be needed???
-                        self.root.set_body_text()
-                            # Update the body text.
-                        self.root.set_status()
-                            # Update the status line.
-                else:
-                    self.root.select_ap(ap)
-                        # This *only* sets c.p. and updated c.p.b.
-                    self.select_ap(ap)
-                        # Selects the corresponding LeoTreeItem.
-                    self.set_ap(ap)
-                        # Sets self.selected_ap.
-                    self.root.set_body_text()
-                        # Update the body text.
-                    self.root.set_status()
-                        # Update the status line.
+                if 0: print('===== on_selected_event: select:', ap['headline'])
+                self.select_ap(ap)
+                    # Selects the corresponding LeoTreeItem.
+                self.set_ap(ap)
+                    # Sets self.selected_ap.
+                self.root.select_tree_using_ap(ap)
+                    # A helper action, calling tree.select.
+                ### should not be needed.
+                    # self.root.set_body_text()
+                        # # Update the body text.
+                    # self.root.set_status()
+                        # # Update the status line.
     #@-others
 #@+node:ekr.20181108233657.1: *3* class LeoFlexxTreeItem
 class LeoFlexxTreeItem(flx.TreeItem):
