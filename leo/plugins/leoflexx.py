@@ -77,44 +77,19 @@ import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
 import leo.core.leoTest as leoTest
 #@-<< leoflexx: imports >>
-#@+<< leoflexx: switches and other globals >>
-#@+node:ekr.20181202105852.1: ** << leoflexx: switches and other globals >>
-warn_about_changed = False
-    # True: raise alert about changed outline.
-warn_about_code = False
-    # True: raise alert on startup about pre-alpha code.
-    # Should be set for all pushed code.
-#
-# Debugging switches...
-#
-debug_focus = False
-    # True: put 'focus' in g.app.debug.
-debug_keys = False
-    # True: put 'keys' in g.app.debug.
-debug_startup = False
-    # Debug startup code.
-use_ace = True # False: use Code Mirror.
-    # Only ace is supported at present.
-    # print('\nuse_ace', use_ace, '\n')
-#@-<< leoflexx: switches and other globals >>
 #@+<< leoflexx: assets >>
 #@+node:ekr.20181111074958.1: ** << leoflexx: assets >>
-if use_ace:
-    # Assets for ace JS editor.
-    base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
-    flx.assets.associate_asset(__name__, base_url + 'ace.js')
-    flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
-    flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
-else:
-    # Assets for CodeMirror JS editor.
-    base_url = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/'
-    flx.assets.associate_asset(__name__, base_url + '5.21.0/codemirror.min.css')
-    flx.assets.associate_asset(__name__, base_url + '5.21.0/codemirror.min.js')
-    flx.assets.associate_asset(__name__, base_url + '5.21.0/mode/python/python.js')
-    flx.assets.associate_asset(__name__, base_url + '5.21.0/theme/solarized.css')
-    flx.assets.associate_asset(__name__, base_url + '5.21.0/addon/selection/active-line.js')
-    flx.assets.associate_asset(__name__, base_url + '5.21.0/addon/edit/matchbrackets.js')
+# Assets for ace JS editor.
+base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
+flx.assets.associate_asset(__name__, base_url + 'ace.js')
+flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
+flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< leoflexx: assets >>
+#
+# Switches.
+public = True # True: public code issues various alerts.
+debug_focus = False # True: put 'focus' in g.app.debug.
+debug_keys = False # True: put 'keys' in g.app.debug.
 #
 # pylint: disable=logging-not-lazy
 #@+others
@@ -157,12 +132,7 @@ def make_editor_function(name, node):
     Making this a top-level function avoids the need to create a common
     base class that only defines this as a method.
     '''
-    # print('make_editor_function: node: %r' % node.__class__)
-        # node.__class__ is HTMLDivElementPrototype
-    if use_ace:
-        editor = make_ace_editor(name, node)
-    else:
-        editor = make_cm_editor(name, node)
+    editor = make_ace_editor(name, node)
     if 0:
         print('make_editor_function: editor:...') #  %r' % editor.__class__)
         for key in sorted(editor.__class__.keys()):
@@ -184,26 +154,6 @@ def make_ace_editor(name, node):
     if name == 'minibuffer':
         pass ### Disable line numbers.
     return ace
-#@+node:ekr.20181212051213.1: *4* function: make_cm_editor
-def make_cm_editor(name, node):
-    '''Return a new instance of the CodeMirror editor.'''
-    # pylint: disable=undefined-variable
-        # window looks undefined.
-    options = dict(
-        value='',
-        mode='python' if name == 'body' else None,
-        theme='solarized dark',
-        autofocus=True,
-        styleActiveLine=True,
-        matchBrackets=True,
-        indentUnit=4,
-        smartIndent=True,
-        lineWrapping=True,
-        lineNumbers=True,
-        firstLineNumber=1,
-        readOnly=False,
-    )
-    return window.CodeMirror(node, options)
 #@+node:ekr.20181113041410.1: *3* suppress_unwanted_log_messages (not used)
 def suppress_unwanted_log_messages():
     '''
@@ -381,11 +331,6 @@ class LeoBrowserApp(flx.PyComponent):
         assert g.app.windowList
         for frame in g.app.windowList:
             assert isinstance(frame, DummyFrame), repr(frame)
-        if debug_startup:
-            print('')
-            print('===== LeoBrowserApp.init: g.app.windowList...')
-            g.printObj(g.app.windowList)
-            print('')
         #
         # Set g.app debugging ivars.
         if debug_focus:
@@ -1156,10 +1101,6 @@ class LeoBrowserGui(leoGui.NullGui):
     def __init__ (self, gui_name='browser'):
         super().__init__(guiName='browser')
             # leoTest.doTest special-cases the name "browser".
-        if debug_startup:
-            print('')
-            print('===== LeoBrowserGui.__init__')
-            print('')
         self.gui_name = gui_name # May specify the actual browser.
         assert gui_name.startswith('browser')
         self.logWaiting = []
@@ -1191,10 +1132,6 @@ class LeoBrowserGui(leoGui.NullGui):
         We create a placeholder in g.app.windowList, for app.finish_create.
         '''
         gui = self
-        if debug_startup:
-            print('')
-            print('===== LeoBrowserGui.createLeoFrame =====', c.shortFileName())
-            print('')
         self.lastFrame = DummyFrame(c, title, gui)
         g.app.windowList.append(self.lastFrame)
             # A buglet in Leo's core: this is necessary.
@@ -1284,7 +1221,7 @@ class LeoBrowserGui(leoGui.NullGui):
         runtime = self.specific_browser or 'webruntime'
         flx.launch(LeoBrowserApp, runtime)
         flx.logger.info('LeoApp: after flx.launch')
-        flx.set_log_level('ERROR') #  if use_ace and warnings_only else 'INFO')
+        flx.set_log_level('ERROR') #  'INFO'
             # DEBUG produces way too many messages.
         flx.run()
     #@-others
@@ -1580,10 +1517,7 @@ class JS_Editor(flx.Widget):
 
     @flx.reaction('size')
     def __on_size(self, *events):
-        if use_ace:
-            self.editor.resize()
-        else:
-            self.editor.refresh()
+        self.editor.resize()
     
     #@+others
     #@+node:ekr.20181121072246.1: *4* jse.Keys
@@ -1643,31 +1577,24 @@ class JS_Editor(flx.Widget):
         self.editor.focus()
     #@+node:ekr.20181215061810.1: *4* jse.text getters
     def get_ins(self):
-        if use_ace:
-            d = self.editor.selection.getCursor()
-            row, col = d ['row'], d['column']
-            if 0: print('%s: get_ins: row: %s col: %s' % (self.tag, row, col))
-            return row, col
-        else:
-            print('%s: get_ins: NOT READY YET' % self.tag)
-            return 0, 0
+        d = self.editor.selection.getCursor()
+        row, col = d ['row'], d['column']
+        if 0: print('%s: get_ins: row: %s col: %s' % (self.tag, row, col))
+        return row, col
         
     def get_sel(self):
-        if use_ace:
-            selections = self.editor.selection.getAllRanges()
-            if selections:
-                sel = selections[0]
-                d1, d2 = sel ['start'], sel ['end']
-                row1, col1 = d1 ['row'], d1 ['column']
-                row2, col2 = d2 ['row'], d2 ['column']
-            else:
-                print('%s: get_sel: NO SELECTION' % self.tag)
-                i = self.get_ins()
-                row1 = col1 = row2 = col2 = i
-            if 0: print('%s: get_sel: (%s, %s) to (%s, %s)' % (self.tag, row1, col1, row2, col2))
-            return row1, col1, row2, col2
+        selections = self.editor.selection.getAllRanges()
+        if selections:
+            sel = selections[0]
+            d1, d2 = sel ['start'], sel ['end']
+            row1, col1 = d1 ['row'], d1 ['column']
+            row2, col2 = d2 ['row'], d2 ['column']
         else:
-            print('%s: get_sel: NOT READY YET' % self.tag)
+            print('%s: get_sel: NO SELECTION' % self.tag)
+            i = self.get_ins()
+            row1 = col1 = row2 = col2 = i
+        if 0: print('%s: get_sel: (%s, %s) to (%s, %s)' % (self.tag, row1, col1, row2, col2))
+        return row1, col1, row2, col2
         
     def get_text(self):
         editor = self.editor
@@ -1678,10 +1605,7 @@ class JS_Editor(flx.Widget):
     @flx.action
     def insert(self, s):
         if 0: print(self.tag, 'insert', repr(s))
-        if use_ace:
-            self.editor.insert(s)
-        else:
-            print('flx.Body: NOT READY')
+        self.editor.insert(s)
 
     @flx.action
     def select_all_text(self):
@@ -1695,10 +1619,7 @@ class JS_Editor(flx.Widget):
         if 0:
             print('%s: set_insert_point: i: %s = (%s, %s)' % (
                 self.tag, str(insert).ljust(3), row, col))
-        if use_ace:
-            self.editor.moveCursorTo(row, col)
-        else:
-            print('flx.wrapper: set_insert_point: NOT READY')
+        self.editor.moveCursorTo(row, col)
 
     @flx.action
     def set_selection_range(self, i, j):
@@ -1813,7 +1734,7 @@ class LeoFlexxMainWindow(flx.Widget):
             status_line = LeoFlexxStatusLine()
         #@+<< define unload action >>
         #@+node:ekr.20181206044554.1: *4* << define unload action >>
-        if warn_about_changed:
+        if public:
             RawJS("""\
             // Called from Mozilla, but not webruntime.
             window.onbeforeunload = function(){
@@ -1828,10 +1749,10 @@ class LeoFlexxMainWindow(flx.Widget):
         self._mutate('status_line', status_line)
         self._mutate('tree', tree)
         self.emit('do_init')
-        if warn_about_code:
+        if public:
             global alert # for pyflakes.
             # pylint: disable=undefined-variable
-            alert('LeoWapp is pre-alpha code.\n\nUse at your own risk')
+            alert('Use LeoWapp at your own risk')
         
     @flx.reaction('!do_init')
     def after_init(self):
