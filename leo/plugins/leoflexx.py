@@ -84,9 +84,10 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< leoflexx: assets >>
 #
 # Switches.
-is_public = False # True: public code issues various alerts.
 debug_focus = False # True: put 'focus' in g.app.debug.
 debug_keys = False # True: put 'keys' in g.app.debug.
+is_public = True # True: public code issues various alerts.
+debug = not is_public
 #
 # pylint: disable=logging-not-lazy
 #@+others
@@ -276,17 +277,70 @@ class LeoBrowserApp(flx.PyComponent):
     '''
     The browser component of Leo in the browser.
 
-    **Important**: This is self.root for all flexx components.
+    This is self.root for all flexx components.
 
-    **Important**: This is *not* g.app. The LeoBridge defines g.app.
+    This is *not* g.app.
     '''
     
     main_window = flx.ComponentProp(settable=True)
 
+    #@+others
+    #@+node:ekr.20181126103604.1: *4*  app.Initing
+    #@+node:ekr.20181114015356.1: *5* app.create_all_data
+    def create_gnx_to_vnode(self):
+        t1 = time.clock()
+        self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
+            # This is likely the only data that ever will be needed.
+        if 0:
+            print('app.create_all_data: %5.3f sec. %s entries' % (
+                (time.clock()-t1), len(list(self.gnx_to_vnode.keys()))))
+        self.test_round_trip_positions()
+    #@+node:ekr.20181124133513.1: *5* app.finish_create
+    @flx.action
+    def finish_create(self):
+        '''
+        Initialize all ivars and widgets.
+        
+        Called after all flx.Widgets have been fully inited!
+        '''
+        w = self.main_window
+        self.c = c = g.app.log.c
+        assert c
+        # Init all redraw ivars
+        self.create_gnx_to_vnode()
+        self.old_flattened_outline = []
+        self.old_redraw_dict = {}
+        self.redraw_generation = 0
+        self.fast_redrawer = leoFastRedraw.FastRedraw()
+        self.old_flattened_outline = self.fast_redrawer.flatten_outline(c)
+        self.old_redraw_dict = self.make_redraw_dict(c.p)
+        # Select the proper position.
+        c.contractAllHeadlines()
+        c.selectPosition(c.p or c.rootPosition())
+        # Monkey-patch the FindTabManager
+        c.findCommands.minibuffer_mode = True
+        c.findCommands.ftm = g.NullObject()
+        # Init the log, body, status line and tree.
+        g.app.gui.writeWaitingLog2()
+        ### Needed ???
+        self.set_body_text()
+        self.set_status()
+        self.redraw(c.p)
+        # Init the focus. It's debatable...
+        if 0:
+            self.gui.set_focus(c, c.frame.tree)
+            w.tree.set_focus()
+        else: # This definitely shows focus in the editor.
+            self.gui.set_focus(c, c.frame.body)
+            w.body.set_focus()
+        # Set the inited flag *last*
+        self.inited = True
+    #@+node:ekr.20181216042806.1: *5* app.init
     def init(self):
         # Set the ivars.
         global g # always use the imported g.
         self.inited = False
+            # Set in finish_create
         self.tag = '(app wrapper)'
         #
         # Open or get the first file.
@@ -332,56 +386,6 @@ class LeoBrowserApp(flx.PyComponent):
         # The main window will be created (much) later.
         main_window = LeoFlexxMainWindow()
         self._mutate('main_window', main_window)
-
-    #@+others
-    #@+node:ekr.20181126103604.1: *4*  app.Initing
-    #@+node:ekr.20181114015356.1: *5* app.create_all_data
-    def create_gnx_to_vnode(self):
-        t1 = time.clock()
-        self.gnx_to_vnode = { v.gnx: v for v in self.c.all_unique_nodes() }
-            # This is likely the only data that ever will be needed.
-        if 0:
-            print('app.create_all_data: %5.3f sec. %s entries' % (
-                (time.clock()-t1), len(list(self.gnx_to_vnode.keys()))))
-        self.test_round_trip_positions()
-    #@+node:ekr.20181124133513.1: *5* app.finish_create
-    @flx.action
-    def finish_create(self):
-        '''
-        Initialize all ivars and widgets.
-        
-        Called after all flx.Widgets have been fully inited!
-        '''
-        w = self.main_window
-        self.inited = True
-        self.c = c = g.app.log.c
-        assert c
-        # Init all redraw ivars
-        self.create_gnx_to_vnode()
-        self.old_flattened_outline = []
-        self.old_redraw_dict = {}
-        self.redraw_generation = 0
-        self.fast_redrawer = leoFastRedraw.FastRedraw()
-        self.old_flattened_outline = self.fast_redrawer.flatten_outline(c)
-        self.old_redraw_dict = self.make_redraw_dict(c.p)
-        # Select the proper position.
-        c.contractAllHeadlines()
-        c.selectPosition(c.p or c.rootPosition())
-        # Monkey-patch the FindTabManager
-        c.findCommands.minibuffer_mode = True
-        c.findCommands.ftm = g.NullObject()
-        # Init the log, body, status line and tree.
-        g.app.gui.writeWaitingLog2()
-        self.set_body_text()
-        self.set_status()
-        self.redraw(c.p)
-        # Init the focus. It's debatable...
-        if 0:
-            self.gui.set_focus(c, c.frame.tree)
-            w.tree.set_focus()
-        else: # This definitely shows focus in the editor.
-            self.gui.set_focus(c, c.frame.body)
-            w.body.set_focus()
     #@+node:ekr.20181105091545.1: *5* app.open_bridge
     def open_bridge(self):
         '''Can't be in JS.'''
@@ -662,6 +666,54 @@ class LeoBrowserApp(flx.PyComponent):
     def edit_headline_completer(self, headline):
         g.trace(headline)
     #@+node:ekr.20181124095316.1: *4* app.Selecting...
+    #@+node:ekr.20181111202747.1: *5* app.action.select_ap
+    @flx.action
+    def select_ap(self, ap):
+        '''
+        Select the position in Leo's core corresponding to the archived position.
+        Nothing in the flx.tree needs to be updated.
+        '''
+        assert ap, g.callers()
+        c, w = self.c, self.main_window
+        p = self.ap_to_p(ap)
+        assert p, (repr(ap), g.callers())
+        lt, rt = c.frame.statusLine.update()
+        w.status_line.update(lt, rt)
+        # print('===== app.select_ap', repr(ap))
+        w.tree.select_ap(ap)
+        c.frame.tree.super_select(p)
+            # call LeoTree.select, but not self.select_p.
+    #@+node:ekr.20181118061020.1: *5* app.action.select_p
+    @flx.action
+    def select_p(self, p):
+        '''
+        Select the position in the tree.
+        
+        Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
+        '''
+        c = self.c
+        w = self.main_window
+        ap = self.p_to_ap(p)
+        # Be careful during startup.
+        if w and w.tree:
+            w.tree.set_ap(ap)
+            body = c.frame.body.wrapper
+            if debug: print('===== app.select_p: sel: %r %s' % (body.sel, p.h), g.callers())
+            w.body.set_text(body.s)
+                ###
+            w.body.set_insert_point(body.ins, body.sel)
+    #@+node:ekr.20181216051109.1: *5* app.action.select helpers NEW
+    @flx.action
+    def complete_select(self, d):
+        '''A helper action, called from flx_body.sync_before_select.'''
+        self.c.frame.tree.complete_select(d)
+
+    @flx.action
+    def select_tree_using_ap(self, ap):
+        '''A helper action, called from flx_tree.on_selected_event.'''
+        if 0: g.trace(ap ['headline'])
+        p = self.ap_to_p(ap)
+        self.c.frame.tree.select(p)
     #@+node:ekr.20181111204659.1: *5* app.p_to_ap (updates app.gnx_to_vnode)
     def p_to_ap(self, p):
         '''
@@ -689,39 +741,6 @@ class LeoBrowserApp(flx.PyComponent):
                 'headline': stack_v.h,
             } for (stack_v, stack_childIndex) in p.stack ],
         }
-    #@+node:ekr.20181118061020.1: *5* app.action.select_p
-    @flx.action
-    def select_p(self, p):
-        '''
-        Select the position in the tree.
-        
-        Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
-        '''
-        c = self.c
-        w = self.main_window
-        ap = self.p_to_ap(p)
-        # Be careful during startup.
-        if w and w.tree:
-            w.tree.set_ap(ap)
-            body = c.frame.body.wrapper
-            w.body.set_insert_point(body.ins, body.sel)
-    #@+node:ekr.20181111202747.1: *5* app.action.select_ap
-    @flx.action
-    def select_ap(self, ap):
-        '''
-        Select the position in Leo's core corresponding to the archived position.
-        Nothin in the flx.tree needs to be updated.
-        '''
-        assert ap, g.callers()
-        c, w = self.c, self.main_window
-        p = self.ap_to_p(ap)
-        assert p, (repr(ap), g.callers())
-        lt, rt = c.frame.statusLine.update()
-        w.status_line.update(lt, rt)
-        # print('===== app.select_ap', repr(ap))
-        w.tree.select_ap(ap)
-        c.frame.tree.super_select(p)
-            # call LeoTree.select, but not self.select_p.
     #@+node:ekr.20181215154640.1: *5* app.update_body_from_dict
     def update_body_from_dict(self, d):
         '''Update p.b, etc, using d.'''
@@ -739,7 +758,8 @@ class LeoBrowserApp(flx.PyComponent):
         sel = (sel1, sel2)
         # Update Leo's internal data structures.
         w.ins, w.sel, w.s = ins, sel, s
-        if 1: g.trace('ins: %s sel: (%s, %s) len(s): %s' % (ins, sel[0], sel[1], len(s)))
+        if debug: print('===== app.update_body_from_dict: ins: %s sel: (%s, %s) p: %s ==> %s' % (
+                    ins, sel[0], sel[1], c.p.h, d['headline']))
     #@+node:ekr.20181122132009.1: *4* app.Testing...
     #@+node:ekr.20181111142921.1: *5* app.action: do_command & helpers
     @flx.action
@@ -901,8 +921,14 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181127070903.1: *5* app.execute/complete_minibuffer_command
     def execute_minibuffer_command(self, commandName, char, mods):
         '''Start the execution of a minibuffer command.'''
+        c = self.c
         w = self.root.main_window
-        w.body.sync_before_command({'commandName': commandName, 'char': char, 'mods': mods})
+        w.body.sync_before_command({
+            'char': char,
+            'commandName': commandName,
+            'headline': c.p.h, # Debugging.
+            'mods': mods,
+        })
             
     @flx.action
     def complete_minibuffer_command(self, d):
@@ -1414,27 +1440,36 @@ class LeoBrowserTree(leoFrame.NullTree):
     #@+node:ekr.20181116081421.1: *4* tree_wrapper.select, super_select, endEditLabel
     def select(self, p):
         '''Override NullTree.select, which is actually LeoTree.select.'''
-        print('tree.select: %r' % (p and p.h))
-        if 1: ### OLD code
+        if self.root.inited:
+            if debug: print('tree.select: new p: %r' % p.h)
+            w = self.root.main_window
+            w.body.sync_before_select({
+                'ap': self.root.p_to_ap(p),
+                'headline': p.h, # Debugging.
+            })
+                # The callback is self.complete_select.
+        else:
+            # Don't sync the body pane.
             super().select(p)
                 # Call LeoTree.select.'''
             self.root.select_p(p)
                 # Call app.select_position.
-        else: # New code
-            w = self.root.main_window
-            w.body.sync_before_select({'ap': self.root.p_to_ap(p)})
-                # The callback is self.complete_select.
-            
+
     def complete_select(self, d):
         self.root.update_body_from_dict(d)
             # Complete the syncing of the body pane.
         p = self.root.ap_to_p(d ['ap'])
-        print('tree.complete_select: p: %r' % (p))
-        print('tree.complete_select: d: %r' % (d))
+        if debug: print('tree.complete_select: p: %r' % (p.h))
+        if 0: print('tree.complete_select: d: %r' % (d))
         super().select(p)
             # Call LeoTree.select.'''
         self.root.select_p(p)
             # Call app.select_position.
+            
+    def select_ap(self, ap): ### New, experimental.
+        p = self.root.ap_to_p(ap)
+        if debug: print('tree.select_ap: p: %r' % (p))
+        self.select(p)
 
     def super_select(self, p):
         '''Call only LeoTree.select.'''
@@ -1643,17 +1678,16 @@ class LeoFlexxBody(JS_Editor):
     @flx.action
     def sync_before_command(self, d):
         '''Update p.b, etc. before executing a minibuffer command..'''
+        if debug: print('flx_body.sync_before_command')
         self.update_body_dict(d)
         self.root.complete_minibuffer_command(d)
         
     @flx.action
     def sync_before_select(self, d):
         '''Update p.b, etc. before selecting a new node.'''
-        # Careful during startup.
-        if self.root and self.root.tree:
-            self.update_body_dict(d)
-            if 1: print('flx_body.sync_before_select: d: %r' % d)
-            self.root.tree.complete_select(d)
+        if debug: print('===== flx_body.sync_before_select')
+        self.update_body_dict(d)
+        self.root.complete_select(d)
         
     def update_body_dict(self, d):
         '''Add keys to d describing the body pane.'''
@@ -2208,18 +2242,31 @@ class LeoFlexxTree(flx.Widget):
         for ev in events:
             if ev.new_value: # A selection event.
                 ap = ev.source.leo_ap
-                if 0: print('on_selected_event: select:', ap['headline'])
+                if debug: print('===== on_selected_event: select:', ap['headline'])
                 # self.dump_ap(ap)
-                self.root.select_ap(ap)
-                    # This *only* sets c.p. and updated c.p.b.
-                self.select_ap(ap)
-                    # Selects the corresponding LeoTreeItem.
-                self.set_ap(ap)
-                    # Sets self.selected_ap.
-                self.root.set_body_text()
-                    # Update the body text.
-                self.root.set_status()
-                    # Update the status line.
+                if 1:
+                    self.select_ap(ap)
+                        # Selects the corresponding LeoTreeItem.
+                    self.set_ap(ap)
+                        # Sets self.selected_ap.
+                    self.root.select_tree_using_ap(ap)
+                        ### New: calls tree.select.
+                    if 0: ### should not be needed???
+                        self.root.set_body_text()
+                            # Update the body text.
+                        self.root.set_status()
+                            # Update the status line.
+                else:
+                    self.root.select_ap(ap)
+                        # This *only* sets c.p. and updated c.p.b.
+                    self.select_ap(ap)
+                        # Selects the corresponding LeoTreeItem.
+                    self.set_ap(ap)
+                        # Sets self.selected_ap.
+                    self.root.set_body_text()
+                        # Update the body text.
+                    self.root.set_status()
+                        # Update the status line.
     #@-others
 #@+node:ekr.20181108233657.1: *3* class LeoFlexxTreeItem
 class LeoFlexxTreeItem(flx.TreeItem):
