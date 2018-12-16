@@ -60,15 +60,12 @@ import os
 import re
 import sys
 import time
-
 # This is what Leo typically does.
 path = os.getcwd()
 if path not in sys.path:
-    # print('appending %s to sys.path' % path)
     sys.path.append(path)
-
 import leo.core.leoGlobals as g
-    # **Note**: JS code can not use g.trace, g.callers or g.pdb.
+    # JS code can *not* use g.trace, g.callers or g.pdb.
 import leo.core.leoBridge as leoBridge
 import leo.core.leoFastRedraw as leoFastRedraw
 import leo.core.leoFrame as leoFrame
@@ -87,7 +84,7 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< leoflexx: assets >>
 #
 # Switches.
-public = True # True: public code issues various alerts.
+is_public = True # True: public code issues various alerts.
 debug_focus = False # True: put 'focus' in g.app.debug.
 debug_keys = False # True: put 'keys' in g.app.debug.
 #
@@ -124,24 +121,14 @@ def info (s):
 #@+node:ekr.20181103151350.1: *3* init
 def init():
     return flx
-#@+node:ekr.20181203151314.1: *3* make_editor_function & helpers
+#@+node:ekr.20181203151314.1: *3* make_editor_function
 def make_editor_function(name, node):
     '''
-    Instantiate the JS editor, either ace or CodeMirror.
+    Instantiate the ace editor.
     
     Making this a top-level function avoids the need to create a common
     base class that only defines this as a method.
     '''
-    editor = make_ace_editor(name, node)
-    if 0:
-        print('make_editor_function: editor:...') #  %r' % editor.__class__)
-        for key in sorted(editor.__class__.keys()):
-            print(key)
-    return editor
-#@+node:ekr.20181212051103.1: *4* function: make_ace_editor
-def make_ace_editor(name, node):
-    '''Return an instance of the ace editor.'''
-    # https://ace.c9.io/#nav=api
     # pylint: disable=undefined-variable
         # window looks undefined.
     global window 
@@ -1734,7 +1721,7 @@ class LeoFlexxMainWindow(flx.Widget):
             status_line = LeoFlexxStatusLine()
         #@+<< define unload action >>
         #@+node:ekr.20181206044554.1: *4* << define unload action >>
-        if public:
+        if is_public:
             RawJS("""\
             // Called from Mozilla, but not webruntime.
             window.onbeforeunload = function(){
@@ -1749,7 +1736,7 @@ class LeoFlexxMainWindow(flx.Widget):
         self._mutate('status_line', status_line)
         self._mutate('tree', tree)
         self.emit('do_init')
-        if public:
+        if is_public:
             global alert # for pyflakes.
             # pylint: disable=undefined-variable
             alert('Use LeoWapp at your own risk')
