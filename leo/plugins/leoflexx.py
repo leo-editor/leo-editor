@@ -656,14 +656,13 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181129122147.1: *4* app.edit_headline & helper
     def edit_headline(self):
         '''Simulate editing the headline in the minibuffer.'''
-        c, w = self.c, self.root.main_window
+        w = self.root.main_window
         mb = w.minibuffer
-        if 0: g.trace(mb, c.p.h)
         mb.set_text('Enter Headline: ')
         mb.set_focus()
         
     def edit_headline_completer(self, headline):
-        g.trace(headline)
+        print('app.edit_headline_completer')
     #@+node:ekr.20181124095316.1: *4* app.Selecting...
     #@+node:ekr.20181111202747.1: *5* app.action.select_ap
     @flx.action
@@ -704,13 +703,13 @@ class LeoBrowserApp(flx.PyComponent):
     @flx.action
     def complete_unselect(self, d):
         '''A helper action, called from flx_body.sync_before_select.'''
-        if 0: g.trace(d ['headline'])
+        if 0: print('app.complete_unselect:', d ['headline'])
         self.c.frame.tree.complete_unselect(d)
 
     @flx.action
     def select_tree_using_ap(self, ap):
         '''A helper action, called from flx_tree.on_selected_event.'''
-        if 0: g.trace(ap ['headline'])
+        if 0: print('app.select_tree_using_ap:', ap ['headline'])
         p = self.ap_to_p(ap)
         self.c.frame.tree.select(p)
     #@+node:ekr.20181111204659.1: *5* app.p_to_ap (updates app.gnx_to_vnode)
@@ -877,18 +876,15 @@ class LeoBrowserApp(flx.PyComponent):
     def end_set_headline(self, h):
         c, k, p, u = self.c, self.c.k, self.c.p, self.c.undoer
         w = self.root.main_window
-        ### g.trace('-----', p.v.h, '==>', h)
         # Undoably set the head. Like leoTree.onHeadChanged, called LeoTree.endEditLabel.
         oldHead = p.h
         p.v.setHeadString(h)
-        ### g.trace(c.rootPosition())
-        if True: # was changed:
-            undoType = 'Typing'
-            undoData = u.beforeChangeNodeContents(p, oldHead=oldHead)
-            if not c.changed: c.setChanged(True)
-            dirtyVnodeList = p.setDirty()
-            u.afterChangeNodeContents(p, undoType, undoData,
-                dirtyVnodeList=dirtyVnodeList, inHead=True)
+        undoType = 'Typing'
+        undoData = u.beforeChangeNodeContents(p, oldHead=oldHead)
+        if not c.changed: c.setChanged(True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p, undoType, undoData,
+            dirtyVnodeList=dirtyVnodeList, inHead=True)
         k.keyboardQuit()
         c.redraw()
         w.body.set_focus()
@@ -906,7 +902,7 @@ class LeoBrowserApp(flx.PyComponent):
             c.frame.tree.select(p)
             # LeoBrowserTree.select.
         else:
-            g.trace('not found: %s' % h)
+            print('app.do_select: not found: %s' % h)
     #@+node:ekr.20181210054516.1: *6* app.do_test
     def do_test(self):
         c = self.c
@@ -1204,7 +1200,7 @@ class LeoBrowserGui(leoGui.NullGui):
         elif not g.unitTesting:
             # This gets called when reloading the page (reopening the .leo file) after Ctrl-F.
             # It also gets called during unit tests.
-            g.trace('(gui): unknown widget', repr(widget), g.callers(6))
+            print('gui.set_focus: unknown widget', repr(widget), g.callers(6))
     #@+node:ekr.20181206090210.1: *4* gui.writeWaitingLog1/2
     def writeWaitingLog1(self, c=None):
         '''Monkey-patched do-nothing version of g.app.writeWaitingLog.'''
@@ -1383,7 +1379,7 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         pass
         
     def get(self):
-        g.trace('(LeoBrowserStatusLine): NOT READY')
+        print('status_line.get: NOT READY')
         return ''
     #@+node:ekr.20181119045343.1: *4* status_line_wrapper.put and put1
     def put(self, s, bg=None, fg=None):
