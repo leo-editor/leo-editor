@@ -172,7 +172,7 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         return g.NullObject()
         
     def setFocus(self):
-        print(self.tag, 'setAllText')
+        if 0: print(self.tag, 'setFocus')
         self.flx_wrapper().set_focus()
 
     # No need to override getters.
@@ -181,7 +181,7 @@ class API_Wrapper (leoFrame.StringTextWrapper):
     def finish_set_insert(self, tag):
         '''Common helper for selection setters.'''
         if 0:
-            print('%s: %s: %s %r' % (self.tag, tag, self.ins, self.sel)) # debug_select
+            print('%s: %s: %s %r' % (self.tag, tag, self.ins, self.sel))
         self.flx_wrapper().set_insert_point(self.ins, self.sel)
 
     def seeInsertPoint(self):
@@ -530,14 +530,9 @@ class LeoBrowserApp(flx.PyComponent):
         w.tree.redraw_with_dict(redraw_dict, redraw_instructions)
             # At present, this does a full redraw using redraw_dict.
             # The redraw instructions are not used.
-        ###
-            # Wrong: only Leo's core should call c.setChanged().
-            # Set c.changed if there are any redraw instructions.
-            # if redraw_instructions:
-                # if debug_changed: print('app.redraw: C CHANGED')
-                # c.setChanged()
-        if 0:
-            g.trace('%5.3f sec.' % (time.clock()-t1))
+        #
+        # Do not call c.setChanged() here.
+        if 0: print('app.redraw: %5.3f sec.' % (time.clock()-t1))
         #
         # Move to the next redraw generation.
         self.old_flattened_outline = new_flattened_outline
@@ -635,7 +630,6 @@ class LeoBrowserApp(flx.PyComponent):
         assert p.v
         self.gnx_to_vnode[p.v.gnx] = p.v
         if 0: print('make_dict_for_position: %s%s' % ('  '*p.level(), p.v.h))
-            # debug_redraw
                 # A superb trace. There are similar traces in:
                 # - flx_tree.redraw_with_dict  and its helper, flx_tree.create_item_with_parent.
                 # - flx_tree.populate_children and its helper, flx_tree.create_item_for_ap
@@ -1169,13 +1163,13 @@ class LeoBrowserGui(leoGui.NullGui):
     #@+node:ekr.20181119153936.1: *4* gui.focus...
     def get_focus(self, *args, **kwargs):
         w = self.focusWidget
-        if debug_focus:
-            w_tag = w.tag if w else "NO WIDGET"
-            print('%s: get_focus: %s %s' % (self.tag, w_tag,  g.callers(2)))
+        if 0: print('%s: get_focus: %r' % (self.tag, w.tag))
         return w
 
     def set_focus(self, commander, widget):
         # Be careful during startup.
+        if g.unitTesting:
+            return
         if not self.root:
             return
         c = self.root.c
@@ -1186,20 +1180,16 @@ class LeoBrowserGui(leoGui.NullGui):
             LeoBrowserMinibuffer,
             LeoBrowserTree,
         )):
-            if 0: print(self.tag, 'set_focus', widget.tag) # debug_events
-            if not g.unitTesting:
-                widget.setFocus()
+            if 0: print(self.tag, 'set_focus', widget.tag)
+            widget.setFocus()
             self.focusWidget = widget
         elif isinstance(widget, API_Wrapper):
             # This does sometimes get executed.
-            if 0: print('===== gui.set_focus: redirect AceWrapper to LeoBrowserBody', g.callers())
+            if 0: print('===== gui.set_focus: redirect AceWrapper to LeoBrowserBody')
             assert isinstance(c.frame.body, LeoBrowserBody), repr(c.frame.body)
             assert widget.name == 'body', repr(widget.name)
-            if not g.unitTesting:
-                c.frame.body.setFocus()
-        elif not g.unitTesting:
-            # This gets called when reloading the page (reopening the .leo file) after Ctrl-F.
-            # It also gets called during unit tests.
+            c.frame.body.wrapper.setFocus()
+        else:
             print('gui.set_focus: unknown widget', repr(widget), g.callers(6))
     #@+node:ekr.20181206090210.1: *4* gui.writeWaitingLog1/2
     def writeWaitingLog1(self, c=None):
@@ -1548,8 +1538,7 @@ class JS_Editor(flx.Widget):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        if debug_keys:
-            print('JS_Editor.key_press: %s %r' % (self.name, ev))
+        if 0: print('JS_Editor.key_press: %s %r' % (self.name, ev))
         if self.should_be_leo_key(ev):
             e.preventDefault()
         return ev
@@ -1592,11 +1581,11 @@ class JS_Editor(flx.Widget):
     #@+node:ekr.20181215083642.1: *4* jse.focus
     @flx.action
     def see_insert_point(self):
-        if 0: print(self.tag, 'see_insert_point')
+        if 0: print(self.tag, 'jse.see_insert_point')
         
     @flx.action
     def set_focus(self):
-        if debug_focus: print(self.tag, 'set_focus')
+        if 0: print(self.tag, 'jse.set_focus')
         self.editor.focus()
     #@+node:ekr.20181215061810.1: *4* jse.text getters
     def get_ins(self):
@@ -1727,8 +1716,7 @@ class LeoFlexxLog(JS_Editor):
         
     @flx.action
     def set_focus(self):
-        if debug_focus:
-            print(self.tag, 'ace.focus()')
+        if 0: print('flx.log.set_focus()')
         self.editor.focus()
     #@-others
 #@+node:ekr.20181104082130.1: *3* class LeoFlexxMainWindow
@@ -1843,8 +1831,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
         # Backspace is not emitted.
         ev = self._create_key_event(e)
         key, mods = ev ['key'], ev ['modifiers']
-        if debug_keys:
-            print('mini.key_press: %r %r' % (mods, key))
+        if 0: print('mini.key_press: %r %r' % (mods, key))
         if mods:
             e.preventDefault()
             return ev
@@ -1862,8 +1849,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
     def on_key_press(self, *events):
         '''Pass *all* keys Leo's core.'''
         for ev in events:
-            if debug_keys:
-                print('mini.on_key_press: %r %r' % (ev ['modifiers'], ev['key']))
+            if 0: print('mini.on_key_press: %r %r' % (ev ['modifiers'], ev['key']))
             self.root.do_key(ev, 'minibufferWidget')
     #@+node:ekr.20181129174405.1: *4* flx_minibuffer.do_enter_key
     def do_enter_key(self, key, mods):
@@ -1872,8 +1858,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
         This will only be called if the user has entered the minibuffer via a click.
         '''
         command = self.editor.getValue()
-        if debug_keys:
-            print('mini.do_enter_key', repr(command))
+        if 0: print('mini.do_enter_key', repr(command))
         if command.strip():
             if command.startswith('full-command:'):
                 command = command[len('full-command:'):].strip()
@@ -2011,7 +1996,7 @@ class LeoFlexxTree(flx.Widget):
         assert redraw_dict
         self.clear_tree()
         items = redraw_dict ['items']
-        if 0: print('%s: %s direct children' % (tag, len(items))) # debug_redraw
+        if 0: print('%s: %s direct children' % (tag, len(items)))
         for item in items:
             if 0: print('  item', repr(item['headline']))
             self.create_item_with_parent(item, self.tree)
@@ -2024,7 +2009,7 @@ class LeoFlexxTree(flx.Widget):
         # pylint: disable=no-member
             # set_collapsed is in the base class.
         ap = item ['ap']
-        if 0: print('%s%s' % ('  '*ap ['level'], ap['headline'])) # debug_tree: lengthy.
+        if 0: print('%s%s' % ('  '*ap ['level'], ap['headline']))
         #
         # Create the node.
         with parent:
@@ -2117,8 +2102,7 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181120063735.1: *4* flx_tree.Focus
     @flx.action
     def set_focus(self):
-        if debug_focus:
-            print(self.tag, 'self.node.ace.focus()')
+        if 0: print('flx.tree.set_focus()')
         self.node.focus()
     #@+node:ekr.20181123165819.1: *4* flx_tree.Incremental Drawing...
     # This are not used, at present, but they may come back.
@@ -2135,8 +2119,7 @@ class LeoFlexxTree(flx.Widget):
         assert parent
         assert parent_ap == parent.leo_ap
             # The expansion bit may have changed?
-        if 0: print('flx.tree.populate_children: parent: %r %s children' % (
-            parent, len(children))) # debug_tree.
+        if 0: print('flx.tree.populate_children: parent: %r %s children' % (parent, len(children)))
         for child_ap in children:
             self.create_item_with_parent(child_ap, parent)
         self.populating_tree_item = False
@@ -2174,22 +2157,29 @@ class LeoFlexxTree(flx.Widget):
         '''
         parent_ap = d ['parent_ap']
         children = d ['items']
-        if 0: print('===== flx.tree.receive_children: %s children' % (len(children))) # debug_tree.
+        if 0: print('===== flx.tree.receive_children: %s children' % (len(children)))
         self.populate_children(children, parent_ap)
     #@+node:ekr.20181120061140.1: *4* flx_tree.Key handling
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        f_key = not ev['modifiers'] and ev['key'].startswith('F')
-        if debug_keys:
-            print('flx.TREE: key_press: %r preventDefault: %s', (ev, not f_key))
-        if not f_key:
-            e.preventDefault()
+        mods, key = ev['modifiers'], ev['key']
+        f_key = not mods and key.startswith('F')
+        if 0: print('flx.tree.key_press: %r preventDefault: %s', (ev, not f_key))
+        # Use default action for F-Keys.
+        if not mods and key.startswith('F'):
+            return ev
+        # Don't ignore Return
+        # if not mods and key == 'Enter':
+        #     return ev
+        #
+        # Prevent default action for all other keys.
+        e.preventDefault()
         return ev
 
     @flx.reaction('tree.key_press')
     def on_key_press(self, *events):
-        if 0: print('flx.TREE.key_press')
+        if 0: print('flx.tree.on_key_press')
         for ev in events:
             self.root.do_key(ev, 'tree')
     #@+node:ekr.20181121195235.1: *4* flx_tree.Selecting...
