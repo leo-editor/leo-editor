@@ -345,8 +345,11 @@ class LeoBrowserApp(flx.PyComponent):
         # Open or get the first file.
         if g.app and isinstance(g.app.gui, LeoBrowserGui):
             # We are running with --gui=browser.
-            assert isinstance(g.app.log, leoFrame.NullLog)
-            c = g.app.log.c
+            if isinstance(g.app.log, leoFrame.NullLog):
+                c = g.app.log.c
+            else:
+                print('app.init: ===== Ctrl-H ===== ?')
+                return 
         else:
             # We are running stand-alone.
             # Use the bridge to open a single file.
@@ -1538,7 +1541,7 @@ class JS_Editor(flx.Widget):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        if 0: print('JS_Editor.key_press: %s %r' % (self.name, ev))
+        if 0: print('jse.key_press: %s %r' % (self.name, ev))
         if self.should_be_leo_key(ev):
             e.preventDefault()
         return ev
@@ -1556,11 +1559,11 @@ class JS_Editor(flx.Widget):
         Return True if Leo should handle the key.
         Leo handles only modified keys, not F-keys or plain keys.
         '''
-        key, mods, tag = ev['key'], ev['modifiers'], 'JSE.should_be_leo_key:'
+        key, mods, tag = ev['key'], ev['modifiers'], 'JSE.should_be_leo_key'
         #
         # The widget handles F-keys.
         if not mods and key.startswith('F'):
-            if 0: print(tag, 'Send F-Keys to body', repr(mods), repr(key))
+            if 0: print('%s: %r %r return: false' % (tag, mods, key))
             return False
         mods2 = mods
         if 'Shift' in mods2:
@@ -1573,11 +1576,8 @@ class JS_Editor(flx.Widget):
             return False
         #
         # Leo should handle all other modified keys.
-        if mods2:
-            if 0: print(tag, '  modified: send to Leo', repr(mods), repr(key))
-        else:
-            if 0: print(tag, 'unmodified: send to Body', repr(mods), repr(key))
-        return mods
+        if 0: print('%s: %r %r return: %s' % (tag, mods, key, bool(mods2)))
+        return mods2
     #@+node:ekr.20181215083642.1: *4* jse.focus
     @flx.action
     def see_insert_point(self):
