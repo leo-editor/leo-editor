@@ -27,7 +27,9 @@ from flask import request
 #
 # curl -i -H "Content-Type: application/json" -X PUT -d '{"done":true}' http://localhost:5000/todo/api/v1.0/tasks/2
 #@-<< curl reference >>
-
+# 
+# pylint: disable=len-as-condition
+# pylint: disable=unidiomatic-typecheck
 app = Flask(__name__)
 #@+<< define tasks >>
 #@+node:ekr.20181209121948.1: ** << define tasks >>
