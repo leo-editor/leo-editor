@@ -3795,15 +3795,6 @@ def openUrl(event=None):
 def openUrlUnderCursor(event=None):
     '''Open the url under the cursor.'''
     return g.openUrlOnClick(event)
-#@+node:ekr.20181016103706.1: ** pytest tests (leoApp.py)
-def test1():
-    assert True
-    
-def test2():
-    assert False
-    
-def third_test():
-    assert True
 #@-others
 #@@language python
 #@@tabwidth -4
