@@ -139,7 +139,7 @@ def make_editor_function(name, node):
         ace.getSession().setMode("ace/mode/python")
             # This sets soft tabs.
     if name == 'minibuffer':
-        pass ### Disable line numbers.
+        pass # To do: Disable line numbers.
     return ace
 #@+node:ekr.20181113041410.1: *3* suppress_unwanted_log_messages (not used)
 def suppress_unwanted_log_messages():
@@ -482,18 +482,15 @@ class LeoBrowserApp(flx.PyComponent):
 
     @flx.action
     def set_body_text(self):
-        ### c, w = self.c, self.main_window
-        ### w.body.set_text(c.p.b)
         c = self.c
         c.frame.body.wrapper.setAllText(c.p.b)
-            ### Using the wrapper sets the text *and* the insert point and selection range.
+            # Using the wrapper sets the text *and* the insert point and selection range.
 
     @flx.action
     def set_status(self):
         c, w = self.c, self.main_window
         lt, rt = c.frame.statusLine.update(c.p.b, 0)
         w.status_line.update(lt, rt)
-        
     #@+node:ekr.20181122132345.1: *4* app.Drawing...
     #@+node:ekr.20181113042549.1: *5* app.action.redraw
     @flx.action
@@ -833,7 +830,7 @@ class LeoBrowserApp(flx.PyComponent):
             fc.wrapping = False
         # Do the search.
         fc.findNext()
-        if 1: ### Testing only???
+        if 1: # Testing only?
             w = self.root.main_window
             c.k.keyboardQuit()
             c.redraw()
@@ -943,7 +940,7 @@ class LeoBrowserApp(flx.PyComponent):
             widget=w, # Use the body pane by default.
         )
             # Another hack.
-        k.functionTail = None ### Changed.
+        k.functionTail = None
         if commandName and commandName.isdigit():
             # The line number Easter Egg.
             def func(event=None):
@@ -1759,10 +1756,6 @@ class LeoFlexxMainWindow(flx.Widget):
         self._mutate('status_line', status_line)
         self._mutate('tree', tree)
         self.emit('do_init')
-        if is_public:
-            global alert # for pyflakes.
-            # pylint: disable=undefined-variable
-            alert('Use LeoWapp at your own risk')
         
     @flx.reaction('!do_init')
     def after_init(self):
@@ -1815,15 +1808,6 @@ class LeoFlexxMiniBuffer(JS_Editor):
         if 0: print('===== flx.minibuffer.set_text', repr(s))
         self.editor.setValue(s)
     #@+node:ekr.20181203150409.1: *4* flx_minibuffer.Key handling
-    if 0: ### Reference only.
-
-        RawJS("""\
-    window.onbeforeunload = function(){
-        // console.log("window.onbeforeunload")
-        return "Are you sure?"
-    };""")
-
-
     @flx.emitter
     def key_press(self, e):
         '''Pass *all* keys except Enter and F12 to Leo's core.'''
@@ -1839,7 +1823,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
         if key == 'Enter':
             self.do_enter_key(key, mods)
             e.preventDefault()
-            return None ###
+            return None
         # k.masterKeyHandler will handle everything.
         e.preventDefault()
         return ev
@@ -2095,9 +2079,8 @@ class LeoFlexxTree(flx.Widget):
                     if 0: print('===== flx.tree.on_tree_event: already expanded', ap['headline'])
                 else:
                     ap['expanded'] = True
-                    ### self.root.expand_and_redraw(ap)
                     self.start_populating_children(ap, tree_item)
-                    # Populate children, if necessary.
+                        # Populate children, if necessary.
     #@+node:ekr.20181120063735.1: *4* flx_tree.Focus
     @flx.action
     def set_focus(self):
@@ -2238,11 +2221,6 @@ class LeoFlexxTree(flx.Widget):
                     # Sets self.selected_ap.
                 self.root.select_tree_using_ap(ap)
                     # A helper action, calling tree.select.
-                ### should not be needed.
-                    # self.root.set_body_text()
-                        # # Update the body text.
-                    # self.root.set_status()
-                        # # Update the status line.
     #@-others
 #@+node:ekr.20181108233657.1: *3* class LeoFlexxTreeItem
 class LeoFlexxTreeItem(flx.TreeItem):
