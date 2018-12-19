@@ -321,7 +321,6 @@ class LeoBrowserApp(flx.PyComponent):
         c.findCommands.ftm = g.NullObject()
         # Init the log, body, status line and tree.
         g.app.gui.writeWaitingLog2()
-        ### Needed ???
         self.set_body_text()
         self.set_status()
         self.redraw(c.p)
@@ -332,7 +331,7 @@ class LeoBrowserApp(flx.PyComponent):
         else: # This definitely shows focus in the editor.
             self.gui.set_focus(c, c.frame.body)
             w.body.set_focus()
-        # Set the inited flag *last*
+        # Set the inited flag *last*.
         self.inited = True
     #@+node:ekr.20181216042806.1: *5* app.init
     def init(self):
