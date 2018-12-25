@@ -432,6 +432,7 @@ class FileCommands(object):
             # This encoding must match the encoding used in putLeoOutline.
         hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
         v = hidden_v.children[0]
+        v.parents.remove(hidden_v)
         # Restore the hidden root's children
         c.hiddenRootNode.children = old_children
         if not v:
