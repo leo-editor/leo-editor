@@ -289,7 +289,7 @@ class FastRead (object):
                             fc.descendentVnodeUaDictList.append((v, aDict),)
                     #
                     # Handle vnode uA's
-                    uaDict = gnx2ua.get(gnx)
+                    uaDict = gnx2ua[gnx]
                         # gnx2ua is a defaultdict(dict)
                         # It might already exists because of tnode uA's.
                     for key, val in d.items():
