@@ -65,6 +65,8 @@ class FastRead (object):
         if not s:
             with open(path, 'rb') as f:
                 s = f.read()
+        s = s.replace(b'\x0c', b'')
+            # Fix #1036.
         return self.readWithElementTree(path, s)
     #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
     def readWithElementTree(self, path, s):
