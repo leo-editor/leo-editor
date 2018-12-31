@@ -2363,7 +2363,6 @@ class AtFile(object):
         if root.isAtIgnoreNode():
             g.trace('already contains @ignore', root.h)
         elif not g.unitTesting:
-            g.trace('=====', g.callers())
             s = root.b.rstrip()
             if s:
                 root.b = s + '\n@ignore\n'

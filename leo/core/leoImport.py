@@ -1858,7 +1858,8 @@ class RecursiveImportController(object):
                 self.import_one_file(dir_, parent)
             else:
                 self.import_dir(dir_, parent)
-                self.post_process(parent, dir_)
+            self.post_process(parent, dir_)
+                # Fix # 1033.
             c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
         except Exception:
             g.es_print('Exception in recursive import')

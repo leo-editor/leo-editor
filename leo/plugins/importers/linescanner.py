@@ -920,7 +920,7 @@ class Importer(object):
                 # Used in a unit test.
                 c.importCommands.errors += 1
         return ok
-    #@+node:ekr.20161108131153.4: *5* i.clean_blank_lines
+    #@+node:ekr.20161108131153.4: *5* i.clean_blank_lines (not used)
     def clean_blank_lines(self, lines):
         '''Remove all blanks and tabs in all blank lines.'''
         return [self.lstrip_line(z) if z.isspace() else z for z in lines]
