@@ -1120,14 +1120,15 @@ class AtFile(object):
             at.default_directory, at.targetFileName)
         if not toString:
             if at.shouldPromptForDangerousWrite(eventualFileName, root):
-                # Prompt if writing a new @file or @thin node would
+                # Prompt if writing a new @file or @clean node would
                 # overwrite an existing file.
                 ok = self.promptForDangerousWrite(eventualFileName, kind)
                 if ok:
                     at.rememberReadPath(eventualFileName, root)
                 else:
                     g.es("not written:", eventualFileName)
-                    at.addAtIgnore(root)
+                    # Fix #1031: do not add @ignore here!
+                    # @ignore will be added below if the write actually fails.
                     return
         if not at.openFileForWriting(root, at.targetFileName, toString):
             # Calls at.addAtIgnore() if there are errors.
