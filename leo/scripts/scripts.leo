@@ -358,6 +358,9 @@
 <v t="ekr.20180529105231.1"><vh>Leo 5.7.4</vh>
 <v t="ekr.20180529105204.1"><vh>script: get-child-headlines</vh></v>
 </v>
+<v t="ekr.20181231155722.1"><vh>Leo 5.8.1</vh>
+<v t="ekr.20181231155727.1"><vh>@@command make-vim-node</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -4223,6 +4226,23 @@ if 1:
 ''' % d
 </t>
 <t tx="ekr.20181020064400.1"></t>
+<t tx="ekr.20181231155722.1"></t>
+<t tx="ekr.20181231155727.1">'''
+Select from the cursor to a line starting with "endfunction",
+then do 'extract' command.
+'''
+s = c.p.b
+w = c.frame.body.wrapper
+i = w.getInsertPoint()
+target = '\nendfunction'
+j = s.find(target, i)
+if j &gt; -1:
+    j += len(target)
+    j = g.skip_line(s,j)
+    w.setSelectionRange(i, j, insert=i)
+    c.frame.body.wrapper.setSelectionRange(i, j, insert=i)
+    c.k.simulateCommand('extract')
+</t>
 <t tx="mhw.20181210131101.1">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
