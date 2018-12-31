@@ -65,6 +65,8 @@ class FastRead (object):
         if not s:
             with open(path, 'rb') as f:
                 s = f.read()
+        s = s.replace(b'\x0c', b'')
+            # Fix #1036.
         return self.readWithElementTree(path, s)
     #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
     def readWithElementTree(self, path, s):
@@ -289,7 +291,7 @@ class FastRead (object):
                             fc.descendentVnodeUaDictList.append((v, aDict),)
                     #
                     # Handle vnode uA's
-                    uaDict = gnx2ua.get(gnx)
+                    uaDict = gnx2ua[gnx]
                         # gnx2ua is a defaultdict(dict)
                         # It might already exists because of tnode uA's.
                     for key, val in d.items():
@@ -432,6 +434,7 @@ class FileCommands(object):
             # This encoding must match the encoding used in putLeoOutline.
         hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
         v = hidden_v.children[0]
+        v.parents.remove(hidden_v)
         # Restore the hidden root's children
         c.hiddenRootNode.children = old_children
         if not v:
