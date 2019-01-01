@@ -1430,6 +1430,10 @@
 <v t="ekr.20131019061259.16686"><vh>Pre-defined symbols</vh></v>
 <v t="ekr.20170315020214.1"><vh>LeoApp class</vh></v>
 <v t="ekr.20131019061259.16688"><vh>Commands class</vh></v>
+<v t="ekr.20190101093224.1"><vh>Undoing commands</vh>
+<v t="ekr.20190101093224.2"><vh>Undoably changing body text</vh></v>
+<v t="ekr.20190101093224.3"><vh>Undoably changing multiple nodes</vh></v>
+</v>
 <v t="ekr.20131019061259.16690"><vh>VNode class</vh></v>
 <v t="ekr.20131019061259.16691"><vh>Position class</vh></v>
 <v t="ekr.20131019061259.16692"><vh>leo.core.leoGlobals module</vh></v>
@@ -2298,9 +2302,6 @@
 <v t="ekr.20180930062351.61"><vh>Removed --no-cache &amp; --trace-cache</vh></v>
 </v>
 </v>
-<v t="ekr.20170217093640.1"></v>
-<v t="ekr.20040403171740"></v>
-<v t="ekr.20050901101608.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -30659,6 +30660,33 @@ The body text of an @data history-list *setting node* preloads commands into the
     check-clones
     expand-log-pane
     contract-log-pane</t>
+<t tx="ekr.20190101093224.1">If you want to make a command undoable, you must create "before" and "after" snapshots of the parts of the outline that may change. Here are some examples.  Leo's source code contains many other examples.
+</t>
+<t tx="ekr.20190101093224.2">To undo a single change to body text::
+
+    command = 'my-command-name'
+    b = c.undoer.beforeChangeNodeContents(p, oldYScroll=ypos)
+    # Change p's body text.
+    c.undoer.afterChangeNodeContents(p,
+        command=command, bunch=b, dirtyVnodeList=[])
+</t>
+<t tx="ekr.20190101093224.3">If your command changes multiple nodes, the pattern is::
+
+    u, undoType = c.undoer, 'command-name'
+    u.beforeChangeGroup(c.p, undoType)
+    dirtyVnodeList = []
+    changed = False
+    # For each change, do something like the following:
+    for p in to_be_changed_nodes:
+        # Change p.
+        dirtyVnodeList.append(p.v)
+        u.afterChangeNodeContents(p, undoType, bunch)
+        changed = True
+    if changed:
+        u.afterChangeGroup(c.p, undoType,
+            reportFlag=False,
+            dirtyVnodeList=dirtyVnodeList)
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
