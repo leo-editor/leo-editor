@@ -39,6 +39,10 @@
 <v t="ekr.20131019184243.16695"><vh>Pre-defined symbols</vh></v>
 <v t="ekr.20170315015836.1"><vh>LeoApp class</vh></v>
 <v t="ekr.20131019184243.16697"><vh>Commands class</vh></v>
+<v t="ekr.20190101084845.1"><vh>Undoing commands</vh>
+<v t="ekr.20190101092126.1"><vh>Undoably changing body text</vh></v>
+<v t="ekr.20190101092129.1"><vh>Undoably changing multiple nodes</vh></v>
+</v>
 <v t="ekr.20131019184243.16698"><vh>VNode class</vh></v>
 <v t="ekr.20131019184243.16699"><vh>Position class</vh></v>
 <v t="ekr.20131019184243.16700"><vh>The leoGlobals module</vh></v>
@@ -1708,6 +1712,34 @@ c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
 </t>
 <t tx="ekr.20181015143002.1">True: Wrap body text.
 
+</t>
+<t tx="ekr.20190101084845.1">If you want to make a command undoable, you must create "before" and "after" snapshots of the parts of the outline that may change. Here are some examples.  Leo's source code contains many other examples.
+
+    </t>
+<t tx="ekr.20190101092126.1">To undo a single change to body text::
+
+    command = 'my-command-name'
+    b = c.undoer.beforeChangeNodeContents(p, oldYScroll=ypos)
+    # Change p's body text.
+    c.undoer.afterChangeNodeContents(p,
+        command=command, bunch=b, dirtyVnodeList=[])
+</t>
+<t tx="ekr.20190101092129.1">If your command changes multiple nodes, the pattern is::
+
+    u, undoType = c.undoer, 'command-name'
+    u.beforeChangeGroup(c.p, undoType)
+    dirtyVnodeList = []
+    changed = False
+    # For each change, do something like the following:
+    for p in to_be_changed_nodes:
+        # Change p.
+        dirtyVnodeList.append(p.v)
+        u.afterChangeNodeContents(p, undoType, bunch)
+        changed = True
+    if changed:
+        u.afterChangeGroup(c.p, undoType,
+            reportFlag=False,
+            dirtyVnodeList=dirtyVnodeList)
 </t>
 <t tx="mhw.20181210130732.1">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.

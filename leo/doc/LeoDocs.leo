@@ -2298,6 +2298,9 @@
 <v t="ekr.20180930062351.61"><vh>Removed --no-cache &amp; --trace-cache</vh></v>
 </v>
 </v>
+<v t="ekr.20170217093640.1"></v>
+<v t="ekr.20040403171740"></v>
+<v t="ekr.20050901101608.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18598,7 +18601,7 @@ Leo now stores "ephemeral" or position-related data *in vnodes*. This was a comp
 </t>
 <t tx="ekr.20150312080344.12">Leo's Gui code is built on wrapper and widget classes. A **widget** is an actual Qt widget. A **wrapper** is an object whose API hides the details of the underlying gui **text** widgets. Leo's core code usually uses wrappers, not raw widgets.
 
-There is a back door for special cases. All wrapper classes define an official ``widget`` ivar, so core or plugin code can gain access to the real Qt widget using ``wrapper.widget``. Searching for ``wrapper.widget`` should find all gui-dependent snippets of code in Leo's core.
+There is a back door for special cases. All wrapper classes define an official ``widget`` ivar (instance variable), so core or plugin code can gain access to the real Qt widget using ``wrapper.widget``. Searching for ``wrapper.widget`` should find all gui-dependent snippets of code in Leo's core.
 
 Wrappers allow the same text-handling code to work regardless of whether the actual text widgets are a QTextBrowser or a QsciScintilla object. Without wrappers, all of Leo's text-editing commands would have to know the details of the api of the actual Qt text widget!
 </t>
@@ -23080,7 +23083,9 @@ The execute-script command pre-defines three names: c, g, and p. **c** is the `c
             len(p.b),       # p.b is p's body text.
             ' '*p.level(),  # p.level() is p's indentation level.
             p.h,            # p.h is p's headline.
-        )
+        ))
+        
+To run this script, put it in the body text of any node and do Ctrl-B, execute-script.
 
 .. _`scripting tutorial`: tutorial-scripting.html
 
@@ -23658,6 +23663,9 @@ Finally, ``&lt;Return&gt;`` executes the ``print-commands`` command. The output 
     Prompts for a filename. This command completes the name of files and directories as in command completion.  As a result, this command can be very fast.  You may want to bind this command to ``Ctrl-O`` instead of the default ``open-outline`` command.
 </t>
 <t tx="ekr.20170313111502.1">@language python
+
+**p.b** is the body text associated with position p. Similarly, **p.h** is p's headline.
+p.b and p.h are python properties, so you can assign to p.b and p.h.
 
 This script creates an outline node as the last top-level node::
 
