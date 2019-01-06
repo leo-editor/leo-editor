@@ -744,7 +744,7 @@ ekr_dark</t>
 @language css
 
   EKRDark.leo: @data qt-gui-plugin-style-sheet
-  @theme EKR Black Solarized.
+  at-theme EKR Black Solarized.
   at-tabwidth -2 causes a crash in parse-template!
 
 */
