@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.50">
-	<global_window_position top="117" left="473" height="700" width="1035"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -163,6 +160,7 @@
 <v t="ekr.20180309185230.115"><vh>Status area</vh></v>
 <v t="ekr.20180309185230.116"><vh>Tab bar</vh></v>
 <v t="ekr.20180309185230.117"><vh>Tree</vh></v>
+<v t="ekr.20190106114202.1"><vh>zz must be last</vh></v>
 </v>
 </v>
 </v>
@@ -212,7 +210,9 @@ random background colors which are appropriate etc.</t>
 used to find icon files</t>
 <t tx="ekr.20180309185230.105">/*
 @language css
-at-tabwidth -2 causes a crash in parse-template!
+
+  EKRLight.leo: @data qt-gui-plugin-style-sheet
+  at-tabwidth -2 causes a crash in parse-template!
 */</t>
 <t tx="ekr.20180309185230.106">/* The body pane */
 /* QTextEdit#richTextEdit, QTextBrowser#vr-body { */
@@ -356,17 +356,6 @@ QLineEdit#status2 {
   border-color: @LeoBlue;
   border-width: 1px;
   border-style: solid;
-}
-QLineEdit#status1[style_class ~= 'info'],
-QLineEdit#status2[style_class ~= 'info'] {
-    background: @LeoBlue;
-    color:      @white;
-}
-
-QLineEdit#status1[style_class ~= 'fail'],
-QLineEdit#status2[style_class ~= 'fail'] {
-    background: @red;
-    color:      @white;
 }
 </t>
 <t tx="ekr.20180309185230.116">QTabBar::tab {
@@ -709,5 +698,17 @@ def spam():
 </t>
 <t tx="ekr.20180314052351.2"></t>
 <t tx="ekr.20180319081051.1"></t>
+<t tx="ekr.20190106114202.1">QLineEdit#status1[style_class ~= 'info'],
+QLineEdit#status2[style_class ~= 'info'] {
+    background: @LeoBlue;
+    color:      @white;
+}
+
+QLineEdit#status1[style_class ~= 'fail'],
+QLineEdit#status2[style_class ~= 'fail'] {
+    background: @red;
+    color:      @white;
+}
+</t>
 </tnodes>
 </leo_file>

@@ -181,10 +181,10 @@
 <v t="ekr.20180318145515.824"><vh>Status area</vh></v>
 <v t="ekr.20180318145515.825"><vh>Tab bar</vh></v>
 <v t="ekr.20180318145515.826"><vh>Tree</vh></v>
+<v t="ekr.20190106105105.1"><vh>zz must be last</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20180320125351.1"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180312110809.1"></t>
@@ -742,9 +742,11 @@ leo_dark_0
 ekr_dark</t>
 <t tx="ekr.20180318145515.813">/*
 @language css
-at-tabwidth -2 causes a crash in parse-template!
 
-@data qt-gui-plugin-style-sheet: EKR Black Solarized
+  EKRDark.leo: @data qt-gui-plugin-style-sheet
+  @theme EKR Black Solarized.
+  at-tabwidth -2 causes a crash in parse-template!
+
 */
 </t>
 <t tx="ekr.20180318145515.814">/* A Qt bug? More general css should precede more specific. */
@@ -947,17 +949,6 @@ QLineEdit#status2 {
   border-width: 1px;
   border-style: solid;
 }
-QLineEdit#status1[style_class ~= 'info'],
-QLineEdit#status2[style_class ~= 'info'] {
-    background: @solarized-blue;
-    color:      @solarized-white;
-}
-
-QLineEdit#status1[style_class ~= 'fail'],
-QLineEdit#status2[style_class ~= 'fail'] {
-    background: @solarized-red;
-    color:      @solarized-white;
-}
 </t>
 <t tx="ekr.20180318145515.825">QTabBar::tab {
   /* color: @text-foreground; */
@@ -1018,6 +1009,17 @@ QTreeView QLineEdit {
 #859900: real solarized green. Bad hue</t>
 <t tx="ekr.20181005084517.1">QFrame#gutter {
   /* background: gray; */
+}</t>
+<t tx="ekr.20190106105105.1">QLineEdit#status1[style_class ~= 'info'],
+QLineEdit#status2[style_class ~= 'info'] {
+    background: @solarized-blue;
+    color:      @solarized-white;
+}
+
+QLineEdit#status1[style_class ~= 'fail'],
+QLineEdit#status2[style_class ~= 'fail'] {
+    background: @solarized-red;
+    color:      @solarized-white;
 }</t>
 </tnodes>
 </leo_file>

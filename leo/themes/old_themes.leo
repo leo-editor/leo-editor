@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -30,6 +27,7 @@
 <v t="ekr.20180307015158.131"><vh>Status areas</vh></v>
 <v t="ekr.20180307015158.132"><vh>Vim mode borders</vh></v>
 <v t="ekr.20180307015158.133"><vh>Widgets</vh></v>
+<v t="ekr.20190106114300.1"><vh>zz must be last</vh></v>
 </v>
 <v t="ekr.20180307015158.22"><vh>@theme base dark</vh>
 <v t="ekr.20180307015158.23"><vh>settings (base dark)</vh>
@@ -899,6 +897,8 @@ QWidget#body-text-renderer {
 <t tx="ekr.20180307015158.115">/*
 @language css
 
+    old_themes.leo: @data qt-gui-plugin-style-sheet (ekr light)
+
     =========== Leo's new, fully parameterized, stylesheet. ===========
     
     This stylesheet is responsible for most of Leo's appearance.
@@ -1078,17 +1078,6 @@ QLabel#minibufferLabel {
     font-weight:    @minibuffer-font-weight;
     font-style:     @minibuffer-font-style;
 }
-
-/* ----- Minibuffer ----- */
-
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
-    background-color: @minibuffer_warning_color;
-}
-
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
-    color: @minibuffer_error_color;
-    background-color: @minibuffer_warning_color;
-}
 </t>
 <t tx="ekr.20180307015158.123">/* ========== Outline pane ========== */
 
@@ -1172,29 +1161,6 @@ QTreeView::branch:open:has-children{
     text-decoration:    @bookmarks_base_decoration;
 }
 
-#show_bookmarks QPushButton[style_class~='bookmark_children'] {
-    color:              @bookmarks_children_color;
-    font-family:        @bookmarks_children_family;
-    font-size:          @bookmarks_children_size;
-    font-weight:        @bookmarks_children_weight;
-    text-decoration:    @bookmarks_children_decoration;
-}
-
-#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
-    font-size:          @bookmarks_expanded_size;
-    color:              @bookmarks_expanded_color;
-    font-style:         @bookmarks_expanded_style;
-    font-weight:        @bookmarks_expanded_weight;
-    text-decoration:    @bookmarks_expanded_decoration;
-}
-
-#show_bookmarks QPushButton[style_class~='bookmark_current'] {
-    font-size:          @bookmarks_current_size;
-    color:              @bookmarks_current_color;
-    font-style:         @bookmarks_expanded_style;
-    font-weight:        @bookmarks_current_weight;
-    text-decoration:    @bookmarks_current_decoration;
-}
 </t>
 <t tx="ekr.20180307015158.126">/* ========== screencast.py plugin========== */
 
@@ -1307,7 +1273,9 @@ QStackedWidget {
 }
 </t>
 <t tx="ekr.20180307015158.134">/*
-@language css EKR: qt-gui-user-style-sheet
+@language css
+
+old_themes.leo: qt-gui-user-style-sheet (ekr light)
 */
 
 /*
@@ -1496,7 +1464,9 @@ Was red. Now now comment1_color</t>
 <t tx="ekr.20180307015158.216">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
 <t tx="ekr.20180307015158.217">/*
-@language css windows ekr dark
+@language css
+
+old_themes.leo: qt-gui-user-style-sheet (ekr dark)
 */</t>
 <t tx="ekr.20180307015158.218"></t>
 <t tx="ekr.20180307015158.219">/* ===== active pane highlighting ===== */
@@ -1928,7 +1898,9 @@ node headings, and click the reload-style button.
 <t tx="ekr.20180307015158.314">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
 <t tx="ekr.20180307015158.315">/*
-@language css linux ekr dark
+@language css
+
+old_themes.leo: qt-gui-user-style-sheet (linux ekr dark)
 */</t>
 <t tx="ekr.20180307015158.316"></t>
 <t tx="ekr.20180307015158.317">/* ===== active pane highlighting ===== */
@@ -2315,7 +2287,7 @@ random background colors which are appropriate etc.</t>
 <t tx="ekr.20180307015158.407">/*
 @language css
 
-leo_dark theme 0
+old_themes.leo: qt-gui-user-style-sheet (leo_dark theme 0)
 */</t>
 <t tx="ekr.20180307015158.408">/* ===== active pane highlighting ===== */
 QTextEdit#log-widget,
@@ -2704,7 +2676,7 @@ url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)<
 <t tx="ekr.20180307015158.496">/*
 @language css
 
-leo_dark theme 1
+old_themes.leo: qt-gui-user-style-sheet (leo_dark theme 1)
 */</t>
 <t tx="ekr.20180307015158.497">/* ===== Body pane ===== */
 
@@ -3069,7 +3041,7 @@ Note: Do not use @-constants here.</t>
 <t tx="ekr.20180307015158.583">/*
 @language css
 
-leo_dark theme 2
+old_themes.leo: qt-gui-user-style-sheet (leo_dark theme 2)
 */</t>
 <t tx="ekr.20180307015158.584">/* ===== Body Editor ===== */
 
@@ -3312,8 +3284,49 @@ url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)<
 <t tx="ekr.20180307015158.97">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
 <t tx="ekr.20180307015158.98">/*
-@language css (base dark)
+@language css
+
+old_themes.leo: @data qt-gui-plugin-style-sheet (base dark)
+    
 */</t>
 <t tx="ekr.20180307015158.99"></t>
+<t tx="ekr.20190106114300.1">/* ----- Minibuffer ----- */
+
+QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
+    background-color: @minibuffer_warning_color;
+}
+
+QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
+    color: @minibuffer_error_color;
+    background-color: @minibuffer_warning_color;
+}
+
+/* Bookmarks plugin */
+
+#show_bookmarks QPushButton[style_class~='bookmark_children'] {
+    color:              @bookmarks_children_color;
+    font-family:        @bookmarks_children_family;
+    font-size:          @bookmarks_children_size;
+    font-weight:        @bookmarks_children_weight;
+    text-decoration:    @bookmarks_children_decoration;
+}
+
+#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
+    font-size:          @bookmarks_expanded_size;
+    color:              @bookmarks_expanded_color;
+    font-style:         @bookmarks_expanded_style;
+    font-weight:        @bookmarks_expanded_weight;
+    text-decoration:    @bookmarks_expanded_decoration;
+}
+
+#show_bookmarks QPushButton[style_class~='bookmark_current'] {
+    font-size:          @bookmarks_current_size;
+    color:              @bookmarks_current_color;
+    font-style:         @bookmarks_expanded_style;
+    font-weight:        @bookmarks_current_weight;
+    text-decoration:    @bookmarks_current_decoration;
+}
+
+</t>
 </tnodes>
 </leo_file>

@@ -538,8 +538,8 @@
 <v t="edward.20150614045745.1"><vh>Rendering pane</vh></v>
 <v t="ekr.20140915194122.19471"><vh>Splitter</vh></v>
 <v t="ekr.20140915194122.19473"><vh>Status areas</vh></v>
-<v t="ekr.20140915194122.19475"><vh>Vim mode borders</vh></v>
 <v t="ekr.20140915194122.19470"><vh>Widgets</vh></v>
+<v t="ekr.20190106080417.1"><vh>zz Must be last</vh></v>
 </v>
 </v>
 <v t="ekr.20150620100951.1"><vh>User Qt Gui style sheet</vh>
@@ -2365,6 +2365,7 @@
 </v>
 </v>
 <v t="ekr.20181028103333.1"></v>
+<v t="ekr.20140912072521.19160"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9414,6 +9415,8 @@ its sub-nodes into your myLeoSettings.leo file under the "@settings" node.
 <t tx="ekr.20140912072521.19160">/*
 @language css
 
+    leoSettings.leo: @data qt-gui-plugin-style-sheet
+
     =========== Leo's new, fully parameterized, stylesheet. ===========
     
     This stylesheet is responsible for most of Leo's appearance.
@@ -9674,16 +9677,6 @@ QLabel#minibufferLabel {
     font-style:     @minibuffer-font-style;
 }
 
-/* ----- Minibuffer ----- */
-
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
-    background-color: @minibuffer_warning_color;
-}
-
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
-    color: @minibuffer_error_color;
-    background-color: @minibuffer_warning_color;
-}
 </t>
 <t tx="ekr.20140915194122.19463"></t>
 <t tx="ekr.20140915194122.19464">/* ========== bookmarks.py plugin ========== */
@@ -9700,29 +9693,7 @@ QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
     text-decoration:    @bookmarks_base_decoration;
 }
 
-#show_bookmarks QPushButton[style_class~='bookmark_children'] {
-    color:              @bookmarks_children_color;
-    font-family:        @bookmarks_children_family;
-    font-size:          @bookmarks_children_size;
-    font-weight:        @bookmarks_children_weight;
-    text-decoration:    @bookmarks_children_decoration;
-}
 
-#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
-    font-size:          @bookmarks_expanded_size;
-    color:              @bookmarks_expanded_color;
-    font-style:         @bookmarks_expanded_style;
-    font-weight:        @bookmarks_expanded_weight;
-    text-decoration:    @bookmarks_expanded_decoration;
-}
-
-#show_bookmarks QPushButton[style_class~='bookmark_current'] {
-    font-size:          @bookmarks_current_size;
-    color:              @bookmarks_current_color;
-    font-style:         @bookmarks_expanded_style;
-    font-weight:        @bookmarks_current_weight;
-    text-decoration:    @bookmarks_current_decoration;
-}
 </t>
 <t tx="ekr.20140915194122.19465">/* ========== screencast.py plugin========== */
 
@@ -9868,15 +9839,6 @@ QLineEdit#status1, QLineEdit#status2 {
     font-style:         @status-font-style;
 }
 
-QLineEdit#status1[style_class ~= 'info'], QLineEdit#status2[style_class ~= 'info'] {
-    background-color:   @find-found-bg;
-    color:              @find-found-fg;
-}
-
-QLineEdit#status1[style_class ~= 'fail'], QLineEdit#status2[style_class ~= 'fail'] {
-    background-color:   @find-not-found-bg;
-    color:              @find-not-found-fg;
-}
 </t>
 <t tx="ekr.20140915194122.19474">/* ========== Outline pane ========== */
 
@@ -9944,20 +9906,6 @@ QTreeView::branch:open:has-children{
 
 ===== */
 
-</t>
-<t tx="ekr.20140915194122.19475">/* Vim mode borders... */
-
-QTextEdit#richTextEdit[vim_state~="vim_normal"] {
-  border: @vim-mode-normal-border;
-}
-
-QTextEdit#richTextEdit[vim_state~="vim_insert"] {
-  border: @vim-mode-insert-border;
-}
-
-QTextEdit#richTextEdit[vim_state~="vim_visual"] {
-  border: @vim-mode-visual-border;
-}
 </t>
 <t tx="ekr.20140915194122.21837">A small font size used by default in the status area.</t>
 <t tx="ekr.20140915194122.23413">A small font size used by default in the check boxes in the Find tab.</t>
@@ -10309,7 +10257,9 @@ except KeyError:
 <t tx="ekr.20150618105435.1"></t>
 <t tx="ekr.20150619190137.1">True: close the Find Dialog after any search.
 False: leave the Find Dialog open after any search.</t>
-<t tx="ekr.20150620100923.1">/* alternative active pane highlighting */
+<t tx="ekr.20150620100923.1">/* leoSettings.leo: @data qt-gui-user-style-sheet */
+
+/* alternative active pane highlighting */
 
 QTextEdit#log-widget,
 QLineEdit#lineEdit,
@@ -12157,6 +12107,68 @@ div.headline[icon="15"]::before {
     content: url("http://leoeditor.com/box15.GIF") " " attr(expand) " ";
 }
 </t>
+<t tx="ekr.20190106080417.1">/* ----- Minibuffer ----- */
+
+QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
+    background-color: @minibuffer_warning_color;
+}
+
+QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
+    color: @minibuffer_error_color;
+    background-color: @minibuffer_warning_color;
+}
+
+/* ----- Status line ----- */
+
+QLineEdit#status1[style_class ~= 'info'], QLineEdit#status2[style_class ~= 'info'] {
+    background-color:   @find-found-bg;
+    color:              @find-found-fg;
+}
+
+QLineEdit#status1[style_class ~= 'fail'], QLineEdit#status2[style_class ~= 'fail'] {
+    background-color:   @find-not-found-bg;
+    color:              @find-not-found-fg;
+}
+
+/* Vim mode borders... */
+
+QTextEdit#richTextEdit[vim_state~="vim_normal"] {
+  border: @vim-mode-normal-border;
+}
+
+QTextEdit#richTextEdit[vim_state~="vim_insert"] {
+  border: @vim-mode-insert-border;
+}
+
+QTextEdit#richTextEdit[vim_state~="vim_visual"] {
+  border: @vim-mode-visual-border;
+}
+
+/* ----- bookmarks.py ----- */
+
+#show_bookmarks QPushButton[style_class~='bookmark_children'] {
+    color:              @bookmarks_children_color;
+    font-family:        @bookmarks_children_family;
+    font-size:          @bookmarks_children_size;
+    font-weight:        @bookmarks_children_weight;
+    text-decoration:    @bookmarks_children_decoration;
+}
+
+#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
+    font-size:          @bookmarks_expanded_size;
+    color:              @bookmarks_expanded_color;
+    font-style:         @bookmarks_expanded_style;
+    font-weight:        @bookmarks_expanded_weight;
+    text-decoration:    @bookmarks_expanded_decoration;
+}
+
+#show_bookmarks QPushButton[style_class~='bookmark_current'] {
+    font-size:          @bookmarks_current_size;
+    color:              @bookmarks_current_color;
+    font-style:         @bookmarks_expanded_style;
+    font-weight:        @bookmarks_current_weight;
+    text-decoration:    @bookmarks_current_decoration;
+}</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
