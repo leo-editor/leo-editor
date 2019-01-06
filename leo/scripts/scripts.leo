@@ -362,6 +362,9 @@
 <v t="ekr.20181231155727.1"><vh>@@command make-vim-node</vh></v>
 </v>
 </v>
+<v t="ekr.20190106073221.1"><vh>find-chains</vh>
+<v t="ekr.20190106073221.2"><vh>standard methods</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -4243,6 +4246,58 @@ if j &gt; -1:
     c.frame.body.wrapper.setSelectionRange(i, j, insert=i)
     c.k.simulateCommand('extract')
 </t>
+<t tx="ekr.20190106073221.1">'''To be run in leoPy.leo: find Leo's important chains.'''
+g.cls()
+import re
+bases, chains = ['self.', 'c.', 'g.'], set()
+id_pat = r'\w[\w0-9]*'
+
+def get_lines():
+    '''Return a list of lines containing chains.'''
+    pat = re.compile(r'%s\.%s\.\w' % (id_pat, id_pat))
+    lines = set()
+    for p in c.all_unique_positions():
+        for line in g.splitLines(p.b):
+            if pat.search(line):
+                lines.add(line)
+    lines = list(lines)
+    print('%s lines' % len(lines))
+    return lines
+    
+s = ''.join(get_lines())
+
+def find_chains(base):
+    chains.add(base)
+    base = base.replace('.', r'\.')
+    pat = re.compile(r'\b(%s%s\.)(%s)' % (base, id_pat, id_pat))
+    for m in re.finditer(pat, s) or []:
+        chain, follow = m.group(1), m.group(2)
+        if chain not in chains: # and follow not in methods:
+            bases.append(chain)
+            chains.add(chain)
+            
+def munge_chains(chains):
+    '''Remove simple ivars and use c instead of self.c.'''
+    chains = [z.rstrip('.') for z in sorted(list(chains))]
+    chains = sorted(list(set([z[5:] if z.startswith('self.c.') else z for z in chains])))
+        # Replace self.c with c.
+    chains = [z for z in chains if z.count('.') &gt; 0]
+    chains = [z for z in chains if not z.startswith('self.') or z.count('.') &gt; 1]
+    return chains
+
+while bases:
+    find_chains(bases.pop())
+chains = munge_chains(chains)
+g.printObj(chains, tag='%s chains' % len(chains))</t>
+<t tx="ekr.20190106073221.2">if 0:
+    methods = (
+        'copy', # general method.
+        'add', # set methods
+        'append', 'extend', 'insert', 'pop', 'remove', 'split', 'sort', # list methods
+        'get',  'keys', 'items', 'values', # dict methods.
+        'endswith', 'finditer', 'lower', 'strip', 'lstrip', 'rstrip', 'startswith', 'upper',
+            # string methods.
+    )</t>
 <t tx="mhw.20181210131101.1">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
