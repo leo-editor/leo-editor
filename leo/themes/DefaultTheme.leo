@@ -2604,8 +2604,8 @@ QTreeView::branch:open:has-children{
     color:              @bookmarks_base_color;
     margin:             @bookmarks_base_margin;
     padding:            @bookmarks_base_padding;
-    border:             @bookmarks_base_border;
-    font-family:        @bookmarks_base_family;
+    /* border:             at-bookmarks_base_border; */
+    /* font-family:        at-bookmarks_base_family; */
     font-size:          @bookmarks_base_size;
     font-style:         @bookmarks_base_style;
     font-weight:        @bookmarks_base_weight;
@@ -2614,7 +2614,7 @@ QTreeView::branch:open:has-children{
 
 #show_bookmarks QPushButton[style_class~='bookmark_children'] {
     color:              @bookmarks_children_color;
-    font-family:        @bookmarks_children_family;
+    /* font-family:        at-bookmarks_children_family; */
     font-size:          @bookmarks_children_size;
     font-weight:        @bookmarks_children_weight;
     text-decoration:    @bookmarks_children_decoration;
@@ -2787,8 +2787,8 @@ QTextEdit#bigtextwarning {
 
 /* -----
 QPushButton {
-    font-family: @push-button-font-family;
-    font-size:   @push-button-font-size;
+    font-family: at-push-button-font-family;
+    font-size:   at-push-button-font-size;
 }
 ----- */
 
