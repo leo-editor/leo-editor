@@ -2129,15 +2129,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
         def put_helper(self, s, w, bg=None, fg=None):
             '''Put string s in the indicated widget, with proper colors.'''
             c = self.c
-            if not bg:
-                bg = c.config.getColor('status-bg') or 'white'
-            if not fg:
-                fg = c.config.getColor('status-fg') or 'black'
-            if 0:
+            bg = bg or c.config.getColor('status-bg') or 'white'
+            fg = fg or c.config.getColor('status-fg') or 'black'
+            if True:
                 # Work around #804. w is a QLineEdit.
-                s = 'background: %s; color: %s;' % (bg, fg)
-                g.trace(s)
-                w.setStyleSheet(s)
+                w.setStyleSheet('background: %s; color: %s;' % (bg, fg))
             else:
                 # Rather than put(msg, explicit_color, explicit_color) we should use
                 # put(msg, status) where status is None, 'info', or 'fail'.
