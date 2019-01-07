@@ -60,13 +60,16 @@ class FastRead (object):
         
     #@+others
     #@+node:ekr.20180604110143.1: *3* fast.readFile & helper
+    translate_table = b''.join([chr(z) for z in range(20) if chr(z) not in '\t\r\n'])
+
     def readFile(self, path=None, s=None):
 
         if not s:
             with open(path, 'rb') as f:
                 s = f.read()
-        s = s.replace(b'\x0c', b'')
-            # Fix #1036.
+        # s = s.replace(b'\x0c', b'').replace(b'0x00', b'')
+        s = s.translate(None, self.translate_table)
+            # Fix #1036 and #1046.
         return self.readWithElementTree(path, s)
     #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
     def readWithElementTree(self, path, s):
