@@ -704,7 +704,6 @@
 <v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
 <v t="ekr.20181018113812.1"><vh>@string initial-chooser-directory = None</vh></v>
 <v t="ekr.20181018113813.1"><vh>@string script-file-path = None</vh></v>
-<v t="ekr.20181018113813.2"><vh>newHeadline</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
 <v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
 <v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
@@ -2364,8 +2363,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20181028103333.1"></v>
-<v t="ekr.20140912072521.19160"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11937,7 +11934,6 @@ See https://jedi.readthedocs.io/en/latest/index.html
 <t tx="ekr.20181018113812.1">
 </t>
 <t tx="ekr.20181018113813.1"></t>
-<t tx="ekr.20181018113813.2"></t>
 <t tx="ekr.20181018113857.1"></t>
 <t tx="ekr.20181028103333.1"></t>
 <t tx="ekr.20181028103333.2"></t>
