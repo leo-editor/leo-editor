@@ -60,7 +60,7 @@ class FastRead (object):
         
     #@+others
     #@+node:ekr.20180604110143.1: *3* fast.readFile & helper
-    translate_table = b''.join([chr(z) for z in range(20) if chr(z) not in '\t\r\n'])
+    translate_table = b''.join([g.toEncodedString(chr(z)) for z in range(20) if chr(z) not in '\t\r\n'])
         # See https://en.wikipedia.org/wiki/Valid_characters_in_XML.
 
     def readFile(self, path=None, s=None):
