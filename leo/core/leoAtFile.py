@@ -472,6 +472,7 @@ class AtFile(object):
     def readAll(self, root, force=False):
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
+        old_changed = c.changed
         use_tracer = False
         if use_tracer: tt = g.startTracer()
         if force:
@@ -484,7 +485,7 @@ class AtFile(object):
         for p in files:
             at.readFileAtPosition(force, p)
         for p in files:
-            p.clearDirty()
+            p.v.clearDirty()
         if not g.unitTesting:
             if files:
                 t2 = time.time()
@@ -492,6 +493,7 @@ class AtFile(object):
             elif force:
                 g.es("no @<file> nodes in the selected tree")
         if use_tracer: tt.stop()
+        c.changed = old_changed
         c.raise_error_dialogs()
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
     def findFilesToRead(self, force, root):
@@ -551,20 +553,17 @@ class AtFile(object):
     #@+node:ekr.20190108054803.1: *6* at.readFileAtPosition
     def readFileAtPosition(self, force, p):
         '''Read the @<file> node at p.'''
-        at, c = self, self.c
-        if p.isAtThinFileNode():
+        at, c, fileName = self, self.c, p.anyAtFileNodeName()
+        if p.isAtThinFileNode() or p.isAtFileNode():
             at.read(p, force=force)
         elif p.isAtAutoNode():
-            fileName = p.atAutoNodeName()
             at.readOneAtAutoNode(fileName, p)
         elif p.isAtEditNode():
-            fileName = p.atEditNodeName()
             at.readOneAtEditNode(fileName, p)
         elif p.isAtShadowFileNode():
-            fileName = p.atShadowFileNodeName()
             at.readOneAtShadowNode(fileName, p)
-        elif p.isAtFileNode():
-            at.read(p, force=force)
+        # elif p.isAtFileNode():
+            # at.read(p, force=force)
         elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
             at.rememberReadPath(g.fullPath(c, p), p)
         elif p.isAtCleanNode():
