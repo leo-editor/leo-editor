@@ -473,8 +473,6 @@ class AtFile(object):
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
         old_changed = c.changed
-        use_tracer = False
-        if use_tracer: tt = g.startTracer()
         if force:
             # Capture the current headline only if
             # we aren't doing the initial read.
@@ -492,7 +490,6 @@ class AtFile(object):
                 g.es('read %s files in %2.2f seconds' % (len(files), t2 - t1))
             elif force:
                 g.es("no @<file> nodes in the selected tree")
-        if use_tracer: tt.stop()
         c.changed = old_changed
         c.raise_error_dialogs()
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
@@ -1301,28 +1298,14 @@ class AtFile(object):
         This prevents the write-all command from needlessly updating
         the @persistence data, thereby annoyingly changing the .leo file.
         '''
-        at, c = self, self.c
+        at = self
         at.root = root # 2014/10/21
         if not force and p.isDirty(): ### and p.v not in writtenFiles:
             at.autoBeautify(p)
-        if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
-            pathChanged = False
-        else:
-            oldPath = g.os_path_normcase(at.getPathUa(p))
-            newPath = g.os_path_normcase(g.fullPath(c, p))
-            pathChanged = oldPath and oldPath != newPath
-            # 2010/01/27: suppress this message during save-as and save-to commands.
-            if pathChanged and not c.ignoreChangedPaths:
-                ok = self.promptForDangerousWrite(
-                    fileName=None,
-                    kind=None,
-                    message='%s\n%s' % (
-                        g.tr('path changed for %s' % (p.h)),
-                        g.tr('write this file anyway?')))
-                if ok:
-                    at.setPathUa(p, newPath) # Remember that we have changed paths.
-                else:
-                    return
+        try:
+            pathChanged = at.writePathChanged(p)
+        except IOError:
+            return
         if force or p.v.isDirty() or pathChanged: ### or p.v in writtenFiles
             #
             # Tricky: @ignore not recognised in @asis nodes.
@@ -1364,6 +1347,31 @@ class AtFile(object):
         except Exception:
             g.es('unexpected exception')
             g.es_exception()
+    #@+node:ekr.20190108105509.1: *7* at.writePathChanged
+    def writePathChanged(self, p):
+        '''
+        Return True if the path has changed and the user allows it.
+        raise IOError if the user forbids the write.
+        Return False if the path has not changed.
+        '''
+        at, c = self, self.c
+        if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
+            return False
+        oldPath = g.os_path_normcase(at.getPathUa(p))
+        newPath = g.os_path_normcase(g.fullPath(c, p))
+        pathChanged = oldPath and oldPath != newPath
+        # 2010/01/27: suppress this message during save-as and save-to commands.
+        if pathChanged and not c.ignoreChangedPaths:
+            ok = self.promptForDangerousWrite(
+                fileName=None,
+                kind=None,
+                message='%s\n%s' % (
+                    g.tr('path changed for %s' % (p.h)),
+                    g.tr('write this file anyway?')))
+            if not ok:
+                raise IOError
+            at.setPathUa(p, newPath) # Remember that we have changed paths.
+        return pathChanged
     #@+node:ekr.20140727075002.18108: *6* at.saveOutlineIfPossible
     def saveOutlineIfPossible(self):
         '''Save the outline if only persistence data nodes are dirty.'''
