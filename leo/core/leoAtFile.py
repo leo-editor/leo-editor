@@ -562,8 +562,6 @@ class AtFile(object):
             at.readOneAtEditNode(fileName, p)
         elif p.isAtShadowFileNode():
             at.readOneAtShadowNode(fileName, p)
-        # elif p.isAtFileNode():
-            # at.read(p, force=force)
         elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
             at.rememberReadPath(g.fullPath(c, p), p)
         elif p.isAtCleanNode():
@@ -1219,8 +1217,8 @@ class AtFile(object):
         files, root = at.findFilesToWrite(writeAtFileNodesFlag)
         for p in files:
             try:
-                writtenFiles = [p.v] ### A temp hack.
-                self.writeAllHelper(p, root, force, toString, writeAtFileNodesFlag, writtenFiles)
+                ### writtenFiles = [p.v] ### A temp hack.
+                self.writeAllHelper(p, root, force, toString) ###, writeAtFileNodesFlag, writtenFiles)
             except Exception:
                 self.internalWriteError(p)
         # Make *sure* these flags are cleared for other commands.
@@ -1230,7 +1228,8 @@ class AtFile(object):
         # say the command is finished.
         if not g.unitTesting:
             if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
-                if writtenFiles:
+                if files:
+                ### if writtenFiles:
                     report = c.config.getBool('report-unchanged-files', default=True)
                     if report:
                         g.es("finished")
@@ -1295,9 +1294,7 @@ class AtFile(object):
         g.es('Warning: changes to this file will be lost', color='red')
         g.es('unless you can save the file successfully.', color='red')
     #@+node:ekr.20041005105605.149: *6* at.writeAllHelper & helper
-    def writeAllHelper(self, p, root,
-        force, toString, writeAtFileNodesFlag, writtenFiles
-    ):
+    def writeAllHelper(self, p, root, force, toString): ### writeAtFileNodesFlag, writtenFiles
         '''
         Write one file for the at.writeAll.
         Do *not* write @auto files unless p == root.
@@ -1306,7 +1303,7 @@ class AtFile(object):
         '''
         at, c = self, self.c
         at.root = root # 2014/10/21
-        if not force and p.v not in writtenFiles:
+        if not force: ### and p.v not in writtenFiles:
             at.autoBeautify(p)
         if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
             pathChanged = False
@@ -1329,45 +1326,46 @@ class AtFile(object):
                     at.setPathUa(p, newPath) # Remember that we have changed paths.
                 else:
                     return
-        if (p.v.isDirty() or
-            pathChanged or
-            writeAtFileNodesFlag or
-            p.v in writtenFiles
-        ):
+        if (p.v.isDirty() or pathChanged):
+            ### writeAtFileNodesFlag or
+            ### p.v in writtenFiles
             # Tricky: @ignore not recognised in @asis nodes.
             if p.isAtAsisFileNode():
                 at.asisWrite(p, toString=toString)
-                writtenFiles.append(p.v)
+                ### writtenFiles.append(p.v)
             elif p.isAtIgnoreNode():
-                pass # Handled in caller.
+                ### pass # Handled in caller.
+                return ###
             elif p.isAtAutoNode():
                 at.writeOneAtAutoNode(p, toString=toString, force=force)
-                writtenFiles.append(p.v)
+                ### writtenFiles.append(p.v)
                 # Do *not* clear the dirty bits the entries in @persistence tree here!
             elif p.isAtCleanNode():
                 at.write(p, kind='@clean', nosentinels=True, toString=toString)
-                writtenFiles.append(p.v)
+                ### writtenFiles.append(p.v)
             elif p.isAtEditNode():
                 at.writeOneAtEditNode(p, toString=toString)
-                writtenFiles.append(p.v)
+                ### writtenFiles.append(p.v)
             elif p.isAtNoSentFileNode():
                 at.write(p, kind='@nosent', nosentinels=True, toString=toString)
-                writtenFiles.append(p.v)
+                ### writtenFiles.append(p.v)
             elif p.isAtShadowFileNode():
                 at.writeOneAtShadowNode(p, toString=toString, force=force or pathChanged)
-                writtenFiles.append(p.v)
+                ### writtenFiles.append(p.v)
             elif p.isAtThinFileNode():
                 at.write(p, kind='@thin', toString=toString)
-                writtenFiles.append(p.v)
+                ### writtenFiles.append(p.v)
             elif p.isAtFileNode():
                 at.write(p, kind='@file', toString=toString)
-                writtenFiles.append(p.v)
-            if p.v in writtenFiles:
+                ### writtenFiles.append(p.v)
+            if True: ### p.v in writtenFiles:
                 # Clear the dirty bits in all descendant nodes.
                 # However, persistence data may still have to be written.
                 # This can not be helped.
                 for p2 in p.self_and_subtree(copy=False):
                     p2.v.clearDirty()
+        else:
+            g.trace('==== not written =====', p.h)
     #@+node:ekr.20150602204757.1: *7* at.autoBeautify
     def autoBeautify(self, p):
         '''Auto beautify p's tree if allowed by settings and directives.'''
