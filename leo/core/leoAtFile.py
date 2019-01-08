@@ -1303,7 +1303,7 @@ class AtFile(object):
         '''
         at, c = self, self.c
         at.root = root # 2014/10/21
-        if not force: ### and p.v not in writtenFiles:
+        if not force and p.isDirty(): ### and p.v not in writtenFiles:
             at.autoBeautify(p)
         if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
             pathChanged = False
@@ -1326,9 +1326,9 @@ class AtFile(object):
                     at.setPathUa(p, newPath) # Remember that we have changed paths.
                 else:
                     return
-        if (p.v.isDirty() or pathChanged):
-            ### writeAtFileNodesFlag or
-            ### p.v in writtenFiles
+        if p.v.isDirty() or pathChanged:
+            ### or writeAtFileNodesFlag or p.v in writtenFiles
+            #
             # Tricky: @ignore not recognised in @asis nodes.
             if p.isAtAsisFileNode():
                 at.asisWrite(p, toString=toString)
@@ -1358,14 +1358,12 @@ class AtFile(object):
             elif p.isAtFileNode():
                 at.write(p, kind='@file', toString=toString)
                 ### writtenFiles.append(p.v)
-            if True: ### p.v in writtenFiles:
-                # Clear the dirty bits in all descendant nodes.
-                # However, persistence data may still have to be written.
-                # This can not be helped.
-                for p2 in p.self_and_subtree(copy=False):
-                    p2.v.clearDirty()
-        else:
-            g.trace('==== not written =====', p.h)
+            #
+            # Clear the dirty bits in all descendant nodes.
+            # The persistence data may still have to be written.
+            # This can not be helped.
+            for p2 in p.self_and_subtree(copy=False):
+                p2.v.clearDirty()
     #@+node:ekr.20150602204757.1: *7* at.autoBeautify
     def autoBeautify(self, p):
         '''Auto beautify p's tree if allowed by settings and directives.'''
