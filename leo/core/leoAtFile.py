@@ -468,7 +468,7 @@ class AtFile(object):
             line = s[j: k]
             valid, new_df, start, end, isThin = at.parseLeoSentinel(line)
             return not isThin
-    #@+node:ekr.20041005105605.26: *5* at.readAll & helpers (changed)
+    #@+node:ekr.20041005105605.26: *5* at.readAll & helpers
     def readAll(self, root, force=False):
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
@@ -1196,7 +1196,7 @@ class AtFile(object):
             at.targetFileName = "<string-file>"
         else:
             at.targetFileName = root.anyAtFileNodeName()
-    #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers (changed)
+    #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
     def writeAll(self,
         writeAtFileNodesFlag=False,
         writeDirtyAtFileNodesFlag=False,
@@ -2033,7 +2033,7 @@ class AtFile(object):
             at.putAtAllChild(child)
         at.putCloseNodeSentinel(p)
     #@+node:ekr.20041005105605.170: *6* at.@others (write)
-    #@+node:ekr.20041005105605.173: *7* putAtOthersLine & helpers
+    #@+node:ekr.20041005105605.173: *7* at.putAtOthersLine & helpers
     def putAtOthersLine(self, s, i, p):
         """Put the expansion of @others."""
         at = self
@@ -2061,13 +2061,13 @@ class AtFile(object):
         # This is the same in both old and new sentinels.
         at.putSentinel("@-others")
         at.indent -= delta
-    #@+node:ekr.20041005105605.172: *8* putAtOthersChild
+    #@+node:ekr.20041005105605.172: *8* at.putAtOthersChild
     def putAtOthersChild(self, p):
         at = self
         at.putOpenNodeSentinel(p)
         at.putBody(p)
         at.putCloseNodeSentinel(p)
-    #@+node:ekr.20041005105605.171: *8* validInAtOthers (write)
+    #@+node:ekr.20041005105605.171: *8* at.validInAtOthers (write)
     def validInAtOthers(self, p):
         """
         Return True if p should be included in the expansion of the @others
