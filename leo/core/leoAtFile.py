@@ -1222,19 +1222,7 @@ class AtFile(object):
         at.cancelFlag = False
         at.yesToAll = False
         # Say the command is finished.
-        if not g.unitTesting:
-            if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
-                if files:
-                    report = c.config.getBool('report-unchanged-files', default=True)
-                    if report:
-                        g.es("finished")
-                    elif at.sameFiles:
-                        g.es('finished. %s unchanged files' % at.sameFiles)
-                elif writeAtFileNodesFlag:
-                    g.warning("no @<file> nodes in the selected tree")
-                    # g.es("to write an unchanged @auto node,\nselect it directly.")
-                else:
-                    g.es("no dirty @<file> nodes")
+        at.reportEndOfWrite(files, force, writeDirtyAtFileNodesFlag)
         if c.isChanged():
             # Save the outline if only persistence data nodes are dirty.
             self.saveOutlineIfPossible()
@@ -1289,6 +1277,38 @@ class AtFile(object):
         g.es('https://groups.google.com/forum/#!forum/leo-editor', color='blue')
         g.es('Warning: changes to this file will be lost', color='red')
         g.es('unless you can save the file successfully.', color='red')
+    #@+node:ekr.20190108112519.1: *6* at.reportEndOfWrite
+    def reportEndOfWrite(self, files, force, writeDirtyAtFileNodesFlag):
+        
+        at, c = self, self.c
+        if g.unitTesting:
+            return
+        if not force and not writeDirtyAtFileNodesFlag:
+            return
+        if files:
+            report = c.config.getBool('report-unchanged-files', default=True)
+            if report:
+                g.es("finished")
+            elif at.sameFiles:
+                g.es('finished. %s unchanged files' % at.sameFiles)
+        elif force:
+            g.warning("no @<file> nodes in the selected tree")
+            # g.es("to write an unchanged @auto node,\nselect it directly.")
+        else:
+            g.es("no dirty @<file> nodes")
+    #@+node:ekr.20140727075002.18108: *6* at.saveOutlineIfPossible
+    def saveOutlineIfPossible(self):
+        '''Save the outline if only persistence data nodes are dirty.'''
+        c = self.c
+        changed_positions = [p for p in c.all_unique_positions() if p.v.isDirty()]
+        at_persistence = c.persistenceController and c.persistenceController.has_at_persistence_node()
+        if at_persistence:
+            changed_positions = [p for p in changed_positions
+                if not at_persistence.isAncestorOf(p)]
+        if not changed_positions:
+            # g.warning('auto-saving @persistence tree.')
+            c.setChanged(False)
+            c.redraw()
     #@+node:ekr.20041005105605.149: *6* at.writeAllHelper & helper
     def writeAllHelper(self, p, root, force, toString):
         '''
@@ -1298,14 +1318,12 @@ class AtFile(object):
         the @persistence data, thereby annoyingly changing the .leo file.
         '''
         at = self
-        ### g.trace(force, p.isDirty(), p.h)
         at.root = root
         if not force and p.isDirty():
             at.autoBeautify(p)
         try:
             pathChanged = at.writePathChanged(p)
         except IOError:
-            g.trace('===== not written: IOError', p.h)
             return
         # Tricky: @ignore not recognised in @asis nodes.
         if p.isAtAsisFileNode():
@@ -1371,19 +1389,6 @@ class AtFile(object):
                 raise IOError
             at.setPathUa(p, newPath) # Remember that we have changed paths.
         return pathChanged
-    #@+node:ekr.20140727075002.18108: *6* at.saveOutlineIfPossible
-    def saveOutlineIfPossible(self):
-        '''Save the outline if only persistence data nodes are dirty.'''
-        c = self.c
-        changed_positions = [p for p in c.all_unique_positions() if p.v.isDirty()]
-        at_persistence = c.persistenceController and c.persistenceController.has_at_persistence_node()
-        if at_persistence:
-            changed_positions = [p for p in changed_positions
-                if not at_persistence.isAncestorOf(p)]
-        if not changed_positions:
-            # g.warning('auto-saving @persistence tree.')
-            c.setChanged(False)
-            c.redraw()
     #@+node:ekr.20070806105859: *5* at.writeAtAutoNodes & writeDirtyAtAutoNodes & helpers
     @cmd('write-at-auto-nodes')
     def writeAtAutoNodes(self, event=None):
