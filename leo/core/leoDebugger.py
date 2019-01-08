@@ -180,6 +180,16 @@ class Xdb(pdb.Pdb, threading.Thread):
         self.saved_frame = None
         self.saved_traceback = None
     #@+node:ekr.20181002053718.1: *3* Overrides
+    #@+node:ekr.20190108040329.1: *4* xdb.checkline (overrides Pdb)
+    def checkline(self, path, n):
+        
+        try:
+            return pdb.Pdb.checkline(self, path, n)
+        except AttributeError:
+            return False
+        except Exception:
+            g.es_exception()
+            return False
     #@+node:ekr.20181002061627.1: *4* xdb.cmdloop (overrides Cmd)
     def cmdloop(self, intro=None):
         '''Override Cmd.cmdloop.'''
