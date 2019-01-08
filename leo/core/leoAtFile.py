@@ -468,7 +468,7 @@ class AtFile(object):
             line = s[j: k]
             valid, new_df, start, end, isThin = at.parseLeoSentinel(line)
             return not isThin
-    #@+node:ekr.20041005105605.26: *5* at.readAll
+    #@+node:ekr.20041005105605.26: *5* at.readAll & helpers
     def readAll(self, root, force=False):
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
@@ -479,14 +479,81 @@ class AtFile(object):
             # we aren't doing the initial read.
             c.endEditing()
         t1 = time.time()
-        nRead = 0
+        c.init_error_dialogs()
+        if 1:
+            files = at.findFilesToRead(force, root)
+            nRead = len(files)
+            for p in files:
+                at.readFileAtPosition(force, p)
+        else:
+            nRead = 0
+            p = root.copy()
+            scanned_tnodes = set()
+            after = p.nodeAfterTree() if force else None
+            while p and p != after:
+                data = (p.gnx, g.fullPath(c, p))
+                #skip clones referring to exactly the same paths.
+                if data in scanned_tnodes:
+                    p.moveToNodeAfterTree()
+                    continue
+                scanned_tnodes.add(data)
+                if not p.h.startswith('@'):
+                    p.moveToThreadNext()
+                elif p.isAtIgnoreNode():
+                    if p.isAnyAtFileNode():
+                        c.ignored_at_file_nodes.append(p.h)
+                    p.moveToNodeAfterTree()
+                elif p.isAtThinFileNode():
+                    nRead += 1
+                    at.read(p, force=force)
+                    p.moveToNodeAfterTree()
+                elif p.isAtAutoNode():
+                    nRead += 1
+                    fileName = p.atAutoNodeName()
+                    at.readOneAtAutoNode(fileName, p)
+                    p.moveToNodeAfterTree()
+                elif p.isAtEditNode():
+                    nRead += 1
+                    fileName = p.atEditNodeName()
+                    at.readOneAtEditNode(fileName, p)
+                    p.moveToNodeAfterTree()
+                elif p.isAtShadowFileNode():
+                    nRead += 1
+                    fileName = p.atShadowFileNodeName()
+                    at.readOneAtShadowNode(fileName, p)
+                    p.moveToNodeAfterTree()
+                elif p.isAtFileNode():
+                    nRead += 1
+                    at.read(p, force=force)
+                    p.moveToNodeAfterTree()
+                elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+                    at.rememberReadPath(g.fullPath(c, p), p)
+                    p.moveToNodeAfterTree()
+                elif p.isAtCleanNode():
+                    nRead += 1
+                    at.readOneAtCleanNode(p)
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
+        if not g.unitTesting:
+            if nRead:
+                t2 = time.time()
+                g.es('read %s files in %2.2f seconds' % (nRead, t2 - t1))
+            elif force:
+                g.es("no @<file> nodes in the selected tree")
+        if use_tracer: tt.stop()
+        c.raise_error_dialogs()
+    #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
+    def findFilesToRead(self, force, root):
+        
+        at, c = self, self.c
         p = root.copy()
         scanned_tnodes = set()
-        c.init_error_dialogs()
+        files = []
         after = p.nodeAfterTree() if force else None
         while p and p != after:
             data = (p.gnx, g.fullPath(c, p))
-            #skip clones referring to exactly the same paths.
+            # skip clones referring to exactly the same paths.
             if data in scanned_tnodes:
                 p.moveToNodeAfterTree()
                 continue
@@ -498,45 +565,63 @@ class AtFile(object):
                     c.ignored_at_file_nodes.append(p.h)
                 p.moveToNodeAfterTree()
             elif p.isAtThinFileNode():
-                nRead += 1
                 at.read(p, force=force)
+                files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtAutoNode():
-                nRead += 1
                 fileName = p.atAutoNodeName()
                 at.readOneAtAutoNode(fileName, p)
+                files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtEditNode():
-                nRead += 1
                 fileName = p.atEditNodeName()
                 at.readOneAtEditNode(fileName, p)
+                files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtShadowFileNode():
-                nRead += 1
                 fileName = p.atShadowFileNodeName()
                 at.readOneAtShadowNode(fileName, p)
+                files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtFileNode():
-                nRead += 1
                 at.read(p, force=force)
+                files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
                 at.rememberReadPath(g.fullPath(c, p), p)
                 p.moveToNodeAfterTree()
             elif p.isAtCleanNode():
-                nRead += 1
                 at.readOneAtCleanNode(p)
-                p.moveToNodeAfterTree()
+                files.append(p.copy())
+                ### p.moveToNodeAfterTree()
+                p.moveToThreadNext()
+                    ### Highly experimental.
+                    #525: Nested nodes.
             else:
                 p.moveToThreadNext()
-        if not g.unitTesting:
-            if nRead:
-                t2 = time.time()
-                g.es('read %s files in %2.2f seconds' % (nRead, t2 - t1))
-            elif force:
-                g.es("no @<file> nodes in the selected tree")
-        if use_tracer: tt.stop()
-        c.raise_error_dialogs()
+        ### g.trace([z.h for z in files])
+        return files
+    #@+node:ekr.20190108054803.1: *6* at.readFileAtPosition
+    def readFileAtPosition(self, force, p):
+        '''Read the @<file> node at p.'''
+        at, c = self, self.c
+        if p.isAtThinFileNode():
+            at.read(p, force=force)
+        elif p.isAtAutoNode():
+            fileName = p.atAutoNodeName()
+            at.readOneAtAutoNode(fileName, p)
+        elif p.isAtEditNode():
+            fileName = p.atEditNodeName()
+            at.readOneAtEditNode(fileName, p)
+        elif p.isAtShadowFileNode():
+            fileName = p.atShadowFileNodeName()
+            at.readOneAtShadowNode(fileName, p)
+        elif p.isAtFileNode():
+            at.read(p, force=force)
+        elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+            at.rememberReadPath(g.fullPath(c, p), p)
+        elif p.isAtCleanNode():
+            at.readOneAtCleanNode(p)
     #@+node:ekr.20080801071227.7: *5* at.readAtShadowNodes
     def readAtShadowNodes(self, p):
         '''Read all @shadow nodes in the p's tree.'''
@@ -1170,15 +1255,14 @@ class AtFile(object):
             at.targetFileName = "<string-file>"
         else:
             at.targetFileName = root.anyAtFileNodeName()
-    #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
+    #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers (changed)
     def writeAll(self,
         writeAtFileNodesFlag=False,
         writeDirtyAtFileNodesFlag=False,
         toString=False
     ):
         """Write @file nodes in all or part of the outline"""
-        at = self; c = at.c
-        writtenFiles = [] # Files that might be written again.
+        at, c = self, self.c
         at.sameFiles = 0
         force = writeAtFileNodesFlag
         # This is the *only* place where these are set.
@@ -1186,43 +1270,46 @@ class AtFile(object):
         at.canCancelFlag = True
         at.cancelFlag = False
         at.yesToAll = False
-        if writeAtFileNodesFlag:
-            # The Write @<file> Nodes command.
-            # Write all nodes in the selected tree.
-            root = c.p
-            p = c.p
-            after = p.nodeAfterTree()
+        if 1:
+            files, root = at.findFilesToWrite(writeAtFileNodesFlag)
+            for p in files:
+                try:
+                    writtenFiles = [p.v] ### A temp hack.
+                    self.writeAllHelper(p, root, force, toString, writeAtFileNodesFlag, writtenFiles)
+                except Exception:
+                    self.internalWriteError(p)
         else:
-            # Write dirty nodes in the entire outline.
-            root = c.rootPosition()
-            p = c.rootPosition()
-            after = None
-        # Leo 5.6: write files only once.
-        seen = set()
-        while p and p != after:
-            if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
-                if p.isAnyAtFileNode():
-                    c.ignored_at_file_nodes.append(p.h)
-                # Note: @ignore not honored in @asis nodes.
-                p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
-            elif p.isAnyAtFileNode():
-                data = p.v, g.fullPath(c, p)
-                if data not in seen:
-                    seen.add(data)
-                    try:
-                        self.writeAllHelper(p, root, force, toString, writeAtFileNodesFlag, writtenFiles)
-                    except Exception:
-                        # Fix bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
-                        # Give a more urgent, more specific, more helpful message.
-                        g.es_exception()
-                        g.es('Internal error writing: %s' % (p.h), color='red')
-                        g.es('Please report this error to:', color='blue')
-                        g.es('https://groups.google.com/forum/#!forum/leo-editor', color='blue')
-                        g.es('Warning: changes to this file will be lost', color='red')
-                        g.es('unless you can save the file successfully.', color='red')
-                p.moveToNodeAfterTree()
+            writtenFiles = [] # Files that might be written again. Set by writeAllHelper.
+            if writeAtFileNodesFlag:
+                # The Write @<file> Nodes command.
+                # Write all nodes in the selected tree.
+                root = c.p
+                p = c.p
+                after = p.nodeAfterTree()
             else:
-                p.moveToThreadNext()
+                # Write dirty nodes in the entire outline.
+                root = c.rootPosition()
+                p = c.rootPosition()
+                after = None
+            # Leo 5.6: write files only once.
+            seen = set()
+            while p and p != after:
+                if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
+                    if p.isAnyAtFileNode():
+                        c.ignored_at_file_nodes.append(p.h)
+                    # Note: @ignore not honored in @asis nodes.
+                    p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
+                elif p.isAnyAtFileNode():
+                    data = p.v, g.fullPath(c, p)
+                    if data not in seen:
+                        seen.add(data)
+                        try:
+                            self.writeAllHelper(p, root, force, toString, writeAtFileNodesFlag, writtenFiles)
+                        except Exception:
+                            self.internalWriteError(p)
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
         # Make *sure* these flags are cleared for other commands.
         at.canCancelFlag = False
         at.cancelFlag = False
@@ -1244,6 +1331,56 @@ class AtFile(object):
         if c.isChanged():
             # Save the outline if only persistence data nodes are dirty.
             self.saveOutlineIfPossible()
+    #@+node:ekr.20190108052043.1: *6* at.findFilesToWrite
+    def findFilesToWrite(self, writeAtFileNodesFlag):
+        '''
+        Return a list of files to write.
+        We must do this in a prepass, so as to avoid errors later.
+        '''
+        c = self.c
+        if writeAtFileNodesFlag:
+            # The Write @<file> Nodes command.
+            # Write all nodes in the selected tree.
+            root = c.p
+            p = c.p
+            after = p.nodeAfterTree()
+        else:
+            # Write dirty nodes in the entire outline.
+            root = c.rootPosition()
+            p = c.rootPosition()
+            after = None
+        seen = set()
+        files = []
+        while p and p != after:
+            if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
+                if p.isAnyAtFileNode():
+                    c.ignored_at_file_nodes.append(p.h)
+                # Note: @ignore not honored in @asis nodes.
+                p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
+            elif p.isAnyAtFileNode():
+                data = p.v, g.fullPath(c, p)
+                if data not in seen:
+                    seen.add(data)
+                    files.append(p.copy())
+                p.moveToThreadNext()
+                    #525: Scan for nested @<file> nodes
+            else:
+                p.moveToThreadNext()
+        ### g.trace([z.h for z in files])
+        return files, root
+        
+    #@+node:ekr.20190108053115.1: *6* at.internalWriteError
+    def internalWriteError(self, p):
+        '''
+        Fix bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
+        Give a more urgent, more specific, more helpful message.
+        '''
+        g.es_exception()
+        g.es('Internal error writing: %s' % (p.h), color='red')
+        g.es('Please report this error to:', color='blue')
+        g.es('https://groups.google.com/forum/#!forum/leo-editor', color='blue')
+        g.es('Warning: changes to this file will be lost', color='red')
+        g.es('unless you can save the file successfully.', color='red')
     #@+node:ekr.20041005105605.149: *6* at.writeAllHelper & helper
     def writeAllHelper(self, p, root,
         force, toString, writeAtFileNodesFlag, writtenFiles
@@ -2039,6 +2176,12 @@ class AtFile(object):
             return True
         elif p.isAtIgnoreNode():
             g.error('did not write @ignore node', p.v.h)
+            return False
+        elif p.isAnyAtFileNode() and not p.isAtAutoNode() and not p.isAtAutoRstNode():
+            p.v.setVisited()
+                ### Highly experimental.
+                # 525: Nested @clean.
+                # Suppress a future error. Requires other changes.
             return False
         else:
             return True
