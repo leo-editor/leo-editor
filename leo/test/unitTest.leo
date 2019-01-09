@@ -757,9 +757,9 @@
 <v t="ekr.20181102063435.1"><vh>Fails...</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20190109152924.1"><vh>A</vh></v>
-<v t="ekr.20190109152924.3"><vh>newHeadline</vh></v>
-<v t="ekr.20190109152924.2"><vh>B</vh></v>
+<v t="ekr.20190109175253.1"><vh>A</vh></v>
+<v t="ekr.20190109175253.3"><vh>newHeadline</vh></v>
+<v t="ekr.20190109175253.2"><vh>B</vh></v>
 </v>
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
@@ -2265,7 +2265,7 @@ try:
     x.makeShadowDirectory(shadow_dir)
     if g.os_path_exists(shadow_fn):
         g.utils_remove(shadow_fn,verbose=True)
-    at.writeOneAtShadowNode(child,toString=True,force=True)
+    at.writeOneAtShadowNode(child, testing=True) ### toString=True,force=True)
     assert at.startSentinelComment == '#','startSentinelComment: %s' % (
         repr(at.startSentinelComment))
     assert at.endSentinelComment == '','endSentinelComment: %s' % (
@@ -2273,7 +2273,7 @@ try:
     if 0:
         print('public...\n',at.public_s)
         print('private...\n',at.private_s)
-    at.writeOneAtShadowNode(child,toString=False,force=True)
+    at.writeOneAtShadowNode(child, testing=False) ### toString=False,force=True)
     assert g.os_path_exists(shadow_fn),'not found: %s' % shadow_fn
     # No need to remove this: it's in the unittest directory.
     # g.utils_remove(shadow_fn,verbose=True)
@@ -9633,9 +9633,6 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="ekr.20190109152924.1"></t>
-<t tx="ekr.20190109152924.2"></t>
-<t tx="ekr.20190109152924.3"></t>
 <t tx="ekr.20190109152926.1">gnx: ekr.20090627070131.4975
 </t>
 <t tx="ekr.20190109152926.2">gnx: ekr.20090627070131.4975
@@ -9655,6 +9652,9 @@ gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
 <t tx="ekr.20190109153806.1"></t>
+<t tx="ekr.20190109175253.1"></t>
+<t tx="ekr.20190109175253.2"></t>
+<t tx="ekr.20190109175253.3"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
