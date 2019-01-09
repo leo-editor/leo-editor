@@ -1214,9 +1214,9 @@ class AtFile(object):
         files, root = at.findFilesToWrite(force)
         for p in files:
             try:
-                self.writeAllHelper(p, root, force, toString)
+                at.writeAllHelper(p, root, force, toString)
             except Exception:
-                self.internalWriteError(p)
+                at.internalWriteError(p)
         # Make *sure* these flags are cleared for other commands.
         at.canCancelFlag = False
         at.cancelFlag = False
@@ -1225,7 +1225,7 @@ class AtFile(object):
         at.reportEndOfWrite(files, force, writeDirtyAtFileNodesFlag)
         if c.isChanged():
             # Save the outline if only persistence data nodes are dirty.
-            self.saveOutlineIfPossible()
+            at.saveOutlineIfPossible()
     #@+node:ekr.20190108052043.1: *6* at.findFilesToWrite
     def findFilesToWrite(self, force):
         '''
@@ -1379,7 +1379,7 @@ class AtFile(object):
         pathChanged = oldPath and oldPath != newPath
         # 2010/01/27: suppress this message during save-as and save-to commands.
         if pathChanged and not c.ignoreChangedPaths:
-            ok = self.promptForDangerousWrite(
+            ok = at.promptForDangerousWrite(
                 fileName=None,
                 kind=None,
                 message='%s\n%s' % (
