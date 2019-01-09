@@ -712,7 +712,6 @@ class AtFile(object):
         written as an @file node.
         '''
         at = self.c.atFileCommands
-        ### at.write(root, kind='@nosent', nosentinels=False, toString=True)
         at.getFile(root, kind='@nosent', sentinels=True)
         s = g.toUnicode(at.stringOutput, encoding=at.encoding)
         return g.splitLines(s)
@@ -739,7 +738,7 @@ class AtFile(object):
             ok = at.importAtShadowNode(fn, p)
             if ok:
                 # Create the private file automatically.
-                at.writeOneAtShadowNode(p, force=True) ### toString=False, 
+                at.writeOneAtShadowNode(p, force=True)
     #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode
     def importAtShadowNode(self, fn, p):
         at = self; c = at.c; ic = c.importCommands
@@ -1042,7 +1041,6 @@ class AtFile(object):
         assert kind in ('@clean', '@file', '@nosent', '@shadow', '@thin', '@test'), repr(kind)
         at, c = self, self.c
         c.endEditing() # Capture the current headline.
-        ### at.setTargetFileName(root, toString=True)
         at.targetFileName = "<string-file>"
         at.initWriteIvars(root, at.targetFileName,
             nosentinels=not sentinels, toString=True)
@@ -1158,14 +1156,13 @@ class AtFile(object):
         at.outputFile = g.FileLikeObject()
         return True
     #@+node:ekr.20041005105605.144: *5* at.write & helper (changed)
-    def write(self, root, kind, nosentinels=False): ###, toString=False):
+    def write(self, root, kind, nosentinels=False):
         """Write a 4.x derived file.
         root is the position of an @<file> node.
         """
         assert kind in ('@clean', '@file', '@nosent', '@shadow', '@thin', '@test'), repr(kind)
         at, c = self, self.c
         c.endEditing() # Capture the current headline.
-        ### at.setTargetFileName(root, toString=False)
         at.targetFileName = root.anyAtFileNodeName()
         at.initWriteIvars(
             root,
@@ -1207,19 +1204,10 @@ class AtFile(object):
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
             at.writeException() # Sets dirty and orphan bits.
-    #@+node:ekr.20140630081820.16722: *6* at.setTargetFileName (no longer used)
-    def setTargetFileName(self, root, toString):
-        '''Set the target file name for at.write.'''
-        at = self
-        if toString:
-            at.targetFileName = "<string-file>"
-        else:
-            at.targetFileName = root.anyAtFileNodeName()
     #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
     def writeAll(self,
         writeAtFileNodesFlag=False,
         writeDirtyAtFileNodesFlag=False,
-        ### toString=False
     ):
         """Write @file nodes in all or part of the outline"""
         at, c = self, self.c
@@ -1233,7 +1221,7 @@ class AtFile(object):
         files, root = at.findFilesToWrite(force)
         for p in files:
             try:
-                at.writeAllHelper(p, root, force) ###, toString)
+                at.writeAllHelper(p, root, force)
             except Exception:
                 at.internalWriteError(p)
         # Make *sure* these flags are cleared for other commands.
@@ -1329,7 +1317,7 @@ class AtFile(object):
             c.setChanged(False)
             c.redraw()
     #@+node:ekr.20041005105605.149: *6* at.writeAllHelper & helper (changed)
-    def writeAllHelper(self, p, root, force): ###, toString):
+    def writeAllHelper(self, p, root, force):
         '''
         Write one file for the at.writeAll.
         Do *not* write @auto files unless p == root.
@@ -1347,24 +1335,24 @@ class AtFile(object):
             return
         # Tricky: @ignore not recognised in @asis nodes.
         if p.isAtAsisFileNode():
-            at.asisWrite(p) ###, toString=toString)
+            at.asisWrite(p)
         elif p.isAtIgnoreNode():
             return # Handled in caller.
         elif p.isAtAutoNode():
-            at.writeOneAtAutoNode(p, force=force) ### toString=toString, 
+            at.writeOneAtAutoNode(p, force=force) 
             # Do *not* clear the dirty bits the entries in @persistence tree here!
         elif p.isAtCleanNode():
-            at.write(p, kind='@clean', nosentinels=True) ### toString=toString)
+            at.write(p, kind='@clean', nosentinels=True)
         elif p.isAtEditNode():
-            at.writeOneAtEditNode(p) ###, toString=toString)
+            at.writeOneAtEditNode(p)
         elif p.isAtNoSentFileNode():
-            at.write(p, kind='@nosent', nosentinels=True) ###, toString=toString)
+            at.write(p, kind='@nosent', nosentinels=True)
         elif p.isAtShadowFileNode():
-            at.writeOneAtShadowNode(p, force=force or pathChanged) ### toString=toString)
+            at.writeOneAtShadowNode(p, force=force or pathChanged)
         elif p.isAtThinFileNode():
-            at.write(p, kind='@thin') ###, toString=toString)
+            at.write(p, kind='@thin')
         elif p.isAtFileNode():
-            at.write(p, kind='@file') ###, toString=toString)
+            at.write(p, kind='@file')
         #
         # Clear the dirty bits in all descendant nodes.
         # The persistence data may still have to be written.
