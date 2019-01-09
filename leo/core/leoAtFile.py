@@ -1070,30 +1070,8 @@ class AtFile(object):
             nosentinels=True, toString=True)
         at.openStringForWriting(root)
             # Sets at.outputFile, etc.
-        #
-        # Use a common helper to do the actual writing.
         at.writeAtAutoContents(fileName, root)
-        ###
-            # #
-            # # Dispatch the proper writer.
-            # junk, ext = g.os_path_splitext(fileName)
-            # writer = at.dispatch(ext, root)
-            # if writer:
-                # writer(root)
-            # elif root.isAtAutoRstNode():
-                # # An escape hatch: fall back to the theRst writer
-                # # if there is no rst writer plugin.
-                # ok2 = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
-                # if not ok2: at.errors += 1
-            # else:
-                # # leo 5.6: allow undefined section references in all @auto files.
-                # ivar = 'allow_undefined_refs'
-                # try:
-                    # setattr(at, ivar, True)
-                    # at.writeOpenFile(root, nosentinels=True, toString=True)
-                # finally:
-                    # if hasattr(at, ivar):
-                        # delattr(at, ivar)
+            # Actually write the @auto node.
         at.closeWriteFile()
         return at.stringOutput if at.errors == 0 else ''
     #@+node:ekr.20190109160056.3: *5* at.getAtEdit (new)
@@ -1422,7 +1400,7 @@ class AtFile(object):
         elif p.isAtIgnoreNode():
             return # Handled in caller.
         elif p.isAtAutoNode():
-            at.writeOneAtAutoNode(p, force=force) 
+            at.writeOneAtAutoNode(p) ###, force=force) 
             # Do *not* clear the dirty bits the entries in @persistence tree here!
         elif p.isAtCleanNode():
             at.write(p, kind='@clean', nosentinels=True)
@@ -1497,8 +1475,8 @@ class AtFile(object):
         at.writeAtAutoNodesHelper(writeDirtyOnly=True)
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers (changed)
-    def writeOneAtAutoNode(self,p,
-        force=False,
+    def writeOneAtAutoNode(self, p,
+        ### force=False,
         trialWrite=False,
             # Set only by Importer.trial_write.
             # Suppresses call to update_before_write_foreign_file below.
@@ -1542,27 +1520,7 @@ class AtFile(object):
                 at.addAtIgnore(root)
             return False
         at.writeAtAutoContents(fileName, root)
-        ###
-            # #
-            # # Dispatch the proper writer.
-            # junk, ext = g.os_path_splitext(fileName)
-            # writer = at.dispatch(ext, root)
-            # if writer:
-                # writer(root)
-            # elif root.isAtAutoRstNode():
-                # # An escape hatch: fall back to the theRst writer
-                # # if there is no rst writer plugin.
-                # ok2 = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
-                # if not ok2: at.errors += 1
-            # else:
-                # # leo 5.6: allow undefined section references in all @auto files.
-                # ivar = 'allow_undefined_refs'
-                # try:
-                    # setattr(at, ivar, True)
-                    # at.writeOpenFile(root, nosentinels=True, toString=toString)
-                # finally:
-                    # if hasattr(at, ivar):
-                        # delattr(at, ivar)
+            # Actually write the @auto node.
         at.closeWriteFile()
             # Sets stringOutput if toString is True.
         if at.errors == 0:
@@ -1584,7 +1542,7 @@ class AtFile(object):
                 p.isAtAutoNode() and not p.isAtIgnoreNode() and
                 (p.isDirty() or not writeDirtyOnly)
             ):
-                ok = at.writeOneAtAutoNode(p, force=True)
+                ok = at.writeOneAtAutoNode(p) ###, force=True)
                 if ok:
                     found = True
                     p.moveToNodeAfterTree()

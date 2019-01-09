@@ -301,12 +301,10 @@ class GoToCommands(object):
             ivar = 'force_sentinels'
             try:
                 setattr(at, ivar, True)
-                ### ok = at.writeOneAtAutoNode(root, force=True, toString=True)
                 s = at.getAtAuto(root)
             finally:
                 if hasattr(at, ivar):
                     delattr(at, ivar)
-            ### return at.stringOutput if ok else ''
             return s
         else:
             return g.composeScript( # Fix # 429.
