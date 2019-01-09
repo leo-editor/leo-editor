@@ -977,7 +977,7 @@ class TestManager(object):
                 test = ImportExportTestCase(c, p2, dialog, temp, doImport)
                 suite.addTest(test)
         return suite
-    #@+node:ekr.20051104075904.44: *4* TM.runAtFileTest
+    #@+node:ekr.20051104075904.44: *4* TM.runAtFileTest (changed)
     def runAtFileTest(self, p):
         """Common code for testing output of @file, @thin, etc."""
         c = self.c
@@ -1003,7 +1003,9 @@ class TestManager(object):
         elif theType == "@edit":
             at.writeOneAtEditNode(child1, toString=True)
         else:
-            at.write(child1, nosentinels=nosentinels, toString=True)
+            ### at.write(child1, nosentinels=nosentinels, toString=True)
+            s = at.getFile(child1, kind='@test', sentinels=not nosentinels) ###, toString=True)
+            at.stringOutput = s ### Temp
         try:
             result = g.toUnicode(at.stringOutput)
             assert result == expected
@@ -1661,7 +1663,7 @@ class TestManager(object):
         """Do an AtFile.write the p's tree to the body text of the output node."""
         s = self.writeNodeToString(c, p, sentinels)
         output.scriptSetBodyString(s)
-    #@+node:ekr.20051104075904.39: *4* TM.writeNodeToString
+    #@+node:ekr.20051104075904.39: *4* TM.writeNodeToString (changed)
     def writeNodeToString(self, c, p, sentinels):
         """Return an AtFile.write of p's tree to a string."""
         at = c.atFileCommands
@@ -1670,8 +1672,9 @@ class TestManager(object):
             if not p2.v.fileIndex:
                 p2.v.fileIndex = ni.getNewIndex(p2.v)
         # Write the file to a string.
-        at.write(p, nosentinels=not sentinels, toString=True)
-        return at.stringOutput
+        ### at.write(p, nosentinels=not sentinels, toString=True)
+        ### return at.stringOutput
+        return at.getFile(p, sentinels=sentinels)
     #@-others
 #@+node:ekr.20120220070422.10420: ** Top-level functions (leoTest)
 #@+node:ekr.20051104075904.97: *3* leoTest.py: factorial (a test of doctests)

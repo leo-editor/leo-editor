@@ -56,6 +56,14 @@
 <v t="ekr.20181116142416.5"><vh>@data:#@auto</vh>
 <v t="ekr.20181116142416.6"><vh>@gnxs</vh></v>
 </v>
+<v t="ekr.20190109152926.1"><vh>@data:#@auto</vh></v>
+<v t="ekr.20190109152926.2"><vh>@data:#@auto</vh>
+<v t="ekr.20190109152926.3"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20190109152926.4"><vh>@data:#@auto</vh></v>
+<v t="ekr.20190109152926.5"><vh>@data:#@auto</vh>
+<v t="ekr.20190109152926.6"><vh>@gnxs</vh></v>
+</v>
 </v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
 <v t="ekr.20080324133327.2"><vh>@bool allow-middle-button-paste = True</vh></v>
@@ -749,12 +757,23 @@
 <v t="ekr.20181102063435.1"><vh>Fails...</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20181116142414.1"><vh>A</vh></v>
-<v t="ekr.20181116142414.3"><vh>newHeadline</vh></v>
-<v t="ekr.20181116142414.2"><vh>B</vh></v>
+<v t="ekr.20190109152924.1"><vh>A</vh></v>
+<v t="ekr.20190109152924.3"><vh>newHeadline</vh></v>
+<v t="ekr.20190109152924.2"><vh>B</vh></v>
 </v>
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
+</v>
+<v t="ekr.20190109153806.1"><vh>Changed</vh>
+<v t="ekr.20060602195313"><vh>@test at.write using @comment</vh>
+<v t="ekr.20060602195313.2"><vh>root</vh>
+<v t="ekr.20060602195313.3"><vh>&lt;&lt; Get LRR Task &gt;&gt;</vh></v>
+<v t="ekr.20060602195313.4"><vh>&lt;&lt; Start LRR &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4567"><vh>@test at.writeOneAtShadowNode</vh>
+<v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -1465,6 +1484,63 @@ if guiname == 'wxWindows':
     assert(not tkinter)
     assert(wx)
 </t>
+<t tx="ekr.20060602195313">import re
+at = c.atFileCommands
+expected = '''\
+/*@+leo-ver=5-thin*/
+/*@+node:GNX: * root*/
+/*@@language c*/
+#ifdef COMMENT
+/*@@comment /* */ */
+#endif
+/*@@tabwidth 4*/
+/*@@lineending crlf*/
+
+/*@+others*/
+/*@-others*/
+
+/*@+&lt; &lt; Get LRR Task &gt; &gt;*/
+/*@+node:GNX: ** &lt; &lt; Get LRR Task &gt; &gt;*/
+/*@-&lt; &lt; Get LRR Task &gt; &gt;*/
+/*@+&lt; &lt; Start LRR &gt; &gt;*/
+/*@+node:GNX: ** &lt; &lt; Start LRR &gt; &gt;*/
+/*@-&lt; &lt; Start LRR &gt; &gt;*/
+/*@-leo*/
+'''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
+
+child = p.firstChild()
+### at.write(child, toString=True)
+    # Default: nosentinels=False
+### result = str(at.stringOutput)
+result = at.getFile(child, kind='@test')
+result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
+if 0: # Show unexpected mismatches.
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    print('len(expected): %s, len(result): %s' % (len(expected), len(result)))
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
+
+assert result == expected
+</t>
+<t tx="ekr.20060602195313.2">@language c
+#ifdef COMMENT
+@comment /* */ 
+#endif
+@tabwidth 4
+@lineending crlf
+
+@others
+
+&lt;&lt; Get LRR Task &gt;&gt;
+&lt;&lt; Start LRR &gt;&gt;
+</t>
+<t tx="ekr.20060602195313.3"></t>
+<t tx="ekr.20060602195313.4"></t>
 <t tx="ekr.20060912091510.1">import time
 
 c.frame.body.addEditor()
@@ -2174,6 +2250,41 @@ x.show_error(
     message = "Test of x.show_error",
     lines1_message = "lines1",
     lines2_message = "lines2")
+</t>
+<t tx="ekr.20090529115704.4567">at = c.atFileCommands
+x = c.shadowController
+changed = c.changed
+child = p.firstChild()
+s = child.b
+
+try:
+    child.setHeadString('@shadow unittest/test_1.py')
+    fn = 'unittest/test_1.py'
+    shadow_fn = x.shadowPathName(fn)
+    shadow_dir = x.shadowDirName(fn)
+    x.makeShadowDirectory(shadow_dir)
+    if g.os_path_exists(shadow_fn):
+        g.utils_remove(shadow_fn,verbose=True)
+    at.writeOneAtShadowNode(child,toString=True,force=True)
+    assert at.startSentinelComment == '#','startSentinelComment: %s' % (
+        repr(at.startSentinelComment))
+    assert at.endSentinelComment == '','endSentinelComment: %s' % (
+        repr(at.endSentinelComment))
+    if 0:
+        print('public...\n',at.public_s)
+        print('private...\n',at.private_s)
+    at.writeOneAtShadowNode(child,toString=False,force=True)
+    assert g.os_path_exists(shadow_fn),'not found: %s' % shadow_fn
+    # No need to remove this: it's in the unittest directory.
+    # g.utils_remove(shadow_fn,verbose=True)
+finally:
+
+    child.setHeadString('@@shadow unittest/test_1.py')
+    c.setChanged(changed)
+    # c.redraw_now()
+</t>
+<t tx="ekr.20090529115704.4568"># body of @shadow test node
+# The last line.
 </t>
 <t tx="ekr.20090529141856.4730">import sys
 
@@ -9504,9 +9615,6 @@ gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
 <t tx="ekr.20181102063435.1"># These are first, to save time.</t>
-<t tx="ekr.20181116142414.1"></t>
-<t tx="ekr.20181116142414.2"></t>
-<t tx="ekr.20181116142414.3"></t>
 <t tx="ekr.20181116142416.1">gnx: ekr.20090627070131.4975
 </t>
 <t tx="ekr.20181116142416.2">gnx: ekr.20090627070131.4975
@@ -9525,6 +9633,28 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
+<t tx="ekr.20190109152924.1"></t>
+<t tx="ekr.20190109152924.2"></t>
+<t tx="ekr.20190109152924.3"></t>
+<t tx="ekr.20190109152926.1">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20190109152926.2">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20190109152926.3">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20190109152926.4">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20190109152926.5">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20190109152926.6">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
+<t tx="ekr.20190109153806.1"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
