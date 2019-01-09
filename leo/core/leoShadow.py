@@ -608,11 +608,9 @@ class ShadowController(object):
             # but we *do* want sentinels elsewhere.
             at.at_shadow_test_hack = True
             try:
-                ### at.write(p, kind='@shadow', nosentinels=False, toString=True)
                 s = at.getFile(p, kind='@shadow', sentinels=True)
             finally:
                 at.at_shadow_test_hack = False
-            ### s = at.stringOutput
             return g.splitLines(s)
         #@+node:ekr.20080709062932.22: *5* makePublicLines (AtShadowTestCase)
         def makePublicLines(self, lines):

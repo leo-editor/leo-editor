@@ -983,7 +983,7 @@ class AtFile(object):
     #@+node:ekr.20041005105605.132: *3* at.Writing
     #@+node:ekr.20041005105605.133: *4* Writing (top level)
     #@+node:ekr.20041005105605.154: *5* at.asisWrite & helper
-    def asisWrite(self, root, toString=False):
+    def asisWrite(self, root):
         at = self; c = at.c
         c.endEditing() # Capture the current headline.
         c.init_error_dialogs()
@@ -991,7 +991,7 @@ class AtFile(object):
             # Note: @asis always writes all nodes,
             # so there can be no orphan or ignored nodes.
             targetFileName = root.atAsisFileNodeName()
-            at.initWriteIvars(root, targetFileName, toString=toString)
+            at.initWriteIvars(root, targetFileName, toString=False)
             # "look ahead" computation of eventual fileName.
             eventualFileName = c.os_path_finalize_join(
                 at.default_directory, at.targetFileName)
@@ -1006,7 +1006,7 @@ class AtFile(object):
                     return
             if at.errors:
                 return
-            if not at.openFileForWriting(root, targetFileName, toString):
+            if not at.openFileForWriting(root, targetFileName, toString=False):
                 # Calls at.addAtIgnore() if there are errors.
                 return
             for p in root.self_and_subtree(copy=False):
@@ -1038,7 +1038,6 @@ class AtFile(object):
         '''Write the @asis node to a string.'''
         at = self; c = at.c
         c.endEditing() # Capture the current headline.
-        c.init_error_dialogs()
         try:
             # Note: @asis always writes all nodes,
             # so there can be no orphan or ignored nodes.
@@ -1092,36 +1091,26 @@ class AtFile(object):
                 if hasattr(at, ivar):
                     delattr(at, ivar)
         at.closeWriteFile()
-            # Sets stringOutput if toString is True.
-        ###
-            # if at.errors:
-                # isAtAutoRst = root.isAtAutoRstNode()
-                # at.replaceTargetFileIfDifferent(root, ignoreBlankLines=isAtAutoRst)
-                    # # Sets/clears dirty and orphan bits.
-            # else:
-                # g.es("not written:", fileName)
-                # ### at.addAtIgnore(root)
         return at.stringOutput if at.errors == 0 else ''
     #@+node:ekr.20190109160056.3: *5* at.getAtEdit (new)
-     ### at.writeOneAtEditNode(child1, toString=True)
     def getAtEdit(self, root):
         '''Write one @edit node.'''
         at, c = self, self.c
         c.endEditing()
-        ### c.init_error_dialogs()
         if root.hasChildren():
             g.error('@edit nodes must not have children')
             g.es('To save your work, convert @edit to @auto, @file or @clean')
             return False
-        ### at.default_directory = g.setDefaultDirectory(c, p, importing=True)
+        #
+        # Init...
         at.targetFileName = root.atEditNodeName()
         at.initWriteIvars(root, at.targetFileName,
             atEdit=True, nosentinels=True, toString=True)
+        #
         # Compute the file's contents.
         # Unlike the @clean/@nosent file logic, it does not add a final newline.
         contents = ''.join([s for s in g.splitLines(root.b)
             if at.directiveKind4(s, 0) == at.noDirective])
-        ### at.stringOutput = contents
         return contents
     #@+node:ekr.20190109142026.1: *5* at.getFile (new)
     def getFile(self, root, kind, sentinels=True):
@@ -1415,7 +1404,6 @@ class AtFile(object):
         This prevents the write-all command from needlessly updating
         the @persistence data, thereby annoyingly changing the .leo file.
         '''
-        ### Called only by at.writeAll.
         at = self
         at.root = root
         if not force and p.isDirty():
@@ -1505,10 +1493,8 @@ class AtFile(object):
         at.writeAtAutoNodesHelper(writeDirtyOnly=True)
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers (changed)
-    def writeOneAtAutoNode(self,
-        p,
+    def writeOneAtAutoNode(self,p,
         force=False,
-        ### toString=False,
         trialWrite=False,
             # Set only by Importer.trial_write.
             # Suppresses call to update_before_write_foreign_file below.
@@ -1582,7 +1568,7 @@ class AtFile(object):
             at.addAtIgnore(root)
         return at.errors == 0
     #@+node:ekr.20190109163934.24: *7* at.writeAtAutoNodesHelper
-    def writeAtAutoNodesHelper(self, writeDirtyOnly=True): ### toString=False, 
+    def writeAtAutoNodesHelper(self, writeDirtyOnly=True):
         """Write @auto nodes in the selected outline"""
         at = self; c = at.c
         p = c.p; after = p.nodeAfterTree()
@@ -1947,7 +1933,7 @@ class AtFile(object):
         Return True if the body contains an @others line.
         '''
         at = self
-        ### if not at.sentinels: g.trace(at.sentinels, p.h, g.callers(4))
+        #
         # New in 4.3 b2: get s from fromString if possible.
         s = fromString if fromString else p.b
         p.v.setVisited()

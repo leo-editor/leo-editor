@@ -997,20 +997,14 @@ class TestManager(object):
             "@asis",), "bad type: %s" % theType
         nosentinels = theType in ("@asis", "@clean", "@edit", "@nosent")
         if theType == "@asis":
-            ### at.asisWrite(child1, toString=True)
             result = at.getAsIs(child1)
         elif theType == "@auto":
-            ### at.writeOneAtAutoNode(child1, toString=True, force=True)
             result = at.getAtAuto(child1)
         elif theType == "@edit":
-            ### at.writeOneAtEditNode(child1, toString=True)
             result = at.getAtEdit(child1)
         else:
-            ### at.write(child1, nosentinels=nosentinels, toString=True)
-            result = at.getFile(child1, kind='@test', sentinels=not nosentinels) ###, toString=True)
-            ### at.stringOutput = s ### Temp
+            result = at.getFile(child1, kind='@test', sentinels=not nosentinels)
         try:
-            ### result = g.toUnicode(at.stringOutput)
             assert result == expected
         except AssertionError:
             #@+<< dump result and expected >>
@@ -1675,8 +1669,6 @@ class TestManager(object):
             if not p2.v.fileIndex:
                 p2.v.fileIndex = ni.getNewIndex(p2.v)
         # Write the file to a string.
-        ### at.write(p, nosentinels=not sentinels, toString=True)
-        ### return at.stringOutput
         return at.getFile(p, sentinels=sentinels)
     #@-others
 #@+node:ekr.20120220070422.10420: ** Top-level functions (leoTest)
