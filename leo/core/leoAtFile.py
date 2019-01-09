@@ -1400,7 +1400,7 @@ class AtFile(object):
         elif p.isAtIgnoreNode():
             return # Handled in caller.
         elif p.isAtAutoNode():
-            at.writeOneAtAutoNode(p) ###, force=force) 
+            at.writeOneAtAutoNode(p)
             # Do *not* clear the dirty bits the entries in @persistence tree here!
         elif p.isAtCleanNode():
             at.write(p, kind='@clean', nosentinels=True)
@@ -1475,15 +1475,12 @@ class AtFile(object):
         at.writeAtAutoNodesHelper(writeDirtyOnly=True)
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers (changed)
-    def writeOneAtAutoNode(self, p,
-        ### force=False,
-        trialWrite=False,
-            # Set only by Importer.trial_write.
-            # Suppresses call to update_before_write_foreign_file below.
-    ):
+    def writeOneAtAutoNode(self, p, trialWrite=False):
         '''
         Write p, an @auto node.
         File indices *must* have already been assigned.
+        
+        trialWrite: Set only by Importer.trial_write.
         '''
         toString = False
         at, c = self, self.c
@@ -1542,7 +1539,7 @@ class AtFile(object):
                 p.isAtAutoNode() and not p.isAtIgnoreNode() and
                 (p.isDirty() or not writeDirtyOnly)
             ):
-                ok = at.writeOneAtAutoNode(p) ###, force=True)
+                ok = at.writeOneAtAutoNode(p)
                 if ok:
                     found = True
                     p.moveToNodeAfterTree()
