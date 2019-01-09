@@ -1071,25 +1071,29 @@ class AtFile(object):
         at.openStringForWriting(root)
             # Sets at.outputFile, etc.
         #
-        # Dispatch the proper writer.
-        junk, ext = g.os_path_splitext(fileName)
-        writer = at.dispatch(ext, root)
-        if writer:
-            writer(root)
-        elif root.isAtAutoRstNode():
-            # An escape hatch: fall back to the theRst writer
-            # if there is no rst writer plugin.
-            ok2 = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
-            if not ok2: at.errors += 1
-        else:
-            # leo 5.6: allow undefined section references in all @auto files.
-            ivar = 'allow_undefined_refs'
-            try:
-                setattr(at, ivar, True)
-                at.writeOpenFile(root, nosentinels=True, toString=True)
-            finally:
-                if hasattr(at, ivar):
-                    delattr(at, ivar)
+        # Use a common helper to do the actual writing.
+        at.writeAtAutoContents(fileName, root)
+        ###
+            # #
+            # # Dispatch the proper writer.
+            # junk, ext = g.os_path_splitext(fileName)
+            # writer = at.dispatch(ext, root)
+            # if writer:
+                # writer(root)
+            # elif root.isAtAutoRstNode():
+                # # An escape hatch: fall back to the theRst writer
+                # # if there is no rst writer plugin.
+                # ok2 = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
+                # if not ok2: at.errors += 1
+            # else:
+                # # leo 5.6: allow undefined section references in all @auto files.
+                # ivar = 'allow_undefined_refs'
+                # try:
+                    # setattr(at, ivar, True)
+                    # at.writeOpenFile(root, nosentinels=True, toString=True)
+                # finally:
+                    # if hasattr(at, ivar):
+                        # delattr(at, ivar)
         at.closeWriteFile()
         return at.stringOutput if at.errors == 0 else ''
     #@+node:ekr.20190109160056.3: *5* at.getAtEdit (new)
@@ -1537,26 +1541,28 @@ class AtFile(object):
                 g.es("not written:", fileName)
                 at.addAtIgnore(root)
             return False
-        #
-        # Dispatch the proper writer.
-        junk, ext = g.os_path_splitext(fileName)
-        writer = at.dispatch(ext, root)
-        if writer:
-            writer(root)
-        elif root.isAtAutoRstNode():
-            # An escape hatch: fall back to the theRst writer
-            # if there is no rst writer plugin.
-            ok2 = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
-            if not ok2: at.errors += 1
-        else:
-            # leo 5.6: allow undefined section references in all @auto files.
-            ivar = 'allow_undefined_refs'
-            try:
-                setattr(at, ivar, True)
-                at.writeOpenFile(root, nosentinels=True, toString=toString)
-            finally:
-                if hasattr(at, ivar):
-                    delattr(at, ivar)
+        at.writeAtAutoContents(fileName, root)
+        ###
+            # #
+            # # Dispatch the proper writer.
+            # junk, ext = g.os_path_splitext(fileName)
+            # writer = at.dispatch(ext, root)
+            # if writer:
+                # writer(root)
+            # elif root.isAtAutoRstNode():
+                # # An escape hatch: fall back to the theRst writer
+                # # if there is no rst writer plugin.
+                # ok2 = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
+                # if not ok2: at.errors += 1
+            # else:
+                # # leo 5.6: allow undefined section references in all @auto files.
+                # ivar = 'allow_undefined_refs'
+                # try:
+                    # setattr(at, ivar, True)
+                    # at.writeOpenFile(root, nosentinels=True, toString=toString)
+                # finally:
+                    # if hasattr(at, ivar):
+                        # delattr(at, ivar)
         at.closeWriteFile()
             # Sets stringOutput if toString is True.
         if at.errors == 0:
@@ -1925,6 +1931,29 @@ class AtFile(object):
         at.putAtLastLines(s)
         if not toString:
             at.warnAboutOrphandAndIgnoredNodes()
+    #@+node:ekr.20190109172025.1: *5* at.writeAtAutoContents
+    def writeAtAutoContents(self, fileName, root):
+        '''Common helper for getAtAuto and writeOneAtAutoNode.'''
+        at, c = self, self.c
+        # Dispatch the proper writer.
+        junk, ext = g.os_path_splitext(fileName)
+        writer = at.dispatch(ext, root)
+        if writer:
+            writer(root)
+        elif root.isAtAutoRstNode():
+            # An escape hatch: fall back to the theRst writer
+            # if there is no rst writer plugin.
+            ok = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
+            if not ok: at.errors += 1
+        else:
+            # leo 5.6: allow undefined section references in all @auto files.
+            ivar = 'allow_undefined_refs'
+            try:
+                setattr(at, ivar, True)
+                at.writeOpenFile(root, nosentinels=True, toString=True)
+            finally:
+                if hasattr(at, ivar):
+                    delattr(at, ivar)
     #@+node:ekr.20041005105605.160: *4* Writing 4.x
     #@+node:ekr.20041005105605.161: *5* at.putBody & helpers
     def putBody(self, p, fromString=''):
