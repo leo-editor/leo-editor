@@ -1002,18 +1002,23 @@ class Importer(object):
         ivar = 'allow_undefined_refs'
         try:
             setattr(at, ivar, True)
-            at.writeOneAtAutoNode(
-                self.root,
-                force=True,
-                toString=True,
-                trialWrite=True,
-                    # Suppress call to update_before_write_foreign_file
-                    # in at.writeOneAtAutoNode.
-            )
+            result = at.getAtAuto(self.root, trialWrite=True)
+                # Suppress call to update_before_write_foreign_file
+                # in at.writeOneAtAutoNode.
+            ###
+                # at.writeOneAtAutoNode(
+                    # self.root,
+                    # force=True,
+                    # toString=True,
+                    # trialWrite=True,
+                        # # Suppress call to update_before_write_foreign_file
+                        # # in at.writeOneAtAutoNode.
+                # )
         finally:
             if hasattr(at, ivar):
                 delattr(at, ivar)
-        return g.toUnicode(at.stringOutput, self.encoding)
+        ### return g.toUnicode(at.stringOutput, self.encoding)
+        return result
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
     def all_contexts(self, table):

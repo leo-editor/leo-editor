@@ -285,7 +285,7 @@ class GoToCommands(object):
             return delims1, None
         else:
             return delims2, delims3
-    #@+node:ekr.20150624143903.1: *4* goto.get_external_file_with_sentinels
+    #@+node:ekr.20150624143903.1: *4* goto.get_external_file_with_sentinels (changed)
     def get_external_file_with_sentinels(self, root):
         '''
         root is an @<file> node.
@@ -301,11 +301,13 @@ class GoToCommands(object):
             ivar = 'force_sentinels'
             try:
                 setattr(at, ivar, True)
-                ok = at.writeOneAtAutoNode(root, force=True, toString=True)
+                ### ok = at.writeOneAtAutoNode(root, force=True, toString=True)
+                s = at.getAtAuto(root)
             finally:
                 if hasattr(at, ivar):
                     delattr(at, ivar)
-            return at.stringOutput if ok else ''
+            ### return at.stringOutput if ok else ''
+            return s
         else:
             return g.composeScript( # Fix # 429.
                 c = c,

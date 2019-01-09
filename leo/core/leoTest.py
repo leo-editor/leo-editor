@@ -997,17 +997,20 @@ class TestManager(object):
             "@asis",), "bad type: %s" % theType
         nosentinels = theType in ("@asis", "@clean", "@edit", "@nosent")
         if theType == "@asis":
-            at.asisWrite(child1, toString=True)
+            ### at.asisWrite(child1, toString=True)
+            result = at.getAsIs(child1)
         elif theType == "@auto":
-            at.writeOneAtAutoNode(child1, toString=True, force=True)
+            ### at.writeOneAtAutoNode(child1, toString=True, force=True)
+            result = at.getAtAuto(child1)
         elif theType == "@edit":
-            at.writeOneAtEditNode(child1, toString=True)
+            ### at.writeOneAtEditNode(child1, toString=True)
+            result = at.getAtEdit(child1)
         else:
             ### at.write(child1, nosentinels=nosentinels, toString=True)
-            s = at.getFile(child1, kind='@test', sentinels=not nosentinels) ###, toString=True)
-            at.stringOutput = s ### Temp
+            result = at.getFile(child1, kind='@test', sentinels=not nosentinels) ###, toString=True)
+            ### at.stringOutput = s ### Temp
         try:
-            result = g.toUnicode(at.stringOutput)
+            ### result = g.toUnicode(at.stringOutput)
             assert result == expected
         except AssertionError:
             #@+<< dump result and expected >>
