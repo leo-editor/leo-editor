@@ -697,8 +697,9 @@ class AtFile(object):
         written as an @file node.
         '''
         at = self.c.atFileCommands
-        at.atFileToString(root, kind='@nosent', sentinels=True)
-        s = g.toUnicode(at.stringOutput, encoding=at.encoding)
+        result = at.atFileToString(root, kind='@nosent', sentinels=True)
+        ### s = g.toUnicode(at.stringOutput, encoding=at.encoding)
+        s = g.toUnicode(result, encoding=at.encoding)
         return g.splitLines(s)
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
     def readOneAtShadowNode(self, fn, p, force=False):
@@ -1398,7 +1399,6 @@ class AtFile(object):
         at.writeAtAutoContents(fileName, root)
             # Actually write the @auto node.
         at.closeWriteFile()
-            # Sets stringOutput if toString is True.
         if at.errors == 0:
             isAtAutoRst = root.isAtAutoRstNode()
             at.replaceTargetFileIfDifferent(root, ignoreBlankLines=isAtAutoRst)
@@ -1593,7 +1593,8 @@ class AtFile(object):
     #@+node:ekr.20080712150045.3: *7* at.closeAtShadowStringFile
     def closeAtShadowStringFile(self, theFile):
         at = self
-        if theFile:
+        assert theFile, g.callers() ###
+        if theFile: ###
             theFile.flush()
             s = at.stringOutput = theFile.get()
             at.outputContents = s
@@ -2506,7 +2507,7 @@ class AtFile(object):
         at.outputContents = at.outputFile.get()
         at.outputFile.close()
         at.outputFile = None
-        return at.stringOutput
+        ### return at.stringOutput
     #@+node:ekr.20041005105605.197: *5* at.compareFiles
     def compareFiles(self, path1, path2, ignoreLineEndings, ignoreBlankLines=False):
         """Compare two text files."""
