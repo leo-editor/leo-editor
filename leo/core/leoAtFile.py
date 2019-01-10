@@ -225,20 +225,6 @@ class AtFile(object):
             encoding = g.getPythonEncodingFromString(root.b)
             if encoding:
                 at.encoding = encoding
-        if toString:
-            if 0: ### Now done in openStringForWriting
-                at.outputFile = g.FileLikeObject()
-                if g.app.unitTesting:
-                    at.output_newline = '\n'
-                # else: at.output_newline set in initCommonIvars.
-                at.stringOutput = ""
-                at.outputFileName = "<string-file>"
-        else:
-            if 0: ### Now done in openFileForWriting, and in writeOneAtShadowNode.
-                # at.outputNewline set in initCommonIvars.
-                at.outputFile = None
-                at.stringOutput = None
-                at.outputFileName = g.u('')
         # Init all other ivars even if there is an error.
         if not at.errors and at.root:
             if hasattr(at.root.v, 'tnodeList'):
@@ -1633,7 +1619,8 @@ class AtFile(object):
                 # A hack to suppress an error message.
                 # The actual sentinels will be set below.
         )
-        at.outputFileName = g.u('') ###
+        at.outputFileName = g.u('')
+            # Previously done in at.initWriteIvars.
         #
         # Bug fix: Leo 4.5.1:
         # use x.markerFromFileName to force the delim to match
