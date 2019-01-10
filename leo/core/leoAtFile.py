@@ -1026,7 +1026,7 @@ class AtFile(object):
         try:
             # Note: @asis always writes all nodes,
             # so there can be no orphan or ignored nodes.
-            at.initWriteIvars(root, "<string-file>") ### at.targetFileName)
+            at.initWriteIvars(root, "<string-file>")
             at.openStringForWriting(root)
                 # Sets at.outputFile, etc.
             for p in root.self_and_subtree(copy=False):
@@ -1049,7 +1049,6 @@ class AtFile(object):
         #
         # Init
         fileName = root.atAutoNodeName()
-        ### at.targetFileName = "<string-file>"
         at.initWriteIvars(root, "<string-file>", nosentinels=True)
         at.openStringForWriting(root)
         at.writeAtAutoContents(fileName, root)
@@ -1064,8 +1063,6 @@ class AtFile(object):
             g.error('@edit nodes must not have children')
             g.es('To save your work, convert @edit to @auto, @file or @clean')
             return False
-        # Init...
-        ### at.targetFileName = root.atEditNodeName()
         at.initWriteIvars(root, root.atEditNodeName(), atEdit=True, nosentinels=True)
         # Compute the file's contents.
         contents = ''.join([s for s in g.splitLines(root.b)
@@ -1079,7 +1076,6 @@ class AtFile(object):
         assert kind in ('@clean', '@file', '@nosent', '@shadow', '@thin', '@test'), repr(kind)
         at, c = self, self.c
         c.endEditing() # Capture the current headline.
-        ### at.targetFileName = "<string-file>"
         at.initWriteIvars(root, "<string-file>", nosentinels=not sentinels)
         at.openStringForWriting(root)
         try:
@@ -1202,7 +1198,6 @@ class AtFile(object):
         assert kind in ('@clean', '@file', '@nosent', '@shadow', '@thin', '@test'), repr(kind)
         at, c = self, self.c
         c.endEditing() # Capture the current headline.
-        ### at.targetFileName = root.anyAtFileNodeName()
         at.initWriteIvars(root, root.anyAtFileNodeName(), nosentinels=nosentinels)
         # Compute the eventual fileName.
         eventualFileName = c.os_path_finalize_join(
@@ -1465,7 +1460,6 @@ class AtFile(object):
         at.rememberReadPath(fileName, root)
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
-        ### at.targetFileName = fileName
         at.initWriteIvars(root, fileName, nosentinels=True)
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
@@ -1792,7 +1786,6 @@ class AtFile(object):
             else:
                 g.es("not written:", fn)
                 return False
-        ### at.targetFileName = fn
         at.initWriteIvars(root, fn, atEdit=True, nosentinels=True)
         # Compute the file's contents.
         contents = ''.join([s for s in g.splitLines(p.b)
