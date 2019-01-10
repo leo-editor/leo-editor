@@ -705,7 +705,7 @@ class AtFile(object):
         s = s.replace('\r\n', '\n')
             # Suppress meaningless "node changed" messages.
         return g.splitLines(s)
-    #@+node:ekr.20150204165040.9: *6* at.write_at_clean_sentinels (changed)
+    #@+node:ekr.20150204165040.9: *6* at.write_at_clean_sentinels
     def write_at_clean_sentinels(self, root):
         '''
         Return all lines of the @clean tree as if it were
@@ -1006,7 +1006,7 @@ class AtFile(object):
                     return
             if at.errors:
                 return
-            if not at.openFileForWriting(root, targetFileName): ###, toString=False):
+            if not at.openFileForWriting(root, targetFileName):
                 # Calls at.addAtIgnore() if there are errors.
                 return
             for p in root.self_and_subtree(copy=False):
@@ -1093,7 +1093,7 @@ class AtFile(object):
         contents = ''.join([s for s in g.splitLines(root.b)
             if at.directiveKind4(s, 0) == at.noDirective])
         return contents
-    #@+node:ekr.20190109142026.1: *5* at.getFile (new)
+    #@+node:ekr.20190109142026.1: *5* at.getFile
     def getFile(self, root, kind, sentinels=True):
         """Write a 4.x derived file to a string, and return it.
         root is the position of an @<file> node.
@@ -1234,7 +1234,7 @@ class AtFile(object):
                 # Fix #1031: do not add @ignore here!
                 # @ignore will be added below if the write actually fails.
                 return
-        if not at.openFileForWriting(root, at.targetFileName): ###, toString=False):
+        if not at.openFileForWriting(root, at.targetFileName):
             # Calls at.addAtIgnore() if there are errors.
             return
         try:
@@ -1362,7 +1362,7 @@ class AtFile(object):
             # g.warning('auto-saving @persistence tree.')
             c.setChanged(False)
             c.redraw()
-    #@+node:ekr.20041005105605.149: *6* at.writeAllHelper & helper (changed)
+    #@+node:ekr.20041005105605.149: *6* at.writeAllHelper & helper
     def writeAllHelper(self, p, root):
         '''
         Write one file for the at.writeAll.
@@ -1458,7 +1458,7 @@ class AtFile(object):
         c.init_error_dialogs()
         at.writeAtAutoNodesHelper(writeDirtyOnly=True)
         c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers (changed)
+    #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
     def writeOneAtAutoNode(self, p, trialWrite=False):
         '''
         Write p, an @auto node.
@@ -1466,15 +1466,13 @@ class AtFile(object):
         
         trialWrite: Set only by Importer.trial_write.
         '''
-        ### toString = False
         at, c = self, self.c
         root = p.copy()
         fileName = p.atAutoNodeName()
-        if not fileName: ### and not toString:
+        if not fileName:
             return False
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
         fileName = c.os_path_finalize_join(at.default_directory, fileName)
-        ### if not toString and at.shouldPromptForDangerousWrite(fileName, root):
         if at.shouldPromptForDangerousWrite(fileName, root):
             # Prompt if writing a new @auto node would overwrite the existing file.
             ok = self.promptForDangerousWrite(fileName, kind='@auto')
@@ -1485,15 +1483,13 @@ class AtFile(object):
         at.rememberReadPath(fileName, root)
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
-        ### at.targetFileName = "<string-file>" if toString else fileName
         at.targetFileName = fileName
         at.initWriteIvars(root, at.targetFileName, nosentinels=True)
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
-        ok = at.openFileForWriting(root, fileName=fileName) ###, toString=False)
+        ok = at.openFileForWriting(root, fileName=fileName)
             # Calls at.addAtIgnore() if there are errors.
         if not ok:
-            ### if not toString:
             g.es("not written:", fileName)
             at.addAtIgnore(root)
             return False
@@ -1749,7 +1745,7 @@ class AtFile(object):
             at.exception("exception preprocessing script")
         return at.stringOutput
     #@+node:ekr.20041005105605.151: *5* at.writeMissing & helper
-    def writeMissing(self, p): ###, toString=False):
+    def writeMissing(self, p):
         at = self; c = at.c
         writtenFiles = False
         c.init_error_dialogs()
@@ -1762,7 +1758,7 @@ class AtFile(object):
                     at.targetFileName = c.os_path_finalize_join(
                         self.default_directory, at.targetFileName)
                     if not g.os_path_exists(at.targetFileName):
-                        ok = at.openFileForWriting(p, at.targetFileName) ###, toString=False)
+                        ok = at.openFileForWriting(p, at.targetFileName)
                             # Calls at.addAtIgnore() if there are errors.
                         if ok:
                             at.writeMissingNode(p)

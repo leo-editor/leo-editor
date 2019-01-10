@@ -977,7 +977,7 @@ class TestManager(object):
                 test = ImportExportTestCase(c, p2, dialog, temp, doImport)
                 suite.addTest(test)
         return suite
-    #@+node:ekr.20051104075904.44: *4* TM.runAtFileTest (changed)
+    #@+node:ekr.20051104075904.44: *4* TM.runAtFileTest
     def runAtFileTest(self, p):
         """Common code for testing output of @file, @thin, etc."""
         c = self.c
@@ -1660,7 +1660,7 @@ class TestManager(object):
         """Do an AtFile.write the p's tree to the body text of the output node."""
         s = self.writeNodeToString(c, p, sentinels)
         output.scriptSetBodyString(s)
-    #@+node:ekr.20051104075904.39: *4* TM.writeNodeToString (changed)
+    #@+node:ekr.20051104075904.39: *4* TM.writeNodeToString
     def writeNodeToString(self, c, p, sentinels):
         """Return an AtFile.write of p's tree to a string."""
         at = c.atFileCommands

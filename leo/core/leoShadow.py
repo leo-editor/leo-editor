@@ -600,7 +600,7 @@ class ShadowController(object):
             p2 = root.insertAsLastChild()
             p2.setHeadString(h + '-sentinels')
             return p2
-        #@+node:ekr.20080709062932.21: *5* makePrivateLines (AtShadowTestCase) (changed)
+        #@+node:ekr.20080709062932.21: *5* makePrivateLines (AtShadowTestCase)
         def makePrivateLines(self, p):
             '''Return a list of the lines of p containing sentinels.'''
             at = self.c.atFileCommands
