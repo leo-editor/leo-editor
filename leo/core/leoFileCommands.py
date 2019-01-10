@@ -1482,7 +1482,7 @@ class FileCommands(object):
         try:
             # 2010/01/19: Do *not* signal failure here.
             # This allows Leo to quit properly.
-            c.atFileCommands.writeAll()
+            c.atFileCommands.writeAll(all=False)
             return True
         except Exception:
             # Work around bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
@@ -1748,14 +1748,7 @@ class FileCommands(object):
         '''Write all @file nodes in the selected outline.'''
         c = self.c
         c.init_error_dialogs()
-        c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
-        c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20080801071227.5: *4* fc.writeAtShadowNodes
-    def writeAtShadowNodes(self, event=None):
-        '''Write all @file nodes in the selected outline.'''
-        c = self.c
-        c.init_error_dialogs()
-        c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
+        c.atFileCommands.writeAll(all=True)
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20031218072017.1666: *4* fc.writeDirtyAtFileNodes
     @cmd('write-dirty-at-file-nodes')
@@ -1763,7 +1756,7 @@ class FileCommands(object):
         '''Write all changed @file Nodes.'''
         c = self.c
         c.init_error_dialogs()
-        c.atFileCommands.writeAll(writeDirtyAtFileNodesFlag=True)
+        c.atFileCommands.writeAll(all=False)
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20080801071227.6: *4* fc.writeDirtyAtShadowNodes
     def writeDirtyAtShadowNodes(self, event=None):

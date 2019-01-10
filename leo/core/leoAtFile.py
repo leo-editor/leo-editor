@@ -1254,17 +1254,18 @@ class AtFile(object):
                 delattr(self.root.v, 'tnodeList')
             at.writeException() # Sets dirty and orphan bits.
     #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
-    def writeAll(self, writeAtFileNodesFlag=False, writeDirtyAtFileNodesFlag=False):
+    def writeAll(self, all=False):
+        ###writeAtFileNodesFlag=False, writeDirtyAtFileNodesFlag=False):
         """Write @file nodes in all or part of the outline"""
         at, c = self, self.c
         at.sameFiles = 0
-        force = writeAtFileNodesFlag
+        ### force = writeAtFileNodesFlag
         # This is the *only* place where these are set.
         # promptForDangerousWrite sets cancelFlag only if canCancelFlag is True.
         at.canCancelFlag = True
         at.cancelFlag = False
         at.yesToAll = False
-        files, root = at.findFilesToWrite(force)
+        files, root = at.findFilesToWrite(all)
         for p in files:
             try:
                 at.writeAllHelper(p, root)
@@ -1275,7 +1276,7 @@ class AtFile(object):
         at.cancelFlag = False
         at.yesToAll = False
         # Say the command is finished.
-        at.reportEndOfWrite(files, force, writeDirtyAtFileNodesFlag)
+        at.reportEndOfWrite(files, all)
         if c.isChanged():
             # Save the outline if only persistence data nodes are dirty.
             at.saveOutlineIfPossible()
@@ -1331,12 +1332,10 @@ class AtFile(object):
         g.es('Warning: changes to this file will be lost', color='red')
         g.es('unless you can save the file successfully.', color='red')
     #@+node:ekr.20190108112519.1: *6* at.reportEndOfWrite
-    def reportEndOfWrite(self, files, force, writeDirtyAtFileNodesFlag):
+    def reportEndOfWrite(self, files, all):
         
         at, c = self, self.c
         if g.unitTesting:
-            return
-        if not force and not writeDirtyAtFileNodesFlag:
             return
         if files:
             report = c.config.getBool('report-unchanged-files', default=True)
@@ -1344,11 +1343,11 @@ class AtFile(object):
                 g.es("finished")
             elif at.sameFiles:
                 g.es('finished. %s unchanged files' % at.sameFiles)
-        elif force:
+        elif all:
             g.warning("no @<file> nodes in the selected tree")
             # g.es("to write an unchanged @auto node,\nselect it directly.")
         else:
-            g.es("no dirty @<file> nodes")
+            g.es("no dirty @<file> nodes in the selected tree")
     #@+node:ekr.20140727075002.18108: *6* at.saveOutlineIfPossible
     def saveOutlineIfPossible(self):
         '''Save the outline if only persistence data nodes are dirty.'''
