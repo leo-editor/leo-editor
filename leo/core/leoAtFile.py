@@ -234,10 +234,11 @@ class AtFile(object):
                 at.stringOutput = ""
                 at.outputFileName = "<string-file>"
         else:
-            # at.outputNewline set in initCommonIvars.
-            at.outputFile = None
-            at.stringOutput = None
-            at.outputFileName = g.u('')
+            if 0: ### Now done in openFileForWriting, and in writeOneAtShadowNode.
+                # at.outputNewline set in initCommonIvars.
+                at.outputFile = None
+                at.stringOutput = None
+                at.outputFileName = g.u('')
         # Init all other ivars even if there is an error.
         if not at.errors and at.root:
             if hasattr(at.root.v, 'tnodeList'):
@@ -1121,6 +1122,10 @@ class AtFile(object):
     #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper
     def openFileForWriting(self, root, fileName):
         at = self
+        # at.outputNewline set in initCommonIvars.
+        at.outputFile = None
+        at.stringOutput = None
+        at.outputFileName = g.u('')
         ok = at.openFileForWritingHelper(fileName)
         if not ok:
             at.outputFile = None
@@ -1628,6 +1633,7 @@ class AtFile(object):
                 # A hack to suppress an error message.
                 # The actual sentinels will be set below.
         )
+        at.outputFileName = g.u('') ###
         #
         # Bug fix: Leo 4.5.1:
         # use x.markerFromFileName to force the delim to match
