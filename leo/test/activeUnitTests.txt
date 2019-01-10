@@ -1099,16 +1099,16 @@ s2 = '''
 at = c.atFileCommands
 assert at.isFileLike(s1),'fail1'
 assert not at.isFileLike(s2),'fail2'
-#@+node:ekr.20090529115704.4562: *4* @test at.open/closeStringFile
+#@+node:ekr.20090529115704.4562: *4* @test at.open/closeAtShadowStringFile
 at = c.atFileCommands
 
 # at.toString is set by the execute-script command.
 # at.outputFile = f = g.fileLikeObject() # Re-allocate for the test.
-f = at.openStringFile('abc')
+f = at.openAtShadowStringFile('abc')
 assert isinstance(f,g.fileLikeObject)
 s = 'abc'
 f.write(s)
-s2 = at.closeStringFile(f)
+s2 = at.closeAtShadowStringFile(f)
 assert s == s2,s2
 # assert at.toString
 #@+node:ekr.20090529115704.4563: *4* @test at.openForWrite: not a shadow file
@@ -20621,9 +20621,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20190110105302.1: *6* A
-#@+node:ekr.20190110105302.3: *6* newHeadline
-#@+node:ekr.20190110105302.2: *6* B
+#@+node:ekr.20190110114957.1: *6* A
+#@+node:ekr.20190110114957.3: *6* newHeadline
+#@+node:ekr.20190110114957.2: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():

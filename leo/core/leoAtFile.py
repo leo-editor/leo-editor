@@ -1645,12 +1645,12 @@ class AtFile(object):
         data = []
         for sentinels in (False, True):
             # Specify encoding explicitly.
-            theFile = at.openStringFile(fn, encoding=at.encoding)
+            theFile = at.openAtShadowStringFile(fn, encoding=at.encoding)
             at.sentinels = sentinels
             at.writeOpenFile(root, nosentinels=not sentinels)
                     # nosentinels only affects error messages.
             at.warnAboutOrphandAndIgnoredNodes()
-            s = at.closeStringFile(theFile)
+            s = at.closeAtShadowStringFile(theFile)
             data.append(s)
         # Set these new ivars for unit tests.
         # data has exactly two elements.
@@ -1687,8 +1687,23 @@ class AtFile(object):
             else:
                 # An unknown language.
                 pass # Use the default language, **not** 'unknown_language'
-    #@+node:ekr.20080712150045.2: *7* at.openStringFile
-    def openStringFile(self, fn, encoding='utf-8'):
+    #@+node:ekr.20080712150045.3: *7* at.closeAtShadowStringFile
+    def closeAtShadowStringFile(self, theFile):
+        at = self
+        if theFile:
+            theFile.flush()
+            s = at.stringOutput = theFile.get()
+            at.outputContents = s
+            theFile.close()
+            at.outputFile = None
+            at.outputFileName = g.u('')
+            at.shortFileName = ''
+            at.targetFileName = None
+            return s
+        else:
+            return None
+    #@+node:ekr.20080712150045.2: *7* at.openAtShadowStringFile
+    def openAtShadowStringFile(self, fn, encoding='utf-8'):
         '''A helper for at.writeOneAtShadowNode.'''
         at = self
         at.shortFileName = g.shortFileName(fn)
@@ -2562,21 +2577,6 @@ class AtFile(object):
             g.trace("unexpected exception")
             g.es_exception()
             if suppress: raise
-    #@+node:ekr.20080712150045.3: *5* at.closeStringFile
-    def closeStringFile(self, theFile):
-        at = self
-        if theFile:
-            theFile.flush()
-            s = at.stringOutput = theFile.get()
-            at.outputContents = s
-            theFile.close()
-            at.outputFile = None
-            at.outputFileName = g.u('')
-            at.shortFileName = ''
-            at.targetFileName = None
-            return s
-        else:
-            return None
     #@+node:ekr.20041005105605.135: *5* at.closeWriteFile
     # 4.0: Don't use newline-pending logic.
 

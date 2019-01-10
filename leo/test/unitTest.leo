@@ -757,9 +757,9 @@
 <v t="ekr.20181102063435.1"><vh>Fails...</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20190110105302.1"><vh>A</vh></v>
-<v t="ekr.20190110105302.3"><vh>newHeadline</vh></v>
-<v t="ekr.20190110105302.2"><vh>B</vh></v>
+<v t="ekr.20190110114957.1"><vh>A</vh></v>
+<v t="ekr.20190110114957.3"><vh>newHeadline</vh></v>
+<v t="ekr.20190110114957.2"><vh>B</vh></v>
 </v>
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
@@ -774,6 +774,7 @@
 <v t="ekr.20090529115704.4567"><vh>@test at.writeOneAtShadowNode</vh>
 <v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
 </v>
+<v t="ekr.20090529115704.4562"><vh>@test at.open/closeAtShadowStringFile</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2250,6 +2251,18 @@ x.show_error(
     message = "Test of x.show_error",
     lines1_message = "lines1",
     lines2_message = "lines2")
+</t>
+<t tx="ekr.20090529115704.4562">at = c.atFileCommands
+
+# at.toString is set by the execute-script command.
+# at.outputFile = f = g.fileLikeObject() # Re-allocate for the test.
+f = at.openAtShadowStringFile('abc')
+assert isinstance(f,g.fileLikeObject)
+s = 'abc'
+f.write(s)
+s2 = at.closeAtShadowStringFile(f)
+assert s == s2,s2
+# assert at.toString
 </t>
 <t tx="ekr.20090529115704.4567">at = c.atFileCommands
 x = c.shadowController
@@ -9652,9 +9665,9 @@ gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
 <t tx="ekr.20190109153806.1"></t>
-<t tx="ekr.20190110105302.1"></t>
-<t tx="ekr.20190110105302.2"></t>
-<t tx="ekr.20190110105302.3"></t>
+<t tx="ekr.20190110114957.1"></t>
+<t tx="ekr.20190110114957.2"></t>
+<t tx="ekr.20190110114957.3"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
