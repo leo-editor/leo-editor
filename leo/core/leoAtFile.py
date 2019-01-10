@@ -1073,7 +1073,7 @@ class AtFile(object):
         """Write a 4.x derived file to a string, and return it.
         root is the position of an @<file> node.
         """
-        assert kind in ('@clean', '@file', '@nosent', '@shadow', '@thin', '@test'), repr(kind)
+        # assert kind in ('@clean', '@file', '@nosent', '@shadow', '@thin', '@test'), repr(kind)
         at, c = self, self.c
         c.endEditing() # Capture the current headline.
         at.initWriteIvars(root, "<string-file>", nosentinels=not sentinels)
@@ -1195,7 +1195,7 @@ class AtFile(object):
         """Write a 4.x derived file.
         root is the position of an @<file> node.
         """
-        assert kind in ('@clean', '@file', '@nosent', '@shadow', '@thin', '@test'), repr(kind)
+        # assert kind in ('@clean', '@file', '@nosent', '@shadow', '@thin', '@test'), repr(kind)
         at, c = self, self.c
         c.endEditing() # Capture the current headline.
         at.initWriteIvars(root, root.anyAtFileNodeName(), nosentinels=nosentinels)
