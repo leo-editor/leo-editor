@@ -1031,11 +1031,13 @@ class AtFile(object):
                 # Sets at.outputFile, etc.
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
-            at.closeWriteFile()
-            at.fileChangedFlag = False
+            ### at.closeWriteFile()
+            result = at.closeStringFile()
+            ### at.fileChangedFlag = False
         except Exception:
             at.writeException(root) # Sets dirty and orphan bits.
-        return at.stringOutput
+            result = g.u('')
+        return result ### at.stringOutput
     #@+node:ekr.20190109160056.2: *5* at.atAutoToString
     def atAutoToString(self, root, trialWrite=False):
             # Set only by Importer.trial_write.
@@ -1052,8 +1054,9 @@ class AtFile(object):
         at.initWriteIvars(root, "<string-file>", nosentinels=True)
         at.openStringForWriting(root)
         at.writeAtAutoContents(fileName, root)
-        at.closeWriteFile()
-        return at.stringOutput if at.errors == 0 else ''
+        ### at.closeWriteFile()
+        ### return at.stringOutput if at.errors == 0 else ''
+        return at.closeStringFile()
     #@+node:ekr.20190109160056.3: *5* at.atEditToString
     def atEditToString(self, root):
         '''Write one @edit node.'''
@@ -1081,8 +1084,9 @@ class AtFile(object):
         try:
             at.writeOpenFile(root, nosentinels=not sentinels)
             assert root == at.root, 'write'
-            at.closeWriteFile()
-            at.fileChangedFlag = False
+            ### at.closeWriteFile()
+            ### at.fileChangedFlag = False
+            result = at.closeStringFile()
             # Major bug: failure to clear this wipes out headlines!
             # Minor bug: sometimes this causes slight problems...
             if hasattr(self.root.v, 'tnodeList'):
@@ -1093,7 +1097,9 @@ class AtFile(object):
                 delattr(self.root.v, 'tnodeList')
             at.exception("exception preprocessing script")
             root.v._p_changed = True
-        return g.toUnicode(at.stringOutput)
+            result = g.u('')
+        ### return g.toUnicode(at.stringOutput)
+        return result
     #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper
     def openFileForWriting(self, root, fileName):
         at = self
@@ -2592,6 +2598,19 @@ class AtFile(object):
             return at.stringOutput
         else:
             return None
+    #@+node:ekr.20190110115327.1: *5* at.closeStringFile (new)
+    def closeStringFile(self):
+        '''Close a string file opened with at.openStringForWriting.'''
+        at = self
+        assert at.toString, g.callers()
+        assert at.outputFile, g.callers()
+        at.outputFile.flush()
+        ### at.outputContents = at.outputFile.get()
+        at.stringOutput = g.toUnicode('' if at.errors else at.outputFile.get())
+        at.outputFile.close()
+        at.outputFile = None
+        at.fileChangedFlag = False
+        return at.stringOutput
     #@+node:ekr.20041005105605.197: *5* at.compareFiles
     def compareFiles(self, path1, path2, ignoreLineEndings, ignoreBlankLines=False):
         """Compare two text files."""
