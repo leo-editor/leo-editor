@@ -698,7 +698,6 @@ class AtFile(object):
         '''
         at = self.c.atFileCommands
         result = at.atFileToString(root, kind='@nosent', sentinels=True)
-        ### s = g.toUnicode(at.stringOutput, encoding=at.encoding)
         s = g.toUnicode(result, encoding=at.encoding)
         return g.splitLines(s)
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
@@ -1593,19 +1592,16 @@ class AtFile(object):
     #@+node:ekr.20080712150045.3: *7* at.closeAtShadowStringFile
     def closeAtShadowStringFile(self, theFile):
         at = self
-        assert theFile, g.callers() ###
-        if theFile: ###
-            theFile.flush()
-            s = at.stringOutput = theFile.get()
-            at.outputContents = s
-            theFile.close()
-            at.outputFile = None
-            at.outputFileName = g.u('')
-            at.shortFileName = ''
-            at.targetFileName = None
-            return s
-        else:
-            return None
+        assert theFile, g.callers()
+        theFile.flush()
+        s = at.stringOutput = theFile.get()
+        at.outputContents = s
+        theFile.close()
+        at.outputFile = None
+        at.outputFileName = g.u('')
+        at.shortFileName = ''
+        at.targetFileName = None
+        return s
     #@+node:ekr.20080712150045.2: *7* at.openAtShadowStringFile
     def openAtShadowStringFile(self, fn, encoding='utf-8'):
         '''A helper for at.writeOneAtShadowNode.'''
@@ -2500,6 +2496,9 @@ class AtFile(object):
     # 4.0: Don't use newline-pending logic.
 
     def closeWriteFile(self):
+        '''
+        Close the file and set at.outputContents, not at.stringOutput.
+        '''
         at = self
         assert not at.toString, g.callers()
         assert at.outputFile, g.callers()
@@ -2507,7 +2506,7 @@ class AtFile(object):
         at.outputContents = at.outputFile.get()
         at.outputFile.close()
         at.outputFile = None
-        ### return at.stringOutput
+
     #@+node:ekr.20041005105605.197: *5* at.compareFiles
     def compareFiles(self, path1, path2, ignoreLineEndings, ignoreBlankLines=False):
         """Compare two text files."""
