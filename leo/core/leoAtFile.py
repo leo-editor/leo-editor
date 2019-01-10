@@ -226,12 +226,13 @@ class AtFile(object):
             if encoding:
                 at.encoding = encoding
         if toString:
-            at.outputFile = g.FileLikeObject()
-            if g.app.unitTesting:
-                at.output_newline = '\n'
-            # else: at.output_newline set in initCommonIvars.
-            at.stringOutput = ""
-            at.outputFileName = "<string-file>"
+            if 0: ### Now done in openStringForWriting
+                at.outputFile = g.FileLikeObject()
+                if g.app.unitTesting:
+                    at.output_newline = '\n'
+                # else: at.output_newline set in initCommonIvars.
+                at.stringOutput = ""
+                at.outputFileName = "<string-file>"
         else:
             # at.outputNewline set in initCommonIvars.
             at.outputFile = None
@@ -1204,6 +1205,8 @@ class AtFile(object):
         at.shortFileName = g.shortFileName(fn)
         at.outputFileName = "<string: %s>" % at.shortFileName
         at.outputFile = g.FileLikeObject()
+        if g.app.unitTesting: at.output_newline = '\n'
+        at.stringOutput = ""
         return True
     #@+node:ekr.20041005105605.144: *5* at.write & helper
     def write(self, root, kind, nosentinels=False):
