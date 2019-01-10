@@ -1031,9 +1031,7 @@ class AtFile(object):
                 # Sets at.outputFile, etc.
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
-            ### at.closeWriteFile()
             result = at.closeStringFile()
-            ### at.fileChangedFlag = False
         except Exception:
             at.writeException(root) # Sets dirty and orphan bits.
             result = g.u('')
@@ -1054,8 +1052,6 @@ class AtFile(object):
         at.initWriteIvars(root, "<string-file>", nosentinels=True)
         at.openStringForWriting(root)
         at.writeAtAutoContents(fileName, root)
-        ### at.closeWriteFile()
-        ### return at.stringOutput if at.errors == 0 else ''
         return at.closeStringFile()
     #@+node:ekr.20190109160056.3: *5* at.atEditToString
     def atEditToString(self, root):
@@ -1084,8 +1080,6 @@ class AtFile(object):
         try:
             at.writeOpenFile(root, nosentinels=not sentinels)
             assert root == at.root, 'write'
-            ### at.closeWriteFile()
-            ### at.fileChangedFlag = False
             result = at.closeStringFile()
             # Major bug: failure to clear this wipes out headlines!
             # Minor bug: sometimes this causes slight problems...
@@ -1098,7 +1092,6 @@ class AtFile(object):
             at.exception("exception preprocessing script")
             root.v._p_changed = True
             result = g.u('')
-        ### return g.toUnicode(at.stringOutput)
         return result
     #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper
     def openFileForWriting(self, root, fileName):
@@ -1761,7 +1754,8 @@ class AtFile(object):
             at.openStringForWriting(root)
             # Simulate writing the entire file so error recovery works.
             at.writeOpenFile(root, fromString=s, nosentinels=not sentinels)
-            at.closeWriteFile()
+            ### at.closeWriteFile()
+            result = at.closeStringFile()
             # Major bug: failure to clear this wipes out headlines!
             # Minor bug: sometimes this causes slight problems...
             if root:
@@ -1770,7 +1764,9 @@ class AtFile(object):
                 root.v._p_changed = True
         except Exception:
             at.exception("exception preprocessing script")
-        return at.stringOutput
+            return g.u('')
+        ### return at.stringOutput
+        return result
     #@+node:ekr.20041005105605.151: *5* at.writeMissing & helper
     def writeMissing(self, p):
         at = self; c = at.c
@@ -2588,16 +2584,19 @@ class AtFile(object):
 
     def closeWriteFile(self):
         at = self
-        if at.outputFile:
+        assert not at.toString, g.callers()
+        assert at.outputFile, g.callers()
+        if True: ### at.outputFile:
             at.outputFile.flush()
             at.outputContents = at.outputFile.get()
-            if at.toString:
-                at.stringOutput = at.outputFile.get()
+            ###
+            # if at.toString:
+                # at.stringOutput = at.outputFile.get()
             at.outputFile.close()
             at.outputFile = None
             return at.stringOutput
-        else:
-            return None
+        # else:
+            # return None
     #@+node:ekr.20190110115327.1: *5* at.closeStringFile (new)
     def closeStringFile(self):
         '''Close a string file opened with at.openStringForWriting.'''
@@ -2605,8 +2604,9 @@ class AtFile(object):
         assert at.toString, g.callers()
         assert at.outputFile, g.callers()
         at.outputFile.flush()
-        ### at.outputContents = at.outputFile.get()
         at.stringOutput = g.toUnicode('' if at.errors else at.outputFile.get())
+        at.outputContents = at.stringOutput
+            # Required for various checks.
         at.outputFile.close()
         at.outputFile = None
         at.fileChangedFlag = False
