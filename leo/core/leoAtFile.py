@@ -1255,11 +1255,9 @@ class AtFile(object):
             at.writeException() # Sets dirty and orphan bits.
     #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
     def writeAll(self, all=False):
-        ###writeAtFileNodesFlag=False, writeDirtyAtFileNodesFlag=False):
         """Write @file nodes in all or part of the outline"""
         at, c = self, self.c
         at.sameFiles = 0
-        ### force = writeAtFileNodesFlag
         # This is the *only* place where these are set.
         # promptForDangerousWrite sets cancelFlag only if canCancelFlag is True.
         at.canCancelFlag = True
