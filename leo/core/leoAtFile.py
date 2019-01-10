@@ -1093,102 +1093,6 @@ class AtFile(object):
             root.v._p_changed = True
             result = g.u('')
         return result
-    #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper
-    def openFileForWriting(self, root, fileName):
-        at = self
-        # at.outputNewline set in initCommonIvars.
-        at.outputFile = None
-        at.stringOutput = None
-        at.outputFileName = g.u('')
-        at.toString = False
-        ok = at.openFileForWritingHelper(fileName)
-        if not ok:
-            at.outputFile = None
-            at.addAtIgnore(root)
-        return ok
-    #@+node:ekr.20041005105605.143: *6* at.openFileForWritingHelper & helper
-    def openFileForWritingHelper(self, fileName):
-        '''Open the file and return True if all went well.'''
-        at = self; c = at.c
-        try:
-            at.shortFileName = g.shortFileName(fileName)
-            at.targetFileName = c.os_path_finalize_join(
-                at.default_directory, fileName)
-            path = g.os_path_dirname(at.targetFileName)
-            if not path or not g.os_path_exists(path):
-                if path:
-                    path = g.makeAllNonExistentDirectories(path, c=c)
-                if not path or not g.os_path_exists(path):
-                    path = g.os_path_dirname(at.targetFileName)
-                    at.writeError("path does not exist: " + path)
-                    return False
-        except Exception:
-            at.exception("exception creating path: %s" % repr(path))
-            g.es_exception()
-            return False
-        if g.os_path_exists(at.targetFileName):
-            try:
-                if not os.access(at.targetFileName, os.W_OK):
-                    at.writeError("can not open: read only: " + at.targetFileName)
-                    return False
-            except AttributeError:
-                pass # os.access() may not exist on all platforms.
-        try:
-            old_output_fn = at.outputFileName
-                # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1260547
-            at.outputFileName = None
-            kind, at.outputFile = self.openForWrite(at.outputFileName, 'wb')
-            if not at.outputFile:
-                kind = 'did not overwrite' if kind == 'check' else 'can not create'
-                at.writeError("%s %s" % (kind, old_output_fn))
-                return False
-        except Exception:
-            at.exception("exception creating:" + old_output_fn)
-            return False
-        return True
-    #@+node:bwmulder.20050101094804: *7* at.openForWrite
-    def openForWrite(self, filename, wb='wb'):
-        '''Open a file for writes, handling shadow files.'''
-        at = self; c = at.c; x = c.shadowController
-        try:
-            # 2011/10/11: in "quick edit/save" mode the .leo file may not have a name.
-            if c.fileName():
-                shadow_filename = x.shadowPathName(filename)
-                self.writing_to_shadow_directory = os.path.exists(shadow_filename)
-                open_file_name = shadow_filename if self.writing_to_shadow_directory else filename
-                self.shadow_filename = shadow_filename if self.writing_to_shadow_directory else None
-            else:
-                self.writing_to_shadow_directory = False
-                open_file_name = filename
-            if self.writing_to_shadow_directory:
-                x.message('writing %s' % shadow_filename)
-                f = g.FileLikeObject()
-                return 'shadow', f
-            else:
-                ok = c.checkFileTimeStamp(at.targetFileName)
-                if ok:
-                    f = g.FileLikeObject()
-                else:
-                    f = None
-                # return 'check',ok and open(open_file_name,wb)
-                return 'check', f
-        except IOError:
-            if not g.app.unitTesting:
-                g.error('openForWrite: exception opening file: %s' % (open_file_name))
-                g.es_exception()
-            return 'error', None
-    #@+node:ekr.20190109145850.1: *5* at.openStringForWriting
-    def openStringForWriting(self, root):
-        at = self
-        fn = root.anyAtFileNodeName() or root.h # use root.h for unit tests.
-        assert fn, repr(root)
-        at.shortFileName = g.shortFileName(fn)
-        at.outputFileName = "<string: %s>" % at.shortFileName
-        at.outputFile = g.FileLikeObject()
-        if g.app.unitTesting: at.output_newline = '\n'
-        at.stringOutput = ""
-        at.toString = True
-        return True
     #@+node:ekr.20041005105605.144: *5* at.write & helper
     def write(self, root, kind, nosentinels=False):
         """Write a 4.x derived file.
@@ -2577,19 +2481,7 @@ class AtFile(object):
             g.trace("unexpected exception")
             g.es_exception()
             if suppress: raise
-    #@+node:ekr.20041005105605.135: *5* at.closeWriteFile
-    # 4.0: Don't use newline-pending logic.
-
-    def closeWriteFile(self):
-        at = self
-        assert not at.toString, g.callers()
-        assert at.outputFile, g.callers()
-        at.outputFile.flush()
-        at.outputContents = at.outputFile.get()
-        at.outputFile.close()
-        at.outputFile = None
-        return at.stringOutput
-    #@+node:ekr.20190110115327.1: *5* at.closeStringFile (new)
+    #@+node:ekr.20190110115327.1: *5* at.closeStringFile
     def closeStringFile(self):
         '''Close a string file opened with at.openStringForWriting.'''
         at = self
@@ -2602,6 +2494,18 @@ class AtFile(object):
         at.outputFile.close()
         at.outputFile = None
         at.fileChangedFlag = False
+        return at.stringOutput
+    #@+node:ekr.20041005105605.135: *5* at.closeWriteFile
+    # 4.0: Don't use newline-pending logic.
+
+    def closeWriteFile(self):
+        at = self
+        assert not at.toString, g.callers()
+        assert at.outputFile, g.callers()
+        at.outputFile.flush()
+        at.outputContents = at.outputFile.get()
+        at.outputFile.close()
+        at.outputFile = None
         return at.stringOutput
     #@+node:ekr.20041005105605.197: *5* at.compareFiles
     def compareFiles(self, path1, path2, ignoreLineEndings, ignoreBlankLines=False):
@@ -2710,6 +2614,102 @@ class AtFile(object):
             return True, i + 2
         else:
             return False, -1
+    #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper
+    def openFileForWriting(self, root, fileName):
+        at = self
+        # at.outputNewline set in initCommonIvars.
+        at.outputFile = None
+        at.stringOutput = None
+        at.outputFileName = g.u('')
+        at.toString = False
+        ok = at.openFileForWritingHelper(fileName)
+        if not ok:
+            at.outputFile = None
+            at.addAtIgnore(root)
+        return ok
+    #@+node:ekr.20041005105605.143: *6* at.openFileForWritingHelper & helper
+    def openFileForWritingHelper(self, fileName):
+        '''Open the file and return True if all went well.'''
+        at = self; c = at.c
+        try:
+            at.shortFileName = g.shortFileName(fileName)
+            at.targetFileName = c.os_path_finalize_join(
+                at.default_directory, fileName)
+            path = g.os_path_dirname(at.targetFileName)
+            if not path or not g.os_path_exists(path):
+                if path:
+                    path = g.makeAllNonExistentDirectories(path, c=c)
+                if not path or not g.os_path_exists(path):
+                    path = g.os_path_dirname(at.targetFileName)
+                    at.writeError("path does not exist: " + path)
+                    return False
+        except Exception:
+            at.exception("exception creating path: %s" % repr(path))
+            g.es_exception()
+            return False
+        if g.os_path_exists(at.targetFileName):
+            try:
+                if not os.access(at.targetFileName, os.W_OK):
+                    at.writeError("can not open: read only: " + at.targetFileName)
+                    return False
+            except AttributeError:
+                pass # os.access() may not exist on all platforms.
+        try:
+            old_output_fn = at.outputFileName
+                # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1260547
+            at.outputFileName = None
+            kind, at.outputFile = self.openForWrite(at.outputFileName, 'wb')
+            if not at.outputFile:
+                kind = 'did not overwrite' if kind == 'check' else 'can not create'
+                at.writeError("%s %s" % (kind, old_output_fn))
+                return False
+        except Exception:
+            at.exception("exception creating:" + old_output_fn)
+            return False
+        return True
+    #@+node:bwmulder.20050101094804: *7* at.openForWrite
+    def openForWrite(self, filename, wb='wb'):
+        '''Open a file for writes, handling shadow files.'''
+        at = self; c = at.c; x = c.shadowController
+        try:
+            # 2011/10/11: in "quick edit/save" mode the .leo file may not have a name.
+            if c.fileName():
+                shadow_filename = x.shadowPathName(filename)
+                self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+                open_file_name = shadow_filename if self.writing_to_shadow_directory else filename
+                self.shadow_filename = shadow_filename if self.writing_to_shadow_directory else None
+            else:
+                self.writing_to_shadow_directory = False
+                open_file_name = filename
+            if self.writing_to_shadow_directory:
+                x.message('writing %s' % shadow_filename)
+                f = g.FileLikeObject()
+                return 'shadow', f
+            else:
+                ok = c.checkFileTimeStamp(at.targetFileName)
+                if ok:
+                    f = g.FileLikeObject()
+                else:
+                    f = None
+                # return 'check',ok and open(open_file_name,wb)
+                return 'check', f
+        except IOError:
+            if not g.app.unitTesting:
+                g.error('openForWrite: exception opening file: %s' % (open_file_name))
+                g.es_exception()
+            return 'error', None
+    #@+node:ekr.20190109145850.1: *5* at.openStringForWriting
+    def openStringForWriting(self, root):
+        at = self
+        fn = root.anyAtFileNodeName() or root.h # use root.h for unit tests.
+        assert fn, repr(root)
+        at.shortFileName = g.shortFileName(fn)
+        at.outputFileName = "<string: %s>" % at.shortFileName
+        at.outputFile = g.FileLikeObject()
+        if g.app.unitTesting: at.output_newline = '\n'
+        at.stringOutput = ""
+        at.toString = True
+        return True
     #@+node:ekr.20041005105605.201: *5* at.os and allies
     # Note:  self.outputFile may be either a FileLikeObject or a real file.
     #@+node:ekr.20041005105605.202: *6* at.oblank, oblanks & otabs
