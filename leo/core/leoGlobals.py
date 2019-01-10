@@ -7332,7 +7332,7 @@ def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
         # Important: converts unicode to utf-8 encoded strings.
         script = at.writeFromString(p.copy(), s,
             forcePythonSentinels=forcePythonSentinels,
-            useSentinels=useSentinels)
+            sentinels=useSentinels)
         script = script.replace("\r\n", "\n") # Use brute force.
         # Important, the script is an **encoded string**, not a unicode string.
         g.app.scriptDict["script2"] = script

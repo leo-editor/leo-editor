@@ -130,7 +130,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 root=root,
                 s=script,
                 forcePythonSentinels=True,
-                useSentinels=False)
+                sentinels=False)
             script = script.replace("\r\n", "\n")
             try:
                 exec(script, c.abbrev_subst_env, c.abbrev_subst_env)

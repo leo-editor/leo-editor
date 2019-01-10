@@ -1693,7 +1693,7 @@ class AtFile(object):
                 g.es("no @shadow nodes in the selected tree")
         return found
     #@+node:ekr.20050506084734: *5* at.writeFromString
-    def writeFromString(self, root, s, forcePythonSentinels=True, useSentinels=True):
+    def writeFromString(self, root, s, forcePythonSentinels=True, sentinels=True):
         """
         Write a 4.x derived file from a string.
 
@@ -1703,11 +1703,11 @@ class AtFile(object):
         c.endEditing()
             # Capture the current headline, but don't change the focus!
         at.initWriteIvars(root, "<string-file>",
-            forcePythonSentinels=forcePythonSentinels, nosentinels=not useSentinels)
+            forcePythonSentinels=forcePythonSentinels, nosentinels=not sentinels)
         try:
             at.openStringForWriting(root)
             # Simulate writing the entire file so error recovery works.
-            at.writeOpenFile(root, fromString=s, nosentinels=not useSentinels)
+            at.writeOpenFile(root, fromString=s, nosentinels=not sentinels)
             at.closeWriteFile()
             # Major bug: failure to clear this wipes out headlines!
             # Minor bug: sometimes this causes slight problems...
