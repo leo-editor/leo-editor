@@ -997,7 +997,7 @@ class TestManager(object):
             "@asis",), "bad type: %s" % theType
         nosentinels = theType in ("@asis", "@clean", "@edit", "@nosent")
         if theType == "@asis":
-            result = at.getAsIs(child1)
+            result = at.getAtAsis(child1)
         elif theType == "@auto":
             result = at.getAtAuto(child1)
         elif theType == "@edit":

@@ -1019,7 +1019,7 @@ class AtFile(object):
             at.outputStringWithLineEndings(s)
 
     #@+node:ekr.20190109160056.1: *5* at.getAsIs
-    def getAsIs(self, root):
+    def getAtAsis(self, root):
         '''Write the @asis node to a string.'''
         at = self; c = at.c
         c.endEditing() # Capture the current headline.
