@@ -738,7 +738,7 @@ class AtFile(object):
             ok = at.importAtShadowNode(fn, p)
             if ok:
                 # Create the private file automatically.
-                at.writeOneAtShadowNode(p) ###, force=True)
+                at.writeOneAtShadowNode(p)
     #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode
     def importAtShadowNode(self, fn, p):
         at = self; c = at.c; ic = c.importCommands
@@ -1283,7 +1283,7 @@ class AtFile(object):
         files, root = at.findFilesToWrite(force)
         for p in files:
             try:
-                at.writeAllHelper(p, root) ### force
+                at.writeAllHelper(p, root)
             except Exception:
                 at.internalWriteError(p)
         # Make *sure* these flags are cleared for other commands.
@@ -1379,7 +1379,7 @@ class AtFile(object):
             c.setChanged(False)
             c.redraw()
     #@+node:ekr.20041005105605.149: *6* at.writeAllHelper & helper (changed)
-    def writeAllHelper(self, p, root): ### force
+    def writeAllHelper(self, p, root):
         '''
         Write one file for the at.writeAll.
         Do *not* write @auto files unless p == root.
@@ -1388,12 +1388,12 @@ class AtFile(object):
         '''
         at = self
         at.root = root
-        if p.isDirty(): ### and not force.
-            at.autoBeautify(p)
         try:
             at.writePathChanged(p)
         except IOError:
             return
+        if p.isDirty():
+            at.autoBeautify(p)
         # Tricky: @ignore not recognised in @asis nodes.
         if p.isAtAsisFileNode():
             at.asisWrite(p)
@@ -1409,7 +1409,7 @@ class AtFile(object):
         elif p.isAtNoSentFileNode():
             at.write(p, kind='@nosent', nosentinels=True)
         elif p.isAtShadowFileNode():
-            at.writeOneAtShadowNode(p) ###, force=force or pathChanged)
+            at.writeOneAtShadowNode(p)
         elif p.isAtThinFileNode():
             at.write(p, kind='@thin')
         elif p.isAtFileNode():
@@ -1618,7 +1618,7 @@ class AtFile(object):
         c.raise_error_dialogs(kind='write')
         return val
     #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helpers
-    def writeOneAtShadowNode(self, p, testing=False): ### force=False, 
+    def writeOneAtShadowNode(self, p, testing=False):
         '''
         Write p, an @shadow node.
         File indices *must* have already been assigned.
@@ -1687,7 +1687,7 @@ class AtFile(object):
         if g.app.unitTesting:
             exceptions = ('public_s', 'private_s', 'sentinels', 'stringOutput', 'outputContents')
             assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
-        if at.errors == 0: ### and not toString:
+        if at.errors == 0 and not testing:
             # Write the public and private files.
             x.makeShadowDirectory(fn)
                 # makeShadowDirectory takes a *public* file name.
@@ -1716,14 +1716,17 @@ class AtFile(object):
                 # An unknown language.
                 pass # Use the default language, **not** 'unknown_language'
     #@+node:ekr.20190109153627.13: *6* at.writeAtShadowNodesHelper
-    def writeAtShadowNodesHelper(self, writeDirtyOnly=True): ### toString=False, 
+    def writeAtShadowNodesHelper(self, writeDirtyOnly=True): 
         """Write @shadow nodes in the selected outline"""
         at = self; c = at.c
         p = c.p; after = p.nodeAfterTree()
         found = False
         while p and p != after:
-            if p.atShadowFileNodeName() and not p.isAtIgnoreNode() and (p.isDirty() or not writeDirtyOnly):
-                ok = at.writeOneAtShadowNode(p) ###, toString=toString, , force=True)
+            if (
+                p.atShadowFileNodeName() and not p.isAtIgnoreNode()
+                and (p.isDirty() or not writeDirtyOnly)
+            ):
+                ok = at.writeOneAtShadowNode(p)
                 if ok:
                     found = True
                     g.blue('wrote %s' % p.atShadowFileNodeName())
