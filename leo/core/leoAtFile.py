@@ -1033,7 +1033,7 @@ class AtFile(object):
             s = g.toEncodedString(s, at.encoding, reportErrors=True)
             at.outputStringWithLineEndings(s)
 
-    #@+node:ekr.20190109160056.1: *5* at.getAsIs (new)
+    #@+node:ekr.20190109160056.1: *5* at.getAsIs
     def getAsIs(self, root):
         '''Write the @asis node to a string.'''
         at = self; c = at.c
@@ -1052,7 +1052,7 @@ class AtFile(object):
         except Exception:
             at.writeException(root) # Sets dirty and orphan bits.
         return at.stringOutput
-    #@+node:ekr.20190109160056.2: *5* at.getAtAuto (new)
+    #@+node:ekr.20190109160056.2: *5* at.getAtAuto
     def getAtAuto(self, root, trialWrite=False):
             # Set only by Importer.trial_write.
             # Suppresses call to update_before_write_foreign_file below.
@@ -1069,12 +1069,10 @@ class AtFile(object):
         at.initWriteIvars(root, at.targetFileName,
             nosentinels=True, toString=True)
         at.openStringForWriting(root)
-            # Sets at.outputFile, etc.
         at.writeAtAutoContents(fileName, root)
-            # Actually write the @auto node.
         at.closeWriteFile()
         return at.stringOutput if at.errors == 0 else ''
-    #@+node:ekr.20190109160056.3: *5* at.getAtEdit (new)
+    #@+node:ekr.20190109160056.3: *5* at.getAtEdit
     def getAtEdit(self, root):
         '''Write one @edit node.'''
         at, c = self, self.c
@@ -1083,12 +1081,10 @@ class AtFile(object):
             g.error('@edit nodes must not have children')
             g.es('To save your work, convert @edit to @auto, @file or @clean')
             return False
-        #
         # Init...
         at.targetFileName = root.atEditNodeName()
         at.initWriteIvars(root, at.targetFileName,
             atEdit=True, nosentinels=True, toString=True)
-        #
         # Compute the file's contents.
         contents = ''.join([s for s in g.splitLines(root.b)
             if at.directiveKind4(s, 0) == at.noDirective])
@@ -1105,7 +1101,6 @@ class AtFile(object):
         at.initWriteIvars(root, at.targetFileName,
             nosentinels=not sentinels, toString=True)
         at.openStringForWriting(root)
-            # Sets at.outputFile, etc.
         try:
             at.writeOpenFile(root, nosentinels=not sentinels)
             assert root == at.root, 'write'
@@ -1220,7 +1215,7 @@ class AtFile(object):
         c.endEditing() # Capture the current headline.
         at.targetFileName = root.anyAtFileNodeName()
         at.initWriteIvars(root, at.targetFileName, nosentinels=nosentinels)
-        # "look ahead" computation of eventual fileName.
+        # Compute the eventual fileName.
         eventualFileName = c.os_path_finalize_join(
             at.default_directory, at.targetFileName)
         if at.shouldPromptForDangerousWrite(eventualFileName, root):
@@ -1812,7 +1807,6 @@ class AtFile(object):
         at.targetFileName = fn
         at.initWriteIvars(root, at.targetFileName, atEdit=True, nosentinels=True)
         # Compute the file's contents.
-        # Unlike the @clean/@nosent file logic, it does not add a final newline.
         contents = ''.join([s for s in g.splitLines(p.b)
             if at.directiveKind4(s, 0) == at.noDirective])
         ok = at.openFileForWriting(root, fileName=fn)
@@ -1829,8 +1823,8 @@ class AtFile(object):
         c.raise_error_dialogs(kind='write')
         return ok
     #@+node:ekr.20041005105605.157: *5* at.writeOpenFile
-    def writeOpenFile(self, root, fromString='', nosentinels=False): 
-        """Do all writes except asis writes."""
+    def writeOpenFile(self, root, fromString='', nosentinels=False):
+        '''Write the contents of the file.'''
         at = self
         s = fromString if fromString else root.v.b
         root.clearAllVisitedInTree()
