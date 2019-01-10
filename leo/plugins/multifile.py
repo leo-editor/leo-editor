@@ -90,7 +90,7 @@ files = {}
 originalOpenFileForWriting = None
 
 #@+others
-#@+node:ekr.20050226115130.1: ** init & helpers
+#@+node:ekr.20050226115130.1: ** init & helpers (multifile.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     # Append to the module list, not to the g.copy.
@@ -98,7 +98,8 @@ def init ():
     g.globalDirectiveList.append('multiprefix')
     # Override all instances of leoAtFile.AtFile.
     at = leoAtFile.AtFile
-    global originalOpenFileForWriting ; originalOpenFileForWriting = at.openFileForWriting
+    global originalOpenFileForWriting
+    originalOpenFileForWriting = at.openFileForWriting
     g.funcToMethod(decoratedOpenFileForWriting,at,name='openFileForWriting')
     # g.registerHandler('save1',start)
     g.registerHandler('save2',stop)
@@ -134,12 +135,12 @@ def insertDirectoryString (c):
         #w.event_generate('<Key>')
         #w.update_idletasks()
 #@+node:mork.20041018204908.3: ** decoratedOpenFileForWriting
-def decoratedOpenFileForWriting (self,root,fileName,toString):
+def decoratedOpenFileForWriting (self,root,fileName):
 
     # Call the original method.
     global files
     global originalOpenFileForWriting
-    val = originalOpenFileForWriting(self,root,fileName,toString)
+    val = originalOpenFileForWriting(self, root, fileName)
     # Save a pointer to the root for later.
     if root.isDirty():
         files [fileName] = root.copy()
