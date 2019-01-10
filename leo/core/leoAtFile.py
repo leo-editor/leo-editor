@@ -1829,15 +1829,15 @@ class AtFile(object):
             at.write(p, kind='@file')
         else:
             g.trace('can not happen: unknown @file node')
-    #@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode
-    def writeOneAtEditNode(self, p, toString=False, force=False):
+    #@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode (changed)
+    def writeOneAtEditNode(self, p, force=False): 
         '''Write one @edit node.'''
         at = self; c = at.c
         root = p.copy()
         c.endEditing()
         c.init_error_dialogs()
         fn = p.atEditNodeName()
-        if not fn and not toString:
+        if not fn:
             return False
         if p.hasChildren():
             g.error('@edit nodes must not have children')
@@ -1858,16 +1858,13 @@ class AtFile(object):
         at.initWriteIvars(root, at.targetFileName,
             atEdit=True,
             nosentinels=True,
-            toString=toString,
+            toString=False,
         )
         # Compute the file's contents.
         # Unlike the @clean/@nosent file logic, it does not add a final newline.
         contents = ''.join([s for s in g.splitLines(p.b)
             if at.directiveKind4(s, 0) == at.noDirective])
-        if toString:
-            at.stringOutput = contents
-            return True
-        ok = at.openFileForWriting(root, fileName=fn) ###, toString=False)
+        ok = at.openFileForWriting(root, fileName=fn)
             # Calls at.addAtIgnore() if there are errors.
         if ok:
             self.os(contents)
