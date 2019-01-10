@@ -1018,7 +1018,7 @@ class AtFile(object):
             s = g.toEncodedString(s, at.encoding, reportErrors=True)
             at.outputStringWithLineEndings(s)
 
-    #@+node:ekr.20190109160056.1: *5* at.getAsIs
+    #@+node:ekr.20190109160056.1: *5* at.getAtAsis
     def getAtAsis(self, root):
         '''Write the @asis node to a string.'''
         at = self; c = at.c
