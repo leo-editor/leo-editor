@@ -1035,7 +1035,7 @@ class AtFile(object):
         except Exception:
             at.writeException(root) # Sets dirty and orphan bits.
             result = g.u('')
-        return result ### at.stringOutput
+        return result
     #@+node:ekr.20190109160056.2: *5* at.atAutoToString
     def atAutoToString(self, root, trialWrite=False):
             # Set only by Importer.trial_write.
@@ -1754,7 +1754,6 @@ class AtFile(object):
             at.openStringForWriting(root)
             # Simulate writing the entire file so error recovery works.
             at.writeOpenFile(root, fromString=s, nosentinels=not sentinels)
-            ### at.closeWriteFile()
             result = at.closeStringFile()
             # Major bug: failure to clear this wipes out headlines!
             # Minor bug: sometimes this causes slight problems...
@@ -1765,7 +1764,6 @@ class AtFile(object):
         except Exception:
             at.exception("exception preprocessing script")
             return g.u('')
-        ### return at.stringOutput
         return result
     #@+node:ekr.20041005105605.151: *5* at.writeMissing & helper
     def writeMissing(self, p):
@@ -2586,17 +2584,11 @@ class AtFile(object):
         at = self
         assert not at.toString, g.callers()
         assert at.outputFile, g.callers()
-        if True: ### at.outputFile:
-            at.outputFile.flush()
-            at.outputContents = at.outputFile.get()
-            ###
-            # if at.toString:
-                # at.stringOutput = at.outputFile.get()
-            at.outputFile.close()
-            at.outputFile = None
-            return at.stringOutput
-        # else:
-            # return None
+        at.outputFile.flush()
+        at.outputContents = at.outputFile.get()
+        at.outputFile.close()
+        at.outputFile = None
+        return at.stringOutput
     #@+node:ekr.20190110115327.1: *5* at.closeStringFile (new)
     def closeStringFile(self):
         '''Close a string file opened with at.openStringForWriting.'''
