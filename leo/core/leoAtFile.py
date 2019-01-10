@@ -1107,7 +1107,7 @@ class AtFile(object):
         at.openStringForWriting(root)
             # Sets at.outputFile, etc.
         try:
-            at.writeOpenFile(root, nosentinels=not sentinels) ###, toString=True)
+            at.writeOpenFile(root, nosentinels=not sentinels)
             assert root == at.root, 'write'
             at.closeWriteFile()
             at.fileChangedFlag = False
@@ -1238,8 +1238,8 @@ class AtFile(object):
             # Calls at.addAtIgnore() if there are errors.
             return
         try:
-            at.writeOpenFile(root, nosentinels=nosentinels) ###, toString=False)
-            at.warnAboutOrphandAndIgnoredNodes() ###
+            at.writeOpenFile(root, nosentinels=nosentinels)
+            at.warnAboutOrphandAndIgnoredNodes()
             assert root == at.root, 'write'
             at.closeWriteFile()
             if at.errors > 0:
@@ -1644,9 +1644,9 @@ class AtFile(object):
             # Specify encoding explicitly.
             theFile = at.openStringFile(fn, encoding=at.encoding)
             at.sentinels = sentinels
-            at.writeOpenFile(root, nosentinels=not sentinels) ###, toString=False)
+            at.writeOpenFile(root, nosentinels=not sentinels)
                     # nosentinels only affects error messages.
-            at.warnAboutOrphandAndIgnoredNodes() ###
+            at.warnAboutOrphandAndIgnoredNodes()
             s = at.closeStringFile(theFile)
             data.append(s)
         # Set these new ivars for unit tests.
@@ -1730,8 +1730,7 @@ class AtFile(object):
         try:
             at.openStringForWriting(root)
             # Simulate writing the entire file so error recovery works.
-            at.writeOpenFile(root, fromString=s, nosentinels=not useSentinels) ###, )
-                ### toString=True, 
+            at.writeOpenFile(root, fromString=s, nosentinels=not useSentinels)
             at.closeWriteFile()
             # Major bug: failure to clear this wipes out headlines!
             # Minor bug: sometimes this causes slight problems...
@@ -1830,7 +1829,7 @@ class AtFile(object):
         c.raise_error_dialogs(kind='write')
         return ok
     #@+node:ekr.20041005105605.157: *5* at.writeOpenFile
-    def writeOpenFile(self, root, fromString='', nosentinels=False): ### toString=False, 
+    def writeOpenFile(self, root, fromString='', nosentinels=False): 
         """Do all writes except asis writes."""
         at = self
         s = fromString if fromString else root.v.b
@@ -1845,8 +1844,6 @@ class AtFile(object):
         at.putSentinel("@-leo")
         root.setVisited()
         at.putAtLastLines(s)
-        ### if not toString:
-        ###    at.warnAboutOrphandAndIgnoredNodes()
     #@+node:ekr.20190109172025.1: *5* at.writeAtAutoContents
     def writeAtAutoContents(self, fileName, root):
         '''Common helper for getAtAuto and writeOneAtAutoNode.'''
@@ -1866,7 +1863,7 @@ class AtFile(object):
             ivar = 'allow_undefined_refs'
             try:
                 setattr(at, ivar, True)
-                at.writeOpenFile(root, nosentinels=True) ###, toString=True)
+                at.writeOpenFile(root, nosentinels=True)
             finally:
                 if hasattr(at, ivar):
                     delattr(at, ivar)
