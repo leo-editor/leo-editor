@@ -169,7 +169,7 @@ class AtFile(object):
         atEdit=False,
         atShadow=False,
         forcePythonSentinels=False,
-        nosentinels=False,
+        sentinels=True,
     ):
         at, c = self, self.c
         assert root
@@ -201,7 +201,7 @@ class AtFile(object):
         # at.page_width:        set by scanAllDirectives() below.
         at.outputContents = None
         at.sameFiles = 0
-        at.sentinels = not nosentinels
+        at.sentinels = sentinels
         at.shortFileName = "" # For messages.
         at.root = root
         # at.tab_width:         set by scanAllDirectives() below.
@@ -1049,7 +1049,7 @@ class AtFile(object):
         #
         # Init
         fileName = root.atAutoNodeName()
-        at.initWriteIvars(root, "<string-file>", nosentinels=True)
+        at.initWriteIvars(root, "<string-file>", sentinels=False)
         at.openStringForWriting(root)
         at.writeAtAutoContents(fileName, root)
         return at.closeStringFile()
@@ -1062,7 +1062,7 @@ class AtFile(object):
             g.error('@edit nodes must not have children')
             g.es('To save your work, convert @edit to @auto, @file or @clean')
             return False
-        at.initWriteIvars(root, root.atEditNodeName(), atEdit=True, nosentinels=True)
+        at.initWriteIvars(root, root.atEditNodeName(), atEdit=True, sentinels=False)
         # Compute the file's contents.
         contents = ''.join([s for s in g.splitLines(root.b)
             if at.directiveKind4(s, 0) == at.noDirective])
@@ -1075,10 +1075,10 @@ class AtFile(object):
         # assert kind in ('@clean', '@file', '@nosent', '@shadow', '@thin', '@test'), repr(kind)
         at, c = self, self.c
         c.endEditing() # Capture the current headline.
-        at.initWriteIvars(root, "<string-file>", nosentinels=not sentinels)
+        at.initWriteIvars(root, "<string-file>", sentinels=sentinels)
         at.openStringForWriting(root)
         try:
-            at.writeOpenFile(root, nosentinels=not sentinels)
+            at.writeOpenFile(root, sentinels=sentinels)
             assert root == at.root, 'write'
             result = at.closeStringFile()
             # Major bug: failure to clear this wipes out headlines!
@@ -1094,14 +1094,14 @@ class AtFile(object):
             result = g.u('')
         return result
     #@+node:ekr.20041005105605.144: *5* at.write & helper
-    def write(self, root, kind, nosentinels=False):
+    def write(self, root, kind, sentinels=True):
         """Write a 4.x derived file.
         root is the position of an @<file> node.
         """
         # assert kind in ('@clean', '@file', '@nosent', '@shadow', '@thin', '@test'), repr(kind)
         at, c = self, self.c
         c.endEditing() # Capture the current headline.
-        at.initWriteIvars(root, root.anyAtFileNodeName(), nosentinels=nosentinels)
+        at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
         # Compute the eventual fileName.
         eventualFileName = c.os_path_finalize_join(
             at.default_directory, at.targetFileName)
@@ -1120,7 +1120,7 @@ class AtFile(object):
             # Calls at.addAtIgnore() if there are errors.
             return
         try:
-            at.writeOpenFile(root, nosentinels=nosentinels)
+            at.writeOpenFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
             assert root == at.root, 'write'
             at.closeWriteFile()
@@ -1267,11 +1267,11 @@ class AtFile(object):
             at.writeOneAtAutoNode(p)
             # Do *not* clear the dirty bits the entries in @persistence tree here!
         elif p.isAtCleanNode():
-            at.write(p, kind='@clean', nosentinels=True)
+            at.write(p, kind='@clean', sentinels=False)
         elif p.isAtEditNode():
             at.writeOneAtEditNode(p)
         elif p.isAtNoSentFileNode():
-            at.write(p, kind='@nosent', nosentinels=True)
+            at.write(p, kind='@nosent', sentinels=False)
         elif p.isAtShadowFileNode():
             at.writeOneAtShadowNode(p)
         elif p.isAtThinFileNode():
@@ -1341,7 +1341,7 @@ class AtFile(object):
             ivar = 'allow_undefined_refs'
             try:
                 setattr(at, ivar, True)
-                at.writeOpenFile(root, nosentinels=True)
+                at.writeOpenFile(root, sentinels=False)
             finally:
                 if hasattr(at, ivar):
                     delattr(at, ivar)
@@ -1386,7 +1386,7 @@ class AtFile(object):
         at.rememberReadPath(fileName, root)
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
-        at.initWriteIvars(root, fileName, nosentinels=True)
+        at.initWriteIvars(root, fileName, sentinels=False)
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting(root, fileName=fileName)
@@ -1549,8 +1549,7 @@ class AtFile(object):
             # Specify encoding explicitly.
             theFile = at.openAtShadowStringFile(fn, encoding=at.encoding)
             at.sentinels = sentinels
-            at.writeOpenFile(root, nosentinels=not sentinels)
-                    # nosentinels only affects error messages.
+            at.writeOpenFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
             s = at.closeAtShadowStringFile(theFile)
             data.append(s)
@@ -1650,11 +1649,11 @@ class AtFile(object):
         c.endEditing()
             # Capture the current headline, but don't change the focus!
         at.initWriteIvars(root, "<string-file>",
-            forcePythonSentinels=forcePythonSentinels, nosentinels=not sentinels)
+            forcePythonSentinels=forcePythonSentinels, sentinels=sentinels)
         try:
             at.openStringForWriting(root)
             # Simulate writing the entire file so error recovery works.
-            at.writeOpenFile(root, fromString=s, nosentinels=not sentinels)
+            at.writeOpenFile(root, fromString=s, sentinels=sentinels)
             result = at.closeStringFile()
             # Major bug: failure to clear this wipes out headlines!
             # Minor bug: sometimes this causes slight problems...
@@ -1704,7 +1703,7 @@ class AtFile(object):
         if p.isAtAsisFileNode():
             at.asisWrite(p)
         elif p.isAtNoSentFileNode():
-            at.write(p, kind='@nosent', nosentinels=True)
+            at.write(p, kind='@nosent', sentinels=False)
         elif p.isAtFileNode():
             at.write(p, kind='@file')
         else:
@@ -1734,7 +1733,7 @@ class AtFile(object):
             else:
                 g.es("not written:", fn)
                 return False
-        at.initWriteIvars(root, fn, atEdit=True, nosentinels=True)
+        at.initWriteIvars(root, fn, atEdit=True, sentinels=False)
         # Compute the file's contents.
         contents = ''.join([s for s in g.splitLines(p.b)
             if at.directiveKind4(s, 0) == at.noDirective])
@@ -1752,7 +1751,7 @@ class AtFile(object):
         c.raise_error_dialogs(kind='write')
         return ok
     #@+node:ekr.20041005105605.157: *5* at.writeOpenFile
-    def writeOpenFile(self, root, fromString='', nosentinels=False):
+    def writeOpenFile(self, root, fromString='', sentinels=True):
         '''Write the contents of the file.'''
         at = self
         s = fromString if fromString else root.v.b

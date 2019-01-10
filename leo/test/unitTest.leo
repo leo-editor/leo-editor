@@ -1510,9 +1510,6 @@ expected = '''\
 '''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
 
 child = p.firstChild()
-### at.write(child, toString=True)
-    # Default: nosentinels=False
-### result = str(at.stringOutput)
 result = at.atFileToString(child, kind='@test')
 result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
 if 0: # Show unexpected mismatches.
@@ -2278,7 +2275,7 @@ try:
     x.makeShadowDirectory(shadow_dir)
     if g.os_path_exists(shadow_fn):
         g.utils_remove(shadow_fn,verbose=True)
-    at.writeOneAtShadowNode(child, testing=True) ### toString=True,force=True)
+    at.writeOneAtShadowNode(child, testing=True)
     assert at.startSentinelComment == '#','startSentinelComment: %s' % (
         repr(at.startSentinelComment))
     assert at.endSentinelComment == '','endSentinelComment: %s' % (
@@ -2286,7 +2283,7 @@ try:
     if 0:
         print('public...\n',at.public_s)
         print('private...\n',at.private_s)
-    at.writeOneAtShadowNode(child, testing=False) ### toString=False,force=True)
+    at.writeOneAtShadowNode(child, testing=False)
     assert g.os_path_exists(shadow_fn),'not found: %s' % shadow_fn
     # No need to remove this: it's in the unittest directory.
     # g.utils_remove(shadow_fn,verbose=True)
@@ -2960,7 +2957,7 @@ for tag,aList in table:
 <t tx="ekr.20100131171342.5482">ivars = (
     # Global managers.
     'config',
-    ### 'externalFilesController',
+    # 'externalFilesController',
     'loadManager','pluginsController','recentFilesManager',
     # Official ivars.
     'gui',

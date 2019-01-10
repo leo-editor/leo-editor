@@ -315,7 +315,7 @@ def run(self):
         child2 = expected.firstChild().next()
         child1_b = clean(child1.b)
         child2_b = clean(child2.b)
-        child2_b = self.munge(child2.b) ###
+        child2_b = self.munge(child2.b)
         ok = rst == child1_b and html == child2_b
         if not ok:
             got_html,got_rst = self.set_got(expected,got)
@@ -654,7 +654,7 @@ assert hasattr(g.app,'homeDir') # May well be None.
 ivars = (
     # Global managers.
     'config',
-    ### 'externalFilesController',
+    # 'externalFilesController',
     'loadManager','pluginsController','recentFilesManager',
     # Official ivars.
     'gui',
@@ -1263,7 +1263,7 @@ s = child.b
 try:
     fn = 'unittest/read_test.py'
     child.setHeadString('@shadow %s' % fn)
-    at.writeOneAtShadowNode(child, testing=True) ### toString=False,force=True)
+    at.writeOneAtShadowNode(child, testing=True)
     at.readOneAtShadowNode(fn,child)
 finally:
     child.setHeadString('@@shadow %s' % fn)
@@ -1462,9 +1462,6 @@ expected = '''\
 '''.replace('AT','#@').replace('> >', '>>').replace('< <', '<<')
 
 child = p.firstChild()
-### at.write(child, toString=True)
-    # Default: nosentinels=False
-### result = str(at.stringOutput)
 result = at.atFileToString(child, kind='@test')
 result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
 if 0: # Show unexpected mismatches.
@@ -1508,7 +1505,7 @@ try:
     x.makeShadowDirectory(shadow_dir)
     if g.os_path_exists(shadow_fn):
         g.utils_remove(shadow_fn,verbose=True)
-    at.writeOneAtShadowNode(child, testing=True) ### toString=True,force=True)
+    at.writeOneAtShadowNode(child, testing=True)
     assert at.startSentinelComment == '#','startSentinelComment: %s' % (
         repr(at.startSentinelComment))
     assert at.endSentinelComment == '','endSentinelComment: %s' % (
@@ -1516,7 +1513,7 @@ try:
     if 0:
         print('public...\n',at.public_s)
         print('private...\n',at.private_s)
-    at.writeOneAtShadowNode(child, testing=False) ### toString=False,force=True)
+    at.writeOneAtShadowNode(child, testing=False)
     assert g.os_path_exists(shadow_fn),'not found: %s' % shadow_fn
     # No need to remove this: it's in the unittest directory.
     # g.utils_remove(shadow_fn,verbose=True)
@@ -5920,7 +5917,7 @@ try:
     i = s.find('main')
     assert i == 2,i
 finally:
-    if 0: ###
+    if 0:
         c.undoer.undo()
 #@+node:ekr.20061101121602.166: *5* @test delete-char
 c.testManager.runEditCommandTest(p)
@@ -7883,7 +7880,6 @@ try:
         event = g.app.gui.create_key_event(c,char=char,binding=binding,w=w)
         ec.selfInsertCommand(event)
     result = w.getAllText()
-    #g.trace('result',repr(result))
     assert result.endswith('    '),'result:\n%s' % result
     # Test of autocompleter.
 finally:
@@ -9616,7 +9612,7 @@ import sys
 if sys.platform.startswith('linux'):
     self.skipTest('skip headline test')
 elif g.app.gui.guiName() == 'curses':
-    ### This could be adapted, but not now.
+    # This could be adapted, but not now.
     self.skipTest('Not for curses gui')
 else:
     k = c.k
