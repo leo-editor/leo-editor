@@ -182,7 +182,8 @@ class Xdb(pdb.Pdb, threading.Thread):
     #@+node:ekr.20181002053718.1: *3* Overrides
     #@+node:ekr.20190108040329.1: *4* xdb.checkline (overrides Pdb)
     def checkline(self, path, n):
-        
+        # pylint: disable=arguments-differ
+            # filename, lineno
         try:
             return pdb.Pdb.checkline(self, path, n)
         except AttributeError:
