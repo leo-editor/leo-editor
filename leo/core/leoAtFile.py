@@ -1482,15 +1482,16 @@ class AtFile(object):
         
         trialWrite: Set only by Importer.trial_write.
         '''
-        toString = False
+        ### toString = False
         at, c = self, self.c
         root = p.copy()
         fileName = p.atAutoNodeName()
-        if not fileName and not toString:
+        if not fileName: ### and not toString:
             return False
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
         fileName = c.os_path_finalize_join(at.default_directory, fileName)
-        if not toString and at.shouldPromptForDangerousWrite(fileName, root):
+        ### if not toString and at.shouldPromptForDangerousWrite(fileName, root):
+        if at.shouldPromptForDangerousWrite(fileName, root):
             # Prompt if writing a new @auto node would overwrite the existing file.
             ok = self.promptForDangerousWrite(fileName, kind='@auto')
             if not ok:
@@ -1500,21 +1501,18 @@ class AtFile(object):
         at.rememberReadPath(fileName, root)
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
-        at.targetFileName = "<string-file>" if toString else fileName
-        at.initWriteIvars(
-            root,
-            at.targetFileName,
-            nosentinels=True,
-            toString=toString,
-        )
+        ### at.targetFileName = "<string-file>" if toString else fileName
+        at.targetFileName = fileName
+        at.initWriteIvars(root, at.targetFileName,
+            nosentinels=True, toString=False)
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
-        ok = at.openFileForWriting(root, fileName=fileName, toString=toString)
+        ok = at.openFileForWriting(root, fileName=fileName, toString=False)
             # Calls at.addAtIgnore() if there are errors.
         if not ok:
-            if not toString:
-                g.es("not written:", fileName)
-                at.addAtIgnore(root)
+            ### if not toString:
+            g.es("not written:", fileName)
+            at.addAtIgnore(root)
             return False
         at.writeAtAutoContents(fileName, root)
             # Actually write the @auto node.
@@ -1760,6 +1758,7 @@ class AtFile(object):
         )
         try:
             ok = at.openFileForWriting(root, at.targetFileName, toString=True)
+                ### To do: replace by at.openStringFile...
                 # Calls at.addAtIgnore() if there are errors.
             if g.app.unitTesting:
                 assert ok, 'writeFromString' # string writes never fail.
@@ -1780,7 +1779,7 @@ class AtFile(object):
             at.exception("exception preprocessing script")
         return at.stringOutput
     #@+node:ekr.20041005105605.151: *5* at.writeMissing & helper
-    def writeMissing(self, p, toString=False):
+    def writeMissing(self, p): ###, toString=False):
         at = self; c = at.c
         writtenFiles = False
         c.init_error_dialogs()
@@ -1793,7 +1792,7 @@ class AtFile(object):
                     at.targetFileName = c.os_path_finalize_join(
                         self.default_directory, at.targetFileName)
                     if not g.os_path_exists(at.targetFileName):
-                        ok = at.openFileForWriting(p, at.targetFileName, toString)
+                        ok = at.openFileForWriting(p, at.targetFileName, toString=False)
                             # Calls at.addAtIgnore() if there are errors.
                         if ok:
                             at.writeMissingNode(p)
