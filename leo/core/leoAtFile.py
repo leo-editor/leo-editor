@@ -991,7 +991,7 @@ class AtFile(object):
             # Note: @asis always writes all nodes,
             # so there can be no orphan or ignored nodes.
             targetFileName = root.atAsisFileNodeName()
-            at.initWriteIvars(root, targetFileName, toString=False)
+            at.initWriteIvars(root, targetFileName)
             # "look ahead" computation of eventual fileName.
             eventualFileName = c.os_path_finalize_join(
                 at.default_directory, at.targetFileName)
@@ -1090,7 +1090,6 @@ class AtFile(object):
             atEdit=True, nosentinels=True, toString=True)
         #
         # Compute the file's contents.
-        # Unlike the @clean/@nosent file logic, it does not add a final newline.
         contents = ''.join([s for s in g.splitLines(root.b)
             if at.directiveKind4(s, 0) == at.noDirective])
         return contents
@@ -1124,25 +1123,13 @@ class AtFile(object):
             root.v._p_changed = True
         return g.toUnicode(at.stringOutput)
     #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper
-    def openFileForWriting(self, root, fileName): ###, toString):
+    def openFileForWriting(self, root, fileName):
         at = self
         ok = at.openFileForWritingHelper(fileName)
         if not ok:
             at.outputFile = None
             at.addAtIgnore(root)
         return ok
-        ###
-            # at.outputFile = None
-            # if toString:
-                # at.shortFileName = g.shortFileName(fileName)
-                # at.outputFileName = "<string: %s>" % at.shortFileName
-                # at.outputFile = g.FileLikeObject()
-            # else:
-                # ok = at.openFileForWritingHelper(fileName)
-                # if not ok:
-                    # at.outputFile = None
-                    # at.addAtIgnore(root)
-            # return at.outputFile is not None
     #@+node:ekr.20041005105605.143: *6* at.openFileForWritingHelper & helper
     def openFileForWritingHelper(self, fileName):
         '''Open the file and return True if all went well.'''
@@ -1214,7 +1201,7 @@ class AtFile(object):
                 g.error('openForWrite: exception opening file: %s' % (open_file_name))
                 g.es_exception()
             return 'error', None
-    #@+node:ekr.20190109145850.1: *5* at.openStringForWriting (new)
+    #@+node:ekr.20190109145850.1: *5* at.openStringForWriting
     def openStringForWriting(self, root):
         at = self
         fn = root.anyAtFileNodeName() or root.h # use root.h for unit tests.
@@ -1223,7 +1210,7 @@ class AtFile(object):
         at.outputFileName = "<string: %s>" % at.shortFileName
         at.outputFile = g.FileLikeObject()
         return True
-    #@+node:ekr.20041005105605.144: *5* at.write & helper (changed)
+    #@+node:ekr.20041005105605.144: *5* at.write & helper
     def write(self, root, kind, nosentinels=False):
         """Write a 4.x derived file.
         root is the position of an @<file> node.
@@ -1232,16 +1219,10 @@ class AtFile(object):
         at, c = self, self.c
         c.endEditing() # Capture the current headline.
         at.targetFileName = root.anyAtFileNodeName()
-        at.initWriteIvars(
-            root,
-            at.targetFileName,
-            nosentinels=nosentinels,
-            toString=False,
-        )
+        at.initWriteIvars(root, at.targetFileName, nosentinels=nosentinels)
         # "look ahead" computation of eventual fileName.
         eventualFileName = c.os_path_finalize_join(
             at.default_directory, at.targetFileName)
-       
         if at.shouldPromptForDangerousWrite(eventualFileName, root):
             # Prompt if writing a new @file or @clean node would
             # overwrite an existing file.
@@ -1273,10 +1254,7 @@ class AtFile(object):
                 delattr(self.root.v, 'tnodeList')
             at.writeException() # Sets dirty and orphan bits.
     #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
-    def writeAll(self,
-        writeAtFileNodesFlag=False,
-        writeDirtyAtFileNodesFlag=False,
-    ):
+    def writeAll(self, writeAtFileNodesFlag=False, writeDirtyAtFileNodesFlag=False):
         """Write @file nodes in all or part of the outline"""
         at, c = self, self.c
         at.sameFiles = 0
@@ -1509,8 +1487,7 @@ class AtFile(object):
         c.endEditing() # Capture the current headline.
         ### at.targetFileName = "<string-file>" if toString else fileName
         at.targetFileName = fileName
-        at.initWriteIvars(root, at.targetFileName,
-            nosentinels=True, toString=False)
+        at.initWriteIvars(root, at.targetFileName, nosentinels=True)
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting(root, fileName=fileName) ###, toString=False)
@@ -1653,14 +1630,8 @@ class AtFile(object):
                 g.es("not written:", fn)
                 return
         c.endEditing() # Capture the current headline.
-        at.initWriteIvars(
-            root,
-            targetFileName=None, # Not used.
+        at.initWriteIvars(root, None,
             atShadow=True,
-            nosentinels=None,
-                # set below.  Affects only error messages (sometimes).
-            toString=False,
-                # True: create a FileLikeObject below.
             forcePythonSentinels=True,
                 # A hack to suppress an error message.
                 # The actual sentinels will be set below.
@@ -1764,18 +1735,9 @@ class AtFile(object):
         )
         try:
             at.openStringForWriting(root)
-            ###
-                # ok = at.openFileForWriting(root, at.targetFileName, toString=True)
-                    # ### To do: replace by at.openStringFile...
-                    # # Calls at.addAtIgnore() if there are errors.
-                # if g.app.unitTesting:
-                    # assert ok, 'writeFromString' # string writes never fail.
             # Simulate writing the entire file so error recovery works.
             at.writeOpenFile(root,
-                nosentinels=not useSentinels,
-                toString=True,
-                fromString=s,
-            )
+                nosentinels=not useSentinels, toString=True, fromString=s)
             at.closeWriteFile()
             # Major bug: failure to clear this wipes out headlines!
             # Minor bug: sometimes this causes slight problems...
@@ -1829,7 +1791,7 @@ class AtFile(object):
             at.write(p, kind='@file')
         else:
             g.trace('can not happen: unknown @file node')
-    #@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode (changed)
+    #@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode
     def writeOneAtEditNode(self, p): 
         '''Write one @edit node.'''
         at = self; c = at.c
@@ -1855,8 +1817,7 @@ class AtFile(object):
                 g.es("not written:", fn)
                 return False
         at.targetFileName = fn
-        at.initWriteIvars(root, at.targetFileName,
-            atEdit=True, nosentinels=True, toString=False)
+        at.initWriteIvars(root, at.targetFileName, atEdit=True, nosentinels=True)
         # Compute the file's contents.
         # Unlike the @clean/@nosent file logic, it does not add a final newline.
         contents = ''.join([s for s in g.splitLines(p.b)
