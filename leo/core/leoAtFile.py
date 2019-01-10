@@ -1006,7 +1006,7 @@ class AtFile(object):
                     return
             if at.errors:
                 return
-            if not at.openFileForWriting(root, targetFileName, toString=False):
+            if not at.openFileForWriting(root, targetFileName): ###, toString=False):
                 # Calls at.addAtIgnore() if there are errors.
                 return
             for p in root.self_and_subtree(copy=False):
@@ -1124,19 +1124,25 @@ class AtFile(object):
             root.v._p_changed = True
         return g.toUnicode(at.stringOutput)
     #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper
-    def openFileForWriting(self, root, fileName, toString):
+    def openFileForWriting(self, root, fileName): ###, toString):
         at = self
-        at.outputFile = None
-        if toString:
-            at.shortFileName = g.shortFileName(fileName)
-            at.outputFileName = "<string: %s>" % at.shortFileName
-            at.outputFile = g.FileLikeObject()
-        else:
-            ok = at.openFileForWritingHelper(fileName)
-            if not ok:
-                at.outputFile = None
-                at.addAtIgnore(root)
-        return at.outputFile is not None
+        ok = at.openFileForWritingHelper(fileName)
+        if not ok:
+            at.outputFile = None
+            at.addAtIgnore(root)
+        return ok
+        ###
+            # at.outputFile = None
+            # if toString:
+                # at.shortFileName = g.shortFileName(fileName)
+                # at.outputFileName = "<string: %s>" % at.shortFileName
+                # at.outputFile = g.FileLikeObject()
+            # else:
+                # ok = at.openFileForWritingHelper(fileName)
+                # if not ok:
+                    # at.outputFile = None
+                    # at.addAtIgnore(root)
+            # return at.outputFile is not None
     #@+node:ekr.20041005105605.143: *6* at.openFileForWritingHelper & helper
     def openFileForWritingHelper(self, fileName):
         '''Open the file and return True if all went well.'''
@@ -1247,7 +1253,7 @@ class AtFile(object):
                 # Fix #1031: do not add @ignore here!
                 # @ignore will be added below if the write actually fails.
                 return
-        if not at.openFileForWriting(root, at.targetFileName, toString=False):
+        if not at.openFileForWriting(root, at.targetFileName): ###, toString=False):
             # Calls at.addAtIgnore() if there are errors.
             return
         try:
@@ -1507,7 +1513,7 @@ class AtFile(object):
             nosentinels=True, toString=False)
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
-        ok = at.openFileForWriting(root, fileName=fileName, toString=False)
+        ok = at.openFileForWriting(root, fileName=fileName) ###, toString=False)
             # Calls at.addAtIgnore() if there are errors.
         if not ok:
             ### if not toString:
@@ -1757,11 +1763,13 @@ class AtFile(object):
             forcePythonSentinels=forcePythonSentinels,
         )
         try:
-            ok = at.openFileForWriting(root, at.targetFileName, toString=True)
-                ### To do: replace by at.openStringFile...
-                # Calls at.addAtIgnore() if there are errors.
-            if g.app.unitTesting:
-                assert ok, 'writeFromString' # string writes never fail.
+            at.openStringForWriting(root)
+            ###
+                # ok = at.openFileForWriting(root, at.targetFileName, toString=True)
+                    # ### To do: replace by at.openStringFile...
+                    # # Calls at.addAtIgnore() if there are errors.
+                # if g.app.unitTesting:
+                    # assert ok, 'writeFromString' # string writes never fail.
             # Simulate writing the entire file so error recovery works.
             at.writeOpenFile(root,
                 nosentinels=not useSentinels,
@@ -1792,7 +1800,7 @@ class AtFile(object):
                     at.targetFileName = c.os_path_finalize_join(
                         self.default_directory, at.targetFileName)
                     if not g.os_path_exists(at.targetFileName):
-                        ok = at.openFileForWriting(p, at.targetFileName, toString=False)
+                        ok = at.openFileForWriting(p, at.targetFileName) ###, toString=False)
                             # Calls at.addAtIgnore() if there are errors.
                         if ok:
                             at.writeMissingNode(p)
@@ -1859,7 +1867,7 @@ class AtFile(object):
         if toString:
             at.stringOutput = contents
             return True
-        ok = at.openFileForWriting(root, fileName=fn, toString=False)
+        ok = at.openFileForWriting(root, fileName=fn) ###, toString=False)
             # Calls at.addAtIgnore() if there are errors.
         if ok:
             self.os(contents)
