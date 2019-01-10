@@ -170,7 +170,7 @@ class AtFile(object):
         atShadow=False,
         forcePythonSentinels=False, # Was None
         nosentinels=False,
-        toString=False,
+        ### toString=False,
     ):
         at, c = self, self.c
         assert root
@@ -210,7 +210,7 @@ class AtFile(object):
         at.targetFileName = targetFileName
             # Must be None for @shadow.
         at.thinFile = True
-        at.toString = toString
+        ### at.toString = toString
         at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
         # Sets the following ivars:
             # at.default_directory
@@ -1030,7 +1030,7 @@ class AtFile(object):
             # Note: @asis always writes all nodes,
             # so there can be no orphan or ignored nodes.
             at.targetFileName = "<string-file>"
-            at.initWriteIvars(root, at.targetFileName, toString=True)
+            at.initWriteIvars(root, at.targetFileName) ###, toString=True)
             at.openStringForWriting(root)
                 # Sets at.outputFile, etc.
             for p in root.self_and_subtree(copy=False):
@@ -1054,8 +1054,7 @@ class AtFile(object):
         # Init
         fileName = root.atAutoNodeName()
         at.targetFileName = "<string-file>"
-        at.initWriteIvars(root, at.targetFileName,
-            nosentinels=True, toString=True)
+        at.initWriteIvars(root, at.targetFileName, nosentinels=True) ###, toString=True)
         at.openStringForWriting(root)
         at.writeAtAutoContents(fileName, root)
         at.closeWriteFile()
@@ -1071,8 +1070,7 @@ class AtFile(object):
             return False
         # Init...
         at.targetFileName = root.atEditNodeName()
-        at.initWriteIvars(root, at.targetFileName,
-            atEdit=True, nosentinels=True, toString=True)
+        at.initWriteIvars(root, at.targetFileName, atEdit=True, nosentinels=True) ###, toString=True)
         # Compute the file's contents.
         contents = ''.join([s for s in g.splitLines(root.b)
             if at.directiveKind4(s, 0) == at.noDirective])
@@ -1086,8 +1084,7 @@ class AtFile(object):
         at, c = self, self.c
         c.endEditing() # Capture the current headline.
         at.targetFileName = "<string-file>"
-        at.initWriteIvars(root, at.targetFileName,
-            nosentinels=not sentinels, toString=True)
+        at.initWriteIvars(root, at.targetFileName, nosentinels=not sentinels) ###, toString=True)
         at.openStringForWriting(root)
         try:
             at.writeOpenFile(root, nosentinels=not sentinels)
@@ -1112,6 +1109,7 @@ class AtFile(object):
         at.outputFile = None
         at.stringOutput = None
         at.outputFileName = g.u('')
+        at.toString = False
         ok = at.openFileForWritingHelper(fileName)
         if not ok:
             at.outputFile = None
@@ -1198,6 +1196,7 @@ class AtFile(object):
         at.outputFile = g.FileLikeObject()
         if g.app.unitTesting: at.output_newline = '\n'
         at.stringOutput = ""
+        at.toString = True
         return True
     #@+node:ekr.20041005105605.144: *5* at.write & helper
     def write(self, root, kind, nosentinels=False):
@@ -1714,9 +1713,9 @@ class AtFile(object):
         c.endEditing()
             # Capture the current headline, but don't change the focus!
         at.initWriteIvars(root, "<string-file>",
-            nosentinels=not useSentinels,
-            toString=True,
             forcePythonSentinels=forcePythonSentinels,
+            nosentinels=not useSentinels,
+            ### toString=True,
         )
         try:
             at.openStringForWriting(root)
