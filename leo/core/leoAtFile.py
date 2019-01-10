@@ -1672,7 +1672,7 @@ class AtFile(object):
             g.error("not written:", at.outputFileName)
             at.addAtIgnore(root)
         return at.errors == 0
-    #@+node:ekr.20080819075811.13: *7* adjustTargetLanguage
+    #@+node:ekr.20080819075811.13: *7* at.adjustTargetLanguage
     def adjustTargetLanguage(self, fn):
         """Use the language implied by fn's extension if
         there is a conflict between it and c.target_language."""
@@ -1687,6 +1687,15 @@ class AtFile(object):
             else:
                 # An unknown language.
                 pass # Use the default language, **not** 'unknown_language'
+    #@+node:ekr.20080712150045.2: *7* at.openStringFile
+    def openStringFile(self, fn, encoding='utf-8'):
+        '''A helper for at.writeOneAtShadowNode.'''
+        at = self
+        at.shortFileName = g.shortFileName(fn)
+        at.outputFileName = "<string: %s>" % at.shortFileName
+        at.outputFile = g.FileLikeObject(encoding=encoding)
+        at.targetFileName = "<string-file>"
+        return at.outputFile
     #@+node:ekr.20190109153627.13: *6* at.writeAtShadowNodesHelper
     def writeAtShadowNodesHelper(self, writeDirtyOnly=True): 
         """Write @shadow nodes in the selected outline"""
@@ -2690,14 +2699,6 @@ class AtFile(object):
             return True, i + 2
         else:
             return False, -1
-    #@+node:ekr.20080712150045.2: *5* at.openStringFile
-    def openStringFile(self, fn, encoding='utf-8'):
-        at = self
-        at.shortFileName = g.shortFileName(fn)
-        at.outputFileName = "<string: %s>" % at.shortFileName
-        at.outputFile = g.FileLikeObject(encoding=encoding)
-        at.targetFileName = "<string-file>"
-        return at.outputFile
     #@+node:ekr.20041005105605.201: *5* at.os and allies
     # Note:  self.outputFile may be either a FileLikeObject or a real file.
     #@+node:ekr.20041005105605.202: *6* at.oblank, oblanks & otabs
