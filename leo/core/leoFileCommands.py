@@ -1756,7 +1756,7 @@ class FileCommands(object):
         '''Write all changed @file Nodes.'''
         c = self.c
         c.init_error_dialogs()
-        c.atFileCommands.writeAll(all=False)
+        c.atFileCommands.writeAll(dirty=True)
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20080801071227.6: *4* fc.writeDirtyAtShadowNodes
     def writeDirtyAtShadowNodes(self, event=None):

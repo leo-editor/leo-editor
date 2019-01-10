@@ -1137,7 +1137,7 @@ class AtFile(object):
                 delattr(self.root.v, 'tnodeList')
             at.writeException() # Sets dirty and orphan bits.
     #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
-    def writeAll(self, all=False):
+    def writeAll(self, all=False, dirty=False):
         """Write @file nodes in all or part of the outline"""
         at, c = self, self.c
         at.sameFiles = 0
@@ -1157,7 +1157,7 @@ class AtFile(object):
         at.cancelFlag = False
         at.yesToAll = False
         # Say the command is finished.
-        at.reportEndOfWrite(files, all)
+        at.reportEndOfWrite(files, all, dirty)
         if c.isChanged():
             # Save the outline if only persistence data nodes are dirty.
             at.saveOutlineIfPossible()
@@ -1213,7 +1213,7 @@ class AtFile(object):
         g.es('Warning: changes to this file will be lost', color='red')
         g.es('unless you can save the file successfully.', color='red')
     #@+node:ekr.20190108112519.1: *6* at.reportEndOfWrite
-    def reportEndOfWrite(self, files, all):
+    def reportEndOfWrite(self, files, all, dirty):
         
         at, c = self, self.c
         if g.unitTesting:
@@ -1227,7 +1227,7 @@ class AtFile(object):
         elif all:
             g.warning("no @<file> nodes in the selected tree")
             # g.es("to write an unchanged @auto node,\nselect it directly.")
-        else:
+        elif dirty:
             g.es("no dirty @<file> nodes in the selected tree")
     #@+node:ekr.20140727075002.18108: *6* at.saveOutlineIfPossible
     def saveOutlineIfPossible(self):
