@@ -1830,7 +1830,7 @@ class AtFile(object):
         else:
             g.trace('can not happen: unknown @file node')
     #@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode (changed)
-    def writeOneAtEditNode(self, p, force=False): 
+    def writeOneAtEditNode(self, p): 
         '''Write one @edit node.'''
         at = self; c = at.c
         root = p.copy()
@@ -1845,7 +1845,7 @@ class AtFile(object):
             return False
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
         fn = c.os_path_finalize_join(at.default_directory, fn)
-        if not force and at.shouldPromptForDangerousWrite(fn, root):
+        if at.shouldPromptForDangerousWrite(fn, root):
             # Prompt if writing a new @edit node would overwrite the existing file.
             ok = self.promptForDangerousWrite(fn, kind='@edit')
             if ok:
@@ -1856,10 +1856,7 @@ class AtFile(object):
                 return False
         at.targetFileName = fn
         at.initWriteIvars(root, at.targetFileName,
-            atEdit=True,
-            nosentinels=True,
-            toString=False,
-        )
+            atEdit=True, nosentinels=True, toString=False)
         # Compute the file's contents.
         # Unlike the @clean/@nosent file logic, it does not add a final newline.
         contents = ''.join([s for s in g.splitLines(p.b)

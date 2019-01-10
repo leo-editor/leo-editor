@@ -330,7 +330,7 @@ def save(self, event=None, fileName=None):
             fileName = None
             # Write the @edit node if needed.
             if root.isDirty():
-                c.atFileCommands.writeOneAtEditNode(root, force=True) 
+                c.atFileCommands.writeOneAtEditNode(root) 
             c.setChanged(False)
         else:
             fileName = ''.join(c.k.givenArgs)

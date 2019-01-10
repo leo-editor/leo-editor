@@ -819,7 +819,7 @@ class LeoFrame(object):
                 # See https://bugs.launchpad.net/leo-editor/+bug/381527
                 # Write the @edit node if needed.
                 if root.isDirty():
-                    c.atFileCommands.writeOneAtEditNode(root, force=True) 
+                    c.atFileCommands.writeOneAtEditNode(root) 
                 return False # Don't save and don't veto.
             else:
                 c.mFileName = g.app.gui.runSaveFileDialog(c,
