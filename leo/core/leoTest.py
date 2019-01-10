@@ -997,13 +997,13 @@ class TestManager(object):
             "@asis",), "bad type: %s" % theType
         nosentinels = theType in ("@asis", "@clean", "@edit", "@nosent")
         if theType == "@asis":
-            result = at.getAtAsis(child1)
+            result = at.atAsisToString(child1)
         elif theType == "@auto":
-            result = at.getAtAuto(child1)
+            result = at.atAutoToString(child1)
         elif theType == "@edit":
-            result = at.getAtEdit(child1)
+            result = at.atEditToString(child1)
         else:
-            result = at.getFile(child1, kind='@test', sentinels=not nosentinels)
+            result = at.atFileToString(child1, kind='@test', sentinels=not nosentinels)
         try:
             assert result == expected
         except AssertionError:
@@ -1669,7 +1669,7 @@ class TestManager(object):
             if not p2.v.fileIndex:
                 p2.v.fileIndex = ni.getNewIndex(p2.v)
         # Write the file to a string.
-        return at.getFile(p, sentinels=sentinels)
+        return at.atFileToString(p, sentinels=sentinels)
     #@-others
 #@+node:ekr.20120220070422.10420: ** Top-level functions (leoTest)
 #@+node:ekr.20051104075904.97: *3* leoTest.py: factorial (a test of doctests)

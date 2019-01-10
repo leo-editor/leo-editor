@@ -1002,7 +1002,7 @@ class Importer(object):
         ivar = 'allow_undefined_refs'
         try:
             setattr(at, ivar, True)
-            result = at.getAtAuto(self.root, trialWrite=True)
+            result = at.atAutoToString(self.root, trialWrite=True)
                 # Suppress call to update_before_write_foreign_file.
         finally:
             if hasattr(at, ivar):

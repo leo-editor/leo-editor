@@ -301,7 +301,7 @@ class GoToCommands(object):
             ivar = 'force_sentinels'
             try:
                 setattr(at, ivar, True)
-                s = at.getAtAuto(root)
+                s = at.atAutoToString(root)
             finally:
                 if hasattr(at, ivar):
                     delattr(at, ivar)

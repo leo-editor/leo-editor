@@ -697,7 +697,7 @@ class AtFile(object):
         written as an @file node.
         '''
         at = self.c.atFileCommands
-        at.getFile(root, kind='@nosent', sentinels=True)
+        at.atFileToString(root, kind='@nosent', sentinels=True)
         s = g.toUnicode(at.stringOutput, encoding=at.encoding)
         return g.splitLines(s)
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
@@ -1018,8 +1018,8 @@ class AtFile(object):
             s = g.toEncodedString(s, at.encoding, reportErrors=True)
             at.outputStringWithLineEndings(s)
 
-    #@+node:ekr.20190109160056.1: *5* at.getAtAsis
-    def getAtAsis(self, root):
+    #@+node:ekr.20190109160056.1: *5* at.atAsisToString
+    def atAsisToString(self, root):
         '''Write the @asis node to a string.'''
         at = self; c = at.c
         c.endEditing() # Capture the current headline.
@@ -1036,8 +1036,8 @@ class AtFile(object):
         except Exception:
             at.writeException(root) # Sets dirty and orphan bits.
         return at.stringOutput
-    #@+node:ekr.20190109160056.2: *5* at.getAtAuto
-    def getAtAuto(self, root, trialWrite=False):
+    #@+node:ekr.20190109160056.2: *5* at.atAutoToString
+    def atAutoToString(self, root, trialWrite=False):
             # Set only by Importer.trial_write.
             # Suppresses call to update_before_write_foreign_file below.
         '''
@@ -1054,8 +1054,8 @@ class AtFile(object):
         at.writeAtAutoContents(fileName, root)
         at.closeWriteFile()
         return at.stringOutput if at.errors == 0 else ''
-    #@+node:ekr.20190109160056.3: *5* at.getAtEdit
-    def getAtEdit(self, root):
+    #@+node:ekr.20190109160056.3: *5* at.atEditToString
+    def atEditToString(self, root):
         '''Write one @edit node.'''
         at, c = self, self.c
         c.endEditing()
@@ -1068,8 +1068,8 @@ class AtFile(object):
         contents = ''.join([s for s in g.splitLines(root.b)
             if at.directiveKind4(s, 0) == at.noDirective])
         return contents
-    #@+node:ekr.20190109142026.1: *5* at.getFile
-    def getFile(self, root, kind, sentinels=True):
+    #@+node:ekr.20190109142026.1: *5* at.atFileToString
+    def atFileToString(self, root, kind, sentinels=True):
         """Write a 4.x derived file to a string, and return it.
         root is the position of an @<file> node.
         """
@@ -1419,6 +1419,29 @@ class AtFile(object):
                 raise IOError
             at.setPathUa(p, newPath) # Remember that we have changed paths.
         return pathChanged
+    #@+node:ekr.20190109172025.1: *5* at.writeAtAutoContents
+    def writeAtAutoContents(self, fileName, root):
+        '''Common helper for atAutoToString and writeOneAtAutoNode.'''
+        at, c = self, self.c
+        # Dispatch the proper writer.
+        junk, ext = g.os_path_splitext(fileName)
+        writer = at.dispatch(ext, root)
+        if writer:
+            writer(root)
+        elif root.isAtAutoRstNode():
+            # An escape hatch: fall back to the theRst writer
+            # if there is no rst writer plugin.
+            ok = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
+            if not ok: at.errors += 1
+        else:
+            # leo 5.6: allow undefined section references in all @auto files.
+            ivar = 'allow_undefined_refs'
+            try:
+                setattr(at, ivar, True)
+                at.writeOpenFile(root, nosentinels=True)
+            finally:
+                if hasattr(at, ivar):
+                    delattr(at, ivar)
     #@+node:ekr.20070806105859: *5* at.writeAtAutoNodes & writeDirtyAtAutoNodes & helpers
     @cmd('write-at-auto-nodes')
     def writeAtAutoNodes(self, event=None):
@@ -1819,29 +1842,6 @@ class AtFile(object):
         at.putSentinel("@-leo")
         root.setVisited()
         at.putAtLastLines(s)
-    #@+node:ekr.20190109172025.1: *5* at.writeAtAutoContents
-    def writeAtAutoContents(self, fileName, root):
-        '''Common helper for getAtAuto and writeOneAtAutoNode.'''
-        at, c = self, self.c
-        # Dispatch the proper writer.
-        junk, ext = g.os_path_splitext(fileName)
-        writer = at.dispatch(ext, root)
-        if writer:
-            writer(root)
-        elif root.isAtAutoRstNode():
-            # An escape hatch: fall back to the theRst writer
-            # if there is no rst writer plugin.
-            ok = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
-            if not ok: at.errors += 1
-        else:
-            # leo 5.6: allow undefined section references in all @auto files.
-            ivar = 'allow_undefined_refs'
-            try:
-                setattr(at, ivar, True)
-                at.writeOpenFile(root, nosentinels=True)
-            finally:
-                if hasattr(at, ivar):
-                    delattr(at, ivar)
     #@+node:ekr.20041005105605.160: *4* Writing 4.x
     #@+node:ekr.20041005105605.161: *5* at.putBody & helpers
     def putBody(self, p, fromString=''):

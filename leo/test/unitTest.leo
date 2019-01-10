@@ -757,9 +757,9 @@
 <v t="ekr.20181102063435.1"><vh>Fails...</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20190109175253.1"><vh>A</vh></v>
-<v t="ekr.20190109175253.3"><vh>newHeadline</vh></v>
-<v t="ekr.20190109175253.2"><vh>B</vh></v>
+<v t="ekr.20190110105302.1"><vh>A</vh></v>
+<v t="ekr.20190110105302.3"><vh>newHeadline</vh></v>
+<v t="ekr.20190110105302.2"><vh>B</vh></v>
 </v>
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
@@ -1512,7 +1512,7 @@ child = p.firstChild()
 ### at.write(child, toString=True)
     # Default: nosentinels=False
 ### result = str(at.stringOutput)
-result = at.getFile(child, kind='@test')
+result = at.atFileToString(child, kind='@test')
 result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
 if 0: # Show unexpected mismatches.
     result = g.splitLines(result)
@@ -9652,9 +9652,9 @@ gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
 <t tx="ekr.20190109153806.1"></t>
-<t tx="ekr.20190109175253.1"></t>
-<t tx="ekr.20190109175253.2"></t>
-<t tx="ekr.20190109175253.3"></t>
+<t tx="ekr.20190110105302.1"></t>
+<t tx="ekr.20190110105302.2"></t>
+<t tx="ekr.20190110105302.3"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

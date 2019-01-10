@@ -1465,7 +1465,7 @@ child = p.firstChild()
 ### at.write(child, toString=True)
     # Default: nosentinels=False
 ### result = str(at.stringOutput)
-result = at.getFile(child, kind='@test')
+result = at.atFileToString(child, kind='@test')
 result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
 if 0: # Show unexpected mismatches.
     result = g.splitLines(result)
@@ -20621,9 +20621,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20190109175253.1: *6* A
-#@+node:ekr.20190109175253.3: *6* newHeadline
-#@+node:ekr.20190109175253.2: *6* B
+#@+node:ekr.20190110105302.1: *6* A
+#@+node:ekr.20190110105302.3: *6* newHeadline
+#@+node:ekr.20190110105302.2: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
