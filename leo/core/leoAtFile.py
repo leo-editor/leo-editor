@@ -2923,10 +2923,8 @@ class AtFile(object):
         Return True if the original file was changed.
         '''
         at = self; c = at.c
-        if new:
-            assert not at.toString, g.callers()
-        else:
-            assert not at.toString, g.callers()
+        assert not at.toString, g.callers()
+        ###
             # if at.toString:
                 # # Do *not* change the actual file or set any dirty flag.
                 # at.fileChangedFlag = False
