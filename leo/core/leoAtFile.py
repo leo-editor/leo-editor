@@ -984,11 +984,9 @@ class AtFile(object):
             c.init_error_dialogs()
             fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
             if not at.precheck(fileName, root):
-                at.addAtIgnore(root) ###
                 return
-            at.openStringFile()
-            ### if not at.openFileForWriting(root, fileName):
-            ###    return
+            if not at.openFileForWriting(root, fileName):
+                return
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
             at.closeWriteFile()
@@ -1092,11 +1090,9 @@ class AtFile(object):
             c.endEditing()
             fileName = at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
             if not at.precheck(fileName, root):
-                at.addAtIgnore(root) ###
                 return
-            ###if not at.openFileForWriting(root, fileName):
-            ###    return
-            at.openStringFile()
+            if not at.openFileForWriting(root, fileName):
+                return
             at.writeOpenFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
             at.closeWriteFile()
@@ -1347,16 +1343,14 @@ class AtFile(object):
                 sentinels=False,
             )
             if not at.precheck(fileName, root):
-                at.addAtIgnore(root) ###
-                return False
+                return
             if c.persistenceController:
                 c.persistenceController.update_before_write_foreign_file(root)
-            at.openStringFile()
-                # ok = at.openFileForWriting(root, fileName)
-                # if not ok:
-                    # g.es("not written:", fileName)
-                    # at.addAtIgnore(root)
-                    # return False
+            ok = at.openFileForWriting(root, fileName)
+            if not ok:
+                g.es("not written:", fileName)
+                at.addAtIgnore(root)
+                return False
             at.writeAtAutoContents(fileName, root)
             at.closeWriteFile()
             if at.errors:
@@ -1500,11 +1494,11 @@ class AtFile(object):
             data = []
             for sentinels in (False, True):
                 # Specify encoding explicitly.
-                file_ = at.openAtShadowStringFile(full_path, encoding=at.encoding)
+                theFile = at.openAtShadowStringFile(full_path, encoding=at.encoding)
                 at.sentinels = sentinels
                 at.writeOpenFile(root, sentinels=sentinels)
                 at.warnAboutOrphandAndIgnoredNodes()
-                s = at.closeAtShadowStringFile(file_)
+                s = at.closeAtShadowStringFile(theFile)
                 data.append(s)
             #
             # Set these new ivars for unit tests.
@@ -1624,7 +1618,7 @@ class AtFile(object):
         except Exception:
             at.exception("exception preprocessing script")
             return g.u('')
-    #@+node:ekr.20041005105605.151: *5* at.writeMissing & helper (big change)
+    #@+node:ekr.20041005105605.151: *5* at.writeMissing & helper
     def writeMissing(self, p):
         at = self; c = at.c
         writtenFiles = False
@@ -1633,21 +1627,17 @@ class AtFile(object):
         after = p.nodeAfterTree()
         while p and p != after: # Don't use iterator.
             if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
-                if at.precheck(p.anyAtFileNodeName(), p):
-                    at.writeMissingNode(p)
-                    writtenFiles = True
-                ###
-                    # at.targetFileName = p.anyAtFileNodeName()
-                    # if at.targetFileName:
-                        # at.targetFileName = c.os_path_finalize_join(
-                            # self.default_directory, at.targetFileName)
-                        # if not g.os_path_exists(at.targetFileName):
-                            # ok = at.openFileForWriting(p, at.targetFileName)
-                                # # Calls at.addAtIgnore() if there are errors.
-                            # if ok:
-                                # at.writeMissingNode(p)
-                                # writtenFiles = True
-                                # at.closeWriteFile()
+                at.targetFileName = p.anyAtFileNodeName()
+                if at.targetFileName:
+                    at.targetFileName = c.os_path_finalize_join(
+                        self.default_directory, at.targetFileName)
+                    if not g.os_path_exists(at.targetFileName):
+                        ok = at.openFileForWriting(p, at.targetFileName)
+                            # Calls at.addAtIgnore() if there are errors.
+                        if ok:
+                            at.writeMissingNode(p)
+                            writtenFiles = True
+                            at.closeWriteFile()
                 p.moveToNodeAfterTree()
             elif p.isAtIgnoreNode():
                 p.moveToNodeAfterTree()
@@ -1669,12 +1659,8 @@ class AtFile(object):
             at.write(p, sentinels=False)
         elif p.isAtFileNode():
             at.write(p)
-        elif p.isAtAutoNode() or p.isAtAutoRstNode():
-            g.es_print('can not write missing @auto or @auto-rst node:', color='red')
-            g.es_print(p.h)
         else:
             g.trace('can not happen: unknown @file node')
-        p.clearDirty()
     #@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode
     def writeOneAtEditNode(self, p): 
         '''Write one @edit node.'''
@@ -1695,15 +1681,12 @@ class AtFile(object):
                 sentinels=False,
             )
             if not at.precheck(fileName, root):
+                return False
+            ok = at.openFileForWriting(root, fileName=fileName)
+            if not ok:
+                g.es("not written:", fileName)
                 at.addAtIgnore(root)
                 return False
-            at.openStringFile()
-            ###
-                # ok = at.openFileForWriting(root, fileName=fileName)
-                # if not ok:
-                    # g.es("not written:", fileName)
-                    # at.addAtIgnore(root)
-                    # return False
             contents = ''.join([s for s in g.splitLines(p.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
             self.os(contents)
@@ -2313,42 +2296,6 @@ class AtFile(object):
             # The dirty bit may be cleared later.
             root.setDirty()
             g.es('adding @ignore to', root.h)
-    #@+node:ekr.20190111111608.1: *5* at.checkPath & helpers
-    def checkPath(self, fileName):
-        '''Return True if we can write to the file's directory.'''
-        at = self
-        assert g.os_path_isabs(fileName), (repr(fileName), g.callers())
-        directory = g.os_path_dirname(fileName)
-        if not at.checkDirectory(directory):
-            return False
-        if g.os_path_exists(fileName):
-            return at.isWritable(fileName)
-        return True
-    #@+node:ekr.20190111112432.1: *6* at.checkDir
-    def checkDirectory(self, directory):
-        '''Return True if directory exists or could be created.'''
-        at, c = self, self.c
-        assert directory, g.callers()
-        if g.os_path_exists(directory):
-            return at.isWritable(directory)
-        try:
-            g.makeAllNonExistentDirectories(directory, c=c)
-            return True
-        except Exception:
-            g.es("exception creating path: %r" % (directory), color='red')
-            g.es_exception()
-            return False
-    #@+node:ekr.20190111112442.1: *6* at.isWritable
-    def isWritable(self, path):
-        '''Return True if the path is writable.'''
-        try:
-            # os.access() may not exist on all platforms.
-            ok = os.access(path, os.W_OK)
-        except AttributeError:
-            return True
-        if not ok:
-            g.es('read only:', repr(path), color='red')
-        return ok
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
     def checkPythonCode(self, root, s=None, targetFn=None, pyflakes_errors_only=False):
         '''Perform python-related checks on root.'''
@@ -2610,7 +2557,7 @@ class AtFile(object):
             return True, i + 2
         else:
             return False, -1
-    #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper (to be removed)
+    #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper
     def openFileForWriting(self, root, fileName):
         at = self
         # at.outputNewline set in initCommonIvars.
@@ -2623,7 +2570,7 @@ class AtFile(object):
             at.outputFile = None
             at.addAtIgnore(root)
         return ok
-    #@+node:ekr.20041005105605.143: *6* at.openFileForWritingHelper & helper (no longer used)
+    #@+node:ekr.20041005105605.143: *6* at.openFileForWritingHelper & helper
     def openFileForWritingHelper(self, fileName):
         '''
         Open a **string** file and return True if all went well.
@@ -2667,7 +2614,7 @@ class AtFile(object):
             at.exception("exception creating:" + old_output_fn)
             return False
         return True
-    #@+node:bwmulder.20050101094804: *7* at.openForWrite (no longer used)
+    #@+node:bwmulder.20050101094804: *7* at.openForWrite
     def openForWrite(self, filename, wb='wb'):
         '''Open a **string** file for writes, handling shadow files.'''
         at = self; c = at.c; x = c.shadowController
@@ -2692,15 +2639,6 @@ class AtFile(object):
                 g.error('openForWrite: exception opening file: %s' % (open_file_name))
                 g.es_exception()
             return 'error', None
-    #@+node:ekr.20190111120057.1: *5* at.openStringFile
-    def openStringFile(self):
-        at = self
-        ### at.shortFileName = g.shortFileName(fn)
-        ### at.outputFileName = "<string: %s>" % at.shortFileName
-        at.outputFile = g.FileLikeObject()
-        if g.app.unitTesting: at.output_newline = '\n'
-        at.stringOutput = ""
-        at.toString = False
     #@+node:ekr.20190109145850.1: *5* at.openStringForWriting
     def openStringForWriting(self, root):
         at = self
@@ -2772,10 +2710,6 @@ class AtFile(object):
         Return False if the user declines to do the write.
         '''
         at = self
-        if not at.checkPath(fileName):
-            g.es("not written:", fileName, color='red')
-            # Fix #1031: do not add @ignore here!
-            return False
         if not at.shouldPromptForDangerousWrite(fileName, root):
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
