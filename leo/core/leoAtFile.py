@@ -168,9 +168,14 @@ class AtFile(object):
     def initWriteIvars(self, root, targetFileName,
         atEdit=False,
         atShadow=False,
+        defaultDirectory = None,
         forcePythonSentinels=False,
         sentinels=True,
     ):
+        '''
+        Compute default values of all write-related ivars.
+        Return the default output file.
+        '''
         at, c = self, self.c
         assert root
         self.initCommonIvars()
@@ -217,6 +222,9 @@ class AtFile(object):
                 # at.output_newline
                 # at.page_width
                 # at.tab_width
+        # Override at.default_directory if an explicit directory is given.
+        if defaultDirectory:
+            at.default_directory = defaultDirectory
         # Encoding directive overrides everything else.
         if at.language == 'python':
             encoding = g.getPythonEncodingFromString(root.b)
@@ -227,6 +235,7 @@ class AtFile(object):
             if hasattr(at.root.v, 'tnodeList'):
                 delattr(at.root.v, 'tnodeList')
             at.root.v._p_changed = True
+        return c.os_path_finalize_join(at.default_directory, at.targetFileName)
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkDerivedFile
@@ -973,22 +982,20 @@ class AtFile(object):
         c.endEditing() # Capture the current headline.
         c.init_error_dialogs()
         try:
-            # Note: @asis always writes all nodes,
-            # so there can be no orphan or ignored nodes.
-            targetFileName = root.atAsisFileNodeName()
-            at.initWriteIvars(root, targetFileName)
-            eventualFileName = c.os_path_finalize_join(
-                at.default_directory, at.targetFileName)
-            if not at.precheck(eventualFileName, root):
+            fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
+            ###
+                # eventualFileName = c.os_path_finalize_join(
+                    # at.default_directory, at.targetFileName)
+            if not at.precheck(fileName, root):
                 return
-            if not at.openFileForWriting(root, targetFileName):
+            if not at.openFileForWriting(root, fileName): ###targetFileName):
                 return
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
             at.closeWriteFile()
             at.replaceTargetFileIfDifferent(root)
         except Exception:
-            at.writeException(root) # Sets dirty and orphan bits.
+            at.writeException(root)
 
     silentWrite = asisWrite # Compatibility with old scripts.
     #@+node:ekr.20170331141933.1: *6* at.writeAsisNode
@@ -1089,24 +1096,26 @@ class AtFile(object):
         """
         # assert kind in ('@clean', '@file', '@nosent', '@shadow', '@thin', '@test'), repr(kind)
         at, c = self, self.c
-        c.endEditing() # Capture the current headline.
-        at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
-        eventualFileName = c.os_path_finalize_join(
-            at.default_directory, at.targetFileName)
-        if not at.precheck(eventualFileName, root):
-            return
-        if not at.openFileForWriting(root, at.targetFileName):
-            return
         try:
+            c.endEditing()
+            fileName = at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
+            ###
+                # eventualFileName = c.os_path_finalize_join(
+                    # at.default_directory, at.targetFileName)
+            if not at.precheck(fileName, root):
+                return
+            if not at.openFileForWriting(root, fileName): ### at.targetFileName):
+                return
             at.writeOpenFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
             at.closeWriteFile()
             if at.errors:
-                g.es("not written:", g.shortFileName(at.targetFileName))
+                g.es("not written:", g.shortFileName(fileName)) ### at.targetFileName))
                 at.addAtIgnore(root)
             else:
-                # Fix bug 889175: Remember the full fileName.
-                at.rememberReadPath(eventualFileName, root)
+                ### Now done in precheck.
+                    # Fix bug 889175: Remember the full fileName.
+                    ### at.rememberReadPath(fileName, root)
                 at.replaceTargetFileIfDifferent(root)
                     # Sets/clears dirty and orphan bits.
         except Exception:
@@ -1347,33 +1356,41 @@ class AtFile(object):
         trialWrite: Set only by Importer.trial_write.
         '''
         at, c = self, self.c
-        c.endEditing() # Capture the current headline.
-        root = p.copy()
-        fileName = p.atAutoNodeName()
-        if not fileName:
+        if not p.atAutoNodeName():
             return False
-        at.initWriteIvars(root, fileName, sentinels=False)
-        at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-            # Override.
-        fileName = c.os_path_finalize_join(at.default_directory, fileName)
-        if not at.precheck(fileName, root):
-            return
-        if c.persistenceController and not trialWrite:
-            c.persistenceController.update_before_write_foreign_file(root)
-        ok = at.openFileForWriting(root, fileName=fileName)
-        if not ok:
+        try:
+            c.endEditing() # Capture the current headline.
+            root = p.copy()
+            fileName = at.initWriteIvars(root, p.atAutoNodeName(),
+                defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
+                sentinels=False,
+            )
+            ###
+                # at.default_directory = g.setDefaultDirectory(c, p, importing=True)
+                    # # Override.
+                # fileName = c.os_path_finalize_join(at.default_directory, fileName)
+                    # # Override
+            if not at.precheck(fileName, root):
+                return
+            if c.persistenceController and not trialWrite:
+                c.persistenceController.update_before_write_foreign_file(root)
+            ok = at.openFileForWriting(root, fileName=fileName)
+            if not ok:
+                g.es("not written:", fileName)
+                at.addAtIgnore(root)
+                return False
+            at.writeAtAutoContents(fileName, root)
+            at.closeWriteFile()
+            if at.errors == 0:
+                isAtAutoRst = root.isAtAutoRstNode()
+                at.replaceTargetFileIfDifferent(root, ignoreBlankLines=isAtAutoRst)
+                return True
             g.es("not written:", fileName)
             at.addAtIgnore(root)
             return False
-        at.writeAtAutoContents(fileName, root)
-        at.closeWriteFile()
-        if at.errors == 0:
-            isAtAutoRst = root.isAtAutoRstNode()
-            at.replaceTargetFileIfDifferent(root, ignoreBlankLines=isAtAutoRst)
-            return True
-        g.es("not written:", fileName)
-        at.addAtIgnore(root)
-        return False
+        except Exception:
+            at.writeException(root)
+            return False
     #@+node:ekr.20190109163934.24: *7* at.writeAtAutoNodesHelper
     def writeAtAutoNodesHelper(self, writeDirtyOnly=True):
         """Write @auto nodes in the selected outline"""
@@ -1670,37 +1687,46 @@ class AtFile(object):
     #@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode
     def writeOneAtEditNode(self, p): 
         '''Write one @edit node.'''
-        at = self; c = at.c
+        at, c = self, self.c
         root = p.copy()
         c.endEditing()
-        c.init_error_dialogs()
-        fn = p.atEditNodeName()
-        if not fn:
+        if not p.atEditNodeName():
             return False
-        if p.hasChildren():
-            g.error('@edit nodes must not have children')
-            g.es('To save your work, convert @edit to @auto, @file or @clean')
+        try:
+            c.init_error_dialogs()
+            if p.hasChildren():
+                g.error('@edit nodes must not have children')
+                g.es('To save your work, convert @edit to @auto, @file or @clean')
+                return False
+            fileName = at.initWriteIvars(root, p.atEditNodeName(),
+                atEdit=True,
+                defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
+                sentinels=False,
+            )
+            ###
+                # at.default_directory = g.setDefaultDirectory(c, p, importing=True)
+                    # # Override.
+                # fn = c.os_path_finalize_join(at.default_directory, fn)
+                    # # Override.
+            if not at.precheck(fileName, root):
+                return False
+            ok = at.openFileForWriting(root, fileName=fileName) ### fn
+            if ok:
+                contents = ''.join([s for s in g.splitLines(p.b)
+                    if at.directiveKind4(s, 0) == at.noDirective])
+                self.os(contents)
+                at.closeWriteFile()
+                if at.errors:
+                    g.es("not written:", fileName) ### at.targetFileName)
+                    at.addAtIgnore(root)
+                else:
+                    at.replaceTargetFileIfDifferent(root)
+                        # calls at.addAtIgnore if there are errors.
+            c.raise_error_dialogs(kind='write')
+            return ok
+        except Exception:
+            at.writeException(root)
             return False
-        at.initWriteIvars(root, fn, atEdit=True, sentinels=False)
-        at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-            # Override.
-        fn = c.os_path_finalize_join(at.default_directory, fn)
-        if not at.precheck(fn, root):
-            return False
-        ok = at.openFileForWriting(root, fileName=fn)
-        if ok:
-            contents = ''.join([s for s in g.splitLines(p.b)
-                if at.directiveKind4(s, 0) == at.noDirective])
-            self.os(contents)
-            at.closeWriteFile()
-            if at.errors:
-                g.es("not written:", at.targetFileName)
-                at.addAtIgnore(root)
-            else:
-                at.replaceTargetFileIfDifferent(root)
-                    # calls at.addAtIgnore if there are errors.
-        c.raise_error_dialogs(kind='write')
-        return ok
     #@+node:ekr.20041005105605.157: *5* at.writeOpenFile
     def writeOpenFile(self, root, fromString='', sentinels=True):
         '''Write the contents of the file.'''
