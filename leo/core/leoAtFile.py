@@ -979,9 +979,9 @@ class AtFile(object):
     #@+node:ekr.20041005105605.154: *5* at.asisWrite & helper
     def asisWrite(self, root):
         at = self; c = at.c
-        c.endEditing() # Capture the current headline.
-        c.init_error_dialogs()
         try:
+            c.endEditing()
+            c.init_error_dialogs()
             fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
             if not at.precheck(fileName, root):
                 return
@@ -1347,8 +1347,8 @@ class AtFile(object):
         '''
         at, c = self, self.c
         root = p.copy()
-        c.endEditing() # Capture the current headline.
         try:
+            c.endEditing()
             if not p.atAutoNodeName():
                 return False
             fileName = at.initWriteIvars(root, p.atAutoNodeName(),
@@ -1681,11 +1681,11 @@ class AtFile(object):
         '''Write one @edit node.'''
         at, c = self, self.c
         root = p.copy()
-        c.endEditing()
         try:
+            c.endEditing()
+            c.init_error_dialogs()
             if not p.atEditNodeName():
                 return False
-            c.init_error_dialogs()
             if p.hasChildren():
                 g.error('@edit nodes must not have children')
                 g.es('To save your work, convert @edit to @auto, @file or @clean')
@@ -2731,6 +2731,8 @@ class AtFile(object):
         '''
         at = self
         if not at.shouldPromptForDangerousWrite(fileName, root):
+            # Fix bug 889175: Remember the full fileName.
+            at.rememberReadPath(fileName, root)
             return True
         # Prompt if the write would overwrite the existing file.
         ok = self.promptForDangerousWrite(fileName, kind='@asis')
