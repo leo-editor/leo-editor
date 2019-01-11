@@ -14,6 +14,11 @@ import re
 import sys
 import time
 #@-<< imports >>
+new = False ### Use new atFile write code
+if new:
+    print('')
+    print('===== new ====')
+    print('')
 #@+others
 #@+node:ekr.20160514120655.1: ** class AtFile
 class AtFile(object):
@@ -976,49 +981,15 @@ class AtFile(object):
         return isThin
     #@+node:ekr.20041005105605.132: *3* at.Writing
     #@+node:ekr.20041005105605.133: *4* Writing (top level)
-    #@+node:ekr.20041005105605.154: *5* at.asisWrite & helper
-    def asisWrite(self, root):
-        at, c = self, self.c
-        try:
-            c.endEditing()
-            c.init_error_dialogs()
-            fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
-            if not at.precheck(fileName, root):
-                return
-            if not at.openFileForWriting(root, fileName):
-                return
-            for p in root.self_and_subtree(copy=False):
-                at.writeAsisNode(p)
-            at.closeWriteFile()
-            at.replaceFile(root)
-        except Exception:
-            at.writeException(root)
-
-    silentWrite = asisWrite # Compatibility with old scripts.
-    #@+node:ekr.20170331141933.1: *6* at.writeAsisNode
-    def writeAsisNode(self, p):
-        '''Write the p's node to an @asis file.'''
-        at = self
-        # Write the headline only if it starts with '@@'.
-        s = p.h
-        if g.match(s, 0, "@@"):
-            s = s[2:]
-            if s:
-                at.outputFile.write(s)
-        # Write the body.
-        s = p.b
-        if s:
-            s = g.toEncodedString(s, at.encoding, reportErrors=True)
-            at.outputStringWithLineEndings(s)
-
-    #@+node:ekr.20190109160056.1: *5* at.atAsisToString
+    #@+node:ekr.20190111153506.1: *5* at.XToString
+    #@+node:ekr.20190109160056.1: *6* at.atAsisToString
     def atAsisToString(self, root):
         '''Write the @asis node to a string.'''
         at, c = self, self.c
         try:
             c.endEditing()
             at.initWriteIvars(root, "<string-file>")
-            at.openStringForWriting(root)
+            at.openStringForString()
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
             result = at.closeStringFile()
@@ -1026,20 +997,20 @@ class AtFile(object):
             at.writeException(root)
             result = g.u('')
         return result
-    #@+node:ekr.20190109160056.2: *5* at.atAutoToString
+    #@+node:ekr.20190109160056.2: *6* at.atAutoToString
     def atAutoToString(self, root):
         '''Write the root @auto node to a string, and return it.'''
         at, c = self, self.c
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root, root.atAutoNodeName(), sentinels=False)
-            at.openStringForWriting(root)
+            at.openStringForString()
             at.writeAtAutoContents(fileName, root)
             return at.closeStringFile()
         except Exception:
             at.writeException(root)
             return g.u('')
-    #@+node:ekr.20190109160056.3: *5* at.atEditToString
+    #@+node:ekr.20190109160056.3: *6* at.atEditToString
     def atEditToString(self, root):
         '''Write one @edit node.'''
         at, c = self, self.c
@@ -1057,14 +1028,14 @@ class AtFile(object):
             at.writeException(root)
             return g.u('')
 
-    #@+node:ekr.20190109142026.1: *5* at.atFileToString
+    #@+node:ekr.20190109142026.1: *6* at.atFileToString
     def atFileToString(self, root, sentinels=True):
         '''Write an external file to a string, and return its contents.'''
         at, c = self, self.c
         try:
             c.endEditing()
             at.initWriteIvars(root, "<string-file>", sentinels=sentinels)
-            at.openStringForWriting(root)
+            at.openStringForString()
             at.writeOpenFile(root, sentinels=sentinels)
             assert root == at.root, 'write'
             result = at.closeStringFile()
@@ -1080,7 +1051,74 @@ class AtFile(object):
             at.exception("exception preprocessing script")
             root.v._p_changed = True
             return g.u('')
-    #@+node:ekr.20041005105605.144: *5* at.write & helper
+    #@+node:ekr.20050506084734: *6* at.stringToString
+    def stringToString(self, root, s, forcePythonSentinels=True, sentinels=True):
+        """
+        Write a 4.x derived file from a string.
+
+        This is at.write specialized for scripting.
+        """
+        at = self; c = at.c
+        c.endEditing()
+            # Capture the current headline, but don't change the focus!
+        at.initWriteIvars(root, "<string-file>",
+            forcePythonSentinels=forcePythonSentinels, sentinels=sentinels)
+        try:
+            at.openStringForString()
+            at.writeOpenFile(root, fromString=s, sentinels=sentinels)
+            result = at.closeStringFile()
+            # Major bug: failure to clear this wipes out headlines!
+            #            Sometimes this causes slight problems...
+            if root:
+                if hasattr(self.root.v, 'tnodeList'):
+                    delattr(self.root.v, 'tnodeList')
+                root.v._p_changed = True
+            return result
+        except Exception:
+            at.exception("exception preprocessing script")
+            return g.u('')
+    #@+node:ekr.20190111153522.1: *5* at.writeX...
+    #@+node:ekr.20041005105605.154: *6* at.asisWrite & helper
+    def asisWrite(self, root):
+        at, c = self, self.c
+        try:
+            c.endEditing()
+            c.init_error_dialogs()
+            fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
+           
+            if new:
+                if not at.precheck(fileName, root):
+                    at.addAtIgnore(root) ###
+                    return
+                at.openStringForFile(root)
+            else:
+                if not at.openFileForWriting(root, fileName):
+                    return
+            for p in root.self_and_subtree(copy=False):
+                at.writeAsisNode(p)
+            at.closeWriteFile()
+            at.replaceFile(root)
+        except Exception:
+            at.writeException(root)
+
+    silentWrite = asisWrite # Compatibility with old scripts.
+    #@+node:ekr.20170331141933.1: *7* at.writeAsisNode
+    def writeAsisNode(self, p):
+        '''Write the p's node to an @asis file.'''
+        at = self
+        # Write the headline only if it starts with '@@'.
+        s = p.h
+        if g.match(s, 0, "@@"):
+            s = s[2:]
+            if s:
+                at.outputFile.write(s)
+        # Write the body.
+        s = p.b
+        if s:
+            s = g.toEncodedString(s, at.encoding, reportErrors=True)
+            at.outputStringWithLineEndings(s)
+
+    #@+node:ekr.20041005105605.144: *6* at.write & helper
     def write(self, root, sentinels=True):
         """Write a 4.x derived file.
         root is the position of an @<file> node.
@@ -1089,10 +1127,14 @@ class AtFile(object):
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
-            if not at.precheck(fileName, root):
-                return
-            if not at.openFileForWriting(root, fileName):
-                return
+            if new:
+                if not at.precheck(fileName, root):
+                    at.addAtIgnore(root) ###
+                    return
+                at.openStringForFile(root)
+            else:
+                if not at.openFileForWriting(root, fileName):
+                    return
             at.writeOpenFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
             at.closeWriteFile()
@@ -1105,6 +1147,378 @@ class AtFile(object):
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
             at.writeException()
+    #@+node:ekr.20041005105605.151: *6* at.writeMissing & helper (to do)
+    def writeMissing(self, p):
+        at = self; c = at.c
+        writtenFiles = False
+        c.init_error_dialogs()
+        p = p.copy()
+        after = p.nodeAfterTree()
+        while p and p != after: # Don't use iterator.
+            if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
+                at.targetFileName = p.anyAtFileNodeName()
+                if at.targetFileName:
+                    at.targetFileName = c.os_path_finalize_join(
+                        self.default_directory, at.targetFileName)
+                    if not g.os_path_exists(at.targetFileName):
+                        ok = at.openFileForWriting(p, at.targetFileName)
+                            # Calls at.addAtIgnore() if there are errors.
+                        if ok:
+                            at.writeMissingNode(p)
+                            writtenFiles = True
+                            at.closeWriteFile()
+                p.moveToNodeAfterTree()
+            elif p.isAtIgnoreNode():
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        if not g.unitTesting:
+            if writtenFiles > 0:
+                g.es("finished")
+            else:
+                g.es("no @file node in the selected tree")
+        c.raise_error_dialogs(kind='write')
+    #@+node:ekr.20041005105605.152: *7* at.writeMissingNode
+    def writeMissingNode(self, p):
+
+        at = self
+        if p.isAtAsisFileNode():
+            at.asisWrite(p)
+        elif p.isAtNoSentFileNode():
+            at.write(p, sentinels=False)
+        elif p.isAtFileNode():
+            at.write(p)
+        else:
+            g.trace('can not happen: unknown @file node')
+    #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
+    def writeOneAtAutoNode(self, p):
+        '''
+        Write p, an @auto node.
+        File indices *must* have already been assigned.
+        '''
+        at, c = self, self.c
+        root = p.copy()
+        try:
+            c.endEditing()
+            if not p.atAutoNodeName():
+                return False
+            fileName = at.initWriteIvars(root, p.atAutoNodeName(),
+                defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
+                sentinels=False,
+            )
+            if new:
+                if not at.precheck(fileName, root):
+                    at.addAtIgnore(root) ###
+                    return
+                at.openStringForFile(root)
+            if c.persistenceController:
+                c.persistenceController.update_before_write_foreign_file(root)
+            if new: ###
+                pass
+            else:
+                ok = at.openFileForWriting(root, fileName)
+                if not ok:
+                    g.es("not written:", fileName)
+                    at.addAtIgnore(root)
+                    return False
+            at.writeAtAutoContents(fileName, root)
+            at.closeWriteFile()
+            if at.errors:
+                g.es("not written:", fileName)
+                at.addAtIgnore(root)
+                return False
+            at.replaceFile(root, ignoreBlankLines=root.isAtAutoRstNode())
+            return True
+        except Exception:
+            at.writeException(root)
+            return False
+    #@+node:ekr.20190109163934.24: *7* at.writeAtAutoNodesHelper
+    def writeAtAutoNodesHelper(self, writeDirtyOnly=True):
+        """Write @auto nodes in the selected outline"""
+        at = self; c = at.c
+        p = c.p; after = p.nodeAfterTree()
+        found = False
+        while p and p != after:
+            if (
+                p.isAtAutoNode() and not p.isAtIgnoreNode() and
+                (p.isDirty() or not writeDirtyOnly)
+            ):
+                ok = at.writeOneAtAutoNode(p)
+                if ok:
+                    found = True
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
+            else:
+                p.moveToThreadNext()
+        if not g.unitTesting:
+            if found:
+                g.es("finished")
+            elif writeDirtyOnly:
+                g.es("no dirty @auto nodes in the selected tree")
+            else:
+                g.es("no @auto nodes in the selected tree")
+    #@+node:ekr.20140728040812.17993: *7* at.dispatch & helpers
+    def dispatch(self, ext, p):
+        '''Return the correct writer function for p, an @auto node.'''
+        at = self
+        # Match @auto type before matching extension.
+        return at.writer_for_at_auto(p) or at.writer_for_ext(ext)
+    #@+node:ekr.20140728040812.17995: *8* at.writer_for_at_auto
+    def writer_for_at_auto(self, root):
+        '''A factory returning a writer function for the given kind of @auto directive.'''
+        at = self
+        d = g.app.atAutoWritersDict
+        for key in d.keys():
+            aClass = d.get(key)
+            if aClass and g.match_word(root.h, 0, key):
+
+                def writer_for_at_auto_cb(root):
+                    # pylint: disable=cell-var-from-loop
+                    try:
+                        writer = aClass(at.c)
+                        s = writer.write(root)
+                        return s
+                    except Exception:
+                        g.es_exception()
+                        return None
+
+                return writer_for_at_auto_cb
+        return None
+    #@+node:ekr.20140728040812.17997: *8* at.writer_for_ext
+    def writer_for_ext(self, ext):
+        '''A factory returning a writer function for the given file extension.'''
+        at = self
+        d = g.app.writersDispatchDict
+        aClass = d.get(ext)
+        if aClass:
+
+            def writer_for_ext_cb(root):
+                try:
+                    return aClass(at.c).write(root)
+                except Exception:
+                    g.es_exception()
+                    return None
+
+            return writer_for_ext_cb
+        else:
+            return None
+    #@+node:ekr.20090225080846.5: *6* at.writeOneAtEditNode
+    def writeOneAtEditNode(self, p): 
+        '''Write one @edit node.'''
+        at, c = self, self.c
+        root = p.copy()
+        try:
+            c.endEditing()
+            c.init_error_dialogs()
+            if not p.atEditNodeName():
+                return False
+            if p.hasChildren():
+                g.error('@edit nodes must not have children')
+                g.es('To save your work, convert @edit to @auto, @file or @clean')
+                return False
+            fileName = at.initWriteIvars(root, p.atEditNodeName(),
+                atEdit=True,
+                defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
+                sentinels=False,
+            )
+            if new:
+                if not at.precheck(fileName, root):
+                    at.addAtIgnore(root) ###
+                    return
+                at.openStringForFile(root)
+            else:
+                ok = at.openFileForWriting(root, fileName=fileName)
+                if not ok:
+                    g.es("not written:", fileName)
+                    at.addAtIgnore(root)
+                    return False
+            contents = ''.join([s for s in g.splitLines(p.b)
+                if at.directiveKind4(s, 0) == at.noDirective])
+            self.os(contents)
+            at.closeWriteFile()
+            at.replaceFile(root)
+            c.raise_error_dialogs(kind='write')
+            return True
+        except Exception:
+            at.writeException(root)
+            return False
+    #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helpers
+    def writeOneAtShadowNode(self, p, testing=False):
+        '''
+        Write p, an @shadow node.
+        File indices *must* have already been assigned.
+        
+        testing: set by unit tests to suppress the call to at.precheck.
+        '''
+        at, c = self, self.c
+        root = p.copy()
+        x = c.shadowController
+        try:
+            c.endEditing() # Capture the current headline.
+            self.adjustTargetLanguage(p.atShadowFileNodeName()) 
+                # A hack to support unknown extensions. May set c.target_language.
+            full_path = g.fullPath(c, p)
+            at.initWriteIvars(root, None,
+                atShadow = True,
+                defaultDirectory = g.os_path_dirname(full_path),
+                forcePythonSentinels = True)
+                    # Force python sentinels to suppress an error message.
+                    # The actual sentinels will be set below.
+            at.outputFileName = g.u('')
+                # Override.
+            # Make sure we can compute the shadow directory.
+            private_fn = x.shadowPathName(full_path)
+            if not private_fn:
+                return False
+            if not testing and not at.precheck(full_path, root):
+                return False
+            #
+            # Bug fix: Leo 4.5.1:
+            # use x.markerFromFileName to force the delim to match
+            # what is used in x.propegate changes.
+            marker = x.markerFromFileName(full_path)
+            at.startSentinelComment, at.endSentinelComment = marker.getDelims()
+            if g.app.unitTesting:
+                ivars_dict = g.getIvarsDict(at)
+            #
+            # Write the public and private files to public_s and private_s strings.
+            data = []
+            for sentinels in (False, True):
+                # Specify encoding explicitly.
+                theFile = at.openAtShadowStringFile(full_path, encoding=at.encoding)
+                at.sentinels = sentinels
+                at.writeOpenFile(root, sentinels=sentinels)
+                at.warnAboutOrphandAndIgnoredNodes()
+                s = at.closeAtShadowStringFile(theFile)
+                data.append(s)
+            #
+            # Set these new ivars for unit tests.
+            # data has exactly two elements.
+            # pylint: disable=unbalanced-tuple-unpacking
+            at.public_s, at.private_s = data
+            if g.app.unitTesting:
+                exceptions = (
+                    'public_s', 'private_s',
+                    'sentinels', 'stringOutput', 'outputContents',
+                )
+                assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
+            if at.errors == 0 and not testing:
+                # Write the public and private files.
+                x.makeShadowDirectory(full_path)
+                    # makeShadowDirectory takes a *public* file name.
+                at.replaceFileWithString(private_fn, at.private_s)
+                at.replaceFileWithString(full_path, at.public_s)
+            self.checkPythonCode(root, s=at.private_s, targetFn=full_path)
+            if at.errors == 0:
+                root.clearDirty()
+            else:
+                g.error("not written:", at.outputFileName)
+                at.addAtIgnore(root)
+            return at.errors == 0
+        except Exception:
+            at.writeException(root)
+            return False
+    #@+node:ekr.20080819075811.13: *7* at.adjustTargetLanguage
+    def adjustTargetLanguage(self, fn):
+        """Use the language implied by fn's extension if
+        there is a conflict between it and c.target_language."""
+        at = self
+        c = at.c
+        junk, ext = g.os_path_splitext(fn)
+        if ext:
+            if ext.startswith('.'): ext = ext[1:]
+            language = g.app.extension_dict.get(ext)
+            if language:
+                c.target_language = language
+            else:
+                # An unknown language.
+                pass # Use the default language, **not** 'unknown_language'
+    #@+node:ekr.20080712150045.3: *7* at.closeAtShadowStringFile
+    def closeAtShadowStringFile(self, theFile):
+        at = self
+        assert theFile, g.callers()
+        theFile.flush()
+        s = at.stringOutput = theFile.get()
+        at.outputContents = s
+        theFile.close()
+        at.outputFile = None
+        at.outputFileName = g.u('')
+        at.shortFileName = ''
+        at.targetFileName = None
+        return s
+    #@+node:ekr.20080712150045.2: *7* at.openAtShadowStringFile
+    def openAtShadowStringFile(self, fn, encoding='utf-8'):
+        '''A helper for at.writeOneAtShadowNode.'''
+        at = self
+        at.shortFileName = g.shortFileName(fn)
+        at.outputFileName = "<string: %s>" % at.shortFileName
+        at.outputFile = g.FileLikeObject(encoding=encoding)
+        at.targetFileName = "<string-file>"
+        return at.outputFile
+    #@+node:ekr.20190111153551.1: *5* at.commands
+    #@+node:ekr.20070806105859: *6* at.writeAtAutoNodes & writeDirtyAtAutoNodes & helpers
+    @cmd('write-at-auto-nodes')
+    def writeAtAutoNodes(self, event=None):
+        '''Write all @auto nodes in the selected outline.'''
+        at = self; c = at.c
+        c.init_error_dialogs()
+        at.writeAtAutoNodesHelper(writeDirtyOnly=False)
+        c.raise_error_dialogs(kind='write')
+
+    @cmd('write-dirty-at-auto-nodes')
+    def writeDirtyAtAutoNodes(self, event=None):
+        '''Write all dirty @auto nodes in the selected outline.'''
+        at = self; c = at.c
+        c.init_error_dialogs()
+        at.writeAtAutoNodesHelper(writeDirtyOnly=True)
+        c.raise_error_dialogs(kind='write')
+    #@+node:ekr.20080711093251.3: *6* at.writeAtShadowNodes & writeDirtyAtShadowNodes & helpers
+    @cmd('write-at-shadow-nodes')
+    def writeAtShadowNodes(self, event=None):
+        '''Write all @shadow nodes in the selected outline.'''
+        at = self; c = at.c
+        c.init_error_dialogs()
+        val = at.writeAtShadowNodesHelper(writeDirtyOnly=False)
+        c.raise_error_dialogs(kind='write')
+        return val
+
+    @cmd('write-dirty-at-shadow-nodes')
+    def writeDirtyAtShadowNodes(self, event=None):
+        '''Write all dirty @shadow nodes in the selected outline.'''
+        at = self; c = at.c
+        c.init_error_dialogs()
+        val = at.writeAtShadowNodesHelper(writeDirtyOnly=True)
+        c.raise_error_dialogs(kind='write')
+        return val
+    #@+node:ekr.20190109153627.13: *7* at.writeAtShadowNodesHelper
+    def writeAtShadowNodesHelper(self, writeDirtyOnly=True): 
+        """Write @shadow nodes in the selected outline"""
+        at = self; c = at.c
+        p = c.p; after = p.nodeAfterTree()
+        found = False
+        while p and p != after:
+            if (
+                p.atShadowFileNodeName() and not p.isAtIgnoreNode()
+                and (p.isDirty() or not writeDirtyOnly)
+            ):
+                ok = at.writeOneAtShadowNode(p)
+                if ok:
+                    found = True
+                    g.blue('wrote %s' % p.atShadowFileNodeName())
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
+            else:
+                p.moveToThreadNext()
+        if not g.unitTesting:
+            if found:
+                g.es("finished")
+            elif writeDirtyOnly:
+                g.es("no dirty @shadow nodes in the selected tree")
+            else:
+                g.es("no @shadow nodes in the selected tree")
+        return found
     #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
     def writeAll(self, all=False, dirty=False):
         """Write @file nodes in all or part of the outline"""
@@ -1310,393 +1724,6 @@ class AtFile(object):
             finally:
                 if hasattr(at, ivar):
                     delattr(at, ivar)
-    #@+node:ekr.20070806105859: *5* at.writeAtAutoNodes & writeDirtyAtAutoNodes & helpers
-    @cmd('write-at-auto-nodes')
-    def writeAtAutoNodes(self, event=None):
-        '''Write all @auto nodes in the selected outline.'''
-        at = self; c = at.c
-        c.init_error_dialogs()
-        at.writeAtAutoNodesHelper(writeDirtyOnly=False)
-        c.raise_error_dialogs(kind='write')
-
-    @cmd('write-dirty-at-auto-nodes')
-    def writeDirtyAtAutoNodes(self, event=None):
-        '''Write all dirty @auto nodes in the selected outline.'''
-        at = self; c = at.c
-        c.init_error_dialogs()
-        at.writeAtAutoNodesHelper(writeDirtyOnly=True)
-        c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
-    def writeOneAtAutoNode(self, p):
-        '''
-        Write p, an @auto node.
-        File indices *must* have already been assigned.
-        '''
-        at, c = self, self.c
-        root = p.copy()
-        try:
-            c.endEditing()
-            if not p.atAutoNodeName():
-                return False
-            fileName = at.initWriteIvars(root, p.atAutoNodeName(),
-                defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
-                sentinels=False,
-            )
-            if not at.precheck(fileName, root):
-                return
-            if c.persistenceController:
-                c.persistenceController.update_before_write_foreign_file(root)
-            ok = at.openFileForWriting(root, fileName)
-            if not ok:
-                g.es("not written:", fileName)
-                at.addAtIgnore(root)
-                return False
-            at.writeAtAutoContents(fileName, root)
-            at.closeWriteFile()
-            if at.errors:
-                g.es("not written:", fileName)
-                at.addAtIgnore(root)
-                return False
-            at.replaceFile(root, ignoreBlankLines=root.isAtAutoRstNode())
-            return True
-        except Exception:
-            at.writeException(root)
-            return False
-    #@+node:ekr.20190109163934.24: *7* at.writeAtAutoNodesHelper
-    def writeAtAutoNodesHelper(self, writeDirtyOnly=True):
-        """Write @auto nodes in the selected outline"""
-        at = self; c = at.c
-        p = c.p; after = p.nodeAfterTree()
-        found = False
-        while p and p != after:
-            if (
-                p.isAtAutoNode() and not p.isAtIgnoreNode() and
-                (p.isDirty() or not writeDirtyOnly)
-            ):
-                ok = at.writeOneAtAutoNode(p)
-                if ok:
-                    found = True
-                    p.moveToNodeAfterTree()
-                else:
-                    p.moveToThreadNext()
-            else:
-                p.moveToThreadNext()
-        if not g.unitTesting:
-            if found:
-                g.es("finished")
-            elif writeDirtyOnly:
-                g.es("no dirty @auto nodes in the selected tree")
-            else:
-                g.es("no @auto nodes in the selected tree")
-    #@+node:ekr.20140728040812.17993: *7* at.dispatch & helpers
-    def dispatch(self, ext, p):
-        '''Return the correct writer function for p, an @auto node.'''
-        at = self
-        # Match @auto type before matching extension.
-        return at.writer_for_at_auto(p) or at.writer_for_ext(ext)
-    #@+node:ekr.20140728040812.17995: *8* at.writer_for_at_auto
-    def writer_for_at_auto(self, root):
-        '''A factory returning a writer function for the given kind of @auto directive.'''
-        at = self
-        d = g.app.atAutoWritersDict
-        for key in d.keys():
-            aClass = d.get(key)
-            if aClass and g.match_word(root.h, 0, key):
-
-                def writer_for_at_auto_cb(root):
-                    # pylint: disable=cell-var-from-loop
-                    try:
-                        writer = aClass(at.c)
-                        s = writer.write(root)
-                        return s
-                    except Exception:
-                        g.es_exception()
-                        return None
-
-                return writer_for_at_auto_cb
-        return None
-    #@+node:ekr.20140728040812.17997: *8* at.writer_for_ext
-    def writer_for_ext(self, ext):
-        '''A factory returning a writer function for the given file extension.'''
-        at = self
-        d = g.app.writersDispatchDict
-        aClass = d.get(ext)
-        if aClass:
-
-            def writer_for_ext_cb(root):
-                try:
-                    return aClass(at.c).write(root)
-                except Exception:
-                    g.es_exception()
-                    return None
-
-            return writer_for_ext_cb
-        else:
-            return None
-    #@+node:ekr.20080711093251.3: *5* at.writeAtShadowNodes & writeDirtyAtShadowNodes & helpers
-    @cmd('write-at-shadow-nodes')
-    def writeAtShadowNodes(self, event=None):
-        '''Write all @shadow nodes in the selected outline.'''
-        at = self; c = at.c
-        c.init_error_dialogs()
-        val = at.writeAtShadowNodesHelper(writeDirtyOnly=False)
-        c.raise_error_dialogs(kind='write')
-        return val
-
-    @cmd('write-dirty-at-shadow-nodes')
-    def writeDirtyAtShadowNodes(self, event=None):
-        '''Write all dirty @shadow nodes in the selected outline.'''
-        at = self; c = at.c
-        c.init_error_dialogs()
-        val = at.writeAtShadowNodesHelper(writeDirtyOnly=True)
-        c.raise_error_dialogs(kind='write')
-        return val
-    #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helpers
-    def writeOneAtShadowNode(self, p, testing=False):
-        '''
-        Write p, an @shadow node.
-        File indices *must* have already been assigned.
-        
-        testing: set by unit tests to suppress the call to at.precheck.
-        '''
-        at, c = self, self.c
-        root = p.copy()
-        x = c.shadowController
-        try:
-            c.endEditing() # Capture the current headline.
-            self.adjustTargetLanguage(p.atShadowFileNodeName()) 
-                # A hack to support unknown extensions. May set c.target_language.
-            full_path = g.fullPath(c, p)
-            at.initWriteIvars(root, None,
-                atShadow = True,
-                defaultDirectory = g.os_path_dirname(full_path),
-                forcePythonSentinels = True)
-                    # Force python sentinels to suppress an error message.
-                    # The actual sentinels will be set below.
-            at.outputFileName = g.u('')
-                # Override.
-            # Make sure we can compute the shadow directory.
-            private_fn = x.shadowPathName(full_path)
-            if not private_fn:
-                return False
-            if not testing and not at.precheck(full_path, root):
-                return False
-            #
-            # Bug fix: Leo 4.5.1:
-            # use x.markerFromFileName to force the delim to match
-            # what is used in x.propegate changes.
-            marker = x.markerFromFileName(full_path)
-            at.startSentinelComment, at.endSentinelComment = marker.getDelims()
-            if g.app.unitTesting:
-                ivars_dict = g.getIvarsDict(at)
-            #
-            # Write the public and private files to public_s and private_s strings.
-            data = []
-            for sentinels in (False, True):
-                # Specify encoding explicitly.
-                theFile = at.openAtShadowStringFile(full_path, encoding=at.encoding)
-                at.sentinels = sentinels
-                at.writeOpenFile(root, sentinels=sentinels)
-                at.warnAboutOrphandAndIgnoredNodes()
-                s = at.closeAtShadowStringFile(theFile)
-                data.append(s)
-            #
-            # Set these new ivars for unit tests.
-            # data has exactly two elements.
-            # pylint: disable=unbalanced-tuple-unpacking
-            at.public_s, at.private_s = data
-            if g.app.unitTesting:
-                exceptions = (
-                    'public_s', 'private_s',
-                    'sentinels', 'stringOutput', 'outputContents',
-                )
-                assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
-            if at.errors == 0 and not testing:
-                # Write the public and private files.
-                x.makeShadowDirectory(full_path)
-                    # makeShadowDirectory takes a *public* file name.
-                at.replaceFileWithString(private_fn, at.private_s)
-                at.replaceFileWithString(full_path, at.public_s)
-            self.checkPythonCode(root, s=at.private_s, targetFn=full_path)
-            if at.errors == 0:
-                root.clearDirty()
-            else:
-                g.error("not written:", at.outputFileName)
-                at.addAtIgnore(root)
-            return at.errors == 0
-        except Exception:
-            at.writeException(root)
-            return False
-    #@+node:ekr.20080819075811.13: *7* at.adjustTargetLanguage
-    def adjustTargetLanguage(self, fn):
-        """Use the language implied by fn's extension if
-        there is a conflict between it and c.target_language."""
-        at = self
-        c = at.c
-        junk, ext = g.os_path_splitext(fn)
-        if ext:
-            if ext.startswith('.'): ext = ext[1:]
-            language = g.app.extension_dict.get(ext)
-            if language:
-                c.target_language = language
-            else:
-                # An unknown language.
-                pass # Use the default language, **not** 'unknown_language'
-    #@+node:ekr.20080712150045.3: *7* at.closeAtShadowStringFile
-    def closeAtShadowStringFile(self, theFile):
-        at = self
-        assert theFile, g.callers()
-        theFile.flush()
-        s = at.stringOutput = theFile.get()
-        at.outputContents = s
-        theFile.close()
-        at.outputFile = None
-        at.outputFileName = g.u('')
-        at.shortFileName = ''
-        at.targetFileName = None
-        return s
-    #@+node:ekr.20080712150045.2: *7* at.openAtShadowStringFile
-    def openAtShadowStringFile(self, fn, encoding='utf-8'):
-        '''A helper for at.writeOneAtShadowNode.'''
-        at = self
-        at.shortFileName = g.shortFileName(fn)
-        at.outputFileName = "<string: %s>" % at.shortFileName
-        at.outputFile = g.FileLikeObject(encoding=encoding)
-        at.targetFileName = "<string-file>"
-        return at.outputFile
-    #@+node:ekr.20190109153627.13: *6* at.writeAtShadowNodesHelper
-    def writeAtShadowNodesHelper(self, writeDirtyOnly=True): 
-        """Write @shadow nodes in the selected outline"""
-        at = self; c = at.c
-        p = c.p; after = p.nodeAfterTree()
-        found = False
-        while p and p != after:
-            if (
-                p.atShadowFileNodeName() and not p.isAtIgnoreNode()
-                and (p.isDirty() or not writeDirtyOnly)
-            ):
-                ok = at.writeOneAtShadowNode(p)
-                if ok:
-                    found = True
-                    g.blue('wrote %s' % p.atShadowFileNodeName())
-                    p.moveToNodeAfterTree()
-                else:
-                    p.moveToThreadNext()
-            else:
-                p.moveToThreadNext()
-        if not g.unitTesting:
-            if found:
-                g.es("finished")
-            elif writeDirtyOnly:
-                g.es("no dirty @shadow nodes in the selected tree")
-            else:
-                g.es("no @shadow nodes in the selected tree")
-        return found
-    #@+node:ekr.20050506084734: *5* at.stringToString
-    def stringToString(self, root, s, forcePythonSentinels=True, sentinels=True):
-        """
-        Write a 4.x derived file from a string.
-
-        This is at.write specialized for scripting.
-        """
-        at = self; c = at.c
-        c.endEditing()
-            # Capture the current headline, but don't change the focus!
-        at.initWriteIvars(root, "<string-file>",
-            forcePythonSentinels=forcePythonSentinels, sentinels=sentinels)
-        try:
-            at.openStringForWriting(root)
-            at.writeOpenFile(root, fromString=s, sentinels=sentinels)
-            result = at.closeStringFile()
-            # Major bug: failure to clear this wipes out headlines!
-            #            Sometimes this causes slight problems...
-            if root:
-                if hasattr(self.root.v, 'tnodeList'):
-                    delattr(self.root.v, 'tnodeList')
-                root.v._p_changed = True
-            return result
-        except Exception:
-            at.exception("exception preprocessing script")
-            return g.u('')
-    #@+node:ekr.20041005105605.151: *5* at.writeMissing & helper
-    def writeMissing(self, p):
-        at = self; c = at.c
-        writtenFiles = False
-        c.init_error_dialogs()
-        p = p.copy()
-        after = p.nodeAfterTree()
-        while p and p != after: # Don't use iterator.
-            if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
-                at.targetFileName = p.anyAtFileNodeName()
-                if at.targetFileName:
-                    at.targetFileName = c.os_path_finalize_join(
-                        self.default_directory, at.targetFileName)
-                    if not g.os_path_exists(at.targetFileName):
-                        ok = at.openFileForWriting(p, at.targetFileName)
-                            # Calls at.addAtIgnore() if there are errors.
-                        if ok:
-                            at.writeMissingNode(p)
-                            writtenFiles = True
-                            at.closeWriteFile()
-                p.moveToNodeAfterTree()
-            elif p.isAtIgnoreNode():
-                p.moveToNodeAfterTree()
-            else:
-                p.moveToThreadNext()
-        if not g.unitTesting:
-            if writtenFiles > 0:
-                g.es("finished")
-            else:
-                g.es("no @file node in the selected tree")
-        c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20041005105605.152: *6* at.writeMissingNode
-    def writeMissingNode(self, p):
-
-        at = self
-        if p.isAtAsisFileNode():
-            at.asisWrite(p)
-        elif p.isAtNoSentFileNode():
-            at.write(p, sentinels=False)
-        elif p.isAtFileNode():
-            at.write(p)
-        else:
-            g.trace('can not happen: unknown @file node')
-    #@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode
-    def writeOneAtEditNode(self, p): 
-        '''Write one @edit node.'''
-        at, c = self, self.c
-        root = p.copy()
-        try:
-            c.endEditing()
-            c.init_error_dialogs()
-            if not p.atEditNodeName():
-                return False
-            if p.hasChildren():
-                g.error('@edit nodes must not have children')
-                g.es('To save your work, convert @edit to @auto, @file or @clean')
-                return False
-            fileName = at.initWriteIvars(root, p.atEditNodeName(),
-                atEdit=True,
-                defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
-                sentinels=False,
-            )
-            if not at.precheck(fileName, root):
-                return False
-            ok = at.openFileForWriting(root, fileName=fileName)
-            if not ok:
-                g.es("not written:", fileName)
-                at.addAtIgnore(root)
-                return False
-            contents = ''.join([s for s in g.splitLines(p.b)
-                if at.directiveKind4(s, 0) == at.noDirective])
-            self.os(contents)
-            at.closeWriteFile()
-            at.replaceFile(root)
-            c.raise_error_dialogs(kind='write')
-            return True
-        except Exception:
-            at.writeException(root)
-            return False
     #@+node:ekr.20041005105605.157: *5* at.writeOpenFile
     def writeOpenFile(self, root, fromString='', sentinels=True):
         '''Write the contents of the file.'''
@@ -2675,8 +2702,8 @@ class AtFile(object):
                 g.error('openForWrite: exception opening file: %s' % (open_file_name))
                 g.es_exception()
             return 'error', None
-    #@+node:ekr.20190111120057.1: *5* at.openStringFile
-    def openStringFile(self):
+    #@+node:ekr.20190111120057.1: *5* at.openStringForString
+    def openStringForString(self):
         '''Return a string-file for writing to an actual file.'''
         at = self
         ### at.shortFileName = g.shortFileName(fn)
@@ -2684,9 +2711,9 @@ class AtFile(object):
         at.outputFile = g.FileLikeObject()
         if g.app.unitTesting: at.output_newline = '\n'
         at.stringOutput = ""
-        at.toString = False
-    #@+node:ekr.20190109145850.1: *5* at.openStringForWriting
-    def openStringForWriting(self, root):
+        at.toString = True ###
+    #@+node:ekr.20190109145850.1: *5* at.openStringForFile
+    def openStringForFile(self, root):
         at = self
         fn = root.anyAtFileNodeName() or root.h # use root.h for unit tests.
         assert fn, repr(root)
@@ -2695,8 +2722,8 @@ class AtFile(object):
         at.outputFile = g.FileLikeObject()
         if g.app.unitTesting: at.output_newline = '\n'
         at.stringOutput = ""
-        at.toString = True
-        return True
+        at.toString = False
+        ### return True
     #@+node:ekr.20041005105605.201: *5* at.os and allies
     # Note:  self.outputFile may be either a FileLikeObject or a real file.
     #@+node:ekr.20041005105605.202: *6* at.oblank, oblanks & otabs
