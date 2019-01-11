@@ -2950,6 +2950,7 @@ class AtFile(object):
         if new: ###
             at.targetFileName = fileName
         # g.trace('target: %r output: %r' % (at.targetFileName, at.outputFileName))
+            ### output seems to be None, always.
         if g.os_path_exists(at.targetFileName):
             if at.compareFiles(
                 at.outputFileName,
