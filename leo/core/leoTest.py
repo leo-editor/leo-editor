@@ -1657,7 +1657,7 @@ class TestManager(object):
         output.scriptSetBodyString(result)
     #@+node:ekr.20051104075904.38: *4* TM.writeNodeToNode
     def writeNodeToNode(self, c, p, output, sentinels=True):
-        """Do an AtFile.write the p's tree to the body text of the output node."""
+        '''Write the p's tree to the body text of the output node.'''
         s = self.writeNodeToString(c, p, sentinels)
         output.scriptSetBodyString(s)
     #@+node:ekr.20051104075904.39: *4* TM.writeNodeToString
