@@ -983,12 +983,9 @@ class AtFile(object):
         c.init_error_dialogs()
         try:
             fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
-            ###
-                # eventualFileName = c.os_path_finalize_join(
-                    # at.default_directory, at.targetFileName)
             if not at.precheck(fileName, root):
                 return
-            if not at.openFileForWriting(root, fileName): ###targetFileName):
+            if not at.openFileForWriting(root, fileName):
                 return
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
@@ -1099,25 +1096,18 @@ class AtFile(object):
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
-            ###
-                # eventualFileName = c.os_path_finalize_join(
-                    # at.default_directory, at.targetFileName)
             if not at.precheck(fileName, root):
                 return
-            if not at.openFileForWriting(root, fileName): ### at.targetFileName):
+            if not at.openFileForWriting(root, fileName):
                 return
             at.writeOpenFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
             at.closeWriteFile()
             if at.errors:
-                g.es("not written:", g.shortFileName(fileName)) ### at.targetFileName))
+                g.es("not written:", g.shortFileName(fileName))
                 at.addAtIgnore(root)
             else:
-                ### Now done in precheck.
-                    # Fix bug 889175: Remember the full fileName.
-                    ### at.rememberReadPath(fileName, root)
                 at.replaceTargetFileIfDifferent(root)
-                    # Sets/clears dirty and orphan bits.
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
@@ -1356,38 +1346,32 @@ class AtFile(object):
         trialWrite: Set only by Importer.trial_write.
         '''
         at, c = self, self.c
-        if not p.atAutoNodeName():
-            return False
+        root = p.copy()
+        c.endEditing() # Capture the current headline.
         try:
-            c.endEditing() # Capture the current headline.
-            root = p.copy()
+            if not p.atAutoNodeName():
+                return False
             fileName = at.initWriteIvars(root, p.atAutoNodeName(),
                 defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
                 sentinels=False,
             )
-            ###
-                # at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-                    # # Override.
-                # fileName = c.os_path_finalize_join(at.default_directory, fileName)
-                    # # Override
             if not at.precheck(fileName, root):
                 return
             if c.persistenceController and not trialWrite:
                 c.persistenceController.update_before_write_foreign_file(root)
-            ok = at.openFileForWriting(root, fileName=fileName)
+            ok = at.openFileForWriting(root, fileName)
             if not ok:
                 g.es("not written:", fileName)
                 at.addAtIgnore(root)
                 return False
             at.writeAtAutoContents(fileName, root)
             at.closeWriteFile()
-            if at.errors == 0:
-                isAtAutoRst = root.isAtAutoRstNode()
-                at.replaceTargetFileIfDifferent(root, ignoreBlankLines=isAtAutoRst)
-                return True
-            g.es("not written:", fileName)
-            at.addAtIgnore(root)
-            return False
+            if at.errors:
+                g.es("not written:", fileName)
+                at.addAtIgnore(root)
+                return False
+            at.replaceTargetFileIfDifferent(root, ignoreBlankLines=root.isAtAutoRstNode())
+            return True
         except Exception:
             at.writeException(root)
             return False
@@ -1488,67 +1472,75 @@ class AtFile(object):
         
         The testing kwarg is set only by unit tests.
         '''
-        at, c, x = self, self.c, self.c.shadowController
+        at, c = self, self.c
         root = p.copy()
-        c.endEditing() # Capture the current headline.
-        fn = p.atShadowFileNodeName()
-        assert fn, p.h
-        self.adjustTargetLanguage(fn) 
-            # A hack to support unknown extensions. May set c.target_language.
-        fn = g.fullPath(c, p)
-        at.initWriteIvars(root, None, atShadow=True, forcePythonSentinels=True)
-            # Force python sentinels to suppress an error message.
-            # The actual sentinels will be set below.
-        at.outputFileName = g.u('')
-            # Override.
-        at.default_directory = g.os_path_dirname(fn)
-            # Override.
-        # Make sure we can compute the shadow directory.
-        private_fn = x.shadowPathName(fn)
-        if not private_fn:
+        x = c.shadowController
+        try:
+            c.endEditing() # Capture the current headline.
+            fn = p.atShadowFileNodeName()
+            assert fn, p.h
+            self.adjustTargetLanguage(fn) 
+                # A hack to support unknown extensions. May set c.target_language.
+            fn = g.fullPath(c, p)
+            at.initWriteIvars(root, None, atShadow=True, forcePythonSentinels=True)
+                # Force python sentinels to suppress an error message.
+                # The actual sentinels will be set below.
+            at.outputFileName = g.u('')
+                # Override.
+            at.default_directory = g.os_path_dirname(fn)
+                # Override.
+            # Make sure we can compute the shadow directory.
+            private_fn = x.shadowPathName(fn)
+            if not private_fn:
+                return False
+            if not testing and not at.precheck(fn, root):
+                return False
+            #
+            # Bug fix: Leo 4.5.1:
+            # use x.markerFromFileName to force the delim to match
+            # what is used in x.propegate changes.
+            marker = x.markerFromFileName(fn)
+            at.startSentinelComment, at.endSentinelComment = marker.getDelims()
+            if g.app.unitTesting:
+                ivars_dict = g.getIvarsDict(at)
+            #
+            # Write the public and private files to public_s and private_s strings.
+            data = []
+            for sentinels in (False, True):
+                # Specify encoding explicitly.
+                theFile = at.openAtShadowStringFile(fn, encoding=at.encoding)
+                at.sentinels = sentinels
+                at.writeOpenFile(root, sentinels=sentinels)
+                at.warnAboutOrphandAndIgnoredNodes()
+                s = at.closeAtShadowStringFile(theFile)
+                data.append(s)
+            #
+            # Set these new ivars for unit tests.
+            # data has exactly two elements.
+            # pylint: disable=unbalanced-tuple-unpacking
+            at.public_s, at.private_s = data
+            if g.app.unitTesting:
+                exceptions = (
+                    'public_s', 'private_s',
+                    'sentinels', 'stringOutput', 'outputContents',
+                )
+                assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
+            if at.errors == 0 and not testing:
+                # Write the public and private files.
+                x.makeShadowDirectory(fn)
+                    # makeShadowDirectory takes a *public* file name.
+                at.replaceFileWithString(private_fn, at.private_s)
+                at.replaceFileWithString(fn, at.public_s)
+            self.checkPythonCode(root, s=at.private_s, targetFn=fn)
+            if at.errors == 0:
+                root.clearDirty()
+            else:
+                g.error("not written:", at.outputFileName)
+                at.addAtIgnore(root)
+            return at.errors == 0
+        except Exception:
+            at.writeException(root)
             return False
-        if not testing and not at.precheck(fn, root):
-            return False
-        #
-        # Bug fix: Leo 4.5.1:
-        # use x.markerFromFileName to force the delim to match
-        # what is used in x.propegate changes.
-        marker = x.markerFromFileName(fn)
-        at.startSentinelComment, at.endSentinelComment = marker.getDelims()
-        if g.app.unitTesting:
-            ivars_dict = g.getIvarsDict(at)
-        #
-        # Write the public and private files to public_s and private_s strings.
-        data = []
-        for sentinels in (False, True):
-            # Specify encoding explicitly.
-            theFile = at.openAtShadowStringFile(fn, encoding=at.encoding)
-            at.sentinels = sentinels
-            at.writeOpenFile(root, sentinels=sentinels)
-            at.warnAboutOrphandAndIgnoredNodes()
-            s = at.closeAtShadowStringFile(theFile)
-            data.append(s)
-        #
-        # Set these new ivars for unit tests.
-        # data has exactly two elements.
-        # pylint: disable=unbalanced-tuple-unpacking
-        at.public_s, at.private_s = data
-        if g.app.unitTesting:
-            exceptions = ('public_s', 'private_s', 'sentinels', 'stringOutput', 'outputContents')
-            assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
-        if at.errors == 0 and not testing:
-            # Write the public and private files.
-            x.makeShadowDirectory(fn)
-                # makeShadowDirectory takes a *public* file name.
-            at.replaceFileWithString(private_fn, at.private_s)
-            at.replaceFileWithString(fn, at.public_s)
-        self.checkPythonCode(root, s=at.private_s, targetFn=fn)
-        if at.errors == 0:
-            root.clearDirty()
-        else:
-            g.error("not written:", at.outputFileName)
-            at.addAtIgnore(root)
-        return at.errors == 0
     #@+node:ekr.20080819075811.13: *7* at.adjustTargetLanguage
     def adjustTargetLanguage(self, fn):
         """Use the language implied by fn's extension if
@@ -1690,9 +1682,9 @@ class AtFile(object):
         at, c = self, self.c
         root = p.copy()
         c.endEditing()
-        if not p.atEditNodeName():
-            return False
         try:
+            if not p.atEditNodeName():
+                return False
             c.init_error_dialogs()
             if p.hasChildren():
                 g.error('@edit nodes must not have children')
@@ -1703,27 +1695,20 @@ class AtFile(object):
                 defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
                 sentinels=False,
             )
-            ###
-                # at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-                    # # Override.
-                # fn = c.os_path_finalize_join(at.default_directory, fn)
-                    # # Override.
             if not at.precheck(fileName, root):
                 return False
-            ok = at.openFileForWriting(root, fileName=fileName) ### fn
-            if ok:
-                contents = ''.join([s for s in g.splitLines(p.b)
-                    if at.directiveKind4(s, 0) == at.noDirective])
-                self.os(contents)
-                at.closeWriteFile()
-                if at.errors:
-                    g.es("not written:", fileName) ### at.targetFileName)
-                    at.addAtIgnore(root)
-                else:
-                    at.replaceTargetFileIfDifferent(root)
-                        # calls at.addAtIgnore if there are errors.
+            ok = at.openFileForWriting(root, fileName=fileName)
+            if not ok:
+                g.es("not written:", fileName)
+                at.addAtIgnore(root)
+                return False
+            contents = ''.join([s for s in g.splitLines(p.b)
+                if at.directiveKind4(s, 0) == at.noDirective])
+            self.os(contents)
+            at.closeWriteFile()
+            at.replaceTargetFileIfDifferent(root)
             c.raise_error_dialogs(kind='write')
-            return ok
+            return True
         except Exception:
             at.writeException(root)
             return False
