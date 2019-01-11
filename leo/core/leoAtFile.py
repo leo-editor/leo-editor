@@ -1085,7 +1085,6 @@ class AtFile(object):
             c.endEditing()
             c.init_error_dialogs()
             fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
-           
             if new:
                 if not at.precheck(fileName, root):
                     at.addAtIgnore(root) ###
@@ -1097,7 +1096,7 @@ class AtFile(object):
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
             at.closeWriteFile()
-            at.replaceFile(root)
+            at.replaceFile(fileName, root)
         except Exception:
             at.writeException(root)
 
@@ -1142,7 +1141,7 @@ class AtFile(object):
                 g.es("not written:", g.shortFileName(fileName))
                 at.addAtIgnore(root)
             else:
-                at.replaceFile(root)
+                at.replaceFile(fileName, root)
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
@@ -1227,7 +1226,7 @@ class AtFile(object):
                 g.es("not written:", fileName)
                 at.addAtIgnore(root)
                 return False
-            at.replaceFile(root, ignoreBlankLines=root.isAtAutoRstNode())
+            at.replaceFile(fileName, root, ignoreBlankLines=root.isAtAutoRstNode())
             return True
         except Exception:
             at.writeException(root)
@@ -1337,7 +1336,7 @@ class AtFile(object):
                 if at.directiveKind4(s, 0) == at.noDirective])
             self.os(contents)
             at.closeWriteFile()
-            at.replaceFile(root)
+            at.replaceFile(fileName, root)
             c.raise_error_dialogs(kind='write')
             return True
         except Exception:
@@ -2487,6 +2486,7 @@ class AtFile(object):
     #@+node:ekr.20190110115327.1: *5* at.closeStringFile
     def closeStringFile(self):
         '''Close a string file opened with at.openStringForWriting.'''
+        ### changed
         at = self
         assert at.toString, g.callers()
         assert at.outputFile, g.callers()
@@ -2620,7 +2620,7 @@ class AtFile(object):
             return True, i + 2
         else:
             return False, -1
-    #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper
+    #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper (OLD)
     def openFileForWriting(self, root, fileName):
         at = self
         # at.outputNewline set in initCommonIvars.
@@ -2913,7 +2913,7 @@ class AtFile(object):
                 if line:
                     self.putSentinel("@comment " + line)
     #@+node:ekr.20041005105605.212: *5* at.replaceFile
-    def replaceFile(self, root, ignoreBlankLines=False):
+    def replaceFile(self, fileName, root, ignoreBlankLines=False):
         '''Create target file as follows:
         1. If target file does not exist, rename output file to target file.
         2. If target file is identical to output file, remove the output file.
@@ -2923,23 +2923,33 @@ class AtFile(object):
         Return True if the original file was changed.
         '''
         at = self; c = at.c
-        if at.toString:
-            # Do *not* change the actual file or set any dirty flag.
-            at.fileChangedFlag = False
-            return False
+        if new:
+            assert not at.toString, g.callers()
+        else:
+            if at.toString:
+                # Do *not* change the actual file or set any dirty flag.
+                at.fileChangedFlag = False
+                return False
         if root:
             root.clearDirty()
-        # Fix bug 1132821: Leo replaces a soft link with a real file.
-        if at.outputFileName:
-            at.outputFileName = g.os_path_realpath(at.outputFileName)
-        if at.targetFileName:
-            at.targetFileName = g.os_path_realpath(at.targetFileName)
+        if new:
+            at.outputFileName = g.os_path_realpath(fileName)
+            ### To do.
+        else:
+            # Fix bug 1132821: Leo replaces a soft link with a real file.
+            if at.outputFileName:
+                at.outputFileName = g.os_path_realpath(at.outputFileName)
+            if at.targetFileName:
+                at.targetFileName = g.os_path_realpath(at.targetFileName)
         # #531: Optionally report timestamp...
         if c.config.getBool('log-show-save-time', default=False):
             format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
             timestamp = time.strftime(format) + ' '
         else:
             timestamp = ''
+        if new: ###
+            at.targetFileName = fileName
+        g.trace('target: %r output: %r' % (at.targetFileName, at.outputFileName))
         if g.os_path_exists(at.targetFileName):
             if at.compareFiles(
                 at.outputFileName,

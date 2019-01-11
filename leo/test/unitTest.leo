@@ -894,7 +894,7 @@ try:
         assert exists(fn),fn
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    val = at.replaceFile(at.root)
+    val = at.replaceFile(fn, at.root)
     assert val
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
@@ -932,7 +932,7 @@ try:
         assert exists(fn)
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    assert not at.replaceFile(at.root)
+    assert not at.replaceFile(fn, at.root)
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
         print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
@@ -963,7 +963,7 @@ try:
     at.outputContents = contents = g.toUnicode('test output')
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    val = at.replaceFile(at.root)
+    val = at.replaceFile(fn, at.root)
     assert not val
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
