@@ -706,7 +706,7 @@ class AtFile(object):
         written as an @file node.
         '''
         at = self.c.atFileCommands
-        result = at.atFileToString(root, sentinels=True) ### kind='@nosent', 
+        result = at.atFileToString(root, sentinels=True)
         s = g.toUnicode(result, encoding=at.encoding)
         return g.splitLines(s)
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
@@ -1037,8 +1037,6 @@ class AtFile(object):
         at, c = self, self.c
         try:
             c.endEditing()
-            ### fileName = root.atAutoNodeName()
-            ### at.initWriteIvars(root, "<string-file>", sentinels=False)
             fileName = at.initWriteIvars(root, root.atAutoNodeName(), sentinels=False)
             at.openStringForWriting(root)
             at.writeAtAutoContents(fileName, root)
@@ -1065,7 +1063,7 @@ class AtFile(object):
             return g.u('')
 
     #@+node:ekr.20190109142026.1: *5* at.atFileToString
-    def atFileToString(self, root, sentinels=True): ### kind
+    def atFileToString(self, root, sentinels=True):
         '''Write an external file to a string, and return its contents.'''
         at, c = self, self.c
         try:

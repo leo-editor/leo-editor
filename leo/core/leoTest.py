@@ -1002,8 +1002,8 @@ class TestManager(object):
         elif theType == "@edit":
             result = at.atEditToString(child1)
         else:
-            sentinels = theType not in ("@asis", "@clean", "@edit", "@nosent")
-            result = at.atFileToString(child1, sentinels=sentinels) ### kind='@test', 
+            result = at.atFileToString(child1,
+                sentinels=theType not in ("@asis", "@clean", "@edit", "@nosent"))
         try:
             assert result == expected
         except AssertionError:

@@ -608,7 +608,7 @@ class ShadowController(object):
             # but we *do* want sentinels elsewhere.
             at.at_shadow_test_hack = True
             try:
-                s = at.atFileToString(p, sentinels=True) ### kind='@shadow', 
+                s = at.atFileToString(p, sentinels=True)
             finally:
                 at.at_shadow_test_hack = False
             return g.splitLines(s)
