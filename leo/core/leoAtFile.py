@@ -2949,7 +2949,7 @@ class AtFile(object):
             timestamp = ''
         if new: ###
             at.targetFileName = fileName
-        g.trace('target: %r output: %r' % (at.targetFileName, at.outputFileName))
+        # g.trace('target: %r output: %r' % (at.targetFileName, at.outputFileName))
         if g.os_path_exists(at.targetFileName):
             if at.compareFiles(
                 at.outputFileName,
