@@ -2296,6 +2296,42 @@ class AtFile(object):
             # The dirty bit may be cleared later.
             root.setDirty()
             g.es('adding @ignore to', root.h)
+    #@+node:ekr.20190111111608.1: *5* at.checkPath & helpers
+    def checkPath(self, fileName):
+        '''Return True if we can write to the file's directory.'''
+        at = self
+        assert g.os_path_isabs(fileName), (repr(fileName), g.callers())
+        directory = g.os_path_dirname(fileName)
+        if not at.checkDirectory(directory):
+            return False
+        if g.os_path_exists(fileName):
+            return at.isWritable(fileName)
+        return True
+    #@+node:ekr.20190111112432.1: *6* at.checkDir
+    def checkDirectory(self, directory):
+        '''Return True if directory exists or could be created.'''
+        at, c = self, self.c
+        assert directory, g.callers()
+        if g.os_path_exists(directory):
+            return at.isWritable(directory)
+        try:
+            g.makeAllNonExistentDirectories(directory, c=c)
+            return True
+        except Exception:
+            g.es("exception creating path: %r" % (directory), color='red')
+            g.es_exception()
+            return False
+    #@+node:ekr.20190111112442.1: *6* at.isWritable
+    def isWritable(self, path):
+        '''Return True if the path is writable.'''
+        try:
+            # os.access() may not exist on all platforms.
+            ok = os.access(path, os.W_OK)
+        except AttributeError:
+            return True
+        if not ok:
+            g.es('read only:', repr(path), color='red')
+        return ok
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
     def checkPythonCode(self, root, s=None, targetFn=None, pyflakes_errors_only=False):
         '''Perform python-related checks on root.'''
@@ -2639,6 +2675,16 @@ class AtFile(object):
                 g.error('openForWrite: exception opening file: %s' % (open_file_name))
                 g.es_exception()
             return 'error', None
+    #@+node:ekr.20190111120057.1: *5* at.openStringFile
+    def openStringFile(self):
+        '''Return a string-file for writing to an actual file.'''
+        at = self
+        ### at.shortFileName = g.shortFileName(fn)
+        ### at.outputFileName = "<string: %s>" % at.shortFileName
+        at.outputFile = g.FileLikeObject()
+        if g.app.unitTesting: at.output_newline = '\n'
+        at.stringOutput = ""
+        at.toString = False
     #@+node:ekr.20190109145850.1: *5* at.openStringForWriting
     def openStringForWriting(self, root):
         at = self
@@ -2839,52 +2885,6 @@ class AtFile(object):
                 line = line.replace("@date", time.asctime())
                 if line:
                     self.putSentinel("@comment " + line)
-    #@+node:ekr.20080712150045.1: *5* at.replaceFileWithString
-    def replaceFileWithString(self, fn, s):
-        '''
-        Replace the file with s if s is different from theFile's contents.
-
-        Return True if theFile was changed.
-
-        This is used only by the @shadow logic.
-        '''
-        at, c = self, self.c
-        exists = g.os_path_exists(fn)
-        if exists: # Read the file.  Return if it is the same.
-            s2, e = g.readFileIntoString(fn)
-            if s is None:
-                return False
-            if s == s2:
-                report = c.config.getBool('report-unchanged-files', default=True)
-                if report and not g.unitTesting:
-                    g.es('unchanged:', fn)
-                return False
-        # Issue warning if directory does not exist.
-        theDir = g.os_path_dirname(fn)
-        if theDir and not g.os_path_exists(theDir):
-            if not g.unitTesting:
-                g.error('not written: %s directory not found' % fn)
-            return False
-        # Replace
-        try:
-            f = open(fn, 'wb')
-            # 2013/10/28: Fix bug 1243847: unicode error when saving @shadow nodes.
-            # Call g.toEncodedString regardless of Python version.
-            s = g.toEncodedString(s, encoding=self.encoding)
-            f.write(s)
-            f.close()
-            if g.unitTesting:
-                pass
-            else:
-                if exists:
-                    g.es('wrote:    ', fn)
-                else:
-                    g.es('created:', fn)
-            return True
-        except IOError:
-            at.error('unexpected exception writing file: %s' % (fn))
-            g.es_exception()
-            return False
     #@+node:ekr.20041005105605.212: *5* at.replaceFile
     def replaceFile(self, root, ignoreBlankLines=False):
         '''Create target file as follows:
@@ -2969,6 +2969,52 @@ class AtFile(object):
             # No original file to change. Return value tested by a unit test.
             at.fileChangedFlag = False
             at.checkPythonCode(root)
+            return False
+    #@+node:ekr.20080712150045.1: *5* at.replaceFileWithString
+    def replaceFileWithString(self, fn, s):
+        '''
+        Replace the file with s if s is different from theFile's contents.
+
+        Return True if theFile was changed.
+
+        This is used only by the @shadow logic.
+        '''
+        at, c = self, self.c
+        exists = g.os_path_exists(fn)
+        if exists: # Read the file.  Return if it is the same.
+            s2, e = g.readFileIntoString(fn)
+            if s is None:
+                return False
+            if s == s2:
+                report = c.config.getBool('report-unchanged-files', default=True)
+                if report and not g.unitTesting:
+                    g.es('unchanged:', fn)
+                return False
+        # Issue warning if directory does not exist.
+        theDir = g.os_path_dirname(fn)
+        if theDir and not g.os_path_exists(theDir):
+            if not g.unitTesting:
+                g.error('not written: %s directory not found' % fn)
+            return False
+        # Replace
+        try:
+            f = open(fn, 'wb')
+            # 2013/10/28: Fix bug 1243847: unicode error when saving @shadow nodes.
+            # Call g.toEncodedString regardless of Python version.
+            s = g.toEncodedString(s, encoding=self.encoding)
+            f.write(s)
+            f.close()
+            if g.unitTesting:
+                pass
+            else:
+                if exists:
+                    g.es('wrote:    ', fn)
+                else:
+                    g.es('created:', fn)
+            return True
+        except IOError:
+            at.error('unexpected exception writing file: %s' % (fn))
+            g.es_exception()
             return False
     #@+node:ekr.20041005105605.216: *5* at.warnAboutOrpanAndIgnoredNodes
     # Called from writeOpenFile.
