@@ -7330,7 +7330,7 @@ def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
         at = c.atFileCommands
         g.app.scriptDict["script1"] = s
         # Important: converts unicode to utf-8 encoded strings.
-        script = at.writeFromString(p.copy(), s,
+        script = at.stringToString(p.copy(), s,
             forcePythonSentinels=forcePythonSentinels,
             sentinels=useSentinels)
         script = script.replace("\r\n", "\n") # Use brute force.
@@ -7435,7 +7435,7 @@ def insertCodingLine(encoding, script):
     '''
     Insert a coding line at the start of script s if no such line exists.
     The coding line must start with @first because it will be passed to
-    at.writeFromString.
+    at.stringToString.
     '''
     if script:
         tag = '@first # -*- coding:'

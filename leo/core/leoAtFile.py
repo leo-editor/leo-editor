@@ -1457,7 +1457,7 @@ class AtFile(object):
         Write p, an @shadow node.
         File indices *must* have already been assigned.
         
-        The testing kwarg is set only by unit tests.
+        testing: set by unit tests to suppress the call to at.precheck.
         '''
         at, c = self, self.c
         root = p.copy()
@@ -1593,8 +1593,8 @@ class AtFile(object):
             else:
                 g.es("no @shadow nodes in the selected tree")
         return found
-    #@+node:ekr.20050506084734: *5* at.writeFromString
-    def writeFromString(self, root, s, forcePythonSentinels=True, sentinels=True):
+    #@+node:ekr.20050506084734: *5* at.stringToString
+    def stringToString(self, root, s, forcePythonSentinels=True, sentinels=True):
         """
         Write a 4.x derived file from a string.
 

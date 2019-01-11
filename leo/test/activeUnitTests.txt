@@ -1184,7 +1184,7 @@ if (
 AT-leo
 '''.replace('AT','#@').replace('> >', '>>').replace('< <', '<<')
 
-result = at.writeFromString(c.p, s)
+result = at.stringToString(c.p, s)
 result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
     # Don't test actual gnx's, so we can copy/paste this test.
 if 0: # Show unexpected mismatches.
@@ -1234,7 +1234,7 @@ ATafterref
 AT-leo
 '''.replace('AT','#@').replace('> >', '>>').replace('< <', '<<')
     # Recreate expected string.
-result = at.writeFromString(c.p, s)
+result = at.stringToString(c.p, s)
 result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
     # Don't test actual gnx's, so we can copy/paste this test.
 if 0: # Show unexpected mismatches.

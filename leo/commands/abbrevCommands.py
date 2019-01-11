@@ -126,7 +126,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             v = leoNodes.VNode(context=c)
             root = leoNodes.Position(v)
             # Similar to g.getScript.
-            script = at.writeFromString(
+            script = at.stringToString(
                 root=root,
                 s=script,
                 forcePythonSentinels=True,
