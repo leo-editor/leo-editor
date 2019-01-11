@@ -995,7 +995,6 @@ class TestManager(object):
         assert theType in (
             "@auto", "@clean", "@edit", "@file", "@thin", "@nosent",
             "@asis",), "bad type: %s" % theType
-        nosentinels = theType in ("@asis", "@clean", "@edit", "@nosent")
         if theType == "@asis":
             result = at.atAsisToString(child1)
         elif theType == "@auto":
@@ -1003,7 +1002,8 @@ class TestManager(object):
         elif theType == "@edit":
             result = at.atEditToString(child1)
         else:
-            result = at.atFileToString(child1, kind='@test', sentinels=not nosentinels)
+            sentinels = theType not in ("@asis", "@clean", "@edit", "@nosent")
+            result = at.atFileToString(child1, sentinels=sentinels) ### kind='@test', 
         try:
             assert result == expected
         except AssertionError:

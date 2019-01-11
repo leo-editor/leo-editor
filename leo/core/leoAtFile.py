@@ -706,7 +706,7 @@ class AtFile(object):
         written as an @file node.
         '''
         at = self.c.atFileCommands
-        result = at.atFileToString(root, kind='@nosent', sentinels=True)
+        result = at.atFileToString(root, sentinels=True) ### kind='@nosent', 
         s = g.toUnicode(result, encoding=at.encoding)
         return g.splitLines(s)
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
@@ -978,7 +978,7 @@ class AtFile(object):
     #@+node:ekr.20041005105605.133: *4* Writing (top level)
     #@+node:ekr.20041005105605.154: *5* at.asisWrite & helper
     def asisWrite(self, root):
-        at = self; c = at.c
+        at, c = self, self.c
         try:
             c.endEditing()
             c.init_error_dialogs()
@@ -1014,19 +1014,16 @@ class AtFile(object):
     #@+node:ekr.20190109160056.1: *5* at.atAsisToString
     def atAsisToString(self, root):
         '''Write the @asis node to a string.'''
-        at = self; c = at.c
-        c.endEditing() # Capture the current headline.
+        at, c = self, self.c
         try:
-            # Note: @asis always writes all nodes,
-            # so there can be no orphan or ignored nodes.
+            c.endEditing()
             at.initWriteIvars(root, "<string-file>")
             at.openStringForWriting(root)
-                # Sets at.outputFile, etc.
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
             result = at.closeStringFile()
         except Exception:
-            at.writeException(root) # Sets dirty and orphan bits.
+            at.writeException(root)
             result = g.u('')
         return result
     #@+node:ekr.20190109160056.2: *5* at.atAutoToString
@@ -1038,60 +1035,63 @@ class AtFile(object):
         File indices *must* have already been assigned.
         '''
         at, c = self, self.c
-        c.endEditing() # Capture the current headline.
-        #
-        # Init
-        fileName = root.atAutoNodeName()
-        at.initWriteIvars(root, "<string-file>", sentinels=False)
-        at.openStringForWriting(root)
-        at.writeAtAutoContents(fileName, root)
-        return at.closeStringFile()
+        try:
+            c.endEditing()
+            ### fileName = root.atAutoNodeName()
+            ### at.initWriteIvars(root, "<string-file>", sentinels=False)
+            fileName = at.initWriteIvars(root, root.atAutoNodeName(), sentinels=False)
+            at.openStringForWriting(root)
+            at.writeAtAutoContents(fileName, root)
+            return at.closeStringFile()
+        except Exception:
+            at.writeException(root)
+            return g.u('')
     #@+node:ekr.20190109160056.3: *5* at.atEditToString
     def atEditToString(self, root):
         '''Write one @edit node.'''
         at, c = self, self.c
-        c.endEditing()
-        if root.hasChildren():
-            g.error('@edit nodes must not have children')
-            g.es('To save your work, convert @edit to @auto, @file or @clean')
-            return False
-        at.initWriteIvars(root, root.atEditNodeName(), atEdit=True, sentinels=False)
-        # Compute the file's contents.
-        contents = ''.join([s for s in g.splitLines(root.b)
-            if at.directiveKind4(s, 0) == at.noDirective])
-        return contents
-    #@+node:ekr.20190109142026.1: *5* at.atFileToString
-    def atFileToString(self, root, kind, sentinels=True):
-        """Write a 4.x derived file to a string, and return it.
-        root is the position of an @<file> node.
-        """
-        # assert kind in ('@clean', '@file', '@nosent', '@shadow', '@thin', '@test'), repr(kind)
-        at, c = self, self.c
-        c.endEditing() # Capture the current headline.
-        at.initWriteIvars(root, "<string-file>", sentinels=sentinels)
-        at.openStringForWriting(root)
         try:
+            c.endEditing()
+            if root.hasChildren():
+                g.error('@edit nodes must not have children')
+                g.es('To save your work, convert @edit to @auto, @file or @clean')
+                return False
+            at.initWriteIvars(root, root.atEditNodeName(), atEdit=True, sentinels=False)
+            contents = ''.join([s for s in g.splitLines(root.b)
+                if at.directiveKind4(s, 0) == at.noDirective])
+            return contents
+        except Exception:
+            at.writeException(root)
+            return g.u('')
+
+    #@+node:ekr.20190109142026.1: *5* at.atFileToString
+    def atFileToString(self, root, sentinels=True): ### kind
+        '''Write an external file to a string, and return its contents.'''
+        at, c = self, self.c
+        try:
+            c.endEditing()
+            at.initWriteIvars(root, "<string-file>", sentinels=sentinels)
+            at.openStringForWriting(root)
             at.writeOpenFile(root, sentinels=sentinels)
             assert root == at.root, 'write'
             result = at.closeStringFile()
             # Major bug: failure to clear this wipes out headlines!
-            # Minor bug: sometimes this causes slight problems...
+            #            Sometimes this causes slight problems...
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
                 root.v._p_changed = True
+            return result
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
             at.exception("exception preprocessing script")
             root.v._p_changed = True
-            result = g.u('')
-        return result
+            return g.u('')
     #@+node:ekr.20041005105605.144: *5* at.write & helper
     def write(self, root, kind, sentinels=True):
         """Write a 4.x derived file.
         root is the position of an @<file> node.
         """
-        # assert kind in ('@clean', '@file', '@nosent', '@shadow', '@thin', '@test'), repr(kind)
         at, c = self, self.c
         try:
             c.endEditing()
@@ -1111,7 +1111,7 @@ class AtFile(object):
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
-            at.writeException() # Sets dirty and orphan bits.
+            at.writeException()
     #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
     def writeAll(self, all=False, dirty=False):
         """Write @file nodes in all or part of the outline"""
@@ -1620,7 +1620,6 @@ class AtFile(object):
             forcePythonSentinels=forcePythonSentinels, sentinels=sentinels)
         try:
             at.openStringForWriting(root)
-            # Simulate writing the entire file so error recovery works.
             at.writeOpenFile(root, fromString=s, sentinels=sentinels)
             result = at.closeStringFile()
             # Major bug: failure to clear this wipes out headlines!
@@ -1629,10 +1628,10 @@ class AtFile(object):
                 if hasattr(self.root.v, 'tnodeList'):
                     delattr(self.root.v, 'tnodeList')
                 root.v._p_changed = True
+            return result
         except Exception:
             at.exception("exception preprocessing script")
             return g.u('')
-        return result
     #@+node:ekr.20041005105605.151: *5* at.writeMissing & helper
     def writeMissing(self, p):
         at = self; c = at.c

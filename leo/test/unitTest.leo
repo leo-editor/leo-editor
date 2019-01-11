@@ -1510,7 +1510,7 @@ expected = '''\
 '''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
 
 child = p.firstChild()
-result = at.atFileToString(child, kind='@test')
+result = at.atFileToString(child)
 result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
 if 0: # Show unexpected mismatches.
     result = g.splitLines(result)
