@@ -1469,13 +1469,16 @@ class AtFile(object):
             self.adjustTargetLanguage(fn) 
                 # A hack to support unknown extensions. May set c.target_language.
             fn = g.fullPath(c, p)
-            at.initWriteIvars(root, None, atShadow=True, forcePythonSentinels=True)
-                # Force python sentinels to suppress an error message.
-                # The actual sentinels will be set below.
+            at.initWriteIvars(root, None,
+                atShadow = True,
+                defaultDirectory = g.os_path_dirname(fn),
+                forcePythonSentinels = True)
+                    # Force python sentinels to suppress an error message.
+                    # The actual sentinels will be set below.
             at.outputFileName = g.u('')
                 # Override.
-            at.default_directory = g.os_path_dirname(fn)
-                # Override.
+            ### at.default_directory = g.os_path_dirname(fn)
+                ### Override.
             # Make sure we can compute the shadow directory.
             private_fn = x.shadowPathName(fn)
             if not private_fn:
@@ -1610,7 +1613,7 @@ class AtFile(object):
             at.writeOpenFile(root, fromString=s, sentinels=sentinels)
             result = at.closeStringFile()
             # Major bug: failure to clear this wipes out headlines!
-            # Minor bug: sometimes this causes slight problems...
+            #            Sometimes this causes slight problems...
             if root:
                 if hasattr(self.root.v, 'tnodeList'):
                     delattr(self.root.v, 'tnodeList')
