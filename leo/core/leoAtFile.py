@@ -1027,13 +1027,8 @@ class AtFile(object):
             result = g.u('')
         return result
     #@+node:ekr.20190109160056.2: *5* at.atAutoToString
-    def atAutoToString(self, root, trialWrite=False):
-            # Set only by Importer.trial_write.
-            # Suppresses call to update_before_write_foreign_file below.
-        '''
-        Write the root @auto node to a string, and return it.
-        File indices *must* have already been assigned.
-        '''
+    def atAutoToString(self, root):
+        '''Write the root @auto node to a string, and return it.'''
         at, c = self, self.c
         try:
             c.endEditing()
@@ -1332,12 +1327,10 @@ class AtFile(object):
         at.writeAtAutoNodesHelper(writeDirtyOnly=True)
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
-    def writeOneAtAutoNode(self, p, trialWrite=False):
+    def writeOneAtAutoNode(self, p): ###, trialWrite=False):
         '''
         Write p, an @auto node.
         File indices *must* have already been assigned.
-        
-        trialWrite: Set only by Importer.trial_write.
         '''
         at, c = self, self.c
         root = p.copy()
@@ -1351,7 +1344,7 @@ class AtFile(object):
             )
             if not at.precheck(fileName, root):
                 return
-            if c.persistenceController and not trialWrite:
+            if c.persistenceController: ### and not trialWrite:
                 c.persistenceController.update_before_write_foreign_file(root)
             ok = at.openFileForWriting(root, fileName)
             if not ok:
