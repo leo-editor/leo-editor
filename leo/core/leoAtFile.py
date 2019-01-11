@@ -2572,7 +2572,11 @@ class AtFile(object):
         return ok
     #@+node:ekr.20041005105605.143: *6* at.openFileForWritingHelper & helper
     def openFileForWritingHelper(self, fileName):
-        '''Open the file and return True if all went well.'''
+        '''
+        Open a **string** file and return True if all went well.
+        
+        at.replaceTargetFileIfDifferent is the *only* code that writes to the file system.
+        '''
         at = self; c = at.c
         try:
             at.shortFileName = g.shortFileName(fileName)
