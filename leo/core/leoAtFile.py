@@ -2926,15 +2926,17 @@ class AtFile(object):
         if new:
             assert not at.toString, g.callers()
         else:
-            if at.toString:
-                # Do *not* change the actual file or set any dirty flag.
-                at.fileChangedFlag = False
-                return False
+            assert not at.toString, g.callers()
+            # if at.toString:
+                # # Do *not* change the actual file or set any dirty flag.
+                # at.fileChangedFlag = False
+                # return False
         if root:
             root.clearDirty()
         if new:
             at.outputFileName = g.os_path_realpath(fileName)
-            ### To do.
+            if at.targetFileName:
+                at.targetFileName = g.os_path_realpath(at.targetFileName)
         else:
             # Fix bug 1132821: Leo replaces a soft link with a real file.
             if at.outputFileName:
