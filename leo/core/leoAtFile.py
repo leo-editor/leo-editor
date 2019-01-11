@@ -1327,7 +1327,7 @@ class AtFile(object):
         at.writeAtAutoNodesHelper(writeDirtyOnly=True)
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
-    def writeOneAtAutoNode(self, p): ###, trialWrite=False):
+    def writeOneAtAutoNode(self, p):
         '''
         Write p, an @auto node.
         File indices *must* have already been assigned.
@@ -1344,7 +1344,7 @@ class AtFile(object):
             )
             if not at.precheck(fileName, root):
                 return
-            if c.persistenceController: ### and not trialWrite:
+            if c.persistenceController:
                 c.persistenceController.update_before_write_foreign_file(root)
             ok = at.openFileForWriting(root, fileName)
             if not ok:
@@ -1657,9 +1657,9 @@ class AtFile(object):
         if p.isAtAsisFileNode():
             at.asisWrite(p)
         elif p.isAtNoSentFileNode():
-            at.write(p, sentinels=False) ### kind='@nosent', 
+            at.write(p, sentinels=False)
         elif p.isAtFileNode():
-            at.write(p) ### , kind='@file'
+            at.write(p)
         else:
             g.trace('can not happen: unknown @file node')
     #@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode
