@@ -977,20 +977,22 @@ class AtFile(object):
             # so there can be no orphan or ignored nodes.
             targetFileName = root.atAsisFileNodeName()
             at.initWriteIvars(root, targetFileName)
-            # "look ahead" computation of eventual fileName.
             eventualFileName = c.os_path_finalize_join(
                 at.default_directory, at.targetFileName)
-            if at.shouldPromptForDangerousWrite(eventualFileName, root):
-                # Prompt if writing a new @asis node would overwrite the existing file.
-                ok = self.promptForDangerousWrite(eventualFileName, kind='@asis')
-                if ok:
-                    # Fix bug 889175: Remember the full fileName.
-                    at.rememberReadPath(eventualFileName, root)
-                else:
-                    g.es("not written:", eventualFileName)
-                    return
-            if at.errors:
+            if not at.precheck(eventualFileName, root):
                 return
+            ###
+                # if at.shouldPromptForDangerousWrite(eventualFileName, root):
+                    # # Prompt if writing a new @asis node would overwrite the existing file.
+                    # ok = self.promptForDangerousWrite(eventualFileName, kind='@asis')
+                    # if ok:
+                        # # Fix bug 889175: Remember the full fileName.
+                        # at.rememberReadPath(eventualFileName, root)
+                    # else:
+                        # g.es("not written:", eventualFileName)
+                        # return
+            # if at.errors:
+                # return
             if not at.openFileForWriting(root, targetFileName):
                 # Calls at.addAtIgnore() if there are errors.
                 return
@@ -1102,20 +1104,22 @@ class AtFile(object):
         at, c = self, self.c
         c.endEditing() # Capture the current headline.
         at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
-        # Compute the eventual fileName.
         eventualFileName = c.os_path_finalize_join(
             at.default_directory, at.targetFileName)
-        if at.shouldPromptForDangerousWrite(eventualFileName, root):
-            # Prompt if writing a new @file or @clean node would
-            # overwrite an existing file.
-            ok = self.promptForDangerousWrite(eventualFileName, kind)
-            if ok:
-                at.rememberReadPath(eventualFileName, root)
-            else:
-                g.es("not written:", eventualFileName)
-                # Fix #1031: do not add @ignore here!
-                # @ignore will be added below if the write actually fails.
-                return
+        if not at.precheck(eventualFileName, root):
+            return
+        ###
+            # if at.shouldPromptForDangerousWrite(eventualFileName, root):
+                # # Prompt if writing a new @file or @clean node would
+                # # overwrite an existing file.
+                # ok = self.promptForDangerousWrite(eventualFileName, kind)
+                # if ok:
+                    # at.rememberReadPath(eventualFileName, root)
+                # else:
+                    # g.es("not written:", eventualFileName)
+                    # # Fix #1031: do not add @ignore here!
+                    # # @ignore will be added below if the write actually fails.
+                    # return
         if not at.openFileForWriting(root, at.targetFileName):
             # Calls at.addAtIgnore() if there are errors.
             return
@@ -1370,23 +1374,27 @@ class AtFile(object):
         trialWrite: Set only by Importer.trial_write.
         '''
         at, c = self, self.c
+        c.endEditing() # Capture the current headline.
         root = p.copy()
         fileName = p.atAutoNodeName()
         if not fileName:
             return False
-        at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        fileName = c.os_path_finalize_join(at.default_directory, fileName)
-        if at.shouldPromptForDangerousWrite(fileName, root):
-            # Prompt if writing a new @auto node would overwrite the existing file.
-            ok = self.promptForDangerousWrite(fileName, kind='@auto')
-            if not ok:
-                g.es("not written:", fileName)
-                return False
-        # Fix bug 889175: Remember the full fileName.
-        at.rememberReadPath(fileName, root)
-        # This code is similar to code in at.write.
-        c.endEditing() # Capture the current headline.
         at.initWriteIvars(root, fileName, sentinels=False)
+        at.default_directory = g.setDefaultDirectory(c, p, importing=True)
+            # Override.
+        fileName = c.os_path_finalize_join(at.default_directory, fileName)
+        if not at.precheck(fileName, root):
+            return
+        ###
+            # if at.shouldPromptForDangerousWrite(fileName, root):
+                # # Prompt if writing a new @auto node would overwrite the existing file.
+                # ok = self.promptForDangerousWrite(fileName, kind='@auto')
+                # if not ok:
+                    # g.es("not written:", fileName)
+                    # return False
+        # Fix bug 889175: Remember the full fileName.
+        ### at.rememberReadPath(fileName, root)
+            ### Now done in precheck.
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting(root, fileName=fileName)
@@ -1396,7 +1404,6 @@ class AtFile(object):
             at.addAtIgnore(root)
             return False
         at.writeAtAutoContents(fileName, root)
-            # Actually write the @auto node.
         at.closeWriteFile()
         if at.errors == 0:
             isAtAutoRst = root.isAtAutoRstNode()
@@ -1505,6 +1512,7 @@ class AtFile(object):
         '''
         at, c, x = self, self.c, self.c.shadowController
         root = p.copy()
+        c.endEditing() # Capture the current headline.
         fn = p.atShadowFileNodeName()
         if not fn:
             g.error('can not happen: not an @shadow node', p.h)
@@ -1517,22 +1525,21 @@ class AtFile(object):
         private_fn = x.shadowPathName(fn)
         if not private_fn:
             return False
-        if not testing and at.shouldPromptForDangerousWrite(fn, root):
-            # Prompt if writing a new @shadow node would overwrite the existing public file.
-            ok = self.promptForDangerousWrite(fn, kind='@shadow')
-            if ok:
-                # Fix bug 889175: Remember the full fileName.
-                at.rememberReadPath(fn, root)
-            else:
-                g.es("not written:", fn)
-                return
-        c.endEditing() # Capture the current headline.
-        at.initWriteIvars(root, None,
-            atShadow=True,
-            forcePythonSentinels=True,
-                # A hack to suppress an error message.
-                # The actual sentinels will be set below.
-        )
+        if not testing and not at.precheck(fn, root):
+            return False
+            ###
+            # if not testing and at.shouldPromptForDangerousWrite(fn, root):
+                # # Prompt if writing a new @shadow node would overwrite the existing public file.
+                # ok = self.promptForDangerousWrite(fn, kind='@shadow')
+                # if ok:
+                    # # Fix bug 889175: Remember the full fileName.
+                    # at.rememberReadPath(fn, root)
+                # else:
+                    # g.es("not written:", fn)
+                    # return
+        at.initWriteIvars(root, None, atShadow=True, forcePythonSentinels=True)
+            # Force python sentinels to suppress an error message.
+            # The actual sentinels will be set below.
         at.outputFileName = g.u('')
             # Previously done in at.initWriteIvars.
         #
@@ -1722,24 +1729,27 @@ class AtFile(object):
             g.error('@edit nodes must not have children')
             g.es('To save your work, convert @edit to @auto, @file or @clean')
             return False
-        at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        fn = c.os_path_finalize_join(at.default_directory, fn)
-        if at.shouldPromptForDangerousWrite(fn, root):
-            # Prompt if writing a new @edit node would overwrite the existing file.
-            ok = self.promptForDangerousWrite(fn, kind='@edit')
-            if ok:
-                # Fix bug 889175: Remember the full fileName.
-                at.rememberReadPath(fn, root)
-            else:
-                g.es("not written:", fn)
-                return False
         at.initWriteIvars(root, fn, atEdit=True, sentinels=False)
-        # Compute the file's contents.
-        contents = ''.join([s for s in g.splitLines(p.b)
-            if at.directiveKind4(s, 0) == at.noDirective])
+        at.default_directory = g.setDefaultDirectory(c, p, importing=True)
+            # Override.
+        fn = c.os_path_finalize_join(at.default_directory, fn)
+        if not at.precheck(fn, root):
+            return False
+        ###
+            # if at.shouldPromptForDangerousWrite(fn, root):
+                # # Prompt if writing a new @edit node would overwrite the existing file.
+                # ok = self.promptForDangerousWrite(fn, kind='@edit')
+                # if ok:
+                    # # Fix bug 889175: Remember the full fileName.
+                    # at.rememberReadPath(fn, root)
+                # else:
+                    # g.es("not written:", fn)
+                    # return False
         ok = at.openFileForWriting(root, fileName=fn)
             # Calls at.addAtIgnore() if there are errors.
         if ok:
+            contents = ''.join([s for s in g.splitLines(p.b)
+                if at.directiveKind4(s, 0) == at.noDirective])
             self.os(contents)
             at.closeWriteFile()
             if at.errors:
@@ -2761,6 +2771,24 @@ class AtFile(object):
             s = g.ue(s, at.encoding)
         s = s.replace('\n', at.output_newline)
         self.os(s)
+    #@+node:ekr.20190111045822.1: *5* at.precheck
+    def precheck(self, fileName, root):
+        '''
+        Check for dangerous writes.
+        Return False if the user declines to do the write.
+        '''
+        at = self
+        if not at.shouldPromptForDangerousWrite(fileName, root):
+            return True
+        # Prompt if the write would overwrite the existing file.
+        ok = self.promptForDangerousWrite(fileName, kind='@asis')
+        if ok:
+            # Fix bug 889175: Remember the full fileName.
+            at.rememberReadPath(fileName, root)
+            return True
+        # Fix #1031: do not add @ignore here!
+        g.es("not written:", fileName)
+        return False
     #@+node:ekr.20050506090446.1: *5* at.putAtFirstLines
     def putAtFirstLines(self, s):
         '''Write any @firstlines from string s.
