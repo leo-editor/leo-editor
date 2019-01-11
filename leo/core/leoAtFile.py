@@ -981,25 +981,12 @@ class AtFile(object):
                 at.default_directory, at.targetFileName)
             if not at.precheck(eventualFileName, root):
                 return
-            ###
-                # if at.shouldPromptForDangerousWrite(eventualFileName, root):
-                    # # Prompt if writing a new @asis node would overwrite the existing file.
-                    # ok = self.promptForDangerousWrite(eventualFileName, kind='@asis')
-                    # if ok:
-                        # # Fix bug 889175: Remember the full fileName.
-                        # at.rememberReadPath(eventualFileName, root)
-                    # else:
-                        # g.es("not written:", eventualFileName)
-                        # return
-            # if at.errors:
-                # return
             if not at.openFileForWriting(root, targetFileName):
-                # Calls at.addAtIgnore() if there are errors.
                 return
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
             at.closeWriteFile()
-            at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+            at.replaceTargetFileIfDifferent(root)
         except Exception:
             at.writeException(root) # Sets dirty and orphan bits.
 
@@ -1108,27 +1095,13 @@ class AtFile(object):
             at.default_directory, at.targetFileName)
         if not at.precheck(eventualFileName, root):
             return
-        ###
-            # if at.shouldPromptForDangerousWrite(eventualFileName, root):
-                # # Prompt if writing a new @file or @clean node would
-                # # overwrite an existing file.
-                # ok = self.promptForDangerousWrite(eventualFileName, kind)
-                # if ok:
-                    # at.rememberReadPath(eventualFileName, root)
-                # else:
-                    # g.es("not written:", eventualFileName)
-                    # # Fix #1031: do not add @ignore here!
-                    # # @ignore will be added below if the write actually fails.
-                    # return
         if not at.openFileForWriting(root, at.targetFileName):
-            # Calls at.addAtIgnore() if there are errors.
             return
         try:
             at.writeOpenFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
-            assert root == at.root, 'write'
             at.closeWriteFile()
-            if at.errors > 0:
+            if at.errors:
                 g.es("not written:", g.shortFileName(at.targetFileName))
                 at.addAtIgnore(root)
             else:
@@ -1385,20 +1358,9 @@ class AtFile(object):
         fileName = c.os_path_finalize_join(at.default_directory, fileName)
         if not at.precheck(fileName, root):
             return
-        ###
-            # if at.shouldPromptForDangerousWrite(fileName, root):
-                # # Prompt if writing a new @auto node would overwrite the existing file.
-                # ok = self.promptForDangerousWrite(fileName, kind='@auto')
-                # if not ok:
-                    # g.es("not written:", fileName)
-                    # return False
-        # Fix bug 889175: Remember the full fileName.
-        ### at.rememberReadPath(fileName, root)
-            ### Now done in precheck.
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting(root, fileName=fileName)
-            # Calls at.addAtIgnore() if there are errors.
         if not ok:
             g.es("not written:", fileName)
             at.addAtIgnore(root)
@@ -1408,11 +1370,10 @@ class AtFile(object):
         if at.errors == 0:
             isAtAutoRst = root.isAtAutoRstNode()
             at.replaceTargetFileIfDifferent(root, ignoreBlankLines=isAtAutoRst)
-                # Sets/clears dirty and orphan bits.
-        else:
-            g.es("not written:", fileName)
-            at.addAtIgnore(root)
-        return at.errors == 0
+            return True
+        g.es("not written:", fileName)
+        at.addAtIgnore(root)
+        return False
     #@+node:ekr.20190109163934.24: *7* at.writeAtAutoNodesHelper
     def writeAtAutoNodesHelper(self, writeDirtyOnly=True):
         """Write @auto nodes in the selected outline"""
@@ -1514,34 +1475,23 @@ class AtFile(object):
         root = p.copy()
         c.endEditing() # Capture the current headline.
         fn = p.atShadowFileNodeName()
-        if not fn:
-            g.error('can not happen: not an @shadow node', p.h)
-            return False
-        # A hack to support unknown extensions.
-        self.adjustTargetLanguage(fn) # May set c.target_language.
+        assert fn, p.h
+        self.adjustTargetLanguage(fn) 
+            # A hack to support unknown extensions. May set c.target_language.
         fn = g.fullPath(c, p)
+        at.initWriteIvars(root, None, atShadow=True, forcePythonSentinels=True)
+            # Force python sentinels to suppress an error message.
+            # The actual sentinels will be set below.
+        at.outputFileName = g.u('')
+            # Override.
         at.default_directory = g.os_path_dirname(fn)
-        # Bug fix 2010/01/18: Make sure we can compute the shadow directory.
+            # Override.
+        # Make sure we can compute the shadow directory.
         private_fn = x.shadowPathName(fn)
         if not private_fn:
             return False
         if not testing and not at.precheck(fn, root):
             return False
-            ###
-            # if not testing and at.shouldPromptForDangerousWrite(fn, root):
-                # # Prompt if writing a new @shadow node would overwrite the existing public file.
-                # ok = self.promptForDangerousWrite(fn, kind='@shadow')
-                # if ok:
-                    # # Fix bug 889175: Remember the full fileName.
-                    # at.rememberReadPath(fn, root)
-                # else:
-                    # g.es("not written:", fn)
-                    # return
-        at.initWriteIvars(root, None, atShadow=True, forcePythonSentinels=True)
-            # Force python sentinels to suppress an error message.
-            # The actual sentinels will be set below.
-        at.outputFileName = g.u('')
-            # Previously done in at.initWriteIvars.
         #
         # Bug fix: Leo 4.5.1:
         # use x.markerFromFileName to force the delim to match
@@ -1550,6 +1500,7 @@ class AtFile(object):
         at.startSentinelComment, at.endSentinelComment = marker.getDelims()
         if g.app.unitTesting:
             ivars_dict = g.getIvarsDict(at)
+        #
         # Write the public and private files to public_s and private_s strings.
         data = []
         for sentinels in (False, True):
@@ -1560,6 +1511,7 @@ class AtFile(object):
             at.warnAboutOrphandAndIgnoredNodes()
             s = at.closeAtShadowStringFile(theFile)
             data.append(s)
+        #
         # Set these new ivars for unit tests.
         # data has exactly two elements.
         # pylint: disable=unbalanced-tuple-unpacking
@@ -1735,18 +1687,7 @@ class AtFile(object):
         fn = c.os_path_finalize_join(at.default_directory, fn)
         if not at.precheck(fn, root):
             return False
-        ###
-            # if at.shouldPromptForDangerousWrite(fn, root):
-                # # Prompt if writing a new @edit node would overwrite the existing file.
-                # ok = self.promptForDangerousWrite(fn, kind='@edit')
-                # if ok:
-                    # # Fix bug 889175: Remember the full fileName.
-                    # at.rememberReadPath(fn, root)
-                # else:
-                    # g.es("not written:", fn)
-                    # return False
         ok = at.openFileForWriting(root, fileName=fn)
-            # Calls at.addAtIgnore() if there are errors.
         if ok:
             contents = ''.join([s for s in g.splitLines(p.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
