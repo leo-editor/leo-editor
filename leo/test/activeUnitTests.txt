@@ -1351,7 +1351,7 @@ try:
         assert exists(fn),fn
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    val = at.replaceFile(fn, at.root)
+    val = at.replaceFile(contents, fn, at.root)
     assert val
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
@@ -1389,7 +1389,7 @@ try:
         assert exists(fn)
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    assert not at.replaceFile(fn, at.root)
+    assert not at.replaceFile(contents, fn, at.root)
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
         print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
@@ -1420,7 +1420,7 @@ try:
     at.outputContents = contents = g.toUnicode('test output')
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    val = at.replaceFile(fn, at.root)
+    val = at.replaceFile(contents, fn, at.root)
     assert not val
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
@@ -10484,8 +10484,6 @@ end = g.os_path_normpath(r'leo/test')
 
 assert s.endswith(end),repr(s)
 #@+node:ekr.20120228145505.4834: *5* @thin ../test/unittest/at-path-test1.py
-@language python
-# unittest/at-path-test1.py 
 #@+node:ekr.20080917151620.27: *4* @test g.scanAtPathDirectives @path ../test @path unittest @thin at-path-test3.py
 greatGrandChild = p.firstChild().firstChild().firstChild()
 aList = g.get_directives_dict_list(greatGrandChild)
@@ -10496,8 +10494,6 @@ assert s.endswith(end),repr(s)
 #@+node:ekr.20080917151620.28: *5* @path ../test
 #@+node:ekr.20080917151620.29: *6* @path unittest
 #@+node:ekr.20120228145505.4838: *7* @thin at-path-test3.py
-@language python
-# unittest/at-path-test3.py 
 #@+node:ekr.20080917151620.24: *4* @test g.scanAtPathDirectives @path ../test/unittest @thin at-path-test2.py
 grandChild = p.firstChild().firstChild()
 aList = g.get_directives_dict_list(grandChild)
@@ -10507,8 +10503,6 @@ end = g.os_path_normpath(r'leo/test/unittest')
 assert s.endswith(end),repr(s)
 #@+node:ekr.20080917151620.25: *5* @path ../test/unittest
 #@+node:ekr.20120228145505.4841: *6* @thin at-path-test2.py
-@language python
-# unittest/at-path-test2.py
 #@+node:ekr.20080917151620.31: *4* @test g.scanAtTabwidthDirectives +6
 @tabwidth 6
 
@@ -20617,9 +20611,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20190110114957.1: *6* A
-#@+node:ekr.20190110114957.3: *6* newHeadline
-#@+node:ekr.20190110114957.2: *6* B
+#@+node:ekr.20190111173331.1: *6* A
+#@+node:ekr.20190111173331.3: *6* newHeadline
+#@+node:ekr.20190111173331.2: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():

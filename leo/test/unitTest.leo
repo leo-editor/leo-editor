@@ -757,9 +757,9 @@
 <v t="ekr.20181102063435.1"><vh>Fails...</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20190110114957.1"><vh>A</vh></v>
-<v t="ekr.20190110114957.3"><vh>newHeadline</vh></v>
-<v t="ekr.20190110114957.2"><vh>B</vh></v>
+<v t="ekr.20190111173331.1"><vh>A</vh></v>
+<v t="ekr.20190111173331.3"><vh>newHeadline</vh></v>
+<v t="ekr.20190111173331.2"><vh>B</vh></v>
 </v>
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
@@ -894,7 +894,7 @@ try:
         assert exists(fn),fn
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    val = at.replaceFile(fn, at.root)
+    val = at.replaceFile(contents, fn, at.root)
     assert val
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
@@ -932,7 +932,7 @@ try:
         assert exists(fn)
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    assert not at.replaceFile(fn, at.root)
+    assert not at.replaceFile(contents, fn, at.root)
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
         print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
@@ -963,7 +963,7 @@ try:
     at.outputContents = contents = g.toUnicode('test output')
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    val = at.replaceFile(fn, at.root)
+    val = at.replaceFile(contents, fn, at.root)
     assert not val
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
@@ -9774,10 +9774,10 @@ gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
 <t tx="ekr.20190109153806.1"></t>
-<t tx="ekr.20190110114957.1"></t>
-<t tx="ekr.20190110114957.2"></t>
-<t tx="ekr.20190110114957.3"></t>
 <t tx="ekr.20190111110537.1"></t>
+<t tx="ekr.20190111173331.1"></t>
+<t tx="ekr.20190111173331.2"></t>
+<t tx="ekr.20190111173331.3"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

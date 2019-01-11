@@ -1095,8 +1095,8 @@ class AtFile(object):
                     return
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
-            at.closeWriteFile()
-            at.replaceFile(fileName, root)
+            contents = at.closeWriteFile()
+            at.replaceFile(contents, fileName, root)
         except Exception:
             at.writeException(root)
 
@@ -1136,12 +1136,12 @@ class AtFile(object):
                     return
             at.writeOpenFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
-            at.closeWriteFile()
+            contents = at.closeWriteFile()
             if at.errors:
                 g.es("not written:", g.shortFileName(fileName))
                 at.addAtIgnore(root)
             else:
-                at.replaceFile(fileName, root)
+                at.replaceFile(contents, fileName, root)
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
@@ -1221,12 +1221,12 @@ class AtFile(object):
                     at.addAtIgnore(root)
                     return False
             at.writeAtAutoContents(fileName, root)
-            at.closeWriteFile()
+            contents = at.closeWriteFile()
             if at.errors:
                 g.es("not written:", fileName)
                 at.addAtIgnore(root)
                 return False
-            at.replaceFile(fileName, root, ignoreBlankLines=root.isAtAutoRstNode())
+            at.replaceFile(contents,fileName, root, ignoreBlankLines=root.isAtAutoRstNode())
             return True
         except Exception:
             at.writeException(root)
@@ -1335,8 +1335,8 @@ class AtFile(object):
             contents = ''.join([s for s in g.splitLines(p.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
             self.os(contents)
-            at.closeWriteFile()
-            at.replaceFile(fileName, root)
+            contents = at.closeWriteFile()
+            at.replaceFile(contents, fileName, root)
             c.raise_error_dialogs(kind='write')
             return True
         except Exception:
@@ -2509,9 +2509,13 @@ class AtFile(object):
         assert not at.toString, g.callers()
         assert at.outputFile, g.callers()
         at.outputFile.flush()
-        at.outputContents = at.outputFile.get()
+        if new:
+            contents = at.outputFile.get()
+        else:
+            contents = at.outputContents = at.outputFile.get()
         at.outputFile.close()
         at.outputFile = None
+        return contents ### new
 
     #@+node:ekr.20041005105605.197: *5* at.compareFiles
     def compareFiles(self, path1, path2, ignoreLineEndings, ignoreBlankLines=False):
@@ -2913,7 +2917,22 @@ class AtFile(object):
                 if line:
                     self.putSentinel("@comment " + line)
     #@+node:ekr.20041005105605.212: *5* at.replaceFile
-    def replaceFile(self, fileName, root, ignoreBlankLines=False):
+    def replaceFile(self, contents, fileName, root, ignoreBlankLines=False):
+        '''Create target file as follows:
+        1. If target file does not exist, rename output file to target file.
+        2. If target file is identical to output file, remove the output file.
+        3. If target file is different from output file,
+           remove target file, then rename output file to be target file.
+
+        Return True if the original file was changed.
+        '''
+        at = self ###; c = at.c
+        if new:
+            return at.new_replaceFile(contents, fileName, root, ignoreBlankLines=ignoreBlankLines)
+        else:
+            return at.old_replaceFile(contents, fileName, root, ignoreBlankLines=ignoreBlankLines)
+    #@+node:ekr.20190111172114.1: *6* at.new_replaceFile
+    def new_replaceFile(self, contents, fileName, root, ignoreBlankLines=False):
         '''Create target file as follows:
         1. If target file does not exist, rename output file to target file.
         2. If target file is identical to output file, remove the output file.
@@ -2924,31 +2943,19 @@ class AtFile(object):
         '''
         at = self; c = at.c
         assert not at.toString, g.callers()
-        ###
-            # if at.toString:
-                # # Do *not* change the actual file or set any dirty flag.
-                # at.fileChangedFlag = False
-                # return False
         if root:
             root.clearDirty()
-        if new:
-            at.outputFileName = g.os_path_realpath(fileName)
-            if at.targetFileName:
-                at.targetFileName = g.os_path_realpath(at.targetFileName)
-        else:
-            # Fix bug 1132821: Leo replaces a soft link with a real file.
-            if at.outputFileName:
-                at.outputFileName = g.os_path_realpath(at.outputFileName)
-            if at.targetFileName:
-                at.targetFileName = g.os_path_realpath(at.targetFileName)
+        at.outputFileName = g.os_path_realpath(fileName)
+        if at.targetFileName:
+            at.targetFileName = g.os_path_realpath(at.targetFileName)
+       
         # #531: Optionally report timestamp...
         if c.config.getBool('log-show-save-time', default=False):
             format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
             timestamp = time.strftime(format) + ' '
         else:
             timestamp = ''
-        if new: ###
-            at.targetFileName = fileName
+        
         # g.trace('target: %r output: %r' % (at.targetFileName, at.outputFileName))
             ### output seems to be None, always.
         if g.os_path_exists(at.targetFileName):
@@ -2993,7 +3000,94 @@ class AtFile(object):
                 return ok
         else:
             s = at.outputContents
-            ok = self.create(at.targetFileName, s)
+            ok = at.create(at.targetFileName, s)
+            if ok:
+                c.setFileTimeStamp(at.targetFileName)
+                if not g.unitTesting:
+                    g.es('%screated: %s' % (timestamp, at.targetFileName))
+                if root:
+                    # Fix bug 889175: Remember the full fileName.
+                    at.rememberReadPath(at.targetFileName, root)
+            else:
+                # at.rename gives the error.
+                at.addAtIgnore(root)
+            # No original file to change. Return value tested by a unit test.
+            at.fileChangedFlag = False
+            at.checkPythonCode(root)
+            return False
+    #@+node:ekr.20190111172117.1: *6* at.old_replaceFile
+    def old_replaceFile(self, contents, fileName, root, ignoreBlankLines=False):
+        '''Create target file as follows:
+        1. If target file does not exist, rename output file to target file.
+        2. If target file is identical to output file, remove the output file.
+        3. If target file is different from output file,
+           remove target file, then rename output file to be target file.
+
+        Return True if the original file was changed.
+        '''
+        at = self; c = at.c
+        assert not at.toString, g.callers()
+        ###
+            # if at.toString:
+                # # Do *not* change the actual file or set any dirty flag.
+                # at.fileChangedFlag = False
+                # return False
+        if root:
+            root.clearDirty()
+        # Fix bug 1132821: Leo replaces a soft link with a real file.
+        if at.outputFileName:
+            at.outputFileName = g.os_path_realpath(at.outputFileName)
+        if at.targetFileName:
+            at.targetFileName = g.os_path_realpath(at.targetFileName)
+        # #531: Optionally report timestamp...
+        if c.config.getBool('log-show-save-time', default=False):
+            format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
+            timestamp = time.strftime(format) + ' '
+        else:
+            timestamp = ''
+        if g.os_path_exists(at.targetFileName):
+            if at.compareFiles(
+                at.outputFileName,
+                at.targetFileName,
+                ignoreLineEndings=not at.explicitLineEnding,
+                ignoreBlankLines=ignoreBlankLines
+            ):
+                # Files are identical.
+                report = c.config.getBool('report-unchanged-files', default=True)
+                at.sameFiles += 1
+                if report and not g.unitTesting:
+                    g.es('%sunchanged: %s' % (timestamp, at.shortFileName))
+                at.fileChangedFlag = False
+                # Leo 5.6: Check unchanged files.
+                at.checkPythonCode(root, pyflakes_errors_only=True)
+                return False
+            else:
+                # A mismatch. Report if the files differ only in line endings.
+                if (
+                    at.explicitLineEnding and
+                    at.compareFiles(
+                        at.outputFileName,
+                        at.targetFileName,
+                        ignoreLineEndings=True)
+                ):
+                    g.warning("correcting line endings in:", at.targetFileName)
+                s = at.outputContents
+                ok = at.create(at.targetFileName, s)
+                if ok:
+                    c.setFileTimeStamp(at.targetFileName)
+                    if not g.unitTesting:
+                        g.es('%swrote: %s' % (timestamp, at.shortFileName))
+                else:
+                    g.error('error writing', at.shortFileName)
+                    g.es('not written:', at.shortFileName)
+                    at.addAtIgnore(root)
+                at.checkPythonCode(root)
+                    # Bug fix: check *after* writing the file.
+                at.fileChangedFlag = ok
+                return ok
+        else:
+            s = at.outputContents
+            ok = at.create(at.targetFileName, s)
             if ok:
                 c.setFileTimeStamp(at.targetFileName)
                 if not g.unitTesting:
