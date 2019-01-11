@@ -2189,18 +2189,12 @@ class AtFile(object):
             # A hack for @shadow unit testing.
             # see AtShadowTestCase.makePrivateLines.
             return h
+        gnx = p.v.fileIndex
+        level = 1 + p.level() - self.root.level()
+        if level > 2:
+            return "%s: *%s* %s" % (gnx, level, h)
         else:
-            gnx = p.v.fileIndex
-            level = 1 + p.level() - self.root.level()
-            stars = '*' * level
-            if 1: # Put the gnx in the traditional place.
-                if level > 2:
-                    return "%s: *%s* %s" % (gnx, level, h)
-                else:
-                    return "%s: %s %s" % (gnx, stars, h)
-            else: # Hide the gnx to the right.
-                pad = max(1, 100 - len(stars) - len(h)) * ' '
-                return '%s %s%s::%s' % (stars, h, pad, gnx)
+            return "%s: %s %s" % (gnx, '*' * level, h)
     #@+node:ekr.20041005105605.189: *6* at.removeCommentDelims
     def removeCommentDelims(self, p):
         '''
@@ -2264,16 +2258,19 @@ class AtFile(object):
         at.putSentinel("@+node:" + s)
         # Leo 4.7 b2: we never write tnodeLists.
     #@+node:ekr.20041005105605.194: *5* at.putSentinel (applies cweb hack) 4.x
-    # This method outputs all sentinels.
-
     def putSentinel(self, s):
-        "Write a sentinel whose text is s, applying the CWEB hack if needed."
+        '''
+        Write a sentinel whose text is s, applying the CWEB hack if needed.
+        
+        This method outputs all sentinels.
+        '''
         at = self
         if at.sentinels or hasattr(at, 'force_sentinels'):
             at.putIndent(at.indent)
             at.os(at.startSentinelComment)
-            # apply the cweb hack to s. If the opening comment delim ends in '@',
-            # double all '@' signs except the first.
+            # Apply the cweb hack to s:
+            #   If the opening comment delim ends in '@',
+            #   double all '@' signs except the first.
             start = at.startSentinelComment
             if start and start[-1] == '@':
                 s = s.replace('@', '@@')[1:]
@@ -2615,10 +2612,10 @@ class AtFile(object):
         return True
     #@+node:bwmulder.20050101094804: *7* at.openForWrite
     def openForWrite(self, filename, wb='wb'):
-        '''Open a file for writes, handling shadow files.'''
+        '''Open a **string** file for writes, handling shadow files.'''
         at = self; c = at.c; x = c.shadowController
         try:
-            # 2011/10/11: in "quick edit/save" mode the .leo file may not have a name.
+            # In "quick edit/save" mode the .leo file may not have a name.
             if c.fileName():
                 shadow_filename = x.shadowPathName(filename)
                 self.writing_to_shadow_directory = os.path.exists(shadow_filename)
@@ -2629,16 +2626,10 @@ class AtFile(object):
                 open_file_name = filename
             if self.writing_to_shadow_directory:
                 x.message('writing %s' % shadow_filename)
-                f = g.FileLikeObject()
-                return 'shadow', f
-            else:
-                ok = c.checkFileTimeStamp(at.targetFileName)
-                if ok:
-                    f = g.FileLikeObject()
-                else:
-                    f = None
-                # return 'check',ok and open(open_file_name,wb)
-                return 'check', f
+                return 'shadow', g.FileLikeObject()
+            ok = c.checkFileTimeStamp(at.targetFileName)
+            f = g.FileLikeObject() if ok else None
+            return 'check', f
         except IOError:
             if not g.app.unitTesting:
                 g.error('openForWrite: exception opening file: %s' % (open_file_name))
@@ -2670,7 +2661,7 @@ class AtFile(object):
     #@+node:ekr.20041005105605.203: *6* at.onl & onl_sent
     def onl(self):
         """Write a newline to the output stream."""
-        self.os('\n') # not self.output_newline
+        self.os('\n') # **not** self.output_newline
 
     def onl_sent(self):
         """Write a newline to the output stream, provided we are outputting sentinels."""
