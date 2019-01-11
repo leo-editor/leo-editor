@@ -1086,7 +1086,7 @@ class AtFile(object):
             root.v._p_changed = True
             return g.u('')
     #@+node:ekr.20041005105605.144: *5* at.write & helper
-    def write(self, root, sentinels=True): ### kind
+    def write(self, root, sentinels=True):
         """Write a 4.x derived file.
         root is the position of an @<file> node.
         """
@@ -1240,18 +1240,14 @@ class AtFile(object):
         elif p.isAtAutoNode():
             at.writeOneAtAutoNode(p)
             # Do *not* clear the dirty bits the entries in @persistence tree here!
-        elif p.isAtCleanNode():
-            at.write(p, sentinels=False) ### kind='@clean', 
+        elif p.isAtCleanNode() or p.isAtNoSentFileNode():
+            at.write(p, sentinels=False)
         elif p.isAtEditNode():
             at.writeOneAtEditNode(p)
-        elif p.isAtNoSentFileNode():
-            at.write(p, sentinels=False) ### kind='@nosent', 
         elif p.isAtShadowFileNode():
             at.writeOneAtShadowNode(p)
-        elif p.isAtThinFileNode():
-            at.write(p) ###, kind='@thin'
-        elif p.isAtFileNode():
-            at.write(p) ### , kind='@file')
+        elif p.isAtThinFileNode() or p.isAtFileNode():
+            at.write(p)
         #
         # Clear the dirty bits in all descendant nodes.
         # The persistence data may still have to be written.
