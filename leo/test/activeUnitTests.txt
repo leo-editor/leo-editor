@@ -1329,7 +1329,7 @@ try:
 finally:
     if g.os_path_exists(path):
         os.unlink(path)
-#@+node:ekr.20050105094311: *4* @test at.replaceTargetFileIfDifferent (different)
+#@+node:ekr.20050105094311: *4* @test at.replaceFile (different contents)
 import os
 import leo.core.leoAtFile as leoAtFile
 at = c.atFileCommands
@@ -1351,7 +1351,7 @@ try:
         assert exists(fn),fn
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    val = at.replaceTargetFileIfDifferent(at.root)
+    val = at.replaceFile(at.root)
     assert val
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
@@ -1367,7 +1367,7 @@ finally:
         for fn in (at.outputFileName,at.targetFileName):
             if fn and exists(fn):
                 os.remove(fn)
-#@+node:ekr.20050105095743: *4* @test at.replaceTargetFileIfDifferent (identical)
+#@+node:ekr.20050105095743: *4* @test at.replaceFile (same contents)
 import os
 import leo.core.leoAtFile as leoAtFile
 at = c.atFileCommands
@@ -1389,7 +1389,7 @@ try:
         assert exists(fn)
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    assert not at.replaceTargetFileIfDifferent(at.root)
+    assert not at.replaceFile(at.root)
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
         print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
@@ -1404,7 +1404,7 @@ finally:
         for fn in (at.outputFileName,at.targetFileName):
             if fn and exists(fn):
                 os.remove(fn)
-#@+node:ekr.20050105100227: *4* @test at.replaceTargetFileIfDifferent (no target file)
+#@+node:ekr.20050105100227: *4* @test at.replaceFile (no target file)
 import os
 import leo.core.leoAtFile as leoAtFile
 at = c.atFileCommands
@@ -1420,7 +1420,7 @@ try:
     at.outputContents = contents = g.toUnicode('test output')
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    val = at.replaceTargetFileIfDifferent(at.root)
+    val = at.replaceFile(at.root)
     assert not val
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))

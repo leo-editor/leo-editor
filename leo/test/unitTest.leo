@@ -776,6 +776,11 @@
 </v>
 <v t="ekr.20090529115704.4562"><vh>@test at.open/closeAtShadowStringFile</vh></v>
 </v>
+<v t="ekr.20190111110537.1"><vh>re: at.replaceFile</vh>
+<v t="ekr.20050105094311"><vh>@test at.replaceFile (different contents)</vh></v>
+<v t="ekr.20050105095743"><vh>@test at.replaceFile (same contents)</vh></v>
+<v t="ekr.20050105100227"><vh>@test at.replaceFile (no target file)</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -868,6 +873,113 @@ p.OnHyperLinkControlClick(event=None)
 </t>
 <t tx="ekr.20041121151002"># Many of these are required for unit tests.
 # Do not change them without running all unit tests.</t>
+<t tx="ekr.20050105094311">import os
+import leo.core.leoAtFile as leoAtFile
+at = c.atFileCommands
+exists = g.os_path_exists
+at.outputFileName = None
+at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
+try:
+    # Create both paths (different contents)
+    table = (at.targetFileName,)
+    at.outputContents = contents = g.toUnicode('test contents')
+    for fn in table:
+        if fn and exists(fn):
+            os.remove(fn)
+        assert not exists(fn)
+        f = open(fn,'w')
+        s = 'test %s' % fn
+        f.write(s)
+        f.close()
+        assert exists(fn),fn
+    at.toString = False # Set by execute script stuff.
+    at.shortFileName = at.targetFileName
+    val = at.replaceFile(at.root)
+    assert val
+    if 0:
+        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    assert not exists(at.outputFileName), 'oops, output file exists'
+    assert exists(at.targetFileName), 'oops, target file does not exist'
+    f = open(at.targetFileName)
+    s = f.read()
+    f.close()
+    assert s == contents,s
+finally:
+    if 1:
+        for fn in (at.outputFileName,at.targetFileName):
+            if fn and exists(fn):
+                os.remove(fn)
+</t>
+<t tx="ekr.20050105095743">import os
+import leo.core.leoAtFile as leoAtFile
+at = c.atFileCommands
+exists = g.os_path_exists
+at.outputFileName = None
+at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
+# Create both paths (identical contents)
+contents = g.toUnicode('test contents')
+try:
+    table = (at.targetFileName,)
+    at.outputContents = contents
+    for fn in table:
+        if fn and exists(fn):
+            os.remove(fn)
+        assert not exists(fn)
+        f = open(fn,'w')
+        f.write(contents)
+        f.close()
+        assert exists(fn)
+    at.toString = False # Set by execute script stuff.
+    at.shortFileName = at.targetFileName
+    assert not at.replaceFile(at.root)
+    if 0:
+        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    assert not exists(at.outputFileName)
+    assert exists(at.targetFileName)
+    f = open(at.targetFileName)
+    s = f.read()
+    f.close()
+    assert s == contents,contents
+finally:
+    if 1:
+        for fn in (at.outputFileName,at.targetFileName):
+            if fn and exists(fn):
+                os.remove(fn)
+</t>
+<t tx="ekr.20050105100227">import os
+import leo.core.leoAtFile as leoAtFile
+at = c.atFileCommands
+exists = g.os_path_exists
+at.outputFileName = None # g.os_path_join(g.app.testDir,'xyzzy1.txt')
+at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2.txt')
+# Remove both files.
+for fn in (at.outputFileName,at.targetFileName):
+    if fn and exists(fn):
+        os.remove(fn)
+try:
+    # Create the output file or contents.
+    at.outputContents = contents = g.toUnicode('test output')
+    at.toString = False # Set by execute script stuff.
+    at.shortFileName = at.targetFileName
+    val = at.replaceFile(at.root)
+    assert not val
+    if 0:
+        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    assert not exists(at.outputFileName),at.outputFileName
+    assert exists(at.targetFileName),at.targetFileName
+    f = open(at.targetFileName)
+    s = f.read()
+    f.close()
+    assert s == contents,'%s len(%s)' % (fn,len(s))
+finally:
+    if 1:
+        for fn in (at.outputFileName,at.targetFileName):
+            if fn and exists(fn):
+                os.remove(fn)
+</t>
 <t tx="ekr.20050208051854">@first # -*- coding: utf-8 -*-
 
 at = c.atFileCommands
@@ -9665,6 +9777,7 @@ unl: cheese
 <t tx="ekr.20190110114957.1"></t>
 <t tx="ekr.20190110114957.2"></t>
 <t tx="ekr.20190110114957.3"></t>
+<t tx="ekr.20190111110537.1"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

@@ -990,7 +990,7 @@ class AtFile(object):
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
             at.closeWriteFile()
-            at.replaceTargetFileIfDifferent(root)
+            at.replaceFile(root)
         except Exception:
             at.writeException(root)
 
@@ -1100,7 +1100,7 @@ class AtFile(object):
                 g.es("not written:", g.shortFileName(fileName))
                 at.addAtIgnore(root)
             else:
-                at.replaceTargetFileIfDifferent(root)
+                at.replaceFile(root)
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
@@ -1357,7 +1357,7 @@ class AtFile(object):
                 g.es("not written:", fileName)
                 at.addAtIgnore(root)
                 return False
-            at.replaceTargetFileIfDifferent(root, ignoreBlankLines=root.isAtAutoRstNode())
+            at.replaceFile(root, ignoreBlankLines=root.isAtAutoRstNode())
             return True
         except Exception:
             at.writeException(root)
@@ -1691,7 +1691,7 @@ class AtFile(object):
                 if at.directiveKind4(s, 0) == at.noDirective])
             self.os(contents)
             at.closeWriteFile()
-            at.replaceTargetFileIfDifferent(root)
+            at.replaceFile(root)
             c.raise_error_dialogs(kind='write')
             return True
         except Exception:
@@ -2575,7 +2575,7 @@ class AtFile(object):
         '''
         Open a **string** file and return True if all went well.
         
-        at.replaceTargetFileIfDifferent is the *only* code that writes to the file system.
+        at.replaceFile is the *only* code that writes to the file system.
         '''
         at = self; c = at.c
         try:
@@ -2885,8 +2885,8 @@ class AtFile(object):
             at.error('unexpected exception writing file: %s' % (fn))
             g.es_exception()
             return False
-    #@+node:ekr.20041005105605.212: *5* at.replaceTargetFileIfDifferent
-    def replaceTargetFileIfDifferent(self, root, ignoreBlankLines=False):
+    #@+node:ekr.20041005105605.212: *5* at.replaceFile
+    def replaceFile(self, root, ignoreBlankLines=False):
         '''Create target file as follows:
         1. If target file does not exist, rename output file to target file.
         2. If target file is identical to output file, remove the output file.
