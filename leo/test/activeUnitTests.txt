@@ -1252,14 +1252,12 @@ assert result == expected
 a
 #@+node:ekr.20170409003052.3: *5* << b >>
 b
-#@+node:ekr.20090529115704.4564: *4* @test at.readOneAtShadowNode
+#@+node:ekr.20090529115704.4564: *4* @@@test at.readOneAtShadowNode
 at = c.atFileCommands
 x = c.shadowController
-
 changed = c.changed
 child = p.firstChild()
 s = child.b
-
 try:
     fn = 'unittest/read_test.py'
     child.setHeadString('@shadow %s' % fn)

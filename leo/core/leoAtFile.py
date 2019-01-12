@@ -193,13 +193,13 @@ class AtFile(object):
         at.root = root
         at.sentinels = sentinels
         #
-        # Set other ivars.
-        at.docKind = None
+        # Override initCommonIvars.
         if forcePythonSentinels:
-            # Force Python comment delims for g.getScript.
             at.endSentinelComment = None
             at.startSentinelComment = "#"
-        # at.endSentinelComment: set by initCommonIvars().
+        #
+        # Set other ivars.
+        at.docKind = None
         at.force_newlines_in_at_nosent_bodies = \
             c.config.getBool('force_newlines_in_at_nosent_bodies')
         at.outputContents = None
@@ -218,7 +218,7 @@ class AtFile(object):
                 # at.page_width
                 # at.tab_width
         #
-        # Override at.default_directory if an explicit directory is given.
+        # Overrides of at.scanAllDirectives...
         if defaultDirectory:
             at.default_directory = defaultDirectory
         #
@@ -228,7 +228,7 @@ class AtFile(object):
             if encoding:
                 at.encoding = encoding
         #
-        # Remove root.v.tnodeList.
+        # Clean root.v.
         if not at.errors and at.root:
             if hasattr(at.root.v, 'tnodeList'):
                 delattr(at.root.v, 'tnodeList')
