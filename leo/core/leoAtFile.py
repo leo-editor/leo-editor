@@ -193,9 +193,9 @@ class AtFile(object):
             at.startSentinelComment = "#"
         #
         # Set other ivars.
-        ### at.docKind = None
         at.force_newlines_in_at_nosent_bodies = \
             c.config.getBool('force_newlines_in_at_nosent_bodies')
+            # For at.ensureTrailingNewline only.
         at.sameFiles = 0
             # For communication between replaceFile and reportEndOfWrite.
         at.targetFileName = targetFileName
@@ -2153,7 +2153,6 @@ class AtFile(object):
     def putStartDocLine(self, s, i, kind):
         """Write the start of a doc part."""
         at = self
-        ### at.docKind = kind
         sentinel = "@+doc" if kind == at.docDirective else "@+at"
         directive = "@doc" if kind == at.docDirective else "@"
         # Put whatever follows the directive in the sentinel.
