@@ -766,23 +766,6 @@
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20190109153806.1"><vh>Recent</vh>
-<v t="ekr.20060602195313"><vh>@test at.write using @comment</vh>
-<v t="ekr.20060602195313.2"><vh>root</vh>
-<v t="ekr.20060602195313.3"><vh>&lt;&lt; Get LRR Task &gt;&gt;</vh></v>
-<v t="ekr.20060602195313.4"><vh>&lt;&lt; Start LRR &gt;&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20090529115704.4567"><vh>@test at.writeOneAtShadowNode</vh>
-<v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
-</v>
-<v t="ekr.20090529115704.4562"><vh>@test at.open/closeAtShadowStringFile</vh></v>
-</v>
-<v t="ekr.20190111110537.1"><vh>re: at.replaceFile</vh>
-<v t="ekr.20050105094311"><vh>@test at.replaceFile (different contents)</vh></v>
-<v t="ekr.20050105095743"><vh>@test at.replaceFile (same contents)</vh></v>
-<v t="ekr.20050105100227"><vh>@test at.replaceFile (no target file)</vh></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -897,113 +880,6 @@ f.close()
 assert s == 'test %s' % path
 os.remove(path2)
 assert not exists(path)
-</t>
-<t tx="ekr.20050105094311">import os
-import leo.core.leoAtFile as leoAtFile
-at = c.atFileCommands
-exists = g.os_path_exists
-at.outputFileName = None
-at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
-try:
-    # Create both paths (different contents)
-    table = (at.targetFileName,)
-    at.outputContents = contents = g.toUnicode('test contents')
-    for fn in table:
-        if fn and exists(fn):
-            os.remove(fn)
-        assert not exists(fn)
-        f = open(fn,'w')
-        s = 'test %s' % fn
-        f.write(s)
-        f.close()
-        assert exists(fn),fn
-    at.toString = False # Set by execute script stuff.
-    at.shortFileName = at.targetFileName
-    val = at.replaceFile(contents, fn, at.root)
-    assert val
-    if 0:
-        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-    assert not exists(at.outputFileName), 'oops, output file exists'
-    assert exists(at.targetFileName), 'oops, target file does not exist'
-    f = open(at.targetFileName)
-    s = f.read()
-    f.close()
-    assert s == contents,s
-finally:
-    if 1:
-        for fn in (at.outputFileName,at.targetFileName):
-            if fn and exists(fn):
-                os.remove(fn)
-</t>
-<t tx="ekr.20050105095743">import os
-import leo.core.leoAtFile as leoAtFile
-at = c.atFileCommands
-exists = g.os_path_exists
-at.outputFileName = None
-at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
-# Create both paths (identical contents)
-contents = g.toUnicode('test contents')
-try:
-    table = (at.targetFileName,)
-    at.outputContents = contents
-    for fn in table:
-        if fn and exists(fn):
-            os.remove(fn)
-        assert not exists(fn)
-        f = open(fn,'w')
-        f.write(contents)
-        f.close()
-        assert exists(fn)
-    at.toString = False # Set by execute script stuff.
-    at.shortFileName = at.targetFileName
-    assert not at.replaceFile(contents, fn, at.root)
-    if 0:
-        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-    assert not exists(at.outputFileName)
-    assert exists(at.targetFileName)
-    f = open(at.targetFileName)
-    s = f.read()
-    f.close()
-    assert s == contents,contents
-finally:
-    if 1:
-        for fn in (at.outputFileName,at.targetFileName):
-            if fn and exists(fn):
-                os.remove(fn)
-</t>
-<t tx="ekr.20050105100227">import os
-import leo.core.leoAtFile as leoAtFile
-at = c.atFileCommands
-exists = g.os_path_exists
-at.outputFileName = None # g.os_path_join(g.app.testDir,'xyzzy1.txt')
-at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2.txt')
-# Remove both files.
-for fn in (at.outputFileName,at.targetFileName):
-    if fn and exists(fn):
-        os.remove(fn)
-try:
-    # Create the output file or contents.
-    at.outputContents = contents = g.toUnicode('test output')
-    at.toString = False # Set by execute script stuff.
-    at.shortFileName = at.targetFileName
-    val = at.replaceFile(contents, fn, at.root)
-    assert not val
-    if 0:
-        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-    assert not exists(at.outputFileName),at.outputFileName
-    assert exists(at.targetFileName),at.targetFileName
-    f = open(at.targetFileName)
-    s = f.read()
-    f.close()
-    assert s == contents,'%s len(%s)' % (fn,len(s))
-finally:
-    if 1:
-        for fn in (at.outputFileName,at.targetFileName):
-            if fn and exists(fn):
-                os.remove(fn)
 </t>
 <t tx="ekr.20050208051854">@first # -*- coding: utf-8 -*-
 
@@ -1622,60 +1498,6 @@ if guiname == 'wxWindows':
     assert(not tkinter)
     assert(wx)
 </t>
-<t tx="ekr.20060602195313">import re
-at = c.atFileCommands
-expected = '''\
-/*@+leo-ver=5-thin*/
-/*@+node:GNX: * root*/
-/*@@language c*/
-#ifdef COMMENT
-/*@@comment /* */ */
-#endif
-/*@@tabwidth 4*/
-/*@@lineending crlf*/
-
-/*@+others*/
-/*@-others*/
-
-/*@+&lt; &lt; Get LRR Task &gt; &gt;*/
-/*@+node:GNX: ** &lt; &lt; Get LRR Task &gt; &gt;*/
-/*@-&lt; &lt; Get LRR Task &gt; &gt;*/
-/*@+&lt; &lt; Start LRR &gt; &gt;*/
-/*@+node:GNX: ** &lt; &lt; Start LRR &gt; &gt;*/
-/*@-&lt; &lt; Start LRR &gt; &gt;*/
-/*@-leo*/
-'''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
-
-child = p.firstChild()
-result = at.atFileToString(child)
-result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
-if 0: # Show unexpected mismatches.
-    result = g.splitLines(result)
-    expected = g.splitLines(expected)
-    print('len(expected): %s, len(result): %s' % (len(expected), len(result)))
-    for i, s in enumerate(result):
-        if expected[i] != result[i]:
-            print(i)
-            print('expected: %r' % expected[i])
-            print('result:   %r' % result[i])
-            break
-
-assert result == expected
-</t>
-<t tx="ekr.20060602195313.2">@language c
-#ifdef COMMENT
-@comment /* */ 
-#endif
-@tabwidth 4
-@lineending crlf
-
-@others
-
-&lt;&lt; Get LRR Task &gt;&gt;
-&lt;&lt; Start LRR &gt;&gt;
-</t>
-<t tx="ekr.20060602195313.3"></t>
-<t tx="ekr.20060602195313.4"></t>
 <t tx="ekr.20060912091510.1">import time
 
 c.frame.body.addEditor()
@@ -2386,18 +2208,6 @@ x.show_error(
     lines1_message = "lines1",
     lines2_message = "lines2")
 </t>
-<t tx="ekr.20090529115704.4562">at = c.atFileCommands
-
-# at.toString is set by the execute-script command.
-# at.outputFile = f = g.fileLikeObject() # Re-allocate for the test.
-f = at.openAtShadowStringFile('abc')
-assert isinstance(f,g.fileLikeObject)
-s = 'abc'
-f.write(s)
-s2 = at.closeAtShadowStringFile(f)
-assert s == s2,s2
-# assert at.toString
-</t>
 <t tx="ekr.20090529115704.4563">### This method no longer exists.
 at = c.atFileCommands
 x = c.shadowController
@@ -2411,41 +2221,6 @@ finally:
     if g.os_path_exists(filename):
         x.unlink(filename)
         assert not g.os_path_exists(filename)
-</t>
-<t tx="ekr.20090529115704.4567">at = c.atFileCommands
-x = c.shadowController
-changed = c.changed
-child = p.firstChild()
-s = child.b
-
-try:
-    child.setHeadString('@shadow unittest/test_1.py')
-    fn = 'unittest/test_1.py'
-    shadow_fn = x.shadowPathName(fn)
-    shadow_dir = x.shadowDirName(fn)
-    x.makeShadowDirectory(shadow_dir)
-    if g.os_path_exists(shadow_fn):
-        g.utils_remove(shadow_fn,verbose=True)
-    at.writeOneAtShadowNode(child, testing=True)
-    assert at.startSentinelComment == '#','startSentinelComment: %s' % (
-        repr(at.startSentinelComment))
-    assert at.endSentinelComment == '','endSentinelComment: %s' % (
-        repr(at.endSentinelComment))
-    if 0:
-        print('public...\n',at.public_s)
-        print('private...\n',at.private_s)
-    at.writeOneAtShadowNode(child, testing=False)
-    assert g.os_path_exists(shadow_fn),'not found: %s' % shadow_fn
-    # No need to remove this: it's in the unittest directory.
-    # g.utils_remove(shadow_fn,verbose=True)
-finally:
-
-    child.setHeadString('@@shadow unittest/test_1.py')
-    c.setChanged(changed)
-    # c.redraw_now()
-</t>
-<t tx="ekr.20090529115704.4568"># body of @shadow test node
-# The last line.
 </t>
 <t tx="ekr.20090529141856.4730">import sys
 
@@ -9812,8 +9587,6 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="ekr.20190109153806.1"></t>
-<t tx="ekr.20190111110537.1"></t>
 <t tx="ekr.20190112105415.1"></t>
 <t tx="ekr.20190112105415.2"></t>
 <t tx="ekr.20190112105415.3"></t>
