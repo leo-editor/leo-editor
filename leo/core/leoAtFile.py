@@ -2921,7 +2921,8 @@ class AtFile(object):
             return at.old_replaceFile(contents, fileName, root, ignoreBlankLines=ignoreBlankLines)
     #@+node:ekr.20190111172114.1: *6* at.new_replaceFile (test)
     def new_replaceFile(self, contents, fileName, root, ignoreBlankLines=False):
-        '''Write or create the given file from the contents.
+        '''
+        Write or create the given file from the contents.
         Return True if the original file was changed.
         '''
         at, c = self, self.c
@@ -2941,12 +2942,11 @@ class AtFile(object):
         if not g.os_path_exists(fileName):
             ok = at.create(fileName, contents)
             if ok:
-                c.setFileTimeStamp(fileName)
                 if not g.unitTesting:
                     g.es('%screated: %s' % (timestamp, fileName))
                 if root:
                     # Fix bug 889175: Remember the full fileName.
-                    at.rememberReadPath(at.targetFileName, root)
+                    at.rememberReadPath(fileName, root)
             else:
                 # at.rename gives the error.
                 at.addAtIgnore(root)
@@ -2962,23 +2962,23 @@ class AtFile(object):
             report = c.config.getBool('report-unchanged-files', default=True)
             at.sameFiles += 1
             if report and not g.unitTesting:
-                g.es('%sunchanged: %s' % (timestamp, at.shortFileName))
+                g.es('%sunchanged: %s' % (timestamp, g.shortFileName(fileName)))
             # Leo 5.6: Check unchanged files.
             at.checkPythonCode(root, pyflakes_errors_only=True)
             return False # No change to original file.
         #
         # 3. Write the file.
-        if (
-            at.explicitLineEnding and
+        if (at.explicitLineEnding and
             at.compareContentsWithFile(contents, fileName,
-                ignoreBlankLines=ignoreBlankLines, ignoreLineEndings=True)
+                ignoreBlankLines=ignoreBlankLines,
+                ignoreLineEndings=True,
+            )
         ):
-            g.warning("correcting line endings in:", at.targetFileName)
+            g.warning("correcting line endings in:", fileName)
         ok = at.create(fileName, contents)
         if ok:
-            c.setFileTimeStamp(fileName)
             if not g.unitTesting:
-                g.es('%swrote: %s' % (timestamp, at.shortFileName))
+                g.es('%swrote: %s' % (timestamp, g.shortFileName(fileName)))
         else:
             g.error('error writing', at.shortFileName)
             g.es('not written:', at.shortFileName)
@@ -3219,26 +3219,28 @@ class AtFile(object):
         # Do _not_ call self.error here.
         return g.utils_chmod(fileName, mode)
     #@+node:ekr.20130910100653.11323: *5* at.create
-    def create(self, fn, s):
+    def create(self, fileName, s):
         '''Create a file whose contents are s.'''
-        at = self
-        # 2015/07/15: do this before converting to encoded string.
+        at, c = self, self.c
+        #
+        # Do this before converting to encoded string.
         if at.output_newline != '\n':
             s = s.replace('\r', '').replace('\n', at.output_newline)
-        # This is part of the new_write logic.
-        # This is the only call to g.toEncodedString in the new_write logic.
-        # 2013/10/28: fix bug 1243847: unicode error when saving @shadow nodes
+        #
+        # This is the only call to g.toEncodedString in the write logic.
         if g.isUnicode(s):
             s = g.toEncodedString(s, encoding=at.encoding)
         try:
-            f = open(fn, 'wb') # Must be 'wb' to preserve line endings.
+            f = open(fileName, 'wb') # Must be 'wb' to preserve line endings.
             f.write(s)
             f.close()
         except Exception:
             f = None
             g.es_exception()
-            g.error('error writing', fn)
-            g.es('not written:', fn)
+            g.error('error writing', fileName)
+            g.es('not written:', fileName)
+        if f:
+            c.setFileTimeStamp(fileName)
         return bool(f)
     #@+node:ekr.20050104131929.1: *5* at.rename
     #@+<< about os.rename >>

@@ -671,7 +671,7 @@ class LeoImportCommands(object):
             # Func is a callback. It must have a c argument.
         # Call the scanning function.
         if g.unitTesting:
-            assert func or ext in ('.txt', '.w', '.xxx'), (ext, p.h)
+            assert func or ext in ('.txt', '.w', '.xxx'), (repr(func), ext, p.h)
         if func and not c.config.getBool('suppress-import-parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')

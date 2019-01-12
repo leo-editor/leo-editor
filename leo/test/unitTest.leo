@@ -781,6 +781,9 @@
 <v t="ekr.20050105095743"><vh>@test at.replaceFile (same contents)</vh></v>
 <v t="ekr.20050105100227"><vh>@test at.replaceFile (no target file)</vh></v>
 </v>
+<v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
+<v t="ekr.20090529115704.4565"><vh>@@shadow unittest/read_test.py</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2372,6 +2375,26 @@ f.write(s)
 s2 = at.closeAtShadowStringFile(f)
 assert s == s2,s2
 # assert at.toString
+</t>
+<t tx="ekr.20090529115704.4564">at = c.atFileCommands
+x = c.shadowController
+
+changed = c.changed
+child = p.firstChild()
+s = child.b
+
+try:
+    fn = 'unittest/read_test.py'
+    child.setHeadString('@shadow %s' % fn)
+    at.writeOneAtShadowNode(child, testing=True)
+    at.readOneAtShadowNode(fn,child)
+finally:
+    child.setHeadString('@@shadow %s' % fn)
+    c.setChanged(changed)
+</t>
+<t tx="ekr.20090529115704.4565">@language python
+@tabwidth -4
+@others
 </t>
 <t tx="ekr.20090529115704.4567">at = c.atFileCommands
 x = c.shadowController
