@@ -1330,7 +1330,7 @@ class AtFile(object):
                 forcePythonSentinels = True)
                     # Force python sentinels to suppress an error message.
                     # The actual sentinels will be set below.
-            at.outputFileName = g.u('')
+            ###### at.outputFileName = g.u('')
                 # Override.
             at.default_directory = g.os_path_dirname(full_path)
                 # Override.
@@ -1410,14 +1410,14 @@ class AtFile(object):
         at.outputContents = s
         theFile.close()
         at.outputFile = None
-        at.outputFileName = g.u('')
+        ### at.outputFileName = g.u('')
         at.targetFileName = None
         return s
     #@+node:ekr.20080712150045.2: *7* at.openAtShadowStringFile
     def openAtShadowStringFile(self, fn, encoding='utf-8'):
         '''A helper for at.writeOneAtShadowNode.'''
         at = self
-        at.outputFileName = "<string: %s>" % g.shortFileName(fn)
+        ### at.outputFileName = "<string: %s>" % g.shortFileName(fn)
         at.outputFile = g.FileLikeObject(encoding=encoding)
         at.targetFileName = "<string-file>"
         return at.outputFile
@@ -2598,7 +2598,7 @@ class AtFile(object):
         at = self
         fn = root.anyAtFileNodeName() or root.h # use root.h for unit tests.
         assert fn, repr(root)
-        at.outputFileName = "<string: %s>" % g.shortFileName(fn)
+        ### at.outputFileName = "<string: %s>" % g.shortFileName(fn)
         at.outputFile = g.FileLikeObject()
         if g.app.unitTesting: at.output_newline = '\n'
         at.stringOutput = ""
@@ -2969,16 +2969,14 @@ class AtFile(object):
     #@+node:ekr.20041005105605.218: *5* at.writeException
     def writeException(self, fileName, root):
         at = self
-        g.error("exception writing:", fileName) ### at.targetFileName)
+        g.error("exception writing:", fileName)
         g.es_exception()
         if at.outputFile:
             at.outputFile.flush()
             at.outputFile.close()
             at.outputFile = None
         at.remove(fileName)
-        # if at.outputFileName:
-            # at.remove(at.outputFileName)
-        at.addAtIgnore(root) ### at.root)
+        at.addAtIgnore(root)
     #@+node:ekr.20041005105605.219: *3* at.Utilites
     #@+node:ekr.20041005105605.220: *4* at.error & printError
     def error(self, *args):
