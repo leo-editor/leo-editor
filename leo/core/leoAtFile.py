@@ -14,11 +14,14 @@ import re
 import sys
 import time
 #@-<< imports >>
-new = False ### Use new atFile write code
+#@+<< define new >>
+#@+node:ekr.20190112080802.1: ** << define new >>
+new = True ### Use new atFile write code
 if new:
     print('')
     print('===== new ====')
     print('')
+#@-<< define new >>
 #@+others
 #@+node:ekr.20160514120655.1: ** class AtFile
 class AtFile(object):
