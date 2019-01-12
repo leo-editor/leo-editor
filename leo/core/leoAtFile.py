@@ -726,7 +726,7 @@ class AtFile(object):
         # Delete all children.
         while p.hasChildren():
             p.firstChild().doDelete()
-        g.trace(shadow_exists, shadow_fn)
+        g.trace(shadow_exists, shadow_fn) ### For travisCI.
         if shadow_exists:
             at.read(p, atShadow=True, force=force)
         else:
