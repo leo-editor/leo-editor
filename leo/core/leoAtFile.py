@@ -1400,7 +1400,7 @@ class AtFile(object):
                     'sentinels', 'stringOutput', 'outputContents',
                 )
                 assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
-            if at.errors == 0 and not testing:
+            if at.errors == 0: ### and not testing:
                 # Write the public and private files.
                 x.makeShadowDirectory(fn)
                     # makeShadowDirectory takes a *public* file name.
