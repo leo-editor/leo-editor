@@ -199,7 +199,7 @@ class AtFile(object):
             c.config.getBool('force_newlines_in_at_nosent_bodies')
         at.outputContents = None
         at.sameFiles = 0
-        at.shortFileName = "" # For messages.
+        ### at.shortFileName = "" # For messages.
         at.targetFileName = targetFileName
             # Must be None for @shadow.
         at.thinFile = True
@@ -1412,15 +1412,15 @@ class AtFile(object):
         theFile.close()
         at.outputFile = None
         at.outputFileName = g.u('')
-        at.shortFileName = ''
+        ### at.shortFileName = ''
         at.targetFileName = None
         return s
     #@+node:ekr.20080712150045.2: *7* at.openAtShadowStringFile
     def openAtShadowStringFile(self, fn, encoding='utf-8'):
         '''A helper for at.writeOneAtShadowNode.'''
         at = self
-        at.shortFileName = g.shortFileName(fn)
-        at.outputFileName = "<string: %s>" % at.shortFileName
+        ### at.shortFileName = g.shortFileName(fn)
+        at.outputFileName = "<string: %s>" % g.shortFileName(fn) ### at.shortFileName
         at.outputFile = g.FileLikeObject(encoding=encoding)
         at.targetFileName = "<string-file>"
         return at.outputFile
@@ -2601,8 +2601,8 @@ class AtFile(object):
         at = self
         fn = root.anyAtFileNodeName() or root.h # use root.h for unit tests.
         assert fn, repr(root)
-        at.shortFileName = g.shortFileName(fn)
-        at.outputFileName = "<string: %s>" % at.shortFileName
+        ### at.shortFileName = g.shortFileName(fn)
+        at.outputFileName = "<string: %s>" % g.shortFileName(fn) ### at.shortFileName
         at.outputFile = g.FileLikeObject()
         if g.app.unitTesting: at.output_newline = '\n'
         at.stringOutput = ""
@@ -2816,6 +2816,7 @@ class AtFile(object):
         #
         # 1. If fileName does not exist, create it from the contents.
         fileName = g.os_path_realpath(fileName)
+        sfn = g.shortFileName(fileName)
         if not g.os_path_exists(fileName):
             ok = at.create(fileName, contents)
             if ok:
@@ -2839,7 +2840,7 @@ class AtFile(object):
             report = c.config.getBool('report-unchanged-files', default=True)
             at.sameFiles += 1
             if report and not g.unitTesting:
-                g.es('%sunchanged: %s' % (timestamp, g.shortFileName(fileName)))
+                g.es('%sunchanged: %s' % (timestamp, sfn)) ### g.shortFileName(fileName)))
             # Leo 5.6: Check unchanged files.
             at.checkPythonCode(root, pyflakes_errors_only=True)
             return False # No change to original file.
@@ -2855,15 +2856,15 @@ class AtFile(object):
         ok = at.create(fileName, contents)
         if ok:
             if not g.unitTesting:
-                g.es('%swrote: %s' % (timestamp, g.shortFileName(fileName)))
+                g.es('%swrote: %s' % (timestamp, sfn)) ### g.shortFileName(fileName)))
         else:
-            g.error('error writing', at.shortFileName)
-            g.es('not written:', at.shortFileName)
+            g.error('error writing', sfn) ### at.shortFileName)
+            g.es('not written:', sfn) ### at.shortFileName)
             at.addAtIgnore(root)
         at.checkPythonCode(root)
             # Bug fix: check *after* writing the file.
         return ok
-    #@+node:ekr.20190111174802.1: *6* at.compareFileWithContents (new)
+    #@+node:ekr.20190111174802.1: *6* at.compareFileWithContents
     def compareContentsWithFile(self, contents, path, ignoreLineEndings, ignoreBlankLines=False):
         """Compare two text files."""
         at = self
