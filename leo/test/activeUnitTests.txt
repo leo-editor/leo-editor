@@ -1277,7 +1277,7 @@ f.close()
 assert exists(path)
 assert at.remove(path)
 assert not exists(path)
-#@+node:ekr.20050105093524: *4* @test at.rename
+#@+node:ekr.20050105093524: *4* @@test at.rename
 import os
 at = c.atFileCommands
 exists = g.os_path_exists
@@ -20596,9 +20596,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20190111173331.1: *6* A
-#@+node:ekr.20190111173331.3: *6* newHeadline
-#@+node:ekr.20190111173331.2: *6* B
+#@+node:ekr.20190112105415.1: *6* A
+#@+node:ekr.20190112105415.3: *6* newHeadline
+#@+node:ekr.20190112105415.2: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():

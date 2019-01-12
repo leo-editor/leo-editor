@@ -758,9 +758,9 @@
 <v t="ekr.20181102063435.1"><vh>Fails...</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20190111173331.1"><vh>A</vh></v>
-<v t="ekr.20190111173331.3"><vh>newHeadline</vh></v>
-<v t="ekr.20190111173331.2"><vh>B</vh></v>
+<v t="ekr.20190112105415.1"><vh>A</vh></v>
+<v t="ekr.20190112105415.3"><vh>newHeadline</vh></v>
+<v t="ekr.20190112105415.2"><vh>B</vh></v>
 </v>
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
@@ -782,6 +782,7 @@
 <v t="ekr.20050105100227"><vh>@test at.replaceFile (no target file)</vh></v>
 </v>
 </v>
+<v t="ekr.20050105093524"><vh>@@test at.rename</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -874,6 +875,29 @@ p.OnHyperLinkControlClick(event=None)
 </t>
 <t tx="ekr.20041121151002"># Many of these are required for unit tests.
 # Do not change them without running all unit tests.</t>
+<t tx="ekr.20050105093524">import os
+at = c.atFileCommands
+exists = g.os_path_exists
+path = g.os_path_join(g.app.testDir,'xyzzy')
+path2 = g.os_path_join(g.app.testDir,'xyzzy2')
+# Create both paths.
+for p in (path,path2):
+    if exists(p):
+        os.remove(p)
+    assert not exists(p)
+    f = open(p,'w')
+    f.write('test %s' % p)
+    f.close()
+    assert exists(p)
+assert at.rename(path,path2,verbose=True)
+assert exists(path2)
+f = open(path2)
+s = f.read()
+f.close()
+assert s == 'test %s' % path
+os.remove(path2)
+assert not exists(path)
+</t>
 <t tx="ekr.20050105094311">import os
 import leo.core.leoAtFile as leoAtFile
 at = c.atFileCommands
@@ -9790,9 +9814,9 @@ unl: cheese
 </t>
 <t tx="ekr.20190109153806.1"></t>
 <t tx="ekr.20190111110537.1"></t>
-<t tx="ekr.20190111173331.1"></t>
-<t tx="ekr.20190111173331.2"></t>
-<t tx="ekr.20190111173331.3"></t>
+<t tx="ekr.20190112105415.1"></t>
+<t tx="ekr.20190112105415.2"></t>
+<t tx="ekr.20190112105415.3"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

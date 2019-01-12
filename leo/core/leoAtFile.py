@@ -977,13 +977,13 @@ class AtFile(object):
         at, c = self, self.c
         try:
             c.endEditing()
-            at.initWriteIvars(root, "<string-file>")
+            fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
             at.openStringForString()
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
             result = at.closeStringFile()
         except Exception:
-            at.writeException(root)
+            at.writeException(fileName, root)
             result = g.u('')
         return result
     #@+node:ekr.20190109160056.2: *6* at.atAutoToString
@@ -997,7 +997,7 @@ class AtFile(object):
             at.writeAtAutoContents(fileName, root)
             return at.closeStringFile()
         except Exception:
-            at.writeException(root)
+            at.writeException(fileName, root)
             return g.u('')
     #@+node:ekr.20190109160056.3: *6* at.atEditToString
     def atEditToString(self, root):
@@ -1009,12 +1009,12 @@ class AtFile(object):
                 g.error('@edit nodes must not have children')
                 g.es('To save your work, convert @edit to @auto, @file or @clean')
                 return False
-            at.initWriteIvars(root, root.atEditNodeName(), atEdit=True, sentinels=False)
+            fileName = at.initWriteIvars(root, root.atEditNodeName(), atEdit=True, sentinels=False)
             contents = ''.join([s for s in g.splitLines(root.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
             return contents
         except Exception:
-            at.writeException(root)
+            at.writeException(fileName, root)
             return g.u('')
 
     #@+node:ekr.20190109142026.1: *6* at.atFileToString
@@ -1083,7 +1083,7 @@ class AtFile(object):
             contents = at.closeWriteFile()
             at.replaceFile(contents, fileName, root)
         except Exception:
-            at.writeException(root)
+            at.writeException(fileName, root)
 
     silentWrite = asisWrite # Compatibility with old scripts.
     #@+node:ekr.20170331141933.1: *7* at.writeAsisNode
@@ -1126,7 +1126,7 @@ class AtFile(object):
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
-            at.writeException()
+            at.writeException(fileName, root)
     #@+node:ekr.20041005105605.151: *6* at.writeMissing & helper
     def writeMissing(self, p):
         at, c = self, self.c
@@ -1200,7 +1200,7 @@ class AtFile(object):
             at.replaceFile(contents,fileName, root, ignoreBlankLines=root.isAtAutoRstNode())
             return True
         except Exception:
-            at.writeException(root)
+            at.writeException(fileName, root)
             return False
     #@+node:ekr.20190109163934.24: *7* at.writeAtAutoNodesHelper
     def writeAtAutoNodesHelper(self, writeDirtyOnly=True):
@@ -1304,7 +1304,7 @@ class AtFile(object):
             c.raise_error_dialogs(kind='write')
             return True
         except Exception:
-            at.writeException(root)
+            at.writeException(fileName, root)
             return False
     #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helpers
     def writeOneAtShadowNode(self, p, testing=False):
@@ -1378,13 +1378,13 @@ class AtFile(object):
                 at.replaceFileWithString(full_path, at.public_s)
             self.checkPythonCode(root, s=at.private_s, targetFn=full_path)
             if at.errors:
-                g.error("not written:", at.outputFileName)
+                g.error("not written:", full_path) ### at.outputFileName)
                 at.addAtIgnore(root)
             else:
                 root.clearDirty()
             return not at.errors
         except Exception:
-            at.writeException(root)
+            at.writeException(full_path, root)
             return False
     #@+node:ekr.20080819075811.13: *7* at.adjustTargetLanguage
     def adjustTargetLanguage(self, fn):
@@ -2822,7 +2822,6 @@ class AtFile(object):
                     # Fix bug 889175: Remember the full fileName.
                     at.rememberReadPath(fileName, root)
             else:
-                # at.rename gives the error.
                 at.addAtIgnore(root)
             # No original file to change. Return value tested by a unit test.
             at.checkPythonCode(root)
@@ -2968,17 +2967,18 @@ class AtFile(object):
         at.error(message)
         at.addAtIgnore(at.root)
     #@+node:ekr.20041005105605.218: *5* at.writeException
-    def writeException(self, root=None):
+    def writeException(self, fileName, root):
         at = self
-        g.error("exception writing:", at.targetFileName)
+        g.error("exception writing:", fileName) ### at.targetFileName)
         g.es_exception()
         if at.outputFile:
             at.outputFile.flush()
             at.outputFile.close()
             at.outputFile = None
-        if at.outputFileName:
-            at.remove(at.outputFileName)
-        at.addAtIgnore(at.root)
+        at.remove(fileName)
+        # if at.outputFileName:
+            # at.remove(at.outputFileName)
+        at.addAtIgnore(root) ### at.root)
     #@+node:ekr.20041005105605.219: *3* at.Utilites
     #@+node:ekr.20041005105605.220: *4* at.error & printError
     def error(self, *args):
@@ -3029,47 +3029,6 @@ class AtFile(object):
         if f:
             c.setFileTimeStamp(fileName)
         return bool(f)
-    #@+node:ekr.20050104131929.1: *5* at.rename
-    #@+<< about os.rename >>
-    #@+node:ekr.20050104131929.2: *6* << about os.rename >>
-    #@+at Here is the Python 2.4 documentation for rename (same as Python 2.3)
-    # 
-    # Rename the file or directory src to dst.  If dst is a directory, OSError will be raised.
-    # 
-    # On Unix, if dst exists and is a file, it will be removed silently if the user
-    # has permission. The operation may fail on some Unix flavors if src and dst are
-    # on different filesystems. If successful, the renaming will be an atomic
-    # operation (this is a POSIX requirement).
-    # 
-    # On Windows, if dst already exists, OSError will be raised even if it is a file;
-    # there may be no way to implement an atomic rename when dst names an existing
-    # file.
-    #@-<< about os.rename >>
-
-    def rename(self, src, dst, mode=None, verbose=True):
-        '''
-        Remove dst if it exists, then rename src to dst.
-        Change the mode of the renamed file if mode is given.
-        Return True if all went well.
-        '''
-        c = self.c
-        head, junk = g.os_path_split(dst)
-        if head:
-            g.makeAllNonExistentDirectories(head, c=c)
-        if g.os_path_exists(dst):
-            if not self.remove(dst, verbose=verbose):
-                return False
-        try:
-            os.rename(src, dst)
-            if mode is not None:
-                self.chmod(dst, mode)
-            return True
-        except Exception:
-            if verbose:
-                self.error("exception renaming: %s to: %s" % (
-                    self.outputFileName, self.targetFileName))
-                g.es_exception()
-            return False
     #@+node:ekr.20050104132018: *5* at.remove
     def remove(self, fileName, verbose=True):
         if not fileName:
