@@ -1352,28 +1352,29 @@ class AtFile(object):
         x = c.shadowController
         try:
             c.endEditing() # Capture the current headline.
-            self.adjustTargetLanguage(p.atShadowFileNodeName()) 
+            fn = p.atShadowFileNodeName()
+            assert fn, p.h
+            self.adjustTargetLanguage(fn) 
                 # A hack to support unknown extensions. May set c.target_language.
-            full_path = g.fullPath(c, p)
-            at.initWriteIvars(root, None,
-                atShadow = True,
-                defaultDirectory = g.os_path_dirname(full_path),
-                forcePythonSentinels = True)
-                    # Force python sentinels to suppress an error message.
-                    # The actual sentinels will be set below.
+            fn = g.fullPath(c, p)
+            at.initWriteIvars(root, None, atShadow=True, forcePythonSentinels=True)
+                # Force python sentinels to suppress an error message.
+                # The actual sentinels will be set below.
             at.outputFileName = g.u('')
                 # Override.
+            at.default_directory = g.os_path_dirname(fn)
+                # Override.
             # Make sure we can compute the shadow directory.
-            private_fn = x.shadowPathName(full_path)
+            private_fn = x.shadowPathName(fn)
             if not private_fn:
                 return False
-            if not testing and not at.precheck(full_path, root):
+            if not testing and not at.precheck(fn, root):
                 return False
             #
             # Bug fix: Leo 4.5.1:
             # use x.markerFromFileName to force the delim to match
             # what is used in x.propegate changes.
-            marker = x.markerFromFileName(full_path)
+            marker = x.markerFromFileName(fn)
             at.startSentinelComment, at.endSentinelComment = marker.getDelims()
             if g.app.unitTesting:
                 ivars_dict = g.getIvarsDict(at)
@@ -1382,7 +1383,7 @@ class AtFile(object):
             data = []
             for sentinels in (False, True):
                 # Specify encoding explicitly.
-                theFile = at.openAtShadowStringFile(full_path, encoding=at.encoding)
+                theFile = at.openAtShadowStringFile(fn, encoding=at.encoding)
                 at.sentinels = sentinels
                 at.writeOpenFile(root, sentinels=sentinels)
                 at.warnAboutOrphandAndIgnoredNodes()
@@ -1401,11 +1402,11 @@ class AtFile(object):
                 assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
             if at.errors == 0 and not testing:
                 # Write the public and private files.
-                x.makeShadowDirectory(full_path)
+                x.makeShadowDirectory(fn)
                     # makeShadowDirectory takes a *public* file name.
                 at.replaceFileWithString(private_fn, at.private_s)
-                at.replaceFileWithString(full_path, at.public_s)
-            self.checkPythonCode(root, s=at.private_s, targetFn=full_path)
+                at.replaceFileWithString(fn, at.public_s)
+            self.checkPythonCode(root, s=at.private_s, targetFn=fn)
             if at.errors == 0:
                 root.clearDirty()
             else:

@@ -781,7 +781,7 @@
 <v t="ekr.20050105095743"><vh>@test at.replaceFile (same contents)</vh></v>
 <v t="ekr.20050105100227"><vh>@test at.replaceFile (no target file)</vh></v>
 </v>
-<v t="ekr.20090529115704.4564"><vh>@@@test at.readOneAtShadowNode</vh>
+<v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
 <v t="ekr.20090529115704.4565"><vh>@@shadow unittest/read_test.py</vh></v>
 </v>
 </vnodes>
