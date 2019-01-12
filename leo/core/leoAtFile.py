@@ -197,7 +197,6 @@ class AtFile(object):
         at.docKind = None
         at.force_newlines_in_at_nosent_bodies = \
             c.config.getBool('force_newlines_in_at_nosent_bodies')
-        ### at.outputContents = None
         at.sameFiles = 0
             # For communication between replaceFile and reportEndOfWrite.
         at.targetFileName = targetFileName
@@ -1364,12 +1363,7 @@ class AtFile(object):
             # pylint: disable=unbalanced-tuple-unpacking
             at.public_s, at.private_s = data
             if g.app.unitTesting:
-                exceptions = (
-                    'public_s', 'private_s',
-                    'sentinels',
-                    ### 'stringOutput',
-                    ### 'outputContents',
-                )
+                exceptions = ('public_s', 'private_s', 'sentinels')
                 assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
             if not at.errors:
                 # Write the public and private files.
@@ -1378,7 +1372,6 @@ class AtFile(object):
                 at.replaceFileWithString(private_fn, at.private_s)
                 at.replaceFileWithString(full_path, at.public_s)
             at.checkPythonCode(
-                ### s=at.private_s, targetFn=full_path)
                 contents = at.private_s,
                 fileName = full_path,
                 root = root,
@@ -1412,13 +1405,10 @@ class AtFile(object):
         at = self
         assert theFile, g.callers()
         theFile.flush()
-        ### s = at.stringOutput = theFile.get()
         contents = theFile.get()
-        ### at.outputContents = s
         theFile.close()
         at.outputFile = None
         at.targetFileName = None
-        ### return s
         return contents
     #@+node:ekr.20080712150045.2: *7* at.openAtShadowStringFile
     def openAtShadowStringFile(self, fn, encoding='utf-8'):
@@ -2331,26 +2321,15 @@ class AtFile(object):
             g.es('read only:', repr(path), color='red')
         return ok
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
-    def checkPythonCode(self, contents, fileName, root, pyflakes_errors_only=False): ### , targetFn=None, 
-            ### s=None
+    def checkPythonCode(self, contents, fileName, root, pyflakes_errors_only=False): 
         '''Perform python-related checks on root.'''
         at = self
-        ###
-        # if not targetFn:
-            # targetFn = at.targetFileName
-        if not contents:
-            return True
-        ### if targetFn and targetFn.endswith('.py') and at.checkPythonCodeOnWrite:
-        if fileName and fileName.endswith('.py') and at.checkPythonCodeOnWrite:
-            ###
-                # if not s:
-                    # s = at.outputContents
-                    # if not s: return
+        if contents and fileName and fileName.endswith('.py') and at.checkPythonCodeOnWrite:
             # It's too slow to check each node separately.
             if pyflakes_errors_only:
                 ok = True
             else:
-                ok = at.checkPythonSyntax(root, contents) ### s)
+                ok = at.checkPythonSyntax(root, contents)
             # Syntax checking catches most indentation problems.
                 # if ok: at.tabNannyNode(root,s)
             if ok and at.runPyFlakesOnWrite and not g.unitTesting:
@@ -2358,7 +2337,7 @@ class AtFile(object):
             else:
                 ok2 = True
             if not ok or not ok2:
-                g.app.syntax_error_files.append(g.shortFileName(fileName)) ### targetFn))
+                g.app.syntax_error_files.append(g.shortFileName(fileName))
     #@+node:ekr.20090514111518.5663: *6* at.checkPythonSyntax
     def checkPythonSyntax(self, p, body, supress=False):
         at = self
@@ -2468,13 +2447,9 @@ class AtFile(object):
         assert at.toString, g.callers()
         assert at.outputFile, g.callers()
         at.outputFile.flush()
-        ### at.stringOutput = g.toUnicode('' if at.errors else at.outputFile.get())
         contents = g.toUnicode('' if at.errors else at.outputFile.get())
-        ### at.outputContents = at.stringOutput
-            # Required for various checks.
         at.outputFile.close()
         at.outputFile = None
-        ### return at.stringOutput
         return contents
     #@+node:ekr.20041005105605.135: *5* at.closeWriteFile
     # 4.0: Don't use newline-pending logic.
@@ -2486,7 +2461,7 @@ class AtFile(object):
         assert at.outputFile, g.callers()
         at.outputFile.flush()
         contents = at.outputFile.get()
-        ### at.outputFile.close()
+        at.outputFile.close()
         at.outputFile = None
         return contents
     #@+node:ekr.20041005105605.198: *5* at.directiveKind4 (write logic)
@@ -2566,8 +2541,8 @@ class AtFile(object):
         '''Return a string-file for writing to an actual file.'''
         at = self
         at.outputFile = g.FileLikeObject()
-        if g.app.unitTesting: at.output_newline = '\n'
-        ### at.stringOutput = ""
+        if g.app.unitTesting:
+            at.output_newline = '\n'
         at.toString = True
     #@+node:ekr.20190109145850.1: *5* at.openStringForFile
     def openStringForFile(self, root):
@@ -2576,9 +2551,7 @@ class AtFile(object):
         assert fn, repr(root)
         at.outputFile = g.FileLikeObject()
         if g.app.unitTesting: at.output_newline = '\n'
-        ### at.stringOutput = ""
         at.toString = False
-
     #@+node:ekr.20041005105605.201: *5* at.os and allies
     # Note:  self.outputFile may be either a FileLikeObject or a real file.
     #@+node:ekr.20041005105605.202: *6* at.oblank, oblanks & otabs
