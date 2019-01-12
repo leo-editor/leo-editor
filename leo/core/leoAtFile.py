@@ -183,6 +183,7 @@ class AtFile(object):
         #
         # Copy args
         at.atEdit = atEdit
+            # Used only by putBody.
         at.atShadow = atShadow
         at.root = root
         at.sentinels = sentinels
