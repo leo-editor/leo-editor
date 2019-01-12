@@ -154,6 +154,7 @@ class AtFile(object):
         at.rootSeen = False
         at.atShadow = atShadow
         at.targetFileName = fileName
+            # For at.writeError only.
         at.tnodeList = []
             # Needed until old-style @file nodes are no longer supported.
         at.tnodeListIndex = 0
@@ -200,7 +201,7 @@ class AtFile(object):
         at.sameFiles = 0
             # For communication between replaceFile and reportEndOfWrite.
         at.targetFileName = targetFileName
-            # Must be None for @shadow.
+            # For at.writeError only.
         at.thinFile = True
         at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
             # Sets the following ivars:
@@ -229,7 +230,7 @@ class AtFile(object):
         #
         # Return the finalized file name.
         return g.os_path_realpath(
-            c.os_path_finalize_join(at.default_directory, at.targetFileName))
+            c.os_path_finalize_join(at.default_directory, targetFileName)) ### at.targetFileName
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkDerivedFile
@@ -1409,13 +1410,15 @@ class AtFile(object):
         theFile.close()
         at.outputFile = None
         at.targetFileName = None
+            # For at.writeError only.
         return contents
     #@+node:ekr.20080712150045.2: *7* at.openAtShadowStringFile
-    def openAtShadowStringFile(self, fn, encoding='utf-8'):
+    def openAtShadowStringFile(self, fileName, encoding='utf-8'):
         '''A helper for at.writeOneAtShadowNode.'''
         at = self
         at.outputFile = g.FileLikeObject(encoding=encoding)
-        at.targetFileName = "<string-file>"
+        at.targetFileName = fileName
+            # for at.writeError only.
         return at.outputFile
     #@+node:ekr.20190111153551.1: *5* at.commands
     #@+node:ekr.20070806105859: *6* at.writeAtAutoNodes & writeDirtyAtAutoNodes & helpers
@@ -2907,7 +2910,7 @@ class AtFile(object):
                     at.writeError("@ignore node: " + p.h)
                 p.moveToThreadNext()
     #@+node:ekr.20041005105605.217: *5* at.writeError
-    def writeError(self, message=None):
+    def writeError(self, message):
         '''Issue an error while writing an @<file> node.'''
         at = self
         if at.errors == 0:
