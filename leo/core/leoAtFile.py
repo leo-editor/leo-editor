@@ -726,7 +726,6 @@ class AtFile(object):
         # Delete all children.
         while p.hasChildren():
             p.firstChild().doDelete()
-        g.trace(shadow_exists, shadow_fn) ### For travisCI.
         if shadow_exists:
             at.read(p, atShadow=True, force=force)
         else:
@@ -1400,19 +1399,19 @@ class AtFile(object):
                     'sentinels', 'stringOutput', 'outputContents',
                 )
                 assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
-            if at.errors == 0: ### and not testing:
+            if not at.errors:
                 # Write the public and private files.
                 x.makeShadowDirectory(fn)
                     # makeShadowDirectory takes a *public* file name.
                 at.replaceFileWithString(private_fn, at.private_s)
                 at.replaceFileWithString(fn, at.public_s)
             self.checkPythonCode(root, s=at.private_s, targetFn=fn)
-            if at.errors == 0:
-                root.clearDirty()
-            else:
+            if at.errors:
                 g.error("not written:", at.outputFileName)
                 at.addAtIgnore(root)
-            return at.errors == 0
+            else:
+                root.clearDirty()
+            return not at.errors
         except Exception:
             at.writeException(root)
             return False
@@ -2997,11 +2996,6 @@ class AtFile(object):
         '''
         at = self; c = at.c
         assert not at.toString, g.callers()
-        ###
-            # if at.toString:
-                # # Do *not* change the actual file or set any dirty flag.
-                # at.fileChangedFlag = False
-                # return False
         if root:
             root.clearDirty()
         # Fix bug 1132821: Leo replaces a soft link with a real file.
