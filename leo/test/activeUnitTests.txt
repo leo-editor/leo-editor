@@ -1277,29 +1277,6 @@ f.close()
 assert exists(path)
 assert at.remove(path)
 assert not exists(path)
-#@+node:ekr.20050105093524: *4* @@test at.rename
-import os
-at = c.atFileCommands
-exists = g.os_path_exists
-path = g.os_path_join(g.app.testDir,'xyzzy')
-path2 = g.os_path_join(g.app.testDir,'xyzzy2')
-# Create both paths.
-for p in (path,path2):
-    if exists(p):
-        os.remove(p)
-    assert not exists(p)
-    f = open(p,'w')
-    f.write('test %s' % p)
-    f.close()
-    assert exists(p)
-assert at.rename(path,path2,verbose=True)
-assert exists(path2)
-f = open(path2)
-s = f.read()
-f.close()
-assert s == 'test %s' % path
-os.remove(path2)
-assert not exists(path)
 #@+node:ekr.20090529115704.4566: *4* @test at.replaceFileWithString
 import os
 s = 'abc'

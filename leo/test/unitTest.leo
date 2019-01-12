@@ -438,6 +438,7 @@
 <v t="ekr.20100802220019.5795"><vh>@@test at.deleteUnvistedNodes</vh></v>
 <v t="ekr.20110524091618.3488"><vh>@@test at.massageDocPart</vh></v>
 <v t="ekr.20090529115704.4563"><vh>@@test at.openForWrite: not a shadow file</vh></v>
+<v t="ekr.20050105093524"><vh>@@test at.rename</vh></v>
 <v t="ekr.20050208051854"><vh>@@test atFile.printError</vh></v>
 <v t="ekr.20111118125141.3879"><vh>@@test bodyCtrl property</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
@@ -782,7 +783,6 @@
 <v t="ekr.20050105100227"><vh>@test at.replaceFile (no target file)</vh></v>
 </v>
 </v>
-<v t="ekr.20050105093524"><vh>@@test at.rename</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor

@@ -1330,8 +1330,6 @@ class AtFile(object):
                 forcePythonSentinels = True)
                     # Force python sentinels to suppress an error message.
                     # The actual sentinels will be set below.
-            ###### at.outputFileName = g.u('')
-                # Override.
             at.default_directory = g.os_path_dirname(full_path)
                 # Override.
             # Make sure we can compute the shadow directory.
@@ -1378,7 +1376,7 @@ class AtFile(object):
                 at.replaceFileWithString(full_path, at.public_s)
             self.checkPythonCode(root, s=at.private_s, targetFn=full_path)
             if at.errors:
-                g.error("not written:", full_path) ### at.outputFileName)
+                g.error("not written:", full_path)
                 at.addAtIgnore(root)
             else:
                 root.clearDirty()
@@ -1410,14 +1408,12 @@ class AtFile(object):
         at.outputContents = s
         theFile.close()
         at.outputFile = None
-        ### at.outputFileName = g.u('')
         at.targetFileName = None
         return s
     #@+node:ekr.20080712150045.2: *7* at.openAtShadowStringFile
     def openAtShadowStringFile(self, fn, encoding='utf-8'):
         '''A helper for at.writeOneAtShadowNode.'''
         at = self
-        ### at.outputFileName = "<string: %s>" % g.shortFileName(fn)
         at.outputFile = g.FileLikeObject(encoding=encoding)
         at.targetFileName = "<string-file>"
         return at.outputFile
@@ -2598,7 +2594,6 @@ class AtFile(object):
         at = self
         fn = root.anyAtFileNodeName() or root.h # use root.h for unit tests.
         assert fn, repr(root)
-        ### at.outputFileName = "<string: %s>" % g.shortFileName(fn)
         at.outputFile = g.FileLikeObject()
         if g.app.unitTesting: at.output_newline = '\n'
         at.stringOutput = ""
