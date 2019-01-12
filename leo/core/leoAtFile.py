@@ -161,8 +161,6 @@ class AtFile(object):
         at.v = None
         at.vStack = [] # Stack of at.v values.
         at.thinChildIndexStack = [] # number of siblings at this level.
-        ### at.thinFile = False
-            # True if the external file uses new-style sentinels.
         at.thinNodeStack = [] # Entries are vnodes.
         at.updateWarningGiven = False
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
@@ -195,14 +193,13 @@ class AtFile(object):
             at.startSentinelComment = "#"
         #
         # Set other ivars.
-        at.docKind = None
+        ### at.docKind = None
         at.force_newlines_in_at_nosent_bodies = \
             c.config.getBool('force_newlines_in_at_nosent_bodies')
         at.sameFiles = 0
             # For communication between replaceFile and reportEndOfWrite.
         at.targetFileName = targetFileName
             # For at.writeError only.
-        ### at.thinFile = True
         at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
             # Sets the following ivars:
                 # at.default_directory
@@ -2156,7 +2153,7 @@ class AtFile(object):
     def putStartDocLine(self, s, i, kind):
         """Write the start of a doc part."""
         at = self
-        at.docKind = kind
+        ### at.docKind = kind
         sentinel = "@+doc" if kind == at.docDirective else "@+at"
         directive = "@doc" if kind == at.docDirective else "@"
         # Put whatever follows the directive in the sentinel.
