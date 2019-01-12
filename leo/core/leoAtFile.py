@@ -2914,16 +2914,8 @@ class AtFile(object):
                 line = line.replace("@date", time.asctime())
                 if line:
                     self.putSentinel("@comment " + line)
-    #@+node:ekr.20041005105605.212: *5* at.replaceFile & helper
+    #@+node:ekr.20190111172114.1: *5* at.replaceFile (new)
     def replaceFile(self, contents, fileName, root, ignoreBlankLines=False):
-        '''Return True if the original file was changed (for unit testing only).'''
-        at = self
-        if new:
-            return at.new_replaceFile(contents, fileName, root, ignoreBlankLines=ignoreBlankLines)
-        else:
-            return at.old_replaceFile(contents, fileName, root, ignoreBlankLines=ignoreBlankLines)
-    #@+node:ekr.20190111172114.1: *6* at.new_replaceFile (test)
-    def new_replaceFile(self, contents, fileName, root, ignoreBlankLines=False):
         '''
         Write or create the given file from the contents.
         Return True if the original file was changed.
@@ -2989,93 +2981,6 @@ class AtFile(object):
         at.checkPythonCode(root)
             # Bug fix: check *after* writing the file.
         return ok
-    #@+node:ekr.20190111172117.1: *6* at.old_replaceFile
-    def old_replaceFile(self, contents, fileName, root, ignoreBlankLines=False):
-        '''Create target file as follows:
-        1. If target file does not exist, rename output file to target file.
-        2. If target file is identical to output file, remove the output file.
-        3. If target file is different from output file,
-           remove target file, then rename output file to be target file.
-
-        Return True if the original file was changed.
-        '''
-        at = self; c = at.c
-        assert not at.toString, g.callers()
-        ###
-            # if at.toString:
-                # # Do *not* change the actual file or set any dirty flag.
-                # at.fileChangedFlag = False
-                # return False
-        if root:
-            root.clearDirty()
-        # Fix bug 1132821: Leo replaces a soft link with a real file.
-        if at.outputFileName:
-            at.outputFileName = g.os_path_realpath(at.outputFileName)
-        if at.targetFileName:
-            at.targetFileName = g.os_path_realpath(at.targetFileName)
-        # #531: Optionally report timestamp...
-        if c.config.getBool('log-show-save-time', default=False):
-            format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
-            timestamp = time.strftime(format) + ' '
-        else:
-            timestamp = ''
-        if g.os_path_exists(at.targetFileName):
-            if at.compareFiles(
-                at.outputFileName,
-                at.targetFileName,
-                ignoreLineEndings=not at.explicitLineEnding,
-                ignoreBlankLines=ignoreBlankLines
-            ):
-                # Files are identical.
-                report = c.config.getBool('report-unchanged-files', default=True)
-                at.sameFiles += 1
-                if report and not g.unitTesting:
-                    g.es('%sunchanged: %s' % (timestamp, at.shortFileName))
-                at.fileChangedFlag = False
-                # Leo 5.6: Check unchanged files.
-                at.checkPythonCode(root, pyflakes_errors_only=True)
-                return False
-            else:
-                # A mismatch. Report if the files differ only in line endings.
-                if (
-                    at.explicitLineEnding and
-                    at.compareFiles(
-                        at.outputFileName,
-                        at.targetFileName,
-                        ignoreLineEndings=True)
-                ):
-                    g.warning("correcting line endings in:", at.targetFileName)
-                s = at.outputContents
-                ok = at.create(at.targetFileName, s)
-                if ok:
-                    c.setFileTimeStamp(at.targetFileName)
-                    if not g.unitTesting:
-                        g.es('%swrote: %s' % (timestamp, at.shortFileName))
-                else:
-                    g.error('error writing', at.shortFileName)
-                    g.es('not written:', at.shortFileName)
-                    at.addAtIgnore(root)
-                at.checkPythonCode(root)
-                    # Bug fix: check *after* writing the file.
-                at.fileChangedFlag = ok
-                return ok
-        else:
-            s = at.outputContents
-            ok = at.create(at.targetFileName, s)
-            if ok:
-                c.setFileTimeStamp(at.targetFileName)
-                if not g.unitTesting:
-                    g.es('%screated: %s' % (timestamp, at.targetFileName))
-                if root:
-                    # Fix bug 889175: Remember the full fileName.
-                    at.rememberReadPath(at.targetFileName, root)
-            else:
-                # at.rename gives the error.
-                at.addAtIgnore(root)
-            # No original file to change. Return value tested by a unit test.
-            at.fileChangedFlag = False
-            at.checkPythonCode(root)
-            return False
     #@+node:ekr.20190111174802.1: *6* at.compareFileWithContents (new)
     def compareContentsWithFile(self, contents, path, ignoreLineEndings, ignoreBlankLines=False):
         """Compare two text files."""
