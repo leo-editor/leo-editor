@@ -2746,7 +2746,7 @@ class AtFile(object):
         Return True if the original file was changed.
         '''
         at, c = self, self.c
-        assert not at.toString, g.callers()
+        ### assert not at.toString, g.callers()
         if root:
             root.clearDirty()
         #
