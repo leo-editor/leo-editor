@@ -2486,41 +2486,6 @@ class AtFile(object):
         at.outputFile = None
         return contents
 
-    #@+node:ekr.20041005105605.197: *5* at.compareFiles
-    def compareFiles(self, path1, path2, ignoreLineEndings, ignoreBlankLines=False):
-        """Compare two text files."""
-        at = self
-        # We can't use 'U' mode because of encoding issues (Python 2.x only).
-        s1 = at.outputContents
-        e1 = at.encoding
-        if s1 is None:
-            g.internalError('empty compare file: %s' % path1)
-            return False
-        s2 = g.readFileIntoEncodedString(path2)
-        e2 = None
-        if s2 is None:
-            g.internalError('empty compare file: %s' % path2)
-            return False
-        # 2013/10/28: fix bug #1243855: @auto-rst doesn't save text
-        # Make sure both strings are unicode.
-        # This is requred to handle binary files in Python 3.x.
-        if not g.isUnicode(s1):
-            s1 = g.toUnicode(s1, encoding=e1)
-        if not g.isUnicode(s2):
-            s2 = g.toUnicode(s2, encoding=e2)
-        equal = s1 == s2
-        if ignoreBlankLines and not equal:
-            s1 = g.removeBlankLines(s1)
-            s2 = g.removeBlankLines(s2)
-            equal = s1 == s2
-        if ignoreLineEndings and not equal:
-            # Wrong: equivalent to ignoreBlankLines!
-                # s1 = s1.replace('\n','').replace('\r','')
-                # s2 = s2.replace('\n','').replace('\r','')
-            s1 = s1.replace('\r', '')
-            s2 = s2.replace('\r', '')
-            equal = s1 == s2
-        return equal
     #@+node:ekr.20041005105605.198: *5* at.directiveKind4 (write logic)
     # These patterns exclude constructs such as @encoding.setter or @encoding(whatever)
     # However, they must allow @language python, @nocolor-node, etc.
