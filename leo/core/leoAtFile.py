@@ -197,7 +197,7 @@ class AtFile(object):
         at.docKind = None
         at.force_newlines_in_at_nosent_bodies = \
             c.config.getBool('force_newlines_in_at_nosent_bodies')
-        at.outputContents = None
+        ### at.outputContents = None
         at.sameFiles = 0
             # For communication between replaceFile and reportEndOfWrite.
         at.targetFileName = targetFileName
@@ -1366,7 +1366,9 @@ class AtFile(object):
             if g.app.unitTesting:
                 exceptions = (
                     'public_s', 'private_s',
-                    'sentinels', 'stringOutput', 'outputContents',
+                    'sentinels',
+                    ### 'stringOutput',
+                    ### 'outputContents',
                 )
                 assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
             if not at.errors:
@@ -1410,12 +1412,14 @@ class AtFile(object):
         at = self
         assert theFile, g.callers()
         theFile.flush()
-        s = at.stringOutput = theFile.get()
-        at.outputContents = s
+        ### s = at.stringOutput = theFile.get()
+        contents = theFile.get()
+        ### at.outputContents = s
         theFile.close()
         at.outputFile = None
         at.targetFileName = None
-        return s
+        ### return s
+        return contents
     #@+node:ekr.20080712150045.2: *7* at.openAtShadowStringFile
     def openAtShadowStringFile(self, fn, encoding='utf-8'):
         '''A helper for at.writeOneAtShadowNode.'''
@@ -2464,28 +2468,27 @@ class AtFile(object):
         assert at.toString, g.callers()
         assert at.outputFile, g.callers()
         at.outputFile.flush()
-        at.stringOutput = g.toUnicode('' if at.errors else at.outputFile.get())
-        at.outputContents = at.stringOutput
+        ### at.stringOutput = g.toUnicode('' if at.errors else at.outputFile.get())
+        contents = g.toUnicode('' if at.errors else at.outputFile.get())
+        ### at.outputContents = at.stringOutput
             # Required for various checks.
         at.outputFile.close()
         at.outputFile = None
-        return at.stringOutput
+        ### return at.stringOutput
+        return contents
     #@+node:ekr.20041005105605.135: *5* at.closeWriteFile
     # 4.0: Don't use newline-pending logic.
 
     def closeWriteFile(self):
-        '''
-        Close the file and set at.outputContents, not at.stringOutput.
-        '''
+        '''Close the file and return its contents.'''
         at = self
         assert not at.toString, g.callers()
         assert at.outputFile, g.callers()
         at.outputFile.flush()
         contents = at.outputFile.get()
-        at.outputFile.close()
+        ### at.outputFile.close()
         at.outputFile = None
         return contents
-
     #@+node:ekr.20041005105605.198: *5* at.directiveKind4 (write logic)
     # These patterns exclude constructs such as @encoding.setter or @encoding(whatever)
     # However, they must allow @language python, @nocolor-node, etc.
@@ -2564,7 +2567,7 @@ class AtFile(object):
         at = self
         at.outputFile = g.FileLikeObject()
         if g.app.unitTesting: at.output_newline = '\n'
-        at.stringOutput = ""
+        ### at.stringOutput = ""
         at.toString = True
     #@+node:ekr.20190109145850.1: *5* at.openStringForFile
     def openStringForFile(self, root):
@@ -2573,7 +2576,7 @@ class AtFile(object):
         assert fn, repr(root)
         at.outputFile = g.FileLikeObject()
         if g.app.unitTesting: at.output_newline = '\n'
-        at.stringOutput = ""
+        ### at.stringOutput = ""
         at.toString = False
 
     #@+node:ekr.20041005105605.201: *5* at.os and allies
