@@ -775,6 +775,7 @@
 <v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
 </v>
 <v t="ekr.20090529115704.4562"><vh>@test at.open/closeAtShadowStringFile</vh></v>
+<v t="ekr.20090529115704.4563"><vh>@@@test at.openForWrite: not a shadow file</vh></v>
 </v>
 <v t="ekr.20190111110537.1"><vh>re: at.replaceFile</vh>
 <v t="ekr.20050105094311"><vh>@test at.replaceFile (different contents)</vh></v>
@@ -2375,6 +2376,20 @@ f.write(s)
 s2 = at.closeAtShadowStringFile(f)
 assert s == s2,s2
 # assert at.toString
+</t>
+<t tx="ekr.20090529115704.4563">### This method no longer exists.
+at = c.atFileCommands
+x = c.shadowController
+filename = x.pathName('xyzzy')
+assert not g.os_path_exists(filename)
+try:
+    kind,theFile = at.openForWrite(filename)
+    assert kind == 'check'
+    if theFile: theFile.close()
+finally:
+    if g.os_path_exists(filename):
+        x.unlink(filename)
+        assert not g.os_path_exists(filename)
 </t>
 <t tx="ekr.20090529115704.4564">at = c.atFileCommands
 x = c.shadowController

@@ -1138,26 +1138,35 @@ class AtFile(object):
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
             at.writeException()
-    #@+node:ekr.20041005105605.151: *6* at.writeMissing & helper (to do)
+    #@+node:ekr.20041005105605.151: *6* at.writeMissing & helper (test)
     def writeMissing(self, p):
-        at = self; c = at.c
+        at, c = self, self.c
         writtenFiles = False
         c.init_error_dialogs()
         p = p.copy()
         after = p.nodeAfterTree()
         while p and p != after: # Don't use iterator.
             if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
-                at.targetFileName = p.anyAtFileNodeName()
-                if at.targetFileName:
-                    at.targetFileName = c.os_path_finalize_join(
-                        self.default_directory, at.targetFileName)
-                    if not g.os_path_exists(at.targetFileName):
-                        ok = at.openFileForWriting(p, at.targetFileName)
-                            # Calls at.addAtIgnore() if there are errors.
-                        if ok:
-                            at.writeMissingNode(p)
-                            writtenFiles = True
-                            at.closeWriteFile()
+                ### at.targetFileName = p.anyAtFileNodeName()
+                fileName = p.anyAtFileNodeName()
+                if fileName:
+                    fileName = c.os_path_finalize_join(at.default_directory, fileName)
+                    if at.precheck(fileName, p):
+                        at.writeMissingNode(p)
+                        writtenFiles = True
+                    else:
+                        at.addAtIgnore(p)
+                ###
+                    # if at.targetFileName:
+                    # at.targetFileName = c.os_path_finalize_join(
+                        # self.default_directory, at.targetFileName)
+                        # if not g.os_path_exists(at.targetFileName):
+                            # ok = at.openFileForWriting(p, at.targetFileName)
+                                # # Calls at.addAtIgnore() if there are errors.
+                            # if ok:
+                                # at.writeMissingNode(p)
+                                # writtenFiles = True
+                                # at.closeWriteFile()
                 p.moveToNodeAfterTree()
             elif p.isAtIgnoreNode():
                 p.moveToNodeAfterTree()
@@ -1179,6 +1188,8 @@ class AtFile(object):
             at.write(p, sentinels=False)
         elif p.isAtFileNode():
             at.write(p)
+        elif p.isAtAutoNode() or p.isAtAutoRstNode():
+            g.es('Can not write missing @auto node', p.h, color='red')
         else:
             g.trace('can not happen: unknown @file node')
     #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
@@ -2622,88 +2633,6 @@ class AtFile(object):
             return True, i + 2
         else:
             return False, -1
-    #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper (OLD)
-    def openFileForWriting(self, root, fileName):
-        at = self
-        # at.outputNewline set in initCommonIvars.
-        at.outputFile = None
-        at.stringOutput = None
-        at.outputFileName = g.u('')
-        at.toString = False
-        ok = at.openFileForWritingHelper(fileName)
-        if not ok:
-            at.outputFile = None
-            at.addAtIgnore(root)
-        return ok
-    #@+node:ekr.20041005105605.143: *6* at.openFileForWritingHelper & helper
-    def openFileForWritingHelper(self, fileName):
-        '''
-        Open a **string** file and return True if all went well.
-        
-        at.replaceFile is the *only* code that writes to the file system.
-        '''
-        at = self; c = at.c
-        try:
-            at.shortFileName = g.shortFileName(fileName)
-            at.targetFileName = c.os_path_finalize_join(
-                at.default_directory, fileName)
-            path = g.os_path_dirname(at.targetFileName)
-            if not path or not g.os_path_exists(path):
-                if path:
-                    path = g.makeAllNonExistentDirectories(path, c=c)
-                if not path or not g.os_path_exists(path):
-                    path = g.os_path_dirname(at.targetFileName)
-                    at.writeError("path does not exist: " + path)
-                    return False
-        except Exception:
-            at.exception("exception creating path: %s" % repr(path))
-            g.es_exception()
-            return False
-        if g.os_path_exists(at.targetFileName):
-            try:
-                if not os.access(at.targetFileName, os.W_OK):
-                    at.writeError("can not open: read only: " + at.targetFileName)
-                    return False
-            except AttributeError:
-                pass # os.access() may not exist on all platforms.
-        try:
-            old_output_fn = at.outputFileName
-                # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1260547
-            at.outputFileName = None
-            kind, at.outputFile = self.openForWrite(at.outputFileName, 'wb')
-            if not at.outputFile:
-                kind = 'did not overwrite' if kind == 'check' else 'can not create'
-                at.writeError("%s %s" % (kind, old_output_fn))
-                return False
-        except Exception:
-            at.exception("exception creating:" + old_output_fn)
-            return False
-        return True
-    #@+node:bwmulder.20050101094804: *7* at.openForWrite
-    def openForWrite(self, filename, wb='wb'):
-        '''Open a **string** file for writes, handling shadow files.'''
-        at = self; c = at.c; x = c.shadowController
-        try:
-            # In "quick edit/save" mode the .leo file may not have a name.
-            if c.fileName():
-                shadow_filename = x.shadowPathName(filename)
-                self.writing_to_shadow_directory = os.path.exists(shadow_filename)
-                open_file_name = shadow_filename if self.writing_to_shadow_directory else filename
-                self.shadow_filename = shadow_filename if self.writing_to_shadow_directory else None
-            else:
-                self.writing_to_shadow_directory = False
-                open_file_name = filename
-            if self.writing_to_shadow_directory:
-                x.message('writing %s' % shadow_filename)
-                return 'shadow', g.FileLikeObject()
-            ok = c.checkFileTimeStamp(at.targetFileName)
-            f = g.FileLikeObject() if ok else None
-            return 'check', f
-        except IOError:
-            if not g.app.unitTesting:
-                g.error('openForWrite: exception opening file: %s' % (open_file_name))
-                g.es_exception()
-            return 'error', None
     #@+node:ekr.20190111120057.1: *5* at.openStringForString
     def openStringForString(self):
         '''Return a string-file for writing to an actual file.'''
