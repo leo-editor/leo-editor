@@ -14,14 +14,6 @@ import re
 import sys
 import time
 #@-<< imports >>
-#@+<< define new >>
-#@+node:ekr.20190112080802.1: ** << define new >>
-new = True ### Use new atFile write code
-if new:
-    print('')
-    print('===== new ====')
-    print('')
-#@-<< define new >>
 #@+others
 #@+node:ekr.20160514120655.1: ** class AtFile
 class AtFile(object):
@@ -1083,14 +1075,15 @@ class AtFile(object):
             c.endEditing()
             c.init_error_dialogs()
             fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
-            if new:
-                if not at.precheck(fileName, root):
-                    at.addAtIgnore(root)
-                    return
-                at.openStringForFile(root)
-            else:
-                if not at.openFileForWriting(root, fileName):
-                    return
+            ### if new:
+            if not at.precheck(fileName, root):
+                at.addAtIgnore(root)
+                return
+            at.openStringForFile(root)
+            ###
+                # else:
+                    # if not at.openFileForWriting(root, fileName):
+                        # return
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
             contents = at.closeWriteFile()
@@ -1124,14 +1117,15 @@ class AtFile(object):
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
-            if new:
-                if not at.precheck(fileName, root):
-                    at.addAtIgnore(root)
-                    return
-                at.openStringForFile(root)
-            else:
-                if not at.openFileForWriting(root, fileName):
-                    return
+            ###if new:
+            if not at.precheck(fileName, root):
+                at.addAtIgnore(root)
+                return
+            at.openStringForFile(root)
+            ###
+                # else:
+                    # if not at.openFileForWriting(root, fileName):
+                        # return
             at.writeOpenFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
             contents = at.closeWriteFile()
@@ -1203,21 +1197,22 @@ class AtFile(object):
                 defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
                 sentinels=False,
             )
-            if new:
-                if not at.precheck(fileName, root):
-                    at.addAtIgnore(root)
-                    return
-                at.openStringForFile(root)
+            ###if new:
+            if not at.precheck(fileName, root):
+                at.addAtIgnore(root)
+                return
+            at.openStringForFile(root)
             if c.persistenceController:
                 c.persistenceController.update_before_write_foreign_file(root)
-            if new: ###
-                pass
-            else:
-                ok = at.openFileForWriting(root, fileName)
-                if not ok:
-                    g.es("not written:", fileName)
-                    at.addAtIgnore(root)
-                    return False
+            ###
+                # if new: ###
+                    # pass
+                # else:
+                    # ok = at.openFileForWriting(root, fileName)
+                    # if not ok:
+                        # g.es("not written:", fileName)
+                        # at.addAtIgnore(root)
+                        # return False
             at.writeAtAutoContents(fileName, root)
             contents = at.closeWriteFile()
             if at.errors:
@@ -1319,17 +1314,18 @@ class AtFile(object):
                 defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
                 sentinels=False,
             )
-            if new:
-                if not at.precheck(fileName, root):
-                    at.addAtIgnore(root)
-                    return
-                at.openStringForFile(root)
-            else:
-                ok = at.openFileForWriting(root, fileName=fileName)
-                if not ok:
-                    g.es("not written:", fileName)
-                    at.addAtIgnore(root)
-                    return False
+            ###if new:
+            if not at.precheck(fileName, root):
+                at.addAtIgnore(root)
+                return
+            at.openStringForFile(root)
+            ###
+                # else:
+                    # ok = at.openFileForWriting(root, fileName=fileName)
+                    # if not ok:
+                        # g.es("not written:", fileName)
+                        # at.addAtIgnore(root)
+                        # return False
             contents = ''.join([s for s in g.splitLines(p.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
             self.os(contents)
@@ -2509,10 +2505,12 @@ class AtFile(object):
         assert not at.toString, g.callers()
         assert at.outputFile, g.callers()
         at.outputFile.flush()
-        if new:
-            contents = at.outputFile.get()
-        else:
-            contents = at.outputContents = at.outputFile.get()
+        contents = at.outputFile.get()
+        ###
+            # if new:
+                # contents = at.outputFile.get()
+            # else:
+                # contents = at.outputContents = at.outputFile.get()
         at.outputFile.close()
         at.outputFile = None
         return contents
