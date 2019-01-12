@@ -186,34 +186,25 @@ class AtFile(object):
         self.initCommonIvars()
         assert at.checkPythonCodeOnWrite is not None
         assert at.underindentEscapeString is not None
+        #
+        # Copy args
         at.atEdit = atEdit
         at.atShadow = atShadow
-        # at.default_directory: set by scanAllDirectives()
+        at.root = root
+        at.sentinels = sentinels
+        #
+        # Set other ivars.
         at.docKind = None
         if forcePythonSentinels:
+            # Force Python comment delims for g.getScript.
             at.endSentinelComment = None
-        # at.endSentinelComment: set by initCommonIvars.
-        # at.encoding:           set by scanAllDirectives() below.
-        # at.explicitLineEnding: set below.
+            at.startSentinelComment = "#"
+        # at.endSentinelComment: set by initCommonIvars().
         at.force_newlines_in_at_nosent_bodies = \
             c.config.getBool('force_newlines_in_at_nosent_bodies')
-        # at.language:      set by scanAllDirectives() below.
-        # at.outputFile:    set below.
-        # at.outputNewline: set below.
-        if forcePythonSentinels:
-            # Force Python comment delims for g.getScript.
-            at.startSentinelComment = "#"
-        # else:                 set by initCommonIvars.
-        # at.stringOutput:      set below.
-        # at.outputFileName:    set below.
-        # at.output_newline:    set by scanAllDirectives() below.
-        # at.page_width:        set by scanAllDirectives() below.
         at.outputContents = None
         at.sameFiles = 0
-        at.sentinels = sentinels
         at.shortFileName = "" # For messages.
-        at.root = root
-        # at.tab_width:         set by scanAllDirectives() below.
         at.targetFileName = targetFileName
             # Must be None for @shadow.
         at.thinFile = True
@@ -226,20 +217,26 @@ class AtFile(object):
                 # at.output_newline
                 # at.page_width
                 # at.tab_width
+        #
         # Override at.default_directory if an explicit directory is given.
         if defaultDirectory:
             at.default_directory = defaultDirectory
+        #
         # Encoding directive overrides everything else.
         if at.language == 'python':
             encoding = g.getPythonEncodingFromString(root.b)
             if encoding:
                 at.encoding = encoding
-        # Init all other ivars even if there is an error.
+        #
+        # Remove root.v.tnodeList.
         if not at.errors and at.root:
             if hasattr(at.root.v, 'tnodeList'):
                 delattr(at.root.v, 'tnodeList')
             at.root.v._p_changed = True
-        return c.os_path_finalize_join(at.default_directory, at.targetFileName)
+        #
+        # Return the finalized file name.
+        fileName = c.os_path_finalize_join(at.default_directory, at.targetFileName)
+        return g.os_path_realpath(fileName)
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkDerivedFile
@@ -729,6 +726,7 @@ class AtFile(object):
         # Delete all children.
         while p.hasChildren():
             p.firstChild().doDelete()
+        g.trace(shadow_exists, shadow_fn)
         if shadow_exists:
             at.read(p, atShadow=True, force=force)
         else:
