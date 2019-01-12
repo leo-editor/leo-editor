@@ -195,7 +195,6 @@ class AtFile(object):
         # at.endSentinelComment: set by initCommonIvars.
         # at.encoding:           set by scanAllDirectives() below.
         # at.explicitLineEnding: set below.
-        ### at.fileChangedFlag = False # True: the file has actually been updated.
         at.force_newlines_in_at_nosent_bodies = \
             c.config.getBool('force_newlines_in_at_nosent_bodies')
         # at.language:      set by scanAllDirectives() below.
@@ -1087,7 +1086,7 @@ class AtFile(object):
             fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
             if new:
                 if not at.precheck(fileName, root):
-                    at.addAtIgnore(root) ###
+                    at.addAtIgnore(root)
                     return
                 at.openStringForFile(root)
             else:
@@ -1128,7 +1127,7 @@ class AtFile(object):
             fileName = at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
             if new:
                 if not at.precheck(fileName, root):
-                    at.addAtIgnore(root) ###
+                    at.addAtIgnore(root)
                     return
                 at.openStringForFile(root)
             else:
@@ -1207,7 +1206,7 @@ class AtFile(object):
             )
             if new:
                 if not at.precheck(fileName, root):
-                    at.addAtIgnore(root) ###
+                    at.addAtIgnore(root)
                     return
                 at.openStringForFile(root)
             if c.persistenceController:
@@ -1323,7 +1322,7 @@ class AtFile(object):
             )
             if new:
                 if not at.precheck(fileName, root):
-                    at.addAtIgnore(root) ###
+                    at.addAtIgnore(root)
                     return
                 at.openStringForFile(root)
             else:
@@ -2486,7 +2485,6 @@ class AtFile(object):
     #@+node:ekr.20190110115327.1: *5* at.closeStringFile
     def closeStringFile(self):
         '''Close a string file opened with at.openStringForWriting.'''
-        ### changed
         at = self
         assert at.toString, g.callers()
         assert at.outputFile, g.callers()
@@ -2496,7 +2494,6 @@ class AtFile(object):
             # Required for various checks.
         at.outputFile.close()
         at.outputFile = None
-        ### at.fileChangedFlag = False
         return at.stringOutput
     #@+node:ekr.20041005105605.135: *5* at.closeWriteFile
     # 4.0: Don't use newline-pending logic.
@@ -2515,7 +2512,7 @@ class AtFile(object):
             contents = at.outputContents = at.outputFile.get()
         at.outputFile.close()
         at.outputFile = None
-        return contents ### new
+        return contents
 
     #@+node:ekr.20041005105605.197: *5* at.compareFiles
     def compareFiles(self, path1, path2, ignoreLineEndings, ignoreBlankLines=False):
@@ -2710,8 +2707,6 @@ class AtFile(object):
     def openStringForString(self):
         '''Return a string-file for writing to an actual file.'''
         at = self
-        ### at.shortFileName = g.shortFileName(fn)
-        ### at.outputFileName = "<string: %s>" % at.shortFileName
         at.outputFile = g.FileLikeObject()
         if g.app.unitTesting: at.output_newline = '\n'
         at.stringOutput = ""
@@ -2727,7 +2722,7 @@ class AtFile(object):
         if g.app.unitTesting: at.output_newline = '\n'
         at.stringOutput = ""
         at.toString = False
-        ### return True
+
     #@+node:ekr.20041005105605.201: *5* at.os and allies
     # Note:  self.outputFile may be either a FileLikeObject or a real file.
     #@+node:ekr.20041005105605.202: *6* at.oblank, oblanks & otabs
@@ -2919,7 +2914,7 @@ class AtFile(object):
     #@+node:ekr.20041005105605.212: *5* at.replaceFile & helper
     def replaceFile(self, contents, fileName, root, ignoreBlankLines=False):
         '''Return True if the original file was changed (for unit testing only).'''
-        at = self ###; c = at.c
+        at = self
         if new:
             return at.new_replaceFile(contents, fileName, root, ignoreBlankLines=ignoreBlankLines)
         else:
@@ -2929,7 +2924,7 @@ class AtFile(object):
         '''Write or create the given file from the contents.
         Return True if the original file was changed.
         '''
-        at = self; c = at.c
+        at, c = self, self.c
         assert not at.toString, g.callers()
         if root:
             root.clearDirty()
@@ -2946,9 +2941,9 @@ class AtFile(object):
         if not g.os_path_exists(fileName):
             ok = at.create(fileName, contents)
             if ok:
-                c.setFileTimeStamp(fileName) ### at.targetFileName
+                c.setFileTimeStamp(fileName)
                 if not g.unitTesting:
-                    g.es('%screated: %s' % (timestamp, fileName)) ### at.targetFileName
+                    g.es('%screated: %s' % (timestamp, fileName))
                 if root:
                     # Fix bug 889175: Remember the full fileName.
                     at.rememberReadPath(at.targetFileName, root)
@@ -2956,13 +2951,11 @@ class AtFile(object):
                 # at.rename gives the error.
                 at.addAtIgnore(root)
             # No original file to change. Return value tested by a unit test.
-            ### at.fileChangedFlag = False
             at.checkPythonCode(root)
             return False # No change to original file.
         # 
         # 2. Do nothing if fileName is identical to the contents.
-        if at.compareContentsWithFile(
-            contents, fileName,
+        if at.compareContentsWithFile(contents, fileName,
             ignoreBlankLines=ignoreBlankLines,
             ignoreLineEndings=not at.explicitLineEnding,
         ):
@@ -2970,7 +2963,6 @@ class AtFile(object):
             at.sameFiles += 1
             if report and not g.unitTesting:
                 g.es('%sunchanged: %s' % (timestamp, at.shortFileName))
-            ### at.fileChangedFlag = False
             # Leo 5.6: Check unchanged files.
             at.checkPythonCode(root, pyflakes_errors_only=True)
             return False # No change to original file.
@@ -2978,15 +2970,13 @@ class AtFile(object):
         # 3. Write the file.
         if (
             at.explicitLineEnding and
-            at.compareContentsWithFile(
-                contents, fileName,
-                ignoreBlankLines=ignoreBlankLines,
-                ignoreLineEndings=True,
-        )):
+            at.compareContentsWithFile(contents, fileName,
+                ignoreBlankLines=ignoreBlankLines, ignoreLineEndings=True)
+        ):
             g.warning("correcting line endings in:", at.targetFileName)
-        ok = at.create(fileName, contents) ### at.targetFileName
+        ok = at.create(fileName, contents)
         if ok:
-            c.setFileTimeStamp(fileName) ###at.targetFileName)
+            c.setFileTimeStamp(fileName)
             if not g.unitTesting:
                 g.es('%swrote: %s' % (timestamp, at.shortFileName))
         else:
@@ -2995,7 +2985,6 @@ class AtFile(object):
             at.addAtIgnore(root)
         at.checkPythonCode(root)
             # Bug fix: check *after* writing the file.
-        ### at.fileChangedFlag = ok
         return ok
     #@+node:ekr.20190111172117.1: *6* at.old_replaceFile
     def old_replaceFile(self, contents, fileName, root, ignoreBlankLines=False):
