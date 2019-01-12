@@ -1075,15 +1075,10 @@ class AtFile(object):
             c.endEditing()
             c.init_error_dialogs()
             fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
-            ### if new:
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return
             at.openStringForFile(root)
-            ###
-                # else:
-                    # if not at.openFileForWriting(root, fileName):
-                        # return
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
             contents = at.closeWriteFile()
@@ -1117,15 +1112,10 @@ class AtFile(object):
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
-            ###if new:
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return
             at.openStringForFile(root)
-            ###
-                # else:
-                    # if not at.openFileForWriting(root, fileName):
-                        # return
             at.writeOpenFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
             contents = at.closeWriteFile()
@@ -1138,7 +1128,7 @@ class AtFile(object):
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
             at.writeException()
-    #@+node:ekr.20041005105605.151: *6* at.writeMissing & helper (test)
+    #@+node:ekr.20041005105605.151: *6* at.writeMissing & helper
     def writeMissing(self, p):
         at, c = self, self.c
         writtenFiles = False
@@ -1147,7 +1137,6 @@ class AtFile(object):
         after = p.nodeAfterTree()
         while p and p != after: # Don't use iterator.
             if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
-                ### at.targetFileName = p.anyAtFileNodeName()
                 fileName = p.anyAtFileNodeName()
                 if fileName:
                     fileName = c.os_path_finalize_join(at.default_directory, fileName)
@@ -1156,17 +1145,6 @@ class AtFile(object):
                         writtenFiles = True
                     else:
                         at.addAtIgnore(p)
-                ###
-                    # if at.targetFileName:
-                    # at.targetFileName = c.os_path_finalize_join(
-                        # self.default_directory, at.targetFileName)
-                        # if not g.os_path_exists(at.targetFileName):
-                            # ok = at.openFileForWriting(p, at.targetFileName)
-                                # # Calls at.addAtIgnore() if there are errors.
-                            # if ok:
-                                # at.writeMissingNode(p)
-                                # writtenFiles = True
-                                # at.closeWriteFile()
                 p.moveToNodeAfterTree()
             elif p.isAtIgnoreNode():
                 p.moveToNodeAfterTree()
@@ -1208,22 +1186,12 @@ class AtFile(object):
                 defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
                 sentinels=False,
             )
-            ###if new:
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return
             at.openStringForFile(root)
             if c.persistenceController:
                 c.persistenceController.update_before_write_foreign_file(root)
-            ###
-                # if new: ###
-                    # pass
-                # else:
-                    # ok = at.openFileForWriting(root, fileName)
-                    # if not ok:
-                        # g.es("not written:", fileName)
-                        # at.addAtIgnore(root)
-                        # return False
             at.writeAtAutoContents(fileName, root)
             contents = at.closeWriteFile()
             if at.errors:
@@ -1325,18 +1293,10 @@ class AtFile(object):
                 defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
                 sentinels=False,
             )
-            ###if new:
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return
             at.openStringForFile(root)
-            ###
-                # else:
-                    # ok = at.openFileForWriting(root, fileName=fileName)
-                    # if not ok:
-                        # g.es("not written:", fileName)
-                        # at.addAtIgnore(root)
-                        # return False
             contents = ''.join([s for s in g.splitLines(p.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
             self.os(contents)
@@ -2517,11 +2477,6 @@ class AtFile(object):
         assert at.outputFile, g.callers()
         at.outputFile.flush()
         contents = at.outputFile.get()
-        ###
-            # if new:
-                # contents = at.outputFile.get()
-            # else:
-                # contents = at.outputContents = at.outputFile.get()
         at.outputFile.close()
         at.outputFile = None
         return contents
@@ -2640,7 +2595,7 @@ class AtFile(object):
         at.outputFile = g.FileLikeObject()
         if g.app.unitTesting: at.output_newline = '\n'
         at.stringOutput = ""
-        at.toString = True ###
+        at.toString = True
     #@+node:ekr.20190109145850.1: *5* at.openStringForFile
     def openStringForFile(self, root):
         at = self
@@ -2841,7 +2796,7 @@ class AtFile(object):
                 line = line.replace("@date", time.asctime())
                 if line:
                     self.putSentinel("@comment " + line)
-    #@+node:ekr.20190111172114.1: *5* at.replaceFile (new)
+    #@+node:ekr.20190111172114.1: *5* at.replaceFile
     def replaceFile(self, contents, fileName, root, ignoreBlankLines=False):
         '''
         Write or create the given file from the contents.
@@ -2912,7 +2867,7 @@ class AtFile(object):
     def compareContentsWithFile(self, contents, path, ignoreLineEndings, ignoreBlankLines=False):
         """Compare two text files."""
         at = self
-        s1 = contents ###at.outputContents
+        s1 = contents
         e1 = at.encoding
         s2 = g.readFileIntoEncodedString(path)
         e2 = None

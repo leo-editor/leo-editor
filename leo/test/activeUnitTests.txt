@@ -1111,20 +1111,6 @@ f.write(s)
 s2 = at.closeAtShadowStringFile(f)
 assert s == s2,s2
 # assert at.toString
-#@+node:ekr.20090529115704.4563: *4* @@@test at.openForWrite: not a shadow file
-### This method no longer exists.
-at = c.atFileCommands
-x = c.shadowController
-filename = x.pathName('xyzzy')
-assert not g.os_path_exists(filename)
-try:
-    kind,theFile = at.openForWrite(filename)
-    assert kind == 'check'
-    if theFile: theFile.close()
-finally:
-    if g.os_path_exists(filename):
-        x.unlink(filename)
-        assert not g.os_path_exists(filename)
 #@+node:ekr.20071113145804.7: *4* @test at.parseLeoSentinel
 at=c.atFileCommands # self is a dummy argument.
 table = (

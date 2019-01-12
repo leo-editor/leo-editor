@@ -437,6 +437,7 @@
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
 <v t="ekr.20100802220019.5795"><vh>@@test at.deleteUnvistedNodes</vh></v>
 <v t="ekr.20110524091618.3488"><vh>@@test at.massageDocPart</vh></v>
+<v t="ekr.20090529115704.4563"><vh>@@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20050208051854"><vh>@@test atFile.printError</vh></v>
 <v t="ekr.20111118125141.3879"><vh>@@test bodyCtrl property</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
@@ -764,7 +765,7 @@
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20190109153806.1"><vh>Changed</vh>
+<v t="ekr.20190109153806.1"><vh>Recent</vh>
 <v t="ekr.20060602195313"><vh>@test at.write using @comment</vh>
 <v t="ekr.20060602195313.2"><vh>root</vh>
 <v t="ekr.20060602195313.3"><vh>&lt;&lt; Get LRR Task &gt;&gt;</vh></v>
@@ -775,15 +776,11 @@
 <v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
 </v>
 <v t="ekr.20090529115704.4562"><vh>@test at.open/closeAtShadowStringFile</vh></v>
-<v t="ekr.20090529115704.4563"><vh>@@@test at.openForWrite: not a shadow file</vh></v>
-</v>
 <v t="ekr.20190111110537.1"><vh>re: at.replaceFile</vh>
 <v t="ekr.20050105094311"><vh>@test at.replaceFile (different contents)</vh></v>
 <v t="ekr.20050105095743"><vh>@test at.replaceFile (same contents)</vh></v>
 <v t="ekr.20050105100227"><vh>@test at.replaceFile (no target file)</vh></v>
 </v>
-<v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
-<v t="ekr.20090529115704.4565"><vh>@@shadow unittest/read_test.py</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2390,24 +2387,6 @@ finally:
     if g.os_path_exists(filename):
         x.unlink(filename)
         assert not g.os_path_exists(filename)
-</t>
-<t tx="ekr.20090529115704.4564">at = c.atFileCommands
-x = c.shadowController
-changed = c.changed
-child = p.firstChild()
-s = child.b
-try:
-    fn = 'unittest/read_test.py'
-    child.setHeadString('@shadow %s' % fn)
-    at.writeOneAtShadowNode(child, testing=True)
-    at.readOneAtShadowNode(fn,child)
-finally:
-    child.setHeadString('@@shadow %s' % fn)
-    c.setChanged(changed)
-</t>
-<t tx="ekr.20090529115704.4565">@language python
-@tabwidth -4
-@others
 </t>
 <t tx="ekr.20090529115704.4567">at = c.atFileCommands
 x = c.shadowController
