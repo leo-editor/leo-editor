@@ -179,7 +179,7 @@ class AtFile(object):
     ):
         '''
         Compute default values of all write-related ivars.
-        Return the default output file.
+        Return the finalized name of the output file.
         '''
         at, c = self, self.c
         assert root
@@ -221,9 +221,8 @@ class AtFile(object):
         # Overrides of at.scanAllDirectives...
         if defaultDirectory:
             at.default_directory = defaultDirectory
-        #
-        # Encoding directive overrides everything else.
         if at.language == 'python':
+            # Encoding directive overrides everything else.
             encoding = g.getPythonEncodingFromString(root.b)
             if encoding:
                 at.encoding = encoding
@@ -235,8 +234,8 @@ class AtFile(object):
             at.root.v._p_changed = True
         #
         # Return the finalized file name.
-        fileName = c.os_path_finalize_join(at.default_directory, at.targetFileName)
-        return g.os_path_realpath(fileName)
+        return g.os_path_realpath(
+            c.os_path_finalize_join(at.default_directory, at.targetFileName))
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkDerivedFile
@@ -726,7 +725,6 @@ class AtFile(object):
         # Delete all children.
         while p.hasChildren():
             p.firstChild().doDelete()
-        g.trace(shadow_exists, shadow_fn) ### For travisCI.
         if shadow_exists:
             at.read(p, atShadow=True, force=force)
         else:
@@ -1363,11 +1361,6 @@ class AtFile(object):
                 forcePythonSentinels = True)
                     # Force python sentinels to suppress an error message.
                     # The actual sentinels will be set below.
-            ###
-                # full_path = g.fullPath(c, p)
-                # at.initWriteIvars(root, None, atShadow=True, forcePythonSentinels=True)
-                    # # Force python sentinels to suppress an error message.
-                    # # The actual sentinels will be set below.
             at.outputFileName = g.u('')
                 # Override.
             at.default_directory = g.os_path_dirname(full_path)
