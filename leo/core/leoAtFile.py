@@ -230,7 +230,7 @@ class AtFile(object):
         #
         # Return the finalized file name.
         return g.os_path_realpath(
-            c.os_path_finalize_join(at.default_directory, targetFileName)) ### at.targetFileName
+            c.os_path_finalize_join(at.default_directory, targetFileName))
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkDerivedFile
