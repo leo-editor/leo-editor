@@ -777,11 +777,11 @@
 <v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
 </v>
 <v t="ekr.20090529115704.4562"><vh>@test at.open/closeAtShadowStringFile</vh></v>
+</v>
 <v t="ekr.20190111110537.1"><vh>re: at.replaceFile</vh>
 <v t="ekr.20050105094311"><vh>@test at.replaceFile (different contents)</vh></v>
 <v t="ekr.20050105095743"><vh>@test at.replaceFile (same contents)</vh></v>
 <v t="ekr.20050105100227"><vh>@test at.replaceFile (no target file)</vh></v>
-</v>
 </v>
 </vnodes>
 <tnodes>

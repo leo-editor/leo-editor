@@ -199,6 +199,7 @@ class AtFile(object):
             c.config.getBool('force_newlines_in_at_nosent_bodies')
         at.outputContents = None
         at.sameFiles = 0
+            # For communication between replaceFile and reportEndOfWrite.
         at.targetFileName = targetFileName
             # Must be None for @shadow.
         at.thinFile = True
@@ -1374,7 +1375,12 @@ class AtFile(object):
                     # makeShadowDirectory takes a *public* file name.
                 at.replaceFileWithString(private_fn, at.private_s)
                 at.replaceFileWithString(full_path, at.public_s)
-            self.checkPythonCode(root, s=at.private_s, targetFn=full_path)
+            at.checkPythonCode(
+                ### s=at.private_s, targetFn=full_path)
+                contents = at.private_s,
+                fileName = full_path,
+                root = root,
+            )
             if at.errors:
                 g.error("not written:", full_path)
                 at.addAtIgnore(root)
@@ -2321,20 +2327,26 @@ class AtFile(object):
             g.es('read only:', repr(path), color='red')
         return ok
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
-    def checkPythonCode(self, root, s=None, targetFn=None, pyflakes_errors_only=False):
+    def checkPythonCode(self, contents, fileName, root, pyflakes_errors_only=False): ### , targetFn=None, 
+            ### s=None
         '''Perform python-related checks on root.'''
         at = self
-        if not targetFn:
-            targetFn = at.targetFileName
-        if targetFn and targetFn.endswith('.py') and at.checkPythonCodeOnWrite:
-            if not s:
-                s = at.outputContents
-                if not s: return
+        ###
+        # if not targetFn:
+            # targetFn = at.targetFileName
+        if not contents:
+            return True
+        ### if targetFn and targetFn.endswith('.py') and at.checkPythonCodeOnWrite:
+        if fileName and fileName.endswith('.py') and at.checkPythonCodeOnWrite:
+            ###
+                # if not s:
+                    # s = at.outputContents
+                    # if not s: return
             # It's too slow to check each node separately.
             if pyflakes_errors_only:
                 ok = True
             else:
-                ok = at.checkPythonSyntax(root, s)
+                ok = at.checkPythonSyntax(root, contents) ### s)
             # Syntax checking catches most indentation problems.
                 # if ok: at.tabNannyNode(root,s)
             if ok and at.runPyFlakesOnWrite and not g.unitTesting:
@@ -2342,7 +2354,7 @@ class AtFile(object):
             else:
                 ok2 = True
             if not ok or not ok2:
-                g.app.syntax_error_files.append(g.shortFileName(targetFn))
+                g.app.syntax_error_files.append(g.shortFileName(fileName)) ### targetFn))
     #@+node:ekr.20090514111518.5663: *6* at.checkPythonSyntax
     def checkPythonSyntax(self, p, body, supress=False):
         at = self
@@ -2819,7 +2831,7 @@ class AtFile(object):
             else:
                 at.addAtIgnore(root)
             # No original file to change. Return value tested by a unit test.
-            at.checkPythonCode(root)
+            at.checkPythonCode(contents, fileName, root)
             return False # No change to original file.
         # 
         # 2. Do nothing if fileName is identical to the contents.
@@ -2832,7 +2844,7 @@ class AtFile(object):
             if report and not g.unitTesting:
                 g.es('%sunchanged: %s' % (timestamp, sfn))
             # Leo 5.6: Check unchanged files.
-            at.checkPythonCode(root, pyflakes_errors_only=True)
+            at.checkPythonCode(contents, fileName, root, pyflakes_errors_only=True)
             return False # No change to original file.
         #
         # 3. Write the file.
@@ -2851,7 +2863,7 @@ class AtFile(object):
             g.error('error writing', sfn)
             g.es('not written:', sfn)
             at.addAtIgnore(root)
-        at.checkPythonCode(root)
+        at.checkPythonCode(contents, fileName, root)
             # Bug fix: check *after* writing the file.
         return ok
     #@+node:ekr.20190111174802.1: *6* at.compareFileWithContents
