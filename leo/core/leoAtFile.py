@@ -161,7 +161,7 @@ class AtFile(object):
         at.v = None
         at.vStack = [] # Stack of at.v values.
         at.thinChildIndexStack = [] # number of siblings at this level.
-        at.thinFile = False
+        ### at.thinFile = False
             # True if the external file uses new-style sentinels.
         at.thinNodeStack = [] # Entries are vnodes.
         at.updateWarningGiven = False
@@ -202,7 +202,7 @@ class AtFile(object):
             # For communication between replaceFile and reportEndOfWrite.
         at.targetFileName = targetFileName
             # For at.writeError only.
-        at.thinFile = True
+        ### at.thinFile = True
         at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
             # Sets the following ivars:
                 # at.default_directory
