@@ -1076,10 +1076,10 @@ class AtFile(object):
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return
-            at.openStringForFile(root)
+            at.openStringForFile()
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
-            contents = at.closeWriteFile()
+            contents = at.closeStringFile()
             at.replaceFile(contents, fileName, root)
         except Exception:
             at.writeException(fileName, root)
@@ -1113,10 +1113,10 @@ class AtFile(object):
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return
-            at.openStringForFile(root)
+            at.openStringForFile()
             at.writeOpenFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
-            contents = at.closeWriteFile()
+            contents = at.closeStringFile()
             if at.errors:
                 g.es("not written:", g.shortFileName(fileName))
                 at.addAtIgnore(root)
@@ -1187,11 +1187,11 @@ class AtFile(object):
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return
-            at.openStringForFile(root)
+            at.openStringForFile()
             if c.persistenceController:
                 c.persistenceController.update_before_write_foreign_file(root)
             at.writeAtAutoContents(fileName, root)
-            contents = at.closeWriteFile()
+            contents = at.closeStringFile()
             if at.errors:
                 g.es("not written:", fileName)
                 at.addAtIgnore(root)
@@ -1294,11 +1294,11 @@ class AtFile(object):
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return
-            at.openStringForFile(root)
+            at.openStringForFile()
             contents = ''.join([s for s in g.splitLines(p.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
             self.os(contents)
-            contents = at.closeWriteFile()
+            contents = at.closeStringFile()
             at.replaceFile(contents, fileName, root)
             c.raise_error_dialogs(kind='write')
             return True
@@ -2444,23 +2444,9 @@ class AtFile(object):
     def closeStringFile(self):
         '''Close a string file opened with at.openStringForWriting.'''
         at = self
-        assert at.toString, g.callers()
         assert at.outputFile, g.callers()
         at.outputFile.flush()
         contents = g.toUnicode('' if at.errors else at.outputFile.get())
-        at.outputFile.close()
-        at.outputFile = None
-        return contents
-    #@+node:ekr.20041005105605.135: *5* at.closeWriteFile
-    # 4.0: Don't use newline-pending logic.
-
-    def closeWriteFile(self):
-        '''Close the file and return its contents.'''
-        at = self
-        assert not at.toString, g.callers()
-        assert at.outputFile, g.callers()
-        at.outputFile.flush()
-        contents = at.outputFile.get()
         at.outputFile.close()
         at.outputFile = None
         return contents
@@ -2536,22 +2522,31 @@ class AtFile(object):
             return True, i + 2
         else:
             return False, -1
-    #@+node:ekr.20190111120057.1: *5* at.openStringForString
+    #@+node:ekr.20190109145850.1: *5* at.openStringForFile/String
+    def openStringForFile(self): ###, root):
+        at = self
+        ### fn = root.anyAtFileNodeName() or root.h # use root.h for unit tests.
+        ### assert fn, repr(root)
+        at.openStringHelper()
+        # at.outputFile = g.FileLikeObject()
+        # if g.app.unitTesting:
+            # at.output_newline = '\n'
+        at.toString = False
+
     def openStringForString(self):
         '''Return a string-file for writing to an actual file.'''
+        at = self
+        at.openStringHelper()
+        # at.outputFile = g.FileLikeObject()
+        # if g.app.unitTesting:
+            # at.output_newline = '\n'
+        at.toString = True
+        
+    def openStringHelper(self):
         at = self
         at.outputFile = g.FileLikeObject()
         if g.app.unitTesting:
             at.output_newline = '\n'
-        at.toString = True
-    #@+node:ekr.20190109145850.1: *5* at.openStringForFile
-    def openStringForFile(self, root):
-        at = self
-        fn = root.anyAtFileNodeName() or root.h # use root.h for unit tests.
-        assert fn, repr(root)
-        at.outputFile = g.FileLikeObject()
-        if g.app.unitTesting: at.output_newline = '\n'
-        at.toString = False
     #@+node:ekr.20041005105605.201: *5* at.os and allies
     # Note:  self.outputFile may be either a FileLikeObject or a real file.
     #@+node:ekr.20041005105605.202: *6* at.oblank, oblanks & otabs
