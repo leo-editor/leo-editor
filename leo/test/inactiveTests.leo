@@ -1018,7 +1018,7 @@
 <v t="ekr.20110728154927.3324"><vh>@@test position &gt; operator</vh></v>
 </v>
 </v>
-<v t="ekr.20190113114613.2"><vh>old tests</vh>
+<v t="ekr.20190113114613.2"><vh>Newer unused tests</vh>
 <v t="ekr.20190113114613.3"><vh>@@suite @nosent with javascript</vh>
 <v t="ekr.20190113114613.4"><vh>@@shadow-tests</vh>
 <v t="ekr.20190113114613.5"><vh>@@shadow-test equal @nosent @doc</vh>
@@ -1275,6 +1275,7 @@
 <v t="ekr.20190113114613.183"><vh>@@test AdminPermission.java</vh></v>
 <v t="ekr.20190113114613.184"><vh>@@test at.deleteUnvistedNodes</vh></v>
 <v t="ekr.20190113114613.185"><vh>@@test at.massageDocPart</vh></v>
+<v t="ekr.20190113123110.1"><vh>@@test at.open/closeAtShadowStringFile</vh></v>
 <v t="ekr.20190113114613.186"><vh>@@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20190113114613.187"><vh>@@test at.rename</vh></v>
 <v t="ekr.20190113114613.188"><vh>@@test atFile.printError</vh></v>
@@ -19128,5 +19129,17 @@ node 2 line 2
 node 1 line 2
 </t>
 <t tx="ekr.20190113114631.1"></t>
+<t tx="ekr.20190113123110.1">at = c.atFileCommands
+
+# at.toString is set by the execute-script command.
+# at.outputFile = f = g.fileLikeObject() # Re-allocate for the test.
+f = at.openAtShadowStringFile('abc')
+assert isinstance(f,g.fileLikeObject)
+s = 'abc'
+f.write(s)
+s2 = at.closeAtShadowStringFile(f)
+assert s == s2,s2
+# assert at.toString
+</t>
 </tnodes>
 </leo_file>

@@ -64,8 +64,33 @@
 <v t="ekr.20190109152926.5"><vh>@data:#@auto</vh>
 <v t="ekr.20190109152926.6"><vh>@gnxs</vh></v>
 </v>
+<v t="ekr.20190113121854.1"><vh>@data:@auto unittest/at-auto-test.py</vh>
+<v t="ekr.20190113124357.7"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20190113124357.1"><vh>@data:@auto unittest/at-auto-line-number-test.py</vh>
+<v t="ekr.20190113124357.2"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20190113124357.3"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
+<v t="ekr.20190113124357.4"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20190113124357.5"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
+<v t="ekr.20190113124357.6"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20190113124357.8"><vh>@data:@auto unittest/at-auto-test.py</vh>
+<v t="ekr.20190113124357.9"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20190113124357.10"><vh>@data:@auto unittest/at-auto-unit-test.py</vh>
+<v t="ekr.20190113124357.11"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20190113124357.12"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.org</vh>
+<v t="ekr.20190113124357.13"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20190113124357.14"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.otl</vh>
+<v t="ekr.20190113124357.15"><vh>@gnxs</vh></v>
+</v>
 </v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
+<v t="ekr.20190113122443.1"><vh>@bool add-context-to-headlines = False</vh></v>
 <v t="ekr.20080324133327.2"><vh>@bool allow-middle-button-paste = True</vh></v>
 <v t="ekr.20161011095551.1"><vh>@bool allow-section-references-in-at-auto = True</vh></v>
 <v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
@@ -76,8 +101,8 @@
 <v t="ekr.20150602215639.1"><vh>@bool tidy-autobeautify = False</vh></v>
 <v t="ekr.20070503064257"><vh>@bool use-chapters = True</vh></v>
 <v t="ekr.20150321155210.11"><vh>@bool verbose-check-outline = False</vh></v>
-<v t="ekr.20070528100318"><vh>@bool write-strips-blank-lines = False</vh></v>
 <v t="ekr.20181031152556.1"><vh>@bool write-script-file = True</vh></v>
+<v t="ekr.20070528100318"><vh>@bool write-strips-blank-lines = False</vh></v>
 <v t="ekr.20170415084531.1"><vh>@data import-html-tags</vh></v>
 <v t="ekr.20111026111009.3972"><vh>@data import-xml-tags</vh></v>
 <v t="ekr.20111123042627.6654"><vh>@enabled-plugins</vh></v>
@@ -179,18 +204,49 @@
 <v t="ekr.20111125182408.3947"><vh>@test ic.createImportParent changes back-slashes to slashes</vh></v>
 </v>
 </v>
+<v t="ekr.20190113120618.1"><vh>Files</vh>
+<v t="ekr.20190113120734.1"><vh>@asis unittest/at-asis-test.py</vh>
+<v t="ekr.20190113120734.2"><vh>spam</vh></v>
+<v t="ekr.20190113120734.3"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20190113123439.5"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
+<v t="ekr.20190113123439.7"><vh>@auto unittest/at-auto-md-line-number-test.md</vh></v>
+<v t="ekr.20190113123439.11"><vh>@auto unittest/at-auto-section-ref-test.py</vh></v>
+<v t="ekr.20190113121550.1"><vh>@auto unittest/at-auto-test.py</vh></v>
+<v t="ekr.20190113123439.13"><vh>@auto unittest/at-auto-test.py</vh></v>
+<v t="ekr.20190113123439.16"><vh>@auto unittest/at-auto-unit-test.py</vh></v>
+<v t="ekr.20190113123635.2"><vh>@auto-org unittest/at-auto-org-line-number-test.org</vh></v>
+<v t="ekr.20190113123635.5"><vh>@auto-otl unittest/at-auto-otl-line-number-test.otl</vh></v>
+<v t="ekr.20190113123822.1"><vh>@clean unittest/at-clean-line-number-test.c</vh>
+<v t="ekr.20190113123822.2"><vh>spam</vh></v>
+<v t="ekr.20190113123822.3"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20190113123853.1"><vh>@clean unittest/at-clean-line-number-test.py</vh>
+<v t="ekr.20190113123853.2"><vh>spam</vh></v>
+<v t="ekr.20190113123853.3"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20160403123754.1"><vh>@file unittest/at-file-line-number-test.c</vh></v>
+<v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh></v>
+<v t="ekr.20111021115306.3697"><vh>@file unittest/tex-error.tex</vh></v>
+<v t="ekr.20130912092638.4150"><vh>@file unittest/utf-16-test.txt</vh></v>
+<v t="ekr.20190113124135.1"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
+<v t="ekr.20190113124135.2"><vh>spam</vh></v>
+<v t="ekr.20190113124135.3"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20100731163237.5782"><vh>@thin unittest/at-thin-html-test.html</vh></v>
+<v t="ekr.20090704085350.5022"><vh>@thin unittest/at-thin-test.py</vh></v>
+</v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20181102063435.1"><vh>Fails...</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20190112105415.1"><vh>A</vh></v>
-<v t="ekr.20190112105415.3"><vh>newHeadline</vh></v>
-<v t="ekr.20190112105415.2"><vh>B</vh></v>
+<v t="ekr.20190113123219.1"><vh>A</vh></v>
+<v t="ekr.20190113123219.3"><vh>newHeadline</vh></v>
+<v t="ekr.20190113123219.2"><vh>B</vh></v>
 </v>
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20090529115704.4562"><vh>@@test at.open/closeAtShadowStringFile</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -691,18 +747,6 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-</t>
-<t tx="ekr.20090529115704.4562">at = c.atFileCommands
-
-# at.toString is set by the execute-script command.
-# at.outputFile = f = g.fileLikeObject() # Re-allocate for the test.
-f = at.openAtShadowStringFile('abc')
-assert isinstance(f,g.fileLikeObject)
-s = 'abc'
-f.write(s)
-s2 = at.closeAtShadowStringFile(f)
-assert s == s2,s2
-# assert at.toString
 </t>
 <t tx="ekr.20091206090247.5060"># Use these with caution.</t>
 <t tx="ekr.20091206090247.5061">count = 0
@@ -1490,8 +1534,115 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="ekr.20190112105415.1"></t>
-<t tx="ekr.20190112105415.2"></t>
-<t tx="ekr.20190112105415.3"></t>
+<t tx="ekr.20190113120618.1"># At least one unit test uses each of these files.</t>
+<t tx="ekr.20190113120734.1">@language python
+@others
+</t>
+<t tx="ekr.20190113120734.2">def spam():
+    pass</t>
+<t tx="ekr.20190113120734.3">def eggs():
+    pass</t>
+<t tx="ekr.20190113121854.1">gnx: ekr.20190113121550.1
+</t>
+<t tx="ekr.20190113122443.1"># Must be False for @auto unit tests.</t>
+<t tx="ekr.20190113123219.1"></t>
+<t tx="ekr.20190113123219.2"></t>
+<t tx="ekr.20190113123219.3"></t>
+<t tx="ekr.20190113123822.1">@language c
+@tabwidth -4
+// before @others // line 1
+@others
+// last line: line 6
+</t>
+<t tx="ekr.20190113123822.2">def spam(): // line 2
+    pass
+</t>
+<t tx="ekr.20190113123822.3">def eggs(): // line 4
+    pass
+</t>
+<t tx="ekr.20190113123853.1">@language python
+@tabwidth -4
+# Before @others: line 1
+@others
+# Last line: line 6
+</t>
+<t tx="ekr.20190113123853.2">def spam(): # line 2
+    pass
+</t>
+<t tx="ekr.20190113123853.3">def eggs(): # line 4
+    pass
+</t>
+<t tx="ekr.20190113124135.1">@language python
+@tabwidth -4
+# before @others: line 1
+@others
+# last line: line 6</t>
+<t tx="ekr.20190113124135.2">def spam(): # line 2
+    pass
+</t>
+<t tx="ekr.20190113124135.3">def eggs(): # line 4
+    pass</t>
+<t tx="ekr.20190113124357.1">gnx: ekr.20190113123439.5
+</t>
+<t tx="ekr.20190113124357.10">gnx: ekr.20190113123439.16
+</t>
+<t tx="ekr.20190113124357.11">gnx: ekr.20190113124246.32
+unl: class class1
+gnx: ekr.20190113124246.33
+unl: class class1--&gt;class1_method1
+gnx: ekr.20190113124246.34
+unl: class class1--&gt;class1_method2
+gnx: ekr.20190113124246.35
+unl: class class2
+gnx: ekr.20190113124246.36
+unl: class class2--&gt;class2_method1
+gnx: ekr.20190113124246.37
+unl: class class2--&gt;class2_method2
+</t>
+<t tx="ekr.20190113124357.12">gnx: ekr.20190113123635.2
+</t>
+<t tx="ekr.20190113124357.13">gnx: ekr.20190113124246.38
+unl: section 1
+gnx: ekr.20190113124246.39
+unl: section 2
+</t>
+<t tx="ekr.20190113124357.14">gnx: ekr.20190113123635.5
+</t>
+<t tx="ekr.20190113124357.15">gnx: ekr.20190113124246.40
+unl: First line.
+gnx: ekr.20190113124246.41
+unl: section 1
+gnx: ekr.20190113124246.42
+unl: section 2
+</t>
+<t tx="ekr.20190113124357.2">gnx: ekr.20190113124246.25
+unl: at_auto_child
+</t>
+<t tx="ekr.20190113124357.3">gnx: ekr.20190113123439.7
+</t>
+<t tx="ekr.20190113124357.4">gnx: ekr.20190113124246.26
+unl: !Declarations
+gnx: ekr.20190113124246.27
+unl: section 1
+gnx: ekr.20190113124246.28
+unl: section 2
+</t>
+<t tx="ekr.20190113124357.5">gnx: ekr.20190113123439.11
+</t>
+<t tx="ekr.20190113124357.6">gnx: ekr.20190113124246.29
+unl: Declarations
+</t>
+<t tx="ekr.20190113124357.7">gnx: ekr.20190113121909.7
+unl: spam
+gnx: ekr.20190113121909.8
+unl: eggs
+</t>
+<t tx="ekr.20190113124357.8">gnx: ekr.20190113123439.13
+</t>
+<t tx="ekr.20190113124357.9">gnx: ekr.20190113124246.30
+unl: spam
+gnx: ekr.20190113124246.31
+unl: eggs
+</t>
 </tnodes>
 </leo_file>

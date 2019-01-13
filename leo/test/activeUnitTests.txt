@@ -820,15 +820,12 @@ if g.app.isExternalUnitTest:
 
 h = '@asis unittest/at-asis-test.py'
 p = g.findNodeAnywhere(c,h)
-assert p
-
+assert p, h
 table = (
     (p.firstChild(),'spam'),
     (p.firstChild().next(),'eggs')
 )
-
 assert not p.isDirty(),p.h # Do not ignore this failure!
-
 for p2,h2 in table:
     assert p2.h == h2
     assert len(p2.b) > 10
@@ -884,14 +881,14 @@ if g.app.isExternalUnitTest:
 
 h = '@auto unittest/at-auto-test.py'
 p = g.findNodeAnywhere(c,h)
-assert p
+assert p, h
 table = (
     (p.firstChild(),'spam'),
     (p.firstChild().next(),'eggs')
 )
 assert not p.isDirty(),p.h # Do not ignore this failure!
-for p2,h2 in table:
-    assert p2.h == h2
+for p2, h2 in table:
+    assert p2.h == h2, (p2.h, h2)
     assert len(p2.b) > 10
 #@+node:ekr.20090225102051.2: *4* @test @edit
 c.testManager.runAtFileTest(p)
@@ -20561,9 +20558,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20190112105415.1: *6* A
-#@+node:ekr.20190112105415.3: *6* newHeadline
-#@+node:ekr.20190112105415.2: *6* B
+#@+node:ekr.20190113123219.1: *6* A
+#@+node:ekr.20190113123219.3: *6* newHeadline
+#@+node:ekr.20190113123219.2: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
