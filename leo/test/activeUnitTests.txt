@@ -875,7 +875,7 @@ def cheese():
 
     pass
 #end
-#@+node:ekr.20090704085350.5052: *4* @test @auto: shape of tree
+#@+node:ekr.20090704085350.5052: *4* @@test @auto: shape of tree
 if g.app.isExternalUnitTest:
     self.skipTest('Not for external tests: uses @<file> node.')
 h = '@auto unittest/at-auto-test.py'
@@ -887,7 +887,7 @@ table = (
 )
 assert not p.isDirty(), p.h # Do not ignore this failure!
 for p2, h2 in table:
-    assert p2 and p2.h == h2, (p2.h, h2)
+    assert p2 and p2.h == h2, (p2 and p2.h, h2)
     assert len(p2.b) > 10
 #@+node:ekr.20090225102051.2: *4* @test @edit
 c.testManager.runAtFileTest(p)
