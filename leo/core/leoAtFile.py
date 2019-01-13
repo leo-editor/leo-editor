@@ -98,7 +98,7 @@ class AtFile(object):
         at.startSentinelComment = ""
         at.startSentinelComment = ""
         at.tab_width = c.tab_width or -4
-        at.toString = False # True: sring-oriented read or write.
+        ### at.toString = False # True: sring-oriented read or write.
         at.writing_to_shadow_directory = False
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
     def initReadIvars(self, root, fileName,
@@ -1943,7 +1943,7 @@ class AtFile(object):
         isSection, junk = at.isSectionName(p.h, i)
         if isSection:
             return False # A section definition node.
-        elif at.sentinels or at.toString:
+        elif at.sentinels: ### or at.toString:
             # @ignore must not stop expansion here!
             return True
         elif p.isAtIgnoreNode():
@@ -2237,7 +2237,7 @@ class AtFile(object):
     def putOpenNodeSentinel(self, p, inAtAll=False):
         """Write @+node sentinel for p."""
         at = self
-        if not inAtAll and p.isAtFileNode() and p != at.root and not at.toString:
+        if not inAtAll and p.isAtFileNode() and p != at.root: ### and not at.toString:
             at.writeError("@file not valid in: " + p.h)
             return
         s = at.nodeSentinelText(p)
@@ -2513,22 +2513,27 @@ class AtFile(object):
     #@+node:ekr.20190109145850.1: *5* at.open/close string file
     # open/close methods used by top-level atFile.write logic.
 
-    def openStringForFile(self):
-        at = self
-        at.openStringHelper()
-        at.toString = False
-
-    def openStringForString(self):
-        at = self
-        at.openStringHelper()
-        at.toString = True
+    ###
+        # def openStringForFile(self):
+            # at = self
+            # at.openStringHelper()
+            # at.toString = False
         
-    def openStringHelper(self):
+        # def openStringForString(self):
+            # at = self
+            # at.openStringHelper()
+            # at.toString = True
+        
+    def initOutputString(self):
         at = self
         at.outputFile = g.FileLikeObject()
         if g.app.unitTesting:
             at.output_newline = '\n'
-
+            
+    ###
+    openStringForFile = initOutputString
+    openStringForString = initOutputString
+            
     def closeStringFile(self):
         at = self
         at.outputFile.flush()
