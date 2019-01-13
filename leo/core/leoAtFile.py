@@ -1539,17 +1539,29 @@ class AtFile(object):
                 ivars_dict = g.getIvarsDict(at)
             #
             # Write the public and private files to public_s and private_s strings.
-            data = []
-            for sentinels in (False, True):
-                at.openOutputStream()
-                at.sentinels = sentinels
-                at.putFile(root, sentinels=sentinels)
-                at.warnAboutOrphandAndIgnoredNodes()
-                s = at.closeOutputStream()
-                data.append(s)
-            # pylint: disable=unbalanced-tuple-unpacking
-                # data has exactly two elements.
-            at.public_s, at.private_s = data
+            if 1:
+                
+                def put(sentinels):
+                    at.openOutputStream()
+                    at.sentinels = sentinels
+                    at.putFile(root, sentinels=sentinels)
+                    at.warnAboutOrphandAndIgnoredNodes()
+                    return at.closeOutputStream()
+                    
+                at.public_s = put(False)
+                at.private_s = put(True)
+            else:
+                data = []
+                for sentinels in (False, True):
+                    at.openOutputStream()
+                    at.sentinels = sentinels
+                    at.putFile(root, sentinels=sentinels)
+                    at.warnAboutOrphandAndIgnoredNodes()
+                    s = at.closeOutputStream()
+                    data.append(s)
+                # pylint: disable=unbalanced-tuple-unpacking
+                    # data has exactly two elements.
+                at.public_s, at.private_s = data
             if g.app.unitTesting:
                 exceptions = ('public_s', 'private_s', 'sentinels', 'outputList')
                 assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
