@@ -1497,7 +1497,7 @@ class AtFile(object):
         except Exception:
             at.writeException(fileName, root)
             return False
-    #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helpers
+    #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helper
     def writeOneAtShadowNode(self, p, testing=False):
         '''
         Write p, an @shadow node.
@@ -1588,7 +1588,8 @@ class AtFile(object):
                 c.target_language = language
             else:
                 # An unknown language.
-                pass # Use the default language, **not** 'unknown_language'
+                # Use the default language, **not** 'unknown_language'
+                pass
     #@+node:ekr.20190111153506.1: *5* at.XToString
     #@+node:ekr.20190109160056.1: *6* at.atAsisToString
     def atAsisToString(self, root):
