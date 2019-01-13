@@ -92,13 +92,11 @@ class AtFile(object):
         at.language = None
         at.output_newline = g.getOutputNewline(c=c)
         at.page_width = None
-        ### at.pending = []
         at.raw = False # True: in @raw mode
         at.root = None # The root (a position) of tree being read or written.
         at.startSentinelComment = ""
         at.startSentinelComment = ""
         at.tab_width = c.tab_width or -4
-        ### at.toString = False # True: sring-oriented read or write.
         at.writing_to_shadow_directory = False
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
     def initReadIvars(self, root, fileName,
@@ -1247,7 +1245,7 @@ class AtFile(object):
             # An escape hatch: fall back to the theRst writer
             # if there is no rst writer plugin.
             outputFile = at.openOutputFile()
-            ok = c.rstCommands.writeAtAutoFile(root, fileName, outputFile) ### at.outputFile)
+            ok = c.rstCommands.writeAtAutoFile(root, fileName, outputFile)
             return outputFile.close() if ok else None
         # leo 5.6: allow undefined section references in all @auto files.
         ivar = 'allow_undefined_refs'
@@ -1384,12 +1382,10 @@ class AtFile(object):
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return False
-            ### at.openOutputFile()
             if c.persistenceController:
                 c.persistenceController.update_before_write_foreign_file(root)
-            contents, ok = at.writeAtAutoContents(fileName, root)
-            ### contents = at.closeOutputFile()
-            if not ok:
+            contents = at.writeAtAutoContents(fileName, root)
+            if contents is None:
                 g.es("not written:", fileName)
                 at.addAtIgnore(root)
                 return False
@@ -1637,10 +1633,7 @@ class AtFile(object):
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root, root.atAutoNodeName(), sentinels=False)
-            ### at.openOutputFile()
-            ### at.outputFile = g.FileLikeObject()
             return at.writeAtAutoContents(fileName, root) or g.u('')
-            ### return at.closeOutputFile()
         except Exception:
             at.writeException(fileName, root)
             return g.u('')
@@ -1794,7 +1787,6 @@ class AtFile(object):
                 # Fix bug 784920: @raw mode does not ignore directives
                 at.putCodeLine(s, i)
         elif kind in (at.docDirective, at.atDirective):
-            ### assert not at.pending, 'putBody at.pending'
             if not status.in_code:
                 # Bug fix 12/31/04: handle adjacent doc parts.
                 at.putEndDocLine()
@@ -1953,7 +1945,7 @@ class AtFile(object):
         isSection, junk = at.isSectionName(p.h, i)
         if isSection:
             return False # A section definition node.
-        elif at.sentinels: ### or at.toString:
+        elif at.sentinels:
             # @ignore must not stop expansion here!
             return True
         elif p.isAtIgnoreNode():
@@ -2098,7 +2090,6 @@ class AtFile(object):
     #@+node:ekr.20041005105605.181: *6* at.putBlankDocLine
     def putBlankDocLine(self):
         at = self
-        ### at.putPending(split=False)
         if not at.endSentinelComment:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment); at.oblank()
@@ -2130,7 +2121,6 @@ class AtFile(object):
     def putEndDocLine(self):
         """Write the conclusion of a doc part."""
         at = self
-        ### at.putPending(split=False)
         # Put the closing delimiter if we are using block comments.
         if at.endSentinelComment:
             at.putIndent(at.indent)
@@ -2225,7 +2215,7 @@ class AtFile(object):
     def putOpenNodeSentinel(self, p, inAtAll=False):
         """Write @+node sentinel for p."""
         at = self
-        if not inAtAll and p.isAtFileNode() and p != at.root: ### and not at.toString:
+        if not inAtAll and p.isAtFileNode() and p != at.root:
             at.writeError("@file not valid in: " + p.h)
             return
         s = at.nodeSentinelText(p)
@@ -2503,7 +2493,7 @@ class AtFile(object):
 
     def openOutputFile(self):
         '''
-        Open the output file, which must be file like'''
+        Open the output file, which must be file-like'''
         at = self
         at.outputFile = g.FileLikeObject()
         # Can't be inited in initWriteIvars because not valid in @shadow logic.
@@ -2511,7 +2501,7 @@ class AtFile(object):
             at.output_newline = '\n'
 
     def closeOutputFile(self):
-        '''Close the output stream, returning its contents.'''
+        '''Close the output file, returning its contents.'''
         at = self
         at.outputFile.flush()
         contents = g.toUnicode('' if at.errors else at.outputFile.get())
@@ -2523,7 +2513,7 @@ class AtFile(object):
     # open/close methods used by top-level atFile.write logic.
 
     def openOutputStream(self):
-        '''Open the output stream.'''
+        '''Open the output stream, which is *not* guaranteed to be a file-like object.'''
         at = self
         at.outputFile = g.FileLikeObject()
         # Can't be inited in initWriteIvars because not valid in @shadow logic.
@@ -2734,7 +2724,6 @@ class AtFile(object):
         Return True if the original file was changed.
         '''
         at, c = self, self.c
-        ### assert not at.toString, g.callers()
         if root:
             root.clearDirty()
         #
