@@ -1240,21 +1240,27 @@ class AtFile(object):
         junk, ext = g.os_path_splitext(fileName)
         writer = at.dispatch(ext, root)
         if writer:
+            at.openOutputStream()
             writer(root)
-        elif root.isAtAutoRstNode():
+            return at.closeOutputStream()
+        if root.isAtAutoRstNode():
             # An escape hatch: fall back to the theRst writer
             # if there is no rst writer plugin.
-            ok = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
-            if not ok: at.errors += 1
-        else:
-            # leo 5.6: allow undefined section references in all @auto files.
-            ivar = 'allow_undefined_refs'
-            try:
-                setattr(at, ivar, True)
-                at.putFile(root, sentinels=False)
-            finally:
-                if hasattr(at, ivar):
-                    delattr(at, ivar)
+            outputFile = at.openOutputFile()
+            ok = c.rstCommands.writeAtAutoFile(root, fileName, outputFile) ### at.outputFile)
+            return outputFile.close() if ok else None
+        # leo 5.6: allow undefined section references in all @auto files.
+        ivar = 'allow_undefined_refs'
+        try:
+            setattr(at, ivar, True)
+            at.openOutputStream()
+            at.putFile(root, sentinels=False)
+            return at.closeOutputStream()
+        except Exception:
+            return None
+        finally:
+            if hasattr(at, ivar):
+                delattr(at, ivar)
     #@+node:ekr.20190111153522.1: *5* at.writeX...
     #@+node:ekr.20041005105605.154: *6* at.asisWrite & helper
     def asisWrite(self, root):
@@ -1363,6 +1369,7 @@ class AtFile(object):
         '''
         Write p, an @auto node.
         File indices *must* have already been assigned.
+        Return True if the node was written successfully.
         '''
         at, c = self, self.c
         root = p.copy()
@@ -1376,13 +1383,13 @@ class AtFile(object):
             )
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
-                return
-            at.openOutputFile()
+                return False
+            ### at.openOutputFile()
             if c.persistenceController:
                 c.persistenceController.update_before_write_foreign_file(root)
-            at.writeAtAutoContents(fileName, root)
-            contents = at.closeOutputFile()
-            if at.errors:
+            contents, ok = at.writeAtAutoContents(fileName, root)
+            ### contents = at.closeOutputFile()
+            if not ok:
                 g.es("not written:", fileName)
                 at.addAtIgnore(root)
                 return False
@@ -1630,10 +1637,10 @@ class AtFile(object):
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root, root.atAutoNodeName(), sentinels=False)
-            at.openOutputFile()
-            at.outputFile = g.FileLikeObject()
-            at.writeAtAutoContents(fileName, root)
-            return at.closeOutputFile()
+            ### at.openOutputFile()
+            ### at.outputFile = g.FileLikeObject()
+            return at.writeAtAutoContents(fileName, root) or g.u('')
+            ### return at.closeOutputFile()
         except Exception:
             at.writeException(fileName, root)
             return g.u('')
