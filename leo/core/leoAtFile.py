@@ -1036,7 +1036,7 @@ class AtFile(object):
         return found
     #@+node:ekr.20041005105605.157: *5* at.putFile
     def putFile(self, root, fromString='', sentinels=True):
-        '''Write the contents of the file to the string output file.'''
+        '''Write the contents of the file to the output stream.'''
         at = self
         s = fromString if fromString else root.v.b
         root.clearAllVisitedInTree()
@@ -1489,11 +1489,11 @@ class AtFile(object):
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return
-            at.openOutputStream()
+            ### at.openOutputStream()
             contents = ''.join([s for s in g.splitLines(p.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
-            self.os(contents)
-            contents = at.closeOutputStream()
+            ### self.os(contents)
+            ### contents = at.closeOutputStream()
             at.replaceFile(contents, fileName, root)
             c.raise_error_dialogs(kind='write')
             return True
