@@ -875,9 +875,11 @@ def cheese():
 
     pass
 #end
-#@+node:ekr.20090704085350.5052: *4* @@test @auto: shape of tree
+#@+node:ekr.20090704085350.5052: *4* @test @auto: shape of tree
 if g.app.isExternalUnitTest:
     self.skipTest('Not for external tests: uses @<file> node.')
+if g.in_bridge:
+    self.skipTest('Not for TravisCI')
 h = '@auto unittest/at-auto-test.py'
 p = g.findNodeAnywhere(c,h)
 assert p, h

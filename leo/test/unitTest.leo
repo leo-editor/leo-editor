@@ -246,7 +246,7 @@
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20090704085350.5052"><vh>@@test @auto: shape of tree</vh></v>
+<v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -750,6 +750,8 @@ finally:
 </t>
 <t tx="ekr.20090704085350.5052">if g.app.isExternalUnitTest:
     self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
+if g.in_bridge:
+    self.skipTest('Not for TravisCI')
 h = '@auto unittest/at-auto-test.py'
 p = g.findNodeAnywhere(c,h)
 assert p, h
