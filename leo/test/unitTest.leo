@@ -766,6 +766,7 @@
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20090529115704.4562"><vh>@@test at.open/closeAtShadowStringFile</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2207,6 +2208,18 @@ x.show_error(
     message = "Test of x.show_error",
     lines1_message = "lines1",
     lines2_message = "lines2")
+</t>
+<t tx="ekr.20090529115704.4562">at = c.atFileCommands
+
+# at.toString is set by the execute-script command.
+# at.outputFile = f = g.fileLikeObject() # Re-allocate for the test.
+f = at.openAtShadowStringFile('abc')
+assert isinstance(f,g.fileLikeObject)
+s = 'abc'
+f.write(s)
+s2 = at.closeAtShadowStringFile(f)
+assert s == s2,s2
+# assert at.toString
 </t>
 <t tx="ekr.20090529115704.4563">### This method no longer exists.
 at = c.atFileCommands

@@ -1488,7 +1488,7 @@ class AtFile(object):
             )
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
-                return
+                return False
             contents = ''.join([s for s in g.splitLines(p.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
             at.replaceFile(contents, fileName, root)
@@ -1542,11 +1542,13 @@ class AtFile(object):
             data = []
             for sentinels in (False, True):
                 # Specify encoding explicitly.
-                theFile = at.openAtShadowStringFile(full_path, encoding=at.encoding)
+                ### theFile = at.openAtShadowStringFile(full_path, encoding=at.encoding)
+                at.openOutputStream()
                 at.sentinels = sentinels
                 at.putFile(root, sentinels=sentinels)
                 at.warnAboutOrphandAndIgnoredNodes()
-                s = at.closeAtShadowStringFile(theFile)
+                ### s = at.closeAtShadowStringFile(theFile)
+                s = at.closeOutputStream()
                 data.append(s)
             #
             # Set these new ivars for unit tests.
@@ -1554,7 +1556,7 @@ class AtFile(object):
             # pylint: disable=unbalanced-tuple-unpacking
             at.public_s, at.private_s = data
             if g.app.unitTesting:
-                exceptions = ('public_s', 'private_s', 'sentinels')
+                exceptions = ('public_s', 'private_s', 'sentinels', 'outputList')
                 assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
             if not at.errors:
                 # Write the public and private files.
@@ -1591,25 +1593,6 @@ class AtFile(object):
             else:
                 # An unknown language.
                 pass # Use the default language, **not** 'unknown_language'
-    #@+node:ekr.20080712150045.3: *7* at.closeAtShadowStringFile
-    def closeAtShadowStringFile(self, theFile):
-        at = self
-        assert theFile, g.callers()
-        theFile.flush()
-        contents = theFile.get()
-        theFile.close()
-        at.outputFile = None
-        at.targetFileName = None
-            # For at.writeError only.
-        return contents
-    #@+node:ekr.20080712150045.2: *7* at.openAtShadowStringFile
-    def openAtShadowStringFile(self, fileName, encoding='utf-8'):
-        '''A helper for at.writeOneAtShadowNode.'''
-        at = self
-        at.outputFile = g.FileLikeObject(encoding=encoding)
-        at.targetFileName = fileName
-            # for at.writeError only.
-        return at.outputFile
     #@+node:ekr.20190111153506.1: *5* at.XToString
     #@+node:ekr.20190109160056.1: *6* at.atAsisToString
     def atAsisToString(self, root):
@@ -2519,7 +2502,10 @@ class AtFile(object):
     def closeOutputStream(self):
         '''Close the output stream, returning its contents.'''
         at = self
-        contents = g.toUnicode('' if at.errors else ''.join(at.outputList))
+        if at.errors:
+            contents = g.u('')
+        else:
+            contents = ''.join([g.toUnicode(z, encoding=at.encoding) for z in at.outputList])
         at.outputList = []
         return contents
     #@+node:ekr.20041005105605.201: *5* at.os and allies
@@ -2545,7 +2531,7 @@ class AtFile(object):
     #@+node:ekr.20041005105605.204: *6* at.os
     def os(self, s):
         """
-        Write a string to the output stream.
+        Write a string to the output file or stream.
 
         All output produced by leoAtFile module goes here.
         """
@@ -2559,6 +2545,11 @@ class AtFile(object):
         if not g.isUnicode(s):
             s = g.toUnicode(s, 'ascii')
         at.outputList.append(s)
+        ###
+            # if getattr(at, 'outputFile', None):
+                # at.outputFile.put(s)
+            # else:
+                # at.outputList.append(s)
     #@+node:ekr.20041005105605.205: *5* at.outputStringWithLineEndings
     # Write the string s as-is except that we replace '\n' with the proper line ending.
 

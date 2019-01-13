@@ -1099,18 +1099,6 @@ s2 = '''
 at = c.atFileCommands
 assert at.isFileLike(s1),'fail1'
 assert not at.isFileLike(s2),'fail2'
-#@+node:ekr.20090529115704.4562: *4* @test at.open/closeAtShadowStringFile
-at = c.atFileCommands
-
-# at.toString is set by the execute-script command.
-# at.outputFile = f = g.fileLikeObject() # Re-allocate for the test.
-f = at.openAtShadowStringFile('abc')
-assert isinstance(f,g.fileLikeObject)
-s = 'abc'
-f.write(s)
-s2 = at.closeAtShadowStringFile(f)
-assert s == s2,s2
-# assert at.toString
 #@+node:ekr.20071113145804.7: *4* @test at.parseLeoSentinel
 at=c.atFileCommands # self is a dummy argument.
 table = (
