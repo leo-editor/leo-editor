@@ -1497,7 +1497,7 @@ class AtFile(object):
         except Exception:
             at.writeException(fileName, root)
             return False
-    #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helper
+    #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helpers
     def writeOneAtShadowNode(self, p, testing=False):
         '''
         Write p, an @shadow node.
@@ -1538,30 +1538,16 @@ class AtFile(object):
             if g.app.unitTesting:
                 ivars_dict = g.getIvarsDict(at)
             #
-            # Write the public and private files to public_s and private_s strings.
-            if 1:
+            # Write the public and private files to strings.
+            def put(sentinels):
+                at.openOutputStream()
+                at.sentinels = sentinels
+                at.putFile(root, sentinels=sentinels)
+                at.warnAboutOrphandAndIgnoredNodes()
+                return at.closeOutputStream()
                 
-                def put(sentinels):
-                    at.openOutputStream()
-                    at.sentinels = sentinels
-                    at.putFile(root, sentinels=sentinels)
-                    at.warnAboutOrphandAndIgnoredNodes()
-                    return at.closeOutputStream()
-                    
-                at.public_s = put(False)
-                at.private_s = put(True)
-            else:
-                data = []
-                for sentinels in (False, True):
-                    at.openOutputStream()
-                    at.sentinels = sentinels
-                    at.putFile(root, sentinels=sentinels)
-                    at.warnAboutOrphandAndIgnoredNodes()
-                    s = at.closeOutputStream()
-                    data.append(s)
-                # pylint: disable=unbalanced-tuple-unpacking
-                    # data has exactly two elements.
-                at.public_s, at.private_s = data
+            at.public_s = put(False)
+            at.private_s = put(True)
             if g.app.unitTesting:
                 exceptions = ('public_s', 'private_s', 'sentinels', 'outputList')
                 assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
@@ -1601,6 +1587,52 @@ class AtFile(object):
                 # An unknown language.
                 # Use the default language, **not** 'unknown_language'
                 pass
+    #@+node:ekr.20080712150045.1: *7* at.replaceFileWithString
+    def replaceFileWithString(self, fn, s):
+        '''
+        Replace the file with s if s is different from theFile's contents.
+
+        Return True if theFile was changed.
+
+        This is used only by the @shadow logic.
+        '''
+        at, c = self, self.c
+        exists = g.os_path_exists(fn)
+        if exists: # Read the file.  Return if it is the same.
+            s2, e = g.readFileIntoString(fn)
+            if s is None:
+                return False
+            if s == s2:
+                report = c.config.getBool('report-unchanged-files', default=True)
+                if report and not g.unitTesting:
+                    g.es('unchanged:', fn)
+                return False
+        # Issue warning if directory does not exist.
+        theDir = g.os_path_dirname(fn)
+        if theDir and not g.os_path_exists(theDir):
+            if not g.unitTesting:
+                g.error('not written: %s directory not found' % fn)
+            return False
+        # Replace
+        try:
+            f = open(fn, 'wb')
+            # 2013/10/28: Fix bug 1243847: unicode error when saving @shadow nodes.
+            # Call g.toEncodedString regardless of Python version.
+            s = g.toEncodedString(s, encoding=self.encoding)
+            f.write(s)
+            f.close()
+            if g.unitTesting:
+                pass
+            else:
+                if exists:
+                    g.es('wrote:    ', fn)
+                else:
+                    g.es('created:', fn)
+            return True
+        except IOError:
+            at.error('unexpected exception writing file: %s' % (fn))
+            g.es_exception()
+            return False
     #@+node:ekr.20190111153506.1: *5* at.XToString
     #@+node:ekr.20190109160056.1: *6* at.atAsisToString
     def atAsisToString(self, root):
@@ -2801,52 +2833,6 @@ class AtFile(object):
             s2 = s2.replace('\r', '')
             equal = s1 == s2
         return equal
-    #@+node:ekr.20080712150045.1: *5* at.replaceFileWithString
-    def replaceFileWithString(self, fn, s):
-        '''
-        Replace the file with s if s is different from theFile's contents.
-
-        Return True if theFile was changed.
-
-        This is used only by the @shadow logic.
-        '''
-        at, c = self, self.c
-        exists = g.os_path_exists(fn)
-        if exists: # Read the file.  Return if it is the same.
-            s2, e = g.readFileIntoString(fn)
-            if s is None:
-                return False
-            if s == s2:
-                report = c.config.getBool('report-unchanged-files', default=True)
-                if report and not g.unitTesting:
-                    g.es('unchanged:', fn)
-                return False
-        # Issue warning if directory does not exist.
-        theDir = g.os_path_dirname(fn)
-        if theDir and not g.os_path_exists(theDir):
-            if not g.unitTesting:
-                g.error('not written: %s directory not found' % fn)
-            return False
-        # Replace
-        try:
-            f = open(fn, 'wb')
-            # 2013/10/28: Fix bug 1243847: unicode error when saving @shadow nodes.
-            # Call g.toEncodedString regardless of Python version.
-            s = g.toEncodedString(s, encoding=self.encoding)
-            f.write(s)
-            f.close()
-            if g.unitTesting:
-                pass
-            else:
-                if exists:
-                    g.es('wrote:    ', fn)
-                else:
-                    g.es('created:', fn)
-            return True
-        except IOError:
-            at.error('unexpected exception writing file: %s' % (fn))
-            g.es_exception()
-            return False
     #@+node:ekr.20041005105605.216: *5* at.warnAboutOrpanAndIgnoredNodes
     # Called from putFile.
 
