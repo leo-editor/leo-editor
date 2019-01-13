@@ -1543,11 +1543,11 @@ class AtFile(object):
                 at.openOutputStream()
                 at.sentinels = sentinels
                 at.putFile(root, sentinels=sentinels)
-                at.warnAboutOrphandAndIgnoredNodes()
                 return at.closeOutputStream()
                 
             at.public_s = put(False)
             at.private_s = put(True)
+            at.warnAboutOrphandAndIgnoredNodes()
             if g.app.unitTesting:
                 exceptions = ('public_s', 'private_s', 'sentinels', 'outputList')
                 assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
