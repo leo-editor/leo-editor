@@ -199,6 +199,8 @@ class AtFile(object):
             # For at.ensureTrailingNewline only.
         at.sameFiles = 0
             # For communication between replaceFile and reportEndOfWrite.
+        at.outputList = []
+            # For stream output.
         at.targetFileName = targetFileName
             # For at.writeError only.
         at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
@@ -2515,7 +2517,8 @@ class AtFile(object):
     def openOutputStream(self):
         '''Open the output stream, which is *not* guaranteed to be a file-like object.'''
         at = self
-        at.outputFile = g.FileLikeObject()
+        ### at.outputFile = g.FileLikeObject()
+        at.outputList = []
         # Can't be inited in initWriteIvars because not valid in @shadow logic.
         if g.app.unitTesting:
             at.output_newline = '\n'
@@ -2523,10 +2526,12 @@ class AtFile(object):
     def closeOutputStream(self):
         '''Close the output stream, returning its contents.'''
         at = self
-        at.outputFile.flush()
-        contents = g.toUnicode('' if at.errors else at.outputFile.get())
-        at.outputFile.close()
-        at.outputFile = None
+        ### at.outputFile.flush()
+        ### contents = g.toUnicode('' if at.errors else at.outputFile.get())
+        contents = g.toUnicode('' if at.errors else ''.join(at.outputList))
+        at.outputList = []
+        ### at.outputFile.close()
+        ### at.outputFile = None
         return contents
 
     #@+node:ekr.20041005105605.201: *5* at.os and allies
@@ -2557,20 +2562,29 @@ class AtFile(object):
         """
         at = self
         tag = self.underindentEscapeString
-        f = at.outputFile
-        assert isinstance(f, g.FileLikeObject), f
-        if s and f:
+        if s.startswith(tag):
             try:
-                if s.startswith(tag):
-                    junk, s = self.parseUnderindentTag(s)
-                # Bug fix: this must be done last.
-                # Convert everything to unicode.
-                # We expect plain text coming only from sentinels.
-                if not g.isUnicode(s):
-                    s = g.toUnicode(s, 'ascii')
-                f.write(s)
+                junk, s = at.parseUnderindentTag(s)
             except Exception:
                 at.exception("exception writing:" + s)
+        if not g.isUnicode(s):
+            s = g.toUnicode(s, 'ascii')
+        at.outputList.append(s)
+        ###
+            # f = at.outputFile
+            # assert isinstance(f, g.FileLikeObject), f
+            # if s and f:
+                # try:
+                    # if s.startswith(tag):
+                        # junk, s = self.parseUnderindentTag(s)
+                    # # Bug fix: this must be done last.
+                    # # Convert everything to unicode.
+                    # # We expect plain text coming only from sentinels.
+                    # if not g.isUnicode(s):
+                        # s = g.toUnicode(s, 'ascii')
+                    # f.write(s)
+                # except Exception:
+                    # at.exception("exception writing:" + s)
     #@+node:ekr.20041005105605.205: *5* at.outputStringWithLineEndings
     # Write the string s as-is except that we replace '\n' with the proper line ending.
 
