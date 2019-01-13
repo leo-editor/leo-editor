@@ -2440,16 +2440,6 @@ class AtFile(object):
             g.trace("unexpected exception")
             g.es_exception()
             if suppress: raise
-    #@+node:ekr.20190110115327.1: *5* at.closeStringFile
-    def closeStringFile(self):
-        '''Close a string file opened with at.openStringForWriting.'''
-        at = self
-        assert at.outputFile, g.callers()
-        at.outputFile.flush()
-        contents = g.toUnicode('' if at.errors else at.outputFile.get())
-        at.outputFile.close()
-        at.outputFile = None
-        return contents
     #@+node:ekr.20041005105605.198: *5* at.directiveKind4 (write logic)
     # These patterns exclude constructs such as @encoding.setter or @encoding(whatever)
     # However, they must allow @language python, @nocolor-node, etc.
@@ -2522,24 +2512,17 @@ class AtFile(object):
             return True, i + 2
         else:
             return False, -1
-    #@+node:ekr.20190109145850.1: *5* at.openStringForFile/String
-    def openStringForFile(self): ###, root):
+    #@+node:ekr.20190109145850.1: *5* at.open/close string file
+    # open/close methods used by top-level atFile.write logic.
+
+    def openStringForFile(self):
         at = self
-        ### fn = root.anyAtFileNodeName() or root.h # use root.h for unit tests.
-        ### assert fn, repr(root)
         at.openStringHelper()
-        # at.outputFile = g.FileLikeObject()
-        # if g.app.unitTesting:
-            # at.output_newline = '\n'
         at.toString = False
 
     def openStringForString(self):
-        '''Return a string-file for writing to an actual file.'''
         at = self
         at.openStringHelper()
-        # at.outputFile = g.FileLikeObject()
-        # if g.app.unitTesting:
-            # at.output_newline = '\n'
         at.toString = True
         
     def openStringHelper(self):
@@ -2547,6 +2530,14 @@ class AtFile(object):
         at.outputFile = g.FileLikeObject()
         if g.app.unitTesting:
             at.output_newline = '\n'
+
+    def closeStringFile(self):
+        at = self
+        at.outputFile.flush()
+        contents = g.toUnicode('' if at.errors else at.outputFile.get())
+        at.outputFile.close()
+        at.outputFile = None
+        return contents
     #@+node:ekr.20041005105605.201: *5* at.os and allies
     # Note:  self.outputFile may be either a FileLikeObject or a real file.
     #@+node:ekr.20041005105605.202: *6* at.oblank, oblanks & otabs
