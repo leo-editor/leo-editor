@@ -1542,18 +1542,14 @@ class AtFile(object):
             data = []
             for sentinels in (False, True):
                 # Specify encoding explicitly.
-                ### theFile = at.openAtShadowStringFile(full_path, encoding=at.encoding)
                 at.openOutputStream()
                 at.sentinels = sentinels
                 at.putFile(root, sentinels=sentinels)
                 at.warnAboutOrphandAndIgnoredNodes()
-                ### s = at.closeAtShadowStringFile(theFile)
                 s = at.closeOutputStream()
                 data.append(s)
-            #
-            # Set these new ivars for unit tests.
-            # data has exactly two elements.
             # pylint: disable=unbalanced-tuple-unpacking
+                # data has exactly two elements.
             at.public_s, at.private_s = data
             if g.app.unitTesting:
                 exceptions = ('public_s', 'private_s', 'sentinels', 'outputList')
