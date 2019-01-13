@@ -92,7 +92,7 @@ class AtFile(object):
         at.language = None
         at.output_newline = g.getOutputNewline(c=c)
         at.page_width = None
-        at.pending = []
+        ### at.pending = []
         at.raw = False # True: in @raw mode
         at.root = None # The root (a position) of tree being read or written.
         at.startSentinelComment = ""
@@ -192,6 +192,8 @@ class AtFile(object):
         if forcePythonSentinels:
             at.endSentinelComment = None
             at.startSentinelComment = "#"
+        if g.app.unitTesting:
+            at.output_newline = '\n'
         #
         # Set other ivars.
         at.force_newlines_in_at_nosent_bodies = \
@@ -1784,7 +1786,7 @@ class AtFile(object):
                 # Fix bug 784920: @raw mode does not ignore directives
                 at.putCodeLine(s, i)
         elif kind in (at.docDirective, at.atDirective):
-            assert not at.pending, 'putBody at.pending'
+            ### assert not at.pending, 'putBody at.pending'
             if not status.in_code:
                 # Bug fix 12/31/04: handle adjacent doc parts.
                 at.putEndDocLine()
@@ -2088,7 +2090,7 @@ class AtFile(object):
     #@+node:ekr.20041005105605.181: *6* at.putBlankDocLine
     def putBlankDocLine(self):
         at = self
-        at.putPending(split=False)
+        ### at.putPending(split=False)
         if not at.endSentinelComment:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment); at.oblank()
@@ -2098,16 +2100,12 @@ class AtFile(object):
         """
         Handle one line of a doc part.
 
-        Output complete lines and split long lines and queue pending lines.
-        Inserted newlines are always preceded by whitespace.
+        Output complete lines and split long lines.
+        Precede Inserted newlines by whitespace.
         """
         at = self
         j = g.skip_line(s, i)
         s = s[i: j]
-        # if at.endSentinelComment:
-            # leading = at.indent
-        # else:
-            # leading = at.indent + len(at.startSentinelComment) + 1
         if not s or s[0] == '\n':
             # A blank line.
             at.putBlankDocLine()
@@ -2124,30 +2122,12 @@ class AtFile(object):
     def putEndDocLine(self):
         """Write the conclusion of a doc part."""
         at = self
-        at.putPending(split=False)
+        ### at.putPending(split=False)
         # Put the closing delimiter if we are using block comments.
         if at.endSentinelComment:
             at.putIndent(at.indent)
             at.os(at.endSentinelComment)
             at.onl() # Note: no trailing whitespace.
-    #@+node:ekr.20041005105605.186: *6* at.putPending (old only)
-    def putPending(self, split):
-        """Write the pending part of a doc part.
-
-        We retain trailing whitespace iff the split flag is True."""
-        at = self
-        s = ''.join(at.pending); at.pending = []
-        # Remove trailing newline temporarily.  We'll add it back later.
-        if s and s[-1] == '\n':
-            s = s[: -1]
-        if not split:
-            s = s.rstrip()
-            if not s:
-                return
-        at.putIndent(at.indent)
-        if not at.endSentinelComment:
-            at.os(at.startSentinelComment); at.oblank()
-        at.os(s); at.onl()
     #@+node:ekr.20041005105605.182: *6* at.putStartDocLine
     def putStartDocLine(self, s, i, kind):
         """Write the start of a doc part."""
