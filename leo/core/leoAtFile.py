@@ -2542,11 +2542,7 @@ class AtFile(object):
     def closeOutputStream(self):
         '''Close the output stream, returning its contents.'''
         at = self
-        if at.errors:
-            contents = g.u('')
-        else:
-            ### contents = ''.join([g.toUnicode(z, encoding=at.encoding) for z in at.outputList])
-            contents = u''.join(at.outputList)
+        contents = g.u('') if at.errors else u''.join(at.outputList)
         at.outputList = []
         return contents
     #@+node:ekr.20041005105605.201: *5* at.os and allies
@@ -2584,13 +2580,8 @@ class AtFile(object):
                 at.exception("exception writing:" + s)
                 return
         if not g.isUnicode(s):
-            s = g.toUnicode(s, at.encoding) ###'ascii')
+            s = g.toUnicode(s, at.encoding)
         at.outputList.append(s)
-        ###
-            # if getattr(at, 'outputFile', None):
-                # at.outputFile.put(s)
-            # else:
-                # at.outputList.append(s)
     #@+node:ekr.20041005105605.205: *5* at.outputStringWithLineEndings
     # Write the string s as-is except that we replace '\n' with the proper line ending.
 
