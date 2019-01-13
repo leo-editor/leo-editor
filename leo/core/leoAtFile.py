@@ -980,11 +980,10 @@ class AtFile(object):
             at.openStringForString()
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
-            result = at.closeStringFile()
+            return at.closeStringFile()
         except Exception:
             at.writeException(fileName, root)
-            result = g.u('')
-        return result
+            return g.u('')
     #@+node:ekr.20190109160056.2: *6* at.atAutoToString
     def atAutoToString(self, root):
         '''Write the root @auto node to a string, and return it.'''
@@ -1009,13 +1008,13 @@ class AtFile(object):
                 g.es('To save your work, convert @edit to @auto, @file or @clean')
                 return False
             fileName = at.initWriteIvars(root, root.atEditNodeName(), atEdit=True, sentinels=False)
-            contents = ''.join([s for s in g.splitLines(root.b)
-                if at.directiveKind4(s, 0) == at.noDirective])
+            contents = ''.join([
+                s for s in g.splitLines(root.b)
+                    if at.directiveKind4(s, 0) == at.noDirective])
             return contents
         except Exception:
             at.writeException(fileName, root)
             return g.u('')
-
     #@+node:ekr.20190109142026.1: *6* at.atFileToString
     def atFileToString(self, root, sentinels=True):
         '''Write an external file to a string, and return its contents.'''
@@ -1046,12 +1045,11 @@ class AtFile(object):
 
         This is at.write specialized for scripting.
         """
-        at = self; c = at.c
-        c.endEditing()
-            # Capture the current headline, but don't change the focus!
-        at.initWriteIvars(root, "<string-file>",
-            forcePythonSentinels=forcePythonSentinels, sentinels=sentinels)
+        at, c = self, self.c
         try:
+            c.endEditing()
+            at.initWriteIvars(root, "<string-file>",
+                forcePythonSentinels=forcePythonSentinels, sentinels=sentinels)
             at.openStringForString()
             at.writeOpenFile(root, fromString=s, sentinels=sentinels)
             result = at.closeStringFile()
@@ -1688,7 +1686,7 @@ class AtFile(object):
                     delattr(at, ivar)
     #@+node:ekr.20041005105605.157: *5* at.writeOpenFile
     def writeOpenFile(self, root, fromString='', sentinels=True):
-        '''Write the contents of the file.'''
+        '''Write the contents of the file to the string output file.'''
         at = self
         s = fromString if fromString else root.v.b
         root.clearAllVisitedInTree()
