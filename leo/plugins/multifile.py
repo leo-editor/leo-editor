@@ -2,6 +2,7 @@
 #@+node:mork.20041018204908.1: * @file multifile.py
 #@+<< docstring >>
 #@+node:ekr.20050226114732: ** << docstring >>
+#@@language rest
 r''' Allows Leo to write a file to multiple locations.
 
 This plugin acts as a post-write mechanism, a file must be written to the
@@ -11,12 +12,12 @@ absolute path, it works in tandem with them.
 To use, place @multipath at the start of a line in the root node or an ancestor
 of the node. The format is (On Unix-like systems)::
 
-    @multipath /machine/unit/:/machine/robot/:/machine/
+    (at)multipath /machine/unit/:/machine/robot/:/machine/
 
 New in version 0.6 of this plugin: the separator used above is ';' not ':',
 for example::
 
-    @multipath c:\prog\test;c:\prog\unittest
+    (at)multipath c:\prog\test;c:\prog\unittest
 
 It will places copy of the written file in each of these directories.
 
@@ -25,19 +26,16 @@ There is an additional directive that simplifies common paths, it is called
 @multipath directive you set the beginning of the paths in the @multipath
 directive. For example::
 
-#@verbatim
-    #@multiprefix /leo #@multipath /plugins
+    (at)multiprefix /leo #@multipath /plugins
 
 or::
 
-#@verbatim
-    #@multiprefix /leo/
-#@verbatim
-    #@multipath plugins: fungus : drain
+    (at)multiprefix /leo/
+    (at)multipath plugins: fungus : drain
 
 copies a file to /leo/plugins /leo/fungus /leo/drain.
 
-Note: I put # in front of the directives here because I don't want someone
+Note: I put (at) in front of the directives here because I don't want someone
 browsing this file to accidentally save multiple copies of this file to their
 system :)
 
@@ -47,10 +45,6 @@ an ancestor a copy of the file is created. These directives must at the
 beginning of the line and by themselves.
 '''
 #@-<< docstring >>
-
-#@@language python
-#@@tabwidth -4
-
 #@+<< imports >>
 #@+node:ekr.20050226114732.1: ** << imports >>
 import leo.core.leoGlobals as g
@@ -65,7 +59,6 @@ multipath = '@multipath'
 haveseen = {}
 files = {}
 original_precheck = None
-
 #@+others
 #@+node:ekr.20050226115130.1: ** init & helpers (multifile.py)
 def init ():
@@ -107,11 +100,10 @@ def insertDirectoryString (c):
     d = g.app.gui.runOpenDirectoryDialog(
         title='Select a directory',
         startdir=os.curdir)
-
     if d:
         w = c.frame.body.wrapper
         ins = w.getInsertPoint()
-        w.insert(ins,d)
+        w.insert(ins, d)
         #w.event_generate('<Key>')
         #w.update_idletasks()
 #@+node:mork.20041018204908.3: ** decorated_precheck
@@ -185,4 +177,6 @@ def scanForMultiPath (c):
                     d[fileName] = aList
     return d
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

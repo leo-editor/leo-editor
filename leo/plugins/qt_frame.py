@@ -3428,12 +3428,14 @@ class LeoQtMenu(leoMenu.LeoMenu):
         """Wrapper for the Tkinter add_command menu method."""
         # pylint: disable=arguments-differ
         accel = keys.get('accelerator') or ''
-        command = keys.get('command')
+        command = keys.get('command') or ''
         commandName = keys.get('commandName')
         label = keys.get('label')
         n = keys.get('underline')
+        if n is None: n = -1
         menu = keys.get('menu') or self
-        if not label: return
+        if not label:
+            return
         if -1 < n < len(label):
             label = label[: n] + '&' + label[n:]
         if accel:
