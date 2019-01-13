@@ -2545,7 +2545,8 @@ class AtFile(object):
         if at.errors:
             contents = g.u('')
         else:
-            contents = ''.join([g.toUnicode(z, encoding=at.encoding) for z in at.outputList])
+            ### contents = ''.join([g.toUnicode(z, encoding=at.encoding) for z in at.outputList])
+            contents = u''.join(at.outputList)
         at.outputList = []
         return contents
     #@+node:ekr.20041005105605.201: *5* at.os and allies
@@ -2583,7 +2584,7 @@ class AtFile(object):
                 at.exception("exception writing:" + s)
                 return
         if not g.isUnicode(s):
-            s = g.toUnicode(s, 'ascii')
+            s = g.toUnicode(s, at.encoding) ###'ascii')
         at.outputList.append(s)
         ###
             # if getattr(at, 'outputFile', None):
