@@ -979,10 +979,10 @@ class AtFile(object):
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
-            at.openStringForString()
+            at.openOutputStream()
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
-            return at.closeStringFile()
+            return at.closeOutputStream()
         except Exception:
             at.writeException(fileName, root)
             return g.u('')
@@ -993,9 +993,9 @@ class AtFile(object):
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root, root.atAutoNodeName(), sentinels=False)
-            at.openStringForString()
+            at.openOutputStream()
             at.writeAtAutoContents(fileName, root)
-            return at.closeStringFile()
+            return at.closeOutputStream()
         except Exception:
             at.writeException(fileName, root)
             return g.u('')
@@ -1024,10 +1024,10 @@ class AtFile(object):
         try:
             c.endEditing()
             at.initWriteIvars(root, "<string-file>", sentinels=sentinels)
-            at.openStringForString()
+            at.openOutputStream()
             at.writeOpenFile(root, sentinels=sentinels)
             assert root == at.root, 'write'
-            result = at.closeStringFile()
+            result = at.closeOutputStream()
             # Major bug: failure to clear this wipes out headlines!
             #            Sometimes this causes slight problems...
             if hasattr(self.root.v, 'tnodeList'):
@@ -1052,9 +1052,9 @@ class AtFile(object):
             c.endEditing()
             at.initWriteIvars(root, "<string-file>",
                 forcePythonSentinels=forcePythonSentinels, sentinels=sentinels)
-            at.openStringForString()
+            at.openOutputStream()
             at.writeOpenFile(root, fromString=s, sentinels=sentinels)
-            result = at.closeStringFile()
+            result = at.closeOutputStream()
             # Major bug: failure to clear this wipes out headlines!
             #            Sometimes this causes slight problems...
             if root:
@@ -1076,10 +1076,10 @@ class AtFile(object):
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return
-            at.openStringForFile()
+            at.openOutputStream()
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
-            contents = at.closeStringFile()
+            contents = at.closeOutputStream()
             at.replaceFile(contents, fileName, root)
         except Exception:
             at.writeException(fileName, root)
@@ -1113,10 +1113,10 @@ class AtFile(object):
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return
-            at.openStringForFile()
+            at.openOutputStream()
             at.writeOpenFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
-            contents = at.closeStringFile()
+            contents = at.closeOutputStream()
             if at.errors:
                 g.es("not written:", g.shortFileName(fileName))
                 at.addAtIgnore(root)
@@ -1187,11 +1187,11 @@ class AtFile(object):
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return
-            at.openStringForFile()
+            at.openOutputStream()
             if c.persistenceController:
                 c.persistenceController.update_before_write_foreign_file(root)
             at.writeAtAutoContents(fileName, root)
-            contents = at.closeStringFile()
+            contents = at.closeOutputStream()
             if at.errors:
                 g.es("not written:", fileName)
                 at.addAtIgnore(root)
@@ -1294,11 +1294,11 @@ class AtFile(object):
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return
-            at.openStringForFile()
+            at.openOutputStream()
             contents = ''.join([s for s in g.splitLines(p.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
             self.os(contents)
-            contents = at.closeStringFile()
+            contents = at.closeOutputStream()
             at.replaceFile(contents, fileName, root)
             c.raise_error_dialogs(kind='write')
             return True
@@ -2490,31 +2490,19 @@ class AtFile(object):
             return True, i + 2
         else:
             return False, -1
-    #@+node:ekr.20190109145850.1: *5* at.open/close string file
+    #@+node:ekr.20190109145850.1: *5* at.open/closeOutputStream
     # open/close methods used by top-level atFile.write logic.
 
-    ###
-        # def openStringForFile(self):
-            # at = self
-            # at.openStringHelper()
-            # at.toString = False
-        
-        # def openStringForString(self):
-            # at = self
-            # at.openStringHelper()
-            # at.toString = True
-        
-    def initOutputString(self):
+    def openOutputStream(self):
+        '''Open the output stream.'''
         at = self
         at.outputFile = g.FileLikeObject()
+        # Can't be inited in initWriteIvars because not valid in @shadow logic.
         if g.app.unitTesting:
             at.output_newline = '\n'
-            
-    ###
-    openStringForFile = initOutputString
-    openStringForString = initOutputString
-            
-    def closeStringFile(self):
+
+    def closeOutputStream(self):
+        '''Close the output stream, returning its contents.'''
         at = self
         at.outputFile.flush()
         contents = g.toUnicode('' if at.errors else at.outputFile.get())
