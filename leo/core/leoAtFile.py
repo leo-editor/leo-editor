@@ -1541,7 +1541,6 @@ class AtFile(object):
             # Write the public and private files to public_s and private_s strings.
             data = []
             for sentinels in (False, True):
-                # Specify encoding explicitly.
                 at.openOutputStream()
                 at.sentinels = sentinels
                 at.putFile(root, sentinels=sentinels)
