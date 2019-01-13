@@ -213,7 +213,6 @@
 <v t="ekr.20190113123439.7"><vh>@auto unittest/at-auto-md-line-number-test.md</vh></v>
 <v t="ekr.20190113123439.11"><vh>@auto unittest/at-auto-section-ref-test.py</vh></v>
 <v t="ekr.20190113121550.1"><vh>@auto unittest/at-auto-test.py</vh></v>
-<v t="ekr.20190113123439.13"><vh>@auto unittest/at-auto-test.py</vh></v>
 <v t="ekr.20190113123439.16"><vh>@auto unittest/at-auto-unit-test.py</vh></v>
 <v t="ekr.20190113123635.2"><vh>@auto-org unittest/at-auto-org-line-number-test.org</vh></v>
 <v t="ekr.20190113123635.5"><vh>@auto-otl unittest/at-auto-otl-line-number-test.otl</vh></v>
