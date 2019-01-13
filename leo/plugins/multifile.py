@@ -60,52 +60,32 @@ import os.path
 import shutil
 import weakref
 #@-<< imports >>
-
-__version__ = ".9"
-#@+<< version history >>
-#@+node:ekr.20050226115130: ** << version history >>
-#@@killcolor
-#@+at
-# 0.3 EKR:
-# - Added init method.
-# - Minor code reorg.  The actual code is unchanged.
-# 0.4 EKR: Changed 'new_c' logic to 'c' logic.
-# 0.5 EKR: Use 'new' and 'open2' hooks to call addMenu.
-# 0.6 EKR: Made it work with Leo 4.4.2.
-# - Made all uses of leoAtFile explicit.
-# - Simplified code by using g.funcToMethod in init code.
-# - Renamed decoratedOpenFileForWriting to match openFileForWriting.
-# - Rewrote stop and scanForMultiPath methods.
-# 0.7 EKR: Use absolute filename for original file to avoid problems with current directory.
-# 0.8 EKR:
-# * The path separator in @multipath directives is ';', not ':' as previously.
-# - Fixed several bugs in scanForMultiPath.
-# 0.9 EKR: add entries to g.globalDirectiveList so that this plugin will work with the new colorizer.
-#@-<< version history >>
-
 multiprefix = '@multiprefix'
 multipath = '@multipath'
 haveseen = {}
 files = {}
-originalOpenFileForWriting = None
+original_precheck = None
 
 #@+others
 #@+node:ekr.20050226115130.1: ** init & helpers (multifile.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
+    global original_precheck
+    #
     # Append to the module list, not to the g.copy.
     g.globalDirectiveList.append('multipath')
     g.globalDirectiveList.append('multiprefix')
-    # Override all instances of leoAtFile.AtFile.
+    #
+    # Override all instances of at.precheck
     at = leoAtFile.AtFile
-    global originalOpenFileForWriting
-    originalOpenFileForWriting = at.openFileForWriting
-    g.funcToMethod(decoratedOpenFileForWriting,at,name='openFileForWriting')
+    original_precheck = at.precheck
+    g.funcToMethod(decorated_precheck, at, name='precheck')
+    #
     # g.registerHandler('save1',start)
     g.registerHandler('save2',stop)
     g.registerHandler(('new','menu2'),addMenu)
     g.plugin_signon(__name__)
-    return True # Now gui-independent.
+    return True # gui-independent.
 #@+node:mork.20041019091317: *3* addMenu
 haveseen = weakref.WeakKeyDictionary()
 
@@ -134,17 +114,18 @@ def insertDirectoryString (c):
         w.insert(ins,d)
         #w.event_generate('<Key>')
         #w.update_idletasks()
-#@+node:mork.20041018204908.3: ** decoratedOpenFileForWriting
-def decoratedOpenFileForWriting (self,root,fileName):
-
+#@+node:mork.20041018204908.3: ** decorated_precheck
+def decorated_precheck (self, root, fileName):
+    '''Call at.precheck, then add fileName to the global files list.'''
+    #
     # Call the original method.
     global files
-    global originalOpenFileForWriting
-    val = originalOpenFileForWriting(self, root, fileName)
+    global original_precheck
+    val = original_precheck(self, fileName, root)
+    #
     # Save a pointer to the root for later.
-    if root.isDirty():
+    if val and root.isDirty():
         files [fileName] = root.copy()
-    # Return whatever the original method returned.
     return val
 #@+node:mork.20041018204908.6: ** stop
 def stop (tag,keywords):
