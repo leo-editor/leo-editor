@@ -1489,11 +1489,8 @@ class AtFile(object):
             if not at.precheck(fileName, root):
                 at.addAtIgnore(root)
                 return
-            ### at.openOutputStream()
             contents = ''.join([s for s in g.splitLines(p.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
-            ### self.os(contents)
-            ### contents = at.closeOutputStream()
             at.replaceFile(contents, fileName, root)
             c.raise_error_dialogs(kind='write')
             return True
