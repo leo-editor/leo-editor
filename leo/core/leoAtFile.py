@@ -2681,14 +2681,19 @@ class AtFile(object):
         if root:
             root.clearDirty()
         #
-        # 0. Optionally create the timestamp.
+        # Create the timestamp (only for messages).
         if c.config.getBool('log-show-save-time', default=False):
             format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
             timestamp = time.strftime(format) + ' '
         else:
             timestamp = ''
+        ### NEW ###
+        ### was in at.create.
+        assert g.isUnicode(contents), g.callers()
+        if at.output_newline != '\n':
+            contents = contents.replace('\r', '').replace('\n', at.output_newline)
         #
-        # 1. If fileName does not exist, create it from the contents.
+        # If file does not exist, create it from the contents.
         fileName = g.os_path_realpath(fileName)
         sfn = g.shortFileName(fileName)
         if not g.os_path_exists(fileName):
@@ -2835,7 +2840,7 @@ class AtFile(object):
     def chmod(self, fileName, mode):
         # Do _not_ call self.error here.
         return g.utils_chmod(fileName, mode)
-    #@+node:ekr.20130910100653.11323: *5* at.create
+    #@+node:ekr.20130910100653.11323: *5* at.create (to be deleted)
     def create(self, fileName, s):
         '''Create a file whose contents are s.'''
         at, c = self, self.c
