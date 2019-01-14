@@ -283,13 +283,7 @@ class AtFile(object):
             # Open the file in binary mode to allow 0x1a in bodies & headlines.
             at.inputFile = open(fn, 'rb')
             s = at.readFileToUnicode(fn)
-                # Sets at.encoding...
-                #   From the BOM, if present.
-                #   Otherwise from the header, if it has -encoding=
-                #   Otherwise, uses existing value of at.encoding.
-                # Then does:
-                #    s = s.replace('\r\n','\n')
-                #    at.initReadLine(s)
+                # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
             at.warnOnReadOnlyFile(fn)
         except IOError:
             at.error("can not open: '@file %s'" % (fn))
@@ -824,7 +818,7 @@ class AtFile(object):
             at.readVersion5 = readVersion5
         return valid, new_df, start, end, isThin
     #@+node:ekr.20130911110233.11284: *5* at.readFileToUnicode & helpers
-    def readFileToUnicode(self, fn):
+    def readFileToUnicode(self, fileName):
         '''
         Carefully sets at.encoding, then uses at.encoding to convert the file
         to a unicode string.
@@ -837,13 +831,9 @@ class AtFile(object):
             B. The value of c.config.default_derived_file_encoding.
 
         Returns the string, or None on failure.
-
-        This method is now part of the main @file read code.
-        at.openFileForReading calls this method to read all @file nodes.
-        Previously only at.scanHeaderForThin (import code) called this method.
         '''
         at = self
-        s = at.openFileHelper(fn)
+        s = at.openFileHelper(fileName)
         if s is not None:
             e, s = g.stripBOM(s)
             if e:
@@ -852,29 +842,28 @@ class AtFile(object):
             else:
                 # Get the encoding from the header, or the default encoding.
                 s_temp = g.toUnicode(s, 'ascii', reportErrors=False)
-                e = at.getEncodingFromHeader(fn, s_temp)
+                e = at.getEncodingFromHeader(fileName, s_temp)
                 s = g.toUnicode(s, encoding=e)
             s = s.replace('\r\n', '\n')
             at.encoding = e
             at.initReadLine(s)
         return s
     #@+node:ekr.20130911110233.11285: *6* at.openFileHelper
-    def openFileHelper(self, fn):
+    def openFileHelper(self, fileName):
         '''Open a file, reporting all exceptions.'''
         at = self
         s = None
         try:
-            f = open(fn, 'rb')
-            s = f.read()
-            f.close()
+            with open(fileName, 'rb') as f:
+                s = f.read()
         except IOError:
-            at.error('can not open %s' % (fn))
+            at.error('can not open %s' % (fileName))
         except Exception:
-            at.error('Exception reading %s' % (fn))
+            at.error('Exception reading %s' % (fileName))
             g.es_exception()
         return s
     #@+node:ekr.20130911110233.11287: *6* at.getEncodingFromHeader
-    def getEncodingFromHeader(self, fn, s):
+    def getEncodingFromHeader(self, fileName, s):
         '''
         Return the encoding given in the @+leo sentinel, if the sentinel is
         present, or the previous value of at.encoding otherwise.
@@ -894,7 +883,7 @@ class AtFile(object):
             assert old_encoding
             at.encoding = None
             # Execute scanHeader merely to set at.encoding.
-            at.scanHeader(fn, giveErrors=False)
+            at.scanHeader(fileName, giveErrors=False)
             e = at.encoding or old_encoding
         assert e
         return e
@@ -964,7 +953,7 @@ class AtFile(object):
         This is a kludgy method used only by the import code.'''
         at = self
         at.readFileToUnicode(fileName)
-            # inits at.readLine.
+            # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
         junk, junk, isThin = at.scanHeader(None)
             # scanHeader uses at.readline instead of its args.
             # scanHeader also sets at.encoding.
@@ -1555,8 +1544,8 @@ class AtFile(object):
                 # Write the public and private files.
                 x.makeShadowDirectory(full_path)
                     # makeShadowDirectory takes a *public* file name.
-                at.replaceFileWithString(private_fn, at.private_s)
-                at.replaceFileWithString(full_path, at.public_s)
+                x.replaceFileWithString(at.encoding, private_fn, at.private_s)
+                x.replaceFileWithString(at.encoding, full_path, at.public_s)
             at.checkPythonCode(
                 contents = at.private_s,
                 fileName = full_path,
@@ -1587,52 +1576,6 @@ class AtFile(object):
                 # An unknown language.
                 # Use the default language, **not** 'unknown_language'
                 pass
-    #@+node:ekr.20080712150045.1: *7* at.replaceFileWithString
-    def replaceFileWithString(self, fn, s):
-        '''
-        Replace the file with s if s is different from theFile's contents.
-
-        Return True if theFile was changed.
-
-        This is used only by the @shadow logic.
-        '''
-        at, c = self, self.c
-        exists = g.os_path_exists(fn)
-        if exists: # Read the file.  Return if it is the same.
-            s2, e = g.readFileIntoString(fn)
-            if s is None:
-                return False
-            if s == s2:
-                report = c.config.getBool('report-unchanged-files', default=True)
-                if report and not g.unitTesting:
-                    g.es('unchanged:', fn)
-                return False
-        # Issue warning if directory does not exist.
-        theDir = g.os_path_dirname(fn)
-        if theDir and not g.os_path_exists(theDir):
-            if not g.unitTesting:
-                g.error('not written: %s directory not found' % fn)
-            return False
-        # Replace
-        try:
-            f = open(fn, 'wb')
-            # 2013/10/28: Fix bug 1243847: unicode error when saving @shadow nodes.
-            # Call g.toEncodedString regardless of Python version.
-            s = g.toEncodedString(s, encoding=self.encoding)
-            f.write(s)
-            f.close()
-            if g.unitTesting:
-                pass
-            else:
-                if exists:
-                    g.es('wrote:    ', fn)
-                else:
-                    g.es('created:', fn)
-            return True
-        except IOError:
-            at.error('unexpected exception writing file: %s' % (fn))
-            g.es_exception()
-            return False
     #@+node:ekr.20190111153506.1: *5* at.XToString
     #@+node:ekr.20190109160056.1: *6* at.atAsisToString
     def atAsisToString(self, root):

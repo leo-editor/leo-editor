@@ -247,6 +247,14 @@
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
+<v t="ekr.20190114084910.1"><vh>To be deleted</vh>
+<v t="ekr.20090529115704.4566"><vh>@@test at.replaceFileWithString</vh></v>
+<v t="ekr.20100131180007.5461"><vh>@@test at.replaceFileWithString (does not exist)</vh></v>
+</v>
+<v t="ekr.20190114085335.1"><vh>Recent fails</vh>
+<v t="ekr.20090529115704.4559"><vh>@test x.replaceFileWithString</vh></v>
+<v t="ekr.20100131180007.5367"><vh>@test x.replaceFileWithString 2</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -748,6 +756,31 @@ finally:
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
 </t>
+<t tx="ekr.20090529115704.4559">x = c.shadowController
+s = 'abc'
+encoding = 'utf-8'
+fn = '../test/unittest/replaceFileWithStringTestFile.py'
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,fn))
+x.replaceFileWithString(encoding, path, s)
+f = open(path)
+s2 = f.read()
+f.close()
+assert s == s2
+</t>
+<t tx="ekr.20090529115704.4566">import os
+s = 'abc'
+fn = 'unitTestFile.py'
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','unittest',fn))
+try:
+    c.atFileCommands.replaceFileWithString(path,s)
+    f = open(path)
+    s2 = f.read()
+    f.close()
+    assert s == s2
+finally:
+    if g.os_path_exists(path):
+        os.unlink(path)
+</t>
 <t tx="ekr.20090704085350.5052">if g.app.isExternalUnitTest:
     self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
 if g.in_bridge:
@@ -1008,6 +1041,19 @@ for ivar in ivars:
 assert not fails, 'null g.app ivars in %s...\n%s' % (
     g.app, g.objToString(fails))
 
+</t>
+<t tx="ekr.20100131180007.5367">c, p = g.getTestVars()
+x = c.shadowController
+encoding = 'utf-8'
+fn = 'does/not/exist'
+assert not g.os_path_exists(fn)
+assert not x.replaceFileWithString(encoding, fn, 'abc')
+</t>
+<t tx="ekr.20100131180007.5461">at = c.atFileCommands
+
+fn = 'does/not/exist'
+assert not g.os_path_exists(fn)
+assert not at.replaceFileWithString (fn,'abc')
 </t>
 <t tx="ekr.20101220161557.6016"># Nov. 2016: 878 tests.
 # Nov. 2017: 916 tests, 25 skipped.
@@ -1660,5 +1706,11 @@ unl: spam
 gnx: ekr.20190113124246.31
 unl: eggs
 </t>
+<t tx="ekr.20190114084910.1"></t>
+<t tx="ekr.20190114085335.1">@nosearch
+
+# flattened, ignore-case, head, body
+
+# found 4 nodes</t>
 </tnodes>
 </leo_file>

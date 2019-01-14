@@ -3730,12 +3730,12 @@ def readFileIntoEncodedString(fn, silent=False):
             g.es_exception()
     return None
 #@+node:ekr.20100125073206.8710: *3* g.readFileIntoString
-def readFileIntoString(fn,
+def readFileIntoString(fileName,
     encoding='utf-8', # BOM may override this.
     kind=None, # @file, @edit, ...
     verbose=True,
 ):
-    '''Return the contents of the file whose full path is fn.
+    '''Return the contents of the file whose full path is fileName.
 
     Return (s,e)
     s is the string, converted to unicode, or None if there was an error.
@@ -3745,18 +3745,18 @@ def readFileIntoString(fn,
     - The encoding given by the 'encoding' keyword arg.
     - None, which typically means 'utf-8'.
     '''
-    if not fn:
-        if verbose: g.trace('no fn arg given')
+    if not fileName:
+        if verbose: g.trace('no fileName arg given')
         return None, None
-    if g.os_path_isdir(fn):
-        if verbose: g.trace('not a file:', fn)
+    if g.os_path_isdir(fileName):
+        if verbose: g.trace('not a file:', fileName)
         return None, None
-    if not g.os_path_exists(fn):
-        if verbose: g.error('file not found:', fn)
+    if not g.os_path_exists(fileName):
+        if verbose: g.error('file not found:', fileName)
         return None, None
     try:
         e = None
-        with open(fn, 'rb') as f:
+        with open(fileName, 'rb') as f:
             s = f.read()
         # Fix #391.
         if not s:
@@ -3765,19 +3765,17 @@ def readFileIntoString(fn,
         e, s = g.stripBOM(s)
         if not e:
             # Python's encoding comments override everything else.
-            junk, ext = g.os_path_splitext(fn)
+            junk, ext = g.os_path_splitext(fileName)
             if ext == '.py':
                 e = g.getPythonEncodingFromString(s)
         s = g.toUnicode(s, encoding=e or encoding)
         return s, e
     except IOError:
-        # Translate 'can not open' and kind, but not fn.
-        if kind:
-            if verbose: g.error('can not open', '', kind, fn)
-        else:
-            if verbose: g.error('can not open', fn)
+        # Translate 'can not open' and kind, but not fileName.
+        if verbose:
+           g.error('can not open', '', (kind or ''), fileName)
     except Exception:
-        g.error('readFileIntoString: unexpected exception reading %s' % (fn))
+        g.error('readFileIntoString: unexpected exception reading %s' % (fileName))
         g.es_exception()
     return None, None
 #@+node:ekr.20160504062833.1: *3* g.readFileToUnicodeString

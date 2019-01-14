@@ -1263,20 +1263,6 @@ f.close()
 assert exists(path)
 assert at.remove(path)
 assert not exists(path)
-#@+node:ekr.20090529115704.4566: *4* @test at.replaceFileWithString
-import os
-s = 'abc'
-fn = 'unitTestFile.py'
-path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','unittest',fn))
-try:
-    c.atFileCommands.replaceFileWithString(path,s)
-    f = open(path)
-    s2 = f.read()
-    f.close()
-    assert s == s2
-finally:
-    if g.os_path_exists(path):
-        os.unlink(path)
 #@+node:ekr.20050105094311: *4* @test at.replaceFile (different contents)
 import os
 import leo.core.leoAtFile as leoAtFile
@@ -1521,12 +1507,6 @@ table = (
 for kind,val in table:
     assert val == 'abc','kind %s expected %s got %s' % (
         kind,'abc',val)
-#@+node:ekr.20100131180007.5461: *4* @test at.replaceFileWithString
-at = c.atFileCommands
-
-fn = 'does/not/exist'
-assert not g.os_path_exists(fn)
-assert not at.replaceFileWithString (fn,'abc')
 #@+node:ekr.20100131180007.5458: *4* @test at.scanAllDirectives (minimal)
 at = c.atFileCommands
 d = at.scanAllDirectives(p)
@@ -25687,22 +25667,21 @@ assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
 #@+node:ekr.20090529115704.4559: *4* @test x.replaceFileWithString
 x = c.shadowController
 s = 'abc'
-
+encoding = 'utf-8'
 fn = '../test/unittest/replaceFileWithStringTestFile.py'
 path = g.os_path_abspath(g.os_path_join(g.app.loadDir,fn))
-
-x.replaceFileWithString(path,s)
+x.replaceFileWithString(encoding, path, s)
 f = open(path)
 s2 = f.read()
 f.close()
 assert s == s2
 #@+node:ekr.20100131180007.5367: *4* @test x.replaceFileWithString 2
-c,p = g.getTestVars()
+c, p = g.getTestVars()
 x = c.shadowController
-
+encoding = 'utf-8'
 fn = 'does/not/exist'
 assert not g.os_path_exists(fn)
-assert not x.replaceFileWithString (fn,'abc')
+assert not x.replaceFileWithString(encoding, fn, 'abc')
 #@+node:ekr.20090529115704.4554: *4* @test x.shadowDirName
 x = c.shadowController
 subdir = c.config.getString('shadow_subdir') or '.leo_shadow'

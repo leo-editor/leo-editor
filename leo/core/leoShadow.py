@@ -109,43 +109,43 @@ class ShadowController(object):
             # Force the creation of the directories.
             g.makeAllNonExistentDirectories(path, c=None, force=True)
         return g.os_path_exists(path) and g.os_path_isdir(path)
-    #@+node:ekr.20080713091247.1: *4* x.replaceFileWithString (@shadow)
-    def replaceFileWithString(self, fn, s):
-        '''Replace the file with s if s is different from theFile's contents.
+    #@+node:ekr.20080713091247.1: *4* x.replaceFileWithString
+    def replaceFileWithString(self, encoding, fileName, s):
+        '''
+        Replace the file with s if s is different from theFile's contents.
 
         Return True if theFile was changed.
         '''
-        c = self.c
-        x = self
-        exists = g.os_path_exists(fn)
+        x, c = self, self.c
+        exists = g.os_path_exists(fileName)
         if exists:
             # Read the file.  Return if it is the same.
-            s2, e = g.readFileIntoString(fn)
+            s2, e = g.readFileIntoString(fileName)
             if s2 is None:
                 return False
             if s == s2:
                 report = c.config.getBool('report-unchanged-files', default=True)
                 if report and not g.unitTesting:
-                    g.es('unchanged:', fn)
+                    g.es('unchanged:', fileName)
                 return False
         # Issue warning if directory does not exist.
-        theDir = g.os_path_dirname(fn)
+        theDir = g.os_path_dirname(fileName)
         if theDir and not g.os_path_exists(theDir):
             if not g.unitTesting:
-                x.error('not written: %s directory not found' % fn)
+                x.error('not written: %s directory not found' % fileName)
             return False
         # Replace the file.
         try:
-            f = open(fn, 'wb')
-            # 2011/09/09: Use self.encoding.
-            f.write(g.toEncodedString(s, encoding=self.encoding))
+            with open(fileName, 'wb') as f:
+                # Fix bug 1243847: unicode error when saving @shadow nodes.
+                f.write(g.toEncodedString(s, encoding=encoding))
             f.close()
             if not g.unitTesting:
-                if exists: g.es('wrote:', fn)
-                else: g.es('created:', fn)
+                kind = 'wrote' if exists else 'created'
+                g.es('%-6s: %s' % kind, fileName)
             return True
         except IOError:
-            x.error('unexpected exception writing file: %s' % (fn))
+            x.error('unexpected exception writing file: %s' % (fileName))
             g.es_exception()
             return False
     #@+node:ekr.20080711063656.6: *4* x.shadowDirName and shadowPathName
@@ -385,7 +385,7 @@ class ShadowController(object):
         Propagate the changes from the public file (without_sentinels)
         to the private file (with_sentinels)
         '''
-        x = self; at = self.c.atFileCommands
+        x, at = self, self.c.atFileCommands
         at.errors = 0
         self.encoding = at.encoding
         s = at.readFileToUnicode(old_private_file)
@@ -415,7 +415,7 @@ class ShadowController(object):
         # 2010/01/07: check at.errors also.
         if copy and x.errors == 0 and at.errors == 0:
             s = ''.join(new_private_lines)
-            x.replaceFileWithString(fn, s)
+            x.replaceFileWithString(fn, at.encoding, s)
         return copy
     #@+node:bwmulder.20041231170726: *4* x.updatePublicAndPrivateFiles
     def updatePublicAndPrivateFiles(self, root, fn, shadow_fn):
