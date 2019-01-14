@@ -2745,7 +2745,7 @@ class AtFile(object):
             g.es('not written:', sfn)
             at.addAtIgnore(root)
         at.checkPythonCode(contents, fileName, root)
-            # Bug fix: check *after* writing the file.
+            # Check *after* writing the file.
         return ok
     #@+node:ekr.20190114061452.27: *6* at.compareIgnoringBlankLines
     def compareIgnoringBlankLines(self, s1, s2):
