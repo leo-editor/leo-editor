@@ -2805,7 +2805,7 @@ class AtFile(object):
         at = self
         g.error("exception writing:", fileName)
         g.es_exception()
-        if at.outputFile:
+        if getattr(at, 'outputFile', None): ###
             at.outputFile.flush()
             at.outputFile.close()
             at.outputFile = None

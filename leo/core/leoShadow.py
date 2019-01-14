@@ -142,7 +142,8 @@ class ShadowController(object):
             f.close()
             if not g.unitTesting:
                 kind = 'wrote' if exists else 'created'
-                g.es('%-6s: %s' % kind, fileName)
+                ### g.es('%-6s: %s' % kind, fileName)
+                g.es('%-6s: %s' % (kind, fileName))
             return True
         except IOError:
             x.error('unexpected exception writing file: %s' % (fileName))
