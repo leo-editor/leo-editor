@@ -1278,6 +1278,8 @@
 <v t="ekr.20190113123110.1"><vh>@@test at.open/closeAtShadowStringFile</vh></v>
 <v t="ekr.20190113114613.186"><vh>@@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20190113114613.187"><vh>@@test at.rename</vh></v>
+<v t="ekr.20190114095901.2"><vh>@@test at.replaceFileWithString</vh></v>
+<v t="ekr.20190114095901.3"><vh>@@test at.replaceFileWithString (does not exist)</vh></v>
 <v t="ekr.20190113114613.188"><vh>@@test atFile.printError</vh></v>
 <v t="ekr.20190113114613.189"><vh>@@test bodyCtrl property</vh></v>
 <v t="ekr.20190113114613.190"><vh>@@test c# ref card</vh></v>
@@ -19140,6 +19142,26 @@ f.write(s)
 s2 = at.closeAtShadowStringFile(f)
 assert s == s2,s2
 # assert at.toString
+</t>
+<t tx="ekr.20190114095901.2">import os
+s = 'abc'
+fn = 'unitTestFile.py'
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','unittest',fn))
+try:
+    c.atFileCommands.replaceFileWithString(path,s)
+    f = open(path)
+    s2 = f.read()
+    f.close()
+    assert s == s2
+finally:
+    if g.os_path_exists(path):
+        os.unlink(path)
+</t>
+<t tx="ekr.20190114095901.3">at = c.atFileCommands
+
+fn = 'does/not/exist'
+assert not g.os_path_exists(fn)
+assert not at.replaceFileWithString (fn,'abc')
 </t>
 </tnodes>
 </leo_file>
