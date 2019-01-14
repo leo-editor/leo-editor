@@ -1265,7 +1265,7 @@ class AtFile(object):
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
             contents = at.closeOutputStream()
-            at.replaceFile(contents, fileName, root)
+            at.replaceFile(contents, at.encoding, fileName, root)
         except Exception:
             at.writeException(fileName, root)
 
@@ -1306,7 +1306,7 @@ class AtFile(object):
                 g.es("not written:", g.shortFileName(fileName))
                 at.addAtIgnore(root)
             else:
-                at.replaceFile(contents, fileName, root)
+                at.replaceFile(contents, at.encoding, fileName, root)
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
@@ -1380,7 +1380,8 @@ class AtFile(object):
                 g.es("not written:", fileName)
                 at.addAtIgnore(root)
                 return False
-            at.replaceFile(contents,fileName, root, ignoreBlankLines=root.isAtAutoRstNode())
+            at.replaceFile(contents, at.encoding, fileName, root,
+                ignoreBlankLines=root.isAtAutoRstNode())
             return True
         except Exception:
             at.writeException(fileName, root)
@@ -1480,7 +1481,7 @@ class AtFile(object):
                 return False
             contents = ''.join([s for s in g.splitLines(p.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
-            at.replaceFile(contents, fileName, root)
+            at.replaceFile(contents, at.encoding, fileName, root)
             c.raise_error_dialogs(kind='write')
             return True
         except Exception:
@@ -2672,7 +2673,7 @@ class AtFile(object):
                 if line:
                     self.putSentinel("@comment " + line)
     #@+node:ekr.20190111172114.1: *5* at.replaceFile
-    def replaceFile(self, contents, fileName, root, ignoreBlankLines=False):
+    def replaceFile(self, contents, encoding, fileName, root, ignoreBlankLines=False):
         '''
         Write or create the given file from the contents.
         Return True if the original file was changed.
@@ -2687,7 +2688,6 @@ class AtFile(object):
             timestamp = time.strftime(format) + ' '
         else:
             timestamp = ''
-        ### NEW ###
         ### was in at.create.
         assert g.isUnicode(contents), g.callers()
         if at.output_newline != '\n':
@@ -2697,8 +2697,10 @@ class AtFile(object):
         fileName = g.os_path_realpath(fileName)
         sfn = g.shortFileName(fileName)
         if not g.os_path_exists(fileName):
-            ok = at.create(fileName, contents)
+            ### ok = at.create(fileName, contents)
+            ok = g.writeFile(contents, encoding, fileName)
             if ok:
+                c.setFileTimeStamp(fileName)
                 if not g.unitTesting:
                     g.es('%screated: %s' % (timestamp, fileName))
                 if root:
@@ -2731,8 +2733,10 @@ class AtFile(object):
             )
         ):
             g.warning("correcting line endings in:", fileName)
-        ok = at.create(fileName, contents)
+        ### ok = at.create(fileName, contents)
+        ok = g.writeFile(contents, encoding, fileName)
         if ok:
+            c.setFileTimeStamp(fileName)
             if not g.unitTesting:
                 g.es('%swrote: %s' % (timestamp, sfn))
         else:
@@ -2840,30 +2844,6 @@ class AtFile(object):
     def chmod(self, fileName, mode):
         # Do _not_ call self.error here.
         return g.utils_chmod(fileName, mode)
-    #@+node:ekr.20130910100653.11323: *5* at.create (to be deleted)
-    def create(self, fileName, s):
-        '''Create a file whose contents are s.'''
-        at, c = self, self.c
-        #
-        # Do this before converting to encoded string.
-        if at.output_newline != '\n':
-            s = s.replace('\r', '').replace('\n', at.output_newline)
-        #
-        # This is the only call to g.toEncodedString in the write logic.
-        if g.isUnicode(s):
-            s = g.toEncodedString(s, encoding=at.encoding)
-        try:
-            f = open(fileName, 'wb') # Must be 'wb' to preserve line endings.
-            f.write(s)
-            f.close()
-        except Exception:
-            f = None
-            g.es_exception()
-            g.error('error writing', fileName)
-            g.es('not written:', fileName)
-        if f:
-            c.setFileTimeStamp(fileName)
-        return bool(f)
     #@+node:ekr.20050104132018: *5* at.remove
     def remove(self, fileName, verbose=True):
         if not fileName:

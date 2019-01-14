@@ -1267,6 +1267,7 @@ assert not exists(path)
 import os
 import leo.core.leoAtFile as leoAtFile
 at = c.atFileCommands
+encoding = 'utf-8'
 exists = g.os_path_exists
 at.outputFileName = None
 at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
@@ -1285,7 +1286,7 @@ try:
         assert exists(fn),fn
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    val = at.replaceFile(contents, fn, at.root)
+    val = at.replaceFile(contents, encoding, fn, at.root)
     assert val
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
@@ -1305,6 +1306,7 @@ finally:
 import os
 import leo.core.leoAtFile as leoAtFile
 at = c.atFileCommands
+encoding = 'utf-8'
 exists = g.os_path_exists
 at.outputFileName = None
 at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
@@ -1323,7 +1325,7 @@ try:
         assert exists(fn)
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    assert not at.replaceFile(contents, fn, at.root)
+    assert not at.replaceFile(contents, encoding, fn, at.root)
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
         print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
@@ -1342,6 +1344,7 @@ finally:
 import os
 import leo.core.leoAtFile as leoAtFile
 at = c.atFileCommands
+encoding = 'utf-8'
 exists = g.os_path_exists
 at.outputFileName = None # g.os_path_join(g.app.testDir,'xyzzy1.txt')
 at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2.txt')
@@ -1352,9 +1355,9 @@ for fn in (at.outputFileName,at.targetFileName):
 try:
     # Create the output file or contents.
     at.outputContents = contents = g.toUnicode('test output')
-    at.toString = False # Set by execute script stuff.
+    ### at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
-    val = at.replaceFile(contents, fn, at.root)
+    val = at.replaceFile(contents, encoding, fn, at.root)
     assert not val
     if 0:
         print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
@@ -20539,9 +20542,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20190113123219.1: *6* A
-#@+node:ekr.20190113123219.3: *6* newHeadline
-#@+node:ekr.20190113123219.2: *6* B
+#@+node:ekr.20190114091635.1: *6* A
+#@+node:ekr.20190114091635.3: *6* newHeadline
+#@+node:ekr.20190114091635.2: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():

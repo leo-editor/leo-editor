@@ -239,9 +239,9 @@
 <v t="ekr.20181102063435.1"><vh>Fails...</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20190113123219.1"><vh>A</vh></v>
-<v t="ekr.20190113123219.3"><vh>newHeadline</vh></v>
-<v t="ekr.20190113123219.2"><vh>B</vh></v>
+<v t="ekr.20190114091635.1"><vh>A</vh></v>
+<v t="ekr.20190114091635.3"><vh>newHeadline</vh></v>
+<v t="ekr.20190114091635.2"><vh>B</vh></v>
 </v>
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
@@ -1607,9 +1607,6 @@ unl: cheese
 <t tx="ekr.20190113121854.1">gnx: ekr.20190113121550.1
 </t>
 <t tx="ekr.20190113122443.1"># Must be False for @auto unit tests.</t>
-<t tx="ekr.20190113123219.1"></t>
-<t tx="ekr.20190113123219.2"></t>
-<t tx="ekr.20190113123219.3"></t>
 <t tx="ekr.20190113123822.1">@language c
 @tabwidth -4
 // before @others // line 1
@@ -1712,5 +1709,8 @@ unl: eggs
 # flattened, ignore-case, head, body
 
 # found 4 nodes</t>
+<t tx="ekr.20190114091635.1"></t>
+<t tx="ekr.20190114091635.2"></t>
+<t tx="ekr.20190114091635.3"></t>
 </tnodes>
 </leo_file>
