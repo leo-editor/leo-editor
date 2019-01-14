@@ -1495,6 +1495,7 @@ class AtFile(object):
         
         testing: set by unit tests to suppress the call to at.precheck.
         '''
+        ### g.trace(p.h) ###
         at, c = self, self.c
         root = p.copy()
         x = c.shadowController
@@ -2805,7 +2806,7 @@ class AtFile(object):
         at = self
         g.error("exception writing:", fileName)
         g.es_exception()
-        if getattr(at, 'outputFile', None): ###
+        if getattr(at, 'outputFile', None):
             at.outputFile.flush()
             at.outputFile.close()
             at.outputFile = None

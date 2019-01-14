@@ -142,7 +142,6 @@ class ShadowController(object):
             f.close()
             if not g.unitTesting:
                 kind = 'wrote' if exists else 'created'
-                ### g.es('%-6s: %s' % kind, fileName)
                 g.es('%-6s: %s' % (kind, fileName))
             return True
         except IOError:
@@ -416,7 +415,7 @@ class ShadowController(object):
         # 2010/01/07: check at.errors also.
         if copy and x.errors == 0 and at.errors == 0:
             s = ''.join(new_private_lines)
-            x.replaceFileWithString(fn, at.encoding, s)
+            x.replaceFileWithString(at.encoding, fn, s)
         return copy
     #@+node:bwmulder.20041231170726: *4* x.updatePublicAndPrivateFiles
     def updatePublicAndPrivateFiles(self, root, fn, shadow_fn):

@@ -445,6 +445,7 @@ class ExternalFilesController(object):
         if old_time == new_time:
             # print('%s:times match %s %s' % (tag,c.shortFileName(),path))
             return False
+        ### g.trace(path, g.callers()) ###
         #
         # Check the checksums *only* if the mod times don't match.
         old_sum = self.checksum_d.get(path)
