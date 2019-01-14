@@ -3396,29 +3396,6 @@ def chdir(path):
         path = g.os_path_dirname(path)
     if g.os_path_isdir(path) and g.os_path_exists(path):
         os.chdir(path)
-#@+node:ekr.20190114061452.27: *3* g.compareIgnoringBlankLines
-def compareIgnoringBlankLines(s1, s2):
-    '''Compare two strings, ignoring blank lines.'''
-    assert g.isUnicode(s1), g.callers()
-    assert g.isUnicode(s2), g.callers()
-    if s1 == s2:
-        return True
-    s1 = g.removeBlankLines(s1)
-    s2 = g.removeBlankLines(s2)
-    return s1 == s2
-#@+node:ekr.20190114061452.28: *3* g.compareIgnoringLineEndings
-def compareIgnoringLineEndings(s1, s2):
-    '''Compare two strings, ignoring line endings.'''
-    assert g.isUnicode(s1), g.callers()
-    assert g.isUnicode(s2), g.callers()
-    if s1 == s2:
-        return True
-    # Wrong: equivalent to ignoreBlankLines!
-        # s1 = s1.replace('\n','').replace('\r','')
-        # s2 = s2.replace('\n','').replace('\r','')
-    s1 = s1.replace('\r', '')
-    s2 = s2.replace('\r', '')
-    return s1 == s2
 #@+node:ekr.20120222084734.10287: *3* g.compute...Dir
 # For compatibility with old code.
 

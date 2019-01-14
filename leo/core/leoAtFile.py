@@ -2672,7 +2672,7 @@ class AtFile(object):
                 line = line.replace("@date", time.asctime())
                 if line:
                     self.putSentinel("@comment " + line)
-    #@+node:ekr.20190111172114.1: *5* at.replaceFile & helper
+    #@+node:ekr.20190111172114.1: *5* at.replaceFile & helpers
     def replaceFile(self, contents, encoding, fileName, root, ignoreBlankLines=False):
         '''
         Write or create the given file from the contents.
@@ -2717,7 +2717,7 @@ class AtFile(object):
             encoding=at.encoding, silent=True)
             
         if (contents == old_contents or (
-            ignoreBlankLines and g.compareIgnoringBlankLines(old_contents, contents)
+            ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents)
         )):
             at.sameFiles += 1
             if not g.unitTesting and c.config.getBool('report-unchanged-files', default=True):
@@ -2725,38 +2725,14 @@ class AtFile(object):
             # Leo 5.6: Check unchanged files.
             at.checkPythonCode(contents, fileName, root, pyflakes_errors_only=True)
             return False # No change to original file.
-        ###
-            # # 
-            # # 2. Do nothing if fileName is identical to the contents.
-            # if at.compareContentsWithFile(contents, fileName,
-                # ignoreBlankLines=ignoreBlankLines,
-                # ignoreLineEndings=not at.explicitLineEnding,
-            # ):
-                # report = c.config.getBool('report-unchanged-files', default=True)
-                # at.sameFiles += 1
-                # if report and not g.unitTesting:
-                    # g.es('%sunchanged: %s' % (timestamp, sfn))
-                # # Leo 5.6: Check unchanged files.
-                # at.checkPythonCode(contents, fileName, root, pyflakes_errors_only=True)
-                # return False # No change to original file.
         #
         # Warn if we are only adjusting the line endings.
         if (
             at.explicitLineEnding and
-            not g.compareIgnoringLineEndings(old_contents, contents) and
-            not (ignoreBlankLines and g.compareIgnoringLineEndings(old_contents, contents))
+            not at.compareIgnoringLineEndings(old_contents, contents) and
+            not (ignoreBlankLines and at.compareIgnoringLineEndings(old_contents, contents))
         ):
             g.warning("correcting line endings in:", fileName)
-        ###
-            # #
-            # # 3. Write the file.
-            # if (at.explicitLineEnding and
-                # at.compareContentsWithFile(contents, fileName,
-                    # ignoreBlankLines=ignoreBlankLines,
-                    # ignoreLineEndings=True,
-                # )
-            # ):
-                # g.warning("correcting line endings in:", fileName)
         #
         # Write a changed file.
         ok = g.writeFile(contents, encoding, fileName)
@@ -2771,6 +2747,29 @@ class AtFile(object):
         at.checkPythonCode(contents, fileName, root)
             # Bug fix: check *after* writing the file.
         return ok
+    #@+node:ekr.20190114061452.27: *6* at.compareIgnoringBlankLines
+    def compareIgnoringBlankLines(self, s1, s2):
+        '''Compare two strings, ignoring blank lines.'''
+        assert g.isUnicode(s1), g.callers()
+        assert g.isUnicode(s2), g.callers()
+        if s1 == s2:
+            return True
+        s1 = g.removeBlankLines(s1)
+        s2 = g.removeBlankLines(s2)
+        return s1 == s2
+    #@+node:ekr.20190114061452.28: *6* at.compareIgnoringLineEndings
+    def compareIgnoringLineEndings(self, s1, s2):
+        '''Compare two strings, ignoring line endings.'''
+        assert g.isUnicode(s1), g.callers()
+        assert g.isUnicode(s2), g.callers()
+        if s1 == s2:
+            return True
+        # Wrong: equivalent to ignoreBlankLines!
+            # s1 = s1.replace('\n','').replace('\r','')
+            # s2 = s2.replace('\n','').replace('\r','')
+        s1 = s1.replace('\r', '')
+        s2 = s2.replace('\r', '')
+        return s1 == s2
     #@+node:ekr.20041005105605.216: *5* at.warnAboutOrpanAndIgnoredNodes
     # Called from putFile.
 
