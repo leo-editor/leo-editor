@@ -107,7 +107,7 @@ def insertDirectoryString (c):
         #w.event_generate('<Key>')
         #w.update_idletasks()
 #@+node:mork.20041018204908.3: ** decorated_precheck
-def decorated_precheck (self, root, fileName):
+def decorated_precheck (self, fileName, root):
     '''Call at.precheck, then add fileName to the global files list.'''
     #
     # Call the original method.
@@ -148,11 +148,13 @@ def scanForMultiPath (c):
     New in version 0.6 of this plugin: use ';' to separate paths in @multipath statements.'''
 
     global multiprefix, multipath
-    at = c.atFileCommands ; sep = ';' ; d = {}
+    ### at = c.atFileCommands
+    d, sep = {}, ';'
     for fileName in files: # Keys are fileNames, values are root positions.
         root = files[fileName]
-        at.scanDefaultDirectory(root) # Using root here may be dubious.
-        fileName = g.os_path_join(at.default_directory,fileName)
+        ### at.scanDefaultDirectory(root) # Using root here may be dubious.
+        default_directory = g.os_path_dirname(fileName),
+        fileName = g.os_path_join(default_directory, fileName)
         positions = [p.copy() for p in root.self_and_parents()]
         positions.reverse()
         prefix = ''
@@ -169,9 +171,9 @@ def scanForMultiPath (c):
                     paths = s.split(sep)
                     paths = [z.strip() for z in paths]
                     if prefix:
-                        paths = [g.os_path_join(at.default_directory,prefix,z) for z in paths]
+                        paths = [g.os_path_join(default_directory,prefix,z) for z in paths]
                     else:
-                        paths = [g.os_path_join(at.default_directory,z) for z in paths]
+                        paths = [g.os_path_join(default_directory,z) for z in paths]
                     aList = d.get(fileName,[])
                     aList.extend(paths)
                     d[fileName] = aList
