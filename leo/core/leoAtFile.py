@@ -2672,7 +2672,7 @@ class AtFile(object):
                 line = line.replace("@date", time.asctime())
                 if line:
                     self.putSentinel("@comment " + line)
-    #@+node:ekr.20190111172114.1: *5* at.replaceFile
+    #@+node:ekr.20190111172114.1: *5* at.replaceFile & helper
     def replaceFile(self, contents, encoding, fileName, root, ignoreBlankLines=False):
         '''
         Write or create the given file from the contents.
@@ -2688,7 +2688,8 @@ class AtFile(object):
             timestamp = time.strftime(format) + ' '
         else:
             timestamp = ''
-        ### was in at.create.
+        #
+        # Adjust the contents.
         assert g.isUnicode(contents), g.callers()
         if at.output_newline != '\n':
             contents = contents.replace('\r', '').replace('\n', at.output_newline)
@@ -2697,7 +2698,6 @@ class AtFile(object):
         fileName = g.os_path_realpath(fileName)
         sfn = g.shortFileName(fileName)
         if not g.os_path_exists(fileName):
-            ### ok = at.create(fileName, contents)
             ok = g.writeFile(contents, encoding, fileName)
             if ok:
                 c.setFileTimeStamp(fileName)
@@ -2711,29 +2711,54 @@ class AtFile(object):
             # No original file to change. Return value tested by a unit test.
             at.checkPythonCode(contents, fileName, root)
             return False # No change to original file.
-        # 
-        # 2. Do nothing if fileName is identical to the contents.
-        if at.compareContentsWithFile(contents, fileName,
-            ignoreBlankLines=ignoreBlankLines,
-            ignoreLineEndings=not at.explicitLineEnding,
-        ):
-            report = c.config.getBool('report-unchanged-files', default=True)
+        #
+        # Compare the old and new contents.
+        old_contents = g.readFileIntoUnicodeString(fileName,
+            encoding=at.encoding, silent=True)
+            
+        if (contents == old_contents or (
+            ignoreBlankLines and g.compareIgnoringBlankLines(old_contents, contents)
+        )):
             at.sameFiles += 1
-            if report and not g.unitTesting:
+            if not g.unitTesting and c.config.getBool('report-unchanged-files', default=True):
                 g.es('%sunchanged: %s' % (timestamp, sfn))
             # Leo 5.6: Check unchanged files.
             at.checkPythonCode(contents, fileName, root, pyflakes_errors_only=True)
             return False # No change to original file.
+        ###
+            # # 
+            # # 2. Do nothing if fileName is identical to the contents.
+            # if at.compareContentsWithFile(contents, fileName,
+                # ignoreBlankLines=ignoreBlankLines,
+                # ignoreLineEndings=not at.explicitLineEnding,
+            # ):
+                # report = c.config.getBool('report-unchanged-files', default=True)
+                # at.sameFiles += 1
+                # if report and not g.unitTesting:
+                    # g.es('%sunchanged: %s' % (timestamp, sfn))
+                # # Leo 5.6: Check unchanged files.
+                # at.checkPythonCode(contents, fileName, root, pyflakes_errors_only=True)
+                # return False # No change to original file.
         #
-        # 3. Write the file.
-        if (at.explicitLineEnding and
-            at.compareContentsWithFile(contents, fileName,
-                ignoreBlankLines=ignoreBlankLines,
-                ignoreLineEndings=True,
-            )
+        # Warn if we are only adjusting the line endings.
+        if (
+            at.explicitLineEnding and
+            not g.compareIgnoringLineEndings(old_contents, contents) and
+            not (ignoreBlankLines and g.compareIgnoringLineEndings(old_contents, contents))
         ):
             g.warning("correcting line endings in:", fileName)
-        ### ok = at.create(fileName, contents)
+        ###
+            # #
+            # # 3. Write the file.
+            # if (at.explicitLineEnding and
+                # at.compareContentsWithFile(contents, fileName,
+                    # ignoreBlankLines=ignoreBlankLines,
+                    # ignoreLineEndings=True,
+                # )
+            # ):
+                # g.warning("correcting line endings in:", fileName)
+        #
+        # Write a changed file.
         ok = g.writeFile(contents, encoding, fileName)
         if ok:
             c.setFileTimeStamp(fileName)
@@ -2746,37 +2771,6 @@ class AtFile(object):
         at.checkPythonCode(contents, fileName, root)
             # Bug fix: check *after* writing the file.
         return ok
-    #@+node:ekr.20190111174802.1: *6* at.compareFileWithContents
-    def compareContentsWithFile(self, contents, path, ignoreLineEndings, ignoreBlankLines=False):
-        """Compare two text files."""
-        at = self
-        s1 = contents
-        e1 = at.encoding
-        s2 = g.readFileIntoEncodedString(path)
-        e2 = None
-        if s2 is None:
-            g.internalError('empty compare file: %s' % path)
-            return False
-        #
-        # Make sure both strings are unicode.
-        # This is requred to handle binary files in Python 3.x.
-        if not g.isUnicode(s1):
-            s1 = g.toUnicode(s1, encoding=e1)
-        if not g.isUnicode(s2):
-            s2 = g.toUnicode(s2, encoding=e2)
-        equal = s1 == s2
-        if ignoreBlankLines and not equal:
-            s1 = g.removeBlankLines(s1)
-            s2 = g.removeBlankLines(s2)
-            equal = s1 == s2
-        if ignoreLineEndings and not equal:
-            # Wrong: equivalent to ignoreBlankLines!
-                # s1 = s1.replace('\n','').replace('\r','')
-                # s2 = s2.replace('\n','').replace('\r','')
-            s1 = s1.replace('\r', '')
-            s2 = s2.replace('\r', '')
-            equal = s1 == s2
-        return equal
     #@+node:ekr.20041005105605.216: *5* at.warnAboutOrpanAndIgnoredNodes
     # Called from putFile.
 
