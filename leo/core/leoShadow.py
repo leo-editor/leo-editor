@@ -139,7 +139,8 @@ class ShadowController(object):
             with open(fileName, 'wb') as f:
                 # Fix bug 1243847: unicode error when saving @shadow nodes.
                 f.write(g.toEncodedString(s, encoding=encoding))
-            f.close()
+            c.setFileTimeStamp(fileName)
+                # Fix #1053.  This is an *ancient* bug.
             if not g.unitTesting:
                 kind = 'wrote' if exists else 'created'
                 g.es('%-6s: %s' % (kind, fileName))

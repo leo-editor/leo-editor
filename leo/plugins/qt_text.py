@@ -797,7 +797,6 @@ class NumberBar(QtWidgets.QFrame):
         n = i = 0
         c = self.c
         translation = c.user_dict.get('line_number_translation', [])
-        ### if translation: g.trace(translation)
         self.offsets = []
         while block.isValid():
             i = translation[n] if n < len(translation) else n + 1

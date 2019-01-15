@@ -417,7 +417,7 @@ class ExternalFilesController(object):
     #@+node:ekr.20150407204201.1: *4* efc.get_mtime
     def get_mtime(self, path):
         '''Return the modification time for the path.'''
-        return g.os_path_getmtime(path)
+        return g.os_path_getmtime(g.os_path_realpath(path))
     #@+node:ekr.20150405122428.1: *4* efc.get_time
     def get_time(self, path):
         '''
@@ -438,14 +438,14 @@ class ExternalFilesController(object):
         old_time = self.get_time(path)
         new_time = self.get_mtime(path)
         if not old_time:
+            ### if 'at_clean' in path: g.trace(repr(old_time), path) ###
             # Initialize.
             self.set_time(path, new_time)
             self.checksum_d[path] = self.checksum(path)
             return False
         if old_time == new_time:
-            # print('%s:times match %s %s' % (tag,c.shortFileName(),path))
+            ### if 'at_clean' in path: g.trace('times match', old_time, g.shortFileName(path))
             return False
-        ### g.trace(path, g.callers()) ###
         #
         # Check the checksums *only* if the mod times don't match.
         old_sum = self.checksum_d.get(path)
@@ -458,6 +458,7 @@ class ExternalFilesController(object):
             return False
         else:
             # The file has really changed.
+            g.trace(path)
             assert old_time, path
             if 0: # Fix bug 208: external change overwrite protection only works once
                 # https://github.com/leo-editor/leo-editor/issues/208
@@ -474,6 +475,7 @@ class ExternalFilesController(object):
         if val is None:
             val = c.config.getBool('check-for-changed-external-files', default=False)
             d[c] = val
+            ### g.trace(val, c.shortFileName())
         return val
     #@+node:ekr.20150404083049.1: *4* efc.join
     def join(self, s1, s2):

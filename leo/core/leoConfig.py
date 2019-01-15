@@ -1777,7 +1777,7 @@ class LocalConfigManager(object):
         if key is None:
             return False
         if not self.settingsDict:
-            return False ###
+            return False
         gs = self.settingsDict.get(key)
         if not gs:
             return False

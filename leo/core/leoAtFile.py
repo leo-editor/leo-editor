@@ -1495,7 +1495,6 @@ class AtFile(object):
         
         testing: set by unit tests to suppress the call to at.precheck.
         '''
-        ### g.trace(p.h) ###
         at, c = self, self.c
         root = p.copy()
         x = c.shadowController

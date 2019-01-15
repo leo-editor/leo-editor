@@ -1966,8 +1966,8 @@ class RecursiveImportController(object):
             # Part 1: update the status.
             m = self.file_pattern.match(p.h)
             if m:
-                ### prefix = m.group(1)
-                ### fn = g.shortFileName(p.h[len(prefix):].strip())
+                # prefix = m.group(1)
+                # fn = g.shortFileName(p.h[len(prefix):].strip())
                 after, class_name = None, None
                 continue
             elif p.h.startswith('@path '):
