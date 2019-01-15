@@ -804,8 +804,9 @@ class LeoQtTree(leoFrame.LeoTree):
         try:
             self.busy = True
             p = self.item2position(item)
-            auto_edit = self.prev_v == p.v
             if p:
+                auto_edit = self.prev_v == p.v
+                    # Fix #1049.
                 self.prev_v = p.v
                 event = None
                 mods = g.app.gui.qtApp.keyboardModifiers()

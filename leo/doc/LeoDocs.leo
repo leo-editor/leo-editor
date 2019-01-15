@@ -8134,7 +8134,8 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an Attribute
 
 \@pagewidth &lt;n&gt;
 
-   Sets the page width used to break doc parts into lines.
+   Sets the page width used by the reformat-paragraph command.
+   This directive also controls how @doc parts are broken into lines.
 
 ..  .. index::
     ..  pair: \@path; Glossary
@@ -8770,7 +8771,8 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 
 \@pagewidth &lt;n&gt;
 
-   Sets the page width used to break doc parts into lines.
+   Sets the page width used by the reformat-paragraph command.
+   This directive also controls how @doc parts are broken into lines.
    &lt;n&gt; should be a positive integer.  For example::
 
       @pagewidth 100
@@ -15151,7 +15153,7 @@ The **@language** directive tells which language is in effect::
     pair: @tabwidth; Tutorial
     pair: Negative tab width; Tutorial
 
-The **@pagewidth** directive set page width (used when formatting paragraphs). The **@tabwidth** directive controls tabbing. Negative tab widths (recommended for Python) convert tabs to spaces::
+The **@pagewidth** directive sets the page width used by the reformat-paragraph command. The **@tabwidth** directive controls tabbing. Negative tab widths (recommended for Python) convert tabs to spaces::
 
     @pagewidth 100
     @tabwidth -4
