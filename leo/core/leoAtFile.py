@@ -2716,10 +2716,10 @@ class AtFile(object):
         # Compare the old and new contents.
         old_contents = g.readFileIntoUnicodeString(fileName,
             encoding=at.encoding, silent=True)
-            
-        if (contents == old_contents or (
-            ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents)
-        )):
+        unchanged = (
+            contents == old_contents or 
+            ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents))
+        if unchanged:
             at.sameFiles += 1
             if not g.unitTesting and c.config.getBool('report-unchanged-files', default=True):
                 g.es('%sunchanged: %s' % (timestamp, sfn))
@@ -2728,12 +2728,12 @@ class AtFile(object):
             return False # No change to original file.
         #
         # Warn if we are only adjusting the line endings.
-        if (
-            at.explicitLineEnding and
-            not at.compareIgnoringLineEndings(old_contents, contents) and
-            not (ignoreBlankLines and at.compareIgnoringLineEndings(old_contents, contents))
-        ):
-            g.warning("correcting line endings in:", fileName)
+        if at.explicitLineEnding:
+            ok = (
+                at.compareIgnoringLineEndings(old_contents, contents) or
+                ignoreBlankLines and at.compareIgnoringLineEndings(old_contents, contents))
+            if not ok:
+                g.warning("correcting line endings in:", fileName)
         #
         # Write a changed file.
         ok = g.writeFile(contents, encoding, fileName)
