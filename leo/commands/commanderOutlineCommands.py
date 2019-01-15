@@ -527,7 +527,7 @@ def goToNextClone(self, event=None):
                 if 1:
                     cc.selectChapterByName(new_name)
                     c.redraw(p)
-                else: ### Old code.
+                else: # Old code.
                     c.selectPosition(p)
                     cc.selectChapterByName(new_name)
         else:

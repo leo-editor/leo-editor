@@ -696,11 +696,6 @@ class LeoImportCommands(object):
         '''Return the correct scanner function for p, an @auto node.'''
         # Match the @auto type first, then the file extension.
         c = self.c
-        ###
-            # if g.unitTesting:
-                # g.trace(p.h)
-                # g.trace(g.app.scanner_for_at_auto(c, p))
-                # g.trace(g.app.scanner_for_ext(c, ext))
         return g.app.scanner_for_at_auto(c, p) or g.app.scanner_for_ext(c, ext)
     #@+node:ekr.20140724073946.18050: *5* ic.get_import_filename
     def get_import_filename(self, fileName, parent):

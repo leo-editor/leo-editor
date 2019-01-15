@@ -438,13 +438,11 @@ class ExternalFilesController(object):
         old_time = self.get_time(path)
         new_time = self.get_mtime(path)
         if not old_time:
-            ### if 'at_clean' in path: g.trace(repr(old_time), path) ###
             # Initialize.
             self.set_time(path, new_time)
             self.checksum_d[path] = self.checksum(path)
             return False
         if old_time == new_time:
-            ### if 'at_clean' in path: g.trace('times match', old_time, g.shortFileName(path))
             return False
         #
         # Check the checksums *only* if the mod times don't match.
@@ -475,7 +473,6 @@ class ExternalFilesController(object):
         if val is None:
             val = c.config.getBool('check-for-changed-external-files', default=False)
             d[c] = val
-            ### g.trace(val, c.shortFileName())
         return val
     #@+node:ekr.20150404083049.1: *4* efc.join
     def join(self, s1, s2):
