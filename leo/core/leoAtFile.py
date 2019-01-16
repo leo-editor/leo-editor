@@ -1259,7 +1259,7 @@ class AtFile(object):
             c.init_error_dialogs()
             fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
             if not at.precheck(fileName, root):
-                at.addAtIgnore(root)
+                at.addToOrphanList(root)
                 return
             at.openOutputStream()
             for p in root.self_and_subtree(copy=False):
@@ -1296,7 +1296,7 @@ class AtFile(object):
             c.endEditing()
             fileName = at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
             if not at.precheck(fileName, root):
-                at.addAtIgnore(root)
+                at.addToOrphanList(root)
                 return
             at.openOutputStream()
             at.putFile(root, sentinels=sentinels)
@@ -1304,7 +1304,7 @@ class AtFile(object):
             contents = at.closeOutputStream()
             if at.errors:
                 g.es("not written:", g.shortFileName(fileName))
-                at.addAtIgnore(root)
+                at.addToOrphanList(root)
             else:
                 at.replaceFile(contents, at.encoding, fileName, root)
         except Exception:
@@ -1327,7 +1327,7 @@ class AtFile(object):
                         at.writeMissingNode(p)
                         writtenFiles = True
                     else:
-                        at.addAtIgnore(p)
+                        at.addToOrphanList(p)
                 p.moveToNodeAfterTree()
             elif p.isAtIgnoreNode():
                 p.moveToNodeAfterTree()
@@ -1371,14 +1371,14 @@ class AtFile(object):
                 sentinels=False,
             )
             if not at.precheck(fileName, root):
-                at.addAtIgnore(root)
+                at.addToOrphanList(root)
                 return False
             if c.persistenceController:
                 c.persistenceController.update_before_write_foreign_file(root)
             contents = at.writeAtAutoContents(fileName, root)
             if contents is None:
                 g.es("not written:", fileName)
-                at.addAtIgnore(root)
+                at.addToOrphanList(root)
                 return False
             at.replaceFile(contents, at.encoding, fileName, root,
                 ignoreBlankLines=root.isAtAutoRstNode())
@@ -1477,7 +1477,7 @@ class AtFile(object):
                 sentinels=False,
             )
             if not at.precheck(fileName, root):
-                at.addAtIgnore(root)
+                at.addToOrphanList(root)
                 return False
             contents = ''.join([s for s in g.splitLines(p.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
@@ -1554,7 +1554,7 @@ class AtFile(object):
             )
             if at.errors:
                 g.error("not written:", full_path)
-                at.addAtIgnore(root)
+                at.addToOrphanList(root)
             else:
                 root.clearDirty()
             return not at.errors
@@ -2210,8 +2210,8 @@ class AtFile(object):
             at.onl()
     #@+node:ekr.20041005105605.196: *4* Writing 4.x utils...
     #@+node:ekr.20181024134823.1: *5* at.addAtIgnore
-    def addAtIgnore(self, root):
-        '''Add an @ignore directive to the root node.'''
+    def addToOrphanList(self, root):
+        '''Mark the root as erroneous for c.raise_error_dialogs().'''
         c = self.c
         # Fix #1050:
         root.setOrphan()
@@ -2697,7 +2697,7 @@ class AtFile(object):
                     # Fix bug 889175: Remember the full fileName.
                     at.rememberReadPath(fileName, root)
             else:
-                at.addAtIgnore(root)
+                at.addToOrphanList(root)
             # No original file to change. Return value tested by a unit test.
             at.checkPythonCode(contents, fileName, root)
             return False # No change to original file.
@@ -2734,7 +2734,7 @@ class AtFile(object):
         else:
             g.error('error writing', sfn)
             g.es('not written:', sfn)
-            at.addAtIgnore(root)
+            at.addToOrphanList(root)
         at.checkPythonCode(contents, fileName, root)
             # Check *after* writing the file.
         return ok
@@ -2793,7 +2793,7 @@ class AtFile(object):
         if at.errors == 0:
             g.es_error("errors writing: " + at.targetFileName)
         at.error(message)
-        at.addAtIgnore(at.root)
+        at.addToOrphanList(at.root)
     #@+node:ekr.20041005105605.218: *5* at.writeException
     def writeException(self, fileName, root):
         at = self
@@ -2804,7 +2804,7 @@ class AtFile(object):
             at.outputFile.close()
             at.outputFile = None
         at.remove(fileName)
-        at.addAtIgnore(root)
+        at.addToOrphanList(root)
     #@+node:ekr.20041005105605.219: *3* at.Utilites
     #@+node:ekr.20041005105605.220: *4* at.error & printError
     def error(self, *args):
