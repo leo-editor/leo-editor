@@ -456,7 +456,6 @@ class ExternalFilesController(object):
             return False
         else:
             # The file has really changed.
-            g.trace(path)
             assert old_time, path
             if 0: # Fix bug 208: external change overwrite protection only works once
                 # https://github.com/leo-editor/leo-editor/issues/208
