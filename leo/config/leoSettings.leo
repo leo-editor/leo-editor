@@ -100,66 +100,6 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20181017205207.1"><vh>Retired settings</vh>
-<v t="ekr.20060408090018"><vh>@bool added-setting = True</vh></v>
-<v t="ekr.20080324105006.6"><vh>@bool allow-middle-button-paste = False</vh></v>
-<v t="ekr.20161011090731.1"><vh>@bool allow_section_references_in_at_auto = False</vh></v>
-<v t="ekr.20041119043902.3"><vh>@bool append-output-to-output-file = False</vh></v>
-<v t="ekr.20101104191857.8345"><vh>@bool at-auto-separate-non-def-nodes = False</vh></v>
-<v t="ekr.20070803082435"><vh>@bool full-import-checks = True</vh></v>
-<v t="ekr.20041119043902.4"><vh>@bool ignore-blank-lines = True</vh></v>
-<v t="ekr.20161010085256.1"><vh>@bool js-importer-clean-lws = True</vh></v>
-<v t="ekr.20041119043902.11"><vh>@bool make-whitespace-visible = False</vh></v>
-<v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
-<v t="ekr.20101009103953.8642"><vh>@bool put-expansion-bits-in-leo-files = True</vh></v>
-<v t="ekr.20041119034357.5"><vh>@bool read-only = False</vh></v>
-<v t="ekr.20041119041019"><vh>@bool redirect-execute-script-output-to-log-pane = False</vh></v>
-<v t="ekr.20041120152657"><vh>@bool script-change = None</vh></v>
-<v t="ekr.20041120152900.2"><vh>@bool script-search = None</vh></v>
-<v t="ekr.20060125104049"><vh>@bool show-only-find-tab-options = True</vh></v>
-<v t="ekr.20140721165014.19165"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
-<v t="ekr.20120205022040.15411"><vh>@bool swap-mac-keys = False</vh></v>
-<v t="ekr.20041119034357.13"><vh>@bool use-plugins = True</vh></v>
-<v t="ekr.20071113084330"><vh>@bool warn-when-plugins-fail-to-load = True</vh></v>
-<v t="ekr.20061009190510"><vh>@bool write-recent-files-as-needed = True</vh></v>
-<v t="ekr.20041119041747.4"><vh>@bool write-strips-blank-lines = True</vh></v>
-<v t="ekr.20050203085250"><vh>@int global-setting-for-unit-tests = 132</vh></v>
-<v t="ekr.20080930072519.4"><vh>@int icon-bar-widgets-per-row = 20</vh></v>
-<v t="ekr.20161010172424.1"><vh>@int js-importer-min-rescan-size = 0</vh></v>
-<v t="ekr.20161010172441.1"><vh>@int js-importer-min-scan-size = 0</vh></v>
-<v t="ekr.20060521134125"><vh>@string debugger-default-target = None</vh></v>
-<v t="ekr.20060521134125.1"><vh>@string debugger-force-target = None</vh></v>
-<v t="ekr.20041119034357.29"><vh>@string default-tangle-directory = None</vh></v>
-<v t="ekr.20060620085654"><vh>@string editor-orientation = horizontal</vh></v>
-<v t="ekr.20041119050749.11"><vh>@string headline-gmt-time = None</vh></v>
-<v t="ekr.20111003104518.15499"><vh>@string http_bookmark_unl = Bookmarks</vh></v>
-<v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
-<v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
-<v t="ekr.20041119034357.16"><vh>Retired: all Compare panel options</vh>
-<v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
-<v t="ekr.20041119043902.5"><vh>@bool ignore-first-line-of-file-1 = False</vh></v>
-<v t="ekr.20041119043902.6"><vh>@bool ignore-first-line-of-file-2 = False</vh></v>
-<v t="ekr.20041119043902.7"><vh>@bool ignore-interior-whitespace = False</vh></v>
-<v t="ekr.20041119043902.8"><vh>@bool ignore-leading-whitespace = False</vh></v>
-<v t="ekr.20041119043902.9"><vh>@bool ignore-sentinel-lines = False</vh></v>
-<v t="ekr.20041119043902"><vh>@string compare-file-1 = None</vh></v>
-<v t="ekr.20041119043902.1"><vh>@string compare-file-2 = None</vh></v>
-<v t="ekr.20041119034357.18"><vh>@string limit-directory-search-extension = .py</vh></v>
-<v t="ekr.20041119043902.2"><vh>@string output-file = None</vh></v>
-</v>
-<v t="ekr.20041119050105"><vh>output options</vh>
-<v t="ekr.20041119043902.10"><vh>@int limit-count = 9</vh></v>
-<v t="ekr.20041119043902.12"><vh>@bool print-both-lines-for-matches = False</vh></v>
-<v t="ekr.20041119043902.13"><vh>@bool print-matching-lines = False</vh></v>
-<v t="ekr.20041119043902.14"><vh>@bool print-mismatching-lines = True</vh></v>
-<v t="ekr.20041119043902.15"><vh>@bool print-trailing-lines = True</vh></v>
-</v>
-</v>
-<v t="ekr.20100907092300.6957"><vh>Retired: all Inkscape options</vh>
-<v t="ekr.20100907092300.6958"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
-<v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
-</v>
-</v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
@@ -2433,16 +2373,6 @@ Settings outside this tree have no effect.
 The node "Qt Gui Stylesheet settings" contains most of the setting relating to appearance.</t>
 <t tx="ekr.20041119034357.10">See the "Tree Operation" node for settings that affect how the tree pane works.</t>
 <t tx="ekr.20041119034357.12"></t>
-<t tx="ekr.20041119034357.13">True: Leo loads plugins on startup.
-
-Warnings:
-
-- This is a global option ONLY. It can only be set in the leoSettings.leo files
-that Leo reads during startup. Changing this option in other Leo files will have
-NO effect.
-
-- When this option is enabled, plugins could potentially execute HOSTILE CODE
-contained in Leo files. See further warnings in LeoDocs.leo.</t>
 <t tx="ekr.20041119034357.14">This option affects how Leo treats body text in @root trees.
 
 True:    Body text in @root trees start in doc mode.
@@ -2453,18 +2383,7 @@ False:    Body text in @root trees start in code mode.
 
 This way makes @root trees more compatible with @file trees.</t>
 <t tx="ekr.20041119034357.15"></t>
-<t tx="ekr.20041119034357.16"></t>
-<t tx="ekr.20041119034357.17"></t>
-<t tx="ekr.20041119034357.18">Limit directory searches to files with the given file extension.
-
-None  Compares all files when comparing directories.
-.py   Compares only .py files when comparing directories.</t>
 <t tx="ekr.20041119034357.20">
-</t>
-<t tx="ekr.20041119034357.29">DEPRECATED
-
-The default directory used if no directory specified in @path, @root or @file directives.
-
 </t>
 <t tx="ekr.20041119034357.31">The width of tabs on the screen.  This setting is also used when writing doc parts.
 
@@ -2506,7 +2425,6 @@ Note: this setting can be overridden by the x_mode_fg_color settings.</t>
 #ffecea
 
 Note: this setting can be overridden by the x_mode_bg_color settings.</t>
-<t tx="ekr.20041119034357.5">False: Leo writes leoSettings.leo files.</t>
 <t tx="ekr.20041119034357.50">Color of insertion cursor
 
 </t>
@@ -2622,9 +2540,6 @@ Creates a user-defined type. For example:
 
 This is much better than using a base type because the dialog creator can
 present the user with a listbox containing only the valid options.</t>
-<t tx="ekr.20041119041019">False: Print sends its output to stdout (console) when doing Execute Script command.
-True:  Print redirected to Leo's log pane when doing Execute Script command.
-</t>
 <t tx="ekr.20041119041019.1">The string to be appended to file names resulting from the Remove Sentinels command.
 If the value starts with . the extension is appended to the original file name.
 Otherwise, the extension is appended before the file extension.
@@ -2677,9 +2592,6 @@ asis: Leo retains the number of newlines contained in each body text.
 zero: Leo removes all trailing whitespace from body text.
 
 one:  Leo ends each non-empty body text with exactly one trailing newline.</t>
-<t tx="ekr.20041119041747.4">
-True:  Leo strips blanks and tabs from otherwise blank lines.
-False: Leo retains whitespace even in otherwise blank lines.</t>
 <t tx="ekr.20041119042929"></t>
 <t tx="ekr.20041119042929.1">Value must be Qt color name or value, such as 'red' or 'xf2fddff' (without the quotes).
 
@@ -2700,65 +2612,7 @@ Important: Once a .leo file is created the &lt;?xml..."&gt; line can only be cha
 <t tx="ekr.20041119042929.9">The encoding used for derived files if no @encoding directive is in effect.
 This setting is also used to encode files created by the Tangle commands.
 Default is UTF-8 (case not important).</t>
-<t tx="ekr.20041119043902">The path to the first file or directory to be compared.
-
-Directory compares ignore a filename part of the path, if present.
-
-E.g., c:/directory2/spam.py is valid for directory compares</t>
-<t tx="ekr.20041119043902.1">The path to the second file or directory to be compared.
-
-Directory compares ignore a filename part of the path, if present.
-
-E.g., c:/directory2/spam.py is valid for directory compares</t>
-<t tx="ekr.20041119043902.10">0: Show lines regardless of the number of mismatches.
-
-n: Stop showing lines after n mismatches.
-
-</t>
-<t tx="ekr.20041119043902.11">
-1: Show blanks as [ ] and tabs as [t]
-
-</t>
-<t tx="ekr.20041119043902.12">True:  Print lines of both files when showing matching lines.
-
-False: Print only the line of compare_file_1 when showing matching lines.
-
-</t>
-<t tx="ekr.20041119043902.13">True: Print lines that match using the print_both_lines_for_matches option.
-
-</t>
-<t tx="ekr.20041119043902.14">True: Print lines that do not compare equal to each other.
-
-</t>
-<t tx="ekr.20041119043902.15">True: Print lines all lines in one file after an end-of-file is seen on the other file.</t>
-<t tx="ekr.20041119043902.2">The path to the output file.
-
-Leo will silently write to this file, regardless of whether it already exists, creating the file if needed.
-
-Leo will write to the log pane if this path is empty or invalid.</t>
-<t tx="ekr.20041119043902.3">True:  Append output to output file.
-
-False: Replace output file with results of compare.</t>
-<t tx="ekr.20041119043902.4">True: Ignore blanks lines when comparing files.
-
-</t>
-<t tx="ekr.20041119043902.5">True: Ignore the first line of compare_file_1 when comparing files.
-
-</t>
-<t tx="ekr.20041119043902.6">True: Ignore the first line of compare_file_2 when comparing files.</t>
-<t tx="ekr.20041119043902.7">True: Ignore whitespace after the leading whitespace of a line when comparing files.</t>
-<t tx="ekr.20041119043902.8">True:  Ignore leading whitespace of each line when comparing files.
-
-False: The recommended setting when comparing Python source files.
-
-</t>
-<t tx="ekr.20041119043902.9">True: Ignore sentinel lines when comparing files.
-
-Leo sets sentinel comment delimiters from the first line of each file.  This option has no effect if the first line is not a @+leo line.</t>
 <t tx="ekr.20041119044139"></t>
-<t tx="ekr.20041119050105">These options affecting how Leo shows the results of file compares.
-
-Leo gathers statistics regardless of these options.</t>
 <t tx="ekr.20041119050105.1">The change string (without the quotes unless quotes are part of the string).
 
 N.B. Leo requires utf-8 encoding for any non-ascii characters.</t>
@@ -2811,9 +2665,6 @@ Examples:
 Thu, 30 Jan 2003 16:57:12
 %a, %d %b %Y %H:%M:%S
 </t>
-<t tx="ekr.20041119050749.11">True:  use gmt time when inserting time into headlines.
-
-False: use local time.</t>
 <t tx="ekr.20041119050749.4">True:  Tell whether drags will move nodes or clone nodes.
 False: Don't issue such messages.
 
@@ -2845,64 +2696,6 @@ Examples:
     Enables descendant settings for Windows
     
 </t>
-<t tx="ekr.20041120152657"></t>
-<t tx="ekr.20041120152900.2">When the Script Search radio button is selected Leo treats the contents of the
-Search Text as a script to execute whenever any kind of Find command is
-executed. Similarly, when the Script Change checkbox is selected Leo treats the
-context of the Change Text as a script to execute whenever any kind of Change
-command is executed. See below for just how this works.
-
-Script-based find-change is extremely powerful. In effect, Leo's Find/Change
-panel becomes a new platform for running scripts interactively. Leo now has all
-the find/change capability of pattern matching languages like Snobol and Icon,
-just by using the capabilities of the plain Python language. Moreover, Leo can
-deliver these capabilities interactively or not depending which buttons you push
-in Leo's Find/Change panel.
-
-Script-based find/change frees the user from having to control script-based
-searches interactively. Rather than forcing find/change scripts to implement
-their own interactive controls, it is much easier to use what Leo already has.
-
-HOW IT WORKS
-
-Leo dedicates a Python dictionary called app.searchDict for communication
-between Leo and the search and change scripts. The search and change scripts may
-also use app.searchDict for communication between themselves. Leo sets
-app.searchDict["type"] to "find", "change", "findAll" or "changeAll" to indicate
-the kind of command being executed. Scripts may use all other entries in
-app.searchDict as they please.
-
-Leo executes the find script once when you press the Find button (or the Change
-then Find button) in Leo's Find/Change dialog. Typically, the find script would
-traversing the tree and highlight the found text or otherwise indicate to the
-user that the find operation has succeeded. However, the script can do anything
-it pleases.
-
-Leo executes the the find script repeatedly when you press the Find All button.
-Leo keeps executing the find script until app.searchDict["continue"] evaluates
-to false. Initially there is no entry for app.searchDict["continue"], so the
-find script must set app.searchDict["continue"] = true if it wants Leo to keep
-executing it.
-
-Leo executes the change script once when you press the Change button. Typically,
-the change script would change the selected text. Usually the change script will
-compute the new value of body text and call v.setBodyStringOrPane(newText) to
-make that change permanent. 
-
-The change script also may handle undo, typically by calling
-c.frame.onBodyChanged(v,"Change",oldText=oldText). Leo does not handle undo
-automatically. Indeed, Leo makes no assumptions whatever about what the change
-script really does.
-
-Leo executes the the change script repeatedly when you press the Change All
-button. Just as with the Find All command, Leo keeps executing the change script
-until app.searchDict["continue"] evaluates to false.
-
-Most find and change scripts will ignore settings in the Find Panel like "whole
-word", "pattern match", and "reverse". However, these settings are available to
-the scripts via ivars such as c.whole_word_flag, etc. if desired.
-
-For examples, see the node called 'Script Find and Script Change' in leoDocs.leo.</t>
 <t tx="ekr.20041120155431.1">The body text of @shortcut nodes contain the specification for zero or more shortcuts.
 
 Lines starting with # are ignored.
@@ -2941,9 +2734,6 @@ char granularity: start a new undo unit for each character typed.
 
 Leo used char granularity for all version prior to 4.3. char granularity is not
 recommended; it is clumsy and wasteful of computer memory.</t>
-<t tx="ekr.20050203085250">This is not used in Leo, except in unit tests.
-
-Please do not change this; it would make a unit test fail.</t>
 <t tx="ekr.20050203090810">Please do not change any of these settings.
 
 Doing so would make unit tests fail.
@@ -3353,15 +3143,9 @@ If this is False it will be harder to use the arrow keys in the headline.
     
 False: (Legacy) Selecting an outline node transfers focus to the body pane.</t>
 <t tx="ekr.20060122105527.8"></t>
-<t tx="ekr.20060125104049">True: (recommended) The Find tab shows only options, not text or buttons.
-False: (legacy)     The Find tab shows text, options and buttons.</t>
 <t tx="ekr.20060127050605">Zero (recommended): unlimited stack size.
 Non-zero: limit the maximum stack size to the given number.</t>
 <t tx="ekr.20060201111002"></t>
-<t tx="ekr.20060204124608">True: minibuffer commands show the Find Tab.
-False: minibuffer commands hide the Find Tab.
-
-Important: the Find Tab always exists regardless of this setting.</t>
 <t tx="ekr.20060216135834">True:  enable autocompletion initially.
 False: disable autocomopletion initially.
 
@@ -3556,7 +3340,6 @@ word-search-forward</t>
 <t tx="ekr.20060325071042.1"></t>
 <t tx="ekr.20060325071042.2"></t>
 <t tx="ekr.20060325071042.3"></t>
-<t tx="ekr.20060408090018"></t>
 <t tx="ekr.20060504131831.1"></t>
 <t tx="ekr.20060504131831.2"></t>
 <t tx="ekr.20060504134056"></t>
@@ -3567,11 +3350,6 @@ word-search-forward</t>
 <t tx="ekr.20060504140408.1"></t>
 <t tx="ekr.20060504140408.2"></t>
 <t tx="ekr.20060521132401">c:\Python24\Scripts\_winpdb.py</t>
-<t tx="ekr.20060521134125">The debug target to use if no target is specified otherwise.
-
-c:\prog\tigris-cvs\leo\src\leo.py
-</t>
-<t tx="ekr.20060521134125.1">The debug target to use regardless of the selected node or other settings.</t>
 <t tx="ekr.20060524151415"></t>
 <t tx="ekr.20060524151415.1">idle: use Python's standard Idle debugger.
 
@@ -3664,8 +3442,6 @@ LavenderBlush1
 azure2
 aquamarine1</t>
 <t tx="ekr.20060606085536.1">Overrides body_text_foreground_color.</t>
-<t tx="ekr.20060620085654">vertical:   pack body-pane editors vertically.
-horizontal: pack body-pane editors horizontally.</t>
 <t tx="ekr.20060627084739">True: flash matching bracket when typing (, ), [, ], { or }.</t>
 <t tx="ekr.20060627121646"></t>
 <t tx="ekr.20060627121646.1"></t>
@@ -3921,8 +3697,6 @@ is happening.
 <t tx="ekr.20061003173413"></t>
 <t tx="ekr.20061007211759">True: collapse the parent of the moved node when moving a node left.
 </t>
-<t tx="ekr.20061009190510">True: update .leoRecentFiles.txt, creating it if if does not exist.
-False: don't update .leoRecentFiles and don't create it.</t>
 <t tx="ekr.20061010111324">True: (legacy) Select all headline text when editing a headline.
 False: Put the cursor at the end of the headline text.</t>
 <t tx="ekr.20061011082224">@language rest
@@ -4241,7 +4015,6 @@ menu-shortcut = Alt-W # Window menu.
 Please don't change this node and its descendants; they are for Leo's
 developers.
 </t>
-<t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070925144552">Leo creates its menus using @menus trees. Within @menus trees,
 @menu nodes create menus and @item nodes create menu items.
 
@@ -4291,7 +4064,6 @@ True: Top pane contains only outline.  Bottom pane contains body and log panes.<
 for which leading whitespace is not terribly significant.
 
 True: @auto warns about mismatches that occur solely in leading whitespace.</t>
-<t tx="ekr.20071113084330"></t>
 <t tx="ekr.20071114072753">True: the vim plugin will open @url nodes when they are double clicked.</t>
 <t tx="ekr.20071213060239">@color</t>
 <t tx="ekr.20071213060239.1"></t>
@@ -4375,9 +4147,6 @@ All other @command nodes define **local commands** that are defined only in this
 </t>
 <t tx="ekr.20080315083057.7">True: (Recommended) The spell commands collapse all nodes that are not ancestors of the node containing the match.
 False: The spell commands do not collapse any nodes.</t>
-<t tx="ekr.20080324105006.6">True: allow linux-like pastes using a mouse's middle button.
-
-Important: this may cause crashes on some platforms.</t>
 <t tx="ekr.20080326060254.3">The default language if no @language or @comment is in effect.
 
 Valid values are (case is ignored):
@@ -4941,8 +4710,6 @@ lcd2c" "
 True: @shadow and @auto create a single node for the entire file.</t>
 <t tx="ekr.20080921060401.3"></t>
 <t tx="ekr.20080930072519.3"></t>
-<t tx="ekr.20080930072519.4">The number of buttons or widget in any one row of icons in the icon area.
-If there are more than this number, a new row is created.</t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.
 </t>
@@ -5043,11 +4810,6 @@ A reasonable alternative would be:
     
 '\n.. class:: code\n..\n\n::\n'</t>
 <t tx="ekr.20090514111518.8379"></t>
-<t tx="ekr.20090620112052.9070">@nocolor
-
-The encoding assumed for strings used by the Qt plugin.
-UTF-8 is a reasonable default.
-Change to your Python's default encoding if you have unicode problems.</t>
 <t tx="ekr.20090724102842.2492">If zero, all nodes are colorized, regardless of length of body text.
 If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
 
@@ -5107,22 +4869,8 @@ date;;={|{x=time.asctime()}|}
 <t tx="ekr.20100904134301.11006">True: enable abbreviations
 False disable abbreviations
 </t>
-<t tx="ekr.20100907092300.6957"></t>
-<t tx="ekr.20100907092300.6958">Path to inkscape template file
-</t>
-<t tx="ekr.20100907092300.6959">Path to Inkscape executable</t>
 <t tx="ekr.20100910115903.8297"></t>
 <t tx="ekr.20100910115903.8299"></t>
-<t tx="ekr.20101009103953.8642">True (recommended):
-    Write "E" attribute bits in &lt;v&gt; elements.
-    Leo outlines will record the expansion state of all nodes.
-    
-False: (Good for files like unitTest.leo)
-    Suppress "E" attribute bits in &lt;v&gt; elements.
-    Only the ancestors of the presently selected node will
-    be expanded when Leo opens an outline.</t>
-<t tx="ekr.20101104191857.8345">True:  put non-definition code in separate nodes.
-False: put trailing non-definition code at the start of the next node.</t>
 <t tx="ekr.20110510071925.14588"></t>
 <t tx="ekr.20110510071925.14589">True:  show completions in a QCompleter popup.
 False: show completions in Leo's Completions tab.
@@ -5358,7 +5106,6 @@ Commands:
 <t tx="ekr.20111003085631.15488"></t>
 <t tx="ekr.20111003085631.15489"></t>
 <t tx="ekr.20111003085631.15490"></t>
-<t tx="ekr.20111003104518.15499"></t>
 <t tx="ekr.20111003130143.15561">    **Important**: these nodes **only** specify fonts used by Leo's syntax colorizer.
     
     To set fonts in Leo's widgets, change Leo's master style sheet::
@@ -5926,9 +5673,6 @@ True (Recommended):
 </t>
 <t tx="ekr.20111115083813.12518"></t>
 <t tx="ekr.20120205022040.15410">These are needed to handle shortcuts for the find panel!</t>
-<t tx="ekr.20120205022040.15411">This setting has effect only on MacOS.
-
-When True, bindings that appear to specify the control key actually specify the command (clover) key.</t>
 <t tx="ekr.20120305084218.11271"># Unbound F-Keys cause problems on Ubuntu
 help            = F1
 # find-prev     = F2    # Set elsewhere
@@ -7770,7 +7514,6 @@ The valid values are::
 command:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="ekr.20140721165014.19165">This allows the newline character to switch from the outline pane to the body pane.</t>
 <t tx="ekr.20140721165014.19166">True:  Outline gets focus when a new window is opened.
 False: Body pane gets focus when a new window is opened.</t>
 <t tx="ekr.20140721165014.19167">True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
@@ -10595,22 +10338,6 @@ code {
 <t tx="ekr.20161006102148.1">Import M&amp;ORE Files...</t>
 <t tx="ekr.20161007090350.1">Import &amp;Jupyter Notebook...</t>
 <t tx="ekr.20161007090445.1">Export &amp;Jupyter Notebook</t>
-<t tx="ekr.20161010085256.1">True: The javascript importer cleans blank lines and regularizes indentaion.
-</t>
-<t tx="ekr.20161010172424.1">If &gt; 0, the importer rescans blocks only if they have more than the indicated number of lines.</t>
-<t tx="ekr.20161010172441.1">If &gt; 0, the importer scans files only if they have more than the indicated number of lines.</t>
-<t tx="ekr.20161011090731.1">True: (Experimental): The @auto write code expands section references.
-False: (Legacy):      The @auto write code ignores section references.
-
-@language rest
-@wrap
-
-**Note**: This setting has been retired for the following reasons:
-
-1. The new javascript importer *always* generate section references for non-trivial programs. As a result, the legacy value for this setting would cause the javascript importer to fail.
-
-2. The new @auto write code writes expands section references if they exist.  Otherwise, the write code writes the line as is, without any complaint. As a result, there should be no problem if an imported code contains something that looks like a section reference but isn't.
-</t>
 <t tx="ekr.20161011130632.1">/*
     The main .css stylesheet for the mod_http.py plugin.
     From Chris George:
@@ -11744,7 +11471,6 @@ True:  Replace the Meta key with the Alt Key.
 <t tx="ekr.20180525053145.1">True: use jedi for autocompletion if available.
 See https://jedi.readthedocs.io/en/latest/index.html
 </t>
-<t tx="ekr.20181017205207.1"></t>
 <t tx="ekr.20181018060340.1">def filter_get_x(self, setting):
     '''
     Return False if we can safely ignore a missing call to config.get(setting).
@@ -12204,7 +11930,6 @@ QTextEdit#richTextEdit[vim_state~="vim_visual"] {
 <t tx="jlunz.20151120072157.1">True: Wrap body text.
 
 </t>
-<t tx="leohag.20081204085551.13"># Don't change this unless you know what you are doing.</t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
 <t tx="peckj.20130514082859.5600">This defines the font size for body text in print outs.
