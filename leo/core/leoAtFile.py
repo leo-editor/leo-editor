@@ -2209,7 +2209,7 @@ class AtFile(object):
                 at.os(at.endSentinelComment)
             at.onl()
     #@+node:ekr.20041005105605.196: *4* Writing 4.x utils...
-    #@+node:ekr.20181024134823.1: *5* at.addAtIgnore
+    #@+node:ekr.20181024134823.1: *5* at.addToOrphanList
     def addToOrphanList(self, root):
         '''Mark the root as erroneous for c.raise_error_dialogs().'''
         c = self.c
