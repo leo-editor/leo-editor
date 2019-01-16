@@ -102,13 +102,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # A LeoTabbedTopLevel for tabbed windows.
             # None for non-tabbed windows.
         # Init the base class.
-        ui_file_name = c.config.getString('qt-ui-file-name')
         self.useScintilla = c.config.getBool('qt-use-scintilla')
-        if not ui_file_name:
-            ui_file_name = 'qt_main.ui'
-        ui_description_file = g.app.loadDir + "/../plugins/" + ui_file_name
-        if not g.os_path_exists(ui_description_file):
-            g.trace('File not found: %s' % ui_description_file)
         self.reloadSettings()
         main_splitter, secondary_splitter = self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")

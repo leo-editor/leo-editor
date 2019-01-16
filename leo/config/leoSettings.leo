@@ -134,6 +134,7 @@
 <v t="ekr.20041119050749.11"><vh>@string headline-gmt-time = None</vh></v>
 <v t="ekr.20111003104518.15499"><vh>@string http_bookmark_unl = Bookmarks</vh></v>
 <v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
+<v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
 <v t="ekr.20041119034357.16"><vh>Retired: all Compare panel options</vh>
 <v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
 <v t="ekr.20041119043902.5"><vh>@bool ignore-first-line-of-file-1 = False</vh></v>
@@ -2168,7 +2169,6 @@
 <v t="ekr.20150322061147.1"><vh>@int qt-cursor-width = 1</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
-<v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
 </v>
 <v t="ekr.20110611092035.16481"><vh>Scripting</vh>
 <v t="ekr.20061029091403"><vh>@bool show-full-tracebacks-in-scripts = False</vh></v>
