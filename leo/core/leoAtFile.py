@@ -2724,7 +2724,8 @@ class AtFile(object):
         old_contents = g.readFileIntoUnicodeString(fileName,
             encoding=at.encoding, silent=True)
         unchanged = (
-            contents == old_contents or 
+            contents == old_contents or
+            (not at.explicitLineEnding and at.compareIgnoringLineEndings(old_contents, contents)) or ###
             ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents))
         if unchanged:
             at.sameFiles += 1
