@@ -148,12 +148,10 @@ def scanForMultiPath (c):
     New in version 0.6 of this plugin: use ';' to separate paths in @multipath statements.'''
 
     global multiprefix, multipath
-    ### at = c.atFileCommands
     d, sep = {}, ';'
     for fileName in files: # Keys are fileNames, values are root positions.
         root = files[fileName]
-        ### at.scanDefaultDirectory(root) # Using root here may be dubious.
-        default_directory = g.os_path_dirname(fileName),
+        default_directory = g.os_path_dirname(fileName)
         fileName = g.os_path_join(default_directory, fileName)
         positions = [p.copy() for p in root.self_and_parents()]
         positions.reverse()
