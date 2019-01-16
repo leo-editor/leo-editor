@@ -370,11 +370,10 @@ def saveAll(self, event=None):
     c = self
     c.save() # Force a write of the present window.
     for f in g.app.windowList:
-        c = f.c
-        if c.isChanged():
-            c.save()
+        c2 = f.c
+        if c2 != c and c2.isChanged():
+            c2.save()
     # Restore the present tab.
-    c = self
     dw = c.frame.top # A DynamicWindow
     dw.select(c)
 #@+node:ekr.20031218072017.2835: *3* c_file.saveAs

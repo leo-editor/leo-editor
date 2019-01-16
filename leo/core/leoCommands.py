@@ -165,9 +165,9 @@ class Commands(object):
         self.changed = False
             # True: the ouline has changed since the last save.
         self.ignored_at_file_nodes = []
-            # List of nodes for error dialog.
+            # List of nodes for c.raise_error_dialogs.
         self.import_error_nodes = []
-            #
+            # List of nodes for c.raise_error_dialogs.
         self.last_dir = None
             # The last used directory.
         self.mFileName = fileName or ''
@@ -176,6 +176,8 @@ class Commands(object):
             #
         self.openDirectory = None
             #
+        self.orphan_at_file_nodes = []
+            # List of orphaned nodes for c.raise_error_dialogs.
         self.wrappedFileName = None
             # The name of the wrapped file, for wrapper commanders.
             # Set by LM.initWrapperLeoFile
@@ -2451,7 +2453,7 @@ class Commands(object):
         # Issue one or two dialogs or messages.
         saved_body = c.rootPosition().b
             # Save the root's body. Somehow the dialog destroys it!
-        if c.import_error_nodes or c.ignored_at_file_nodes:
+        if c.import_error_nodes or c.ignored_at_file_nodes or c.orphan_at_file_nodes:
             g.app.gui.dismiss_splash_screen()
         else:
             # #1007: Exit now, so we don't have to restore c.rootPosition().b.
@@ -2471,13 +2473,32 @@ class Commands(object):
             files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))
             kind = 'read' if kind.startswith('read') else 'written'
             if use_dialogs:
+                message = 'The following were not %s because they contain @ignore:\n%s' % (kind, files)
                 g.app.gui.runAskOkDialog(c,
-                    title='Not read',
-                    message='The following were not %s because they contain @ignore:\n%s' % (
-                        kind, files))
+                    message=message,
+                    title='Not %s' % kind.capitalize(),
+                )
             else:
                 g.es('not %s (@ignore)...' % (kind), color='red')
                 g.es(files, color='blue')
+        #
+        # #1050: always raise a dialog for orphan @<file> nodes.
+        if c.orphan_at_file_nodes:
+            message = '\n'.join([
+                'The following were not written because of errors:\n',
+                '\n'.join(sorted(set(c.orphan_at_file_nodes))),
+                '',
+                'Warning: changes to these files will be lost\n'
+                'unless you can save the files successfully.'
+            ])
+            g.app.gui.runAskOkDialog(c, message=message, title='Not Written')
+            # Mark all the nodes dirty.
+            for z in c.all_unique_positions():
+                if z.isOrphan():
+                    z.setDirty()
+                    z.clearOrphan()
+            c.setChanged()
+            c.redraw()
         # Restore the root position's body.
         c.rootPosition().v.b = saved_body
             # #1007: just set v.b.

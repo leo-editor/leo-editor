@@ -2212,20 +2212,28 @@ class AtFile(object):
     #@+node:ekr.20181024134823.1: *5* at.addAtIgnore
     def addAtIgnore(self, root):
         '''Add an @ignore directive to the root node.'''
-        if not root:
-            g.error('can not happen, no root')
-            return
-        if root.isAtIgnoreNode():
-            g.trace('already contains @ignore', root.h)
-        elif not g.unitTesting:
-            s = root.b.rstrip()
-            if s:
-                root.b = s + '\n@ignore\n'
-            else:
-                root.b = '@ignore\n'
-            # The dirty bit may be cleared later.
-            root.setDirty()
-            g.es('adding @ignore to', root.h)
+        c = self.c
+        ###
+            # if not root:
+                # g.error('can not happen, no root')
+                # return
+
+        # Fix #1050:
+        root.setOrphan()
+        c.orphan_at_file_nodes.append(root.h)
+
+        ###
+            # if root.isAtIgnoreNode():
+                # g.trace('already contains @ignore', root.h)
+            # elif not g.unitTesting:
+                # s = root.b.rstrip()
+                # if s:
+                    # root.b = s + '\n@ignore\n'
+                # else:
+                    # root.b = '@ignore\n'
+                # # The dirty bit may be cleared later.
+                # root.setDirty()
+                # g.es('adding @ignore to', root.h)
     #@+node:ekr.20190111111608.1: *5* at.checkPath & helpers
     def checkPath(self, fileName):
         '''Return True if we can write to the file's directory.'''
@@ -2789,8 +2797,11 @@ class AtFile(object):
             if p.isAtAllNode():
                 p.moveToNodeAfterTree()
             else:
-                if p.isAtIgnoreNode():
-                    at.writeError("@ignore node: " + p.h)
+                # #1050: test orphan bit.
+                if p.isOrphan():
+                    at.writeError("Orphan node: " + p.h)
+                    if p.hasParent():
+                        g.blue("parent node:", p.parent().h)
                 p.moveToThreadNext()
     #@+node:ekr.20041005105605.217: *5* at.writeError
     def writeError(self, message):
