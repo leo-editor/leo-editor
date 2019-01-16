@@ -2213,27 +2213,9 @@ class AtFile(object):
     def addAtIgnore(self, root):
         '''Add an @ignore directive to the root node.'''
         c = self.c
-        ###
-            # if not root:
-                # g.error('can not happen, no root')
-                # return
-
         # Fix #1050:
         root.setOrphan()
         c.orphan_at_file_nodes.append(root.h)
-
-        ###
-            # if root.isAtIgnoreNode():
-                # g.trace('already contains @ignore', root.h)
-            # elif not g.unitTesting:
-                # s = root.b.rstrip()
-                # if s:
-                    # root.b = s + '\n@ignore\n'
-                # else:
-                    # root.b = '@ignore\n'
-                # # The dirty bit may be cleared later.
-                # root.setDirty()
-                # g.es('adding @ignore to', root.h)
     #@+node:ekr.20190111111608.1: *5* at.checkPath & helpers
     def checkPath(self, fileName):
         '''Return True if we can write to the file's directory.'''
@@ -2725,7 +2707,7 @@ class AtFile(object):
             encoding=at.encoding, silent=True)
         unchanged = (
             contents == old_contents or
-            (not at.explicitLineEnding and at.compareIgnoringLineEndings(old_contents, contents)) or ###
+            (not at.explicitLineEnding and at.compareIgnoringLineEndings(old_contents, contents)) or
             ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents))
         if unchanged:
             at.sameFiles += 1
