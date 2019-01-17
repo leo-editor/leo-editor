@@ -2424,6 +2424,7 @@ class Commands(object):
         c = self
         c.import_error_nodes = []
         c.ignored_at_file_nodes = []
+        c.orphan_at_file_nodes = []
         if g.unitTesting:
             d = g.app.unitTestDict
             tag = 'init_error_dialogs'
@@ -2495,6 +2496,7 @@ class Commands(object):
             # Mark all the nodes dirty.
             for z in c.all_unique_positions():
                 if z.isOrphan():
+                    g.trace('CLEAR', z.h)
                     z.setDirty()
                     z.clearOrphan()
             c.setChanged()
