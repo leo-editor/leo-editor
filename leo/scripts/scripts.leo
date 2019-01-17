@@ -358,12 +358,17 @@
 <v t="ekr.20180529105231.1"><vh>Leo 5.7.4</vh>
 <v t="ekr.20180529105204.1"><vh>script: get-child-headlines</vh></v>
 </v>
+</v>
 <v t="ekr.20181231155722.1"><vh>Leo 5.8.1</vh>
+<v t="ekr.20190117144022.1"><vh>@@button goto-test (Terry Brown)</vh>
+<v t="ekr.20190117144022.2"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20181231155727.1"><vh>@@command make-vim-node</vh></v>
-</v>
-</v>
-<v t="ekr.20190106073221.1"><vh>find-chains</vh>
+<v t="ekr.20190106073221.1"><vh>script: find-chains (EKR)</vh>
 <v t="ekr.20190106073221.2"><vh>standard methods</vh></v>
+</v>
+<v t="ekr.20190117144035.3"><vh>script: run pytest in separate process</vh></v>
+<v t="ekr.20190117144035.2"><vh>script: stand-alone run pytest</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -4298,6 +4303,156 @@ g.printObj(chains, tag='%s chains' % len(chains))</t>
         'endswith', 'finditer', 'lower', 'strip', 'lstrip', 'rstrip', 'startswith', 'upper',
             # string methods.
     )</t>
+<t tx="ekr.20190117144022.1">&lt;&lt; docstring &gt;&gt;
+import re
+tests_path = c.config.getString("pytest-path") or "tests"
+info = {}
+
+# climb up node tree collecting info.
+for nd in p.self_and_parents_iter():
+    definition = re.match(r'def ([^( ]*)\(', p.b)
+    if definition and not info.get('func'):
+        info['func'] = definition.group(1)
+    if nd.h.endswith('.py') and not info.get('file'):
+        info['file'] = nd.h.split()[-1].split('/')[-1]
+    if nd.h.strip('/') == tests_path.strip('/'):
+        info['test'] = True
+
+nd = p.copy()
+
+if info.get('test'):  # we started in these tests folder
+    while nd.h.strip('/') != tests_path.strip('/'):
+        nd = nd.parent()  # climb up to code folder
+    if info.get('file'):  # find or create code file
+        target = info['file'][5:]
+        for sib in nd.self_and_siblings():
+            if sib.h.endswith(target):
+                nd = sib
+                break
+        else:
+            nd = nd.insertAfter()
+            nd.h = '@auto ' + target
+    if info.get('func'):  # find or create code function
+        target = info['func'][5:]
+        for child in nd.children():
+            if child.h == target:
+                nd = child
+                break
+        else:
+            nd = nd.insertAsLastChild()
+            nd.h = target
+            nd.b = 'def'  # let abbreviation build the rest
+else:  # we stared in the code folder
+    if info.get('func'):  # get up to file level (weak, could be deeper)
+        nd.moveToParent()
+    for sib in nd.self_and_siblings():  # find or create tests folder
+        if sib.h.strip('/') == tests_path.strip('/'):
+            nd = sib
+            break
+    else:
+        nd = nd.insertBefore()
+        nd.h = "/%s/" % tests_path.strip('/')
+        nd.b = "@path %s" % tests_path
+    if info.get('file'):  # find or create test file
+        target = 'test_' + info['file']
+        for child in nd.children():
+            if child.h.endswith(target):
+                nd = child
+                break
+        else:
+            nd = nd.insertAsLastChild()
+            nd.h = "@auto %s" % target
+            nd.b = "import %s\n\n@others\n" % info['file'].replace('.py', '')
+    if info.get('func'):  # find or create test function
+        target = 'test_' + info['func']
+        for child in nd.children():
+            if child.h == target:
+                nd = child
+                break
+        else:
+            nd = nd.insertAsLastChild()
+            nd.h = target
+            nd.b = "def %s():\n    assert %s. == 'otters'\n" % (
+                target, info['file'].replace('.py', ''))
+
+c.selectPosition(nd)
+c.redraw()
+</t>
+<t tx="ekr.20190117144022.2">"""
+switch between code and test
+
+If you're using `pytest`[1] and use the layout described below, this @button code
+will jump you between a function and its test, creating the (test)function
+if it doesn't already exist.  Also the tests folder and `test_foo.py` file.
+It assumes use of the `active_path` plugin which headlines folders as
+`/myFolder/` with body text `@path myFolder`.
+
+This code is very heavy on assumptions, but a lot of those are driven
+by pytest default behavior.
+
+To run tests, use `python -m pytest`, as anything involving py.test is
+deprecated, and for some reason `pytest` finds files but runs no tests.
+Tested with pytest 3.x, note Ubuntu 16.04 seems to still be on 2.x
+
+Assumed layout:
+
+/tests/
+    test_utils.py
+        def test_add_one()...
+        def test_sub_one()...
+    test_gui.py
+        def test_load_buttons()...
+utils.py
+    def add_one()...
+    def sub_one()...
+gui.py
+    def load_buttons()...
+
+So running this code from a button will jump you from
+test_sub_one() back to sub_one() and visa versa creating any
+missing parts of the hierarchy in the process.
+
+[1] https://docs.pytest.org/en/latest/
+"""</t>
+<t tx="ekr.20190117144035.2">g.cls()
+import os
+import subprocess
+loadDir = g.app.loadDir
+if 1:
+    table = (
+        (os.path.abspath(os.path.join(loadDir, '..', '..')), None),
+    )
+else:
+    table = (
+        (os.path.abspath(os.path.join(loadDir, '..', 'core')), None),
+        (os.path.abspath(os.path.join(loadDir, '..', 'test')), None),
+        (os.path.abspath(os.path.join(loadDir, '..', 'plugins', 'test')), None),
+    )
+for path, ignore in table:
+    assert os.path.exists(path), repr(path)
+    # subprocess.Popen(r'python %s %s' % (prog, path), shell=True)
+    ignore = '-k %s ' % (ignore) if ignore else ''
+    command = r'pytest %s%s' % (ignore, path)
+    subprocess.Popen(command, shell=True)</t>
+<t tx="ekr.20190117144035.3">g.cls()
+import os
+import subprocess
+loadDir = g.app.loadDir
+prog = g.os_path_finalize_join(loadDir, '..', '..', 'run_pytest_tests.py')
+if 1:
+    paths = (
+        os.path.abspath(os.path.join(loadDir, '..', '..')),
+    )
+else:
+    paths = (
+        os.path.abspath(os.path.join(loadDir, '..', 'core')),
+        os.path.abspath(os.path.join(loadDir, '..', 'test')),
+        os.path.abspath(os.path.join(loadDir, '..', 'plugins', 'test')),
+    )
+for path in paths:
+    assert os.path.exists(path), repr(path)
+    subprocess.Popen(r'python %s %s' % (prog, path), shell=True)
+</t>
 <t tx="mhw.20181210131101.1">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
