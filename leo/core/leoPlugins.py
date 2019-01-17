@@ -466,11 +466,7 @@ class LeoPluginsController(object):
         trace = 'plugins' in g.app.debug
 
         def report(message):
-            if (
-                (trace or tag == 'open0') and
-                not g.unitTesting and
-                g.app.gui.guiName() != 'browser'
-            ):
+            if trace and not g.unitTesting:
                 g.es_print('loadOnePlugin: %s' % message)
                 
         # Define local helper functions.
@@ -534,7 +530,7 @@ class LeoPluginsController(object):
         #@+node:ekr.20180528162300.1: *5* function:reportFailedImport
         def reportFailedImport():
             '''Report a failed import.'''
-            if g.app.batchMode or g.app.inBridge or g.unitTesting or not trace:
+            if g.app.batchMode or g.app.inBridge or g.unitTesting:
                 return
             if (
                 self.warn_on_failure and
@@ -567,7 +563,8 @@ class LeoPluginsController(object):
         finally:
             self.loadingModuleNameStack.pop()
         if not result:
-            reportFailedImport()
+            if trace:
+                reportFailedImport()
             return None
         #
         # Last-minute checks.
