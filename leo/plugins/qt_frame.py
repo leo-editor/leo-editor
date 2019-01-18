@@ -1415,7 +1415,7 @@ class LeoQtBody(leoFrame.LeoBody):
         if self.totalNumberOfEditors == 2:
             self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
-            ####### new test ########
+            # Fix #1021: Pack differently depending on whether the gutter exists.
             if self.use_gutter:
                 self.packLabel(widget.parent(), n=1)
                 widget.leo_label = widget.parent().leo_label
@@ -1448,14 +1448,17 @@ class LeoQtBody(leoFrame.LeoBody):
     def createEditor(self, name):
         '''Create a new body editor.'''
         c, p = self.c, self.c.p
-        f = c.frame.top.leo_ui.leo_body_inner_frame
+        parent_frame = c.frame.top.leo_ui.leo_body_inner_frame
+        ### To do: Create a frame for line numbers, if necessary
+            # if self.use_gutter:
+                # parent_frame = qt_text.LeoLineTextWidget(c, body)
         # Step 1: create the editor.
-        w = widget = qt_text.LeoQTextBrowser(f, c, self)
+        w = widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
         w.setObjectName('richTextEdit') # Will be changed later.
         wrapper = qt_text.QTextEditWrapper(w, name='body', c=c)
         self.packLabel(w)
         # Step 2: inject ivars, set bindings, etc.
-        self.injectIvars(f, name, p, wrapper)
+        self.injectIvars(parent_frame, name, p, wrapper)
         self.updateInjectedIvars(w, p)
         wrapper.setAllText(p.b)
         wrapper.see(0)
@@ -1466,7 +1469,7 @@ class LeoQtBody(leoFrame.LeoBody):
         else:
             # Scintilla only.
             self.recolorWidget(p, wrapper)
-        return f, wrapper
+        return parent_frame, wrapper
     #@+node:ekr.20110605121601.18197: *5* LeoQtBody.assignPositionToEditor
     def assignPositionToEditor(self, p):
         '''Called *only* from tree.select to select the present body editor.'''
