@@ -3021,6 +3021,14 @@
 <v t="ekr.20190117143942.651"><vh>x.replaceFileWithString</vh></v>
 <v t="ekr.20190117143942.652"></v>
 </v>
+<v t="ekr.20190118085508.1"><vh>#1056: Line numbers do not work</vh>
+<v t="ekr.20190118085508.2"><vh>QtStatusLineClass.update &amp; helpers</vh>
+<v t="ekr.20190118085508.3"><vh>qstatus.compute_columns</vh></v>
+<v t="ekr.20190118085508.4"><vh>qstatus.file_line (not used)</vh></v>
+<v t="ekr.20190118085508.5"><vh>qstatus.put_status_line</vh></v>
+</v>
+</v>
+<v t="ekr.20190117143942.976"><vh>#1057: Unwanted loadOnePlugin messages on startup</vh></v>
 <v t="ekr.20190117143942.654"><vh>#525: Nested @clean</vh>
 <v t="ekr.20190117143942.655"><vh>----- writing</vh>
 <v t="ekr.20190117143942.656"></v>
@@ -3370,7 +3378,6 @@
 <v t="ekr.20190117143942.974"></v>
 </v>
 <v t="ekr.20190117143942.975"><vh>re: Put ignore in git-diff node</vh></v>
-<v t="ekr.20190117143942.976"><vh>#1057: Unwanted loadOnePlugin messages on startup</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -45977,6 +45984,82 @@ https://github.com/leo-editor/leo-editor/issues/1057
     while s.endswith('\n') or s.endswith('\r'):
         s = s[: -1]
     c.k.extendLabel(s, select=True, protect=False)
+</t>
+<t tx="ekr.20190118085508.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1056
+
+@language python
+</t>
+<t tx="ekr.20190118085508.2">def update(self):
+    if g.app.killed: return
+    c, body = self.c, self.c.frame.body
+    if not c.p:
+        return
+    te = body.widget
+    if not isinstance(te, QtWidgets.QTextEdit):
+        return
+    cursor = te.textCursor()
+    block = cursor.block()
+    row = block.blockNumber() + 1
+    col, fcol = self.compute_columns(block, cursor)
+    words = len(c.p.b.split(None))
+    self.put_status_line(col, fcol, row, words)
+    self.lastRow = row
+    self.lastCol = col
+    self.lastFcol = fcol
+</t>
+<t tx="ekr.20190118085508.3">def compute_columns(self, block, cursor):
+    
+    c = self.c
+    line = g.u(block.text())
+    col = cursor.columnNumber()
+    offset = c.p.textOffset()
+    fcol_offset = 0
+    s2 = line[0: col]
+    col = g.computeWidth(s2, c.tab_width)
+    #
+    # Fix bug #195: fcol when using @first directive is inaccurate
+    # https://github.com/leo-editor/leo-editor/issues/195
+    i = line.find('&lt;&lt;')
+    j = line.find('&gt;&gt;')
+    if -1 &lt; i &lt; j or g.match_word(line.strip(), 0, '@others'):
+        offset = None
+    else:
+        for tag in ('@first ', '@last '):
+            if line.startswith(tag):
+                fcol_offset = len(tag)
+                break
+    #
+    # fcol is '' if there is no ancestor @&lt;file&gt; node.
+    fcol = None if offset is None else max(0, col + offset - fcol_offset)
+    return col, fcol
+</t>
+<t tx="ekr.20190118085508.4">def file_line(self):
+    '''
+    Return the line of the first line of c.p in its external file.
+    Return None if c.p is not part of an external file.
+    '''
+    c, p = self.c, self.c.p
+    if p:
+        goto = gotoCommands.GoToCommands(c)
+        return goto.find_node_start(p)
+    else:
+        return None
+</t>
+<t tx="ekr.20190118085508.5">def put_status_line(self, col, fcol, row, words):
+    
+    if 1:
+        fcol_part = '' if fcol is None else ' fcol: %d' % (fcol)
+        # For now, it seems to0 difficult to get alignment *exactly* right.
+        self.put1("line: %d col: %d %s words: %s" % (row, col, fcol_part, words))
+    else:
+        # #283 is not ready yet, and probably will never be.
+        fline = self.file_line()
+        fline = '' if fline is None else fline + row
+        self.put1(
+            "fline: %2s line: %2d col: %2s fcol: %2s" % (fline, row, col, fcol))
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
