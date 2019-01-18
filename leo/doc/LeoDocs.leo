@@ -3379,6 +3379,7 @@
 </v>
 <v t="ekr.20190117143942.975"><vh>re: Put ignore in git-diff node</vh></v>
 </v>
+<v t="ekr.20190118130252.1"><vh>*** Make sure people know about @jupyter</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -46061,6 +46062,7 @@ https://github.com/leo-editor/leo-editor/issues/1056
         self.put1(
             "fline: %2s line: %2d col: %2s fcol: %2s" % (fline, row, col, fcol))
 </t>
+<t tx="ekr.20190118130252.1"></t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
