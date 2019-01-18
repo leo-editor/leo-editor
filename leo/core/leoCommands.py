@@ -2496,7 +2496,6 @@ class Commands(object):
             # Mark all the nodes dirty.
             for z in c.all_unique_positions():
                 if z.isOrphan():
-                    g.trace('CLEAR', z.h)
                     z.setDirty()
                     z.clearOrphan()
             c.setChanged()
