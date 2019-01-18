@@ -180,8 +180,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=6)
         grid = self.createGrid(bodyFrame, 'bodyGrid')
         innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
-        ######## Causes problems #########.
-        # if c.config.getBool('use-gutter', default=False):
         if self.use_gutter:
             lineWidget = qt_text.LeoLineTextWidget(c, body)
             vLayout.addWidget(lineWidget)
@@ -1449,14 +1447,14 @@ class LeoQtBody(leoFrame.LeoBody):
         '''Create a new body editor.'''
         c, p = self.c, self.c.p
         parent_frame = c.frame.top.leo_ui.leo_body_inner_frame
-        ### To do: Create a frame for line numbers, if necessary
-            # if self.use_gutter:
-                # parent_frame = qt_text.LeoLineTextWidget(c, body)
+        # To do: #1061: Create a frame for line numbers, if necessary
+        #
         # Step 1: create the editor.
         w = widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
         w.setObjectName('richTextEdit') # Will be changed later.
         wrapper = qt_text.QTextEditWrapper(w, name='body', c=c)
         self.packLabel(w)
+        #
         # Step 2: inject ivars, set bindings, etc.
         self.injectIvars(parent_frame, name, p, wrapper)
         self.updateInjectedIvars(w, p)
