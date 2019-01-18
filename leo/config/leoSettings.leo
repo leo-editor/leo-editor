@@ -632,7 +632,6 @@
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
 <v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
-<v t="chris.20180320083521.1"><vh>@bool word-count = False</vh></v>
 <v t="ekr.20181018113730.1"><vh>@string external-editor</vh></v>
 </v>
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
@@ -2303,6 +2302,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
+<v t="chris.20180320083521.1"><vh>NOT USED: @bool word-count = False</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.

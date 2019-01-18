@@ -2150,7 +2150,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     c.styleSheetManager.mng.add_sclass(w, status)
                     c.styleSheetManager.mng.update_view(w)  # force appearance update
             w.setText(s)
-        #@+node:chris.20180320072817.1: *4* QtStatusLineClass.update & helper
+        #@+node:chris.20180320072817.1: *4* QtStatusLineClass.update & helpers
         def update(self):
             if g.app.killed: return
             c = self.c; body = c.frame.body
@@ -2162,51 +2162,35 @@ class LeoQtFrame(leoFrame.LeoFrame):
             te = body.widget
             if not isinstance(te, QtWidgets.QTextEdit):
                 return
-            ### count_words = c.config.getBool('word-count', default=False)
-            if 1: ### if isinstance(te, QtWidgets.QTextEdit):
-                offset = c.p.textOffset()
-                cr = te.textCursor()
-                bl = cr.block()
-                col = cr.columnNumber()
-                row = bl.blockNumber() + 1
-                ### g.trace('ROW', row, 'COL:', col)
-                line = g.u(bl.text())
-                # Fix bug #195: fcol when using @first directive is inaccurate
-                # https://github.com/leo-editor/leo-editor/issues/195
-                offset = c.p.textOffset()
-                fcol_offset = 0
-                s2 = line[0: col]
-                col = g.computeWidth(s2, c.tab_width)
-                i = line.find('<<')
-                j = line.find('>>')
-                if -1 < i < j or g.match_word(line.strip(), 0, '@others'):
-                    offset = None
-                else:
-                    for tag in ('@first ', '@last '):
-                        if line.startswith(tag):
-                            fcol_offset = len(tag)
-                            break
-                # New in Leo 5.2. fcol is '' if there is no ancestor @<file> node.
-                fcol = None if offset is None else max(0, col + offset - fcol_offset)
+            offset = c.p.textOffset()
+            cursor = te.textCursor()
+            bl = cursor.block()
+            col = cursor.columnNumber()
+            row = bl.blockNumber() + 1
+            line = g.u(bl.text())
+            # Fix bug #195: fcol when using @first directive is inaccurate
+            # https://github.com/leo-editor/leo-editor/issues/195
+            offset = c.p.textOffset()
+            fcol_offset = 0
+            s2 = line[0: col]
+            col = g.computeWidth(s2, c.tab_width)
+            i = line.find('<<')
+            j = line.find('>>')
+            if -1 < i < j or g.match_word(line.strip(), 0, '@others'):
+                offset = None
             else:
-                row, col, fcol = 0, 0, None
-            if 1:
-                ### self.put1("line: %d col: %d fcol: %s" % (row, col, fcol))
-                ### words = " words: %3s" % (len(c.p.b.split(None))) if count_words else ''
-                words = len(c.p.b.split(None))
-                fcol_part = ' '*4 if fcol is None else '%s' % (fcol)
-                ### g.trace(repr(fcol), repr(fcol_part))
-                self.put1("line: %3s col: %3s fcol: %3s words: %s" % (row, col, fcol_part, words))
-            else:
-                #283 is not ready yet, and probably will never be.
-                fline = self.file_line()
-                fline = '' if fline is None else fline + row
-                self.put1(
-                    "fline: %2s line: %2d col: %2s fcol: %2s" % (fline, row, col, fcol))
+                for tag in ('@first ', '@last '):
+                    if line.startswith(tag):
+                        fcol_offset = len(tag)
+                        break
+            # New in Leo 5.2. fcol is '' if there is no ancestor @<file> node.
+            fcol = None if offset is None else max(0, col + offset - fcol_offset)
+            words = len(c.p.b.split(None))
+            self.put_status_line(col, fcol, row, words)
             self.lastRow = row
             self.lastCol = col
             self.lastFcol = fcol
-        #@+node:chris.20180320072817.2: *5* file_line (not used)
+        #@+node:chris.20180320072817.2: *5* qstatus.file_line (not used)
         def file_line(self):
             '''
             Return the line of the first line of c.p in its external file.
@@ -2218,6 +2202,18 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 return goto.find_node_start(p)
             else:
                 return None
+        #@+node:ekr.20190118082047.1: *5* qstatus.put_status_line
+        def put_status_line(self, col, fcol, row, words):
+            
+            if 1:
+                fcol_part = ' '*4 if fcol is None else '%s' % (fcol)
+                self.put1("line: %3s col: %3s fcol: %3s words: %s" % (row, col, fcol_part, words))
+            else:
+                #283 is not ready yet, and probably will never be.
+                fline = self.file_line()
+                fline = '' if fline is None else fline + row
+                self.put1(
+                    "fline: %2s line: %2d col: %2s fcol: %2s" % (fline, row, col, fcol))
         #@-others
     #@+node:ekr.20110605121601.18262: *3* qtFrame.class QtIconBarClass
     class QtIconBarClass(object):
