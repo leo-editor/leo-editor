@@ -1718,27 +1718,6 @@ class AtFile(object):
                 elif not at.atEdit:
                     at.onl()
         return status.has_at_others
-    #@+node:ekr.20041005105605.162: *6* at.ensureTrailingNewline
-    def ensureTrailingNewline(self, s):
-        '''
-        Ensure a trailing newline in s.
-        If we add a trailing newline, we'll generate an @nonl sentinel below.
-
-        - We always ensure a newline in @file and @thin trees.
-        - This code is not used used in @asis trees.
-        - New in Leo 4.4.3 b1: We add a newline in @clean/@nosent trees unless
-          @bool force_newlines_in_at_nosent_bodies = False
-        '''
-        at = self
-        if s:
-            trailingNewlineFlag = s[-1] == '\n'
-            if not trailingNewlineFlag:
-                if at.sentinels or at.force_newlines_in_at_nosent_bodies:
-                    s = s + '\n'
-        else:
-            trailingNewlineFlag = True # don't need to generate an @nonl
-        g.trace(trailingNewlineFlag, repr(s and g.splitLines(s)[-1]))
-        return s, trailingNewlineFlag
     #@+node:ekr.20041005105605.163: *6* at.putLine
     def putLine(self, i, kind, p, s, status):
         '''Put the line at s[i:] of the given kind, updating the status.'''
