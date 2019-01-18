@@ -1677,13 +1677,18 @@ class AtFile(object):
         Return True if the body contains an @others line.
         '''
         at = self
+        new = True
         #
         # New in 4.3 b2: get s from fromString if possible.
         s = fromString if fromString else p.b
         p.v.setVisited()
             # Make sure v is never expanded again.
             # Suppress orphans check.
-        s, trailingNewlineFlag = at.ensureTrailingNewline(s)
+        if new:
+            ### if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
+            if s: s = s.rstrip() + '\n'
+        else:
+            s, trailingNewlineFlag = at.ensureTrailingNewline(s)
         at.raw = False # Bug fix.
         i = 0
         status = g.Bunch(
@@ -1703,11 +1708,14 @@ class AtFile(object):
             # g.bunch *does* have .in_code and has_at_others members.
         if not status.in_code:
             at.putEndDocLine()
-        if not trailingNewlineFlag:
-            if at.sentinels:
-                pass # Never write @nonl
-            elif not at.atEdit:
-                at.onl()
+        if new:
+            pass
+        else:
+            if not trailingNewlineFlag:
+                if at.sentinels:
+                    pass # Never write @nonl
+                elif not at.atEdit:
+                    at.onl()
         return status.has_at_others
     #@+node:ekr.20041005105605.162: *6* at.ensureTrailingNewline
     def ensureTrailingNewline(self, s):
@@ -1728,6 +1736,7 @@ class AtFile(object):
                     s = s + '\n'
         else:
             trailingNewlineFlag = True # don't need to generate an @nonl
+        g.trace(trailingNewlineFlag, repr(s and g.splitLines(s)[-1]))
         return s, trailingNewlineFlag
     #@+node:ekr.20041005105605.163: *6* at.putLine
     def putLine(self, i, kind, p, s, status):
