@@ -2156,36 +2156,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c, body = self.c, self.c.frame.body
             if not c.p:
                 return
-            # te is a QTextEdit.
-            # 2010/02/19: Fix bug 525090
-            # An added editor window doesn't display line/col
             te = body.widget
             if not isinstance(te, QtWidgets.QTextEdit):
                 return
-            ### offset = c.p.textOffset()
             cursor = te.textCursor()
             block = cursor.block()
             row = block.blockNumber() + 1
-            ### line = g.u(block.text())
             col, fcol = self.compute_columns(block, cursor)
-            ###
-                # # Fix bug #195: fcol when using @first directive is inaccurate
-                # # https://github.com/leo-editor/leo-editor/issues/195
-                # offset = c.p.textOffset()
-                # fcol_offset = 0
-                # s2 = line[0: col]
-                # col = g.computeWidth(s2, c.tab_width)
-                # i = line.find('<<')
-                # j = line.find('>>')
-                # if -1 < i < j or g.match_word(line.strip(), 0, '@others'):
-                    # offset = None
-                # else:
-                    # for tag in ('@first ', '@last '):
-                        # if line.startswith(tag):
-                            # fcol_offset = len(tag)
-                            # break
-                # # New in Leo 5.2. fcol is '' if there is no ancestor @<file> node.
-                # fcol = None if offset is None else max(0, col + offset - fcol_offset)
             words = len(c.p.b.split(None))
             self.put_status_line(col, fcol, row, words)
             self.lastRow = row
@@ -2201,6 +2178,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             fcol_offset = 0
             s2 = line[0: col]
             col = g.computeWidth(s2, c.tab_width)
+            #
             # Fix bug #195: fcol when using @first directive is inaccurate
             # https://github.com/leo-editor/leo-editor/issues/195
             i = line.find('<<')
@@ -2212,7 +2190,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     if line.startswith(tag):
                         fcol_offset = len(tag)
                         break
-            # New in Leo 5.2. fcol is '' if there is no ancestor @<file> node.
+            #
+            # fcol is '' if there is no ancestor @<file> node.
             fcol = None if offset is None else max(0, col + offset - fcol_offset)
             return col, fcol
         #@+node:chris.20180320072817.2: *5* qstatus.file_line (not used)
@@ -2235,7 +2214,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 # For now, it seems to0 difficult to get alignment *exactly* right.
                 self.put1("line: %d col: %d %s words: %s" % (row, col, fcol_part, words))
             else:
-                #283 is not ready yet, and probably will never be.
+                # #283 is not ready yet, and probably will never be.
                 fline = self.file_line()
                 fline = '' if fline is None else fline + row
                 self.put1(
