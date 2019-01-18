@@ -195,8 +195,8 @@ class AtFile(object):
         #
         # Set other ivars.
         at.force_newlines_in_at_nosent_bodies = \
-            c.config.getBool('force_newlines_in_at_nosent_bodies')
-            # For at.ensureTrailingNewline only.
+            c.config.getBool('force-newlines-in-at-nosent-bodies')
+            # For at.putBody only.
         at.sameFiles = 0
             # For communication between replaceFile and reportEndOfWrite.
         at.outputList = []
@@ -1685,8 +1685,9 @@ class AtFile(object):
             # Make sure v is never expanded again.
             # Suppress orphans check.
         if new:
-            ### if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
-            if s: s = s.rstrip() + '\n'
+            ### if s: s = s.rstrip() + '\n'
+            if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
+                s = s.rstrip() + '\n'
         else:
             s, trailingNewlineFlag = at.ensureTrailingNewline(s)
         at.raw = False # Bug fix.
