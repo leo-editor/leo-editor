@@ -1704,15 +1704,6 @@ class AtFile(object):
             # g.bunch *does* have .in_code and has_at_others members.
         if not status.in_code:
             at.putEndDocLine()
-        ###
-            # if new:
-                # pass
-            # else:
-                # if not trailingNewlineFlag:
-                    # if at.sentinels:
-                        # pass # Never write @nonl
-                    # elif not at.atEdit:
-                        # at.onl()
         return status.has_at_others
     #@+node:ekr.20041005105605.163: *6* at.putLine
     def putLine(self, i, kind, p, s, status):
