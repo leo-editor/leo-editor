@@ -1102,7 +1102,6 @@ class AtFile(object):
         if not force:
             files = [z for z in files if z.isDirty()]
         return files, root
-        
     #@+node:ekr.20190108053115.1: *6* at.internalWriteError
     def internalWriteError(self, p):
         '''
@@ -1285,7 +1284,6 @@ class AtFile(object):
         if s:
             s = g.toEncodedString(s, at.encoding, reportErrors=True)
             at.outputStringWithLineEndings(s)
-
     #@+node:ekr.20041005105605.144: *6* at.write & helper
     def write(self, root, sentinels=True):
         """Write a 4.x derived file.
@@ -1677,19 +1675,16 @@ class AtFile(object):
         Return True if the body contains an @others line.
         '''
         at = self
-        new = True
         #
         # New in 4.3 b2: get s from fromString if possible.
         s = fromString if fromString else p.b
         p.v.setVisited()
             # Make sure v is never expanded again.
             # Suppress orphans check.
-        if new:
-            ### if s: s = s.rstrip() + '\n'
-            if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
-                s = s.rstrip() + '\n'
-        else:
-            s, trailingNewlineFlag = at.ensureTrailingNewline(s)
+        #
+        # Fix #1048 & #1037: regularize most trailing whitespace.
+        if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
+            s = s.rstrip() + '\n'
         at.raw = False # Bug fix.
         i = 0
         status = g.Bunch(
@@ -1709,14 +1704,15 @@ class AtFile(object):
             # g.bunch *does* have .in_code and has_at_others members.
         if not status.in_code:
             at.putEndDocLine()
-        if new:
-            pass
-        else:
-            if not trailingNewlineFlag:
-                if at.sentinels:
-                    pass # Never write @nonl
-                elif not at.atEdit:
-                    at.onl()
+        ###
+            # if new:
+                # pass
+            # else:
+                # if not trailingNewlineFlag:
+                    # if at.sentinels:
+                        # pass # Never write @nonl
+                    # elif not at.atEdit:
+                        # at.onl()
         return status.has_at_others
     #@+node:ekr.20041005105605.163: *6* at.putLine
     def putLine(self, i, kind, p, s, status):
@@ -2450,7 +2446,6 @@ class AtFile(object):
         at.outputFile.close()
         at.outputFile = None
         return contents
-
     #@+node:ekr.20190109145850.1: *5* at.open/closeOutputStream
     # open/close methods used by top-level atFile.write logic.
 
@@ -3318,7 +3313,6 @@ class FastAtRead (object):
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent, body = stack.pop()
                 continue
-
             #@-<< 3. handle @others >>
             #@afterref
  # clears in_doc
