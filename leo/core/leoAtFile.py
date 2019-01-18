@@ -1684,7 +1684,6 @@ class AtFile(object):
         #
         # Fix #1048 & #1037: regularize most trailing whitespace.
         if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
-            ### s = s.rstrip() + '\n'
             if not s.endswith('\n'):
                 s = s + '\n'
         at.raw = False # Bug fix.
