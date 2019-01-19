@@ -100,6 +100,9 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
+<v t="ekr.20190119061613.1"><vh>Recently deleted settings</vh>
+<v t="ekr.20041119041747.1"><vh>@@string trailing-body-newlines = one</vh></v>
+</v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
@@ -656,7 +659,6 @@
 <v t="ekr.20041119034357.14"><vh>@bool at-root-bodies-start-in-doc-mode = True</vh></v>
 <v t="ekr.20070419103554"><vh>@bool force-newlines-in-at-nosent-bodies = True</vh></v>
 <v t="ekr.20041119041747"><vh>@string output-newline = nl</vh></v>
-<v t="ekr.20041119041747.1"><vh>@string trailing-body-newlines = one</vh></v>
 <v t="ekr.20081216090156.5"><vh>@string underindent-escape-string = \\-</vh></v>
 </v>
 <v t="ekr.20041119034357.7"><vh>Leo files</vh>
@@ -11889,6 +11891,7 @@ QTextEdit#richTextEdit[vim_state~="vim_visual"] {
     font-weight:        @bookmarks_current_weight;
     text-decoration:    @bookmarks_current_decoration;
 }</t>
+<t tx="ekr.20190119061613.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
