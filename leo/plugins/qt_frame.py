@@ -2501,6 +2501,29 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # Could be a user error.
             g.es("exception in user configuration for splitbar")
             g.es_exception()
+    #@+node:ekr.20190119122558.1: *4* qtFrame.getActualRatios
+    def getActualRatios(self):
+        '''
+        Return the actual values corresponding to frame.ratio and frame.secondary_ratio.
+        '''
+        layout = self.c and self.c.free_layout
+        if not layout:
+            return 0.5, 0.5
+            
+        def get_ratio(w, tag):
+            if w:
+                f1, f2 = w.sizes()
+                try:
+                    r = float(f1)/float(f1+f2)
+                    ### g.trace('%s %2d %2d => %5.2f' % (tag, f1, f2, r))
+                    return r
+                except ValueError:
+                    pass
+            return 0.5, 0.5
+                    
+        r1 = get_ratio(layout.get_main_splitter(), 'r1')
+        r2 = get_ratio(layout.get_secondary_splitter(), 'r2')
+        return r1, r2
     #@+node:ekr.20110605121601.18277: *4* qtFrame.reconfigureFromConfig
     def reconfigureFromConfig(self):
         '''Init the configuration of the Qt frame from settings.'''
@@ -2549,15 +2572,19 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2
     def divideLeoSplitter1(self, frac):
         '''Divide the main splitter.'''
-        free_layout = self.c and self.c.free_layout
-        w = free_layout.get_main_splitter()
+        layout = self.c and self.c.free_layout
+        if not layout:
+            return
+        w = layout.get_main_splitter()
         if w:
             self.divideAnySplitter(frac, w)
 
     def divideLeoSplitter2(self, frac):
         '''Divide the secondary splitter.'''
-        free_layout = self.c and self.c.free_layout
-        w = free_layout.get_secondary_splitter()
+        layout = self.c and self.c.free_layout
+        if not layout:
+            return
+        w = layout.get_secondary_splitter()
         if w:
             self.divideAnySplitter(frac, w)
     #@+node:ekr.20110605121601.18284: *4* qtFrame.divideAnySplitter
@@ -2577,6 +2604,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         s = s1 + s2
         s1 = int(s * frac + 0.5)
         s2 = s - s1
+        ### g.trace("%2d %2d %5.2f => %2d %2d" % (sizes[0], sizes[1], frac, s1, s2))
         splitter.setSizes([s1, s2])
     #@+node:ekr.20110605121601.18285: *3* qtFrame.Event handlers
     #@+node:ekr.20110605121601.18286: *4* qtFrame.OnCloseLeoEvent
