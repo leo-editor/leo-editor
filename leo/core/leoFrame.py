@@ -329,7 +329,6 @@ class LeoBody(object):
         d = self.editorWidgets
         w = c.frame.body.wrapper
         values = list(d.values())
-        # g.printDict(d)
         if len(values) > 1:
             i = values.index(w) + 1
             if i == len(values): i = 0
@@ -1152,15 +1151,19 @@ class LeoLog(object):
     def createTextWidget(self, parentFrame):
         return None
     #@+node:ekr.20070302094848.4: *3* LeoLog.cycleTabFocus
-    @cmd('cycle-tab-focus')
+    ### @cmd('cycle-tab-focus')
     def cycleTabFocus(self, event=None):
         '''Cycle keyboard focus between the tabs in the log pane.'''
-        d = self.frameDict # Keys are page names. Values are Tk.Frames.
+        d = self.frameDict # Keys are page names. Values are Frames.
         w = d.get(self.tabName)
         values = list(d.values())
         if self.numberOfVisibleTabs() > 1:
-            i = values.index(w) + 1
-            if i == len(values): i = 0
+            try:
+                i = values.index(w)
+                if i >= len(values)-1:
+                    i = 0
+            except ValueError:
+                i = 0
             tabName = list(d.keys())[i]
             self.selectTab(tabName)
             return i
