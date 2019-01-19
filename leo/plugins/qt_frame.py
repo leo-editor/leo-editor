@@ -49,7 +49,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     support operations requested by Leo's core.
     '''
     #@+others
-    #@+node:ekr.20110605121601.18138: *3*  ctor (DynamicWindow)
+    #@+node:ekr.20110605121601.18138: *3*  ctor & reloadSettings (DynamicWindow)
     def __init__(self, c, parent=None):
         '''Ctor for the DynamicWindow class.  The main window is c.frame.top'''
             # Called from LeoQtFrame.finishCreate.
@@ -68,6 +68,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.bigTree = c.config.getBool('big-outline-pane')
         self.show_iconbar = c.config.getBool('show-iconbar', default=True)
         self.toolbar_orientation = c.config.getString('qt-toolbar-location') or ''
+        self.use_gutter = c.config.getBool('use-gutter', default=False)
         if getattr(self, 'iconBar', None):
             if self.show_iconbar:
                 self.iconBar.show()
@@ -179,7 +180,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=6)
         grid = self.createGrid(bodyFrame, 'bodyGrid')
         innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
-        if c.config.getBool('use-gutter', default=False):
+        if self.use_gutter:
             lineWidget = qt_text.LeoLineTextWidget(c, body)
             vLayout.addWidget(lineWidget)
         else:
@@ -1347,6 +1348,7 @@ class LeoQtBody(leoFrame.LeoBody):
         c = self.c
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.use_chapters = c.config.getBool('use-chapters')
+        self.use_gutter = c.config.getBool('use-gutter', default=False)
     #@+node:ekr.20160309074124.1: *5* LeoQtBody.set_invisibles
     def set_invisibles(self, c):
         '''Set the show-invisibles bit in the document.'''
@@ -1411,15 +1413,18 @@ class LeoQtBody(leoFrame.LeoBody):
         if self.totalNumberOfEditors == 2:
             self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
-            self.packLabel(widget.parent(), n=1)
-            widget.leo_label = widget.parent().leo_label
+            # Fix #1021: Pack differently depending on whether the gutter exists.
+            if self.use_gutter:
+                self.packLabel(widget.parent(), n=1)
+                widget.leo_label = widget.parent().leo_label
+            else:
+                self.packLabel(widget, n=1)
         name = '%d' % self.totalNumberOfEditors
         f, wrapper = self.createEditor(name)
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(widget), widget
         assert isinstance(f, QtWidgets.QFrame), f
         d[name] = wrapper
-        # g.printDict(d)
         if self.numberOfEditors == 2:
             # Inject the ivars into the first editor.
             # The name of the last editor need not be '1'
@@ -1437,18 +1442,21 @@ class LeoQtBody(leoFrame.LeoBody):
         self.selectEditor(wrapper)
         self.updateEditors()
         c.bodyWantsFocus()
-    #@+node:ekr.20110605121601.18196: *6* LeoQtBody.createEditor
+    #@+node:ekr.20190118150859.10: *6* LeoQtBody.createEditor
     def createEditor(self, name):
         '''Create a new body editor.'''
         c, p = self.c, self.c.p
-        f = c.frame.top.leo_ui.leo_body_inner_frame
+        parent_frame = c.frame.top.leo_ui.leo_body_inner_frame
+        # To do: #1061: Create a frame for line numbers, if necessary
+        #
         # Step 1: create the editor.
-        w = widget = qt_text.LeoQTextBrowser(f, c, self)
+        w = widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
         w.setObjectName('richTextEdit') # Will be changed later.
         wrapper = qt_text.QTextEditWrapper(w, name='body', c=c)
         self.packLabel(w)
+        #
         # Step 2: inject ivars, set bindings, etc.
-        self.injectIvars(f, name, p, wrapper)
+        self.injectIvars(parent_frame, name, p, wrapper)
         self.updateInjectedIvars(w, p)
         wrapper.setAllText(p.b)
         wrapper.see(0)
@@ -1459,7 +1467,7 @@ class LeoQtBody(leoFrame.LeoBody):
         else:
             # Scintilla only.
             self.recolorWidget(p, wrapper)
-        return f, wrapper
+        return parent_frame, wrapper
     #@+node:ekr.20110605121601.18197: *5* LeoQtBody.assignPositionToEditor
     def assignPositionToEditor(self, p):
         '''Called *only* from tree.select to select the present body editor.'''
@@ -1748,6 +1756,13 @@ class LeoQtBody(leoFrame.LeoBody):
             if chapter != oldChapter:
                 cc.selectChapterByName(name)
                 c.bodyWantsFocus()
+    #@+node:ekr.20110605121601.18216: *5* LeoQtBody.unpackWidget
+    def unpackWidget(self, layout, w):
+
+        index = layout.indexOf(w)
+        item = layout.itemAt(index)
+        item.setGeometry(QtCore.QRect(0, 0, 0, 0))
+        layout.removeItem(item)
     #@+node:ekr.20110605121601.18215: *5* LeoQtBody.updateInjectedIvars
     def updateInjectedIvars(self, w, p):
 
@@ -1759,13 +1774,6 @@ class LeoQtBody(leoFrame.LeoBody):
         else:
             w.leo_chapter = None
         w.leo_p = p.copy()
-    #@+node:ekr.20110605121601.18216: *5* LeoQtBody.unpackWidget
-    def unpackWidget(self, layout, w):
-
-        index = layout.indexOf(w)
-        item = layout.itemAt(index)
-        item.setGeometry(QtCore.QRect(0, 0, 0, 0))
-        layout.removeItem(item)
     #@+node:ekr.20110605121601.18223: *3* LeoQtBody.Event handlers
     #@+node:ekr.20110930174206.15472: *4* LeoQtBody.onFocusIn
     def onFocusIn(self, obj):
@@ -3256,6 +3264,7 @@ class LeoQtLog(leoFrame.LeoLog):
             self.tabWidget.addTab(contents, tabName)
         return contents
     #@+node:ekr.20110605121601.18327: *4* LeoQtLog.cycleTabFocus
+    @cmd('cycle-tab-focus')
     def cycleTabFocus(self, event=None):
         '''Cycle keyboard focus between the tabs in the log pane.'''
         w = self.tabWidget
