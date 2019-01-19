@@ -1401,7 +1401,9 @@ expected = '''\
 child = p.firstChild()
 result = at.atFileToString(child)
 result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
-if 0: # Show unexpected mismatches.
+if result != expected: # Show unexpected mismatches.
+    g.printObj(result, tag='result')
+    g.printObj(expected, tag='expected')
     result = g.splitLines(result)
     expected = g.splitLines(expected)
     print('len(expected): %s, len(result): %s' % (len(expected), len(result)))
@@ -1411,6 +1413,8 @@ if 0: # Show unexpected mismatches.
             print('expected: %r' % expected[i])
             print('result:   %r' % result[i])
             break
+elif 0:
+    g.printObj(result, tag='result')
 
 assert result == expected
 #@+node:ekr.20060602195313.2: *5* root
