@@ -2711,6 +2711,12 @@
 <v t="ekr.20190117143942.393"><vh>LeoFrame.endEditLabelCommand</vh></v>
 </v>
 <v t="ekr.20190117143942.394"><vh>#1007: console gui doesn't load</vh></v>
+<v t="ekr.20190118222654.1"><vh>#1021: branch add-editor</vh>
+<v t="ekr.20190118222654.2"><vh>dw.createBodyPane</vh></v>
+<v t="ekr.20190118222654.3"><vh>LeoQtBody.addEditor &amp; helper</vh>
+<v t="ekr.20190118222654.4"><vh>LeoQtBody.createEditor</vh></v>
+</v>
+</v>
 <v t="ekr.20190117143942.395"><vh>#1023: bits</vh>
 <v t="ekr.20190117143942.396"><vh>fc.putVnodes</vh></v>
 <v t="ekr.20190117143942.397"></v>
@@ -2994,6 +3000,12 @@
 <v t="ekr.20190117143942.629"></v>
 <v t="ekr.20190117143942.642"></v>
 </v>
+<v t="ekr.20190118222624.1"><vh>#1048 &amp; #1037: trailing blank lines</vh>
+<v t="ekr.20190118222624.2"><vh>at.putBody &amp; helpers</vh>
+<v t="ekr.20190118222624.3"><vh>at.ensureTrailingNewline</vh></v>
+<v t="ekr.20190118222624.4"><vh>at.putLine</vh></v>
+</v>
+</v>
 <v t="ekr.20190117143942.633"><vh>#1049: crash kills Leo</vh>
 <v t="ekr.20190117143942.634"><vh>qtree.onItemClicked</vh></v>
 </v>
@@ -3029,6 +3041,12 @@
 </v>
 </v>
 <v t="ekr.20190117143942.976"><vh>#1057: Unwanted loadOnePlugin messages on startup</vh></v>
+<v t="ekr.20190118222636.1"><vh>#1059: cycle-tab-focus exception</vh>
+<v t="ekr.20190118222636.2"><vh>LeoLog.cycleTabFocus</vh></v>
+<v t="ekr.20190118222636.3"><vh>LeoQtLog.cycleTabFocus</vh></v>
+<v t="ekr.20190118222636.4"><vh>ec.cycleFocus</vh></v>
+<v t="ekr.20190118222636.5"><vh>LeoBody.cycleEditorFocus</vh></v>
+</v>
 <v t="ekr.20190117143942.654"><vh>#525: Nested @clean</vh>
 <v t="ekr.20190117143942.655"><vh>----- writing</vh>
 <v t="ekr.20190117143942.656"></v>
@@ -46060,6 +46078,350 @@ https://github.com/leo-editor/leo-editor/issues/1056
         fline = '' if fline is None else fline + row
         self.put1(
             "fline: %2s line: %2d col: %2s fcol: %2s" % (fline, row, col, fcol))
+</t>
+<t tx="ekr.20190118222624.1">@language rest
+@wrap
+
+#1048 @clean: https://github.com/leo-editor/leo-editor/issues/1048
+#1037 @file:  https://github.com/leo-editor/leo-editor/issues/1037
+
+at.putBody regularizes trailing whitespace w/o calling at.ensureTrailingNewline.
+
+Leo no longer generates @nonl sentinels, so regularizing trailing ws is much easier.
+
+@language python
+
+</t>
+<t tx="ekr.20190118222624.2">def putBody(self, p, fromString=''):
+    '''
+    Generate the body enclosed in sentinel lines.
+    Return True if the body contains an @others line.
+    '''
+    at = self
+    #
+    # New in 4.3 b2: get s from fromString if possible.
+    s = fromString if fromString else p.b
+    p.v.setVisited()
+        # Make sure v is never expanded again.
+        # Suppress orphans check.
+    s, trailingNewlineFlag = at.ensureTrailingNewline(s)
+    at.raw = False # Bug fix.
+    i = 0
+    status = g.Bunch(
+        at_comment_seen = False,
+        at_delims_seen = False,
+        at_warning_given = False,
+        has_at_others = False,
+        in_code = True,
+    )
+    while i &lt; len(s):
+        next_i = g.skip_line(s, i)
+        assert next_i &gt; i, 'putBody'
+        kind = at.directiveKind4(s, i)
+        at.putLine(i, kind, p, s, status)
+        i = next_i
+    # pylint: disable=no-member
+        # g.bunch *does* have .in_code and has_at_others members.
+    if not status.in_code:
+        at.putEndDocLine()
+    if not trailingNewlineFlag:
+        if at.sentinels:
+            pass # Never write @nonl
+        elif not at.atEdit:
+            at.onl()
+    return status.has_at_others
+</t>
+<t tx="ekr.20190118222624.3">def ensureTrailingNewline(self, s):
+    '''
+    Ensure a trailing newline in s.
+    If we add a trailing newline, we'll generate an @nonl sentinel below.
+
+    - We always ensure a newline in @file and @thin trees.
+    - This code is not used used in @asis trees.
+    - New in Leo 4.4.3 b1: We add a newline in @clean/@nosent trees unless
+      @bool force_newlines_in_at_nosent_bodies = False
+    '''
+    at = self
+    if s:
+        trailingNewlineFlag = s[-1] == '\n'
+        if not trailingNewlineFlag:
+            if at.sentinels or at.force_newlines_in_at_nosent_bodies:
+                s = s + '\n'
+    else:
+        trailingNewlineFlag = True # don't need to generate an @nonl
+    return s, trailingNewlineFlag
+</t>
+<t tx="ekr.20190118222624.4">def putLine(self, i, kind, p, s, status):
+    '''Put the line at s[i:] of the given kind, updating the status.'''
+    at = self
+    if kind == at.noDirective:
+        if status.in_code:
+            if at.raw:
+                at.putCodeLine(s, i)
+            else:
+                name, n1, n2 = at.findSectionName(s, i)
+                if name:
+                    at.putRefLine(s, i, n1, n2, name, p)
+                else:
+                    at.putCodeLine(s, i)
+        else:
+            at.putDocLine(s, i)
+    elif at.raw:
+        if kind == at.endRawDirective:
+            at.raw = False
+            at.putSentinel("@@end_raw")
+        else:
+            # Fix bug 784920: @raw mode does not ignore directives
+            at.putCodeLine(s, i)
+    elif kind in (at.docDirective, at.atDirective):
+        if not status.in_code:
+            # Bug fix 12/31/04: handle adjacent doc parts.
+            at.putEndDocLine()
+        at.putStartDocLine(s, i, kind)
+        status.in_code = False
+    elif kind in (at.cDirective, at.codeDirective):
+        # Only @c and @code end a doc part.
+        if not status.in_code:
+            at.putEndDocLine()
+        at.putDirective(s, i)
+        status.in_code = True
+    elif kind == at.allDirective:
+        if status.in_code:
+            if p == self.root:
+                at.putAtAllLine(s, i, p)
+            else:
+                at.error('@all not valid in: %s' % (p.h))
+        else: at.putDocLine(s, i)
+    elif kind == at.othersDirective:
+        if status.in_code:
+            if status.has_at_others:
+                at.error('multiple @others in: %s' % (p.h))
+            else:
+                at.putAtOthersLine(s, i, p)
+                status.has_at_others = True
+        else:
+            at.putDocLine(s, i)
+    elif kind == at.rawDirective:
+        at.raw = True
+        at.putSentinel("@@raw")
+    elif kind == at.endRawDirective:
+        # Fix bug 784920: @raw mode does not ignore directives
+        at.error('unmatched @end_raw directive: %s' % p.h)
+    elif kind == at.startVerbatim:
+        # Fix bug 778204: @verbatim not a valid Leo directive.
+        if g.unitTesting:
+            # A hack: unit tests for @shadow use @verbatim as a kind of directive.
+            pass
+        else:
+            at.error('@verbatim is not a Leo directive: %s' % p.h)
+    elif kind == at.miscDirective:
+        # Fix bug 583878: Leo should warn about @comment/@delims clashes.
+        if g.match_word(s, i, '@comment'):
+            status.at_comment_seen = True
+        elif g.match_word(s, i, '@delims'):
+            status.at_delims_seen = True
+        if (
+            status.at_comment_seen and
+            status.at_delims_seen and not
+            status.at_warning_given
+        ):
+            status.at_warning_given = True
+            at.error('@comment and @delims in node %s' % p.h)
+        at.putDirective(s, i)
+    else:
+        at.error('putBody: can not happen: unknown directive kind: %s' % kind)
+</t>
+<t tx="ekr.20190118222636.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1059
+
+    
+@language python
+</t>
+<t tx="ekr.20190118222636.2">### @cmd('cycle-tab-focus')
+def cycleTabFocus(self, event=None):
+    '''Cycle keyboard focus between the tabs in the log pane.'''
+    d = self.frameDict # Keys are page names. Values are Frames.
+    w = d.get(self.tabName)
+    values = list(d.values())
+    if self.numberOfVisibleTabs() &gt; 1:
+        try:
+            i = values.index(w)
+            if i &gt;= len(values)-1:
+                i = 0
+        except ValueError:
+            i = 0
+        tabName = list(d.keys())[i]
+        self.selectTab(tabName)
+        return i
+</t>
+<t tx="ekr.20190118222636.3">@cmd('cycle-tab-focus')
+def cycleTabFocus(self, event=None):
+    '''Cycle keyboard focus between the tabs in the log pane.'''
+    w = self.tabWidget
+    i = w.currentIndex()
+    i += 1
+    if i &gt;= w.count():
+        i = 0
+    tabName = w.tabText(i)
+    self.selectTab(tabName, createText=False)
+    return i
+</t>
+<t tx="ekr.20190118222636.4">@cmd('cycle-focus')
+def cycleFocus(self, event):
+    '''Cycle the keyboard focus between Leo's outline, body and log panes.'''
+    c, k = self.c, self.c.k
+    w = event and event.widget
+    body = c.frame.body.wrapper
+    log = c.frame.log.logCtrl
+    tree = c.frame.tree.canvas
+    # A hack for the Qt gui.
+    if hasattr(w, 'logCtrl'):
+        w = w.logCtrl
+    panes = [body, log, tree]
+    if w in panes:
+        i = panes.index(w) + 1
+        if i &gt;= len(panes): i = 0
+        pane = panes[i]
+    else:
+        pane = body
+    # Warning: traces mess up the focus
+        # g.pr(g.app.gui.widget_name(w),g.app.gui.widget_name(pane))
+    #
+    # This works from the minibuffer *only* if there is no typing completion.
+    c.widgetWantsFocusNow(pane)
+    k.newMinibufferWidget = pane
+    k.showStateAndMode()
+</t>
+<t tx="ekr.20190118222636.5">@cmd('editor-cycle-focus')
+@cmd('cycle-editor-focus') # There is no LeoQtBody method
+def cycleEditorFocus(self, event=None):
+    '''Cycle keyboard focus between the body text editors.'''
+    c = self.c
+    d = self.editorWidgets
+    w = c.frame.body.wrapper
+    values = list(d.values())
+    if len(values) &gt; 1:
+        i = values.index(w) + 1
+        if i == len(values): i = 0
+        w2 = values[i]
+        assert(w != w2)
+        self.selectEditor(w2)
+        c.frame.body.wrapper = w2
+</t>
+<t tx="ekr.20190118222654.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1021
+
+The culprit was a mistaken fix to #690:
+https://github.com/leo-editor/leo-editor/issues/690
+
+
+@language python
+</t>
+<t tx="ekr.20190118222654.2">def createBodyPane(self, parent):
+    '''Create the body pane.'''
+    # Create widgets.
+    c = self.leo_c
+    bodyFrame = self.createFrame(parent, 'bodyFrame')
+    innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame',
+        hPolicy=QtWidgets.QSizePolicy.Expanding)
+    sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget')
+    page2 = QtWidgets.QWidget()
+    self.setName(page2, 'bodyPage2')
+    body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
+    # Pack.
+    vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=6)
+    grid = self.createGrid(bodyFrame, 'bodyGrid')
+    innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
+    if self.use_gutter:
+        lineWidget = qt_text.LeoLineTextWidget(c, body)
+        vLayout.addWidget(lineWidget)
+    else:
+        vLayout.addWidget(body)
+    sw.addWidget(page2)
+    innerGrid.addWidget(sw, 0, 0, 1, 1)
+    grid.addWidget(innerFrame, 0, 0, 1, 1)
+    self.verticalLayout.addWidget(parent)
+    # Official ivars
+    self.text_page = page2
+    self.stackedWidget = sw # used by LeoQtBody
+    self.richTextEdit = body
+    self.leo_body_frame = bodyFrame
+    self.leo_body_inner_frame = innerFrame
+</t>
+<t tx="ekr.20190118222654.3"># An override of leoFrame.addEditor.
+
+@cmd('editor-add')
+@cmd('add-editor')
+def addEditor(self, event=None):
+    '''Add another editor to the body pane.'''
+    c, p = self.c, self.c.p
+    d = self.editorWidgets
+    wrapper = c.frame.body.wrapper # A QTextEditWrapper
+    widget = wrapper.widget
+    self.totalNumberOfEditors += 1
+    self.numberOfEditors += 1
+    if self.totalNumberOfEditors == 2:
+        self.editorWidgets['1'] = wrapper
+        # Pack the original body editor.
+        # Fix #1021: Pack differently depending on whether the gutter exists.
+        if self.use_gutter:
+            self.packLabel(widget.parent(), n=1)
+            widget.leo_label = widget.parent().leo_label
+        else:
+            self.packLabel(widget, n=1)
+    name = '%d' % self.totalNumberOfEditors
+    f, wrapper = self.createEditor(name)
+    assert g.isTextWrapper(wrapper), wrapper
+    assert g.isTextWidget(widget), widget
+    assert isinstance(f, QtWidgets.QFrame), f
+    d[name] = wrapper
+    if self.numberOfEditors == 2:
+        # Inject the ivars into the first editor.
+        # The name of the last editor need not be '1'
+        d = self.editorWidgets
+        keys = list(d.keys())
+        old_name = keys[0]
+        old_wrapper = d.get(old_name)
+        old_w = old_wrapper.widget
+        self.injectIvars(f, old_name, p, old_wrapper)
+        self.updateInjectedIvars(old_w, p)
+        self.selectLabel(old_wrapper) # Immediately create the label in the old editor.
+    # Switch editors.
+    c.frame.body.wrapper = wrapper
+    self.selectLabel(wrapper)
+    self.selectEditor(wrapper)
+    self.updateEditors()
+    c.bodyWantsFocus()
+</t>
+<t tx="ekr.20190118222654.4">def createEditor(self, name):
+    '''Create a new body editor.'''
+    c, p = self.c, self.c.p
+    parent_frame = c.frame.top.leo_ui.leo_body_inner_frame
+    # To do: #1061: Create a frame for line numbers, if necessary
+    #
+    # Step 1: create the editor.
+    w = widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
+    w.setObjectName('richTextEdit') # Will be changed later.
+    wrapper = qt_text.QTextEditWrapper(w, name='body', c=c)
+    self.packLabel(w)
+    #
+    # Step 2: inject ivars, set bindings, etc.
+    self.injectIvars(parent_frame, name, p, wrapper)
+    self.updateInjectedIvars(w, p)
+    wrapper.setAllText(p.b)
+    wrapper.see(0)
+    c.k.completeAllBindingsForWidget(wrapper)
+    if isinstance(w, QtWidgets.QTextEdit):
+        colorizer = leoColorizer.JEditColorizer(c, widget, wrapper)
+        colorizer.highlighter.setDocument(widget.document())
+    else:
+        # Scintilla only.
+        self.recolorWidget(p, wrapper)
+    return parent_frame, wrapper
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
