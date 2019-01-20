@@ -398,7 +398,10 @@ class FileCommands(object):
         self.gnxDict = {}
         s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
             # This encoding must match the encoding used in putLeoOutline.
+        r1, r2 = c.frame.getActualRatios()
         hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
+        c.frame.resizePanesToRatio(r1, r2)
+            # Fix #1047: restore the ratios, changed by FastRead.
         v = hidden_v.children[0]
         v.parents = []
         # Restore the hidden root's children
@@ -436,7 +439,10 @@ class FileCommands(object):
             ni.check_gnx(c, v.fileIndex, v)
         s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
             # This encoding must match the encoding used in putLeoOutline.
+        r1, r2 = c.frame.getActualRatios()
         hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
+        c.frame.resizePanesToRatio(r1, r2)
+            # Fix #1047: restore the ratios, changed by FastRead.
         v = hidden_v.children[0]
         v.parents.remove(hidden_v)
         # Restore the hidden root's children
@@ -851,7 +857,10 @@ class FileCommands(object):
         try:
             # This encoding must match the encoding used in putLeoOutline.
             s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+            r1, r2 = c.frame.getActualRatios()
             v = FastRead(c, {}).readFile(s=s)
+            c.frame.resizePanesToRatio(r1, r2)
+                # Fix #1047: restore the ratios, changed by FastRead.
             if not v:
                 return g.es("the clipboard is not valid ", color="blue")
         finally:

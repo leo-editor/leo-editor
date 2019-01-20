@@ -2515,7 +2515,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 f1, f2 = w.sizes()
                 try:
                     r = float(f1)/float(f1+f2)
-                    ### g.trace('%s %2d %2d => %5.2f' % (tag, f1, f2, r))
+                    # g.trace('%s %2d %2d => %5.2f' % (tag, f1, f2, r))
                     return r
                 except ValueError:
                     pass
@@ -2604,7 +2604,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         s = s1 + s2
         s1 = int(s * frac + 0.5)
         s2 = s - s1
-        ### g.trace("%2d %2d %5.2f => %2d %2d" % (sizes[0], sizes[1], frac, s1, s2))
+        # g.trace("%2d %2d %5.2f => %2d %2d" % (sizes[0], sizes[1], frac, s1, s2))
         splitter.setSizes([s1, s2])
     #@+node:ekr.20110605121601.18285: *3* qtFrame.Event handlers
     #@+node:ekr.20110605121601.18286: *4* qtFrame.OnCloseLeoEvent

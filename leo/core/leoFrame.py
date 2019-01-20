@@ -1752,6 +1752,7 @@ class NullFrame(LeoFrame):
     def fullyExpandOutlinePane(self, event=None): pass
     def fullyExpandPane(self, event=None): pass
     def get_window_info(self): return 600, 500, 20, 20
+    def getActualRatios(self): return 0.5, 0.5
     def hideBodyPane(self, event=None): pass
     def hideLogPane(self, event=None): pass
     def hideLogWindow(self, event=None): pass

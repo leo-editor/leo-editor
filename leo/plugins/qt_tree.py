@@ -288,7 +288,6 @@ class LeoQtTree(leoFrame.LeoTree):
         # Cancel the delayed redraw request.
         c.requestLaterRedraw = False
         old_r1, old_r2 = frame.getActualRatios()
-        ### g.trace('%5.2f %5.2f' % (old_r1, old_r2))
         if not p:
             p = c.currentPosition()
         elif c.hoistStack and p.h.startswith('@chapter') and p.hasChildren():
@@ -308,8 +307,6 @@ class LeoQtTree(leoFrame.LeoTree):
         finally:
             self.busy = False
         self.setItemForCurrentPosition()
-        frame.resizePanesToRatio(old_r1, old_r2)
-            # Fix #1047.
         return p # Return the position, which may have changed.
 
     # Compatibility
