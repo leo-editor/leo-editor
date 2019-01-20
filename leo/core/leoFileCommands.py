@@ -61,15 +61,20 @@ class FastRead (object):
     #@+others
     #@+node:ekr.20180604110143.1: *3* fast.readFile/FromClipboard & helper
     def readFile(self, path):
-        '''Read the file and return its hidden vnode.'''
+        '''Read the file, change splitter ratiors, and return its hidden vnode.'''
         with open(path, 'rb') as f:
             s = f.read()
         v, g_element = self.readWithElementTree(path, s)
         self.scanGlobals(g_element)
+            # Fix #1047: only this method changes splitter sizes.
         return v
         
     def readFileFromClipboard(self, s):
-        '''Recreate a file from a string s, and return its hidden vnode.'''
+        '''
+        Recreate a file from a string s, and return its hidden vnode.
+        
+        Unlike readFile above, this does not affect splitter sizes.
+        '''
         v, g_element = self.readWithElementTree(path=None, s=s)
         return v
     #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
