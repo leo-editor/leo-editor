@@ -2506,14 +2506,17 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''
         Return the actual values corresponding to frame.ratio and frame.secondary_ratio.
         '''
-        layout = self.c and self.c.free_layout
+        c = self.c
+        if not c:
+            return 0.5, 0.5
+        layout = c.free_layout
         if not layout:
             return 0.5, 0.5
             
         def get_ratio(w, tag):
             if w:
-                f1, f2 = w.sizes()
                 try:
+                    f1, f2 = w.sizes()
                     r = float(f1)/float(f1+f2)
                     # g.trace('%s %2d %2d => %5.2f' % (tag, f1, f2, r))
                     return r
