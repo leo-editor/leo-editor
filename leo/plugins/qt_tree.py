@@ -280,14 +280,13 @@ class LeoQtTree(leoFrame.LeoTree):
         Redraw all visible nodes of the tree.
         Preserve the vertical scrolling unless scroll is True.
         '''
-        c, frame = self.c, self.c.frame
+        c = self.c
         if g.app.disable_redraw:
             return
         if self.busy:
             return
         # Cancel the delayed redraw request.
         c.requestLaterRedraw = False
-        old_r1, old_r2 = frame.getActualRatios()
         if not p:
             p = c.currentPosition()
         elif c.hoistStack and p.h.startswith('@chapter') and p.hasChildren():

@@ -2501,32 +2501,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # Could be a user error.
             g.es("exception in user configuration for splitbar")
             g.es_exception()
-    #@+node:ekr.20190119122558.1: *4* qtFrame.getActualRatios
-    def getActualRatios(self):
-        '''
-        Return the actual values corresponding to frame.ratio and frame.secondary_ratio.
-        '''
-        c = self.c
-        if not c:
-            return 0.5, 0.5
-        layout = c.free_layout
-        if not layout:
-            return 0.5, 0.5
-            
-        def get_ratio(w, tag):
-            if w:
-                try:
-                    f1, f2 = w.sizes()
-                    r = float(f1)/float(f1+f2)
-                    # g.trace('%s %2d %2d => %5.2f' % (tag, f1, f2, r))
-                    return r
-                except ValueError:
-                    pass
-            return 0.5, 0.5
-                    
-        r1 = get_ratio(layout.get_main_splitter(), 'r1')
-        r2 = get_ratio(layout.get_secondary_splitter(), 'r2')
-        return r1, r2
     #@+node:ekr.20110605121601.18277: *4* qtFrame.reconfigureFromConfig
     def reconfigureFromConfig(self):
         '''Init the configuration of the Qt frame from settings.'''
