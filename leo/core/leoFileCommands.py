@@ -60,7 +60,7 @@ class FastRead (object):
         
     #@+others
     #@+node:ekr.20180604110143.1: *3* fast.readFile/FromClipboard & helper
-    def readFile(self, path): ###path=None, s=None):
+    def readFile(self, path):
         '''Read the file and return its hidden vnode.'''
         with open(path, 'rb') as f:
             s = f.read()
@@ -68,7 +68,7 @@ class FastRead (object):
         self.scanGlobals(g_element)
         return v
         
-    def readFileFromClipboard(self, s): ### path=None, s=None):
+    def readFileFromClipboard(self, s):
         '''Recreate a file from a string s, and return its hidden vnode.'''
         v, g_element = self.readWithElementTree(path=None, s=s)
         return v
@@ -97,7 +97,6 @@ class FastRead (object):
         g_element = xroot.find('globals')
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
-        ### self.scanGlobals(g_element)
         gnx2body, gnx2ua = self.scanTnodes(t_elements)
         hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
         self.handleBits()
@@ -403,10 +402,7 @@ class FileCommands(object):
         self.gnxDict = {}
         s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
             # This encoding must match the encoding used in putLeoOutline.
-        ### r1, r2 = c.frame.getActualRatios()
-        hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s=s)
-        ###c.frame.resizePanesToRatio(r1, r2)
-            # Fix #1047: restore the ratios, changed by FastRead.
+        hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
         v = hidden_v.children[0]
         v.parents = []
         # Restore the hidden root's children
@@ -444,10 +440,7 @@ class FileCommands(object):
             ni.check_gnx(c, v.fileIndex, v)
         s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
             # This encoding must match the encoding used in putLeoOutline.
-        ### r1, r2 = c.frame.getActualRatios()
-        hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s=s)
-        ### c.frame.resizePanesToRatio(r1, r2)
-            # Fix #1047: restore the ratios, changed by FastRead.
+        hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
         v = hidden_v.children[0]
         v.parents.remove(hidden_v)
         # Restore the hidden root's children
@@ -862,10 +855,7 @@ class FileCommands(object):
         try:
             # This encoding must match the encoding used in putLeoOutline.
             s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            ### r1, r2 = c.frame.getActualRatios()
-            v = FastRead(c, {}).readFileFromClipboard(s=s)
-            ###c.frame.resizePanesToRatio(r1, r2)
-                # Fix #1047: restore the ratios, changed by FastRead.
+            v = FastRead(c, {}).readFileFromClipboard(s)
             if not v:
                 return g.es("the clipboard is not valid ", color="blue")
         finally:
