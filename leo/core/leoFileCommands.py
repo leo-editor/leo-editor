@@ -59,22 +59,27 @@ class FastRead (object):
         self.gnx2vnode = gnx2vnode
         
     #@+others
-    #@+node:ekr.20180604110143.1: *3* fast.readFile & helper
+    #@+node:ekr.20180604110143.1: *3* fast.readFile/FromClipboard & helper
+    def readFile(self, path): ###path=None, s=None):
+        '''Read the file and return its hidden vnode.'''
+        with open(path, 'rb') as f:
+            s = f.read()
+        v, g_element = self.readWithElementTree(path, s)
+        self.scanGlobals(g_element)
+        return v
+        
+    def readFileFromClipboard(self, s): ### path=None, s=None):
+        '''Recreate a file from a string s, and return its hidden vnode.'''
+        v, g_element = self.readWithElementTree(path=None, s=s)
+        return v
+    #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
     translate_table = b''.join([g.toEncodedString(chr(z)) for z in range(20) if chr(z) not in '\t\r\n'])
         # See https://en.wikipedia.org/wiki/Valid_characters_in_XML.
 
-    def readFile(self, path=None, s=None):
-
-        if not s:
-            with open(path, 'rb') as f:
-                s = f.read()
-        # s = s.replace(b'\x0c', b'').replace(b'0x00', b'')
+    def readWithElementTree(self, path, s):
+        
         s = s.translate(None, self.translate_table)
             # Fix #1036 and #1046.
-        return self.readWithElementTree(path, s)
-    #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
-    def readWithElementTree(self, path, s):
-
         contents = g.toUnicode(s) if g.isPython3 else s
         try:
             xroot = ElementTree.fromstring(contents)
@@ -92,11 +97,11 @@ class FastRead (object):
         g_element = xroot.find('globals')
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
-        self.scanGlobals(g_element)
+        ### self.scanGlobals(g_element)
         gnx2body, gnx2ua = self.scanTnodes(t_elements)
         hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
         self.handleBits()
-        return hidden_v
+        return hidden_v, g_element
     #@+node:ekr.20180624125321.1: *5* fast.handleBits
     def handleBits(self):
 
@@ -398,9 +403,9 @@ class FileCommands(object):
         self.gnxDict = {}
         s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
             # This encoding must match the encoding used in putLeoOutline.
-        r1, r2 = c.frame.getActualRatios()
-        hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
-        c.frame.resizePanesToRatio(r1, r2)
+        ### r1, r2 = c.frame.getActualRatios()
+        hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s=s)
+        ###c.frame.resizePanesToRatio(r1, r2)
             # Fix #1047: restore the ratios, changed by FastRead.
         v = hidden_v.children[0]
         v.parents = []
@@ -439,9 +444,9 @@ class FileCommands(object):
             ni.check_gnx(c, v.fileIndex, v)
         s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
             # This encoding must match the encoding used in putLeoOutline.
-        r1, r2 = c.frame.getActualRatios()
-        hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
-        c.frame.resizePanesToRatio(r1, r2)
+        ### r1, r2 = c.frame.getActualRatios()
+        hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s=s)
+        ### c.frame.resizePanesToRatio(r1, r2)
             # Fix #1047: restore the ratios, changed by FastRead.
         v = hidden_v.children[0]
         v.parents.remove(hidden_v)
@@ -857,9 +862,9 @@ class FileCommands(object):
         try:
             # This encoding must match the encoding used in putLeoOutline.
             s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            r1, r2 = c.frame.getActualRatios()
-            v = FastRead(c, {}).readFile(s=s)
-            c.frame.resizePanesToRatio(r1, r2)
+            ### r1, r2 = c.frame.getActualRatios()
+            v = FastRead(c, {}).readFileFromClipboard(s=s)
+            ###c.frame.resizePanesToRatio(r1, r2)
                 # Fix #1047: restore the ratios, changed by FastRead.
             if not v:
                 return g.es("the clipboard is not valid ", color="blue")
