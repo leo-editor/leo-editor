@@ -22466,7 +22466,7 @@ Leo.
         git clone --depth=500 git@github.com:leo-editor/leo-editor.git (ssh access)
 
 And that's it! You can run launchLeo.py directly. When you want to refresh the
-code with latest modifications from GitHub, run git pull. If you need to go farther back in time than last 500 commits run "git --unshallow".
+code with latest modifications from GitHub, run git pull.
 </t>
 <t tx="ekr.20170206073747.2">Install Python and Qt, as described above (`Installing Packages`_).
 
@@ -26127,7 +26127,7 @@ Python's `pip`_ tool will download *and* install Leo and all of Leo's dependenci
 
 **Python 3**::
 
-    pip3 install leo
+    pip install leo
 
 **Python 2 with Anaconda**::
 
