@@ -210,7 +210,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             for s in g.splitLines(p.b):
                 if s.strip() and not s.startswith('#'):
                     abbrev_name = s.strip()
-                    for child in p.children():
+                    # #926: Allow organizer nodes by searching all descendants.
+                    for child in p.subtree(): #### p.children():
                         if child.h.strip() == abbrev_name:
                             abbrev_s = c.fileCommands.putLeoOutline(child)
                             d[abbrev_name] = abbrev_s
