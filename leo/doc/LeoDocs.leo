@@ -22459,14 +22459,14 @@ Leo.
 1. First, you need to get git from http://git-scm.com/.
 2. Get Leo from GitHub by doing::
 
-        git clone https://github.com/leo-editor/leo-editor (http access)
+        git clone --depth=500 https://github.com/leo-editor/leo-editor (http access)
     
    or::
    
-        git clone git@github.com:leo-editor/leo-editor.git (ssh access)
+        git clone --depth=500 git@github.com:leo-editor/leo-editor.git (ssh access)
 
 And that's it! You can run launchLeo.py directly. When you want to refresh the
-code with latest modifications from GitHub, run git pull.
+code with latest modifications from GitHub, run git pull. If you need to go farther back in time than last 500 commits run "git --unshallow".
 </t>
 <t tx="ekr.20170206073747.2">Install Python and Qt, as described above (`Installing Packages`_).
 
@@ -26119,15 +26119,15 @@ Python's `pip`_ tool will download *and* install Leo and all of Leo's dependenci
 
 1. `Install Python`_ first, if necessary. If you are new to Python, install Python 3, not Python 2.
 
-2. Check whether pip has been installed using the terminal window command below. If there's an error `Install pip`_:
+2. Check whether pip has been installed using the terminal window command below. If there's an error `Install pip`_::
 
     pip --version
 
 3. Install Leo and all required packages:
 
-**Python 3**
+**Python 3**::
 
-    pip install leo
+    pip3 install leo
 
 **Python 2 with Anaconda**::
 
