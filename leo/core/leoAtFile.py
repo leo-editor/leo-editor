@@ -3236,9 +3236,9 @@ class FastAtRead (object):
                 print('%2s %5s %s' % (i+1, in_tree, v2.h))
             print(']')
             print('PARENT.CHILDREN...')
-            g.printObj([v2.h for v2 in parent_v.children])
+            g.printObj([v3.h for v3 in parent_v.children])
             print('PARENTS...')
-            g.printObj([v2.h for v2 in v.parents])
+            g.printObj([v4.h for v4 in v.parents])
         #@-<< define dump_v >>
         i = 0 # To keep pylint happy.
         for i, line in enumerate(lines[start:]):

@@ -2321,13 +2321,15 @@
 <v t="ekr.20190117143942.976"><vh>#1057: Unwanted loadOnePlugin messages on startup</vh></v>
 <v t="ekr.20190118222636.1"><vh>#1059: cycle-tab-focus exception</vh></v>
 </v>
-<v t="ekr.20190119070017.1"><vh>5.8.1: Major features</vh>
+<v t="ekr.20190119070017.1"><vh>5.8.1: Features</vh>
 <v t="ekr.20190117143942.654"><vh>#0525: Nested @clean</vh></v>
 <v t="ekr.20190117143942.672"><vh>#0672: Leo uses TravisCI</vh></v>
 <v t="ekr.20190117143942.681"><vh>#0915: Leo debugger</vh></v>
+<v t="ekr.20190122041941.1"><vh>#0926: Organize @outline-data tree-abbreviations</vh></v>
 <v t="ekr.20190117143942.29"><vh>#1005: LeoWapp: Leo in a browser</vh></v>
 <v t="ekr.20190117143942.399"><vh>#1031, #1050 and #1003: Better error recovery</vh></v>
 <v t="ekr.20190117143942.463"><vh>#1040: Simplify atFile.write code</vh></v>
+<v t="ekr.20190122042300.1"><vh>#1047: Tree Window Resizes on Paste Node</vh></v>
 </v>
 <v t="ekr.20190119071258.1"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
 </v>
@@ -30827,6 +30829,16 @@ https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.8.1+l
 - Remove @string qt-ui-file-name.
 - #993: use -, not underscore, for settings names.
   https://github.com/leo-editor/leo-editor/issues/993
+</t>
+<t tx="ekr.20190122041941.1">https://github.com/leo-editor/leo-editor/issues/926
+</t>
+<t tx="ekr.20190122042300.1">https://github.com/leo-editor/leo-editor/issues/1047
+
+The following call FastRead().readFileFromClipboard:
+    
+- fc.getLeoOutlineFromClipBoard.
+- fc.getLeoOutlineFromClipBoardRetainingClones.
+- fc.getPos/VnodeFromClipboard.
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 

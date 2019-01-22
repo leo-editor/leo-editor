@@ -89,6 +89,7 @@ debug_keys = False # True: put 'keys' in g.app.debug.
 is_public = True # True: public code issues various alerts.
 #
 # pylint: disable=logging-not-lazy
+# pylint: disable=missing-super-argument
 #@+others
 #@+node:ekr.20181121040901.1: **  top-level functions
 #@+node:ekr.20181121091633.1: *3* dump_event
