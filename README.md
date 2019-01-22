@@ -1,15 +1,16 @@
-Leo 5.8 final, http://leoeditor.com, is now available on
+Leo 5.8.1 beta 1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 5.8**
+**The highlights of Leo 5.8.1**
 
-- Much faster file-read code.
-- Leo no longer caches file contents. Removed --no-cache!
-- Leo using ElementTree instead of sax to read .leo files.
-- Refactored and improved Leo's key-handling code.
-- Improved Leo's outline drawing code.
+- LeoWapp: Leo in a browser.
+- Integrated debugger.
+- Nested @clean nodes, useful for LaTex files.
+- A major refactoring of the code that writes external files.
+- Better error recovery.
+- Support for continuous integration with TravisCI.
 - The usual minor bug fixes.
 
 **Links**

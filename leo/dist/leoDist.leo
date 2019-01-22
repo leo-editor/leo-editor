@@ -45,36 +45,36 @@
 </v>
 <v t="EKR.20040519091259"><vh>Announcements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
-<v t="ekr.20180828034134.1"><vh>Leo 5.8 b1 release notes</vh></v>
-<v t="ekr.20180527084946.1"><vh>Leo 5.7.3 release notes</vh>
-<v t="ekr.20180527084946.2"><vh>Bugs</vh>
-<v t="ekr.20180527084946.3"><vh>#841: Python importer does not always handle decorators properly </vh></v>
-<v t="ekr.20180527084946.4"><vh>#892: Crash in checkForChangedNodes</vh></v>
-<v t="ekr.20180527084946.5"><vh>#893: Python Console gets stuck on IndentationError </vh></v>
-<v t="ekr.20180527084946.6"><vh>#901: The Windows Right-Menu key insert "Menu" into text</vh></v>
+<v t="ekr.20190122052801.1"><vh>Leo 5.8.1 release notes</vh>
+<v t="ekr.20190122052801.2"><vh>5.8.1: Bugs fixed</vh>
+<v t="ekr.20190122052801.3"><vh>#0804: ~= in style sheets</vh></v>
+<v t="ekr.20190122052801.4"><vh>#0998: Fix recursive import problems</vh></v>
+<v t="ekr.20190122052801.5"><vh>#1002 self.assertEqual in a @test node is not comparing lists properly</vh></v>
+<v t="ekr.20190122052801.6"><vh>#1007: console gui doesn't load</vh></v>
+<v t="ekr.20190122052801.7"><vh>#1021: Fixed add-editor</vh></v>
+<v t="ekr.20190122052801.8"><vh>#1023: Marked and expansion bits no longer affect .leo files</vh></v>
+<v t="ekr.20190122052801.9"><vh>#1032: importers should not clean blank lines</vh></v>
+<v t="ekr.20190122052801.10"><vh>#1033: No @path directive added for empty imported files</vh></v>
+<v t="ekr.20190122052801.11"><vh>#1036 and #1046: strip control chars before reading .leo files</vh></v>
+<v t="ekr.20190122052801.12"><vh>#1048 &amp; #1037: trailing blank lines</vh></v>
+<v t="ekr.20190122052801.13"><vh>#1049: crash kills Leo</vh></v>
+<v t="ekr.20190122052801.14"><vh>#1051: eliminate ui interface refs</vh></v>
+<v t="ekr.20190122052801.15"><vh>#1053: Unwanted @shadow message on saves</vh></v>
+<v t="ekr.20190122052801.16"><vh>#1056: Column numbers in the status line do not work</vh></v>
+<v t="ekr.20190122052801.17"><vh>#1057: Unwanted loadOnePlugin messages on startup</vh></v>
+<v t="ekr.20190122052801.18"><vh>#1059: cycle-tab-focus exception</vh></v>
 </v>
-<v t="ekr.20180527084946.7"><vh>Code</vh>
-<v t="ekr.20180527084946.8"><vh>#875: Rename json reader/writer plugins</vh></v>
-<v t="ekr.20180527084946.9"><vh>BackgroundProcessManager supports clickable links</vh></v>
-<v t="ekr.20180527084946.10"><vh>Removed most g.trace statements</vh></v>
+<v t="ekr.20190122052801.19"><vh>5.8.1: Features</vh>
+<v t="ekr.20190122052801.20"><vh>#0525: Nested @clean</vh></v>
+<v t="ekr.20190122052801.21"><vh>#0672: Leo uses TravisCI</vh></v>
+<v t="ekr.20190122052801.22"><vh>#0915: Leo debugger</vh></v>
+<v t="ekr.20190122052801.23"><vh>#0926: Organize @outline-data tree-abbreviations</vh></v>
+<v t="ekr.20190122052801.24"><vh>#1005: LeoWapp: Leo in a browser</vh></v>
+<v t="ekr.20190122052801.25"><vh>#1031, #1050 and #1003: Better error recovery</vh></v>
+<v t="ekr.20190122052801.26"><vh>#1040: Simplify atFile.write code</vh></v>
+<v t="ekr.20190122052801.27"><vh>#1047: Tree Window Resizes on Paste Node</vh></v>
 </v>
-<v t="ekr.20180527084946.11"><vh>Info items</vh>
-<v t="ekr.20180527084946.12"><vh>#909: How to use LaTeX with Leo</vh></v>
-<v t="ekr.20180527084946.13"><vh>#910: Summary of developer info items</vh></v>
-</v>
-<v t="ekr.20180527084946.14"><vh>Features</vh>
-<v t="ekr.20180527084946.15"><vh>#309: Support Jedi autocompletion</vh></v>
-<v t="ekr.20180527084946.16"><vh>#738: Links in Tips dialogs are now clickable</vh></v>
-<v t="ekr.20180527084946.17"><vh>#868: Allow separate bindings for numeric keypad keys</vh></v>
-<v t="ekr.20180527084946.18"><vh>#904: Allow local overrides of abbreviations</vh></v>
-<v t="ekr.20180527084946.19"><vh>Added diff-related wrappers</vh></v>
-<v t="ekr.20180527084946.20"><vh>Added leo_babel plugin</vh></v>
-<v t="ekr.20180527084946.21"><vh>Improved recursive import script</vh></v>
-<v t="ekr.20180527084946.22"><vh>Improved typescript importer</vh></v>
-<v t="ekr.20180527084946.23"><vh>pylint creates clickable links</vh></v>
-<v t="ekr.20180527084946.24"><vh>Removed settings</vh></v>
-<v t="ekr.20180527084946.25"><vh>Smart searches for functions and methods</vh></v>
-</v>
+<v t="ekr.20190122052801.28"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
 </v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
@@ -172,7 +172,7 @@
 </t>
 <t tx="EKR.20040519090846.1">MIT License
 
-Copyright (c) 1997-2018 by Edward K. Ream.
+Copyright (c) 1997-2019 by Edward K. Ream.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -194,7 +194,7 @@ SOFTWARE.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.8
+Version: 5.8.1
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -214,18 +214,19 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.8 final, http://leoeditor.com, is now available on
+<t tx="EKR.20040519090846.9">Leo 5.8.1 beta 1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 5.8**
+**The highlights of Leo 5.8.1**
 
-- Much faster file-read code.
-- Leo no longer caches file contents. Removed --no-cache!
-- Leo using ElementTree instead of sax to read .leo files.
-- Refactored and improved Leo's key-handling code.
-- Improved Leo's outline drawing code.
+- LeoWapp: Leo in a browser.
+- Integrated debugger.
+- Nested @clean nodes, useful for LaTex files.
+- A major refactoring of the code that writes external files.
+- Better error recovery.
+- Support for continuous integration with TravisCI.
 - The usual minor bug fixes.
 
 **Links**
@@ -718,7 +719,7 @@ leo/core/commit_timestamp.json merge=ours
 
 2. Search for copyright
 
-    Latest copyright date: 2018.
+    Latest copyright date: 20198.
 
     Note: install.txt file embeds a copyright message in the nsi installer.</t>
 <t tx="ekr.20150416081546.1"></t>
@@ -1466,7 +1467,6 @@ Overview:
 - Spell check entire file.
 - Copy release notes to leoDist.leo.
 - Copy release notes to LeoReleaseNotes.leo
-- Select the readme node.
 
 LeoDist.leo:
 - Make sure copyright dates are correct.
@@ -1534,160 +1534,6 @@ git push --follow-tags
   
 - Email Matt Wilkie, maphew@gmail.com, announcing the release.
   </t>
-<t tx="ekr.20180527084946.1">May 28, 2018
-Leo 5.7.3, http://leoeditor.com, is now available on
-[GitHub](https://github.com/leo-editor/leo-editor).
-
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
-
-**The highlights of Leo 5.7.3**
-
-- Added support for Jedi autocompletion.
-- Much improved python_terminal plugin.
-- Much improved recursive import script.
-- New leo_babel plugin.
-- Leo's pylint command writes clickable links.
-- Smart searches for functions and methods.
-- Allow separate bindings for numeric keypad keys
-- Added easy-to-use diff-related wrappers for scripts.
-- Allow local overrides of all abbreviations.
-- Improved TypeScript importer.
-- The usual minor bug fixes.
-
-**Links**
-
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
-- [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
-- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
-- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
-</t>
-<t tx="ekr.20180527084946.10">A mass cleanup of Leo's code, removing many unused tracing statements.</t>
-<t tx="ekr.20180527084946.11"></t>
-<t tx="ekr.20180527084946.12">https://github.com/leo-editor/leo-editor/issues/909
-</t>
-<t tx="ekr.20180527084946.13">https://github.com/leo-editor/leo-editor/issues/910</t>
-<t tx="ekr.20180527084946.14"></t>
-<t tx="ekr.20180527084946.15">https://github.com/leo-editor/leo-editor/issues/309
-</t>
-<t tx="ekr.20180527084946.16">https://github.com/leo-editor/leo-editor/issues/738
-</t>
-<t tx="ekr.20180527084946.17">https://github.com/leo-editor/leo-editor/issues/868
-
-As usual, spellings are not significant. For example:
-
-clone-find-all-flattened = Key_Pad+9
-clone-find-all = keypad-PageUp
-    # Same as keypad+pageup, etc. etc.</t>
-<t tx="ekr.20180527084946.18">Allow local overrides of @data global-abbreviations &amp; @outline-data tree-abbreviations
-https://github.com/leo-editor/leo-editor/issues/904</t>
-<t tx="ekr.20180527084946.19">@language rest
-
-Added c.diff_file, c.diff_two_branches and c.git_diff. Examples:
-
-@language python
-
-# creates outline-oriented diffs between all changed files between any two revs.
-# In this case, rev1 is the last rev in devel not affected by removing trace statements.
-
-c.diff_two_revs(
- rev1="24abd822b", # devel
- rev2="HEAD", # will work in *any* branch
-)
-
-# Leo's git-diff command:
-c.git_diff()
-
-# Compares a file in two different branches:
-c.diff_two_branches(
-    branch1='master',
-    branch2='devel',
-    fn='leo/core/leoCommands.py',
-)
-</t>
-<t tx="ekr.20180527084946.2"></t>
-<t tx="ekr.20180527084946.20">For documentation, see the leo/plugins/leo_babel/doc folder.</t>
-<t tx="ekr.20180527084946.21">The recursive import script now adds disambiguating headline comments as follows:
-
-- If a node is a descendant of a class node, the script prepends the class's name:
-
-    aClass.headline
-
-- Otherwise, the script appends the file name:
-
-    headline (x.py)
-
-This is a huge help when using the clone-find commands.
-</t>
-<t tx="ekr.20180527084946.22"></t>
-<t tx="ekr.20180527084946.23">Clicking on underlined links in the log pane takes you to the proper node and line.</t>
-<t tx="ekr.20180527084946.24">- Removed @bool trace_import.
-- Removed @bool trace_bind_key_exceptions.</t>
-<t tx="ekr.20180527084946.25">The find-def command is typically invoked by control-clicking a function name. This command now will search for possible *alternative spellings* of the name if no match is found initially:
-
-- If the original name contains an underscore, say x_y, the second search will be for the camelCase version, xY.
-
-- Otherwise, we assume the name may be camelCase, say xY, and we attempt to convert it to x_y.
-
-A second search is attempted only if the converted name is different from the original.  In particular, names starting with a leading underscore are never converted.
-
-The new setting: @bool find-def-creates-clones (default False) controls whether a clone-find-flattened command is used to show all matching definitions. This setting has no effect when only one definition is found.</t>
-<t tx="ekr.20180527084946.3">https://github.com/leo-editor/leo-editor/issues/841</t>
-<t tx="ekr.20180527084946.4">https://github.com/leo-editor/leo-editor/issues/892
-</t>
-<t tx="ekr.20180527084946.5">https://github.com/leo-editor/leo-editor/issues/893
-
-A complete rewrite of the python_terminal plugin.</t>
-<t tx="ekr.20180527084946.6">https://github.com/leo-editor/leo-editor/issues/901
-</t>
-<t tx="ekr.20180527084946.7"></t>
-<t tx="ekr.20180527084946.8">https://github.com/leo-editor/leo-editor/issues/875</t>
-<t tx="ekr.20180527084946.9">BackgroundProcessManager.start_process now takes two new kwargs:  link_pattern and link_root:
-
-- link_pattern: a regex string or compiled regex pattern, used to determine whether a message contains a link.
-
-- link_root: the root @file node.
-
-When present, bpm.put_log uses these as follows::
-
-    unl = link_root.get_UNL(with_proto=True, with_count=True)
-    nodeLink = "%s,%d" % (unl, -line)
-    c.frame.log.put(s + '\n', nodeLink=nodeLink)
-</t>
-<t tx="ekr.20180828034134.1">Leo 5.8 b1, http://leoeditor.com, is now available on
-[GitHub](https://github.com/leo-editor/leo-editor).
-
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
-
-**The highlights of Leo 5.8**
-
-- Much faster file-read code.
-- Leo no longer caches file contents. Removed --no-cache!
-- Leo using ElementTree instead of sax to read .leo files.
-- Refactored and improved Leo's key-handling code.
-- Improved Leo's outline drawing code.
-- The usual minor bug fixes.
-
-**Links**
-
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
-- [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
-- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
-- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
-</t>
 <t tx="ekr.20180828095749.1">git checkout -b x.y-final-rel
 git push origin x.y-final-rel
 </t>
@@ -1696,6 +1542,126 @@ git push origin x.y-final-rel
 </t>
 <t tx="ekr.20181001112153.1"></t>
 <t tx="ekr.20181001112218.1"></t>
+<t tx="ekr.20190122052801.1">Leo 5.8.1 beta 1, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 5.8.1**
+
+- LeoWapp: Leo in a browser.
+- Integrated debugger.
+- Nested @clean nodes, useful for LaTex files.
+- A major refactoring of the code that writes external files.
+- Better error recovery.
+- Support for continuous integration with TravisCI.
+- The usual minor bug fixes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20190122052801.10">https://github.com/leo-editor/leo-editor/issues/1033
+</t>
+<t tx="ekr.20190122052801.11">https://github.com/leo-editor/leo-editor/issues/1036
+https://github.com/leo-editor/leo-editor/issues/1046</t>
+<t tx="ekr.20190122052801.12">Leo no longer generates @nonl sentinels, so regularizing trailing ws is much easier.
+
+#1048 @clean: https://github.com/leo-editor/leo-editor/issues/1048
+#1037 @file:  https://github.com/leo-editor/leo-editor/issues/1037
+
+</t>
+<t tx="ekr.20190122052801.13">https://github.com/leo-editor/leo-editor/issues/1049
+</t>
+<t tx="ekr.20190122052801.14">https://github.com/leo-editor/leo-editor/issues/1051
+
+Removed @string qt-ui-file-name.
+</t>
+<t tx="ekr.20190122052801.15">https://github.com/leo-editor/leo-editor/issues/1053
+
+This was an ancient bug!
+
+The fix was to call c.setFileTimeStamp(fileName) in x.replaceFileWithString.
+</t>
+<t tx="ekr.20190122052801.16">https://github.com/leo-editor/leo-editor/issues/1056
+</t>
+<t tx="ekr.20190122052801.17">https://github.com/leo-editor/leo-editor/issues/1057
+</t>
+<t tx="ekr.20190122052801.18">https://github.com/leo-editor/leo-editor/issues/1059
+</t>
+<t tx="ekr.20190122052801.19"></t>
+<t tx="ekr.20190122052801.2">For the complete list, see:
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.8.1+label%3Abug+is%3Aclosed</t>
+<t tx="ekr.20190122052801.20">https://github.com/leo-editor/leo-editor/issues/525
+
+See this posting:
+https://groups.google.com/forum/#!msg/leo-editor/WGQIzBzQ058/QTJRUvl9CwAJ</t>
+<t tx="ekr.20190122052801.21">https://github.com/leo-editor/leo-editor/issues/672
+
+TravisCI: https://travis-ci.org/
+</t>
+<t tx="ekr.20190122052801.22">https://github.com/leo-editor/leo-editor/issues/915
+
+Creates the xdb command and db-* commands.The xdb_pane.py plugin is optional, but recommended.
+</t>
+<t tx="ekr.20190122052801.23">https://github.com/leo-editor/leo-editor/issues/926
+</t>
+<t tx="ekr.20190122052801.24">https://github.com/leo-editor/leo-editor/issues/1005
+</t>
+<t tx="ekr.20190122052801.25">When saving a file, Leo now raises a dialog warning if quitting might lose data.
+
+There are three related issues:
+https://github.com/leo-editor/leo-editor/issues/1031
+https://github.com/leo-editor/leo-editor/issues/1050
+https://github.com/leo-editor/leo-editor/issues/1003
+</t>
+<t tx="ekr.20190122052801.26">https://github.com/leo-editor/leo-editor/issues/1040
+
+This was a major refactoring of Leo's code.
+
+See this post: https://groups.google.com/forum/#!topic/leo-editor/JfAUMMOSdvQ
+</t>
+<t tx="ekr.20190122052801.27">https://github.com/leo-editor/leo-editor/issues/1047
+
+The following call FastRead().readFileFromClipboard:
+    
+- fc.getLeoOutlineFromClipBoard.
+- fc.getLeoOutlineFromClipBoardRetainingClones.
+- fc.getPos/VnodeFromClipboard.
+</t>
+<t tx="ekr.20190122052801.28">- Removed @string trailing-body-newlines.
+- Remove @string qt-ui-file-name.
+- #993: use -, not underscore, for settings names.
+  https://github.com/leo-editor/leo-editor/issues/993
+</t>
+<t tx="ekr.20190122052801.3">https://github.com/leo-editor/leo-editor/issues/804
+
+Changed various style sheets as a workaround for a serious Qt bug.
+</t>
+<t tx="ekr.20190122052801.4">https://github.com/leo-editor/leo-editor/issues/998
+</t>
+<t tx="ekr.20190122052801.5">https://github.com/leo-editor/leo-editor/issues/1002
+</t>
+<t tx="ekr.20190122052801.6">https://github.com/leo-editor/leo-editor/issues/1007
+</t>
+<t tx="ekr.20190122052801.7">https://github.com/leo-editor/leo-editor/issues/1021
+
+The culprit was a mistaken fix to #690:
+https://github.com/leo-editor/leo-editor/issues/690
+</t>
+<t tx="ekr.20190122052801.8">https://github.com/leo-editor/leo-editor/issues/1023
+</t>
+<t tx="ekr.20190122052801.9">https://github.com/leo-editor/leo-editor/issues/1032</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 

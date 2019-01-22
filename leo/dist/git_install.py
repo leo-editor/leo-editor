@@ -64,7 +64,7 @@ The directory structure when starting this script:
     ~/anydir/zips/tornado-master.zip
     ~/anydir/zips/webruntime-master.zip
 
-Creathing the python virtual environment:
+Creating the python virtual environment:
 
     This is what I did on Ubuntu 18.10
 
