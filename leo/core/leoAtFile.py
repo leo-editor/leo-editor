@@ -3117,7 +3117,7 @@ class FastAtRead (object):
             for key in gnx2body: 
                 body = gnx2body.get(key)
                 v = gnx2vnode.get(key)
-                assert v
+                assert v, (key, v)
                 v._bodyString = g.toUnicode(''.join(body))
     #@+node:ekr.20180602103135.2: *3* fast_at.scan_header
     header_pattern = re.compile(r'''
@@ -3159,7 +3159,6 @@ class FastAtRead (object):
             # To handle doc parts.
         first_i = 0
             # Index into first array.
-           
         in_doc = False
             # True: in @doc parts.
         in_raw = False
@@ -3172,6 +3171,9 @@ class FastAtRead (object):
             # Entries are (vnode, in_clone_tree)
         n_last_lines = 0
             # The number of @@last directives seen.
+        root_seen = False
+            # False: The next +@node sentinel denotes the root, regardless of gnx.
+            # Needed to handle #1065 so reads will not create spurious child nodes.
         sentinel = delim_start + '@'
             # Faster than a regex!
         stack = []
@@ -3338,9 +3340,18 @@ class FastAtRead (object):
                 v = gnx2vnode.get(gnx)
                 #
                 # Case 1: The root @file node. Don't change the headline.
-                if v and v == root_v:
+                if not root_seen:
+                    # Fix #1064: The node represents the root, regardless of the gnx!
+                    root_seen = True
                     clone_v = None
                     gnx2body[gnx] = body = []
+                    if not v:
+                        # Fix #1064.
+                        v = root_v
+                        if gnx != root_gnx:
+                            g.es_print("using gnx from external file: %s" % (v.h), color='blue')
+                        gnx2vnode [gnx] = v
+                        v.fileIndex = gnx
                     v.children = []
                     continue
                 #
@@ -3600,19 +3611,19 @@ class FastAtRead (object):
         contents = contents.replace('\r','')
         lines = g.splitLines(contents)
         data = self.scan_header(lines)
-        if data:
-            # Clear all children.
-            # Previously, this had been done in readOpenFile.
-            root.v._deleteAllChildren()
-            delims, first_lines, start_i = data
-            self.scan_lines(
-                delims, first_lines, lines, start_i)
-            if trace:
-                t2 = time.clock()
-                g.trace('%5.3f sec. %s' % ((t2-t1), path))
-            return True
-        g.trace('Invalid external file: %s' % sfn)
-        return False
+        if not data:
+            g.trace('Invalid external file: %s' % sfn)
+            return False
+        # Clear all children.
+        # Previously, this had been done in readOpenFile.
+        root.v._deleteAllChildren()
+        delims, first_lines, start_i = data
+        self.scan_lines(
+            delims, first_lines, lines, start_i)
+        if trace:
+            t2 = time.clock()
+            g.trace('%5.3f sec. %s' % ((t2-t1), path))
+        return True
     #@-others
 #@-others
 #@@language python
