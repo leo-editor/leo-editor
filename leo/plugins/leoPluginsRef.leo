@@ -168,6 +168,7 @@
 <v t="ekr.20150107090324.1"><vh>@file cursesGui.py</vh></v>
 <v t="ekr.20170419092835.1"><vh>@file cursesGui2.py</vh></v>
 <v t="ekr.20181103094900.1"><vh>@file leoflexx.py</vh></v>
+<v t="ekr.201811100000000.1"><vh>@file leoflexx_js.py</vh></v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>
@@ -199,12 +200,6 @@
 <v t="ekr.20140723122936.18137"><vh>@file importers/xml.py</vh></v>
 </v>
 <v t="ekr.20180504192522.1"><vh>leo_babel</vh>
-<v t="ekr.20180504193756.1"><vh>Top-level</vh>
-<v t="ekr.20180504191650.17"><vh>@file leo_babel/babel_kill.py</vh></v>
-<v t="bob.20170716140541.1"><vh>@file leo_babel/babel_api.py</vh></v>
-<v t="bob.20170311140807.1"><vh>@file leo_babel/babel.py</vh></v>
-<v t="bob.20170726143458.1"><vh>@file leo_babel/babel_lib.py</vh></v>
-</v>
 <v t="ekr.20180504191650.34"><vh>@clean leo_babel/__init__.py</vh></v>
 <v t="ekr.20180504191650.36"><vh>examples</vh>
 <v t="bob.20170716135108.2"><vh>@file leo_babel/examples/slowOut.py</vh></v>
@@ -429,6 +424,7 @@
 <v t="ekr.20170313020320.1"><vh>@file settings_finder.py</vh></v>
 <v t="ville.20110304230157.6513"><vh>@file systray.py</vh></v>
 <v t="tbrown.20141101114322.1"><vh>@file wikiview.py</vh></v>
+<v t="ekr.20181004143535.1"><vh>@file xdb_pane.py</vh></v>
 <v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
 <v t="ekr.20140726091031.18071"><vh>Writer plugins</vh>
@@ -2901,7 +2897,6 @@ print('done! wrote %s' % fn)
 <t tx="ekr.20180504191650.42"></t>
 <t tx="ekr.20180504191650.68"></t>
 <t tx="ekr.20180504192522.1"></t>
-<t tx="ekr.20180504193756.1"></t>
 <t tx="ekr.20181030041210.1"></t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
