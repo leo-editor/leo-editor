@@ -2259,6 +2259,7 @@
 <v t="ekr.20190117143942.399"><vh>#1031, #1050 and #1003: Better error recovery</vh></v>
 <v t="ekr.20190117143942.463"><vh>#1040: Simplify atFile.write code</vh></v>
 <v t="ekr.20190122042300.1"><vh>#1047: Tree Window Resizes on Paste Node</vh></v>
+<v t="ekr.20190123122138.1"><vh>Retired the head-to-prev node and tail-to-next-node commands </vh></v>
 </v>
 <v t="ekr.20190119071258.1"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
 </v>
@@ -29769,6 +29770,7 @@ https://github.com/leo-editor/leo-editor/issues/977
 </t>
 <t tx="ekr.20190123075859.1">https://github.com/leo-editor/leo-editor/issues/1065
 </t>
+<t tx="ekr.20190123122138.1"></t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
