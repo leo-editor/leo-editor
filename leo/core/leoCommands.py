@@ -2340,6 +2340,7 @@ class Commands(object):
         if d and g.app.externalFilesController:
             # Select an ancestor @<file> node if possible.
             if not d.get('p'):
+                d ['p'] = None
                 p = c.p
                 while p:
                     if p.isAnyAtFileNode():

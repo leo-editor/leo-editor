@@ -4628,7 +4628,7 @@ if not efc:
     self.skipTest('No externalFilesController')
 result = efc.ask(c,p.h)
 assert result in (True, False),result
-#@+node:ekr.20100203103015.5355: *4* @test efc.get_ext
+#@+node:ekr.20100203103015.5355: *4* @test efc.compute_ext
 @language python
 
 efc = g.app.externalFilesController
@@ -4641,14 +4641,14 @@ table = (
     ('.txt','.txt'),
 )
 for ext,result in table:
-    result2 = efc.get_ext(c,p,ext)
+    result2 = efc.compute_ext(c,p,ext)
     assert result==result2,'ext: %s, expected %s, got %s' % (
         repr(ext),repr(result),repr(result2))
-#@+node:ekr.20100203103015.5354: *4* @test efc.temp_file_path
+#@+node:ekr.20100203103015.5354: *4* @test efc.compute_temp_file_path
 efc = g.app.externalFilesController
 if not efc:
     self.skipTest('no externalFilesController')
-s = efc.temp_file_path(c,p,'.py')
+s = efc.compute_temp_file_path(c,p,'.py')
 assert s.endswith('.py')
 #@+node:ville.20090602190735.4770: *4* @test g.command decorator
 _foo = 0

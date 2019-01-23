@@ -17,7 +17,8 @@ class ExternalFile(object):
         '''Ctor for ExternalFile class.'''
         self.c = c
         self.ext = ext
-        self.p = p.copy()
+        self.p = p and p.copy()
+            # The nearest @<file> node.
         self.path = path
         self.time = time
 
@@ -45,9 +46,10 @@ class ExternalFilesController(object):
 
     This class raises a dialog when a file changes outside of Leo.
 
-    **Convention**:
+    **Naming conventions**:
 
     - d is always a dict created by the @open-with logic.
+      This dict describes *only* how to open the file.
 
     - ef is always an ExternalFiles instance.
     '''
@@ -94,10 +96,10 @@ class ExternalFilesController(object):
             return self.ask(c, path)
         else:
             return True
-    #@+node:ekr.20031218072017.2613: *4* efc.destroy_frame & helper
+    #@+node:ekr.20031218072017.2613: *4* efc.destroy_frame
     def destroy_frame(self, frame):
         """
-        Close all "Open With" files associated with frame
+        Close all "Open With" files associated with frame.
         Called by g.app.destroyWindow.
         """
         files = [ef for ef in self.files if ef.c.frame == frame]
@@ -105,15 +107,6 @@ class ExternalFilesController(object):
         for ef in files:
             self.destroy_external_file(ef)
         self.files = [z for z in self.files if z.path not in paths]
-    #@+node:ekr.20031218072017.2614: *5* efc.destroy_external_file
-    def destroy_external_file(self, ef):
-        '''Destroy the file corresponding to the given ExternalFile instance.'''
-        # Do not use g.trace here.
-        if ef.path and g.os_path_exists(ef.path):
-            try:
-                os.remove(ef.path)
-            except Exception:
-                pass
     #@+node:ekr.20150407141838.1: *4* efc.find_path_for_node (called from vim.py)
     def find_path_for_node(self, p):
         '''
@@ -227,60 +220,234 @@ class ExternalFilesController(object):
             else:
                 p.setDirty()
                 c.setChanged(True)
-    #@+node:ekr.20150404082344.1: *4* efc.open_with & helper (called from c.openWith)
+    #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers (Changed)
     def open_with(self, c, d):
         '''
         Called by c.openWith to handle items in the Open With... menu.
 
-        d is a dictionary created from an @openwith settings node.
+        'd' a dict created from an @openwith settings node with these keys:
 
-        'args':     the command-line arguments to be used to open the file.
-        'ext':      the file extension.
-        'kind':     the method used to open the file, such as subprocess.Popen.
-        'name':     menu label (used only by the menu code).
-        'shortcut': menu shortcut (used only by the menu code).
-
-        d may also have the following entry, created by c.openWith:
-
-        'p':        the nearest @<file> node.
+            'args':     the command-line arguments to be used to open the file.
+            'ext':      the file extension.
+            'kind':     the method used to open the file, such as subprocess.Popen.
+            'name':     menu label (used only by the menu code).
+            'p':        the nearest @<file> node, or None.
+            'shortcut': menu shortcut (used only by the menu code).
         '''
+        g.trace('==========', c.p.h)
+        g.printObj(d, tag='open-with-dict') ###
         try:
             ext = d.get('ext')
             if not g.doHook('openwith1', c=c, p=c.p, v=c.p.v, d=d):
                 root = d.get('p')
                 if root:
-                    # Called from open-with menu.
-                    dir_ = g.setDefaultDirectory(c, root)
-                    fn = c.os_path_finalize_join(dir_, root.anyAtFileNodeName())
-                    self.open_temp_file(c, d, fn)
+                    # Open the external file itself.
+                    directory = g.setDefaultDirectory(c, root)
+                    fn = c.os_path_finalize_join(directory, root.anyAtFileNodeName())
+                    self.open_file_in_external_editor(c, d, fn)
                 else:
+                    # Open a temp file containing just the node.
                     p = c.p
-                    ext = self.get_ext(c, p, ext)
-                    fn = self.open_with_helper(c, ext, p)
-                    if fn:
-                        self.open_temp_file(c, d, fn)
+                    ext = self.compute_ext(c, p, ext)
+                    path = self.compute_temp_file_path(c, p, ext)
+                    if path:
+                        self.remove_temp_file(p, path)
+                        self.create_temp_file(c, ext, p)
+                        self.open_file_in_external_editor(c, d, path)
             g.doHook('openwith2', c=c, p=c.p, v=c.p.v, d=d)
         except Exception:
             g.es('unexpected exception in c.openWith')
             g.es_exception()
-    #@+node:ekr.20100203050306.5797: *5* efc.open_with_helper
-    def open_with_helper(self, c, ext, p):
-        '''
-        Reopen a temp file for p if it exists in self.files.
-        Otherwise, open a new temp file.
-        '''
-        path = self.temp_file_path(c, p, ext)
+    #@+node:ekr.20031218072017.2824: *5* efc.compute_ext
+    def compute_ext(self, c, p, ext):
+        '''Return the file extension to be used in the temp file.'''
+        if ext:
+            for ch in ("'", '"'):
+                if ext.startswith(ch): ext = ext.strip(ch)
+        if not ext:
+            # if node is part of @<file> tree, get ext from file name
+            for p2 in p.self_and_parents(copy=False):
+                if p2.isAnyAtFileNode():
+                    fn = p2.h.split(None, 1)[1]
+                    ext = g.os_path_splitext(fn)[1]
+                    break
+        if not ext:
+            theDict = c.scanAllDirectives()
+            language = theDict.get('language')
+            ext = g.app.language_extension_dict.get(language)
+        if not ext:
+            ext = '.txt'
+        if ext[0] != '.':
+            ext = '.' + ext
+        return ext
+    #@+node:ekr.20031218072017.2832: *5* efc.compute_temp_file_path & helpers
+    def compute_temp_file_path(self, c, p, ext):
+        '''Return the path to the temp file for p and ext.'''
+        if c.config.getBool('open-with-clean-filenames'):
+            path = self.clean_file_name(c, ext, p)
+        else:
+            path = self.legacy_file_name(c, ext, p)
         if not path:
-            return g.error('c.temp_file_path failed')
-        #
-        # Return a path if a temp file already refers to p.v
+            g.error('c.temp_file_path failed')
+        return path
+    #@+node:ekr.20150406055221.2: *6* efc.clean_file_name
+    def clean_file_name(self, c, ext, p):
+        '''Compute the file name when subdirectories mirror the node's hierarchy in Leo.'''
+        use_extentions = c.config.getBool('open-with-uses-derived-file-extensions')
+        ancestors, found = [], False
+        for p2 in p.self_and_parents(copy=False):
+            h = p2.anyAtFileNodeName()
+            if not h:
+                h = p2.h # Not an @file node: use the entire header
+            elif use_extentions and not found:
+                # Found the nearest ancestor @<file> node.
+                found = True
+                base, ext2 = g.os_path_splitext(h)
+                if p2 == p: h = base
+                if ext2: ext = ext2
+            ancestors.append(g.sanitize_filename(h))
+        # The base directory is <tempdir>/Leo<id(v)>.
+        ancestors.append("Leo" + str(id(p.v)))
+        # Build temporary directories.
+        td = os.path.abspath(tempfile.gettempdir())
+        while len(ancestors) > 1:
+            td = os.path.join(td, ancestors.pop())
+            if not os.path.exists(td):
+                os.mkdir(td)
+        # Compute the full path.
+        name = ancestors.pop() + ext
+        path = os.path.join(td, name)
+        return path
+    #@+node:ekr.20150406055221.3: *6* efc.legacy_file_name
+    def legacy_file_name(self, c, ext, p):
+        '''Compute a legacy file name for unsupported operating systems.'''
+        try:
+            leoTempDir = getpass.getuser() + "_" + "Leo"
+        except Exception:
+            leoTempDir = "LeoTemp"
+            g.es("Could not retrieve your user name.")
+            g.es("Temporary files will be stored in: %s" % leoTempDir)
+        td = os.path.join(os.path.abspath(tempfile.gettempdir()), leoTempDir)
+        if not os.path.exists(td):
+            os.mkdir(td)
+        name = g.sanitize_filename(p.h) + '_' + str(id(p.v)) + ext
+        path = os.path.join(td, name)
+        return path
+    #@+node:ekr.20190123051253.1: *6* efc.remove_temp_file
+    def remove_temp_file(self, p, path):
+        '''
+        Remove any existing temp file for p and path, updating self.files.
+        '''
         for ef in self.files:
             if path and path == ef.path and p.v == ef.p.v:
-                return ef.path
-        #
-        # Not found: create the temp file.
-        return self.create_temp_file(c, ext, p)
-            # May be None.
+                self.destroy_external_file(ef)
+                self.files = [z for z in self.files if z != ef]
+                return
+    #@+node:ekr.20100203050306.5937: *5* efc.create_temp_file
+    def create_temp_file(self, c, ext, p):
+        '''
+        Create the file used by open-with if necessary.
+        Add the corresponding ExternalFile instance to self.files
+        '''
+        path = self.compute_temp_file_path(c, p, ext)
+        g.trace('=====', path)
+        exists = g.os_path_exists(path)
+        # Compute encoding and s.
+        d2 = c.scanAllDirectives(p)
+        encoding = d2.get('encoding', None)
+        if encoding is None:
+            encoding = c.config.default_derived_file_encoding
+        s = g.toEncodedString(p.b, encoding, reportErrors=True)
+        # Write the file *only* if it doesn't exist.
+        # No need to read the file: recomputing s above suffices.
+        if not exists:
+            try:
+                with open(path, 'wb') as f:
+                    f.write(s)
+                    f.flush()
+            except IOError:
+                g.error('exception creating temp file: %s' % path)
+                g.es_exception()
+                return None
+        # Add or update the external file entry.
+        time = self.get_mtime(path)
+        self.files = [z for z in self.files if z.path != path]
+        self.files.append(ExternalFile(c, ext, p, path, time))
+        return path
+    #@+node:ekr.20031218072017.2829: *5* efc.open_file_in_external_editor
+    def open_file_in_external_editor(self, c, d, fn, testing=False):
+        '''
+        Open a file fn in an external editor.
+
+        This will be an entire external file, or a temp file for a single node.
+
+        d is a dictionary created from an @openwith settings node.
+
+            'args':     the command-line arguments to be used to open the file.
+            'ext':      the file extension.
+            'kind':     the method used to open the file, such as subprocess.Popen.
+            'name':     menu label (used only by the menu code).
+            'p':        the nearest @<file> node, or None.
+            'shortcut': menu shortcut (used only by the menu code).
+        '''
+        g.trace('=====', d.get('kind'), fn)
+        testing = testing or g.unitTesting
+        arg_tuple = d.get('args', [])
+        arg = ' '.join(arg_tuple)
+        kind = d.get('kind')
+        try:
+            # All of these must be supported because they
+            # could exist in @open-with nodes.
+            command = '<no command>'
+            if kind in ('os.system', 'os.startfile'):
+                # New in Leo 5.7: 
+                # Use subProcess.Popen(..., shell=True)
+                c_arg = self.join(arg, fn)
+                if not testing:
+                    try:
+                        subprocess.Popen(c_arg, shell=True)
+                    except OSError:
+                        g.es_print('c_arg', repr(c_arg))
+                        g.es_exception()
+            elif kind == 'exec':
+                g.es_print('open-with exec no longer valid.')
+            elif kind == 'os.spawnl':
+                filename = g.os_path_basename(arg)
+                command = 'os.spawnl(%s,%s,%s)' % (arg, filename, fn)
+                if not testing: os.spawnl(os.P_NOWAIT, arg, filename, fn)
+            elif kind == 'os.spawnv':
+                filename = os.path.basename(arg_tuple[0])
+                vtuple = arg_tuple[1:]
+                vtuple.insert(0, filename)
+                    # add the name of the program as the first argument.
+                    # Change suggested by Jim Sizelove.
+                vtuple.append(fn)
+                command = 'os.spawnv(%s)' % (vtuple)
+                if not testing:
+                    os.spawnv(os.P_NOWAIT, arg[0], vtuple) #???
+            elif kind == 'subprocess.Popen':
+                c_arg = self.join(arg, fn)
+                command = 'subprocess.Popen(%s)' % c_arg
+                if not testing:
+                    try:
+                        subprocess.Popen(c_arg, shell=True)
+                    except OSError:
+                        g.es_print('c_arg', repr(c_arg))
+                        g.es_exception()
+            elif g.isCallable(kind):
+                # Invoke openWith like this:
+                # c.openWith(data=[func,None,None])
+                # func will be called with one arg, the filename
+                command = '%s(%s)' % (kind, fn)
+                if not testing: kind(fn)
+            else:
+                command = 'bad command:' + str(kind)
+                if not testing: g.trace(command)
+            return command # for unit testing.
+        except Exception:
+            g.es('exception executing open-with command:', command)
+            g.es_exception()
+            return 'oops: %s' % command
     #@+node:ekr.20150404092538.1: *4* efc.shut_down
     def shut_down(self):
         '''
@@ -340,80 +507,16 @@ class ExternalFilesController(object):
         '''Return the checksum of the file at the given path.'''
         import hashlib
         return hashlib.md5(open(path, 'rb').read()).hexdigest()
-    #@+node:ekr.20100203050306.5937: *4* efc.create_temp_file
-    def create_temp_file(self, c, ext, p):
-        '''
-        Create the temp file used by open-with if necessary.
-        Add the corresponding ExternalFile instance to self.files
-        '''
-        path = self.temp_file_path(c, p, ext)
-        exists = g.os_path_exists(path)
-        # Compute encoding and s.
-        d2 = c.scanAllDirectives(p)
-        encoding = d2.get('encoding', None)
-        if encoding is None:
-            encoding = c.config.default_derived_file_encoding
-        s = g.toEncodedString(p.b, encoding, reportErrors=True)
-        # Write the file *only* if it doesn't exist.
-        # No need to read the file: recomputing s above suffices.
-        if not exists:
+    #@+node:ekr.20031218072017.2614: *4* efc.destroy_external_file
+    def destroy_external_file(self, ef):
+        '''Destroy the file corresponding to the given ExternalFile instance.'''
+        # Do not use g.trace here.
+        g.trace('-----', ef)
+        if ef.path and g.os_path_exists(ef.path):
             try:
-                f = open(path, 'wb')
-                f.write(s)
-                f.flush()
-                f.close()
-            except IOError:
-                g.error('exception creating temp file: %s' % path)
-                g.es_exception()
-                return None
-        # Add or update the external file entry.
-        time = self.get_mtime(path)
-        self.files = [z for z in self.files if z.path != path]
-        self.files.append(ExternalFile(c, ext, p, path, time))
-        return path
-    #@+node:ekr.20150427145447.1: *4* efc.dump_d
-    def dump_d(self, d, tag):
-        '''Print dictionary d.  Similar to g.printDict.'''
-        if d:
-            indent = ''
-            n = 6
-            for key in sorted(d):
-                if g.isString(key):
-                    n = max(n, len(key))
-            g.pr('%s...{' % (tag) if tag else '{')
-            for key in sorted(d):
-                val = d.get(key)
-                if key == 'body':
-                    val = 'len(body) = %s' % (len(val))
-                else:
-                    val = repr(val).strip()
-                # g.pr("%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip()))
-                g.pr("%s%*s: %s" % (indent, n, key, val))
-            g.pr('}')
-        else:
-            g.pr('%s...{}' % (tag) if tag else '{}')
-    #@+node:ekr.20031218072017.2824: *4* efc.get_ext
-    def get_ext(self, c, p, ext):
-        '''Return the file extension to be used in the temp file.'''
-        if ext:
-            for ch in ("'", '"'):
-                if ext.startswith(ch): ext = ext.strip(ch)
-        if not ext:
-            # if node is part of @<file> tree, get ext from file name
-            for p2 in p.self_and_parents(copy=False):
-                if p2.isAnyAtFileNode():
-                    fn = p2.h.split(None, 1)[1]
-                    ext = g.os_path_splitext(fn)[1]
-                    break
-        if not ext:
-            theDict = c.scanAllDirectives()
-            language = theDict.get('language')
-            ext = g.app.language_extension_dict.get(language)
-        if not ext:
-            ext = '.txt'
-        if ext[0] != '.':
-            ext = '.' + ext
-        return ext
+                os.remove(ef.path)
+            except Exception:
+                pass
     #@+node:ekr.20150407204201.1: *4* efc.get_mtime
     def get_mtime(self, path):
         '''Return the modification time for the path.'''
@@ -477,80 +580,6 @@ class ExternalFilesController(object):
     def join(self, s1, s2):
         '''Return s1 + ' ' + s2'''
         return '%s %s' % (s1, s2)
-    #@+node:ekr.20031218072017.2829: *4* efc.open_temp_file
-    def open_temp_file(self, c, d, fn, testing=False):
-        '''
-        Open a temp file corresponding to fn in an external editor.
-
-        d is a dictionary created from an @openwith settings node.
-
-        'args':     the command-line arguments to be used to open the file.
-        'ext':      the file extension.
-        'kind':     the method used to open the file, such as subprocess.Popen.
-        'name':     menu label (used only by the menu code).
-        'shortcut': menu shortcut (used only by the menu code).
-        '''
-        testing = testing or g.unitTesting
-        arg_tuple = d.get('args', [])
-        arg = ' '.join(arg_tuple)
-        kind = d.get('kind')
-        # This doesn't handle %ProgramFiles%
-            # if kind in ('os.spawnl', 'subprocess.Popen'):
-                # if not g.os_path_exists(arg):
-                    # return
-        try:
-            # All of these must be supported because they
-            # could exist in @open-with nodes.
-            command = '<no command>'
-            if kind in ('os.system', 'os.startfile'):
-                # New in Leo 5.7: 
-                # Use subProcess.Popen(..., shell=True)
-                c_arg = self.join(arg, fn)
-                if not testing:
-                    try:
-                        subprocess.Popen(c_arg, shell=True)
-                    except OSError:
-                        g.es_print('c_arg', repr(c_arg))
-                        g.es_exception()
-            elif kind == 'exec':
-                g.es_print('open-with exec no longer valid.')
-            elif kind == 'os.spawnl':
-                filename = g.os_path_basename(arg)
-                command = 'os.spawnl(%s,%s,%s)' % (arg, filename, fn)
-                if not testing: os.spawnl(os.P_NOWAIT, arg, filename, fn)
-            elif kind == 'os.spawnv':
-                filename = os.path.basename(arg_tuple[0])
-                vtuple = arg_tuple[1:]
-                vtuple.insert(0, filename)
-                    # add the name of the program as the first argument.
-                    # Change suggested by Jim Sizelove.
-                vtuple.append(fn)
-                command = 'os.spawnv(%s)' % (vtuple)
-                if not testing:
-                    os.spawnv(os.P_NOWAIT, arg[0], vtuple) #???
-            elif kind == 'subprocess.Popen':
-                c_arg = self.join(arg, fn)
-                command = 'subprocess.Popen(%s)' % c_arg
-                if not testing:
-                    try:
-                        subprocess.Popen(c_arg, shell=True)
-                    except OSError:
-                        g.es_print('c_arg', repr(c_arg))
-                        g.es_exception()
-            elif g.isCallable(kind):
-                # Invoke openWith like this:
-                # c.openWith(data=[func,None,None])
-                # func will be called with one arg, the filename
-                command = '%s(%s)' % (kind, fn)
-                if not testing: kind(fn)
-            else:
-                command = 'bad command:' + str(kind)
-                if not testing: g.trace(command)
-            return command # for unit testing.
-        except Exception:
-            g.es('exception executing open-with command:', command)
-            g.es_exception()
-            return 'oops: %s' % command
     #@+node:tbrown.20150904102518.1: *4* efc.set_time
     def set_time(self, path, new_time=None):
         '''
@@ -565,57 +594,6 @@ class ExternalFilesController(object):
         '''
         t = new_time or self.get_mtime(path)
         self._time_d[g.os_path_realpath(path)] = t
-    #@+node:ekr.20031218072017.2832: *4* efc.temp_file_path & helpers
-    def temp_file_path(self, c, p, ext):
-        '''Return the path to the temp file for p and ext.'''
-        if c.config.getBool('open-with-clean-filenames'):
-            path = self.clean_file_name(c, ext, p)
-        else:
-            path = self.legacy_file_name(c, ext, p)
-        return path
-    #@+node:ekr.20150406055221.2: *5* efc.clean_file_name
-    def clean_file_name(self, c, ext, p):
-        '''Compute the file name when subdirectories mirror the node's hierarchy in Leo.'''
-        use_extentions = c.config.getBool('open-with-uses-derived-file-extensions')
-        ancestors, found = [], False
-        for p2 in p.self_and_parents(copy=False):
-            h = p2.anyAtFileNodeName()
-            if not h:
-                h = p2.h # Not an @file node: use the entire header
-            elif use_extentions and not found:
-                # Found the nearest ancestor @<file> node.
-                found = True
-                base, ext2 = g.os_path_splitext(h)
-                if p2 == p: h = base
-                if ext2: ext = ext2
-            ancestors.append(g.sanitize_filename(h))
-        # The base directory is <tempdir>/Leo<id(v)>.
-        ancestors.append("Leo" + str(id(p.v)))
-        # Build temporary directories.
-        td = os.path.abspath(tempfile.gettempdir())
-        while len(ancestors) > 1:
-            td = os.path.join(td, ancestors.pop())
-            if not os.path.exists(td):
-                os.mkdir(td)
-        # Compute the full path.
-        name = ancestors.pop() + ext
-        path = os.path.join(td, name)
-        return path
-    #@+node:ekr.20150406055221.3: *5* efc.legacy_file_name
-    def legacy_file_name(self, c, ext, p):
-        '''Compute a legacy file name for unsupported operating systems.'''
-        try:
-            leoTempDir = getpass.getuser() + "_" + "Leo"
-        except Exception:
-            leoTempDir = "LeoTemp"
-            g.es("Could not retrieve your user name.")
-            g.es("Temporary files will be stored in: %s" % leoTempDir)
-        td = os.path.join(os.path.abspath(tempfile.gettempdir()), leoTempDir)
-        if not os.path.exists(td):
-            os.mkdir(td)
-        name = g.sanitize_filename(p.h) + '_' + str(id(p.v)) + ext
-        path = os.path.join(td, name)
-        return path
     #@-others
 #@-others
 #@@language python
