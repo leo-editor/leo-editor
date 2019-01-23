@@ -221,7 +221,7 @@ class ExternalFilesController(object):
             else:
                 p.setDirty()
                 c.setChanged(True)
-    #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers (Changed)
+    #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers
     def open_with(self, c, d):
         '''
         Called by c.openWith to handle items in the Open With... menu.
@@ -235,8 +235,6 @@ class ExternalFilesController(object):
             'p':        the nearest @<file> node, or None.
             'shortcut': menu shortcut (used only by the menu code).
         '''
-        ### g.trace('==========', c.p.h)
-        ### g.printObj(d, tag='open-with-dict')
         try:
             ext = d.get('ext')
             if not g.doHook('openwith1', c=c, p=c.p, v=c.p.v, d=d):
@@ -252,9 +250,6 @@ class ExternalFilesController(object):
                     ext = self.compute_ext(c, p, ext)
                     path = self.compute_temp_file_path(c, p, ext)
                     if path:
-                        # This warning is only sometimes useful.
-                            # if g.os_path_exists(path):
-                                # g.es_print('recreating temp file:', path, color='red')
                         self.remove_temp_file(p, path)
                         self.create_temp_file(c, ext, p)
                         self.open_file_in_external_editor(c, d, path)
@@ -383,7 +378,6 @@ class ExternalFilesController(object):
             'p':        the nearest @<file> node, or None.
             'shortcut': menu shortcut (used only by the menu code).
         '''
-        ### g.trace('=====', d.get('kind'), fn)
         testing = testing or g.unitTesting
         arg_tuple = d.get('args', [])
         arg = ' '.join(arg_tuple)
