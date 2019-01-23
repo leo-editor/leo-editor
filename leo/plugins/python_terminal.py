@@ -13,6 +13,11 @@
 #@+node:peckj.20150428142633.2: ** << docstring >>
 '''Provides an interactive python terminal in the log pane.
 
+**Warning**: Use at your own risk.
+
+Numerous significant problems have been reported, including segfaults.
+
+
 By Jacob M. Peck
 
 Usage
