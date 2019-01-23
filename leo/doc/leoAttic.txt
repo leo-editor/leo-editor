@@ -3202,19 +3202,6 @@ def prompt_for_files(self):
     if names:
         g.chdir(names[0])
         self.import_files(names)
-#@+node:ekr.20160917130023.1: ** qt_gui.setClipboardSelection
-def setClipboardSelection(self, s):
-    '''
-    Set the clipboard selection to s.
-    There are problems with PyQt5.
-    '''
-    if isQt5:
-        # Alas, returning reopens bug 218: https://github.com/leo-editor/leo-editor/issues/218
-        return
-    if s:
-        # This code generates a harmless, but annoying warning on PyQt5.
-        cb = self.qtApp.clipboard()
-        cb.setText(QString(s), mode=cb.Selection)
 #@+node:ekr.20070919133659.1: ** fc.checkLeoFile
 @cmd('check-leo-file')
 def checkLeoFile(self, event=None):
@@ -3654,6 +3641,51 @@ def getActualRatios(self):
     r1 = get_ratio(layout.get_main_splitter(), 'r1')
     r2 = get_ratio(layout.get_secondary_splitter(), 'r2')
     return r1, r2
+#@+node:ekr.20190123070114.1: ** efc.is_open_elsewhere
+def is_open_elsewhere(self, path):
+    '''
+    Return True if there is an open handle on path.
+    https://stackoverflow.com/questions/11114492
+    '''
+    # This is very slow, and does not work.
+    return False ###
+    try:
+        import psutil
+        for proc in psutil.process_iter():
+            ### g.trace('*****', proc)
+            try:
+                for item in proc.open_files():
+                    ### g.trace(item.path)
+                    if path == item.path:
+                        g.trace('===== FOUND', path)
+                        return True
+            except Exception:
+                pass
+        return False
+    except ImportError:
+        g.es_exception()
+        return False
+#@+node:ekr.20150427145447.1: ** efc.dump_d
+def dump_d(self, d, tag):
+    '''Print dictionary d.  Similar to g.printDict.'''
+    if d:
+        indent = ''
+        n = 6
+        for key in sorted(d):
+            if g.isString(key):
+                n = max(n, len(key))
+        g.pr('%s...{' % (tag) if tag else '{')
+        for key in sorted(d):
+            val = d.get(key)
+            if key == 'body':
+                val = 'len(body) = %s' % (len(val))
+            else:
+                val = repr(val).strip()
+            # g.pr("%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip()))
+            g.pr("%s%*s: %s" % (indent, n, key, val))
+        g.pr('}')
+    else:
+        g.pr('%s...{}' % (tag) if tag else '{}')
 #@-all
 #@@nosearch
 #@-leo

@@ -2232,6 +2232,7 @@
 <v t="ekr.20190117143933.1"><vh>Leo 5.8.1 release notes</vh>
 <v t="ekr.20190119065631.1"><vh>5.8.1: Bugs fixed</vh>
 <v t="ekr.20190117143942.673"><vh>#0804: ~= in style sheets</vh></v>
+<v t="ekr.20190123075604.1"><vh>#0981 &amp; #977: File syncing</vh></v>
 <v t="ekr.20190117143942.957"><vh>#0998: Fix recursive import problems</vh></v>
 <v t="ekr.20190117143942.2"><vh>#1002 self.assertEqual in a @test node is not comparing lists properly</vh></v>
 <v t="ekr.20190117143942.394"><vh>#1007: console gui doesn't load</vh></v>
@@ -2247,6 +2248,7 @@
 <v t="ekr.20190118085508.1"><vh>#1056: Column numbers in the status line do not work</vh></v>
 <v t="ekr.20190117143942.976"><vh>#1057: Unwanted loadOnePlugin messages on startup</vh></v>
 <v t="ekr.20190118222636.1"><vh>#1059: cycle-tab-focus exception</vh></v>
+<v t="ekr.20190123075859.1"><vh>#1065: refresh-from-disk</vh></v>
 </v>
 <v t="ekr.20190119070017.1"><vh>5.8.1: Features</vh>
 <v t="ekr.20190117143942.654"><vh>#0525: Nested @clean</vh></v>
@@ -29765,6 +29767,12 @@ The following call FastRead().readFileFromClipboard:
 - Better error recovery.
 - Support for continuous integration with TravisCI.
 - The usual minor bug fixes.</t>
+<t tx="ekr.20190123075604.1">https://github.com/leo-editor/leo-editor/issues/981
+https://github.com/leo-editor/leo-editor/issues/977
+
+</t>
+<t tx="ekr.20190123075859.1">https://github.com/leo-editor/leo-editor/issues/1065
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
