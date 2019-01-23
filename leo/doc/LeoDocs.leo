@@ -19568,13 +19568,9 @@ Similarly, these commands select various nodes in the outline::
     Format the presently selected node as computer code.
 ``flatten-outline-to-node``
     Appends the headline and body text of all descendants of the selected node to the body text of the selected node.
-``head-to-prev-node``
-    Moves non-empty text preceding a class, method or function definition to the end of the previous sibling node.
 ``parse-body``
     Parse p.b as source code, creating a tree of descendant nodes.
     This is essentially an import of p.b.
-``tail-to-next-node``
-    Moves non-empty text following a class, method or function definition to the start of the next sibling node.
 </t>
 <t tx="ekr.20150318110552.51">You may drag a node (including all its descendants) from one place to another in an outline. To start a drag, press the main (left) mouse button while the cursor is over the icon for a node. The cursor will change to a hand icon. If you release the mouse button while the hand cursor is above another node, Leo will move the dragged node after that node. If you release the mouse button when the hand cursor is not over a node, Leo will leave the outline pane as it is. Leo scrolls the outline pane as the result of mouse-moved events, so to continue scrolling you must keep moving the mouse.
 

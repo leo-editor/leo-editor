@@ -3686,6 +3686,60 @@ def dump_d(self, d, tag):
         g.pr('}')
     else:
         g.pr('%s...{}' % (tag) if tag else '{}')
+#@+node:ekr.20101103093942.5941: ** @g.command(head-to-prev-node)
+@g.command('head-to-prev-node')
+def headToPrevNode(event):
+    '''Move the code preceding a def to end of previous node.'''
+    c = event.get('c')
+    if not c: return
+    p = c.p
+    try:
+        import leo.plugins.importers.python as python
+    except ImportError:
+        return
+    scanner = python.Py_Importer(c.importCommands)
+    kind, i, junk = scanner.find_class(p)
+    p2 = p.back()
+    if p2 and kind in ('class', 'def') and i > 0:
+        u = c.undoer; undoType = 'move-head-to-prev'
+        head = p.b[: i].rstrip()
+        u.beforeChangeGroup(p, undoType)
+        b = u.beforeChangeNodeContents(p)
+        p.b = p.b[i:]
+        u.afterChangeNodeContents(p, undoType, b)
+        if head:
+            b2 = u.beforeChangeNodeContents(p2)
+            p2.b = p2.b.rstrip() + '\n\n' + head + '\n'
+            u.afterChangeNodeContents(p2, undoType, b2)
+        u.afterChangeGroup(p, undoType)
+        c.selectPosition(p2)
+#@+node:ekr.20101103093942.5943: ** @g.command(tail-to-next-node)
+@g.command('tail-to-next-node')
+def tailToNextNode(event=None):
+    '''Move the code following a def to start of next node.'''
+    c = event.get('c')
+    if not c: return
+    p = c.p
+    try:
+        import leo.plugins.importers.python as python
+    except ImportError:
+        return
+    scanner = python.Py_Importer(c.importCommands)
+    kind, junk, j = scanner.find_class(p)
+    p2 = p.next()
+    if p2 and kind in ('class', 'def') and j < len(p.b):
+        u = c.undoer; undoType = 'move-tail-to-next'
+        tail = p.b[j:].rstrip()
+        u.beforeChangeGroup(p, undoType)
+        b = u.beforeChangeNodeContents(p)
+        p.b = p.b[: j]
+        u.afterChangeNodeContents(p, undoType, b)
+        if tail:
+            b2 = u.beforeChangeNodeContents(p2)
+            p2.b = tail + '\n\n' + p2.b
+            u.afterChangeNodeContents(p2, undoType, b2)
+        u.afterChangeGroup(p, undoType)
+        c.selectPosition(p2)
 #@-all
 #@@nosearch
 #@-leo
