@@ -14,7 +14,6 @@
 '''Provides an interactive python terminal in the log pane.
 
 **Warning**: Use at your own risk.
-
 Numerous significant problems have been reported, including segfaults.
 
 
