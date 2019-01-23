@@ -16,7 +16,7 @@ This issue lists the filters that I use to organize and understand my work flow.
 
 - [Important bugs](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Abug+-label%3Awaiting+-label%3Alvl%3Aminor): Significant bugs (`-label:lvl:minor`) that can be fixed now (`-label:waiting`).
 
-- [Minor bugs](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Abug+-label%3Awaiting+label%3Alvl%3Aminor) and [Minor enhancements](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Aenhancement+-label%3Awaiting+label%3Alvl%3Aminor+).
+- [Minor bugs](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Abug+-label%3Awaiting+label%3Alvl%3Aminor), [plugin bugs](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Abug+label%3APlugin+),  and [minor enhancements](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Aenhancement+-label%3Awaiting+label%3Alvl%3Aminor+).  I am responsible for fixing only "core" plugins such as viewrendered.py and mod_scripting.py.
 
 - [5.8.1](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+milestone%3A5.8.1+-label%3Awaiting+-label%3Apip+is%3Aopen+): Programming issues scheduled for 5.8.1.
 
