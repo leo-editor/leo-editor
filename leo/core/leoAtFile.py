@@ -3348,8 +3348,9 @@ class FastAtRead (object):
                     if not v:
                         # Fix #1064.
                         v = root_v
-                        if gnx != root_gnx:
-                            g.es_print("using gnx from external file: %s" % (v.h), color='blue')
+                        # This message is annoying when using git-diff.
+                            # if gnx != root_gnx:
+                                # g.es_print("using gnx from external file: %s" % (v.h), color='blue')
                         gnx2vnode [gnx] = v
                         v.fileIndex = gnx
                     v.children = []
