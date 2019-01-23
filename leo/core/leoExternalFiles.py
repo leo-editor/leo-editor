@@ -60,6 +60,7 @@ class ExternalFilesController(object):
         self.checksum_d = {}
             # Keys are full paths, values are file checksums.
         self.enabled_d = {}
+            # For efc.on_idle.
             # Keys are commanders.
             # Values are cached check_for_changed_external_file settings.
         self.files = []
@@ -105,7 +106,7 @@ class ExternalFilesController(object):
         files = [ef for ef in self.files if ef.c.frame == frame]
         paths = [ef.path for ef in files]
         for ef in files:
-            self.destroy_external_file(ef)
+            self.destroy_temp_file(ef)
         self.files = [z for z in self.files if z.path not in paths]
     #@+node:ekr.20150407141838.1: *4* efc.find_path_for_node (called from vim.py)
     def find_path_for_node(self, p):
@@ -234,8 +235,8 @@ class ExternalFilesController(object):
             'p':        the nearest @<file> node, or None.
             'shortcut': menu shortcut (used only by the menu code).
         '''
-        g.trace('==========', c.p.h)
-        g.printObj(d, tag='open-with-dict') ###
+        ### g.trace('==========', c.p.h)
+        ### g.printObj(d, tag='open-with-dict')
         try:
             ext = d.get('ext')
             if not g.doHook('openwith1', c=c, p=c.p, v=c.p.v, d=d):
@@ -243,14 +244,17 @@ class ExternalFilesController(object):
                 if root:
                     # Open the external file itself.
                     directory = g.setDefaultDirectory(c, root)
-                    fn = c.os_path_finalize_join(directory, root.anyAtFileNodeName())
-                    self.open_file_in_external_editor(c, d, fn)
+                    path = c.os_path_finalize_join(directory, root.anyAtFileNodeName())
+                    self.open_file_in_external_editor(c, d, path)
                 else:
                     # Open a temp file containing just the node.
                     p = c.p
                     ext = self.compute_ext(c, p, ext)
                     path = self.compute_temp_file_path(c, p, ext)
                     if path:
+                        # This warning is only sometimes useful.
+                            # if g.os_path_exists(path):
+                                # g.es_print('recreating temp file:', path, color='red')
                         self.remove_temp_file(p, path)
                         self.create_temp_file(c, ext, p)
                         self.open_file_in_external_editor(c, d, path)
@@ -333,16 +337,6 @@ class ExternalFilesController(object):
         name = g.sanitize_filename(p.h) + '_' + str(id(p.v)) + ext
         path = os.path.join(td, name)
         return path
-    #@+node:ekr.20190123051253.1: *6* efc.remove_temp_file
-    def remove_temp_file(self, p, path):
-        '''
-        Remove any existing temp file for p and path, updating self.files.
-        '''
-        for ef in self.files:
-            if path and path == ef.path and p.v == ef.p.v:
-                self.destroy_external_file(ef)
-                self.files = [z for z in self.files if z != ef]
-                return
     #@+node:ekr.20100203050306.5937: *5* efc.create_temp_file
     def create_temp_file(self, c, ext, p):
         '''
@@ -350,7 +344,6 @@ class ExternalFilesController(object):
         Add the corresponding ExternalFile instance to self.files
         '''
         path = self.compute_temp_file_path(c, p, ext)
-        g.trace('=====', path)
         exists = g.os_path_exists(path)
         # Compute encoding and s.
         d2 = c.scanAllDirectives(p)
@@ -390,7 +383,7 @@ class ExternalFilesController(object):
             'p':        the nearest @<file> node, or None.
             'shortcut': menu shortcut (used only by the menu code).
         '''
-        g.trace('=====', d.get('kind'), fn)
+        ### g.trace('=====', d.get('kind'), fn)
         testing = testing or g.unitTesting
         arg_tuple = d.get('args', [])
         arg = ' '.join(arg_tuple)
@@ -448,6 +441,16 @@ class ExternalFilesController(object):
             g.es('exception executing open-with command:', command)
             g.es_exception()
             return 'oops: %s' % command
+    #@+node:ekr.20190123051253.1: *5* efc.remove_temp_file
+    def remove_temp_file(self, p, path):
+        '''
+        Remove any existing *temp* file for p and path, updating self.files.
+        '''
+        for ef in self.files:
+            if path and path == ef.path and p.v == ef.p.v:
+                self.destroy_temp_file(ef)
+                self.files = [z for z in self.files if z != ef]
+                return
     #@+node:ekr.20150404092538.1: *4* efc.shut_down
     def shut_down(self):
         '''
@@ -458,7 +461,7 @@ class ExternalFilesController(object):
         '''
         # Dont call g.es or g.trace! The log stream no longer exists.
         for ef in self.files[:]:
-            self.destroy_external_file(ef)
+            self.destroy_temp_file(ef)
         self.files = []
     #@+node:ekr.20150405110219.1: *3* efc.utilities
     # pylint: disable=no-value-for-parameter
@@ -507,11 +510,10 @@ class ExternalFilesController(object):
         '''Return the checksum of the file at the given path.'''
         import hashlib
         return hashlib.md5(open(path, 'rb').read()).hexdigest()
-    #@+node:ekr.20031218072017.2614: *4* efc.destroy_external_file
-    def destroy_external_file(self, ef):
-        '''Destroy the file corresponding to the given ExternalFile instance.'''
+    #@+node:ekr.20031218072017.2614: *4* efc.destroy_temp_file
+    def destroy_temp_file(self, ef):
+        '''Destroy the *temp* file corresponding to ef, an ExternalFile instance.'''
         # Do not use g.trace here.
-        g.trace('-----', ef)
         if ef.path and g.os_path_exists(ef.path):
             try:
                 os.remove(ef.path)
