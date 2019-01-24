@@ -1821,6 +1821,7 @@ class RecursiveImportController(object):
         recursive=True,
         safe_at_file=True,
         theTypes=None,
+        ignore_pattern=None,
     ):
         '''Ctor for RecursiveImportController class.'''
         self.c = c
@@ -1833,6 +1834,7 @@ class RecursiveImportController(object):
         self.root = None
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
+        self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
     #@+node:ekr.20130823083943.12613: *3* ric.run & helpers
     def run(self, dir_):
         '''
@@ -1892,7 +1894,8 @@ class RecursiveImportController(object):
                     if ext in self.theTypes:
                         files2.append(path)
                 elif self.recursive:
-                    dirs.append(path)
+                    if not self.ignore_pattern.search(path):
+                        dirs.append(path)
             except OSError:
                 g.es_print('Exception computing', path)
                 g.es_exception()
@@ -1902,7 +1905,8 @@ class RecursiveImportController(object):
             parent.v.h = dir_
             if files2:
                 for f in files2:
-                    self.import_one_file(f, parent=parent)
+                    if not self.ignore_pattern.search(f):
+                        self.import_one_file(f, parent=parent)
             if dirs:
                 assert self.recursive
                 for dir_ in sorted(dirs):
