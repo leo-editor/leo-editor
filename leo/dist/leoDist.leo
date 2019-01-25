@@ -1694,20 +1694,9 @@ nb: Optional `--depth=500` fetches the last 3-4 months of activity and is
  - Wheel: for building cross platform binaries (might be installed already)
  - Setuptools: because ...setup!
  - Twine: for secure upload to pypi.org
- - PyPandoc: to convert markdown to rst for Readme
- - Semantic_version: make version number compatible with Pypi.org
 
-    pip install pypandoc setuptools twine wheel semantic_version
-
-Pandoc executable must be in PATH. If not installed already one these should
-work (or use your own preferred method):
-
-    # Preferred
-    conda install pandoc
-
-    # Alternate
-    from pypandoc.pandoc_download import download_pandoc
-    download_pandoc()</t>
+    pip install setuptools twine wheel
+</t>
 <t tx="maphew.20180128212042.3">A PyPi account is needed to update Leo's pypi reference. Contact one of the
 package index owners to be added as a maintainer if needed. See end of
 https://pypi.python.org/pypi/leo
@@ -1731,14 +1720,14 @@ Windows syntax. 'Activate/deactivate' assume using virtual environments; skip th
     
     rmdir /s/q dist build leo.egg-info
     git checkout tags/5.7
-    python setup.py bdist_wheel
+    python setup.py sdist bdist_wheel
     
     :: Optional, test install locally
     pip install dist\*.whl
     leo-console --version
     pip uninstall leo
     
-    twine upload dist\*.whl
+    twine upload dist\*
     
     :: Optional, inspect public page for problems
     start https://pypi.python.org/pypi/leo
