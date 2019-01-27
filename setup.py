@@ -12,6 +12,23 @@ from shutil import rmtree
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
 import leo.core.leoGlobals as g
 import leo.core.leoVersion as leoVersion
+#@+node:mhw-nc.20190126224021.1: *3* setup janitor
+#import setuptools
+try:
+   from setupext_janitor import janitor
+   CleanCommand = janitor.CleanCommand
+except ImportError:
+   CleanCommand = None
+
+cmd_classes = {}
+if CleanCommand is not None:
+   cmd_classes['clean'] = CleanCommand
+
+setup(
+   # normal parameters
+   setup_requires=['setupext_janitor'],
+   cmdclass=cmd_classes,
+)
 #@+node:maphew.20141126230535.3: ** docstring
 '''setup.py for leo
 
@@ -138,31 +155,33 @@ user_requires = [
     #'pyxml', # xml importing ## no pip package
     ]
 #@+node:maphew.20171122231442.1: ** clean
-def clean():
-    print('\nRemoving build, dist and egg directories')
-    root = os.path.dirname(os.path.realpath(__file__))
-    for d in ['build', 'dist', 'leo.egg-info', '.eggs']:
-        dpath = os.path.join(root, d)
-        if os.path.isdir(dpath):
-            rmtree(dpath)
-clean()
+#@+doc #ignore this node
+# def clean():
+#     print('\nRemoving build, dist and egg directories')
+#     root = os.path.dirname(os.path.realpath(__file__))
+#     for d in ['build', 'dist', 'leo.egg-info', '.eggs']:
+#         dpath = os.path.join(root, d)
+#         if os.path.isdir(dpath):
+#             rmtree(dpath)
+# clean()
 #@-others
 
 def define_entry_points(entry_points=None):
     print('Creating entry_points for [OS name - system]: {} - {}'.format(platform.os.name, platform.system()))
-    entry_points={
-       'console_scripts': [
+    entry_points={'console_scripts': [
             'leo-c = leo.core.runLeo:run_console',
             'leo-console = leo.core.runLeo:run_console'],
-        'gui_scripts': ['leo = leo.core.runLeo:run']
-       }                
+            'gui_scripts': ['leo = leo.core.runLeo:run']}
     if platform.system() == 'Windows':
-        entry_points.update({
-            'console_scripts': [
-                'leo-m = leo.core.runLeo:run',
-                'leo-messages = leo.core.runLeo:run']})
+        entry_points.update({'console_scripts': [
+            'leo-m = leo.core.runLeo:run',
+            'leo-messages = leo.core.runLeo:run']})
+    # extend clean command to remove more files than setuptools, issue#1055
+    entry_points.update({
+            'distutils.commands': [
+            'clean = setupext_janitor.janitor:CleanCommand']})
     return entry_points
-        
+
 setup(
     name='leo',
     # version = leo.core.leoVersion.version,
@@ -185,7 +204,8 @@ setup(
     #scripts=['leo/dist/leo-install.py'],
         # no longer needed. `entry_points` is the preferred method now
         # delete the script too, after testing
-    entry_points=define_entry_points()
+    entry_points=define_entry_points(),
+    cmdclass={'clean': janitor.CleanCommand} # clean more than setuptools, #1055
 )
 
 #@@language python

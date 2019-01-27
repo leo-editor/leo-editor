@@ -117,8 +117,11 @@
 <v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.md</vh></v>
 <v t="ekr.20151227063335.1"><vh>@asis ../../About leo.exe.TXT</vh></v>
-<v t="ekr.20150425135153.1"><vh>homebrew istall script</vh>
+<v t="ekr.20150425135153.1"><vh>homebrew install script</vh>
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
+</v>
+<v t="mhw-nc.20190126223741.1"><vh>Pip</vh>
+<v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
 </v>
 </v>
 <v t="ekr.20141118074110.4"><vh>How to...</vh>
@@ -1841,5 +1844,6 @@ that updates yml file will delete any comments within it. (e.g. `travis encrypt
 
 
 </t>
+<t tx="mhw-nc.20190126223741.1"></t>
 </tnodes>
 </leo_file>
