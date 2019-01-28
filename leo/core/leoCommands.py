@@ -636,6 +636,8 @@ class Commands(object):
                         namespace.update(script_gnx=script_p.gnx)
                     # We *always* execute the script with p = c.p.
                     c.executeScriptHelper(args, define_g, define_name, namespace, script)
+                except KeyboardInterrupt:
+                    g.es('interrupted')
                 except Exception:
                     if raiseFlag:
                         raise
