@@ -177,6 +177,11 @@ class ExternalFilesController(object):
         while p:
             if p.v in seen:
                 p.moveToNodeAfterTree()
+            elif p.isAtCleanNode():
+                # Fix #1074: nested @clean nodes.
+                seen.add(p.v)
+                self.idle_check_at_file_node(c, p)
+                p.moveToThreadNext()
             elif p.isAnyAtFileNode():
                 seen.add(p.v)
                 self.idle_check_at_file_node(c, p)
