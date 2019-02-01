@@ -259,7 +259,7 @@ def refreshFromDisk(self, event=None):
     elif word in ('@thin', '@file'):
         if shouldDelete: p.v._deleteAllChildren()
         at.read(p, force=True)
-    elif word in ('@clean',):
+    elif word == '@clean':
         # Wishlist 148: use @auto parser if the node is empty.
         if p.b.strip() or p.hasChildren():
             at.readOneAtCleanNode(p)
@@ -270,8 +270,12 @@ def refreshFromDisk(self, event=None):
         if shouldDelete: p.v._deleteAllChildren()
         at.read(p, force=True, atShadow=True)
     elif word == '@edit':
-        if shouldDelete: p.v._deleteAllChildren()
         at.readOneAtEditNode(fn, p)
+            # Always deletes children.
+    elif word == '@asis':
+        # Fix #1067.
+        at.readOneAtAsisNode(fn, p)
+            # Always deletes children.
     else:
         g.es_print('can not refresh from disk\n%r' % p.h)
         redraw_flag = False
