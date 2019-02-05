@@ -4,7 +4,8 @@ git:
 install:
     - python -m pip install --upgrade pip
     - pip --version
-#script:
+script:
+    - python -c "print('skipping tests')"
 #    - python run_travis_unit_tests.py
 deploy:
   provider: pypi
