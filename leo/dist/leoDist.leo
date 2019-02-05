@@ -1830,10 +1830,6 @@ As currently configured if the commit is a tag AND the branch is `master` travis
 will also attempt to deploy a release automatically to PyPi.org.
 - Deploying to PyPi, https://docs.travis-ci.com/user/deployment/pypi/
 
-The `travis_tests` folder is optional at this point, there are no real tests in
-it. It can be removed, or moved elsewhere. It's there for illustration. Over
-time the testing portion will become more and more important.
-
 Command line client: https://github.com/travis-ci/travis.rb
 Not essential, but useful. Note: using `travis` command line client in a way
 that updates yml file will delete any comments within it. (e.g. `travis encrypt
