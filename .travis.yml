@@ -22,7 +22,7 @@ script:
     # There are no travis tests after checking out release tag
     #- pytest travis_tests/*
 deploy:
-  provider: testpypi
+  provider: pypi
   user: maphew
  server: https://testpypi.python.org/pypi 
   password:
