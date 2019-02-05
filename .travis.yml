@@ -4,8 +4,8 @@ git:
 install:
     - python -m pip install --upgrade pip
     - pip --version
-script:
-    - python run_travis_unit_tests.py
+#script:
+#    - python run_travis_unit_tests.py
 deploy:
   provider: pypi
   user: maphew
