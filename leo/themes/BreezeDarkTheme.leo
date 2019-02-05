@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -17,16 +14,16 @@
 <v t="chris.20180314054143.4"><vh>Test g.es(color=*)</vh></v>
 <v t="chris.20180314054143.5"><vh>g.error/note/warning test</vh></v>
 </v>
-<v t="chris.20180313181652.1" a="E"><vh>@settings</vh>
-<v t="chris.20180313181652.2" a="E"><vh>@theme Breeze Dark</vh>
+<v t="chris.20180313181652.1"><vh>@settings</vh>
+<v t="chris.20180313181652.2"><vh>@theme Breeze Dark</vh>
 <v t="chris.20180313181652.3"><vh>Resources</vh></v>
 <v t="chris.20180313181652.115"><vh>Theme description settings</vh>
 <v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="chris.20180313181652.117"><vh>@string color_theme = dark</vh></v>
 <v t="chris.20180322154730.1"><vh>@string theme-name = BreezeDarkTheme</vh></v>
 </v>
-<v t="chris.20180313181652.14" a="E"><vh>Settings for Leo Breeze Dark</vh>
-<v t="chris.20180322072943.1" a="E"><vh>Colors...</vh>
+<v t="chris.20180313181652.14"><vh>Settings for Leo Breeze Dark</vh>
+<v t="chris.20180322072943.1"><vh>Colors...</vh>
 <v t="chris.20180313181652.4"><vh>Breeze Dark Color definitions</vh>
 <v t="chris.20180313181652.5"><vh>@color dark-base0 = #eff0f1</vh></v>
 <v t="chris.20180313181652.6"><vh>@color dark-base1 = #909396</vh></v>
@@ -94,11 +91,11 @@
 <v t="chris.20180313181652.64"><vh>@color text-foreground = @dark-base0</vh></v>
 <v t="chris.20180313181652.65"><vh>@color text-foreground-bright = @dark-base2</vh></v>
 </v>
-<v t="chris.20180313181652.66" a="E"><vh>Colors: Widgets</vh>
+<v t="chris.20180313181652.66"><vh>Colors: Widgets</vh>
 <v t="chris.20180313181652.67"><vh>@color button-hover-fg = @dark-base7</vh></v>
 </v>
 </v>
-<v t="chris.20180313181652.68" a="E"><vh>Fonts &amp; text sizes</vh>
+<v t="chris.20180313181652.68"><vh>Fonts &amp; text sizes</vh>
 <v t="chris.20180313181652.69"><vh>@string font-family = Inconsolata, Droid Sans Mono, DejaVu Sans Mono</vh></v>
 <v t="chris.20180313181652.70"><vh>@string font-family-body =@font-family</vh></v>
 <v t="chris.20180313181652.71"><vh>@string font-family-log =@font-family</vh></v>
@@ -149,12 +146,12 @@
 </v>
 </v>
 </v>
-<v t="chris.20180313181652.112" a="E"><vh>Outline indicators</vh>
+<v t="chris.20180313181652.112"><vh>Outline indicators</vh>
 <v t="chris.20180313181652.113"><vh>@string tree-image-closed = dark/branch_closed.svg</vh></v>
 <v t="chris.20180313181652.114"><vh>@string tree-image-open = dark/branch_open.svg</vh></v>
 </v>
 </v>
-<v t="chris.20180313181652.118" a="E"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="chris.20180313181652.118"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="chris.20180313181652.119"><vh>General Widgets</vh></v>
 <v t="chris.20180313181652.120"><vh>Body &amp; other text</vh></v>
 <v t="chris.20180313181652.125"><vh>Minibuffer &amp; label</vh></v>
@@ -208,8 +205,11 @@ random background colors which are appropriate etc.</t>
 <t tx="chris.20180313181652.117" lineYOffset="4b002e">Name of the theme,
 used to find icon files</t>
 <t tx="chris.20180313181652.118">/*
+
+  BreezeDarkTheme.leo: @data qt-gui-plugin-style-sheet
+  at-tabwidth -2 causes a crash in parse-template!
+
 @language css
-at-tabwidth -2 causes a crash in parse-template!
 */</t>
 <t tx="chris.20180313181652.119">QDockWidget {
  border: 5px solid red;

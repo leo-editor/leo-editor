@@ -264,13 +264,13 @@ def doNodeAction(pClicked, c):
     #    3 = log 1,2 & 'no match to pattern'
     #    4 = log 1,2,3, & any code debugging messages,
     #              matched pattern's 'directives', and '@file saved' settings
-    messageLevel = c.config.getInt('nodeActions_message_level')
+    messageLevel = c.config.getInt('nodeActions-message-level')
 
     if messageLevel >= 1:
         g.es( "nodeActions: triggered" )
 
     #Save @file type nodes before running script if enabled
-    saveAtFile = c.config.getBool('nodeActions_save_atFile_nodes')
+    saveAtFile = c.config.getBool('nodeActions-save-atFile-nodes')
     if messageLevel >= 4:
         g.blue( "nA: Global nodeActions_save_atFile_nodes=",saveAtFile)
     #Find the "nodeActions" node

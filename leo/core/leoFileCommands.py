@@ -59,32 +59,32 @@ class FastRead (object):
         self.gnx2vnode = gnx2vnode
         
     #@+others
-    #@+node:ekr.20180604110143.1: *3* fast.readFile & helper
-    def readFile(self, path=None, s=None):
-
-        if not s:
-            with open(path, 'rb') as f:
-                s = f.read()
-        return self.readWithElementTree(path, s)
+    #@+node:ekr.20180604110143.1: *3* fast.readFile/FromClipboard & helper
+    def readFile(self, path):
+        '''Read the file, change splitter ratiors, and return its hidden vnode.'''
+        with open(path, 'rb') as f:
+            s = f.read()
+        v, g_element = self.readWithElementTree(path, s)
+        self.scanGlobals(g_element)
+            # Fix #1047: only this method changes splitter sizes.
+        return v
+        
+    def readFileFromClipboard(self, s):
+        '''
+        Recreate a file from a string s, and return its hidden vnode.
+        
+        Unlike readFile above, this does not affect splitter sizes.
+        '''
+        v, g_element = self.readWithElementTree(path=None, s=s)
+        return v
     #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
-    minimal_leo_file = """<?xml version="1.0" encoding="utf-8"?>
-    <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-    <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-    <leo_header file_format="2"/>
-    <globals/>
-    <preferences/>
-    <find_panel_settings/>
-    <vnodes>
-    <v t="ekr.20180829082643.3"><vh>Minimal Leo File</vh></v>
-    </vnodes>
-    <tnodes>
-    <t tx="ekr.20180829082643.3"></t>
-    </tnodes>
-    </leo_file>
-    """
+    translate_table = b''.join([g.toEncodedString(chr(z)) for z in range(20) if chr(z) not in '\t\r\n'])
+        # See https://en.wikipedia.org/wiki/Valid_characters_in_XML.
 
     def readWithElementTree(self, path, s):
-
+        
+        s = s.translate(None, self.translate_table)
+            # Fix #1036 and #1046.
         contents = g.toUnicode(s) if g.isPython3 else s
         try:
             xroot = ElementTree.fromstring(contents)
@@ -93,18 +93,19 @@ class FastRead (object):
                 message = 'bad .leo file: %s' % g.shortFileName(path)
             else:
                 message = 'The clipboard is not a vaild .leo file'
+            print('')
             g.es_print(message, color='red')
             g.es_print(g.toUnicode(e))
-            # Parse a minimal file for the rest of Leo.
-            xroot = ElementTree.fromstring(self.minimal_leo_file)
+            print('')
+            # #970: Just report failure here.
+            return None
         g_element = xroot.find('globals')
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
-        self.scanGlobals(g_element)
         gnx2body, gnx2ua = self.scanTnodes(t_elements)
         hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
         self.handleBits()
-        return hidden_v
+        return hidden_v, g_element
     #@+node:ekr.20180624125321.1: *5* fast.handleBits
     def handleBits(self):
 
@@ -192,7 +193,11 @@ class FastRead (object):
         '''Get global data from the cache, with reasonable defaults.'''
         c = self.c
         d = self.getGlobalData()
-        w, h = d.get('width'), d.get('height')
+        windowSize = g.app.loadManager.options.get('windowSize')
+        if windowSize is not None:
+            h, w = windowSize # checked in LM.scanOption.
+        else:
+            w, h = d.get('width'), d.get('height')
         x, y = d.get('left'), d.get('top')
         r1, r2 = d.get('r1'), d.get('r2')
         c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
@@ -206,22 +211,27 @@ class FastRead (object):
     def getGlobalData(self):
         '''Return a dict containing all global data.'''
         c = self.c
-        data = c.db.get('window_position')
-        if data:
-            # pylint: disable=unpacking-non-sequence
-            top, left, height, width = data
-            d = {
+        try:
+            window_pos = c.db.get('window_position')
+            r1 = float(c.db.get('body_outline_ratio', '0.5'))
+            r2 = float(c.db.get('body_secondary_ratio', '0.5'))
+            top, left, height, width = window_pos
+            return {
                 'top': int(top),
                 'left': int(left),
                 'height': int(height),
                 'width': int(width),
+                'r1': r1,
+                'r2': r2,
             }
-        else:
-            # Use reasonable defaults.
-            d = {'top': 50, 'left': 50, 'height': 500, 'width': 800}
-        d ['r1'] = float(c.db.get('body_outline_ratio', '0.5'))
-        d ['r2'] = float(c.db.get('body_secondary_ratio', '0.5'))
-        return d
+        except Exception:
+            pass
+        # Use reasonable defaults.
+        return {
+            'top': 50, 'left': 50,
+            'height': 500, 'width': 800,
+            'r1': 0.5, 'r2': 0.5,
+        }
     #@+node:ekr.20180602062323.8: *5* fast.scanTnodes
     def scanTnodes (self, t_elements):
 
@@ -294,7 +304,7 @@ class FastRead (object):
                             fc.descendentVnodeUaDictList.append((v, aDict),)
                     #
                     # Handle vnode uA's
-                    uaDict = gnx2ua.get(gnx)
+                    uaDict = gnx2ua[gnx]
                         # gnx2ua is a defaultdict(dict)
                         # It might already exists because of tnode uA's.
                     for key, val in d.items():
@@ -397,7 +407,7 @@ class FileCommands(object):
         self.gnxDict = {}
         s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
             # This encoding must match the encoding used in putLeoOutline.
-        hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
+        hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
         v = hidden_v.children[0]
         v.parents = []
         # Restore the hidden root's children
@@ -435,8 +445,9 @@ class FileCommands(object):
             ni.check_gnx(c, v.fileIndex, v)
         s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
             # This encoding must match the encoding used in putLeoOutline.
-        hidden_v = FastRead(c, self.gnxDict).readFile(s=s)
+        hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
         v = hidden_v.children[0]
+        v.parents.remove(hidden_v)
         # Restore the hidden root's children
         c.hiddenRootNode.children = old_children
         if not v:
@@ -849,7 +860,7 @@ class FileCommands(object):
         try:
             # This encoding must match the encoding used in putLeoOutline.
             s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            v = FastRead(c, {}).readFile(s=s)
+            v = FastRead(c, {}).readFileFromClipboard(s)
             if not v:
                 return g.es("the clipboard is not valid ", color="blue")
         finally:
@@ -1121,8 +1132,8 @@ class FileCommands(object):
     def putSavedMessage(self, fileName):
         c = self.c
         # #531: Optionally report timestamp...
-        if c.config.getBool('log_show_save_time', default=False):
-            format = c.config.getString('log_timestamp_format') or "%H:%M:%S"
+        if c.config.getBool('log-show-save-time', default=False):
+            format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
             timestamp = time.strftime(format) + ' '
         else:
             timestamp = ''
@@ -1303,28 +1314,29 @@ class FileCommands(object):
         """Write a <v> element corresponding to a VNode."""
         fc = self
         v = p.v
+        #
+        # Precompute constants.
         isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
         isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
-            # 2010/09/02: @edit nodes must not have children.
-            # If they do, the entire tree is written to the outline.
+            # Write the entire @edit tree if it has children.
         isFile = p.isAtFileNode()
         isShadow = p.isAtShadowFileNode()
         isThin = p.isAtThinFileNode()
-        isOrphan = p.isOrphan()
-        if not isIgnore:
-            isIgnore = p.isAtIgnoreNode()
-        # 2010/10/22: force writes of orphan @edit, @auto and @shadow trees.
-        if isIgnore: forceWrite = True # Always write full @ignore trees.
-        elif isAuto: forceWrite = isOrphan # Force write of orphan @auto trees.
-        elif isEdit: forceWrite = isOrphan # Force write of orphan @edit trees.
-        elif isFile: forceWrite = isOrphan # Force write of orphan @file trees.
-        elif isShadow: forceWrite = isOrphan # Force write of @shadow trees.
-        elif isThin: forceWrite = isOrphan # Force write of  orphan @thin trees.
-        else: forceWrite = True # Write all other @<file> trees.
+        #
+        # Set forcewrite.
+        if isIgnore or p.isAtIgnoreNode():
+            forceWrite = True
+        elif isAuto or isEdit or isFile or isShadow or isThin:
+            forceWrite = False
+        else:
+            forceWrite = True
+        #
+        # Set the write bit if necessary.
         gnx = v.fileIndex
         if forceWrite or self.usingClipboard:
             v.setWriteBit() # 4.2: Indicate we wrote the body text.
         attrs = fc.compute_attribute_bits(forceWrite, p)
+        #
         # Write the node.
         v_head = '<v t="%s"%s>' % (gnx, attrs)
         if gnx in fc.vnodesDict:
@@ -1365,7 +1377,8 @@ class FileCommands(object):
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # Fix #526: do this for @auto nodes as well.
             attrs.append(self.putDescendentVnodeUas(p))
-            attrs.append(self.putDescendentAttributes(p))
+            # Fix #1023: never put marked/expanded bits.
+                # attrs.append(self.putDescendentAttributes(p))
         return ''.join(attrs)
     #@+node:ekr.20031218072017.1579: *5* fc.putVnodes
     def putVnodes(self, p=None):
@@ -1478,7 +1491,7 @@ class FileCommands(object):
         try:
             # 2010/01/19: Do *not* signal failure here.
             # This allows Leo to quit properly.
-            c.atFileCommands.writeAll()
+            c.atFileCommands.writeAll(all=False)
             return True
         except Exception:
             # Work around bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
@@ -1744,14 +1757,7 @@ class FileCommands(object):
         '''Write all @file nodes in the selected outline.'''
         c = self.c
         c.init_error_dialogs()
-        c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
-        c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20080801071227.5: *4* fc.writeAtShadowNodes
-    def writeAtShadowNodes(self, event=None):
-        '''Write all @file nodes in the selected outline.'''
-        c = self.c
-        c.init_error_dialogs()
-        c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
+        c.atFileCommands.writeAll(all=True)
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20031218072017.1666: *4* fc.writeDirtyAtFileNodes
     @cmd('write-dirty-at-file-nodes')
@@ -1759,7 +1765,7 @@ class FileCommands(object):
         '''Write all changed @file Nodes.'''
         c = self.c
         c.init_error_dialogs()
-        c.atFileCommands.writeAll(writeDirtyAtFileNodesFlag=True)
+        c.atFileCommands.writeAll(dirty=True)
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20080801071227.6: *4* fc.writeDirtyAtShadowNodes
     def writeDirtyAtShadowNodes(self, event=None):
@@ -1849,26 +1855,6 @@ class FileCommands(object):
             g.error("fc.pickle: unexpected exception in", torv)
             g.es_exception()
             return ''
-    #@+node:ekr.20040701065235.2: *4* fc.putDescendentAttributes
-    def putDescendentAttributes(self, p):
-
-        # Create lists of all tnodes whose vnodes are marked or expanded.
-        marks = []; expanded = []
-        for p in p.subtree():
-            v = p.v
-            if p.isMarked() and p.v not in marks:
-                marks.append(v)
-            if p.hasChildren() and p.isExpanded() and v not in expanded:
-                expanded.append(v)
-        result = []
-        for theList, tag in ((marks, "marks"), (expanded, "expanded")):
-            if theList:
-                sList = []
-                for v in theList:
-                    sList.append("%s," % v.fileIndex)
-                s = ''.join(sList)
-                result.append('\n%s="%s"' % (tag, s))
-        return ''.join(result)
     #@+node:ekr.20080805071954.2: *4* fc.putDescendentVnodeUas
     def putDescendentVnodeUas(self, p):
         '''

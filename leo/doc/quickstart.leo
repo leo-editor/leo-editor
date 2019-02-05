@@ -13,6 +13,7 @@
 <v t="ekr.20090628091852.8471"><vh>@string target_language = rest</vh></v>
 <v t="ekr.20090628092246.4267"><vh>@int page_width = 60</vh></v>
 <v t="ekr.20180410083042.1"><vh>@bool body_pane_wraps = True</vh></v>
+<v t="mhw.20181210131031.1"><vh>@bool put-expansion-bits-in-leo-files = False</vh></v>
 </v>
 <v t="ekr.20090628092604.1829"><vh>change log</vh></v>
 </v>
@@ -221,6 +222,14 @@ def init2():
 
 </t>
 <t tx="ekr.20180410083042.1"></t>
+<t tx="mhw.20181210131031.1">True (recommended):
+    Write "E" attribute bits in &lt;v&gt; elements.
+    Leo outlines will record the expansion state of all nodes.
+    
+False: (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in &lt;v&gt; elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.</t>
 <t tx="ville.20090627211608.10116">Remove the first @ from @file in the subtree below and save (ctrl+s) to create an **external file** which is directly usable outside leo. Try opening the resulting myfile.py in a normal text editor (e.g. from right-click menu on the @file node) to see what it looks like.
 
 Note the @others directive, and the the lines that look like

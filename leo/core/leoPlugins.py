@@ -274,9 +274,8 @@ class LeoPluginsController(object):
         self.reloadSettings()
 
     def reloadSettings(self):
-        self.warn_on_failure = g.app.config.getBool(
-            setting='warn_when_plugins_fail_to_load',
-            default=True)
+        self.warn_on_failure = \
+            g.app.config.getBool('warn_when_plugins_fail_to_load', default=True)
     #@+node:ekr.20100909065501.5952: *3* plugins.Event handlers
     #@+node:ekr.20161029060545.1: *4* plugins.on_idle
     def on_idle(self):
@@ -467,7 +466,7 @@ class LeoPluginsController(object):
         trace = 'plugins' in g.app.debug
 
         def report(message):
-            if (trace or tag == 'open0') and not g.unitTesting:
+            if trace and not g.unitTesting:
                 g.es_print('loadOnePlugin: %s' % message)
                 
         # Define local helper functions.
@@ -531,7 +530,7 @@ class LeoPluginsController(object):
         #@+node:ekr.20180528162300.1: *5* function:reportFailedImport
         def reportFailedImport():
             '''Report a failed import.'''
-            if g.app.batchMode or g.app.inBridge or g.unitTesting or not trace:
+            if g.app.batchMode or g.app.inBridge or g.unitTesting:
                 return
             if (
                 self.warn_on_failure and
@@ -564,7 +563,8 @@ class LeoPluginsController(object):
         finally:
             self.loadingModuleNameStack.pop()
         if not result:
-            reportFailedImport()
+            if trace:
+                reportFailedImport()
             return None
         #
         # Last-minute checks.

@@ -280,23 +280,23 @@ def init():
 def getGlobalConfiguration():
     """read config."""
     # timeout.
-    newtimeout = g.app.config.getInt("http_timeout")
+    newtimeout = g.app.config.getInt("http-timeout")
     if newtimeout is not None:
         config.http_timeout = newtimeout / 1000.0
     # ip.
-    newip = g.app.config.getString("http_ip")
+    newip = g.app.config.getString("http-ip")
     if newip:
         config.http_ip = newip
     # port.
-    newport = g.app.config.getInt("http_port")
+    newport = g.app.config.getInt("http-port")
     if newport:
         config.http_port = newport
     # active.
-    newactive = g.app.config.getBool("http_active")
+    newactive = g.app.config.getBool("http-active")
     if newactive is not None:
         config.http_active = newactive
     # attribute name.
-    new_rst2_http_attributename = g.app.config.getString("rst2_http_attributename")
+    new_rst2_http_attributename = g.app.config.getString("rst2-http-attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
 #@+node:EKR.20040517080250.45: *3* plugin_wrapper
@@ -323,26 +323,32 @@ def onFileOpen(tag, keywords):
 def getConfiguration(c):
     """Called when the user opens a new file."""
     # timeout.
-    newtimeout = c.config.getInt("http_timeout")
+    newtimeout = c.config.getInt("http-timeout")
     if newtimeout is not None:
         config.http_timeout = newtimeout / 1000.0
     # port.
-    newport = c.config.getInt("http_port")
+    newport = c.config.getInt("http-port")
     if newport:
         config.http_port = newport
     # active.
-    newactive = c.config.getBool("http_active")
+    newactive = c.config.getBool("http-active")
     if newactive is not None:
         config.http_active = newactive
     # attribute name.
-    new_rst2_http_attributename = c.config.getString("rst2_http_attributename")
+    new_rst2_http_attributename = c.config.getString("rst2-http-attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
 #@+node:ekr.20161003140938.1: ** getData
 def getData(setting):
     '''Return the given @data node.'''
+    # Plug an important security hole.
+    c = g.app and g.app.log and g.app.log.c
+    key = g.app.config.munge(setting)
+    if c and key == 'httpscript' and c.config.isLocalSetting(key, 'data'):
+        g.issueSecurityWarning('@data http-script')
+        return ""
     aList = g.app.config.getData(
-        setting,
+        key,
         strip_comments=False,
         strip_data=False,
     )
@@ -350,6 +356,7 @@ def getData(setting):
     return s
 #@+node:bwmulder.20050326191345: ** class config
 class config(object):
+    enabled = None # True when security check re http-allow-remote-exec passes.
     http_active = False
     http_timeout = 0
     http_ip = '127.0.0.1'
@@ -689,7 +696,7 @@ class LeoActions(object):
     #@+node:tbrown.20110930220448.18077: *3* __init__(LeoActions)
     def __init__(self, request_handler):
         self.request_handler = request_handler
-        self.bookmark_unl = g.app.commanders()[0].config.getString('http_bookmark_unl')
+        self.bookmark_unl = g.app.commanders()[0].config.getString('http-bookmark-unl')
         self.exec_handler = ExecHandler(request_handler)
     #@+node:tbrown.20110930220448.18075: *3* add_bookmark
     def add_bookmark(self):
@@ -912,8 +919,16 @@ class ExecHandler(object):
         """Return the file like 'f' that leo_interface.send_head makes"""
         # self.request_handler.path.startswith('/_/exec/')
 
-        if not g.app.config.getBool("http_allow_remote_exec"):
+        if not g.app.config.getBool("http-allow-remote-exec"):
             return None  # fail deliberately
+            
+        c = g.app and g.app.log and g.app.log.c
+        if c and config.enable is None:
+            if c.config.isLocalSetting('http-allow-remote-exec', 'bool'):
+                g.issueSecurityWarning('@bool http-allow-remote-exec')
+                config.enable = False
+            else:
+                config.enable = True
 
         parsed_url = urlparse.urlparse(self.request_handler.path)
         query = urlparse.parse_qs(parsed_url.query)

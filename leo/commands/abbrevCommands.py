@@ -126,11 +126,11 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             v = leoNodes.VNode(context=c)
             root = leoNodes.Position(v)
             # Similar to g.getScript.
-            script = at.writeFromString(
+            script = at.stringToString(
                 root=root,
                 s=script,
                 forcePythonSentinels=True,
-                useSentinels=False)
+                sentinels=False)
             script = script.replace("\r\n", "\n")
             try:
                 exec(script, c.abbrev_subst_env, c.abbrev_subst_env)
@@ -157,7 +157,14 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.config.getBool('scripting-at-script-nodes') or
             c.config.getBool('scripting-abbreviations'))
         self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
-        self.subst_env = c.config.getData('abbreviations-subst-env', strip_data=False)
+        # @data abbreviations-subst-env must *only* be defined in leoSettings.leo or myLeoSettings.leo!
+        if c.config:
+            key = 'abbreviations-subst-env'
+            if c.config.isLocalSetting(key, 'data'):
+                g.issueSecurityWarning('@data %s' % key)
+                self.subst_env = ""
+            else:
+                self.subst_env = c.config.getData(key, strip_data=False)
     #@+node:ekr.20150514043850.9: *6* abbrev.init_tree_abbrev
     def init_tree_abbrev(self):
         '''Init tree_abbrevs_d from @data tree-abbreviations nodes.'''
@@ -203,7 +210,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             for s in g.splitLines(p.b):
                 if s.strip() and not s.startswith('#'):
                     abbrev_name = s.strip()
-                    for child in p.children():
+                    # #926: Allow organizer nodes by searching all descendants.
+                    for child in p.subtree():
                         if child.h.strip() == abbrev_name:
                             abbrev_s = c.fileCommands.putLeoOutline(child)
                             d[abbrev_name] = abbrev_s

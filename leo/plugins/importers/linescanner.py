@@ -157,8 +157,8 @@ class Importer(object):
         c = self.c
         c.registerReloadSettings(self)
         # self.at_auto_separate_non_def_nodes = False
-        self.at_auto_warns_about_leading_whitespace = c.config.getBool(
-            'at_auto_warns_about_leading_whitespace')
+        self.at_auto_warns_about_leading_whitespace = \
+            c.config.getBool('at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
     #@+node:ekr.20161110042512.1: *3* i.API for setting body text
     # All code in passes 1 and 2 *must* use this API to change body text.
@@ -920,7 +920,7 @@ class Importer(object):
                 # Used in a unit test.
                 c.importCommands.errors += 1
         return ok
-    #@+node:ekr.20161108131153.4: *5* i.clean_blank_lines
+    #@+node:ekr.20161108131153.4: *5* i.clean_blank_lines (not used)
     def clean_blank_lines(self, lines):
         '''Remove all blanks and tabs in all blank lines.'''
         return [self.lstrip_line(z) if z.isspace() else z for z in lines]
@@ -1002,18 +1002,12 @@ class Importer(object):
         ivar = 'allow_undefined_refs'
         try:
             setattr(at, ivar, True)
-            at.writeOneAtAutoNode(
-                self.root,
-                force=True,
-                toString=True,
-                trialWrite=True,
-                    # Suppress call to update_before_write_foreign_file
-                    # in at.writeOneAtAutoNode.
-            )
+            result = at.atAutoToString(self.root) ###, trialWrite=True)
+                ### Suppress call to update_before_write_foreign_file.
         finally:
             if hasattr(at, ivar):
                 delattr(at, ivar)
-        return g.toUnicode(at.stringOutput, self.encoding)
+        return g.toUnicode(result, self.encoding)
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
     def all_contexts(self, table):

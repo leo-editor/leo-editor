@@ -153,8 +153,8 @@ class OpmlController(object):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.opml_read_derived_files = c.config.getBool('opml_read_derived_files')
-        self.opml_write_derived_files = c.config.getBool('opml_write_derived_files')
+        self.opml_read_derived_files = c.config.getBool('opml-read-derived-files')
+        self.opml_write_derived_files = c.config.getBool('opml-write-derived-files')
 
     #@+node:ekr.20060914163456: *3* oc.createVnodes & helpers
     def createVnodes(self, c, dummyRoot):
@@ -201,7 +201,7 @@ class OpmlController(object):
             # 'C' (clone) and 'D' bits are not used.
             if 'M' in a: v.setMarked()
             if 'E' in a: v.expand()
-            if 'O' in a: v.setOrphan()
+            # if 'O' in a: v.setOrphan()
             if 'T' in a: self.topVnode = v
             if 'V' in a: self.currentVnode = v
         if 0: # Leo no longer uses the tnodeList.
@@ -443,8 +443,8 @@ class PutToOPML(object):
         self.putOPMLPostlog()
     #@+node:ekr.20060919172012.3: *3* putOPMLProlog
     def putOPMLProlog(self):
-        s = self.c.config.getString('opml_namespace') or 'leo:com:leo-opml'
-        ver = self.c.config.getString('opml_version') or '2.0'
+        s = self.c.config.getString('opml-namespace') or 'leo:com:leo-opml'
+        ver = self.c.config.getString('opml-version') or '2.0'
         self.put('<opml version="%s" xmlns:leo="%s">' % (ver, s))
     #@+node:ekr.20060919172012.4: *3* putOPMLHeader
     def putOPMLHeader(self):
@@ -522,8 +522,6 @@ class PutToOPML(object):
         if p.isExpanded(): attr.append('E')
         if p.isMarked(): attr.append('M')
         if c.isCurrentPosition(p): attr.append('V')
-        #if p.v.isOrphan():              attr.append('O')
-        #if p.equal(self.topPosition):   attr.append('T')
         return ''.join(attr)
     #@+node:ekr.20060919172012.9: *4* tnodeListAttributes (Not used)
     # Based on fileCommands.putTnodeList.

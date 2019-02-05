@@ -46,7 +46,6 @@ __version__ = "0.7"
 #     - exposed the pluginController as c.theDateNodesController
 #     - added support for settings:
 #         - @bool suppress-datenodes-menus
-#         - @bool suppress-all-plugin-menus
 #     - added minibuffer commands
 #         - datenodes-today
 #         - datenodes-this-month
@@ -249,10 +248,7 @@ def on_create(tag, keywords):
 
     #@+<< Create the plug-in menu. >>
     #@+node:bobjack.20080615065747.3: *3* << Create the plug-in menu. >>
-    if not (
-        c.config.getBool('suppress-datenodes-menus') or
-        c.config.getBool('suppress-all-plugin-menus')
-    ):
+    if not c.config.getBool('suppress-datenodes-menus'):
         # create a menu separator
         c.frame.menu.createMenuItemsFromTable("Outline", [("-", None, None),])
 

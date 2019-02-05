@@ -21,7 +21,7 @@ class Py_Importer(Importer):
             state_class = Python_ScanState,
             strict=True,
         )
-        self.put_decorators = self.c.config.getBool('put_python_decorators_in_imported_headlines')
+        self.put_decorators = self.c.config.getBool('put-python-decorators-in-imported-headlines')
 
     #@+others
     #@+node:ekr.20161110073751.1: *3* py_i.clean_headline
@@ -35,7 +35,8 @@ class Py_Importer(Importer):
             return m.group(1)
         # Handle classes.
         #913: Show base classes in python importer.
-        m = re.match(r'\s*class\s+(\w+)\s*(\(\w+\))?', s)
+        #978: Better regex handles class C(bar.Bar)
+        m = re.match(r'\s*class\s+(\w+)\s*(\([\w.]+\))?', s)
         if m:
             return 'class %s%s' % (m.group(1), m.group(2) or '')
         return s.strip()

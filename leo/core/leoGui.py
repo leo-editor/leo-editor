@@ -386,7 +386,7 @@ class NullGui(LeoGui):
     def set_focus(self, commander, widget):
         self.focusWidget = widget
     #@+node:ekr.20070301171901: *3* NullGui.do nothings
-    def alert(self, message): pass
+    def alert(self, c, message): pass
     def attachLeoIcon(self, window): pass
     def destroySelf(self): pass
     def finishCreate(self): pass

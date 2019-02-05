@@ -784,12 +784,8 @@ class PythonTokenBeautifier(object):
         self.state_stack = [] # Stack of ParseState objects.
         # Settings...
         if c:
-            self.delete_blank_lines = not c.config.getBool(
-                'tidy-keep-blank-lines', default=True)
-            self.args_style = c.config.getString('tidy-args-style')
-            # Not used yet.
-            # if self.args_style not in ('align', 'asis', 'indent'):
-                # self.args_style = 'align'
+            self.delete_blank_lines = \
+                not c.config.getBool('tidy-keep-blank-lines', default=True)
             self.tab_width = abs(c.tab_width) if c else 4
         else:
             self.tab_width = 4

@@ -361,8 +361,11 @@ class PylintCommand(object):
         if leo_path not in sys.path:
             sys.path.append(leo_path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
-        for p in roots:
-            self.check(p, rc_fn)
+        if roots:
+            for p in roots:
+                self.check(p, rc_fn)
+        else:
+            g.es('pylint: no files found', color='red')
     #@+node:ekr.20150514125218.12: *3* pylint.run_pylint
     pylint_install_message = False
 

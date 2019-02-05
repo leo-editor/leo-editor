@@ -51,7 +51,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # "declutter", node appearance tweaking
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
         self.declutter_update = False  # true when update on idle needed
-        if 0: ### EKR: This looks like a bad idea.
+        if 0: # EKR: This looks like a bad idea.
             g.registerHandler('save1', self.clear_visual_icons)
             g.registerHandler('headkey2', self.update_appearance)
             g.registerHandler('idle', self.update_appearance_idle)
@@ -75,7 +75,7 @@ class LeoQtTree(leoFrame.LeoTree):
             w.headerItem().setHidden(True)
         except Exception:
             pass
-        n = c.config.getInt('icon-height')
+        n = c.config.getInt('icon-height') or 16
         w.setIconSize(QtCore.QSize(160, n))
     #@+node:ekr.20110605121601.17866: *4* qtree.get_name
     def getName(self):
@@ -106,12 +106,12 @@ class LeoQtTree(leoFrame.LeoTree):
     def reloadSettings(self):
         '''LeoQtTree.'''
         c = self.c
-        self.auto_edit = c.config.getBool('single_click_auto_edits_headline', False)
-        self.enable_drag_messages = c.config.getBool("enable_drag_messages")
-        self.select_all_text_when_editing_headlines = c.config.getBool(
-            'select_all_text_when_editing_headlines')
+        self.auto_edit = c.config.getBool('single-click-auto-edits-headline', False)
+        self.enable_drag_messages = c.config.getBool("enable-drag-messages")
+        self.select_all_text_when_editing_headlines = \
+            c.config.getBool('select_all_text_when_editing_headlines')
         self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
-        self.use_chapters = c.config.getBool('use_chapters')
+        self.use_chapters = c.config.getBool('use-chapters')
         self.use_declutter = c.config.getBool('tree-declutter', default=False)
 
     #@+node:ekr.20110605121601.17940: *4* qtree.wrapQLineEdit
@@ -804,8 +804,9 @@ class LeoQtTree(leoFrame.LeoTree):
         try:
             self.busy = True
             p = self.item2position(item)
-            auto_edit = self.prev_v == p.v
             if p:
+                auto_edit = self.prev_v == p.v
+                    # Fix #1049.
                 self.prev_v = p.v
                 event = None
                 mods = g.app.gui.qtApp.keyboardModifiers()

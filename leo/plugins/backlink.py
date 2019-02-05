@@ -111,7 +111,7 @@ class backlinkController(object):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.name_levels = c.config.getInt('backlink_name_levels') or 0
+        self.name_levels = c.config.getInt('backlink-name-levels') or 0
     #@+node:tbrown.20091005145931.5227: *3* fixIDs
     def fixIDs(self, c):
 

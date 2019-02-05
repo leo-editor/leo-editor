@@ -3,6 +3,50 @@
 .. @@language rest
 .. @@killbeautify
 .. @+all
+.. @+node:ekr.20190123074336.1: ** Backup of public filters
+https://github.com/leo-editor/leo-editor/issues/1064
+
+This issue lists the filters that I use to organize and understand my work flow.  They are a high level overview of what will (and won't) be done.
+
+**About two dozen significant enhancements remain**.  None of these will fundamentally change Leo.  Fixing bugs has a higher priority.
+
+- [Curated unscheduled issues](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+no%3Amilestone+-label%3Amaybe+-label%3Ainfo+-label%3Apip+-label%3Awaiting+-label%3Alvl%3Aminor): Interesting open programming issues that have not been assigned a milestone. See the actual filter for details. Some may be assigned to 5.8.2.
+
+- [Branch info](https://github.com/leo-editor/leo-editor/issues/1058): An info item reminding me what each branch does, and its status.
+
+- [Important bugs](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Abug+-label%3Awaiting+-label%3Alvl%3Aminor): Significant bugs (`-label:lvl:minor`) that can be fixed now (`-label:waiting`).
+
+- [Minor bugs](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Abug+-label%3Awaiting+label%3Alvl%3Aminor), [plugin bugs](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Abug+label%3APlugin+),  and [minor enhancements](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Aenhancement+-label%3Awaiting+label%3Alvl%3Aminor+).  I am responsible for fixing only "core" plugins such as viewrendered.py and mod_scripting.py.
+
+- [5.8.1](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+milestone%3A5.8.1+-label%3Awaiting+-label%3Apip+is%3Aopen+): Programming issues scheduled for 5.8.1.
+
+- [5.8.2](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+milestone%3A5.8.2+is%3Aopen+-label%3Apip): Programming issues scheduled for 5.8.2.
+
+**Links to Labels**
+
+- [Bug](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Abug+): All bugs. Borderline issues can have both the "Bug" and "Enhancement" labels.
+
+- [Best](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Abest): The most significant enhancement issues.
+
+- [EKR](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+label%3AEKR+is%3Aopen): Issues in which I have (or have had) a particular interest. This label is no guarantee of action.
+
+- [Info](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3Ainfo): All Info items.
+
+- [Summary](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Asummary): All Summary items. *Note*: Summary items are also Info items.
+
+- [Importers](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+import+is%3Aopen+label%3AImporter): Importer items are the most important links between Leo and other programs.
+
+- [Emacs](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Aemacs): Issues related to Emacs. Some issues have been downgraded in importance recently.
+
+- [Gui](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+label%3Agui+is%3Aopen): Items related to Leo's gui code, especially window code. **These items won't happen unless someone else volunteers to do them**.
+
+- [Maybe](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Amaybe): Open issues which I have no present commitment to do.
+
+- [Won'tDo](https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3Awon%27tdo): Closed issues which I am unlikely to do, absent a significant change of opinion.
+
+  Many of my own issues have been relegated to the "Won'tDo" category. I am no longer interested in slavishly adding features from other editors to Leo, nor am I interested in embedding Leo in other editors.
+
+**The "Maybe" and "Won'tDo" labels are not necessarily death sentences.** I often change my mind. Comments are not allowed here. Please argue for an issue in [leo-editor](https://groups.google.com/forum/#!forum/leo-editor), or in the issue itself.
 .. @+node:ekr.20090202064534.4: **  Your mission, should you choose to accept it
 @language rest
 

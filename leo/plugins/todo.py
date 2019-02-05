@@ -83,7 +83,7 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     name = g.app.gui.guiName()
     if name != "qt":
-        if name not in ('curses', 'nullGui'):
+        if name not in ('browser', 'curses', 'nullGui'):
             print('todo.py plugin not loading because gui is not Qt')
         return False
     g.registerHandler('after-create-leo-frame',onCreate)
@@ -114,7 +114,7 @@ if g.app.gui.guiName() == "qt":
             # change dir to get themed icons, needed for uic resources
             # 20180327 this is working, these are icons for todo UI, not
             # the tree.
-            theme = g.app.config.getString('color_theme')
+            theme = g.app.config.getString('color-theme')
             if theme:
                 testPath = g.os_path_join(
                     g.app.homeLeoDir, 'themes', theme, 'Icons', 'cleo')
@@ -257,7 +257,7 @@ if g.app.gui.guiName() == "qt":
             # else:
                 # self.connect(self.UI.butDetails, QtCore.SIGNAL("clicked()"),
                     # lambda: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
-            if self.owner.c.config.getBool("todo_compact_interface"):
+            if self.owner.c.config.getBool("todo-compact-interface"):
                 self.UI.frmDetails.setVisible(False)
 
             if True: ### isQt5:
@@ -279,8 +279,8 @@ if g.app.gui.guiName() == "qt":
                 # self.connect(self.UI.butApplyOffset, QtCore.SIGNAL("clicked()"),
                     # lambda: o.set_date_offset(field='nextworkdate'))
 
-            n = g.app.config.getInt("todo_calendar_n")
-            cols = g.app.config.getInt("todo_calendar_cols")
+            n = g.app.config.getInt("todo-calendar-n")
+            cols = g.app.config.getInt("todo-calendar-cols")
             if n or cols:
                 self.UI.dueDateEdit.calendarWidget().build(n or 3, cols or 3)
                 self.UI.nxtwkDateEdit.calendarWidget().build(n or 3, cols or 3)
@@ -403,10 +403,10 @@ class todoController(object):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.time_name = c.config.getString('todo_time_name') or 'days'
-        self.icon_location = c.config.getString('todo_icon_location') or 'beforeHeadline'
-        self.prog_location = c.config.getString('todo_prog_location') or 'beforeHeadline'
-        self.icon_order = c.config.getString('todo_icon_order') or 'pri-first'
+        self.time_name = c.config.getString('todo-time-name') or 'days'
+        self.icon_location = c.config.getString('todo-icon-location') or 'beforeHeadline'
+        self.prog_location = c.config.getString('todo-prog-location') or 'beforeHeadline'
+        self.icon_order = c.config.getString('todo-icon-order') or 'pri-first'
     #@+node:tbrown.20090522142657.7894: *3* __del__
     def __del__(self):
         for i in self.handlers:

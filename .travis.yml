@@ -1,9 +1,26 @@
 language: python
-install: 
+git:
+    ## Clone depth, must be big enough to include a tag
+    depth: 100
+install:
+    ## Using PEP-518 (pypoject.toml) requires pip >v10 
+    - python -m pip install --upgrade pip
+    - pip --version
 script:
-- python setup.py bdist_wheel | grep -v -e '^adding' -e '^copying'
-- pip install dist/*.whl
-- leo-console --version
+    #- pip install --editable .
+    #- leo-console --version
+    
+    ## Test: Build python wheel, install, and run Leo in console mode
+    # reverse grep to hide excessive 'adding' and 'copying'
+    - python setup.py bdist_wheel | grep -v -e '^adding' -e '^copying'
+    - pip install dist/*.whl
+    - leo-console --version
+    
+    ## Test: Unit tests
+    - python run_travis_unit_tests.py
+
+    # There are no travis tests after checking out release tag
+    #- pytest travis_tests/*
 deploy:
   provider: pypi
   user: maphew

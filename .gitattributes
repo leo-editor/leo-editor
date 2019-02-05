@@ -8,7 +8,10 @@ nsi.log.txt                     export-ignore
 
 git-manifest.txt                export-ignore
 MakeFile                        export-ignore
-MANIFEST.in                     export-ignore
+
+# Ignoring this breaks downstream distributions
+# see Issue #968, https://github.com/leo-editor/leo-editor/issues/968#issuecomment-451763826
+# MANIFEST.in                     export-ignore
 
 leoStandAloneGlobals.py         export-ignore
 stand_alone_globals.leo         export-ignore
@@ -25,3 +28,4 @@ leo/core/ekrLeoPy.leo           export-ignore
 leo/test/unittest/.leo_shadow/  export-ignore
 
 leo/core/commit_timestamp.json merge=ours
+

@@ -352,9 +352,9 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20171114041307.1: *5* jedit.reloadSettings
     def reloadSettings(self):
         c = self.c
-        self.showInvisibles = c.config.getBool("show_invisibles_by_default")
-        self.underline_undefined = c.config.getBool("underline_undefined_section_names")
-        self.use_hyperlinks = c.config.getBool("use_hyperlinks")
+        self.showInvisibles = c.config.getBool("show-invisibles-by-default")
+        self.underline_undefined = c.config.getBool("underline-undefined-section-names")
+        self.use_hyperlinks = c.config.getBool("use-hyperlinks")
         # There were in setFontFromConfig.
         self.bold_font = c.config.getFontFromParams(
             "body_text_font_family", "body_text_font_size",
@@ -423,7 +423,7 @@ class JEditColorizer(BaseColorizer):
             (' ', self.match_blanks, False),
             ('\t', self.match_tabs, False),
         ]
-        if self.c.config.getBool("color_trailing_whitespace"):
+        if self.c.config.getBool("color-trailing-whitespace"):
             table += [
                 (' ', self.match_trailing_ws, True),
                 ('\t', self.match_trailing_ws, True),
@@ -2108,7 +2108,7 @@ class QScintillaColorizer(BaseColorizer):
             
     def reloadSettings(self):
         c = self.c
-        self.enabled = c.config.getBool('use_syntax_coloring')
+        self.enabled = c.config.getBool('use-syntax-coloring')
     #@+node:ekr.20170128141158.1: *3* qsc.scanColorDirectives (over-ride)
     def scanColorDirectives(self, p):
         '''

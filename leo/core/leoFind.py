@@ -505,7 +505,7 @@ class LeoFind(object):
     @cmd('focus-to-find')
     def focusToFind(self, event=None):
         c = self.c
-        if c.config.getBool('use_find_dialog', default=True):
+        if c.config.getBool('use-find-dialog', default=True):
             g.app.gui.openFindDialog(c)
         else:
             c.frame.log.selectTab('Find')
@@ -527,7 +527,7 @@ class LeoFind(object):
     def openFindTab(self, event=None, show=True):
         '''Open the Find tab in the log pane.'''
         c = self.c
-        if c.config.getBool('use_find_dialog', default=True):
+        if c.config.getBool('use-find-dialog', default=True):
             g.app.gui.openFindDialog(c)
         else:
             c.frame.log.selectTab('Find')
@@ -1229,7 +1229,7 @@ class LeoFind(object):
         # New in Leo 5.2: minibuffer modes shows options in status area.
         if self.minibuffer_mode:
             self.showFindOptionsInStatusArea()
-        elif c.config.getBool('use_find_dialog', default=True):
+        elif c.config.getBool('use-find-dialog', default=True):
             g.app.gui.openFindDialog(c)
         else:
             c.frame.log.selectTab('Find')

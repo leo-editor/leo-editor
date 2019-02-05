@@ -56,8 +56,8 @@ class LeoQtEventFilter(QtCore.QObject):
         # Debugging.
         self.keyIsActive = False
         # Pretend there is a binding for these characters.
-        close_flashers = c.config.getString('close_flash_brackets') or ''
-        open_flashers = c.config.getString('open_flash_brackets') or ''
+        close_flashers = c.config.getString('close-flash-brackets') or ''
+        open_flashers = c.config.getString('open-flash-brackets') or ''
         self.flashers = open_flashers + close_flashers
         # Support for ctagscompleter.py plugin.
         self.ctagscompleter_active = False

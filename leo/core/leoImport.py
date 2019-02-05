@@ -671,8 +671,8 @@ class LeoImportCommands(object):
             # Func is a callback. It must have a c argument.
         # Call the scanning function.
         if g.unitTesting:
-            assert func or ext in ('.txt', '.w', '.xxx'), (ext, p.h)
-        if func and not c.config.getBool('suppress_import_parsing', default=False):
+            assert func or ext in ('.txt', '.w', '.xxx'), (repr(func), ext, p.h)
+        if func and not c.config.getBool('suppress-import-parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
             # func is actually a factory: it instantiates the importer class.
@@ -1821,6 +1821,7 @@ class RecursiveImportController(object):
         recursive=True,
         safe_at_file=True,
         theTypes=None,
+        ignore_pattern=None,
     ):
         '''Ctor for RecursiveImportController class.'''
         self.c = c
@@ -1833,6 +1834,7 @@ class RecursiveImportController(object):
         self.root = None
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
+        self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
     #@+node:ekr.20130823083943.12613: *3* ric.run & helpers
     def run(self, dir_):
         '''
@@ -1858,7 +1860,8 @@ class RecursiveImportController(object):
                 self.import_one_file(dir_, parent)
             else:
                 self.import_dir(dir_, parent)
-                self.post_process(parent, dir_)
+            self.post_process(parent, dir_)
+                # Fix # 1033.
             c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
         except Exception:
             g.es_print('Exception in recursive import')
@@ -1891,7 +1894,8 @@ class RecursiveImportController(object):
                     if ext in self.theTypes:
                         files2.append(path)
                 elif self.recursive:
-                    dirs.append(path)
+                    if not self.ignore_pattern.search(path):
+                        dirs.append(path)
             except OSError:
                 g.es_print('Exception computing', path)
                 g.es_exception()
@@ -1901,7 +1905,8 @@ class RecursiveImportController(object):
             parent.v.h = dir_
             if files2:
                 for f in files2:
-                    self.import_one_file(f, parent=parent)
+                    if not self.ignore_pattern.search(f):
+                        self.import_one_file(f, parent=parent)
             if dirs:
                 assert self.recursive
                 for dir_ in sorted(dirs):
@@ -1953,17 +1958,19 @@ class RecursiveImportController(object):
     #@+node:ekr.20180524100258.1: *5* ric.add_class_names
     def add_class_names(self, p):
         '''Add class names to headlines for all descendant nodes.'''
-        after, fn, class_name = None, None, None
+        after, class_name = None, None
+        class_paren_pattern = re.compile(r'(.*)\(.*\)\.(.*)')
+        paren_pattern = re.compile(r'(.*)\(.*\.py\)')
         for p in p.self_and_subtree(copy=False):
             # Part 1: update the status.
             m = self.file_pattern.match(p.h)
             if m:
-                prefix = m.group(1)
-                fn = g.shortFileName(p.h[len(prefix):].strip())
+                # prefix = m.group(1)
+                # fn = g.shortFileName(p.h[len(prefix):].strip())
                 after, class_name = None, None
                 continue
             elif p.h.startswith('@path '):
-                after, fn, class_name = None, None, None
+                after, class_name = None, None
             elif p.h.startswith('class '):
                 class_name = p.h[5:].strip()
                 if class_name:
@@ -1973,12 +1980,20 @@ class RecursiveImportController(object):
                 after, class_name = None, None
             # Part 2: update the headline.
             if class_name:
-                if not p.h.startswith(class_name):
+                if p.h.startswith(class_name):
+                    m = class_paren_pattern.match(p.h)
+                    if m:
+                        p.h = ('%s.%s' % (m.group(1), m.group(2))).rstrip()
+                else:
                     p.h = '%s.%s' % (class_name, p.h)
-            elif fn:
-                tag = ' (%s)' % fn
-                if not p.h.endswith(tag):
-                    p.h += tag
+            else:
+                m = paren_pattern.match(p.h)
+                if m:
+                    p.h = m.group(1).rstrip()
+            # elif fn:
+                # tag = ' (%s)' % fn
+                # if not p.h.endswith(tag):
+                    # p.h += tag
     #@+node:ekr.20130823083943.12608: *5* ric.clear_dirty_bits
     def clear_dirty_bits(self, p):
         c = self.c
@@ -2231,10 +2246,10 @@ class ZimImportController(object):
     def __init__(self, c):
         '''Ctor for ZimImportController class.'''
         self.c = c
-        self.pathToZim = c.config.getString('path_to_zim')
-        self.rstLevel = c.config.getInt('rst_level') or 0
-        self.rstType = c.config.getString('rst_type') or 'rst'
-        self.zimNodeName = c.config.getString('zim_node_name') or 'Imported Zim Tree'
+        self.pathToZim = c.config.getString('path-to-zim')
+        self.rstLevel = c.config.getInt('zim-rst-level') or 0
+        self.rstType = c.config.getString('zim-rst-type') or 'rst'
+        self.zimNodeName = c.config.getString('zim-node-name') or 'Imported Zim Tree'
     #@+node:ekr.20141210051628.28: *3* zic.parseZimIndex
     def parseZimIndex(self):
         """
@@ -2345,33 +2360,6 @@ class ZimImportController(object):
             c.redraw()
     #@-others
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
-#@+node:ekr.20101103093942.5941: *3* @g.command(head-to-prev-node)
-@g.command('head-to-prev-node')
-def headToPrevNode(event):
-    '''Move the code preceding a def to end of previous node.'''
-    c = event.get('c')
-    if not c: return
-    p = c.p
-    try:
-        import leo.plugins.importers.python as python
-    except ImportError:
-        return
-    scanner = python.Py_Importer(c.importCommands)
-    kind, i, junk = scanner.find_class(p)
-    p2 = p.back()
-    if p2 and kind in ('class', 'def') and i > 0:
-        u = c.undoer; undoType = 'move-head-to-prev'
-        head = p.b[: i].rstrip()
-        u.beforeChangeGroup(p, undoType)
-        b = u.beforeChangeNodeContents(p)
-        p.b = p.b[i:]
-        u.afterChangeNodeContents(p, undoType, b)
-        if head:
-            b2 = u.beforeChangeNodeContents(p2)
-            p2.b = p2.b.rstrip() + '\n\n' + head + '\n'
-            u.afterChangeNodeContents(p2, undoType, b2)
-        u.afterChangeGroup(p, undoType)
-        c.selectPosition(p2)
 #@+node:ekr.20160504050255.1: *3* @g.command(import-free-mind-files)
 if lxml:
 
@@ -2427,33 +2415,6 @@ def parse_body_command(event):
     c = event.get('c')
     if c and c.p:
         c.importCommands.parse_body(c.p)
-#@+node:ekr.20101103093942.5943: *3* @g.command(tail-to-next-node)
-@g.command('tail-to-next-node')
-def tailToNextNode(event=None):
-    '''Move the code following a def to start of next node.'''
-    c = event.get('c')
-    if not c: return
-    p = c.p
-    try:
-        import leo.plugins.importers.python as python
-    except ImportError:
-        return
-    scanner = python.Py_Importer(c.importCommands)
-    kind, junk, j = scanner.find_class(p)
-    p2 = p.next()
-    if p2 and kind in ('class', 'def') and j < len(p.b):
-        u = c.undoer; undoType = 'move-tail-to-next'
-        tail = p.b[j:].rstrip()
-        u.beforeChangeGroup(p, undoType)
-        b = u.beforeChangeNodeContents(p)
-        p.b = p.b[: j]
-        u.afterChangeNodeContents(p, undoType, b)
-        if tail:
-            b2 = u.beforeChangeNodeContents(p2)
-            p2.b = tail + '\n\n' + p2.b
-            u.afterChangeNodeContents(p2, undoType, b2)
-        u.afterChangeGroup(p, undoType)
-        c.selectPosition(p2)
 #@-others
 #@@language python
 #@@tabwidth -4

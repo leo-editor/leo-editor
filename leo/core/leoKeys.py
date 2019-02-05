@@ -185,10 +185,10 @@ class AutoCompleterClass(object):
         
     def reloadSettings(self):
         c = self.c
-        self.auto_tab = c.config.getBool('auto_tab_complete', True)
-        self.forbid_invalid = c.config.getBool('forbid_invalid_completions', False)
-        self.use_jedi = c.config.getBool('use_jedi', False)
-        self.use_qcompleter = c.config.getBool('use_qcompleter', False)
+        self.auto_tab = c.config.getBool('auto-tab-complete', True)
+        self.forbid_invalid = c.config.getBool('forbid-invalid-completions', False)
+        self.use_jedi = c.config.getBool('use-jedi', False)
+        self.use_qcompleter = c.config.getBool('use-qcompleter', False)
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
     #@+node:ekr.20061031131434.8: *3* ac.Top level
@@ -543,7 +543,10 @@ class AutoCompleterClass(object):
                     g.es_print('can not import jedi')
                     g.es_print('ignoring @bool use_jedi = True')
             if jedi:
-                aList = self.get_jedi_completions(prefix)
+                aList = (
+                    self.get_jedi_completions(prefix) or
+                        # Prefer the jedi completions.
+                    self.get_leo_completions(prefix))
                 d[prefix] = aList
                 return aList
         #
@@ -557,10 +560,9 @@ class AutoCompleterClass(object):
         aList = d.get(prefix)
         if aList:
             return aList
-        # Always try the Leo completions first.
-        # Fall back to the codewise completions.
         aList = (
             self.get_leo_completions(prefix) or
+                # Prefer the Leo completions.
             self.get_codewise_completions(prefix)
         )
         d[prefix] = aList
@@ -717,25 +719,18 @@ class AutoCompleterClass(object):
                 completions = None
                 g.printObj(source_lines[n0-1:n0+30])
                 print('ERROR', p.h)
-        if completions is None:
+        if not completions:
             return []
         # May be used in traces below.
         assert t3 >= t2 >= t1
-        assert local_column is not None
-                
+        assert local_column is not None  
         completions = [z.name for z in completions]
         completions = [self.add_prefix(prefix, z) for z in completions]
         # Retain these for now...
             # g.printObj(completions[:5])
             # head = line[:local_column]
-            # tail = line[local_column:]
-            # print('%s completions for %r' % (len(completions), head.strip()))
-            # print(' get: %5.4f sec.' % (t2-t1))
-            # print('jedi: %5.4f sec.' % (t3-t2))
-            # print('n0: %s len(source): %s jedi_line: %s' % (n0, len(source), jedi_line))
-            # print('LINE: %r' % line)
-            # print('HEAD: %r' % head)
-            # print('TAIL: %r' % tail)
+            # ch = line[local_column:local_column+1]
+            # g.trace(len(completions), repr(ch), head.strip())
         return completions
     #@+node:ekr.20180526211127.1: *6* ac.add_prefix
     def add_prefix(self, prefix, s):
@@ -863,7 +858,7 @@ class AutoCompleterClass(object):
             self.insert_string(ch)
             common_prefix, prefix, aList = self.compute_completion_list()
             if not aList:
-                if self.forbid_invalid: # 2011/06/17.
+                if self.forbid_invalid:
                     # Delete the character we just inserted.
                     self.do_backspace()
             # @bool auto_tab_complete is deprecated.
@@ -970,7 +965,7 @@ class AutoCompleterClass(object):
     def start(self, event):
         # We don't need to clear this now that we don't use ContextSniffer.
         c = self.c
-        if c.config.getBool('use_jedi', default=True):
+        if c.config.getBool('use-jedi', default=True):
             self.completionsDict = {}
         if self.use_qcompleter:
             self.init_qcompleter(event)
@@ -1973,34 +1968,33 @@ class KeyHandlerClass(object):
         c = self.c
         getBool = c.config.getBool
         getColor = c.config.getColor
-        self.enable_autocompleter = getBool('enable_autocompleter_initially')
-        self.enable_calltips = getBool('enable_calltips_initially')
-        self.ignore_caps_lock = getBool('ignore_caps_lock')
-        self.ignore_unbound_non_ascii_keys = getBool('ignore_unbound_non_ascii_keys')
-        self.minibuffer_background_color = getColor('minibuffer_background_color') or 'lightblue'
-        self.minibuffer_foreground_color = getColor('minibuffer_foreground_color') or 'black'
-        self.minibuffer_warning_color = getColor('minibuffer_warning_color') or 'lightgrey'
-        self.minibuffer_error_color = getColor('minibuffer_error_color') or 'red'
-        self.replace_meta_with_alt = getBool('replace_meta_with_alt')
-        self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
+        self.enable_autocompleter = getBool('enable-autocompleter-initially')
+        self.enable_calltips = getBool('enable-calltips-initially')
+        self.ignore_unbound_non_ascii_keys = getBool('ignore-unbound-non-ascii-keys')
+        self.minibuffer_background_color = getColor('minibuffer-background-color') or 'lightblue'
+        self.minibuffer_foreground_color = getColor('minibuffer-foreground-color') or 'black'
+        self.minibuffer_warning_color = getColor('minibuffer-warning-color') or 'lightgrey'
+        self.minibuffer_error_color = getColor('minibuffer-error-color') or 'red'
+        self.replace_meta_with_alt = getBool('replace-meta-with-alt')
+        self.warn_about_redefined_shortcuts = getBool('warn-about-redefined-shortcuts')
         # Has to be disabled (default) for AltGr support on Windows
-        self.enable_alt_ctrl_bindings = c.config.getBool('enable_alt_ctrl_bindings')
+        self.enable_alt_ctrl_bindings = c.config.getBool('enable-alt-ctrl-bindings')
         # Part 2: These were in finishCreate.
         # Set mode colors used by k.setInputState.
-        bg = c.config.getColor('body_text_background_color') or 'white'
-        fg = c.config.getColor('body_text_foreground_color') or 'black'
-        self.command_mode_bg_color = getColor('command_mode_bg_color') or bg
-        self.command_mode_fg_color = getColor('command_mode_fg_color') or fg
-        self.insert_mode_bg_color = getColor('insert_mode_bg_color') or bg
-        self.insert_mode_fg_color = getColor('insert_mode_fg_color') or fg
-        self.overwrite_mode_bg_color = getColor('overwrite_mode_bg_color') or bg
-        self.overwrite_mode_fg_color = getColor('overwrite_mode_fg_color') or fg
-        self.unselected_body_bg_color = getColor('unselected_body_bg_color') or bg
-        self.unselected_body_fg_color = getColor('unselected_body_fg_color') or bg
+        bg = c.config.getColor('body-text-background-color') or 'white'
+        fg = c.config.getColor('body-text-foreground-color') or 'black'
+        self.command_mode_bg_color = getColor('command-mode-bg-color') or bg
+        self.command_mode_fg_color = getColor('command-mode-fg-color') or fg
+        self.insert_mode_bg_color = getColor('insert-mode-bg-color') or bg
+        self.insert_mode_fg_color = getColor('insert-mode-fg-color') or fg
+        self.overwrite_mode_bg_color = getColor('overwrite-mode-bg-color') or bg
+        self.overwrite_mode_fg_color = getColor('overwrite-mode-fg-color') or fg
+        self.unselected_body_bg_color = getColor('unselected-body-bg-color') or bg
+        self.unselected_body_fg_color = getColor('unselected-body-fg-color') or bg
     #@+node:ekr.20110209093958.15413: *4* k.setDefaultEditingKeyAction (New)
     def setDefaultEditingAction(self):
         k = self; c = k.c
-        action = c.config.getString('default_editing_state') or 'insert'
+        action = c.config.getString('default-editing-state') or 'insert'
         action.lower()
         if action not in ('command', 'insert', 'overwrite'):
             g.trace('ignoring default_editing_state: %s' % (action))
@@ -2009,7 +2003,7 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.82: *4* k.setDefaultUnboundKeyAction
     def setDefaultUnboundKeyAction(self, allowCommandState=True):
         k = self; c = k.c
-        defaultAction = c.config.getString('top_level_unbound_key_action') or 'insert'
+        defaultAction = c.config.getString('top-level-unbound-key-action') or 'insert'
         defaultAction.lower()
         if defaultAction == 'command' and not allowCommandState:
             self.unboundKeyAction = 'insert'
@@ -2166,7 +2160,7 @@ class KeyHandlerClass(object):
         '''Print warnings if commands do not have any @shortcut entry.
         The entry may be `None`, of course.'''
         k = self; c = k.c
-        if not c.config.getBool('warn_about_missing_settings'): return
+        if not c.config.getBool('warn-about-missing-settings'): return
         for name in sorted(c.commandsDict):
             abbrev = k.abbreviationsDict.get(name)
             key = c.frame.menu.canonicalizeMenuName(abbrev or name)
@@ -2231,7 +2225,7 @@ class KeyHandlerClass(object):
     def initSpecialIvars(self):
         '''Set ivars for special keystrokes from previously-existing bindings.'''
         c, k = self.c, self
-        warn = c.config.getBool('warn_about_missing_settings')
+        warn = c.config.getBool('warn-about-missing-settings')
         for ivar, commandName in (
             ('fullCommandKey', 'full-command'),
             ('abortAllModesKey', 'keyboard-quit'),
@@ -2699,7 +2693,7 @@ class KeyHandlerClass(object):
     def toggleInputState(self, event=None):
         '''The toggle-input-state command.'''
         k = self; c = k.c
-        default = c.config.getString('top_level_unbound_key_action') or 'insert'
+        default = c.config.getString('top-level-unbound-key-action') or 'insert'
         state = k.unboundKeyAction
         if default == 'insert':
             state = 'command' if state == 'insert' else 'insert'
@@ -3014,7 +3008,9 @@ class KeyHandlerClass(object):
             else:
                 return None
         elif g.app.unitTesting:
-            raise AttributeError
+            raise AttributeError('no such command: %s' % commandName)
+        elif g.app.inBridge:
+            raise AttributeError('no such command: %s' % commandName)
         else:
             g.error('simulateCommand: no command for %s' % (commandName))
             return None
@@ -3048,7 +3044,7 @@ class KeyHandlerClass(object):
         k = self
         # Setup...
         if 'keys' in g.app.debug:
-            g.trace(repr(k.state.kind), repr(event.char), event.stroke)
+            g.trace(repr(k.state.kind), repr(event.char), repr(event.stroke))
         k.checkKeyEvent(event)
         k.setEventWidget(event)
         k.traceVars(event)
@@ -3261,8 +3257,14 @@ class KeyHandlerClass(object):
         # Second, honor general modes.
         #
         if state == 'getArg':
-            k.getArg(event, stroke=stroke)
-            return True
+            # New in Leo 5.8: Only call k.getArg for keys it can handle.
+            if k.isPlainKey(stroke):
+                k.getArg(event, stroke=stroke)
+                return True
+            if stroke.s in ('Escape', 'Tab', 'BackSpace'):
+                k.getArg(event, stroke=stroke)
+                return True
+            return False 
         if state in ('getFileName', 'get-file-name'):
             k.getFileName(event)
             return True
@@ -3499,6 +3501,7 @@ class KeyHandlerClass(object):
             if result == 'ignore':
                 return False # Let getArg handle it.
             if result == 'found':
+                # Do not call k.keyboardQuit here!
                 return True
         #
         # No binding exists.
@@ -3538,7 +3541,11 @@ class KeyHandlerClass(object):
             stroke=stroke)
         # Careful: the command could exit.
         if c.exists and not k.silentMode:
-            c.minibufferWantsFocus()
+            # Use the state *after* executing the command.
+            if k.state.kind:
+                c.minibufferWantsFocus()
+            else:
+                c.bodyWantsFocus()
         return 'found'
     #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
     def isSpecialKey(self, event):
@@ -3650,6 +3657,9 @@ class KeyHandlerClass(object):
             if not func:
                 return
         commandName = commandName or func and func.__name__ or '<no function>'
+        if 'keys' in g.app.debug:
+            # A very important trace.
+            g.trace(commandName, 'stroke', stroke)
         k.funcReturn = None # For unit testing.
         #
         # Remember the key.

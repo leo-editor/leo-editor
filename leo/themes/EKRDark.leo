@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.66">
-	<global_window_position top="31" left="579" height="1048" width="1109"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -175,6 +172,7 @@
 <v t="ekr.20180318145515.816"><vh>Borders</vh></v>
 <v t="ekr.20180318145515.817"><vh>Buttons</vh></v>
 <v t="ekr.20180318145515.818"><vh>Log</vh></v>
+<v t="ekr.20181005084517.1"><vh>Gutter</vh></v>
 <v t="ekr.20180318145515.819"><vh>Menus</vh></v>
 <v t="ekr.20180318145515.820"><vh>Minibuffer &amp; label</vh></v>
 <v t="ekr.20180318145515.821"><vh>Plugins</vh></v>
@@ -183,10 +181,10 @@
 <v t="ekr.20180318145515.824"><vh>Status area</vh></v>
 <v t="ekr.20180318145515.825"><vh>Tab bar</vh></v>
 <v t="ekr.20180318145515.826"><vh>Tree</vh></v>
+<v t="ekr.20190106105105.1"><vh>zz must be last</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20180320125351.1"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180312110809.1"></t>
@@ -744,9 +742,11 @@ leo_dark_0
 ekr_dark</t>
 <t tx="ekr.20180318145515.813">/*
 @language css
-at-tabwidth -2 causes a crash in parse-template!
 
-@data qt-gui-plugin-style-sheet: EKR Black Solarized
+  EKRDark.leo: @data qt-gui-plugin-style-sheet
+  at-theme EKR Black Solarized.
+  at-tabwidth -2 causes a crash in parse-template!
+
 */
 </t>
 <t tx="ekr.20180318145515.814">/* A Qt bug? More general css should precede more specific. */
@@ -949,17 +949,6 @@ QLineEdit#status2 {
   border-width: 1px;
   border-style: solid;
 }
-QLineEdit#status1[style_class ~= 'info'],
-QLineEdit#status2[style_class ~= 'info'] {
-    background: @solarized-blue;
-    color:      @solarized-white;
-}
-
-QLineEdit#status1[style_class ~= 'fail'],
-QLineEdit#status2[style_class ~= 'fail'] {
-    background: @solarized-red;
-    color:      @solarized-white;
-}
 </t>
 <t tx="ekr.20180318145515.825">QTabBar::tab {
   /* color: @text-foreground; */
@@ -1018,5 +1007,19 @@ QTreeView QLineEdit {
 #80cb07: too bright
 
 #859900: real solarized green. Bad hue</t>
+<t tx="ekr.20181005084517.1">QFrame#gutter {
+  /* background: gray; */
+}</t>
+<t tx="ekr.20190106105105.1">QLineEdit#status1[style_class ~= 'info'],
+QLineEdit#status2[style_class ~= 'info'] {
+    background: @solarized-blue;
+    color:      @solarized-white;
+}
+
+QLineEdit#status1[style_class ~= 'fail'],
+QLineEdit#status2[style_class ~= 'fail'] {
+    background: @solarized-red;
+    color:      @solarized-white;
+}</t>
 </tnodes>
 </leo_file>

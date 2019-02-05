@@ -18,7 +18,7 @@ import optparse
 import subprocess
 import string
 import sys
-# import time
+import time
 import traceback
 import zipfile
 import platform
@@ -50,13 +50,17 @@ class IdleTimeManager(object):
     def add_callback(self, callback):
         '''Add a callback to be called at every idle time.'''
         self.callback_list.append(callback)
-    #@+node:ekr.20161026124810.1: *3* itm.on_idle
+    #@+node:ekr.20161026124810.1: *3* itm.on_idle (changed)
     on_idle_count = 0
 
     def on_idle(self, timer):
         '''IdleTimeManager: Run all idle-time callbacks.'''
         if not g.app: return
         if g.app.killed: return
+        if not g.app.pluginsController:
+            g.trace('No g.app.pluginsController', g.callers())
+            timer.stop()
+            return # For debugger.
         self.on_idle_count += 1
         # Handle the registered callbacks.
         for callback in self.callback_list:
@@ -944,12 +948,12 @@ class LeoApp(object):
         '''Command decorator for the LeoApp class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['g', 'app'])
-    #@+node:ekr.20090717112235.6007: *4* app.computeSignon
+    #@+node:ekr.20090717112235.6007: *4* app.computeSignon & printSignon
     def computeSignon(self):
         import leo.core.leoVersion as leoVersion
         app = self
         build, date = leoVersion.build, leoVersion.date
-        guiVersion = app.gui.getFullVersion() if app.gui else 'no gui!'
+        guiVersion = ', ' + app.gui.getFullVersion() if app.gui else ''
         leoVer = leoVersion.version
         n1, n2, n3, junk, junk = sys.version_info
         if sys.platform.startswith('win'):
@@ -982,21 +986,24 @@ class LeoApp(object):
             app.signon += ', build '+build
         if date:
             app.signon += ', '+date
-        app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
+        app.signon2 = 'Python %s.%s.%s%s\n%s' % (
             n1, n2, n3, guiVersion, sysVersion)
-        # Leo 5.6: print the signon immediately:
-        if not app.silentMode:
+            
+    def printSignon(self, verbose=False):
+        '''Print a minimal sigon to the log.'''
+        app = self
+        if app.silentMode:
+            return
+        if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+            print('Note: sys.stdout.encoding is not UTF-8')
+            print('Encoding is: %r' % sys.stdout.encoding)
+            print('See: https://stackoverflow.com/questions/14109024')
             print('')
-            if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
-                print('Note: sys.stdout.encoding is not UTF-8')
-                print('Encoding is: %r' % sys.stdout.encoding)
-                print('See: https://stackoverflow.com/questions/14109024')
-                print('')
-            print(app.signon)
+        print(app.signon)
+        if verbose:
             print(app.signon1)
             print(app.signon2)
             print('** isPython3: %s' % g.isPython3)
-            print('')
     #@+node:ekr.20100831090251.5838: *4* app.createXGui
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
@@ -1018,6 +1025,24 @@ class LeoApp(object):
             g.es_exception()
             print('can not create curses gui.')
             sys.exit()
+    #@+node:ekr.20181031160401.1: *5* app.createBrowserGui
+    def createBrowserGui(self, fileName='', verbose=False):
+        app = self
+        try:
+            from flexx import flx
+            assert flx
+        except Exception:
+            g.es_exception()
+            print('can not import flexx')
+            sys.exit(1)
+        try:
+            import leo.plugins.leoflexx as leoflexx
+            assert leoflexx
+        except Exception:
+            g.es_exception()
+            print('can not import leo.plugins.leoflexx')
+            sys.exit(1)
+        g.app.gui = leoflexx.LeoBrowserGui(gui_name=app.guiArgName)
     #@+node:ekr.20090619065122.8593: *5* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
         """A convenience routines for plugins to create the default gui class."""
@@ -1032,6 +1057,8 @@ class LeoApp(object):
             app.createQtGui(fileName, verbose=verbose)
         elif argName == 'null':
             g.app.gui = g.app.nullGui
+        elif argName.startswith('browser'):
+            app.createBrowserGui()
         elif argName in ('console', 'curses'):
             app.createCursesGui()
         elif argName == 'text':
@@ -1060,7 +1087,7 @@ class LeoApp(object):
             import leo.plugins.qt_gui as qt_gui
         except Exception:
             g.es_exception()
-            print('can not importleo.plugins.qt_gui')
+            print('can not import leo.plugins.qt_gui')
             sys.exit(1)
         try:
             from leo.plugins.editpane.editpane import edit_pane_test_open, edit_pane_csv
@@ -1265,6 +1292,10 @@ class LeoApp(object):
         app.logWaiting = []
         # Essential when opening multiple files...
         g.app.setLog(None)
+    #@+node:ekr.20180924093227.1: *3* app.c property
+    @property
+    def c (self):
+        return self.log and self.log.c
     #@+node:ekr.20171127111053.1: *3* app.Closing
     #@+node:ekr.20031218072017.2609: *4* app.closeLeoWindow
     def closeLeoWindow(self, frame, new_c=None, finish_quit=True):
@@ -1334,7 +1365,7 @@ class LeoApp(object):
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
         if 'shutdown' in g.app.debug:
-            g.pr('finishQuit')
+            g.pr('finishQuit: killed:', g.app.killed)
         if not g.app.killed:
             g.doHook("end1")
             g.app.global_cacher.commit_and_close()
@@ -1343,7 +1374,6 @@ class LeoApp(object):
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         self.destroyAllOpenWithFiles()
-        # if trace: g.pr('app.finishQuit: setting g.app.killed: %s' % g.callers())
         g.app.killed = True
             # Disable all further hooks and events.
             # Alas, "idle" events can still be called
@@ -1432,8 +1462,7 @@ class LeoApp(object):
             if trace:
                 g.pr('forgetOpenFile: %s' % g.shortFileName(fn))
             d[tag] = aList
-        else:
-            if trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
+        # elif trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
     def rememberOpenFile(self, fn):
         
@@ -1803,28 +1832,30 @@ class LoadManager(object):
         '''Return the absolute path to the theme .leo file.'''
         lm = self
         resolve = self.resolve_theme_path
+        #
         # Step 1: Use the --theme file if it exists
         path = resolve(lm.options.get('theme_path'), tag='--theme')
         if path: return path
+        #
         # Step 2: look for the @string theme-name setting in the first loaded file.
         # This is a hack, but especially useful for test*.leo files in leo/themes.
         path = lm.files and lm.files[0]
         if path and g.os_path_exists(path):
             # Tricky: we must call lm.computeLocalSettings *here*.
             theme_c = lm.openSettingsFile(path)
-            if not theme_c:
-                return None # Fix #843.
-            settings_d, junk_shortcuts_d = lm.computeLocalSettings(
-                c=theme_c,
-                settings_d=lm.globalSettingsDict,
-                bindings_d=lm.globalBindingsDict,
-                localFlag=False,
-            )
-            setting = settings_d.get_string_setting('theme-name')
-            if setting:
-                tag = theme_c.shortFileName()
-                path = resolve(setting, tag=tag)
-                if path: return path
+            if theme_c:
+                settings_d, junk_shortcuts_d = lm.computeLocalSettings(
+                    c=theme_c,
+                    settings_d=lm.globalSettingsDict,
+                    bindings_d=lm.globalBindingsDict,
+                    localFlag=False,
+                )
+                setting = settings_d.get_string_setting('theme-name')
+                if setting:
+                    tag = theme_c.shortFileName()
+                    path = resolve(setting, tag=tag)
+                    if path: return path
+        #
         # Finally, use the setting in myLeoSettings.leo.
         setting = lm.globalSettingsDict.get_string_setting('theme-name')
         tag = 'myLeoSettings.leo'
@@ -1949,10 +1980,12 @@ class LoadManager(object):
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(self, c, localFlag, theme=False):
         import leo.core.leoConfig as leoConfig
-        parser = leoConfig.SettingsTreeParser(c, localFlag)
-            # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
-        shortcutsDict, settingsDict = parser.traverse(theme=theme)
-        return shortcutsDict, settingsDict
+        if c:
+            parser = leoConfig.SettingsTreeParser(c, localFlag)
+                # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
+            shortcutsDict, settingsDict = parser.traverse(theme=theme)
+            return shortcutsDict, settingsDict
+        return None, None
     #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
     def getPreviousSettings(self, fn):
         '''
@@ -1975,14 +2008,18 @@ class LoadManager(object):
                 g.app.preReadFlag = False
             # Merge the settings from c into *copies* of the global dicts.
             d1, d2 = lm.computeLocalSettings(c,
-                lm.globalSettingsDict, lm.globalBindingsDict, localFlag=True)
+                lm.globalSettingsDict,
+                lm.globalBindingsDict,
+                localFlag=True)
                     # d1 and d2 are copies.
             d1.setName(settingsName)
             d2.setName(shortcutsName)
-        else:
-            # Get the settings from the globals settings dicts.
-            d1 = lm.globalSettingsDict.copy(settingsName)
-            d2 = lm.globalBindingsDict.copy(shortcutsName)
+            return PreviousSettings(d1, d2)
+        #
+        # The file does not exist, or is not valid.
+        # Get the settings from the globals settings dicts.
+        d1 = lm.globalSettingsDict.copy(settingsName)
+        d2 = lm.globalBindingsDict.copy(shortcutsName)
         return PreviousSettings(d1, d2)
     #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts(self, c, old_d, new_d, localFlag):
@@ -2108,24 +2145,19 @@ class LoadManager(object):
         The caller must init the c.config object.
         '''
         lm = self
-        if not fn: return None
-        giveMessage = (
-            not g.app.unitTesting and
-            not g.app.silentMode and
-            not g.app.batchMode)
-            # and not g.app.inBridge
-
-        def message(s):
-            # This occurs early in startup, so use the following.
-            if giveMessage:
-                if not g.isPython3:
-                    s = g.toEncodedString(s, 'ascii')
-                g.blue(s)
-
+        if not fn:
+            return None
         theFile = lm.openLeoOrZipFile(fn)
         if not theFile:
             return None # Fix #843.
-        message('reading settings in %s' % (fn))
+        if not any([g.app.unitTesting, g.app.silentMode, g.app.batchMode]):
+            # This occurs early in startup, so use the following.
+            s = 'reading settings in %s' % (fn)
+            if not g.isPython3:
+                    s = g.toEncodedString(s, 'ascii')
+            if 'startup' in g.app.debug:
+                print(s)
+            g.es(s, color='blue')
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
@@ -2221,6 +2253,7 @@ class LoadManager(object):
     def load(self, fileName=None, pymacs=None):
         '''Load the indicated file'''
         lm = self
+        t1 = time.clock()
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
         print('') # Give some separation for the coming traces.
@@ -2228,8 +2261,9 @@ class LoadManager(object):
             return
         lm.doPrePluginsInit(fileName, pymacs)
             # sets lm.options and lm.files
+        g.app.computeSignon()
+        g.app.printSignon()
         if lm.options.get('version'):
-            print(g.app.signon)
             return
         if not g.app.gui:
             return
@@ -2237,7 +2271,8 @@ class LoadManager(object):
             # Disable redraw until all files are loaded.
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
-        if g.app.killed: return
+        if g.app.killed:
+            return
         g.app.idleTimeManager.start()
         # Phase 3: after loading plugins. Create one or more frames.
         if lm.options.get('script') and not self.files:
@@ -2248,13 +2283,17 @@ class LoadManager(object):
             g.app.makeAllBindings()
             if ok and g.app.diff:
                 lm.doDiff()
-        if ok:
-            g.es('') # Clears horizontal scrolling in the log pane.
-            if g.app.listen_to_log_flag:
-                g.app.listenToLog()
-            g.app.gui.runMainLoop()
-            # For scripts, the gui is a nullGui.
-            # and the gui.setScript has already been called.
+        if not ok:
+            return
+        g.es('') # Clears horizontal scrolling in the log pane.
+        if g.app.listen_to_log_flag:
+            g.app.listenToLog()
+        if 'startup' in g.app.debug:
+            t2 = time.clock()
+            g.es_print('startup time: %5.2f sec' % (t2-t1))
+        g.app.gui.runMainLoop()
+        # For scripts, the gui is a nullGui.
+        # and the gui.setScript has already been called.
     #@+node:ekr.20150225133846.7: *4* LM.doDiff
     def doDiff(self):
         '''Support --diff option after loading Leo.'''
@@ -2381,7 +2420,6 @@ class LoadManager(object):
         lm.options = options = lm.scanOptions(fileName, pymacs)
             # also sets lm.files.
         if options.get('version'):
-            g.app.computeSignon()
             return
         script = options.get('script')
         verbose = script is None
@@ -2584,7 +2622,7 @@ class LoadManager(object):
     #@+node:ekr.20120219154958.10482: *5* LM.getDefaultFile
     def getDefaultFile(self):
         # Get the name of the workbook.
-        fn = g.app.config.getString('default_leo_file')
+        fn = g.app.config.getString('default-leo-file')
         fn = g.os_path_finalize(fn)
         if not fn: return
         if g.os_path_exists(fn):
@@ -2740,6 +2778,8 @@ class LoadManager(object):
             gui = gui.lower()
             if gui == 'qttabs':
                 g.app.qt_use_tabs = True
+            elif gui.startswith('browser'):
+                g.app.qt_use_tabs = False
             elif gui in ('console', 'curses', 'text', 'qt', 'null'):
                     # text: cursesGui.py, curses: cursesGui2.py.
                 g.app.qt_use_tabs = False
@@ -2779,7 +2819,10 @@ class LoadManager(object):
         script = options.script
         if script:
             fn = g.os_path_finalize_join(g.app.loadDir, script)
-            script, e = g.readFileIntoString(fn, kind='script:')
+            script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
+            if not script:
+                print('script not found:%s' % fn)
+                sys.exit(1)
         else:
             script = None
         return script
@@ -3082,14 +3125,12 @@ class LoadManager(object):
         # For second read, the settings for the file are *exactly* previousSettings.
         c = g.app.newCommander(fileName=fn, gui=gui,
             previousSettings=previousSettings)
-        assert c
         # Open the file, if possible.
         g.doHook('open0')
         theFile = lm.openLeoOrZipFile(fn)
         if isinstance(theFile, sqlite3.Connection):
             # this commander is associated with sqlite db
             c.sqlite_connection = theFile
-            
         # Enable the log.
         g.app.unlockLog()
         c.frame.log.enable(True)
@@ -3181,7 +3222,8 @@ class LoadManager(object):
         if not g.os_path_exists(fn):
             p = c.rootPosition()
             # Create an empty @edit node unless fn is an .leo file.
-            p.h = g.shortFileName(fn) if fn.endswith('.leo') else '@edit %s' % fn
+            # Fix #1070: Use "newHeadline", not fn.
+            p.h = "newHeadline" if fn.endswith('.leo') else '@edit %s' % fn
             c.selectPosition(p)
         elif c.looksLikeDerivedFile(fn):
             # 2011/10/10: Create an @file node.
@@ -3208,7 +3250,7 @@ class LoadManager(object):
         c.frame.setTitle(c.frame.title)
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
-        if c.config.getBool('use_chapters') and c.chapterController:
+        if c.config.getBool('use-chapters') and c.chapterController:
             c.chapterController.finishCreate()
         frame.c.setChanged(False)
             # Mark the outline clean.
@@ -3279,7 +3321,8 @@ class LoadManager(object):
                 theDir = c.os_path_finalize(g.os_path_dirname(fn))
                 c.openDirectory = c.frame.openDirectory = theDir
         else:
-            g.app.closeLeoWindow(c.frame, finish_quit=self.more_cmdline_files is False)
+            g.app.closeLeoWindow(c.frame, finish_quit=False)
+                # #970: Never close Leo here.
         return ok
     #@+node:ekr.20160430063406.1: *3* LM.revertCommander
     def revertCommander(self, c):
@@ -3409,8 +3452,8 @@ class RecentFilesManager(object):
         i = 0
         n = len(accel_ch)
         # see if we're grouping when files occur in more than one place
-        rf_group = c.config.getBool("recent_files_group")
-        rf_always = c.config.getBool("recent_files_group_always")
+        rf_group = c.config.getBool("recent-files-group")
+        rf_always = c.config.getBool("recent-files-group-always")
         groupedEntries = rf_group or rf_always
         if groupedEntries: # if so, make dict of groups
             dirCount = {}

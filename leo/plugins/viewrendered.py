@@ -201,10 +201,13 @@ trace = False
 #@+<< imports >>
 #@+node:tbrown.20100318101414.5993: ** << imports >> (vr)
 import leo.core.leoGlobals as g
-import leo.plugins.qt_text as qt_text
-import leo.plugins.free_layout as free_layout
-from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
-from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
+try:
+    import leo.plugins.qt_text as qt_text
+    import leo.plugins.free_layout as free_layout
+    from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+    from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
+except Exception:
+    QtWidgets = False
 try:
     import docutils
     import docutils.core
@@ -291,6 +294,14 @@ def decorate_window(w):
 #@+node:tbrown.20100318101414.5995: *3* vr.init
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    if not QtWidgets or not g.app.gui.guiName().startswith('qt'):
+        if (
+            not g.unitTesting and
+            not g.app.batchMode and
+            not g.app.gui.guiName() in ('browser', 'curses')
+        ):
+            g.es_print('viewrendered requires Qt')
+        return False
     global got_docutils
     if not got_docutils:
         g.es_print('Warning: viewrendered.py running without docutils.')
@@ -641,7 +652,6 @@ if QtWidgets: # NOQA
             c = self.c
             c.registerReloadSettings(self)
             self.auto_create = c.config.getBool('view-rendered-auto-create', False)
-            # self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
             self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
             self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
         #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
@@ -855,7 +865,7 @@ if QtWidgets: # NOQA
             c = pc.c
             if pc.must_change_widget(QtWebKitWidgets.QWebView):
                 w = QtWebKitWidgets.QWebView()
-                n = c.config.getInt('qweb_view_font_size')
+                n = c.config.getInt('qweb-view-font-size')
                 if n:
                     settings = w.settings()
                     settings.setFontSize(settings.DefaultFontSize, n)
@@ -902,7 +912,7 @@ if QtWidgets: # NOQA
             c = pc.c
             if pc.must_change_widget(QtWebKitWidgets.QWebView):
                 w = QtWebKitWidgets.QWebView()
-                n = c.config.getInt('qweb_view_font_size')
+                n = c.config.getInt('qweb-view-font-size')
                 if n:
                     settings = w.settings()
                     settings.setFontSize(settings.DefaultFontSize, n)
@@ -958,7 +968,7 @@ if QtWidgets: # NOQA
             else:
                 if pc.must_change_widget(QtWebKitWidgets.QWebView):
                     w = QtWebKitWidgets.QWebView()
-                    n = c.config.getInt('qweb_view_font_size')
+                    n = c.config.getInt('qweb-view-font-size')
                     if n:
                         settings = w.settings()
                         settings.setFontSize(settings.DefaultFontSize, n)
@@ -1025,7 +1035,7 @@ if QtWidgets: # NOQA
                     pc.title = None
                 mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
                 mdext = [x.strip() for x in mdext.split(',')]
-                s = markdown(s, mdext)
+                s = markdown(s, extensions=mdext)
                 s = g.toUnicode(s)
             except SystemMessage as sm:
                 msg = sm.args[0]

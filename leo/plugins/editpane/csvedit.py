@@ -155,6 +155,24 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         self.c = c
         self.lep = lep
         self.tbl = 0
+        self.state = {
+            'rows': 2,
+            'sep': ',',
+            'start': '',
+            'end': '',
+        }
+        if c:  # update state with anything stored in uA
+            u = c.p.v.u
+            if '_lep' in u:
+                if 'csv' in u['_lep']:
+                    self.state.update(u['_lep']['csv'])
+                    # add anything not already present
+                    u['_lep']['csv'].update(self.state)
+                else:
+                    u['_lep']['csv'] = dict(self.state)
+            else:
+                u['_lep'] = {'csv': dict(self.state)}
+
         self.ui = self.make_ui()
     def get_delim(self):
         """get_delim - get the current delimiter parts"""
@@ -215,12 +233,12 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         ui.min_rows.setMinimum(1)
         ui.min_rows.setPrefix("tbl with ")
         ui.min_rows.setSuffix(" rows")
-        ui.min_rows.setValue(2)
+        ui.min_rows.setValue(self.state['rows'])
         # separator text and line start / end text
         for attr in 'sep', 'start', 'end':
             buttons2.addWidget(QtWidgets.QLabel(attr.title()+':'))
             w = QtWidgets.QLineEdit()
-            w.setText(getattr(DEFAULTDELIM, attr))
+            w.setText(self.state[attr])
             setattr(ui, attr+'_txt', w)
             # w.textEdited.connect(self.delim_changed)
             buttons2.addWidget(w)
@@ -255,6 +273,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
 
         # self.update_text(self.lep.get_position().b)
         self.ui.data.delim = self.get_delim()
+        self.update_state()
         self.new_data()
     def insert(self, name, move=False):
         index = self.ui.table.currentIndex()
@@ -327,6 +346,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
             self.tbl += 1 if next else -1
         self.tbl = min(max(0, self.tbl), len(tables)-1)
         self.update_text(text)
+        self.update_state()
     def focusInEvent (self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
@@ -355,6 +375,22 @@ class LEP_CSVEdit(QtWidgets.QWidget):
                 self.tbl = i
         self.update_text(text)
 
+    def update_state(self):
+        """Copy state to uA"""
+        self.state = {
+            'rows': self.ui.min_rows.value(),
+            'sep': self.ui.sep_txt.text(),
+            'start': self.ui.start_txt.text(),
+            'end': self.ui.end_txt.text(),
+        }
+        u = self.c.p.v.u
+        if '_lep' in u:
+            if 'csv' in u['_lep']:
+                u['_lep']['csv'].update(self.state)
+            else:
+                u['_lep']['csv'] = dict(self.state)
+        else:
+            u['_lep'] = {'csv': dict(self.state)}
     def update_text(self, text):
         """update_text - update for current text
 

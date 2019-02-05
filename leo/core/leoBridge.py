@@ -135,6 +135,7 @@ class BridgeController(object):
         except ImportError:
             print("Error importing leoConfig.py")
             import traceback; traceback.print_exc()
+        #
         # Set leoGlobals.g here, rather than in leoGlobals.
         leoGlobals.g = leoGlobals
         #@-<< initLeo imports >>

@@ -49,7 +49,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     support operations requested by Leo's core.
     '''
     #@+others
-    #@+node:ekr.20110605121601.18138: *3*  ctor (DynamicWindow)
+    #@+node:ekr.20110605121601.18138: *3*  ctor & reloadSettings (DynamicWindow)
     def __init__(self, c, parent=None):
         '''Ctor for the DynamicWindow class.  The main window is c.frame.top'''
             # Called from LeoQtFrame.finishCreate.
@@ -65,9 +65,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def reloadSettings(self):
         c = self.leo_c
         c.registerReloadSettings(self)
-        self.bigTree = c.config.getBool('big_outline_pane')
-        self.show_iconbar = c.config.getBool('show_iconbar', default=True)
+        self.bigTree = c.config.getBool('big-outline-pane')
+        self.show_iconbar = c.config.getBool('show-iconbar', default=True)
         self.toolbar_orientation = c.config.getString('qt-toolbar-location') or ''
+        self.use_gutter = c.config.getBool('use-gutter', default=False)
         if getattr(self, 'iconBar', None):
             if self.show_iconbar:
                 self.iconBar.show()
@@ -102,12 +103,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # A LeoTabbedTopLevel for tabbed windows.
             # None for non-tabbed windows.
         # Init the base class.
-        ui_file_name = c.config.getString('qt_ui_file_name')
         self.useScintilla = c.config.getBool('qt-use-scintilla')
-        if not ui_file_name:
-            ui_file_name = 'qt_main.ui'
-        ui_description_file = g.app.loadDir + "/../plugins/" + ui_file_name
-        assert g.os_path_exists(ui_description_file)
         self.reloadSettings()
         main_splitter, secondary_splitter = self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")
@@ -119,7 +115,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_menubar = self.menuBar()
         self.statusBar = QtWidgets.QStatusBar()
         self.setStatusBar(self.statusBar)
-        orientation = c.config.getString('initial_split_orientation')
+        orientation = c.config.getString('initial-split-orientation')
         self.setSplitDirection(main_splitter, secondary_splitter, orientation)
         if hasattr(c, 'styleSheetManager'):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
@@ -184,7 +180,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=6)
         grid = self.createGrid(bodyFrame, 'bodyGrid')
         innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
-        if c.config.getBool('use-gutter', default=False):
+        if self.use_gutter:
             lineWidget = qt_text.LeoLineTextWidget(c, body)
             vLayout.addWidget(lineWidget)
         else:
@@ -232,7 +228,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         findTab.setObjectName('findTab')
         # Fix #516:
         use_minibuffer = c.config.getBool('minibuffer-find-mode', default=False)
-        use_dialog = c.config.getBool('use_find_dialog', default=False)
+        use_dialog = c.config.getBool('use-find-dialog', default=False)
         if not use_minibuffer and not use_dialog:
             tabWidget.addTab(findScrollArea, 'Find')
         # Do this later, in LeoFind.finishCreate
@@ -1351,7 +1347,8 @@ class LeoQtBody(leoFrame.LeoBody):
     def reloadSettings(self):
         c = self.c
         self.useScintilla = c.config.getBool('qt-use-scintilla')
-        self.use_chapters = c.config.getBool('use_chapters')
+        self.use_chapters = c.config.getBool('use-chapters')
+        self.use_gutter = c.config.getBool('use-gutter', default=False)
     #@+node:ekr.20160309074124.1: *5* LeoQtBody.set_invisibles
     def set_invisibles(self, c):
         '''Set the show-invisibles bit in the document.'''
@@ -1416,15 +1413,18 @@ class LeoQtBody(leoFrame.LeoBody):
         if self.totalNumberOfEditors == 2:
             self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
-            self.packLabel(widget.parent(), n=1)
-            widget.leo_label = widget.parent().leo_label
+            # Fix #1021: Pack differently depending on whether the gutter exists.
+            if self.use_gutter:
+                self.packLabel(widget.parent(), n=1)
+                widget.leo_label = widget.parent().leo_label
+            else:
+                self.packLabel(widget, n=1)
         name = '%d' % self.totalNumberOfEditors
         f, wrapper = self.createEditor(name)
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(widget), widget
         assert isinstance(f, QtWidgets.QFrame), f
         d[name] = wrapper
-        # g.printDict(d)
         if self.numberOfEditors == 2:
             # Inject the ivars into the first editor.
             # The name of the last editor need not be '1'
@@ -1442,18 +1442,21 @@ class LeoQtBody(leoFrame.LeoBody):
         self.selectEditor(wrapper)
         self.updateEditors()
         c.bodyWantsFocus()
-    #@+node:ekr.20110605121601.18196: *6* LeoQtBody.createEditor
+    #@+node:ekr.20190118150859.10: *6* LeoQtBody.createEditor
     def createEditor(self, name):
         '''Create a new body editor.'''
         c, p = self.c, self.c.p
-        f = c.frame.top.leo_ui.leo_body_inner_frame
+        parent_frame = c.frame.top.leo_ui.leo_body_inner_frame
+        # To do: #1061: Create a frame for line numbers, if necessary
+        #
         # Step 1: create the editor.
-        w = widget = qt_text.LeoQTextBrowser(f, c, self)
+        w = widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
         w.setObjectName('richTextEdit') # Will be changed later.
         wrapper = qt_text.QTextEditWrapper(w, name='body', c=c)
         self.packLabel(w)
+        #
         # Step 2: inject ivars, set bindings, etc.
-        self.injectIvars(f, name, p, wrapper)
+        self.injectIvars(parent_frame, name, p, wrapper)
         self.updateInjectedIvars(w, p)
         wrapper.setAllText(p.b)
         wrapper.see(0)
@@ -1464,7 +1467,7 @@ class LeoQtBody(leoFrame.LeoBody):
         else:
             # Scintilla only.
             self.recolorWidget(p, wrapper)
-        return f, wrapper
+        return parent_frame, wrapper
     #@+node:ekr.20110605121601.18197: *5* LeoQtBody.assignPositionToEditor
     def assignPositionToEditor(self, p):
         '''Called *only* from tree.select to select the present body editor.'''
@@ -1753,6 +1756,13 @@ class LeoQtBody(leoFrame.LeoBody):
             if chapter != oldChapter:
                 cc.selectChapterByName(name)
                 c.bodyWantsFocus()
+    #@+node:ekr.20110605121601.18216: *5* LeoQtBody.unpackWidget
+    def unpackWidget(self, layout, w):
+
+        index = layout.indexOf(w)
+        item = layout.itemAt(index)
+        item.setGeometry(QtCore.QRect(0, 0, 0, 0))
+        layout.removeItem(item)
     #@+node:ekr.20110605121601.18215: *5* LeoQtBody.updateInjectedIvars
     def updateInjectedIvars(self, w, p):
 
@@ -1764,13 +1774,6 @@ class LeoQtBody(leoFrame.LeoBody):
         else:
             w.leo_chapter = None
         w.leo_p = p.copy()
-    #@+node:ekr.20110605121601.18216: *5* LeoQtBody.unpackWidget
-    def unpackWidget(self, layout, w):
-
-        index = layout.indexOf(w)
-        item = layout.itemAt(index)
-        item.setGeometry(QtCore.QRect(0, 0, 0, 0))
-        layout.removeItem(item)
     #@+node:ekr.20110605121601.18223: *3* LeoQtBody.Event handlers
     #@+node:ekr.20110930174206.15472: *4* LeoQtBody.onFocusIn
     def onFocusIn(self, obj):
@@ -1947,9 +1950,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
         
     def reloadSettings(self):
         c = self.c
-        self.cursorStay = c.config.getBool("cursor_stay_on_paste", default=True)
-        self.use_chapters = c.config.getBool('use_chapters')
-        self.use_chapter_tabs = c.config.getBool('use_chapter_tabs')
+        self.cursorStay = c.config.getBool("cursor-stay-on-paste", default=True)
+        self.use_chapters = c.config.getBool('use-chapters')
+        self.use_chapter_tabs = c.config.getBool('use-chapter-tabs')
     #@+node:ekr.20110605121601.18248: *5* qtFrame.setIvars
     def setIvars(self):
         # "Official ivars created in createLeoFrame and its allies.
@@ -2079,7 +2082,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             w2.setReadOnly(True)
             splitter = QtWidgets.QSplitter()
             self.statusBar.addWidget(splitter, True)
-            sizes = c.config.getString('status_line_split_sizes') or '1 2'
+            sizes = c.config.getString('status-line-split-sizes') or '1 2'
             sizes = [int(i) for i in sizes.replace(',', ' ').split()]
             # pylint: disable=consider-using-ternary
             for n, i in enumerate(sizes):
@@ -2128,123 +2131,78 @@ class LeoQtFrame(leoFrame.LeoFrame):
         def put_helper(self, s, w, bg=None, fg=None):
             '''Put string s in the indicated widget, with proper colors.'''
             c = self.c
-            if not bg:
-                bg = c.config.getColor('status-bg') or 'white'
-            if not fg:
-                fg = c.config.getColor('status-fg') or 'black'
-
-            # Rather than put(msg, explicit_color, explicit_color) we should use
-            # put(msg, status) where status is None, 'info', or 'fail'.
-            # Just as a quick hack to avoid dealing with propagating those changes
-            # back upstream, infer status like this:
-            status = None
-            if (fg == c.config.getColor('find-found-fg') and
-                bg == c.config.getColor('find-found-bg')
-            ):
-                status = 'info'
-            elif (fg == c.config.getColor('find-not-found-fg') and
-                bg == c.config.getColor('find-not-found-bg')
-            ):
-                status = 'fail'
-            d = self.styleSheetCache
-            if status != d.get(w, '__undefined__'):
-                d[w] = status
-                c.styleSheetManager.mng.remove_sclass(w, ['info', 'fail'])
-                c.styleSheetManager.mng.add_sclass(w, status)
-                c.styleSheetManager.mng.update_view(w)  # force appearance update
+            bg = bg or c.config.getColor('status-bg') or 'white'
+            fg = fg or c.config.getColor('status-fg') or 'black'
+            if True:
+                # Work around #804. w is a QLineEdit.
+                w.setStyleSheet('background: %s; color: %s;' % (bg, fg))
+            else:
+                # Rather than put(msg, explicit_color, explicit_color) we should use
+                # put(msg, status) where status is None, 'info', or 'fail'.
+                # Just as a quick hack to avoid dealing with propagating those changes
+                # back upstream, infer status like this:
+                if (fg == c.config.getColor('find-found-fg') and
+                    bg == c.config.getColor('find-found-bg')
+                ):
+                    status = 'info'
+                elif (fg == c.config.getColor('find-not-found-fg') and
+                    bg == c.config.getColor('find-not-found-bg')
+                ):
+                    status = 'fail'
+                else:
+                    status = None
+                d = self.styleSheetCache
+                if status != d.get(w, '__undefined__'):
+                    d[w] = status
+                    c.styleSheetManager.mng.remove_sclass(w, ['info', 'fail'])
+                    c.styleSheetManager.mng.add_sclass(w, status)
+                    c.styleSheetManager.mng.update_view(w)  # force appearance update
             w.setText(s)
-
-        #@+node:chris.20180320072817.1: *4* QtStatusLineClass.update & helper
+        #@+node:chris.20180320072817.1: *4* QtStatusLineClass.update & helpers
         def update(self):
             if g.app.killed: return
-            c = self.c; body = c.frame.body
+            c, body = self.c, self.c.frame.body
             if not c.p:
                 return
-            # te is a QTextEdit.
-            # 2010/02/19: Fix bug 525090
-            # An added editor window doesn't display line/col
             te = body.widget
-            if c.config.getBool('word-count', default=False):
-                if isinstance(te, QtWidgets.QTextEdit):
-                    offset = c.p.textOffset()
-                    cr = te.textCursor()
-                    bl = cr.block()
-                    col = bl.position()
-                    row = bl.blockNumber() + 1
-                    line = g.u(bl.text())
-                    # Fix bug #195: fcol when using @first directive is inaccurate
-                    # https://github.com/leo-editor/leo-editor/issues/195
-                    offset = c.p.textOffset()
-                    fcol_offset = 0
-                    s2 = line[0: col]
-                    col = g.computeWidth(s2, c.tab_width)
-                    i = line.find('<<')
-                    j = line.find('>>')
-                    if -1 < i < j or g.match_word(line.strip(), 0, '@others'):
-                        offset = None
-                    else:
-                        for tag in ('@first ', '@last '):
-                            if line.startswith(tag):
-                                fcol_offset = len(tag)
-                                break
-                    # New in Leo 5.2. fcol is '' if there is no ancestor @<file> node.
-                    fcol = '' if offset is None else max(0, col + offset - fcol_offset)
-                    u = c.p.b
-                    wordNum = len(u.split(None))
-                else:
-                    row, col, fcol = 0, 0, ''
-                if 1:
-                    self.put1("line: %d col: %d fcol: %s words: %u" % (row, col, fcol, wordNum))
-                else:
-                    #283 is not ready yet, and probably will never be.
-                    fline = self.file_line()
-                    fline = '' if fline is None else fline + row
-                    self.put1(
-                        "fline: %s line: %d col: %d fcol: %s words: %u" % (
-                            fline, row, col, fcol, wordNum))
-                self.lastRow = row
-                self.lastCol = col
-                self.lastFcol = fcol
-                self.lastwordNum = wordNum
+            if not isinstance(te, QtWidgets.QTextEdit):
                 return
-            if isinstance(te, QtWidgets.QTextEdit):
-                offset = c.p.textOffset()
-                cr = te.textCursor()
-                bl = cr.block()
-                col = bl.position()
-                row = bl.blockNumber() + 1
-                line = g.u(bl.text())
-                # Fix bug #195: fcol when using @first directive is inaccurate
-                # https://github.com/leo-editor/leo-editor/issues/195
-                offset = c.p.textOffset()
-                fcol_offset = 0
-                s2 = line[0: col]
-                col = g.computeWidth(s2, c.tab_width)
-                i = line.find('<<')
-                j = line.find('>>')
-                if -1 < i < j or g.match_word(line.strip(), 0, '@others'):
-                    offset = None
-                else:
-                    for tag in ('@first ', '@last '):
-                        if line.startswith(tag):
-                            fcol_offset = len(tag)
-                            break
-                # New in Leo 5.2. fcol is '' if there is no ancestor @<file> node.
-                fcol = '' if offset is None else max(0, col + offset - fcol_offset)
-            else:
-                row, col, fcol = 0, 0, ''
-            if 1:
-                self.put1("line: %d col: %d fcol: %s" % (row, col, fcol))
-            else:
-                #283 is not ready yet, and probably will never be.
-                fline = self.file_line()
-                fline = '' if fline is None else fline + row
-                self.put1(
-                    "fline: %s line: %d col: %d fcol: %s" % (fline, row, col, fcol))
+            cursor = te.textCursor()
+            block = cursor.block()
+            row = block.blockNumber() + 1
+            col, fcol = self.compute_columns(block, cursor)
+            words = len(c.p.b.split(None))
+            self.put_status_line(col, fcol, row, words)
             self.lastRow = row
             self.lastCol = col
             self.lastFcol = fcol
-        #@+node:chris.20180320072817.2: *5* file_line
+        #@+node:ekr.20190118082646.1: *5* qstatus.compute_columns
+        def compute_columns(self, block, cursor):
+            
+            c = self.c
+            line = g.u(block.text())
+            col = cursor.columnNumber()
+            offset = c.p.textOffset()
+            fcol_offset = 0
+            s2 = line[0: col]
+            col = g.computeWidth(s2, c.tab_width)
+            #
+            # Fix bug #195: fcol when using @first directive is inaccurate
+            # https://github.com/leo-editor/leo-editor/issues/195
+            i = line.find('<<')
+            j = line.find('>>')
+            if -1 < i < j or g.match_word(line.strip(), 0, '@others'):
+                offset = None
+            else:
+                for tag in ('@first ', '@last '):
+                    if line.startswith(tag):
+                        fcol_offset = len(tag)
+                        break
+            #
+            # fcol is '' if there is no ancestor @<file> node.
+            fcol = None if offset is None else max(0, col + offset - fcol_offset)
+            return col, fcol
+        #@+node:chris.20180320072817.2: *5* qstatus.file_line (not used)
         def file_line(self):
             '''
             Return the line of the first line of c.p in its external file.
@@ -2256,6 +2214,19 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 return goto.find_node_start(p)
             else:
                 return None
+        #@+node:ekr.20190118082047.1: *5* qstatus.put_status_line
+        def put_status_line(self, col, fcol, row, words):
+            
+            if 1:
+                fcol_part = '' if fcol is None else ' fcol: %d' % (fcol)
+                # For now, it seems to0 difficult to get alignment *exactly* right.
+                self.put1("line: %d col: %d %s words: %s" % (row, col, fcol_part, words))
+            else:
+                # #283 is not ready yet, and probably will never be.
+                fline = self.file_line()
+                fline = '' if fline is None else fline + row
+                self.put1(
+                    "fline: %2s line: %2d col: %2s fcol: %2s" % (fline, row, col, fcol))
         #@-others
     #@+node:ekr.20110605121601.18262: *3* qtFrame.class QtIconBarClass
     class QtIconBarClass(object):
@@ -2479,7 +2450,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     action_container.actions()[top_offset], act)
                 action_container.setText(
                     g.u(action_container.text()) +
-                    (c.config.getString('mod_scripting_subtext') or '')
+                    (c.config.getString('mod-scripting-subtext') or '')
                 )
         #@-others
     #@+node:ekr.20110605121601.18274: *3* qtFrame.Configuration
@@ -2487,11 +2458,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def configureBar(self, bar, verticalFlag):
         c = self.c
         # Get configuration settings.
-        w = c.config.getInt("split_bar_width")
+        w = c.config.getInt("split-bar-width")
         if not w or w < 1: w = 7
         relief = c.config.get("split_bar_relief", "relief")
         if not relief: relief = "flat"
-        color = c.config.getColor("split_bar_color")
+        color = c.config.getColor("split-bar-color")
         if not color: color = "LightSteelBlue2"
         try:
             if verticalFlag:
@@ -2513,11 +2484,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18276: *4* qtFrame.configureBarsFromConfig
     def configureBarsFromConfig(self):
         c = self.c
-        w = c.config.getInt("split_bar_width")
+        w = c.config.getInt("split-bar-width")
         if not w or w < 1: w = 7
         relief = c.config.get("split_bar_relief", "relief")
         if not relief or relief == "": relief = "flat"
-        color = c.config.getColor("split_bar_color")
+        color = c.config.getColor("split-bar-color")
         if not color or color == "": color = "LightSteelBlue2"
         if self.splitVerticalFlag:
             bar1, bar2 = self.bar1, self.bar2
@@ -2541,10 +2512,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def setInitialWindowGeometry(self):
         """Set the position and size of the frame to config params."""
         c = self.c
-        h = c.config.getInt("initial_window_height") or 500
-        w = c.config.getInt("initial_window_width") or 600
-        x = c.config.getInt("initial_window_left") or 10
-        y = c.config.getInt("initial_window_top") or 10
+        h = c.config.getInt("initial-window-height") or 500
+        w = c.config.getInt("initial-window-width") or 600
+        x = c.config.getInt("initial-window-left") or 10
+        y = c.config.getInt("initial-window-top") or 10
         if h and w and x and y:
             self.setTopGeometry(w, h, x, y)
     #@+node:ekr.20110605121601.18279: *4* qtFrame.setTabWidth
@@ -2559,14 +2530,14 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def reconfigurePanes(self):
         c, f = self.c, self
         if f.splitVerticalFlag:
-            r = c.config.getRatio("initial_vertical_ratio")
+            r = c.config.getRatio("initial-vertical-ratio")
             if r is None or r < 0.0 or r > 1.0: r = 0.5
-            r2 = c.config.getRatio("initial_vertical_secondary_ratio")
+            r2 = c.config.getRatio("initial-vertical-secondary-ratio")
             if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         else:
-            r = c.config.getRatio("initial_horizontal_ratio")
+            r = c.config.getRatio("initial-horizontal-ratio")
             if r is None or r < 0.0 or r > 1.0: r = 0.3
-            r2 = c.config.getRatio("initial_horizontal_secondary_ratio")
+            r2 = c.config.getRatio("initial-horizontal-secondary-ratio")
             if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         f.resizePanesToRatio(r, r2)
     #@+node:ekr.20110605121601.18282: *4* qtFrame.resizePanesToRatio
@@ -2578,15 +2549,19 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2
     def divideLeoSplitter1(self, frac):
         '''Divide the main splitter.'''
-        free_layout = self.c and self.c.free_layout
-        w = free_layout.get_main_splitter()
+        layout = self.c and self.c.free_layout
+        if not layout:
+            return
+        w = layout.get_main_splitter()
         if w:
             self.divideAnySplitter(frac, w)
 
     def divideLeoSplitter2(self, frac):
         '''Divide the secondary splitter.'''
-        free_layout = self.c and self.c.free_layout
-        w = free_layout.get_secondary_splitter()
+        layout = self.c and self.c.free_layout
+        if not layout:
+            return
+        w = layout.get_secondary_splitter()
         if w:
             self.divideAnySplitter(frac, w)
     #@+node:ekr.20110605121601.18284: *4* qtFrame.divideAnySplitter
@@ -2606,6 +2581,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         s = s1 + s2
         s1 = int(s * frac + 0.5)
         s2 = s - s1
+        # g.trace("%2d %2d %5.2f => %2d %2d" % (sizes[0], sizes[1], frac, s1, s2))
         splitter.setSizes([s1, s2])
     #@+node:ekr.20110605121601.18285: *3* qtFrame.Event handlers
     #@+node:ekr.20110605121601.18286: *4* qtFrame.OnCloseLeoEvent
@@ -3035,7 +3011,7 @@ class LeoQtLog(leoFrame.LeoLog):
         
     def reloadSettings(self):
         c = self.c
-        self.wrap = bool(c.config.getBool('log_pane_wraps'))
+        self.wrap = bool(c.config.getBool('log-pane-wraps'))
         
     #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self):
@@ -3056,7 +3032,7 @@ class LeoQtLog(leoFrame.LeoLog):
         # Create the log tab as the leftmost tab.
         # log.selectTab('Log')
         log.createTab('Log')
-        logWidget = self.contentsDict.get('Log')
+        self.logWidget = logWidget = self.contentsDict.get('Log')
         option = QtGui.QTextOption
         logWidget.setWordWrapMode(
             option.WordWrap if self.wrap else option.NoWrap)
@@ -3183,7 +3159,7 @@ class LeoQtLog(leoFrame.LeoLog):
             color = leoColor.getColor(color)
         if not color:
             # #788: First, fall back to 'log_black_color', not 'black.
-            color = c.config.getColor('log_black_color')
+            color = c.config.getColor('log-black-color')
             if not color:
                 # Should never be necessary.
                 color = 'black'
@@ -3293,6 +3269,7 @@ class LeoQtLog(leoFrame.LeoLog):
             self.tabWidget.addTab(contents, tabName)
         return contents
     #@+node:ekr.20110605121601.18327: *4* LeoQtLog.cycleTabFocus
+    @cmd('cycle-tab-focus')
     def cycleTabFocus(self, event=None):
         '''Cycle keyboard focus between the tabs in the log pane.'''
         w = self.tabWidget
@@ -3426,12 +3403,14 @@ class LeoQtMenu(leoMenu.LeoMenu):
         """Wrapper for the Tkinter add_command menu method."""
         # pylint: disable=arguments-differ
         accel = keys.get('accelerator') or ''
-        command = keys.get('command')
+        command = keys.get('command') or ''
         commandName = keys.get('commandName')
         label = keys.get('label')
         n = keys.get('underline')
+        if n is None: n = -1
         menu = keys.get('menu') or self
-        if not label: return
+        if not label:
+            return
         if -1 < n < len(label):
             label = label[: n] + '&' + label[n:]
         if accel:
@@ -3732,7 +3711,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             # Paste the node after the presently selected node.
         if not pasted:
             return
-        if c.config.getBool('inter_outline_drag_moves'):
+        if c.config.getBool('inter-outline-drag-moves'):
             src_c, src_p = g.app.drag_source
             if src_p.hasVisNext(src_c):
                 nxt = src_p.getVisNext(src_c).v
@@ -4500,7 +4479,7 @@ class TabbedFrameFactory(object):
         # Work around the problem with missing dirty indicator
         # by always showing the tab.
         tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
-        tabw.setTabsClosable(c.config.getBool('outline_tabs_show_close', True))
+        tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
         dw.show()
         tabw.show()
         return dw

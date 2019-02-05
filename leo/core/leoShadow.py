@@ -69,9 +69,9 @@ class ShadowController(object):
     def reloadSettings(self):
         '''ShadowController.reloadSettings.'''
         c = self.c
-        self.shadow_subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
-        self.shadow_prefix = c.config.getString('shadow_prefix') or ''
-        self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir', default=False)
+        self.shadow_subdir = c.config.getString('shadow-subdir') or '.leo_shadow'
+        self.shadow_prefix = c.config.getString('shadow-prefix') or ''
+        self.shadow_in_home_dir = c.config.getBool('shadow-in-home-dir', default=False)
         self.shadow_subdir = g.os_path_normpath(self.shadow_subdir)
     #@+node:ekr.20080711063656.1: *3* x.File utils
     #@+node:ekr.20080711063656.7: *4* x.baseDirName
@@ -109,43 +109,44 @@ class ShadowController(object):
             # Force the creation of the directories.
             g.makeAllNonExistentDirectories(path, c=None, force=True)
         return g.os_path_exists(path) and g.os_path_isdir(path)
-    #@+node:ekr.20080713091247.1: *4* x.replaceFileWithString (@shadow)
-    def replaceFileWithString(self, fn, s):
-        '''Replace the file with s if s is different from theFile's contents.
+    #@+node:ekr.20080713091247.1: *4* x.replaceFileWithString
+    def replaceFileWithString(self, encoding, fileName, s):
+        '''
+        Replace the file with s if s is different from theFile's contents.
 
         Return True if theFile was changed.
         '''
-        c = self.c
-        x = self
-        exists = g.os_path_exists(fn)
+        x, c = self, self.c
+        exists = g.os_path_exists(fileName)
         if exists:
             # Read the file.  Return if it is the same.
-            s2, e = g.readFileIntoString(fn)
+            s2, e = g.readFileIntoString(fileName)
             if s2 is None:
                 return False
             if s == s2:
-                report = c.config.getBool('report_unchanged_files', default=True)
+                report = c.config.getBool('report-unchanged-files', default=True)
                 if report and not g.unitTesting:
-                    g.es('unchanged:', fn)
+                    g.es('unchanged:', fileName)
                 return False
         # Issue warning if directory does not exist.
-        theDir = g.os_path_dirname(fn)
+        theDir = g.os_path_dirname(fileName)
         if theDir and not g.os_path_exists(theDir):
             if not g.unitTesting:
-                x.error('not written: %s directory not found' % fn)
+                x.error('not written: %s directory not found' % fileName)
             return False
         # Replace the file.
         try:
-            f = open(fn, 'wb')
-            # 2011/09/09: Use self.encoding.
-            f.write(g.toEncodedString(s, encoding=self.encoding))
-            f.close()
+            with open(fileName, 'wb') as f:
+                # Fix bug 1243847: unicode error when saving @shadow nodes.
+                f.write(g.toEncodedString(s, encoding=encoding))
+            c.setFileTimeStamp(fileName)
+                # Fix #1053.  This is an *ancient* bug.
             if not g.unitTesting:
-                if exists: g.es('wrote:', fn)
-                else: g.es('created:', fn)
+                kind = 'wrote' if exists else 'created'
+                g.es('%-6s: %s' % (kind, fileName))
             return True
         except IOError:
-            x.error('unexpected exception writing file: %s' % (fn))
+            x.error('unexpected exception writing file: %s' % (fileName))
             g.es_exception()
             return False
     #@+node:ekr.20080711063656.6: *4* x.shadowDirName and shadowPathName
@@ -385,7 +386,7 @@ class ShadowController(object):
         Propagate the changes from the public file (without_sentinels)
         to the private file (with_sentinels)
         '''
-        x = self; at = self.c.atFileCommands
+        x, at = self, self.c.atFileCommands
         at.errors = 0
         self.encoding = at.encoding
         s = at.readFileToUnicode(old_private_file)
@@ -415,7 +416,7 @@ class ShadowController(object):
         # 2010/01/07: check at.errors also.
         if copy and x.errors == 0 and at.errors == 0:
             s = ''.join(new_private_lines)
-            x.replaceFileWithString(fn, s)
+            x.replaceFileWithString(at.encoding, fn, s)
         return copy
     #@+node:bwmulder.20041231170726: *4* x.updatePublicAndPrivateFiles
     def updatePublicAndPrivateFiles(self, root, fn, shadow_fn):
@@ -608,10 +609,9 @@ class ShadowController(object):
             # but we *do* want sentinels elsewhere.
             at.at_shadow_test_hack = True
             try:
-                at.write(p, nosentinels=False, toString=True)
+                s = at.atFileToString(p, sentinels=True)
             finally:
                 at.at_shadow_test_hack = False
-            s = at.stringOutput
             return g.splitLines(s)
         #@+node:ekr.20080709062932.22: *5* makePublicLines (AtShadowTestCase)
         def makePublicLines(self, lines):

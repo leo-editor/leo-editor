@@ -241,40 +241,43 @@ def refreshFromDisk(self, event=None):
     c.nodeConflictList = []
     fn = p.anyAtFileNodeName()
     shouldDelete = (not g.SQLITE) or (c.sqlite_connection is None)
-    if fn:
-        b = u.beforeChangeTree(p)
-        redraw_flag = True
-        at = c.atFileCommands
-        c.recreateGnxDict()
-            # Fix bug 1090950 refresh from disk: cut node ressurection.
-        i = g.skip_id(p.h, 0, chars='@')
-        word = p.h[0: i]
-        if word == '@auto':
-            # This includes @auto-*
-            if shouldDelete: p.v._deleteAllChildren()
+    if not fn:
+        g.warning('not an @<file> node:\n%r' % (p.h))
+        return
+    b = u.beforeChangeTree(p)
+    redraw_flag = True
+    at = c.atFileCommands
+    c.recreateGnxDict()
+        # Fix bug 1090950 refresh from disk: cut node ressurection.
+    i = g.skip_id(p.h, 0, chars='@')
+    word = p.h[0: i]
+    if word == '@auto':
+        # This includes @auto-*
+        if shouldDelete: p.v._deleteAllChildren()
+        # Fix #451: refresh-from-disk selects wrong node.
+        p = at.readOneAtAutoNode(fn, p)
+    elif word in ('@thin', '@file'):
+        if shouldDelete: p.v._deleteAllChildren()
+        at.read(p, force=True)
+    elif word == '@clean':
+        # Wishlist 148: use @auto parser if the node is empty.
+        if p.b.strip() or p.hasChildren():
+            at.readOneAtCleanNode(p)
+        else:
             # Fix #451: refresh-from-disk selects wrong node.
             p = at.readOneAtAutoNode(fn, p)
-        elif word in ('@thin', '@file'):
-            if shouldDelete: p.v._deleteAllChildren()
-            at.read(p, force=True)
-        elif word in ('@clean',):
-            # Wishlist 148: use @auto parser if the node is empty.
-            if p.b.strip() or p.hasChildren():
-                at.readOneAtCleanNode(p)
-            else:
-                # Fix #451: refresh-from-disk selects wrong node.
-                p = at.readOneAtAutoNode(fn, p)
-        elif word == '@shadow':
-            if shouldDelete: p.v._deleteAllChildren()
-            at.read(p, force=True, atShadow=True)
-        elif word == '@edit':
-            if shouldDelete: p.v._deleteAllChildren()
-            at.readOneAtEditNode(fn, p)
-        else:
-            g.es_print('can not refresh from disk\n%r' % p.h)
-            redraw_flag = False
+    elif word == '@shadow':
+        if shouldDelete: p.v._deleteAllChildren()
+        at.read(p, force=True, atShadow=True)
+    elif word == '@edit':
+        at.readOneAtEditNode(fn, p)
+            # Always deletes children.
+    elif word == '@asis':
+        # Fix #1067.
+        at.readOneAtAsisNode(fn, p)
+            # Always deletes children.
     else:
-        g.warning('not an @<file> node:\n%r' % (p.h))
+        g.es_print('can not refresh from disk\n%r' % p.h)
         redraw_flag = False
     if redraw_flag:
         # Fix #451: refresh-from-disk selects wrong node.
@@ -331,8 +334,7 @@ def save(self, event=None, fileName=None):
             fileName = None
             # Write the @edit node if needed.
             if root.isDirty():
-                c.atFileCommands.writeOneAtEditNode(root,
-                    toString=False, force=True)
+                c.atFileCommands.writeOneAtEditNode(root) 
             c.setChanged(False)
         else:
             fileName = ''.join(c.k.givenArgs)
@@ -372,11 +374,10 @@ def saveAll(self, event=None):
     c = self
     c.save() # Force a write of the present window.
     for f in g.app.windowList:
-        c = f.c
-        if c.isChanged():
-            c.save()
+        c2 = f.c
+        if c2 != c and c2.isChanged():
+            c2.save()
     # Restore the present tab.
-    c = self
     dw = c.frame.top # A DynamicWindow
     dw.select(c)
 #@+node:ekr.20031218072017.2835: *3* c_file.saveAs

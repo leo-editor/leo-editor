@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20131030071311.17125"><vh>Startup</vh>
 <v t="ekr.20131030071311.18741"><vh>@button make-sphinx</vh></v>
 <v t="ekr.20131030071311.17126"><vh>@settings</vh>
+<v t="ekr.20181015143002.1"><vh>@bool body_pane_wraps = True</vh></v>
+<v t="mhw.20181210130732.1"><vh>@bool put-expansion-bits-in-leo-files = False</vh></v>
 <v t="ekr.20131030071311.18671"><vh>@string target_language = rest</vh></v>
 <v t="ekr.20131030071311.17128"><vh>For rst3 command</vh>
 <v t="ekr.20131030071311.17127"><vh>@bool rst3_call_docutils = True</vh></v>
@@ -20,7 +19,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131019184243.16683"><vh>Leo's cheat sheet</vh>
+<v t="ekr.20131019184243.16683"><vh>===== Leo's cheat sheet</vh></v>
 <v t="ekr.20131019184243.16685"><vh>Key bindings</vh>
 <v t="ekr.20131019184243.16686"><vh>Selecting outline nodes</vh></v>
 <v t="ekr.20131019184243.16687"><vh>Moving outline nodes</vh></v>
@@ -40,19 +39,35 @@
 <v t="ekr.20131019184243.16695"><vh>Pre-defined symbols</vh></v>
 <v t="ekr.20170315015836.1"><vh>LeoApp class</vh></v>
 <v t="ekr.20131019184243.16697"><vh>Commands class</vh></v>
+<v t="ekr.20190101084845.1"><vh>Undoing commands</vh>
+<v t="ekr.20190101092126.1"><vh>Undoably changing body text</vh></v>
+<v t="ekr.20190101092129.1"><vh>Undoably changing multiple nodes</vh></v>
+</v>
 <v t="ekr.20131019184243.16698"><vh>VNode class</vh></v>
 <v t="ekr.20131019184243.16699"><vh>Position class</vh></v>
 <v t="ekr.20131019184243.16700"><vh>The leoGlobals module</vh></v>
 <v t="ekr.20170311121717.1"><vh>Test driven development</vh></v>
 <v t="ekr.20170403190104.1"><vh>Performance gotchas</vh></v>
-<v t="ekr.20170403190120.1"><vh>About names</vh></v>
 <v t="ekr.20180503073939.1"><vh>Prompting for command arguments</vh>
 <v t="ekr.20180503073954.1"><vh>Example 1: Prompt for one arg</vh></v>
 <v t="ekr.20180503074530.1"><vh>Example 2: Prompt for 2 args</vh></v>
 <v t="ekr.20180503132659.1"><vh>Example 3: Prompt for 3 args</vh></v>
 </v>
+<v t="ekr.20181015142534.3"><vh>Naming conventions in Leo's core</vh>
+<v t="ekr.20181015142534.4"><vh>Official ivars</vh></v>
+</v>
+<v t="ekr.20181015142534.2"><vh>Widgets and wrappers</vh></v>
 </v>
 <v t="ekr.20170311122518.1"><vh>Command line options</vh></v>
+<v t="ekr.20180405105738.1"><vh>Learning to be a Leo developer</vh>
+<v t="ekr.20160315141648.1"><vh>Code academy</vh>
+<v t="ekr.20160315141648.3"><vh>CA: uA's</vh></v>
+<v t="ekr.20160315141648.4"><vh>CA: icons</vh></v>
+<v t="ekr.20160315141648.5"><vh>CA: using git</vh></v>
+<v t="ekr.20160315141648.6"><vh>CA: finding nodes with c.cloneFindByPredicate</vh></v>
+</v>
+<v t="ekr.20180405093138.1"><vh>Leo University</vh></v>
+<v t="ekr.20181015142534.1"><vh>Architecture</vh></v>
 </v>
 <v t="ekr.20131030071311.18723"><vh>The rst3 tutorial</vh>
 <v t="ekr.20131030071311.18732"><vh>@rst ~/myDocument.html</vh>
@@ -73,7 +88,7 @@
 <v t="ekr.20180405093127.9"><vh>@html display Leo tree using css</vh></v>
 <v t="ekr.20180405093127.11"><vh>@image LeoSplash</vh></v>
 <v t="ekr.20180405093127.12"><vh>@image splash screen</vh></v>
-<v t="ekr.20180405093127.22" a="M"><vh>@svg bubbles from sources</vh></v>
+<v t="ekr.20180405093127.22"><vh>@svg bubbles from sources</vh></v>
 <v t="ekr.20180405093127.23"><vh>@svg bubbles.svg from a link</vh></v>
 <v t="ekr.20180405093127.31"><vh>Markdown example</vh></v>
 <v t="ekr.20180405105451.1"><vh>pyplot examples</vh>
@@ -89,23 +104,12 @@
 </v>
 </v>
 <v t="ekr.20180405093127.30"><vh>reStructuredText docstring example</vh></v>
-<v t="ekr.20180405093127.32" a="M"><vh>reStructureText text example</vh></v>
-</v>
-<v t="ekr.20131019184243.16694"></v>
-<v t="ekr.20180405105738.1"><vh>Learning to be a Leo developer</vh>
-<v t="ekr.20160315141648.1"><vh>Code academy</vh>
-<v t="ekr.20160315141648.3"><vh>CA: uA's</vh></v>
-<v t="ekr.20160315141648.4"><vh>CA: icons</vh></v>
-<v t="ekr.20160315141648.5"><vh>CA: using git</vh></v>
-<v t="ekr.20160315141648.6"><vh>CA: finding nodes with c.cloneFindByPredicate</vh></v>
-</v>
-<v t="ekr.20180405093138.1"><vh>Leo University</vh></v>
+<v t="ekr.20180405093127.32"><vh>reStructureText text example</vh></v>
 </v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20131019184243.16683">@wrap
-</t>
-<t tx="ekr.20131019184243.16685"></t>
+<t tx="ekr.20131019184243.16683">This Cheat Sheet contains a summary of many of Leo's important features.</t>
+<t tx="ekr.20131019184243.16685">Here is a summary of Leo's key bindings.</t>
 <t tx="ekr.20131019184243.16686">When focus is in the outline pane::
 
     Right-arrow (expand-and-go-right)
@@ -345,9 +349,7 @@ By default, the file's extension determines the importer:
 For full details, see Leo's Directives reference:
 http://leoeditor.com/directives.html
     </t>
-<t tx="ekr.20131019184243.16694">@wrap
-
-This section lists the ivars, properties, functions and methods most
+<t tx="ekr.20131019184243.16694">This section lists the ivars, properties, functions and methods most
 commonly used in Leo scripts.
 
 **Very important**: use Alt-1 (toggle-autocompleter) and Alt-2
@@ -771,10 +773,7 @@ which we are not conscious.
 --- The End ---
 
 </t>
-<t tx="ekr.20160315141648.1">@language rest
-@wrap
-
-Leo's Code Academy posts discuss how to do useful things in Leo. The following are distilled from online discussions about Leo's scripting.</t>
+<t tx="ekr.20160315141648.1">Leo's Code Academy posts discuss how to do useful things in Leo. The following are distilled from online discussions about Leo's scripting.</t>
 <t tx="ekr.20160315141648.3">uA's (user Attributes) associate arbitrary data with any vnode. uA's are dictionaries of dictionaries--an **outer dictionary** and zero or more **inner dictionaries**. The outer dictionary associates plugin names (or Leo's core) with inner dictionaries. The inner dictionaries carry the actual data.
 
 The v.u or p.v properties get and set uA's. You can think of p.u as a synonym for p.v.unknownAttributes on both sides of an assignment. For example::
@@ -948,7 +947,9 @@ refers to the file abc.py in (absolute path of) the current directory.
 - Make sure to *instantiate* any changed objects.
 - See "Unit testing with Leo" for full details.
 </t>
-<t tx="ekr.20170311122518.1">Usage: launchLeo.py [options] file1, file2, ...
+<t tx="ekr.20170311122518.1">@nowrap
+
+Usage: launchLeo.py [options] file1, file2, ...
 
 Options:
   -h, --help            show this help message and exit
@@ -1004,8 +1005,6 @@ In contrast, the corresponding p.v.b and p.v.b setters and p.v.setDirty() are ex
 Usually, code *should* use the p.b and p.h setters and p.setDirty(), despite their cost, because they update Leo's outline pane properly. Calling c.redraw() is *not* enough.
 
 These performance gotchas become important for repetitive commands, like cff, replace-all and recursive import. In such situations, code should use p.v.b and p.v.h setters instead of p.b and p.h setters.
-</t>
-<t tx="ekr.20170403190120.1">Scripts may safely assume that most names defined in Leo's core will never change. Names used outside their defining module *can't* be changed, because doing so would impact existing user scripts. This includes virtually everything in leoGlobals.py, and many names in leoCommands.py and other files. The only names that might change are unlikely every to be of use to scripts anyway. For example, helper functions.
 </t>
 <t tx="ekr.20180405093127.1">Here are some demos of Leo's rendering capabilities.
 
@@ -1371,8 +1370,7 @@ plt.show()</t>
 &lt;/svg&gt;</t>
 <t tx="ekr.20180405093127.23">..\Icons\bubbles.svg
 </t>
-<t tx="ekr.20180405093127.30">@language rest
-@wrap
+<t tx="ekr.20180405093127.30">@nowrap
 
 ''' Creates a window for *live* rendering of rst, html, etc.  (Qt only).
 
@@ -1390,8 +1388,9 @@ viewrendered.py creates the following (``Alt-X``) commands:
     displays the html source generated from reStructuredText, useful for
     debugging
 
-``viewrendered`` sets the process current directory (os.chdir()) to the path
-to the node being rendered, to allow relative paths to work in
+``viewrendered``
+   sets the process current directory (os.chdir()) to the path
+   to the node being rendered, to allow relative paths to work in
 ``.. image::`` directives.
 
 reStructuredText errors and warnings may be shown.  For example, both::
@@ -1588,9 +1587,7 @@ https://github.com/leo-editor/leo-editor/issues/816
 </t>
 <t tx="ekr.20180405105451.1">These will work only if numpy and pyplot are installed.</t>
 <t tx="ekr.20180405105738.1"></t>
-<t tx="ekr.20180503073939.1">
-
-</t>
+<t tx="ekr.20180503073939.1"></t>
 <t tx="ekr.20180503073954.1">@language python
 
 # To see this in action (from this file):
@@ -1643,5 +1640,114 @@ def i3_command(event):
     c.interactive(callback, event,
         prompts=['One: ', ' Two: ', ' Three: '])
 </t>
+<t tx="ekr.20181015142534.1">Leo uses a model/view/controller architecture.
+
+- Controller: The Commands class and its helpers in leoCommands.py and leoEditCommands.py.
+
+- Model: The VNode and Position classes in leoNodes.py.
+
+- View: The gui-independent base classes are in the node "Gui Base Classes". The Qt-Specific subclasses are in the node "Qt gui".
+
+**Important**: The general organization of these classes have changed hardly at all in Leo's 20+ year history.  The reason is that what each class does is fairly obvious.  How the gets the job done may have changed drastically, but *that's an internal implementation detail of the class itself*.  This is the crucial design principle that allows Leo's code to remain stable.  *Classes do not know or meddle in the internal details of other classes*.  As a result, nobody, including EKR, needs to remember internal details.
+</t>
+<t tx="ekr.20181015142534.2">A **widget** is an actual Qt widget. Leo's core seldom accesses widgets directly.  Instead, a  **wrapper class** defines a standard api that hides the details of the underlying gui **text** widgets.
+
+Leo's core uses the wrapper api almost exclusively. That is, Leo's core code treats wrappers *as if* they were only text widgets there are!
+
+A back door exists for special cases. All wrapper classes define an official ``widget`` ivar, so core or plugin code can gain access to the real Qt widget using wrapper.widget. Searching for wrapper.widget will find all gui-dependent snippets of code in Leo's core.
+</t>
+<t tx="ekr.20181015142534.3">LeoPyRef.leo contains all of Leo's core source code.
+
+Leo's code uses the following conventions throughout:
+
+c:  a commander.
+ch: a character.
+d:  a dialog or a dict.
+f:  an open file.
+fn: a file name.
+g:  the leoGlobals module.
+i, j, k: indices into a string.
+p:  a Position.
+s:  a string.
+t:  a text widget.
+u:  an undoer.
+w:  a gui widget.
+v:  a Vnode
+z:  a local temp.
+
+In more limited contexts, the following conventions apply:
+
+si:     a g.ShortcutInfo object.
+ks:     a g.KeyStroke object
+stroke: a KeyStroke object.
+
+btw:    leoFrame.BaseTextWrapper
+stw:    leoFrame.StringTextWrapper
+
+bqtw:   qt_text.BaseQTextWrapper
+lqtb:   qt_text.LeoQTextBrowser
+qhlw:   qt_text.QHeadlineWrapper
+qmbw:   qt_text.QMinibufferWrapper
+qlew:   qt_text.QLineEditWrapper
+qsciw:  qt_text.QScintiallaWrapper
+qtew:   qt_text.QTextEditWrapper
+
+Names defined in Leo's core are unlikely to change, especially names used outside their defining module. This includes virtually everything in leoGlobals.py, and many names in leoCommands.py and other files. </t>
+<t tx="ekr.20181015142534.4">The following 'official' ivars (instance vars) will always exist:
+
+c.frame                 The frame containing the log,body,tree, etc.
+c.frame.body            The body pane.
+c.frame.body.widget     The gui widget for the body pane.
+c.frame.body.wrapper    The high level interface for the body widget.
+c.frame.iconBar         The icon bar.
+c.frame.log             The log pane.
+c.frame.log.widget      The gui widget for the log pane.
+c.frame.log.wrapper     The high-level interface for the log pane.
+c.frame.tree            The tree pane.
+
+The following were official ivars that no longer exist:
+
+c.frame.body.bodyCtrl   Use c.frame.body.wrapper instead.
+c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
+</t>
+<t tx="ekr.20181015143002.1">True: Wrap body text.
+
+</t>
+<t tx="ekr.20190101084845.1">If you want to make a command undoable, you must create "before" and "after" snapshots of the parts of the outline that may change. Here are some examples.  Leo's source code contains many other examples.
+
+    </t>
+<t tx="ekr.20190101092126.1">To undo a single change to body text::
+
+    command = 'my-command-name'
+    b = c.undoer.beforeChangeNodeContents(p, oldYScroll=ypos)
+    # Change p's body text.
+    c.undoer.afterChangeNodeContents(p,
+        command=command, bunch=b, dirtyVnodeList=[])
+</t>
+<t tx="ekr.20190101092129.1">If your command changes multiple nodes, the pattern is::
+
+    u, undoType = c.undoer, 'command-name'
+    u.beforeChangeGroup(c.p, undoType)
+    dirtyVnodeList = []
+    changed = False
+    # For each change, do something like the following:
+    for p in to_be_changed_nodes:
+        # Change p.
+        dirtyVnodeList.append(p.v)
+        u.afterChangeNodeContents(p, undoType, bunch)
+        changed = True
+    if changed:
+        u.afterChangeGroup(c.p, undoType,
+            reportFlag=False,
+            dirtyVnodeList=dirtyVnodeList)
+</t>
+<t tx="mhw.20181210130732.1">True (recommended):
+    Write "E" attribute bits in &lt;v&gt; elements.
+    Leo outlines will record the expansion state of all nodes.
+    
+False: (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in &lt;v&gt; elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.</t>
 </tnodes>
 </leo_file>

@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -92,15 +89,16 @@
 <v t="ekr.20150521115018.1"><vh>@file leoBeautify.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
-<v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
 <v t="ekr.20150605175037.1"><vh>@file leoCheck.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
 <v t="ekr.20140827092102.18574"><vh>@file leoColorizer.py</vh></v>
 <v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20180212072657.2"><vh>@file leoCompare.py</vh></v>
+<v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20130302121602.10208"><vh>@file leoDebugger.py</vh></v>
 <v t="ekr.20160306114544.1"><vh>@file leoExternalFiles.py</vh></v>
+<v t="ekr.20181202062518.1"><vh>@file leoFastRedraw.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31372e3171017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
@@ -191,6 +189,8 @@
 </v>
 <v t="ekr.20160124165611.1"><vh>@file ../../launchLeo-unified.spec</vh></v>
 <v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
+<v t="maphew.20181013162818.1"><vh>@edit ../../.travis.yml</vh></v>
+<v t="maphew.20181013162837.1"><vh>@edit ../../pyproject.toml</vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
 </v>
 <v t="ekr.20180225010913.1"><vh>In leo/core</vh>

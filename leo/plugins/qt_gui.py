@@ -446,7 +446,9 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting: return None
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
-        d.setStyleSheet(c.active_stylesheet)
+        stylesheet = getattr(c, 'active_stylesheet', None)
+        if stylesheet:
+            d.setStyleSheet(stylesheet)
         d.setWindowTitle(title)
         if message: d.setText(message)
         d.setIcon(b.Information)
@@ -468,7 +470,9 @@ class LeoQtGui(leoGui.LeoGui):
             return None
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
-        d.setStyleSheet(c.active_stylesheet)
+        stylesheet = getattr(c, 'active_stylesheet', None)
+        if stylesheet:
+            d.setStyleSheet(stylesheet)
         if message: d.setText(message)
         d.setIcon(b.Warning)
         d.setWindowTitle(title)
@@ -961,9 +965,9 @@ class LeoQtGui(leoGui.LeoGui):
             print('')
             g.trace('...')
             # dump('g.app.theme_color', g.app.theme_color)
-            dump('@string color_theme', getString('color_theme'))
+            dump('@string color_theme', getString('color-theme'))
             # dump('g.app.theme_name', g.app.theme_name)
-            dump('@string theme_name', getString('theme_name'))
+            dump('@string theme_name', getString('theme-name'))
             print('directory table...')
             g.printObj(table)
             print('')

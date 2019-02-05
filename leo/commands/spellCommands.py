@@ -63,7 +63,7 @@ class BaseSpellWrapper(object):
     def find_user_dict(self):
         '''Return the full path to the local dictionary.'''
         c = self.c
-        fn = c.config.getString('enchant_local_dictionary')
+        fn = c.config.getString('enchant-local-dictionary')
         if not fn:
             fn = g.os_path_finalize_join(
                 g.app.loadDir,
@@ -220,7 +220,7 @@ class DefaultWrapper(BaseSpellWrapper):
     def find_main_dict(self):
         '''Return the full path to the global dictionary.'''
         c = self.c
-        fn = c.config.getString('main_spelling_dictionary')
+        fn = c.config.getString('main-spelling-dictionary')
         if fn and g.os_path_exists(fn):
             return fn
         # Default to ~/.leo/main_spelling_dict.txt
@@ -334,7 +334,7 @@ class EnchantWrapper(BaseSpellWrapper):
     def init_language(self):
         '''Init self.language.'''
         c = self.c
-        language = g.toUnicode(c.config.getString('enchant_language'))
+        language = g.toUnicode(c.config.getString('enchant-language'))
         if language:
             try:
                 ok = enchant.dict_exists(language)

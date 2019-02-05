@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -1903,7 +1900,9 @@ g.es_print('black',color='black')</t>
 <t tx="chris.20180322164627.2"></t>
 <t tx="chris.20180322171300.1">/*
 @language css
-at-tabwidth -2 causes a crash in parse-template!
+
+    DefaultTheme.leo: @data qt-gui-plugin-style-sheet
+    at-tabwidth -2 causes a crash in parse-template!
 */</t>
 <t tx="chris.20180322171300.10">QAbstractScrollArea
 {
@@ -2478,10 +2477,12 @@ QMenu::separator
 <t tx="chris.20180322171328.1">/*
 @language css
 
-    =========== Leo's new, fully parameterized, stylesheet. ===========
+  DefaultTheme.leo: @data qt-gui-plugin-style-sheet
+
+  =========== Leo's new, fully parameterized, stylesheet. ===========
     
-    This stylesheet is responsible for most of Leo's appearance.
-    This stylesheet is composed of this nodes and all its descendants, in outline order.
+  This stylesheet is responsible for most of Leo's appearance.
+  This stylesheet is composed of this nodes and all its descendants, in outline order.
     
     Leo inserts the settings in the tree "Qt Gui Stylesheet settings" into this stylesheet.
     Modify those settings, *not* this stylesheet.
@@ -2603,8 +2604,8 @@ QTreeView::branch:open:has-children{
     color:              @bookmarks_base_color;
     margin:             @bookmarks_base_margin;
     padding:            @bookmarks_base_padding;
-    border:             @bookmarks_base_border;
-    font-family:        @bookmarks_base_family;
+    /* border:             at-bookmarks_base_border; */
+    /* font-family:        at-bookmarks_base_family; */
     font-size:          @bookmarks_base_size;
     font-style:         @bookmarks_base_style;
     font-weight:        @bookmarks_base_weight;
@@ -2613,7 +2614,7 @@ QTreeView::branch:open:has-children{
 
 #show_bookmarks QPushButton[style_class~='bookmark_children'] {
     color:              @bookmarks_children_color;
-    font-family:        @bookmarks_children_family;
+    /* font-family:        at-bookmarks_children_family; */
     font-size:          @bookmarks_children_size;
     font-weight:        @bookmarks_children_weight;
     text-decoration:    @bookmarks_children_decoration;
@@ -2786,8 +2787,8 @@ QTextEdit#bigtextwarning {
 
 /* -----
 QPushButton {
-    font-family: @push-button-font-family;
-    font-size:   @push-button-font-size;
+    font-family: at-push-button-font-family;
+    font-size:   at-push-button-font-size;
 }
 ----- */
 

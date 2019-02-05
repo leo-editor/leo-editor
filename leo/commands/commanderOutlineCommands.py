@@ -527,7 +527,7 @@ def goToNextClone(self, event=None):
                 if 1:
                     cc.selectChapterByName(new_name)
                     c.redraw(p)
-                else: ### Old code.
+                else: # Old code.
                     c.selectPosition(p)
                     cc.selectChapterByName(new_name)
         else:
@@ -867,7 +867,7 @@ def insertHeadlineHelper(c,
         (c.hoistStack and current == c.hoistStack[-1].p)
     ):
         # Make sure the new node is visible when hoisting.
-        if c.config.getBool('insert_new_nodes_at_end'):
+        if c.config.getBool('insert-new-nodes-at-end'):
             p = current.insertAsLastChild()
         else:
             p = current.insertAsNthChild(0)

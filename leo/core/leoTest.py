@@ -158,6 +158,8 @@ class GeneralTestCase(unittest.TestCase):
         """Mark a unit test as having failed."""
         import leo.core.leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
+        raise self.failureException(msg)
+            # Fix # 1002. Raise an exception, as in TestCase.fail()
     #@+node:ekr.20051104075904.9: *3* tearDown
     def tearDown(self):
         # Restore the outline.
@@ -586,113 +588,29 @@ class TestManager(object):
         Important: this is also called from dynamicUnitTest.leo
         to run external tests "locally" from dynamicUnitTest.leo
         '''
-        c, tm = self.c, self
-        # Clear the screen before running multiple unit tests locally.
-        # if all or marked: g.cls()
-        p1 = c.p.copy() # 2011/10/31: always restore the selected position.
-        # This seems a bit risky when run in unitTest.leo.
+        c = self.c
+        p1 = c.p.copy()
+            # Always restore the selected position.
+        #
+        # Don't auto-save unitTest.leo.
         if not c.fileName().endswith('unitTest.leo'):
             if c.isChanged():
                 c.save() # Eliminate the need for ctrl-s.
         try:
-            g.unitTesting = g.app.unitTesting = True
-            g.app.runningAllUnitTests = all and not marked # Bug fix: 2012/12/20
-            g.app.unitTestDict["fail"] = False
-            g.app.unitTestDict['c'] = c
-            g.app.unitTestDict['g'] = g
-            g.app.unitTestDict['p'] = c.p.copy()
-            # c.undoer.clearUndoState() # New in 4.3.1.
             changed = c.isChanged()
-            suite = unittest.makeSuite(unittest.TestCase)
-            aList = tm.findAllUnitTestNodes(all, marked)
-            setup_script = None
-            found = False
-            for p in aList:
-                if tm.isTestSetupNode(p):
-                    setup_script = p.b
-                    test = None
-                elif tm.isTestNode(p):
-                    test = tm.makeTestCase(p, setup_script)
-                elif tm.isSuiteNode(p): # @suite
-                    test = tm.makeTestSuite(p, setup_script)
-                elif tm.isTestClassNode(p):
-                    test = tm.makeTestClass(p) # A suite of tests.
-                else:
-                    test = None
-                if test:
-                    suite.addTest(test)
-                    found = True
-            # Verbosity: 1: print just dots.
-            if not found:
-                # 2011/10/30: run the body of p as a unit test.
-                test = tm.makeTestCase(c.p, setup_script)
-                if test:
-                    suite.addTest(test)
-                    found = True
-            if found:
-                if g.app.gui.guiName() == 'curses':
-                    logger, handler, stream = self.create_logging_stream()
-                    runner = unittest.TextTestRunner(
-                        stream=stream,
-                        failfast=g.app.failFast,
-                        verbosity=verbosity,
-                    )
-                else:
-                    stream = None
-                    runner = unittest.TextTestRunner(
-                        # stream=stream, # Careful: doesn't work with Python 2.
-                        failfast=g.app.failFast,
-                        verbosity=verbosity,
-                    )
-                if 1: # Use the null gui for all unit tests.
-                    import leo.core.leoFrame as leoFrame
-                    g.app.old_gui = old_gui = g.app.gui
-                    old_frame = c.frame
-                    old_k_w = c.k.w
-                    try:
-                        g.app.gui = leoGui.NullGui()
-                        c.frame = leoFrame.NullFrame(c, title='<title>', gui=g.app.gui)
-                        c.frame.openDirectory = old_frame.openDirectory
-                            # A kluge, but quite useful.
-                        c.k.w = None
-                            # A huge switcheroo.
-                        result = runner.run(suite)
-                    finally:
-                        g.app.gui = old_gui
-                        c.frame = old_frame
-                        c.k.w = old_k_w
-                        # Allow unit tests to kill the console gui.
-                        if g.app.killed:
-                            if 'shutdown' in g.app.debug:
-                                g.trace('calling sys.exit(0) after unit test')
-                            sys.exit(0)
-                else:
-                    result = runner.run(suite)
-                if stream:
-                    if stream.aList:
-                        # pylint: disable=logging-not-lazy
-                            # This may be a pylint issue.
-                        logger.info('\n'+''.join(stream.aList))
-                    logger.removeHandler(handler)
-                # put info to db as well
-                if True:
-                    # Used by quicksearch plugin.
-                    key = 'unittest/cur/fail'
-                    archive = [(t.p.gnx, trace2) for(t, trace2) in result.errors]
-                    c.db [key] = archive
-            else:
-                g.error('no %s@test or @suite nodes in %s outline' % (
-                    'marked ' if marked else '',
-                    'entire' if all else 'selected'))
+            g.unitTesting = g.app.unitTesting = True
+            g.app.runningAllUnitTests = all and not marked
+            self.do_tests_helper(all, marked, verbosity)
         finally:
-            c.setChanged(changed) # Restore changed state.
+            # Allow unit tests to kill the console gui.
+            if g.app.killed:
+                if 'shutdown' in g.app.debug:
+                    g.trace('calling sys.exit(0) after unit test')
+                sys.exit(0)
             g.unitTesting = g.app.unitTesting = False
-            if True: # g.app.unitTestDict.get('restoreSelectedNode', True):
-                # This is more natural, and more useful.
-                c.contractAllHeadlines()
-                c.redraw(p1)
-            else:
-                c.recolor() # Needed when coloring is disabled in unit tests.
+            c.setChanged(changed)
+            c.contractAllHeadlines()
+            c.redraw(p1)
     #@+node:ekr.20170504130531.1: *5* class LoggingLog
     class LoggingStream:
         '''A class that can searve as a logging stream.'''
@@ -718,7 +636,7 @@ class TestManager(object):
         def flush(self):
             pass
 
-    #@+node:ekr.20170504130408.1: *5* create_logging_stream
+    #@+node:ekr.20170504130408.1: *5* tm.create_logging_stream
     def create_logging_stream(self):
 
         logger = logging.getLogger()
@@ -736,7 +654,73 @@ class TestManager(object):
             logger.addHandler(handler)
         stream = self.LoggingStream(logger)
         return logger, handler, stream
-    #@+node:ekr.20120912094259.10549: *5* get_suite_script
+    #@+node:ekr.20181102023828.1: *5* tm.do_tests_helper
+    def do_tests_helper(self, all, marked, verbosity):
+
+        c = self.c
+        suite = self.make_test_suite(all, marked)
+        if not suite:
+            g.error('no %s@test or @suite nodes in %s outline' % (
+                'marked ' if marked else '',
+                'entire' if all else 'selected'))
+            return
+        #
+        # New in Leo 5.8.1: re-init the dict.
+        g.app.unitTestDict = {
+            'fail': False, 'c': c, 'g': g, 'p': c.p.copy(),
+        }
+        #
+        # 1. Set logger, handler, stream, runner
+        gui_name = g.app.gui.guiName().lower()
+        if gui_name == 'curses':
+            logger, handler, stream = self.create_logging_stream()
+            runner = unittest.TextTestRunner(
+                failfast=g.app.failFast,
+                stream=stream, # Implies we are running Python 3.
+                verbosity=verbosity,
+            )
+        else:
+            logger, handler, stream = None, None, None
+            runner = unittest.TextTestRunner(
+                failfast=g.app.failFast,
+                # Careful: stream is not valid in Python 2.
+                verbosity=verbosity,
+            )
+        #
+        # 2. Run the unit tests, with the NullGui or BrowserGui.
+        g.app.old_gui = old_gui = g.app.gui
+        new_gui = self.instantiate_gui()
+            # New in Leo 5.8.1.
+        old_frame = c.frame
+        old_k_w = c.k.w
+        try:
+            import leo.core.leoFrame as leoFrame
+            g.app.gui = new_gui
+            c.frame = leoFrame.NullFrame(c, title='<title>', gui=g.app.gui)
+            c.frame.openDirectory = old_frame.openDirectory
+                # A kluge, but quite useful.
+            c.k.w = None
+                # A huge switcheroo.
+            result = runner.run(suite)
+        finally:
+            g.app.gui = old_gui
+            c.frame = old_frame
+            c.k.w = old_k_w
+        #
+        # 3. Clean up.
+        if stream:
+            if stream.aList:
+                # pylint: disable=logging-not-lazy
+                    # This may be a pylint issue.
+                logger.info('\n'+''.join(stream.aList))
+            logger.removeHandler(handler)
+        #
+        # 4. Support for the quicksearch plugin.
+        if gui_name not in ('browser', 'curses'):
+            key = 'unittest/cur/fail'
+            archive = [(t.p.gnx, trace2) for(t, trace2) in result.errors]
+            c.db [key] = archive
+    #@+node:ekr.20120912094259.10549: *5* tm.get_suite_script
     def get_suite_script(self):
         s = '''
 
@@ -747,7 +731,7 @@ class TestManager(object):
 
     '''
         return g.adjustTripleString(s, self.c.tab_width)
-    #@+node:ekr.20120912094259.10547: *5* get_test_class_script
+    #@+node:ekr.20120912094259.10547: *5* tm.get_test_class_script
     def get_test_class_script(self):
         s = '''
 
@@ -758,7 +742,44 @@ class TestManager(object):
 
     '''
         return g.adjustTripleString(s, self.c.tab_width)
-    #@+node:ekr.20051104075904.13: *5* makeTestCase
+    #@+node:ekr.20181121030240.1: *5* tm.instantiate_gui
+    def instantiate_gui(self):
+        '''
+        Subclasses may override to provide a "live" gui instance.
+        '''
+        return leoGui.NullGui()
+    #@+node:ekr.20181102030001.1: *5* tm.make_test_suite
+    def make_test_suite(self, all, marked):
+        '''Return the test suite or None.'''
+        c, tm = self.c, self
+        suite = unittest.makeSuite(unittest.TestCase)
+        aList = tm.findAllUnitTestNodes(all, marked)
+        setup_script = None
+        found = False
+        for p in aList:
+            if tm.isTestSetupNode(p):
+                setup_script = p.b
+                test = None
+            elif tm.isTestNode(p):
+                test = tm.makeTestCase(p, setup_script)
+            elif tm.isSuiteNode(p): # @suite
+                test = tm.makeTestSuite(p, setup_script)
+            elif tm.isTestClassNode(p):
+                test = tm.makeTestClass(p) # A suite of tests.
+            else:
+                test = None
+            if test:
+                suite.addTest(test)
+                found = True
+        if not found:
+            # Run the body of p as a unit test.
+            test = tm.makeTestCase(c.p, setup_script)
+            if test:
+                suite.addTest(test)
+                found = True
+        return suite if found else None
+        
+    #@+node:ekr.20051104075904.13: *5* tm.makeTestCase
     def makeTestCase(self, p, setup_script):
         c = self.c
         p = p.copy()
@@ -766,7 +787,7 @@ class TestManager(object):
             return GeneralTestCase(c, p, setup_script)
         else:
             return None
-    #@+node:ekr.20120912094259.10546: *5* makeTestClass
+    #@+node:ekr.20120912094259.10546: *5* tm.makeTestClass
     def makeTestClass(self, p):
         """Create a subclass of unittest.TestCase"""
         c, tm = self.c, self
@@ -807,7 +828,7 @@ class TestManager(object):
             print('\n%s: exception creating test class in %s' % (fname, p.h))
             g.es_print_exception()
             return None
-    #@+node:ekr.20051104075904.12: *5* makeTestSuite
+    #@+node:ekr.20051104075904.12: *5* tm.makeTestSuite
     # This code executes the script in an @suite node.
     # This code assumes that the script sets the 'suite' var to the test suite.
 
@@ -974,17 +995,16 @@ class TestManager(object):
         assert theType in (
             "@auto", "@clean", "@edit", "@file", "@thin", "@nosent",
             "@asis",), "bad type: %s" % theType
-        nosentinels = theType in ("@asis", "@clean", "@edit", "@nosent")
         if theType == "@asis":
-            at.asisWrite(child1, toString=True)
+            result = at.atAsisToString(child1)
         elif theType == "@auto":
-            at.writeOneAtAutoNode(child1, toString=True, force=True)
+            result = at.atAutoToString(child1)
         elif theType == "@edit":
-            at.writeOneAtEditNode(child1, toString=True)
+            result = at.atEditToString(child1)
         else:
-            at.write(child1, nosentinels=nosentinels, toString=True)
+            result = at.atFileToString(child1,
+                sentinels=theType not in ("@asis", "@clean", "@edit", "@nosent"))
         try:
-            result = g.toUnicode(at.stringOutput)
             assert result == expected
         except AssertionError:
             #@+<< dump result and expected >>
@@ -1637,7 +1657,7 @@ class TestManager(object):
         output.scriptSetBodyString(result)
     #@+node:ekr.20051104075904.38: *4* TM.writeNodeToNode
     def writeNodeToNode(self, c, p, output, sentinels=True):
-        """Do an AtFile.write the p's tree to the body text of the output node."""
+        '''Write the p's tree to the body text of the output node.'''
         s = self.writeNodeToString(c, p, sentinels)
         output.scriptSetBodyString(s)
     #@+node:ekr.20051104075904.39: *4* TM.writeNodeToString
@@ -1649,8 +1669,7 @@ class TestManager(object):
             if not p2.v.fileIndex:
                 p2.v.fileIndex = ni.getNewIndex(p2.v)
         # Write the file to a string.
-        at.write(p, nosentinels=not sentinels, toString=True)
-        return at.stringOutput
+        return at.atFileToString(p, sentinels=sentinels)
     #@-others
 #@+node:ekr.20120220070422.10420: ** Top-level functions (leoTest)
 #@+node:ekr.20051104075904.97: *3* leoTest.py: factorial (a test of doctests)

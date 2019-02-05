@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -54,7 +51,6 @@
 </v>
 <v t="ekr.20170420085814.1"><vh>Recursive import script</vh></v>
 </v>
-<v t="ekr.20170420085814.1"></v>
 <v t="ekr.20090430075506.4"><vh>Notes</vh>
 <v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
 </v>
@@ -168,10 +164,11 @@
 <v t="tbrown.20110428144124.29061"><vh>@file xml_edit.py</vh></v>
 <v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
 </v>
-<v t="ekr.20081121105001.2080"><vh>Gui plugins</vh>
+<v t="ekr.20181030041210.1"><vh>Gui</vh>
 <v t="ekr.20150107090324.1"><vh>@file cursesGui.py</vh></v>
 <v t="ekr.20170419092835.1"><vh>@file cursesGui2.py</vh></v>
-<v t="ekr.20170419150249.1"><vh>@file template_gui.py</vh></v>
+<v t="ekr.20181103094900.1"><vh>@file leoflexx.py</vh></v>
+<v t="ekr.201811100000000.1"><vh>@file leoflexx_js.py</vh></v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>
@@ -186,7 +183,7 @@
 <v t="ekr.20160412101008.1"><vh>@file importers/ipynb.py</vh></v>
 <v t="ekr.20140723122936.18143"><vh>@file importers/java.py</vh></v>
 <v t="ekr.20140723122936.18144"><vh>@file importers/javascript.py</vh></v>
-<v t="ekr.20160504080826.1"><vh>@file importers/json.py</vh></v>
+<v t="ekr.20160504080826.1"><vh>@file importers/leo_json.py</vh></v>
 <v t="ekr.20140723122936.18151"><vh>@file importers/leo_rst.py</vh></v>
 <v t="ekr.20161108125620.1"><vh>@file importers/linescanner.py</vh></v>
 <v t="ekr.20170530024520.2"><vh>@file importers/lua.py</vh></v>
@@ -203,12 +200,6 @@
 <v t="ekr.20140723122936.18137"><vh>@file importers/xml.py</vh></v>
 </v>
 <v t="ekr.20180504192522.1"><vh>leo_babel</vh>
-<v t="ekr.20180504193756.1"><vh>Top-level</vh>
-<v t="ekr.20180504191650.17"><vh>@file babel_kill.py</vh></v>
-<v t="bob.20170716140541.1"><vh>@file babel_api.py</vh></v>
-<v t="bob.20170311140807.1"><vh>@file babel.py</vh></v>
-<v t="bob.20170726143458.1"><vh>@file babel_lib.py</vh></v>
-</v>
 <v t="ekr.20180504191650.34"><vh>@clean leo_babel/__init__.py</vh></v>
 <v t="ekr.20180504191650.36"><vh>examples</vh>
 <v t="bob.20170716135108.2"><vh>@file leo_babel/examples/slowOut.py</vh></v>
@@ -409,7 +400,7 @@
 <v t="tbrown.20130420091241.44181"><vh>@file screen_capture.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
-<v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
+<v t="tbrown.20090119215428.2" descendentVnodeUnknownAttributes="7d71005808000000302e362e31332e3071017d71025808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323031382d30382d313871077573732e"><vh>@file todo.py</vh></v>
 <v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 </v>
@@ -433,6 +424,7 @@
 <v t="ekr.20170313020320.1"><vh>@file settings_finder.py</vh></v>
 <v t="ville.20110304230157.6513"><vh>@file systray.py</vh></v>
 <v t="tbrown.20141101114322.1"><vh>@file wikiview.py</vh></v>
+<v t="ekr.20181004143535.1"><vh>@file xdb_pane.py</vh></v>
 <v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
 <v t="ekr.20140726091031.18071"><vh>Writer plugins</vh>
@@ -441,7 +433,7 @@
 <v t="tbrown.20140804103545.29975"><vh>@file writers/ctext.py</vh></v>
 <v t="ekr.20141116100154.2"><vh>@file writers/dart.py</vh></v>
 <v t="ekr.20160412101901.1"><vh>@file writers/ipynb.py</vh></v>
-<v t="ekr.20160504083330.1"><vh>@file writers/json.py</vh></v>
+<v t="ekr.20160504083330.1"><vh>@file writers/leo_json.py</vh></v>
 <v t="ekr.20180202053206.1"><vh>@file writers/treepad.py</vh></v>
 <v t="ekr.20140726091031.18080"><vh>@file writers/leo_rst.py</vh></v>
 <v t="ekr.20140726091031.18073"><vh>@file writers/markdown.py</vh></v>
@@ -750,9 +742,6 @@ http://leoeditor.com//rstplugin3.html
 <t tx="ekr.20050805162550.10">def __init__ (self,c):
 
     global SilverCity
-
-    # g.trace('rst3.py:rstClass',g.callers())
-
     self.c = c
     &lt;&lt; init ivars &gt;&gt;
 
@@ -859,7 +848,6 @@ self.source = None # The written source as a string.
                     self.ext = ext
                 else:
                     self.ext = g.os_path_splitext(self.outputFileName)[1].lower()
-                # g.trace('ext',self.ext,self.outputFileName)
                 if self.ext in ('.htm','.html','.tex','.pdf'):
                     ok = self.writeSpecialTree(p,toString=toString,justOneFile=justOneFile)
                 else:
@@ -878,20 +866,12 @@ self.source = None # The written source as a string.
     return None,None
 </t>
 <t tx="ekr.20050805162550.19">def underline (self,s,p):
-
     '''Return the underlining string to be used at the given level for string s.'''
-
     u = self.getOption('underline_characters') #  '''#=+*^~"'`-:&gt;&lt;_'''
-
     level = max(0,p.level()-self.toplevel)
     level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
-
     ch = u [level]
-
-    # g.trace(self.toplevel,p.level(),level,repr(ch),p.h)
-
     n = max(4,len(s))
-
     return ch * n + '\n'
 </t>
 <t tx="ekr.20050805162550.2">import leo.core.leoGlobals as g
@@ -1019,23 +999,16 @@ except ImportError:
     return ok
 </t>
 <t tx="ekr.20050805162550.23">def writeTree(self,p):
-
     '''Write p's tree to self.outputFile.'''
-
     self.scanAllOptions(p)
-
-    # g.trace(self.getOption('generate_rst_header_comment'))
-
     if self.getOption('generate_rst'):
         if self.getOption('generate_rst_header_comment'):
             self.write(self.rstComment(
                 'rst3: filename: %s\n\n' % self.outputFileName))
-
     # We can't use an iterator because we may skip parts of the tree.
     p = p.copy() # Only one copy is needed for traversal.
     self.topNode = p.copy() # Indicate the top of this tree.
     after = p.nodeAfterTree()
-
     while p and p != after:
         self.writeNode(p)
 </t>
@@ -1144,7 +1117,6 @@ def relocate_references (self, iterator_generator):
         attr = mod_http.get_http_attribute(p)
         if not attr:
             continue
-        # g.trace('before',p.h,attr)
         if bwm_file:
             print &gt;&gt; bwm_file
             print &gt;&gt; bwm_file, "relocate_references(1): Position, attr:"
@@ -1186,7 +1158,6 @@ def relocate_references (self, iterator_generator):
                         'href="%s"' % http_node_ref)
                 except Exception:
                     g.es("Skipped", attr[line+2])
-    # g.trace('after %s\n\n\n',attr)
 </t>
 <t tx="ekr.20050805162550.38">def find_anchors (self, p):
 
@@ -1194,7 +1165,6 @@ def relocate_references (self, iterator_generator):
 
     for p1, attrs in self.http_attribute_iter(p):
         html = mod_http.reconstruct_html_from_attrs(attrs)
-        # g.trace(pprint.pprint(html))
         parser = anchor_htmlParserClass(self, p1)
         for line in html:
             try:
@@ -1204,7 +1174,6 @@ def relocate_references (self, iterator_generator):
                 # filter out non-ascii characters.
                 # bwm: not quite sure what's going on here.
                 parser.feed(line)
-    # g.trace(g.dictToString(self.anchor_map,tag='anchor_map'))
 </t>
 <t tx="ekr.20050805162550.39">@
 The parser classes are used to construct the html code for nodes. The algorithm has two phases:
@@ -1324,20 +1293,17 @@ done with the link_htmlParserClass.
     is_node_marker = False
     if self.is_anchor(tag,attrs) and self.is_node_marker(attrs):
         is_node_marker = self.is_node_marker(attrs)
-        # g.trace(tag,attrs)
         line, column = self.getpos()
         if self.last_position:
             lines = self.node_code [:]
             lines [0] = lines [0] [self.startpos:]
             del lines [line-self.deleted_lines-1:]
-            # g.trace('Storing in %s...\n%s' % self.last_position, lines)
             mod_http.get_http_attribute(self.last_position).extend(lines)
             &lt;&lt; trace the unknownAttribute &gt;&gt;
         if self.deleted_lines &lt; line-1:
             del self.node_code [: line-1-self.deleted_lines]
             self.deleted_lines = line-1
             self.endpos_pending = True
-    # g.trace("rst2: handle_starttag:", tag, attrs, is_node_marker)
     starttag = self.get_starttag_text()
     self.stack = [starttag, None, self.stack]
     self.node_marker_stack.append(is_node_marker)
@@ -1350,7 +1316,6 @@ done with the link_htmlParserClass.
     '''
     self.stack[1] = "&lt;/" + tag + "&gt;"
 
-    # g.trace(tag,g.listToString(self.stack))
     if self.endpos_pending:
         line, column = self.getpos()
         self.startpos = self.node_code[0].find("&gt;", column) + 1
@@ -1369,8 +1334,6 @@ done with the link_htmlParserClass.
     self.stack = self.stack[2]
 </t>
 <t tx="ekr.20050805162550.49">def feed(self, line):
-
-    # g.trace(repr(line))
 
     self.node_code.append(line)
 
@@ -1487,13 +1450,9 @@ done with the link_htmlParserClass.
 <t tx="ekr.20050805162550.6">def onCreate(tag, keywords):
 
     c = keywords.get('new_c') or keywords.get('c')
-
-    # g.trace('(rst3 plugin)',c)
-
     if c:
         global controllers
         controllers[c] = rstClass(c)
-
         # Warning: Do not return anything but None here!
         # Doing so suppresses the loading of other 'new' or 'open2' hooks!
 </t>
@@ -1522,7 +1481,6 @@ The first three elements are stack of tags, the rest is html code.
 
     try:
         language = arguments [0]
-        # g.trace(language)
         # See http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/252170
         module = SilverCity and getattr(SilverCity,language)
         generator = module and getattr(module,language+"HTMLGenerator")
@@ -1673,7 +1631,6 @@ Later or never:
         if fullName in self.defaultOptionsDict.keys():
             if   val.lower() == 'true': val = True
             elif val.lower() == 'false': val = False
-            # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
             return { self.munge(name): val }
         else:
             g.error('ignoring unknown option: %s' % (name))
@@ -1768,21 +1725,19 @@ def scanAllOptions(self,p):
     setting corresponding ivars.
     '''
 
-    self.initOptionsFromSettings() # Must be done on every node.
+    self.initOptionsFromSettings()
+        # Must be done on every node.
     self.handleSingleNodeOptions(p)
-    seen = self.singleNodeOptions[:] # Suppress inheritance of single-node options.
-
-    # g.trace('-'*20)
+    seen = self.singleNodeOptions[:]
+        # Suppress inheritance of single-node options.
     for p in p.self_and_parents():
         d = self.tnodeOptionDict.get(p.v,{})
-        # g.trace(p.h,d)
         for key in d.keys():
             ivar = self.munge(key)
             if ivar not in seen:
                 seen.append(ivar)
                 val = d.get(key)
                 self.setOption(key,val,p.h)
-
     # self.dumpSettings()
     if self.rst3_all:
         self.setOption("generate_rst", True, "rst3_all")
@@ -1801,8 +1756,6 @@ def scanAllOptions(self,p):
     d = c.scanAllDirectives(p)
     self.encoding = d.get('encoding') or self.defaultEncoding
     self.path = d.get('path') or ''
-
-    # g.trace('path:',self.path)
 </t>
 <t tx="ekr.20050809080031">def write (self,s):
 
@@ -1934,7 +1887,6 @@ def scanAllOptions(self,p):
 
     for ivar in self.singleNodeOptions:
         val = d.get(ivar,False)
-        #g.trace('%24s %8s %s' % (ivar,val,p.h))
         self.setOption(ivar,val,p.h)
 
 </t>
@@ -2008,7 +1960,6 @@ def scanAllOptions(self,p):
         elif s.startswith('@') and not self.isAnySpecialDocPart(s):
             for key in self.leoDirectivesList:
                 if g.match_word(s,0,key):
-                    # g.trace('removing %s' % s)
                     break
             else:
                 result.append(s)
@@ -2018,8 +1969,6 @@ def scanAllOptions(self,p):
     return result
 </t>
 <t tx="ekr.20050811105438.1">def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
-
-    # g.trace(kind,g.listToString(lines))
 
     result = [] ; n = 0
     while n &lt; len(lines):
@@ -2045,13 +1994,8 @@ def scanAllOptions(self,p):
     return result
 </t>
 <t tx="ekr.20050811135526">def setOption (self,name,val,tag):
-    trace = False and not g.unitTesting
+
     ivar = self.munge(name)
-    if trace:
-        if ivar not in self.optionsDict:
-            g.trace('init %24s %20s %s %s' % (ivar, val, tag, self))
-        elif self.optionsDict.get(ivar) != val:
-            g.trace('set  %24s %20s %s %s' % (ivar, val, tag, self))
     self.optionsDict [ivar] = val
 </t>
 <t tx="ekr.20050811150541">def handleCodeMode (self,lines):
@@ -2119,8 +2063,6 @@ def scanAllOptions(self,p):
 </t>
 <t tx="ekr.20050811154552">def getDocPart (self,lines,n):
 
-    # g.trace('n',n,repr(''.join(lines)))
-
     result = []
     &lt;&lt; Append whatever follows @doc or @space to result &gt;&gt;
     while n &lt; len(lines):
@@ -2182,7 +2124,6 @@ def scanAllOptions(self,p):
                 # Special case: Treat a bare @rst like @rst-no-head
                 if h == self.getOption('rst_prefix'):
                     d ['ignore_this_headline'] = True
-                # g.trace(repr(h),repr(prefix),ivar,d)
                 return d
 
         if h.startswith('@rst'):
@@ -2336,12 +2277,6 @@ To activate the rst3 plugin, do the following:
 
     openDirectory = self.c.frame.openDirectory
     default_path = self.getOption('default_path')
-
-    # if default_path:
-        # default_path = g.os_path_finalize(default_path)
-
-    # g.trace('default_path',default_path,'fileName',fileName)
-
     if default_path:
         path = g.os_path_finalize_join(self.path,default_path,fileName)
     elif self.path:
@@ -2404,7 +2339,6 @@ To activate the rst3 plugin, do the following:
     if not result: result = []
     if showHeadlines:
         if result or showThisHeadline or showOrganizers or p == self.topNode:
-            # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
 </t>
@@ -2477,12 +2411,11 @@ To activate the rst3 plugin, do the following:
     c = self.c
     d = c.scanAllDirectives(p)
     language = d.get('language')
-    if language is None: language = 'python'
-    else: language = language.lower()
+    if language is None:
+        language = 'python'
+    else:
+        language = language.lower()
     syntax = SilverCity is not None
-
-    # g.trace('language',language,'language.title()',language.title(),p.h)
-
     s = self.getOption('code_block_string')
     if s:
         self.code_block_string = s.replace('\\n','\n')
@@ -2502,18 +2435,13 @@ To activate the rst3 plugin, do the following:
         line 1
         line 2 etc.
     '''
-
-    # g.trace(p.h,g.callers())
-
     lines = p.b.split('\n')
     lines = [' '*4 + z for z in lines]
     lines.insert(0,'::\n')
-
     s = '\n'.join(lines)
     if s.strip():
         self.write('%s\n\n' % s)
 </t>
-<t tx="ekr.20081121105001.2080"># Most other gui plugins are now in leoGuiPluginsRef.leo</t>
 <t tx="ekr.20090428082801.64">def handleMissingStyleSheetArgs (self,s=None):
 
     '''Parse the publish_argv_for_missing_stylesheets option,
@@ -2964,14 +2892,12 @@ proc.wait()
 os.chdir(old_dir)
 print('done! wrote %s' % fn)
 </t>
-<t tx="ekr.20180504191650.34">@language python
-@tabwidth -4
-</t>
+<t tx="ekr.20180504191650.34"></t>
 <t tx="ekr.20180504191650.36"></t>
 <t tx="ekr.20180504191650.42"></t>
 <t tx="ekr.20180504191650.68"></t>
 <t tx="ekr.20180504192522.1"></t>
-<t tx="ekr.20180504193756.1"></t>
+<t tx="ekr.20181030041210.1"></t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
 </tnodes>

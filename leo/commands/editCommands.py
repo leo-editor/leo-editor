@@ -53,9 +53,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.bracketsFlashDelay = cf.getInt('flash-brackets-delay')
         self.bracketsFlashFg = cf.getColor('flash-brackets-foreground-color')
         self.flashMatchingBrackets = cf.getBool('flash-matching-brackets')
-        self.smartAutoIndent = cf.getBool('smart_auto_indent')
-        self.openBracketsList = cf.getString('open_flash_brackets') or '([{'
-        self.closeBracketsList = cf.getString('close_flash_brackets') or ')]}'
+        self.smartAutoIndent = cf.getBool('smart-auto-indent')
+        self.openBracketsList = cf.getString('open-flash-brackets') or '([{'
+        self.closeBracketsList = cf.getString('close-flash-brackets') or ')]}'
         self.initBracketMatcher(c)
     #@+node:ekr.20150514063305.190: *3* ec.cache
     @cmd('clear-all-caches')

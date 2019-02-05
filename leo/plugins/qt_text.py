@@ -380,7 +380,11 @@ class QLineEditWrapper(QTextMixin):
     #@-others
 #@+node:ekr.20150403094619.1: ** class LeoLineTextWidget(QFrame)
 class LeoLineTextWidget(QtWidgets.QFrame):
-    '''A QFrame supporting gutter line numbers. This class *has* a QTextEdit.'''
+    '''
+    A QFrame supporting gutter line numbers.
+    
+    This class *has* a QTextEdit.
+    '''
     #@+others
     #@+node:ekr.20150403094706.9: *3* __init__(LeoLineTextWidget)
     def __init__(self, c, e, *args):
@@ -404,7 +408,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):
     def eventFilter(self, obj, event):
         '''
         Update the line numbers for all events on the text edit and the viewport.
-        This is easier than connecting all necessary singals.
+        This is easier than connecting all necessary signals.
         '''
         if obj in (self.edit, self.edit.viewport()):
             self.number_bar.update()
@@ -706,7 +710,7 @@ if QtWidgets:
 #@+node:ekr.20150403094706.2: ** class NumberBar(QFrame)
 class NumberBar(QtWidgets.QFrame):
     #@+others
-    #@+node:ekr.20150403094706.3: *3* NumberBar.__init__& reloadSettings
+    #@+node:ekr.20150403094706.3: *3* NumberBar.__init__
     def __init__(self, c, e, *args):
         '''Ctor for NumberBar class.'''
         QtWidgets.QFrame.__init__(self, *args)
@@ -718,12 +722,16 @@ class NumberBar(QtWidgets.QFrame):
             # A QTextDocument.
         self.fm = self.fontMetrics()
             # A QFontMetrics
+        self.image = QtGui.QImage(g.app.gui.getImageImage(
+            g.os_path_finalize_join(g.app.loadDir,
+                '..', 'Icons', 'Tango','16x16', 'actions', 'stop.png')))
         self.highest_line = 0
             # The highest line that is currently visibile.
         # Set the name to gutter so that the QFrame#gutter style sheet applies.
+        self.offsets = []
         self.setObjectName('gutter')
         self.reloadSettings()
-        
+    #@+node:ekr.20181005093003.1: *3* NumberBar.reloadSettings
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
@@ -731,7 +739,33 @@ class NumberBar(QtWidgets.QFrame):
             # Extra width for column.
         self.y_adjust = c.config.getInt('gutter-y-adjust') or 10
             # The y offset of the first line of the gutter.
+    #@+node:ekr.20181005085507.1: *3* NumberBar.mousePressEvent
+    def mousePressEvent(self, event):
         
+        c = self.c
+
+        def find_line(y):
+            n, last_y = 0, 0
+            for n, y2 in self.offsets:
+                if last_y <= y < y2:
+                    return n
+                last_y = y2
+            return n if self.offsets else 0
+            
+        xdb = getattr(g.app, 'xdb', None)
+        if not xdb:
+            return
+        path = xdb.canonic(g.fullPath(c, c.p))
+        if not path:
+            return
+        n = find_line(event.y())
+        if not xdb.checkline(path, n):
+            g.trace('FAIL checkline', path, n)
+            return
+        if xdb.has_breakpoint(path, n):
+            xdb.qc.put('clear %s:%s' % (path, n))
+        else:
+            xdb.qc.put('b %s:%s' % (path, n))
     #@+node:ekr.20150403094706.5: *3* NumberBar.update
     def update(self, *args):
         '''
@@ -763,6 +797,7 @@ class NumberBar(QtWidgets.QFrame):
         n = i = 0
         c = self.c
         translation = c.user_dict.get('line_number_translation', [])
+        self.offsets = []
         while block.isValid():
             i = translation[n] if n < len(translation) else n + 1
             n += 1
@@ -779,6 +814,7 @@ class NumberBar(QtWidgets.QFrame):
     #@+node:ekr.20150403094706.7: *3* NumberBar.paintBlock
     def paintBlock(self, bold, n, painter, top_left, scroll_y):
         '''Paint n, right justified in the line number field.'''
+        c = self.c
         if bold:
             self.setBold(painter, True)
         s = str(n)
@@ -787,9 +823,26 @@ class NumberBar(QtWidgets.QFrame):
         # x = self.width() - self.fm.width(s) - self.w_adjust
         x = 0
         y = round(top_left.y()) - scroll_y + self.fm.ascent() + self.y_adjust
+        self.offsets.append((n, y),)
         painter.drawText(x, y, s)
         if bold:
             self.setBold(painter, False)
+        xdb = getattr(g.app, 'xdb', None)
+        if not xdb:
+            return
+        if not xdb.has_breakpoints():
+            return
+        path = g.fullPath(c, c.p)
+        if xdb.has_breakpoint(path, n):
+            target_r = QtCore.QRect(
+                self.fm.width(s) + 16,
+                top_left.y() + self.y_adjust - 2,
+                16.0, 16.0)
+            if self.image:
+                source_r = QtCore.QRect(0.0, 0.0, 16.0, 16.0)
+                painter.drawImage(target_r, self.image, source_r)
+            else:
+                painter.drawEllipse(target_r)
     #@+node:ekr.20150403094706.8: *3* NumberBar.setBold
     def setBold(self, painter, flag):
         '''Set or clear bold facing in the painter, depending on flag.'''

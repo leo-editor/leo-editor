@@ -27,6 +27,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+.eggs/
 
 # Test results
 /.pytest_cache/
@@ -48,7 +49,7 @@ leo/test/unittest/rst_write_test.txt
 *.leo_db
 *Thumbs.db
 *.zip
-
+*.*.swp # vim swap files
 ./*.zip
 ./*.exe
 
@@ -127,3 +128,4 @@ annotate.txt
 leo/core/leoProjects.txt
 leo/plugins/spellpyx.txt
 
+.eggs/*

@@ -133,13 +133,13 @@ def init():
 # defer binding event until c exists
 def attachToCommander(t,k):
     c = k.get('c')
-    event = c.config.getString('active_path_event') or "headdclick1"
+    event = c.config.getString('active-path-event') or "headdclick1"
     # pylint: disable=unnecessary-lambda
     g.registerHandler(event, lambda t,k: onSelect(t,k))
 
     # not using a proper class, so
     c.__active_path = {'ignore': [], 'autoload': [],
-        'do_autoload': c.config.getBool('active_path_do_autoload', default=True)}
+        'do_autoload': c.config.getBool('active-path-do-autoload', default=True)}
 
     if c.config.getData('active_path_ignore'):
         c.__active_path['ignore'] = [re.compile(i, re.IGNORECASE)
@@ -149,18 +149,18 @@ def attachToCommander(t,k):
         c.__active_path['autoload'] = [re.compile(i, re.IGNORECASE)
             for i in c.config.getData('active_path_autoload')]
 
-    if c.config.getBool('active_path_load_docstring'):
+    if c.config.getBool('active-path-load-docstring'):
         c.__active_path['load_docstring'] = True
     else:
         c.__active_path['load_docstring'] = False
 
-    if c.config.getFloat('active_path_timeout_seconds'):
-        c.__active_path['timeout'] = c.config.getFloat('active_path_timeout_seconds')
+    if c.config.getFloat('active-path-timeout-seconds'):
+        c.__active_path['timeout'] = c.config.getFloat('active-path-timeout-seconds')
     else:
         c.__active_path['timeout'] = 10.
 
-    if c.config.getInt('active_path_max_size'):
-        c.__active_path['max_size'] = c.config.getInt('active_path_max_size')
+    if c.config.getInt('active-path-max-size'):
+        c.__active_path['max_size'] = c.config.getInt('active-path-max-size')
     else:
         c.__active_path['max_size'] = 1000000
 
@@ -412,7 +412,7 @@ def createFile(c,parent,d):
         return False
 
     d = os.path.basename(d)
-    atType = c.config.getString('active_path_attype') or 'auto'
+    atType = c.config.getString('active-path-attype') or 'auto'
     ok = g.app.gui.runAskYesNoDialog(c, 'Create / load file?',
         'Create file @'+atType+' '+d+'?')
     if ok == 'no':
@@ -457,7 +457,7 @@ def openFile(c,parent,d, autoload=False):
     if autoload and oversize:
         return
 
-    atType = c.config.getString('active_path_attype') or 'auto'
+    atType = c.config.getString('active-path-attype') or 'auto'
     parent.h = '@' + atType + ' ' + parent.h
     c.selectPosition(parent)
     if atType == 'asis':

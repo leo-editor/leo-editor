@@ -202,9 +202,9 @@ class leoscreen_Controller(object):
         c = self.c
         c.registerReloadSettings(self)
         # line prefix for pasting results into leo (#, --, //, C, etc.)
-        x = self.c.config.getString('leoscreen_prefix')
+        x = self.c.config.getString('leoscreen-prefix')
         self.get_line_prefix = x.replace('SPACE', ' ') if x else ''
-        self.time_fmt = self.c.config.getString('leoscreen_time_fmt') or '%Y-%m-%d %H:%M:%S'
+        self.time_fmt = self.c.config.getString('leoscreen-time-fmt') or '%Y-%m-%d %H:%M:%S'
     #@+node:tbrown.20100226095909.12785: *3* __del__
     def __del__(self):
         """remove temporary file"""

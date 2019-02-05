@@ -87,6 +87,47 @@ class GoToCommands(object):
         else:
             self.fail(lines, n, root)
             return None, -1, False
+    #@+node:ekr.20181003080042.1: *3* goto.node_offset_to_file_line (new)
+    def node_offset_to_file_line(self, target_offset, target_p, root):
+        '''
+        Given a zero-based target_offset within target_p.b, return the line
+        number of the corresponding line within root's file.
+        '''
+        delim1, delim2 = self.get_delims(root)
+        file_s = self.get_external_file_with_sentinels(root)
+        gnx, h, n, node_offset, target_gnx = None, None, -1, None, target_p.gnx
+        stack = []
+        for s in g.splitLines(file_s):
+            n += 1 # All lines contribute to the file's line count.
+            # g.trace('%4s %4r %40r %s' % (n, node_offset, h, s.rstrip()))
+            if self.is_sentinel(delim1, delim2, s):
+                s2 = s.strip()[len(delim1):]
+                # Common code for the visible sentinels.
+                if s2.startswith(('@+others', '@+<<', '@@'),):
+                    if target_offset == node_offset and gnx == target_gnx:
+                        return n
+                    if node_offset is not None:
+                        node_offset += 1
+                # These sentinels change nodes...
+                if s2.startswith('@+node'):
+                    gnx, h = self.get_script_node_info(s, delim2)
+                    node_offset = 0
+                elif s2.startswith('@-node'):
+                    gnx = node_offset = None
+                elif s2.startswith(('@+others', '@+<<'),):
+                    stack.append([gnx, h, node_offset])
+                    gnx, node_offset = None, None
+                elif s2.startswith(('@-others', '@-<<'),):
+                    gnx, h, node_offset = stack.pop()
+            else:
+                # All non-sentinel lines are visible.
+                if target_offset == node_offset and gnx == target_gnx:
+                    return n
+                if node_offset is not None:
+                    node_offset += 1
+        print('')
+        g.trace('Not found', target_offset, target_gnx)
+        return None
     #@+node:ekr.20150624085605.1: *3* goto.scan_nonsentinel_lines
     def scan_nonsentinel_lines(self, lines, n, root):
         '''
@@ -244,7 +285,7 @@ class GoToCommands(object):
             return delims1, None
         else:
             return delims2, delims3
-    #@+node:ekr.20150624143903.1: *4* goto.get_external_file_with_sentinels
+    #@+node:ekr.20150624143903.1: *4* goto.get_external_file_with_sentinels (changed)
     def get_external_file_with_sentinels(self, root):
         '''
         root is an @<file> node.
@@ -260,11 +301,11 @@ class GoToCommands(object):
             ivar = 'force_sentinels'
             try:
                 setattr(at, ivar, True)
-                ok = at.writeOneAtAutoNode(root, force=True, toString=True)
+                s = at.atAutoToString(root)
             finally:
                 if hasattr(at, ivar):
                     delattr(at, ivar)
-            return at.stringOutput if ok else ''
+            return s
         else:
             return g.composeScript( # Fix # 429.
                 c = c,

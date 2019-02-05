@@ -165,9 +165,9 @@ class Commands(object):
         self.changed = False
             # True: the ouline has changed since the last save.
         self.ignored_at_file_nodes = []
-            # List of nodes for error dialog.
+            # List of nodes for c.raise_error_dialogs.
         self.import_error_nodes = []
-            #
+            # List of nodes for c.raise_error_dialogs.
         self.last_dir = None
             # The last used directory.
         self.mFileName = fileName or ''
@@ -176,6 +176,8 @@ class Commands(object):
             #
         self.openDirectory = None
             #
+        self.orphan_at_file_nodes = []
+            # List of orphaned nodes for c.raise_error_dialogs.
         self.wrappedFileName = None
             # The name of the wrapped file, for wrapper commanders.
             # Set by LM.initWrapperLeoFile
@@ -282,6 +284,8 @@ class Commands(object):
         # Import files to execute @g.commander_command decorators
         import leo.core.leoCompare as leoCompare
         assert leoCompare
+        import leo.core.leoDebugger as leoDebugger
+        assert leoDebugger
         import leo.commands.commanderEditCommands as commanderEditCommands
         assert commanderEditCommands
         import leo.commands.commanderFileCommands as commanderFileCommands
@@ -542,34 +546,33 @@ class Commands(object):
         getColor = c.config.getColor
         getData = c.config.getData
         getInt = c.config.getInt
-        # c.allow_at_in_paragraphs = getBool('allow-at-in-paragraphs', default=False)
-        c.autoindent_in_nocolor = getBool('autoindent_in_nocolor_mode')
-        c.collapse_nodes_after_move = getBool('collapse_nodes_after_move')
-        c.collapse_on_lt_arrow = getBool('collapse_on_lt_arrow', default=True)
+        c.autoindent_in_nocolor = getBool('autoindent-in-nocolor-mode')
+        c.collapse_nodes_after_move = getBool('collapse-nodes-after-move')
+        c.collapse_on_lt_arrow = getBool('collapse-on-lt-arrow', default=True)
         c.contractVisitedNodes = getBool('contractVisitedNodes')
         c.fixedWindowPositionData = getData('fixedWindowPosition')
-        c.focus_border_color = getColor('focus_border_color') or 'red'
-        c.focus_border_command_state_color = getColor('focus_border_command_state_color') or 'blue'
-        c.focus_border_overwrite_state_color = getColor('focus_border_overwrite_state_color') or 'green'
-        c.focus_border_width = getInt('focus_border_width') or 1 # pixels
-        c.forceExecuteEntireBody = getBool('force_execute_entire_body', default=False)
-        c.make_node_conflicts_node = getBool('make-node-conflicts-node', default=True)
-        c.max_pre_loaded_body_chars = c.config.getInt('max-pre-loaded-body-chars') or 0
-        c.outlineHasInitialFocus = getBool('outline_pane_has_initial_focus')
-        c.page_width = getInt('page_width') or 132
-        c.putBitsFlag = getBool('put_expansion_bits_in_leo_files', default=True)
-        c.sparse_move = getBool('sparse_move_outline_left')
-        c.sparse_find = getBool('collapse_nodes_during_finds')
-        c.sparce_spell = getBool('collapse_nodes_while_spelling')
+        c.focus_border_color = getColor('focus-border-color') or 'red'
+        c.focus_border_command_state_color = \
+            getColor('focus-border-command-state-color') or 'blue'
+        c.focus_border_overwrite_state_color = \
+            getColor('focus-border-overwrite-state-color') or 'green'
+        c.focus_border_width = getInt('focus-border-width') or 1 # pixels
+        c.forceExecuteEntireBody = \
+            getBool('force-execute-entire-body', default=False)
+        c.make_node_conflicts_node = \
+            getBool('make-node-conflicts-node', default=True)
+        c.outlineHasInitialFocus = getBool('outline-pane-has-initial-focus')
+        c.page_width = getInt('page-width') or 132
+        # c.putBitsFlag = getBool('put-expansion-bits-in-leo-files', default=True)
+        c.sparse_move = getBool('sparse-move-outline-left')
+        c.sparse_find = getBool('collapse-nodes-during-finds')
+        c.sparce_spell = getBool('collapse-nodes-while-spelling')
         c.stayInTreeAfterSelect = getBool('stayInTreeAfterSelect')
-        c.smart_tab = getBool('smart_tab')
-        c.tab_width = getInt('tab_width') or -4
-        # c.use_body_focus_border = getBool('use_body_focus_border', default=True)
-        # c.use_focus_border = getBool('use_focus_border', default=True)
-            # Not used: replaced by stylesheet settings.
-        c.verbose_check_outline = getBool('verbose_check_outline', default=False)
-        c.vim_mode = getBool('vim_mode', default=False)
-        c.write_script_file = getBool('write_script_file')
+        c.smart_tab = getBool('smart-tab')
+        c.tab_width = getInt('tab-width') or -4
+        c.verbose_check_outline = getBool('verbose-check-outline', default=False)
+        c.vim_mode = getBool('vim-mode', default=False)
+        c.write_script_file = getBool('write-script-file')
     #@+node:ekr.20090213065933.7: *4* c.setWindowPosition
     def setWindowPosition(self):
         c = self
@@ -633,6 +636,8 @@ class Commands(object):
                         namespace.update(script_gnx=script_p.gnx)
                     # We *always* execute the script with p = c.p.
                     c.executeScriptHelper(args, define_g, define_name, namespace, script)
+                except KeyboardInterrupt:
+                    g.es('interrupted')
                 except Exception:
                     if raiseFlag:
                         raise
@@ -1665,11 +1670,11 @@ class Commands(object):
         default_format = "%m/%d/%Y %H:%M:%S" # E.g., 1/30/2003 8:31:55
         # Try to get the format string from settings.
         if body:
-            format = c.config.getString("body_time_format_string")
-            gmt = c.config.getBool("body_gmt_time")
+            format = c.config.getString("body-time-format-string")
+            gmt = c.config.getBool("body-gmt-time")
         else:
-            format = c.config.getString("headline_time_format_string")
-            gmt = c.config.getBool("headline_gmt_time")
+            format = c.config.getString("headline-time-format-string")
+            gmt = c.config.getBool("headline-gmt-time")
         if format is None:
             format = default_format
         try:
@@ -1901,7 +1906,7 @@ class Commands(object):
             'language':language,
             'delims':g.set_delims_from_language(language),
         }
-        wrap = c.config.getBool("body_pane_wraps")
+        wrap = c.config.getBool("body-pane-wraps")
         table = (
             ('encoding',    None,           g.scanAtEncodingDirectives),
             ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
@@ -2145,7 +2150,7 @@ class Commands(object):
 
         # Get the path to the file.
         c = self
-        path = c.config.getString('script_file_path')
+        path = c.config.getString('script-file-path')
         if path:
             isAbsPath = os.path.isabs(path)
             driveSpec, path = os.path.splitdrive(path)
@@ -2176,7 +2181,7 @@ class Commands(object):
             g.es_exception()
             g.es("Failed to write script to %s" % path)
             # g.es("Check your configuration of script_file_path, currently %s" %
-                # c.config.getString('script_file_path'))
+                # c.config.getString('script-file-path'))
             path = None
         return path
     #@+node:ekr.20171124101444.1: *3* c.File
@@ -2337,6 +2342,7 @@ class Commands(object):
         if d and g.app.externalFilesController:
             # Select an ancestor @<file> node if possible.
             if not d.get('p'):
+                d ['p'] = None
                 p = c.p
                 while p:
                     if p.isAnyAtFileNode():
@@ -2421,6 +2427,7 @@ class Commands(object):
         c = self
         c.import_error_nodes = []
         c.ignored_at_file_nodes = []
+        c.orphan_at_file_nodes = []
         if g.unitTesting:
             d = g.app.unitTestDict
             tag = 'init_error_dialogs'
@@ -2444,31 +2451,61 @@ class Commands(object):
             d[tag] = 1 + d.get(tag, 0)
             # This trace catches all too-many-calls failures.
                 # g.trace(g.callers())
+            c.init_error_dialogs()
+            return
+        #
+        # Issue one or two dialogs or messages.
+        saved_body = c.rootPosition().b
+            # Save the root's body. Somehow the dialog destroys it!
+        if c.import_error_nodes or c.ignored_at_file_nodes or c.orphan_at_file_nodes:
+            g.app.gui.dismiss_splash_screen()
         else:
-            # Issue one or two dialogs or messages.
-            if c.import_error_nodes or c.ignored_at_file_nodes:
-                g.app.gui.dismiss_splash_screen()
-            if c.import_error_nodes:
-                files = '\n'.join(sorted(set(c.import_error_nodes)))
-                if use_dialogs:
-                    g.app.gui.runAskOkDialog(c,
-                        title='Import errors',
-                        message='The following were not imported properly. '
-                        '@ignore was inserted:\n%s' % (files))
-                else:
-                    g.es('import errors...', color='red')
-                    g.es('\n'.join(sorted(files)), color='blue')
-            if c.ignored_at_file_nodes:
-                files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))
-                kind = 'read' if kind.startswith('read') else 'written'
-                if use_dialogs:
-                    g.app.gui.runAskOkDialog(c,
-                        title='Not read',
-                        message='The following were not %s because they contain @ignore:\n%s' % (
-                            kind, files))
-                else:
-                    g.es('not %s (@ignore)...' % (kind), color='red')
-                    g.es(files, color='blue')
+            # #1007: Exit now, so we don't have to restore c.rootPosition().b.
+            c.init_error_dialogs()
+            return
+        if c.import_error_nodes:
+            files = '\n'.join(sorted(set(c.import_error_nodes)))
+            if use_dialogs:
+                g.app.gui.runAskOkDialog(c,
+                    title='Import errors',
+                    message='The following were not imported properly. '
+                    '@ignore was inserted:\n%s' % (files))
+            else:
+                g.es('import errors...', color='red')
+                g.es('\n'.join(sorted(files)), color='blue')
+        if c.ignored_at_file_nodes:
+            files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))
+            kind = 'read' if kind.startswith('read') else 'written'
+            if use_dialogs:
+                message = 'The following were not %s because they contain @ignore:\n%s' % (kind, files)
+                g.app.gui.runAskOkDialog(c,
+                    message=message,
+                    title='Not %s' % kind.capitalize(),
+                )
+            else:
+                g.es('not %s (@ignore)...' % (kind), color='red')
+                g.es(files, color='blue')
+        #
+        # #1050: always raise a dialog for orphan @<file> nodes.
+        if c.orphan_at_file_nodes:
+            message = '\n'.join([
+                'The following were not written because of errors:\n',
+                '\n'.join(sorted(set(c.orphan_at_file_nodes))),
+                '',
+                'Warning: changes to these files will be lost\n'
+                'unless you can save the files successfully.'
+            ])
+            g.app.gui.runAskOkDialog(c, message=message, title='Not Written')
+            # Mark all the nodes dirty.
+            for z in c.all_unique_positions():
+                if z.isOrphan():
+                    z.setDirty()
+                    z.clearOrphan()
+            c.setChanged()
+            c.redraw()
+        # Restore the root position's body.
+        c.rootPosition().v.b = saved_body
+            # #1007: just set v.b.
         c.init_error_dialogs()
     #@+node:ekr.20150710083827.1: *5* c.syntaxErrorDialog
     def syntaxErrorDialog(self):
@@ -2787,7 +2824,7 @@ class Commands(object):
         if not event or not event.char or not event.char.isalnum():
             return
         c = self; p = c.p; p1 = p.copy()
-        invisible = c.config.getBool('invisible_outline_navigation')
+        invisible = c.config.getBool('invisible-outline-navigation')
         ch = event.char if event else ''
         allFlag = ch.isupper() and invisible # all is a global (!?)
         if not invisible: ch = ch.lower()
@@ -2825,7 +2862,7 @@ class Commands(object):
 
         Returns False if @float outline_nav_extend_delay setting is 0.0 or unspecified.'''
         c = self
-        deltaTime = c.config.getFloat('outline_nav_extend_delay')
+        deltaTime = c.config.getFloat('outline-nav-extend-delay')
         if deltaTime in (None, 0.0):
             return False
         else:
@@ -2924,8 +2961,7 @@ class Commands(object):
         if w and g.app.gui:
             if 'focus' in g.app.debug:
                 print('')
-                g.trace('(c)',  w.__class__.__name__)
-                g.trace(g.callers(6))
+                g.trace('(c)', repr(w))
             c.requestedFocusWidget = w
 
     def set_focus(self, w, force=False):
@@ -2934,8 +2970,7 @@ class Commands(object):
         if w and g.app.gui:
             if trace:
                 print('')
-                g.trace('(c)',  w.__class__.__name__)
-                g.trace(g.callers(6))
+                g.trace('(c)', repr(w))
             g.app.gui.set_focus(c, w)
         else:
             if trace: g.trace('(c) no w')
@@ -3439,6 +3474,7 @@ class Commands(object):
         safe_at_file=True,
         theTypes=None,
         # force_at_others=False, # tag:no-longer-used
+        ignore_pattern=None
     ):
         #@+<< docstring >>
         #@+node:ekr.20130823083943.12614: *4* << docstring >>
@@ -3473,6 +3509,7 @@ class Commands(object):
                     safe_at_file=safe_at_file,
                     theTypes=['.py'] if not theTypes else theTypes,
                     # force_at_others = force_at_others,  # tag:no-longer-used
+                    ignore_pattern=ignore_pattern
                 )
                 cc.run(dir_)
             finally:

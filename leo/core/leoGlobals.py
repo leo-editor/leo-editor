@@ -2450,8 +2450,10 @@ def objToString(obj, indent='', printCaller=False, tag=None):
         prefix = g.caller() if printCaller else tag
     else:
         prefix = None
-    return '%s...\n%s\n' % (prefix, s) if prefix else s
-
+    if prefix:
+        sep = '\n' if '\n' in s else ' '
+        return '%s:%s%s' % (prefix, sep, s)
+    return s
 toString = objToString
 #@+node:ekr.20140401054342.16844: *4* g.run_pylint
 def run_pylint(fn, rc,
@@ -3013,7 +3015,7 @@ def getLanguageAtPosition(c, p):
     language = (
         d and d.get('language') or
         g.getLanguageFromAncestorAtFileNode(p) or
-        c.config.getString('target_language') or
+        c.config.getString('target-language') or
         'python'
     )
     return language.lower()
@@ -3203,7 +3205,7 @@ def scanAtWrapDirectives(aList, issue_error_flag=False):
 def scanAllAtWrapDirectives(c, p):
     '''Scan p and all ancestors looking for @wrap/@nowrap directives.'''
     if c and p:
-        default = c and c.config.getBool("body_pane_wraps")
+        default = c and c.config.getBool("body-pane-wraps")
         aList = g.get_directives_dict_list(p)
         val = g.scanAtWrapDirectives(aList)
         ret = default if val is None else val
@@ -3448,6 +3450,10 @@ def create_temp_file(textMode=False):
         g.es_exception()
         theFile, theFileName = None, ''
     return theFile, theFileName
+#@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
+def defaultLeoFileExtension(c=None):
+    conf = c.config if c else g.app.config
+    return conf.getString('default-leo-extension') or '.leo'
 #@+node:ekr.20031218072017.3118: *3* g.ensure_extension
 def ensure_extension(name, ext):
     theFile, old_ext = g.os_path_splitext(name)
@@ -3459,6 +3465,12 @@ def ensure_extension(name, ext):
         return name
     else:
         return name + ext
+#@+node:vitalije.20170714085317.1: *3* g.fileFilters
+def fileFilters(key):
+    if key == 'LEOFILES' and g.SQLITE:
+        return ("Leo files", "*.leo *.db")
+    elif key == 'LEOFILES':
+        return ("Leo files", "*.leo")
 #@+node:ekr.20150403150655.1: *3* g.fullPath
 def fullPath(c, p, simulate=False):
     '''
@@ -3488,7 +3500,7 @@ def getBaseDirectory(c):
     if base and g.os_path_isabs(base):
         # Set c.chdir_to_relative_path as needed.
         if not hasattr(c, 'chdir_to_relative_path'):
-            c.chdir_to_relative_path = c.config.getBool('chdir_to_relative_path')
+            c.chdir_to_relative_path = c.config.getBool('chdir-to-relative-path')
         # Call os.chdir if requested.
         if c.chdir_to_relative_path:
             os.chdir(base)
@@ -3520,7 +3532,7 @@ def guessExternalEditor(c=None):
         os.environ.get("LEO_EDITOR") or
         os.environ.get("EDITOR") or
         g.app.db and g.app.db.get("LEO_EDITOR") or
-        c and c.config.getString('external_editor'))
+        c and c.config.getString('external-editor'))
     if editor: return editor
     # fallbacks
     platform = sys.platform.lower()
@@ -3695,11 +3707,12 @@ def readFileIntoEncodedString(fn, silent=False):
             g.es_exception()
     return None
 #@+node:ekr.20100125073206.8710: *3* g.readFileIntoString
-def readFileIntoString(fn,
+def readFileIntoString(fileName,
     encoding='utf-8', # BOM may override this.
     kind=None, # @file, @edit, ...
+    verbose=True,
 ):
-    '''Return the contents of the file whose full path is fn.
+    '''Return the contents of the file whose full path is fileName.
 
     Return (s,e)
     s is the string, converted to unicode, or None if there was an error.
@@ -3709,21 +3722,18 @@ def readFileIntoString(fn,
     - The encoding given by the 'encoding' keyword arg.
     - None, which typically means 'utf-8'.
     '''
-    if not fn:
-        g.trace('no fn arg given')
-        g.trace(g.callers())
+    if not fileName:
+        if verbose: g.trace('no fileName arg given')
         return None, None
-    if g.os_path_isdir(fn):
-        g.trace('not a file:', fn)
-        g.trace(g.callers())
+    if g.os_path_isdir(fileName):
+        if verbose: g.trace('not a file:', fileName)
         return None, None
-    if not g.os_path_exists(fn):
-        g.error('file not found:', fn)
-        g.trace(g.callers())
+    if not g.os_path_exists(fileName):
+        if verbose: g.error('file not found:', fileName)
         return None, None
     try:
         e = None
-        with open(fn, 'rb') as f:
+        with open(fileName, 'rb') as f:
             s = f.read()
         # Fix #391.
         if not s:
@@ -3732,19 +3742,17 @@ def readFileIntoString(fn,
         e, s = g.stripBOM(s)
         if not e:
             # Python's encoding comments override everything else.
-            junk, ext = g.os_path_splitext(fn)
+            junk, ext = g.os_path_splitext(fileName)
             if ext == '.py':
                 e = g.getPythonEncodingFromString(s)
         s = g.toUnicode(s, encoding=e or encoding)
         return s, e
     except IOError:
-        # Translate 'can not open' and kind, but not fn.
-        if kind:
-            g.error('can not open', '', kind, fn)
-        else:
-            g.error('can not open', fn)
+        # Translate 'can not open' and kind, but not fileName.
+        if verbose:
+           g.error('can not open', '', (kind or ''), fileName)
     except Exception:
-        g.error('readFileIntoString: unexpected exception reading %s' % (fn))
+        g.error('readFileIntoString: unexpected exception reading %s' % (fileName))
         g.es_exception()
     return None, None
 #@+node:ekr.20160504062833.1: *3* g.readFileToUnicodeString
@@ -3910,16 +3918,19 @@ def utils_stat(fileName):
     except Exception:
         mode = None
     return mode
-#@+node:vitalije.20170714085317.1: *3* g.fileFilters
-def fileFilters(key):
-    if key == 'LEOFILES' and g.SQLITE:
-        return ("Leo files", "*.leo *.db")
-    elif key == 'LEOFILES':
-        return ("Leo files", "*.leo")
-#@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
-def defaultLeoFileExtension(c=None):
-    conf = c.config if c else g.app.config
-    return conf.getString('default_leo_extension') or '.leo'
+#@+node:ekr.20190114061452.26: *3* g.writeFile
+def writeFile(contents, encoding, fileName):
+    '''Create a file with the given contents.'''
+    try:
+        if g.isUnicode(contents):
+            contents = g.toEncodedString(contents, encoding=encoding)
+        # 'wb' preserves line endings.
+        with open(fileName, 'wb') as f:
+            f.write(contents)
+        return True
+    except Exception:
+        g.es_exception()
+        return False
 #@+node:ekr.20031218072017.3151: ** g.Finding & Scanning
 #@+node:ekr.20140602083643.17659: *3* g.find_word
 def find_word(s, word, i=0):
@@ -6110,13 +6121,13 @@ def es_dump(s, n=30, title=None):
 def es_error(*args, **keys):
     color = keys.get('color')
     if color is None and g.app.config:
-        keys['color'] = g.app.config.getColor("log_error_color") or 'red'
+        keys['color'] = g.app.config.getColor("log-error-color") or 'red'
     g.es(*args, **keys)
 
 def es_print_error(*args, **keys):
     color = keys.get('color')
     if color is None and g.app.config:
-        keys['color'] = g.app.config.getColor("log_error_color") or 'red'
+        keys['color'] = g.app.config.getColor("log-error-color") or 'red'
     g.es_print(*args, **keys)
 #@+node:ekr.20031218072017.3111: *3* g.es_event_exception
 def es_event_exception(eventName, full=False):
@@ -6457,17 +6468,17 @@ def actualColor(color):
     # #788: Translate colors to theme-defined colors.
     if color is None:
         # Prefer text_foreground_color'
-        color2 = c.config.getColor('log_text_foreground_color')
+        color2 = c.config.getColor('log-text-foreground-color')
         if color2: return color2
         # Fall back to log_black_color.
-        color2 = c.config.getColor('log_black_color')
+        color2 = c.config.getColor('log-black-color')
         return color2 or 'black'
     if color == 'black':
         # Prefer log_black_color.
-        color2 = c.config.getColor('log_black_color')
+        color2 = c.config.getColor('log-black-color')
         if color2: return color2
         # Fall back to log_text_foreground_color.
-        color2 = c.config.getColor('log_text_foreground_color')
+        color2 = c.config.getColor('log-text-foreground-color')
         return color2 or 'black'
     color2 = c.config.getColor('log_%s_color' % color)
     return color2 or color
@@ -6607,6 +6618,12 @@ def input_(message='', c=None):
 #@+node:ekr.20110609125359.16493: *3* g.isMacOS
 def isMacOS():
     return sys.platform == 'darwin'
+#@+node:ekr.20181027133311.1: *3* g.issueSecurityWarning
+def issueSecurityWarning(setting):
+    g.es('Security warning! Ignoring...',color='red')
+    g.es(setting, color='red')
+    g.es('This setting can be set only in')
+    g.es('leoSettings.leo or myLeoSettings.leo')
 #@+node:ekr.20031218072017.3144: *3* g.makeDict (Python Cookbook)
 # From the Python cookbook.
 
@@ -7324,9 +7341,9 @@ def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
         at = c.atFileCommands
         g.app.scriptDict["script1"] = s
         # Important: converts unicode to utf-8 encoded strings.
-        script = at.writeFromString(p.copy(), s,
+        script = at.stringToString(p.copy(), s,
             forcePythonSentinels=forcePythonSentinels,
-            useSentinels=useSentinels)
+            sentinels=useSentinels)
         script = script.replace("\r\n", "\n") # Use brute force.
         # Important, the script is an **encoded string**, not a unicode string.
         g.app.scriptDict["script2"] = script
@@ -7334,30 +7351,42 @@ def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
     else:
         return ''
 #@+node:ekr.20170123074946.1: *4* g.extractExecutableString
-def extractExecutableString(c, p, s, language='python'):
+def extractExecutableString(c, p, s):
     '''
     Return all lines for the given @language directive.
 
     Ignore all lines under control of any other @language directive.
     '''
+    #
+    # Rewritten to fix #1071.
     if g.unitTesting:
         return s # Regretable, but necessary.
-
-    # Assume @language python by default.
-    if not language: language = 'python'
-    pattern = re.compile(r'\s*@language\s+(\w+)')
-    result = []
-    for line in g.splitLines(s):
-        m = pattern.match(line)
-        if m: # Found an @language directive.
-            language = m.group(1)
-        elif language == 'python':
+    #
+    # Return s if no @language in effect. Should never happen.
+    language = g.scanForAtLanguage(c, p)
+    if not language:
+        return s
+    #
+    # Return s if @language is unambiguous.
+    pattern = r'^@language\s+(\w+)'
+    matches = list(re.finditer(pattern, s, re.MULTILINE))
+    if len(matches) < 2:
+        return s
+    #
+    # Scan the lines, extracting only the valid lines.
+    extracting, result = False, []
+    for i, line in enumerate(g.splitLines(s)):
+        m = re.match(pattern, line)
+        if m:
+            g.trace(language, m.group(1))
+            extracting = m.group(1) == language
+        elif extracting:
             result.append(line)
     return ''.join(result)
 #@+node:ekr.20060624085200: *3* g.handleScriptException
 def handleScriptException(c, p, script, script1):
     g.warning("exception executing script")
-    full = c.config.getBool('show_full_tracebacks_in_scripts')
+    full = c.config.getBool('show-full-tracebacks-in-scripts')
     fileName, n = g.es_exception(full=full)
     # Careful: this test is no longer guaranteed.
     if p.v.context == c:
@@ -7429,7 +7458,7 @@ def insertCodingLine(encoding, script):
     '''
     Insert a coding line at the start of script s if no such line exists.
     The coding line must start with @first because it will be passed to
-    at.writeFromString.
+    at.stringToString.
     '''
     if script:
         tag = '@first # -*- coding:'

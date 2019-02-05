@@ -215,7 +215,8 @@ def getString (c):
     '''
     at = c.atFileCommands
     # EKR: 2017/04/10: needs testing.
-    at.writeOpenFile(c.p, nosentinels=True, toString=True)
+    at.toString = True
+    at.writeOpenFile(c.p, sentinels=False)
     return cleanString(at.stringOutput)
 #@+node:mork.20041025120706: ** doMinidomTest
 def doMinidomTest( c ):

@@ -197,7 +197,7 @@ class RstCommands(object):
 
     def reloadSettings(self):
         '''RstCommand.reloadSettings'''
-        self.debug = self.c.config.getBool('rst3_debug', default=False)
+        self.debug = self.c.config.getBool('rst3-debug', default=False)
         
     #@+node:ekr.20150509035745.1: *4* rst.cmd (decorator)
     def cmd(name):
@@ -309,7 +309,7 @@ class RstCommands(object):
                         d[key] = val
                     break
         # Special warning for mod_http plugin.
-        if not mod_http and c.config.getBool('http_server_support'):
+        if not mod_http and c.config.getBool('http-server-support'):
             g.error('No http_server_support: can not import mod_http plugin')
             d['http_server_support'] = False
     #@+node:ekr.20100813041139.5920: *3* rst.Entry points

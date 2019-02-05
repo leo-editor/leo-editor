@@ -2,30 +2,28 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150514040118.1: * @file ../commands/debugCommands.py
 #@@first
-'''Leo's debug commands.'''
-#@+<< imports >>
-#@+node:ekr.20150514050138.1: ** << imports >> (debugCommands.py)
+'''Per-commander debugging class.'''
+#@+<< debugCommands.py imports >>
+#@+node:ekr.20181006100818.1: ** << debugCommands.py imports >>
 import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 import os
 import subprocess
 import sys
-#@-<< imports >>
+#@-<< debugCommands.py imports >>
 
 def cmd(name):
     '''Command decorator for the DebugCommandsClass class.'''
     return g.new_cmd_decorator(name, ['c', 'debugCommands',])
-
-#@+others
-#@+node:ekr.20160514095909.1: ** class DebugCommandsClass
+    
 class DebugCommandsClass(BaseEditCommandsClass):
     #@+others
-    #@+node:ekr.20150514063305.103: *3* debug.collectGarbage
+    #@+node:ekr.20150514063305.103: ** debug.collectGarbage
     @cmd('gc-collect-garbage')
     def collectGarbage(self, event=None):
         """Run Python's Garbage Collector."""
         g.collectGarbage()
-    #@+node:ekr.20150514063305.106: *3* debug.dumpAll/New/VerboseObjects
+    #@+node:ekr.20150514063305.106: ** debug.dumpAll/New/VerboseObjects
     @cmd('gc-dump-all-objects')
     def dumpAllObjects(self, event=None):
         '''Print a summary of all existing Python objects.'''
@@ -43,7 +41,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
     def verboseDumpObjects(self, event=None):
         '''Print a more verbose listing of all existing Python objects.'''
         g.printGcVerbose()
-    #@+node:ekr.20170713112849.1: *3* debug.dumpNode
+    #@+node:ekr.20170713112849.1: ** debug.dumpNode
     @cmd('dump-node')
     def dumpNode(self, event=None):
         '''Dump c.p.v, including gnx, uA's, etc.'''
@@ -55,13 +53,13 @@ class DebugCommandsClass(BaseEditCommandsClass):
                 g.printDict(p.v.u)
             else:
                 g.es_print('no uAs')
-    #@+node:ekr.20150514063305.108: *3* debug.freeTreeWidgets
+    #@+node:ekr.20150514063305.108: ** debug.freeTreeWidgets
     def freeTreeWidgets(self, event=None):
         '''Free all widgets used in Leo's outline pane.'''
         c = self.c
         c.frame.tree.destroyWidgets()
         c.redraw()
-    #@+node:ekr.20150514063305.104: *3* debug.invoke_debugger & helper
+    #@+node:ekr.20150514063305.104: ** debug.invoke_debugger & helper
     @cmd('debug')
     def invoke_debugger(self, event=None):
         '''
@@ -99,13 +97,13 @@ class DebugCommandsClass(BaseEditCommandsClass):
         else:
             args = [sys.executable, winpdb, '-t', filename]
             os.spawnv(os.P_NOWAIT, python, args)
-    #@+node:ekr.20150514063305.105: *4* debug.findDebugger
+    #@+node:ekr.20150514063305.105: *3* debug.findDebugger
     def findDebugger(self):
         '''Find the debugger using settings.'''
         c = self.c
         pythonDir = g.os_path_dirname(sys.executable)
         debuggers = (
-            c.config.getString('debugger_path'),
+            c.config.getString('debugger-path'),
             g.os_path_join(pythonDir, 'Lib', 'site-packages', 'winpdb.py'), # winpdb 1.1.2 or newer
             g.os_path_join(pythonDir, 'scripts', '_winpdb.py'), # oder version.
         )
@@ -118,7 +116,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
                     g.warning('debugger does not exist:', debugger)
         g.es('no debugger found.')
         return None
-    #@+node:ekr.20170429154309.1: *3* debug.killLogListener
+    #@+node:ekr.20170429154309.1: ** debug.killLogListener
     @cmd('kill-log-listener')
     @cmd('log-kill-listener')
     def killLogListener(self, event=None):
@@ -133,12 +131,12 @@ class DebugCommandsClass(BaseEditCommandsClass):
         else:
             g.es_print('log listener not active.')
 
-    #@+node:ekr.20150514063305.109: *3* debug.pdb
+    #@+node:ekr.20150514063305.109: ** debug.pdb
     @cmd('pdb')
     def pdb(self, event=None):
         '''Fall into pdb.'''
         g.pdb()
-    #@+node:ekr.20150514063305.110: *3* debug.printFocus
+    #@+node:ekr.20150514063305.110: ** debug.printFocus
     @cmd('show-focus')
     def printFocus(self, event=None):
         '''
@@ -154,18 +152,18 @@ class DebugCommandsClass(BaseEditCommandsClass):
         g.es_print(
             '           c.get_focus:',
             c.widget_name(c.get_focus()))
-    #@+node:ekr.20150514063305.111: *3* debug.printGcSummary
+    #@+node:ekr.20150514063305.111: ** debug.printGcSummary
     @cmd('gc-show-summary')
     def printGcSummary(self, event=None):
         '''Print a brief summary of all Python objects.'''
         g.printGcSummary()
-    #@+node:ekr.20150514063305.112: *3* debug.printStats
+    #@+node:ekr.20150514063305.112: ** debug.printStats
     def printStats(self, event=None):
         '''Print statistics about the objects that Leo is using.'''
         c = self.c
         c.frame.tree.showStats()
         self.dumpAllObjects()
-    #@+node:ekr.20150514063305.113: *3* debug.runUnitTest commands
+    #@+node:ekr.20150514063305.113: ** debug.runUnitTest commands
     @cmd('run-all-unit-tests-locally')
     def runAllUnitTestsLocally(self, event=None):
         '''Run all unit tests contained in the presently selected outline.
@@ -203,5 +201,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Tests are run in an external process, so tests *cannot* change the outline.'''
         self.c.testManager.runTestsExternally(all=False, marked=False)
     #@-others
-#@-others
+
+#@@language python
+#@@tabwidth -4
 #@-leo

@@ -329,7 +329,6 @@ class LeoBody(object):
         d = self.editorWidgets
         w = c.frame.body.wrapper
         values = list(d.values())
-        # g.printDict(d)
         if len(values) > 1:
             i = values.index(w) + 1
             if i == len(values): i = 0
@@ -527,7 +526,7 @@ class LeoBody(object):
         c = self.c
         cc = c.chapterController
         # Was in ctor.
-        use_chapters = c.config.getBool('use_chapters')
+        use_chapters = c.config.getBool('use-chapters')
         if cc and use_chapters:
             w.leo_chapter = cc.getSelectedChapter()
         else:
@@ -769,14 +768,14 @@ class LeoFrame(object):
         s = c.config.get("initial_split_orientation", "string")
         verticalFlag = s is None or (s != "h" and s != "horizontal")
         if verticalFlag:
-            r = c.config.getRatio("initial_vertical_ratio")
+            r = c.config.getRatio("initial-vertical-ratio")
             if r is None or r < 0.0 or r > 1.0: r = 0.5
-            r2 = c.config.getRatio("initial_vertical_secondary_ratio")
+            r2 = c.config.getRatio("initial-vertical-secondary-ratio")
             if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         else:
-            r = c.config.getRatio("initial_horizontal_ratio")
+            r = c.config.getRatio("initial-horizontal-ratio")
             if r is None or r < 0.0 or r > 1.0: r = 0.3
-            r2 = c.config.getRatio("initial_horizontal_secondary_ratio")
+            r2 = c.config.getRatio("initial-horizontal-secondary-ratio")
             if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         return verticalFlag, r, r2
     #@+node:ekr.20031218072017.3690: *4* LeoFrame.longFileName & shortFileName
@@ -819,8 +818,7 @@ class LeoFrame(object):
                 # See https://bugs.launchpad.net/leo-editor/+bug/381527
                 # Write the @edit node if needed.
                 if root.isDirty():
-                    c.atFileCommands.writeOneAtEditNode(root,
-                        toString=False, force=True)
+                    c.atFileCommands.writeOneAtEditNode(root) 
                 return False # Don't save and don't veto.
             else:
                 c.mFileName = g.app.gui.runSaveFileDialog(c,
@@ -1153,15 +1151,19 @@ class LeoLog(object):
     def createTextWidget(self, parentFrame):
         return None
     #@+node:ekr.20070302094848.4: *3* LeoLog.cycleTabFocus
-    @cmd('cycle-tab-focus')
+    ### @cmd('cycle-tab-focus')
     def cycleTabFocus(self, event=None):
         '''Cycle keyboard focus between the tabs in the log pane.'''
-        d = self.frameDict # Keys are page names. Values are Tk.Frames.
+        d = self.frameDict # Keys are page names. Values are Frames.
         w = d.get(self.tabName)
         values = list(d.values())
         if self.numberOfVisibleTabs() > 1:
-            i = values.index(w) + 1
-            if i == len(values): i = 0
+            try:
+                i = values.index(w)
+                if i >= len(values)-1:
+                    i = 0
+            except ValueError:
+                i = 0
             tabName = list(d.keys())[i]
             self.selectTab(tabName)
             return i
@@ -1585,7 +1587,7 @@ class LeoTree(object):
             # This is now done in set_body_text_after_select.
         c.frame.scanForTabWidth(p)
             #GS I believe this should also get into the select1 hook
-        use_chapters = c.config.getBool('use_chapters')
+        use_chapters = c.config.getBool('use-chapters')
         if use_chapters:
             cc = c.chapterController
             theChapter = cc and cc.getSelectedChapter()
@@ -1844,7 +1846,7 @@ class NullIconBarClass(object):
 class NullLog(LeoLog):
     '''A do-nothing log class.'''
     #@+others
-    #@+node:ekr.20070302095500: *3* Birth
+    #@+node:ekr.20070302095500: *3* NullLog.Birth
     #@+node:ekr.20041012083237: *4* NullLog.__init__
     def __init__(self, frame=None, parentFrame=None):
         # Init the base class.
@@ -1853,25 +1855,28 @@ class NullLog(LeoLog):
         self.logNumber = 0
         self.widget = self.createControl(parentFrame)
             # self.logCtrl is now a property of the base LeoLog class.
-    #@+node:ekr.20120216123546.10951: *4* finishCreate (NullLog)
+    #@+node:ekr.20120216123546.10951: *4* NullLog.finishCreate
     def finishCreate(self):
         pass
-    #@+node:ekr.20041012083237.1: *4* createControl
+    #@+node:ekr.20041012083237.1: *4* NullLog.createControl
     def createControl(self, parentFrame):
         return self.createTextWidget(parentFrame)
-    #@+node:ekr.20070302095121: *4* createTextWidget (NullLog)
+    #@+node:ekr.20070302095121: *4* NullLog.createTextWidge
     def createTextWidget(self, parentFrame):
         self.logNumber += 1
         c = self.c
         log = StringTextWrapper(c=c, name="log-%d" % self.logNumber)
         return log
-    #@+node:ekr.20111119145033.10186: *3* isLogWidget (NullLog)
+    #@+node:ekr.20181119135041.1: *3* NullLog.hasSelection
+    def hasSelection(self):
+        return self.widget.hasSelection()
+    #@+node:ekr.20111119145033.10186: *3* NullLog.isLogWidget
     def isLogWidget(self, w):
         return False
-    #@+node:ekr.20041012083237.2: *3* oops
+    #@+node:ekr.20041012083237.2: *3* NullLog.oops
     def oops(self):
         g.trace("NullLog:", g.callers(4))
-    #@+node:ekr.20041012083237.3: *3* put and putnl (NullLog)
+    #@+node:ekr.20041012083237.3: *3* NullLog.put and putnl
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         # print('(nullGui) print',repr(s))
         if self.enabled:
@@ -1884,7 +1889,7 @@ class NullLog(LeoLog):
     def putnl(self, tabName='Log'):
         if self.enabled:
             g.pr('')
-    #@+node:ekr.20060124085830: *3* tabs (NullLog)
+    #@+node:ekr.20060124085830: *3* NullLog.tabs
     def clearTab(self, tabName, wrap='none'): pass
 
     def createCanvas(self, tabName): pass
