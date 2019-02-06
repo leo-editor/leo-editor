@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2"/>
-<globals/>
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
+	<global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -101,7 +104,7 @@
 <v t="ekr.20150416081546.8"><vh>Linux install script</vh></v>
 <v t="ekr.20150416081546.9"><vh>Warn if leoProjects.txt or leoToDo.txt contain clones</vh></v>
 </v>
-<v t="EKR.20040519090846"><vh>Distribution files</vh>
+<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@asis ../../.gitattributes</vh></v>
 <v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh>
 <v t="ekr.20130809141000.1991"><vh>System requirements</vh></v>
@@ -120,8 +123,10 @@
 <v t="ekr.20150425135153.1"><vh>homebrew install script</vh>
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
-<v t="mhw-nc.20190126223741.1"><vh>Pip</vh>
-<v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
+<v t="mhw-nc.20190126223741.1" a="E"><vh>Pip</vh>
+<v t="maphew.20180224170853.1" a="E"
+expanded="maphew.20180305124637.1,"><vh>@file ../../setup.py</vh></v>
+<v t="maphew.20190206032329.1"><vh>@asis ../../pyproject.toml</vh></v>
 </v>
 </v>
 <v t="ekr.20141118074110.4"><vh>How to...</vh>
@@ -1820,6 +1825,7 @@ needed to leverage PEP-518. Fix: upgrade pip in `.travis.yml`
     python -m pip install --upgrade pip
 
 </t>
+<t tx="maphew.20190206032329.1"></t>
 <t tx="matt.20181004031246.1">@language md
 
 _Initiating issue: https://github.com/leo-editor/leo-editor/issues/672_

@@ -13,7 +13,6 @@ from setuptools import setup, find_packages # Always prefer setuptools over dist
 import leo.core.leoGlobals as g
 import leo.core.leoVersion as leoVersion
 #@+node:mhw-nc.20190126224021.1: *3* setup janitor
-#import setuptools
 try:
    from setupext_janitor import janitor
    CleanCommand = janitor.CleanCommand
@@ -24,11 +23,17 @@ cmd_classes = {}
 if CleanCommand is not None:
    cmd_classes['clean'] = CleanCommand
 
-setup(
-   # normal parameters
-   setup_requires=['setupext_janitor'],
-   cmdclass=cmd_classes,
-)
+# at moment requires this fork pre-installed:
+# pip install https://codeload.github.com/maphew/setupext-janitor/zip/master
+# TODO: figure how to add this to pyproject.toml
+
+# otherwise:
+#
+#setup(
+#  # normal parameters
+#   setup_requires=['setupext_janitor'],
+#  cmdclass=cmd_classes,
+#)
 #@+node:maphew.20141126230535.3: ** docstring
 '''setup.py for leo
 
@@ -155,7 +160,8 @@ user_requires = [
     #'pyxml', # xml importing ## no pip package
     ]
 #@+node:maphew.20171122231442.1: ** clean
-#@+doc #ignore this node
+#@+at #ignore this node
+# 
 # def clean():
 #     print('\nRemoving build, dist and egg directories')
 #     root = os.path.dirname(os.path.realpath(__file__))
