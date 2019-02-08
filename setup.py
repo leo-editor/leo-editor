@@ -12,7 +12,20 @@ from shutil import rmtree
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
 import leo.core.leoGlobals as g
 import leo.core.leoVersion as leoVersion
-#@+node:mhw-nc.20190126224021.1: *3* setup janitor
+#@+node:maphew.20141126230535.3: ** docstring
+'''setup.py for leo
+
+    Nov 2014: strip to bare minimum and rebuild using ONLY
+    https://python-packaging-user-guide.readthedocs.org/en/latest/index.html
+    
+    Oct 2017: Excellent guide "﻿Less known packaging features and tricks"
+    Ionel Cristian Mărieș, @ionelmc
+    https://blog.ionelmc.ro/presentations/packaging/#slide:2
+    https://blog.ionelmc.ro/2014/05/25/python-packaging/
+'''
+
+#@+node:mhw-nc.20190126224021.1: ** setup janitor
+# Initiated by #1055 - Have 'setup clean' play nice with others
 # Until accepted upstream we require this forked module pre-installed
 # from: https://github.com/maphew/setupext-janitor/setupext_janitor
 # to: ./leo/extensions/setupext_janitor
@@ -26,18 +39,6 @@ except ImportError:
 cmd_classes = {}
 if CleanCommand is not None:
    cmd_classes['clean'] = CleanCommand
-
-#@+node:maphew.20141126230535.3: ** docstring
-'''setup.py for leo
-
-    Nov 2014: strip to bare minimum and rebuild using ONLY
-    https://python-packaging-user-guide.readthedocs.org/en/latest/index.html
-    
-    Oct 2017: Excellent guide "﻿Less known packaging features and tricks"
-    Ionel Cristian Mărieș, @ionelmc
-    https://blog.ionelmc.ro/presentations/packaging/#slide:2
-    https://blog.ionelmc.ro/2014/05/25/python-packaging/
-'''
 
 #@+node:maphew.20181010203342.385: ** get_version
 def get_version(file, version=None):
@@ -152,19 +153,7 @@ user_requires = [
     #'pyenchant', # spell check support ## no wheels for some platforms, e.g. amd64
     #'pyxml', # xml importing ## no pip package
     ]
-#@+node:maphew.20171122231442.1: ** clean
-#@+at #ignore this node
-# 
-# def clean():
-#     print('\nRemoving build, dist and egg directories')
-#     root = os.path.dirname(os.path.realpath(__file__))
-#     for d in ['build', 'dist', 'leo.egg-info', '.eggs']:
-#         dpath = os.path.join(root, d)
-#         if os.path.isdir(dpath):
-#             rmtree(dpath)
-# clean()
-#@-others
-
+#@+node:maphew.20190207205714.1: ** define_entry_points
 def define_entry_points(entry_points=None):
     print('Creating entry_points for [OS name - system]: {} - {}'.format(platform.os.name, platform.system()))
     entry_points={'console_scripts': [
@@ -180,6 +169,7 @@ def define_entry_points(entry_points=None):
             'distutils.commands': [
             'clean = setupext_janitor.janitor:CleanCommand']})
     return entry_points
+#@-others
 
 setup(
     name='leo',
