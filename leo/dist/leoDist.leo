@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -104,7 +101,7 @@
 <v t="ekr.20150416081546.8"><vh>Linux install script</vh></v>
 <v t="ekr.20150416081546.9"><vh>Warn if leoProjects.txt or leoToDo.txt contain clones</vh></v>
 </v>
-<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
+<v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@asis ../../.gitattributes</vh></v>
 <v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh>
 <v t="ekr.20130809141000.1991"><vh>System requirements</vh></v>
@@ -124,10 +121,11 @@
 <v t="ekr.20150425135153.1"><vh>homebrew install script</vh>
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
-<v t="mhw-nc.20190126223741.1" a="E"><vh>Pip</vh>
-<v t="maphew.20180224170853.1" a="E"
-expanded="maphew.20180305124637.1,"><vh>@file ../../setup.py</vh></v>
+<v t="mhw-nc.20190126223741.1"><vh>Pip</vh>
+<v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
+<v t="maphew.20190208135916.1"><vh>@asis ../../setup.cfg</vh></v>
 <v t="maphew.20190206032329.1"><vh>@asis ../../pyproject.toml</vh></v>
+<v t="maphew.20190208142757.1"><vh>@clean ../../optional-tools.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20141118074110.4"><vh>How to...</vh>
@@ -1826,7 +1824,29 @@ needed to leverage PEP-518. Fix: upgrade pip in `.travis.yml`
     python -m pip install --upgrade pip
 
 </t>
-<t tx="maphew.20190206032329.1"></t>
+<t tx="maphew.20190206032329.1">[build-system]
+requires = ["setuptools&gt;=38.6.0",
+    "wheel&gt;=0.31.0",
+    "twine&gt;=1.11.0"]
+</t>
+<t tx="maphew.20190208135916.1">[bdist_wheel]
+# This flag says that the code is written to work on both Python 2 and Python
+# 3. If at all possible, it is good practice to do this. If you cannot, you
+# will need to generate wheels for each Python version that you support.
+universal=1
+</t>
+<t tx="maphew.20190208142757.1">@language python
+# A list of pip installable tools and libraries in the Requirements File Format
+# https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format
+#
+# Install with:
+#   
+#       pip install -r optional-tools.txt
+#
+
+pyenchant  # spell check support. No wheels for some platforms, e.g. amd64
+pyxml; python_version &lt; "3.0"   # Used for XML import. Appears to be only python 2 package
+</t>
 <t tx="matt.20181004031246.1">@language md
 
 _Initiating issue: https://github.com/leo-editor/leo-editor/issues/672_
@@ -1868,5 +1888,6 @@ deploy:
     #tags: true
     branch: master, travis
 </t>
+<t tx="mhw-nc.20190126223741.1"></t>
 </tnodes>
 </leo_file>
