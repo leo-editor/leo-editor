@@ -10,8 +10,13 @@ import os
 import platform
 from shutil import rmtree
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
+import sys
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+    # required for pip >v10 and pyproject.toml 
 import leo.core.leoGlobals as g
 import leo.core.leoVersion as leoVersion
+
 #@+node:maphew.20141126230535.3: ** docstring
 '''setup.py for leo
 
