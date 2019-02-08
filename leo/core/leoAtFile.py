@@ -637,6 +637,27 @@ class AtFile(object):
         p.b = g.u(head) + g.toUnicode(s, encoding=encoding, reportErrors='True')
         if not changed: c.setChanged(False)
         g.doHook('after-edit', p=p)
+    #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
+    def readOneAtAsisNode(self, fn, p):
+        '''Read one @asis node. Used only by refresh-from-disk'''
+        at, c = self, self.c
+        at.default_directory = g.setDefaultDirectory(c, p, importing=True)
+        fn = c.os_path_finalize_join(at.default_directory, fn)
+        junk, ext = g.os_path_splitext(fn)
+        # Remember the full fileName.
+        at.rememberReadPath(fn, p)
+        if not g.unitTesting:
+            g.es("reading: @asis %s" % (g.shortFileName(fn)))
+        s, e = g.readFileIntoString(fn, kind='@edit')
+        if s is None: return
+        encoding = 'utf-8' if e is None else e
+        # Delete all children.
+        while p.hasChildren():
+            p.firstChild().doDelete()
+        old_body = p.b
+        p.b = g.toUnicode(s, encoding=encoding, reportErrors='True')
+        if not c.isChanged() and p.b != old_body:
+            c.setChanged(True)
     #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
     def readOneAtCleanNode(self, root):
         '''Update the @clean/@nosent node at root.'''

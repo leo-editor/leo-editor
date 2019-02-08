@@ -116,6 +116,7 @@
 <v t="ekr.20130809141000.1997"><vh>Adding Leo to your path</vh></v>
 <v t="ekr.20130809141000.1998"><vh>Running Leo for the first time</vh></v>
 </v>
+<v t="matt.20190205105334.1"><vh>@asis ../../.travis.yml</vh></v>
 <v t="EKR.20040519090846.1"><vh>@asis ../../LICENSE</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.md</vh></v>
@@ -1838,18 +1839,34 @@ As currently configured if the commit is a tag AND the branch is `master` travis
 will also attempt to deploy a release automatically to PyPi.org.
 - Deploying to PyPi, https://docs.travis-ci.com/user/deployment/pypi/
 
-The `travis_tests` folder is optional at this point, there are no real tests in
-it. It can be removed, or moved elsewhere. It's there for illustration. Over
-time the testing portion will become more and more important.
-
 Command line client: https://github.com/travis-ci/travis.rb
 Not essential, but useful. Note: using `travis` command line client in a way
 that updates yml file will delete any comments within it. (e.g. `travis encrypt
 ...`)
 
-
-
 </t>
-<t tx="mhw-nc.20190126223741.1"></t>
+<t tx="matt.20190205105334.1">language: python
+git:
+    ## Clone depth, must be big enough to include a tag
+    depth: 100
+install:
+    ## Using PEP-518 (pypoject.toml) requires pip &gt;v10 
+    - python -m pip install --upgrade pip
+    - pip --version
+script:
+    ## Test: Unit tests
+    - python run_travis_unit_tests.py
+
+    # There are no travis tests after checking out release tag
+    #- pytest travis_tests/*
+deploy:
+  provider: pypi
+  user: maphew
+  password:
+    secure: pZeDQzNu1XKDcGVEELttI/NqXMP5b5e99DgNzgTG+DVWU76sQ2wf4Jb1opIriHFQhN1etlndxVxp6YkugHDnu/B5rRklx+6WdAgHrIKcmbKzw86BsCzIwWqn1BqRlNT3mHo6uz1eQwQfJ/0/wptB5nougn8Z/E+hEIWbNgpu4CYr2TTa+9aWEpkg2h2ogOzZ1brp4hW2bJ0xW6XWBj+/bOsrgVKEmBvTZHkqFQSlODgHMJwsU3BWe/ntZ0J4QvLxseBSZM5tJTIG3w0pvGydGqxxAzbg1IY/4HZZFAttLGTr5ZJPBI2gPmz9FxmvJrWeV2iqkmMo8/OACqzSKYnMc2s8ACwUILNEZMSW+Z3IzFIUmomee3XKkkCCfbMi6eGHGYH2SFJLMnH11hGbr3yKY60FlWx8Hhds/aliGeEUdd6VqKfFeUgxcA4eDVSaAZCDFO9UWaFgrWdxEsi5aK+ElvrV/WYstouCOeMsfPIQREN8CPhQyvL4Q/gndLW904pmUkRQb9QMDzevL0gsBcP2I0mq742MmX3Kwk2gDyVxu1KafF1J6lFCBTWNyWqE18+CJxW/Qe7t1Qx7PPpDMf5kJwGtgOwg4hLELvSrA2hDL5h2kRtDoE1jkX0U5OLK2XWSHzFLLKt1VBNAal2JtJB1ii/7pC38jxFm/ZFRnOtJU0I=
+  on:
+    #tags: true
+    branch: master, travis
+</t>
 </tnodes>
 </leo_file>

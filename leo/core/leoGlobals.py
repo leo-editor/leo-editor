@@ -7351,24 +7351,36 @@ def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
     else:
         return ''
 #@+node:ekr.20170123074946.1: *4* g.extractExecutableString
-def extractExecutableString(c, p, s, language='python'):
+def extractExecutableString(c, p, s):
     '''
     Return all lines for the given @language directive.
 
     Ignore all lines under control of any other @language directive.
     '''
+    #
+    # Rewritten to fix #1071.
     if g.unitTesting:
         return s # Regretable, but necessary.
-
-    # Assume @language python by default.
-    if not language: language = 'python'
-    pattern = re.compile(r'\s*@language\s+(\w+)')
-    result = []
-    for line in g.splitLines(s):
-        m = pattern.match(line)
-        if m: # Found an @language directive.
-            language = m.group(1)
-        elif language == 'python':
+    #
+    # Return s if no @language in effect. Should never happen.
+    language = g.scanForAtLanguage(c, p)
+    if not language:
+        return s
+    #
+    # Return s if @language is unambiguous.
+    pattern = r'^@language\s+(\w+)'
+    matches = list(re.finditer(pattern, s, re.MULTILINE))
+    if len(matches) < 2:
+        return s
+    #
+    # Scan the lines, extracting only the valid lines.
+    extracting, result = False, []
+    for i, line in enumerate(g.splitLines(s)):
+        m = re.match(pattern, line)
+        if m:
+            g.trace(language, m.group(1))
+            extracting = m.group(1) == language
+        elif extracting:
             result.append(line)
     return ''.join(result)
 #@+node:ekr.20060624085200: *3* g.handleScriptException
