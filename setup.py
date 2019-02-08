@@ -13,8 +13,12 @@ from setuptools import setup, find_packages # Always prefer setuptools over dist
 import leo.core.leoGlobals as g
 import leo.core.leoVersion as leoVersion
 #@+node:mhw-nc.20190126224021.1: *3* setup janitor
+# Until accepted upstream we require this forked module pre-installed
+# from: https://github.com/maphew/setupext-janitor/setupext_janitor
+# to: ./leo/extensions/setupext_janitor
+
 try:
-   from setupext_janitor import janitor
+   from leo.extensions.setupext_janitor import janitor
    CleanCommand = janitor.CleanCommand
 except ImportError:
    CleanCommand = None
@@ -23,17 +27,6 @@ cmd_classes = {}
 if CleanCommand is not None:
    cmd_classes['clean'] = CleanCommand
 
-# at moment requires this fork pre-installed:
-# pip install https://codeload.github.com/maphew/setupext-janitor/zip/master
-# TODO: figure how to add this to pyproject.toml
-
-# otherwise:
-#
-#setup(
-#  # normal parameters
-#   setup_requires=['setupext_janitor'],
-#  cmdclass=cmd_classes,
-#)
 #@+node:maphew.20141126230535.3: ** docstring
 '''setup.py for leo
 
