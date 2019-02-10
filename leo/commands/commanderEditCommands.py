@@ -538,70 +538,6 @@ def insertBodyTime(self, event=None):
     i = w.getInsertPoint()
     w.insert(i, s)
     c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
-#@+node:ekr.20180410054716.1: ** c_ec: insert-jupyter-toc & insert-markdown-toc
-@g.commander_command('insert-jupyter-toc')
-def insertJupyterTOC(self, event=None):
-    '''
-    Insert a Jupyter table of contents at the cursor,
-    replacing any selected text.
-    '''
-    insert_toc(c=self, kind='jupyter')
-    
-@g.commander_command('insert-markdown-toc')
-def insertMarkdownTOC(self, event=None):
-    '''
-    Insert a Markdown table of contents at the cursor,
-    replacing any selected text.
-    '''
-    insert_toc(c=self, kind='markdown')
-
-#@+node:ekr.20180410074238.1: *3* insert_toc
-def insert_toc(c, kind):
-    '''Insert a table of contents at the cursor.'''
-    undoType = 'Insert %s TOC' % kind.capitalize()
-    w = c.frame.body.wrapper
-    if g.app.batchMode:
-        c.notValidInBatchMode(undoType)
-        return
-    oldSel = w.getSelectionRange()
-    w.deleteTextSelection()
-    s = make_toc(c, kind=kind, root=c.p)
-    i = w.getInsertPoint()
-    w.insert(i, s)
-    c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
-#@+node:ekr.20180410054926.1: *3* make_toc
-def make_toc(c, kind, root):
-    '''Return the toc for root.b as a list of lines.'''
-
-    def cell_type(p):
-        language = g.getLanguageAtPosition(c, p)
-        return 'markdown' if language in ('jupyter', 'markdown') else 'python'
-        
-    def clean_headline(s):
-        # Surprisingly tricky. This could remove too much, but better to be safe.
-        aList = [ch for ch in s if ch in '-: ' or ch.isalnum()]
-        return ''.join(aList).rstrip('-').strip()
-
-    result, stack = [], []
-    for p in root.subtree():
-        if cell_type(p) == 'markdown':
-            level = p.level() - root.level()
-            if len(stack) < level:
-                stack.append(1)
-            else:
-                stack = stack[:level]
-            n = stack[-1]
-            stack[-1] = n+1
-            # Use bullets
-            title = clean_headline(p.h)
-            url = clean_headline(p.h.replace(' ','-'))
-            if kind == 'markdown':
-                url = url.lower()
-            line = '%s- [%s](#%s)\n' % (' '*4*(level-1), title, url)
-            result.append(line)
-    if result:
-        result.append('\n')
-    return ''.join(result)
 #@+node:ekr.20171123135625.52: ** c_ec.justify-toggle-auto
 @g.commander_command("justify-toggle-auto")
 def justify_toggle_auto(self, event=None):
@@ -616,6 +552,39 @@ def justify_toggle_auto(self, event=None):
     else:
         c.editCommands.autojustify = 0
         g.es("Autojustify off")
+#@+node:ekr.20190210095609.1: ** c_ec.line_to_headline
+@g.commander_command('line-to-headline')
+def line_to_headline(self, event=None):
+    '''
+    Create child node from the selected line.
+    
+    Cut the selected line and make it the new node's headline
+    '''
+    c, w = self, self.frame.body.wrapper
+    p = c.p
+    ins, s = w.getInsertPoint(), p.b
+    u, undoType = c.undoer, 'Extract Line'
+    i = g.find_line_start(s, ins)
+    j = g.skip_line(s, i)
+    line = s[i:j].strip()
+    if not line:
+        return
+    u.beforeChangeGroup(p, undoType)
+    undoData = u.beforeInsertNode(p)
+    p2 = p.insertAsLastChild()
+    p2.h = line
+    u.afterInsertNode(p2, undoType, undoData)
+    oldText = p.b
+    p.b = s[:i] + s[j:]
+    w.setInsertPoint(i)
+    u.setUndoTypingParams(p, undoType, oldText=oldText, newText=p.b)
+    p2.setDirty()
+    c.setChanged(True)
+    u.afterChangeGroup(p, undoType=undoType)
+    c.redraw_after_icons_changed()
+    p.expand()
+    c.redraw(p)
+    c.bodyWantsFocus()
 #@+node:ekr.20171123135625.11: ** c_ec.preferences
 @g.commander_command('settings')
 def preferences(self, event=None):
@@ -961,5 +930,69 @@ def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     w.see(ins)
     # Make sure we never scroll horizontally.
     w.setXScrollPosition(0)
+#@+node:ekr.20180410054716.1: ** c_ec: insert-jupyter-toc & insert-markdown-toc
+@g.commander_command('insert-jupyter-toc')
+def insertJupyterTOC(self, event=None):
+    '''
+    Insert a Jupyter table of contents at the cursor,
+    replacing any selected text.
+    '''
+    insert_toc(c=self, kind='jupyter')
+    
+@g.commander_command('insert-markdown-toc')
+def insertMarkdownTOC(self, event=None):
+    '''
+    Insert a Markdown table of contents at the cursor,
+    replacing any selected text.
+    '''
+    insert_toc(c=self, kind='markdown')
+
+#@+node:ekr.20180410074238.1: *3* insert_toc
+def insert_toc(c, kind):
+    '''Insert a table of contents at the cursor.'''
+    undoType = 'Insert %s TOC' % kind.capitalize()
+    w = c.frame.body.wrapper
+    if g.app.batchMode:
+        c.notValidInBatchMode(undoType)
+        return
+    oldSel = w.getSelectionRange()
+    w.deleteTextSelection()
+    s = make_toc(c, kind=kind, root=c.p)
+    i = w.getInsertPoint()
+    w.insert(i, s)
+    c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
+#@+node:ekr.20180410054926.1: *3* make_toc
+def make_toc(c, kind, root):
+    '''Return the toc for root.b as a list of lines.'''
+
+    def cell_type(p):
+        language = g.getLanguageAtPosition(c, p)
+        return 'markdown' if language in ('jupyter', 'markdown') else 'python'
+        
+    def clean_headline(s):
+        # Surprisingly tricky. This could remove too much, but better to be safe.
+        aList = [ch for ch in s if ch in '-: ' or ch.isalnum()]
+        return ''.join(aList).rstrip('-').strip()
+
+    result, stack = [], []
+    for p in root.subtree():
+        if cell_type(p) == 'markdown':
+            level = p.level() - root.level()
+            if len(stack) < level:
+                stack.append(1)
+            else:
+                stack = stack[:level]
+            n = stack[-1]
+            stack[-1] = n+1
+            # Use bullets
+            title = clean_headline(p.h)
+            url = clean_headline(p.h.replace(' ','-'))
+            if kind == 'markdown':
+                url = url.lower()
+            line = '%s- [%s](#%s)\n' % (' '*4*(level-1), title, url)
+            result.append(line)
+    if result:
+        result.append('\n')
+    return ''.join(result)
 #@-others
 #@-leo

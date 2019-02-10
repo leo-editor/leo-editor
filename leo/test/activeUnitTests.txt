@@ -26052,6 +26052,18 @@ after
 #@+node:ekr.20050518071251.4: *7* selection
 2.0
 2.16
+#@+node:ekr.20190210103111.1: *6* line_to_headline test1
+#@+node:ekr.20190210103111.2: *7* before
+before
+headline
+after
+#@+node:ekr.20190210103111.3: *7* after
+before
+after
+#@+node:ekr.20190210103111.4: *8* headline
+#@+node:ekr.20190210103111.5: *7* selection
+2.0
+2.0
 #@+node:ekr.20071113202510: *4* @test zz end of leoUndo tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoUndo tests.')
