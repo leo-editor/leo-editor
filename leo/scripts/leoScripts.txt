@@ -3900,13 +3900,14 @@ goto :eof
   echo.       %~n0 "c:\path\to\python.exe" register
   echo.  
   goto :eof
-#@+node:maphew.20130809155103.2863: *4* @file build-leo.bat
-@ Create a ~Setuptools~ Windows binary installer package
-@c
-pushd ..\..
-python setup.py sdist
-python setup.py bdist_wininst --user-access-control=auto --bitmap leo\Icons\SplashScreen-installer.bmp
+#@+node:maphew.20130809155103.2863: *4* @auto build-leo.bat
+@language batch
+@:: Build source distribution and wheel
+@:: typically used for deploying to PyPi.org and installing Leo with Pip
+pushd %~dp0..\..
+python setup.py sdist bdist_wheel |findstr /v "^creating ^adding ^copying ^creating ^byte-compiling"
 start dist
+popd
 #@+node:maphew.20130613230258.2801: *4* @file elevate.py
 ''' Open a new python intepreter after asking for elevated UAC permissions, and feed it the python script specified on the command line.
 

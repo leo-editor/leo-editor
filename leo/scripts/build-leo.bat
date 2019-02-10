@@ -1,9 +1,6 @@
-REM @+leo-ver=5-thin
-REM @+node:maphew.20130809155103.2863: * @file build-leo.bat
-REM @+at Create a ~Setuptools~ Windows binary installer package
-REM @@c
-pushd ..\..
-python setup.py sdist
-python setup.py bdist_wininst --user-access-control=auto --bitmap leo\Icons\SplashScreen-installer.bmp
+@:: Build source distribution and wheel
+@:: typically used for deploying to PyPi.org and installing Leo with Pip
+pushd %~dp0..\..
+python setup.py sdist bdist_wheel |findstr /v "^creating ^adding ^copying ^creating ^byte-compiling"
 start dist
-REM @-leo
+popd

@@ -18,6 +18,9 @@
 <v t="ekr.20161206070406.1"><vh>@data:@auto-md ../doc/c2py.md</vh>
 <v t="ekr.20161206090903.1"><vh>@gnxs</vh></v>
 </v>
+<v t="maphew.20190209160547.1"><vh>@data:@auto build-leo.bat</vh>
+<v t="maphew.20190209160810.1"><vh>@gnxs</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
@@ -4453,6 +4456,9 @@ for path in paths:
     assert os.path.exists(path), repr(path)
     subprocess.Popen(r'python %s %s' % (prog, path), shell=True)
 </t>
+<t tx="maphew.20190209160547.1">gnx: maphew.20130809155103.2863
+</t>
+<t tx="maphew.20190209160810.1"></t>
 <t tx="mhw.20181210131101.1">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
