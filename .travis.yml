@@ -12,7 +12,7 @@ script:
 
     ## Test: Build python wheel, install, and run Leo in console mode
     # reverse grep to hide excessive 'adding' and 'copying'
-    - python setup.py bdist_wheel | grep -v -e '^adding' -e '^copying'
+    - python setup.py bdist_wheel | grep -v -e '^adding' -e '^copying' -e '^creating'
     - pip install dist/*.whl
     - leo-console --version
     
