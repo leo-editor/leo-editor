@@ -19125,7 +19125,8 @@ The command operates on the paragraph containing the insert cursor. If the inser
     Creates a new node whose headline is the first line of selected body text and whose body is all other lines of selected text. Previously selected text is deleted from the original body text.
 ``extract-names (Ctrl-Shift-N)``
     Creates one or more child nodes, one for each section name in the selected body text. The headline of each created node is the section name.
-</t>
+``line-to-headline``
+    Creates a new node whose headline is the selected body line.</t>
 <t tx="ekr.20150318110552.26">``execute-script (Ctrl-B)``
     Executes body text as a Python script. Leo execute the selected text, or the entire body text if no text is selected. The Execute Script command pre-defines the values c, g and p as follows:
 
