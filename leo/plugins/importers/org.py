@@ -61,7 +61,6 @@ class Org_Importer(Importer):
                 self.find_parent(
                     level = level,
                     h = m.group(2))
-                ### g.trace(repr(m.group(2)))
             else:
                 p = self.parents[-1]
                 self.add_line(p, line)
