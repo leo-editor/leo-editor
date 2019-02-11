@@ -60,12 +60,9 @@ class Export_IPYNB(object):
         Export_IPYNB: entry point for @auto writes.
         Signature must match signature of BaseWriter.write().
         '''
-        at = self.c.atFileCommands
+        ### at = self.c.atFileCommands
         if not root:
             g.trace('can not happen: no root')
-            return False
-        if not at and at.outputFile:
-            g.trace('can not happen: no at.outputFile')
             return False
         # Write the text to at.outputFile.
         self.root = root
@@ -79,7 +76,8 @@ class Export_IPYNB(object):
             return False
         if g.isUnicode(s):
             s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
-        at.outputFile.write(s)
+        ### at.outputFile.write(s)
+        self.put(s)
         return True
     #@+node:ekr.20180409081735.1: *3* ipy_w.cell_type
     def cell_type(self, p):
@@ -161,7 +159,7 @@ class Export_IPYNB(object):
     def make_notebook(self):
         '''Create a JSON notebook'''
         root = self.root
-        nb = self.get_ua(root, key='prefix') or self.default_metadata
+        nb = self.get_ua(root, key='prefix') or self.default_metadata()
         # Write the expansion status of the root.
         meta = nb.get('metadata') or {}
         meta ['collapsed'] = not root.isExpanded()
