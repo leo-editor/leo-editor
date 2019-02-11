@@ -47,7 +47,6 @@ class Export_IPYNB(basewriter.BaseWriter):
             return False
         if not s:
             return False
-        ###if g.isUnicode(s):
         s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
         try:
             with open(fn, 'wb') as f:
@@ -62,7 +61,6 @@ class Export_IPYNB(basewriter.BaseWriter):
         Export_IPYNB: entry point for @auto writes.
         Signature must match signature of BaseWriter.write().
         '''
-        ### at = self.c.atFileCommands
         if not root:
             g.trace('can not happen: no root')
             return False
@@ -76,10 +74,6 @@ class Export_IPYNB(basewriter.BaseWriter):
             return False
         if not s:
             return False
-        ###
-            # if g.isUnicode(s):
-                # s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
-        ### at.outputFile.write(s)
         self.put(g.toUnicode(s))
         return True
     #@+node:ekr.20180409081735.1: *3* ipy_w.cell_type
