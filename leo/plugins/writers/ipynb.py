@@ -64,7 +64,6 @@ class Export_IPYNB(basewriter.BaseWriter):
         if not root:
             g.trace('can not happen: no root')
             return False
-        # Write the text to at.outputFile.
         self.root = root
         try:
             nb = self.make_notebook()
