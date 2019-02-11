@@ -88,7 +88,7 @@ def yaml_rule12(colorer, s, i):
         at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
 
 def yaml_rule13(colorer, s, i):
-    # Fix #1083:
+    # Fix #1082:
         # Old: regexp="\\s*(-|)?\\s*[^\\s]+\\s*:(\\s|$)"
         # Old: at_line_start=True.
     return colorer.match_seq_regexp(s, i, kind="keyword1", regexp=r"\s*-?\s*\w+:",
