@@ -88,9 +88,12 @@ def yaml_rule12(colorer, s, i):
         at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
 
 def yaml_rule13(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="keyword1", regexp="\\s*(-|)?\\s*[^\\s]+\\s*:(\\s|$)",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    # Fix #1083:
+        # Old: regexp="\\s*(-|)?\\s*[^\\s]+\\s*:(\\s|$)"
+        # Old: at_line_start=True.
+    return colorer.match_seq_regexp(s, i, kind="keyword1", regexp=r"\s*-?\s*\w+:",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+            
 def yaml_rule14(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+~\\s*$",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
@@ -147,7 +150,8 @@ rulesDict1 = {
     "&": [yaml_rule11,],
     "*": [yaml_rule12,],
     "+": [yaml_rule8,],
-    "-": [yaml_rule1,yaml_rule7,],
+    "-": [yaml_rule1,yaml_rule7,yaml_rule13],
+        # Fix #1082.
     ".": [yaml_rule2,],
     ">": [yaml_rule10,],
     "[": [yaml_rule4,],
