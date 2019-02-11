@@ -609,7 +609,7 @@ def goToParent(self, event=None):
     '''Select the parent of the selected node.'''
     c = self; p = c.p
     c.treeSelectHelper(p and p.parent())
-#@+node:ekr.20190211104913.1: *3* c_oc.goToPrevMarkedHeadline (test)
+#@+node:ekr.20190211104913.1: *3* c_oc.goToPrevMarkedHeadline
 @g.commander_command('goto-prev-marked')
 def goToPrevMarkedHeadline(self, event=None):
     '''Select the next marked node.'''
