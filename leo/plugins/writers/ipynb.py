@@ -4,6 +4,7 @@
 import re
 import sys
 import leo.core.leoGlobals as g
+import leo.plugins.writers.basewriter as basewriter
 if g.isPython3:
     # pylint: disable=relative-import
         # an unhelpful warning.
@@ -13,11 +14,13 @@ else:
 # print('writers/ipynb.py: json: %s' % json)
 #@+others
 #@+node:ekr.20160412101845.2: ** class Export_IPYNB
-class Export_IPYNB(object):
+class Export_IPYNB(basewriter.BaseWriter):
     '''A class to export outlines to .ipynb files.'''
     
     def __init__(self, c):
         '''Ctor for Import_IPYNB class.'''
+        basewriter.BaseWriter.__init__(self, c)
+            # Init the base class.
         self.c = c
             # Commander of present outline.
         self.root = None
@@ -44,12 +47,10 @@ class Export_IPYNB(object):
             return False
         if not s:
             return False
-        if g.isUnicode(s):
-            s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
+        s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
         try:
-            f = open(fn, 'wb')
-            f.write(s)
-            f.close()
+            with open(fn, 'wb') as f:
+                f.write(s)
             g.es_print('wrote: %s' % fn)
         except IOError:
             g.es_print('can not open: %s' % fn)
@@ -60,14 +61,9 @@ class Export_IPYNB(object):
         Export_IPYNB: entry point for @auto writes.
         Signature must match signature of BaseWriter.write().
         '''
-        at = self.c.atFileCommands
         if not root:
             g.trace('can not happen: no root')
             return False
-        if not at and at.outputFile:
-            g.trace('can not happen: no at.outputFile')
-            return False
-        # Write the text to at.outputFile.
         self.root = root
         try:
             nb = self.make_notebook()
@@ -77,9 +73,7 @@ class Export_IPYNB(object):
             return False
         if not s:
             return False
-        if g.isUnicode(s):
-            s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
-        at.outputFile.write(s)
+        self.put(g.toUnicode(s))
         return True
     #@+node:ekr.20180409081735.1: *3* ipy_w.cell_type
     def cell_type(self, p):
@@ -161,7 +155,7 @@ class Export_IPYNB(object):
     def make_notebook(self):
         '''Create a JSON notebook'''
         root = self.root
-        nb = self.get_ua(root, key='prefix') or self.default_metadata
+        nb = self.get_ua(root, key='prefix') or self.default_metadata()
         # Write the expansion status of the root.
         meta = nb.get('metadata') or {}
         meta ['collapsed'] = not root.isExpanded()

@@ -742,7 +742,7 @@ class LeoBrowserApp(flx.PyComponent):
         w = c.frame.body.wrapper
         # Compute the insert point.
         s = d['s']
-        col, row = d['ins_col'], d['ins_row'], 
+        col, row = d['ins_col'], d['ins_row']
         ins = g.convertRowColToPythonIndex(s, row, col)
         # Compute the selection range.
         col1, row1 =  d ['sel_col1'], d ['sel_row1']
