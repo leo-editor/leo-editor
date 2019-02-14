@@ -66,7 +66,7 @@ def register_leo(pyexe, launchLeo, icon):
     else:
         g.es("LeoDoc.ico not in expected location, can't continue.")  
 #@+node:maphew.20130510011223.1646: *3* sample registry outcome
-'''This is what the resulting registry key should look like, once exported from
+r'''This is what the resulting registry key should look like, once exported from
 regedit. The translated hex code is:
     
     "d:\Python27\python.exe" "C:\Users\Matt\Dropbox\apps\leo-editor\launchLeo.py" "%1" %*
@@ -100,8 +100,11 @@ regedit. The translated hex code is:
 #   00,72,00,5c,00,6c,00,61,00,75,00,6e,00,63,00,68,00,4c,00,65,00,6f,00,2e,00,\
 #   70,00,79,00,22,00,20,00,22,00,25,00,31,00,22,00,20,00,25,00,2a,00,00,00
 #@-others
-from _winreg import *
-
+try:
+    from _winreg import *
+except ModuleNotFoundError as err:
+    from winreg import *
+    
 # g.es("\n--- Running register-leo Leo script")
 
 pyexe = g.sys.executable
