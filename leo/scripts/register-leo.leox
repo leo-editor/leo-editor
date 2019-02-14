@@ -14,17 +14,18 @@ See http://superuser.com/questions/88491/force-cmd-exe-to-run-as-admin/
 Resources used:
    @url  http://stackoverflow.com/questions/2331690/how-to-set-a-icon-file-while-creating-file
    @url http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-extension
+   @url https://stackoverflow.com/questions/130763/request-uac-elevation-from-within-a-python-script
 '''
 #@+node:maphew.20130509185752.1607: ** register_leo
 def register_leo(pyexe, launchLeo, icon):
     '''Create registry key for Leo file type, set default icon and launch command    
     '''    
-    g.es("\nAttempting to register leo filetype with Windows...")
-    g.es("Python:", pyexe)
-    g.es("Leo:", launchLeo)
+    g.es("Attempting to register leo filetype with Windows...")
+    g.es("  Python:", pyexe)
+    g.es("  Leo:", launchLeo)
     
     if g.os_path_exists(icon):
-        g.es("Found:", icon)
+        g.es("  Found:", icon)
         #@+<<filetype>>
         #@+node:maphew.20130515233516.1659: *3* <<filetype>>
         try:
@@ -64,7 +65,7 @@ def register_leo(pyexe, launchLeo, icon):
             g.es("Failed:", e)
         #@-<<association>>
     else:
-        g.es("LeoDoc.ico not in expected location, can't continue.")  
+        g.es("  LeoDoc.ico not in expected location, can't continue.")  
 #@+node:maphew.20130510011223.1646: *3* sample registry outcome
 r'''This is what the resulting registry key should look like, once exported from
 regedit. The translated hex code is:
@@ -104,14 +105,31 @@ try:
     from _winreg import *
 except ModuleNotFoundError as err:
     from winreg import *
-    
-# g.es("\n--- Running register-leo Leo script")
+
+import ctypes, sys
+
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
+g.es("--- Running register-leo Leo script")
+
+if not is_admin():
+    g.es("No admin privileges. Attempting to reload...")
+else:
+    g.es("Re-run the program with admin rights...")
+    ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+
 
 pyexe = g.sys.executable
 pywexe = pyexe.replace('python.exe', 'pythonw.exe')
 launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
 icon = "%s\Icons\LeoDoc.ico" % g.computeLeoDir()
 
-# use 'pywexe' instead to not open a console window when launching Leo
+# 'pyexe' to launch GUI with a console window for messages
+# 'pywexe' to launch GUI only (will lose messages that bypass log)
 register_leo(pywexe, launchLeo, icon)
+
 #@-leo
