@@ -1,0 +1,9 @@
+#@+leo-ver=5-thin
+#@+node:mhw-debug-1081.20190214225936.1: * @file xx-leo-script-11.leox
+#@@language python
+#@@tabwidth -4
+debug = True
+g.es_print("--- Running a Leo script")
+if debug: g.es_print(g.app.scriptDict.keys())
+g.es_print(g.app.scriptDict['script2'])
+#@-leo

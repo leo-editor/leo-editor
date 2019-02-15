@@ -2,6 +2,7 @@
 #@+node:maphew.20130611235500.2658: * @file register-leo.leox
 #@@language python
 #@@tabwidth -4
+debug = True
 #@+others
 #@+node:maphew.20130510011223.1645: ** docstring
 '''Tell Windows how to handle .leo files, enables double clicking on them to open.
@@ -114,22 +115,31 @@ def is_admin():
     except:
         return False
 
-g.es("--- Running register-leo Leo script")
+g.es_print("--- Running register-leo Leo script")
+if debug: g.es_print(g.app.scriptDict.keys())
+if debug: g.es_print('is admin direct?', ctypes.windll.shell32.IsUserAnAdmin())
+if debug: g.es_print('is admin by func?', is_admin())
 
 if not is_admin():
-    g.es("No admin privileges. Attempting to reload...")
+    g.es_print("No admin privileges. Attempting to reload...")
+    outfile = g.os.path.join(g.os.environ['TEMP'], 'xxx-register-leo.py')
+    with open(outfile, 'w') as f:
+        f.write(g.app.scriptDict['script2'])
+        g.es_print('Wrote', outfile)
 else:
-    g.es("Re-run the program with admin rights...")
-    ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+    g.es_print('why is this block not executing?')
+    g.es_print("Re-run the program with admin rights...")
+    #ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+    ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, outfile, None, 1)
+    
+# pyexe = g.sys.executable
+# pywexe = pyexe.replace('python.exe', 'pythonw.exe')
+# launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
+# icon = "%s\Icons\LeoDoc.ico" % g.computeLeoDir()
 
+# # 'pyexe' to launch GUI with a console window for messages
+# # 'pywexe' to launch GUI only (will lose messages that bypass log)
+# register_leo(pywexe, launchLeo, icon)
 
-pyexe = g.sys.executable
-pywexe = pyexe.replace('python.exe', 'pythonw.exe')
-launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
-icon = "%s\Icons\LeoDoc.ico" % g.computeLeoDir()
-
-# 'pyexe' to launch GUI with a console window for messages
-# 'pywexe' to launch GUI only (will lose messages that bypass log)
-register_leo(pywexe, launchLeo, icon)
-
+g.es_print('--- end of script')
 #@-leo
