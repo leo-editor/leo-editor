@@ -106,7 +106,13 @@ def configuredcommands_rclick(c,p,menu):
     config = c.config.getData('contextmenu_commands')
     if config:
         cmds = [el.split(None,1) for el in config]
-        for cmd, desc in cmds:
+        for data in cmds:
+            # Fix #1084
+            try:
+                cmd, desc = data
+            except ValueError:
+                g.es_print('Invalid @data contextmenu_commands')
+                continue
             desc = desc.strip()
             action = menu.addAction(desc)
             #action.setToolTip(cmd)
