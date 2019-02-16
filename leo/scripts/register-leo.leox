@@ -2,8 +2,14 @@
 #@+node:maphew.20130611235500.2658: * @file register-leo.leox
 #@@language python
 #@@tabwidth -4
-debug = True
 #@+others
+#@+node:mhw-debug-1081.20190216130451.1: ** imports
+import leo.core.leoGlobals as g
+
+try:
+    from _winreg import * #py2
+except ModuleNotFoundError as err:
+    from winreg import * #py3
 #@+node:maphew.20130510011223.1645: ** docstring
 '''Tell Windows how to handle .leo files, enables double clicking on them to open.
 
@@ -21,12 +27,12 @@ Resources used:
 def register_leo(pyexe, launchLeo, icon):
     '''Create registry key for Leo file type, set default icon and launch command    
     '''    
-    g.es("Attempting to register leo filetype with Windows...")
-    g.es("  Python:", pyexe)
-    g.es("  Leo:", launchLeo)
+    g.es_print("Attempting to register leo filetype with Windows...")
+    g.es_print("  Python:", pyexe)
+    g.es_print("  Leo:", launchLeo)
     
     if g.os_path_exists(icon):
-        g.es("  Found:", icon)
+        g.es_print("  Found:", icon)
         #@+<<filetype>>
         #@+node:maphew.20130515233516.1659: *3* <<filetype>>
         try:
@@ -43,10 +49,10 @@ def register_leo(pyexe, launchLeo, icon):
             for k in (leoKey, iconKey, shellKey, openKey, cmdKey):
                 CloseKey(k)
                 
-            g.es("Registered!")
+            g.es_print("Registered!")
 
         except WindowsError as e:
-            g.es("Failed:", e)
+            g.es_print("Failed:", e)
         #@-<<filetype>>
         #@+<<association>>
         #@+node:maphew.20130515233516.1660: *3* <<association>>
@@ -60,13 +66,13 @@ def register_leo(pyexe, launchLeo, icon):
             SetValue(leoKey, None, REG_SZ, "Leo.File")
             CloseKey(leoKey)
             
-            g.es(".leo, .leox files associated as 'Leo.File'")        
+            g.es_print(".leo, .leox files associated as 'Leo.File'")        
 
         except WindowsError as e:
-            g.es("Failed:", e)
+            g.es_print("Failed:", e)
         #@-<<association>>
     else:
-        g.es("  LeoDoc.ico not in expected location, can't continue.")  
+        g.es_print("  LeoDoc.ico not in expected location, can't continue.")  
 #@+node:maphew.20130510011223.1646: *3* sample registry outcome
 r'''This is what the resulting registry key should look like, once exported from
 regedit. The translated hex code is:
@@ -102,44 +108,16 @@ regedit. The translated hex code is:
 #   00,72,00,5c,00,6c,00,61,00,75,00,6e,00,63,00,68,00,4c,00,65,00,6f,00,2e,00,\
 #   70,00,79,00,22,00,20,00,22,00,25,00,31,00,22,00,20,00,25,00,2a,00,00,00
 #@-others
-try:
-    from _winreg import *
-except ModuleNotFoundError as err:
-    from winreg import *
-
-import ctypes, sys
-
-def is_admin():
-    try:
-        return ctypes.windll.shell32.IsUserAnAdmin()
-    except:
-        return False
 
 g.es_print("--- Running register-leo Leo script")
-if debug: g.es_print(g.app.scriptDict.keys())
-if debug: g.es_print('is admin direct?', ctypes.windll.shell32.IsUserAnAdmin())
-if debug: g.es_print('is admin by func?', is_admin())
-
-if not is_admin():
-    g.es_print("No admin privileges. Attempting to reload...")
-    outfile = g.os.path.join(g.os.environ['TEMP'], 'xxx-register-leo.py')
-    with open(outfile, 'w') as f:
-        f.write(g.app.scriptDict['script2'])
-        g.es_print('Wrote', outfile)
-else:
-    g.es_print('why is this block not executing?')
-    g.es_print("Re-run the program with admin rights...")
-    #ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
-    ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, outfile, None, 1)
-    
-# pyexe = g.sys.executable
-# pywexe = pyexe.replace('python.exe', 'pythonw.exe')
-# launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
-# icon = "%s\Icons\LeoDoc.ico" % g.computeLeoDir()
+pyexe = g.sys.executable
+pywexe = pyexe.replace('python.exe', 'pythonw.exe')
+launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
+icon = "%s\Icons\LeoDoc.ico" % g.computeLeoDir()
 
 # # 'pyexe' to launch GUI with a console window for messages
 # # 'pywexe' to launch GUI only (will lose messages that bypass log)
-# register_leo(pywexe, launchLeo, icon)
 
+register_leo(pywexe, launchLeo, icon)
 g.es_print('--- end of script')
 #@-leo
