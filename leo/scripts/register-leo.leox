@@ -49,10 +49,10 @@ def register_leo(pyexe, launchLeo, icon):
             for k in (leoKey, iconKey, shellKey, openKey, cmdKey):
                 CloseKey(k)
                 
-            g.es_print("Registered!")
+            g.es_print("  Registered!")
 
         except WindowsError as e:
-            g.es_print("Failed:", e)
+            g.es_print("  Failed:", e)
         #@-<<filetype>>
         #@+<<association>>
         #@+node:maphew.20130515233516.1660: *3* <<association>>
@@ -66,10 +66,10 @@ def register_leo(pyexe, launchLeo, icon):
             SetValue(leoKey, None, REG_SZ, "Leo.File")
             CloseKey(leoKey)
             
-            g.es_print(".leo, .leox files associated as 'Leo.File'")        
+            g.es_print("  .leo, .leox files associated as 'Leo.File'")        
 
         except WindowsError as e:
-            g.es_print("Failed:", e)
+            g.es_print("  Failed:", e)
         #@-<<association>>
     else:
         g.es_print("  LeoDoc.ico not in expected location, can't continue.")  

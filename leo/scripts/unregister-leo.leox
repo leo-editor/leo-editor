@@ -2,27 +2,43 @@
 #@+node:maphew.20130611235500.2665: * @file unregister-leo.leox
 #@@language python
 #@@tabwidth -4
-
 '''Remove registry key for Leo file type and .leo file association'''    
-from _winreg import *
-
-# g.es("\nAttempting to un-register leo filetype with Windows...")            
-try:
-    leoKey = OpenKey(HKEY_CLASSES_ROOT, "Leo.File")
-    DeleteKey(leoKey, "Shell\\Open\\Command")
-    DeleteKey(leoKey, "Shell\\Open")
-    DeleteKey(leoKey, "Shell")
-    DeleteKey(leoKey, "DefaultIcon")
-    DeleteKey(HKEY_CLASSES_ROOT, "Leo.File")        
-    # CloseKey(leoKey)
-    g.es("Leo file type has been removed from registry")
-except WindowsError as e:
-    g.es("Unregistering Leo file type failed: ", e)  
+#@+others
+#@+node:mhw-debug-1081.20190216130451.1: ** imports
+import leo.core.leoGlobals as g
 
 try:
-    DeleteKey(HKEY_CLASSES_ROOT, ".leo")
-    DeleteKey(HKEY_CLASSES_ROOT, ".leox")
-    g.es(".leo, .leox file associations removed from registry")
-except WindowsError as e:
-    g.es("Removing .leo, leox associations failed: ", e)  
+    from _winreg import * #py2
+except ModuleNotFoundError as err:
+    from winreg import * #py3
+#@+node:mhw-debug-1081.20190216145532.1: ** unregister_leo
+def unregister_leo():
+    try:
+        leoKey = OpenKey(HKEY_CLASSES_ROOT, "Leo.File")
+        DeleteKey(leoKey, "Shell\\Open\\Command")
+        DeleteKey(leoKey, "Shell\\Open")
+        DeleteKey(leoKey, "Shell")
+        DeleteKey(leoKey, "DefaultIcon")
+        DeleteKey(HKEY_CLASSES_ROOT, "Leo.File")        
+        # CloseKey(leoKey)
+        g.es_print("  Leo file type has been removed from registry")
+    except WindowsError as e:
+        g.es_print("  Unregistering Leo file type failed: ", e)  
+
+    try:
+        DeleteKey(HKEY_CLASSES_ROOT, ".leo")
+        DeleteKey(HKEY_CLASSES_ROOT, ".leox")
+        g.es_print("  .leo, .leox file associations removed from registry")
+    except WindowsError as e:
+        g.es_print("  Removing .leo, leox associations failed: ", e)
+#@-others
+
+import ctypes, sys
+if not ctypes.windll.shell32.IsUserAnAdmin():
+    g.es_print("No admin privileges. Start Leo as administrator first and then run this script")
+else:
+    g.es_print("--- Running unregister-leo Leo script")
+    g.es_print("  Attempting to un-register leo filetype with Windows...")
+    unregister_leo()
+    g.es_print('--- end of script')
 #@-leo
