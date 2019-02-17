@@ -496,19 +496,13 @@ class AtFile(object):
                 if p.isAnyAtFileNode():
                     c.ignored_at_file_nodes.append(p.h)
                 p.moveToNodeAfterTree()
-            elif p.isAtThinFileNode():
-                files.append(p.copy())
-                p.moveToNodeAfterTree()
-            elif p.isAtAutoNode():
-                files.append(p.copy())
-                p.moveToNodeAfterTree()
-            elif p.isAtEditNode():
-                files.append(p.copy())
-                p.moveToNodeAfterTree()
-            elif p.isAtShadowFileNode():
-                files.append(p.copy())
-                p.moveToNodeAfterTree()
-            elif p.isAtFileNode():
+            elif (
+                p.isAtThinFileNode() or
+                p.isAtAutoNode() or
+                p.isAtEditNode() or
+                p.isAtShadowFileNode() or
+                p.isAtFileNode()
+            ):
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
