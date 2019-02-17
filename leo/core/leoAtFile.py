@@ -478,7 +478,8 @@ class AtFile(object):
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
     def findFilesToRead(self, force, root):
         
-        at, c = self, self.c
+        ### at, c = self, self.c
+        c = self.c
         p = root.copy()
         scanned_tnodes = set()
         files = []
@@ -497,33 +498,33 @@ class AtFile(object):
                     c.ignored_at_file_nodes.append(p.h)
                 p.moveToNodeAfterTree()
             elif p.isAtThinFileNode():
-                at.read(p, force=force)
+                ### at.read(p, force=force)
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtAutoNode():
-                fileName = p.atAutoNodeName()
-                at.readOneAtAutoNode(fileName, p)
+                ### fileName = p.atAutoNodeName()
+                ### at.readOneAtAutoNode(fileName, p)
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtEditNode():
-                fileName = p.atEditNodeName()
-                at.readOneAtEditNode(fileName, p)
+                ### fileName = p.atEditNodeName()
+                ### at.readOneAtEditNode(fileName, p)
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtShadowFileNode():
-                fileName = p.atShadowFileNodeName()
-                at.readOneAtShadowNode(fileName, p)
+                ### fileName = p.atShadowFileNodeName()
+                ### at.readOneAtShadowNode(fileName, p)
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtFileNode():
-                at.read(p, force=force)
+                ### at.read(p, force=force)
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-                at.rememberReadPath(g.fullPath(c, p), p)
+                ### at.rememberReadPath(g.fullPath(c, p), p)
                 p.moveToNodeAfterTree()
             elif p.isAtCleanNode():
-                at.readOneAtCleanNode(p)
+                ### at.readOneAtCleanNode(p)
                 files.append(p.copy())
                 p.moveToThreadNext()
                     # #525: Nested nodes.
@@ -572,8 +573,7 @@ class AtFile(object):
         # Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fileName, p)
-        if not g.unitTesting:
-            g.es("reading:", p.h)
+        ### if not g.unitTesting: g.es("reading:", p.h)
         try:
             # For #451: return p.
             old_p = p.copy()
@@ -615,8 +615,7 @@ class AtFile(object):
         junk, ext = g.os_path_splitext(fn)
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
-        if not g.unitTesting:
-            g.es("reading: @edit %s" % (g.shortFileName(fn)))
+        ### if not g.unitTesting: g.es("reading: @edit %s" % (g.shortFileName(fn)))
         s, e = g.readFileIntoString(fn, kind='@edit')
         if s is None: return
         encoding = 'utf-8' if e is None else e
@@ -646,8 +645,7 @@ class AtFile(object):
         junk, ext = g.os_path_splitext(fn)
         # Remember the full fileName.
         at.rememberReadPath(fn, p)
-        if not g.unitTesting:
-            g.es("reading: @asis %s" % (g.shortFileName(fn)))
+        ### if not g.unitTesting: g.es("reading: @asis %s" % (g.shortFileName(fn)))
         s, e = g.readFileIntoString(fn, kind='@edit')
         if s is None: return
         encoding = 'utf-8' if e is None else e
@@ -738,7 +736,7 @@ class AtFile(object):
         if shadow_exists:
             at.read(p, atShadow=True, force=force)
         else:
-            if not g.unitTesting: g.es("reading:", p.h)
+            ### if not g.unitTesting: g.es("reading:", p.h)
             ok = at.importAtShadowNode(fn, p)
             if ok:
                 # Create the private file automatically.
