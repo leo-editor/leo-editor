@@ -1,32 +1,16 @@
 import os
 import sys
-print(sys.executable)
+print(sys.executable)   # python.exe, pythonw.exe
+print(sys.exec_prefix)  # python.exe's directory
 
-exe_dir = os.path.join(os.path.dirname(sys.executable), 'Scripts') 
-matches = []
-for s in os.listdir(exe_dir):
-    if 'leo' in s:
-        matches.append(s)
-# TODO: figure out what scripts are called when on linux and mac
+# Leo's library path (ie: ./leo-editor/leo or PYTHONHOME/Lib/site-packages/leo)
+# We don't use leoGlobals.computeLoadDir() because it doesn't work 
+# without instantiating g.app first, and that's too much for just this
+import leo
+leolibpath = leo.__path__
+print(leolibpath)
 
-print(exe_dir)
-print(matches)
+# Leo's launch exe, if in PATH. Py3 only, cross platform
+import shutil
+print(shutil.which('leo'))
 
-
-
-
-#launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
-    # breaks when Leo installed under PYTHONHOME (ie: Lib/site-packages and Scripts)
-
-#dirs = [launchLeo, sys.executable, g.app.leoDir, g.app.loadDir, g.app.globalConfigDir, g.app.homeDir]
-#g.es_print('---')
-#[g.es_print(x) for x in dirs]
-# for d in dirs:
-    # g.es_print(d, g.os_path_exists(d))
-
-# if 'site-packages' in g.app.loadDir:
-    # g.es_print('not running from source checkout')
-    # script_dir = g.os_path_finalize_join(g.os_path_dirname(sys.executable), 'Scripts')
-    # g.es_print(script_dir, g.os_path_exists(script_dir))
-    # if g.os_path_exists(g.os_path_finalize_join(script_dir, 'leo.exe')):
-        # g.es_print(g.os_path_finalize_join(script_dir, 'leo'))
