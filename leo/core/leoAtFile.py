@@ -477,8 +477,7 @@ class AtFile(object):
         c.raise_error_dialogs()
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
     def findFilesToRead(self, force, root):
-        
-        ### at, c = self, self.c
+
         c = self.c
         p = root.copy()
         scanned_tnodes = set()
@@ -498,33 +497,23 @@ class AtFile(object):
                     c.ignored_at_file_nodes.append(p.h)
                 p.moveToNodeAfterTree()
             elif p.isAtThinFileNode():
-                ### at.read(p, force=force)
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtAutoNode():
-                ### fileName = p.atAutoNodeName()
-                ### at.readOneAtAutoNode(fileName, p)
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtEditNode():
-                ### fileName = p.atEditNodeName()
-                ### at.readOneAtEditNode(fileName, p)
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtShadowFileNode():
-                ### fileName = p.atShadowFileNodeName()
-                ### at.readOneAtShadowNode(fileName, p)
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtFileNode():
-                ### at.read(p, force=force)
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-                ### at.rememberReadPath(g.fullPath(c, p), p)
                 p.moveToNodeAfterTree()
             elif p.isAtCleanNode():
-                ### at.readOneAtCleanNode(p)
                 files.append(p.copy())
                 p.moveToThreadNext()
                     # #525: Nested nodes.
