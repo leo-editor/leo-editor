@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:mhw-debug-1081.20190214225936.1: * @file xx-leo-script-11.leox
+#@+node:mhw-debug-1081.20190214225936.1: * @file request-elevation.leox
 #@@language python
 #@@tabwidth -4
 import leo.core.leoGlobals as g
@@ -19,12 +19,11 @@ params = 'leo --script-window ' + reg_script
 
 if is_admin():
     g.es_print("Yay! we are admin", is_admin())
+    # subprocess.run
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, reg_script, params, 1)
-    input("Press Enter to continue...")
 else:
-    g.es_print("Not admin", is_admin())
-    input("Press Enter to continue...")    
-    #ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, outfile, params, 1)
+    g.es_print("Not admin, can't do anything", is_admin())
+    ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, reg_script, params, 1)
     g.es_print("Else: as admin loop finished")
 
 input("Press Enter to continue...")

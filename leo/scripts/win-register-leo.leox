@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:maphew.20130611235500.2658: * @file register-leo.leox
+#@+node:maphew.20130611235500.2658: * @file win-register-leo.leox
 #@@language python
 #@@tabwidth -4
 #@+others
@@ -108,12 +108,11 @@ regedit. The translated hex code is:
 #   00,72,00,5c,00,6c,00,61,00,75,00,6e,00,63,00,68,00,4c,00,65,00,6f,00,2e,00,\
 #   70,00,79,00,22,00,20,00,22,00,25,00,31,00,22,00,20,00,25,00,2a,00,00,00
 #@-others
-
+g.es_print("--- Running register-leo Leo script")
 import ctypes, sys
 if not ctypes.windll.shell32.IsUserAnAdmin():
     g.es_print("No admin privileges. Start Leo as administrator first and then run this script")
 else:
-    g.es_print("--- Running register-leo Leo script")
     pyexe = g.sys.executable
     pywexe = pyexe.replace('python.exe', 'pythonw.exe')
     launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
@@ -123,5 +122,6 @@ else:
     # # 'pywexe' to launch GUI only (will lose messages that bypass log)
     
     register_leo(pywexe, launchLeo, icon)
-    g.es_print('--- end of script')
+
+g.es_print('--- end of script')
 #@-leo
