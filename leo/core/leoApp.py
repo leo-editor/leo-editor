@@ -3481,10 +3481,9 @@ class RecentFilesManager(object):
         node is not changed by user.
         '''
         rf = self
-        nl = '\n' ### if g.isPython3 else g.u('\n')
         p1 = c.lastTopLevel().insertAfter()
         p1.h = self.edit_headline
-        p1.b = nl.join(rf.recentFiles)
+        p1.b = '\n'.join(rf.recentFiles)
         c.redraw()
         c.selectPosition(p1)
         c.redraw()

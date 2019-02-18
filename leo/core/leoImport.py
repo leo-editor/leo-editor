@@ -427,7 +427,7 @@ class LeoImportCommands(object):
     #@+node:ekr.20031218072017.1462: *4* ic.exportHeadlines
     def exportHeadlines(self, fileName):
         c = self.c; p = c.p
-        nl = g.u(self.output_newline)
+        nl = self.output_newline ### g.u(self.output_newline)
         if not p:
             return
         self.setEncoding()
