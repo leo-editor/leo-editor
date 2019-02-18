@@ -2254,21 +2254,17 @@ class AtFile(object):
     def checkPythonSyntax(self, p, body, supress=False):
         at = self
         try:
-            ok = True
-            if not g.isPython3:
-                body = g.toEncodedString(body)
             body = body.replace('\r', '')
             fn = '<node: %s>' % p.h
             compile(body + '\n', fn, 'exec')
+            return True
         except SyntaxError:
             if not supress:
                 at.syntaxError(p, body)
-            ok = False
         except Exception:
             g.trace("unexpected exception")
             g.es_exception()
-            ok = False
-        return ok
+        return False
     #@+node:ekr.20090514111518.5666: *7* at.syntaxError (leoAtFile)
     def syntaxError(self, p, body):
         '''Report a syntax error.'''
@@ -2501,8 +2497,7 @@ class AtFile(object):
     def outputStringWithLineEndings(self, s):
         at = self
         # Calling self.onl() runs afoul of queued newlines.
-        if g.isPython3:
-            s = g.ue(s, at.encoding)
+        s = g.ue(s, at.encoding)
         s = s.replace('\n', at.output_newline)
         self.os(s)
     #@+node:ekr.20190111045822.1: *5* at.precheck
