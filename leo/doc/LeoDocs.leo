@@ -2263,8 +2263,7 @@
 </v>
 <v t="ekr.20190119071258.1"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
 </v>
-<v t="ekr.20100806170836.4393"></v>
-<v t="ekr.20160410044518.1"></v>
+<v t="ekr.20100806170836.4399"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -9027,13 +9026,14 @@ accessing external files for most people.
 When writing an @clean tree, Leo expands section references, @all and
 @others directives, but Leo writes no sentinels to the external file.
 
-
 When reading an @clean tree, Leo propagates changes from the external file
 to the @clean tree using the `Mulder/Ream update algorithm`_.
 
 **Note**: The @bool force_newlines_in_at_nosent_bodies setting controls whether
 Leo writes a trailing newline if non-empty body text does not end in a newline.
 The default is True.
+
+**Exerimental**: Nested @clean trees are possible.  See Leo issue #525.  However, "inner" @clean files can not, at present, contain child nodes. 
 </t>
 <t tx="ekr.20100806170836.4402">.. index::
     pair: @shadow; Reference
