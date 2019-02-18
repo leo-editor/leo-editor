@@ -553,11 +553,13 @@ class LeoImportCommands(object):
                 #@+node:ekr.20031218072017.1149: *5* << Write s into newFileName >> (remove-sentinels)
                 # Remove sentinels command.
                 try:
-                    theFile = open(newFileName, 'w')
-                    if not g.isPython3: # 2010/08/27
-                        s = g.toEncodedString(s, self.encoding, reportErrors=True)
-                    theFile.write(s)
-                    theFile.close()
+                    ### theFile = open(newFileName, 'w')
+                    with open(newFileName, 'w') as theFile:
+                        theFile.write(s)
+                    ###
+                        # if not g.isPython3: # 2010/08/27
+                            # s = g.toEncodedString(s, self.encoding, reportErrors=True)
+                    ### theFile.close()
                     if not g.unitTesting:
                         g.es("created:", newFileName)
                 except Exception:
@@ -593,10 +595,11 @@ class LeoImportCommands(object):
         #@+<< open filename to f, or return >>
         #@+node:ekr.20031218072017.1150: *5* << open filename to f, or return >> (weave)
         try:
-            if g.isPython3:
-                f = open(filename, 'w', encoding=self.encoding)
-            else:
-                f = open(filename, 'w')
+            ### if g.isPython3:
+            f = open(filename, 'w', encoding=self.encoding)
+            ###
+                # else:
+                    # f = open(filename, 'w')
         except Exception:
             g.es("exception opening:", filename)
             g.es_print_exception()
@@ -621,14 +624,16 @@ class LeoImportCommands(object):
                 for line in context:
                     f.write(indent)
                     indent += '\t'
-                    if not g.isPython3: # 2010/08/27.
-                        line = g.toEncodedString(line, self.encoding, reportErrors=True)
+                    ###
+                        # if not g.isPython3: # 2010/08/27.
+                            # line = g.toEncodedString(line, self.encoding, reportErrors=True)
                     f.write(line)
                     f.write(nl)
                 #@-<< write the context of p to f >>
                 f.write("-" * 60); f.write(nl)
-                if not g.isPython3:
-                    s = g.toEncodedString(s, self.encoding, reportErrors=True)
+                ###
+                    # if not g.isPython3:
+                        # s = g.toEncodedString(s, self.encoding, reportErrors=True)
                 f.write(s.rstrip() + nl)
         f.flush()
         f.close()
