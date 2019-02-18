@@ -273,8 +273,6 @@ class Position(object):
                 # import traceback ; traceback.print_stack()
             # raise AttributeError(attr)
     #@+node:ekr.20040117173448: *4* p.__nonzero__ & __bool__
-    ### if g.isPython3:
-
     def __bool__(self):
         """
         Return True if a position is valid.
@@ -287,12 +285,6 @@ class Position(object):
         # Tracing this appears to cause unbounded prints.
             # print("__bool__",self.v and self.v.cleanHeadString())
         return self.v is not None
-
-    ###
-    # else:
-        # def __nonzero__(self):
-            # """Return True if a position is valid."""
-            # return self.v is not None
     #@+node:ekr.20040301205720: *4* p.__str__ and p.__repr__
     def __str__(self):
         p = self
@@ -1912,11 +1904,6 @@ class PosList(list):
             t1, t2 = itertools.tee(m, 2)
             try:
                 t1.__next__()
-                ###
-                    # if g.isPython3:
-                        # t1.__next__()
-                    # else:
-                        # t1.next()
                 pc = p.copy()
                 pc.matchiter = t2
                 res.append(pc)
@@ -2250,23 +2237,18 @@ class VNodeBase(object):
     def headString(self):
         """Return the headline string."""
         # This message should never be printed and we want to avoid crashing here!
-        ### if not g.isString(self._headString):
         if isinstance(self._headString, str):
             return self._headString
         if not self.head_unicode_warning:
             self.head_unicode_warning = True
             g.internalError('not a string', repr(self._headString))
-        # Make _sure_ we return a unicode string.
         return g.toUnicode(self._headString)
+        
+    cleanHeadString = headString
 
-    def cleanHeadString(self):
-        return self._headString
-        ###
-            # s = self._headString
-            # if g.isPython3:
-                # return s
-            # else:
-                # return g.toEncodedString(s, "ascii") # Replaces non-ascii characters by '?'
+    ###
+        # def cleanHeadString(self):
+            # return self._headString
     #@+node:ekr.20131223064351.16351: *4* v.isNthChildOf
     def isNthChildOf(self, n, parent_v):
         '''Return True if v is the n'th child of parent_v.'''
