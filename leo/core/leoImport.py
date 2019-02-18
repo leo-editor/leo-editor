@@ -428,24 +428,18 @@ class LeoImportCommands(object):
     def exportHeadlines(self, fileName):
         c = self.c; p = c.p
         nl = g.u(self.output_newline)
-        if not p: return
+        if not p:
+            return
         self.setEncoding()
         firstLevel = p.level()
         try:
-            ### theFile = open(fileName, 'w')
             with open(fileName, 'w') as theFile:
                 for p in p.self_and_subtree(copy=False):
                     head = p.moreHead(firstLevel, useVerticalBar=True)
-                    ### s = head + nl
-                    ###
-                        # if not g.isPython3: # 2010/08/27
-                            # s = g.toEncodedString(s, encoding=self.encoding, reportErrors=True)
                     theFile.write(head + nl)
-                ### theFile.close()
         except IOError:
             g.warning("can not open", fileName)
             c.testManager.fail()
-            ### return
     #@+node:ekr.20031218072017.1147: *4* ic.flattenOutline
     def flattenOutline(self, fileName):
         '''
@@ -500,11 +494,9 @@ class LeoImportCommands(object):
         for p in current.self_and_subtree(copy=False):
             s = self.convertVnodeToWeb(p)
             if s:
-                ### 
-                    # if not g.isPython3: # 2010/08/27
-                        # s = g.toEncodedString(s, self.encoding, reportErrors=True)
                 theFile.write(s)
-                if s[-1] != '\n': theFile.write(nl)
+                if s[-1] != '\n':
+                    theFile.write(nl)
         theFile.close()
     #@+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand
     def removeSentinelsCommand(self, paths, toString=False):

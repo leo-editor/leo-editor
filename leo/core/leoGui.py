@@ -567,19 +567,9 @@ class UnitTestGui(NullGui):
             This is a kludge, but it is probably the best that can be done.
             '''
             aFunc()
-    #@+node:ekr.20081119083601.1: *3* UnitTestGui.toUnicode
-    ### if g.isPython3:
-
+    #@+node:ekr.20081119083601.1: *3* UnitTestGui.toUnicode (deprecated)
     def toUnicode(self, s):
-        # py--lint: disable=no-member
         return str(s)
-
-    ###  
-    # else:
-        
-        # def toUnicode(self, s):
-            # # pylint: disable=no-member
-            # return builtins.unicode(s)
     #@-others
 #@-others
 #@@language python

@@ -367,7 +367,7 @@ class LeoQtTree(leoFrame.LeoTree):
                         warned = True
                         g.log('Declutter patterns must start with RULE*',
                             color='error')
-        text = str(item.text(0)) ### if g.isPython3 else g.u(item.text(0))
+        text = str(item.text(0))
         new_icons = []
         for pattern, cmds in self.declutter_patterns:
             for func in (pattern.match, pattern.search):

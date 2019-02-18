@@ -535,9 +535,6 @@ class ShadowController(object):
             try:
                 f1 = open(fileName, "w")
                 for s in lines:
-                    ###
-                        # if not g.isPython3: # 2010/08/27
-                            # s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
                     f1.write(repr(s))
                 f1.close()
             except IOError:
