@@ -675,6 +675,7 @@ class Commands(object):
         d['script_args'] = args or []
         d['script_gnx'] = g.app.scriptDict.get('script_gnx')
         if namespace: d.update(namespace)
+        #
         # A kludge: reset c.inCommand here to handle the case where we *never* return.
         # (This can happen when there are multiple event loops.)
         # This does not prevent zombie windows if the script puts up a dialog...
@@ -685,12 +686,6 @@ class Commands(object):
             if c.write_script_file:
                 scriptFile = self.writeScriptFile(script)
                 exec(compile(script, scriptFile, 'exec'), d)
-                ###
-                    # py--lint: disable=undefined-variable, no-member
-                    # if g.isPython3:
-                        # exec(compile(script, scriptFile, 'exec'), d)
-                    # else:
-                        # builtins.execfile(scriptFile, d)
             else:
                 exec(script, d)
         finally:
@@ -1617,9 +1612,6 @@ class Commands(object):
         if not body: return
         try:
             fn = '<node: %s>' % p.h
-            ###
-                # if not g.isPython3:
-                    # body = g.toEncodedString(body)
             compile(body + '\n', fn, 'exec')
             c.tabNannyNode(p, h, body, unittest, suppressErrors)
         except SyntaxError:
@@ -2169,23 +2161,11 @@ class Commands(object):
         else:
             path = c.os_path_finalize_join(
                 g.app.homeLeoDir, 'scriptFile.py')
+        #
         # Write the file.
         try:
-            ### f = open(path, encoding='utf-8', mode='w')
             with open(path, encoding='utf-8', mode='w') as f:
                 f.write(script)
-            ###
-                # if g.isPython3:
-                    # # Use the default encoding.
-                    # f = open(path, encoding='utf-8', mode='w')
-                # else:
-                    # f = open(path, 'w')
-            ### s = script
-            ###
-                # if not g.isPython3: # 2010/08/27
-                    # s = g.toEncodedString(s, reportErrors=True)
-                # f.write(s)
-                # f.close()
         except Exception:
             g.es_exception()
             g.es("Failed to write script to %s" % path)
@@ -3911,11 +3891,6 @@ class Commands(object):
             t1, t2 = itertools.tee(m, 2)
             try:
                 t1.__next__()
-                ###
-                    # if g.isPython3:
-                        # t1.__next__()
-                    # else:
-                        # t1.next()
             except StopIteration:
                 continue
             pc = p.copy()

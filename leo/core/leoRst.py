@@ -1489,12 +1489,6 @@ class RstCommands(object):
             theFile = self.outputFile
         if g.is_binary_file(theFile):
             s = self.encode(s)
-        ###
-            # if g.isPython3:
-                # if g.is_binary_file(theFile):
-                    # s = self.encode(s)
-            # else:
-                # s = self.encode(s)
         theFile.write(s)
     #@+node:ekr.20100813041139.5919: *4* rst.write_files & helpers
     def write_files(self, ext, fn, p, callDocutils, toString, writeIntermediateFile):
@@ -1519,15 +1513,8 @@ class RstCommands(object):
             else:
                 # Fixes bug 923301: Unicode error when executing 'rst3' command
                 s = g.toEncodedString(s, 'utf-8')
-                ###
-                    # if g.isPython3:
-                        # s = g.toEncodedString(s, 'utf-8')
                 with open(fn, 'wb') as f:
                     f.write(s)
-                ###
-                    # f = open(fn, 'wb') # Bug fix: use 'wb'
-                    # f.write(s)
-                    # f.close()
                 self.report(fn, p)
                 # self.http_endTree(fn,p,justOneFile=justOneFile)
     #@+node:ekr.20100813041139.5913: *5* rst.addTitleToHtml
@@ -1570,15 +1557,6 @@ class RstCommands(object):
         fn = fn + ext
         with open(fn, 'w', encoding=self.encoding) as f:
             f.write(s)
-        ###
-            # if g.isPython3:
-                # f = open(fn, 'w', encoding=self.encoding)
-            # else:
-                # f = open(fn, 'w')
-                # # Huh?  Shouldn't this always be done???
-                # s = g.toEncodedString(s, encoding=self.encoding, reportErrors=True)
-            # f.write(s)
-            # f.close()
         self.report(fn, p)
     #@+node:ekr.20090502071837.65: *5* rst.writeToDocutils (sets argv) & helper
     def writeToDocutils(self, p, s, ext):
