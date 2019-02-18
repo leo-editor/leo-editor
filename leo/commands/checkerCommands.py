@@ -136,11 +136,12 @@ class Flake8Command(object):
             join(g.app.homeDir, '.leo'),
             join(g.app.loadDir, '..', '..', 'leo', 'test'),
         )
-        if g.isPython3:
-            base_table = ('flake8', 'flake8.txt')
-        else:
-            base_table = ('flake8',)
-        for base in base_table:
+        ###
+            # if g.isPython3:
+                # base_table = ('flake8', 'flake8.txt')
+            # else:
+                # base_table = ('flake8',)
+        for base in ('flake8', 'flake8.txt'): ### base_table:
             for path in dir_table:
                 fn = g.os_path_abspath(join(path, base))
                 if g.os_path_exists(fn):

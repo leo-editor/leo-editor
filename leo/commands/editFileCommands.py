@@ -218,10 +218,12 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             g.pr('\n', kind)
             for key in d:
                 p = d.get(key)
-                if g.isPython3:
-                    g.pr('%-32s %s' % (key, p.h))
-                else:
-                    g.pr('%-32s %s' % (key, g.toEncodedString(p.h, 'ascii')))
+                g.pr('%-32s %s' % (key, p.h))
+                ###
+                    # if g.isPython3:
+                        # g.pr('%-32s %s' % (key, p.h))
+                    # else:
+                        # g.pr('%-32s %s' % (key, g.toEncodedString(p.h, 'ascii')))
     #@+node:ekr.20170806094319.3: *3* efc.compareTrees
     def compareTrees(self, p1, p2, tag):
 
@@ -431,12 +433,15 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             defaultextension=".txt")
         if fileName:
             try:
-                f = open(fileName, 'w')
                 s = w.getAllText()
-                if not g.isPython3: # 2010/08/27
-                    s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
-                f.write(s)
-                f.close()
+                ### f = open(fileName, 'w')
+                with open(fileName, 'w') as f:
+                    f.write(s)
+                ###
+                    # if not g.isPython3: # 2010/08/27
+                        # s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
+                    # f.write(s)
+                    # f.close()
             except IOError:
                 g.es('can not create', fileName)
     #@+node:ekr.20170806094319.15: *3* efc.toggleAtAutoAtEdit & helpers

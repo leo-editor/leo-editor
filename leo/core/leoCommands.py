@@ -8,10 +8,11 @@ import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
     # The leoCommands ctor now does most leo.core.leo* imports.
     # This breaks circular dependencies.
-try:
-    import builtins # Python 3
-except ImportError:
-    import __builtin__ as builtins # Python 2.
+###
+    # try:
+        # import builtins # Python 3
+    # except ImportError:
+        # import __builtin__ as builtins # Python 2.
 import itertools
 import os
 import re
@@ -683,11 +684,13 @@ class Commands(object):
                 # g.inScript is a synonym for g.app.inScript.
             if c.write_script_file:
                 scriptFile = self.writeScriptFile(script)
-                # pylint: disable=undefined-variable, no-member
-                if g.isPython3:
-                    exec(compile(script, scriptFile, 'exec'), d)
-                else:
-                    builtins.execfile(scriptFile, d)
+                exec(compile(script, scriptFile, 'exec'), d)
+                ###
+                    # py--lint: disable=undefined-variable, no-member
+                    # if g.isPython3:
+                        # exec(compile(script, scriptFile, 'exec'), d)
+                    # else:
+                        # builtins.execfile(scriptFile, d)
             else:
                 exec(script, d)
         finally:
@@ -1614,8 +1617,9 @@ class Commands(object):
         if not body: return
         try:
             fn = '<node: %s>' % p.h
-            if not g.isPython3:
-                body = g.toEncodedString(body)
+            ###
+                # if not g.isPython3:
+                    # body = g.toEncodedString(body)
             compile(body + '\n', fn, 'exec')
             c.tabNannyNode(p, h, body, unittest, suppressErrors)
         except SyntaxError:
@@ -2167,16 +2171,21 @@ class Commands(object):
                 g.app.homeLeoDir, 'scriptFile.py')
         # Write the file.
         try:
-            if g.isPython3:
-                # Use the default encoding.
-                f = open(path, encoding='utf-8', mode='w')
-            else:
-                f = open(path, 'w')
-            s = script
-            if not g.isPython3: # 2010/08/27
-                s = g.toEncodedString(s, reportErrors=True)
-            f.write(s)
-            f.close()
+            ### f = open(path, encoding='utf-8', mode='w')
+            with open(path, encoding='utf-8', mode='w') as f:
+                f.write(script)
+            ###
+                # if g.isPython3:
+                    # # Use the default encoding.
+                    # f = open(path, encoding='utf-8', mode='w')
+                # else:
+                    # f = open(path, 'w')
+            ### s = script
+            ###
+                # if not g.isPython3: # 2010/08/27
+                    # s = g.toEncodedString(s, reportErrors=True)
+                # f.write(s)
+                # f.close()
         except Exception:
             g.es_exception()
             g.es("Failed to write script to %s" % path)
@@ -3901,10 +3910,12 @@ class Commands(object):
             m = re.finditer(pat, p.b)
             t1, t2 = itertools.tee(m, 2)
             try:
-                if g.isPython3:
-                    t1.__next__()
-                else:
-                    t1.next()
+                t1.__next__()
+                ###
+                    # if g.isPython3:
+                        # t1.__next__()
+                    # else:
+                        # t1.next()
             except StopIteration:
                 continue
             pc = p.copy()

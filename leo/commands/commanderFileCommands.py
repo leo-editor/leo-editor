@@ -779,8 +779,9 @@ def writeFileFromNode(self, event=None):
                 g.chdir(fileName)
                 if s.startswith('@nocolor\n'):
                     s = s[len('@nocolor\n'):]
-                if not g.isPython3: # 2010/08/27
-                    s = g.toEncodedString(s, reportErrors=True)
+                ###
+                    # if not g.isPython3: # 2010/08/27
+                        # s = g.toEncodedString(s, reportErrors=True)
                 f.write(s)
                 f.flush()
                 g.blue('wrote:', fileName)
