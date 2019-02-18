@@ -59,7 +59,8 @@ import inspect
 import operator
 import os
 # Module 'urllib' has no 'parse' member.
-import urllib # py-lint: disable=E0611
+import urllib
+#
 # Do NOT import pdb here!  We shall define pdb as a _function_ below.
 # import pdb
 import re
@@ -5516,12 +5517,10 @@ def isList(s):
 #@+node:ekr.20160229070349.5: *5* g.isString (deprecated)
 def isString(s):
     '''Return True if s is any string, but not bytes.'''
-    # py--lint: disable=no-member
     return isinstance(s, str)
 #@+node:ekr.20160229070349.6: *5* g.isUnicode (deprecated)
 def isUnicode(s):
     '''Return True if s is a unicode string.'''
-    # py--lint: disable=no-member
     return isinstance(s, str)
 #@+node:ekr.20031218072017.1500: *4* g.isValidEncoding
 def isValidEncoding(encoding):
@@ -6198,7 +6197,6 @@ def pr(*args, **keys):
         pass
 #@+node:ekr.20060221083356: *3* g.prettyPrintType
 def prettyPrintType(obj):
-    # py--lint: disable=no-member
     if isinstance(obj, str):
         return 'string'
     t = type(obj)
@@ -6206,10 +6204,7 @@ def prettyPrintType(obj):
         return 'function'
     if t == types.ModuleType:
         return 'module'
-    ###
-        # if t == types.InstanceType:
-            # return 'object'
-    if t in [types.MethodType, types.BuiltinMethodType]: ###, types.UnboundMethodType]:
+    if t in [types.MethodType, types.BuiltinMethodType]: 
         return 'method'
     # Fall back to a hack.
     t = str(type(obj))
@@ -7640,8 +7635,7 @@ def isValidUrl(url):
         return False
     else:
         parsed = urlparse.urlparse(url)
-        # E1103: Instance of 'ParseResult' has no 'scheme' member.
-        scheme = parsed.scheme # py-lint: disable=E1103
+        scheme = parsed.scheme
         for s in table:
             if scheme.startswith(s):
                 return True
