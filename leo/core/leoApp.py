@@ -13,6 +13,7 @@ except ImportError:
 # import glob
 import importlib
 import io
+StringIO = io.StringIO
 import os
 import optparse
 import subprocess
@@ -22,11 +23,12 @@ import time
 import traceback
 import zipfile
 import platform
-if g.isPython3:
-    StringIO = io.StringIO
-else:
-    import cStringIO
-    StringIO = cStringIO.StringIO
+###
+    # if g.isPython3:
+        # StringIO = io.StringIO
+    # else:
+        # import cStringIO
+        # StringIO = cStringIO.StringIO
 import sqlite3
 #@-<< imports >>
 #@+others

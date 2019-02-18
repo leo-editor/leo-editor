@@ -17,11 +17,12 @@ import os
 
 from collections import defaultdict
 
-# pylint: disable=no-name-in-module
-if g.isPython3:
-    StringTypes = str
-else:
-    from types import StringTypes
+###
+    # # py--lint: disable=no-name-in-module
+    # if g.isPython3:
+        # StringTypes = str
+    # else:
+        # from types import StringTypes
 
 from leo.core.leoQt import QtCore, QtWidgets, QtConst # QtGui
 if QtCore is not None:
@@ -101,7 +102,7 @@ class LeoEditPane(QtWidgets.QWidget):
         self.setAttribute(QtConst.WA_DeleteOnClose)
 
         lep_type = lep_type or ['EDITOR', 'TEXT']
-        if isinstance(lep_type, StringTypes):
+        if isinstance(lep_type, str): ### StringTypes):
             lep_type = [lep_type]
         if len(lep_type) < 2:
             lep_type.append('TEXT')

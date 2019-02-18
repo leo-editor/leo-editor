@@ -35,8 +35,8 @@ try:
     import filecmp
 except ImportError: # does not exist in jython.
     filecmp = None
-if isPython3:
-    from functools import reduce
+### if isPython3:
+from functools import reduce
 try:
     import gc
 except ImportError:
@@ -46,19 +46,20 @@ try:
 except ImportError: # does not exist in jython.
     gettext = None
 import glob
-if isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    import cStringIO
-    StringIO = cStringIO.StringIO
-# import functools
+###if isPython3:
+import io
+StringIO = io.StringIO
+###
+    # else:
+        # import cStringIO
+        # StringIO = cStringIO.StringIO
+    # import functools
 import imp
 import inspect
-# import locale
+    # import locale
 import operator
 import os
-# Module 'urllib' has no 'parse' member.
+### Module 'urllib' has no 'parse' member.
 import urllib
 #
 # Do NOT import pdb here!  We shall define pdb as a _function_ below.
@@ -73,20 +74,13 @@ import tempfile
 import time
 import traceback
 import types
-if isPython3:
-    # pylint: disable=no-name-in-module
-    import urllib.parse as urlparse
-else:
-    import urlparse
+###if isPython3:
+# py--lint: disable=no-name-in-module
+import urllib.parse as urlparse
+###
+    # else:
+        # import urlparse
 import binascii
-# import zipfile
-# These do not exist in IronPython.
-# However, it *is* valid for IronPython to use the Python 2.4 libs!
-    # import os
-    # import string
-    # import tempfile
-    # import traceback
-    # import types
 #@-<< imports >>
 #@+<< define g.globalDirectiveList >>
 #@+node:EKR.20040610094819: ** << define g.globalDirectiveList >>

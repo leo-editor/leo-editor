@@ -24,12 +24,13 @@ except ImportError:
     lxml = None
 import os
 import re
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    import StringIO
-    StringIO = StringIO.StringIO
+###if g.isPython3:
+import io
+StringIO = io.StringIO
+###
+    # else:
+        # import StringIO
+        # StringIO = StringIO.StringIO
 import time
 import urllib
 #@-<< imports >>
