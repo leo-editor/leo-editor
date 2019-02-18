@@ -5551,9 +5551,6 @@ def stripBOM(s):
                 return e, s[len(bom):]
     return None, s
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
-# This inlining makes a huge difference.
-# It saves most calls to _toUnicode and g.isUnicode!
-
 def toUnicode(s, encoding='utf-8', reportErrors=False):
     '''Convert a non-unicode string with the given encoding to unicode.'''
     if isinstance(s, str):
@@ -5571,11 +5568,6 @@ def toUnicode(s, encoding='utf-8', reportErrors=False):
             g.trace(g.callers())
             g.error("toUnicode: Error converting %s...from %s encoding to unicode" % (
                 s[: 200], encoding))
-    ###
-    # except AttributeError:
-        # pass
-        # May be a QString.
-        ### s = g.u(s)
     return s
 #@+node:ekr.20050208093800: *4* g.toEncodedString
 def toEncodedString(s, encoding='utf-8', reportErrors=False):

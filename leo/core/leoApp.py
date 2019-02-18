@@ -6,7 +6,6 @@
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
 import leo.core.leoGlobals as g
 import leo.core.leoExternalFiles as leoExternalFiles
-### import builtins
 import importlib
 import io
 StringIO = io.StringIO
