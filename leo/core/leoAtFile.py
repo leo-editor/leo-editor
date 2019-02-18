@@ -506,6 +506,8 @@ class AtFile(object):
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+                # Note (see #1081): @asis and @nosent can *not* be updated automatically.
+                # Doing so using refresh-from-disk will delete all child nodes.
                 p.moveToNodeAfterTree()
             elif p.isAtCleanNode():
                 files.append(p.copy())

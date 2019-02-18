@@ -193,7 +193,10 @@ class ExternalFilesController(object):
         '''Check the @<file> node at p for external changes.'''
         path = g.fullPath(c, p)
         if self.has_changed(c, path):
-            if self.ask(c, path, p=p):
+            if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+                # Fix #1081: issue a warning.
+                self.warn(c, path, p=p)
+            elif self.ask(c, path, p=p):
                 c.redraw(p=p)
                 c.refreshFromDisk(p)
                 c.redraw()
@@ -595,6 +598,28 @@ class ExternalFilesController(object):
         '''
         t = new_time or self.get_mtime(path)
         self._time_d[g.os_path_realpath(path)] = t
+    #@+node:ekr.20190218055230.1: *4* efc.warn
+    def warn(self, c, path, p):
+        '''
+        Warn that an @asis or @nosent node has been changed externally.
+        
+        There is *no way* to update the tree automatically.
+        '''
+        if g.unitTesting or c not in g.app.commanders():
+            return
+        if not p:
+            g.trace('NO P')
+            return
+        g.app.gui.runAskOkDialog(
+            c=c,
+            message='\n'.join([
+                '%s has changed outside Leo.\n' % g.splitLongFileName(path),
+                'Leo can not update this file automatically.\n',
+                'This file was created from %s.\n' % p.h,
+                'Warning: refresh-from-disk will destroy all children.'
+            ]),
+            title='External file changed',
+        )
     #@-others
 #@-others
 #@@language python
