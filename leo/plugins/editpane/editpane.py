@@ -416,18 +416,17 @@ class LeoEditPane(QtWidgets.QWidget):
         modules = []
         for name in [i[0] for i in names if i[1].lower() == '.py']:
             try:
-                if g.isPython3:
-                    modules.append(import_module('leo.plugins.editpane.'+name))
-                else:
-                    try:
-                        exec ( "import %s" % name )  # parens for Python 3 syntax
-                        modules.append(locals()[name])
-                    except Exception:
-                        pass
+                ###if g.isPython3:
+                modules.append(import_module('leo.plugins.editpane.'+name))
+                # else:
+                    # try:
+                        # exec ( "import %s" % name )  # parens for Python 3 syntax
+                        # modules.append(locals()[name])
+                    # except Exception:
+                        # pass
                 DBG("Loaded module: %s" % name)
             except ImportError as err:
                 DBG("Module not loaded (unmet dependencies?): %s" % name)
-
         for module in modules:
             for key in dir(module):
                 value = getattr(module, key)

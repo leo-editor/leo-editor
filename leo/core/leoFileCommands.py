@@ -79,7 +79,7 @@ class FastRead (object):
         
         s = s.translate(None, self.translate_table)
             # Fix #1036 and #1046.
-        contents = g.toUnicode(s) if g.isPython3 else s
+        contents = g.toUnicode(s) ### if g.isPython3 else s
         try:
             xroot = ElementTree.fromstring(contents)
         except Exception as e:
@@ -1150,8 +1150,9 @@ class FileCommands(object):
         # Improved code: self.outputFile (a cStringIO object) always exists.
         if s:
             self.putCount += 1
-            if not g.isPython3:
-                s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+            ###
+                # if not g.isPython3:
+                    # s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
             self.outputFile.write(s)
     #@+node:ekr.20141020112451.18329: *5* put_dquote
     def put_dquote(self):
@@ -1520,8 +1521,8 @@ class FileCommands(object):
             if toZip:
                 self.writeZipFile(s)
             else:
-                if g.isPython3:
-                    s = bytes(s, self.leo_file_encoding, 'replace')
+                ### if g.isPython3:
+                s = bytes(s, self.leo_file_encoding, 'replace')
                 theActualFile.write(s)
                 theActualFile.close()
                 c.setFileTimeStamp(fileName)

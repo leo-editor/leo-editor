@@ -432,18 +432,20 @@ class LeoImportCommands(object):
         self.setEncoding()
         firstLevel = p.level()
         try:
-            theFile = open(fileName, 'w')
+            ### theFile = open(fileName, 'w')
+            with open(fileName, 'w') as theFile:
+                for p in p.self_and_subtree(copy=False):
+                    head = p.moreHead(firstLevel, useVerticalBar=True)
+                    ### s = head + nl
+                    ###
+                        # if not g.isPython3: # 2010/08/27
+                            # s = g.toEncodedString(s, encoding=self.encoding, reportErrors=True)
+                    theFile.write(head + nl)
+                ### theFile.close()
         except IOError:
             g.warning("can not open", fileName)
             c.testManager.fail()
-            return
-        for p in p.self_and_subtree(copy=False):
-            head = p.moreHead(firstLevel, useVerticalBar=True)
-            s = head + nl
-            if not g.isPython3: # 2010/08/27
-                s = g.toEncodedString(s, encoding=self.encoding, reportErrors=True)
-            theFile.write(s)
-        theFile.close()
+            ### return
     #@+node:ekr.20031218072017.1147: *4* ic.flattenOutline
     def flattenOutline(self, fileName):
         '''
@@ -498,8 +500,9 @@ class LeoImportCommands(object):
         for p in current.self_and_subtree(copy=False):
             s = self.convertVnodeToWeb(p)
             if s:
-                if not g.isPython3: # 2010/08/27
-                    s = g.toEncodedString(s, self.encoding, reportErrors=True)
+                ### 
+                    # if not g.isPython3: # 2010/08/27
+                        # s = g.toEncodedString(s, self.encoding, reportErrors=True)
                 theFile.write(s)
                 if s[-1] != '\n': theFile.write(nl)
         theFile.close()
