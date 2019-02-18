@@ -164,15 +164,16 @@ class Xdb(pdb.Pdb, threading.Thread):
             self.timer.start()
         # Init the base classes.
         threading.Thread.__init__(self)
-        if g.isPython3:
-            pdb.Pdb.__init__(self,
-                stdin=stdin_q,
-                stdout=stdout_q,
-                readrc=False,
-                    # Don't read a .rc file.
-            )
-        else:
-             pdb.Pdb.__init__(self, stdin=stdin_q, stdout=stdout_q)
+        ### if g.isPython3:
+        pdb.Pdb.__init__(self,
+            stdin=stdin_q,
+            stdout=stdout_q,
+            readrc=False,
+                # Don't read a .rc file.
+        )
+        ###
+            # else:
+                 # pdb.Pdb.__init__(self, stdin=stdin_q, stdout=stdout_q)
         sys.stdout = stdout_q
         self.daemon = True
         self.path = path
