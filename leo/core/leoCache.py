@@ -501,7 +501,6 @@ class SqlitePickleShare(object):
 
         self.loader = loadz
         self.dumper = dumpz
-        ### if g.isPython3:
         self.reset_protocol_in_values()
     #@+node:vitalije.20170716201700.4: *4* __contains__(SqlitePickleShare)
     def __contains__(self, key):

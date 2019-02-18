@@ -2018,8 +2018,6 @@ class TypedDict(object):
     __str__ = __repr__
     #@+node:ekr.20120206134955.10150: *4* td._checkKey/ValType
     def _checkKeyType(self, key):
-        ### These fail on Python 2.x for strings.
-        ###if g.isPython3:
         if key and key.__class__ != self.keyType:
             self._reportTypeError(key, self.keyType)
 

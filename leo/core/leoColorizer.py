@@ -431,11 +431,6 @@ class JEditColorizer(BaseColorizer):
         for ch, rule, atFront, in table:
             # Replace the bound method by an unbound method.
             rule = rule.__func__
-            ###
-                # if g.isPython3:
-                    # rule = rule.__func__
-                # else:
-                    # rule = rule.im_func
             theList = theDict.get(ch, [])
             if rule not in theList:
                 if atFront:

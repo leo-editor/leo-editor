@@ -721,7 +721,6 @@ class AtFile(object):
         if shadow_exists:
             at.read(p, atShadow=True, force=force)
         else:
-            ### if not g.unitTesting: g.es("reading:", p.h)
             ok = at.importAtShadowNode(fn, p)
             if ok:
                 # Create the private file automatically.
