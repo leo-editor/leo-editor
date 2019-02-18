@@ -527,7 +527,7 @@ class ShadowController(object):
         x.show_error_lines(lines2, 'shadow_errors.tmp2')
         g.es_print('\n@shadow did not pick up the external changes correctly')
         # g.es_print('Please check shadow.tmp1 and shadow.tmp2 for differences')
-    #@+node:ekr.20080822065427.4: *5* show_error_lines
+    #@+node:ekr.20080822065427.4: *5* x.show_error_lines
     def show_error_lines(self, lines, fileName):
         for i, line in enumerate(lines):
             g.es_print('%3s %s' % (i, repr(line)))

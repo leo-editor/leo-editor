@@ -2,7 +2,7 @@
 #@+node:tbrown.20171028115144.6: * @file ../plugins/editpane/editpane.py
 '''Support for the edit-pane-test-open command and window.'''
 #@+<<editpane.py imports>>
-#@+node:tbrown.20171028115438.1: ** <<editpane.py imports>>
+#@+node:tbrown.20171028115438.1: ** << editpane.py imports >>
 import leo.core.leoGlobals as g
 
 try:

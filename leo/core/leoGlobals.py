@@ -30,10 +30,12 @@ if 0:
     import leo.core.leoGlobals as g # So code can use g below.
 # Don't import this here: it messes up Leo's startup code.
 # import leo.core.leoTest as leoTest
-try:
-    import builtins # Python 3
-except ImportError:
-    import __builtin__ as builtins # Python 2.
+###
+    # try:
+        # import builtins # Python 3
+    # except ImportError:
+        # import __builtin__ as builtins # Python 2.
+### import builtins
 import codecs
 try:
     import filecmp
@@ -1304,10 +1306,11 @@ class NullObject(object):
     # def __len__    (self): return 0 # Debatable.
     def __repr__(self): return "NullObject"
     def __str__(self): return "NullObject"
-    if isPython3:
-        def __bool__(self): return False
-    else:
-        def __nonzero__(self): return 0
+    ### if TisPython3
+    def __bool__(self): return False
+    ###
+    # else:
+        # def __nonzero__(self): return 0
     def __delattr__(self, attr): return self
     def __getattr__(self, attr): return self
     def __setattr__(self, attr, val): return self
@@ -2356,11 +2359,13 @@ def checkUnchangedIvars(obj, d, exceptions=None):
 #@+node:ekr.20031218072017.3128: *4* g.pause
 def pause(s):
     g.pr(s)
+    ###
+        # Use builtins to suppress pyflakes complaint.
+        # py--lint: disable=no-member, undefined-variable
+    ### n = 1000 * 1000 if g.isPython3 else builtins.long(1000) * builtins.long(1000)
+    # n = 1000 * 1000
     i = 0
-    # Use builtins to suppress pyflakes complaint.
-    # pylint: disable=no-member, undefined-variable
-    n = 1000 * 1000 if g.isPython3 else builtins.long(1000) * builtins.long(1000)
-    while i < n:
+    while i < 1000 * 1000:
         i += 1
 #@+node:ekr.20041105091148: *4* g.pdb
 def pdb(message=''):
@@ -2557,24 +2562,25 @@ def enable_gc_debug(event=None):
     if not gc:
         g.error('can not import gc module')
         return
-    if g.isPython3:
-        gc.set_debug(
-            gc.DEBUG_STATS | # prints statistics.
-            gc.DEBUG_LEAK | # Same as all below.
-            gc.DEBUG_COLLECTABLE |
-            gc.DEBUG_UNCOLLECTABLE |
+    ### if g.isPython3:
+    gc.set_debug(
+        gc.DEBUG_STATS | # prints statistics.
+        gc.DEBUG_LEAK | # Same as all below.
+        gc.DEBUG_COLLECTABLE |
+        gc.DEBUG_UNCOLLECTABLE |
+        # gc.DEBUG_INSTANCES |
+        # gc.DEBUG_OBJECTS |
+        gc.DEBUG_SAVEALL)
+    ###
+    # else:
+        # gc.set_debug(
+            # gc.DEBUG_STATS | # prints statistics.
+            # gc.DEBUG_LEAK | # Same as all below.
+            # gc.DEBUG_COLLECTABLE |
+            # gc.DEBUG_UNCOLLECTABLE |
             # gc.DEBUG_INSTANCES |
             # gc.DEBUG_OBJECTS |
-            gc.DEBUG_SAVEALL)
-    else:
-        gc.set_debug(
-            gc.DEBUG_STATS | # prints statistics.
-            gc.DEBUG_LEAK | # Same as all below.
-            gc.DEBUG_COLLECTABLE |
-            gc.DEBUG_UNCOLLECTABLE |
-            gc.DEBUG_INSTANCES |
-            gc.DEBUG_OBJECTS |
-            gc.DEBUG_SAVEALL)
+            # gc.DEBUG_SAVEALL)
 #@+node:ekr.20031218072017.1592: *4* g.printGc
 # Formerly called from unit tests.
 
@@ -2780,10 +2786,12 @@ def printStats(event=None, name=None):
     #
     # Print the stats, organized by number of calls.
     d = g.app.statsDict
-    if g.isPython3:
-        d2 = {val: key for key, val in d.items()}
-    else:
-        d2 = {val: key for key, val in d.iteritems()}
+    ###
+        # if g.isPython3:
+            # d2 = {val: key for key, val in d.items()}
+        # else:
+            # d2 = {val: key for key, val in d.iteritems()}
+    d2 = {val: key for key, val in d.iteritems()}
     for key in reversed(sorted(d2.keys())):
         print('%7s %s' % (key, d2.get(key)))
 #@+node:ekr.20031218072017.3136: *4* g.stat
@@ -3026,7 +3034,8 @@ def getOutputNewline(c=None, name=None):
     Priority:
     - Use name if name given
     - Use c.config.output_newline if c given,
-    - Otherwise use g.app.config.output_newline.'''
+    - Otherwise use g.app.config.output_newline.
+    '''
     if name: s = name
     elif c: s = c.config.output_newline
     else: s = app.config.output_newline
@@ -3039,8 +3048,10 @@ def getOutputNewline(c=None, name=None):
     elif s == "platform": s = os.linesep # 12/2/03: emakital
     elif s == "crlf": s = "\r\n"
     else: s = '\n' # Default for erroneous values.
-    if g.isPython3:
-        s = str(s)
+    ###
+        # if g.isPython3:
+            # s = str(s)
+    assert isinstance(s, str), repr(s)
     return s
 #@+node:ekr.20131230090121.16528: *3* g.isDirective
 # This pattern excludes @encoding.whatever and @encoding(whatever)
@@ -3564,10 +3575,11 @@ def init_dialog_folder(c, p, use_at_path=True):
     return ''
 #@+node:ekr.20100329071036.5744: *3* g.is_binary_file/external_file/string
 def is_binary_file(f):
-    if g.isPython3:
-        return f and isinstance(f, io.BufferedIOBase)
-    else:
-        g.internalError('g.is_binary_file called from Python 2.x code')
+    ### if g.isPython3:
+    return f and isinstance(f, io.BufferedIOBase)
+    ###
+    # else:
+        # g.internalError('g.is_binary_file called from Python 2.x code')
 
 def is_binary_external_file(fileName):
     try:
@@ -3584,10 +3596,11 @@ def is_binary_string(s):
     # http://stackoverflow.com/questions/898669
     # aList is a list of all non-binary characters.
     aList = [7, 8, 9, 10, 12, 13, 27] + list(range(0x20, 0x100))
-    if g.isPython3:
-        aList = bytes(aList)
-    else:
-        aList = ''.join([chr(z) for z in aList])
+    ### if g.isPython3:
+    aList = bytes(aList)
+    ###
+        # else:
+            # aList = ''.join([chr(z) for z in aList])
     return bool(s.translate(None, aList))
 #@+node:EKR.20040504154039: *3* g.is_sentinel
 def is_sentinel(line, delims):
@@ -5232,10 +5245,12 @@ def importFromPath(moduleName, path, verbose=False):
     '''
     trace = 'plugins' in g.app.debug
     path = g.os_path_normpath(path)
-    if g.isPython3:
-        assert g.isString(path)
-    else:
-        path = g.toEncodedString(path)
+    ### if g.isPython3:
+        # assert g.isString(path)
+    assert isinstance(path, str), repr(path)
+    ###
+        # else:
+            # path = g.toEncodedString(path)
     # Bug fix 2011/10/28: Always import the path from the specified path!
     try:
         module, theFile = None, None
@@ -5527,72 +5542,80 @@ def getPythonEncodingFromString(s):
                 if e and g.isValidEncoding(e):
                     encoding = e
     return encoding
-#@+node:ekr.20080816125725.2: *4* g.isBytes/Callable/Int/String/Unicode
+#@+node:ekr.20080816125725.2: *4* g.isBytes/Callable/Int/String/Unicode (deprecated)
 # The syntax of these functions must be valid on Python2K and Python3K.
-#@+node:ekr.20160229070349.2: *5* g.isBytes (inlined)
-if isPython3:
+#@+node:ekr.20160229070349.2: *5* g.isBytes (deprecated)
+### if isPython3
 
-    def isBytes(s):
-        '''Return True if s is Python3k bytes type.'''
-        return isinstance(s, bytes)
-        
-else:
+def isBytes(s):
+    '''Return True if s is Python3k bytes type.'''
+    return isinstance(s, bytes)
+      
+###  
+# else:
 
-    def isBytes(s):
-        '''Return True if s is Python3k bytes type.'''
-        return False
-#@+node:ekr.20160229070349.3: *5* g.isCallable
+    # def isBytes(s):
+        # '''Return True if s is Python3k bytes type.'''
+        # return False
+#@+node:ekr.20160229070349.3: *5* g.isCallable (deprecated)
 def isCallable(obj):
-    if g.isPython3:
-        return hasattr(obj, '__call__')
-    else:
-        return callable(obj)
-#@+node:ekr.20160229070429.1: *5* g.isInt
+    
+    return hasattr(obj, '__call__')
+    ###
+        # if g.isPython3:
+            # return hasattr(obj, '__call__')
+        # else:
+            # return callable(obj)
+#@+node:ekr.20160229070429.1: *5* g.isInt (deprecated)
 def isInt(obj):
     '''Return True if obj is an int or a long.'''
-    # 'long' does not exist in Python 3.
-    # pylint: disable=no-member
-    # pylint: disable=undefined-variable
-    if g.isPython3:
-        return isinstance(obj, int)
-    else:
-        return isinstance(obj, (int, builtins.long))
-#@+node:ekr.20161223082445.1: *5* g.isList
+    return isinstance(obj, int)
+    ###
+        # # 'long' does not exist in Python 3.
+        # # pylint: disable=no-member
+        # # pylint: disable=undefined-variable
+        # if g.isPython3:
+            # return isinstance(obj, int)
+        # else:
+            # return isinstance(obj, (int, builtins.long))
+#@+node:ekr.20161223082445.1: *5* g.isList (deprecated)
 def isList(s):
     '''Return True if s is a list.'''
-    # pylint: disable=no-member
-    if g.isPython3:
-        return isinstance(s, list)
-    else:
-        return isinstance(s, types.ListTypes)
-#@+node:ekr.20160229070349.5: *5* g.isString (inlined)
-if isPython3:
+    return isinstance(s, list)
+    ###
+        # # pylint: disable=no-member
+        # if g.isPython3:
+            # return isinstance(s, list)
+        # else:
+            # return isinstance(s, types.ListTypes)
+#@+node:ekr.20160229070349.5: *5* g.isString (deprecated)
+### if isPython3
 
-    def isString(s):
-        '''Return True if s is any string, but not bytes.'''
-        # pylint: disable=no-member
-        return isinstance(s, str)
+def isString(s):
+    '''Return True if s is any string, but not bytes.'''
+    # py--lint: disable=no-member
+    return isinstance(s, str)
 
-else:
+# else:
 
-     def isString(s):
-        '''Return True if s is any string, but not bytes.'''
-        # pylint: disable=no-member
-        return isinstance(s, types.StringTypes)
-#@+node:ekr.20160229070349.6: *5* g.isUnicode (Inlined)
-if isPython3:
+     # def isString(s):
+        # '''Return True if s is any string, but not bytes.'''
+        # # pylint: disable=no-member
+        # return isinstance(s, types.StringTypes)
+#@+node:ekr.20160229070349.6: *5* g.isUnicode (deprecated)
+### if isPython3
     
-    def isUnicode(s):
-        '''Return True if s is a unicode string.'''
-        # pylint: disable=no-member
-        return isinstance(s, str)
-
-else:
-
-    def isUnicode(s):
-        '''Return True if s is a unicode string.'''
-        # pylint: disable=no-member
-        return isinstance(s, types.UnicodeType)
+def isUnicode(s):
+    '''Return True if s is a unicode string.'''
+    # py--lint: disable=no-member
+    return isinstance(s, str)
+###
+    # else:
+    
+        # def isUnicode(s):
+            # '''Return True if s is a unicode string.'''
+            # # pylint: disable=no-member
+            # return isinstance(s, types.UnicodeType)
 #@+node:ekr.20031218072017.1500: *4* g.isValidEncoding
 def isValidEncoding(encoding):
     '''Return True if the encooding is valid.'''
@@ -5644,20 +5667,21 @@ def stripBOM(s):
             if bom == s[: len(bom)]:
                 return e, s[len(bom):]
     return None, s
-#@+node:ekr.20050208093800.1: *4* g.toUnicode (Inlined)
+#@+node:ekr.20050208093800.1: *4* g.toUnicode
 # This inlining makes a huge difference.
 # It saves most calls to _toUnicode and g.isUnicode!
 
-if isPython3:
-    def toUnicode(s, encoding='utf-8', reportErrors=False):
-        '''Convert a non-unicode string with the given encoding to unicode.'''
-        # pylint: disable=no-member
-        return s if isinstance(s, str) else _toUnicode(s, encoding, reportErrors)
-else:
-    def toUnicode(s, encoding='utf-8', reportErrors=False):
-        '''Convert a non-unicode string with the given encoding to unicode.'''
-        # pylint: disable=no-member
-        return s if isinstance(s, types.UnicodeType) else _toUnicode(s, encoding, reportErrors)
+### if isPython3
+def toUnicode(s, encoding='utf-8', reportErrors=False):
+    '''Convert a non-unicode string with the given encoding to unicode.'''
+    # pylint: disable=no-member
+    return s if isinstance(s, str) else _toUnicode(s, encoding, reportErrors)
+###
+    # else:
+        # def toUnicode(s, encoding='utf-8', reportErrors=False):
+            # '''Convert a non-unicode string with the given encoding to unicode.'''
+            # # pylint: disable=no-member
+            # return s if isinstance(s, types.UnicodeType) else _toUnicode(s, encoding, reportErrors)
             
 def _toUnicode(s, encoding, reportErrors):
     '''Helper for g.toUnicode.'''
@@ -5697,32 +5721,29 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
         # g.dump_encoded_string(encoding,s)
     return s
 #@+node:ekr.20091206161352.6232: *4* g.u & g.ue
-if isPython3: # g.not defined yet.
+### if isPython3: # g.not defined yet.
 
-    def u(s):
-        '''Return s, converted to unicode from Qt widgets.'''
-        return s
+def u(s):
+    '''Return s, converted to unicode from Qt widgets.'''
+    return s
 
-    def ue(s, encoding):
-        return s if g.isUnicode(s) else str(s, encoding)
+def ue(s, encoding):
+    ### return s if g.isUnicode(s) else str(s, encoding)
+    return s if isinstance(s, str) else str(s, encoding)
 
-else:
-
-    def u(s):
-        '''Return s, converted to unicode from Qt widgets.'''
-        # Use builtins to suppress pyflakes complaint.
-        # pylint: disable=no-member, undefined-variable
-        return builtins.unicode(s) # Suppress pyflakes complaint.
-
-    def ue(s, encoding):
-        # Use builtins to suppress pyflakes complaint.
-        # pylint: disable=no-member, undefined-variable
-        return builtins.unicode(s, encoding)
-#@+node:ekr.20170108034643.1: *4* g.ustr (pyzo)
-def ustr(s):
-    '''Define the pyzo ustr function.'''
-    # pylint: disable=no-member
-    return str(s) if isPython3 else g.builtins.unicode(s)
+###
+    # else:
+    
+        # def u(s):
+            # '''Return s, converted to unicode from Qt widgets.'''
+            # # Use builtins to suppress pyflakes complaint.
+            # # pylint: disable=no-member, undefined-variable
+            # return builtins.unicode(s) # Suppress pyflakes complaint.
+    
+        # def ue(s, encoding):
+            # # Use builtins to suppress pyflakes complaint.
+            # # pylint: disable=no-member, undefined-variable
+            # return builtins.unicode(s, encoding)
 #@+node:ekr.20031218072017.3197: *3* g.Whitespace
 #@+node:ekr.20031218072017.3198: *4* g.computeLeadingWhitespace
 # Returns optimized whitespace corresponding to width with the indicated tab_width.
@@ -6280,10 +6301,13 @@ def pr(*args, **keys):
         encoding = 'utf-8'
     s = translateArgs(args, d)
         # Translates everything to unicode.
-    func = g.toUnicode if g.isPython3 else g.toEncodedString
-    s = func(s, encoding=encoding, reportErrors=False)
+    ###
+        # func = g.toUnicode if g.isPython3 else g.toEncodedString
+        # s = func(s, encoding=encoding, reportErrors=False)
+    s = g.toUnicode(s, encoding=encoding, reportErrors=False)
     if newline:
-        s += g.u('\n') if g.isPython3 else '\n'
+        ### s += g.u('\n') if g.isPython3 else '\n'
+        s += '\n'
     # Python's print statement *can* handle unicode, but
     # sitecustomize.py must have sys.setdefaultencoding('utf-8')
     try:
@@ -6299,9 +6323,10 @@ def prettyPrintType(obj):
     if g.isString(obj):
         return 'string'
     # Compute method types.
-    method_types = [types.MethodType, types.BuiltinMethodType]
-    if g.isPython3:
-        method_types.append(types.UnboundMethodType)
+    method_types = [types.MethodType, types.BuiltinMethodType, types.UnboundMethodType]
+    ###
+        # if g.isPython3:
+            # method_types.append(types.UnboundMethodType)
     t = type(obj)
     if t in (types.BuiltinFunctionType, types.FunctionType):
         return 'function'
@@ -6439,19 +6464,21 @@ def translateString(s):
     # pylint: disable=undefined-loop-variable
     # looks like a pylint bug
     upper = app and getattr(app, 'translateToUpperCase', None)
-    if isPython3:
-        if not isString(s):
-            s = str(s, 'utf-8')
-        if upper:
-            s = s.upper()
-        else:
-            s = gettext.gettext(s)
-        return s
+    ### if isPython3
+    ### if not isString(s):
+    if not isinstance(s, str):
+        s = str(s, 'utf-8')
+    if upper:
+        s = s.upper()
     else:
-        if upper:
-            return s.upper()
-        else:
-            return gettext.gettext(s)
+        s = gettext.gettext(s)
+    return s
+    ###
+        # else:
+            # if upper:
+                # return s.upper()
+            # else:
+                # return gettext.gettext(s)
 
 tr = translateString
 #@+node:EKR.20040612114220: ** g.Miscellaneous
@@ -7120,13 +7147,13 @@ def exec_file(path, d, script=None):
     '''Simulate python's execfile statement for python 3.'''
     # pylint: disable=no-member
     # execfile does not exist in python 3.
-    if g.isPython3:
-        if script is None:
-            with open(path) as f:
-                script = f.read()
-        exec(compile(script, path, 'exec'), d)
-    else:
-        builtins.execfile(path, d)
+    ###if g.isPython3:
+    if script is None:
+        with open(path) as f:
+            script = f.read()
+    exec(compile(script, path, 'exec'), d)
+    # else:
+        # builtins.execfile(path, d)
 #@+node:ekr.20131016032805.16721: *3* g.execute_shell_commands
 def execute_shell_commands(commands, trace=False):
     '''
@@ -7509,23 +7536,29 @@ def toEncodedStringWithErrorCode(s, encoding, reportErrors=False):
 #@+node:ekr.20080919065433.1: *3* g.toUnicodeWithErrorCode (for unit testing)
 def toUnicodeWithErrorCode(s, encoding, reportErrors=False):
     '''For unit testing: convert s to unicode and return (s,ok).'''
-    ok = True
-    # pylint: disable=undefined-variable, no-member
-    # unicode does not exist in Python 3.
-    # f = str if g.isPython3 else unicode
-    f = builtins.str if g.isPython3 else builtins.unicode
+    ###
+        # py--lint: disable=undefined-variable, no-member
+        # unicode does not exist in Python 3.
+        # f = str if g.isPython3 else unicode
+    ### f = builtins.str if g.isPython3 else builtins.unicode
         # Suppress pyflakes complaint.
     if s is None:
-        s = g.u('')
-    if not g.isUnicode(s):
-        try:
-            s = f(s, encoding, 'strict')
-        except UnicodeError:
-            s = f(s, encoding, 'replace')
-            if reportErrors:
-                g.error("Error converting %s from %s encoding to unicode" % (s, encoding))
-            ok = False
-    return s, ok
+        ### s = g.u('')
+        return '', True
+    ### if not g.isUnicode(s):
+    if isinstance(s, str):
+        return s, True
+    ### ok = True
+    ### if not isinstance(s, str):
+    try:
+        s = str(s, encoding, 'strict')
+        return s, True
+    except UnicodeError:
+        s = str(s, encoding, 'replace')
+        if reportErrors:
+            g.error("Error converting %s from %s encoding to unicode" % (s, encoding))
+        return s, False
+    ### return s, ok
 #@+node:ekr.20120311151914.9916: ** g.Urls
 unl_regex = re.compile(r'\bunl:.*$')
 
@@ -7538,20 +7571,24 @@ def unquoteUrl(url):
 
     This function handles 2/3 issues and suppresses pylint complaints.
     '''
-    # pylint: disable=no-member
-    unquote = urllib.parse.unquote if isPython3 else urllib.unquote
-    return unquote(url)
+    ###
+        # py--lint: disable=no-member
+        ### unquote = urllib.parse.unquote if isPython3 else urllib.unquote
+        ### return unquote(url)
+    return urllib.parse.unquote(url)
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
 def computeFileUrl(fn, c=None, p=None):
     '''
     Compute finalized url for filename fn.
     This involves adding url escapes and evaluating Leo expressions.
     '''
-    if 1:
+    ### if 1:
         # pylint: disable=no-member
-        unquote = urllib.parse.unquote if isPython3 else urllib.unquote
+        ### unquote = urllib.parse.unquote if isPython3 else urllib.unquote
+        ### url = unquote(fn)
+        ### unquote = urllib.parse.unquote
     # First, replace special characters (especially %20, by their equivalent).
-    url = unquote(fn)
+    url = urllib.parse.unquote(fn)
     # Finalize the path *before* parsing the url.
     i = url.find('~')
     if i > -1:
