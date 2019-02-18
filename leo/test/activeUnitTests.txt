@@ -281,14 +281,6 @@ def report (self,expected,got):
 #@+node:ekr.20100827183358.5957: *5* run
 def run(self):
     '''run an rst test.'''
-    # Individual tests now make these tests explicitly.
-        # import sys
-        # # import leo.core.leoRst as leoRst
-        # if not sys.platform.startswith('win') and g.isPython3: return
-        # try:
-            # import docutils
-        # except ImportError:
-            # return
 
     def clean(s):
         s = s.replace('\r','')
@@ -369,45 +361,31 @@ def set_got (self,expected,got):
 #@+node:ekr.20090703080553.5000: ** @suite run all doctests
 tm = c.testManager
 
-if g.isPython3:
-    # Some tests now fail on Python 2.x.
-    path = g.os_path_join(g.app.loadDir,"..","core")
-    
-    if 0:
-        << define exclude >>
-    else:
-        exclude = ['leoIPython.py',]
-            # leoIPython.py will give an annoying error if IPython can't be imported.
+###if g.isPython3:
 
-    modules = tm.importAllModulesInPath(path,exclude=exclude)
-    suite   = tm.createUnitTestsFromDoctests(modules)
-else:
-    # Create a dummy suite.
-    suite = tm.generalTestCase(p)
+# Some tests now fail on Python 2.x.
+path = g.os_path_join(g.app.loadDir,"..","core")
+
+exclude = ['leoIPython.py',]
+    # leoIPython.py will give an annoying error if IPython can't be imported.
+
+modules = tm.importAllModulesInPath(path,exclude=exclude)
+suite   = tm.createUnitTestsFromDoctests(modules)
+###
+    # else:
+        # Create a dummy suite.
+        # suite = tm.generalTestCase(p)
     
-# if suite: g.app.scriptDict['suite'] = suite
+### if suite: g.app.scriptDict['suite'] = suite
     
-#@+node:ekr.20090703093925.5003: *3* << define exclude >>
-exclude = [
-    # Gives an error if IPython can't be imported.
-    'leoIPython.py',
-    # These cause no problems, but will not have unit tests.
-    'leo_Debugger.py',
-    'leo_FileList.py',
-    'leo_RemoteDebugger.py',
-    'leo_run.py',
-    'leo_Shell.py',
-    'leoDynamicTest.py',
-    'leoBridge.py',
-    'leoBridgeTest.py',
-]
 #@+node:ekr.20100131171342.5471: ** General
 #@+node:ekr.20100210222021.5388: *3* @test save new file
 if g.in_bridge:
     self.skipTest('Not for TravisCI')
 import os
 import sys
-if g.isPython3 and sys.platform.startswith('linux'):
+### if g.isPython3 and sys.platform.startswith('linux'):
+if sys.platform.startswith('linux'):
     # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
     # The crash causes several other unit tests to fail.
     self.skipTest('Not for Linux.')
@@ -737,43 +715,44 @@ assert s == s2,'s:  %s\ns2: %s' % (repr(s),repr(s2))
 # sys.setdefaultencoding('utf-8')
 
 import os
-
-if g.isPython3:
-    fn ='ффф.leo'
-else:
-    fn = g.toUnicode('ффф.leo')
-
+###
+    # if g.isPython3:
+        # fn ='ффф.leo'
+    # else:
+        # fn = g.toUnicode('ффф.leo')
+fn ='ффф.leo'
 g.app.recentFilesManager.writeRecentFilesFileHelper(fn)
 assert g.os_path_exists(fn),'fail 1'
 os.remove(fn)
 assert not g.os_path_exists(fn),'fail 1'
 #@+node:ekr.20160318094003.1: *3* leoAst
 #@+node:ekr.20160318094009.1: *4* @test Python3 features
-if not g.isPython3:
-    self.skipTest('python 3 test')
-else:
-    import leo.core.leoAst as leoAst
-    import leo.external.make_stub_files as msf
-    import leo.external.py2cs as py2cs
-    import ast, tokenize
-    path = g.os_path_finalize_join(g.app.loadDir,
-        '..', 'test', 'unittest', 'python3_test.py')
-    assert g.os_path_exists(path), path
-    fn = g.shortFileName(path)
-    source = open(path, 'r').read()
-    node = ast.parse(source, filename=fn, mode='exec')
-    src = open(path, 'r').read()
-    readlines = g.ReadLinesClass(src).next
-    tokens = list(tokenize.generate_tokens(readlines))
-    leoAst.AstFullTraverser().visit(node)
-    s = leoAst.HTMLReportTraverser(debug=True).main(fn, node)
-    assert s
-    s = leoAst.AstFormatter().format(node,level=0)
-    assert s
-    s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tokens)
-    assert s
-    controller = msf.StandAloneMakeStubFile()
-    msf.StubTraverser(controller).visit(node)
+###
+    # if not g.isPython3:
+        # self.skipTest('python 3 test')
+    # else:
+import leo.core.leoAst as leoAst
+import leo.external.make_stub_files as msf
+import leo.external.py2cs as py2cs
+import ast, tokenize
+path = g.os_path_finalize_join(g.app.loadDir,
+    '..', 'test', 'unittest', 'python3_test.py')
+assert g.os_path_exists(path), path
+fn = g.shortFileName(path)
+source = open(path, 'r').read()
+node = ast.parse(source, filename=fn, mode='exec')
+src = open(path, 'r').read()
+readlines = g.ReadLinesClass(src).next
+tokens = list(tokenize.generate_tokens(readlines))
+leoAst.AstFullTraverser().visit(node)
+s = leoAst.HTMLReportTraverser(debug=True).main(fn, node)
+assert s
+s = leoAst.AstFormatter().format(node,level=0)
+assert s
+s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tokens)
+assert s
+controller = msf.StandAloneMakeStubFile()
+msf.StubTraverser(controller).visit(node)
 #@+node:ekr.20160523094102.1: *4* @test leoAst traverser classes
 # Great ast docs: http://greentreesnakes.readthedocs.io/en/latest/nodes.html
 
@@ -4515,10 +4494,11 @@ pass
 #@+node:ekr.20111212142649.3971: *4* @test c.pasteOutline does not clone top node
 import sys
 # g.openWithFileName *always* opens the file.
-if g.isPython3 and sys.platform.startswith('linux'):
+### if g.isPython3 and sys.platform.startswith('linux'):
+if sys.platform.startswith('linux'):
     # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
     # The crash causes several other unit tests to fail.
-    pass
+    self.skipTest('Not for Linux')
 else:
     c.selectPosition(p)
     c.copyOutline()
@@ -9703,26 +9683,26 @@ child = p.firstChild()
 grandChild = child.firstChild()
 child.v.unknownAttributes = {'unit_test_child':'abcd'}
 grandChild.v.unknownAttributes = {'unit_test_grandchild':'wxyz'}
-
-
 try:
     s = fc.putDescendentVnodeUas (p)
-    
-    if 0: # This test is too flaky to be useful.
-        if g.isPython3:
-            expected = ' descendentVnodeUnknownAttributes=\
-7d7100285803000000302e3071017d7102580f000000756e6974\
-5f746573745f6368696c64710358040000006162636471047358\
-05000000302e302e3071057d71065814000000756e69745f7465\
-73745f6772616e646368696c64710758040000007778797a710873752e"'
-        else:
-            expected = ' descendentVnodeUnknownAttributes="\
-7d7100285503302e3071017d7102550f756e69745f746573745f\
-6368696c6471035504616263647104735505302e302e3071057d\
-71065514756e69745f746573745f6772616e646368696c647107\
-55047778797a710873752e"'
-    
-        assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
+###
+    # try:
+        # s = fc.putDescendentVnodeUas (p)
+        
+        # if 0: # This test is too flaky to be useful.
+            # if g.isPython3:
+                # expected = ' descendentVnodeUnknownAttributes=\
+    # 7d7100285803000000302e3071017d7102580f000000756e6974\
+    # 5f746573745f6368696c64710358040000006162636471047358\
+    # 05000000302e302e3071057d71065814000000756e69745f7465\
+    # 73745f6772616e646368696c64710758040000007778797a710873752e"'
+            # else:
+                # expected = ' descendentVnodeUnknownAttributes="\
+    # 7d7100285503302e3071017d7102550f756e69745f746573745f\
+    # 6368696c6471035504616263647104735505302e302e3071057d\
+    # 71065514756e69745f746573745f6772616e646368696c647107\
+    # 55047778797a710873752e"'
+       #  assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
 finally:
     del child.v.unknownAttributes
     del grandChild.v.unknownAttributes
@@ -10567,25 +10547,6 @@ table = (
 for s in table:
     g.splitLongFileName(s,limit=3)
     
-#@+node:ekr.20130910062920.4149: *4* @test g.stripBOM
-import codecs
-
-# The hack of computing s below is not valid in Python 3.
-if not g.isPython3:
-    table = (
-        ('utf-8',  codecs.BOM_UTF8),
-        ('utf-16', codecs.BOM_UTF16_BE),
-        ('utf-16', codecs.BOM_UTF16_LE),
-        ('utf-32', codecs.BOM_UTF32_BE),
-        ('utf-32', codecs.BOM_UTF32_LE),
-    )
-    for e,bom in table:
-        s1 = 'this is a test'
-        s = bom + 'this is a test'
-        # print('%6s bom: %18r s: %s' % (e,bom,repr(s)))
-        e2,s2 = g.stripBOM(s)
-        assert e2 == e,'%s,%s' % (e,e2)
-        assert s2 == s1,repr(s2)
 #@+node:ekr.20100131180007.5427: *4* @test g.stripPathCruft
 table =  (
     (None,None), # Retain empty paths for warnings.
@@ -15036,23 +14997,32 @@ if 0: # Preamble...
 else:
     ic = c.importCommands 
 s = """
-if isPython3:
-    def u(s):
-        '''Return s, converted to unicode from Qt widgets.'''
-        return s
+def u(s):
+    '''Return s, converted to unicode from Qt widgets.'''
+    return s
 
-    def ue(s, encoding):
-        return s if g.isUnicode(s) else str(s, encoding)
-else:
-    def u(s):
-        '''Return s, converted to unicode from Qt widgets.'''
-        return builtins.unicode(s) # Suppress pyflakes complaint.
-
-    def ue(s, encoding):
-        return builtins.unicode(s, encoding)
+def ue(s, encoding):
+    return s if g.isUnicode(s) else str(s, encoding)
 """
+###
+    # if isPython3:
+        # def u(s):
+            # '''Return s, converted to unicode from Qt widgets.'''
+            # return s
+    
+        # def ue(s, encoding):
+            # return s if g.isUnicode(s) else str(s, encoding)
+    # else:
+        # def u(s):
+            # '''Return s, converted to unicode from Qt widgets.'''
+            # return builtins.unicode(s) # Suppress pyflakes complaint.
+    
+        # def ue(s, encoding):
+            # return builtins.unicode(s, encoding)
 table = (
-    (1, 'Declarations'),
+    ### (1, 'Declarations'),
+    (1, 'u'),
+    (1, 'ue'),
 )
 try:
     test_node = p.copy()
@@ -19573,7 +19543,7 @@ for setting, result in table:
     assert val==result,'For %r, expected %r, Got %r' % (setting, result,val)
 #@+node:ekr.20180527141026.1: *4* @test g.KeyStroke (printable characters)
 import string
-letters = string.ascii_letters if g.isPython3 else string.letters
+### letters = string.ascii_letters if g.isPython3 else string.letters
 # Unshifted.
 for ch in string.printable:
     stroke = g.KeyStroke(binding=ch)
@@ -19583,7 +19553,8 @@ for ch in string.printable:
     else:
         assert stroke.s == ch, (repr(ch), repr(stroke.s))
 # Shifted.
-for ch in string.digits + letters:
+### for ch in string.digits + letters:
+for ch in string.digits + string.ascii_letters:
     stroke = g.KeyStroke(binding='Shift-'+ch)
     assert stroke.s in string.printable, (repr(ch), repr(stroke.s))
 #@+node:ekr.20110509104953.3474: *4* @test k.get_leo_completions
@@ -20568,9 +20539,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20190114091635.1: *6* A
-#@+node:ekr.20190114091635.3: *6* newHeadline
-#@+node:ekr.20190114091635.2: *6* B
+#@+node:ekr.20190218125841.1: *6* A
+#@+node:ekr.20190218125841.3: *6* newHeadline
+#@+node:ekr.20190218125841.2: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
@@ -26467,15 +26438,17 @@ except SyntaxError:
 #@+node:ekr.20100205235740.5392: *3* @test syntax of all files
 import glob
 failed,n = [],0
-skip_tuples3 = (
+### skip_tuples3 = (
+### skip_tuples = skip_tuples3 if g.isPython3 else skip_tuples2
+skip_tuples = (
     ('extensions','asciidoc.py'),
 )
-skip_tuples2 = (
-    ('test', 'python3_test.py'),
-    ('plugins', 'leowapp.py'),
-)
+###
+    # skip_tuples2 = (
+        # ('test', 'python3_test.py'),
+        # ('plugins', 'leowapp.py'),
+    # )
 join = g.os_path_finalize_join
-skip_tuples = skip_tuples3 if g.isPython3 else skip_tuples2
 skip_list = [join(g.app.loadDir,'..',a,b) for a,b in skip_tuples]
 for theDir in ('core','external','extensions','plugins','scripts','test'):
     path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
@@ -26512,12 +26485,12 @@ s2 = 'test: %s' % s
 
 import sys
 # g.openWithFileName *always* opens the file.
-if g.isPython3 and sys.platform.startswith('linux'):
+### if g.isPython3 and sys.platform.startswith('linux'):
+if sys.platform.startswith('linux'):
     # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
     # The crash causes several other unit tests to fail.
-    pass
+    self.skipTest('Not for Linux')
 elif not g.app.isExternalUnitTest:
-
     old_c = c
     filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
     try:
@@ -26533,41 +26506,41 @@ elif not g.app.isExternalUnitTest:
 
 encoding = 'ascii'
 
-if g.isPython3:
-    s = '炰' # This is already unicode.
-    s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-    assert ok, 'toUnicodeWithErrorCode returns False for %s with ascii encoding' % s
+###if g.isPython3:
+s = '炰' # This is already unicode.
+s2, ok = g.toUnicodeWithErrorCode(s,encoding)
+assert ok, 'toUnicodeWithErrorCode returns False for %s with ascii encoding' % s
 
-    s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
-    assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
-else:
-    s = '炰' # An encoded string.
-    s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-    assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
-
-    s = g.ue('炰','utf-8') # Must use utf-8 encoding *here*
-    s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
-    assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
+s3, ok = g.toEncodedStringWithErrorCode(s,encoding)
+assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
+###
+    # else:
+        # s = '炰' # An encoded string.
+        # s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+        # assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
+    
+        # s = g.ue('炰','utf-8') # Must use utf-8 encoding *here*
+        # s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
+        # assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
 #@+node:ekr.20071113143844.6: *3* @test failure with ascii encodings
 @first # -*- coding: utf-8 -*-
-
 encoding = 'ascii'
+### if g.isPython3:
+s = '炰'
+s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+assert ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
 
-if g.isPython3:
-    s = '炰'
-    s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-    assert ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
-
-    s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
-    assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
-else:
-    s = '炰'
-    s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-    assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
-
-    s = g.ue('炰','utf-8')
-    s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
-    assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
+s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
+assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
+###
+    # else:
+        # s = '炰'
+        # s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+        # assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
+    
+        # s = g.ue('炰','utf-8')
+        # s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
+        # assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
 #@+node:ekr.20100204053330.5367: *3* @test koi8-r encoding
 root = p.copy()
 while p.hasChildren():
@@ -26575,10 +26548,12 @@ while p.hasChildren():
 try:
     p1 = p.insertAsLastChild()
     s = '\xd4\xc5\xd3\xd4' # the word 'test' in Russian, koi8-r
-    if g.isPython3:
-        assert g.isUnicode(s)
-    else:
-        s = unicode(s,'koi8-r')
+    assert isinstance(s, str), repr(s)
+    ###
+        # if g.isPython3:
+            # assert g.isUnicode(s)
+        # else:
+            # s = unicode(s,'koi8-r')
     p1.setBodyString(s)
     c.selectPosition(p1)
     c.copyOutline()
@@ -26591,29 +26566,6 @@ finally:
          while root.hasChildren():
               root.firstChild().doDelete(newNode = None)
     c.redraw_now(p)
-#@+node:ekr.20050208104202: *3* @test of round-tripping toUnicode & toEncodedString
-@first # -*- coding: utf-8 -*-
-
-if not g.isPython3: # Does not work with Python 3.x
-
-    for s,encoding in (
-        ('a',    'utf-8'),
-        ('a',    'ascii'),
-        ('äöü',  'utf-8'),
-        ('äöü',  'mbcs'),
-        ('炰',    'utf-8'),
-        ('炰',    'mbcs'),
-    ):
-        if g.isValidEncoding(encoding):
-            s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-            assert ok, 'toUnicodeWithErrorCode fails for %s' %s
-            s3,ok = g.toEncodedStringWithErrorCode(s2,encoding)
-            assert ok, 'toEncodedStringWithErrorCode fails for %s' % s2
-            assert s3 == s, 'Round-trip one fails for %s' %s
-
-            s2 = g.toUnicode(s,encoding)
-            s3 = g.toEncodedString(s2,encoding)
-            assert s3 == s, 'Round-trip two fails for %s' %s
 #@+node:ekr.20050206090416: *3* @test open non-existent non-ascii directory
 @first # -*- coding: utf-8 -*-
 
@@ -26622,12 +26574,13 @@ if not g.isPython3: # Does not work with Python 3.x
 if g.app.isExternalUnitTest:
     self.skipTest('Not for external test')
 else:
-    if g.isPython3:
-        # Do not call g.ue: it will crash.
-        theFile = 'Ỗ'
-    else:
-        theFile = g.ue('Ỗ','utf-8')
-    
+    theFile = 'Ỗ'
+    ###
+        # if g.isPython3:
+            # # Do not call g.ue: it will crash.
+            # theFile = 'Ỗ'
+        # else:
+            # theFile = g.ue('Ỗ','utf-8')
     path = g.os_path_join('Ỗ','Ỗ')
     try:
         c2 = g.openWithFileName(path,old_c=c)
@@ -26636,37 +26589,6 @@ else:
             g.app.destroyWindow(c2.frame)
         c.setLog()
         c.bodyWantsFocus()
-#@+node:ekr.20071113145804.24: *3* @test round trip toUnicode toEncodedString
-@first # -*- coding: utf-8 -*-
-
-if not g.isPython3: # Does not work with Python 3.x
-
-    table = [
-        ('a',    'utf-8'),
-        ('a',    'ascii'),
-        ('äöü',  'utf-8'),
-        ('äöü',  'mbcs'),
-        ('炰',   'utf-8'),
-    ]
-
-    # __pychecker__ = '--no-reimport'
-    import sys
-
-    if sys.platform.startswith('win'):
-        data = '炰','mbcs'
-        table.append(data)
-
-    for s,encoding in table:
-        if g.isValidEncoding(encoding):
-            s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-            assert ok, 'toUnicodeWithErrorCode fails for %s' %s
-            s3,ok = g.toEncodedStringWithErrorCode(s2,encoding)
-            assert ok, 'toEncodedStringWithErrorCode fails for %s' % s2
-            assert s3 == s, 'Round-trip one failed for %s' %s
-
-            s2 = g.toUnicode(s,encoding)
-            s3 = g.toEncodedString(s2,encoding)
-            assert s3 == s, 'Round-trip two failed for %s' %s
 #@+node:ekr.20100421102506.6282: *3* @test rst.write with unicode character
 @first # -*- coding: utf-8 -*-
 try:
@@ -26677,13 +26599,16 @@ except ImportError:
 rst = c.rstCommands
 name = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','rst_write_test.txt')
 s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
-if g.isPython3:
-    f = open(name,'w',encoding='utf-8')
-else:
-    f = open(name,'w')
-    s = rst.encode(s)
-f.write(s)
-f.close()
+with open(name,'w',encoding='utf-8') as f:
+    f.write(s)
+###
+    # if g.isPython3:
+        # f = open(name,'w',encoding='utf-8')
+    # else:
+        # f = open(name,'w')
+        # s = rst.encode(s)
+    # f.write(s)
+    # f.close()
 assert g.os_path_exists(name)
 #@+node:ekr.20081111150402.11: ** @test zz end of all tests
 # Print does not work: it is redirected.
