@@ -8,11 +8,6 @@ import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
     # The leoCommands ctor now does most leo.core.leo* imports.
     # This breaks circular dependencies.
-###
-    # try:
-        # import builtins # Python 3
-    # except ImportError:
-        # import __builtin__ as builtins # Python 2.
 import itertools
 import os
 import re

@@ -553,13 +553,8 @@ class LeoImportCommands(object):
                 #@+node:ekr.20031218072017.1149: *5* << Write s into newFileName >> (remove-sentinels)
                 # Remove sentinels command.
                 try:
-                    ### theFile = open(newFileName, 'w')
                     with open(newFileName, 'w') as theFile:
                         theFile.write(s)
-                    ###
-                        # if not g.isPython3: # 2010/08/27
-                            # s = g.toEncodedString(s, self.encoding, reportErrors=True)
-                    ### theFile.close()
                     if not g.unitTesting:
                         g.es("created:", newFileName)
                 except Exception:
@@ -592,51 +587,35 @@ class LeoImportCommands(object):
         p = c.p
         if not p: return
         self.setEncoding()
-        #@+<< open filename to f, or return >>
-        #@+node:ekr.20031218072017.1150: *5* << open filename to f, or return >> (weave)
         try:
-            ### if g.isPython3:
-            f = open(filename, 'w', encoding=self.encoding)
-            ###
-                # else:
-                    # f = open(filename, 'w')
+            with open(filename, 'w', encoding=self.encoding) as f:
+                for p in p.self_and_subtree():
+                    s = p.b
+                    s2 = s.strip()
+                    if s2:
+                        f.write("-" * 60); f.write(nl)
+                        #@+<< write the context of p to f >>
+                        #@+node:ekr.20031218072017.1465: *5* << write the context of p to f >> (weave)
+                        # write the headlines of p, p's parent and p's grandparent.
+                        context = []; p2 = p.copy(); i = 0
+                        while i < 3:
+                            i += 1
+                            if not p2: break
+                            context.append(p2.h)
+                            p2.moveToParent()
+                        context.reverse()
+                        indent = ""
+                        for line in context:
+                            f.write(indent)
+                            indent += '\t'
+                            f.write(line)
+                            f.write(nl)
+                        #@-<< write the context of p to f >>
+                        f.write("-" * 60); f.write(nl)
+                        f.write(s.rstrip() + nl)
         except Exception:
             g.es("exception opening:", filename)
             g.es_print_exception()
-            return
-        #@-<< open filename to f, or return >>
-        for p in p.self_and_subtree():
-            s = p.b
-            s2 = s.strip()
-            if s2:
-                f.write("-" * 60); f.write(nl)
-                #@+<< write the context of p to f >>
-                #@+node:ekr.20031218072017.1465: *5* << write the context of p to f >> (weave)
-                # write the headlines of p, p's parent and p's grandparent.
-                context = []; p2 = p.copy(); i = 0
-                while i < 3:
-                    i += 1
-                    if not p2: break
-                    context.append(p2.h)
-                    p2.moveToParent()
-                context.reverse()
-                indent = ""
-                for line in context:
-                    f.write(indent)
-                    indent += '\t'
-                    ###
-                        # if not g.isPython3: # 2010/08/27.
-                            # line = g.toEncodedString(line, self.encoding, reportErrors=True)
-                    f.write(line)
-                    f.write(nl)
-                #@-<< write the context of p to f >>
-                f.write("-" * 60); f.write(nl)
-                ###
-                    # if not g.isPython3:
-                        # s = g.toEncodedString(s, self.encoding, reportErrors=True)
-                f.write(s.rstrip() + nl)
-        f.flush()
-        f.close()
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
     def createOutline(self,

@@ -8,11 +8,6 @@ Run the unit tests in test.leo using the Execute Script command.
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui # For UnitTestGui.
-###
-    # try:
-        # import builtins # Python 3
-    # except ImportError:
-        # import __builtin__ as builtins # Python 2.
 import cProfile as profile
 import doctest
 import gc
@@ -195,12 +190,6 @@ class GeneralTestCase(unittest.TestCase):
         if c.write_script_file:
             scriptFile = c.writeScriptFile(script)
             exec(compile(script, scriptFile, 'exec'), d)
-            # py--lint: disable=no-member
-            ###
-                # if g.isPython3:
-                    # exec(compile(script, scriptFile, 'exec'), d)
-                # else:
-                    # builtins.execfile(scriptFile, d)
         else:
             exec(script, d)
         if trace_time:
@@ -807,12 +796,6 @@ class TestManager(object):
             if c.write_script_file:
                 scriptFile = c.writeScriptFile(script)
                 exec(compile(script, scriptFile, 'exec'), d)
-                ###
-                    # # py--lint: disable=no-member
-                    # if g.isPython3:
-                        # exec(compile(script, scriptFile, 'exec'), d)
-                    # else:
-                        # builtins.execfile(scriptFile, d)
             else:
                 exec(script + '\n', d)
             testclass = g.app.scriptDict.get('testclass')
@@ -854,12 +837,6 @@ class TestManager(object):
             if c.write_script_file:
                 scriptFile = c.writeScriptFile(script)
                 exec(compile(script, scriptFile, 'exec'), d)
-                ###
-                    # # pylint: disable=no-member
-                    # if g.isPython3:
-                        # exec(compile(script, scriptFile, 'exec'), d)
-                    # else:
-                        # builtins.execfile(scriptFile, d)
             else:
                 exec(script + '\n', d)
             suite = g.app.scriptDict.get("suite")
@@ -1268,9 +1245,6 @@ class TestManager(object):
     def checkFileSyntax(self, fileName, s, reraise=True, suppress=False):
         '''Called by a unit test to check the syntax of a file.'''
         try:
-            ###
-                # if not g.isPython3:
-                    # s = g.toEncodedString(s)
             s = s.replace('\r', '')
             compile(s + '\n', fileName, 'exec')
             return True
@@ -1725,9 +1699,6 @@ def factorial(n):
         try:
             result *= factor
         except OverflowError:
-            # py--lint: disable=no-member
-            ### f = builtins.int if g.isPython3 else builtins.long
-            ### result *= f(factor)
             result = int(factor)
         factor += 1
     return result
@@ -1754,8 +1725,6 @@ def runGc(disable=False):
 runGC = runGc
 #@+node:ekr.20051104075904.18: *4* enableGc
 def set_debugGc():
-    # pylint: disable=no-member
-    ### if g.isPython3:
     gc.set_debug(
         gc.DEBUG_STATS # prints statistics.
         # gc.DEBUG_LEAK | # Same as all below.
@@ -1763,17 +1732,6 @@ def set_debugGc():
         # gc.DEBUG_UNCOLLECTABLE
         # gc.DEBUG_SAVEALL
     )
-    ###
-        # else:
-            # gc.set_debug(
-                # gc.DEBUG_STATS | # prints statistics.
-                # gc.DEBUG_LEAK | # Same as all below.
-                # gc.DEBUG_COLLECTABLE
-                # gc.DEBUG_UNCOLLECTABLE
-                # gc.DEBUG_INSTANCES |
-                # gc.DEBUG_OBJECTS
-                # gc.DEBUG_SAVEALL
-            # )
 #@+node:ekr.20051104075904.19: *4* makeObjectList
 def makeObjectList(message):
     # WARNING: this id trick is not proper: newly allocated objects can have the same address as old objects.
@@ -1830,9 +1788,6 @@ def printGc(message=None):
                 funcDict[key] = None
                 if key not in lastFunctionsDict:
                     g.pr('\n', obj)
-                    ### if g.isPython3:
-                    # py--lint: disable=no-member
-                    # signature exists in Python 3.x.
                     args, varargs, varkw, defaults = inspect.signature(obj)
                     g.pr("args", args)
                     if varargs: g.pr("varargs", varargs)

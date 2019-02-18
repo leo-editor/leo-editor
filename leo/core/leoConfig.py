@@ -980,8 +980,8 @@ class GlobalConfigManager(object):
         ("default_derived_file_encoding", "string", "utf-8"),
         ("new_leo_file_encoding", "string", "UTF-8"),
             # Upper case for compatibility with previous versions.
-        ### This ivar is no longer used.
-        ### ("defaultEncoding", "string", None),
+        # This ivar is no longer used.
+        # ("defaultEncoding", "string", None),
             # Defaults to None so it doesn't override better defaults.
     )
     #@+node:ekr.20041117072055: *4* ivarsDict (GCM class data)
