@@ -1172,12 +1172,13 @@ class GlobalConfigManager(object):
         assert isinstance(gs, g.GeneralSetting)
         val = gs.val
         # 2011/10/24: test for an explicit None.
-        if g.isPython3:
-            isNone = val in ('None', 'none', '') # ,None)
-        else:
-            isNone = val in (
-                g.u('None'), g.u('none'), g.u(''),
-                'None', 'none', '')
+        ###if g.isPython3:
+        isNone = val in ('None', 'none', '')
+        ###
+            # else:
+                # isNone = val in (
+                    # g.u('None'), g.u('none'), g.u(''),
+                    # 'None', 'none', '')
         if not self.typesMatch(gs.kind, requestedType):
             # New in 4.4: make sure the types match.
             # A serious warning: one setting may have destroyed another!
@@ -1528,12 +1529,13 @@ class LocalConfigManager(object):
         assert g.isGeneralSetting(gs), gs
         val = gs.val
         # 2011/10/24: test for an explicit None.
-        if g.isPython3:
-            isNone = val in ('None', 'none', '') # ,None)
-        else:
-            isNone = val in (
-                g.u('None'), g.u('none'), g.u(''),
-                'None', 'none', '') #,None)
+        ###if g.isPython3:
+        isNone = val in ('None', 'none', '') # ,None)
+        ###
+            # else:
+                # isNone = val in (
+                    # g.u('None'), g.u('none'), g.u(''),
+                    # 'None', 'none', '') #,None)
         if not self.typesMatch(gs.kind, requestedType):
             # New in 4.4: make sure the types match.
             # A serious warning: one setting may have destroyed another!
@@ -1901,12 +1903,13 @@ class SettingsTreeParser(ParserBaseClass):
         munge = g.app.config.munge
         kind, name, val = self.parseHeadline(p.h)
         kind = munge(kind)
-        if g.isPython3:
-            isNone = val in ('None', 'none', '', None)
-        else:
-            isNone = val in (
-                g.u('None'), g.u('none'), g.u(''),
-                'None', 'none', '', None)
+        ###if g.isPython3:
+        isNone = val in ('None', 'none', '', None)
+        ###
+            # else:
+                # isNone = val in (
+                    # g.u('None'), g.u('none'), g.u(''),
+                    # 'None', 'none', '', None)
         if kind is None: # Not an @x node. (New in Leo 4.4.4)
             pass
         elif kind == "settings":

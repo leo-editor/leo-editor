@@ -347,7 +347,6 @@ class AstFormatter(object):
             node.attr) # Don't visit node.attr: it is always a string.
     #@+node:ekr.20141012064706.18419: *4* f.Bytes
     def do_Bytes(self, node): # Python 3.x only.
-        assert g.isPython3
         return str(node.s)
     #@+node:ekr.20141012064706.18420: *4* f.Call & f.keyword
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
@@ -387,7 +386,6 @@ class AstFormatter(object):
         return ''.join(result)
     #@+node:ekr.20170721073056.1: *4* f.Constant (Python 3.6+)
     def do_Constant(self, node): # Python 3.6+ only.
-        assert g.isPython3
         return str(node.s) # A guess.
     #@+node:ekr.20141012064706.18423: *4* f.Dict
     def do_Dict(self, node):
@@ -424,7 +422,6 @@ class AstFormatter(object):
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     def do_FormattedValue(self, node): # Python 3.6+ only.
-        assert g.isPython3
         return '%s%s%s' % (
             self.visit(node.value),
             self.visit(node.conversion) if node.conversion else '',
@@ -1172,7 +1169,6 @@ class AstFullTraverser(object):
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     def do_FormattedValue(self, node): # Python 3.6+ only.
-        assert g.isPython3
         self.visit(node.value)
         if node.conversion:
             self.visit(node.conversion)
@@ -1199,7 +1195,6 @@ class AstFullTraverser(object):
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
-        assert g.isPython3
         for value in node.values or []:
             self.visit(value)
     #@+node:ekr.20141012064706.18496: *4* ft.keyword
@@ -1559,11 +1554,9 @@ class AstPatternFormatter(AstFormatter):
         return 'Bool'
 
     def do_Bytes(self, node): # Python 3.x only.
-        assert g.isPython3
         return 'Bytes' # return str(node.s)
         
     def do_Constant(self, node): # Python 3.6+ only.
-        assert g.isPython3
         return 'Constant'
 
     def do_Name(self, node):
@@ -2125,7 +2118,6 @@ class HTMLReportTraverser(object):
         # self.end_span('collection')
     #@+node:ekr.20170721073431.1: *4* rt.Constant (Python 3.6+)
     def do_Constant(self, node): # Python 3.6+ only.
-        assert g.isPython3
         return str(node.s) # A guess.
     #@+node:ekr.20150722204300.61: *4* rt.Continue
     def do_Continue(self, node):
@@ -2278,7 +2270,6 @@ class HTMLReportTraverser(object):
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     def do_FormattedValue(self, node): # Python 3.6+ only.
-        assert g.isPython3
         self.div('statement')
         self.visit(node.value)
         if node.conversion:
@@ -2415,7 +2406,6 @@ class HTMLReportTraverser(object):
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
-        assert g.isPython3
         for value in node.values or []:
             self.visit(value)
     #@+node:ekr.20150722204300.77: *4* rt.Lambda
