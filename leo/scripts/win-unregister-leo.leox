@@ -6,7 +6,7 @@
 #@+others
 #@+node:mhw-debug-1081.20190216130451.1: ** imports
 import leo.core.leoGlobals as g
-
+import shutil
 try:
     from _winreg import * #py2
 except ModuleNotFoundError as err:
