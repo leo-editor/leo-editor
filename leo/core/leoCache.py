@@ -3,27 +3,13 @@
 '''A module encapsulating Leo's file caching'''
 #@+<< imports >>
 #@+node:ekr.20100208223942.10436: ** << imports >> (leoCache)
-### import sys
-### isPython3 = sys.version_info >= (3, 0, 0)
 import leo.core.leoGlobals as g
-###if isPython3:
-import pickle
-###
-    # else:
-        # import cPickle as pickle
-# import glob
 import fnmatch
-# import hashlib
+import pickle
 import os
 import stat
-# import time
 import zlib
 import sqlite3
-###
-    # try:
-        # import marshal
-    # except ImportError:
-        # marshal = None
 #@-<< imports >>
 # Abbreviations used throughout.
 abspath = g.os_path_abspath

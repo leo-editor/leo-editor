@@ -16,18 +16,11 @@ import binascii
 from collections import defaultdict
 import difflib
 import time
-### if g.isPython3:
-import io # Python 3.x
+import io
 StringIO = io.StringIO
 BytesIO = io.BytesIO
-###
-    # else:
-        # import cStringIO # Python 2.x
-        # StringIO = cStringIO.StringIO
 import os
 import pickle
-# import string
-# import sys
 import tempfile
 import zipfile
 import sqlite3

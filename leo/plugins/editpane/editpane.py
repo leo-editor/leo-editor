@@ -4,6 +4,7 @@
 #@+<<editpane.py imports>>
 #@+node:tbrown.20171028115438.1: ** << editpane.py imports >>
 import leo.core.leoGlobals as g
+import leo.core.signal_manager as sig
 
 try:
     # this can fix an issue with Qt Web views in Ubuntu
@@ -12,27 +13,12 @@ try:
 except Exception:
     # but not need to stop if it doesn't work
     pass
-
-import os
-
 from collections import defaultdict
-
-###
-    # # py--lint: disable=no-name-in-module
-    # if g.isPython3:
-        # StringTypes = str
-    # else:
-        # from types import StringTypes
-
 from leo.core.leoQt import QtCore, QtWidgets, QtConst # QtGui
 if QtCore is not None:
     from leo.plugins.editpane.clicky_splitter import ClickySplitter
-
-if g.isPython3:
-    from importlib import import_module
-
-import leo.core.signal_manager as sig
-
+from importlib import import_module
+import os
 #@-<<editpane.py imports>>
 #@+others
 #@+node:tbrown.20171028115438.2: ** DBG

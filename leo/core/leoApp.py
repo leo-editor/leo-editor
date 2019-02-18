@@ -6,11 +6,7 @@
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
 import leo.core.leoGlobals as g
 import leo.core.leoExternalFiles as leoExternalFiles
-try:
-    import builtins # Python 3
-except ImportError:
-    import __builtin__ as builtins # Python 2.
-# import glob
+import builtins
 import importlib
 import io
 StringIO = io.StringIO
@@ -23,12 +19,6 @@ import time
 import traceback
 import zipfile
 import platform
-###
-    # if g.isPython3:
-        # StringIO = io.StringIO
-    # else:
-        # import cStringIO
-        # StringIO = cStringIO.StringIO
 import sqlite3
 #@-<< imports >>
 #@+others

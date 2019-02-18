@@ -15,8 +15,8 @@ try:
 except ImportError:
     docutils = None
     # print('leoImport.py: can not import docutils')
-# import glob
-# import importlib
+import io
+StringIO = io.StringIO
 import json
 try:
     import lxml.html
@@ -24,13 +24,6 @@ except ImportError:
     lxml = None
 import os
 import re
-###if g.isPython3:
-import io
-StringIO = io.StringIO
-###
-    # else:
-        # import StringIO
-        # StringIO = StringIO.StringIO
 import time
 import urllib
 #@-<< imports >>

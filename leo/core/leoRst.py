@@ -38,12 +38,7 @@ if docutils:
     except Exception:
         g.es_exception()
         docutils = None
-### if g.isPython3:
-# py--lint: disable=no-name-in-module
 import html.parser as HTMLParser
-###
-    # else:
-        # import HTMLParser
 try:
     import leo.plugins.mod_http as mod_http
 except ImportError:
@@ -59,13 +54,8 @@ try:
     import SilverCity
 except ImportError:
     SilverCity = None
-###if g.isPython3:
 import io
 StringIO = io.StringIO
-###
-    # else:
-        # import StringIO
-        # StringIO = StringIO.StringIO
 import time
 #@-<< imports >>
 #@+others

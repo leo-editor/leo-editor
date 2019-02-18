@@ -30,12 +30,12 @@ if 0:
     import leo.core.leoGlobals as g # So code can use g below.
 # Don't import this here: it messes up Leo's startup code.
     # import leo.core.leoTest as leoTest
+import binascii
 import codecs
 try:
     import filecmp
 except ImportError: # does not exist in jython.
     filecmp = None
-### if isPython3:
 from functools import reduce
 try:
     import gc
@@ -46,41 +46,26 @@ try:
 except ImportError: # does not exist in jython.
     gettext = None
 import glob
-###if isPython3:
 import io
 StringIO = io.StringIO
-###
-    # else:
-        # import cStringIO
-        # StringIO = cStringIO.StringIO
-    # import functools
 import imp
 import inspect
-    # import locale
 import operator
 import os
-### Module 'urllib' has no 'parse' member.
-import urllib
 #
 # Do NOT import pdb here!  We shall define pdb as a _function_ below.
-# import pdb
+    # import pdb
 import re
 import shlex
 import shutil
 import string
 import subprocess
-# import sys
 import tempfile
 import time
 import traceback
 import types
-###if isPython3:
-# py--lint: disable=no-name-in-module
+import urllib
 import urllib.parse as urlparse
-###
-    # else:
-        # import urlparse
-import binascii
 #@-<< imports >>
 #@+<< define g.globalDirectiveList >>
 #@+node:EKR.20040610094819: ** << define g.globalDirectiveList >>
