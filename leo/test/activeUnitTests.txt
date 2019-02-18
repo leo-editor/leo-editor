@@ -360,31 +360,17 @@ def set_got (self,expected,got):
     return got_html,got_rst
 #@+node:ekr.20090703080553.5000: ** @suite run all doctests
 tm = c.testManager
-
-###if g.isPython3:
-
-# Some tests now fail on Python 2.x.
 path = g.os_path_join(g.app.loadDir,"..","core")
-
 exclude = ['leoIPython.py',]
     # leoIPython.py will give an annoying error if IPython can't be imported.
-
 modules = tm.importAllModulesInPath(path,exclude=exclude)
 suite   = tm.createUnitTestsFromDoctests(modules)
-###
-    # else:
-        # Create a dummy suite.
-        # suite = tm.generalTestCase(p)
-    
-### if suite: g.app.scriptDict['suite'] = suite
-    
 #@+node:ekr.20100131171342.5471: ** General
 #@+node:ekr.20100210222021.5388: *3* @test save new file
 if g.in_bridge:
     self.skipTest('Not for TravisCI')
 import os
 import sys
-### if g.isPython3 and sys.platform.startswith('linux'):
 if sys.platform.startswith('linux'):
     # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
     # The crash causes several other unit tests to fail.
@@ -710,16 +696,10 @@ s2 = theFile.read()
 assert s == s2,'s:  %s\ns2: %s' % (repr(s),repr(s2))
 #@+node:ekr.20100211110729.5389: *4* @test rfm.writeRecentFilesFileHelper
 @first # -*- coding: utf-8 -*-
-
+#
 # On Windows, this works with or without the following line in sitecustomize.py
-# sys.setdefaultencoding('utf-8')
-
+    # sys.setdefaultencoding('utf-8')
 import os
-###
-    # if g.isPython3:
-        # fn ='ффф.leo'
-    # else:
-        # fn = g.toUnicode('ффф.leo')
 fn ='ффф.leo'
 g.app.recentFilesManager.writeRecentFilesFileHelper(fn)
 assert g.os_path_exists(fn),'fail 1'
@@ -727,10 +707,6 @@ os.remove(fn)
 assert not g.os_path_exists(fn),'fail 1'
 #@+node:ekr.20160318094003.1: *3* leoAst
 #@+node:ekr.20160318094009.1: *4* @test Python3 features
-###
-    # if not g.isPython3:
-        # self.skipTest('python 3 test')
-    # else:
 import leo.core.leoAst as leoAst
 import leo.external.make_stub_files as msf
 import leo.external.py2cs as py2cs
@@ -796,7 +772,6 @@ unnamed node line 1
 #@+node:ekr.20090704085350.5044: *4* @test @asis: shape of tree
 if g.app.isExternalUnitTest:
     self.skipTest('Not for external tests: uses @<file> node.')
-
 h = '@asis unittest/at-asis-test.py'
 p = g.findNodeAnywhere(c,h)
 assert p, h
@@ -883,8 +858,6 @@ Last line: no newline
 #@+node:ekr.20111021115306.3696: *4* @test @file: tex bug
 if g.app.isExternalUnitTest:
     self.skipTest('Not for external tests: uses @<file> node.')
-
-    
 p = g.findNodeAnywhere(c,"@file unittest/tex-error.tex")
 assert(p)
 s1 = r"""\begin{document}
@@ -954,8 +927,7 @@ c.testManager.runAtFileTest(p)
 # Doesn't work when run externally because the copy operation changes the gnx.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-else:
-    c.testManager.runAtFileTest(p)
+c.testManager.runAtFileTest(p)
 #@+node:ekr.20040707141957.13: *5* #@thin
 Line 1
 
@@ -977,7 +949,7 @@ last line 1: no newline
 
 if g.app.isExternalUnitTest:
     self.skipTest('Not for external tests: uses @<file> node.')
-
+#
 # html uses block comments.  This is an important test.
 h = '@thin unittest/at-thin-html-test.html'
 p = g.findNodeAnywhere(c,h)
@@ -990,18 +962,14 @@ assert p.b == s,'body failure'
 #@+node:ekr.20090704085350.5046: *4* @test @thin: shape of tree
 if g.app.isExternalUnitTest:
     self.skipTest('Not for external tests: uses @<file> node.')
-
 h = '@thin unittest/at-thin-test.py'
 p = g.findNodeAnywhere(c,h)
 assert p
-
 table = (
     (p.firstChild(),'spam'),
     (p.firstChild().next(),'eggs')
 )
-
 assert not p.isDirty(),p.h # Do not ignore this failure!
-
 for p2,h2 in table:
     assert p2.h == h2
     assert len(p2.b) > 10
@@ -1334,7 +1302,6 @@ for fn in (at.outputFileName,at.targetFileName):
 try:
     # Create the output file or contents.
     at.outputContents = contents = g.toUnicode('test output')
-    ### at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
     val = at.replaceFile(contents, encoding, fn, at.root)
     assert not val
@@ -1449,25 +1416,14 @@ finally:
 import sys
 if g.app.isExternalUnitTest:
     self.skipTest('external test')
-    # if sys.platform.startswith('linux'):
-        # self.skipTest('external linux test')
-    # else:
-        # path = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','utf-16-test.txt')
-        # assert g.os_path_exists(path)
-        # f = open(path,'r')
-        # s = f.read()
-        # f.close()
-        # s = g.toUnicode(s,encoding='utf-16')
-        # assert s.find('Test of utf-16.') > -1,s
-else:
-    h = '@file unittest/utf-16-test.txt'
-    p = g.findNodeAnywhere(c,h)
-    s = 'Test of utf-16.'
-    assert p,h
-    # It's hard to test the utf-16 text directly.
-    assert p.b
-    assert p.b.find(s) > -1
-    assert len(p.b)==66,len(p.b)
+h = '@file unittest/utf-16-test.txt'
+p = g.findNodeAnywhere(c,h)
+s = 'Test of utf-16.'
+assert p,h
+# It's hard to test the utf-16 text directly.
+assert p.b
+assert p.b.find(s) > -1
+assert len(p.b)==66,len(p.b)
 #@+node:ekr.20100131180007.5462: *4* @test verbatim sentinel
 # Here is something that should generate a verbtim sentinel::
 
@@ -1998,10 +1954,7 @@ More plain text.
 
 if not g.app.gui.guiName().startswith('qt'):
     self.skipTest('Requires Qt')
-
 import leo.core.leoColorizer as leoColorizer
-# import imp
-# imp.reload(leoColorizer)
 wrapper = c.frame.body.wrapper
 widget = c.frame.body.widget
 x = leoColorizer.JEditColorizer(c, widget, wrapper)
@@ -2021,7 +1974,6 @@ try:
             i, language, got, child.b)
 finally:
     tables.b = tables_s
-    
 #@+node:ekr.20170201143435.2: *5* << scanLanguageDirectives test tables >>
 language_table = [
     ('python', '@language rest\n@language python\n', ''),
@@ -2037,10 +1989,7 @@ language_table = [
 
 if not g.app.gui.guiName().startswith('qt'):
     self.skipTest('Requires Qt')
-
 import leo.core.leoColorizer as leoColorizer
-# import imp
-# imp.reload(leoColorizer)
 wrapper = c.frame.body.wrapper
 widget = c.frame.body.widget
 x = leoColorizer.JEditColorizer(c, widget, wrapper)
@@ -2060,7 +2009,6 @@ try:
             i, expected, got, child.b)
 finally:
     tables.b = tables_s
-    
 #@+node:ekr.20170201175441.2: *5* << useSyntaxColoring test tables >>
 language_table = [
     (True, '', ''),
@@ -4493,8 +4441,6 @@ pass
 pass
 #@+node:ekr.20111212142649.3971: *4* @test c.pasteOutline does not clone top node
 import sys
-# g.openWithFileName *always* opens the file.
-### if g.isPython3 and sys.platform.startswith('linux'):
 if sys.platform.startswith('linux'):
     # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
     # The crash causes several other unit tests to fail.
@@ -7790,7 +7736,6 @@ try:
     u = g.u('(pdq):\n')
     w.setInsertPoint(len(s))
     for char in u:
-        ### stroke = g.choose(char=='\n','Return',char)
         binding = 'Return' if char == '\n' else char
         event = g.app.gui.create_key_event(c,char=char,binding=binding,w=w)
         ec.selfInsertCommand(event)
@@ -9685,24 +9630,13 @@ child.v.unknownAttributes = {'unit_test_child':'abcd'}
 grandChild.v.unknownAttributes = {'unit_test_grandchild':'wxyz'}
 try:
     s = fc.putDescendentVnodeUas (p)
-###
-    # try:
-        # s = fc.putDescendentVnodeUas (p)
-        
-        # if 0: # This test is too flaky to be useful.
-            # if g.isPython3:
-                # expected = ' descendentVnodeUnknownAttributes=\
-    # 7d7100285803000000302e3071017d7102580f000000756e6974\
-    # 5f746573745f6368696c64710358040000006162636471047358\
-    # 05000000302e302e3071057d71065814000000756e69745f7465\
-    # 73745f6772616e646368696c64710758040000007778797a710873752e"'
-            # else:
-                # expected = ' descendentVnodeUnknownAttributes="\
-    # 7d7100285503302e3071017d7102550f756e69745f746573745f\
-    # 6368696c6471035504616263647104735505302e302e3071057d\
-    # 71065514756e69745f746573745f6772616e646368696c647107\
-    # 55047778797a710873752e"'
-       #  assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
+    if 0: # This test is too flaky to be useful.
+        expected = ' descendentVnodeUnknownAttributes=\
+        7d7100285803000000302e3071017d7102580f000000756e6974\
+        5f746573745f6368696c64710358040000006162636471047358\
+        05000000302e302e3071057d71065814000000756e69745f7465\
+        73745f6772616e646368696c64710758040000007778797a710873752e"'
+        assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
 finally:
     del child.v.unknownAttributes
     del grandChild.v.unknownAttributes
@@ -14997,32 +14931,25 @@ if 0: # Preamble...
 else:
     ic = c.importCommands 
 s = """
-def u(s):
-    '''Return s, converted to unicode from Qt widgets.'''
-    return s
+if isPython3:
+    def u(s):
+        '''Return s, converted to unicode from Qt widgets.'''
+        return s
 
-def ue(s, encoding):
-    return s if g.isUnicode(s) else str(s, encoding)
+    def ue(s, encoding):
+        return s if g.isUnicode(s) else str(s, encoding)
+else:
+    def u(s):
+        '''Return s, converted to unicode from Qt widgets.'''
+        return builtins.unicode(s) # Suppress pyflakes complaint.
+
+    def ue(s, encoding):
+        return builtins.unicode(s, encoding)
 """
-###
-    # if isPython3:
-        # def u(s):
-            # '''Return s, converted to unicode from Qt widgets.'''
-            # return s
-    
-        # def ue(s, encoding):
-            # return s if g.isUnicode(s) else str(s, encoding)
-    # else:
-        # def u(s):
-            # '''Return s, converted to unicode from Qt widgets.'''
-            # return builtins.unicode(s) # Suppress pyflakes complaint.
-    
-        # def ue(s, encoding):
-            # return builtins.unicode(s, encoding)
 table = (
-    ### (1, 'Declarations'),
-    (1, 'u'),
-    (1, 'ue'),
+    (1, 'Declarations'),
+    # (1, 'u'),
+    # (1, 'ue'),
 )
 try:
     test_node = p.copy()
@@ -19163,7 +19090,6 @@ else:
 
 # Notes:
 # All heading must be followed by an empty line.
-### g.app.suppressImportChecks = True
 s = '''\
   #########
 Chapter 1
@@ -19543,7 +19469,6 @@ for setting, result in table:
     assert val==result,'For %r, expected %r, Got %r' % (setting, result,val)
 #@+node:ekr.20180527141026.1: *4* @test g.KeyStroke (printable characters)
 import string
-### letters = string.ascii_letters if g.isPython3 else string.letters
 # Unshifted.
 for ch in string.printable:
     stroke = g.KeyStroke(binding=ch)
@@ -19553,7 +19478,6 @@ for ch in string.printable:
     else:
         assert stroke.s == ch, (repr(ch), repr(stroke.s))
 # Shifted.
-### for ch in string.digits + letters:
 for ch in string.digits + string.ascii_letters:
     stroke = g.KeyStroke(binding='Shift-'+ch)
     assert stroke.s in string.printable, (repr(ch), repr(stroke.s))
@@ -20539,9 +20463,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20190218125841.1: *6* A
-#@+node:ekr.20190218125841.3: *6* newHeadline
-#@+node:ekr.20190218125841.2: *6* B
+#@+node:ekr.20190218131532.1: *6* A
+#@+node:ekr.20190218131532.3: *6* newHeadline
+#@+node:ekr.20190218131532.2: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
@@ -26438,16 +26362,9 @@ except SyntaxError:
 #@+node:ekr.20100205235740.5392: *3* @test syntax of all files
 import glob
 failed,n = [],0
-### skip_tuples3 = (
-### skip_tuples = skip_tuples3 if g.isPython3 else skip_tuples2
 skip_tuples = (
     ('extensions','asciidoc.py'),
 )
-###
-    # skip_tuples2 = (
-        # ('test', 'python3_test.py'),
-        # ('plugins', 'leowapp.py'),
-    # )
 join = g.os_path_finalize_join
 skip_list = [join(g.app.loadDir,'..',a,b) for a,b in skip_tuples]
 for theDir in ('core','external','extensions','plugins','scripts','test'):
@@ -26482,65 +26399,37 @@ s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
 s2 = 'test: %s' % s
 #@+node:ekr.20050208051418.1: *3* @test can't open message in g.openWithFileName
 @first # -*- coding: utf-8 -*-
-
 import sys
-# g.openWithFileName *always* opens the file.
-### if g.isPython3 and sys.platform.startswith('linux'):
-if sys.platform.startswith('linux'):
+if sys.platform.startswith('linux') or g.app.isExternalUnitTest:
     # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
     # The crash causes several other unit tests to fail.
     self.skipTest('Not for Linux')
-elif not g.app.isExternalUnitTest:
-    old_c = c
-    filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
-    try:
-        c2 = None
-        c2 = g.openWithFileName(filename,old_c=old_c)
-    finally:
-        if c2:
-            g.app.destroyWindow(c2.frame)
-        c.setLog()
-        c.bodyWantsFocus()
+old_c = c
+filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
+try:
+    c2 = None
+    c2 = g.openWithFileName(filename,old_c=old_c)
+finally:
+    if c2:
+        g.app.destroyWindow(c2.frame)
+    c.setLog()
+    c.bodyWantsFocus()
 #@+node:ekr.20050208111037: *3* @test failure to convert unicode characters to ascii
 @first # -*- coding: utf-8 -*-
-
 encoding = 'ascii'
-
-###if g.isPython3:
 s = '炰' # This is already unicode.
 s2, ok = g.toUnicodeWithErrorCode(s,encoding)
 assert ok, 'toUnicodeWithErrorCode returns False for %s with ascii encoding' % s
-
 s3, ok = g.toEncodedStringWithErrorCode(s,encoding)
 assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
-###
-    # else:
-        # s = '炰' # An encoded string.
-        # s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-        # assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
-    
-        # s = g.ue('炰','utf-8') # Must use utf-8 encoding *here*
-        # s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
-        # assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
 #@+node:ekr.20071113143844.6: *3* @test failure with ascii encodings
 @first # -*- coding: utf-8 -*-
 encoding = 'ascii'
-### if g.isPython3:
 s = '炰'
-s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+s2, ok = g.toUnicodeWithErrorCode(s,encoding)
 assert ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
-
-s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
+s3, ok = g.toEncodedStringWithErrorCode(s,encoding)
 assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
-###
-    # else:
-        # s = '炰'
-        # s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-        # assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
-    
-        # s = g.ue('炰','utf-8')
-        # s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
-        # assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
 #@+node:ekr.20100204053330.5367: *3* @test koi8-r encoding
 root = p.copy()
 while p.hasChildren():
@@ -26549,17 +26438,11 @@ try:
     p1 = p.insertAsLastChild()
     s = '\xd4\xc5\xd3\xd4' # the word 'test' in Russian, koi8-r
     assert isinstance(s, str), repr(s)
-    ###
-        # if g.isPython3:
-            # assert g.isUnicode(s)
-        # else:
-            # s = unicode(s,'koi8-r')
     p1.setBodyString(s)
     c.selectPosition(p1)
     c.copyOutline()
     c.pasteOutline()
     p2 = p1.next()
-    # self.assertEqual(p1.b, p2.b) # 'self' defined only when unit-testing.
     assert p1.b == p2.b
 finally:
     if 1:
@@ -26575,12 +26458,6 @@ if g.app.isExternalUnitTest:
     self.skipTest('Not for external test')
 else:
     theFile = 'Ỗ'
-    ###
-        # if g.isPython3:
-            # # Do not call g.ue: it will crash.
-            # theFile = 'Ỗ'
-        # else:
-            # theFile = g.ue('Ỗ','utf-8')
     path = g.os_path_join('Ỗ','Ỗ')
     try:
         c2 = g.openWithFileName(path,old_c=c)
@@ -26601,14 +26478,6 @@ name = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','rst_write_t
 s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
 with open(name,'w',encoding='utf-8') as f:
     f.write(s)
-###
-    # if g.isPython3:
-        # f = open(name,'w',encoding='utf-8')
-    # else:
-        # f = open(name,'w')
-        # s = rst.encode(s)
-    # f.write(s)
-    # f.close()
 assert g.os_path_exists(name)
 #@+node:ekr.20081111150402.11: ** @test zz end of all tests
 # Print does not work: it is redirected.
