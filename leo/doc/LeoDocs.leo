@@ -2263,6 +2263,8 @@
 </v>
 <v t="ekr.20190119071258.1"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
 </v>
+<v t="ekr.20100806170836.4393"></v>
+<v t="ekr.20160410044518.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8879,7 +8881,7 @@ By default, the file's extension determines the importer::
 
 The @asis directive creates an external file without sentinels and without any expansions.
 
-Use this directive only when you must have complete control over every character of the external file. When writing @asis nodes, writes the body text of all nodes in outline order. Leo writes the body text *as is*, without recognizing section definitions, without expanding section references, and without treating directives specially in any way. In particular, Leo copies all directives, including @ or @c directives, to the external file as text.
+Use this directive only when you must have complete control over every character of the external file. When writing @asis nodes, writes the body text of all nodes in outline order. Leo writes the body text *as is*, without recognizing section definitions, without expanding section references, and without treating directives specially in any way. In particular, Leo copies all directives, including @ or @c directives, to the external file as text. **Warning**: Because the external file contains no sentinels, @nosent trees can not be updated from changes made outside of Leo. If you want this capability, use @clean instead.
 
 .. index::
     pair: @@ convention in @asis trees; Reference
@@ -21145,7 +21147,7 @@ File names are relative to the directory containing the .leo file, but that can 
     pair: @nosent; Reference
 
 The @nosent directive creates an external file **without** sentinels. When writing
-@nosent trees, Leo expands section references and @all and @others directives.  Because the external file contains no sentinels, @nosent trees can not be updated from changes made outside of Leo. If you want this capability, use @clean instead.
+@nosent trees, Leo expands section references and @all and @others directives. **Warning**: Because the external file contains no sentinels, @nosent trees can not be updated from changes made outside of Leo. If you want this capability, use @clean instead.
 </t>
 <t tx="ekr.20160410045234.1">When importing files into @auto trees, Leo performs several checks to ensure that writing the imported file will produce exactly the same file. These checks can produces **errors** or **warnings**. Errors indicate a potentially serious problem. Leo inserts an @ignore directive in the @auto tree if any error is found. This prevents the @auto tree from modifying the external file.
 
