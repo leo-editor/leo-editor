@@ -1563,7 +1563,7 @@ class Commands(object):
                     except Exception:
                         return "surprise" # abort
                     if unittest and result != "ok":
-                        g.pr("Syntax error in %s" % p.cleanHeadString())
+                        g.pr("Syntax error in %s" % p.h)
                         return result # End the unit test: it has failed.
         if not unittest:
             g.blue("check complete")

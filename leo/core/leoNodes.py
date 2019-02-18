@@ -282,15 +282,13 @@ class Position(object):
         
         Tests like 'if p is None' or 'if p is not None' will not work properly.
         """
-        # Tracing this appears to cause unbounded prints.
-            # print("__bool__",self.v and self.v.cleanHeadString())
         return self.v is not None
     #@+node:ekr.20040301205720: *4* p.__str__ and p.__repr__
     def __str__(self):
         p = self
         if p.v:
             return "<pos %d childIndex: %d lvl: %d key: %s %s>" % (
-                id(p), p._childIndex, p.level(), p.key(), p.cleanHeadString())
+                id(p), p._childIndex, p.level(), p.key(), p.h)
         else:
             return "<pos %d [%d] None>" % (id(p), len(p.stack))
 
@@ -1983,7 +1981,7 @@ class VNodeBase(object):
         assert self.fileIndex, g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__(self):
-        return "<VNode %s %s>" % (self.gnx, self.cleanHeadString())
+        return "<VNode %s %s>" % (self.gnx, self.headString())
 
     __str__ = __repr__
     #@+node:ekr.20040312145256: *4* v.dump
@@ -2231,7 +2229,7 @@ class VNodeBase(object):
         '''Return True if this VNode contains body text.'''
         s = self._bodyString
         return s and len(s) > 0
-    #@+node:ekr.20031218072017.1581: *4* v.headString & v.cleanHeadString
+    #@+node:ekr.20031218072017.1581: *4* v.headString
     head_unicode_warning = False
 
     def headString(self):
@@ -2243,12 +2241,6 @@ class VNodeBase(object):
             self.head_unicode_warning = True
             g.internalError('not a string', repr(self._headString))
         return g.toUnicode(self._headString)
-        
-    cleanHeadString = headString
-
-    ###
-        # def cleanHeadString(self):
-            # return self._headString
     #@+node:ekr.20131223064351.16351: *4* v.isNthChildOf
     def isNthChildOf(self, n, parent_v):
         '''Return True if v is the n'th child of parent_v.'''
