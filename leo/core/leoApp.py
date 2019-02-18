@@ -995,7 +995,6 @@ class LeoApp(object):
         if verbose:
             print(app.signon1)
             print(app.signon2)
-            ### print('** isPython3: %s' % g.isPython3)
     #@+node:ekr.20100831090251.5838: *4* app.createXGui
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
@@ -1197,12 +1196,10 @@ class LeoApp(object):
             self.createDefaultGui(fileName='g.app.setLeoId', verbose=False)
         if self.gui is None: # Neither gui could be created: this should never happen.
             g.es_debug("Please enter LeoID (e.g. your username, 'johndoe'...)")
-            ### py--lint: disable=no-member
-            ### f = builtins.input if g.isPython3 else builtins.raw_input
-                # Suppress pyflakes complaint.
             leoid = input('LeoID: ')
         else:
             leoid = self.gui.runAskLeoIDDialog()
+        #
         # Bug fix: 2/6/05: put result in g.app.leoID.
         # Careful: periods in the id field of a gnx will corrupt the .leo file!
         self.leoID = leoid.replace('.', '-')
@@ -1215,14 +1212,8 @@ class LeoApp(object):
             if theDir:
                 try:
                     fn = g.os_path_join(theDir, tag)
-                    ### f = open(fn, 'w')
                     with open(fn, 'w') as f:
-                        ### s = self.leoID
-                        ###
-                            # if not g.isPython3:
-                                # s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
                         f.write(self.leoID)
-                        ### f.close()
                     if g.os_path_exists(fn):
                         g.error('', tag, 'created in', theDir)
                         return
@@ -1259,13 +1250,11 @@ class LeoApp(object):
             g.app.setLog(None) # Prepare to requeue for other commanders.
             return
         # Write the signon to the log: similar to self.computeSignon().
-        ### p3 = 'isPython3: %s' % g.isPython3
         table = [
             ('Leo Log Window', 'red'),
             (app.signon, None),
             (app.signon1, None),
             (app.signon2, None),
-            ### (p3, None),
         ]
         table.reverse()
         c.setLog()
@@ -2147,9 +2136,6 @@ class LoadManager(object):
         if not any([g.app.unitTesting, g.app.silentMode, g.app.batchMode]):
             # This occurs early in startup, so use the following.
             s = 'reading settings in %s' % (fn)
-            ###
-                # if not g.isPython3:
-                    # s = g.toEncodedString(s, 'ascii')
             if 'startup' in g.app.debug:
                 print(s)
             g.es(s, color='blue')
@@ -3296,7 +3282,6 @@ class LoadManager(object):
             name = aList and len(aList) == 1 and aList[0]
             if not name: return None
             s = theFile.read(name)
-            ### if g.isPython3: s = g.ue(s, 'utf-8')
             s = g.ue(s, 'utf-8')
             return StringIO(s)
         except IOError:
