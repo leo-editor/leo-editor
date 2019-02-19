@@ -1280,9 +1280,6 @@ class LeoQtGui(leoGui.LeoGui):
     def isTextWrapper(self, w):
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
         return w and hasattr(w, 'supportsHighLevelInterface') and w.supportsHighLevelInterface
-    #@+node:ekr.20110605121601.18526: *4* qt_gui.toUnicode (deprecated)
-    def toUnicode(self, s):
-        return s
     #@+node:ekr.20110605121601.18527: *4* qt_gui.widget_name
     def widget_name(self, w):
         # First try the widget's getName method.

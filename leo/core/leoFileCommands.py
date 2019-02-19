@@ -1835,7 +1835,8 @@ class FileCommands(object):
         try:
             s = pickle.dumps(val, protocol=1)
             s2 = binascii.hexlify(s)
-            s3 = g.ue(s2, 'utf-8')
+            ### s3 = g.ue(s2, 'utf-8')
+            s3 = g.toUnicode(s2, 'utf-8')
             field = ' %s="%s"' % (tag, s3)
             return field
         except pickle.PicklingError:

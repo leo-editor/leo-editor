@@ -238,7 +238,8 @@ class readingThread(threading.Thread):
             if s != "\n":
                 self.TextLock.acquire()
                 try:
-                    self.Text = self.Text + g.ue(s,Encoding)
+                    ### self.Text = self.Text + g.ue(s,Encoding)
+                    self.Text = self.Text + g.toUnicode(s,Encoding)
                 except IOError as ioerr:
                     self.Text = self.Text +"\n"+ "[@run] ioerror :"+str(ioerr)
                 self.TextLock.release()

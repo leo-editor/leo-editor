@@ -5587,13 +5587,11 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
     # Never call g.trace here!
         # g.dump_encoded_string(encoding,s)
     return s
-#@+node:ekr.20091206161352.6232: *4* g.u & g.ue (deprecated)
+#@+node:ekr.20091206161352.6232: *4* g.u
 def u(s):
     '''Return s, converted to unicode from Qt widgets.'''
+    # This can not be removed, because it can be a stand-in for QString.
     return s
-
-def ue(s, encoding):
-    return s if isinstance(s, str) else str(s, encoding)
 #@+node:ekr.20031218072017.3197: *3* g.Whitespace
 #@+node:ekr.20031218072017.3198: *4* g.computeLeadingWhitespace
 # Returns optimized whitespace corresponding to width with the indicated tab_width.

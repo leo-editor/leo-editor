@@ -2497,7 +2497,8 @@ class AtFile(object):
     def outputStringWithLineEndings(self, s):
         at = self
         # Calling self.onl() runs afoul of queued newlines.
-        s = g.ue(s, at.encoding)
+        ### s = g.ue(s, at.encoding)
+        s = g.toUnicode(s, at.encoding)
         s = s.replace('\n', at.output_newline)
         self.os(s)
     #@+node:ekr.20190111045822.1: *5* at.precheck
