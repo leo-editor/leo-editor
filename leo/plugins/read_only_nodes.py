@@ -51,6 +51,10 @@ Davide Salomoni
 
 # Contributed by Davide Salomoni <dsalomoni@yahoo.com>
 
+# EKR: This plugin does not appear to be ready for Python 3.
+
+# pylint: disable=not-callable
+
 #@+<< imports >>
 #@+node:ekr.20050311091110.1: ** << imports >>
 import leo.core.leoGlobals as g
@@ -304,6 +308,7 @@ def insert_read_only_node (c,p,name):
             fh = StringIO()
             fmt = AbstractFormatter(DumbWriter(fh))
             # the parser stores parsed data into fh (file-like handle)
+            ### pylint: disable=too-many-function-args
             parser = HTMLParser(fmt)
 
             # send the HTML text to the parser
@@ -315,6 +320,7 @@ def insert_read_only_node (c,p,name):
             fh.close()
 
             # finally, get the list of hyperlinks and append to the end of the text
+            ### pylint: disable=no-member
             hyperlinks = parser.anchorlist
             numlinks = len(hyperlinks)
             if numlinks > 0:
