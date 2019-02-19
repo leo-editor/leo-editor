@@ -77,11 +77,6 @@ class LeoGui (flx.PyComponent):
         # sys.exit(0)
         
 #@+node:ekr.20181110170235.1: ** class LeoLog
-### Kinda works
-    # class LeoLog(flx.Label):
-        # def init(self, flex=1, style='overflow-y: scroll;'):
-            # pass
-
 class LeoLog(flx.Widget):
 
     CSS = """
@@ -96,10 +91,10 @@ class LeoLog(flx.Widget):
         global window
         # https://ace.c9.io/#nav=api
         self.ace = window.ace.edit(self.node, "editor")
-        ### self.ace.setValue("import os\n\ndirs = os.walk")
+            # self.ace.setValue("import os\n\ndirs = os.walk")
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
-        ### self.ace.getSession().setMode("ace/mode/python")
+            # self.ace.getSession().setMode("ace/mode/python")
         print('window', window)
 
     @flx.reaction('size')
@@ -143,7 +138,6 @@ class LeoTree(flx.Widget):
     #@+node:ekr.20181110170328.2: *3* tree.init
     def init(self):
         with flx.HSplit():
-            ### self.label = flx.Label(flex=1, style='overflow-y: scroll;')
             with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
                 for t in ['foo', 'bar', 'spam', 'eggs']:
                     with flx.TreeItem(text=t, checked=None):
@@ -168,7 +162,7 @@ class LeoTree(flx.Widget):
             kind = '' if ev.new_value else 'un-'
             text = '%10s: %s' % (id_, kind + ev.type)
             assert text
-            ### self.label.set_html(text + '<br />' + self.label.html)
+            # self.label.set_html(text + '<br />' + self.label.html)
     #@-others
 #@-others
 if __name__ == '__main__':

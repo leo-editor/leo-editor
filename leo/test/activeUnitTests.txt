@@ -7732,8 +7732,8 @@ try:
     s = w.getAllText()
 
     # This strings tests unicode, paren matching, and auto-indentation.
-    u = g.u('(a\u00c9\u03a9B\u3045\u4e7cz):\n') # '(aÉ©BE|cz):\n'
-    u = g.u('(pdq):\n')
+    u = '(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉ©BE|cz):\n'
+    u = '(pdq):\n'
     w.setInsertPoint(len(s))
     for char in u:
         binding = 'Return' if char == '\n' else char
@@ -9644,9 +9644,9 @@ finally:
 #@+node:ekr.20080805104144.3: *6* grandChild
 #@+node:ekr.20061001114236: *4* @test putUa
 fc = c.fileCommands # self is a dummy
-p.v.unknownAttributes = {g.u('unit_test'):g.u('abcd')}
+p.v.unknownAttributes = {'unit_test': 'abcd'}
 s = fc.putUnknownAttributes (p.v)
-expected = g.u(' unit_test="58040000006162636471002e"')
+expected = ' unit_test="58040000006162636471002e"'
 assert s == expected, '\nexpected: %s\ngot:      %s' % (repr(expected),repr(s))
 #@+node:ekr.20051107115231.9: *4* @test Select a node when file is first loaded
 c.redraw(p) # To make node visible

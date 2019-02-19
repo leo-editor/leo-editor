@@ -172,9 +172,8 @@ class TextFrame(leoFrame.LeoFrame):
     def __init__(self, c, gui):
         leoFrame.LeoFrame.__init__(self, c, gui)
         assert self.c == c
-        self.top = None ###
+        self.top = None
         self.ratio = self.secondary_ratio = 0.0
-        ### self.title = title # Per leoFrame.__init__
     #@+node:ekr.20150107090324.23: *3* createFirstTreeNode
     def createFirstTreeNode(self):
         c = self.c
@@ -185,7 +184,7 @@ class TextFrame(leoFrame.LeoFrame):
         # the node hasn't been linked yet.
         p._linkAsRoot(oldRoot=None)
         # c.setRootPosition(p) # New in 4.4.2.
-        ### c.editPosition(p)
+
     #@+node:ekr.20150107090324.24: *3* deiconify
     def deiconify(self): pass # N/A
 
@@ -203,7 +202,6 @@ class TextFrame(leoFrame.LeoFrame):
         if f.body.use_chapters:
             c.chapterController = leoChapters.ChapterController(c)
         f.createFirstTreeNode()
-        ### c.initVersion()
         # (*after* setting self.log)
         c.setLog() # writeWaitingLog hangs without this(!)
         # So updateRecentFiles will update our menus.

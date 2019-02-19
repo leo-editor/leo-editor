@@ -80,7 +80,7 @@ class TableController (object):
         i, s, lines = self.get_table(ch, w)
         if lines:
             self.put(ch, event)
-            ### Not yet: self.update()
+            # Not yet: self.update()
         else:
             self.put(ch, event)
 
@@ -166,7 +166,6 @@ class TableController (object):
     #@+node:ekr.20170218134104.1: *3* table.update (not used)
     # def update(self, event, i, lines, stroke):
 
-        # ### Temp
         # # self.old_handleDefaultChar(event, stroke)
         # self.put(ch, w)
     #@-others

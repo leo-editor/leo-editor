@@ -166,12 +166,6 @@ def attachToCommander(t,k):
 
     c.__active_path['DS_SENTINEL'] = "@language rest # AUTOLOADED DOCSTRING"
 #@+node:tbrown.20091128094521.15042: ** popup_entry (active_path)
-### Old code.
-# def mkCmd(cmd, c):
-    # def f():
-        # return cmd(c)
-    # return f
-
 def popup_entry(c,p,menu):
     '''Populate the Path submenu of the popup.'''
     pathmenu = menu.addMenu("Path")
@@ -186,15 +180,6 @@ def popup_entry(c,p,menu):
                 command(event)
 
             a.triggered.connect(active_path_wrapper)
-    ### Old code
-    # for i in globals():
-        # if i.startswith('cmd_'):
-            # a = pathmenu.addAction(PlugIn.niceMenuName(i))
-            # CMD = globals()[i]
-            # if isQt5:
-                # a.triggered.connect(mkCmd(CMD,c))
-            # else:
-                # a.connect(a, QtCore.SIGNAL("triggered()"), mkCmd(CMD,c))
 #@+node:tbrown.20091128094521.15037: ** isDirNode
 def isDirNode(p):
 
@@ -276,19 +261,12 @@ def onSelect (tag,keywords):
     c = keywords.get('c') or keywords.get('new_c')
     if not c: return
     p = keywords.get("p")
-
     p.expand()
-
     pos = p.copy()
-
     path = getPath(c, p)
-
-    if path:
-        if sync_node_to_folder(c,pos,path):
-            ### c.requestRedrawFlag = True
-            c.redraw()
-            return True
-
+    if path and sync_node_to_folder(c,pos,path):
+        c.redraw()
+        return True
     return None
 #@+node:tbrown.20080616153649.4: ** getPath
 def getPath(c, p):
@@ -651,16 +629,12 @@ def cmd_ActOnNode(event, p=None):
     # implementation mostly copied from onSelect
     if p is None:
         p = c.currentPosition()
-
     pos = p.copy()
     path = getPath(c, p)
-
     if path:
         sync_node_to_folder(c,pos,path)
-        ### c.requestRedrawFlag = True
         c.redraw()
         return True
-
     else:
         raise leoPlugins.TryNext
 

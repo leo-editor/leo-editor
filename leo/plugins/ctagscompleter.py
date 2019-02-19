@@ -222,7 +222,7 @@ class CtagsController(object):
         # Create the completer.
         cpl = c.frame.top.completer = self.completer = QCompleter()
         cpl.setWidget(self.body)
-        ### cpl.connect(cpl,QtCore.SIGNAL("activated(QString)"),completion_callback)
+        # cpl.connect(cpl,QtCore.SIGNAL("activated(QString)"),completion_callback)
         cpl.activated.connect(completion_callback)
         # Connect key strokes to the popup.
         # self.popup = cpl.popup()

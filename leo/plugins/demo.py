@@ -52,7 +52,7 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() in ('qt', 'qttabs')
     if ok:
-        ### g.registerHandler('after-create-leo-frame', onCreate)
+        # g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20170128213103.8: ** class Demo

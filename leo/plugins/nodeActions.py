@@ -347,22 +347,21 @@ def doNodeAction(pClicked, c):
                     if saveAtFile:
                         #Problem - No way found to just save clicked node, saving all
                         c.fileCommands.writeAtFileNodes()
-                        ### c.requestRedrawFlag = True
                         c.redraw()
                         if messageLevel >= 3:
                             g.blue( "nA:    Saved '" + hClicked + "'")
-                #Run the script
+                # Run the script
                 applyNodeAction(pScript, pClicked, c)
-                #Indicate that at least one pattern was matched
+                # Indicate that at least one pattern was matched
                 foundPattern = True
-                #Don't trigger more patterns unless enabled in patterns' headline
+                # Don't trigger more patterns unless enabled in patterns' headline
                 if not passEventInternal:
                     break
             else:
                 if messageLevel >= 3:
                     g.blue("nA: Did not match '" + patternOriginal + "'")
 
-        #Finished checking headline against patterns
+        # Finished checking headline against patterns
         if not foundPattern:
             #no match to any pattern, always pass event to next plugin
             if messageLevel >= 1:

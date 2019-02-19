@@ -285,7 +285,6 @@ def at_rich_check(tag, key):
 @g.command('cke-text-open')
 def cmd_OpenEditor(event, at_rich=False):
     '''Open the rich text editor, hide the regular editor.'''
-    ### c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     rte = splitter.find_child(CKEEditor, '')
@@ -302,7 +301,6 @@ def cmd_OpenEditor(event, at_rich=False):
 @g.command('cke-text-close')
 def cmd_CloseEditor(event, at_rich=False):
     '''Close the rich text editor, unhide the regular editor.'''
-    ### c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     if not splitter:
@@ -323,7 +321,6 @@ def cmd_CloseEditor(event, at_rich=False):
 @g.command('cke-text-switch')
 def cmd_SwitchEditor(event):
     '''Switch between regular and rich text editor.'''
-    ### c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     rte = splitter.find_child(CKEEditor, '')
@@ -341,7 +338,6 @@ def cmd_ToggleAutosave(event):
     text unintentionally.  As long as you make no edits, the original
     text will not be changed.
     '''
-    ### c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     c = event.get('c')
     c._ckeeditor_autosave = not c._ckeeditor_autosave
     g.es("Rich text autosave " +

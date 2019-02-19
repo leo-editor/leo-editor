@@ -108,9 +108,9 @@ def open_in_emacs_helper(c, p):
     ):
         # Open a new temp file.
         if path:
-            ### Don't do this: it prevents efc from reopening paths.
-            ### efc = g.app.externalFilesController
-            ### if efc: efc.forget_path(path)
+            # Don't do this: it prevents efc from reopening paths.
+                # efc = g.app.externalFilesController
+                # if efc: efc.forget_path(path)
             os.remove(path)
             os.system(emacs_cmd)
         v.OpenWithOldBody = v.b # Remember the old contents

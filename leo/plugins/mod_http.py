@@ -378,7 +378,7 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
         self.buffer.append(data)
     #@+node:EKR.20040517080250.7: *3* initiate_sending
     def initiate_sending(self):
-        ### Create a bytes string.
+        # Create a bytes string.
         aList = [g.toEncodedString(z) for z in self.buffer]
         self.out_buffer = b''.join(aList)
         del self.buffer
@@ -1008,9 +1008,9 @@ class RequestHandler(
         # http request is complete, control will be passed to self.found_terminator
         self.term = g.toEncodedString('\r\n\r\n')
         self.set_terminator(self.term)
-        self.buffer = BytesIO() ###
-        ### Set self.use_encoding and self.encoding.
-        ### This is used by asyn_chat.
+        self.buffer = BytesIO()
+        # Set self.use_encoding and self.encoding.
+        # This is used by asyn_chat.
         self.use_encoding = True
         self.encoding = 'utf-8'
     #@+node:EKR.20040517080250.15: *3* copyfile

@@ -205,9 +205,6 @@ def addXSLTElement( c , element):
     '''adds some xslt to the text node'''
     w = c.frame.body.wrapper
     w.insert( 'insert', element )
-    ### w.event_generate( '<Key>' )
-    ### w.update_idletasks()
-
 #@+node:mork.20041025113021: ** getString (xsltWithNodes.py)
 def getString (c):
     '''

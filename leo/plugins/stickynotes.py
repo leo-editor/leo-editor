@@ -102,7 +102,7 @@ else:
 def decorate_window(c, w):
     w.setStyleSheet(c.styleSheetManager.get_master_widget().styleSheet())
     g.app.gui.attachLeoIcon(w)
-        ### w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+        # w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 #@+node:vivainio2.20091008133028.5824: ** init
 def init ():
@@ -229,8 +229,6 @@ if encOK:
             secret = sn_encode(unsecret)
             v.b = secret
 
-        ### c = event['c']
-        ### p = c.p
         decoded = sn_decode(v.b)
         if decoded is None:
             return
@@ -384,7 +382,7 @@ class SimpleRichText(QTextEdit):
         self.boldAct.setShortcut(self.tr("Ctrl+B"))
         self.boldAct.setStatusTip(self.tr("Make the text bold"))
         self.boldAct.triggered.connect(self.setBold)
-        ### self.connect(self.boldAct, SIGNAL("triggered()"), self.setBold)
+        # self.connect(self.boldAct, SIGNAL("triggered()"), self.setBold)
         self.addAction(self.boldAct)
 
         boldFont = self.boldAct.font()
@@ -396,7 +394,7 @@ class SimpleRichText(QTextEdit):
         self.italicAct.setShortcut(self.tr("Ctrl+I"))
         self.italicAct.setStatusTip(self.tr("Make the text italic"))
         self.italicAct.triggered.connect(self.setItalic)
-        ### self.connect(self.italicAct, SIGNAL("triggered()"), self.setItalic)
+        # self.connect(self.italicAct, SIGNAL("triggered()"), self.setItalic)
         self.addAction(self.italicAct)
 
     def setBold(self):

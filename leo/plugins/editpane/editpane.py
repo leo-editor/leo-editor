@@ -87,7 +87,7 @@ class LeoEditPane(QtWidgets.QWidget):
         self.setAttribute(QtConst.WA_DeleteOnClose)
 
         lep_type = lep_type or ['EDITOR', 'TEXT']
-        if isinstance(lep_type, str): ### StringTypes):
+        if isinstance(lep_type, str):
             lep_type = [lep_type]
         if len(lep_type) < 2:
             lep_type.append('TEXT')

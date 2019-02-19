@@ -95,21 +95,8 @@ class BrowserGui(leoGui.NullGui):
         
         g.trace('===== (BrowserGui)')
         leoGui.NullGui.__init__(self, guiName='browser')
-        self.styleSheetManagerClass = g.NullObject ###
+        self.styleSheetManagerClass = g.NullObject
         self.log = leoFrame.NullLog()
-        ### self.ftm = g.NullObject
-        ### self.globalFindTabManager = g.NullObject
-        
-        ###
-            # leoGui.LeoGui.__init__(self, guiName='browser')
-                # # Init the base class
-            # self.clipboardContents = ''
-            # self.enablePlugins = False ###
-            # self.focusWidget = None
-            # self.isNullGui = True ###
-            # self.script = None
-            # self.idleTimeClass = g.NullObject
-            # self.styleSheetManagerClass = g.NullObject ###
     #@+node:ekr.20181101034427.1: *3* bg.createLeoFrame
     def createLeoFrame(self, c, title):
 

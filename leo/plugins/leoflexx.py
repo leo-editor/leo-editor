@@ -970,7 +970,7 @@ class LeoBrowserApp(flx.PyComponent):
                 c.executeAnyCommand(func, event)
             k.endCommand(commandName)
             return True
-        if 0: ### Not ready yet
+        if 0: # Not ready yet
             # Show possible completions if the command does not exist.
             if 1: # Useful.
                 k.doTabCompletion(list(c.commandsDict.keys()))
@@ -1732,7 +1732,6 @@ class LeoFlexxMainWindow(flx.Widget):
 
     def init(self):
         self.tag = '(flx main window)'
-        ### with flx.TabLayout():
         with flx.VSplit():
             with flx.HSplit(flex=1):
                 tree = LeoFlexxTree(flex=1)

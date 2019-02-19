@@ -746,7 +746,7 @@ if docutils: # NOQA
             self.styleSheet = getStyleSheet()
             docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.
             self.language = get_language(doctree)
-                ### docutils.languages.get_language(doctree.settings.language_code,self.reporter)
+                # docutils.languages.get_language(doctree.settings.language_code,self.reporter)
             self.in_docinfo = False
             self.head = [] # Set only by meta() method.
             self.body = [] # The body text being accumulated.
@@ -1022,7 +1022,7 @@ if docutils: # NOQA
             style = self.styleSheet.get(style)
             try:
                 s = reportlab.platypus.para.Paragraph (
-                    text, ### self.encode(text),
+                    text,
                     style,
                     bulletText = bulletText,
                     context = self.styleSheet,

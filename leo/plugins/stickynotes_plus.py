@@ -65,7 +65,7 @@ QPlainTextEdit {
 def decorate_window(w):
     w.setStyleSheet(stickynote_stylesheet)
     g.app.gui.attachLeoIcon(w)
-        ### w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+        # w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 
 #@+node:ekr.20100103100944.5393: ** init
@@ -124,7 +124,7 @@ class SimpleRichText(QTextEdit):
         self.boldAct.setCheckable(True)
         self.boldAct.setShortcut(self.tr("Ctrl+B"))
         self.boldAct.setStatusTip(self.tr("Make the text bold"))
-        ### self.connect(self.boldAct, SIGNAL("triggered()"), self.setBold)
+        # self.connect(self.boldAct, SIGNAL("triggered()"), self.setBold)
         self.triggered.connect(self.setBold)
         self.addAction(self.boldAct)
 
@@ -136,7 +136,7 @@ class SimpleRichText(QTextEdit):
         self.italicAct.setCheckable(True)
         self.italicAct.setShortcut(self.tr("Ctrl+I"))
         self.italicAct.setStatusTip(self.tr("Make the text italic"))
-        ### self.connect(self.italicAct, SIGNAL("triggered()"), self.setItalic)
+        # self.connect(self.italicAct, SIGNAL("triggered()"), self.setItalic)
         self.triggered.connect(self.setItalic)
         self.addAction(self.italicAct)
 
@@ -631,7 +631,7 @@ def stickynote_f(event):
     def textchanged_cb():
         nf.dirty = True
 
-    ### nf.connect(nf, SIGNAL("textChanged()"),textchanged_cb)
+    # nf.connect(nf, SIGNAL("textChanged()"),textchanged_cb)
     nf.textChanged.connect(textchanged_cb)
     nf.show()
     g.app.stickynotes[p.gnx] = nf
@@ -672,7 +672,7 @@ def stickynoter_f(event):
     def textchanged_cb():
         nf.dirty = True
 
-    ### nf.connect(nf,SIGNAL("textChanged()"),textchanged_cb)
+    # nf.connect(nf,SIGNAL("textChanged()"),textchanged_cb)
     nf.textChanged.connect(textchanged_cb)
     nf.show()
     g.app.stickynotes[p.gnx] = nf
@@ -713,7 +713,7 @@ def stickynoteplus_f(event):
     def textchanged_cb():
         nf.dirty = True
 
-    ### nf.connect(nf, SIGNAL("textChanged()"),textchanged_cb)
+    # nf.connect(nf, SIGNAL("textChanged()"),textchanged_cb)
     nf.textChanged.connect(textchanged_cb)
     nf.show()
     g.app.stickynotes[p.gnx] = nf

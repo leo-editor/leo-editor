@@ -113,7 +113,7 @@ if QtWidgets:
             self.indent = 0
             self.refreshMarker = False # to change back to >>> from ...
             self.multiLine = False # code spans more than one line
-            ### self.command        = ''    # command to be ran
+            # self.command        = ''    # command to be ran
             self.printBanner() # print sys info
             self.insert_marker() # make the >>> or ... marker
             self.history = [] # list of commands entered

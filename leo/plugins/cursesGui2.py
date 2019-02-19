@@ -1329,7 +1329,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.monkeyPatch(c)
         self.redraw_in_context(c)
         c.frame.tree.set_status_line(c.p)
-        ### self.focus_to_body(c)
+        # self.focus_to_body(c)
         return form
     #@+node:ekr.20170502084106.1: *6* CGui.createCursesBody
     def createCursesBody(self, c, form):
@@ -1815,19 +1815,19 @@ class LeoCursesGui(leoGui.LeoGui):
         '''Put focus in minibuffer text widget.'''
         w = self.set_focus(c, c.frame.body)
         assert w
-        ### w.edit()
+        # w.edit()
     #@+node:ekr.20171202092838.1: *5* CGui.focus_to_head
     def focus_to_head(self, c, p):
         '''Put focus in minibuffer text widget.'''
         w = self.set_focus(c, c.frame.tree)
         assert w
-        ### w.edit()
+        # w.edit()
     #@+node:ekr.20171127162649.1: *5* CGui.focus_to_minibuffer
     def focus_to_minibuffer(self, c):
         '''Put focus in minibuffer text widget.'''
         w = self.set_focus(c, c.frame.miniBufferWidget)
         assert w
-        ### w.edit()
+        # w.edit()
     #@+node:ekr.20170502101347.1: *5* CGui.get_focus
     def get_focus(self, c=None, raw=False, at_idle=False):
         '''
@@ -1930,14 +1930,14 @@ class LeoCursesGui(leoGui.LeoGui):
                 if getattr(w1, 'editing', None):
                     if trace: g.trace('End EDITING', w1.__class__.__name__)
                     w1.editing = False
-                ### w1.how_exited = how
+                # w1.how_exited = how
                 w1.display()
                 for j, w2 in enumerate(getattr(w, '_my_widgets', [])):
                     # if trace: g.trace('CLEAR INNER',  w.__class__.__name__)
                     if getattr(w2, 'editing', None):
                         if trace: g.trace('END EDITING', w2.__class__.__name__)
                         w2.editing = False
-                    ### w2.how_exited = how
+                    # w2.how_exited = how
                     w2.display()
                     
         # Start editing the widget.
@@ -1978,7 +1978,7 @@ class LeoCursesGui(leoGui.LeoGui):
                 if trace: g.trace('FOUND', i, widget)
                 form.editw = i
                 form.display()
-                return ### widget
+                return
             for j, widget3 in enumerate(getattr(widget2, '_my_widgets', [])):
                 if widget == widget3 or repr(widget) == repr(widget3):
                     if trace: g.trace('FOUND INNER', i, j, widget2)
@@ -1989,17 +1989,17 @@ class LeoCursesGui(leoGui.LeoGui):
                         # So weird.
                         widget2.editing=True
                         widget2.display()
-                        ### widget2.entry_widget.edit()
+                        # widget2.entry_widget.edit()
                         widget3.edit()
                         widget2.how_exited = widget3.how_exited
                         widget2.editing = False
                         widget2.display()
                     form.display()
-                    return ### widget
+                    return
         if trace and widget not in self.set_focus_fail:
             self.set_focus_fail.append(widget)
             g.trace('Fail\n%r\n%r' % (widget, w))
-        return ### None
+        return
     #@+node:ekr.20170514060742.1: *4* CGui.Fonts
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
 

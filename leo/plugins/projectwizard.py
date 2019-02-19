@@ -125,7 +125,7 @@ def rclick_path_importfile(c,p,menu):
         print("import files from",path)
 
     action = menu.addAction("Import files")
-    ### action.connect(action, QtCore.SIGNAL("triggered()"), importfiles_rclick_cb)
+    # action.connect(action, QtCore.SIGNAL("triggered()"), importfiles_rclick_cb)
     action.triggered.connect(importfiles_rclick_cb)
 
 def install_contextmenu_handlers():

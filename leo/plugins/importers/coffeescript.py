@@ -164,7 +164,7 @@ class CS_Importer(Importer):
     #@+node:ekr.20160505170558.1: *4* coffee_i.move_trailing_lines & helper (not ready)
     def move_trailing_lines(self, parent):
         '''Move trailing lines into the following node.'''
-        return ### Not ready yet, and maybe never.
+        return # Not ready yet, and maybe never.
         # pylint: disable=unreachable
         prev_lines = []
         last = None
