@@ -3281,7 +3281,6 @@ class LoadManager(object):
             name = aList and len(aList) == 1 and aList[0]
             if not name: return None
             s = theFile.read(name)
-            ### s = g.ue(s, 'utf-8')
             s = g.toUnicode(s, 'utf-8')
             return StringIO(s)
         except IOError:

@@ -567,9 +567,6 @@ class UnitTestGui(NullGui):
             This is a kludge, but it is probably the best that can be done.
             '''
             aFunc()
-    #@+node:ekr.20081119083601.1: *3* UnitTestGui.toUnicode (deprecated)
-    def toUnicode(self, s):
-        return str(s)
     #@-others
 #@-others
 #@@language python

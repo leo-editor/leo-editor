@@ -476,7 +476,6 @@ class PersistenceDataController(object):
             ua = p.v.u
             s = pickle.dumps(ua, protocol=1)
             s2 = binascii.hexlify(s)
-            ### s3 = g.ue(s2, 'utf-8')
             s3 = g.toUnicode(s2, 'utf-8')
             return s3
         except pickle.PicklingError:
