@@ -3791,8 +3791,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     def parseText(self, md):
         '''Parse md.text() into (fn,s)'''
         fn = ''
-        # Fix bug 1046195: character encoding changes when dragging outline between leo files
-        # Python3: md.text() is a (unicode) str.  Python2: md.text is a QString.
         s = md.text()
         if s:
             i = s.find(',')

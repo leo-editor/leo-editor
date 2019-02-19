@@ -5587,7 +5587,7 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
     # Never call g.trace here!
         # g.dump_encoded_string(encoding,s)
     return s
-#@+node:ekr.20091206161352.6232: *4* g.u & g.ue
+#@+node:ekr.20091206161352.6232: *4* g.u & g.ue (deprecated)
 def u(s):
     '''Return s, converted to unicode from Qt widgets.'''
     return s

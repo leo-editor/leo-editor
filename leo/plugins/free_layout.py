@@ -350,7 +350,7 @@ class FreeLayoutController(object):
         # list of things in tab widget
         logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
         for n in range(logTabWidget.count()):
-            text = str(logTabWidget.tabText(n)) # not QString
+            text = str(logTabWidget.tabText(n))
             if text in ('Body', 'Tree'):
                 continue # handled below
             if text == 'Log':

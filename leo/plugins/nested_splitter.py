@@ -1149,7 +1149,7 @@ if QtWidgets: # NOQA
                     _ans.append("%s%s (%s) from %s" % (
                        '   ' * _depth,
                        i.__class__.__name__,
-                       str(i.objectName()), # not QString
+                       str(i.objectName()),
                        getattr(i, '_ns_id', 'UNKNOWN')
                     ))
             if _depth == 1:
