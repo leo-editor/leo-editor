@@ -19,18 +19,15 @@ leoflexx.py implements LeoWapp using flexx.
 import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
-if g.isPython3:
-    import sys
-    try:
-        import websockets
-        assert websockets
-    except ImportError:
-        websockets = None
-        print('leowapp.py requires websockets')
-        print('>pip install websockets')
-    import xml.sax.saxutils as saxutils
-else:
-    print('leowapp.py requires Python 3')
+import sys
+try:
+    import websockets
+    assert websockets
+except ImportError:
+    websockets = None
+    print('leowapp.py requires websockets')
+    print('>pip install websockets')
+import xml.sax.saxutils as saxutils
 #@-<< imports >>
 #@+<< config >>
 #@+node:ekr.20181029070405.1: ** << config >>
@@ -65,9 +62,6 @@ def escape(s):
 #@+node:ekr.20181028052650.5: ** init (leowapp.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    # LeoWapp requires Python 3, for safety and convenience.
-    if not g.isPython3:
-        return False
     if not websockets:
         return False
     # ws_server hangs Leo!

@@ -17,13 +17,7 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoFrame as leoFrame
 import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
-###
-    # try:
-        # import builtins # Python 3
-    # except ImportError:
-        # import __builtin__ as builtins # Python 2.
 import os
-### py--lint: disable=no-member
 get_input = input
 #@-<< imports >>
 #@+<< TODO >>

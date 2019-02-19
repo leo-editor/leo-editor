@@ -15,22 +15,12 @@ Usage:
 
 #@+<< imports >>
 #@+node:ville.20090503124249.4: ** << imports >>
-import sys
-
-isPython3 = sys.version_info >= (3,0,0)
-
 import leo.core.leoGlobals as g
-
 import xml.etree.ElementTree as ET
+import html.parser as HTMLParser
 
 from leo.core import leoPlugins
     # Uses leoPlugins.TryNext
-
-if isPython3:
-    # pylint: disable=no-name-in-module
-    import html.parser as HTMLParser
-else:
-    import HTMLParser
 #@-<< imports >>
 #@+others
 #@+node:ville.20090503124249.5: ** init

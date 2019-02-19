@@ -1,15 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160412101901.1: * @file writers/ipynb.py
 '''The @auto write code for jupyter (.ipynb) files.'''
+import json
 import re
 import sys
 import leo.core.leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 
-### py--lint: disable=relative-import
-import json
-
-# print('writers/ipynb.py: json: %s' % json)
 #@+others
 #@+node:ekr.20160412101845.2: ** class Export_IPYNB
 class Export_IPYNB(basewriter.BaseWriter):

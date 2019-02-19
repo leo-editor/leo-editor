@@ -66,7 +66,6 @@ if QtWebKit:
 else:
     real_webkit = False
 import time
-### py--lint: disable=no-name-in-module
 from urllib.parse import unquote
 #@-<< imports >>
 #@+others

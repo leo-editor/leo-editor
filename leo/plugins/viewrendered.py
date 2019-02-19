@@ -960,7 +960,7 @@ if QtWidgets: # NOQA
             pc = self
             c = pc.c
             ###
-            if g.isPython3 and sys.platform.startswith('win'):
+            if sys.platform.startswith('win'):
                 g.es_print('latex rendering not ready for Python 3')
                 w = pc.ensure_text_widget()
                 pc.show()

@@ -61,7 +61,6 @@ import ftplib
 import os
 import sys
 
-# py--lint: disable=no-name-in-module,no-member
 import urllib.parse as urlparse
 import urllib.request.urlopen as urlopen
 from formatter import AbstractFormatter, DumbWriter

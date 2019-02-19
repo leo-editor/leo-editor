@@ -30,8 +30,6 @@ from math import atan2, sin, cos
 # import time
 import os
 import tempfile
-
-### py--lint: disable=no-name-in-module
 import urllib.request as urllib
 
 try:

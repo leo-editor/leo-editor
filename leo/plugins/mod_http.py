@@ -225,7 +225,6 @@ SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
 import io
 StringIO = io.StringIO
 BytesIO = io.BytesIO
-### py--lint: disable=no-name-in-module
 import urllib.parse as urlparse
 import os
 import select

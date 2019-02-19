@@ -256,7 +256,6 @@ class OpmlController(object):
         badchars.remove('\n')
         flatten = ''.join(badchars)
         pad = ' ' * len(flatten)
-        # py--lint:disable=no-member
         flatten = bytes(flatten, 'utf-8')
         pad = bytes(pad, 'utf-8')
         transtable = bytes.maketrans(flatten, pad)
