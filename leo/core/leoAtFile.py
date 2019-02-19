@@ -2451,7 +2451,7 @@ class AtFile(object):
     def closeOutputStream(self):
         '''Close the output stream, returning its contents.'''
         at = self
-        contents = '' if at.errors else u''.join(at.outputList)
+        contents = '' if at.errors else ''.join(at.outputList)
         at.outputList = []
         return contents
     #@+node:ekr.20041005105605.201: *5* at.os and allies

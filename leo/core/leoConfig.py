@@ -1181,7 +1181,6 @@ class GlobalConfigManager(object):
                 g.error('warning: ignoring', gs.kind, '', setting, 'is not', requestedType)
                 g.error('there may be conflicting settings!')
             return None, False
-        # elif val in (u'None',u'none','None','none','',None):
         elif isNone:
             return '', True
                 # 2011/10/24: Exists, a *user-defined* empty value.
@@ -1894,7 +1893,6 @@ class SettingsTreeParser(ParserBaseClass):
             pass
         elif kind == "settings":
             pass
-        # elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
         elif kind in self.basic_types and isNone:
             # None is valid for all basic types.
             self.set(p, kind, name, None)

@@ -299,7 +299,7 @@ class LeoEditPane(QtWidgets.QWidget):
             lambda checked: self.mode_menu())
 
         # misc. menu
-        btn = self.control_menu_button = QtWidgets.QPushButton(u"More\u25BE", self)
+        btn = self.control_menu_button = QtWidgets.QPushButton("More\u25BE", self)
         self.control.layout().addWidget(btn)
         btn.setContextMenuPolicy(QtConst.CustomContextMenu)
         btn.customContextMenuRequested.connect(  # right click
@@ -607,7 +607,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         """
         self.mode = mode
-        self.btn_mode.setText(u"%s\u25BE" % mode.title())
+        self.btn_mode.setText("%s\u25BE" % mode.title())
         self.state_changed()
 
     #@+node:tbrown.20171028115438.39: *3* state_changed

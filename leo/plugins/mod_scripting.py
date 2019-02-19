@@ -122,7 +122,7 @@ For example::
 
     @button test-args @args = a,b,c
 
-will set sys.argv to [u'a',u'b',u'c'].
+will set sys.argv to ['a', 'b', 'c'].
 
 You can set the background color of buttons created by @button nodes by using @color.
 For example::
@@ -130,7 +130,7 @@ For example::
     @button my button @key=Ctrl+Alt+1 @color=white @args=a,b,c
 
 This creates a button named 'my-button', with a color of white, a keyboard shortcut
-of Ctrl+Alt+1, and sets sys.argv to [u,'a',u'b',u'c'] within the context of the script.
+of Ctrl+Alt+1, and sets sys.argv to ['a', 'b', 'c'] within the context of the script.
 
 Eval Commands
 -------------
