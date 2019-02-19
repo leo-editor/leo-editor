@@ -5,12 +5,10 @@ import re
 import sys
 import leo.core.leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
-if g.isPython3:
-    # pylint: disable=relative-import
-        # an unhelpful warning.
-    import json # This fails in python 2. It yields writers.json
-else:
-    json = g.importModule('json')
+
+### py--lint: disable=relative-import
+import json
+
 # print('writers/ipynb.py: json: %s' % json)
 #@+others
 #@+node:ekr.20160412101845.2: ** class Export_IPYNB

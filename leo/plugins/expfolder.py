@@ -28,15 +28,9 @@ Manager's Plugin Load Order pane.
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-
 import os
 import os.path
-
-if g.isPython3:
-    import configparser as ConfigParser
-else:
-    import ConfigParser
-
+import configparser as ConfigParser
 from leo.plugins.textnode import savetextnode
 
 __version__ = "1.0"

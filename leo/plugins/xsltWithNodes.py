@@ -27,13 +27,8 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 import leo.core.leoGlobals as g
 
 from xml.dom import minidom
-
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    import cStringIO
-    StringIO = cStringIO.StringIO
+import io
+StringIO = io.StringIO
 
 try:
     import Ft
@@ -316,18 +311,11 @@ r'''
 #@+node:ekr.20140906065955.18786: *3* table.leo
 #@@path /boboo/leo-4.2-final/plugins
 #@+node:ekr.20140906065955.18787: *4* @@nosent table.py
-
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    import cStringIO
-    StringIO = cStringIO.StringIO
-
+import io
+StringIO = io.StringIO
 import Tkinter as Tk
 import tktable as tktab
 import leo.core.leoGlobals as g
-
 import csv
 import weakref
 import Pmw

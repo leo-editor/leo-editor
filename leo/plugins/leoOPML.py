@@ -78,16 +78,11 @@ printElements = [] # ['all','outline','head','body',]
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoNodes as leoNodes
-import string
 import xml.sax
 import xml.sax.saxutils
-if g.isPython3:
-    import io # Python 3.x
-    StringIO = io.StringIO
-    BytesIO = io.BytesIO
-else:
-    import cStringIO # Python 2.x
-    StringIO = cStringIO.StringIO
+import io
+StringIO = io.StringIO
+BytesIO = io.BytesIO
 #@-<< imports >>
 #@+others
 #@+node:ekr.20060904132527.9: ** Module level
@@ -231,10 +226,7 @@ class OpmlController(object):
             return g.trace('can not open %s' % path)
         # pylint:disable=catching-non-exception
         try:
-            if g.isPython3:
-                theFile = BytesIO(s)
-            else:
-                theFile = cStringIO.StringIO(s)
+            theFile = BytesIO(s)
             parser = xml.sax.make_parser()
             parser.setFeature(xml.sax.handler.feature_external_ges, 1)
             # Do not include external general entities.
@@ -264,15 +256,11 @@ class OpmlController(object):
         badchars.remove('\n')
         flatten = ''.join(badchars)
         pad = ' ' * len(flatten)
-        # pylint:disable=no-member
-        if g.isPython3:
-            flatten = bytes(flatten, 'utf-8')
-            pad = bytes(pad, 'utf-8')
-            transtable = bytes.maketrans(flatten, pad)
-        else:
-            transtable = string.maketrans(flatten, pad)
+        # py--lint:disable=no-member
+        flatten = bytes(flatten, 'utf-8')
+        pad = bytes(pad, 'utf-8')
+        transtable = bytes.maketrans(flatten, pad)
         return s.translate(transtable)
-    # for i in range(32): print i,repr(chr(i))
     #@+node:ekr.20141020112451.18342: *3* oc.putToOPML
     def putToOPML(self, owner):
         '''

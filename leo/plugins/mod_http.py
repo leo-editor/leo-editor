@@ -220,26 +220,13 @@ import asynchat
 import asyncore
 import cgi
 import json
-if g.isPython3:
-    import http.server
-    SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
-else:
-    import SimpleHTTPServer
-    SimpleHTTPRequestHandler = SimpleHTTPServer.SimpleHTTPRequestHandler
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-    BytesIO = io.BytesIO
-else:
-    import io
-    import StringIO # Python 2.x
-    StringIO = StringIO.StringIO
-    BytesIO = io.BytesIO
-if g.isPython3:
-    # pylint: disable=no-name-in-module
-    import urllib.parse as urlparse
-else:
-    import urlparse
+import http.server
+SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
+import io
+StringIO = io.StringIO
+BytesIO = io.BytesIO
+### py--lint: disable=no-name-in-module
+import urllib.parse as urlparse
 import os
 import select
 import shutil

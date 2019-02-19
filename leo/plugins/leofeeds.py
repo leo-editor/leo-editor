@@ -23,13 +23,8 @@ import leo.core.leoGlobals as g
 from leo.core import leoPlugins
     # Uses leoPlugins.TryNext
 import feedparser
-if g.isPython3:
-    # pylint: disable=no-name-in-module
-    import html.parser as HTMLParser
-else:
-    import HTMLParser
-# import pprint
-# import sys
+### py--lint: disable=no-name-in-module
+import html.parser as HTMLParser
 #@-<< imports >>
 
 #@+others

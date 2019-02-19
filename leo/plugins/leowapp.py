@@ -20,9 +20,6 @@ import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
 if g.isPython3:
-    # import asyncio
-    # import datetime
-    # import random
     import sys
     try:
         import websockets

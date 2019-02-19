@@ -66,11 +66,8 @@ if QtWebKit:
 else:
     real_webkit = False
 import time
-# pylint: disable=no-name-in-module
-if g.isPython3:
-    from urllib.parse import unquote
-else:
-    from urllib import unquote
+### py--lint: disable=no-name-in-module
+from urllib.parse import unquote
 #@-<< imports >>
 #@+others
 #@+node:tbrown.20130813134319.14337: ** init (richtext.py)

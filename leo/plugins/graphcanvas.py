@@ -31,13 +31,8 @@ from math import atan2, sin, cos
 import os
 import tempfile
 
-# pylint: disable=no-name-in-module
-if g.isPython3:
-    import urllib.request as urllib
-else:
-    import urllib2 as urllib
-
-# from xml.sax.saxutils import quoteattr
+### py--lint: disable=no-name-in-module
+import urllib.request as urllib
 
 try:
     import pydot

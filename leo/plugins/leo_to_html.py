@@ -166,16 +166,11 @@ systems.
 #@+node:danr7.20060902215215.4: ** << imports >>
 import leo.core.leoGlobals as g
 
-if g.isPython3:
-    import configparser as ConfigParser
-else:
-    import ConfigParser
-
-import subprocess
-import webbrowser
-import tempfile
+import configparser as ConfigParser
 import os
-
+import subprocess
+import tempfile
+import webbrowser
 #@-<< imports >>
 
 __version__ = '2.3'

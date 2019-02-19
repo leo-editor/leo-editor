@@ -55,32 +55,17 @@ Davide Salomoni
 #@+node:ekr.20050311091110.1: ** << imports >>
 import leo.core.leoGlobals as g
 
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    import cStringIO
-    StringIO = cStringIO.StringIO
-
+import io
+StringIO = io.StringIO
 import ftplib
 import os
 import sys
-# import urllib
 
-# pylint: disable=no-name-in-module,no-member
-if g.isPython3:
-    import urllib.parse as urlparse
-    import urllib.request.urlopen as urlopen
-else:
-    import urlparse
-    urlopen = urlparse.urlopen
-
+# py--lint: disable=no-name-in-module,no-member
+import urllib.parse as urlparse
+import urllib.request.urlopen as urlopen
 from formatter import AbstractFormatter, DumbWriter
-
-if g.isPython3:
-    import html.parser as HTMLParser
-else:
-    from htmllib   import HTMLParser
+import html.parser as HTMLParser
 #@-<< imports >>
 insertOnTime = None
 insertOffTime = None

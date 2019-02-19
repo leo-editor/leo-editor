@@ -270,14 +270,9 @@ except ImportError:
     stylesheet = None
     StyleSheet1 = ParagraphStyle = None
     # raise
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    # pylint: disable=no-member
-    import StringIO
-    StringIO = StringIO.StringIO
-# import types
+import io
+StringIO = io.StringIO
+
 #@-<< imports >>
 #@+others
 #@+node:ekr.20140920145803.17996: ** top-level functions

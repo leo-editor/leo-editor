@@ -58,10 +58,7 @@ __plugin_priority__
 #@+<< imports >>
 #@+node:ekr.20050101090207.10: ** << imports >>
 import leo.core.leoGlobals as g
-if g.isPython3:
-    import configparser as ConfigParser
-else:
-    import ConfigParser
+import configparser as ConfigParser
 import os
 #@-<< imports >>
 __version__ = "2.3"

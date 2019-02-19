@@ -21,10 +21,7 @@ set to c:\ so you may need to modify it depending on your system.
 # leoToRTF 1.0 plugin by Dan Rahmel
 
 import leo.core.leoGlobals as g
-if g.isPython3:
-    import configparser as ConfigParser
-else:
-    import ConfigParser
+import configparser as ConfigParser
 
 #@+others
 #@+node:ekr.20100128073941.5373: ** init

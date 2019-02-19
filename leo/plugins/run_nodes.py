@@ -66,17 +66,9 @@ By Alexis Gendron Paquette. Please send comments to the Leo forums.
 #@+<< imports >>
 #@+node:ekr.20040910070811.4: ** << imports >>
 import leo.core.leoGlobals as g
-
 import os
-# import string
-
-if g.isPython3:
-    import threading
-else:
-    import thread
-    import threading
-
 import subprocess
+import threading
 import time
 #@-<< imports >>
 #@+<< globals >>
@@ -213,13 +205,8 @@ def OnQuit(tag,keywords=None):
 class readingThread(threading.Thread):
 
     File = None
-
-    if g.isPython3:
-        TextLock = threading.Lock()
-        TextLock.acquire()
-    else:
-        TextLock = thread.allocate_lock()
-
+    TextLock = threading.Lock()
+    TextLock.acquire()
     Text = ""
 
     #@+others

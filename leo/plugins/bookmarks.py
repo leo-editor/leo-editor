@@ -819,15 +819,12 @@ class BookMarkDisplay(object):
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
         """make a consistent light background color for text"""
-
-        if g.isPython3:
-            text = g.toEncodedString(text,'utf-8')
+        text = g.toEncodedString(text,'utf-8')
         x = hashlib.md5(text).hexdigest()[-6:]
         add = int('bb',16) if not dark else int('33',16)
         x = tuple([int(x[2*i:2*i+2], 16)//4+add for i in range(3)])
         x = '%02x%02x%02x' % x
         return x
-
     #@+node:tbrown.20131227100801.23856: *3* find_node
     def find_node(self, url):
         """find_node - Return position which is a bookmark for url, or None

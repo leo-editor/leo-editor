@@ -278,19 +278,13 @@ class leoscreen_Controller(object):
     def _get_output(self):
         """grab some output"""
         self.screen_cmd(['hardcopy -h "%s"'%self.tmpfile])
-
         # seems new output file isn't visible to the process
         # without this call
         cmd = ['ls', self.tmpfile]
         proc = subprocess.Popen(cmd,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         proc.communicate()
-
-        if g.isPython3:
-            f = open(self.tmpfile, encoding='latin-1')
-        else:
-            f = open(self.tmpfile)
-
+        f = open(self.tmpfile, encoding='latin-1')
         self.output = f.read().strip().split('\n')
         self.next_unread_line = self.first_line
     #@+node:tbrown.20100226095909.12788: *3* get_line

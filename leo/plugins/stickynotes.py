@@ -249,8 +249,7 @@ if encOK:
     def sn_encode(s):
         pad = ' '*(16-len(s)%16)
         txt = base64.b64encode(AES.new(__ENCKEY[0]).encrypt((s+pad).encode('utf-8')))
-        if g.isPython3:
-            txt = str(txt, 'utf-8')
+        txt = str(txt, 'utf-8')
         wrapped = textwrap.wrap(txt, break_long_words=True)
         return '\n'.join(wrapped)
 

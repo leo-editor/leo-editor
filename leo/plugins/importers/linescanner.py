@@ -77,14 +77,9 @@ need to do so.
 #@+node:ekr.20161108130715.1: ** << linescanner imports >>
 # pylint: disable=wrong-import-order
 import leo.core.leoGlobals as g
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    import StringIO
-    StringIO = StringIO.StringIO
+import io
+StringIO = io.StringIO
 import re
-# import time
 #@-<< linescanner imports >>
 #@+others
 #@+node:ekr.20161108155730.1: ** class Importer

@@ -18,12 +18,8 @@ Replies to the original messages become children of that message.
 #@+node:ville.20110125222411.10539: ** << imports >>
 import leo.core.leoGlobals as g
 import mailbox
-
-if g.isPython3:
-    # pylint: disable=no-name-in-module
-    from html.parser import HTMLParser
-else:
-    from HTMLParser import HTMLParser
+### py--lint: disable=no-name-in-module
+from html.parser import HTMLParser
 #@-<< imports >>
 
 #@+others

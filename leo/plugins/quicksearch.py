@@ -692,10 +692,7 @@ class QuickSearchController(object):
             m = re.finditer(pat, p.b)
             t1, t2 = itertools.tee(m, 2)
             try:
-                if g.isPython3:
-                    t1.__next__()
-                else:
-                    t1.next()
+                t1.__next__()
             except StopIteration:
                 continue
             pc = p.copy()
