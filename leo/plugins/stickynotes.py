@@ -658,7 +658,6 @@ class Tabula(QMainWindow):
                 QLineEdit.Normal, p.h)
             if not r:
                 return
-            ### new = g.u(new)
             p.h = new
             w.setWindowTitle(new)
 
