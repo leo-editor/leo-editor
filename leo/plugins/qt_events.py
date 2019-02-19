@@ -287,17 +287,9 @@ class LeoQtEventFilter(QtCore.QObject):
         if toString == 'Esc':
             toString = 'Escape'
         try:
-            ch1 = chr(keynum)
+            ch = chr(keynum)
         except ValueError:
-            ch1 = ''
-        ch = ch1
-        ###
-            # try:
-                # ch = g.u(ch1)
-            # except UnicodeError:
-                # ch = ch1
-        ### text = g.u(text)
-        ### toString = g.u(toString)
+            ch = ''
         return keynum, text, toString, ch
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):

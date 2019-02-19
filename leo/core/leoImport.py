@@ -1375,8 +1375,6 @@ class LeoImportCommands(object):
     def createHeadline(self, parent, body, headline):
         '''Create a new VNode as the last child of parent position.'''
         p = parent.insertAsLastChild()
-        ### body = g.u(body)
-        ### headline = g.u(headline)
         p.initHeadString(headline)
         if body:
             self.setBodyString(p, body)

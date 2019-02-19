@@ -313,7 +313,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 if w.hasSelectedText():
                     i = w.selectionStart()
                     s = w.selectedText()
-                    ### s = g.u(s)
                     j = i + len(s)
                 else:
                     i = j = ins
@@ -1051,7 +1050,6 @@ class FindTabManager(object):
         )
         for ivar, setting_name, default in table:
             s = c.config.getString(setting_name) or default
-            ### s = g.u(s)
             w = getattr(self, ivar)
             w.insert(s)
             if find.minibuffer_mode:
@@ -1266,7 +1264,6 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         i = self.indexOf(dw)
         if i < 0: return
         s = self.tabText(i)
-        ### s = g.u(s)
         if len(s) > 2:
             if changed:
                 if not s.startswith('* '):
@@ -4245,9 +4242,6 @@ class LeoQtTreeTab(object):
         def onIndexChanged(s, tt=tt):
             if g.isInt(s):
                 s = '' if s == -1 else tt.w.currentText()
-            ###
-                # else: # s is the tab name.
-                    # s = g.u(s)
             if s and not tt.cc.selectChapterLockout:
                 tt.selectTab(s)
         # A change: the argument could now be an int instead of a string.
@@ -4272,7 +4266,6 @@ class LeoQtTreeTab(object):
     def selectTab(self, tabName):
         '''LeoQtTreeTab.'''
         tt, c, cc = self, self.c, self.cc
-        ### tabName = g.u(tabName)
         exists = tabName in self.tabNames
         c.treeWantsFocusNow()
             # Fix #969. Somehow this is important.

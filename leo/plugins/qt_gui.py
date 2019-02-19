@@ -1283,14 +1283,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18526: *4* qt_gui.toUnicode (deprecated)
     def toUnicode(self, s):
         return s
-        ###
-        # try:
-            # s = g.u(s)
-            # return s
-        # except Exception:
-            # g.trace('*** Unicode Error: bugs possible')
-            # # The mass update omitted the encoding param.
-            # return g.toUnicode(s, reportErrors='replace')
     #@+node:ekr.20110605121601.18527: *4* qt_gui.widget_name
     def widget_name(self, w):
         # First try the widget's getName method.
