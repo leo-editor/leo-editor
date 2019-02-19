@@ -5478,7 +5478,7 @@ def getPythonEncodingFromString(s):
 # The syntax of these functions must be valid on Python2K and Python3K.
 #@+node:ekr.20160229070349.2: *5* g.isBytes (deprecated)
 def isBytes(s):
-    '''Return True if s is Python3k bytes type.'''
+    '''Return True if s is a bytes type.'''
     return isinstance(s, bytes)
 #@+node:ekr.20160229070349.3: *5* g.isCallable (deprecated)
 def isCallable(obj):
