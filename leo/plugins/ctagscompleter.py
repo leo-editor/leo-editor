@@ -149,11 +149,10 @@ class CtagsController(object):
         body = self.body
         cpl = self.completer
         if not completion:
-            completion = g.u(cpl.currentCompletion())
+            completion = cpl.currentCompletion()
         if completion:
-            cmpl = g.u(completion).split(None,1)[0]
-            cmpl = g.u(cmpl)
-            prefix = g.u(cpl.completionPrefix())
+            cmpl = completion.split(None,1)[0]
+            prefix = cpl.completionPrefix()
             tc = body.textCursor()
             extra = len(cmpl) - len(prefix)
             tc.movePosition(tc.Left)

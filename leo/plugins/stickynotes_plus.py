@@ -296,22 +296,21 @@ class notetextedit(QTextEdit):
         cursor = self.textCursor()
         if not cursor.hasSelection():
             return
-        text = g.u(cursor.selectedText()) # need unicode for if below
-
+        text = cursor.selectedText()
         if text.startswith('http://'):
             text = '<a href="{0}">{1}</a> '.format(text, text[7:])
         else:
             text = '<a href="http://{0}">{0}</a> '.format(text)
-
-        # the below works but doesn't pick up highlighting of an anchor
+        #
+        # The below works but doesn't pick up highlighting of an anchor
         # would have to do the underlining and blue color
             #format = QTextCharFormat()
             #format.setAnchor(True)
             #format.setAnchorHref(text)
             #cursor.setCharFormat(format)
             #self.setTextCursor(cursor)
-
-        #this also works and generates highlighting
+        #
+        # This also works and generates highlighting
         cursor.deleteChar()
         cursor.insertHtml(text) # also self.insertHtml should work
 
@@ -509,11 +508,11 @@ class notetextedit(QTextEdit):
     def mouseReleaseEvent(self, event):
         #print("mouseReleaseEvent")
         pos = event.pos()
-        url = g.u(self.anchorAt(pos))
+        url = self.anchorAt(pos)
         if url:
             if not url.startswith('http://'): #linux seems to need this
                 url = 'http://{0}'.format(url)
-            webbrowser.open(g.u(url),new=2,autoraise=True)
+            webbrowser.open(url, new=2, autoraise=True)
         else:
             QTextEdit.mouseReleaseEvent(self,event)
     #@+node:ekr.20100103100944.5418: *3* insertFromMimeData
@@ -521,7 +520,7 @@ class notetextedit(QTextEdit):
         # not sure really necessary since it actually appears to paste URLs correctly
         # I am stripping the http
         print("Paste")
-        text = g.u(source.text())
+        text = source.text()
         if len(text.split())==1 and (text.startswith('http://') or 'www' in text or '.com' in text or '.html' in text):
             if text.startswith('http://'):
                 text = '<a href="{0}">{1}</a> '.format(text, text[7:])
@@ -535,8 +534,7 @@ class notetextedit(QTextEdit):
     def toMarkdown(self):
         references = ''
         i = 1
-        # doc = QString() # the full document
-        doc = g.u('')
+        doc = ''
         block = self.document().begin() # block is like a para; text fragment is sequence of same char format
         while block.isValid():
             #print "block=",block.text()
@@ -545,7 +543,7 @@ class notetextedit(QTextEdit):
             #elif block.textList():
                 #textList = block.textList()
                 #print block.textList().count()
-                #print g.u(block.textList().itemText(block))
+                #print block.textList().itemText(block)
                 #print block.textList().itemNumber(block)
                 #print block.textList().item(block.textList().itemNumber(block)).text()
                 #doc += textList.itemText(block) + ' ' + textList.item(textList.itemNumber(block)).text() + '\n\n'
@@ -553,7 +551,7 @@ class notetextedit(QTextEdit):
                 if block.textList():
                     doc += '  '+block.textList().itemText(block) + ' '
                 # para = QString()
-                para = g.u('')
+                para = ''
                 iterator = block.begin()
                 while iterator != block.end():
                     fragment = iterator.fragment()
@@ -562,7 +560,7 @@ class notetextedit(QTextEdit):
                         # pylint: disable=no-member
                         # EKR: I'm not sure whether this warning is valid.
                         # I'm going to kill it because this is an experimental plugin.
-                        text = g.u(Qt.escape(fragment.text()))
+                        text = Qt.escape(fragment.text())
                             # turns chars like < into entities &lt;
                         font_size = char_format.font().pointSize()
                         # a fragment can only be an anchor, italics or bold

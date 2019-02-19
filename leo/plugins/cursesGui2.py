@@ -898,10 +898,10 @@ class StringFindTabManager(object):
         self.replace_all_button = None
     #@+node:ekr.20171128051435.3: *4* ftm.text getters/setters
     def getFindText(self):
-        return g.u(self.find_findbox.text())
+        return self.find_findbox.text()
 
     def getReplaceText(self):
-        return g.u(self.find_replacebox.text())
+        return self.find_replacebox.text()
 
     getChangeText = getReplaceText
 
@@ -949,7 +949,6 @@ class StringFindTabManager(object):
         )
         for ivar, setting_name, default in table:
             s = c.config.getString(setting_name) or default
-            s = g.u(s)
             w = getattr(self, ivar)
             w.insert(s)
         # Check boxes.
@@ -1775,7 +1774,7 @@ class LeoCursesGui(leoGui.LeoGui):
                 sort_by_extension=True,
             )
             self.in_dialog = False
-            s = g.u(s or '')
+            s = s or ''
             if s:
                 c.last_dir = g.os_path_dirname(s)
             return s

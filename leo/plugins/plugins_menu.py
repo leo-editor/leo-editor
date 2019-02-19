@@ -313,7 +313,7 @@ class PlugIn(object):
             options = {}
             for option in config.options(section):
                 #g.pr('config', section, option )
-                options[option] = g.u(config.get(section, option))
+                options[option] = config.get(section, option)
             data[section] = options
         # Save the original config data. This will not be changed.
         self.sourceConfig = data

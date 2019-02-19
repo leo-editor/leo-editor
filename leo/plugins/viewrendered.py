@@ -939,7 +939,7 @@ if QtWidgets: # NOQA
             else:
                 url = g.getUrlFromNode(c.p)
                 if not url:
-                    return g.u('')
+                    return ''
                 if not nbformat:
                     return 'can not import nbformt to render url: %r' % url
                 try:

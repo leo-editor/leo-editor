@@ -323,13 +323,13 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
     def returnPressed(self):
         w = self.ui.listWidget
         self.scon.freeze()
-        t = g.u(self.ui.lineEdit.text())
+        t = self.ui.lineEdit.text()
         if not t.strip():
             return
         # Handle Easter eggs.
-        if t == g.u('m'):
+        if t == 'm':
             self.scon.doShowMarked()
-        elif t == g.u('h'):
+        elif t == 'h':
             self.scon.doSearchHistory()
         else:
             self.scon.doSearch(t)
@@ -342,7 +342,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
     #@+node:ville.20121118193144.3622: *3* quick_w.liveUpdate
     def liveUpdate(self):
 
-        t = g.u(self.ui.lineEdit.text())
+        t = self.ui.lineEdit.text()
         if not t.strip():
             if self.scon.frozen:
                 self.scon.freeze(False)
@@ -352,7 +352,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
             return
         if self.scon.frozen:
             return
-        if t == g.u('m'):
+        if t == 'm':
             self.scon.doShowMarked()
             return
         self.scon.worker.set_input(t)

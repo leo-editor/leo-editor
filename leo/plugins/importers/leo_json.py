@@ -42,7 +42,7 @@ class JSON_Scanner:
             else:
                 child = parent.insertAsLastChild()
                 child.h = d2.get('h') or '<**no h**>'
-                child.b = d2.get('b') or g.u('')
+                child.b = d2.get('b') or ''
                 if d2.get('gnx'):
                     child.v.findIndex = gnx = d2.get('gnx')
                     self.vnodes_dict[gnx] = child.v

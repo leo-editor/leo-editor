@@ -679,8 +679,8 @@ if docutils:
 
             # if type(text) is types.UnicodeType:
             if g.isUnicode(text):
-                # text = text.replace(g.u('\u2020'),g.u(' '))
-                # text = text.replace(g.u('\xa0'), g.u(' '))
+                # text = text.replace('\u2020',' ')
+                # text = text.replace('\xa0', ' ')
                 text = text.encode('utf-8')
             return text
 

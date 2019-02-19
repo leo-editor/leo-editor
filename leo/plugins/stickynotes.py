@@ -144,13 +144,13 @@ def stickynoter_f(event):
 
     def focusin():
         if v is c.p.v:
-            nf.setHtml(g.u(v.b))
+            nf.setHtml(v.b)
             nf.setWindowTitle(p.h)
             nf.dirty = False
 
     def focusout():
         if nf.dirty:
-            v.b = g.u(nf.toHtml())
+            v.b = nf.toHtml()
             v.setDirty()
             nf.dirty = False
             p = c.p
@@ -482,7 +482,7 @@ def mknote(c,p, parent=None, focusin=None, focusout=None):
             if v is c.p.v:
                 if v.b.encode('utf-8') != nf.toPlainText():
                     # only when needed to avoid scroll jumping
-                    nf.setPlainText(g.u(v.b))
+                    nf.setPlainText(v.b)
                 nf.setWindowTitle(v.h)
                 nf.dirty = False
 
@@ -490,7 +490,7 @@ def mknote(c,p, parent=None, focusin=None, focusout=None):
         def focusout():
             if nf.dirty:
                 if v.b.encode('utf-8') != nf.toPlainText():
-                    v.b = g.u(nf.toPlainText())
+                    v.b = nf.toPlainText()
                     v.setDirty()
                     # Fix #249: Leo and Stickynote plugin do not request to save
                     c.setChanged(True)
@@ -658,7 +658,7 @@ class Tabula(QMainWindow):
                 QLineEdit.Normal, p.h)
             if not r:
                 return
-            new = g.u(new)
+            ### new = g.u(new)
             p.h = new
             w.setWindowTitle(new)
 
