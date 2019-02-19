@@ -618,7 +618,7 @@ class AtFile(object):
                 head = '@language %s\n' % language
             else:
                 head = '@nocolor\n'
-        p.b = g.u(head) + g.toUnicode(s, encoding=encoding, reportErrors='True')
+        p.b = head + g.toUnicode(s, encoding=encoding, reportErrors='True')
         if not changed: c.setChanged(False)
         g.doHook('after-edit', p=p)
     #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
@@ -1592,7 +1592,7 @@ class AtFile(object):
             return at.closeOutputStream()
         except Exception:
             at.writeException(fileName, root)
-            return g.u('')
+            return ''
     #@+node:ekr.20190109160056.2: *6* at.atAutoToString
     def atAutoToString(self, root):
         '''Write the root @auto node to a string, and return it.'''
@@ -1600,10 +1600,10 @@ class AtFile(object):
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root, root.atAutoNodeName(), sentinels=False)
-            return at.writeAtAutoContents(fileName, root) or g.u('')
+            return at.writeAtAutoContents(fileName, root) or ''
         except Exception:
             at.writeException(fileName, root)
-            return g.u('')
+            return ''
     #@+node:ekr.20190109160056.3: *6* at.atEditToString
     def atEditToString(self, root):
         '''Write one @edit node.'''
@@ -1621,7 +1621,7 @@ class AtFile(object):
             return contents
         except Exception:
             at.writeException(fileName, root)
-            return g.u('')
+            return ''
     #@+node:ekr.20190109142026.1: *6* at.atFileToString
     def atFileToString(self, root, sentinels=True):
         '''Write an external file to a string, and return its contents.'''
@@ -1644,7 +1644,7 @@ class AtFile(object):
                 delattr(self.root.v, 'tnodeList')
             at.exception("exception preprocessing script")
             root.v._p_changed = True
-            return g.u('')
+            return ''
     #@+node:ekr.20050506084734: *6* at.stringToString
     def stringToString(self, root, s, forcePythonSentinels=True, sentinels=True):
         """
@@ -1669,7 +1669,7 @@ class AtFile(object):
             return result
         except Exception:
             at.exception("exception preprocessing script")
-            return g.u('')
+            return ''
     #@+node:ekr.20041005105605.160: *4* Writing 4.x
     #@+node:ekr.20041005105605.161: *5* at.putBody & helpers
     def putBody(self, p, fromString=''):
@@ -2451,7 +2451,7 @@ class AtFile(object):
     def closeOutputStream(self):
         '''Close the output stream, returning its contents.'''
         at = self
-        contents = g.u('') if at.errors else u''.join(at.outputList)
+        contents = '' if at.errors else u''.join(at.outputList)
         at.outputList = []
         return contents
     #@+node:ekr.20041005105605.201: *5* at.os and allies
@@ -3189,10 +3189,10 @@ class FastAtRead (object):
         # Init the parent vnode for testing.
         #
         if self.test:
-            root_gnx = gnx = g.u('root-gnx')
+            root_gnx = gnx = 'root-gnx'
                 # The node that we are reading.
                 # start with the gnx for the @file node.
-            gnx_head =  g.u('<hidden top vnode>')
+            gnx_head =  '<hidden top vnode>'
                 # The headline of the root node.
             context = None
             parent_v = self.VNode(context=context, gnx=gnx)

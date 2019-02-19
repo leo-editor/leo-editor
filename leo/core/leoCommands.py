@@ -111,7 +111,7 @@ class Commands(object):
             # Stack of nodes to be root of drawn tree.
             # Affects drawing routines and find commands.
         # For outline navigation.
-        self.navPrefix = g.u('') # Must always be a string.
+        self.navPrefix = '' # Must always be a string.
         self.navTime = None
 
         self.sqlite_connection = None
@@ -241,7 +241,7 @@ class Commands(object):
 
         c.fileCommands = DummyFileCommands()
         self.hiddenRootNode = leoNodes.VNode(context=c, gnx=gnx)
-        self.hiddenRootNode.h = g.u('<hidden root vnode>')
+        self.hiddenRootNode.h = '<hidden root vnode>'
         c.fileCommands = None
         # Create the gui frame.
         title = c.computeWindowTitle(c.mFileName)

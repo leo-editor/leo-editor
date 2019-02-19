@@ -751,7 +751,7 @@ class LeoQtTree(leoFrame.LeoTree):
             e = self.getTreeEditorForItem(item)
         if not e:
             return
-        s = g.u(e.text())
+        s = e.text()
         self.closeEditorHelper(e, item)
         oldHead = p.h
         changed = s != oldHead
@@ -1238,7 +1238,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def getItemText(self, item):
         '''Return the text of the item.'''
         if item:
-            return g.u(item.text(0))
+            return item.text(0)
         else:
             return '<no item>'
     #@+node:ekr.20110605121601.18425: *4* qtree.getParentItem

@@ -166,12 +166,7 @@ class LeoQtGui(leoGui.LeoGui):
         cb = self.qtApp.clipboard()
         if cb:
             QtWidgets.QApplication.processEvents()
-            s = cb.text()
-            # Fix bug 147: Python 3 clipboard encoding
-            s = g.u(s)
-                # Don't call g.toUnicode here!
-                # s is a QString, which isn't exactly a unicode string!
-            return s
+            return cb.text()
         else:
             g.trace('no clipboard!')
             return ''
@@ -396,7 +391,7 @@ class LeoQtGui(leoGui.LeoGui):
         parent = None
         title = 'Enter Leo id'
         s, ok = QtWidgets.QInputDialog.getText(parent, title, message)
-        return g.u(s)
+        return s
     #@+node:ekr.20110605121601.18491: *4* qt_gui.runAskOkCancelNumberDialog
     def runAskOkCancelNumberDialog(self, c, title, message, cancelButtonText=None, okButtonText=None):
         """Create and run askOkCancelNumber dialog ."""
@@ -537,7 +532,7 @@ class LeoQtGui(leoGui.LeoGui):
         d = QtWidgets.QFileDialog()
         self.attachLeoIcon(d)
         s = d.getExistingDirectory(parent, title, startdir)
-        return g.u(s)
+        return s
     #@+node:ekr.20110605121601.18500: *4* qt_gui.runOpenFileDialog
     def runOpenFileDialog(self, c, title, filetypes,
         defaultextension='',
@@ -572,12 +567,12 @@ class LeoQtGui(leoGui.LeoGui):
         if isQt5: # this is a *Py*Qt change rather than a Qt change
             val, junk_selected_filter = val
         if multiple:
-            files = [g.os_path_normslashes(g.u(s)) for s in val]
+            files = [g.os_path_normslashes(s) for s in val]
             if files:
                 c.last_dir = g.os_path_dirname(files[-1])
             return files
         else:
-            s = g.os_path_normslashes(g.u(val))
+            s = g.os_path_normslashes(val)
             if s:
                 c.last_dir = g.os_path_dirname(s)
             return s
@@ -616,7 +611,7 @@ class LeoQtGui(leoGui.LeoGui):
             c.in_qt_dialog = False
             # Very bizarre: PyQt5 version can return a tuple!
             s = obj[0] if isinstance(obj, (list, tuple)) else obj
-            s = g.u(s or '')
+            s = s or ''
             if s:
                 c.last_dir = g.os_path_dirname(s)
             return s
@@ -1285,15 +1280,17 @@ class LeoQtGui(leoGui.LeoGui):
     def isTextWrapper(self, w):
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
         return w and hasattr(w, 'supportsHighLevelInterface') and w.supportsHighLevelInterface
-    #@+node:ekr.20110605121601.18526: *4* qt_gui.toUnicode
+    #@+node:ekr.20110605121601.18526: *4* qt_gui.toUnicode (deprecated)
     def toUnicode(self, s):
-        try:
-            s = g.u(s)
-            return s
-        except Exception:
-            g.trace('*** Unicode Error: bugs possible')
-            # The mass update omitted the encoding param.
-            return g.toUnicode(s, reportErrors='replace')
+        return s
+        ###
+        # try:
+            # s = g.u(s)
+            # return s
+        # except Exception:
+            # g.trace('*** Unicode Error: bugs possible')
+            # # The mass update omitted the encoding param.
+            # return g.toUnicode(s, reportErrors='replace')
     #@+node:ekr.20110605121601.18527: *4* qt_gui.widget_name
     def widget_name(self, w):
         # First try the widget's getName method.
@@ -1734,8 +1731,8 @@ class StyleSheetManager(object):
                 if value is not None:
                     # New in Leo 5.5: Do NOT add comments here.
                     # They RUIN style sheets if they appear in a nested comment!
-                        # value = '%s /* %s */' % (g.u(value.val), key)
-                    value = g.u(value.val)
+                        # value = '%s /* %s */' % (value.val, key)
+                    value = value.val
                 elif key in self.color_db:
                     # New in Leo 5.5: Do NOT add comments here.
                     # They RUIN style sheets if they appear in a nested comment!

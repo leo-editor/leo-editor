@@ -253,7 +253,7 @@ class LeoQtEventFilter(QtCore.QObject):
         Return (keynum, text, toString, ch).
 
         keynum: event.key()
-        ch:     g.u(chr(keynum)) or '' if there is an exception.
+        ch:     chr(keynum) or '' if there is an exception.
         toString:
             For special keys: made-up spelling that become part of the setting.
             For all others:   QtGui.QKeySequence(keynum).toString()
@@ -290,12 +290,14 @@ class LeoQtEventFilter(QtCore.QObject):
             ch1 = chr(keynum)
         except ValueError:
             ch1 = ''
-        try:
-            ch = g.u(ch1)
-        except UnicodeError:
-            ch = ch1
-        text = g.u(text)
-        toString = g.u(toString)
+        ch = ch1
+        ###
+            # try:
+                # ch = g.u(ch1)
+            # except UnicodeError:
+                # ch = ch1
+        ### text = g.u(text)
+        ### toString = g.u(toString)
         return keynum, text, toString, ch
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):

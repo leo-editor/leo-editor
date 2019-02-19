@@ -165,8 +165,10 @@ def showColorWheel(self, event=None):
         g.es("No color selected")
     elif in_color_setting:
         udata = c.undoer.beforeChangeNodeContents(p)
-        p.h = '%s = %s'%(p.h.split('=', 1)[0].strip(),
-                         g.u(picker.selectedColor().name()))
+        p.h = '%s = %s' % (
+            p.h.split('=', 1)[0].strip(),
+            picker.selectedColor().name(),
+        )
         c.undoer.afterChangeNodeContents(p, 'change-color', udata)
     else:
         text = picker.selectedColor().name()
@@ -198,7 +200,6 @@ def showFonts(self, event=None):
         font = picker.selectedFont()
         udata = c.undoer.beforeChangeNodeContents(p)
         comments = [x for x in g.splitLines(p.b) if x.strip().startswith('#')]
-
         defs = [
             '\n' if comments else '',
             '%s_family = %s\n'%(name, font.family()),
@@ -206,8 +207,7 @@ def showFonts(self, event=None):
             '%s_slant = %s\n'%(name, 'italic' if font.italic() else 'roman'),
             '%s_size = %s\n'%(name, font.pointSizeF())
         ]
-
-        p.b = g.u('').join(comments + defs)
+        p.b = ''.join(comments + defs)
         c.undoer.afterChangeNodeContents(p, 'change-font', udata)
 #@+node:ekr.20140918124632.17891: ** qt: style-reload
 @g.command('style-reload')

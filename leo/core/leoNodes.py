@@ -1943,8 +1943,8 @@ class VNodeBase(object):
         v.unknownAttributes or any mutable VNode object changes.
         '''
         # The primary data: headline and body text.
-        self._headString = g.u('newHeadline')
-        self._bodyString = g.u('')
+        self._headString = 'newHeadline'
+        self._bodyString = ''
         # Structure data...
         self.children = []
             # Ordered list of all children of this node.

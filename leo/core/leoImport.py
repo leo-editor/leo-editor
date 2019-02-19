@@ -150,7 +150,7 @@ class JSON_Import_Helper(object):
             else:
                 child = parent.insertAsLastChild()
                 child.h = d2.get('h') or '<**no h**>'
-                child.b = d2.get('b') or g.u('')
+                child.b = d2.get('b') or ''
                 if d2.get('gnx'):
                     child.v.findIndex = gnx = d2.get('gnx')
                     self.vnodes_dict[gnx] = child.v
@@ -449,7 +449,7 @@ class LeoImportCommands(object):
         The outline is represented in MORE format.
         '''
         c = self.c
-        nl = g.u(self.output_newline)
+        nl = self.output_newline
         p = c.p
         if not p:
             return
@@ -1375,8 +1375,8 @@ class LeoImportCommands(object):
     def createHeadline(self, parent, body, headline):
         '''Create a new VNode as the last child of parent position.'''
         p = parent.insertAsLastChild()
-        body = g.u(body)
-        headline = g.u(headline)
+        ### body = g.u(body)
+        ### headline = g.u(headline)
         p.initHeadString(headline)
         if body:
             self.setBodyString(p, body)

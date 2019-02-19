@@ -1660,8 +1660,8 @@ class FileCommands(object):
         fc = self
         if not s:
             return fc.c.rootPosition()
-        sep = g.u('<->')
-        comma = g.u(',')
+        sep = '<->'
+        comma = ','
         stack = [x.split(comma) for x in s.split(sep)]
         stack = [(fc.gnxDict[x], int(y)) for x,y in stack]
         v, ci = stack[-1]
@@ -1670,8 +1670,8 @@ class FileCommands(object):
     #@+node:vitalije.20170705075117.1: *6* fc.encodePosition
     def encodePosition(self, p):
         '''New schema for encoding current position hopefully simplier one.'''
-        jn = g.u('<->')
-        mk = g.u('%s,%s')
+        jn = '<->'
+        mk = '%s,%s'
         res = [mk%(x.gnx, y) for x,y in p.stack]
         res.append(mk%(p.gnx, p._childIndex))
         return jn.join(res)

@@ -3419,7 +3419,7 @@ class KeyHandlerClass(object):
             before, sel, after = w.getInsertLines()
             m = k._cmd_handle_input_pattern.search(sel)
             assert m # edit-shortcut was invoked on a malformed body line
-            sel = g.u('%s %s\n')%(m.group(0), stroke.s)
+            sel = '%s %s' % (m.group(0), stroke.s)
             udata = c.undoer.beforeChangeNodeContents(p)
             w.setSelectionAreas(before, sel, after)
             c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
@@ -3429,8 +3429,8 @@ class KeyHandlerClass(object):
             return
         elif p.h.startswith(('@command', '@button')):
             udata = c.undoer.beforeChangeNodeContents(p)
-            cmd = p.h.split(g.u('@key'),1)[0]
-            p.h = g.u('%s @key=%s')%(cmd, stroke.s)
+            cmd = p.h.split('@key',1)[0]
+            p.h = '%s @key=%s' % (cmd, stroke.s)
             c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
             try:
                 cmdname = cmd.split(' ', 1)[1].strip()
@@ -3442,7 +3442,7 @@ class KeyHandlerClass(object):
             # this should never happen
             g.error('not in settings node shortcut')
     #@+node:vitalije.20170709151653.1: *6* k.isInShortcutBodyLine
-    _cmd_handle_input_pattern = re.compile(g.u('[A-Za-z0-9_\\-]+\\s*='))
+    _cmd_handle_input_pattern = re.compile(r'[A-Za-z0-9_\-]+\s*=')
 
     def isInShortcutBodyLine(self):
         k = self; c = k.c; p = c.p

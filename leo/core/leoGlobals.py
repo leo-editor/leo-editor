@@ -3686,7 +3686,7 @@ def readFileIntoString(fileName,
             s = f.read()
         # Fix #391.
         if not s:
-            return g.u(''), None
+            return '', None
         # New in Leo 4.11: check for unicode BOM first.
         e, s = g.stripBOM(s)
         if not e:
@@ -3732,7 +3732,7 @@ def readlineForceUnixNewline(f, fileName=None):
         s = f.readline()
     except UnicodeDecodeError:
         g.trace('UnicodeDecodeError: %s' % (fileName), f, g.callers())
-        s = g.u('')
+        s = ''
     if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
         s = s[0: -2] + "\n"
     return s
@@ -6873,7 +6873,7 @@ def toUnicodeFileEncoding(path):
         # Yes, this is correct.  All os_path_x functions return Unicode strings.
         return g.toUnicode(path)
     else:
-        return g.u('')
+        return ''
 #@+node:ekr.20111115155710.9859: ** g.Parsing & Tokenizing
 #@+node:ekr.20031218072017.822: *3* g.createTopologyList
 def createTopologyList(c, root=None, useHeadlines=False):
