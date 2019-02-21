@@ -5,6 +5,8 @@
 #@+others
 #@+node:mhw-debug-1081.20190216130451.1: ** imports
 import leo.core.leoGlobals as g
+import os
+import sys
 import shutil
 try:
     from _winreg import * #py2
@@ -23,31 +25,16 @@ Resources used:
    @url http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-extension
    @url https://stackoverflow.com/questions/130763/request-uac-elevation-from-within-a-python-script
 '''
-#@+node:mhw-debug-1081.20190217234410.1: ** 'which' utility
-def which(program):
-    '''Search PATH for executable {program}
-    Python implmentation of 'which' program, courtesty of @Suraj:
-    https://stackoverflow.com/questions/377017/test-if-executable-exists-in-python
-    '''
-    def is_exe(fpath):
-        return os.path.exists(fpath) and os.access(fpath, os.X_OK) and os.path.isfile(fpath)
-
-    def ext_candidates(fpath):
-        yield fpath
-        for ext in os.environ.get("PATHEXT", "").split(os.pathsep):
-            yield fpath + ext
-
-    fpath, fname = os.path.split(program)
-    if fpath:
-        if is_exe(program):
-            return program
+#@+node:mhw-debug-1081.20190221070850.1: ** get_launch_leo
+def get_launch_leo():
+    '''Prefer leo exe script in path over launchLeo.py relative to Leo library'''
+    leo_script = os.path.join(sys.exec_prefix, 'Scripts', 'leo.exe')
+    if os.path.isfile(leo_script):
+        return leo_script
     else:
-        for path in os.environ["PATH"].split(os.pathsep):
-            exe_file = os.path.join(path, program)
-            for candidate in ext_candidates(exe_file):
-                if is_exe(candidate):
-                    return candidate
-
+        leo_script = os.path.join(g.computeLeoDir(), '../launchLeo.py')
+    if os.path.isfile(leo_script):
+        return leo_script
     return None
 #@+node:maphew.20130509185752.1607: ** register_leo
 def register_leo(pyexe, launchLeo, icon):
@@ -70,8 +57,12 @@ def register_leo(pyexe, launchLeo, icon):
 
             SetValue(leoKey, None, REG_SZ, "Leo Editor File")
             SetValue(iconKey, None, REG_SZ, icon)
-            SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "{1}" "%1" %*'.format(pyexe, launchLeo))
             
+            if 'launchLeo.py' in launchLeo:
+                SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "{1}" "%1" %*'.format(pyexe, launchLeo))
+            else:
+                SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "%1" %*'.format(launchLeo))
+                
             for k in (leoKey, iconKey, shellKey, openKey, cmdKey):
                 CloseKey(k)
                 
@@ -134,22 +125,6 @@ regedit. The translated hex code is:
 #   00,72,00,5c,00,6c,00,61,00,75,00,6e,00,63,00,68,00,4c,00,65,00,6f,00,2e,00,\
 #   70,00,79,00,22,00,20,00,22,00,25,00,31,00,22,00,20,00,25,00,2a,00,00,00
 #@-others
-
-def get_launch_leo():
-    '''Prefer leo exe script in path over launchLeo.py relative to Leo library'''
-    leo_script = which('leo')
-    if not leo_script:
-        leo_script = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
-    if not os.path.isfile(leo):
-        leo_script = None
-    return leo_script
-
-def cmd_exists(cmd):
-    '''Search PATH for 'cmd' as executable file'''
-    return any(
-        os.access(os.path.join(path, cmd), os.X_OK) 
-        for path in os.environ["PATH"].split(os.pathsep)
-    )
 
 g.es_print("--- Running register-leo Leo script")
 import ctypes, sys
