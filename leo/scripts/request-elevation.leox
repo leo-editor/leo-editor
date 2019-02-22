@@ -13,18 +13,19 @@ def is_admin():
     except:
         return False
 
+leo = r"c:\apps\miniconda3\envs\leo-dev\Scripts\leo-m.exe"
 #reg_script = g.os.path.join(g.os.environ['TEMP'], 'xxx-register-leo.py')
 reg_script = g.os_path_finalize_join(g.computeLeoDir(), '../scripts/register-leo.leox')
-params = 'leo --script-window ' + reg_script
+params = 'leo --script=' + reg_script
 
 if is_admin():
     g.es_print("Yay! we are admin", is_admin())
+    g.es_print(leo, params)
     # subprocess.run
-    ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, reg_script, params, 1)
+    g.es_print('If this were real next command would be:')
+    g.es_print('python scripts/elevate.py "path/to/leo --script=../scripts/win-register-leo.leox" ')
 else:
     g.es_print("Not admin, can't do anything", is_admin())
-    ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, reg_script, params, 1)
-    g.es_print("Else: as admin loop finished")
 
 input("Press Enter to continue...")
 #@-leo
