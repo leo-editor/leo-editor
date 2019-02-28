@@ -5,6 +5,7 @@
 '''Remove registry key for Leo file type and .leo file association'''    
 #@+others
 #@+node:mhw-debug-1081.20190216130451.1: ** imports
+import leo
 import leo.core.leoGlobals as g
 import os
 import sys

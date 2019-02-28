@@ -4,6 +4,7 @@
 #@@tabwidth -4
 #@+others
 #@+node:mhw-debug-1081.20190216130451.1: ** imports
+import leo
 import leo.core.leoGlobals as g
 import os
 import sys
@@ -25,14 +26,19 @@ Resources used:
    @url http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-extension
    @url https://stackoverflow.com/questions/130763/request-uac-elevation-from-within-a-python-script
 '''
+#@+node:mhw-debug-1081.20190227224730.1: ** get_leo_libpath
+def get_leo_libpath():
+    '''Return Leo's library path (ie: ./leo-editor/leo or PYTHONHOME/Lib/site-packages/leo)'''
+    import leo
+    return leo.__path__[0]
 #@+node:mhw-debug-1081.20190221070850.1: ** get_launch_leo
 def get_launch_leo():
-    '''Prefer leo exe script in path over launchLeo.py relative to Leo library'''
+    '''Prefer leo exe script in PATH over launchLeo.py relative to Leo library'''
     leo_script = os.path.join(sys.exec_prefix, 'Scripts', 'leo.exe')
     if os.path.isfile(leo_script):
         return leo_script
     else:
-        leo_script = os.path.join(g.computeLeoDir(), '../launchLeo.py')
+        leo_script = os.path.join(get_leo_libpath(), '../launchLeo.py')
     if os.path.isfile(leo_script):
         return leo_script
     return None
@@ -135,7 +141,7 @@ else:
     pywexe = pyexe.replace('python.exe', 'pythonw.exe')
     #launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
     launchLeo = get_launch_leo()
-    icon = "%s\Icons\LeoDoc.ico" % g.computeLeoDir()
+    icon = "%s\Icons\LeoDoc.ico" % get_leo_libpath()
     
     # # 'pyexe' to launch GUI with a console window for messages
     # # 'pywexe' to launch GUI only (will lose messages that bypass log)
