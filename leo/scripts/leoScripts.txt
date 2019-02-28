@@ -3941,21 +3941,38 @@ def elevate(params):
     print(msg)
     #g.es(msg)
     
-#@+node:maphew.20130611235500.2658: *4* @file register-leo.leox
+#@+node:maphew.20130611235500.2658: *4* @file win-register-leo.leox
 @language python
 @tabwidth -4
 @others
-from _winreg import *
 
-# g.es("\n--- Running register-leo Leo script")
+g.es_print("--- Running register-leo Leo script")
+import ctypes, sys
+if not ctypes.windll.shell32.IsUserAnAdmin():
+    g.es_print("No admin privileges. Start Leo as administrator first and then run this script")
+else:
+    pyexe = g.sys.executable
+    pywexe = pyexe.replace('python.exe', 'pythonw.exe')
+    #launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
+    launchLeo = get_launch_leo()
+    icon = "%s\Icons\LeoDoc.ico" % get_leo_libpath()
+    
+    # # 'pyexe' to launch GUI with a console window for messages
+    # # 'pywexe' to launch GUI only (will lose messages that bypass log)
+    
+    register_leo(pywexe, launchLeo, icon)
 
-pyexe = g.sys.executable
-pywexe = pyexe.replace('python.exe', 'pythonw.exe')
-launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
-icon = r"%s\Icons\LeoDoc.ico" % g.computeLeoDir()
-
-# use 'pywexe' instead to not open a console window when launching Leo
-register_leo(pywexe, launchLeo, icon)
+g.es_print('--- end of script')
+#@+node:mhw-debug-1081.20190216130451.1: *5* imports
+import leo
+import leo.core.leoGlobals as g
+import os
+import sys
+import shutil
+try:
+    from _winreg import * #py2
+except ModuleNotFoundError as err:
+    from winreg import * #py3
 #@+node:maphew.20130510011223.1645: *5* docstring
 '''Tell Windows how to handle .leo files, enables double clicking on them to open.
 
@@ -3967,21 +3984,38 @@ See http://superuser.com/questions/88491/force-cmd-exe-to-run-as-admin/
 Resources used:
    @url  http://stackoverflow.com/questions/2331690/how-to-set-a-icon-file-while-creating-file
    @url http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-extension
+   @url https://stackoverflow.com/questions/130763/request-uac-elevation-from-within-a-python-script
 '''
+#@+node:mhw-debug-1081.20190227224730.1: *5* get_leo_libpath
+def get_leo_libpath():
+    '''Return Leo's library path (ie: ./leo-editor/leo or PYTHONHOME/Lib/site-packages/leo)'''
+    import leo
+    return leo.__path__[0]
+#@+node:mhw-debug-1081.20190221070850.1: *5* get_launch_leo
+def get_launch_leo():
+    '''Prefer leo exe script in PATH over launchLeo.py relative to Leo library'''
+    leo_script = os.path.join(sys.exec_prefix, 'Scripts', 'leo.exe')
+    if os.path.isfile(leo_script):
+        return leo_script
+    else:
+        leo_script = os.path.join(get_leo_libpath(), '../launchLeo.py')
+    if os.path.isfile(leo_script):
+        return leo_script
+    return None
 #@+node:maphew.20130509185752.1607: *5* register_leo
 def register_leo(pyexe, launchLeo, icon):
     '''Create registry key for Leo file type, set default icon and launch command    
     '''    
-    g.es("\nAttempting to register leo filetype with Windows...")
-    g.es("Python:", pyexe)
-    g.es("Leo:", launchLeo)
+    g.es_print("Attempting to register leo filetype with Windows...")
+    g.es_print("  Python:", pyexe)
+    g.es_print("  Leo:", launchLeo)
     
     if g.os_path_exists(icon):
-        g.es("Found:", icon)
+        g.es_print("  Found:", icon)
         <<filetype>>
         <<association>>
     else:
-        g.es("LeoDoc.ico not in expected location, can't continue.")  
+        g.es_print("  LeoDoc.ico not in expected location, can't continue.")  
 #@+node:maphew.20130515233516.1659: *6* <<filetype>>
 try:
     leoKey = CreateKey(HKEY_CLASSES_ROOT, "Leo.File")
@@ -3992,15 +4026,19 @@ try:
 
     SetValue(leoKey, None, REG_SZ, "Leo Editor File")
     SetValue(iconKey, None, REG_SZ, icon)
-    SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "{1}" "%1" %*'.format(pyexe, launchLeo))
     
+    if 'launchLeo.py' in launchLeo:
+        SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "{1}" "%1" %*'.format(pyexe, launchLeo))
+    else:
+        SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "%1" %*'.format(launchLeo))
+        
     for k in (leoKey, iconKey, shellKey, openKey, cmdKey):
         CloseKey(k)
         
-    g.es("Registered!")
+    g.es_print("  Registered!")
 
 except WindowsError as e:
-    g.es("Failed:", e)
+    g.es_print("  Failed:", e)
 #@+node:maphew.20130515233516.1660: *6* <<association>>
 try:
     leoKey = CreateKey(HKEY_CLASSES_ROOT, ".leo")
@@ -4012,15 +4050,15 @@ try:
     SetValue(leoKey, None, REG_SZ, "Leo.File")
     CloseKey(leoKey)
     
-    g.es(".leo, .leox files associated as 'Leo.File'")        
+    g.es_print("  .leo, .leox files associated as 'Leo.File'")        
 
 except WindowsError as e:
-    g.es("Failed:", e)
+    g.es_print("  Failed:", e)
 #@+node:maphew.20130510011223.1646: *6* sample registry outcome
-'''This is what the resulting registry key should look like, once exported from
+r'''This is what the resulting registry key should look like, once exported from
 regedit. The translated hex code is:
     
-    "d:\\Python27\\python.exe" "C:\\Users\\Matt\\Dropbox\\apps\\leo-editor\\launchLeo.py" "%1" %*
+    "d:\Python27\python.exe" "C:\Users\Matt\Dropbox\apps\leo-editor\launchLeo.py" "%1" %*
     
 '''
 @
@@ -4050,32 +4088,50 @@ Windows Registry Editor Version 5.00
   70,00,70,00,73,00,5c,00,6c,00,65,00,6f,00,2d,00,65,00,64,00,69,00,74,00,6f,\
   00,72,00,5c,00,6c,00,61,00,75,00,6e,00,63,00,68,00,4c,00,65,00,6f,00,2e,00,\
   70,00,79,00,22,00,20,00,22,00,25,00,31,00,22,00,20,00,25,00,2a,00,00,00
-#@+node:maphew.20130611235500.2665: *4* @file unregister-leo.leox
+#@+node:maphew.20130611235500.2665: *4* @file win-unregister-leo.leox
 @language python
 @tabwidth -4
-
 '''Remove registry key for Leo file type and .leo file association'''    
-from _winreg import *
+@others
 
-# g.es("\nAttempting to un-register leo filetype with Windows...")            
+import ctypes, sys
+if not ctypes.windll.shell32.IsUserAnAdmin():
+    g.es_print("No admin privileges. Start Leo as administrator first and then run this script")
+else:
+    g.es_print("--- Running unregister-leo Leo script")
+    g.es_print("  Attempting to un-register leo filetype with Windows...")
+    unregister_leo()
+    g.es_print('--- end of script')
+#@+node:mhw-debug-1081.20190216130451.1: *5* imports
+import leo
+import leo.core.leoGlobals as g
+import os
+import sys
+import shutil
 try:
-    leoKey = OpenKey(HKEY_CLASSES_ROOT, "Leo.File")
-    DeleteKey(leoKey, "Shell\\Open\\Command")
-    DeleteKey(leoKey, "Shell\\Open")
-    DeleteKey(leoKey, "Shell")
-    DeleteKey(leoKey, "DefaultIcon")
-    DeleteKey(HKEY_CLASSES_ROOT, "Leo.File")        
-    # CloseKey(leoKey)
-    g.es("Leo file type has been removed from registry")
-except WindowsError as e:
-    g.es("Unregistering Leo file type failed: ", e)  
+    from _winreg import * #py2
+except ModuleNotFoundError as err:
+    from winreg import * #py3
+#@+node:mhw-debug-1081.20190216145532.1: *5* unregister_leo
+def unregister_leo():
+    try:
+        leoKey = OpenKey(HKEY_CLASSES_ROOT, "Leo.File")
+        DeleteKey(leoKey, "Shell\\Open\\Command")
+        DeleteKey(leoKey, "Shell\\Open")
+        DeleteKey(leoKey, "Shell")
+        DeleteKey(leoKey, "DefaultIcon")
+        DeleteKey(HKEY_CLASSES_ROOT, "Leo.File")        
+        # CloseKey(leoKey)
+        g.es_print("  Leo file type has been removed from registry")
+    except WindowsError as e:
+        g.es_print("  Unregistering Leo file type failed: ", e)  
 
-try:
-    DeleteKey(HKEY_CLASSES_ROOT, ".leo")
-    DeleteKey(HKEY_CLASSES_ROOT, ".leox")
-    g.es(".leo, .leox file associations removed from registry")
-except WindowsError as e:
-    g.es("Removing .leo, leox associations failed: ", e)  
+    try:
+        DeleteKey(HKEY_CLASSES_ROOT, ".leo")
+        DeleteKey(HKEY_CLASSES_ROOT, ".leox")
+        g.es_print("  .leo, .leox file associations removed from registry")
+    except WindowsError as e:
+        g.es_print("  Removing .leo, leox associations failed: ", e)
 #@+node:ekr.20150416071458.1: ** Commands acting on nodes
 #@+node:ekr.20060824181946: *3* @@button convert-to-at-shadow
 """
