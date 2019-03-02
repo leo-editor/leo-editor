@@ -460,7 +460,7 @@ def babelExec(event):
     def getScript(c, p,
         useSelectedText=True,
         forcePythonSentinels=True,
-        useSentinels=True,
+        sentinels=True,
         language='python',
     ):
         '''
@@ -491,14 +491,14 @@ def babelExec(event):
                     result.append(line)
             return ''.join(result)
         #@+node:bob.20170726143458.19: *4* composeScript()
-        def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
+        def composeScript(c, p, s, forcePythonSentinels=True, sentinels=True):
             '''Compose a script from p.b.'''
 
             if s.strip():
                 # Important: converts unicode to utf-8 encoded strings.
-                script = c.atFileCommands.writeFromString(p.copy(), s,
+                script = c.atFileCommands.stringToString(p.copy(), s,
                     forcePythonSentinels=forcePythonSentinels,
-                    useSentinels=useSentinels)
+                    sentinels=sentinels)
                 script = script.replace("\r\n", "\n") # Use brute force.
                 # Important, the script is an **encoded string**, not a unicode string.
                 return script
@@ -520,7 +520,7 @@ def babelExec(event):
             s = extractExecutableString(c, p, s, language)
             script = composeScript(c, p, s,
                         forcePythonSentinels=forcePythonSentinels,
-                        useSentinels=useSentinels)
+                        sentinels=sentinels)
         except Exception:
             leoG.es_print("unexpected exception in Leo-Babel getScript()")
             raise
