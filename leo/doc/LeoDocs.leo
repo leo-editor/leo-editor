@@ -1341,6 +1341,7 @@
 <v t="ekr.20180226155010.2"><vh>Call g.execute_shell_commands_with_options</vh></v>
 </v>
 <v t="ekr.20180226153353.1"><vh>Using g.app.backgroundProcessManager</vh></v>
+<v t="ekr.20190307093145.1"><vh>Using g.execute_shell_commands</vh></v>
 </v>
 <v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20180827103758.1"><vh>Using @pyplot and matplotlib</vh>
@@ -2263,6 +2264,7 @@
 </v>
 <v t="ekr.20190119071258.1"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
 </v>
+<v t="ekr.20161029072351.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -21820,7 +21822,8 @@ self.unitTestMenusDict = {}
 - The first section discusses three ways of calling subprocess.popen directly or via Leo helper functions.
 
 - The second section discusses the BackgroundProcessManager class.  Leo's pylint command uses this class to run pylint commands sequentially *without blocking Leo*. Running processes sequentially prevents unwanted interleaving of output.
-</t>
+
+- The last two sections discuss using g.execute_shell_commands and g.execute_shell_commands_with_options. </t>
 <t tx="ekr.20161120073024.1">@language md
 
 These .md files are intended to be viewed on [GitHub](https://github.com/leo-editor/leo-editor/tree/master/leo/doc).
@@ -29776,6 +29779,28 @@ https://github.com/leo-editor/leo-editor/issues/977
 <t tx="ekr.20190123075859.1">https://github.com/leo-editor/leo-editor/issues/1065
 </t>
 <t tx="ekr.20190123122138.1"></t>
+<t tx="ekr.20190307093145.1">@language rest
+
+g.execute_shell_command tales a single argument, which may be either a string or a list of strings. Each string represents one command. g.execute_shell_command executes each command in order.  Commands starting with '&amp;' are executed without waiting. Commands that do not start with '&amp;' finish before running later commands. Examples:
+
+@language python
+
+# Run the qml app in a separate process:
+g.execute_shell_commands('qmlscene /test/qml_test.qml')
+
+# List the contents of a directory:
+g.execute_shell_commands([
+    'cd ~/test',
+    'ls -a',
+])
+
+# Run a python test in a separate process.
+g.execute_shell_commands('python /test/qt_test.py')
+
+@language rest
+
+g.execute_shell_commands_with_options inits an environment and then calls g.execute_shell_commands.  See Leo's source code for details.
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
