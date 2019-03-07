@@ -4480,7 +4480,6 @@ def clean_file(path):
         if line.endswith('\n'):
             lines.append('\n')
     new_s = ''.join(lines)
-    # g.trace('same' if file_s == new_s else 'diff', path)
     if file_s != new_s:
         with open(path, 'w') as f:
             f.write(new_s)
