@@ -686,6 +686,7 @@
 <v t="ekr.20141108064630.15"><vh>How can I create buttons with dropdown menus?</vh></v>
 <v t="ekr.20120229094652.15099"><vh>How can I make commonly-used scripts widely accessible?</vh></v>
 <v t="ekr.20160415031743.21"><vh>How can I organize large docstrings?</vh></v>
+<v t="ekr.20190307095247.1"><vh>How can I run code in an external process?</vh></v>
 <v t="ekr.20160428105918.1"><vh>How can I run pylint outside of Leo?</vh></v>
 <v t="ekr.20131115075142.16636"><vh>How can I test settings easily?</vh></v>
 <v t="ekr.20160304081437.4"><vh>How can I use Leo in virtualenv?</vh></v>
@@ -2264,6 +2265,7 @@
 </v>
 <v t="ekr.20190119071258.1"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
 </v>
+<v t="ekr.20190307095247.1"></v>
 <v t="ekr.20161029072351.1"></v>
 </vnodes>
 <tnodes>
@@ -29801,6 +29803,9 @@ g.execute_shell_commands('python /test/qt_test.py')
 
 g.execute_shell_commands_with_options inits an environment and then calls g.execute_shell_commands.  See Leo's source code for details.
 </t>
+<t tx="ekr.20190307095247.1">This is detailed more fully in a scripting miscellany. g.execute_shell_commands executes one or more commands in a separate process using subprocess.popen. Commands *not* preceded by '&amp;' run to completion before the next command is run.
+
+This allows you to run programs in *any* language.  Just invoke the compiler/interpreter using g.execute_shell_commands.</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
