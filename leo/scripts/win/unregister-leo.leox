@@ -1,8 +1,23 @@
 #@+leo-ver=5-thin
-#@+node:maphew.20130611235500.2665: * @file win-unregister-leo.leox
+#@+node:maphew.20130611235500.2665: * @file unregister-leo.leox
 #@@language python
 #@@tabwidth -4
 '''Remove registry key for Leo file type and .leo file association'''    
+
+# define script names and paths
+sc_path = os.path.realpath(os.path.join(leo.__path__[0], 'scripts/win'))
+elevate = os.path.join(sc_path, 'elevate.py')
+register = os.path.join(sc_path, 'register-leo.leox')
+unregister = os.path.join(sc_path, 'unregister-leo.leox')
+
+def do_register():
+    g.es_print('--- Running elevate and register')
+    result = subprocess.run(['python', elevate, register], stdout=subprocess.PIPE)
+    g.es_print(result.stdout.decode('utf-8'))
+        # requires python 3.5+
+        # for this style of subprocess.run()
+    g.es_print('---')
+    
 #@+others
 #@+node:mhw-debug-1081.20190216130451.1: ** imports
 import leo
@@ -10,6 +25,8 @@ import leo.core.leoGlobals as g
 import os
 import sys
 import shutil
+import subprocess
+
 try:
     from _winreg import * #py2
 except ModuleNotFoundError as err:
@@ -39,6 +56,7 @@ def unregister_leo():
 import ctypes, sys
 if not ctypes.windll.shell32.IsUserAnAdmin():
     g.es_print("No admin privileges. Start Leo as administrator first and then run this script")
+
 else:
     g.es_print("--- Running unregister-leo Leo script")
     g.es_print("  Attempting to un-register leo filetype with Windows...")

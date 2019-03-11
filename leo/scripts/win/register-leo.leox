@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:maphew.20130611235500.2658: * @file win-register-leo.leox
+#@+node:maphew.20130611235500.2658: * @file register-leo.leox
 #@@language python
 #@@tabwidth -4
 #@+others
@@ -9,6 +9,8 @@ import leo.core.leoGlobals as g
 import os
 import sys
 import shutil
+import subprocess
+
 try:
     from _winreg import * #py2
 except ModuleNotFoundError as err:
