@@ -21112,10 +21112,16 @@ Scripts only of interest when on Microsoft Windows platform.
 @tabwidth -4
 @others
 
+# define script names and paths
+scripts_path = os.path.realpath(os.path.join(leo.__path__[0], 'scripts/win'))
+elevate = os.path.join(scripts_path, 'elevate.py')
+this_script = get_my_path()
+
 g.es_print("--- Running register-leo Leo script")
 import ctypes, sys
 if not ctypes.windll.shell32.IsUserAnAdmin():
-    g.es_print("No admin privileges. Start Leo as administrator first and then run this script")
+    g.es_print("No admin privileges")
+    relaunch_elevated(this_script)
 else:
     pyexe = g.sys.executable
     pywexe = pyexe.replace('python.exe', 'pythonw.exe')
