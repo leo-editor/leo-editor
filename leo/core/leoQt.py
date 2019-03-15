@@ -17,6 +17,7 @@ Callers are expected to use the *PyQt5* spellings of modules:
     # QtDeclarative, QtMultimedia, Qsci, QString, QtSvg,
     # QtWebKit, QtWebKitWidgets
     # printsupport
+    # Signal
 import leo.core.leoGlobals as g
 strict = False
 trace = False
@@ -48,14 +49,18 @@ if fail:
     QtMultimedia = None # Replacement for phonon.
     qt_version = '<no version>'
     printsupport = None
+    Signal = None
 elif isQt5:
     try:
         from PyQt5 import QtCore
         from PyQt5 import QtGui
         from PyQt5 import QtWidgets
         from PyQt5.QtCore import QUrl
+        from PyQt5.QtCore import pyqtSignal
         QtConst = QtCore.Qt
         printsupport = Qt
+        Signal = pyqtSignal # Support for pyzo.
+        QtCore.Signal = pyqtSignal # Support for pyzo.
     except ImportError:
         print('leoQt.py: can not fully import PyQt5.')
         g.es_exception() # PR #339.
@@ -64,11 +69,14 @@ else:
     try:
         from PyQt4 import QtCore
         from PyQt4 import QtGui
+        from PyQt4.QtCore import pyqtSignal
         from PyQt4.QtCore import QUrl
         assert QUrl # for pyflakes.
         QtConst = QtCore.Qt
         QtWidgets = QtGui
         printsupport = QtWidgets
+        Signal = pyqtSignal # Support for pyzo.
+        QtCore.Signal = pyqtSignal # Support for pyzo.
     except ImportError:
         print('leoQt.py: can not fully import PyQt4.')
         g.es_exception() # PR #339.
