@@ -3790,7 +3790,8 @@ mod_scripting.py
 nav_qt.py
 nodetags.py
 quicksearch.py
-python_terminal.py
+# python_terminal.py
+    # #1009: python_terminal can segfault.
 screen_capture.py
 settings_finder.py
 stickynotes.py
