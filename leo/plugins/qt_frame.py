@@ -31,7 +31,7 @@ except ImportError:
     splitter_class = QtWidgets.QSplitter
 #@-<< imports >>
 #@+others
-#@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QtWidgets.QMainWindow)
+#@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
 class DynamicWindow(QtWidgets.QMainWindow):
     '''
     A class representing all parts of the main Qt window.
