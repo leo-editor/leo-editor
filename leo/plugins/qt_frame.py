@@ -30,6 +30,104 @@ except ImportError:
     print('Can not import nested_splitter')
     splitter_class = QtWidgets.QSplitter
 #@-<< imports >>
+if g.pyzo:
+    #@+<< pyzo imports >>
+    #@+node:ekr.20190317082435.1: ** << pyzo imports >> (qt_frame.py)
+    # import os
+    # import time
+    # import leo.core.leoGlobals as g
+    # from leo.core.leoQt import QtCore, QtGui, QtWidgets
+
+    class LeoEmptySplashWidget(QtWidgets.QWidget):
+        
+        def __init__(self, parent, **kwargs):
+            QtWidgets.QWidget.__init__(self, parent)
+
+    from pyzo.util import zon
+    from pyzo.util.zon import isidentifier
+    #@-<< pyzo imports >>
+    #@+<< define class LeoPyzoConfig >>
+    #@+node:ekr.20190317082751.1: ** << define class LeoPyzoConfig >>
+    class LeoPyzoConfig(zon.Dict):
+        #@+others
+        #@+node:ekr.20190317082751.2: *3* Dict.__repr__
+        def __repr__(self):
+            identifier_items = []
+            nonidentifier_items = []
+            for key, val in self.items():
+                if isidentifier(key):
+                    identifier_items.append('%s=%r' % (key, val))
+                else:
+                    nonidentifier_items.append('(%r, %r)' % (key, val))
+            if nonidentifier_items:
+                return 'Dict([%s], %s)' % (', '.join(nonidentifier_items),
+                                           ', '.join(identifier_items))
+            else:
+                return 'Dict(%s)' % (', '.join(identifier_items))
+        #@+node:ekr.20190317082751.3: *3* Dict.__getattribute__
+        def __getattribute__(self, key):
+            try:
+                ### return object.__getattribute__(self, key)
+                val = object.__getattribute__(self, key)
+                if False and key not in ('advanced', 'shortcuts2', 'settings'):
+                    # print('===== LeoPyzoConfig 1: %r: %r' % (key, val))
+                    print('===== LeoPyzoConfig 1: %r' % key)
+                return val
+            except AttributeError:
+                if key in self:
+                    if False and key not in ('advanced', 'shortcuts2', 'settings'):
+                        # print('===== LeoPyzoConfig 1: %r: %r' % (key, g.truncate(self[key], 50)))
+                        print('===== LeoPyzoConfig 2: %r' % key)
+                    return self[key]
+                else:
+                    raise
+        #@+node:ekr.20190317082751.4: *3* Dict.__setattr__
+        # def __setattr__(self, key, val):
+            # if key in Dict.__reserved_names__:
+                # # Either let OrderedDict do its work, or disallow
+                # if key not in Dict.__pure_names__:
+                    # return _dict.__setattr__(self, key, val)
+                # else:
+                    # raise AttributeError('Reserved name, this key can only ' +
+                                         # 'be set via ``d[%r] = X``' % key)
+            # else:
+                # # if isinstance(val, dict): val = Dict(val) -> no, makes a copy!
+                # self[key] = val
+        #@+node:ekr.20190317082751.5: *3* Dict.__dir__
+        # def __dir__(self):
+            # names = [k for k in self.keys() if isidentifier(k)]
+            # return Dict.__reserved_names__ + names
+        #@-others
+    #@-<< define class LeoPyzoConfig >>
+    #@+<< pyzo monkey patches >>
+    #@+node:ekr.20190317082927.1: ** << pyzo monkey patches >>
+    #
+    # Use a do-nothing SplashWidget
+    import pyzo.core.splash
+    pyzo.core.splash.SplashWidget = LeoEmptySplashWidget
+    #
+    # Use a Leonine pyzo.config.
+    import pyzo
+    pyzo.config = LeoPyzoConfig()
+    from pyzo import loadConfig
+    loadConfig()
+        # To be replaced by LeoPyzoConfig.loadConfig.
+    #
+    # Monkey patch EditorTabs.loadFile
+    from pyzo.core.editorTabs import EditorTabs
+    old_loadFile = EditorTabs.loadFile
+
+    def loadFile(self, filename, updateTabs=True):
+        g.trace('patched loadFile:', filename)
+        if filename.endswith('leo'):
+            return None
+        return old_loadFile(self, filename, updateTabs)
+        
+    g.funcToMethod(loadFile, EditorTabs)
+
+    #@-<< pyzo monkey patches >>
+    # Do the other pyzo imports.
+    import pyzo.core.main
 #@+others
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
 class DynamicWindow(QtWidgets.QMainWindow):
