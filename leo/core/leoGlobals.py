@@ -1294,9 +1294,9 @@ class NullObject(object):
 class TracingNullObject(object):
     '''Tracing NullObject.'''
     def __init__(self, tag, *args, **keys):
-        print('='*20, 'NullObject.__init__:', tag)
+        print('='*10, 'NullObject.__init__:', id(self), tag)
     def __call__(self, *args, **keys):
-        print('NullObject.__call__:')
+        print('%30s' % 'NullObject.__call__:')
         return self
     def __repr__(self):
         return 'NullObject:'
@@ -1307,30 +1307,30 @@ class TracingNullObject(object):
     def __delattr__(self, attr):
         return self
     def __getattr__(self, attr):
-        print('NullObject.__getattr__:', attr, g.callers())
+        print('%30s' % ('NullObject.__getattr__:'), attr, g.callers())
         return self
     def __setattr__(self, attr, val):
-        print('NullObject.__setattr__:', attr, g.callers())
+        print('%30s' % ('NullObject.__setattr__:'), attr, g.callers())
         return self
     # Container methods
     def __bool__(self):
-        print('NullObject.__bool__', g.callers())
+        print('%30s' % ('NullObject.__bool__:'), id(self), g.callers(2))
         return False
     def __contains__(self, item):
-        print('NullObject.__contains__:', item)
+        print('%30s' % ('NullObject.__contains__:'), item)
         return False
     def __getitem__(self, key):
-        print('NullObject.__getitem__:', key)
+        print('%30s' % ('NullObject.__getitem__:'), key)
         raise KeyError
     def __iter__(self):
-        print('NullObject.__iter__:')
+        print('%30s' % 'NullObject.__iter__:')
         raise StopIteration
     def __len__(self):
-        print('NullObject.__len__:')
+        print('%30s' % 'NullObject.__len__:')
         return 0
     # Iteration methods: 
     def __next__(self):
-        print('NullObject.__next__:')
+        print('%30s' % 'NullObject.__next__:')
         raise StopIteration
 #@+node:ekr.20190317093640.1: *3* NOT USED: << class NullObject >>
 #@+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
