@@ -185,13 +185,15 @@ class FreeLayoutController(object):
                     return w
                 w = w.parent()
         return None
-    #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
+    #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter (changed)
     def get_top_splitter(self):
         '''Return the top splitter of c.frame.top.'''
         # Careful: we could be unit testing.
         f = self.c.frame
         if hasattr(f, 'top') and f.top:
-            return f.top.findChild(NestedSplitter).top()
+            ### return f.top.findChild(NestedSplitter).top()
+            child = f.top.findChild(NestedSplitter)
+            return child and child.top()
         else:
             return None
     #@+node:ekr.20120419095424.9927: *3* flc.loadLayouts (sets wrap=True)

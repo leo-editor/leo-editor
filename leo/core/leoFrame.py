@@ -855,12 +855,16 @@ class LeoFrame(object):
         if self.iconBar: self.iconBar.clear()
 
     def createIconBar(self):
+        if g.pyzo:
+            return g.NullObject() ###
         c = self.c
         if not self.iconBar:
             self.iconBar = self.iconBarClass(c, self.outerFrame)
         return self.iconBar
 
     def getIconBar(self):
+        if g.pyzo:
+            return g.NullObject() ###
         if not self.iconBar:
             self.iconBar = self.iconBarClass(self.c, self.outerFrame)
         return self.iconBar

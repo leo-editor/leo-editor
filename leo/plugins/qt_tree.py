@@ -46,7 +46,11 @@ class LeoQtTree(leoFrame.LeoTree):
         # Components.
         self.canvas = self # An official ivar used by Leo's core.
         self.headlineWrapper = qt_text.QHeadlineWrapper # This is a class.
-        self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
+        if g.pyzo:
+            
+            self.treeWidget = w = frame.top.leo_ui.treeWidget
+        else:
+            self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.
         # "declutter", node appearance tweaking
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
