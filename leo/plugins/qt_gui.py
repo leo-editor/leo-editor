@@ -748,7 +748,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # else:
                     # c.bodyWantsFocusNow()
         g.doHook('activate', c=c, p=c.p, v=c.p, event=event)
-    #@+node:ekr.20130921043420.21175: *4* qt_gui.setFilter
+    #@+node:ekr.20130921043420.21175: *4* qt_gui.setFilter (changed)
     # w's type is in (DynamicWindow,QMinibufferWrapper,LeoQtLog,LeoQtTree,
     # QTextEditWrapper,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
 
@@ -758,6 +758,8 @@ class LeoQtGui(leoGui.LeoGui):
         w is a wrapper object, not necessarily a QWidget.
         '''
         # gui = self
+        if g.pyzo:
+            return
         assert isinstance(obj, QtWidgets.QWidget), obj
         theFilter = qt_events.LeoQtEventFilter(c, w=w, tag=tag)
         obj.installEventFilter(theFilter)

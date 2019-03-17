@@ -1269,26 +1269,70 @@ class MatchBrackets(object):
         else:
             g.es("unmatched", repr(ch))
     #@-others
-#@+node:ekr.20031219074948.1: *3* class g.NullObject (Python Cookbook)
+#@+node:ekr.20031219074948.1: *3* class g.Tracing/NullObject
 #@@nobeautify
 
 class NullObject(object):
-    """
-    An object that does nothing, and does it very well.
-    From the Python cookbook, recipe 5.23
-    """
+    """An object that does nothing, and does it very well."""
     def __init__(self, *args, **keys): pass
     def __call__(self, *args, **keys): return self
-    # def __len__    (self): return 0 # Debatable.
     def __repr__(self): return "NullObject"
     def __str__(self): return "NullObject"
-    def __bool__(self): return False
+    # Attribute access...
     def __delattr__(self, attr): return self
     def __getattr__(self, attr): return self
     def __setattr__(self, attr, val): return self
+    # Container methods..
+    def __bool__(self): return False
+    def __contains__(self, item): return False
+    def __getitem__(self, key): raise KeyError
+    def __iter__(self): raise StopIteration
+    def __len__(self): return 0
+    # Iteration methods: 
+    def __next__(self): raise StopIteration
 
-nullObject = NullObject
-    # For compatibility
+class TracingNullObject(object):
+    '''Tracing NullObject.'''
+    def __init__(self, tag, *args, **keys):
+        print('='*20, 'NullObject.__init__:', tag)
+    def __call__(self, *args, **keys):
+        print('NullObject.__call__:')
+        return self
+    def __repr__(self):
+        return 'NullObject:'
+    def __str__(self):
+        return 'NullObject:'
+    #
+    # Attribute access...
+    def __delattr__(self, attr):
+        return self
+    def __getattr__(self, attr):
+        print('NullObject.__getattr__:', attr, g.callers())
+        return self
+    def __setattr__(self, attr, val):
+        print('NullObject.__setattr__:', attr, g.callers())
+        return self
+    # Container methods
+    def __bool__(self):
+        print('NullObject.__bool__', g.callers())
+        return False
+    def __contains__(self, item):
+        print('NullObject.__contains__:', item)
+        return False
+    def __getitem__(self, key):
+        print('NullObject.__getitem__:', key)
+        raise KeyError
+    def __iter__(self):
+        print('NullObject.__iter__:')
+        raise StopIteration
+    def __len__(self):
+        print('NullObject.__len__:')
+        return 0
+    # Iteration methods: 
+    def __next__(self):
+        print('NullObject.__next__:')
+        raise StopIteration
+#@+node:ekr.20190317093640.1: *3* NOT USED: << class NullObject >>
 #@+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
 class PosList(list):
     #@+<< docstring for PosList >>
@@ -5938,12 +5982,14 @@ def red(*args, **keys):
 
 def warning(*args, **keys):
     g.es_print(color='warning', *args, **keys)
-#@+node:ekr.20070626132332: *3* g.es
+#@+node:ekr.20070626132332: *3* g.es (changed)
 def es(*args, **keys):
     '''Put all non-keyword args to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
+    if g.pyzo:
+        return ###
     if not app or app.killed:
         return
     if app.gui and app.gui.consoleOnly:

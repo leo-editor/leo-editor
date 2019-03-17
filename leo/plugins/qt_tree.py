@@ -1179,8 +1179,11 @@ class LeoQtTree(leoFrame.LeoTree):
         wrapper = self.connectEditorWidget(e, item)
         self.sizeTreeEditor(self.c, e)
         return e, wrapper
-    #@+node:ekr.20110605121601.18421: *4* qtree.createTreeItem
+    #@+node:ekr.20110605121601.18421: *4* qtree.createTreeItem (changed)
     def createTreeItem(self, p, parent_item):
+        
+        if g.pyzo:
+            return g.TracingNullObject(tag='tree item')
 
         w = self.treeWidget
         itemOrTree = parent_item or w
