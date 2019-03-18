@@ -21,7 +21,7 @@ in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
 pyzo = False
-print('===== py3.pyzo branch: g.pyzo:', pyzo)
+print('\n===== py3.pyzo branch: g.pyzo:', pyzo)
 SQLITE = True
     # True: Enable SQLite DB.
 #@-<< global switches >>
