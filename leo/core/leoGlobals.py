@@ -1344,7 +1344,7 @@ class TracingNullObject(object):
         print('%30s' % 'NullObject.__iter__:')
         raise StopIteration
     def __len__(self):
-        print('%30s' % 'NullObject.__len__:')
+        # print('%30s' % 'NullObject.__len__:')
         return 0
     # Iteration methods: 
     def __next__(self):
