@@ -1294,9 +1294,10 @@ class NullObject(object):
 class TracingNullObject(object):
     '''Tracing NullObject.'''
     def __init__(self, tag, *args, **kwargs):
-        suppress = ('tree item',)
-        if tag not in suppress:
-            print('='*10, 'NullObject.__init__:', id(self), tag)
+        if 0:
+            suppress = ('tree item',)
+            if tag not in suppress:
+                print('='*10, 'NullObject.__init__:', id(self), tag)
     def __call__(self, *args, **kwargs):
         if 0:
             suppress = ('PyQt5.QtGui.QIcon', 'LeoQtTree.onItemCollapsed',)

@@ -120,8 +120,9 @@ if g.pyzo:
     old_loadFile = EditorTabs.loadFile
 
     def loadFile(self, filename, updateTabs=True):
-        g.trace('patched loadFile:', filename)
+        print('----- patched loadFile:', filename)
         if filename.endswith('leo'):
+            g.trace('sys.argv:', sys.argv)
             return None
         return old_loadFile(self, filename, updateTabs)
         
@@ -4462,7 +4463,7 @@ class LeoTabbedTopLevel(LeoBaseTabWidget):
         self.setMovable(False)
         tb = QtTabBarWrapper(self)
         self.setTabBar(tb)
-#@+node:ekr.20190317084647.1: ** class LeoPyzoMainWindow (MainWindow)
+#@+node:ekr.20190317084647.1: ** class LeoPyzoMainWindow (MainWindow) (new)
 if g.pyzo:
     ### from pyzo import translate
     from pyzo.core import commandline
@@ -4479,7 +4480,7 @@ if g.pyzo:
         #@+node:ekr.20190317084647.2: *3* LeoPyzoMainWindow.__init__ (override: don't hold splash)
         def __init__(self, parent=None, locale=None):
             
-            print('LeoPyzoMainWindow.__init__: SplashWidget:', repr(SplashWidget))
+            print('LeoPyzoMainWindow.__init__:') # SplashWidget:', repr(SplashWidget))
             
             QtWidgets.QMainWindow.__init__(self, parent)
             
@@ -4659,13 +4660,12 @@ if g.pyzo:
         firstStyleSheet = True
 
         def setStyleSheet(self, style, *args, **kwargs):
-            print('LeoPyzoMainWindow.setStyleSheet', style, args, kwargs)
+            # print('LeoPyzoMainWindow.setStyleSheet', style, args, kwargs)
             # A hack: Ignore the first call.
             if self.firstStyleSheet:
                 self.firstStyleSheet = False
                 return
             QtWidgets.QMainWindow.setStyleSheet(self, style)
-            
         #@+node:ekr.20190317084647.5: *3* LeoPyzoMainWindow.closeEvent (traces)
         def closeEvent(self, event):
             """ Override close event handler. """
