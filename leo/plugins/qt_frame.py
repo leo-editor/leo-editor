@@ -133,7 +133,9 @@ if g.pyzo:
     import pyzo.core.main
 #@+others
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
-class DynamicWindow(QtWidgets.QMainWindow):
+dw_base = object if g.pyzo else QtWidgets.QMainWindow
+
+class DynamicWindow(dw_base):
     '''
     A class representing all parts of the main Qt window.
 
@@ -155,7 +157,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''Ctor for the DynamicWindow class.  The main window is c.frame.top'''
             # Called from LeoQtFrame.finishCreate.
             # For qttabs gui, parent is a LeoTabbedTopLevel.
-        QtWidgets.QMainWindow.__init__(self, parent)
+        if g.pyzo:
+            pass
+        else:
+            QtWidgets.QMainWindow.__init__(self, parent)
         self.leo_c = c
         self.leo_master = None # Set in construct.
         self.leo_menubar = None # Set in createMenuBar.
@@ -200,7 +205,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def construct(self, master=None):
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         c = self.leo_c
-        self.leo_master = master
+        self.leo_master = master or g.TracingNullObject(tag='dw.leo_master')
             # A LeoTabbedTopLevel for tabbed windows.
             # None for non-tabbed windows.
         # Init the base class.
@@ -232,8 +237,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.setStatusBar(self.statusBar)
             orientation = c.config.getString('initial-split-orientation')
             self.setSplitDirection(main_splitter, secondary_splitter, orientation)
-        if hasattr(c, 'styleSheetManager'):
-            c.styleSheetManager.set_style_sheets(top=self, all=True)
+            if hasattr(c, 'styleSheetManager'):
+                c.styleSheetManager.set_style_sheets(top=self, all=True)
     #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
     def set_icon_bar_orientation(self, c):
         '''Set the orientation of the icon bar based on settings.'''
@@ -476,6 +481,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18151: *5* dw.setMainWindowOptions
     def setMainWindowOptions(self):
         '''Set default options for Leo's main window.'''
+        if g.pyzo:
+            return
         dw = self
         dw.setObjectName("MainWindow")
         dw.resize(691, 635)
@@ -1010,21 +1017,21 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 s,
                 None,
                 QtWidgets.QApplication.UnicodeUTF8)
-    #@+node:ekr.20190317084000.1: *3* dw.createPyzoMainWindow
+    #@+node:ekr.20190317084000.1: *3* dw.createPyzoMainWindow (*** new)
     def createPyzoMainWindow(self):
         '''
         Create the component ivars of the main window.
         Copied/adapted from qt_main.py.
         Called instead of uic.loadUi(ui_description_file, self)
         '''
-        dw = self
+        # dw = self
         self.leo_ui = self
         self.richTextEdit = g.TracingNullObject(tag='dw.richTextEdit')
         self.stackedWidget = g.TracingNullObject(tag='dw.stackedWidget')
         self.treeWidget = g.TracingNullObject(tag='dw.treeWidget')
         self.tabWidget = g.TracingNullObject(tag='dw.tabWidet')
             ### 
-        self.setMainWindowOptions()
+        ### self.setMainWindowOptions()
         LeoPyzoMainWindow()
         ###
             # self.createCentralWidget()
@@ -1044,7 +1051,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # self.createMenuBar()
             # self.createStatusBar(dw)
         # Signals
-        QtCore.QMetaObject.connectSlotsByName(dw)
+        ### QtCore.QMetaObject.connectSlotsByName(dw)
         ### return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18179: *3* dw.Event handlers
     #@+node:ekr.20110605121601.18140: *4* dw.closeEvent
@@ -1074,6 +1081,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18178: *3* dw.setGeometry
     def setGeometry(self, rect):
         '''Set the window geometry, but only once when using the qttabs gui.'''
+        if g.pyzo:
+            return
         if g.app.qt_use_tabs:
             m = self.leo_master
             assert self.leo_master
@@ -2147,6 +2156,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         assert c
         # returns DynamicWindow
         f.top = g.app.gui.frameFactory.createFrame(f)
+            ### Creates *pyzo* window.
+            ### f.top is a DynamicWindow.
         f.createIconBar() # A base class method.
         if g.pyzo:
             f.tree = qt_tree.LeoQtTree(c, f)
@@ -2705,6 +2716,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def resizePanesToRatio(self, ratio, ratio2):
         '''Resize splitter1 and splitter2 using the given ratios.'''
         # pylint: disable=arguments-differ
+        if g.pyzo:
+            return
         self.divideLeoSplitter1(ratio)
         self.divideLeoSplitter2(ratio2)
     #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2
@@ -3045,6 +3058,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20160424080815.2: *4* qtFrame.ratio property
     def __get_ratio(self):
         '''Return splitter ratio of the main splitter.'''
+        if g.pyzo:
+            return 0.5
         c = self.c
         free_layout = c.free_layout
         if free_layout:
@@ -3064,6 +3079,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20160424080815.3: *4* qtFrame.secondary_ratio property
     def __get_secondary_ratio(self):
         '''Return the splitter ratio of the secondary splitter.'''
+        if g.pyzo:
+            return 0.5
         c = self.c
         free_layout = c.free_layout
         if free_layout:
@@ -3084,6 +3101,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.lift()
 
     def deiconify(self):
+        if g.pyzo:
+            return
         if self.top and self.top.isMinimized(): # Bug fix: 400739.
             self.lift()
 
@@ -4894,18 +4913,21 @@ class TabbedFrameFactory(object):
         # Shorten the title.
         title = os.path.basename(c.mFileName) if c.mFileName else leoFrame.title
         tip = leoFrame.title
-        dw.setWindowTitle(tip) # 2010/1/1
-        idx = tabw.addTab(dw, title)
-        if tip: tabw.setTabToolTip(idx, tip)
-        dw.construct(master=tabw)
-        tabw.setCurrentIndex(idx)
-        g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
-        # Work around the problem with missing dirty indicator
-        # by always showing the tab.
-        tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
-        tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
-        dw.show()
-        tabw.show()
+        if g.pyzo:
+            dw.construct(master=None)
+        else:
+            dw.setWindowTitle(tip) # 2010/1/1
+            idx = tabw.addTab(dw, title)
+            if tip: tabw.setTabToolTip(idx, tip)
+            dw.construct(master=tabw)
+            tabw.setCurrentIndex(idx)
+            g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
+            # Work around the problem with missing dirty indicator
+            # by always showing the tab.
+            tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
+            tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
+            dw.show()
+            tabw.show()
         return dw
     #@+node:ekr.20110605121601.18468: *3* createMaster (TabbedFrameFactory)
     def createMaster(self):

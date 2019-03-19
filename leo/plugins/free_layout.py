@@ -189,6 +189,8 @@ class FreeLayoutController(object):
     def get_top_splitter(self):
         '''Return the top splitter of c.frame.top.'''
         # Careful: we could be unit testing.
+        if g.pyzo:
+            return None
         f = self.c.frame
         if hasattr(f, 'top') and f.top:
             ### return f.top.findChild(NestedSplitter).top()
