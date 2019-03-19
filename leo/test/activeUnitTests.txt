@@ -4541,7 +4541,7 @@ finally:
 
 if not ok: raise
 #@+node:ekr.20100131180007.5465: *4* @test class StubConfig
-class StubConfig(g.nullObject):
+class StubConfig(g.NullObject):
     pass
 
 x = StubConfig()
@@ -20463,9 +20463,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20190218131532.1: *6* A
-#@+node:ekr.20190218131532.3: *6* newHeadline
-#@+node:ekr.20190218131532.2: *6* B
+#@+node:ekr.20190319020829.1: *6* A
+#@+node:ekr.20190319020829.3: *6* newHeadline
+#@+node:ekr.20190319020829.2: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():

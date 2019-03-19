@@ -244,9 +244,9 @@
 <v t="ekr.20181102063435.1"><vh>Fails...</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20190218131532.1"><vh>A</vh></v>
-<v t="ekr.20190218131532.3"><vh>newHeadline</vh></v>
-<v t="ekr.20190218131532.2"><vh>B</vh></v>
+<v t="ekr.20190319020829.1"><vh>A</vh></v>
+<v t="ekr.20190319020829.3"><vh>newHeadline</vh></v>
+<v t="ekr.20190319020829.2"><vh>B</vh></v>
 </v>
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
@@ -1719,8 +1719,8 @@ gnx: ekr.20190113124246.31
 unl: eggs
 </t>
 <t tx="ekr.20190218125637.1"></t>
-<t tx="ekr.20190218131532.1"></t>
-<t tx="ekr.20190218131532.2"></t>
-<t tx="ekr.20190218131532.3"></t>
+<t tx="ekr.20190319020829.1"></t>
+<t tx="ekr.20190319020829.2"></t>
+<t tx="ekr.20190319020829.3"></t>
 </tnodes>
 </leo_file>
