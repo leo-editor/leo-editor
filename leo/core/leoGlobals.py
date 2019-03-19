@@ -1293,10 +1293,16 @@ class NullObject(object):
 
 class TracingNullObject(object):
     '''Tracing NullObject.'''
-    def __init__(self, tag, *args, **keys):
-        print('='*10, 'NullObject.__init__:', id(self), tag)
-    def __call__(self, *args, **keys):
-        print('%30s' % 'NullObject.__call__:')
+    def __init__(self, tag, *args, **kwargs):
+        suppress = ('tree item',)
+        if tag not in suppress:
+            print('='*10, 'NullObject.__init__:', id(self), tag)
+    def __call__(self, *args, **kwargs):
+        if 0:
+            suppress = ('PyQt5.QtGui.QIcon', 'LeoQtTree.onItemCollapsed',)
+            for z in suppress:
+                if z not in repr(args):
+                    print('%30s' % 'NullObject.__call__:', args, kwargs)
         return self
     def __repr__(self):
         return 'NullObject:'
@@ -1307,14 +1313,25 @@ class TracingNullObject(object):
     def __delattr__(self, attr):
         return self
     def __getattr__(self, attr):
-        print('%30s' % ('NullObject.__getattr__:'), attr, g.callers())
+        if 0:
+            suppress = (
+                'contractItem', 'declutter_node', 'drawNode',
+                'initAfterLoad',
+                'set_focus', 'show_tips')
+            callers = g.callers(2)
+            if not callers.endswith(suppress):
+                print('%30s' % ('NullObject.__getattr__:'), attr, g.callers())
         return self
     def __setattr__(self, attr, val):
         print('%30s' % ('NullObject.__setattr__:'), attr, g.callers())
         return self
     # Container methods
     def __bool__(self):
-        print('%30s' % ('NullObject.__bool__:'), id(self), g.callers(2))
+        if 0:
+            suppress = ('getShortcut','on_idle', 'setItemText')
+            callers = g.callers(2)
+            if not callers.endswith(suppress):
+                print('%30s' % ('NullObject.__bool__:'), id(self), callers)
         return False
     def __contains__(self, item):
         print('%30s' % ('NullObject.__contains__:'), item)

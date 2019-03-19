@@ -206,6 +206,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.reloadSettings()
         if g.pyzo:
+            g.app.forgetOpenFile(c.fileName(), force=True)
+                ### Temp hack.
             c.frame.body = g.TracingNullObject(tag='c.frame.body')
             c.frame.log = g.TracingNullObject(tag='c.frame.log')
                 ###
@@ -501,6 +503,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         shape=QtWidgets.QFrame.NoFrame,
     ):
         '''Create a Qt Frame.'''
+        if g.pyzo:
+            g.trace('(DynamicWindow)', name)
         w = QtWidgets.QFrame(parent)
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
         w.setFrameShape(shape)
@@ -4879,6 +4883,8 @@ class TabbedFrameFactory(object):
     #@+node:ekr.20110605121601.18466: *3* createFrame (TabbedFrameFactory)
     def createFrame(self, leoFrame):
 
+        if g.pyzo:
+            g.trace('(TabbedFrameFactory)', leoFrame)
         c = leoFrame.c
         if self.masterFrame is None:
             self.createMaster()
