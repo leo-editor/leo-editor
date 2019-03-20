@@ -2481,7 +2481,7 @@ class PygmentsColorizer(BaseColorizer):
             else:
                 mode = None
             return self.init_mode_from_module(name, mode)
-    #@+node:ekr.20190319151826.16: *5* pygments.init_mode_from_module
+    #@+node:ekr.20190319151826.16: *5* pygments.init_mode_from_module (changed)
     def init_mode_from_module(self, name, mode):
         '''Name may be a language name or a delegate name.
            Mode is a python module or class containing all
@@ -2822,7 +2822,7 @@ class PygmentsColorizer(BaseColorizer):
                     i += max(1, n)
                 else:
                     i += 1
-    #@+node:ekr.20190319151826.78: *3* pygments.mainLoop (called from recolor)
+    #@+node:ekr.20190319151826.78: *3* pygments.mainLoop (called from recolor) (changed)
     def mainLoop(self, n, s):
         '''Colorize a *single* line s, starting in state n.'''
         trace = True and not g.unitTesting
