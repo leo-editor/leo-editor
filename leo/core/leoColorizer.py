@@ -2415,6 +2415,7 @@ class PygmentsColorizer(BaseColorizer):
             except Exception: # Recover after a user error.
                 g.es_exception()
                 wrapper.tag_configure(name, foreground=default_color)
+        ### g.printObj(wrapper.configDict, tag='configDict')
         # underline=var doesn't seem to work.
         if 0: # self.use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
             wrapper.tag_configure("link", underline=1) # defined
@@ -3705,32 +3706,37 @@ class PygmentsColorizer(BaseColorizer):
                     i += max(1, n)
                 else:
                     i += 1
-    #@+node:ekr.20190319151826.78: *3* pygments.mainLoop
+    #@+node:ekr.20190319151826.78: *3* pygments.mainLoop (called from recolor)
     def mainLoop(self, n, s):
         '''Colorize a *single* line s, starting in state n.'''
-        f = self.restartDict.get(n)
-        i = f(s) if f else 0
-        while i < len(s):
-            progress = i
-            functions = self.rulesDict.get(s[i], [])
-            # g.printList(functions)
-            for f in functions:
-                n = f(self, s, i)
-                if n is None:
-                    g.trace('Can not happen: n is None', repr(f))
-                    break
-                elif n > 0: # Success. The match has already been colored.
-                    i += n
-                    break
-                elif n < 0: # Total failure.
-                    i += -n
-                    break
-                else: # Partial failure: Do not break or change i!
-                    pass
-            else:
-                i += 1
-            assert i > progress
-        # Don't even *think* about changing state here.
+        trace = True and not g.unitTesting
+        from pygments.lexers import PythonLexer
+            ### Must be generalized.
+        if trace:
+            print('')
+            g.trace('state:%s line: %r\n' % (n, s))
+        d = {
+            'Keyword': 'keyword1',
+            'Keyword.Namespace': 'keyword1',
+            'Literal.String.Doc': 'literal1',
+                # A **full** docstring.
+            'Literal.String.Interpol': 'literal1',
+            'Literal.String.Single': 'literal1',
+            'Comment.Single': 'comment1',
+            # 'xt': 'blank',
+            'Operator': 'operator',
+        }
+        i = 0
+        for token in PythonLexer().get_tokens(s):
+            kind, val = token
+            j = i + len(val)
+            kind = repr(kind).lstrip('Token.')
+            if trace and kind not in ('xt', 'Name', 'Operator', 'Punctuation'):
+                print('%35r %2s %2s %r' % (kind, i, j, val))
+            tag = d.get(kind)
+            if tag:
+                self.setTag(tag, s, i, j)
+            i = j
     #@+node:ekr.20190319151826.79: *3* pygments.recolor (color one line)
     def recolor(self, s):
         '''
