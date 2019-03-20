@@ -2938,7 +2938,7 @@ class PygmentsColorizer(BaseColorizer):
                     i += max(1, n)
                 else:
                     i += 1
-    #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop (called from recolor) (changed)
+    #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop (changed)
     format_dict = {
         'Keyword': 'keyword1',
         'Keyword.Namespace': 'keyword1',
@@ -2955,11 +2955,12 @@ class PygmentsColorizer(BaseColorizer):
         '''Colorize a *single* line s, starting in state n.'''
         # Based on code copyright (c) Jupyter Development Team.
         # Distributed under the terms of the Modified BSD License.
-        trace = g.pygments and not g.unitTesting
+        trace = False and g.pygments and not g.unitTesting
         highlighter = self.highlighter
         if not getattr(self, '_lexer', None):
             self._lexer = Lexer() ###
-            g.trace('===== new lexer:', self._lexer)
+            if trace:
+                g.trace('===== new lexer:', self._lexer)
         if trace:
             print('')
             g.trace('state:%s line: %s' % (n, s))
@@ -3000,16 +3001,20 @@ class PygmentsColorizer(BaseColorizer):
                         print('%30r %3s %3s %r' % (kind, i, j, val))
                     self.setTag(tag, s, i, j)
                 i = j
-    #@+node:ekr.20190319151826.79: *3* pyg_c.recolor (color one line)
+    #@+node:ekr.20190319151826.79: *3* pyg_c.recolor (calls mainloop)
     def recolor(self, s):
         '''
         PygmentsColorizer.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
         '''
+        trace = False and g.pygments and not g.unitTesting
         p = self.c.p
         self.recolorCount += 1
         block_n = self.currentBlockNumber()
         n = self.prevState()
+        if trace:
+            print('')
+            g.trace(n, repr(s), '\n')
         if p.v != self.old_v:
             self.updateSyntaxColorer(p) # Force a full recolor
             assert self.language
@@ -3024,7 +3029,7 @@ class PygmentsColorizer(BaseColorizer):
             n = self.initBlock0()
         n = self.setState(n) # Required.
         # Always color the line, even if colorizing is disabled.
-        if s:
+        if s is not None:
             self.mainLoop(n, s)
     #@+node:ekr.20190319151826.80: *4* pyg_c.initBlock0
     def initBlock0 (self):
