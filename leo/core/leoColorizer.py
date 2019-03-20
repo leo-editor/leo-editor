@@ -3,19 +3,31 @@
 #@+node:ekr.20140827092102.18574: * @file leoColorizer.py
 #@@first
 '''All colorizing code for Leo.'''
+
+# Indicated code are copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 #@+<< imports >>
 #@+node:ekr.20140827092102.18575: ** << imports >> (leoColorizer.py)
-import leo.core.leoGlobals as g
-from leo.core.leoQt import Qsci, QtGui, QtWidgets # isQt5, QtCore
-# try:
-    # import builtins # Python 3
-# except ImportError:
-    # import __builtin__ as builtins # Python 2.
 import re
 import string
 # import time
+import leo.core.leoGlobals as g
+from leo.core.leoQt import Qsci, QtGui, QtWidgets # isQt5, QtCore
+if g.pygments:
+    # pylint: disable=no-name-in-module
+        # PythonLexer or PythonLexer3 will be undefined.
+    try:
+        # Jupyter imports.
+        ### from leo.core.leoQt import QtGui
+        ### from ipython_genutils.py3compat import PY3, string_types
+        ### from pygments.formatters.html import HtmlFormatter
+        from pygments.lexer import RegexLexer, _TokenType, Text, Error
+        from pygments.lexers import PythonLexer, Python3Lexer
+        from pygments.styles import get_style_by_name
+    except ImportError:
+        g.pygments = None
 #@-<< imports >>
-# pylint: disable=anomalous-backslash-in-string
 #@+others
 #@+node:ekr.20170127141855.1: ** class BaseColorizer
 class BaseColorizer(object):
@@ -36,7 +48,7 @@ class BaseColorizer(object):
 
     #@+others
     #@+node:ekr.20170127142001.1: *3* bc.updateSyntaxColorer & helpers
-    at_language_pattern = re.compile('^@language\s+([\w-]+)', re.MULTILINE)
+    at_language_pattern = re.compile(r'^@language\s+([\w-]+)', re.MULTILINE)
 
     def updateSyntaxColorer(self, p):
         '''
@@ -2266,55 +2278,56 @@ class PygmentsColorizer(BaseColorizer):
             "body_text_font_slant", "body_text_font_weight",
             c.config.defaultBodyFontSize)
         self.color_tags_list = []
-    #@+node:ekr.20190319151826.9: *4* pygments.addLeoRules
+    #@+node:ekr.20190319151826.9: *4* pygments.addLeoRules (to do)
     def addLeoRules(self, theDict):
         '''Put Leo-specific rules to theList.'''
         # pylint: disable=no-member
         # Python 2 uses rule.im_func. Python 3 uses rule.__func__.
-        table = [
-            # Rules added at front are added in **reverse** order.
-            ('@', self.match_leo_keywords, True), # Called after all other Leo matchers.
-                # Debatable: Leo keywords override langauge keywords.
-            ('@', self.match_at_color, True),
-            ('@', self.match_at_killcolor, True),
-            ('@', self.match_at_language, True), # 2011/01/17
-            ('@', self.match_at_nocolor, True),
-            ('@', self.match_at_nocolor_node, True),
-            ('@', self.match_at_wrap, True), # 2015/06/22
-            ('@', self.match_doc_part, True),
-            ('f', self.match_url_f, True),
-            ('g', self.match_url_g, True),
-            ('h', self.match_url_h, True),
-            ('m', self.match_url_m, True),
-            ('n', self.match_url_n, True),
-            ('p', self.match_url_p, True),
-            ('t', self.match_url_t, True),
-            ('u', self.match_unl, True),
-            ('w', self.match_url_w, True),
-            # ('<', self.match_image, True),
-            ('<', self.match_section_ref, True), # Called **first**.
-            # Rules added at back are added in normal order.
-            (' ', self.match_blanks, False),
-            ('\t', self.match_tabs, False),
-        ]
-        if self.c.config.getBool("color-trailing-whitespace"):
-            table += [
-                (' ', self.match_trailing_ws, True),
-                ('\t', self.match_trailing_ws, True),
-            ]
-        for ch, rule, atFront, in table:
-            # Replace the bound method by an unbound method.
-            if g.isPython3:
-                rule = rule.__func__
-            else:
-                rule = rule.im_func
-            theList = theDict.get(ch, [])
-            if rule not in theList:
-                if atFront:
-                    theList.insert(0, rule)
-                else:
-                    theList.append(rule)
-                theDict[ch] = theList
+        ###
+            # table = [
+                # # Rules added at front are added in **reverse** order.
+                # ('@', self.match_leo_keywords, True), # Called after all other Leo matchers.
+                    # # Debatable: Leo keywords override langauge keywords.
+                # ('@', self.match_at_color, True),
+                # ('@', self.match_at_killcolor, True),
+                # ('@', self.match_at_language, True), # 2011/01/17
+                # ('@', self.match_at_nocolor, True),
+                # ('@', self.match_at_nocolor_node, True),
+                # ('@', self.match_at_wrap, True), # 2015/06/22
+                # ('@', self.match_doc_part, True),
+                # ('f', self.match_url_f, True),
+                # ('g', self.match_url_g, True),
+                # ('h', self.match_url_h, True),
+                # ('m', self.match_url_m, True),
+                # ('n', self.match_url_n, True),
+                # ('p', self.match_url_p, True),
+                # ('t', self.match_url_t, True),
+                # ('u', self.match_unl, True),
+                # ('w', self.match_url_w, True),
+                # # ('<', self.match_image, True),
+                # ('<', self.match_section_ref, True), # Called **first**.
+                # # Rules added at back are added in normal order.
+                # (' ', self.match_blanks, False),
+                # ('\t', self.match_tabs, False),
+            # ]
+            # if self.c.config.getBool("color-trailing-whitespace"):
+                # table += [
+                    # (' ', self.match_trailing_ws, True),
+                    # ('\t', self.match_trailing_ws, True),
+                # ]
+            # for ch, rule, atFront, in table:
+                # # Replace the bound method by an unbound method.
+                # if g.isPython3:
+                    # rule = rule.__func__
+                # else:
+                    # rule = rule.im_func
+                # theList = theDict.get(ch, [])
+                # if rule not in theList:
+                    # if atFront:
+                        # theList.insert(0, rule)
+                    # else:
+                        # theList.append(rule)
+                    # theDict[ch] = theList
     #@+node:ekr.20190319151826.10: *4* pygments.configure_hard_tab_width
     def configure_hard_tab_width(self):
         '''Set the width of a hard tab.
@@ -2826,11 +2839,16 @@ class PygmentsColorizer(BaseColorizer):
     def mainLoop(self, n, s):
         '''Colorize a *single* line s, starting in state n.'''
         trace = True and not g.unitTesting
-        from pygments.lexers import PythonLexer
+        # pylint: disable=no-name-in-module
+        if g.isPython3:
+            from pygments.lexers import Python3Lexer as Lexer
+        else:
+            from pygments.lexers import PythonLexer as Lexer
             ### Must be generalized.
         if trace:
             print('')
             g.trace('state:%s line: %r\n' % (n, s))
+        
         d = {
             'Keyword': 'keyword1',
             'Keyword.Namespace': 'keyword1',
@@ -2843,7 +2861,7 @@ class PygmentsColorizer(BaseColorizer):
             'Operator': 'operator',
         }
         i = 0
-        for token in PythonLexer().get_tokens(s):
+        for token in Lexer().get_tokens(s):
             kind, val = token
             j = i + len(val)
             kind = repr(kind).lstrip('Token.')
@@ -2890,6 +2908,18 @@ class PygmentsColorizer(BaseColorizer):
         else:
             n = self.setRestart(self.restartNoColor)
         return n
+    #@+node:ekr.20190320084740.1: *4* pygments.restartNoColor
+    def restartNoColor(self, s):
+        if self.trace_leo_matches:
+            g.trace(repr(s))
+        if g.match_word(s, 0, '@color'):
+            n = self.setRestart(self.restartColor)
+            self.setState(n) # Enables coloring of *this* line.
+            self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
+            return len('@color')
+        else:
+            self.setRestart(self.restartNoColor)
+            return len(s) # Match everything.
     #@+node:ekr.20190319151826.81: *4* pygments.setInitialStateNumber
     def setInitialStateNumber(self):
         '''
@@ -3148,6 +3178,248 @@ class QScintillaColorizer(BaseColorizer):
             elif 0:
                 g.trace('no lexer for', class_name)
         return d
+    #@-others
+#@+node:ekr.20190320062618.1: ** Jupyter classes
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+#@+node:ekr.20190320062624.2: *3* RegexLexer.get_tokens_unprocessed
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
+def get_tokens_unprocessed(self, text, stack=('root',)):
+    """
+    Split ``text`` into (tokentype, text) pairs.
+
+    Monkeypatched to store the final stack on the object itself.
+
+    The `text` parameter this gets passed is only the current line, so to
+    highlight things like multiline strings correctly, we need to retrieve
+    the state from the previous line (this is done in PygmentsHighlighter,
+    below), and use it to continue processing the current line.
+    """
+    pos = 0
+    tokendefs = self._tokens
+    if hasattr(self, '_saved_state_stack'):
+        statestack = list(self._saved_state_stack)
+    else:
+        statestack = list(stack)
+    statetokens = tokendefs[statestack[-1]]
+    while 1:
+        for rexmatch, action, new_state in statetokens:
+            m = rexmatch(text, pos)
+            if m:
+                if action is not None:
+                    # pylint: disable=unidiomatic-typecheck
+                        ### EKR: Use isinstance?
+                    if type(action) is _TokenType:
+                        yield pos, action, m.group()
+                    else:
+                        for item in action(self, m):
+                            yield item
+                pos = m.end()
+                if new_state is not None:
+                    # state transition
+                    if isinstance(new_state, tuple):
+                        for state in new_state:
+                            if state == '#pop':
+                                statestack.pop()
+                            elif state == '#push':
+                                statestack.append(statestack[-1])
+                            else:
+                                statestack.append(state)
+                    elif isinstance(new_state, int):
+                        # pop
+                        del statestack[new_state:]
+                    elif new_state == '#push':
+                        statestack.append(statestack[-1])
+                    else:
+                        assert False, "wrong state def: %r" % new_state
+                    statetokens = tokendefs[statestack[-1]]
+                break
+        else:
+            try:
+                if text[pos] == '\n':
+                    # at EOL, reset state to "root"
+                    pos += 1
+                    statestack = ['root']
+                    statetokens = tokendefs['root']
+                    yield pos, Text, u'\n'
+                    continue
+                yield pos, Error, text[pos]
+                pos += 1
+            except IndexError:
+                break
+    self._saved_state_stack = list(statestack)
+    
+# Monkeypatch!
+if g.pygments:
+    RegexLexer.get_tokens_unprocessed = get_tokens_unprocessed
+#@+node:ekr.20190320062624.3: *3* class PygmentsBlockUserData(QTextBlockUserData)
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
+class PygmentsBlockUserData(QtGui.QTextBlockUserData):
+    """ Storage for the user data associated with each line."""
+
+    syntax_stack = ('root',)
+
+    def __init__(self, **kwds):
+        for key, value in kwds.items():
+            setattr(self, key, value)
+        QtGui.QTextBlockUserData.__init__(self)
+
+    def __repr__(self):
+        attrs = ['syntax_stack']
+        kwds = ', '.join([
+            '%s=%r' % (attr, getattr(self, attr))
+                for attr in attrs
+        ])
+        return 'PygmentsBlockUserData(%s)' % kwds
+#@+node:ekr.20190320062624.6: *3* class PygmentsHighlighter(QSyntaxHighlighter)
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
+class PygmentsHighlighter(QtGui.QSyntaxHighlighter):
+    """ Syntax highlighter that uses Pygments for parsing. """
+
+    #@+others
+    #@+node:ekr.20190320062624.7: *4* ph.__init__
+    def __init__(self, parent, lexer=None):
+        
+        super(PygmentsHighlighter, self).__init__(parent)
+        self._document = self.document()
+        ### self._formatter = HtmlFormatter(nowrap=True)
+        self.set_style('default')
+        if lexer is not None:
+            self._lexer = lexer
+        elif g.isPython3:
+            self._lexer = Python3Lexer()
+        else:
+            self._lexer = PythonLexer()
+    #@+node:ekr.20190320062624.8: *4* ph.highlightBlock
+    # QSyntaxHighlighter interface
+
+    def highlightBlock(self, string):
+        """ Highlight a block of text.
+        """
+        prev_data = self.currentBlock().previous().userData()
+        if prev_data is not None:
+            self._lexer._saved_state_stack = prev_data.syntax_stack
+        elif hasattr(self._lexer, '_saved_state_stack'):
+            del self._lexer._saved_state_stack
+        #
+        # Lex the text using Pygments
+        index = 0
+        for token, text in self._lexer.get_tokens(string):
+            length = len(text)
+            self.setFormat(index, length, self._get_format(token))
+            index += length
+
+        if hasattr(self._lexer, '_saved_state_stack'):
+            data = PygmentsBlockUserData(
+                syntax_stack=self._lexer._saved_state_stack)
+            self.currentBlock().setUserData(data)
+            # Clean up for the next go-round.
+            del self._lexer._saved_state_stack
+
+    #@+node:ekr.20190320062624.9: *4* ph.set_style
+    def set_style(self, style):
+        """ Sets the style to the specified Pygments style.
+        """
+        ###if isinstance(style, string_types):
+        if g.isString(style):
+            style = get_style_by_name(style)
+        self._style = style
+        self._clear_caches()
+    #@+node:ekr.20190320062624.10: *4* ph.set_style_sheet (not used)
+    ###
+    # def set_style_sheet(self, stylesheet):
+        # """
+        # Sets a CSS stylesheet. The classes in the stylesheet should
+        # correspond to those generated by:
+
+            # pygmentize -S <style> -f html
+
+        # Note that 'set_style' and 'set_style_sheet' completely override each
+        # other, i.e. they cannot be used in conjunction.
+        # """
+        # self._document.setDefaultStyleSheet(stylesheet)
+        # self._style = None
+        # self._clear_caches()
+    #@+node:ekr.20190320063234.1: *4* Protected interface
+    # Protected interface
+    #@+node:ekr.20190320062624.11: *5* ph._clear_caches
+    def _clear_caches(self):
+        """ Clear caches for brushes and formats.
+        """
+        self._brushes = {}
+        self._formats = {}
+    #@+node:ekr.20190320062624.12: *5* ph._get_format & helpers
+    def _get_format(self, token):
+        """ Returns a QTextCharFormat for token or None.
+        """
+        if token in self._formats:
+            return self._formats[token]
+        if self._style is None:
+            g.trace('**** no _style ***')
+            result = QtGui.QTextCharFormat()
+            ### result = self._get_format_from_document(token, self._document)
+        else:
+            result = self._get_format_from_style(token, self._style)
+        self._formats[token] = result
+        return result
+    #@+node:ekr.20190320062624.13: *6* ph._get_format_from_document (to be deleted)
+    def _get_format_from_document(self, token, document):
+        """ Returns a QTextCharFormat for token by
+        """
+        code, html = next(self._formatter._format_lines([(token, u'dummy')]))
+        self._document.setHtml(html)
+        return QtGui.QTextCursor(self._document).charFormat()
+    #@+node:ekr.20190320062624.14: *6* ph._get_format_from_style
+    def _get_format_from_style(self, token, style):
+        """ Returns a QTextCharFormat for token by reading a Pygments style.
+        """
+        result = QtGui.QTextCharFormat()
+        for key, value in style.style_for_token(token).items():
+            if value:
+                if key == 'color':
+                    result.setForeground(self._get_brush(value))
+                elif key == 'bgcolor':
+                    result.setBackground(self._get_brush(value))
+                elif key == 'bold':
+                    result.setFontWeight(QtGui.QFont.Bold)
+                elif key == 'italic':
+                    result.setFontItalic(True)
+                elif key == 'underline':
+                    result.setUnderlineStyle(
+                        QtGui.QTextCharFormat.SingleUnderline)
+                elif key == 'sans':
+                    result.setFontStyleHint(QtGui.QFont.SansSerif)
+                elif key == 'roman':
+                    result.setFontStyleHint(QtGui.QFont.Times)
+                elif key == 'mono':
+                    result.setFontStyleHint(QtGui.QFont.TypeWriter)
+        return result
+    #@+node:ekr.20190320062624.15: *6* ph._get_brush
+    def _get_brush(self, color):
+        """ Returns a brush for the color.
+        """
+        result = self._brushes.get(color)
+        if result is None:
+            qcolor = self._get_color(color)
+            result = QtGui.QBrush(qcolor)
+            self._brushes[color] = result
+        return result
+    #@+node:ekr.20190320062624.16: *6* ph._get_color
+    def _get_color(self, color):
+        """ Returns a QColor built from a Pygments color string.
+        """
+        qcolor = QtGui.QColor()
+        qcolor.setRgb(
+            int(color[:2], base=16),
+            int(color[2:4], base=16),
+            int(color[4:6], base=16))
+        return qcolor
     #@-others
 #@-others
 #@@language python
