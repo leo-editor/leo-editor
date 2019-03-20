@@ -21,15 +21,19 @@ if g.pygments:
         # Jupyter imports.
         ### from leo.core.leoQt import QtGui
         ### from ipython_genutils.py3compat import PY3, string_types
-        ### from pygments.formatters.html import HtmlFormatter
+        from pygments.formatters.html import HtmlFormatter
         from pygments.lexer import RegexLexer, _TokenType, Text, Error
-        from pygments.lexers import PythonLexer, Python3Lexer
+        # from pygments.lexers import PythonLexer, Python3Lexer
+        if g.isPython3:
+            from pygments.lexers import Python3Lexer as Lexer # pylint: disable=no-name-in-module
+        else:
+            from pygments.lexers import PythonLexer as Lexer # pylint: disable=no-name-in-module
         from pygments.styles import get_style_by_name
     except ImportError:
         g.pygments = None
 #@-<< imports >>
 #@+others
-#@+node:ekr.20170127141855.1: ** class BaseColorizer
+#@+node:ekr.20170127141855.1: ** class BaseColorizer (object)
 class BaseColorizer(object):
     '''The base class for all Leo colorizers.'''
 
@@ -40,6 +44,7 @@ class BaseColorizer(object):
         self.enabled = False
         self.full_recolor_count = 0
         self.highlighter = g.NullObject()
+            # Overridden in subclasses.
         self.showInvisibles = False
 
     def init(self, p):
@@ -1981,16 +1986,20 @@ class JEditColorizer(BaseColorizer):
         self.tagCount += 1
         self.highlighter.setFormat(i, j - i, format)
     #@-others
-#@+node:ekr.20110605121601.18565: ** class LeoHighlighter
-# This is c.frame.body.colorizer.highlighter
+#@+node:ekr.20110605121601.18565: ** class LeoHighlighter (QSyntaxHighlighter)
 # Careful: we may be running from the bridge.
 if QtGui:
+    
 
     class LeoHighlighter(QtGui.QSyntaxHighlighter):
-        '''A subclass of QSyntaxHighlighter that overrides
+        '''
+        A subclass of QSyntaxHighlighter that overrides
         the highlightBlock and rehighlight methods.
 
-        All actual syntax coloring is done in the jeditColorer class.'''
+        All actual syntax coloring is done in the highlighter class.
+        '''
+        # This is c.frame.body.colorizer.highlighter
+        
         #@+others
         #@+node:ekr.20110605121601.18566: *3* leo_h.ctor
         def __init__(self, c, colorizer, document):
@@ -2002,6 +2011,13 @@ if QtGui:
                 # Alas, a QsciDocument is not a QTextDocument.
             QtGui.QSyntaxHighlighter.__init__(self, document)
                 # Init the base class.
+            if g.pygments:
+                self._brushes = {}
+                self._document = document
+                self._formats = {}
+                self._formatter = HtmlFormatter(nowrap=True)
+                self._style = None
+                self.setStyle('default')
         #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
         def highlightBlock(self, s):
             """ Called by QSyntaxHighlighter """
@@ -2009,8 +2025,98 @@ if QtGui:
             s = g.toUnicode(s)
             self.colorizer.recolor(s)
                 # Highlight just one line.
+        #@+node:ekr.20190320154014.1: *3* leo_h: From PygmentsHighlighter
+        if g.pygments:
+            #
+            # All code in this tree is based on PygmentsHighlighter.
+            #
+            # Copyright (c) Jupyter Development Team.
+            # Distributed under the terms of the Modified BSD License.
+            #@+others
+            #@+node:ekr.20190320153605.1: *4* leo_h._get_format & helpers
+            def _get_format(self, token):
+                """ Returns a QTextCharFormat for token or None.
+                """
+                if token in self._formats:
+                    return self._formats[token]
+                if self._style is None:
+                    result = self._get_format_from_document(token, self._document)
+                else:
+                    result = self._get_format_from_style(token, self._style)
+                result = self._get_format_from_style(token, self._style)
+                self._formats[token] = result
+                return result
+            #@+node:ekr.20190320162831.1: *5* pyg_h._get_format_from_document
+            def _get_format_from_document(self, token, document):
+                """ Returns a QTextCharFormat for token by
+                """
+                ### These lines cause unbounded recursion.
+                    # code, html = next(self._formatter._format_lines([(token, u'dummy')]))
+                    # self._document.setHtml(html)
+                format = QtGui.QTextCursor(self._document).charFormat()
+                return format
+            #@+node:ekr.20190320153716.1: *5* leo_h._get_format_from_style
+            def _get_format_from_style(self, token, style):
+                """ Returns a QTextCharFormat for token by reading a Pygments style.
+                """
+                result = QtGui.QTextCharFormat()
+                for key, value in style.style_for_token(token).items():
+                    if value:
+                        if key == 'color':
+                            result.setForeground(self._get_brush(value))
+                        elif key == 'bgcolor':
+                            result.setBackground(self._get_brush(value))
+                        elif key == 'bold':
+                            result.setFontWeight(QtGui.QFont.Bold)
+                        elif key == 'italic':
+                            result.setFontItalic(True)
+                        elif key == 'underline':
+                            result.setUnderlineStyle(
+                                QtGui.QTextCharFormat.SingleUnderline)
+                        elif key == 'sans':
+                            result.setFontStyleHint(QtGui.QFont.SansSerif)
+                        elif key == 'roman':
+                            result.setFontStyleHint(QtGui.QFont.Times)
+                        elif key == 'mono':
+                            result.setFontStyleHint(QtGui.QFont.TypeWriter)
+                return result
+            #@+node:ekr.20190320153958.1: *4* leo_h.setStyle
+            def setStyle(self, style):
+                """ Sets the style to the specified Pygments style.
+                """
+                ### if isinstance(style, string_types):
+                if g.isString(style):
+                    style = get_style_by_name(style)
+                self._style = style
+                self._clear_caches()
+            #@+node:ekr.20190320154604.1: *4* leo_h.clear_caches
+            def _clear_caches(self):
+                """ Clear caches for brushes and formats.
+                """
+                self._brushes = {}
+                self._formats = {}
+            #@+node:ekr.20190320154752.1: *4* leo_h._get_brush/color
+            def _get_brush(self, color):
+                """ Returns a brush for the color.
+                """
+                result = self._brushes.get(color)
+                if result is None:
+                    qcolor = self._get_color(color)
+                    result = QtGui.QBrush(qcolor)
+                    self._brushes[color] = result
+                return result
+
+            def _get_color(self, color):
+                """ Returns a QColor built from a Pygments color string.
+                """
+                qcolor = QtGui.QColor()
+                qcolor.setRgb(int(color[:2], base=16),
+                              int(color[2:4], base=16),
+                              int(color[4:6], base=16))
+                return qcolor
+            #@-others
         #@-others
-#@+node:ekr.20140906095826.18717: ** class NullScintillaLexer
+#@+node:ekr.20140906095826.18717: ** class NullScintillaLexer (QsciLexerCustom)
 if Qsci:
 
     class NullScintillaLexer(Qsci.QsciLexerCustom):
@@ -2042,19 +2148,16 @@ if Qsci:
 #@+node:ekr.20190319151826.1: ** class PygmentsColorizer(BaseColorizer)
 class PygmentsColorizer(BaseColorizer):
     '''
-    This class adapts pygments tokents to QSyntaxHighlighter.
-    
-
+    This class adapts pygments tokens to QSyntaxHighlighter.
     '''
     # This is c.frame.body.colorizer
 
     #@+others
-    #@+node:ekr.20190319151826.2: *3*  pygments.Birth & init
-    #@+node:ekr.20190319151826.3: *4* pygments.__init & helpers
+    #@+node:ekr.20190319151826.2: *3*  pyg_c.Birth & init
+    #@+node:ekr.20190319151826.3: *4* pyg_c.__init & helpers
     def __init__(self, c, widget, wrapper):
         '''Ctor for JEditColorizer class.'''
         BaseColorizer.__init__(self,c)
-        assert self.c, g.callers()
         self.widget = widget
         self.wrapper = wrapper
         # This assert is not true when using multiple body editors
@@ -2147,12 +2250,12 @@ class PygmentsColorizer(BaseColorizer):
         self.defineLeoKeywordsDict()
         self.defineDefaultColorsDict()
         self.defineDefaultFontDict()
-    #@+node:ekr.20190319151826.4: *5* pygments.defineLeoKeywordsDict
+    #@+node:ekr.20190319151826.4: *5* pyg_c.defineLeoKeywordsDict
     def defineLeoKeywordsDict(self):
         self.leoKeywordsDict = {}
         for key in g.globalDirectiveList:
             self.leoKeywordsDict[key] = 'leokeyword'
-    #@+node:ekr.20190319151826.5: *5* pygments.defineDefaultColorsDict
+    #@+node:ekr.20190319151826.5: *5* pyg_c.defineDefaultColorsDict
     #@@nobeautify
 
     def defineDefaultColorsDict (self):
@@ -2204,7 +2307,7 @@ class PygmentsColorizer(BaseColorizer):
             'operator'  :('operator_color', 'black'), # 2014/09/17
             'trailing_whitespace': ('trailing_whitespace_color', '#808080'),
         }
-    #@+node:ekr.20190319151826.6: *5* pygments.defineDefaultFontDict
+    #@+node:ekr.20190319151826.6: *5* pyg_c.defineDefaultFontDict
     #@@nobeautify
 
     def defineDefaultFontDict (self):
@@ -2258,7 +2361,7 @@ class PygmentsColorizer(BaseColorizer):
                 'operator'      :'operator_font',
                 'trailing_whitespace' :'trailing_whitespace_font',
         }
-    #@+node:ekr.20190319151826.7: *5* pygments.reloadSettings
+    #@+node:ekr.20190319151826.7: *5* pyg_c.reloadSettings
     def reloadSettings(self):
         c = self.c
         self.showInvisibles = c.config.getBool("show-invisibles-by-default")
@@ -2278,7 +2381,7 @@ class PygmentsColorizer(BaseColorizer):
             "body_text_font_slant", "body_text_font_weight",
             c.config.defaultBodyFontSize)
         self.color_tags_list = []
-    #@+node:ekr.20190319151826.9: *4* pygments.addLeoRules (to do)
+    #@+node:ekr.20190319151826.9: *4* pyg_c.addLeoRules (to do)
     def addLeoRules(self, theDict):
         '''Put Leo-specific rules to theList.'''
         # pylint: disable=no-member
@@ -2328,7 +2431,7 @@ class PygmentsColorizer(BaseColorizer):
                     # else:
                         # theList.append(rule)
                     # theDict[ch] = theList
-    #@+node:ekr.20190319151826.10: *4* pygments.configure_hard_tab_width
+    #@+node:ekr.20190319151826.10: *4* pyg_c.configure_hard_tab_width
     def configure_hard_tab_width(self):
         '''Set the width of a hard tab.
         The stated default is 40, but apparently it must be set explicitly.
@@ -2345,7 +2448,7 @@ class PygmentsColorizer(BaseColorizer):
         else:
             # To do: configure the QScintilla widget.
             pass
-    #@+node:ekr.20190319151826.11: *4* pygments.configure_tags
+    #@+node:ekr.20190319151826.11: *4* pyg_c.configure_tags
     def configure_tags(self):
         '''Configure all tags.'''
         c = self.c
@@ -2421,7 +2524,7 @@ class PygmentsColorizer(BaseColorizer):
             wrapper.end_tag_configure()
         except AttributeError:
             pass
-    #@+node:ekr.20190319151826.12: *4* pygments.configure_variable_tags
+    #@+node:ekr.20190319151826.12: *4* pyg_c.configure_variable_tags
     def configure_variable_tags(self):
         c = self.c
         wrapper = self.wrapper
@@ -2442,7 +2545,7 @@ class PygmentsColorizer(BaseColorizer):
         # Special case:
         if not self.showInvisibles:
             wrapper.tag_configure("elide", elide="1")
-    #@+node:ekr.20190319151826.13: *4* pygments.init
+    #@+node:ekr.20190319151826.13: *4* pyg_c.init
     def init(self, p):
         '''Init the colorizer, but *not* state. p is for tracing only.'''
         #
@@ -2461,7 +2564,7 @@ class PygmentsColorizer(BaseColorizer):
         # Must be done to support per-language @font/@color settings.
         self.configure_tags()
         self.configure_hard_tab_width() # 2011/10/04
-    #@+node:ekr.20190319151826.14: *4* pygments.init_all_state
+    #@+node:ekr.20190319151826.14: *4* pyg_c.init_all_state
     def init_all_state(self, v):
         '''Completely init all state data.'''
         assert self.language, g.callers(8)
@@ -2471,7 +2574,7 @@ class PygmentsColorizer(BaseColorizer):
         self.restartDict = {}
         self.stateDict = {}
         self.stateNameDict = {}
-    #@+node:ekr.20190319151826.15: *4* pygments.init_mode & helpers
+    #@+node:ekr.20190319151826.15: *4* pyg_c.init_mode & helpers
     def init_mode(self, name):
         '''Name may be a language name or a delegate name.'''
         if not name:
@@ -2494,7 +2597,7 @@ class PygmentsColorizer(BaseColorizer):
             else:
                 mode = None
             return self.init_mode_from_module(name, mode)
-    #@+node:ekr.20190319151826.16: *5* pygments.init_mode_from_module (changed)
+    #@+node:ekr.20190319151826.16: *5* pyg_c.init_mode_from_module (changed)
     def init_mode_from_module(self, name, mode):
         '''Name may be a language name or a delegate name.
            Mode is a python module or class containing all
@@ -2559,7 +2662,7 @@ class PygmentsColorizer(BaseColorizer):
             # else:
                 # self.language = language # 2017/01/31
         return True
-    #@+node:ekr.20190319151826.17: *5* pygments.nameToRulesetName
+    #@+node:ekr.20190319151826.17: *5* pyg_c.nameToRulesetName
     def nameToRulesetName(self, name):
         '''
         Compute language and rulesetName from name, which is either a language
@@ -2578,7 +2681,7 @@ class PygmentsColorizer(BaseColorizer):
             delegate = name[i + 2:]
             rulesetName = self.munge('%s_%s' % (language, delegate))
         return language, rulesetName
-    #@+node:ekr.20190319151826.18: *5* pygments.setKeywords
+    #@+node:ekr.20190319151826.18: *5* pyg_c.setKeywords
     def setKeywords(self):
         '''Initialize the keywords for the present language.
 
@@ -2608,7 +2711,7 @@ class PygmentsColorizer(BaseColorizer):
         self.word_chars = {}
         for z in chars:
             self.word_chars[z] = z
-    #@+node:ekr.20190319151826.19: *5* pygments.setModeAttributes
+    #@+node:ekr.20190319151826.19: *5* pyg_c.setModeAttributes
     def setModeAttributes(self):
         '''Set the ivars from self.attributesDict,
         converting 'true'/'false' to True and False.'''
@@ -2626,7 +2729,7 @@ class PygmentsColorizer(BaseColorizer):
             if val in ('true', 'True'): val = True
             if val in ('false', 'False'): val = False
             setattr(self, key, val)
-    #@+node:ekr.20190319151826.20: *5* pygments.initModeFromBunch
+    #@+node:ekr.20190319151826.20: *5* pyg_c.initModeFromBunch
     def initModeFromBunch(self, bunch):
         self.modeBunch = bunch
         self.attributesDict = bunch.attributesDict
@@ -2639,7 +2742,7 @@ class PygmentsColorizer(BaseColorizer):
         self.rulesDict = bunch.rulesDict
         self.rulesetName = bunch.rulesetName
         self.word_chars = bunch.word_chars # 2011/05/21
-    #@+node:ekr.20190319151826.21: *5* pygments.updateDelimsTables
+    #@+node:ekr.20190319151826.21: *5* pyg_c.updateDelimsTables
     def updateDelimsTables(self):
         '''Update g.app.language_delims_dict if no entry for the language exists.'''
         d = self.properties
@@ -2658,13 +2761,13 @@ class PygmentsColorizer(BaseColorizer):
             d = g.app.language_delims_dict
             if not d.get(self.language):
                 d[self.language] = delims
-    #@+node:ekr.20190319151826.22: *4* pygments.munge
+    #@+node:ekr.20190319151826.22: *4* pyg_c.munge
     def munge(self, s):
         '''Munge a mode name so that it is a valid python id.'''
         valid = string.ascii_letters + string.digits + '_'
         return ''.join([ch.lower() if ch in valid else '_' for ch in s])
-    #@+node:ekr.20190319151826.69: *3*  pygments.State methods
-    #@+node:ekr.20190319151826.70: *4* pygments.clearState
+    #@+node:ekr.20190319151826.69: *3*  pyg_c.State methods
+    #@+node:ekr.20190319151826.70: *4* pyg_c.clearState
     def clearState(self):
         '''
         Create a *language-specific* default state.
@@ -2673,7 +2776,7 @@ class PygmentsColorizer(BaseColorizer):
         n = self.initialStateNumber
         self.setState(n)
         return n
-    #@+node:ekr.20190319151826.71: *4* pygments.computeState
+    #@+node:ekr.20190319151826.71: *4* pyg_c.computeState
     def computeState(self, f, keys):
         '''
         Compute the state name associated with f and all the keys.
@@ -2717,7 +2820,7 @@ class PygmentsColorizer(BaseColorizer):
             state = state.replace(pattern, s)
         n = self.stateNameToStateNumber(f, state)
         return n
-    #@+node:ekr.20190319151826.72: *4* pygments.getters & setters
+    #@+node:ekr.20190319151826.72: *4* pyg_c.getters & setters
     def currentBlockNumber(self):
         block = self.highlighter.currentBlock()
         return block.blockNumber() if block and block.isValid() else -1
@@ -2731,7 +2834,7 @@ class PygmentsColorizer(BaseColorizer):
     def setState(self, n):
         self.highlighter.setCurrentBlockState(n)
         return n
-    #@+node:ekr.20190319151826.73: *4* pygments.inColorState
+    #@+node:ekr.20190319151826.73: *4* pyg_c.inColorState
     def inColorState(self):
         '''True if the *current* state is enabled.'''
         n = self.currentState()
@@ -2743,13 +2846,13 @@ class PygmentsColorizer(BaseColorizer):
         return enabled
 
 
-    #@+node:ekr.20190319151826.74: *4* pygments.setRestart
+    #@+node:ekr.20190319151826.74: *4* pyg_c.setRestart
     def setRestart(self, f, **keys):
         n = self.computeState(f, keys)
         self.setState(n)
         return n
 
-    #@+node:ekr.20190319151826.75: *4* pygments.show...
+    #@+node:ekr.20190319151826.75: *4* pyg_c.show...
     def showState(self, n):
         state = self.stateDict.get(n, 'no-state')
         return '%2s:%s' % (n, state)
@@ -2761,7 +2864,7 @@ class PygmentsColorizer(BaseColorizer):
     def showPrevState(self):
         n = self.prevState()
         return self.showState(n)
-    #@+node:ekr.20190319151826.76: *4* pygments.stateNameToStateNumber
+    #@+node:ekr.20190319151826.76: *4* pyg_c.stateNameToStateNumber
     def stateNameToStateNumber(self, f, stateName):
         '''
         stateDict:     Keys are state numbers, values state names.
@@ -2777,7 +2880,7 @@ class PygmentsColorizer(BaseColorizer):
             self.nextState += 1
             self.n2languageDict [n] = self.language
         return n
-    #@+node:ekr.20190319151826.77: *3* pygments.colorRangeWithTag
+    #@+node:ekr.20190319151826.77: *3* pyg_c.colorRangeWithTag
     def colorRangeWithTag(self, s, i, j, tag, delegate='', exclude_match=False):
         '''Actually colorize the selected range.
 
@@ -2835,46 +2938,72 @@ class PygmentsColorizer(BaseColorizer):
                     i += max(1, n)
                 else:
                     i += 1
-    #@+node:ekr.20190319151826.78: *3* pygments.mainLoop (called from recolor) (changed)
+    #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop (called from recolor) (changed)
+    format_dict = {
+        'Keyword': 'keyword1',
+        'Keyword.Namespace': 'keyword1',
+        'Literal.String.Doc': 'literal1',
+            # A **full** docstring.
+        'Literal.String.Interpol': 'literal1',
+        'Literal.String.Single': 'literal1',
+        'Comment.Single': 'comment1',
+        # 'xt': 'blank',
+        'Operator': 'operator',
+    }
+
     def mainLoop(self, n, s):
         '''Colorize a *single* line s, starting in state n.'''
-        trace = True and not g.unitTesting
-        # pylint: disable=no-name-in-module
-        if g.isPython3:
-            from pygments.lexers import Python3Lexer as Lexer
-        else:
-            from pygments.lexers import PythonLexer as Lexer
-            ### Must be generalized.
+        # Based on code copyright (c) Jupyter Development Team.
+        # Distributed under the terms of the Modified BSD License.
+        trace = g.pygments and not g.unitTesting
+        highlighter = self.highlighter
+        if not getattr(self, '_lexer', None):
+            self._lexer = Lexer() ###
+            g.trace('===== new lexer:', self._lexer)
         if trace:
             print('')
-            g.trace('state:%s line: %r\n' % (n, s))
-        
-        d = {
-            'Keyword': 'keyword1',
-            'Keyword.Namespace': 'keyword1',
-            'Literal.String.Doc': 'literal1',
-                # A **full** docstring.
-            'Literal.String.Interpol': 'literal1',
-            'Literal.String.Single': 'literal1',
-            'Comment.Single': 'comment1',
-            # 'xt': 'blank',
-            'Operator': 'operator',
-        }
-        i = 0
-        for token in Lexer().get_tokens(s):
-            kind, val = token
-            j = i + len(val)
-            kind = repr(kind).lstrip('Token.')
-            if trace and kind not in ('xt', 'Name', 'Operator', 'Punctuation'):
-                print('%30r %3s %3s %r' % (kind, i, j, val))
-            tag = d.get(kind)
-            if tag:
-                self.setTag(tag, s, i, j)
-            i = j
-    #@+node:ekr.20190319151826.79: *3* pygments.recolor (color one line)
+            g.trace('state:%s line: %s' % (n, s))
+        #
+        # Lex the text using Pygments
+        if 1:
+            ### prev_data = self.currentBlock().previous().userData()
+            prev_data = highlighter.currentBlock().previous().userData()
+            if prev_data is not None:
+                if trace: g.trace('prev_data: %r\n' % prev_data)
+                self._lexer._saved_state_stack = prev_data.syntax_stack
+            elif hasattr(self._lexer, '_saved_state_stack'):
+                del self._lexer._saved_state_stack
+            index = 0
+            for token, text in self._lexer.get_tokens(s):
+                length = len(text)
+                if trace: print('%25r %r' % (repr(token).lstrip('Token.'), text))
+                ### self.setFormat(index, length, self._get_format(token))
+                format = highlighter._get_format(token)
+                highlighter.setFormat(index, length, format)
+                index += length
+            if hasattr(self._lexer, '_saved_state_stack'):
+                # g.trace('_lexer._saved_state_stack:', self._lexer._saved_state_stack)
+                data = PygmentsBlockUserData(syntax_stack=self._lexer._saved_state_stack)
+                ### self.currentBlock().setUserData(data)
+                highlighter.currentBlock().setUserData(data)
+                # Clean up for the next go-round.
+                del self._lexer._saved_state_stack  
+        else:
+            # Does not handle continued tokens.
+            i = 0
+            for kind, val in self._lexer.get_tokens(text=s):
+                j = i + len(val)
+                kind = repr(kind).lstrip('Token.')
+                tag = self.format_dict.get(kind)
+                if tag:
+                    if trace and kind not in ('xt', 'Name', 'Operator', 'Punctuation'):
+                        print('%30r %3s %3s %r' % (kind, i, j, val))
+                    self.setTag(tag, s, i, j)
+                i = j
+    #@+node:ekr.20190319151826.79: *3* pyg_c.recolor (color one line)
     def recolor(self, s):
         '''
-        jEdit.recolor: Recolor a *single* line, s.
+        PygmentsColorizer.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
         '''
         p = self.c.p
@@ -2897,7 +3026,7 @@ class PygmentsColorizer(BaseColorizer):
         # Always color the line, even if colorizing is disabled.
         if s:
             self.mainLoop(n, s)
-    #@+node:ekr.20190319151826.80: *4* pygments.initBlock0
+    #@+node:ekr.20190319151826.80: *4* pyg_c.initBlock0
     def initBlock0 (self):
         '''
         Init *local* ivars when handling block 0.
@@ -2908,7 +3037,7 @@ class PygmentsColorizer(BaseColorizer):
         else:
             n = self.setRestart(self.restartNoColor)
         return n
-    #@+node:ekr.20190320084740.1: *4* pygments.restartNoColor
+    #@+node:ekr.20190320084740.1: *4* pyg_c.restartNoColor
     def restartNoColor(self, s):
         if self.trace_leo_matches:
             g.trace(repr(s))
@@ -2920,7 +3049,7 @@ class PygmentsColorizer(BaseColorizer):
         else:
             self.setRestart(self.restartNoColor)
             return len(s) # Match everything.
-    #@+node:ekr.20190319151826.81: *4* pygments.setInitialStateNumber
+    #@+node:ekr.20190319151826.81: *4* pyg_c.setInitialStateNumber
     def setInitialStateNumber(self):
         '''
         Init the initialStateNumber ivar for clearState()
@@ -2933,7 +3062,7 @@ class PygmentsColorizer(BaseColorizer):
         self.initialStateNumber = n
         self.blankStateNumber = self.stateNameToStateNumber(None,state+';blank')
         return n
-    #@+node:ekr.20190319151826.82: *4* pygments.languageTag
+    #@+node:ekr.20190319151826.82: *4* pyg_c.languageTag
     def languageTag(self, name):
         '''
         Return the standardized form of the language name.
@@ -2950,7 +3079,7 @@ class PygmentsColorizer(BaseColorizer):
             return name
         else:
             return 'no-language'
-    #@+node:ekr.20190319151826.83: *3* pygments.set_wikiview_patterns
+    #@+node:ekr.20190319151826.83: *3* pyg_c.set_wikiview_patterns
     def set_wikiview_patterns(self, leadins, patterns):
         '''
         Init the colorizer so it will *skip* all patterns.
@@ -2969,7 +3098,7 @@ class PygmentsColorizer(BaseColorizer):
                     aList.insert(0, wiki_rule)
                     d [ch] = aList
         self.rulesDict = d
-    #@+node:ekr.20190319151826.84: *3* pygments.setTag
+    #@+node:ekr.20190319151826.84: *3* pyg_c.setTag
     def setTag(self, tag, s, i, j):
         '''Set the tag in the highlighter.'''
         self.n_setTag += 1
@@ -3275,152 +3404,6 @@ class PygmentsBlockUserData(QtGui.QTextBlockUserData):
                 for attr in attrs
         ])
         return 'PygmentsBlockUserData(%s)' % kwds
-#@+node:ekr.20190320062624.6: *3* class PygmentsHighlighter(QSyntaxHighlighter)
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
-
-class PygmentsHighlighter(QtGui.QSyntaxHighlighter):
-    """ Syntax highlighter that uses Pygments for parsing. """
-
-    #@+others
-    #@+node:ekr.20190320062624.7: *4* ph.__init__
-    def __init__(self, parent, lexer=None):
-        
-        super(PygmentsHighlighter, self).__init__(parent)
-        self._document = self.document()
-        ### self._formatter = HtmlFormatter(nowrap=True)
-        self.set_style('default')
-        if lexer is not None:
-            self._lexer = lexer
-        elif g.isPython3:
-            self._lexer = Python3Lexer()
-        else:
-            self._lexer = PythonLexer()
-    #@+node:ekr.20190320062624.8: *4* ph.highlightBlock
-    # QSyntaxHighlighter interface
-
-    def highlightBlock(self, string):
-        """ Highlight a block of text.
-        """
-        prev_data = self.currentBlock().previous().userData()
-        if prev_data is not None:
-            self._lexer._saved_state_stack = prev_data.syntax_stack
-        elif hasattr(self._lexer, '_saved_state_stack'):
-            del self._lexer._saved_state_stack
-        #
-        # Lex the text using Pygments
-        index = 0
-        for token, text in self._lexer.get_tokens(string):
-            length = len(text)
-            self.setFormat(index, length, self._get_format(token))
-            index += length
-
-        if hasattr(self._lexer, '_saved_state_stack'):
-            data = PygmentsBlockUserData(
-                syntax_stack=self._lexer._saved_state_stack)
-            self.currentBlock().setUserData(data)
-            # Clean up for the next go-round.
-            del self._lexer._saved_state_stack
-
-    #@+node:ekr.20190320062624.9: *4* ph.set_style
-    def set_style(self, style):
-        """ Sets the style to the specified Pygments style.
-        """
-        ###if isinstance(style, string_types):
-        if g.isString(style):
-            style = get_style_by_name(style)
-        self._style = style
-        self._clear_caches()
-    #@+node:ekr.20190320062624.10: *4* ph.set_style_sheet (not used)
-    ###
-    # def set_style_sheet(self, stylesheet):
-        # """
-        # Sets a CSS stylesheet. The classes in the stylesheet should
-        # correspond to those generated by:
-
-            # pygmentize -S <style> -f html
-
-        # Note that 'set_style' and 'set_style_sheet' completely override each
-        # other, i.e. they cannot be used in conjunction.
-        # """
-        # self._document.setDefaultStyleSheet(stylesheet)
-        # self._style = None
-        # self._clear_caches()
-    #@+node:ekr.20190320063234.1: *4* Protected interface
-    # Protected interface
-    #@+node:ekr.20190320062624.11: *5* ph._clear_caches
-    def _clear_caches(self):
-        """ Clear caches for brushes and formats.
-        """
-        self._brushes = {}
-        self._formats = {}
-    #@+node:ekr.20190320062624.12: *5* ph._get_format & helpers
-    def _get_format(self, token):
-        """ Returns a QTextCharFormat for token or None.
-        """
-        if token in self._formats:
-            return self._formats[token]
-        if self._style is None:
-            g.trace('**** no _style ***')
-            result = QtGui.QTextCharFormat()
-            ### result = self._get_format_from_document(token, self._document)
-        else:
-            result = self._get_format_from_style(token, self._style)
-        self._formats[token] = result
-        return result
-    #@+node:ekr.20190320062624.13: *6* ph._get_format_from_document (to be deleted)
-    def _get_format_from_document(self, token, document):
-        """ Returns a QTextCharFormat for token by
-        """
-        code, html = next(self._formatter._format_lines([(token, u'dummy')]))
-        self._document.setHtml(html)
-        return QtGui.QTextCursor(self._document).charFormat()
-    #@+node:ekr.20190320062624.14: *6* ph._get_format_from_style
-    def _get_format_from_style(self, token, style):
-        """ Returns a QTextCharFormat for token by reading a Pygments style.
-        """
-        result = QtGui.QTextCharFormat()
-        for key, value in style.style_for_token(token).items():
-            if value:
-                if key == 'color':
-                    result.setForeground(self._get_brush(value))
-                elif key == 'bgcolor':
-                    result.setBackground(self._get_brush(value))
-                elif key == 'bold':
-                    result.setFontWeight(QtGui.QFont.Bold)
-                elif key == 'italic':
-                    result.setFontItalic(True)
-                elif key == 'underline':
-                    result.setUnderlineStyle(
-                        QtGui.QTextCharFormat.SingleUnderline)
-                elif key == 'sans':
-                    result.setFontStyleHint(QtGui.QFont.SansSerif)
-                elif key == 'roman':
-                    result.setFontStyleHint(QtGui.QFont.Times)
-                elif key == 'mono':
-                    result.setFontStyleHint(QtGui.QFont.TypeWriter)
-        return result
-    #@+node:ekr.20190320062624.15: *6* ph._get_brush
-    def _get_brush(self, color):
-        """ Returns a brush for the color.
-        """
-        result = self._brushes.get(color)
-        if result is None:
-            qcolor = self._get_color(color)
-            result = QtGui.QBrush(qcolor)
-            self._brushes[color] = result
-        return result
-    #@+node:ekr.20190320062624.16: *6* ph._get_color
-    def _get_color(self, color):
-        """ Returns a QColor built from a Pygments color string.
-        """
-        qcolor = QtGui.QColor()
-        qcolor.setRgb(
-            int(color[:2], base=16),
-            int(color[2:4], base=16),
-            int(color[4:6], base=16))
-        return qcolor
-    #@-others
 #@-others
 #@@language python
 #@@tabwidth -4
