@@ -2970,10 +2970,8 @@ class PygmentsColorizer(BaseColorizer):
         prev_data = highlighter.currentBlock().previous().userData()
         if prev_data is not None:
             # if trace: print('prev data:', prev_data)
-            ### lexer._saved_state_stack = prev_data.syntax_stack
             setattr(lexer, stack_ivar, prev_data.syntax_stack)
         elif hasattr(self._lexer, stack_ivar):
-            ### del self._lexer._saved_state_stack
             delattr(self._lexer, stack_ivar)
         index = 0
         for token, text in self._lexer.get_tokens(s):
@@ -2988,7 +2986,6 @@ class PygmentsColorizer(BaseColorizer):
             ### if trace: print('new data:', data)
             highlighter.currentBlock().setUserData(data)
             # Clean up for the next go-round.
-            ### del self._lexer._saved_state_stack
             delattr(self._lexer, stack_ivar)
         #
         # New code by EKR.
