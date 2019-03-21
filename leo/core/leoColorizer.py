@@ -2938,7 +2938,9 @@ class PygmentsColorizer(BaseColorizer):
                     i += max(1, n)
                 else:
                     i += 1
-    #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop (changed)
+    #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop (new) (to do: Leonine features)
+    lexer_dict = {}
+        # Keys are language names, values are instantiated lexers.
     state_s_dict = {}
         # Keys are strings, values are ints.
     state_n_dict = {}
@@ -2947,48 +2949,47 @@ class PygmentsColorizer(BaseColorizer):
     state_index = 1
 
     def mainLoop(self, s):
-        '''Colorize a *single* line s, starting in state n.'''
-        # Based on code copyright (c) Jupyter Development Team.
-        # Distributed under the terms of the Modified BSD License.
+        '''Colorize a *single* line s'''
         trace = False and g.pygments and not g.unitTesting
-        trace_tokens = False
-        trace_user_data = False
         highlighter = self.highlighter
         if not getattr(self, '_lexer', None):
             self._lexer = Lexer() ###
-            if trace:
-                g.trace('===== new lexer:', self._lexer)
+            if trace: g.trace('===== new lexer:', self._lexer)
+        lexer = self._lexer
         if trace:
-            print('\npyg_c.mainLoop: line:', repr(s))
+            print('\npyg_c.mainLoop: count: %s line: %r' % (self.recolorCount, s))
             prev_state = highlighter.previousBlockState()
             prev_state_s = self.state_n_dict.get(prev_state, "<no state>")
             print('prev state: %r: %s' % (prev_state, prev_state_s))
         #
-        # Lex the text using Pygments
+        # Lex the text using Pygments.
+        #
+        # Based on code copyright (c) Jupyter Development Team.
+        # Distributed under the terms of the Modified BSD License.
+        stack_ivar = '_saved_state_stack'
         prev_data = highlighter.currentBlock().previous().userData()
         if prev_data is not None:
-            if trace and trace_user_data:
-                print('prev data:', prev_data)
-            self._lexer._saved_state_stack = prev_data.syntax_stack
-        elif hasattr(self._lexer, '_saved_state_stack'):
-            del self._lexer._saved_state_stack
+            # if trace: print('prev data:', prev_data)
+            ### lexer._saved_state_stack = prev_data.syntax_stack
+            setattr(lexer, stack_ivar, prev_data.syntax_stack)
+        elif hasattr(self._lexer, stack_ivar):
+            ### del self._lexer._saved_state_stack
+            delattr(self._lexer, stack_ivar)
         index = 0
         for token, text in self._lexer.get_tokens(s):
             length = len(text)
-            if trace and trace_tokens:
-                print('%25r %r' % (repr(token).lstrip('Token.'), text))
+            ### if trace: print('%25r %r' % (repr(token).lstrip('Token.'), text))
             format = highlighter._get_format(token)
             highlighter.setFormat(index, length, format)
             index += length
-        if hasattr(self._lexer, '_saved_state_stack'):
-            stack = self._lexer._saved_state_stack
+        stack = getattr(self._lexer, stack_ivar, None)
+        if stack:
             data = PygmentsBlockUserData(syntax_stack=stack)
-            if trace and trace_user_data: print('new data:', data)
+            ### if trace: print('new data:', data)
             highlighter.currentBlock().setUserData(data)
             # Clean up for the next go-round.
-            del self._lexer._saved_state_stack
-        else:
-            stack = []
+            ### del self._lexer._saved_state_stack
+            delattr(self._lexer, stack_ivar)
         #
         # New code by EKR.
         state_s = '%s; %r' % (self.language, stack)
@@ -2999,7 +3000,7 @@ class PygmentsColorizer(BaseColorizer):
             self.state_s_dict [state_s] = state_n
             self.state_n_dict [state_n] = state_s
         highlighter.setCurrentBlockState(state_n)
-    #@+node:ekr.20190319151826.79: *3* pyg_c.recolor (calls mainloop)
+    #@+node:ekr.20190319151826.79: *3* pyg_c.recolor
     def recolor(self, s):
         '''
         PygmentsColorizer.recolor: Recolor a *single* line, s.
@@ -3014,7 +3015,8 @@ class PygmentsColorizer(BaseColorizer):
             print('')
             g.trace(repr(s), '\n')
         if p.v != self.old_v:
-            self.updateSyntaxColorer(p) # Force a full recolor
+            self.updateSyntaxColorer(p)
+                # Force a full recolor
                 # sets self.language and self.enabled.
             assert self.language
             ### self.init_all_state(p.v)
