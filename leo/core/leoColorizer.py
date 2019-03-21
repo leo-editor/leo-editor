@@ -2020,7 +2020,11 @@ if QtGui:
                 self._style = None
                 # Style gallery: https://help.farbox.com/pygments.html
                 # Dark styles: fruity, monokai, native, vim
-                self.setStyle('default') # 'solarized' or 'leonine'
+                try:
+                    self.setStyle('solarized') # or 'leonine'
+                    # https://github.com/gthank/solarized-dark-pygments
+                except Exception:
+                    self.setStyle('default') # 'solarized' or 'leonine'
         #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
         def highlightBlock(self, s):
             """ Called by QSyntaxHighlighter """
