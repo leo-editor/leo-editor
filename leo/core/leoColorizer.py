@@ -2016,8 +2016,11 @@ if QtGui:
                 self._document = document
                 self._formats = {}
                 self._formatter = HtmlFormatter(nowrap=True)
+                
                 self._style = None
-                self.setStyle('default')
+                # Style gallery: https://help.farbox.com/pygments.html
+                # Dark styles: fruity, monokai, native, vim
+                self.setStyle('default') # 'solarized' or 'leonine'
         #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
         def highlightBlock(self, s):
             """ Called by QSyntaxHighlighter """
@@ -2954,7 +2957,8 @@ class PygmentsColorizer(BaseColorizer):
         highlighter = self.highlighter
         if not getattr(self, '_lexer', None):
             self._lexer = Lexer() ###
-            if trace: g.trace('===== new lexer:', self._lexer)
+            # g.trace('===== new lexer:', self._lexer)
+            # g.printObj(dir(self._lexer))
         lexer = self._lexer
         if trace:
             print('\npyg_c.mainLoop: count: %s line: %r' % (self.recolorCount, s))
