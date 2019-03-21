@@ -16,14 +16,12 @@ import leo.core.leoGlobals as g
 from leo.core.leoQt import Qsci, QtGui, QtWidgets # isQt5, QtCore
 if g.pygments:
     # pylint: disable=no-name-in-module
-        # PythonLexer or PythonLexer3 will be undefined.
+        ### PythonLexer or PythonLexer3 will be undefined.
     try:
         # Jupyter imports.
-        ### from leo.core.leoQt import QtGui
-        ### from ipython_genutils.py3compat import PY3, string_types
         from pygments.formatters.html import HtmlFormatter
         from pygments.lexer import RegexLexer, _TokenType, Text, Error
-        # from pygments.lexers import PythonLexer, Python3Lexer
+        ### To be removed.
         if g.isPython3:
             from pygments.lexers import Python3Lexer as Lexer # pylint: disable=no-name-in-module
         else:
@@ -2091,7 +2089,6 @@ if QtGui:
             def setStyle(self, style):
                 """ Sets the style to the specified Pygments style.
                 """
-                ### if isinstance(style, string_types):
                 if g.isString(style):
                     style = get_style_by_name(style)
                 self._style = style
@@ -2960,7 +2957,7 @@ class PygmentsColorizer(BaseColorizer):
         trace = False and g.pygments and not g.unitTesting
         highlighter = self.highlighter
         if not getattr(self, '_lexer', None):
-            self._lexer = Lexer() ###
+            self._lexer = Lexer() ### To be generalized.
             # g.trace('===== new lexer:', self._lexer)
             # g.printObj(dir(self._lexer))
         lexer = self._lexer
@@ -2984,7 +2981,7 @@ class PygmentsColorizer(BaseColorizer):
         index = 0
         for token, text in self._lexer.get_tokens(s):
             length = len(text)
-            ### if trace: print('%25r %r' % (repr(token).lstrip('Token.'), text))
+            # if trace: print('%25r %r' % (repr(token).lstrip('Token.'), text))
             format = highlighter._get_format(token)
             highlighter.setFormat(index, length, format)
             index += length
