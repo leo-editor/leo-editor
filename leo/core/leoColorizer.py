@@ -2939,68 +2939,66 @@ class PygmentsColorizer(BaseColorizer):
                 else:
                     i += 1
     #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop (changed)
-    format_dict = {
-        'Keyword': 'keyword1',
-        'Keyword.Namespace': 'keyword1',
-        'Literal.String.Doc': 'literal1',
-            # A **full** docstring.
-        'Literal.String.Interpol': 'literal1',
-        'Literal.String.Single': 'literal1',
-        'Comment.Single': 'comment1',
-        # 'xt': 'blank',
-        'Operator': 'operator',
-    }
+    state_s_dict = {}
+        # Keys are strings, values are ints.
+    state_n_dict = {}
+        # For tracing only.
+        # Keys are ints, values are strings.
+    state_index = 1
 
-    def mainLoop(self, n, s):
+    def mainLoop(self, s):
         '''Colorize a *single* line s, starting in state n.'''
         # Based on code copyright (c) Jupyter Development Team.
         # Distributed under the terms of the Modified BSD License.
         trace = False and g.pygments and not g.unitTesting
+        trace_tokens = False
+        trace_user_data = False
         highlighter = self.highlighter
         if not getattr(self, '_lexer', None):
             self._lexer = Lexer() ###
             if trace:
                 g.trace('===== new lexer:', self._lexer)
         if trace:
-            print('')
-            g.trace('state:%s line: %s' % (n, s))
+            print('\npyg_c.mainLoop: line:', repr(s))
+            prev_state = highlighter.previousBlockState()
+            prev_state_s = self.state_n_dict.get(prev_state, "<no state>")
+            print('prev state: %r: %s' % (prev_state, prev_state_s))
         #
         # Lex the text using Pygments
-        if 1:
-            ### prev_data = self.currentBlock().previous().userData()
-            prev_data = highlighter.currentBlock().previous().userData()
-            if prev_data is not None:
-                if trace: g.trace('prev_data: %r\n' % prev_data)
-                self._lexer._saved_state_stack = prev_data.syntax_stack
-            elif hasattr(self._lexer, '_saved_state_stack'):
-                del self._lexer._saved_state_stack
-            index = 0
-            for token, text in self._lexer.get_tokens(s):
-                length = len(text)
-                if trace: print('%25r %r' % (repr(token).lstrip('Token.'), text))
-                ### self.setFormat(index, length, self._get_format(token))
-                format = highlighter._get_format(token)
-                highlighter.setFormat(index, length, format)
-                index += length
-            if hasattr(self._lexer, '_saved_state_stack'):
-                # g.trace('_lexer._saved_state_stack:', self._lexer._saved_state_stack)
-                data = PygmentsBlockUserData(syntax_stack=self._lexer._saved_state_stack)
-                ### self.currentBlock().setUserData(data)
-                highlighter.currentBlock().setUserData(data)
-                # Clean up for the next go-round.
-                del self._lexer._saved_state_stack  
+        prev_data = highlighter.currentBlock().previous().userData()
+        if prev_data is not None:
+            if trace and trace_user_data:
+                print('prev data:', prev_data)
+            self._lexer._saved_state_stack = prev_data.syntax_stack
+        elif hasattr(self._lexer, '_saved_state_stack'):
+            del self._lexer._saved_state_stack
+        index = 0
+        for token, text in self._lexer.get_tokens(s):
+            length = len(text)
+            if trace and trace_tokens:
+                print('%25r %r' % (repr(token).lstrip('Token.'), text))
+            format = highlighter._get_format(token)
+            highlighter.setFormat(index, length, format)
+            index += length
+        if hasattr(self._lexer, '_saved_state_stack'):
+            stack = self._lexer._saved_state_stack
+            data = PygmentsBlockUserData(syntax_stack=stack)
+            if trace and trace_user_data: print('new data:', data)
+            highlighter.currentBlock().setUserData(data)
+            # Clean up for the next go-round.
+            del self._lexer._saved_state_stack
         else:
-            # Does not handle continued tokens.
-            i = 0
-            for kind, val in self._lexer.get_tokens(text=s):
-                j = i + len(val)
-                kind = repr(kind).lstrip('Token.')
-                tag = self.format_dict.get(kind)
-                if tag:
-                    if trace and kind not in ('xt', 'Name', 'Operator', 'Punctuation'):
-                        print('%30r %3s %3s %r' % (kind, i, j, val))
-                    self.setTag(tag, s, i, j)
-                i = j
+            stack = []
+        #
+        # New code by EKR.
+        state_s = '%s; %r' % (self.language, stack)
+        state_n = self.state_s_dict.get(state_s)
+        if state_n is None:
+            state_n = self.state_index
+            self.state_index += 1
+            self.state_s_dict [state_s] = state_n
+            self.state_n_dict [state_n] = state_s
+        highlighter.setCurrentBlockState(state_n)
     #@+node:ekr.20190319151826.79: *3* pyg_c.recolor (calls mainloop)
     def recolor(self, s):
         '''
@@ -3010,27 +3008,31 @@ class PygmentsColorizer(BaseColorizer):
         trace = False and g.pygments and not g.unitTesting
         p = self.c.p
         self.recolorCount += 1
-        block_n = self.currentBlockNumber()
-        n = self.prevState()
+        ### block_n = self.currentBlockNumber()
+        ### n = self.prevState()
         if trace:
             print('')
-            g.trace(n, repr(s), '\n')
+            g.trace(repr(s), '\n')
         if p.v != self.old_v:
             self.updateSyntaxColorer(p) # Force a full recolor
+                # sets self.language and self.enabled.
             assert self.language
-            self.init_all_state(p.v)
-            self.init(p)
-        else:
-            new_language = self.n2languageDict.get(n)
-            if new_language != self.language:
-                self.language = new_language
-                self.init(p)
-        if block_n == 0:
-            n = self.initBlock0()
-        n = self.setState(n) # Required.
-        # Always color the line, even if colorizing is disabled.
-        if s is not None:
-            self.mainLoop(n, s)
+            ### self.init_all_state(p.v)
+            ### self.init(p)
+        ###
+            # else:
+                # new_language = self.n2languageDict.get(n)
+                # if new_language != self.language:
+                    # self.language = new_language
+                        # self.init(p)
+            # if block_n == 0:
+                # n = self.initBlock0()
+            # n = self.setState(n) # Required.
+            # Always color the line, even if colorizing is disabled.
+            # if s is not None:
+                # self.mainLoop(n, s)
+        if s:
+            self.mainLoop(s)
     #@+node:ekr.20190319151826.80: *4* pyg_c.initBlock0
     def initBlock0 (self):
         '''
