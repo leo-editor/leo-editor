@@ -3040,7 +3040,7 @@ class PygmentsColorizer(BaseColorizer):
         class PatchedLexer(lexer.__class__):
             tokens = {
                 'root': [
-                   (r'\<\<(.*?)\>\>', self.section_ref_callback),
+                   (r'(?-m:\<\<(.*?)\>\>)', self.section_ref_callback),
                         # Single-line, non-greedy match.
                    (r'(@doc|@)(\s+|\n)(.|\n)*?^@c', Comment.Leo.DocPart),
                         # Multi-line, non-greedy match.
