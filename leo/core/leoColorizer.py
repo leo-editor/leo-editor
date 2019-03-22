@@ -14,9 +14,7 @@ import string
 # import time
 import leo.core.leoGlobals as g
 from leo.core.leoQt import Qsci, QtGui, QtWidgets
-if g.pygments:
-    import pygments.styles
-    import pygments.lexers
+    
 #@-<< imports >>
 #@+others
 #@+node:ekr.20170127141855.1: ** class BaseColorizer (object)
@@ -2080,8 +2078,9 @@ if QtGui:
             def setStyle(self, style):
                 """ Sets the style to the specified Pygments style.
                 """
+                from pygments.styles import get_style_by_name
                 if g.isString(style):
-                    style = pygments.styles.get_style_by_name(style)
+                    style = get_style_by_name(style)
                 self._style = style
                 self._clear_caches()
             #@+node:ekr.20190320154604.1: *4* leo_h.clear_caches
@@ -2934,8 +2933,8 @@ class PygmentsColorizer(BaseColorizer):
                 else:
                     i += 1
     #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop & helpers
-    lexer_dict = {}
-        # Keys are language names, values are instantiated lexers.
+    lexers_dict = {}
+        # Keys are language names, values are instantiated, patched lexers.
     state_s_dict = {}
         # Keys are strings, values are ints.
     state_n_dict = {}
@@ -2945,16 +2944,17 @@ class PygmentsColorizer(BaseColorizer):
 
     def mainLoop(self, s):
         '''Colorize a *single* line s'''
-        trace = False and g.pygments and not g.unitTesting
-        p = self.c.p
         highlighter, language = self.highlighter, self.language
         if language == 'patch':
             language = 'diff'
         assert language, g.callers()
-        lexer = self.get_lexer(language)
-        lexer = self.patch_lexer(language, lexer, p)
+        lexer = self.lexers_dict.get(language)
+        if not lexer:
+            lexer = self.get_lexer(language)
+            lexer = self.patch_lexer(language, lexer)
+            self.lexers_dict [language] = lexer
         self._lexer = lexer
-        if trace:
+        if False: ###
             print('\npyg_c.mainLoop: count: %s line: %r' % (self.recolorCount, s))
             prev_state = highlighter.previousBlockState()
             prev_state_s = self.state_n_dict.get(prev_state, "<no state>")
@@ -2986,7 +2986,7 @@ class PygmentsColorizer(BaseColorizer):
             # Clean up for the next go-round.
             delattr(self._lexer, stack_ivar)
         #
-        # New code by EKR.
+        # New code by EKR makes multiline tokens work.
         state_s = '%s; %r' % (self.language, stack)
         state_n = self.state_s_dict.get(state_s)
         if state_n is None:
@@ -2995,85 +2995,62 @@ class PygmentsColorizer(BaseColorizer):
             self.state_s_dict [state_s] = state_n
             self.state_n_dict [state_n] = state_s
         highlighter.setCurrentBlockState(state_n)
+    #@+node:ekr.20190322133358.1: *4* pyg_c.section_ref_callback
+    def section_ref_callback(self, lexer, match):
+        '''pygments callback for section references.'''
+        from pygments.token import Comment
+        c = self.c
+        name, ref, start = match.group(1), match.group(0), match.start()
+        if 1: ### Temp: just use comments.
+            yield match.start(), Comment, '<<'
+            yield start+2, Comment, name
+            yield start+2+len(name), Comment, '>>'
+        else:
+            yield match.start(), Comment.Leo.SecRefOpen, '<<'
+            if g.findReference(ref, c.p):
+                yield start+2, Comment.Leo.SectionRef, name
+            else:
+                yield start+2, Comment.Leo.UndefinedSectionRef, name
+            yield start+2+len(name), Comment.Leo.SecRefClose, '>>'
     #@+node:ekr.20190322082533.1: *4* pyg_c.get_lexer
-    lexers_d = {}
-        # Keys are language names, values are lexers.
-
     def get_lexer(self, language):
         '''Return the lexer for self.language, creating it if necessary.'''
-        trace = True and not g.unitTesting
-        lexer_d, lexers = self.lexers_d, pygments.lexers
-        if language in lexer_d:
-            return lexer_d [language]
+        import pygments.lexers as lexers
         try:
             if g.isPython3 and language == 'python':
                 lexer_language = 'python3'
             else:
                 lexer_language = language
             lexer = lexers.get_lexer_by_name(lexer_language)
-            if trace: g.trace('CREATED lexer for %s: %r' % (language, lexer))
-            self.lexers_d [language] = lexer
+            ### g.trace('CREATED lexer for %s: %r' % (language, lexer))
         except Exception:
             g.trace('==== no lexer for %r' % language)
             lexer = lexers.Python3Lexer if g.isPython3 else lexers.PythonLexer
             if 'python' not in self.lexers_d:
                 g.trace('CREATED default lexer for python: %r' % lexer)
-                self.lexers_d ['python'] = lexer
         return lexer
     #@+node:ekr.20190322094034.1: *4* pyg_c.patch_lexer
-    patched_lexer_d = {}
-        # Keys are language:vnode strings, values are patched lexers.
-
-    def patch_lexer(self, language, lexer, p):
+    def patch_lexer(self, language, lexer):
         
-        from pygments.lexer import inherit
-        # from pygments.lexers import Python3Lexer
         from pygments.token import Comment
+        from pygments.lexer import inherit
         
-        d = self.patched_lexer_d
-        key = '%s:%r' % (language, p.v.gnx)
-        patched_lexer = d.get(key)
-        if patched_lexer:
-            return patched_lexer
-            
-        # This callback will be different for every p.
-        def section_reference_callback(lexer, match):
-            name, ref, start = match.group(1), match.group(0), match.start()
-            if 1: ### Temp: just use comments.
-                yield match.start(), Comment, '<<'
-                yield start+2, Comment, name
-                yield start+2+len(name), Comment, '>>'
-            else:
-                yield match.start(), Comment.Leo.SecRefOpen, '<<'
-                if g.findReference(ref, p):
-                    yield start+2, Comment.Leo.SectionRef, name
-                else:
-                    yield start+2, Comment.Leo.UndefinedSectionRef, name
-                yield start+2+len(name), Comment.Leo.SecRefClose, '>>'
-        
-        leo_tokens = {
-            'root': [
-               (r'\<\<(.*?)\>\>', section_reference_callback),
-                    # Single-line, non-greedy match.
-               (r'(@doc|@)(\s+|\n)(.|\n)*?^@c', Comment.Leo.DocPart),
-                    # Multi-line, non-greedy match.
-               inherit,
-            ],
-        }
-        
+        class PatchedLexer(lexer.__class__):
+            tokens = {
+                'root': [
+                   (r'\<\<(.*?)\>\>', self.section_ref_callback),
+                        # Single-line, non-greedy match.
+                   (r'(@doc|@)(\s+|\n)(.|\n)*?^@c', Comment.Leo.DocPart),
+                        # Multi-line, non-greedy match.
+                   inherit,
+                ],
+            }
+
         try:
-            g.trace('===== PATCHING', language)
-            class PatchedLexer(lexer.__class__):
-                tokens = leo_tokens
-            
-            patched_lexer = PatchedLexer()
-            g.trace('PATCHED lexer for:', key)
-            d [key] = patched_lexer
-            return patched_lexer
+            return PatchedLexer()
         except Exception:
             g.trace('can not patch %r' % language)
             g.es_exception()
-            del d [key]
             return lexer
     #@+node:ekr.20190319151826.79: *3* pyg_c.recolor
     def recolor(self, s):
