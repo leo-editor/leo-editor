@@ -1999,8 +1999,6 @@ if QtGui:
                 self._brushes = {}
                 self._document = document
                 self._formats = {}
-                ### self._formatter = HtmlFormatter(nowrap=True)
-                ### self._style = None
                 # Style gallery: https://help.farbox.com/pygments.html
                 # Dark styles: fruity, monokai, native, vim
                 # https://github.com/gthank/solarized-dark-pygments
@@ -2011,6 +2009,8 @@ if QtGui:
                 except Exception:
                     print('pygments %r style not found. Using "default" style' % style_name)
                     self.setStyle('default')
+                    style_name = 'default'
+                self.colorizer.style_name = style_name
                 assert self._style
         #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
         def highlightBlock(self, s):
@@ -2065,7 +2065,6 @@ if QtGui:
                     if key not in self.key_error_d:
                         self.key_error_d [key] = True
                         g.trace(err)
-                        # g.es_exception()
                     return result
                 for key, value in data:
                     if value:
@@ -2960,7 +2959,6 @@ class PygmentsColorizer(BaseColorizer):
         highlighter, language = self.highlighter, self.language
         if language == 'patch':
             language = 'diff'
-        assert language, g.callers()
         lexer = self.lexers_dict.get(language)
         if not lexer:
             lexer = self.get_lexer(language)
@@ -2980,26 +2978,24 @@ class PygmentsColorizer(BaseColorizer):
         stack_ivar = '_saved_state_stack'
         prev_data = highlighter.currentBlock().previous().userData()
         if prev_data is not None:
-            # if trace: print('prev data:', prev_data)
             setattr(lexer, stack_ivar, prev_data.syntax_stack)
         elif hasattr(self._lexer, stack_ivar):
             delattr(self._lexer, stack_ivar)
         index = 0
         for token, text in self._lexer.get_tokens(s):
             length = len(text)
-            # if trace: print('%25r %r' % (repr(token).lstrip('Token.'), text))
+            # print('%25r %r' % (repr(token).lstrip('Token.'), text))
             format = highlighter._get_format(token)
             highlighter.setFormat(index, length, format)
             index += length
         stack = getattr(self._lexer, stack_ivar, None)
         if stack:
             data = PygmentsBlockUserData(syntax_stack=stack)
-            ### if trace: print('new data:', data)
             highlighter.currentBlock().setUserData(data)
             # Clean up for the next go-round.
             delattr(self._lexer, stack_ivar)
         #
-        # New code by EKR makes multiline tokens work.
+        # New code by EKR. Fixes a bug so multiline tokens work.
         state_s = '%s; %r' % (self.language, stack)
         state_n = self.state_s_dict.get(state_s)
         if state_n is None:
@@ -3011,20 +3007,13 @@ class PygmentsColorizer(BaseColorizer):
     #@+node:ekr.20190322133358.1: *4* pyg_c.section_ref_callback
     def section_ref_callback(self, lexer, match):
         '''pygments callback for section references.'''
-        from pygments.token import Comment
-        c = self.c
+        from pygments.token import Comment, Name
         name, ref, start = match.group(1), match.group(0), match.start()
-        if 0: ### Temp: just use comments.
-            yield match.start(), Comment, '<<'
-            yield start+2, Comment, name
-            yield start+2+len(name), Comment, '>>'
-        else:
-            yield match.start(), Comment.Leo.SecRefOpen, '<<'
-            if g.findReference(ref, c.p):
-                yield start+2, Comment.Leo.SectionRef, name
-            else:
-                yield start+2, Comment.Leo.UndefinedSectionRef, name
-            yield start+2+len(name), Comment.Leo.SecRefClose, '>>'
+        found = g.findReference(ref, self.c.p)
+        found_tok = Name.Entity if found else Name.Other
+        yield match.start(), Comment, '<<'
+        yield start+2, found_tok, name
+        yield start+2+len(name), Comment, '>>'
     #@+node:ekr.20190322082533.1: *4* pyg_c.get_lexer
     def get_lexer(self, language):
         '''Return the lexer for self.language, creating it if necessary.'''
