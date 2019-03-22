@@ -2961,6 +2961,7 @@ class PygmentsColorizer(BaseColorizer):
             # g.trace('===== new lexer:', self._lexer)
             # g.printObj(dir(self._lexer))
         lexer = self._lexer
+        # g.printObj(lexer.tokens ['root'])
         if trace:
             print('\npyg_c.mainLoop: count: %s line: %r' % (self.recolorCount, s))
             prev_state = highlighter.previousBlockState()
