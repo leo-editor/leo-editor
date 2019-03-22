@@ -2022,7 +2022,7 @@ if QtGui:
                 style_name = c.config.getString('pygments-style-name') or 'default'
                 try:
                     self.setStyle(style_name)
-                    print('using %r pygments style' % style_name)
+                    print('using %r pygments style in %r' % (style_name, c.shortFileName()))
                 except Exception:
                     print('pygments style not found: %r. Using "default" style' % style_name)
                     self.setStyle('default') # 'solarized' or 'leonine'
