@@ -15,20 +15,8 @@ import string
 import leo.core.leoGlobals as g
 from leo.core.leoQt import Qsci, QtGui, QtWidgets # isQt5, QtCore
 if g.pygments:
-    # pylint: disable=no-name-in-module
-        ### PythonLexer or PythonLexer3 will be undefined.
-    try:
-        # Jupyter imports.
-        from pygments.formatters.html import HtmlFormatter
-        from pygments.lexer import RegexLexer, _TokenType, Text, Error
-        ### To be removed.
-        if g.isPython3:
-            from pygments.lexers import Python3Lexer as Lexer # pylint: disable=no-name-in-module
-        else:
-            from pygments.lexers import PythonLexer as Lexer # pylint: disable=no-name-in-module
-        from pygments.styles import get_style_by_name
-    except ImportError:
-        g.pygments = None
+    import pygments.styles
+    import pygments.lexers
 #@-<< imports >>
 #@+others
 #@+node:ekr.20170127141855.1: ** class BaseColorizer (object)
@@ -2013,9 +2001,8 @@ if QtGui:
                 self._brushes = {}
                 self._document = document
                 self._formats = {}
-                self._formatter = HtmlFormatter(nowrap=True)
-                
-                self._style = None
+                ### self._formatter = HtmlFormatter(nowrap=True)
+                ### self._style = None
                 # Style gallery: https://help.farbox.com/pygments.html
                 # Dark styles: fruity, monokai, native, vim
                 # https://github.com/gthank/solarized-dark-pygments
@@ -2024,8 +2011,9 @@ if QtGui:
                     self.setStyle(style_name)
                     print('using %r pygments style in %r' % (style_name, c.shortFileName()))
                 except Exception:
-                    print('pygments style not found: %r. Using "default" style' % style_name)
-                    self.setStyle('default') # 'solarized' or 'leonine'
+                    print('pygments %r style not found. Using "default" style' % style_name)
+                    self.setStyle('default')
+                assert self._style
         #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
         def highlightBlock(self, s):
             """ Called by QSyntaxHighlighter """
@@ -2093,7 +2081,7 @@ if QtGui:
                 """ Sets the style to the specified Pygments style.
                 """
                 if g.isString(style):
-                    style = get_style_by_name(style)
+                    style = pygments.styles.get_style_by_name(style)
                 self._style = style
                 self._clear_caches()
             #@+node:ekr.20190320154604.1: *4* leo_h.clear_caches
@@ -2945,7 +2933,7 @@ class PygmentsColorizer(BaseColorizer):
                     i += max(1, n)
                 else:
                     i += 1
-    #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop (new) (to do: Leonine features)
+    #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop & helpers
     lexer_dict = {}
         # Keys are language names, values are instantiated lexers.
     state_s_dict = {}
@@ -2958,13 +2946,11 @@ class PygmentsColorizer(BaseColorizer):
     def mainLoop(self, s):
         '''Colorize a *single* line s'''
         trace = False and g.pygments and not g.unitTesting
-        highlighter = self.highlighter
-        if not getattr(self, '_lexer', None):
-            self._lexer = Lexer() ### To be generalized.
-            # g.trace('===== new lexer:', self._lexer)
-            # g.printObj(dir(self._lexer))
-        lexer = self._lexer
-        # g.printObj(lexer.tokens ['root'])
+        highlighter, language = self.highlighter, self.language
+        assert language, g.callers()
+        lexer = self.get_lexer(language)
+        lexer = self.patch_lexer(language, lexer)
+        self._lexer = lexer
         if trace:
             print('\npyg_c.mainLoop: count: %s line: %r' % (self.recolorCount, s))
             prev_state = highlighter.previousBlockState()
@@ -3006,6 +2992,45 @@ class PygmentsColorizer(BaseColorizer):
             self.state_s_dict [state_s] = state_n
             self.state_n_dict [state_n] = state_s
         highlighter.setCurrentBlockState(state_n)
+    #@+node:ekr.20190322082533.1: *4* pyg_c.get_lexer
+    lexers_d = {}
+        # Keys are language names, values are lexers.
+
+    def get_lexer(self, language):
+        '''Return the lexer for self.language, creating it if necessary.'''
+        lexer_d, lexers = self.lexers_d, pygments.lexers
+        if language in lexer_d:
+            return lexer_d [language]
+        try:
+            if g.isPython3 and language == 'python':
+                lexer_language = 'python3'
+            else:
+                lexer_language = language
+            lexer = lexers.get_lexer_by_name(lexer_language)
+            g.trace('CREATED lexer for %s: %r' % (language, lexer))
+            self.lexers_d [language] = lexer
+        except Exception:
+            g.trace('==== no lexer for %r' % language)
+            lexer = lexers.Python3Lexer if g.isPython3 else lexers.PythonLexer
+            if 'python' not in self.lexers_d:
+                g.trace('CREATED default lexer for python: %r' % lexer)
+                self.lexers_d ['python'] = lexer
+        ### To do: create Leonine lexer from newly-created lexer.
+        return lexer
+    #@+node:ekr.20190322094034.1: *4* pyg_c.patch_lexer
+    patched_lexer_d = {}
+        # Keys are languages, values are patched lexers.
+
+    def patch_lexer(self, language, lexer):
+        
+        d = self.patched_lexer_d
+        patched_lexer = d.get(language)
+        if patched_lexer:
+            return patched_lexer
+        g.trace('CREATED patched lexer for %s: %r' % (language, lexer))
+        d [language] = lexer
+            ### To do
+        return lexer
     #@+node:ekr.20190319151826.79: *3* pyg_c.recolor
     def recolor(self, s):
         '''
@@ -3039,7 +3064,8 @@ class PygmentsColorizer(BaseColorizer):
             # Always color the line, even if colorizing is disabled.
             # if s is not None:
                 # self.mainLoop(n, s)
-        if s:
+        if s is not None:
+            # For pygments, we *must* call for all lines.
             self.mainLoop(s)
     #@+node:ekr.20190319151826.80: *4* pyg_c.initBlock0
     def initBlock0 (self):
@@ -3329,6 +3355,8 @@ class QScintillaColorizer(BaseColorizer):
 #@+node:ekr.20190320062624.2: *3* RegexLexer.get_tokens_unprocessed
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+
+from pygments.lexer import RegexLexer, _TokenType, Text, Error
 
 def get_tokens_unprocessed(self, text, stack=('root',)):
     """
