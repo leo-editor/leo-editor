@@ -2163,7 +2163,8 @@ class PygmentsColorizer(BaseColorizer):
     #@+node:ekr.20190319151826.3: *4* pyg_c.__init & helpers
     def __init__(self, c, widget, wrapper):
         '''Ctor for JEditColorizer class.'''
-        BaseColorizer.__init__(self,c)
+        BaseColorizer.__init__(self, c)
+        # g.trace('PygmentsColorizer:__init__', self.c.shortFileName())
         self.widget = widget
         self.wrapper = wrapper
         # This assert is not true when using multiple body editors
@@ -2959,11 +2960,12 @@ class PygmentsColorizer(BaseColorizer):
         highlighter, language = self.highlighter, self.language
         if language == 'patch':
             language = 'diff'
-        lexer = self.lexers_dict.get(language)
+        key = '%s:%s' % (language, id(self))
+        lexer = self.lexers_dict.get(key)
         if not lexer:
             lexer = self.get_lexer(language)
             lexer = self.patch_lexer(language, lexer)
-            self.lexers_dict [language] = lexer
+            self.lexers_dict [key] = lexer
         self._lexer = lexer
         if False: ###
             print('\npyg_c.mainLoop: count: %s line: %r' % (self.recolorCount, s))
@@ -3007,9 +3009,13 @@ class PygmentsColorizer(BaseColorizer):
     #@+node:ekr.20190322133358.1: *4* pyg_c.section_ref_callback
     def section_ref_callback(self, lexer, match):
         '''pygments callback for section references.'''
+        c = self.c
         from pygments.token import Comment, Name
         name, ref, start = match.group(1), match.group(0), match.start()
-        found = g.findReference(ref, self.c.p)
+        found = g.findReference(ref, c.p)
+        # print('')
+        # g.trace(c.shortFileName(), c.p.h)
+        # g.trace(ref, 'Found:', found and found.h or 'False')
         found_tok = Name.Entity if found else Name.Other
         yield match.start(), Comment, '<<'
         yield start+2, found_tok, name
@@ -3024,7 +3030,6 @@ class PygmentsColorizer(BaseColorizer):
             else:
                 lexer_language = language
             lexer = lexers.get_lexer_by_name(lexer_language)
-            ### g.trace('CREATED lexer for %s: %r' % (language, lexer))
         except Exception:
             g.trace('==== no lexer for %r' % language)
             lexer = lexers.Python3Lexer if g.isPython3 else lexers.PythonLexer
