@@ -2058,7 +2058,6 @@ if QtGui:
                 result = QtGui.QTextCharFormat()
                 #
                 # EKR: handle missing tokens.
-                ### This is a temp hack..
                 try:
                     data = style.style_for_token(token).items()
                 except KeyError as err:
