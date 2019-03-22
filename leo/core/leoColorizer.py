@@ -2050,11 +2050,25 @@ if QtGui:
                 format = QtGui.QTextCursor(self._document).charFormat()
                 return format
             #@+node:ekr.20190320153716.1: *5* leo_h._get_format_from_style
+            key_error_d = {}
+
             def _get_format_from_style(self, token, style):
                 """ Returns a QTextCharFormat for token by reading a Pygments style.
                 """
                 result = QtGui.QTextCharFormat()
-                for key, value in style.style_for_token(token).items():
+                #
+                # EKR: handle missing tokens.
+                ### This is a temp hack..
+                try:
+                    data = style.style_for_token(token).items()
+                except KeyError as err:
+                    key = repr(err)
+                    if key not in self.key_error_d:
+                        self.key_error_d [key] = True
+                        g.trace(err)
+                        # g.es_exception()
+                    return result
+                for key, value in data:
                     if value:
                         if key == 'color':
                             result.setForeground(self._get_brush(value))
@@ -3001,7 +3015,7 @@ class PygmentsColorizer(BaseColorizer):
         from pygments.token import Comment
         c = self.c
         name, ref, start = match.group(1), match.group(0), match.start()
-        if 1: ### Temp: just use comments.
+        if 0: ### Temp: just use comments.
             yield match.start(), Comment, '<<'
             yield start+2, Comment, name
             yield start+2+len(name), Comment, '>>'
