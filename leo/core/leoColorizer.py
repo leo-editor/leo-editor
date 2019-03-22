@@ -3013,9 +3013,6 @@ class PygmentsColorizer(BaseColorizer):
         from pygments.token import Comment, Name
         name, ref, start = match.group(1), match.group(0), match.start()
         found = g.findReference(ref, c.p)
-        # print('')
-        # g.trace(c.shortFileName(), c.p.h)
-        # g.trace(ref, 'Found:', found and found.h or 'False')
         found_tok = Name.Entity if found else Name.Other
         yield match.start(), Comment, '<<'
         yield start+2, found_tok, name
