@@ -42,6 +42,7 @@
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
 </v>
+<v t="ekr.20190322041148.1"><vh>@string pygments-style-name = leonine</vh></v>
 </v>
 <v t="ekr.20140103105930.16446"><vh>@views</vh>
 <v t="ekr.20140102162014.16438"><vh>@view added strip_comments keyword arg to two config.getData methods</vh></v>
@@ -72,6 +73,7 @@
 <v t="ekr.20181102040815.1"><vh>script: warn about long lines</vh></v>
 </v>
 </v>
+<v t="ekr.20190322041148.1"></v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
 <v t="ekr.20190122185223.1"><vh>regex: find all kwargs</vh></v>
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
@@ -338,7 +340,6 @@
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
 </v>
 </v>
-<v t="ekr.20031218072017.2794"></v>
 <v t="ekr.20180606035619.1"><vh>Recent files</vh>
 <v t="ekr.20120419093256.10048"></v>
 <v t="ekr.20140907123524.18774"></v>
@@ -1266,69 +1267,12 @@
 <v t="ekr.20190317084647.2"></v>
 </v>
 </v>
+<v t="ekr.20031218072017.2794"></v>
 <v t="ekr.20140827092102.18574"></v>
 <v t="ekr.20190319150024.1"><vh>===== pygments</vh>
 <v t="ekr.20190319151056.1"><vh> Not used</vh>
-<v t="ekr.20190321002423.1"><vh>COPY: old pyg_c.mainLoop</vh></v>
 <v t="ekr.20170428054142.1"><vh>leo_h.force_rehighlight</vh></v>
 <v t="ekr.20110605121601.18568"><vh>leo_h.rehighlight (disabled)</vh></v>
-<v t="ekr.20190319151826.23"><vh> pygments.Pattern matchers</vh>
-<v t="ekr.20190319151826.24"><vh> About the pattern matchers</vh></v>
-<v t="ekr.20190319151826.25"><vh>pygments.dump</vh></v>
-<v t="ekr.20190319151826.26"><vh>pygments.Leo rule functions</vh>
-<v t="ekr.20190319151826.27"><vh>pygments.match_at_color</vh>
-<v t="ekr.20190319151826.28"><vh>restartColor</vh></v>
-</v>
-<v t="ekr.20190319151826.29"><vh>pygments.match_at_killcolor &amp; restarter</vh>
-<v t="ekr.20190319151826.30"><vh>pygments.restartKillColor</vh></v>
-</v>
-<v t="ekr.20190319151826.31"><vh>pygments.match_at_language</vh></v>
-<v t="ekr.20190319151826.32"><vh>pygments.match_at_nocolor &amp; restarter</vh>
-<v t="ekr.20190319151826.33"><vh>pygments.restartNoColor</vh></v>
-</v>
-<v t="ekr.20190319151826.34"><vh>pygments.match_at_nocolor_node &amp; restarter</vh>
-<v t="ekr.20190319151826.35"><vh>pygments.restartNoColorNode</vh></v>
-</v>
-<v t="ekr.20190319151826.36"><vh>pygments.match_at_wrap</vh></v>
-<v t="ekr.20190319151826.37"><vh>pygments.match_blanks</vh></v>
-<v t="ekr.20190319151826.38"><vh>pygments.match_doc_part &amp; restarter</vh>
-<v t="ekr.20190319151826.39"><vh>pygments.restartDocPart</vh></v>
-</v>
-<v t="ekr.20190319151826.40"><vh>pygments.match_image</vh></v>
-<v t="ekr.20190319151826.41"><vh>pygments.match_leo_keywords</vh></v>
-<v t="ekr.20190319151826.42"><vh>pygments.match_section_ref</vh>
-<v t="ekr.20190319151826.43"><vh>&lt;&lt; set the hyperlink &gt;&gt; (jedit)</vh></v>
-</v>
-<v t="ekr.20190319151826.44"><vh>pygments.match_tabs</vh></v>
-<v t="ekr.20190319151826.45"><vh>pygments.match_tabs</vh></v>
-<v t="ekr.20190319151826.46"><vh>pygments.match_unl</vh></v>
-<v t="ekr.20190319151826.47"><vh>pygments.match_url_any/f/h</vh></v>
-</v>
-<v t="ekr.20190319151826.48"><vh>pygments.match_compiled_regexp</vh>
-<v t="ekr.20190319151826.49"><vh>pygments.match_compiled_regexp_helper</vh></v>
-</v>
-<v t="ekr.20190319151826.50"><vh>pygments.match_eol_span</vh></v>
-<v t="ekr.20190319151826.51"><vh>pygments.match_eol_span_regexp</vh></v>
-<v t="ekr.20190319151826.52"><vh>pygments.match_everything</vh></v>
-<v t="ekr.20190319151826.53"><vh>pygments.match_keywords</vh></v>
-<v t="ekr.20190319151826.54"><vh>pygments.match_line</vh></v>
-<v t="ekr.20190319151826.55"><vh>pygments.match_mark_following &amp; getNextToken</vh>
-<v t="ekr.20190319151826.56"><vh>pygments.getNextToken</vh></v>
-</v>
-<v t="ekr.20190319151826.57"><vh>pygments.match_mark_previous</vh></v>
-<v t="ekr.20190319151826.58"><vh>pygments.match_regexp_helper</vh></v>
-<v t="ekr.20190319151826.59"><vh>pygments.match_seq</vh></v>
-<v t="ekr.20190319151826.60"><vh>pygments.match_seq_regexp</vh></v>
-<v t="ekr.20190319151826.61"><vh>pygments.match_span &amp; helper &amp; restarter</vh>
-<v t="ekr.20190319151826.62"><vh>pygments.match_span_helper</vh></v>
-<v t="ekr.20190319151826.63"><vh>pygments.restart_match_span</vh></v>
-</v>
-<v t="ekr.20190319151826.64"><vh>pygments.match_span_regexp</vh></v>
-<v t="ekr.20190319151826.65"><vh>pygments.match_wiki_pattern</vh></v>
-<v t="ekr.20190319151826.66"><vh>pygments.match_word_and_regexp</vh></v>
-<v t="ekr.20190319151826.67"><vh>pygments.skip_line</vh></v>
-<v t="ekr.20190319151826.68"><vh>pygments.trace_match</vh></v>
-</v>
 <v t="ekr.20190319151826.8"><vh>pygments.addImportedRules</vh></v>
 <v t="ekr.20190320062624.6"><vh>class PygmentsHighlighter(QSyntaxHighlighter) (NOT YET)</vh>
 <v t="ekr.20190320062624.7"><vh>pyg_h.__init__</vh></v>
@@ -1348,125 +1292,12 @@
 </v>
 <v t="ekr.20190319192254.1"><vh> Changed</vh>
 <v t="ekr.20190319151826.16"><vh>pyg_c.init_mode_from_module (changed)</vh></v>
-<v t="ekr.20190319151826.78"><vh>pyg_c.mainLoop (new) (to do: Leonine features)</vh></v>
-</v>
-<v t="ekr.20190319150835.1"><vh>print pygments tokens</vh></v>
-</v>
-<v t="ekr.20190321124036.1"><vh>----- style prototypes</vh>
-<v t="ekr.20190319185726.1"><vh>python wrapper.configDict</vh></v>
-<v t="ekr.20190321104651.1"><vh>color settings</vh></v>
-<v t="ekr.20190321104134.1"><vh>style</vh></v>
-<v t="ekr.20190321112916.1"><vh>dynamic style</vh>
-<v t="ekr.20190321120119.1"><vh>is_valid_color</vh></v>
-</v>
-<v t="ekr.20190321130021.1"><vh>&lt;&lt; define class LeonineStyle &gt;&gt; (not used)</vh>
-<v t="ekr.20190321130235.2"><vh>StyleMeta.__new__ (disabled)</vh></v>
-<v t="ekr.20190321130235.3"><vh>StyleMeta.style_for_token (hacked)</vh></v>
-<v t="ekr.20190321130235.4"><vh>StyleMeta.list_styles</vh></v>
-<v t="ekr.20190321130235.5"><vh>StyleMeta.styles_token</vh></v>
-<v t="ekr.20190321130235.6"><vh>StyleMeta.__iter__</vh></v>
-<v t="ekr.20190321130235.7"><vh>StyleMeta.__len__</vh></v>
-</v>
-<v t="ekr.20190321170917.1"><vh>leo_h.patch_leo_styles</vh></v>
-<v t="ekr.20190321104651.1"></v>
-<v t="ekr.20190321182604.1"><vh>EKRDark.leo Colors...</vh>
-<v t="ekr.20190321182604.2"><vh>Base colors: not all are solarized colors</vh>
-<v t="ekr.20190321182604.3"><vh>@color dark-base0 = #fdffdd</vh></v>
-<v t="ekr.20190321182604.4"><vh>@color dark-base00 = #657b83</vh></v>
-<v t="ekr.20190321182604.5"><vh>@color dark-base01 = #586e75</vh></v>
-<v t="ekr.20190321182604.6"><vh>@color dark-base02 = #073642</vh></v>
-<v t="ekr.20190321182604.7"><vh>@color dark-base03 = #000005</vh></v>
-<v t="ekr.20190321182604.8"><vh>@color dark-base04 = #000059</vh></v>
-<v t="ekr.20190321182604.9"><vh>@color dark-base05 = #003b00</vh></v>
-<v t="ekr.20190321182604.10"><vh>@color dark-base06 = #3b0000</vh></v>
-<v t="ekr.20190321182604.11"><vh>@color dark-base1 = #93a1a1</vh></v>
-<v t="ekr.20190321182604.12"><vh>@color dark-base2 = #eee8d5</vh></v>
-<v t="ekr.20190321182604.13"><vh>@color dark-base3 = #fdf6e3</vh></v>
-<v t="ekr.20190321182604.14"><vh>@color solarized-black = #000005</vh></v>
-<v t="ekr.20190321182604.15"><vh>@color solarized-blue = #268bd2</vh></v>
-<v t="ekr.20190321182604.16"><vh>@color solarized-cyan = #2aa198</vh></v>
-<v t="ekr.20190321182604.17"><vh>@color solarized-green = #859900</vh></v>
-<v t="ekr.20190321182604.18"><vh>@color solarized-magenta = #d33682</vh></v>
-<v t="ekr.20190321182604.19"><vh>@color solarized-red = #dc322f</vh></v>
-<v t="ekr.20190321182604.20"><vh>@color solarized-orange = #cb4b16</vh></v>
-<v t="ekr.20190321182604.21"><vh>@color solarized-violet = #6c71c4</vh></v>
-<v t="ekr.20190321182604.22"><vh>@color solarized-white = #fdf6e3 </vh></v>
-<v t="ekr.20190321182604.23"><vh>@color solarized-yellow = #b58900</vh></v>
-</v>
-<v t="ekr.20190321182604.24"><vh>Colors: Logical colors</vh>
-<v t="ekr.20190321182604.25"><vh>@color LeoBlue = @LightSteelBlue1</vh></v>
-<v t="ekr.20190321182604.26"><vh>@color LeoGreen = #00AA00</vh></v>
-<v t="ekr.20190321182604.27"><vh>@color LeoYellow = @LightYellow</vh></v>
-<v t="ekr.20190321182604.28"><vh>@color log_black_color = @text-foreground</vh></v>
-<v t="ekr.20190321182604.29"><vh>@color log_blue_color = @solarized-blue</vh></v>
-<v t="ekr.20190321182604.30"><vh>@color log_cyan_color = @solarized-cyan</vh></v>
-<v t="ekr.20190321182604.31"><vh>@color log_error_color =@solarized-red</vh></v>
-<v t="ekr.20190321182604.32"><vh>@color log_green_color = @solarized-green</vh></v>
-<v t="ekr.20190321182604.33"><vh>@color log_info_color = @solarized-blue</vh></v>
-<v t="ekr.20190321182604.34"><vh>@color log_magenta_color = @solarized-magenta</vh></v>
-<v t="ekr.20190321182604.35"><vh>@color log_note_color = @solarized-blue</vh></v>
-<v t="ekr.20190321182604.36"><vh>@color log_orange_color = @solarized-orange</vh></v>
-<v t="ekr.20190321182604.37"><vh>@color log_red_color = @solarized-red</vh></v>
-<v t="ekr.20190321182604.38"><vh>@color log_violet_color = @solarized-violet</vh></v>
-<v t="ekr.20190321182604.39"><vh>@color log_warning_color = @solarized-red</vh></v>
-<v t="ekr.20190321182604.40"><vh>@color log_white_color = @solarized-white</vh></v>
-<v t="ekr.20190321182604.41"><vh>@color log_yellow_color = @solarized-yellow</vh></v>
-</v>
-<v t="ekr.20190321182604.42"><vh>Colors: Syntax coloring</vh>
-<v t="ekr.20190321182604.43"><vh>Colors: defaults</vh>
-<v t="ekr.20190321182604.44"><vh>@color alt_solarized_green = #84c805</vh></v>
-<v t="ekr.20190321182604.45"><vh>@color blank_color = grey</vh></v>
-<v t="ekr.20190321182604.46"><vh>@color tab_color = red</vh></v>
-<v t="ekr.20190321182604.47"><vh>@color label_color = red</vh></v>
-<v t="ekr.20190321182604.48"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="ekr.20190321182604.49"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="ekr.20190321182604.50"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="ekr.20190321182604.51"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ekr.20190321182604.52"><vh>@color literal1_color = @alt-solarized-green</vh></v>
-<v t="ekr.20190321182604.53"><vh>@color literal2_color = @alt-solarized-green</vh></v>
-<v t="ekr.20190321182604.54"><vh>@color literal3_color = @alt-solarized-green</vh></v>
-<v t="ekr.20190321182604.55"><vh>@color literal4_color = @alt-solarized-green</vh></v>
-<v t="ekr.20190321182604.56"><vh>@color markup_color = #268bd2</vh></v>
-<v t="ekr.20190321182604.57"><vh>@color comment1_color = #d33682</vh></v>
-<v t="ekr.20190321182604.58"><vh>@color comment2_color = #d33682</vh></v>
-<v t="ekr.20190321182604.59"><vh>@color comment3_color = #d33682</vh></v>
-<v t="ekr.20190321182604.60"><vh>@color comment4_color = #d33682</vh></v>
-</v>
-<v t="ekr.20190321182604.61"><vh>Colors: Leo constructs</vh>
-<v t="ekr.20190321182604.62"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
-<v t="ekr.20190321182604.63"><vh>@color null_color = #6c71c4</vh></v>
-<v t="ekr.20190321182604.64"><vh>@color operator_color = #6c71c4</vh></v>
-<v t="ekr.20190321182604.65"><vh>@color doc_part_color = @solarized-red</vh></v>
-<v t="ekr.20190321182604.66"><vh>@color leo_keyword_color = @literal1_color</vh></v>
-<v t="ekr.20190321182604.67"><vh>@color section_name_color = @solarized-red</vh></v>
-<v t="ekr.20190321182604.68"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
-<v t="ekr.20190321182604.69"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
-<v t="ekr.20190321182604.70"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20190321182604.71"><vh>@color url_color = @solarized-purple</vh></v>
-</v>
-<v t="ekr.20190321182604.72"><vh>Colors: patch (diff)</vh>
-<v t="ekr.20190321182604.73"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
-<v t="ekr.20190321182604.74"><vh>@color patch_keyword2_color = @solarized-red</vh></v>
-<v t="ekr.20190321182604.75"><vh>@color patch_keyword3_color = @solarized-blue</vh></v>
-<v t="ekr.20190321182604.76"><vh>@color patch_literal1_color = @solarized-blue</vh></v>
-<v t="ekr.20190321182604.77"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
+<v t="ekr.20190319151826.78"><vh>pyg_c.mainLoop &amp; helpers</vh>
+<v t="ekr.20190322133358.1"><vh>pyg_c.section_ref_callback</vh></v>
+<v t="ekr.20190322082533.1"><vh>pyg_c.get_lexer</vh></v>
+<v t="ekr.20190322094034.1"><vh>pyg_c.patch_lexer</vh></v>
 </v>
 </v>
-<v t="ekr.20190321182604.78"><vh>Colors: Text</vh>
-<v t="ekr.20190321182604.79"><vh>@color log_text_background_color = #000005</vh></v>
-<v t="ekr.20190321182604.80"><vh>@color log_text_foreground_color = #ffffff</vh></v>
-<v t="ekr.20190321182604.81"><vh>@color text-background =@dark-base03</vh></v>
-<v t="ekr.20190321182604.82"><vh>@color text-background-bright =@dark-base02</vh></v>
-<v t="ekr.20190321182604.83"><vh>@color text-foreground =@dark-base0</vh></v>
-<v t="ekr.20190321182604.84"><vh>@color text-foreground-bright =@dark-base2</vh></v>
-</v>
-<v t="ekr.20190321182604.85"><vh>Colors: Widgets</vh>
-<v t="ekr.20190321182604.86"><vh>@color button-hover-fg =@dark-base03</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20120212060348.10374"></v>
-<v t="ekr.20140827092102.18575"><vh>&lt;&lt; imports &gt;&gt; (leoColorizer.py)</vh></v>
 <v t="ekr.20190320161623.1"><vh>----- classes</vh>
 <v t="ekr.20110605121601.18569"><vh>class JEditColorizer(BaseColorizer)</vh>
 <v t="ekr.20110605121601.18571"><vh> jedit.Birth &amp; init</vh>
@@ -1583,7 +1414,7 @@
 <v t="ekr.20170514054524.1"><vh>bc.fonts</vh></v>
 </v>
 <v t="ekr.20110605121601.18565"><vh>class LeoHighlighter (QSyntaxHighlighter)</vh>
-<v t="ekr.20110605121601.18566"><vh>leo_h.ctor</vh></v>
+<v t="ekr.20110605121601.18566"><vh>leo_h.ctor (sets style)</vh></v>
 <v t="ekr.20110605121601.18567"><vh>leo_h.highlightBlock</vh></v>
 <v t="ekr.20190320154014.1"><vh>leo_h: From PygmentsHighlighter</vh>
 <v t="ekr.20190320153605.1"><vh>leo_h._get_format &amp; helpers</vh>
@@ -1642,20 +1473,126 @@
 </v>
 <v t="ekr.20190320062624.3"><vh>class PygmentsBlockUserData(QTextBlockUserData)</vh></v>
 </v>
-<v t="ekr.20190319151826.78"></v>
+<v t="ekr.20190321124036.1"><vh>----- style prototypes</vh>
+<v t="ekr.20190319185726.1"><vh>python wrapper.configDict</vh></v>
+<v t="ekr.20190321104651.1"><vh>color settings</vh></v>
+<v t="ekr.20190321104134.1"><vh>style</vh></v>
+<v t="ekr.20190321112916.1"><vh>dynamic style</vh>
+<v t="ekr.20190321120119.1"><vh>is_valid_color</vh></v>
+</v>
+<v t="ekr.20190321130021.1"><vh>&lt;&lt; define class LeonineStyle &gt;&gt; (not used)</vh>
+<v t="ekr.20190321130235.2"><vh>StyleMeta.__new__ (disabled)</vh></v>
+<v t="ekr.20190321130235.3"><vh>StyleMeta.style_for_token (hacked)</vh></v>
+<v t="ekr.20190321130235.4"><vh>StyleMeta.list_styles</vh></v>
+<v t="ekr.20190321130235.5"><vh>StyleMeta.styles_token</vh></v>
+<v t="ekr.20190321130235.6"><vh>StyleMeta.__iter__</vh></v>
+<v t="ekr.20190321130235.7"><vh>StyleMeta.__len__</vh></v>
+</v>
+<v t="ekr.20190321170917.1"><vh>leo_h.patch_leo_styles</vh></v>
+<v t="ekr.20190321104651.1"></v>
+<v t="ekr.20190321182604.1"><vh>EKRDark.leo Colors...</vh>
+<v t="ekr.20190321182604.2"><vh>Base colors: not all are solarized colors</vh>
+<v t="ekr.20190321182604.3"><vh>@color dark-base0 = #fdffdd</vh></v>
+<v t="ekr.20190321182604.4"><vh>@color dark-base00 = #657b83</vh></v>
+<v t="ekr.20190321182604.5"><vh>@color dark-base01 = #586e75</vh></v>
+<v t="ekr.20190321182604.6"><vh>@color dark-base02 = #073642</vh></v>
+<v t="ekr.20190321182604.7"><vh>@color dark-base03 = #000005</vh></v>
+<v t="ekr.20190321182604.8"><vh>@color dark-base04 = #000059</vh></v>
+<v t="ekr.20190321182604.9"><vh>@color dark-base05 = #003b00</vh></v>
+<v t="ekr.20190321182604.10"><vh>@color dark-base06 = #3b0000</vh></v>
+<v t="ekr.20190321182604.11"><vh>@color dark-base1 = #93a1a1</vh></v>
+<v t="ekr.20190321182604.12"><vh>@color dark-base2 = #eee8d5</vh></v>
+<v t="ekr.20190321182604.13"><vh>@color dark-base3 = #fdf6e3</vh></v>
+<v t="ekr.20190321182604.14"><vh>@color solarized-black = #000005</vh></v>
+<v t="ekr.20190321182604.15"><vh>@color solarized-blue = #268bd2</vh></v>
+<v t="ekr.20190321182604.16"><vh>@color solarized-cyan = #2aa198</vh></v>
+<v t="ekr.20190321182604.17"><vh>@color solarized-green = #859900</vh></v>
+<v t="ekr.20190321182604.18"><vh>@color solarized-magenta = #d33682</vh></v>
+<v t="ekr.20190321182604.19"><vh>@color solarized-red = #dc322f</vh></v>
+<v t="ekr.20190321182604.20"><vh>@color solarized-orange = #cb4b16</vh></v>
+<v t="ekr.20190321182604.21"><vh>@color solarized-violet = #6c71c4</vh></v>
+<v t="ekr.20190321182604.22"><vh>@color solarized-white = #fdf6e3 </vh></v>
+<v t="ekr.20190321182604.23"><vh>@color solarized-yellow = #b58900</vh></v>
+</v>
+<v t="ekr.20190321182604.24"><vh>Colors: Logical colors</vh>
+<v t="ekr.20190321182604.25"><vh>@color LeoBlue = @LightSteelBlue1</vh></v>
+<v t="ekr.20190321182604.26"><vh>@color LeoGreen = #00AA00</vh></v>
+<v t="ekr.20190321182604.27"><vh>@color LeoYellow = @LightYellow</vh></v>
+<v t="ekr.20190321182604.28"><vh>@color log_black_color = @text-foreground</vh></v>
+<v t="ekr.20190321182604.29"><vh>@color log_blue_color = @solarized-blue</vh></v>
+<v t="ekr.20190321182604.30"><vh>@color log_cyan_color = @solarized-cyan</vh></v>
+<v t="ekr.20190321182604.31"><vh>@color log_error_color =@solarized-red</vh></v>
+<v t="ekr.20190321182604.32"><vh>@color log_green_color = @solarized-green</vh></v>
+<v t="ekr.20190321182604.33"><vh>@color log_info_color = @solarized-blue</vh></v>
+<v t="ekr.20190321182604.34"><vh>@color log_magenta_color = @solarized-magenta</vh></v>
+<v t="ekr.20190321182604.35"><vh>@color log_note_color = @solarized-blue</vh></v>
+<v t="ekr.20190321182604.36"><vh>@color log_orange_color = @solarized-orange</vh></v>
+<v t="ekr.20190321182604.37"><vh>@color log_red_color = @solarized-red</vh></v>
+<v t="ekr.20190321182604.38"><vh>@color log_violet_color = @solarized-violet</vh></v>
+<v t="ekr.20190321182604.39"><vh>@color log_warning_color = @solarized-red</vh></v>
+<v t="ekr.20190321182604.40"><vh>@color log_white_color = @solarized-white</vh></v>
+<v t="ekr.20190321182604.41"><vh>@color log_yellow_color = @solarized-yellow</vh></v>
+</v>
+<v t="ekr.20190321182604.42"><vh>Colors: Syntax coloring</vh>
+<v t="ekr.20190321182604.43"><vh>Colors: defaults</vh>
+<v t="ekr.20190321182604.44"><vh>@color alt_solarized_green = #84c805</vh></v>
+<v t="ekr.20190321182604.45"><vh>@color blank_color = grey</vh></v>
+<v t="ekr.20190321182604.46"><vh>@color tab_color = red</vh></v>
+<v t="ekr.20190321182604.47"><vh>@color label_color = red</vh></v>
+<v t="ekr.20190321182604.48"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="ekr.20190321182604.49"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="ekr.20190321182604.50"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="ekr.20190321182604.51"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="ekr.20190321182604.52"><vh>@color literal1_color = @alt-solarized-green</vh></v>
+<v t="ekr.20190321182604.53"><vh>@color literal2_color = @alt-solarized-green</vh></v>
+<v t="ekr.20190321182604.54"><vh>@color literal3_color = @alt-solarized-green</vh></v>
+<v t="ekr.20190321182604.55"><vh>@color literal4_color = @alt-solarized-green</vh></v>
+<v t="ekr.20190321182604.56"><vh>@color markup_color = #268bd2</vh></v>
+<v t="ekr.20190321182604.57"><vh>@color comment1_color = #d33682</vh></v>
+<v t="ekr.20190321182604.58"><vh>@color comment2_color = #d33682</vh></v>
+<v t="ekr.20190321182604.59"><vh>@color comment3_color = #d33682</vh></v>
+<v t="ekr.20190321182604.60"><vh>@color comment4_color = #d33682</vh></v>
+</v>
+<v t="ekr.20190321182604.61"><vh>Colors: Leo constructs</vh>
+<v t="ekr.20190321182604.62"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
+<v t="ekr.20190321182604.63"><vh>@color null_color = #6c71c4</vh></v>
+<v t="ekr.20190321182604.64"><vh>@color operator_color = #6c71c4</vh></v>
+<v t="ekr.20190321182604.65"><vh>@color doc_part_color = @solarized-red</vh></v>
+<v t="ekr.20190321182604.66"><vh>@color leo_keyword_color = @literal1_color</vh></v>
+<v t="ekr.20190321182604.67"><vh>@color section_name_color = @solarized-red</vh></v>
+<v t="ekr.20190321182604.68"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
+<v t="ekr.20190321182604.69"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
+<v t="ekr.20190321182604.70"><vh>@color undefined_section_name_color = red</vh></v>
+<v t="ekr.20190321182604.71"><vh>@color url_color = @solarized-purple</vh></v>
+</v>
+<v t="ekr.20190321182604.72"><vh>Colors: patch (diff)</vh>
+<v t="ekr.20190321182604.73"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
+<v t="ekr.20190321182604.74"><vh>@color patch_keyword2_color = @solarized-red</vh></v>
+<v t="ekr.20190321182604.75"><vh>@color patch_keyword3_color = @solarized-blue</vh></v>
+<v t="ekr.20190321182604.76"><vh>@color patch_literal1_color = @solarized-blue</vh></v>
+<v t="ekr.20190321182604.77"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
+</v>
+</v>
+<v t="ekr.20190321182604.78"><vh>Colors: Text</vh>
+<v t="ekr.20190321182604.79"><vh>@color log_text_background_color = #000005</vh></v>
+<v t="ekr.20190321182604.80"><vh>@color log_text_foreground_color = #ffffff</vh></v>
+<v t="ekr.20190321182604.81"><vh>@color text-background =@dark-base03</vh></v>
+<v t="ekr.20190321182604.82"><vh>@color text-background-bright =@dark-base02</vh></v>
+<v t="ekr.20190321182604.83"><vh>@color text-foreground =@dark-base0</vh></v>
+<v t="ekr.20190321182604.84"><vh>@color text-foreground-bright =@dark-base2</vh></v>
+</v>
+<v t="ekr.20190321182604.85"><vh>Colors: Widgets</vh>
+<v t="ekr.20190321182604.86"><vh>@color button-hover-fg =@dark-base03</vh></v>
+</v>
+</v>
 <v t="ekr.20190321205442.1"><vh>subclassing lexer</vh>
 <v t="ekr.20190321205811.1"><vh>&lt;&lt; section reference &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20190322040433.1"><vh>git diff HEAD </vh>
-<v t="ekr.20190322040433.2"><vh>leo/core/leoColorizer.py</vh>
-<v t="ekr.20190322040433.9"><vh>Changed</vh>
-<v t="ekr.20190322040433.10"><vh>pyg_c.mainLoop (new) (to do: Leonine features)</vh>
-<v t="ekr.20190322040433.11"><vh>Old:pyg_c.mainLoop (new) (to do: Leonine features)</vh></v>
+</v>
+</v>
+<v t="ekr.20120212060348.10374"></v>
+<v t="ekr.20190320153716.1"></v>
 <v t="ekr.20190319151826.78"></v>
-</v>
-</v>
-</v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943">@nosearch
@@ -7851,16 +7788,19 @@ if QtGui:
         self._brushes = {}
         self._document = document
         self._formats = {}
-        self._formatter = HtmlFormatter(nowrap=True)
-        
-        self._style = None
         # Style gallery: https://help.farbox.com/pygments.html
         # Dark styles: fruity, monokai, native, vim
+        # https://github.com/gthank/solarized-dark-pygments
+        style_name = c.config.getString('pygments-style-name') or 'default'
         try:
-            self.setStyle('solarized') # or 'leonine'
-            # https://github.com/gthank/solarized-dark-pygments
+            self.setStyle(style_name)
+            print('using %r pygments style in %r' % (style_name, c.shortFileName()))
         except Exception:
-            self.setStyle('default') # 'solarized' or 'leonine'
+            print('pygments %r style not found. Using "default" style' % style_name)
+            self.setStyle('default')
+            style_name = 'default'
+        self.colorizer.style_name = style_name
+        assert self._style
 </t>
 <t tx="ekr.20110605121601.18567">def highlightBlock(self, s):
     """ Called by QSyntaxHighlighter """
@@ -11012,27 +10952,6 @@ def refreshFromDisk(self, event=None):
         return '&lt;IdleTime: id: %s&gt;' % id(self)
 
 __str__ = __repr__
-</t>
-<t tx="ekr.20140827092102.18575">import re
-import string
-# import time
-import leo.core.leoGlobals as g
-from leo.core.leoQt import Qsci, QtGui, QtWidgets # isQt5, QtCore
-if g.pygments:
-    # pylint: disable=no-name-in-module
-        ### PythonLexer or PythonLexer3 will be undefined.
-    try:
-        # Jupyter imports.
-        from pygments.formatters.html import HtmlFormatter
-        from pygments.lexer import RegexLexer, _TokenType, Text, Error
-        ### To be removed.
-        if g.isPython3:
-            from pygments.lexers import Python3Lexer as Lexer # pylint: disable=no-name-in-module
-        else:
-            from pygments.lexers import PythonLexer as Lexer # pylint: disable=no-name-in-module
-        from pygments.styles import get_style_by_name
-    except ImportError:
-        g.pygments = None
 </t>
 <t tx="ekr.20140831085423.18630">This outline contains all of Leo's core source code.
 
@@ -18336,48 +18255,28 @@ All of the free_layout plugin will probably go away:
 
 https://github.com/leo-editor/leo-editor/issues/568
 
-First:
-- c.config.getString('pygments-style-name', default='default')
-- Use a callback to test whether a section ref is undefined.
-  Generate Comment.Leo.SectionRef or Comment.Leo.UndefinedSectionRef.
-  
-- Allow lookups of Leo names in style files.
+Post:
+- Everything works!
+- Choice of tokens is still an open question.
 
-Improve mainloop:
-- Use get_lexer_by_name to instantiate lexers.
-  Test self.language.
-- Add lexer dict.
-- Remove hard imports.
-- Detect @language x.
+To do:
+- Add rest/diff handlers in 'leonine' style.
+- Detect @language x in mainloop.
 
-Difficult?: Ask pygments people?
-- Create Leonine lexers dynamically. 
-- Create Leonine styles dynamically.
-  
-Later:
-- Add copyrights &amp; acknowledgements (in devel) for pyzo, yoton, npyscreen, Jupyter/qtconsole.
+Devel:
+- Add promote-headlines command.
+- Add copyrights &amp; acknowledgements for pyzo, yoton, npyscreen, Jupyter/qtconsole.
 
-Maybe:
+Maybe or never:
 - Support legacy syntax-coloring settings?
   If not, clean the code: remove all/most init code.
-- Change states when switching nodes?
-  Probably not: the call to rehighlight probably clears everything.
-
-Open Questions:
-- Should the colorizer and highlighter code be unified?
-  It won't be done in 5.8.  It *might* be done in 6.0
-- Should the code be part of 5.8?
+- Put code 5.8?
 - What about legacy syntax-coloring settings?
+- Unify colorizer and highlighter code?
+  Not in 5.8. Maybe in 6.0
 
 @language python
 @nosearch
-</t>
-<t tx="ekr.20190319150835.1">g.cls()
-from pygments.lexers import PythonLexer
-code = p.b # 'print "Hello World"'
-for token in PythonLexer().get_tokens(code):
-    kind, val = token
-    print('%35r %r' % (kind, val))
 </t>
 <t tx="ekr.20190319151056.1"></t>
 <t tx="ekr.20190319151826.1">class PygmentsColorizer(BaseColorizer):
@@ -18724,78 +18623,6 @@ for token in PythonLexer().get_tokens(code):
     valid = string.ascii_letters + string.digits + '_'
     return ''.join([ch.lower() if ch in valid else '_' for ch in s])
 </t>
-<t tx="ekr.20190319151826.23"></t>
-<t tx="ekr.20190319151826.24">@nocolor-node
-@
-
-The following jEdit matcher methods return the length of the matched text if the
-match succeeds, and zero otherwise. In most cases, these methods colorize all
-the matched text.
-
-The following arguments affect matching:
-
-- at_line_start         True: sequence must start the line.
-- at_whitespace_end     True: sequence must be first non-whitespace text of the line.
-- at_word_start         True: sequence must start a word.
-- hash_char             The first character that must match in a regular expression.
-- no_escape:            True: ignore an 'end' string if it is preceded by
-                        the ruleset's escape character.
-- no_line_break         True: the match will not succeed across line breaks.
-- no_word_break:        True: the match will not cross word breaks.
-
-The following arguments affect coloring when a match succeeds:
-
-- delegate              A ruleset name. The matched text will be colored recursively
-                        by the indicated ruleset.
-- exclude_match         If True, the actual text that matched will not be colored.
-- kind                  The color tag to be applied to colored text.
-</t>
-<t tx="ekr.20190319151826.25">def dump(self, s):
-    if s.find('\n') == -1:
-        return s
-    else:
-        return '\n' + s + '\n'
-</t>
-<t tx="ekr.20190319151826.26"></t>
-<t tx="ekr.20190319151826.27">def match_at_color(self, s, i):
-    if self.trace_leo_matches:
-        g.trace()
-    # Only matches at start of line.
-    if i == 0 and g.match_word(s, 0, '@color'):
-        n = self.setRestart(self.restartColor)
-        self.setState(n) # Enable coloring of *this* line.
-        self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
-            # Now required. Sets state.
-        return len('@color')
-    else:
-        return 0
-</t>
-<t tx="ekr.20190319151826.28">def restartColor(self, s):
-    '''Change all lines up to the next color directive.'''
-    if g.match_word(s, 0, '@killcolor'):
-        self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
-        self.setRestart(self.restartKillColor)
-        return -len(s) # Continue to suppress coloring.
-    elif g.match_word(s, 0, '@nocolor-node'):
-        self.setRestart(self.restartNoColorNode)
-        return -len(s) # Continue to suppress coloring.
-    elif g.match_word(s, 0, '@nocolor'):
-        self.setRestart(self.restartNoColor)
-        return -len(s) # Continue to suppress coloring.
-    else:
-        n = self.setRestart(self.restartColor)
-        self.setState(n) # Enables coloring of *this* line.
-        return 0 # Allow colorizing!
-</t>
-<t tx="ekr.20190319151826.29">def match_at_killcolor(self, s, i):
-
-    # Only matches at start of line.
-    if i == 0 and g.match_word(s, i, '@killcolor'):
-        self.setRestart(self.restartKillColor)
-        return len(s) # Match everything.
-    else:
-        return 0
-</t>
 <t tx="ekr.20190319151826.3">def __init__(self, c, widget, wrapper):
     '''Ctor for JEditColorizer class.'''
     BaseColorizer.__init__(self,c)
@@ -18892,352 +18719,10 @@ The following arguments affect coloring when a match succeeds:
     self.defineDefaultColorsDict()
     self.defineDefaultFontDict()
 </t>
-<t tx="ekr.20190319151826.30">def restartKillColor(self, s):
-    self.setRestart(self.restartKillColor)
-    return len(s) + 1
-</t>
-<t tx="ekr.20190319151826.31">def match_at_language(self, s, i):
-    '''Match Leo's @language directive.'''
-    # Only matches at start of line.
-    if i != 0: return 0
-    if g.match_word(s, i, '@language'):
-        old_name = self.language
-        j = g.skip_ws(s, i + len('@language'))
-        k = g.skip_c_id(s, j)
-        name = s[j: k]
-        ok = self.init_mode(name)
-        if ok:
-            self.colorRangeWithTag(s, i, k, 'leokeyword')
-            if name != old_name:
-                # Solves the recoloring problem!
-                n = self.setInitialStateNumber()
-                self.setState(n)
-        return k - i
-    else:
-        return 0
-</t>
-<t tx="ekr.20190319151826.32">def match_at_nocolor(self, s, i):
-
-    if self.trace_leo_matches:
-        g.trace(i, repr(s))
-    # Only matches at start of line.
-    if i == 0 and not g.match(s, i, '@nocolor-') and g.match_word(s, i, '@nocolor'):
-        self.setRestart(self.restartNoColor)
-        return len(s) # Match everything.
-    else:
-        return 0
-</t>
-<t tx="ekr.20190319151826.33">def restartNoColor(self, s):
-    if self.trace_leo_matches:
-        g.trace(repr(s))
-    if g.match_word(s, 0, '@color'):
-        n = self.setRestart(self.restartColor)
-        self.setState(n) # Enables coloring of *this* line.
-        self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
-        return len('@color')
-    else:
-        self.setRestart(self.restartNoColor)
-        return len(s) # Match everything.
-</t>
-<t tx="ekr.20190319151826.34">def match_at_nocolor_node(self, s, i):
-
-    # Only matches at start of line.
-    if i == 0 and g.match_word(s, i, '@nocolor-node'):
-        self.setRestart(self.restartNoColorNode)
-        return len(s) # Match everything.
-    else:
-        return 0
-</t>
-<t tx="ekr.20190319151826.35">def restartNoColorNode(self, s):
-    self.setRestart(self.restartNoColorNode)
-    return len(s) + 1
-</t>
-<t tx="ekr.20190319151826.36">def match_at_wrap(self, s, i):
-    '''Match Leo's @wrap directive.'''
-    c = self.c
-    # Only matches at start of line.
-    seq = '@wrap'
-    if i == 0 and g.match_word(s, i, seq):
-        j = i + len(seq)
-        k = g.skip_ws(s, j)
-        self.colorRangeWithTag(s, i, k, 'leokeyword')
-        c.frame.setWrap(c.p, force=True)
-        return k - i
-    else:
-        return 0
-</t>
-<t tx="ekr.20190319151826.37">def match_blanks(self, s, i):
-    if 1: # Use Qt code to show invisibles.
-        return 0
-    else: # Old code...
-        if not self.showInvisibles:
-            return 0
-        j = i; n = len(s)
-        while j &lt; n and s[j] == ' ':
-            j += 1
-        if j &gt; i:
-            self.colorRangeWithTag(s, i, j, 'blank')
-            return j - i
-        else:
-            return 0
-</t>
-<t tx="ekr.20190319151826.38">def match_doc_part(self, s, i):
-    '''
-    Colorize Leo's @ and @ doc constructs.
-    Matches only at the start of the line.
-    '''
-    if i != 0:
-        return 0
-    elif g.match_word(s, i, '@doc'):
-        j = i + 4
-    elif g.match(s, i, '@') and (i + 1 &gt;= len(s) or s[i + 1] in (' ', '\t', '\n')):
-        j = i + 1
-    else:
-        return 0
-    c = self.c
-    self.colorRangeWithTag(s, 0, j, 'leokeyword')
-    # New in Leo 5.5: optionally colorize doc parts using reStructuredText
-    if c.config.getBool('color-doc-parts-as-rest'):
-        # Switch langauges.
-        self.after_doc_language = self.language
-        self.language = 'rest'
-        self.clearState()
-        self.init(c.p)
-        # Restart.
-        self.setRestart(self.restartDocPart)
-        # Do *not* color the text here!
-        return j
-    else:
-        self.clearState()
-        self.setRestart(self.restartDocPart)
-        self.colorRangeWithTag(s, j, len(s), 'docpart')
-        return len(s)
-</t>
-<t tx="ekr.20190319151826.39">def restartDocPart(self, s):
-    '''
-    Restarter for @ and @ contructs.
-    Continue until an @c, @code or @language at the start of the line.
-    '''
-    for tag in ('@c', '@code', '@language'):
-        if g.match_word(s, 0, tag):
-            if tag == '@language':
-                return self.match_at_language(s, 0)
-            else:
-                j = len(tag)
-                self.colorRangeWithTag(s, 0, j, 'leokeyword') # 'docpart')
-                # Switch languages.
-                self.language = self.after_doc_language
-                self.clearState()
-                self.init(self.c.p)
-                self.after_doc_language = None
-                return j
-    # Color the next line.
-    self.setRestart(self.restartDocPart)
-    if self.c.config.getBool('color-doc-parts-as-rest'):
-        # Do *not* colorize the text here.
-        return 0
-    else:
-        self.colorRangeWithTag(s, 0, len(s), 'docpart')
-        return len(s)
-</t>
 <t tx="ekr.20190319151826.4">def defineLeoKeywordsDict(self):
     self.leoKeywordsDict = {}
     for key in g.globalDirectiveList:
         self.leoKeywordsDict[key] = 'leokeyword'
-</t>
-<t tx="ekr.20190319151826.40">image_url = re.compile(r'^\s*&lt;\s*img\s+.*src=\"(.*)\".*&gt;\s*$')
-
-def match_image(self, s, i):
-    '''Matcher for &lt;img...&gt;'''
-    m = self.image_url.match(s,i)
-    if m:
-        self.image_src = src = m.group(1)
-        j = len(src)
-        doc = self.highlighter.document()
-        block_n = self.currentBlockNumber()
-        text_block = doc.findBlockByNumber(block_n)
-        g.trace('block_n: %2s %s' % (block_n, repr(s)))
-        g.trace('block text: %s' % repr(text_block.text()))
-            # How to get the cursor of the colorized line.
-                # body = self.c.frame.body
-                # s = body.wrapper.getAllText()
-                # wrapper.delete(0, j)
-                # cursor.insertHtml(src)
-        return j
-    else:
-        return 0
-</t>
-<t tx="ekr.20190319151826.41">def match_leo_keywords(self, s, i):
-    '''Succeed if s[i:] is a Leo keyword.'''
-    self.totalLeoKeywordsCalls += 1
-    if s[i] != '@':
-        return 0
-    # fail if something besides whitespace precedes the word on the line.
-    i2 = i - 1
-    while i2 &gt;= 0:
-        ch = s[i2]
-        if ch == '\n':
-            break
-        elif ch in (' ', '\t'):
-            i2 -= 1
-        else:
-            return 0
-    # Get the word as quickly as possible.
-    j = i + 1
-    while j &lt; len(s) and s[j] in self.word_chars:
-        j += 1
-    word = s[i + 1: j] # entries in leoKeywordsDict do not start with '@'.
-    if j &lt; len(s) and s[j] not in (' ', '\t', '\n'):
-        return 0 # Fail, but allow a rescan, as in objective_c.
-    if self.leoKeywordsDict.get(word):
-        kind = 'leokeyword'
-        self.colorRangeWithTag(s, i, j, kind)
-        self.prev = (i, j, kind)
-        result = j - i + 1 # Bug fix: skip the last character.
-        self.trace_match(kind, s, i, j)
-        return result
-    else:
-        # 2010/10/20: also check the keywords dict here.
-        # This allows for objective_c keywords starting with '@'
-        # This will not slow down Leo, because it is called
-        # for things that look like Leo directives.
-        word = '@' + word
-        kind = self.keywordsDict.get(word)
-        if kind:
-            self.colorRangeWithTag(s, i, j, kind)
-            self.prev = (i, j, kind)
-            self.trace_match(kind, s, i, j)
-            return j - i
-        else:
-            # Bug fix: allow rescan.  Affects @language patch.
-            return 0
-            # Wrong: return -(j - i + 1)
-</t>
-<t tx="ekr.20190319151826.42">def match_section_ref(self, s, i):
-    if self.trace_leo_matches:
-        g.trace()
-    p = self.c.p
-    if not g.match(s, i, '&lt;&lt;'):
-        return 0
-    k = g.find_on_line(s, i + 2, '&gt;&gt;')
-    if k == -1:
-        return 0
-    else:
-        j = k + 2
-        self.colorRangeWithTag(s, i, i + 2, 'namebrackets')
-        ref = g.findReference(s[i: j], p)
-        if ref:
-            if self.use_hyperlinks:
-                &lt;&lt; set the hyperlink &gt;&gt;
-            else:
-                self.colorRangeWithTag(s, i + 2, k, 'link')
-        else:
-            self.colorRangeWithTag(s, i + 2, k, 'name')
-        self.colorRangeWithTag(s, k, j, 'namebrackets')
-        return j - i
-</t>
-<t tx="ekr.20190319151826.43"># Set the bindings to VNode callbacks.
-tagName = "hyper" + str(self.hyperCount)
-self.hyperCount += 1
-ref.tagName = tagName
-</t>
-<t tx="ekr.20190319151826.44">def match_tabs(self, s, i):
-    if 1: # Use Qt code to show invisibles.
-        return 0
-    else: # Old code...
-        if not self.showInvisibles:
-            return 0
-        if self.trace_leo_matches: g.trace()
-        j = i; n = len(s)
-        while j &lt; n and s[j] == '\t':
-            j += 1
-        if j &gt; i:
-            self.colorRangeWithTag(s, i, j, 'tab')
-            return j - i
-        else:
-            return 0
-</t>
-<t tx="ekr.20190319151826.45">def match_trailing_ws(self, s, i):
-    """match trailing whitespace"""
-    j = i; n = len(s)
-    while j &lt; n and s[j] in ' \t':
-        j += 1
-    if j &gt; i and j == n:
-        self.colorRangeWithTag(s, i, j, 'trailing_whitespace')
-        return j - i
-    else:
-        return 0
-</t>
-<t tx="ekr.20190319151826.46">def match_unl(self, s, i):
-    if g.match(s.lower(), i, 'unl://'):
-        j = len(s)
-        self.colorRangeWithTag(s, i, j, 'url')
-        return j
-    else:
-        return 0
-</t>
-<t tx="ekr.20190319151826.47"># Fix bug 893230: URL coloring does not work for many Internet protocols.
-# Added support for: gopher, mailto, news, nntp, prospero, telnet, wais
-url_regex_f = re.compile(r"""(file|ftp)://[^\s'"]+[\w=/]""")
-url_regex_g = re.compile(r"""gopher://[^\s'"]+[\w=/]""")
-url_regex_h = re.compile(r"""(http|https)://[^\s'"]+[\w=/]""")
-url_regex_m = re.compile(r"""mailto://[^\s'"]+[\w=/]""")
-url_regex_n = re.compile(r"""(news|nntp)://[^\s'"]+[\w=/]""")
-url_regex_p = re.compile(r"""prospero://[^\s'"]+[\w=/]""")
-url_regex_t = re.compile(r"""telnet://[^\s'"]+[\w=/]""")
-url_regex_w = re.compile(r"""wais://[^\s'"]+[\w=/]""")
-kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
-url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
-
-def match_any_url(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex)
-
-def match_url_f(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_f)
-
-def match_url_g(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_g)
-
-def match_url_h(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_h)
-
-def match_url_m(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_m)
-
-def match_url_n(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_n)
-
-def match_url_p(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_p)
-
-def match_url_t(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_t)
-
-def match_url_w(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_w)
-</t>
-<t tx="ekr.20190319151826.48">def match_compiled_regexp(self, s, i, kind, regexp, delegate=''):
-    '''Succeed if the compiled regular expression regexp matches at s[i:].'''
-    n = self.match_compiled_regexp_helper(s, i, regexp)
-    if n &gt; 0:
-        j = i + n
-        self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
-        self.prev = (i, j, kind)
-        self.trace_match(kind, s, i, j)
-        return n
-    else:
-        return 0
-</t>
-<t tx="ekr.20190319151826.49">def match_compiled_regexp_helper(self, s, i, regex):
-    '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
-    # Match succeeds or fails more quickly than search.
-    self.match_obj = mo = regex.match(s, i) # re_obj.search(s,i)
-    if mo is None:
-        return 0
-    start, end = mo.start(), mo.end()
-    if start != i:
-        return 0
-    return end - start
 </t>
 <t tx="ekr.20190319151826.5">@nobeautify
 
@@ -19290,205 +18775,6 @@ def defineDefaultColorsDict (self):
         'operator'  :('operator_color', 'black'), # 2014/09/17
         'trailing_whitespace': ('trailing_whitespace_color', '#808080'),
     }
-</t>
-<t tx="ekr.20190319151826.50">def match_eol_span(self, s, i,
-    kind=None, seq='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    delegate='', exclude_match=False
-):
-    '''Succeed if seq matches s[i:]'''
-    if at_line_start and i != 0 and s[i - 1] != '\n':
-        return 0
-    if at_whitespace_end and i != g.skip_ws(s, 0):
-        return 0
-    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars:
-        return 0
-    if at_word_start and i + len(seq) + 1 &lt; len(s) and s[i + len(seq)] in self.word_chars:
-        return 0
-    if g.match(s, i, seq):
-        j = len(s)
-        self.colorRangeWithTag(s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
-        self.prev = (i, j, kind)
-        self.trace_match(kind, s, i, j)
-        return j # (was j-1) With a delegate, this could clear state.
-    else:
-        return 0
-</t>
-<t tx="ekr.20190319151826.51">def match_eol_span_regexp(self, s, i,
-    kind='', regexp='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    delegate='', exclude_match=False
-):
-    '''Succeed if the regular expression regex matches s[i:].'''
-    if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-    if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars: return 0 # 7/5/2008
-    n = self.match_regexp_helper(s, i, regexp)
-    if n &gt; 0:
-        j = len(s)
-        self.colorRangeWithTag(s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
-        self.prev = (i, j, kind)
-        self.trace_match(kind, s, i, j)
-        return j - i
-    else:
-        return 0
-</t>
-<t tx="ekr.20190319151826.52"># def match_everything (self,s,i,kind=None,delegate='',exclude_match=False):
-    # '''Match the entire rest of the string.'''
-    # j = len(s)
-    # self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
-    # return j
-</t>
-<t tx="ekr.20190319151826.53"># This is a time-critical method.
-
-def match_keywords(self, s, i):
-    '''
-    Succeed if s[i:] is a keyword.
-    Returning -len(word) for failure greatly reduces the number of times this
-    method is called.
-    '''
-    self.totalKeywordsCalls += 1
-    # We must be at the start of a word.
-    if i &gt; 0 and s[i - 1] in self.word_chars:
-        return 0
-    # Get the word as quickly as possible.
-    j = i; n = len(s)
-    chars = self.word_chars
-    # A kludge just for Haskell:
-    if self.language in ('haskell','clojure'):
-        chars["'"] = "'"
-    while j &lt; n and s[j] in chars:
-        j += 1
-    word = s[i: j]
-    # Fix part of #585: A kludge for css.
-    if self.language == 'css' and word.endswith(':'):
-        j -= 1
-        word = word[:-1]
-    if not word:
-        g.trace('can not happen', repr(s[i: max(j, i + 1)]), repr(s[i: i + 10]), g.callers())
-        return 0
-    if self.ignore_case: word = word.lower()
-    kind = self.keywordsDict.get(word)
-    if kind:
-        self.colorRangeWithTag(s, i, j, kind)
-        self.prev = (i, j, kind)
-        result = j - i
-        self.trace_match(kind, s, i, j)
-        return result
-    else:
-        return -len(word) # An important new optimization.
-</t>
-<t tx="ekr.20190319151826.54">def match_line(self, s, i, kind=None, delegate='', exclude_match=False):
-    '''Match the rest of the line.'''
-    j = g.skip_to_end_of_line(s, i)
-    self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
-    return j - i
-</t>
-<t tx="ekr.20190319151826.55">def match_mark_following(self, s, i,
-    kind='', pattern='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    exclude_match=False
-):
-    '''Succeed if s[i:] matches pattern.'''
-    if not self.allow_mark_prev: return 0
-    if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-    if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars: return 0 # 7/5/2008
-    if at_word_start and i + len(pattern) + 1 &lt; len(s) and s[i + len(pattern)] in self.word_chars:
-        return 0 # 7/5/2008
-    if g.match(s, i, pattern):
-        j = i + len(pattern)
-        # self.colorRangeWithTag(s,i,j,kind,exclude_match=exclude_match)
-        k = self.getNextToken(s, j)
-        # 2011/05/31: Do not match *anything* unless there is a token following.
-        if k &gt; j:
-            self.colorRangeWithTag(s, i, j, kind, exclude_match=exclude_match)
-            self.colorRangeWithTag(s, j, k, kind, exclude_match=False)
-            j = k
-            self.prev = (i, j, kind)
-            self.trace_match(kind, s, i, j)
-            return j - i
-        else:
-            return 0
-    else:
-        return 0
-</t>
-<t tx="ekr.20190319151826.56">def getNextToken(self, s, i):
-    '''Return the index of the end of the next token for match_mark_following.
-
-    The jEdit docs are not clear about what a 'token' is, but experiments with jEdit
-    show that token means a word, as defined by word_chars.'''
-    # 2011/05/31: Might we extend the concept of token?
-    # If s[i] is not a word char, should we return just it?
-    i0 = i
-    while i &lt; len(s) and s[i].isspace():
-        i += 1
-    i1 = i
-    while i &lt; len(s) and s[i] in self.word_chars:
-        i += 1
-    if i == i1:
-        return i0
-    else:
-        # 2011/05/31: was i+1
-        return min(len(s), i)
-</t>
-<t tx="ekr.20190319151826.57">def match_mark_previous(self, s, i,
-    kind='', pattern='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    exclude_match=False
-):
-    '''Return the length of a matched SEQ or 0 if no match.
-
-    'at_line_start':    True: sequence must start the line.
-    'at_whitespace_end':True: sequence must be first non-whitespace text of the line.
-    'at_word_start':    True: sequence must start a word.'''
-    # This match was causing most of the syntax-color problems.
-    return 0 # 2009/6/23
-</t>
-<t tx="ekr.20190319151826.58">def match_regexp_helper(self, s, i, pattern):
-    '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
-    try:
-        flags = re.MULTILINE
-        if self.ignore_case: flags |= re.IGNORECASE
-        re_obj = re.compile(pattern, flags)
-    except Exception:
-        # Do not call g.es here!
-        g.trace('Invalid regular expression: %s' % (pattern))
-        return 0
-    # Match succeeds or fails more quickly than search.
-    self.match_obj = mo = re_obj.match(s, i) # re_obj.search(s,i)
-    if mo is None:
-        return 0
-    else:
-        start, end = mo.start(), mo.end()
-        if start != i: # Bug fix 2007-12-18: no match at i
-            return 0
-        return end - start
-</t>
-<t tx="ekr.20190319151826.59">def match_seq(self, s, i,
-    kind='', seq='',
-    at_line_start=False,
-    at_whitespace_end=False,
-    at_word_start=False,
-    delegate=''
-):
-    '''Succeed if s[:] mathces seq.'''
-    if at_line_start and i != 0 and s[i - 1] != '\n':
-        j = i
-    elif at_whitespace_end and i != g.skip_ws(s, 0):
-        j = i
-    elif at_word_start and i &gt; 0 and s[i - 1] in self.word_chars: # 7/5/2008
-        j = i
-    if at_word_start and i + len(seq) + 1 &lt; len(s) and s[i + len(seq)] in self.word_chars:
-        j = i # 7/5/2008
-    elif g.match(s, i, seq):
-        j = i + len(seq)
-        self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
-        self.prev = (i, j, kind)
-        self.trace_match(kind, s, i, j)
-    else:
-        j = i
-    return j - i
 </t>
 <t tx="ekr.20190319151826.6">@nobeautify
 
@@ -19543,256 +18829,6 @@ def defineDefaultFontDict (self):
             'operator'      :'operator_font',
             'trailing_whitespace' :'trailing_whitespace_font',
     }
-</t>
-<t tx="ekr.20190319151826.60">def match_seq_regexp(self, s, i,
-    kind='', regexp='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    delegate=''
-):
-    '''Succeed if the regular expression regexp matches at s[i:].'''
-    if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-    if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars: return 0
-    n = self.match_regexp_helper(s, i, regexp)
-    j = i + n
-    assert(j - i == n)
-    self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
-    self.prev = (i, j, kind)
-    self.trace_match(kind, s, i, j)
-    return j - i
-</t>
-<t tx="ekr.20190319151826.61">def match_span(self, s, i,
-    kind='', begin='', end='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    delegate='', exclude_match=False,
-    no_escape=False, no_line_break=False, no_word_break=False
-):
-    '''Succeed if s[i:] starts with 'begin' and contains a following 'end'.'''
-    dots = False # A flag that we are using dots as a continuation.
-    if i &gt;= len(s):
-        return 0
-    if at_line_start and i != 0 and s[i - 1] != '\n':
-        j = i
-    elif at_whitespace_end and i != g.skip_ws(s, 0):
-        j = i
-    elif at_word_start and i &gt; 0 and s[i - 1] in self.word_chars:
-        j = i
-    elif at_word_start and i + len(begin) + 1 &lt; len(s) and s[i + len(begin)] in self.word_chars:
-        j = i
-    elif not g.match(s, i, begin):
-        j = i
-    else:
-        # We have matched the start of the span.
-        j = self.match_span_helper(s, i + len(begin), end,
-            no_escape, no_line_break, no_word_break=no_word_break)
-        if j == -1:
-            j = i # A real failure.
-        else:
-            # A hack to handle continued strings. Should work for most languages.
-            # Prepend "dots" to the kind, as a flag to setTag.
-            dots = j &gt; len(s) and begin in "'\"" and end in "'\"" and kind.startswith('literal')
-            dots = dots and self.language not in ('lisp', 'elisp')
-            if dots:
-                kind = 'dots'+kind
-            # A match
-            i2 = i + len(begin); j2 = j + len(end)
-            if delegate:
-                self.colorRangeWithTag(s, i, i2, kind, delegate=None, exclude_match=exclude_match)
-                self.colorRangeWithTag(s, i2, j, kind, delegate=delegate, exclude_match=exclude_match)
-                self.colorRangeWithTag(s, j, j2, kind, delegate=None, exclude_match=exclude_match)
-            else:
-                self.colorRangeWithTag(s, i, j2, kind, delegate=None, exclude_match=exclude_match)
-            j = j2
-            self.prev = (i, j, kind)
-    self.trace_match(kind, s, i, j)
-    # New in Leo 5.5: don't recolor everything after continued strings.
-    if j &gt; len(s) and not dots:
-        j = len(s) + 1
-
-        def span(s):
-            # Note: bindings are frozen by this def.
-            return self.restart_match_span(s,
-                # Positional args, in alpha order
-                delegate, end, exclude_match, kind,
-                no_escape, no_line_break, no_word_break)
-
-        self.setRestart(span,
-            # These must be keyword args.
-            delegate=delegate, end=end,
-            exclude_match=exclude_match,
-            kind=kind,
-            no_escape=no_escape,
-            no_line_break=no_line_break,
-            no_word_break=no_word_break)
-    return j - i # Correct, whatever j is.
-</t>
-<t tx="ekr.20190319151826.62">def match_span_helper(self, s, i, pattern, no_escape, no_line_break, no_word_break):
-    '''
-    Return n &gt;= 0 if s[i] ends with a non-escaped 'end' string.
-    '''
-    esc = self.escape
-    while 1:
-        j = s.find(pattern, i)
-        if j == -1:
-            # Match to end of text if not found and no_line_break is False
-            if no_line_break:
-                return -1
-            else:
-                return len(s) + 1
-        elif no_word_break and j &gt; 0 and s[j - 1] in self.word_chars:
-            return -1 # New in Leo 4.5.
-        elif no_line_break and '\n' in s[i: j]:
-            return -1
-        elif esc and not no_escape:
-            # Only an odd number of escapes is a 'real' escape.
-            escapes = 0; k = 1
-            while j - k &gt;= 0 and s[j - k] == esc:
-                escapes += 1; k += 1
-            if (escapes % 2) == 1:
-                assert s[j - 1] == esc
-                i += 1 # 2013/08/26: just advance past the *one* escaped character.
-            else:
-                return j
-        else:
-            return j
-</t>
-<t tx="ekr.20190319151826.63">def restart_match_span(self, s,
-    delegate, end, exclude_match, kind,
-    no_escape, no_line_break, no_word_break
-):
-    '''Remain in this state until 'end' is seen.'''
-    i = 0
-    j = self.match_span_helper(s, i, end, no_escape, no_line_break, no_word_break)
-    if j == -1:
-        j2 = len(s) + 1
-    elif j &gt; len(s):
-        j2 = j
-    else:
-        j2 = j + len(end)
-    if delegate:
-        self.colorRangeWithTag(s, i, j, kind,
-            delegate=delegate, exclude_match=exclude_match)
-        self.colorRangeWithTag(s, j, j2, kind,
-            delegate=None, exclude_match=exclude_match)
-    else: # avoid having to merge ranges in addTagsToList.
-        self.colorRangeWithTag(s, i, j2, kind,
-            delegate=None, exclude_match=exclude_match)
-    j = j2
-    self.trace_match(kind, s, i, j)
-    if j &gt; len(s):
-
-        def span(s):
-            return self.restart_match_span(s,
-                # Positional args, in alpha order
-                delegate, end, exclude_match, kind,
-                no_escape, no_line_break, no_word_break)
-
-        self.setRestart(span,
-            # These must be keywords args.
-            delegate=delegate, end=end, kind=kind,
-            no_escape=no_escape,
-            no_line_break=no_line_break,
-            no_word_break=no_word_break)
-    else:
-        self.clearState()
-    return j # Return the new i, *not* the length of the match.
-</t>
-<t tx="ekr.20190319151826.64">def match_span_regexp(self, s, i,
-    kind='', begin='', end='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    delegate='', exclude_match=False,
-    no_escape=False, no_line_break=False, no_word_break=False,
-):
-    '''Succeed if s[i:] starts with 'begin' (a regular expression) and
-    contains a following 'end'.
-    '''
-    if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-    if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars: return 0 # 7/5/2008
-    if at_word_start and i + len(begin) + 1 &lt; len(s) and s[i + len(begin)] in self.word_chars:
-        return 0 # 7/5/2008
-    n = self.match_regexp_helper(s, i, begin)
-    # We may have to allow $n here, in which case we must use a regex object?
-    if n &gt; 0:
-        j = i + n
-        j2 = s.find(end, j)
-        if j2 == -1: return 0
-        if self.escape and not no_escape:
-            # Only an odd number of escapes is a 'real' escape.
-            escapes = 0; k = 1
-            while j - k &gt;= 0 and s[j - k] == self.escape:
-                escapes += 1; k += 1
-            if (escapes % 2) == 1:
-                # An escaped end **aborts the entire match**:
-                # there is no way to 'restart' the regex.
-                return 0
-        i2 = j2 - len(end)
-        if delegate:
-            self.colorRangeWithTag(s, i, j, kind, delegate=None, exclude_match=exclude_match)
-            self.colorRangeWithTag(s, j, i2, kind, delegate=delegate, exclude_match=False)
-            self.colorRangeWithTag(s, i2, j2, kind, delegate=None, exclude_match=exclude_match)
-        else: # avoid having to merge ranges in addTagsToList.
-            self.colorRangeWithTag(s, i, j2, kind, delegate=None, exclude_match=exclude_match)
-        self.prev = (i, j, kind)
-        self.trace_match(kind, s, i, j2)
-        return j2 - i
-    else: return 0
-</t>
-<t tx="ekr.20190319151826.65">def match_wiki_pattern(self, s, i, pattern):
-    '''Show or hide a regex pattern managed by the wikiview plugin.'''
-    m = pattern.match(s,i)
-    if m:
-        n = len(m.group(0))
-        self.colorRangeWithTag(s, i, i + n, 'url')
-        return n
-    else:
-        return 0
-</t>
-<t tx="ekr.20190319151826.66">def match_word_and_regexp(self, s, i,
-    kind1='', word='',
-    kind2='', pattern='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    exclude_match=False
-):
-    '''Succeed if s[i:] matches pattern.'''
-    if not self.allow_mark_prev: return 0
-    if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-    if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars: return 0
-    if at_word_start and i + len(word) + 1 &lt; len(s) and s[i + len(word)] in self.word_chars:
-        j = i
-    if not g.match(s, i, word):
-        return 0
-    j = i + len(word)
-    n = self.match_regexp_helper(s, j, pattern)
-    if n == 0:
-        return 0
-    self.colorRangeWithTag(s, i, j, kind1, exclude_match=exclude_match)
-    k = j + n
-    self.colorRangeWithTag(s, j, k, kind2, exclude_match=False)
-    self.prev = (j, k, kind2)
-    self.trace_match(kind1, s, i, j)
-    self.trace_match(kind2, s, j, k)
-    return k - i
-</t>
-<t tx="ekr.20190319151826.67">def skip_line(self, s, i):
-    if self.escape:
-        escape = self.escape + '\n'
-        n = len(escape)
-        while i &lt; len(s):
-            j = g.skip_line(s, i)
-            if not g.match(s, j - n, escape):
-                return j
-            i = j
-        return i
-    else:
-        return g.skip_line(s, i)
-            # Include the newline so we don't get a flash at the end of the line.
-</t>
-<t tx="ekr.20190319151826.68">def trace_match(self, kind, s, i, j):
-
-    if j != i and self.trace_match_flag:
-        g.trace(kind, i, j, g.callers(2), self.dump(s[i: j]))
 </t>
 <t tx="ekr.20190319151826.69"></t>
 <t tx="ekr.20190319151826.7">def reloadSettings(self):
@@ -19986,8 +19022,8 @@ def showPrevState(self):
             else:
                 i += 1
 </t>
-<t tx="ekr.20190319151826.78">lexer_dict = {}
-    # Keys are language names, values are instantiated lexers.
+<t tx="ekr.20190319151826.78">lexers_dict = {}
+    # Keys are language names, values are instantiated, patched lexers.
 state_s_dict = {}
     # Keys are strings, values are ints.
 state_n_dict = {}
@@ -19997,15 +19033,16 @@ state_index = 1
 
 def mainLoop(self, s):
     '''Colorize a *single* line s'''
-    trace = False and g.pygments and not g.unitTesting
-    highlighter = self.highlighter
-    if not getattr(self, '_lexer', None):
-        self._lexer = Lexer() ### To be generalized.
-        # g.trace('===== new lexer:', self._lexer)
-        # g.printObj(dir(self._lexer))
-    lexer = self._lexer
-    # g.printObj(lexer.tokens ['root'])
-    if trace:
+    highlighter, language = self.highlighter, self.language
+    if language == 'patch':
+        language = 'diff'
+    lexer = self.lexers_dict.get(language)
+    if not lexer:
+        lexer = self.get_lexer(language)
+        lexer = self.patch_lexer(language, lexer)
+        self.lexers_dict [language] = lexer
+    self._lexer = lexer
+    if False: ###
         print('\npyg_c.mainLoop: count: %s line: %r' % (self.recolorCount, s))
         prev_state = highlighter.previousBlockState()
         prev_state_s = self.state_n_dict.get(prev_state, "&lt;no state&gt;")
@@ -20018,26 +19055,24 @@ def mainLoop(self, s):
     stack_ivar = '_saved_state_stack'
     prev_data = highlighter.currentBlock().previous().userData()
     if prev_data is not None:
-        # if trace: print('prev data:', prev_data)
         setattr(lexer, stack_ivar, prev_data.syntax_stack)
     elif hasattr(self._lexer, stack_ivar):
         delattr(self._lexer, stack_ivar)
     index = 0
     for token, text in self._lexer.get_tokens(s):
         length = len(text)
-        # if trace: print('%25r %r' % (repr(token).lstrip('Token.'), text))
+        # print('%25r %r' % (repr(token).lstrip('Token.'), text))
         format = highlighter._get_format(token)
         highlighter.setFormat(index, length, format)
         index += length
     stack = getattr(self._lexer, stack_ivar, None)
     if stack:
         data = PygmentsBlockUserData(syntax_stack=stack)
-        ### if trace: print('new data:', data)
         highlighter.currentBlock().setUserData(data)
         # Clean up for the next go-round.
         delattr(self._lexer, stack_ivar)
     #
-    # New code by EKR.
+    # New code by EKR. Fixes a bug so multiline tokens work.
     state_s = '%s; %r' % (self.language, stack)
     state_n = self.state_s_dict.get(state_s)
     if state_n is None:
@@ -20079,7 +19114,8 @@ def mainLoop(self, s):
         # Always color the line, even if colorizing is disabled.
         # if s is not None:
             # self.mainLoop(n, s)
-    if s:
+    if s is not None:
+        # For pygments, we *must* call for all lines.
         self.mainLoop(s)
 </t>
 <t tx="ekr.20190319151826.8">def addImportedRules(self, mode, rulesDict, rulesetName):
@@ -20486,11 +19522,23 @@ def highlightBlock(self, string):
     self._formats[token] = result
     return result
 </t>
-<t tx="ekr.20190320153716.1">def _get_format_from_style(self, token, style):
+<t tx="ekr.20190320153716.1">key_error_d = {}
+
+def _get_format_from_style(self, token, style):
     """ Returns a QTextCharFormat for token by reading a Pygments style.
     """
     result = QtGui.QTextCharFormat()
-    for key, value in style.style_for_token(token).items():
+    #
+    # EKR: handle missing tokens.
+    try:
+        data = style.style_for_token(token).items()
+    except KeyError as err:
+        key = repr(err)
+        if key not in self.key_error_d:
+            self.key_error_d [key] = True
+            g.trace(err)
+        return result
+    for key, value in data:
         if value:
             if key == 'color':
                 result.setForeground(self._get_brush(value))
@@ -20514,6 +19562,7 @@ def highlightBlock(self, string):
 <t tx="ekr.20190320153958.1">def setStyle(self, style):
     """ Sets the style to the specified Pygments style.
     """
+    from pygments.styles import get_style_by_name
     if g.isString(style):
         style = get_style_by_name(style)
     self._style = style
@@ -20561,38 +19610,6 @@ def _get_color(self, color):
         # self._document.setHtml(html)
     format = QtGui.QTextCursor(self._document).charFormat()
     return format
-</t>
-<t tx="ekr.20190321002423.1">format_dict = {
-    'Keyword': 'keyword1',
-    'Keyword.Namespace': 'keyword1',
-    'Literal.String.Doc': 'literal1',
-        # A **full** docstring.
-    'Literal.String.Interpol': 'literal1',
-    'Literal.String.Single': 'literal1',
-    'Comment.Single': 'comment1',
-    # 'xt': 'blank',
-    'Operator': 'operator',
-}
-
-def mainLoop(self, n, s):
-    '''Colorize a *single* line s, starting in state n.'''
-    trace = False and g.pygments and not g.unitTesting
-    highlighter = self.highlighter
-    if trace:
-        print('')
-        g.trace('state:%s line: %s' % (n, s))
-    #
-    # Does not handle continued tokens.
-    i = 0
-    for kind, val in self._lexer.get_tokens(text=s):
-        j = i + len(val)
-        kind = repr(kind).lstrip('Token.')
-        tag = self.format_dict.get(kind)
-        if tag:
-            if trace and kind not in ('xt', 'Name', 'Operator', 'Punctuation'):
-                print('%30r %3s %3s %r' % (kind, i, j, val))
-            self.setTag(tag, s, i, j)
-        i = j
 </t>
 <t tx="ekr.20190321004028.1"></t>
 <t tx="ekr.20190321104134.1">from pygments.style import Style
@@ -21299,9 +20316,20 @@ from pygments.token import Comment
 
 &lt;&lt; section reference &gt;&gt;
 
+# Important: must bind p in the real Lexer.
+
+def section_reference_callback(lexer, match):
+    name, ref, start = match.group(1), match.group(0), match.start()
+    yield match.start(), Comment.Leo.SecRefOpen, '&lt;&lt;'
+    if g.findReference(ref, p):
+        yield start+2, Comment.Leo.SectionRef, name
+    else:
+        yield start+2, Comment.Leo.UndefinedSectionRef, name
+    yield start+2+len(name), Comment.Leo.SecRefClose, '&gt;&gt;'
+
 leo_tokens = {
     'root': [
-       (r'\&lt;\&lt;.*\&gt;\&gt;', Comment.Leo.SectionRef),
+       (r'\&lt;\&lt;(.*?)\&gt;\&gt;', section_reference_callback),
        (r'(@doc|@)(\s+|\n)(.|\n)*?^@c', Comment.Leo.DocPart),
             # (.|\n)*? is a non-greedy match.
        inherit,
@@ -21315,103 +20343,60 @@ lexer = LeoPython3Lexer()
 for token, text in lexer.get_tokens(p.b):
     kind = repr(token).lstrip('Token.')
     if 'Leo' in kind:
-        print('%30r %r' % (kind, text))
+        print('%35r %r' % (kind, text))
     </t>
 <t tx="ekr.20190321205811.1"># Test.</t>
-<t tx="ekr.20190322040433.1">@ignore
-@nosearch
-HEAD=0ff672b0a</t>
-<t tx="ekr.20190322040433.10">@ignore
-@nosearch
-@language patch
---- HEAD
-+++ uncommitted
-@@ -16,6 +16,7 @@
-         # g.trace('===== new lexer:', self._lexer)
-         # g.printObj(dir(self._lexer))
-     lexer = self._lexer
-+    # g.printObj(lexer.tokens ['root'])
-     if trace:
-         print('\npyg_c.mainLoop: count: %s line: %r' % (self.recolorCount, s))
-         prev_state = highlighter.previousBlockState()
-@language python
+<t tx="ekr.20190322041148.1"></t>
+<t tx="ekr.20190322082533.1">def get_lexer(self, language):
+    '''Return the lexer for self.language, creating it if necessary.'''
+    import pygments.lexers as lexers
+    try:
+        if g.isPython3 and language == 'python':
+            lexer_language = 'python3'
+        else:
+            lexer_language = language
+        lexer = lexers.get_lexer_by_name(lexer_language)
+        ### g.trace('CREATED lexer for %s: %r' % (language, lexer))
+    except Exception:
+        g.trace('==== no lexer for %r' % language)
+        lexer = lexers.Python3Lexer if g.isPython3 else lexers.PythonLexer
+        if 'python' not in self.lexers_d:
+            g.trace('CREATED default lexer for python: %r' % lexer)
+    return lexer
 </t>
-<t tx="ekr.20190322040433.11">lexer_dict = {}
-    # Keys are language names, values are instantiated lexers.
-state_s_dict = {}
-    # Keys are strings, values are ints.
-state_n_dict = {}
-    # For tracing only.
-    # Keys are ints, values are strings.
-state_index = 1
+<t tx="ekr.20190322094034.1">def patch_lexer(self, language, lexer):
+    
+    from pygments.token import Comment
+    from pygments.lexer import inherit
+    
+    class PatchedLexer(lexer.__class__):
+        tokens = {
+            'root': [
+               (r'\&lt;\&lt;(.*?)\&gt;\&gt;', self.section_ref_callback),
+                    # Single-line, non-greedy match.
+               (r'(@doc|@)(\s+|\n)(.|\n)*?^@c', Comment.Leo.DocPart),
+                    # Multi-line, non-greedy match.
+               inherit,
+            ],
+        }
 
-def mainLoop(self, s):
-    '''Colorize a *single* line s'''
-    trace = False and g.pygments and not g.unitTesting
-    highlighter = self.highlighter
-    if not getattr(self, '_lexer', None):
-        self._lexer = Lexer() ### To be generalized.
-        # g.trace('===== new lexer:', self._lexer)
-        # g.printObj(dir(self._lexer))
-    lexer = self._lexer
-    if trace:
-        print('\npyg_c.mainLoop: count: %s line: %r' % (self.recolorCount, s))
-        prev_state = highlighter.previousBlockState()
-        prev_state_s = self.state_n_dict.get(prev_state, "&lt;no state&gt;")
-        print('prev state: %r: %s' % (prev_state, prev_state_s))
-    #
-    # Lex the text using Pygments.
-    #
-    # Based on code copyright (c) Jupyter Development Team.
-    # Distributed under the terms of the Modified BSD License.
-    stack_ivar = '_saved_state_stack'
-    prev_data = highlighter.currentBlock().previous().userData()
-    if prev_data is not None:
-        # if trace: print('prev data:', prev_data)
-        setattr(lexer, stack_ivar, prev_data.syntax_stack)
-    elif hasattr(self._lexer, stack_ivar):
-        delattr(self._lexer, stack_ivar)
-    index = 0
-    for token, text in self._lexer.get_tokens(s):
-        length = len(text)
-        # if trace: print('%25r %r' % (repr(token).lstrip('Token.'), text))
-        format = highlighter._get_format(token)
-        highlighter.setFormat(index, length, format)
-        index += length
-    stack = getattr(self._lexer, stack_ivar, None)
-    if stack:
-        data = PygmentsBlockUserData(syntax_stack=stack)
-        ### if trace: print('new data:', data)
-        highlighter.currentBlock().setUserData(data)
-        # Clean up for the next go-round.
-        delattr(self._lexer, stack_ivar)
-    #
-    # New code by EKR.
-    state_s = '%s; %r' % (self.language, stack)
-    state_n = self.state_s_dict.get(state_s)
-    if state_n is None:
-        state_n = self.state_index
-        self.state_index += 1
-        self.state_s_dict [state_s] = state_n
-        self.state_n_dict [state_n] = state_s
-    highlighter.setCurrentBlockState(state_n)
+    try:
+        return PatchedLexer()
+    except Exception:
+        g.trace('can not patch %r' % language)
+        g.es_exception()
+        return lexer
 </t>
-<t tx="ekr.20190322040433.2">@ignore
-@nosearch
-@language patch
---- HEAD
-+++ uncommitted
-@@ -2961,6 +2961,7 @@
-             # g.trace('===== new lexer:', self._lexer)
-             # g.printObj(dir(self._lexer))
-         lexer = self._lexer
-+        # g.printObj(lexer.tokens ['root'])
-         if trace:
-             print('\npyg_c.mainLoop: count: %s line: %r' % (self.recolorCount, s))
-             prev_state = highlighter.previousBlockState()
-@language python
+<t tx="ekr.20190322133358.1">def section_ref_callback(self, lexer, match):
+    '''pygments callback for section references.'''
+    from pygments.token import Comment, Name
+    name, ref, start = match.group(1), match.group(0), match.start()
+    found = g.findReference(ref, self.c.p)
+    found_tok = Name.Entity if found else Name.Other
+    yield match.start(), Comment, '&lt;&lt;'
+    yield start+2, found_tok, name
+    yield start+2+len(name), Comment, '&gt;&gt;'
 </t>
-<t tx="ekr.20190322040433.9"></t>
 <t tx="tbrown.20110621120042.22914">def get_top_splitter(self):
     '''Return the top splitter of c.frame.top.'''
     # Careful: we could be unit testing.
