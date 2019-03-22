@@ -1999,7 +1999,7 @@ if QtGui:
         # This is c.frame.body.colorizer.highlighter
         
         #@+others
-        #@+node:ekr.20110605121601.18566: *3* leo_h.ctor
+        #@+node:ekr.20110605121601.18566: *3* leo_h.ctor (sets style)
         def __init__(self, c, colorizer, document):
             '''ctor for LeoHighlighter class.'''
             self.c = c
@@ -2018,10 +2018,13 @@ if QtGui:
                 self._style = None
                 # Style gallery: https://help.farbox.com/pygments.html
                 # Dark styles: fruity, monokai, native, vim
+                # https://github.com/gthank/solarized-dark-pygments
+                style_name = c.config.getString('pygments-style-name') or 'default'
                 try:
-                    self.setStyle('solarized') # or 'leonine'
-                    # https://github.com/gthank/solarized-dark-pygments
+                    self.setStyle(style_name)
+                    print('using %r pygments style' % style_name)
                 except Exception:
+                    print('pygments style not found: %r. Using "default" style' % style_name)
                     self.setStyle('default') # 'solarized' or 'leonine'
         #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
         def highlightBlock(self, s):
