@@ -338,6 +338,7 @@
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
 </v>
 </v>
+<v t="ekr.20031218072017.2794"></v>
 <v t="ekr.20180606035619.1"><vh>Recent files</vh>
 <v t="ekr.20120419093256.10048"></v>
 <v t="ekr.20140907123524.18774"></v>
@@ -1350,7 +1351,119 @@
 <v t="ekr.20190319151826.78"><vh>pyg_c.mainLoop (new) (to do: Leonine features)</vh></v>
 </v>
 <v t="ekr.20190319150835.1"><vh>print pygments tokens</vh></v>
+</v>
+<v t="ekr.20190321124036.1"><vh>----- style prototypes</vh>
 <v t="ekr.20190319185726.1"><vh>python wrapper.configDict</vh></v>
+<v t="ekr.20190321104651.1"><vh>color settings</vh></v>
+<v t="ekr.20190321104134.1"><vh>style</vh></v>
+<v t="ekr.20190321112916.1"><vh>dynamic style</vh>
+<v t="ekr.20190321120119.1"><vh>is_valid_color</vh></v>
+</v>
+<v t="ekr.20190321130021.1"><vh>&lt;&lt; define class LeonineStyle &gt;&gt; (not used)</vh>
+<v t="ekr.20190321130235.2"><vh>StyleMeta.__new__ (disabled)</vh></v>
+<v t="ekr.20190321130235.3"><vh>StyleMeta.style_for_token (hacked)</vh></v>
+<v t="ekr.20190321130235.4"><vh>StyleMeta.list_styles</vh></v>
+<v t="ekr.20190321130235.5"><vh>StyleMeta.styles_token</vh></v>
+<v t="ekr.20190321130235.6"><vh>StyleMeta.__iter__</vh></v>
+<v t="ekr.20190321130235.7"><vh>StyleMeta.__len__</vh></v>
+</v>
+<v t="ekr.20190321170917.1"><vh>leo_h.patch_leo_styles</vh></v>
+<v t="ekr.20190321104651.1"></v>
+<v t="ekr.20190321182604.1"><vh>EKRDark.leo Colors...</vh>
+<v t="ekr.20190321182604.2"><vh>Base colors: not all are solarized colors</vh>
+<v t="ekr.20190321182604.3"><vh>@color dark-base0 = #fdffdd</vh></v>
+<v t="ekr.20190321182604.4"><vh>@color dark-base00 = #657b83</vh></v>
+<v t="ekr.20190321182604.5"><vh>@color dark-base01 = #586e75</vh></v>
+<v t="ekr.20190321182604.6"><vh>@color dark-base02 = #073642</vh></v>
+<v t="ekr.20190321182604.7"><vh>@color dark-base03 = #000005</vh></v>
+<v t="ekr.20190321182604.8"><vh>@color dark-base04 = #000059</vh></v>
+<v t="ekr.20190321182604.9"><vh>@color dark-base05 = #003b00</vh></v>
+<v t="ekr.20190321182604.10"><vh>@color dark-base06 = #3b0000</vh></v>
+<v t="ekr.20190321182604.11"><vh>@color dark-base1 = #93a1a1</vh></v>
+<v t="ekr.20190321182604.12"><vh>@color dark-base2 = #eee8d5</vh></v>
+<v t="ekr.20190321182604.13"><vh>@color dark-base3 = #fdf6e3</vh></v>
+<v t="ekr.20190321182604.14"><vh>@color solarized-black = #000005</vh></v>
+<v t="ekr.20190321182604.15"><vh>@color solarized-blue = #268bd2</vh></v>
+<v t="ekr.20190321182604.16"><vh>@color solarized-cyan = #2aa198</vh></v>
+<v t="ekr.20190321182604.17"><vh>@color solarized-green = #859900</vh></v>
+<v t="ekr.20190321182604.18"><vh>@color solarized-magenta = #d33682</vh></v>
+<v t="ekr.20190321182604.19"><vh>@color solarized-red = #dc322f</vh></v>
+<v t="ekr.20190321182604.20"><vh>@color solarized-orange = #cb4b16</vh></v>
+<v t="ekr.20190321182604.21"><vh>@color solarized-violet = #6c71c4</vh></v>
+<v t="ekr.20190321182604.22"><vh>@color solarized-white = #fdf6e3 </vh></v>
+<v t="ekr.20190321182604.23"><vh>@color solarized-yellow = #b58900</vh></v>
+</v>
+<v t="ekr.20190321182604.24"><vh>Colors: Logical colors</vh>
+<v t="ekr.20190321182604.25"><vh>@color LeoBlue = @LightSteelBlue1</vh></v>
+<v t="ekr.20190321182604.26"><vh>@color LeoGreen = #00AA00</vh></v>
+<v t="ekr.20190321182604.27"><vh>@color LeoYellow = @LightYellow</vh></v>
+<v t="ekr.20190321182604.28"><vh>@color log_black_color = @text-foreground</vh></v>
+<v t="ekr.20190321182604.29"><vh>@color log_blue_color = @solarized-blue</vh></v>
+<v t="ekr.20190321182604.30"><vh>@color log_cyan_color = @solarized-cyan</vh></v>
+<v t="ekr.20190321182604.31"><vh>@color log_error_color =@solarized-red</vh></v>
+<v t="ekr.20190321182604.32"><vh>@color log_green_color = @solarized-green</vh></v>
+<v t="ekr.20190321182604.33"><vh>@color log_info_color = @solarized-blue</vh></v>
+<v t="ekr.20190321182604.34"><vh>@color log_magenta_color = @solarized-magenta</vh></v>
+<v t="ekr.20190321182604.35"><vh>@color log_note_color = @solarized-blue</vh></v>
+<v t="ekr.20190321182604.36"><vh>@color log_orange_color = @solarized-orange</vh></v>
+<v t="ekr.20190321182604.37"><vh>@color log_red_color = @solarized-red</vh></v>
+<v t="ekr.20190321182604.38"><vh>@color log_violet_color = @solarized-violet</vh></v>
+<v t="ekr.20190321182604.39"><vh>@color log_warning_color = @solarized-red</vh></v>
+<v t="ekr.20190321182604.40"><vh>@color log_white_color = @solarized-white</vh></v>
+<v t="ekr.20190321182604.41"><vh>@color log_yellow_color = @solarized-yellow</vh></v>
+</v>
+<v t="ekr.20190321182604.42"><vh>Colors: Syntax coloring</vh>
+<v t="ekr.20190321182604.43"><vh>Colors: defaults</vh>
+<v t="ekr.20190321182604.44"><vh>@color alt_solarized_green = #84c805</vh></v>
+<v t="ekr.20190321182604.45"><vh>@color blank_color = grey</vh></v>
+<v t="ekr.20190321182604.46"><vh>@color tab_color = red</vh></v>
+<v t="ekr.20190321182604.47"><vh>@color label_color = red</vh></v>
+<v t="ekr.20190321182604.48"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="ekr.20190321182604.49"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="ekr.20190321182604.50"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="ekr.20190321182604.51"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="ekr.20190321182604.52"><vh>@color literal1_color = @alt-solarized-green</vh></v>
+<v t="ekr.20190321182604.53"><vh>@color literal2_color = @alt-solarized-green</vh></v>
+<v t="ekr.20190321182604.54"><vh>@color literal3_color = @alt-solarized-green</vh></v>
+<v t="ekr.20190321182604.55"><vh>@color literal4_color = @alt-solarized-green</vh></v>
+<v t="ekr.20190321182604.56"><vh>@color markup_color = #268bd2</vh></v>
+<v t="ekr.20190321182604.57"><vh>@color comment1_color = #d33682</vh></v>
+<v t="ekr.20190321182604.58"><vh>@color comment2_color = #d33682</vh></v>
+<v t="ekr.20190321182604.59"><vh>@color comment3_color = #d33682</vh></v>
+<v t="ekr.20190321182604.60"><vh>@color comment4_color = #d33682</vh></v>
+</v>
+<v t="ekr.20190321182604.61"><vh>Colors: Leo constructs</vh>
+<v t="ekr.20190321182604.62"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
+<v t="ekr.20190321182604.63"><vh>@color null_color = #6c71c4</vh></v>
+<v t="ekr.20190321182604.64"><vh>@color operator_color = #6c71c4</vh></v>
+<v t="ekr.20190321182604.65"><vh>@color doc_part_color = @solarized-red</vh></v>
+<v t="ekr.20190321182604.66"><vh>@color leo_keyword_color = @literal1_color</vh></v>
+<v t="ekr.20190321182604.67"><vh>@color section_name_color = @solarized-red</vh></v>
+<v t="ekr.20190321182604.68"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
+<v t="ekr.20190321182604.69"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
+<v t="ekr.20190321182604.70"><vh>@color undefined_section_name_color = red</vh></v>
+<v t="ekr.20190321182604.71"><vh>@color url_color = @solarized-purple</vh></v>
+</v>
+<v t="ekr.20190321182604.72"><vh>Colors: patch (diff)</vh>
+<v t="ekr.20190321182604.73"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
+<v t="ekr.20190321182604.74"><vh>@color patch_keyword2_color = @solarized-red</vh></v>
+<v t="ekr.20190321182604.75"><vh>@color patch_keyword3_color = @solarized-blue</vh></v>
+<v t="ekr.20190321182604.76"><vh>@color patch_literal1_color = @solarized-blue</vh></v>
+<v t="ekr.20190321182604.77"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
+</v>
+</v>
+<v t="ekr.20190321182604.78"><vh>Colors: Text</vh>
+<v t="ekr.20190321182604.79"><vh>@color log_text_background_color = #000005</vh></v>
+<v t="ekr.20190321182604.80"><vh>@color log_text_foreground_color = #ffffff</vh></v>
+<v t="ekr.20190321182604.81"><vh>@color text-background =@dark-base03</vh></v>
+<v t="ekr.20190321182604.82"><vh>@color text-background-bright =@dark-base02</vh></v>
+<v t="ekr.20190321182604.83"><vh>@color text-foreground =@dark-base0</vh></v>
+<v t="ekr.20190321182604.84"><vh>@color text-foreground-bright =@dark-base2</vh></v>
+</v>
+<v t="ekr.20190321182604.85"><vh>Colors: Widgets</vh>
+<v t="ekr.20190321182604.86"><vh>@color button-hover-fg =@dark-base03</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20120212060348.10374"></v>
 <v t="ekr.20140827092102.18575"><vh>&lt;&lt; imports &gt;&gt; (leoColorizer.py)</vh></v>
@@ -1529,8 +1642,20 @@
 </v>
 <v t="ekr.20190320062624.3"><vh>class PygmentsBlockUserData(QTextBlockUserData)</vh></v>
 </v>
-<v t="ekr.20190319151826.79"></v>
 <v t="ekr.20190319151826.78"></v>
+<v t="ekr.20190321205442.1"><vh>subclassing lexer</vh>
+<v t="ekr.20190321205811.1"><vh>&lt;&lt; section reference &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20190322040433.1"><vh>git diff HEAD </vh>
+<v t="ekr.20190322040433.2"><vh>leo/core/leoColorizer.py</vh>
+<v t="ekr.20190322040433.9"><vh>Changed</vh>
+<v t="ekr.20190322040433.10"><vh>pyg_c.mainLoop (new) (to do: Leonine features)</vh>
+<v t="ekr.20190322040433.11"><vh>Old:pyg_c.mainLoop (new) (to do: Leonine features)</vh></v>
+<v t="ekr.20190319151826.78"></v>
+</v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943">@nosearch
@@ -7727,8 +7852,15 @@ if QtGui:
         self._document = document
         self._formats = {}
         self._formatter = HtmlFormatter(nowrap=True)
+        
         self._style = None
-        self.setStyle('default')
+        # Style gallery: https://help.farbox.com/pygments.html
+        # Dark styles: fruity, monokai, native, vim
+        try:
+            self.setStyle('solarized') # or 'leonine'
+            # https://github.com/gthank/solarized-dark-pygments
+        except Exception:
+            self.setStyle('default') # 'solarized' or 'leonine'
 </t>
 <t tx="ekr.20110605121601.18567">def highlightBlock(self, s):
     """ Called by QSyntaxHighlighter """
@@ -10888,14 +11020,12 @@ import leo.core.leoGlobals as g
 from leo.core.leoQt import Qsci, QtGui, QtWidgets # isQt5, QtCore
 if g.pygments:
     # pylint: disable=no-name-in-module
-        # PythonLexer or PythonLexer3 will be undefined.
+        ### PythonLexer or PythonLexer3 will be undefined.
     try:
         # Jupyter imports.
-        ### from leo.core.leoQt import QtGui
-        ### from ipython_genutils.py3compat import PY3, string_types
         from pygments.formatters.html import HtmlFormatter
         from pygments.lexer import RegexLexer, _TokenType, Text, Error
-        # from pygments.lexers import PythonLexer, Python3Lexer
+        ### To be removed.
         if g.isPython3:
             from pygments.lexers import Python3Lexer as Lexer # pylint: disable=no-name-in-module
         else:
@@ -18203,34 +18333,41 @@ All of the free_layout plugin will probably go away:
 - Disabled FreeLayoutController.get_top_splitter.
 </t>
 <t tx="ekr.20190319150024.1">@language rest
-@wrap
 
-Explore:
-- Explore pygments styles.
-- Explore creating Leonine lexers.
+https://github.com/leo-editor/leo-editor/issues/568
 
-mainLoop:
+First:
+- c.config.getString('pygments-style-name', default='default')
+- Use a callback to test whether a section ref is undefined.
+  Generate Comment.Leo.SectionRef or Comment.Leo.UndefinedSectionRef.
+  
+- Allow lookups of Leo names in style files.
+
+Improve mainloop:
+- Use get_lexer_by_name to instantiate lexers.
+  Test self.language.
 - Add lexer dict.
+- Remove hard imports.
 - Detect @language x.
-- use get_lexer_by_name to instantiate lexers.
-  No need to import specific lexers.
 
-To do:
-- Clean the code: remove all/most init code.
-- Support arbitrary languages.
-- Support Leo syntax for section references and @doc parts.
-- Recognize @language x.
-- Use new settings to specify colors.
+Difficult?: Ask pygments people?
+- Create Leonine lexers dynamically. 
+- Create Leonine styles dynamically.
+  
+Later:
+- Add copyrights &amp; acknowledgements (in devel) for pyzo, yoton, npyscreen, Jupyter/qtconsole.
+
+Maybe:
+- Support legacy syntax-coloring settings?
+  If not, clean the code: remove all/most init code.
+- Change states when switching nodes?
+  Probably not: the call to rehighlight probably clears everything.
 
 Open Questions:
-- Must Leo change states when switching nodes?
-  Probably not: the call to rehighlight probably clears everything.
-- Should the code be refactored?  If so, before 6.0?
-- Should the code be part of 5.8.1?
-- Should support for old syntax settings be retained in 6.0?  In 5.8.1?
-
-Copyrights &amp; Acknowledgements (in devel):
-- Add copyrights &amp; acknowledgements for pyzo, yoton, npyscreen, Jupyter/qtconsole.
+- Should the colorizer and highlighter code be unified?
+  It won't be done in 5.8.  It *might* be done in 6.0
+- Should the code be part of 5.8?
+- What about legacy syntax-coloring settings?
 
 @language python
 @nosearch
@@ -19863,9 +20000,11 @@ def mainLoop(self, s):
     trace = False and g.pygments and not g.unitTesting
     highlighter = self.highlighter
     if not getattr(self, '_lexer', None):
-        self._lexer = Lexer() ###
-        if trace: g.trace('===== new lexer:', self._lexer)
+        self._lexer = Lexer() ### To be generalized.
+        # g.trace('===== new lexer:', self._lexer)
+        # g.printObj(dir(self._lexer))
     lexer = self._lexer
+    # g.printObj(lexer.tokens ['root'])
     if trace:
         print('\npyg_c.mainLoop: count: %s line: %r' % (self.recolorCount, s))
         prev_state = highlighter.previousBlockState()
@@ -19880,15 +20019,13 @@ def mainLoop(self, s):
     prev_data = highlighter.currentBlock().previous().userData()
     if prev_data is not None:
         # if trace: print('prev data:', prev_data)
-        ### lexer._saved_state_stack = prev_data.syntax_stack
         setattr(lexer, stack_ivar, prev_data.syntax_stack)
     elif hasattr(self._lexer, stack_ivar):
-        ### del self._lexer._saved_state_stack
         delattr(self._lexer, stack_ivar)
     index = 0
     for token, text in self._lexer.get_tokens(s):
         length = len(text)
-        ### if trace: print('%25r %r' % (repr(token).lstrip('Token.'), text))
+        # if trace: print('%25r %r' % (repr(token).lstrip('Token.'), text))
         format = highlighter._get_format(token)
         highlighter.setFormat(index, length, format)
         index += length
@@ -19898,7 +20035,6 @@ def mainLoop(self, s):
         ### if trace: print('new data:', data)
         highlighter.currentBlock().setUserData(data)
         # Clean up for the next go-round.
-        ### del self._lexer._saved_state_stack
         delattr(self._lexer, stack_ivar)
     #
     # New code by EKR.
@@ -20378,7 +20514,6 @@ def highlightBlock(self, string):
 <t tx="ekr.20190320153958.1">def setStyle(self, style):
     """ Sets the style to the specified Pygments style.
     """
-    ### if isinstance(style, string_types):
     if g.isString(style):
         style = get_style_by_name(style)
     self._style = style
@@ -20460,6 +20595,823 @@ def mainLoop(self, n, s):
         i = j
 </t>
 <t tx="ekr.20190321004028.1"></t>
+<t tx="ekr.20190321104134.1">from pygments.style import Style
+from pygments.token import Comment, Keyword, Name, String
+    # Error, Number, Operator, Generic
+from leo.core.leoColor import leo_color_database
+
+class LeonineStyle(Style):
+    default_style = ""
+    table = (
+        (Comment, 'firebrick3'),
+        (Keyword, 'blue'),
+        (Name, 'white'),
+        # (Name.Function, '#0f0'),
+        # (Name.Class, 'bold #0f0'),
+        (String, '#00aa00'),
+    )
+    styles = {key: leo_color_database.get(val, val) for (key,val) in table}
+    g.printObj(styles, tag='styles')
+</t>
+<t tx="ekr.20190321104651.1">@tabwidth -4
+g.cls()
+from leo.core.leoColor import leo_color_database as d
+table = (
+    # leoSettings.leo: Colors for Leo constructs.
+    ('doc-part-color', 'firebrick3'),
+    ('leo-keyword-color', '#00aa00'),
+    ('section-name-color', 'red'),
+    ('show-invisibles-space-color', '#E5E5E5'),
+    ('show-invisibles-tab-color', '#CCCCCC'),
+    ('undefined-section-name-color', 'red'),
+    ('url-color', 'purple'),
+    # jEdit colors.
+    ('comment1-color', 'firebrick3'),
+    ('comment2-color', 'firebrick3'),
+    ('comment3-color', 'plum3'),
+    ('comment4-color', 'orchid1'),
+    ('keyword1-color', 'blue'),
+    ('keyword2-color', 'blue'),
+    ('keyword3-color', 'blue'),
+    ('keyword4-color', 'blue'),
+    ('label-color', 'red'),
+    ('literal1-color', '#00aa00'),
+    ('literal2-color', '#00aa00'),
+    ('literal3-color', '#00aa00'),
+    ('literal4-color', '#00aa00'),
+    ('markup-color', 'blue'),
+    ('operator-color', 'None'),
+    )
+for doc, name in table:
+    print('%30s %10s %s' % (doc, name, d.get(name, name)))
+</t>
+<t tx="ekr.20190321112916.1">g.cls()
+from pygments.style import Style
+from pygments.token import string_to_tokentype
+from leo.core.leoColor import leo_color_database
+
+# Simulate what c.config.getData would return.
+config = (
+    'comment, firebrick3',
+    'keyword, blue',
+    'Name, white',
+    'String, #00aa00',
+    # 'huh???, whatever',
+)
+
+@others
+
+class LeonineStyle(Style):
+    default_style = ""
+    table = []
+    for line in config:
+        name, color = line.split(',')
+        name = name.capitalize()
+        color = color.strip()
+        color = leo_color_database.get(color, color)
+        if is_valid_color(color):
+            try:
+                token = string_to_tokentype(name)
+                table.append([token, color])
+            except Exception:
+                print('unknown token', repr(name))
+        else:
+            print('invalid color: %r for style: %r' % (color, name))
+    styles = dict(table)
+    g.printObj(styles, tag='styles dict')
+</t>
+<t tx="ekr.20190321120119.1">def is_valid_color(s):
+    '''Return True if s is a valid Qt color string.'''
+    if not s.startswith('#'):
+        return False
+    try:
+        int(s[1:], 16)
+        return True
+    except ValueError:
+        return False
+</t>
+<t tx="ekr.20190321124036.1"></t>
+<t tx="ekr.20190321130021.1">###
+    # from pygments.token import Comment, Keyword, Name, String\
+        # Error, Number, Operator, Generic
+    # from pygments.style import Style
+# from pygments.util import add_metaclass
+# from pygments.style import StyleMeta
+import pygments.token as token_module
+from leo.core.leoColor import leo_color_database
+# Use the Leonine style.
+### @add_metaclass(StyleMeta)
+
+class LeonineStyle(object):
+    default_style = ""
+    table = (
+        (token_module.Comment, 'firebrick3'),
+        (token_module.Keyword, 'blue'),
+        (token_module.Name, 'white'),
+        # (token_module.Name.Function, '#0f0'),
+        # (token_module.Name.Class, 'bold #0f0'),
+        (token_module.String, '#00aa00'),
+    )
+    styles = {key: leo_color_database.get(val, val).strip('#') for (key,val) in table}
+    _styles = styles ### a hack.
+    g.printObj(styles, tag='LeonineStyle.styles')
+    
+    @others  # hack: just copy the methods from StyleMeta.
+</t>
+<t tx="ekr.20190321130235.2"># def __new__(mcs, name, bases, dct):
+    # obj = type.__new__(mcs, name, bases, dct)
+    # for token in STANDARD_TYPES:
+        # if token not in obj.styles:
+            # obj.styles[token] = ''
+
+    # def colorformat(text):
+        # if text in ansicolors:
+            # return text
+        # if text[0:1] == '#':
+            # col = text[1:]
+            # if len(col) == 6:
+                # return col
+            # elif len(col) == 3:
+                # return col[0]*2 + col[1]*2 + col[2]*2
+        # elif text == '':
+            # return ''
+        # assert False, "wrong color format %r" % text
+
+    # _styles = obj._styles = {}
+
+    # for ttype in obj.styles:
+        # for token in ttype.split():
+            # if token in _styles:
+                # continue
+            # ndef = _styles.get(token.parent, None)
+            # styledefs = obj.styles.get(token, '').split()
+            # if not ndef or token is None:
+                # ndef = ['', 0, 0, 0, '', '', 0, 0, 0]
+            # elif 'noinherit' in styledefs and token is not Token:
+                # ndef = _styles[Token][:]
+            # else:
+                # ndef = ndef[:]
+            # _styles[token] = ndef
+            # for styledef in obj.styles.get(token, '').split():
+                # if styledef == 'noinherit':
+                    # pass
+                # elif styledef == 'bold':
+                    # ndef[1] = 1
+                # elif styledef == 'nobold':
+                    # ndef[1] = 0
+                # elif styledef == 'italic':
+                    # ndef[2] = 1
+                # elif styledef == 'noitalic':
+                    # ndef[2] = 0
+                # elif styledef == 'underline':
+                    # ndef[3] = 1
+                # elif styledef == 'nounderline':
+                    # ndef[3] = 0
+                # elif styledef[:3] == 'bg:':
+                    # ndef[4] = colorformat(styledef[3:])
+                # elif styledef[:7] == 'border:':
+                    # ndef[5] = colorformat(styledef[7:])
+                # elif styledef == 'roman':
+                    # ndef[6] = 1
+                # elif styledef == 'sans':
+                    # ndef[7] = 1
+                # elif styledef == 'mono':
+                    # ndef[8] = 1
+                # else:
+                    # ndef[0] = colorformat(styledef)
+
+    # return obj
+
+</t>
+<t tx="ekr.20190321130235.3">def style_for_token(cls, token):
+    try:
+        t = cls._styles[token]
+        ### color = t[0]
+        color = t ### A big hack.
+    except KeyError:
+        color = None
+    ansicolor = bgansicolor = None
+    ###
+        # if color.startswith('#ansi'):
+            # ansicolor = color
+            # color = _ansimap[color]
+    ### bgcolor = t[4]
+    ###
+        # if bgcolor.startswith('#ansi'):
+            # bgansicolor = bgcolor
+            # bgcolor = _ansimap[bgcolor]
+
+    return {
+        'color':        color or None,
+        'bold':         None, ### bool(t[1]),
+        'italic':       None, ### bool(t[2]),
+        'underline':    None, ### bool(t[3]),
+        'bgcolor':      None, ### bgcolor or None,
+        'border':       None, ### t[5] or None,
+        'roman':        None, ### bool(t[6]) or None,
+        'sans':         None, ### bool(t[7]) or None,
+        'mono':         None, ### bool(t[8]) or None,
+        'ansicolor':    ansicolor,
+        'bgansicolor':  bgansicolor,
+    }
+
+</t>
+<t tx="ekr.20190321130235.4">def list_styles(cls):
+    return list(cls)
+
+</t>
+<t tx="ekr.20190321130235.5">def styles_token(cls, ttype):
+    return ttype in cls._styles
+
+</t>
+<t tx="ekr.20190321130235.6">def __iter__(cls):
+    for token in cls._styles:
+        yield token, cls.style_for_token(token)
+
+</t>
+<t tx="ekr.20190321130235.7">def __len__(cls):
+    return len(cls._styles)
+
+
+</t>
+<t tx="ekr.20190321170917.1">def patch_leo_styles(self, name, style):
+
+    g.trace('style:', name, style)
+    # g.printObj(style.list_styles(), tag='list_styles()')
+    # g.printObj(dir(style), tag='style for %s' % name)
+    leo_d = {
+        'Comment': 'firebrick3',
+        'Keyword': 'blue',
+        'Name': 'white',
+        # Name.Function: '#0f0',
+        # Name.Class, 'bold #0f0',
+        'String': '#00aa00',
+    }
+    style_d = {
+        'color':        None,
+        'bold':         None, ### bool(t[1]),
+        'italic':       None, ### bool(t[2]),
+        'underline':    None, ### bool(t[3]),
+        'bgcolor':      None, ### bgcolor or None,
+        'border':       None, ### t[5] or None,
+        'roman':        None, ### bool(t[6]) or None,
+        'sans':         None, ### bool(t[7]) or None,
+        'mono':         None, ### bool(t[8]) or None,
+        'ansicolor':    None,
+        'bgansicolor':  None,
+    }
+    assert style_d
+    if 0:
+        for key in style.styles:
+            key2 = repr(key).lstrip('Token.')
+            if key2 in leo_d:
+                val = leo_d.get(key2)
+                g.trace('patch:', key, val)
+                style.styles[key] = val
+            else:
+                style.styles[key] = ''
+    if 0: # works, but won't be live.
+        for data in style.list_styles():
+            o, d = data
+            g.printObj(d, tag='data.d')
+    if 1:
+        d = style.styles
+        for key in d:
+            g.printObj(d.get(key), tag=key)
+    g.printObj(style._styles, tag='style._styles for %s' % name)
+    # g.printObj(style.styles,  tag=' style.styles for %s' % name)</t>
+<t tx="ekr.20190321182604.1"># These are the colors used in leo/themes/EKRDark.leo</t>
+<t tx="ekr.20190321182604.10">@language md
+&lt;style&gt;
+div#bg {background:#3b0000}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.11">@language md
+&lt;style&gt;
+div#bg {background:#93a1a1}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.12">@language md
+&lt;style&gt;
+div#bg {background:#eee8d5}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.13">@language md
+&lt;style&gt;
+div#bg {background:#fdf6e3}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.14">@language md
+
+&lt;!-- Not an official solarized color. --&gt;
+&lt;!-- Same as dark-base-03 --&gt;
+
+&lt;style&gt;
+div#bg {background:#000005}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.15">@language md
+&lt;style&gt;
+div#bg {background:#268bd2}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.16">@language md
+&lt;style&gt;
+div#bg {background:#2aa198}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.17">@language md
+&lt;style&gt;
+div#bg {background:#859900}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.18">@language md
+&lt;style&gt;
+div#bg {background:#d33682}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.19">@language md
+&lt;style&gt;
+div#bg {background:#dc322f}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.2"></t>
+<t tx="ekr.20190321182604.20">@language md
+&lt;style&gt;
+div#bg {background:#cb4b16}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.21">@language md
+&lt;style&gt;
+div#bg {background:#6c71c4}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.22">@language md
+
+&lt;!-- Not an official solarized color. Same as solorarized-base3 --&gt;
+
+&lt;style&gt;
+div#bg {background:#fdf6e3}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.23">@language md
+&lt;style&gt;
+div#bg {background:#b58900}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.24"></t>
+<t tx="ekr.20190321182604.25">@language md
+&lt;style&gt;
+div#bg {background:LightSteelBlue}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.26">@language md
+&lt;style&gt;
+div#bg {background:#00AA00}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.27">@language md
+&lt;style&gt;
+div#bg {background:LightYellow}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.28">Use a light color, not black!
+
+@text-foreground
+@solarized-white = #fdf6e3 
+</t>
+<t tx="ekr.20190321182604.29"></t>
+<t tx="ekr.20190321182604.3">@language md
+&lt;style&gt;
+div#bg {background:#fdffdd}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.30"></t>
+<t tx="ekr.20190321182604.31">Was @solarized-red
+
+Terry: #dc322f</t>
+<t tx="ekr.20190321182604.32"></t>
+<t tx="ekr.20190321182604.33"></t>
+<t tx="ekr.20190321182604.34"></t>
+<t tx="ekr.20190321182604.35"></t>
+<t tx="ekr.20190321182604.36"></t>
+<t tx="ekr.20190321182604.37"></t>
+<t tx="ekr.20190321182604.38"></t>
+<t tx="ekr.20190321182604.39">Was @solarized-red
+Terry: #268bd2</t>
+<t tx="ekr.20190321182604.4">@language md
+&lt;style&gt;
+div#bg {background:#657b83}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.40"># Not an official solarized color: same as solorarized-base3</t>
+<t tx="ekr.20190321182604.41"></t>
+<t tx="ekr.20190321182604.42" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
+<t tx="ekr.20190321182604.43">These @color names map directly to the constants defined in each .py file in the leo/modes folder.
+
+There is a script to generate these .py files directly from the jEdit .xml syntax coloring files.
+
+These names can't be changed.  Leo's colorizing code leoColorizer.py uses these names to init various data structures.  The names are bound (in the modes/*.py files) to arguments to the pattern matches in leoColorizer.py.
+
+Check the .py file in leo/modes for your langauge to see which names are actually used.
+</t>
+<t tx="ekr.20190321182604.44">#84c805: good enough.
+
+#94e507: better, but a tad too bright.
+
+#80cb07: too bright
+
+#859900: real solarized green. Bad hue</t>
+<t tx="ekr.20190321182604.45"></t>
+<t tx="ekr.20190321182604.46"></t>
+<t tx="ekr.20190321182604.47"></t>
+<t tx="ekr.20190321182604.48">&lt;!-- Solarized blue: #268bd2 --&gt;
+
+@language md
+&lt;style&gt;
+div#bg {background:#268bd2}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.49">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ekr.20190321182604.5">@language md
+&lt;style&gt;
+div#bg {background:#586e75}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.50">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ekr.20190321182604.51">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ekr.20190321182604.52">&lt;!-- #00aa00 (Idle comment green) --&gt;
+
+&lt;!-- Solarize green      #859900 --&gt;
+
+@language md
+&lt;style&gt;
+div#bg {background:#859900}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.53"></t>
+<t tx="ekr.20190321182604.54"></t>
+<t tx="ekr.20190321182604.55"></t>
+<t tx="ekr.20190321182604.56">&lt;!-- was black --&gt;
+
+@language md
+&lt;style&gt;
+div#bg {background:#268bd2}
+
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.57">&lt;!-- was firebrick3 --&gt;
+&lt;!-- magenta   #d33682 --&gt;
+
+@language md
+&lt;style&gt;
+div#bg {background:#d33682}
+
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.58"></t>
+<t tx="ekr.20190321182604.59"></t>
+<t tx="ekr.20190321182604.6">@language md
+&lt;style&gt;
+div#bg {background:#073642}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.60"></t>
+<t tx="ekr.20190321182604.61"></t>
+<t tx="ekr.20190321182604.62"># New: solarized-blue
+</t>
+<t tx="ekr.20190321182604.63"></t>
+<t tx="ekr.20190321182604.64"></t>
+<t tx="ekr.20190321182604.65">The color of text in doc parts.
+
+firebrick3
+</t>
+<t tx="ekr.20190321182604.66">#80cb07
+The color of Leo keywords such as @ignore, @color, etc.
+
+#00aa00
+</t>
+<t tx="ekr.20190321182604.67">The color of name in &lt; &lt; name &gt; &gt; when name is defined.
+
+red
+
+</t>
+<t tx="ekr.20190321182604.68">The background color that represents spaces when Show Invisibles mode is in effect.
+
+gray80: #CCCCCC
+gray90: #E5E5E5
+</t>
+<t tx="ekr.20190321182604.69">The foreground color that represents tabs when Show Invisibles mode is in effect.
+
+gray80: #CCCCCC
+gray90: #E5E5E5
+</t>
+<t tx="ekr.20190321182604.7">@language md
+&lt;style&gt;
+div#bg {background:#000005}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.70">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
+</t>
+<t tx="ekr.20190321182604.71">purple
+</t>
+<t tx="ekr.20190321182604.72"></t>
+<t tx="ekr.20190321182604.73"># +</t>
+<t tx="ekr.20190321182604.74"># -</t>
+<t tx="ekr.20190321182604.75"># @@</t>
+<t tx="ekr.20190321182604.76"># +++</t>
+<t tx="ekr.20190321182604.77"># ---</t>
+<t tx="ekr.20190321182604.78"></t>
+<t tx="ekr.20190321182604.79">&lt;!-- Background color of log text. --&gt;
+
+@language md
+&lt;style&gt;
+div#bg {background:#000005}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.8">@language md
+&lt;style&gt;
+div#bg {background:#000059}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.80">&lt;!-- Foreground color of log text. --&gt;
+
+@language md
+&lt;style&gt;
+div#bg {background:#ffffff}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.81">@language md
+&lt;style&gt;
+div#bg {background:#000005}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.82">@language md
+&lt;style&gt;
+div#bg {background:#073642}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.83">@language md
+&lt;style&gt;
+div#bg {background:#fdffdd}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.84">@language md
+&lt;style&gt;
+div#bg {background:#eee8d5}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.85">Most widgets are colored in their css nodes.
+
+Only colors appearing in several places are given here.</t>
+<t tx="ekr.20190321182604.86">@language md
+&lt;style&gt;
+div#bg {background:#000005}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321182604.9">@language md
+&lt;style&gt;
+div#bg {background:#003b00}
+&lt;/style&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+</t>
+<t tx="ekr.20190321205442.1">@doc this is a docpart
+Second line of docpart.
+@c
+
+@ Another doc part.
+@c
+
+g.cls()
+from pygments.lexer import inherit
+from pygments.lexers import Python3Lexer
+from pygments.token import Comment
+
+&lt;&lt; section reference &gt;&gt;
+
+leo_tokens = {
+    'root': [
+       (r'\&lt;\&lt;.*\&gt;\&gt;', Comment.Leo.SectionRef),
+       (r'(@doc|@)(\s+|\n)(.|\n)*?^@c', Comment.Leo.DocPart),
+            # (.|\n)*? is a non-greedy match.
+       inherit,
+    ],
+}
+
+class LeoPython3Lexer(Python3Lexer):
+    tokens = leo_tokens
+
+lexer = LeoPython3Lexer()
+for token, text in lexer.get_tokens(p.b):
+    kind = repr(token).lstrip('Token.')
+    if 'Leo' in kind:
+        print('%30r %r' % (kind, text))
+    </t>
+<t tx="ekr.20190321205811.1"># Test.</t>
+<t tx="ekr.20190322040433.1">@ignore
+@nosearch
+HEAD=0ff672b0a</t>
+<t tx="ekr.20190322040433.10">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -16,6 +16,7 @@
+         # g.trace('===== new lexer:', self._lexer)
+         # g.printObj(dir(self._lexer))
+     lexer = self._lexer
++    # g.printObj(lexer.tokens ['root'])
+     if trace:
+         print('\npyg_c.mainLoop: count: %s line: %r' % (self.recolorCount, s))
+         prev_state = highlighter.previousBlockState()
+@language python
+</t>
+<t tx="ekr.20190322040433.11">lexer_dict = {}
+    # Keys are language names, values are instantiated lexers.
+state_s_dict = {}
+    # Keys are strings, values are ints.
+state_n_dict = {}
+    # For tracing only.
+    # Keys are ints, values are strings.
+state_index = 1
+
+def mainLoop(self, s):
+    '''Colorize a *single* line s'''
+    trace = False and g.pygments and not g.unitTesting
+    highlighter = self.highlighter
+    if not getattr(self, '_lexer', None):
+        self._lexer = Lexer() ### To be generalized.
+        # g.trace('===== new lexer:', self._lexer)
+        # g.printObj(dir(self._lexer))
+    lexer = self._lexer
+    if trace:
+        print('\npyg_c.mainLoop: count: %s line: %r' % (self.recolorCount, s))
+        prev_state = highlighter.previousBlockState()
+        prev_state_s = self.state_n_dict.get(prev_state, "&lt;no state&gt;")
+        print('prev state: %r: %s' % (prev_state, prev_state_s))
+    #
+    # Lex the text using Pygments.
+    #
+    # Based on code copyright (c) Jupyter Development Team.
+    # Distributed under the terms of the Modified BSD License.
+    stack_ivar = '_saved_state_stack'
+    prev_data = highlighter.currentBlock().previous().userData()
+    if prev_data is not None:
+        # if trace: print('prev data:', prev_data)
+        setattr(lexer, stack_ivar, prev_data.syntax_stack)
+    elif hasattr(self._lexer, stack_ivar):
+        delattr(self._lexer, stack_ivar)
+    index = 0
+    for token, text in self._lexer.get_tokens(s):
+        length = len(text)
+        # if trace: print('%25r %r' % (repr(token).lstrip('Token.'), text))
+        format = highlighter._get_format(token)
+        highlighter.setFormat(index, length, format)
+        index += length
+    stack = getattr(self._lexer, stack_ivar, None)
+    if stack:
+        data = PygmentsBlockUserData(syntax_stack=stack)
+        ### if trace: print('new data:', data)
+        highlighter.currentBlock().setUserData(data)
+        # Clean up for the next go-round.
+        delattr(self._lexer, stack_ivar)
+    #
+    # New code by EKR.
+    state_s = '%s; %r' % (self.language, stack)
+    state_n = self.state_s_dict.get(state_s)
+    if state_n is None:
+        state_n = self.state_index
+        self.state_index += 1
+        self.state_s_dict [state_s] = state_n
+        self.state_n_dict [state_n] = state_s
+    highlighter.setCurrentBlockState(state_n)
+</t>
+<t tx="ekr.20190322040433.2">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -2961,6 +2961,7 @@
+             # g.trace('===== new lexer:', self._lexer)
+             # g.printObj(dir(self._lexer))
+         lexer = self._lexer
++        # g.printObj(lexer.tokens ['root'])
+         if trace:
+             print('\npyg_c.mainLoop: count: %s line: %r' % (self.recolorCount, s))
+             prev_state = highlighter.previousBlockState()
+@language python
+</t>
+<t tx="ekr.20190322040433.9"></t>
 <t tx="tbrown.20110621120042.22914">def get_top_splitter(self):
     '''Return the top splitter of c.frame.top.'''
     # Careful: we could be unit testing.
