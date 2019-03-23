@@ -11,7 +11,8 @@
 #@+node:ekr.20140827092102.18575: ** << imports >> (leoColorizer.py)
 import re
 import string
-# import time
+import time
+assert time
 import leo.core.leoGlobals as g
 from leo.core.leoQt import Qsci, QtGui, QtWidgets
     
@@ -1809,8 +1810,11 @@ class JEditColorizer(BaseColorizer):
                 else:
                     i += 1
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
+    tot_time = 0.0
+
     def mainLoop(self, n, s):
         '''Colorize a *single* line s, starting in state n.'''
+        t1 = time.clock()
         f = self.restartDict.get(n)
         i = f(s) if f else 0
         while i < len(s):
@@ -1834,6 +1838,7 @@ class JEditColorizer(BaseColorizer):
                 i += 1
             assert i > progress
         # Don't even *think* about changing state here.
+        self.tot_time += time.clock() - t1
     #@+node:ekr.20110605121601.18640: *3* jedit.recolor (color one line)
     def recolor(self, s):
         '''
@@ -1999,10 +2004,10 @@ if QtGui:
                 self._brushes = {}
                 self._document = document
                 self._formats = {}
-                # Style gallery: https://help.farbox.com/pygments.html
-                # Dark styles: fruity, monokai, native, vim
-                # https://github.com/gthank/solarized-dark-pygments
                 style_name = c.config.getString('pygments-style-name') or 'default'
+                    # Style gallery: https://help.farbox.com/pygments.html
+                    # Dark styles: fruity, monokai, native, vim
+                    # https://github.com/gthank/solarized-dark-pygments
                 try:
                     self.setStyle(style_name)
                     # print('using %r pygments style in %r' % (style_name, c.shortFileName()))
@@ -2204,9 +2209,12 @@ class PygmentsColorizer(BaseColorizer):
         # For tracing only.
         # Keys are ints, values are strings.
     state_index = 1
+        # Index of state number to be allocated.
+    tot_time = 0.0
 
     def mainLoop(self, s):
         '''Colorize a *single* line s'''
+        t1 = time.clock()
         highlighter, language = self.highlighter, self.language
         if language == 'patch':
             language = 'diff'
@@ -2255,6 +2263,7 @@ class PygmentsColorizer(BaseColorizer):
             self.state_s_dict [state_s] = state_n
             self.state_n_dict [state_n] = state_s
         highlighter.setCurrentBlockState(state_n)
+        self.tot_time += time.clock() - t1
     #@+node:ekr.20190322133358.1: *4* pyg_c.section_ref_callback
     def section_ref_callback(self, lexer, match):
         '''pygments callback for section references.'''
