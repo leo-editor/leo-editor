@@ -2120,6 +2120,8 @@
 <v t="ekr.20181018113857.1"><vh>@string main-spelling-dictionary = None</vh></v>
 </v>
 <v t="ekr.20041119034357.70"><vh>Syntax coloring</vh>
+<v t="ekr.20190323043913.1"><vh>@bool use-pygments = False</vh></v>
+<v t="ekr.20190323043928.1"><vh>@string pygments-style-name = default</vh></v>
 <v t="ekr.20170202104705.1"><vh>@bool color-doc-parts-as-rest = True</vh></v>
 <v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="ekr.20111024091133.16650"><vh>Colors for Leo constructs</vh>
@@ -11893,6 +11895,9 @@ QTextEdit#richTextEdit[vim_state~="vim_visual"] {
     text-decoration:    @bookmarks_current_decoration;
 }</t>
 <t tx="ekr.20190119061613.1"></t>
+<t tx="ekr.20190323043913.1"></t>
+<t tx="ekr.20190323043928.1"># leonine is recommended. Install it from leo-editor-contrib.
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
