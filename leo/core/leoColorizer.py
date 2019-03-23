@@ -2328,11 +2328,14 @@ class PygmentsColorizer(BaseColorizer):
         from pygments.lexer import inherit
         
         class PatchedLexer(lexer.__class__):
+            
+            leo_sec_ref_pat = r'(?-m:\<\<(.*?)\>\>)' if g.isPython3 else r'\<\<(.*?)\>\>'
+                # Multiline for Python 2, but that can't be helped.
             tokens = {
                 'root': [
                     (r'^@(color|nocolor|killcolor)\b', self.at_color_callback),
                     (r'^@language\s+(\w+)', self.at_language_callback),
-                    (r'(?-m:\<\<(.*?)\>\>)', self.section_ref_callback),
+                    (leo_sec_ref_pat, self.section_ref_callback),
                         # Single-line, non-greedy match.
                     (r'(^\s*@doc|@)(\s+|\n)(.|\n)*?^@c', Comment.Leo.DocPart),
                         # Multi-line, non-greedy match.
