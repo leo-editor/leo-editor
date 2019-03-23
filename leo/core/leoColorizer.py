@@ -30,7 +30,7 @@ def make_colorizer(c, widget, wrapper):
     '''Return an instance of JEditColorizer or PygmentsColorizer.'''
     
     use_pygments = pygments and c.config.getBool('use-pygments', default=False)
-    g.trace('use_pygments:', use_pygments, c.shortFileName())
+    # g.trace('use_pygments:', use_pygments, c.shortFileName())
     if use_pygments:
         return PygmentsColorizer(c, widget, wrapper)
     else:
@@ -2018,7 +2018,7 @@ if QtGui:
                 # Alas, a QsciDocument is not a QTextDocument.
             QtGui.QSyntaxHighlighter.__init__(self, document)
                 # Init the base class.
-            if g.pygments:
+            if pygments and c.config.getBool('use-pygments', default=False):
                 self._brushes = {}
                 self._document = document
                 self._formats = {}
@@ -2043,107 +2043,107 @@ if QtGui:
             self.colorizer.recolor(s)
                 # Highlight just one line.
         #@+node:ekr.20190320154014.1: *3* leo_h: From PygmentsHighlighter
-        if g.pygments:
-            #
-            # All code in this tree is based on PygmentsHighlighter.
-            #
-            # Copyright (c) Jupyter Development Team.
-            # Distributed under the terms of the Modified BSD License.
-            #@+others
-            #@+node:ekr.20190320153605.1: *4* leo_h._get_format & helpers
-            def _get_format(self, token):
-                """ Returns a QTextCharFormat for token or None.
-                """
-                if token in self._formats:
-                    return self._formats[token]
-                if self._style is None:
-                    result = self._get_format_from_document(token, self._document)
-                else:
-                    result = self._get_format_from_style(token, self._style)
+        #
+        # All code in this tree is based on PygmentsHighlighter.
+        #
+        # Copyright (c) Jupyter Development Team.
+        # Distributed under the terms of the Modified BSD License.
+
+        #@+others
+        #@+node:ekr.20190320153605.1: *4* leo_h._get_format & helpers
+        def _get_format(self, token):
+            """ Returns a QTextCharFormat for token or None.
+            """
+            if token in self._formats:
+                return self._formats[token]
+            if self._style is None:
+                result = self._get_format_from_document(token, self._document)
+            else:
                 result = self._get_format_from_style(token, self._style)
-                self._formats[token] = result
-                return result
-            #@+node:ekr.20190320162831.1: *5* pyg_h._get_format_from_document
-            def _get_format_from_document(self, token, document):
-                """ Returns a QTextCharFormat for token by
-                """
-                ### These lines cause unbounded recursion.
-                    # code, html = next(self._formatter._format_lines([(token, u'dummy')]))
-                    # self._document.setHtml(html)
-                format = QtGui.QTextCursor(self._document).charFormat()
-                return format
-            #@+node:ekr.20190320153716.1: *5* leo_h._get_format_from_style
-            key_error_d = {}
+            result = self._get_format_from_style(token, self._style)
+            self._formats[token] = result
+            return result
+        #@+node:ekr.20190320162831.1: *5* pyg_h._get_format_from_document
+        def _get_format_from_document(self, token, document):
+            """ Returns a QTextCharFormat for token by
+            """
+            # Modified by EKR.
+            # These lines cause unbounded recursion.
+                # code, html = next(self._formatter._format_lines([(token, u'dummy')]))
+                # self._document.setHtml(html)
+            return QtGui.QTextCursor(self._document).charFormat()
+        #@+node:ekr.20190320153716.1: *5* leo_h._get_format_from_style
+        key_error_d = {}
 
-            def _get_format_from_style(self, token, style):
-                """ Returns a QTextCharFormat for token by reading a Pygments style.
-                """
-                result = QtGui.QTextCharFormat()
-                #
-                # EKR: handle missing tokens.
-                try:
-                    data = style.style_for_token(token).items()
-                except KeyError as err:
-                    key = repr(err)
-                    if key not in self.key_error_d:
-                        self.key_error_d [key] = True
-                        g.trace(err)
-                    return result
-                for key, value in data:
-                    if value:
-                        if key == 'color':
-                            result.setForeground(self._get_brush(value))
-                        elif key == 'bgcolor':
-                            result.setBackground(self._get_brush(value))
-                        elif key == 'bold':
-                            result.setFontWeight(QtGui.QFont.Bold)
-                        elif key == 'italic':
-                            result.setFontItalic(True)
-                        elif key == 'underline':
-                            result.setUnderlineStyle(
-                                QtGui.QTextCharFormat.SingleUnderline)
-                        elif key == 'sans':
-                            result.setFontStyleHint(QtGui.QFont.SansSerif)
-                        elif key == 'roman':
-                            result.setFontStyleHint(QtGui.QFont.Times)
-                        elif key == 'mono':
-                            result.setFontStyleHint(QtGui.QFont.TypeWriter)
+        def _get_format_from_style(self, token, style):
+            """ Returns a QTextCharFormat for token by reading a Pygments style.
+            """
+            result = QtGui.QTextCharFormat()
+            #
+            # EKR: handle missing tokens.
+            try:
+                data = style.style_for_token(token).items()
+            except KeyError as err:
+                key = repr(err)
+                if key not in self.key_error_d:
+                    self.key_error_d [key] = True
+                    g.trace(err)
                 return result
-            #@+node:ekr.20190320153958.1: *4* leo_h.setStyle
-            def setStyle(self, style):
-                """ Sets the style to the specified Pygments style.
-                """
-                from pygments.styles import get_style_by_name
-                if g.isString(style):
-                    style = get_style_by_name(style)
-                self._style = style
-                self._clear_caches()
-            #@+node:ekr.20190320154604.1: *4* leo_h.clear_caches
-            def _clear_caches(self):
-                """ Clear caches for brushes and formats.
-                """
-                self._brushes = {}
-                self._formats = {}
-            #@+node:ekr.20190320154752.1: *4* leo_h._get_brush/color
-            def _get_brush(self, color):
-                """ Returns a brush for the color.
-                """
-                result = self._brushes.get(color)
-                if result is None:
-                    qcolor = self._get_color(color)
-                    result = QtGui.QBrush(qcolor)
-                    self._brushes[color] = result
-                return result
+            for key, value in data:
+                if value:
+                    if key == 'color':
+                        result.setForeground(self._get_brush(value))
+                    elif key == 'bgcolor':
+                        result.setBackground(self._get_brush(value))
+                    elif key == 'bold':
+                        result.setFontWeight(QtGui.QFont.Bold)
+                    elif key == 'italic':
+                        result.setFontItalic(True)
+                    elif key == 'underline':
+                        result.setUnderlineStyle(
+                            QtGui.QTextCharFormat.SingleUnderline)
+                    elif key == 'sans':
+                        result.setFontStyleHint(QtGui.QFont.SansSerif)
+                    elif key == 'roman':
+                        result.setFontStyleHint(QtGui.QFont.Times)
+                    elif key == 'mono':
+                        result.setFontStyleHint(QtGui.QFont.TypeWriter)
+            return result
+        #@+node:ekr.20190320153958.1: *4* leo_h.setStyle
+        def setStyle(self, style):
+            """ Sets the style to the specified Pygments style.
+            """
+            from pygments.styles import get_style_by_name
+            if g.isString(style):
+                style = get_style_by_name(style)
+            self._style = style
+            self._clear_caches()
+        #@+node:ekr.20190320154604.1: *4* leo_h.clear_caches
+        def _clear_caches(self):
+            """ Clear caches for brushes and formats.
+            """
+            self._brushes = {}
+            self._formats = {}
+        #@+node:ekr.20190320154752.1: *4* leo_h._get_brush/color
+        def _get_brush(self, color):
+            """ Returns a brush for the color.
+            """
+            result = self._brushes.get(color)
+            if result is None:
+                qcolor = self._get_color(color)
+                result = QtGui.QBrush(qcolor)
+                self._brushes[color] = result
+            return result
 
-            def _get_color(self, color):
-                """ Returns a QColor built from a Pygments color string.
-                """
-                qcolor = QtGui.QColor()
-                qcolor.setRgb(int(color[:2], base=16),
-                              int(color[2:4], base=16),
-                              int(color[4:6], base=16))
-                return qcolor
-            #@-others
+        def _get_color(self, color):
+            """ Returns a QColor built from a Pygments color string.
+            """
+            qcolor = QtGui.QColor()
+            qcolor.setRgb(int(color[:2], base=16),
+                          int(color[2:4], base=16),
+                          int(color[4:6], base=16))
+            return qcolor
+        #@-others
         #@-others
 #@+node:ekr.20140906095826.18717: ** class NullScintillaLexer (QsciLexerCustom)
 if Qsci:
@@ -2556,101 +2556,105 @@ class QScintillaColorizer(BaseColorizer):
 #@+node:ekr.20190320062618.1: ** Jupyter classes
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-#@+node:ekr.20190320062624.2: *3* RegexLexer.get_tokens_unprocessed
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
 
-from pygments.lexer import RegexLexer, _TokenType, Text, Error
+if pygments:
+    #@+others
+    #@+node:ekr.20190320062624.2: *3* RegexLexer.get_tokens_unprocessed
+    # Copyright (c) Jupyter Development Team.
+    # Distributed under the terms of the Modified BSD License.
 
-def get_tokens_unprocessed(self, text, stack=('root',)):
-    """
-    Split ``text`` into (tokentype, text) pairs.
+    from pygments.lexer import RegexLexer, _TokenType, Text, Error
 
-    Monkeypatched to store the final stack on the object itself.
+    def get_tokens_unprocessed(self, text, stack=('root',)):
+        """
+        Split ``text`` into (tokentype, text) pairs.
 
-    The `text` parameter this gets passed is only the current line, so to
-    highlight things like multiline strings correctly, we need to retrieve
-    the state from the previous line (this is done in PygmentsHighlighter,
-    below), and use it to continue processing the current line.
-    """
-    pos = 0
-    tokendefs = self._tokens
-    if hasattr(self, '_saved_state_stack'):
-        statestack = list(self._saved_state_stack)
-    else:
-        statestack = list(stack)
-    statetokens = tokendefs[statestack[-1]]
-    while 1:
-        for rexmatch, action, new_state in statetokens:
-            m = rexmatch(text, pos)
-            if m:
-                if action is not None:
-                    # pylint: disable=unidiomatic-typecheck
-                        ### EKR: Use isinstance?
-                    if type(action) is _TokenType:
-                        yield pos, action, m.group()
-                    else:
-                        for item in action(self, m):
-                            yield item
-                pos = m.end()
-                if new_state is not None:
-                    # state transition
-                    if isinstance(new_state, tuple):
-                        for state in new_state:
-                            if state == '#pop':
-                                statestack.pop()
-                            elif state == '#push':
-                                statestack.append(statestack[-1])
-                            else:
-                                statestack.append(state)
-                    elif isinstance(new_state, int):
-                        # pop
-                        del statestack[new_state:]
-                    elif new_state == '#push':
-                        statestack.append(statestack[-1])
-                    else:
-                        assert False, "wrong state def: %r" % new_state
-                    statetokens = tokendefs[statestack[-1]]
-                break
+        Monkeypatched to store the final stack on the object itself.
+
+        The `text` parameter this gets passed is only the current line, so to
+        highlight things like multiline strings correctly, we need to retrieve
+        the state from the previous line (this is done in PygmentsHighlighter,
+        below), and use it to continue processing the current line.
+        """
+        pos = 0
+        tokendefs = self._tokens
+        if hasattr(self, '_saved_state_stack'):
+            statestack = list(self._saved_state_stack)
         else:
-            try:
-                if text[pos] == '\n':
-                    # at EOL, reset state to "root"
+            statestack = list(stack)
+        statetokens = tokendefs[statestack[-1]]
+        while 1:
+            for rexmatch, action, new_state in statetokens:
+                m = rexmatch(text, pos)
+                if m:
+                    if action is not None:
+                        # pylint: disable=unidiomatic-typecheck
+                            ### EKR: Use isinstance?
+                        if type(action) is _TokenType:
+                            yield pos, action, m.group()
+                        else:
+                            for item in action(self, m):
+                                yield item
+                    pos = m.end()
+                    if new_state is not None:
+                        # state transition
+                        if isinstance(new_state, tuple):
+                            for state in new_state:
+                                if state == '#pop':
+                                    statestack.pop()
+                                elif state == '#push':
+                                    statestack.append(statestack[-1])
+                                else:
+                                    statestack.append(state)
+                        elif isinstance(new_state, int):
+                            # pop
+                            del statestack[new_state:]
+                        elif new_state == '#push':
+                            statestack.append(statestack[-1])
+                        else:
+                            assert False, "wrong state def: %r" % new_state
+                        statetokens = tokendefs[statestack[-1]]
+                    break
+            else:
+                try:
+                    if text[pos] == '\n':
+                        # at EOL, reset state to "root"
+                        pos += 1
+                        statestack = ['root']
+                        statetokens = tokendefs['root']
+                        yield pos, Text, u'\n'
+                        continue
+                    yield pos, Error, text[pos]
                     pos += 1
-                    statestack = ['root']
-                    statetokens = tokendefs['root']
-                    yield pos, Text, u'\n'
-                    continue
-                yield pos, Error, text[pos]
-                pos += 1
-            except IndexError:
-                break
-    self._saved_state_stack = list(statestack)
-    
-# Monkeypatch!
-if g.pygments:
-    RegexLexer.get_tokens_unprocessed = get_tokens_unprocessed
-#@+node:ekr.20190320062624.3: *3* class PygmentsBlockUserData(QTextBlockUserData)
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
+                except IndexError:
+                    break
+        self._saved_state_stack = list(statestack)
+        
+    # Monkeypatch!
+    if pygments:
+        RegexLexer.get_tokens_unprocessed = get_tokens_unprocessed
+    #@+node:ekr.20190320062624.3: *3* class PygmentsBlockUserData(QTextBlockUserData)
+    # Copyright (c) Jupyter Development Team.
+    # Distributed under the terms of the Modified BSD License.
 
-class PygmentsBlockUserData(QtGui.QTextBlockUserData):
-    """ Storage for the user data associated with each line."""
+    class PygmentsBlockUserData(QtGui.QTextBlockUserData):
+        """ Storage for the user data associated with each line."""
 
-    syntax_stack = ('root',)
+        syntax_stack = ('root',)
 
-    def __init__(self, **kwds):
-        for key, value in kwds.items():
-            setattr(self, key, value)
-        QtGui.QTextBlockUserData.__init__(self)
+        def __init__(self, **kwds):
+            for key, value in kwds.items():
+                setattr(self, key, value)
+            QtGui.QTextBlockUserData.__init__(self)
 
-    def __repr__(self):
-        attrs = ['syntax_stack']
-        kwds = ', '.join([
-            '%s=%r' % (attr, getattr(self, attr))
-                for attr in attrs
-        ])
-        return 'PygmentsBlockUserData(%s)' % kwds
+        def __repr__(self):
+            attrs = ['syntax_stack']
+            kwds = ', '.join([
+                '%s=%r' % (attr, getattr(self, attr))
+                    for attr in attrs
+            ])
+            return 'PygmentsBlockUserData(%s)' % kwds
+    #@-others
 #@-others
 #@@language python
 #@@tabwidth -4

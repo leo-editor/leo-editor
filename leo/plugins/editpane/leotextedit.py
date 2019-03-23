@@ -1,20 +1,15 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.5: * @file ../plugins/editpane/leotextedit.py
-#@+<<leotextedit.py imports >>
+#@+<< leotextedit.py imports >>
 #@+node:tbrown.20171028115508.1: ** <<leotextedit.py imports >>
 # import re
+# import time
 import leo.core.leoGlobals as g
 assert g
-from leo.core.leoQt import QtWidgets #  QtConst, QtCore, QtGui
-if g.pygments:
-    from leo.core.leoColorizer import PygmentsColorizer as LeoColorizer
-else:
-    from leo.core.leoColorizer import JEditColorizer as LeoColorizer
+from leo.core.leoQt import QtWidgets
+import leo.core.leoColorizer as leoColorizer
 import leo.plugins.qt_text as qt_text
-
-# import time  # temporary for debugging
-
-#@-<<leotextedit.py imports >>
+#@-<< leotextedit.py imports >>
 #@+others
 #@+node:tbrown.20171028115508.2: ** DBG
 def DBG(text):
@@ -41,12 +36,11 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
         self.textChanged.connect(self.text_changed)
         self.wrapper = qt_text.QTextEditWrapper(self, name='edit_pane', c=c)
         self.wrapper.widget = self
-        ### self.highlighter = JEditColorizer(c, self, self.wrapper)
-        self.highlighter = LeoColorizer(c, self, self.wrapper)
+        ### self.highlighter = LeoColorizer(c, self, self.wrapper)
+        self.highlighter = leoColorizer.make_colorizer(c, self, self.wrapper)
         #
         # maybe need to go in this direction, but this is insufficient by iteself
         # g.app.gui.setFilter(c, self, self.wrapper, 'edit_pane')
-
     #@+node:tbrown.20171028115508.5: *3* focusInEvent(LeoTextEdit)
     def focusInEvent (self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
