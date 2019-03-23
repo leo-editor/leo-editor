@@ -30,7 +30,7 @@ def make_colorizer(c, widget, wrapper):
     '''Return an instance of JEditColorizer or PygmentsColorizer.'''
     
     use_pygments = pygments and c.config.getBool('use-pygments', default=False)
-    g.trace('use_pygments:', use_pygments)
+    g.trace('use_pygments:', use_pygments, c.shortFileName())
     if use_pygments:
         return PygmentsColorizer(c, widget, wrapper)
     else:
@@ -2295,7 +2295,6 @@ class PygmentsColorizer(BaseColorizer):
         from pygments.token import Name, Text
         kind = match.group(0)
         self.color_enabled = kind == '@color'
-        g.trace(self.color_enabled, kind)
         if self.color_enabled:
             yield match.start(), Name.Decorator, kind
         else:
@@ -2304,7 +2303,6 @@ class PygmentsColorizer(BaseColorizer):
     def at_language_callback(self, lexer, match):
         from pygments.token import Name
         self.language = match.group(1)
-        g.trace(self.language)
         yield match.start(), Name.Decorator, match.group(0)
     #@+node:ekr.20190322133358.1: *4* pyg_c.section_ref_callback
     def section_ref_callback(self, lexer, match):
@@ -2321,8 +2319,7 @@ class PygmentsColorizer(BaseColorizer):
     def get_lexer(self, language):
         '''Return the lexer for self.language, creating it if necessary.'''
         import pygments.lexers as lexers
-        # pylint: disable=no-member
-            # 
+       
         try:
             if g.isPython3 and language == 'python':
                 lexer_language = 'python3'
@@ -2330,6 +2327,8 @@ class PygmentsColorizer(BaseColorizer):
                 lexer_language = language
             lexer = lexers.get_lexer_by_name(lexer_language)
         except Exception:
+            # pylint: disable=no-member
+                # One of the lexer's will not exist.
             g.trace('==== no lexer for %r' % language)
             lexer = lexers.Python3Lexer if g.isPython3 else lexers.PythonLexer
             if 'python' not in self.lexers_dict:
