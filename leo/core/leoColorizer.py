@@ -2235,32 +2235,30 @@ class PygmentsColorizer(BaseColorizer):
     def mainLoop(self, s):
         '''Colorize a *single* line s'''
         t1 = time.clock()
-        highlighter, language = self.highlighter, self.language
-        if language == 'patch':
-            language = 'diff'
+        highlighter = self.highlighter
         #
-        # Allocate a patched lexer if necessary.
-        key = '%s:%s' % (language, id(self))
-        lexer = self.lexers_dict.get(key)
-        if not lexer:
-            lexer = self.get_lexer(language)
-            lexer = self.patch_lexer(language, lexer)
-            self.lexers_dict [key] = lexer
-        self._lexer = lexer
-        # g.trace(self.color_enabled, repr(s))
+        # First, set the *expected* lexer. It may change later.
+        lexer = self.set_lexer()
         #
-        # Lex the text using Pygments.
-        #
-        # Based on code copyright (c) Jupyter Development Team.
-        # Distributed under the terms of the Modified BSD License.
+        # Restore the state.
+        # Based on Jupyter code: (c) Jupyter Development Team.
         stack_ivar = '_saved_state_stack'
         prev_data = highlighter.currentBlock().previous().userData()
         if prev_data is not None:
+            # New code by EKR. Restore the language if necessary.
+            if self.language != prev_data.leo_language:
+                # Change the language and the lexer!
+                self.language = prev_data.leo_language
+                # g.trace('RESTORE:', self.language)
+                lexer = self.set_lexer()
             setattr(lexer, stack_ivar, prev_data.syntax_stack)
-        elif hasattr(self._lexer, stack_ivar):
-            delattr(self._lexer, stack_ivar)
+        elif hasattr(lexer, stack_ivar):
+            delattr(lexer, stack_ivar)
+        # g.trace(self.color_enabled, self.language, repr(s))
+        #
+        # The main loop. Warning: this can change self.language.
         index = 0
-        for token, text in self._lexer.get_tokens(s):
+        for token, text in lexer.get_tokens(s):
             length = len(text)
             # print('%5s %25r %r' % (self.color_enabled, repr(token).lstrip('Token.'), text))
             if self.color_enabled:
@@ -2271,14 +2269,17 @@ class PygmentsColorizer(BaseColorizer):
                 format = QtGui.QTextCharFormat()
             highlighter.setFormat(index, length, format)
             index += length
-        stack = getattr(self._lexer, stack_ivar, None)
+        #
+        # Save the state.
+        # Based on Jupyter code: (c) Jupyter Development Team.
+        stack = getattr(lexer, stack_ivar, None)
         if stack:
-            data = PygmentsBlockUserData(syntax_stack=stack)
+            data = PygmentsBlockUserData(syntax_stack=stack, leo_language=self.language)
             highlighter.currentBlock().setUserData(data)
             # Clean up for the next go-round.
-            delattr(self._lexer, stack_ivar)
+            delattr(lexer, stack_ivar)
         #
-        # New code by EKR.
+        # New code by EKR:
         # - Fixes a bug so multiline tokens work.
         # - State supports Leo's color directives.
         state_s = '%s; %s: %r' % (self.language, self.color_enabled, stack)
@@ -2304,17 +2305,6 @@ class PygmentsColorizer(BaseColorizer):
         from pygments.token import Name
         self.language = match.group(1)
         yield match.start(), Name.Decorator, match.group(0)
-    #@+node:ekr.20190322133358.1: *4* pyg_c.section_ref_callback
-    def section_ref_callback(self, lexer, match):
-        '''pygments callback for section references.'''
-        c = self.c
-        from pygments.token import Comment, Name
-        name, ref, start = match.group(1), match.group(0), match.start()
-        found = g.findReference(ref, c.p)
-        found_tok = Name.Entity if found else Name.Other
-        yield match.start(), Comment, '<<'
-        yield start+2, found_tok, name
-        yield start+2+len(name), Comment, '>>'
     #@+node:ekr.20190322082533.1: *4* pyg_c.get_lexer
     def get_lexer(self, language):
         '''Return the lexer for self.language, creating it if necessary.'''
@@ -2359,6 +2349,29 @@ class PygmentsColorizer(BaseColorizer):
             g.trace('can not patch %r' % language)
             g.es_exception()
             return lexer
+    #@+node:ekr.20190322133358.1: *4* pyg_c.section_ref_callback
+    def section_ref_callback(self, lexer, match):
+        '''pygments callback for section references.'''
+        c = self.c
+        from pygments.token import Comment, Name
+        name, ref, start = match.group(1), match.group(0), match.start()
+        found = g.findReference(ref, c.p)
+        found_tok = Name.Entity if found else Name.Other
+        yield match.start(), Comment, '<<'
+        yield start+2, found_tok, name
+        yield start+2+len(name), Comment, '>>'
+    #@+node:ekr.20190323064820.1: *4* pyg_c.set_lexer
+    def set_lexer(self):
+        '''Return the lexer for self.language.'''
+        if self.language == 'patch':
+            self.language = 'diff'
+        key = '%s:%s' % (self.language, id(self))
+        lexer = self.lexers_dict.get(key)
+        if not lexer:
+            lexer = self.get_lexer(self.language)
+            lexer = self.patch_lexer(self.language, lexer)
+            self.lexers_dict [key] = lexer
+        return lexer
     #@+node:ekr.20190319151826.79: *3* pyg_c.recolor
     def recolor(self, s):
         '''
