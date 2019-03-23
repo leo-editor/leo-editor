@@ -15,6 +15,13 @@ import time
 assert time
 import leo.core.leoGlobals as g
 from leo.core.leoQt import Qsci, QtGui, QtWidgets
+#
+# Recover gracefully if pygments can not be imported.
+try:
+    import pygments
+except ImportError:
+    pygments = None
+
     
 #@-<< imports >>
 #@+others

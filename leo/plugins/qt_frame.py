@@ -1376,7 +1376,9 @@ class LeoQtBody(leoFrame.LeoBody):
             self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
             self.widget.setAcceptRichText(False)
-            if g.pygments:
+            use_pygments = leoColorizer.pygments and c.config.getBool('use-pygments', default=False)
+            g.trace('===== use_pygments:', use_pygments)
+            if use_pygments: # g.pygments
                 self.colorizer = leoColorizer.PygmentsColorizer(c, self.widget, self.wrapper)
             else:
                 self.colorizer = leoColorizer.JEditColorizer(c, self.widget, self.wrapper)
@@ -1464,7 +1466,9 @@ class LeoQtBody(leoFrame.LeoBody):
         wrapper.see(0)
         c.k.completeAllBindingsForWidget(wrapper)
         if isinstance(w, QtWidgets.QTextEdit):
-            if g.pygments:
+            use_pygments = leoColorizer.pygments and c.config.getBool('use-pygments', default=False)
+            g.trace('use_pygments:', use_pygments)
+            if use_pygments: ### g.pygments:
                 colorizer = leoColorizer.PygmentsColorizer(c, widget, wrapper)
             else:
                 colorizer = leoColorizer.JEditColorizer(c, widget, wrapper)
