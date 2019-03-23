@@ -3519,6 +3519,42 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         k.showStateAndMode()
     #@-others
+#@+node:ekr.20190323084957.1: ** @g.command('promote-bodies')
+@g.command('promote-bodies')
+def promoteBodies(event):
+    '''Copy the body text of all descendants to the parent's body text.'''
+    c = event.get('c')
+    if not c:
+        return
+    p = c.p
+    result = [p.b.rstrip()+'\n'] if p.b.strip() else []
+    b = c.undoer.beforeChangeNodeContents(p)
+    for child in p.subtree():
+        h = child.h.strip()
+        if child.b:
+            body = '\n'.join(['  %s' % (z) for z in g.splitLines(child.b)])
+            s = '- %s\n%s' % (h,body)
+        else:
+            s = '- %s' % h
+        if s.strip():
+            result.append(s.strip())
+    if result:
+        result.append('')
+    p.b = '\n'.join(result)
+    c.undoer.afterChangeNodeContents(p,'promote-bodies',b)
+#@+node:ekr.20190323085410.1: ** @g.command('promote-headlines')
+@g.command('promote-headlines')
+def promoteHeadlines(event):
+    '''Copy the headlines of all descendants to the parent's body text.'''
+    c = event.get('c')
+    if not c:
+        return
+    p = c.p
+    b = c.undoer.beforeChangeNodeContents(p)
+    result = '\n'.join([p.h.rstrip() for p in p.subtree()])
+    if result:
+        p.b = p.b.lstrip() + '\n' + result
+        c.undoer.afterChangeNodeContents(p,'promote-headlines',b)
 #@+node:ekr.20180210160930.1: ** @g.command('mark-first-parents')
 @g.command('mark-first-parents')
 def mark_first_parents(event):
