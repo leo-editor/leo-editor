@@ -22,8 +22,9 @@ in_bridge = False
     # This tells leoApp to load a null Gui.
 SQLITE = True
     # True: Enable SQLite DB.
-pygments = True
-print('\n ===== g.pygments: %s' % pygments)
+pygments = False
+if pygments:
+    print('\n ===== g.pygments: %s' % pygments)
 #@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
