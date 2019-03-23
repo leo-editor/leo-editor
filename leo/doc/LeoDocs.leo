@@ -7548,6 +7548,17 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 **THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**
+
+################
+Other Copyrights
+################
+
+Portions of Leo's pygments interface use code from the Jupyter qtconsole package.
+
+These parts are are clearly marked in Leo's code as follows:
+
+    Copyright (c) Jupyter Development Team.
+    Distributed under the terms of the Modified BSD License.
 </t>
 <t tx="ekr.20090223065025.3">**Important**: The changes you make below **will not persist** unless your script calls c.frame.body.onBodyChanged after making those changes. This method has the following signature::
 
