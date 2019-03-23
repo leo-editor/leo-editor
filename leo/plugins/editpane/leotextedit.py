@@ -36,7 +36,6 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
         self.textChanged.connect(self.text_changed)
         self.wrapper = qt_text.QTextEditWrapper(self, name='edit_pane', c=c)
         self.wrapper.widget = self
-        ### self.highlighter = LeoColorizer(c, self, self.wrapper)
         self.highlighter = leoColorizer.make_colorizer(c, self, self.wrapper)
         #
         # maybe need to go in this direction, but this is insufficient by iteself

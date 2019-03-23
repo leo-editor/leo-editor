@@ -28,10 +28,7 @@ except ImportError:
 #@+node:ekr.20190323044524.1: ** function: make_colorizer
 def make_colorizer(c, widget, wrapper):
     '''Return an instance of JEditColorizer or PygmentsColorizer.'''
-    
-    use_pygments = pygments and c.config.getBool('use-pygments', default=False)
-    # g.trace('use_pygments:', use_pygments, c.shortFileName())
-    if use_pygments:
+    if pygments and c.config.getBool('use-pygments', default=False):
         return PygmentsColorizer(c, widget, wrapper)
     else:
         return JEditColorizer(c, widget, wrapper)
@@ -2589,7 +2586,7 @@ if pygments:
                 if m:
                     if action is not None:
                         # pylint: disable=unidiomatic-typecheck
-                            ### EKR: Use isinstance?
+                            # EKR: Why not use isinstance?
                         if type(action) is _TokenType:
                             yield pos, action, m.group()
                         else:
