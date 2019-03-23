@@ -25,6 +25,17 @@ except ImportError:
     
 #@-<< imports >>
 #@+others
+#@+node:ekr.20190323044524.1: ** function: make_colorizer
+def make_colorizer(c, widget, wrapper):
+    '''Return an instance of JEditColorizer or PygmentsColorizer.'''
+    
+    use_pygments = pygments and c.config.getBool('use-pygments', default=False)
+    g.trace('use_pygments:', use_pygments)
+    if use_pygments:
+        return PygmentsColorizer(c, widget, wrapper)
+    else:
+        return JEditColorizer(c, widget, wrapper)
+        
 #@+node:ekr.20170127141855.1: ** class BaseColorizer (object)
 class BaseColorizer(object):
     '''The base class for all Leo colorizers.'''
