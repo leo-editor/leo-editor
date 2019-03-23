@@ -2193,6 +2193,8 @@ class PygmentsColorizer(BaseColorizer):
         self.enabled = True
             # Per-node enable/disable flag.
             # Set by updateSyntaxColorer, used by jEdit colorizer.
+        self.color_enabled = self.enabled
+            # Set/cleared by color directives.
         self.language = 'python'
             # set by scanLanguageDirectives.
         self.old_v = None
@@ -2245,6 +2247,7 @@ class PygmentsColorizer(BaseColorizer):
             lexer = self.patch_lexer(language, lexer)
             self.lexers_dict [key] = lexer
         self._lexer = lexer
+        # g.trace(self.color_enabled, repr(s))
         #
         # Lex the text using Pygments.
         #
@@ -2259,10 +2262,13 @@ class PygmentsColorizer(BaseColorizer):
         index = 0
         for token, text in self._lexer.get_tokens(s):
             length = len(text)
-            # print('%25r %r' % (repr(token).lstrip('Token.'), text))
-            format = highlighter._formats.get(token)
-            if not format:
-                format = highlighter._get_format(token)
+            # print('%5s %25r %r' % (self.color_enabled, repr(token).lstrip('Token.'), text))
+            if self.color_enabled:
+                format = highlighter._formats.get(token)
+                if not format:
+                    format = highlighter._get_format(token)
+            else:
+                format = QtGui.QTextCharFormat()
             highlighter.setFormat(index, length, format)
             index += length
         stack = getattr(self._lexer, stack_ivar, None)
@@ -2272,8 +2278,10 @@ class PygmentsColorizer(BaseColorizer):
             # Clean up for the next go-round.
             delattr(self._lexer, stack_ivar)
         #
-        # New code by EKR. Fixes a bug so multiline tokens work.
-        state_s = '%s; %r' % (self.language, stack)
+        # New code by EKR.
+        # - Fixes a bug so multiline tokens work.
+        # - State supports Leo's color directives.
+        state_s = '%s; %s: %r' % (self.language, self.color_enabled, stack)
         state_n = self.state_s_dict.get(state_s)
         if state_n is None:
             state_n = self.state_index
@@ -2282,6 +2290,22 @@ class PygmentsColorizer(BaseColorizer):
             self.state_n_dict [state_n] = state_s
         highlighter.setCurrentBlockState(state_n)
         self.tot_time += time.clock() - t1
+    #@+node:ekr.20190323045655.1: *4* pyg_c.at_color_callback
+    def at_color_callback(self, lexer, match):
+        from pygments.token import Name, Text
+        kind = match.group(0)
+        self.color_enabled = kind == '@color'
+        g.trace(self.color_enabled, kind)
+        if self.color_enabled:
+            yield match.start(), Name.Decorator, kind
+        else:
+            yield match.start(), Text, kind
+    #@+node:ekr.20190323045735.1: *4* pyg_c.at_language_callback
+    def at_language_callback(self, lexer, match):
+        from pygments.token import Name
+        self.language = match.group(1)
+        g.trace(self.language)
+        yield match.start(), Name.Decorator, match.group(0)
     #@+node:ekr.20190322133358.1: *4* pyg_c.section_ref_callback
     def section_ref_callback(self, lexer, match):
         '''pygments callback for section references.'''
@@ -2320,9 +2344,11 @@ class PygmentsColorizer(BaseColorizer):
         class PatchedLexer(lexer.__class__):
             tokens = {
                 'root': [
-                   (r'(?-m:\<\<(.*?)\>\>)', self.section_ref_callback),
+                    (r'^@(color|nocolor|killcolor)\b', self.at_color_callback),
+                    (r'^@language\s+(\w+)', self.at_language_callback),
+                    (r'(?-m:\<\<(.*?)\>\>)', self.section_ref_callback),
                         # Single-line, non-greedy match.
-                   (r'(@doc|@)(\s+|\n)(.|\n)*?^@c', Comment.Leo.DocPart),
+                    (r'(^\s*@doc|@)(\s+|\n)(.|\n)*?^@c', Comment.Leo.DocPart),
                         # Multi-line, non-greedy match.
                    inherit,
                 ],
@@ -2346,6 +2372,9 @@ class PygmentsColorizer(BaseColorizer):
             self.updateSyntaxColorer(p)
                 # Force a full recolor
                 # sets self.language and self.enabled.
+            self.color_enabled = self.enabled
+            self.old_v = p.v
+                # Fix a major performance bug.
             assert self.language
         if s is not None:
             # For pygments, we *must* call for all lines.
