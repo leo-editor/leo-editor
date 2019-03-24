@@ -2312,7 +2312,7 @@ class PygmentsColorizer(BaseJEditColorizer):
         if r == 'name':
             # Avoid a colision with existing Leo tag.
             r = 'name.pygments'
-        if 1:
+        if 0:
             if r not in self.traced_dict:
                 self.traced_dict [r] = r
                 g.trace(r)
