@@ -2273,15 +2273,7 @@ class PygmentsColorizer(BaseColorizer):
         for token, text in lexer.get_tokens(s):
             length = len(text)
             # print('%5s %25r %r' % (self.color_enabled, repr(token).lstrip('Token.'), text))
-            if self.color_enabled:
-                ### format = highlighter._formats.get(token)
-                # if not format:
-                    # format = highlighter._get_format(token)
-                format = self.getFormat(token)
-            else:
-                ### format = QtGui.QTextCharFormat()
-                format = self.getDefaultFormat()
-            ### highlighter.setFormat(index, length, format)
+            format = self.getFormat(token) if self.color_enabled else self.getDefaultFormat()
             self.setFormat(index, length, format, s)
             index += length
         #
