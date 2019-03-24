@@ -2217,6 +2217,33 @@ class PygmentsColorizer(BaseColorizer):
         self.defineDefaultFontDict()
         self.reloadSettings()
         self.init()
+    #@+node:ekr.20190324063349.1: *3* pyg_c.format getters
+    def getLegacyDefaultFormat(self):
+        return None
+
+    def getLegacyFormat(self, token):
+        '''Return a jEdit tag for the given pygments token.'''
+        r = repr(token).lower()
+        g.trace(r)
+        if 'keyword' in r:
+            return 'keyword1'
+        else:
+            return 'literal1'
+
+    def getPygmentsFormat(self, token):
+        '''Return a pygments format.'''
+        format = self.highlighter._formats.get(token)
+        if not format:
+            format = self.highlighter._get_format(token)
+        return format
+    #@+node:ekr.20190324064341.1: *3* pyg_c.format setters
+    def setLegacyFormat(self, index, length, format, s):
+        '''Call the jEdit style setTag.'''
+        BaseColorizer.setTag(self, format, s, index, index+length)
+        
+    def setPygmentsFormat(self, index, length, format, s):
+        ''' Call the base setTag to set the Qt format.'''
+        self.highlighter.setFormat(index, length, format)
     #@+node:ekr.20190324043722.1: *3* pyg_c.init & helpers
     def init(self, p=None):
         '''Init the colorizer. p is for tracing only.'''
@@ -2228,7 +2255,7 @@ class PygmentsColorizer(BaseColorizer):
         self.configure_tags()
         self.configure_hard_tab_width()
 
-    def addLeoRules(self, rulesDict):
+    def addLeoRules(self, theDict):
         pass
     #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop & helpers
     format_dict = {}
@@ -2414,30 +2441,10 @@ class PygmentsColorizer(BaseColorizer):
             self.getFormat = self.getPygmentsFormat
             self.setFormat = self.setPygmentsFormat
         else:
-            self.getDefaultFormat = self.getDefaultTag
-            self.getFormat = self.getLegacyTag
-            self.setFormat = self.setTag
+            self.getDefaultFormat = self.getLegacyDefaultFormat
+            self.getFormat = self.getLegacyFormat
+            self.setFormat = self.setLegacyFormat
                 # Use the JEdit style method.
-    #@+node:ekr.20190324063349.1: *3* pyg_c.format getters/setters
-    def getLegacyFormat(self, token):
-        '''Return a jEdit tag for the given pygments token.'''
-        g.trace(token)
-        return 'keyword1'
-
-    def getPygmentsFormat(self, token):
-        '''Return a pygments format.'''
-        format = self.highlighter._formats.get(token)
-        if not format:
-            format = self.highlighter._get_format(token)
-        return format
-
-    def setLegacyFormat(self, index, length, format, s):
-        '''Call the jEdit style setTag.'''
-        BaseColorizer.setTag(self, format, s, index, index+length)
-        
-    def setPygmentsFormat(self, index, length, format, s):
-        ''' Call the base setTag to set the Qt format.'''
-        self.highlighter.setFormat(index, length, format)
     #@-others
 #@+node:ekr.20140906081909.18689: ** class QScintillaColorizer(BaseColorizer)
 # This is c.frame.body.colorizer
