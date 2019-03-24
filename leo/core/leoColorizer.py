@@ -822,7 +822,7 @@ class BaseJEditColorizer (BaseColorizer):
         if i == j:
             return
         wrapper = self.wrapper # A QTextEditWrapper
-        tag = tag.lower() # 2011/10/28
+        tag = tag.lower() if tag else ''
         ### g.trace(tag, repr(s[i:j]))
         # A hack to allow continuation dots on any tag.
         dots = tag.startswith('dots')
