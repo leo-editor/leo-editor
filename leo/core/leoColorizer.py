@@ -499,7 +499,6 @@ class BaseJEditColorizer (BaseColorizer):
             "name.tag"          :'null_font',
             "name.variable"     :'null_font',
             "number"            :'null_font',
-            "operator"          :'operator_font',
             "operator.word"     :'keyword4_font',
             "string"            :'literal1_font',
             "string.doc"        :'literal1_font',
