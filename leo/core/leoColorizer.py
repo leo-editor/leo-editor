@@ -367,9 +367,9 @@ class BaseJEditColorizer (BaseColorizer):
 
         # These defaults are sure to exist.
         self.default_colors_dict = {
-
+            #
             # Used in Leo rules...
-
+            #
             # tag name      :( option name,                  default color),
             'blank'         :('show_invisibles_space_color', '#E5E5E5'), # gray90
             'docpart'       :('doc_part_color',              'red'),
@@ -379,17 +379,52 @@ class BaseJEditColorizer (BaseColorizer):
             'namebrackets'  :('section_name_brackets_color', 'blue'),
             'tab'           :('show_invisibles_tab_color',   '#CCCCCC'), # gray80
             'url'           :('url_color',                   'purple'),
-
-            # Used by the old colorizer: to be removed.
-
-            # 'bracketRange'   :('bracket_range_color',     'orange'), # Forth.
-            # 'comment'        :('comment_color',           'red'),
-            # 'cwebName'       :('cweb_section_name_color', 'red'),
-            # 'keyword'        :('keyword_color',           'blue'),
-            # 'latexBackground':('latex_background_color',  'white'),
-            # 'pp'             :('directive_color',         'blue'),
-            # 'string'         :('string_color',            '#00aa00'), # Used by IDLE.
-
+            #
+            # Pygments tags, taken from 'default' style.
+            # tag name          :( option name,         default color),
+            "comment"           :('comment',            '#408080'), # italic
+            "comment.preproc"   :('comment.preproc',    '#BC7A00'), # noitalic
+            "error"             :('error',              "#FF0000"), # border
+            "generic.deleted"   :('generic.deleted',    '#A00000'),
+            "generic.emph"      :('generic.emph',       '#000080'), # italic
+            "generic.error"     :('generic.error',      '#FF0000'),
+            "generic.heading"   :('generic.heading',    '#000080'), # bold
+            "generic.inserted"  :('generic.inserted',   '#00A000'),
+            "generic.output"    :('generic.output',     '#888'),
+            "generic.prompt"    :('generic.prompt',     '#000080'), # bold
+            "generic.strong"    :('generic.strong',     '#000080'), # bold
+            "generic.subheading":('generic.subheading', '#800080'), # bold
+            "generic.traceback" :('generic.traceback',  '#04D'),
+            "keyword"           :('keyword',            '#008000'), # bold
+            "keyword.pseudo"    :('keyword.pseudo',     '#008000'), # nobold
+            "keyword.type"      :('keyword.type',       '#B00040'),
+            "name.pygments"     :('name.pygements',     'white'),
+                # A hack: getLegacyFormat returns name.pygments instead of name.
+            "name.attribute"    :('name.attribute',     '#7D9029'), # bold
+            "name.builtin"      :('name.builtin',       '#008000'),
+            "name.class"        :('name.class',         '#0000FF'), # bold
+            "name.constant"     :('name.constant',      '#880000'),
+            "name.decorator"    :('name.decorator',     '#AA22FF'),
+            "name.entity"       :('name.entity',        '#999999'), # bold
+            "name.exception"    :('name.exception',     '#D2413A'), # bold
+            "name.function"     :('name.function',      '#0000FF'),
+            "name.label"        :('name.label',         '#A0A000'),
+            "name.namespace"    :('name.namespace',     '#0000FF'), # bold
+            "name.tag"          :('name.tag',           '#008000'), # bold
+            "name.variable"     :('name.variable',      '#19177C'),
+            "number"            :('number',             '#666666'),
+            # "operator"          :('operator',           '#666666'),
+            "operator.word"     :('operator.Word',      '#AA22FF'), # bold
+            "string"            :('string',             '#BA2121'),
+            "string.doc"        :('string.doc',         '#BA2121'), # italic
+            "string.escape"     :('string.escape',      '#BB6622'), # bold
+            "string.interpol"   :('string.interpol',    '#BB6688'), # bold
+            "string.other"      :('string.other',       '#008000'),
+            "string.regex"      :('string.regex',       '#BB6688'),
+            "string.symbol"     :('string.symbol',      '#19177C'),
+            'xt'                :('xt',                 '#bbbbbb'),
+            "whitespace"        :('whitespace',         '#bbbbbb'),
+            #
             # jEdit tags.
             # tag name  :( option name,     default color),
             'comment1'  :('comment1_color', 'red'),
@@ -418,53 +453,84 @@ class BaseJEditColorizer (BaseColorizer):
     def defineDefaultFontDict (self):
 
         self.default_font_dict = {
-
+            #
             # Used in Leo rules...
-
-                # tag name      : option name
-                'blank'         :'show_invisibles_space_font', # 2011/10/24.
-                'docpart'       :'doc_part_font',
-                'leokeyword'    :'leo_keyword_font',
-                'link'          :'section_name_font',
-                'name'          :'undefined_section_name_font',
-                'namebrackets'  :'section_name_brackets_font',
-                'tab'           : 'show_invisibles_tab_font', # 2011/10/24.
-                'url'           : 'url_font',
-
-            # Used by old colorizer.
-
-                # 'bracketRange'   :'bracketRange_font', # Forth.
-                # 'comment'       :'comment_font',
-                # 'cwebName'      :'cweb_section_name_font',
-                # 'keyword'       :'keyword_font',
-                # 'latexBackground':'latex_background_font',
-                # 'pp'            :'directive_font',
-                # 'string'        :'string_font',
-
-             # jEdit tags.
-
-                 # tag name     : option name
-                'comment1'      :'comment1_font',
-                'comment2'      :'comment2_font',
-                'comment3'      :'comment3_font',
-                'comment4'      :'comment4_font',
-                #'default'       :'default_font',
-                'function'      :'function_font',
-                'keyword1'      :'keyword1_font',
-                'keyword2'      :'keyword2_font',
-                'keyword3'      :'keyword3_font',
-                'keyword4'      :'keyword4_font',
-                'keyword5'      :'keyword5_font',
-                'label'         :'label_font',
-                'literal1'      :'literal1_font',
-                'literal2'      :'literal2_font',
-                'literal3'      :'literal3_font',
-                'literal4'      :'literal4_font',
-                'markup'        :'markup_font',
-                # 'nocolor' This tag is used, but never generates code.
-                'null'          :'null_font',
-                'operator'      :'operator_font',
-                'trailing_whitespace' :'trailing_whitespace_font',
+            # tag name      : option name
+            'blank'         :'show_invisibles_space_font', # 2011/10/24.
+            'docpart'       :'doc_part_font',
+            'leokeyword'    :'leo_keyword_font',
+            'link'          :'section_name_font',
+            'name'          :'undefined_section_name_font',
+            'namebrackets'  :'section_name_brackets_font',
+            'tab'           :'show_invisibles_tab_font', # 2011/10/24.
+            'url'           :'url_font',
+            #
+            # Pygments tags (lower case)...
+            # tag name          : option name
+            "comment"           :'comment1_font',
+            "comment.preproc"   :'comment2_font',
+            "error"             :'null_font',
+            "generic.deleted"   :'literal4_font',
+            "generic.emph"      :'literal4_font',
+            "generic.error"     :'literal4_font',
+            "generic.heading"   :'literal4_font',
+            "generic.inserted"  :'literal4_font',
+            "generic.output"    :'literal4_font',
+            "generic.prompt"    :'literal4_font',
+            "generic.strong"    :'literal4_font',
+            "generic.subheading":'literal4_font',
+            "generic.traceback" :'literal4_font',
+            "keyword"           :'keyword1_font',
+            "keyword.pseudo"    :'keyword2_font',
+            "keyword.type"      :'keyword3_font',
+            "name.attribute"    :'null_font',
+            "name.builtin"      :'null_font',
+            "name.class"        :'null_font',
+            "name.constant"     :'null_font',
+            "name.decorator"    :'null_font',
+            "name.entity"       :'null_font',
+            "name.exception"    :'null_font',
+            "name.function"     :'null_font',
+            "name.label"        :'null_font',
+            "name.namespace"    :'null_font',
+            "name.tag"          :'null_font',
+            "name.variable"     :'null_font',
+            "number"            :'null_font',
+            "operator"          :'operator_font',
+            "operator.word"     :'keyword4_font',
+            "string"            :'literal1_font',
+            "string.doc"        :'literal1_font',
+            "string.escape"     :'literal1_font',
+            "string.interpol"   :'literal1_font',
+            "string.other"      :'literal1_font',
+            "string.regex"      :'literal1_font',
+            "string.symbol"     :'literal1_font',
+            'xt'                :'text_font',
+            "whitespace"        :'text_font',
+            #
+            # jEdit tags.
+            # tag name     : option name
+            'comment1'      :'comment1_font',
+            'comment2'      :'comment2_font',
+            'comment3'      :'comment3_font',
+            'comment4'      :'comment4_font',
+            #'default'       :'default_font',
+            'function'      :'function_font',
+            'keyword1'      :'keyword1_font',
+            'keyword2'      :'keyword2_font',
+            'keyword3'      :'keyword3_font',
+            'keyword4'      :'keyword4_font',
+            'keyword5'      :'keyword5_font',
+            'label'         :'label_font',
+            'literal1'      :'literal1_font',
+            'literal2'      :'literal2_font',
+            'literal3'      :'literal3_font',
+            'literal4'      :'literal4_font',
+            'markup'        :'markup_font',
+            # 'nocolor' This tag is used, but never generates code.
+            'null'          :'null_font',
+            'operator'      :'operator_font',
+            'trailing_whitespace' :'trailing_whitespace_font',
         }
     #@+node:ekr.20110605121601.18573: *3* bjc.defineLeoKeywordsDict
     def defineLeoKeywordsDict(self):
@@ -754,6 +820,7 @@ class BaseJEditColorizer (BaseColorizer):
             return
         wrapper = self.wrapper # A QTextEditWrapper
         tag = tag.lower() # 2011/10/28
+        ### g.trace(tag, repr(s[i:j]))
         # A hack to allow continuation dots on any tag.
         dots = tag.startswith('dots')
         if dots:
@@ -2231,26 +2298,21 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+node:ekr.20190324063349.1: *3* pyg_c.format getters
     def getLegacyDefaultFormat(self):
         return None
+        
+    ### traced_dict = {}
 
     def getLegacyFormat(self, token, text):
         '''Return a jEdit tag for the given pygments token.'''
-        r = repr(token).lower()# .lstrip('token.')
-        for kind in ('comment', 'keyword', 'literal',):
-            if kind in r:
-                return kind + '1'
-        if 'name' in r:
-            # g.trace(r, repr(text))
-            return '' # 'keyword2'
-        for kind in ('operator',):
-            if kind in r:
-                return kind
-        if 'punctuation' in r:
-            return ''
-        if 'text' in r:
-            # if text.strip(): g.trace(r, repr(text))
-            return ''
-        # g.trace('UNKNOWN:', r, text)
-        return 'literal1'
+        r = repr(token).lstrip('Token.').lstrip('Literal.').lower()
+            # Tables and setTag assume lower-case.
+        if r == 'name':
+            # Avoid a colision with existing Leo tag.
+            r = 'name.pygments'
+        ###
+            # if r not in self.traced_dict:
+                # self.traced_dict [r] = r
+                # g.trace(r)
+        return r
 
     def getPygmentsFormat(self, token, text):
         '''Return a pygments format.'''
