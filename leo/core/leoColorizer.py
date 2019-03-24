@@ -2221,16 +2221,27 @@ class PygmentsColorizer(BaseColorizer):
     def getLegacyDefaultFormat(self):
         return None
 
-    def getLegacyFormat(self, token):
+    def getLegacyFormat(self, token, text):
         '''Return a jEdit tag for the given pygments token.'''
-        r = repr(token).lower()
-        g.trace(r)
-        if 'keyword' in r:
-            return 'keyword1'
-        else:
-            return 'literal1'
+        r = repr(token).lower()# .lstrip('token.')
+        for kind in ('comment', 'keyword', 'literal',):
+            if kind in r:
+                return kind + '1'
+        if 'name' in r:
+            # g.trace(r, repr(text))
+            return '' # 'keyword2'
+        for kind in ('operator',):
+            if kind in r:
+                return kind
+        if 'punctuation' in r:
+            return ''
+        if 'text' in r:
+            # if text.strip(): g.trace(r, repr(text))
+            return ''
+        # g.trace('UNKNOWN:', r, text)
+        return 'literal1'
 
-    def getPygmentsFormat(self, token):
+    def getPygmentsFormat(self, token, text):
         '''Return a pygments format.'''
         format = self.highlighter._formats.get(token)
         if not format:
@@ -2300,7 +2311,10 @@ class PygmentsColorizer(BaseColorizer):
         for token, text in lexer.get_tokens(s):
             length = len(text)
             # print('%5s %25r %r' % (self.color_enabled, repr(token).lstrip('Token.'), text))
-            format = self.getFormat(token) if self.color_enabled else self.getDefaultFormat()
+            if self.color_enabled:
+                format = self.getFormat(token, text)
+            else:
+                format = self.getDefaultFormat()
             self.setFormat(index, length, format, s)
             index += length
         #
