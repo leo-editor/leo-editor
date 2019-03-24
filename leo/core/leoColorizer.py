@@ -384,6 +384,7 @@ class BaseJEditColorizer (BaseColorizer):
             # tag name          :( option name,         default color),
             "comment"           :('comment',            '#408080'), # italic
             "comment.preproc"   :('comment.preproc',    '#BC7A00'), # noitalic
+            "comment.single"    :('comment.single',     '#BC7A00'), # italic
             "error"             :('error',              "#FF0000"), # border
             "generic.deleted"   :('generic.deleted',    '#A00000'),
             "generic.emph"      :('generic.emph',       '#000080'), # italic
@@ -421,6 +422,7 @@ class BaseJEditColorizer (BaseColorizer):
             "string.interpol"   :('string.interpol',    '#BB6688'), # bold
             "string.other"      :('string.other',       '#008000'),
             "string.regex"      :('string.regex',       '#BB6688'),
+            "string.single"     :('string.regex',       '#BA2121'),
             "string.symbol"     :('string.symbol',      '#19177C'),
             'xt'                :('xt',                 '#bbbbbb'),
             "whitespace"        :('whitespace',         '#bbbbbb'),
@@ -469,6 +471,7 @@ class BaseJEditColorizer (BaseColorizer):
             # tag name          : option name
             "comment"           :'comment1_font',
             "comment.preproc"   :'comment2_font',
+            "comment.single"    :'comment1_font',
             "error"             :'null_font',
             "generic.deleted"   :'literal4_font',
             "generic.emph"      :'literal4_font',
@@ -504,6 +507,7 @@ class BaseJEditColorizer (BaseColorizer):
             "string.interpol"   :'literal1_font',
             "string.other"      :'literal1_font',
             "string.regex"      :'literal1_font',
+            "string.single"     :'literal1_font',
             "string.symbol"     :'literal1_font',
             'xt'                :'text_font',
             "whitespace"        :'text_font',
@@ -2299,7 +2303,7 @@ class PygmentsColorizer(BaseJEditColorizer):
     def getLegacyDefaultFormat(self):
         return None
         
-    ### traced_dict = {}
+    traced_dict = {}
 
     def getLegacyFormat(self, token, text):
         '''Return a jEdit tag for the given pygments token.'''
@@ -2308,10 +2312,10 @@ class PygmentsColorizer(BaseJEditColorizer):
         if r == 'name':
             # Avoid a colision with existing Leo tag.
             r = 'name.pygments'
-        ###
-            # if r not in self.traced_dict:
-                # self.traced_dict [r] = r
-                # g.trace(r)
+        if 1:
+            if r not in self.traced_dict:
+                self.traced_dict [r] = r
+                g.trace(r)
         return r
 
     def getPygmentsFormat(self, token, text):
