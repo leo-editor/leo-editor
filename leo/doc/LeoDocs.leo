@@ -3514,12 +3514,17 @@ The following deserve special thanks:
 - e inspired @button nodes, a truly brilliant idea.
 - The late Bob Fitzwater kept me focused on design. Oh, how I wish he could see today's Leo.
 - Jonathan M. Gilligan showed how to put the Leo icon in Leo's windows.
+- The Jupyter development team taught me how to support pygments colorizing.
+- Almar Klein wrote pyzo, yoton and flexx.
+  Flexx is the basis of LeoWapp (--gui=browser).
+  Leo will (soon) use various excellent features of pyzo.
 - Donald Knuth invented the CWEB language and literate programming.
 - LeoUser (B.H.) contributed numerous plugins, including a prototype for Leo's minibuffer, and wrote jyLeo: Leo in Jython.
 - The late Bernhard Mulder invented the fundamental @shadow algorithm, a stroke of genius. Bernhard also inspired Leo's generators and position class. The one-node world could not have happened without Bernhard.
 - Joe Orr created tutorials and XSLT stylesheets for Leo: http://www.jserv.com/jk_orr/xml/leo.htm.
 - John K. Ousterhout created tcl/Tk, used in early versions of Leo.
-- Виталије Милошевић, (Vitalije Milosevic) rewrote Leo's read code, thereby allowing Leo to do without file caching.
+- Виталије Милошевић, (Vitalije Milosevic) rewrote Leo's read code,
+  thereby allowing Leo to do without file caching.
 - Tsuchi Noko created transparent icons.
 - Neal Norwitz wrote PyChecker.
 - Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
@@ -3530,7 +3535,8 @@ The following deserve special thanks:
 - Steven P. Schaefer pointed out security problems.
 - Gil Shwartz helped with unicode support.
 - Phil Straus has been a great friend and constant support.
-- Kent Tenney lobbies constantly to make Leo easier to use and understand. His comment opened the door to the one-node world.
+- Kent Tenney lobbies constantly to make Leo easier to use and understand.
+  His comment opened the door to the one-node world.
 - Guido van Rossum created Python.
 - Dave Winer created MORE.
 - Ville M. Vainio made invaluable contributions, including the one-node world,
