@@ -78,7 +78,7 @@ class BaseColorizer(object):
         # '''May be over-ridden in subclasses.'''
         # self.enabled = True
         # self.language = 'python'
-    #@+node:ekr.20170127142001.1: *3* bjc.updateSyntaxColorer & helpers
+    #@+node:ekr.20170127142001.1: *3* bc.updateSyntaxColorer & helpers
     # Note: these are used by unit tests.
 
     at_language_pattern = re.compile(r'^@language\s+([\w-]+)', re.MULTILINE)
@@ -264,14 +264,41 @@ class BaseJEditColorizer (BaseColorizer):
         else:
             # To do: configure the QScintilla widget.
             pass
-    #@+node:ekr.20110605121601.18578: *3* bjc.configure_tags
+    #@+node:ekr.20110605121601.18578: *3* bjc.configure_tags & helpers
     def configure_tags(self):
         '''Configure all tags.'''
-        c = self.c
         wrapper = self.wrapper
-        isQt = g.app.gui.guiName().startswith('qt')
         if wrapper and hasattr(wrapper, 'start_tag_configure'):
             wrapper.start_tag_configure()
+        self.configure_fonts()
+        self.configure_colors()
+        self.configure_variable_tags()
+        if wrapper and hasattr(wrapper, 'end_tag_configure'):
+            wrapper.end_tag_configure()
+    #@+node:ekr.20190324172632.1: *4* bjc.configure_colors
+    def configure_colors(self):
+        '''Configure all colors in the default colors dict.'''
+        c, wrapper = self.c, self.wrapper
+        getColor = c.config.getColor
+        for key in sorted(self.default_colors_dict.keys()):
+            option_name, default_color = self.default_colors_dict[key]
+            color = (
+                getColor('%s_%s' % (self.language, option_name)) or
+                getColor(option_name) or default_color)
+            # Must use foreground, not fg.
+            try:
+                wrapper.tag_configure(key, foreground=color)
+            except Exception: # Recover after a user error.
+                g.es_exception()
+                wrapper.tag_configure(key, foreground=default_color)
+    #@+node:ekr.20190324172242.1: *4* bjc.configure_fonts
+    def configure_fonts(self):
+        '''Configure all fonts in the default fonts dict.'''
+        trace = True and not g.unitTesting ###
+        c = self.c
+        isQt = g.app.gui.guiName().startswith('qt')
+        wrapper = self.wrapper
+        #
         # Get the default body font.
         defaultBodyfont = self.fonts.get('default_body_font')
         if not defaultBodyfont:
@@ -280,15 +307,17 @@ class BaseJEditColorizer (BaseColorizer):
                 "body_text_font_slant", "body_text_font_weight",
                 c.config.defaultBodyFontSize)
             self.fonts['default_body_font'] = defaultBodyfont
-        # Configure fonts.
-        keys = list(self.default_font_dict.keys()); keys.sort()
-        for key in keys:
+        #
+        # Set all fonts.
+        for key in sorted(self.default_font_dict.keys()):
             option_name = self.default_font_dict[key]
+            #
             # First, look for the language-specific setting, then the general setting.
             for name in ('%s_%s' % (self.language, option_name), (option_name)):
                 font = self.fonts.get(name)
                 if font:
                     wrapper.tag_configure(key, font=font)
+                    if trace: g.trace(key, font)
                     break
                 else:
                     family = c.config.get(name + '_family', 'family')
@@ -304,45 +333,28 @@ class BaseJEditColorizer (BaseColorizer):
                         # Save a reference to the font so it 'sticks'.
                         self.fonts[key] = font
                         wrapper.tag_configure(key, font=font)
+                        if trace: g.trace(key, font)
                         break
-            else: # Neither the general setting nor the language-specific setting exists.
+            else:
+                # Neither the general setting nor the language-specific setting exists.
                 if list(self.fonts.keys()): # Restore the default font.
                     self.fonts[key] = font # Essential
                     wrapper.tag_configure(key, font=defaultBodyfont)
             if isQt and key == 'url' and font:
                 font.setUnderline(True)
-        keys = sorted(self.default_colors_dict.keys())
-        for name in keys:
-            option_name, default_color = self.default_colors_dict[name]
-            color = (
-                c.config.getColor('%s_%s' % (self.language, option_name)) or
-                c.config.getColor(option_name) or
-                default_color)
-            # Must use foreground, not fg.
-            try:
-                wrapper.tag_configure(name, foreground=color)
-            except Exception: # Recover after a user error.
-                g.es_exception()
-                wrapper.tag_configure(name, foreground=default_color)
-        # underline=var doesn't seem to work.
-        if 0: # self.use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
-            wrapper.tag_configure("link", underline=1) # defined
-            wrapper.tag_configure("name", underline=0) # undefined
-        else:
-            wrapper.tag_configure("link", underline=0)
-            if self.underline_undefined:
-                wrapper.tag_configure("name", underline=1)
-            else:
-                wrapper.tag_configure("name", underline=0)
-        self.configure_variable_tags()
-        try:
-            wrapper.end_tag_configure()
-        except AttributeError:
-            pass
-    #@+node:ekr.20110605121601.18579: *3* bjc.configure_variable_tags
+    #@+node:ekr.20110605121601.18579: *4* bjc.configure_variable_tags
     def configure_variable_tags(self):
         c = self.c
         wrapper = self.wrapper
+        wrapper.tag_configure("link", underline=0)
+        use_pygments = pygments and c.config.getBool('use-pygments', default=False)
+        name = 'name.other' if use_pygments else 'name'
+        wrapper.tag_configure(name, underline=1 if self.underline_undefined else 0)
+        ###
+            # if self.underline_undefined:
+                # wrapper.tag_configure("name", underline=1)
+            # else:
+                # wrapper.tag_configure("name", underline=0)
         for name, option_name, default_color in (
             # ("blank", "show_invisibles_space_background_color", "Gray90"),
             # ("tab", "show_invisibles_tab_background_color", "Gray80"),
@@ -357,6 +369,7 @@ class BaseJEditColorizer (BaseColorizer):
                 wrapper.tag_configure(name, background=color)
             except Exception: # A user error.
                 wrapper.tag_configure(name, background=default_color)
+                g.es_exception() ###
         # Special case:
         if not self.showInvisibles:
             wrapper.tag_configure("elide", elide="1")
@@ -411,6 +424,7 @@ class BaseJEditColorizer (BaseColorizer):
             "name.function"     :('name.function',      '#0000FF'),
             "name.label"        :('name.label',         '#A0A000'),
             "name.namespace"    :('name.namespace',     '#0000FF'), # bold
+            "name.other"        :('name.other',         'red'),
             "name.tag"          :('name.tag',           '#008000'), # bold
             "name.variable"     :('name.variable',      '#19177C'),
             "number"            :('number',             '#666666'),
@@ -823,15 +837,18 @@ class BaseJEditColorizer (BaseColorizer):
             return
         wrapper = self.wrapper # A QTextEditWrapper
         tag = tag.lower() if tag else ''
-        ### g.trace(tag, repr(s[i:j]))
         # A hack to allow continuation dots on any tag.
         dots = tag.startswith('dots')
         if dots:
             tag = tag[len('dots'):]
         colorName = wrapper.configDict.get(tag)
-        # Munge the color name.
+        ###
+            # if tag.startswith('name'):
+                # underline = wrapper.configUnderlineDict.get(tag)
+                # g.trace(repr(tag), underline, colorName, repr(s[i:j]))
         if not colorName:
             return
+        # Munge the color name.
         if colorName[-1].isdigit() and colorName[0] != '#':
             colorName = colorName[: -1]
         # Get the actual color.

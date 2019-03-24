@@ -2151,6 +2151,7 @@
 <v t="ekr.20060826152759"><vh>@color markup-color = blue</vh></v>
 <v t="ekr.20060713101831"><vh>@color operator-color = None</vh></v>
 </v>
+<v t="ekr.20190324140542.1"><vh>Colors for pygments tags</vh></v>
 </v>
 <v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
 <v t="ekr.20170819113555.1"><vh>patch</vh>
@@ -2307,6 +2308,8 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20041119034357.70"></v>
+<v t="ekr.20190324140542.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11900,6 +11903,7 @@ QTextEdit#richTextEdit[vim_state~="vim_visual"] {
 <t tx="ekr.20190323043928.1"># leonine is recommended. Install it from leo-editor-contrib.
 </t>
 <t tx="ekr.20190324042831.1"></t>
+<t tx="ekr.20190324140542.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
