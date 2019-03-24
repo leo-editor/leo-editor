@@ -73,9 +73,109 @@ class BaseColorizer(object):
     def init(self, p):
         '''May be over-ridden in subclasses.'''
         pass
-    #@+node:ekr.20110605121601.18571: *3* bc.init & helpers
-    # Init code used by both JEditColorizer and PygmentsColorizer.
-    #@+node:ekr.20110605121601.18576: *4* bc.addImportedRules
+    #@+node:ekr.20190324120640.1: *3* bc.scanLanguageDirectives
+    # def scanLanguageDirectives(self, p):
+        # '''May be over-ridden in subclasses.'''
+        # self.enabled = True
+        # self.language = 'python'
+    #@+node:ekr.20170127142001.1: *3* bjc.updateSyntaxColorer & helpers
+    # Note: these are used by unit tests.
+
+    at_language_pattern = re.compile(r'^@language\s+([\w-]+)', re.MULTILINE)
+
+    def updateSyntaxColorer(self, p):
+        '''
+        Scan for color directives in p and its ancestors.
+        Return True unless an coloring is unambiguously disabled.
+        Called from Leo's node-selection logic and from the colorizer.
+        '''
+        if p: # This guard is required.
+            try:
+                self.enabled = self.useSyntaxColoring(p)
+                self.language = self.scanLanguageDirectives(p)
+            except Exception:
+                g.es_print('unexpected exception in updateSyntaxColorer')
+                g.es_exception()
+    #@+node:ekr.20170127142001.2: *4* bjc.scanLanguageDirectives & helpers
+    def scanLanguageDirectives(self, p, use_default=True):
+        '''Return language based on the directives in p's ancestors.'''
+        c = self.c
+        root = p.copy()
+        # Look for the first @language directive only in p itself.
+        language = self.findFirstValidAtLanguageDirective(p)
+        if language:
+            return language
+        for p in root.parents():
+            languages = self.findAllValidLanguageDirectives(p)
+            if len(languages) == 1: # An unambiguous language
+                language = languages[0]
+                return language
+        #  Get the language from the nearest ancestor @<file> node.
+        language = g.getLanguageFromAncestorAtFileNode(root)
+        if not language and use_default:
+            language = c.target_language
+        return language
+
+    #@+node:ekr.20170201150505.1: *5* bjc.findAllValidLanguageDirectives
+    def findAllValidLanguageDirectives(self, p):
+        '''Return list of all valid @language directives in p.b'''
+        languages = set()
+        for m in self.at_language_pattern.finditer(p.b):
+            language = m.group(1)
+            if self.isValidLanguage(language):
+                languages.add(language)
+        return list(sorted(languages))
+    #@+node:ekr.20170127142001.5: *5* bjc.findFirstAtLanguageDirective
+    def findFirstValidAtLanguageDirective(self, p):
+        '''Return the first *valid* @language directive in p.b.'''
+        for m in self.at_language_pattern.finditer(p.b):
+            language = m.group(1)
+            if self.isValidLanguage(language):
+                return language
+        return None
+
+    #@+node:ekr.20170127142001.6: *5* bjc.isValidLanguage
+    def isValidLanguage(self, language):
+        '''True if language exists in leo/modes.'''
+        fn = g.os_path_join(g.app.loadDir, '..', 'modes', '%s.py' % (language))
+        return g.os_path_exists(fn)
+    #@+node:ekr.20170127142001.7: *4* bjc.useSyntaxColoring & helper
+    def useSyntaxColoring(self, p):
+        '''True if p's parents enable coloring in p.'''
+        # Special cases for the selected node.
+        d = self.findColorDirectives(p)
+        if 'killcolor' in d: return False
+        if 'nocolor-node' in d: return False
+        # Now look at the parents.
+        for p in p.parents():
+            d = self.findColorDirectives(p)
+            # @killcolor anywhere disables coloring.
+            if 'killcolor' in d: return False
+            # unambiguous @color enables coloring.
+            elif 'color' in d and 'nocolor' not in d: return True
+            # Unambiguous @nocolor disables coloring.
+            elif 'nocolor' in d and 'color' not in d: return False
+        return True
+    #@+node:ekr.20170127142001.8: *5* bjc.findColorDirectives
+    color_directives_pat = re.compile(
+        # Order is important: put longest matches first.
+        r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
+        , re.MULTILINE)
+
+    def findColorDirectives(self, p):
+        '''Return a dict with each color directive in p.b, without the leading '@'.'''
+        d = {}
+        for m in self.color_directives_pat.finditer(p.b):
+            word = m.group(0)[1:]
+            d[word] = word
+        return d
+    #@-others
+#@+node:ekr.20190324115354.1: ** class BaseJEditColorizer (BaseColorizer)
+class BaseJEditColorizer (BaseColorizer):
+    '''A class containing common JEdit tags machinery.'''
+    # No need for a ctor.
+    #@+others
+    #@+node:ekr.20110605121601.18576: *3* bjc.addImportedRules
     def addImportedRules(self, mode, rulesDict, rulesetName):
         '''Append any imported rules at the end of the rulesets specified in mode.importDict'''
         if self.importedRulesets.get(rulesetName):
@@ -98,7 +198,7 @@ class BaseColorizer(object):
                             aList.extend(rules)
                             self.rulesDict[key] = aList
             self.initModeFromBunch(savedBunch)
-    #@+node:ekr.20110605121601.18577: *4* bc.addLeoRules
+    #@+node:ekr.20110605121601.18577: *3* bjc.addLeoRules
     def addLeoRules(self, theDict):
         '''Put Leo-specific rules to theList.'''
         # pylint: disable=no-member
@@ -147,7 +247,7 @@ class BaseColorizer(object):
                 else:
                     theList.append(rule)
                 theDict[ch] = theList
-    #@+node:ekr.20111024091133.16702: *4* bc.configure_hard_tab_width
+    #@+node:ekr.20111024091133.16702: *3* bjc.configure_hard_tab_width
     def configure_hard_tab_width(self):
         '''Set the width of a hard tab.
         The stated default is 40, but apparently it must be set explicitly.
@@ -164,7 +264,7 @@ class BaseColorizer(object):
         else:
             # To do: configure the QScintilla widget.
             pass
-    #@+node:ekr.20110605121601.18578: *4* bc.configure_tags
+    #@+node:ekr.20110605121601.18578: *3* bjc.configure_tags
     def configure_tags(self):
         '''Configure all tags.'''
         c = self.c
@@ -239,7 +339,7 @@ class BaseColorizer(object):
             wrapper.end_tag_configure()
         except AttributeError:
             pass
-    #@+node:ekr.20110605121601.18579: *4* bc.configure_variable_tags
+    #@+node:ekr.20110605121601.18579: *3* bjc.configure_variable_tags
     def configure_variable_tags(self):
         c = self.c
         wrapper = self.wrapper
@@ -260,7 +360,7 @@ class BaseColorizer(object):
         # Special case:
         if not self.showInvisibles:
             wrapper.tag_configure("elide", elide="1")
-    #@+node:ekr.20110605121601.18574: *4* bc.defineDefaultColorsDict
+    #@+node:ekr.20110605121601.18574: *3* bjc.defineDefaultColorsDict
     #@@nobeautify
 
     def defineDefaultColorsDict (self):
@@ -312,7 +412,7 @@ class BaseColorizer(object):
             'operator'  :('operator_color', 'black'), # 2014/09/17
             'trailing_whitespace': ('trailing_whitespace_color', '#808080'),
         }
-    #@+node:ekr.20110605121601.18575: *4* bc.defineDefaultFontDict
+    #@+node:ekr.20110605121601.18575: *3* bjc.defineDefaultFontDict
     #@@nobeautify
 
     def defineDefaultFontDict (self):
@@ -366,18 +466,18 @@ class BaseColorizer(object):
                 'operator'      :'operator_font',
                 'trailing_whitespace' :'trailing_whitespace_font',
         }
-    #@+node:ekr.20110605121601.18573: *4* bc.defineLeoKeywordsDict
+    #@+node:ekr.20110605121601.18573: *3* bjc.defineLeoKeywordsDict
     def defineLeoKeywordsDict(self):
         self.leoKeywordsDict = {}
         for key in g.globalDirectiveList:
             self.leoKeywordsDict[key] = 'leokeyword'
-    #@+node:ekr.20170514054524.1: *4* bc.getFontFromParams
+    #@+node:ekr.20170514054524.1: *3* bjc.getFontFromParams
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         return None
 
     # def setFontFromConfig(self):
         # pass
-    #@+node:ekr.20110605121601.18581: *4* bc.init_mode & helpers
+    #@+node:ekr.20110605121601.18581: *3* bjc.init_mode & helpers
     def init_mode(self, name):
         '''Name may be a language name or a delegate name.'''
         if not name:
@@ -400,7 +500,7 @@ class BaseColorizer(object):
             else:
                 mode = None
             return self.init_mode_from_module(name, mode)
-    #@+node:btheado.20131124162237.16303: *5* bc.init_mode_from_module
+    #@+node:btheado.20131124162237.16303: *4* bjc.init_mode_from_module
     def init_mode_from_module(self, name, mode):
         '''Name may be a language name or a delegate name.
            Mode is a python module or class containing all
@@ -462,7 +562,7 @@ class BaseColorizer(object):
         else:
             self.language = language # 2017/01/31
         return True
-    #@+node:ekr.20110605121601.18582: *5* bc.nameToRulesetName
+    #@+node:ekr.20110605121601.18582: *4* bjc.nameToRulesetName
     def nameToRulesetName(self, name):
         '''
         Compute language and rulesetName from name, which is either a language
@@ -481,7 +581,7 @@ class BaseColorizer(object):
             delegate = name[i + 2:]
             rulesetName = self.munge('%s_%s' % (language, delegate))
         return language, rulesetName
-    #@+node:ekr.20110605121601.18583: *5* bc.setKeywords
+    #@+node:ekr.20110605121601.18583: *4* bjc.setKeywords
     def setKeywords(self):
         '''Initialize the keywords for the present language.
 
@@ -511,7 +611,7 @@ class BaseColorizer(object):
         self.word_chars = {}
         for z in chars:
             self.word_chars[z] = z
-    #@+node:ekr.20110605121601.18584: *5* bc.setModeAttributes
+    #@+node:ekr.20110605121601.18584: *4* bjc.setModeAttributes
     def setModeAttributes(self):
         '''Set the ivars from self.attributesDict,
         converting 'true'/'false' to True and False.'''
@@ -529,7 +629,7 @@ class BaseColorizer(object):
             if val in ('true', 'True'): val = True
             if val in ('false', 'False'): val = False
             setattr(self, key, val)
-    #@+node:ekr.20110605121601.18585: *5* bc.initModeFromBunch
+    #@+node:ekr.20110605121601.18585: *4* bjc.initModeFromBunch
     def initModeFromBunch(self, bunch):
         self.modeBunch = bunch
         self.attributesDict = bunch.attributesDict
@@ -542,7 +642,7 @@ class BaseColorizer(object):
         self.rulesDict = bunch.rulesDict
         self.rulesetName = bunch.rulesetName
         self.word_chars = bunch.word_chars # 2011/05/21
-    #@+node:ekr.20110605121601.18586: *5* bc.updateDelimsTables
+    #@+node:ekr.20110605121601.18586: *4* bjc.updateDelimsTables
     def updateDelimsTables(self):
         '''Update g.app.language_delims_dict if no entry for the language exists.'''
         d = self.properties
@@ -561,12 +661,7 @@ class BaseColorizer(object):
             d = g.app.language_delims_dict
             if not d.get(self.language):
                 d[self.language] = delims
-    #@+node:ekr.20110605121601.18587: *4* bc.munge
-    def munge(self, s):
-        '''Munge a mode name so that it is a valid python id.'''
-        valid = string.ascii_letters + string.digits + '_'
-        return ''.join([ch.lower() if ch in valid else '_' for ch in s])
-    #@+node:ekr.20190324050727.1: *3* bc.init_style_ivars
+    #@+node:ekr.20190324050727.1: *3* bjc.init_style_ivars
     def init_style_ivars(self):
         '''Init Style data common to JEdit and Pygments colorizers.'''
         # init() properly sets these for each language.
@@ -626,7 +721,12 @@ class BaseColorizer(object):
             'markup', 'operator',
             'trailing_whitespace',
         ]
-    #@+node:ekr.20171114041307.1: *3* bc.reloadSettings
+    #@+node:ekr.20110605121601.18587: *3* bjc.munge
+    def munge(self, s):
+        '''Munge a mode name so that it is a valid python id.'''
+        valid = string.ascii_letters + string.digits + '_'
+        return ''.join([ch.lower() if ch in valid else '_' for ch in s])
+    #@+node:ekr.20171114041307.1: *3* bjc.reloadSettings
     def reloadSettings(self):
         c = self.c
         self.showInvisibles = c.config.getBool("show-invisibles-by-default")
@@ -646,7 +746,7 @@ class BaseColorizer(object):
             "body_text_font_slant", "body_text_font_weight",
             c.config.defaultBodyFontSize)
         self.color_tags_list = []
-    #@+node:ekr.20110605121601.18641: *3* bc.setTag
+    #@+node:ekr.20110605121601.18641: *3* bjc.setTag
     def setTag(self, tag, s, i, j):
         '''Set the tag in the highlighter.'''
         self.n_setTag += 1
@@ -694,99 +794,10 @@ class BaseColorizer(object):
             format.setUnderlineStyle(format.NoUnderline)
         self.tagCount += 1
         self.highlighter.setFormat(i, j - i, format)
-    #@+node:ekr.20170127142001.1: *3* bc.updateSyntaxColorer & helpers
-    at_language_pattern = re.compile(r'^@language\s+([\w-]+)', re.MULTILINE)
-
-    def updateSyntaxColorer(self, p):
-        '''
-        Scan for color directives in p and its ancestors.
-        Return True unless an coloring is unambiguously disabled.
-        Called from Leo's node-selection logic and from the colorizer.
-        '''
-        if p: # This guard is required.
-            try:
-                self.enabled = self.useSyntaxColoring(p)
-                self.language = self.scanLanguageDirectives(p)
-            except Exception:
-                g.es_print('unexpected exception in updateSyntaxColorer')
-                g.es_exception()
-    #@+node:ekr.20170127142001.2: *4* bc.scanLanguageDirectives & helpers
-    def scanLanguageDirectives(self, p, use_default=True):
-        '''Return language based on the directives in p's ancestors.'''
-        c = self.c
-        root = p.copy()
-        # Look for the first @language directive only in p itself.
-        language = self.findFirstValidAtLanguageDirective(p)
-        if language:
-            return language
-        for p in root.parents():
-            languages = self.findAllValidLanguageDirectives(p)
-            if len(languages) == 1: # An unambiguous language
-                language = languages[0]
-                return language
-        #  Get the language from the nearest ancestor @<file> node.
-        language = g.getLanguageFromAncestorAtFileNode(root)
-        if not language and use_default:
-            language = c.target_language
-        return language
-
-    #@+node:ekr.20170201150505.1: *5* bc.findAllValidLanguageDirectives
-    def findAllValidLanguageDirectives(self, p):
-        '''Return list of all valid @language directives in p.b'''
-        languages = set()
-        for m in self.at_language_pattern.finditer(p.b):
-            language = m.group(1)
-            if self.isValidLanguage(language):
-                languages.add(language)
-        return list(sorted(languages))
-    #@+node:ekr.20170127142001.5: *5* bc.findFirstAtLanguageDirective
-    def findFirstValidAtLanguageDirective(self, p):
-        '''Return the first *valid* @language directive in p.b.'''
-        for m in self.at_language_pattern.finditer(p.b):
-            language = m.group(1)
-            if self.isValidLanguage(language):
-                return language
-        return None
-
-    #@+node:ekr.20170127142001.6: *5* bc.isValidLanguage
-    def isValidLanguage(self, language):
-        '''True if language exists in leo/modes.'''
-        fn = g.os_path_join(g.app.loadDir, '..', 'modes', '%s.py' % (language))
-        return g.os_path_exists(fn)
-    #@+node:ekr.20170127142001.7: *4* bc.useSyntaxColoring & helper
-    def useSyntaxColoring(self, p):
-        '''True if p's parents enable coloring in p.'''
-        # Special cases for the selected node.
-        d = self.findColorDirectives(p)
-        if 'killcolor' in d: return False
-        if 'nocolor-node' in d: return False
-        # Now look at the parents.
-        for p in p.parents():
-            d = self.findColorDirectives(p)
-            # @killcolor anywhere disables coloring.
-            if 'killcolor' in d: return False
-            # unambiguous @color enables coloring.
-            elif 'color' in d and 'nocolor' not in d: return True
-            # Unambiguous @nocolor disables coloring.
-            elif 'nocolor' in d and 'color' not in d: return False
-        return True
-    #@+node:ekr.20170127142001.8: *5* bc.findColorDirectives
-    color_directives_pat = re.compile(
-        # Order is important: put longest matches first.
-        r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
-        , re.MULTILINE)
-
-    def findColorDirectives(self, p):
-        '''Return a dict with each color directive in p.b, without the leading '@'.'''
-        d = {}
-        for m in self.color_directives_pat.finditer(p.b):
-            word = m.group(0)[1:]
-            d[word] = word
-        return d
     #@-others
-#@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseColorizer)
+#@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseJEditColorizer)
 # This is c.frame.body.colorizer
-class JEditColorizer(BaseColorizer):
+class JEditColorizer(BaseJEditColorizer):
     '''
     The JEditColorizer class adapts jEdit pattern matchers for QSyntaxHighlighter.
     For full documentation, see:
@@ -796,7 +807,7 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18572: *3* jedit.__init__ & helpers
     def __init__(self, c, widget, wrapper):
         '''Ctor for JEditColorizer class.'''
-        BaseColorizer.__init__(self, c, widget, wrapper)
+        BaseJEditColorizer.__init__(self, c, widget, wrapper)
         #
         # Create the highlighter. The default is NullObject.
         if isinstance(widget, QtWidgets.QTextEdit):
@@ -2186,8 +2197,8 @@ if Qsci:
             # pylint: disable=no-member
             font = QtGui.QFont("DejaVu Sans Mono", 14)
             lexer.setFont(font)
-#@+node:ekr.20190319151826.1: ** class PygmentsColorizer(BaseColorizer)
-class PygmentsColorizer(BaseColorizer):
+#@+node:ekr.20190319151826.1: ** class PygmentsColorizer(BaseJEditColorizer)
+class PygmentsColorizer(BaseJEditColorizer):
     '''
     This class adapts pygments tokens to QSyntaxHighlighter.
     '''
@@ -2197,7 +2208,7 @@ class PygmentsColorizer(BaseColorizer):
     #@+node:ekr.20190319151826.3: *3* pyg_c.__init__
     def __init__(self, c, widget, wrapper):
         '''Ctor for JEditColorizer class.'''
-        BaseColorizer.__init__(self, c, widget, wrapper)
+        BaseJEditColorizer.__init__(self, c, widget, wrapper)
         #
         # Create the highlighter. The default is NullObject.
         if isinstance(widget, QtWidgets.QTextEdit):
@@ -2250,7 +2261,7 @@ class PygmentsColorizer(BaseColorizer):
     #@+node:ekr.20190324064341.1: *3* pyg_c.format setters
     def setLegacyFormat(self, index, length, format, s):
         '''Call the jEdit style setTag.'''
-        BaseColorizer.setTag(self, format, s, index, index+length)
+        BaseJEditColorizer.setTag(self, format, s, index, index+length)
         
     def setPygmentsFormat(self, index, length, format, s):
         ''' Call the base setTag to set the Qt format.'''
@@ -2448,7 +2459,7 @@ class PygmentsColorizer(BaseColorizer):
     def reloadSettings(self):
         '''Reload the base settings, plus pygments settings.'''
         c = self.c
-        BaseColorizer.reloadSettings(self)
+        BaseJEditColorizer.reloadSettings(self)
         self.use_pygments_styles = c.config.getBool('use-pygments-styles', default=True)
         if self.use_pygments_styles:
             self.getDefaultFormat = QtGui.QTextCharFormat
