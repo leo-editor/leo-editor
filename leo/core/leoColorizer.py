@@ -2447,7 +2447,10 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+node:ekr.20190323045735.1: *4* pyg_c.at_language_callback
     def at_language_callback(self, lexer, match):
         from pygments.token import Name
-        self.language = match.group(1)
+        language = match.group(1)
+        ok = self.init_mode(language)
+        if ok:
+            self.language = language
         yield match.start(), Name.Decorator, match.group(0)
     #@+node:ekr.20190322082533.1: *4* pyg_c.get_lexer
     def get_lexer(self, language):
