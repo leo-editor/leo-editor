@@ -2253,6 +2253,7 @@
 <v t="ekr.20190123075859.1"><vh>#1065: refresh-from-disk</vh></v>
 </v>
 <v t="ekr.20190119070017.1"><vh>5.8.1: Features</vh>
+<v t="ekr.20190325062650.1"><vh>#0568 &amp; #1102: pygments syntax coloring</vh></v>
 <v t="ekr.20190117143942.654"><vh>#0525: Nested @clean</vh></v>
 <v t="ekr.20190117143942.672"><vh>#0672: Leo uses TravisCI</vh></v>
 <v t="ekr.20190117143942.681"><vh>#0915: Leo debugger</vh></v>
@@ -29672,6 +29673,8 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 **The highlights of Leo 5.8.1**
 
 - LeoWapp: Leo in a browser.
+- Optional syntax coloring using pygments.
+  Optional: you may use @color directives instead of pygments styles.
 - Integrated debugger.
 - Nested @clean nodes, useful for LaTex files.
 - A major refactoring of the code that writes external files.
@@ -29823,6 +29826,13 @@ g.execute_shell_commands_with_options inits an environment and then calls g.exec
 <t tx="ekr.20190307095247.1">This is detailed more fully in a scripting miscellany. g.execute_shell_commands executes one or more commands in a separate process using subprocess.popen. Commands *not* preceded by '&amp;' run to completion before the next command is run.
 
 This allows you to run programs in *any* language.  Just invoke the compiler/interpreter using g.execute_shell_commands.</t>
+<t tx="ekr.20190325062650.1">https://github.com/leo-editor/leo-editor/issues/568
+
+https://github.com/leo-editor/leo-editor/issues/1102
+
+New settings:
+
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
