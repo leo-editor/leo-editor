@@ -62,6 +62,7 @@
 <v t="ekr.20111026083456.16490"><vh>Local commands</vh>
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
 </v>
+<v t="ekr.20190324182659.1"><vh>script: make color nodes</vh></v>
 </v>
 <v t="ekr.20041119035137"><vh>About this file, leoSettings.leo</vh>
 <v t="ekr.20041122163623"><vh>About settings names</vh></v>
@@ -100,9 +101,6 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20190119061613.1"><vh>Recently deleted settings</vh>
-<v t="ekr.20041119041747.1"><vh>@@string trailing-body-newlines = one</vh></v>
-</v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
@@ -2330,10 +2328,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.70"></v>
-<v t="ekr.20190324183149.1"><vh>leonine styles</vh></v>
-<v t="ekr.20190324140542.1"></v>
-<v t="ekr.20190324182659.1"><vh>script: make color nodes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2504,12 +2498,18 @@ always uses this ratio when opening a file that is being split vertically.</t>
 
 These are the settings used by Leo's Qt syntax colorer.
 
-Syntax colors may be any valid Tk color name or color value.
+Syntax colors may be any color value or any color name in Leo's color database in leoColor.py.
 
-For example, "00aa00" is the dark green used by IDLE.
+Examples:
 
-See http://www.tcl.tk/man/tcl8.3/TkCmd/colors.htm for a list of valid color
-names. These names are case sensitive, for example: BlanchedAlmond.</t>
+- "00aa00" is the dark green used by IDLE.
+- mistyRose1 and solarizedred are in the color database.
+
+Leo converts setting names to the standard form used in the database, so the following are valid:
+    
+- Misty-Rose1
+- solarized-red
+</t>
 <t tx="ekr.20041119034357.8">Example:
 
 "Created by Leo at @date"
@@ -2613,15 +2613,6 @@ platform: Lines end in platform-specific way.
 With platform Leo opens output files in "w" mode rather than "wb" mode and writes '\n'
 
 Please specify nl when uploading files to Leo's CVS site.</t>
-<t tx="ekr.20041119041747.1">The number of trailing newlines Leo retains at the end of each body text.
-
-asis: Leo retains the number of newlines contained in each body text.
-      
-    Warning: Leo sometimes has problems determining which ending newlines are "real".
-
-zero: Leo removes all trailing whitespace from body text.
-
-one:  Leo ends each non-empty body text with exactly one trailing newline.</t>
 <t tx="ekr.20041119042929"></t>
 <t tx="ekr.20041119042929.1">Value must be Qt color name or value, such as 'red' or 'xf2fddff' (without the quotes).
 
@@ -11922,12 +11913,12 @@ QTextEdit#richTextEdit[vim_state~="vim_visual"] {
     font-weight:        @bookmarks_current_weight;
     text-decoration:    @bookmarks_current_decoration;
 }</t>
-<t tx="ekr.20190119061613.1"></t>
 <t tx="ekr.20190323043913.1"></t>
 <t tx="ekr.20190323043928.1"># leonine is recommended. Install it from leo-editor-contrib.
 </t>
 <t tx="ekr.20190324042831.1"></t>
-<t tx="ekr.20190324140542.1"></t>
+<t tx="ekr.20190324140542.1"># The setting names are names of pygments tokens.
+# Not all tokens are represented here.</t>
 <t tx="ekr.20190324182659.1">from  leo.core.leoColor import leo_color_database as color_d
 
 d = {
@@ -11961,13 +11952,6 @@ for key, val in d.items():
     # p.b = val
 c.redraw()
     </t>
-<t tx="ekr.20190324183149.1">Comment:            'italic'
-Name.Other:         'underline'
-Generic.Emph:       'italic '
-Generic.Heading:    'underline ' 
-Generic.Strong:     'bold '
-Name.Tag:           'italic '
-</t>
 <t tx="ekr.20190325050733.1"></t>
 <t tx="ekr.20190325050733.10"></t>
 <t tx="ekr.20190325050733.11"></t>

@@ -30,9 +30,9 @@ except ImportError:
 def make_colorizer(c, widget, wrapper):
     '''Return an instance of JEditColorizer or PygmentsColorizer.'''
     use_pygments = pygments and c.config.getBool('use-pygments', default=False)
-    g.es_print('Using pygments: %s' % use_pygments)
+    # g.es_print('Using pygments: %s' % use_pygments)
     if use_pygments:
-        g.es_print('Using pygments styles: %s' % c.config.getBool('use-pygments-styles', default=True))
+        # g.es_print('Using pygments styles: %s' % c.config.getBool('use-pygments-styles', default=True))
         return PygmentsColorizer(c, widget, wrapper)
     else:
         return JEditColorizer(c, widget, wrapper)
