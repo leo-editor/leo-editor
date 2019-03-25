@@ -11913,10 +11913,26 @@ QTextEdit#richTextEdit[vim_state~="vim_visual"] {
     font-weight:        @bookmarks_current_weight;
     text-decoration:    @bookmarks_current_decoration;
 }</t>
-<t tx="ekr.20190323043913.1"></t>
-<t tx="ekr.20190323043928.1"># leonine is recommended. Install it from leo-editor-contrib.
+<t tx="ekr.20190323043913.1">True: Leo uses pygments if available.
+
+
+@string pygments-style-name
+
+The default is "default" (without the quotes). This setting has effect only if @bool use-pygments is True.  It should be the name of a pygments style residing in the pygments/styles folder.  leonine.py defines a style that I used for testing.
+
 </t>
-<t tx="ekr.20190324042831.1"></t>
+<t tx="ekr.20190323043928.1">The name of the pygments style to use.
+This setting has effect only if *both* @bool use-pygments and @bool use-pygments-styles are True.
+
+The 'leonine' style is recommended. Install it from leo-editor-contrib.
+</t>
+<t tx="ekr.20190324042831.1">True: Use the pygments style given by @string pygments-style-name.
+
+False: Use @color settings to configure pygments tokens.
+       This allows per-language configuration, just as with Leo's jEdit-based colorers.
+
+
+</t>
 <t tx="ekr.20190324140542.1"># The setting names are names of pygments tokens.
 # Not all tokens are represented here.</t>
 <t tx="ekr.20190324182659.1">from  leo.core.leoColor import leo_color_database as color_d
