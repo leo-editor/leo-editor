@@ -2170,8 +2170,9 @@
 <v t="ekr.20190325050733.16"><vh>@color name.tag = solarized-magenta</vh></v>
 <v t="ekr.20190325050733.17"><vh>@color string = alt-solarized-green</vh></v>
 <v t="ekr.20190325050733.18"><vh>@color string.doc = solarized-orange</vh></v>
+<v t="ekr.20190325050733.20"><vh>@color string.double = alt-solarized-green</vh></v>
 <v t="ekr.20190325050733.19"><vh>@color string.interpol = alt-solarized-green</vh></v>
-<v t="ekr.20190325050733.20"><vh>@color string.single = alt-solarized-green</vh></v>
+<v t="ekr.20190325052226.1"><vh>@color string.single = alt-solarized-green</vh></v>
 </v>
 </v>
 <v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
@@ -11948,6 +11949,7 @@ d = {
     'Name.Tag':           'solarized-magenta',
     'String':             'alt-solarized-green',
     'String.Doc':         'solarized-orange', # docstring.
+    'String.Double':      'alt-solarized-green',
     'String.Interpol':    'alt-solarized-green',
     'String.Single':      'alt-solarized-green',
 }
@@ -11986,6 +11988,7 @@ Name.Tag:           'italic '
 <t tx="ekr.20190325050733.7"></t>
 <t tx="ekr.20190325050733.8"></t>
 <t tx="ekr.20190325050733.9"></t>
+<t tx="ekr.20190325052226.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

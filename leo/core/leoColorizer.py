@@ -436,6 +436,7 @@ class BaseJEditColorizer (BaseColorizer):
             "operator.word"     :('operator.Word',      '#AA22FF'), # bold
             "string"            :('string',             '#BA2121'),
             "string.doc"        :('string.doc',         '#BA2121'), # italic
+            "string.double"     :('string.double',      '#BA2121'),
             "string.escape"     :('string.escape',      '#BB6622'), # bold
             "string.interpol"   :('string.interpol',    '#BB6688'), # bold
             "string.other"      :('string.other',       '#008000'),
