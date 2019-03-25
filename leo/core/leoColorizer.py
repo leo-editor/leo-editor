@@ -378,7 +378,6 @@ class BaseJEditColorizer (BaseColorizer):
         self.default_colors_dict = {
             #
             # Used in Leo rules...
-            #
             # tag name      :( option name,                  default color),
             'blank'         :('show_invisibles_space_color', '#E5E5E5'), # gray90
             'docpart'       :('doc_part_color',              'red'),
@@ -389,12 +388,28 @@ class BaseJEditColorizer (BaseColorizer):
             'tab'           :('show_invisibles_tab_color',   '#CCCCCC'), # gray80
             'url'           :('url_color',                   'purple'),
             #
-            # Pygments tags, taken from 'default' style.
+            # Pygments tags.  Non-default values are taken from 'default' style.
+            #
+            # Top-level...
+            # tag name          :( option name,         default color),
+            "error"             :('error',              "#FF0000"), # border
+            'other'             :('other',              'white'),
+            'punctuation'       :('punctuation',        'white'),
+            "whitespace"        :('whitespace',         '#bbbbbb'),
+            'xt'                :('xt',                 '#bbbbbb'),
+            #
+            # Comment...
             # tag name          :( option name,         default color),
             "comment"           :('comment',            '#408080'), # italic
+            'comment.hashbang'  :('comment.hashbang',   '#408080'),
+            'comment.multiline' :('comment.multiline',  '#408080'),
+            'comment.special'   :('comment.special',    '#408080'),
             "comment.preproc"   :('comment.preproc',    '#BC7A00'), # noitalic
             "comment.single"    :('comment.single',     '#BC7A00'), # italic
-            "error"             :('error',              "#FF0000"), # border
+            #
+            # Generic...
+            # tag name          :( option name,         default color),
+            "generic"           :('generic',            '#A00000'),
             "generic.deleted"   :('generic.deleted',    '#A00000'),
             "generic.emph"      :('generic.emph',       '#000080'), # italic
             "generic.error"     :('generic.error',      '#FF0000'),
@@ -405,38 +420,78 @@ class BaseJEditColorizer (BaseColorizer):
             "generic.strong"    :('generic.strong',     '#000080'), # bold
             "generic.subheading":('generic.subheading', '#800080'), # bold
             "generic.traceback" :('generic.traceback',  '#04D'),
-            "keyword"           :('keyword',            '#008000'), # bold
-            "keyword.pseudo"    :('keyword.pseudo',     '#008000'), # nobold
-            "keyword.type"      :('keyword.type',       '#B00040'),
-            "name.pygments"     :('name.pygements',     'white'),
+            #
+            # Keyword...
+            # tag name              :( option name,             default color),
+            "keyword"               :('keyword',                '#008000'), # bold
+            'keyword.constant'      :('keyword.constant',       '#008000'),
+            'keyword.declaration'   :('keyword.declaration',    '#008000'),
+            'keyword.namespace'     :('keyword.namespace',      '#008000'),
+            "keyword.pseudo"        :('keyword.pseudo',         '#008000'), # nobold
+            'keyword.reserved'      :('keyword.reserved',       '#008000'),
+            "keyword.type"          :('keyword.type',           '#B00040'),
+            #
+            # Literal...
+            # tag name              :( option name,         default color),
+            'literal'               :('literal',            'white'),
+            'literal.date'          :('literal.date',       'white'),
+            #
+            # Name...
+            # tag name              :( option name,         default color
+            # 'name'                :('name',               default_color),
+            "name.attribute"        :('name.attribute',     '#7D9029'), # bold
+            "name.builtin"          :('name.builtin',       '#008000'),
+            "name.builtin.pseudo"   :('name.builtin.pseudo','#008000'),
+            "name.class"            :('name.class',         '#0000FF'), # bold
+            "name.constant"         :('name.constant',      '#880000'),
+            "name.decorator"        :('name.decorator',     '#AA22FF'),
+            "name.entity"           :('name.entity',        '#999999'), # bold
+            "name.exception"        :('name.exception',     '#D2413A'), # bold
+            "name.function"         :('name.function',      '#0000FF'),
+            "name.function.magic"   :('name.function.magic','#0000FF'),
+            "name.label"            :('name.label',         '#A0A000'),
+            "name.namespace"        :('name.namespace',     '#0000FF'), # bold
+            "name.other"            :('name.other',         'red'),
+            "name.pygments"         :('name.pygments',      'white'),
                 # A hack: getLegacyFormat returns name.pygments instead of name.
-            "name.attribute"    :('name.attribute',     '#7D9029'), # bold
-            "name.builtin"      :('name.builtin',       '#008000'),
-            "name.class"        :('name.class',         '#0000FF'), # bold
-            "name.constant"     :('name.constant',      '#880000'),
-            "name.decorator"    :('name.decorator',     '#AA22FF'),
-            "name.entity"       :('name.entity',        '#999999'), # bold
-            "name.exception"    :('name.exception',     '#D2413A'), # bold
-            "name.function"     :('name.function',      '#0000FF'),
-            "name.label"        :('name.label',         '#A0A000'),
-            "name.namespace"    :('name.namespace',     '#0000FF'), # bold
-            "name.other"        :('name.other',         'red'),
-            "name.tag"          :('name.tag',           '#008000'), # bold
-            "name.variable"     :('name.variable',      '#19177C'),
-            "number"            :('number',             '#666666'),
-            # "operator"          :('operator',           '#666666'),
+            "name.tag"              :('name.tag',               '#008000'), # bold
+            "name.variable"         :('name.variable',          '#19177C'),
+            "name.variable.class"   :('name.variable.class',    '#19177C'),
+            "name.variable.global"  :('name.variable.global',   '#19177C'),
+            "name.variable.instance":('name.variable.instance', '#19177C'),
+            "name.variable.magic"   :('name.variable.magic',    '#19177C'),
+            #
+            # Number...
+            # tag name              :( option name,         default color
+            "number"                :('number',             '#666666'),
+            'number.bin'            :('number.bin',         '#666666'),
+            'number.float'          :('number.float',       '#666666'),
+            'number.hex'            :('number.hex',         '#666666'),
+            'number.integer'        :('number.integer',     '#666666'),
+            'number.integer.long'   :('number.integer.long','#666666'),
+            'number.oct'            :('number.oct',         '#666666'),
+            #
+            # Operator...
+            # tag name          :( option name,         default color
+            # "operator"        :('operator',           '#666666'),
             "operator.word"     :('operator.Word',      '#AA22FF'), # bold
+            #
+            # String...
+            # tag name          :( option name,         default color
             "string"            :('string',             '#BA2121'),
+            'string.affix'      :('string.affix',       '#BA2121'),
+            'string.backtick'   :('string.backtick',    '#BA2121'),
+            'string.char'       :('string.char',        '#BA2121'),
+            'string.delimiter'  :('string.delimiter',   '#BA2121'),
             "string.doc"        :('string.doc',         '#BA2121'), # italic
             "string.double"     :('string.double',      '#BA2121'),
             "string.escape"     :('string.escape',      '#BB6622'), # bold
+            'string.heredoc'    :('string.heredoc',     '#BA2121'),
             "string.interpol"   :('string.interpol',    '#BB6688'), # bold
             "string.other"      :('string.other',       '#008000'),
             "string.regex"      :('string.regex',       '#BB6688'),
             "string.single"     :('string.single',      '#BA2121'),
             "string.symbol"     :('string.symbol',      '#19177C'),
-            'xt'                :('xt',                 '#bbbbbb'),
-            "whitespace"        :('whitespace',         '#bbbbbb'),
             #
             # jEdit tags.
             # tag name  :( option name,     default color),
@@ -457,7 +512,7 @@ class BaseJEditColorizer (BaseColorizer):
             'literal4'  :('literal4_color', '#00aa00'),
             'markup'    :('markup_color',   'red'),
             'null'      :('null_color',     None), #'black'),
-            'operator'  :('operator_color', 'black'), # 2014/09/17
+            'operator'  :('operator_color', 'black'),
             'trailing_whitespace': ('trailing_whitespace_color', '#808080'),
         }
     #@+node:ekr.20110605121601.18575: *3* bjc.defineDefaultFontDict
