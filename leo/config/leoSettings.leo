@@ -2152,26 +2152,26 @@
 <v t="ekr.20060713101831"><vh>@color operator-color = None</vh></v>
 </v>
 <v t="ekr.20190324140542.1"><vh>Colors for pygments tags</vh>
-<v t="ekr.20190324191332.1"><vh>@color comment = #cb4b16</vh></v>
-<v t="ekr.20190324191332.2"><vh>@color comment.single = #cb4b16</vh></v>
-<v t="ekr.20190324191332.3"><vh>@color generic.deleted = #dc322f</vh></v>
-<v t="ekr.20190324191332.4"><vh>@color generic.emph = #268bd2</vh></v>
-<v t="ekr.20190324191332.5"><vh>@color generic.heading = #d33682</vh></v>
-<v t="ekr.20190324191332.6"><vh>@color generic.inserted = #84c805</vh></v>
-<v t="ekr.20190324191332.7"><vh>@color generic.strong = #268bd2</vh></v>
-<v t="ekr.20190324191332.8"><vh>@color generic.subheading = #d33682</vh></v>
-<v t="ekr.20190324191332.9"><vh>@color keyword = #268bd2</vh></v>
-<v t="ekr.20190324191332.10"><vh>@color name = #FFFFFF</vh></v>
-<v t="ekr.20190324191332.11"><vh>@color name.class = #FFFFFF</vh></v>
-<v t="ekr.20190324191332.12"><vh>@color name.decorator = #cb4b16</vh></v>
-<v t="ekr.20190324191332.13"><vh>@color name.entity = #268bd2</vh></v>
-<v t="ekr.20190324191332.14"><vh>@color name.function = #FFFFFF</vh></v>
-<v t="ekr.20190324191332.15"><vh>@color name.other = #dc322f</vh></v>
-<v t="ekr.20190324191332.16"><vh>@color name.tag = #d33682</vh></v>
-<v t="ekr.20190324191332.17"><vh>@color string = #84c805</vh></v>
-<v t="ekr.20190324191332.18"><vh>@color string.doc = #cb4b16</vh></v>
-<v t="ekr.20190324191332.19"><vh>@color string.interpol = #84c805</vh></v>
-<v t="ekr.20190324191332.20"><vh>@color string.single = #84c805</vh></v>
+<v t="ekr.20190325050733.1"><vh>@color comment = solarized-orange</vh></v>
+<v t="ekr.20190325050733.2"><vh>@color comment.single = solarized-orange</vh></v>
+<v t="ekr.20190325050733.3"><vh>@color generic.deleted = solarized-red</vh></v>
+<v t="ekr.20190325050733.4"><vh>@color generic.emph = solarized-blue</vh></v>
+<v t="ekr.20190325050733.5"><vh>@color generic.heading = solarized-magenta</vh></v>
+<v t="ekr.20190325050733.6"><vh>@color generic.inserted = alt-solarized-green</vh></v>
+<v t="ekr.20190325050733.7"><vh>@color generic.strong = solarized-blue</vh></v>
+<v t="ekr.20190325050733.8"><vh>@color generic.subheading = solarized-magenta</vh></v>
+<v t="ekr.20190325050733.9"><vh>@color keyword = solarized-blue</vh></v>
+<v t="ekr.20190325050733.10"><vh>@color name = white</vh></v>
+<v t="ekr.20190325050733.11"><vh>@color name.class = white</vh></v>
+<v t="ekr.20190325050733.12"><vh>@color name.decorator = solarized-orange</vh></v>
+<v t="ekr.20190325050733.13"><vh>@color name.entity = solarized-blue</vh></v>
+<v t="ekr.20190325050733.14"><vh>@color name.function = white</vh></v>
+<v t="ekr.20190325050733.15"><vh>@color name.other = solarized-red</vh></v>
+<v t="ekr.20190325050733.16"><vh>@color name.tag = solarized-magenta</vh></v>
+<v t="ekr.20190325050733.17"><vh>@color string = alt-solarized-green</vh></v>
+<v t="ekr.20190325050733.18"><vh>@color string.doc = solarized-orange</vh></v>
+<v t="ekr.20190325050733.19"><vh>@color string.interpol = alt-solarized-green</vh></v>
+<v t="ekr.20190325050733.20"><vh>@color string.single = alt-solarized-green</vh></v>
 </v>
 </v>
 <v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
@@ -2330,8 +2330,8 @@
 </v>
 </v>
 <v t="ekr.20041119034357.70"></v>
-<v t="ekr.20190324140542.1"></v>
 <v t="ekr.20190324183149.1"><vh>leonine styles</vh></v>
+<v t="ekr.20190324140542.1"></v>
 <v t="ekr.20190324182659.1"><vh>script: make color nodes</vh></v>
 </vnodes>
 <tnodes>
@@ -11954,8 +11954,9 @@ d = {
 root = p.copy()
 for key, val in d.items():
     p = root.insertAsLastChild()
-    p.h = '@color %s = %s' % (key.lower(), color_d.get(val, 'white'))
-    p.b = val
+    # p.h = '@color %s = %s' % (key.lower(), color_d.get(val, 'white'))
+    p.h = '@color %s = %s' % (key.lower(), val)
+    # p.b = val
 c.redraw()
     </t>
 <t tx="ekr.20190324183149.1">Comment:            'italic'
@@ -11965,26 +11966,26 @@ Generic.Heading:    'underline '
 Generic.Strong:     'bold '
 Name.Tag:           'italic '
 </t>
-<t tx="ekr.20190324191332.1">solarized-orange</t>
-<t tx="ekr.20190324191332.10">white</t>
-<t tx="ekr.20190324191332.11">white</t>
-<t tx="ekr.20190324191332.12">solarized-orange</t>
-<t tx="ekr.20190324191332.13">solarized-blue</t>
-<t tx="ekr.20190324191332.14">white</t>
-<t tx="ekr.20190324191332.15">solarized-red</t>
-<t tx="ekr.20190324191332.16">solarized-magenta</t>
-<t tx="ekr.20190324191332.17">alt-solarized-green</t>
-<t tx="ekr.20190324191332.18">solarized-orange</t>
-<t tx="ekr.20190324191332.19">alt-solarized-green</t>
-<t tx="ekr.20190324191332.2">solarized-orange</t>
-<t tx="ekr.20190324191332.20">alt-solarized-green</t>
-<t tx="ekr.20190324191332.3">solarized-red</t>
-<t tx="ekr.20190324191332.4">solarized-blue</t>
-<t tx="ekr.20190324191332.5">solarized-magenta</t>
-<t tx="ekr.20190324191332.6">alt-solarized-green</t>
-<t tx="ekr.20190324191332.7">solarized-blue</t>
-<t tx="ekr.20190324191332.8">solarized-magenta</t>
-<t tx="ekr.20190324191332.9">solarized-blue</t>
+<t tx="ekr.20190325050733.1"></t>
+<t tx="ekr.20190325050733.10"></t>
+<t tx="ekr.20190325050733.11"></t>
+<t tx="ekr.20190325050733.12"></t>
+<t tx="ekr.20190325050733.13"></t>
+<t tx="ekr.20190325050733.14"></t>
+<t tx="ekr.20190325050733.15"></t>
+<t tx="ekr.20190325050733.16"></t>
+<t tx="ekr.20190325050733.17"></t>
+<t tx="ekr.20190325050733.18"></t>
+<t tx="ekr.20190325050733.19"></t>
+<t tx="ekr.20190325050733.2"></t>
+<t tx="ekr.20190325050733.20"></t>
+<t tx="ekr.20190325050733.3"></t>
+<t tx="ekr.20190325050733.4"></t>
+<t tx="ekr.20190325050733.5"></t>
+<t tx="ekr.20190325050733.6"></t>
+<t tx="ekr.20190325050733.7"></t>
+<t tx="ekr.20190325050733.8"></t>
+<t tx="ekr.20190325050733.9"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

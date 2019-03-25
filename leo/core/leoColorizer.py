@@ -15,7 +15,7 @@ import time
 assert time
 import leo.core.leoGlobals as g
 from leo.core.leoQt import Qsci, QtGui, QtWidgets
-# from leo.core.leoColor import leo_color_database
+from leo.core.leoColor import leo_color_database
 #
 # Recover gracefully if pygments can not be imported.
 try:
@@ -852,6 +852,11 @@ class BaseJEditColorizer (BaseColorizer):
         ### g.trace('%r %r %r' % (tag, colorName, s[i:j]))
         if not colorName:
             return
+        #
+        # New in Leo 5.8.1: allow symbolic color names here.
+        # This now works because all keys in leo_color_database are normalized.
+        colorName = colorName.replace(' ', '').replace('-','').replace('_','').lower().strip()
+        colorName = leo_color_database.get(colorName, colorName)
         ###
             # if colorName[-1].isdigit() and colorName[0] != '#':
                 # colorName = colorName[: -1]
