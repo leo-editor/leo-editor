@@ -15,6 +15,7 @@ import time
 assert time
 import leo.core.leoGlobals as g
 from leo.core.leoQt import Qsci, QtGui, QtWidgets
+# from leo.core.leoColor import leo_color_database
 #
 # Recover gracefully if pygments can not be imported.
 try:
@@ -280,21 +281,20 @@ class BaseJEditColorizer (BaseColorizer):
         '''Configure all colors in the default colors dict.'''
         c, wrapper = self.c, self.wrapper
         getColor = c.config.getColor
+            # getColor puts the color name in standard form:
+            # color = color.replace(' ', '').lower().strip()
         for key in sorted(self.default_colors_dict.keys()):
             option_name, default_color = self.default_colors_dict[key]
-            ###
-                # g.trace(option_name,
-                    # getColor('%s_%s' % (self.language, option_name)),
-                    # getColor(option_name))
             color = (
                 getColor('%s_%s' % (self.language, option_name)) or
                 getColor(option_name) or default_color)
             # Must use foreground, not fg.
             try:
                 wrapper.tag_configure(key, foreground=color)
-            except Exception: # Recover after a user error.
+            except Exception: # Recover after a user settings error.
                 g.es_exception()
                 wrapper.tag_configure(key, foreground=default_color)
+
     #@+node:ekr.20190324172242.1: *4* bjc.configure_fonts
     def configure_fonts(self):
         '''Configure all fonts in the default fonts dict.'''
@@ -840,20 +840,21 @@ class BaseJEditColorizer (BaseColorizer):
         if i == j:
             return
         wrapper = self.wrapper # A QTextEditWrapper
-        tag = tag.lower() if tag else ''
+        if not tag.strip():
+            return
+        tag = tag.lower().strip()
         # A hack to allow continuation dots on any tag.
         dots = tag.startswith('dots')
         if dots:
             tag = tag[len('dots'):]
         colorName = wrapper.configDict.get(tag)
-        ###
-            # if tag.startswith('string'):
-                # g.trace(repr(tag), colorName, repr(s[i:j]))
+            # This color name should already be valid.
+        ### g.trace('%r %r %r' % (tag, colorName, s[i:j]))
         if not colorName:
             return
-        # Munge the color name.
-        if colorName[-1].isdigit() and colorName[0] != '#':
-            colorName = colorName[: -1]
+        ###
+            # if colorName[-1].isdigit() and colorName[0] != '#':
+                # colorName = colorName[: -1]
         # Get the actual color.
         color = self.actualColorDict.get(colorName)
         if not color:
@@ -2131,23 +2132,29 @@ if QtGui:
                 # Alas, a QsciDocument is not a QTextDocument.
             QtGui.QSyntaxHighlighter.__init__(self, document)
                 # Init the base class.
-            if pygments and c.config.getBool('use-pygments', default=False):
-                self._brushes = {}
-                self._document = document
-                self._formats = {}
-                style_name = c.config.getString('pygments-style-name') or 'default'
-                    # Style gallery: https://help.farbox.com/pygments.html
-                    # Dark styles: fruity, monokai, native, vim
-                    # https://github.com/gthank/solarized-dark-pygments
-                try:
-                    self.setStyle(style_name)
-                    # print('using %r pygments style in %r' % (style_name, c.shortFileName()))
-                except Exception:
-                    print('pygments %r style not found. Using "default" style' % style_name)
-                    self.setStyle('default')
-                    style_name = 'default'
-                self.colorizer.style_name = style_name
-                assert self._style
+            if not pygments:
+                return
+            if not c.config.getBool('use-pygments', default=False):
+                return
+            self._brushes = {}
+            self._document = document
+            self._formats = {}
+            self.colorizer.style_name = 'default'
+            style_name = c.config.getString('pygments-style-name') or 'default'
+                # Style gallery: https://help.farbox.com/pygments.html
+                # Dark styles: fruity, monokai, native, vim
+                # https://github.com/gthank/solarized-dark-pygments
+            if not c.config.getBool('use-pygments-styles', default=True):
+                return
+            try:
+                self.setStyle(style_name)
+                # print('using %r pygments style in %r' % (style_name, c.shortFileName()))
+            except Exception:
+                print('pygments %r style not found. Using "default" style' % style_name)
+                self.setStyle('default')
+                style_name = 'default'
+            self.colorizer.style_name = style_name
+            assert self._style
         #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
         def highlightBlock(self, s):
             """ Called by QSyntaxHighlighter """

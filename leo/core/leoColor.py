@@ -36,43 +36,35 @@ import leo.core.leoGlobals as g
 # import string
 #@+<< define leo_color_database >>
 #@+node:bob.20080115070511.2: ** << define leo_color_database >>
-#@+at
-# All names added to this database should be in normalized form,
-# otherwise the accessor functions won't work.
-# 
-# Adding names here will make them availiable to all gui's and
-# dhtml that use this service.
-# 
-# Names are normalized by removing spaces and capitalization.
-#@@c
+# All keys should contain only lower-case letters.
 leo_color_database = {
     # leo colors
     "leoblue": "#F0F8FF", #alice blue
     "leoyellow": "#ffffec",
     "leopink": "#FFE4E1", # misty rose
     # Solarized colors
-    'alt-solarized-green': '#84c805',
-    'dark-base0': '#fdffdd',
-    'dark-base00': '#657b83',
-    'dark-base01': '#586e75',
-    'dark-base02': '#073642',
-    'dark-base03': '#000005',
-    'dark-base04': '#000059',
-    'dark-base05': '#003b00',
-    'dark-base06': '#3b0000',
-    'dark-base1': '#93a1a1',
-    'dark-base2': '#eee8d5',
-    'dark-base3': '#fdf6e3',
-    'solarized-black': '#000005', # Unofficial.
-    'solarized-blue': '#268bd2',
-    'solarized-cyan': '#2aa198',
-    'solarized-green': '#859900',
-    'solarized-magenta': '#d33682',
-    'solarized-red': '#dc322f',
-    'solarized-orange': '#cb4b16',
-    'solarized-violet': '#6c71c4',
-    'solarized-white': '#fdf6e3',  # Unofficial: same as solorarized-base3
-    'solarized-yellow': '#b58900',
+    'altsolarizedgreen': '#84c805',
+    'darkbase0': '#fdffdd',
+    'darkbase00': '#657b83',
+    'darkbase01': '#586e75',
+    'darkbase02': '#073642',
+    'darkbase03': '#000005',
+    'darkbase04': '#000059',
+    'darkbase05': '#003b00',
+    'darkbase06': '#3b0000',
+    'darkbase1': '#93a1a1',
+    'darkbase2': '#eee8d5',
+    'darkbase3': '#fdf6e3',
+    'solarizedblack': '#000005', # Unofficial.
+    'solarizedblue': '#268bd2',
+    'solarizedcyan': '#2aa198',
+    'solarizedgreen': '#859900',
+    'solarizedmagenta': '#d33682',
+    'solarizedred': '#dc322f',
+    'solarizedorange': '#cb4b16',
+    'solarizedviolet': '#6c71c4',
+    'solarizedwhite': '#fdf6e3',  # Unofficial: same as solorarized-base3
+    'solarizedyellow': '#b58900',
     # Qt colors
     "aliceblue": "#F0F8FF",
     "antiquewhite": "#FAEBD7",
