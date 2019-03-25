@@ -282,6 +282,10 @@ class BaseJEditColorizer (BaseColorizer):
         getColor = c.config.getColor
         for key in sorted(self.default_colors_dict.keys()):
             option_name, default_color = self.default_colors_dict[key]
+            ###
+                # g.trace(option_name,
+                    # getColor('%s_%s' % (self.language, option_name)),
+                    # getColor(option_name))
             color = (
                 getColor('%s_%s' % (self.language, option_name)) or
                 getColor(option_name) or default_color)
@@ -436,7 +440,7 @@ class BaseJEditColorizer (BaseColorizer):
             "string.interpol"   :('string.interpol',    '#BB6688'), # bold
             "string.other"      :('string.other',       '#008000'),
             "string.regex"      :('string.regex',       '#BB6688'),
-            "string.single"     :('string.regex',       '#BA2121'),
+            "string.single"     :('string.single',      '#BA2121'),
             "string.symbol"     :('string.symbol',      '#19177C'),
             'xt'                :('xt',                 '#bbbbbb'),
             "whitespace"        :('whitespace',         '#bbbbbb'),
@@ -843,9 +847,8 @@ class BaseJEditColorizer (BaseColorizer):
             tag = tag[len('dots'):]
         colorName = wrapper.configDict.get(tag)
         ###
-            # if tag.startswith('name'):
-                # underline = wrapper.configUnderlineDict.get(tag)
-                # g.trace(repr(tag), underline, colorName, repr(s[i:j]))
+            # if tag.startswith('string'):
+                # g.trace(repr(tag), colorName, repr(s[i:j]))
         if not colorName:
             return
         # Munge the color name.
