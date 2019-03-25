@@ -298,7 +298,6 @@ class BaseJEditColorizer (BaseColorizer):
     #@+node:ekr.20190324172242.1: *4* bjc.configure_fonts
     def configure_fonts(self):
         '''Configure all fonts in the default fonts dict.'''
-        trace = True and not g.unitTesting ###
         c = self.c
         isQt = g.app.gui.guiName().startswith('qt')
         wrapper = self.wrapper
@@ -321,7 +320,6 @@ class BaseJEditColorizer (BaseColorizer):
                 font = self.fonts.get(name)
                 if font:
                     wrapper.tag_configure(key, font=font)
-                    if trace: g.trace(key, font)
                     break
                 else:
                     family = c.config.get(name + '_family', 'family')
@@ -337,7 +335,6 @@ class BaseJEditColorizer (BaseColorizer):
                         # Save a reference to the font so it 'sticks'.
                         self.fonts[key] = font
                         wrapper.tag_configure(key, font=font)
-                        if trace: g.trace(key, font)
                         break
             else:
                 # Neither the general setting nor the language-specific setting exists.
@@ -354,11 +351,6 @@ class BaseJEditColorizer (BaseColorizer):
         use_pygments = pygments and c.config.getBool('use-pygments', default=False)
         name = 'name.other' if use_pygments else 'name'
         wrapper.tag_configure(name, underline=1 if self.underline_undefined else 0)
-        ###
-            # if self.underline_undefined:
-                # wrapper.tag_configure("name", underline=1)
-            # else:
-                # wrapper.tag_configure("name", underline=0)
         for name, option_name, default_color in (
             # ("blank", "show_invisibles_space_background_color", "Gray90"),
             # ("tab", "show_invisibles_tab_background_color", "Gray80"),
@@ -373,7 +365,7 @@ class BaseJEditColorizer (BaseColorizer):
                 wrapper.tag_configure(name, background=color)
             except Exception: # A user error.
                 wrapper.tag_configure(name, background=default_color)
-                g.es_exception() ###
+                g.es_print('invalid setting: %r = %r' % (name, default_color))
         # Special case:
         if not self.showInvisibles:
             wrapper.tag_configure("elide", elide="1")
@@ -850,7 +842,6 @@ class BaseJEditColorizer (BaseColorizer):
             tag = tag[len('dots'):]
         colorName = wrapper.configDict.get(tag)
             # This color name should already be valid.
-        ### g.trace('%r %r %r' % (tag, colorName, s[i:j]))
         if not colorName:
             return
         #
@@ -858,7 +849,7 @@ class BaseJEditColorizer (BaseColorizer):
         # This now works because all keys in leo_color_database are normalized.
         colorName = colorName.replace(' ', '').replace('-','').replace('_','').lower().strip()
         colorName = leo_color_database.get(colorName, colorName)
-        ###
+        # This is weird, so I'll leave it here.
             # if colorName[-1].isdigit() and colorName[0] != '#':
                 # colorName = colorName[: -1]
         # Get the actual color.

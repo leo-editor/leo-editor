@@ -558,7 +558,7 @@ class AtFile(object):
         # Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fileName, p)
-        ### if not g.unitTesting: g.es("reading:", p.h)
+        # if not g.unitTesting: g.es("reading:", p.h)
         try:
             # For #451: return p.
             old_p = p.copy()
@@ -600,7 +600,7 @@ class AtFile(object):
         junk, ext = g.os_path_splitext(fn)
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
-        ### if not g.unitTesting: g.es("reading: @edit %s" % (g.shortFileName(fn)))
+        # if not g.unitTesting: g.es("reading: @edit %s" % (g.shortFileName(fn)))
         s, e = g.readFileIntoString(fn, kind='@edit')
         if s is None: return
         encoding = 'utf-8' if e is None else e
@@ -630,7 +630,7 @@ class AtFile(object):
         junk, ext = g.os_path_splitext(fn)
         # Remember the full fileName.
         at.rememberReadPath(fn, p)
-        ### if not g.unitTesting: g.es("reading: @asis %s" % (g.shortFileName(fn)))
+        # if not g.unitTesting: g.es("reading: @asis %s" % (g.shortFileName(fn)))
         s, e = g.readFileIntoString(fn, kind='@edit')
         if s is None: return
         encoding = 'utf-8' if e is None else e
@@ -721,7 +721,7 @@ class AtFile(object):
         if shadow_exists:
             at.read(p, atShadow=True, force=force)
         else:
-            ### if not g.unitTesting: g.es("reading:", p.h)
+            # if not g.unitTesting: g.es("reading:", p.h)
             ok = at.importAtShadowNode(fn, p)
             if ok:
                 # Create the private file automatically.
