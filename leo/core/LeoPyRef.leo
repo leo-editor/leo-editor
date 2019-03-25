@@ -348,6 +348,7 @@
 <v t="ekr.20140907085654.18699"></v>
 <v t="ekr.20140907131341.18707"></v>
 <v t="ekr.20031218072017.2794"></v>
+<v t="ekr.20140827092102.18574"></v>
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31382e3171017d71025808000000616e6e6f7461746571037d710473732e"></v>
 </v>
 <v t="ekr.20180604114211.1"><vh>Recent code</vh>
@@ -1270,65 +1271,19 @@
 <v t="ekr.20190323084957.1"><vh>@g.command('promote-bodies')</vh></v>
 <v t="ekr.20190323085410.1"><vh>@g.command('promote-headlines')</vh></v>
 </v>
-<v t="ekr.20190321124036.1"><vh>----- style prototypes</vh>
-<v t="ekr.20190321112916.1"><vh>dynamic style</vh>
-<v t="ekr.20190321120119.1"><vh>is_valid_color</vh></v>
-</v>
-<v t="ekr.20190321130021.1"><vh>&lt;&lt; define class LeonineStyle &gt;&gt; (a failed experiment)</vh>
-<v t="ekr.20190321130235.2"><vh>StyleMeta.__new__ (disabled)</vh></v>
-<v t="ekr.20190321130235.3"><vh>StyleMeta.style_for_token (hacked)</vh></v>
-<v t="ekr.20190321130235.4"><vh>StyleMeta.list_styles</vh></v>
-<v t="ekr.20190321130235.5"><vh>StyleMeta.styles_token</vh></v>
-<v t="ekr.20190321130235.6"><vh>StyleMeta.__iter__</vh></v>
-<v t="ekr.20190321130235.7"><vh>StyleMeta.__len__</vh></v>
-</v>
-<v t="ekr.20190321170917.1"><vh>leo_h.patch_leo_styles</vh></v>
-</v>
-</v>
-<v t="ekr.20140827092102.18574"></v>
 <v t="ekr.20190319150024.1"><vh>===== pygments</vh>
-<v t="ekr.20190323034724.1"><vh>print recolor stats</vh></v>
-<v t="ekr.20190324043722.1"><vh>pyg_c.init &amp; helpers</vh></v>
-<v t="ekr.20190319151826.79"><vh>pyg_c.recolor</vh></v>
-<v t="ekr.20190324051704.1"><vh>pyg_c.reloadSettings</vh></v>
-</v>
-<v t="ekr.20190324043104.1"><vh>----- Support Leonine styles for pygments</vh></v>
-<v t="ekr.20190324115354.1"><vh>class BaseJEditColorizer (BaseColorizer)</vh>
-<v t="ekr.20110605121601.18576"><vh>bjc.addImportedRules</vh></v>
-<v t="ekr.20110605121601.18577"></v>
-<v t="ekr.20111024091133.16702"><vh>bjc.configure_hard_tab_width</vh></v>
-<v t="ekr.20110605121601.18578"><vh>bjc.configure_tags</vh></v>
-<v t="ekr.20110605121601.18579"><vh>bjc.configure_variable_tags</vh></v>
+<v t="bob.20080115070511.2"><vh>&lt;&lt; define leo_color_database &gt;&gt;</vh></v>
+<v t="ekr.20190324172632.1"><vh>bjc.configure_colors</vh></v>
 <v t="ekr.20110605121601.18574"><vh>bjc.defineDefaultColorsDict</vh></v>
-<v t="ekr.20110605121601.18575"><vh>bjc.defineDefaultFontDict</vh></v>
-<v t="ekr.20110605121601.18573"><vh>bjc.defineLeoKeywordsDict</vh></v>
-<v t="ekr.20170514054524.1"><vh>bjc.getFontFromParams</vh></v>
-<v t="ekr.20110605121601.18581"><vh>bjc.init_mode &amp; helpers</vh>
-<v t="btheado.20131124162237.16303"><vh>bjc.init_mode_from_module</vh></v>
-<v t="ekr.20110605121601.18582"><vh>bjc.nameToRulesetName</vh></v>
-<v t="ekr.20110605121601.18583"><vh>bjc.setKeywords</vh></v>
-<v t="ekr.20110605121601.18584"><vh>bjc.setModeAttributes</vh></v>
-<v t="ekr.20110605121601.18585"><vh>bjc.initModeFromBunch</vh></v>
-<v t="ekr.20110605121601.18586"><vh>bjc.updateDelimsTables</vh></v>
-</v>
-<v t="ekr.20190324050727.1"><vh>bjc.init_style_ivars</vh></v>
-<v t="ekr.20110605121601.18587"><vh>bjc.munge</vh></v>
-<v t="ekr.20171114041307.1"><vh>bjc.reloadSettings</vh></v>
 <v t="ekr.20110605121601.18641"><vh>bjc.setTag</vh></v>
-</v>
-<v t="ekr.20190319151826.78"><vh>pyg_c.mainLoop &amp; helpers</vh>
-<v t="ekr.20190323045655.1"><vh>pyg_c.at_color_callback</vh></v>
+<v t="ekr.20110605121601.18566"><vh>leo_h.ctor (sets style)</vh></v>
 <v t="ekr.20190323045735.1"><vh>pyg_c.at_language_callback</vh></v>
-<v t="ekr.20190322082533.1"><vh>pyg_c.get_lexer</vh></v>
-<v t="ekr.20190322094034.1"><vh>pyg_c.patch_lexer</vh></v>
-<v t="ekr.20190322133358.1"><vh>pyg_c.section_ref_callback</vh></v>
-<v t="ekr.20190323064820.1"><vh>pyg_c.set_lexer</vh></v>
-</v>
 <v t="ekr.20190324063349.1"><vh>pyg_c.format getters</vh></v>
-<v t="ekr.20110605121601.18641"></v>
-<v t="ekr.20110605121601.18574"></v>
-<v t="ekr.20110605121601.18575"></v>
-<v t="ekr.20190324135038.1"><vh>** default to solarized colors</vh></v>
+<v t="ekr.20190324192318.1"><vh>script: make color nodes</vh></v>
+<v t="ekr.20190323034724.1"><vh>script: print recolor stats</vh></v>
+<v t="ekr.20190325053636.1"><vh>leonine styles</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943">@nosearch
@@ -1357,67 +1312,693 @@
 
 get = getColor
 </t>
-<t tx="btheado.20131124162237.16303">def init_mode_from_module(self, name, mode):
-    '''Name may be a language name or a delegate name.
-       Mode is a python module or class containing all
-       coloring rule attributes for the mode.
-    '''
-    language, rulesetName = self.nameToRulesetName(name)
-    if mode:
-        # A hack to give modes/forth.py access to c.
-        if hasattr(mode, 'pre_init_mode'):
-            mode.pre_init_mode(self.c)
-    else:
-        # Create a dummy bunch to limit recursion.
-        self.modes[rulesetName] = self.modeBunch = g.Bunch(
-            attributesDict={},
-            defaultColor=None,
-            keywordsDict={},
-            language='unknown-language',
-            mode=mode,
-            properties={},
-            rulesDict={},
-            rulesetName=rulesetName,
-            word_chars=self.word_chars, # 2011/05/21
-        )
-        self.rulesetName = rulesetName
-        self.language = 'unknown-language'
-        return False
-    self.language = language
-    self.rulesetName = rulesetName
-    self.properties = getattr(mode, 'properties', None) or {}
-    self.keywordsDict = mode.keywordsDictDict.get(rulesetName, {}) if hasattr(mode, 'keywordsDictDict') else {}
-    self.setKeywords()
-    self.attributesDict = mode.attributesDictDict.get(rulesetName) if hasattr(mode, 'attributesDictDict') else {}
-    self.setModeAttributes()
-    self.rulesDict = mode.rulesDictDict.get(rulesetName) if hasattr(mode, 'rulesDictDict') else {}
-    self.addLeoRules(self.rulesDict)
-    self.defaultColor = 'null'
-    self.mode = mode
-    self.modes[rulesetName] = self.modeBunch = g.Bunch(
-        attributesDict=self.attributesDict,
-        defaultColor=self.defaultColor,
-        keywordsDict=self.keywordsDict,
-        language = self.language,
-        mode=self.mode,
-        properties=self.properties,
-        rulesDict=self.rulesDict,
-        rulesetName=self.rulesetName,
-        word_chars=self.word_chars, # 2011/05/21
-    )
-    # Do this after 'officially' initing the mode, to limit recursion.
-    self.addImportedRules(mode, self.rulesDict, rulesetName)
-    self.updateDelimsTables()
-    initialDelegate = self.properties.get('initialModeDelegate')
-    if initialDelegate:
-        # Replace the original mode by the delegate mode.
-        self.init_mode(initialDelegate)
-        language2, rulesetName2 = self.nameToRulesetName(initialDelegate)
-        self.modes[rulesetName] = self.modes.get(rulesetName2)
-        self.language = language2 # 2017/01/31
-    else:
-        self.language = language # 2017/01/31
-    return True
+<t tx="bob.20080115070511.2"># All keys should contain only lower-case letters.
+leo_color_database = {
+    # leo colors
+    "leoblue": "#F0F8FF", #alice blue
+    "leoyellow": "#ffffec",
+    "leopink": "#FFE4E1", # misty rose
+    # Solarized colors
+    'altsolarizedgreen': '#84c805',
+    'darkbase0': '#fdffdd',
+    'darkbase00': '#657b83',
+    'darkbase01': '#586e75',
+    'darkbase02': '#073642',
+    'darkbase03': '#000005',
+    'darkbase04': '#000059',
+    'darkbase05': '#003b00',
+    'darkbase06': '#3b0000',
+    'darkbase1': '#93a1a1',
+    'darkbase2': '#eee8d5',
+    'darkbase3': '#fdf6e3',
+    'solarizedblack': '#000005', # Unofficial.
+    'solarizedblue': '#268bd2',
+    'solarizedcyan': '#2aa198',
+    'solarizedgreen': '#859900',
+    'solarizedmagenta': '#d33682',
+    'solarizedred': '#dc322f',
+    'solarizedorange': '#cb4b16',
+    'solarizedviolet': '#6c71c4',
+    'solarizedwhite': '#fdf6e3',  # Unofficial: same as solorarized-base3
+    'solarizedyellow': '#b58900',
+    # Qt colors
+    "aliceblue": "#F0F8FF",
+    "antiquewhite": "#FAEBD7",
+    "antiquewhite1": "#FFEFDB",
+    "antiquewhite2": "#EEDFCC",
+    "antiquewhite3": "#CDC0B0",
+    "antiquewhite4": "#8B8378",
+    "aquamarine": "#7FFFD4",
+    "aquamarine1": "#7FFFD4",
+    "aquamarine2": "#76EEC6",
+    "aquamarine3": "#66CDAA",
+    "aquamarine4": "#458B74",
+    "azure": "#F0FFFF",
+    "azure1": "#F0FFFF",
+    "azure2": "#E0EEEE",
+    "azure3": "#C1CDCD",
+    "azure4": "#838B8B",
+    "beige": "#F5F5DC",
+    "bisque": "#FFE4C4",
+    "bisque1": "#FFE4C4",
+    "bisque2": "#EED5B7",
+    "bisque3": "#CDB79E",
+    "bisque4": "#8B7D6B",
+    "black": "#000000",
+    "blanchedalmond": "#FFEBCD",
+    "blue": "#0000FF",
+    "blue1": "#0000FF",
+    "blue2": "#0000EE",
+    "blue3": "#0000CD",
+    "blue4": "#00008B",
+    "blueviolet": "#8A2BE2",
+    "brown": "#A52A2A",
+    "brown1": "#FF4040",
+    "brown2": "#EE3B3B",
+    "brown3": "#CD3333",
+    "brown4": "#8B2323",
+    "burlywood": "#DEB887",
+    "burlywood1": "#FFD39B",
+    "burlywood2": "#EEC591",
+    "burlywood3": "#CDAA7D",
+    "burlywood4": "#8B7355",
+    "cadetblue": "#5F9EA0",
+    "cadetblue1": "#98F5FF",
+    "cadetblue2": "#8EE5EE",
+    "cadetblue3": "#7AC5CD",
+    "cadetblue4": "#53868B",
+    "chartreuse": "#7FFF00",
+    "chartreuse1": "#7FFF00",
+    "chartreuse2": "#76EE00",
+    "chartreuse3": "#66CD00",
+    "chartreuse4": "#458B00",
+    "chocolate": "#D2691E",
+    "chocolate1": "#FF7F24",
+    "chocolate2": "#EE7621",
+    "chocolate3": "#CD661D",
+    "chocolate4": "#8B4513",
+    "coral": "#FF7F50",
+    "coral1": "#FF7256",
+    "coral2": "#EE6A50",
+    "coral3": "#CD5B45",
+    "coral4": "#8B3E2F",
+    "cornflowerblue": "#6495ED",
+    "cornsilk": "#FFF8DC",
+    "cornsilk1": "#FFF8DC",
+    "cornsilk2": "#EEE8CD",
+    "cornsilk3": "#CDC8B1",
+    "cornsilk4": "#8B8878",
+    "cyan": "#00FFFF",
+    "cyan1": "#00FFFF",
+    "cyan2": "#00EEEE",
+    "cyan3": "#00CDCD",
+    "cyan4": "#008B8B",
+    "darkblue": "#00008B",
+    "darkcyan": "#008B8B",
+    "darkgoldenrod": "#B8860B",
+    "darkgoldenrod1": "#FFB90F",
+    "darkgoldenrod2": "#EEAD0E",
+    "darkgoldenrod3": "#CD950C",
+    "darkgoldenrod4": "#8B6508",
+    "darkgray": "#A9A9A9",
+    "darkgreen": "#006400",
+    "darkgrey": "#A9A9A9",
+    "darkkhaki": "#BDB76B",
+    "darkmagenta": "#8B008B",
+    "darkolivegreen": "#556B2F",
+    "darkolivegreen1": "#CAFF70",
+    "darkolivegreen2": "#BCEE68",
+    "darkolivegreen3": "#A2CD5A",
+    "darkolivegreen4": "#6E8B3D",
+    "darkorange": "#FF8C00",
+    "darkorange1": "#FF7F00",
+    "darkorange2": "#EE7600",
+    "darkorange3": "#CD6600",
+    "darkorange4": "#8B4500",
+    "darkorchid": "#9932CC",
+    "darkorchid1": "#BF3EFF",
+    "darkorchid2": "#B23AEE",
+    "darkorchid3": "#9A32CD",
+    "darkorchid4": "#68228B",
+    "darkred": "#8B0000",
+    "darksalmon": "#E9967A",
+    "darkseagreen": "#8FBC8F",
+    "darkseagreen1": "#C1FFC1",
+    "darkseagreen2": "#B4EEB4",
+    "darkseagreen3": "#9BCD9B",
+    "darkseagreen4": "#698B69",
+    "darkslateblue": "#483D8B",
+    "darkslategray": "#2F4F4F",
+    "darkslategray1": "#97FFFF",
+    "darkslategray2": "#8DEEEE",
+    "darkslategray3": "#79CDCD",
+    "darkslategray4": "#528B8B",
+    "darkslategrey": "#2F4F4F",
+    "darkturquoise": "#00CED1",
+    "darkviolet": "#9400D3",
+    "deeppink": "#FF1493",
+    "deeppink1": "#FF1493",
+    "deeppink2": "#EE1289",
+    "deeppink3": "#CD1076",
+    "deeppink4": "#8B0A50",
+    "deepskyblue": "#00BFFF",
+    "deepskyblue1": "#00BFFF",
+    "deepskyblue2": "#00B2EE",
+    "deepskyblue3": "#009ACD",
+    "deepskyblue4": "#00688B",
+    "dimgray": "#696969",
+    "dimgrey": "#696969",
+    "dodgerblue": "#1E90FF",
+    "dodgerblue1": "#1E90FF",
+    "dodgerblue2": "#1C86EE",
+    "dodgerblue3": "#1874CD",
+    "dodgerblue4": "#104E8B",
+    "firebrick": "#B22222",
+    "firebrick1": "#FF3030",
+    "firebrick2": "#EE2C2C",
+    "firebrick3": "#CD2626",
+    "firebrick4": "#8B1A1A",
+    "floralwhite": "#FFFAF0",
+    "forestgreen": "#228B22",
+    "gainsboro": "#DCDCDC",
+    "ghostwhite": "#F8F8FF",
+    "gold": "#FFD700",
+    "gold1": "#FFD700",
+    "gold2": "#EEC900",
+    "gold3": "#CDAD00",
+    "gold4": "#8B7500",
+    "goldenrod": "#DAA520",
+    "goldenrod1": "#FFC125",
+    "goldenrod2": "#EEB422",
+    "goldenrod3": "#CD9B1D",
+    "goldenrod4": "#8B6914",
+    "gray": "#BEBEBE",
+    "gray0": "#000000",
+    "gray1": "#030303",
+    "gray10": "#1A1A1A",
+    "gray100": "#FFFFFF",
+    "gray11": "#1C1C1C",
+    "gray12": "#1F1F1F",
+    "gray13": "#212121",
+    "gray14": "#242424",
+    "gray15": "#262626",
+    "gray16": "#292929",
+    "gray17": "#2B2B2B",
+    "gray18": "#2E2E2E",
+    "gray19": "#303030",
+    "gray2": "#050505",
+    "gray20": "#333333",
+    "gray21": "#363636",
+    "gray22": "#383838",
+    "gray23": "#3B3B3B",
+    "gray24": "#3D3D3D",
+    "gray25": "#404040",
+    "gray26": "#424242",
+    "gray27": "#454545",
+    "gray28": "#474747",
+    "gray29": "#4A4A4A",
+    "gray3": "#080808",
+    "gray30": "#4D4D4D",
+    "gray31": "#4F4F4F",
+    "gray32": "#525252",
+    "gray33": "#545454",
+    "gray34": "#575757",
+    "gray35": "#595959",
+    "gray36": "#5C5C5C",
+    "gray37": "#5E5E5E",
+    "gray38": "#616161",
+    "gray39": "#636363",
+    "gray4": "#0A0A0A",
+    "gray40": "#666666",
+    "gray41": "#696969",
+    "gray42": "#6B6B6B",
+    "gray43": "#6E6E6E",
+    "gray44": "#707070",
+    "gray45": "#737373",
+    "gray46": "#757575",
+    "gray47": "#787878",
+    "gray48": "#7A7A7A",
+    "gray49": "#7D7D7D",
+    "gray5": "#0D0D0D",
+    "gray50": "#7F7F7F",
+    "gray51": "#828282",
+    "gray52": "#858585",
+    "gray53": "#878787",
+    "gray54": "#8A8A8A",
+    "gray55": "#8C8C8C",
+    "gray56": "#8F8F8F",
+    "gray57": "#919191",
+    "gray58": "#949494",
+    "gray59": "#969696",
+    "gray6": "#0F0F0F",
+    "gray60": "#999999",
+    "gray61": "#9C9C9C",
+    "gray62": "#9E9E9E",
+    "gray63": "#A1A1A1",
+    "gray64": "#A3A3A3",
+    "gray65": "#A6A6A6",
+    "gray66": "#A8A8A8",
+    "gray67": "#ABABAB",
+    "gray68": "#ADADAD",
+    "gray69": "#B0B0B0",
+    "gray7": "#121212",
+    "gray70": "#B3B3B3",
+    "gray71": "#B5B5B5",
+    "gray72": "#B8B8B8",
+    "gray73": "#BABABA",
+    "gray74": "#BDBDBD",
+    "gray75": "#BFBFBF",
+    "gray76": "#C2C2C2",
+    "gray77": "#C4C4C4",
+    "gray78": "#C7C7C7",
+    "gray79": "#C9C9C9",
+    "gray8": "#141414",
+    "gray80": "#CCCCCC",
+    "gray81": "#CFCFCF",
+    "gray82": "#D1D1D1",
+    "gray83": "#D4D4D4",
+    "gray84": "#D6D6D6",
+    "gray85": "#D9D9D9",
+    "gray86": "#DBDBDB",
+    "gray87": "#DEDEDE",
+    "gray88": "#E0E0E0",
+    "gray89": "#E3E3E3",
+    "gray9": "#171717",
+    "gray90": "#E5E5E5",
+    "gray91": "#E8E8E8",
+    "gray92": "#EBEBEB",
+    "gray93": "#EDEDED",
+    "gray94": "#F0F0F0",
+    "gray95": "#F2F2F2",
+    "gray96": "#F5F5F5",
+    "gray97": "#F7F7F7",
+    "gray98": "#FAFAFA",
+    "gray99": "#FCFCFC",
+    "green": "#00FF00",
+    "green1": "#00FF00",
+    "green2": "#00EE00",
+    "green3": "#00CD00",
+    "green4": "#008B00",
+    "greenyellow": "#ADFF2F",
+    "grey": "#BEBEBE",
+    "grey0": "#000000",
+    "grey1": "#030303",
+    "grey10": "#1A1A1A",
+    "grey100": "#FFFFFF",
+    "grey11": "#1C1C1C",
+    "grey12": "#1F1F1F",
+    "grey13": "#212121",
+    "grey14": "#242424",
+    "grey15": "#262626",
+    "grey16": "#292929",
+    "grey17": "#2B2B2B",
+    "grey18": "#2E2E2E",
+    "grey19": "#303030",
+    "grey2": "#050505",
+    "grey20": "#333333",
+    "grey21": "#363636",
+    "grey22": "#383838",
+    "grey23": "#3B3B3B",
+    "grey24": "#3D3D3D",
+    "grey25": "#404040",
+    "grey26": "#424242",
+    "grey27": "#454545",
+    "grey28": "#474747",
+    "grey29": "#4A4A4A",
+    "grey3": "#080808",
+    "grey30": "#4D4D4D",
+    "grey31": "#4F4F4F",
+    "grey32": "#525252",
+    "grey33": "#545454",
+    "grey34": "#575757",
+    "grey35": "#595959",
+    "grey36": "#5C5C5C",
+    "grey37": "#5E5E5E",
+    "grey38": "#616161",
+    "grey39": "#636363",
+    "grey4": "#0A0A0A",
+    "grey40": "#666666",
+    "grey41": "#696969",
+    "grey42": "#6B6B6B",
+    "grey43": "#6E6E6E",
+    "grey44": "#707070",
+    "grey45": "#737373",
+    "grey46": "#757575",
+    "grey47": "#787878",
+    "grey48": "#7A7A7A",
+    "grey49": "#7D7D7D",
+    "grey5": "#0D0D0D",
+    "grey50": "#7F7F7F",
+    "grey51": "#828282",
+    "grey52": "#858585",
+    "grey53": "#878787",
+    "grey54": "#8A8A8A",
+    "grey55": "#8C8C8C",
+    "grey56": "#8F8F8F",
+    "grey57": "#919191",
+    "grey58": "#949494",
+    "grey59": "#969696",
+    "grey6": "#0F0F0F",
+    "grey60": "#999999",
+    "grey61": "#9C9C9C",
+    "grey62": "#9E9E9E",
+    "grey63": "#A1A1A1",
+    "grey64": "#A3A3A3",
+    "grey65": "#A6A6A6",
+    "grey66": "#A8A8A8",
+    "grey67": "#ABABAB",
+    "grey68": "#ADADAD",
+    "grey69": "#B0B0B0",
+    "grey7": "#121212",
+    "grey70": "#B3B3B3",
+    "grey71": "#B5B5B5",
+    "grey72": "#B8B8B8",
+    "grey73": "#BABABA",
+    "grey74": "#BDBDBD",
+    "grey75": "#BFBFBF",
+    "grey76": "#C2C2C2",
+    "grey77": "#C4C4C4",
+    "grey78": "#C7C7C7",
+    "grey79": "#C9C9C9",
+    "grey8": "#141414",
+    "grey80": "#CCCCCC",
+    "grey81": "#CFCFCF",
+    "grey82": "#D1D1D1",
+    "grey84": "#D6D6D6",
+    "grey85": "#D9D9D9",
+    "grey86": "#DBDBDB",
+    "grey87": "#DEDEDE",
+    "grey88": "#E0E0E0",
+    "grey89": "#E3E3E3",
+    "grey9": "#171717",
+    "grey90": "#E5E5E5",
+    "grey91": "#E8E8E8",
+    "grey92": "#EBEBEB",
+    "grey93": "#EDEDED",
+    "grey94": "#F0F0F0",
+    "grey95": "#F2F2F2",
+    "grey96": "#F5F5F5",
+    "grey97": "#F7F7F7",
+    "grey98": "#FAFAFA",
+    "grey99": "#FCFCFC",
+    "honeydew": "#F0FFF0",
+    "honeydew1": "#F0FFF0",
+    "honeydew2": "#E0EEE0",
+    "honeydew3": "#C1CDC1",
+    "honeydew4": "#838B83",
+    "hotpink": "#FF69B4",
+    "hotpink1": "#FF6EB4",
+    "hotpink2": "#EE6AA7",
+    "hotpink3": "#CD6090",
+    "hotpink4": "#8B3A62",
+    "indianred": "#CD5C5C",
+    "indianred1": "#FF6A6A",
+    "indianred2": "#EE6363",
+    "indianred3": "#CD5555",
+    "indianred4": "#8B3A3A",
+    "ivory": "#FFFFF0",
+    "ivory1": "#FFFFF0",
+    "ivory2": "#EEEEE0",
+    "ivory3": "#CDCDC1",
+    "ivory4": "#8B8B83",
+    "khaki": "#F0E68C",
+    "khaki1": "#FFF68F",
+    "khaki2": "#EEE685",
+    "khaki3": "#CDC673",
+    "khaki4": "#8B864E",
+    "lavender": "#E6E6FA",
+    "lavenderblush": "#FFF0F5",
+    "lavenderblush1": "#FFF0F5",
+    "lavenderblush2": "#EEE0E5",
+    "lavenderblush3": "#CDC1C5",
+    "lavenderblush4": "#8B8386",
+    "lawngreen": "#7CFC00",
+    "lemonchiffon": "#FFFACD",
+    "lemonchiffon1": "#FFFACD",
+    "lemonchiffon2": "#EEE9BF",
+    "lemonchiffon3": "#CDC9A5",
+    "lemonchiffon4": "#8B8970",
+    "lightblue": "#ADD8E6",
+    "lightblue1": "#BFEFFF",
+    "lightblue2": "#B2DFEE",
+    "lightblue3": "#9AC0CD",
+    "lightblue4": "#68838B",
+    "lightcoral": "#F08080",
+    "lightcyan": "#E0FFFF",
+    "lightcyan1": "#E0FFFF",
+    "lightcyan2": "#D1EEEE",
+    "lightcyan3": "#B4CDCD",
+    "lightcyan4": "#7A8B8B",
+    "lightgoldenrod": "#EEDD82",
+    "lightgoldenrod1": "#FFEC8B",
+    "lightgoldenrod2": "#EEDC82",
+    "lightgoldenrod3": "#CDBE70",
+    "lightgoldenrod4": "#8B814C",
+    "lightgoldenrodyellow": "#FAFAD2",
+    "lightgray": "#D3D3D3",
+    "lightgreen": "#90EE90",
+    "lightgrey": "#D3D3D3",
+    "lightpink": "#FFB6C1",
+    "lightpink1": "#FFAEB9",
+    "lightpink2": "#EEA2AD",
+    "lightpink3": "#CD8C95",
+    "lightpink4": "#8B5F65",
+    "lightsalmon": "#FFA07A",
+    "lightsalmon1": "#FFA07A",
+    "lightsalmon2": "#EE9572",
+    "lightsalmon3": "#CD8162",
+    "lightsalmon4": "#8B5742",
+    "lightseagreen": "#20B2AA",
+    "lightskyblue": "#87CEFA",
+    "lightskyblue1": "#B0E2FF",
+    "lightskyblue2": "#A4D3EE",
+    "lightskyblue3": "#8DB6CD",
+    "lightskyblue4": "#607B8B",
+    "lightslateblue": "#8470FF",
+    "lightslategray": "#778899",
+    "lightslategrey": "#778899",
+    "lightsteelblue": "#B0C4DE",
+    "lightsteelblue1": "#CAE1FF",
+    "lightsteelblue2": "#BCD2EE",
+    "lightsteelblue3": "#A2B5CD",
+    "lightsteelblue4": "#6E7B8B",
+    "lightyellow": "#FFFFE0",
+    "lightyellow1": "#FFFFE0",
+    "lightyellow2": "#EEEED1",
+    "lightyellow3": "#CDCDB4",
+    "lightyellow4": "#8B8B7A",
+    "limegreen": "#32CD32",
+    "linen": "#FAF0E6",
+    "magenta": "#FF00FF",
+    "magenta1": "#FF00FF",
+    "magenta2": "#EE00EE",
+    "magenta3": "#CD00CD",
+    "magenta4": "#8B008B",
+    "maroon": "#B03060",
+    "maroon1": "#FF34B3",
+    "maroon2": "#EE30A7",
+    "maroon3": "#CD2990",
+    "maroon4": "#8B1C62",
+    "mediumaquamarine": "#66CDAA",
+    "mediumblue": "#0000CD",
+    "mediumorchid": "#BA55D3",
+    "mediumorchid1": "#E066FF",
+    "mediumorchid2": "#D15FEE",
+    "mediumorchid3": "#B452CD",
+    "mediumorchid4": "#7A378B",
+    "mediumpurple": "#9370DB",
+    "mediumpurple1": "#AB82FF",
+    "mediumpurple2": "#9F79EE",
+    "mediumpurple3": "#8968CD",
+    "mediumpurple4": "#5D478B",
+    "mediumseagreen": "#3CB371",
+    "mediumslateblue": "#7B68EE",
+    "mediumspringgreen": "#00FA9A",
+    "mediumturquoise": "#48D1CC",
+    "mediumvioletred": "#C71585",
+    "midnightblue": "#191970",
+    "mintcream": "#F5FFFA",
+    "mistyrose": "#FFE4E1",
+    "mistyrose1": "#FFE4E1",
+    "mistyrose2": "#EED5D2",
+    "mistyrose3": "#CDB7B5",
+    "mistyrose4": "#8B7D7B",
+    "moccasin": "#FFE4B5",
+    "navajowhite": "#FFDEAD",
+    "navajowhite1": "#FFDEAD",
+    "navajowhite2": "#EECFA1",
+    "navajowhite3": "#CDB38B",
+    "navajowhite4": "#8B795E",
+    "navy": "#000080",
+    "navyblue": "#000080",
+    "oldlace": "#FDF5E6",
+    "olivedrab": "#6B8E23",
+    "olivedrab1": "#C0FF3E",
+    "olivedrab2": "#B3EE3A",
+    "olivedrab3": "#9ACD32",
+    "olivedrab4": "#698B22",
+    "orange": "#FFA500",
+    "orange1": "#FFA500",
+    "orange2": "#EE9A00",
+    "orange3": "#CD8500",
+    "orange4": "#8B5A00",
+    "orangered": "#FF4500",
+    "orangered1": "#FF4500",
+    "orangered2": "#EE4000",
+    "orangered3": "#CD3700",
+    "orangered4": "#8B2500",
+    "orchid": "#DA70D6",
+    "orchid1": "#FF83FA",
+    "orchid2": "#EE7AE9",
+    "orchid3": "#CD69C9",
+    "orchid4": "#8B4789",
+    "palegoldenrod": "#EEE8AA",
+    "palegreen": "#98FB98",
+    "palegreen1": "#9AFF9A",
+    "palegreen2": "#90EE90",
+    "palegreen3": "#7CCD7C",
+    "palegreen4": "#548B54",
+    "paleturquoise": "#AFEEEE",
+    "paleturquoise1": "#BBFFFF",
+    "paleturquoise2": "#AEEEEE",
+    "paleturquoise3": "#96CDCD",
+    "paleturquoise4": "#668B8B",
+    "palevioletred": "#DB7093",
+    "palevioletred1": "#FF82AB",
+    "palevioletred2": "#EE799F",
+    "palevioletred3": "#CD6889",
+    "palevioletred4": "#8B475D",
+    "papayawhip": "#FFEFD5",
+    "peachpuff": "#FFDAB9",
+    "peachpuff1": "#FFDAB9",
+    "peachpuff2": "#EECBAD",
+    "peachpuff3": "#CDAF95",
+    "peachpuff4": "#8B7765",
+    "peru": "#CD853F",
+    "pink": "#FFC0CB",
+    "pink1": "#FFB5C5",
+    "pink2": "#EEA9B8",
+    "pink3": "#CD919E",
+    "pink4": "#8B636C",
+    "plum": "#DDA0DD",
+    "plum1": "#FFBBFF",
+    "plum2": "#EEAEEE",
+    "plum3": "#CD96CD",
+    "plum4": "#8B668B",
+    "powderblue": "#B0E0E6",
+    "purple": "#A020F0",
+    "purple1": "#9B30FF",
+    "purple2": "#912CEE",
+    "purple3": "#7D26CD",
+    "purple4": "#551A8B",
+    "red": "#FF0000",
+    "red1": "#FF0000",
+    "red2": "#EE0000",
+    "red3": "#CD0000",
+    "red4": "#8B0000",
+    "rosybrown": "#BC8F8F",
+    "rosybrown1": "#FFC1C1",
+    "rosybrown2": "#EEB4B4",
+    "rosybrown3": "#CD9B9B",
+    "rosybrown4": "#8B6969",
+    "royalblue": "#4169E1",
+    "royalblue1": "#4876FF",
+    "royalblue2": "#436EEE",
+    "royalblue3": "#3A5FCD",
+    "royalblue4": "#27408B",
+    "saddlebrown": "#8B4513",
+    "salmon": "#FA8072",
+    "salmon1": "#FF8C69",
+    "salmon2": "#EE8262",
+    "salmon3": "#CD7054",
+    "salmon4": "#8B4C39",
+    "sandybrown": "#F4A460",
+    "seagreen": "#2E8B57",
+    "seagreen1": "#54FF9F",
+    "seagreen2": "#4EEE94",
+    "seagreen3": "#43CD80",
+    "seagreen4": "#2E8B57",
+    "seashell": "#FFF5EE",
+    "seashell1": "#FFF5EE",
+    "seashell2": "#EEE5DE",
+    "seashell3": "#CDC5BF",
+    "seashell4": "#8B8682",
+    "sienna": "#A0522D",
+    "sienna1": "#FF8247",
+    "sienna2": "#EE7942",
+    "sienna3": "#CD6839",
+    "sienna4": "#8B4726",
+    "skyblue": "#87CEEB",
+    "skyblue1": "#87CEFF",
+    "skyblue2": "#7EC0EE",
+    "skyblue3": "#6CA6CD",
+    "skyblue4": "#4A708B",
+    "slateblue": "#6A5ACD",
+    "slateblue1": "#836FFF",
+    "slateblue2": "#7A67EE",
+    "slateblue3": "#6959CD",
+    "slateblue4": "#473C8B",
+    "slategray": "#708090",
+    "slategray1": "#C6E2FF",
+    "slategray2": "#B9D3EE",
+    "slategray3": "#9FB6CD",
+    "slategray4": "#6C7B8B",
+    "slategrey": "#708090",
+    "snow": "#FFFAFA",
+    "snow1": "#FFFAFA",
+    "snow2": "#EEE9E9",
+    "snow3": "#CDC9C9",
+    "snow4": "#8B8989",
+    "springgreen": "#00FF7F",
+    "springgreen1": "#00FF7F",
+    "springgreen2": "#00EE76",
+    "springgreen3": "#00CD66",
+    "springgreen4": "#008B45",
+    "steelblue": "#4682B4",
+    "steelblue1": "#63B8FF",
+    "steelblue2": "#5CACEE",
+    "steelblue3": "#4F94CD",
+    "steelblue4": "#36648B",
+    "tan": "#D2B48C",
+    "tan1": "#FFA54F",
+    "tan2": "#EE9A49",
+    "tan3": "#CD853F",
+    "tan4": "#8B5A2B",
+    "thistle": "#D8BFD8",
+    "thistle1": "#FFE1FF",
+    "thistle2": "#EED2EE",
+    "thistle3": "#CDB5CD",
+    "thistle4": "#8B7B8B",
+    "tomato": "#FF6347",
+    "tomato1": "#FF6347",
+    "tomato2": "#EE5C42",
+    "tomato3": "#CD4F39",
+    "tomato4": "#8B3626",
+    "turquoise": "#40E0D0",
+    "turquoise1": "#00F5FF",
+    "turquoise2": "#00E5EE",
+    "turquoise3": "#00C5CD",
+    "turquoise4": "#00868B",
+    "violet": "#EE82EE",
+    "violetred": "#D02090",
+    "violetred1": "#FF3E96",
+    "violetred2": "#EE3A8C",
+    "violetred3": "#CD3278",
+    "violetred4": "#8B2252",
+    "wheat": "#F5DEB3",
+    "wheat1": "#FFE7BA",
+    "wheat2": "#EED8AE",
+    "wheat3": "#CDBA96",
+    "wheat4": "#8B7E66",
+    "white": "#FFFFFF",
+    "whitesmoke": "#F5F5F5",
+    "yellow": "#FFFF00",
+    "yellow1": "#FFFF00",
+    "yellow2": "#EEEE00",
+    "yellow3": "#CDCD00",
+    "yellow4": "#8B8B00",
+    "yellowgreen": "#9ACD32"
+}
 </t>
 <t tx="ekr.20031218072017.1147">def flattenOutline(self, fileName):
     '''
@@ -4399,7 +4980,7 @@ def writeDirtyAtAutoNodes(self, event=None):
     # Remember that we have seen the @auto node.
     # Fix bug 889175: Remember the full fileName.
     at.rememberReadPath(fileName, p)
-    ### if not g.unitTesting: g.es("reading:", p.h)
+    # if not g.unitTesting: g.es("reading:", p.h)
     try:
         # For #451: return p.
         old_p = p.copy()
@@ -4756,7 +5337,7 @@ def writeDirtyAtShadowNodes(self, event=None):
     if shadow_exists:
         at.read(p, atShadow=True, force=force)
     else:
-        ### if not g.unitTesting: g.es("reading:", p.h)
+        # if not g.unitTesting: g.es("reading:", p.h)
         ok = at.importAtShadowNode(fn, p)
         if ok:
             # Create the private file automatically.
@@ -4999,7 +5580,7 @@ def parseUnderindentTag(self, s):
     junk, ext = g.os_path_splitext(fn)
     # Fix bug 889175: Remember the full fileName.
     at.rememberReadPath(fn, p)
-    ### if not g.unitTesting: g.es("reading: @edit %s" % (g.shortFileName(fn)))
+    # if not g.unitTesting: g.es("reading: @edit %s" % (g.shortFileName(fn)))
     s, e = g.readFileIntoString(fn, kind='@edit')
     if s is None: return
     encoding = 'utf-8' if e is None else e
@@ -7496,10 +8077,38 @@ def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
     toString = g.u(toString)
     return keynum, text, toString, ch
 </t>
-<t tx="ekr.20110605121601.18573">def defineLeoKeywordsDict(self):
-    self.leoKeywordsDict = {}
-    for key in g.globalDirectiveList:
-        self.leoKeywordsDict[key] = 'leokeyword'
+<t tx="ekr.20110605121601.18566">def __init__(self, c, colorizer, document):
+    '''ctor for LeoHighlighter class.'''
+    self.c = c
+    self.colorizer = colorizer
+    self.n_calls = 0
+    assert isinstance(document, QtGui.QTextDocument), document
+        # Alas, a QsciDocument is not a QTextDocument.
+    QtGui.QSyntaxHighlighter.__init__(self, document)
+        # Init the base class.
+    if not pygments:
+        return
+    if not c.config.getBool('use-pygments', default=False):
+        return
+    self._brushes = {}
+    self._document = document
+    self._formats = {}
+    self.colorizer.style_name = 'default'
+    style_name = c.config.getString('pygments-style-name') or 'default'
+        # Style gallery: https://help.farbox.com/pygments.html
+        # Dark styles: fruity, monokai, native, vim
+        # https://github.com/gthank/solarized-dark-pygments
+    if not c.config.getBool('use-pygments-styles', default=True):
+        return
+    try:
+        self.setStyle(style_name)
+        # print('using %r pygments style in %r' % (style_name, c.shortFileName()))
+    except Exception:
+        print('pygments %r style not found. Using "default" style' % style_name)
+        self.setStyle('default')
+        style_name = 'default'
+    self.colorizer.style_name = style_name
+    assert self._style
 </t>
 <t tx="ekr.20110605121601.18574">@nobeautify
 
@@ -7551,6 +8160,7 @@ def defineDefaultColorsDict (self):
         "name.function"     :('name.function',      '#0000FF'),
         "name.label"        :('name.label',         '#A0A000'),
         "name.namespace"    :('name.namespace',     '#0000FF'), # bold
+        "name.other"        :('name.other',         'red'),
         "name.tag"          :('name.tag',           '#008000'), # bold
         "name.variable"     :('name.variable',      '#19177C'),
         "number"            :('number',             '#666666'),
@@ -7558,11 +8168,12 @@ def defineDefaultColorsDict (self):
         "operator.word"     :('operator.Word',      '#AA22FF'), # bold
         "string"            :('string',             '#BA2121'),
         "string.doc"        :('string.doc',         '#BA2121'), # italic
+        "string.double"     :('string.double',      '#BA2121'),
         "string.escape"     :('string.escape',      '#BB6622'), # bold
         "string.interpol"   :('string.interpol',    '#BB6688'), # bold
         "string.other"      :('string.other',       '#008000'),
         "string.regex"      :('string.regex',       '#BB6688'),
-        "string.single"     :('string.regex',       '#BA2121'),
+        "string.single"     :('string.single',      '#BA2121'),
         "string.symbol"     :('string.symbol',      '#19177C'),
         'xt'                :('xt',                 '#bbbbbb'),
         "whitespace"        :('whitespace',         '#bbbbbb'),
@@ -7589,116 +8200,6 @@ def defineDefaultColorsDict (self):
         'operator'  :('operator_color', 'black'), # 2014/09/17
         'trailing_whitespace': ('trailing_whitespace_color', '#808080'),
     }
-</t>
-<t tx="ekr.20110605121601.18575">@nobeautify
-
-def defineDefaultFontDict (self):
-
-    self.default_font_dict = {
-        #
-        # Used in Leo rules...
-        # tag name      : option name
-        'blank'         :'show_invisibles_space_font', # 2011/10/24.
-        'docpart'       :'doc_part_font',
-        'leokeyword'    :'leo_keyword_font',
-        'link'          :'section_name_font',
-        'name'          :'undefined_section_name_font',
-        'namebrackets'  :'section_name_brackets_font',
-        'tab'           :'show_invisibles_tab_font', # 2011/10/24.
-        'url'           :'url_font',
-        #
-        # Pygments tags (lower case)...
-        # tag name          : option name
-        "comment"           :'comment1_font',
-        "comment.preproc"   :'comment2_font',
-        "comment.single"    :'comment1_font',
-        "error"             :'null_font',
-        "generic.deleted"   :'literal4_font',
-        "generic.emph"      :'literal4_font',
-        "generic.error"     :'literal4_font',
-        "generic.heading"   :'literal4_font',
-        "generic.inserted"  :'literal4_font',
-        "generic.output"    :'literal4_font',
-        "generic.prompt"    :'literal4_font',
-        "generic.strong"    :'literal4_font',
-        "generic.subheading":'literal4_font',
-        "generic.traceback" :'literal4_font',
-        "keyword"           :'keyword1_font',
-        "keyword.pseudo"    :'keyword2_font',
-        "keyword.type"      :'keyword3_font',
-        "name.attribute"    :'null_font',
-        "name.builtin"      :'null_font',
-        "name.class"        :'null_font',
-        "name.constant"     :'null_font',
-        "name.decorator"    :'null_font',
-        "name.entity"       :'null_font',
-        "name.exception"    :'null_font',
-        "name.function"     :'null_font',
-        "name.label"        :'null_font',
-        "name.namespace"    :'null_font',
-        "name.tag"          :'null_font',
-        "name.variable"     :'null_font',
-        "number"            :'null_font',
-        "operator"          :'operator_font',
-        "operator.word"     :'keyword4_font',
-        "string"            :'literal1_font',
-        "string.doc"        :'literal1_font',
-        "string.escape"     :'literal1_font',
-        "string.interpol"   :'literal1_font',
-        "string.other"      :'literal1_font',
-        "string.regex"      :'literal1_font',
-        "string.single"     :'literal1_font',
-        "string.symbol"     :'literal1_font',
-        'xt'                :'text_font',
-        "whitespace"        :'text_font',
-        #
-        # jEdit tags.
-        # tag name     : option name
-        'comment1'      :'comment1_font',
-        'comment2'      :'comment2_font',
-        'comment3'      :'comment3_font',
-        'comment4'      :'comment4_font',
-        #'default'       :'default_font',
-        'function'      :'function_font',
-        'keyword1'      :'keyword1_font',
-        'keyword2'      :'keyword2_font',
-        'keyword3'      :'keyword3_font',
-        'keyword4'      :'keyword4_font',
-        'keyword5'      :'keyword5_font',
-        'label'         :'label_font',
-        'literal1'      :'literal1_font',
-        'literal2'      :'literal2_font',
-        'literal3'      :'literal3_font',
-        'literal4'      :'literal4_font',
-        'markup'        :'markup_font',
-        # 'nocolor' This tag is used, but never generates code.
-        'null'          :'null_font',
-        'operator'      :'operator_font',
-        'trailing_whitespace' :'trailing_whitespace_font',
-    }
-</t>
-<t tx="ekr.20110605121601.18576">def addImportedRules(self, mode, rulesDict, rulesetName):
-    '''Append any imported rules at the end of the rulesets specified in mode.importDict'''
-    if self.importedRulesets.get(rulesetName):
-        return
-    else:
-        self.importedRulesets[rulesetName] = True
-    names = mode.importDict.get(rulesetName, []) if hasattr(mode, 'importDict') else []
-    for name in names:
-        savedBunch = self.modeBunch
-        ok = self.init_mode(name)
-        if ok:
-            rulesDict2 = self.rulesDict
-            for key in rulesDict2.keys():
-                aList = self.rulesDict.get(key, [])
-                aList2 = rulesDict2.get(key)
-                if aList2:
-                    # Don't add the standard rules again.
-                    rules = [z for z in aList2 if z not in aList]
-                    if rules:
-                        aList.extend(rules)
-                        self.rulesDict[key] = aList
-        self.initModeFromBunch(savedBunch)
 </t>
 <t tx="ekr.20110605121601.18577">def addLeoRules(self, theDict):
     '''Put Leo-specific rules to theList.'''
@@ -7749,247 +8250,31 @@ def defineDefaultFontDict (self):
                 theList.append(rule)
             theDict[ch] = theList
 </t>
-<t tx="ekr.20110605121601.18578">def configure_tags(self):
-    '''Configure all tags.'''
-    c = self.c
-    wrapper = self.wrapper
-    isQt = g.app.gui.guiName().startswith('qt')
-    if wrapper and hasattr(wrapper, 'start_tag_configure'):
-        wrapper.start_tag_configure()
-    # Get the default body font.
-    defaultBodyfont = self.fonts.get('default_body_font')
-    if not defaultBodyfont:
-        defaultBodyfont = c.config.getFontFromParams(
-            "body_text_font_family", "body_text_font_size",
-            "body_text_font_slant", "body_text_font_weight",
-            c.config.defaultBodyFontSize)
-        self.fonts['default_body_font'] = defaultBodyfont
-    # Configure fonts.
-    keys = list(self.default_font_dict.keys()); keys.sort()
-    for key in keys:
-        option_name = self.default_font_dict[key]
-        # First, look for the language-specific setting, then the general setting.
-        for name in ('%s_%s' % (self.language, option_name), (option_name)):
-            font = self.fonts.get(name)
-            if font:
-                wrapper.tag_configure(key, font=font)
-                break
-            else:
-                family = c.config.get(name + '_family', 'family')
-                size = c.config.get(name + '_size', 'size')
-                slant = c.config.get(name + '_slant', 'slant')
-                weight = c.config.get(name + '_weight', 'weight')
-                if family or slant or weight or size:
-                    family = family or g.app.config.defaultFontFamily
-                    size = size or c.config.defaultBodyFontSize
-                    slant = slant or 'roman'
-                    weight = weight or 'normal'
-                    font = g.app.gui.getFontFromParams(family, size, slant, weight)
-                    # Save a reference to the font so it 'sticks'.
-                    self.fonts[key] = font
-                    wrapper.tag_configure(key, font=font)
-                    break
-        else: # Neither the general setting nor the language-specific setting exists.
-            if list(self.fonts.keys()): # Restore the default font.
-                self.fonts[key] = font # Essential
-                wrapper.tag_configure(key, font=defaultBodyfont)
-        if isQt and key == 'url' and font:
-            font.setUnderline(True)
-    keys = sorted(self.default_colors_dict.keys())
-    for name in keys:
-        option_name, default_color = self.default_colors_dict[name]
-        color = (
-            c.config.getColor('%s_%s' % (self.language, option_name)) or
-            c.config.getColor(option_name) or
-            default_color)
-        # Must use foreground, not fg.
-        try:
-            wrapper.tag_configure(name, foreground=color)
-        except Exception: # Recover after a user error.
-            g.es_exception()
-            wrapper.tag_configure(name, foreground=default_color)
-    # underline=var doesn't seem to work.
-    if 0: # self.use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
-        wrapper.tag_configure("link", underline=1) # defined
-        wrapper.tag_configure("name", underline=0) # undefined
-    else:
-        wrapper.tag_configure("link", underline=0)
-        if self.underline_undefined:
-            wrapper.tag_configure("name", underline=1)
-        else:
-            wrapper.tag_configure("name", underline=0)
-    self.configure_variable_tags()
-    try:
-        wrapper.end_tag_configure()
-    except AttributeError:
-        pass
-</t>
-<t tx="ekr.20110605121601.18579">def configure_variable_tags(self):
-    c = self.c
-    wrapper = self.wrapper
-    for name, option_name, default_color in (
-        # ("blank", "show_invisibles_space_background_color", "Gray90"),
-        # ("tab", "show_invisibles_tab_background_color", "Gray80"),
-        ("elide", None, "yellow"),
-    ):
-        if self.showInvisibles:
-            color = c.config.getColor(option_name) if option_name else default_color
-        else:
-            option_name, default_color = self.default_colors_dict.get(name, (None, None),)
-            color = c.config.getColor(option_name) if option_name else ''
-        try:
-            wrapper.tag_configure(name, background=color)
-        except Exception: # A user error.
-            wrapper.tag_configure(name, background=default_color)
-    # Special case:
-    if not self.showInvisibles:
-        wrapper.tag_configure("elide", elide="1")
-</t>
-<t tx="ekr.20110605121601.18581">def init_mode(self, name):
-    '''Name may be a language name or a delegate name.'''
-    if not name:
-        return False
-    language, rulesetName = self.nameToRulesetName(name)
-    bunch = self.modes.get(rulesetName)
-    if bunch:
-        if bunch.language == 'unknown-language':
-            return False
-        else:
-            self.initModeFromBunch(bunch)
-            self.language = language # 2011/05/30
-            return True
-    else:
-        # Bug fix: 2008/2/10: Don't try to import a non-existent language.
-        path = g.os_path_join(g.app.loadDir, '..', 'modes')
-        fn = g.os_path_join(path, '%s.py' % (language))
-        if g.os_path_exists(fn):
-            mode = g.importFromPath(moduleName=language, path=path)
-        else:
-            mode = None
-        return self.init_mode_from_module(name, mode)
-</t>
-<t tx="ekr.20110605121601.18582">def nameToRulesetName(self, name):
-    '''
-    Compute language and rulesetName from name, which is either a language
-    name or a delegate name.
-    '''
-    if not name:
-        return ''
-    i = name.find('::')
-    if i == -1:
-        language = name
-        # New in Leo 5.0: allow delegated language names.
-        language = g.app.delegate_language_dict.get(language, language)
-        rulesetName = '%s_main' % (language)
-    else:
-        language = name[: i]
-        delegate = name[i + 2:]
-        rulesetName = self.munge('%s_%s' % (language, delegate))
-    return language, rulesetName
-</t>
-<t tx="ekr.20110605121601.18583">def setKeywords(self):
-    '''Initialize the keywords for the present language.
-
-     Set self.word_chars ivar to string.letters + string.digits
-     plus any other character appearing in any keyword.
-     '''
-    # Add any new user keywords to leoKeywordsDict.
-    d = self.keywordsDict
-    keys = list(d.keys())
-    for s in g.globalDirectiveList:
-        key = '@' + s
-        if key not in keys:
-            d[key] = 'leokeyword'
-    # Create a temporary chars list.  It will be converted to a dict later.
-    chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
-    for key in list(d.keys()):
-        for ch in key:
-            if ch not in chars:
-                chars.append(g.toUnicode(ch))
-    # jEdit2Py now does this check, so this isn't really needed.
-    # But it is needed for forth.py.
-    for ch in (' ', '\t'):
-        if ch in chars:
-            # g.es_print('removing %s from word_chars' % (repr(ch)))
-            chars.remove(ch)
-    # Convert chars to a dict for faster access.
-    self.word_chars = {}
-    for z in chars:
-        self.word_chars[z] = z
-</t>
-<t tx="ekr.20110605121601.18584">def setModeAttributes(self):
-    '''Set the ivars from self.attributesDict,
-    converting 'true'/'false' to True and False.'''
-    d = self.attributesDict
-    aList = (
-        ('default', 'null'),
-        ('digit_re', ''),
-        ('escape', ''), # New in Leo 4.4.2.
-        ('highlight_digits', True),
-        ('ignore_case', True),
-        ('no_word_sep', ''),
-    )
-    for key, default in aList:
-        val = d.get(key, default)
-        if val in ('true', 'True'): val = True
-        if val in ('false', 'False'): val = False
-        setattr(self, key, val)
-</t>
-<t tx="ekr.20110605121601.18585">def initModeFromBunch(self, bunch):
-    self.modeBunch = bunch
-    self.attributesDict = bunch.attributesDict
-    self.setModeAttributes()
-    self.defaultColor = bunch.defaultColor
-    self.keywordsDict = bunch.keywordsDict
-    self.language = bunch.language
-    self.mode = bunch.mode
-    self.properties = bunch.properties
-    self.rulesDict = bunch.rulesDict
-    self.rulesetName = bunch.rulesetName
-    self.word_chars = bunch.word_chars # 2011/05/21
-</t>
-<t tx="ekr.20110605121601.18586">def updateDelimsTables(self):
-    '''Update g.app.language_delims_dict if no entry for the language exists.'''
-    d = self.properties
-    lineComment = d.get('lineComment')
-    startComment = d.get('commentStart')
-    endComment = d.get('commentEnd')
-    if lineComment and startComment and endComment:
-        delims = '%s %s %s' % (lineComment, startComment, endComment)
-    elif startComment and endComment:
-        delims = '%s %s' % (startComment, endComment)
-    elif lineComment:
-        delims = '%s' % lineComment
-    else:
-        delims = None
-    if delims:
-        d = g.app.language_delims_dict
-        if not d.get(self.language):
-            d[self.language] = delims
-</t>
-<t tx="ekr.20110605121601.18587">def munge(self, s):
-    '''Munge a mode name so that it is a valid python id.'''
-    valid = string.ascii_letters + string.digits + '_'
-    return ''.join([ch.lower() if ch in valid else '_' for ch in s])
-</t>
 <t tx="ekr.20110605121601.18641">def setTag(self, tag, s, i, j):
     '''Set the tag in the highlighter.'''
     self.n_setTag += 1
     if i == j:
         return
     wrapper = self.wrapper # A QTextEditWrapper
-    tag = tag.lower() # 2011/10/28
-    ### g.trace(tag, repr(s[i:j]))
+    if not tag.strip():
+        return
+    tag = tag.lower().strip()
     # A hack to allow continuation dots on any tag.
     dots = tag.startswith('dots')
     if dots:
         tag = tag[len('dots'):]
     colorName = wrapper.configDict.get(tag)
-    # Munge the color name.
+        # This color name should already be valid.
     if not colorName:
         return
-    if colorName[-1].isdigit() and colorName[0] != '#':
-        colorName = colorName[: -1]
+    #
+    # New in Leo 5.8.1: allow symbolic color names here.
+    # This now works because all keys in leo_color_database are normalized.
+    colorName = colorName.replace(' ', '').replace('-','').replace('_','').lower().strip()
+    colorName = leo_color_database.get(colorName, colorName)
+    # This is weird, so I'll leave it here.
+        # if colorName[-1].isdigit() and colorName[0] != '#':
+            # colorName = colorName[: -1]
     # Get the actual color.
     color = self.actualColorDict.get(colorName)
     if not color:
@@ -8034,23 +8319,6 @@ def setYScrollPosition(self, pos):
     if pos is None: pos = 0
     sb = w.verticalScrollBar()
     sb.setSliderPosition(pos)
-</t>
-<t tx="ekr.20111024091133.16702">def configure_hard_tab_width(self):
-    '''Set the width of a hard tab.
-    The stated default is 40, but apparently it must be set explicitly.
-    '''
-    c, widget, wrapper = self.c, self.widget, self.wrapper
-    # For some reason, the size is not accurate.
-    if isinstance(widget, QtWidgets.QTextEdit):
-        font = wrapper.widget.currentFont()
-        info = QtGui.QFontInfo(font)
-        size = info.pointSizeF()
-        pixels_per_point = 1.0 # 0.9
-        hard_tab_width = abs(int(pixels_per_point * size * c.tab_width))
-        wrapper.widget.setTabStopWidth(hard_tab_width)
-    else:
-        # To do: configure the QScintilla widget.
-        pass
 </t>
 <t tx="ekr.20111028060955.16565">def getMenuEntryInfo(self, data, menu):
     done = False
@@ -12592,12 +12860,6 @@ from .eveventhandler import Event
 
 </t>
 <t tx="ekr.20170428085201.1">@nosearch</t>
-<t tx="ekr.20170514054524.1">def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
-    return None
-
-# def setFontFromConfig(self):
-    # pass
-</t>
 <t tx="ekr.20170616102324.1">def execGitCommand(command, directory=None):
     '''Execute the given git command in the given directory.'''
     git_dir = g.os_path_finalize_join(directory, '.git')
@@ -13091,26 +13353,6 @@ def gitDiff(self, event):
         c.config.getBool('run-pyflakes-on-write', default=False)
     self.underindentEscapeString = \
         c.config.getString('underindent-escape-string') or '\\-'
-</t>
-<t tx="ekr.20171114041307.1">def reloadSettings(self):
-    c = self.c
-    self.showInvisibles = c.config.getBool("show-invisibles-by-default")
-    self.underline_undefined = c.config.getBool("underline-undefined-section-names")
-    self.use_hyperlinks = c.config.getBool("use-hyperlinks")
-    # There were in setFontFromConfig.
-    self.bold_font = c.config.getFontFromParams(
-        "body_text_font_family", "body_text_font_size",
-        "body_text_font_slant", "body_text_font_weight",
-        c.config.defaultBodyFontSize)
-    self.italic_font = c.config.getFontFromParams(
-        "body_text_font_family", "body_text_font_size",
-        "body_text_font_slant", "body_text_font_weight",
-        c.config.defaultBodyFontSize)
-    self.bolditalic_font = c.config.getFontFromParams(
-        "body_text_font_family", "body_text_font_size",
-        "body_text_font_slant", "body_text_font_weight",
-        c.config.defaultBodyFontSize)
-    self.color_tags_list = []
 </t>
 <t tx="ekr.20171122055719.1">def declutter_style(self, arg, c, cmd, item, new_icons):
     '''Handle style options.'''
@@ -15628,7 +15870,7 @@ found 284 nodes
     junk, ext = g.os_path_splitext(fn)
     # Remember the full fileName.
     at.rememberReadPath(fn, p)
-    ### if not g.unitTesting: g.es("reading: @asis %s" % (g.shortFileName(fn)))
+    # if not g.unitTesting: g.es("reading: @asis %s" % (g.shortFileName(fn)))
     s, e = g.readFileIntoString(fn, kind='@edit')
     if s is None: return
     encoding = 'utf-8' if e is None else e
@@ -16589,391 +16831,10 @@ All of the free_layout plugin will probably go away:
 
 https://github.com/leo-editor/leo-editor/issues/568
 
-- language callback should call init.
-
 @language python
 @nosearch
 </t>
-<t tx="ekr.20190319151826.78">format_dict = {}
-    # Keys are repr(Token), values are formats.
-lexers_dict = {}
-    # Keys are language names, values are instantiated, patched lexers.
-state_s_dict = {}
-    # Keys are strings, values are ints.
-state_n_dict = {}
-    # For tracing only.
-    # Keys are ints, values are strings.
-state_index = 1
-    # Index of state number to be allocated.
-tot_time = 0.0
-
-def mainLoop(self, s):
-    '''Colorize a *single* line s'''
-    t1 = time.clock()
-    highlighter = self.highlighter
-    #
-    # First, set the *expected* lexer. It may change later.
-    lexer = self.set_lexer()
-    #
-    # Restore the state.
-    # Based on Jupyter code: (c) Jupyter Development Team.
-    stack_ivar = '_saved_state_stack'
-    prev_data = highlighter.currentBlock().previous().userData()
-    if prev_data is not None:
-        # New code by EKR. Restore the language if necessary.
-        if self.language != prev_data.leo_language:
-            # Change the language and the lexer!
-            self.language = prev_data.leo_language
-            # g.trace('RESTORE:', self.language)
-            lexer = self.set_lexer()
-        setattr(lexer, stack_ivar, prev_data.syntax_stack)
-    elif hasattr(lexer, stack_ivar):
-        delattr(lexer, stack_ivar)
-    # g.trace(self.color_enabled, self.language, repr(s))
-    #
-    # The main loop. Warning: this can change self.language.
-    index = 0
-    for token, text in lexer.get_tokens(s):
-        length = len(text)
-        # print('%5s %25r %r' % (self.color_enabled, repr(token).lstrip('Token.'), text))
-        if self.color_enabled:
-            format = self.getFormat(token, text)
-        else:
-            format = self.getDefaultFormat()
-        self.setFormat(index, length, format, s)
-        index += length
-    #
-    # Save the state.
-    # Based on Jupyter code: (c) Jupyter Development Team.
-    stack = getattr(lexer, stack_ivar, None)
-    if stack:
-        data = PygmentsBlockUserData(syntax_stack=stack, leo_language=self.language)
-        highlighter.currentBlock().setUserData(data)
-        # Clean up for the next go-round.
-        delattr(lexer, stack_ivar)
-    #
-    # New code by EKR:
-    # - Fixes a bug so multiline tokens work.
-    # - State supports Leo's color directives.
-    state_s = '%s; %s: %r' % (self.language, self.color_enabled, stack)
-    state_n = self.state_s_dict.get(state_s)
-    if state_n is None:
-        state_n = self.state_index
-        self.state_index += 1
-        self.state_s_dict [state_s] = state_n
-        self.state_n_dict [state_n] = state_s
-    highlighter.setCurrentBlockState(state_n)
-    self.tot_time += time.clock() - t1
-</t>
-<t tx="ekr.20190319151826.79">def recolor(self, s):
-    '''
-    PygmentsColorizer.recolor: Recolor a *single* line, s.
-    QSyntaxHighligher calls this method repeatedly and automatically.
-    '''
-    p = self.c.p
-    self.recolorCount += 1
-    if p.v != self.old_v:
-        self.updateSyntaxColorer(p)
-            # Force a full recolor
-            # sets self.language and self.enabled.
-        self.color_enabled = self.enabled
-        self.old_v = p.v
-            # Fix a major performance bug.
-        self.init(p)
-            # Support
-        assert self.language
-    if s is not None:
-        # For pygments, we *must* call for all lines.
-        self.mainLoop(s)
-</t>
-<t tx="ekr.20190321112916.1">g.cls()
-from pygments.style import Style
-from pygments.token import string_to_tokentype
-from leo.core.leoColor import leo_color_database
-
-# Simulate what c.config.getData would return.
-config = (
-    'comment, firebrick3',
-    'keyword, blue',
-    'Name, white',
-    'String, #00aa00',
-    # 'huh???, whatever',
-)
-
-@others
-
-class LeonineStyle(Style):
-    default_style = ""
-    table = []
-    for line in config:
-        name, color = line.split(',')
-        name = name.capitalize()
-        color = color.strip()
-        color = leo_color_database.get(color, color)
-        if is_valid_color(color):
-            try:
-                token = string_to_tokentype(name)
-                table.append([token, color])
-            except Exception:
-                print('unknown token', repr(name))
-        else:
-            print('invalid color: %r for style: %r' % (color, name))
-    styles = dict(table)
-    g.printObj(styles, tag='styles dict')
-</t>
-<t tx="ekr.20190321120119.1">def is_valid_color(s):
-    '''Return True if s is a valid Qt color string.'''
-    if not s.startswith('#'):
-        return False
-    try:
-        int(s[1:], 16)
-        return True
-    except ValueError:
-        return False
-</t>
-<t tx="ekr.20190321124036.1"></t>
-<t tx="ekr.20190321130021.1">import pygments.token as token_module
-from leo.core.leoColor import leo_color_database
-# Use the Leonine style.
-# @add_metaclass(StyleMeta)
-
-class LeonineStyle(object):
-    default_style = ""
-    table = (
-        (token_module.Comment, 'firebrick3'),
-        (token_module.Keyword, 'blue'),
-        (token_module.Name, 'white'),
-        # (token_module.Name.Function, '#0f0'),
-        # (token_module.Name.Class, 'bold #0f0'),
-        (token_module.String, '#00aa00'),
-    )
-    styles = {key: leo_color_database.get(val, val).strip('#') for (key,val) in table}
-    _styles = styles # a hack.
-    g.printObj(styles, tag='LeonineStyle.styles')
-    
-    @others  # hack: just copy the methods from StyleMeta.
-</t>
-<t tx="ekr.20190321130235.2"># def __new__(mcs, name, bases, dct):
-    # obj = type.__new__(mcs, name, bases, dct)
-    # for token in STANDARD_TYPES:
-        # if token not in obj.styles:
-            # obj.styles[token] = ''
-
-    # def colorformat(text):
-        # if text in ansicolors:
-            # return text
-        # if text[0:1] == '#':
-            # col = text[1:]
-            # if len(col) == 6:
-                # return col
-            # elif len(col) == 3:
-                # return col[0]*2 + col[1]*2 + col[2]*2
-        # elif text == '':
-            # return ''
-        # assert False, "wrong color format %r" % text
-
-    # _styles = obj._styles = {}
-
-    # for ttype in obj.styles:
-        # for token in ttype.split():
-            # if token in _styles:
-                # continue
-            # ndef = _styles.get(token.parent, None)
-            # styledefs = obj.styles.get(token, '').split()
-            # if not ndef or token is None:
-                # ndef = ['', 0, 0, 0, '', '', 0, 0, 0]
-            # elif 'noinherit' in styledefs and token is not Token:
-                # ndef = _styles[Token][:]
-            # else:
-                # ndef = ndef[:]
-            # _styles[token] = ndef
-            # for styledef in obj.styles.get(token, '').split():
-                # if styledef == 'noinherit':
-                    # pass
-                # elif styledef == 'bold':
-                    # ndef[1] = 1
-                # elif styledef == 'nobold':
-                    # ndef[1] = 0
-                # elif styledef == 'italic':
-                    # ndef[2] = 1
-                # elif styledef == 'noitalic':
-                    # ndef[2] = 0
-                # elif styledef == 'underline':
-                    # ndef[3] = 1
-                # elif styledef == 'nounderline':
-                    # ndef[3] = 0
-                # elif styledef[:3] == 'bg:':
-                    # ndef[4] = colorformat(styledef[3:])
-                # elif styledef[:7] == 'border:':
-                    # ndef[5] = colorformat(styledef[7:])
-                # elif styledef == 'roman':
-                    # ndef[6] = 1
-                # elif styledef == 'sans':
-                    # ndef[7] = 1
-                # elif styledef == 'mono':
-                    # ndef[8] = 1
-                # else:
-                    # ndef[0] = colorformat(styledef)
-
-    # return obj
-
-</t>
-<t tx="ekr.20190321130235.3">def style_for_token(cls, token):
-    try:
-        t = cls._styles[token]
-        ### color = t[0]
-        color = t ### A big hack.
-    except KeyError:
-        color = None
-    ansicolor = bgansicolor = None
-    ###
-        # if color.startswith('#ansi'):
-            # ansicolor = color
-            # color = _ansimap[color]
-    ### bgcolor = t[4]
-    ###
-        # if bgcolor.startswith('#ansi'):
-            # bgansicolor = bgcolor
-            # bgcolor = _ansimap[bgcolor]
-
-    return {
-        'color':        color or None,
-        'bold':         None, ### bool(t[1]),
-        'italic':       None, ### bool(t[2]),
-        'underline':    None, ### bool(t[3]),
-        'bgcolor':      None, ### bgcolor or None,
-        'border':       None, ### t[5] or None,
-        'roman':        None, ### bool(t[6]) or None,
-        'sans':         None, ### bool(t[7]) or None,
-        'mono':         None, ### bool(t[8]) or None,
-        'ansicolor':    ansicolor,
-        'bgansicolor':  bgansicolor,
-    }
-
-</t>
-<t tx="ekr.20190321130235.4">def list_styles(cls):
-    return list(cls)
-
-</t>
-<t tx="ekr.20190321130235.5">def styles_token(cls, ttype):
-    return ttype in cls._styles
-
-</t>
-<t tx="ekr.20190321130235.6">def __iter__(cls):
-    for token in cls._styles:
-        yield token, cls.style_for_token(token)
-
-</t>
-<t tx="ekr.20190321130235.7">def __len__(cls):
-    return len(cls._styles)
-
-
-</t>
-<t tx="ekr.20190321170917.1">def patch_leo_styles(self, name, style):
-
-    g.trace('style:', name, style)
-    # g.printObj(style.list_styles(), tag='list_styles()')
-    # g.printObj(dir(style), tag='style for %s' % name)
-    leo_d = {
-        'Comment': 'firebrick3',
-        'Keyword': 'blue',
-        'Name': 'white',
-        # Name.Function: '#0f0',
-        # Name.Class, 'bold #0f0',
-        'String': '#00aa00',
-    }
-    style_d = {
-        'color':        None,
-        'bold':         None, ### bool(t[1]),
-        'italic':       None, ### bool(t[2]),
-        'underline':    None, ### bool(t[3]),
-        'bgcolor':      None, ### bgcolor or None,
-        'border':       None, ### t[5] or None,
-        'roman':        None, ### bool(t[6]) or None,
-        'sans':         None, ### bool(t[7]) or None,
-        'mono':         None, ### bool(t[8]) or None,
-        'ansicolor':    None,
-        'bgansicolor':  None,
-    }
-    assert style_d
-    if 0:
-        for key in style.styles:
-            key2 = repr(key).lstrip('Token.')
-            if key2 in leo_d:
-                val = leo_d.get(key2)
-                g.trace('patch:', key, val)
-                style.styles[key] = val
-            else:
-                style.styles[key] = ''
-    if 0: # works, but won't be live.
-        for data in style.list_styles():
-            o, d = data
-            g.printObj(d, tag='data.d')
-    if 1:
-        d = style.styles
-        for key in d:
-            g.printObj(d.get(key), tag=key)
-    g.printObj(style._styles, tag='style._styles for %s' % name)
-    # g.printObj(style.styles,  tag=' style.styles for %s' % name)</t>
 <t tx="ekr.20190322041148.1"></t>
-<t tx="ekr.20190322082533.1">def get_lexer(self, language):
-    '''Return the lexer for self.language, creating it if necessary.'''
-    import pygments.lexers as lexers
-   
-    try:
-        if g.isPython3 and language == 'python':
-            lexer_language = 'python3'
-        else:
-            lexer_language = language
-        lexer = lexers.get_lexer_by_name(lexer_language)
-    except Exception:
-        # pylint: disable=no-member
-            # One of the lexer's will not exist.
-        g.trace('==== no lexer for %r' % language)
-        lexer = lexers.Python3Lexer if g.isPython3 else lexers.PythonLexer
-        if 'python' not in self.lexers_dict:
-            g.trace('CREATED default lexer for python: %r' % lexer)
-    return lexer
-</t>
-<t tx="ekr.20190322094034.1">def patch_lexer(self, language, lexer):
-    
-    from pygments.token import Comment
-    from pygments.lexer import inherit
-    
-    class PatchedLexer(lexer.__class__):
-        
-        leo_sec_ref_pat = r'(?-m:\&lt;\&lt;(.*?)\&gt;\&gt;)' if g.isPython3 else r'\&lt;\&lt;(.*?)\&gt;\&gt;'
-            # Multiline for Python 2, but that can't be helped.
-        tokens = {
-            'root': [
-                (r'^@(color|nocolor|killcolor)\b', self.at_color_callback),
-                (r'^@language\s+(\w+)', self.at_language_callback),
-                (leo_sec_ref_pat, self.section_ref_callback),
-                    # Single-line, non-greedy match.
-                (r'(^\s*@doc|@)(\s+|\n)(.|\n)*?^@c', Comment.Leo.DocPart),
-                    # Multi-line, non-greedy match.
-               inherit,
-            ],
-        }
-
-    try:
-        return PatchedLexer()
-    except Exception:
-        g.trace('can not patch %r' % language)
-        g.es_exception()
-        return lexer
-</t>
-<t tx="ekr.20190322133358.1">def section_ref_callback(self, lexer, match):
-    '''pygments callback for section references.'''
-    c = self.c
-    from pygments.token import Comment, Name
-    name, ref, start = match.group(1), match.group(0), match.start()
-    found = g.findReference(ref, c.p)
-    found_tok = Name.Entity if found else Name.Other
-    yield match.start(), Comment, '&lt;&lt;'
-    yield start+2, found_tok, name
-    yield start+2+len(name), Comment, '&gt;&gt;'
-</t>
 <t tx="ekr.20190323034724.1">#
 # The performance bug was in pyg_c.recolor.
 # It was calling updateSyntaxColorer(p) for each line!!!
@@ -16984,31 +16845,13 @@ print('recolorCount:', colorizer.recolorCount)
 print('tot_time: %5.2f' % colorizer.tot_time)
 colorizer.recolorCount = 0
 </t>
-<t tx="ekr.20190323045655.1">def at_color_callback(self, lexer, match):
-    from pygments.token import Name, Text
-    kind = match.group(0)
-    self.color_enabled = kind == '@color'
-    if self.color_enabled:
-        yield match.start(), Name.Decorator, kind
-    else:
-        yield match.start(), Text, kind
-</t>
 <t tx="ekr.20190323045735.1">def at_language_callback(self, lexer, match):
     from pygments.token import Name
-    self.language = match.group(1)
+    language = match.group(1)
+    ok = self.init_mode(language)
+    if ok:
+        self.language = language
     yield match.start(), Name.Decorator, match.group(0)
-</t>
-<t tx="ekr.20190323064820.1">def set_lexer(self):
-    '''Return the lexer for self.language.'''
-    if self.language == 'patch':
-        self.language = 'diff'
-    key = '%s:%s' % (self.language, id(self))
-    lexer = self.lexers_dict.get(key)
-    if not lexer:
-        lexer = self.get_lexer(self.language)
-        lexer = self.patch_lexer(self.language, lexer)
-        self.lexers_dict [key] = lexer
-    return lexer
 </t>
 <t tx="ekr.20190323084212.1"></t>
 <t tx="ekr.20190323084957.1">@g.command('promote-bodies')
@@ -17047,100 +16890,6 @@ def promoteHeadlines(event):
         p.b = p.b.lstrip() + '\n' + result
         c.undoer.afterChangeNodeContents(p,'promote-headlines',b)
 </t>
-<t tx="ekr.20190324043104.1">@language rest
-@wrap
-
-@bool use-pygments-styles = False
-
-</t>
-<t tx="ekr.20190324043722.1">def init(self, p=None):
-    '''Init the colorizer. p is for tracing only.'''
-    #
-    # Like jedit.init, but no need to init state.
-    self.init_mode(self.language)
-    self.prev = None
-        # Used by setTag.
-    self.configure_tags()
-    self.configure_hard_tab_width()
-
-def addLeoRules(self, theDict):
-    pass
-</t>
-<t tx="ekr.20190324050727.1">def init_style_ivars(self):
-    '''Init Style data common to JEdit and Pygments colorizers.'''
-    # init() properly sets these for each language.
-    self.actualColorDict = {} # Used only by setTag.
-    self.hyperCount = 0
-    # Attributes dict ivars: defaults are as shown...
-    self.default = 'null'
-    self.digit_re = ''
-    self.escape = ''
-    self.highlight_digits = True
-    self.ignore_case = True
-    self.no_word_sep = ''
-    # Debugging...
-    self.allow_mark_prev = True
-    self.n_setTag = 0
-    self.tagCount = 0
-    self.trace_leo_matches = False
-    self.trace_match_flag = False
-    # Profiling...
-    self.recolorCount = 0 # Total calls to recolor
-    self.stateCount = 0 # Total calls to setCurrentState
-    self.totalStates = 0
-    self.maxStateNumber = 0
-    self.totalKeywordsCalls = 0
-    self.totalLeoKeywordsCalls = 0
-    # Mode data...
-    self.defaultRulesList = []
-    self.importedRulesets = {}
-    self.initLanguage = None
-    self.prev = None # The previous token.
-    self.fonts = {} # Keys are config names.  Values are actual fonts.
-    self.keywords = {} # Keys are keywords, values are 0..5.
-        # Keys are state ints, values are language names.
-    self.modes = {} # Keys are languages, values are modes.
-    self.mode = None # The mode object for the present language.
-    self.modeBunch = None # A bunch fully describing a mode.
-    self.modeStack = []
-    self.rulesDict = {}
-    # self.defineAndExtendForthWords()
-    self.word_chars = {} # Inited by init_keywords().
-    self.tags = [
-        # 8 Leo-specific tags.
-        "blank", # show_invisibles_space_color
-        "docpart",
-        "leokeyword",
-        "link",
-        "name",
-        "namebrackets",
-        "tab", # show_invisibles_space_color
-        "url",
-        # jEdit tags.
-        'comment1', 'comment2', 'comment3', 'comment4',
-        # default, # exists, but never generated.
-        'function',
-        'keyword1', 'keyword2', 'keyword3', 'keyword4',
-        'label', 'literal1', 'literal2', 'literal3', 'literal4',
-        'markup', 'operator',
-        'trailing_whitespace',
-    ]
-</t>
-<t tx="ekr.20190324051704.1">def reloadSettings(self):
-    '''Reload the base settings, plus pygments settings.'''
-    c = self.c
-    BaseJEditColorizer.reloadSettings(self)
-    self.use_pygments_styles = c.config.getBool('use-pygments-styles', default=True)
-    if self.use_pygments_styles:
-        self.getDefaultFormat = QtGui.QTextCharFormat
-        self.getFormat = self.getPygmentsFormat
-        self.setFormat = self.setPygmentsFormat
-    else:
-        self.getDefaultFormat = self.getLegacyDefaultFormat
-        self.getFormat = self.getLegacyFormat
-        self.setFormat = self.setLegacyFormat
-            # Use the JEdit style method.
-</t>
 <t tx="ekr.20190324063349.1">def getLegacyDefaultFormat(self):
     return None
     
@@ -17166,12 +16915,63 @@ def getPygmentsFormat(self, token, text):
         format = self.highlighter._get_format(token)
     return format
 </t>
-<t tx="ekr.20190324115354.1">class BaseJEditColorizer (BaseColorizer):
-    '''A class containing common JEdit tags machinery.'''
-    # No need for a ctor.
-    @others
+<t tx="ekr.20190324172632.1">def configure_colors(self):
+    '''Configure all colors in the default colors dict.'''
+    c, wrapper = self.c, self.wrapper
+    getColor = c.config.getColor
+        # getColor puts the color name in standard form:
+        # color = color.replace(' ', '').lower().strip()
+    for key in sorted(self.default_colors_dict.keys()):
+        option_name, default_color = self.default_colors_dict[key]
+        color = (
+            getColor('%s_%s' % (self.language, option_name)) or
+            getColor(option_name) or default_color)
+        # Must use foreground, not fg.
+        try:
+            wrapper.tag_configure(key, foreground=color)
+        except Exception: # Recover after a user settings error.
+            g.es_exception()
+            wrapper.tag_configure(key, foreground=default_color)
+
 </t>
-<t tx="ekr.20190324135038.1"></t>
+<t tx="ekr.20190324192318.1">from  leo.core.leoColor import leo_color_database as color_d
+
+d = {
+    'Comment':            'solarized-orange',
+    'Comment.Single':     'solarized-orange',
+    'Generic.Deleted':    'solarized-red',
+    'Generic.Emph':       'solarized-blue',
+    'Generic.Heading':    'solarized-magenta',
+    'Generic.Inserted':   'alt-solarized-green',
+    'Generic.Strong':     'solarized-blue',
+    'Generic.Subheading': 'solarized-magenta',
+    'Keyword':            'solarized-blue',
+    'Name':               'white',
+    'Name.Class':         'white',
+    'Name.Decorator':     'solarized-orange',
+    'Name.Entity':        'solarized-blue',
+    'Name.Function':      'white',
+    'Name.Other':         'solarized-red',
+    'Name.Tag':           'solarized-magenta',
+    'String':             'alt-solarized-green',
+    'String.Doc':         'solarized-orange', # docstring.
+    'String.Interpol':    'alt-solarized-green',
+    'String.Single':      'alt-solarized-green',
+}
+root = p.copy()
+for key, val in d.items():
+    p = root.insertAsLastChild()
+    p.h = '@color %s = %s' % (key.lower(), color_d.get(val, 'white'))
+    p.b = val
+c.redraw()
+    </t>
+<t tx="ekr.20190325053636.1">Comment:            'italic'
+Name.Other:         'underline'
+Generic.Emph:       'italic '
+Generic.Heading:    'underline ' 
+Generic.Strong:     'bold '
+Name.Tag:           'italic '
+</t>
 <t tx="tbrown.20110621120042.22914">def get_top_splitter(self):
     '''Return the top splitter of c.frame.top.'''
     # Careful: we could be unit testing.
