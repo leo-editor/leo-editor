@@ -295,7 +295,7 @@ class BaseJEditColorizer (BaseColorizer):
                 g.es_exception()
                 wrapper.tag_configure(key, foreground=default_color)
 
-    #@+node:ekr.20190324172242.1: *4* bjc.configure_fonts
+    #@+node:ekr.20190324172242.1: *4* bjc.configure_fonts & helper
     def configure_fonts(self):
         '''Configure all fonts in the default fonts dict.'''
         c = self.c
@@ -314,25 +314,30 @@ class BaseJEditColorizer (BaseColorizer):
         # Set all fonts.
         for key in sorted(self.default_font_dict.keys()):
             option_name = self.default_font_dict[key]
-            #
-            # First, look for the language-specific setting, then the general setting.
+            # Look for the language-specific setting, then the general setting.
             for name in ('%s_%s' % (self.language, option_name), (option_name)):
                 font = self.fonts.get(name)
                 if font:
                     wrapper.tag_configure(key, font=font)
                     break
                 else:
-                    family = c.config.get(name + '_family', 'family')
-                    size = c.config.get(name + '_size', 'size')
-                    slant = c.config.get(name + '_slant', 'slant')
-                    weight = c.config.get(name + '_weight', 'weight')
-                    if family or slant or weight or size:
-                        family = family or g.app.config.defaultFontFamily
-                        size = size or c.config.defaultBodyFontSize
-                        slant = slant or 'roman'
-                        weight = weight or 'normal'
-                        font = g.app.gui.getFontFromParams(family, size, slant, weight)
-                        # Save a reference to the font so it 'sticks'.
+                    ###
+                        # family = c.config.get(name + '_family', 'family')
+                        # size = c.config.get(name + '_size', 'size')
+                        # slant = c.config.get(name + '_slant', 'slant')
+                        # weight = c.config.get(name + '_weight', 'weight')
+                        # if family or slant or weight or size:
+                            # family = family or g.app.config.defaultFontFamily
+                            # size = size or c.config.defaultBodyFontSize
+                            # slant = slant or 'roman'
+                            # weight = weight or 'normal'
+                            # font = g.app.gui.getFontFromParams(family, size, slant, weight)
+                            # # Save a reference to the font so it 'sticks'.
+                            # self.fonts[key] = font
+                            # wrapper.tag_configure(key, font=font)
+                            # break
+                    font = self.find_font(name)
+                    if font:
                         self.fonts[key] = font
                         wrapper.tag_configure(key, font=font)
                         break
@@ -343,6 +348,22 @@ class BaseJEditColorizer (BaseColorizer):
                     wrapper.tag_configure(key, font=defaultBodyfont)
             if isQt and key == 'url' and font:
                 font.setUnderline(True)
+    #@+node:ekr.20190326034006.1: *5* bjc.find_font
+    def find_font(self, name):
+        '''Return the font for the given configuration name.'''
+        c, get = self.c, self.c.config.get
+        family = get(name + '_family', 'family')
+        size   = get(name + '_size', 'size')
+        slant  = get(name + '_slant', 'slant')
+        weight = get(name + '_weight', 'weight')
+        # g.trace(name)
+        if family or slant or weight or size:
+            family = family or g.app.config.defaultFontFamily
+            size = size or c.config.defaultBodyFontSize
+            slant = slant or 'roman'
+            weight = weight or 'normal'
+            return g.app.gui.getFontFromParams(family, size, slant, weight)
+        return None
     #@+node:ekr.20110605121601.18579: *4* bjc.configure_variable_tags
     def configure_variable_tags(self):
         c = self.c
