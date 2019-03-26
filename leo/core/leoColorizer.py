@@ -318,17 +318,18 @@ class BaseJEditColorizer (BaseColorizer):
             for name in ('%s_%s' % (self.language, option_name), (option_name)):
                 font = self.fonts.get(name)
                 if font:
-                    wrapper.tag_configure(key, font=font)
+                    # wrapper.tag_configure(key, font=font)
                     break
                 font = self.find_font(name)
                 if font:
                     self.fonts[key] = font
-                    wrapper.tag_configure(key, font=font)
+                    # wrapper.tag_configure(key, font=font)
                     break
             else:
                 # Neither the general setting nor the language-specific setting exists.
                 self.fonts[key] = None # Essential
-                wrapper.tag_configure(key, font=defaultBodyfont)
+                font = defaultBodyfont
+            wrapper.tag_configure(key, font=font)
             if isQt and key == 'url' and font:
                 font.setUnderline(True)
     #@+node:ekr.20190326034006.1: *5* bjc.find_font
