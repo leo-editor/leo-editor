@@ -693,7 +693,8 @@ class ParserBaseClass(object):
         # name is everything up to '='
         i = s.find('=')
         if i == -1:
-            name = s; val = None
+            name = s
+            val = None
         else:
             name = s[: i].strip()
             val = s[i + 1:].strip().strip('"').strip("'")
