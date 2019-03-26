@@ -2873,23 +2873,30 @@ if pygments:
     # Copyright (c) Jupyter Development Team.
     # Distributed under the terms of the Modified BSD License.
 
-    class PygmentsBlockUserData(QtGui.QTextBlockUserData):
-        """ Storage for the user data associated with each line."""
+    if QtGui:
 
-        syntax_stack = ('root',)
-
-        def __init__(self, **kwds):
-            for key, value in kwds.items():
-                setattr(self, key, value)
-            QtGui.QTextBlockUserData.__init__(self)
-
-        def __repr__(self):
-            attrs = ['syntax_stack']
-            kwds = ', '.join([
-                '%s=%r' % (attr, getattr(self, attr))
-                    for attr in attrs
-            ])
-            return 'PygmentsBlockUserData(%s)' % kwds
+        class PygmentsBlockUserData(QtGui.QTextBlockUserData):
+            """ Storage for the user data associated with each line."""
+        
+            syntax_stack = ('root',)
+        
+            def __init__(self, **kwds):
+                for key, value in kwds.items():
+                    setattr(self, key, value)
+                QtGui.QTextBlockUserData.__init__(self)
+        
+            def __repr__(self):
+                attrs = ['syntax_stack']
+                kwds = ', '.join([
+                    '%s=%r' % (attr, getattr(self, attr))
+                        for attr in attrs
+                ])
+                return 'PygmentsBlockUserData(%s)' % kwds
+                
+    else:
+        # For TravisCi.
+        PygmentsBlockUserData = g.NullObject
+        
     #@-others
 #@-others
 #@@language python
