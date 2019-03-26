@@ -314,33 +314,34 @@ class BaseJEditColorizer (BaseColorizer):
         # Set all fonts.
         for key in sorted(self.default_font_dict.keys()):
             option_name = self.default_font_dict[key]
-            # Look for the language-specific setting, then the general setting.
-            for name in ('%s_%s' % (self.language, option_name), (option_name)):
+            # Find language specific setting before general setting.
+            table = (
+                '%s_%s' % (self.language, option_name), 
+                option_name,
+            )
+            for name in table:
                 font = self.fonts.get(name)
                 if font:
-                    # wrapper.tag_configure(key, font=font)
                     break
                 font = self.find_font(name)
                 if font:
                     self.fonts[key] = font
-                    # wrapper.tag_configure(key, font=font)
+                    wrapper.tag_configure(key, font=font)
+                    if isQt and key == 'url':
+                        font.setUnderline(True)
                     break
             else:
-                # Neither the general setting nor the language-specific setting exists.
+                # Neither setting exists.
                 self.fonts[key] = None # Essential
-                font = defaultBodyfont
-            wrapper.tag_configure(key, font=font)
-            if isQt and key == 'url' and font:
-                font.setUnderline(True)
+                wrapper.tag_configure(key, font=defaultBodyfont)
     #@+node:ekr.20190326034006.1: *5* bjc.find_font
-    def find_font(self, name):
-        '''Return the font for the given configuration name.'''
+    def find_font(self, setting_name):
+        '''Return the font for the given setting name.'''
         c, get = self.c, self.c.config.get
-        family = get(name + '_family', 'family')
-        size   = get(name + '_size', 'size')
-        slant  = get(name + '_slant', 'slant')
-        weight = get(name + '_weight', 'weight')
-        # g.trace(name)
+        family = get(setting_name + '_family', 'family')
+        size   = get(setting_name + '_size', 'size')
+        slant  = get(setting_name + '_slant', 'slant')
+        weight = get(setting_name + '_weight', 'weight')
         if family or slant or weight or size:
             family = family or g.app.config.defaultFontFamily
             size = size or c.config.defaultBodyFontSize
