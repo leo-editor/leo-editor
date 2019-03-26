@@ -320,30 +320,14 @@ class BaseJEditColorizer (BaseColorizer):
                 if font:
                     wrapper.tag_configure(key, font=font)
                     break
-                else:
-                    ###
-                        # family = c.config.get(name + '_family', 'family')
-                        # size = c.config.get(name + '_size', 'size')
-                        # slant = c.config.get(name + '_slant', 'slant')
-                        # weight = c.config.get(name + '_weight', 'weight')
-                        # if family or slant or weight or size:
-                            # family = family or g.app.config.defaultFontFamily
-                            # size = size or c.config.defaultBodyFontSize
-                            # slant = slant or 'roman'
-                            # weight = weight or 'normal'
-                            # font = g.app.gui.getFontFromParams(family, size, slant, weight)
-                            # # Save a reference to the font so it 'sticks'.
-                            # self.fonts[key] = font
-                            # wrapper.tag_configure(key, font=font)
-                            # break
-                    font = self.find_font(name)
-                    if font:
-                        self.fonts[key] = font
-                        wrapper.tag_configure(key, font=font)
-                        break
+                font = self.find_font(name)
+                if font:
+                    self.fonts[key] = font
+                    wrapper.tag_configure(key, font=font)
+                    break
             else:
                 # Neither the general setting nor the language-specific setting exists.
-                if list(self.fonts.keys()): # Restore the default font.
+                if True: ### list(self.fonts.keys()): # Restore the default font.
                     self.fonts[key] = font # Essential
                     wrapper.tag_configure(key, font=defaultBodyfont)
             if isQt and key == 'url' and font:
