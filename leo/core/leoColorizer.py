@@ -338,16 +338,20 @@ class BaseJEditColorizer (BaseColorizer):
     def find_font(self, setting_name):
         '''Return the font for the given setting name.'''
         c, get = self.c, self.c.config.get
-        family = get(setting_name + '_family', 'family')
-        size   = get(setting_name + '_size', 'size')
-        slant  = get(setting_name + '_slant', 'slant')
-        weight = get(setting_name + '_weight', 'weight')
-        if family or slant or weight or size:
-            family = family or g.app.config.defaultFontFamily
-            size = size or c.config.defaultBodyFontSize
-            slant = slant or 'roman'
-            weight = weight or 'normal'
-            return g.app.gui.getFontFromParams(family, size, slant, weight)
+        for name in (setting_name, setting_name.rstrip('_font')):
+            family = get(name + '_family', 'family')
+            size   = get(name + '_size', 'size')
+            slant  = get(name + '_slant', 'slant')
+            weight = get(name + '_weight', 'weight')
+            if family or slant or weight or size:
+                family = family or g.app.config.defaultFontFamily
+                size = size or c.config.defaultBodyFontSize
+                    # It's almost certainly a good idea to set size explicitly.
+                slant = slant or 'roman'
+                weight = weight or 'normal'
+                font = g.app.gui.getFontFromParams(family, size, slant, weight)
+                # g.trace(setting_name, family, size, slant, weight)
+                return font
         return None
     #@+node:ekr.20110605121601.18579: *4* bjc.configure_variable_tags
     def configure_variable_tags(self):
