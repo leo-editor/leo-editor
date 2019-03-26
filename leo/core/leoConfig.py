@@ -660,15 +660,7 @@ class ParserBaseClass(object):
             g.callers(),
             "must be overridden in subclass")
     #@+node:ekr.20041213082558: *3* parsers (ParserBaseClass)
-    #@+node:ekr.20041213083651: *4* fontSettingNameToFontKind
-    def fontSettingNameToFontKind(self, name):
-        s = name.strip()
-        if s:
-            for tag in ('_family', '_size', '_slant', '_weight'):
-                if s.endswith(tag):
-                    return tag[1:]
-        return None
-    #@+node:ekr.20041213082558.1: *4* parseFont & helper
+    #@+node:ekr.20041213082558.1: *4* pbc.parseFont & parseFontLine
     def parseFont(self, p):
         d = {
             'comments': [],
@@ -684,7 +676,7 @@ class ParserBaseClass(object):
         comments = d.get('comments')
         d['comments'] = '\n'.join(comments)
         return d
-    #@+node:ekr.20041213082558.2: *5* parseFontLine
+    #@+node:ekr.20041213082558.2: *5* pbc.parseFontLine
     def parseFontLine(self, line, d):
         s = line.strip()
         if not s: return
@@ -697,19 +689,24 @@ class ParserBaseClass(object):
             comments = d.get('comments')
             comments.append(s)
             d['comments'] = comments
+            return
+        # name is everything up to '='
+        i = s.find('=')
+        if i == -1:
+            name = s; val = None
         else:
-            # name is everything up to '='
-            i = s.find('=')
-            if i == -1:
-                name = s; val = None
-            else:
-                name = s[: i].strip()
-                val = s[i + 1:].strip()
-                val = val.lstrip('"').rstrip('"')
-                val = val.lstrip("'").rstrip("'")
-            fontKind = self.fontSettingNameToFontKind(name)
-            if fontKind:
+            name = s[: i].strip()
+            val = s[i + 1:].strip().strip('"').strip("'")
+            # val = val.lstrip('"').rstrip('"')
+            #val = val.lstrip("'").rstrip("'")
+        for tag in ('_family', '_size', '_slant', '_weight'):
+            if name.endswith(tag):
+                fontKind = tag[1:]
                 d[fontKind] = name, val # Used only by doFont.
+                return
+        # fontKind = self.fontSettingNameToFontKind(name)
+        # if fontKind:
+            # d[fontKind] = name, val # Used only by doFont.
     #@+node:ekr.20041119205148: *4* parseHeadline
     def parseHeadline(self, s):
         """

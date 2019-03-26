@@ -323,7 +323,7 @@ class BaseJEditColorizer (BaseColorizer):
                 font = self.fonts.get(name)
                 if font:
                     break
-                font = self.find_font(name)
+                font = self.find_font(key, name)
                 if font:
                     self.fonts[key] = font
                     wrapper.tag_configure(key, font=font)
@@ -335,8 +335,11 @@ class BaseJEditColorizer (BaseColorizer):
                 self.fonts[key] = None # Essential
                 wrapper.tag_configure(key, font=defaultBodyfont)
     #@+node:ekr.20190326034006.1: *5* bjc.find_font
-    def find_font(self, setting_name):
-        '''Return the font for the given setting name.'''
+    def find_font(self, key, setting_name):
+        '''
+        Return the font for the given setting name.
+        Key is for debugging only.
+        '''
         c, get = self.c, self.c.config.get
         for name in (setting_name, setting_name.rstrip('_font')):
             family = get(name + '_family', 'family')
@@ -350,7 +353,9 @@ class BaseJEditColorizer (BaseColorizer):
                 slant = slant or 'roman'
                 weight = weight or 'normal'
                 font = g.app.gui.getFontFromParams(family, size, slant, weight)
-                # g.trace(setting_name, family, size, slant, weight)
+                # A good trace: the key shows what is happening.
+                    # g.trace('%20s %5s %20s %10s %5s %6s %s' % (
+                        # key, bool(font), setting_name, family, size, slant, weight))
                 return font
         return None
     #@+node:ekr.20110605121601.18579: *4* bjc.configure_variable_tags
