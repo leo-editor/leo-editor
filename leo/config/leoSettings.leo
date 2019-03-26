@@ -5128,21 +5128,45 @@ Commands:
 <t tx="ekr.20111003085631.15488"></t>
 <t tx="ekr.20111003085631.15489"></t>
 <t tx="ekr.20111003085631.15490"></t>
-<t tx="ekr.20111003130143.15561">    **Important**: these nodes **only** specify fonts used by Leo's syntax colorizer.
+<t tx="ekr.20111003130143.15561">**Important**: these nodes **only** specify fonts used by Leo's syntax colorizer.
+
+To set fonts in Leo's widgets, change Leo's master style sheet::
     
-    To set fonts in Leo's widgets, change Leo's master style sheet::
-        
-        @data qt-gui-plugin-style-sheet 
+    @data qt-gui-plugin-style-sheet
     
-    Valid values for the body of @font nodes::
-        
-        family: a font family name
-        size:   an integer
-        weight: bold, normal, None
-        slant: roman, italic, None
+Leo ignores everything in the headline after @font: only the body matters.
+
+Body lines starting with '#' are comments.
+
+Body lines have the form:
+
+&lt;optional language name&gt;&lt;jEdit or Pygments key&gt;&lt;specifiers&gt;
+
+Underlines and '-' characters are ignored, and can be used for readability.
+
+Valid specifiers are:
     
-    Use the show-fonts command to pick fonts, then copy the values shown by the
-    show-fonts command to the values here.
+family: a font family name. None is the default, indicating the default font.
+size:   an integer, optinally followed by px or pt.
+weight: bold, normal, None.  Default is normal.
+slant: roman, italic, None. Default is roman.
+
+Example 1: Sets the comment1 font, for python only.
+
+python_comment1_family = None
+python_comment1_size = 12pt
+python_comment1_slant = italic
+python_comment1_weight = None
+
+Example 2: Sets the comment1 font for all languages.
+
+comment1_family = None
+comment1_size = 12pt
+comment1_slant = italic
+comment1_weight = bold
+
+Use the show-fonts command to pick fonts, then copy the values shown by the
+show-fonts command to the values here.
 </t>
 <t tx="ekr.20111004182631.15533"></t>
 <t tx="ekr.20111004182631.15534">True:  Leo colors C language comments in cweb mode as black with LaTeX keywords highlighted.
