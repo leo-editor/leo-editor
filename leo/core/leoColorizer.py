@@ -327,9 +327,8 @@ class BaseJEditColorizer (BaseColorizer):
                     break
             else:
                 # Neither the general setting nor the language-specific setting exists.
-                if True: ### list(self.fonts.keys()): # Restore the default font.
-                    self.fonts[key] = font # Essential
-                    wrapper.tag_configure(key, font=defaultBodyfont)
+                self.fonts[key] = font # Essential
+                wrapper.tag_configure(key, font=defaultBodyfont)
             if isQt and key == 'url' and font:
                 font.setUnderline(True)
     #@+node:ekr.20190326034006.1: *5* bjc.find_font
