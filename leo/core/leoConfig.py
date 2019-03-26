@@ -697,16 +697,11 @@ class ParserBaseClass(object):
         else:
             name = s[: i].strip()
             val = s[i + 1:].strip().strip('"').strip("'")
-            # val = val.lstrip('"').rstrip('"')
-            #val = val.lstrip("'").rstrip("'")
         for tag in ('_family', '_size', '_slant', '_weight'):
             if name.endswith(tag):
-                fontKind = tag[1:]
-                d[fontKind] = name, val # Used only by doFont.
+                kind = tag[1:]
+                d[kind] = name, val # Used only by doFont.
                 return
-        # fontKind = self.fontSettingNameToFontKind(name)
-        # if fontKind:
-            # d[fontKind] = name, val # Used only by doFont.
     #@+node:ekr.20041119205148: *4* parseHeadline
     def parseHeadline(self, s):
         """
