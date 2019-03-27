@@ -1107,7 +1107,7 @@ class JEditColorizer(BaseJEditColorizer):
     #@+node:ekr.20190326183005.1: *4* jedit.reloadSettings
     def reloadSettings(self):
         '''Complete the initialization of all settings.'''
-        if 'coloring' in g.app.debug:
+        if 'coloring' in g.app.debug and not g.unitTesting:
             print('reloading jEdit settings.')
         # Do the basic inits.
         BaseJEditColorizer.reloadSettings(self)
@@ -2516,7 +2516,7 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+node:ekr.20190324051704.1: *4* pyg_c.reloadSettings
     def reloadSettings(self):
         '''Reload the base settings, plus pygments settings.'''
-        if 'coloring' in g.app.debug:
+        if 'coloring' in g.app.debug and not g.unitTesting:
             print('reloading pygments settings.')
         # Do basic inits.
         BaseJEditColorizer.reloadSettings(self)
