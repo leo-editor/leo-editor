@@ -5134,36 +5134,48 @@ To set fonts in Leo's widgets, change Leo's master style sheet::
     
     @data qt-gui-plugin-style-sheet
     
-Leo ignores everything in the headline after @font: only the body matters.
-
-Body lines starting with '#' are comments.
-
-Body lines have the form:
-
-&lt;optional language name&gt;&lt;jEdit or Pygments key&gt;&lt;specifiers&gt;
-
-Underlines and '-' characters are ignored, and can be used for readability.
-
-Valid specifiers are:
+**Notes**
     
-family: a font family name. None is the default, indicating the default font.
-size:   an integer, optinally followed by px or pt.
-weight: bold, normal, None.  Default is normal.
-slant: roman, italic, None. Default is roman.
+- Leo ignores everything in the headline after @font: only the body matters.
+- Body lines starting with '#' are comments.
+- All other body lines should have the form:
 
-Example 1: Sets the comment1 font, for python only.
+    &lt;optional language name&gt;&lt;jEdit or Pygments key&gt;&lt;specifiers&gt;
+
+- Underlines and '-' characters are ignored, and can be used for readability.
+- Valid specifiers are:
+    
+    family: a font family name.
+            None is the default, indicating the default font.
+    size:   an integer, optinally followed by px or pt.
+    weight: bold, normal, None.'
+            Default is normal.
+    slant:  roman, italic, None.
+            Default is roman.
+
+- **Note**: A single @font node may create settings for different languages.
+            See example 3 below.
+
+Example 1: Sets the comment1 font, for python only:
 
 python_comment1_family = None
 python_comment1_size = 12pt
 python_comment1_slant = italic
 python_comment1_weight = None
 
-Example 2: Sets the comment1 font for all languages.
+Example 2: Sets the comment1 font for all languages:
 
 comment1_family = None
 comment1_size = 12pt
 comment1_slant = italic
 comment1_weight = bold
+
+Example 3: Combining the previous two examples:
+
+python_comment1_size = 12pt
+python_comment1_slant = italic
+comment1_size = 12pt
+comment1_slant = italic
 
 Use the show-fonts command to pick fonts, then copy the values shown by the
 show-fonts command to the values here.
