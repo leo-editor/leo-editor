@@ -913,17 +913,36 @@ class BaseJEditColorizer (BaseColorizer):
     def report_changes(self):
         '''Report changes to pygments settings'''
         c = self.c
+        trace = 'syntax' in g.app.debug and not g.unitTesting
+        if trace:
+            g.es_print('\n--trace-syntax:')
+            
+        def show(setting, val):
+            if trace:
+                g.es_print('%35s: %s' % (setting, val))
         #
         # Set self.use_pygments only once: it can't be changed later.
         # There is no easy way to re-instantiate classes created by make_colorizer.
         use_pygments = c.config.getBool('use-pygments', default=False)
         if self.prev_use_pygments is None:
             self.use_pygments = self.prev_use_pygments = use_pygments
-        elif use_pygments != self.prev_use_pygments:
-            g.es_print('Can not change @bool use-pygments = %s' %
-                (self.prev_use_pygments), color='red')
+            show('@bool use-pygments', use_pygments)
+        elif use_pygments == self.prev_use_pygments:
+            show('@bool use-pygments', use_pygments)
+        else:
+            g.es_print('%35s: %s' % (
+                    'Can not change @bool use-pygments',
+                    self.prev_use_pygments),
+                color='red')
         #
-        # Report other changes only if we are actually using pygments.
+        # Report everything if we are tracing.
+        style_name = c.config.getString('pygments-style-name') or 'default'
+            # Don't set an ivar. It's not used in this class.
+            # This setting is used only in the LeoHighlighter class
+        show('@bool use-pytments-styles', self.use_pygments_styles)
+        show('@string pygments-style-name', style_name)
+        #
+        # Report other changes only if we are using pygments.
         if not use_pygments:
             return
         #
@@ -938,9 +957,6 @@ class BaseJEditColorizer (BaseColorizer):
             return
         #
         # Report changes to @string pygments-style-name
-        style_name = c.config.getString('pygments-style-name') or 'default'
-            # Don't set an ivar. It's not used in this class.
-            # This setting is used only in the LeoHighlighter class
         if self.prev_style is None:
             self.prev_style = style_name
         elif style_name != self.prev_style:
@@ -1077,11 +1093,9 @@ class JEditColorizer(BaseJEditColorizer):
         '''Complete the initialization of all settings.'''
         if 'syntax' in g.app.debug:
             print('reloading jEdit settings.')
-        #
-        # First, do the basic inits.
+        # Do the basic inits.
         BaseJEditColorizer.reloadSettings(self)
-        #
-        # Next, do all the inits previously done in the ctor.
+        # Init everything else.
         self.init_style_ivars()
         self.defineLeoKeywordsDict()
         self.defineDefaultColorsDict()
@@ -2488,11 +2502,9 @@ class PygmentsColorizer(BaseJEditColorizer):
         '''Reload the base settings, plus pygments settings.'''
         if 'syntax' in g.app.debug:
             print('reloading pygments settings.')
-        #
-        # First, do basic inits.
+        # Do basic inits.
         BaseJEditColorizer.reloadSettings(self)
-        #
-        # Next, bind methods.
+        # Bind methods.
         if self.use_pygments_styles:
             self.getDefaultFormat = QtGui.QTextCharFormat
             self.getFormat = self.getPygmentsFormat
@@ -2501,9 +2513,7 @@ class PygmentsColorizer(BaseJEditColorizer):
             self.getDefaultFormat = self.getLegacyDefaultFormat
             self.getFormat = self.getLegacyFormat
             self.setFormat = self.setLegacyFormat
-                # Use the JEdit style method.
-        #
-        # Re-init everything.
+        # Init everything else.
         self.init_style_ivars()
         self.defineLeoKeywordsDict()
         self.defineDefaultColorsDict()
