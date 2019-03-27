@@ -1023,10 +1023,10 @@ class BaseJEditColorizer (BaseColorizer):
         self.tagCount += 1
         if trace:
             # A superb trace.
-            v = self.c.p.v
-            if v != self.last_v:
-                print('')
-                self.last_v = v
+            p = self.c and self.c.p
+            if p and p.v != self.last_v:
+                print('\n%s\n' % p.h)
+                self.last_v = p.v
             if len(repr(s[i: j])) <= 20:
                 s2 = repr(s[i: j])
             else:
