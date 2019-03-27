@@ -2870,7 +2870,6 @@ class LoadManager(object):
             ('plugins', options.trace_plugins),
             ('shutdown', options.trace_shutdown),
             ('startup', options.trace_startup),
-            ('syntax', options.trace_syntax), # Leo 5.8.1-b2.
             ('themes', options.trace_themes),
         )
         for val, option in table:

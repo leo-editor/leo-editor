@@ -913,9 +913,9 @@ class BaseJEditColorizer (BaseColorizer):
     def report_changes(self):
         '''Report changes to pygments settings'''
         c = self.c
-        trace = 'syntax' in g.app.debug and not g.unitTesting
+        trace = 'coloring' in g.app.debug and not g.unitTesting
         if trace:
-            g.es_print('\n--trace-syntax:')
+            g.es_print('\n--trace-coloring...')
             
         def show(setting, val):
             if trace:
@@ -944,6 +944,7 @@ class BaseJEditColorizer (BaseColorizer):
         #
         # Report other changes only if we are using pygments.
         if not use_pygments:
+            if trace: print('')
             return
         #
         # Report changes to @bool use-pygments-style
@@ -963,8 +964,11 @@ class BaseJEditColorizer (BaseColorizer):
             g.es_print('New pygments style: %s' % style_name)
             self.prev_style = style_name
     #@+node:ekr.20110605121601.18641: *3* bjc.setTag
+    last_v = None
+
     def setTag(self, tag, s, i, j):
         '''Set the tag in the highlighter.'''
+        trace = 'coloring' in g.app.debug and not g.unitTesting
         self.n_setTag += 1
         if i == j:
             return
@@ -1017,6 +1021,18 @@ class BaseJEditColorizer (BaseColorizer):
             format.setForeground(color)
             format.setUnderlineStyle(format.NoUnderline)
         self.tagCount += 1
+        if trace:
+            # A superb trace.
+            v = self.c.p.v
+            if v != self.last_v:
+                print('')
+                self.last_v = v
+            if len(repr(s[i: j])) <= 20:
+                s2 = repr(s[i: j])
+            else:
+                s2 = repr(s[i: i + 17 - 2] + '...')
+            print('--trace-coloring: %25s %3s %3s %-20s %s' % (
+                ('%s.%s' % (self.language, tag)), i, j, s2, g.callers(2)))
         self.highlighter.setFormat(i, j - i, format)
     #@-others
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseJEditColorizer)
@@ -1091,7 +1107,7 @@ class JEditColorizer(BaseJEditColorizer):
     #@+node:ekr.20190326183005.1: *4* jedit.reloadSettings
     def reloadSettings(self):
         '''Complete the initialization of all settings.'''
-        if 'syntax' in g.app.debug:
+        if 'coloring' in g.app.debug:
             print('reloading jEdit settings.')
         # Do the basic inits.
         BaseJEditColorizer.reloadSettings(self)
@@ -2085,8 +2101,8 @@ class JEditColorizer(BaseJEditColorizer):
         '''Actually colorize the selected range.
 
         This is called whenever a pattern matcher succeed.'''
-        trace = 'coloring' in g.app.debug
-            # A superb trace: enable this first to see what gets colored.
+        trace = 'coloring' in g.app.debug and not g.unitTesting
+            # setTag does most tracing.
         if not self.inColorState():
             # Do *not* check x.flag here. It won't work.
             if trace: g.trace('not in color state')
@@ -2097,7 +2113,7 @@ class JEditColorizer(BaseJEditColorizer):
                     s2 = repr(s[i: j])
                 else:
                     s2 = repr(s[i: i + 17 - 2] + '...')
-                g.trace('%25s %3s %3s %-20s %s' % (
+                print('--trace-coloring: %25s %3s %3s %-20s %s' % (
                     ('%s.%s' % (delegate, tag)), i, j, s2, g.callers(2)))
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
@@ -2120,10 +2136,10 @@ class JEditColorizer(BaseJEditColorizer):
             bunch = self.modeStack.pop()
             self.initModeFromBunch(bunch)
         elif not exclude_match:
-            if trace:
-                s2 = repr(s[i: j]) if len(repr(s[i: j])) <= 20 else repr(s[i: i + 17 - 2] + '...')
-                g.trace('%25s %3s %3s %-20s %s' % (
-                    ('%s.%s' % (self.language, tag)), i, j, s2, g.callers(2)))
+            # if trace:
+                # s2 = repr(s[i: j]) if len(repr(s[i: j])) <= 20 else repr(s[i: i + 17 - 2] + '...')
+                # g.trace('%25s %3s %3s %-20s %s' % (
+                    # ('%s.%s' % (self.language, tag)), i, j, s2, g.callers(2)))
             self.setTag(tag, s, i, j)
         if tag != 'url':
             # Allow UNL's and URL's *everywhere*.
@@ -2500,7 +2516,7 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+node:ekr.20190324051704.1: *4* pyg_c.reloadSettings
     def reloadSettings(self):
         '''Reload the base settings, plus pygments settings.'''
-        if 'syntax' in g.app.debug:
+        if 'coloring' in g.app.debug:
             print('reloading pygments settings.')
         # Do basic inits.
         BaseJEditColorizer.reloadSettings(self)
