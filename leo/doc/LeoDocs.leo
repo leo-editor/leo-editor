@@ -2253,8 +2253,8 @@
 <v t="ekr.20190123075859.1"><vh>#1065: refresh-from-disk</vh></v>
 </v>
 <v t="ekr.20190119070017.1"><vh>5.8.1: Features</vh>
-<v t="ekr.20190325062650.1"><vh>#0568 &amp; #1102: pygments syntax coloring</vh></v>
 <v t="ekr.20190117143942.654"><vh>#0525: Nested @clean</vh></v>
+<v t="ekr.20190325062650.1"><vh>#0568 &amp; #1102: pygments syntax coloring</vh></v>
 <v t="ekr.20190117143942.672"><vh>#0672: Leo uses TravisCI</vh></v>
 <v t="ekr.20190117143942.681"><vh>#0915: Leo debugger</vh></v>
 <v t="ekr.20190122041941.1"><vh>#0926: Organize @outline-data tree-abbreviations</vh></v>
@@ -2262,12 +2262,15 @@
 <v t="ekr.20190117143942.399"><vh>#1031, #1050 and #1003: Better error recovery</vh></v>
 <v t="ekr.20190117143942.463"><vh>#1040: Simplify atFile.write code</vh></v>
 <v t="ekr.20190122042300.1"><vh>#1047: Tree Window Resizes on Paste Node</vh></v>
+<v t="ekr.20190327105147.364"><vh>#1081: @asis</vh></v>
+<v t="ekr.20190327105525.1"><vh>#1085: The py3 branch</vh></v>
+<v t="ekr.20190327105503.1"><vh>Added g.get_files_in_directory</vh></v>
+<v t="ekr.20190327105000.1"><vh>Added promote-headline command</vh></v>
+<v t="ekr.20190327105249.1"><vh>Created py3 branch, for Leo 6.0</vh></v>
 <v t="ekr.20190123122138.1"><vh>Retired the head-to-prev node and tail-to-next-node commands </vh></v>
 </v>
 <v t="ekr.20190119071258.1"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
 </v>
-<v t="ekr.20190307095247.1"></v>
-<v t="ekr.20161029072351.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -29672,10 +29675,13 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **The highlights of Leo 5.8.1**
 
+Major features
 - LeoWapp: Leo in a browser.
 - Optional syntax coloring using pygments.
-  Optional: you may use @color directives instead of pygments styles.
+  Optional: you may use @color &amp; @font directives instead of pygments styles.
 - Integrated debugger.
+
+Other features
 - Nested @clean nodes, useful for LaTex files.
 - A major refactoring of the code that writes external files.
 - Better error recovery.
@@ -29772,9 +29778,21 @@ https://github.com/leo-editor/leo-editor/issues/690
 <t tx="ekr.20190119065631.1">For the complete list, see:
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.8.1+label%3Abug+is%3Aclosed</t>
 <t tx="ekr.20190119070017.1"></t>
-<t tx="ekr.20190119071258.1">- Removed @string trailing-body-newlines.
-- Remove @string qt-ui-file-name.
+<t tx="ekr.20190119071258.1">New settings (defaults as shown):
+
+- @bool use-pygments = False
+- @bool use-pygments-styles = True
+- @string pygments-style-name = default
+- Created a 'leonine' style.
+  See: https://github.com/leo-editor/leo-editor-contrib/blob/master/leonine.py
+  
+Changed/improved settings:
+- Improved --trace-coloring traces
 - #993: use -, not underscore, for settings names.
+
+Removed settings:
+- Removed @string trailing-body-newlines.
+- Remove @string qt-ui-file-name.
   https://github.com/leo-editor/leo-editor/issues/993
 </t>
 <t tx="ekr.20190122041941.1">https://github.com/leo-editor/leo-editor/issues/926
@@ -29789,6 +29807,7 @@ The following call FastRead().readFileFromClipboard:
 </t>
 <t tx="ekr.20190122044116.1">- LeoWapp: Leo in a browser.
 - Integrated debugger.
+- Support for pygments syntax coloring.
 - Nested @clean nodes, useful for LaTex files.
 - A major refactoring of the code that writes external files.
 - Better error recovery.
@@ -29826,13 +29845,43 @@ g.execute_shell_commands_with_options inits an environment and then calls g.exec
 <t tx="ekr.20190307095247.1">This is detailed more fully in a scripting miscellany. g.execute_shell_commands executes one or more commands in a separate process using subprocess.popen. Commands *not* preceded by '&amp;' run to completion before the next command is run.
 
 This allows you to run programs in *any* language.  Just invoke the compiler/interpreter using g.execute_shell_commands.</t>
-<t tx="ekr.20190325062650.1">https://github.com/leo-editor/leo-editor/issues/568
+<t tx="ekr.20190325062650.1">Leo now optionally supports syntax coloring with pygments.
+See http://pygments.org/docs/
 
-https://github.com/leo-editor/leo-editor/issues/1102
+Related Leo issues:
 
-New settings:
+- https://github.com/leo-editor/leo-editor/issues/568
+- https://github.com/leo-editor/leo-editor/issues/1102
 
+New settings (defaults as shown):
+
+- @bool use-pygments = False
+- @bool use-pygments-styles = True
+- @string pygments-style-name = default
+- Created a 'leonine' style.
+  See: https://github.com/leo-editor/leo-editor-contrib/blob/master/leonine.py
 </t>
+<t tx="ekr.20190327105000.1">Copies the headlines of all descendants to the parent's body text.</t>
+<t tx="ekr.20190327105147.364">https://github.com/leo-editor/leo-editor/issues/1081
+
+Added warning when @asis or @nosent files change outside of Leo.
+</t>
+<t tx="ekr.20190327105249.1">https://github.com/leo-editor/leo-editor/issues/1085
+This branch assumes Python 3.  It will be the basis of Leo 6.0.
+  
+- Removed isPython3 switches.
+- Removed g.u.
+- Removed g.ue.
+
+The following methods will not be removed:
+- Replace isBytes, isCallable, isInt, isList, isString
+</t>
+<t tx="ekr.20190327105503.1"></t>
+<t tx="ekr.20190327105525.1">https://github.com/leo-editor/leo-editor/issues/1085
+
+This branch removes all Python 2 compatibility code.
+It will be the basis of Leo 6.0.
+ </t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
