@@ -876,13 +876,23 @@ class BaseJEditColorizer (BaseColorizer):
         '''Munge a mode name so that it is a valid python id.'''
         valid = string.ascii_letters + string.digits + '_'
         return ''.join([ch.lower() if ch in valid else '_' for ch in s])
-    #@+node:ekr.20171114041307.1: *3* bjc.reloadSettings
+    #@+node:ekr.20171114041307.1: *3* bjc.reloadSettings & helper
+    #@@nobeautify
     def reloadSettings(self):
-        c = self.c
-        self.showInvisibles = c.config.getBool("show-invisibles-by-default")
-        self.underline_undefined = c.config.getBool("underline-undefined-section-names")
-        self.use_hyperlinks = c.config.getBool("use-hyperlinks")
-        # There were in setFontFromConfig.
+        c, getBool = self.c, self.c.config.getBool
+        #
+        # Init all settings ivars.
+        self.color_tags_list = []
+        self.showInvisibles      = getBool("show-invisibles-by-default")
+        self.underline_undefined = getBool("underline-undefined-section-names")
+        self.use_hyperlinks      = getBool("use-hyperlinks")
+        self.use_pygments        = None # Set in report_changes.
+        self.use_pygments_styles = getBool('use-pygments-styles', default=True)
+        #
+        # Report changes to pygments settings.
+        self.report_changes()
+        #
+        # Init the default fonts.
         self.bold_font = c.config.getFontFromParams(
             "body_text_font_family", "body_text_font_size",
             "body_text_font_slant", "body_text_font_weight",
@@ -895,7 +905,47 @@ class BaseJEditColorizer (BaseColorizer):
             "body_text_font_family", "body_text_font_size",
             "body_text_font_slant", "body_text_font_weight",
             c.config.defaultBodyFontSize)
-        self.color_tags_list = []
+    #@+node:ekr.20190327053604.1: *4* bjc.report_changes
+    prev_use_pygments = None
+    prev_use_styles = None
+    prev_style = None
+
+    def report_changes(self):
+        '''Report changes to pygments settings'''
+        c = self.c
+        #
+        # Set self.use_pygments only once: it can't be changed later.
+        # There is no easy way to re-instantiate classes created by make_colorizer.
+        use_pygments = c.config.getBool('use-pygments', default=False)
+        if self.prev_use_pygments is None:
+            self.use_pygments = self.prev_use_pygments = use_pygments
+        elif use_pygments != self.prev_use_pygments:
+            g.es_print('Can not change @bool use-pygments = %s' %
+                (self.prev_use_pygments), color='red')
+        #
+        # Report other changes only if we are actually using pygments.
+        if not use_pygments:
+            return
+        #
+        # Report changes to @bool use-pygments-style
+        if self.prev_use_styles is None:
+            self.prev_use_styles = self.use_pygments_styles
+        elif self.use_pygments_styles != self.prev_use_styles:
+            g.es_print('using pygments styles: %s' % self.use_pygments_styles)
+        #
+        # Report @string pygments-style-name only if we are using styles.
+        if not self.use_pygments_styles:
+            return
+        #
+        # Report changes to @string pygments-style-name
+        style_name = c.config.getString('pygments-style-name') or 'default'
+            # Don't set an ivar. It's not used in this class.
+            # This setting is used only in the LeoHighlighter class
+        if self.prev_style is None:
+            self.prev_style = style_name
+        elif style_name != self.prev_style:
+            g.es_print('New pygments style: %s' % style_name)
+            self.prev_style = style_name
     #@+node:ekr.20110605121601.18641: *3* bjc.setTag
     def setTag(self, tag, s, i, j):
         '''Set the tag in the highlighter.'''
@@ -985,12 +1035,14 @@ class JEditColorizer(BaseJEditColorizer):
         self.stateNameDict = {} # Keys are state names, values are state numbers.
         #
         # Init common data...
-        self.init_style_ivars()
-        self.defineLeoKeywordsDict()
-        self.defineDefaultColorsDict()
-        self.defineDefaultFontDict()
+        ###
+        ### Now done in reload settings.
+            # self.init_style_ivars()
+            # self.defineLeoKeywordsDict()
+            # self.defineDefaultColorsDict()
+            # self.defineDefaultFontDict()
         self.reloadSettings()
-        self.init()
+        ### self.init()
     #@+node:ekr.20110605121601.18580: *4* jedit.init
     def init(self, p=None):
         '''Init the colorizer, but *not* state. p is for tracing only.'''
@@ -1020,6 +1072,22 @@ class JEditColorizer(BaseJEditColorizer):
         self.restartDict = {}
         self.stateDict = {}
         self.stateNameDict = {}
+    #@+node:ekr.20190326183005.1: *4* jedit.reloadSettings
+    def reloadSettings(self):
+        '''Complete the initialization of all settings.'''
+        if 'syntax' in g.app.debug:
+            print('reloading jEdit settings.')
+        #
+        # First, do the basic inits.
+        BaseJEditColorizer.reloadSettings(self)
+        #
+        # Next, do all the inits previously done in the ctor.
+        self.init_style_ivars()
+        self.defineLeoKeywordsDict()
+        self.defineDefaultColorsDict()
+        self.defineDefaultFontDict()
+        self.init()
+        
     #@+node:ekr.20110605121601.18589: *3*  jedit.Pattern matchers
     #@+node:ekr.20110605121601.18590: *4*  About the pattern matchers
     #@@nocolor-node
@@ -2197,12 +2265,27 @@ if QtGui:
             self.n_calls = 0
             assert isinstance(document, QtGui.QTextDocument), document
                 # Alas, a QsciDocument is not a QTextDocument.
+            self.leo_document = document
             QtGui.QSyntaxHighlighter.__init__(self, document)
                 # Init the base class.
+            self.reloadSettings()
+        #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
+        def highlightBlock(self, s):
+            """ Called by QSyntaxHighlighter """
+            self.n_calls += 1
+            s = g.toUnicode(s)
+            self.colorizer.recolor(s)
+                # Highlight just one line.
+        #@+node:ekr.20190327052228.1: *3* leo_h.reloadSettings
+        def reloadSettings(self):
+            '''Reload all reloadable settings.'''
+            c, document = self.c, self.leo_document
             if not pygments:
                 return
             if not c.config.getBool('use-pygments', default=False):
                 return
+            #
+            # Init pygments ivars.
             self._brushes = {}
             self._document = document
             self._formats = {}
@@ -2213,6 +2296,8 @@ if QtGui:
                 # https://github.com/gthank/solarized-dark-pygments
             if not c.config.getBool('use-pygments-styles', default=True):
                 return
+            #
+            # Init pygments style.
             try:
                 self.setStyle(style_name)
                 # print('using %r pygments style in %r' % (style_name, c.shortFileName()))
@@ -2222,13 +2307,6 @@ if QtGui:
                 style_name = 'default'
             self.colorizer.style_name = style_name
             assert self._style
-        #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
-        def highlightBlock(self, s):
-            """ Called by QSyntaxHighlighter """
-            self.n_calls += 1
-            s = g.toUnicode(s)
-            self.colorizer.recolor(s)
-                # Highlight just one line.
         #@+node:ekr.20190320154014.1: *3* leo_h: From PygmentsHighlighter
         #
         # All code in this tree is based on PygmentsHighlighter.
@@ -2369,7 +2447,7 @@ class PygmentsColorizer(BaseJEditColorizer):
     # This is c.frame.body.colorizer
 
     #@+others
-    #@+node:ekr.20190319151826.3: *3* pyg_c.__init__
+    #@+node:ekr.20190319151826.3: *3* pyg_c.__init__ & helpers
     def __init__(self, c, widget, wrapper):
         '''Ctor for JEditColorizer class.'''
         BaseJEditColorizer.__init__(self, c, widget, wrapper)
@@ -2386,11 +2464,50 @@ class PygmentsColorizer(BaseJEditColorizer):
         self.old_v = None
         #
         # Init common data...
+            # self.init_style_ivars()
+            # self.defineLeoKeywordsDict()
+            # self.defineDefaultColorsDict()
+            # self.defineDefaultFontDict()
+        self.reloadSettings()
+            # self.init()
+    #@+node:ekr.20190324043722.1: *4* pyg_c.init
+    def init(self, p=None):
+        '''Init the colorizer. p is for tracing only.'''
+        #
+        # Like jedit.init, but no need to init state.
+        self.init_mode(self.language)
+        self.prev = None
+            # Used by setTag.
+        self.configure_tags()
+        self.configure_hard_tab_width()
+
+    def addLeoRules(self, theDict):
+        pass
+    #@+node:ekr.20190324051704.1: *4* pyg_c.reloadSettings
+    def reloadSettings(self):
+        '''Reload the base settings, plus pygments settings.'''
+        if 'syntax' in g.app.debug:
+            print('reloading pygments settings.')
+        #
+        # First, do basic inits.
+        BaseJEditColorizer.reloadSettings(self)
+        #
+        # Next, bind methods.
+        if self.use_pygments_styles:
+            self.getDefaultFormat = QtGui.QTextCharFormat
+            self.getFormat = self.getPygmentsFormat
+            self.setFormat = self.setPygmentsFormat
+        else:
+            self.getDefaultFormat = self.getLegacyDefaultFormat
+            self.getFormat = self.getLegacyFormat
+            self.setFormat = self.setLegacyFormat
+                # Use the JEdit style method.
+        #
+        # Re-init everything.
         self.init_style_ivars()
         self.defineLeoKeywordsDict()
         self.defineDefaultColorsDict()
         self.defineDefaultFontDict()
-        self.reloadSettings()
         self.init()
     #@+node:ekr.20190324063349.1: *3* pyg_c.format getters
     def getLegacyDefaultFormat(self):
@@ -2425,19 +2542,6 @@ class PygmentsColorizer(BaseJEditColorizer):
     def setPygmentsFormat(self, index, length, format, s):
         ''' Call the base setTag to set the Qt format.'''
         self.highlighter.setFormat(index, length, format)
-    #@+node:ekr.20190324043722.1: *3* pyg_c.init & helpers
-    def init(self, p=None):
-        '''Init the colorizer. p is for tracing only.'''
-        #
-        # Like jedit.init, but no need to init state.
-        self.init_mode(self.language)
-        self.prev = None
-            # Used by setTag.
-        self.configure_tags()
-        self.configure_hard_tab_width()
-
-    def addLeoRules(self, theDict):
-        pass
     #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop & helpers
     format_dict = {}
         # Keys are repr(Token), values are formats.
@@ -2617,21 +2721,6 @@ class PygmentsColorizer(BaseJEditColorizer):
         if s is not None:
             # For pygments, we *must* call for all lines.
             self.mainLoop(s)
-    #@+node:ekr.20190324051704.1: *3* pyg_c.reloadSettings
-    def reloadSettings(self):
-        '''Reload the base settings, plus pygments settings.'''
-        c = self.c
-        BaseJEditColorizer.reloadSettings(self)
-        self.use_pygments_styles = c.config.getBool('use-pygments-styles', default=True)
-        if self.use_pygments_styles:
-            self.getDefaultFormat = QtGui.QTextCharFormat
-            self.getFormat = self.getPygmentsFormat
-            self.setFormat = self.setPygmentsFormat
-        else:
-            self.getDefaultFormat = self.getLegacyDefaultFormat
-            self.getFormat = self.getLegacyFormat
-            self.setFormat = self.setLegacyFormat
-                # Use the JEdit style method.
     #@-others
 #@+node:ekr.20140906081909.18689: ** class QScintillaColorizer(BaseColorizer)
 # This is c.frame.body.colorizer

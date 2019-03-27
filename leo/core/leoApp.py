@@ -2735,8 +2735,8 @@ class LoadManager(object):
         add_bool('--session-save',  'save session tabs on exit')
         add_bool('--silent',        'disable all log messages')
         add_other('--theme',        'use the named theme file', m='NAME')
-        add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
-        add_bool('--trace-coloring', 'trace syntax coloring')
+        add_other('--trace-binding','trace commands bound to a key', m='KEY')
+        add_bool('--trace-coloring','trace syntax coloring')
         add_bool('--trace-drawing', 'trace outline redraws')
         add_bool('--trace-events',  'trace non-key events')
         add_bool('--trace-focus',   'trace changes of focus')
@@ -2744,9 +2744,10 @@ class LoadManager(object):
         add_bool('--trace-ipython', 'trace ipython bridge')
         add_bool('--trace-keys',    'trace key events')
         add_bool('--trace-plugins', 'trace imports of plugins')
-        add_other('--trace-setting', 'trace where named setting is set', m="NAME")
-        add_bool('--trace-shutdown', 'trace shutdown logic')
-        add_bool('--trace-startup',  'trace startup logic')
+        add_other('--trace-setting','trace where named setting is set', m="NAME")
+        add_bool('--trace-shutdown','trace shutdown logic')
+        add_bool('--trace-startup', 'trace startup logic')
+        add_bool('--trace-syntax',  'trace syntax coloring')
         add_bool('--trace-themes',  'trace theme init logic')
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         # Multiple bool values.
@@ -2861,14 +2862,15 @@ class LoadManager(object):
             # ('cache', options.trace_cache),
             ('coloring', options.trace_coloring),
             ('drawing', options.trace_drawing),
-            ('events', options.trace_events), # New
+            ('events', options.trace_events),
             ('focus', options.trace_focus),
-            ('gnx', options.trace_gnx), # New.
-            ('keys', options.trace_keys), # New
-            ('ipython', options.trace_ipython), # New
+            ('gnx', options.trace_gnx),
+            ('keys', options.trace_keys),
+            ('ipython', options.trace_ipython),
             ('plugins', options.trace_plugins),
             ('shutdown', options.trace_shutdown),
-            ('startup', options.trace_startup), # New
+            ('startup', options.trace_startup),
+            ('syntax', options.trace_syntax), # Leo 5.8.1-b2.
             ('themes', options.trace_themes),
         )
         for val, option in table:
