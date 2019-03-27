@@ -2651,16 +2651,19 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+node:ekr.20190323045735.1: *4* pyg_c.at_language_callback
     def at_language_callback(self, lexer, match):
         from pygments.token import Name
-        language = match.group(1)
+        language = match.group(2)
         ok = self.init_mode(language)
         if ok:
             self.language = language
-        yield match.start(), Name.Decorator, match.group(0)
+            yield match.start(), Name.Decorator, match.group(0)
+        else:
+            yield match.start(), Name.Decorator, match.group(1)
+                # Color only the @language, indicating an unknown language.
     #@+node:ekr.20190322082533.1: *4* pyg_c.get_lexer
     def get_lexer(self, language):
         '''Return the lexer for self.language, creating it if necessary.'''
         import pygments.lexers as lexers
-       
+        trace = 'coloring' in g.app.debug and not g.unitTesting
         try:
             if g.isPython3 and language == 'python':
                 lexer_language = 'python3'
@@ -2670,10 +2673,11 @@ class PygmentsColorizer(BaseJEditColorizer):
         except Exception:
             # pylint: disable=no-member
                 # One of the lexer's will not exist.
-            g.trace('==== no lexer for %r' % language)
+            if trace:
+                ('--trace-coloring: no lexer for %r' % language)
             lexer = lexers.Python3Lexer() if g.isPython3 else lexers.PythonLexer()
-            if 'python' not in self.lexers_dict:
-                g.trace('CREATED default lexer for python: %r' % lexer)
+            if trace and 'python' not in self.lexers_dict:
+                g.trace('--trace-coloring: default lexer for python: %r' % lexer)
         return lexer
     #@+node:ekr.20190322094034.1: *4* pyg_c.patch_lexer
     def patch_lexer(self, language, lexer):
@@ -2688,7 +2692,7 @@ class PygmentsColorizer(BaseJEditColorizer):
             tokens = {
                 'root': [
                     (r'^@(color|nocolor|killcolor)\b', self.at_color_callback),
-                    (r'^@language\s+(\w+)', self.at_language_callback),
+                    (r'^(@language)\s+(\w+)', self.at_language_callback),
                     (leo_sec_ref_pat, self.section_ref_callback),
                         # Single-line, non-greedy match.
                     (r'(^\s*@doc|@)(\s+|\n)(.|\n)*?^@c', Comment.Leo.DocPart),
