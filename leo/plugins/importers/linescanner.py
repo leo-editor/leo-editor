@@ -884,7 +884,7 @@ class Importer(object):
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
         lines1, lines2 = g.splitLines(s1), g.splitLines(s2)
-        if 0:
+        if 0: # An excellent trace for debugging.
             g.trace(c.shortFileName())
             g.printObj(lines1, tag='lines1')
             g.printObj(lines2, tag='lines2')
