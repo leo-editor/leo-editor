@@ -2819,7 +2819,8 @@ class LoadManager(object):
         # --script
         script = options.script
         if script:
-            fn = g.os_path_finalize_join(g.app.loadDir, script)
+            # #1090: use cwd, not g.app.loadDir, to find scripts.
+            fn = g.os_path_finalize_join(os.getcwd(), script)
             script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
             if not script:
                 print('script not found:%s' % fn)
