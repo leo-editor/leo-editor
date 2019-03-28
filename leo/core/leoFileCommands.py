@@ -1362,16 +1362,8 @@ class FileCommands(object):
     #@+node:ekr.20031218072017.1865: *6* fc.compute_attribute_bits
     def compute_attribute_bits(self, forceWrite, p):
         '''Return the initial values of v's attributes.'''
-        c, v = self.c, p.v
-        #
-        # Remember the to-be-cashed data.
-        if self.new:
-            pass
-        else:
-            if v.isExpanded() and v.hasChildren():
-                self.expanded_gnxs.add(v.gnx) 
-            if v.isMarked():
-                self.marked_gnxs.add(v.gnx)
+        c = self.c
+        # Cache the current position.
         if p == self.rootPosition and c.mFileName:
             aList = [str(z) for z in self.currentPosition.archivedPosition()]
             c.db ['current_position'] = ','.join(aList)
@@ -1402,31 +1394,23 @@ class FileCommands(object):
             self.putVnode(self.currentPosition)
                 # Write only current tree.
         else:
-            if self.new:
-                pass
-            else:
-                self.expanded_gnxs, self.marked_gnxs = set(), set()
             for p in c.rootPosition().self_and_siblings():
                 self.putVnode(p, isIgnore=p.isAtIgnoreNode())
-            if self.new:
-                self.setCachedBits()
-            else:
-                c.db ['expanded'] = ','.join(list(self.expanded_gnxs))
-                c.db ['marked'] = ','.join(list(self.marked_gnxs))
+            # Fix #1018: scan *all* nodes.
+            self.setCachedBits()
         self.put("</vnodes>\n")
     #@+node:ekr.20190328160622.1: *6* fc.setCachedBits
     def setCachedBits(self):
         '''Set the cached expanded and marked bits for *all* nodes.'''
         c = self.c
-        ### g.trace('=====', c.shortFileName())
         expanded = [v.gnx for v in c.all_unique_nodes() if v.isExpanded()]
         marked = [v.gnx for v in c.all_unique_nodes() if v.isMarked()]
         c.db ['expanded'] = ','.join(expanded)
         c.db ['marked'] = ','.join(marked)
-        if 0:
-            g.trace()
-            g.printObj(sorted(expanded), tag='expanded')
-            g.printObj(sorted(marked), tag='marked')
+        ###
+            # g.trace()
+            # g.printObj(sorted(expanded), tag='expanded')
+            # g.printObj(sorted(marked), tag='marked')
     #@+node:ekr.20031218072017.1247: *5* fc.putXMLLine
     def putXMLLine(self):
         '''Put the **properly encoded** <?xml> element.'''
