@@ -368,7 +368,7 @@
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31382e3171017d71025808000000616e6e6f7461746571037d710473732e"></v>
 </v>
 <v t="ekr.20180604114211.1"><vh>Recent code</vh>
-<v t="ekr.20190119062719.1"><vh>Done &amp; documented</vh>
+<v t="ekr.20190119062719.1"><vh> Done &amp; documented</vh>
 <v t="ekr.20190319150024.1"><vh>#0568: pygments</vh>
 <v t="ekr.20190323034724.1"><vh>script: print recolor stats</vh></v>
 <v t="ekr.20190324192318.1"><vh>script: make color nodes</vh></v>
@@ -419,39 +419,7 @@
 <v t="ekr.20190327105736.1"><vh>Added g.get_files_in_directory</vh></v>
 <v t="ekr.20190323084212.1"><vh>Added promote-headlines commands</vh></v>
 </v>
-<v t="ekr.20180824062242.1"><vh>#958: freeze in vim mode</vh>
-<v t="ekr.20110605121601.18005"><vh>class LeoQTextBrowser (QtWidgets.QTextBrowser)</vh>
-<v t="ekr.20110605121601.18006"><vh> lqtb.ctor (** no longer instantiates leo_h)</vh></v>
-<v t="ekr.20110605121601.18007"><vh>lqtb. __repr__ &amp; __str__</vh></v>
-<v t="ekr.20110605121601.18008"><vh>lqtb.Auto completion</vh>
-<v t="ekr.20110605121601.18009"><vh>class LeoQListWidget(QListWidget)</vh>
-<v t="ekr.20110605121601.18010"><vh>lqlw.ctor</vh></v>
-<v t="ekr.20110605121601.18011"><vh>lqlw.closeEvent</vh></v>
-<v t="ekr.20110605121601.18012"><vh>lqlw.end_completer</vh></v>
-<v t="ekr.20141024170936.7"><vh>lqlw.get_selection</vh></v>
-<v t="ekr.20110605121601.18013"><vh>lqlw.keyPressEvent</vh></v>
-<v t="ekr.20110605121601.18014"><vh>lqlw.select_callback</vh></v>
-<v t="tbrown.20111011094944.27031"><vh>lqlw.tab_callback</vh></v>
-<v t="ekr.20110605121601.18015"><vh>lqlw.set_position</vh></v>
-<v t="ekr.20110605121601.18016"><vh>lqlw.show_completions</vh></v>
-</v>
-<v t="ekr.20110605121601.18017"><vh>lqtb.lqtb.init_completer</vh></v>
-<v t="ekr.20110605121601.18018"><vh>lqtb.redirections to LeoQListWidget</vh></v>
-</v>
-<v t="ekr.20110605121601.18019"><vh>lqtb.leo_dumpButton</vh></v>
-<v t="ekr.20141103061944.31"><vh>lqtb.get/setXScrollPosition</vh></v>
-<v t="ekr.20111002125540.7021"><vh>lqtb.get/setYScrollPosition</vh></v>
-<v t="ekr.20120925061642.13506"><vh>lqtb.onSliderChanged</vh></v>
-<v t="tbrown.20130411145310.18855"><vh>lqtb.wheelEvent</vh></v>
-</v>
-<v t="ekr.20180824062905.1"><vh>lqtb.onFocusIn</vh></v>
-</v>
-<v t="ekr.20181004060958.1"><vh>re: can not happen in jedi completer</vh>
-<v t="ekr.20180519111302.1"><vh>ac.get_jedi_completions &amp; helper</vh>
-<v t="ekr.20180526211127.1"><vh>ac.add_prefix</vh></v>
-</v>
-</v>
-<v t="ekr.20190216104815.1"><vh>===== #525: nested #clean</vh>
+<v t="ekr.20190216104815.1"><vh>===== #0525: nested #clean</vh>
 <v t="ekr.20190217060648.1"><vh>ref</vh>
 <v t="ekr.20190108054317.1"><vh>at.findFilesToRead</vh></v>
 <v t="ekr.20190108052043.1"><vh>at.findFilesToWrite</vh></v>
@@ -499,6 +467,33 @@
 <v t="ekr.20041005105605.163"></v>
 <v t="ekr.20041005105605.174"></v>
 </v>
+<v t="ekr.20180824062242.1"><vh>===== #0958: freeze in vim mode</vh>
+<v t="ekr.20110605121601.18005"><vh>class LeoQTextBrowser (QtWidgets.QTextBrowser)</vh>
+<v t="ekr.20110605121601.18006"><vh> lqtb.ctor (** no longer instantiates leo_h)</vh></v>
+<v t="ekr.20110605121601.18007"><vh>lqtb. __repr__ &amp; __str__</vh></v>
+<v t="ekr.20110605121601.18008"><vh>lqtb.Auto completion</vh>
+<v t="ekr.20110605121601.18009"><vh>class LeoQListWidget(QListWidget)</vh>
+<v t="ekr.20110605121601.18010"><vh>lqlw.ctor</vh></v>
+<v t="ekr.20110605121601.18011"><vh>lqlw.closeEvent</vh></v>
+<v t="ekr.20110605121601.18012"><vh>lqlw.end_completer</vh></v>
+<v t="ekr.20141024170936.7"><vh>lqlw.get_selection</vh></v>
+<v t="ekr.20110605121601.18013"><vh>lqlw.keyPressEvent</vh></v>
+<v t="ekr.20110605121601.18014"><vh>lqlw.select_callback</vh></v>
+<v t="tbrown.20111011094944.27031"><vh>lqlw.tab_callback</vh></v>
+<v t="ekr.20110605121601.18015"><vh>lqlw.set_position</vh></v>
+<v t="ekr.20110605121601.18016"><vh>lqlw.show_completions</vh></v>
+</v>
+<v t="ekr.20110605121601.18017"><vh>lqtb.lqtb.init_completer</vh></v>
+<v t="ekr.20110605121601.18018"><vh>lqtb.redirections to LeoQListWidget</vh></v>
+</v>
+<v t="ekr.20110605121601.18019"><vh>lqtb.leo_dumpButton</vh></v>
+<v t="ekr.20141103061944.31"><vh>lqtb.get/setXScrollPosition</vh></v>
+<v t="ekr.20111002125540.7021"><vh>lqtb.get/setYScrollPosition</vh></v>
+<v t="ekr.20120925061642.13506"><vh>lqtb.onSliderChanged</vh></v>
+<v t="tbrown.20130411145310.18855"><vh>lqtb.wheelEvent</vh></v>
+</v>
+<v t="ekr.20180824062905.1"><vh>lqtb.onFocusIn</vh></v>
+</v>
 <v t="ekr.20190306105229.1"><vh>===== #1032: @clean cleans blank lines</vh>
 <v t="ekr.20080708094444.36"><vh>x.propagate_changes</vh></v>
 <v t="ekr.20080708094444.38"><vh>x.propagate_changed_lines (main algorithm) &amp; helpers</vh>
@@ -522,12 +517,17 @@
 <v t="ekr.20041005105605.174"></v>
 <v t="ekr.20041005105605.204"><vh>at.os</vh></v>
 </v>
+<v t="ekr.20190327203238.1"><vh>===== #1090:  --script path</vh>
+<v t="ekr.20180312153008.1"><vh>LM.doScriptOption</vh></v>
+</v>
+<v t="ekr.20190327194749.1"><vh>===== #1098: crash in json scanner</vh></v>
 <v t="ekr.20190327183758.1"><vh>===== merge devel into py3 and pyzo branches</vh>
 <v t="ekr.20190327192403.1"><vh>py3 conflicts</vh></v>
 </v>
-<v t="ekr.20190327194749.1"><vh>===== #1098: crash in json scanner</vh></v>
-<v t="ekr.20190327203238.1"><vh>===== #1090:  --script path</vh>
-<v t="ekr.20180312153008.1"><vh>LM.doScriptOption</vh></v>
+<v t="ekr.20181004060958.1"><vh>re: can not happen in jedi completer</vh>
+<v t="ekr.20180519111302.1"><vh>ac.get_jedi_completions &amp; helper</vh>
+<v t="ekr.20180526211127.1"><vh>ac.add_prefix</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20190316153545.1"><vh>===== #1096 pyzo</vh>
