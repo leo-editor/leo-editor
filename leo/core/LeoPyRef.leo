@@ -42,6 +42,7 @@
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
 </v>
+<v t="ekr.20190322041148.1"><vh>@string pygments-style-name = leonine</vh></v>
 </v>
 <v t="ekr.20140103105930.16446"><vh>@views</vh>
 <v t="ekr.20140102162014.16438"><vh>@view added strip_comments keyword arg to two config.getData methods</vh></v>
@@ -68,10 +69,11 @@
 <v t="ekr.20170428084123.1"><vh>Recursive import script</vh>
 <v t="ekr.20170428084123.2"><vh>&lt;&lt; old dir_ settings &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20180816105258.1"><vh>script: diff-branches</vh></v>
 <v t="ekr.20181102040815.1"><vh>script: warn about long lines</vh></v>
+<v t="ekr.20180816105258.1"><vh>script: diff-branches</vh></v>
 </v>
 </v>
+<v t="ekr.20190322041148.1"></v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
 <v t="ekr.20190122185223.1"><vh>regex: find all kwargs</vh></v>
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
@@ -80,6 +82,24 @@
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
 </v>
 <v t="ekr.20190116145049.1"><vh>To do</vh>
+<v t="ekr.20181008045948.1"><vh>re: Add toggle-gutter command</vh>
+<v t="ekr.20110605121601.18163"><vh>dw.createText</vh></v>
+<v t="ekr.20110605121601.18143"><vh>dw.createBodyPane</vh></v>
+<v t="ekr.20150403094619.1"><vh>class LeoLineTextWidget(QFrame)</vh>
+<v t="ekr.20150403094706.9"><vh>__init__(LeoLineTextWidget)</vh></v>
+<v t="ekr.20150403094706.10"><vh>eventFilter</vh></v>
+</v>
+<v t="ekr.20150403094706.2"><vh>class NumberBar(QFrame)</vh>
+<v t="ekr.20150403094706.3"><vh>NumberBar.__init__</vh></v>
+<v t="ekr.20181005093003.1"><vh>NumberBar.reloadSettings</vh></v>
+<v t="ekr.20181005085507.1"><vh>NumberBar.mousePressEvent</vh></v>
+<v t="ekr.20150403094706.5"><vh>NumberBar.update</vh></v>
+<v t="ekr.20150403094706.6"><vh>NumberBar.paintEvent</vh></v>
+<v t="ekr.20150403094706.7"><vh>NumberBar.paintBlock</vh></v>
+<v t="ekr.20150403094706.8"><vh>NumberBar.setBold</vh></v>
+</v>
+<v t="ekr.20181009123539.1"><vh>qt: toggle-gutter</vh></v>
+</v>
 <v t="ekr.20190116145036.1"><vh>To do: No milestone</vh>
 <v t="ekr.20181027151243.1"><vh>#1006: Allow @button and @command only from trusted directories</vh>
 <v t="ekr.20181027133311.1"><vh>g.issueSecurityWarning</vh></v>
@@ -343,89 +363,103 @@
 <v t="ekr.20140907123524.18774"></v>
 <v t="ekr.20140907085654.18699"></v>
 <v t="ekr.20140907131341.18707"></v>
-<v t="ekr.20150323150718.1"></v>
+<v t="ekr.20181009072707.1"></v>
+<v t="ekr.20140827092102.18574"></v>
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31382e3171017d71025808000000616e6e6f7461746571037d710473732e"></v>
-<v t="ekr.20140810053602.18074"></v>
-<v t="ekr.20080708094444.1"></v>
 </v>
 <v t="ekr.20180604114211.1"><vh>Recent code</vh>
 <v t="ekr.20190119062719.1"><vh>Done &amp; documented</vh>
-<v t="ekr.20190121135044.1"><vh>#0926: Organize @outline-data tree-abbreviations</vh>
-<v t="ekr.20170227062001.1"><vh>abbrev.init_tree_abbrev_helper</vh></v>
+<v t="ekr.20190319150024.1"><vh>#0568: pygments</vh>
+<v t="ekr.20190323034724.1"><vh>script: print recolor stats</vh></v>
+<v t="ekr.20190324192318.1"><vh>script: make color nodes</vh></v>
+<v t="ekr.20190326182642.1"><vh>----- Color settings</vh>
+<v t="ekr.20110605121601.18574"><vh>bjc.defineDefaultColorsDict</vh></v>
+<v t="ekr.20190324172632.1"><vh>bjc.configure_colors</vh></v>
 </v>
+<v t="ekr.20190326174530.1"><vh>----- Font settings</vh>
+<v t="ekr.20190325053636.1"><vh> leonine styles</vh></v>
+<v t="ekr.20041120094940.4"><vh>doFont</vh></v>
+<v t="ekr.20041213082558.1"><vh>parseFont &amp; helper</vh>
+<v t="ekr.20041213082558.2"><vh>parseFontLine</vh></v>
+</v>
+<v t="ekr.20110605121601.18575"><vh>bjc.defineDefaultFontDict</vh></v>
+<v t="ekr.20190324172242.1"><vh>bjc.configure_fonts &amp; helper</vh>
+<v t="ekr.20190326034006.1"><vh>bjc.find_font</vh></v>
+</v>
+</v>
+<v t="ekr.20190326131804.1"><vh>----- Reload-settings</vh>
+<v t="ekr.20190327052228.1"><vh>leo_h.reloadSettings</vh></v>
+<v t="ekr.20190326183005.1"><vh>jedit.reloadSettings</vh></v>
+<v t="ekr.20190324051704.1"><vh>pyg_c.reloadSettings</vh></v>
+<v t="ekr.20171114041307.1"><vh>bjc.reloadSettings &amp; helper</vh>
+<v t="ekr.20190327053604.1"><vh>bjc.report_changes</vh></v>
+</v>
+</v>
+<v t="ekr.20190327064446.1"><vh>----- trace-coloring</vh>
+<v t="ekr.20190327053604.1"></v>
+<v t="ekr.20110605121601.18641"><vh>bjc.setTag</vh></v>
+<v t="ekr.20110605121601.18637"><vh>jedit.colorRangeWithTag</vh></v>
+<v t="ekr.20190326183005.1"></v>
+<v t="ekr.20190324051704.1"></v>
+</v>
+<v t="ekr.20190327072744.1"><vh>----- @language directives</vh>
+<v t="ekr.20190323045735.1"><vh>pyg_c.at_language_callback</vh></v>
+<v t="ekr.20190322082533.1"><vh>pyg_c.get_lexer</vh></v>
+<v t="ekr.20190322094034.1"><vh>pyg_c.patch_lexer</vh></v>
+<v t="ekr.20190327111419.1"><vh>Post</vh></v>
+</v>
+</v>
+<v t="ekr.20190121135044.1"><vh>#0926: Organize @outline-data tree-abbreviations</vh></v>
 <v t="ekr.20190118130950.1"><vh>#0981 &amp; #0977: File syncing</vh></v>
 <v t="ekr.20190119085129.1"><vh>#1047: Tree Window Resizes on Paste Node</vh></v>
-<v t="ekr.20190122113449.1"><vh>#1065: refresh-from-disk</vh>
-<v t="ekr.20160514120655.1"><vh>class AtFile</vh>
-<v t="ekr.20131224053735.16380"><vh>&lt;&lt; define class constants &gt;&gt;</vh></v>
-<v t="ekr.20041005105605.7"><vh>at.Birth &amp; init</vh>
-<v t="ekr.20041005105605.8"><vh>at.ctor &amp; helpers</vh>
-<v t="ekr.20171113152939.1"><vh>at.reloadSettings</vh></v>
+<v t="ekr.20190122113449.1"><vh>#1065: refresh-from-disk</vh></v>
+<v t="ekr.20190218044303.1"><vh>#1081: @asis</vh></v>
+<v t="ekr.20190218071717.1"><vh>#1085: Py3 branch</vh></v>
+<v t="ekr.20190327143118.1"><vh>#1101: scripting miscellany</vh></v>
+<v t="ekr.20190327105736.1"><vh>Added g.get_files_in_directory</vh></v>
+<v t="ekr.20190323084212.1"><vh>Added promote-headlines commands</vh></v>
 </v>
-<v t="ekr.20150509194251.1"><vh>at.cmd (decorator)</vh></v>
-<v t="ekr.20041005105605.10"><vh>at.initCommonIvars</vh></v>
-<v t="ekr.20041005105605.13"><vh>at.initReadIvars</vh></v>
-<v t="ekr.20041005105605.15"><vh>at.initWriteIvars</vh></v>
+<v t="ekr.20180824062242.1"><vh>#958: freeze in vim mode</vh>
+<v t="ekr.20110605121601.18005"><vh>class LeoQTextBrowser (QtWidgets.QTextBrowser)</vh>
+<v t="ekr.20110605121601.18006"><vh> lqtb.ctor (** no longer instantiates leo_h)</vh></v>
+<v t="ekr.20110605121601.18007"><vh>lqtb. __repr__ &amp; __str__</vh></v>
+<v t="ekr.20110605121601.18008"><vh>lqtb.Auto completion</vh>
+<v t="ekr.20110605121601.18009"><vh>class LeoQListWidget(QListWidget)</vh>
+<v t="ekr.20110605121601.18010"><vh>lqlw.ctor</vh></v>
+<v t="ekr.20110605121601.18011"><vh>lqlw.closeEvent</vh></v>
+<v t="ekr.20110605121601.18012"><vh>lqlw.end_completer</vh></v>
+<v t="ekr.20141024170936.7"><vh>lqlw.get_selection</vh></v>
+<v t="ekr.20110605121601.18013"><vh>lqlw.keyPressEvent</vh></v>
+<v t="ekr.20110605121601.18014"><vh>lqlw.select_callback</vh></v>
+<v t="tbrown.20111011094944.27031"><vh>lqlw.tab_callback</vh></v>
+<v t="ekr.20110605121601.18015"><vh>lqlw.set_position</vh></v>
+<v t="ekr.20110605121601.18016"><vh>lqlw.show_completions</vh></v>
 </v>
-<v t="ekr.20041005105605.17"><vh>at.Reading</vh>
-<v t="ekr.20041005105605.18"><vh>at.Reading (top level)</vh>
-<v t="ekr.20070919133659"><vh>at.checkDerivedFile</vh></v>
-<v t="ekr.20041005105605.19"><vh>at.openFileForReading &amp; helper</vh>
-<v t="ekr.20150204165040.4"><vh>at.openAtShadowFileForReading</vh></v>
+<v t="ekr.20110605121601.18017"><vh>lqtb.lqtb.init_completer</vh></v>
+<v t="ekr.20110605121601.18018"><vh>lqtb.redirections to LeoQListWidget</vh></v>
 </v>
-<v t="ekr.20041005105605.21"><vh>at.read &amp; helpers</vh>
-<v t="ekr.20100122130101.6174"><vh>at.deleteTnodeList</vh></v>
-<v t="ekr.20071105164407"><vh>at.deleteUnvisitedNodes &amp; helpers</vh>
-<v t="ekr.20100803073751.5817"><vh>createResurrectedNodesNode</vh></v>
-<v t="ekr.20100803073751.5818"><vh>defineResurrectedNodeCallback</vh></v>
+<v t="ekr.20110605121601.18019"><vh>lqtb.leo_dumpButton</vh></v>
+<v t="ekr.20141103061944.31"><vh>lqtb.get/setXScrollPosition</vh></v>
+<v t="ekr.20111002125540.7021"><vh>lqtb.get/setYScrollPosition</vh></v>
+<v t="ekr.20120925061642.13506"><vh>lqtb.onSliderChanged</vh></v>
+<v t="tbrown.20130411145310.18855"><vh>lqtb.wheelEvent</vh></v>
 </v>
-<v t="ekr.20041005105605.22"><vh>at.initFileName</vh></v>
-<v t="ekr.20100224050618.11547"><vh>at.isFileLike</vh></v>
+<v t="ekr.20180824062905.1"><vh>lqtb.onFocusIn</vh></v>
 </v>
-<v t="ekr.20041005105605.26"><vh>at.readAll &amp; helpers</vh>
+<v t="ekr.20181004060958.1"><vh>re: can not happen in jedi completer</vh>
+<v t="ekr.20180519111302.1"><vh>ac.get_jedi_completions &amp; helper</vh>
+<v t="ekr.20180526211127.1"><vh>ac.add_prefix</vh></v>
+</v>
+</v>
+<v t="ekr.20190216104815.1"><vh>===== #525: nested #clean</vh>
+<v t="ekr.20190217060648.1"><vh>ref</vh>
 <v t="ekr.20190108054317.1"><vh>at.findFilesToRead</vh></v>
-<v t="ekr.20190108054803.1"><vh>at.readFileAtPosition</vh></v>
-</v>
-<v t="ekr.20080801071227.7"><vh>at.readAtShadowNodes</vh></v>
-<v t="ekr.20070909100252"><vh>at.readOneAtAutoNode</vh></v>
-<v t="ekr.20090225080846.3"><vh>at.readOneAtEditNode</vh></v>
-<v t="ekr.20190201104956.1"><vh>at.readOneAtAsisNode</vh></v>
-<v t="ekr.20150204165040.5"><vh>at.readOneAtCleanNode &amp; helpers</vh>
-<v t="ekr.20150204165040.7"><vh>at.dump_lines</vh></v>
-<v t="ekr.20150204165040.8"><vh>at.read_at_clean_lines</vh></v>
-<v t="ekr.20150204165040.9"><vh>at.write_at_clean_sentinels</vh></v>
-</v>
-<v t="ekr.20080711093251.7"><vh>at.readOneAtShadowNode &amp; helper</vh>
-<v t="ekr.20080712080505.1"><vh>at.importAtShadowNode</vh></v>
-</v>
-</v>
-<v t="ekr.20180622110112.1"><vh>at.fast_read_into_root</vh></v>
-<v t="ekr.20041005105605.116"><vh>at.Reading utils...</vh>
-<v t="ekr.20041005105605.119"><vh>at.createImportedNode</vh></v>
-<v t="ekr.20130911110233.11286"><vh>at.initReadLine</vh></v>
-<v t="ekr.20041005105605.120"><vh>at.parseLeoSentinel</vh></v>
-<v t="ekr.20130911110233.11284"><vh>at.readFileToUnicode &amp; helpers</vh>
-<v t="ekr.20130911110233.11285"><vh>at.openFileHelper</vh></v>
-<v t="ekr.20130911110233.11287"><vh>at.getEncodingFromHeader</vh></v>
-</v>
-<v t="ekr.20041005105605.128"><vh>at.readLine</vh></v>
-<v t="ekr.20041005105605.129"><vh>at.scanHeader</vh>
-<v t="ekr.20041005105605.130"><vh>at.scanFirstLines</vh></v>
-</v>
-<v t="ekr.20050103163224"><vh>at.scanHeaderForThin (import code)</vh></v>
-</v>
-</v>
-<v t="ekr.20041005105605.132"><vh>at.Writing</vh>
-<v t="ekr.20041005105605.133"><vh>Writing (top level)</vh>
-<v t="ekr.20190111153551.1"><vh>at.commands</vh>
-<v t="ekr.20070806105859"><vh>at.writeAtAutoNodes &amp; writeDirtyAtAutoNodes &amp; helpers</vh></v>
-<v t="ekr.20080711093251.3"><vh>at.writeAtShadowNodes &amp; writeDirtyAtShadowNodes &amp; helpers</vh>
-<v t="ekr.20190109153627.13"><vh>at.writeAtShadowNodesHelper</vh></v>
-</v>
-</v>
-<v t="ekr.20041005105605.157"><vh>at.putFile</vh></v>
-<v t="ekr.20041005105605.147"><vh>at.writeAll &amp; helpers</vh>
 <v t="ekr.20190108052043.1"><vh>at.findFilesToWrite</vh></v>
+<v t="ekr.20041005105605.174"><vh>at.putCodeLine</vh></v>
+<v t="ekr.20041005105605.216"><vh>at.warnAboutOrpanAndIgnoredNodes</vh></v>
+<v t="ekr.20041005105605.144"><vh>at.write &amp; helper</vh></v>
+<v t="ekr.20041005105605.147"><vh>at.writeAll &amp; helpers</vh>
+<v t="ekr.20190108052043.1"></v>
 <v t="ekr.20190108053115.1"><vh>at.internalWriteError</vh></v>
 <v t="ekr.20190108112519.1"><vh>at.reportEndOfWrite</vh></v>
 <v t="ekr.20140727075002.18108"><vh>at.saveOutlineIfPossible</vh></v>
@@ -434,36 +468,9 @@
 <v t="ekr.20190108105509.1"><vh>at.writePathChanged</vh></v>
 </v>
 </v>
-<v t="ekr.20190109172025.1"><vh>at.writeAtAutoContents</vh></v>
-<v t="ekr.20190111153522.1"><vh>at.writeX...</vh>
-<v t="ekr.20041005105605.154"><vh>at.asisWrite &amp; helper</vh>
-<v t="ekr.20170331141933.1"><vh>at.writeAsisNode</vh></v>
+<v t="ekr.20031218072017.3388"><vh>p.clearAllVisitedInTree</vh></v>
 </v>
-<v t="ekr.20041005105605.144"><vh>at.write &amp; helper</vh></v>
-<v t="ekr.20041005105605.151"><vh>at.writeMissing &amp; helper</vh>
-<v t="ekr.20041005105605.152"><vh>at.writeMissingNode</vh></v>
-</v>
-<v t="ekr.20070806141607"><vh>at.writeOneAtAutoNode &amp; helpers</vh>
-<v t="ekr.20190109163934.24"><vh>at.writeAtAutoNodesHelper</vh></v>
-<v t="ekr.20140728040812.17993"><vh>at.dispatch &amp; helpers</vh>
-<v t="ekr.20140728040812.17995"><vh>at.writer_for_at_auto</vh></v>
-<v t="ekr.20140728040812.17997"><vh>at.writer_for_ext</vh></v>
-</v>
-</v>
-<v t="ekr.20090225080846.5"><vh>at.writeOneAtEditNode</vh></v>
-<v t="ekr.20080711093251.5"><vh>at.writeOneAtShadowNode &amp; helpers</vh>
-<v t="ekr.20080819075811.13"><vh>at.adjustTargetLanguage</vh></v>
-</v>
-</v>
-<v t="ekr.20190111153506.1"><vh>at.XToString</vh>
-<v t="ekr.20190109160056.1"><vh>at.atAsisToString</vh></v>
-<v t="ekr.20190109160056.2"><vh>at.atAutoToString</vh></v>
-<v t="ekr.20190109160056.3"><vh>at.atEditToString</vh></v>
-<v t="ekr.20190109142026.1"><vh>at.atFileToString</vh></v>
-<v t="ekr.20050506084734"><vh>at.stringToString</vh></v>
-</v>
-</v>
-<v t="ekr.20041005105605.160"><vh>Writing 4.x</vh>
+<v t="ekr.20041005105605.157"><vh>at.putFile</vh></v>
 <v t="ekr.20041005105605.161"><vh>at.putBody &amp; helpers</vh>
 <v t="ekr.20041005105605.163"><vh>at.putLine</vh></v>
 </v>
@@ -479,7 +486,7 @@
 <v t="ekr.20041005105605.171"><vh>at.validInAtOthers (write)</vh></v>
 </v>
 </v>
-<v t="ekr.20041005105605.174"><vh>at.putCodeLine</vh></v>
+<v t="ekr.20041005105605.174"></v>
 <v t="ekr.20041005105605.176"><vh>at.putRefLine &amp; helpers</vh>
 <v t="ekr.20131224085853.16443"><vh>at.findReference</vh></v>
 <v t="ekr.20041005105605.199"><vh>at.findSectionName</vh></v>
@@ -488,620 +495,6 @@
 <v t="ekr.20041005105605.177"><vh>at.putRefAt</vh></v>
 </v>
 </v>
-<v t="ekr.20041005105605.180"><vh>writing doc lines...</vh>
-<v t="ekr.20041005105605.181"><vh>at.putBlankDocLine</vh></v>
-<v t="ekr.20041005105605.183"><vh>at.putDocLine</vh></v>
-<v t="ekr.20041005105605.185"><vh>at.putEndDocLine</vh></v>
-<v t="ekr.20041005105605.182"><vh>at.putStartDocLine</vh></v>
-</v>
-</v>
-<v t="ekr.20041005105605.187"><vh>Writing 4,x sentinels...</vh>
-<v t="ekr.20041005105605.188"><vh>at.nodeSentinelText &amp; helper</vh>
-<v t="ekr.20041005105605.189"><vh>at.removeCommentDelims</vh></v>
-</v>
-<v t="ekr.20041005105605.190"><vh>at.putLeadInSentinel</vh></v>
-<v t="ekr.20041005105605.191"><vh>at.putCloseNodeSentinel</vh></v>
-<v t="ekr.20041005105605.192"><vh>at.putOpenLeoSentinel 4.x</vh></v>
-<v t="ekr.20041005105605.193"><vh>at.putOpenNodeSentinel</vh></v>
-<v t="ekr.20041005105605.194"><vh>at.putSentinel (applies cweb hack) 4.x</vh></v>
-</v>
-<v t="ekr.20041005105605.196"><vh>Writing 4.x utils...</vh>
-<v t="ekr.20181024134823.1"><vh>at.addToOrphanList</vh></v>
-<v t="ekr.20190111111608.1"><vh>at.checkPath &amp; helpers</vh>
-<v t="ekr.20190111112432.1"><vh>at.checkDir</vh></v>
-<v t="ekr.20190111112442.1"><vh>at.isWritable</vh></v>
-</v>
-<v t="ekr.20090514111518.5661"><vh>at.checkPythonCode &amp; helpers</vh>
-<v t="ekr.20090514111518.5663"><vh>at.checkPythonSyntax</vh>
-<v t="ekr.20090514111518.5666"><vh>at.syntaxError (leoAtFile)</vh></v>
-</v>
-<v t="ekr.20161021084954.1"><vh>at.runPyflakes</vh></v>
-<v t="ekr.20090514111518.5665"><vh>at.tabNannyNode</vh></v>
-</v>
-<v t="ekr.20041005105605.198"><vh>at.directiveKind4 (write logic)</vh></v>
-<v t="ekr.20041005105605.200"><vh>at.isSectionName</vh></v>
-<v t="ekr.20190113043601.1"><vh>at.open/closeOutputFile</vh></v>
-<v t="ekr.20190109145850.1"><vh>at.open/closeOutputStream</vh></v>
-<v t="ekr.20041005105605.201"><vh>at.os and allies</vh>
-<v t="ekr.20041005105605.202"><vh>at.oblank, oblanks &amp; otabs</vh></v>
-<v t="ekr.20041005105605.203"><vh>at.onl &amp; onl_sent</vh></v>
-<v t="ekr.20041005105605.204"><vh>at.os</vh></v>
-</v>
-<v t="ekr.20041005105605.205"><vh>at.outputStringWithLineEndings</vh></v>
-<v t="ekr.20190111045822.1"><vh>at.precheck</vh></v>
-<v t="ekr.20050506090446.1"><vh>at.putAtFirstLines</vh></v>
-<v t="ekr.20050506090955"><vh>at.putAtLastLines</vh></v>
-<v t="ekr.20041005105605.206"><vh>at.putDirective 4.x &amp; helper</vh>
-<v t="ekr.20041005105605.207"><vh>at.putDelims</vh></v>
-</v>
-<v t="ekr.20041005105605.210"><vh>at.putIndent</vh></v>
-<v t="ekr.20041005105605.211"><vh>at.putInitialComment</vh></v>
-<v t="ekr.20190111172114.1"><vh>at.replaceFile &amp; helpers</vh>
-<v t="ekr.20190114061452.27"><vh>at.compareIgnoringBlankLines</vh></v>
-<v t="ekr.20190114061452.28"><vh>at.compareIgnoringLineEndings</vh></v>
-</v>
-<v t="ekr.20041005105605.216"><vh>at.warnAboutOrpanAndIgnoredNodes</vh></v>
-<v t="ekr.20041005105605.217"><vh>at.writeError</vh></v>
-<v t="ekr.20041005105605.218"><vh>at.writeException</vh></v>
-</v>
-</v>
-<v t="ekr.20041005105605.219"><vh>at.Utilites</vh>
-<v t="ekr.20041005105605.220"><vh>at.error &amp; printError</vh></v>
-<v t="ekr.20041005105605.221"><vh>at.exception</vh></v>
-<v t="ekr.20050104131929"><vh>at.file operations...</vh>
-<v t="ekr.20050104131820"><vh>at.chmod</vh></v>
-<v t="ekr.20050104132018"><vh>at.remove</vh></v>
-<v t="ekr.20050104132026"><vh>at.stat</vh></v>
-</v>
-<v t="ekr.20090530055015.6023"><vh>at.get/setPathUa</vh></v>
-<v t="ekr.20081216090156.4"><vh>at.parseUnderindentTag</vh></v>
-<v t="ekr.20090712050729.6017"><vh>at.promptForDangerousWrite</vh></v>
-<v t="ekr.20120112084820.10001"><vh>at.rememberReadPath</vh></v>
-<v t="ekr.20080923070954.4"><vh>at.scanAllDirectives</vh>
-<v t="ekr.20080923070954.14"><vh>&lt;&lt; Set ivars &gt;&gt; (at.scanAllDirectives)</vh></v>
-<v t="ekr.20080923070954.13"><vh>&lt;&lt; Set comment strings from delims &gt;&gt; (at.scanAllDirectives)</vh></v>
-</v>
-<v t="ekr.20120110174009.9965"><vh>at.shouldPromptForDangerousWrite</vh></v>
-<v t="ekr.20041005105605.20"><vh>at.warnOnReadOnlyFile</vh></v>
-</v>
-</v>
-<v t="ekr.20180602102448.1"><vh>class FastAtRead</vh>
-<v t="ekr.20180602103135.3"><vh>fast_at.get_patterns</vh></v>
-<v t="ekr.20180603060721.1"><vh>fast_at.post_pass</vh></v>
-<v t="ekr.20180602103135.2"><vh>fast_at.scan_header</vh></v>
-<v t="ekr.20180602103135.8"><vh>fast_at.scan_lines</vh>
-<v t="ekr.20180602103135.9"><vh>&lt;&lt; init scan_lines &gt;&gt;</vh></v>
-<v t="ekr.20180613061743.1"><vh>&lt;&lt; define dump_v &gt;&gt;</vh></v>
-<v t="ekr.20180602103135.10"><vh>&lt;&lt; 1. common code for all lines &gt;&gt;</vh></v>
-<v t="ekr.20180602103135.12"><vh>&lt;&lt; 2. short-circuit later tests &gt;&gt;</vh></v>
-<v t="ekr.20180602103135.14"><vh>&lt;&lt; 3. handle @others &gt;&gt;</vh></v>
-<v t="ekr.20180602103135.18"><vh>&lt;&lt; 4. handle section refs &gt;&gt;</vh></v>
-<v t="ekr.20180602103135.19"><vh>&lt;&lt; handle node_start &gt;&gt;</vh></v>
-<v t="ekr.20180602103135.16"><vh>&lt;&lt; handle end of @doc &amp; @code parts &gt;&gt;</vh></v>
-<v t="ekr.20180602103135.13"><vh>&lt;&lt; handle @all &gt;&gt;</vh></v>
-<v t="ekr.20180603063102.1"><vh>&lt;&lt; handle afterref &gt;&gt;</vh></v>
-<v t="ekr.20180606053919.1"><vh>&lt;&lt; handle @first and @last &gt;&gt;</vh></v>
-<v t="ekr.20180621050901.1"><vh>&lt;&lt; handle @comment &gt;&gt;</vh></v>
-<v t="ekr.20180608104836.1"><vh>&lt;&lt; handle @delims &gt;&gt;</vh></v>
-<v t="ekr.20180606080200.1"><vh>&lt;&lt; handle @raw &gt;&gt;</vh></v>
-<v t="ekr.20180602103135.20"><vh>&lt;&lt; handle @-leo &gt;&gt;</vh></v>
-<v t="ekr.20180603135602.1"><vh>&lt;&lt; Last 1. handle remaining @@ lines &gt;&gt;</vh></v>
-<v t="ekr.20180606054325.1"><vh>&lt;&lt; Last 2. handle remaining @doc lines &gt;&gt;</vh></v>
-<v t="ekr.20180602103135.17"><vh>&lt;&lt; Last 3. handle remaining @ lines &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20180603170614.1"><vh>fast_at.read_into_root</vh></v>
-</v>
-<v t="ekr.20140717074441.17772"><vh>c_file.refreshFromDisk</vh></v>
-<v t="ekr.20041005105605.21"></v>
-<v t="ekr.20180603170614.1"></v>
-<v t="ekr.20180603060721.1"></v>
-<v t="ekr.20180602103135.9"></v>
-<v t="ekr.20180602103135.19"></v>
-<v t="ekr.20180602103135.8"></v>
-</v>
-</v>
-<v t="ekr.20190306083111.1"><vh>To be documented</vh>
-<v t="ekr.20190218071717.1"><vh>#1085: Py3 branch</vh>
-<v t="ekr.20190218122943.1"><vh>Deleted</vh>
-<v t="ekr.20190218235026.1"><vh>g.ue</vh></v>
-<v t="ekr.20170108034643.1"><vh>g.ustr (pyzo)</vh></v>
-<v t="ekr.20031218072017.1150"><vh>&lt;&lt; open filename to f, or return &gt;&gt; (weave)</vh></v>
-<v t="ekr.20110605121601.18526"><vh>qt_gui.toUnicode</vh></v>
-<v t="ekr.20081119083601.1"><vh>UnitTestGui.toUnicode</vh></v>
-</v>
-<v t="ekr.20190219000246.1"><vh>Done</vh>
-<v t="ekr.20190218131849.1"><vh>Removed isPython3</vh>
-<v t="ekr.20190218073025.1"><vh> Commands...</vh>
-<v t="ekr.20040723094220.5"><vh>c.checkPythonNode</vh></v>
-<v t="ekr.20171123135625.5"><vh>c.executeScriptHelper</vh></v>
-<v t="ville.20090311200059.1"><vh>c.find_b</vh></v>
-<v t="ekr.20070115135502"><vh>c.writeScriptFile</vh></v>
-<v t="ekr.20070915142635"><vh>c_file.writeFileFromNode</vh></v>
-<v t="ekr.20170806094317.19"><vh>efc.dumpCompareNodes</vh></v>
-<v t="ekr.20170806094318.15"><vh>efc.saveFile</vh></v>
-<v t="ekr.20160517133049.4"><vh>flake8.get_flake8_config</vh></v>
-<v t="ekr.20100813041139.5912"><vh>rst.createIntermediateFile</vh></v>
-<v t="ekr.20090502071837.94"><vh>rst.write</vh></v>
-<v t="ekr.20100813041139.5919"><vh>rst.write_files &amp; helpers</vh>
-<v t="ekr.20100813041139.5913"><vh>rst.addTitleToHtml</vh></v>
-<v t="ekr.20100813041139.5914"><vh>rst.createDirectoryForFile</vh></v>
-<v t="ekr.20100813041139.5912"></v>
-<v t="ekr.20090502071837.65"><vh>rst.writeToDocutils (sets argv) &amp; helper</vh>
-<v t="ekr.20090502071837.66"><vh>rst.handleMissingStyleSheetArgs</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20190218072811.1"><vh> Gui...</vh>
-<v t="ekr.20110605121601.18384"><vh>LeoQTreeWidget.setText</vh></v>
-<v t="tbrown.20171028115438.26"><vh>load_modules</vh></v>
-<v t="ekr.20110605121601.18113"><vh>qsciw.setAllText</vh></v>
-<v t="tbrown.20150807090639.1"><vh>qtree.declutter_node &amp; helpers</vh>
-<v t="ekr.20171122064635.1"><vh>qtree.declutter_replace</vh></v>
-<v t="ekr.20171122055719.1"><vh>qtree.declutter_style</vh></v>
-</v>
-</v>
-<v t="ekr.20190218071807.1"><vh> Imports...</vh>
-<v t="ekr.20120219194520.10463"><vh>&lt;&lt; imports &gt;&gt; (leoApp)</vh></v>
-<v t="ekr.20100208223942.10436"><vh>&lt;&lt; imports &gt;&gt; (leoCache)</vh></v>
-<v t="ekr.20050405141130"><vh>&lt;&lt; imports &gt;&gt; (leoFileCommands)</vh></v>
-<v t="ekr.20050208101229"><vh>&lt;&lt; imports &gt;&gt; (leoGlobals)</vh></v>
-<v t="ekr.20091224155043.6539"><vh>&lt;&lt; imports &gt;&gt; (leoImport)</vh></v>
-<v t="ekr.20100908120927.5971"><vh>&lt;&lt; imports &gt;&gt; (leoRst)</vh></v>
-<v t="ekr.20181006100604.1"><vh>&lt;&lt; leoDebugger.py imports &gt;&gt;</vh></v>
-<v t="tbrown.20171028115438.1"><vh>&lt;&lt; editpane.py imports &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20190218073115.1"><vh> IO...</vh>
-<v t="ekr.20180602062323.7"><vh>fast.readWithElementTree &amp; helpers</vh>
-<v t="ekr.20180624125321.1"><vh>fast.handleBits</vh></v>
-<v t="ekr.20180606041211.1"><vh>fast.resolveUa &amp; helper</vh>
-<v t="ekr.20180606044154.1"><vh>fast.bytesToUnicode</vh></v>
-</v>
-<v t="ekr.20180605062300.1"><vh>fast.scanGlobals &amp; helper</vh>
-<v t="ekr.20180708060437.1"><vh>fast.getGlobalData</vh></v>
-</v>
-<v t="ekr.20180602062323.8"><vh>fast.scanTnodes</vh></v>
-<v t="ekr.20180602062323.9"><vh>fast.scanVnodes &amp; helper</vh>
-<v t="ekr.20180605102822.1"><vh>&lt;&lt; define v_element_visitor &gt;&gt;</vh>
-<v t="ekr.20180605075042.1"><vh>&lt;&lt; Make a new vnode, linked to the parent &gt;&gt;</vh></v>
-<v t="ekr.20180605075113.1"><vh>&lt;&lt; handle all other v attributes &gt;&gt;</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20031218072017.1470"><vh>fc.put &amp; helpers</vh>
-<v t="ekr.20141020112451.18329"><vh>put_dquote</vh></v>
-<v t="ekr.20141020112451.18330"><vh>put_dquoted_bool</vh></v>
-<v t="ekr.20141020112451.18331"><vh>put_flag</vh></v>
-<v t="ekr.20141020112451.18332"><vh>put_in_dquotes</vh></v>
-<v t="ekr.20141020112451.18333"><vh>put_nl</vh></v>
-<v t="ekr.20141020112451.18334"><vh>put_tab</vh></v>
-<v t="ekr.20141020112451.18335"><vh>put_tabs</vh></v>
-</v>
-<v t="ekr.20100119145629.6111"><vh>fc.writeToFileHelper &amp; helpers</vh>
-<v t="ekr.20100119145629.6106"><vh>fc.createActualFile</vh></v>
-<v t="ekr.20031218072017.3047"><vh>fc.createBackupFile</vh></v>
-<v t="ekr.20100119145629.6108"><vh>fc.handleWriteLeoFileException</vh></v>
-</v>
-<v t="ekr.20031218072017.1462"><vh>ic.exportHeadlines</vh></v>
-<v t="ekr.20031218072017.1148"><vh>ic.outlineToWeb</vh></v>
-<v t="ekr.20080822065427.4"><vh>x.show_error_lines</vh></v>
-</v>
-<v t="ekr.20190218072351.1"><vh> leoApp.py...</vh>
-<v t="ekr.20090717112235.6007"><vh>app.computeSignon &amp; printSignon</vh></v>
-<v t="ekr.20031218072017.1982"><vh>app.setIDFile</vh></v>
-<v t="ekr.20031218072017.1981"><vh>app.setIdFromDialog</vh></v>
-<v t="ekr.20031218072017.2619"><vh>app.writeWaitingLog</vh></v>
-<v t="ekr.20120222103014.10312"><vh>LM.openSettingsFile</vh></v>
-<v t="ekr.20120223062418.10410"><vh>LM.openZipFile</vh></v>
-<v t="vitalije.20170703115609.1"><vh>rf.editRecentFiles</vh></v>
-</v>
-<v t="ekr.20190218072404.1"><vh> leoAtFile.py...</vh>
-<v t="ekr.20090514111518.5663"></v>
-<v t="ekr.20041005105605.205"></v>
-</v>
-<v t="ekr.20190218073446.1"><vh> leoConfig.py...</vh>
-<v t="ekr.20041121143823"><vh>gcm.getValFromDict</vh></v>
-<v t="ekr.20120215072959.12520"><vh>getValFromDict</vh></v>
-<v t="ekr.20041119204714"><vh>visitNode (SettingsTreeParser)</vh></v>
-</v>
-<v t="ekr.20190218071916.1"><vh> leoGlobals.py...</vh>
-<v t="ekr.20031219074948.1"><vh>class g.Tracing/NullObject</vh></v>
-<v t="ekr.20120320053907.9776"><vh>g.computeFileUrl</vh></v>
-<v t="ekr.20060127162818"><vh>g.enable_gc_debug</vh></v>
-<v t="ekr.20161223090721.1"><vh>g.exec_file</vh></v>
-<v t="ekr.20031218072017.1386"><vh>g.getOutputNewline</vh></v>
-<v t="ekr.20031218072017.2278"><vh>g.importFromPath</vh></v>
-<v t="ekr.20100329071036.5744"><vh>g.is_binary_file/external_file/string</vh></v>
-<v t="ekr.20160229070349.2"><vh>g.isBytes (deprecated)</vh></v>
-<v t="ekr.20160229070349.3"><vh>g.isCallable (deprecated)</vh></v>
-<v t="ekr.20160229070429.1"><vh>g.isInt (deprecated)</vh></v>
-<v t="ekr.20161223082445.1"><vh>g.isList (deprecated)</vh></v>
-<v t="ekr.20160229070349.5"><vh>g.isString (deprecated)</vh></v>
-<v t="ekr.20160229070349.6"><vh>g.isUnicode (deprecated)</vh></v>
-<v t="ekr.20031218072017.3128"><vh>g.pause</vh></v>
-<v t="ekr.20080710101653.1"><vh>g.pr</vh></v>
-<v t="ekr.20060221083356"><vh>g.prettyPrintType</vh></v>
-<v t="ekr.20031218072017.3135"><vh>g.printStats</vh></v>
-<v t="ekr.20050208093800.1"><vh>g.toUnicode</vh></v>
-<v t="ekr.20080919065433.1"><vh>g.toUnicodeWithErrorCode (for unit testing)</vh></v>
-<v t="ekr.20060810095921"><vh>g.translateString &amp; tr</vh></v>
-<v t="ekr.20091206161352.6232"><vh>g.u</vh></v>
-<v t="ekr.20170226093349.1"><vh>g.unquoteUrl</vh></v>
-</v>
-<v t="ekr.20190218073221.1"><vh> leoNodes.py...</vh>
-<v t="ville.20090311195550.1"><vh>filter_b</vh></v>
-<v t="ekr.20040117173448"><vh>p.__nonzero__ &amp; __bool__</vh></v>
-<v t="ekr.20031218072017.1581"><vh>v.headString</vh></v>
-</v>
-<v t="ekr.20190218072450.1"><vh> leoTest.py</vh>
-<v t="ekr.20051104075904.22"><vh>&lt;&lt; print added functions &gt;&gt;</vh></v>
-<v t="ekr.20051104075904.18"><vh>enableGc</vh></v>
-<v t="ekr.20051104075904.97"><vh>leoTest.py: factorial (a test of doctests)</vh></v>
-<v t="ekr.20051104075904.10"><vh>runTest (generalTestCase)</vh></v>
-<v t="ekr.20051104075904.93"><vh>TM.checkFileSyntax</vh></v>
-<v t="ekr.20120912094259.10546"><vh>tm.makeTestClass</vh></v>
-<v t="ekr.20051104075904.12"><vh>tm.makeTestSuite</vh></v>
-</v>
-<v t="ekr.20190218071950.1"><vh> Tangle/Untangle...</vh>
-<v t="ekr.20031218072017.1149"><vh>&lt;&lt; Write s into newFileName &gt;&gt; (remove-sentinels)</vh></v>
-<v t="ekr.20031218072017.1464"><vh>ic.weave</vh>
-<v t="ekr.20031218072017.1465"><vh>&lt;&lt; write the context of p to f &gt;&gt; (weave)</vh></v>
-</v>
-</v>
-<v t="ekr.20190218073511.1"><vh>Misc...</vh>
-<v t="ekr.20110605121601.18577"><vh>jedit.addLeoRules</vh></v>
-<v t="ekr.20120206134955.10150"><vh>td._checkKey/ValType</vh></v>
-<v t="ekr.20141210051628.28"><vh>zic.parseZimIndex</vh></v>
-<v t="vitalije.20170716201700.3"><vh> __init__ (SqlitePickleShare)</vh></v>
-<v t="ekr.20181006160108.1"><vh>xdb.__init__</vh></v>
-</v>
-</v>
-<v t="ekr.20190218153315.1"><vh>Removed 61:g.u</vh>
-<v t="ekr.20180602103135.9"></v>
-<v t="ekr.20141031053508.15"><vh>add_rclick_menu (QtIconBarClass)</vh></v>
-<v t="ekr.20190109160056.1"></v>
-<v t="ekr.20190109160056.2"></v>
-<v t="ekr.20190109160056.3"></v>
-<v t="ekr.20190109142026.1"></v>
-<v t="ekr.20190109145850.1"></v>
-<v t="ekr.20090225080846.3"></v>
-<v t="ekr.20050506084734"></v>
-<v t="ekr.20120217070122.10473"><vh>c.initCommandIvars</vh></v>
-<v t="ekr.20120217070122.10470"><vh>c.initObjects</vh></v>
-<v t="ekr.20110605121601.18148"><vh>dw.createMiniBuffer</vh></v>
-<v t="ekr.20180602062323.9"></v>
-<v t="vitalije.20170705075107.1"><vh>fc.decodePosition</vh></v>
-<v t="vitalije.20170705075117.1"><vh>fc.encodePosition</vh></v>
-<v t="ekr.20110605121601.18544"><vh>filter.qtKey</vh></v>
-<v t="ekr.20131119185305.16478"><vh>ftm.clear_focus &amp; init_focus &amp; set_entry_focus</vh></v>
-<v t="ekr.20131117120458.16789"><vh>ftm.init_widgets (creates callbacks)</vh></v>
-<v t="ekr.20131117164142.16853"><vh>ftm.text getters/setters</vh></v>
-<v t="ekr.20100125073206.8710"><vh>g.readFileIntoString</vh></v>
-<v t="ekr.20031218072017.3120"><vh>g.readlineForceUnixNewline</vh></v>
-<v t="ekr.20050208093800.1"></v>
-<v t="ekr.20031218072017.2160"><vh>g.toUnicodeFileEncoding</vh></v>
-<v t="ekr.20091206161352.6232"></v>
-<v t="ekr.20031218072017.3306"><vh>ic.createHeadline</vh></v>
-<v t="ekr.20031218072017.1462"></v>
-<v t="ekr.20031218072017.1147"><vh>ic.flattenOutline</vh></v>
-<v t="ekr.20160504144353.1"><vh>json.create_nodes (generalize)</vh></v>
-<v t="vitalije.20170708161511.1"><vh>k.handleInputShortcut</vh>
-<v t="vitalije.20170709151653.1"><vh>k.isInShortcutBodyLine</vh></v>
-<v t="vitalije.20170709151658.1"><vh>k.isEditShortcutSensible</vh></v>
-<v t="vitalije.20170709202924.1"><vh>k.editShortcut_do_bind_helper</vh></v>
-</v>
-<v t="vitalije.20170709151653.1"></v>
-<v t="ekr.20131118172620.16894"><vh>keyPress (EventWrapper)</vh></v>
-<v t="ekr.20110605121601.18360"><vh>LeoQtMenu.setMenuLabel</vh></v>
-<v t="ekr.20110605121601.18383"><vh>LeoQTreeWidget.parseText</vh></v>
-<v t="ekr.20141024170936.7"><vh>lqlw.get_selection</vh></v>
-<v t="tbrown.20111011094944.27031"><vh>lqlw.tab_callback</vh></v>
-<v t="ekr.20110605121601.18120"><vh>qlew.getAllText</vh></v>
-<v t="ekr.20110605121601.18122"><vh>qlew.getSelectionRange</vh></v>
-<v t="ekr.20110605121601.18129"><vh>qlew.setInsertPoint</vh></v>
-<v t="ekr.20110605121601.18130"><vh>qlew.setSelectionRange</vh></v>
-<v t="ekr.20110605121601.18108"><vh>qsciw.getAllText</vh></v>
-<v t="ekr.20190118082646.1"><vh>qstatus.compute_columns</vh></v>
-<v t="ekr.20170324142416.1"><vh>qt: show-color-wheel</vh></v>
-<v t="ekr.20170324143944.3"><vh>qt: show-fonts</vh></v>
-<v t="ekr.20160917125948.1"><vh>qt_gui.getTextFromClipboard</vh></v>
-<v t="ekr.20110605121601.18494"><vh>qt_gui.runAskLeoIDDialog</vh></v>
-<v t="ekr.20110605121601.18499"><vh>qt_gui.runOpenDirectoryDialog</vh></v>
-<v t="ekr.20110605121601.18500"><vh>qt_gui.runOpenFileDialog</vh></v>
-<v t="ekr.20110605121601.18502"><vh>qt_gui.runSaveFileDialog</vh></v>
-<v t="ekr.20110605121601.18081"><vh>qtew.getAllText</vh></v>
-<v t="ekr.20110605121601.18311"><vh>qtFrame.Qt bindings...</vh></v>
-<v t="ekr.20110605121601.18424"><vh>qtree.getItemText</vh></v>
-<v t="ekr.20110605121601.17912"><vh>qtree.onHeadChanged</vh>
-<v t="ekr.20120409185504.10028"><vh>&lt;&lt; truncate s if it has multiple lines &gt;&gt;</vh></v>
-</v>
-<v t="vitalije.20170703115609.1"></v>
-<v t="ekr.20131115120119.17395"><vh>setChanged (LeoTabbedTopLevel)</vh></v>
-<v t="ekr.20180316093159.1"><vh>ssm.do_pass</vh></v>
-<v t="ekr.20110605121601.18441"><vh>tt.createControl (defines class LeoQComboBox)</vh></v>
-<v t="ekr.20110605121601.18445"><vh>tt.selectTab</vh></v>
-<v t="ekr.20031218072017.3344"><vh>v.__init</vh></v>
-</v>
-<v t="ekr.20190218154718.1"><vh>Removed 5:g.ue</vh>
-<v t="ekr.20041005105605.205"></v>
-<v t="ekr.20080805085257.2"><vh>fc.pickle</vh></v>
-<v t="ekr.20091206161352.6232"></v>
-<v t="ekr.20120223062418.10410"></v>
-<v t="ekr.20140713062552.17737"><vh>pd.pickle</vh></v>
-</v>
-</v>
-<v t="ekr.20190218145819.1"><vh>Still uses isPython3</vh>
-<v t="ekr.20190218071840.1"><vh> leoAst.py...</vh>
-<v t="ekr.20141012064706.18416"><vh>f.arguments</vh></v>
-<v t="ekr.20141012064706.18419"><vh>f.Bytes</vh></v>
-<v t="ekr.20170721073056.1"><vh>f.Constant (Python 3.6+)</vh></v>
-<v t="ekr.20170721075130.1"><vh>f.FormattedValue (Python 3.6+)</vh></v>
-<v t="ekr.20141012064706.18459"><vh>f.Raise</vh></v>
-<v t="ekr.20141012064706.18531"><vh>Constants &amp; Name</vh></v>
-<v t="ekr.20141012064706.18482"><vh>ft.arguments &amp; arg</vh></v>
-<v t="ekr.20170721073315.1"><vh>ft.Constant (Python 3.6+)</vh></v>
-<v t="ekr.20170721075714.1"><vh>ft.FormattedValue (Python 3.6+)</vh></v>
-<v t="ekr.20170721080935.1"><vh>ft.JoinedStr (Python 3.6+)</vh></v>
-<v t="ekr.20141012064706.18520"><vh>ft.Raise</vh></v>
-<v t="ekr.20170721073431.1"><vh>rt.Constant (Python 3.6+)</vh></v>
-<v t="ekr.20150722204300.85"><vh>rt.Raise</vh></v>
-<v t="ekr.20170721075845.1"><vh>rf.FormattedValue (Python 3.6+: unfinished)</vh></v>
-<v t="ekr.20170721080959.1"><vh>rf.JoinedStr (Python 3.6+: unfinished)</vh></v>
-</v>
-</v>
-<v t="ekr.20190218174250.1"><vh>Possible replacements</vh>
-<v t="ekr.20190218154841.1"><vh>Minor</vh>
-<v t="ekr.20190218154507.1"><vh>Found 7:isBytes</vh>
-<v t="ekr.20180606041211.1"></v>
-<v t="ekr.20050418161620.2"><vh>fc.putUaHelper</vh></v>
-<v t="ekr.20160229070349.2"></v>
-<v t="ekr.20080816125725.2"><vh>g.isBytes/Callable/Int/String/Unicode (deprecated)</vh>
-<v t="ekr.20160229070349.2"></v>
-<v t="ekr.20160229070349.3"></v>
-<v t="ekr.20160229070429.1"></v>
-<v t="ekr.20161223082445.1"></v>
-<v t="ekr.20160229070349.5"></v>
-<v t="ekr.20160229070349.6"></v>
-</v>
-<v t="ekr.20031218072017.2317"><vh>g.trace</vh></v>
-<v t="ekr.20090502071837.65"></v>
-<v t="ekr.20050404151753.6"><vh>write (g.FileLikeObject)</vh></v>
-</v>
-<v t="ekr.20190218154520.1"><vh>Found 2:isCallable</vh>
-<v t="ekr.20031218072017.2829"><vh>efc.open_file_in_external_editor</vh></v>
-<v t="ekr.20160229070349.3"></v>
-</v>
-<v t="ekr.20190218154532.1"><vh>Found 7:isInt</vh>
-<v t="ekr.20091211111443.6266"><vh>c.checkBatchOperationsList</vh></v>
-<v t="ekr.20070317130250"><vh>cc.selectChapterByName &amp; helper</vh>
-<v t="ekr.20090306060344.2"><vh>cc.selectChapterByNameHelper</vh></v>
-</v>
-<v t="ekr.20160229070429.1"></v>
-<v t="ekr.20111114151846.9847"><vh>g.toPythonIndex</vh></v>
-<v t="ekr.20110605121601.18100"><vh>qtew.toPythonIndex</vh></v>
-<v t="ekr.20110605121601.18441"></v>
-</v>
-<v t="ekr.20190218154614.1"><vh>Found 7:isList</vh>
-<v t="ekr.20120129181245.10220"><vh>class g.TypedDict/OfLists &amp; isTypedDict/OfLists</vh>
-<v t="ekr.20120205022040.17769"><vh>td.ctor</vh></v>
-<v t="ekr.20120205022040.17770"><vh>td.__repr__ &amp; __str__</vh></v>
-<v t="ekr.20120206134955.10150"></v>
-<v t="ekr.20120205022040.17774"><vh>td.add &amp; td.replace</vh></v>
-<v t="ekr.20120223062418.10422"><vh>td.copy</vh></v>
-<v t="ekr.20120206134955.10151"><vh>td.dump</vh></v>
-<v t="ekr.20120205022040.17771"><vh>td getters</vh></v>
-<v t="ekr.20120214165710.10728"><vh>td.setName</vh></v>
-<v t="ekr.20120205022040.17807"><vh>td.update</vh></v>
-</v>
-<v t="ekr.20161223082445.1"></v>
-<v t="ekr.20120205022040.17771"></v>
-<v t="ekr.20120205022040.17774"></v>
-<v t="ekr.20120205022040.17769"></v>
-<v t="ekr.20120206134955.10151"></v>
-</v>
-</v>
-<v t="ekr.20190218154421.1"><vh>Found 50:isString</vh>
-<v t="ekr.20150514043850.9"><vh>abbrev.init_tree_abbrev</vh>
-<v t="ekr.20170227062001.1"></v>
-</v>
-<v t="ekr.20120215072959.12527"><vh>c.config.getData</vh></v>
-<v t="ekr.20131114051702.16542"><vh>c.config.getOutlineData</vh></v>
-<v t="ekr.20140717074441.17770"><vh>c.recreateGnxDict</vh></v>
-<v t="ekr.20171215074959.2"><vh>checker.Assign &amp; helpers</vh>
-<v t="ekr.20171215074959.4"><vh>checker.do_assn_to_self</vh></v>
-<v t="ekr.20171215074959.3"><vh>checker.do_assn_to_special</vh></v>
-</v>
-<v t="ekr.20171216063026.1"><vh>checker.error, fail, note &amp; log_line</vh></v>
-<v t="ekr.20171216110107.1"><vh>checker.get_chain</vh></v>
-<v t="ekr.20171208142646.1"><vh>checker.resolve &amp; helpers</vh>
-<v t="ekr.20171208134737.1"><vh>checker.resolve_call</vh></v>
-<v t="ekr.20171209034244.1"><vh>checker.resolve_chain</vh></v>
-<v t="ekr.20171208173323.1"><vh>checker.resolve_ivar &amp; helpers</vh>
-<v t="ekr.20171217102701.1"><vh>checker.remember_unknown_ivar</vh></v>
-<v t="ekr.20171217102055.1"><vh>checker.report_unbounded_recursion</vh></v>
-</v>
-<v t="ekr.20171209065852.1"><vh>checker_check_signature &amp; helpers</vh>
-<v t="ekr.20171212034531.1"><vh>checker.check_arg (Finish)</vh></v>
-<v t="ekr.20171212035137.1"><vh>checker.check_arg_helper</vh></v>
-<v t="ekr.20171212044621.1"><vh>checker.compare_classes</vh></v>
-</v>
-</v>
-<v t="ekr.20171208134737.1"></v>
-<v t="ekr.20171209034244.1"></v>
-<v t="ekr.20150523132558.1"><vh>class OutputToken</vh></v>
-<v t="ekr.20161028090624.1"><vh>class ProcessData</vh></v>
-<v t="ekr.20141012064706.18403"><vh>f.visit</vh></v>
-<v t="ekr.20180606041211.1"></v>
-<v t="ekr.20050418161620.2"></v>
-<v t="ekr.20170222084048.1"></v>
-<v t="ekr.20141012064706.18474"><vh>ft.FunctionDef</vh></v>
-<v t="ekr.20180627050237.1"><vh>function: dump_cache</vh></v>
-<v t="ekr.20131016032805.16721"><vh>g.execute_shell_commands</vh></v>
-<v t="ekr.20150722051946.2"><vh>g.flatten_list</vh></v>
-<v t="ekr.20160229070349.5"></v>
-<v t="ekr.20150722051946.3"><vh>g.join_list</vh></v>
-<v t="ekr.20050819064157"><vh>g.objToSTring &amp; g.toString</vh></v>
-<v t="ekr.20170216091704.1"><vh>g.openUrlHelper</vh></v>
-<v t="ekr.20160417174224.1"><vh>g.plural</vh></v>
-<v t="ekr.20031218072017.3135"></v>
-<v t="ekr.20031218072017.3136"><vh>g.stat</vh></v>
-<v t="ekr.20031218072017.2160"></v>
-<v t="ekr.20031218072017.2317"></v>
-<v t="ekr.20080220111323"><vh>g.translateArgs</vh></v>
-<v t="ekr.20120222103014.10314"><vh>gcm.config_iter</vh></v>
-<v t="bob.20071231111744.2"><vh>get / getColor</vh></v>
-<v t="ekr.20160518074545.9"><vh>get_files_for_scope</vh></v>
-<v t="ekr.20100216141722.5626"><vh>goto.find_gnx</vh></v>
-<v t="ekr.20140825102404.18525"><vh>IdleTime.__repr__</vh></v>
-<v t="ekr.20090518072506.8494"><vh>k.isFKey</vh></v>
-<v t="ekr.20061031131434.126"><vh>k.manufactureKeyPressForCommandName</vh></v>
-<v t="ekr.20111028060955.16568"><vh>LeoMenu.getMenuEntryBindings</vh></v>
-<v t="ekr.20111028060955.16565"><vh>LeoMenu.getMenuEntryInfo</vh></v>
-<v t="ekr.20031218072017.1997"><vh>ni.scanGnx</vh></v>
-<v t="ekr.20150526201701.12"><vh>ptb.op*</vh></v>
-<v t="ekr.20150527213419.1"><vh>ptb.possible_unary_op &amp; unary_op</vh></v>
-<v t="ekr.20150526201701.13"><vh>ptb.word &amp; word_op</vh></v>
-<v t="ekr.20110605121601.18510"><vh>qt_gui.getFontFromParams</vh></v>
-<v t="ekr.20150722204300.88"><vh>rt.Str</vh></v>
-<v t="ekr.20120205022040.17771"></v>
-<v t="ekr.20160225102931.9"><vh>ts.dump_token</vh></v>
-<v t="ekr.20031218072017.3614"><vh>u.setRedoType</vh></v>
-<v t="ekr.20091221145433.6381"><vh>u.setUndoType</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20190306072725.1"><vh>re: Allow "remote" git-diff</vh>
-<v t="ekr.20170616102324.1"><vh>g.execGitCommand</vh></v>
-<v t="ekr.20170806094320.13"><vh>class GitDiffController</vh>
-<v t="ekr.20170806094320.4"><vh>gdc.__init__ &amp; helper</vh></v>
-<v t="ekr.20180510095544.1"><vh>gdc.Entries...</vh>
-<v t="ekr.20180506064102.10"><vh>gdc.diff_two_branches</vh></v>
-<v t="ekr.20180507212821.1"><vh>gdc.diff_two_revs</vh></v>
-<v t="ekr.20170806094320.12"><vh>gdc.git_diff &amp; helper</vh>
-<v t="ekr.20170820082125.1"><vh>gdc.diff_revs</vh></v>
-</v>
-<v t="ekr.20170806094320.6"><vh>gdc.diff_file &amp; helpers</vh>
-<v t="ekr.20170806191942.2"><vh>gdc.create_compare_node</vh></v>
-<v t="ekr.20170806094321.1"><vh>gdc.create_file_node</vh></v>
-<v t="ekr.20170806094320.7"><vh>gdc.find_file</vh></v>
-<v t="ekr.20170806094321.7"><vh>gdc.make_at_file_outline</vh></v>
-<v t="ekr.20170806125535.1"><vh>gdc.make_diff_outlines &amp; helper</vh>
-<v t="ekr.20170806191707.1"><vh>gdc.compute_dicts</vh></v>
-</v>
-<v t="ekr.20170821052348.1"><vh>gdc.get_revno</vh></v>
-<v t="ekr.20170820084258.1"><vh>gdc.make_at_clean_outline</vh></v>
-</v>
-</v>
-<v t="ekr.20180510095801.1"><vh>gdc.Utils</vh>
-<v t="ekr.20170806094320.18"><vh>gdc.create_root</vh></v>
-<v t="ekr.20170819132219.1"><vh>gdc.find_gnx</vh></v>
-<v t="ekr.20170806094321.5"><vh>gdc.finish</vh></v>
-<v t="ekr.20180506064102.11"><vh>gdc.get_file_from_branch</vh></v>
-<v t="ekr.20170806094320.15"><vh>gdc.get_file_from_rev</vh></v>
-<v t="ekr.20170806094320.9"><vh>gdc.get_files</vh></v>
-<v t="ekr.20180510095807.1"><vh>gdc.set_directory &amp; helper</vh>
-<v t="ekr.20170806094321.3"><vh>gdc.find_git_working_directory</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20170819035801.90"><vh>efc.gitDiff (git-diff)</vh></v>
-<v t="ekr.20190306082736.1"><vh>git diff HEAD </vh>
-<v t="ekr.20190306082736.2"><vh>leo/commands/editFileCommands.py</vh>
-<v t="ekr.20190306082736.9"><vh>Changed</vh>
-<v t="ekr.20190306082736.10"><vh>gdc.__init__ &amp; helper</vh>
-<v t="ekr.20190306082736.11"><vh>Old:gdc.__init__ &amp; helper</vh></v>
-<v t="ekr.20170806094320.4"></v>
-</v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20190218044303.1"><vh>===== #1081 @asis</vh>
-<v t="ekr.20190218061842.1"><vh>ref</vh>
-<v t="ekr.20190108054317.1"></v>
-<v t="ekr.20190108054317.1"></v>
-<v t="ekr.20150405200212.1"><vh>efc.ask</vh></v>
-<v t="ekr.20150403045207.1"><vh>efc.has_changed</vh></v>
-<v t="ekr.20150330033306.1"><vh>efc.on_idle &amp; helpers</vh>
-<v t="ekr.20150404045115.1"><vh>efc.idle_check_commander</vh></v>
-<v t="ekr.20150403044823.1"><vh>efc.idle_check_at_file_node</vh></v>
-<v t="ekr.20150407124259.1"><vh>efc.idle_check_open_with_file &amp; helper</vh>
-<v t="ekr.20150407205631.1"><vh>efc.update_open_with_node</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20190218061833.1"><vh>changed</vh>
-<v t="ekr.20150403044823.1"></v>
-<v t="ekr.20190218055230.1"><vh>efc.warn</vh></v>
-</v>
-</v>
-<v t="ekr.20190306083224.1"><vh>re: Added guards to context menu</vh>
-<v t="ekr.20110605121601.18437"><vh>qtree.onContextMenu</vh></v>
-</v>
-<v t="ekr.20190306142950.1"><vh>g.get_files_in_directory</vh></v>
-</v>
-<v t="ekr.20180824062242.1"><vh>#958: freeze in vim mode</vh>
-<v t="ekr.20110605121601.18005"><vh>class LeoQTextBrowser (QtWidgets.QTextBrowser)</vh>
-<v t="ekr.20110605121601.18006"><vh> lqtb.ctor (** no longer instantiates leo_h)</vh></v>
-<v t="ekr.20110605121601.18007"><vh>lqtb. __repr__ &amp; __str__</vh></v>
-<v t="ekr.20110605121601.18008"><vh>lqtb.Auto completion</vh>
-<v t="ekr.20110605121601.18009"><vh>class LeoQListWidget(QListWidget)</vh>
-<v t="ekr.20110605121601.18010"><vh>lqlw.ctor</vh></v>
-<v t="ekr.20110605121601.18011"><vh>lqlw.closeEvent</vh></v>
-<v t="ekr.20110605121601.18012"><vh>lqlw.end_completer</vh></v>
-<v t="ekr.20141024170936.7"></v>
-<v t="ekr.20110605121601.18013"><vh>lqlw.keyPressEvent</vh></v>
-<v t="ekr.20110605121601.18014"><vh>lqlw.select_callback</vh></v>
-<v t="tbrown.20111011094944.27031"></v>
-<v t="ekr.20110605121601.18015"><vh>lqlw.set_position</vh></v>
-<v t="ekr.20110605121601.18016"><vh>lqlw.show_completions</vh></v>
-</v>
-<v t="ekr.20110605121601.18017"><vh>lqtb.lqtb.init_completer</vh></v>
-<v t="ekr.20110605121601.18018"><vh>lqtb.redirections to LeoQListWidget</vh></v>
-</v>
-<v t="ekr.20110605121601.18019"><vh>lqtb.leo_dumpButton</vh></v>
-<v t="ekr.20141103061944.31"><vh>lqtb.get/setXScrollPosition</vh></v>
-<v t="ekr.20111002125540.7021"><vh>lqtb.get/setYScrollPosition</vh></v>
-<v t="ekr.20120925061642.13506"><vh>lqtb.onSliderChanged</vh></v>
-<v t="tbrown.20130411145310.18855"><vh>lqtb.wheelEvent</vh></v>
-</v>
-<v t="ekr.20180824062905.1"><vh>lqtb.onFocusIn</vh></v>
-</v>
-<v t="ekr.20181008045948.1"><vh>re: Add toggle-gutter command</vh>
-<v t="ekr.20110605121601.18163"><vh>dw.createText</vh></v>
-<v t="ekr.20110605121601.18143"><vh>dw.createBodyPane</vh></v>
-<v t="ekr.20150403094619.1"><vh>class LeoLineTextWidget(QFrame)</vh>
-<v t="ekr.20150403094706.9"><vh>__init__(LeoLineTextWidget)</vh></v>
-<v t="ekr.20150403094706.10"><vh>eventFilter</vh></v>
-</v>
-<v t="ekr.20150403094706.2"><vh>class NumberBar(QFrame)</vh>
-<v t="ekr.20150403094706.3"><vh>NumberBar.__init__</vh></v>
-<v t="ekr.20181005093003.1"><vh>NumberBar.reloadSettings</vh></v>
-<v t="ekr.20181005085507.1"><vh>NumberBar.mousePressEvent</vh></v>
-<v t="ekr.20150403094706.5"><vh>NumberBar.update</vh></v>
-<v t="ekr.20150403094706.6"><vh>NumberBar.paintEvent</vh></v>
-<v t="ekr.20150403094706.7"><vh>NumberBar.paintBlock</vh></v>
-<v t="ekr.20150403094706.8"><vh>NumberBar.setBold</vh></v>
-</v>
-<v t="ekr.20181009123539.1"><vh>qt: toggle-gutter</vh></v>
-</v>
-<v t="ekr.20181004060958.1"><vh>re: can not happen in jedi completer</vh>
-<v t="ekr.20180519111302.1"><vh>ac.get_jedi_completions &amp; helper</vh>
-<v t="ekr.20180526211127.1"><vh>ac.add_prefix</vh></v>
-</v>
-</v>
-<v t="ekr.20190216104815.1"><vh>===== #525: nested #clean</vh>
-<v t="ekr.20190217060648.1"><vh>ref</vh>
-<v t="ekr.20190108054317.1"></v>
-<v t="ekr.20190108052043.1"></v>
-<v t="ekr.20041005105605.174"></v>
-<v t="ekr.20041005105605.216"></v>
-<v t="ekr.20041005105605.144"></v>
-<v t="ekr.20041005105605.147"></v>
-<v t="ekr.20031218072017.3388"><vh>p.clearAllVisitedInTree</vh></v>
-</v>
-<v t="ekr.20041005105605.157"></v>
-<v t="ekr.20041005105605.161"></v>
-<v t="ekr.20041005105605.164"></v>
 <v t="ekr.20041005105605.173"></v>
 <v t="ekr.20041005105605.163"></v>
 <v t="ekr.20041005105605.174"></v>
@@ -1123,19 +516,26 @@
 <v t="ekr.20150208223018.4"><vh>x.put_plain_line</vh></v>
 <v t="ekr.20150209044257.8"><vh>x.put_sentinels</vh></v>
 </v>
-<v t="ekr.20190109142026.1"></v>
+<v t="ekr.20190109142026.1"><vh>at.atFileToString</vh></v>
 <v t="ekr.20041005105605.157"></v>
 <v t="ekr.20041005105605.161"></v>
 <v t="ekr.20041005105605.174"></v>
-<v t="ekr.20041005105605.204"></v>
+<v t="ekr.20041005105605.204"><vh>at.os</vh></v>
+</v>
+<v t="ekr.20190327183758.1"><vh>===== merge devel into py3 and pyzo branches</vh>
+<v t="ekr.20190327192403.1"><vh>py3 conflicts</vh></v>
+</v>
+<v t="ekr.20190327194749.1"><vh>===== #1098: crash in json scanner</vh></v>
+<v t="ekr.20190327203238.1"><vh>===== #1090:  --script path</vh>
+<v t="ekr.20180312153008.1"><vh>LM.doScriptOption</vh></v>
 </v>
 </v>
 <v t="ekr.20190316153545.1"><vh>===== #1096 pyzo</vh>
 <v t="ekr.20190319024244.1"><vh>checkin: DynamicWindow is just an object</vh></v>
 <v t="ekr.20190317083529.1"><vh>Changed &amp; new</vh>
-<v t="ekr.20090717112235.6007"></v>
+<v t="ekr.20090717112235.6007"><vh>app.computeSignon &amp; printSignon</vh></v>
 <v t="ekr.20120215072959.12539"><vh>c.config.getShortcut (changed)</vh></v>
-<v t="ekr.20031219074948.1"></v>
+<v t="ekr.20031219074948.1"><vh>class g.Tracing/NullObject</vh></v>
 <v t="ekr.20131118172620.16858"><vh>dw.finishCreateLogPane (changed)</vh></v>
 <v t="tbrown.20110621120042.22914"><vh>flc.get_top_splitter (changed)</vh></v>
 <v t="ekr.20070626132332"><vh>g.es (changed)</vh></v>
@@ -1160,7 +560,6 @@
 <v t="ekr.20190317082603.14"><vh>LeoMainWindow.closeEvent (traces)</vh></v>
 </v>
 </v>
-</v>
 <v t="ekr.20120212060348.10374"><vh> &lt;&lt; global switches &gt;&gt; (leoGlobals.py)</vh></v>
 <v t="ekr.20190317082435.1"><vh>&lt;&lt; pyzo imports &gt;&gt; (qt_frame.py)</vh></v>
 <v t="ekr.20190317084039.1"><vh>----- new main window</vh>
@@ -1173,7 +572,7 @@
 </v>
 <v t="ekr.20110605121601.18146"><vh>dw.createMainLayout</vh></v>
 <v t="ekr.20110605121601.18147"><vh>dw.createMenuBar</vh></v>
-<v t="ekr.20110605121601.18148"></v>
+<v t="ekr.20110605121601.18148"><vh>dw.createMiniBuffer</vh></v>
 <v t="ekr.20110605121601.18149"><vh>dw.createOutlinePane</vh></v>
 <v t="ekr.20110605121601.18150"><vh>dw.createStatusBar</vh></v>
 <v t="ekr.20110605121601.18151"><vh>dw.setMainWindowOptions</vh></v>
@@ -1207,7 +606,7 @@
 <v t="ekr.20131118172620.16892"><vh>class EventWrapper</vh>
 <v t="ekr.20131120054058.16281"><vh>create_d</vh></v>
 <v t="ekr.20131118172620.16893"><vh>wrapper</vh></v>
-<v t="ekr.20131118172620.16894"></v>
+<v t="ekr.20131118172620.16894"><vh>keyPress (EventWrapper)</vh></v>
 <v t="ekr.20131118172620.16895"><vh>keyRelease</vh></v>
 </v>
 </v>
@@ -1265,631 +664,20 @@
 <v t="ekr.20110605121601.18139"></v>
 <v t="ekr.20190317084000.1"></v>
 <v t="ekr.20190317084647.2"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943">@nosearch
-</t>
-<t tx="bob.20071231111744.2">def getColor(name, default=None):
-    """ Translate a named color into #rrggbb' format.
-
-    if 'name' is not a string it is returned unchanged.
-
-    If 'name' is already in '#rrggbb' format then it is returned unchanged.
-
-    If 'name' is not in global_color_database then getColor(default, None)
-    is called and that result returned.
-    """
-    if not g.isString(name):
-        return name
-    if name[0] == '#':
-        return name
-    name = name.replace(' ', '').lower().strip()
-    if name in leo_color_database:
-        name2 = leo_color_database[name]
-        return name2
-    if default:
-        return getColor(default, default=None)
-    return None
-
-get = getColor
-</t>
-<t tx="ekr.20031218072017.1147">def flattenOutline(self, fileName):
-    '''
-    A helper for the flatten-outline command.
-
-    Export the selected outline to an external file.
-    The outline is represented in MORE format.
-    '''
-    c = self.c
-    nl = self.output_newline
-    p = c.p
-    if not p:
-        return
-    self.setEncoding()
-    firstLevel = p.level()
-    try:
-        theFile = open(fileName, 'wb')
-            # Fix crasher: open in 'wb' mode.
-    except IOError:
-        g.warning("can not open", fileName)
-        c.testManager.fail()
-        return
-    for p in p.self_and_subtree(copy=False):
-        s = p.moreHead(firstLevel) + nl
-        s = g.toEncodedString(s, encoding=self.encoding, reportErrors=True)
-        theFile.write(s)
-        s = p.moreBody() + nl # Inserts escapes.
-        if s.strip():
-            s = g.toEncodedString(s, self.encoding, reportErrors=True)
-            theFile.write(s)
-    theFile.close()
-</t>
-<t tx="ekr.20031218072017.1148">def outlineToWeb(self, fileName, webType):
-    c = self.c; nl = self.output_newline
-    current = c.p
-    if not current: return
-    self.setEncoding()
-    self.webType = webType
-    try:
-        theFile = open(fileName, 'w')
-    except IOError:
-        g.warning("can not open", fileName)
-        c.testManager.fail()
-        return
-    self.treeType = "@file"
-    # Set self.treeType to @root if p or an ancestor is an @root node.
-    for p in current.parents():
-        flag, junk = g.is_special(p.b, "@root")
-        if flag:
-            self.treeType = "@root"
-            break
-    for p in current.self_and_subtree(copy=False):
-        s = self.convertVnodeToWeb(p)
-        if s:
-            theFile.write(s)
-            if s[-1] != '\n':
-                theFile.write(nl)
-    theFile.close()
-</t>
-<t tx="ekr.20031218072017.1149"># Remove sentinels command.
-try:
-    with open(newFileName, 'w') as theFile:
-        theFile.write(s)
-    if not g.unitTesting:
-        g.es("created:", newFileName)
-except Exception:
-    g.es("exception creating:", newFileName)
-    g.es_print_exception()
-</t>
-<t tx="ekr.20031218072017.1150">try:
-    if g.isPython3:
-        f = open(filename, 'w', encoding=self.encoding)
-    else:
-        f = open(filename, 'w')
-except Exception:
-    g.es("exception opening:", filename)
-    g.es_print_exception()
-    return
-</t>
-<t tx="ekr.20031218072017.1386">def getOutputNewline(c=None, name=None):
-    '''Convert the name of a line ending to the line ending itself.
-
-    Priority:
-    - Use name if name given
-    - Use c.config.output_newline if c given,
-    - Otherwise use g.app.config.output_newline.
-    '''
-    if name: s = name
-    elif c: s = c.config.output_newline
-    else: s = app.config.output_newline
-    if not s: s = ''
-    s = s.lower()
-    # pylint: disable=undefined-loop-variable
-    # looks like a pylint bug
-    if s in ("nl", "lf"): s = '\n'
-    elif s == "cr": s = '\r'
-    elif s == "platform": s = os.linesep # 12/2/03: emakital
-    elif s == "crlf": s = "\r\n"
-    else: s = '\n' # Default for erroneous values.
-    assert isinstance(s, str), repr(s)
-    return s
-</t>
-<t tx="ekr.20031218072017.1462">def exportHeadlines(self, fileName):
-    c = self.c; p = c.p
-    nl = self.output_newline
-    if not p:
-        return
-    self.setEncoding()
-    firstLevel = p.level()
-    try:
-        with open(fileName, 'w') as theFile:
-            for p in p.self_and_subtree(copy=False):
-                head = p.moreHead(firstLevel, useVerticalBar=True)
-                theFile.write(head + nl)
-    except IOError:
-        g.warning("can not open", fileName)
-        c.testManager.fail()
-</t>
-<t tx="ekr.20031218072017.1464">def weave(self, filename):
-    c = self.c; nl = self.output_newline
-    p = c.p
-    if not p: return
-    self.setEncoding()
-    try:
-        with open(filename, 'w', encoding=self.encoding) as f:
-            for p in p.self_and_subtree():
-                s = p.b
-                s2 = s.strip()
-                if s2:
-                    f.write("-" * 60); f.write(nl)
-                    &lt;&lt; write the context of p to f &gt;&gt;
-                    f.write("-" * 60); f.write(nl)
-                    f.write(s.rstrip() + nl)
-    except Exception:
-        g.es("exception opening:", filename)
-        g.es_print_exception()
-</t>
-<t tx="ekr.20031218072017.1465"># write the headlines of p, p's parent and p's grandparent.
-context = []; p2 = p.copy(); i = 0
-while i &lt; 3:
-    i += 1
-    if not p2: break
-    context.append(p2.h)
-    p2.moveToParent()
-context.reverse()
-indent = ""
-for line in context:
-    f.write(indent)
-    indent += '\t'
-    f.write(line)
-    f.write(nl)
-</t>
-<t tx="ekr.20031218072017.1470">def put(self, s):
-    '''Put string s to self.outputFile. All output eventually comes here.'''
-    # Improved code: self.outputFile (a cStringIO object) always exists.
-    if s:
-        self.putCount += 1
-        self.outputFile.write(s)
-</t>
-<t tx="ekr.20031218072017.1581">head_unicode_warning = False
-
-def headString(self):
-    """Return the headline string."""
-    # This message should never be printed and we want to avoid crashing here!
-    if isinstance(self._headString, str):
-        return self._headString
-    if not self.head_unicode_warning:
-        self.head_unicode_warning = True
-        g.internalError('not a string', repr(self._headString))
-    return g.toUnicode(self._headString)
-</t>
-<t tx="ekr.20031218072017.1981">def setIdFromDialog(self):
-    '''Get leoID from a dialog.'''
-    # Don't put up a splash screen.
-    # It would obscure the coming dialog.
-    self.use_splash_screen = False
-    # New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
-    if self.gui is None:
-        # Create the Qt gui if it exists.
-        self.createDefaultGui(fileName='g.app.setLeoId', verbose=False)
-    if self.gui is None: # Neither gui could be created: this should never happen.
-        g.es_debug("Please enter LeoID (e.g. your username, 'johndoe'...)")
-        leoid = input('LeoID: ')
-    else:
-        leoid = self.gui.runAskLeoIDDialog()
-    #
-    # Bug fix: 2/6/05: put result in g.app.leoID.
-    # Careful: periods in the id field of a gnx will corrupt the .leo file!
-    self.leoID = leoid.replace('.', '-')
-    g.blue('leoID=', repr(self.leoID), spaces=False)
-</t>
-<t tx="ekr.20031218072017.1982">def setIDFile(self):
-    '''Create leoID.txt.'''
-    tag = ".leoID.txt"
-    for theDir in (self.homeLeoDir, self.globalConfigDir, self.loadDir):
-        if theDir:
-            try:
-                fn = g.os_path_join(theDir, tag)
-                with open(fn, 'w') as f:
-                    f.write(self.leoID)
-                if g.os_path_exists(fn):
-                    g.error('', tag, 'created in', theDir)
-                    return
-            except IOError:
-                pass
-            g.error('can not create', tag, 'in', theDir)
-</t>
-<t tx="ekr.20031218072017.1997">def scanGnx(self, s, i=0):
-    """Create a gnx from its string representation."""
-    if not g.isString(s):
-        g.error("scanGnx: unexpected index type:", type(s), '', s)
-        return None, None, None
-    s = s.strip()
-    theId, t, n = None, None, None
-    i, theId = g.skip_to_char(s, i, '.')
-    if g.match(s, i, '.'):
-        i, t = g.skip_to_char(s, i + 1, '.')
-        if g.match(s, i, '.'):
-            i, n = g.skip_to_char(s, i + 1, '.')
-    # Use self.defaultId for missing id entries.
-    if not theId:
-        theId = self.defaultId
-    return theId, t, n
-</t>
-<t tx="ekr.20031218072017.2160">def toUnicodeFileEncoding(path):
-    # Fix bug 735938: file association crash
-    if path and g.isString(path):
-        path = path.replace('\\', os.sep)
-        # Yes, this is correct.  All os_path_x functions return Unicode strings.
-        return g.toUnicode(path)
-    else:
-        return ''
-</t>
-<t tx="ekr.20031218072017.2278">def importFromPath(moduleName, path, verbose=False):
-    '''
-    Import a module whose name is given from the directory given by path.
-
-    **Warning**: This is a thin wrapper for imp.load_module, which is
-    equivalent to reload! Reloading Leo files while running will crash Leo.
-    '''
-    trace = 'plugins' in g.app.debug
-    path = g.os_path_normpath(path)
-    assert isinstance(path, str), repr(path)
-    #
-    # Bug fix 2011/10/28: Always import the path from the specified path!
-    try:
-        module, theFile = None, None
-        try:
-            data = imp.find_module(moduleName, [path]) # This can open the file.
-            theFile, pathname, description = data
-            module = imp.load_module(moduleName, theFile, pathname, description)
-            if trace: g.trace('loaded', moduleName, 'from', path)
-        except ImportError:
-            if trace or verbose:
-                g.error('no module %s in path %s' % (moduleName, path))
-        except UiTypeException:
-            if not g.unitTesting and not g.app.batchMode:
-                g.es_print('Plugin %s does not support %s gui' % (
-                    moduleName, g.app.gui.guiName()))
-        except Exception:
-            g.error("unexpected exception in g.importFromPath(%s)" %
-                (moduleName))
-            g.es_exception()
-    # Put no return statements before here!
-    finally:
-        if theFile: theFile.close()
-    return module
-</t>
-<t tx="ekr.20031218072017.2317">def trace(*args, **keys):
-    '''Print a tracing message.'''
-    # Don't use g here: in standalone mode g is a NullObject!
-    # Compute the effective args.
-    d = {'align': 0, 'before': '', 'newline': True, 'caller_level': 1, 'noname': False}
-    d = doKeywordArgs(keys, d)
-    newline = d.get('newline')
-    align = d.get('align', 0)
-    caller_level = d.get('caller_level', 1)
-    noname = d.get('noname')
-    # Compute the caller name.
-    if noname:
-        name = ''
-    else:
-        try: # get the function name from the call stack.
-            f1 = sys._getframe(caller_level) # The stack frame, one level up.
-            code1 = f1.f_code # The code object
-            name = code1.co_name # The code name
-        except Exception:
-            name = g.shortFileName(__file__)
-        if name == '&lt;module&gt;':
-            name = g.shortFileName(__file__)
-        if name.endswith('.pyc'):
-            name = name[: -1]
-    # Pad the caller name.
-    if align != 0 and len(name) &lt; abs(align):
-        pad = ' ' * (abs(align) - len(name))
-        if align &gt; 0: name = name + pad
-        else: name = pad + name
-    # Munge *args into s.
-    result = [name] if name else []
-    for arg in args:
-        if isString(arg):
-            pass
-        elif isBytes(arg):
-            arg = toUnicode(arg)
-        else:
-            arg = repr(arg)
-        if result:
-            result.append(" " + arg)
-        else:
-            result.append(arg)
-    s = d.get('before') + ''.join(result)
-    pr(s, newline=newline)
 </t>
 <t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
 # See the "About this file" node for important notes.
 @language python
 </t>
 <t tx="ekr.20031218072017.2604"></t>
-<t tx="ekr.20031218072017.2619">def writeWaitingLog(self, c):
-    '''Write all waiting lines to the log.'''
-    #
-    # Do not call g.es, g.es_print, g.pr or g.trace here!
-    app = self
-    if not c or not c.exists:
-        return
-    if g.unitTesting:
-        app.logWaiting = []
-        g.app.setLog(None) # Prepare to requeue for other commanders.
-        return
-    # Write the signon to the log: similar to self.computeSignon().
-    table = [
-        ('Leo Log Window', 'red'),
-        (app.signon, None),
-        (app.signon1, None),
-        (app.signon2, None),
-    ]
-    table.reverse()
-    c.setLog()
-    app.logInited = True # Prevent recursive call.
-    if not app.silentMode:
-        # Write the signon.
-        for s, color in table:
-            if s:
-                app.logWaiting.insert(0, (s, color, True),)
-        # Write all the queued log entries.
-        for msg in app.logWaiting:
-            s, color, newline = msg[:3]
-            kwargs = {} if len(msg) &lt; 4 else msg[3]
-            kwargs = {k:v for k,v in kwargs.items() if k not in ('color', 'newline')}
-            g.es('', s, color=color, newline=newline, **kwargs)
-        if hasattr(c.frame.log, 'scrollToEnd'):
-            g.app.gui.runAtIdle(c.frame.log.scrollToEnd)
-    app.logWaiting = []
-    # Essential when opening multiple files...
-    g.app.setLog(None)
-</t>
-<t tx="ekr.20031218072017.2829">def open_file_in_external_editor(self, c, d, fn, testing=False):
-    '''
-    Open a file fn in an external editor.
-
-    This will be an entire external file, or a temp file for a single node.
-
-    d is a dictionary created from an @openwith settings node.
-
-        'args':     the command-line arguments to be used to open the file.
-        'ext':      the file extension.
-        'kind':     the method used to open the file, such as subprocess.Popen.
-        'name':     menu label (used only by the menu code).
-        'p':        the nearest @&lt;file&gt; node, or None.
-        'shortcut': menu shortcut (used only by the menu code).
-    '''
-    testing = testing or g.unitTesting
-    arg_tuple = d.get('args', [])
-    arg = ' '.join(arg_tuple)
-    kind = d.get('kind')
-    try:
-        # All of these must be supported because they
-        # could exist in @open-with nodes.
-        command = '&lt;no command&gt;'
-        if kind in ('os.system', 'os.startfile'):
-            # New in Leo 5.7: 
-            # Use subProcess.Popen(..., shell=True)
-            c_arg = self.join(arg, fn)
-            if not testing:
-                try:
-                    subprocess.Popen(c_arg, shell=True)
-                except OSError:
-                    g.es_print('c_arg', repr(c_arg))
-                    g.es_exception()
-        elif kind == 'exec':
-            g.es_print('open-with exec no longer valid.')
-        elif kind == 'os.spawnl':
-            filename = g.os_path_basename(arg)
-            command = 'os.spawnl(%s,%s,%s)' % (arg, filename, fn)
-            if not testing: os.spawnl(os.P_NOWAIT, arg, filename, fn)
-        elif kind == 'os.spawnv':
-            filename = os.path.basename(arg_tuple[0])
-            vtuple = arg_tuple[1:]
-            vtuple.insert(0, filename)
-                # add the name of the program as the first argument.
-                # Change suggested by Jim Sizelove.
-            vtuple.append(fn)
-            command = 'os.spawnv(%s)' % (vtuple)
-            if not testing:
-                os.spawnv(os.P_NOWAIT, arg[0], vtuple) #???
-        elif kind == 'subprocess.Popen':
-            c_arg = self.join(arg, fn)
-            command = 'subprocess.Popen(%s)' % c_arg
-            if not testing:
-                try:
-                    subprocess.Popen(c_arg, shell=True)
-                except OSError:
-                    g.es_print('c_arg', repr(c_arg))
-                    g.es_exception()
-        elif g.isCallable(kind):
-            # Invoke openWith like this:
-            # c.openWith(data=[func,None,None])
-            # func will be called with one arg, the filename
-            command = '%s(%s)' % (kind, fn)
-            if not testing: kind(fn)
-        else:
-            command = 'bad command:' + str(kind)
-            if not testing: g.trace(command)
-        return command # for unit testing.
-    except Exception:
-        g.es('exception executing open-with command:', command)
-        g.es_exception()
-        return 'oops: %s' % command
-</t>
-<t tx="ekr.20031218072017.3047">def createBackupFile(self, fileName):
-    '''
-        Create a closed backup file and copy the file to it,
-        but only if the original file exists.
-    '''
-    if g.os_path_exists(fileName):
-        fd, backupName = tempfile.mkstemp(text=False)
-        f = open(fileName, 'rb') # rb is essential.
-        s = f.read()
-        f.close()
-        try:
-            try:
-                os.write(fd, s)
-            finally:
-                os.close(fd)
-            ok = True
-        except Exception:
-            g.error('exception creating backup file')
-            g.es_exception()
-            ok, backupName = False, None
-        if not ok and self.read_only:
-            g.error("read only")
-    else:
-        ok, backupName = True, None
-    return ok, backupName
-</t>
-<t tx="ekr.20031218072017.3120">@ Stephen P. Schaefer 9/7/2002
-
-The Unix readline() routine delivers "\r\n" line end strings verbatim,
-while the windows versions force the string to use the Unix convention
-of using only "\n". This routine causes the Unix readline to do the
-same.
-@c
-
-def readlineForceUnixNewline(f, fileName=None):
-    try:
-        s = f.readline()
-    except UnicodeDecodeError:
-        g.trace('UnicodeDecodeError: %s' % (fileName), f, g.callers())
-        s = ''
-    if len(s) &gt;= 2 and s[-2] == "\r" and s[-1] == "\n":
-        s = s[0: -2] + "\n"
-    return s
-</t>
-<t tx="ekr.20031218072017.3128">def pause(s):
-    g.pr(s)
-    i = 0
-    while i &lt; 1000 * 1000:
-        i += 1
-</t>
-<t tx="ekr.20031218072017.3135">@command('show-stats')
-def printStats(event=None, name=None):
-    '''
-    Print all gathered statistics.
-    
-    Here is the recommended code to gather stats for one method/function:
-        
-        if not g.app.statsLockout:
-            g.app.statsLockout = True
-            try:
-                d = g.app.statsDict
-                key = 'g.isUnicode:' + g.callers()
-                d [key] = d.get(key, 0) + 1
-            finally:
-                g.app.statsLockout = False
-    '''
-    if name:
-        if not isString(name):
-            name = repr(name)
-    else:
-        name = g._callerName(n=2) # Get caller name 2 levels back.
-    #
-    # Print the stats, organized by number of calls.
-    d = g.app.statsDict
-    d2 = {val: key for key, val in d.iteritems()}
-    for key in reversed(sorted(d2.keys())):
-        print('%7s %s' % (key, d2.get(key)))
-</t>
-<t tx="ekr.20031218072017.3136">def stat(name=None):
-    """Increments the statistic for name in g.app.statsDict
-    The caller's name is used by default.
-    """
-    d = g.app.statsDict
-    if name:
-        if not isString(name):
-            name = repr(name)
-    else:
-        name = g._callerName(n=2) # Get caller name 2 levels back.
-    d[name] = 1 + d.get(name, 0)
-</t>
-<t tx="ekr.20031218072017.3306">def createHeadline(self, parent, body, headline):
-    '''Create a new VNode as the last child of parent position.'''
-    p = parent.insertAsLastChild()
-    p.initHeadString(headline)
-    if body:
-        self.setBodyString(p, body)
-    return p
-</t>
-<t tx="ekr.20031218072017.3344">def __init__(self, context, gnx=None):
-    '''
-    Ctor for the VNode class.
-    To support ZODB, the code must set v._p_changed = 1 whenever
-    v.unknownAttributes or any mutable VNode object changes.
-    '''
-    # The primary data: headline and body text.
-    self._headString = 'newHeadline'
-    self._bodyString = ''
-    # Structure data...
-    self.children = []
-        # Ordered list of all children of this node.
-    self.parents = []
-        # Unordered list of all parents of this node.
-    # Other essential data...
-    self.fileIndex = None
-        # The immutable fileIndex (gnx) for this node. Set below.
-    self.iconVal = 0
-        # The present value of the node's icon.
-    self.statusBits = 0
-        # status bits
-    # Information that is never written to any file...
-    self.context = context # The context containing context.hiddenRootNode.
-        # Required so we can compute top-level siblings.
-        # It is named .context rather than .c to emphasize its limited usage.
-    self.expandedPositions = []
-        # Positions that should be expanded.
-    self.insertSpot = None
-        # Location of previous insert point.
-    self.scrollBarSpot = None
-        # Previous value of scrollbar position.
-    self.selectionLength = 0
-        # The length of the selected body text.
-    self.selectionStart = 0
-        # The start of the selected body text.
-    # To make VNode's independent of Leo's core,
-    # wrap all calls to the VNode ctor::
-    #
-    #   def allocate_vnode(c,gnx):
-    #       v = VNode(c)
-    #       g.app.nodeIndices.new_vnode_helper(c,gnx,v)
-    g.app.nodeIndices.new_vnode_helper(context, gnx, self)
-    assert self.fileIndex, g.callers()
-</t>
 <t tx="ekr.20031218072017.3388">def clearAllVisitedInTree(self):
     for p in self.self_and_subtree(copy=False):
         p.v.clearVisited()
         p.v.clearWriteBit()
-</t>
-<t tx="ekr.20031218072017.3614"># These routines update both the ivar and the menu label.
-
-def setRedoType(self, theType):
-
-    u = self; frame = u.c.frame
-    if not g.isString(theType):
-        g.trace('oops: expected string for command, got %s' % repr(theType))
-        g.trace(g.callers())
-        theType = '&lt;unknown&gt;'
-    menu = frame.menu.getMenu("Edit")
-    name = u.redoMenuName(theType)
-    if name != u.redoMenuLabel:
-        # Update menu using old name.
-        realLabel = frame.menu.getRealMenuName(name)
-        if realLabel == name:
-            underline = -1 if g.match(name, 0, "Can't") else 0
-        else:
-            underline = realLabel.find("&amp;")
-        realLabel = realLabel.replace("&amp;", "")
-        frame.menu.setMenuLabel(menu, u.realRedoMenuLabel, realLabel, underline=underline)
-        u.redoMenuLabel = name
-        u.realRedoMenuLabel = realLabel
 </t>
 <t tx="ekr.20031218072017.3625">&lt;&lt; about gui classes and gui plugins &gt;&gt;
 </t>
@@ -1974,252 +762,6 @@ class TracingNullObject(object):
         print('%30s' % 'NullObject.__next__:')
         raise StopIteration
 </t>
-<t tx="ekr.20040117173448">def __bool__(self):
-    """
-    Return True if a position is valid.
-    
-    The tests 'if p' or 'if not p' are the _only_ correct ways to test
-    whether a position p is valid.
-    
-    Tests like 'if p is None' or 'if p is not None' will not work properly.
-    """
-    return self.v is not None
-</t>
-<t tx="ekr.20040723094220.5">def checkPythonNode(self, p, unittest=False, suppressErrors=False):
-    c = self; h = p.h
-    # Call getScript to ignore directives and section references.
-    body = g.getScript(c, p.copy())
-    if not body: return
-    try:
-        fn = '&lt;node: %s&gt;' % p.h
-        compile(body + '\n', fn, 'exec')
-        c.tabNannyNode(p, h, body, unittest, suppressErrors)
-    except SyntaxError:
-        if not suppressErrors:
-            g.warning("Syntax error in: %s" % h)
-            g.es_exception(full=False, color="black")
-        if unittest: raise
-    except Exception:
-        g.es_print('unexpected exception')
-        g.es_exception()
-        if unittest: raise
-</t>
-<t tx="ekr.20041005105605.10">def initCommonIvars(self):
-    """
-    Init ivars common to both reading and writing.
-
-    The defaults set here may be changed later.
-    """
-    at = self
-    c = at.c
-    at.at_auto_encoding = c.config.default_at_auto_file_encoding
-    at.default_directory = None
-    at.encoding = c.config.default_derived_file_encoding
-    at.endSentinelComment = ""
-    at.errors = 0
-    at.inCode = True
-    at.indent = 0 # The unit of indentation is spaces, not tabs.
-    at.language = None
-    at.output_newline = g.getOutputNewline(c=c)
-    at.page_width = None
-    at.raw = False # True: in @raw mode
-    at.root = None # The root (a position) of tree being read or written.
-    at.startSentinelComment = ""
-    at.startSentinelComment = ""
-    at.tab_width = c.tab_width or -4
-    at.writing_to_shadow_directory = False
-</t>
-<t tx="ekr.20041005105605.116"></t>
-<t tx="ekr.20041005105605.119">def createImportedNode(self, root, headline):
-    at = self
-    if at.importRootSeen:
-        p = root.insertAsLastChild()
-        p.initHeadString(headline)
-    else:
-        # Put the text into the already-existing root node.
-        p = root
-        at.importRootSeen = True
-    p.v.setVisited() # Suppress warning about unvisited node.
-    return p
-</t>
-<t tx="ekr.20041005105605.120">def parseLeoSentinel(self, s):
-    '''
-    Parse the sentinel line s.
-    If the sentinel is valid, set at.encoding, at.readVersion, at.readVersion5.
-    '''
-    at, c = self, self.c
-    # Set defaults.
-    encoding = c.config.default_derived_file_encoding
-    readVersion, readVersion5 = None, None
-    new_df, start, end, isThin = False, '', '', False
-    # Example: \*@+leo-ver=5-thin-encoding=utf-8,.*/
-    pattern = re.compile(r'(.+)@\+leo(-ver=([0123456789]+))?(-thin)?(-encoding=(.*)(\.))?(.*)')
-        # The old code weirdly allowed '.' in version numbers.
-        # group 1: opening delim
-        # group 2: -ver=
-        # group 3: version number
-        # group(4): -thin
-        # group(5): -encoding=utf-8,.
-        # group(6): utf-8,
-        # group(7): .
-        # group(8): closing delim.
-    m = pattern.match(s)
-    valid = bool(m)
-    if valid:
-        start = m.group(1) # start delim
-        valid = bool(start)
-    if valid:
-        new_df = bool(m.group(2)) # -ver=
-        if new_df:
-            # Set the version number.
-            if m.group(3):
-                readVersion = m.group(3)
-                readVersion5 = readVersion &gt;= '5'
-            else:
-                valid = False
-    if valid:
-        # set isThin
-        isThin = bool(m.group(4))
-    if valid and m.group(5):
-        # set encoding.
-        encoding = m.group(6)
-        if encoding and encoding.endswith(','):
-            # Leo 4.2 or after.
-            encoding = encoding[:-1]
-        if not g.isValidEncoding(encoding):
-            g.es_print("bad encoding in derived file:", encoding)
-            valid = False
-    if valid:
-        end = m.group(8) # closing delim
-    if valid:
-        at.encoding = encoding
-        at.readVersion = readVersion
-        at.readVersion5 = readVersion5
-    return valid, new_df, start, end, isThin
-</t>
-<t tx="ekr.20041005105605.128">def readLine(self):
-    """
-    Read one line from file using the present encoding.
-    Returns at.read_lines[at.read_i++]
-    """
-    # This is an old interface, now used only by at.scanHeader.
-    # For now, it's not worth replacing.
-    at = self
-    if at.read_i &lt; len(at.read_lines):
-        s = at.read_lines[at.read_i]
-        at.read_i += 1
-        return s
-    else:
-        return '' # Not an error.
-</t>
-<t tx="ekr.20041005105605.129">def scanHeader(self, fileName, giveErrors=True):
-    """
-    Scan the @+leo sentinel, using the old readLine interface.
-
-    Sets self.encoding, and self.start/endSentinelComment.
-
-    Returns (firstLines,new_df,isThinDerivedFile) where:
-    firstLines        contains all @first lines,
-    new_df            is True if we are reading a new-format derived file.
-    isThinDerivedFile is True if the file is an @thin file.
-    """
-    at = self
-    new_df, isThinDerivedFile = False, False
-    firstLines = [] # The lines before @+leo.
-    s = self.scanFirstLines(firstLines)
-    valid = len(s) &gt; 0
-    if valid:
-        valid, new_df, start, end, isThinDerivedFile = at.parseLeoSentinel(s)
-    if valid:
-        at.startSentinelComment = start
-        at.endSentinelComment = end
-    elif giveErrors:
-        at.error("No @+leo sentinel in: %s" % fileName)
-        g.trace(g.callers())
-    return firstLines, new_df, isThinDerivedFile
-</t>
-<t tx="ekr.20041005105605.13">def initReadIvars(self, root, fileName,
-    importFileName=None,
-    perfectImportRoot=None,
-    atShadow=False,
-):
-    at = self
-    at.initCommonIvars()
-    at.bom_encoding = None
-        # The encoding implied by any BOM (set by g.stripBOM)
-    at.cloneSibCount = 0
-        # n &gt; 1: Make sure n cloned sibs exists at next @+node sentinel
-    at.correctedLines = 0
-        # For perfect import.
-    at.docOut = [] # The doc part being accumulated.
-    at.done = False # True when @-leo seen.
-    at.endSentinelIndentStack = []
-        # Restored indentation for @-others and @-&lt;&lt; sentinels.
-        # Used only when readVersion5.
-    at.endSentinelStack = []
-        # Contains entries for +node sentinels only when not readVersion5
-    at.endSentinelLevelStack = []
-        # The saved level, len(at.thinNodeStack), for @-others and @-&lt;&lt; sentinels.
-        # Used only when readVersion5.
-    at.endSentinelNodeStack = []
-        # Used only when readVersion5.
-    at.fromString = False
-    at.importing = bool(importFileName)
-    at.importRootSeen = False
-    at.indentStack = []
-    at.inputFile = None
-    at.lastLines = [] # The lines after @-leo
-    at.lastRefNode = None
-        # The previous reference node, for at.readAfterRef.
-        # No stack is needed because -&lt;&lt; sentinels restore at.v
-        # to the node needed by at.readAfterRef.
-    at.lastThinNode = None
-        # The last thin node at this level.
-        # Used by createThinChild4.
-    at.leadingWs = ""
-    at.lineNumber = 0 # New in Leo 4.4.8.
-    at.out = None
-    at.outStack = []
-    at.perfectImportRoot = perfectImportRoot
-    at.read_i = 0
-    at.read_lines = []
-    at.readVersion = ''
-        # New in Leo 4.8: "4" or "5" for new-style thin files.
-    at.readVersion5 = False
-        # synonym for at.readVersion &gt;= '5' and not atShadow.
-    at.root = root
-    at.rootSeen = False
-    at.atShadow = atShadow
-    at.targetFileName = fileName
-        # For at.writeError only.
-    at.tnodeList = []
-        # Needed until old-style @file nodes are no longer supported.
-    at.tnodeListIndex = 0
-    at.v = None
-    at.vStack = [] # Stack of at.v values.
-    at.thinChildIndexStack = [] # number of siblings at this level.
-    at.thinNodeStack = [] # Entries are vnodes.
-    at.updateWarningGiven = False
-</t>
-<t tx="ekr.20041005105605.130">def scanFirstLines(self, firstLines):
-    '''
-    Append all lines before the @+leo line to firstLines.
-
-    Empty lines are ignored because empty @first directives are
-    ignored.
-
-    We can not call sentinelKind here because that depends on the comment
-    delimiters we set here.
-    '''
-    at = self
-    s = at.readLine()
-    while s and s.find("@+leo") == -1:
-        firstLines.append(s)
-        s = at.readLine()
-    return s
-</t>
-<t tx="ekr.20041005105605.132"></t>
-<t tx="ekr.20041005105605.133"></t>
 <t tx="ekr.20041005105605.144">def write(self, root, sentinels=True):
     """Write a 4.x derived file.
     root is the position of an @&lt;file&gt; node.
@@ -2307,137 +849,6 @@ class TracingNullObject(object):
     for p2 in p.self_and_subtree(copy=False):
         p2.v.clearDirty()
 </t>
-<t tx="ekr.20041005105605.15">def initWriteIvars(self, root, targetFileName,
-    atEdit=False,
-    atShadow=False,
-    defaultDirectory = None,
-    forcePythonSentinels=False,
-    sentinels=True,
-):
-    '''
-    Compute default values of all write-related ivars.
-    Return the finalized name of the output file.
-    '''
-    at, c = self, self.c
-    assert root
-    self.initCommonIvars()
-    assert at.checkPythonCodeOnWrite is not None
-    assert at.underindentEscapeString is not None
-    #
-    # Copy args
-    at.atEdit = atEdit
-        # Used only by putBody.
-    at.atShadow = atShadow
-    at.root = root
-    at.sentinels = sentinels
-    #
-    # Override initCommonIvars.
-    if forcePythonSentinels:
-        at.endSentinelComment = None
-        at.startSentinelComment = "#"
-    if g.app.unitTesting:
-        at.output_newline = '\n'
-    #
-    # Set other ivars.
-    at.force_newlines_in_at_nosent_bodies = \
-        c.config.getBool('force-newlines-in-at-nosent-bodies')
-        # For at.putBody only.
-    at.sameFiles = 0
-        # For communication between replaceFile and reportEndOfWrite.
-    at.outputList = []
-        # For stream output.
-    at.targetFileName = targetFileName
-        # For at.writeError only.
-    at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
-        # Sets the following ivars:
-            # at.default_directory
-            # at.encoding
-            # at.explicitLineEnding
-            # at.language
-            # at.output_newline
-            # at.page_width
-            # at.tab_width
-    #
-    # Overrides of at.scanAllDirectives...
-    if defaultDirectory:
-        at.default_directory = defaultDirectory
-    if at.language == 'python':
-        # Encoding directive overrides everything else.
-        encoding = g.getPythonEncodingFromString(root.b)
-        if encoding:
-            at.encoding = encoding
-    #
-    # Clean root.v.
-    if not at.errors and at.root:
-        if hasattr(at.root.v, 'tnodeList'):
-            delattr(at.root.v, 'tnodeList')
-        at.root.v._p_changed = True
-    #
-    # Return the finalized file name.
-    return g.os_path_realpath(
-        c.os_path_finalize_join(at.default_directory, targetFileName))
-</t>
-<t tx="ekr.20041005105605.151">def writeMissing(self, p):
-    at, c = self, self.c
-    writtenFiles = False
-    c.init_error_dialogs()
-    p = p.copy()
-    after = p.nodeAfterTree()
-    while p and p != after: # Don't use iterator.
-        if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
-            fileName = p.anyAtFileNodeName()
-            if fileName:
-                fileName = c.os_path_finalize_join(at.default_directory, fileName)
-                if at.precheck(fileName, p):
-                    at.writeMissingNode(p)
-                    writtenFiles = True
-                else:
-                    at.addToOrphanList(p)
-            p.moveToNodeAfterTree()
-        elif p.isAtIgnoreNode():
-            p.moveToNodeAfterTree()
-        else:
-            p.moveToThreadNext()
-    if not g.unitTesting:
-        if writtenFiles &gt; 0:
-            g.es("finished")
-        else:
-            g.es("no @file node in the selected tree")
-    c.raise_error_dialogs(kind='write')
-</t>
-<t tx="ekr.20041005105605.152">def writeMissingNode(self, p):
-
-    at = self
-    if p.isAtAsisFileNode():
-        at.asisWrite(p)
-    elif p.isAtNoSentFileNode():
-        at.write(p, sentinels=False)
-    elif p.isAtFileNode():
-        at.write(p)
-    elif p.isAtAutoNode() or p.isAtAutoRstNode():
-        g.es('Can not write missing @auto node', p.h, color='red')
-    else:
-        g.trace('can not happen: unknown @file node')
-</t>
-<t tx="ekr.20041005105605.154">def asisWrite(self, root):
-    at, c = self, self.c
-    try:
-        c.endEditing()
-        c.init_error_dialogs()
-        fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
-        if not at.precheck(fileName, root):
-            at.addToOrphanList(root)
-            return
-        at.openOutputStream()
-        for p in root.self_and_subtree(copy=False):
-            at.writeAsisNode(p)
-        contents = at.closeOutputStream()
-        at.replaceFile(contents, at.encoding, fileName, root)
-    except Exception:
-        at.writeException(fileName, root)
-
-silentWrite = asisWrite # Compatibility with old scripts.
-</t>
 <t tx="ekr.20041005105605.157">def putFile(self, root, fromString='', sentinels=True):
     '''Write the contents of the file to the output stream.'''
     at = self
@@ -2454,7 +865,6 @@ silentWrite = asisWrite # Compatibility with old scripts.
     root.setVisited()
     at.putAtLastLines(s)
 </t>
-<t tx="ekr.20041005105605.160"></t>
 <t tx="ekr.20041005105605.161">def putBody(self, p, fromString=''):
     '''
     Generate the body enclosed in sentinel lines.
@@ -2629,7 +1039,6 @@ silentWrite = asisWrite # Compatibility with old scripts.
         at.putAtAllChild(child)
     at.putCloseNodeSentinel(p)
 </t>
-<t tx="ekr.20041005105605.17"></t>
 <t tx="ekr.20041005105605.170"></t>
 <t tx="ekr.20041005105605.171">def validInAtOthers(self, p):
     """
@@ -2781,259 +1190,6 @@ silentWrite = asisWrite # Compatibility with old scripts.
         at.onl_sent() # Not a real newline.
         at.indent -= delta
 </t>
-<t tx="ekr.20041005105605.18"></t>
-<t tx="ekr.20041005105605.180"></t>
-<t tx="ekr.20041005105605.181">def putBlankDocLine(self):
-    at = self
-    if not at.endSentinelComment:
-        at.putIndent(at.indent)
-        at.os(at.startSentinelComment); at.oblank()
-    at.onl()
-</t>
-<t tx="ekr.20041005105605.182">def putStartDocLine(self, s, i, kind):
-    """Write the start of a doc part."""
-    at = self
-    sentinel = "@+doc" if kind == at.docDirective else "@+at"
-    directive = "@doc" if kind == at.docDirective else "@"
-    # Put whatever follows the directive in the sentinel.
-    # Skip past the directive.
-    i += len(directive)
-    j = g.skip_to_end_of_line(s, i)
-    follow = s[i: j]
-    # Put the opening @+doc or @-doc sentinel, including whatever follows the directive.
-    at.putSentinel(sentinel + follow)
-    # Put the opening comment if we are using block comments.
-    if at.endSentinelComment:
-        at.putIndent(at.indent)
-        at.os(at.startSentinelComment); at.onl()
-</t>
-<t tx="ekr.20041005105605.183">def putDocLine(self, s, i):
-    """
-    Handle one line of a doc part.
-
-    Output complete lines and split long lines.
-    Precede Inserted newlines by whitespace.
-    """
-    at = self
-    j = g.skip_line(s, i)
-    s = s[i: j]
-    if not s or s[0] == '\n':
-        # A blank line.
-        at.putBlankDocLine()
-    else:
-        # Write the line as it is.
-        at.putIndent(at.indent)
-        if not at.endSentinelComment:
-            at.os(at.startSentinelComment)
-            at.oblank()
-        at.os(s)
-        if not s.endswith('\n'):
-            at.onl()
-</t>
-<t tx="ekr.20041005105605.185">def putEndDocLine(self):
-    """Write the conclusion of a doc part."""
-    at = self
-    # Put the closing delimiter if we are using block comments.
-    if at.endSentinelComment:
-        at.putIndent(at.indent)
-        at.os(at.endSentinelComment)
-        at.onl() # Note: no trailing whitespace.
-</t>
-<t tx="ekr.20041005105605.187"></t>
-<t tx="ekr.20041005105605.188">def nodeSentinelText(self, p):
-    """Return the text of a @+node or @-node sentinel for p."""
-    at = self
-    h = at.removeCommentDelims(p)
-    if getattr(at, 'at_shadow_test_hack', False):
-        # A hack for @shadow unit testing.
-        # see AtShadowTestCase.makePrivateLines.
-        return h
-    gnx = p.v.fileIndex
-    level = 1 + p.level() - self.root.level()
-    if level &gt; 2:
-        return "%s: *%s* %s" % (gnx, level, h)
-    else:
-        return "%s: %s %s" % (gnx, '*' * level, h)
-</t>
-<t tx="ekr.20041005105605.189">def removeCommentDelims(self, p):
-    '''
-    If the present @language/@comment settings do not specify a single-line comment
-    we remove all block comment delims from h. This prevents headline text from
-    interfering with the parsing of node sentinels.
-    '''
-    at = self
-    start = at.startSentinelComment
-    end = at.endSentinelComment
-    h = p.h
-    if end:
-        h = h.replace(start, "")
-        h = h.replace(end, "")
-    return h
-</t>
-<t tx="ekr.20041005105605.19">def openFileForReading(self, fromString=False):
-    '''
-    Open the file given by at.root.
-    This will be the private file for @shadow nodes.
-    '''
-    at, c = self, self.c
-    if fromString:
-        if at.atShadow:
-            return at.error(
-                'can not call at.read from string for @shadow files')
-        at.inputFile = g.FileLikeObject(fromString=fromString)
-        at.initReadLine(fromString)
-        return None, None
-    #
-    # Not from a string. Carefully read the file.
-    fn = g.fullPath(c, at.root)
-        # Returns full path, including file name.
-    at.setPathUa(at.root, fn)
-        # Remember the full path to this node.
-    if at.atShadow:
-        fn = at.openAtShadowFileForReading(fn)
-        if not fn:
-            return None, None
-    assert fn
-    try:
-        # Open the file in binary mode to allow 0x1a in bodies &amp; headlines.
-        at.inputFile = open(fn, 'rb')
-        s = at.readFileToUnicode(fn)
-            # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
-        at.warnOnReadOnlyFile(fn)
-    except IOError:
-        at.error("can not open: '@file %s'" % (fn))
-        at.inputFile = None
-        at._file_bytes = g.toEncodedString('')
-        fn, s = None, None
-    return fn, s
-</t>
-<t tx="ekr.20041005105605.190">def putLeadInSentinel(self, s, i, j, delta):
-    """
-    Set at.leadingWs as needed for @+others and @+&lt;&lt; sentinels.
-
-    i points at the start of a line.
-    j points at @others or a section reference.
-    delta is the change in at.indent that is about to happen and hasn't happened yet.
-    """
-    at = self
-    at.leadingWs = "" # Set the default.
-    if i == j:
-        return # The @others or ref starts a line.
-    k = g.skip_ws(s, i)
-    if j == k:
-        # Only whitespace before the @others or ref.
-        at.leadingWs = s[i: j] # Remember the leading whitespace, including its spelling.
-    else:
-        self.putIndent(at.indent) # 1/29/04: fix bug reported by Dan Winkler.
-        at.os(s[i: j])
-        at.onl_sent()
-</t>
-<t tx="ekr.20041005105605.191">def putCloseNodeSentinel(self, p):
-    '''End a node.'''
-    at = self
-    at.raw = False # Bug fix: 2010/07/04
-</t>
-<t tx="ekr.20041005105605.192">def putOpenLeoSentinel(self, s):
-    """Write @+leo sentinel."""
-    at = self
-    if at.sentinels or hasattr(at, 'force_sentinels'):
-        s = s + "-thin"
-        encoding = at.encoding.lower()
-        if encoding != "utf-8":
-            # New in 4.2: encoding fields end in ",."
-            s = s + "-encoding=%s,." % (encoding)
-        at.putSentinel(s)
-</t>
-<t tx="ekr.20041005105605.193">def putOpenNodeSentinel(self, p, inAtAll=False):
-    """Write @+node sentinel for p."""
-    at = self
-    if not inAtAll and p.isAtFileNode() and p != at.root:
-        at.writeError("@file not valid in: " + p.h)
-        return
-    s = at.nodeSentinelText(p)
-    at.putSentinel("@+node:" + s)
-    # Leo 4.7 b2: we never write tnodeLists.
-</t>
-<t tx="ekr.20041005105605.194">def putSentinel(self, s):
-    '''
-    Write a sentinel whose text is s, applying the CWEB hack if needed.
-    
-    This method outputs all sentinels.
-    '''
-    at = self
-    if at.sentinels or hasattr(at, 'force_sentinels'):
-        at.putIndent(at.indent)
-        at.os(at.startSentinelComment)
-        # Apply the cweb hack to s:
-        #   If the opening comment delim ends in '@',
-        #   double all '@' signs except the first.
-        start = at.startSentinelComment
-        if start and start[-1] == '@':
-            s = s.replace('@', '@@')[1:]
-        at.os(s)
-        if at.endSentinelComment:
-            at.os(at.endSentinelComment)
-        at.onl()
-</t>
-<t tx="ekr.20041005105605.196"></t>
-<t tx="ekr.20041005105605.198"># These patterns exclude constructs such as @encoding.setter or @encoding(whatever)
-# However, they must allow @language python, @nocolor-node, etc.
-at_directive_kind_pattern = re.compile(r'\s*@([\w-]+)\s*')
-
-def directiveKind4(self, s, i):
-    """
-    Return the kind of at-directive or noDirective.
-    
-    Potential simplifications:
-    - Using strings instead of constants.
-    - Using additional regex's to recognize directives.
-    """
-    at = self
-    n = len(s)
-    if i &gt;= n or s[i] != '@':
-        j = g.skip_ws(s, i)
-        if g.match_word(s, j, "@others"):
-            return at.othersDirective
-        elif g.match_word(s, j, "@all"):
-            return at.allDirective
-        else:
-            return at.noDirective
-    table = (
-        ("@all", at.allDirective),
-        ("@c", at.cDirective),
-        ("@code", at.codeDirective),
-        ("@doc", at.docDirective),
-        ("@end_raw", at.endRawDirective),
-        ("@others", at.othersDirective),
-        ("@raw", at.rawDirective),
-        ("@verbatim", at.startVerbatim))
-    # Rewritten 6/8/2005.
-    if i + 1 &gt;= n or s[i + 1] in (' ', '\t', '\n'):
-        # Bare '@' not recognized in cweb mode.
-        return at.noDirective if at.language == "cweb" else at.atDirective
-    if not s[i + 1].isalpha():
-        return at.noDirective # Bug fix: do NOT return miscDirective here!
-    if at.language == "cweb" and g.match_word(s, i, '@c'):
-        return at.noDirective
-    for name, directive in table:
-        if g.match_word(s, i, name):
-            return directive
-    # Support for add_directives plugin.
-    # Use regex to properly distinguish between Leo directives
-    # and python decorators.
-    s2 = s[i:]
-    m = self.at_directive_kind_pattern.match(s2)
-    if m:
-        word = m.group(1)
-        if word not in g.globalDirectiveList:
-            return at.noDirective
-        s3 = s2[m.end(1):]
-        if s3 and s3[0] in ".(":
-            return at.noDirective
-        else:
-            return at.miscDirective
-    return at.noDirective
-</t>
 <t tx="ekr.20041005105605.199">def findSectionName(self, s, i):
     '''
     Return n1, n2 representing a section name.
@@ -3059,49 +1215,6 @@ def directiveKind4(self, s, i):
     else:
         return None, n1, len(s)
 </t>
-<t tx="ekr.20041005105605.20">def warnOnReadOnlyFile(self, fn):
-    # os.access() may not exist on all platforms.
-    try:
-        read_only = not os.access(fn, os.W_OK)
-    except AttributeError:
-        read_only = False
-    if read_only:
-        g.error("read only:", fn)
-</t>
-<t tx="ekr.20041005105605.200"># returns (flag, end). end is the index of the character after the section name.
-
-def isSectionName(self, s, i):
-    # 2013/08/01: bug fix: allow leading periods.
-    while i &lt; len(s) and s[i] == '.':
-        i += 1
-    if not g.match(s, i, "&lt;&lt;"):
-        return False, -1
-    i = g.find_on_line(s, i, "&gt;&gt;")
-    if i &gt; -1:
-        return True, i + 2
-    else:
-        return False, -1
-</t>
-<t tx="ekr.20041005105605.201"># Note:  self.outputFile may be either a FileLikeObject or a real file.
-</t>
-<t tx="ekr.20041005105605.202">def oblank(self):
-    self.os(' ')
-
-def oblanks(self, n):
-    self.os(' ' * abs(n))
-
-def otabs(self, n):
-    self.os('\t' * abs(n))
-</t>
-<t tx="ekr.20041005105605.203">def onl(self):
-    """Write a newline to the output stream."""
-    self.os('\n') # **not** self.output_newline
-
-def onl_sent(self):
-    """Write a newline to the output stream, provided we are outputting sentinels."""
-    if self.sentinels:
-        self.onl()
-</t>
 <t tx="ekr.20041005105605.204">def os(self, s):
     """
     Write a string to the output file or stream.
@@ -3118,137 +1231,6 @@ def onl_sent(self):
     if not g.isUnicode(s):
         s = g.toUnicode(s, at.encoding)
     at.outputList.append(s)
-</t>
-<t tx="ekr.20041005105605.205"># Write the string s as-is except that we replace '\n' with the proper line ending.
-
-def outputStringWithLineEndings(self, s):
-    at = self
-    # Calling self.onl() runs afoul of queued newlines.
-    s = g.toUnicode(s, at.encoding)
-    s = s.replace('\n', at.output_newline)
-    self.os(s)
-</t>
-<t tx="ekr.20041005105605.206">def putDirective(self, s, i):
-    r'''
-    Output a sentinel a directive or reference s.
-
-    It is important for PHP and other situations that \@first and \@last
-    directives get translated to verbatim lines that do *not* include what
-    follows the @first &amp; @last directives.
-    '''
-    at = self
-    k = i
-    j = g.skip_to_end_of_line(s, i)
-    directive = s[i: j]
-    if g.match_word(s, k, "@delims"):
-        at.putDelims(directive, s, k)
-    elif g.match_word(s, k, "@language"):
-        self.putSentinel("@" + directive)
-    elif g.match_word(s, k, "@comment"):
-        self.putSentinel("@" + directive)
-    elif g.match_word(s, k, "@last"):
-        self.putSentinel("@@last")
-            # Convert to an verbatim line _without_ anything else.
-    elif g.match_word(s, k, "@first"):
-        self.putSentinel("@@first")
-            # Convert to an verbatim line _without_ anything else.
-    else:
-        self.putSentinel("@" + directive)
-    i = g.skip_line(s, k)
-    return i
-</t>
-<t tx="ekr.20041005105605.207">def putDelims(self, directive, s, k):
-    '''Put an @delims directive.'''
-    at = self
-    # Put a space to protect the last delim.
-    at.putSentinel(directive + " ") # 10/23/02: put @delims, not @@delims
-    # Skip the keyword and whitespace.
-    j = i = g.skip_ws(s, k + len("@delims"))
-    # Get the first delim.
-    while i &lt; len(s) and not g.is_ws(s[i]) and not g.is_nl(s, i):
-        i += 1
-    if j &lt; i:
-        at.startSentinelComment = s[j: i]
-        # Get the optional second delim.
-        j = i = g.skip_ws(s, i)
-        while i &lt; len(s) and not g.is_ws(s[i]) and not g.is_nl(s, i):
-            i += 1
-        at.endSentinelComment = s[j: i] if j &lt; i else ""
-    else:
-        at.writeError("Bad @delims directive")
-</t>
-<t tx="ekr.20041005105605.21">def read(self, root, importFileName=None,
-    fromString=None, atShadow=False, force=False
-):
-    """Read an @thin or @file tree."""
-    at, c = self, self.c
-    fileName = at.initFileName(fromString, importFileName, root)
-    if not fileName:
-        at.error("Missing file name.  Restoring @file tree from .leo file.")
-        return False
-    at.rememberReadPath(g.fullPath(c, root), root)
-        # Fix bug 760531: always mark the root as read, even if there was an error.
-        # Fix bug 889175: Remember the full fileName.
-    at.initReadIvars(root, fileName,
-        importFileName=importFileName, atShadow=atShadow)
-    at.fromString = fromString
-    if at.errors:
-        return False
-    fileName, file_s = at.openFileForReading(fromString=fromString)
-        # For @shadow files, calls x.updatePublicAndPrivateFiles.
-        # Calls at.initReadLine(s), where s is the file contents.
-        # This will be used only if not cached.
-    #
-    # Set the time stamp.
-    if fileName and at.inputFile:
-        c.setFileTimeStamp(fileName)
-    elif not fileName and not fromString and not file_s:
-        return False
-    root.clearVisitedInTree()
-    at.scanAllDirectives(root, importing=at.importing, reading=True)
-        # Sets the following ivars:
-            # at.default_directory
-            # at.encoding: **changed later** by readOpenFile/at.scanHeader.
-            # at.explicitLineEnding
-            # at.language
-            # at.output_newline
-            # at.page_width
-            # at.tab_width
-    gnx2vnode = c.fileCommands.gnxDict
-    contents = fromString or file_s
-    FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
-    root.clearDirty()
-    return True
-</t>
-<t tx="ekr.20041005105605.210">def putIndent(self, n, s=''):
-    """Put tabs and spaces corresponding to n spaces,
-    assuming that we are at the start of a line.
-
-    Remove extra blanks if the line starts with the underindentEscapeString"""
-    tag = self.underindentEscapeString
-    if s.startswith(tag):
-        n2, s2 = self.parseUnderindentTag(s)
-        if n2 &gt;= n: return
-        elif n &gt; 0: n -= n2
-        else: n += n2
-    if n &gt; 0:
-        w = self.tab_width
-        if w &gt; 1:
-            q, r = divmod(n, w)
-            self.otabs(q)
-            self.oblanks(r)
-        else:
-            self.oblanks(n)
-</t>
-<t tx="ekr.20041005105605.211">def putInitialComment(self):
-    c = self.c
-    s2 = c.config.output_initial_comment
-    if s2:
-        lines = s2.split("\\n")
-        for line in lines:
-            line = line.replace("@date", time.asctime())
-            if line:
-                self.putSentinel("@comment " + line)
 </t>
 <t tx="ekr.20041005105605.216"># Called from putFile.
 
@@ -3275,362 +1257,59 @@ def warnAboutOrphandAndIgnoredNodes(self):
                     g.blue("parent node:", p.parent().h)
             p.moveToThreadNext()
 </t>
-<t tx="ekr.20041005105605.217">def writeError(self, message):
-    '''Issue an error while writing an @&lt;file&gt; node.'''
-    at = self
-    if at.errors == 0:
-        g.es_error("errors writing: " + at.targetFileName)
-    at.error(message)
-    at.addToOrphanList(at.root)
+<t tx="ekr.20041120094940.4">def doFont(self, p, kind, name, val):
+    '''Handle an @font node. Such nodes affect syntax coloring *only*.'''
+    d = self.parseFont(p)
+    # Set individual settings.
+    for key in ('family', 'size', 'slant', 'weight'):
+        data = d.get(key)
+        if data is not None:
+            name, val = data
+            setKind = key
+            self.set(p, setKind, name, val)
 </t>
-<t tx="ekr.20041005105605.218">def writeException(self, fileName, root):
-    at = self
-    g.error("exception writing:", fileName)
-    g.es_exception()
-    if getattr(at, 'outputFile', None):
-        at.outputFile.flush()
-        at.outputFile.close()
-        at.outputFile = None
-    at.remove(fileName)
-    at.addToOrphanList(root)
-</t>
-<t tx="ekr.20041005105605.219"></t>
-<t tx="ekr.20041005105605.22">def initFileName(self, fromString, importFileName, root):
-    '''Return the fileName to be used in messages.'''
-    at = self
-    if fromString:
-        fileName = "&lt;string-file&gt;"
-    elif importFileName:
-        fileName = importFileName
-    elif root.isAnyAtFileNode():
-        fileName = root.anyAtFileNodeName()
-    else:
-        fileName = None
-    if fileName:
-        # Fix bug 102: call the commander method, not the global funtion.
-        fileName = at.c.os_path_finalize(fileName)
-    return fileName
-</t>
-<t tx="ekr.20041005105605.220">def error(self, *args):
-    at = self
-    if True: # args:
-        at.printError(*args)
-    at.errors += 1
-
-def printError(self, *args):
-    '''Print an error message that may contain non-ascii characters.'''
-    at = self
-    if at.errors:
-        g.error(*args)
-    else:
-        g.warning(*args)
-</t>
-<t tx="ekr.20041005105605.221">def exception(self, message):
-    self.error(message)
-    g.es_exception()
-</t>
-<t tx="ekr.20041005105605.26">def readAll(self, root, force=False):
-    """Scan positions, looking for @&lt;file&gt; nodes to read."""
-    at, c = self, self.c
-    old_changed = c.changed
-    if force:
-        # Capture the current headline only if
-        # we aren't doing the initial read.
-        c.endEditing()
-    t1 = time.time()
-    c.init_error_dialogs()
-    files = at.findFilesToRead(force, root)
-    for p in files:
-        at.readFileAtPosition(force, p)
-    for p in files:
-        p.v.clearDirty()
-    if not g.unitTesting:
-        if files:
-            t2 = time.time()
-            g.es('read %s files in %2.2f seconds' % (len(files), t2 - t1))
-        elif force:
-            g.es("no @&lt;file&gt; nodes in the selected tree")
-    c.changed = old_changed
-    c.raise_error_dialogs()
-</t>
-<t tx="ekr.20041005105605.7"></t>
-<t tx="ekr.20041005105605.8"># Note: g.getScript also call the at.__init__ and at.finishCreate().
-
-def __init__(self, c):
-    '''ctor for atFile class.'''
-    # **Warning**: all these ivars must **also** be inited in initCommonIvars.
-    self.c = c
-    self.encoding = 'utf-8' # 2014/08/13
-    self.fileCommands = c.fileCommands
-    self.errors = 0 # Make sure at.error() works even when not inited.
-    # **Only** at.writeAll manages these flags.
-    # promptForDangerousWrite sets cancelFlag and yesToAll only if canCancelFlag is True.
-    self.canCancelFlag = False
-    self.cancelFlag = False
-    self.yesToAll = False
-    # User options: set in reloadSettings.
-    self.checkPythonCodeOnWrite = False
-    self.runPyFlakesOnWrite = False
-    self.underindentEscapeString = '\\-'
-    self.reloadSettings()
-</t>
-<t tx="ekr.20041119204714">def visitNode(self, p):
-    """Init any settings found in node p."""
-    p = p.copy()
-        # Bug fix 2011/11/24
-        # Ensure inner traversals don't change callers's p.
-    munge = g.app.config.munge
-    kind, name, val = self.parseHeadline(p.h)
-    kind = munge(kind)
-    isNone = val in ('None', 'none', '', None)
-    if kind is None: # Not an @x node. (New in Leo 4.4.4)
-        pass
-    elif kind == "settings":
-        pass
-    elif kind in self.basic_types and isNone:
-        # None is valid for all basic types.
-        self.set(p, kind, name, None)
-    elif kind in self.control_types or kind in self.basic_types:
-        f = self.dispatchDict.get(kind)
-        if f:
-            try:
-                return f(p, kind, name, val)
-            except Exception:
-                g.es_exception()
-        else:
-            g.pr("*** no handler", kind)
-    return None
-</t>
-<t tx="ekr.20041121143823">def getValFromDict(self, d, setting, requestedType, warn=True):
-    '''Look up the setting in d. If warn is True, warn if the requested type
-    does not (loosely) match the actual type.
-    returns (val,exists)'''
-    gs = d.get(self.munge(setting))
-    if not gs: return None, False
-    assert isinstance(gs, g.GeneralSetting)
-    val = gs.val
-    isNone = val in ('None', 'none', '')
-    if not self.typesMatch(gs.kind, requestedType):
-        # New in 4.4: make sure the types match.
-        # A serious warning: one setting may have destroyed another!
-        # Important: this is not a complete test of conflicting settings:
-        # The warning is given only if the code tries to access the setting.
-        if warn:
-            g.error('warning: ignoring', gs.kind, '', setting, 'is not', requestedType)
-            g.error('there may be conflicting settings!')
-        return None, False
-    elif isNone:
-        return '', True
-            # 2011/10/24: Exists, a *user-defined* empty value.
-    else:
-        return val, True
-</t>
-<t tx="ekr.20050103163224">def scanHeaderForThin(self, fileName):
-    '''
-    Return true if the derived file is a thin file.
-
-    This is a kludgy method used only by the import code.'''
-    at = self
-    at.readFileToUnicode(fileName)
-        # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
-    junk, junk, isThin = at.scanHeader(None)
-        # scanHeader uses at.readline instead of its args.
-        # scanHeader also sets at.encoding.
-    return isThin
-</t>
-<t tx="ekr.20050104131820">def chmod(self, fileName, mode):
-    # Do _not_ call self.error here.
-    return g.utils_chmod(fileName, mode)
-</t>
-<t tx="ekr.20050104131929">@ The difference, if any, between these methods and the corresponding g.utils_x
-functions is that these methods may call self.error.
-</t>
-<t tx="ekr.20050104132018">def remove(self, fileName, verbose=True):
-    if not fileName:
-        g.trace('No file name', g.callers())
-        return False
-    try:
-        os.remove(fileName)
-        return True
-    except Exception:
-        if verbose:
-            self.error("exception removing: %s" % fileName)
-            g.es_exception()
-            g.trace(g.callers(5))
-        return False
-</t>
-<t tx="ekr.20050104132026">def stat(self, fileName):
-    '''Return the access mode of named file, removing any setuid, setgid, and sticky bits.'''
-    # Do _not_ call self.error here.
-    return g.utils_stat(fileName)
-</t>
-<t tx="ekr.20050208093800.1">def toUnicode(s, encoding='utf-8', reportErrors=False):
-    '''Convert a non-unicode string with the given encoding to unicode.'''
-    if isinstance(s, str):
-        return s
-    if not encoding:
-        encoding = 'utf-8'
-    #
-    # These are the only significant calls to s.decode in Leo.
-    try:
-        s = s.decode(encoding, 'strict')
-    except (UnicodeDecodeError, UnicodeError):
-        # https://wiki.python.org/moin/UnicodeDecodeError
-        s = s.decode(encoding, 'replace')
-        if reportErrors:
-            g.trace(g.callers())
-            g.error("toUnicode: Error converting %s...from %s encoding to unicode" % (
-                s[: 200], encoding))
-    return s
-</t>
-<t tx="ekr.20050208101229">if 0:
-    # This is now done in run.
-    import leo.core.leoGlobals as g # So code can use g below.
-# Don't import this here: it messes up Leo's startup code.
-    # import leo.core.leoTest as leoTest
-import binascii
-import codecs
-try:
-    import filecmp
-except ImportError: # does not exist in jython.
-    filecmp = None
-from functools import reduce
-try:
-    import gc
-except ImportError:
-    gc = None
-try:
-    import gettext
-except ImportError: # does not exist in jython.
-    gettext = None
-import glob
-import io
-StringIO = io.StringIO
-import imp
-import inspect
-import operator
-import os
-#
-# Do NOT import pdb here!  We shall define pdb as a _function_ below.
-    # import pdb
-import re
-import shlex
-import shutil
-import string
-import subprocess
-import tempfile
-import time
-import traceback
-import types
-import urllib
-import urllib.parse as urlparse
-</t>
-<t tx="ekr.20050404151753.6">def write(self, s):
-    if s:
-        if g.isBytes(s):
-            s = g.toUnicode(s, self.encoding)
-        self.list.append(s)
-</t>
-<t tx="ekr.20050405141130">import xml.etree.ElementTree as ElementTree
-try:
-    # IronPython has problems with this.
-    import xml.sax
-    import xml.sax.saxutils
-except Exception:
-    pass
-import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
-import binascii
-from collections import defaultdict
-import difflib
-import time
-import io
-StringIO = io.StringIO
-BytesIO = io.BytesIO
-import os
-import pickle
-import tempfile
-import zipfile
-import sqlite3
-import hashlib
-from contextlib import contextmanager
-</t>
-<t tx="ekr.20050418161620.2">def putUaHelper(self, torv, key, val):
-    '''Put attribute whose name is key and value is val to the output stream.'''
-    # New in 4.3: leave string attributes starting with 'str_' alone.
-    if key.startswith('str_'):
-        if g.isString(val) or g.isBytes(val):
-            val = g.toUnicode(val)
-            attr = ' %s="%s"' % (key, xml.sax.saxutils.escape(val))
-            return attr
-        else:
-            g.trace(type(val), repr(val))
-            g.warning("ignoring non-string attribute", key, "in", torv)
-            return ''
-    else:
-        return self.pickle(torv=torv, val=val, tag=key)
-</t>
-<t tx="ekr.20050506084734">def stringToString(self, root, s, forcePythonSentinels=True, sentinels=True):
-    """
-    Write a 4.x derived file from a string.
-
-    This is at.write specialized for scripting.
-    """
-    at, c = self, self.c
-    try:
-        c.endEditing()
-        at.initWriteIvars(root, "&lt;string-file&gt;",
-            forcePythonSentinels=forcePythonSentinels, sentinels=sentinels)
-        at.openOutputStream()
-        at.putFile(root, fromString=s, sentinels=sentinels)
-        result = at.closeOutputStream()
-        # Major bug: failure to clear this wipes out headlines!
-        #            Sometimes this causes slight problems...
-        if root:
-            if hasattr(self.root.v, 'tnodeList'):
-                delattr(self.root.v, 'tnodeList')
-            root.v._p_changed = True
-        return result
-    except Exception:
-        at.exception("exception preprocessing script")
-        return ''
-</t>
-<t tx="ekr.20050506090446.1">def putAtFirstLines(self, s):
-    '''Write any @firstlines from string s.
-    These lines are converted to @verbatim lines,
-    so the read logic simply ignores lines preceding the @+leo sentinel.'''
-    at = self; tag = "@first"
-    i = 0
-    while g.match(s, i, tag):
-        i += len(tag)
-        i = g.skip_ws(s, i)
-        j = i
-        i = g.skip_to_end_of_line(s, i)
-        # Write @first line, whether empty or not
-        line = s[j: i]
-        at.os(line); at.onl()
-        i = g.skip_nl(s, i)
-</t>
-<t tx="ekr.20050506090955">def putAtLastLines(self, s):
-    '''Write any @last lines from string s.
-    These lines are converted to @verbatim lines,
-    so the read logic simply ignores lines following the @-leo sentinel.'''
-    at = self; tag = "@last"
-    # Use g.splitLines to preserve trailing newlines.
+<t tx="ekr.20041213082558.1">def parseFont(self, p):
+    d = {
+        'comments': [],
+        'family': None,
+        'size': None,
+        'slant': None,
+        'weight': None,
+    }
+    s = p.b
     lines = g.splitLines(s)
-    n = len(lines); j = k = n - 1
-    # Scan backwards for @last directives.
-    while j &gt;= 0:
-        line = lines[j]
-        if g.match(line, 0, tag): j -= 1
-        elif not line.strip():
-            j -= 1
-        else: break
-    # Write the @last lines.
-    for line in lines[j + 1: k + 1]:
-        if g.match(line, 0, tag):
-            i = len(tag); i = g.skip_ws(line, i)
-            at.os(line[i:])
+    for line in lines:
+        self.parseFontLine(line, d)
+    comments = d.get('comments')
+    d['comments'] = '\n'.join(comments)
+    return d
+</t>
+<t tx="ekr.20041213082558.2">def parseFontLine(self, line, d):
+    s = line.strip()
+    if not s: return
+    try:
+        s = str(s)
+    except UnicodeError:
+        pass
+    if g.match(s, 0, '#'):
+        s = s[1:].strip()
+        comments = d.get('comments')
+        comments.append(s)
+        d['comments'] = comments
+        return
+    # name is everything up to '='
+    i = s.find('=')
+    if i == -1:
+        name = s
+        val = None
+    else:
+        name = s[: i].strip()
+        val = s[i + 1:].strip().strip('"').strip("'")
+    for tag in ('_family', '_size', '_slant', '_weight'):
+        if name.endswith(tag):
+            kind = tag[1:]
+            d[kind] = name, val # Used only by doFont.
+            return
 </t>
 <t tx="ekr.20050721093241">@nobeautify
 @nocolor
@@ -3707,270 +1386,7 @@ returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction.
 </t>
-<t tx="ekr.20050819064157">def objToString(obj, indent='', printCaller=False, tag=None):
-    '''Pretty print any Python object to a string.'''
-    # pylint: disable=undefined-loop-variable
-        # Looks like a a pylint bug.
-    #
-    # Compute s.
-    if isinstance(obj, dict):
-        s = dictToString(obj, indent=indent)
-    elif isinstance(obj, list):
-        s = listToString(obj, indent=indent)
-    elif isinstance(obj, tuple):
-        s = tupleToString(obj, indent=indent)
-    elif g.isString(obj):
-        # Print multi-line strings as lists.
-        s = obj
-        lines = g.splitLines(s)
-        if len(lines) &gt; 1:
-            s = listToString(lines, indent=indent)
-        else:
-            s = repr(s)
-    else:
-        s = repr(obj)
-    #
-    # Compute the return value.
-    if printCaller and tag:
-        prefix = '%s: %s' % (g.caller(), tag)
-    elif printCaller or tag:
-        prefix = g.caller() if printCaller else tag
-    else:
-        prefix = None
-    if prefix:
-        sep = '\n' if '\n' in s else ' '
-        return '%s:%s%s' % (prefix, sep, s)
-    return s
-toString = objToString
-</t>
 <t tx="ekr.20051031040240"></t>
-<t tx="ekr.20051104075904.10">def runTest(self, define_g=True):
-    '''Run a Leo GeneralTestCase test.'''
-    trace_time = False
-    tm = self
-    c = tm.c
-    p = tm.p.copy()
-    if trace_time:
-        t1 = time.clock()
-    script = g.getScript(c, p).strip()
-    if self.setup_script:
-        script = self.setup_script + '\n' + script
-    tm.assertTrue(script)
-    if c.shortFileName() == 'dynamicUnitTest.leo':
-        c.write_script_file = True
-    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
-    g.app.unitTestDict = {'c': c, 'g': g, 'p': p and p.copy()}
-    if define_g:
-        d = {'c': c, 'g': g, 'p': p and p.copy(), 'self': tm,}
-    else:
-        d = {'self': tm,}
-    script = script + '\n'
-    # Execute the script. Let the unit test handle any errors!
-    # 2011/11/02: pass the script sources to exec or execfile.
-    if c.write_script_file:
-        scriptFile = c.writeScriptFile(script)
-        exec(compile(script, scriptFile, 'exec'), d)
-    else:
-        exec(script, d)
-    if trace_time:
-        t2 = time.clock()
-        if t2 - t1 &gt; 3.0:
-            print('')
-            g.trace('EXCESSIVE TIME: %5.2f sec. in %s' % (t2-t1, self.p.h))
-</t>
-<t tx="ekr.20051104075904.12"># This code executes the script in an @suite node.
-# This code assumes that the script sets the 'suite' var to the test suite.
-
-def makeTestSuite(self, p, setup_script):
-    """Create a suite of test cases by executing the script in an @suite node."""
-    c, tm = self.c, self
-    fname = 'makeTestSuite'
-    p = p.copy()
-    script = g.getScript(c, p).strip()
-    if not script:
-        print("no script in %s" % p.h)
-        return None
-    if setup_script:
-        script = setup_script + script
-    try:
-        script = script + tm.get_suite_script()
-        d = {'c': c, 'g': g, 'p': p}
-        if c.write_script_file:
-            scriptFile = c.writeScriptFile(script)
-            exec(compile(script, scriptFile, 'exec'), d)
-        else:
-            exec(script + '\n', d)
-        suite = g.app.scriptDict.get("suite")
-        if not suite:
-            print("\n%s: %s script did not set suite var" % (fname, p.h))
-        return suite
-    except Exception:
-        print('\n%s: exception creating test cases for %s' % (fname, p.h))
-        g.es_print_exception()
-        return None
-</t>
-<t tx="ekr.20051104075904.18">def set_debugGc():
-    gc.set_debug(
-        gc.DEBUG_STATS # prints statistics.
-        # gc.DEBUG_LEAK | # Same as all below.
-        # gc.DEBUG_COLLECTABLE
-        # gc.DEBUG_UNCOLLECTABLE
-        # gc.DEBUG_SAVEALL
-    )
-</t>
-<t tx="ekr.20051104075904.22">import types
-import inspect
-global lastFunctionsDict
-funcDict = {}
-for obj in gc.get_objects():
-    if isinstance(obj, types.FunctionType):
-        key = repr(obj) # Don't create a pointer to the object!
-        funcDict[key] = None
-        if key not in lastFunctionsDict:
-            g.pr('\n', obj)
-            args, varargs, varkw, defaults = inspect.signature(obj)
-            g.pr("args", args)
-            if varargs: g.pr("varargs", varargs)
-            if varkw: g.pr("varkw", varkw)
-            if defaults:
-                g.pr("defaults...")
-                for s in defaults: g.pr(s)
-lastFunctionsDict = funcDict
-funcDict = {}
-</t>
-<t tx="ekr.20051104075904.93">def checkFileSyntax(self, fileName, s, reraise=True, suppress=False):
-    '''Called by a unit test to check the syntax of a file.'''
-    try:
-        s = s.replace('\r', '')
-        compile(s + '\n', fileName, 'exec')
-        return True
-    except SyntaxError:
-        if not suppress:
-            g.warning("syntax error in:", fileName)
-            g.es_print_exception(full=True, color="black")
-        if reraise: raise
-        return False
-    except Exception:
-        if not suppress:
-            g.warning("unexpected error in:", fileName)
-            # g.es_print_exception(full=False,color="black")
-        if reraise: raise
-        return False
-</t>
-<t tx="ekr.20051104075904.97"># Some of these will fail now for Python 2.x.
-
-def factorial(n):
-    """Return the factorial of n, an exact integer &gt;= 0.
-
-    If the result is small enough to fit in an int, return an int.
-    Else return a long.
-
-    &gt;&gt;&gt; [factorial(n) for n in range(6)]
-    [1, 1, 2, 6, 24, 120]
-    &gt;&gt;&gt; factorial(30)
-    265252859812191058636308480000000
-    &gt;&gt;&gt; factorial(-1)
-    Traceback (most recent call last):
-        ...
-    ValueError: n must be &gt;= 0
-
-    Factorials of floats are OK, but the float must be an exact integer:
-    &gt;&gt;&gt; factorial(30.1)
-    Traceback (most recent call last):
-        ...
-    ValueError: n must be exact integer
-    &gt;&gt;&gt; factorial(30.0)
-    265252859812191058636308480000000
-
-    It must also not be ridiculously large:
-    &gt;&gt;&gt; factorial(1e100)
-    Traceback (most recent call last):
-        ...
-    OverflowError: n too large
-    """
-    import math
-    if not n &gt;= 0:
-        raise ValueError("n must be &gt;= 0")
-    if math.floor(n) != n:
-        raise ValueError("n must be exact integer")
-    if n + 1 == n: # catch a value like 1e300
-        raise OverflowError("n too large")
-    result = 1
-    factor = 2
-    while factor &lt;= n:
-        try:
-            result *= factor
-        except OverflowError:
-            result = int(factor)
-        factor += 1
-    return result
-</t>
-<t tx="ekr.20060127162818">def enable_gc_debug(event=None):
-    # pylint: disable=no-member
-    if not gc:
-        g.error('can not import gc module')
-        return
-    gc.set_debug(
-        gc.DEBUG_STATS | # prints statistics.
-        gc.DEBUG_LEAK | # Same as all below.
-        gc.DEBUG_COLLECTABLE |
-        gc.DEBUG_UNCOLLECTABLE |
-        # gc.DEBUG_INSTANCES |
-        # gc.DEBUG_OBJECTS |
-        gc.DEBUG_SAVEALL)
-</t>
-<t tx="ekr.20060221083356">def prettyPrintType(obj):
-    if isinstance(obj, str):
-        return 'string'
-    t = type(obj)
-    if t in (types.BuiltinFunctionType, types.FunctionType):
-        return 'function'
-    if t == types.ModuleType:
-        return 'module'
-    if t in [types.MethodType, types.BuiltinMethodType]: 
-        return 'method'
-    # Fall back to a hack.
-    t = str(type(obj))
-    if t.startswith("&lt;type '"): t = t[7:]
-    if t.endswith("'&gt;"): t = t[: -2]
-    return t
-</t>
-<t tx="ekr.20060810095921">def translateString(s):
-    '''Return the translated text of s.'''
-    # pylint: disable=undefined-loop-variable
-    # looks like a pylint bug
-    upper = app and getattr(app, 'translateToUpperCase', None)
-    if not isinstance(s, str):
-        s = str(s, 'utf-8')
-    if upper:
-        s = s.upper()
-    else:
-        s = gettext.gettext(s)
-    return s
-
-tr = translateString
-</t>
-<t tx="ekr.20061031131434.126">def manufactureKeyPressForCommandName(self, w, commandName):
-    '''
-    Implement a command by passing a keypress to the gui.
-    
-    **Only unit tests use this method.**
-    '''
-    c, k = self.c, self
-    stroke = k.getStrokeForCommandName(commandName)
-    assert g.isStroke(stroke), stroke.__class__.__name__
-    shortcut = stroke.s
-    assert g.isString(shortcut)
-    if shortcut and w:
-        g.app.gui.set_focus(c, w)
-        g.app.gui.event_generate(c, None, shortcut, w)
-    else:
-        message = 'no shortcut for %s' % (commandName)
-        if g.app.unitTesting:
-            raise AttributeError(message)
-        else:
-            g.error(message)
-</t>
 <t tx="ekr.20061119120006">def addIconButton(self, *args, **keys):
     if self.iconBar: return self.iconBar.add(*args, **keys)
     else: return None
@@ -4011,55 +1427,6 @@ def hideIconBar(self):
 
 def showIconBar(self):
     if self.iconBar: self.iconBar.show()
-</t>
-<t tx="ekr.20070115135502">def writeScriptFile(self, script):
-
-    # Get the path to the file.
-    c = self
-    path = c.config.getString('script-file-path')
-    if path:
-        isAbsPath = os.path.isabs(path)
-        driveSpec, path = os.path.splitdrive(path)
-        parts = path.split('/')
-        # xxx bad idea, loadDir is often read only!
-        path = g.app.loadDir
-        if isAbsPath:
-            # make the first element absolute
-            parts[0] = driveSpec + os.sep + parts[0]
-        allParts = [path] + parts
-        path = c.os_path_finalize_join(*allParts)
-    else:
-        path = c.os_path_finalize_join(
-            g.app.homeLeoDir, 'scriptFile.py')
-    #
-    # Write the file.
-    try:
-        with open(path, encoding='utf-8', mode='w') as f:
-            f.write(script)
-    except Exception:
-        g.es_exception()
-        g.es("Failed to write script to %s" % path)
-        # g.es("Check your configuration of script_file_path, currently %s" %
-            # c.config.getString('script-file-path'))
-        path = None
-    return path
-</t>
-<t tx="ekr.20070317130250">def selectChapterByName(self, name, collapse=True):
-    '''Select a chapter.  Return True if a redraw is needed.'''
-    cc = self
-    if self.selectChapterLockout:
-        return
-    if g.isInt(name):
-        return cc.note('PyQt5 chapters not supported')
-    chapter = cc.getChapter(name)
-    if not chapter:
-        g.es_print('no such @chapter node: %s' % name)
-        return
-    try:
-        cc.selectChapterLockout = True
-        cc.selectChapterByNameHelper(chapter, collapse=collapse)
-    finally:
-        cc.selectChapterLockout = False
 </t>
 <t tx="ekr.20070626132332">def es(*args, **keys):
     '''Put all non-keyword args to the log pane.
@@ -4110,203 +1477,6 @@ def showIconBar(self):
         
 log = es
 
-</t>
-<t tx="ekr.20070806105859">@cmd('write-at-auto-nodes')
-def writeAtAutoNodes(self, event=None):
-    '''Write all @auto nodes in the selected outline.'''
-    at = self; c = at.c
-    c.init_error_dialogs()
-    at.writeAtAutoNodesHelper(writeDirtyOnly=False)
-    c.raise_error_dialogs(kind='write')
-
-@cmd('write-dirty-at-auto-nodes')
-def writeDirtyAtAutoNodes(self, event=None):
-    '''Write all dirty @auto nodes in the selected outline.'''
-    at = self; c = at.c
-    c.init_error_dialogs()
-    at.writeAtAutoNodesHelper(writeDirtyOnly=True)
-    c.raise_error_dialogs(kind='write')
-</t>
-<t tx="ekr.20070806141607">def writeOneAtAutoNode(self, p):
-    '''
-    Write p, an @auto node.
-    File indices *must* have already been assigned.
-    Return True if the node was written successfully.
-    '''
-    at, c = self, self.c
-    root = p.copy()
-    try:
-        c.endEditing()
-        if not p.atAutoNodeName():
-            return False
-        fileName = at.initWriteIvars(root, p.atAutoNodeName(),
-            defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
-            sentinels=False,
-        )
-        if not at.precheck(fileName, root):
-            at.addToOrphanList(root)
-            return False
-        if c.persistenceController:
-            c.persistenceController.update_before_write_foreign_file(root)
-        contents = at.writeAtAutoContents(fileName, root)
-        if contents is None:
-            g.es("not written:", fileName)
-            at.addToOrphanList(root)
-            return False
-        at.replaceFile(contents, at.encoding, fileName, root,
-            ignoreBlankLines=root.isAtAutoRstNode())
-        return True
-    except Exception:
-        at.writeException(fileName, root)
-        return False
-</t>
-<t tx="ekr.20070909100252">def readOneAtAutoNode(self, fileName, p):
-    '''Read an @auto file into p. Return the *new* position.'''
-    at, c, ic = self, self.c, self.c.importCommands
-    oldChanged = c.isChanged()
-    at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-    fileName = c.os_path_finalize_join(at.default_directory, fileName)
-    if not g.os_path_exists(fileName):
-        g.error('not found: %r' % (p.h), nodeLink=p.get_UNL(with_proto=True))
-        return p
-    # Remember that we have seen the @auto node.
-    # Fix bug 889175: Remember the full fileName.
-    at.rememberReadPath(fileName, p)
-    ### if not g.unitTesting: g.es("reading:", p.h)
-    try:
-        # For #451: return p.
-        old_p = p.copy()
-        at.scanAllDirectives(
-            p,
-            forcePythonSentinels=False,
-            importing=True,
-            reading=True,
-        )
-        p.v.b = '' # Required for @auto API checks.
-        p.v._deleteAllChildren()
-        p = ic.createOutline(fileName, parent=p.copy())
-        # Do *not* select a postion here.
-        # That would improperly expand nodes.
-            # c.selectPosition(p)
-    except Exception:
-        p = old_p
-        ic.errors += 1
-        g.es_print('Unexpected exception importing', fileName)
-        g.es_exception()
-    if ic.errors:
-        g.error('errors inhibited read @auto %s' % (fileName))
-    elif c.persistenceController:
-        c.persistenceController.update_after_read_foreign_file(p)
-    # Finish.
-    if ic.errors or not g.os_path_exists(fileName):
-        p.clearDirty()
-        c.setChanged(oldChanged)
-    else:
-        g.doHook('after-auto', c=c, p=p)
-    return p
-</t>
-<t tx="ekr.20070915142635">@g.commander_command('write-file-from-node')
-def writeFileFromNode(self, event=None):
-    '''If node starts with @read-file-into-node, use the full path name in the headline.
-    Otherwise, prompt for a file name.
-    '''
-    c = self; p = c.p
-    c.endEditing()
-    h = p.h.rstrip()
-    s = p.b
-    tag = '@read-file-into-node'
-    if h.startswith(tag):
-        fileName = h[len(tag):].strip()
-    else:
-        fileName = None
-    if not fileName:
-        filetypes = [("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo"),]
-        fileName = g.app.gui.runSaveFileDialog(c,
-            initialfile=None,
-            title='Write File From Node',
-            filetypes=filetypes,
-            defaultextension=None)
-    if fileName:
-        try:
-            with open(fileName, 'w') as f:
-                g.chdir(fileName)
-                if s.startswith('@nocolor\n'):
-                    s = s[len('@nocolor\n'):]
-                f.write(s)
-                f.flush()
-                g.blue('wrote:', fileName)
-        except IOError:
-            g.error('can not write %s', fileName)
-        
-</t>
-<t tx="ekr.20070919133659">@cmd('check-derived-file')
-def checkDerivedFile(self, event=None):
-    '''Make sure an external file written by Leo may be read properly.'''
-    g.trace('=====')
-    at = self; c = at.c; p = c.p
-    if not p.isAtFileNode() and not p.isAtThinFileNode():
-        return g.red('Please select an @thin or @file node')
-    fn = p.anyAtFileNodeName()
-    path = g.os_path_dirname(c.mFileName)
-    fn = g.os_path_finalize_join(g.app.loadDir, path, fn)
-    if not g.os_path_exists(fn):
-        return g.error('file not found: %s' % (fn))
-    s, e = g.readFileIntoString(fn)
-    if s is None: return
-    #
-    # Create a dummy, unconnected, VNode as the root.
-    root_v = leoNodes.VNode(context=c)
-    root = leoNodes.Position(root_v)
-    FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
-    return c
-</t>
-<t tx="ekr.20071105164407">def deleteUnvisitedNodes(self, root, redraw=True):
-    '''
-    Delete unvisited nodes in root's subtree, not including root.
-
-    Before Leo 5.6: Move unvisited node to be children of the 'Resurrected
-    Nodes'.
-    '''
-    at = self
-    # Find the unvisited nodes.
-    aList = [z for z in root.subtree() if not z.isVisited()]
-    if aList:
-        # new-read: Never create resurrected nodes.
-            # r = at.createResurrectedNodesNode()
-            # callback = at.defineResurrectedNodeCallback(r, root)
-            # # Move the nodes using the callback.
-            # at.c.deletePositionsInList(aList, callback)
-        at.c.deletePositionsInList(aList, redraw=redraw)
-</t>
-<t tx="ekr.20080220111323">console_encoding = None
-
-def translateArgs(args, d):
-    '''Return the concatenation of s and all args,
-
-    with odd args translated.'''
-    global console_encoding
-    if not console_encoding:
-        e = sys.getdefaultencoding()
-        console_encoding = e if isValidEncoding(e) else 'utf-8'
-        # print 'translateArgs',console_encoding
-    result = []; n = 0; spaces = d.get('spaces')
-    for arg in args:
-        n += 1
-        # print('g.translateArgs: arg',arg,type(arg),g.isString(arg),'will trans',(n%2)==1)
-        # First, convert to unicode.
-        if g.isString(arg):
-            arg = toUnicode(arg, console_encoding)
-        # Now translate.
-        if not isString(arg):
-            arg = repr(arg)
-        elif(n % 2) == 1:
-            arg = translateString(arg)
-        else:
-            pass # The arg is an untranslated string.
-        if arg:
-            if result and spaces: result.append(' ')
-            result.append(arg)
-    return ''.join(result)
 </t>
 <t tx="ekr.20080412053100.5">@language rest
 </t>
@@ -4377,799 +1547,7 @@ def translateArgs(args, d):
     x.b = x.preprocess(new_public_lines)
     x.a = x.preprocess(old_public_lines)
 </t>
-<t tx="ekr.20080710101653.1"># see: http://www.diveintopython.org/xml_processing/unicode.html
-
-def pr(*args, **keys):
-    '''
-    Print all non-keyword args. This is a wrapper for the print statement.
-
-    The first, third, fifth, etc. arg translated by g.translateString.
-    Supports color, comma, newline, spaces and tabName keyword arguments.
-    '''
-    # Compute the effective args.
-    d = {'commas': False, 'newline': True, 'spaces': True}
-    d = doKeywordArgs(keys, d)
-    newline = d.get('newline')
-    stdout = sys.stdout if sys.stdout and g.unitTesting else sys.__stdout__
-        # Unit tests require sys.stdout.
-    if not stdout:
-        # Fix #541.
-        return
-    if sys.platform.lower().startswith('win'):
-        encoding = 'ascii' # 2011/11/9.
-    elif getattr(stdout, 'encoding', None):
-        # sys.stdout is a TextIOWrapper with a particular encoding.
-        encoding = stdout.encoding
-    else:
-        encoding = 'utf-8'
-    s = translateArgs(args, d)
-        # Translates everything to unicode.
-    s = g.toUnicode(s, encoding=encoding, reportErrors=False)
-    if newline:
-        s += '\n'
-    #
-    # Python's print statement *can* handle unicode, but
-    # sitecustomize.py must have sys.setdefaultencoding('utf-8')
-    try:
-        # 783: print-* commands fail under pythonw.
-        # https://github.com/leo-editor/leo-editor/issues/783.
-        stdout.write(s)
-    except Exception:
-        pass
-</t>
-<t tx="ekr.20080711093251.3">@cmd('write-at-shadow-nodes')
-def writeAtShadowNodes(self, event=None):
-    '''Write all @shadow nodes in the selected outline.'''
-    at = self; c = at.c
-    c.init_error_dialogs()
-    val = at.writeAtShadowNodesHelper(writeDirtyOnly=False)
-    c.raise_error_dialogs(kind='write')
-    return val
-
-@cmd('write-dirty-at-shadow-nodes')
-def writeDirtyAtShadowNodes(self, event=None):
-    '''Write all dirty @shadow nodes in the selected outline.'''
-    at = self; c = at.c
-    c.init_error_dialogs()
-    val = at.writeAtShadowNodesHelper(writeDirtyOnly=True)
-    c.raise_error_dialogs(kind='write')
-    return val
-</t>
-<t tx="ekr.20080711093251.5">def writeOneAtShadowNode(self, p, testing=False):
-    '''
-    Write p, an @shadow node.
-    File indices *must* have already been assigned.
-    
-    testing: set by unit tests to suppress the call to at.precheck.
-    '''
-    at, c = self, self.c
-    root = p.copy()
-    x = c.shadowController
-    try:
-        c.endEditing() # Capture the current headline.
-        fn = p.atShadowFileNodeName()
-        assert fn, p.h
-        self.adjustTargetLanguage(fn) 
-            # A hack to support unknown extensions. May set c.target_language.
-        full_path = g.fullPath(c, p)
-        at.initWriteIvars(root, None,
-            atShadow = True,
-            defaultDirectory = g.os_path_dirname(full_path),
-            forcePythonSentinels = True)
-                # Force python sentinels to suppress an error message.
-                # The actual sentinels will be set below.
-        at.default_directory = g.os_path_dirname(full_path)
-            # Override.
-        # Make sure we can compute the shadow directory.
-        private_fn = x.shadowPathName(full_path)
-        if not private_fn:
-            return False
-        if not testing and not at.precheck(full_path, root):
-            return False
-        #
-        # Bug fix: Leo 4.5.1:
-        # use x.markerFromFileName to force the delim to match
-        # what is used in x.propegate changes.
-        marker = x.markerFromFileName(full_path)
-        at.startSentinelComment, at.endSentinelComment = marker.getDelims()
-        if g.app.unitTesting:
-            ivars_dict = g.getIvarsDict(at)
-        #
-        # Write the public and private files to strings.
-        def put(sentinels):
-            at.openOutputStream()
-            at.sentinels = sentinels
-            at.putFile(root, sentinels=sentinels)
-            return at.closeOutputStream()
-            
-        at.public_s = put(False)
-        at.private_s = put(True)
-        at.warnAboutOrphandAndIgnoredNodes()
-        if g.app.unitTesting:
-            exceptions = ('public_s', 'private_s', 'sentinels', 'outputList')
-            assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
-        if not at.errors:
-            # Write the public and private files.
-            x.makeShadowDirectory(full_path)
-                # makeShadowDirectory takes a *public* file name.
-            x.replaceFileWithString(at.encoding, private_fn, at.private_s)
-            x.replaceFileWithString(at.encoding, full_path, at.public_s)
-        at.checkPythonCode(
-            contents = at.private_s,
-            fileName = full_path,
-            root = root,
-        )
-        if at.errors:
-            g.error("not written:", full_path)
-            at.addToOrphanList(root)
-        else:
-            root.clearDirty()
-        return not at.errors
-    except Exception:
-        at.writeException(full_path, root)
-        return False
-</t>
-<t tx="ekr.20080711093251.7">def readOneAtShadowNode(self, fn, p, force=False):
-
-    at = self; c = at.c; x = c.shadowController
-    if not fn == p.atShadowFileNodeName():
-        return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
-            fn, p.atShadowFileNodeName()))
-    # Fix bug 889175: Remember the full fileName.
-    at.rememberReadPath(fn, p)
-    at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-    fn = c.os_path_finalize_join(at.default_directory, fn)
-    shadow_fn = x.shadowPathName(fn)
-    shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-    # Delete all children.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-    if shadow_exists:
-        at.read(p, atShadow=True, force=force)
-    else:
-        ok = at.importAtShadowNode(fn, p)
-        if ok:
-            # Create the private file automatically.
-            at.writeOneAtShadowNode(p)
-</t>
-<t tx="ekr.20080712080505.1">def importAtShadowNode(self, fn, p):
-    at = self; c = at.c; ic = c.importCommands
-    oldChanged = c.isChanged()
-    # Delete all the child nodes.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-    # Import the outline, exactly as @auto does.
-    ic.createOutline(fn, parent=p.copy(), atShadow=True)
-    if ic.errors:
-        g.error('errors inhibited read @shadow', fn)
-    if ic.errors or not g.os_path_exists(fn):
-        p.clearDirty()
-        c.setChanged(oldChanged)
-    # else: g.doHook('after-shadow', p = p)
-    return ic.errors == 0
-</t>
 <t tx="ekr.20080730161153.8"></t>
-<t tx="ekr.20080801071227.7">def readAtShadowNodes(self, p):
-    '''Read all @shadow nodes in the p's tree.'''
-    at = self
-    after = p.nodeAfterTree()
-    p = p.copy() # Don't change p in the caller.
-    while p and p != after: # Don't use iterator.
-        if p.isAtShadowFileNode():
-            fileName = p.atShadowFileNodeName()
-            at.readOneAtShadowNode(fileName, p)
-            p.moveToNodeAfterTree()
-        else:
-            p.moveToThreadNext()
-</t>
-<t tx="ekr.20080805085257.2">def pickle(self, torv, val, tag):
-    '''Pickle val and return the hexlified result.'''
-    try:
-        s = pickle.dumps(val, protocol=1)
-        s2 = binascii.hexlify(s)
-        s3 = g.toUnicode(s2, 'utf-8')
-        field = ' %s="%s"' % (tag, s3)
-        return field
-    except pickle.PicklingError:
-        if tag: # The caller will print the error if tag is None.
-            g.warning("ignoring non-pickleable value", val, "in", torv)
-        return ''
-    except Exception:
-        g.error("fc.pickle: unexpected exception in", torv)
-        g.es_exception()
-        return ''
-</t>
-<t tx="ekr.20080816125725.2"># The syntax of these functions must be valid on Python2K and Python3K.
-</t>
-<t tx="ekr.20080819075811.13">def adjustTargetLanguage(self, fn):
-    """Use the language implied by fn's extension if
-    there is a conflict between it and c.target_language."""
-    at = self
-    c = at.c
-    junk, ext = g.os_path_splitext(fn)
-    if ext:
-        if ext.startswith('.'): ext = ext[1:]
-        language = g.app.extension_dict.get(ext)
-        if language:
-            c.target_language = language
-        else:
-            # An unknown language.
-            # Use the default language, **not** 'unknown_language'
-            pass
-</t>
-<t tx="ekr.20080822065427.4">def show_error_lines(self, lines, fileName):
-    for i, line in enumerate(lines):
-        g.es_print('%3s %s' % (i, repr(line)))
-    if False: # Only for major debugging.
-        try:
-            f1 = open(fileName, "w")
-            for s in lines:
-                f1.write(repr(s))
-            f1.close()
-        except IOError:
-            g.es_exception()
-            g.es_print('can not open', fileName)
-</t>
-<t tx="ekr.20080919065433.1">def toUnicodeWithErrorCode(s, encoding, reportErrors=False):
-    '''For unit testing: convert s to unicode and return (s,ok).'''
-    if s is None:
-        return '', True
-    if isinstance(s, str):
-        return s, True
-    try:
-        s = str(s, encoding, 'strict')
-        return s, True
-    except UnicodeError:
-        s = str(s, encoding, 'replace')
-        if reportErrors:
-            g.error("Error converting %s from %s encoding to unicode" % (s, encoding))
-        return s, False
-</t>
-<t tx="ekr.20080923070954.13">if forcePythonSentinels:
-    # Force Python language.
-    delim1, delim2, delim3 = g.set_delims_from_language("python")
-    self.language = "python"
-else:
-    delim1, delim2, delim3 = delims
-# Use single-line comments if we have a choice.
-# delim1,delim2,delim3 now correspond to line,start,end
-if delim1:
-    at.startSentinelComment = delim1
-    at.endSentinelComment = "" # Must not be None.
-elif delim2 and delim3:
-    at.startSentinelComment = delim2
-    at.endSentinelComment = delim3
-else: # Emergency!
-    #
-    # Issue an error only if at.language has been set.
-    # This suppresses a message from the markdown importer.
-    if not g.app.unitTesting and at.language:
-        g.trace(repr(at.language), g.callers())
-        g.es_print("unknown language: using Python comment delimiters")
-        g.es_print("c.target_language:", c.target_language)
-    at.startSentinelComment = "#" # This should never happen!
-    at.endSentinelComment = ""
-</t>
-<t tx="ekr.20080923070954.14">at.page_width = c.page_width
-at.tab_width = c.tab_width
-at.default_directory = None # 8/2: will be set later.
-if c.target_language:
-    c.target_language = c.target_language.lower()
-delims = g.set_delims_from_language(c.target_language)
-at.language = c.target_language
-at.encoding = c.config.default_derived_file_encoding
-at.output_newline = g.getOutputNewline(c=c) # Init from config settings.
-</t>
-<t tx="ekr.20080923070954.4">def scanAllDirectives(self,
-    p,
-    forcePythonSentinels=False,
-    importing=False,
-    issuePathWarning=False,
-    reading=False,
-):
-    '''
-    Scan p and p's ancestors looking for directives,
-    setting corresponding AtFile ivars.
-    '''
-    at, c = self, self.c
-    g.app.atPathInBodyWarning = None
-    &lt;&lt; set ivars &gt;&gt;
-    lang_dict = {'language': at.language, 'delims': delims,}
-    table = (
-        ('encoding', at.encoding, g.scanAtEncodingDirectives),
-        # ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
-        ('lang-dict', None, g.scanAtCommentAndAtLanguageDirectives),
-        ('lineending', None, g.scanAtLineendingDirectives),
-        ('pagewidth', c.page_width, g.scanAtPagewidthDirectives),
-        ('path', None, c.scanAtPathDirectives),
-        ('tabwidth', c.tab_width, g.scanAtTabwidthDirectives),
-    )
-    # Set d by scanning all directives.
-    aList = g.get_directives_dict_list(p)
-    d = {}
-    for key, default, func in table:
-        val = func(aList)
-        d[key] = default if val is None else val
-    # Post process.
-    lineending = d.get('lineending')
-    lang_dict = d.get('lang-dict')
-    if lang_dict:
-        delims = lang_dict.get('delims')
-        at.language = lang_dict.get('language')
-    else:
-        # No language directive.  Look for @&lt;file&gt; nodes.
-        language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
-        delims = g.set_delims_from_language(language)
-    at.encoding = d.get('encoding')
-    at.explicitLineEnding = bool(lineending)
-    at.output_newline = lineending or g.getOutputNewline(c=c)
-    at.page_width = d.get('pagewidth')
-    at.default_directory = d.get('path')
-    at.tab_width = d.get('tabwidth')
-    if not importing and not reading:
-        # Don't override comment delims when reading!
-        &lt;&lt; set comment strings from delims &gt;&gt;
-    # For unit testing.
-    d = {
-        "all": all,
-        "encoding": at.encoding,
-        "language": at.language,
-        "lineending": at.output_newline,
-        "pagewidth": at.page_width,
-        "path": at.default_directory,
-        "tabwidth": at.tab_width,
-    }
-    return d
-</t>
-<t tx="ekr.20081119083601.1">if g.isPython3:
-
-    def toUnicode(self, s):
-        # pylint: disable=no-member
-        return str(s)
-            
-else:
-    
-    def toUnicode(self, s):
-        # pylint: disable=no-member
-        return builtins.unicode(s)
-</t>
-<t tx="ekr.20081216090156.4"># Important: this is part of the *write* logic.
-# It is called from at.os and at.putIndent.
-
-def parseUnderindentTag(self, s):
-    tag = self.underindentEscapeString
-    s2 = s[len(tag):]
-    # To be valid, the escape must be followed by at least one digit.
-    i = 0
-    while i &lt; len(s2) and s2[i].isdigit():
-        i += 1
-    if i &gt; 0:
-        n = int(s2[: i])
-        # Bug fix: 2012/06/05: remove any period following the count.
-        # This is a new convention.
-        if i &lt; len(s2) and s2[i] == '.':
-            i += 1
-        return n, s2[i:]
-    else:
-        return 0, s
-</t>
-<t tx="ekr.20090225080846.3">def readOneAtEditNode(self, fn, p):
-    at = self
-    c = at.c
-    ic = c.importCommands
-    at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-    fn = c.os_path_finalize_join(at.default_directory, fn)
-    junk, ext = g.os_path_splitext(fn)
-    # Fix bug 889175: Remember the full fileName.
-    at.rememberReadPath(fn, p)
-    ### if not g.unitTesting: g.es("reading: @edit %s" % (g.shortFileName(fn)))
-    s, e = g.readFileIntoString(fn, kind='@edit')
-    if s is None: return
-    encoding = 'utf-8' if e is None else e
-    # Delete all children.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-    changed = c.isChanged()
-    head = ''
-    ext = ext.lower()
-    if ext in ('.html', '.htm'): head = '@language html\n'
-    elif ext in ('.txt', '.text'): head = '@nocolor\n'
-    else:
-        language = ic.languageForExtension(ext)
-        if language and language != 'unknown_language':
-            head = '@language %s\n' % language
-        else:
-            head = '@nocolor\n'
-    p.b = head + g.toUnicode(s, encoding=encoding, reportErrors='True')
-    if not changed: c.setChanged(False)
-    g.doHook('after-edit', p=p)
-</t>
-<t tx="ekr.20090225080846.5">def writeOneAtEditNode(self, p): 
-    '''Write one @edit node.'''
-    at, c = self, self.c
-    root = p.copy()
-    try:
-        c.endEditing()
-        c.init_error_dialogs()
-        if not p.atEditNodeName():
-            return False
-        if p.hasChildren():
-            g.error('@edit nodes must not have children')
-            g.es('To save your work, convert @edit to @auto, @file or @clean')
-            return False
-        fileName = at.initWriteIvars(root, p.atEditNodeName(),
-            atEdit=True,
-            defaultDirectory = g.setDefaultDirectory(c, p, importing=True),
-            sentinels=False,
-        )
-        if not at.precheck(fileName, root):
-            at.addToOrphanList(root)
-            return False
-        contents = ''.join([s for s in g.splitLines(p.b)
-            if at.directiveKind4(s, 0) == at.noDirective])
-        at.replaceFile(contents, at.encoding, fileName, root)
-        c.raise_error_dialogs(kind='write')
-        return True
-    except Exception:
-        at.writeException(fileName, root)
-        return False
-</t>
-<t tx="ekr.20090306060344.2">def selectChapterByNameHelper(self, chapter, collapse=True):
-    '''Select the chapter, and redraw if necessary.'''
-    cc, c = self, self.c
-    if not cc.selectedChapter and chapter.name == 'main':
-        chapter.p = c.p
-        return
-    if chapter == cc.selectedChapter:
-        chapter.p = c.p
-        return
-    if cc.selectedChapter:
-        cc.selectedChapter.unselect()
-    else:
-        main_chapter = cc.getChapter('main')
-        if main_chapter:
-            main_chapter.unselect()
-    if chapter.p and c.positionExists(chapter.p):
-        p = chapter.p
-    elif chapter.name == 'main':
-        p = chapter.p # Do *not* use c.p here!
-    else:
-        p = chapter.p = chapter.findRootNode()
-        if not p:
-            return
-    chapter.select()
-    c.setCurrentPosition(chapter.p)
-    # Clean up, but not initially.
-    if collapse and chapter.name == 'main':
-        for p in c.all_positions():
-            # Compare vnodes, not positions.
-            if p.v != c.p.v:
-                p.contract()
-    c.redraw(chapter.p)
-        # Fix part of #265.
-        # Redraw only here, when we are sure it is needed.
-</t>
-<t tx="ekr.20090502071837.65">def writeToDocutils(self, p, s, ext):
-    '''Send s to docutils using the writer implied by ext and return the result.'''
-    if not docutils:
-        g.error('writeToDocutils: docutils not present')
-        return None
-    openDirectory = self.c.frame.openDirectory
-    overrides = {'output_encoding': self.encoding}
-    # Compute the args list if the stylesheet path does not exist.
-    styleSheetArgsDict = self.handleMissingStyleSheetArgs(p)
-    if ext == '.pdf':
-        module = g.importFromPath(
-            moduleName='leo_pdf',
-            path=g.os_path_finalize_join(g.app.loadDir, '..', 'plugins'),
-            verbose=False)
-        if not module:
-            return None
-        writer = module.Writer() # Get an instance.
-        writer_name = None
-    else:
-        writer = None
-        for ext2, writer_name in (
-            ('.html', 'html'),
-            ('.htm', 'html'),
-            ('.tex', 'latex'),
-            ('.pdf', 'leo.plugins.leo_pdf'), # 2011/11/03
-            ('.s5', 's5'), # 2011/03/27
-            ('.odt', 'odt'), # 2011/03/27
-        ):
-            if ext2 == ext: break
-        else:
-            g.error('unknown docutils extension: %s' % (ext))
-            return None
-    # SilverCity seems not to be supported, so this warning is strange.
-    if False and ext in ('.html', '.htm') and not SilverCity:
-        if not self.silverCityWarningGiven:
-            self.silverCityWarningGiven = True
-            if not g.unitTesting:
-                g.es('SilverCity not present so no syntax highlighting')
-    # Make the stylesheet path relative to the directory containing the output file.
-    rel_stylesheet_path = self.getOption(p, 'stylesheet_path') or ''
-    # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
-    stylesheet_path = g.os_path_finalize_join(
-        openDirectory, rel_stylesheet_path)
-    stylesheet_name = self.getOption(p, 'stylesheet_name')
-    assert stylesheet_name
-    path = g.os_path_finalize_join(stylesheet_path, stylesheet_name)
-    if self.getOption(p, 'stylesheet_embed') is False:
-        rel_path = g.os_path_join(
-            rel_stylesheet_path, self.getOption(p, 'stylesheet_name'))
-        rel_path = rel_path.replace('\\', '/') # 2010/01/28
-        overrides['stylesheet'] = rel_path
-        overrides['stylesheet_path'] = None
-        overrides['embed_stylesheet'] = None
-    elif g.os_path_exists(path):
-        if ext != '.pdf':
-            overrides['stylesheet'] = path
-            overrides['stylesheet_path'] = None
-    elif styleSheetArgsDict:
-        g.es_print('using publish_argv_for_missing_stylesheets',
-            styleSheetArgsDict)
-        overrides.update(styleSheetArgsDict)
-            # MWC add args to settings
-    elif rel_stylesheet_path == stylesheet_path:
-        g.error('stylesheet not found: %s' % (path))
-    else:
-        g.error('stylesheet not found\n', path)
-        if self.path: g.es_print('@path:', self.path)
-        g.es_print('open path:', openDirectory)
-        if rel_stylesheet_path:
-            g.es_print('relative path:', rel_stylesheet_path)
-    try:
-        # All paths now come through here.
-        result = None # Ensure that result is defined.
-        result = docutils.core.publish_string(source=s,
-                reader_name='standalone',
-                parser_name='restructuredtext',
-                writer=writer,
-                writer_name=writer_name,
-                settings_overrides=overrides)
-        if g.isBytes(result):
-            result = g.toUnicode(result)
-    except docutils.ApplicationError as error:
-        # g.error('Docutils error (%s):' % (error.__class__.__name__))
-        g.error('Docutils error:')
-        g.blue(error)
-    except Exception:
-        g.es_print('Unexpected docutils exception')
-        g.es_exception()
-    return result
-</t>
-<t tx="ekr.20090502071837.66">def handleMissingStyleSheetArgs(self, p, s=None):
-    '''
-    Parse the publish_argv_for_missing_stylesheets option,
-    returning a dict containing the parsed args.
-    '''
-    force = False
-    if force:
-        # See http://docutils.sourceforge.net/docs/user/config.html#documentclass
-        return {'documentclass': 'report', 'documentoptions': 'english,12pt,lettersize'}
-    if not s:
-        s = self.getOption(p, 'publish_argv_for_missing_stylesheets')
-    if not s:
-        return {}
-    # Handle argument lists such as this:
-    # --language=en,--documentclass=report,--documentoptions=[english,12pt,lettersize]
-    d = {}
-    while s:
-        s = s.strip()
-        if not s.startswith('--'): break
-        s = s[2:].strip()
-        eq = s.find('=')
-        cm = s.find(',')
-        if eq == -1 or (-1 &lt; cm &lt; eq): # key[nl] or key,
-            val = ''
-            cm = s.find(',')
-            if cm == -1:
-                key = s.strip()
-                s = ''
-            else:
-                key = s[: cm].strip()
-                s = s[cm + 1:].strip()
-        else: # key = val
-            key = s[: eq].strip()
-            s = s[eq + 1:].strip()
-            if s.startswith('['): # [...]
-                rb = s.find(']')
-                if rb == -1: break # Bad argument.
-                val = s[: rb + 1]
-                s = s[rb + 1:].strip()
-                if s.startswith(','):
-                    s = s[1:].strip()
-            else: # val[nl] or val,
-                cm = s.find(',')
-                if cm == -1:
-                    val = s
-                    s = ''
-                else:
-                    val = s[: cm].strip()
-                    s = s[cm + 1:].strip()
-        if not key:
-            break
-        if not val.strip(): val = '1'
-        d[str(key)] = str(val)
-    return d
-</t>
-<t tx="ekr.20090502071837.94">def write(self, s, theFile=None):
-    '''Write s to the given file, or self.outputFile.'''
-    if theFile is None:
-        theFile = self.outputFile
-    if g.is_binary_file(theFile):
-        s = self.encode(s)
-    theFile.write(s)
-</t>
-<t tx="ekr.20090514111518.5661">def checkPythonCode(self, contents, fileName, root, pyflakes_errors_only=False): 
-    '''Perform python-related checks on root.'''
-    at = self
-    if contents and fileName and fileName.endswith('.py') and at.checkPythonCodeOnWrite:
-        # It's too slow to check each node separately.
-        if pyflakes_errors_only:
-            ok = True
-        else:
-            ok = at.checkPythonSyntax(root, contents)
-        # Syntax checking catches most indentation problems.
-            # if ok: at.tabNannyNode(root,s)
-        if ok and at.runPyFlakesOnWrite and not g.unitTesting:
-            ok2 = self.runPyflakes(root, pyflakes_errors_only=pyflakes_errors_only)
-        else:
-            ok2 = True
-        if not ok or not ok2:
-            g.app.syntax_error_files.append(g.shortFileName(fileName))
-</t>
-<t tx="ekr.20090514111518.5663">def checkPythonSyntax(self, p, body, supress=False):
-    at = self
-    try:
-        body = body.replace('\r', '')
-        fn = '&lt;node: %s&gt;' % p.h
-        compile(body + '\n', fn, 'exec')
-        return True
-    except SyntaxError:
-        if not supress:
-            at.syntaxError(p, body)
-    except Exception:
-        g.trace("unexpected exception")
-        g.es_exception()
-    return False
-</t>
-<t tx="ekr.20090514111518.5665">def tabNannyNode(self, p, body, suppress=False):
-    import parser
-    import tabnanny
-    import tokenize
-    try:
-        readline = g.ReadLinesClass(body).next
-        tabnanny.process_tokens(tokenize.generate_tokens(readline))
-    except parser.ParserError:
-        junk, msg, junk = sys.exc_info()
-        if suppress:
-            raise
-        else:
-            g.error("ParserError in", p.h)
-            g.es('', str(msg))
-    except IndentationError:
-        junk, msg, junk = sys.exc_info()
-        if suppress:
-            raise
-        else:
-            g.error("IndentationError in", p.h)
-            g.es('', str(msg))
-    except tokenize.TokenError:
-        junk, msg, junk = sys.exc_info()
-        if suppress:
-            raise
-        else:
-            g.error("TokenError in", p.h)
-            g.es('', str(msg))
-    except tabnanny.NannyNag:
-        junk, nag, junk = sys.exc_info()
-        if suppress:
-            raise
-        else:
-            badline = nag.get_lineno()
-            line = nag.get_line()
-            message = nag.get_msg()
-            g.error("indentation error in", p.h, "line", badline)
-            g.es(message)
-            line2 = repr(str(line))[1: -1]
-            g.es("offending line:\n", line2)
-    except Exception:
-        g.trace("unexpected exception")
-        g.es_exception()
-        if suppress: raise
-</t>
-<t tx="ekr.20090514111518.5666">def syntaxError(self, p, body):
-    '''Report a syntax error.'''
-    g.error("Syntax error in: %s" % (p.h))
-    typ, val, tb = sys.exc_info()
-    message = hasattr(val, 'message') and val.message
-    if message: g.es_print(message)
-    if val is None: return
-    lines = g.splitLines(body)
-    n = val.lineno
-    offset = val.offset or 0
-    if n is None: return
-    i = val.lineno - 1
-    for j in range(max(0, i - 2), min(i + 2, len(lines) - 1)):
-        if j == i:
-            mark = '*'
-            node_link = "%s,-%d" % (
-                p.get_UNL(with_proto=True, with_count=True), j+1)
-        else:
-            mark = ' '
-            node_link = None
-        text = '%5s:%s %s' % (j+1, mark, lines[j].rstrip())
-        g.es_print(text, nodeLink=node_link)
-        if j == i:
-            g.es_print(' ' * (7 + offset) + '^')
-</t>
-<t tx="ekr.20090518072506.8494">def isFKey(self, stroke):
-    # k = self
-    if not stroke: return False
-    assert g.isString(stroke) or g.isStroke(stroke)
-    s = stroke.s if g.isStroke(stroke) else stroke
-    s = s.lower()
-    return s.startswith('f') and len(s) &lt;= 3 and s[1:].isdigit()
-</t>
-<t tx="ekr.20090530055015.6023">def getPathUa(self, p):
-    if hasattr(p.v, 'tempAttributes'):
-        d = p.v.tempAttributes.get('read-path', {})
-        return d.get('path')
-    else:
-        return ''
-
-def setPathUa(self, p, path):
-    if not hasattr(p.v, 'tempAttributes'):
-        p.v.tempAttributes = {}
-    d = p.v.tempAttributes.get('read-path', {})
-    d['path'] = path
-    p.v.tempAttributes['read-path'] = d
-</t>
-<t tx="ekr.20090712050729.6017">def promptForDangerousWrite(self, fileName, kind, message=None):
-    '''Raise a dialog asking the user whether to overwrite an existing file.'''
-    at, c, root = self, self.c, self.root
-    if g.app.unitTesting:
-        val = g.app.unitTestDict.get('promptForDangerousWrite')
-        return val in (None, True)
-    if at.cancelFlag:
-        assert at.canCancelFlag
-        return False
-    if at.yesToAll:
-        assert at.canCancelFlag
-        return True
-    if root and root.h.startswith('@auto-rst'):
-        # Fix bug 50: body text lost switching @file to @auto-rst
-        # Refuse to convert any @&lt;file&gt; node to @auto-rst.
-        d = root.v.at_read if hasattr(root.v, 'at_read') else {}
-        aList = sorted(d.get(fileName, []))
-        for h in aList:
-            if not h.startswith('@auto-rst'):
-                g.es('can not convert @file to @auto-rst!', color='red')
-                g.es('reverting to:', h)
-                root.h = h
-                c.redraw()
-                return False
-    if message is None:
-        message = '%s %s\n%s\n%s' % (
-            kind, g.splitLongFileName(fileName),
-            g.tr('already exists.'),
-            g.tr('Overwrite this file?'))
-    result = g.app.gui.runAskYesNoCancelDialog(c,
-        title='Overwrite existing file?',
-        yesToAllMessage="Yes To &amp;All",
-        message=message,
-        cancelMessage="&amp;Cancel (No To All)",
-    )
-    if at.canCancelFlag:
-        # We are in the writeAll logic so these flags can be set.
-        if result == 'cancel':
-            at.cancelFlag = True
-        elif result == 'yes-to-all':
-            at.yesToAll = True
-    return result in ('yes', 'yes-to-all')
-</t>
 <t tx="ekr.20090717112235.6007">def computeSignon(self):
     import leo.core.leoVersion as leoVersion
     app = self
@@ -5229,456 +1607,7 @@ def printSignon(self, verbose=False):
         print(app.signon2)
 </t>
 <t tx="ekr.20090802181029.5988"></t>
-<t tx="ekr.20091206161352.6232">def u(s):
-    '''Return s, converted to unicode from Qt widgets.'''
-    # This can not be removed, because it can be a stand-in for QString.
-    return s
-</t>
-<t tx="ekr.20091211111443.6266">def checkBatchOperationsList(self, aList):
-    ok = True; d = {}
-    for z in aList:
-        try:
-            op, p, n = z
-            ok = (op in ('insert', 'delete') and
-                isinstance(p, leoNodes.position) and g.isInt(n))
-            if ok:
-                aList2 = d.get(p.v, [])
-                data = n, op
-                aList2.append(data)
-                d[p.v] = aList2
-        except ValueError:
-            ok = False
-        if not ok: break
-    return ok, d
-</t>
-<t tx="ekr.20091221145433.6381">def setUndoType(self, theType):
-
-    u = self; frame = u.c.frame
-    if not g.isString(theType):
-        g.trace('oops: expected string for command, got %s' % repr(theType))
-        g.trace(g.callers())
-        theType = '&lt;unknown&gt;'
-    menu = frame.menu.getMenu("Edit")
-    name = u.undoMenuName(theType)
-    if name != u.undoMenuLabel:
-        # Update menu using old name.
-        realLabel = frame.menu.getRealMenuName(name)
-        if realLabel == name:
-            underline = -1 if g.match(name, 0, "Can't") else 0
-        else:
-            underline = realLabel.find("&amp;")
-        realLabel = realLabel.replace("&amp;", "")
-        frame.menu.setMenuLabel(menu, u.realUndoMenuLabel, realLabel, underline=underline)
-        u.undoType = theType
-        u.undoMenuLabel = name
-        u.realUndoMenuLabel = realLabel
-</t>
-<t tx="ekr.20091224155043.6539"># Required so the unit test that simulates an @auto leoImport.py will work!
-import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
-import csv
-try:
-    import docutils
-    import docutils.core
-    # print('leoImport.py:',docutils)
-except ImportError:
-    docutils = None
-    # print('leoImport.py: can not import docutils')
-import io
-StringIO = io.StringIO
-import json
-try:
-    import lxml.html
-except ImportError:
-    lxml = None
-import os
-import re
-import time
-import urllib
-</t>
-<t tx="ekr.20100119145629.6106">def createActualFile(self, fileName, toOPML, toZip):
-    if toZip:
-        self.toString = True
-        theActualFile = None
-    else:
-        try:
-            # 2010/01/21: always write in binary mode.
-            theActualFile = open(fileName, 'wb')
-        except IOError:
-            g.es('can not open %s' % fileName)
-            g.es_exception()
-            theActualFile = None
-    return fileName, theActualFile
-</t>
-<t tx="ekr.20100119145629.6108">def handleWriteLeoFileException(self, fileName, backupName, theActualFile):
-    c = self.c
-    g.es("exception writing:", fileName)
-    g.es_exception(full=True)
-    if theActualFile:
-        theActualFile.close()
-    # Delete fileName.
-    if fileName and g.os_path_exists(fileName):
-        self.deleteFileWithMessage(fileName, '')
-    # Rename backupName to fileName.
-    if backupName and g.os_path_exists(backupName):
-        g.es("restoring", fileName, "from", backupName)
-        # No need to create directories when restoring.
-        g.utils_rename(c, backupName, fileName)
-    else:
-        g.error('backup file does not exist!', repr(backupName))
-</t>
-<t tx="ekr.20100119145629.6111">def writeToFileHelper(self, fileName, toOPML):
-    c = self.c; toZip = c.isZipped
-    ok, backupName = self.createBackupFile(fileName)
-    if not ok: return False
-    fileName, theActualFile = self.createActualFile(fileName, toOPML, toZip)
-    if not theActualFile: return False
-    self.mFileName = fileName
-    self.outputFile = StringIO() # Always write to a string.
-    try:
-        if toOPML:
-            if hasattr(c, 'opmlController'):
-                c.opmlController.putToOPML(owner=self)
-            else:
-                # This is not likely ever to be called.
-                g.trace('leoOPML plugin not active.')
-        else:
-            self.putLeoFile()
-        s = self.outputFile.getvalue()
-        g.app.write_Leo_file_string = s # 2010/01/19: always set this.
-        if toZip:
-            self.writeZipFile(s)
-        else:
-            s = bytes(s, self.leo_file_encoding, 'replace')
-            theActualFile.write(s)
-            theActualFile.close()
-            c.setFileTimeStamp(fileName)
-            # raise AttributeError # To test handleWriteLeoFileException.
-            # Delete backup file.
-            if backupName and g.os_path_exists(backupName):
-                self.deleteFileWithMessage(backupName, 'backup')
-        return True
-    except Exception:
-        self.handleWriteLeoFileException(
-            fileName, backupName, theActualFile)
-        return False
-</t>
-<t tx="ekr.20100122130101.6174">def deleteTnodeList(self, p): # AtFile method.
-    '''Remove p's tnodeList.'''
-    v = p.v
-    if hasattr(v, "tnodeList"):
-        if False: # Not an error, but a useful trace.
-            g.blue("deleting tnodeList for " + repr(v))
-        delattr(v, "tnodeList")
-        v._p_changed = True
-</t>
-<t tx="ekr.20100125073206.8710">def readFileIntoString(fileName,
-    encoding='utf-8', # BOM may override this.
-    kind=None, # @file, @edit, ...
-    verbose=True,
-):
-    '''Return the contents of the file whose full path is fileName.
-
-    Return (s,e)
-    s is the string, converted to unicode, or None if there was an error.
-    e is the encoding of s, computed in the following order:
-    - The BOM encoding if the file starts with a BOM mark.
-    - The encoding given in the # -*- coding: utf-8 -*- line for python files.
-    - The encoding given by the 'encoding' keyword arg.
-    - None, which typically means 'utf-8'.
-    '''
-    if not fileName:
-        if verbose: g.trace('no fileName arg given')
-        return None, None
-    if g.os_path_isdir(fileName):
-        if verbose: g.trace('not a file:', fileName)
-        return None, None
-    if not g.os_path_exists(fileName):
-        if verbose: g.error('file not found:', fileName)
-        return None, None
-    try:
-        e = None
-        with open(fileName, 'rb') as f:
-            s = f.read()
-        # Fix #391.
-        if not s:
-            return '', None
-        # New in Leo 4.11: check for unicode BOM first.
-        e, s = g.stripBOM(s)
-        if not e:
-            # Python's encoding comments override everything else.
-            junk, ext = g.os_path_splitext(fileName)
-            if ext == '.py':
-                e = g.getPythonEncodingFromString(s)
-        s = g.toUnicode(s, encoding=e or encoding)
-        return s, e
-    except IOError:
-        # Translate 'can not open' and kind, but not fileName.
-        if verbose:
-           g.error('can not open', '', (kind or ''), fileName)
-    except Exception:
-        g.error('readFileIntoString: unexpected exception reading %s' % (fileName))
-        g.es_exception()
-    return None, None
-</t>
-<t tx="ekr.20100208223942.10436">import leo.core.leoGlobals as g
-import fnmatch
-import pickle
-import os
-import stat
-import zlib
-import sqlite3
-</t>
-<t tx="ekr.20100216141722.5626">def find_gnx(self, root, gnx, vnodeName):
-    '''
-    Scan root's tree for a node with the given gnx and vnodeName.
-    return (p,found)
-    '''
-    if gnx:
-        assert g.isString(gnx)
-        gnx = g.toUnicode(gnx)
-        for p in root.self_and_subtree(copy=False):
-            if p.matchHeadline(vnodeName):
-                if p.v.fileIndex == gnx:
-                    return p.copy(), True
-        return None, False
-    else:
-        return root, False
-</t>
-<t tx="ekr.20100224050618.11547">def isFileLike(self, s):
-    '''Return True if s has file-like sentinels.'''
-    at = self; tag = "@+leo"
-    s = g.toUnicode(s)
-    i = s.find(tag)
-    if i == -1:
-        return True # Don't use the cache.
-    else:
-        j, k = g.getLine(s, i)
-        line = s[j: k]
-        valid, new_df, start, end, isThin = at.parseLeoSentinel(line)
-        return not isThin
-</t>
-<t tx="ekr.20100329071036.5744">def is_binary_file(f):
-    return f and isinstance(f, io.BufferedIOBase)
-
-def is_binary_external_file(fileName):
-    try:
-        with open(fileName, 'rb') as f:
-            s = f.read(1024) # bytes, in Python 3.
-        return g.is_binary_string(s)
-    except IOError:
-        return False
-    except Exception:
-        g.es_exception()
-        return False
-
-def is_binary_string(s):
-    # http://stackoverflow.com/questions/898669
-    # aList is a list of all non-binary characters.
-    aList = [7, 8, 9, 10, 12, 13, 27] + list(range(0x20, 0x100))
-    aList = bytes(aList)
-    return bool(s.translate(None, aList))
-</t>
-<t tx="ekr.20100803073751.5817">def createResurrectedNodesNode(self):
-    '''Create a 'Resurrected Nodes' node as the last top-level node.'''
-    at = self; c = at.c; tag = 'Resurrected Nodes'
-    # Find the last top-level node.
-    last = c.rootPosition()
-    while last.hasNext():
-        last.moveToNext()
-    # Create the node after last if it doesn't exist.
-    if last.h == tag:
-        p = last
-    else:
-        p = last.insertAfter()
-        p.setHeadString(tag)
-    p.expand()
-    return p
-</t>
-<t tx="ekr.20100803073751.5818">def defineResurrectedNodeCallback(self, r, root):
-    '''Define a callback that moves node p as r's last child.'''
-
-    def callback(p, r=r.copy(), root=root):
-        '''The resurrected nodes callback.'''
-        child = r.insertAsLastChild()
-        child.h = 'From %s' % root.h
-        v = p.v
-        if 1: # new code: based on vnodes.
-            import leo.core.leoNodes as leoNodes
-            for parent_v in v.parents:
-                assert isinstance(parent_v, leoNodes.VNode), parent_v
-                if v in parent_v.children:
-                    childIndex = parent_v.children.index(v)
-                    v._cutLink(childIndex, parent_v)
-                    v._addLink(len(child.v.children), child.v)
-                else:
-                    # This would be surprising.
-                    g.trace('**already deleted**', parent_v, v)
-        else: # old code, based on positions.
-            p.moveToLastChildOf(child)
-        if not g.unitTesting:
-            g.error('resurrected node:', v.h)
-            g.blue('in file:', root.h)
-
-    return callback
-</t>
-<t tx="ekr.20100813041139.5912">def createIntermediateFile(self, fn, p, s):
-    '''Write s to to the file whose name is fn.'''
-    ext = self.getOption(p, 'write_intermediate_extension')
-    ext = ext or '.txt' # .txt by default.
-    if not ext.startswith('.'): ext = '.' + ext
-    fn = fn + ext
-    with open(fn, 'w', encoding=self.encoding) as f:
-        f.write(s)
-    self.report(fn, p)
-</t>
-<t tx="ekr.20100813041139.5913">def addTitleToHtml(self, s):
-    '''Replace an empty &lt;title&gt; element by the contents of
-    the first &lt;h1&gt; element.'''
-    i = s.find('&lt;title&gt;&lt;/title&gt;')
-    if i == -1: return s
-    m = re.search('&lt;h1&gt;([^&lt;]*)&lt;/h1&gt;', s)
-    if not m:
-        m = re.search('&lt;h1&gt;&lt;[^&gt;]+&gt;([^&lt;]*)&lt;/a&gt;&lt;/h1&gt;', s)
-    if m:
-        s = s.replace('&lt;title&gt;&lt;/title&gt;',
-            '&lt;title&gt;%s&lt;/title&gt;' % m.group(1))
-    return s
-</t>
-<t tx="ekr.20100813041139.5914">def createDirectoryForFile(self, fn):
-    '''Create the directory for fn if
-    a) it doesn't exist and
-    b) the user options allow it.
-
-    Return True if the directory existed or was made.'''
-    c = self.c
-    # Create the directory if it doesn't exist.
-    theDir, junk = g.os_path_split(fn)
-    theDir = c.os_path_finalize(theDir)
-    if g.os_path_exists(theDir):
-        return True
-    else:
-        ok = g.makeAllNonExistentDirectories(theDir, c=c, force=False)
-        if not ok:
-            g.error('did not create:', theDir)
-        return ok
-</t>
-<t tx="ekr.20100813041139.5919">def write_files(self, ext, fn, p, callDocutils, toString, writeIntermediateFile):
-    '''Write a file to the indicated locations.'''
-    isHtml = ext in ('.html', '.htm')
-    fn = self.computeOutputFileName(fn)
-    if not toString:
-        if not self.createDirectoryForFile(fn):
-            return
-    if writeIntermediateFile:
-        if not toString:
-            self.createIntermediateFile(fn, p, self.source)
-    if callDocutils and ext in ('.htm', '.html', '.tex', '.pdf', '.s5', '.odt'):
-        self.stringOutput = s = self.writeToDocutils(p, self.source, ext)
-        if s and isHtml:
-            self.stringOutput = s = self.addTitleToHtml(s)
-        if not s:
-            return
-        if toString:
-            if not g.isUnicode(s):
-                s = g.toUnicode(s, 'utf-8')
-        else:
-            # Fixes bug 923301: Unicode error when executing 'rst3' command
-            s = g.toEncodedString(s, 'utf-8')
-            with open(fn, 'wb') as f:
-                f.write(s)
-            self.report(fn, p)
-            # self.http_endTree(fn,p,justOneFile=justOneFile)
-</t>
-<t tx="ekr.20100908120927.5971">import leo.core.leoGlobals as g
-verbose = 'plugins' in g.app.debug
-try:
-    import docutils
-    import docutils.core
-except ImportError:
-    docutils = None
-if verbose:
-    print('leoRst3.py: docutils: %s' % docutils)
-if docutils:
-    try:
-        from docutils import parsers
-        if verbose or not parsers: print('leoRst.py', parsers)
-        from docutils.parsers import rst
-        if verbose or not rst: print('leoRst.py', rst)
-        if not parsers or not rst:
-            docutils = None
-    except ImportError:
-        docutils = None
-    except Exception:
-        g.es_exception()
-        docutils = None
-import html.parser as HTMLParser
-try:
-    import leo.plugins.mod_http as mod_http
-except ImportError:
-    mod_http = None
-except Exception:
-    # Don't let a problem with a plugin crash Leo's core!
-    # g.es_print('leoRst: can not import leo.plugins.mod_http')
-    # g.es_exception()
-    mod_http = None
-import pprint
-import re
-try:
-    import SilverCity
-except ImportError:
-    SilverCity = None
-import io
-StringIO = io.StringIO
-import time
-</t>
 <t tx="ekr.20110605121601.17862"># These files are true plugins, but it is more convenient to put them here.
-</t>
-<t tx="ekr.20110605121601.17912"># Tricky code: do not change without careful thought and testing.
-
-def onHeadChanged(self, p, undoType='Typing', s=None, e=None):
-    '''Officially change a headline.'''
-    c = self.c; u = c.undoer
-    if not p:
-        return
-    item = self.getCurrentItem()
-    if not item:
-        return
-    if not e:
-        e = self.getTreeEditorForItem(item)
-    if not e:
-        return
-    s = e.text()
-    self.closeEditorHelper(e, item)
-    oldHead = p.h
-    changed = s != oldHead
-    if g.doHook("headkey1", c=c, p=c.p, v=c.p, s=s, changed=changed):
-        return
-    if changed:
-        # New in Leo 4.10.1.
-        &lt;&lt; truncate s if it has multiple lines &gt;&gt;
-        p.initHeadString(s)
-        item.setText(0, s) # Required to avoid full redraw.
-        undoData = u.beforeChangeNodeContents(p, oldHead=oldHead)
-        if not c.changed: c.setChanged(True)
-        # New in Leo 4.4.5: we must recolor the body because
-        # the headline may contain directives.
-        c.frame.body.recolor(p)
-        dirtyVnodeList = p.setDirty()
-        u.afterChangeNodeContents(p, undoType, undoData,
-            dirtyVnodeList=dirtyVnodeList, inHead=True) # 2013/08/26.
-    g.doHook("headkey2", c=c, p=c.p, v=c.p, s=s, changed=changed)
-    # This is a crucial shortcut.
-    if g.unitTesting: return
-    if changed:
-        self.redraw_after_head_changed()
-    if 0: # Don't do this: it interferes with clicks, and is not needed.
-        if self.stayInTree:
-            c.treeWantsFocus()
-        else:
-            c.bodyWantsFocus()
-    p.v.contentModified()
-    c.outerUpdate()
 </t>
 <t tx="ekr.20110605121601.18005">if QtWidgets:
 
@@ -5884,105 +1813,6 @@ def show_completions(self, aList):
     else:
         kind = 'unknown: %s' % repr(button)
     return kind
-</t>
-<t tx="ekr.20110605121601.18081">def getAllText(self):
-    '''QTextEditWrapper.'''
-    w = self.widget
-    return w.toPlainText()
-</t>
-<t tx="ekr.20110605121601.18100">def toPythonIndex(self, index, s=None):
-    '''This is much faster than versions using g.toPythonIndex.'''
-    w = self
-    te = self.widget
-    if index is None:
-        return 0
-    elif g.isInt(index):
-        return index
-    elif index == '1.0':
-        return 0
-    elif index == 'end':
-        return w.getLastPosition()
-    else:
-        doc = te.document()
-        data = index.split('.')
-        if len(data) == 2:
-            row, col = data
-            row, col = int(row), int(col)
-            bl = doc.findBlockByNumber(row - 1)
-            return bl.position() + col
-        else:
-            g.trace('bad string index: %s' % index)
-            return 0
-</t>
-<t tx="ekr.20110605121601.18108">def getAllText(self):
-    '''Get all text from a QsciScintilla widget.'''
-    w = self.widget
-    return w.text()
-</t>
-<t tx="ekr.20110605121601.18113">def setAllText(self, s):
-    '''Set the text of a QScintilla widget.'''
-    w = self.widget
-    assert isinstance(w, Qsci.QsciScintilla), w
-    w.setText(s)
-</t>
-<t tx="ekr.20110605121601.18120">def getAllText(self):
-    '''QHeadlineWrapper.'''
-    if self.check():
-        w = self.widget
-        return w.text()
-    else:
-        return ''
-</t>
-<t tx="ekr.20110605121601.18122">def getSelectionRange(self, sort=True):
-    '''QHeadlineWrapper.'''
-    w = self.widget
-    if self.check():
-        if w.hasSelectedText():
-            i = w.selectionStart()
-            s = w.selectedText()
-            j = i + len(s)
-        else:
-            i = j = w.cursorPosition()
-        return i, j
-    else:
-        return 0, 0
-</t>
-<t tx="ekr.20110605121601.18129">def setInsertPoint(self, i, s=None):
-    '''QHeadlineWrapper.'''
-    if not self.check(): return
-    w = self.widget
-    if s is None:
-        s = w.text()
-    i = self.toPythonIndex(i)
-    i = max(0, min(i, len(s)))
-    w.setCursorPosition(i)
-</t>
-<t tx="ekr.20110605121601.18130">def setSelectionRange(self, i, j, insert=None, s=None):
-    '''QHeadlineWrapper.'''
-    if not self.check(): return
-    w = self.widget
-    if i &gt; j: i, j = j, i
-    if s is None:
-        s = w.text()
-    n = len(s)
-    i = self.toPythonIndex(i)
-    j = self.toPythonIndex(j)
-    i = max(0, min(i, n))
-    j = max(0, min(j, n))
-    if insert is None:
-        insert = j
-    else:
-        insert = self.toPythonIndex(insert)
-        insert = max(0, min(insert, n))
-    if i == j:
-        w.setCursorPosition(i)
-    else:
-        length = j - i
-        # Set selection is a QLineEditMethod
-        if insert &lt; j:
-            w.setSelection(j, -length)
-        else:
-            w.setSelection(i, length)
 </t>
 <t tx="ekr.20110605121601.18137">dw_base = object if g.pyzo else QtWidgets.QMainWindow
 
@@ -6645,96 +2475,6 @@ def do_leo_spell_btn_Ignore(self):
     f.resizePanesToRatio(ratio, secondary_ratio)
 
 </t>
-<t tx="ekr.20110605121601.18311">def bringToFront(self):
-    self.lift()
-
-def deiconify(self):
-    if g.pyzo:
-        return
-    if self.top and self.top.isMinimized(): # Bug fix: 400739.
-        self.lift()
-
-def getFocus(self):
-    return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
-
-def get_window_info(self):
-    if hasattr(self.top, 'leo_master') and self.top.leo_master:
-        f = self.top.leo_master
-    else:
-        f = self.top
-    rect = f.geometry()
-    topLeft = rect.topLeft()
-    x, y = topLeft.x(), topLeft.y()
-    w, h = rect.width(), rect.height()
-    return w, h, x, y
-
-def iconify(self):
-    if self.top: self.top.showMinimized()
-
-def lift(self):
-    if not self.top: return
-    if self.top.isMinimized(): # Bug 379141
-        self.top.showNormal()
-    self.top.activateWindow()
-    self.top.raise_()
-
-def getTitle(self):
-    # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
-    # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
-    w = self.top.leo_master if g.app.qt_use_tabs else self.top
-    return w.windowTitle()
-
-def setTitle(self, s):
-    # pylint: disable=arguments-differ
-    if self.top:
-        # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
-        # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
-        w = self.top.leo_master if g.app.qt_use_tabs else self.top
-        w.setWindowTitle(s)
-
-def setTopGeometry(self, w, h, x, y, adjustSize=True):
-    # self.top is a DynamicWindow.
-    if self.top:
-        self.top.setGeometry(QtCore.QRect(x, y, w, h))
-
-def update(self, *args, **keys):
-    self.top.update()
-</t>
-<t tx="ekr.20110605121601.18360">def setMenuLabel(self, menu, name, label, underline=-1):
-
-    def munge(s):
-        return (s or '').replace('&amp;', '')
-
-    # menu is a QtMenuWrapper.
-    if not menu: return
-    realName = munge(self.getRealMenuName(name))
-    realLabel = self.getRealMenuName(label)
-    for action in menu.actions():
-        s = munge(action.text())
-        s = s.split('\t')[0]
-        if s == realName:
-            action.setText(realLabel)
-            break
-</t>
-<t tx="ekr.20110605121601.18383">def parseText(self, md):
-    '''Parse md.text() into (fn,s)'''
-    fn = ''
-    s = md.text()
-    if s:
-        i = s.find(',')
-        if i == -1:
-            pass
-        else:
-            fn = s[: i]
-            s = s[i + 1:]
-    return fn, s
-</t>
-<t tx="ekr.20110605121601.18384">def setText(self, md):
-    c = self.c
-    fn = self.fileName()
-    s = c.fileCommands.putLeoOutline()
-    md.setText('%s,%s' % (fn, s))
-</t>
 <t tx="ekr.20110605121601.18421">def createTreeItem(self, p, parent_item):
     
     if g.pyzo:
@@ -6750,81 +2490,6 @@ def update(self, *args, **keys):
         pass
     #print "item",item
     return item
-</t>
-<t tx="ekr.20110605121601.18424">def getItemText(self, item):
-    '''Return the text of the item.'''
-    if item:
-        return item.text(0)
-    else:
-        return '&lt;no item&gt;'
-</t>
-<t tx="ekr.20110605121601.18437">def onContextMenu(self, point):
-    c = self.c
-    w = self.treeWidget
-    handlers = g.tree_popup_handlers
-    menu = QtWidgets.QMenu()
-    menuPos = w.mapToGlobal(point)
-    if not handlers:
-        menu.addAction("No popup handlers")
-    p = c.p.copy()
-    done = set()
-    for handler in handlers:
-        # every handler has to add it's QActions by itself
-        if handler in done:
-            # do not run the same handler twice
-            continue
-        try:
-            handler(c, p, menu)
-        except Exception:
-            g.es_print('Exception executing right-click handler')
-            g.es_exception()
-    menu.popup(menuPos)
-    self._contextmenu = menu
-</t>
-<t tx="ekr.20110605121601.18441">def createControl(self):
-
-    class LeoQComboBox(QtWidgets.QComboBox):
-        '''Create a subclass in order to handle focusInEvents.'''
-
-        def __init__(self, tt):
-            self.leo_tt = tt
-            QtWidgets.QComboBox.__init__(self) # Init the base class.
-            # Fix #458: Chapters drop-down list is not automatically resized.
-            self.setSizeAdjustPolicy(self.AdjustToContents)
-
-        def focusInEvent(self, event):
-            self.leo_tt.setNames()
-            QtWidgets.QComboBox.focusInEvent(self, event) # Call the base class
-
-    tt = self
-    frame = QtWidgets.QLabel('Chapters: ')
-    tt.iconBar.addWidget(frame)
-    tt.w = w = LeoQComboBox(tt)
-    tt.setNames()
-    tt.iconBar.addWidget(w)
-
-    def onIndexChanged(s, tt=tt):
-        if g.isInt(s):
-            s = '' if s == -1 else tt.w.currentText()
-        if s and not tt.cc.selectChapterLockout:
-            tt.selectTab(s)
-    # A change: the argument could now be an int instead of a string.
-
-    w.currentIndexChanged.connect(onIndexChanged)
-</t>
-<t tx="ekr.20110605121601.18445">def selectTab(self, tabName):
-    '''LeoQtTreeTab.'''
-    tt, c, cc = self, self.c, self.cc
-    exists = tabName in self.tabNames
-    c.treeWantsFocusNow()
-        # Fix #969. Somehow this is important.
-    if not exists:
-        tt.createTab(tabName) # Calls tt.setNames()
-    if tt.lockout:
-        return
-    cc.selectChapterByName(tabName)
-    c.redraw()
-    c.outerUpdate()
 </t>
 <t tx="ekr.20110605121601.18464">class TabbedFrameFactory(object):
     """ 'Toplevel' frame builder for tabbed toplevel interface
@@ -7018,243 +2683,366 @@ def tab_cycle_previous(event):
     """ Cycle to next tab """
     tab_cycle(-1)
 </t>
-<t tx="ekr.20110605121601.18494">def runAskLeoIDDialog(self):
-    """Create and run a dialog to get g.app.LeoID."""
-    if g.unitTesting: return None
-    message = (
-        "leoID.txt not found\n\n" +
-        "Please enter an id that identifies you uniquely.\n" +
-        "Your cvs/bzr login name is a good choice.\n\n" +
-        "Leo uses this id to uniquely identify nodes.\n\n" +
-        "Your id must contain only letters and numbers\n" +
-        "and must be at least 3 characters in length.")
-    parent = None
-    title = 'Enter Leo id'
-    s, ok = QtWidgets.QInputDialog.getText(parent, title, message)
-    return s
-</t>
-<t tx="ekr.20110605121601.18499">def runOpenDirectoryDialog(self, title, startdir):
-    """Create and run an Qt open directory dialog ."""
-    parent = None
-    d = QtWidgets.QFileDialog()
-    self.attachLeoIcon(d)
-    s = d.getExistingDirectory(parent, title, startdir)
-    return s
-</t>
-<t tx="ekr.20110605121601.18500">def runOpenFileDialog(self, c, title, filetypes,
-    defaultextension='',
-    multiple=False,
-    startpath=None,
-):
-    """Create and run an Qt open file dialog ."""
-    if g.unitTesting:
-        return ''
-    parent = None
-    filter_ = self.makeFilter(filetypes)
-    dialog = QtWidgets.QFileDialog()
-    dialog.setStyleSheet(c.active_stylesheet)
-    self.attachLeoIcon(dialog)
-    # 2018/03/14: Bug fixes:
-    # - Use init_dialog_folder only if a path is not given
-    # - *Never* Use os.curdir by default!
-    if not startpath:
-        startpath = g.init_dialog_folder(c, c.p, use_at_path=True)
-            # Returns c.last_dir or os.curdir
-    func = dialog.getOpenFileNames if multiple else dialog.getOpenFileName
-    c.in_qt_dialog = True
-    try:
-        val = func(
-            parent=parent,
-            caption=title,
-            directory=startpath,
-            filter=filter_,
-        )
-    finally:
-        c.in_qt_dialog = False
-    if isQt5: # this is a *Py*Qt change rather than a Qt change
-        val, junk_selected_filter = val
-    if multiple:
-        files = [g.os_path_normslashes(s) for s in val]
-        if files:
-            c.last_dir = g.os_path_dirname(files[-1])
-        return files
-    else:
-        s = g.os_path_normslashes(val)
-        if s:
-            c.last_dir = g.os_path_dirname(s)
-        return s
-</t>
-<t tx="ekr.20110605121601.18502">def runSaveFileDialog(self, c, initialfile='', title='Save', filetypes=None, defaultextension=''):
-    """Create and run an Qt save file dialog ."""
-    if filetypes is None:
-        filetypes = []
-    if g.unitTesting:
-        return ''
-    else:
-        parent = None
-        filter_ = self.makeFilter(filetypes)
-        d = QtWidgets.QFileDialog()
-        d.setStyleSheet(c.active_stylesheet)
-        self.attachLeoIcon(d)
-        c.in_qt_dialog = True
-        obj = d.getSaveFileName(
-            parent,
-            title,
-            # os.curdir,
-            g.init_dialog_folder(c, c.p, use_at_path=True),
-            filter_)
-        c.in_qt_dialog = False
-        # Very bizarre: PyQt5 version can return a tuple!
-        s = obj[0] if isinstance(obj, (list, tuple)) else obj
-        s = s or ''
-        if s:
-            c.last_dir = g.os_path_dirname(s)
-        return s
-</t>
-<t tx="ekr.20110605121601.18510">size_warnings = []
+<t tx="ekr.20110605121601.18574">@nobeautify
 
-def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
-    '''Required to handle syntax coloring.'''
-    if g.isString(size):
-        if size.endswith('pt'):
-            size = size[: -2].strip()
-        elif size.endswith('px'):
-            if size not in self.size_warnings:
-                self.size_warnings.append(size)
-                g.es('px ignored in font setting: %s' % size)
-            size = size[: -2].strip()
-    try:
-        size = int(size)
-    except Exception:
-        size = 0
-    if size &lt; 1: size = defaultSize
-    d = {
-        'black': QtGui.QFont.Black,
-        'bold': QtGui.QFont.Bold,
-        'demibold': QtGui.QFont.DemiBold,
-        'light': QtGui.QFont.Light,
-        'normal': QtGui.QFont.Normal,
+def defineDefaultColorsDict (self):
+
+    # These defaults are sure to exist.
+    self.default_colors_dict = {
+        #
+        # Used in Leo rules...
+        # tag name      :( option name,                  default color),
+        'blank'         :('show_invisibles_space_color', '#E5E5E5'), # gray90
+        'docpart'       :('doc_part_color',              'red'),
+        'leokeyword'    :('leo_keyword_color',           'blue'),
+        'link'          :('section_name_color',          'red'),
+        'name'          :('undefined_section_name_color','red'),
+        'namebrackets'  :('section_name_brackets_color', 'blue'),
+        'tab'           :('show_invisibles_tab_color',   '#CCCCCC'), # gray80
+        'url'           :('url_color',                   'purple'),
+        #
+        # Pygments tags.  Non-default values are taken from 'default' style.
+        #
+        # Top-level...
+        # tag name          :( option name,         default color),
+        'error'             :('error',              '#FF0000'), # border
+        'other'             :('other',              'white'),
+        'punctuation'       :('punctuation',        'white'),
+        'whitespace'        :('whitespace',         '#bbbbbb'),
+        'xt'                :('xt',                 '#bbbbbb'),
+        #
+        # Comment...
+        # tag name          :( option name,         default color),
+        'comment'           :('comment',            '#408080'), # italic
+        'comment.hashbang'  :('comment.hashbang',   '#408080'),
+        'comment.multiline' :('comment.multiline',  '#408080'),
+        'comment.special'   :('comment.special',    '#408080'),
+        'comment.preproc'   :('comment.preproc',    '#BC7A00'), # noitalic
+        'comment.single'    :('comment.single',     '#BC7A00'), # italic
+        #
+        # Generic...
+        # tag name          :( option name,         default color),
+        'generic'           :('generic',            '#A00000'),
+        'generic.deleted'   :('generic.deleted',    '#A00000'),
+        'generic.emph'      :('generic.emph',       '#000080'), # italic
+        'generic.error'     :('generic.error',      '#FF0000'),
+        'generic.heading'   :('generic.heading',    '#000080'), # bold
+        'generic.inserted'  :('generic.inserted',   '#00A000'),
+        'generic.output'    :('generic.output',     '#888'),
+        'generic.prompt'    :('generic.prompt',     '#000080'), # bold
+        'generic.strong'    :('generic.strong',     '#000080'), # bold
+        'generic.subheading':('generic.subheading', '#800080'), # bold
+        'generic.traceback' :('generic.traceback',  '#04D'),
+        #
+        # Keyword...
+        # tag name              :( option name,             default color),
+        'keyword'               :('keyword',                '#008000'), # bold
+        'keyword.constant'      :('keyword.constant',       '#008000'),
+        'keyword.declaration'   :('keyword.declaration',    '#008000'),
+        'keyword.namespace'     :('keyword.namespace',      '#008000'),
+        'keyword.pseudo'        :('keyword.pseudo',         '#008000'), # nobold
+        'keyword.reserved'      :('keyword.reserved',       '#008000'),
+        'keyword.type'          :('keyword.type',           '#B00040'),
+        #
+        # Literal...
+        # tag name              :( option name,         default color),
+        'literal'               :('literal',            'white'),
+        'literal.date'          :('literal.date',       'white'),
+        #
+        # Name...
+        # tag name              :( option name,         default color
+        # 'name' defined below.
+        'name.attribute'        :('name.attribute',     '#7D9029'), # bold
+        'name.builtin'          :('name.builtin',       '#008000'),
+        'name.builtin.pseudo'   :('name.builtin.pseudo','#008000'),
+        'name.class'            :('name.class',         '#0000FF'), # bold
+        'name.constant'         :('name.constant',      '#880000'),
+        'name.decorator'        :('name.decorator',     '#AA22FF'),
+        'name.entity'           :('name.entity',        '#999999'), # bold
+        'name.exception'        :('name.exception',     '#D2413A'), # bold
+        'name.function'         :('name.function',      '#0000FF'),
+        'name.function.magic'   :('name.function.magic','#0000FF'),
+        'name.label'            :('name.label',         '#A0A000'),
+        'name.namespace'        :('name.namespace',     '#0000FF'), # bold
+        'name.other'            :('name.other',         'red'),
+        'name.pygments'         :('name.pygments',      'white'),
+            # A hack: getLegacyFormat returns name.pygments instead of name.
+        'name.tag'              :('name.tag',               '#008000'), # bold
+        'name.variable'         :('name.variable',          '#19177C'),
+        'name.variable.class'   :('name.variable.class',    '#19177C'),
+        'name.variable.global'  :('name.variable.global',   '#19177C'),
+        'name.variable.instance':('name.variable.instance', '#19177C'),
+        'name.variable.magic'   :('name.variable.magic',    '#19177C'),
+        #
+        # Number...
+        # tag name              :( option name,         default color
+        'number'                :('number',             '#666666'),
+        'number.bin'            :('number.bin',         '#666666'),
+        'number.float'          :('number.float',       '#666666'),
+        'number.hex'            :('number.hex',         '#666666'),
+        'number.integer'        :('number.integer',     '#666666'),
+        'number.integer.long'   :('number.integer.long','#666666'),
+        'number.oct'            :('number.oct',         '#666666'),
+        #
+        # Operator...
+        # tag name          :( option name,         default color
+        # 'operator' defined below.
+        'operator.word'     :('operator.Word',      '#AA22FF'), # bold
+        #
+        # String...
+        # tag name          :( option name,         default color
+        'string'            :('string',             '#BA2121'),
+        'string.affix'      :('string.affix',       '#BA2121'),
+        'string.backtick'   :('string.backtick',    '#BA2121'),
+        'string.char'       :('string.char',        '#BA2121'),
+        'string.delimiter'  :('string.delimiter',   '#BA2121'),
+        'string.doc'        :('string.doc',         '#BA2121'), # italic
+        'string.double'     :('string.double',      '#BA2121'),
+        'string.escape'     :('string.escape',      '#BB6622'), # bold
+        'string.heredoc'    :('string.heredoc',     '#BA2121'),
+        'string.interpol'   :('string.interpol',    '#BB6688'), # bold
+        'string.other'      :('string.other',       '#008000'),
+        'string.regex'      :('string.regex',       '#BB6688'),
+        'string.single'     :('string.single',      '#BA2121'),
+        'string.symbol'     :('string.symbol',      '#19177C'),
+        #
+        # jEdit tags.
+        # tag name  :( option name,     default color),
+        'comment1'  :('comment1_color', 'red'),
+        'comment2'  :('comment2_color', 'red'),
+        'comment3'  :('comment3_color', 'red'),
+        'comment4'  :('comment4_color', 'red'),
+        'function'  :('function_color', 'black'),
+        'keyword1'  :('keyword1_color', 'blue'),
+        'keyword2'  :('keyword2_color', 'blue'),
+        'keyword3'  :('keyword3_color', 'blue'),
+        'keyword4'  :('keyword4_color', 'blue'),
+        'keyword5'  :('keyword5_color', 'blue'),
+        'label'     :('label_color',    'black'),
+        'literal1'  :('literal1_color', '#00aa00'),
+        'literal2'  :('literal2_color', '#00aa00'),
+        'literal3'  :('literal3_color', '#00aa00'),
+        'literal4'  :('literal4_color', '#00aa00'),
+        'markup'    :('markup_color',   'red'),
+        'null'      :('null_color',     None), #'black'),
+        'operator'  :('operator_color', 'black'),
+        'trailing_whitespace': ('trailing_whitespace_color', '#808080'),
     }
-    weight_val = d.get(weight.lower(), QtGui.QFont.Normal)
-    italic = slant == 'italic'
-    if not family:
-        family = g.app.config.defaultFontFamily
-    if not family:
-        family = 'DejaVu Sans Mono'
-    try:
-        font = QtGui.QFont(family, size, weight_val, italic)
-        if sys.platform.startswith('linux'):
-            font.setHintingPreference(font.PreferFullHinting)
-        # g.es(font,font.hintingPreference())
-        return font
-    except Exception:
-        g.es("exception setting font", g.callers(4))
-        g.es("", "family,size,slant,weight:", "", family, "", size, "", slant, "", weight)
-        # g.es_exception() # This just confuses people.
-        return g.app.config.defaultFont
 </t>
-<t tx="ekr.20110605121601.18526">def toUnicode(self, s):
-    try:
-        s = g.u(s)
-        return s
-    except Exception:
-        g.trace('*** Unicode Error: bugs possible')
-        # The mass update omitted the encoding param.
-        return g.toUnicode(s, reportErrors='replace')
-</t>
-<t tx="ekr.20110605121601.18544">def qtKey(self, event):
-    '''
-    Return the components of a Qt key event.
+<t tx="ekr.20110605121601.18575">@nobeautify
 
-    Modifiers are handled separately.
+def defineDefaultFontDict (self):
 
-    Return (keynum, text, toString, ch).
-
-    keynum: event.key()
-    ch:     chr(keynum) or '' if there is an exception.
-    toString:
-        For special keys: made-up spelling that become part of the setting.
-        For all others:   QtGui.QKeySequence(keynum).toString()
-    text:   event.text()
-    '''
-    keynum = event.key()
-    text = event.text() # This is the unicode character!
-    qt = QtCore.Qt
-    d = {
-        qt.Key_Alt: 'Key_Alt',
-        qt.Key_AltGr: 'Key_AltGr',
-            # On Windows, when the KeyDown event for this key is sent,
-            # the Ctrl+Alt modifiers are also set.
-        qt.Key_Control: 'Key_Control', # MacOS: Command key
-        qt.Key_Meta: 'Key_Meta',
-            # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
-        qt.Key_Shift: 'Key_Shift',
-        qt.Key_NumLock: 'Num_Lock',
-            # 868.
+    self.default_font_dict = {
+        #
+        # Used in Leo rules...
+        # tag name      : option name
+        'blank'         :'show_invisibles_space_font', # 2011/10/24.
+        'docpart'       :'doc_part_font',
+        'leokeyword'    :'leo_keyword_font',
+        'link'          :'section_name_font',
+        'name'          :'undefined_section_name_font',
+        'namebrackets'  :'section_name_brackets_font',
+        'tab'           :'show_invisibles_tab_font', # 2011/10/24.
+        'url'           :'url_font',
+        #
+        # Pygments tags (lower case)...
+        # tag name          : option name
+        "comment"           :'comment1_font',
+        "comment.preproc"   :'comment2_font',
+        "comment.single"    :'comment1_font',
+        "error"             :'null_font',
+        "generic.deleted"   :'literal4_font',
+        "generic.emph"      :'literal4_font',
+        "generic.error"     :'literal4_font',
+        "generic.heading"   :'literal4_font',
+        "generic.inserted"  :'literal4_font',
+        "generic.output"    :'literal4_font',
+        "generic.prompt"    :'literal4_font',
+        "generic.strong"    :'literal4_font',
+        "generic.subheading":'literal4_font',
+        "generic.traceback" :'literal4_font',
+        "keyword"           :'keyword1_font',
+        "keyword.pseudo"    :'keyword2_font',
+        "keyword.type"      :'keyword3_font',
+        "name.attribute"    :'null_font',
+        "name.builtin"      :'null_font',
+        "name.class"        :'null_font',
+        "name.constant"     :'null_font',
+        "name.decorator"    :'null_font',
+        "name.entity"       :'null_font',
+        "name.exception"    :'null_font',
+        "name.function"     :'null_font',
+        "name.label"        :'null_font',
+        "name.namespace"    :'null_font',
+        "name.tag"          :'null_font',
+        "name.variable"     :'null_font',
+        "number"            :'null_font',
+        "operator.word"     :'keyword4_font',
+        "string"            :'literal1_font',
+        "string.doc"        :'literal1_font',
+        "string.escape"     :'literal1_font',
+        "string.interpol"   :'literal1_font',
+        "string.other"      :'literal1_font',
+        "string.regex"      :'literal1_font',
+        "string.single"     :'literal1_font',
+        "string.symbol"     :'literal1_font',
+        'xt'                :'text_font',
+        "whitespace"        :'text_font',
+        #
+        # jEdit tags.
+        # tag name     : option name
+        'comment1'      :'comment1_font',
+        'comment2'      :'comment2_font',
+        'comment3'      :'comment3_font',
+        'comment4'      :'comment4_font',
+        #'default'       :'default_font',
+        'function'      :'function_font',
+        'keyword1'      :'keyword1_font',
+        'keyword2'      :'keyword2_font',
+        'keyword3'      :'keyword3_font',
+        'keyword4'      :'keyword4_font',
+        'keyword5'      :'keyword5_font',
+        'label'         :'label_font',
+        'literal1'      :'literal1_font',
+        'literal2'      :'literal2_font',
+        'literal3'      :'literal3_font',
+        'literal4'      :'literal4_font',
+        'markup'        :'markup_font',
+        # 'nocolor' This tag is used, but never generates code.
+        'null'          :'null_font',
+        'operator'      :'operator_font',
+        'trailing_whitespace' :'trailing_whitespace_font',
     }
-    if d.get(keynum):
-        if 0: # Allow bare modifier key.
-            toString = d.get(keynum)
-        else:
-            toString = ''
-    else:
-        toString = QtGui.QKeySequence(keynum).toString()
-    # Fix bug 1244461: Numpad 'Enter' key does not work in minibuffer
-    if toString == 'Enter':
-        toString = 'Return'
-    if toString == 'Esc':
-        toString = 'Escape'
-    try:
-        ch = chr(keynum)
-    except ValueError:
-        ch = ''
-    return keynum, text, toString, ch
 </t>
-<t tx="ekr.20110605121601.18577">def addLeoRules(self, theDict):
-    '''Put Leo-specific rules to theList.'''
-    # pylint: disable=no-member
-    # Python 2 uses rule.im_func. Python 3 uses rule.__func__.
-    table = [
-        # Rules added at front are added in **reverse** order.
-        ('@', self.match_leo_keywords, True), # Called after all other Leo matchers.
-            # Debatable: Leo keywords override langauge keywords.
-        ('@', self.match_at_color, True),
-        ('@', self.match_at_killcolor, True),
-        ('@', self.match_at_language, True), # 2011/01/17
-        ('@', self.match_at_nocolor, True),
-        ('@', self.match_at_nocolor_node, True),
-        ('@', self.match_at_wrap, True), # 2015/06/22
-        ('@', self.match_doc_part, True),
-        ('f', self.match_url_f, True),
-        ('g', self.match_url_g, True),
-        ('h', self.match_url_h, True),
-        ('m', self.match_url_m, True),
-        ('n', self.match_url_n, True),
-        ('p', self.match_url_p, True),
-        ('t', self.match_url_t, True),
-        ('u', self.match_unl, True),
-        ('w', self.match_url_w, True),
-        # ('&lt;', self.match_image, True),
-        ('&lt;', self.match_section_ref, True), # Called **first**.
-        # Rules added at back are added in normal order.
-        (' ', self.match_blanks, False),
-        ('\t', self.match_tabs, False),
-    ]
-    if self.c.config.getBool("color-trailing-whitespace"):
-        table += [
-            (' ', self.match_trailing_ws, True),
-            ('\t', self.match_trailing_ws, True),
-        ]
-    for ch, rule, atFront, in table:
-        # Replace the bound method by an unbound method.
-        rule = rule.__func__
-        theList = theDict.get(ch, [])
-        if rule not in theList:
-            if atFront:
-                theList.insert(0, rule)
+<t tx="ekr.20110605121601.18637">def colorRangeWithTag(self, s, i, j, tag, delegate='', exclude_match=False):
+    '''Actually colorize the selected range.
+
+    This is called whenever a pattern matcher succeed.'''
+    trace = 'coloring' in g.app.debug and not g.unitTesting
+        # setTag does most tracing.
+    if not self.inColorState():
+        # Do *not* check x.flag here. It won't work.
+        if trace: g.trace('not in color state')
+        return
+    if delegate:
+        if trace:
+            if len(repr(s[i: j])) &lt;= 20:
+                s2 = repr(s[i: j])
             else:
-                theList.append(rule)
-            theDict[ch] = theList
+                s2 = repr(s[i: i + 17 - 2] + '...')
+            print('--trace-coloring: %25s %3s %3s %-20s %s' % (
+                ('%s.%s' % (delegate, tag)), i, j, s2, g.callers(2)))
+        self.modeStack.append(self.modeBunch)
+        self.init_mode(delegate)
+        while 0 &lt;= i &lt; j and i &lt; len(s):
+            progress = i
+            assert j &gt;= 0, j
+            for f in self.rulesDict.get(s[i], []):
+                n = f(self, s, i)
+                if n is None:
+                    g.trace('Can not happen: delegate matcher returns None')
+                elif n &gt; 0:
+                    i += n; break
+            else:
+                # Use the default chars for everything else.
+                # Use the *delegate's* default characters if possible.
+                default_tag = self.attributesDict.get('default')
+                self.setTag(default_tag or tag, s, i, i + 1)
+                i += 1
+            assert i &gt; progress
+        bunch = self.modeStack.pop()
+        self.initModeFromBunch(bunch)
+    elif not exclude_match:
+        # if trace:
+            # s2 = repr(s[i: j]) if len(repr(s[i: j])) &lt;= 20 else repr(s[i: i + 17 - 2] + '...')
+            # g.trace('%25s %3s %3s %-20s %s' % (
+                # ('%s.%s' % (self.language, tag)), i, j, s2, g.callers(2)))
+        self.setTag(tag, s, i, j)
+    if tag != 'url':
+        # Allow UNL's and URL's *everywhere*.
+        j = min(j, len(s))
+        while i &lt; j:
+            ch = s[i].lower()
+            if ch == 'u':
+                n = self.match_unl(s, i)
+                i += max(1, n)
+            elif ch in 'fh': # file|ftp|http|https
+                n = self.match_any_url(s, i)
+                i += max(1, n)
+            else:
+                i += 1
+</t>
+<t tx="ekr.20110605121601.18641">last_v = None
+
+def setTag(self, tag, s, i, j):
+    '''Set the tag in the highlighter.'''
+    trace = 'coloring' in g.app.debug and not g.unitTesting
+    self.n_setTag += 1
+    if i == j:
+        return
+    wrapper = self.wrapper # A QTextEditWrapper
+    if not tag.strip():
+        return
+    tag = tag.lower().strip()
+    # A hack to allow continuation dots on any tag.
+    dots = tag.startswith('dots')
+    if dots:
+        tag = tag[len('dots'):]
+    colorName = wrapper.configDict.get(tag)
+        # This color name should already be valid.
+    if not colorName:
+        return
+    #
+    # New in Leo 5.8.1: allow symbolic color names here.
+    # This now works because all keys in leo_color_database are normalized.
+    colorName = colorName.replace(' ', '').replace('-','').replace('_','').lower().strip()
+    colorName = leo_color_database.get(colorName, colorName)
+    # This is weird, so I'll leave it here.
+        # if colorName[-1].isdigit() and colorName[0] != '#':
+            # colorName = colorName[: -1]
+    # Get the actual color.
+    color = self.actualColorDict.get(colorName)
+    if not color:
+        color = QtGui.QColor(colorName)
+        if color.isValid():
+            self.actualColorDict[colorName] = color
+        else:
+            return g.trace('unknown color name', colorName, g.callers())
+    underline = wrapper.configUnderlineDict.get(tag)
+    format = QtGui.QTextCharFormat()
+    font = self.fonts.get(tag)
+    if font:
+        format.setFont(font)
+    if tag in ('blank', 'tab'):
+        if tag == 'tab' or colorName == 'black':
+            format.setFontUnderline(True)
+        if colorName != 'black':
+            format.setBackground(color)
+    elif underline:
+        format.setForeground(color)
+        format.setUnderlineStyle(format.SingleUnderline)
+        format.setFontUnderline(True)
+    elif dots or tag == 'trailing_whitespace':
+        format.setForeground(color)
+        format.setUnderlineStyle(format.DotLine)
+    else:
+        format.setForeground(color)
+        format.setUnderlineStyle(format.NoUnderline)
+    self.tagCount += 1
+    if trace:
+        # A superb trace.
+        p = self.c and self.c.p
+        if p and p.v != self.last_v:
+            print('\n%s\n' % p.h)
+            self.last_v = p.v
+        if len(repr(s[i: j])) &lt;= 20:
+            s2 = repr(s[i: j])
+        else:
+            s2 = repr(s[i: i + 17 - 2] + '...')
+        print('--trace-coloring: %25s %3s %3s %-20s %s' % (
+            ('%s.%s' % (self.language, tag)), i, j, s2, g.callers(2)))
+    self.highlighter.setFormat(i, j - i, format)
 </t>
 <t tx="ekr.20111002125540.7021">def getYScrollPosition(self):
     '''Get the vertical scrollbar position.'''
@@ -7270,231 +3058,6 @@ def setYScrollPosition(self, pos):
     sb = w.verticalScrollBar()
     sb.setSliderPosition(pos)
 </t>
-<t tx="ekr.20111028060955.16565">def getMenuEntryInfo(self, data, menu):
-    done = False
-    if g.isString(data):
-        # A single string is both the label and the command.
-        s = data
-        removeHyphens = s and s[0] == '*'
-        if removeHyphens: s = s[1:]
-        label = self.capitalizeMinibufferMenuName(s, removeHyphens)
-        command = s.replace('&amp;', '').lower()
-        if label == '-':
-            self.add_separator(menu)
-            done = True # That's all.
-    else:
-        ok = isinstance(data, (list, tuple)) and len(data) in (2, 3)
-        if ok:
-            if len(data) == 2:
-                # Command can be a minibuffer-command name.
-                label, command = data
-            else:
-                # Ignore shortcuts bound in menu tables.
-                label, junk, command = data
-            if label in (None, '-'):
-                self.add_separator(menu)
-                done = True # That's all.
-        else:
-            g.trace('bad data in menu table: %s' % repr(data))
-            done = True # Ignore bad data
-    return label, command, done
-</t>
-<t tx="ekr.20111028060955.16568">def getMenuEntryBindings(self, command, dynamicMenu, label):
-    '''Compute commandName from command.'''
-    c = self.c
-    if g.isString(command):
-        # Command is really a command name.
-        commandName = command
-    else:
-        # First, get the old-style name.
-        commandName = self.computeOldStyleShortcutKey(label)
-    command = c.commandsDict.get(commandName)
-    return commandName
-</t>
-<t tx="ekr.20111114151846.9847">def toPythonIndex(s, index):
-    '''Convert index to a Python int.
-
-    index may be a Tk index (x.y) or 'end'.
-    '''
-    if index is None:
-        return 0
-    elif g.isInt(index):
-        return index
-    elif index == '1.0':
-        return 0
-    elif index == 'end':
-        return len(s)
-    else:
-        data = index.split('.')
-        if len(data) == 2:
-            row, col = data
-            row, col = int(row), int(col)
-            i = g.convertRowColToPythonIndex(s, row - 1, col)
-            return i
-        else:
-            g.trace('bad string index: %s' % index)
-            return 0
-</t>
-<t tx="ekr.20120110174009.9965">def shouldPromptForDangerousWrite(self, fn, p):
-    '''
-    Return True if a prompt should be issued
-    when writing p (an @&lt;file&gt; node) to fn.
-    '''
-    if not g.os_path_exists(fn):
-        # No danger of overwriting fn.
-        return False
-    elif hasattr(p.v, 'at_read'):
-        # Fix bug #50: body text lost switching @file to @auto-rst
-        d = p.v.at_read
-        aSet = d.get(fn, set())
-        return p.h not in aSet
-    else:
-        return True
-            # The file was never read.
-</t>
-<t tx="ekr.20120112084820.10001">def rememberReadPath(self, fn, p):
-    '''
-    Remember the files that have been read *and*
-    the full headline (@&lt;file&gt; type) that caused the read.
-    '''
-    v = p.v
-    # Fix bug #50: body text lost switching @file to @auto-rst
-    if not hasattr(v, 'at_read'):
-        v.at_read = {}
-    d = v.at_read
-    aSet = d.get(fn, set())
-    aSet.add(p.h)
-    d[fn] = aSet
-</t>
-<t tx="ekr.20120129181245.10220">class TypedDict(object):
-    '''A class containing a name and enforcing type checking.'''
-    @others
-
-def isTypedDict(obj):
-    return isinstance(obj, TypedDict)
-
-class TypedDictOfLists(TypedDict):
-    '''A class whose values are lists of typed values.'''
-
-    def __init__(self, name, keyType, valType):
-        TypedDict.__init__(self, name, keyType, valType) # Init the base class
-        self.isList = True
-
-    def __repr__(self):
-        return '&lt;TypedDictOfLists name:%s keys:%s values:%s len(keys): %s' % (
-            self._name, self.keyType.__name__, self.valType.__name__, len(list(self.keys())))
-
-    __str__ = __repr__
-
-    def copy(self, name=None):
-        d = TypedDictOfLists(name or self._name, self.keyType, self.valType)
-        d.d = dict(self.d)
-        return d
-
-def isTypedDictOfLists(obj):
-    return isinstance(obj, TypedDictOfLists)
-</t>
-<t tx="ekr.20120205022040.17769">def __init__(self, name, keyType, valType):
-
-    self.d = {}
-    self.isList = False
-    self._name = name # name is a method.
-    self.keyType = keyType
-    self.valType = valType
-</t>
-<t tx="ekr.20120205022040.17770">def __repr__(self):
-    return '&lt;TypedDict name:%s keys:%s values:%s len(keys): %s' % (
-        self._name, self.keyType.__name__, self.valType.__name__, len(list(self.keys())))
-
-__str__ = __repr__
-</t>
-<t tx="ekr.20120205022040.17771">def get(self, key, default=None):
-    self._checkKeyType(key)
-    if default is None and self.isList:
-        default = []
-    return self.d.get(key, default)
-    
-# New in Leo 5.7.1
-def get_setting(self, key):
-    key = key.replace('-','').replace('_','')
-    gs = self.get(key)
-    val = gs and gs.val
-    return val
-    
-# New in Leo 5.7.1
-def get_string_setting(self, key):
-    val = self.get_setting(key)
-    return g.toUnicode(val) if val and g.isString(val) else None
-
-def keys(self):
-    return self.d.keys()
-
-def name(self):
-    return self._name
-</t>
-<t tx="ekr.20120205022040.17774">def add(self, key, val):
-    if key is None:
-        g.trace('TypeDict: None is not a valid key', g.callers())
-        return
-    self._checkKeyType(key)
-    self._checkValType(val)
-    if self.isList:
-        aList = self.d.get(key, [])
-        if val not in aList:
-            aList.append(val)
-            self.d[key] = aList
-    else:
-        self.d[key] = val
-
-def replace(self, key, val):
-    if key is None:
-        g.trace('TypeDict: None is not a valid key', g.callers())
-        return
-    self._checkKeyType(key)
-    if self.isList:
-        try:
-            for z in val:
-                self._checkValType(z)
-        except TypeError:
-            self._checkValType(val) # val is not iterable.
-        self.d[key] = val
-    else:
-        self._checkValType(val)
-        self.d[key] = val
-
-__setitem__ = replace # allow d[key] = val.
-</t>
-<t tx="ekr.20120205022040.17807">def update(self, d):
-    if isinstance(d, TypedDict):
-        self.d.update(d.d)
-    else:
-        self.d.update(d)
-</t>
-<t tx="ekr.20120206134955.10150">def _checkKeyType(self, key):
-    if key and key.__class__ != self.keyType:
-        self._reportTypeError(key, self.keyType)
-
-def _checkValType(self, val):
-    # This doesn't fail, either on Python 2.x or 3.x.
-    assert val.__class__ == self.valType, self._reportTypeError(val, self.valType)
-
-def _reportTypeError(self, obj, objType):
-    print('obj', obj, 'obj.__class__', obj.__class__, 'objType', objType)
-    return 'dict: %s expected %s got %s' % (
-        self._name, obj.__class__.__name__, objType.__name__)
-</t>
-<t tx="ekr.20120206134955.10151">def dump(self):
-    result = ['Dump of %s' % (self)]
-    for key in sorted(self.d.keys()):
-        if self.isList:
-            result.append(key)
-            aList = self.d.get(key, [])
-            for z in aList:
-                result.append('  ' + repr(z))
-        else:
-            result.append(key, self.d.get(key))
-    return '\n'.join(result)
-</t>
 <t tx="ekr.20120212060348.10374">in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
@@ -7502,58 +3065,6 @@ pyzo = False
 print('\n===== py3.pyzo branch: g.pyzo:', pyzo)
 SQLITE = True
     # True: Enable SQLite DB.
-</t>
-<t tx="ekr.20120214165710.10728">def setName(self, name):
-    self._name = name
-</t>
-<t tx="ekr.20120215072959.12520">def getValFromDict(self, d, setting, requestedType, warn=True):
-    '''Look up the setting in d. If warn is True, warn if the requested type
-    does not (loosely) match the actual type.
-    returns (val,exists)'''
-    gs = d.get(g.app.config.munge(setting))
-    if not gs: return None, False
-    assert g.isGeneralSetting(gs), gs
-    val = gs.val
-    isNone = val in ('None', 'none', '') # ,None)
-    if not self.typesMatch(gs.kind, requestedType):
-        # New in 4.4: make sure the types match.
-        # A serious warning: one setting may have destroyed another!
-        # Important: this is not a complete test of conflicting settings:
-        # The warning is given only if the code tries to access the setting.
-        if warn:
-            g.error('warning: ignoring', gs.kind, '', setting, 'is not', requestedType)
-            g.error('there may be conflicting settings!')
-        return None, False
-    elif isNone:
-        return '', True
-            # 2011/10/24: Exists, a *user-defined* empty value.
-    else:
-        return val, True
-</t>
-<t tx="ekr.20120215072959.12527">def getData(self, setting, strip_comments=True, strip_data=True):
-    '''Return a list of non-comment strings in the body text of @data setting.'''
-    # 904: Add local abbreviations to global settings.
-    append = setting == 'global-abbreviations'
-    if append:
-        data0 = g.app.config.getData(setting,
-            strip_comments=strip_comments,
-            strip_data=strip_data,
-        )
-    data = self.get(setting, "data")
-    # New in Leo 4.11: parser.doData strips only comments now.
-    # New in Leo 4.12: parser.doData strips *nothing*.
-    if g.isString(data):
-        data = [data]
-    if data and strip_comments:
-        data = [z for z in data if not z.strip().startswith('#')]
-    if data and strip_data:
-        data = [z.strip() for z in data if z.strip()]
-    if append and data != data0:
-        if data:
-            data.extend(data0)
-        else:
-            data = data0
-    return data
 </t>
 <t tx="ekr.20120215072959.12539">def getShortcut(self, commandName):
     '''Return rawKey,accel for shortcutName'''
@@ -7580,386 +3091,6 @@ SQLITE = True
         # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
         return None, []
 </t>
-<t tx="ekr.20120217070122.10470">@nobeautify
-
-def initObjects(self, gui):
-
-    c = self
-    gnx = 'hidden-root-vnode-gnx'
-    assert not hasattr(c, 'fileCommands'), c.fileCommands
-
-    class DummyFileCommands:
-        def __init__(self):
-            self.gnxDict = {}
-
-    c.fileCommands = DummyFileCommands()
-    self.hiddenRootNode = leoNodes.VNode(context=c, gnx=gnx)
-    self.hiddenRootNode.h = '&lt;hidden root vnode&gt;'
-    c.fileCommands = None
-    # Create the gui frame.
-    title = c.computeWindowTitle(c.mFileName)
-    if not g.app.initing:
-        g.doHook("before-create-leo-frame", c=c)
-    self.frame = gui.createLeoFrame(c, title)
-    assert self.frame
-    assert self.frame.c == c
-    import leo.core.leoHistory as leoHistory
-    self.nodeHistory = leoHistory.NodeHistory(c)
-    self.initConfigSettings()
-    c.setWindowPosition() # Do this after initing settings.
-    # Break circular import dependencies by doing imports here.
-    # These imports take almost 3/4 sec in the leoBridge.
-    import leo.core.leoAtFile as leoAtFile
-    import leo.core.leoBeautify as leoBeautify # So decorators are executed.
-    assert leoBeautify # for pyflakes.
-    import leo.core.leoChapters as leoChapters
-    # User commands...
-    import leo.commands.abbrevCommands as abbrevCommands
-    import leo.commands.checkerCommands as checkerCommands
-    assert checkerCommands
-        # To suppress a pyflakes warning.
-        # The import *is* required to define commands.
-    import leo.commands.controlCommands as controlCommands
-    import leo.commands.convertCommands as convertCommands
-    import leo.commands.debugCommands as debugCommands
-    import leo.commands.editCommands as editCommands
-    import leo.commands.editFileCommands as editFileCommands
-    import leo.commands.gotoCommands as gotoCommands
-    import leo.commands.helpCommands as helpCommands
-    import leo.commands.keyCommands as keyCommands
-    import leo.commands.killBufferCommands as killBufferCommands
-    import leo.commands.rectangleCommands as rectangleCommands
-    import leo.commands.spellCommands as spellCommands
-    # Import files to execute @g.commander_command decorators
-    import leo.core.leoCompare as leoCompare
-    assert leoCompare
-    import leo.core.leoDebugger as leoDebugger
-    assert leoDebugger
-    import leo.commands.commanderEditCommands as commanderEditCommands
-    assert commanderEditCommands
-    import leo.commands.commanderFileCommands as commanderFileCommands
-    assert commanderFileCommands
-    import leo.commands.commanderFindCommands as commanderFindCommands
-    assert commanderFindCommands
-    import leo.commands.commanderHelpCommands as commanderHelpCommands
-    assert commanderHelpCommands
-    import leo.commands.commanderOutlineCommands as commanderOutlineCommands
-    assert commanderOutlineCommands
-    # Other subcommanders.
-    import leo.core.leoFind as leoFind # Leo 4.11.1
-    import leo.core.leoKeys as leoKeys
-    import leo.core.leoFileCommands as leoFileCommands
-    import leo.core.leoImport as leoImport
-    import leo.core.leoPersistence as leoPersistence
-    import leo.core.leoPrinting as leoPrinting
-    import leo.core.leoRst as leoRst
-    import leo.core.leoShadow as leoShadow
-    import leo.core.leoTangle as leoTangle
-    import leo.core.leoTest as leoTest
-    import leo.core.leoUndo as leoUndo
-    import leo.core.leoVim as leoVim
-    # Define the subcommanders.
-    self.keyHandler = self.k    = leoKeys.KeyHandlerClass(c)
-    self.chapterController      = leoChapters.ChapterController(c)
-    self.shadowController       = leoShadow.ShadowController(c)
-    self.fileCommands           = leoFileCommands.FileCommands(c)
-    self.findCommands           = leoFind.LeoFind(c)
-    self.atFileCommands         = leoAtFile.AtFile(c)
-    self.importCommands         = leoImport.LeoImportCommands(c)
-    self.persistenceController  = leoPersistence.PersistenceDataController(c)
-    self.printingController     = leoPrinting.PrintingController(c)
-    self.rstCommands            = leoRst.RstCommands(c)
-    self.tangleCommands         = leoTangle.TangleCommands(c)
-    self.testManager            = leoTest.TestManager(c)
-    self.vimCommands            = leoVim.VimCommands(c)
-    # User commands
-    self.abbrevCommands     = abbrevCommands.AbbrevCommandsClass(c)
-    self.controlCommands    = controlCommands.ControlCommandsClass(c)
-    self.convertCommands    = convertCommands.ConvertCommandsClass(c)
-    self.debugCommands      = debugCommands.DebugCommandsClass(c)
-    self.editCommands       = editCommands.EditCommandsClass(c)
-    self.editFileCommands   = editFileCommands.EditFileCommandsClass(c)
-    self.gotoCommands       = gotoCommands.GoToCommands(c)
-    self.helpCommands       = helpCommands.HelpCommandsClass(c)
-    self.keyHandlerCommands = keyCommands.KeyHandlerCommandsClass(c)
-    self.killBufferCommands = killBufferCommands.KillBufferCommandsClass(c)
-    self.rectangleCommands  = rectangleCommands.RectangleCommandsClass(c)
-    self.spellCommands      = spellCommands.SpellCommandsClass(c)
-    self.undoer             = leoUndo.Undoer(c)
-    # Create the list of subcommanders.
-    self.subCommanders = [
-        self.abbrevCommands,
-        self.atFileCommands,
-        self.chapterController,
-        self.controlCommands,
-        self.convertCommands,
-        self.debugCommands,
-        self.editCommands,
-        self.editFileCommands,
-        self.fileCommands,
-        self.findCommands,
-        self.gotoCommands,
-        self.helpCommands,
-        self.importCommands,
-        self.keyHandler,
-        self.keyHandlerCommands,
-        self.killBufferCommands,
-        self.persistenceController,
-        self.printingController,
-        self.rectangleCommands,
-        self.rstCommands,
-        self.shadowController,
-        self.spellCommands,
-        self.tangleCommands,
-        self.testManager,
-        self.vimCommands,
-        self.undoer,
-    ]
-    # Other objects
-    c.configurables = c.subCommanders[:]
-        # A list of other classes that have a reloadSettings method
-    c.db = g.app.commander_cacher.get_wrapper(c)
-    import leo.plugins.free_layout as free_layout
-    self.free_layout = free_layout.FreeLayoutController(c)
-    if hasattr(g.app.gui, 'styleSheetManagerClass'):
-        self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
-        self.subCommanders.append(self.styleSheetManager)
-    else:
-        self.styleSheetManager = None
-</t>
-<t tx="ekr.20120217070122.10473">def initCommandIvars(self):
-    '''Init ivars used while executing a command.'''
-    self.commandsDict = {}
-        # Keys are command names, values are functions.
-    self.disableCommandsMessage = ''
-        # The presence of this message disables all commands.
-    self.hookFunction = None
-        # One of three places that g.doHook looks for hook functions.
-    self.ignoreChangedPaths = False
-        # True: disable path changed message in at.WriteAllHelper.
-    self.inCommand = False
-        # Interlocks to prevent premature closing of a window.
-    self.isZipped = False
-        # Set by g.openWithFileName.
-    self.outlineToNowebDefaultFileName = "noweb.nw"
-        # For Outline To Noweb dialog.
-    # For tangle/untangle
-    self.tangle_errors = 0
-    # Default Tangle options
-    self.use_header_flag = False
-    self.output_doc_flag = False
-    # For hoist/dehoist commands.
-    self.hoistStack = []
-        # Stack of nodes to be root of drawn tree.
-        # Affects drawing routines and find commands.
-    # For outline navigation.
-    self.navPrefix = '' # Must always be a string.
-    self.navTime = None
-
-    self.sqlite_connection = None
-</t>
-<t tx="ekr.20120219194520.10463">import leo.core.leoGlobals as g
-import leo.core.leoExternalFiles as leoExternalFiles
-import importlib
-import io
-StringIO = io.StringIO
-import os
-import optparse
-import subprocess
-import string
-import sys
-import time
-import traceback
-import zipfile
-import platform
-import sqlite3
-</t>
-<t tx="ekr.20120222103014.10312">def openSettingsFile(self, fn):
-    '''
-    Open a settings file with a null gui.  Return the commander.
-
-    The caller must init the c.config object.
-    '''
-    lm = self
-    if not fn:
-        return None
-    theFile = lm.openLeoOrZipFile(fn)
-    if not theFile:
-        return None # Fix #843.
-    if not any([g.app.unitTesting, g.app.silentMode, g.app.batchMode]):
-        # This occurs early in startup, so use the following.
-        s = 'reading settings in %s' % (fn)
-        if 'startup' in g.app.debug:
-            print(s)
-        g.es(s, color='blue')
-    # Changing g.app.gui here is a major hack.  It is necessary.
-    oldGui = g.app.gui
-    g.app.gui = g.app.nullGui
-    c = g.app.newCommander(fn)
-    frame = c.frame
-    frame.log.enable(False)
-    g.app.lockLog()
-    g.app.openingSettingsFile = True
-    try:
-        ok =  c.fileCommands.openLeoFile(theFile, fn,
-                readAtFileNodesFlag=False, silent=True)
-                    # closes theFile.
-    finally:
-        g.app.openingSettingsFile = False
-    g.app.unlockLog()
-    c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
-    g.app.gui = oldGui
-    return c if ok else None
-</t>
-<t tx="ekr.20120222103014.10314">def config_iter(self, c):
-    '''Letters:
-      leoSettings.leo
-    D default settings
-    F loaded .leo File
-    M myLeoSettings.leo
-    @ @button, @command, @mode.
-    '''
-    lm = g.app.loadManager
-    d = c.config.settingsDict if c else lm.globalSettingsDict
-    limit = c.config.getInt('print-settings-at-data-limit')
-    if limit is None:
-        limit = 20 # A resonable default.
-    # pylint: disable=len-as-condition
-    for key in sorted(list(d.keys())):
-        gs = d.get(key)
-        assert g.isGeneralSetting(gs), gs
-        if gs and gs.kind:
-            letter = lm.computeBindingLetter(gs.path)
-            val = gs.val
-            if gs.kind == 'data':
-                # #748: Remove comments
-                aList = [' '*8 + z.rstrip() for z in val
-                    if z.strip() and not z.strip().startswith('#')]
-                if not aList:
-                    val = '[]'
-                elif limit == 0 or len(aList) &lt; limit:
-                    val = '\n    [\n' + '\n'.join(aList) + '\n    ]'
-                    # The following doesn't work well.
-                    # val = g.objToString(aList, indent=' '*4)
-                else:
-                    val = '&lt;%s non-comment lines&gt;' % len(aList)
-            elif g.isString(val) and val.startswith('&lt;?xml'):
-                val = '&lt;xml&gt;'
-            key2 = '@%-6s %s' % (gs.kind, key)
-            yield key2, val, c, letter
-</t>
-<t tx="ekr.20120223062418.10410">def openZipFile(self, fn):
-    # lm = self
-    try:
-        theFile = zipfile.ZipFile(fn, 'r')
-        if not theFile: return None
-        # Read the file into an StringIO file.
-        aList = theFile.namelist()
-        name = aList and len(aList) == 1 and aList[0]
-        if not name: return None
-        s = theFile.read(name)
-        s = g.toUnicode(s, 'utf-8')
-        return StringIO(s)
-    except IOError:
-        # Do not use string + here: it will fail for non-ascii strings!
-        if not g.unitTesting:
-            g.error("can not open:", fn)
-        return None
-</t>
-<t tx="ekr.20120223062418.10422">def copy(self, name=None):
-    '''Return a new dict with the same contents.'''
-    d = TypedDict(name or self._name, self.keyType, self.valType)
-    d.d = dict(self.d)
-    return d
-</t>
-<t tx="ekr.20120320053907.9776">def computeFileUrl(fn, c=None, p=None):
-    '''
-    Compute finalized url for filename fn.
-    This involves adding url escapes and evaluating Leo expressions.
-    '''
-    # First, replace special characters (especially %20, by their equivalent).
-    url = urllib.parse.unquote(fn)
-    # Finalize the path *before* parsing the url.
-    i = url.find('~')
-    if i &gt; -1:
-        # Expand '~' and handle Leo expressions.
-        path = url[i:]
-        path = g.os_path_expanduser(path)
-        path = g.os_path_expandExpression(path, c=c)
-        path = g.os_path_finalize(path)
-        url = url[: i] + path
-    else:
-        # Handle Leo expressions.
-        tag = 'file://'
-        tag2 = 'file:///'
-        if sys.platform.startswith('win') and url.startswith(tag2):
-            path = url[len(tag2):].lstrip()
-        elif url.startswith(tag):
-            path = url[len(tag):].lstrip()
-        else:
-            path = url
-        path = g.os_path_expandExpression(path, c=c)
-        # Handle ancestor @path directives.
-        if c and c.openDirectory:
-            base = c.getNodePath(p)
-            path = g.os_path_finalize_join(c.openDirectory, base, path)
-        else:
-            path = g.os_path_finalize(path)
-        url = '%s%s' % (tag, path)
-    return url
-</t>
-<t tx="ekr.20120409185504.10028"># Remove trailing newlines before warning of truncation.
-while s and s[-1] == '\n':
-    s = s[: -1]
-# Warn if there are multiple lines.
-i = s.find('\n')
-if i &gt; -1:
-    s = s[: i]
-    if s != oldHead:
-        g.warning("truncating headline to one line")
-limit = 1000
-if len(s) &gt; limit:
-    s = s[: limit]
-    if s != oldHead:
-        g.warning("truncating headline to", limit, "characters")
-</t>
-<t tx="ekr.20120912094259.10546">def makeTestClass(self, p):
-    """Create a subclass of unittest.TestCase"""
-    c, tm = self.c, self
-    fname = 'makeTestClass'
-    p = p.copy()
-    script = g.getScript(c, p).strip()
-    if not script:
-        print("nothing in %s" % p.h)
-        return None
-    try:
-        script = script + tm.get_test_class_script()
-        script = script + tm.get_suite_script()
-        d = {'c': c, 'g': g, 'p': p, 'unittest': unittest}
-        if c.write_script_file:
-            scriptFile = c.writeScriptFile(script)
-            exec(compile(script, scriptFile, 'exec'), d)
-        else:
-            exec(script + '\n', d)
-        testclass = g.app.scriptDict.get('testclass')
-        suite = g.app.scriptDict.get('suite')
-        if suite and testclass:
-            print("\n%s: both 'suite' and 'testclass defined in %s" % (
-                fname, p.h))
-        elif testclass:
-            suite = unittest.TestLoader().loadTestsFromTestCase(testclass)
-            return suite
-        elif suite:
-            return suite
-        else:
-            print("\n%s: neither 'suite' nor 'testclass' defined in %s" % (
-                fname, p.h))
-            return None
-    except Exception:
-        print('\n%s: exception creating test class in %s' % (fname, p.h))
-        g.es_print_exception()
-        return None
-</t>
 <t tx="ekr.20120925061642.13506">def onSliderChanged(self, arg):
     '''Handle a Qt onSliderChanged event.'''
     c = self.leo_c
@@ -7981,83 +3112,6 @@ if len(s) &gt; limit:
         # Call the base class method.
         QtWidgets.QMainWindow.setWindowTitle(self, s)
 </t>
-<t tx="ekr.20130911110233.11284">def readFileToUnicode(self, fileName):
-    '''
-    Carefully sets at.encoding, then uses at.encoding to convert the file
-    to a unicode string.
-
-    Sets at.encoding as follows:
-    1. Use the BOM, if present. This unambiguously determines the encoding.
-    2. Use the -encoding= field in the @+leo header, if present and valid.
-    3. Otherwise, uses existing value of at.encoding, which comes from:
-        A. An @encoding directive, found by at.scanAllDirectives.
-        B. The value of c.config.default_derived_file_encoding.
-
-    Returns the string, or None on failure.
-    '''
-    at = self
-    s = at.openFileHelper(fileName)
-    if s is not None:
-        e, s = g.stripBOM(s)
-        if e:
-            # The BOM determines the encoding unambiguously.
-            s = g.toUnicode(s, encoding=e)
-        else:
-            # Get the encoding from the header, or the default encoding.
-            s_temp = g.toUnicode(s, 'ascii', reportErrors=False)
-            e = at.getEncodingFromHeader(fileName, s_temp)
-            s = g.toUnicode(s, encoding=e)
-        s = s.replace('\r\n', '\n')
-        at.encoding = e
-        at.initReadLine(s)
-    return s
-</t>
-<t tx="ekr.20130911110233.11285">def openFileHelper(self, fileName):
-    '''Open a file, reporting all exceptions.'''
-    at = self
-    s = None
-    try:
-        with open(fileName, 'rb') as f:
-            s = f.read()
-    except IOError:
-        at.error('can not open %s' % (fileName))
-    except Exception:
-        at.error('Exception reading %s' % (fileName))
-        g.es_exception()
-    return s
-</t>
-<t tx="ekr.20130911110233.11286">def initReadLine(self, s):
-    '''Init the ivars so that at.readLine will read all of s.'''
-    at = self
-    at.read_i = 0
-    at.read_lines = g.splitLines(s)
-    at._file_bytes = g.toEncodedString(s)
-</t>
-<t tx="ekr.20130911110233.11287">def getEncodingFromHeader(self, fileName, s):
-    '''
-    Return the encoding given in the @+leo sentinel, if the sentinel is
-    present, or the previous value of at.encoding otherwise.
-    '''
-    at = self
-    if at.errors:
-        g.trace('can not happen: at.errors &gt; 0')
-        e = at.encoding
-        if g.unitTesting: assert False, g.callers()
-            # This can happen when the showTree command in a unit test is left on.
-            # A @file/@clean node is created which refers to a non-existent file.
-            # It's surprisingly difficult to set at.error=0 safely elsewhere.
-            # Otoh, I'm not sure why this test here is ever really useful.
-    else:
-        at.initReadLine(s)
-        old_encoding = at.encoding
-        assert old_encoding
-        at.encoding = None
-        # Execute scanHeader merely to set at.encoding.
-        at.scanHeader(fileName, giveErrors=False)
-        e = at.encoding or old_encoding
-    assert e
-    return e
-</t>
 <t tx="ekr.20130921043420.21175"># w's type is in (DynamicWindow,QMinibufferWrapper,LeoQtLog,LeoQtTree,
 # QTextEditWrapper,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
 
@@ -8075,18 +3129,6 @@ def setFilter(self, c, obj, w, tag):
     w.ev_filter = theFilter
         # Set the official ivar in w.
 </t>
-<t tx="ekr.20131016032805.16721" annotate="7d71002e">def execute_shell_commands(commands, trace=False):
-    '''
-    Execute each shell command in a separate process.
-    Wait for each command to complete, except those starting with '&amp;'
-    '''
-    if g.isString(commands): commands = [commands]
-    for command in commands:
-        wait = not command.startswith('&amp;')
-        if command.startswith('&amp;'): command = command[1:].strip()
-        proc = subprocess.Popen(command, shell=True)
-        if wait: proc.communicate()
-</t>
 <t tx="ekr.20131111060930.18010"># Standard bindings...
 # run-selected-unit-tests-externally = Alt-4 
 # run-marked-unit-tests-externally = Alt-5
@@ -8094,136 +3136,6 @@ def setFilter(self, c, obj, w, tag):
 run-selected-unit-tests-locally = Alt-4
 do-nothing = Alt-5
 run-marked-unit-tests-locally = Alt-6
-</t>
-<t tx="ekr.20131114051702.16542">def getOutlineData(self, setting):
-    '''Return the pastable (xml) text of the entire @outline-data tree.'''
-    data = self.get(setting, "outlinedata")
-    if setting == 'tree-abbreviations':
-        # 904: Append local tree abbreviations to the global abbreviations.
-        data0 = g.app.config.getOutlineData(setting)
-        if data and data0 and data != data0:
-            assert g.isString(data0)
-            assert g.isString(data)
-            # We can't merge the data here: they are .leo files!
-            # abbrev.init_tree_abbrev_helper does the merge.
-            data = [data0, data]
-    return data
-</t>
-<t tx="ekr.20131115120119.17395">def setChanged(self, c, changed):
-    # Find the tab corresponding to c.
-    dw = c.frame.top # A DynamicWindow
-    i = self.indexOf(dw)
-    if i &lt; 0: return
-    s = self.tabText(i)
-    if len(s) &gt; 2:
-        if changed:
-            if not s.startswith('* '):
-                title = "* " + s
-                self.setTabText(i, title)
-        else:
-            if s.startswith('* '):
-                title = s[2:]
-                self.setTabText(i, title)
-</t>
-<t tx="ekr.20131117120458.16789">def init_widgets(self):
-    '''
-    Init widgets and ivars from c.config settings.
-    Create callbacks that always keep the LeoFind ivars up to date.
-    '''
-    c = self.c
-    find = c.findCommands
-    # Find/change text boxes.
-    table = (
-        ('find_findbox', 'find_text', '&lt;find pattern here&gt;'),
-        ('find_replacebox', 'change_text', ''),
-    )
-    for ivar, setting_name, default in table:
-        s = c.config.getString(setting_name) or default
-        w = getattr(self, ivar)
-        w.insert(s)
-        if find.minibuffer_mode:
-            w.clearFocus()
-        else:
-            w.setSelection(0, len(s))
-    # Check boxes.
-    table = (
-        ('ignore_case', self.check_box_ignore_case),
-        ('mark_changes', self.check_box_mark_changes),
-        ('mark_finds', self.check_box_mark_finds),
-        ('pattern_match', self.check_box_regexp),
-        ('search_body', self.check_box_search_body),
-        ('search_headline', self.check_box_search_headline),
-        ('whole_word', self.check_box_whole_word),
-        ('wrap', self.check_box_wrap_around),
-    )
-    for setting_name, w in table:
-        val = c.config.getBool(setting_name, default=False)
-        # The setting name is also the name of the LeoFind ivar.
-        assert hasattr(find, setting_name), setting_name
-        setattr(find, setting_name, val)
-        if val:
-            w.toggle()
-
-        def check_box_callback(n, setting_name=setting_name, w=w):
-            # The focus has already change when this gets called.
-            # focus_w = QtWidgets.QApplication.focusWidget()
-            val = w.isChecked()
-            assert hasattr(find, setting_name), setting_name
-            setattr(find, setting_name, val)
-            # Too kludgy: we must use an accurate setting.
-            # It would be good to have an "about to change" signal.
-            # Put focus in minibuffer if minibuffer find is in effect.
-            c.bodyWantsFocusNow()
-
-        w.stateChanged.connect(check_box_callback)
-    # Radio buttons
-    table = (
-        ('node_only', 'node_only', self.radio_button_node_only),
-        ('entire_outline', None, self.radio_button_entire_outline),
-        ('suboutline_only', 'suboutline_only', self.radio_button_suboutline_only),
-    )
-    for setting_name, ivar, w in table:
-        val = c.config.getBool(setting_name, default=False)
-        # The setting name is also the name of the LeoFind ivar.
-        if ivar is not None:
-            assert hasattr(find, setting_name), setting_name
-            setattr(find, setting_name, val)
-            w.toggle()
-
-        def radio_button_callback(n, ivar=ivar, setting_name=setting_name, w=w):
-            val = w.isChecked()
-            find.radioButtonsChanged = True
-            if ivar:
-                assert hasattr(find, ivar), ivar
-                setattr(find, ivar, val)
-
-        w.toggled.connect(radio_button_callback)
-    # Ensure one radio button is set.
-    if not find.node_only and not find.suboutline_only:
-        w = self.radio_button_entire_outline
-        w.toggle()
-</t>
-<t tx="ekr.20131117164142.16853">def getFindText(self):
-    return self.find_findbox.text()
-
-def getReplaceText(self):
-    return self.find_replacebox.text()
-
-getChangeText = getReplaceText
-
-def setFindText(self, s):
-    w = self.find_findbox
-    s = g.toUnicode(s)
-    w.clear()
-    w.insert(s)
-
-def setReplaceText(self, s):
-    w = self.find_replacebox
-    s = g.toUnicode(s)
-    w.clear()
-    w.insert(s)
-
-setChangeText = setReplaceText
 </t>
 <t tx="ekr.20131118152731.16847">def create_find_grid(self, parent):
     grid = self.createGrid(parent, 'findGrid', margin=10, spacing=10)
@@ -8481,27 +3393,6 @@ setChangeText = setReplaceText
 <t tx="ekr.20131118172620.16895">def keyRelease(self, event):
     return self.oldEvent(event)
 </t>
-<t tx="ekr.20131119185305.16478">def clear_focus(self):
-    self.entry_focus = None
-    self.find_findbox.clearFocus()
-
-def init_focus(self):
-    self.set_entry_focus()
-    w = self.find_findbox
-    w.setFocus()
-    s = w.text()
-    w.setSelection(0, len(s))
-
-def set_entry_focus(self):
-    # Remember the widget that had focus, changing headline widgets
-    # to the tree pane widget.  Headline widgets can disappear!
-    c = self.c
-    w = g.app.gui.get_focus(raw=True)
-    if w != c.frame.body.wrapper.widget:
-        w = c.frame.tree.treeWidget
-    self.entry_focus = w
-
-</t>
 <t tx="ekr.20131120054058.16281">def create_d(self):
     '''Create self.d dictionary.'''
     c = self.c
@@ -8542,22 +3433,6 @@ g.app.debug_widgets = not g.app.debug_widgets
 print('g.app.debug_app: %s' % g.app.debug_app)
 print('g.app.debug_widgets: %s' % g.app.debug_widgets)
 </t>
-<t tx="ekr.20131224053735.16380">@nobeautify
-
-# directives...
-noDirective     =  1 # not an at-directive.
-allDirective    =  2 # at-all (4.2)
-docDirective    =  3 # @doc.
-atDirective     =  4 # @&lt;space&gt; or @&lt;newline&gt;
-codeDirective   =  5 # @code
-cDirective      =  6 # @c&lt;space&gt; or @c&lt;newline&gt;
-othersDirective =  7 # at-others
-miscDirective   =  8 # All other directives
-rawDirective    =  9 # @raw
-endRawDirective = 10 # @end_raw
-startVerbatim   = 11 # @verbatim
-    # Not a real directive. Used to issue warnings.
-</t>
 <t tx="ekr.20131224085853.16443">def findReference(self, name, p):
     '''Find a reference to name.  Raise an error if not found.'''
     at = self
@@ -8594,90 +3469,6 @@ The parser for @data nodes, doData, no longer strips *anything*.</t>
             return False
     return True
 </t>
-<t tx="ekr.20140713062552.17737">def pickle(self, p):
-    '''Pickle val and return the hexlified result.'''
-    try:
-        ua = p.v.u
-        s = pickle.dumps(ua, protocol=1)
-        s2 = binascii.hexlify(s)
-        s3 = g.toUnicode(s2, 'utf-8')
-        return s3
-    except pickle.PicklingError:
-        g.warning("ignoring non-pickleable value", ua, "in", p.h)
-        return ''
-    except Exception:
-        g.error("pd.pickle: unexpected exception in", p.h)
-        g.es_exception()
-        return ''
-</t>
-<t tx="ekr.20140717074441.17770">def recreateGnxDict(self):
-    '''Recreate the gnx dict prior to refreshing nodes from disk.'''
-    c, d = self, {}
-    for v in c.all_unique_nodes():
-        gnxString = v.fileIndex
-        if g.isString(gnxString):
-            d[gnxString] = v
-            if 'gnx' in g.app.debug:
-                g.trace(c.shortFileName(), gnxString, v)
-        else:
-            g.internalError('no gnx for vnode: %s' % (v))
-    c.fileCommands.gnxDict = d
-</t>
-<t tx="ekr.20140717074441.17772"># refresh_pattern = re.compile('^(@[\w-]+)')
-
-@g.commander_command('refresh-from-disk')
-def refreshFromDisk(self, event=None):
-    '''Refresh an @&lt;file&gt; node from disk.'''
-    c, p, u = self, self.p, self.undoer
-    c.nodeConflictList = []
-    fn = p.anyAtFileNodeName()
-    shouldDelete = (not g.SQLITE) or (c.sqlite_connection is None)
-    if not fn:
-        g.warning('not an @&lt;file&gt; node:\n%r' % (p.h))
-        return
-    b = u.beforeChangeTree(p)
-    redraw_flag = True
-    at = c.atFileCommands
-    c.recreateGnxDict()
-        # Fix bug 1090950 refresh from disk: cut node ressurection.
-    i = g.skip_id(p.h, 0, chars='@')
-    word = p.h[0: i]
-    if word == '@auto':
-        # This includes @auto-*
-        if shouldDelete: p.v._deleteAllChildren()
-        # Fix #451: refresh-from-disk selects wrong node.
-        p = at.readOneAtAutoNode(fn, p)
-    elif word in ('@thin', '@file'):
-        if shouldDelete: p.v._deleteAllChildren()
-        at.read(p, force=True)
-    elif word == '@clean':
-        # Wishlist 148: use @auto parser if the node is empty.
-        if p.b.strip() or p.hasChildren():
-            at.readOneAtCleanNode(p)
-        else:
-            # Fix #451: refresh-from-disk selects wrong node.
-            p = at.readOneAtAutoNode(fn, p)
-    elif word == '@shadow':
-        if shouldDelete: p.v._deleteAllChildren()
-        at.read(p, force=True, atShadow=True)
-    elif word == '@edit':
-        at.readOneAtEditNode(fn, p)
-            # Always deletes children.
-    elif word == '@asis':
-        # Fix #1067.
-        at.readOneAtAsisNode(fn, p)
-            # Always deletes children.
-    else:
-        g.es_print('can not refresh from disk\n%r' % p.h)
-        redraw_flag = False
-    if redraw_flag:
-        # Fix #451: refresh-from-disk selects wrong node.
-        c.selectPosition(p)
-        u.afterChangeTree(p, command='refresh-from-disk', bunch=b)
-        # Create the 'Recovered Nodes' tree.
-        c.fileCommands.handleNodeConflicts()
-        c.redraw()
-</t>
 <t tx="ekr.20140727075002.18108">def saveOutlineIfPossible(self):
     '''Save the outline if only persistence data nodes are dirty.'''
     c = self.c
@@ -8691,51 +3482,6 @@ def refreshFromDisk(self, event=None):
         c.setChanged(False)
         c.redraw()
 </t>
-<t tx="ekr.20140728040812.17993">def dispatch(self, ext, p):
-    '''Return the correct writer function for p, an @auto node.'''
-    at = self
-    # Match @auto type before matching extension.
-    return at.writer_for_at_auto(p) or at.writer_for_ext(ext)
-</t>
-<t tx="ekr.20140728040812.17995">def writer_for_at_auto(self, root):
-    '''A factory returning a writer function for the given kind of @auto directive.'''
-    at = self
-    d = g.app.atAutoWritersDict
-    for key in d.keys():
-        aClass = d.get(key)
-        if aClass and g.match_word(root.h, 0, key):
-
-            def writer_for_at_auto_cb(root):
-                # pylint: disable=cell-var-from-loop
-                try:
-                    writer = aClass(at.c)
-                    s = writer.write(root)
-                    return s
-                except Exception:
-                    g.es_exception()
-                    return None
-
-            return writer_for_at_auto_cb
-    return None
-</t>
-<t tx="ekr.20140728040812.17997">def writer_for_ext(self, ext):
-    '''A factory returning a writer function for the given file extension.'''
-    at = self
-    d = g.app.writersDispatchDict
-    aClass = d.get(ext)
-    if aClass:
-
-        def writer_for_ext_cb(root):
-            try:
-                return aClass(at.c).write(root)
-            except Exception:
-                g.es_exception()
-                return None
-
-        return writer_for_ext_cb
-    else:
-        return None
-</t>
 <t tx="ekr.20140808103117.18035"></t>
 <t tx="ekr.20140808103117.18038">gnx: ekr.20110605121601.18698
 </t>
@@ -8744,16 +3490,6 @@ def refreshFromDisk(self, event=None):
 <t tx="ekr.20140808103117.18042">gnx: ekr.20110605121601.18704
 </t>
 <t tx="ekr.20140808103117.18044">gnx: ekr.20110605121601.18709
-</t>
-<t tx="ekr.20140825102404.18525">def __repr__(self):
-    '''IdleTime repr.'''
-    tag = self.tag
-    if tag:
-        return '&lt;IdleTime: %s&gt;' % (tag if g.isString(tag) else repr(tag))
-    else:
-        return '&lt;IdleTime: id: %s&gt;' % id(self)
-
-__str__ = __repr__
 </t>
 <t tx="ekr.20140831085423.18630">This outline contains all of Leo's core source code.
 
@@ -8858,246 +3594,9 @@ Valid values are (case is ignored):
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="ekr.20140920064112.17946"></t>
-<t tx="ekr.20141012064706.18403">def visit(self, node, *args, **keys):
-    '''Return the formatted version of an Ast node, or list of Ast nodes.'''
-    if isinstance(node, (list, tuple)):
-        return ','.join([self.visit(z) for z in node])
-    elif node is None:
-        return 'None'
-    else:
-        assert isinstance(node, ast.AST), node.__class__.__name__
-        method_name = 'do_' + node.__class__.__name__
-        method = getattr(self, method_name)
-        s = method(node, *args, **keys)
-        assert g.isString(s), type(s)
-        return s
-</t>
-<t tx="ekr.20141012064706.18416"># 2: arguments = (expr* args, identifier? vararg, identifier?
-#                arg? kwarg, expr* defaults)
-# 3: arguments = (arg*  args, arg? vararg,
-#                arg* kwonlyargs, expr* kw_defaults,
-#                arg? kwarg, expr* defaults)
-
-def do_arguments(self, node):
-    '''Format the arguments node.'''
-    kind = self.kind(node)
-    assert kind == 'arguments', kind
-    args = [self.visit(z) for z in node.args]
-    defaults = [self.visit(z) for z in node.defaults]
-    args2 = []
-    n_plain = len(args) - len(defaults)
-    for i in range(len(node.args)):
-        if i &lt; n_plain:
-            args2.append(args[i])
-        else:
-            args2.append('%s=%s' % (args[i], defaults[i - n_plain]))
-    if g.isPython3:
-        # Add the vararg and kwarg expressions.
-        vararg = getattr(node, 'vararg', None)
-        if vararg: args2.append('*' + self.visit(vararg))
-        kwarg = getattr(node, 'kwarg', None)
-        if kwarg: args2.append('**' + self.visit(kwarg))
-    else:
-        # Add the vararg and kwarg names.
-        name = getattr(node, 'vararg', None)
-        if name: args2.append('*' + name)
-        name = getattr(node, 'kwarg', None)
-        if name: args2.append('**' + name)
-    return ','.join(args2)
-</t>
-<t tx="ekr.20141012064706.18419">def do_Bytes(self, node): # Python 3.x only.
-    return str(node.s)
-</t>
-<t tx="ekr.20141012064706.18459"># Raise(expr? type, expr? inst, expr? tback)    Python 2
-# Raise(expr? exc, expr? cause)                 Python 3
-
-def do_Raise(self, node):
-    args = []
-    attrs = ('exc', 'cause') if g.isPython3 else ('type', 'inst', 'tback')
-    for attr in attrs:
-        if getattr(node, attr, None) is not None:
-            args.append(self.visit(getattr(node, attr)))
-    if args:
-        return self.indent('raise %s\n' % (
-            ','.join(args)))
-    else:
-        return self.indent('raise\n')
-</t>
-<t tx="ekr.20141012064706.18474"># 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
-# 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
-#                expr? returns)
-
-def do_FunctionDef(self, node, visit_body=True):
-
-    old_context = self.context
-    self.context = node
-    self.level += 1
-    # Visit the tree in token order.
-    for z in node.decorator_list:
-        self.visit(z)
-    assert g.isString(node.name)
-    self.visit(node.args)
-    if getattr(node, 'returns', None): # Python 3.
-        self.visit(node.returns)
-    if visit_body:
-        for z in node.body:
-            self.visit(z)
-    self.level -= 1
-    self.context = old_context
-
-do_AsyncFunctionDef = do_FunctionDef
-</t>
-<t tx="ekr.20141012064706.18482"># 2: arguments = (
-# expr* args,
-#   identifier? vararg,
-#   identifier? kwarg,
-#   expr* defaults)
-# 3: arguments = (
-#   arg*  args,
-#   arg? vararg,
-#   arg* kwonlyargs,
-#   expr* kw_defaults,
-#   arg? kwarg,
-#   expr* defaults)
-
-def do_arguments(self, node):
-
-    for z in node.args:
-        self.visit(z)
-    if g.isPython3 and getattr(node, 'vararg', None):
-        # An identifier in Python 2.
-        self.visit(node.vararg)
-    if g.isPython3 and getattr(node, 'kwarg', None):
-        # An identifier in Python 2.
-        self.visit_list(node.kwarg)
-    if getattr(node, 'kwonlyargs', None): # Python 3.
-        self.visit_list(node.kwonlyargs)
-    if getattr(node, 'kw_defaults', None): # Python 3.
-        self.visit_list(node.kw_defaults)
-    for z in node.defaults:
-        self.visit(z)
-
-# 3: arg = (identifier arg, expr? annotation)
-
-def do_arg(self, node):
-    if getattr(node, 'annotation', None):
-        self.visit(node.annotation)
-</t>
-<t tx="ekr.20141012064706.18520"># Raise(expr? type, expr? inst, expr? tback)    Python 2
-# Raise(expr? exc, expr? cause)                 Python 3
-
-def do_Raise(self, node):
-
-    attrs = ('exc', 'cause') if g.isPython3 else ('type', 'inst', 'tback')
-    for attr in attrs:
-        if getattr(node, attr, None):
-            self.visit(getattr(node, attr))
-</t>
-<t tx="ekr.20141012064706.18531"># Return generic markers allow better pattern matches.
-
-def do_BoolOp(self, node): # Python 2.x only.
-    return 'Bool'
-
-def do_Bytes(self, node): # Python 3.x only.
-    return 'Bytes' # return str(node.s)
-    
-def do_Constant(self, node): # Python 3.6+ only.
-    return 'Constant'
-
-def do_Name(self, node):
-    return 'Bool' if node.id in ('True', 'False') else node.id
-
-def do_NameConstant(self, node): # Python 3 only.
-    s = repr(node.value)
-    return 'Bool' if s in ('True', 'False') else s
-
-def do_Num(self, node):
-    return 'Num' # return repr(node.n)
-
-def do_Str(self, node):
-    '''This represents a string constant.'''
-    return 'Str' # return repr(node.s)
-</t>
-<t tx="ekr.20141020112451.18329">def put_dquote(self):
-    self.put('"')
-</t>
-<t tx="ekr.20141020112451.18330">def put_dquoted_bool(self, b):
-    if b: self.put('"1"')
-    else: self.put('"0"')
-</t>
-<t tx="ekr.20141020112451.18331">def put_flag(self, a, b):
-    if a:
-        self.put(" "); self.put(b); self.put('="1"')
-</t>
-<t tx="ekr.20141020112451.18332">def put_in_dquotes(self, a):
-    self.put('"')
-    if a: self.put(a) # will always be True if we use backquotes.
-    else: self.put('0')
-    self.put('"')
-</t>
-<t tx="ekr.20141020112451.18333">def put_nl(self):
-    self.put("\n")
-</t>
-<t tx="ekr.20141020112451.18334">def put_tab(self):
-    self.put("\t")
-</t>
-<t tx="ekr.20141020112451.18335">def put_tabs(self, n):
-    while n &gt; 0:
-        self.put("\t")
-        n -= 1
-</t>
 <t tx="ekr.20141024170936.7">def get_selection(self):
     '''Return the presently selected item's text.'''
     return self.currentItem().text()
-</t>
-<t tx="ekr.20141031053508.15">def add_rclick_menu(self, action_container, rclicks, controller,
-    top_level=True,
-    button=None,
-    script=None
-):
-    c = controller.c
-    top_offset = -2 # insert before the remove button and goto script items
-    if top_level:
-        button = action_container
-    for rc in rclicks:
-        # pylint: disable=cell-var-from-loop
-        headline = rc.position.h[8:].strip()
-        act = QtWidgets.QAction(headline, action_container)
-        if '---' in headline and headline.strip().strip('-') == '':
-            act.setSeparator(True)
-        elif rc.position.b.strip():
-
-            def cb(checked, p=rc.position, button=button):
-                controller.executeScriptFromButton(
-                    b=button,
-                    buttonText=p.h[8:].strip(),
-                    p=p,
-                    script=script,
-                )
-                if c.exists:
-                    c.outerUpdate()
-
-            act.triggered.connect(cb)
-        else: # recurse submenu
-            sub_menu = QtWidgets.QMenu(action_container)
-            act.setMenu(sub_menu)
-            self.add_rclick_menu(sub_menu, rc.children, controller,
-                top_level=False, button=button)
-        if top_level:
-            # insert act before Remove Button
-            action_container.insertAction(
-                action_container.actions()[top_offset], act)
-        else:
-            action_container.addAction(act)
-    if top_level and rclicks:
-        act = QtWidgets.QAction('---', action_container)
-        act.setSeparator(True)
-        action_container.insertAction(
-            action_container.actions()[top_offset], act)
-        action_container.setText(
-            action_container.text() +
-            (c.config.getString('mod-scripting-subtext') or '')
-        )
 </t>
 <t tx="ekr.20141103061944.31">def getXScrollPosition(self):
     '''Get the horizontal scrollbar position.'''
@@ -9112,111 +3611,6 @@ def setXScrollPosition(self, pos):
         w = self
         sb = w.horizontalScrollBar()
         sb.setSliderPosition(pos)
-</t>
-<t tx="ekr.20141210051628.28">def parseZimIndex(self):
-    """
-    Parse Zim wiki index.rst and return a list of tuples (level, name, path)
-    """
-    # c = self.c
-    pathToZim = g.os_path_abspath(self.pathToZim)
-    pathToIndex = g.os_path_join(pathToZim, 'index.rst')
-    if not g.os_path_exists(pathToIndex):
-        g.es('not found: %s' % (pathToIndex), color='red')
-        return None
-    index = open(pathToIndex).read()
-    # pylint: disable=anomalous-backslash-in-string
-    parse = re.findall('(\t*)-\s`(.+)\s&lt;(.+)&gt;`_', index)
-    if not parse:
-        g.es('invalid index: %s' % (pathToIndex), color='red')
-        return None
-    results = []
-    for result in parse:
-        level = len(result[0])
-        name = result[1].decode('utf-8')
-        unquote = urllib.parse.unquote
-        path = [g.os_path_abspath(g.os_path_join(
-            pathToZim, unquote(result[2]).decode('utf-8')))]
-        results.append((level, name, path))
-    return results
-</t>
-<t tx="ekr.20150204165040.4">def openAtShadowFileForReading(self, fn):
-    '''Open an @shadow for reading and return shadow_fn.'''
-    at = self
-    x = at.c.shadowController
-    # readOneAtShadowNode should already have checked these.
-    shadow_fn = x.shadowPathName(fn)
-    shadow_exists = (g.os_path_exists(shadow_fn) and
-        g.os_path_isfile(shadow_fn))
-    if not shadow_exists:
-        g.trace('can not happen: no private file',
-            shadow_fn, g.callers())
-        at.error('can not happen: private file does not exist: %s' % (
-            shadow_fn))
-        return None
-    # This method is the gateway to the shadow algorithm.
-    x.updatePublicAndPrivateFiles(at.root, fn, shadow_fn)
-    return shadow_fn
-</t>
-<t tx="ekr.20150204165040.5">def readOneAtCleanNode(self, root):
-    '''Update the @clean/@nosent node at root.'''
-    at, c, x = self, self.c, self.c.shadowController
-    fileName = g.fullPath(c, root)
-    if not g.os_path_exists(fileName):
-        g.es_print('not found: %s' % (fileName), color='red',
-            nodeLink=root.get_UNL(with_proto=True))
-        return
-    at.rememberReadPath(fileName, root)
-    at.initReadIvars(root, fileName)
-        # Must be called before at.scanAllDirectives.
-    at.scanAllDirectives(root)
-        # Sets at.startSentinelComment/endSentinelComment.
-    new_public_lines = at.read_at_clean_lines(fileName)
-    old_private_lines = self.write_at_clean_sentinels(root)
-    marker = x.markerFromFileLines(old_private_lines, fileName)
-    old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
-    if old_public_lines:
-        new_private_lines = x.propagate_changed_lines(
-            new_public_lines, old_private_lines, marker, p=root)
-    else:
-        new_private_lines = []
-        root.b = ''.join(new_public_lines)
-        return True
-    if new_private_lines == old_private_lines:
-        return True
-    if not g.unitTesting:
-        g.es("updating:", root.h)
-    root.clearVisitedInTree()
-    gnx2vnode = at.fileCommands.gnxDict
-    contents = ''.join(new_private_lines)
-    FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
-    return True # Errors not detected.
-</t>
-<t tx="ekr.20150204165040.7">def dump(self, lines, tag):
-    '''Dump all lines.'''
-    print('***** %s lines...\n' % tag)
-    for s in lines:
-        print(s.rstrip())
-</t>
-<t tx="ekr.20150204165040.8">def read_at_clean_lines(self, fn):
-    '''Return all lines of the @clean/@nosent file at fn.'''
-    at = self
-    s = at.openFileHelper(fn)
-        # Use the standard helper. Better error reporting.
-        # Important: uses 'rb' to open the file.
-    s = g.toUnicode(s, encoding=at.encoding)
-    s = s.replace('\r\n', '\n')
-        # Suppress meaningless "node changed" messages.
-    return g.splitLines(s)
-</t>
-<t tx="ekr.20150204165040.9">def write_at_clean_sentinels(self, root):
-    '''
-    Return all lines of the @clean tree as if it were
-    written as an @file node.
-    '''
-    at = self.c.atFileCommands
-    result = at.atFileToString(root, sentinels=True)
-    s = g.toUnicode(result, encoding=at.encoding)
-    return g.splitLines(s)
 </t>
 <t tx="ekr.20150207044400.12">def op_delete(self, tag, ai, aj, bi, bj):
     '''Handle the 'delete' opcode.'''
@@ -9938,104 +4332,6 @@ def createDefiningWordRule(self, word):
 
     return forth_defining_word_rule
 </t>
-<t tx="ekr.20150330033306.1">on_idle_count = 0
-
-def on_idle(self):
-    '''
-    Check for changed open-with files and all external files in commanders
-    for which @bool check_for_changed_external_file is True.
-    '''
-    if not g.app or g.app.killed:
-        return
-    self.on_idle_count += 1
-    # New in Leo 5.7: always handle delayed requests.
-    if g.app.windowList:
-        c = g.app.log and g.app.log.c
-        if c:
-            c.outerUpdate()
-    if 1:
-        # Fix #262: Improve performance of check_for_changed_external_files.
-        if self.unchecked_files:
-            # Check all external files.
-            for ef in self.unchecked_files:
-                self.idle_check_open_with_file(ef)
-            self.unchecked_files = []
-        elif self.unchecked_commanders:
-            # Check the next commander for which
-            # @bool check_for_changed_external_file is True.
-            c = self.unchecked_commanders.pop()
-            self.idle_check_commander(c)
-        else:
-            # Add all commanders for which
-            # @bool check_for_changed_external_file is True.
-            self.unchecked_commanders = [
-                z for z in g.app.commanders() if self.is_enabled(z)
-            ]
-            self.unchecked_files = [z for z in self.files if z.exists()]
-    else:
-        # First, check all existing open-with files.
-        for ef in self.files: # A list of ExternalFile instances.
-            if ef.exists():
-                self.idle_check_open_with_file(ef)
-        # Next, check all commanders for which
-        # @bool check_for_changed_external_file is True.
-        for c in g.app.commanders():
-            if self.is_enabled(c):
-                self.idle_check_commander(c)
-</t>
-<t tx="ekr.20150403044823.1">def idle_check_at_file_node(self, c, p):
-    '''Check the @&lt;file&gt; node at p for external changes.'''
-    path = g.fullPath(c, p)
-    if self.has_changed(c, path):
-        if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-            # Fix #1081: issue a warning.
-            self.warn(c, path, p=p)
-        elif self.ask(c, path, p=p):
-            c.redraw(p=p)
-            c.refreshFromDisk(p)
-            c.redraw()
-        # Always update the path &amp; time to prevent future warnings.
-        self.set_time(path)
-        self.checksum_d[path] = self.checksum(path)
-</t>
-<t tx="ekr.20150403045207.1">def has_changed(self, c, path):
-    '''Return True if p's external file has changed outside of Leo.'''
-    if not g.os_path_exists(path):
-        return False
-    if g.os_path_isdir(path):
-        return False
-    #
-    # First, check the modification times.
-    old_time = self.get_time(path)
-    new_time = self.get_mtime(path)
-    if not old_time:
-        # Initialize.
-        self.set_time(path, new_time)
-        self.checksum_d[path] = self.checksum(path)
-        return False
-    if old_time == new_time:
-        return False
-    #
-    # Check the checksums *only* if the mod times don't match.
-    old_sum = self.checksum_d.get(path)
-    new_sum = self.checksum(path)
-    if new_sum == old_sum:
-        # The modtime changed, but it's contents didn't.
-        # Update the time, so we don't keep checking the checksums.
-        # Return False so we don't prompt the user for an update.
-        self.set_time(path, new_time)
-        return False
-    else:
-        # The file has really changed.
-        assert old_time, path
-        if 0: # Fix bug 208: external change overwrite protection only works once
-            # https://github.com/leo-editor/leo-editor/issues/208
-            # These next two lines mean that if the Leo version
-            # is changed (dirtied) again, overwrite will occur without warning.
-            self.set_time(path, new_time)
-            self.checksum_d[path] = new_sum
-        return True
-</t>
 <t tx="ekr.20150403094619.1">class LeoLineTextWidget(QtWidgets.QFrame):
     '''
     A QFrame supporting gutter line numbers.
@@ -10179,94 +4475,6 @@ def on_idle(self):
     hbox.addWidget(e)
     e.installEventFilter(self)
     e.viewport().installEventFilter(self)
-</t>
-<t tx="ekr.20150404045115.1">def idle_check_commander(self, c):
-    '''
-    Check all external files corresponding to @&lt;file&gt; nodes in c for
-    changes.
-    '''
-    p = c.rootPosition()
-    seen = set()
-    while p:
-        if p.v in seen:
-            p.moveToNodeAfterTree()
-        elif p.isAtCleanNode():
-            # Fix #1074: nested @clean nodes.
-            seen.add(p.v)
-            self.idle_check_at_file_node(c, p)
-            p.moveToThreadNext()
-        elif p.isAnyAtFileNode():
-            seen.add(p.v)
-            self.idle_check_at_file_node(c, p)
-            p.moveToNodeAfterTree()
-        else:
-            p.moveToThreadNext()
-</t>
-<t tx="ekr.20150405200212.1">def ask(self, c, path, p=None):
-    '''
-    Ask user whether to overwrite an @&lt;file&gt; tree.
-    Return True if the user agrees.
-    '''
-    if g.unitTesting:
-        return False
-    if c not in g.app.commanders():
-        return False
-    if self.yesno_all_time + 3 &gt;= time.time() and self.yesno_all_answer:
-        self.yesno_all_time = time.time()  # Still reloading?  Extend time.
-        return bool('yes' in self.yesno_all_answer.lower())
-    if not p:
-        for ef in self.files:
-            if ef.path == path:
-                where = ef.p.h
-                break
-        else:
-            where = 'the outline node'
-    else:
-        where = p.h
-    _is_leo = path.endswith(('.leo', '.db'))
-    if _is_leo:
-        s = '\n'.join([
-            '%s has changed outside Leo.' %(g.splitLongFileName(path)),
-            'Overwrite it?'
-        ])
-    else:
-        s = '\n'.join([
-            '%s has changed outside Leo.' % (g.splitLongFileName(path)),
-            'Reload %s in Leo?' % (where),
-        ])
-    result = g.app.gui.runAskYesNoDialog(c, 'Overwrite the version in Leo?', s,
-        yes_all=not _is_leo, no_all=not _is_leo)
-    if result and "-all" in result.lower():
-        self.yesno_all_time = time.time()
-        self.yesno_all_answer = result.lower()
-    return bool(result and 'yes' in result.lower())
-        # Careful: may be unit testing.
-</t>
-<t tx="ekr.20150407124259.1">def idle_check_open_with_file(self, ef):
-    '''Update the open-with node given by ef.'''
-    assert isinstance(ef, ExternalFile), ef
-    if ef.path and os.path.exists(ef.path):
-        time = self.get_mtime(ef.path)
-        if time and time != ef.time:
-            ef.time = time # inhibit endless dialog loop.
-            self.update_open_with_node(ef)
-</t>
-<t tx="ekr.20150407205631.1">def update_open_with_node(self, ef):
-    '''Update the body text of ef.p to the contents of ef.path.'''
-    assert isinstance(ef, ExternalFile), ef
-    c, p = ef.c, ef.p.copy()
-    # Ask the user how to resolve the conflict.
-    if self.ask(c, ef.path, p=p):
-        g.blue('updated %s' % p.h)
-        s, e = g.readFileIntoString(ef.path)
-        p.b = s
-        if c.config.getBool('open-with-goto-node-on-update'):
-            c.selectPosition(p)
-        if c.config.getBool('open-with-save-on-update'):
-            c.save()
-        else:
-            p.setDirty()
-            c.setChanged(True)
 </t>
 <t tx="ekr.20150413091056.1">'''Warn if leoProjects.txt or leoToDo.txt contain any clones.'''
 
@@ -10807,11 +5015,6 @@ def define_s(self):
 'write-outline-only':           c.fileCommands.writeOutlineOnly,
 '''
 </t>
-<t tx="ekr.20150509194251.1">def cmd(name):
-    '''Command decorator for the AtFileCommands class.'''
-    # pylint: disable=no-self-argument
-    return g.new_cmd_decorator(name, ['c', 'atFileCommands',])
-</t>
 <t tx="ekr.20150514035207.1"></t>
 <t tx="ekr.20150514043850.8">def init_settings(self):
     '''Called from AbbrevCommands.reload_settings aka reloadSettings.'''
@@ -10838,110 +5041,6 @@ def define_s(self):
             self.subst_env = ""
         else:
             self.subst_env = c.config.getData(key, strip_data=False)
-</t>
-<t tx="ekr.20150514043850.9">def init_tree_abbrev(self):
-    '''Init tree_abbrevs_d from @data tree-abbreviations nodes.'''
-    c = self.c
-    #
-    # Careful. This happens early in startup.
-    root = c.rootPosition()
-    if not root:
-        return
-    if not c.p:
-        c.selectPosition(root)
-    if not c.p:
-        return
-    data = c.config.getOutlineData('tree-abbreviations')
-    if data is None:
-        return
-    d = {}
-    # #904: data may be a string or a list of two strings.
-    aList = [data] if g.isString(data) else data
-    for tree_s in aList:
-        #
-        # Expand the tree so we can traverse it.
-        if not c.canPasteOutline(tree_s):
-            return
-        c.fileCommands.leo_file_encoding = 'utf-8'
-        #
-        # As part of #427, disable all redraws.
-        try:
-            old_disable = g.app.disable_redraw
-            g.app.disable_redraw = True
-            self.init_tree_abbrev_helper(d, tree_s)
-        finally:
-            g.app.disable_redraw = old_disable
-    self.tree_abbrevs_d = d
-</t>
-<t tx="ekr.20150523132558.1">class OutputToken(object):
-    '''A class representing Output Tokens'''
-
-    def __init__(self, kind, value):
-        self.kind = kind
-        self.value = value
-
-    def __repr__(self):
-        if self.kind == 'line-indent':
-            assert not self.value.strip(' ')
-            return '%15s %s' % (self.kind, len(self.value))
-        else:
-            return '%15s %r' % (self.kind, self.value)
-
-    __str__ = __repr__
-
-    def to_string(self):
-        '''Convert an output token to a string.'''
-        return self.value if g.isString(self.value) else ''
-</t>
-<t tx="ekr.20150526201701.12">def op(self, s):
-    '''Add op token to code list.'''
-    assert s and g.isString(s), repr(s)
-    self.blank()
-    self.add_token('op', s)
-    self.blank()
-
-def op_blank(self, s):
-    '''Remove a preceding blank token, then add op and blank tokens.'''
-    assert s and g.isString(s), repr(s)
-    self.clean('blank')
-    self.add_token('op', s)
-    self.blank()
-
-def op_no_blanks(self, s):
-    '''Add an operator *not* surrounded by blanks.'''
-    self.clean('blank')
-    self.add_token('op-no-blanks', s)
-</t>
-<t tx="ekr.20150526201701.13">def word(self, s):
-    '''Add a word request to the code list.'''
-    assert s and g.isString(s), repr(s)
-    self.blank()
-    self.add_token('word', s)
-    self.blank()
-
-def word_op(self, s):
-    '''Add a word-op request to the code list.'''
-    assert s and g.isString(s), repr(s)
-    self.blank()
-    self.add_token('word-op', s)
-    self.blank()
-</t>
-<t tx="ekr.20150527213419.1">def possible_unary_op(self, s):
-    '''Add a unary or binary op to the token list.'''
-    self.clean('blank')
-    prev = self.code_list[-1]
-    if prev.kind in ('lt', 'op', 'op-no-blanks', 'word-op'):
-        self.unary_op(s)
-    elif prev.kind == 'word' and prev.value in ('elif', 'if', 'return', 'while'):
-        self.unary_op(s)
-    else:
-        self.op(s)
-
-def unary_op(self, s):
-    '''Add an operator request to the code list.'''
-    assert s and g.isString(s), repr(s)
-    self.blank()
-    self.add_token('unary-op', s)
 </t>
 <t tx="ekr.20150531102337.1"></t>
 <t tx="ekr.20150602204757.1">def autoBeautify(self, p):
@@ -10982,91 +5081,6 @@ if c.isChanged():
     c.save()
 c.k.simulateCommand('pylint')
 </t>
-<t tx="ekr.20150722051946.2">def flatten_list(obj):
-    '''A generator yielding a flattened (concatenated) version of obj.'''
-    if isinstance(obj, dict) and obj.get('_join_list'):
-        # join_list created obj, and ensured that all args are strings.
-        indent = obj.get('indent') or ''
-        leading = obj.get('leading') or ''
-        sep = obj.get('sep') or ''
-        trailing = obj.get('trailing') or ''
-        aList = obj.get('aList')
-        for i, item in enumerate(aList):
-            if leading: yield leading
-            for s in flatten_list(item):
-                if indent and s.startswith('\n'):
-                    yield '\n' + indent + s[1:]
-                else:
-                    yield s
-            if sep and i &lt; len(aList) - 1: yield sep
-            if trailing: yield trailing
-    elif isinstance(obj, (list, tuple)):
-        for obj2 in obj:
-            for s in flatten_list(obj2):
-                yield s
-    elif obj:
-        if g.isString(obj):
-            yield obj
-        else:
-            yield repr(obj) # Not likely to be useful.
-    else:
-        pass # Allow None and empty containers.
-</t>
-<t tx="ekr.20150722051946.3">def join_list(aList, indent='', leading='', sep='', trailing=''):
-    '''
-    Create a dict representing the concatenation of the
-    strings in aList, formatted per the keyword args.
-    See the HTMLReportTraverser class for many examples.
-    '''
-    if not aList:
-        return None
-    if 1: # These asserts are reasonable.
-        assert g.isString(indent), indent
-        assert g.isString(leading), leading
-        assert g.isString(sep), sep
-        assert g.isString(trailing), trailing
-    else: # This generality is not likely to be useful.
-        if leading and not g.isString(leading):
-            leading = list_to_string(leading)
-        if sep and not g.isString(sep):
-            sep = list_to_string(sep)
-        if trailing and not g.isString(trailing):
-            trailing = list_to_string(trailing)
-    if indent or leading or sep or trailing:
-        return {
-            '_join_list': True, # Indicate that join_list created this dict.
-            'aList': aList,
-            'indent': indent, 'leading': leading, 'sep': sep, 'trailing': trailing,
-        }
-    else:
-        return aList
-</t>
-<t tx="ekr.20150722204300.85"># Raise(expr? type, expr? inst, expr? tback)    Python 2
-# Raise(expr? exc, expr? cause)                 Python 3
-
-def do_Raise(self, node):
-
-    self.div('statement')
-    self.keyword("raise")
-    attrs = ('exc', 'cause') if g.isPython3 else ('type', 'inst', 'tback')
-    for attr in attrs:
-        if getattr(node, attr, None) is not None:
-            self.visit(getattr(node, attr))
-    self.end_div('statement')
-</t>
-<t tx="ekr.20150722204300.88">def do_Str(self, node):
-    '''This represents a string constant.'''
-
-    def clean(s):
-        return s.replace(' ','').replace('\n','').replace('"','').replace("'",'')
-
-    assert g.isString(node.s)
-    if self.last_doc and clean(self.last_doc) == clean(node.s):
-        # Already seen.
-        self.last_doc = None
-    else:
-        self.string(node.s)
-</t>
 <t tx="ekr.20160122104332.1">@language python
 </t>
 <t tx="ekr.20160123142722.1"># An example configuration file for make_stub_files.py.
@@ -11094,47 +5108,6 @@ prefix_lines:
 [Def Name Patterns]
 
 [General Patterns]
-</t>
-<t tx="ekr.20160225102931.9">def dump_token(self, token, verbose=False):
-    '''Dump the token. It is either a string or a 5-tuple.'''
-    if g.isString(token):
-        return token
-    else:
-        t1, t2, t3, t4, t5 = token
-        kind = g.toUnicode(token_module.tok_name[t1].lower())
-        # raw_val = g.toUnicode(t5)
-        val = g.toUnicode(t2)
-        if verbose:
-            return 'token: %10s %r' % (kind, val)
-        else:
-            return val
-</t>
-<t tx="ekr.20160229070349.2">def isBytes(s):
-    '''Return True if s is a bytes type.'''
-    return isinstance(s, bytes)
-</t>
-<t tx="ekr.20160229070349.3">def isCallable(obj):
-    return hasattr(obj, '__call__')
-</t>
-<t tx="ekr.20160229070349.5">def isString(s):
-    '''Return True if s is any string, but not bytes.'''
-    return isinstance(s, str)
-</t>
-<t tx="ekr.20160229070349.6">def isUnicode(s):
-    '''Return True if s is a unicode string.'''
-    return isinstance(s, str)
-</t>
-<t tx="ekr.20160229070429.1">def isInt(obj):
-    '''Return True if obj is an int or a long.'''
-    return isinstance(obj, int)
-</t>
-<t tx="ekr.20160417174224.1">def plural(obj):
-    '''Return "s" or "" depending on n.'''
-    if isinstance(obj, (list, tuple)) or g.isString(obj):
-        n = len(obj)
-    else:
-        n = obj
-    return '' if n == 1 else 's'
 </t>
 <t tx="ekr.20160420054135.4">gnx: ekr.20160412193816.5
 unl: qt_quicksearch declarations
@@ -11231,209 +5204,6 @@ unl: class Ui_MainWindow--&gt;retranslateUi
         g.chdir(names[0])
         self.import_files(names)
 </t>
-<t tx="ekr.20160504144353.1">def create_nodes(self, parent, parent_d):
-    '''Create the tree of nodes rooted in parent.'''
-    d = self.gnx_dict
-    for child_gnx in parent_d.get('children'):
-        d2 = d.get(child_gnx)
-        if child_gnx in self.vnodes_dict:
-            # It's a clone.
-            v = self.vnodes_dict.get(child_gnx)
-            n = parent.numberOfChildren()
-            child = leoNodes.Position(v)
-            child._linkAsNthChild(parent, n)
-            # Don't create children again.
-        else:
-            child = parent.insertAsLastChild()
-            child.h = d2.get('h') or '&lt;**no h**&gt;'
-            child.b = d2.get('b') or ''
-            if d2.get('gnx'):
-                child.v.findIndex = gnx = d2.get('gnx')
-                self.vnodes_dict[gnx] = child.v
-            if d2.get('ua'):
-                child.u = d2.get('ua')
-            self.create_nodes(child, d2)
-</t>
-<t tx="ekr.20160514120655.1">class AtFile(object):
-    """A class implementing the atFile subcommander."""
-    &lt;&lt; define class constants &gt;&gt;
-    @others
-
-atFile = AtFile # compatibility
-</t>
-<t tx="ekr.20160517133049.4">def get_flake8_config(self):
-    '''Return the path to the pylint configuration file.'''
-    join = g.os_path_finalize_join
-    dir_table = (
-        g.app.homeDir,
-        join(g.app.homeDir, '.leo'),
-        join(g.app.loadDir, '..', '..', 'leo', 'test'),
-    )
-    for base in ('flake8', 'flake8.txt'):
-        for path in dir_table:
-            fn = g.os_path_abspath(join(path, base))
-            if g.os_path_exists(fn):
-                return fn
-    if not g.unitTesting:
-        g.es_print('no flake8 configuration file found in\n%s' % (
-            '\n'.join(dir_table)))
-    return None
-</t>
-<t tx="ekr.20160518074545.9">def get_files_for_scope(self, scope, fn):
-    '''Return a list of absolute filenames for external linters.'''
-    d = {
-        'all':      [self.core, self.commands, self.external, self.plugins], #  self.modes
-        'commands': [self.commands],
-        'core':     [self.core, self.commands, self.external, self.gui_plugins],
-        'external': [self.external],
-        'file':     [fn],
-        'gui':      [self.gui_plugins],
-        'modes':    [self.modes],
-        'plugins':  [self.plugins],
-    }
-    functions = d.get(scope)
-    paths = []
-    if functions:
-        for func in functions:
-            files = [func] if g.isString(func) else func()
-                # Bug fix: 2016/10/15
-            for fn in files:
-                fn = g.os_path_abspath(fn)
-                if g.os_path_exists(fn):
-                    if g.os_path_isfile(fn):
-                        paths.append(fn)
-                else:
-                    print('does not exist: %s' % fn)
-        paths = sorted(set(paths))
-        return paths
-    else:
-        print('LinterTable.get_table: bad scope', scope)
-        return []
-</t>
-<t tx="ekr.20160917125948.1">def getTextFromClipboard(self):
-    '''Get a unicode string from the clipboard.'''
-    cb = self.qtApp.clipboard()
-    if cb:
-        QtWidgets.QApplication.processEvents()
-        return cb.text()
-    else:
-        g.trace('no clipboard!')
-        return ''
-</t>
-<t tx="ekr.20161021084954.1">def runPyflakes(self, root, pyflakes_errors_only):
-    '''Run pyflakes on the selected node.'''
-    try:
-        import leo.commands.checkerCommands as checkerCommands
-        if checkerCommands.pyflakes:
-            x = checkerCommands.PyflakesCommand(self.c)
-            ok = x.run(p=root,pyflakes_errors_only=pyflakes_errors_only)
-            return ok
-        else:
-            return True # Suppress error if pyflakes can not be imported.
-    except Exception:
-        g.es_exception()
-</t>
-<t tx="ekr.20161028090624.1">class ProcessData(object):
-    '''A class to hold data about running or queued processes.'''
-
-    def __init__(self, c, kind, fn, link_pattern, link_root, shell):
-        '''Ctor for the ProcessData class.'''
-        self.c = c
-        self.callback = None
-        self.fn = fn
-        self.kind = kind
-        self.link_pattern = None
-        self.link_root = link_root
-        self.shell = shell
-        #
-        # Check and compile the link pattern.
-        if link_pattern and g.isString(link_pattern):
-            try:
-                self.link_pattern = re.compile(link_pattern)
-            except Exception:
-                g.trace('Invalid link pattern: %s' % link_pattern)
-                self.link_pattern = None
-
-    def __repr__(self):
-        return 'c: %s kind: %s callback: %s fn: %s shell: %s' % (
-            self.c.shortFileName(),
-            self.kind,
-            id(self.callback) if self.callback else None,
-            self.fn,
-            self.shell,
-        )
-
-    __str__ = __repr__
-</t>
-<t tx="ekr.20161223082445.1">def isList(s):
-    '''Return True if s is a list.'''
-    return isinstance(s, list)
-</t>
-<t tx="ekr.20161223090721.1">def exec_file(path, d, script=None):
-    '''Simulate python's execfile statement for python 3.'''
-    if script is None:
-        with open(path) as f:
-            script = f.read()
-    exec(compile(script, path, 'exec'), d)
-</t>
-<t tx="ekr.20170108034643.1">def ustr(s):
-    '''Define the pyzo ustr function.'''
-    # pylint: disable=no-member
-    return str(s) if isPython3 else g.builtins.unicode(s)
-</t>
-<t tx="ekr.20170216091704.1">def openUrlHelper(event, url=None):
-    '''Open the UNL or URL under the cursor.  Return it for unit testing.'''
-    c = getattr(event, 'c', None)
-    if not c: return None
-    w = getattr(event, 'w', c.frame.body.wrapper)
-    if not g.app.gui.isTextWrapper(w):
-        g.internalError('must be a text wrapper', w)
-        return None
-    setattr(event, 'widget', w)
-    # Part 1: get the url.
-    if url is None:
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        i, j = w.getSelectionRange()
-        if i != j: return None # So find doesn't open the url.
-        row, col = g.convertPythonIndexToRowCol(s, ins)
-        i, j = g.getLine(s, ins)
-        line = s[i: j]
-        # Find the url on the line.
-        for match in g.url_regex.finditer(line):
-            # Don't open if we click after the url.
-            if match.start() &lt;= col &lt; match.end():
-                url = match.group()
-                if g.isValidUrl(url):
-                    break
-        else:
-            # Look for the unl:
-            for match in g.unl_regex.finditer(line):
-                # Don't open if we click after the unl.
-                if match.start() &lt;= col &lt; match.end():
-                    unl = match.group()
-                    g.handleUnl(unl, c)
-                    return
-    elif not g.isString(url):
-        url = url.toString()
-        url = g.toUnicode(url)
-            # Fix #571
-    if url and g.isValidUrl(url):
-        # Part 2: handle the url
-        p = c.p
-        if not g.doHook("@url1", c=c, p=p, url=url):
-            g.handleUrl(url, c=c, p=p)
-        g.doHook("@url2", c=c, p=p)
-        return url
-    else:
-        # Part 3: call find-def.
-        if not w.hasSelection():
-            c.editCommands.extendToWord(event, select=True)
-        word = w.getSelectedText().strip()
-        if word:
-            c.findCommands.findDef(event)
-        return None
-</t>
 <t tx="ekr.20170222084048.1">def add_children(self, parent, element):
     '''
     parent is the parent position, element is the parent element.
@@ -11448,107 +5218,6 @@ atFile = AtFile # compatibility
     p.b = text if text.strip() else ''
     for child in element:
         self.add_children(p, child)
-</t>
-<t tx="ekr.20170226093349.1">def unquoteUrl(url):
-    '''Replace special characters (especially %20, by their equivalent).'''
-    return urllib.parse.unquote(url)
-</t>
-<t tx="ekr.20170227062001.1">def init_tree_abbrev_helper(self, d, tree_s):
-
-    c = self.c
-    hidden_root = c.fileCommands.getPosFromClipboard(tree_s)
-    if not hidden_root:
-        return g.trace('no pasted node')
-    for p in hidden_root.children():
-        for s in g.splitLines(p.b):
-            if s.strip() and not s.startswith('#'):
-                abbrev_name = s.strip()
-                # #926: Allow organizer nodes by searching all descendants.
-                for child in p.subtree():
-                    if child.h.strip() == abbrev_name:
-                        abbrev_s = c.fileCommands.putLeoOutline(child)
-                        d[abbrev_name] = abbrev_s
-                        break
-                else:
-                    g.trace('no definition for %s' % abbrev_name)
-</t>
-<t tx="ekr.20170324142416.1">@g.command('show-color-wheel')
-def showColorWheel(self, event=None):
-    '''Show a Qt color dialog.'''
-    c = self.c; p = c.p
-    picker = QtWidgets.QColorDialog()
-    in_color_setting = p.h.startswith('@color ')
-    try:
-        text = QtWidgets.QApplication.clipboard().text()
-        if in_color_setting:
-            text = p.h.split('=', 1)[1].strip()
-        color = QtGui.QColor(text)
-        picker.setCurrentColor(color)
-    except (ValueError, IndexError) as e:
-        g.trace('error caught', e)
-    if not picker.exec_():
-        g.es("No color selected")
-    elif in_color_setting:
-        udata = c.undoer.beforeChangeNodeContents(p)
-        p.h = '%s = %s' % (
-            p.h.split('=', 1)[0].strip(),
-            picker.selectedColor().name(),
-        )
-        c.undoer.afterChangeNodeContents(p, 'change-color', udata)
-    else:
-        text = picker.selectedColor().name()
-        g.es("copied to clipboard:", text)
-        QtWidgets.QApplication.clipboard().setText(text)
-</t>
-<t tx="ekr.20170324143944.3">@g.command('show-fonts')
-def showFonts(self, event=None):
-    '''Open a tab in the log pane showing a font picker.'''
-    c = self.c; p = c.p
-
-    picker = QtWidgets.QFontDialog()
-    if p.h.startswith('@font'):
-        (name, family, weight, slant, size) = leoConfig.parseFont(p.b)
-    else:
-        name, family, weight, slant, size = None, None, False, False, 12
-    try:
-        font = QtGui.QFont()
-        if family: font.setFamily(family)
-        font.setBold(weight)
-        font.setItalic(slant)
-        font.setPointSize(size)
-        picker.setCurrentFont(font)
-    except ValueError:
-        pass
-    if not picker.exec_():
-        g.es("No font selected")
-    else:
-        font = picker.selectedFont()
-        udata = c.undoer.beforeChangeNodeContents(p)
-        comments = [x for x in g.splitLines(p.b) if x.strip().startswith('#')]
-        defs = [
-            '\n' if comments else '',
-            '%s_family = %s\n'%(name, font.family()),
-            '%s_weight = %s\n'%(name, 'bold' if font.bold() else 'normal'),
-            '%s_slant = %s\n'%(name, 'italic' if font.italic() else 'roman'),
-            '%s_size = %s\n'%(name, font.pointSizeF())
-        ]
-        p.b = ''.join(comments + defs)
-        c.undoer.afterChangeNodeContents(p, 'change-font', udata)
-</t>
-<t tx="ekr.20170331141933.1">def writeAsisNode(self, p):
-    '''Write the p's node to an @asis file.'''
-    at = self
-    # Write the headline only if it starts with '@@'.
-    s = p.h
-    if g.match(s, 0, "@@"):
-        s = s[2:]
-        if s:
-            at.outputFile.write(s)
-    # Write the body.
-    s = p.b
-    if s:
-        s = g.toEncodedString(s, at.encoding, reportErrors=True)
-        at.outputStringWithLineEndings(s)
 </t>
 <t tx="ekr.20170427112302.1">g.cls()
 import glob
@@ -11726,378 +5395,6 @@ from .eveventhandler import Event
 
 </t>
 <t tx="ekr.20170428085201.1">@nosearch</t>
-<t tx="ekr.20170616102324.1">def execGitCommand(command, directory=None):
-    '''Execute the given git command in the given directory.'''
-    git_dir = g.os_path_finalize_join(directory, '.git')
-    if not g.os_path_exists(git_dir):
-        g.trace('not found:', git_dir)
-        return []
-    if '\n' in command:
-        g.trace('removing newline from', command)
-        command = command.replace('\n','')
-    if directory:
-        os.chdir(directory)
-    p = subprocess.Popen(
-        shlex.split(command),
-        stdout=subprocess.PIPE,
-        stderr=None, # Shows error traces.
-        shell=False,
-    )
-    out, err = p.communicate()
-    lines = [g.toUnicode(z) for z in g.splitLines(out or [])]
-    return lines
-</t>
-<t tx="ekr.20170721073056.1">def do_Constant(self, node): # Python 3.6+ only.
-    return str(node.s) # A guess.
-</t>
-<t tx="ekr.20170721073315.1">def do_Constant(self, node): # Python 3.6+ only.
-    assert g.isPython3
-</t>
-<t tx="ekr.20170721073431.1">def do_Constant(self, node): # Python 3.6+ only.
-    return str(node.s) # A guess.
-</t>
-<t tx="ekr.20170721075130.1"># FormattedValue(expr value, int? conversion, expr? format_spec)
-
-def do_FormattedValue(self, node): # Python 3.6+ only.
-    return '%s%s%s' % (
-        self.visit(node.value),
-        self.visit(node.conversion) if node.conversion else '',
-        self.visit(node.format_spec) if node.format_spec else '')
-</t>
-<t tx="ekr.20170721075714.1"># FormattedValue(expr value, int? conversion, expr? format_spec)
-
-def do_FormattedValue(self, node): # Python 3.6+ only.
-    self.visit(node.value)
-    if node.conversion:
-        self.visit(node.conversion)
-    if node.format_spec:
-        self.visit(node.format_spec)
-</t>
-<t tx="ekr.20170721075845.1"># FormattedValue(expr value, int? conversion, expr? format_spec)
-
-def do_FormattedValue(self, node): # Python 3.6+ only.
-    self.div('statement')
-    self.visit(node.value)
-    if node.conversion:
-        self.visit(node.conversion)
-    if node.format_spec:
-        self.visit(node.format_spec)
-    self.end_div('statement')
-</t>
-<t tx="ekr.20170721080935.1"># JoinedStr(expr* values)
-
-def do_JoinedStr(self, node):
-    for value in node.values or []:
-        self.visit(value)
-</t>
-<t tx="ekr.20170721080959.1"># JoinedStr(expr* values)
-
-def do_JoinedStr(self, node):
-    for value in node.values or []:
-        self.visit(value)
-</t>
-<t tx="ekr.20170806094317.19">def dumpCompareNodes(self, fileName1, fileName2, inserted, deleted, changed):
-    for d, kind in (
-        (inserted, 'inserted (only in %s)' % (fileName1)),
-        (deleted, 'deleted  (only in %s)' % (fileName2)),
-        (changed, 'changed'),
-    ):
-        g.pr('\n', kind)
-        for key in d:
-            p = d.get(key)
-            g.pr('%-32s %s' % (key, p.h))
-</t>
-<t tx="ekr.20170806094318.15">@cmd('file-save')
-def saveFile(self, event):
-    '''Prompt for the name of a file and put the body text of the selected node into it..'''
-    c = self.c
-    w = self.editWidget(event)
-    if not w:
-        return
-    fileName = g.app.gui.runSaveFileDialog(c,
-        initialfile=None,
-        title='save-file',
-        filetypes=[("Text", "*.txt"), ("All files", "*")],
-        defaultextension=".txt")
-    if fileName:
-        try:
-            s = w.getAllText()
-            with open(fileName, 'w') as f:
-                f.write(s)
-        except IOError:
-            g.es('can not create', fileName)
-</t>
-<t tx="ekr.20170806094320.12">def git_diff(self, directory=None, rev1='HEAD', rev2=''):
-    '''The main line of the git diff command.'''
-    if not self.set_directory(directory):
-        return
-    #
-    # Diff the given revs.
-    ok = self.diff_revs(rev1, rev2)
-    if ok: return
-    #
-    # Go back at most 5 revs...
-    n1, n2 = 1, 0
-    while n1 &lt;= 5:
-        ok = self.diff_revs(
-            rev1 = 'HEAD@{%s}' % (n1),
-            rev2 = 'HEAD@{%s}' % (n2))
-        if ok: return
-        n1, n2 = n1+1, n2+1
-    if not ok:
-        g.es_print('no changed readable files from HEAD@{1}..HEAD@(5)')
-</t>
-<t tx="ekr.20170806094320.13">class GitDiffController:
-    '''A class to do git diffs.'''
-    @others
-</t>
-<t tx="ekr.20170806094320.15">def get_file_from_rev(self, rev, fn):
-    '''Get the file from the given rev, or the working directory if None.'''
-    if rev:
-        # Get the file using git.
-        command = 'git show %s:%s' % (rev, fn)
-        lines = g.execGitCommand(command, self.repo_dir)
-        s = ''.join(lines)
-    else:
-        # Get the file from the working directory.
-        path = g.os_path_finalize_join(self.repo_dir, fn)
-        if g.os_path_exists(path):
-            try:
-                with open(path, 'rb') as f: # Was 'r'
-                    s = f.read()
-            except Exception:
-                g.es_print('Can not read', path)
-                g.es_exception()
-                s = ''
-        else:
-            g.trace('not found:', path)
-            s = ''
-    return g.toUnicode(s).replace('\r','')
-</t>
-<t tx="ekr.20170806094320.18">def create_root(self, rev1, rev2):
-    '''Create the top-level organizer node describing the git diff.'''
-    c = self.c
-    r1, r2 = rev1 or '', rev2 or ''
-    p = c.lastTopLevel().insertAfter()
-    p.h = 'git diff %s %s' % (r1, r2)
-    p.b = '@ignore\n@nosearch\n'
-    if r1 and r2:
-        p.b += '%s=%s\n%s=%s' % (
-            r1, self.get_revno(r1),
-            r2, self.get_revno(r2),
-        )
-    else:
-        p.b += '%s=%s' % (r1, self.get_revno(r1))
-    return p
-</t>
-<t tx="ekr.20170806094320.4">def __init__ (self, c, repo_dir=None):
-    '''Ctor for the GitDiffController class.'''
-    self.c = c
-    self.file_node = None
-    self.old_dir = g.os_path_abspath('.')
-    self.repo_dir = repo_dir
-    self.root = None
-</t>
-<t tx="ekr.20170806094320.6">def diff_file(self, fn, directory=None, rev1='HEAD', rev2=''):
-    '''
-    Create an outline describing the git diffs for fn.
-    '''
-    if not self.set_directory(directory):
-        return
-    c = self.c
-    s1 = self.get_file_from_rev(rev1, fn)
-    s2 = self.get_file_from_rev(rev2, fn)
-    lines1 = g.splitLines(s1)
-    lines2 = g.splitLines(s2)
-    diff_list = list(difflib.unified_diff(
-        lines1,
-        lines2,
-        rev1 or 'uncommitted',
-        rev2 or 'uncommitted',
-    ))
-    diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
-    self.file_node = self.create_file_node(diff_list, fn)
-    if c.looksLikeDerivedFile(fn):
-        c1 = self.make_at_file_outline(fn, s1, rev1)
-        c2 = self.make_at_file_outline(fn, s2, rev2)
-    else:
-        root = self.find_file(fn)
-        if root:
-            c1 = self.make_at_clean_outline(fn, root, s1, rev1)
-            c2 = self.make_at_clean_outline(fn, root, s2, rev2)
-        else:
-            # This warning is silly.
-            # g.es_print('No outline for', fn)
-            c1 = c2 = None
-    if c1 and c2:
-        self.make_diff_outlines(c1, c2, fn, rev1, rev2)
-        self.file_node.b = '%s\n@language %s\n' % (
-            self.file_node.b.rstrip(), c2.target_language)
-</t>
-<t tx="ekr.20170806094320.7">def find_file(self, fn):
-    '''Return the @&lt;file&gt; node matching fn.'''
-    c = self.c
-    fn = g.os_path_basename(fn)
-    for p in c.all_unique_positions():
-        if p.isAnyAtFileNode():
-            fn2 = p.anyAtFileNodeName()
-            if fn2.endswith(fn):
-                return p
-    return None
-</t>
-<t tx="ekr.20170806094320.9">def get_files(self, rev1, rev2):
-    '''Return a list of changed files.'''
-
-    def readable(fn):
-        for suffix in ('commit_timestamp.json', '.db', '.leo', '.zip', ):
-            if fn.strip().endswith(suffix):
-                return False
-        return True
-
-    command = 'git diff --name-only %s %s' % (rev1 or '', rev2 or '')
-    files = [
-        z.strip() for z in g.execGitCommand(command, self.repo_dir)
-            if readable(z)
-    ]
-    return files
-</t>
-<t tx="ekr.20170806094321.1">def create_file_node(self, diff_list, fn):
-    '''Create an organizer node for the file.'''
-    p = self.root.insertAsLastChild()
-    p.h = fn.strip()
-    p.b = ''.join(diff_list)
-    return p
-</t>
-<t tx="ekr.20170806094321.3">def find_git_working_directory(self, directory):
-    '''Return the git working directory, starting at directory.'''
-    assert directory
-    while directory:
-        if g.os_path_exists(g.os_path_finalize_join(directory, '.git')):
-            return directory
-        path2 = g.os_path_finalize_join(directory, '..')
-        if path2 == directory:
-            break
-        directory = path2
-    return None
-</t>
-<t tx="ekr.20170806094321.5">def finish(self):
-    '''Finish execution of this command.'''
-    c = self.c
-    os.chdir(self.old_dir)
-    c.contractAllHeadlines(redrawFlag=False)
-    self.root.expand()
-    c.selectPosition(self.root)
-    c.redraw()
-    c.treeWantsFocusNow()
-</t>
-<t tx="ekr.20170806094321.7">def make_at_file_outline(self, fn, s, rev):
-    '''Create a hidden temp outline from lines.'''
-    # A specialized version of atFileCommands.read.
-    hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
-    at = hidden_c.atFileCommands
-    hidden_c.frame.createFirstTreeNode()
-    root = hidden_c.rootPosition()
-    root.h = fn + ':' + rev if rev else fn
-    at.initReadIvars(root, fn, importFileName=None, atShadow=None)
-    if at.errors &gt; 0:
-        g.trace('***** errors')
-        return None
-    at.fast_read_into_root(
-        c = hidden_c,
-        contents = s,
-        gnx2vnode = {},
-        path = fn,
-        root = root,
-    )
-    return hidden_c
-   
-</t>
-<t tx="ekr.20170806125535.1">def make_diff_outlines(self, c1, c2, fn, rev1='', rev2=''):
-    '''Create an outline-oriented diff from the *hidden* outlines c1 and c2.'''
-    added, deleted, changed = self.compute_dicts(c1, c2)
-    table = (
-        (added, 'Added'),
-        (deleted, 'Deleted'),
-        (changed, 'Changed'))
-    for d, kind in table:
-        self.create_compare_node(c1, c2, d, kind, rev1, rev2)
-</t>
-<t tx="ekr.20170806191707.1">def compute_dicts(self, c1, c2):
-    '''Compute inserted, deleted, changed dictionaries.'''
-    # Special case the root: only compare the body text.
-    root1, root2 = c1.rootPosition().v, c2.rootPosition().v
-    root1.h = root2.h
-    if 0:
-        g.trace('c1...')
-        for p in c1.all_positions():
-            print('%4s %s' % (len(p.b), p.h))
-        g.trace('c2...')
-        for p in c2.all_positions():
-            print('%4s %s' % (len(p.b), p.h))
-    d1 = {v.fileIndex: v for v in c1.all_unique_nodes()} 
-    d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
-    added   = {key: d2.get(key) for key in d2 if not d1.get(key)}
-    deleted = {key: d1.get(key) for key in d1 if not d2.get(key)}
-    # Remove the root from the added and deleted dicts.
-    if root2.fileIndex in added:
-        del added[root2.fileIndex]
-    if root1.fileIndex in deleted:
-        del deleted[root1.fileIndex]
-    changed = {}
-    for key in d1:
-        if key in d2:
-            v1 = d1.get(key)
-            v2 = d2.get(key)
-            assert v1 and v2
-            assert v1.context != v2.context
-            if v1.h != v2.h or v1.b != v2.b:
-                changed[key] = (v1, v2)
-    return added, deleted, changed
-</t>
-<t tx="ekr.20170806191942.2">def create_compare_node(self, c1, c2, d, kind, rev1, rev2):
-    '''Create nodes describing the changes.'''
-    if not d:
-        return
-    parent = self.file_node.insertAsLastChild()
-    parent.setHeadString(kind)
-    for key in d:
-        if kind.lower() == 'changed':
-            v1, v2 = d.get(key)
-            # Organizer node: contains diff
-            organizer = parent.insertAsLastChild()
-            organizer.h = v2.h
-            body = list(difflib.unified_diff(
-                g.splitLines(v1.b),
-                g.splitLines(v2.b),
-                rev1 or 'uncommitted',
-                rev2 or 'uncommitted',
-            ))
-            if ''.join(body).strip():
-                body.insert(0, '@ignore\n@nosearch\n@language patch\n')
-                body.append('@language %s\n' % (c2.target_language))
-            else:
-                body = ['Only headline has changed']
-            organizer.b = ''.join(body)
-            # Node 2: Old node
-            p2 = organizer.insertAsLastChild()
-            p2.h = 'Old:' + v1.h
-            p2.b = v1.b
-            # Node 3: New node
-            assert v1.fileIndex == v2.fileIndex
-            p_in_c = self.find_gnx(self.c, v1.fileIndex)
-            if p_in_c: # Make a clone, if possible.
-                p3 = p_in_c.clone()
-                p3.moveToLastChildOf(organizer)
-            else:
-                p3 = organizer.insertAsLastChild()
-                p3.h = 'New:' + v2.h
-                p3.b = v2.b
-        else:
-            v = d.get(key)
-            p = parent.insertAsLastChild()
-            p.h = v.h
-            p.b = v.b
-</t>
 <t tx="ekr.20170811173924.1">@language python
 import os
 import subprocess
@@ -12124,550 +5421,55 @@ proc.wait()
 os.chdir(old_dir)
 print('done! wrote %s' % fn)
 </t>
-<t tx="ekr.20170819035801.90">@cmd('git-diff')
-@cmd('gd')
-def gitDiff(self, event):
-
-    GitDiffController(c=self.c).git_diff(rev1='HEAD')
-</t>
-<t tx="ekr.20170819132219.1">def find_gnx(self, c, gnx):
-    '''Return a position in c having the given gnx.'''
-    for p in c.all_unique_positions():
-        if p.v.fileIndex == gnx:
-            return p
-    return None
-</t>
-<t tx="ekr.20170820082125.1">def diff_revs(self, rev1, rev2):
-    '''Diff all files given by rev1 and rev2.'''
-    files = self.get_files(rev1, rev2)
-    if files:
-        self.root = self.create_root(rev1, rev2)
-        for fn in files:
-            self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
-        self.finish()
-    return bool(files)
-    
-</t>
-<t tx="ekr.20170820084258.1">def make_at_clean_outline(self, fn, root, s, rev):
-    '''
-    Create a hidden temp outline from lines without sentinels.
-    root is the @&lt;file&gt; node for fn.
-    s is the contents of the (public) file, without sentinels.
-    '''
-    # A specialized version of at.readOneAtCleanNode.
-    hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
-    at = hidden_c.atFileCommands
-    x = hidden_c.shadowController
-    hidden_c.frame.createFirstTreeNode()
-    hidden_root = hidden_c.rootPosition()
-    # copy root to hidden root, including gnxs.
-    root.copyTreeFromSelfTo(hidden_root, copyGnxs=True)
-    hidden_root.h = fn + ':' + rev if rev else fn
-    # Set at.encoding first.
-    at.initReadIvars(hidden_root, fn)
-        # Must be called before at.scanAllDirectives.
-    at.scanAllDirectives(hidden_root)
-        # Sets at.startSentinelComment/endSentinelComment.
-    new_public_lines = g.splitLines(s)
-    old_private_lines = at.write_at_clean_sentinels(hidden_root)
-    marker = x.markerFromFileLines(old_private_lines, fn)
-    old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
-    assert old_public_lines
-    new_private_lines = x.propagate_changed_lines(
-        new_public_lines, old_private_lines, marker, p=hidden_root)
-    at.fast_read_into_root(
-        c = hidden_c,
-        contents = ''.join(new_private_lines),
-        gnx2vnode = {},
-        path = fn,
-        root = hidden_root,
-    )
-    return hidden_c
-</t>
-<t tx="ekr.20170821052348.1">def get_revno(self, revspec, abbreviated=True):
-    '''Return the abbreviated hash the given revision spec.'''
-    if revspec:
-        # Return only the abbreviated hash for the revspec.
-        command = 'git show --format=%%%s --no-patch %s' % (
-            'h' if abbreviated else 'H',
-            revspec)
-        lines = g.execGitCommand(command, self.repo_dir)
-        return ''.join(lines).strip()
-    else:
-        return 'uncommitted'
-</t>
 <t tx="ekr.20171031111403.1"></t>
-<t tx="ekr.20171113152939.1">def reloadSettings(self):
-    '''AtFile.reloadSettings'''
-    c = self.c
-    self.checkPythonCodeOnWrite = \
-        c.config.getBool('check-python-code-on-write', default=True)
-    self.runPyFlakesOnWrite = \
-        c.config.getBool('run-pyflakes-on-write', default=False)
-    self.underindentEscapeString = \
-        c.config.getString('underindent-escape-string') or '\\-'
-</t>
-<t tx="ekr.20171122055719.1">def declutter_style(self, arg, c, cmd, item, new_icons):
-    '''Handle style options.'''
-    arg = c.styleSheetManager.expand_css_constants(arg).split()[0]
-    if cmd == 'ICON':
-        new_icons.append(arg)
-    elif cmd == 'BG':
-        item.setBackground(0, QtGui.QBrush(QtGui.QColor(arg)))
-    elif cmd == 'FG':
-        item.setForeground(0, QtGui.QBrush(QtGui.QColor(arg)))
-    elif cmd == 'FONT':
-        item.setFont(0, QtGui.QFont(arg))
-    elif cmd == 'ITALIC':
-        font = item.font(0)
-        font.setItalic(bool(int(arg)))
-        item.setFont(0, font)
-    elif cmd == 'WEIGHT':
-        arg = getattr(QtGui.QFont, arg, 75)
-        font = item.font(0)
-        font.setWeight(arg)
-        item.setFont(0, font)
-    elif cmd == 'PX':
-        font = item.font(0)
-        font.setPixelSize(int(arg))
-        item.setFont(0, font)
-    elif cmd == 'PT':
-        font = item.font(0)
-        font.setPointSize(int(arg))
-        item.setFont(0, font)
-</t>
-<t tx="ekr.20171122064635.1">def declutter_replace(self, arg, cmd, item, m, pattern, text):
-    '''
-    Execute cmd and return True if cmd is any replace command.
-    '''
-    if cmd == 'REPLACE':
-        text = pattern.sub(arg, text)
-        item.setText(0, text)
-        return True
-    elif cmd == 'REPLACE-HEAD':
-        s = text[:m.start()]
-        item.setText(0, s.rstrip())
-        return True
-    elif cmd == 'REPLACE-TAIL':
-        s = text[m.end():]
-        item.setText(0, s.lstrip())
-        return True
-    elif cmd == 'REPLACE-REST':
-        s = text[:m.start] + text[m.end():]
-        item.setText(0, s.strip())
-        return True
-    else:
-        return False
-    
-</t>
-<t tx="ekr.20171123135625.5">def executeScriptHelper(self, args, define_g, define_name, namespace, script):
-    c = self
-    if c.p:
-        p = c.p.copy() # *Always* use c.p and pass c.p to script.
-        c.setCurrentDirectoryFromContext(p)
-    else:
-        p = None
-    # Do NOT define a subfunction here!
+<t tx="ekr.20171114041307.1">@nobeautify
+def reloadSettings(self):
+    c, getBool = self.c, self.c.config.getBool
     #
-    # On some, python 2.x versions it causes exec to cause a syntax error
-    # Workarounds that avoid the syntax error hurt performance.
-    # See http://stackoverflow.com/questions/4484872.
-
-        # def g_input_wrapper(message, c=c):
-            # return g.input_(message, c=c)
-
-    d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
-    if define_name: d['__name__'] = define_name
-    d['script_args'] = args or []
-    d['script_gnx'] = g.app.scriptDict.get('script_gnx')
-    if namespace: d.update(namespace)
+    # Init all settings ivars.
+    self.color_tags_list = []
+    self.showInvisibles      = getBool("show-invisibles-by-default")
+    self.underline_undefined = getBool("underline-undefined-section-names")
+    self.use_hyperlinks      = getBool("use-hyperlinks")
+    self.use_pygments        = None # Set in report_changes.
+    self.use_pygments_styles = getBool('use-pygments-styles', default=True)
     #
-    # A kludge: reset c.inCommand here to handle the case where we *never* return.
-    # (This can happen when there are multiple event loops.)
-    # This does not prevent zombie windows if the script puts up a dialog...
-    try:
-        c.inCommand = False
-        g.inScript = g.app.inScript = True
-            # g.inScript is a synonym for g.app.inScript.
-        if c.write_script_file:
-            scriptFile = self.writeScriptFile(script)
-            exec(compile(script, scriptFile, 'exec'), d)
-        else:
-            exec(script, d)
-    finally:
-        g.inScript = g.app.inScript = False
-</t>
-<t tx="ekr.20171208134737.1"># Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
-
-def resolve_call(self, node):
-    '''Resolve the head of the call's chain to a Type.'''
-    assert self.pass_n == 2
-    self.stats.resolve_call += 1
-    chain = self.get_chain(node.func)
-    if chain:
-        func = chain.pop()
-        if isinstance(func, ast.Name):
-            func = func.id
-        assert g.isString(func), repr(func)
-    if chain:
-        assert isinstance(chain[0], ast.Name), repr(chain[0])
-        chain[0] = chain[0].id
-        # args = ','.join([self.format(z) for z in node.args])
-        self.recursion_count = 0
-        if self.class_name:
-            context = self.Type('instance', self.class_name)
-        else:
-            context = self.Type('module', self.file_name)
-        result = self.resolve_chain(node, chain, context)
-    else:
-        result = self.Type('unknown', 'empty chain')
-    assert isinstance(result, self.Type), repr(result)
-    return result
-</t>
-<t tx="ekr.20171208142646.1">def resolve(self, node, name, context, trace=False):
-    '''Resolve name in the given context to a Type.'''
-    self.stats.resolve += 1
-    assert g.isString(name), (repr(name), g.callers())
-    if context:
-        if context.kind in ('error', 'unknown'):
-            result = context
-        elif name == 'self':
-            if context.name:
-                result = self.Type('instance', context.name)
-            else:
-                g.trace('===== NO OBJECT NAME')
-                result = self.Type('error', 'no object name')
-        elif context.kind in ('class', 'instance'):
-            result = self.resolve_ivar(node, name, context)
-        else:
-            result = self.Type('error', 'unknown kind: %s' % context.kind)
-    else:
-        result = self.Type('error', 'unbound name: %s' % name)
-    return result
-</t>
-<t tx="ekr.20171208173323.1">def resolve_ivar(self, node, ivar, context):
-    '''Resolve context.ivar to a Type.'''
-    assert self.pass_n == 2, repr(self.pass_n)
-    self.stats.resolve_ivar += 1
-    class_name = 'Commands' if context.name == 'c' else context.name
-    self.recursion_count += 1
-    if self.recursion_count &gt; 20:
-        self.report_unbounded_recursion(node, class_name, ivar, context)
-        return self.Type('error', 'recursion')
-    the_class = self.classes.get(class_name)
-    if not the_class:
-        return self.Type('error', 'no class %s' % ivar)
-    ivars = the_class.get('ivars')
-    methods = the_class.get('methods')
-    if ivar == 'self':
-        return self.Type('instance', class_name)
-    elif methods.get(ivar):
-        return self.Type('func', ivar)
-    elif ivars.get(ivar):
-        val = ivars.get(ivar)
-        if isinstance(val, self.Type):
-            return val
-        # Check for pre-defined special names.
-        for special_name, special_obj in self.special_names_dict.items():
-            tail = val[len(special_name):]
-            if val == special_name:
-                return special_obj
-            elif val.startswith(special_name) and tail.startswith('.'):
-                # Resovle the rest of the tail in the found context.
-                return self.resolve_chain(node, tail[1:], special_obj)
-        # Avoid recursion .
-        head = val.split('.')
-        if ivar in (val, head[0]):
-            return self.Type('unknown', ivar)
-        for name2 in head:
-            old_context = context
-            context = self.resolve(node, name2, context)
-            if 0: g.trace('recursive %s: %r --&gt; %r' % (name2, old_context, context))
-        if 0: g.trace('END RECURSIVE: %r', context)
-        return context
-    elif ivar in self.special_names_dict:
-        val = self.special_names_dict.get(ivar)
-        return val
-    else:
-        # Remember the unknown.
-        self.remember_unknown_ivar(ivar)
-        return self.Type('error', 'no member %s' % ivar)
-</t>
-<t tx="ekr.20171209034244.1">def resolve_chain(self, node, chain, context, trace=False):
-    '''Resolve the chain to a Type.'''
-    self.stats.resolve_chain += 1
-    name = '&lt;no name&gt;'
-    for obj in chain:
-        name = obj.id if isinstance(obj, ast.Name) else obj
-        assert g.isString(name), (repr(name), g.callers())
-        context = self.resolve(node, name, context, trace=trace)
-    assert isinstance(context, self.Type), repr(context)
-    return context
-</t>
-<t tx="ekr.20171209065852.1">def check_signature(self, node, func, args, signature):
-    
-    self.stats.check_signature += 1
-    if signature[0] == 'self':
-        signature = signature[1:]
-    result = 'ok'
-    for i, arg in enumerate(args):
-        if i &lt; len(signature):
-            result = self.check_arg(node, func, args, arg, signature[i])
-            if result is 'fail':
-                self.fail(node, '\n%s(%s) incompatible with %s(%s)' % (
-                    func, ','.join(args),
-                    func, ','.join(signature),
-                ))
-                break
-    if result == 'ok':
-        self.stats.sig_ok += 1
-    elif result == 'fail':
-        self.stats.sig_fail += 1
-    else:
-        assert result == 'unknown'
-        self.stats.sig_unknown += 1
-</t>
-<t tx="ekr.20171212034531.1">def check_arg(self, node, func, args, call_arg, sig_arg):
-    '''
-    Check call_arg and sig_arg with arg (a list).
-    
-    To do: check keyword args.
-    '''
-    return self.check_arg_helper(node, func, call_arg, sig_arg)
-
-</t>
-<t tx="ekr.20171212035137.1">def check_arg_helper(self, node, func, call_arg, sig_arg):
-
-    special_names_dict = self.special_names_dict
-    if call_arg == sig_arg or sig_arg in (None, 'None'):
-        # Match anything against a default value of None.
-        return 'ok'
-    # Resolve the call_arg if possible.
-    chain = call_arg.split('.')
-    if len(chain) &gt; 1:
-        head, tail = chain[0], chain[1:]
-        if head in special_names_dict:
-            context = special_names_dict.get(head)
-            context = self.resolve_chain(node, tail, context)
-            if context.kind == 'error':
-                # Caller will report the error.
-                return 'unknown'
-            if sig_arg in special_names_dict:
-                sig_class = special_names_dict.get(sig_arg)
-                return self.compare_classes(
-                    node, call_arg, sig_arg, context, sig_class)
-    if sig_arg in special_names_dict and call_arg in special_names_dict:
-        sig_class = special_names_dict.get(sig_arg)
-        call_class = special_names_dict.get(call_arg)
-        return self.compare_classes(
-            node, call_arg, sig_arg, call_class, sig_class)
-    return 'unknown'
-</t>
-<t tx="ekr.20171212044621.1">def compare_classes(self, node, arg1, arg2, class1, class2):
-
-    if class1 == class2:
-        self.stats.sig_infer_ok += 1
-        return 'ok'
-    else:
-        # The caller reports the failure.
-        # self.error(node, 'FAIL', arg1, arg2, class1, class2)
-        self.stats.sig_infer_fail += 1
-        return 'fail'
-</t>
-<t tx="ekr.20171215074959.2">def before_Assign(self, node):
-    
-    s = self.format(node)
-    if self.test_kind is 'test': print(s)
-    if self.pass_n == 1:
-        return
-    self.stats.assignments += 1
-    for target in node.targets:
-        chain = self.get_chain(target)
-        if len(chain) == 2:
-            var1, var2 = chain
-            assert isinstance(var1, ast.Name), repr(var1)
-            assert g.isString(var2), repr(var2)
-            name = var1.id
-            if name == 'self':
-                self.do_assn_to_self(node, name, var2)
-            elif name in self.special_names_dict:
-                self.do_assn_to_special(node, name, var2)
-</t>
-<t tx="ekr.20171215074959.3">def do_assn_to_special(self, node, var1, var2):
-
-    assert self.pass_n == 2
-    assert var1 in self.special_names_dict, (repr(var1))
-    class_name = self.class_name
-    t = self.special_names_dict.get(var1)
-    if not t:
-        if 0: self.note(node, 'not special', var1, self.format(node).strip())
-        return
-    # Do not set members within the class itself.
-    if t.kind == 'instance' and t.name == class_name:
-        if 0: self.note(node, 'SKIP', var1, class_name)
-        return
-    # Resolve val, if possible.
-    context = self.Type(
-        'instance' if class_name else 'module',
-        class_name or self.file_name,
-    )
-    self.recursion_count = 0
-    value_s = self.format(node.value)
-    resolved_type = self.resolve(node, value_s, context, trace=False)
-    assert isinstance(resolved_type, self.Type), repr(resolved_type)
-    if 0: self.note(node, 'context %s : %s ==&gt; %s' % (context, value_s, resolved_type))
-    # Update var1's dict, not class_name's dict.
-    d = self.classes.get(t.name)
-    ivars = d.get('ivars')
-    # tag:setter ivar1.ivar2 = Type
-    ivars[var2] = resolved_type
-    d['ivars'] = ivars
-</t>
-<t tx="ekr.20171215074959.4">def do_assn_to_self(self, node, var1, var2):
-
-    assert self.pass_n == 2
-    assert var1 == 'self'
-    class_name = self.class_name
-    if not class_name:
-        self.note(node, 'SKIP: no class name', self.format(node))
-        return
-    if class_name in self.special_class_names:
-        # self.note(node, 'SKIP: not special', self.format(node))
-        return
-    d = self.classes.get(class_name)
-    assert d is not None, class_name
-    ivars = d.get('ivars')
-    ivars[var2] = self.format(node.value)
-    d['ivars'] = ivars
-</t>
-<t tx="ekr.20171216063026.1">def error(self, node, *args, **kwargs):
-    
-    self.errors += 1
-    print('')
-    print('Error: %s' % self.log_line(node, *args, **kwargs))
-    print('')
-    
-def fail(self, node, *args, **kwargs):
-    self.stats.inference_fails += 1
-    print('')
-    print('Inference failure: %s' % self.log_line(node, *args, **kwargs))
-    print('')
-    
-def log_line(self, node=None, *args, **kwargs):
-    # pylint: disable=keyword-arg-before-vararg
-        # putting *args first is invalid in Python 2.x.
-    return 'line: %s file: %s: %s' % (
-        getattr(node, 'lineno', '??'),
-        self.file_name or '&lt;string&gt;',
-        ' '.join([z if g.isString(z) else repr(z) for z in args]),
-    )
-    
-def note(self, node, *args, **kwargs):
-
-    print('')
-    print('Note: %s' % self.log_line(node, *args, **kwargs))
-    print('')
-</t>
-<t tx="ekr.20171216110107.1">def get_chain(self,node):
-    '''Scan node for a chain of names.'''
-    chain, node1 = [], node
-    while not isinstance(node, ast.Name):
-        if isinstance(node, ast.Attribute):
-            assert g.isString(node.attr), repr(node.attr)
-            chain.append(node.attr)
-            node = node.value
-        else:
-            name = node.__class__.__name__
-            if name not in (
-                'BoolOp', # c.config.getString('stylesheet') or ''.strip
-                'Call', # c1.rootPosition().h = whatever
-                'Dict', # {}.whatever.
-                'Subscript', # d[x] = whatever
-                'Str', # ''.join(), etc
-                'Tuple', # (hPos,vPos) = self.getScroll()
-            ):
-                self.note(node1, '(get_chain) target %s:\n%s' % (
-                    name, self.format(node1)))
-            return []
-    if isinstance(node, ast.Name):
-        chain.append(node)
-        return list(reversed(chain))
-    else:
-        return []
-</t>
-<t tx="ekr.20171217102055.1">def report_unbounded_recursion(self, node, class_name, ivar, context):
-    
-    the_class = self.classes.get(class_name)
-    self.error(node, 'UNBOUNDED RECURSION: %r %r\nCallers: %s' % (
-        ivar, context, g.callers()))
-    if 0:
-        g.trace('CLASS DICT: Commands')
-        g.printDict(self.classes.get('Commands'))
-    if 0:
-        g.trace('CLASS DICT', class_name)
-        g.printDict(the_class)
-</t>
-<t tx="ekr.20171217102701.1">def remember_unknown_ivar(self, ivar):
-
-    d = self.unknowns
-    aList = d.get(ivar, [])
-    data = (self.line_number, self.file_name)
-    aList.append(data)
-    # tag:setter (data describing unknown ivar)
-    d[ivar] = aList
-    # self.error(node, 'No member:', ivar)
-    return self.Type('error', 'no member %s' % ivar)
+    # Report changes to pygments settings.
+    self.report_changes()
+    #
+    # Init the default fonts.
+    self.bold_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.italic_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.bolditalic_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
 </t>
 <t tx="ekr.20180225010644.1"></t>
 <t tx="ekr.20180225010707.1"></t>
 <t tx="ekr.20180225010743.1">@nosearch</t>
 <t tx="ekr.20180225010850.1"></t>
 <t tx="ekr.20180225010913.1"></t>
-<t tx="ekr.20180316093159.1">def do_pass(self, constants, deltas, settingsDict, sheet, to_do):
-    
-    to_do.sort(key=len, reverse=True)
-    for const in to_do:
-        value = None
-        if const in constants:
-            # This constant is about to be removed.
-            value = constants[const]
-            if const[1:] not in deltas and not self.css_warning_given:
-                self.css_warning_given = True
-                g.es_print("'%s' from style-sheet comment definition, " % const)
-                g.es_print("please use regular @string / @color type @settings.")
-        else:
-            key = g.app.config.canonicalizeSettingName(const[1:])
-                # lowercase, without '@','-','_', etc.
-            value = settingsDict.get(key)
-            if value is not None:
-                # New in Leo 5.5: Do NOT add comments here.
-                # They RUIN style sheets if they appear in a nested comment!
-                    # value = '%s /* %s */' % (value.val, key)
-                value = value.val
-            elif key in self.color_db:
-                # New in Leo 5.5: Do NOT add comments here.
-                # They RUIN style sheets if they appear in a nested comment!
-                value = self.color_db.get(key)
-                    # value = '%s /* %s */' % (value, key)
-        if value:
-            # Partial fix for #780.
-            try:
-                sheet = re.sub(
-                    const + "(?![-A-Za-z0-9_])",
-                        # don't replace shorter constants occuring in larger
-                    value,
-                    sheet,
-                )
-            except Exception:
-                g.es_print('Exception handling style sheet')
-                g.es_print(sheet)
-                g.es_exception()
-        else:
-            pass
-            # tricky, might be an undefined identifier, but it might
-            # also be a @foo in a /* comment */, where it's harmless.
-            # So rely on whoever calls .setStyleSheet() to do the right thing.
-    return sheet
+<t tx="ekr.20180312153008.1">def doScriptOption(self, options, parser):
+
+    # --script
+    script = options.script
+    if script:
+        # #1090: use cwd, not g.app.loadDir, to find scripts.
+        fn = g.os_path_finalize_join(os.getcwd(), script)
+        script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
+        if not script:
+            print('script not found:%s' % fn)
+            sys.exit(1)
+    else:
+        script = None
+    return script
 </t>
 <t tx="ekr.20180324065741.1">'''Copy the selected text to the next node.'''
 w = c.frame.body.wrapper
@@ -12682,91 +5484,6 @@ if s.strip():
     c.editHeadline()
 else:
     g.es_print('no text selected')
-</t>
-<t tx="ekr.20180506064102.10">def diff_two_branches(self, branch1, branch2, fn, directory=None):
-    '''Create an outline describing the git diffs for fn.'''
-    c = self.c
-    if not self.set_directory(directory):
-        return
-    self.root = p = c.lastTopLevel().insertAfter()
-    p.h = 'git-diff-branches %s %s' % (branch1, branch2)
-    s1 = self.get_file_from_branch(branch1, fn)
-    s2 = self.get_file_from_branch(branch2, fn)
-    lines1 = g.splitLines(s1)
-    lines2 = g.splitLines(s2)
-    diff_list = list(difflib.unified_diff(
-        lines1,
-        lines2,
-        branch1 ,
-        branch2,
-    ))
-    diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
-    self.file_node = self.create_file_node(diff_list, fn)
-    if c.looksLikeDerivedFile(fn):
-        c1 = self.make_at_file_outline(fn, s1, branch1)
-        c2 = self.make_at_file_outline(fn, s2, branch2)
-    else:
-        root = self.find_file(fn)
-        if root:
-            c1 = self.make_at_clean_outline(fn, root, s1, branch1)
-            c2 = self.make_at_clean_outline(fn, root, s2, branch2)
-        else:
-            c1 = c2 = None
-    if c1 and c2:
-        self.make_diff_outlines(c1, c2, fn)
-        self.file_node.b = '%s\n@language %s\n' % (
-            self.file_node.b.rstrip(), c2.target_language)
-    self.finish()
-</t>
-<t tx="ekr.20180506064102.11">def get_file_from_branch(self, branch, fn):
-    '''Get the file from the hed of the given branch.'''
-    # Get the file using git.
-    command = 'git show %s:%s' % (branch, fn)
-    directory = self.repo_dir
-    lines = g.execGitCommand(command, directory)
-    s = ''.join(lines)
-    return g.toUnicode(s).replace('\r','')
-</t>
-<t tx="ekr.20180507212821.1">def diff_two_revs(self, directory=None, rev1='HEAD', rev2=''):
-    '''
-    Create an outline describing the git diffs for all files changed
-    between rev1 and rev2.
-    '''
-    c = self.c
-    if not self.set_directory(directory):
-        return
-    # Get list of changed files.
-    files = self.get_files(rev1, rev2)
-    g.es_print('diffing %s files. This may take awhile' % len(files))
-    # Create the root node.
-    self.root = c.lastTopLevel().insertAfter()
-    self.root.h = 'git diff revs: %s %s' % (rev1, rev2)
-    self.root.b = '@ignore\n@nosearch\n'
-    # Create diffs of all files.
-    for fn in files:
-        self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
-    self.finish()
-</t>
-<t tx="ekr.20180510095544.1"></t>
-<t tx="ekr.20180510095801.1"></t>
-<t tx="ekr.20180510095807.1">def set_directory(self, directory):
-    '''
-    Handle directory inits.
-    Return True if the .git directory has been found.
-    '''
-    if not directory:
-        if self.repo_dir:
-            # Use previously-computed result.
-            return self.repo_dir
-        directory = g.os_path_abspath(os.curdir)
-    #
-    # Change to the new directory.
-    self.repo_dir = self.find_git_working_directory(directory)
-    if self.repo_dir:
-        os.chdir(directory)
-    else:
-        g.es_print('no .git directory found in %r' % directory)
-    return self.repo_dir
 </t>
 <t tx="ekr.20180519111302.1">def get_jedi_completions(self, prefix):
 
@@ -12851,510 +5568,6 @@ else:
         prefix = '.'.join(aList[:-1]) + '.'
     return s if s.startswith(prefix) else prefix + s
 </t>
-<t tx="ekr.20180602062323.7">translate_table = b''.join([g.toEncodedString(chr(z)) for z in range(20) if chr(z) not in '\t\r\n'])
-    # See https://en.wikipedia.org/wiki/Valid_characters_in_XML.
-
-def readWithElementTree(self, path, s):
-    
-    s = s.translate(None, self.translate_table)
-        # Fix #1036 and #1046.
-    contents = g.toUnicode(s)
-    try:
-        xroot = ElementTree.fromstring(contents)
-    except Exception as e:
-        if path:
-            message = 'bad .leo file: %s' % g.shortFileName(path)
-        else:
-            message = 'The clipboard is not a vaild .leo file'
-        print('')
-        g.es_print(message, color='red')
-        g.es_print(g.toUnicode(e))
-        print('')
-        # #970: Just report failure here.
-        return None
-    g_element = xroot.find('globals')
-    v_elements = xroot.find('vnodes')
-    t_elements = xroot.find('tnodes')
-    gnx2body, gnx2ua = self.scanTnodes(t_elements)
-    hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
-    self.handleBits()
-    return hidden_v, g_element
-</t>
-<t tx="ekr.20180602062323.8">def scanTnodes (self, t_elements):
-
-    gnx2body, gnx2ua = {}, defaultdict(dict)
-    for e in t_elements:
-        # First, find the gnx.
-        gnx = e.attrib['tx']
-        gnx2body [gnx] = e.text or ''
-        # Next, scan for uA's for this gnx.
-        for key, val in e.attrib.items():
-            if key != 'tx':
-                gnx2ua [gnx][key] = self.resolveUa(key, val)
-    return gnx2body, gnx2ua
-</t>
-<t tx="ekr.20180602062323.9">def scanVnodes(self, gnx2body, gnx2vnode, gnx2ua, v_elements):
-    
-    c, fc = self.c, self.c.fileCommands
-    &lt;&lt; define v_element_visitor &gt;&gt;
-    #
-    # Create the hidden root vnode.
-    gnx = 'hidden-root-vnode-gnx'
-    hidden_v = leoNodes.VNode(context=c, gnx=gnx)
-    hidden_v._headString = '&lt;hidden root vnode&gt;'
-    gnx2vnode [gnx] = hidden_v
-    #
-    # Traverse the tree of v elements.
-    v_element_visitor(v_elements, hidden_v)
-    return hidden_v
-</t>
-<t tx="ekr.20180602102448.1">class FastAtRead (object):
-    '''
-    Read an exteral file, created from an @file tree.
-    This is Vitalije's code, edited by EKR.
-    '''
-
-    def __init__ (self, c, gnx2vnode, test=False, TestVNode=None): 
-        self.c = c
-        assert gnx2vnode is not None
-        self.gnx2vnode = gnx2vnode
-            # The global fc.gnxDict. Keys are gnx's, values are vnodes.
-        self.path = None
-        self.root = None
-        self.VNode = TestVNode if test else leoNodes.VNode
-        self.test = test
-
-    @others
-</t>
-<t tx="ekr.20180602103135.10">if verbatim:
-    # We are in raw mode, or other special situation.
-    # Previous line was verbatim sentinel. Append this line as it is.
-    if afterref:
-        afterref = False
-        if body: # a List of lines.
-            body[-1] = body[-1].rstrip() + line
-        else:
-            body = [line]
-        verbatim = False
-    elif in_raw:
-        m = end_raw_pat.match(line)
-        if m:
-            in_raw = False
-            verbatim = False
-        else:
-             body.append(line)
-             # Continue verbatim/raw mode.
-    else:
-        body.append(line)
-        verbatim = False
-    continue
-if line == verbline: # &lt;delim&gt;@verbatim.
-    verbatim = True
-    continue
-#
-# Strip the line only once.
-strip_line = line.strip()
-#
-# Undo the cweb hack.
-if is_cweb and line.startswith(sentinel):
-    line = line[:len(sentinel)] + line[len(sentinel):].replace('@@', '@')
-# Adjust indentation.
-if indent and line[:indent].isspace() and len(line) &gt; indent:
-    line = line[indent:]
-</t>
-<t tx="ekr.20180602103135.12"># This is valid because all following sections are either:
-# 1. guarded by 'if in_doc' or
-# 2. guarded by a pattern that matches the start of the sentinel.   
-#
-if not in_doc and not strip_line.startswith(sentinel):
-    # lstrip() is faster than using a regex!
-    body.append(line)
-    continue
-</t>
-<t tx="ekr.20180602103135.13">m = all_pat.match(line)
-if m:
-    # @all tells Leo's *write* code not to check for undefined sections.
-    # Here, in the read code, we merely need to add it to the body.
-    # Pushing and popping the stack may not be necessary, but it can't hurt.
-    if m.group(2) == '+': # opening sentinel
-        body.append('%s@all%s\n' % (m.group(1), m.group(3) or ''))
-        stack.append((gnx, indent, body))
-    else: # closing sentinel.
-        # m.group(2) is '-' because the pattern matched.
-        gnx, indent, body = stack.pop()
-        gnx2body[gnx] = body
-    continue
-</t>
-<t tx="ekr.20180602103135.14">m = others_pat.match(line)
-if m:
-    in_doc = False
-    if m.group(2) == '+': # opening sentinel
-        body.append('%s@others%s\n' % (m.group(1), m.group(3) or ''))
-        stack.append((gnx, indent, body))
-        indent += m.end(1) # adjust current identation
-    else: # closing sentinel.
-        # m.group(2) is '-' because the pattern matched.
-        gnx, indent, body = stack.pop()
-    continue
-</t>
-<t tx="ekr.20180602103135.16">if in_doc:
-    # When delim_end exists the doc block:
-    # - begins with the opening delim, alonw on its own line
-    # - ends with the closing delim, alone on its own line.
-    # Both of these lines should be skipped
-    if line in doc_skip:
-        # doc_skip is (delim_start + '\n', delim_end + '\n')
-        continue
-    #
-    # Check for @c or @code.
-    m = code_pat.match(line)
-    if m:
-        in_doc = False 
-        body.append('@code\n' if m.group(1) else '@c\n')
-        continue
-else:
-    m = doc_pat.match(line)
-    if m:
-        # @+at or @+doc?
-        doc = '@doc' if m.group(1) == 'doc' else '@'
-        doc2 = m.group(2) or '' # Trailing text.
-        if doc2:
-            body.append('%s%s\n'%(doc, doc2))
-        else:
-            body.append(doc + '\n')
-        # Enter @doc mode.
-        in_doc = True
-        continue
-</t>
-<t tx="ekr.20180602103135.17"># Probably can't happen: an apparent sentinel line.
-# Such lines should be @@ lines or follow @verbatim.
-#
-# This assert verifies the short-circuit test.
-assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
-#
-# This trace is less important, but interesting.
-g.trace('UNEXPECTED LINE:', repr(sentinel), repr(line), g.shortFileName(self.path))
-body.append(line)
-</t>
-<t tx="ekr.20180602103135.18">m = ref_pat.match(line)
-if m:
-    in_doc = False
-    if m.group(2) == '+':
-        # open sentinel.
-        body.append(m.group(1) + g.angleBrackets(m.group(3)) + '\n')
-        stack.append((gnx, indent, body))
-        indent += m.end(1)
-    else:
-        # close sentinel.
-        # m.group(2) is '-' because the pattern matched.
-        gnx, indent, body = stack.pop()
-    continue
-</t>
-<t tx="ekr.20180602103135.19">m = node_start_pat.match(line)
-if m:
-    in_doc, in_raw = False, False
-    gnx, head = m.group(2), m.group(5)
-    level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
-        # m.group(3) is the level number, m.group(4) is the number of stars.
-    v = gnx2vnode.get(gnx)
-    #
-    # Case 1: The root @file node. Don't change the headline.
-    if not root_seen:
-        # Fix #1064: The node represents the root, regardless of the gnx!
-        root_seen = True
-        clone_v = None
-        gnx2body[gnx] = body = []
-        if not v:
-            # Fix #1064.
-            v = root_v
-            # This message is annoying when using git-diff.
-                # if gnx != root_gnx:
-                    # g.es_print("using gnx from external file: %s" % (v.h), color='blue')
-            gnx2vnode [gnx] = v
-            v.fileIndex = gnx
-        v.children = []
-        continue
-    #
-    # Case 2: We are scanning the descendants of a clone.
-    parent_v, clone_v = level_stack[level-2]
-    if v and clone_v:
-        # The last version of the body and headline wins..
-        gnx2body[gnx] = body = []
-        v._headString = head
-        # Update the level_stack.
-        level_stack = level_stack[:level-1]
-        level_stack.append((v, clone_v),)
-        # Always clear the children!
-        v.children=[]
-        parent_v.children.append(v)
-        continue
-    #
-    # Case 3: we are not already scanning the descendants of a clone.
-    if v:
-        # The *start* of a clone tree. Reset the children.
-        clone_v = v
-        v.children = []
-    else:
-        # Make a new vnode.
-        v = self.VNode(context=context, gnx=gnx)
-    #
-    # The last version of the body and headline wins.
-    gnx2vnode[gnx] = v
-    gnx2body[gnx] = body = []
-    v._headString = head
-    #
-    # Update the stack.
-    level_stack = level_stack[:level-1]
-    level_stack.append((v, clone_v),)
-    #
-    # Update the links.
-    assert v != root_v
-    parent_v.children.append(v)
-    v.parents.append(parent_v)
-    # dump_v()
-    continue
-</t>
-<t tx="ekr.20180602103135.2">header_pattern = re.compile(r'''
-    ^(.+)@\+leo
-    (-ver=(\d+))?
-    (-thin)?
-    (-encoding=(.*)(\.))?
-    (.*)$''', re.VERBOSE)
-
-def scan_header(self, lines):
-    '''
-    Scan for the header line, which follows any @first lines.
-    Return (delims, first_lines, i+1) or None
-    '''
-    first_lines = []
-    i = 0 # To keep pylint happy.
-    for i, line in enumerate(lines):
-        m = self.header_pattern.match(line)
-        if m:
-            delims = m.group(1), m.group(8) or ''
-            return delims, first_lines, i+1
-        first_lines.append(line)
-    return None
-</t>
-<t tx="ekr.20180602103135.20">if line.startswith(delim_start + '@-leo'):
-    i += 1
-    break
-</t>
-<t tx="ekr.20180602103135.3">@nobeautify
-
-def get_patterns(self, delims):
-    '''Create regex patterns for the given comment delims.'''
-    # This must be a function, because of @comments &amp; @delims.
-    delim_start, delim_end = delims
-    delims = re.escape(delim_start), re.escape(delim_end or '')
-    delim_start, delim_end = delims
-    patterns = (
-        # The list of patterns, in alphabetical order.
-        # These patterns must be mutually exclusive.
-        r'^\s*%s@afterref%s$'%delims,               # @afterref
-        r'^(\s*)%s@(\+|-)all\b(.*)%s$'%delims,      # @all
-        r'^\s*%s@@c(ode)?%s$'%delims,               # @c and @code
-        r'^\s*%s@comment(.*)%s'%delims,             # @comment
-        r'^\s*%s@delims(.*)%s'%delims,              # @delims
-        r'^\s*%s@\+(at|doc)?(\s.*?)?%s\n'%delims,   # @doc or @
-        r'^\s*%s@end_raw\s*%s'%delims,              # @end_raw
-        r'^\s*%s@@first%s$'%delims,                 # @first
-        r'^\s*%s@@last%s$'%delims,                  # @last
-        r'^(\s*)%s@\+node:([^:]+): \*(\d+)?(\*?) (.*)%s$'%delims, # @node
-        r'^(\s*)%s@(\+|-)others\b(.*)%s$'%delims,   # @others
-        r'^\s*%s@raw(.*)%s'%delims,                 # @raw
-        r'^(\s*)%s@(\+|-)%s\s*%s$'%(                # section ref
-            delim_start, g.angleBrackets('(.*)'), delim_end)
-    )
-    # Return the compiled patterns, in alphabetical order.
-    return (re.compile(pattern) for pattern in patterns)
-</t>
-<t tx="ekr.20180602103135.8">def scan_lines(self, delims, first_lines, lines, start, test=False):
-    '''Scan all lines of the file, creating vnodes.'''
-    &lt;&lt; init scan_lines &gt;&gt;
-    &lt;&lt; define dump_v &gt;&gt;
-    i = 0 # To keep pylint happy.
-    for i, line in enumerate(lines[start:]):
-        # Order matters.
-        &lt;&lt; 1. common code for all lines &gt;&gt;
-        &lt;&lt; 2. short-circuit later tests &gt;&gt;
-        &lt;&lt; 3. handle @others &gt;&gt; # clears in_doc
-        &lt;&lt; 4. handle section refs &gt;&gt; # clears in_doc.
-        # Order doesn't matter, but match more common sentinels first.
-        &lt;&lt; handle node_start &gt;&gt;
-        &lt;&lt; handle end of @doc &amp; @code parts &gt;&gt;
-        &lt;&lt; handle @all &gt;&gt;
-        &lt;&lt; handle afterref &gt;&gt;
-        &lt;&lt; handle @first and @last &gt;&gt;
-        &lt;&lt; handle @comment &gt;&gt;
-        &lt;&lt; handle @delims &gt;&gt;
-        &lt;&lt; handle @raw &gt;&gt;
-        &lt;&lt; handle @-leo &gt;&gt;
-        # These must be last, in this order.
-        &lt;&lt; Last 1. handle remaining @@ lines &gt;&gt;
-        &lt;&lt; Last 2. handle remaining @doc lines &gt;&gt;
-        &lt;&lt; Last 3. handle remaining @ lines &gt;&gt;
-    else:
-        # No @-leo sentinel
-        return None, []
-    # Handle @last lines.
-    last_lines = lines[start+i:]
-    if last_lines:
-        last_lines = ['@last ' + z for z in last_lines]
-        gnx2body[root_gnx] = gnx2body[root_gnx] + last_lines
-    self.post_pass(gnx2body, gnx2vnode, root_v)
-    return root_v, last_lines
-</t>
-<t tx="ekr.20180602103135.9">#
-# Simple vars...
-afterref = False
-    # A special verbatim line follows @afterref.
-clone_v = None
-    # The root of the clone tree.
-    # When not None, we are scanning a clone and all it's descendants.
-delim_start, delim_end = delims
-    # The start/end delims.
-doc_skip = (delim_start + '\n', delim_end + '\n')
-    # To handle doc parts.
-first_i = 0
-    # Index into first array.
-in_doc = False
-    # True: in @doc parts.
-in_raw = False
-    # True: @raw seen.
-is_cweb = delim_start == '@q@' and delim_end == '@&gt;'
-    # True: cweb hack in effect.
-indent = 0 
-    # The current indentation.
-level_stack = []
-    # Entries are (vnode, in_clone_tree)
-n_last_lines = 0
-    # The number of @@last directives seen.
-root_seen = False
-    # False: The next +@node sentinel denotes the root, regardless of gnx.
-    # Needed to handle #1065 so reads will not create spurious child nodes.
-sentinel = delim_start + '@'
-    # Faster than a regex!
-stack = []
-    # Entries are (gnx, indent, body)
-    # Updated when at+others, at+&lt;section&gt;, or at+all is seen.
-verbline = delim_start + '@verbatim' + delim_end + '\n'
-    # The spelling of at-verbatim sentinel
-verbatim = False
-    # True: the next line must be added without change.
-#
-# Init the data for the root node.
-#
-
-#
-# Init the parent vnode for testing.
-#
-if self.test:
-    root_gnx = gnx = 'root-gnx'
-        # The node that we are reading.
-        # start with the gnx for the @file node.
-    gnx_head =  '&lt;hidden top vnode&gt;'
-        # The headline of the root node.
-    context = None
-    parent_v = self.VNode(context=context, gnx=gnx)
-    parent_v._headString = gnx_head
-        # Corresponds to the @files node itself.
-else:
-    # Production.
-    root_gnx = gnx = self.root.gnx
-    context = self.c
-    parent_v = self.root.v
-root_v = parent_v
-    # Does not change.
-level_stack.append((root_v, False),)
-#
-# Init the gnx dict last.
-#
-gnx2vnode = self.gnx2vnode
-    # Keys are gnx's, values are vnodes.
-gnx2body = {}
-    # Keys are gnxs, values are list of body lines.
-gnx2vnode[gnx] = parent_v
-    # Add gnx to the keys
-gnx2body[gnx] = body = first_lines
-    # Add gnx to the keys.
-    # Body is the list of lines presently being accumulated.
-#
-# get the patterns.
-after_pat, all_pat, code_pat, comment_pat, delims_pat,\
-doc_pat, end_raw_pat, first_pat, last_pat, \
-node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(delims)
-</t>
-<t tx="ekr.20180603060721.1">def post_pass(self, gnx2body, gnx2vnode, root_v):
-    '''Set all body text.'''
-    # Set the body text.
-    if self.test:
-        # Check the keys.
-        bkeys = sorted(gnx2body.keys())
-        vkeys = sorted(gnx2vnode.keys())
-        if bkeys != vkeys:
-            g.trace('KEYS MISMATCH')
-            g.printObj(bkeys)
-            g.printObj(vkeys)
-            if self.test:
-                sys.exit(1)
-        # Set the body text.
-        for key in vkeys:
-            v = gnx2vnode.get(key)
-            body = gnx2body.get(key)
-            v._bodyString = ''.join(body)
-    else:
-        assert root_v.gnx in gnx2vnode, root_v
-        assert root_v.gnx in gnx2body, root_v
-        # Don't use items(): it doesn't exist in Python 2.
-        for key in gnx2body: 
-            body = gnx2body.get(key)
-            v = gnx2vnode.get(key)
-            assert v, (key, v)
-            v._bodyString = g.toUnicode(''.join(body))
-</t>
-<t tx="ekr.20180603063102.1">m = after_pat.match(line)
-if m:
-    afterref = True
-    verbatim = True
-        # Avoid an extra test in the main loop.
-    continue
-</t>
-<t tx="ekr.20180603135602.1"># @first, @last, @delims and @comment generate @@ sentinels,
-# So this must follow all of those.
-if line.startswith(delim_start + '@@'):
-    ii = len(delim_start) + 1 # on second '@'
-    jj = line.rfind(delim_end) if delim_end else -1
-    body.append(line[ii:jj] + '\n')
-    continue
-</t>
-<t tx="ekr.20180603170614.1">def read_into_root(self, contents, path, root):
-    '''
-    Parse the file's contents, creating a tree of vnodes
-    anchored in root.v.
-    '''
-    trace = False
-    t1 = time.clock()
-    self.path = path
-    self.root = root
-    sfn = g.shortFileName(path)
-    contents = contents.replace('\r','')
-    lines = g.splitLines(contents)
-    data = self.scan_header(lines)
-    if not data:
-        g.trace('Invalid external file: %s' % sfn)
-        return False
-    # Clear all children.
-    # Previously, this had been done in readOpenFile.
-    root.v._deleteAllChildren()
-    delims, first_lines, start_i = data
-    self.scan_lines(
-        delims, first_lines, lines, start_i)
-    if trace:
-        t2 = time.clock()
-        g.trace('%5.3f sec. %s' % ((t2-t1), path))
-    return True
-</t>
 <t tx="ekr.20180604114156.2">@language rest
 @wrap
 
@@ -13413,240 +5626,7 @@ http://leo.zwiki.org/GraphsInTrees
 
 @language python
 </t>
-<t tx="ekr.20180605062300.1">def scanGlobals(self, g_element):
-    '''Get global data from the cache, with reasonable defaults.'''
-    c = self.c
-    d = self.getGlobalData()
-    windowSize = g.app.loadManager.options.get('windowSize')
-    if windowSize is not None:
-        h, w = windowSize # checked in LM.scanOption.
-    else:
-        w, h = d.get('width'), d.get('height')
-    x, y = d.get('left'), d.get('top')
-    r1, r2 = d.get('r1'), d.get('r2')
-    c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
-    c.frame.resizePanesToRatio(r1, r2)
-    if g.app.start_minimized:
-        c.frame.setTopGeometry(w, h, x, y)
-    elif not g.app.start_maximized and not g.app.start_fullscreen:
-        c.frame.setTopGeometry(w, h, x, y)
-        c.frame.deiconify()
-</t>
-<t tx="ekr.20180605075042.1">v = leoNodes.VNode(context=c, gnx=gnx)
-gnx2vnode [gnx] = v
-parent_v.children.append(v)
-v.parents.append(parent_v)
-body = g.toUnicode(gnx2body.get(gnx) or '')
-assert g.isUnicode(body), body.__class__.__name__
-v._bodyString = body
-v._headString = 'PLACE HOLDER'
-</t>
-<t tx="ekr.20180605075113.1"># Like fc.handleVnodeSaxAttrutes.
-#
-# The native attributes of &lt;v&gt; elements are a, t, vtag, tnodeList,
-# marks, expanded, and descendentTnode/VnodeUnknownAttributes.
-d = e.attrib
-s = d.get('tnodeList', '')
-tnodeList = s and s.split(',')
-if tnodeList:
-    # This tnodeList will be resolved later.
-    v.tempTnodeList = tnodeList
-s = d.get('descendentTnodeUnknownAttributes')
-if s:
-    aDict = fc.getDescendentUnknownAttributes(s, v=v)
-    if aDict:
-        fc.descendentTnodeUaDictList.append(aDict)
-s = d.get('descendentVnodeUnknownAttributes')
-if s:
-    aDict = fc.getDescendentUnknownAttributes(s, v=v)
-    if aDict:
-        fc.descendentVnodeUaDictList.append((v, aDict),)
-#
-# Handle vnode uA's
-uaDict = gnx2ua[gnx]
-    # gnx2ua is a defaultdict(dict)
-    # It might already exists because of tnode uA's.
-for key, val in d.items():
-    if key not in self.nativeVnodeAttributes:
-        uaDict[key] = self.resolveUa(key, val)
-if uaDict:
-    v.unknownAttributes = uaDict
-</t>
-<t tx="ekr.20180605102822.1">def v_element_visitor(parent_e, parent_v):
-    '''Visit the given element, creating or updating the parent vnode.'''
-    for e in parent_e:
-        assert e.tag in ('v','vh'), e.tag
-        if e.tag == 'vh':
-            parent_v._headString = g.toUnicode(e.text or '')
-            continue
-        gnx = e.attrib['t']
-        v = gnx2vnode.get(gnx)
-        if v:
-            # A clone
-            parent_v.children.append(v)
-            v.parents.append(parent_v)
-            # The body overrides any previous body text.
-            body = g.toUnicode(gnx2body.get(gnx) or '')
-            assert g.isUnicode(body), body.__class__.__name__
-            v._bodyString = body
-        else:
-            &lt;&lt; Make a new vnode, linked to the parent &gt;&gt;
-            &lt;&lt; handle all other v attributes &gt;&gt;
-            # Handle all inner elements.
-            v_element_visitor(e, v)
-</t>
 <t tx="ekr.20180606035619.1"></t>
-<t tx="ekr.20180606041211.1">def resolveUa(self, attr, val, kind=None): # Kind is for unit testing.
-    '''Parse an unknown attribute in a &lt;v&gt; or &lt;t&gt; element.'''
-    try:
-        val = g.toEncodedString(val)
-    except Exception:
-        g.es_print('unexpected exception converting hexlified string to string')
-        g.es_exception()
-        return None
-    # Leave string attributes starting with 'str_' alone.
-    if attr.startswith('str_'):
-        if g.isString(val) or g.isBytes(val):
-            return g.toUnicode(val)
-    try:
-        binString = binascii.unhexlify(val)
-            # Throws a TypeError if val is not a hex string.
-    except Exception:
-        # Python 2.x throws TypeError
-        # Python 3.x throws binascii.Error
-        # Assume that Leo 4.1 or above wrote the attribute.
-        if g.unitTesting:
-            assert kind == 'raw', 'unit test failed: kind=' % repr(kind)
-        else:
-            g.trace('can not unhexlify %s=%s' % (attr, val))
-        return val
-    try:
-        # No change needed to support protocols.
-        val2 = pickle.loads(binString)
-        return val2
-    except Exception:
-        try:
-            # for python 2.7 and python 3.4
-            # pylint: disable=unexpected-keyword-arg
-            val2 = pickle.loads(binString, encoding='bytes')
-            val2 = self.bytesToUnicode(val2)
-            return val2
-        except Exception:
-            g.trace('can not unpickle %s=%s' % (attr, val))
-            return val
-</t>
-<t tx="ekr.20180606044154.1">def bytesToUnicode(self, ob):
-    """
-    Recursively convert bytes objects in strings / lists / dicts to str
-    objects, thanks to TNT
-    http://stackoverflow.com/questions/22840092
-    Needed for reading Python 2.7 pickles in Python 3.4.
-    """
-    # pylint: disable=unidiomatic-typecheck
-    # This is simpler than using isinstance.
-    t = type(ob)
-    if t in (list, tuple):
-        l = [str(i, 'utf-8') if type(i) is bytes else i for i in ob]
-        l = [self.bytesToUnicode(i) if type(i) in (list, tuple, dict) else i
-            for i in l]
-        ro = tuple(l) if t is tuple else l
-    elif t is dict:
-        byte_keys = [i for i in ob if type(i) is bytes]
-        for bk in byte_keys:
-            v = ob[bk]
-            del(ob[bk])
-            ob[str(bk, 'utf-8')] = v
-        for k in ob:
-            if type(ob[k]) is bytes:
-                ob[k] = str(ob[k], 'utf-8')
-            elif type(ob[k]) in (list, tuple, dict):
-                ob[k] = self.bytesToUnicode(ob[k])
-        ro = ob
-    elif t is bytes: # TNB added this clause
-        ro = str(ob, 'utf-8')
-    else:
-        ro = ob
-    return ro
-</t>
-<t tx="ekr.20180606053919.1">m = first_pat.match(line)
-if m:
-    if 0 &lt;= first_i &lt; len(first_lines):
-        body.append('@first ' + first_lines[first_i])
-        first_i += 1
-    else:
-        g.trace('too many @first lines')
-    continue
-m = last_pat.match(line)
-if m:
-    n_last_lines += 1
-    continue
-</t>
-<t tx="ekr.20180606054325.1">if in_doc:
-    if delim_end:
-        # doc lines are unchanged.
-        body.append(line)
-    else:
-        # Doc lines start with start_delim + one blank.
-        body.append(line[len(delim_start)+1:])
-    continue
-</t>
-<t tx="ekr.20180606080200.1"># http://leoeditor.com/directives.html#part-4-dangerous-directives
-m = raw_pat.match(line)
-if m:
-    in_raw = True
-    verbatim = True
-        # Avoid an extra test in the main loop.
-    continue
-</t>
-<t tx="ekr.20180608104836.1">m = delims_pat.match(line)
-if m:
-    # Get 1 or 2 comment delims
-    # Whatever happens, retain the original @delims line.
-    delims = m.group(1).strip()
-    body.append('@delims %s\n' % delims)
-    #
-    # Parse the delims.
-    delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
-    m2 = delims_pat.match(delims)
-    if not m2:
-        g.trace('Ignoring invalid @comment: %r' % line)
-        continue
-    delim_start = m2.group(1)
-    delim_end = m2.group(2) or ''
-    #
-    # Within these delimiters:
-    # - double underscores represent a newline.
-    # - underscores represent a significant space,
-    delim_start = delim_start.replace('__','\n').replace('_',' ')
-    delim_end = delim_end.replace('__','\n').replace('_',' ')
-    # Recalculate all delim-related values
-    doc_skip = (delim_start + '\n', delim_end + '\n')
-    is_cweb = delim_start == '@q@' and delim_end == '@&gt;'
-    sentinel = delim_start + '@'
-    #
-    # Recalculate the patterns
-    delims = delim_start, delim_end
-    (
-        after_pat, all_pat, code_pat, comment_pat, delims_pat,
-        doc_pat, end_raw_pat, first_pat, last_pat,
-        node_start_pat, others_pat, raw_pat, ref_pat
-    ) = self.get_patterns(delims)
-    continue
-</t>
-<t tx="ekr.20180613061743.1">def dump_v():
-    '''Dump the level stack and v.'''
-    print('----- LEVEL', level, v.h)
-    print('       PARENT', parent_v.h)
-    print('[')
-    for i, data in enumerate(level_stack):
-        v2, in_tree = data
-        print('%2s %5s %s' % (i+1, in_tree, v2.h))
-    print(']')
-    print('PARENT.CHILDREN...')
-    g.printObj([v3.h for v3 in parent_v.children])
-    print('PARENTS...')
-    g.printObj([v4.h for v4 in v.parents])
-</t>
 <t tx="ekr.20180619063409.1">@language rest
 @wrap
 
@@ -13655,124 +5635,6 @@ https://github.com/leo-editor/leo-editor/issues/929
 ElementTree is more widely available.
 
 @language python
-</t>
-<t tx="ekr.20180621050901.1"># http://leoeditor.com/directives.html#part-4-dangerous-directives
-m = comment_pat.match(line)
-if m:
-    # &lt;1, 2 or 3 comment delims&gt;
-    delims = m.group(1).strip()
-    # Whatever happens, retain the @delims line.
-    body.append('@comment %s\n' % delims)
-    delim1, delim2, delim3 = g.set_delims_from_string(delims)
-        # delim1 is always the single-line delimiter.
-    if delim1:
-        delim_start, delim_end = delim1, ''
-    else:
-        delim_start, delim_end = delim2, delim3
-    #
-    # Within these delimiters:
-    # - double underscores represent a newline.
-    # - underscores represent a significant space,
-    delim_start = delim_start.replace('__','\n').replace('_',' ')
-    delim_end = delim_end.replace('__','\n').replace('_',' ')
-    # Recalculate all delim-related values
-    doc_skip = (delim_start + '\n', delim_end + '\n')
-    is_cweb = delim_start == '@q@' and delim_end == '@&gt;'
-    sentinel = delim_start + '@'
-    #
-    # Recalculate the patterns.
-    delims = delim_start, delim_end
-    (
-        after_pat, all_pat, code_pat, comment_pat, delims_pat,
-        doc_pat, end_raw_pat, first_pat, last_pat,
-        node_start_pat, others_pat, raw_pat, ref_pat
-    ) = self.get_patterns(delims)
-    continue
-</t>
-<t tx="ekr.20180622110112.1">def fast_read_into_root(self, c, contents, gnx2vnode, path, root):
-    '''A convenience wrapper for FastAtReAD.read_into_root()'''
-    return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
-</t>
-<t tx="ekr.20180624125321.1">def handleBits(self):
-
-    c, fc = self.c, self.c.fileCommands
-    expanded = c.db.get('expanded')
-    marked = c.db.get('marked')
-    expanded = expanded.split(',') if expanded else []
-    marked = marked.split(',') if marked else []
-    fc.descendentExpandedList = expanded
-    fc.descendentMarksList = marked
-</t>
-<t tx="ekr.20180627050237.1">def dump_cache(db, tag):
-    '''Dump the given cache.'''
-    print('\n===== %s =====\n' % tag)
-    # Create a dict, sorted by file prefixes.
-    d = {}
-    for key in db.keys():
-        key = key[0]
-        val = db.get(key)
-        data = key.split(':::')
-        if len(data) == 2:
-            fn, key2 = data
-        else:
-            fn, key2 = 'None', key
-        aList = d.get(fn, [])
-        aList.append((key2, val),)
-        d[fn] = aList
-    # Print the dict.
-    files = 0
-    for key in sorted(d.keys()):
-        if key != 'None':
-            dump_list('File: ' + key, d.get(key))
-            files += 1
-    if d.get('None'):
-        heading = 'All others' if files else None
-        dump_list(heading, d.get('None'))
-        
-def dump_list(heading, aList):
-    if heading:
-        print('\n%s...\n' % heading)
-    for aTuple in aList:
-        key, val = aTuple
-        if g.isString(val):
-            if key.endswith(('leo_expanded', 'leo_marked')):
-                if val:
-                    print('%30s:' % key)
-                    g.printObj(val.split(','))
-                else:
-                    print('%30s: []' % key)
-            else:
-                print('%30s: %s' % (key, val))   
-        elif isinstance(val, (int, float)):
-            print('%30s: %s' % (key, val))    
-        else:
-            print('%30s:' % key)
-            g.printObj(val)
-</t>
-<t tx="ekr.20180708060437.1">def getGlobalData(self):
-    '''Return a dict containing all global data.'''
-    c = self.c
-    try:
-        window_pos = c.db.get('window_position')
-        r1 = float(c.db.get('body_outline_ratio', '0.5'))
-        r2 = float(c.db.get('body_secondary_ratio', '0.5'))
-        top, left, height, width = window_pos
-        return {
-            'top': int(top),
-            'left': int(left),
-            'height': int(height),
-            'width': int(width),
-            'r1': r1,
-            'r2': r2,
-        }
-    except Exception:
-        pass
-    # Use reasonable defaults.
-    return {
-        'top': 50, 'left': 50,
-        'height': 500, 'width': 800,
-        'r1': 0.5, 'r2': 0.5,
-    }
 </t>
 <t tx="ekr.20180708145905.1">@language rest
 @wrap
@@ -13891,9 +5753,9 @@ precede the node's line that have not already been returned.
 <t tx="ekr.20180816105258.1">import leo.commands.editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='devel',
-    branch2='5.8-b1-rel',
-    fn='leo/plugins/qt_tree.py',
+    branch1='devel', # old branch
+    branch2='py3', # new branch
+    fn='leo/core/leoApp.py',
     directory=None,
 )
 </t>
@@ -13960,43 +5822,6 @@ def onFocusIn(self, event):
         # Extra width for column.
     self.y_adjust = c.config.getInt('gutter-y-adjust') or 10
         # The y offset of the first line of the gutter.
-</t>
-<t tx="ekr.20181006100604.1">import leo.core.leoGlobals as g
-import bdb
-import queue
-import os
-import pdb
-import re
-import sys
-import threading
-</t>
-<t tx="ekr.20181006160108.1">def __init__(self, path=None):
-        
-    self.qc = queue.Queue() # The command queue.
-    self.qr = queue.Queue() # The request queue.
-    stdin_q = self.QueueStdin(qc=self.qc)
-    stdout_q = self.QueueStdout(qr=self.qr)
-    # Start the singleton listener, in the main Leo thread.
-    timer = getattr(g.app, 'xdb_timer', None)
-    if timer:
-        self.timer = timer
-    else:
-        self.timer = g.IdleTime(listener, delay=0)
-        self.timer.start()
-    # Init the base classes.
-    threading.Thread.__init__(self)
-    pdb.Pdb.__init__(self,
-        stdin=stdin_q,
-        stdout=stdout_q,
-        readrc=False,
-            # Don't read a .rc file.
-    )
-    sys.stdout = stdout_q
-    self.daemon = True
-    self.path = path
-    self.prompt = '(xdb) '
-    self.saved_frame = None
-    self.saved_traceback = None
 </t>
 <t tx="ekr.20181008045948.1"></t>
 <t tx="ekr.20181009072707.1">@first # -*- coding: utf-8 -*-
@@ -14094,13 +5919,6 @@ def add_gutter(event):
         gutter.using_gutter = True
 </t>
 <t tx="ekr.20181013081645.1">@path test</t>
-<t tx="ekr.20181024134823.1">def addToOrphanList(self, root):
-    '''Mark the root as erroneous for c.raise_error_dialogs().'''
-    c = self.c
-    # Fix #1050:
-    root.setOrphan()
-    c.orphan_at_file_nodes.append(root.h)
-</t>
 <t tx="ekr.20181027133311.1">def issueSecurityWarning(setting):
     g.es('Security warning! Ignoring...',color='red')
     g.es(setting, color='red')
@@ -14216,22 +6034,6 @@ for fn in files:
             p.moveToThreadNext()
     return files
 </t>
-<t tx="ekr.20190108054803.1">def readFileAtPosition(self, force, p):
-    '''Read the @&lt;file&gt; node at p.'''
-    at, c, fileName = self, self.c, p.anyAtFileNodeName()
-    if p.isAtThinFileNode() or p.isAtFileNode():
-        at.read(p, force=force)
-    elif p.isAtAutoNode():
-        at.readOneAtAutoNode(fileName, p)
-    elif p.isAtEditNode():
-        at.readOneAtEditNode(fileName, p)
-    elif p.isAtShadowFileNode():
-        at.readOneAtShadowNode(fileName, p)
-    elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-        at.rememberReadPath(g.fullPath(c, p), p)
-    elif p.isAtCleanNode():
-        at.readOneAtCleanNode(p)
-</t>
 <t tx="ekr.20190108105509.1">def writePathChanged(self, p):
     '''
     Return True if the path has changed and the user allows it.
@@ -14297,324 +6099,6 @@ for fn in files:
         root.v._p_changed = True
         return ''
 </t>
-<t tx="ekr.20190109145850.1"># open/close methods used by top-level atFile.write logic.
-
-def openOutputStream(self):
-    '''Open the output stream, which a list, *not* a file-like object.'''
-    at = self
-    at.outputList = []
-    # Can't be inited in initWriteIvars because not valid in @shadow logic.
-    if g.app.unitTesting:
-        at.output_newline = '\n'
-
-def closeOutputStream(self):
-    '''Close the output stream, returning its contents.'''
-    at = self
-    contents = '' if at.errors else ''.join(at.outputList)
-    at.outputList = []
-    return contents
-</t>
-<t tx="ekr.20190109153627.13">def writeAtShadowNodesHelper(self, writeDirtyOnly=True): 
-    """Write @shadow nodes in the selected outline"""
-    at = self; c = at.c
-    p = c.p; after = p.nodeAfterTree()
-    found = False
-    while p and p != after:
-        if (
-            p.atShadowFileNodeName() and not p.isAtIgnoreNode()
-            and (p.isDirty() or not writeDirtyOnly)
-        ):
-            ok = at.writeOneAtShadowNode(p)
-            if ok:
-                found = True
-                g.blue('wrote %s' % p.atShadowFileNodeName())
-                p.moveToNodeAfterTree()
-            else:
-                p.moveToThreadNext()
-        else:
-            p.moveToThreadNext()
-    if not g.unitTesting:
-        if found:
-            g.es("finished")
-        elif writeDirtyOnly:
-            g.es("no dirty @shadow nodes in the selected tree")
-        else:
-            g.es("no @shadow nodes in the selected tree")
-    return found
-</t>
-<t tx="ekr.20190109160056.1">def atAsisToString(self, root):
-    '''Write the @asis node to a string.'''
-    at, c = self, self.c
-    try:
-        c.endEditing()
-        fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
-        at.openOutputStream()
-        for p in root.self_and_subtree(copy=False):
-            at.writeAsisNode(p)
-        return at.closeOutputStream()
-    except Exception:
-        at.writeException(fileName, root)
-        return ''
-</t>
-<t tx="ekr.20190109160056.2">def atAutoToString(self, root):
-    '''Write the root @auto node to a string, and return it.'''
-    at, c = self, self.c
-    try:
-        c.endEditing()
-        fileName = at.initWriteIvars(root, root.atAutoNodeName(), sentinels=False)
-        return at.writeAtAutoContents(fileName, root) or ''
-    except Exception:
-        at.writeException(fileName, root)
-        return ''
-</t>
-<t tx="ekr.20190109160056.3">def atEditToString(self, root):
-    '''Write one @edit node.'''
-    at, c = self, self.c
-    try:
-        c.endEditing()
-        if root.hasChildren():
-            g.error('@edit nodes must not have children')
-            g.es('To save your work, convert @edit to @auto, @file or @clean')
-            return False
-        fileName = at.initWriteIvars(root, root.atEditNodeName(), atEdit=True, sentinels=False)
-        contents = ''.join([
-            s for s in g.splitLines(root.b)
-                if at.directiveKind4(s, 0) == at.noDirective])
-        return contents
-    except Exception:
-        at.writeException(fileName, root)
-        return ''
-</t>
-<t tx="ekr.20190109163934.24">def writeAtAutoNodesHelper(self, writeDirtyOnly=True):
-    """Write @auto nodes in the selected outline"""
-    at = self; c = at.c
-    p = c.p; after = p.nodeAfterTree()
-    found = False
-    while p and p != after:
-        if (
-            p.isAtAutoNode() and not p.isAtIgnoreNode() and
-            (p.isDirty() or not writeDirtyOnly)
-        ):
-            ok = at.writeOneAtAutoNode(p)
-            if ok:
-                found = True
-                p.moveToNodeAfterTree()
-            else:
-                p.moveToThreadNext()
-        else:
-            p.moveToThreadNext()
-    if not g.unitTesting:
-        if found:
-            g.es("finished")
-        elif writeDirtyOnly:
-            g.es("no dirty @auto nodes in the selected tree")
-        else:
-            g.es("no @auto nodes in the selected tree")
-</t>
-<t tx="ekr.20190109172025.1">def writeAtAutoContents(self, fileName, root):
-    '''Common helper for atAutoToString and writeOneAtAutoNode.'''
-    at, c = self, self.c
-    # Dispatch the proper writer.
-    junk, ext = g.os_path_splitext(fileName)
-    writer = at.dispatch(ext, root)
-    if writer:
-        at.openOutputStream()
-        writer(root)
-        return at.closeOutputStream()
-    if root.isAtAutoRstNode():
-        # An escape hatch: fall back to the theRst writer
-        # if there is no rst writer plugin.
-        outputFile = at.openOutputFile()
-        ok = c.rstCommands.writeAtAutoFile(root, fileName, outputFile)
-        return outputFile.close() if ok else None
-    # leo 5.6: allow undefined section references in all @auto files.
-    ivar = 'allow_undefined_refs'
-    try:
-        setattr(at, ivar, True)
-        at.openOutputStream()
-        at.putFile(root, sentinels=False)
-        return at.closeOutputStream()
-    except Exception:
-        return None
-    finally:
-        if hasattr(at, ivar):
-            delattr(at, ivar)
-</t>
-<t tx="ekr.20190111045822.1">def precheck(self, fileName, root):
-    '''
-    Check for dangerous writes.
-    Return False if the user declines to do the write.
-    '''
-    at = self
-    if not at.shouldPromptForDangerousWrite(fileName, root):
-        # Fix bug 889175: Remember the full fileName.
-        at.rememberReadPath(fileName, root)
-        return True
-    # Prompt if the write would overwrite the existing file.
-    ok = self.promptForDangerousWrite(fileName, kind='@asis')
-    if ok:
-        # Fix bug 889175: Remember the full fileName.
-        at.rememberReadPath(fileName, root)
-        return True
-    # Fix #1031: do not add @ignore here!
-    g.es("not written:", fileName)
-    return False
-</t>
-<t tx="ekr.20190111111608.1">def checkPath(self, fileName):
-    '''Return True if we can write to the file's directory.'''
-    at = self
-    assert g.os_path_isabs(fileName), (repr(fileName), g.callers())
-    directory = g.os_path_dirname(fileName)
-    if not at.checkDirectory(directory):
-        return False
-    if g.os_path_exists(fileName):
-        return at.isWritable(fileName)
-    return True
-</t>
-<t tx="ekr.20190111112432.1">def checkDirectory(self, directory):
-    '''Return True if directory exists or could be created.'''
-    at, c = self, self.c
-    assert directory, g.callers()
-    if g.os_path_exists(directory):
-        return at.isWritable(directory)
-    try:
-        g.makeAllNonExistentDirectories(directory, c=c)
-        return True
-    except Exception:
-        g.es("exception creating path: %r" % (directory), color='red')
-        g.es_exception()
-        return False
-</t>
-<t tx="ekr.20190111112442.1">def isWritable(self, path):
-    '''Return True if the path is writable.'''
-    try:
-        # os.access() may not exist on all platforms.
-        ok = os.access(path, os.W_OK)
-    except AttributeError:
-        return True
-    if not ok:
-        g.es('read only:', repr(path), color='red')
-    return ok
-</t>
-<t tx="ekr.20190111153506.1"></t>
-<t tx="ekr.20190111153522.1"></t>
-<t tx="ekr.20190111153551.1"></t>
-<t tx="ekr.20190111172114.1">def replaceFile(self, contents, encoding, fileName, root, ignoreBlankLines=False):
-    '''
-    Write or create the given file from the contents.
-    Return True if the original file was changed.
-    '''
-    at, c = self, self.c
-    if root:
-        root.clearDirty()
-    #
-    # Create the timestamp (only for messages).
-    if c.config.getBool('log-show-save-time', default=False):
-        format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
-        timestamp = time.strftime(format) + ' '
-    else:
-        timestamp = ''
-    #
-    # Adjust the contents.
-    assert g.isUnicode(contents), g.callers()
-    if at.output_newline != '\n':
-        contents = contents.replace('\r', '').replace('\n', at.output_newline)
-    #
-    # If file does not exist, create it from the contents.
-    fileName = g.os_path_realpath(fileName)
-    sfn = g.shortFileName(fileName)
-    if not g.os_path_exists(fileName):
-        ok = g.writeFile(contents, encoding, fileName)
-        if ok:
-            c.setFileTimeStamp(fileName)
-            if not g.unitTesting:
-                g.es('%screated: %s' % (timestamp, fileName))
-            if root:
-                # Fix bug 889175: Remember the full fileName.
-                at.rememberReadPath(fileName, root)
-        else:
-            at.addToOrphanList(root)
-        # No original file to change. Return value tested by a unit test.
-        at.checkPythonCode(contents, fileName, root)
-        return False # No change to original file.
-    #
-    # Compare the old and new contents.
-    old_contents = g.readFileIntoUnicodeString(fileName,
-        encoding=at.encoding, silent=True)
-    unchanged = (
-        contents == old_contents or
-        (not at.explicitLineEnding and at.compareIgnoringLineEndings(old_contents, contents)) or
-        ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents))
-    if unchanged:
-        at.sameFiles += 1
-        if not g.unitTesting and c.config.getBool('report-unchanged-files', default=True):
-            g.es('%sunchanged: %s' % (timestamp, sfn))
-        # Leo 5.6: Check unchanged files.
-        at.checkPythonCode(contents, fileName, root, pyflakes_errors_only=True)
-        return False # No change to original file.
-    #
-    # Warn if we are only adjusting the line endings.
-    if at.explicitLineEnding:
-        ok = (
-            at.compareIgnoringLineEndings(old_contents, contents) or
-            ignoreBlankLines and at.compareIgnoringLineEndings(old_contents, contents))
-        if not ok:
-            g.warning("correcting line endings in:", fileName)
-    #
-    # Write a changed file.
-    ok = g.writeFile(contents, encoding, fileName)
-    if ok:
-        c.setFileTimeStamp(fileName)
-        if not g.unitTesting:
-            g.es('%swrote: %s' % (timestamp, sfn))
-    else:
-        g.error('error writing', sfn)
-        g.es('not written:', sfn)
-        at.addToOrphanList(root)
-    at.checkPythonCode(contents, fileName, root)
-        # Check *after* writing the file.
-    return ok
-</t>
-<t tx="ekr.20190113043601.1">def openOutputFile(self):
-    '''Open the output file, which must be file-like'''
-    at = self
-    at.outputFile = g.FileLikeObject()
-    # Can't be inited in initWriteIvars because not valid in @shadow logic.
-    if g.app.unitTesting:
-        at.output_newline = '\n'
-
-def closeOutputFile(self):
-    '''Close the output file, returning its contents.'''
-    at = self
-    at.outputFile.flush()
-    contents = g.toUnicode('' if at.errors else at.outputFile.get())
-    at.outputFile.close()
-    at.outputFile = None
-    return contents
-</t>
-<t tx="ekr.20190114061452.27">def compareIgnoringBlankLines(self, s1, s2):
-    '''Compare two strings, ignoring blank lines.'''
-    assert g.isUnicode(s1), g.callers()
-    assert g.isUnicode(s2), g.callers()
-    if s1 == s2:
-        return True
-    s1 = g.removeBlankLines(s1)
-    s2 = g.removeBlankLines(s2)
-    return s1 == s2
-</t>
-<t tx="ekr.20190114061452.28">def compareIgnoringLineEndings(self, s1, s2):
-    '''Compare two strings, ignoring line endings.'''
-    assert g.isUnicode(s1), g.callers()
-    assert g.isUnicode(s2), g.callers()
-    if s1 == s2:
-        return True
-    # Wrong: equivalent to ignoreBlankLines!
-        # s1 = s1.replace('\n','').replace('\r','')
-        # s2 = s2.replace('\n','').replace('\r','')
-    s1 = s1.replace('\r', '')
-    s2 = s2.replace('\r', '')
-    return s1 == s2
-</t>
 <t tx="ekr.20190116145036.1"></t>
 <t tx="ekr.20190116145049.1">@language rest
 @wrap
@@ -14624,32 +6108,6 @@ def closeOutputFile(self):
 *** Add *real* org mode emulation to Leo
 
 @language python
-</t>
-<t tx="ekr.20190118082646.1">def compute_columns(self, block, cursor):
-    
-    c = self.c
-    line = block.text()
-    col = cursor.columnNumber()
-    offset = c.p.textOffset()
-    fcol_offset = 0
-    s2 = line[0: col]
-    col = g.computeWidth(s2, c.tab_width)
-    #
-    # Fix bug #195: fcol when using @first directive is inaccurate
-    # https://github.com/leo-editor/leo-editor/issues/195
-    i = line.find('&lt;&lt;')
-    j = line.find('&gt;&gt;')
-    if -1 &lt; i &lt; j or g.match_word(line.strip(), 0, '@others'):
-        offset = None
-    else:
-        for tag in ('@first ', '@last '):
-            if line.startswith(tag):
-                fcol_offset = len(tag)
-                break
-    #
-    # fcol is '' if there is no ancestor @&lt;file&gt; node.
-    fcol = None if offset is None else max(0, col + offset - fcol_offset)
-    return col, fcol
 </t>
 <t tx="ekr.20190118130950.1">@language rest
 @wrap
@@ -14662,7 +6120,11 @@ The only real change was to efc.open_with. It deletes temp files before reopenin
 @language python
 @nosearch
 </t>
-<t tx="ekr.20190119062719.1"># for reference only.
+<t tx="ekr.20190119062719.1">@language rest
+@wrap
+@nosearch
+
+# for reference only.
 # This can be deleted at any time.
 </t>
 <t tx="ekr.20190119085129.1">@language rest
@@ -14706,26 +6168,6 @@ found 1154 nodes
 
 found 284 nodes
 </t>
-<t tx="ekr.20190201104956.1">def readOneAtAsisNode(self, fn, p):
-    '''Read one @asis node. Used only by refresh-from-disk'''
-    at, c = self, self.c
-    at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-    fn = c.os_path_finalize_join(at.default_directory, fn)
-    junk, ext = g.os_path_splitext(fn)
-    # Remember the full fileName.
-    at.rememberReadPath(fn, p)
-    ### if not g.unitTesting: g.es("reading: @asis %s" % (g.shortFileName(fn)))
-    s, e = g.readFileIntoString(fn, kind='@edit')
-    if s is None: return
-    encoding = 'utf-8' if e is None else e
-    # Delete all children.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-    old_body = p.b
-    p.b = g.toUnicode(s, encoding=encoding, reportErrors='True')
-    if not c.isChanged() and p.b != old_body:
-        c.setChanged(True)
-</t>
 <t tx="ekr.20190216104815.1">@language rest
 @wrap
 
@@ -14734,165 +6176,21 @@ https://github.com/leo-editor/leo-editor/issues/525
 @language python
 </t>
 <t tx="ekr.20190217060648.1"></t>
-<t tx="ekr.20190218044303.1">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/1081
+<t tx="ekr.20190218044303.1">https://github.com/leo-editor/leo-editor/issues/1081
 
 Added warning when @asis or @nosent files change outside of Leo.
-
-@language python
 </t>
-<t tx="ekr.20190218055230.1">def warn(self, c, path, p):
-    '''
-    Warn that an @asis or @nosent node has been changed externally.
-    
-    There is *no way* to update the tree automatically.
-    '''
-    if g.unitTesting or c not in g.app.commanders():
-        return
-    if not p:
-        g.trace('NO P')
-        return
-    g.app.gui.runAskOkDialog(
-        c=c,
-        message='\n'.join([
-            '%s has changed outside Leo.\n' % g.splitLongFileName(path),
-            'Leo can not update this file automatically.\n',
-            'This file was created from %s.\n' % p.h,
-            'Warning: refresh-from-disk will destroy all children.'
-        ]),
-        title='External file changed',
-    )
-</t>
-<t tx="ekr.20190218061833.1"></t>
-<t tx="ekr.20190218061842.1"></t>
 <t tx="ekr.20190218071717.1">@language rest
-@wrap
-@nosearch
 
 https://github.com/leo-editor/leo-editor/issues/1085
 
-@language python
+- Removed isPython3 switches.
+- Removed g.u.
+- Removed g.ue.
+
+These are **NOT** necessary:
+- Replace isBytes, isCallable, isInt, isList, isString
 </t>
-<t tx="ekr.20190218071807.1"></t>
-<t tx="ekr.20190218071840.1"></t>
-<t tx="ekr.20190218071916.1"></t>
-<t tx="ekr.20190218071950.1"></t>
-<t tx="ekr.20190218072351.1"></t>
-<t tx="ekr.20190218072404.1"></t>
-<t tx="ekr.20190218072450.1"></t>
-<t tx="ekr.20190218072811.1"></t>
-<t tx="ekr.20190218073025.1"></t>
-<t tx="ekr.20190218073115.1"></t>
-<t tx="ekr.20190218073221.1"></t>
-<t tx="ekr.20190218073446.1"></t>
-<t tx="ekr.20190218073511.1"></t>
-<t tx="ekr.20190218122943.1"></t>
-<t tx="ekr.20190218131849.1"></t>
-<t tx="ekr.20190218145819.1"></t>
-<t tx="ekr.20190218153315.1">@nosearch
-
-# flattened, word, ignore-case, head, body
-
-# found 61 nodes</t>
-<t tx="ekr.20190218154421.1">@nosearch
-
-# flattened, word, ignore-case, head, body
-
-# found 50 nodes</t>
-<t tx="ekr.20190218154507.1">@nosearch
-
-# flattened, word, ignore-case, head, body
-
-# found 8 nodes</t>
-<t tx="ekr.20190218154520.1">@nosearch
-
-# flattened, word, ignore-case, head, body
-
-# found 3 nodes</t>
-<t tx="ekr.20190218154532.1">@nosearch
-
-# flattened, word, ignore-case, head, body
-
-# found 7 nodes</t>
-<t tx="ekr.20190218154614.1">@nosearch
-
-# flattened, word, ignore-case, head, body
-
-# found 7 nodes</t>
-<t tx="ekr.20190218154718.1">@nosearch
-
-# flattened, word, ignore-case, head, body
-
-# found 5 nodes</t>
-<t tx="ekr.20190218154841.1"></t>
-<t tx="ekr.20190218174250.1"># These are **NOT** necessary.
-# Many have been made in py3replace branch.</t>
-<t tx="ekr.20190218235026.1">def ue(s, encoding):
-    return s if isinstance(s, str) else str(s, encoding)
-</t>
-<t tx="ekr.20190219000246.1"></t>
-<t tx="ekr.20190306072725.1">@language rest
-@wrap
-
-Added "repo_dir" kwarg to GitDiffController.__init__.
-
-@language python
-</t>
-<t tx="ekr.20190306082736.1">@ignore
-@nosearch
-HEAD=402525ec2</t>
-<t tx="ekr.20190306082736.10">@ignore
-@nosearch
-@language patch
---- HEAD
-+++ uncommitted
-@@ -1,7 +1,7 @@
--def __init__ (self, c):
-+def __init__ (self, c, repo_dir=None):
-     '''Ctor for the GitDiffController class.'''
-     self.c = c
-     self.file_node = None
-     self.old_dir = g.os_path_abspath('.')
--    self.repo_dir = None
-+    self.repo_dir = repo_dir
-     self.root = None
-@language python
-</t>
-<t tx="ekr.20190306082736.11">def __init__ (self, c):
-    '''Ctor for the GitDiffController class.'''
-    self.c = c
-    self.file_node = None
-    self.old_dir = g.os_path_abspath('.')
-    self.repo_dir = None
-    self.root = None
-</t>
-<t tx="ekr.20190306082736.2">@ignore
-@nosearch
-@language patch
---- HEAD
-+++ uncommitted
-@@ -510,12 +510,12 @@
-     '''A class to do git diffs.'''
-     #@+others
-     #@+node:ekr.20170806094320.4: *3* gdc.__init__ &amp; helper
--    def __init__ (self, c):
-+    def __init__ (self, c, repo_dir=None):
-         '''Ctor for the GitDiffController class.'''
-         self.c = c
-         self.file_node = None
-         self.old_dir = g.os_path_abspath('.')
--        self.repo_dir = None
-+        self.repo_dir = repo_dir
-         self.root = None
-     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
-     #@+node:ekr.20180506064102.10: *4* gdc.diff_two_branches
-@language python
-</t>
-<t tx="ekr.20190306082736.9"></t>
-<t tx="ekr.20190306083111.1"></t>
-<t tx="ekr.20190306083224.1"></t>
 <t tx="ekr.20190306105229.1">@language rest
 @wrap
 
@@ -14900,46 +6198,19 @@ https://github.com/leo-editor/leo-editor/issues/1032
 
 @language python
 </t>
-<t tx="ekr.20190306142950.1">def get_files_in_directory(directory, kinds=None, recursive=True):
-    '''
-    Return a list of all files of the given file extensions in the directory.
-    Default kinds: ['*.py'].
-    '''
-    files, sep = [], os.path.sep
-    if not g.os.path.exists(directory):
-        g.es_print('does not exist', directory)
-        return files
-    try:
-        if kinds:
-            kinds = [z if z.startswith('*') else '*'+z for z in kinds]
-        else:
-            kinds = ['*.py']
-        if recursive:
-            # Works for all versions of Python.
-            import fnmatch
-            for root, dirnames, filenames in os.walk(directory):
-                for kind in kinds:
-                    for filename in fnmatch.filter(filenames, kind):
-                        files.append(os.path.join(root, filename))
-        else:
-            for kind in kinds:
-                files.extend(glob.glob(directory + sep + kind))
-        return list(set(sorted(files)))
-    except Exception:
-        g.es_exception()
-        return []
-</t>
 <t tx="ekr.20190316153545.1">@language rest
 @wrap
 
 https://github.com/leo-editor/leo-editor/issues/1096
 
+*** Search for g.pyzo to see all changes.
+
+To do:
+
+- Email to Almar Klein.
 - Change title of main window.
-
 - Create **pyzo shims** for menus, config.
-
 - Make pyzo tool panes for outline, body panes, log pane &amp; sub-panes, and VR pane.
-
 - Modify pyzo shutdown logic:
   g.app.forgetOpenFile(c.fileName(), force=True)
 
@@ -15669,6 +6940,490 @@ The various frame ratios will probably go away:
 All of the free_layout plugin will probably go away:
 - Disabled FreeLayoutController.get_top_splitter.
 </t>
+<t tx="ekr.20190319150024.1">@language rest
+
+https://github.com/leo-editor/leo-editor/issues/568
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20190322041148.1"></t>
+<t tx="ekr.20190322082533.1">def get_lexer(self, language):
+    '''Return the lexer for self.language, creating it if necessary.'''
+    import pygments.lexers as lexers
+    trace = 'coloring' in g.app.debug and not g.unitTesting
+    try:
+        if language == 'python':
+            lexer_language = 'python3'
+        lexer = lexers.get_lexer_by_name(lexer_language)
+    except Exception:
+        # pylint: disable=no-member
+            # One of the lexer's will not exist.
+        if trace:
+            ('--trace-coloring: no lexer for %r' % language)
+        lexer = lexers.Python3Lexer()
+        if trace and 'python' not in self.lexers_dict:
+            g.trace('--trace-coloring: default lexer for python: %r' % lexer)
+    return lexer
+</t>
+<t tx="ekr.20190322094034.1">def patch_lexer(self, language, lexer):
+    
+    from pygments.token import Comment
+    from pygments.lexer import inherit
+    
+    class PatchedLexer(lexer.__class__):
+        
+        leo_sec_ref_pat = r'(?-m:\&lt;\&lt;(.*?)\&gt;\&gt;)'
+        tokens = {
+            'root': [
+                (r'^@(color|nocolor|killcolor)\b', self.at_color_callback),
+                (r'^(@language)\s+(\w+)', self.at_language_callback),
+                (leo_sec_ref_pat, self.section_ref_callback),
+                    # Single-line, non-greedy match.
+                (r'(^\s*@doc|@)(\s+|\n)(.|\n)*?^@c', Comment.Leo.DocPart),
+                    # Multi-line, non-greedy match.
+               inherit,
+            ],
+        }
+
+    try:
+        return PatchedLexer()
+    except Exception:
+        g.trace('can not patch %r' % language)
+        g.es_exception()
+        return lexer
+</t>
+<t tx="ekr.20190323034724.1">g.cls()
+import leo.core.leoColorizer as leoColorizer
+print('       has pygments:', bool(leoColorizer.pygments))
+print('       use-pygments:', c.config.getBool('use-pygments'))
+print('use-pygments-styles:', c.config.getBool('use-pygments-styles'))
+print('pygments-style-name:', c.config.getString('pygments-style-name'))
+if 0:
+    # The performance bug was in pyg_c.recolor.
+    # It was calling updateSyntaxColorer(p) for each line!!!
+    colorizer = c.frame.body.colorizer
+    print('recolorCount:', colorizer.recolorCount)
+    print('tot_time: %5.2f' % colorizer.tot_time)
+    colorizer.recolorCount = 0
+</t>
+<t tx="ekr.20190323045735.1">def at_language_callback(self, lexer, match):
+    from pygments.token import Name
+    language = match.group(2)
+    ok = self.init_mode(language)
+    if ok:
+        self.language = language
+        yield match.start(), Name.Decorator, match.group(0)
+    else:
+        yield match.start(), Name.Decorator, match.group(1)
+            # Color only the @language, indicating an unknown language.
+</t>
+<t tx="ekr.20190323084212.1"></t>
+<t tx="ekr.20190324051704.1">def reloadSettings(self):
+    '''Reload the base settings, plus pygments settings.'''
+    if 'coloring' in g.app.debug and not g.unitTesting:
+        print('reloading pygments settings.')
+    # Do basic inits.
+    BaseJEditColorizer.reloadSettings(self)
+    # Bind methods.
+    if self.use_pygments_styles:
+        self.getDefaultFormat = QtGui.QTextCharFormat
+        self.getFormat = self.getPygmentsFormat
+        self.setFormat = self.setPygmentsFormat
+    else:
+        self.getDefaultFormat = self.getLegacyDefaultFormat
+        self.getFormat = self.getLegacyFormat
+        self.setFormat = self.setLegacyFormat
+    # Init everything else.
+    self.init_style_ivars()
+    self.defineLeoKeywordsDict()
+    self.defineDefaultColorsDict()
+    self.defineDefaultFontDict()
+    self.init()
+</t>
+<t tx="ekr.20190324172242.1">def configure_fonts(self):
+    '''Configure all fonts in the default fonts dict.'''
+    c = self.c
+    isQt = g.app.gui.guiName().startswith('qt')
+    wrapper = self.wrapper
+    #
+    # Get the default body font.
+    defaultBodyfont = self.fonts.get('default_body_font')
+    if not defaultBodyfont:
+        defaultBodyfont = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant", "body_text_font_weight",
+            c.config.defaultBodyFontSize)
+        self.fonts['default_body_font'] = defaultBodyfont
+    #
+    # Set all fonts.
+    for key in sorted(self.default_font_dict.keys()):
+        option_name = self.default_font_dict[key]
+        # Find language specific setting before general setting.
+        table = (
+            '%s_%s' % (self.language, option_name), 
+            option_name,
+        )
+        for name in table:
+            font = self.fonts.get(name)
+            if font:
+                break
+            font = self.find_font(key, name)
+            if font:
+                self.fonts[key] = font
+                wrapper.tag_configure(key, font=font)
+                if isQt and key == 'url':
+                    font.setUnderline(True)
+                break
+        else:
+            # Neither setting exists.
+            self.fonts[key] = None # Essential
+            wrapper.tag_configure(key, font=defaultBodyfont)
+</t>
+<t tx="ekr.20190324172632.1">def configure_colors(self):
+    '''Configure all colors in the default colors dict.'''
+    c, wrapper = self.c, self.wrapper
+    getColor = c.config.getColor
+        # getColor puts the color name in standard form:
+        # color = color.replace(' ', '').lower().strip()
+    for key in sorted(self.default_colors_dict.keys()):
+        option_name, default_color = self.default_colors_dict[key]
+        color = (
+            getColor('%s_%s' % (self.language, option_name)) or
+            getColor(option_name) or default_color)
+        # Must use foreground, not fg.
+        try:
+            wrapper.tag_configure(key, foreground=color)
+        except Exception: # Recover after a user settings error.
+            g.es_exception()
+            wrapper.tag_configure(key, foreground=default_color)
+
+</t>
+<t tx="ekr.20190324192318.1">from  leo.core.leoColor import leo_color_database as color_d
+
+d = {
+    'Comment':            'solarized-orange',
+    'Comment.Single':     'solarized-orange',
+    'Generic.Deleted':    'solarized-red',
+    'Generic.Emph':       'solarized-blue',
+    'Generic.Heading':    'solarized-magenta',
+    'Generic.Inserted':   'alt-solarized-green',
+    'Generic.Strong':     'solarized-blue',
+    'Generic.Subheading': 'solarized-magenta',
+    'Keyword':            'solarized-blue',
+    'Name':               'white',
+    'Name.Class':         'white',
+    'Name.Decorator':     'solarized-orange',
+    'Name.Entity':        'solarized-blue',
+    'Name.Function':      'white',
+    'Name.Other':         'solarized-red',
+    'Name.Tag':           'solarized-magenta',
+    'String':             'alt-solarized-green',
+    'String.Doc':         'solarized-orange', # docstring.
+    'String.Interpol':    'alt-solarized-green',
+    'String.Single':      'alt-solarized-green',
+}
+root = p.copy()
+for key, val in d.items():
+    p = root.insertAsLastChild()
+    p.h = '@color %s = %s' % (key.lower(), color_d.get(val, 'white'))
+    p.b = val
+c.redraw()
+    </t>
+<t tx="ekr.20190325053636.1">Comment:            'italic'
+Name.Other:         'underline'
+Generic.Emph:       'italic '
+Generic.Heading:    'underline ' 
+Generic.Strong:     'bold '
+Name.Tag:           'italic '
+</t>
+<t tx="ekr.20190326034006.1">def find_font(self, key, setting_name):
+    '''
+    Return the font for the given setting name.
+    Key is for debugging only.
+    '''
+    c, get = self.c, self.c.config.get
+    for name in (setting_name, setting_name.rstrip('_font')):
+        family = get(name + '_family', 'family')
+        size   = get(name + '_size', 'size')
+        slant  = get(name + '_slant', 'slant')
+        weight = get(name + '_weight', 'weight')
+        if family or slant or weight or size:
+            family = family or g.app.config.defaultFontFamily
+            size = size or c.config.defaultBodyFontSize
+                # It's almost certainly a good idea to set size explicitly.
+            slant = slant or 'roman'
+            weight = weight or 'normal'
+            font = g.app.gui.getFontFromParams(family, size, slant, weight)
+            # A good trace: the key shows what is happening.
+                # g.trace('%20s %5s %20s %10s %5s %6s %s' % (
+                    # key, bool(font), setting_name, family, size, slant, weight))
+            return font
+    return None
+</t>
+<t tx="ekr.20190326131804.1">@language rest
+@wrap
+
+- Define jedit.reloadSettings.
+  jedit.__init__ should call it to do last inits.
+  
+- jpg_c sould call reloadSettings.</t>
+<t tx="ekr.20190326174530.1"></t>
+<t tx="ekr.20190326182642.1"></t>
+<t tx="ekr.20190326183005.1">def reloadSettings(self):
+    '''Complete the initialization of all settings.'''
+    if 'coloring' in g.app.debug and not g.unitTesting:
+        print('reloading jEdit settings.')
+    # Do the basic inits.
+    BaseJEditColorizer.reloadSettings(self)
+    # Init everything else.
+    self.init_style_ivars()
+    self.defineLeoKeywordsDict()
+    self.defineDefaultColorsDict()
+    self.defineDefaultFontDict()
+    self.init()
+    
+</t>
+<t tx="ekr.20190327052228.1">def reloadSettings(self):
+    '''Reload all reloadable settings.'''
+    c, document = self.c, self.leo_document
+    if not pygments:
+        return
+    if not c.config.getBool('use-pygments', default=False):
+        return
+    #
+    # Init pygments ivars.
+    self._brushes = {}
+    self._document = document
+    self._formats = {}
+    self.colorizer.style_name = 'default'
+    style_name = c.config.getString('pygments-style-name') or 'default'
+        # Style gallery: https://help.farbox.com/pygments.html
+        # Dark styles: fruity, monokai, native, vim
+        # https://github.com/gthank/solarized-dark-pygments
+    if not c.config.getBool('use-pygments-styles', default=True):
+        return
+    #
+    # Init pygments style.
+    try:
+        self.setStyle(style_name)
+        # print('using %r pygments style in %r' % (style_name, c.shortFileName()))
+    except Exception:
+        print('pygments %r style not found. Using "default" style' % style_name)
+        self.setStyle('default')
+        style_name = 'default'
+    self.colorizer.style_name = style_name
+    assert self._style
+</t>
+<t tx="ekr.20190327053604.1">prev_use_pygments = None
+prev_use_styles = None
+prev_style = None
+
+def report_changes(self):
+    '''Report changes to pygments settings'''
+    c = self.c
+    trace = 'coloring' in g.app.debug and not g.unitTesting
+    if trace:
+        g.es_print('\n--trace-coloring...')
+        
+    def show(setting, val):
+        if trace:
+            g.es_print('%35s: %s' % (setting, val))
+    #
+    # Set self.use_pygments only once: it can't be changed later.
+    # There is no easy way to re-instantiate classes created by make_colorizer.
+    use_pygments = c.config.getBool('use-pygments', default=False)
+    if self.prev_use_pygments is None:
+        self.use_pygments = self.prev_use_pygments = use_pygments
+        show('@bool use-pygments', use_pygments)
+    elif use_pygments == self.prev_use_pygments:
+        show('@bool use-pygments', use_pygments)
+    else:
+        g.es_print('%35s: %s' % (
+                'Can not change @bool use-pygments',
+                self.prev_use_pygments),
+            color='red')
+    #
+    # Report everything if we are tracing.
+    style_name = c.config.getString('pygments-style-name') or 'default'
+        # Don't set an ivar. It's not used in this class.
+        # This setting is used only in the LeoHighlighter class
+    show('@bool use-pytments-styles', self.use_pygments_styles)
+    show('@string pygments-style-name', style_name)
+    #
+    # Report other changes only if we are using pygments.
+    if not use_pygments:
+        if trace: print('')
+        return
+    #
+    # Report changes to @bool use-pygments-style
+    if self.prev_use_styles is None:
+        self.prev_use_styles = self.use_pygments_styles
+    elif self.use_pygments_styles != self.prev_use_styles:
+        g.es_print('using pygments styles: %s' % self.use_pygments_styles)
+    #
+    # Report @string pygments-style-name only if we are using styles.
+    if not self.use_pygments_styles:
+        return
+    #
+    # Report changes to @string pygments-style-name
+    if self.prev_style is None:
+        self.prev_style = style_name
+    elif style_name != self.prev_style:
+        g.es_print('New pygments style: %s' % style_name)
+        self.prev_style = style_name
+</t>
+<t tx="ekr.20190327064446.1">@nosearch
+</t>
+<t tx="ekr.20190327072744.1"></t>
+<t tx="ekr.20190327105736.1">def get_files_in_directory(directory, kinds=None, recursive=True):
+    '''
+    Return a list of all files of the given file extensions in the directory.
+    Default kinds: ['*.py'].
+    '''
+    files, sep = [], os.path.sep
+    if not g.os.path.exists(directory):
+        g.es_print('does not exist', directory)
+        return files
+    try:
+        if kinds:
+            kinds = [z if z.startswith('*') else '*'+z for z in kinds]
+        else:
+            kinds = ['*.py']
+        if recursive:
+            # Works for all versions of Python.
+            import fnmatch
+            for root, dirnames, filenames in os.walk(directory):
+                for kind in kinds:
+                    for filename in fnmatch.filter(filenames, kind):
+                        files.append(os.path.join(root, filename))
+        else:
+            for kind in kinds:
+                files.extend(glob.glob(directory + sep + kind))
+        return list(set(sorted(files)))
+    except Exception:
+        g.es_exception()
+        return []
+</t>
+<t tx="ekr.20190327111419.1">On Wednesday, March 27, 2019 at 9:02:20 AM UTC-5, Arjan wrote:
+ 
+
+    My notes are organized in various sections -- but often I have items that belong to multiple sections, so I'd place them in both using clones.
+
+...
+
+    Now with over a dozen top-level sections and many more subsections and subsubsections for each, switching between different sections becomes unwieldy.
+
+
+Imo, the best way to deal with this problem is to create organizer nodes for your projects and sub-projects.  I do this all the time.  There is no limit to Leo's organizational abilities, as I shall now attempt to explain.
+
+    The solution to your clone problems is to use more clones.  No kidding.
+
+Here is an example taken from the recent pygments work. You should be able to adapt it to any organizational task whatever.  Here are the big ideas
+
+Organizer nodes create views of your data
+
+For large projects, you definitely should create an organizer node any time you are going to be spending more than a few minutes of a task.  For the pygments project, the outer organizer node is:
+
+Top level node: #0568: pygments
+The body text contained my to-do list and links to #568.
+
+Use inner organizer nodes to further organize you work
+
+The inner organizers for my pygments project have these headlines:
+
+----- Color settings
+----- Font settings
+----- Reload-settings
+----- trace-coloring
+----- @language directives
+
+Each inner organizer node contains notes to myself in the body text.  Its children of clones of all nodes relating to the task.
+
+Within organizers, clones can be "redundant"
+
+This is something I probably haven't ever explained before.  It's a really important idea, and it's why clone problems can be solved using more clones.
+
+Let me try to explain.  Within a programming sub-project I often want to focus on a class.  But within that class, I further want to focus on organizer nodes of the class, or individual methods of that class.
+
+In theory, just cloning the class gives access to all the methods (and organizer nodes) within that class.  Why?  Because clones contain all their children.
+
+So creating clones (focusing on the clones) could be called redundant.  In practice, though, these "redundant" clones are useful.
+
+Similarly, the clone-find-all-flattened command creates "redundant" top-level nodes.  You could just use the clone-find-all command instead, but I find cff almost always to be more useful.
+
+Two levels of organizer nodes should suffice
+
+I have never need more levels, even for large projects such as creating a new gui for Leo.  Three levels would likely suffice for truly stupendous projects.
+
+Organizer nodes are valuable, but not precious
+
+Ultimately, they are temporary.  I make copies of data that should be retained indefinitely.  For example, I'll move cool new scripts to scripts.leo, and documentation to LeoDocs.leo.
+
+Summary
+
+Creating lots of clones can create organizational problems. The solution to those problems is to create organizer node containing more clones.
+
+Don't be afraid of creating "redundant" clones.
+
+Two levels of organizer nodes should suffice for even large, complex tasks.  Three levels should suffice for truly huge tasks.
+
+Organizer nodes are valuable, but not redundant.
+
+To make all this work, you must be adept with using clones.  In particular, you must know when deleting a clone will actually delete data.  This will quickly become second nature, but only if you give clones a chance.
+
+Edward</t>
+<t tx="ekr.20190327143118.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1101
+
+from leo.core.leoQt import QtWidgets
+log = c.frame.log
+w = log.createTab('My Tab', createText=False, widget=QtWidgets.QFrame())
+log.selectTab('My Tab')
+
+@language python
+</t>
+<t tx="ekr.20190327183758.1">git merge devel 
+git merge --abort
+git merge devel -s ours
+
+= use pyzo version of leoQt.py</t>
+<t tx="ekr.20190327192403.1">[a64] &gt;git merge devel
+
+Auto-merging leo/plugins/qt_frame.py
+    - Use Py3
+Auto-merging leo/plugins/cursesGui2.py
+    - Use Py3
+Auto-merging leo/core/leoGlobals.py
+    - Use Py3
+Auto-merging leo/core/leoConfig.py
+    - Use Py3, but use devel version of parseFontLine, deleting fontSettingNameToFontKind.
+Auto-merging leo/core/leoColorizer.py
+    - *** Use devel.  (Done) Remove all calls to g.u, g.isPython3
+Auto-merging leo/core/leoAtFile.py
+CONFLICT (content): Merge conflict in leo/core/leoAtFile.py
+    - Use Py3
+Auto-merging leo/core/leoApp.py
+    - Use PY3
+</t>
+<t tx="ekr.20190327194749.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1098
+
+@language python
+</t>
+<t tx="ekr.20190327203238.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1090
+
+command line--script relative path is relative to `leo/core` instead of file-system
+
+@language python
+</t>
 <t tx="tbrown.20110621120042.22914">def get_top_splitter(self):
     '''Return the top splitter of c.frame.top.'''
     # Careful: we could be unit testing.
@@ -15719,269 +7474,6 @@ All of the free_layout plugin will probably go away:
         event.accept()
         return
     QtWidgets.QTextBrowser.wheelEvent(self, event)
-</t>
-<t tx="tbrown.20150807090639.1">def declutter_node(self, c, p, item):
-    """declutter_node - change the appearance of a node
-
-    :param commander c: commander containing node
-    :param position p: position of node
-    :param QWidgetItem item: tree node widget item
-    """
-    if self.declutter_patterns is None:
-        self.declutter_patterns = []
-        warned = False
-        lines = c.config.getData("tree-declutter-patterns")
-        for line in lines:
-            try:
-                cmd, arg = line.split(None, 1)
-            except ValueError:
-                # Allow empty arg, and guard against user errors.
-                cmd = line.strip()
-                arg = ''
-            if cmd.startswith('#'):
-                pass
-            elif cmd == 'RULE':
-                self.declutter_patterns.append((re.compile(arg), []))
-            else:
-                if self.declutter_patterns:
-                    self.declutter_patterns[-1][1].append((cmd, arg))
-                elif not warned:
-                    warned = True
-                    g.log('Declutter patterns must start with RULE*',
-                        color='error')
-    text = str(item.text(0))
-    new_icons = []
-    for pattern, cmds in self.declutter_patterns:
-        for func in (pattern.match, pattern.search):
-            m = func(text)
-            if m:
-                for cmd, arg in cmds:
-                    if self.declutter_replace(arg, cmd, item, m, pattern, text):
-                        pass
-                    else:
-                        self.declutter_style(arg, c, cmd, item, new_icons)
-                break # Don't try pattern.search if pattern.match succeeds.
-    com = c.editCommands
-    allIcons = com.getIconList(p)
-    icons = [i for i in allIcons if 'visualIcon' not in i]
-    if len(allIcons) != len(icons) or new_icons:
-        for icon in new_icons:
-            com.appendImageDictToList(
-                icons, icon, 2, on='vnode', visualIcon='1'
-            )
-        com.setIconList(p, icons, False)
-</t>
-<t tx="tbrown.20171028115438.1">import leo.core.leoGlobals as g
-import leo.core.signal_manager as sig
-try:
-    # this can fix an issue with Qt Web views in Ubuntu
-    from OpenGL import GL
-    assert GL # To keep pyflakes happy.
-except Exception:
-    # but not need to stop if it doesn't work
-    pass
-from collections import defaultdict
-from leo.core.leoQt import QtCore, QtWidgets, QtConst # QtGui
-if QtCore is not None:
-    from leo.plugins.editpane.clicky_splitter import ClickySplitter
-from importlib import import_module
-import os
-</t>
-<t tx="tbrown.20171028115438.26">def load_modules(self):
-    """load_modules - load modules to find widgets
-    """
-    module_dir = os.path.dirname(__file__)
-    names = [os.path.splitext(i) for i in os.listdir(module_dir)
-             if os.path.isfile(os.path.join(module_dir, i))]
-    # FIXME: sort 'plain' to start of list for devel.
-    names.sort(key=lambda x: (not x[0].startswith('plain'), x[0]))
-    modules = []
-    for name in [i[0] for i in names if i[1].lower() == '.py']:
-        try:
-            modules.append(import_module('leo.plugins.editpane.'+name))
-            DBG("Loaded module: %s" % name)
-        except ImportError as err:
-            DBG("Module not loaded (unmet dependencies?): %s" % name)
-    for module in modules:
-        for key in dir(module):
-            value = getattr(module, key)
-            if hasattr(value, 'lep_type') and value not in self.widget_classes:
-                if module not in self.modules:
-                    self.modules.append(module)
-                self.widget_classes.append(value)
-                self.widget_for[value.lep_type].append(value)
-</t>
-<t tx="ville.20090311195550.1">def filter_b(self, regex, flags=re.IGNORECASE):
-    """ Find all the nodes in PosList self where body matches regex
-    one or more times.
-
-    """
-    pat = re.compile(regex, flags)
-    res = PosList()
-    for p in self:
-        m = re.finditer(pat, p.b)
-        t1, t2 = itertools.tee(m, 2)
-        try:
-            t1.__next__()
-            pc = p.copy()
-            pc.matchiter = t2
-            res.append(pc)
-        except StopIteration:
-            pass
-    return res
-</t>
-<t tx="ville.20090311200059.1">def find_b(self, regex, flags=re.IGNORECASE | re.MULTILINE):
-    """ Return list (a PosList) of all nodes whose body matches regex
-    one or more times.
-
-    """
-    c = self
-    pat = re.compile(regex, flags)
-    res = leoNodes.PosList()
-    for p in c.all_positions():
-        m = re.finditer(pat, p.b)
-        t1, t2 = itertools.tee(m, 2)
-        try:
-            t1.__next__()
-        except StopIteration:
-            continue
-        pc = p.copy()
-        pc.matchiter = t2
-        res.append(pc)
-    return res
-</t>
-<t tx="vitalije.20170703115609.1">def editRecentFiles(self, c):
-    '''
-    Dump recentFiles into new node appended as lastTopLevel, selects it and
-    request focus in body.
-
-    NOTE: command write-edited-recent-files assume that headline of this
-    node is not changed by user.
-    '''
-    rf = self
-    p1 = c.lastTopLevel().insertAfter()
-    p1.h = self.edit_headline
-    p1.b = '\n'.join(rf.recentFiles)
-    c.redraw()
-    c.selectPosition(p1)
-    c.redraw()
-    c.bodyWantsFocusNow()
-    g.es('edit list and run write-rff to save recentFiles')
-</t>
-<t tx="vitalije.20170705075107.1">def decodePosition(self, s):
-    '''Creates position from its string representation encoded by fc.encodePosition.'''
-    fc = self
-    if not s:
-        return fc.c.rootPosition()
-    sep = '&lt;-&gt;'
-    comma = ','
-    stack = [x.split(comma) for x in s.split(sep)]
-    stack = [(fc.gnxDict[x], int(y)) for x,y in stack]
-    v, ci = stack[-1]
-    p = leoNodes.Position(v, ci, stack[:-1])
-    return p
-</t>
-<t tx="vitalije.20170705075117.1">def encodePosition(self, p):
-    '''New schema for encoding current position hopefully simplier one.'''
-    jn = '&lt;-&gt;'
-    mk = '%s,%s'
-    res = [mk%(x.gnx, y) for x,y in p.stack]
-    res.append(mk%(p.gnx, p._childIndex))
-    return jn.join(res)
-</t>
-<t tx="vitalije.20170708161511.1">def handleInputShortcut(self, event, stroke):
-    c, k, p = self.c, self, self.c.p
-    k.clearState()
-    if p.h.startswith(('@shortcuts', '@mode')):
-        # line of text in body
-        w = c.frame.body
-        before, sel, after = w.getInsertLines()
-        m = k._cmd_handle_input_pattern.search(sel)
-        assert m # edit-shortcut was invoked on a malformed body line
-        sel = '%s %s' % (m.group(0), stroke.s)
-        udata = c.undoer.beforeChangeNodeContents(p)
-        w.setSelectionAreas(before, sel, after)
-        c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
-        w.onBodyChanged('change shortcut')
-        cmdname = m.group(0).rstrip('= ')
-        k.editShortcut_do_bind_helper(stroke, cmdname)
-        return
-    elif p.h.startswith(('@command', '@button')):
-        udata = c.undoer.beforeChangeNodeContents(p)
-        cmd = p.h.split('@key',1)[0]
-        p.h = '%s @key=%s' % (cmd, stroke.s)
-        c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
-        try:
-            cmdname = cmd.split(' ', 1)[1].strip()
-            k.editShortcut_do_bind_helper(stroke, cmdname)
-        except IndexError:
-            pass
-        return
-    else:
-        # this should never happen
-        g.error('not in settings node shortcut')
-</t>
-<t tx="vitalije.20170709151653.1">_cmd_handle_input_pattern = re.compile(r'[A-Za-z0-9_\-]+\s*=')
-
-def isInShortcutBodyLine(self):
-    k = self; c = k.c; p = c.p
-    if p.h.startswith(('@shortcuts', '@mode')):
-        # line of text in body
-        w = c.frame.body
-        before, sel, after = w.getInsertLines()
-        m = k._cmd_handle_input_pattern.search(sel)
-        return bool(m)
-    return p.h.startswith(('@command', '@button'))
-</t>
-<t tx="vitalije.20170709151658.1">def isEditShortcutSensible(self):
-    k = self; c = k.c; p = c.p
-    return p.h.startswith(('@command', '@button')) or k.isInShortcutBodyLine()
-</t>
-<t tx="vitalije.20170709202924.1">def editShortcut_do_bind_helper(self, stroke, cmdname):
-    k = self; c = k.c
-    cmdfunc = c.commandsDict.get(cmdname)
-    if cmdfunc:
-        k.bindKey('all', stroke, cmdfunc, cmdname)
-        g.es('bound', stroke, 'to command', cmdname)
-</t>
-<t tx="vitalije.20170716201700.3">def __init__(self, root):
-    """
-    Init the SqlitePickleShare class.
-    root: The directory that contains the data. Created if it doesn't exist.
-    """
-    self.root = abspath(expanduser(root))
-    if not isdir(self.root) and not g.unitTesting:
-        self._makedirs(self.root)
-    dbfile = ':memory:' if g.unitTesting else join(root, 'cache.sqlite')
-    self.conn = sqlite3.connect(dbfile, isolation_level=None)
-    self.init_dbtables(self.conn)
-    self.cache = {}
-        # Keys are normalized file names.
-        # Values are tuples (obj, orig_mod_time)
-
-    def loadz(data):
-        if data:
-            try:
-                val = pickle.loads(zlib.decompress(data))
-            except (ValueError, TypeError):
-                g.es("Unpickling error - Python 3 data accessed from Python 2?")
-                return None
-            return val
-        else:
-            return None
-
-    def dumpz(val):
-        try:
-            # use Python 2's highest protocol, 2, if possible
-            data = pickle.dumps(val, protocol=2)
-        except Exception:
-            # but use best available if that doesn't work (unlikely)
-            data = pickle.dumps(val, pickle.HIGHEST_PROTOCOL)
-        return sqlite3.Binary(zlib.compress(data))
-
-    self.loader = loadz
-    self.dumper = dumpz
-    self.reset_protocol_in_values()
 </t>
 </tnodes>
 </leo_file>
