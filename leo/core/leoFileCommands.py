@@ -1364,9 +1364,10 @@ class FileCommands(object):
         '''Return the initial values of v's attributes.'''
         c = self.c
         # Cache the current position.
-        if p == self.rootPosition and c.mFileName:
-            aList = [str(z) for z in self.currentPosition.archivedPosition()]
-            c.db ['current_position'] = ','.join(aList)
+        if 0:
+            if p == self.rootPosition and c.mFileName:
+                aList = [str(z) for z in self.currentPosition.archivedPosition()]
+                c.db ['current_position'] = ','.join(aList)
         #
         # Append unKnownAttributes to attrs
         attrs = []
@@ -1401,16 +1402,17 @@ class FileCommands(object):
         self.put("</vnodes>\n")
     #@+node:ekr.20190328160622.1: *6* fc.setCachedBits
     def setCachedBits(self):
-        '''Set the cached expanded and marked bits for *all* nodes.'''
+        '''
+        Set the cached expanded and marked bits for *all* nodes.
+        Also cache the current position.
+        '''
         c = self.c
+        current = [str(z) for z in self.currentPosition.archivedPosition()]
         expanded = [v.gnx for v in c.all_unique_nodes() if v.isExpanded()]
         marked = [v.gnx for v in c.all_unique_nodes() if v.isMarked()]
         c.db ['expanded'] = ','.join(expanded)
         c.db ['marked'] = ','.join(marked)
-        ###
-            # g.trace()
-            # g.printObj(sorted(expanded), tag='expanded')
-            # g.printObj(sorted(marked), tag='marked')
+        c.db ['current_position'] = ','.join(current)
     #@+node:ekr.20031218072017.1247: *5* fc.putXMLLine
     def putXMLLine(self):
         '''Put the **properly encoded** <?xml> element.'''
