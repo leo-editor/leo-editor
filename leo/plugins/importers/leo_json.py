@@ -137,13 +137,13 @@ class JSON_Scanner:
                 parent.b = top_d.get('b') or ''
                 self.create_nodes(parent, top_d)
                 c.redraw()
+            return bool(top_d)
         except AttributeError:
-            # Partial fix for #1098: issue advice.
-            g.error('Can not import %s' % parent.h)
-            g.es('Leo can only read .json files that Leo itself wrote')
-            g.es('Workaround: copy your .json text into @auto x.json.')
-            g.es('Leo will read the file correctly when you reload your outline.')
-        return bool(top_d)
+            # Fix #1098
+            c = self.c
+            parent.b = repr(d)
+            c.redraw()
+            return True
     #@-others
 #@-others
 importer_dict = {
