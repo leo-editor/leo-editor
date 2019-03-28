@@ -62,6 +62,7 @@
 <v t="ekr.20111026083456.16490"><vh>Local commands</vh>
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
 </v>
+<v t="ekr.20190324182659.1"><vh>script: make color nodes</vh></v>
 </v>
 <v t="ekr.20041119035137"><vh>About this file, leoSettings.leo</vh>
 <v t="ekr.20041122163623"><vh>About settings names</vh></v>
@@ -100,9 +101,6 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20190119061613.1"><vh>Recently deleted settings</vh>
-<v t="ekr.20041119041747.1"><vh>@@string trailing-body-newlines = one</vh></v>
-</v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
@@ -2120,6 +2118,9 @@
 <v t="ekr.20181018113857.1"><vh>@string main-spelling-dictionary = None</vh></v>
 </v>
 <v t="ekr.20041119034357.70"><vh>Syntax coloring</vh>
+<v t="ekr.20190323043913.1"><vh>@bool use-pygments = False</vh></v>
+<v t="ekr.20190324042831.1"><vh>@bool use-pygments-styles = True</vh></v>
+<v t="ekr.20190323043928.1"><vh>@string pygments-style-name = default</vh></v>
 <v t="ekr.20170202104705.1"><vh>@bool color-doc-parts-as-rest = True</vh></v>
 <v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="ekr.20111024091133.16650"><vh>Colors for Leo constructs</vh>
@@ -2147,6 +2148,29 @@
 <v t="ekr.20060504134056.2"><vh>@color literal4-color = #00aa00</vh></v>
 <v t="ekr.20060826152759"><vh>@color markup-color = blue</vh></v>
 <v t="ekr.20060713101831"><vh>@color operator-color = None</vh></v>
+</v>
+<v t="ekr.20190324140542.1"><vh>Colors for pygments tags</vh>
+<v t="ekr.20190325050733.1"><vh>@color comment = solarized-orange</vh></v>
+<v t="ekr.20190325050733.2"><vh>@color comment.single = solarized-orange</vh></v>
+<v t="ekr.20190325050733.3"><vh>@color generic.deleted = solarized-red</vh></v>
+<v t="ekr.20190325050733.4"><vh>@color generic.emph = solarized-blue</vh></v>
+<v t="ekr.20190325050733.5"><vh>@color generic.heading = solarized-magenta</vh></v>
+<v t="ekr.20190325050733.6"><vh>@color generic.inserted = alt-solarized-green</vh></v>
+<v t="ekr.20190325050733.7"><vh>@color generic.strong = solarized-blue</vh></v>
+<v t="ekr.20190325050733.8"><vh>@color generic.subheading = solarized-magenta</vh></v>
+<v t="ekr.20190325050733.9"><vh>@color keyword = solarized-blue</vh></v>
+<v t="ekr.20190325050733.10"><vh>@color name = white</vh></v>
+<v t="ekr.20190325050733.11"><vh>@color name.class = white</vh></v>
+<v t="ekr.20190325050733.12"><vh>@color name.decorator = solarized-orange</vh></v>
+<v t="ekr.20190325050733.13"><vh>@color name.entity = solarized-blue</vh></v>
+<v t="ekr.20190325050733.14"><vh>@color name.function = white</vh></v>
+<v t="ekr.20190325050733.15"><vh>@color name.other = solarized-red</vh></v>
+<v t="ekr.20190325050733.16"><vh>@color name.tag = solarized-magenta</vh></v>
+<v t="ekr.20190325050733.17"><vh>@color string = alt-solarized-green</vh></v>
+<v t="ekr.20190325050733.18"><vh>@color string.doc = solarized-orange</vh></v>
+<v t="ekr.20190325050733.20"><vh>@color string.double = alt-solarized-green</vh></v>
+<v t="ekr.20190325050733.19"><vh>@color string.interpol = alt-solarized-green</vh></v>
+<v t="ekr.20190325052226.1"><vh>@color string.single = alt-solarized-green</vh></v>
 </v>
 </v>
 <v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
@@ -2474,12 +2498,18 @@ always uses this ratio when opening a file that is being split vertically.</t>
 
 These are the settings used by Leo's Qt syntax colorer.
 
-Syntax colors may be any valid Tk color name or color value.
+Syntax colors may be any color value or any color name in Leo's color database in leoColor.py.
 
-For example, "00aa00" is the dark green used by IDLE.
+Examples:
 
-See http://www.tcl.tk/man/tcl8.3/TkCmd/colors.htm for a list of valid color
-names. These names are case sensitive, for example: BlanchedAlmond.</t>
+- "00aa00" is the dark green used by IDLE.
+- mistyRose1 and solarizedred are in the color database.
+
+Leo converts setting names to the standard form used in the database, so the following are valid:
+    
+- Misty-Rose1
+- solarized-red
+</t>
 <t tx="ekr.20041119034357.8">Example:
 
 "Created by Leo at @date"
@@ -2583,15 +2613,6 @@ platform: Lines end in platform-specific way.
 With platform Leo opens output files in "w" mode rather than "wb" mode and writes '\n'
 
 Please specify nl when uploading files to Leo's CVS site.</t>
-<t tx="ekr.20041119041747.1">The number of trailing newlines Leo retains at the end of each body text.
-
-asis: Leo retains the number of newlines contained in each body text.
-      
-    Warning: Leo sometimes has problems determining which ending newlines are "real".
-
-zero: Leo removes all trailing whitespace from body text.
-
-one:  Leo ends each non-empty body text with exactly one trailing newline.</t>
 <t tx="ekr.20041119042929"></t>
 <t tx="ekr.20041119042929.1">Value must be Qt color name or value, such as 'red' or 'xf2fddff' (without the quotes).
 
@@ -3790,7 +3811,8 @@ mod_scripting.py
 nav_qt.py
 nodetags.py
 quicksearch.py
-python_terminal.py
+# python_terminal.py
+    # #1009: python_terminal can segfault.
 screen_capture.py
 settings_finder.py
 stickynotes.py
@@ -5106,21 +5128,57 @@ Commands:
 <t tx="ekr.20111003085631.15488"></t>
 <t tx="ekr.20111003085631.15489"></t>
 <t tx="ekr.20111003085631.15490"></t>
-<t tx="ekr.20111003130143.15561">    **Important**: these nodes **only** specify fonts used by Leo's syntax colorizer.
+<t tx="ekr.20111003130143.15561">**Important**: these nodes **only** specify fonts used by Leo's syntax colorizer.
+
+To set fonts in Leo's widgets, change Leo's master style sheet::
     
-    To set fonts in Leo's widgets, change Leo's master style sheet::
-        
-        @data qt-gui-plugin-style-sheet 
+    @data qt-gui-plugin-style-sheet
     
-    Valid values for the body of @font nodes::
-        
-        family: a font family name
-        size:   an integer
-        weight: bold, normal, None
-        slant: roman, italic, None
+**Notes**
     
-    Use the show-fonts command to pick fonts, then copy the values shown by the
-    show-fonts command to the values here.
+- Leo ignores everything in the headline after @font: only the body matters.
+- Body lines starting with '#' are comments.
+- All other body lines should have the form:
+
+    &lt;optional language name&gt;&lt;jEdit or Pygments key&gt;&lt;specifiers&gt;
+
+- Underlines and '-' characters are ignored, and can be used for readability.
+- Valid specifiers are:
+    
+    family: a font family name.
+            None is the default, indicating the default font.
+    size:   an integer, optinally followed by px or pt.
+    weight: bold, normal, None.'
+            Default is normal.
+    slant:  roman, italic, None.
+            Default is roman.
+
+- **Note**: A single @font node may create settings for different languages.
+            See example 3 below.
+
+Example 1: Sets the comment1 font, for python only:
+
+python_comment1_family = None
+python_comment1_size = 12pt
+python_comment1_slant = italic
+python_comment1_weight = None
+
+Example 2: Sets the comment1 font for all languages:
+
+comment1_family = None
+comment1_size = 12pt
+comment1_slant = italic
+comment1_weight = bold
+
+Example 3: Combining the previous two examples:
+
+python_comment1_size = 12pt
+python_comment1_slant = italic
+comment1_size = 12pt
+comment1_slant = italic
+
+Use the show-fonts command to pick fonts, then copy the values shown by the
+show-fonts command to the values here.
 </t>
 <t tx="ekr.20111004182631.15533"></t>
 <t tx="ekr.20111004182631.15534">True:  Leo colors C language comments in cweb mode as black with LaTeX keywords highlighted.
@@ -11891,7 +11949,82 @@ QTextEdit#richTextEdit[vim_state~="vim_visual"] {
     font-weight:        @bookmarks_current_weight;
     text-decoration:    @bookmarks_current_decoration;
 }</t>
-<t tx="ekr.20190119061613.1"></t>
+<t tx="ekr.20190323043913.1">True: Leo uses pygments if available.
+
+
+@string pygments-style-name
+
+The default is "default" (without the quotes). This setting has effect only if @bool use-pygments is True.  It should be the name of a pygments style residing in the pygments/styles folder.  leonine.py defines a style that I used for testing.
+
+</t>
+<t tx="ekr.20190323043928.1">The name of the pygments style to use.
+This setting has effect only if *both* @bool use-pygments and @bool use-pygments-styles are True.
+
+The 'leonine' style is recommended. Install it from leo-editor-contrib.
+</t>
+<t tx="ekr.20190324042831.1">True: Use the pygments style given by @string pygments-style-name.
+
+False: Use @color settings to configure pygments tokens.
+       This allows per-language configuration, just as with Leo's jEdit-based colorers.
+
+
+</t>
+<t tx="ekr.20190324140542.1"># The setting names are names of pygments tokens.
+# Not all tokens are represented here.</t>
+<t tx="ekr.20190324182659.1">from  leo.core.leoColor import leo_color_database as color_d
+
+d = {
+    'Comment':            'solarized-orange',
+    'Comment.Single':     'solarized-orange',
+    'Generic.Deleted':    'solarized-red',
+    'Generic.Emph':       'solarized-blue',
+    'Generic.Heading':    'solarized-magenta',
+    'Generic.Inserted':   'alt-solarized-green',
+    'Generic.Strong':     'solarized-blue',
+    'Generic.Subheading': 'solarized-magenta',
+    'Keyword':            'solarized-blue',
+    'Name':               'white',
+    'Name.Class':         'white',
+    'Name.Decorator':     'solarized-orange',
+    'Name.Entity':        'solarized-blue',
+    'Name.Function':      'white',
+    'Name.Other':         'solarized-red',
+    'Name.Tag':           'solarized-magenta',
+    'String':             'alt-solarized-green',
+    'String.Doc':         'solarized-orange', # docstring.
+    'String.Double':      'alt-solarized-green',
+    'String.Interpol':    'alt-solarized-green',
+    'String.Single':      'alt-solarized-green',
+}
+root = p.copy()
+for key, val in d.items():
+    p = root.insertAsLastChild()
+    # p.h = '@color %s = %s' % (key.lower(), color_d.get(val, 'white'))
+    p.h = '@color %s = %s' % (key.lower(), val)
+    # p.b = val
+c.redraw()
+    </t>
+<t tx="ekr.20190325050733.1"></t>
+<t tx="ekr.20190325050733.10"></t>
+<t tx="ekr.20190325050733.11"></t>
+<t tx="ekr.20190325050733.12"></t>
+<t tx="ekr.20190325050733.13"></t>
+<t tx="ekr.20190325050733.14"></t>
+<t tx="ekr.20190325050733.15"></t>
+<t tx="ekr.20190325050733.16"></t>
+<t tx="ekr.20190325050733.17"></t>
+<t tx="ekr.20190325050733.18"></t>
+<t tx="ekr.20190325050733.19"></t>
+<t tx="ekr.20190325050733.2"></t>
+<t tx="ekr.20190325050733.20"></t>
+<t tx="ekr.20190325050733.3"></t>
+<t tx="ekr.20190325050733.4"></t>
+<t tx="ekr.20190325050733.5"></t>
+<t tx="ekr.20190325050733.6"></t>
+<t tx="ekr.20190325050733.7"></t>
+<t tx="ekr.20190325050733.8"></t>
+<t tx="ekr.20190325050733.9"></t>
+<t tx="ekr.20190325052226.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
