@@ -676,7 +676,7 @@ class ParserBaseClass(object):
         comments = d.get('comments')
         d['comments'] = '\n'.join(comments)
         return d
-    #@+node:ekr.20041213082558.2: *5* pbc.pbc.parseFontLine
+    #@+node:ekr.20041213082558.2: *5* pbc.parseFontLine
     def parseFontLine(self, line, d):
         s = line.strip()
         if not s: return
