@@ -372,7 +372,6 @@
 </v>
 <v t="ekr.20190117144035.3"><vh>script: run pytest in separate process</vh></v>
 <v t="ekr.20190117144035.2"><vh>script: stand-alone run pytest</vh></v>
-<v t="ekr.20190307044803.1"><vh>script: recursive-clean-lines</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -4456,36 +4455,6 @@ else:
 for path in paths:
     assert os.path.exists(path), repr(path)
     subprocess.Popen(r'python %s %s' % (prog, path), shell=True)
-</t>
-<t tx="ekr.20190307044803.1">'''
-Recursively clean all lines in a folder.
-
-Do this before importing to @clean.
-'''
-g.cls()
-
-directory = r'C:\apps\pyzo\source\pyzo'
-
-def clean_dir(directory):
-    for path in g.get_files_in_directory(directory, kinds=['.py']):
-        clean_file(path)
-        
-def clean_file(path):
-    with open(path, 'r') as f:
-        file_s = f.read()
-    lines = []
-    for line in g.splitLines(file_s):
-        if line.rstrip():
-            lines.append(line.rstrip())
-        if line.endswith('\n'):
-            lines.append('\n')
-    new_s = ''.join(lines)
-    if file_s != new_s:
-        with open(path, 'w') as f:
-            f.write(new_s)
-            print('wrote: %s' % path)
-    
-clean_dir(directory)
 </t>
 <t tx="maphew.20190209160547.1">gnx: maphew.20130809155103.2863
 </t>

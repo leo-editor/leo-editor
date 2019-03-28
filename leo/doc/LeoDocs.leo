@@ -2254,6 +2254,7 @@
 </v>
 <v t="ekr.20190119070017.1"><vh>5.8.1: Features</vh>
 <v t="ekr.20190117143942.654"><vh>#0525: Nested @clean</vh></v>
+<v t="ekr.20190325062650.1"><vh>#0568 &amp; #1102: pygments syntax coloring</vh></v>
 <v t="ekr.20190117143942.672"><vh>#0672: Leo uses TravisCI</vh></v>
 <v t="ekr.20190117143942.681"><vh>#0915: Leo debugger</vh></v>
 <v t="ekr.20190122041941.1"><vh>#0926: Organize @outline-data tree-abbreviations</vh></v>
@@ -2261,12 +2262,16 @@
 <v t="ekr.20190117143942.399"><vh>#1031, #1050 and #1003: Better error recovery</vh></v>
 <v t="ekr.20190117143942.463"><vh>#1040: Simplify atFile.write code</vh></v>
 <v t="ekr.20190122042300.1"><vh>#1047: Tree Window Resizes on Paste Node</vh></v>
+<v t="ekr.20190327105147.364"><vh>#1081: @asis</vh></v>
+<v t="ekr.20190327105525.1"><vh>#1085: The py3 branch</vh></v>
+<v t="ekr.20190327105503.1"><vh>Added g.get_files_in_directory</vh></v>
+<v t="ekr.20190327105000.1"><vh>Added promote-headline command</vh></v>
+<v t="ekr.20190327105249.1"><vh>Created py3 branch, for Leo 6.0</vh></v>
 <v t="ekr.20190123122138.1"><vh>Retired the head-to-prev node and tail-to-next-node commands </vh></v>
 </v>
 <v t="ekr.20190119071258.1"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
 </v>
-<v t="ekr.20190307095247.1"></v>
-<v t="ekr.20161029072351.1"></v>
+<v t="ekr.20131012060912.16788"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3514,12 +3519,17 @@ The following deserve special thanks:
 - e inspired @button nodes, a truly brilliant idea.
 - The late Bob Fitzwater kept me focused on design. Oh, how I wish he could see today's Leo.
 - Jonathan M. Gilligan showed how to put the Leo icon in Leo's windows.
+- The Jupyter development team taught me how to support pygments colorizing.
+- Almar Klein wrote pyzo, yoton and flexx.
+  Flexx is the basis of LeoWapp (--gui=browser).
+  Leo will (soon) use various excellent features of pyzo.
 - Donald Knuth invented the CWEB language and literate programming.
 - LeoUser (B.H.) contributed numerous plugins, including a prototype for Leo's minibuffer, and wrote jyLeo: Leo in Jython.
 - The late Bernhard Mulder invented the fundamental @shadow algorithm, a stroke of genius. Bernhard also inspired Leo's generators and position class. The one-node world could not have happened without Bernhard.
 - Joe Orr created tutorials and XSLT stylesheets for Leo: http://www.jserv.com/jk_orr/xml/leo.htm.
 - John K. Ousterhout created tcl/Tk, used in early versions of Leo.
-- Виталије Милошевић, (Vitalije Milosevic) rewrote Leo's read code, thereby allowing Leo to do without file caching.
+- Виталије Милошевић, (Vitalije Milosevic) rewrote Leo's read code,
+  thereby allowing Leo to do without file caching.
 - Tsuchi Noko created transparent icons.
 - Neal Norwitz wrote PyChecker.
 - Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
@@ -3530,7 +3540,8 @@ The following deserve special thanks:
 - Steven P. Schaefer pointed out security problems.
 - Gil Shwartz helped with unicode support.
 - Phil Straus has been a great friend and constant support.
-- Kent Tenney lobbies constantly to make Leo easier to use and understand. His comment opened the door to the one-node world.
+- Kent Tenney lobbies constantly to make Leo easier to use and understand.
+  His comment opened the door to the one-node world.
 - Guido van Rossum created Python.
 - Dave Winer created MORE.
 - Ville M. Vainio made invaluable contributions, including the one-node world,
@@ -7548,6 +7559,17 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 **THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**
+
+################
+Other Copyrights
+################
+
+Portions of Leo's pygments interface use code from the Jupyter qtconsole package.
+
+These parts are are clearly marked in Leo's code as follows:
+
+    Copyright (c) Jupyter Development Team.
+    Distributed under the terms of the Modified BSD License.
 </t>
 <t tx="ekr.20090223065025.3">**Important**: The changes you make below **will not persist** unless your script calls c.frame.body.onBodyChanged after making those changes. This method has the following signature::
 
@@ -29654,8 +29676,13 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **The highlights of Leo 5.8.1**
 
+Major features
 - LeoWapp: Leo in a browser.
+- Optional syntax coloring using pygments.
+  Optional: you may use @color &amp; @font directives instead of pygments styles.
 - Integrated debugger.
+
+Other features
 - Nested @clean nodes, useful for LaTex files.
 - A major refactoring of the code that writes external files.
 - Better error recovery.
@@ -29752,9 +29779,21 @@ https://github.com/leo-editor/leo-editor/issues/690
 <t tx="ekr.20190119065631.1">For the complete list, see:
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.8.1+label%3Abug+is%3Aclosed</t>
 <t tx="ekr.20190119070017.1"></t>
-<t tx="ekr.20190119071258.1">- Removed @string trailing-body-newlines.
-- Remove @string qt-ui-file-name.
+<t tx="ekr.20190119071258.1">New settings (defaults as shown):
+
+- @bool use-pygments = False
+- @bool use-pygments-styles = True
+- @string pygments-style-name = default
+- Created a 'leonine' style.
+  See: https://github.com/leo-editor/leo-editor-contrib/blob/master/leonine.py
+  
+Changed/improved settings:
+- Improved --trace-coloring traces
 - #993: use -, not underscore, for settings names.
+
+Removed settings:
+- Removed @string trailing-body-newlines.
+- Remove @string qt-ui-file-name.
   https://github.com/leo-editor/leo-editor/issues/993
 </t>
 <t tx="ekr.20190122041941.1">https://github.com/leo-editor/leo-editor/issues/926
@@ -29769,6 +29808,7 @@ The following call FastRead().readFileFromClipboard:
 </t>
 <t tx="ekr.20190122044116.1">- LeoWapp: Leo in a browser.
 - Integrated debugger.
+- Support for pygments syntax coloring.
 - Nested @clean nodes, useful for LaTex files.
 - A major refactoring of the code that writes external files.
 - Better error recovery.
@@ -29806,6 +29846,43 @@ g.execute_shell_commands_with_options inits an environment and then calls g.exec
 <t tx="ekr.20190307095247.1">This is detailed more fully in a scripting miscellany. g.execute_shell_commands executes one or more commands in a separate process using subprocess.popen. Commands *not* preceded by '&amp;' run to completion before the next command is run.
 
 This allows you to run programs in *any* language.  Just invoke the compiler/interpreter using g.execute_shell_commands.</t>
+<t tx="ekr.20190325062650.1">Leo now optionally supports syntax coloring with pygments.
+See http://pygments.org/docs/
+
+Related Leo issues:
+
+- https://github.com/leo-editor/leo-editor/issues/568
+- https://github.com/leo-editor/leo-editor/issues/1102
+
+New settings (defaults as shown):
+
+- @bool use-pygments = False
+- @bool use-pygments-styles = True
+- @string pygments-style-name = default
+- Created a 'leonine' style.
+  See: https://github.com/leo-editor/leo-editor-contrib/blob/master/leonine.py
+</t>
+<t tx="ekr.20190327105000.1">Copies the headlines of all descendants to the parent's body text.</t>
+<t tx="ekr.20190327105147.364">https://github.com/leo-editor/leo-editor/issues/1081
+
+Added warning when @asis or @nosent files change outside of Leo.
+</t>
+<t tx="ekr.20190327105249.1">https://github.com/leo-editor/leo-editor/issues/1085
+This branch assumes Python 3.  It will be the basis of Leo 6.0.
+  
+- Removed isPython3 switches.
+- Removed g.u.
+- Removed g.ue.
+
+The following methods will not be removed:
+- Replace isBytes, isCallable, isInt, isList, isString
+</t>
+<t tx="ekr.20190327105503.1"></t>
+<t tx="ekr.20190327105525.1">https://github.com/leo-editor/leo-editor/issues/1085
+
+This branch removes all Python 2 compatibility code.
+It will be the basis of Leo 6.0.
+ </t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
