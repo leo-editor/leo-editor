@@ -3442,6 +3442,35 @@ def fullPath(c, p, simulate=False):
             # Fix #102: call commander method, not the global function.
             return c.os_path_finalize_join(path, fn)
     return ''
+#@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
+def get_files_in_directory(directory, kinds=None, recursive=True):
+    '''
+    Return a list of all files of the given file extensions in the directory.
+    Default kinds: ['*.py'].
+    '''
+    files, sep = [], os.path.sep
+    if not g.os.path.exists(directory):
+        g.es_print('does not exist', directory)
+        return files
+    try:
+        if kinds:
+            kinds = [z if z.startswith('*') else '*'+z for z in kinds]
+        else:
+            kinds = ['*.py']
+        if recursive:
+            # Works for all versions of Python.
+            import fnmatch
+            for root, dirnames, filenames in os.walk(directory):
+                for kind in kinds:
+                    for filename in fnmatch.filter(filenames, kind):
+                        files.append(os.path.join(root, filename))
+        else:
+            for kind in kinds:
+                files.extend(glob.glob(directory + sep + kind))
+        return list(set(sorted(files)))
+    except Exception:
+        g.es_exception()
+        return []
 #@+node:ekr.20031218072017.1264: *3* g.getBaseDirectory
 # Handles the conventions applying to the "relative_path_base_directory" configuration option.
 
