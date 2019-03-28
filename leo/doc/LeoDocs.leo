@@ -16072,18 +16072,18 @@ Scripts may capture positions like this::
 
     c.frame.log.selectTab('Test')
         # Create Test or make it visible.
-
+    
     g.es('Test',color='blue',tabName='Test')
         # Write to the test tab.
+        
+.. Fix Leo Issue #1101: https://github.com/leo-editor/leo-editor/issues/1101
 
-Plugins and scripts may call the c.frame.canvas.createCanvas method to create a log tab containing a graphics widget. Here is an example script::
+Plugins and scripts may call c.frame.log.createTab to create non-text widgets in the log pane::
 
-    log = c.frame.log ; tag = 'my-canvas'
-    w = log.canvasDict.get(tag)
-    if not w:
-        w = log.createCanvas(tag)
-        w.configure(bg='yellow')
-    log.selectTab(tag)
+    from leo.core.leoQt import QtWidgets
+    log = c.frame.log
+    w = log.createTab('My Tab', createText=False, widget=QtWidgets.QFrame())
+    log.selectTab('My Tab')
 </t>
 <t tx="ekr.20131012191145.16789">.. in writingPlugins.html
 
