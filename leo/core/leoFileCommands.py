@@ -1362,14 +1362,6 @@ class FileCommands(object):
     #@+node:ekr.20031218072017.1865: *6* fc.compute_attribute_bits
     def compute_attribute_bits(self, forceWrite, p):
         '''Return the initial values of v's attributes.'''
-        c = self.c
-        # Cache the current position.
-        if 0:
-            if p == self.rootPosition and c.mFileName:
-                aList = [str(z) for z in self.currentPosition.archivedPosition()]
-                c.db ['current_position'] = ','.join(aList)
-        #
-        # Append unKnownAttributes to attrs
         attrs = []
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # Fix #526: do this for @auto nodes as well.
