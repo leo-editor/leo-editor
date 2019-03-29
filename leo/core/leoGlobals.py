@@ -2192,9 +2192,7 @@ def _assert(condition, show_callers=True):
     ok = bool(condition)
     if ok:
         return True
-    print('')
-    g.es_print('===== g._assert failed =====')
-    print('')
+    g.es_print('\n===== g._assert failed =====\n')
     if show_callers:
         g.es_print(g.callers())
     return False
@@ -6445,6 +6443,7 @@ def trace(*args, **keys):
     if prefix:
         prefix = prefix[1:] # One less newline.
         pr(prefix)
+        # s = s.lstrip()
     pr(s, newline=newline)
 #@+node:ekr.20080220111323: *3* g.translateArgs
 console_encoding = None
