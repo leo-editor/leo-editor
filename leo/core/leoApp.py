@@ -2837,7 +2837,10 @@ class LoadManager(object):
             not options.no_splash and
             not options.minimized)
         # --pyzo
-        g.app.pyzo = g.pyzo and options.pyzo
+        if g.pyzo and options.pyzo:
+            g.app.pyzo = True
+        else:
+            g.pyzo = g.app.pyzo = False
         
         # --session-restore & --session-save
         g.app.restore_session = bool(options.session_restore)
