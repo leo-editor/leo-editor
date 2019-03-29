@@ -985,7 +985,7 @@ class LeoApp(object):
         app = self
         if app.silentMode:
             return
-        if g.pyzo and g.app.pyzo:
+        if g.pyzo:
             pass
         else:
             if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
@@ -2837,11 +2837,8 @@ class LoadManager(object):
             not options.no_splash and
             not options.minimized)
         # --pyzo
-        if g.pyzo and options.pyzo:
-            g.app.pyzo = True
-        else:
-            g.pyzo = g.app.pyzo = False
-        
+        g.pyzo = g.pyzo and options.pyzo
+        print('\n===== py3.pyzo branch: --pyzo:', bool(g.pyzo))
         # --session-restore & --session-save
         g.app.restore_session = bool(options.session_restore)
         g.app.save_session = bool(options.session_save)

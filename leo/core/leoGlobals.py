@@ -22,8 +22,10 @@ in_bridge = False
     # This tells leoApp to load a null Gui.
 pyzo = True
     # It's now safe to enable this permanently,
-    # because "dangerous" code will test g.app.pyzo, not g.pyzo.
-print('\n===== py3.pyzo branch: g.pyzo:', pyzo)
+    # because LM.scanOptions clears it unless --pyzo is in effect.
+#
+# Now done in LM.doSimpleOptions.
+    # print('\n===== py3.pyzo branch: g.pyzo:', pyzo)
 SQLITE = True
     # True: Enable SQLite DB.
 #@-<< global switches >>
