@@ -2231,9 +2231,7 @@ def _assert(condition, show_callers=True):
     ok = bool(condition)
     if ok:
         return True
-    print('')
-    g.es_print('===== g._assert failed =====')
-    print('')
+    g.es_print('\n===== g._assert failed =====\n')
     if show_callers:
         g.es_print(g.callers())
     return False

@@ -195,8 +195,7 @@ class GeneralTestCase(unittest.TestCase):
         if trace_time:
             t2 = time.clock()
             if t2 - t1 > 3.0:
-                print('')
-                g.trace('EXCESSIVE TIME: %5.2f sec. in %s' % (t2-t1, self.p.h))
+                g.trace('\nEXCESSIVE TIME: %5.2f sec. in %s' % (t2-t1, self.p.h))
     #@+node:ekr.20051104075904.11: *3* shortDescription
     def shortDescription(self):
         s = self.p.h
