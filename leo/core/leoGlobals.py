@@ -6419,6 +6419,17 @@ def trace(*args, **keys):
         else: name = pad + name
     # Munge *args into s.
     result = [name] if name else []
+    #
+    # Put leading newlines into the prefix.
+    if isinstance(args, tuple):
+        args = list(args)
+    if args and isString(args[0]):
+        prefix = ''
+        while args[0].startswith('\n'):
+            prefix += '\n'
+            args[0] = args[0][1:]
+    else:
+        prefix = ''
     for arg in args:
         if isString(arg):
             pass
@@ -6431,6 +6442,9 @@ def trace(*args, **keys):
         else:
             result.append(arg)
     s = d.get('before') + ''.join(result)
+    if prefix:
+        prefix = prefix[1:] # One less newline.
+        pr(prefix)
     pr(s, newline=newline)
 #@+node:ekr.20080220111323: *3* g.translateArgs
 console_encoding = None
