@@ -20,7 +20,9 @@ isWindows = sys.platform.startswith('win')
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
-pyzo = False
+pyzo = True
+    # It's now safe to enable this permanently,
+    # because "dangerous" code will test g.app.pyzo, not g.pyzo.
 print('\n===== py3.pyzo branch: g.pyzo:', pyzo)
 SQLITE = True
     # True: Enable SQLite DB.

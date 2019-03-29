@@ -985,7 +985,7 @@ class LeoApp(object):
         app = self
         if app.silentMode:
             return
-        if g.pyzo:
+        if g.pyzo and g.app.pyzo:
             pass
         else:
             if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
@@ -2710,6 +2710,8 @@ class LoadManager(object):
         add_bool('--minimized',     'start minimized')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
+        if g.pyzo:
+            add_bool('--pyzo',      'enable experimental pyzo code')
         add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
         add_other('--script',       'execute a script and then exit', m="PATH")
         add_bool('--script-window', 'execute script using default gui')
@@ -2834,6 +2836,9 @@ class LoadManager(object):
         g.app.use_splash_screen = (
             not options.no_splash and
             not options.minimized)
+        # --pyzo
+        g.app.pyzo = g.pyzo and options.pyzo
+        
         # --session-restore & --session-save
         g.app.restore_session = bool(options.session_restore)
         g.app.save_session = bool(options.session_save)
