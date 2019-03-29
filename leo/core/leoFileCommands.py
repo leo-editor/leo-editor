@@ -93,8 +93,7 @@ class FastRead (object):
                 message = 'bad .leo file: %s' % g.shortFileName(path)
             else:
                 message = 'The clipboard is not a vaild .leo file'
-            print('')
-            g.es_print(message, color='red')
+            g.es_print('\n' + message, color='red')
             g.es_print(g.toUnicode(e))
             print('')
             # #970: Just report failure here.

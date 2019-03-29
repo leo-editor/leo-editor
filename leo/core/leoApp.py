@@ -2216,8 +2216,7 @@ class LoadManager(object):
                     g.app.theme_color = settings_d.get_string_setting('color-theme')
                     g.app.theme_name = settings_d.get_string_setting('theme-name')
                     if trace:
-                        print('')
-                        g.trace('=====\n')
+                        g.trace('\n=====\n')
                         print(' g.app.theme_path: %s' % g.app.theme_directory)
                         print(' g.app.theme_name: %s' % g.app.theme_name)
                         print('g.app.theme_color: %s' % g.app.theme_color)
