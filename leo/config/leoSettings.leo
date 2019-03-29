@@ -3469,7 +3469,7 @@ aquamarine1</t>
 <t tx="ekr.20060627121646.2">The number of times to flash matching brackets.</t>
 <t tx="ekr.20060627121646.3">One half the total cycle time of bracket flashes, in milliseconds.</t>
 <t tx="ekr.20060704090341"></t>
-<t tx="ekr.20060713101831"># Support for solozized colors requires black.</t>
+<t tx="ekr.20060713101831"># Support for solarized colors requires black.</t>
 <t tx="ekr.20060730101451"></t>
 <t tx="ekr.20060730101451.3"></t>
 <t tx="ekr.20060730101451.5"></t>
@@ -5182,7 +5182,7 @@ show-fonts command to the values here.
 </t>
 <t tx="ekr.20111004182631.15533"></t>
 <t tx="ekr.20111004182631.15534">True:  Leo colors C language comments in cweb mode as black with LaTeX keywords highlighted.
-Flase: Leo colors C language comments in cweb mode as comments (default red).
+False: Leo colors C language comments in cweb mode as comments (default red).
 
 Note: this setting does not affect how Leo colors noweb section references and defintions.
 </t>

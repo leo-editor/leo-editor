@@ -11,6 +11,7 @@
 #@+node:ekr.20140827092102.18575: ** << imports >> (leoColorizer.py)
 import re
 import string
+import sys
 import time
 assert time
 import leo.core.leoGlobals as g
@@ -2681,8 +2682,12 @@ class PygmentsColorizer(BaseJEditColorizer):
         from pygments.lexer import inherit
         
         class PatchedLexer(lexer.__class__):
+
+            wimpy_regex = sys.version_info < (3, 6, 0)
             
-            leo_sec_ref_pat = r'(?-m:\<\<(.*?)\>\>)'
+            leo_sec_ref_pat = r'\<\<(.*?)\>\>' if wimpy_regex else r'(?-m:\<\<(.*?)\>\>)'
+                # Multiline for Python 2, and less than 3.6, but that can't be helped.
+
             tokens = {
                 'root': [
                     (r'^@(color|nocolor|killcolor)\b', self.at_color_callback),
