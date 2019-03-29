@@ -1026,7 +1026,7 @@ class AtFile(object):
             else:
                 g.es("no @shadow nodes in the selected tree")
         return found
-    #@+node:ekr.20041005105605.157: *5* at.putFile
+    #@+node:ekr.20041005105605.157: *5* at.putFile & helper
     def putFile(self, root, fromString='', sentinels=True):
         '''Write the contents of the file to the output stream.'''
         at = self
@@ -1671,7 +1671,7 @@ class AtFile(object):
             at.exception("exception preprocessing script")
             return ''
     #@+node:ekr.20041005105605.160: *4* Writing 4.x
-    #@+node:ekr.20041005105605.161: *5* at.putBody & helpers
+    #@+node:ekr.20041005105605.161: *5* at.putBody & helper
     def putBody(self, p, fromString=''):
         '''
         Generate the body enclosed in sentinel lines.
@@ -3131,7 +3131,7 @@ class FastAtRead (object):
         Return (delims, first_lines, i+1) or None
         '''
         first_lines = []
-        i = 0 # To keep pylint happy.
+        i = 0 # To keep some versions of pylint happy.
         for i, line in enumerate(lines):
             m = self.header_pattern.match(line)
             if m:

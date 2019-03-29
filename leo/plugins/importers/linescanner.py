@@ -879,6 +879,10 @@ class Importer(object):
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
         lines1, lines2 = g.splitLines(s1), g.splitLines(s2)
+        if 0: # An excellent trace for debugging.
+            g.trace(c.shortFileName())
+            g.printObj(lines1, tag='lines1')
+            g.printObj(lines2, tag='lines2')
         if self.strict:
             # Ignore blank lines only.
             # Adding nodes may add blank lines.
@@ -931,10 +935,10 @@ class Importer(object):
         result = []
         aList1 = aList[max(0, i-n):i]
         aList2 = aList[i+1:i+n+1]
-        result.extend(['  %4s %s' % (i + 1 - len(aList1) + j, g.truncate(s,60))
+        result.extend(['  %4s %r\n' % (i + 1 - len(aList1) + j, g.truncate(s,60))
             for j, s in enumerate(aList1)])
-        result.append('* %4s %s' % (i + 1, g.truncate(aList[i], 60)))
-        result.extend(['  %4s %s' % (i + 2 + j, g.truncate(s, 60))
+        result.append('* %4s %r\n' % (i + 1, g.truncate(aList[i], 60)))
+        result.extend(['  %4s %r\n' % (i + 2 + j, g.truncate(s, 60))
             for j, s in enumerate(aList2)])
         return result
     #@+node:ekr.20161123210716.1: *5* i.show_failure
