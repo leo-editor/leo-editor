@@ -42,7 +42,6 @@
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
 </v>
-<v t="ekr.20190322041148.1"><vh>@string pygments-style-name = leonine</vh></v>
 </v>
 <v t="ekr.20140103105930.16446"><vh>@views</vh>
 <v t="ekr.20140102162014.16438"><vh>@view added strip_comments keyword arg to two config.getData methods</vh></v>
@@ -73,7 +72,6 @@
 <v t="ekr.20180816105258.1"><vh>script: diff-branches</vh></v>
 </v>
 </v>
-<v t="ekr.20190322041148.1"></v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
 <v t="ekr.20190122185223.1"><vh>regex: find all kwargs</vh></v>
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
@@ -363,11 +361,115 @@
 <v t="ekr.20140907123524.18774"></v>
 <v t="ekr.20140907085654.18699"></v>
 <v t="ekr.20140907131341.18707"></v>
-<v t="ekr.20181009072707.1"></v>
-<v t="ekr.20140827092102.18574"></v>
+<v t="ekr.20160306114544.1"></v>
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31382e3171017d71025808000000616e6e6f7461746571037d710473732e"></v>
 </v>
 <v t="ekr.20180604114211.1"><vh>Recent code</vh>
+<v t="ekr.20190329040120.1"><vh> Others</vh>
+<v t="ekr.20190306105229.1"><vh>6.0: #1032: @clean cleans blank lines</vh>
+<v t="ekr.20080708094444.36"><vh>x.propagate_changes</vh></v>
+<v t="ekr.20080708094444.38"><vh>x.propagate_changed_lines (main algorithm) &amp; helpers</vh>
+<v t="ekr.20150207044400.9"><vh> &lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20150207111757.180"><vh>x.dump_args</vh></v>
+<v t="ekr.20150207111757.178"><vh>x.dump_lines</vh></v>
+<v t="ekr.20150209044257.6"><vh>x.init_data</vh></v>
+<v t="ekr.20080708094444.40"><vh>x.init_ivars</vh></v>
+<v t="ekr.20150207044400.16"><vh>x.op_bad</vh></v>
+<v t="ekr.20150207044400.12"><vh>x.op_delete</vh></v>
+<v t="ekr.20150207044400.13"><vh>x.op_equal</vh></v>
+<v t="ekr.20150207044400.14"><vh>x.op_insert</vh></v>
+<v t="ekr.20150207044400.15"><vh>x.op_replace</vh></v>
+<v t="ekr.20150208060128.7"><vh>x.preprocess</vh></v>
+<v t="ekr.20150208223018.4"><vh>x.put_plain_line</vh></v>
+<v t="ekr.20150209044257.8"><vh>x.put_sentinels</vh></v>
+</v>
+<v t="ekr.20190109142026.1"><vh>at.atFileToString</vh></v>
+<v t="ekr.20041005105605.157"><vh>at.putFile &amp; helper</vh></v>
+<v t="ekr.20041005105605.161"><vh>at.putBody &amp; helper</vh>
+<v t="ekr.20041005105605.163"><vh>at.putLine</vh></v>
+</v>
+<v t="ekr.20041005105605.174"><vh>at.putCodeLine</vh></v>
+<v t="ekr.20041005105605.204"><vh>at.os</vh></v>
+</v>
+<v t="ekr.20190216104815.1"><vh>Maybe: #0525: nested #clean</vh>
+<v t="ekr.20190217060648.1"><vh>ref</vh>
+<v t="ekr.20190108054317.1"><vh>at.findFilesToRead</vh></v>
+<v t="ekr.20190108052043.1"><vh>at.findFilesToWrite</vh></v>
+<v t="ekr.20041005105605.174"></v>
+<v t="ekr.20041005105605.216"><vh>at.warnAboutOrpanAndIgnoredNodes</vh></v>
+<v t="ekr.20041005105605.144"><vh>at.write &amp; helper</vh></v>
+<v t="ekr.20041005105605.147"><vh>at.writeAll &amp; helpers</vh>
+<v t="ekr.20190108052043.1"></v>
+<v t="ekr.20190108053115.1"><vh>at.internalWriteError</vh></v>
+<v t="ekr.20190108112519.1"><vh>at.reportEndOfWrite</vh></v>
+<v t="ekr.20140727075002.18108"><vh>at.saveOutlineIfPossible</vh></v>
+<v t="ekr.20041005105605.149"><vh>at.writeAllHelper &amp; helper</vh>
+<v t="ekr.20150602204757.1"><vh>at.autoBeautify</vh></v>
+<v t="ekr.20190108105509.1"><vh>at.writePathChanged</vh></v>
+</v>
+</v>
+<v t="ekr.20031218072017.3388"><vh>p.clearAllVisitedInTree</vh></v>
+</v>
+<v t="ekr.20041005105605.157"></v>
+<v t="ekr.20041005105605.161"></v>
+<v t="ekr.20041005105605.164"><vh>writing code lines...</vh>
+<v t="ekr.20041005105605.165"><vh>at.@all</vh>
+<v t="ekr.20041005105605.166"><vh>at.putAtAllLine</vh></v>
+<v t="ekr.20041005105605.167"><vh>at.putAtAllBody</vh></v>
+<v t="ekr.20041005105605.169"><vh>at.putAtAllChild</vh></v>
+</v>
+<v t="ekr.20041005105605.170"><vh>at.@others (write)</vh>
+<v t="ekr.20041005105605.173"><vh>at.putAtOthersLine &amp; helpers</vh>
+<v t="ekr.20041005105605.172"><vh>at.putAtOthersChild</vh></v>
+<v t="ekr.20041005105605.171"><vh>at.validInAtOthers (write)</vh></v>
+</v>
+</v>
+<v t="ekr.20041005105605.174"></v>
+<v t="ekr.20041005105605.176"><vh>at.putRefLine &amp; helpers</vh>
+<v t="ekr.20131224085853.16443"><vh>at.findReference</vh></v>
+<v t="ekr.20041005105605.199"><vh>at.findSectionName</vh></v>
+<v t="ekr.20041005105605.178"><vh>at.putAfterLastRef</vh></v>
+<v t="ekr.20041005105605.179"><vh>at.putAfterMiddleRef</vh></v>
+<v t="ekr.20041005105605.177"><vh>at.putRefAt</vh></v>
+</v>
+</v>
+<v t="ekr.20041005105605.173"></v>
+<v t="ekr.20041005105605.163"></v>
+<v t="ekr.20041005105605.174"></v>
+</v>
+<v t="ekr.20180824062242.1"><vh>Won't Fix: #0958: freeze in vim mode</vh>
+<v t="ekr.20110605121601.18005"><vh>class LeoQTextBrowser (QtWidgets.QTextBrowser)</vh>
+<v t="ekr.20110605121601.18006"><vh> lqtb.ctor (** no longer instantiates leo_h)</vh></v>
+<v t="ekr.20110605121601.18007"><vh>lqtb. __repr__ &amp; __str__</vh></v>
+<v t="ekr.20110605121601.18008"><vh>lqtb.Auto completion</vh>
+<v t="ekr.20110605121601.18009"><vh>class LeoQListWidget(QListWidget)</vh>
+<v t="ekr.20110605121601.18010"><vh>lqlw.ctor</vh></v>
+<v t="ekr.20110605121601.18011"><vh>lqlw.closeEvent</vh></v>
+<v t="ekr.20110605121601.18012"><vh>lqlw.end_completer</vh></v>
+<v t="ekr.20141024170936.7"><vh>lqlw.get_selection</vh></v>
+<v t="ekr.20110605121601.18013"><vh>lqlw.keyPressEvent</vh></v>
+<v t="ekr.20110605121601.18014"><vh>lqlw.select_callback</vh></v>
+<v t="tbrown.20111011094944.27031"><vh>lqlw.tab_callback</vh></v>
+<v t="ekr.20110605121601.18015"><vh>lqlw.set_position</vh></v>
+<v t="ekr.20110605121601.18016"><vh>lqlw.show_completions</vh></v>
+</v>
+<v t="ekr.20110605121601.18017"><vh>lqtb.lqtb.init_completer</vh></v>
+<v t="ekr.20110605121601.18018"><vh>lqtb.redirections to LeoQListWidget</vh></v>
+</v>
+<v t="ekr.20110605121601.18019"><vh>lqtb.leo_dumpButton</vh></v>
+<v t="ekr.20141103061944.31"><vh>lqtb.get/setXScrollPosition</vh></v>
+<v t="ekr.20111002125540.7021"><vh>lqtb.get/setYScrollPosition</vh></v>
+<v t="ekr.20120925061642.13506"><vh>lqtb.onSliderChanged</vh></v>
+<v t="tbrown.20130411145310.18855"><vh>lqtb.wheelEvent</vh></v>
+</v>
+<v t="ekr.20180824062905.1"><vh>lqtb.onFocusIn</vh></v>
+</v>
+<v t="ekr.20181004060958.1"><vh>re: can not happen in jedi completer</vh>
+<v t="ekr.20180519111302.1"><vh>ac.get_jedi_completions &amp; helper</vh>
+<v t="ekr.20180526211127.1"><vh>ac.add_prefix</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20190119062719.1"><vh> Done &amp; documented</vh>
 <v t="ekr.20190319150024.1"><vh>#0568: pygments</vh>
 <v t="ekr.20190323034724.1"><vh>script: print recolor stats</vh></v>
@@ -414,135 +516,73 @@
 <v t="ekr.20190119085129.1"><vh>#1047: Tree Window Resizes on Paste Node</vh></v>
 <v t="ekr.20190122113449.1"><vh>#1065: refresh-from-disk</vh></v>
 <v t="ekr.20190218044303.1"><vh>#1081: @asis</vh></v>
-<v t="ekr.20190218071717.1"><vh>#1085: Py3 branch</vh></v>
 <v t="ekr.20190327143118.1"><vh>#1101: scripting miscellany</vh></v>
 <v t="ekr.20190327105736.1"><vh>Added g.get_files_in_directory</vh></v>
 <v t="ekr.20190323084212.1"><vh>Added promote-headlines commands</vh></v>
 </v>
-<v t="ekr.20190216104815.1"><vh>===== #0525: nested #clean</vh>
-<v t="ekr.20190217060648.1"><vh>ref</vh>
-<v t="ekr.20190108054317.1"><vh>at.findFilesToRead</vh></v>
-<v t="ekr.20190108052043.1"><vh>at.findFilesToWrite</vh></v>
-<v t="ekr.20041005105605.174"><vh>at.putCodeLine</vh></v>
-<v t="ekr.20041005105605.216"><vh>at.warnAboutOrpanAndIgnoredNodes</vh></v>
-<v t="ekr.20041005105605.144"><vh>at.write &amp; helper</vh></v>
-<v t="ekr.20041005105605.147"><vh>at.writeAll &amp; helpers</vh>
-<v t="ekr.20190108052043.1"></v>
-<v t="ekr.20190108053115.1"><vh>at.internalWriteError</vh></v>
-<v t="ekr.20190108112519.1"><vh>at.reportEndOfWrite</vh></v>
-<v t="ekr.20140727075002.18108"><vh>at.saveOutlineIfPossible</vh></v>
-<v t="ekr.20041005105605.149"><vh>at.writeAllHelper &amp; helper</vh>
-<v t="ekr.20150602204757.1"><vh>at.autoBeautify</vh></v>
-<v t="ekr.20190108105509.1"><vh>at.writePathChanged</vh></v>
-</v>
-</v>
-<v t="ekr.20031218072017.3388"><vh>p.clearAllVisitedInTree</vh></v>
-</v>
-<v t="ekr.20041005105605.157"><vh>at.putFile</vh></v>
-<v t="ekr.20041005105605.161"><vh>at.putBody &amp; helpers</vh>
-<v t="ekr.20041005105605.163"><vh>at.putLine</vh></v>
-</v>
-<v t="ekr.20041005105605.164"><vh>writing code lines...</vh>
-<v t="ekr.20041005105605.165"><vh>at.@all</vh>
-<v t="ekr.20041005105605.166"><vh>at.putAtAllLine</vh></v>
-<v t="ekr.20041005105605.167"><vh>at.putAtAllBody</vh></v>
-<v t="ekr.20041005105605.169"><vh>at.putAtAllChild</vh></v>
-</v>
-<v t="ekr.20041005105605.170"><vh>at.@others (write)</vh>
-<v t="ekr.20041005105605.173"><vh>at.putAtOthersLine &amp; helpers</vh>
-<v t="ekr.20041005105605.172"><vh>at.putAtOthersChild</vh></v>
-<v t="ekr.20041005105605.171"><vh>at.validInAtOthers (write)</vh></v>
-</v>
-</v>
-<v t="ekr.20041005105605.174"></v>
-<v t="ekr.20041005105605.176"><vh>at.putRefLine &amp; helpers</vh>
-<v t="ekr.20131224085853.16443"><vh>at.findReference</vh></v>
-<v t="ekr.20041005105605.199"><vh>at.findSectionName</vh></v>
-<v t="ekr.20041005105605.178"><vh>at.putAfterLastRef</vh></v>
-<v t="ekr.20041005105605.179"><vh>at.putAfterMiddleRef</vh></v>
-<v t="ekr.20041005105605.177"><vh>at.putRefAt</vh></v>
-</v>
-</v>
-<v t="ekr.20041005105605.173"></v>
-<v t="ekr.20041005105605.163"></v>
-<v t="ekr.20041005105605.174"></v>
-</v>
-<v t="ekr.20180824062242.1"><vh>===== #0958: freeze in vim mode</vh>
-<v t="ekr.20110605121601.18005"><vh>class LeoQTextBrowser (QtWidgets.QTextBrowser)</vh>
-<v t="ekr.20110605121601.18006"><vh> lqtb.ctor (** no longer instantiates leo_h)</vh></v>
-<v t="ekr.20110605121601.18007"><vh>lqtb. __repr__ &amp; __str__</vh></v>
-<v t="ekr.20110605121601.18008"><vh>lqtb.Auto completion</vh>
-<v t="ekr.20110605121601.18009"><vh>class LeoQListWidget(QListWidget)</vh>
-<v t="ekr.20110605121601.18010"><vh>lqlw.ctor</vh></v>
-<v t="ekr.20110605121601.18011"><vh>lqlw.closeEvent</vh></v>
-<v t="ekr.20110605121601.18012"><vh>lqlw.end_completer</vh></v>
-<v t="ekr.20141024170936.7"><vh>lqlw.get_selection</vh></v>
-<v t="ekr.20110605121601.18013"><vh>lqlw.keyPressEvent</vh></v>
-<v t="ekr.20110605121601.18014"><vh>lqlw.select_callback</vh></v>
-<v t="tbrown.20111011094944.27031"><vh>lqlw.tab_callback</vh></v>
-<v t="ekr.20110605121601.18015"><vh>lqlw.set_position</vh></v>
-<v t="ekr.20110605121601.18016"><vh>lqlw.show_completions</vh></v>
-</v>
-<v t="ekr.20110605121601.18017"><vh>lqtb.lqtb.init_completer</vh></v>
-<v t="ekr.20110605121601.18018"><vh>lqtb.redirections to LeoQListWidget</vh></v>
-</v>
-<v t="ekr.20110605121601.18019"><vh>lqtb.leo_dumpButton</vh></v>
-<v t="ekr.20141103061944.31"><vh>lqtb.get/setXScrollPosition</vh></v>
-<v t="ekr.20111002125540.7021"><vh>lqtb.get/setYScrollPosition</vh></v>
-<v t="ekr.20120925061642.13506"><vh>lqtb.onSliderChanged</vh></v>
-<v t="tbrown.20130411145310.18855"><vh>lqtb.wheelEvent</vh></v>
-</v>
-<v t="ekr.20180824062905.1"><vh>lqtb.onFocusIn</vh></v>
-</v>
-<v t="ekr.20190306105229.1"><vh>===== #1032: @clean cleans blank lines</vh>
-<v t="ekr.20080708094444.36"><vh>x.propagate_changes</vh></v>
-<v t="ekr.20080708094444.38"><vh>x.propagate_changed_lines (main algorithm) &amp; helpers</vh>
-<v t="ekr.20150207044400.9"><vh> &lt;&lt; docstring &gt;&gt;</vh></v>
-<v t="ekr.20150207111757.180"><vh>x.dump_args</vh></v>
-<v t="ekr.20150207111757.178"><vh>x.dump_lines</vh></v>
-<v t="ekr.20150209044257.6"><vh>x.init_data</vh></v>
-<v t="ekr.20080708094444.40"><vh>x.init_ivars</vh></v>
-<v t="ekr.20150207044400.16"><vh>x.op_bad</vh></v>
-<v t="ekr.20150207044400.12"><vh>x.op_delete</vh></v>
-<v t="ekr.20150207044400.13"><vh>x.op_equal</vh></v>
-<v t="ekr.20150207044400.14"><vh>x.op_insert</vh></v>
-<v t="ekr.20150207044400.15"><vh>x.op_replace</vh></v>
-<v t="ekr.20150208060128.7"><vh>x.preprocess</vh></v>
-<v t="ekr.20150208223018.4"><vh>x.put_plain_line</vh></v>
-<v t="ekr.20150209044257.8"><vh>x.put_sentinels</vh></v>
-</v>
-<v t="ekr.20190109142026.1"><vh>at.atFileToString</vh></v>
-<v t="ekr.20041005105605.157"></v>
-<v t="ekr.20041005105605.161"></v>
-<v t="ekr.20041005105605.174"></v>
-<v t="ekr.20041005105605.204"><vh>at.os</vh></v>
-</v>
+<v t="ekr.20190329035854.1"><vh> To be documented</vh>
+<v t="ekr.20190218071717.1"><vh>#1085: Py3 branch</vh></v>
+<v t="ekr.20190327194749.1"><vh>===== #1098: crash in json scanner</vh></v>
 <v t="ekr.20190327203238.1"><vh>===== #1090:  --script path</vh>
 <v t="ekr.20180312153008.1"><vh>LM.doScriptOption</vh></v>
 </v>
-<v t="ekr.20190327194749.1"><vh>===== #1098: crash in json scanner</vh></v>
-<v t="ekr.20190327183758.1"><vh>===== merge devel into py3 and pyzo branches</vh>
-<v t="ekr.20190327192403.1"><vh>py3 conflicts</vh></v>
+<v t="ekr.20190328083346.1"><vh>===== #1018: marks</vh>
+<v t="ekr.20031218072017.1579"><vh>fc.putVnodes &amp; helper</vh>
+<v t="ekr.20190328160622.1"><vh>fc.setCachedBits</vh></v>
 </v>
-<v t="ekr.20181004060958.1"><vh>re: can not happen in jedi completer</vh>
-<v t="ekr.20180519111302.1"><vh>ac.get_jedi_completions &amp; helper</vh>
-<v t="ekr.20180526211127.1"><vh>ac.add_prefix</vh></v>
+<v t="ekr.20031218072017.1863"><vh>fc.putVnode &amp; helper</vh>
+<v t="ekr.20031218072017.1865"><vh>fc.compute_attribute_bits</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20190328165019.1"><vh>===== #1100: changes to external files</vh>
+<v t="ekr.20150405073203.1"><vh>class ExternalFilesController</vh>
+<v t="ekr.20150404083533.1"><vh>efc.ctor</vh></v>
+<v t="ekr.20150405105938.1"><vh>efc.entries</vh>
+<v t="ekr.20150405194745.1"><vh>efc.check_overwrite (called from c.checkTimeStamp)</vh></v>
+<v t="ekr.20031218072017.2613"><vh>efc.destroy_frame</vh></v>
+<v t="ekr.20150407141838.1"><vh>efc.find_path_for_node (called from vim.py)</vh></v>
+<v t="ekr.20150330033306.1"><vh>efc.on_idle &amp; helpers</vh>
+<v t="ekr.20150404045115.1"><vh>efc.idle_check_commander</vh></v>
+<v t="ekr.20150403044823.1"><vh>efc.idle_check_at_file_node</vh></v>
+<v t="ekr.20150407124259.1"><vh>efc.idle_check_open_with_file &amp; helper</vh>
+<v t="ekr.20150407205631.1"><vh>efc.update_open_with_node</vh></v>
+</v>
+</v>
+<v t="ekr.20150404082344.1"><vh>efc.open_with &amp; helpers</vh>
+<v t="ekr.20031218072017.2824"><vh>efc.compute_ext</vh></v>
+<v t="ekr.20031218072017.2832"><vh>efc.compute_temp_file_path &amp; helpers</vh>
+<v t="ekr.20150406055221.2"><vh>efc.clean_file_name</vh></v>
+<v t="ekr.20150406055221.3"><vh>efc.legacy_file_name</vh></v>
+</v>
+<v t="ekr.20100203050306.5937"><vh>efc.create_temp_file</vh></v>
+<v t="ekr.20031218072017.2829"><vh>efc.open_file_in_external_editor</vh></v>
+<v t="ekr.20190123051253.1"><vh>efc.remove_temp_file</vh></v>
+</v>
+<v t="ekr.20150404092538.1"><vh>efc.shut_down</vh></v>
+</v>
+<v t="ekr.20150405110219.1"><vh>efc.utilities</vh>
+<v t="ekr.20150405200212.1"><vh>efc.ask</vh></v>
+<v t="ekr.20150404052819.1"><vh>efc.checksum</vh></v>
+<v t="ekr.20031218072017.2614"><vh>efc.destroy_temp_file</vh></v>
+<v t="ekr.20150407204201.1"><vh>efc.get_mtime</vh></v>
+<v t="ekr.20150405122428.1"><vh>efc.get_time</vh></v>
+<v t="ekr.20150403045207.1"><vh>efc.has_changed</vh></v>
+<v t="ekr.20150405104340.1"><vh>efc.is_enabled</vh></v>
+<v t="ekr.20150404083049.1"><vh>efc.join</vh></v>
+<v t="tbrown.20150904102518.1"><vh>efc.set_time</vh></v>
+<v t="ekr.20190218055230.1"><vh>efc.warn</vh></v>
+</v>
+</v>
+<v t="ekr.20150403044823.1"></v>
+<v t="ekr.20150403045207.1"></v>
 </v>
 </v>
 <v t="ekr.20190316153545.1"><vh>===== #1096 pyzo</vh>
+<v t="ekr.20190329040602.1"><vh>Ref</vh>
+<v t="ekr.20120212060348.10374"><vh> &lt;&lt; global switches &gt;&gt; (leoGlobals.py)</vh></v>
+<v t="ekr.20190317082435.1"><vh>&lt;&lt; pyzo imports &gt;&gt; (qt_frame.py)</vh></v>
 <v t="ekr.20190319024244.1"><vh>checkin: DynamicWindow is just an object</vh></v>
-<v t="ekr.20190317083529.1"><vh>Changed &amp; new</vh>
-<v t="ekr.20090717112235.6007"><vh>app.computeSignon &amp; printSignon</vh></v>
-<v t="ekr.20120215072959.12539"><vh>c.config.getShortcut (changed)</vh></v>
-<v t="ekr.20031219074948.1"><vh>class g.Tracing/NullObject</vh></v>
-<v t="ekr.20131118172620.16858"><vh>dw.finishCreateLogPane (changed)</vh></v>
-<v t="tbrown.20110621120042.22914"><vh>flc.get_top_splitter (changed)</vh></v>
-<v t="ekr.20070626132332"><vh>g.es (changed)</vh></v>
-<v t="ekr.20061119120006"><vh>LeoFrame.Icon area convenience methods</vh></v>
-<v t="ekr.20130921043420.21175"><vh>qt_gui.setFilter (changed)</vh></v>
-<v t="ekr.20110605121601.18421"><vh>qtree.createTreeItem (changed)</vh></v>
-</v>
 <v t="ekr.20190317082603.1"><vh>COPY pyzo_test.py</vh>
 <v t="ekr.20190317082603.2"><vh>&lt;&lt; easy imports &gt;&gt;</vh></v>
 <v t="ekr.20190317082603.3"><vh>&lt;&lt; class LeoEmptySplashWidget &gt;&gt;</vh></v>
@@ -560,15 +600,31 @@
 <v t="ekr.20190317082603.14"><vh>LeoMainWindow.closeEvent (traces)</vh></v>
 </v>
 </v>
-<v t="ekr.20120212060348.10374"><vh> &lt;&lt; global switches &gt;&gt; (leoGlobals.py)</vh></v>
-<v t="ekr.20190317082435.1"><vh>&lt;&lt; pyzo imports &gt;&gt; (qt_frame.py)</vh></v>
-<v t="ekr.20190317084039.1"><vh>----- new main window</vh>
+<v t="ekr.20190329040519.1"><vh>----- classes</vh>
+<v t="ekr.20110605121601.18464"><vh>class TabbedFrameFactory</vh>
+<v t="ekr.20110605121601.18465"><vh> ctor (TabbedFrameFactory)</vh></v>
+<v t="ekr.20110605121601.18466"><vh>createFrame (TabbedFrameFactory)</vh></v>
+<v t="ekr.20110605121601.18468"><vh>createMaster (TabbedFrameFactory)</vh></v>
+<v t="ekr.20110605121601.18472"><vh>createTabCommands (TabbedFrameFactory)</vh>
+<v t="ekr.20110605121601.18473"><vh>&lt;&lt; Commands for tabs &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20110605121601.18467"><vh>deleteFrame (TabbedFrameFactory)</vh></v>
+<v t="ekr.20110605121601.18471"><vh>focusCurrentBody (TabbedFrameFactory)</vh></v>
+<v t="ekr.20110605121601.18469"><vh>setTabForCommander (TabbedFrameFactory)</vh></v>
+<v t="ekr.20110605121601.18470"><vh>signal handlers (TabbedFrameFactory)</vh></v>
+</v>
+<v t="ekr.20110605121601.18137"><vh>class  DynamicWindow (QMainWindow)</vh>
+<v t="ekr.20110605121601.18138"><vh> ctor &amp; reloadSettings (DynamicWindow)</vh></v>
+<v t="ekr.20110605121601.18172"><vh>do_leo_spell_btn_*</vh></v>
+<v t="ekr.20110605121601.18139"><vh>dw.construct &amp; helpers (*** changed)</vh>
+<v t="ekr.20140915062551.19519"><vh>dw.set_icon_bar_orientation</vh></v>
+</v>
 <v t="ekr.20110605121601.18141"><vh>dw.createMainWindow &amp; helpers</vh>
 <v t="ekr.20110605121601.18142"><vh>dw.top-level</vh>
 <v t="ekr.20110605121601.18143"></v>
 <v t="ekr.20110605121601.18144"><vh>dw.createCentralWidget</vh></v>
 <v t="ekr.20110605121601.18145"><vh>dw.createLogPane &amp; helpers</vh>
-<v t="ekr.20131118172620.16858"></v>
+<v t="ekr.20131118172620.16858"><vh>dw.finishCreateLogPane (changed)</vh></v>
 </v>
 <v t="ekr.20110605121601.18146"><vh>dw.createMainLayout</vh></v>
 <v t="ekr.20110605121601.18147"><vh>dw.createMenuBar</vh></v>
@@ -618,29 +674,7 @@
 <v t="ekr.20110605121601.18171"><vh>dw.tr</vh></v>
 </v>
 </v>
-<v t="ekr.20110605121601.18139"><vh>dw.construct &amp; helpers (*** changed)</vh>
-<v t="ekr.20140915062551.19519"><vh>dw.set_icon_bar_orientation</vh></v>
-</v>
 <v t="ekr.20190317084000.1"><vh>dw.createPyzoMainWindow (*** new)</vh></v>
-</v>
-<v t="ekr.20110605121601.18464"><vh>class TabbedFrameFactory</vh>
-<v t="ekr.20110605121601.18465"><vh> ctor (TabbedFrameFactory)</vh></v>
-<v t="ekr.20110605121601.18466"><vh>createFrame (TabbedFrameFactory)</vh></v>
-<v t="ekr.20110605121601.18468"><vh>createMaster (TabbedFrameFactory)</vh></v>
-<v t="ekr.20110605121601.18472"><vh>createTabCommands (TabbedFrameFactory)</vh>
-<v t="ekr.20110605121601.18473"><vh>&lt;&lt; Commands for tabs &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20110605121601.18467"><vh>deleteFrame (TabbedFrameFactory)</vh></v>
-<v t="ekr.20110605121601.18471"><vh>focusCurrentBody (TabbedFrameFactory)</vh></v>
-<v t="ekr.20110605121601.18469"><vh>setTabForCommander (TabbedFrameFactory)</vh></v>
-<v t="ekr.20110605121601.18470"><vh>signal handlers (TabbedFrameFactory)</vh></v>
-</v>
-<v t="ekr.20110605121601.18137"><vh>class  DynamicWindow (QMainWindow)</vh>
-<v t="ekr.20110605121601.18138"><vh> ctor &amp; reloadSettings (DynamicWindow)</vh></v>
-<v t="ekr.20110605121601.18172"><vh>do_leo_spell_btn_*</vh></v>
-<v t="ekr.20110605121601.18139"></v>
-<v t="ekr.20110605121601.18141"></v>
-<v t="ekr.20190317084000.1"></v>
 <v t="ekr.20110605121601.18179"><vh>dw.Event handlers</vh>
 <v t="ekr.20110605121601.18140"><vh>dw.closeEvent</vh></v>
 </v>
@@ -656,7 +690,30 @@
 <v t="ekr.20190317084647.4"><vh>LeoPyzoMainWindow.setStyleSheet (override)</vh></v>
 <v t="ekr.20190317084647.5"><vh>LeoPyzoMainWindow.closeEvent (traces)</vh></v>
 </v>
-<v t="ekr.20190319022339.1"><vh>----- call order</vh></v>
+</v>
+<v t="ekr.20190329035816.1"><vh>----- Two-step enabling</vh>
+<v t="ekr.20180312150559.1"><vh>LM.addOptionsToParser</vh></v>
+<v t="ekr.20180312151544.1"><vh>LM.doSimpleOptions</vh></v>
+</v>
+</v>
+<v t="ekr.20190317083529.1"><vh>Changed &amp; new</vh>
+<v t="ekr.20090717112235.6007"><vh>app.computeSignon &amp; printSignon</vh></v>
+<v t="ekr.20120215072959.12539"><vh>c.config.getShortcut (changed)</vh></v>
+<v t="ekr.20031219074948.1"><vh>class g.Tracing/NullObject</vh></v>
+<v t="ekr.20131118172620.16858"></v>
+<v t="tbrown.20110621120042.22914"><vh>flc.get_top_splitter (changed)</vh></v>
+<v t="ekr.20070626132332"><vh>g.es (changed)</vh></v>
+<v t="ekr.20061119120006"><vh>LeoFrame.Icon area convenience methods</vh></v>
+<v t="ekr.20130921043420.21175"><vh>qt_gui.setFilter (changed)</vh></v>
+<v t="ekr.20110605121601.18421"><vh>qtree.createTreeItem (changed)</vh></v>
+</v>
+</v>
+<v t="ekr.20190317084039.1"><vh>----- new main window</vh>
+<v t="ekr.20110605121601.18141"></v>
+<v t="ekr.20110605121601.18139"></v>
+<v t="ekr.20190317084000.1"></v>
+</v>
+<v t="ekr.20190319022339.1"><vh>----- call order</vh>
 <v t="ekr.20110605121601.18250"><vh>qtFrame.finishCreate &amp; helpers (changed)</vh>
 <v t="ekr.20110605121601.18251"><vh>qtFrame.createSplitterComponents</vh></v>
 </v>
@@ -669,11 +726,219 @@
 <tnodes>
 <t tx="EKR.20040430162943">@nosearch
 </t>
+<t tx="ekr.20031218072017.1579">new = True
+
+def putVnodes(self, p=None):
+    """Puts all &lt;v&gt; elements in the order in which they appear in the outline."""
+    c = self.c
+    c.clearAllVisited()
+    self.put("&lt;vnodes&gt;\n")
+    # Make only one copy for all calls.
+    self.currentPosition = p or c.p
+    self.rootPosition = c.rootPosition()
+    self.vnodesDict = {}
+    if self.usingClipboard:
+        self.expanded_gnxs, self.marked_gnxs = set(), set()
+            # These will be ignored.
+        self.putVnode(self.currentPosition)
+            # Write only current tree.
+    else:
+        for p in c.rootPosition().self_and_siblings():
+            self.putVnode(p, isIgnore=p.isAtIgnoreNode())
+        # Fix #1018: scan *all* nodes.
+        self.setCachedBits()
+    self.put("&lt;/vnodes&gt;\n")
+</t>
+<t tx="ekr.20031218072017.1863">def putVnode(self, p, isIgnore=False):
+    """Write a &lt;v&gt; element corresponding to a VNode."""
+    fc = self
+    v = p.v
+    #
+    # Precompute constants.
+    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+    isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
+        # Write the entire @edit tree if it has children.
+    isFile = p.isAtFileNode()
+    isShadow = p.isAtShadowFileNode()
+    isThin = p.isAtThinFileNode()
+    #
+    # Set forcewrite.
+    if isIgnore or p.isAtIgnoreNode():
+        forceWrite = True
+    elif isAuto or isEdit or isFile or isShadow or isThin:
+        forceWrite = False
+    else:
+        forceWrite = True
+    #
+    # Set the write bit if necessary.
+    gnx = v.fileIndex
+    if forceWrite or self.usingClipboard:
+        v.setWriteBit() # 4.2: Indicate we wrote the body text.
+
+    attrs = fc.compute_attribute_bits(forceWrite, p)
+    #
+    # Write the node.
+    v_head = '&lt;v t="%s"%s&gt;' % (gnx, attrs)
+    if gnx in fc.vnodesDict:
+        fc.put(v_head + '&lt;/v&gt;\n')
+    else:
+        fc.vnodesDict[gnx] = True
+        v_head += '&lt;vh&gt;%s&lt;/vh&gt;' % (xml.sax.saxutils.escape(p.v.headString() or ''))
+        # New in 4.2: don't write child nodes of @file-thin trees
+        # (except when writing to clipboard)
+        if p.hasChildren() and (forceWrite or self.usingClipboard):
+            fc.put('%s\n' % v_head)
+            # This optimization eliminates all "recursive" copies.
+            p.moveToFirstChild()
+            while 1:
+                fc.putVnode(p, isIgnore)
+                if p.hasNext(): p.moveToNext()
+                else: break
+            p.moveToParent() # Restore p in the caller.
+            fc.put('&lt;/v&gt;\n')
+        else:
+            fc.put('%s&lt;/v&gt;\n' % v_head) # Call put only once.
+</t>
+<t tx="ekr.20031218072017.1865">def compute_attribute_bits(self, forceWrite, p):
+    '''Return the initial values of v's attributes.'''
+    attrs = []
+    if p.hasChildren() and not forceWrite and not self.usingClipboard:
+        # Fix #526: do this for @auto nodes as well.
+        attrs.append(self.putDescendentVnodeUas(p))
+        # Fix #1023: never put marked/expanded bits.
+            # attrs.append(self.putDescendentAttributes(p))
+    return ''.join(attrs)
+</t>
 <t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
 # See the "About this file" node for important notes.
 @language python
 </t>
 <t tx="ekr.20031218072017.2604"></t>
+<t tx="ekr.20031218072017.2613">def destroy_frame(self, frame):
+    """
+    Close all "Open With" files associated with frame.
+    Called by g.app.destroyWindow.
+    """
+    files = [ef for ef in self.files if ef.c.frame == frame]
+    paths = [ef.path for ef in files]
+    for ef in files:
+        self.destroy_temp_file(ef)
+    self.files = [z for z in self.files if z.path not in paths]
+</t>
+<t tx="ekr.20031218072017.2614">def destroy_temp_file(self, ef):
+    '''Destroy the *temp* file corresponding to ef, an ExternalFile instance.'''
+    # Do not use g.trace here.
+    if ef.path and g.os_path_exists(ef.path):
+        try:
+            os.remove(ef.path)
+        except Exception:
+            pass
+</t>
+<t tx="ekr.20031218072017.2824">def compute_ext(self, c, p, ext):
+    '''Return the file extension to be used in the temp file.'''
+    if ext:
+        for ch in ("'", '"'):
+            if ext.startswith(ch): ext = ext.strip(ch)
+    if not ext:
+        # if node is part of @&lt;file&gt; tree, get ext from file name
+        for p2 in p.self_and_parents(copy=False):
+            if p2.isAnyAtFileNode():
+                fn = p2.h.split(None, 1)[1]
+                ext = g.os_path_splitext(fn)[1]
+                break
+    if not ext:
+        theDict = c.scanAllDirectives()
+        language = theDict.get('language')
+        ext = g.app.language_extension_dict.get(language)
+    if not ext:
+        ext = '.txt'
+    if ext[0] != '.':
+        ext = '.' + ext
+    return ext
+</t>
+<t tx="ekr.20031218072017.2829">def open_file_in_external_editor(self, c, d, fn, testing=False):
+    '''
+    Open a file fn in an external editor.
+
+    This will be an entire external file, or a temp file for a single node.
+
+    d is a dictionary created from an @openwith settings node.
+
+        'args':     the command-line arguments to be used to open the file.
+        'ext':      the file extension.
+        'kind':     the method used to open the file, such as subprocess.Popen.
+        'name':     menu label (used only by the menu code).
+        'p':        the nearest @&lt;file&gt; node, or None.
+        'shortcut': menu shortcut (used only by the menu code).
+    '''
+    testing = testing or g.unitTesting
+    arg_tuple = d.get('args', [])
+    arg = ' '.join(arg_tuple)
+    kind = d.get('kind')
+    try:
+        # All of these must be supported because they
+        # could exist in @open-with nodes.
+        command = '&lt;no command&gt;'
+        if kind in ('os.system', 'os.startfile'):
+            # New in Leo 5.7: 
+            # Use subProcess.Popen(..., shell=True)
+            c_arg = self.join(arg, fn)
+            if not testing:
+                try:
+                    subprocess.Popen(c_arg, shell=True)
+                except OSError:
+                    g.es_print('c_arg', repr(c_arg))
+                    g.es_exception()
+        elif kind == 'exec':
+            g.es_print('open-with exec no longer valid.')
+        elif kind == 'os.spawnl':
+            filename = g.os_path_basename(arg)
+            command = 'os.spawnl(%s,%s,%s)' % (arg, filename, fn)
+            if not testing: os.spawnl(os.P_NOWAIT, arg, filename, fn)
+        elif kind == 'os.spawnv':
+            filename = os.path.basename(arg_tuple[0])
+            vtuple = arg_tuple[1:]
+            vtuple.insert(0, filename)
+                # add the name of the program as the first argument.
+                # Change suggested by Jim Sizelove.
+            vtuple.append(fn)
+            command = 'os.spawnv(%s)' % (vtuple)
+            if not testing:
+                os.spawnv(os.P_NOWAIT, arg[0], vtuple) #???
+        elif kind == 'subprocess.Popen':
+            c_arg = self.join(arg, fn)
+            command = 'subprocess.Popen(%s)' % c_arg
+            if not testing:
+                try:
+                    subprocess.Popen(c_arg, shell=True)
+                except OSError:
+                    g.es_print('c_arg', repr(c_arg))
+                    g.es_exception()
+        elif g.isCallable(kind):
+            # Invoke openWith like this:
+            # c.openWith(data=[func,None,None])
+            # func will be called with one arg, the filename
+            command = '%s(%s)' % (kind, fn)
+            if not testing: kind(fn)
+        else:
+            command = 'bad command:' + str(kind)
+            if not testing: g.trace(command)
+        return command # for unit testing.
+    except Exception:
+        g.es('exception executing open-with command:', command)
+        g.es_exception()
+        return 'oops: %s' % command
+</t>
+<t tx="ekr.20031218072017.2832">def compute_temp_file_path(self, c, p, ext):
+    '''Return the path to the temp file for p and ext.'''
+    if c.config.getBool('open-with-clean-filenames'):
+        path = self.clean_file_name(c, ext, p)
+    else:
+        path = self.legacy_file_name(c, ext, p)
+    if not path:
+        g.error('c.temp_file_path failed')
+    return path
+</t>
 <t tx="ekr.20031218072017.3388">def clearAllVisitedInTree(self):
     for p in self.self_and_subtree(copy=False):
         p.v.clearVisited()
@@ -1607,6 +1872,36 @@ def printSignon(self, verbose=False):
         print(app.signon2)
 </t>
 <t tx="ekr.20090802181029.5988"></t>
+<t tx="ekr.20100203050306.5937">def create_temp_file(self, c, ext, p):
+    '''
+    Create the file used by open-with if necessary.
+    Add the corresponding ExternalFile instance to self.files
+    '''
+    path = self.compute_temp_file_path(c, p, ext)
+    exists = g.os_path_exists(path)
+    # Compute encoding and s.
+    d2 = c.scanAllDirectives(p)
+    encoding = d2.get('encoding', None)
+    if encoding is None:
+        encoding = c.config.default_derived_file_encoding
+    s = g.toEncodedString(p.b, encoding, reportErrors=True)
+    # Write the file *only* if it doesn't exist.
+    # No need to read the file: recomputing s above suffices.
+    if not exists:
+        try:
+            with open(path, 'wb') as f:
+                f.write(s)
+                f.flush()
+        except IOError:
+            g.error('exception creating temp file: %s' % path)
+            g.es_exception()
+            return None
+    # Add or update the external file entry.
+    time = self.get_mtime(path)
+    self.files = [z for z in self.files if z.path != path]
+    self.files.append(ExternalFile(c, ext, p, path, time))
+    return path
+</t>
 <t tx="ekr.20110605121601.17862"># These files are true plugins, but it is more convenient to put them here.
 </t>
 <t tx="ekr.20110605121601.18005">if QtWidgets:
@@ -3061,8 +3356,12 @@ def setYScrollPosition(self, pos):
 <t tx="ekr.20120212060348.10374">in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
-pyzo = False
-print('\n===== py3.pyzo branch: g.pyzo:', pyzo)
+pyzo = True
+    # It's now safe to enable this permanently,
+    # because LM.scanOptions clears it unless --pyzo is in effect.
+#
+# Now done in LM.doSimpleOptions.
+    # print('\n===== py3.pyzo branch: g.pyzo:', pyzo)
 SQLITE = True
     # True: Enable SQLite DB.
 </t>
@@ -4332,6 +4631,110 @@ def createDefiningWordRule(self, word):
 
     return forth_defining_word_rule
 </t>
+<t tx="ekr.20150330033306.1">on_idle_count = 0
+
+def on_idle(self):
+    '''
+    Check for changed open-with files and all external files in commanders
+    for which @bool check_for_changed_external_file is True.
+    '''
+    if not g.app or g.app.killed:
+        return
+    self.on_idle_count += 1
+    # New in Leo 5.7: always handle delayed requests.
+    if g.app.windowList:
+        c = g.app.log and g.app.log.c
+        if c:
+            c.outerUpdate()
+    if 1:
+        # Fix #262: Improve performance when @bool check-for-changed-external-files is True.
+        if self.unchecked_files:
+            # Check all external files.
+            for ef in self.unchecked_files:
+                self.idle_check_open_with_file(ef)
+            self.unchecked_files = []
+        elif self.unchecked_commanders:
+            # Check the next commander for which
+            # @bool check_for_changed_external_file is True.
+            c = self.unchecked_commanders.pop()
+            self.idle_check_commander(c)
+        else:
+            # Add all commanders for which
+            # @bool check_for_changed_external_file is True.
+            self.unchecked_commanders = [
+                z for z in g.app.commanders() if self.is_enabled(z)
+            ]
+            self.unchecked_files = [z for z in self.files if z.exists()]
+    else:
+        # First, check all existing open-with files.
+        for ef in self.files: # A list of ExternalFile instances.
+            if ef.exists():
+                self.idle_check_open_with_file(ef)
+        # Next, check all commanders for which
+        # @bool check_for_changed_external_file is True.
+        for c in g.app.commanders():
+            if self.is_enabled(c):
+                self.idle_check_commander(c)
+</t>
+<t tx="ekr.20150403044823.1">def idle_check_at_file_node(self, c, p):
+    '''Check the @&lt;file&gt; node at p for external changes.'''
+    trace = False
+        # Matt, set this to True, but only for the file that interests you.\
+        # trace = p.h == '@file unregister-leo.leox'
+    path = g.fullPath(c, p)
+    has_changed = self.has_changed(c, path)
+    if trace:
+        g.trace('changed', has_changed, p.h)
+    if has_changed:
+        if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+            # Fix #1081: issue a warning.
+            self.warn(c, path, p=p)
+        elif self.ask(c, path, p=p):
+            c.redraw(p=p)
+            c.refreshFromDisk(p)
+            c.redraw()
+        # Always update the path &amp; time to prevent future warnings.
+        self.set_time(path)
+        self.checksum_d[path] = self.checksum(path)
+</t>
+<t tx="ekr.20150403045207.1">def has_changed(self, c, path):
+    '''Return True if p's external file has changed outside of Leo.'''
+    if not g.os_path_exists(path):
+        return False
+    if g.os_path_isdir(path):
+        return False
+    #
+    # First, check the modification times.
+    old_time = self.get_time(path)
+    new_time = self.get_mtime(path)
+    if not old_time:
+        # Initialize.
+        self.set_time(path, new_time)
+        self.checksum_d[path] = self.checksum(path)
+        return False
+    if old_time == new_time:
+        return False
+    #
+    # Check the checksums *only* if the mod times don't match.
+    old_sum = self.checksum_d.get(path)
+    new_sum = self.checksum(path)
+    if new_sum == old_sum:
+        # The modtime changed, but it's contents didn't.
+        # Update the time, so we don't keep checking the checksums.
+        # Return False so we don't prompt the user for an update.
+        self.set_time(path, new_time)
+        return False
+    else:
+        # The file has really changed.
+        assert old_time, path
+        if 0: # Fix bug 208: external change overwrite protection only works once
+            # https://github.com/leo-editor/leo-editor/issues/208
+            # These next two lines mean that if the Leo version
+            # is changed (dirtied) again, overwrite will occur without warning.
+            self.set_time(path, new_time)
+            self.checksum_d[path] = new_sum
+        return True
+</t>
 <t tx="ekr.20150403094619.1">class LeoLineTextWidget(QtWidgets.QFrame):
     '''
     A QFrame supporting gutter line numbers.
@@ -4475,6 +4878,291 @@ def createDefiningWordRule(self, word):
     hbox.addWidget(e)
     e.installEventFilter(self)
     e.viewport().installEventFilter(self)
+</t>
+<t tx="ekr.20150404045115.1">def idle_check_commander(self, c):
+    '''
+    Check all external files corresponding to @&lt;file&gt; nodes in c for
+    changes.
+    '''
+    p = c.rootPosition()
+    seen = set()
+    while p:
+        if p.v in seen:
+            p.moveToNodeAfterTree()
+        elif p.isAtCleanNode():
+            # Fix #1074: nested @clean nodes.
+            seen.add(p.v)
+            self.idle_check_at_file_node(c, p)
+            p.moveToThreadNext()
+        elif p.isAnyAtFileNode():
+            seen.add(p.v)
+            self.idle_check_at_file_node(c, p)
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+</t>
+<t tx="ekr.20150404052819.1">def checksum(self, path):
+    '''Return the checksum of the file at the given path.'''
+    import hashlib
+    return hashlib.md5(open(path, 'rb').read()).hexdigest()
+</t>
+<t tx="ekr.20150404082344.1">def open_with(self, c, d):
+    '''
+    Called by c.openWith to handle items in the Open With... menu.
+
+    'd' a dict created from an @openwith settings node with these keys:
+
+        'args':     the command-line arguments to be used to open the file.
+        'ext':      the file extension.
+        'kind':     the method used to open the file, such as subprocess.Popen.
+        'name':     menu label (used only by the menu code).
+        'p':        the nearest @&lt;file&gt; node, or None.
+        'shortcut': menu shortcut (used only by the menu code).
+    '''
+    try:
+        ext = d.get('ext')
+        if not g.doHook('openwith1', c=c, p=c.p, v=c.p.v, d=d):
+            root = d.get('p')
+            if root:
+                # Open the external file itself.
+                directory = g.setDefaultDirectory(c, root)
+                path = c.os_path_finalize_join(directory, root.anyAtFileNodeName())
+                self.open_file_in_external_editor(c, d, path)
+            else:
+                # Open a temp file containing just the node.
+                p = c.p
+                ext = self.compute_ext(c, p, ext)
+                path = self.compute_temp_file_path(c, p, ext)
+                if path:
+                    self.remove_temp_file(p, path)
+                    self.create_temp_file(c, ext, p)
+                    self.open_file_in_external_editor(c, d, path)
+        g.doHook('openwith2', c=c, p=c.p, v=c.p.v, d=d)
+    except Exception:
+        g.es('unexpected exception in c.openWith')
+        g.es_exception()
+</t>
+<t tx="ekr.20150404083049.1">def join(self, s1, s2):
+    '''Return s1 + ' ' + s2'''
+    return '%s %s' % (s1, s2)
+</t>
+<t tx="ekr.20150404083533.1">def __init__(self, c=None):
+    '''Ctor for ExternalFiles class.'''
+    self.checksum_d = {}
+        # Keys are full paths, values are file checksums.
+    self.enabled_d = {}
+        # For efc.on_idle.
+        # Keys are commanders.
+        # Values are cached @bool check-for-changed-external-file settings.
+    self.files = []
+        # List of ExternalFile instances created by self.open_with.
+    self.has_changed_d = {}
+        # Keys are commanders. Values are bools.
+        # Used only to limit traces.
+    self.unchecked_commanders = []
+        # Copy of g.app.commanders()
+    self.unchecked_files = []
+        # Copy of self file. Only one files is checked at idle time.
+    self._time_d = {}
+        # Keys are full paths, values are modification times.
+        # DO NOT alter directly, use set_time(path) and
+        # get_time(path), see set_time() for notes.
+    self.yesno_all_time = 0  # previous yes/no to all answer, time of answer
+    self.yesno_all_answer = None  # answer, 'yes-all', or 'no-all'
+    g.app.idleTimeManager.add_callback(self.on_idle)
+</t>
+<t tx="ekr.20150404092538.1">def shut_down(self):
+    '''
+    Destroy all temporary open-with files.
+    This may fail if the files are still open.
+
+    Called by g.app.finishQuit.
+    '''
+    # Dont call g.es or g.trace! The log stream no longer exists.
+    for ef in self.files[:]:
+        self.destroy_temp_file(ef)
+    self.files = []
+</t>
+<t tx="ekr.20150405073203.1">class ExternalFilesController(object):
+    '''
+    A class tracking changes to external files:
+
+    - temp files created by open-with commands.
+    - external files corresponding to @file nodes.
+
+    This class raises a dialog when a file changes outside of Leo.
+
+    **Naming conventions**:
+
+    - d is always a dict created by the @open-with logic.
+      This dict describes *only* how to open the file.
+
+    - ef is always an ExternalFiles instance.
+    '''
+    @others
+</t>
+<t tx="ekr.20150405104340.1">def is_enabled(self, c):
+    '''Return the cached @bool check_for_changed_external_file setting.'''
+    d = self.enabled_d
+    val = d.get(c)
+    if val is None:
+        val = c.config.getBool('check-for-changed-external-files', default=False)
+        d[c] = val
+    return val
+</t>
+<t tx="ekr.20150405105938.1"></t>
+<t tx="ekr.20150405110219.1"># pylint: disable=no-value-for-parameter
+</t>
+<t tx="ekr.20150405122428.1">def get_time(self, path):
+    '''
+    return timestamp for path
+
+    see set_time() for notes
+    '''
+    return self._time_d.get(g.os_path_realpath(path))
+</t>
+<t tx="ekr.20150405194745.1">def check_overwrite(self, c, path):
+    '''
+    Implements c.checkTimeStamp.
+
+    Return True if the file given by fn has not been changed
+    since Leo read it or if the user agrees to overwrite it.
+    '''
+    if c.sqlite_connection and c.mFileName == path:
+        # sqlite database file is never actually overwriten by Leo
+        # so no need to check its timestamp. It is modified through
+        # sqlite methods.
+        return True
+    if self.has_changed(c, path):
+        return self.ask(c, path)
+    else:
+        return True
+</t>
+<t tx="ekr.20150405200212.1">def ask(self, c, path, p=None):
+    '''
+    Ask user whether to overwrite an @&lt;file&gt; tree.
+    Return True if the user agrees.
+    '''
+    if g.unitTesting:
+        return False
+    if c not in g.app.commanders():
+        return False
+    if self.yesno_all_time + 3 &gt;= time.time() and self.yesno_all_answer:
+        self.yesno_all_time = time.time()  # Still reloading?  Extend time.
+        return bool('yes' in self.yesno_all_answer.lower())
+    if not p:
+        for ef in self.files:
+            if ef.path == path:
+                where = ef.p.h
+                break
+        else:
+            where = 'the outline node'
+    else:
+        where = p.h
+    _is_leo = path.endswith(('.leo', '.db'))
+    if _is_leo:
+        s = '\n'.join([
+            '%s has changed outside Leo.' %(g.splitLongFileName(path)),
+            'Overwrite it?'
+        ])
+    else:
+        s = '\n'.join([
+            '%s has changed outside Leo.' % (g.splitLongFileName(path)),
+            'Reload %s in Leo?' % (where),
+        ])
+    result = g.app.gui.runAskYesNoDialog(c, 'Overwrite the version in Leo?', s,
+        yes_all=not _is_leo, no_all=not _is_leo)
+    if result and "-all" in result.lower():
+        self.yesno_all_time = time.time()
+        self.yesno_all_answer = result.lower()
+    return bool(result and 'yes' in result.lower())
+        # Careful: may be unit testing.
+</t>
+<t tx="ekr.20150406055221.2">def clean_file_name(self, c, ext, p):
+    '''Compute the file name when subdirectories mirror the node's hierarchy in Leo.'''
+    use_extentions = c.config.getBool('open-with-uses-derived-file-extensions')
+    ancestors, found = [], False
+    for p2 in p.self_and_parents(copy=False):
+        h = p2.anyAtFileNodeName()
+        if not h:
+            h = p2.h # Not an @file node: use the entire header
+        elif use_extentions and not found:
+            # Found the nearest ancestor @&lt;file&gt; node.
+            found = True
+            base, ext2 = g.os_path_splitext(h)
+            if p2 == p: h = base
+            if ext2: ext = ext2
+        ancestors.append(g.sanitize_filename(h))
+    # The base directory is &lt;tempdir&gt;/Leo&lt;id(v)&gt;.
+    ancestors.append("Leo" + str(id(p.v)))
+    # Build temporary directories.
+    td = os.path.abspath(tempfile.gettempdir())
+    while len(ancestors) &gt; 1:
+        td = os.path.join(td, ancestors.pop())
+        if not os.path.exists(td):
+            os.mkdir(td)
+    # Compute the full path.
+    name = ancestors.pop() + ext
+    path = os.path.join(td, name)
+    return path
+</t>
+<t tx="ekr.20150406055221.3">def legacy_file_name(self, c, ext, p):
+    '''Compute a legacy file name for unsupported operating systems.'''
+    try:
+        leoTempDir = getpass.getuser() + "_" + "Leo"
+    except Exception:
+        leoTempDir = "LeoTemp"
+        g.es("Could not retrieve your user name.")
+        g.es("Temporary files will be stored in: %s" % leoTempDir)
+    td = os.path.join(os.path.abspath(tempfile.gettempdir()), leoTempDir)
+    if not os.path.exists(td):
+        os.mkdir(td)
+    name = g.sanitize_filename(p.h) + '_' + str(id(p.v)) + ext
+    path = os.path.join(td, name)
+    return path
+</t>
+<t tx="ekr.20150407124259.1">def idle_check_open_with_file(self, ef):
+    '''Update the open-with node given by ef.'''
+    assert isinstance(ef, ExternalFile), ef
+    if ef.path and os.path.exists(ef.path):
+        time = self.get_mtime(ef.path)
+        if time and time != ef.time:
+            ef.time = time # inhibit endless dialog loop.
+            self.update_open_with_node(ef)
+</t>
+<t tx="ekr.20150407141838.1">def find_path_for_node(self, p):
+    '''
+    Find the path corresponding to node p.
+    called from vim.py.
+    '''
+    for ef in self.files:
+        if ef.p and ef.p.v == p.v:
+            path = ef.path
+            break
+    else:
+        path = None
+    return path
+</t>
+<t tx="ekr.20150407204201.1">def get_mtime(self, path):
+    '''Return the modification time for the path.'''
+    return g.os_path_getmtime(g.os_path_realpath(path))
+</t>
+<t tx="ekr.20150407205631.1">def update_open_with_node(self, ef):
+    '''Update the body text of ef.p to the contents of ef.path.'''
+    assert isinstance(ef, ExternalFile), ef
+    c, p = ef.c, ef.p.copy()
+    # Ask the user how to resolve the conflict.
+    if self.ask(c, ef.path, p=p):
+        g.blue('updated %s' % p.h)
+        s, e = g.readFileIntoString(ef.path)
+        p.b = s
+        if c.config.getBool('open-with-goto-node-on-update'):
+            c.selectPosition(p)
+        if c.config.getBool('open-with-save-on-update'):
+            c.save()
+        else:
+            p.setDirty()
+            c.setChanged(True)
 </t>
 <t tx="ekr.20150413091056.1">'''Warn if leoProjects.txt or leoToDo.txt contain any clones.'''
 
@@ -5456,6 +6144,118 @@ def reloadSettings(self):
 <t tx="ekr.20180225010743.1">@nosearch</t>
 <t tx="ekr.20180225010850.1"></t>
 <t tx="ekr.20180225010913.1"></t>
+<t tx="ekr.20180312150559.1">@nobeautify
+
+def addOptionsToParser(self, parser):
+    
+    add = parser.add_option
+    
+    def add_bool(option, help, dest=None):
+        add(option, action='store_true', dest=dest, help=help)
+
+    def add_other(option, help, dest=None, m=None):
+        add(option, dest=dest, help=help, metavar=m)
+
+    add_bool('--diff',          'use Leo as an external git diff')
+    add_bool('--fullscreen',    'start fullscreen')
+    add_bool('--ipython',       'enable ipython support')
+    add_bool('--fail-fast',     'stop unit tests after the first failure')
+    add_other('--gui',          'gui to use (qt/qttabs/console/null)')
+    add_bool('--listen-to-log', 'start log_listener.py on startup')
+    add_other('--load-type',    '@&lt;file&gt; type for non-outlines', m='TYPE')
+    add_bool('--maximized',     'start maximized')
+    add_bool('--minimized',     'start minimized')
+    add_bool('--no-plugins',    'disable all plugins')
+    add_bool('--no-splash',     'disable the splash screen')
+    if g.pyzo:
+        add_bool('--pyzo',      'enable experimental pyzo code')
+    add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
+    add_other('--script',       'execute a script and then exit', m="PATH")
+    add_bool('--script-window', 'execute script using default gui')
+    add_other('--select',       'headline or gnx of node to select', m='ID')
+    add_bool('--session-restore','restore session tabs at startup')
+    add_bool('--session-save',  'save session tabs on exit')
+    add_bool('--silent',        'disable all log messages')
+    add_other('--theme',        'use the named theme file', m='NAME')
+    add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
+    add_bool('--trace-coloring', 'trace syntax coloring')
+    add_bool('--trace-drawing', 'trace outline redraws')
+    add_bool('--trace-events',  'trace non-key events')
+    add_bool('--trace-focus',   'trace changes of focus')
+    add_bool('--trace-gnx',     'trace gnx logic')
+    add_bool('--trace-ipython', 'trace ipython bridge')
+    add_bool('--trace-keys',    'trace key events')
+    add_bool('--trace-plugins', 'trace imports of plugins')
+    add_other('--trace-setting', 'trace where named setting is set', m="NAME")
+    add_bool('--trace-shutdown', 'trace shutdown logic')
+    add_bool('--trace-startup',  'trace startup logic')
+    add_bool('--trace-themes',  'trace theme init logic')
+    add_other('--window-size',  'initial window size (height x width)', m='SIZE')
+    # Multiple bool values.
+    add('-v', '--version', action='store_true',
+        help='print version number and exit')
+</t>
+<t tx="ekr.20180312151544.1">def doSimpleOptions(self, options):
+    '''These args just set g.app ivars.'''
+    # --fail-fast
+    g.app.failFast = options.fail_fast
+    # --fullscreen
+    g.app.start_fullscreen = options.fullscreen
+    # --git-diff
+    g.app.diff = options.diff
+    # --listen-to-log
+    g.app.listen_to_log_flag = options.listen_to_log
+    # --ipython
+    g.app.useIpython = options.ipython
+    # --maximized
+    g.app.start_maximized = options.maximized
+    # --minimized
+    g.app.start_minimized = options.minimized
+    # --no-plugins
+    if options.no_plugins:
+        g.app.enablePlugins = False
+    # --no-splash: --minimized disables the splash screen
+    g.app.use_splash_screen = (
+        not options.no_splash and
+        not options.minimized)
+    # --pyzo
+    g.pyzo = g.pyzo and options.pyzo
+    print('\n===== py3.pyzo branch: --pyzo:', bool(g.pyzo))
+    # --session-restore &amp; --session-save
+    g.app.restore_session = bool(options.session_restore)
+    g.app.save_session = bool(options.session_save)
+    # --silent
+    g.app.silentMode = options.silent
+    #
+    # Most --trace- options append items to g.app.debug.
+    table = (
+        # ('cache', options.trace_cache),
+        ('coloring', options.trace_coloring),
+        ('drawing', options.trace_drawing),
+        ('events', options.trace_events), # New
+        ('focus', options.trace_focus),
+        ('gnx', options.trace_gnx), # New.
+        ('keys', options.trace_keys), # New
+        ('ipython', options.trace_ipython), # New
+        ('plugins', options.trace_plugins),
+        ('shutdown', options.trace_shutdown),
+        ('startup', options.trace_startup), # New
+        ('themes', options.trace_themes),
+    )
+    for val, option in table:
+        if option:
+            g.app.debug.append(val)
+    #
+    # These are not bool options.
+    # --trace-binding
+    g.app.trace_binding = options.trace_binding
+        # g.app.config does not exist yet.
+    #
+    # --trace-setting=setting
+    g.app.trace_setting = options.trace_setting
+        # g.app.config does not exist yet.
+    
+</t>
 <t tx="ekr.20180312153008.1">def doScriptOption(self, options, parser):
 
     # --script
@@ -6168,6 +6968,16 @@ found 1154 nodes
 
 found 284 nodes
 </t>
+<t tx="ekr.20190123051253.1">def remove_temp_file(self, p, path):
+    '''
+    Remove any existing *temp* file for p and path, updating self.files.
+    '''
+    for ef in self.files:
+        if path and path == ef.path and p.v == ef.p.v:
+            self.destroy_temp_file(ef)
+            self.files = [z for z in self.files if z != ef]
+            return
+</t>
 <t tx="ekr.20190216104815.1">@language rest
 @wrap
 
@@ -6179,6 +6989,28 @@ https://github.com/leo-editor/leo-editor/issues/525
 <t tx="ekr.20190218044303.1">https://github.com/leo-editor/leo-editor/issues/1081
 
 Added warning when @asis or @nosent files change outside of Leo.
+</t>
+<t tx="ekr.20190218055230.1">def warn(self, c, path, p):
+    '''
+    Warn that an @asis or @nosent node has been changed externally.
+    
+    There is *no way* to update the tree automatically.
+    '''
+    if g.unitTesting or c not in g.app.commanders():
+        return
+    if not p:
+        g.trace('NO P')
+        return
+    g.app.gui.runAskOkDialog(
+        c=c,
+        message='\n'.join([
+            '%s has changed outside Leo.\n' % g.splitLongFileName(path),
+            'Leo can not update this file automatically.\n',
+            'This file was created from %s.\n' % p.h,
+            'Warning: refresh-from-disk will destroy all children.'
+        ]),
+        title='External file changed',
+    )
 </t>
 <t tx="ekr.20190218071717.1">@language rest
 
@@ -6947,7 +7779,6 @@ https://github.com/leo-editor/leo-editor/issues/568
 @language python
 @nosearch
 </t>
-<t tx="ekr.20190322041148.1"></t>
 <t tx="ekr.20190322082533.1">def get_lexer(self, language):
     '''Return the lexer for self.language, creating it if necessary.'''
     import pygments.lexers as lexers
@@ -7385,29 +8216,6 @@ log.selectTab('My Tab')
 
 @language python
 </t>
-<t tx="ekr.20190327183758.1">git merge devel 
-git merge --abort
-git merge devel -s ours
-
-= use pyzo version of leoQt.py</t>
-<t tx="ekr.20190327192403.1">[a64] &gt;git merge devel
-
-Auto-merging leo/plugins/qt_frame.py
-    - Use Py3
-Auto-merging leo/plugins/cursesGui2.py
-    - Use Py3
-Auto-merging leo/core/leoGlobals.py
-    - Use Py3
-Auto-merging leo/core/leoConfig.py
-    - Use Py3, but use devel version of parseFontLine, deleting fontSettingNameToFontKind.
-Auto-merging leo/core/leoColorizer.py
-    - *** Use devel.  (Done) Remove all calls to g.u, g.isPython3
-Auto-merging leo/core/leoAtFile.py
-CONFLICT (content): Merge conflict in leo/core/leoAtFile.py
-    - Use Py3
-Auto-merging leo/core/leoApp.py
-    - Use PY3
-</t>
 <t tx="ekr.20190327194749.1">@language rest
 @wrap
 
@@ -7424,6 +8232,41 @@ command line--script relative path is relative to `leo/core` instead of file-sys
 
 @language python
 </t>
+<t tx="ekr.20190328083346.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1018
+
+fc.setCachedBits scans *all* nodes for cached data.
+This simplifies fc.compute_attribute_bits.
+
+@language python
+</t>
+<t tx="ekr.20190328160622.1">def setCachedBits(self):
+    '''
+    Set the cached expanded and marked bits for *all* nodes.
+    Also cache the current position.
+    '''
+    c = self.c
+    current = [str(z) for z in self.currentPosition.archivedPosition()]
+    expanded = [v.gnx for v in c.all_unique_nodes() if v.isExpanded()]
+    marked = [v.gnx for v in c.all_unique_nodes() if v.isMarked()]
+    c.db ['expanded'] = ','.join(expanded)
+    c.db ['marked'] = ','.join(marked)
+    c.db ['current_position'] = ','.join(current)
+</t>
+<t tx="ekr.20190328165019.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1100
+
+@language python
+</t>
+<t tx="ekr.20190329035816.1"></t>
+<t tx="ekr.20190329035854.1"></t>
+<t tx="ekr.20190329040120.1"></t>
+<t tx="ekr.20190329040519.1"></t>
+<t tx="ekr.20190329040602.1"></t>
 <t tx="tbrown.20110621120042.22914">def get_top_splitter(self):
     '''Return the top splitter of c.frame.top.'''
     # Careful: we could be unit testing.
@@ -7474,6 +8317,20 @@ command line--script relative path is relative to `leo/core` instead of file-sys
         event.accept()
         return
     QtWidgets.QTextBrowser.wheelEvent(self, event)
+</t>
+<t tx="tbrown.20150904102518.1">def set_time(self, path, new_time=None):
+    '''
+    Implements c.setTimeStamp.
+
+    Update the timestamp for path.
+
+    NOTE: file paths with symbolic links occur with and without those links
+    resolved depending on the code call path.  This inconsistency is
+    probably not Leo's fault but an underlying Python issue.
+    Hence the need to call realpath() here.
+    '''
+    t = new_time or self.get_mtime(path)
+    self._time_d[g.os_path_realpath(path)] = t
 </t>
 </tnodes>
 </leo_file>
