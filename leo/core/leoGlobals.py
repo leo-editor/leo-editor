@@ -6443,7 +6443,6 @@ def trace(*args, **keys):
     if prefix:
         prefix = prefix[1:] # One less newline.
         pr(prefix)
-        # s = s.lstrip()
     pr(s, newline=newline)
 #@+node:ekr.20080220111323: *3* g.translateArgs
 console_encoding = None
