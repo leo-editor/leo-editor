@@ -1351,6 +1351,11 @@ class TracingNullObject(object):
 #@+node:ekr.20190330062625.1: *4* g.null_object_print_attr
 tracing_tags = {}
     # Keys are id's, values are tags.
+    # Set only by TracingNullObject.__init__.
+    
+tracing_signatures = {}
+    # Keys are signatures: '%s.%s:%s' % (tag, attr, callers)
+    # Values not important.
     
 def get_tracing_tag(id_):
     return tracing_tags.get(id_, "<NO TAG>")
@@ -1390,8 +1395,16 @@ def null_object_print_attr(id_, attr):
     callers = ', '.join(callers[:-1])
     in_callers = any([z in callers for z in suppress_callers])
     s = '%s.%s' % (tag, attr)
-    if not in_callers and s not in suppress_attrs:
-        print('%40s %s' % (s, callers))
+    if 1:
+        signature = '%s.%s:%s' % (tag, attr, callers)
+        # Print each signature once.  No need to filter!
+        if signature not in tracing_signatures:
+            tracing_signatures [signature] = True
+            print('%40s %s' % (s, callers))
+    else:
+        # Filter traces.
+        if not in_callers and s not in suppress_attrs:
+            print('%40s %s' % (s, callers))
 #@+node:ekr.20190317093640.1: *3* NOT USED: << class NullObject >>
 #@+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
 class PosList(list):
