@@ -10,20 +10,11 @@ from leo.core.leoQt import QtCore, QtWidgets
 import leo.core.leoGlobals as g
 assert g.pyzo
 #
-# Imports for monkey patches.
+# Be explicit about where everything comes from...
 import pyzo
+import pyzo.core.main
 import pyzo.core.splash
-from pyzo import loadConfig
-from pyzo.core.editorTabs import EditorTabs
-from pyzo.util import zon
-from pyzo.util.zon import isidentifier
-### from pyzo import translate
-from pyzo.core import commandline
-from pyzo.core.main import loadAppIcons, loadIcons, loadFonts, MainWindow
-    # For __init__.
-from pyzo.core.main import callLater
-    # For _populate
-from pyzo.core.splash import SplashWidget
+import pyzo.util
 #@-<< pyzo_shims imports >>
 #@+others
 #@+node:ekr.20190330100939.1: **  function: loadFile (pyzo_shims.py)
@@ -36,6 +27,26 @@ def loadFile(self, filename, updateTabs=True):
         g.trace('sys.argv:', sys.argv)
         return None
     return old_loadFile(self, filename, updateTabs)
+#@+node:ekr.20190330112146.1: **  function: monkey_patch (pyzo_shims.py)
+old_loadFile = None
+    # Save a permanent reference
+
+def monkey_patch():
+    
+    global old_loadFile
+    #
+    # Use a do-nothing SplashWidget
+    pyzo.core.splash.SplashWidget = LeoEmptySplashWidget
+    #
+    # Use a Leonine pyzo.config.
+    pyzo.config = LeoPyzoConfig()
+    pyzo.loadConfig()
+        # To be replaced by LeoPyzoConfig.loadConfig.
+    #
+    # Monkey-patch EditorTabs.loadFile.
+    from pyzo.core.editorTabs import EditorTabs
+    old_loadFile = EditorTabs.loadFile
+    g.funcToMethod(loadFile, EditorTabs)
 #@+node:ekr.20190317082435.1: ** class LeoEmptySplashWidget (QWidget)
 class LeoEmptySplashWidget(QtWidgets.QWidget):
     
@@ -43,10 +54,13 @@ class LeoEmptySplashWidget(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, parent)
 
 #@+node:ekr.20190317082751.1: ** class LeoPyzoConfig (zon.Dict)
-class LeoPyzoConfig(zon.Dict):
+class LeoPyzoConfig(pyzo.util.zon.Dict):
     #@+others
     #@+node:ekr.20190317082751.2: *3* Dict.__repr__
     def __repr__(self):
+
+        from pyzo.util.zon import isidentifier
+            # Changed import.
         identifier_items = []
         nonidentifier_items = []
         for key, val in self.items():
@@ -93,15 +107,15 @@ class LeoPyzoConfig(zon.Dict):
         # names = [k for k in self.keys() if isidentifier(k)]
         # return Dict.__reserved_names__ + names
     #@-others
-#@+node:ekr.20190317084647.1: ** class LeoPyzoMainWindow (MainWindow)
-class LeoPyzoMainWindow(MainWindow):
+#@+node:ekr.20190317084647.1: ** class LeoPyzoMainWindow (pyzo.core.main.MainWindow)
+class LeoPyzoMainWindow(pyzo.core.main.MainWindow):
     #@+others
     #@+node:ekr.20190317084647.2: *3* LeoPyzoMainWindow.__init__ (override: don't hold splash)
     def __init__(self, parent=None, locale=None):
-        
+
         print('LeoPyzoMainWindow.__init__:')
-        
-        QtWidgets.QMainWindow.__init__(self, parent)
+
+        pyzo.core.main.MainWindow.__init__(self, parent)
         
         self._closeflag = 0  # Used during closing/restarting
 
@@ -110,7 +124,9 @@ class LeoPyzoMainWindow(MainWindow):
         # is being shown at the fancy title bar (since it's not properly
         # updated)
         self.setMainTitle()
-        loadAppIcons()
+        pyzo.core.main.loadAppIcons()
+            # New: fully qualified.
+       
         self.setWindowIcon(pyzo.icon)
 
         # Restore window geometry before drawing for the first time,
@@ -119,7 +135,8 @@ class LeoPyzoMainWindow(MainWindow):
         self.restoreGeometry()
 
         # Show splash screen (we need to set our color too)
-        w = SplashWidget(self, distro='no distro')
+        
+        w = pyzo.core.splash.SplashWidget(self, distro='no distro')
         self.setCentralWidget(w)
         self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
 
@@ -151,8 +168,10 @@ class LeoPyzoMainWindow(MainWindow):
         self.setAttribute(QtCore.Qt.WA_AlwaysShowToolTips, True)
 
         # Load icons and fonts
-        loadIcons()
-        loadFonts()
+        pyzo.core.main.loadIcons()
+            # New: fully qualified.
+        pyzo.core.main.loadFonts()
+            # New: fully qualified.
 
         # Set qt style and test success
         self.setQtStyle(None) # None means init!
@@ -202,7 +221,7 @@ class LeoPyzoMainWindow(MainWindow):
             e.setFocus()
 
         # Handle any actions
-        commandline.handle_cmd_args()
+        pyzo.core.commandline.handle_cmd_args()
     #@+node:ekr.20190317084647.3: *3* LeoPyzoMainWindow._populate (shims: shells, keyMapper)
     def _populate(self):
         
@@ -255,7 +274,8 @@ class LeoPyzoMainWindow(MainWindow):
 
         # Create the default shell when returning to the event queue
         if use_shell:
-            callLater(pyzo.shells.addShell)
+            pyzo.core.main.callLater(pyzo.shells.addShell)
+                # New: fully qualified.
 
         # Create statusbar
         if pyzo.config.view.showStatusbar:
@@ -302,6 +322,9 @@ class LeoPyzoMainWindow(MainWindow):
     def closeEvent(self, event):
         """ Override close event handler. """
         import sys
+        import pyzo.core.commandline as commandline
+            # New import.
+        
         t1 = time.clock()
 
         # Are we restaring?
@@ -326,7 +349,7 @@ class LeoPyzoMainWindow(MainWindow):
         t2 = time.clock()
 
         # Proceed with closing shells
-        pyzo.localKernelManager.terminateAll()
+        pyzo.localKernelManager.terminateAll() # pylint: disable=no-member
         for shell in pyzo.shells:
             shell._context.close()
             
@@ -372,19 +395,5 @@ class PyzoMenuShim (object):
     #@+others
     #@-others
 #@-others
-#@+<< pyzo monkey patches >>
-#@+node:ekr.20190317082927.1: **  << pyzo monkey patches >>
-#
-# Use a do-nothing SplashWidget
-pyzo.core.splash.SplashWidget = LeoEmptySplashWidget
-#
-# Use a Leonine pyzo.config.
-pyzo.config = LeoPyzoConfig()
-loadConfig()
-    # To be replaced by LeoPyzoConfig.loadConfig.
-#
-# Monkey-patch EditorTabs.loadFile.
-old_loadFile = EditorTabs.loadFile
-g.funcToMethod(loadFile, EditorTabs)
-#@-<< pyzo monkey patches >>
+monkey_patch()
 #@-leo
