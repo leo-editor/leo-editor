@@ -856,7 +856,7 @@ class LeoFrame(object):
 
     def createIconBar(self):
         if g.pyzo:
-            return g.TracingNullObject(tag='frame.createIconBar')
+            return g.TracingNullObject(tag='c.frame.createIconBar')
         c = self.c
         if not self.iconBar:
             self.iconBar = self.iconBarClass(c, self.outerFrame)
@@ -864,7 +864,7 @@ class LeoFrame(object):
 
     def getIconBar(self):
         if g.pyzo:
-            return g.TracingNullObject(tag='frame.getIconBar')
+            return g.TracingNullObject(tag='c.frame.getIconBar')
         if not self.iconBar:
             self.iconBar = self.iconBarClass(self.c, self.outerFrame)
         return self.iconBar

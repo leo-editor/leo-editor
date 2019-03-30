@@ -1273,7 +1273,7 @@ class MatchBrackets(object):
         else:
             g.es("unmatched", repr(ch))
     #@-others
-#@+node:ekr.20031219074948.1: *3* class g.Tracing/NullObject
+#@+node:ekr.20031219074948.1: *3* class g.Tracing/NullObject & helpers
 #@@nobeautify
 
 class NullObject(object):
@@ -1290,14 +1290,15 @@ class NullObject(object):
     def __bool__(self): return False
     def __contains__(self, item): return False
     def __getitem__(self, key): raise KeyError
-    def __iter__(self): raise StopIteration
+    def __iter__(self): return self ### raise StopIteration
     def __len__(self): return 0
     # Iteration methods: 
     def __next__(self): raise StopIteration
-
+    
 class TracingNullObject(object):
     '''Tracing NullObject.'''
     def __init__(self, tag, *args, **kwargs):
+        tracing_tags [id(self)] = tag
         if 0:
             suppress = ('tree item',)
             if tag not in suppress:
@@ -1318,42 +1319,79 @@ class TracingNullObject(object):
     def __delattr__(self, attr):
         return self
     def __getattr__(self, attr):
-        if 0:
-            suppress = (
-                'contractItem', 'declutter_node', 'drawNode',
-                'initAfterLoad',
-                'set_focus', 'show_tips')
-            callers = g.callers(2)
-            if not callers.endswith(suppress):
-                print('%30s' % ('NullObject.__getattr__:'), attr, g.callers())
+        null_object_print_attr(id(self), attr)
         return self
     def __setattr__(self, attr, val):
-        print('%30s' % ('NullObject.__setattr__:'), attr, g.callers())
+        print('%20s' % ('Null.__setattr__:'), attr, g.callers())
         return self
-    # Container methods
+    #
+    # All other methods...
     def __bool__(self):
         if 0:
             suppress = ('getShortcut','on_idle', 'setItemText')
             callers = g.callers(2)
             if not callers.endswith(suppress):
-                print('%30s' % ('NullObject.__bool__:'), id(self), callers)
+                print('%20s' % ('Null.__bool__:'), id(self), callers)
         return False
     def __contains__(self, item):
-        print('%30s' % ('NullObject.__contains__:'), item)
+        print('%20s' % ('Null.__contains__:'), item)
         return False
     def __getitem__(self, key):
-        print('%30s' % ('NullObject.__getitem__:'), key)
+        print('%20s' % ('Null.__getitem__:'), key)
         raise KeyError
     def __iter__(self):
-        print('%30s' % 'NullObject.__iter__:')
-        raise StopIteration
+        print('%20s' % 'Null.__iter__:')
+        return self ### raise StopIteration
     def __len__(self):
-        # print('%30s' % 'NullObject.__len__:')
+        # print('%20s' % 'Null.__len__:')
         return 0
-    # Iteration methods: 
     def __next__(self):
-        print('%30s' % 'NullObject.__next__:')
+        print('%20s' % 'Null.__next__:')
         raise StopIteration
+#@+node:ekr.20190330062625.1: *4* g.null_object_print_attr
+tracing_tags = {}
+    # Keys are id's, values are tags.
+    
+def get_tracing_tag(id_):
+    return tracing_tags.get(id_, "<NO TAG>")
+
+def null_object_print_attr(id_, attr):
+    # pyzo.keyMapper.keyMappingChanged addItem, _addAction
+    suppress_callers = (
+        'drawNode', 'drawTopTree', 'drawTree',
+        'contractItem', 'getCurrentItem',
+        'declutter_node',
+        'finishCreate',
+        'initAfterLoad',
+        'show_tips',
+        'writeWaitingLog',
+        # 'set_focus', 'show_tips',
+    )
+    suppress_attrs = (
+        # Leo...
+        'c.frame.body.wrapper',
+        'c.frame.getIconBar.add',
+        'c.frame.log.createTab',
+        'c.frame.log.enable',
+        'c.frame.log.finishCreate',
+        'c.frame.menu.createMenuBar',
+        'c.frame.menu.finishCreate',
+        'c.frame.menu.getMenu',
+        'currentItem',
+        'dw.leo_master.windowTitle',
+        # Pyzo...
+        'pyzo.keyMapper.connect',
+        'pyzo.keyMapper.keyMappingChanged',
+        'pyzo.keyMapper.setShortcut',
+    
+    )
+    tag = tracing_tags.get(id_, "<NO TAG>")
+    callers = g.callers(3).split(',')
+    callers = ', '.join(callers[:-1])
+    in_callers = any([z in callers for z in suppress_callers])
+    s = '%s.%s' % (tag, attr)
+    if not in_callers and s not in suppress_attrs:
+        print('%40s %s' % (s, callers))
 #@+node:ekr.20190317093640.1: *3* NOT USED: << class NullObject >>
 #@+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
 class PosList(list):

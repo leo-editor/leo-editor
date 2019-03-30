@@ -4607,7 +4607,7 @@ if g.pyzo:
         def _populate(self):
             
             print('----- LeoPyzoMainWindow._populate')
-            use_shell = True
+            use_shell = False
 
             # Delayed imports
             from pyzo.core.editorTabs import EditorTabs
