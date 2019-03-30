@@ -933,7 +933,7 @@ class DynamicWindow(dw_base):
         self.tabWidget = g.TracingNullObject(tag='dw.tabWidet')
             ### 
         ### self.setMainWindowOptions()
-        from leo.plugins.pyzo_shims import LeoPyzoMainWindow
+        from leo.core.pyzo_shims import LeoPyzoMainWindow
         LeoPyzoMainWindow()
         ###
             # self.createCentralWidget()

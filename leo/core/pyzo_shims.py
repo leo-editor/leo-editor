@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20190330100032.1: * @file ../plugins/pyzo_shims.py
+#@+node:ekr.20190330100032.1: * @file ../core/pyzo_shims.py
 '''Shims to adapt pyzo classes to Leo.'''
 #@+<< pyzo_shims imports >>
 #@+node:ekr.20190330101646.1: **  << pyzo_shims imports >>
