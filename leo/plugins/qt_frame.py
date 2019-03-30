@@ -8,8 +8,7 @@
 import os
 import sys
 import platform
-import time
-
+# import time
 import leo.core.leoGlobals as g
 import leo.core.leoColor as leoColor
 import leo.core.leoColorizer as leoColorizer
@@ -32,105 +31,6 @@ except ImportError:
     print('Can not import nested_splitter')
     splitter_class = QtWidgets.QSplitter
 #@-<< imports >>
-if g.pyzo:
-    #@+<< pyzo imports >>
-    #@+node:ekr.20190317082435.1: ** << pyzo imports >> (qt_frame.py)
-    # import os
-    # import time
-    # import leo.core.leoGlobals as g
-    # from leo.core.leoQt import QtCore, QtGui, QtWidgets
-
-    class LeoEmptySplashWidget(QtWidgets.QWidget):
-        
-        def __init__(self, parent, **kwargs):
-            QtWidgets.QWidget.__init__(self, parent)
-
-    from pyzo.util import zon
-    from pyzo.util.zon import isidentifier
-    #@-<< pyzo imports >>
-    #@+<< define class LeoPyzoConfig >>
-    #@+node:ekr.20190317082751.1: ** << define class LeoPyzoConfig >>
-    class LeoPyzoConfig(zon.Dict):
-        #@+others
-        #@+node:ekr.20190317082751.2: *3* Dict.__repr__
-        def __repr__(self):
-            identifier_items = []
-            nonidentifier_items = []
-            for key, val in self.items():
-                if isidentifier(key):
-                    identifier_items.append('%s=%r' % (key, val))
-                else:
-                    nonidentifier_items.append('(%r, %r)' % (key, val))
-            if nonidentifier_items:
-                return 'Dict([%s], %s)' % (', '.join(nonidentifier_items),
-                                           ', '.join(identifier_items))
-            else:
-                return 'Dict(%s)' % (', '.join(identifier_items))
-        #@+node:ekr.20190317082751.3: *3* Dict.__getattribute__
-        def __getattribute__(self, key):
-            try:
-                ### return object.__getattribute__(self, key)
-                val = object.__getattribute__(self, key)
-                if False and key not in ('advanced', 'shortcuts2', 'settings'):
-                    # print('===== LeoPyzoConfig 1: %r: %r' % (key, val))
-                    print('===== LeoPyzoConfig 1: %r' % key)
-                return val
-            except AttributeError:
-                if key in self:
-                    if False and key not in ('advanced', 'shortcuts2', 'settings'):
-                        # print('===== LeoPyzoConfig 1: %r: %r' % (key, g.truncate(self[key], 50)))
-                        print('===== LeoPyzoConfig 2: %r' % key)
-                    return self[key]
-                else:
-                    raise
-        #@+node:ekr.20190317082751.4: *3* Dict.__setattr__
-        # def __setattr__(self, key, val):
-            # if key in Dict.__reserved_names__:
-                # # Either let OrderedDict do its work, or disallow
-                # if key not in Dict.__pure_names__:
-                    # return _dict.__setattr__(self, key, val)
-                # else:
-                    # raise AttributeError('Reserved name, this key can only ' +
-                                         # 'be set via ``d[%r] = X``' % key)
-            # else:
-                # # if isinstance(val, dict): val = Dict(val) -> no, makes a copy!
-                # self[key] = val
-        #@+node:ekr.20190317082751.5: *3* Dict.__dir__
-        # def __dir__(self):
-            # names = [k for k in self.keys() if isidentifier(k)]
-            # return Dict.__reserved_names__ + names
-        #@-others
-    #@-<< define class LeoPyzoConfig >>
-    #@+<< pyzo monkey patches >>
-    #@+node:ekr.20190317082927.1: ** << pyzo monkey patches >>
-    #
-    # Use a do-nothing SplashWidget
-    import pyzo.core.splash
-    pyzo.core.splash.SplashWidget = LeoEmptySplashWidget
-    #
-    # Use a Leonine pyzo.config.
-    import pyzo
-    pyzo.config = LeoPyzoConfig()
-    from pyzo import loadConfig
-    loadConfig()
-        # To be replaced by LeoPyzoConfig.loadConfig.
-    #
-    # Monkey patch EditorTabs.loadFile
-    from pyzo.core.editorTabs import EditorTabs
-    old_loadFile = EditorTabs.loadFile
-
-    def loadFile(self, filename, updateTabs=True):
-        print('----- patched loadFile:', filename)
-        if filename.endswith('leo'):
-            g.trace('sys.argv:', sys.argv)
-            return None
-        return old_loadFile(self, filename, updateTabs)
-        
-    g.funcToMethod(loadFile, EditorTabs)
-
-    #@-<< pyzo monkey patches >>
-    # Do the other pyzo imports.
-    import pyzo.core.main
 #@+others
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
 dw_base = object if g.pyzo else QtWidgets.QMainWindow
@@ -201,7 +101,7 @@ class DynamicWindow(dw_base):
 
     def do_leo_spell_btn_Ignore(self):
         self.doSpellBtn('onIgnoreButton')
-    #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers (*** changed)
+    #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers (shims: dw.* & c.frame.body/log)
     def construct(self, master=None):
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         c = self.leo_c
@@ -1017,7 +917,8 @@ class DynamicWindow(dw_base):
                 s,
                 None,
                 QtWidgets.QApplication.UnicodeUTF8)
-    #@+node:ekr.20190317084000.1: *3* dw.createPyzoMainWindow (*** new)
+    #@+node:ekr.20190317084000.1: *3* dw.createPyzoMainWindow (shims: dw.*)
+
     def createPyzoMainWindow(self):
         '''
         Create the component ivars of the main window.
@@ -1032,6 +933,7 @@ class DynamicWindow(dw_base):
         self.tabWidget = g.TracingNullObject(tag='dw.tabWidet')
             ### 
         ### self.setMainWindowOptions()
+        from leo.plugins.pyzo_shims import LeoPyzoMainWindow
         LeoPyzoMainWindow()
         ###
             # self.createCentralWidget()
@@ -2148,7 +2050,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Command decorator for the LeoQtFrame class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
-    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (changed)
+    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (shim: f.frame.menu)
     def finishCreate(self):
 
         f = self
@@ -4482,290 +4384,6 @@ class LeoTabbedTopLevel(LeoBaseTabWidget):
         self.setMovable(False)
         tb = QtTabBarWrapper(self)
         self.setTabBar(tb)
-#@+node:ekr.20190317084647.1: ** class LeoPyzoMainWindow (MainWindow) (new)
-if g.pyzo:
-    ### from pyzo import translate
-    from pyzo.core import commandline
-    from pyzo.core.main import loadAppIcons, loadIcons, loadFonts, MainWindow
-        # For __init__.
-    from pyzo.core.main import callLater
-        # For _populate
-        
-    from pyzo.core.splash import SplashWidget
-        # The big one.
-    
-    class LeoPyzoMainWindow(MainWindow):
-        #@+others
-        #@+node:ekr.20190317084647.2: *3* LeoPyzoMainWindow.__init__ (override: don't hold splash)
-        def __init__(self, parent=None, locale=None):
-            
-            print('LeoPyzoMainWindow.__init__:') # SplashWidget:', repr(SplashWidget))
-            
-            QtWidgets.QMainWindow.__init__(self, parent)
-            
-            self._closeflag = 0  # Used during closing/restarting
-
-            # Init window title and application icon
-            # Set title to something nice. On Ubuntu 12.10 this text is what
-            # is being shown at the fancy title bar (since it's not properly
-            # updated)
-            self.setMainTitle()
-            loadAppIcons()
-            self.setWindowIcon(pyzo.icon)
-
-            # Restore window geometry before drawing for the first time,
-            # such that the window is in the right place
-            self.resize(800, 600) # default size
-            self.restoreGeometry()
-
-            # Show splash screen (we need to set our color too)
-            w = SplashWidget(self, distro='no distro')
-            self.setCentralWidget(w)
-            self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
-
-            # Show empty window and disable updates for a while
-            self.show()
-            self.paintNow()
-            self.setUpdatesEnabled(False)
-
-            # Determine timeout for showing splash screen
-            splash_timeout = time.time() + 1.0
-
-            # Set locale of main widget, so that qt strings are translated
-            # in the right way
-            if locale:
-                self.setLocale(locale)
-
-            # Store myself
-            pyzo.main = self
-
-            # Init dockwidget settings
-            self.setTabPosition(QtCore.Qt.AllDockWidgetAreas,QtWidgets.QTabWidget.South)
-            self.setDockOptions(
-                    QtWidgets.QMainWindow.AllowNestedDocks |
-                    QtWidgets.QMainWindow.AllowTabbedDocks
-                    #|  QtWidgets.QMainWindow.AnimatedDocks
-                )
-
-            # Set window atrributes
-            self.setAttribute(QtCore.Qt.WA_AlwaysShowToolTips, True)
-
-            # Load icons and fonts
-            loadIcons()
-            loadFonts()
-
-            # Set qt style and test success
-            self.setQtStyle(None) # None means init!
-            
-            if 0: ###
-                # Hold the splash screen if needed
-                while time.time() < splash_timeout:
-                    QtWidgets.qApp.flush()
-                    QtWidgets.qApp.processEvents()
-                    time.sleep(0.05)
-
-            # Populate the window (imports more code)
-            self._populate()
-
-            # Revert to normal background, and enable updates
-            self.setStyleSheet('')
-            self.setUpdatesEnabled(True)
-
-            # Restore window state, force updating, and restore again
-            self.restoreState()
-            self.paintNow()
-            self.restoreState()
-
-            # Present user with wizard if he/she is new.
-            if False:  # pyzo.config.state.newUser:
-                from pyzo.util.pyzowizard import PyzoWizard
-                w = PyzoWizard(self)
-                w.show() # Use show() instead of exec_() so the user can interact with pyzo
-
-            # Create new shell config if there is None
-            if not pyzo.config.shellConfigs2:
-                from pyzo.core.kernelbroker import KernelInfo
-                pyzo.config.shellConfigs2.append( KernelInfo() )
-
-            # EKR: Set background.
-            if getattr(pyzo.config.settings, 'dark_theme', None):
-                bg = getattr(pyzo.config.settings, 'dark_background', '#657b83')
-                    # Default: solarized base00
-                try:
-                    self.setStyleSheet("background: %s" % bg) 
-                except Exception:
-                    print('oops: MainWindow.__init__')
-
-            # Focus on editor
-            e = pyzo.editors.getCurrentEditor()
-            if e is not None:
-                e.setFocus()
-
-            # Handle any actions
-            commandline.handle_cmd_args()
-        #@+node:ekr.20190317084647.3: *3* LeoPyzoMainWindow._populate (unchanged)
-        def _populate(self):
-            
-            print('----- LeoPyzoMainWindow._populate')
-            use_shell = False
-
-            # Delayed imports
-            from pyzo.core.editorTabs import EditorTabs
-            from pyzo.core.shellStack import ShellStackWidget
-            from pyzo.core import codeparser
-            from pyzo.core.history import CommandHistory
-            from pyzo.tools import ToolManager
-
-            # Instantiate tool manager
-            pyzo.toolManager = ToolManager()
-
-            # Check to install conda now ...
-            #from pyzo.util.bootstrapconda import check_for_conda_env
-            #check_for_conda_env()
-
-            # Instantiate and start source-code parser
-            if pyzo.parser is None:
-                pyzo.parser = codeparser.Parser()
-                pyzo.parser.start()
-
-            # Create editor stack and make the central widget
-            pyzo.editors = EditorTabs(self)
-            self.setCentralWidget(pyzo.editors)
-                # EKR: QMainWindow.setCentralWidget
-
-            # Create floater for shell
-            self._shellDock = dock = QtWidgets.QDockWidget(self)
-            if pyzo.config.settings.allowFloatingShell:
-                dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
-            else:
-                dock.setFeatures(dock.DockWidgetMovable)
-            dock.setObjectName('shells')
-            dock.setWindowTitle('Shells')
-            self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-
-            # Create shell stack
-            if use_shell: # Disabling the shell works.
-                pyzo.shells = ShellStackWidget(self)
-                dock.setWidget(pyzo.shells)
-            else:
-                pyzo.shells = g.TracingNullObject(tag='pyzo.shells')
-
-            # Initialize command history
-            pyzo.command_history = CommandHistory('command_history.py')
-
-            # Create the default shell when returning to the event queue
-            if use_shell:
-                callLater(pyzo.shells.addShell)
-
-            # Create statusbar
-            if pyzo.config.view.showStatusbar:
-                pyzo.status = self.statusBar()
-            else:
-                pyzo.status = None
-                self.setStatusBar(None)
-
-            # Create menu
-            if use_shell:
-                # Crashes:
-                # File "C:/apps/pyzo/source\pyzo\core\menu.py", line 961, in _updateShells
-                # pyzo.icons.application_add, pyzo.shells.addShell, config) 
-                from pyzo.core import menu
-                pyzo.keyMapper = menu.KeyMapper()
-                menu.buildMenus(self.menuBar())
-            else:
-                # Shim:
-                from pyzo.core import menu
-                pyzo.keyMapper = g.TracingNullObject(tag='pyzo.keyMapper')
-
-            # Add the context menu to the editor
-            pyzo.editors.addContextMenu()
-            pyzo.shells.addContextMenu()
-
-            # Load tools
-            if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
-                pyzo.toolManager.loadTool('pyzosourcestructure')
-                pyzo.toolManager.loadTool('pyzofilebrowser', 'pyzosourcestructure')
-            elif pyzo.config.state.loadedTools:
-                for toolId in pyzo.config.state.loadedTools:
-                    pyzo.toolManager.loadTool(toolId)
-        #@+node:ekr.20190317084647.4: *3* LeoPyzoMainWindow.setStyleSheet (override)
-        firstStyleSheet = True
-
-        def setStyleSheet(self, style, *args, **kwargs):
-            # print('LeoPyzoMainWindow.setStyleSheet', style, args, kwargs)
-            # A hack: Ignore the first call.
-            if self.firstStyleSheet:
-                self.firstStyleSheet = False
-                return
-            QtWidgets.QMainWindow.setStyleSheet(self, style)
-        #@+node:ekr.20190317084647.5: *3* LeoPyzoMainWindow.closeEvent (traces)
-        def closeEvent(self, event):
-            """ Override close event handler. """
-            import sys
-            t1 = time.clock()
-
-            # Are we restaring?
-            restarting = time.time() - self._closeflag < 1.0
-
-            # Save settings
-            pyzo.saveConfig()
-            pyzo.command_history.save()
-
-            # Stop command server
-            commandline.stop_our_server()
-
-            # Proceed with closing...
-            result = pyzo.editors.closeAll()
-            if not result:
-                self._closeflag = False
-                event.ignore()
-                return
-            else:
-                self._closeflag = True
-                
-            t2 = time.clock()
-
-            # Proceed with closing shells
-            pyzo.localKernelManager.terminateAll()
-            for shell in pyzo.shells:
-                shell._context.close()
-                
-            t3 = time.clock()
-
-            # Close tools
-            for toolname in pyzo.toolManager.getLoadedTools():
-                tool = pyzo.toolManager.getTool(toolname)
-                tool.close()
-                
-            t4 = time.clock()
-
-            # Stop all threads (this should really only be daemon threads)
-            import threading
-            for thread in threading.enumerate():
-                if hasattr(thread, 'stop'):
-                    try:
-                        thread.stop(0.1)
-                    except Exception:
-                        pass
-                        
-            t5 = time.clock()
-
-            if 1: # EKR
-                print('===== LeoPyzoMainWindow.closeEvent')
-                print('stage 1:          %5.2f' % (t2-t1))
-                print('stage 2: shells:  %5.2f' % (t3-t2))
-                print('stage 3: tools:   %5.2f' % (t4-t3))
-                print('stage 4: threads: %5.2f' % (t5-t4))
-
-            # Proceed as normal
-            QtWidgets.QMainWindow.closeEvent(self, event)
-
-            # Harder exit to prevent segfault. Not really a solution,
-            # but it does the job until Pyside gets fixed.
-            if sys.version_info >= (3,3,0) and not restarting:
-                if hasattr(os, '_exit'):
-                    os._exit(0)
-        #@-others
 #@+node:peckj.20140505102552.10377: ** class QtTabBarWrapper (QTabBar)
 class QtTabBarWrapper(QtWidgets.QTabBar):
     #@+others
