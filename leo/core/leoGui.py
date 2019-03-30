@@ -468,18 +468,6 @@ class StringGui(LeoGui):
     leoFrame.StringTextWrapper class.
     '''
     #@+others
-    #@+node:ekr.20170613095422.2: *3* StringGui.__init__ (not used yet)
-    # def __init__(self, guiName='StringGui'):
-        # '''ctor for the StringGui class.'''
-        # LeoGui.__init__(self, guiName)
-            # # init the base class.
-        # self.clipboardContents = ''
-        # self.theDict = {}
-        # self.focusWidget = None
-        # self.frameFactory = g.NullObject()
-        # self.iconimages = {}
-        # self.script = None
-        # self.isNullGui = True
     #@+node:ekr.20170613095422.7: *3* StringGui.oops
     def oops(self):
 
