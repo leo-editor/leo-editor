@@ -932,8 +932,12 @@ class DynamicWindow(dw_base):
         self.tabWidget = g.TracingNullObject(tag='dw.tabWidet')
             ### 
         ### self.setMainWindowOptions()
-        from leo.core.pyzo_shims import MainWindowShim
-        MainWindowShim()
+        #
+        # Import *all* of the pyzo packages.
+        import leo.core.pyzo_shims as pyzo_shims
+        pyzo_shims.monkey_patch()
+        pyzo_shims.MainWindowShim()
+        
         ###
             # self.createCentralWidget()
             # main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)

@@ -1,21 +1,21 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20190330100032.1: * @file ../core/pyzo_shims.py
 '''Shims to adapt pyzo classes to Leo.'''
-#@+<< pyzo_shims imports >>
-#@+node:ekr.20190330101646.1: **  << pyzo_shims imports >>
+print('\npyzo_shims.py\n')
+#@+<< pyzo_shims non-pyzo imports >>
+#@+node:ekr.20190330101646.1: **  << pyzo_shims non-pyzo imports >>
 import os
 import sys
 import time
 from leo.core.leoQt import QtCore, QtWidgets
 import leo.core.leoGlobals as g
 assert g.pyzo
-#
+#@-<< pyzo_shims non-pyzo imports >>
 # Be explicit about where everything comes from...
 import pyzo
 import pyzo.core.main
 import pyzo.core.splash
 import pyzo.util
-#@-<< pyzo_shims imports >>
 #@+others
 #@+node:ekr.20190330100939.1: **  function: loadFile (pyzo_shims.py)
 def loadFile(self, filename, updateTabs=True):
@@ -393,5 +393,5 @@ class SplashShim(QtWidgets.QWidget):
         # This ctor is required, because it is called with kwargs.
         QtWidgets.QWidget.__init__(self, parent)
 #@-others
-monkey_patch()
+
 #@-leo
