@@ -4607,6 +4607,7 @@ if g.pyzo:
         def _populate(self):
             
             print('----- LeoPyzoMainWindow._populate')
+            use_shell = True
 
             # Delayed imports
             from pyzo.core.editorTabs import EditorTabs
@@ -4643,14 +4644,18 @@ if g.pyzo:
             self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 
             # Create shell stack
-            pyzo.shells = ShellStackWidget(self)
-            dock.setWidget(pyzo.shells)
+            if use_shell: # Disabling the shell works.
+                pyzo.shells = ShellStackWidget(self)
+                dock.setWidget(pyzo.shells)
+            else:
+                pyzo.shells = g.TracingNullObject(tag='pyzo.shells')
 
             # Initialize command history
             pyzo.command_history = CommandHistory('command_history.py')
 
             # Create the default shell when returning to the event queue
-            callLater(pyzo.shells.addShell)
+            if use_shell:
+                callLater(pyzo.shells.addShell)
 
             # Create statusbar
             if pyzo.config.view.showStatusbar:
@@ -4660,9 +4665,17 @@ if g.pyzo:
                 self.setStatusBar(None)
 
             # Create menu
-            from pyzo.core import menu
-            pyzo.keyMapper = menu.KeyMapper()
-            menu.buildMenus(self.menuBar())
+            if use_shell:
+                # Crashes:
+                # File "C:/apps/pyzo/source\pyzo\core\menu.py", line 961, in _updateShells
+                # pyzo.icons.application_add, pyzo.shells.addShell, config) 
+                from pyzo.core import menu
+                pyzo.keyMapper = menu.KeyMapper()
+                menu.buildMenus(self.menuBar())
+            else:
+                # Shim:
+                from pyzo.core import menu
+                pyzo.keyMapper = g.TracingNullObject(tag='pyzo.keyMapper')
 
             # Add the context menu to the editor
             pyzo.editors.addContextMenu()

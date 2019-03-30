@@ -31,6 +31,9 @@ controllers = {}
 #@+node:ville.20090518182905.5423: ** init
 def init ():
     '''Return True if the plugin has loaded successfully.'''
+    if getattr(g, 'pyzo', None):
+        # print('\nnav_qt plugin is not compatible with --pyzo\n')
+        return False
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.registerHandler(('new','open2'),onCreate)
