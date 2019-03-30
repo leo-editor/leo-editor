@@ -1290,11 +1290,17 @@ class NullObject(object):
     def __bool__(self): return False
     def __contains__(self, item): return False
     def __getitem__(self, key): raise KeyError
-    def __iter__(self): return self ### raise StopIteration
+    def __iter__(self): return self
     def __len__(self): return 0
     # Iteration methods: 
     def __next__(self): raise StopIteration
     
+tracing_tags = {}
+    # Keys are id's, values are tags.
+    
+tracing_signatures = {}
+    # Keys are signatures: '%s.%s:%s' % (tag, attr, callers). Values not important.
+
 class TracingNullObject(object):
     '''Tracing NullObject.'''
     def __init__(self, tag, *args, **kwargs):
@@ -1311,9 +1317,9 @@ class TracingNullObject(object):
                     print('%30s' % 'NullObject.__call__:', args, kwargs)
         return self
     def __repr__(self):
-        return 'NullObject:'
+        return 'NullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
     def __str__(self):
-        return 'NullObject:'
+        return 'NullObject: %s' % tracing_tags.get(id(self), "<NO TAG>")
     #
     # Attribute access...
     def __delattr__(self, attr):
@@ -1322,46 +1328,36 @@ class TracingNullObject(object):
         null_object_print_attr(id(self), attr)
         return self
     def __setattr__(self, attr, val):
-        print('%20s' % ('Null.__setattr__:'), attr, g.callers())
+        g.null_object_print(id(self), '__setattr__')
         return self
     #
     # All other methods...
     def __bool__(self):
-        if 0:
+        if 0: ### To do: print only once.
             suppress = ('getShortcut','on_idle', 'setItemText')
             callers = g.callers(2)
             if not callers.endswith(suppress):
-                print('%20s' % ('Null.__bool__:'), id(self), callers)
+                g.null_object_print(id(self), '__bool__')
         return False
     def __contains__(self, item):
-        print('%20s' % ('Null.__contains__:'), item)
+        g.null_object_print(id(self), '__contains__')
         return False
     def __getitem__(self, key):
-        print('%20s' % ('Null.__getitem__:'), key)
+        g.null_object_print(id(self), '__getitem__')
         raise KeyError
     def __iter__(self):
-        print('%20s' % 'Null.__iter__:')
-        return self ### raise StopIteration
+        g.null_object_print(id(self), '__iter__')
+        return self
     def __len__(self):
-        # print('%20s' % 'Null.__len__:')
+        # g.null_object_print(id(self), '__len__')
         return 0
     def __next__(self):
-        print('%20s' % 'Null.__next__:')
+        g.null_object_print(id(self), '__next__')
         raise StopIteration
 #@+node:ekr.20190330062625.1: *4* g.null_object_print_attr
-tracing_tags = {}
-    # Keys are id's, values are tags.
-    # Set only by TracingNullObject.__init__.
-    
-tracing_signatures = {}
-    # Keys are signatures: '%s.%s:%s' % (tag, attr, callers)
-    # Values not important.
-    
-def get_tracing_tag(id_):
-    return tracing_tags.get(id_, "<NO TAG>")
-
 def null_object_print_attr(id_, attr):
-    # pyzo.keyMapper.keyMappingChanged addItem, _addAction
+    #@+<< define suppression lists >>
+    #@+node:ekr.20190330072026.1: *5* << define suppression lists >>
     suppress_callers = (
         'drawNode', 'drawTopTree', 'drawTree',
         'contractItem', 'getCurrentItem',
@@ -1388,23 +1384,38 @@ def null_object_print_attr(id_, attr):
         'pyzo.keyMapper.connect',
         'pyzo.keyMapper.keyMappingChanged',
         'pyzo.keyMapper.setShortcut',
-    
     )
+    #@-<< define suppression lists >>
+    if 0:
+        tag = tracing_tags.get(id_, "<NO TAG>")
+        callers = g.callers(3).split(',')
+        callers = ','.join(callers[:-1])
+        in_callers = any([z in callers for z in suppress_callers])
+        s = '%s.%s' % (tag, attr)
+        if 1:
+            signature = '%s.%s:%s' % (tag, attr, callers)
+            # Print each signature once.  No need to filter!
+            if signature not in tracing_signatures:
+                tracing_signatures [signature] = True
+                print('%40s %s' % (s, callers))
+        else:
+            # Filter traces.
+            if not in_callers and s not in suppress_attrs:
+                print('%40s %s' % (s, callers))
+#@+node:ekr.20190330072832.1: *4* g.null_object_print
+def null_object_print(id_, kind):
     tag = tracing_tags.get(id_, "<NO TAG>")
     callers = g.callers(3).split(',')
-    callers = ', '.join(callers[:-1])
-    in_callers = any([z in callers for z in suppress_callers])
-    s = '%s.%s' % (tag, attr)
+    callers = ','.join(callers[:-1])
+    s = '%s.%s' % (kind, tag)
+    signature = '%s:%s' % (s, callers)
     if 1:
-        signature = '%s.%s:%s' % (tag, attr, callers)
-        # Print each signature once.  No need to filter!
-        if signature not in tracing_signatures:
-            tracing_signatures [signature] = True
-            print('%40s %s' % (s, callers))
-    else:
-        # Filter traces.
-        if not in_callers and s not in suppress_attrs:
-            print('%40s %s' % (s, callers))
+        # Always print:
+        print('%40s %s' % (s, callers))
+    elif signature not in tracing_signatures:
+        # Print each signature once.
+        tracing_signatures [signature] = True
+        print('%40s %s' % (s, callers))
 #@+node:ekr.20190317093640.1: *3* NOT USED: << class NullObject >>
 #@+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
 class PosList(list):
