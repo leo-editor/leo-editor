@@ -44,7 +44,7 @@ def monkey_patch():
     from pyzo.core.editorTabs import EditorTabs
     old_loadFile = EditorTabs.loadFile
     g.funcToMethod(loadFile, EditorTabs)
-#@+node:ekr.20190317082751.1: ** class ConfigShim (zon.Dict)
+#@+node:ekr.20190317082751.1: ** class ConfigShim (zon.Dict) (To do)
 class ConfigShim(pyzo.util.zon.Dict):
     #@+others
     #@+node:ekr.20190317082751.2: *3* ConfigShim.__repr__
@@ -380,12 +380,12 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             if hasattr(os, '_exit'):
                 os._exit(0)
     #@-others
-#@+node:ekr.20190330100146.1: ** class MenuShim (object) (TO DO)
+#@+node:ekr.20190330100146.1: ** class MenuShim (object) (To do)
 class MenuShim (object):
     '''Adaptor class standing between Leo and Pyzo menus.'''
     #@+others
     #@-others
-#@+node:ekr.20190317082435.1: ** class SplashShim (QWidget)
+#@+node:ekr.20190317082435.1: ** class SplashShim (QtWidgets.QWidget)
 class SplashShim(QtWidgets.QWidget):
     '''A do-nothing splash widget.'''
     
