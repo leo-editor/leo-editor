@@ -29,34 +29,25 @@ def loadFile(self, filename, updateTabs=True):
     return old_loadFile(self, filename, updateTabs)
 #@+node:ekr.20190330112146.1: **  function: monkey_patch (pyzo_shims.py)
 old_loadFile = None
-    # Save a permanent reference
+    # Save a permanent reference.
 
 def monkey_patch():
     
     global old_loadFile
-    #
     # Use a do-nothing SplashWidget
-    pyzo.core.splash.SplashWidget = LeoEmptySplashWidget
-    #
+    pyzo.core.splash.SplashWidget = SplashShim
     # Use a Leonine pyzo.config.
-    pyzo.config = LeoPyzoConfig()
+    pyzo.config = ConfigShim()
     pyzo.loadConfig()
         # To be replaced by LeoPyzoConfig.loadConfig.
-    #
     # Monkey-patch EditorTabs.loadFile.
     from pyzo.core.editorTabs import EditorTabs
     old_loadFile = EditorTabs.loadFile
     g.funcToMethod(loadFile, EditorTabs)
-#@+node:ekr.20190317082435.1: ** class LeoEmptySplashWidget (QWidget)
-class LeoEmptySplashWidget(QtWidgets.QWidget):
-    
-    def __init__(self, parent, **kwargs):
-        QtWidgets.QWidget.__init__(self, parent)
-
-#@+node:ekr.20190317082751.1: ** class LeoPyzoConfig (zon.Dict)
-class LeoPyzoConfig(pyzo.util.zon.Dict):
+#@+node:ekr.20190317082751.1: ** class ConfigShim (zon.Dict)
+class ConfigShim(pyzo.util.zon.Dict):
     #@+others
-    #@+node:ekr.20190317082751.2: *3* Dict.__repr__
+    #@+node:ekr.20190317082751.2: *3* ConfigShim.__repr__
     def __repr__(self):
 
         from pyzo.util.zon import isidentifier
@@ -73,7 +64,7 @@ class LeoPyzoConfig(pyzo.util.zon.Dict):
                                        ', '.join(identifier_items))
         else:
             return 'Dict(%s)' % (', '.join(identifier_items))
-    #@+node:ekr.20190317082751.3: *3* Dict.__getattribute__
+    #@+node:ekr.20190317082751.3: *3* ConfigShim.__getattribute__
     def __getattribute__(self, key):
         try:
             ### return object.__getattribute__(self, key)
@@ -90,7 +81,7 @@ class LeoPyzoConfig(pyzo.util.zon.Dict):
                 return self[key]
             else:
                 raise
-    #@+node:ekr.20190317082751.4: *3* Dict.__setattr__
+    #@+node:ekr.20190317082751.4: *3* ConfigShim.__setattr__
     # def __setattr__(self, key, val):
         # if key in Dict.__reserved_names__:
             # # Either let OrderedDict do its work, or disallow
@@ -102,18 +93,18 @@ class LeoPyzoConfig(pyzo.util.zon.Dict):
         # else:
             # # if isinstance(val, dict): val = Dict(val) -> no, makes a copy!
             # self[key] = val
-    #@+node:ekr.20190317082751.5: *3* Dict.__dir__
+    #@+node:ekr.20190317082751.5: *3* ConfigShim.__dir__
     # def __dir__(self):
         # names = [k for k in self.keys() if isidentifier(k)]
         # return Dict.__reserved_names__ + names
     #@-others
-#@+node:ekr.20190317084647.1: ** class LeoPyzoMainWindow (pyzo.core.main.MainWindow)
-class LeoPyzoMainWindow(pyzo.core.main.MainWindow):
+#@+node:ekr.20190317084647.1: ** class MainWindowShim (pyzo.core.main.MainWindow)
+class MainWindowShim(pyzo.core.main.MainWindow):
     #@+others
-    #@+node:ekr.20190317084647.2: *3* LeoPyzoMainWindow.__init__ (override: don't hold splash)
+    #@+node:ekr.20190317084647.2: *3* MainWindowShim.__init__ (override: don't hold splash)
     def __init__(self, parent=None, locale=None):
 
-        print('LeoPyzoMainWindow.__init__:')
+        print('MainWindowShim.__init__:')
 
         pyzo.core.main.MainWindow.__init__(self, parent)
         
@@ -222,10 +213,10 @@ class LeoPyzoMainWindow(pyzo.core.main.MainWindow):
 
         # Handle any actions
         pyzo.core.commandline.handle_cmd_args()
-    #@+node:ekr.20190317084647.3: *3* LeoPyzoMainWindow._populate (shims: shells, keyMapper)
+    #@+node:ekr.20190317084647.3: *3* MainWindowShim._populate (shims: shells, keyMapper)
     def _populate(self):
         
-        print('----- LeoPyzoMainWindow._populate')
+        print('----- MainWindowShim._populate')
         use_shell = False
 
         # Delayed imports
@@ -308,17 +299,17 @@ class LeoPyzoMainWindow(pyzo.core.main.MainWindow):
         elif pyzo.config.state.loadedTools:
             for toolId in pyzo.config.state.loadedTools:
                 pyzo.toolManager.loadTool(toolId)
-    #@+node:ekr.20190317084647.4: *3* LeoPyzoMainWindow.setStyleSheet (override)
+    #@+node:ekr.20190317084647.4: *3* MainWindowShim.setStyleSheet (override)
     firstStyleSheet = True
 
     def setStyleSheet(self, style, *args, **kwargs):
-        # print('LeoPyzoMainWindow.setStyleSheet', style, args, kwargs)
+        # print('MainWindowShim.setStyleSheet', style, args, kwargs)
         # A hack: Ignore the first call.
         if self.firstStyleSheet:
             self.firstStyleSheet = False
             return
         QtWidgets.QMainWindow.setStyleSheet(self, style)
-    #@+node:ekr.20190317084647.5: *3* LeoPyzoMainWindow.closeEvent (traces)
+    #@+node:ekr.20190317084647.5: *3* MainWindowShim.closeEvent (traces)
     def closeEvent(self, event):
         """ Override close event handler. """
         import sys
@@ -374,7 +365,7 @@ class LeoPyzoMainWindow(pyzo.core.main.MainWindow):
         t5 = time.clock()
 
         if 1: # EKR
-            print('===== LeoPyzoMainWindow.closeEvent')
+            print('===== MainWindowShim.closeEvent')
             print('stage 1:          %5.2f' % (t2-t1))
             print('stage 2: shells:  %5.2f' % (t3-t2))
             print('stage 3: tools:   %5.2f' % (t4-t3))
@@ -389,11 +380,18 @@ class LeoPyzoMainWindow(pyzo.core.main.MainWindow):
             if hasattr(os, '_exit'):
                 os._exit(0)
     #@-others
-#@+node:ekr.20190330100146.1: ** class PyzoMenuShim (object)
-class PyzoMenuShim (object):
+#@+node:ekr.20190330100146.1: ** class MenuShim (object) (TO DO)
+class MenuShim (object):
     '''Adaptor class standing between Leo and Pyzo menus.'''
     #@+others
     #@-others
+#@+node:ekr.20190317082435.1: ** class SplashShim (QWidget)
+class SplashShim(QtWidgets.QWidget):
+    '''A do-nothing splash widget.'''
+    
+    def __init__(self, parent, **kwargs):
+        # This ctor is required, because it is called with kwargs.
+        QtWidgets.QWidget.__init__(self, parent)
 #@-others
 monkey_patch()
 #@-leo

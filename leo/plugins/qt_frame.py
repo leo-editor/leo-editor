@@ -60,7 +60,7 @@ class DynamicWindow(dw_base):
         if g.pyzo:
             pass
         else:
-            QtWidgets.QMainWindow.__init__(self, parent)
+            QtWidgets.QMainWindow.__init__(self, parent) # pylint: disable=non-parent-init-called
         self.leo_c = c
         self.leo_master = None # Set in construct.
         self.leo_menubar = None # Set in createMenuBar.
@@ -918,7 +918,6 @@ class DynamicWindow(dw_base):
                 None,
                 QtWidgets.QApplication.UnicodeUTF8)
     #@+node:ekr.20190317084000.1: *3* dw.createPyzoMainWindow (shims: dw.*)
-
     def createPyzoMainWindow(self):
         '''
         Create the component ivars of the main window.
@@ -933,8 +932,8 @@ class DynamicWindow(dw_base):
         self.tabWidget = g.TracingNullObject(tag='dw.tabWidet')
             ### 
         ### self.setMainWindowOptions()
-        from leo.core.pyzo_shims import LeoPyzoMainWindow
-        LeoPyzoMainWindow()
+        from leo.core.pyzo_shims import MainWindowShim
+        MainWindowShim()
         ###
             # self.createCentralWidget()
             # main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
