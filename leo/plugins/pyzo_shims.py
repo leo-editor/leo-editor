@@ -2,7 +2,7 @@
 #@+node:ekr.20190330100032.1: * @file ../plugins/pyzo_shims.py
 '''Shims to adapt pyzo classes to Leo.'''
 #@+<< pyzo_shims imports >>
-#@+node:ekr.20190330101646.1: ** << pyzo_shims imports >>
+#@+node:ekr.20190330101646.1: **  << pyzo_shims imports >>
 import os
 import sys
 import time
@@ -24,9 +24,18 @@ from pyzo.core.main import loadAppIcons, loadIcons, loadFonts, MainWindow
 from pyzo.core.main import callLater
     # For _populate
 from pyzo.core.splash import SplashWidget
-    # The big one.
 #@-<< pyzo_shims imports >>
 #@+others
+#@+node:ekr.20190330100939.1: **  function: loadFile (pyzo_shims.py)
+def loadFile(self, filename, updateTabs=True):
+    '''
+    A monkey-patched replacement for pyzo.core.editorTabs.EditorTabs.loadFile.
+    '''
+    print('----- patched loadFile:', filename)
+    if filename.endswith('leo'):
+        g.trace('sys.argv:', sys.argv)
+        return None
+    return old_loadFile(self, filename, updateTabs)
 #@+node:ekr.20190317082435.1: ** class LeoEmptySplashWidget (QWidget)
 class LeoEmptySplashWidget(QtWidgets.QWidget):
     
@@ -90,7 +99,7 @@ class LeoPyzoMainWindow(MainWindow):
     #@+node:ekr.20190317084647.2: *3* LeoPyzoMainWindow.__init__ (override: don't hold splash)
     def __init__(self, parent=None, locale=None):
         
-        print('LeoPyzoMainWindow.__init__:') # SplashWidget:', repr(SplashWidget))
+        print('LeoPyzoMainWindow.__init__:')
         
         QtWidgets.QMainWindow.__init__(self, parent)
         
@@ -362,19 +371,9 @@ class PyzoMenuShim (object):
     '''Adaptor class standing between Leo and Pyzo menus.'''
     #@+others
     #@-others
-#@+node:ekr.20190330100939.1: ** function: loadFile (pyzo_shims.py)
-def loadFile(self, filename, updateTabs=True):
-    '''
-    A monkey-patched replacement for pyzo.core.editorTabs.EditorTabs.loadFile.
-    '''
-    print('----- patched loadFile:', filename)
-    if filename.endswith('leo'):
-        g.trace('sys.argv:', sys.argv)
-        return None
-    return old_loadFile(self, filename, updateTabs)
 #@-others
 #@+<< pyzo monkey patches >>
-#@+node:ekr.20190317082927.1: ** << pyzo monkey patches >>
+#@+node:ekr.20190317082927.1: **  << pyzo monkey patches >>
 #
 # Use a do-nothing SplashWidget
 pyzo.core.splash.SplashWidget = LeoEmptySplashWidget
