@@ -101,7 +101,7 @@ class DynamicWindow(dw_base):
 
     def do_leo_spell_btn_Ignore(self):
         self.doSpellBtn('onIgnoreButton')
-    #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers (shims: dw.* & c.frame.body/log)
+    #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers (9 shims)
     def construct(self, master=None):
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         c = self.leo_c
@@ -917,7 +917,7 @@ class DynamicWindow(dw_base):
                 s,
                 None,
                 QtWidgets.QApplication.UnicodeUTF8)
-    #@+node:ekr.20190317084000.1: *3* dw.createPyzoMainWindow (shims: dw.*)
+    #@+node:ekr.20190317084000.1: *3* dw.createPyzoMainWindow (4 shims)
     def createPyzoMainWindow(self):
         '''
         Create the component ivars of the main window.
@@ -925,7 +925,7 @@ class DynamicWindow(dw_base):
         Called instead of uic.loadUi(ui_description_file, self)
         '''
         # dw = self
-        g.trace('\n ==========', g.callers())
+        ### g.trace('\n =====', g.callers())
         self.leo_ui = self
         self.richTextEdit = g.TracingNullObject(tag='dw.richTextEdit')
         self.stackedWidget = g.TracingNullObject(tag='dw.stackedWidget')
@@ -4537,8 +4537,7 @@ class TabbedFrameFactory(object):
     #@+node:ekr.20110605121601.18466: *3* createFrame (TabbedFrameFactory)
     def createFrame(self, leoFrame):
 
-        if g.pyzo:
-            g.trace('\n===== TabbedFrameFactory', leoFrame)
+        ### if pyzo: g.trace('\n===== TabbedFrameFactory', leoFrame)
         c = leoFrame.c
         if self.masterFrame is None:
             self.createMaster()

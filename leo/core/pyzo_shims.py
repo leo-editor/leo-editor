@@ -11,11 +11,17 @@ from leo.core.leoQt import QtCore, QtWidgets
 import leo.core.leoGlobals as g
 assert g.pyzo
 #@-<< pyzo_shims non-pyzo imports >>
+
 # Be explicit about where everything comes from...
 import pyzo
 import pyzo.core.main
 import pyzo.core.splash
 import pyzo.util
+
+old_loadFile = None
+    # Set by monkey_patch.
+    # Save a permanent reference.
+
 #@+others
 #@+node:ekr.20190330100939.1: **  function: loadFile (pyzo_shims.py)
 def loadFile(self, filename, updateTabs=True):
@@ -28,9 +34,6 @@ def loadFile(self, filename, updateTabs=True):
         return None
     return old_loadFile(self, filename, updateTabs)
 #@+node:ekr.20190330112146.1: **  function: monkey_patch (pyzo_shims.py)
-old_loadFile = None
-    # Save a permanent reference.
-
 def monkey_patch():
 
     global old_loadFile
@@ -99,15 +102,26 @@ class ConfigShim(pyzo.util.zon.Dict):
         # return Dict.__reserved_names__ + names
     #@-others
 #@+node:ekr.20190317084647.1: ** class MainWindowShim (pyzo.core.main.MainWindow)
+# Important: 
+# pyzo.core.main.MainWindow is just a QMainWindow.
+#
+# Do *not* make the shim a subclass of MainWindow!
+# Doing so would generate a duplicate call to _populate.
+
 class MainWindowShim(pyzo.core.main.MainWindow):
     #@+others
-    #@+node:ekr.20190317084647.2: *3* MainWindowShim.__init__ (override: don't hold splash)
+    #@+node:ekr.20190317084647.2: *3* MainWindowShim.__init__
     def __init__(self, parent=None, locale=None):
+        #
+        # pylint: disable=non-parent-init-called, super-init-not-called
+            # Only init QMainWindow, **not** MainWindow.
+            # MainWindow.__init__ calls all the code below.
+            # This was the source of the duplicate imports and duplicate calls to _populate.
 
-        print('\nMainWindowShim.__init__:', g.callers())
+        ### print('\nMainWindowShim.__init__:', g.callers())
 
-        pyzo.core.main.MainWindow.__init__(self, parent)
-        
+        QtWidgets.QMainWindow.__init__(self, parent)
+
         self._closeflag = 0  # Used during closing/restarting
 
         # Init window title and application icon
@@ -213,10 +227,11 @@ class MainWindowShim(pyzo.core.main.MainWindow):
 
         # Handle any actions
         pyzo.core.commandline.handle_cmd_args()
-    #@+node:ekr.20190317084647.3: *3* MainWindowShim._populate (shims: shells, keyMapper)
+    #@+node:ekr.20190317084647.3: *3* MainWindowShim._populate (2 shims)
     def _populate(self):
         
-        print('\n========== MainWindowShim._populate', g.callers())
+        ### print('\n========== MainWindowShim._populate', g.callers(), '\n')
+        
         use_shell = False
 
         # Delayed imports
@@ -226,7 +241,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         from pyzo.core.history import CommandHistory
         from pyzo.tools import ToolManager
         
-        print('----- MainWindowShim._populate: end of delayed imports')
+        ### print('----- MainWindowShim._populate: end of delayed imports')
 
         # Instantiate tool manager
         pyzo.toolManager = ToolManager()
