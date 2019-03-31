@@ -37,8 +37,11 @@ def loadFile(self, filename, updateTabs=True):
 def monkey_patch():
 
     global old_loadFile
-    # Use a do-nothing SplashWidget
-    pyzo.core.splash.SplashWidget = SplashShim
+    
+    ### MainWindowShim now uses SplashShim directly
+        # Use a do-nothing SplashWidget
+        # pyzo.core.splash.SplashWidget = SplashShim
+        
     # Use a Leonine pyzo.config.
     if 0:
         # Works, but uses light theme.
@@ -56,8 +59,6 @@ new_config = True
 config_shim_seen = {}
     # Keys are bunches.
 
-print('\n===== new_config: %s\n' % new_config)
-
 try:  # pragma: no cover
     from collections import OrderedDict as _dict
 except ImportError:
@@ -71,6 +72,10 @@ config_base = _dict if new_config else Dict
     # The old code needs _dict, not dict.
 
 class ConfigShim(config_base):
+    
+    def __init__(self):
+        config_base.__init__(self)
+        print('\n===== ConfigShim: new_config: %s\n' % new_config)
     
     if new_config:
         #@+<< define bunch settings >>
@@ -386,6 +391,14 @@ class ConfigShim(config_base):
     #@-others
 #@+node:ekr.20190317084647.1: ** class MainWindowShim (pyzo.core.main.MainWindow)
 class MainWindowShim(pyzo.core.main.MainWindow):
+    
+    initial_draw = False
+        # True: do an initial draw.
+        # Works either way.
+    use_shell = True
+        # Works either way.
+        # In particular, drawing is reasonable when use_shell is True.
+
     #@+others
     #@+node:ekr.20190317084647.2: *3* MainWindowShim.__init__
     def __init__(self, parent=None, locale=None):
@@ -418,18 +431,24 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         self.restoreGeometry()
 
         # Show splash screen (we need to set our color too)
-        
-        w = pyzo.core.splash.SplashWidget(self, distro='no distro')
+        ### w = pyzo.core.splash.SplashWidget(self, distro='no distro')
+        w = SplashShim(parent)
+            # No need to Monkey-Patch pyzo.core.splash.SplashWidget
         self.setCentralWidget(w)
-        self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
+        ###
+            # These do nothing, even when use_shell is True.
+        ### self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
+        #self.setStyleSheet("QMainWindow { background-color: red;}")
+            # Does nothing.
 
         # Show empty window and disable updates for a while
-        self.show()
-        self.paintNow()
+        if self.initial_draw:
+            self.show()
+            self.paintNow()
         self.setUpdatesEnabled(False)
 
         # Determine timeout for showing splash screen
-        splash_timeout = time.time() + 1.0
+        ### splash_timeout = time.time() + 0.001 ### 1.0
 
         # Set locale of main widget, so that qt strings are translated
         # in the right way
@@ -459,22 +478,25 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         # Set qt style and test success
         self.setQtStyle(None) # None means init!
         
-        if 0: ###
+        ###
             # Hold the splash screen if needed
-            while time.time() < splash_timeout:
-                QtWidgets.qApp.flush()
-                QtWidgets.qApp.processEvents()
-                time.sleep(0.05)
+            # while time.time() < splash_timeout:
+                # QtWidgets.qApp.flush()
+                # QtWidgets.qApp.processEvents()
+                # time.sleep(0.05)
 
         # Populate the window (imports more code)
         self._populate()
 
         # Revert to normal background, and enable updates
         self.setStyleSheet('')
+            # Required.
         self.setUpdatesEnabled(True)
 
         # Restore window state, force updating, and restore again
         self.restoreState()
+        if not self.initial_draw:
+            self.show()
         self.paintNow()
         self.restoreState()
 
@@ -507,17 +529,19 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         pyzo.core.commandline.handle_cmd_args()
     #@+node:ekr.20190317084647.3: *3* MainWindowShim._populate (2 shims)
     def _populate(self):
+        
+        trace = False and g.pyzo_trace_imports
 
-        use_shell = False
-
-        # Delayed imports
-        print('\n===== MainWindowShim._populate\n')
+        # Delayed imports, exactly as in MainWindow._populate.
+        if trace:
+            print('\n===== MainWindowShim._populate\n')
         from pyzo.core.editorTabs import EditorTabs
         from pyzo.core.shellStack import ShellStackWidget
         from pyzo.core import codeparser
         from pyzo.core.history import CommandHistory
         from pyzo.tools import ToolManager
-        print('\n===== MainWindowShim._populate: end of delayed imports\n')
+        if trace:
+            print('\n===== MainWindowShim._populate: end of delayed imports\n')
 
         # Instantiate tool manager
         pyzo.toolManager = ToolManager()
@@ -547,7 +571,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 
         # Create shell stack
-        if use_shell: # Disabling the shell works.
+        if self.use_shell: # Disabling the shell works.
             pyzo.shells = ShellStackWidget(self)
             dock.setWidget(pyzo.shells)
         else:
@@ -557,7 +581,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         pyzo.command_history = CommandHistory('command_history.py')
 
         # Create the default shell when returning to the event queue
-        if use_shell:
+        if self.use_shell:
             pyzo.core.main.callLater(pyzo.shells.addShell)
                 # New: fully qualified.
 
@@ -569,12 +593,11 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             self.setStatusBar(None)
 
         # Create menu
-        if use_shell:
-            # Crashes:
-            # File "C:/apps/pyzo/source\pyzo\core\menu.py", line 961, in _updateShells
-            # pyzo.icons.application_add, pyzo.shells.addShell, config) 
+        if self.use_shell:
             from pyzo.core import menu
             pyzo.keyMapper = menu.KeyMapper()
+            assert not isinstance(pyzo.keyMapper, (g.TracingNullObject, g.NullObject))
+                # This should not be a Shim.
             menu.buildMenus(self.menuBar())
         else:
             # Shim:
@@ -711,5 +734,4 @@ class SplashShim(QtWidgets.QWidget):
         # This ctor is required, because it is called with kwargs.
         QtWidgets.QWidget.__init__(self, parent)
 #@-others
-
 #@-leo
