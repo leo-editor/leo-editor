@@ -23,6 +23,10 @@ in_bridge = False
 pyzo = True
     # It's now safe to enable this permanently,
     # because LM.scanOptions clears it unless --pyzo is in effect.
+pyzo_trace = False
+    # True: enable traces in pyzo itself.
+pyzo_trace_imports = True
+    # True: enable traces of imports in pyzo itself.
 #
 # Now done in LM.doSimpleOptions.
     # print('\n===== py3.pyzo branch: g.pyzo:', pyzo)
@@ -326,10 +330,8 @@ unitTesting = False # A synonym for app.unitTesting.
 #@+others
 #@+node:ekr.20140711071454.17644: ** g.Classes & class accessors
 #@+node:ekr.20031218072017.3098: *3* class g.Bunch (Python Cookbook)
-#@+at From The Python Cookbook: Often we want to just collect a bunch of
-# stuff together, naming each item of the bunch; a dictionary's OK for
-# that, but a small do-nothing class is even handier, and prettier to
-# use.
+#@+at
+# From The Python Cookbook: 
 # 
 # Create a Bunch whenever you want to group a few variables:
 # 
@@ -360,12 +362,11 @@ class Bunch(object):
 
     def toString(self):
         tag = self.__dict__.get('tag')
-        entries = ["%s: %s" % (key, str(self.__dict__.get(key)))
+        entries = ["%s: %s" % (key, str(self.__dict__.get(key)) or repr(self.__dict__.get(key)))
             for key in self.ivars() if key != 'tag']
-        if tag:
-            return "Bunch(tag=%s)...\n%s\n" % (tag, '\n'.join(entries))
-        else:
-            return "Bunch...\n%s\n" % '\n'.join(entries)
+        result = ['g.Bunch(%s)' % (tag or '')]
+        result.extend(entries)
+        return '\n    '.join(result) + '\n'
     # Used by new undo code.
 
     def __setitem__(self, key, value):
@@ -380,7 +381,7 @@ class Bunch(object):
     def get(self, key, theDefault=None):
         return self.__dict__.get(key, theDefault)
         
-    def __contains__(self, key): ### New, experimental.
+    def __contains__(self, key): # New.
         # print('g.Bunch.__contains__', key in self.__dict__, key)
         return key in self.__dict__
 
