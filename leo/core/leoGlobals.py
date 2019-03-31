@@ -1344,7 +1344,8 @@ class TracingNullObject(object):
         return False
     def __getitem__(self, key):
         g.null_object_print(id(self), '__getitem__')
-        raise KeyError
+        return None
+        ### raise KeyError
     def __iter__(self):
         g.null_object_print(id(self), '__iter__')
         return self
@@ -1354,6 +1355,9 @@ class TracingNullObject(object):
     def __next__(self):
         g.null_object_print(id(self), '__next__')
         raise StopIteration
+    def __setitem__(self, key, val):
+        g.null_object_print(id(self), '__setitem__')
+        return None
 #@+node:ekr.20190330062625.1: *4* g.null_object_print_attr
 def null_object_print_attr(id_, attr):
     #@+<< define suppression lists >>
@@ -1409,7 +1413,7 @@ def null_object_print(id_, kind):
     callers = ','.join(callers[:-1])
     s = '%s.%s' % (kind, tag)
     signature = '%s:%s' % (s, callers)
-    if 1:
+    if 0:
         # Always print:
         print('%40s %s' % (s, callers))
     elif signature not in tracing_signatures:

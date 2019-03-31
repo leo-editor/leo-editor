@@ -41,65 +41,346 @@ def monkey_patch():
     pyzo.core.splash.SplashWidget = SplashShim
     # Use a Leonine pyzo.config.
     pyzo.config = ConfigShim()
+        # g.TracingNullObject(tag='pyzo.config')
+            # This eventually fails, because the caller expects a QFont.
     pyzo.loadConfig()
         # To be replaced by LeoPyzoConfig.loadConfig.
     # Monkey-patch EditorTabs.loadFile.
     from pyzo.core.editorTabs import EditorTabs
     old_loadFile = EditorTabs.loadFile
     g.funcToMethod(loadFile, EditorTabs)
-#@+node:ekr.20190317082751.1: ** class ConfigShim (zon.Dict) (To do)
-class ConfigShim(pyzo.util.zon.Dict):
-    #@+others
-    #@+node:ekr.20190317082751.2: *3* ConfigShim.__repr__
-    def __repr__(self):
+#@+node:ekr.20190317082751.1: ** class ConfigShim
+new_config = False
+    # Works when False.
 
-        from pyzo.util.zon import isidentifier
-            # Changed import.
-        identifier_items = []
-        nonidentifier_items = []
-        for key, val in self.items():
-            if isidentifier(key):
-                identifier_items.append('%s=%r' % (key, val))
-            else:
-                nonidentifier_items.append('(%r, %r)' % (key, val))
-        if nonidentifier_items:
-            return 'Dict([%s], %s)' % (', '.join(nonidentifier_items),
-                                       ', '.join(identifier_items))
-        else:
-            return 'Dict(%s)' % (', '.join(identifier_items))
-    #@+node:ekr.20190317082751.3: *3* ConfigShim.__getattribute__
-    def __getattribute__(self, key):
-        try:
-            ### return object.__getattribute__(self, key)
-            val = object.__getattribute__(self, key)
-            if False and key not in ('advanced', 'shortcuts2', 'settings'):
-                # print('===== LeoPyzoConfig 1: %r: %r' % (key, val))
-                print('===== LeoPyzoConfig 1: %r' % key)
-            return val
-        except AttributeError:
-            if key in self:
-                if False and key not in ('advanced', 'shortcuts2', 'settings'):
-                    # print('===== LeoPyzoConfig 1: %r: %r' % (key, g.truncate(self[key], 50)))
-                    print('===== LeoPyzoConfig 2: %r' % key)
-                return self[key]
-            else:
-                raise
-    #@+node:ekr.20190317082751.4: *3* ConfigShim.__setattr__
-    # def __setattr__(self, key, val):
-        # if key in Dict.__reserved_names__:
-            # # Either let OrderedDict do its work, or disallow
-            # if key not in Dict.__pure_names__:
-                # return _dict.__setattr__(self, key, val)
+try:  # pragma: no cover
+    from collections import OrderedDict as _dict
+except ImportError:
+    _dict = dict
+    
+from pyzo.util.zon import Dict
+
+config_base = _dict if new_config else Dict
+
+class ConfigShim(config_base):
+    
+    if new_config:
+        #@+<< define settings >>
+        #@+node:ekr.20190331053237.1: *3* << define settings >>
+        # ^(\s*)(\w+)\:
+
+        advanced = {
+            'autoCompDelay':200,
+            'fileExtensionsToLoadFromDir':'py,pyw,pyx,txt,bat',
+            'find_autoHide_timeout':10,
+            'homeAndEndWorkOnDisplayedLine':0,
+            'shellMaxLines':10000,
+            'titleText':'{fileName} ({fullPath}) - Interactive Editor for Python',
+        }
+        settings = {
+            'allowFloatingShell':0,
+            'autoCallTip':1,
+            'autoClose_Brackets':1,
+            'autoClose_Quotes':1,
+            'autoComplete':1,
+            'autoComplete_acceptKeys':'Tab',
+            'autoComplete_caseSensitive':0,
+            'autoComplete_fillups':'\n',
+            'autoComplete_keywords':1,
+            'autoIndent':1,
+            'changeDirOnFileExec':0,
+            'defaultIndentUsingSpaces':1,
+            'defaultIndentWidth':4,
+            'defaultLineEndings':'CRLF',
+            'defaultStyle':'python',
+            'justificationWidth':70,
+            'language':'English (US)',
+            'removeTrailingWhitespaceWhenSaving':0,
+        }
+        shellConfigs2 = [{
+            'argv':'',
+            'environ':'',
+            'exe':'c:\\anaconda3\\python.exe',
+            'gui':'auto',
+            'ipython':'yes',
+            'name':'Python',
+            'projectPath':'',
+            'pythonPath':'',
+            'scriptFile':'',
+            'startDir':'',
+            'startupScript':'',
+        }]
+        shortcuts2 = {
+            #@+<< define shortcuts2 >>
+            #@+node:ekr.20190331053528.1: *4* << define shortcuts2 >>
+            'edit__comment':'Ctrl+R,',
+            'edit__copy':'Ctrl+C,Ctrl+Insert',
+            'edit__cut':'Ctrl+X,Shift+Delete',
+            'edit__dedent':'Shift+Tab,',
+            'edit__delete_line':'Ctrl+D,',
+            'edit__duplicate_line':'Ctrl+Shift+D,',
+            'edit__find_next':'Ctrl+G,F3',
+            'edit__find_or_replace':'Ctrl+F,',
+            'edit__find_previous':'Ctrl+Shift+G,Shift+F3',
+            'edit__find_selection':'Ctrl+F3,',
+            'edit__find_selection_backward':'Ctrl+Shift+F3,',
+            'edit__indent':'Tab,',
+            'edit__justify_commentdocstring':'Ctrl+J,',
+            'edit__paste':'Ctrl+V,Shift+Insert',
+            'edit__paste_and_select':'Ctrl+Shift+V',
+            'edit__redo':'Ctrl+Y,',
+            'edit__select_all':'Ctrl+A,',
+            'edit__toggle_breakpoint':'Ctrl+B,',
+            'edit__uncomment':'Ctrl+T,',
+            'edit__undo':'Ctrl+Z,',
+            'file__close':'Ctrl+W,',
+            'file__new':'Ctrl+N,',
+            'file__open':'Ctrl+O,',
+            'file__save':'Ctrl+S,',
+            'run__execute_cell':'Ctrl+Return,Ctrl+Enter',
+            'run__execute_cell_and_advance':'Ctrl+Shift+Return,Ctrl+Shift+Enter',
+            'run__execute_file':'Ctrl+E,F5',
+            'run__execute_main_file':'Ctrl+M,F6',
+            'run__execute_selection':'Alt+Return,F9',
+            'run__execute_selection_and_advance':'Shift+F9,Shift+Alt+Return',
+            'run__run_file_as_script':'Ctrl+Shift+E,Ctrl+F5',
+            'run__run_main_file_as_script':'Ctrl+Shift+M,Ctrl+F6',
+            'shell__clear_screen':'Ctrl+L,',
+            'shell__close':'Alt+K,',
+            'shell__create_shell_1_':'Ctrl+1,',
+            'shell__create_shell_2_':'Ctrl+2,',
+            'shell__create_shell_3_':'Ctrl+3,',
+            'shell__create_shell_4_':'Ctrl+4,',
+            'shell__create_shell_5_':'Ctrl+5,',
+            'shell__create_shell_6_':'Ctrl+6,',
+            'shell__create_shell_7_':'Ctrl+7,',
+            'shell__create_shell_8_':'Ctrl+8,',
+            'shell__interrupt':'Ctrl+I,Meta+C',
+            'shell__postmortem_debug_from_last_traceback':'Ctrl+P,',
+            'shell__restart':'Ctrl+K,',
+            'shell__terminate':'Ctrl+Shift+K,',
+            'view__select_editor':'Ctrl+9,F2',
+            'view__select_previous_file':'Ctrl+Tab,',
+            'view__select_shell':'Ctrl+0,F1',
+            'view__zooming__zoom_in':'Ctrl+=,Ctrl++',
+            'view__zooming__zoom_out':'Ctrl+-,',
+            'view__zooming__zoom_reset':'Ctrl+\\,'
+            #@-<< define shortcuts2 >>
+        }
+        state = {
+            'editorState2':[
+                #@+<< define editorState2 >>
+                #@+node:ekr.20190331053634.1: *4* << define editorState2 >>
+                [
+                    'C:\\apps\\pyzo\\source\\pyzo\\codeeditor\\highlighter.py',
+                    3279,
+                    96
+                ],
+                [
+                    'C:\\apps\\pyzo\\source\\pyzo\\core\\editorTabs.py',
+                    22913,
+                    693
+                ],
+                [
+                    'C:\\apps\\pyzo\\source\\pyzo\\codeeditor\\highlighter.py',
+                    'hist'
+                ],
+                [
+                    'C:\\apps\\pyzo\\source\\pyzo\\core\\editorTabs.py',
+                    'hist'
+                ]
+                #@-<< define editorState2 >>
+            ],
+            'find_autoHide':1,
+            'find_matchCase':0,
+            'find_regExp':0,
+            'find_show':0,
+            'find_wholeWord':1,
+            'loadedTools':['pyzofilebrowser', 'pyzologger', 'pyzosourcestructure'],
+            'newUser':1,
+            'windowGeometry':'AdnQywACAAAAAAGjAAAA2AAABv0AAANWAAABqwAAAPcAAAb1AAADTgAAAAAAAAAAB4A=\n',
+            'windowState':[
+                'AAAA/wAAAAD9AAAAAgAAAAAAAACeAAACRPwCAAAAAfwAAAAUAAACRAAAAYgA/////AIAAAAC+wAA\n',
+                'AB4AcAB5AHoAbwBmAGkAbABlAGIAcgBvAHcAcwBlAHIBAAAAFAAAAWEAAAEIAP////sAAAAmAHAA\n',
+                'eQB6AG8AcwBvAHUAcgBjAGUAcwB0AHIAdQBjAHQAdQByAGUBAAABewAAAN0AAAB6AP///wAAAAEA\n',
+                'AAGEAAACRPwCAAAABvsAAAAMAHMAaABlAGwAbABzAQAAABQAAAD/AAAAcwD////7AAAAFABwAHkA\n',
+                'egBvAGwAbwBnAGcAZQByAQAAARkAAAE/AAAAWQD////7AAAAGgBwAHkAegBvAHcAbwByAGsAcwBw\n',
+                'AGEAYwBlAAAAAT4AAAEaAAAAAAAAAAD7AAAAJgBwAHkAegBvAGkAbgB0AGUAcgBhAGMAdABpAHYA\n',
+                'ZQBoAGUAbABwAAAAAnkAAAB6AAAAAAAAAAD7AAAAIgBwAHkAegBvAGgAaQBzAHQAbwByAHkAdgBp\n',
+                'AGUAdwBlAHIAAAACGgAAAVsAAAAAAAAAAPsAAAAcAHAAeQB6AG8AdwBlAGIAYgByAG8AdwBzAGUA\n',
+                'cgAAAAKwAAAAxQAAAAAAAAAAAAADHQAAAkQAAAAEAAAABAAAAAgAAAAI/AAAAAA=\n'
+            ]
+        }
+        tools = {
+            'pyzofilebrowser':{},
+            'pyzofilebrowser2':{
+                'expandedDirs':['c:\\apps\\pyzo\\source\\pyzo'],
+                'nameFilter':'!*.pyc',
+                'path':'c:\\apps\\pyzo\\source\\pyzo',
+                'searchMatchCase':0,
+                'searchRegExp':0,
+                'searchSubDirs':1,
+                'starredDirs':[{
+                    'addToPythonpath':0,
+                    'name':'Pyzo sources',
+                    'path':'c:\\apps\\pyzo\\source'
+                }]
+            },
+            'pyzohistoryviewer':{},
+            'pyzointeractivehelp':{
+                'fontSize':14,
+                'noNewlines':1,
+                'smartNewlines':1
+            },
+            'pyzologger':{},
+            'pyzosourcestructure':{
+                'level':1,
+                'showTypes':['class', 'def', 'cell', 'todo'],
+            },
+            'pyzowebbrowser':{
+                'bookMarks':[
+                    'docs.python.org',
+                    'scipy.org',
+                    'doc.qt.nokia.com/4.5/',
+                    'pyzo.org',
+                ],
+                'zoomFactor':1.0,
+            },
+            'pyzoworkspace':{
+                'hideTypes':[],
+                'typeTranslation':{
+                    'builtin_function_or_method':'function',
+                    'method':'function'
+                }
+            }
+        }
+            
+        view = {
+            'autoComplete_popupSize':[300, 100],
+            'codeFolding':0,
+            'doBraceMatch':1,
+            'edgeColumn':80,
+            'fontname':'DejaVu Sans Mono',
+            'highlightCurrentLine':1,
+            'highlightMatchingBracket':1,
+            'qtstyle':'fusion',
+            'showIndentationGuides':1,
+            'showLineEndings':0,
+            'showStatusbar':0,
+            'showWhitespace':0,
+            'showWrapSymbols':0,
+            'tabWidth':4,
+            'wrap':1,
+            'zoom':2
+        }
+        #@-<< define settings >>
+        #@+<< new config methods >>
+        #@+node:ekr.20190331052308.1: *3* << new config methods >>
+        #@+others
+        #@+node:ekr.20190331052308.2: *4* ConfigShim.__repr__
+        def __repr__(self):
+            
+            return g.obj2string(self)
+
+            # from pyzo.util.zon import isidentifier
+                # # Changed import.
+            # identifier_items = []
+            # nonidentifier_items = []
+            # for key, val in self.items():
+                # if isidentifier(key):
+                    # identifier_items.append('%s=%r' % (key, val))
+                # else:
+                    # nonidentifier_items.append('(%r, %r)' % (key, val))
+            # if nonidentifier_items:
+                # return 'Dict([%s], %s)' % (', '.join(nonidentifier_items),
+                                           # ', '.join(identifier_items))
             # else:
-                # raise AttributeError('Reserved name, this key can only ' +
-                                     # 'be set via ``d[%r] = X``' % key)
-        # else:
-            # # if isinstance(val, dict): val = Dict(val) -> no, makes a copy!
-            # self[key] = val
-    #@+node:ekr.20190317082751.5: *3* ConfigShim.__dir__
-    # def __dir__(self):
-        # names = [k for k in self.keys() if isidentifier(k)]
-        # return Dict.__reserved_names__ + names
+                # return 'Dict(%s)' % (', '.join(identifier_items))
+        #@+node:ekr.20190331052308.3: *4* ConfigShim.__getattribute__ (not used)
+        # def __getattribute__(self, key):
+            # try:
+                # ### return object.__getattribute__(self, key)
+                # val = object.__getattribute__(self, key)
+                # if False and key not in ('advanced', 'shortcuts2', 'settings'):
+                    # # print('===== LeoPyzoConfig 1: %r: %r' % (key, val))
+                    # print('===== LeoPyzoConfig 1: %r' % key)
+                # return val
+            # except AttributeError:
+                # if key in self:
+                    # if False and key not in ('advanced', 'shortcuts2', 'settings'):
+                        # # print('===== LeoPyzoConfig 1: %r: %r' % (key, g.truncate(self[key], 50)))
+                        # print('===== LeoPyzoConfig 2: %r' % key)
+                    # return self[key]
+                # else:
+                    # raise
+        #@+node:ekr.20190331052308.4: *4* ConfigShim.__setattr__ (not used)
+        # def __setattr__(self, key, val):
+            # if key in Dict.__reserved_names__:
+                # # Either let OrderedDict do its work, or disallow
+                # if key not in Dict.__pure_names__:
+                    # return _dict.__setattr__(self, key, val)
+                # else:
+                    # raise AttributeError('Reserved name, this key can only ' +
+                                         # 'be set via ``d[%r] = X``' % key)
+            # else:
+                # # if isinstance(val, dict): val = Dict(val) -> no, makes a copy!
+                # self[key] = val
+        #@-others
+        #@-<< new config methods >>
+    else:
+        #@+<< old config methods >>
+        #@+node:ekr.20190331052251.1: *3* << old config methods >>
+        #@+others
+        #@+node:ekr.20190317082751.2: *4* ConfigShim.__repr__
+        def __repr__(self):
+
+            from pyzo.util.zon import isidentifier
+                # Changed import.
+            identifier_items = []
+            nonidentifier_items = []
+            for key, val in self.items():
+                if isidentifier(key):
+                    identifier_items.append('%s=%r' % (key, val))
+                else:
+                    nonidentifier_items.append('(%r, %r)' % (key, val))
+            if nonidentifier_items:
+                return 'Dict([%s], %s)' % (', '.join(nonidentifier_items),
+                                           ', '.join(identifier_items))
+            else:
+                return 'Dict(%s)' % (', '.join(identifier_items))
+        #@+node:ekr.20190317082751.3: *4* ConfigShim.__getattribute__
+        def __getattribute__(self, key):
+            try:
+                ### return object.__getattribute__(self, key)
+                val = object.__getattribute__(self, key)
+                if False and key not in ('advanced', 'shortcuts2', 'settings'):
+                    # print('===== LeoPyzoConfig 1: %r: %r' % (key, val))
+                    print('===== LeoPyzoConfig 1: %r' % key)
+                return val
+            except AttributeError:
+                if key in self:
+                    if False and key not in ('advanced', 'shortcuts2', 'settings'):
+                        # print('===== LeoPyzoConfig 1: %r: %r' % (key, g.truncate(self[key], 50)))
+                        print('===== LeoPyzoConfig 2: %r' % key)
+                    return self[key]
+                else:
+                    raise
+        #@+node:ekr.20190317082751.4: *4* ConfigShim.__setattr__
+        def __setattr__(self, key, val):
+            if key in Dict.__reserved_names__:
+                # Either let OrderedDict do its work, or disallow
+                if key not in Dict.__pure_names__:
+                    return _dict.__setattr__(self, key, val)
+                else:
+                    raise AttributeError('Reserved name, this key can only ' +
+                                         'be set via ``d[%r] = X``' % key)
+            else:
+                # if isinstance(val, dict): val = Dict(val) -> no, makes a copy!
+                self[key] = val
+        #@-others
+        #@-<< old config methods >>
+
+    #@+others
     #@-others
 #@+node:ekr.20190317084647.1: ** class MainWindowShim (pyzo.core.main.MainWindow)
 # Important: 
