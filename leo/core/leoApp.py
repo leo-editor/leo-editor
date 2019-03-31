@@ -3114,6 +3114,8 @@ class LoadManager(object):
         c = g.app.newCommander(fileName=fn, gui=gui,
             previousSettings=previousSettings)
         # Open the file, if possible.
+        ###
+        ### Colored light, the first time, then dark.
         g.doHook('open0')
         theFile = lm.openLeoOrZipFile(fn)
         if isinstance(theFile, sqlite3.Connection):

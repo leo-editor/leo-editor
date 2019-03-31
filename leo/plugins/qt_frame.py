@@ -925,6 +925,7 @@ class DynamicWindow(dw_base):
         Called instead of uic.loadUi(ui_description_file, self)
         '''
         # dw = self
+        g.trace('\n ==========', g.callers())
         self.leo_ui = self
         self.richTextEdit = g.TracingNullObject(tag='dw.richTextEdit')
         self.stackedWidget = g.TracingNullObject(tag='dw.stackedWidget')
@@ -2053,7 +2054,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Command decorator for the LeoQtFrame class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
-    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (shim: f.frame.menu)
+    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (2 shims)
     def finishCreate(self):
 
         f = self
@@ -4537,7 +4538,7 @@ class TabbedFrameFactory(object):
     def createFrame(self, leoFrame):
 
         if g.pyzo:
-            g.trace('(TabbedFrameFactory)', leoFrame)
+            g.trace('\n===== TabbedFrameFactory', leoFrame)
         c = leoFrame.c
         if self.masterFrame is None:
             self.createMaster()
@@ -4563,8 +4564,12 @@ class TabbedFrameFactory(object):
             dw.show()
             tabw.show()
         return dw
-    #@+node:ekr.20110605121601.18468: *3* createMaster (TabbedFrameFactory)
+    #@+node:ekr.20110605121601.18468: *3* createMaster (TabbedFrameFactory) (1 shim)
     def createMaster(self):
+        if g.pyzo:
+            self.masterFrame = g.TracingNullObject(tag='LeoTabbedTopLevel')
+                # Could be None. No need for a real shim.
+            return
         mf = self.masterFrame = LeoTabbedTopLevel(factory=self)
         g.app.gui.attachLeoIcon(mf)
         tabbar = mf.tabBar()
@@ -4667,7 +4672,10 @@ class TabbedFrameFactory(object):
         g.app.log = f.log
     #@+node:ekr.20110605121601.18469: *3* setTabForCommander (TabbedFrameFactory)
     def setTabForCommander(self, c):
+        
         tabw = self.masterFrame # a QTabWidget
+        if not tabw:
+            return ### pyzo support.
         for dw in self.leoFrames: # A dict whose keys are DynamicWindows.
             if dw.leo_c == c:
                 for i in range(tabw.count()):

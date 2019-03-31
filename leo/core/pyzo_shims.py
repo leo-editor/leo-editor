@@ -32,7 +32,7 @@ old_loadFile = None
     # Save a permanent reference.
 
 def monkey_patch():
-    
+
     global old_loadFile
     # Use a do-nothing SplashWidget
     pyzo.core.splash.SplashWidget = SplashShim
@@ -104,7 +104,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
     #@+node:ekr.20190317084647.2: *3* MainWindowShim.__init__ (override: don't hold splash)
     def __init__(self, parent=None, locale=None):
 
-        print('MainWindowShim.__init__:')
+        print('\nMainWindowShim.__init__:', g.callers())
 
         pyzo.core.main.MainWindow.__init__(self, parent)
         
@@ -216,7 +216,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
     #@+node:ekr.20190317084647.3: *3* MainWindowShim._populate (shims: shells, keyMapper)
     def _populate(self):
         
-        print('----- MainWindowShim._populate')
+        print('\n========== MainWindowShim._populate', g.callers())
         use_shell = False
 
         # Delayed imports
@@ -225,6 +225,8 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         from pyzo.core import codeparser
         from pyzo.core.history import CommandHistory
         from pyzo.tools import ToolManager
+        
+        print('----- MainWindowShim._populate: end of delayed imports')
 
         # Instantiate tool manager
         pyzo.toolManager = ToolManager()
