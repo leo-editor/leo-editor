@@ -357,15 +357,6 @@
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
 </v>
 </v>
-<v t="ekr.20180606035619.1"><vh>Recent files</vh>
-<v t="ekr.20190330100032.1"></v>
-<v t="ekr.20120419093256.10048"></v>
-<v t="ekr.20140907123524.18774"></v>
-<v t="ekr.20140907085654.18699"></v>
-<v t="ekr.20140907131341.18707"></v>
-<v t="ekr.20160306114544.1"></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31382e3171017d71025808000000616e6e6f7461746571037d710473732e"></v>
-</v>
 <v t="ekr.20180604114211.1"><vh>Recent code</vh>
 <v t="ekr.20190329040120.1"><vh> Others</vh>
 <v t="ekr.20190306105229.1"><vh>6.0: #1032: @clean cleans blank lines</vh>
@@ -583,9 +574,17 @@
 <v t="ekr.20190322082533.1"></v>
 <v t="ekr.20190322094034.1"></v>
 </v>
+<v t="ekr.20180606035619.1"><vh>Recent files</vh>
+<v t="ekr.20190330100032.1"></v>
+<v t="ekr.20120419093256.10048"></v>
+<v t="ekr.20140907085654.18699"></v>
+<v t="ekr.20140907131341.18707"></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31382e3171017d71025808000000616e6e6f7461746571037d710473732e"></v>
+</v>
+<v t="ekr.20031218072017.2608"></v>
+<v t="ekr.20140907123524.18774"></v>
 <v t="ekr.20190330100032.1"></v>
 <v t="ekr.20190316153545.1"><vh>===== #1096 pyzo</vh>
-<v t="ekr.20190317082435.1"><vh>class SplashShim (QtWidgets.QWidget)</vh></v>
 <v t="ekr.20190329040602.1"><vh>Ref</vh>
 <v t="ekr.20120212060348.10374"><vh> &lt;&lt; global switches &gt;&gt; (leoGlobals.py)</vh></v>
 <v t="ekr.20190319024244.1"><vh>checkin: DynamicWindow is just an object</vh></v>
@@ -595,7 +594,7 @@
 <v t="ekr.20110605121601.18137"><vh>class  DynamicWindow (QMainWindow)</vh>
 <v t="ekr.20110605121601.18138"><vh> ctor &amp; reloadSettings (DynamicWindow)</vh></v>
 <v t="ekr.20110605121601.18172"><vh>do_leo_spell_btn_*</vh></v>
-<v t="ekr.20110605121601.18139"><vh>dw.construct &amp; helpers (shims: dw.* &amp; c.frame.body/log)</vh>
+<v t="ekr.20110605121601.18139"><vh>dw.construct &amp; helpers (9 shims)</vh>
 <v t="ekr.20140915062551.19519"><vh>dw.set_icon_bar_orientation</vh></v>
 </v>
 <v t="ekr.20110605121601.18141"><vh>dw.createMainWindow &amp; helpers</vh>
@@ -653,7 +652,7 @@
 <v t="ekr.20110605121601.18171"><vh>dw.tr</vh></v>
 </v>
 </v>
-<v t="ekr.20190317084000.1"><vh>dw.createPyzoMainWindow (shims: dw.*)</vh></v>
+<v t="ekr.20190317084000.1"><vh>dw.createPyzoMainWindow (4 shims)</vh></v>
 <v t="ekr.20110605121601.18179"><vh>dw.Event handlers</vh>
 <v t="ekr.20110605121601.18140"><vh>dw.closeEvent</vh></v>
 </v>
@@ -664,8 +663,8 @@
 <v t="ekr.20130804061744.12425"><vh>dw.setWindowTitle</vh></v>
 </v>
 <v t="ekr.20190317084647.1"><vh>class MainWindowShim (pyzo.core.main.MainWindow)</vh>
-<v t="ekr.20190317084647.2"><vh>MainWindowShim.__init__ (override: don't hold splash)</vh></v>
-<v t="ekr.20190317084647.3"><vh>MainWindowShim._populate (shims: shells, keyMapper)</vh></v>
+<v t="ekr.20190317084647.2"><vh>MainWindowShim.__init__</vh></v>
+<v t="ekr.20190317084647.3"><vh>MainWindowShim._populate (2 shims)</vh></v>
 <v t="ekr.20190317084647.4"><vh>MainWindowShim.setStyleSheet (override)</vh></v>
 <v t="ekr.20190317084647.5"><vh>MainWindowShim.closeEvent (traces)</vh></v>
 </v>
@@ -694,7 +693,7 @@
 <v t="ekr.20110605121601.18421"><vh>qtree.createTreeItem (shim: tree item)</vh></v>
 </v>
 <v t="ekr.20110605121601.18139"></v>
-<v t="ekr.20110605121601.18250"><vh>qtFrame.finishCreate &amp; helpers (shim: f.frame.menu)</vh>
+<v t="ekr.20110605121601.18250"><vh>qtFrame.finishCreate &amp; helpers (2 shims)</vh>
 <v t="ekr.20110605121601.18251"><vh>qtFrame.createSplitterComponents</vh></v>
 </v>
 <v t="ekr.20110605121601.18405"><vh>qtree.__init__</vh></v>
@@ -750,6 +749,20 @@
 <v t="ekr.20110605121601.18250"></v>
 <v t="ekr.20110605121601.18421"></v>
 <v t="ekr.20190317084647.3"></v>
+</v>
+<v t="ekr.20190331032906.1"><vh>----- Removed duplicate top-level window</vh>
+<v t="ekr.20110605121601.18250"></v>
+<v t="ekr.20110605121601.18466"></v>
+<v t="ekr.20110605121601.18468"><vh>createMaster (TabbedFrameFactory) (1 shim)</vh></v>
+<v t="ekr.20190331040800.42"><vh>setTabForCommander (TabbedFrameFactory)</vh>
+<v t="ekr.20190331040800.43"><vh>Old:setTabForCommander (TabbedFrameFactory)</vh></v>
+<v t="ekr.20110605121601.18469"><vh>setTabForCommander (TabbedFrameFactory)</vh></v>
+</v>
+</v>
+<v t="ekr.20190331044953.1"><vh>----- Fixed three hangnails</vh>
+<v t="ekr.20190317084647.2"></v>
+<v t="ekr.20190317084647.3"></v>
+<v t="ekr.20190317084000.1"></v>
 </v>
 </v>
 <v t="ekr.20190330115531.1"><vh>----- rewrite ConfigShim</vh></v>
@@ -3061,8 +3074,7 @@ def update(self, *args, **keys):
 </t>
 <t tx="ekr.20110605121601.18466">def createFrame(self, leoFrame):
 
-    if g.pyzo:
-        g.trace('(TabbedFrameFactory)', leoFrame)
+    ### if pyzo: g.trace('\n===== TabbedFrameFactory', leoFrame)
     c = leoFrame.c
     if self.masterFrame is None:
         self.createMaster()
@@ -3088,6 +3100,42 @@ def update(self, *args, **keys):
         dw.show()
         tabw.show()
     return dw
+</t>
+<t tx="ekr.20110605121601.18468">def createMaster(self):
+    if g.pyzo:
+        self.masterFrame = g.TracingNullObject(tag='LeoTabbedTopLevel')
+            # Could be None. No need for a real shim.
+        return
+    mf = self.masterFrame = LeoTabbedTopLevel(factory=self)
+    g.app.gui.attachLeoIcon(mf)
+    tabbar = mf.tabBar()
+    try:
+        tabbar.setTabsClosable(True)
+        tabbar.tabCloseRequested.connect(self.slotCloseRequest)
+    except AttributeError:
+        pass # Qt 4.4 does not support setTabsClosable
+    mf.currentChanged.connect(self.slotCurrentChanged)
+    if g.app.start_minimized:
+        mf.showMinimized()
+    elif g.app.start_maximized:
+        mf.showMaximized()
+    elif g.app.start_fullscreen:
+        mf.showFullScreen()
+    else:
+        mf.show()
+</t>
+<t tx="ekr.20110605121601.18469">def setTabForCommander(self, c):
+    
+    tabw = self.masterFrame # a QTabWidget
+    if not tabw:
+        return ### pyzo support.
+    for dw in self.leoFrames: # A dict whose keys are DynamicWindows.
+        if dw.leo_c == c:
+            for i in range(tabw.count()):
+                if tabw.widget(i) == dw:
+                    tabw.setCurrentIndex(i)
+                    break
+            break
 </t>
 <t tx="ekr.20110605121601.18574">@nobeautify
 
@@ -7187,32 +7235,26 @@ https://github.com/leo-editor/leo-editor/issues/1032
 
 https://github.com/leo-editor/leo-editor/issues/1096
 
-- Add traces to the actual pyzo files, to verify import order.
-- Finish ConfigShim.
+Finish ConfigShim:
+- Move window config load/save into Leo?
+
+Hangnails &amp; fears:
+- Colorize light, then dark
+- Remove the duplicate Leo window.
+- Import fears: add traces to actual pyzo files.
+- Change title of main window.
 
 Next:
-- Improve the logger shim. (just send to the console?)
-- Create a "real" menu shim.
-- Remove the duplicate Leo window.
-
-Later:
-- Change title of main window.
+- Create LoggerShim (just send to the console?)
+- Finish MenuShim.
 - Put Leo outline in main window.
 - Modify pyzo shutdown logic (after putting outlines in MainWindow).
 - Make pyzo tool panes for outline, body panes, log pane &amp; sub-panes, and VR pane.
   g.app.forgetOpenFile(c.fileName(), force=True)
+  
 @language python
 </t>
-<t tx="ekr.20190317082435.1">class SplashShim(QtWidgets.QWidget):
-    '''A do-nothing splash widget.'''
-    
-    def __init__(self, parent, **kwargs):
-        # This ctor is required, because it is called with kwargs.
-        QtWidgets.QWidget.__init__(self, parent)
-</t>
 <t tx="ekr.20190317082603.12">def _populate(self):
-    
-    g.pdb()
     
     print('----- LeoMainWindow._populate')
 
@@ -7345,6 +7387,7 @@ Later:
     Called instead of uic.loadUi(ui_description_file, self)
     '''
     # dw = self
+    ### g.trace('\n =====', g.callers())
     self.leo_ui = self
     self.richTextEdit = g.TracingNullObject(tag='dw.richTextEdit')
     self.stackedWidget = g.TracingNullObject(tag='dw.stackedWidget')
@@ -7380,15 +7423,26 @@ Later:
     ### return main_splitter, secondary_splitter
 </t>
 <t tx="ekr.20190317084039.1"></t>
-<t tx="ekr.20190317084647.1">class MainWindowShim(pyzo.core.main.MainWindow):
+<t tx="ekr.20190317084647.1"># Important: 
+# pyzo.core.main.MainWindow is just a QMainWindow.
+#
+# Do *not* make the shim a subclass of MainWindow!
+# Doing so would generate a duplicate call to _populate.
+
+class MainWindowShim(pyzo.core.main.MainWindow):
     @others
 </t>
 <t tx="ekr.20190317084647.2">def __init__(self, parent=None, locale=None):
+    #
+    # pylint: disable=non-parent-init-called, super-init-not-called
+        # Only init QMainWindow, **not** MainWindow.
+        # MainWindow.__init__ calls all the code below.
+        # This was the source of the duplicate imports and duplicate calls to _populate.
 
-    print('MainWindowShim.__init__:')
+    ### print('\nMainWindowShim.__init__:', g.callers())
 
-    pyzo.core.main.MainWindow.__init__(self, parent)
-    
+    QtWidgets.QMainWindow.__init__(self, parent)
+
     self._closeflag = 0  # Used during closing/restarting
 
     # Init window title and application icon
@@ -7497,7 +7551,8 @@ Later:
 </t>
 <t tx="ekr.20190317084647.3">def _populate(self):
     
-    print('----- MainWindowShim._populate')
+    ### print('\n========== MainWindowShim._populate', g.callers(), '\n')
+    
     use_shell = False
 
     # Delayed imports
@@ -7506,6 +7561,8 @@ Later:
     from pyzo.core import codeparser
     from pyzo.core.history import CommandHistory
     from pyzo.tools import ToolManager
+    
+    ### print('----- MainWindowShim._populate: end of delayed imports')
 
     # Instantiate tool manager
     pyzo.toolManager = ToolManager()
@@ -8261,6 +8318,58 @@ suppress_attrs = (
 </t>
 <t tx="ekr.20190330095643.1"></t>
 <t tx="ekr.20190330115531.1"># It probably should not be a zon dict!
+</t>
+<t tx="ekr.20190331032906.1">@language rest
+@wrap
+
+- TabbedFrameFactory.createMaster created the duplicate frame.
+  It sets self.masterFrame to None when g.pyzo is True
+
+- Added a guard to TabbedFrameFactory.setTabForCommander.
+
+@language python
+@nosearch</t>
+<t tx="ekr.20190331040800.42">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,5 +1,8 @@
+ def setTabForCommander(self, c):
++    
+     tabw = self.masterFrame # a QTabWidget
++    if not tabw:
++        return ### pyzo support.
+     for dw in self.leoFrames: # A dict whose keys are DynamicWindows.
+         if dw.leo_c == c:
+             for i in range(tabw.count()):
+@language python
+</t>
+<t tx="ekr.20190331040800.43">def setTabForCommander(self, c):
+    tabw = self.masterFrame # a QTabWidget
+    for dw in self.leoFrames: # A dict whose keys are DynamicWindows.
+        if dw.leo_c == c:
+            for i in range(tabw.count()):
+                if tabw.widget(i) == dw:
+                    tabw.setCurrentIndex(i)
+                    break
+            break
+</t>
+<t tx="ekr.20190331044953.1">@language rest
+@wrap
+
+Fixed three hangnails, which were actually serious worries:
+
+- duplicate imports of pyzo.tools.pyzoFileBrowser
+- Very annoying flash in the pyzo window,
+- Duplicate uplicate calls to MainWindowShim._populate.
+
+Calling the base MainWindow.__init__ from MainWindowShim.__init__ is WRONG,
+because MainWindowShim.__init__ contains a *copy* of the MainWindow.__init__ code!
+
+So everything happened twice.
+
+@language python
 </t>
 <t tx="tbrown.20110621120042.22914">def get_top_splitter(self):
     '''Return the top splitter of c.frame.top.'''
