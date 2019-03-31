@@ -40,9 +40,9 @@ def monkey_patch():
     # Use a do-nothing SplashWidget
     pyzo.core.splash.SplashWidget = SplashShim
     # Use a Leonine pyzo.config.
-    pyzo.config = ConfigShim()
-        # g.TracingNullObject(tag='pyzo.config')
-            # This eventually fails, because the caller expects a QFont.
+    if 0:
+        # Works, but uses light theme.
+        pyzo.config = ConfigShim()
     pyzo.loadConfig()
         # To be replaced by LeoPyzoConfig.loadConfig.
     # Monkey-patch EditorTabs.loadFile.
@@ -50,8 +50,13 @@ def monkey_patch():
     old_loadFile = EditorTabs.loadFile
     g.funcToMethod(loadFile, EditorTabs)
 #@+node:ekr.20190317082751.1: ** class ConfigShim
-new_config = False
+new_config = True
     # Works when False.
+    
+config_shim_seen = {}
+    # Keys are bunches.
+
+print('\n===== new_config: %s\n' % new_config)
 
 try:  # pragma: no cover
     from collections import OrderedDict as _dict
@@ -292,39 +297,24 @@ class ConfigShim(config_base):
         #@+node:ekr.20190331052308.2: *4* ConfigShim.__repr__
         def __repr__(self):
             
-            return g.obj2string(self)
-
-            # from pyzo.util.zon import isidentifier
-                # # Changed import.
-            # identifier_items = []
-            # nonidentifier_items = []
-            # for key, val in self.items():
-                # if isidentifier(key):
-                    # identifier_items.append('%s=%r' % (key, val))
-                # else:
-                    # nonidentifier_items.append('(%r, %r)' % (key, val))
-            # if nonidentifier_items:
-                # return 'Dict([%s], %s)' % (', '.join(nonidentifier_items),
-                                           # ', '.join(identifier_items))
-            # else:
-                # return 'Dict(%s)' % (', '.join(identifier_items))
-        #@+node:ekr.20190331052308.3: *4* ConfigShim.__getattribute__ (not used)
-        # def __getattribute__(self, key):
-            # try:
-                # ### return object.__getattribute__(self, key)
-                # val = object.__getattribute__(self, key)
-                # if False and key not in ('advanced', 'shortcuts2', 'settings'):
-                    # # print('===== LeoPyzoConfig 1: %r: %r' % (key, val))
-                    # print('===== LeoPyzoConfig 1: %r' % key)
-                # return val
-            # except AttributeError:
-                # if key in self:
-                    # if False and key not in ('advanced', 'shortcuts2', 'settings'):
-                        # # print('===== LeoPyzoConfig 1: %r: %r' % (key, g.truncate(self[key], 50)))
-                        # print('===== LeoPyzoConfig 2: %r' % key)
-                    # return self[key]
-                # else:
-                    # raise
+            return 'ConfigShim'
+            # return g.obj2string(self)
+                # Can't do this: it calls repr!
+        #@+node:ekr.20190331052308.3: *4* ConfigShim.__getattribute__ 
+        def __getattribute__(self, key):
+            '''The usual shinanigans...'''
+            ### return object.__getattribute__(self, key)
+            try:
+                val = object.__getattribute__(self, key)
+            except AttributeError:
+                if key in self:
+                    val = self[key]
+                else:
+                    raise
+            if key not in config_shim_seen:
+                config_shim_seen [key] = True
+                print('\n===== ConfigShim.__getattribute__', key, val)
+            return val
         #@+node:ekr.20190331052308.4: *4* ConfigShim.__setattr__ (not used)
         # def __setattr__(self, key, val):
             # if key in Dict.__reserved_names__:
