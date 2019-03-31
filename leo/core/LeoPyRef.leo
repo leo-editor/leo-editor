@@ -575,34 +575,88 @@
 <v t="ekr.20190322094034.1"></v>
 </v>
 <v t="ekr.20180606035619.1"><vh>Recent files</vh>
-<v t="ekr.20190330100032.1"></v>
 <v t="ekr.20120419093256.10048"></v>
+<v t="ekr.20140907123524.18774"></v>
 <v t="ekr.20140907085654.18699"></v>
 <v t="ekr.20140907131341.18707"></v>
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31382e3171017d71025808000000616e6e6f7461746571037d710473732e"></v>
 </v>
-<v t="ekr.20031218072017.2608"></v>
-<v t="ekr.20140907123524.18774"></v>
 <v t="ekr.20190330100032.1"></v>
 <v t="ekr.20190316153545.1"><vh>===== #1096 pyzo</vh>
-<v t="ekr.20190329040602.1"><vh>Ref</vh>
 <v t="ekr.20120212060348.10374"><vh> &lt;&lt; global switches &gt;&gt; (leoGlobals.py)</vh></v>
-<v t="ekr.20190319024244.1"><vh>checkin: DynamicWindow is just an object</vh></v>
+<v t="ekr.20031219074948.1"><vh>class g.Tracing/NullObject &amp; helpers</vh>
+<v t="ekr.20190330062625.1"><vh>g.null_object_print_attr</vh>
+<v t="ekr.20190330072026.1"><vh>&lt;&lt; define suppression lists &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20190329045153.1"><vh>Found:g.pyzo</vh>
-<v t="ekr.20190329050013.1"><vh>Imports &amp; base classes</vh>
-<v t="ekr.20110605121601.18137"><vh>class  DynamicWindow (QMainWindow)</vh>
-<v t="ekr.20110605121601.18138"><vh> ctor &amp; reloadSettings (DynamicWindow)</vh></v>
-<v t="ekr.20110605121601.18172"><vh>do_leo_spell_btn_*</vh></v>
+<v t="ekr.20190330072832.1"><vh>g.null_object_print</vh></v>
+</v>
+<v t="ekr.20190329040602.1"><vh>Ref</vh>
+<v t="ekr.20190331053237.1"><vh>OLD &lt;&lt; define settings &gt;&gt;</vh>
+<v t="ekr.20190331053528.1"><vh>&lt;&lt; define shortcuts2 &gt;&gt;</vh></v>
+<v t="ekr.20190331053634.1"><vh>&lt;&lt; define editorState2 &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20190319024244.1"><vh>checkin: DynamicWindow is just an object</vh></v>
+<v t="ekr.20190330051656.1"><vh>----- Found: shims</vh>
+<v t="ekr.20190330095643.1"><vh>Unimportant</vh>
+<v t="ekr.20061119120006"><vh>LeoFrame.Icon area convenience methods</vh></v>
+</v>
 <v t="ekr.20110605121601.18139"><vh>dw.construct &amp; helpers (9 shims)</vh>
 <v t="ekr.20140915062551.19519"><vh>dw.set_icon_bar_orientation</vh></v>
 </v>
+<v t="ekr.20190317084000.1"><vh>dw.createPyzoMainWindow (4 shims)</vh></v>
+<v t="ekr.20110605121601.18250"><vh>qtFrame.finishCreate &amp; helpers (2 shims)</vh>
+<v t="ekr.20110605121601.18251"><vh>qtFrame.createSplitterComponents</vh></v>
+</v>
+<v t="ekr.20110605121601.18421"><vh>qtree.createTreeItem (shim: tree item)</vh></v>
+<v t="ekr.20190317084647.3"><vh>MainWindowShim._populate (2 shims)</vh></v>
+</v>
+<v t="ekr.20190317083529.1"><vh>----- Changed &amp; new</vh>
+<v t="ekr.20090717112235.6007"><vh>app.computeSignon &amp; printSignon</vh></v>
+<v t="ekr.20120215072959.12539"><vh>c.config.getShortcut (changed)</vh></v>
+<v t="ekr.20031219074948.1"></v>
+<v t="ekr.20131118172620.16858"><vh>dw.finishCreateLogPane (changed)</vh></v>
+<v t="tbrown.20110621120042.22914"><vh>flc.get_top_splitter (changed)</vh></v>
+<v t="ekr.20070626132332"><vh>g.es (changed)</vh></v>
+<v t="ekr.20061119120006"></v>
+<v t="ekr.20130921043420.21175"><vh>qt_gui.setFilter (changed)</vh></v>
+<v t="ekr.20110605121601.18421"></v>
+</v>
+<v t="ekr.20190319022339.1"><vh>----- Startup logic, in call order</vh>
+<v t="ekr.20110605121601.18250"></v>
+<v t="ekr.20110605121601.18466"><vh>createFrame (TabbedFrameFactory)</vh></v>
+<v t="ekr.20110605121601.18139"></v>
+<v t="ekr.20190317084000.1"></v>
+<v t="ekr.20190317084647.2"><vh>MainWindowShim.__init__</vh></v>
+<v t="ekr.20190317082603.12"><vh>LeoMainWindow._populate (unchanged)</vh></v>
+</v>
+<v t="ekr.20190331044953.1"><vh>----- Fixed three hangnails</vh>
+<v t="ekr.20190317084647.2"></v>
+<v t="ekr.20190317084647.3"></v>
+<v t="ekr.20190317084000.1"></v>
+</v>
+</v>
+<v t="ekr.20190331164202.1"><vh>Done</vh>
+<v t="ekr.20190329035816.1"><vh>----- Two-step enabling</vh>
+<v t="ekr.20180312150559.1"><vh>LM.addOptionsToParser</vh></v>
+<v t="ekr.20180312151544.1"><vh>LM.doSimpleOptions</vh></v>
+</v>
+<v t="ekr.20190331032906.1"><vh>----- Removed duplicate top-level window</vh>
+<v t="ekr.20110605121601.18250"></v>
+<v t="ekr.20110605121601.18466"></v>
+<v t="ekr.20110605121601.18468"><vh>createMaster (TabbedFrameFactory) (1 shim)</vh></v>
+<v t="ekr.20190331040800.42"><vh>setTabForCommander (TabbedFrameFactory)</vh>
+<v t="ekr.20190331040800.43"><vh>Old:setTabForCommander (TabbedFrameFactory)</vh></v>
+<v t="ekr.20110605121601.18469"><vh>setTabForCommander (TabbedFrameFactory)</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20190317084039.1"><vh>----- new main window</vh>
 <v t="ekr.20110605121601.18141"><vh>dw.createMainWindow &amp; helpers</vh>
 <v t="ekr.20110605121601.18142"><vh>dw.top-level</vh>
 <v t="ekr.20110605121601.18143"></v>
 <v t="ekr.20110605121601.18144"><vh>dw.createCentralWidget</vh></v>
 <v t="ekr.20110605121601.18145"><vh>dw.createLogPane &amp; helpers</vh>
-<v t="ekr.20131118172620.16858"><vh>dw.finishCreateLogPane (changed)</vh></v>
+<v t="ekr.20131118172620.16858"></v>
 </v>
 <v t="ekr.20110605121601.18146"><vh>dw.createMainLayout</vh></v>
 <v t="ekr.20110605121601.18147"><vh>dw.createMenuBar</vh></v>
@@ -652,126 +706,34 @@
 <v t="ekr.20110605121601.18171"><vh>dw.tr</vh></v>
 </v>
 </v>
-<v t="ekr.20190317084000.1"><vh>dw.createPyzoMainWindow (4 shims)</vh></v>
-<v t="ekr.20110605121601.18179"><vh>dw.Event handlers</vh>
-<v t="ekr.20110605121601.18140"><vh>dw.closeEvent</vh></v>
+<v t="ekr.20110605121601.18139"></v>
+<v t="ekr.20190317084000.1"></v>
 </v>
-<v t="ekr.20110605121601.18173"><vh>dw.select</vh></v>
-<v t="ekr.20110605121601.18178"><vh>dw.setGeometry</vh></v>
-<v t="ekr.20110605121601.18177"><vh>dw.setLeoWindowIcon</vh></v>
-<v t="ekr.20110605121601.18174"><vh>dw.setSplitDirection</vh></v>
-<v t="ekr.20130804061744.12425"><vh>dw.setWindowTitle</vh></v>
-</v>
-<v t="ekr.20190317084647.1"><vh>class MainWindowShim (pyzo.core.main.MainWindow)</vh>
-<v t="ekr.20190317084647.2"><vh>MainWindowShim.__init__</vh></v>
-<v t="ekr.20190317084647.3"><vh>MainWindowShim._populate (2 shims)</vh></v>
-<v t="ekr.20190317084647.4"><vh>MainWindowShim.setStyleSheet (override)</vh></v>
+<v t="ekr.20190329082417.1"><vh>----- To do: Shutdown logic</vh>
 <v t="ekr.20190317084647.5"><vh>MainWindowShim.closeEvent (traces)</vh></v>
 </v>
-<v t="ekr.20110605121601.18138"></v>
+<v t="ekr.20190330115531.1"><vh>----- rewrite ConfigShim (later)</vh>
+<v t="ekr.20190317082751.1"><vh>class ConfigShim</vh>
+<v t="ekr.20190331052308.1"><vh>&lt;&lt; new config methods &gt;&gt;</vh>
+<v t="ekr.20190331052308.2"><vh>ConfigShim.__repr__</vh></v>
+<v t="ekr.20190331052308.3"><vh>ConfigShim.__getattribute__ </vh></v>
+<v t="ekr.20190331052308.4"><vh>ConfigShim.__setattr__ (not used)</vh></v>
 </v>
-<v t="ekr.20190329045255.1"><vh>Minor &amp; traces</vh>
-<v t="ekr.20090717112235.6007"><vh>app.computeSignon &amp; printSignon</vh></v>
-<v t="ekr.20120215072959.12539"><vh>c.config.getShortcut (changed)</vh></v>
-<v t="ekr.20110605121601.18466"><vh>createFrame (TabbedFrameFactory)</vh></v>
-<v t="ekr.20110605121601.18155"></v>
-<v t="ekr.20180312150559.1"><vh>LM.addOptionsToParser</vh></v>
-<v t="ekr.20180312151544.1"><vh>LM.doSimpleOptions</vh></v>
+<v t="ekr.20190331082353.1"><vh>&lt;&lt; define bunch settings &gt;&gt;</vh>
+<v t="ekr.20190331082549.1"><vh>&lt;&lt; define bunch shortcuts2 &gt;&gt;</vh></v>
+<v t="ekr.20190331082353.2"><vh>&lt;&lt; define editorState2 &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20190329045409.1"><vh>Disabled when g.pyzo is True</vh>
-<v t="ekr.20131118172620.16858"></v>
-<v t="ekr.20110605121601.18178"></v>
-<v t="ekr.20110605121601.18151"></v>
-<v t="tbrown.20110621120042.22914"><vh>flc.get_top_splitter (changed)</vh></v>
-<v t="ekr.20070626132332"><vh>g.es (changed)</vh></v>
-<v t="ekr.20061119120006"><vh>LeoFrame.Icon area convenience methods</vh></v>
-<v t="ekr.20130921043420.21175"><vh>qt_gui.setFilter (changed)</vh></v>
-<v t="ekr.20110605121601.18311"><vh>qtFrame.Qt bindings...</vh></v>
-<v t="ekr.20160424080815.2"><vh>qtFrame.ratio property</vh></v>
-<v t="ekr.20110605121601.18282"><vh>qtFrame.resizePanesToRatio</vh></v>
-<v t="ekr.20160424080815.3"><vh>qtFrame.secondary_ratio property</vh></v>
-<v t="ekr.20110605121601.18421"><vh>qtree.createTreeItem (shim: tree item)</vh></v>
-</v>
-<v t="ekr.20110605121601.18139"></v>
-<v t="ekr.20110605121601.18250"><vh>qtFrame.finishCreate &amp; helpers (2 shims)</vh>
-<v t="ekr.20110605121601.18251"><vh>qtFrame.createSplitterComponents</vh></v>
-</v>
-<v t="ekr.20110605121601.18405"><vh>qtree.__init__</vh></v>
-</v>
-<v t="ekr.20190329035816.1"><vh>----- Two-step enabling</vh>
-<v t="ekr.20180312150559.1"></v>
-<v t="ekr.20180312151544.1"></v>
-</v>
-<v t="ekr.20190317083529.1"><vh>----- Changed &amp; new</vh>
-<v t="ekr.20090717112235.6007"></v>
-<v t="ekr.20120215072959.12539"></v>
-<v t="ekr.20031219074948.1"><vh>class g.Tracing/NullObject &amp; helpers</vh>
-<v t="ekr.20190330062625.1"><vh>g.null_object_print_attr</vh>
-<v t="ekr.20190330072026.1"><vh>&lt;&lt; define suppression lists &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20190330072832.1"><vh>g.null_object_print</vh></v>
-</v>
-<v t="ekr.20131118172620.16858"></v>
-<v t="tbrown.20110621120042.22914"></v>
-<v t="ekr.20070626132332"></v>
-<v t="ekr.20061119120006"></v>
-<v t="ekr.20130921043420.21175"></v>
-<v t="ekr.20110605121601.18421"></v>
-</v>
-<v t="ekr.20190317084039.1"><vh>----- new main window</vh>
-<v t="ekr.20110605121601.18141"></v>
-<v t="ekr.20110605121601.18139"></v>
-<v t="ekr.20190317084000.1"></v>
-</v>
-<v t="ekr.20190329082432.1"><vh>----- To do: Change window title</vh></v>
-<v t="ekr.20190329082417.1"><vh>----- To do: Shutdown logic</vh>
-<v t="ekr.20190317084647.5"></v>
-</v>
-<v t="ekr.20051023083258"><vh>g.callers &amp; g.caller &amp; _callerName</vh>
-<v t="ekr.20031218072017.3107"><vh>g._callerName</vh></v>
-<v t="ekr.20180328170441.1"><vh>g.caller</vh></v>
-</v>
-<v t="ekr.20190319022339.1"><vh>----- Startup logic, in call order</vh>
-<v t="ekr.20110605121601.18250"></v>
-<v t="ekr.20110605121601.18466"></v>
-<v t="ekr.20110605121601.18139"></v>
-<v t="ekr.20190317084000.1"></v>
-<v t="ekr.20190317084647.2"></v>
-<v t="ekr.20190317082603.12"><vh>LeoMainWindow._populate (unchanged)</vh></v>
-</v>
-<v t="ekr.20031219074948.1"></v>
-<v t="ekr.20190330051656.1"><vh>----- Found: shims</vh>
-<v t="ekr.20190330095643.1"><vh>Unimportant</vh>
-<v t="ekr.20061119120006"></v>
-</v>
-<v t="ekr.20110605121601.18139"></v>
-<v t="ekr.20190317084000.1"></v>
-<v t="ekr.20110605121601.18250"></v>
-<v t="ekr.20110605121601.18421"></v>
-<v t="ekr.20190317084647.3"></v>
-</v>
-<v t="ekr.20190331032906.1"><vh>----- Removed duplicate top-level window</vh>
-<v t="ekr.20110605121601.18250"></v>
-<v t="ekr.20110605121601.18466"></v>
-<v t="ekr.20110605121601.18468"><vh>createMaster (TabbedFrameFactory) (1 shim)</vh></v>
-<v t="ekr.20190331040800.42"><vh>setTabForCommander (TabbedFrameFactory)</vh>
-<v t="ekr.20190331040800.43"><vh>Old:setTabForCommander (TabbedFrameFactory)</vh></v>
-<v t="ekr.20110605121601.18469"><vh>setTabForCommander (TabbedFrameFactory)</vh></v>
-</v>
-</v>
-<v t="ekr.20190331044953.1"><vh>----- Fixed three hangnails</vh>
-<v t="ekr.20190317084647.2"></v>
-<v t="ekr.20190317084647.3"></v>
-<v t="ekr.20190317084000.1"></v>
-</v>
-</v>
-<v t="ekr.20190330115531.1"><vh>----- rewrite ConfigShim</vh></v>
-<v t="ekr.20190317082751.1"><vh>class ConfigShim (zon.Dict) (To do)</vh>
+<v t="ekr.20190331052251.1"><vh>&lt;&lt; old config methods &gt;&gt;</vh>
 <v t="ekr.20190317082751.2"><vh>ConfigShim.__repr__</vh></v>
 <v t="ekr.20190317082751.3"><vh>ConfigShim.__getattribute__</vh></v>
 <v t="ekr.20190317082751.4"><vh>ConfigShim.__setattr__</vh></v>
-<v t="ekr.20190317082751.5"><vh>ConfigShim.__dir__</vh></v>
 </v>
+</v>
+<v t="ekr.20190330112146.1"><vh> function: monkey_patch (pyzo_shims.py)</vh></v>
+</v>
+</v>
+<v t="ekr.20190331165128.1"><vh>----- improve tracing in g.Bunch</vh></v>
+<v t="ekr.20031218072017.3098"><vh>class g.Bunch (Python Cookbook)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943">@nosearch
@@ -1048,28 +1010,62 @@ def putVnodes(self, p=None):
         g.error('c.temp_file_path failed')
     return path
 </t>
-<t tx="ekr.20031218072017.3107">def _callerName(n, verbose=False):
-    try:
-        # get the function name from the call stack.
-        f1 = sys._getframe(n) # The stack frame, n levels up.
-        code1 = f1.f_code # The code object
-        sfn = shortFilename(code1.co_filename) # The file name.
-        locals_ = f1.f_locals # The local namespace.
-        name = code1.co_name
-        line = code1.co_firstlineno
-        if verbose:
-            obj = locals_.get('self')
-            full_name = '%s.%s' % (obj.__class__.__name__, name) if obj else name
-            return 'line %4s %-30s %s' % (line, sfn, full_name)
-        else:
-            return name
-    except ValueError:
-        return ''
-            # The stack is not deep enough OR
-            # sys._getframe does not exist on this platform.
-    except Exception:
-        es_exception()
-        return '' # "&lt;no caller name&gt;"
+<t tx="ekr.20031218072017.3098">@
+From The Python Cookbook: 
+
+Create a Bunch whenever you want to group a few variables:
+
+    point = Bunch(datum=y, squared=y*y, coord=x)
+
+You can read/write the named attributes you just created, add others,
+del some of them, etc:
+    if point.squared &gt; threshold:
+        point.isok = True
+@c
+
+class Bunch(object):
+    """A class that represents a colection of things.
+
+    Especially useful for representing a collection of related variables."""
+
+    def __init__(self, **keywords):
+        self.__dict__.update(keywords)
+
+    def __repr__(self):
+        return self.toString()
+
+    def ivars(self):
+        return sorted(self.__dict__)
+
+    def keys(self):
+        return sorted(self.__dict__)
+
+    def toString(self):
+        tag = self.__dict__.get('tag')
+        entries = ["%s: %s" % (key, str(self.__dict__.get(key)) or repr(self.__dict__.get(key)))
+            for key in self.ivars() if key != 'tag']
+        result = ['g.Bunch(%s)' % (tag or '')]
+        result.extend(entries)
+        return '\n    '.join(result) + '\n'
+    # Used by new undo code.
+
+    def __setitem__(self, key, value):
+        '''Support aBunch[key] = val'''
+        return operator.setitem(self.__dict__, key, value)
+
+    def __getitem__(self, key):
+        '''Support aBunch[key]'''
+        # print('g.Bunch.__getitem__', key)
+        return operator.getitem(self.__dict__, key)
+
+    def get(self, key, theDefault=None):
+        return self.__dict__.get(key, theDefault)
+        
+    def __contains__(self, key): # New.
+        # print('g.Bunch.__contains__', key in self.__dict__, key)
+        return key in self.__dict__
+
+bunch = Bunch
 </t>
 <t tx="ekr.20031218072017.3388">def clearAllVisitedInTree(self):
     for p in self.self_and_subtree(copy=False):
@@ -1148,7 +1144,8 @@ class TracingNullObject(object):
         return False
     def __getitem__(self, key):
         g.null_object_print(id(self), '__getitem__')
-        raise KeyError
+        return None
+        ### raise KeyError
     def __iter__(self):
         g.null_object_print(id(self), '__iter__')
         return self
@@ -1158,6 +1155,9 @@ class TracingNullObject(object):
     def __next__(self):
         g.null_object_print(id(self), '__next__')
         raise StopIteration
+    def __setitem__(self, key, val):
+        g.null_object_print(id(self), '__setitem__')
+        return None
 </t>
 <t tx="ekr.20041005105605.144">def write(self, root, sentinels=True):
     """Write a 4.x derived file.
@@ -1783,39 +1783,6 @@ returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction.
 </t>
-<t tx="ekr.20051023083258">def callers(n=4, count=0, excludeCaller=True, verbose=False):
-    '''
-    Return a list containing the callers of the function that called g.callerList.
-
-    excludeCaller: True (the default), g.callers itself is not on the list.
-    
-    If the `verbose` keyword is True, or the caller name is in the `names`
-    list, return:
-    
-        line N &lt;file name&gt; &lt;class_name&gt;.&lt;caller_name&gt; # methods
-        line N &lt;file name&gt; &lt;caller_name&gt;              # functions.
-        
-    Otherwise, just return the &lt;caller name&gt;
-    '''
-    # Be careful to call g._callerName with smaller values of i first:
-    # sys._getframe throws ValueError if there are less than i entries.
-    result = []
-    i = 3 if excludeCaller else 2
-    while 1:
-        s = _callerName(n=i, verbose=verbose)
-        if s:
-            result.append(s)
-        if not s or len(result) &gt;= n:
-            break
-        i += 1
-    result.reverse()
-    if count &gt; 0:
-        result = result[:count]
-    if verbose:
-        return ''.join(['\n  %s' % z for z in result])
-    else:
-        return ','.join(result)
-</t>
 <t tx="ekr.20051031040240"></t>
 <t tx="ekr.20061119120006">def addIconButton(self, *args, **keys):
     if self.iconBar: return self.iconBar.add(*args, **keys)
@@ -2274,54 +2241,6 @@ def show_completions(self, aList):
         kind = 'unknown: %s' % repr(button)
     return kind
 </t>
-<t tx="ekr.20110605121601.18137">dw_base = object if g.pyzo else QtWidgets.QMainWindow
-
-class DynamicWindow(dw_base):
-    '''
-    A class representing all parts of the main Qt window.
-
-    **Important**: when using tabs, the LeoTabbedTopLevel widget
-    is the top-level window, **not** this QMainWindow!
-
-    c.frame.top is a DynamicWindow object.
-
-    For --gui==qttabs:
-        c.frame.top.parent is a TabbedFrameFactory
-        c.frame.top.leo_master is a LeoTabbedTopLevel
-
-    All leoQtX classes use the ivars of this Window class to
-    support operations requested by Leo's core.
-    '''
-    @others
-</t>
-<t tx="ekr.20110605121601.18138">def __init__(self, c, parent=None):
-    '''Ctor for the DynamicWindow class.  The main window is c.frame.top'''
-        # Called from LeoQtFrame.finishCreate.
-        # For qttabs gui, parent is a LeoTabbedTopLevel.
-    if g.pyzo:
-        pass
-    else:
-        QtWidgets.QMainWindow.__init__(self, parent) # pylint: disable=non-parent-init-called
-    self.leo_c = c
-    self.leo_master = None # Set in construct.
-    self.leo_menubar = None # Set in createMenuBar.
-    self.leo_ui = None # Set in construct.
-    c._style_deltas = defaultdict(lambda: 0) # for adjusting styles dynamically
-    self.reloadSettings()
-
-def reloadSettings(self):
-    c = self.leo_c
-    c.registerReloadSettings(self)
-    self.bigTree = c.config.getBool('big-outline-pane')
-    self.show_iconbar = c.config.getBool('show-iconbar', default=True)
-    self.toolbar_orientation = c.config.getString('qt-toolbar-location') or ''
-    self.use_gutter = c.config.getBool('use-gutter', default=False)
-    if getattr(self, 'iconBar', None):
-        if self.show_iconbar:
-            self.iconBar.show()
-        else:
-            self.iconBar.hide()
-</t>
 <t tx="ekr.20110605121601.18139">def construct(self, master=None):
     """ Factor 'heavy duty' code out from the DynamicWindow ctor """
     c = self.leo_c
@@ -2359,21 +2278,6 @@ def reloadSettings(self):
         self.setSplitDirection(main_splitter, secondary_splitter, orientation)
         if hasattr(c, 'styleSheetManager'):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
-</t>
-<t tx="ekr.20110605121601.18140">def closeEvent(self, event):
-    '''Handle a close event in the Leo window.'''
-    c = self.leo_c
-    if not c.exists:
-        # Fixes double-prompt bug on Linux.
-        event.accept()
-    elif c.inCommand:
-        c.requestCloseWindow = True
-    else:
-        ok = g.app.closeLeoWindow(c.frame)
-        if ok:
-            event.accept()
-        else:
-            event.ignore()
 </t>
 <t tx="ekr.20110605121601.18141">def createMainWindow(self):
     '''
@@ -2838,67 +2742,6 @@ def createVLayout(self, parent, name, margin=0, spacing=0):
             None,
             QtWidgets.QApplication.UnicodeUTF8)
 </t>
-<t tx="ekr.20110605121601.18172">def doSpellBtn(self, btn):
-    getattr(self.leo_c.spellCommands.handler.tab, btn)()
-
-def do_leo_spell_btn_Add(self):
-    self.doSpellBtn('onAddButton')
-
-def do_leo_spell_btn_Change(self):
-    self.doSpellBtn('onChangeButton')
-
-def do_leo_spell_btn_Find(self):
-    self.doSpellBtn('onFindButton')
-
-def do_leo_spell_btn_FindChange(self):
-    self.doSpellBtn('onChangeThenFindButton')
-
-def do_leo_spell_btn_Hide(self):
-    self.doSpellBtn('onHideButton')
-
-def do_leo_spell_btn_Ignore(self):
-    self.doSpellBtn('onIgnoreButton')
-</t>
-<t tx="ekr.20110605121601.18173">def select(self, c):
-    '''Select the window or tab for c. self is c.frame.top.'''
-    if self.leo_master:
-        # A LeoTabbedTopLevel.
-        self.leo_master.select(c)
-    else:
-        w = c.frame.body.wrapper
-        g.app.gui.set_focus(c, w)
-</t>
-<t tx="ekr.20110605121601.18174">def setSplitDirection(self, main_splitter, secondary_splitter, orientation):
-    '''Set the orientations of the splitters in the Leo main window.'''
-    # c = self.leo_c
-    vert = orientation and orientation.lower().startswith('v')
-    h, v = QtCore.Qt.Horizontal, QtCore.Qt.Vertical
-    orientation1 = v if vert else h
-    orientation2 = h if vert else v
-    main_splitter.setOrientation(orientation1)
-    secondary_splitter.setOrientation(orientation2)
-</t>
-<t tx="ekr.20110605121601.18177">def setLeoWindowIcon(self):
-    """ Set icon visible in title bar and task bar """
-    # self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
-    g.app.gui.attachLeoIcon(self)
-</t>
-<t tx="ekr.20110605121601.18178">def setGeometry(self, rect):
-    '''Set the window geometry, but only once when using the qttabs gui.'''
-    if g.pyzo:
-        return
-    if g.app.qt_use_tabs:
-        m = self.leo_master
-        assert self.leo_master
-        # Only set the geometry once, even for new files.
-        if not hasattr(m, 'leo_geom_inited'):
-            m.leo_geom_inited = True
-            self.leo_master.setGeometry(rect)
-            QtWidgets.QMainWindow.setGeometry(self, rect)
-    else:
-        QtWidgets.QMainWindow.setGeometry(self, rect)
-</t>
-<t tx="ekr.20110605121601.18179"></t>
 <t tx="ekr.20110605121601.18250">def finishCreate(self):
 
     f = self
@@ -2934,127 +2777,6 @@ def do_leo_spell_btn_Ignore(self):
     f.splitVerticalFlag, ratio, secondary_ratio = f.initialRatios()
     f.resizePanesToRatio(ratio, secondary_ratio)
 
-</t>
-<t tx="ekr.20110605121601.18282">def resizePanesToRatio(self, ratio, ratio2):
-    '''Resize splitter1 and splitter2 using the given ratios.'''
-    # pylint: disable=arguments-differ
-    if g.pyzo:
-        return
-    self.divideLeoSplitter1(ratio)
-    self.divideLeoSplitter2(ratio2)
-</t>
-<t tx="ekr.20110605121601.18311">def bringToFront(self):
-    self.lift()
-
-def deiconify(self):
-    if g.pyzo:
-        return
-    if self.top and self.top.isMinimized(): # Bug fix: 400739.
-        self.lift()
-
-def getFocus(self):
-    return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
-
-def get_window_info(self):
-    if hasattr(self.top, 'leo_master') and self.top.leo_master:
-        f = self.top.leo_master
-    else:
-        f = self.top
-    rect = f.geometry()
-    topLeft = rect.topLeft()
-    x, y = topLeft.x(), topLeft.y()
-    w, h = rect.width(), rect.height()
-    return w, h, x, y
-
-def iconify(self):
-    if self.top: self.top.showMinimized()
-
-def lift(self):
-    if not self.top: return
-    if self.top.isMinimized(): # Bug 379141
-        self.top.showNormal()
-    self.top.activateWindow()
-    self.top.raise_()
-
-def getTitle(self):
-    # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
-    # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
-    w = self.top.leo_master if g.app.qt_use_tabs else self.top
-    return w.windowTitle()
-
-def setTitle(self, s):
-    # pylint: disable=arguments-differ
-    if self.top:
-        # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
-        # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
-        w = self.top.leo_master if g.app.qt_use_tabs else self.top
-        w.setWindowTitle(s)
-
-def setTopGeometry(self, w, h, x, y, adjustSize=True):
-    # self.top is a DynamicWindow.
-    if self.top:
-        self.top.setGeometry(QtCore.QRect(x, y, w, h))
-
-def update(self, *args, **keys):
-    self.top.update()
-</t>
-<t tx="ekr.20110605121601.18405">def __init__(self, c, frame):
-    '''Ctor for the LeoQtTree class.'''
-    leoFrame.LeoTree.__init__(self, frame)
-        # Init the base class.
-    self.c = c
-    # Widget independent status ivars...
-    self.prev_v = None
-    self.redrawCount = 0 # Count for debugging.
-    self.revertHeadline = None # Previous headline text for abortEditLabel.
-    self.busy = False
-    # Debugging...
-    self.traceCallersFlag = False # Enable traceCallers method.
-    # Associating items with position and vnodes...
-    self.items = []
-    self.item2positionDict = {}
-    self.item2vnodeDict = {}
-    self.position2itemDict = {}
-    self.vnode2itemsDict = {} # values are lists of items.
-    self.editWidgetsDict = {} # keys are native edit widgets, values are wrappers.
-    self.reloadSettings()
-    # Components.
-    self.canvas = self # An official ivar used by Leo's core.
-    self.headlineWrapper = qt_text.QHeadlineWrapper # This is a class.
-    if g.pyzo:
-        self.treeWidget = w = frame.top.leo_ui.treeWidget
-    else:
-        self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
-        # w is a LeoQTreeWidget, a subclass of QTreeWidget.
-    # "declutter", node appearance tweaking
-    self.declutter_patterns = None  # list of pairs of patterns for decluttering
-    self.declutter_update = False  # true when update on idle needed
-    if 0: # EKR: This looks like a bad idea.
-        g.registerHandler('save1', self.clear_visual_icons)
-        g.registerHandler('headkey2', self.update_appearance)
-        g.registerHandler('idle', self.update_appearance_idle)
-
-    if 0: # Drag and drop
-        w.setDragEnabled(True)
-        w.viewport().setAcceptDrops(True)
-        w.showDropIndicator = True
-        w.setAcceptDrops(True)
-        w.setDragDropMode(w.InternalMove)
-        if 1: # Does not work
-
-            def dropMimeData(self, data, action, row, col, parent):
-                g.trace()
-            # w.dropMimeData = dropMimeData
-
-            def mimeData(self, indexes):
-                g.trace()
-    # Early inits...
-    try:
-        w.headerItem().setHidden(True)
-    except Exception:
-        pass
-    n = c.config.getInt('icon-height') or 16
-    w.setIconSize(QtCore.QSize(160, n))
 </t>
 <t tx="ekr.20110605121601.18421">def createTreeItem(self, p, parent_item):
     
@@ -3518,6 +3240,10 @@ def setYScrollPosition(self, pos):
 pyzo = True
     # It's now safe to enable this permanently,
     # because LM.scanOptions clears it unless --pyzo is in effect.
+pyzo_trace = False
+    # True: enable traces in pyzo itself.
+pyzo_trace_imports = True
+    # True: enable traces of imports in pyzo itself.
 #
 # Now done in LM.doSimpleOptions.
     # print('\n===== py3.pyzo branch: g.pyzo:', pyzo)
@@ -3562,13 +3288,6 @@ SQLITE = True
         return
     if p:
         p.v.scrollBarSpot = arg
-</t>
-<t tx="ekr.20130804061744.12425">if 0: # Override for debugging only.
-
-    def setWindowTitle(self, s):
-        g.trace('***(DynamicWindow)', s, self.parent())
-        # Call the base class method.
-        QtWidgets.QMainWindow.setWindowTitle(self, s)
 </t>
 <t tx="ekr.20130921043420.21175"># w's type is in (DynamicWindow,QMinibufferWrapper,LeoQtLog,LeoQtTree,
 # QTextEditWrapper,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
@@ -5961,47 +5680,6 @@ gnx: ekr.20160412193816.8
 unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 </t>
 <t tx="ekr.20160420054135.5"></t>
-<t tx="ekr.20160424080815.2">def __get_ratio(self):
-    '''Return splitter ratio of the main splitter.'''
-    if g.pyzo:
-        return 0.5
-    c = self.c
-    free_layout = c.free_layout
-    if free_layout:
-        w = free_layout.get_main_splitter()
-        if w:
-            aList = w.sizes()
-            if len(aList) == 2:
-                n1, n2 = aList
-                # 2017/06/07: guard against division by zero.
-                ratio = 0.5 if n1 + n2 == 0 else float(n1) / float(n1 + n2)
-                return ratio
-    return 0.5
-
-ratio = property(
-    __get_ratio, # No setter.
-    doc="qtFrame.ratio property")
-</t>
-<t tx="ekr.20160424080815.3">def __get_secondary_ratio(self):
-    '''Return the splitter ratio of the secondary splitter.'''
-    if g.pyzo:
-        return 0.5
-    c = self.c
-    free_layout = c.free_layout
-    if free_layout:
-        w = free_layout.get_secondary_splitter()
-        if w:
-            aList = w.sizes()
-            if len(aList) == 2:
-                n1, n2 = aList
-                ratio = float(n1) / float(n1 + n2)
-                return ratio
-    return 0.5
-
-secondary_ratio = property(
-    __get_secondary_ratio, # no setter.
-    doc="qtFrame.secondary_ratio property")
-</t>
 <t tx="ekr.20160425070345.1">gnx: ekr.20160412193816.1
 unl: qt_main declarations
 gnx: ekr.20160412193816.2
@@ -6479,10 +6157,6 @@ if s.strip():
     c.editHeadline()
 else:
     g.es_print('no text selected')
-</t>
-<t tx="ekr.20180328170441.1">def caller(i=1):
-    '''Return the caller name i levels up the stack.'''
-    return g.callers(i+1).split(',')[0]
 </t>
 <t tx="ekr.20180519111302.1">def get_jedi_completions(self, prefix):
 
@@ -7235,22 +6909,28 @@ https://github.com/leo-editor/leo-editor/issues/1032
 
 https://github.com/leo-editor/leo-editor/issues/1096
 
-Finish ConfigShim:
-- Move window config load/save into Leo?
+Post
+- Many calls to g.TracingNullObject aren't shims: they will eventually just go away.
+- Removed 3 hangnails: big step, because startup clearly works as expected.
 
-Hangnails &amp; fears:
-- Colorize light, then dark
-- Remove the duplicate Leo window.
-- Import fears: add traces to actual pyzo files.
+First:
+- Just override MainWindowShim._populate!
+- Finish MenuShim.
 - Change title of main window.
 
 Next:
 - Create LoggerShim (just send to the console?)
-- Finish MenuShim.
 - Put Leo outline in main window.
 - Modify pyzo shutdown logic (after putting outlines in MainWindow).
 - Make pyzo tool panes for outline, body panes, log pane &amp; sub-panes, and VR pane.
   g.app.forgetOpenFile(c.fileName(), force=True)
+  
+Later:
+- Finish ConfigShim:
+  - Use the pyzo config code, **unless** the settings are Leonine! 
+  - Does Leo need detailed knowledge of pyzo settings?
+  
+
   
 @language python
 </t>
@@ -7326,7 +7006,34 @@ Next:
         for toolId in pyzo.config.state.loadedTools:
             pyzo.toolManager.loadTool(toolId)
 </t>
-<t tx="ekr.20190317082751.1">class ConfigShim(pyzo.util.zon.Dict):
+<t tx="ekr.20190317082751.1">new_config = True
+    # Works when False.
+    
+config_shim_seen = {}
+    # Keys are bunches.
+
+print('\n===== new_config: %s\n' % new_config)
+
+try:  # pragma: no cover
+    from collections import OrderedDict as _dict
+except ImportError:
+    _dict = dict
+    
+from pyzo.util.zon import Dict
+
+# config_base = _dict if new_config else Dict
+
+config_base = _dict if new_config else Dict
+    # The old code needs _dict, not dict.
+
+class ConfigShim(config_base):
+    
+    if new_config:
+        &lt;&lt; define bunch settings &gt;&gt;
+        &lt;&lt; new config methods &gt;&gt;
+    else:
+        &lt;&lt; old config methods &gt;&gt;
+
     @others
 </t>
 <t tx="ekr.20190317082751.2">def __repr__(self):
@@ -7363,21 +7070,17 @@ Next:
         else:
             raise
 </t>
-<t tx="ekr.20190317082751.4"># def __setattr__(self, key, val):
-    # if key in Dict.__reserved_names__:
-        # # Either let OrderedDict do its work, or disallow
-        # if key not in Dict.__pure_names__:
-            # return _dict.__setattr__(self, key, val)
-        # else:
-            # raise AttributeError('Reserved name, this key can only ' +
-                                 # 'be set via ``d[%r] = X``' % key)
-    # else:
-        # # if isinstance(val, dict): val = Dict(val) -&gt; no, makes a copy!
-        # self[key] = val
-</t>
-<t tx="ekr.20190317082751.5"># def __dir__(self):
-    # names = [k for k in self.keys() if isidentifier(k)]
-    # return Dict.__reserved_names__ + names
+<t tx="ekr.20190317082751.4">def __setattr__(self, key, val):
+    if key in Dict.__reserved_names__:
+        # Either let OrderedDict do its work, or disallow
+        if key not in Dict.__pure_names__:
+            return _dict.__setattr__(self, key, val)
+        else:
+            raise AttributeError('Reserved name, this key can only ' +
+                                 'be set via ``d[%r] = X``' % key)
+    else:
+        # if isinstance(val, dict): val = Dict(val) -&gt; no, makes a copy!
+        self[key] = val
 </t>
 <t tx="ekr.20190317083529.1"></t>
 <t tx="ekr.20190317084000.1">def createPyzoMainWindow(self):
@@ -7423,15 +7126,6 @@ Next:
     ### return main_splitter, secondary_splitter
 </t>
 <t tx="ekr.20190317084039.1"></t>
-<t tx="ekr.20190317084647.1"># Important: 
-# pyzo.core.main.MainWindow is just a QMainWindow.
-#
-# Do *not* make the shim a subclass of MainWindow!
-# Doing so would generate a duplicate call to _populate.
-
-class MainWindowShim(pyzo.core.main.MainWindow):
-    @others
-</t>
 <t tx="ekr.20190317084647.2">def __init__(self, parent=None, locale=None):
     #
     # pylint: disable=non-parent-init-called, super-init-not-called
@@ -7637,16 +7331,6 @@ class MainWindowShim(pyzo.core.main.MainWindow):
     elif pyzo.config.state.loadedTools:
         for toolId in pyzo.config.state.loadedTools:
             pyzo.toolManager.loadTool(toolId)
-</t>
-<t tx="ekr.20190317084647.4">firstStyleSheet = True
-
-def setStyleSheet(self, style, *args, **kwargs):
-    # print('MainWindowShim.setStyleSheet', style, args, kwargs)
-    # A hack: Ignore the first call.
-    if self.firstStyleSheet:
-        self.firstStyleSheet = False
-        return
-    QtWidgets.QMainWindow.setStyleSheet(self, style)
 </t>
 <t tx="ekr.20190317084647.5">def closeEvent(self, event):
     """ Override close event handler. """
@@ -8242,16 +7926,7 @@ https://github.com/leo-editor/leo-editor/issues/1100
 <t tx="ekr.20190329035854.1"></t>
 <t tx="ekr.20190329040120.1"></t>
 <t tx="ekr.20190329040602.1"></t>
-<t tx="ekr.20190329045153.1">@nosearch
-
-# flattened, word, ignore-case, head, body
-
-# found 28 nodes</t>
-<t tx="ekr.20190329045255.1"></t>
-<t tx="ekr.20190329045409.1"></t>
-<t tx="ekr.20190329050013.1"></t>
 <t tx="ekr.20190329082417.1"></t>
-<t tx="ekr.20190329082432.1"></t>
 <t tx="ekr.20190330051656.1">@nosearch
 
 Search: NullObject</t>
@@ -8308,7 +7983,7 @@ suppress_attrs = (
     callers = ','.join(callers[:-1])
     s = '%s.%s' % (kind, tag)
     signature = '%s:%s' % (s, callers)
-    if 1:
+    if 0:
         # Always print:
         print('%40s %s' % (s, callers))
     elif signature not in tracing_signatures:
@@ -8317,6 +7992,22 @@ suppress_attrs = (
         print('%40s %s' % (s, callers))
 </t>
 <t tx="ekr.20190330095643.1"></t>
+<t tx="ekr.20190330112146.1">def monkey_patch():
+
+    global old_loadFile
+    # Use a do-nothing SplashWidget
+    pyzo.core.splash.SplashWidget = SplashShim
+    # Use a Leonine pyzo.config.
+    if 0:
+        # Works, but uses light theme.
+        pyzo.config = ConfigShim()
+    pyzo.loadConfig()
+        # To be replaced by LeoPyzoConfig.loadConfig.
+    # Monkey-patch EditorTabs.loadFile.
+    from pyzo.core.editorTabs import EditorTabs
+    old_loadFile = EditorTabs.loadFile
+    g.funcToMethod(loadFile, EditorTabs)
+</t>
 <t tx="ekr.20190330115531.1"># It probably should not be a zon dict!
 </t>
 <t tx="ekr.20190331032906.1">@language rest
@@ -8371,6 +8062,463 @@ So everything happened twice.
 
 @language python
 </t>
+<t tx="ekr.20190331052251.1">@others
+</t>
+<t tx="ekr.20190331052308.1">@others
+</t>
+<t tx="ekr.20190331052308.2">def __repr__(self):
+    
+    return 'ConfigShim'
+    # return g.obj2string(self)
+        # Can't do this: it calls repr!
+</t>
+<t tx="ekr.20190331052308.3">def __getattribute__(self, key):
+    '''The usual shinanigans...'''
+    ### return object.__getattribute__(self, key)
+    try:
+        val = object.__getattribute__(self, key)
+    except AttributeError:
+        if key in self:
+            val = self[key]
+        else:
+            raise
+    if key not in config_shim_seen:
+        config_shim_seen [key] = True
+        print('\n===== ConfigShim.__getattribute__', key, val)
+    return val
+</t>
+<t tx="ekr.20190331052308.4"># def __setattr__(self, key, val):
+    # if key in Dict.__reserved_names__:
+        # # Either let OrderedDict do its work, or disallow
+        # if key not in Dict.__pure_names__:
+            # return _dict.__setattr__(self, key, val)
+        # else:
+            # raise AttributeError('Reserved name, this key can only ' +
+                                 # 'be set via ``d[%r] = X``' % key)
+    # else:
+        # # if isinstance(val, dict): val = Dict(val) -&gt; no, makes a copy!
+        # self[key] = val
+</t>
+<t tx="ekr.20190331053237.1"># ^(\s*)(\w+)\:
+
+advanced = {
+    'autoCompDelay':200,
+    'fileExtensionsToLoadFromDir':'py,pyw,pyx,txt,bat',
+    'find_autoHide_timeout':10,
+    'homeAndEndWorkOnDisplayedLine':0,
+    'shellMaxLines':10000,
+    'titleText':'{fileName} ({fullPath}) - Interactive Editor for Python',
+}
+settings = {
+    'allowFloatingShell':0,
+    'autoCallTip':1,
+    'autoClose_Brackets':1,
+    'autoClose_Quotes':1,
+    'autoComplete':1,
+    'autoComplete_acceptKeys':'Tab',
+    'autoComplete_caseSensitive':0,
+    'autoComplete_fillups':'\n',
+    'autoComplete_keywords':1,
+    'autoIndent':1,
+    'changeDirOnFileExec':0,
+    'defaultIndentUsingSpaces':1,
+    'defaultIndentWidth':4,
+    'defaultLineEndings':'CRLF',
+    'defaultStyle':'python',
+    'justificationWidth':70,
+    'language':'English (US)',
+    'removeTrailingWhitespaceWhenSaving':0,
+}
+shellConfigs2 = [{
+    'argv':'',
+    'environ':'',
+    'exe':'c:\\anaconda3\\python.exe',
+    'gui':'auto',
+    'ipython':'yes',
+    'name':'Python',
+    'projectPath':'',
+    'pythonPath':'',
+    'scriptFile':'',
+    'startDir':'',
+    'startupScript':'',
+}]
+shortcuts2 = {
+    &lt;&lt; define shortcuts2 &gt;&gt;
+}
+state = {
+    'editorState2':[
+        &lt;&lt; define editorState2 &gt;&gt;
+    ],
+    'find_autoHide':1,
+    'find_matchCase':0,
+    'find_regExp':0,
+    'find_show':0,
+    'find_wholeWord':1,
+    'loadedTools':['pyzofilebrowser', 'pyzologger', 'pyzosourcestructure'],
+    'newUser':1,
+    'windowGeometry':'AdnQywACAAAAAAGjAAAA2AAABv0AAANWAAABqwAAAPcAAAb1AAADTgAAAAAAAAAAB4A=\n',
+    'windowState':[
+        'AAAA/wAAAAD9AAAAAgAAAAAAAACeAAACRPwCAAAAAfwAAAAUAAACRAAAAYgA/////AIAAAAC+wAA\n',
+        'AB4AcAB5AHoAbwBmAGkAbABlAGIAcgBvAHcAcwBlAHIBAAAAFAAAAWEAAAEIAP////sAAAAmAHAA\n',
+        'eQB6AG8AcwBvAHUAcgBjAGUAcwB0AHIAdQBjAHQAdQByAGUBAAABewAAAN0AAAB6AP///wAAAAEA\n',
+        'AAGEAAACRPwCAAAABvsAAAAMAHMAaABlAGwAbABzAQAAABQAAAD/AAAAcwD////7AAAAFABwAHkA\n',
+        'egBvAGwAbwBnAGcAZQByAQAAARkAAAE/AAAAWQD////7AAAAGgBwAHkAegBvAHcAbwByAGsAcwBw\n',
+        'AGEAYwBlAAAAAT4AAAEaAAAAAAAAAAD7AAAAJgBwAHkAegBvAGkAbgB0AGUAcgBhAGMAdABpAHYA\n',
+        'ZQBoAGUAbABwAAAAAnkAAAB6AAAAAAAAAAD7AAAAIgBwAHkAegBvAGgAaQBzAHQAbwByAHkAdgBp\n',
+        'AGUAdwBlAHIAAAACGgAAAVsAAAAAAAAAAPsAAAAcAHAAeQB6AG8AdwBlAGIAYgByAG8AdwBzAGUA\n',
+        'cgAAAAKwAAAAxQAAAAAAAAAAAAADHQAAAkQAAAAEAAAABAAAAAgAAAAI/AAAAAA=\n'
+    ]
+}
+tools = {
+    'pyzofilebrowser':{},
+    'pyzofilebrowser2':{
+        'expandedDirs':['c:\\apps\\pyzo\\source\\pyzo'],
+        'nameFilter':'!*.pyc',
+        'path':'c:\\apps\\pyzo\\source\\pyzo',
+        'searchMatchCase':0,
+        'searchRegExp':0,
+        'searchSubDirs':1,
+        'starredDirs':[{
+            'addToPythonpath':0,
+            'name':'Pyzo sources',
+            'path':'c:\\apps\\pyzo\\source'
+        }]
+    },
+    'pyzohistoryviewer':{},
+    'pyzointeractivehelp':{
+        'fontSize':14,
+        'noNewlines':1,
+        'smartNewlines':1
+    },
+    'pyzologger':{},
+    'pyzosourcestructure':{
+        'level':1,
+        'showTypes':['class', 'def', 'cell', 'todo'],
+    },
+    'pyzowebbrowser':{
+        'bookMarks':[
+            'docs.python.org',
+            'scipy.org',
+            'doc.qt.nokia.com/4.5/',
+            'pyzo.org',
+        ],
+        'zoomFactor':1.0,
+    },
+    'pyzoworkspace':{
+        'hideTypes':[],
+        'typeTranslation':{
+            'builtin_function_or_method':'function',
+            'method':'function'
+        }
+    }
+}
+    
+view = {
+    'autoComplete_popupSize':[300, 100],
+    'codeFolding':0,
+    'doBraceMatch':1,
+    'edgeColumn':80,
+    'fontname':'DejaVu Sans Mono',
+    'highlightCurrentLine':1,
+    'highlightMatchingBracket':1,
+    'qtstyle':'fusion',
+    'showIndentationGuides':1,
+    'showLineEndings':0,
+    'showStatusbar':0,
+    'showWhitespace':0,
+    'showWrapSymbols':0,
+    'tabWidth':4,
+    'wrap':1,
+    'zoom':2
+}
+</t>
+<t tx="ekr.20190331053528.1">'edit__comment':'Ctrl+R,',
+'edit__copy':'Ctrl+C,Ctrl+Insert',
+'edit__cut':'Ctrl+X,Shift+Delete',
+'edit__dedent':'Shift+Tab,',
+'edit__delete_line':'Ctrl+D,',
+'edit__duplicate_line':'Ctrl+Shift+D,',
+'edit__find_next':'Ctrl+G,F3',
+'edit__find_or_replace':'Ctrl+F,',
+'edit__find_previous':'Ctrl+Shift+G,Shift+F3',
+'edit__find_selection':'Ctrl+F3,',
+'edit__find_selection_backward':'Ctrl+Shift+F3,',
+'edit__indent':'Tab,',
+'edit__justify_commentdocstring':'Ctrl+J,',
+'edit__paste':'Ctrl+V,Shift+Insert',
+'edit__paste_and_select':'Ctrl+Shift+V',
+'edit__redo':'Ctrl+Y,',
+'edit__select_all':'Ctrl+A,',
+'edit__toggle_breakpoint':'Ctrl+B,',
+'edit__uncomment':'Ctrl+T,',
+'edit__undo':'Ctrl+Z,',
+'file__close':'Ctrl+W,',
+'file__new':'Ctrl+N,',
+'file__open':'Ctrl+O,',
+'file__save':'Ctrl+S,',
+'run__execute_cell':'Ctrl+Return,Ctrl+Enter',
+'run__execute_cell_and_advance':'Ctrl+Shift+Return,Ctrl+Shift+Enter',
+'run__execute_file':'Ctrl+E,F5',
+'run__execute_main_file':'Ctrl+M,F6',
+'run__execute_selection':'Alt+Return,F9',
+'run__execute_selection_and_advance':'Shift+F9,Shift+Alt+Return',
+'run__run_file_as_script':'Ctrl+Shift+E,Ctrl+F5',
+'run__run_main_file_as_script':'Ctrl+Shift+M,Ctrl+F6',
+'shell__clear_screen':'Ctrl+L,',
+'shell__close':'Alt+K,',
+'shell__create_shell_1_':'Ctrl+1,',
+'shell__create_shell_2_':'Ctrl+2,',
+'shell__create_shell_3_':'Ctrl+3,',
+'shell__create_shell_4_':'Ctrl+4,',
+'shell__create_shell_5_':'Ctrl+5,',
+'shell__create_shell_6_':'Ctrl+6,',
+'shell__create_shell_7_':'Ctrl+7,',
+'shell__create_shell_8_':'Ctrl+8,',
+'shell__interrupt':'Ctrl+I,Meta+C',
+'shell__postmortem_debug_from_last_traceback':'Ctrl+P,',
+'shell__restart':'Ctrl+K,',
+'shell__terminate':'Ctrl+Shift+K,',
+'view__select_editor':'Ctrl+9,F2',
+'view__select_previous_file':'Ctrl+Tab,',
+'view__select_shell':'Ctrl+0,F1',
+'view__zooming__zoom_in':'Ctrl+=,Ctrl++',
+'view__zooming__zoom_out':'Ctrl+-,',
+'view__zooming__zoom_reset':'Ctrl+\\,'
+</t>
+<t tx="ekr.20190331053634.1">[
+    'C:\\apps\\pyzo\\source\\pyzo\\codeeditor\\highlighter.py',
+    3279,
+    96
+],
+[
+    'C:\\apps\\pyzo\\source\\pyzo\\core\\editorTabs.py',
+    22913,
+    693
+],
+[
+    'C:\\apps\\pyzo\\source\\pyzo\\codeeditor\\highlighter.py',
+    'hist'
+],
+[
+    'C:\\apps\\pyzo\\source\\pyzo\\core\\editorTabs.py',
+    'hist'
+]
+</t>
+<t tx="ekr.20190331082353.1"># '(\w+)': With: \1 = 
+
+advanced = g.Bunch(
+    autoCompDelay=200,
+    fileExtensionsToLoadFromDir='py,pyw,pyx,txt,bat',
+    find_autoHide_timeout=10,
+    homeAndEndWorkOnDisplayedLine=0,
+    shellMaxLines=10000,
+    titleText='{fileName} ({fullPath}) - Interactive Editor for Python',
+)
+
+settings = g.Bunch(   
+    allowFloatingShell=0,
+    autoCallTip=1,
+    autoClose_Brackets=1,
+    autoClose_Quotes=1,
+    autoComplete=1,
+    autoComplete_acceptKeys='Tab',
+    autoComplete_caseSensitive=0,
+    autoComplete_fillups='\n',
+    autoComplete_keywords=1,
+    autoIndent=1,
+    changeDirOnFileExec=0,
+    defaultIndentUsingSpaces=1,
+    defaultIndentWidth=4,
+    defaultLineEndings='CRLF',
+    defaultStyle='python',
+    justificationWidth=70,
+    language='English (US)',
+    removeTrailingWhitespaceWhenSaving=0,
+)
+
+shellConfigs2 = [
+    g.Bunch(
+        argv = '',
+        environ = '',
+        exe = 'c:\\anaconda3\\python.exe',
+        gui = 'auto',
+        ipython = 'yes',
+        name = 'Python',
+        projectPath = '',
+        pythonPath = '',
+        scriptFile = '',
+        startDir = '',
+        startupScript = '',
+        )
+]
+
+shortcuts2 = g.bunch(
+    &lt;&lt; define bunch shortcuts2 &gt;&gt;
+)
+
+state = g.Bunch(
+    editorState2=[
+        &lt;&lt; define editorState2 &gt;&gt;
+    ],
+    find_autoHide=1,
+    find_matchCase=0,
+    find_regExp=0,
+    find_show=0,
+    find_wholeWord=1,
+    loadedTools=['pyzofilebrowser', 'pyzologger', 'pyzosourcestructure'],
+    newUser=1,
+    windowGeometry='AdnQywACAAAAAAGjAAAA2AAABv0AAANWAAABqwAAAPcAAAb1AAADTgAAAAAAAAAAB4A=\n',
+    windowState=(
+        'AAAA/wAAAAD9AAAAAgAAAAAAAACeAAACRPwCAAAAAfwAAAAUAAACRAAAAYgA/////AIAAAAC+wAA\n'
+        'AB4AcAB5AHoAbwBmAGkAbABlAGIAcgBvAHcAcwBlAHIBAAAAFAAAAWEAAAEIAP////sAAAAmAHAA\n'
+        'eQB6AG8AcwBvAHUAcgBjAGUAcwB0AHIAdQBjAHQAdQByAGUBAAABewAAAN0AAAB6AP///wAAAAEA\n'
+        'AAGEAAACRPwCAAAABvsAAAAMAHMAaABlAGwAbABzAQAAABQAAAD/AAAAcwD////7AAAAFABwAHkA\n'
+        'egBvAGwAbwBnAGcAZQByAQAAARkAAAE/AAAAWQD////7AAAAGgBwAHkAegBvAHcAbwByAGsAcwBw\n'
+        'AGEAYwBlAAAAAT4AAAEaAAAAAAAAAAD7AAAAJgBwAHkAegBvAGkAbgB0AGUAcgBhAGMAdABpAHYA\n'
+        'ZQBoAGUAbABwAAAAAnkAAAB6AAAAAAAAAAD7AAAAIgBwAHkAegBvAGgAaQBzAHQAbwByAHkAdgBp\n'
+        'AGUAdwBlAHIAAAACGgAAAVsAAAAAAAAAAPsAAAAcAHAAeQB6AG8AdwBlAGIAYgByAG8AdwBzAGUA\n'
+        'cgAAAAKwAAAAxQAAAAAAAAAAAAADHQAAAkQAAAAEAAAABAAAAAgAAAAI/AAAAAA=\n'
+    )
+)
+
+tools = g.Bunch(
+    pyzofilebrowser = g.Bunch(),
+    pyzofilebrowser2 = g.Bunch(
+        expandedDirs = ['c:\\apps\\pyzo\\source\\pyzo'],
+        nameFilter = '!*.pyc',
+        path = 'c:\\apps\\pyzo\\source\\pyzo',
+        searchMatchCase = 0,
+        searchRegExp = 0,
+        searchSubDirs = 1,
+        starredDirs =[
+            g.Bunch(
+                addToPythonpath = 0,
+                name = 'Pyzo sources',
+                path = 'c:\\apps\\pyzo\\source',
+            )
+        ]
+    ),
+    pyzohistoryviewer = g.Bunch(),
+    pyzointeractivehelp = g.Bunch(
+        fontSize = 14,
+        noNewlines = 1,
+        smartNewlines = 1
+    ),
+    pyzologger = g.Bunch(),
+    pyzosourcestructure = g.Bunch(
+        level = 1,
+        showTypes = ['class', 'def', 'cell', 'todo'],
+    ),
+    pyzowebbrowser = g.Bunch(
+        bookMarks = [
+            'docs.python.org',
+            'scipy.org',
+            'doc.qt.nokia.com/4.5/',
+            'pyzo.org',
+        ],
+        zoomFactor = 1.0,
+    ),
+    pyzoworkspace = g.Bunch(
+        hideTypes = [],
+        typeTranslation = g.Bunch(
+            builtin_function_or_method = 'function',
+            method = 'function'
+        )
+    )
+) 
+
+view = g.Bunch(
+    autoComplete_popupSize=[300, 100],
+    codeFolding=0,
+    doBraceMatch=1,
+    edgeColumn=80,
+    fontname='DejaVu Sans Mono',
+    highlightCurrentLine=1,
+    highlightMatchingBracket=1,
+    qtstyle='fusion',
+    showIndentationGuides=1,
+    showLineEndings=0,
+    showStatusbar=0,
+    showWhitespace=0,
+    showWrapSymbols=0,
+    tabWidth=4,
+    wrap=1,
+    zoom=2
+)
+</t>
+<t tx="ekr.20190331082353.2">[
+    'C:\\apps\\pyzo\\source\\pyzo\\codeeditor\\highlighter.py',
+    3279,
+    96
+],
+[
+    'C:\\apps\\pyzo\\source\\pyzo\\core\\editorTabs.py',
+    22913,
+    693
+],
+[
+    'C:\\apps\\pyzo\\source\\pyzo\\codeeditor\\highlighter.py',
+    'hist'
+],
+[
+    'C:\\apps\\pyzo\\source\\pyzo\\core\\editorTabs.py',
+    'hist'
+]</t>
+<t tx="ekr.20190331082549.1">edit__comment = 'Ctrl+R,',
+edit__copy = 'Ctrl+C,Ctrl+Insert',
+edit__cut = 'Ctrl+X,Shift+Delete',
+edit__dedent = 'Shift+Tab,',
+edit__delete_line = 'Ctrl+D,',
+edit__duplicate_line = 'Ctrl+Shift+D,',
+edit__find_next = 'Ctrl+G,F3',
+edit__find_or_replace = 'Ctrl+F,',
+edit__find_previous = 'Ctrl+Shift+G,Shift+F3',
+edit__find_selection = 'Ctrl+F3,',
+edit__find_selection_backward = 'Ctrl+Shift+F3,',
+edit__indent = 'Tab,',
+edit__justify_commentdocstring = 'Ctrl+J,',
+edit__paste = 'Ctrl+V,Shift+Insert',
+edit__paste_and_select = 'Ctrl+Shift+V',
+edit__redo = 'Ctrl+Y,',
+edit__select_all = 'Ctrl+A,',
+edit__toggle_breakpoint = 'Ctrl+B,',
+edit__uncomment = 'Ctrl+T,',
+edit__undo = 'Ctrl+Z,',
+file__close = 'Ctrl+W,',
+file__new = 'Ctrl+N,',
+file__open = 'Ctrl+O,',
+file__save = 'Ctrl+S,',
+run__execute_cell = 'Ctrl+Return,Ctrl+Enter',
+run__execute_cell_and_advance = 'Ctrl+Shift+Return,Ctrl+Shift+Enter',
+run__execute_file = 'Ctrl+E,F5',
+run__execute_main_file = 'Ctrl+M,F6',
+run__execute_selection = 'Alt+Return,F9',
+run__execute_selection_and_advance = 'Shift+F9,Shift+Alt+Return',
+run__run_file_as_script = 'Ctrl+Shift+E,Ctrl+F5',
+run__run_main_file_as_script = 'Ctrl+Shift+M,Ctrl+F6',
+shell__clear_screen = 'Ctrl+L,',
+shell__close = 'Alt+K,',
+shell__create_shell_1_ = 'Ctrl+1,',
+shell__create_shell_2_ = 'Ctrl+2,',
+shell__create_shell_3_ = 'Ctrl+3,',
+shell__create_shell_4_ = 'Ctrl+4,',
+shell__create_shell_5_ = 'Ctrl+5,',
+shell__create_shell_6_ = 'Ctrl+6,',
+shell__create_shell_7_ = 'Ctrl+7,',
+shell__create_shell_8_ = 'Ctrl+8,',
+shell__interrupt = 'Ctrl+I,Meta+C',
+shell__postmortem_debug_from_last_traceback = 'Ctrl+P,',
+shell__restart = 'Ctrl+K,',
+shell__terminate = 'Ctrl+Shift+K,',
+view__select_editor = 'Ctrl+9,F2',
+view__select_previous_file = 'Ctrl+Tab,',
+view__select_shell = 'Ctrl+0,F1',
+view__zooming__zoom_in = 'Ctrl+=,Ctrl++',
+view__zooming__zoom_out = 'Ctrl+-,',
+view__zooming__zoom_reset = 'Ctrl+\\,'
+</t>
+<t tx="ekr.20190331164202.1"></t>
+<t tx="ekr.20190331165128.1"></t>
 <t tx="tbrown.20110621120042.22914">def get_top_splitter(self):
     '''Return the top splitter of c.frame.top.'''
     # Careful: we could be unit testing.
