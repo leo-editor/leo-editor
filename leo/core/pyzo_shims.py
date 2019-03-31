@@ -385,12 +385,6 @@ class ConfigShim(config_base):
     #@+others
     #@-others
 #@+node:ekr.20190317084647.1: ** class MainWindowShim (pyzo.core.main.MainWindow)
-# Important: 
-# pyzo.core.main.MainWindow is just a QMainWindow.
-#
-# Do *not* make the shim a subclass of MainWindow!
-# Doing so would generate a duplicate call to _populate.
-
 class MainWindowShim(pyzo.core.main.MainWindow):
     #@+others
     #@+node:ekr.20190317084647.2: *3* MainWindowShim.__init__
@@ -513,18 +507,16 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         pyzo.core.commandline.handle_cmd_args()
     #@+node:ekr.20190317084647.3: *3* MainWindowShim._populate (2 shims)
     def _populate(self):
-        
-        print('\n===== MainWindowShim._populate\n')
-        
+
         use_shell = False
 
         # Delayed imports
+        print('\n===== MainWindowShim._populate\n')
         from pyzo.core.editorTabs import EditorTabs
         from pyzo.core.shellStack import ShellStackWidget
         from pyzo.core import codeparser
         from pyzo.core.history import CommandHistory
         from pyzo.tools import ToolManager
-        
         print('\n===== MainWindowShim._populate: end of delayed imports\n')
 
         # Instantiate tool manager
