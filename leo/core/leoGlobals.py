@@ -374,10 +374,15 @@ class Bunch(object):
 
     def __getitem__(self, key):
         '''Support aBunch[key]'''
+        # print('g.Bunch.__getitem__', key)
         return operator.getitem(self.__dict__, key)
 
     def get(self, key, theDefault=None):
         return self.__dict__.get(key, theDefault)
+        
+    def __contains__(self, key): ### New, experimental.
+        # print('g.Bunch.__contains__', key in self.__dict__, key)
+        return key in self.__dict__
 
 bunch = Bunch
 #@+node:ekr.20040331083824.1: *3* class g.FileLikeObject
