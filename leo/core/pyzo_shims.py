@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20190330100032.1: * @file ../core/pyzo_shims.py
+#@@first
 '''Shims to adapt pyzo classes to Leo.'''
 #@+<< copyright notices >>
 #@+node:ekr.20190401023314.1: ** << copyright notices >>
@@ -749,5 +751,23 @@ class SplashShim(QtWidgets.QWidget):
     def __init__(self, parent, **kwargs):
         # This ctor is required, because it is called with kwargs.
         QtWidgets.QWidget.__init__(self, parent)
+#@+node:ekr.20190401074804.1: ** class ToolShim (Needed???)
+class ToolShim (object):
+    '''
+    A Shim to make a QWidget into a Pyzo Tool window.
+    
+    From the docstring in pyzo/tools.__init__.py:
+    
+    A tool consists of a module which contains a class:
+    - The id of a tool is its lower-cased module name.
+    - The module should contain a class corresponding to its id.
+    
+    The module may contain the following extra variables,
+    which should be placed within the first 50 lines of code:
+    
+    - tool_name:      A readable name for the tool. May contain spaces.
+    - tool_summary:   A single line short summary of the tool.
+                      Will be displayed in the statusbar.
+    '''
 #@-others
 #@-leo
