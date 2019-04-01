@@ -1,16 +1,24 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20190330100032.1: * @file ../core/pyzo_shims.py
 '''Shims to adapt pyzo classes to Leo.'''
-print('\npyzo_shims.py\n')
-#@+<< pyzo_shims non-pyzo imports >>
-#@+node:ekr.20190330101646.1: **  << pyzo_shims non-pyzo imports >>
+#@+<< copyright notices >>
+#@+node:ekr.20190401023314.1: ** << copyright notices >>
+#
+# Portions of this file are based on pyzo's source code:
+# Copyright (C) 2013-2018 by Almar Klein.
+#
+# Search for the above copyright to see the relevant code.
+#@-<< copyright notices >>
+import leo.core.leoGlobals as g
+if g.pyzo_trace_imports:
+    print('\npyzo_shims.py\n')
+#@+<< non-pyzo imports (pyzo_shims.py) >>
+#@+node:ekr.20190330101646.1: **  << non-pyzo imports (pyzo_shims.py) >>
 import os
 import sys
 import time
 from leo.core.leoQt import QtCore, QtWidgets
-import leo.core.leoGlobals as g
-assert g.pyzo
-#@-<< pyzo_shims non-pyzo imports >>
+#@-<< non-pyzo imports (pyzo_shims.py) >>
 
 # Be explicit about where everything comes from...
 import pyzo
@@ -406,6 +414,10 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         Important: do *all* inits here.  Do *not* call MainWindow.__init__.
         
         This allows us complete control over all aspects of the startup process.
+
+        This method is based on pyzo code
+        Copyright (C) 2013-2018 by Almar Klein.
+        
         '''
         #
         # pylint: disable=non-parent-init-called, super-init-not-called
@@ -529,6 +541,10 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         pyzo.core.commandline.handle_cmd_args()
     #@+node:ekr.20190317084647.3: *3* MainWindowShim._populate (2 shims)
     def _populate(self):
+        '''
+        This method is based on pyzo code
+        Copyright (C) 2013-2018 by Almar Klein.
+        '''
         
         trace = False and g.pyzo_trace_imports
 
