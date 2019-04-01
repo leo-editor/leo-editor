@@ -649,6 +649,19 @@
 <v t="ekr.20110605121601.18469"><vh>setTabForCommander (TabbedFrameFactory)</vh></v>
 </v>
 </v>
+<v t="ekr.20190331182937.1"><vh>---- Startup logic</vh>
+<v t="ekr.20190330112146.1"><vh> function: monkey_patch (pyzo_shims.py)</vh></v>
+<v t="ekr.20031218072017.3098"><vh>class g.Bunch (Python Cookbook)</vh></v>
+<v t="ekr.20190317084647.1"><vh>class MainWindowShim (pyzo.core.main.MainWindow)</vh>
+<v t="ekr.20190317084647.2"></v>
+<v t="ekr.20190317084647.3"></v>
+<v t="ekr.20190317084647.4"><vh>MainWindowShim.setStyleSheet (override)</vh></v>
+<v t="ekr.20190317084647.5"><vh>MainWindowShim.closeEvent (traces)</vh></v>
+<v t="ekr.20190331173436.1"><vh>MainWindowShim.setMainTitle</vh></v>
+</v>
+<v t="ekr.20190317084647.3"></v>
+<v t="ekr.20190317084647.2"></v>
+</v>
 </v>
 <v t="ekr.20190317084039.1"><vh>----- new main window</vh>
 <v t="ekr.20110605121601.18141"><vh>dw.createMainWindow &amp; helpers</vh>
@@ -710,18 +723,18 @@
 <v t="ekr.20190317084000.1"></v>
 </v>
 <v t="ekr.20190329082417.1"><vh>----- To do: Shutdown logic</vh>
-<v t="ekr.20190317084647.5"><vh>MainWindowShim.closeEvent (traces)</vh></v>
+<v t="ekr.20190317084647.5"></v>
 </v>
 <v t="ekr.20190330115531.1"><vh>----- rewrite ConfigShim (later)</vh>
 <v t="ekr.20190317082751.1"><vh>class ConfigShim</vh>
+<v t="ekr.20190331082353.1"><vh>&lt;&lt; define bunch settings &gt;&gt;</vh>
+<v t="ekr.20190331082549.1"><vh>&lt;&lt; define bunch shortcuts2 &gt;&gt;</vh></v>
+<v t="ekr.20190331082353.2"><vh>&lt;&lt; define editorState2 &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20190331052308.1"><vh>&lt;&lt; new config methods &gt;&gt;</vh>
 <v t="ekr.20190331052308.2"><vh>ConfigShim.__repr__</vh></v>
 <v t="ekr.20190331052308.3"><vh>ConfigShim.__getattribute__ </vh></v>
 <v t="ekr.20190331052308.4"><vh>ConfigShim.__setattr__ (not used)</vh></v>
-</v>
-<v t="ekr.20190331082353.1"><vh>&lt;&lt; define bunch settings &gt;&gt;</vh>
-<v t="ekr.20190331082549.1"><vh>&lt;&lt; define bunch shortcuts2 &gt;&gt;</vh></v>
-<v t="ekr.20190331082353.2"><vh>&lt;&lt; define editorState2 &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20190331052251.1"><vh>&lt;&lt; old config methods &gt;&gt;</vh>
 <v t="ekr.20190317082751.2"><vh>ConfigShim.__repr__</vh></v>
@@ -729,11 +742,10 @@
 <v t="ekr.20190317082751.4"><vh>ConfigShim.__setattr__</vh></v>
 </v>
 </v>
-<v t="ekr.20190330112146.1"><vh> function: monkey_patch (pyzo_shims.py)</vh></v>
+<v t="ekr.20190330112146.1"></v>
 </v>
 </v>
 <v t="ekr.20190331165128.1"><vh>----- improve tracing in g.Bunch</vh></v>
-<v t="ekr.20031218072017.3098"><vh>class g.Bunch (Python Cookbook)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943">@nosearch
@@ -6909,28 +6921,20 @@ https://github.com/leo-editor/leo-editor/issues/1032
 
 https://github.com/leo-editor/leo-editor/issues/1096
 
-Post
-- Many calls to g.TracingNullObject aren't shims: they will eventually just go away.
-- Removed 3 hangnails: big step, because startup clearly works as expected.
-
 First:
-- Just override MainWindowShim._populate!
+- Improve tracing in g.Bunch.
 - Finish MenuShim.
-- Change title of main window.
-
-Next:
 - Create LoggerShim (just send to the console?)
-- Put Leo outline in main window.
+
+*** Put Leo outline in main window.
+
+Later:
 - Modify pyzo shutdown logic (after putting outlines in MainWindow).
 - Make pyzo tool panes for outline, body panes, log pane &amp; sub-panes, and VR pane.
   g.app.forgetOpenFile(c.fileName(), force=True)
-  
-Later:
 - Finish ConfigShim:
   - Use the pyzo config code, **unless** the settings are Leonine! 
   - Does Leo need detailed knowledge of pyzo settings?
-  
-
   
 @language python
 </t>
@@ -7012,8 +7016,6 @@ Later:
 config_shim_seen = {}
     # Keys are bunches.
 
-print('\n===== new_config: %s\n' % new_config)
-
 try:  # pragma: no cover
     from collections import OrderedDict as _dict
 except ImportError:
@@ -7027,6 +7029,10 @@ config_base = _dict if new_config else Dict
     # The old code needs _dict, not dict.
 
 class ConfigShim(config_base):
+    
+    def __init__(self):
+        config_base.__init__(self)
+        print('\n===== ConfigShim: new_config: %s\n' % new_config)
     
     if new_config:
         &lt;&lt; define bunch settings &gt;&gt;
@@ -7126,15 +7132,28 @@ class ConfigShim(config_base):
     ### return main_splitter, secondary_splitter
 </t>
 <t tx="ekr.20190317084039.1"></t>
+<t tx="ekr.20190317084647.1">class MainWindowShim(pyzo.core.main.MainWindow):
+    
+    initial_draw = False
+        # True: do an initial draw.
+        # Works either way.
+    use_shell = True
+        # Works either way.
+        # In particular, drawing is reasonable when use_shell is True.
+
+    @others
+</t>
 <t tx="ekr.20190317084647.2">def __init__(self, parent=None, locale=None):
+    '''
+    Important: do *all* inits here.  Do *not* call MainWindow.__init__.
+    
+    This allows us complete control over all aspects of the startup process.
+    '''
     #
     # pylint: disable=non-parent-init-called, super-init-not-called
         # Only init QMainWindow, **not** MainWindow.
         # MainWindow.__init__ calls all the code below.
         # This was the source of the duplicate imports and duplicate calls to _populate.
-
-    ### print('\nMainWindowShim.__init__:', g.callers())
-
     QtWidgets.QMainWindow.__init__(self, parent)
 
     self._closeflag = 0  # Used during closing/restarting
@@ -7145,9 +7164,8 @@ class ConfigShim(config_base):
     # updated)
     self.setMainTitle()
     pyzo.core.main.loadAppIcons()
-        # New: fully qualified.
-   
-    self.setWindowIcon(pyzo.icon)
+    ### self.setWindowIcon(pyzo.icon)
+    g.app.gui.attachLeoIcon(self)
 
     # Restore window geometry before drawing for the first time,
     # such that the window is in the right place
@@ -7155,18 +7173,24 @@ class ConfigShim(config_base):
     self.restoreGeometry()
 
     # Show splash screen (we need to set our color too)
-    
-    w = pyzo.core.splash.SplashWidget(self, distro='no distro')
+    ### w = pyzo.core.splash.SplashWidget(self, distro='no distro')
+    w = SplashShim(parent)
+        # No need to Monkey-Patch pyzo.core.splash.SplashWidget
     self.setCentralWidget(w)
-    self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
+    ###
+        # These do nothing, even when use_shell is True.
+    ### self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
+    #self.setStyleSheet("QMainWindow { background-color: red;}")
+        # Does nothing.
 
     # Show empty window and disable updates for a while
-    self.show()
-    self.paintNow()
+    if self.initial_draw:
+        self.show()
+        self.paintNow()
     self.setUpdatesEnabled(False)
 
     # Determine timeout for showing splash screen
-    splash_timeout = time.time() + 1.0
+    ### splash_timeout = time.time() + 0.001 ### 1.0
 
     # Set locale of main widget, so that qt strings are translated
     # in the right way
@@ -7196,22 +7220,25 @@ class ConfigShim(config_base):
     # Set qt style and test success
     self.setQtStyle(None) # None means init!
     
-    if 0: ###
+    ###
         # Hold the splash screen if needed
-        while time.time() &lt; splash_timeout:
-            QtWidgets.qApp.flush()
-            QtWidgets.qApp.processEvents()
-            time.sleep(0.05)
+        # while time.time() &lt; splash_timeout:
+            # QtWidgets.qApp.flush()
+            # QtWidgets.qApp.processEvents()
+            # time.sleep(0.05)
 
     # Populate the window (imports more code)
     self._populate()
 
     # Revert to normal background, and enable updates
     self.setStyleSheet('')
+        # Required.
     self.setUpdatesEnabled(True)
 
     # Restore window state, force updating, and restore again
     self.restoreState()
+    if not self.initial_draw:
+        self.show()
     self.paintNow()
     self.restoreState()
 
@@ -7245,18 +7272,18 @@ class ConfigShim(config_base):
 </t>
 <t tx="ekr.20190317084647.3">def _populate(self):
     
-    ### print('\n========== MainWindowShim._populate', g.callers(), '\n')
-    
-    use_shell = False
+    trace = False and g.pyzo_trace_imports
 
-    # Delayed imports
+    # Delayed imports, exactly as in MainWindow._populate.
+    if trace:
+        print('\n===== MainWindowShim._populate\n')
     from pyzo.core.editorTabs import EditorTabs
     from pyzo.core.shellStack import ShellStackWidget
     from pyzo.core import codeparser
     from pyzo.core.history import CommandHistory
     from pyzo.tools import ToolManager
-    
-    ### print('----- MainWindowShim._populate: end of delayed imports')
+    if trace:
+        print('\n===== MainWindowShim._populate: end of delayed imports\n')
 
     # Instantiate tool manager
     pyzo.toolManager = ToolManager()
@@ -7286,7 +7313,7 @@ class ConfigShim(config_base):
     self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 
     # Create shell stack
-    if use_shell: # Disabling the shell works.
+    if self.use_shell: # Disabling the shell works.
         pyzo.shells = ShellStackWidget(self)
         dock.setWidget(pyzo.shells)
     else:
@@ -7296,7 +7323,7 @@ class ConfigShim(config_base):
     pyzo.command_history = CommandHistory('command_history.py')
 
     # Create the default shell when returning to the event queue
-    if use_shell:
+    if self.use_shell:
         pyzo.core.main.callLater(pyzo.shells.addShell)
             # New: fully qualified.
 
@@ -7308,12 +7335,11 @@ class ConfigShim(config_base):
         self.setStatusBar(None)
 
     # Create menu
-    if use_shell:
-        # Crashes:
-        # File "C:/apps/pyzo/source\pyzo\core\menu.py", line 961, in _updateShells
-        # pyzo.icons.application_add, pyzo.shells.addShell, config) 
+    if self.use_shell:
         from pyzo.core import menu
         pyzo.keyMapper = menu.KeyMapper()
+        assert not isinstance(pyzo.keyMapper, (g.TracingNullObject, g.NullObject))
+            # This should not be a Shim.
         menu.buildMenus(self.menuBar())
     else:
         # Shim:
@@ -7331,6 +7357,16 @@ class ConfigShim(config_base):
     elif pyzo.config.state.loadedTools:
         for toolId in pyzo.config.state.loadedTools:
             pyzo.toolManager.loadTool(toolId)
+</t>
+<t tx="ekr.20190317084647.4">firstStyleSheet = True
+
+def setStyleSheet(self, style, *args, **kwargs):
+    # print('MainWindowShim.setStyleSheet', style, args, kwargs)
+    # A hack: Ignore the first call.
+    if self.firstStyleSheet:
+        self.firstStyleSheet = False
+        return
+    QtWidgets.QMainWindow.setStyleSheet(self, style)
 </t>
 <t tx="ekr.20190317084647.5">def closeEvent(self, event):
     """ Override close event handler. """
@@ -7995,8 +8031,11 @@ suppress_attrs = (
 <t tx="ekr.20190330112146.1">def monkey_patch():
 
     global old_loadFile
-    # Use a do-nothing SplashWidget
-    pyzo.core.splash.SplashWidget = SplashShim
+    
+    ### MainWindowShim now uses SplashShim directly
+        # Use a do-nothing SplashWidget
+        # pyzo.core.splash.SplashWidget = SplashShim
+        
     # Use a Leonine pyzo.config.
     if 0:
         # Works, but uses light theme.
@@ -8463,7 +8502,8 @@ view = g.Bunch(
 [
     'C:\\apps\\pyzo\\source\\pyzo\\core\\editorTabs.py',
     'hist'
-]</t>
+]
+</t>
 <t tx="ekr.20190331082549.1">edit__comment = 'Ctrl+R,',
 edit__copy = 'Ctrl+C,Ctrl+Insert',
 edit__cut = 'Ctrl+X,Shift+Delete',
@@ -8519,6 +8559,32 @@ view__zooming__zoom_reset = 'Ctrl+\\,'
 </t>
 <t tx="ekr.20190331164202.1"></t>
 <t tx="ekr.20190331165128.1"></t>
+<t tx="ekr.20190331173436.1">def setMainTitle(self, path=None):
+    """ Set the title of the main window, by giving a file path.
+    """
+    self.setWindowTitle('Leo Main Window')
+    ### From MainWindow
+        # if not path:
+            # # Plain title
+            # title = "Interactive Editor for Python"
+        # else:
+            # # Title with a filename
+            # name = os.path.basename(path)
+            # if os.path.isfile(path):
+                # pass
+            # elif name == path:
+                # path = translate("main", 'unsaved')
+            # else:
+                # pass  # We hope the given path is informative
+            # # Set title
+            # tmp = { 'fileName':name, 'filename':name, 'name':name,
+                    # 'fullPath':path, 'fullpath':path, 'path':path }
+            # title = pyzo.config.advanced.titleText.format(**tmp)
+    
+        # # Set
+        # self.setWindowTitle(title)
+</t>
+<t tx="ekr.20190331182937.1"></t>
 <t tx="tbrown.20110621120042.22914">def get_top_splitter(self):
     '''Return the top splitter of c.frame.top.'''
     # Careful: we could be unit testing.
