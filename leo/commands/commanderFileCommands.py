@@ -381,6 +381,7 @@ def saveAll(self, event=None):
     dw = c.frame.top # A DynamicWindow
     dw.select(c)
 #@+node:ekr.20031218072017.2835: *3* c_file.saveAs
+@g.commander_command('file-save-as')
 @g.commander_command('save-file-as')
 def saveAs(self, event=None, fileName=None):
     '''Save a Leo outline to a file with a new filename.'''
@@ -437,6 +438,7 @@ def saveAs(self, event=None, fileName=None):
     else:
         c.treeWantsFocus()
 #@+node:ekr.20031218072017.2836: *3* c_file.saveTo
+@g.commander_command('file-save-to')
 @g.commander_command('save-file-to')
 def saveTo(self, event=None, fileName=None, silent=False):
     '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
@@ -493,6 +495,7 @@ def revert(self, event=None):
     if reply == "yes":
         g.app.loadManager.revertCommander(c)
 #@+node:ekr.20070413045221: *3* c_file.saveAsUnzipped & saveAsZipped
+@g.commander_command('file-save-as-unzipped')
 @g.commander_command('save-file-as-unzipped')
 def saveAsUnzipped(self, event=None):
     '''
@@ -502,6 +505,7 @@ def saveAsUnzipped(self, event=None):
     c = self
     saveAsZippedHelper(c, False)
 
+g.commander_command('file-save-as-zipped')
 @g.commander_command('save-file-as-zipped')
 def saveAsZipped(self, event=None):
     '''

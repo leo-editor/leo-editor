@@ -413,8 +413,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             k.setStatusLabel('Removed: %s' % k.arg)
         except Exception:
             k.setStatusLabel('Not Removed: %s' % k.arg)
-    #@+node:ekr.20170806094318.15: *3* efc.saveFile
-    @cmd('file-save')
+    #@+node:ekr.20170806094318.15: *3* efc.saveFile (save-file-by-name)
+    @cmd('file-save-by-name')
+    @cmd('save-file-by-name')
     def saveFile(self, event):
         '''Prompt for the name of a file and put the body text of the selected node into it..'''
         c = self.c
