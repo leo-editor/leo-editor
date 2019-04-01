@@ -47,10 +47,6 @@ def loadFile(self, filename, updateTabs=True):
 def monkey_patch():
 
     global old_loadFile
-    
-    ### MainWindowShim now uses SplashShim directly
-        # Use a do-nothing SplashWidget
-        # pyzo.core.splash.SplashWidget = SplashShim
         
     # Use a Leonine pyzo.config.
     if 0:
@@ -59,9 +55,10 @@ def monkey_patch():
     pyzo.loadConfig()
         # To be replaced by LeoPyzoConfig.loadConfig.
     # Monkey-patch EditorTabs.loadFile.
-    from pyzo.core.editorTabs import EditorTabs
-    old_loadFile = EditorTabs.loadFile
-    g.funcToMethod(loadFile, EditorTabs)
+    if 0:
+        from pyzo.core.editorTabs import EditorTabs
+        old_loadFile = EditorTabs.loadFile
+        g.funcToMethod(loadFile, EditorTabs)
 #@+node:ekr.20190317082751.1: ** class ConfigShim
 new_config = True
     # Works when False.
@@ -425,106 +422,83 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         # pylint: disable=non-parent-init-called, super-init-not-called
             # Only init QMainWindow, **not** MainWindow.
             # MainWindow.__init__ calls all the code below.
-            # This was the source of the duplicate imports and duplicate calls to _populate.
+        #
         QtWidgets.QMainWindow.__init__(self, parent)
 
-        self._closeflag = 0  # Used during closing/restarting
-
+        self._closeflag = 0
+            # Used during closing/restarting
+        #
         # Init window title and application icon
         # Set title to something nice. On Ubuntu 12.10 this text is what
         # is being shown at the fancy title bar (since it's not properly
         # updated)
-        self.setMainTitle()
+        self.setWindowTitle('Leo Main Window')
         pyzo.core.main.loadAppIcons()
-        ### self.setWindowIcon(pyzo.icon)
         g.app.gui.attachLeoIcon(self)
-
-        # Restore window geometry before drawing for the first time,
-        # such that the window is in the right place
+        #
+        # Restore window geometry before drawing for the first time.
         self.resize(800, 600) # default size
         self.restoreGeometry()
-
-        # Show splash screen (we need to set our color too)
-        ### w = pyzo.core.splash.SplashWidget(self, distro='no distro')
+        #
+        # Show splash screen.
         w = SplashShim(parent)
-            # No need to Monkey-Patch pyzo.core.splash.SplashWidget
         self.setCentralWidget(w)
-        ###
-            # These do nothing, even when use_shell is True.
-        ### self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
-        #self.setStyleSheet("QMainWindow { background-color: red;}")
-            # Does nothing.
-
+        #
+        # These do nothing, even when use_shell is True.
+            # self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
+            # self.setStyleSheet("QMainWindow { background-color: red;}")
+        #
         # Show empty window and disable updates for a while
         if self.initial_draw:
             self.show()
             self.paintNow()
         self.setUpdatesEnabled(False)
-
-        # Determine timeout for showing splash screen
-        ### splash_timeout = time.time() + 0.001 ### 1.0
-
-        # Set locale of main widget, so that qt strings are translated
-        # in the right way
+        #
+        # Set locale of main widget, for translate.
         if locale:
             self.setLocale(locale)
-
+        #
         # Store myself
         pyzo.main = self
-
+        #
         # Init dockwidget settings
-        self.setTabPosition(QtCore.Qt.AllDockWidgetAreas,QtWidgets.QTabWidget.South)
+        self.setTabPosition(QtCore.Qt.AllDockWidgetAreas, QtWidgets.QTabWidget.South)
         self.setDockOptions(
                 QtWidgets.QMainWindow.AllowNestedDocks |
                 QtWidgets.QMainWindow.AllowTabbedDocks
                 #|  QtWidgets.QMainWindow.AnimatedDocks
             )
-
+        #
         # Set window atrributes
         self.setAttribute(QtCore.Qt.WA_AlwaysShowToolTips, True)
-
-        # Load icons and fonts
+        #
+        # Load pyzo icons and fonts.
         pyzo.core.main.loadIcons()
-            # New: fully qualified.
         pyzo.core.main.loadFonts()
-            # New: fully qualified.
-
+        #
         # Set qt style and test success
         self.setQtStyle(None) # None means init!
-        
-        ###
-            # Hold the splash screen if needed
-            # while time.time() < splash_timeout:
-                # QtWidgets.qApp.flush()
-                # QtWidgets.qApp.processEvents()
-                # time.sleep(0.05)
-
+        #    
         # Populate the window (imports more code)
         self._populate()
-
+        #
         # Revert to normal background, and enable updates
         self.setStyleSheet('')
             # Required.
         self.setUpdatesEnabled(True)
-
+        #
         # Restore window state, force updating, and restore again
         self.restoreState()
         if not self.initial_draw:
             self.show()
         self.paintNow()
         self.restoreState()
-
-        # Present user with wizard if he/she is new.
-        if False:  # pyzo.config.state.newUser:
-            from pyzo.util.pyzowizard import PyzoWizard
-            w = PyzoWizard(self)
-            w.show() # Use show() instead of exec_() so the user can interact with pyzo
-
+        #
         # Create new shell config if there is None
         if not pyzo.config.shellConfigs2:
             from pyzo.core.kernelbroker import KernelInfo
             pyzo.config.shellConfigs2.append( KernelInfo() )
-
+        #
         # EKR: Set background.
         if getattr(pyzo.config.settings, 'dark_theme', None):
             bg = getattr(pyzo.config.settings, 'dark_background', '#657b83')
@@ -533,12 +507,12 @@ class MainWindowShim(pyzo.core.main.MainWindow):
                 self.setStyleSheet("background: %s" % bg) 
             except Exception:
                 print('oops: MainWindow.__init__')
-
-        # Focus on editor
+        #
+        # Put the focus on editor
         e = pyzo.editors.getCurrentEditor()
         if e is not None:
             e.setFocus()
-
+        #
         # Handle any actions
         pyzo.core.commandline.handle_cmd_args()
     #@+node:ekr.20190317084647.3: *3* MainWindowShim._populate (2 shims)
@@ -744,6 +718,10 @@ class MenuShim (object):
     '''Adaptor class standing between Leo and Pyzo menus.'''
     #@+others
     #@-others
+#@+node:ekr.20190401085747.1: ** class OutlineEditorShim (object) (Experimental)
+class OutlineEditorShim(object):
+    '''A class to make a Leo outline a pyzo editor, residing in a pyzo editor tab.'''
+    ### Completely experimental
 #@+node:ekr.20190317082435.1: ** class SplashShim (QtWidgets.QWidget)
 class SplashShim(QtWidgets.QWidget):
     '''A do-nothing splash widget.'''
