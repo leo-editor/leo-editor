@@ -590,86 +590,14 @@
 </v>
 <v t="ekr.20190330072832.1"><vh>g.null_object_print</vh></v>
 </v>
-<v t="ekr.20190329040602.1"><vh>Ref</vh>
-<v t="ekr.20190331053237.1"><vh>OLD &lt;&lt; define settings &gt;&gt;</vh>
-<v t="ekr.20190331053528.1"><vh>&lt;&lt; define shortcuts2 &gt;&gt;</vh></v>
-<v t="ekr.20190331053634.1"><vh>&lt;&lt; define editorState2 &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20190319024244.1"><vh>checkin: DynamicWindow is just an object</vh></v>
-<v t="ekr.20190330051656.1"><vh>----- Found: shims</vh>
-<v t="ekr.20190330095643.1"><vh>Unimportant</vh>
-<v t="ekr.20061119120006"><vh>LeoFrame.Icon area convenience methods</vh></v>
-</v>
-<v t="ekr.20110605121601.18139"><vh>dw.construct &amp; helpers (9 shims)</vh>
-<v t="ekr.20140915062551.19519"><vh>dw.set_icon_bar_orientation</vh></v>
-</v>
-<v t="ekr.20190317084000.1"><vh>dw.createPyzoMainWindow (4 shims)</vh></v>
-<v t="ekr.20110605121601.18250"><vh>qtFrame.finishCreate &amp; helpers (2 shims)</vh>
-<v t="ekr.20110605121601.18251"><vh>qtFrame.createSplitterComponents</vh></v>
-</v>
-<v t="ekr.20110605121601.18421"><vh>qtree.createTreeItem (shim: tree item)</vh></v>
-<v t="ekr.20190317084647.3"><vh>MainWindowShim._populate (2 shims)</vh></v>
-</v>
-<v t="ekr.20190317083529.1"><vh>----- Changed &amp; new</vh>
-<v t="ekr.20090717112235.6007"><vh>app.computeSignon &amp; printSignon</vh></v>
-<v t="ekr.20120215072959.12539"><vh>c.config.getShortcut (changed)</vh></v>
-<v t="ekr.20031219074948.1"></v>
-<v t="ekr.20131118172620.16858"><vh>dw.finishCreateLogPane (changed)</vh></v>
-<v t="tbrown.20110621120042.22914"><vh>flc.get_top_splitter (changed)</vh></v>
-<v t="ekr.20070626132332"><vh>g.es (changed)</vh></v>
-<v t="ekr.20061119120006"></v>
-<v t="ekr.20130921043420.21175"><vh>qt_gui.setFilter (changed)</vh></v>
-<v t="ekr.20110605121601.18421"></v>
-</v>
-<v t="ekr.20190319022339.1"><vh>----- Startup logic, in call order</vh>
-<v t="ekr.20110605121601.18250"></v>
-<v t="ekr.20110605121601.18466"><vh>createFrame (TabbedFrameFactory)</vh></v>
-<v t="ekr.20110605121601.18139"></v>
-<v t="ekr.20190317084000.1"></v>
-<v t="ekr.20190317084647.2"><vh>MainWindowShim.__init__</vh></v>
-<v t="ekr.20190317082603.12"><vh>LeoMainWindow._populate (unchanged)</vh></v>
-</v>
-<v t="ekr.20190331044953.1"><vh>----- Fixed three hangnails</vh>
-<v t="ekr.20190317084647.2"></v>
-<v t="ekr.20190317084647.3"></v>
-<v t="ekr.20190317084000.1"></v>
-</v>
-</v>
 <v t="ekr.20190331164202.1"><vh>Done</vh>
-<v t="ekr.20190329035816.1"><vh>----- Two-step enabling</vh>
-<v t="ekr.20180312150559.1"><vh>LM.addOptionsToParser</vh></v>
-<v t="ekr.20180312151544.1"><vh>LM.doSimpleOptions</vh></v>
-</v>
-<v t="ekr.20190331032906.1"><vh>----- Removed duplicate top-level window</vh>
-<v t="ekr.20110605121601.18250"></v>
-<v t="ekr.20110605121601.18466"></v>
-<v t="ekr.20110605121601.18468"><vh>createMaster (TabbedFrameFactory) (1 shim)</vh></v>
-<v t="ekr.20190331040800.42"><vh>setTabForCommander (TabbedFrameFactory)</vh>
-<v t="ekr.20190331040800.43"><vh>Old:setTabForCommander (TabbedFrameFactory)</vh></v>
-<v t="ekr.20110605121601.18469"><vh>setTabForCommander (TabbedFrameFactory)</vh></v>
-</v>
-</v>
-<v t="ekr.20190331182937.1"><vh>---- Startup logic</vh>
-<v t="ekr.20190330112146.1"><vh> function: monkey_patch (pyzo_shims.py)</vh></v>
-<v t="ekr.20031218072017.3098"><vh>class g.Bunch (Python Cookbook)</vh></v>
-<v t="ekr.20190317084647.1"><vh>class MainWindowShim (pyzo.core.main.MainWindow)</vh>
-<v t="ekr.20190317084647.2"></v>
-<v t="ekr.20190317084647.3"></v>
-<v t="ekr.20190317084647.4"><vh>MainWindowShim.setStyleSheet (override)</vh></v>
-<v t="ekr.20190317084647.5"><vh>MainWindowShim.closeEvent (traces)</vh></v>
-<v t="ekr.20190331173436.1"><vh>MainWindowShim.setMainTitle</vh></v>
-</v>
-<v t="ekr.20190317084647.3"></v>
-<v t="ekr.20190317084647.2"></v>
-</v>
-</v>
-<v t="ekr.20190317084039.1"><vh>----- new main window</vh>
+<v t="ekr.20190317084039.1"><vh>----- New main window</vh>
 <v t="ekr.20110605121601.18141"><vh>dw.createMainWindow &amp; helpers</vh>
 <v t="ekr.20110605121601.18142"><vh>dw.top-level</vh>
 <v t="ekr.20110605121601.18143"></v>
 <v t="ekr.20110605121601.18144"><vh>dw.createCentralWidget</vh></v>
 <v t="ekr.20110605121601.18145"><vh>dw.createLogPane &amp; helpers</vh>
-<v t="ekr.20131118172620.16858"></v>
+<v t="ekr.20131118172620.16858"><vh>dw.finishCreateLogPane (changed)</vh></v>
 </v>
 <v t="ekr.20110605121601.18146"><vh>dw.createMainLayout</vh></v>
 <v t="ekr.20110605121601.18147"><vh>dw.createMenuBar</vh></v>
@@ -719,13 +647,85 @@
 <v t="ekr.20110605121601.18171"><vh>dw.tr</vh></v>
 </v>
 </v>
+<v t="ekr.20110605121601.18139"><vh>dw.construct &amp; helpers (9 shims)</vh>
+<v t="ekr.20140915062551.19519"><vh>dw.set_icon_bar_orientation</vh></v>
+</v>
+<v t="ekr.20190317084000.1"><vh>dw.createPyzoMainWindow (4 shims)</vh></v>
+</v>
+<v t="ekr.20190331032906.1"><vh>----- Removed duplicate top-level window</vh>
+<v t="ekr.20110605121601.18250"><vh>qtFrame.finishCreate &amp; helpers (2 shims)</vh>
+<v t="ekr.20110605121601.18251"><vh>qtFrame.createSplitterComponents</vh></v>
+</v>
+<v t="ekr.20110605121601.18466"><vh>createFrame (TabbedFrameFactory)</vh></v>
+<v t="ekr.20110605121601.18468"><vh>createMaster (TabbedFrameFactory) (1 shim)</vh></v>
+<v t="ekr.20190331040800.42"><vh>setTabForCommander (TabbedFrameFactory)</vh>
+<v t="ekr.20190331040800.43"><vh>Old:setTabForCommander (TabbedFrameFactory)</vh></v>
+<v t="ekr.20110605121601.18469"><vh>setTabForCommander (TabbedFrameFactory)</vh></v>
+</v>
+</v>
+<v t="ekr.20190331182937.1"><vh>----- Startup logic</vh>
+<v t="ekr.20190330112146.1"><vh> function: monkey_patch (pyzo_shims.py)</vh></v>
+<v t="ekr.20031218072017.3098"><vh>class g.Bunch (Python Cookbook)</vh></v>
+<v t="ekr.20190317084647.1"><vh>class MainWindowShim (pyzo.core.main.MainWindow)</vh>
+<v t="ekr.20190317084647.2"><vh>MainWindowShim.__init__</vh></v>
+<v t="ekr.20190317084647.3"><vh>MainWindowShim._populate (2 shims)</vh></v>
+<v t="ekr.20190317084647.4"><vh>MainWindowShim.setStyleSheet (override)</vh></v>
+<v t="ekr.20190317084647.5"><vh>MainWindowShim.closeEvent (traces)</vh></v>
+<v t="ekr.20190331173436.1"><vh>MainWindowShim.setMainTitle</vh></v>
+</v>
+<v t="ekr.20190317084647.3"></v>
+<v t="ekr.20190317084647.2"></v>
+</v>
+<v t="ekr.20190329035816.1"><vh>----- Two-step enabling</vh>
+<v t="ekr.20180312150559.1"><vh>LM.addOptionsToParser</vh></v>
+<v t="ekr.20180312151544.1"><vh>LM.doSimpleOptions</vh></v>
+</v>
+</v>
+<v t="ekr.20190329040602.1"><vh>Ref</vh>
+<v t="ekr.20190319024244.1"><vh>checkin: DynamicWindow is just an object</vh></v>
+<v t="ekr.20190330051656.1"><vh>----- Found: shims</vh>
+<v t="ekr.20190330095643.1"><vh>Unimportant</vh>
+<v t="ekr.20061119120006"><vh>LeoFrame.Icon area convenience methods</vh></v>
+</v>
 <v t="ekr.20110605121601.18139"></v>
 <v t="ekr.20190317084000.1"></v>
+<v t="ekr.20110605121601.18250"></v>
+<v t="ekr.20110605121601.18421"><vh>qtree.createTreeItem (shim: tree item)</vh></v>
+<v t="ekr.20190317084647.3"></v>
 </v>
-<v t="ekr.20190329082417.1"><vh>----- To do: Shutdown logic</vh>
+<v t="ekr.20190317083529.1"><vh>----- Changed &amp; new</vh>
+<v t="ekr.20090717112235.6007"><vh>app.computeSignon &amp; printSignon</vh></v>
+<v t="ekr.20120215072959.12539"><vh>c.config.getShortcut (changed)</vh></v>
+<v t="ekr.20031219074948.1"></v>
+<v t="ekr.20131118172620.16858"></v>
+<v t="tbrown.20110621120042.22914"><vh>flc.get_top_splitter (changed)</vh></v>
+<v t="ekr.20070626132332"><vh>g.es (changed)</vh></v>
+<v t="ekr.20061119120006"></v>
+<v t="ekr.20130921043420.21175"><vh>qt_gui.setFilter (changed)</vh></v>
+<v t="ekr.20110605121601.18421"></v>
+</v>
+<v t="ekr.20190319022339.1"><vh>----- Startup logic, in call order</vh>
+<v t="ekr.20110605121601.18250"></v>
+<v t="ekr.20110605121601.18466"></v>
+<v t="ekr.20110605121601.18139"></v>
+<v t="ekr.20190317084000.1"></v>
+<v t="ekr.20190317084647.2"></v>
+<v t="ekr.20190317082603.12"><vh>LeoMainWindow._populate (unchanged)</vh></v>
+</v>
+<v t="ekr.20190331044953.1"><vh>----- Fixed three hangnails</vh>
+<v t="ekr.20190317084647.2"></v>
+<v t="ekr.20190317084647.3"></v>
+<v t="ekr.20190317084000.1"></v>
+</v>
+</v>
+<v t="ekr.20190401072835.1"><vh>To do</vh>
+<v t="ekr.20190329082417.1"><vh>To do: ----- Shutdown logic</vh>
 <v t="ekr.20190317084647.5"></v>
 </v>
-<v t="ekr.20190330115531.1"><vh>----- rewrite ConfigShim (later)</vh>
+<v t="ekr.20190331165128.1"><vh>To do: ----- Improve tracing in g.Bunch</vh>
+<v t="ekr.20031218072017.3098"></v>
+</v>
+<v t="ekr.20190330115531.1"><vh>To do: ----- rewrite ConfigShim</vh>
 <v t="ekr.20190317082751.1"><vh>class ConfigShim</vh>
 <v t="ekr.20190331082353.1"><vh>&lt;&lt; define bunch settings &gt;&gt;</vh>
 <v t="ekr.20190331082549.1"><vh>&lt;&lt; define bunch shortcuts2 &gt;&gt;</vh></v>
@@ -745,7 +745,7 @@
 <v t="ekr.20190330112146.1"></v>
 </v>
 </v>
-<v t="ekr.20190331165128.1"><vh>----- improve tracing in g.Bunch</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943">@nosearch
@@ -6920,19 +6920,29 @@ https://github.com/leo-editor/leo-editor/issues/1032
 @nosearch
 
 https://github.com/leo-editor/leo-editor/issues/1096
+https://github.com/pyzo/pyzo/issues/599
 
-First:
-- Improve tracing in g.Bunch.
+devel: save-file-to == file-save-to
+
+Put *entire* Leo outline in main window:
+- LeoTool class. (tool helper)
+- Minimal changes to Leo window.
+- Use g.app.window_list to init.
+- Search for g.pyzo.
+- Re-enable disabled plugin
+
+Next:
+- Disable pyzo painters during startup?
+- class OutlineShim (LeoTool).
 - Finish MenuShim.
 - Create LoggerShim (just send to the console?)
-
-*** Put Leo outline in main window.
 
 Later:
 - Modify pyzo shutdown logic (after putting outlines in MainWindow).
 - Make pyzo tool panes for outline, body panes, log pane &amp; sub-panes, and VR pane.
   g.app.forgetOpenFile(c.fileName(), force=True)
 - Finish ConfigShim:
+  - Improve tracing in g.Bunch.
   - Use the pyzo config code, **unless** the settings are Leonine! 
   - Does Leo need detailed knowledge of pyzo settings?
   
@@ -7148,6 +7158,10 @@ class ConfigShim(config_base):
     Important: do *all* inits here.  Do *not* call MainWindow.__init__.
     
     This allows us complete control over all aspects of the startup process.
+
+    This method is based on pyzo code
+    Copyright (C) 2013-2018 by Almar Klein.
+    
     '''
     #
     # pylint: disable=non-parent-init-called, super-init-not-called
@@ -7271,6 +7285,10 @@ class ConfigShim(config_base):
     pyzo.core.commandline.handle_cmd_args()
 </t>
 <t tx="ekr.20190317084647.3">def _populate(self):
+    '''
+    This method is based on pyzo code
+    Copyright (C) 2013-2018 by Almar Klein.
+    '''
     
     trace = False and g.pyzo_trace_imports
 
@@ -8138,211 +8156,6 @@ So everything happened twice.
         # # if isinstance(val, dict): val = Dict(val) -&gt; no, makes a copy!
         # self[key] = val
 </t>
-<t tx="ekr.20190331053237.1"># ^(\s*)(\w+)\:
-
-advanced = {
-    'autoCompDelay':200,
-    'fileExtensionsToLoadFromDir':'py,pyw,pyx,txt,bat',
-    'find_autoHide_timeout':10,
-    'homeAndEndWorkOnDisplayedLine':0,
-    'shellMaxLines':10000,
-    'titleText':'{fileName} ({fullPath}) - Interactive Editor for Python',
-}
-settings = {
-    'allowFloatingShell':0,
-    'autoCallTip':1,
-    'autoClose_Brackets':1,
-    'autoClose_Quotes':1,
-    'autoComplete':1,
-    'autoComplete_acceptKeys':'Tab',
-    'autoComplete_caseSensitive':0,
-    'autoComplete_fillups':'\n',
-    'autoComplete_keywords':1,
-    'autoIndent':1,
-    'changeDirOnFileExec':0,
-    'defaultIndentUsingSpaces':1,
-    'defaultIndentWidth':4,
-    'defaultLineEndings':'CRLF',
-    'defaultStyle':'python',
-    'justificationWidth':70,
-    'language':'English (US)',
-    'removeTrailingWhitespaceWhenSaving':0,
-}
-shellConfigs2 = [{
-    'argv':'',
-    'environ':'',
-    'exe':'c:\\anaconda3\\python.exe',
-    'gui':'auto',
-    'ipython':'yes',
-    'name':'Python',
-    'projectPath':'',
-    'pythonPath':'',
-    'scriptFile':'',
-    'startDir':'',
-    'startupScript':'',
-}]
-shortcuts2 = {
-    &lt;&lt; define shortcuts2 &gt;&gt;
-}
-state = {
-    'editorState2':[
-        &lt;&lt; define editorState2 &gt;&gt;
-    ],
-    'find_autoHide':1,
-    'find_matchCase':0,
-    'find_regExp':0,
-    'find_show':0,
-    'find_wholeWord':1,
-    'loadedTools':['pyzofilebrowser', 'pyzologger', 'pyzosourcestructure'],
-    'newUser':1,
-    'windowGeometry':'AdnQywACAAAAAAGjAAAA2AAABv0AAANWAAABqwAAAPcAAAb1AAADTgAAAAAAAAAAB4A=\n',
-    'windowState':[
-        'AAAA/wAAAAD9AAAAAgAAAAAAAACeAAACRPwCAAAAAfwAAAAUAAACRAAAAYgA/////AIAAAAC+wAA\n',
-        'AB4AcAB5AHoAbwBmAGkAbABlAGIAcgBvAHcAcwBlAHIBAAAAFAAAAWEAAAEIAP////sAAAAmAHAA\n',
-        'eQB6AG8AcwBvAHUAcgBjAGUAcwB0AHIAdQBjAHQAdQByAGUBAAABewAAAN0AAAB6AP///wAAAAEA\n',
-        'AAGEAAACRPwCAAAABvsAAAAMAHMAaABlAGwAbABzAQAAABQAAAD/AAAAcwD////7AAAAFABwAHkA\n',
-        'egBvAGwAbwBnAGcAZQByAQAAARkAAAE/AAAAWQD////7AAAAGgBwAHkAegBvAHcAbwByAGsAcwBw\n',
-        'AGEAYwBlAAAAAT4AAAEaAAAAAAAAAAD7AAAAJgBwAHkAegBvAGkAbgB0AGUAcgBhAGMAdABpAHYA\n',
-        'ZQBoAGUAbABwAAAAAnkAAAB6AAAAAAAAAAD7AAAAIgBwAHkAegBvAGgAaQBzAHQAbwByAHkAdgBp\n',
-        'AGUAdwBlAHIAAAACGgAAAVsAAAAAAAAAAPsAAAAcAHAAeQB6AG8AdwBlAGIAYgByAG8AdwBzAGUA\n',
-        'cgAAAAKwAAAAxQAAAAAAAAAAAAADHQAAAkQAAAAEAAAABAAAAAgAAAAI/AAAAAA=\n'
-    ]
-}
-tools = {
-    'pyzofilebrowser':{},
-    'pyzofilebrowser2':{
-        'expandedDirs':['c:\\apps\\pyzo\\source\\pyzo'],
-        'nameFilter':'!*.pyc',
-        'path':'c:\\apps\\pyzo\\source\\pyzo',
-        'searchMatchCase':0,
-        'searchRegExp':0,
-        'searchSubDirs':1,
-        'starredDirs':[{
-            'addToPythonpath':0,
-            'name':'Pyzo sources',
-            'path':'c:\\apps\\pyzo\\source'
-        }]
-    },
-    'pyzohistoryviewer':{},
-    'pyzointeractivehelp':{
-        'fontSize':14,
-        'noNewlines':1,
-        'smartNewlines':1
-    },
-    'pyzologger':{},
-    'pyzosourcestructure':{
-        'level':1,
-        'showTypes':['class', 'def', 'cell', 'todo'],
-    },
-    'pyzowebbrowser':{
-        'bookMarks':[
-            'docs.python.org',
-            'scipy.org',
-            'doc.qt.nokia.com/4.5/',
-            'pyzo.org',
-        ],
-        'zoomFactor':1.0,
-    },
-    'pyzoworkspace':{
-        'hideTypes':[],
-        'typeTranslation':{
-            'builtin_function_or_method':'function',
-            'method':'function'
-        }
-    }
-}
-    
-view = {
-    'autoComplete_popupSize':[300, 100],
-    'codeFolding':0,
-    'doBraceMatch':1,
-    'edgeColumn':80,
-    'fontname':'DejaVu Sans Mono',
-    'highlightCurrentLine':1,
-    'highlightMatchingBracket':1,
-    'qtstyle':'fusion',
-    'showIndentationGuides':1,
-    'showLineEndings':0,
-    'showStatusbar':0,
-    'showWhitespace':0,
-    'showWrapSymbols':0,
-    'tabWidth':4,
-    'wrap':1,
-    'zoom':2
-}
-</t>
-<t tx="ekr.20190331053528.1">'edit__comment':'Ctrl+R,',
-'edit__copy':'Ctrl+C,Ctrl+Insert',
-'edit__cut':'Ctrl+X,Shift+Delete',
-'edit__dedent':'Shift+Tab,',
-'edit__delete_line':'Ctrl+D,',
-'edit__duplicate_line':'Ctrl+Shift+D,',
-'edit__find_next':'Ctrl+G,F3',
-'edit__find_or_replace':'Ctrl+F,',
-'edit__find_previous':'Ctrl+Shift+G,Shift+F3',
-'edit__find_selection':'Ctrl+F3,',
-'edit__find_selection_backward':'Ctrl+Shift+F3,',
-'edit__indent':'Tab,',
-'edit__justify_commentdocstring':'Ctrl+J,',
-'edit__paste':'Ctrl+V,Shift+Insert',
-'edit__paste_and_select':'Ctrl+Shift+V',
-'edit__redo':'Ctrl+Y,',
-'edit__select_all':'Ctrl+A,',
-'edit__toggle_breakpoint':'Ctrl+B,',
-'edit__uncomment':'Ctrl+T,',
-'edit__undo':'Ctrl+Z,',
-'file__close':'Ctrl+W,',
-'file__new':'Ctrl+N,',
-'file__open':'Ctrl+O,',
-'file__save':'Ctrl+S,',
-'run__execute_cell':'Ctrl+Return,Ctrl+Enter',
-'run__execute_cell_and_advance':'Ctrl+Shift+Return,Ctrl+Shift+Enter',
-'run__execute_file':'Ctrl+E,F5',
-'run__execute_main_file':'Ctrl+M,F6',
-'run__execute_selection':'Alt+Return,F9',
-'run__execute_selection_and_advance':'Shift+F9,Shift+Alt+Return',
-'run__run_file_as_script':'Ctrl+Shift+E,Ctrl+F5',
-'run__run_main_file_as_script':'Ctrl+Shift+M,Ctrl+F6',
-'shell__clear_screen':'Ctrl+L,',
-'shell__close':'Alt+K,',
-'shell__create_shell_1_':'Ctrl+1,',
-'shell__create_shell_2_':'Ctrl+2,',
-'shell__create_shell_3_':'Ctrl+3,',
-'shell__create_shell_4_':'Ctrl+4,',
-'shell__create_shell_5_':'Ctrl+5,',
-'shell__create_shell_6_':'Ctrl+6,',
-'shell__create_shell_7_':'Ctrl+7,',
-'shell__create_shell_8_':'Ctrl+8,',
-'shell__interrupt':'Ctrl+I,Meta+C',
-'shell__postmortem_debug_from_last_traceback':'Ctrl+P,',
-'shell__restart':'Ctrl+K,',
-'shell__terminate':'Ctrl+Shift+K,',
-'view__select_editor':'Ctrl+9,F2',
-'view__select_previous_file':'Ctrl+Tab,',
-'view__select_shell':'Ctrl+0,F1',
-'view__zooming__zoom_in':'Ctrl+=,Ctrl++',
-'view__zooming__zoom_out':'Ctrl+-,',
-'view__zooming__zoom_reset':'Ctrl+\\,'
-</t>
-<t tx="ekr.20190331053634.1">[
-    'C:\\apps\\pyzo\\source\\pyzo\\codeeditor\\highlighter.py',
-    3279,
-    96
-],
-[
-    'C:\\apps\\pyzo\\source\\pyzo\\core\\editorTabs.py',
-    22913,
-    693
-],
-[
-    'C:\\apps\\pyzo\\source\\pyzo\\codeeditor\\highlighter.py',
-    'hist'
-],
-[
-    'C:\\apps\\pyzo\\source\\pyzo\\core\\editorTabs.py',
-    'hist'
-]
-</t>
 <t tx="ekr.20190331082353.1"># '(\w+)': With: \1 = 
 
 advanced = g.Bunch(
@@ -8585,6 +8398,7 @@ view__zooming__zoom_reset = 'Ctrl+\\,'
         # self.setWindowTitle(title)
 </t>
 <t tx="ekr.20190331182937.1"></t>
+<t tx="ekr.20190401072835.1"></t>
 <t tx="tbrown.20110621120042.22914">def get_top_splitter(self):
     '''Return the top splitter of c.frame.top.'''
     # Careful: we could be unit testing.
