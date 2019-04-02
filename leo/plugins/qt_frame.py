@@ -924,41 +924,17 @@ class DynamicWindow(dw_base):
         Copied/adapted from qt_main.py.
         Called instead of uic.loadUi(ui_description_file, self)
         '''
-        # dw = self
-        ### g.trace('\n =====', g.callers())
-        self.leo_ui = self
-        self.richTextEdit = g.TracingNullObject(tag='dw.richTextEdit')
-        self.stackedWidget = g.TracingNullObject(tag='dw.stackedWidget')
-        self.treeWidget = g.TracingNullObject(tag='dw.treeWidget')
-        self.tabWidget = g.TracingNullObject(tag='dw.tabWidet')
-            ### 
-        ### self.setMainWindowOptions()
+        dw = self
+        dw.leo_ui = self
+        dw.richTextEdit = g.TracingNullObject(tag='dw.richTextEdit')
+        dw.stackedWidget = g.TracingNullObject(tag='dw.stackedWidget')
+        dw.treeWidget = g.TracingNullObject(tag='dw.treeWidget')
+        dw.tabWidget = g.TracingNullObject(tag='dw.tabWidet')
         #
         # Import *all* of the pyzo packages.
         import leo.core.pyzo_shims as pyzo_shims
         pyzo_shims.monkey_patch()
         pyzo_shims.MainWindowShim()
-        
-        ###
-            # self.createCentralWidget()
-            # main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-                # # Creates .verticalLayout
-            # if self.bigTree:
-                # self.createBodyPane(secondary_splitter)
-                # self.createLogPane(secondary_splitter)
-                # treeFrame = self.createOutlinePane(main_splitter)
-                # main_splitter.addWidget(treeFrame)
-                # main_splitter.addWidget(secondary_splitter)
-            # else:
-                # self.createOutlinePane(secondary_splitter)
-                # self.createLogPane(secondary_splitter)
-                # self.createBodyPane(main_splitter)
-            # self.createMiniBuffer(self.centralwidget)
-            # self.createMenuBar()
-            # self.createStatusBar(dw)
-        # Signals
-        ### QtCore.QMetaObject.connectSlotsByName(dw)
-        ### return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18179: *3* dw.Event handlers
     #@+node:ekr.20110605121601.18140: *4* dw.closeEvent
     def closeEvent(self, event):

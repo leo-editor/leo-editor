@@ -62,7 +62,7 @@ def monkey_patch():
     pyzo.loadConfig()
         # To be replaced by LeoPyzoConfig.loadConfig.
     #
-    # Probably will never be needed.
+    # Probably will never be needed: it's fine to load .leo files for now.
     if 0:
         # Ignore .leo files.
         from pyzo.core.editorTabs import EditorTabs
@@ -429,11 +429,10 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         '''
         #
         # pylint: disable=non-parent-init-called, super-init-not-called
-            # Only init QMainWindow, **not** MainWindow.
-            # MainWindow.__init__ calls all the code below.
-        #
         QtWidgets.QMainWindow.__init__(self, parent)
-
+            #
+            # Do **not** call MainWindow.__init__: it calls _populate!
+            #
         self._closeflag = 0
             # Used during closing/restarting
         #
@@ -443,7 +442,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         # updated)
         self.setWindowTitle('Leo Main Window')
         pyzo.core.main.loadAppIcons()
-        g.app.gui.attachLeoIcon(self)
+        ### g.app.gui.attachLeoIcon(self)
         #
         # Restore window geometry before drawing for the first time.
         self.resize(800, 600) # default size
@@ -546,10 +545,6 @@ class MainWindowShim(pyzo.core.main.MainWindow):
 
         # Instantiate tool manager
         pyzo.toolManager = ToolManager()
-
-        # Check to install conda now ...
-        #from pyzo.util.bootstrapconda import check_for_conda_env
-        #check_for_conda_env()
 
         # Instantiate and start source-code parser
         if pyzo.parser is None:
