@@ -108,18 +108,11 @@ def register_leo(pyexe, launchLeo, icon):
         g.es_print("  LeoDoc.ico not in expected location, can't continue.")  
 #@+node:mhw-debug-1081.20190314005003.1: ** relaunch_elevated
 def relaunch_elevated(script):
-    g.es_print('--- Relanching and asking for elevated permissions')
-    result = subprocess.run(['python', elevate, script], stdout=subprocess.PIPE) # py 3.5+
-    g.es_print(result.stdout.decode('utf-8')) # py 3.5+
-    
-    #g.es_print('&python {} {}'.format(elevate, script))
-    #g.execute_shell_commands(['&python {} {}'.format(elevate, script)])
-    
-    #g.es_print('&python {} {}'.format(elevate, r'D:\code-maphew\leo-editor\leo\scripts\win\register-leo.leox' ))
-    #g.execute_shell_commands(['&python {} {}'.format(elevate, r'D:\code-maphew\leo-editor\leo\scripts\win\register-leo.leox' )])
-    
-    
-    #result = subprocess.call(['python', elevate, script]) # py 2.7
+    g.es_print('--- Relaunching and asking for elevated permissions')
+    g.execute_shell_commands(['&{} {} {}'.format(
+        sys.executable,
+        elevate,
+        script)])
     g.es_print('---')
     
 #@+node:mhw-debug-1081.20190314004045.1: ** get_my_path

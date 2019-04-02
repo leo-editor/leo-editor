@@ -1,0 +1,10 @@
+[console_scripts]
+leo-m = leo.core.runLeo:run
+leo-messages = leo.core.runLeo:run
+
+[distutils.commands]
+clean = setupext_janitor.janitor:CleanCommand
+
+[gui_scripts]
+leo = leo.core.runLeo:run
+
