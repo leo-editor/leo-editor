@@ -396,7 +396,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
     #
     # Bugs...
     # 1. No menus are created if use_shell is False.
-    # 2. The shell never finishes warming up if use_shell is False.
+    # 2. The shell never finishes warming up if use_menu is False.
 
     #@-<< MainWindowShim switches >>
 
@@ -437,8 +437,9 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         self.restoreGeometry()
         #
         # Show splash screen.
-        w = SplashShim(parent)
-        self.setCentralWidget(w)
+        if 0: # This just slows down the initial draw.
+            w = SplashShim(parent)
+            self.setCentralWidget(w)
         #
         # These do nothing, even when use_shell is True.
             # self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
