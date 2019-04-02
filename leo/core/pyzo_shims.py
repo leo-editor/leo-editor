@@ -399,7 +399,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
     use_menu = False
     #
     # The shell never warms up if there are no menus.
-    # So for now just force use_menu to -True.
+    # So for now just force use_menu to True.
     if use_shell and not use_menu:
         print('\nMainWindowShim: use_shell sets use_menu = True\n')
         use_menu = True
