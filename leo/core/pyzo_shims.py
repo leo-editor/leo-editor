@@ -384,12 +384,18 @@ class ConfigShim(config_base):
 #@+node:ekr.20190317084647.1: ** class MainWindowShim (pyzo.core.main.MainWindow)
 class MainWindowShim(pyzo.core.main.MainWindow):
     
+    #@+<< MainWindowShim switches >>
+    #@+node:ekr.20190402104228.1: *3* << MainWindowShim switches >>
     initial_draw = False
         # True: do an initial draw.
         # Works either way.
-    use_shell = False
+    use_shell = True
         ### True: disables the Leo icon and adds the Pyzo menus!
         # However, there is no great flash when use_shell is True.
+        
+    use_menu = True
+        # True: create pyzo menus.
+    #@-<< MainWindowShim switches >>
 
     #@+others
     #@+node:ekr.20190317084647.2: *3* MainWindowShim.__init__
@@ -500,7 +506,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         #
         # Handle any actions
         pyzo.core.commandline.handle_cmd_args()
-    #@+node:ekr.20190317084647.3: *3* MainWindowShim._populate (2 shims)
+    #@+node:ekr.20190317084647.3: *3* MainWindowShim._populate (5 shims)
     def _populate(self):
         '''
         This method is based on pyzo code
@@ -548,6 +554,8 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             # Disabling the shell works.
             pyzo.shells = ShellStackWidget(self)
             dock.setWidget(pyzo.shells)
+            pyzo.shells.menu = g.TracingNullObject(tag='pyzo.shells.menu')
+                # To suppress menu events.
         else:
             pyzo.shells = g.TracingNullObject(tag='pyzo.shells')
 
@@ -566,7 +574,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             pyzo.status = None
             self.setStatusBar(None)
 
-        # Create menu
+        # Create shells.
         if self.use_shell:
             from pyzo.core import menu
             pyzo.keyMapper = menu.KeyMapper()
@@ -575,13 +583,20 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             menu.buildMenus(self.menuBar())
         else:
             # Shim:
-            from pyzo.core import menu
+            ###from pyzo.core import menu
+            pyzo.menu = g.TracingNullObject(tag='pyzo.menu')
+            pyzo.shells = g.TracingNullObject(tag='pyzo.shells')
             pyzo.keyMapper = g.TracingNullObject(tag='pyzo.keyMapper')
-
+        #
         # Add the context menu to the editor
-        pyzo.editors.addContextMenu()
-        pyzo.shells.addContextMenu()
-
+        if self.use_menu:
+            pyzo.editors.addContextMenu()
+            pyzo.shells.addContextMenu()
+        else:
+            pyzo.editors.addContextMenu = g.TracingNullObject(tag='pyzo.editors.addContextMenu()')
+            pyzo.shells.addContextMenu = g.TracingNullObject(tag='pyzo.shells.addContextMenu()')
+            
+        #
         # Load tools
         if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
             pyzo.toolManager.loadTool('pyzosourcestructure')
