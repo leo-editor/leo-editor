@@ -399,8 +399,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         # There is no great flash when use_shell is True.
     use_menu = False
     #
-    # Bug: At present, we *must* create a menu for the shell.
-    #      Otherwise, the shell never warms up.
+    # Bug: The shell never warms up if there are no menus.
 
 
     #@-<< MainWindowShim switches >>
@@ -586,7 +585,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             self.setStatusBar(None)
         #
         # Create menu for shell if the shell exists.
-        if self.use_shell or self.use_menu:
+        if self.use_menu: ### or self.use_shell
             from pyzo.core import menu
             pyzo.keyMapper = menu.KeyMapper()
             assert not isinstance(pyzo.keyMapper, (g.TracingNullObject, g.NullObject))
