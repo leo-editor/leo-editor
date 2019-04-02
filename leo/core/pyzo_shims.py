@@ -393,15 +393,16 @@ class MainWindowShim(pyzo.core.main.MainWindow):
     #@+<< MainWindowShim switches >>
     #@+node:ekr.20190402104228.1: *3* << MainWindowShim switches >>
     initial_draw = False
-        # True: do an initial draw.
-        # Works either way.
-    use_shell = True
+        # True: do an initial draw. Works either way.
+    use_shell = False
         # There is no great flash when use_shell is True.
     use_menu = False
     #
-    # Bug: The shell never warms up if there are no menus.
-
-
+    # The shell never warms up if there are no menus.
+    # So for now just force use_menu to -True.
+    if use_shell and not use_menu:
+        print('\nMainWindowShim: use_shell sets use_menu = True\n')
+        use_menu = True
     #@-<< MainWindowShim switches >>
 
     #@+others
@@ -533,7 +534,6 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         from pyzo.tools import ToolManager
         if trace:
             print('\n===== MainWindowShim._populate: end of delayed imports\n')
-        if 1:
             print('initial_draw:', self.initial_draw)
             print('    use_menu:', self.use_menu)
             print('   use_shell:', self.use_shell)
@@ -584,8 +584,8 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             pyzo.status = None
             self.setStatusBar(None)
         #
-        # Create menu for shell if the shell exists.
-        if self.use_menu: ### or self.use_shell
+        # Create the menu.
+        if self.use_menu:
             from pyzo.core import menu
             pyzo.keyMapper = menu.KeyMapper()
             assert not isinstance(pyzo.keyMapper, (g.TracingNullObject, g.NullObject))
@@ -603,6 +603,9 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             def null_menu_callback(*args, **kwargs):
                 pass # g.trace(args, kwargs)
                 
+            # Apparently, doing nothing prevents the Shell from warming up.
+            # For now, use_shell sets use_menu.
+            assert not self.use_shell
             g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellStateChange')
             g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellDebugStateChange')
         #
