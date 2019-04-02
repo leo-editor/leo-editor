@@ -587,7 +587,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             self.setStatusBar(None)
         #
         # Create shells.
-        if self.use_shell:
+        if self.use_shell or self.use_menu:
             from pyzo.core import menu
             pyzo.keyMapper = menu.KeyMapper()
             assert not isinstance(pyzo.keyMapper, (g.TracingNullObject, g.NullObject))
