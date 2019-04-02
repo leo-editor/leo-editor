@@ -411,9 +411,9 @@ class MainWindowShim(pyzo.core.main.MainWindow):
     initial_draw = False
         # True: do an initial draw.
         # Works either way.
-    use_shell = True
-        # Works either way.
-        # In particular, drawing is reasonable when use_shell is True.
+    use_shell = False
+        ### True: disables the Leo icon and adds the Pyzo menus!
+        # However, there is no great flash when use_shell is True.
 
     #@+others
     #@+node:ekr.20190317084647.2: *3* MainWindowShim.__init__
@@ -442,7 +442,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         # updated)
         self.setWindowTitle('Leo Main Window')
         pyzo.core.main.loadAppIcons()
-        ### g.app.gui.attachLeoIcon(self)
+        g.app.gui.attachLeoIcon(self)
         #
         # Restore window geometry before drawing for the first time.
         self.resize(800, 600) # default size
@@ -567,7 +567,8 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 
         # Create shell stack
-        if self.use_shell: # Disabling the shell works.
+        if self.use_shell:
+            # Disabling the shell works.
             pyzo.shells = ShellStackWidget(self)
             dock.setWidget(pyzo.shells)
         else:
