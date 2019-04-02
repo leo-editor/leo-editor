@@ -419,6 +419,8 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             # Do **not** call MainWindow.__init__: it calls _populate!
             #
         self.monkey_patch_leo()
+        pyzo.loadConfig()
+            # To be replaced by LeoPyzoConfig.loadConfig.
         self._closeflag = 0
             # Used during closing/restarting
         #
@@ -690,20 +692,15 @@ class MainWindowShim(pyzo.core.main.MainWindow):
     def monkey_patch_leo(self):
 
         global old_loadFile
-        
-        g.trace('=====')
-            
+        #
         # Use a Leonine pyzo.config.
         if 0:
             # Works, but uses light theme.
             pyzo.config = ConfigShim()
-
-        pyzo.loadConfig()
-            # To be replaced by LeoPyzoConfig.loadConfig.
         #
-        # Probably will never be needed: it's fine to load .leo files for now.
+        # Ignore .leo files.
         if 0:
-            # Ignore .leo files.
+            # Probably will never be needed: it's fine to load .leo files for now.
             from pyzo.core.editorTabs import EditorTabs
             self.old_loadFile = EditorTabs.loadFile
             g.funcToMethod(loadFile, EditorTabs)
