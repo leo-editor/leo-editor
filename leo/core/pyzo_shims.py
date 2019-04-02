@@ -389,12 +389,15 @@ class MainWindowShim(pyzo.core.main.MainWindow):
     initial_draw = False
         # True: do an initial draw.
         # Works either way.
-    use_shell = True
-        ### True: disables the Leo icon and adds the Pyzo menus!
-        # However, there is no great flash when use_shell is True.
-        
+    use_shell = False
+        # There is no great flash when use_shell is True.
     use_menu = True
-        # True: create pyzo menus.
+        
+    #
+    # Bugs...
+    # 1. No menus are created if use_shell is False.
+    # 2. The shell never finishes warming up if use_shell is False.
+
     #@-<< MainWindowShim switches >>
 
     #@+others
@@ -525,20 +528,23 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         from pyzo.tools import ToolManager
         if trace:
             print('\n===== MainWindowShim._populate: end of delayed imports\n')
-
+        if 1:
+            print('initial_draw:', self.initial_draw)
+            print('    use_menu:', self.use_menu)
+            print('   use_shell:', self.use_shell)
+        #
         # Instantiate tool manager
         pyzo.toolManager = ToolManager()
-
+        #
         # Instantiate and start source-code parser
         if pyzo.parser is None:
             pyzo.parser = codeparser.Parser()
             pyzo.parser.start()
-
+        #
         # Create editor stack and make the central widget
         pyzo.editors = EditorTabs(self)
         self.setCentralWidget(pyzo.editors)
-            # EKR: QMainWindow.setCentralWidget
-
+        #
         # Create floater for shell
         self._shellDock = dock = QtWidgets.QDockWidget(self)
         if pyzo.config.settings.allowFloatingShell:
@@ -548,7 +554,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         dock.setObjectName('shells')
         dock.setWindowTitle('Shells')
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-
+        #
         # Create shell stack
         if self.use_shell:
             # Disabling the shell works.
@@ -558,22 +564,21 @@ class MainWindowShim(pyzo.core.main.MainWindow):
                 # To suppress menu events.
         else:
             pyzo.shells = g.TracingNullObject(tag='pyzo.shells')
-
+        #
         # Initialize command history
         pyzo.command_history = CommandHistory('command_history.py')
-
+        #
         # Create the default shell when returning to the event queue
         if self.use_shell:
             pyzo.core.main.callLater(pyzo.shells.addShell)
-                # New: fully qualified.
-
+        #
         # Create statusbar
         if pyzo.config.view.showStatusbar:
             pyzo.status = self.statusBar()
         else:
             pyzo.status = None
             self.setStatusBar(None)
-
+        #
         # Create shells.
         if self.use_shell:
             from pyzo.core import menu
@@ -583,8 +588,6 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             menu.buildMenus(self.menuBar())
         else:
             # Shim:
-            ###from pyzo.core import menu
-            pyzo.menu = g.TracingNullObject(tag='pyzo.menu')
             pyzo.shells = g.TracingNullObject(tag='pyzo.shells')
             pyzo.keyMapper = g.TracingNullObject(tag='pyzo.keyMapper')
         #
@@ -593,9 +596,15 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             pyzo.editors.addContextMenu()
             pyzo.shells.addContextMenu()
         else:
-            pyzo.editors.addContextMenu = g.TracingNullObject(tag='pyzo.editors.addContextMenu()')
-            pyzo.shells.addContextMenu = g.TracingNullObject(tag='pyzo.shells.addContextMenu()')
+            # Doesn't crash, but shell never warms up.
+
+            from pyzo.core.shellStack import ShellStackWidget
             
+            def null_menu_callback(*args, **kwargs):
+                pass # g.trace(args, kwargs)
+                
+            g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellStateChange')
+            g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellDebugStateChange')
         #
         # Load tools
         if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
