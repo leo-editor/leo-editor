@@ -38,24 +38,33 @@ def loadFile(self, filename, updateTabs=True):
     '''
     A monkey-patched replacement for pyzo.core.editorTabs.EditorTabs.loadFile.
     '''
-    print('----- patched loadFile:', filename)
+    print('----- patched loadFile: filename:', filename)
     if filename.endswith('leo'):
-        g.trace('sys.argv:', sys.argv)
+        print('----- ignoring .leo file')
         return None
-    return old_loadFile(self, filename, updateTabs)
+    try:
+        return old_loadFile(self, filename, updateTabs)
+    except Exception:
+        g.es_exception()
+        return None
 #@+node:ekr.20190330112146.1: **  function: monkey_patch (pyzo_shims.py)
 def monkey_patch():
 
     global old_loadFile
+    
+    g.trace('=====')
         
     # Use a Leonine pyzo.config.
     if 0:
         # Works, but uses light theme.
         pyzo.config = ConfigShim()
+
     pyzo.loadConfig()
         # To be replaced by LeoPyzoConfig.loadConfig.
-    # Monkey-patch EditorTabs.loadFile.
+    #
+    # Probably will never be needed.
     if 0:
+        # Ignore .leo files.
         from pyzo.core.editorTabs import EditorTabs
         old_loadFile = EditorTabs.loadFile
         g.funcToMethod(loadFile, EditorTabs)
@@ -620,7 +629,6 @@ class MainWindowShim(pyzo.core.main.MainWindow):
     #@+node:ekr.20190317084647.5: *3* MainWindowShim.closeEvent (traces)
     def closeEvent(self, event):
         """ Override close event handler. """
-        import sys
         import pyzo.core.commandline as commandline
             # New import.
         
