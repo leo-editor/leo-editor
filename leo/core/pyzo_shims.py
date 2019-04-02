@@ -395,14 +395,12 @@ class MainWindowShim(pyzo.core.main.MainWindow):
     initial_draw = False
         # True: do an initial draw.
         # Works either way.
-    use_shell = False
+    use_shell = True
         # There is no great flash when use_shell is True.
     use_menu = True
         
     #
-    # Bugs...
-    # 1. No menus are created if use_shell is False.
-    # 2. The shell never finishes warming up if use_menu is False.
+    # Bug: The shell never finishes warming up if use_menu is False.
 
     #@-<< MainWindowShim switches >>
 
@@ -593,18 +591,13 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             assert not isinstance(pyzo.keyMapper, (g.TracingNullObject, g.NullObject))
                 # This should not be a Shim.
             menu.buildMenus(self.menuBar())
+            pyzo.editors.addContextMenu()
+            pyzo.shells.addContextMenu()
         else:
             # Shim:
             pyzo.shells = g.TracingNullObject(tag='pyzo.shells')
             pyzo.keyMapper = g.TracingNullObject(tag='pyzo.keyMapper')
-        #
-        # Add the context menu to the editor
-        if self.use_menu:
-            pyzo.editors.addContextMenu()
-            pyzo.shells.addContextMenu()
-        else:
-            # Doesn't crash, but shell never warms up.
-
+            
             from pyzo.core.shellStack import ShellStackWidget
             
             def null_menu_callback(*args, **kwargs):
@@ -612,6 +605,21 @@ class MainWindowShim(pyzo.core.main.MainWindow):
                 
             g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellStateChange')
             g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellDebugStateChange')
+        #
+        # Add the context menu to the editor
+        # if self.use_menu:
+            # pyzo.editors.addContextMenu()
+            # pyzo.shells.addContextMenu()
+        # else:
+            # Doesn't crash, but shell never warms up.
+
+            # from pyzo.core.shellStack import ShellStackWidget
+            
+            # def null_menu_callback(*args, **kwargs):
+                # pass # g.trace(args, kwargs)
+                
+            # g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellStateChange')
+            # g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellDebugStateChange')
         #
         # Load tools
         if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
