@@ -22,6 +22,10 @@ import time
 from leo.core.leoQt import QtCore, QtWidgets
 #@-<< non-pyzo imports (pyzo_shims.py) >>
 
+old_loadFile = None
+    # Set by monkey_patch.
+    # Save a permanent reference.
+
 # Be explicit about where everything comes from...
 import pyzo
 import pyzo.core.main
@@ -30,6 +34,8 @@ import pyzo.util
 
 #@+others
 #@+node:ekr.20190330100939.1: **  function: loadFile (pyzo_shims.py)
+
+
 def loadFile(self, filename, updateTabs=True):
     '''
     A monkey-patched replacement for pyzo.core.editorTabs.EditorTabs.loadFile.
@@ -436,10 +442,8 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         self.resize(800, 600) # default size
         self.restoreGeometry()
         #
-        # Show splash screen.
-        if 0: # This just slows down the initial draw.
-            w = SplashShim(parent)
-            self.setCentralWidget(w)
+        # This just slows down the initial draw.
+            # self.setCentralWidget(SplashShim(parent))
         #
         # These do nothing, even when use_shell is True.
             # self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
@@ -686,10 +690,6 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             if hasattr(os, '_exit'):
                 os._exit(0)
     #@+node:ekr.20190402101635.1: *3* MainWindowShim.monkey_patch_leo
-    old_loadFile = None
-        # Set by monkey_patch.
-        # Save a permanent reference.
-
     def monkey_patch_leo(self):
 
         global old_loadFile
@@ -703,7 +703,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         if 0:
             # Probably will never be needed: it's fine to load .leo files for now.
             from pyzo.core.editorTabs import EditorTabs
-            self.old_loadFile = EditorTabs.loadFile
+            old_loadFile = EditorTabs.loadFile
             g.funcToMethod(loadFile, EditorTabs)
     #@+node:ekr.20190331173436.1: *3* MainWindowShim.setMainTitle
     def setMainTitle(self, path=None):
@@ -750,13 +750,6 @@ class MenuShim (object):
 class OutlineEditorShim(object):
     '''A class to make a Leo outline a pyzo editor, residing in a pyzo editor tab.'''
     ### Completely experimental
-#@+node:ekr.20190317082435.1: ** class SplashShim (QtWidgets.QWidget)
-class SplashShim(QtWidgets.QWidget):
-    '''A do-nothing splash widget.'''
-    
-    def __init__(self, parent, **kwargs):
-        # This ctor is required, because it is called with kwargs.
-        QtWidgets.QWidget.__init__(self, parent)
 #@+node:ekr.20190401074804.1: ** class ToolShim (Needed???)
 class ToolShim (object):
     '''
