@@ -397,10 +397,11 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         # Works either way.
     use_shell = True
         # There is no great flash when use_shell is True.
-    use_menu = True
-        
+    use_menu = False
     #
-    # Bug: The shell never finishes warming up if use_menu is False.
+    # Bug: At present, we *must* create a menu for the shell.
+    #      Otherwise, the shell never warms up.
+
 
     #@-<< MainWindowShim switches >>
 
@@ -584,7 +585,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             pyzo.status = None
             self.setStatusBar(None)
         #
-        # Create shells.
+        # Create menu for shell if the shell exists.
         if self.use_shell or self.use_menu:
             from pyzo.core import menu
             pyzo.keyMapper = menu.KeyMapper()
@@ -605,21 +606,6 @@ class MainWindowShim(pyzo.core.main.MainWindow):
                 
             g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellStateChange')
             g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellDebugStateChange')
-        #
-        # Add the context menu to the editor
-        # if self.use_menu:
-            # pyzo.editors.addContextMenu()
-            # pyzo.shells.addContextMenu()
-        # else:
-            # Doesn't crash, but shell never warms up.
-
-            # from pyzo.core.shellStack import ShellStackWidget
-            
-            # def null_menu_callback(*args, **kwargs):
-                # pass # g.trace(args, kwargs)
-                
-            # g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellStateChange')
-            # g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellDebugStateChange')
         #
         # Load tools
         if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
