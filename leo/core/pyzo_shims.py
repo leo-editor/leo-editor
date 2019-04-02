@@ -28,16 +28,13 @@ import pyzo.core.main
 import pyzo.core.splash
 import pyzo.util
 
-old_loadFile = None
-    # Set by monkey_patch.
-    # Save a permanent reference.
-
 #@+others
 #@+node:ekr.20190330100939.1: **  function: loadFile (pyzo_shims.py)
 def loadFile(self, filename, updateTabs=True):
     '''
     A monkey-patched replacement for pyzo.core.editorTabs.EditorTabs.loadFile.
     '''
+    # Not used, and will probably never be used.
     print('----- patched loadFile: filename:', filename)
     if filename.endswith('leo'):
         print('----- ignoring .leo file')
@@ -47,27 +44,6 @@ def loadFile(self, filename, updateTabs=True):
     except Exception:
         g.es_exception()
         return None
-#@+node:ekr.20190330112146.1: **  function: monkey_patch (pyzo_shims.py)
-def monkey_patch():
-
-    global old_loadFile
-    
-    g.trace('=====')
-        
-    # Use a Leonine pyzo.config.
-    if 0:
-        # Works, but uses light theme.
-        pyzo.config = ConfigShim()
-
-    pyzo.loadConfig()
-        # To be replaced by LeoPyzoConfig.loadConfig.
-    #
-    # Probably will never be needed: it's fine to load .leo files for now.
-    if 0:
-        # Ignore .leo files.
-        from pyzo.core.editorTabs import EditorTabs
-        old_loadFile = EditorTabs.loadFile
-        g.funcToMethod(loadFile, EditorTabs)
 #@+node:ekr.20190317082751.1: ** class ConfigShim
 new_config = True
     # Works when False.
@@ -433,6 +409,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             #
             # Do **not** call MainWindow.__init__: it calls _populate!
             #
+        self.monkey_patch_leo()
         self._closeflag = 0
             # Used during closing/restarting
         #
@@ -612,16 +589,6 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         elif pyzo.config.state.loadedTools:
             for toolId in pyzo.config.state.loadedTools:
                 pyzo.toolManager.loadTool(toolId)
-    #@+node:ekr.20190317084647.4: *3* MainWindowShim.setStyleSheet (override)
-    firstStyleSheet = True
-
-    def setStyleSheet(self, style, *args, **kwargs):
-        # print('MainWindowShim.setStyleSheet', style, args, kwargs)
-        # A hack: Ignore the first call.
-        if self.firstStyleSheet:
-            self.firstStyleSheet = False
-            return
-        QtWidgets.QMainWindow.setStyleSheet(self, style)
     #@+node:ekr.20190317084647.5: *3* MainWindowShim.closeEvent (traces)
     def closeEvent(self, event):
         """ Override close event handler. """
@@ -691,6 +658,31 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         if sys.version_info >= (3,3,0) and not restarting:
             if hasattr(os, '_exit'):
                 os._exit(0)
+    #@+node:ekr.20190402101635.1: *3* MainWindowShim.monkey_patch_leo
+    old_loadFile = None
+        # Set by monkey_patch.
+        # Save a permanent reference.
+
+    def monkey_patch_leo(self):
+
+        global old_loadFile
+        
+        g.trace('=====')
+            
+        # Use a Leonine pyzo.config.
+        if 0:
+            # Works, but uses light theme.
+            pyzo.config = ConfigShim()
+
+        pyzo.loadConfig()
+            # To be replaced by LeoPyzoConfig.loadConfig.
+        #
+        # Probably will never be needed: it's fine to load .leo files for now.
+        if 0:
+            # Ignore .leo files.
+            from pyzo.core.editorTabs import EditorTabs
+            self.old_loadFile = EditorTabs.loadFile
+            g.funcToMethod(loadFile, EditorTabs)
     #@+node:ekr.20190331173436.1: *3* MainWindowShim.setMainTitle
     def setMainTitle(self, path=None):
         """ Set the title of the main window, by giving a file path.
@@ -716,6 +708,16 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         
             # # Set
             # self.setWindowTitle(title)
+    #@+node:ekr.20190317084647.4: *3* MainWindowShim.setStyleSheet (override)
+    firstStyleSheet = True
+
+    def setStyleSheet(self, style, *args, **kwargs):
+        # print('MainWindowShim.setStyleSheet', style, args, kwargs)
+        # A hack: Ignore the first call.
+        if self.firstStyleSheet:
+            self.firstStyleSheet = False
+            return
+        QtWidgets.QMainWindow.setStyleSheet(self, style)
     #@-others
 #@+node:ekr.20190330100146.1: ** class MenuShim (object) (To do)
 class MenuShim (object):

@@ -933,7 +933,6 @@ class DynamicWindow(dw_base):
         #
         # Import *all* of the pyzo packages.
         import leo.core.pyzo_shims as pyzo_shims
-        pyzo_shims.monkey_patch()
         pyzo_shims.MainWindowShim()
     #@+node:ekr.20110605121601.18179: *3* dw.Event handlers
     #@+node:ekr.20110605121601.18140: *4* dw.closeEvent
