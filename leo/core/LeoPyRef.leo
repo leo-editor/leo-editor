@@ -31,7 +31,7 @@
 <v t="ekr.20150509183433.2"><vh>create_d</vh></v>
 <v t="ekr.20150509183433.3"><vh>create_decorator (@button)</vh></v>
 <v t="ekr.20150509183433.4"><vh>create_decorators V2</vh></v>
-<v t="ekr.20150509183832.1"><vh>define_s</vh></v>
+<v t="ekr.20150509183832.1"><vh>define_s (@button make-decorators2)</vh></v>
 <v t="ekr.20150509183433.8"><vh>munge_lines</vh></v>
 <v t="ekr.20150509183433.9"><vh>run V2</vh></v>
 </v>
@@ -70,6 +70,7 @@
 </v>
 <v t="ekr.20181102040815.1"><vh>script: warn about long lines</vh></v>
 <v t="ekr.20180816105258.1"><vh>script: diff-branches</vh></v>
+<v t="ekr.20190402091335.1"><vh>script: diff-revs</vh></v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
@@ -581,6 +582,7 @@
 <v t="ekr.20140907131341.18707"></v>
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31382e3171017d71025808000000616e6e6f7461746571037d710473732e"></v>
 </v>
+<v t="ekr.20190401075911.1"><vh>@file ../core/pyzoOutlineTool.py</vh></v>
 <v t="ekr.20190330100032.1"></v>
 <v t="ekr.20190316153545.1"><vh>===== #1096 pyzo</vh>
 <v t="ekr.20120212060348.10374"><vh> &lt;&lt; global switches &gt;&gt; (leoGlobals.py)</vh></v>
@@ -664,35 +666,28 @@
 </v>
 </v>
 <v t="ekr.20190331182937.1"><vh>----- Startup logic</vh>
-<v t="ekr.20190330112146.1"><vh> function: monkey_patch (pyzo_shims.py)</vh></v>
 <v t="ekr.20031218072017.3098"><vh>class g.Bunch (Python Cookbook)</vh></v>
-<v t="ekr.20190317084647.1"><vh>class MainWindowShim (pyzo.core.main.MainWindow)</vh>
+<v t="ekr.20190317084647.3"><vh>MainWindowShim._populate (5 shims)</vh></v>
 <v t="ekr.20190317084647.2"><vh>MainWindowShim.__init__</vh></v>
-<v t="ekr.20190317084647.3"><vh>MainWindowShim._populate (2 shims)</vh></v>
-<v t="ekr.20190317084647.4"><vh>MainWindowShim.setStyleSheet (override)</vh></v>
-<v t="ekr.20190317084647.5"><vh>MainWindowShim.closeEvent (traces)</vh></v>
-<v t="ekr.20190331173436.1"><vh>MainWindowShim.setMainTitle</vh></v>
-</v>
-<v t="ekr.20190317084647.3"></v>
-<v t="ekr.20190317084647.2"></v>
 </v>
 <v t="ekr.20190329035816.1"><vh>----- Two-step enabling</vh>
 <v t="ekr.20180312150559.1"><vh>LM.addOptionsToParser</vh></v>
 <v t="ekr.20180312151544.1"><vh>LM.doSimpleOptions</vh></v>
 </v>
+<v t="ekr.20190402092423.1"><vh>----- Simplify monkey-patching</vh>
+<v t="ekr.20190402101635.1"><vh>MainWindowShim.monkey_patch_leo</vh></v>
+</v>
+<v t="ekr.20190402102243.1"><vh>----- Disentable shells &amp; menus</vh>
+<v t="ekr.20190402104228.1"><vh>&lt;&lt; MainWindowShim switches &gt;&gt;</vh></v>
+<v t="ekr.20190317084647.2"></v>
+<v t="ekr.20190317084647.3"></v>
+</v>
+</v>
+<v t="ekr.20190402143146.1"><vh>No longer used</vh>
+<v t="ekr.20190317082435.1"><vh>class SplashShim (QtWidgets.QWidget)</vh></v>
 </v>
 <v t="ekr.20190329040602.1"><vh>Ref</vh>
 <v t="ekr.20190319024244.1"><vh>checkin: DynamicWindow is just an object</vh></v>
-<v t="ekr.20190330051656.1"><vh>----- Found: shims</vh>
-<v t="ekr.20190330095643.1"><vh>Unimportant</vh>
-<v t="ekr.20061119120006"><vh>LeoFrame.Icon area convenience methods</vh></v>
-</v>
-<v t="ekr.20110605121601.18139"></v>
-<v t="ekr.20190317084000.1"></v>
-<v t="ekr.20110605121601.18250"></v>
-<v t="ekr.20110605121601.18421"><vh>qtree.createTreeItem (shim: tree item)</vh></v>
-<v t="ekr.20190317084647.3"></v>
-</v>
 <v t="ekr.20190317083529.1"><vh>----- Changed &amp; new</vh>
 <v t="ekr.20090717112235.6007"><vh>app.computeSignon &amp; printSignon</vh></v>
 <v t="ekr.20120215072959.12539"><vh>c.config.getShortcut (changed)</vh></v>
@@ -700,9 +695,9 @@
 <v t="ekr.20131118172620.16858"></v>
 <v t="tbrown.20110621120042.22914"><vh>flc.get_top_splitter (changed)</vh></v>
 <v t="ekr.20070626132332"><vh>g.es (changed)</vh></v>
-<v t="ekr.20061119120006"></v>
+<v t="ekr.20061119120006"><vh>LeoFrame.Icon area convenience methods</vh></v>
 <v t="ekr.20130921043420.21175"><vh>qt_gui.setFilter (changed)</vh></v>
-<v t="ekr.20110605121601.18421"></v>
+<v t="ekr.20110605121601.18421"><vh>qtree.createTreeItem (shim: tree item)</vh></v>
 </v>
 <v t="ekr.20190319022339.1"><vh>----- Startup logic, in call order</vh>
 <v t="ekr.20110605121601.18250"></v>
@@ -720,7 +715,7 @@
 </v>
 <v t="ekr.20190401072835.1"><vh>To do</vh>
 <v t="ekr.20190329082417.1"><vh>To do: ----- Shutdown logic</vh>
-<v t="ekr.20190317084647.5"></v>
+<v t="ekr.20190317084647.5"><vh>MainWindowShim.closeEvent (traces)</vh></v>
 </v>
 <v t="ekr.20190331165128.1"><vh>To do: ----- Improve tracing in g.Bunch</vh>
 <v t="ekr.20031218072017.3098"></v>
@@ -742,10 +737,51 @@
 <v t="ekr.20190317082751.4"><vh>ConfigShim.__setattr__</vh></v>
 </v>
 </v>
-<v t="ekr.20190330112146.1"></v>
 </v>
 </v>
+<v t="ekr.20190401082911.1"><vh>----- Outline pane</vh>
+<v t="ekr.20190401085553.1"><vh>COPY: class PyzoEditor(BaseTextCtrl)</vh>
+<v t="ekr.20190401085553.2"><vh>PyzoEditor.__init__</vh></v>
+<v t="ekr.20190401085553.3"><vh>PyzoEditor.name</vh></v>
+<v t="ekr.20190401085553.4"><vh>PyzoEditor.filename</vh></v>
+<v t="ekr.20190401085553.5"><vh>PyzoEditor.lineEndings</vh></v>
+<v t="ekr.20190401085553.6"><vh>PyzoEditor.lineEndings</vh></v>
+<v t="ekr.20190401085553.7"><vh>PyzoEditor.lineEndingsHumanReadable</vh></v>
+<v t="ekr.20190401085553.8"><vh>PyzoEditor.encoding</vh></v>
+<v t="ekr.20190401085553.9"><vh>PyzoEditor.encoding</vh></v>
+<v t="ekr.20190401085553.10"><vh>PyzoEditor.justifyText</vh></v>
+<v t="ekr.20190401085553.11"><vh>PyzoEditor.showRunCursor</vh></v>
+<v t="ekr.20190401085553.12"><vh>PyzoEditor.id</vh></v>
+<v t="ekr.20190401085553.13"><vh>PyzoEditor.focusInEvent</vh></v>
+<v t="ekr.20190401085553.14"><vh>PyzoEditor.testWhetherFileWasChanged</vh></v>
+<v t="ekr.20190401085553.15"><vh>PyzoEditor._onModificationChanged</vh></v>
+<v t="ekr.20190401085553.16"><vh>PyzoEditor._onModified</vh></v>
+<v t="ekr.20190401085553.17"><vh>PyzoEditor.dragMoveEvent</vh></v>
+<v t="ekr.20190401085553.18"><vh>PyzoEditor.dropEvent</vh></v>
+<v t="ekr.20190401085553.19"><vh>PyzoEditor.showEvent</vh></v>
+<v t="ekr.20190401085553.20"><vh>PyzoEditor.setTitleInMainWindow</vh></v>
+<v t="ekr.20190401085553.21"><vh>PyzoEditor.save</vh></v>
+<v t="ekr.20190401085553.22"><vh>PyzoEditor.reload</vh></v>
+<v t="ekr.20190401085553.23"><vh>PyzoEditor.deleteLines</vh></v>
+<v t="ekr.20190401085553.24"><vh>PyzoEditor.duplicateLines</vh></v>
+<v t="ekr.20190401085553.25"><vh>PyzoEditor.commentCode</vh></v>
+<v t="ekr.20190401085553.26"><vh>PyzoEditor.uncommentCode</vh></v>
+<v t="ekr.20190401085553.27"><vh>PyzoEditor.gotoDef</vh></v>
+<v t="ekr.20190401085553.28"><vh>PyzoEditor.processCallTip</vh></v>
+<v t="ekr.20190401085553.29"><vh>PyzoEditor.processAutoComp</vh></v>
+<v t="ekr.20190401085649.1"><vh>main: EKR</vh></v>
 </v>
+<v t="ekr.20190401085953.1"><vh>COPY: createEditor (editor.py)</vh></v>
+<v t="ekr.20190401074804.1"><vh>class ToolShim (Needed???)</vh></v>
+<v t="ekr.20190401080432.1"><vh>class PyzoOutlineTool (QWidget)</vh>
+<v t="ekr.20190401081245.1"><vh>outline_tool.__init__</vh></v>
+</v>
+<v t="ekr.20190330100939.1"><vh> function: loadFile (pyzo_shims.py)</vh></v>
+<v t="ekr.20190401085747.1"><vh>class OutlineEditorShim (object) (Experimental)</vh></v>
+</v>
+</v>
+<v t="ekr.20190403172157.1"><vh>*** Release B2</vh></v>
+<v t="ekr.20190403113219.1"><vh>*** Update Controlling Syntax Coloring chapter</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943">@nosearch
@@ -6922,20 +6958,24 @@ https://github.com/leo-editor/leo-editor/issues/1032
 https://github.com/leo-editor/leo-editor/issues/1096
 https://github.com/pyzo/pyzo/issues/599
 
-devel: save-file-to == file-save-to
+First:
+- Two-step setting of g.pyzo in pyzo *app*.
+- Enable Leo's splash.
+- Trace through *Leo's* startup.
 
-Put *entire* Leo outline in main window:
-- LeoTool class. (tool helper)
-- Minimal changes to Leo window.
-- Use g.app.window_list to init.
-- Search for g.pyzo.
-- Re-enable disabled plugin
+*** Make the Leo outline a pyzo editor???
+    Put *entire* Leo outline in main window
 
 Next:
+- Use g.app.window_list to init.
 - Disable pyzo painters during startup?
 - class OutlineShim (LeoTool).
 - Finish MenuShim.
 - Create LoggerShim (just send to the console?)
+
+Study:
+- How does Pyzo separate Window code from tool code?
+- How can Leo windows *be* QWidget's?
 
 Later:
 - Modify pyzo shutdown logic (after putting outlines in MainWindow).
@@ -6945,8 +6985,21 @@ Later:
   - Improve tracing in g.Bunch.
   - Use the pyzo config code, **unless** the settings are Leonine! 
   - Does Leo need detailed knowledge of pyzo settings?
+- Convert Plugins to be Tool windows.
+- Re-enable disabled plugin.
+  
+Notes:
+- Work started at rev d9f7bc359db, Thursday, 2019-03-28 07:39:41
+- To find shims:  cff shim, case significant, headline only.
   
 @language python
+</t>
+<t tx="ekr.20190317082435.1">class SplashShim(QtWidgets.QWidget):
+    '''A do-nothing splash widget.'''
+    
+    def __init__(self, parent, **kwargs):
+        # This ctor is required, because it is called with kwargs.
+        QtWidgets.QWidget.__init__(self, parent)
 </t>
 <t tx="ekr.20190317082603.12">def _populate(self):
     
@@ -7105,54 +7158,18 @@ class ConfigShim(config_base):
     Copied/adapted from qt_main.py.
     Called instead of uic.loadUi(ui_description_file, self)
     '''
-    # dw = self
-    ### g.trace('\n =====', g.callers())
-    self.leo_ui = self
-    self.richTextEdit = g.TracingNullObject(tag='dw.richTextEdit')
-    self.stackedWidget = g.TracingNullObject(tag='dw.stackedWidget')
-    self.treeWidget = g.TracingNullObject(tag='dw.treeWidget')
-    self.tabWidget = g.TracingNullObject(tag='dw.tabWidet')
-        ### 
-    ### self.setMainWindowOptions()
+    dw = self
+    dw.leo_ui = self
+    dw.richTextEdit = g.TracingNullObject(tag='dw.richTextEdit')
+    dw.stackedWidget = g.TracingNullObject(tag='dw.stackedWidget')
+    dw.treeWidget = g.TracingNullObject(tag='dw.treeWidget')
+    dw.tabWidget = g.TracingNullObject(tag='dw.tabWidet')
     #
     # Import *all* of the pyzo packages.
     import leo.core.pyzo_shims as pyzo_shims
-    pyzo_shims.monkey_patch()
     pyzo_shims.MainWindowShim()
-    
-    ###
-        # self.createCentralWidget()
-        # main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-            # # Creates .verticalLayout
-        # if self.bigTree:
-            # self.createBodyPane(secondary_splitter)
-            # self.createLogPane(secondary_splitter)
-            # treeFrame = self.createOutlinePane(main_splitter)
-            # main_splitter.addWidget(treeFrame)
-            # main_splitter.addWidget(secondary_splitter)
-        # else:
-            # self.createOutlinePane(secondary_splitter)
-            # self.createLogPane(secondary_splitter)
-            # self.createBodyPane(main_splitter)
-        # self.createMiniBuffer(self.centralwidget)
-        # self.createMenuBar()
-        # self.createStatusBar(dw)
-    # Signals
-    ### QtCore.QMetaObject.connectSlotsByName(dw)
-    ### return main_splitter, secondary_splitter
 </t>
 <t tx="ekr.20190317084039.1"></t>
-<t tx="ekr.20190317084647.1">class MainWindowShim(pyzo.core.main.MainWindow):
-    
-    initial_draw = False
-        # True: do an initial draw.
-        # Works either way.
-    use_shell = True
-        # Works either way.
-        # In particular, drawing is reasonable when use_shell is True.
-
-    @others
-</t>
 <t tx="ekr.20190317084647.2">def __init__(self, parent=None, locale=None):
     '''
     Important: do *all* inits here.  Do *not* call MainWindow.__init__.
@@ -7165,108 +7182,86 @@ class ConfigShim(config_base):
     '''
     #
     # pylint: disable=non-parent-init-called, super-init-not-called
-        # Only init QMainWindow, **not** MainWindow.
-        # MainWindow.__init__ calls all the code below.
-        # This was the source of the duplicate imports and duplicate calls to _populate.
     QtWidgets.QMainWindow.__init__(self, parent)
-
-    self._closeflag = 0  # Used during closing/restarting
-
+        #
+        # Do **not** call MainWindow.__init__: it calls _populate!
+        #
+    self.monkey_patch_leo()
+    pyzo.loadConfig()
+        # To be replaced by LeoPyzoConfig.loadConfig.
+    self._closeflag = 0
+        # Used during closing/restarting
+    #
     # Init window title and application icon
     # Set title to something nice. On Ubuntu 12.10 this text is what
     # is being shown at the fancy title bar (since it's not properly
     # updated)
-    self.setMainTitle()
+    self.setWindowTitle('Leo Main Window')
     pyzo.core.main.loadAppIcons()
-    ### self.setWindowIcon(pyzo.icon)
     g.app.gui.attachLeoIcon(self)
-
-    # Restore window geometry before drawing for the first time,
-    # such that the window is in the right place
+    #
+    # Restore window geometry before drawing for the first time.
     self.resize(800, 600) # default size
     self.restoreGeometry()
-
-    # Show splash screen (we need to set our color too)
-    ### w = pyzo.core.splash.SplashWidget(self, distro='no distro')
-    w = SplashShim(parent)
-        # No need to Monkey-Patch pyzo.core.splash.SplashWidget
-    self.setCentralWidget(w)
-    ###
-        # These do nothing, even when use_shell is True.
-    ### self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
-    #self.setStyleSheet("QMainWindow { background-color: red;}")
-        # Does nothing.
-
+    #
+    # This just slows down the initial draw.
+        # self.setCentralWidget(SplashShim(parent))
+    #
+    # These do nothing, even when use_shell is True.
+        # self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
+        # self.setStyleSheet("QMainWindow { background-color: red;}")
+    #
     # Show empty window and disable updates for a while
     if self.initial_draw:
         self.show()
         self.paintNow()
     self.setUpdatesEnabled(False)
-
-    # Determine timeout for showing splash screen
-    ### splash_timeout = time.time() + 0.001 ### 1.0
-
-    # Set locale of main widget, so that qt strings are translated
-    # in the right way
+    #
+    # Set locale of main widget, for translate.
     if locale:
         self.setLocale(locale)
-
+    #
     # Store myself
     pyzo.main = self
-
+    #
     # Init dockwidget settings
-    self.setTabPosition(QtCore.Qt.AllDockWidgetAreas,QtWidgets.QTabWidget.South)
+    self.setTabPosition(QtCore.Qt.AllDockWidgetAreas, QtWidgets.QTabWidget.South)
     self.setDockOptions(
             QtWidgets.QMainWindow.AllowNestedDocks |
             QtWidgets.QMainWindow.AllowTabbedDocks
             #|  QtWidgets.QMainWindow.AnimatedDocks
         )
-
+    #
     # Set window atrributes
     self.setAttribute(QtCore.Qt.WA_AlwaysShowToolTips, True)
-
-    # Load icons and fonts
+    #
+    # Load pyzo icons and fonts.
     pyzo.core.main.loadIcons()
-        # New: fully qualified.
     pyzo.core.main.loadFonts()
-        # New: fully qualified.
-
+    #
     # Set qt style and test success
     self.setQtStyle(None) # None means init!
-    
-    ###
-        # Hold the splash screen if needed
-        # while time.time() &lt; splash_timeout:
-            # QtWidgets.qApp.flush()
-            # QtWidgets.qApp.processEvents()
-            # time.sleep(0.05)
-
+    #    
     # Populate the window (imports more code)
     self._populate()
-
+    #
     # Revert to normal background, and enable updates
     self.setStyleSheet('')
         # Required.
     self.setUpdatesEnabled(True)
-
+    #
     # Restore window state, force updating, and restore again
     self.restoreState()
     if not self.initial_draw:
         self.show()
     self.paintNow()
     self.restoreState()
-
-    # Present user with wizard if he/she is new.
-    if False:  # pyzo.config.state.newUser:
-        from pyzo.util.pyzowizard import PyzoWizard
-        w = PyzoWizard(self)
-        w.show() # Use show() instead of exec_() so the user can interact with pyzo
-
+    #
     # Create new shell config if there is None
     if not pyzo.config.shellConfigs2:
         from pyzo.core.kernelbroker import KernelInfo
         pyzo.config.shellConfigs2.append( KernelInfo() )
-
+    #
     # EKR: Set background.
     if getattr(pyzo.config.settings, 'dark_theme', None):
         bg = getattr(pyzo.config.settings, 'dark_background', '#657b83')
@@ -7275,12 +7270,12 @@ class ConfigShim(config_base):
             self.setStyleSheet("background: %s" % bg) 
         except Exception:
             print('oops: MainWindow.__init__')
-
-    # Focus on editor
+    #
+    # Put the focus on editor
     e = pyzo.editors.getCurrentEditor()
     if e is not None:
         e.setFocus()
-
+    #
     # Handle any actions
     pyzo.core.commandline.handle_cmd_args()
 </t>
@@ -7302,24 +7297,22 @@ class ConfigShim(config_base):
     from pyzo.tools import ToolManager
     if trace:
         print('\n===== MainWindowShim._populate: end of delayed imports\n')
-
+        print('initial_draw:', self.initial_draw)
+        print('    use_menu:', self.use_menu)
+        print('   use_shell:', self.use_shell)
+    #
     # Instantiate tool manager
     pyzo.toolManager = ToolManager()
-
-    # Check to install conda now ...
-    #from pyzo.util.bootstrapconda import check_for_conda_env
-    #check_for_conda_env()
-
+    #
     # Instantiate and start source-code parser
     if pyzo.parser is None:
         pyzo.parser = codeparser.Parser()
         pyzo.parser.start()
-
+    #
     # Create editor stack and make the central widget
     pyzo.editors = EditorTabs(self)
     self.setCentralWidget(pyzo.editors)
-        # EKR: QMainWindow.setCentralWidget
-
+    #
     # Create floater for shell
     self._shellDock = dock = QtWidgets.QDockWidget(self)
     if pyzo.config.settings.allowFloatingShell:
@@ -7329,45 +7322,56 @@ class ConfigShim(config_base):
     dock.setObjectName('shells')
     dock.setWindowTitle('Shells')
     self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-
+    #
     # Create shell stack
-    if self.use_shell: # Disabling the shell works.
+    if self.use_shell:
+        # Disabling the shell works.
         pyzo.shells = ShellStackWidget(self)
         dock.setWidget(pyzo.shells)
+        pyzo.shells.menu = g.TracingNullObject(tag='pyzo.shells.menu')
+            # To suppress menu events.
     else:
         pyzo.shells = g.TracingNullObject(tag='pyzo.shells')
-
+    #
     # Initialize command history
     pyzo.command_history = CommandHistory('command_history.py')
-
+    #
     # Create the default shell when returning to the event queue
     if self.use_shell:
         pyzo.core.main.callLater(pyzo.shells.addShell)
-            # New: fully qualified.
-
+    #
     # Create statusbar
     if pyzo.config.view.showStatusbar:
         pyzo.status = self.statusBar()
     else:
         pyzo.status = None
         self.setStatusBar(None)
-
-    # Create menu
-    if self.use_shell:
+    #
+    # Create the menu.
+    if self.use_menu:
         from pyzo.core import menu
         pyzo.keyMapper = menu.KeyMapper()
         assert not isinstance(pyzo.keyMapper, (g.TracingNullObject, g.NullObject))
             # This should not be a Shim.
         menu.buildMenus(self.menuBar())
+        pyzo.editors.addContextMenu()
+        pyzo.shells.addContextMenu()
     else:
         # Shim:
-        from pyzo.core import menu
+        pyzo.shells = g.TracingNullObject(tag='pyzo.shells')
         pyzo.keyMapper = g.TracingNullObject(tag='pyzo.keyMapper')
-
-    # Add the context menu to the editor
-    pyzo.editors.addContextMenu()
-    pyzo.shells.addContextMenu()
-
+        
+        from pyzo.core.shellStack import ShellStackWidget
+        
+        def null_menu_callback(*args, **kwargs):
+            pass # g.trace(args, kwargs)
+            
+        # Apparently, doing nothing prevents the Shell from warming up.
+        # For now, use_shell sets use_menu.
+        assert not self.use_shell
+        g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellStateChange')
+        g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellDebugStateChange')
+    #
     # Load tools
     if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
         pyzo.toolManager.loadTool('pyzosourcestructure')
@@ -7376,19 +7380,8 @@ class ConfigShim(config_base):
         for toolId in pyzo.config.state.loadedTools:
             pyzo.toolManager.loadTool(toolId)
 </t>
-<t tx="ekr.20190317084647.4">firstStyleSheet = True
-
-def setStyleSheet(self, style, *args, **kwargs):
-    # print('MainWindowShim.setStyleSheet', style, args, kwargs)
-    # A hack: Ignore the first call.
-    if self.firstStyleSheet:
-        self.firstStyleSheet = False
-        return
-    QtWidgets.QMainWindow.setStyleSheet(self, style)
-</t>
 <t tx="ekr.20190317084647.5">def closeEvent(self, event):
     """ Override close event handler. """
-    import sys
     import pyzo.core.commandline as commandline
         # New import.
     
@@ -7981,9 +7974,6 @@ https://github.com/leo-editor/leo-editor/issues/1100
 <t tx="ekr.20190329040120.1"></t>
 <t tx="ekr.20190329040602.1"></t>
 <t tx="ekr.20190329082417.1"></t>
-<t tx="ekr.20190330051656.1">@nosearch
-
-Search: NullObject</t>
 <t tx="ekr.20190330062625.1">def null_object_print_attr(id_, attr):
     &lt;&lt; define suppression lists &gt;&gt;
     if 0:
@@ -8045,25 +8035,22 @@ suppress_attrs = (
         tracing_signatures [signature] = True
         print('%40s %s' % (s, callers))
 </t>
-<t tx="ekr.20190330095643.1"></t>
-<t tx="ekr.20190330112146.1">def monkey_patch():
+<t tx="ekr.20190330100939.1">
 
-    global old_loadFile
-    
-    ### MainWindowShim now uses SplashShim directly
-        # Use a do-nothing SplashWidget
-        # pyzo.core.splash.SplashWidget = SplashShim
-        
-    # Use a Leonine pyzo.config.
-    if 0:
-        # Works, but uses light theme.
-        pyzo.config = ConfigShim()
-    pyzo.loadConfig()
-        # To be replaced by LeoPyzoConfig.loadConfig.
-    # Monkey-patch EditorTabs.loadFile.
-    from pyzo.core.editorTabs import EditorTabs
-    old_loadFile = EditorTabs.loadFile
-    g.funcToMethod(loadFile, EditorTabs)
+def loadFile(self, filename, updateTabs=True):
+    '''
+    A monkey-patched replacement for pyzo.core.editorTabs.EditorTabs.loadFile.
+    '''
+    # Not used, and will probably never be used.
+    print('----- patched loadFile: filename:', filename)
+    if filename.endswith('leo'):
+        print('----- ignoring .leo file')
+        return None
+    try:
+        return old_loadFile(self, filename, updateTabs)
+    except Exception:
+        g.es_exception()
+        return None
 </t>
 <t tx="ekr.20190330115531.1"># It probably should not be a zon dict!
 </t>
@@ -8372,33 +8359,725 @@ view__zooming__zoom_reset = 'Ctrl+\\,'
 </t>
 <t tx="ekr.20190331164202.1"></t>
 <t tx="ekr.20190331165128.1"></t>
-<t tx="ekr.20190331173436.1">def setMainTitle(self, path=None):
-    """ Set the title of the main window, by giving a file path.
-    """
-    self.setWindowTitle('Leo Main Window')
-    ### From MainWindow
-        # if not path:
-            # # Plain title
-            # title = "Interactive Editor for Python"
-        # else:
-            # # Title with a filename
-            # name = os.path.basename(path)
-            # if os.path.isfile(path):
-                # pass
-            # elif name == path:
-                # path = translate("main", 'unsaved')
-            # else:
-                # pass  # We hope the given path is informative
-            # # Set title
-            # tmp = { 'fileName':name, 'filename':name, 'name':name,
-                    # 'fullPath':path, 'fullpath':path, 'path':path }
-            # title = pyzo.config.advanced.titleText.format(**tmp)
-    
-        # # Set
-        # self.setWindowTitle(title)
-</t>
 <t tx="ekr.20190331182937.1"></t>
 <t tx="ekr.20190401072835.1"></t>
+<t tx="ekr.20190401074804.1">class ToolShim (object):
+    '''
+    A Shim to make a QWidget into a Pyzo Tool window.
+    
+    From the docstring in pyzo/tools.__init__.py:
+    
+    A tool consists of a module which contains a class:
+    - The id of a tool is its lower-cased module name.
+    - The module should contain a class corresponding to its id.
+    
+    The module may contain the following extra variables,
+    which should be placed within the first 50 lines of code:
+    
+    - tool_name:      A readable name for the tool. May contain spaces.
+    - tool_summary:   A single line short summary of the tool.
+                      Will be displayed in the statusbar.
+    '''
+</t>
+<t tx="ekr.20190401080432.1">class PyzoOutlineTool(QtWidgets.QWidget):
+    pass
+</t>
+<t tx="ekr.20190401081245.1">def __init__(self, parent):
+    '''Create the Outline Tool pane.'''
+    
+    super().__init__(parent)
+    
+    if 0: # From PyzoHistoryViewer
+        # To keep pyflakes happy...
+        Menu = None
+        pyzo = None 
+        QtCore = None
+        translate = None
+
+        # Widgets
+        self._search = QtWidgets.QLineEdit(self)
+        self._list = QtWidgets.QListWidget(self)
+    
+        # Set monospace
+        font = self._list.font()
+        font.setFamily(pyzo.config.view.fontname)
+        self._list.setFont(font)
+    
+        # Layout
+        layout = QtWidgets.QVBoxLayout(self)
+        self.setLayout(layout)
+        layout.addWidget(self._search, 0)
+        layout.addWidget(self._list, 1)
+    
+        # Customize line edit
+        self._search.setPlaceholderText(translate('menu', 'Search'))
+        self._search.textChanged.connect(self._on_search)
+    
+        # Drag/drop
+        self._list.setSelectionMode(self._list.ExtendedSelection)
+        self._list.setDragEnabled(True)
+        self._list.doubleClicked.connect(self._onDoubleClicked)
+    
+        # Context menu
+        self._menu = Menu(self, translate("menu", "History"))
+        self._menu.addItem(translate("menu", "Copy ::: Copy selected lines"),
+            pyzo.icons.page_white_copy, self.copy, "copy")
+        self._menu.addItem(translate("menu", "Run ::: Run selected lines in current shell"),
+            pyzo.icons.run_lines, self.runSelection, "run")
+        self._menu.addItem(translate("menu", "Remove ::: Remove selected history items(s)"),
+            pyzo.icons.delete, self.removeSelection, "remove")
+    
+        self._list.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self._list.customContextMenuRequested.connect(self._onCustomContextMenuRequested)
+    
+        # Populate
+        for command in pyzo.command_history.get_commands():
+            self._list.addItem(command)
+    
+        # Scroll to end of list on start up
+        self._list.setCurrentRow(self._list.count()-1)
+        item = self._list.currentItem()
+        self._list.scrollToItem(item)
+    
+        # Keep up to date ...
+        pyzo.command_history.command_added.connect(self._on_command_added)
+        pyzo.command_history.command_removed.connect(self._on_command_removed)
+        pyzo.command_history.commands_reset.connect(self._on_commands_reset)
+</t>
+<t tx="ekr.20190401082911.1"></t>
+<t tx="ekr.20190401085553.1">class PyzoEditor(BaseTextCtrl):
+
+    # called when dirty changed or filename changed, etc
+    somethingChanged = QtCore.Signal()
+    @others
+    
+if __name__=="__main__":
+    main()</t>
+<t tx="ekr.20190401085553.10">def justifyText(self):
+    """ Overloaded version of justifyText to make it use our
+    configurable justificationwidth.
+    """
+    super().justifyText(pyzo.config.settings.justificationWidth)
+</t>
+<t tx="ekr.20190401085553.11">def showRunCursor(self, cursor):
+    """
+    Momentarily highlight a piece of code to show that this is being executed
+    """
+
+    extraSelection = QtWidgets.QTextEdit.ExtraSelection()
+    extraSelection.cursor = cursor
+    extraSelection.format.setBackground(QtCore.Qt.gray)
+    self.setExtraSelections([extraSelection])
+
+    self._showRunCursorTimer.singleShot(200, lambda: self.setExtraSelections([]))
+</t>
+<t tx="ekr.20190401085553.12">def id(self):
+    """ Get an id of this editor. This is the filename,
+    or for tmp files, the name. """
+    if self._filename:
+        return self._filename
+    else:
+        return self._name
+</t>
+<t tx="ekr.20190401085553.13">def focusInEvent(self, event):
+    """ Test whether the file has been changed 'behind our back'
+    """
+    # Act normally to the focus event
+    BaseTextCtrl.focusInEvent(self, event)
+    # Test file change
+    self.testWhetherFileWasChanged()
+</t>
+<t tx="ekr.20190401085553.14">def testWhetherFileWasChanged(self):
+    """ testWhetherFileWasChanged()
+    Test to see whether the file was changed outside our backs,
+    and let the user decide what to do.
+    Returns True if it was changed.
+    """
+
+    # get the path
+    path = self._filename
+    if not os.path.isfile(path):
+        # file is deleted from the outside
+        return
+
+    # test the modification time...
+    mtime = os.path.getmtime(path)
+    if mtime != self._modifyTime:
+
+        # ask user
+        dlg = QtWidgets.QMessageBox(self)
+        dlg.setWindowTitle('File was changed')
+        dlg.setText("File has been modified outside of the editor:\n"+
+                    self._filename)
+        dlg.setInformativeText("Do you want to reload?")
+        t=dlg.addButton("Reload", QtWidgets.QMessageBox.AcceptRole) #0
+        dlg.addButton("Keep this version", QtWidgets.QMessageBox.RejectRole) #1
+        dlg.setDefaultButton(t)
+
+        # whatever the result, we will reset the modified time
+        self._modifyTime = os.path.getmtime(path)
+
+        # get result and act
+        result = dlg.exec_()
+        if result == QtWidgets.QMessageBox.AcceptRole:
+            self.reload()
+        else:
+            pass # when cancelled or explicitly said, do nothing
+
+        # Return that indeed the file was changes
+        return True
+</t>
+<t tx="ekr.20190401085553.15">def _onModificationChanged(self,changed):
+    """Handler for the modificationChanged signal. Emit somethingChanged
+    for the editorStack to update the modification notice."""
+    self.somethingChanged.emit()
+</t>
+<t tx="ekr.20190401085553.16">def _onModified(self):
+    pyzo.parser.parseThis(self)
+</t>
+<t tx="ekr.20190401085553.17">def dragMoveEvent(self, event):
+    """ Otherwise cursor can get stuck.
+    https://bitbucket.org/iep-project/iep/issue/252
+    https://qt-project.org/forums/viewthread/3180
+    """
+    if event.mimeData().hasUrls():
+        event.acceptProposedAction()
+    else:
+        BaseTextCtrl.dropEvent(self, event)
+</t>
+<t tx="ekr.20190401085553.18">def dropEvent(self, event):
+    """ Drop files in the list. """
+    if event.mimeData().hasUrls():
+        # file: let the editorstack do the work.
+        pyzo.editors.dropEvent(event)
+    else:
+        # text: act normal
+        BaseTextCtrl.dropEvent(self, event)
+</t>
+<t tx="ekr.20190401085553.19">def showEvent(self, event=None):
+    """ Capture show event to change title. """
+    # Act normally
+    if event:
+        BaseTextCtrl.showEvent(self, event)
+
+    # Make parser update
+    pyzo.parser.parseThis(self)
+</t>
+<t tx="ekr.20190401085553.2">def __init__(self, parent, **kwds):
+    super().__init__(parent, showLineNumbers = True, **kwds)
+
+    # Init filename and name
+    self._filename = ''
+    self._name = '&lt;TMP&gt;'
+
+    # View settings
+    self.setShowWhitespace(pyzo.config.view.showWhitespace)
+    #TODO: self.setViewWrapSymbols(view.showWrapSymbols)
+    self.setShowLineEndings(pyzo.config.view.showLineEndings)
+    self.setShowIndentationGuides(pyzo.config.view.showIndentationGuides)
+    #
+    self.setWrap(bool(pyzo.config.view.wrap))
+    self.setHighlightCurrentLine(pyzo.config.view.highlightCurrentLine)
+    self.setLongLineIndicatorPosition(pyzo.config.view.edgeColumn)
+    self.setHighlightMatchingBracket(pyzo.config.view.highlightMatchingBracket)
+    #TODO: self.setFolding( int(view.codeFolding)*5 )
+    # bracematch is set in baseTextCtrl, since it also applies to shells
+    # dito for zoom and tabWidth
+
+    # Set line endings to default
+    self.lineEndings = pyzo.config.settings.defaultLineEndings
+
+    # Set encoding to default
+    self.encoding = 'UTF-8'
+
+    # Modification time to test file change
+    self._modifyTime = 0
+
+    self.modificationChanged.connect(self._onModificationChanged)
+
+    # To see whether the doc has changed to update the parser.
+    self.textChanged.connect(self._onModified)
+
+    # This timer is used to hide the marker that shows which code is executed
+    self._showRunCursorTimer = QtCore.QTimer()
+
+    # Add context menu (the offset is to prevent accidental auto-clicking)
+    self._menu = EditorContextMenu(self)
+    self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+    self.customContextMenuRequested.connect(lambda p: self._menu.popup(self.mapToGlobal(p)+QtCore.QPoint(0,3)))
+
+## Properties
+</t>
+<t tx="ekr.20190401085553.20">def setTitleInMainWindow(self):
+    """ set the title  text in the main window to show filename. """
+
+    # compose title
+    name, path = self._name, self._filename
+    if path:
+        pyzo.main.setMainTitle(path)
+    else:
+        pyzo.main.setMainTitle(name)
+</t>
+<t tx="ekr.20190401085553.21">def save(self, filename=None):
+    """ Save the file. No checking is done. """
+
+    # get filename
+    if filename is None:
+        filename = self._filename
+    if not filename:
+        raise ValueError("No filename specified, and no filename known.")
+
+    # Test whether it was changed without us knowing. If so, dont save now.
+    if self.testWhetherFileWasChanged():
+        return
+
+    # Get text and remember where we are
+    text = self.toPlainText()
+    cursor = self.textCursor()
+    linenr = cursor.blockNumber() + 1
+    index = cursor.positionInBlock()
+    scroll = self.verticalScrollBar().value()
+
+    # Convert line endings (optionally remove trailing whitespace
+    if pyzo.config.settings.removeTrailingWhitespaceWhenSaving:
+        lines = [line.rstrip() for line in text.split('\n')]
+        if lines[-1]:
+            lines.append('')  # Ensure the file ends in an empty line
+        text = self.lineEndings.join(lines)
+        self.setPlainText(text)
+        # Go back to where we were
+        cursor = self.textCursor()
+        cursor.movePosition(cursor.Start) # move to begin of the document
+        cursor.movePosition(cursor.NextBlock,n=linenr-1) # n blocks down
+        index = min(index, cursor.block().length()-1)
+        cursor.movePosition(cursor.Right,n=index) # n chars right
+        self.setTextCursor(cursor)
+        self.verticalScrollBar().setValue(scroll)
+    else:
+        text = text.replace('\n', self.lineEndings)
+
+    # Make bytes
+    bb = text.encode(self.encoding)
+
+    # Store
+    f = open(filename, 'wb')
+    try:
+        f.write(bb)
+    finally:
+        f.close()
+
+    # Update stats
+    self._filename = normalizePath( filename )
+    self._name = os.path.split(self._filename)[1]
+    self.document().setModified(False)
+    self._modifyTime = os.path.getmtime(self._filename)
+
+    # update title (in case of a rename)
+    self.setTitleInMainWindow()
+
+    # allow item to update its texts (no need: onModifiedChanged does this)
+    #self.somethingChanged.emit()
+</t>
+<t tx="ekr.20190401085553.22">def reload(self):
+    """ Reload text using the self._filename.
+    We do not have a load method; we first try to load the file
+    and only when we succeed create an editor to show it in...
+    This method is only for reloading in case the file was changed
+    outside of the editor. """
+
+    # We can only load if the filename is known
+    if not self._filename:
+        return
+    filename = self._filename
+
+    # Remember where we are
+    cursor = self.textCursor()
+    linenr = cursor.blockNumber() + 1
+
+    # Load file (as bytes)
+    with open(filename, 'rb') as f:
+        bb = f.read()
+
+    # Convert to text
+    text = bb.decode('UTF-8')
+
+    # Process line endings (before setting the text)
+    self.lineEndings= determineLineEnding(text)
+
+    # Set text
+    self.setPlainText(text)
+    self.document().setModified(False)
+
+    # Go where we were (approximately)
+    self.gotoLine(linenr)
+</t>
+<t tx="ekr.20190401085553.23">def deleteLines(self):
+    cursor = self.textCursor()
+    # Find start and end of selection
+    start = cursor.selectionStart()
+    end = cursor.selectionEnd()
+    # Expand selection: from start of first block to start of next block
+    cursor.setPosition(start)
+    cursor.movePosition(cursor.StartOfBlock)
+    cursor.setPosition(end, cursor.KeepAnchor)
+    cursor.movePosition(cursor.NextBlock, cursor.KeepAnchor)
+
+    cursor.removeSelectedText()
+</t>
+<t tx="ekr.20190401085553.24">def duplicateLines(self):
+    cursor = self.textCursor()
+    # Find start and end of selection
+    start = cursor.selectionStart()
+    end = cursor.selectionEnd()
+    # Expand selection: from start of first block to start of next block
+    cursor.setPosition(start)
+    cursor.movePosition(cursor.StartOfBlock)
+    cursor.setPosition(end, cursor.KeepAnchor)
+    cursor.movePosition(cursor.NextBlock, cursor.KeepAnchor)
+
+    text = cursor.selectedText()
+    cursor.setPosition(start)
+    cursor.movePosition(cursor.StartOfBlock)
+    cursor.insertText(text)
+</t>
+<t tx="ekr.20190401085553.25">def commentCode(self):
+    """
+    Comment the lines that are currently selected
+    """
+    indents = []
+
+    def getIndent(cursor):
+        text = cursor.block().text().rstrip()
+        if text:
+            indents.append(len(text) - len(text.lstrip()))
+
+    def commentBlock(cursor):
+        cursor.setPosition(cursor.block().position() + minindent)
+        cursor.insertText('# ')
+
+    self.doForSelectedBlocks(getIndent)
+    minindent = min(indents) if indents else 0
+    self.doForSelectedBlocks(commentBlock)
+</t>
+<t tx="ekr.20190401085553.26">def uncommentCode(self):
+    """
+    Uncomment the lines that are currently selected
+    """
+    #TODO: this should not be applied to lines that are part of a multi-line string
+
+    #Define the uncomment function to be applied to all blocks
+    def uncommentBlock(cursor):
+        """
+        Find the first # on the line; if there is just whitespace before it,
+        remove the # and if it is followed by a space remove the space, too
+        """
+        text = cursor.block().text()
+        commentStart = text.find('#')
+        if commentStart == -1:
+            return #No comment on this line
+        if text[:commentStart].strip() != '':
+            return #Text before the #
+        #Move the cursor to the beginning of the comment
+        cursor.setPosition(cursor.block().position() + commentStart)
+        cursor.deleteChar()
+        if text[commentStart:].startswith('# '):
+            cursor.deleteChar()
+
+    #Apply this function to all blocks
+    self.doForSelectedBlocks(uncommentBlock)
+</t>
+<t tx="ekr.20190401085553.27">def gotoDef(self):
+    """
+    Goto the definition for the word under the cursor
+    """
+
+    # Get name of object to go to
+    cursor = self.textCursor()
+    if not cursor.hasSelection():
+        cursor.select(cursor.WordUnderCursor)
+    word = cursor.selection().toPlainText()
+
+    # Send the open command to the shell
+    s = pyzo.shells.getCurrentShell()
+    if s is not None:
+        if word and word.isidentifier():
+            s.executeCommand('open %s\n'%word)
+        else:
+            s.write('Invalid identifier %r\n' % word)
+
+## Introspection processing methods
+</t>
+<t tx="ekr.20190401085553.28">def processCallTip(self, cto):
+    """ Processes a calltip request using a CallTipObject instance.
+    """
+    # Try using buffer first
+    if cto.tryUsingBuffer():
+        return
+
+    # Try obtaining calltip from the source
+    sig = pyzo.parser.getFictiveSignature(cto.name, self, True)
+    if sig:
+        # Done
+        cto.finish(sig)
+    else:
+        # Try the shell
+        shell = pyzo.shells.getCurrentShell()
+        if shell:
+            shell.processCallTip(cto)
+</t>
+<t tx="ekr.20190401085553.29">def processAutoComp(self, aco):
+    """ Processes an autocomp request using an AutoCompObject instance.
+    """
+
+    # Try using buffer first
+    if aco.tryUsingBuffer():
+        return
+
+    # Init name to poll by remote process (can be changed!)
+    nameForShell = aco.name
+
+    # Get normal fictive namespace
+    fictiveNS = pyzo.parser.getFictiveNameSpace(self)
+    fictiveNS = set(fictiveNS)
+
+    # Add names
+    if not aco.name:
+        # "root" names
+        aco.addNames(fictiveNS)
+        # imports
+        importNames, importLines = pyzo.parser.getFictiveImports(self)
+        aco.addNames(importNames)
+    else:
+        # Prepare list of class names to check out
+        classNames = [aco.name]
+        handleSelf = True
+        # Unroll supers
+        while classNames:
+            className = classNames.pop(0)
+            if not className:
+                continue
+            if handleSelf or (className in fictiveNS):
+                # Only the self list (only first iter)
+                fictiveClass = pyzo.parser.getFictiveClass(
+                    className, self, handleSelf)
+                handleSelf = False
+                if fictiveClass:
+                    aco.addNames( fictiveClass.members )
+                    classNames.extend(fictiveClass.supers)
+            else:
+                nameForShell = className
+                break
+
+    # If there's a shell, let it finish the autocompletion
+    shell = pyzo.shells.getCurrentShell()
+    if shell:
+        aco.name = nameForShell # might be the same or a base class
+        shell.processAutoComp(aco)
+    else:
+        # Otherwise we finish it ourselves
+        aco.finish()
+</t>
+<t tx="ekr.20190401085553.3">@property
+def name(self):
+    return self._name
+</t>
+<t tx="ekr.20190401085553.4">@property
+def filename(self):
+    return self._filename
+</t>
+<t tx="ekr.20190401085553.5">@property
+def lineEndings(self):
+    """
+    Line-endings style of this file. Setter accepts machine-readable (e.g. '\r') and human-readable (e.g. 'CR') input
+    """
+    return self._lineEndings
+</t>
+<t tx="ekr.20190401085553.6">@lineEndings.setter
+def lineEndings(self,value):
+    if value in ('\r','\n','\r\n'):
+        self._lineEndings = value
+        return
+    try:
+        self._lineEndings = {'CR': '\r', 'LF': '\n', 'CRLF': '\r\n'}[value]
+    except KeyError:
+        raise ValueError('Invalid line endings style %r' % value)
+</t>
+<t tx="ekr.20190401085553.7">@property
+def lineEndingsHumanReadable(self):
+    """
+    Current line-endings style, human readable (e.g. 'CR')
+    """
+    return {'\r': 'CR', '\n': 'LF', '\r\n': 'CRLF'}[self.lineEndings]
+</t>
+<t tx="ekr.20190401085553.8">@property
+def encoding(self):
+    """ Encoding used to convert the text of this file to bytes.
+    """
+    return self._encoding
+
+@encoding.setter
+</t>
+<t tx="ekr.20190401085553.9">def encoding(self, value):
+    # Test given value, correct name if it exists
+    try:
+        c = codecs.lookup(value)
+        value = c.name
+    except Exception:
+        value = codecs.lookup('UTF-8').name
+    # Store
+    self._encoding = value
+
+##
+</t>
+<t tx="ekr.20190401085649.1">def main():
+    # Do some stubbing to run this module as a unit separate from pyzo
+    # TODO: untangle pyzo from this module where possible
+    class DummyParser:
+        def parseThis(self, x):
+            pass
+    pyzo.parser = DummyParser()
+    EditorContextMenu = QtWidgets.QMenu  # noqa
+    app = QtWidgets.QApplication([])
+    win = PyzoEditor(None)
+    QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+C"), win).activated.connect(win.copy)
+    QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+X"), win).activated.connect(win.cut)
+    QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+V"), win).activated.connect(win.paste)
+    QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Shift+V"), win).activated.connect(win.pasteAndSelect)
+    QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Z"), win).activated.connect(win.undo)
+    QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Y"), win).activated.connect(win.redo)
+
+    tmp = "foo(bar)\nfor bar in range(5):\n  print bar\n"
+    tmp += "\nclass aap:\n  def monkey(self):\n    pass\n\n"
+    win.setPlainText(tmp)
+    win.show()
+    app.exec_()
+</t>
+<t tx="ekr.20190401085747.1">class OutlineEditorShim(object):
+    '''A class to make a Leo outline a pyzo editor, residing in a pyzo editor tab.'''
+    ### Completely experimental
+</t>
+<t tx="ekr.20190401085953.1">def createEditor(parent, filename=None):
+    """ Tries to load the file given by the filename and
+    if succesful, creates an editor instance to put it in,
+    which is returned.
+    If filename is None, an new/unsaved/temp file is created.
+    """
+
+    if filename is None:
+
+        # Increase counter
+        global newFileCounter
+        newFileCounter  += 1
+
+        # Create editor
+        editor = PyzoEditor(parent)
+        editor.document().setModified(True)
+
+        # Set name
+        editor._name = "&lt;tmp {}&gt;".format(newFileCounter)
+
+    else:
+
+        # check and normalize
+        if not os.path.isfile(filename):
+            raise IOError("File does not exist '%s'." % filename)
+
+        # load file (as bytes)
+        with open(filename, 'rb') as f:
+            bb = f.read()
+            f.close()
+
+        # convert to text, be gentle with files not encoded with utf-8
+        encoding = determineEncoding(bb)
+        text = bb.decode(encoding,'replace')
+
+        # process line endings
+        lineEndings = determineLineEnding(text)
+
+        # if we got here safely ...
+
+        # create editor and set text
+        editor = PyzoEditor(parent)
+        editor.setPlainText(text)
+        editor.lineEndings = lineEndings
+        editor.encoding = encoding
+        editor.document().setModified(False)
+
+        # store name and filename
+        editor._filename = filename
+        editor._name = os.path.split(filename)[1]
+
+        # process indentation
+        indentWidth = determineIndentation(text)
+        if indentWidth == -1: #Tabs
+            editor.setIndentWidth(pyzo.config.settings.defaultIndentWidth)
+            editor.setIndentUsingSpaces(False)
+        elif indentWidth:
+            editor.setIndentWidth(indentWidth)
+            editor.setIndentUsingSpaces(True)
+
+    if editor._filename:
+        editor._modifyTime = os.path.getmtime(editor._filename)
+
+    # Set parser
+    if editor._filename:
+        ext = os.path.splitext(editor._filename)[1]
+        parser = Manager.suggestParser(ext, text)
+        editor.setParser(parser)
+    else:
+        # todo: rename style -&gt; parser
+        editor.setParser(pyzo.config.settings.defaultStyle)
+
+    # return
+    return editor
+</t>
+<t tx="ekr.20190402091335.1">import leo.commands.editFileCommands as efc
+
+efc.GitDiffController(c).diff_two_revs(
+    rev1='263fcc0bcc20ef5', # good
+    rev2='2a307cf4a625105a', # bad, present rev.
+    directory=None,
+)
+</t>
+<t tx="ekr.20190402092423.1">@language rest
+@wrap
+
+- Don't call pyzo.loadConfig from monkey_patch
+- use_shell = True uses pyzo icon &amp; menus.</t>
+<t tx="ekr.20190402101635.1">def monkey_patch_leo(self):
+
+    global old_loadFile
+    #
+    # Use a Leonine pyzo.config.
+    if 0:
+        # Works, but uses light theme.
+        pyzo.config = ConfigShim()
+    #
+    # Ignore .leo files.
+    if 0:
+        # Probably will never be needed: it's fine to load .leo files for now.
+        from pyzo.core.editorTabs import EditorTabs
+        old_loadFile = EditorTabs.loadFile
+        g.funcToMethod(loadFile, EditorTabs)
+</t>
+<t tx="ekr.20190402102243.1"># The shell never warms up if there are no menus.
+# So for now just force use_menu to True.
+</t>
+<t tx="ekr.20190402104228.1">initial_draw = False
+    # True: do an initial draw. Works either way.
+use_shell = False
+    # There is no great flash when use_shell is True.
+use_menu = False
+#
+# The shell never warms up if there are no menus.
+# So for now just force use_menu to True.
+if use_shell and not use_menu:
+    print('\nMainWindowShim: use_shell sets use_menu = True\n')
+    use_menu = True
+</t>
+<t tx="ekr.20190402143146.1"></t>
+<t tx="ekr.20190403113219.1"></t>
+<t tx="ekr.20190403172157.1"></t>
 <t tx="tbrown.20110621120042.22914">def get_top_splitter(self):
     '''Return the top splitter of c.frame.top.'''
     # Careful: we could be unit testing.
