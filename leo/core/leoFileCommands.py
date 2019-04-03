@@ -93,8 +93,7 @@ class FastRead (object):
                 message = 'bad .leo file: %s' % g.shortFileName(path)
             else:
                 message = 'The clipboard is not a vaild .leo file'
-            print('')
-            g.es_print(message, color='red')
+            g.es_print('\n' + message, color='red')
             g.es_print(g.toUnicode(e))
             print('')
             # #970: Just report failure here.
@@ -106,9 +105,9 @@ class FastRead (object):
         hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
         self.handleBits()
         return hidden_v, g_element
-    #@+node:ekr.20180624125321.1: *5* fast.handleBits
+    #@+node:ekr.20180624125321.1: *5* fast.handleBits (reads c.db)
     def handleBits(self):
-
+        '''Restore the expanded and marked bits from c.db.'''
         c, fc = self.c, self.c.fileCommands
         expanded = c.db.get('expanded')
         marked = c.db.get('marked')
@@ -878,7 +877,7 @@ class FileCommands(object):
         self.c.nodeConflictFileName = None # 2010/01/05
     #@+node:EKR.20040627120120: *5* fc.restoreDescendentAttributes
     def restoreDescendentAttributes(self):
-
+        '''Called from fc.readExternalFiles.'''
         c = self.c
         for resultDict in self.descendentTnodeUaDictList:
             for gnx in resultDict:
@@ -1335,6 +1334,7 @@ class FileCommands(object):
         gnx = v.fileIndex
         if forceWrite or self.usingClipboard:
             v.setWriteBit() # 4.2: Indicate we wrote the body text.
+
         attrs = fc.compute_attribute_bits(forceWrite, p)
         #
         # Write the node.
@@ -1358,29 +1358,19 @@ class FileCommands(object):
                 fc.put('</v>\n')
             else:
                 fc.put('%s</v>\n' % v_head) # Call put only once.
-    #@+node:ekr.20031218072017.1865: *6* fc.compute_attribute_bits (helper for fc.putVnode)
+    #@+node:ekr.20031218072017.1865: *6* fc.compute_attribute_bits
     def compute_attribute_bits(self, forceWrite, p):
         '''Return the initial values of v's attributes.'''
-        c, v = self.c, p.v
-        #
-        # Remember the to-be-cashed data.
         attrs = []
-        if v.isExpanded() and v.hasChildren():
-            self.expanded_gnxs.add(v.gnx) 
-        if v.isMarked():
-            self.marked_gnxs.add(v.gnx)
-        if p == self.rootPosition and c.mFileName:
-            aList = [str(z) for z in self.currentPosition.archivedPosition()]
-            c.db ['current_position'] = ','.join(aList)
-        #
-        # Append unKnownAttributes to attrs
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # Fix #526: do this for @auto nodes as well.
             attrs.append(self.putDescendentVnodeUas(p))
             # Fix #1023: never put marked/expanded bits.
                 # attrs.append(self.putDescendentAttributes(p))
         return ''.join(attrs)
-    #@+node:ekr.20031218072017.1579: *5* fc.putVnodes
+    #@+node:ekr.20031218072017.1579: *5* fc.putVnodes & helper
+    new = True
+
     def putVnodes(self, p=None):
         """Puts all <v> elements in the order in which they appear in the outline."""
         c = self.c
@@ -1396,12 +1386,24 @@ class FileCommands(object):
             self.putVnode(self.currentPosition)
                 # Write only current tree.
         else:
-            self.expanded_gnxs, self.marked_gnxs = set(), set()
             for p in c.rootPosition().self_and_siblings():
                 self.putVnode(p, isIgnore=p.isAtIgnoreNode())
-            c.db ['expanded'] = ','.join(list(self.expanded_gnxs))
-            c.db ['marked'] = ','.join(list(self.marked_gnxs))
+            # Fix #1018: scan *all* nodes.
+            self.setCachedBits()
         self.put("</vnodes>\n")
+    #@+node:ekr.20190328160622.1: *6* fc.setCachedBits
+    def setCachedBits(self):
+        '''
+        Set the cached expanded and marked bits for *all* nodes.
+        Also cache the current position.
+        '''
+        c = self.c
+        current = [str(z) for z in self.currentPosition.archivedPosition()]
+        expanded = [v.gnx for v in c.all_unique_nodes() if v.isExpanded()]
+        marked = [v.gnx for v in c.all_unique_nodes() if v.isMarked()]
+        c.db ['expanded'] = ','.join(expanded)
+        c.db ['marked'] = ','.join(marked)
+        c.db ['current_position'] = ','.join(current)
     #@+node:ekr.20031218072017.1247: *5* fc.putXMLLine
     def putXMLLine(self):
         '''Put the **properly encoded** <?xml> element.'''
@@ -1417,6 +1419,7 @@ class FileCommands(object):
         suitable for pasting to the clipboard.
         '''
         try:
+            # g.trace(g.callers(2))
             # Save
             tua = self.descendentTnodeUaDictList
             vua = self.descendentVnodeUaDictList
@@ -1433,13 +1436,13 @@ class FileCommands(object):
             self.putPostlog()
             s = self.outputFile.getvalue()
             self.outputFile = None
-            self.usingClipboard = False
         finally:
             # Restore
             self.descendentTnodeUaDictList = tua
             self.descendentVnodeUaDictList = vua
             self.gnxDict = gnxDict
             self.vnodesDict = vnodesDict
+            self.usingClipboard = False
         return s
     #@+node:ekr.20031218072017.3046: *4* fc.write_Leo_file & helpers
     def write_Leo_file(self, fileName, outlineOnlyFlag, toString=False, toOPML=False):

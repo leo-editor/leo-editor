@@ -2192,9 +2192,7 @@ def _assert(condition, show_callers=True):
     ok = bool(condition)
     if ok:
         return True
-    print('')
-    g.es_print('===== g._assert failed =====')
-    print('')
+    g.es_print('\n===== g._assert failed =====\n')
     if show_callers:
         g.es_print(g.callers())
     return False
@@ -3507,6 +3505,35 @@ def getBaseDirectory(c):
         return base # base need not exist yet.
     else:
         return "" # No relative base given.
+#@+node:ekr.20190306142950.1: *3* g.get_files_in_directory
+def get_files_in_directory(directory, kinds=None, recursive=True):
+    '''
+    Return a list of all files of the given file extensions in the directory.
+    Default kinds: ['*.py'].
+    '''
+    files, sep = [], os.path.sep
+    if not g.os.path.exists(directory):
+        g.es_print('does not exist', directory)
+        return files
+    try:
+        if kinds:
+            kinds = [z if z.startswith('*') else '*'+z for z in kinds]
+        else:
+            kinds = ['*.py']
+        if recursive:
+            # Works for all versions of Python.
+            import fnmatch
+            for root, dirnames, filenames in os.walk(directory):
+                for kind in kinds:
+                    for filename in fnmatch.filter(filenames, kind):
+                        files.append(os.path.join(root, filename))
+        else:
+            for kind in kinds:
+                files.extend(glob.glob(directory + sep + kind))
+        return list(set(sorted(files)))
+    except Exception:
+        g.es_exception()
+        return []
 #@+node:ekr.20170223093758.1: *3* g.getEncodingAt (New in Leo 5.5)
 def getEncodingAt(p, s=None):
     '''
@@ -6390,6 +6417,17 @@ def trace(*args, **keys):
         else: name = pad + name
     # Munge *args into s.
     result = [name] if name else []
+    #
+    # Put leading newlines into the prefix.
+    if isinstance(args, tuple):
+        args = list(args)
+    if args and isString(args[0]):
+        prefix = ''
+        while args[0].startswith('\n'):
+            prefix += '\n'
+            args[0] = args[0][1:]
+    else:
+        prefix = ''
     for arg in args:
         if isString(arg):
             pass
@@ -6402,6 +6440,9 @@ def trace(*args, **keys):
         else:
             result.append(arg)
     s = d.get('before') + ''.join(result)
+    if prefix:
+        prefix = prefix[1:] # One less newline.
+        pr(prefix)
     pr(s, newline=newline)
 #@+node:ekr.20080220111323: *3* g.translateArgs
 console_encoding = None

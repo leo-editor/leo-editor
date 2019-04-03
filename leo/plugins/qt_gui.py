@@ -786,8 +786,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # with wrapper = None, so return the LeoQtBody.
                 w = c.frame.body
         if trace:
-            print('')
-            g.trace('(LeoQtGui)', w.__class__.__name__)
+            g.trace('\n(LeoQtGui)', w.__class__.__name__)
             g.trace(g.callers(6))
         return w
 
@@ -799,8 +798,7 @@ class LeoQtGui(leoGui.LeoGui):
             if hasattr(w, 'widget') and w.widget:
                 w = w.widget
             if 'focus' in g.app.debug:
-                print('')
-                g.trace('(LeoQtGui)',  w.__class__.__name__)
+                g.trace('\n(LeoQtGui)',  w.__class__.__name__)
                 g.trace(g.callers(6))
             w.setFocus()
 
@@ -962,8 +960,7 @@ class LeoQtGui(leoGui.LeoGui):
         if trace and not self.dump_given:
             self.dump_given = True
             getString = g.app.config.getString
-            print('')
-            g.trace('...')
+            g.trace('\n...')
             # dump('g.app.theme_color', g.app.theme_color)
             dump('@string color_theme', getString('color-theme'))
             # dump('g.app.theme_name', g.app.theme_name)

@@ -2671,16 +2671,14 @@ class Commands(object):
             if c.enableRedrawFlag:
                 c.requestLaterRedraw = False
                 if 'drawing' in g.app.debug and not g.unitTesting:
-                    print('')
-                    g.trace('DELAYED REDRAW')
+                    g.trace('\nDELAYED REDRAW')
                     time.sleep(1.0)
                 c.redraw()
         # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
             if 'focus' in g.app.debug and not g.unitTesting:
-                print('')
-                g.trace('DELAYED FOCUS', g.callers())
+                g.trace('\nDELAYED FOCUS', g.callers())
             c.set_focus(w)
             c.requestedFocusWidget = None
         table = (
@@ -2809,8 +2807,7 @@ class Commands(object):
         c = self
         c.requestLaterRedraw = True
         if 'drawing' in g.app.debug:
-            print('')
-            g.trace(g.callers(8))
+            g.trace('\n' + g.callers(8))
     #@+node:ekr.20080514131122.17: *5* c.widget_name
     def widget_name(self, widget):
         # c = self
@@ -2947,8 +2944,7 @@ class Commands(object):
         c = self
         w = g.app.gui and g.app.gui.get_focus(c)
         if 'focus' in g.app.debug:
-            print('')
-            g.trace('(c)',  w.__class__.__name__)
+            g.trace('\n(c)',  w.__class__.__name__)
             g.trace(g.callers(6))
         return w
 
@@ -2960,8 +2956,7 @@ class Commands(object):
         c = self
         if w and g.app.gui:
             if 'focus' in g.app.debug:
-                print('')
-                g.trace('(c)', repr(w))
+                g.trace('\n(c)', repr(w))
             c.requestedFocusWidget = w
 
     def set_focus(self, w, force=False):
@@ -2969,8 +2964,7 @@ class Commands(object):
         c = self
         if w and g.app.gui:
             if trace:
-                print('')
-                g.trace('(c)', repr(w))
+                g.trace('\n(c)', repr(w))
             g.app.gui.set_focus(c, w)
         else:
             if trace: g.trace('(c) no w')
