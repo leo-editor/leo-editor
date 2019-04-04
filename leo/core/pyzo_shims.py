@@ -747,23 +747,27 @@ class MenuShim (object):
     '''Adaptor class standing between Leo and Pyzo menus.'''
     #@+others
     #@-others
-#@+node:ekr.20190401085747.1: ** class OutlineEditorShim (pyzo.core.editor.PyzoEdito)
+#@+node:ekr.20190401085747.1: ** class OutlineEditorShim (QFrame)
 class ScrollBarShim(object):
+    def setValue(self, value):
+        pass
     def value(self):
         return 0
 
 class TextCursorShim(object):
     def position(self):
         return 0
+    def setPosition(self, pos):
+        pass
 
 class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
-    
+
     somethingChanged = Signal()
     blockCountChanged = Signal()
     breakPointsChanged = Signal()
     
     def __init__(self, parent, **kwds):
-        g.trace('OutlineEditorShim: (QFrame)', kwds)
+        g.trace('OutlineEditorShim.__init__: kwds:', kwds)
         super().__init__(parent, **kwds)
         self._breakPoints = {}
         ### self.breakPointsChanged.emit(self)
@@ -782,7 +786,11 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
         return list(sorted(self._breakPoints))
 
     def setPlainText(self, text):
-        g.trace('len(text):', len(text))
+        # g.trace('len(text):', len(text))
+        pass
+        
+    def setTextCursor(self, obj):
+        pass
         
     def setTitleInMainWindow(self):
         pass 

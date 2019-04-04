@@ -4512,7 +4512,7 @@ class TabbedFrameFactory(object):
     #@+node:ekr.20110605121601.18466: *3* createFrame (TabbedFrameFactory)
     def createFrame(self, leoFrame):
 
-        ### if pyzo: g.trace('\n===== TabbedFrameFactory', leoFrame)
+        if g.pyzo: g.trace('\n===== TabbedFrameFactory: create DynamicWindow')
         c = leoFrame.c
         if self.masterFrame is None:
             self.createMaster()
