@@ -783,8 +783,8 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
         self.document = DocumentShim
             # g.TracingNullObject(tag='OutlineEditorShim.document')
         self.lineEndingsHumanReadable = 'CRLF'
-        self.name = '<Dummy name>'
-        self.filename = '<Dummy filename>'
+        self._name = '<Dummy name>'
+        self._filename = '<Dummy filename>'
         self.textCursor = TextCursorShim
         self.horizontalScrollBar = ScrollBarShim
         self.verticalScrollBar = ScrollBarShim
@@ -796,7 +796,7 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
         return list(sorted(self._breakPoints))
 
     def id(self):
-        return self.filename or self.name
+        return self._filename or self._name
 
     def setPlainText(self, text):
         # g.trace('len(text):', len(text))
