@@ -625,12 +625,13 @@ class MainWindowShim(pyzo.core.main.MainWindow):
     def closeEvent(self, event):
         """ Override close event handler. """
         import pyzo.core.commandline as commandline
-            # New import.
+        
+        g.trace('MainWindowShim')
         
         t1 = time.clock()
 
         # Are we restaring?
-        restarting = time.time() - self._closeflag < 1.0
+        ### restarting = time.time() - self._closeflag < 1.0
 
         # Save settings
         pyzo.saveConfig()
@@ -687,7 +688,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
 
         # Harder exit to prevent segfault. Not really a solution,
         # but it does the job until Pyside gets fixed.
-        if sys.version_info >= (3,3,0) and not restarting:
+        if sys.version_info >= (3,3,0): # and not restarting:
             if hasattr(os, '_exit'):
                 os._exit(0)
     #@+node:ekr.20190402101635.1: *3* MainWindowShim.monkey_patch_leo
@@ -748,6 +749,13 @@ class MenuShim (object):
     #@+others
     #@-others
 #@+node:ekr.20190401085747.1: ** class OutlineEditorShim (QFrame)
+class DocumentShim(object):
+    modified = False
+    def isModified(self):
+        return self.modified # To test shutdown logic.
+    def setModified(self, aBool):
+        self.modified = aBool
+
 class ScrollBarShim(object):
     def setValue(self, value):
         pass
@@ -772,7 +780,9 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
         self._breakPoints = {}
         ### self.breakPointsChanged.emit(self)
         ### self.__breakPointArea.update()
-        self.document = g.TracingNullObject(tag='OutlineEditorShim.document')
+        self.document = DocumentShim
+            # g.TracingNullObject(tag='OutlineEditorShim.document')
+        self.lineEndingsHumanReadable = 'CRLF'
         self.name = '<Dummy name>'
         self.filename = '<Dummy filename>'
         self.textCursor = TextCursorShim
@@ -785,8 +795,15 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
     def breakPoints(self):
         return list(sorted(self._breakPoints))
 
+    def id(self):
+        return self.filename or self.name
+
     def setPlainText(self, text):
         # g.trace('len(text):', len(text))
+        pass
+        
+    def save(self, filename=None):
+        ### What else should this do???
         pass
         
     def setTextCursor(self, obj):
