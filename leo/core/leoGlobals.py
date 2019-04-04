@@ -23,6 +23,8 @@ in_bridge = False
 pyzo = True
     # It's now safe to enable this permanently,
     # because LM.scanOptions clears it unless --pyzo is in effect.
+pyzo_patch = True
+    # True: allow patches to pyzo itself.
 pyzo_trace = False
     # True: enable traces in pyzo itself.
 pyzo_trace_imports = True

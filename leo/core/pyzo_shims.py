@@ -12,8 +12,11 @@
 # Search for the above copyright to see the relevant code.
 #@-<< copyright notices >>
 import leo.core.leoGlobals as g
+import sys
+sys.argv.append('--pyzo')
+    # To retain g.pyzo and other global switches.
 if g.pyzo_trace_imports:
-    print('\npyzo_shims.py\n')
+    print('\npyzo_shims.py')
 #@+<< non-pyzo imports (pyzo_shims.py) >>
 #@+node:ekr.20190330101646.1: **  << non-pyzo imports (pyzo_shims.py) >>
 import os
@@ -28,13 +31,14 @@ old_loadFile = None
 
 # Be explicit about where everything comes from...
 import pyzo
+import pyzo.core.editor
 import pyzo.core.main
 import pyzo.core.splash
 import pyzo.util
 
 #@+others
 #@+node:ekr.20190330100939.1: **  function: loadFile (pyzo_shims.py)
-
+# This probably isn't the place to patch pyzo.
 
 def loadFile(self, filename, updateTabs=True):
     '''
@@ -742,10 +746,15 @@ class MenuShim (object):
     '''Adaptor class standing between Leo and Pyzo menus.'''
     #@+others
     #@-others
-#@+node:ekr.20190401085747.1: ** class OutlineEditorShim (object) (Experimental)
-class OutlineEditorShim(object):
+#@+node:ekr.20190401085747.1: ** class OutlineEditorShim (pyzo.core.editor.PyzoEdito)
+class OutlineEditorShim(pyzo.core.editor.PyzoEditor):
     '''A class to make a Leo outline a pyzo editor, residing in a pyzo editor tab.'''
-    ### Completely experimental
+    
+    def __init__(self, parent, **kwds):
+        
+        super().__init__(parent, **kwds) ### showLineNumbers = True, **kwds)
+        
+        g.trace('OutlineEditorShim:', kwds)
 #@+node:ekr.20190401074804.1: ** class ToolShim (Needed???)
 class ToolShim (object):
     '''
