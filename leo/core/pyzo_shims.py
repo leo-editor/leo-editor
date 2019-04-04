@@ -23,6 +23,7 @@ import os
 import sys
 import time
 from leo.core.leoQt import QtCore, QtWidgets
+from PyQt5.QtCore import pyqtSignal as Signal
 #@-<< non-pyzo imports (pyzo_shims.py) >>
 
 old_loadFile = None
@@ -747,14 +748,44 @@ class MenuShim (object):
     #@+others
     #@-others
 #@+node:ekr.20190401085747.1: ** class OutlineEditorShim (pyzo.core.editor.PyzoEdito)
-class OutlineEditorShim(pyzo.core.editor.PyzoEditor):
-    '''A class to make a Leo outline a pyzo editor, residing in a pyzo editor tab.'''
+class ScrollBarShim(object):
+    def value(self):
+        return 0
+
+class TextCursorShim(object):
+    def position(self):
+        return 0
+
+class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
+    
+    somethingChanged = Signal()
+    blockCountChanged = Signal()
+    breakPointsChanged = Signal()
     
     def __init__(self, parent, **kwds):
+        g.trace('OutlineEditorShim: (QFrame)', kwds)
+        super().__init__(parent, **kwds)
+        self._breakPoints = {}
+        ### self.breakPointsChanged.emit(self)
+        ### self.__breakPointArea.update()
+        self.document = g.TracingNullObject(tag='OutlineEditorShim.document')
+        self.name = '<Dummy name>'
+        self.filename = '<Dummy filename>'
+        self.textCursor = TextCursorShim
+        self.horizontalScrollBar = ScrollBarShim
+        self.verticalScrollBar = ScrollBarShim
+
+    def blockCount(self):
+        return 0
         
-        super().__init__(parent, **kwds) ### showLineNumbers = True, **kwds)
+    def breakPoints(self):
+        return list(sorted(self._breakPoints))
+
+    def setPlainText(self, text):
+        g.trace('len(text):', len(text))
         
-        g.trace('OutlineEditorShim:', kwds)
+    def setTitleInMainWindow(self):
+        pass 
 #@+node:ekr.20190401074804.1: ** class ToolShim (Needed???)
 class ToolShim (object):
     '''
