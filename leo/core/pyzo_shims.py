@@ -752,7 +752,7 @@ class MenuShim (object):
 class DocumentShim(object):
     modified = False
     def isModified(self):
-        return self.modified # To test shutdown logic.
+        return self.modified
     def setModified(self, aBool):
         self.modified = aBool
 
@@ -775,7 +775,9 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
     breakPointsChanged = Signal()
     
     def __init__(self, parent, **kwds):
-        print('OutlineEditorShim.__init__: kwds:', kwds)
+        
+        if g.pyzo_trace:
+            print('OutlineEditorShim.__init__: kwds:', kwds)
         super().__init__(parent, **kwds)
         self._breakPoints = {}
         ### self.breakPointsChanged.emit(self)
@@ -785,8 +787,10 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
         self.lineEndingsHumanReadable = 'CRLF'
         self._name = self.name = '<Dummy name>'
         self._filename = self.filename = '<Dummy filename>'
-        self.textCursor = TextCursorShim
+        # Helper shims...
         self.horizontalScrollBar = ScrollBarShim
+        self.parser = g.TracingNullObject(tag='OutlineEditorShim.parser')
+        self.textCursor = TextCursorShim
         self.verticalScrollBar = ScrollBarShim
 
     def blockCount(self):
@@ -797,13 +801,23 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
 
     def id(self):
         return self._filename or self._name
+        
+    def indentUsingSpaces(self):
+        return True
+        
+    def indentWidth(self):
+        return 4
+        
+    def setCheckedOption(self, val):
+        pass
+        
+    def setDebugLineIndicator(self, val):
+        pass
 
     def setPlainText(self, text):
-        # g.trace('len(text):', len(text))
         pass
         
     def save(self, filename=None):
-        ### What else should this do???
         pass
         
     def setTextCursor(self, obj):
