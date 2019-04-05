@@ -783,10 +783,10 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
     
     #@+others
     #@+node:ekr.20190405075322.1: *3* OutlineEditorShim.__init__
-    def __init__(self, parent, **kwds):
+    def __init__(self, filename, parent, **kwds):
         
         if g.pyzo:
-            print('\nOutlineEditorShim.__init__')
+            print('\nOutlineEditorShim.__init__', filename)
             # g.printObj(g.callers(30).split(','), tag='g.callers(): OutlineEditorShim.__init__')
         super().__init__(parent, **kwds)
         self._breakPoints = {}
@@ -795,8 +795,10 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
         self.document = DocumentShim
             # g.TracingNullObject(tag='OutlineEditorShim.document')
         self.lineEndingsHumanReadable = 'CRLF'
-        self._name = self.name = '<Dummy name>'
-        self._filename = self.filename = '<Dummy filename>'
+        self._filename = self.filename = filename
+            # Essential, so the tab will close properly.
+        self._name = self.name = os.path.split(filename)[1]
+            # To set the tab's name properly.
         # Helper shims...
         self.horizontalScrollBar = ScrollBarShim
         self.parser = g.TracingNullObject(tag='OutlineEditorShim.parser')
@@ -804,16 +806,15 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
         self.verticalScrollBar = ScrollBarShim
         # Create the outline!
         self.createOutlineFrame()
-
     #@+node:ekr.20190405075440.1: *3* OutlineEditorShim.createOutlineFrame
     def createOutlineFrame(self):
         '''Create the outline frame.'''
         #
         # Like createFrame TabbedFrameFactory.createFrame.
         assert g.pyzo, g.callers()
-        print('\nOutlineEditorShim.createFrame.')
         c = g.app.newCommander(fileName = self.filename)
             # Calls us again!
+        print('----- OutlineEditorShim.createFrame', self.filename)
         assert c
         
 

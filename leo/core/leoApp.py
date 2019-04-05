@@ -1569,6 +1569,8 @@ class LeoApp(object):
         # Create the commander and its subcommanders.
         # This takes about 3/4 sec when called by the leoBridge module.
         import leo.core.leoCommands as leoCommands
+        if g.pyzo:
+            print('----- app.newCommander', fileName)
         return leoCommands.Commands(fileName, relativeFileName, gui, previousSettings)
     #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
     def selectLeoWindow(self, c):

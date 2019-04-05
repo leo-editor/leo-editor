@@ -2029,7 +2029,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Command decorator for the LeoQtFrame class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
-    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (2 shims)
+    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (5 shims)
     def finishCreate(self):
 
         f = self
@@ -2037,6 +2037,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         assert c
         # returns DynamicWindow
         if g.pyzo:
+            print('----- QtFrame.finishCreate', c.fileName())
             import leo.core.leoFrame as leoFrame
             ### For now, just use dummies.
             f.tree = leoFrame.NullTree(f)
@@ -2047,7 +2048,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             g.app.windowList.append(f)
             c.bodyWantsFocus()
             return
-       # Old code.
+        # Old code.
         f.top = g.app.gui.frameFactory.createFrame(f)
             # f.top is a DynamicWindow.
         f.createIconBar() # A base class method.
