@@ -785,10 +785,9 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
     #@+node:ekr.20190405075322.1: *3* OutlineEditorShim.__init__
     def __init__(self, parent, **kwds):
         
-        if True or g.pyzo_trace:
-            print('\nOutlineEditorShim.__init__\n')
-            g.printObj(g.callers(30).split(','))
-                # g.callers(20))
+        if g.pyzo:
+            print('\nOutlineEditorShim.__init__')
+            # g.printObj(g.callers(30).split(','), tag='g.callers(): OutlineEditorShim.__init__')
         super().__init__(parent, **kwds)
         self._breakPoints = {}
         ### self.breakPointsChanged.emit(self)

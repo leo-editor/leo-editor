@@ -2299,7 +2299,7 @@ class LoadManager(object):
         lm = self
         g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.  Show it and all queued messages.
-        new = False and g.pyzo
+        new = True and g.pyzo
         c = c1 = None
         if new:
             pass
@@ -2327,6 +2327,9 @@ class LoadManager(object):
             c = None
             fileName = None ###
             g.app.log = g.TracingNullObject(tag='g.app.log')
+            # Import *all* of the pyzo packages.
+            import leo.core.pyzo_shims as pyzo_shims
+            pyzo_shims.MainWindowShim()
         else:
             if not c1 or not g.app.windowList:
                 c1 = lm.openEmptyWorkBook()
