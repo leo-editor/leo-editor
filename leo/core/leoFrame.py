@@ -1655,7 +1655,7 @@ class NullBody(LeoBody):
     '''A do-nothing body class.'''
     #@+others
     #@+node:ekr.20031218072017.2192: *3*  NullBody.__init__
-    def __init__(self, frame, parentFrame):
+    def __init__(self, frame=None, parentFrame=None):
         '''Ctor for NullBody class.'''
         LeoBody.__init__(self, frame, parentFrame)
             # Init the base class.

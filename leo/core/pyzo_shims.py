@@ -803,16 +803,20 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
         self.textCursor = TextCursorShim
         self.verticalScrollBar = ScrollBarShim
         # Create the outline!
-        ### self.createOutlineFrame()
+        self.createOutlineFrame()
 
     #@+node:ekr.20190405075440.1: *3* OutlineEditorShim.createOutlineFrame
     def createOutlineFrame(self):
         '''Create the outline frame.'''
         #
         # Like createFrame TabbedFrameFactory.createFrame.
-        if g.pyzo:
-            print('===== OutlineEditorShim.createFrame.')
-            return None ####
+        assert g.pyzo, g.callers()
+        print('\nOutlineEditorShim.createFrame.')
+        c = g.app.newCommander(fileName = self.filename)
+            # Calls us again!
+        assert c
+        
+
         # c = leoFrame.c
         ###
             # if self.masterFrame is None:
