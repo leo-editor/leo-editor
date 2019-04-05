@@ -2251,11 +2251,13 @@ class LoadManager(object):
             return
         g.app.disable_redraw = True
             # Disable redraw until all files are loaded.
+        #
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
         if g.app.killed:
             return
         g.app.idleTimeManager.start()
+        #
         # Phase 3: after loading plugins. Create one or more frames.
         if lm.options.get('script') and not self.files:
             ok = True
@@ -2297,40 +2299,49 @@ class LoadManager(object):
         lm = self
         g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.  Show it and all queued messages.
+        new = False and g.pyzo
         c = c1 = None
-        if lm.files:
-            for n, fn in enumerate(lm.files):
-                lm.more_cmdline_files = n < len(lm.files) - 1
-                c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
-                    # Returns None if the file is open in another instance of Leo.
-                if not c1: c1 = c
-        if g.app.restore_session:
-            m = g.app.sessionManager
-            if m:
-                aList = m.load_snapshot()
-                if aList:
-                    m.load_session(c1, aList)
-                    # tag:#659.
-                    if g.app.windowList:
-                        c = c1 = g.app.windowList[0].c
-                    else:
-                        c = c1 = None
+        if new:
+            pass
+        else:
+            if lm.files:
+                for n, fn in enumerate(lm.files):
+                    lm.more_cmdline_files = n < len(lm.files) - 1
+                    c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+                        # Returns None if the file is open in another instance of Leo.
+                    if not c1: c1 = c
+            if g.app.restore_session:
+                m = g.app.sessionManager
+                if m:
+                    aList = m.load_snapshot()
+                    if aList:
+                        m.load_session(c1, aList)
+                        # tag:#659.
+                        if g.app.windowList:
+                            c = c1 = g.app.windowList[0].c
+                        else:
+                            c = c1 = None
         # Enable redraws.
         g.app.disable_redraw = False
-        if not c1 or not g.app.windowList:
-            c1 = lm.openEmptyWorkBook()
-        # Fix bug #199.
-        g.app.runAlreadyOpenDialog(c1)
-        # Put the focus in the first-opened file.
-        fileName = lm.files[0] if lm.files else None
-        c = c1
-        # For qttabs gui, select the first-loaded tab.
-        if hasattr(g.app.gui, 'frameFactory'):
-            factory = g.app.gui.frameFactory
-            if factory and hasattr(factory, 'setTabForCommander'):
-                factory.setTabForCommander(c)
-        if not c:
-            return False # Force an immediate exit.
+        if new:
+            c = None
+            fileName = None ###
+            g.app.log = g.TracingNullObject(tag='g.app.log')
+        else:
+            if not c1 or not g.app.windowList:
+                c1 = lm.openEmptyWorkBook()
+            # Fix bug #199.
+            g.app.runAlreadyOpenDialog(c1)
+            # Put the focus in the first-opened file.
+            fileName = lm.files[0] if lm.files else None
+            c = c1
+            # For qttabs gui, select the first-loaded tab.
+            if hasattr(g.app.gui, 'frameFactory'):
+                factory = g.app.gui.frameFactory
+                if factory and hasattr(factory, 'setTabForCommander'):
+                    factory.setTabForCommander(c)
+            if not c:
+                return False # Force an immediate exit.
         # Fix bug 844953: tell Unity which menu to use.
             # if c: c.enableMenuBar()
         # Do the final inits.
