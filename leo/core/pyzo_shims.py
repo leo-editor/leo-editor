@@ -781,6 +781,8 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
     blockCountChanged = Signal()
     breakPointsChanged = Signal()
     
+    #@+others
+    #@+node:ekr.20190405075322.1: *3* OutlineEditorShim.__init__
     def __init__(self, parent, **kwds):
         
         if g.pyzo_trace:
@@ -799,7 +801,45 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
         self.parser = g.TracingNullObject(tag='OutlineEditorShim.parser')
         self.textCursor = TextCursorShim
         self.verticalScrollBar = ScrollBarShim
+        # Create the outline!
+        ### self.createOutlineFrame()
 
+    #@+node:ekr.20190405075440.1: *3* OutlineEditorShim.createOutlineFrame
+    def createOutlineFrame(self):
+        '''Create the outline frame.'''
+        #
+        # Like createFrame TabbedFrameFactory.createFrame.
+        if g.pyzo:
+            print('===== OutlineEditorShim.createFrame.')
+            return None ####
+        # c = leoFrame.c
+        ###
+            # if self.masterFrame is None:
+                # self.createMaster()
+            # tabw = self.masterFrame
+        # dw = DynamicWindow(c, parent=self)
+        ###
+            # self.leoFrames[dw] = leoFrame
+        # Shorten the title.
+        # title = os.path.basename(c.mFileName) if c.mFileName else leoFrame.title
+        # tip = leoFrame.title
+       
+        # dw.construct(master=None)
+        # else:
+            # dw.setWindowTitle(tip) # 2010/1/1
+            # idx = tabw.addTab(dw, title)
+            # if tip: tabw.setTabToolTip(idx, tip)
+            # dw.construct(master=tabw)
+            # tabw.setCurrentIndex(idx)
+            # g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
+            # # Work around the problem with missing dirty indicator
+            # # by always showing the tab.
+            # tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
+            # tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
+            # dw.show()
+            # tabw.show()
+        # return dw
+    #@+node:ekr.20190405075412.1: *3* OutlineEditorShim:do-nothings
     def blockCount(self):
         return 0
         
@@ -832,6 +872,8 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
         
     def setTitleInMainWindow(self):
         pass 
+    #@-others
+    
 #@+node:ekr.20190401074804.1: ** class ToolShim (Needed???)
 class ToolShim (object):
     '''
