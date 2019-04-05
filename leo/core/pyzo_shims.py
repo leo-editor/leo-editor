@@ -813,38 +813,9 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
         # Like createFrame TabbedFrameFactory.createFrame.
         assert g.pyzo, g.callers()
         c = g.app.newCommander(fileName = self.filename)
-            # Calls us again!
-        print('----- OutlineEditorShim.createFrame', self.filename)
         assert c
+        print('----- OutlineEditorShim.createOutlineFrame', c.shortFileName())
         
-
-        # c = leoFrame.c
-        ###
-            # if self.masterFrame is None:
-                # self.createMaster()
-            # tabw = self.masterFrame
-        # dw = DynamicWindow(c, parent=self)
-        ###
-            # self.leoFrames[dw] = leoFrame
-        # Shorten the title.
-        # title = os.path.basename(c.mFileName) if c.mFileName else leoFrame.title
-        # tip = leoFrame.title
-       
-        # dw.construct(master=None)
-        # else:
-            # dw.setWindowTitle(tip) # 2010/1/1
-            # idx = tabw.addTab(dw, title)
-            # if tip: tabw.setTabToolTip(idx, tip)
-            # dw.construct(master=tabw)
-            # tabw.setCurrentIndex(idx)
-            # g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
-            # # Work around the problem with missing dirty indicator
-            # # by always showing the tab.
-            # tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
-            # tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
-            # dw.show()
-            # tabw.show()
-        # return dw
     #@+node:ekr.20190405075412.1: *3* OutlineEditorShim:do-nothings
     def blockCount(self):
         return 0

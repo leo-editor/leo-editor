@@ -2037,7 +2037,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         assert c
         # returns DynamicWindow
         if g.pyzo:
-            print('----- QtFrame.finishCreate', c.fileName())
+            print('----- QtFrame.finishCreate', c.shortFileName())
             import leo.core.leoFrame as leoFrame
             ### For now, just use dummies.
             f.tree = leoFrame.NullTree(f)
