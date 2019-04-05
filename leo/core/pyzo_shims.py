@@ -23,7 +23,14 @@ import os
 import sys
 import time
 from leo.core.leoQt import QtCore, QtWidgets
-from PyQt5.QtCore import pyqtSignal as Signal
+try:
+    from PyQt5.QtCore import pyqtSignal as Signal
+except ImportError:
+    try:
+        from PyQt4.QtCore import pyqtSignal as Signal
+    except ImportError:
+        Signal = g.TracingNullObject
+
 #@-<< non-pyzo imports (pyzo_shims.py) >>
 
 old_loadFile = None
