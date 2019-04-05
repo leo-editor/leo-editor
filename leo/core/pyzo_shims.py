@@ -861,6 +861,15 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
         
     def setDebugLineIndicator(self, val):
         pass
+        
+    def setIndentUsingSpaces(self, style):
+        pass
+        
+    def setIndentWidth(self, width):
+        pass
+        
+    def setParser(self, val):
+        pass
 
     def setPlainText(self, text):
         pass
