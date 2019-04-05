@@ -2038,31 +2038,27 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # returns DynamicWindow
         if g.pyzo:
             import leo.core.leoFrame as leoFrame
-            f.tree = leoFrame.NullTree(f) ###
+            ### For now, just use dummies.
+            f.tree = leoFrame.NullTree(f)
             f.body = leoFrame.NullBody(f)
             f.log = leoFrame.NullLog(f)
             f.menu = g.TracingNullObject(tag='c.frame.menu')
             f.miniBufferWidget = g.TracingNullObject(tag='c.frame.miniBufferWidget')
-        else:
-            f.top = g.app.gui.frameFactory.createFrame(f)
-                ### Creates *pyzo* window.
-                ### f.top is a DynamicWindow.
-            f.createIconBar() # A base class method.
-            f.tree = qt_tree.LeoQtTree(c, f)
-                # AttributeError: 'NoneType' object has no attribute 'leo_ui'
-            f.createSplitterComponents()
-            f.createStatusLine() # A base class method.
-            f.menu = LeoQtMenu(c, f, label='top-level-menu')
+            g.app.windowList.append(f)
+            c.bodyWantsFocus()
+            return
+       # Old code.
+        f.top = g.app.gui.frameFactory.createFrame(f)
+            # f.top is a DynamicWindow.
+        f.createIconBar() # A base class method.
+        f.tree = qt_tree.LeoQtTree(c, f)
+        f.createSplitterComponents()
+        f.createStatusLine() # A base class method.
+        f.menu = LeoQtMenu(c, f, label='top-level-menu')
         f.createFirstTreeNode() # Call the base-class method.
-        if g.pyzo:
-            pass
-        else:
-            f.menu = LeoQtMenu(c, f, label='top-level-menu')
+        f.menu = LeoQtMenu(c, f, label='top-level-menu')
         g.app.windowList.append(f)
-        if g.pyzo:
-            pass
-        else:
-            f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
+        f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18251: *5* qtFrame.createSplitterComponents
     def createSplitterComponents(self):
