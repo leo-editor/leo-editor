@@ -633,7 +633,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         """ Override close event handler. """
         import pyzo.core.commandline as commandline
         
-        g.trace('MainWindowShim')
+        g.pr('\nMainWindowShim.closeEvent 1')
         
         t1 = time.clock()
 
@@ -684,7 +684,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         t5 = time.clock()
 
         if 1: # EKR
-            g.pr('===== MainWindowShim.closeEvent')
+            g.pr('\nMainWindowShim.closeEvent 2')
             g.pr('stage 1:          %5.2f' % (t2-t1))
             g.pr('stage 2: shells:  %5.2f' % (t3-t2))
             g.pr('stage 3: tools:   %5.2f' % (t4-t3))
@@ -774,8 +774,12 @@ class TextCursorShim(object):
         return 0
     def setPosition(self, pos):
         pass
+        
+from pyzo.codeeditor import CodeEditorBase
 
-class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
+class OutlineEditorShim(CodeEditorBase):
+    # QtWidgets.QFrame isn't placed properly!
+    # Was pyzo.core.editor.PyzoEditor
 
     somethingChanged = Signal()
     blockCountChanged = Signal()
@@ -783,12 +787,13 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
     
     #@+others
     #@+node:ekr.20190405075322.1: *3* OutlineEditorShim.__init__
-    def __init__(self, filename, parent, **kwds):
+    def __init__(self, filename, parent, **kwargs):
         
         if g.pyzo:
-            g.pr('\nOutlineEditorShim.__init__', filename, parent)
+            g.pr('\nOutlineEditorShim.__init__', filename)
             # g.printObj(g.callers(30).split(','), tag='g.callers(): OutlineEditorShim.__init__')
-        super().__init__(parent, **kwds)
+        super().__init__(parent, **kwargs)
+            # CodeEditorBase only passes args to *its* base class.
         self.c = None # Set in createOutlineFrame.
         self._breakPoints = {}
         ### self.breakPointsChanged.emit(self)
@@ -807,7 +812,7 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
         self.verticalScrollBar = ScrollBarShim
         # Create the outline!
         self.createOutlineFrame()
-    #@+node:ekr.20190405075440.1: *3* ***** OutlineEditorShim.createOutlineFrame
+    #@+node:ekr.20190405075440.1: *3* OutlineEditorShim.createOutlineFrame (TO DO)
     def createOutlineFrame(self):
         '''Create the outline frame.'''
         #
@@ -868,45 +873,61 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
     #@+node:ekr.20190405075412.1: *3* OutlineEditorShim:do-nothings
     def blockCount(self):
         return 0
-        
+
     def breakPoints(self):
         return list(sorted(self._breakPoints))
 
     def id(self):
         return self._filename or self._name
-        
+
     def indentUsingSpaces(self):
         return True
-        
+
     def indentWidth(self):
         return 4
-        
-    def setCheckedOption(self, val):
+
+    def save(self, filename=None):
         pass
-        
-    def setDebugLineIndicator(self, val):
-        pass
-        
+
     def setIndentUsingSpaces(self, style):
         pass
-        
+
+    def setCheckedOption(self, val):
+        pass
+
+    def setDebugLineIndicator(self, val):
+        pass
+
     def setIndentWidth(self, width):
         pass
-        
+
     def setParser(self, val):
         pass
 
     def setPlainText(self, text):
         pass
-        
-    def save(self, filename=None):
-        pass
-        
+
     def setTextCursor(self, obj):
         pass
-        
+
     def setTitleInMainWindow(self):
-        pass 
+        pass
+    #@+node:ekr.20190406165302.1: *3* OutlineEditorShim:set_style
+    def setStyle(self, style):
+        
+        suppress = (
+            'Editor.Highlight current line',
+            'Editor.Indentation guides',
+            'Editor.Line numbers',
+            'Editor.Long line indicator',
+        )
+        
+        def use_style(key):
+            return key not in suppress and not key.startswith('Syntax')
+
+        super().setStyle({
+            z: style.get(z) for z in style.keys() if use_style(z)
+        })
     #@-others
     
 #@+node:ekr.20190401074804.1: ** class ToolShim (Needed???)

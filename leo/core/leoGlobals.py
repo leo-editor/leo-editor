@@ -27,6 +27,7 @@ pyzo_patch = True
     # True: allow patches to pyzo itself.
 pyzo_outline_tab = True
     # True: OutlineEditorShim for .leo files.
+    # Patches createEditor function in pzyo/core/editor.py
 pyzo_trace = False
     # True: enable traces in pyzo itself.
 pyzo_trace_imports = True
