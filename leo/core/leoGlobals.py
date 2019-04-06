@@ -25,13 +25,12 @@ pyzo = True
     # because LM.scanOptions clears it unless --pyzo is in effect.
 pyzo_patch = True
     # True: allow patches to pyzo itself.
+pyzo_outline_tab = True
+    # True: OutlineEditorShim for .leo files.
 pyzo_trace = False
     # True: enable traces in pyzo itself.
 pyzo_trace_imports = True
     # True: enable traces of imports in pyzo itself.
-#
-# Now done in LM.doSimpleOptions.
-    # print('\n===== py3.pyzo branch: g.pyzo:', pyzo)
 SQLITE = True
     # True: Enable SQLite DB.
 #@-<< global switches >>
@@ -377,14 +376,14 @@ class Bunch(object):
 
     def __getitem__(self, key):
         '''Support aBunch[key]'''
-        # print('g.Bunch.__getitem__', key)
+        # g.pr('g.Bunch.__getitem__', key)
         return operator.getitem(self.__dict__, key)
 
     def get(self, key, theDefault=None):
         return self.__dict__.get(key, theDefault)
         
     def __contains__(self, key): # New.
-        # print('g.Bunch.__contains__', key in self.__dict__, key)
+        # g.pr('g.Bunch.__contains__', key in self.__dict__, key)
         return key in self.__dict__
 
 bunch = Bunch
@@ -1409,11 +1408,11 @@ def null_object_print_attr(id_, attr):
             # Print each signature once.  No need to filter!
             if signature not in tracing_signatures:
                 tracing_signatures [signature] = True
-                print('%40s %s' % (s, callers))
+                g.pr('%40s %s' % (s, callers))
         else:
             # Filter traces.
             if not in_callers and s not in suppress_attrs:
-                print('%40s %s' % (s, callers))
+                g.pr('%40s %s' % (s, callers))
 #@+node:ekr.20190330072832.1: *4* g.null_object_print
 def null_object_print(id_, kind):
     tag = tracing_tags.get(id_, "<NO TAG>")
@@ -1423,11 +1422,11 @@ def null_object_print(id_, kind):
     signature = '%s:%s' % (s, callers)
     if 0:
         # Always print:
-        print('%40s %s' % (s, callers))
+        g.pr('%40s %s' % (s, callers))
     elif signature not in tracing_signatures:
         # Print each signature once.
         tracing_signatures [signature] = True
-        print('%40s %s' % (s, callers))
+        g.pr('%40s %s' % (s, callers))
 #@+node:ekr.20190317093640.1: *3* NOT USED: << class NullObject >>
 #@+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
 class PosList(list):

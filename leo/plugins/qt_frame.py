@@ -33,7 +33,7 @@ except ImportError:
 #@-<< imports >>
 #@+others
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
-dw_base = object if g.pyzo else QtWidgets.QMainWindow
+dw_base = QtWidgets.QFrame if g.pyzo else QtWidgets.QMainWindow
 
 class DynamicWindow(dw_base):
     '''
@@ -58,7 +58,7 @@ class DynamicWindow(dw_base):
             # Called from LeoQtFrame.finishCreate.
             # For qttabs gui, parent is a LeoTabbedTopLevel.
         if g.pyzo:
-            pass
+            QtWidgets.QFrame.__init__(self, parent)
         else:
             QtWidgets.QMainWindow.__init__(self, parent) # pylint: disable=non-parent-init-called
         self.leo_c = c
@@ -105,6 +105,9 @@ class DynamicWindow(dw_base):
     def construct(self, master=None):
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         c = self.leo_c
+        if g.pyzo:
+            g.pr('DynamicWindow.contruct: master:', repr(master))
+            assert False, g.callers()
         self.leo_master = master or g.TracingNullObject(tag='dw.leo_master')
             # A LeoTabbedTopLevel for tabbed windows.
             # None for non-tabbed windows.
@@ -1357,8 +1360,7 @@ class LeoQtBody(leoFrame.LeoBody):
         '''Command decorator for the c.frame.body class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
-    #@+node:ekr.20110605121601.18181: *3* LeoQtBody.Birth
-    #@+node:ekr.20110605121601.18182: *4* LeoQtBody.ctor
+    #@+node:ekr.20110605121601.18182: *3* LeoQtBody.ctor & helpers
     def __init__(self, frame, parentFrame):
         '''Ctor for LeoQtBody class.'''
         # Call the base class constructor.
@@ -1382,16 +1384,16 @@ class LeoQtBody(leoFrame.LeoBody):
         self.textRendererLabel = None
         self.textRendererVisible = False
         self.textRendererWrapper = None
-    #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
+    #@+node:ekr.20110605121601.18185: *4* LeoQtBody.get_name
     def getName(self):
         return 'body-widget'
-    #@+node:ekr.20140901062324.18562: *5* LeoQtBody.reloadSettings
+    #@+node:ekr.20140901062324.18562: *4* LeoQtBody.reloadSettings
     def reloadSettings(self):
         c = self.c
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.use_chapters = c.config.getBool('use-chapters')
         self.use_gutter = c.config.getBool('use-gutter', default=False)
-    #@+node:ekr.20160309074124.1: *5* LeoQtBody.set_invisibles
+    #@+node:ekr.20160309074124.1: *4* LeoQtBody.set_invisibles
     def set_invisibles(self, c):
         '''Set the show-invisibles bit in the document.'''
         d = c.frame.body.wrapper.widget.document()
@@ -1399,13 +1401,16 @@ class LeoQtBody(leoFrame.LeoBody):
         if c.frame.body.colorizer.showInvisibles:
             option.setFlags(QtGui.QTextOption.ShowTabsAndSpaces)
         d.setDefaultTextOption(option)
-    #@+node:ekr.20140901062324.18563: *5* LeoQtBody.set_widget
+    #@+node:ekr.20140901062324.18563: *4* LeoQtBody.set_widget
     def set_widget(self):
         '''Set the actual gui widget.'''
         c = self.c
-        top = c.frame.top
-        sw = top.leo_ui.stackedWidget
-        sw.setCurrentIndex(1)
+        if g.pyzo:
+            pass
+        else:
+            top = c.frame.top
+            sw = top.leo_ui.stackedWidget
+            sw.setCurrentIndex(1)
         if self.useScintilla and not Qsci:
             g.trace('Can not import Qsci: ignoring @bool qt-use-scintilla')
         if self.useScintilla and Qsci:
@@ -1415,12 +1420,14 @@ class LeoQtBody(leoFrame.LeoBody):
             self.wrapper = qt_text.QScintillaWrapper(self.widget, name='body', c=c)
             self.colorizer = leoColorizer.QScintillaColorizer(c, self.widget, self.wrapper)
         else:
-            self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
+            if g.pyzo:
+                self.widget = qt_text.LeoQTextBrowser(c.frame, c, None)
+            else:
+                self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
             self.widget.setAcceptRichText(False)
             self.colorizer = leoColorizer.JEditColorizer(c, self.widget, self.wrapper)
-
-    #@+node:ekr.20110605121601.18183: *5* LeoQtBody.setWrap
+    #@+node:ekr.20110605121601.18183: *4* LeoQtBody.setWrap
     def setWrap(self, p=None, force=False):
         '''Set **only** the wrap bits in the body.'''
         if not p or self.useScintilla:
@@ -2037,16 +2044,19 @@ class LeoQtFrame(leoFrame.LeoFrame):
         assert c
         # returns DynamicWindow
         if g.pyzo:
-            print('----- QtFrame.finishCreate', c.shortFileName())
+            # A hack: use dummies until later, when real  
+            g.pr('----- QtFrame.finishCreate', c.shortFileName())
+            assert isinstance(c.frame, LeoQtFrame), repr(c.frame)
             import leo.core.leoFrame as leoFrame
-            ### For now, just use dummies.
+            import leo.core.leoMenu as leoMenu
+            #
             f.tree = leoFrame.NullTree(f)
             f.body = leoFrame.NullBody(f)
             f.log = leoFrame.NullLog(f)
-            f.menu = g.TracingNullObject(tag='c.frame.menu')
+            f.menu = leoMenu.NullMenu(f) ### g.TracingNullObject(tag='c.frame.menu')
             f.miniBufferWidget = g.TracingNullObject(tag='c.frame.miniBufferWidget')
-            g.app.windowList.append(f)
-            c.bodyWantsFocus()
+            # g.app.windowList.append(f)
+            # c.bodyWantsFocus()
             return
         # Old code.
         f.top = g.app.gui.frameFactory.createFrame(f)
@@ -2055,7 +2065,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         f.tree = qt_tree.LeoQtTree(c, f)
         f.createSplitterComponents()
         f.createStatusLine() # A base class method.
-        f.menu = LeoQtMenu(c, f, label='top-level-menu')
         f.createFirstTreeNode() # Call the base-class method.
         f.menu = LeoQtMenu(c, f, label='top-level-menu')
         g.app.windowList.append(f)
@@ -2286,7 +2295,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 self.put1(
                     "fline: %2s line: %2d col: %2s fcol: %2s" % (fline, row, col, fcol))
         #@-others
-    #@+node:ekr.20110605121601.18262: *3* qtFrame.class QtIconBarClass
+    #@+node:ekr.20110605121601.18262: *3* qtFrame.class QtIconBarClass (object)
     class QtIconBarClass(object):
         '''A class representing the singleton Icon bar'''
         #@+others
@@ -3062,22 +3071,27 @@ class LeoQtLog(leoFrame.LeoLog):
         self.logDict = {} # Keys are tab names text widgets.  Values are the widgets.
         self.logWidget = None # Set in finishCreate.
         self.menu = None # A menu that pops up on right clicks in the hull or in tabs.
-        self.tabWidget = tw = c.frame.top.leo_ui.tabWidget
+        if g.pyzo:
+            self.tabWidget = tw = frame
+        else:
+            self.tabWidget = tw = c.frame.top.leo_ui.tabWidget
             # The Qt.QTabWidget that holds all the tabs.
-        # Fixes bug 917814: Switching Log Pane tabs is done incompletely.
-        tw.currentChanged.connect(self.onCurrentChanged)
+            # Fixes bug 917814: Switching Log Pane tabs is done incompletely.
+            tw.currentChanged.connect(self.onCurrentChanged)
         if 0: # Not needed to make onActivateEvent work.
             # Works only for .tabWidget, *not* the individual tabs!
             theFilter = qt_events.LeoQtEventFilter(c, w=tw, tag='tabWidget')
             tw.installEventFilter(theFilter)
         # 2013/11/15: Partial fix for bug 1251755: Log-pane refinements
-        tw.setMovable(True)
+        if g.pyzo:
+            pass
+        else:
+            tw.setMovable(True)
         self.reloadSettings()
         
     def reloadSettings(self):
         c = self.c
         self.wrap = bool(c.config.getBool('log-pane-wraps'))
-        
     #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''
@@ -4514,11 +4528,11 @@ class TabbedFrameFactory(object):
         self.masterFrame = None
         self.createTabCommands()
 
-    #@+node:ekr.20110605121601.18466: *3* createFrame (TabbedFrameFactory)
+    #@+node:ekr.20110605121601.18466: *3* createFrame (TabbedFrameFactory) 
     def createFrame(self, leoFrame):
 
-        if g.pyzo: g.trace('\n===== TabbedFrameFactory: create DynamicWindow')
         c = leoFrame.c
+        assert not g.pyzo, g.callers()
         if self.masterFrame is None:
             self.createMaster()
         tabw = self.masterFrame
@@ -4527,21 +4541,18 @@ class TabbedFrameFactory(object):
         # Shorten the title.
         title = os.path.basename(c.mFileName) if c.mFileName else leoFrame.title
         tip = leoFrame.title
-        if g.pyzo:
-            dw.construct(master=None)
-        else:
-            dw.setWindowTitle(tip) # 2010/1/1
-            idx = tabw.addTab(dw, title)
-            if tip: tabw.setTabToolTip(idx, tip)
-            dw.construct(master=tabw)
-            tabw.setCurrentIndex(idx)
-            g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
-            # Work around the problem with missing dirty indicator
-            # by always showing the tab.
-            tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
-            tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
-            dw.show()
-            tabw.show()
+        dw.setWindowTitle(tip) # 2010/1/1
+        idx = tabw.addTab(dw, title)
+        if tip: tabw.setTabToolTip(idx, tip)
+        dw.construct(master=tabw)
+        tabw.setCurrentIndex(idx)
+        g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
+        # Work around the problem with missing dirty indicator
+        # by always showing the tab.
+        tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
+        tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
+        dw.show()
+        tabw.show()
         return dw
     #@+node:ekr.20110605121601.18468: *3* createMaster (TabbedFrameFactory) (1 shim)
     def createMaster(self):

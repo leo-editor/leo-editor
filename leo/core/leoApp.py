@@ -1570,7 +1570,7 @@ class LeoApp(object):
         # This takes about 3/4 sec when called by the leoBridge module.
         import leo.core.leoCommands as leoCommands
         if g.pyzo:
-            print('----- app.newCommander', g.shortFileName(fileName))
+            g.pr('----- app.newCommander', g.shortFileName(fileName))
         return leoCommands.Commands(fileName, relativeFileName, gui, previousSettings)
     #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
     def selectLeoWindow(self, c):
@@ -2853,7 +2853,7 @@ class LoadManager(object):
             not options.minimized)
         # --pyzo
         g.pyzo = g.pyzo and options.pyzo
-        print('\n===== py3.pyzo branch: --pyzo:', bool(g.pyzo))
+        g.pr('\n===== py3.pyzo branch: --pyzo:', bool(g.pyzo))
         # --session-restore & --session-save
         g.app.restore_session = bool(options.session_restore)
         g.app.save_session = bool(options.session_save)

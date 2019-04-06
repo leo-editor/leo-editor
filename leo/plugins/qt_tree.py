@@ -47,7 +47,8 @@ class LeoQtTree(leoFrame.LeoTree):
         self.canvas = self # An official ivar used by Leo's core.
         self.headlineWrapper = qt_text.QHeadlineWrapper # This is a class.
         if g.pyzo:
-            self.treeWidget = w = frame.top.leo_ui.treeWidget
+            self.treeWidget = w = frame
+            ### self.treeWidget = w = frame.top.leo_ui.treeWidget
         else:
             self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.
@@ -74,6 +75,8 @@ class LeoQtTree(leoFrame.LeoTree):
                 def mimeData(self, indexes):
                     g.trace()
         # Early inits...
+        if g.pyzo:
+            return
         try:
             w.headerItem().setHidden(True)
         except Exception:

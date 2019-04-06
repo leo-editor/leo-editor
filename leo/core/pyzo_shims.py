@@ -85,7 +85,7 @@ class ConfigShim(config_base):
     
     def __init__(self):
         config_base.__init__(self)
-        print('\n===== ConfigShim: new_config: %s\n' % new_config)
+        g.pr('\n===== ConfigShim: new_config: %s\n' % new_config)
     
     if new_config:
         #@+<< define bunch settings >>
@@ -328,7 +328,7 @@ class ConfigShim(config_base):
                     raise
             if key not in config_shim_seen:
                 config_shim_seen [key] = True
-                print('\n===== ConfigShim.__getattribute__', key, val)
+                g.pr('\n===== ConfigShim.__getattribute__', key, val)
             return val
         #@+node:ekr.20190331052308.4: *4* ConfigShim.__setattr__ (not used)
         # def __setattr__(self, key, val):
@@ -371,14 +371,14 @@ class ConfigShim(config_base):
                 ### return object.__getattribute__(self, key)
                 val = object.__getattribute__(self, key)
                 if False and key not in ('advanced', 'shortcuts2', 'settings'):
-                    # print('===== LeoPyzoConfig 1: %r: %r' % (key, val))
-                    print('===== LeoPyzoConfig 1: %r' % key)
+                    # g.pr('===== LeoPyzoConfig 1: %r: %r' % (key, val))
+                    g.pr('===== LeoPyzoConfig 1: %r' % key)
                 return val
             except AttributeError:
                 if key in self:
                     if False and key not in ('advanced', 'shortcuts2', 'settings'):
-                        # print('===== LeoPyzoConfig 1: %r: %r' % (key, g.truncate(self[key], 50)))
-                        print('===== LeoPyzoConfig 2: %r' % key)
+                        # g.pr('===== LeoPyzoConfig 1: %r: %r' % (key, g.truncate(self[key], 50)))
+                        g.pr('===== LeoPyzoConfig 2: %r' % key)
                     return self[key]
                 else:
                     raise
@@ -413,7 +413,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
     # The shell never warms up if there are no menus.
     # So for now just force use_menu to True.
     if use_shell and not use_menu:
-        print('\nMainWindowShim: use_shell sets use_menu = True\n')
+        g.pr('\nMainWindowShim: use_shell sets use_menu = True\n')
         use_menu = True
     #@-<< MainWindowShim switches >>
 
@@ -518,7 +518,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             try:
                 self.setStyleSheet("background: %s" % bg) 
             except Exception:
-                print('oops: MainWindow.__init__')
+                g.pr('oops: MainWindow.__init__')
         #
         # Put the focus on editor
         e = pyzo.editors.getCurrentEditor()
@@ -538,17 +538,17 @@ class MainWindowShim(pyzo.core.main.MainWindow):
 
         # Delayed imports, exactly as in MainWindow._populate.
         if trace:
-            print('\n===== MainWindowShim._populate\n')
+            g.pr('\n===== MainWindowShim._populate\n')
         from pyzo.core.editorTabs import EditorTabs
         from pyzo.core.shellStack import ShellStackWidget
         from pyzo.core import codeparser
         from pyzo.core.history import CommandHistory
         from pyzo.tools import ToolManager
         if trace:
-            print('\n===== MainWindowShim._populate: end of delayed imports\n')
-            print('initial_draw:', self.initial_draw)
-            print('    use_menu:', self.use_menu)
-            print('   use_shell:', self.use_shell)
+            g.pr('\n===== MainWindowShim._populate: end of delayed imports\n')
+            g.pr('initial_draw:', self.initial_draw)
+            g.pr('    use_menu:', self.use_menu)
+            g.pr('   use_shell:', self.use_shell)
         #
         # Instantiate tool manager
         pyzo.toolManager = ToolManager()
@@ -684,11 +684,11 @@ class MainWindowShim(pyzo.core.main.MainWindow):
         t5 = time.clock()
 
         if 1: # EKR
-            print('===== MainWindowShim.closeEvent')
-            print('stage 1:          %5.2f' % (t2-t1))
-            print('stage 2: shells:  %5.2f' % (t3-t2))
-            print('stage 3: tools:   %5.2f' % (t4-t3))
-            print('stage 4: threads: %5.2f' % (t5-t4))
+            g.pr('===== MainWindowShim.closeEvent')
+            g.pr('stage 1:          %5.2f' % (t2-t1))
+            g.pr('stage 2: shells:  %5.2f' % (t3-t2))
+            g.pr('stage 3: tools:   %5.2f' % (t4-t3))
+            g.pr('stage 4: threads: %5.2f' % (t5-t4))
 
         # Proceed as normal
         QtWidgets.QMainWindow.closeEvent(self, event)
@@ -786,9 +786,10 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
     def __init__(self, filename, parent, **kwds):
         
         if g.pyzo:
-            print('\nOutlineEditorShim.__init__', filename)
+            g.pr('\nOutlineEditorShim.__init__', filename, parent)
             # g.printObj(g.callers(30).split(','), tag='g.callers(): OutlineEditorShim.__init__')
         super().__init__(parent, **kwds)
+        self.c = None # Set in createOutlineFrame.
         self._breakPoints = {}
         ### self.breakPointsChanged.emit(self)
         ### self.__breakPointArea.update()
@@ -806,16 +807,64 @@ class OutlineEditorShim(QtWidgets.QFrame): # pyzo.core.editor.PyzoEditor
         self.verticalScrollBar = ScrollBarShim
         # Create the outline!
         self.createOutlineFrame()
-    #@+node:ekr.20190405075440.1: *3* OutlineEditorShim.createOutlineFrame
+    #@+node:ekr.20190405075440.1: *3* ***** OutlineEditorShim.createOutlineFrame
     def createOutlineFrame(self):
         '''Create the outline frame.'''
         #
         # Like createFrame TabbedFrameFactory.createFrame.
         assert g.pyzo, g.callers()
-        c = g.app.newCommander(fileName = self.filename)
-        assert c
-        print('----- OutlineEditorShim.createOutlineFrame', c.shortFileName())
+        self.c = c = g.app.newCommander(fileName = self.filename)
+        g.pr('----- OutlineEditorShim.createOutlineFrame', c.shortFileName())
+        f = c.frame
+            # f is a LeoFrame, *not* a QWidget.
+        if 0:
+            ### Works. Just use dummies.
+            import leo.core.leoFrame as leoFrame
+            f.tree = leoFrame.NullTree(f)
+            f.body = leoFrame.NullBody(f)
+            f.log = leoFrame.NullLog(f)
+            f.menu = g.TracingNullObject(tag='c.frame.menu')
+            f.miniBufferWidget = g.TracingNullObject(tag='c.frame.miniBufferWidget')
+            g.app.windowList.append(f)
+            c.bodyWantsFocus()
+            return
         
+        import leo.plugins.qt_frame as qt_frame
+        import leo.plugins.qt_text as qt_text
+        import leo.plugins.qt_tree as qt_tree
+        assert isinstance(c.frame, qt_frame.LeoQtFrame), repr(c.frame)
+        ### f.top = g.app.gui.frameFactory.createFrame(f)
+        ### f.top = qt_frame.DynamicWindow(c, f)
+            # f.top is a DynamicWindow.
+            ### dw.leo_ui = dw ### weird
+            ### self.leoFrames[dw] = leoFrame
+        ### f.top = QtWidgets.QFrame(parent = ???)
+        ### f.createIconBar() # A base class method.
+        parent = self.parent()
+            # A EditorTabs, a QWidget.
+        if 0: # Works, but it's in a weird place.
+            w = QtWidgets.QWidget(parent)
+            w.setStyleSheet('background: red')
+            w.show()
+        
+        # f.top.iconBar = QtWidgets.QToolBar('toolbar', parent)
+        ### f.iconBar = f.iconBarClass(c, parent)
+        # f.iconBar = f.QtIconBarClass(c, parent)
+        
+        ### f.createSplitterComponents()
+        if 0:
+            f.tree = qt_tree.LeoQtTree(c, parent)
+            f.log = qt_text.LeoQtLog(parent, None)
+            f.body = qt_text.LeoQtBody(parent, None)
+            f.splitVerticalFlag, ratio, secondary_ratio = f.initialRatios()
+            f.resizePanesToRatio(ratio, secondary_ratio)
+        if 0:
+            f.createStatusLine() # A base class method.
+            f.createFirstTreeNode() # Call the base-class method.
+            f.menu = qt_frame.LeoQtMenu(c, f, label='top-level-menu')
+            g.app.windowList.append(f)
+            f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
+        c.bodyWantsFocus()
     #@+node:ekr.20190405075412.1: *3* OutlineEditorShim:do-nothings
     def blockCount(self):
         return 0
