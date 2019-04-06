@@ -755,7 +755,7 @@ class MenuShim (object):
     '''Adaptor class standing between Leo and Pyzo menus.'''
     #@+others
     #@-others
-#@+node:ekr.20190401085747.1: ** class OutlineEditorShim (QFrame)
+#@+node:ekr.20190401085747.1: ** class OutlineEditorShim (QAbstractScrollArea)
 class DocumentShim(object):
     modified = False
     def isModified(self):
@@ -776,8 +776,11 @@ class TextCursorShim(object):
         pass
         
 from pyzo.codeeditor import CodeEditorBase
+assert CodeEditorBase
+QAbstractScrollArea = QtWidgets.QAbstractScrollArea
 
-class OutlineEditorShim(CodeEditorBase):
+class OutlineEditorShim(QtWidgets.QFrame):
+    # QtWidgets.QAbstractScrollArea: placed properly?
     # QtWidgets.QFrame isn't placed properly!
     # Was pyzo.core.editor.PyzoEditor
 
@@ -789,27 +792,30 @@ class OutlineEditorShim(CodeEditorBase):
     #@+node:ekr.20190405075322.1: *3* OutlineEditorShim.__init__
     def __init__(self, filename, parent, **kwargs):
         
-        if g.pyzo:
-            g.pr('\nOutlineEditorShim.__init__', filename)
-            # g.printObj(g.callers(30).split(','), tag='g.callers(): OutlineEditorShim.__init__')
+        assert g.pyzo, g.callers()
+        g.pr('\nOutlineEditorShim.__init__', g.shortFileName(filename))
+        # g.printObj(g.callers(30).split(','), tag='OutlineEditorShim.__init__')
+        # if filename.endswith('.leo'): g.pdb()
         super().__init__(parent, **kwargs)
             # CodeEditorBase only passes args to *its* base class.
         self.c = None # Set in createOutlineFrame.
-        self._breakPoints = {}
-        ### self.breakPointsChanged.emit(self)
-        ### self.__breakPointArea.update()
-        self.document = DocumentShim
-            # g.TracingNullObject(tag='OutlineEditorShim.document')
-        self.lineEndingsHumanReadable = 'CRLF'
         self._filename = self.filename = filename
             # Essential, so the tab will close properly.
         self._name = self.name = os.path.split(filename)[1]
             # To set the tab's name properly.
-        # Helper shims...
-        self.horizontalScrollBar = ScrollBarShim
-        self.parser = g.TracingNullObject(tag='OutlineEditorShim.parser')
-        self.textCursor = TextCursorShim
-        self.verticalScrollBar = ScrollBarShim
+        if not isinstance(self, CodeEditorBase):
+            g.pr('\nOutlineEditorShim: using shims')
+            #
+            # Needed if this is just a QWidget.
+            self._breakPoints = {}
+            # self.breakPointsChanged.emit(self)
+            # self.__breakPointArea.update()
+            self.lineEndingsHumanReadable = 'CRLF'
+            self.document = DocumentShim
+            self.horizontalScrollBar = ScrollBarShim
+            self.parser = g.TracingNullObject(tag='OutlineEditorShim.parser')
+            self.textCursor = TextCursorShim
+            self.verticalScrollBar = ScrollBarShim
         # Create the outline!
         self.createOutlineFrame()
     #@+node:ekr.20190405075440.1: *3* OutlineEditorShim.createOutlineFrame (TO DO)
@@ -847,6 +853,9 @@ class OutlineEditorShim(CodeEditorBase):
         ### f.createIconBar() # A base class method.
         parent = self.parent()
             # A EditorTabs, a QWidget.
+        if 1:
+            self.setStyleSheet('background: red')
+            # does nothing.
         if 0: # Works, but it's in a weird place.
             w = QtWidgets.QWidget(parent)
             w.setStyleSheet('background: red')
