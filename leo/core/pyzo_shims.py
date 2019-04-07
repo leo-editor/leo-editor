@@ -801,7 +801,6 @@ class OutlineEditorShim(QtWidgets.QFrame):
         assert g.pyzo, g.callers()
         g.pr('\nOutlineEditorShim.__init__', g.shortFileName(filename))
         # g.printObj(g.callers(30).split(','), tag='OutlineEditorShim.__init__')
-        # if filename.endswith('.leo'): g.pdb()
         super().__init__(parent, **kwargs)
             # CodeEditorBase only passes args to *its* base class.
         self.c = None # Set in createOutlineFrame.
@@ -838,14 +837,15 @@ class OutlineEditorShim(QtWidgets.QFrame):
             parentFrame=self,
         )
         c.bodyWantsFocus()
-    #@+node:ekr.20190407044153.1: *3* OutlineEditorShim.finishCreate
+    #@+node:ekr.20190407044153.1: *3* OutlineEditorShim.finishCreate (FINISH)
     def finishCreate(self, c):
         '''Create the entire Leo main window in the shim itself.'''
         import leo.plugins.qt_frame as qt_frame
+        # import leo.plugins.qt_menu as qt_menu
         import leo.plugins.qt_text as qt_text
-        import leo.plugins.qt_tree as qt_tree
+        # import leo.plugins.qt_tree as qt_tree
         self.c = c
-        parent = self
+        ### parent = self
             # "self" works as the parent!
         g.pr('----- OutlineEditorShim.finishCreate')
         f = c.frame
@@ -853,27 +853,30 @@ class OutlineEditorShim(QtWidgets.QFrame):
         c.frame.c = c
         assert isinstance(c.frame, qt_frame.LeoQtFrame), repr(c.frame)
         import leo.core.leoFrame as leoFrame
-        f.tree = leoFrame.NullTree(f)
-        f.menu = g.NullObject(tag='c.frame.menu')
-        f.menu = g.NullObject(tag='c.frame.log')
-            # Not ready: assumes an inited tabWidget ivar.
+        if 0:
+            f.tree = leoFrame.NullTree(f)
+                # for createFirstTreeNode
+            f.createFirstTreeNode()
         self.setStyleSheet('background: red')
-        f.createFirstTreeNode()
+        #
+        # From SDIFrameFactory.createFrame
+        dw = qt_frame.DynamicWindow(c, parent=self)
+        dw.construct()
+            # This just creates frames for components.
+        dw.show()
+        f.top = dw
+        g.trace('dw.treeWidget', dw.treeWidget)
+        #
+        # From LeoQtFrame.finishCreate.
+        f.createIconBar() # A base class method.
+        f.createSplitterComponents()
+        ### f.createStatusLine() # A base class method.
+        f.createFirstTreeNode() # Call the base-class method.
+        ### f.menu = qt_menu.LeoQtMenu(c, f, label='top-level-menu')
+        f.menu=g.TracingNullObject(tag='c.frame.menu')
         g.app.windowList.append(f)
-        if 1:
-            f.tree = qt_tree.LeoQtTree(c, parent)
-            # f.log = qt_frame.LeoQtLog(parent, None)
-            f.body = qt_frame.LeoQtBody(c.frame, parentFrame=self)
-            f.splitVerticalFlag, ratio, secondary_ratio = f.initialRatios()
-            f.resizePanesToRatio(ratio, secondary_ratio)
-        if 0:
-            f.createSplitterComponents()
-                # QTreeWidget(parent: QWidget = None):
-                # argument 1 has unexpected type 'LeoQtFrame'
-        if 0:
-            f.createStatusLine() # A base class method.
-            f.menu = qt_frame.LeoQtMenu(c, f, label='top-level-menu')
-            f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
+        f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
+        c.bodyWantsFocus()
     #@+node:ekr.20190406165302.1: *3* OutlineEditorShim.set_style
     def setStyle(self, style):
         

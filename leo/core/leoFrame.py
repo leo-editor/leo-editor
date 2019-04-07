@@ -221,8 +221,8 @@ class LeoBody(object):
         self.parentFrame = parentFrame # New in Leo 4.6.
         self.totalNumberOfEditors = 0
         # May be overridden in subclasses...
-        self.widget = None # set in LeoQtBody.setWidget.
-        self.wrapper = None # set in LeoQtBody.setWidget.
+        self.widget = None # set in LeoQtBody.set_widget.
+        self.wrapper = None # set in LeoQtBody.set_widget.
         self.numberOfEditors = 1
         self.pb = None # paned body widget.
         # Must be overridden in subclasses...

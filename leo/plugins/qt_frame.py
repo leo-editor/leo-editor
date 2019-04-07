@@ -32,7 +32,7 @@ except ImportError:
     splitter_class = QtWidgets.QSplitter
 #@-<< imports >>
 #@+others
-#@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
+#@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow or QFrame)
 dw_base = QtWidgets.QFrame if g.pyzo else QtWidgets.QMainWindow
 
 class DynamicWindow(dw_base):
@@ -57,14 +57,15 @@ class DynamicWindow(dw_base):
         '''Ctor for the DynamicWindow class.  The main window is c.frame.top'''
             # Called from LeoQtFrame.finishCreate.
             # For qttabs gui, parent is a LeoTabbedTopLevel.
+        self.leo_c = c
         if g.pyzo:
             g.pr('===== DynamicWindow.__init__')
             assert parent, g.callers()
             QtWidgets.QFrame.__init__(self, parent)
+            self.leo_master = parent
         else:
             QtWidgets.QMainWindow.__init__(self, parent) # pylint: disable=non-parent-init-called
-        self.leo_c = c
-        self.leo_master = None # Set in construct.
+            self.leo_master = None # Set in construct.
         self.leo_menubar = None # Set in createMenuBar.
         self.leo_ui = None # Set in construct.
         c._style_deltas = defaultdict(lambda: 0) # for adjusting styles dynamically
@@ -103,28 +104,33 @@ class DynamicWindow(dw_base):
 
     def do_leo_spell_btn_Ignore(self):
         self.doSpellBtn('onIgnoreButton')
-    #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers
+    #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers (Test)
     def construct(self, master=None):
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         c = self.leo_c
         if g.pyzo:
-            g.pr('DynamicWindow.contruct: master:', repr(master))
-        self.leo_master = master or g.TracingNullObject(tag='dw.leo_master')
-            # A LeoTabbedTopLevel for tabbed windows.
-            # None for non-tabbed windows.
+            g.pr('DynamicWindow.contruct: master:', repr(self.leo_master))
+        else:
+            self.leo_master = master
+                # A LeoTabbedTopLevel for tabbed windows.
+                # None for non-tabbed windows.
         # Init the base class.
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.reloadSettings()
         main_splitter, secondary_splitter = self.createMainWindow()
-        self.iconBar = self.addToolBar("IconBar")
-        self.set_icon_bar_orientation(c)
-        # #266 A setting to hide the icon bar.
-        # Calling reloadSettings again would also work.
-        if not self.show_iconbar:
-            self.iconBar.hide()
-        self.leo_menubar = self.menuBar()
-        self.statusBar = QtWidgets.QStatusBar()
-        self.setStatusBar(self.statusBar)
+        if g.pyzo:
+            self.iconBar = g.TracingNullObject(tag='dw.iconBar')
+            self.statusBar = g.TracingNullObject(tag='dw.statusBar')
+        else:
+            self.iconBar = self.addToolBar("IconBar")
+            self.set_icon_bar_orientation(c)
+            # #266 A setting to hide the icon bar.
+            # Calling reloadSettings again would also work.
+            if not self.show_iconbar:
+                self.iconBar.hide()
+            self.leo_menubar = self.menuBar()
+            self.statusBar = QtWidgets.QStatusBar()
+            self.setStatusBar(self.statusBar)
         orientation = c.config.getString('initial-split-orientation')
         self.setSplitDirection(main_splitter, secondary_splitter, orientation)
         if hasattr(c, 'styleSheetManager'):
@@ -153,9 +159,13 @@ class DynamicWindow(dw_base):
         '''
         dw = self
         self.leo_ui = self
-        self.setMainWindowOptions()
-        self.createCentralWidget()
-        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        if g.pyzo:
+            self.centralwidget = self.leo_master
+            main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        else:
+            self.setMainWindowOptions()
+            self.createCentralWidget()
+            main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
             # Creates .verticalLayout
         if self.bigTree:
             self.createBodyPane(secondary_splitter)
@@ -275,10 +285,13 @@ class DynamicWindow(dw_base):
         self.setSizePolicy(secondary_splitter)
         self.verticalLayout.addWidget(main_splitter)
         return main_splitter, secondary_splitter
-    #@+node:ekr.20110605121601.18147: *5* dw.createMenuBar
+    #@+node:ekr.20110605121601.18147: *5* dw.createMenuBar (changed)
     def createMenuBar(self):
         '''Create Leo's menu bar.'''
         dw = self
+        if g.pyzo:
+            self.leo_menubar = g.TracingNullObject(tag='dw.leo_menubar')
+            return
         w = QtWidgets.QMenuBar(dw)
         w.setNativeMenuBar(platform.system() == 'Darwin')
         w.setGeometry(QtCore.QRect(0, 0, 957, 22))
@@ -360,9 +373,12 @@ class DynamicWindow(dw_base):
         # Official ivars...
         self.treeWidget = treeWidget
         return treeFrame
-    #@+node:ekr.20110605121601.18150: *5* dw.createStatusBar
+    #@+node:ekr.20110605121601.18150: *5* dw.createStatusBar (changed)
     def createStatusBar(self, parent):
         '''Create the widgets and ivars for Leo's status area.'''
+        if g.pyzo:
+            self.stausBar = g.TracingNullObject(tag='dw.statusbar')
+            return
         w = QtWidgets.QStatusBar(parent)
         w.setObjectName("statusbar")
         parent.setStatusBar(w)
@@ -401,8 +417,7 @@ class DynamicWindow(dw_base):
         shape=QtWidgets.QFrame.NoFrame,
     ):
         '''Create a Qt Frame.'''
-        if g.pyzo:
-            g.trace('(DynamicWindow)', name)
+        # if g.pyzo: g.trace('(DynamicWindow)', name)
         w = QtWidgets.QFrame(parent)
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
         w.setFrameShape(shape)
@@ -1395,6 +1410,7 @@ class LeoQtBody(leoFrame.LeoBody):
         '''Set the actual gui widget.'''
         c = self.c
         if g.pyzo:
+            g.pr('LeoQtBody.set_widget', parentFrame, g.callers())
             pass
         else:
             top = c.frame.top
@@ -1410,7 +1426,10 @@ class LeoQtBody(leoFrame.LeoBody):
             self.colorizer = leoColorizer.QScintillaColorizer(c, self.widget, self.wrapper)
             return
         if g.pyzo:
+            dw = c.frame.top
+            assert dw
             self.widget = qt_text.LeoQTextBrowser(parentFrame, c, None)
+                ######## Use different frame.
         else:
             self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
         self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
@@ -2055,10 +2074,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         g.app.windowList.append(f)
         f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
-    #@+node:ekr.20110605121601.18251: *5* qtFrame.createSplitterComponents (not used)
+    #@+node:ekr.20110605121601.18251: *5* qtFrame.createSplitterComponents
     def createSplitterComponents(self):
         c, f = self.c, self
-        assert not g.pyzo, g.callers()
+        assert isinstance(self, LeoQtFrame), (repr(self), g.callers())
         # Called from:
         # 1.                newCommander,__init__,finishCreate,finishCreate.
         # 2. openFileByName,newCommander,__init__,finishCreate,finishCreate.
@@ -3084,6 +3103,8 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate (must have tabWidget)
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''
+        if g.pyzo:
+            return ###
         c, log, w = self.c, self, self.tabWidget
         # Remove unneeded tabs.
         for name in ('Tab 1', 'Page'):

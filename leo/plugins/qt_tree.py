@@ -16,13 +16,13 @@ import time
 assert time
 #@-<< imports >>
 #@+others
-#@+node:ekr.20160514120051.1: ** class LeoQtTree
+#@+node:ekr.20160514120051.1: ** class LeoQtTree (leoFrame.LeoTree)
 class LeoQtTree(leoFrame.LeoTree):
     '''Leo Qt tree class'''
     callbacksInjected = False # A class var.
     #@+others
     #@+node:ekr.20110605121601.18404: *3* qtree.Birth
-    #@+node:ekr.20110605121601.18405: *4* qtree.__init__
+    #@+node:ekr.20110605121601.18405: *4* qtree.__init__ (changed)
     def __init__(self, c, frame):
         '''Ctor for the LeoQtTree class.'''
         leoFrame.LeoTree.__init__(self, frame)
@@ -47,8 +47,12 @@ class LeoQtTree(leoFrame.LeoTree):
         self.canvas = self # An official ivar used by Leo's core.
         self.headlineWrapper = qt_text.QHeadlineWrapper # This is a class.
         if g.pyzo:
-            import leo.plugins.qt_frame as qt_frame
-            self.treeWidget = w = qt_frame.LeoQTreeWidget(c, frame)
+            ###
+                # import leo.plugins.qt_frame as qt_frame
+                # dw = frame.top
+                # assert isinstance(dw, qt_frame.DynamicWindow)
+            self.treeWidget = w = frame.top.treeWidget
+                # frame.top is a DynamicWindow.
         else:
             self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.
