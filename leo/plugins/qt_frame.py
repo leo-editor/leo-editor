@@ -4544,12 +4544,9 @@ class TabbedFrameFactory(object):
         dw.show()
         tabw.show()
         return dw
-    #@+node:ekr.20110605121601.18468: *3* createMaster (TabbedFrameFactory) (1 shim)
+    #@+node:ekr.20110605121601.18468: *3* createMaster (TabbedFrameFactory)
     def createMaster(self):
-        if g.pyzo:
-            self.masterFrame = g.TracingNullObject(tag='LeoTabbedTopLevel')
-                # Could be None. No need for a real shim.
-            return
+        assert not g.pyzo, g.callers()
         mf = self.masterFrame = LeoTabbedTopLevel(factory=self)
         g.app.gui.attachLeoIcon(mf)
         tabbar = mf.tabBar()
