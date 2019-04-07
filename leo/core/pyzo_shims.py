@@ -755,7 +755,9 @@ class MenuShim (object):
     '''Adaptor class standing between Leo and Pyzo menus.'''
     #@+others
     #@-others
-#@+node:ekr.20190401085747.1: ** class OutlineEditorShim (QAbstractScrollArea)
+#@+node:ekr.20190401085747.1: ** class OutlineEditorShim (QFrame)
+#@+<< shim classes for OutlineEditorShim >>
+#@+node:ekr.20190406194351.1: *3* << shim classes for OutlineEditorShim >>
 class DocumentShim(object):
     modified = False
     def isModified(self):
@@ -774,7 +776,8 @@ class TextCursorShim(object):
         return 0
     def setPosition(self, pos):
         pass
-        
+#@-<< shim classes for OutlineEditorShim >>
+
 from pyzo.codeeditor import CodeEditorBase
 assert CodeEditorBase
 QAbstractScrollArea = QtWidgets.QAbstractScrollArea
@@ -818,7 +821,7 @@ class OutlineEditorShim(QtWidgets.QFrame):
             self.verticalScrollBar = ScrollBarShim
         # Create the outline!
         self.createOutlineFrame()
-    #@+node:ekr.20190405075440.1: *3* OutlineEditorShim.createOutlineFrame (TO DO)
+    #@+node:ekr.20190405075440.1: *3* OutlineEditorShim.createOutlineFrame (REWRITE)
     def createOutlineFrame(self):
         '''Create the outline frame.'''
         #
@@ -855,11 +858,6 @@ class OutlineEditorShim(QtWidgets.QFrame):
             # A EditorTabs, a QWidget.
         if 1:
             self.setStyleSheet('background: red')
-            # does nothing.
-        if 0: # Works, but it's in a weird place.
-            w = QtWidgets.QWidget(parent)
-            w.setStyleSheet('background: red')
-            w.show()
         
         # f.top.iconBar = QtWidgets.QToolBar('toolbar', parent)
         ### f.iconBar = f.iconBarClass(c, parent)
