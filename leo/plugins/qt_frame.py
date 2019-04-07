@@ -2043,37 +2043,20 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Command decorator for the LeoQtFrame class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
-    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (5 shims)
+    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (2 shims)
     def finishCreate(self):
 
         f = self
         c = self.c
         assert c
         if g.pyzo:
-            # OLD HACK: use dummies.
-            # New possibility: use c.parentFrame to create everything. 
-            g.pr('\nQtFrame.finishCreate: %s\n' % c.shortFileName(), c.parentFrame)
+            g.pr('\nQtFrame.finishCreate: %s\n' % c.shortFileName())
+            import leo.core.pyzo_shims as shims
+            assert isinstance(c.parentFrame, shims.OutlineEditorShim), repr(c.parentFrame)
             assert isinstance(c.frame, LeoQtFrame), repr(c.frame)
             import leo.core.leoFrame as leoFrame
             f.tree = leoFrame.NullTree(f)
-                # g.NullObject doesn't work
             f.menu = g.NullObject(tag='c.frame.menu')
-                #
-                # This is called by c.finishCreate,
-                # which calls c.clearUndoState, which affects menus.
-        
-            ### None of these are needed.
-                # if 1:
-                    # f.body = g.TracingNullObject(tag='c.frame.body')
-                    # f.log = g.TracingNullObject(tag='c.frame.log')
-                    # f.miniBufferWidget = g.TracingNullObject(tag='c.frame.miniBufferWidget')
-                # else:
-                    # import leo.core.leoMenu as leoMenu
-                    # f.body = leoFrame.NullBody(f)
-                    # f.menu = leoMenu.NullMenu(f)
-                    # f.log = leoFrame.NullLog(f)
-            # # g.app.windowList.append(f)
-            # c.bodyWantsFocus()
             return
         # Old code.
         f.top = g.app.gui.frameFactory.createFrame(f)
