@@ -161,11 +161,10 @@ class DynamicWindow(dw_base):
         self.leo_ui = self
         if g.pyzo:
             self.centralwidget = self.leo_master
-            main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
         else:
             self.setMainWindowOptions()
             self.createCentralWidget()
-            main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
             # Creates .verticalLayout
         if self.bigTree:
             self.createBodyPane(secondary_splitter)
@@ -509,6 +508,8 @@ class DynamicWindow(dw_base):
     #@+node:ekr.20110605121601.18164: *5* dw.createTreeWidget
     def createTreeWidget(self, parent, name):
         c = self.leo_c
+        if g.pyzo:
+            g.trace(parent)
         w = LeoQTreeWidget(c, parent)
         self.setSizePolicy(w)
         # 12/01/07: add new config setting.
@@ -922,23 +923,6 @@ class DynamicWindow(dw_base):
                 s,
                 None,
                 QtWidgets.QApplication.UnicodeUTF8)
-    #@+node:ekr.20190317084000.1: *3* dw.createPyzoMainWindow (4 shims)
-    def createPyzoMainWindow(self):
-        '''
-        Create the component ivars of the main window.
-        Copied/adapted from qt_main.py.
-        Called instead of uic.loadUi(ui_description_file, self)
-        '''
-        dw = self
-        dw.leo_ui = self
-        dw.richTextEdit = g.TracingNullObject(tag='dw.richTextEdit')
-        dw.stackedWidget = g.TracingNullObject(tag='dw.stackedWidget')
-        dw.treeWidget = g.TracingNullObject(tag='dw.treeWidget')
-        dw.tabWidget = g.TracingNullObject(tag='dw.tabWidet')
-        #
-        # Import *all* of the pyzo packages.
-        import leo.core.pyzo_shims as pyzo_shims
-        pyzo_shims.MainWindowShim()
     #@+node:ekr.20110605121601.18179: *3* dw.Event handlers
     #@+node:ekr.20110605121601.18140: *4* dw.closeEvent
     def closeEvent(self, event):
@@ -1405,17 +1389,16 @@ class LeoQtBody(leoFrame.LeoBody):
         if c.frame.body.colorizer.showInvisibles:
             option.setFlags(QtGui.QTextOption.ShowTabsAndSpaces)
         d.setDefaultTextOption(option)
-    #@+node:ekr.20140901062324.18563: *4* LeoQtBody.set_widget
+    #@+node:ekr.20140901062324.18563: *4* LeoQtBody.set_widget (Test)
     def set_widget(self, parentFrame=None):
         '''Set the actual gui widget.'''
         c = self.c
+        top = c.frame.top
+        sw = top.leo_ui.stackedWidget
+        sw.setCurrentIndex(1)
         if g.pyzo:
-            g.pr('LeoQtBody.set_widget', parentFrame, g.callers())
-            pass
-        else:
-            top = c.frame.top
-            sw = top.leo_ui.stackedWidget
-            sw.setCurrentIndex(1)
+            g.trace('richTextEdit', repr(top.leo_ui.richTextEdit))
+            g.trace('stackedWidget', repr(sw))
         if self.useScintilla and not Qsci:
             g.trace('Can not import Qsci: ignoring @bool qt-use-scintilla')
         if self.useScintilla and Qsci:
@@ -1425,13 +1408,7 @@ class LeoQtBody(leoFrame.LeoBody):
             self.wrapper = qt_text.QScintillaWrapper(self.widget, name='body', c=c)
             self.colorizer = leoColorizer.QScintillaColorizer(c, self.widget, self.wrapper)
             return
-        if g.pyzo:
-            dw = c.frame.top
-            assert dw
-            self.widget = qt_text.LeoQTextBrowser(parentFrame, c, None)
-                ######## Use different frame.
-        else:
-            self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
+        self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
         self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
         self.widget.setAcceptRichText(False)
         if g.pyzo:
@@ -3103,21 +3080,23 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate (must have tabWidget)
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''
-        if g.pyzo:
-            return ###
         c, log, w = self.c, self, self.tabWidget
-        # Remove unneeded tabs.
-        for name in ('Tab 1', 'Page'):
+        if not isinstance(w, QtWidgets.QTabWidget):
+            g.pr('LeoQtLog.finishCreate: WRONG tabWidget:', w)
+            return ### Not ready yet.
+        if 1:
+            # Remove unneeded tabs.
+            for name in ('Tab 1', 'Page'):
+                for i in range(w.count()):
+                    if name == w.tabText(i):
+                        w.removeTab(i)
+                        break
+            # Rename the 'Tab 2' tab to 'Find'.
             for i in range(w.count()):
-                if name == w.tabText(i):
-                    w.removeTab(i)
+                if w.tabText(i) in ('Find', 'Tab 2'):
+                    w.setTabText(i, 'Find')
+                    self.contentsDict['Find'] = w.currentWidget()
                     break
-        # Rename the 'Tab 2' tab to 'Find'.
-        for i in range(w.count()):
-            if w.tabText(i) in ('Find', 'Tab 2'):
-                w.setTabText(i, 'Find')
-                self.contentsDict['Find'] = w.currentWidget()
-                break
         # Create the log tab as the leftmost tab.
         # log.selectTab('Log')
         log.createTab('Log')
@@ -3681,6 +3660,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     # To do: Generate @auto or @file nodes when appropriate.
 
     def __init__(self, c, parent):
+        if g.pyzo:
+            g.pr('LeoQTreeWidget.__init__: parent:', repr(parent))
         QtWidgets.QTreeWidget.__init__(self, parent)
         self.setAcceptDrops(True)
         enable_drag = c.config.getBool('enable-tree-dragging')

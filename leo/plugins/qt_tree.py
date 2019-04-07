@@ -47,12 +47,9 @@ class LeoQtTree(leoFrame.LeoTree):
         self.canvas = self # An official ivar used by Leo's core.
         self.headlineWrapper = qt_text.QHeadlineWrapper # This is a class.
         if g.pyzo:
-            ###
-                # import leo.plugins.qt_frame as qt_frame
-                # dw = frame.top
-                # assert isinstance(dw, qt_frame.DynamicWindow)
             self.treeWidget = w = frame.top.treeWidget
                 # frame.top is a DynamicWindow.
+            g.trace('LeoQtTree.treeWidget', w)
         else:
             self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.

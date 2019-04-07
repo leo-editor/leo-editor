@@ -841,23 +841,21 @@ class OutlineEditorShim(QtWidgets.QFrame):
     def finishCreate(self, c):
         '''Create the entire Leo main window in the shim itself.'''
         import leo.plugins.qt_frame as qt_frame
-        # import leo.plugins.qt_menu as qt_menu
         import leo.plugins.qt_text as qt_text
-        # import leo.plugins.qt_tree as qt_tree
+        ###
+            # import leo.plugins.qt_menu as qt_menu
+            # import leo.plugins.qt_tree as qt_tree
+            # import leo.core.leoFrame as leoFrame
+            # parent = self
+                # "self" works as the parent!
         self.c = c
-        ### parent = self
-            # "self" works as the parent!
         g.pr('----- OutlineEditorShim.finishCreate')
         f = c.frame
-            # f is a LeoFrame, *not* a QWidget.
+            # A LeoFrame, *not* a QWidget.
         c.frame.c = c
         assert isinstance(c.frame, qt_frame.LeoQtFrame), repr(c.frame)
-        import leo.core.leoFrame as leoFrame
-        if 0:
-            f.tree = leoFrame.NullTree(f)
-                # for createFirstTreeNode
-            f.createFirstTreeNode()
         self.setStyleSheet('background: red')
+            # No longer seen, which is good.
         #
         # From SDIFrameFactory.createFrame
         dw = qt_frame.DynamicWindow(c, parent=self)
@@ -873,7 +871,7 @@ class OutlineEditorShim(QtWidgets.QFrame):
         ### f.createStatusLine() # A base class method.
         f.createFirstTreeNode() # Call the base-class method.
         ### f.menu = qt_menu.LeoQtMenu(c, f, label='top-level-menu')
-        f.menu=g.TracingNullObject(tag='c.frame.menu')
+        f.menu=g.NullObject(tag='c.frame.menu')
         g.app.windowList.append(f)
         f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
