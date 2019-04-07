@@ -1368,52 +1368,58 @@ class TracingNullObject(object):
         return None
 #@+node:ekr.20190330062625.1: *4* g.null_object_print_attr
 def null_object_print_attr(id_, attr):
-    #@+<< define suppression lists >>
-    #@+node:ekr.20190330072026.1: *5* << define suppression lists >>
-    suppress_callers = (
-        'drawNode', 'drawTopTree', 'drawTree',
-        'contractItem', 'getCurrentItem',
-        'declutter_node',
-        'finishCreate',
-        'initAfterLoad',
-        'show_tips',
-        'writeWaitingLog',
-        # 'set_focus', 'show_tips',
-    )
-    suppress_attrs = (
-        # Leo...
-        'c.frame.body.wrapper',
-        'c.frame.getIconBar.add',
-        'c.frame.log.createTab',
-        'c.frame.log.enable',
-        'c.frame.log.finishCreate',
-        'c.frame.menu.createMenuBar',
-        'c.frame.menu.finishCreate',
-        'c.frame.menu.getMenu',
-        'currentItem',
-        'dw.leo_master.windowTitle',
-        # Pyzo...
-        'pyzo.keyMapper.connect',
-        'pyzo.keyMapper.keyMappingChanged',
-        'pyzo.keyMapper.setShortcut',
-    )
-    #@-<< define suppression lists >>
-    if 0:
-        tag = tracing_tags.get(id_, "<NO TAG>")
-        callers = g.callers(3).split(',')
-        callers = ','.join(callers[:-1])
-        in_callers = any([z in callers for z in suppress_callers])
-        s = '%s.%s' % (tag, attr)
-        if 1:
-            signature = '%s.%s:%s' % (tag, attr, callers)
-            # Print each signature once.  No need to filter!
-            if signature not in tracing_signatures:
-                tracing_signatures [signature] = True
-                g.pr('%40s %s' % (s, callers))
-        else:
-            # Filter traces.
-            if not in_callers and s not in suppress_attrs:
-                g.pr('%40s %s' % (s, callers))
+    suppress = True
+    if suppress:
+        #@+<< define suppression lists >>
+        #@+node:ekr.20190330072026.1: *5* << define suppression lists >>
+        suppress_callers = (
+            'drawNode', 'drawTopTree', 'drawTree',
+            'contractItem', 'getCurrentItem',
+            'declutter_node',
+            'finishCreate',
+            'initAfterLoad',
+            'show_tips',
+            'writeWaitingLog',
+            # 'set_focus', 'show_tips',
+        )
+        suppress_attrs = (
+            # Leo...
+            'c.frame.body.wrapper',
+            'c.frame.getIconBar.add',
+            'c.frame.log.createTab',
+            'c.frame.log.enable',
+            'c.frame.log.finishCreate',
+            'c.frame.menu.createMenuBar',
+            'c.frame.menu.finishCreate',
+            # 'c.frame.menu.getMenu',
+            'currentItem',
+            'dw.leo_master.windowTitle',
+            # Pyzo...
+            'pyzo.keyMapper.connect',
+            'pyzo.keyMapper.keyMappingChanged',
+            'pyzo.keyMapper.setShortcut',
+        )
+        #@-<< define suppression lists >>
+    else:
+        # Print everything.
+        suppress_callers = []
+        suppress_attrs = []
+   
+    tag = tracing_tags.get(id_, "<NO TAG>")
+    callers = g.callers(3).split(',')
+    callers = ','.join(callers[:-1])
+    in_callers = any([z in callers for z in suppress_callers])
+    s = '%s.%s' % (tag, attr)
+    if suppress:
+        # Filter traces.
+        if not in_callers and s not in suppress_attrs:
+            g.pr('%40s %s' % (s, callers))
+    else:
+        # Print each signature once.  No need to filter!
+        signature = '%s.%s:%s' % (tag, attr, callers)
+        if signature not in tracing_signatures:
+            tracing_signatures [signature] = True
+            g.pr('%40s %s' % (s, callers))
 #@+node:ekr.20190330072832.1: *4* g.null_object_print
 def null_object_print(id_, kind):
     tag = tracing_tags.get(id_, "<NO TAG>")
@@ -1421,7 +1427,7 @@ def null_object_print(id_, kind):
     callers = ','.join(callers[:-1])
     s = '%s.%s' % (kind, tag)
     signature = '%s:%s' % (s, callers)
-    if 0:
+    if 1:
         # Always print:
         g.pr('%40s %s' % (s, callers))
     elif signature not in tracing_signatures:
