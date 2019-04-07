@@ -830,7 +830,10 @@ class OutlineEditorShim(QtWidgets.QFrame):
         #
         # Like createFrame TabbedFrameFactory.createFrame.
         assert g.pyzo, g.callers()
-        self.c = c = g.app.newCommander(fileName = self.filename)
+        self.c = c = g.app.newCommander(
+            fileName=self.filename,
+            parentFrame=self,
+        )
             #
             # This calls c.finishCreate, etc.
             # So it *should* be possible to do everything there.

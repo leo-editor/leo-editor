@@ -1564,14 +1564,25 @@ class LeoApp(object):
         for c in app.commanders():
             c.k.makeAllBindings()
     #@+node:ekr.20031218072017.2188: *3* app.newCommander
-    def newCommander(self, fileName, relativeFileName=None, gui=None, previousSettings=None):
+    def newCommander(self, fileName,
+        gui=None,
+        parentFrame=None, ### New, experimental.
+        previousSettings=None,
+        relativeFileName=None,
+    ):
         """Create a commander and its view frame for the Leo main window."""
         # Create the commander and its subcommanders.
         # This takes about 3/4 sec when called by the leoBridge module.
         import leo.core.leoCommands as leoCommands
         if g.pyzo:
             g.pr('----- app.newCommander', g.shortFileName(fileName))
-        return leoCommands.Commands(fileName, relativeFileName, gui, previousSettings)
+        c = leoCommands.Commands(fileName,
+            gui=gui,
+            parentFrame=parentFrame,
+            previousSettings=previousSettings,
+            relativeFileName=relativeFileName,
+        )
+        return c
     #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
     def selectLeoWindow(self, c):
         frame = c.frame

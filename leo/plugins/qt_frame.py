@@ -2050,8 +2050,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
         c = self.c
         assert c
         if g.pyzo:
-            # A hack: use dummies until later, when real  
-            g.pr('\nQtFrame.finishCreate: %s\n' % c.shortFileName())
+            # OLD HACK: use dummies.
+            # New possibility: use c.parentFrame to create everything. 
+            g.pr('\nQtFrame.finishCreate: %s\n' % c.shortFileName(), c.parentFrame)
             assert isinstance(c.frame, LeoQtFrame), repr(c.frame)
             import leo.core.leoFrame as leoFrame
             f.tree = leoFrame.NullTree(f)

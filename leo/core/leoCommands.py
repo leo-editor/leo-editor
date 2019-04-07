@@ -44,7 +44,12 @@ class Commands(object):
     #@+others
     #@+node:ekr.20031218072017.2811: *3*  c.Birth & death
     #@+node:ekr.20031218072017.2812: *4* c.__init__ & helpers
-    def __init__(self, fileName, relativeFileName=None, gui=None, previousSettings=None):
+    def __init__(self, fileName,
+        gui=None,
+        parentFrame=None,
+        previousSettings=None,
+        relativeFileName=None,
+    ):
 
         # tag = 'Commands.__init__ %s' % (g.shortFileName(fileName))
         c = self
@@ -52,6 +57,7 @@ class Commands(object):
         self._currentPosition = None
         self._topPosition = None
         self.frame = None
+        self.parentFrame = parentFrame # New in Leo 6.0.
         self.gui = gui or g.app.gui
         self.ipythonController = None
             # Set only by the ipython plugin.
