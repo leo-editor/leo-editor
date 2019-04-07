@@ -58,8 +58,8 @@ class DynamicWindow(dw_base):
             # Called from LeoQtFrame.finishCreate.
             # For qttabs gui, parent is a LeoTabbedTopLevel.
         if g.pyzo:
-            g.pr('DynamicWindow.__init__', g.callers())
-        if g.pyzo:
+            g.pr('===== DynamicWindow.__init__')
+            assert parent, g.callers()
             QtWidgets.QFrame.__init__(self, parent)
         else:
             QtWidgets.QMainWindow.__init__(self, parent) # pylint: disable=non-parent-init-called
@@ -109,7 +109,6 @@ class DynamicWindow(dw_base):
         c = self.leo_c
         if g.pyzo:
             g.pr('DynamicWindow.contruct: master:', repr(master))
-            assert False, g.callers()
         self.leo_master = master or g.TracingNullObject(tag='dw.leo_master')
             # A LeoTabbedTopLevel for tabbed windows.
             # None for non-tabbed windows.
