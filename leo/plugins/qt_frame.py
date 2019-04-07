@@ -103,7 +103,7 @@ class DynamicWindow(dw_base):
 
     def do_leo_spell_btn_Ignore(self):
         self.doSpellBtn('onIgnoreButton')
-    #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers (9 shims)
+    #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers
     def construct(self, master=None):
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         c = self.leo_c
@@ -116,34 +116,20 @@ class DynamicWindow(dw_base):
         # Init the base class.
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.reloadSettings()
-        if g.pyzo:
-            g.app.forgetOpenFile(c.fileName(), force=True)
-                ### Temp hack.
-            c.frame.body = g.TracingNullObject(tag='c.frame.body')
-            c.frame.log = g.TracingNullObject(tag='c.frame.log')
-                ###
-            self.findScrollArea = g.TracingNullObject(tag='dw.findScrollArea')
-            self.findTab = g.TracingNullObject(tag='dw.findTab')
-            self.iconBar = g.TracingNullObject(tag='dw.iconBar')
-            self.leo_menubar = g.TracingNullObject(tag='dw.leo_menuBar')
-            self.statusBar = g.TracingNullObject(tag='dw.statusBar')
-            self.lineEdit = g.TracingNullObject(tag='dw.lineEdit')
-            self.createPyzoMainWindow()
-        else: # legacy code.
-            main_splitter, secondary_splitter = self.createMainWindow()
-            self.iconBar = self.addToolBar("IconBar")
-            self.set_icon_bar_orientation(c)
-            # #266 A setting to hide the icon bar.
-            # Calling reloadSettings again would also work.
-            if not self.show_iconbar:
-                self.iconBar.hide()
-            self.leo_menubar = self.menuBar()
-            self.statusBar = QtWidgets.QStatusBar()
-            self.setStatusBar(self.statusBar)
-            orientation = c.config.getString('initial-split-orientation')
-            self.setSplitDirection(main_splitter, secondary_splitter, orientation)
-            if hasattr(c, 'styleSheetManager'):
-                c.styleSheetManager.set_style_sheets(top=self, all=True)
+        main_splitter, secondary_splitter = self.createMainWindow()
+        self.iconBar = self.addToolBar("IconBar")
+        self.set_icon_bar_orientation(c)
+        # #266 A setting to hide the icon bar.
+        # Calling reloadSettings again would also work.
+        if not self.show_iconbar:
+            self.iconBar.hide()
+        self.leo_menubar = self.menuBar()
+        self.statusBar = QtWidgets.QStatusBar()
+        self.setStatusBar(self.statusBar)
+        orientation = c.config.getString('initial-split-orientation')
+        self.setSplitDirection(main_splitter, secondary_splitter, orientation)
+        if hasattr(c, 'styleSheetManager'):
+            c.styleSheetManager.set_style_sheets(top=self, all=True)
     #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
     def set_icon_bar_orientation(self, c):
         '''Set the orientation of the icon bar based on settings.'''
