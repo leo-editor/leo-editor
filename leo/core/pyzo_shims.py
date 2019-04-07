@@ -824,7 +824,7 @@ class OutlineEditorShim(QtWidgets.QFrame):
             self.verticalScrollBar = ScrollBarShim
         # Create the outline!
         self.createOutlineFrame()
-    #@+node:ekr.20190405075440.1: *3* OutlineEditorShim.createOutlineFrame (REWRITE)
+    #@+node:ekr.20190405075440.1: *3* OutlineEditorShim.createOutlineFrame
     def createOutlineFrame(self):
         '''Create the outline frame.'''
         assert g.pyzo, g.callers()
@@ -837,27 +837,33 @@ class OutlineEditorShim(QtWidgets.QFrame):
             fileName=self.filename,
             parentFrame=self,
         )
-        g.pr('----- OutlineEditorShim.createOutlineFrame 2')
-        #
-        # To do: move this into c.frame.finishCreate.
-        #
-        f = c.frame
-        c.frame.c = c
-            # f is a LeoFrame, *not* a QWidget.
-        
+        c.bodyWantsFocus()
+    #@+node:ekr.20190407044153.1: *3* OutlineEditorShim.finishCreate
+    def finishCreate(self, c):
+        '''Create the entire Leo main window in the shim itself.'''
         import leo.plugins.qt_frame as qt_frame
         import leo.plugins.qt_text as qt_text
         import leo.plugins.qt_tree as qt_tree
-        assert isinstance(c.frame, qt_frame.LeoQtFrame), repr(c.frame)
+        self.c = c
         parent = self
             # "self" works as the parent!
+        g.pr('----- OutlineEditorShim.finishCreate')
+        f = c.frame
+            # f is a LeoFrame, *not* a QWidget.
+        c.frame.c = c
+        assert isinstance(c.frame, qt_frame.LeoQtFrame), repr(c.frame)
+        import leo.core.leoFrame as leoFrame
+        f.tree = leoFrame.NullTree(f)
+        f.menu = g.NullObject(tag='c.frame.menu')
+        f.menu = g.NullObject(tag='c.frame.log')
+            # Not ready: assumes an inited tabWidget ivar.
         if 1:
             self.setStyleSheet('background: red')
         if 1:
             f.createFirstTreeNode() # Call the base-class method.
         if 1:
             f.tree = qt_tree.LeoQtTree(c, parent)
-            f.log = qt_frame.LeoQtLog(parent, None)
+            # f.log = qt_frame.LeoQtLog(parent, None)
             f.body = qt_frame.LeoQtBody(c.frame, parentFrame=self)
             f.splitVerticalFlag, ratio, secondary_ratio = f.initialRatios()
             f.resizePanesToRatio(ratio, secondary_ratio)
@@ -870,7 +876,22 @@ class OutlineEditorShim(QtWidgets.QFrame):
             f.menu = qt_frame.LeoQtMenu(c, f, label='top-level-menu')
             g.app.windowList.append(f)
             f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
-        c.bodyWantsFocus()
+    #@+node:ekr.20190406165302.1: *3* OutlineEditorShim.set_style
+    def setStyle(self, style):
+        
+        suppress = (
+            'Editor.Highlight current line',
+            'Editor.Indentation guides',
+            'Editor.Line numbers',
+            'Editor.Long line indicator',
+        )
+        
+        def use_style(key):
+            return key not in suppress and not key.startswith('Syntax')
+
+        super().setStyle({
+            z: style.get(z) for z in style.keys() if use_style(z)
+        })
     #@+node:ekr.20190405075412.1: *3* OutlineEditorShim:do-nothings
     def blockCount(self):
         return 0
@@ -913,22 +934,6 @@ class OutlineEditorShim(QtWidgets.QFrame):
 
     def setTitleInMainWindow(self):
         pass
-    #@+node:ekr.20190406165302.1: *3* OutlineEditorShim:set_style
-    def setStyle(self, style):
-        
-        suppress = (
-            'Editor.Highlight current line',
-            'Editor.Indentation guides',
-            'Editor.Line numbers',
-            'Editor.Long line indicator',
-        )
-        
-        def use_style(key):
-            return key not in suppress and not key.startswith('Syntax')
-
-        super().setStyle({
-            z: style.get(z) for z in style.keys() if use_style(z)
-        })
     #@-others
     
 #@+node:ekr.20190401074804.1: ** class ToolShim (Needed???)

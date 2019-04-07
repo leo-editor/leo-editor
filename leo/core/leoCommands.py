@@ -411,9 +411,9 @@ class Commands(object):
         c.findCommands.finishCreate()
         if not c.gui.isNullGui:
             g.registerHandler('idle', c.idle_focus_helper)
-        if c.frame.menu:
+        if getattr(c.frame, 'menu', None):
             c.frame.menu.finishCreate()
-        if c.frame.log:
+        if getattr(c.frame, 'log', None):
             c.frame.log.finishCreate()
         c.undoer.clearUndoState()
         if c.vimCommands and c.vim_mode:

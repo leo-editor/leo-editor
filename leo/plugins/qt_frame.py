@@ -2043,20 +2043,20 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Command decorator for the LeoQtFrame class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
-    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (2 shims)
+    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers
     def finishCreate(self):
 
         f = self
         c = self.c
         assert c
         if g.pyzo:
-            g.pr('----- QtFrame.finishCreate', c.shortFileName())
+            g.pr('----- c.frame.finishCreate', c.shortFileName())
             import leo.core.pyzo_shims as shims
-            assert isinstance(c.parentFrame, shims.OutlineEditorShim), repr(c.parentFrame)
-            assert isinstance(c.frame, LeoQtFrame), repr(c.frame)
-            import leo.core.leoFrame as leoFrame
-            f.tree = leoFrame.NullTree(f)
-            f.menu = g.NullObject(tag='c.frame.menu')
+            shim = c.parentFrame
+            assert isinstance(shim, shims.OutlineEditorShim), repr(shim)
+            c.frame = self
+            c.frame.c = c
+            shim.finishCreate(c)
             return
         # Old code.
         f.top = g.app.gui.frameFactory.createFrame(f)
