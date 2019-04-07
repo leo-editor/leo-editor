@@ -27,12 +27,13 @@
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 <v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d71005806000000302e382e323371017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a71156573732e"><vh>@file leoScripts.txt</vh></v>
 <v t="mhw-debug-1081.20190310203401.1"><vh>Windows-only scripts</vh>
-<v t="maphew.20130510011223.1646"><vh>sample registry outcome</vh></v>
+<v t="ekr.20140704052551.17941"><vh>Add Windows handler for .leo files</vh>
 <v t="maphew.20130611235500.2658"><vh>@file register-leo.leox</vh></v>
 <v t="maphew.20130611235500.2665"><vh>@file unregister-leo.leox</vh></v>
+<v t="maphew.20130510011223.1646"><vh>sample registry outcome</vh></v>
+</v>
 <v t="maphew.20130613230258.2801"><vh>@file elevate.py</vh></v>
 <v t="maphew.20130809155103.2863"><vh>@auto build-leo.bat</vh></v>
-<v t="ekr.20140704052551.17941"><vh>Add Windows handler for .leo files</vh></v>
 </v>
 </v>
 <v t="ekr.20111017085134.16069"><vh>@ignore @button nodes</vh>
@@ -1138,45 +1139,25 @@ w = c.frame.body.bodyCtrl
 w.clipboard_clear()
 w.clipboard_append(result)
 </t>
-<t tx="ekr.20140704052551.17941"># https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leo$20script/leo-editor/ANPuhuEIU9c/8lgid9MNKkAJ
+<t tx="ekr.20140704052551.17941">@language md
 
-@language python
-@tabwidth -4
+## Test for Leo association
+If Leo files are not registered with Windows the following commands will return "not found" errors.
 
-'''Tell Windows how to handle .leo files, enables double clicking on them to open.
+    reg query hkcr\leo.file
+    reg query hkcr\.leo
+    reg query hkcr\.leox
 
-To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
 
-It opens a command shell and uses `assoc` and `ftype` commands to inform Windows
-where python.exe and the Leo launch script is. It's the equivalent of:
+Example of success:
 
-    assoc .leo=Leo.File
-    ftype Leo.File="B:\Python27\pythonw.exe" "B:\apps\leo-editor\launchLeo.py" "%1" %*   
-       
-Requires elevated User Account Control (UAC) priviliges.
-See http://superuser.com/questions/88491/force-cmd-exe-to-run-as-admin/
-'''
-
-pyexe = g.sys.executable
-leo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
-
-tmp = g.os.environ['TEMP']
-
-assoc_cmd = 'assoc .leo=Leo.File'
-ftype_cmd = 'ftype Leo.File="{0}" "{1}" "%1" %*'.format(pyexe, leo)
-
-g.es(leo)
-g.es(pyexe)
-
-g.es(tmp)
-g.es(assoc_cmd)
-g.es(ftype_cmd)
-
-from subprocess import Popen
-Popen('start "Shell from Leo" cmd.exe /k "{0} &amp;&amp; {1}" '.format(assoc_cmd, ftype_cmd),
-
-    cwd=tmp, shell=True)
-</t>
+    C:\&gt; reg query hkcr\leo.file
+    
+    HKEY_CLASSES_ROOT\leo.file
+        (Default)    REG_SZ    Leo Editor File
+    
+    HKEY_CLASSES_ROOT\leo.file\DefaultIcon
+    HKEY_CLASSES_ROOT\leo.file\Shell</t>
 <t tx="ekr.20141105055521.16">@language python
 
 '''
@@ -4534,13 +4515,13 @@ def clean_file(path):
     
 clean_dir(directory)
 </t>
-<t tx="maphew.20130510011223.1646">r'''This is what the resulting registry key should look like, once exported from
-regedit. The translated hex code is:
+<t tx="maphew.20130510011223.1646">This is what the resulting registry key should look like, once exported from
+regedit. The translated hex code for Open Command is:
     
     "d:\Python27\python.exe" "C:\Users\Matt\Dropbox\apps\leo-editor\launchLeo.py" "%1" %*
-    
-'''
-@
+
+
+```
 Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\.leo]
@@ -4567,7 +4548,7 @@ Windows Registry Editor Version 5.00
   70,00,70,00,73,00,5c,00,6c,00,65,00,6f,00,2d,00,65,00,64,00,69,00,74,00,6f,\
   00,72,00,5c,00,6c,00,61,00,75,00,6e,00,63,00,68,00,4c,00,65,00,6f,00,2e,00,\
   70,00,79,00,22,00,20,00,22,00,25,00,31,00,22,00,20,00,25,00,2a,00,00,00
-</t>
+```</t>
 <t tx="maphew.20190209160547.1">gnx: maphew.20130809155103.2863
 </t>
 <t tx="mhw-debug-1081.20190310203401.1">Scripts only of interest when on Microsoft Windows platform.

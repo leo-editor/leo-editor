@@ -2,7 +2,7 @@
 #@+node:maphew.20130611235500.2665: * @file unregister-leo.leox
 #@@language python
 #@@tabwidth -4
-'''Remove registry key for Leo file type and .leo file association'''    
+'''Remove registry key for Leo file type and .leo file association'''
 #@+others
 #@+node:mhw-debug-1081.20190216130451.1: ** imports
 #py2 shims
