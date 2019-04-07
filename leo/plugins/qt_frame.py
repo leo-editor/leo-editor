@@ -2070,11 +2070,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         g.app.windowList.append(f)
         f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
-    #@+node:ekr.20110605121601.18251: *5* qtFrame.createSplitterComponents
+    #@+node:ekr.20110605121601.18251: *5* qtFrame.createSplitterComponents (not used)
     def createSplitterComponents(self):
         c, f = self.c, self
-        if g.pyzo:
-            g.trace(g.callers(5))
+        assert not g.pyzo, g.callers()
         # Called from:
         # 1.                newCommander,__init__,finishCreate,finishCreate.
         # 2. openFileByName,newCommander,__init__,finishCreate,finishCreate.
@@ -3097,7 +3096,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def reloadSettings(self):
         c = self.c
         self.wrap = bool(c.config.getBool('log-pane-wraps'))
-    #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
+    #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate (must have tabWidget)
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''
         c, log, w = self.c, self, self.tabWidget

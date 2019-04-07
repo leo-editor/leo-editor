@@ -857,10 +857,9 @@ class OutlineEditorShim(QtWidgets.QFrame):
         f.menu = g.NullObject(tag='c.frame.menu')
         f.menu = g.NullObject(tag='c.frame.log')
             # Not ready: assumes an inited tabWidget ivar.
-        if 1:
-            self.setStyleSheet('background: red')
-        if 1:
-            f.createFirstTreeNode() # Call the base-class method.
+        self.setStyleSheet('background: red')
+        f.createFirstTreeNode()
+        g.app.windowList.append(f)
         if 1:
             f.tree = qt_tree.LeoQtTree(c, parent)
             # f.log = qt_frame.LeoQtLog(parent, None)
@@ -874,7 +873,6 @@ class OutlineEditorShim(QtWidgets.QFrame):
         if 0:
             f.createStatusLine() # A base class method.
             f.menu = qt_frame.LeoQtMenu(c, f, label='top-level-menu')
-            g.app.windowList.append(f)
             f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
     #@+node:ekr.20190406165302.1: *3* OutlineEditorShim.set_style
     def setStyle(self, style):
