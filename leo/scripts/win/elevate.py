@@ -4,12 +4,20 @@
 
     python elevate.py d:\full\path\to\some-script.py {args for some-script}
 '''
+#py2 shims
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+
 import sys
 import ctypes
 import tempfile
 
 # -i : ask python interpreter to stay open when done, to see messages
-params = "-i {} ".format(' '.join(sys.argv[1:]))
+params = "-i {}".format(' '.join(sys.argv[1:]))
 #print(params)
 
 #@+others
@@ -29,6 +37,9 @@ def elevate(params):
     msg = 'Exit code: {0} - {1}'.format(retcode, ctypes.FormatError(retcode))
     print(msg)
     #g.es(msg)
+
+    
+
 
 #@+node:mhw-debug-1081.20190222004721.1: *3* thank_you
 def thank_you():
