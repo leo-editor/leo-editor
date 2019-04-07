@@ -2050,7 +2050,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         c = self.c
         assert c
         if g.pyzo:
-            g.pr('\nQtFrame.finishCreate: %s\n' % c.shortFileName())
+            g.pr('----- QtFrame.finishCreate', c.shortFileName())
             import leo.core.pyzo_shims as shims
             assert isinstance(c.parentFrame, shims.OutlineEditorShim), repr(c.parentFrame)
             assert isinstance(c.frame, LeoQtFrame), repr(c.frame)

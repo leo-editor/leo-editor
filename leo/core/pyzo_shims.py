@@ -827,18 +827,20 @@ class OutlineEditorShim(QtWidgets.QFrame):
     #@+node:ekr.20190405075440.1: *3* OutlineEditorShim.createOutlineFrame (REWRITE)
     def createOutlineFrame(self):
         '''Create the outline frame.'''
-        #
-        # Like createFrame TabbedFrameFactory.createFrame.
         assert g.pyzo, g.callers()
+        #
+        # Create a new commander.
+        # c.frame.finishCreate creates the outline pane.
+        #
+        g.pr('----- OutlineEditorShim.createOutlineFrame 1')
         self.c = c = g.app.newCommander(
             fileName=self.filename,
             parentFrame=self,
         )
-            #
-            # This calls c.finishCreate, etc.
-            # So it *should* be possible to do everything there.
-            #
-        g.pr('----- OutlineEditorShim.createOutlineFrame', c.shortFileName())
+        g.pr('----- OutlineEditorShim.createOutlineFrame 2')
+        #
+        # To do: move this into c.frame.finishCreate.
+        #
         f = c.frame
         c.frame.c = c
             # f is a LeoFrame, *not* a QWidget.
