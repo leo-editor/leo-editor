@@ -58,6 +58,8 @@ class DynamicWindow(dw_base):
             # Called from LeoQtFrame.finishCreate.
             # For qttabs gui, parent is a LeoTabbedTopLevel.
         if g.pyzo:
+            g.pr('DynamicWindow.__init__', g.callers())
+        if g.pyzo:
             QtWidgets.QFrame.__init__(self, parent)
         else:
             QtWidgets.QMainWindow.__init__(self, parent) # pylint: disable=non-parent-init-called
@@ -1366,9 +1368,11 @@ class LeoQtBody(leoFrame.LeoBody):
         # Call the base class constructor.
         leoFrame.LeoBody.__init__(self, frame, parentFrame)
         c = self.c
-        assert c.frame == frame and frame.c == c
+        assert c.frame == frame, (repr(c.frame), repr(frame))
+        assert frame.c == c, (repr(frame.c), repr(c))
+        
         self.reloadSettings()
-        self.set_widget()
+        self.set_widget(parentFrame)
             # Sets self.widget and self.wrapper.
         self.setWrap(c.p)
         # For multiple body editors.
@@ -1402,7 +1406,7 @@ class LeoQtBody(leoFrame.LeoBody):
             option.setFlags(QtGui.QTextOption.ShowTabsAndSpaces)
         d.setDefaultTextOption(option)
     #@+node:ekr.20140901062324.18563: *4* LeoQtBody.set_widget
-    def set_widget(self):
+    def set_widget(self, parentFrame=None):
         '''Set the actual gui widget.'''
         c = self.c
         if g.pyzo:
@@ -1419,13 +1423,16 @@ class LeoQtBody(leoFrame.LeoBody):
                 # dw.createText sets self.scintilla_widget
             self.wrapper = qt_text.QScintillaWrapper(self.widget, name='body', c=c)
             self.colorizer = leoColorizer.QScintillaColorizer(c, self.widget, self.wrapper)
+            return
+        if g.pyzo:
+            self.widget = qt_text.LeoQTextBrowser(parentFrame, c, None)
         else:
-            if g.pyzo:
-                self.widget = qt_text.LeoQTextBrowser(c.frame, c, None)
-            else:
-                self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
-            self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
-            self.widget.setAcceptRichText(False)
+            self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
+        self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
+        self.widget.setAcceptRichText(False)
+        if g.pyzo:
+            self.colorizer = g.TracingNullObject(tag='Null Colorizer')
+        else:
             self.colorizer = leoColorizer.JEditColorizer(c, self.widget, self.wrapper)
     #@+node:ekr.20110605121601.18183: *4* LeoQtBody.setWrap
     def setWrap(self, p=None, force=False):
@@ -2042,20 +2049,29 @@ class LeoQtFrame(leoFrame.LeoFrame):
         f = self
         c = self.c
         assert c
-        # returns DynamicWindow
         if g.pyzo:
             # A hack: use dummies until later, when real  
-            g.pr('----- QtFrame.finishCreate', c.shortFileName())
+            g.pr('\nQtFrame.finishCreate: %s\n' % c.shortFileName())
             assert isinstance(c.frame, LeoQtFrame), repr(c.frame)
             import leo.core.leoFrame as leoFrame
-            import leo.core.leoMenu as leoMenu
-            #
             f.tree = leoFrame.NullTree(f)
-            f.body = leoFrame.NullBody(f)
-            f.log = leoFrame.NullLog(f)
-            f.menu = leoMenu.NullMenu(f) ### g.TracingNullObject(tag='c.frame.menu')
-            f.miniBufferWidget = g.TracingNullObject(tag='c.frame.miniBufferWidget')
-            # g.app.windowList.append(f)
+                # g.NullObject doesn't work
+            f.menu = g.NullObject(tag='c.frame.menu')
+                #
+                # This is called by c.finishCreate,
+                # which calls c.clearUndoState, which affects menus.
+        
+            ### None of these are needed.
+                # if 1:
+                    # f.body = g.TracingNullObject(tag='c.frame.body')
+                    # f.log = g.TracingNullObject(tag='c.frame.log')
+                    # f.miniBufferWidget = g.TracingNullObject(tag='c.frame.miniBufferWidget')
+                # else:
+                    # import leo.core.leoMenu as leoMenu
+                    # f.body = leoFrame.NullBody(f)
+                    # f.menu = leoMenu.NullMenu(f)
+                    # f.log = leoFrame.NullLog(f)
+            # # g.app.windowList.append(f)
             # c.bodyWantsFocus()
             return
         # Old code.
@@ -2073,6 +2089,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18251: *5* qtFrame.createSplitterComponents
     def createSplitterComponents(self):
         c, f = self.c, self
+        if g.pyzo:
+            g.trace(g.callers(5))
+        # Called from:
+        # 1.                newCommander,__init__,finishCreate,finishCreate.
+        # 2. openFileByName,newCommander,__init__,finishCreate,finishCreate.
         f.tree = qt_tree.LeoQtTree(c, f)
         f.log = LeoQtLog(f, None)
         f.body = LeoQtBody(f, None)

@@ -794,6 +794,9 @@ class OutlineEditorShim(QtWidgets.QFrame):
     #@+others
     #@+node:ekr.20190405075322.1: *3* OutlineEditorShim.__init__
     def __init__(self, filename, parent, **kwargs):
+        '''
+        Called automatically from pyzo's createEditor function.
+        '''
         
         assert g.pyzo, g.callers()
         g.pr('\nOutlineEditorShim.__init__', g.shortFileName(filename))
@@ -807,7 +810,7 @@ class OutlineEditorShim(QtWidgets.QFrame):
         self._name = self.name = os.path.split(filename)[1]
             # To set the tab's name properly.
         if not isinstance(self, CodeEditorBase):
-            g.pr('\nOutlineEditorShim: using shims')
+            g.pr('\nOutlineEditorShim: using shims\n')
             #
             # Needed if this is just a QWidget.
             self._breakPoints = {}
@@ -828,51 +831,37 @@ class OutlineEditorShim(QtWidgets.QFrame):
         # Like createFrame TabbedFrameFactory.createFrame.
         assert g.pyzo, g.callers()
         self.c = c = g.app.newCommander(fileName = self.filename)
+            #
+            # This calls c.finishCreate, etc.
+            # So it *should* be possible to do everything there.
+            #
         g.pr('----- OutlineEditorShim.createOutlineFrame', c.shortFileName())
         f = c.frame
+        c.frame.c = c
             # f is a LeoFrame, *not* a QWidget.
-        if 0:
-            ### Works. Just use dummies.
-            import leo.core.leoFrame as leoFrame
-            f.tree = leoFrame.NullTree(f)
-            f.body = leoFrame.NullBody(f)
-            f.log = leoFrame.NullLog(f)
-            f.menu = g.TracingNullObject(tag='c.frame.menu')
-            f.miniBufferWidget = g.TracingNullObject(tag='c.frame.miniBufferWidget')
-            g.app.windowList.append(f)
-            c.bodyWantsFocus()
-            return
         
         import leo.plugins.qt_frame as qt_frame
         import leo.plugins.qt_text as qt_text
         import leo.plugins.qt_tree as qt_tree
         assert isinstance(c.frame, qt_frame.LeoQtFrame), repr(c.frame)
-        ### f.top = g.app.gui.frameFactory.createFrame(f)
-        ### f.top = qt_frame.DynamicWindow(c, f)
-            # f.top is a DynamicWindow.
-            ### dw.leo_ui = dw ### weird
-            ### self.leoFrames[dw] = leoFrame
-        ### f.top = QtWidgets.QFrame(parent = ???)
-        ### f.createIconBar() # A base class method.
-        parent = self.parent()
-            # A EditorTabs, a QWidget.
+        parent = self
+            # "self" works as the parent!
         if 1:
             self.setStyleSheet('background: red')
-        
-        # f.top.iconBar = QtWidgets.QToolBar('toolbar', parent)
-        ### f.iconBar = f.iconBarClass(c, parent)
-        # f.iconBar = f.QtIconBarClass(c, parent)
-        
-        ### f.createSplitterComponents()
-        if 0:
+        if 1:
+            f.createFirstTreeNode() # Call the base-class method.
+        if 1:
             f.tree = qt_tree.LeoQtTree(c, parent)
-            f.log = qt_text.LeoQtLog(parent, None)
-            f.body = qt_text.LeoQtBody(parent, None)
+            f.log = qt_frame.LeoQtLog(parent, None)
+            f.body = qt_frame.LeoQtBody(c.frame, parentFrame=self)
             f.splitVerticalFlag, ratio, secondary_ratio = f.initialRatios()
             f.resizePanesToRatio(ratio, secondary_ratio)
         if 0:
+            f.createSplitterComponents()
+                # QTreeWidget(parent: QWidget = None):
+                # argument 1 has unexpected type 'LeoQtFrame'
+        if 0:
             f.createStatusLine() # A base class method.
-            f.createFirstTreeNode() # Call the base-class method.
             f.menu = qt_frame.LeoQtMenu(c, f, label='top-level-menu')
             g.app.windowList.append(f)
             f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
