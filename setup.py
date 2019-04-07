@@ -119,6 +119,8 @@ user_requires = [
     'nbformat', # for Jupyter notebook integration
     'pylint','pyflakes', # coding syntax standards
     'sphinx', # rST plugin
+    'future', # python 2/3 compatibility layer, same with 'six'
+    'six',
     ]
 #@+node:maphew.20190207205714.1: ** define_entry_points
 def define_entry_points(entry_points=None):
