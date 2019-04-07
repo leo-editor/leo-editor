@@ -113,12 +113,19 @@
 <v t="ekr.20130809141000.1997"><vh>Adding Leo to your path</vh></v>
 <v t="ekr.20130809141000.1998"><vh>Running Leo for the first time</vh></v>
 </v>
+<v t="matt.20190205105334.1"><vh>@asis ../../.travis.yml</vh></v>
 <v t="EKR.20040519090846.1"><vh>@asis ../../LICENSE</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.md</vh></v>
 <v t="ekr.20151227063335.1"><vh>@asis ../../About leo.exe.TXT</vh></v>
-<v t="ekr.20150425135153.1"><vh>homebrew istall script</vh>
+<v t="ekr.20150425135153.1"><vh>homebrew install script</vh>
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
+</v>
+<v t="mhw-nc.20190126223741.1"><vh>Pip</vh>
+<v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
+<v t="maphew.20190208135916.1"><vh>@asis ../../setup.cfg</vh></v>
+<v t="maphew.20190206032329.1"><vh>@asis ../../pyproject.toml</vh></v>
+<v t="maphew.20190208142757.1"><vh>@clean ../../optional-tools.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20141118074110.4"><vh>How to...</vh>
@@ -1817,6 +1824,29 @@ needed to leverage PEP-518. Fix: upgrade pip in `.travis.yml`
     python -m pip install --upgrade pip
 
 </t>
+<t tx="maphew.20190206032329.1">[build-system]
+requires = ["setuptools&gt;=38.6.0",
+    "wheel&gt;=0.31.0",
+    "twine&gt;=1.11.0"]
+</t>
+<t tx="maphew.20190208135916.1">[bdist_wheel]
+# This flag says that the code is written to work on both Python 2 and Python
+# 3. If at all possible, it is good practice to do this. If you cannot, you
+# will need to generate wheels for each Python version that you support.
+universal=1
+</t>
+<t tx="maphew.20190208142757.1">@language python
+# A list of pip installable tools and libraries in the Requirements File Format
+# https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format
+#
+# Install with:
+#   
+#       pip install -r optional-tools.txt
+#
+
+pyenchant  # spell check support. No wheels for some platforms, e.g. amd64
+pyxml; python_version &lt; "3.0"   # Used for XML import. Appears to be only python 2 package
+</t>
 <t tx="matt.20181004031246.1">@language md
 
 _Initiating issue: https://github.com/leo-editor/leo-editor/issues/672_
@@ -1829,17 +1859,35 @@ As currently configured if the commit is a tag AND the branch is `master` travis
 will also attempt to deploy a release automatically to PyPi.org.
 - Deploying to PyPi, https://docs.travis-ci.com/user/deployment/pypi/
 
-The `travis_tests` folder is optional at this point, there are no real tests in
-it. It can be removed, or moved elsewhere. It's there for illustration. Over
-time the testing portion will become more and more important.
-
 Command line client: https://github.com/travis-ci/travis.rb
 Not essential, but useful. Note: using `travis` command line client in a way
 that updates yml file will delete any comments within it. (e.g. `travis encrypt
 ...`)
 
-
-
 </t>
+<t tx="matt.20190205105334.1">language: python
+git:
+    ## Clone depth, must be big enough to include a tag
+    depth: 100
+install:
+    ## Using PEP-518 (pypoject.toml) requires pip &gt;v10 
+    - python -m pip install --upgrade pip
+    - pip --version
+script:
+    ## Test: Unit tests
+    - python run_travis_unit_tests.py
+
+    # There are no travis tests after checking out release tag
+    #- pytest travis_tests/*
+deploy:
+  provider: pypi
+  user: maphew
+  password:
+    secure: pZeDQzNu1XKDcGVEELttI/NqXMP5b5e99DgNzgTG+DVWU76sQ2wf4Jb1opIriHFQhN1etlndxVxp6YkugHDnu/B5rRklx+6WdAgHrIKcmbKzw86BsCzIwWqn1BqRlNT3mHo6uz1eQwQfJ/0/wptB5nougn8Z/E+hEIWbNgpu4CYr2TTa+9aWEpkg2h2ogOzZ1brp4hW2bJ0xW6XWBj+/bOsrgVKEmBvTZHkqFQSlODgHMJwsU3BWe/ntZ0J4QvLxseBSZM5tJTIG3w0pvGydGqxxAzbg1IY/4HZZFAttLGTr5ZJPBI2gPmz9FxmvJrWeV2iqkmMo8/OACqzSKYnMc2s8ACwUILNEZMSW+Z3IzFIUmomee3XKkkCCfbMi6eGHGYH2SFJLMnH11hGbr3yKY60FlWx8Hhds/aliGeEUdd6VqKfFeUgxcA4eDVSaAZCDFO9UWaFgrWdxEsi5aK+ElvrV/WYstouCOeMsfPIQREN8CPhQyvL4Q/gndLW904pmUkRQb9QMDzevL0gsBcP2I0mq742MmX3Kwk2gDyVxu1KafF1J6lFCBTWNyWqE18+CJxW/Qe7t1Qx7PPpDMf5kJwGtgOwg4hLELvSrA2hDL5h2kRtDoE1jkX0U5OLK2XWSHzFLLKt1VBNAal2JtJB1ii/7pC38jxFm/ZFRnOtJU0I=
+  on:
+    #tags: true
+    branch: master, travis
+</t>
+<t tx="mhw-nc.20190126223741.1"></t>
 </tnodes>
 </leo_file>

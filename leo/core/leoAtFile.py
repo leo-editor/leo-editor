@@ -477,8 +477,8 @@ class AtFile(object):
         c.raise_error_dialogs()
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
     def findFilesToRead(self, force, root):
-        
-        at, c = self, self.c
+
+        c = self.c
         p = root.copy()
         scanned_tnodes = set()
         files = []
@@ -496,34 +496,20 @@ class AtFile(object):
                 if p.isAnyAtFileNode():
                     c.ignored_at_file_nodes.append(p.h)
                 p.moveToNodeAfterTree()
-            elif p.isAtThinFileNode():
-                at.read(p, force=force)
-                files.append(p.copy())
-                p.moveToNodeAfterTree()
-            elif p.isAtAutoNode():
-                fileName = p.atAutoNodeName()
-                at.readOneAtAutoNode(fileName, p)
-                files.append(p.copy())
-                p.moveToNodeAfterTree()
-            elif p.isAtEditNode():
-                fileName = p.atEditNodeName()
-                at.readOneAtEditNode(fileName, p)
-                files.append(p.copy())
-                p.moveToNodeAfterTree()
-            elif p.isAtShadowFileNode():
-                fileName = p.atShadowFileNodeName()
-                at.readOneAtShadowNode(fileName, p)
-                files.append(p.copy())
-                p.moveToNodeAfterTree()
-            elif p.isAtFileNode():
-                at.read(p, force=force)
+            elif (
+                p.isAtThinFileNode() or
+                p.isAtAutoNode() or
+                p.isAtEditNode() or
+                p.isAtShadowFileNode() or
+                p.isAtFileNode()
+            ):
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
             elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-                at.rememberReadPath(g.fullPath(c, p), p)
+                # Note (see #1081): @asis and @nosent can *not* be updated automatically.
+                # Doing so using refresh-from-disk will delete all child nodes.
                 p.moveToNodeAfterTree()
             elif p.isAtCleanNode():
-                at.readOneAtCleanNode(p)
                 files.append(p.copy())
                 p.moveToThreadNext()
                     # #525: Nested nodes.
@@ -572,8 +558,7 @@ class AtFile(object):
         # Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fileName, p)
-        if not g.unitTesting:
-            g.es("reading:", p.h)
+        # if not g.unitTesting: g.es("reading:", p.h)
         try:
             # For #451: return p.
             old_p = p.copy()
@@ -615,8 +600,7 @@ class AtFile(object):
         junk, ext = g.os_path_splitext(fn)
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
-        if not g.unitTesting:
-            g.es("reading: @edit %s" % (g.shortFileName(fn)))
+        # if not g.unitTesting: g.es("reading: @edit %s" % (g.shortFileName(fn)))
         s, e = g.readFileIntoString(fn, kind='@edit')
         if s is None: return
         encoding = 'utf-8' if e is None else e
@@ -637,6 +621,26 @@ class AtFile(object):
         p.b = g.u(head) + g.toUnicode(s, encoding=encoding, reportErrors='True')
         if not changed: c.setChanged(False)
         g.doHook('after-edit', p=p)
+    #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
+    def readOneAtAsisNode(self, fn, p):
+        '''Read one @asis node. Used only by refresh-from-disk'''
+        at, c = self, self.c
+        at.default_directory = g.setDefaultDirectory(c, p, importing=True)
+        fn = c.os_path_finalize_join(at.default_directory, fn)
+        junk, ext = g.os_path_splitext(fn)
+        # Remember the full fileName.
+        at.rememberReadPath(fn, p)
+        # if not g.unitTesting: g.es("reading: @asis %s" % (g.shortFileName(fn)))
+        s, e = g.readFileIntoString(fn, kind='@edit')
+        if s is None: return
+        encoding = 'utf-8' if e is None else e
+        # Delete all children.
+        while p.hasChildren():
+            p.firstChild().doDelete()
+        old_body = p.b
+        p.b = g.toUnicode(s, encoding=encoding, reportErrors='True')
+        if not c.isChanged() and p.b != old_body:
+            c.setChanged(True)
     #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
     def readOneAtCleanNode(self, root):
         '''Update the @clean/@nosent node at root.'''
@@ -717,7 +721,7 @@ class AtFile(object):
         if shadow_exists:
             at.read(p, atShadow=True, force=force)
         else:
-            if not g.unitTesting: g.es("reading:", p.h)
+            # if not g.unitTesting: g.es("reading:", p.h)
             ok = at.importAtShadowNode(fn, p)
             if ok:
                 # Create the private file automatically.
@@ -1023,7 +1027,7 @@ class AtFile(object):
             else:
                 g.es("no @shadow nodes in the selected tree")
         return found
-    #@+node:ekr.20041005105605.157: *5* at.putFile
+    #@+node:ekr.20041005105605.157: *5* at.putFile & helper
     def putFile(self, root, fromString='', sentinels=True):
         '''Write the contents of the file to the output stream.'''
         at = self
@@ -1668,7 +1672,7 @@ class AtFile(object):
             at.exception("exception preprocessing script")
             return g.u('')
     #@+node:ekr.20041005105605.160: *4* Writing 4.x
-    #@+node:ekr.20041005105605.161: *5* at.putBody & helpers
+    #@+node:ekr.20041005105605.161: *5* at.putBody & helper
     def putBody(self, p, fromString=''):
         '''
         Generate the body enclosed in sentinel lines.
@@ -3133,7 +3137,7 @@ class FastAtRead (object):
         Return (delims, first_lines, i+1) or None
         '''
         first_lines = []
-        i = 0 # To keep pylint happy.
+        i = 0 # To keep some versions of pylint happy.
         for i, line in enumerate(lines):
             m = self.header_pattern.match(line)
             if m:

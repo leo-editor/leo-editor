@@ -416,8 +416,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             k.setStatusLabel('Removed: %s' % k.arg)
         except Exception:
             k.setStatusLabel('Not Removed: %s' % k.arg)
-    #@+node:ekr.20170806094318.15: *3* efc.saveFile
-    @cmd('file-save')
+    #@+node:ekr.20170806094318.15: *3* efc.saveFile (save-file-by-name)
+    @cmd('file-save-by-name')
+    @cmd('save-file-by-name')
     def saveFile(self, event):
         '''Prompt for the name of a file and put the body text of the selected node into it..'''
         c = self.c
@@ -510,12 +511,12 @@ class GitDiffController:
     '''A class to do git diffs.'''
     #@+others
     #@+node:ekr.20170806094320.4: *3* gdc.__init__ & helper
-    def __init__ (self, c):
+    def __init__ (self, c, repo_dir=None):
         '''Ctor for the GitDiffController class.'''
         self.c = c
         self.file_node = None
         self.old_dir = g.os_path_abspath('.')
-        self.repo_dir = None
+        self.repo_dir = repo_dir
         self.root = None
     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
     #@+node:ekr.20180506064102.10: *4* gdc.diff_two_branches

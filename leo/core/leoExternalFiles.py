@@ -62,7 +62,7 @@ class ExternalFilesController(object):
         self.enabled_d = {}
             # For efc.on_idle.
             # Keys are commanders.
-            # Values are cached check_for_changed_external_file settings.
+            # Values are cached @bool check-for-changed-external-file settings.
         self.files = []
             # List of ExternalFile instances created by self.open_with.
         self.has_changed_d = {}
@@ -138,7 +138,7 @@ class ExternalFilesController(object):
             if c:
                 c.outerUpdate()
         if 1:
-            # Fix #262: Improve performance of check_for_changed_external_files.
+            # Fix #262: Improve performance when @bool check-for-changed-external-files is True.
             if self.unchecked_files:
                 # Check all external files.
                 for ef in self.unchecked_files:
@@ -177,6 +177,11 @@ class ExternalFilesController(object):
         while p:
             if p.v in seen:
                 p.moveToNodeAfterTree()
+            elif p.isAtCleanNode():
+                # Fix #1074: nested @clean nodes.
+                seen.add(p.v)
+                self.idle_check_at_file_node(c, p)
+                p.moveToThreadNext()
             elif p.isAnyAtFileNode():
                 seen.add(p.v)
                 self.idle_check_at_file_node(c, p)
@@ -186,9 +191,18 @@ class ExternalFilesController(object):
     #@+node:ekr.20150403044823.1: *5* efc.idle_check_at_file_node
     def idle_check_at_file_node(self, c, p):
         '''Check the @<file> node at p for external changes.'''
+        trace = False
+            # Matt, set this to True, but only for the file that interests you.\
+            # trace = p.h == '@file unregister-leo.leox'
         path = g.fullPath(c, p)
-        if self.has_changed(c, path):
-            if self.ask(c, path, p=p):
+        has_changed = self.has_changed(c, path)
+        if trace:
+            g.trace('changed', has_changed, p.h)
+        if has_changed:
+            if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+                # Fix #1081: issue a warning.
+                self.warn(c, path, p=p)
+            elif self.ask(c, path, p=p):
                 c.redraw(p=p)
                 c.refreshFromDisk(p)
                 c.redraw()
@@ -590,6 +604,28 @@ class ExternalFilesController(object):
         '''
         t = new_time or self.get_mtime(path)
         self._time_d[g.os_path_realpath(path)] = t
+    #@+node:ekr.20190218055230.1: *4* efc.warn
+    def warn(self, c, path, p):
+        '''
+        Warn that an @asis or @nosent node has been changed externally.
+        
+        There is *no way* to update the tree automatically.
+        '''
+        if g.unitTesting or c not in g.app.commanders():
+            return
+        if not p:
+            g.trace('NO P')
+            return
+        g.app.gui.runAskOkDialog(
+            c=c,
+            message='\n'.join([
+                '%s has changed outside Leo.\n' % g.splitLongFileName(path),
+                'Leo can not update this file automatically.\n',
+                'This file was created from %s.\n' % p.h,
+                'Warning: refresh-from-disk will destroy all children.'
+            ]),
+            title='External file changed',
+        )
     #@-others
 #@-others
 #@@language python

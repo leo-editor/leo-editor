@@ -246,13 +246,6 @@
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e332e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
-<v t="ekr.20060602195313"><vh>@test at.write using @comment</vh>
-<v t="ekr.20060602195313.2"><vh>root</vh>
-<v t="ekr.20060602195313.3"><vh>&lt;&lt; Get LRR Task &gt;&gt;</vh></v>
-<v t="ekr.20060602195313.4"><vh>&lt;&lt; Start LRR &gt;&gt;</vh></v>
-</v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -519,64 +512,6 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957">@nosearch</t>
 <t tx="ekr.20051013162226"></t>
-<t tx="ekr.20060602195313">import re
-at = c.atFileCommands
-expected = '''\
-/*@+leo-ver=5-thin*/
-/*@+node:GNX: * root*/
-/*@@language c*/
-#ifdef COMMENT
-/*@@comment /* */ */
-#endif
-/*@@tabwidth 4*/
-/*@@lineending crlf*/
-
-/*@+others*/
-/*@-others*/
-
-/*@+&lt; &lt; Get LRR Task &gt; &gt;*/
-/*@+node:GNX: ** &lt; &lt; Get LRR Task &gt; &gt;*/
-/*@-&lt; &lt; Get LRR Task &gt; &gt;*/
-/*@+&lt; &lt; Start LRR &gt; &gt;*/
-/*@+node:GNX: ** &lt; &lt; Start LRR &gt; &gt;*/
-/*@-&lt; &lt; Start LRR &gt; &gt;*/
-/*@-leo*/
-'''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
-
-child = p.firstChild()
-result = at.atFileToString(child)
-result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
-if result != expected: # Show unexpected mismatches.
-    g.printObj(result, tag='result')
-    g.printObj(expected, tag='expected')
-    result = g.splitLines(result)
-    expected = g.splitLines(expected)
-    print('len(expected): %s, len(result): %s' % (len(expected), len(result)))
-    for i, s in enumerate(result):
-        if expected[i] != result[i]:
-            print(i)
-            print('expected: %r' % expected[i])
-            print('result:   %r' % result[i])
-            break
-elif 0:
-    g.printObj(result, tag='result')
-
-assert result == expected
-</t>
-<t tx="ekr.20060602195313.2">@language c
-#ifdef COMMENT
-@comment /* */ 
-#endif
-@tabwidth 4
-@lineending crlf
-
-@others
-
-&lt;&lt; Get LRR Task &gt;&gt;
-&lt;&lt; Start LRR &gt;&gt;
-</t>
-<t tx="ekr.20060602195313.3"></t>
-<t tx="ekr.20060602195313.4"></t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -811,22 +746,6 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-</t>
-<t tx="ekr.20090704085350.5052">if g.app.isExternalUnitTest:
-    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
-if g.in_bridge:
-    self.skipTest('Not for TravisCI')
-h = '@auto unittest/at-auto-test.py'
-p = g.findNodeAnywhere(c,h)
-assert p, h
-table = (
-    (p.firstChild(),'spam'),
-    (p.firstChild().next(),'eggs')
-)
-assert not p.isDirty(), p.h # Do not ignore this failure!
-for p2, h2 in table:
-    assert p2 and p2.h == h2, (p2 and p2.h, h2)
-    assert len(p2.b) &gt; 10
 </t>
 <t tx="ekr.20091206090247.5060"># Use these with caution.</t>
 <t tx="ekr.20091206090247.5061">count = 0

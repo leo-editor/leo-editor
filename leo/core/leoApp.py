@@ -2216,8 +2216,7 @@ class LoadManager(object):
                     g.app.theme_color = settings_d.get_string_setting('color-theme')
                     g.app.theme_name = settings_d.get_string_setting('theme-name')
                     if trace:
-                        print('')
-                        g.trace('=====\n')
+                        g.trace('\n=====\n')
                         print(' g.app.theme_path: %s' % g.app.theme_directory)
                         print(' g.app.theme_name: %s' % g.app.theme_name)
                         print('g.app.theme_color: %s' % g.app.theme_color)
@@ -2735,8 +2734,8 @@ class LoadManager(object):
         add_bool('--session-save',  'save session tabs on exit')
         add_bool('--silent',        'disable all log messages')
         add_other('--theme',        'use the named theme file', m='NAME')
-        add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
-        add_bool('--trace-coloring', 'trace syntax coloring')
+        add_other('--trace-binding','trace commands bound to a key', m='KEY')
+        add_bool('--trace-coloring','trace syntax coloring')
         add_bool('--trace-drawing', 'trace outline redraws')
         add_bool('--trace-events',  'trace non-key events')
         add_bool('--trace-focus',   'trace changes of focus')
@@ -2744,9 +2743,10 @@ class LoadManager(object):
         add_bool('--trace-ipython', 'trace ipython bridge')
         add_bool('--trace-keys',    'trace key events')
         add_bool('--trace-plugins', 'trace imports of plugins')
-        add_other('--trace-setting', 'trace where named setting is set', m="NAME")
-        add_bool('--trace-shutdown', 'trace shutdown logic')
-        add_bool('--trace-startup',  'trace startup logic')
+        add_other('--trace-setting','trace where named setting is set', m="NAME")
+        add_bool('--trace-shutdown','trace shutdown logic')
+        add_bool('--trace-startup', 'trace startup logic')
+        add_bool('--trace-syntax',  'trace syntax coloring')
         add_bool('--trace-themes',  'trace theme init logic')
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         # Multiple bool values.
@@ -2818,7 +2818,8 @@ class LoadManager(object):
         # --script
         script = options.script
         if script:
-            fn = g.os_path_finalize_join(g.app.loadDir, script)
+            # #1090: use cwd, not g.app.loadDir, to find scripts.
+            fn = g.os_path_finalize_join(os.getcwd(), script)
             script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
             if not script:
                 print('script not found:%s' % fn)
@@ -2861,14 +2862,14 @@ class LoadManager(object):
             # ('cache', options.trace_cache),
             ('coloring', options.trace_coloring),
             ('drawing', options.trace_drawing),
-            ('events', options.trace_events), # New
+            ('events', options.trace_events),
             ('focus', options.trace_focus),
-            ('gnx', options.trace_gnx), # New.
-            ('keys', options.trace_keys), # New
-            ('ipython', options.trace_ipython), # New
+            ('gnx', options.trace_gnx),
+            ('keys', options.trace_keys),
+            ('ipython', options.trace_ipython),
             ('plugins', options.trace_plugins),
             ('shutdown', options.trace_shutdown),
-            ('startup', options.trace_startup), # New
+            ('startup', options.trace_startup),
             ('themes', options.trace_themes),
         )
         for val, option in table:
@@ -3222,7 +3223,8 @@ class LoadManager(object):
         if not g.os_path_exists(fn):
             p = c.rootPosition()
             # Create an empty @edit node unless fn is an .leo file.
-            p.h = g.shortFileName(fn) if fn.endswith('.leo') else '@edit %s' % fn
+            # Fix #1070: Use "newHeadline", not fn.
+            p.h = "newHeadline" if fn.endswith('.leo') else '@edit %s' % fn
             c.selectPosition(p)
         elif c.looksLikeDerivedFile(fn):
             # 2011/10/10: Create an @file node.

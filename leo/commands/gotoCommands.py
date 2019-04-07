@@ -125,8 +125,7 @@ class GoToCommands(object):
                     return n
                 if node_offset is not None:
                     node_offset += 1
-        print('')
-        g.trace('Not found', target_offset, target_gnx)
+        g.trace('\nNot found', target_offset, target_gnx)
         return None
     #@+node:ekr.20150624085605.1: *3* goto.scan_nonsentinel_lines
     def scan_nonsentinel_lines(self, lines, n, root):

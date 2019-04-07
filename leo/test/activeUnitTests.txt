@@ -13163,6 +13163,28 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
+#@+node:ekr.20190210094318.1: *6* @test org #1074
+@first # -*- coding: utf-8 -*-
+s = '''\
+*  Test
+First line.
+'''
+table = (
+    ' Test',
+)
+try:
+    c.importCommands.orgUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == g.toUnicode(h), (p2.h, g.toUnicode(h))
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 #@+node:ekr.20181020062632.1: *6* @test org-placeholder
 if 0:
     # The preamble...
@@ -26030,6 +26052,18 @@ after
 #@+node:ekr.20050518071251.4: *7* selection
 2.0
 2.16
+#@+node:ekr.20190210103111.1: *6* line_to_headline test1
+#@+node:ekr.20190210103111.2: *7* before
+before
+headline
+after
+#@+node:ekr.20190210103111.3: *7* after
+before
+after
+#@+node:ekr.20190210103111.4: *8* headline
+#@+node:ekr.20190210103111.5: *7* selection
+2.0
+2.0
 #@+node:ekr.20071113202510: *4* @test zz end of leoUndo tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoUndo tests.')

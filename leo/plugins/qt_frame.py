@@ -1376,8 +1376,7 @@ class LeoQtBody(leoFrame.LeoBody):
             self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
             self.widget.setAcceptRichText(False)
-            self.colorizer = leoColorizer.JEditColorizer(c, self.widget, self.wrapper)
-
+            self.colorizer = leoColorizer.make_colorizer(c, self.widget, self.wrapper)
     #@+node:ekr.20110605121601.18183: *5* LeoQtBody.setWrap
     def setWrap(self, p=None, force=False):
         '''Set **only** the wrap bits in the body.'''
@@ -1462,7 +1461,7 @@ class LeoQtBody(leoFrame.LeoBody):
         wrapper.see(0)
         c.k.completeAllBindingsForWidget(wrapper)
         if isinstance(w, QtWidgets.QTextEdit):
-            colorizer = leoColorizer.JEditColorizer(c, widget, wrapper)
+            colorizer = leoColorizer.make_colorizer(c, widget, wrapper)
             colorizer.highlighter.setDocument(widget.document())
         else:
             # Scintilla only.

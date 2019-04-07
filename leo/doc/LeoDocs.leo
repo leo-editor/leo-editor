@@ -686,6 +686,7 @@
 <v t="ekr.20141108064630.15"><vh>How can I create buttons with dropdown menus?</vh></v>
 <v t="ekr.20120229094652.15099"><vh>How can I make commonly-used scripts widely accessible?</vh></v>
 <v t="ekr.20160415031743.21"><vh>How can I organize large docstrings?</vh></v>
+<v t="ekr.20190307095247.1"><vh>How can I run code in an external process?</vh></v>
 <v t="ekr.20160428105918.1"><vh>How can I run pylint outside of Leo?</vh></v>
 <v t="ekr.20131115075142.16636"><vh>How can I test settings easily?</vh></v>
 <v t="ekr.20160304081437.4"><vh>How can I use Leo in virtualenv?</vh></v>
@@ -1341,6 +1342,7 @@
 <v t="ekr.20180226155010.2"><vh>Call g.execute_shell_commands_with_options</vh></v>
 </v>
 <v t="ekr.20180226153353.1"><vh>Using g.app.backgroundProcessManager</vh></v>
+<v t="ekr.20190307093145.1"><vh>Using g.execute_shell_commands</vh></v>
 </v>
 <v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20180827103758.1"><vh>Using @pyplot and matplotlib</vh>
@@ -2252,6 +2254,7 @@
 </v>
 <v t="ekr.20190119070017.1"><vh>5.8.1: Features</vh>
 <v t="ekr.20190117143942.654"><vh>#0525: Nested @clean</vh></v>
+<v t="ekr.20190325062650.1"><vh>#0568 &amp; #1102: pygments syntax coloring</vh></v>
 <v t="ekr.20190117143942.672"><vh>#0672: Leo uses TravisCI</vh></v>
 <v t="ekr.20190117143942.681"><vh>#0915: Leo debugger</vh></v>
 <v t="ekr.20190122041941.1"><vh>#0926: Organize @outline-data tree-abbreviations</vh></v>
@@ -2259,10 +2262,16 @@
 <v t="ekr.20190117143942.399"><vh>#1031, #1050 and #1003: Better error recovery</vh></v>
 <v t="ekr.20190117143942.463"><vh>#1040: Simplify atFile.write code</vh></v>
 <v t="ekr.20190122042300.1"><vh>#1047: Tree Window Resizes on Paste Node</vh></v>
+<v t="ekr.20190327105147.364"><vh>#1081: @asis</vh></v>
+<v t="ekr.20190327105525.1"><vh>#1085: The py3 branch</vh></v>
+<v t="ekr.20190327105503.1"><vh>Added g.get_files_in_directory</vh></v>
+<v t="ekr.20190327105000.1"><vh>Added promote-headline command</vh></v>
+<v t="ekr.20190327105249.1"><vh>Created py3 branch, for Leo 6.0</vh></v>
 <v t="ekr.20190123122138.1"><vh>Retired the head-to-prev node and tail-to-next-node commands </vh></v>
 </v>
 <v t="ekr.20190119071258.1"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
 </v>
+<v t="ekr.20131012060912.16788"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3510,12 +3519,17 @@ The following deserve special thanks:
 - e inspired @button nodes, a truly brilliant idea.
 - The late Bob Fitzwater kept me focused on design. Oh, how I wish he could see today's Leo.
 - Jonathan M. Gilligan showed how to put the Leo icon in Leo's windows.
+- The Jupyter development team taught me how to support pygments colorizing.
+- Almar Klein wrote pyzo, yoton and flexx.
+  Flexx is the basis of LeoWapp (--gui=browser).
+  Leo will (soon) use various excellent features of pyzo.
 - Donald Knuth invented the CWEB language and literate programming.
 - LeoUser (B.H.) contributed numerous plugins, including a prototype for Leo's minibuffer, and wrote jyLeo: Leo in Jython.
 - The late Bernhard Mulder invented the fundamental @shadow algorithm, a stroke of genius. Bernhard also inspired Leo's generators and position class. The one-node world could not have happened without Bernhard.
 - Joe Orr created tutorials and XSLT stylesheets for Leo: http://www.jserv.com/jk_orr/xml/leo.htm.
 - John K. Ousterhout created tcl/Tk, used in early versions of Leo.
-- Виталије Милошевић, (Vitalije Milosevic) rewrote Leo's read code, thereby allowing Leo to do without file caching.
+- Виталије Милошевић, (Vitalije Milosevic) rewrote Leo's read code,
+  thereby allowing Leo to do without file caching.
 - Tsuchi Noko created transparent icons.
 - Neal Norwitz wrote PyChecker.
 - Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
@@ -3526,7 +3540,8 @@ The following deserve special thanks:
 - Steven P. Schaefer pointed out security problems.
 - Gil Shwartz helped with unicode support.
 - Phil Straus has been a great friend and constant support.
-- Kent Tenney lobbies constantly to make Leo easier to use and understand. His comment opened the door to the one-node world.
+- Kent Tenney lobbies constantly to make Leo easier to use and understand.
+  His comment opened the door to the one-node world.
 - Guido van Rossum created Python.
 - Dave Winer created MORE.
 - Ville M. Vainio made invaluable contributions, including the one-node world,
@@ -4138,7 +4153,10 @@ Leo is my Favorites Mind Capsule ;-)
 Despite I am no programmer, I have been using Leo for some years now as my "Intelligent PIM" - I organize my (complex) life with Leo. Many thanks to Edward and others for the great application -- vili &lt;viljem.tisnikar@gmail.com&gt;
 
 I had used Leo for a long time as a PIM to track my work, but moved to emacs org mode for a period of time because of its explicit agenda and work tracking capabilities. But I went back to Leo because it seems more flexible when it comes to viewing various aspects of a project. For some recent performance data collection work, under one outline are the theory behind the project, the code (generation) for the project, the project web page (generated from an @rst node tree),  and project deployment (little more than clicking a button). One can change focus from one aspect to another very quickly and use clones to really drill down into an area (for me it's typically the code) when needed. Leo is an impressive tool, and I have only scratched the surface--Robert Shanley.
-</t>
+
+I am a manager, physicist and perhaps an electrical engineer. I use serveral differnt editors all the time, for different reasons, like vim and scite sometime  emacs. I use Leo on complex projects, involving many files. I have small python and Lua scripts, Lua tables, plain text files, many LaTeX files, CSV files, Markdown files, lots of PDF's for reference, spreadsheets, todo lists. I write documentation, write simple tools to help with business and scientific calculations. I do this all in a company with 20 people, working in small teams.
+
+I use Leo as a project manager. It glues together all kind of stuff, allows me to do some jobs with a little script, and interfaces well with others. Some other tools may be better for some other things and I use other tools too, but I keep coming back to Leo for much of my work. Leo manages to be generic enough to co-exist well with other tools and bring all these different files together.--Josef Dalcomo.</t>
 <t tx="ekr.20050830074815.8">"I've written documentation in WordPerfert, Ventura, Word, PageMaker, and FrameMaker and even though they create wonderfully looking and useful documents, they've never been able to do what I've been looking for. HTML, compiled help files, and later PDF came closer, but still not there...I think I've found it in Leo, a way to make a "living" document. A document built out of discrete parts that can be re-organized on the fly to meet the needs of a varying audience...I've already started converting the IT Procedures manual from Open Office to Leo because I know it's going to be much more useful to me and anyone else...just the possibility of keeping system maintenance scripts in the IT manual is mind boggling."---David Nichols
 
 "With the help of the rst2 plugin, [Leo is] the best outliner I have yet encountered for writing the early stages of academic papers."
@@ -7541,6 +7559,17 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 **THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**
+
+################
+Other Copyrights
+################
+
+Portions of Leo's pygments interface use code from the Jupyter qtconsole package.
+
+These parts are are clearly marked in Leo's code as follows:
+
+    Copyright (c) Jupyter Development Team.
+    Distributed under the terms of the Modified BSD License.
 </t>
 <t tx="ekr.20090223065025.3">**Important**: The changes you make below **will not persist** unless your script calls c.frame.body.onBodyChanged after making those changes. This method has the following signature::
 
@@ -8876,7 +8905,7 @@ By default, the file's extension determines the importer::
 
 The @asis directive creates an external file without sentinels and without any expansions.
 
-Use this directive only when you must have complete control over every character of the external file. When writing @asis nodes, writes the body text of all nodes in outline order. Leo writes the body text *as is*, without recognizing section definitions, without expanding section references, and without treating directives specially in any way. In particular, Leo copies all directives, including @ or @c directives, to the external file as text.
+Use this directive only when you must have complete control over every character of the external file. When writing @asis nodes, writes the body text of all nodes in outline order. Leo writes the body text *as is*, without recognizing section definitions, without expanding section references, and without treating directives specially in any way. In particular, Leo copies all directives, including @ or @c directives, to the external file as text. **Warning**: Because the external file contains no sentinels, @nosent trees can not be updated from changes made outside of Leo. If you want this capability, use @clean instead.
 
 .. index::
     pair: @@ convention in @asis trees; Reference
@@ -9022,13 +9051,14 @@ accessing external files for most people.
 When writing an @clean tree, Leo expands section references, @all and
 @others directives, but Leo writes no sentinels to the external file.
 
-
 When reading an @clean tree, Leo propagates changes from the external file
 to the @clean tree using the `Mulder/Ream update algorithm`_.
 
 **Note**: The @bool force_newlines_in_at_nosent_bodies setting controls whether
 Leo writes a trailing newline if non-empty body text does not end in a newline.
 The default is True.
+
+**Experimental**: Nested @clean trees are possible.  See Leo issue #525.  However, "inner" @clean files can not, at present, contain child nodes. 
 </t>
 <t tx="ekr.20100806170836.4402">.. index::
     pair: @shadow; Reference
@@ -16042,18 +16072,18 @@ Scripts may capture positions like this::
 
     c.frame.log.selectTab('Test')
         # Create Test or make it visible.
-
+    
     g.es('Test',color='blue',tabName='Test')
         # Write to the test tab.
+        
+.. Fix Leo Issue #1101: https://github.com/leo-editor/leo-editor/issues/1101
 
-Plugins and scripts may call the c.frame.canvas.createCanvas method to create a log tab containing a graphics widget. Here is an example script::
+Plugins and scripts may call c.frame.log.createTab to create non-text widgets in the log pane::
 
-    log = c.frame.log ; tag = 'my-canvas'
-    w = log.canvasDict.get(tag)
-    if not w:
-        w = log.createCanvas(tag)
-        w.configure(bg='yellow')
-    log.selectTab(tag)
+    from leo.core.leoQt import QtWidgets
+    log = c.frame.log
+    w = log.createTab('My Tab', createText=False, widget=QtWidgets.QFrame())
+    log.selectTab('My Tab')
 </t>
 <t tx="ekr.20131012191145.16789">.. in writingPlugins.html
 
@@ -19122,7 +19152,8 @@ The command operates on the paragraph containing the insert cursor. If the inser
     Creates a new node whose headline is the first line of selected body text and whose body is all other lines of selected text. Previously selected text is deleted from the original body text.
 ``extract-names (Ctrl-Shift-N)``
     Creates one or more child nodes, one for each section name in the selected body text. The headline of each created node is the section name.
-</t>
+``line-to-headline``
+    Creates a new node whose headline is the selected body line.</t>
 <t tx="ekr.20150318110552.26">``execute-script (Ctrl-B)``
     Executes body text as a Python script. Leo execute the selected text, or the entire body text if no text is selected. The Execute Script command pre-defines the values c, g and p as follows:
 
@@ -21141,7 +21172,7 @@ File names are relative to the directory containing the .leo file, but that can 
     pair: @nosent; Reference
 
 The @nosent directive creates an external file **without** sentinels. When writing
-@nosent trees, Leo expands section references and @all and @others directives.  Because the external file contains no sentinels, @nosent trees can not be updated from changes made outside of Leo. If you want this capability, use @clean instead.
+@nosent trees, Leo expands section references and @all and @others directives. **Warning**: Because the external file contains no sentinels, @nosent trees can not be updated from changes made outside of Leo. If you want this capability, use @clean instead.
 </t>
 <t tx="ekr.20160410045234.1">When importing files into @auto trees, Leo performs several checks to ensure that writing the imported file will produce exactly the same file. These checks can produces **errors** or **warnings**. Errors indicate a potentially serious problem. Leo inserts an @ignore directive in the @auto tree if any error is found. This prevents the @auto tree from modifying the external file.
 
@@ -21815,7 +21846,8 @@ self.unitTestMenusDict = {}
 - The first section discusses three ways of calling subprocess.popen directly or via Leo helper functions.
 
 - The second section discusses the BackgroundProcessManager class.  Leo's pylint command uses this class to run pylint commands sequentially *without blocking Leo*. Running processes sequentially prevents unwanted interleaving of output.
-</t>
+
+- The last two sections discuss using g.execute_shell_commands and g.execute_shell_commands_with_options. </t>
 <t tx="ekr.20161120073024.1">@language md
 
 These .md files are intended to be viewed on [GitHub](https://github.com/leo-editor/leo-editor/tree/master/leo/doc).
@@ -29644,8 +29676,13 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **The highlights of Leo 5.8.1**
 
+Major features
 - LeoWapp: Leo in a browser.
+- Optional syntax coloring using pygments.
+  Optional: you may use @color &amp; @font directives instead of pygments styles.
 - Integrated debugger.
+
+Other features
 - Nested @clean nodes, useful for LaTex files.
 - A major refactoring of the code that writes external files.
 - Better error recovery.
@@ -29742,9 +29779,21 @@ https://github.com/leo-editor/leo-editor/issues/690
 <t tx="ekr.20190119065631.1">For the complete list, see:
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.8.1+label%3Abug+is%3Aclosed</t>
 <t tx="ekr.20190119070017.1"></t>
-<t tx="ekr.20190119071258.1">- Removed @string trailing-body-newlines.
-- Remove @string qt-ui-file-name.
+<t tx="ekr.20190119071258.1">New settings (defaults as shown):
+
+- @bool use-pygments = False
+- @bool use-pygments-styles = True
+- @string pygments-style-name = default
+- Created a 'leonine' style.
+  See: https://github.com/leo-editor/leo-editor-contrib/blob/master/leonine.py
+  
+Changed/improved settings:
+- Improved --trace-coloring traces
 - #993: use -, not underscore, for settings names.
+
+Removed settings:
+- Removed @string trailing-body-newlines.
+- Remove @string qt-ui-file-name.
   https://github.com/leo-editor/leo-editor/issues/993
 </t>
 <t tx="ekr.20190122041941.1">https://github.com/leo-editor/leo-editor/issues/926
@@ -29759,6 +29808,7 @@ The following call FastRead().readFileFromClipboard:
 </t>
 <t tx="ekr.20190122044116.1">- LeoWapp: Leo in a browser.
 - Integrated debugger.
+- Support for pygments syntax coloring.
 - Nested @clean nodes, useful for LaTex files.
 - A major refactoring of the code that writes external files.
 - Better error recovery.
@@ -29771,6 +29821,68 @@ https://github.com/leo-editor/leo-editor/issues/977
 <t tx="ekr.20190123075859.1">https://github.com/leo-editor/leo-editor/issues/1065
 </t>
 <t tx="ekr.20190123122138.1"></t>
+<t tx="ekr.20190307093145.1">@language rest
+
+g.execute_shell_command tales a single argument, which may be either a string or a list of strings. Each string represents one command. g.execute_shell_command executes each command in order.  Commands starting with '&amp;' are executed without waiting. Commands that do not start with '&amp;' finish before running later commands. Examples:
+
+@language python
+
+# Run the qml app in a separate process:
+g.execute_shell_commands('qmlscene /test/qml_test.qml')
+
+# List the contents of a directory:
+g.execute_shell_commands([
+    'cd ~/test',
+    'ls -a',
+])
+
+# Run a python test in a separate process.
+g.execute_shell_commands('python /test/qt_test.py')
+
+@language rest
+
+g.execute_shell_commands_with_options inits an environment and then calls g.execute_shell_commands.  See Leo's source code for details.
+</t>
+<t tx="ekr.20190307095247.1">This is detailed more fully in a scripting miscellany. g.execute_shell_commands executes one or more commands in a separate process using subprocess.popen. Commands *not* preceded by '&amp;' run to completion before the next command is run.
+
+This allows you to run programs in *any* language.  Just invoke the compiler/interpreter using g.execute_shell_commands.</t>
+<t tx="ekr.20190325062650.1">Leo now optionally supports syntax coloring with pygments.
+See http://pygments.org/docs/
+
+Related Leo issues:
+
+- https://github.com/leo-editor/leo-editor/issues/568
+- https://github.com/leo-editor/leo-editor/issues/1102
+
+New settings (defaults as shown):
+
+- @bool use-pygments = False
+- @bool use-pygments-styles = True
+- @string pygments-style-name = default
+- Created a 'leonine' style.
+  See: https://github.com/leo-editor/leo-editor-contrib/blob/master/leonine.py
+</t>
+<t tx="ekr.20190327105000.1">Copies the headlines of all descendants to the parent's body text.</t>
+<t tx="ekr.20190327105147.364">https://github.com/leo-editor/leo-editor/issues/1081
+
+Added warning when @asis or @nosent files change outside of Leo.
+</t>
+<t tx="ekr.20190327105249.1">https://github.com/leo-editor/leo-editor/issues/1085
+This branch assumes Python 3.  It will be the basis of Leo 6.0.
+  
+- Removed isPython3 switches.
+- Removed g.u.
+- Removed g.ue.
+
+The following methods will not be removed:
+- Replace isBytes, isCallable, isInt, isList, isString
+</t>
+<t tx="ekr.20190327105503.1"></t>
+<t tx="ekr.20190327105525.1">https://github.com/leo-editor/leo-editor/issues/1085
+
+This branch removes all Python 2 compatibility code.
+It will be the basis of Leo 6.0.
+ </t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with

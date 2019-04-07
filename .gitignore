@@ -7,6 +7,14 @@ __pycache__/
 # .db files
 *.db
 
+# Per user stuff
+.gitconfig
+.viminfo
+.leo
+*.leo_db
+.leo_shadow
+
+
 # Files in leo/proto
 leo/proto/*
 
@@ -28,6 +36,7 @@ var/
 .installed.cfg
 *.egg
 .eggs/
+pip-wheel-metadata/
 
 # Test results
 /.pytest_cache/
@@ -46,15 +55,12 @@ leo/test/unittest/rst_write_test.txt
 *.tmp
 *.pyc
 *.pyo
-*.leo_db
 *Thumbs.db
 *.zip
 *.*.swp # vim swap files
 ./*.zip
 ./*.exe
 
-.leo_shadow
-.leo
 .ropeProject
 
 gradient.png
@@ -127,5 +133,3 @@ annotate.txt
 
 leo/core/leoProjects.txt
 leo/plugins/spellpyx.txt
-
-.eggs/*

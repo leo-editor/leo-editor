@@ -1,0 +1,31 @@
+#@+leo-ver=5-thin
+#@+node:mhw-debug-1081.20190214225936.1: * @file request-elevation.leox
+#@@language python
+#@@tabwidth -4
+import leo.core.leoGlobals as g
+import ctypes, sys
+from six.moves import input # py2,3 compatibility
+g.es_print("--- Running a Leo script")
+
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
+leo = r"c:\apps\miniconda3\envs\leo-dev\Scripts\leo-m.exe"
+#reg_script = g.os.path.join(g.os.environ['TEMP'], 'xxx-register-leo.py')
+reg_script = g.os_path_finalize_join(g.computeLeoDir(), '../scripts/register-leo.leox')
+params = 'leo --script=' + reg_script
+
+if is_admin():
+    g.es_print("Yay! we are admin", is_admin())
+    g.es_print(leo, params)
+    # subprocess.run
+    g.es_print('If this were real next command would be:')
+    g.es_print('python scripts/elevate.py "path/to/leo --script=../scripts/win-register-leo.leox" ')
+else:
+    g.es_print("Not admin, can't do anything", is_admin())
+
+input("Press Enter to continue...")
+#@-leo

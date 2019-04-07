@@ -19,7 +19,7 @@
 <v t="ekr.20180324065741.1"><vh>@@button copy-to-next</vh></v>
 <v t="ekr.20150507170849.1"><vh>@@button create decorators</vh>
 <v t="ekr.20150508063538.1"><vh>create_d</vh></v>
-<v t="ekr.20150508071622.1"><vh>create_decorator</vh></v>
+<v t="ekr.20150508071622.1"><vh>create_decorator (@button)</vh></v>
 <v t="ekr.20150508063412.1"><vh>create_decorators</vh></v>
 <v t="ekr.20150508074623.1"><vh>create_fixups</vh></v>
 <v t="ekr.20150508063926.1"><vh>find_class</vh></v>
@@ -29,13 +29,14 @@
 </v>
 <v t="ekr.20150509183433.1"><vh>@@button make-decorators2</vh>
 <v t="ekr.20150509183433.2"><vh>create_d</vh></v>
-<v t="ekr.20150509183433.3"><vh>create_decorator</vh></v>
+<v t="ekr.20150509183433.3"><vh>create_decorator (@button)</vh></v>
 <v t="ekr.20150509183433.4"><vh>create_decorators V2</vh></v>
 <v t="ekr.20150509183832.1"><vh>define_s</vh></v>
 <v t="ekr.20150509183433.8"><vh>munge_lines</vh></v>
 <v t="ekr.20150509183433.9"><vh>run V2</vh></v>
 </v>
 <v t="ekr.20150703061709.1"><vh>@@button run-pylint</vh></v>
+<v t="ekr.20180824065751.1"><vh>@@button show-gnx</vh></v>
 <v t="ekr.20131121084830.16362"><vh>@@button toggle-debug</vh></v>
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
@@ -67,13 +68,39 @@
 <v t="ekr.20170428084123.1"><vh>Recursive import script</vh>
 <v t="ekr.20170428084123.2"><vh>&lt;&lt; old dir_ settings &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20180816105258.1"><vh>script: diff-branches</vh></v>
+<v t="ekr.20181102040815.1"><vh>script: warn about long lines</vh></v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
+<v t="ekr.20190122185223.1"><vh>regex: find all kwargs</vh></v>
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
 <v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
+</v>
+<v t="ekr.20190116145049.1"><vh>To do</vh>
+<v t="ekr.20190116145036.1"><vh>To do: No milestone</vh>
+<v t="ekr.20181027151243.1"><vh>#1006: Allow @button and @command only from trusted directories</vh>
+<v t="ekr.20181027133311.1"><vh>g.issueSecurityWarning</vh></v>
+<v t="ekr.20140114145953.16691"><vh>c.config.isLocalSetting</vh></v>
+<v t="ekr.20150514043850.8"><vh>abbrev.init_settings (called from reload_settings)</vh></v>
+</v>
+<v t="ekr.20180604114211.408"><vh>#388: wikiview.py plugin problem</vh></v>
+<v t="ekr.20180604114156.2"><vh>#433: Complete the tables.py plugin</vh>
+<v t="ekr.20180604114156.3"><vh>Error running the demo on Windows 10</vh></v>
+</v>
+<v t="ekr.20180604114211.561"><vh>#678: Graphics version of outline pane</vh></v>
+<v t="ekr.20180619063409.1"><vh>#929: Improve FreeMind importer</vh>
+<v t="ekr.20160503145550.1"><vh>class FreeMindImporter</vh>
+<v t="ekr.20170222084048.1"><vh>freemind.add_children</vh></v>
+<v t="ekr.20160503125844.1"><vh>freemind.create_outline</vh></v>
+<v t="ekr.20160503191518.4"><vh>freemind.import_file</vh></v>
+<v t="ekr.20160503145113.1"><vh>freemind.import_files</vh></v>
+<v t="ekr.20160504043823.1"><vh>freemind.prompt_for_files</vh></v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh> About this file</vh>
@@ -93,14 +120,14 @@
 <v t="ekr.20150605175037.1"><vh>@file leoCheck.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
 <v t="ekr.20140827092102.18574"><vh>@file leoColorizer.py</vh></v>
-<v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
+<v t="ekr.20031218072017.2810" descendentVnodeUnknownAttributes="7d7100580c000000302e312e31312e322e352e3771017d71025808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323031382d30382d313871077573732e"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20180212072657.2"><vh>@file leoCompare.py</vh></v>
 <v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20130302121602.10208"><vh>@file leoDebugger.py</vh></v>
 <v t="ekr.20160306114544.1"><vh>@file leoExternalFiles.py</vh></v>
 <v t="ekr.20181202062518.1"><vh>@file leoFastRedraw.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31372e3171017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31382e3171017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
@@ -179,18 +206,19 @@
 <v t="ekr.20161223152353.1"><vh>@edit ../plugins/qt_quicksearch_sub.py</vh></v>
 </v>
 <v t="ekr.20180225010644.1"><vh>Other files</vh>
-<v t="ekr.20180217072000.1"><vh>@ignore Proto</vh>
-<v t="ekr.20180217083023.1"><vh>@@file leoPrototype.py</vh></v>
-</v>
 <v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
+<v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
 <v t="ekr.20150304125314.4"><vh>@clean ../../leo_to_html.xsl</vh>
 <v t="ekr.20150304130753.5"><vh>&lt;&lt;style&gt;&gt;</vh></v>
 <v t="ekr.20150304130753.6"><vh>&lt;&lt;scripts&gt;&gt;</vh></v>
 </v>
+<v t="ekr.20181009072707.1"><vh>@clean ../../run_travis_unit_tests.py</vh>
+<v t="ekr.20181009084156.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20181009084245.1"><vh>&lt;&lt; compute path &gt;&gt;</vh></v>
+<v t="ekr.20181009084323.1"><vh>&lt;&lt; run tests &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20160124165611.1"><vh>@file ../../launchLeo-unified.spec</vh></v>
-<v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
-<v t="maphew.20181013162818.1"><vh>@edit ../../.travis.yml</vh></v>
-<v t="maphew.20181013162837.1"><vh>@edit ../../pyproject.toml</vh></v>
+<v t="ekr.20181014073705.1"><vh>@file ../../run_pytest_tests.py</vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
 </v>
 <v t="ekr.20180225010913.1"><vh>In leo/core</vh>
@@ -198,12 +226,11 @@
 </v>
 <v t="ekr.20180225010743.1"><vh>In leo/external</vh>
 <v t="ekr.20160123142722.1"><vh>@clean ../external/make_stub_files.cfg</vh></v>
-<v t="ekr.20160316091152.1"><vh>@clean ../external/py2cs_theory.md</vh>
-<v t="ekr.20160316091152.2"><vh>The problem</vh></v>
-<v t="ekr.20170820190658.1"><vh>A new node</vh></v>
-<v t="ekr.20160316091152.3"><vh>The design</vh></v>
-<v t="ekr.20160316091152.4"><vh>Using TokenSync class</vh></v>
-<v t="ekr.20160316091152.5"><vh>Summary</vh></v>
+<v t="ekr.20180708145905.1"><vh>@clean ../external/py2cs_theory.md</vh>
+<v t="ekr.20180708152000.1"><vh>The problem</vh></v>
+<v t="ekr.20180708152018.1"><vh>Design</vh></v>
+<v t="ekr.20180708145905.6"><vh>Using TokenSync class</vh></v>
+<v t="ekr.20180708145905.7"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
 <v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
@@ -296,6 +323,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20181013081645.1"><vh>In leo/core/test</vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
 <v t="ekr.20160517182239.1"><vh>@file ../../flake8-leo.py</vh></v>
@@ -304,7 +332,7 @@
 <v t="ekr.20170805060844.1"><vh>@file ../test/leo-bridge-test.py</vh></v>
 <v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
-<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@file leoTest.py</vh></v>
+<v t="ekr.20051104075904"><vh>@file leoTest.py</vh></v>
 </v>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
@@ -396,7 +424,7 @@ returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction.
 </t>
-<t tx="ekr.20051031040240">@nosearch</t>
+<t tx="ekr.20051031040240"></t>
 <t tx="ekr.20080412053100.5">@language rest
 </t>
 <t tx="ekr.20080730161153.8"></t>
@@ -426,6 +454,25 @@ unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;&lt;&lt; class ParserBa
 @language rest
 The parser for @data nodes, doData, no longer strips *anything*.</t>
 <t tx="ekr.20140103105930.16446"></t>
+<t tx="ekr.20140114145953.16691">def isLocalSetting(self, setting, kind):
+    '''Return True if the indicated setting comes from a local .leo file.'''
+    if not kind or kind in ('shortcut', 'shortcuts', 'openwithtable'):
+        return False
+    key = g.app.config.munge(setting)
+    if key is None:
+        return False
+    if not self.settingsDict:
+        return False
+    gs = self.settingsDict.get(key)
+    if not gs:
+        return False
+    assert g.isGeneralSetting(gs), gs
+    path = gs.path.lower()
+    for fn in ('myLeoSettings.leo', 'leoSettings.leo'):
+        if path.endswith(fn.lower()):
+            return False
+    return True
+</t>
 <t tx="ekr.20140808103117.18035"></t>
 <t tx="ekr.20140808103117.18038">gnx: ekr.20110605121601.18698
 </t>
@@ -1292,7 +1339,7 @@ CreateDecorators(c,make_changes=False).run()
     trace = False
     found = False
     decorator = "@cmd('%s')\n" % (c_name)
-    for p in root.self_and_subtree():
+    for p in root.self_and_subtree(copy=False):
         changed,result = False,[]
         for s in g.splitLines(p.b):
             if g.match_word(s,0,'def ' + f_name):
@@ -1384,7 +1431,7 @@ CreateDecorators().run()
     trace = True
     found = False
     decorator = "@cmd('%s')\n" % (c_name)
-    for p in root.self_and_subtree():
+    for p in root.self_and_subtree(copy=False):
         changed,result = False,[]
         for s in g.splitLines(p.b):
             if g.match_word(s,0,'def ' + f_name):
@@ -1641,6 +1688,32 @@ def define_s(self):
 '''
 </t>
 <t tx="ekr.20150514035207.1"></t>
+<t tx="ekr.20150514043850.8">def init_settings(self):
+    '''Called from AbbrevCommands.reload_settings aka reloadSettings.'''
+    c = self.c
+    c.k.abbrevOn = c.config.getBool('enable-abbreviations', default=False)
+    # Init these here for k.masterCommand.
+    c.abbrev_place_end = c.config.getString('abbreviations-place-end')
+    c.abbrev_place_start = c.config.getString('abbreviations-place-start')
+    c.abbrev_subst_end = c.config.getString('abbreviations-subst-end')
+    c.abbrev_subst_env = {'c': c, 'g': g, '_values': {},}
+        # The environment for all substitutions.
+        # May be augmented in init_env.
+    c.abbrev_subst_start = c.config.getString('abbreviations-subst-start')
+    # Local settings.
+    self.enabled = (
+        c.config.getBool('scripting-at-script-nodes') or
+        c.config.getBool('scripting-abbreviations'))
+    self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
+    # @data abbreviations-subst-env must *only* be defined in leoSettings.leo or myLeoSettings.leo!
+    if c.config:
+        key = 'abbreviations-subst-env'
+        if c.config.isLocalSetting(key, 'data'):
+            g.issueSecurityWarning('@data %s' % key)
+            self.subst_env = ""
+        else:
+            self.subst_env = c.config.getData(key, strip_data=False)
+</t>
 <t tx="ekr.20150531102337.1"></t>
 <t tx="ekr.20150604130353.1">gnx: ekr.20150604130223.363
 </t>
@@ -1683,120 +1756,6 @@ prefix_lines:
 
 [General Patterns]
 </t>
-<t tx="ekr.20160316091152.1">@language rest
-@wrap
-
-This is the theory of operation document for py2cs.py. The most interesting aspect of this script is the TokenSync class. This class provides a reliable way of associating tokenizer tokens with ast nodes.
-
-@others
-
-
-
-</t>
-<t tx="ekr.20160316091152.2">
-### The problem
-
-The initial version of py2cs.py (the script) used only tokens. This solved all token-related problems, but made parsing difficult. Alas, it is [difficult](http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a-python-ast-node) to associate tokens with ast nodes.
-
-The script needs the following token-related data:
-
-- The **ignored lines** (comment lines and blank lines) that precede any statement.
-
-- The **trailing comment** strings that might follow any line.
-
-- Optionally, the **line breaks** occurring within lines. At present, this script does not preserve such breaks, and it's probably not worth doing. Indeed, automatically breaking long lines seems more useful, especially considering that coffeescript lines may be substantially shorter than the corresponding python lines.
-
-- The **exact spelling** of all strings.
-
-The [ast_utils module](
-https://bitbucket.org/plas/thonny/src/3b71fda7ac0b66d5c475f7a668ffbdc7ae48c2b5/thonny/ast_utils.py?at=master) purports to solve this problem with convoluted adjustments to the col_offset field. This approach is subject to subtle Python bugs, and subtle differences between Python 2 and Python 3. There is a better way...
-</t>
-<t tx="ekr.20160316091152.3">
-### Design
-
-The main idea is to use *only* the ast.lineno fields and the tokenizer module to recreate token data. The design assumes only that both the ast.lineno field and Python's tokenizer module are solid. This is a much more reasonable assumption than assuming that the col_offset field always tells the truth. In short, this design *ignores* the ast.col_offset field.
-
-At startup, the TokenSync ctor assigns all the incoming tokens to various lists.  These lists are indexed by lineno:
-
-    ts.line_tokens[i]: all the tokens on line i
-    ts.string_tokens[i]: all string tokens on line i
-    st.ignored_lines: the blank or comment line on line i
-
-It is very easy to create these lists. The code does not depend on any arcane details.
-
-#### Recovering the exact spelling of stings.
-
-ts.synch_string returns the *next* string on the line. Here it is, stripped of defensive code:
-
-    def sync_string(self, node):
-        '''Return the spelling of the string at the given node.'''
-        tokens = self.string_tokens[node.lineno-1]
-        token = tokens.pop(0)
-        self.string_tokens[node.lineno-1] = tokens
-        return self.token_val(token)
-
-Stripped of defensive code, the do_Str visitor is just:
-
-    def do_Str(self, node):
-        '''A string constant, including docstrings.'''
-        return self.sync_string(node)
-
-#### Recovering otherwise ignored nodes
-
-**ts.leading_lines(node)** returns a list of otherwise ignored lines that
-precede the node's line that have not already been returned.
-**ts.leading_string(node)** is a convenience method that returns ''.join(ts.leading_lines(node)). The visitors of the CoffeeScriptTraverser class show how to use these methods.
-</t>
-<t tx="ekr.20160316091152.4">
-### Using the TokenSync class
-
-The present code is driven by ast trees, but each visitor of the CoffeeScriptTraverser class takes care to preserve **otherwise-ignored tokens**. These are tokens that would otherwise be ignored: namely blank lines and comments, both entire-line comments and trailing comments.
-
-The visitor for each statement intersperses otherwise ignored tokens using calls to the TokenSync class.  The simplest cases are like this:
-
-    def do_Break(self, node):
-        head = self.leading_string(node)
-        tail = self.trailing_comment(node)
-        return head + self.indent('break') + tail
-
-The leading_string and trailing_comment methods simply redirect to the corresponding methods in the TokenSync class.  Saves a bit of typing. Compound statements are a bit more bother, but not overly so. For example:
-
-    def do_If(self, node):
-
-        result = self.leading_lines(node)
-        tail = self.trailing_comment(node)
-        s = 'if %s:%s' % (self.visit(node.test), tail)
-        result.append(self.indent(s))
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-        if node.orelse:
-            tail = self.tail_after_body(node.body, node.orelse, result)
-            result.append(self.indent('else:' + tail))
-            for z in node.orelse:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
-        return ''.join(result)
-
-The line:
-
-        tail = self.tail_after_body(node.body, node.orelse, result)
-
-is a hack needed to compensate for the lack of an actual ast.Else node.
-</t>
-<t tx="ekr.20160316091152.5">
-### Summary
-
-The TokenSync class is, a new, elegant, unexpected and happy development. It is a relatively easy-to-use helper that allows parser-based code to preserve data that is not easily accessible in parse trees.
-
-The TokenSync class avoids [problems with the col_offset field](
-http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a-python-ast-node) in ast nodes. The TokenSync class depends only on the ast.lineno field and the tokenize module. We can expect it to be rock solid.
-
-Edward K. Ream
-February 20 to 25, 2016
-</t>
 <t tx="ekr.20160420054135.4">gnx: ekr.20160412193816.5
 unl: qt_quicksearch declarations
 gnx: ekr.20160412193816.6
@@ -1817,6 +1776,96 @@ gnx: ekr.20160412193816.4
 unl: class Ui_MainWindow--&gt;retranslateUi
 </t>
 <t tx="ekr.20160425070345.2"></t>
+<t tx="ekr.20160503125844.1">def create_outline(self, path):
+    '''Create a tree of nodes from a FreeMind file.'''
+    c = self.c
+    junk, fileName = g.os_path_split(path)
+    undoData = c.undoer.beforeInsertNode(c.p)
+    try:
+        self.import_file(path)
+        c.undoer.afterInsertNode(c.p, 'Import', undoData)
+    except Exception:
+        g.es_print('Exception importing FreeMind file', g.shortFileName(path))
+        g.es_exception()
+    return c.p
+</t>
+<t tx="ekr.20160503145113.1">def import_files(self, files):
+    '''Import a list of FreeMind (.mmap) files.'''
+    c = self.c
+    if files:
+        self.tab_width = c.getTabWidth(c.p)
+        for fileName in files:
+            g.setGlobalOpenDir(fileName)
+            p = self.create_outline(fileName)
+            p.contract()
+            p.setDirty()
+            c.setChanged(True)
+        c.redraw(p)
+</t>
+<t tx="ekr.20160503145550.1">class FreeMindImporter(object):
+    '''Importer class for FreeMind (.mmap) files.'''
+
+    def __init__(self, c):
+        '''ctor for FreeMind Importer class.'''
+        self.c = c
+        self.count = 0
+        self.d = {}
+
+    @others
+</t>
+<t tx="ekr.20160503191518.4">def import_file(self, path):
+    '''The main line of the FreeMindImporter class.'''
+    c = self.c
+    sfn = g.shortFileName(path)
+    if g.os_path_exists(path):
+        htmltree = lxml.html.parse(path)
+        root = htmltree.getroot()
+        body = root.findall('body')[0]
+        if body is None:
+            g.error('no body in: %s' % sfn)
+        else:
+            root_p = c.lastTopLevel().insertAfter()
+            root_p.h = g.shortFileName(path)
+            for child in body:
+                if child != body:
+                    self.add_children(root_p, child)
+            c.selectPosition(root_p)
+            c.redraw()
+    else:
+        g.error('file not found: %s' % sfn)
+</t>
+<t tx="ekr.20160504043823.1">def prompt_for_files(self):
+    '''Prompt for a list of FreeMind (.mm.html) files and import them.'''
+    c = self.c
+    types = [
+        ("FreeMind files", "*.mm.html"),
+        ("All files", "*"),
+    ]
+    names = g.app.gui.runOpenFileDialog(c,
+        title="Import FreeMind File",
+        filetypes=types,
+        defaultextension=".html",
+        multiple=True)
+    c.bringToFront()
+    if names:
+        g.chdir(names[0])
+        self.import_files(names)
+</t>
+<t tx="ekr.20170222084048.1">def add_children(self, parent, element):
+    '''
+    parent is the parent position, element is the parent element.
+    Recursively add all the child elements as descendants of parent_p.
+    '''
+    p = parent.insertAsLastChild()
+    attrib_text = element.attrib.get('text','').strip()
+    tag = element.tag if g.isString(element.tag) else ''
+    text = element.text or ''
+    if not tag: text = text.strip()
+    p.h = attrib_text or tag or 'Comment'
+    p.b = text if text.strip() else ''
+    for child in element:
+        self.add_children(p, child)
+</t>
 <t tx="ekr.20170427112302.1">g.cls()
 import glob
 files = glob.glob(g.os_path_join(g.app.loadDir, '*.py'))
@@ -1992,7 +2041,7 @@ from .eveventhandler import Event
 
 
 </t>
-<t tx="ekr.20170428085201.1"></t>
+<t tx="ekr.20170428085201.1">@nosearch</t>
 <t tx="ekr.20170811173924.1">@language python
 import os
 import subprocess
@@ -2019,13 +2068,10 @@ proc.wait()
 os.chdir(old_dir)
 print('done! wrote %s' % fn)
 </t>
-<t tx="ekr.20170820190658.1"></t>
 <t tx="ekr.20171031111403.1"></t>
-<t tx="ekr.20180217072000.1"></t>
-<t tx="ekr.20180217083023.1"></t>
 <t tx="ekr.20180225010644.1"></t>
 <t tx="ekr.20180225010707.1"></t>
-<t tx="ekr.20180225010743.1"></t>
+<t tx="ekr.20180225010743.1">@nosearch</t>
 <t tx="ekr.20180225010850.1"></t>
 <t tx="ekr.20180225010913.1"></t>
 <t tx="ekr.20180324065741.1">'''Copy the selected text to the next node.'''
@@ -2041,6 +2087,312 @@ if s.strip():
     c.editHeadline()
 else:
     g.es_print('no text selected')
+</t>
+<t tx="ekr.20180604114156.2">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/433
+
+- Report error: see child node.
+- Ask: Do I need to accept Terry's work?
+
+Terry's code is in plugins/editpane/editpane.py
+
+@language python
+</t>
+<t tx="ekr.20180604114156.3">@language rest
+@wrap
+
+LEP: __init__ LEP
+LEP: Loaded module: plaintextedit
+LEP: Loaded module: plaintextview
+LEP: Loaded module: __init__
+LEP: Loaded module: clicky_splitter
+LEP: Loaded module: csvedit
+LEP: Loaded module: editpane
+LEP: Loaded module: leotextedit
+LEP: Loaded module: markdownview
+LEP: Module not loaded (unmet dependencies?): pandownview
+LEP: Module not loaded (unmet dependencies?): vanillascintilla
+LEP: Module not loaded (unmet dependencies?): webengineview
+LEP: Loaded module: webkitview
+LEP: build layout
+LEP: new edit position
+LEP: text changed, NOT focused
+LEP: new view position
+LEP: update edit position
+LEP: update editor text
+LEP: text changed, NOT focused
+LEP: update view position
+LEP:
+register handlers
+LEP: unregister handlers</t>
+<t tx="ekr.20180604114211.408">@language rest
+@wrap
+wikiview.py plugin problem with new colorizing code
+https://github.com/leo-editor/leo-editor/issues/388
+
+@language python
+</t>
+<t tx="ekr.20180604114211.561">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/678
+
+10 years ago:
+http://leo.zwiki.org/GraphsInTrees
+
+@language python
+</t>
+<t tx="ekr.20180619063409.1">@language rest
+@wrap
+
+The freemind importer should use ElementTree, not lxml
+https://github.com/leo-editor/leo-editor/issues/929
+ElementTree is more widely available.
+
+@language python
+</t>
+<t tx="ekr.20180708145905.1">@language rest
+@wrap
+
+This is the theory of operation document for py2cs.py. The most interesting aspect of this script is the TokenSync class. This class provides a reliable way of associating tokenizer tokens with ast nodes.
+
+@others
+</t>
+<t tx="ekr.20180708145905.6">
+### Using the TokenSync class
+
+The present code is driven by ast trees, but each visitor of the CoffeeScriptTraverser class takes care to preserve **otherwise-ignored tokens**. These are tokens that would otherwise be ignored: namely blank lines and comments, both entire-line comments and trailing comments.
+
+The visitor for each statement intersperses otherwise ignored tokens using calls to the TokenSync class.  The simplest cases are like this:
+
+    def do_Break(self, node):
+        head = self.leading_string(node)
+        tail = self.trailing_comment(node)
+        return head + self.indent('break') + tail
+
+The leading_string and trailing_comment methods simply redirect to the corresponding methods in the TokenSync class.  Saves a bit of typing. Compound statements are a bit more bother, but not overly so. For example:
+
+    def do_If(self, node):
+
+        result = self.leading_lines(node)
+        tail = self.trailing_comment(node)
+        s = 'if %s:%s' % (self.visit(node.test), tail)
+        result.append(self.indent(s))
+        for z in node.body:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+        if node.orelse:
+            tail = self.tail_after_body(node.body, node.orelse, result)
+            result.append(self.indent('else:' + tail))
+            for z in node.orelse:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+        return ''.join(result)
+
+The line:
+
+        tail = self.tail_after_body(node.body, node.orelse, result)
+
+is a hack needed to compensate for the lack of an actual ast.Else node.
+</t>
+<t tx="ekr.20180708145905.7">
+### Summary
+
+The TokenSync class is, a new, elegant, unexpected and happy development. It is a relatively easy-to-use helper that allows parser-based code to preserve data that is not easily accessible in parse trees.
+
+The TokenSync class avoids [problems with the col_offset field](
+http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a-python-ast-node) in ast nodes. The TokenSync class depends only on the ast.lineno field and the tokenize module. We can expect it to be rock solid.
+
+Edward K. Ream
+February 20 to 25, 2016
+
+
+
+</t>
+<t tx="ekr.20180708152000.1">
+### The problem
+
+The initial version of py2cs.py (the script) used only tokens. This solved all token-related problems, but made parsing difficult. Alas, it is [difficult](http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a-python-ast-node) to associate tokens with ast nodes.
+
+The script needs the following token-related data:
+
+- The **ignored lines** (comment lines and blank lines) that precede any statement.
+
+- The **trailing comment** strings that might follow any line.
+
+- Optionally, the **line breaks** occurring within lines. At present, this script does not preserve such breaks, and it's probably not worth doing. Indeed, automatically breaking long lines seems more useful, especially considering that coffeescript lines may be substantially shorter than the corresponding python lines.
+
+- The **exact spelling** of all strings.
+
+The [ast_utils module](
+https://bitbucket.org/plas/thonny/src/3b71fda7ac0b66d5c475f7a668ffbdc7ae48c2b5/thonny/ast_utils.py?at=master) purports to solve this problem with convoluted adjustments to the col_offset field. This approach is subject to subtle Python bugs, and subtle differences between Python 2 and Python 3. There is a better way...
+</t>
+<t tx="ekr.20180708152018.1">
+### Design
+
+The main idea is to use *only* the ast.lineno fields and the tokenizer module to recreate token data. The design assumes only that both the ast.lineno field and Python's tokenizer module are solid. This is a much more reasonable assumption than assuming that the col_offset field always tells the truth. In short, this design *ignores* the ast.col_offset field.
+
+At startup, the TokenSync ctor assigns all the incoming tokens to various lists.  These lists are indexed by lineno:
+
+    ts.line_tokens[i]: all the tokens on line i
+    ts.string_tokens[i]: all string tokens on line i
+    st.ignored_lines: the blank or comment line on line i
+
+It is very easy to create these lists. The code does not depend on any arcane details.
+
+#### Recovering the exact spelling of stings.
+
+ts.synch_string returns the *next* string on the line. Here it is, stripped of defensive code:
+
+    def sync_string(self, node):
+        '''Return the spelling of the string at the given node.'''
+        tokens = self.string_tokens[node.lineno-1]
+        token = tokens.pop(0)
+        self.string_tokens[node.lineno-1] = tokens
+        return self.token_val(token)
+
+Stripped of defensive code, the do_Str visitor is just:
+
+    def do_Str(self, node):
+        '''A string constant, including docstrings.'''
+        return self.sync_string(node)
+
+#### Recovering otherwise ignored nodes
+
+**ts.leading_lines(node)** returns a list of otherwise ignored lines that
+precede the node's line that have not already been returned.
+**ts.leading_string(node)** is a convenience method that returns ''.join(ts.leading_lines(node)). The visitors of the CoffeeScriptTraverser class show how to use these methods.
+</t>
+<t tx="ekr.20180816105258.1">import leo.commands.editFileCommands as efc
+
+efc.GitDiffController(c).diff_two_branches(
+    branch1='devel',
+    branch2='5.8-b1-rel',
+    fn='leo/plugins/qt_tree.py',
+    directory=None,
+)
+</t>
+<t tx="ekr.20180824065751.1">print(p.gnx)</t>
+<t tx="ekr.20181009072707.1">@first # -*- coding: utf-8 -*-
+&lt;&lt; imports &gt;&gt;
+&lt;&lt; compute path &gt;&gt;
+controller = leoBridge.controller(gui='nullGui',
+    loadPlugins=False, readSettings=True,
+    silent=False, verbose=False)
+g = controller.globals()
+c = controller.openLeoFile(path)
+try:
+    # Run all unit tests locally.
+    root = g.findTopLevelNode(c, 'Active Unit Tests', exact=True)
+    assert root, 'Not found: Active Unit Tests'
+    c.selectPosition(root)
+    &lt;&lt; run tests &gt;&gt;
+except Exception as e:
+    print('Unexpected exception 2', e)
+    sys.exit(1)
+</t>
+<t tx="ekr.20181009084156.1">import leo.core.leoBridge as leoBridge
+import os
+import sys
+# import pdb ; pdb.set_trace()
+import unittest
+
+</t>
+<t tx="ekr.20181009084245.1">load_dir = os.path.abspath(os.path.dirname(__file__))
+test_dir = os.path.join(load_dir, 'leo', 'test')
+path = os.path.join(test_dir, 'unitTest.leo')
+assert os.path.exists(path), repr(path)
+</t>
+<t tx="ekr.20181009084323.1">tm = c.testManager
+g.unitTesting = g.app.unitTesting = True
+suite = unittest.makeSuite(unittest.TestCase)
+aList = tm.findAllUnitTestNodes(all=False, marked=False)
+setup_script = None
+found = False
+for p in aList:
+    if tm.isTestSetupNode(p):
+        setup_script = p.b
+        test = None
+    elif tm.isTestNode(p):
+        test = tm.makeTestCase(p, setup_script)
+    elif tm.isSuiteNode(p):
+        test = tm.makeTestSuite(p, setup_script)
+    elif tm.isTestClassNode(p):
+        test = tm.makeTestClass(p)
+    else:
+        test = None
+    if test:
+        suite.addTest(test)
+        found = True
+if not found:
+    print('No unit tests')
+    sys.exit(1)
+runner = unittest.TextTestRunner(
+    failfast=True, verbosity=1)
+try:
+    result = runner.run(suite)
+    if result.errors or result.failures:
+        print('errors: %s, failures: %s' % (
+            len(result.errors), len(result.failures)))
+        sys.exit(1)
+    else:
+        print('Travis unit tests all passed.')
+        sys.exit(0)
+except Exception:
+    print('Unexpected exception')
+    g.es_exception()
+    sys.exit(1)
+</t>
+<t tx="ekr.20181013081645.1">@path test</t>
+<t tx="ekr.20181027133311.1">def issueSecurityWarning(setting):
+    g.es('Security warning! Ignoring...',color='red')
+    g.es(setting, color='red')
+    g.es('This setting can be set only in')
+    g.es('leoSettings.leo or myLeoSettings.leo')
+</t>
+<t tx="ekr.20181027151243.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1006
+
+@language python
+</t>
+<t tx="ekr.20181102040815.1">files = [
+    'test/unittest.leo',
+]
+for fn in files:
+    path = g.os_path_finalize_join(g.app.loadDir, '..', fn)
+    assert g.os_path_exists(path), repr(path)
+    with open(path, 'r') as f:
+        s = f.read()
+        for line in g.splitLines(s):
+            if len(line) &gt; 150:
+                print(line)</t>
+<t tx="ekr.20190116145036.1"></t>
+<t tx="ekr.20190116145049.1">@language rest
+@wrap
+
+*** Add *real* vim emulation to Leo.
+    Use nvim-python: https://github.com/neovim/pynvim
+*** Add *real* org mode emulation to Leo
+
+@language python
+</t>
+<t tx="ekr.20190122185223.1">@language text
+
+Find all kwargs using regex:
+
+^\s*(def\s+\w+\s*\(.*\=.*\))
+
+found 1154 nodes
+
+^\s*(def\s+\w+\s*\(.*\=.*\=.*\))
+
+found 284 nodes
 </t>
 </tnodes>
 </leo_file>

@@ -2192,9 +2192,7 @@ def _assert(condition, show_callers=True):
     ok = bool(condition)
     if ok:
         return True
-    print('')
-    g.es_print('===== g._assert failed =====')
-    print('')
+    g.es_print('\n===== g._assert failed =====\n')
     if show_callers:
         g.es_print(g.callers())
     return False
@@ -3507,6 +3505,35 @@ def getBaseDirectory(c):
         return base # base need not exist yet.
     else:
         return "" # No relative base given.
+#@+node:ekr.20190306142950.1: *3* g.get_files_in_directory
+def get_files_in_directory(directory, kinds=None, recursive=True):
+    '''
+    Return a list of all files of the given file extensions in the directory.
+    Default kinds: ['*.py'].
+    '''
+    files, sep = [], os.path.sep
+    if not g.os.path.exists(directory):
+        g.es_print('does not exist', directory)
+        return files
+    try:
+        if kinds:
+            kinds = [z if z.startswith('*') else '*'+z for z in kinds]
+        else:
+            kinds = ['*.py']
+        if recursive:
+            # Works for all versions of Python.
+            import fnmatch
+            for root, dirnames, filenames in os.walk(directory):
+                for kind in kinds:
+                    for filename in fnmatch.filter(filenames, kind):
+                        files.append(os.path.join(root, filename))
+        else:
+            for kind in kinds:
+                files.extend(glob.glob(directory + sep + kind))
+        return list(set(sorted(files)))
+    except Exception:
+        g.es_exception()
+        return []
 #@+node:ekr.20170223093758.1: *3* g.getEncodingAt (New in Leo 5.5)
 def getEncodingAt(p, s=None):
     '''
@@ -6390,6 +6417,17 @@ def trace(*args, **keys):
         else: name = pad + name
     # Munge *args into s.
     result = [name] if name else []
+    #
+    # Put leading newlines into the prefix.
+    if isinstance(args, tuple):
+        args = list(args)
+    if args and isString(args[0]):
+        prefix = ''
+        while args[0].startswith('\n'):
+            prefix += '\n'
+            args[0] = args[0][1:]
+    else:
+        prefix = ''
     for arg in args:
         if isString(arg):
             pass
@@ -6402,6 +6440,9 @@ def trace(*args, **keys):
         else:
             result.append(arg)
     s = d.get('before') + ''.join(result)
+    if prefix:
+        prefix = prefix[1:] # One less newline.
+        pr(prefix)
     pr(s, newline=newline)
 #@+node:ekr.20080220111323: *3* g.translateArgs
 console_encoding = None
@@ -7351,24 +7392,36 @@ def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
     else:
         return ''
 #@+node:ekr.20170123074946.1: *4* g.extractExecutableString
-def extractExecutableString(c, p, s, language='python'):
+def extractExecutableString(c, p, s):
     '''
     Return all lines for the given @language directive.
 
     Ignore all lines under control of any other @language directive.
     '''
+    #
+    # Rewritten to fix #1071.
     if g.unitTesting:
         return s # Regretable, but necessary.
-
-    # Assume @language python by default.
-    if not language: language = 'python'
-    pattern = re.compile(r'\s*@language\s+(\w+)')
-    result = []
-    for line in g.splitLines(s):
-        m = pattern.match(line)
-        if m: # Found an @language directive.
-            language = m.group(1)
-        elif language == 'python':
+    #
+    # Return s if no @language in effect. Should never happen.
+    language = g.scanForAtLanguage(c, p)
+    if not language:
+        return s
+    #
+    # Return s if @language is unambiguous.
+    pattern = r'^@language\s+(\w+)'
+    matches = list(re.finditer(pattern, s, re.MULTILINE))
+    if len(matches) < 2:
+        return s
+    #
+    # Scan the lines, extracting only the valid lines.
+    extracting, result = False, []
+    for i, line in enumerate(g.splitLines(s)):
+        m = re.match(pattern, line)
+        if m:
+            g.trace(language, m.group(1))
+            extracting = m.group(1) == language
+        elif extracting:
             result.append(line)
     return ''.join(result)
 #@+node:ekr.20060624085200: *3* g.handleScriptException

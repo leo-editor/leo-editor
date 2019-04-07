@@ -724,12 +724,16 @@ class LeoQtTree(leoFrame.LeoTree):
             menu.addAction("No popup handlers")
         p = c.p.copy()
         done = set()
-        for h in handlers:
+        for handler in handlers:
             # every handler has to add it's QActions by itself
-            if h in done:
+            if handler in done:
                 # do not run the same handler twice
                 continue
-            h(c, p, menu)
+            try:
+                handler(c, p, menu)
+            except Exception:
+                g.es_print('Exception executing right-click handler')
+                g.es_exception()
         menu.popup(menuPos)
         self._contextmenu = menu
     #@+node:ekr.20110605121601.17912: *4* qtree.onHeadChanged

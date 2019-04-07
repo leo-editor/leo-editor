@@ -405,6 +405,28 @@ def fullCheckOutline(self, event=None):
     c = self
     return c.checkOutline(check_links=True)
 #@+node:ekr.20031218072017.2913: ** c_oc.Goto commands
+#@+node:ekr.20071213123942: *3* c_oc.findNextClone
+@g.commander_command('find-next-clone')
+def findNextClone(self, event=None):
+    '''Select the next cloned node.'''
+    c = self; p = c.p; cc = c.chapterController
+    if not p: return
+    if p.isCloned():
+        p.moveToThreadNext()
+    flag = False
+    while p:
+        if p.isCloned():
+            flag = True; break
+        else:
+            p.moveToThreadNext()
+    if flag:
+        if cc:
+            # name = cc.findChapterNameForPosition(p)
+            cc.selectChapterByName('main')
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+    else:
+        g.blue('no more clones')
 #@+node:ekr.20031218072017.1628: *3* c_oc.goNextVisitedNode
 @g.commander_command('go-forward')
 def goNextVisitedNode(self, event=None):
@@ -535,28 +557,6 @@ def goToNextClone(self, event=None):
             c.redraw(p)
     else:
         g.blue('done')
-#@+node:ekr.20071213123942: *3* c_oc.findNextClone
-@g.commander_command('find-next-clone')
-def findNextClone(self, event=None):
-    '''Select the next cloned node.'''
-    c = self; p = c.p; cc = c.chapterController
-    if not p: return
-    if p.isCloned():
-        p.moveToThreadNext()
-    flag = False
-    while p:
-        if p.isCloned():
-            flag = True; break
-        else:
-            p.moveToThreadNext()
-    if flag:
-        if cc:
-            # name = cc.findChapterNameForPosition(p)
-            cc.selectChapterByName('main')
-        c.selectPosition(p)
-        c.redraw_after_select(p)
-    else:
-        g.blue('no more clones')
 #@+node:ekr.20031218072017.2917: *3* c_oc.goToNextDirtyHeadline
 @g.commander_command('goto-next-changed')
 def goToNextDirtyHeadline(self, event=None):
@@ -609,6 +609,26 @@ def goToParent(self, event=None):
     '''Select the parent of the selected node.'''
     c = self; p = c.p
     c.treeSelectHelper(p and p.parent())
+#@+node:ekr.20190211104913.1: *3* c_oc.goToPrevMarkedHeadline
+@g.commander_command('goto-prev-marked')
+def goToPrevMarkedHeadline(self, event=None):
+    '''Select the next marked node.'''
+    c = self; p = c.p
+    if not p: return
+    p.moveToThreadBack()
+    wrapped = False
+    while 1:
+        if p and p.isMarked():
+            break
+        elif p:
+            p.moveToThreadBack()
+        elif wrapped:
+            break
+        else:
+            wrapped = True
+            p = c.rootPosition()
+    if not p: g.blue('done')
+    c.treeSelectHelper(p) # Sets focus.
 #@+node:ekr.20031218072017.2921: *3* c_oc.goToPrevSibling
 @g.commander_command('goto-prev-sibling')
 def goToPrevSibling(self, event=None):

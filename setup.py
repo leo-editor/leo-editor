@@ -10,19 +10,28 @@ import os
 import platform
 from shutil import rmtree
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
+import sys
+
+# Ensure setup.py's folder is in module search path else import leo fails
+# required for pip >v10 and pyproject.toml 
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 import leo.core.leoGlobals as g
 import leo.core.leoVersion as leoVersion
-#@+node:maphew.20141126230535.3: ** docstring
-'''setup.py for leo
 
-    Nov 2014: strip to bare minimum and rebuild using ONLY
-    https://python-packaging-user-guide.readthedocs.org/en/latest/index.html
-    
-    Oct 2017: Excellent guide "﻿Less known packaging features and tricks"
-    Ionel Cristian Mărieș, @ionelmc
-    https://blog.ionelmc.ro/presentations/packaging/#slide:2
-    https://blog.ionelmc.ro/2014/05/25/python-packaging/
-'''
+#@+node:mhw-nc.20190126224021.1: ** setup janitor
+# Initiated by #1055 - Have 'setup clean' play nice with others
+# Until accepted upstream we require this forked module pre-installed
+# from: https://github.com/maphew/setupext-janitor/setupext_janitor
+# to: ./leo/extensions/setupext_janitor
+try:
+   from leo.extensions.setupext_janitor import janitor
+   CleanCommand = janitor.CleanCommand
+except ImportError:
+   CleanCommand = None
+
+cmd_classes = {}
+if CleanCommand is not None:
+   cmd_classes['clean'] = CleanCommand
 
 #@+node:maphew.20181010203342.385: ** get_version
 def get_version(file, version=None):
@@ -80,28 +89,8 @@ def get_semver(tag):
         version = tag
     return version
 #@+node:maphew.20171006124415.1: ** Get description
-
 with open('README.md') as f:
     long_description = f.read()
-
-# Get the long description from the README file and convert to reST
-# adapted from https://github.com/BonsaiAI/bonsai-config/blob/0.3.1/setup.py#L7
-# bugfix #773 courtesy @Overdrivr, https://stackoverflow.com/a/35521100/14420
-# try:
-    # print('\n--- Getting long description ---')
-    # from pypandoc import convert_file, convert_text
-    # convert_text('#some title', 'rst', format='md') 
-        # # fix #847, will raise OSError if pandoc binary not found
-    # def read_md(f):
-        # rst = convert_file(f, 'rst')
-        # rst = rst.replace('\r', '') # fix #773
-        # return rst
-# except (ImportError, OSError) as err:
-    # print('\n', err)
-    # print('*** Warning: could not convert Readme.md to .rst (harmless for users)')
-    # def read_md(f): return open(f, 'r').read()
-        # # disable to obviously fail if markdown conversion fails
-
 #@+node:maphew.20141126230535.4: ** classifiers
 classifiers = [
     'Development Status :: 6 - Mature',
@@ -125,44 +114,35 @@ user_requires = [
     'PyQt5; python_version >= "3.0"',
     #'python-qt5; python_version < "3.0" and platform_system=="Windows"',
         # disabled, pending "pip install from .whl fails conditional dependency check" https://github.com/pypa/pip/issues/4886
-    ## missing: pyqt for Linux python 2.x (doesn't exist on PyPi)
     'docutils', # used by Sphinx, rST plugin
-    #'flexx', # for LeoWapp browser gui, requires python v3.5+ so disabled for now
+    'flexx; python_version >= "3.5"', # for LeoWapp browser gui, requires python v3.5+
     'nbformat', # for Jupyter notebook integration
     'pylint','pyflakes', # coding syntax standards
-    #'pypandoc', # doc format conversion
     'sphinx', # rST plugin
-    #'semantic_version', # Pip packaging    
-    #'twine','wheel','keyring' # Pip packaging, uploading to PyPi
-    #'pyenchant', # spell check support ## no wheels for some platforms, e.g. amd64
-    #'pyxml', # xml importing ## no pip package
+    'future', # python 2/3 compatibility layer, same with 'six'
+    'six',
     ]
-#@+node:maphew.20171122231442.1: ** clean
-def clean():
-    print('\nRemoving build, dist and egg directories')
-    root = os.path.dirname(os.path.realpath(__file__))
-    for d in ['build', 'dist', 'leo.egg-info', '.eggs']:
-        dpath = os.path.join(root, d)
-        if os.path.isdir(dpath):
-            rmtree(dpath)
-clean()
-#@-others
-
+#@+node:maphew.20190207205714.1: ** define_entry_points
 def define_entry_points(entry_points=None):
+    '''1. Define scripts that get installed to PYTHONHOME/Scripts.
+      2. Extend `python setup.py clean` to remove more files (issue #1055)   
+    '''
     print('Creating entry_points for [OS name - system]: {} - {}'.format(platform.os.name, platform.system()))
-    entry_points={
-       'console_scripts': [
+    entry_points={'console_scripts': [
             'leo-c = leo.core.runLeo:run_console',
             'leo-console = leo.core.runLeo:run_console'],
-        'gui_scripts': ['leo = leo.core.runLeo:run']
-       }                
+            'gui_scripts': ['leo = leo.core.runLeo:run']}
     if platform.system() == 'Windows':
-        entry_points.update({
-            'console_scripts': [
-                'leo-m = leo.core.runLeo:run',
-                'leo-messages = leo.core.runLeo:run']})
+        entry_points.update({'console_scripts': [
+            'leo-m = leo.core.runLeo:run',
+            'leo-messages = leo.core.runLeo:run']})
+
+    entry_points.update({
+            'distutils.commands': [
+            'clean = setupext_janitor.janitor:CleanCommand']})
     return entry_points
-        
+#@-others
+
 setup(
     name='leo',
     # version = leo.core.leoVersion.version,
@@ -172,7 +152,6 @@ setup(
     url='http://leoeditor.com',
     license='MIT License',
     description='An IDE, PIM and Outliner', # becomes 'Summary' in pkg-info
-    #long_description=read_md('README.md'),
     long_description=long_description,
     long_description_content_type="text/markdown", # PEP566
     platforms=['Linux', 'Windows', 'MacOS'],
@@ -182,10 +161,8 @@ setup(
     include_package_data=True, # also include MANIFEST files in wheels
     setup_requires=setup_requires,
     install_requires=user_requires,
-    #scripts=['leo/dist/leo-install.py'],
-        # no longer needed. `entry_points` is the preferred method now
-        # delete the script too, after testing
-    entry_points=define_entry_points()
+    entry_points=define_entry_points(),
+    cmdclass={'clean': janitor.CleanCommand} # clean more than setuptools, #1055
 )
 
 #@@language python
