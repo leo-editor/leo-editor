@@ -279,6 +279,7 @@ class LeoQtGui(leoGui.LeoGui):
     def createLeoFrame(self, c, title):
         """Create a new Leo frame."""
         gui = self
+        g.pr('\ncreateLeoFrame: creating LeoQtFrame', title, g.callers())
         return qt_frame.LeoQtFrame(c, title, gui)
 
     def createSpellTab(self, c, spellHandler, tabName):

@@ -49,7 +49,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if g.pyzo:
             self.treeWidget = w = frame.top.treeWidget
                 # frame.top is a DynamicWindow.
-            g.trace('LeoQtTree.treeWidget', w)
+            g.pr('LeoQtTree.treeWidget.__init__: frame: %s treeWidget: %s' % (frame, w))
         else:
             self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.

@@ -823,6 +823,9 @@ class OutlineEditorShim(QtWidgets.QFrame):
             self.verticalScrollBar = ScrollBarShim
         # Create the outline!
         self.createOutlineFrame()
+    #@+node:ekr.20190407124624.1: *3* OutlineEditorShim.__repr__
+    def __repr__(self):
+        return '<OutlineEditorShim at %s>' % id(self)
     #@+node:ekr.20190405075440.1: *3* OutlineEditorShim.createOutlineFrame
     def createOutlineFrame(self):
         '''Create the outline frame.'''
@@ -837,17 +840,15 @@ class OutlineEditorShim(QtWidgets.QFrame):
             parentFrame=self,
         )
         c.bodyWantsFocus()
-    #@+node:ekr.20190407044153.1: *3* OutlineEditorShim.finishCreate (FINISH)
+    #@+node:ekr.20190407044153.1: *3* OutlineEditorShim.finishCreate (TEST)
     def finishCreate(self, c):
         '''Create the entire Leo main window in the shim itself.'''
         import leo.plugins.qt_frame as qt_frame
         import leo.plugins.qt_text as qt_text
         ###
-            # import leo.plugins.qt_menu as qt_menu
             # import leo.plugins.qt_tree as qt_tree
+            # import leo.plugins.qt_menu as qt_menu
             # import leo.core.leoFrame as leoFrame
-            # parent = self
-                # "self" works as the parent!
         self.c = c
         g.pr('----- OutlineEditorShim.finishCreate')
         f = c.frame
@@ -863,7 +864,7 @@ class OutlineEditorShim(QtWidgets.QFrame):
             # This just creates frames for components.
         dw.show()
         f.top = dw
-        g.trace('dw.treeWidget', dw.treeWidget)
+        assert isinstance(dw.treeWidget, qt_frame.LeoQTreeWidget), repr(dw.treeWidget)
         #
         # From LeoQtFrame.finishCreate.
         f.createIconBar() # A base class method.
