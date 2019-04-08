@@ -45,6 +45,157 @@ import pyzo.core.splash
 import pyzo.util
 
 #@+others
+#@+node:ekr.20190408085219.1: **  function: createEditor (from editor.py)
+# Imports: editor.py
+
+# import os, sys
+# import re, codecs
+
+# from pyzo.util.qt import QtCore, QtGui, QtWidgets
+# qt = QtGui
+
+# from pyzo.codeeditor import Manager
+# from pyzo.core.menu import EditorContextMenu
+# from pyzo.core.baseTextCtrl import BaseTextCtrl, normalizePath
+# from pyzo.core.pyzoLogging import print  # noqa
+# import pyzo
+
+from pyzo.core.editor import determineEncoding, determineLineEnding, determineIndentation
+from pyzo.core.editor import PyzoEditor
+from pyzo.codeeditor import Manager
+
+def createEditor(parent, filename=None):
+    """ Tries to load the file given by the filename and
+    if succesful, creates an editor instance to put it in,
+    which is returned.
+    If filename is None, an new/unsaved/temp file is created.
+    """
+    
+    if g.pyzo_trace:
+        g.pr('createEditor: %r' % filename)
+
+    if filename is None:
+        # Increase counter
+        global newFileCounter
+        newFileCounter  += 1
+        # Create editor
+        editor = PyzoEditor(parent)
+        editor.document().setModified(True)
+        # Set name
+        editor._name = "<tmp {}>".format(newFileCounter)
+    elif g.pyzo_outline_tab and g.pyzo and g.pyzo_patch and filename.endswith('.leo'):
+        from leo.core.pyzo_shims import OutlineEditorShim
+        #@+<< createEditor patch >>
+        #@+node:ekr.20190408085219.2: *3* << createEditor patch >>
+        # check and normalize
+        if not os.path.isfile(filename):
+            raise IOError("File does not exist '%s'." % filename)
+        #
+        # load file (as bytes)
+        with open(filename, 'rb') as f:
+            bb = f.read()
+            f.close()
+            
+        # convert to text, be gentle with files not encoded with utf-8
+        encoding = determineEncoding(bb)
+        text = bb.decode(encoding,'replace')
+
+        # process line endings
+        lineEndings = determineLineEnding(text)
+
+        # if we got here safely ...
+
+        # create editor and set text
+        ### editor = PyzoEditor(parent)
+        editor = OutlineEditorShim(filename, parent)
+        editor.setPlainText(text)
+        # g.trace('len(text)', len(text))
+
+        editor.lineEndings = lineEndings
+        editor.encoding = encoding
+        editor.document().setModified(False)
+
+        # store name and filename
+        # Now done in OutlineEditorShim.
+            # editor._filename = filename
+            # editor._name = os.path.split(filename)[1]
+
+        # process indentation
+        ###
+            # indentWidth = determineIndentation(text)
+            # if indentWidth == -1: #Tabs
+                # editor.setIndentWidth(pyzo.config.settings.defaultIndentWidth)
+                # editor.setIndentUsingSpaces(False)
+            # elif indentWidth:
+                # editor.setIndentWidth(indentWidth)
+                # editor.setIndentUsingSpaces(True)
+
+        if editor._filename:
+            editor._modifyTime = os.path.getmtime(editor._filename)
+
+        # Set parser
+        if 0:
+            if editor._filename:
+                ### ext = os.path.splitext(editor._filename)[1]
+                ext = '.py'
+                parser = Manager.suggestParser(ext, text)
+                editor.setParser(parser)
+            else:
+                # todo: rename style -> parser
+                editor.setParser(pyzo.config.settings.defaultStyle)
+        #@-<< createEditor patch >>
+        return editor
+    else:
+        # check and normalize
+        if not os.path.isfile(filename):
+            raise IOError("File does not exist '%s'." % filename)
+        # load file (as bytes)
+        with open(filename, 'rb') as f:
+            bb = f.read()
+            f.close()
+        # convert to text, be gentle with files not encoded with utf-8
+        encoding = determineEncoding(bb)
+        text = bb.decode(encoding,'replace')
+
+        # process line endings
+        lineEndings = determineLineEnding(text)
+
+        # if we got here safely ...
+
+        # create editor and set text
+        editor = PyzoEditor(parent) # showlinenumbers=False)
+        editor.setPlainText(text)
+        editor.lineEndings = lineEndings
+        editor.encoding = encoding
+        editor.document().setModified(False)
+
+        # store name and filename
+        editor._filename = filename
+        editor._name = os.path.split(filename)[1]
+
+        # process indentation
+        indentWidth = determineIndentation(text)
+        if indentWidth == -1: #Tabs
+            editor.setIndentWidth(pyzo.config.settings.defaultIndentWidth)
+            editor.setIndentUsingSpaces(False)
+        elif indentWidth:
+            editor.setIndentWidth(indentWidth)
+            editor.setIndentUsingSpaces(True)
+
+    if editor._filename:
+        editor._modifyTime = os.path.getmtime(editor._filename)
+
+    # Set parser
+    if editor._filename:
+        ext = os.path.splitext(editor._filename)[1]
+        parser = Manager.suggestParser(ext, text)
+        editor.setParser(parser)
+    else:
+        # todo: rename style -> parser
+        editor.setParser(pyzo.config.settings.defaultStyle)
+
+    # return
+    return editor
 #@+node:ekr.20190330100939.1: **  function: loadFile (pyzo_shims.py)
 # This probably isn't the place to patch pyzo.
 
@@ -714,6 +865,11 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             from pyzo.core.editorTabs import EditorTabs
             old_loadFile = EditorTabs.loadFile
             g.funcToMethod(loadFile, EditorTabs)
+        #
+        # Patch pyzo.core.editor.createEditor function
+        if 1:
+            import pyzo.core.editor
+            pyzo.core.editor.createEditor = createEditor
     #@+node:ekr.20190331173436.1: *3* MainWindowShim.setMainTitle
     def setMainTitle(self, path=None):
         """ Set the title of the main window, by giving a file path.
