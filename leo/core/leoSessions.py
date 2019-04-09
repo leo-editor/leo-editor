@@ -91,12 +91,16 @@ class SessionManager(object):
         '''
         fn = self.path
         if fn and g.os_path_exists(fn):
-            with open(fn) as f:
-                session = json.loads(f.read())
-            return session
-        else:
-            print('can not load session: no leo.session file')
-            return None
+            try:
+                with open(fn) as f:
+                    session = json.loads(f.read())
+                return session
+            except Exception:
+                pass
+        #
+        # #1107: No need for this message.
+            # print('can not load session: no leo.session file')
+        return None
     #@+node:ekr.20120420054855.14249: *3* SessionManager.save_snapshot
     def save_snapshot(self, c=None):
         '''

@@ -1287,7 +1287,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
     #@+node:ekr.20131115120119.17397: *3* closeEvent (leoTabbedTopLevel)
     def closeEvent(self, event):
         noclose = False
-        if g.app.save_session and g.app.sessionManager:
+        if g.app.sessionManager and g.app.loaded_session:
             g.app.sessionManager.save_snapshot()
         for c in g.app.commanders():
             res = c.exists and g.app.closeLeoWindow(c.frame)

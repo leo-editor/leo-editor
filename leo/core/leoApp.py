@@ -2321,17 +2321,17 @@ class LoadManager(object):
                 c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
                     # Returns None if the file is open in another instance of Leo.
                 if not c1: c1 = c
-        if g.app.restore_session:
-            m = g.app.sessionManager
-            if m:
-                aList = m.load_snapshot()
-                if aList:
-                    m.load_session(c1, aList)
-                    # tag:#659.
-                    if g.app.windowList:
-                        c = c1 = g.app.windowList[0].c
-                    else:
-                        c = c1 = None
+        g.app.loaded_session = not lm.files ### g.app.restore_session
+            # Load (and save later) a session only no files were given on the command line.
+        if g.app.sessionManager and g.app.loaded_session:
+            aList = g.app.sessionManager.load_snapshot()
+            if aList:
+                g.app.sessionManager.load_session(c1, aList)
+                # tag:#659.
+                if g.app.windowList:
+                    c = c1 = g.app.windowList[0].c
+                else:
+                    c = c1 = None
         # Enable redraws.
         g.app.disable_redraw = False
         if not c1 or not g.app.windowList:
@@ -2730,8 +2730,9 @@ class LoadManager(object):
         add_other('--script',       'execute a script and then exit', m="PATH")
         add_bool('--script-window', 'execute script using default gui')
         add_other('--select',       'headline or gnx of node to select', m='ID')
-        add_bool('--session-restore','restore session tabs at startup')
-        add_bool('--session-save',  'save session tabs on exit')
+        if 0: ### #1107
+            add_bool('--session-restore','restore session tabs at startup')
+            add_bool('--session-save',  'save session tabs on exit')
         add_bool('--silent',        'disable all log messages')
         add_other('--theme',        'use the named theme file', m='NAME')
         add_other('--trace-binding','trace commands bound to a key', m='KEY')
@@ -2852,8 +2853,12 @@ class LoadManager(object):
             not options.no_splash and
             not options.minimized)
         # --session-restore & --session-save
-        g.app.restore_session = bool(options.session_restore)
-        g.app.save_session = bool(options.session_save)
+        ### #1107.
+        g.app.restore_session = True
+        g.app.save_session = True
+        ###
+            # g.app.restore_session = bool(options.session_restore)
+            # g.app.save_session = bool(options.session_save)
         # --silent
         g.app.silentMode = options.silent
         #
