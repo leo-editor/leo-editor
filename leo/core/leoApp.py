@@ -118,12 +118,10 @@ class LeoApp(object):
             # True: load files as theme files (ignore myLeoSettings.leo).
         self.listen_to_log_flag = False
             # True: execute listen-to-log command.
+        self.loaded_session = False
+            # Set by startup logic to True if no files specified on the command line.
         self.qt_use_tabs = False
             # True: allow tabbed main window.
-        self.restore_session = False
-            # True: restore session on startup.
-        self.save_session = False
-            # True: save session on close.
         self.silentMode = False
             # True: no signon.
         self.start_fullscreen = False
@@ -1411,8 +1409,7 @@ class LeoApp(object):
     def onQuit(self, event=None):
         '''Exit Leo, prompting to save unsaved outlines first.'''
         g.app.quitting = True
-        # if trace: print('onQuit',g.app.save_session,g.app.sessionManager)
-        if g.app.save_session and g.app.sessionManager:
+        if g.app.sessionManager and g.app.loaded_session:
             g.app.sessionManager.save_snapshot()
         while g.app.windowList:
             w = g.app.windowList[0]
@@ -2321,7 +2318,7 @@ class LoadManager(object):
                 c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
                     # Returns None if the file is open in another instance of Leo.
                 if not c1: c1 = c
-        g.app.loaded_session = not lm.files ### g.app.restore_session
+        g.app.loaded_session = not lm.files
             # Load (and save later) a session only no files were given on the command line.
         if g.app.sessionManager and g.app.loaded_session:
             aList = g.app.sessionManager.load_snapshot()
@@ -2852,13 +2849,6 @@ class LoadManager(object):
         g.app.use_splash_screen = (
             not options.no_splash and
             not options.minimized)
-        # --session-restore & --session-save
-        ### #1107.
-        g.app.restore_session = True
-        g.app.save_session = True
-        ###
-            # g.app.restore_session = bool(options.session_restore)
-            # g.app.save_session = bool(options.session_save)
         # --silent
         g.app.silentMode = options.silent
         #
