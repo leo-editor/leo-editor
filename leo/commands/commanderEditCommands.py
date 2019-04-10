@@ -210,12 +210,12 @@ def dedentBody(self, event=None):
         if s != line: changed = True
         result.append(s)
     if changed:
-        result = ''.join(result)
         # Leo 5.6: preserve insert point.
         preserveSel = sel_1 == sel_2
         if preserveSel:
-            ins = max(0, ins - abs(tab_width))
+            ins = max(len(head), len(result[0]) - len(lines[0]) + ins)
             oldSel = ins, ins
+        result = ''.join(result)
         c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
 #@+node:ekr.20171123135625.36: ** c_ec.deleteComments
 @g.commander_command('delete-comments')
