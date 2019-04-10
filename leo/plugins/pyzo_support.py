@@ -24,11 +24,14 @@ if '--pyzo' not in sys.argv:
 #
 # See whether pyzo can be imported.
 try:
-    #
-    # For now, enable all traces.
-    g.pyzo = True
-    g.pyzo_trace = True
-    g.pyzo_trace_imports = True
+    if 1:
+        g.pyzo = False
+        g.pyzo_trace = False
+        g.pyzo_trace_imports = False
+    else:
+        g.pyzo = True
+        g.pyzo_trace = True
+        g.pyzo_trace_imports = True
     # Be explicit about where everything comes from...
     import pyzo
     # import pyzo.core.editor
