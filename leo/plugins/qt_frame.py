@@ -255,8 +255,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # c = self.leo_c
         vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
         main_splitter = splitter_class(parent)
+        main_splitter.setObjectName('main_splitter')
         main_splitter.setOrientation(QtCore.Qt.Vertical)
         secondary_splitter = splitter_class(main_splitter)
+        secondary_splitter.setObjectName('secondary_splitter')
         secondary_splitter.setOrientation(QtCore.Qt.Horizontal)
         # Official ivar:
         self.verticalLayout = vLayout
