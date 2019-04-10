@@ -213,7 +213,7 @@ def dedentBody(self, event=None):
         # Leo 5.6: preserve insert point.
         preserveSel = sel_1 == sel_2
         if preserveSel:
-            ins = len(result[0]) - len(lines[0]) + ins
+            ins = max(len(head), len(result[0]) - len(lines[0]) + ins)
             oldSel = ins, ins
         result = ''.join(result)
         c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
