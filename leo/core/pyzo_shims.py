@@ -1003,7 +1003,7 @@ class OutlineEditorShim(QtWidgets.QFrame):
             parentFrame=self,
         )
         c.bodyWantsFocus()
-    #@+node:ekr.20190407044153.1: *3* OutlineEditorShim.finishCreate (TEST)
+    #@+node:ekr.20190407044153.1: *3* OutlineEditorShim.finishCreate (FINISH)
     def finishCreate(self, c):
         '''Create the entire Leo main window in the shim itself.'''
         import leo.plugins.qt_frame as qt_frame
@@ -1038,11 +1038,7 @@ class OutlineEditorShim(QtWidgets.QFrame):
         f.menu=g.NullObject(tag='c.frame.menu')
         g.app.windowList.append(f)
         f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
-        ### Experimental.
-        g.app.writeWaitingLog(c)
         c.setLog()
-        assert c.frame.log
-        assert g.app.log
         c.redraw()
         c.bodyWantsFocus()
     #@+node:ekr.20190406165302.1: *3* OutlineEditorShim.set_style

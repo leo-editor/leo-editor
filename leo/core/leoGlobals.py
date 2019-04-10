@@ -6082,7 +6082,7 @@ def red(*args, **keys):
 
 def warning(*args, **keys):
     g.es_print(color='warning', *args, **keys)
-#@+node:ekr.20070626132332: *3* g.es (changed)
+#@+node:ekr.20070626132332: *3* g.es
 def es(*args, **keys):
     '''Put all non-keyword args to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
@@ -6110,6 +6110,8 @@ def es(*args, **keys):
     tabName = d.get('tabName') or 'Log'
     newline = d.get('newline')
     s = g.translateArgs(args, d)
+    # Do not call g.es, g.es_print, g.pr or g.trace here!
+        # sys.__stdout__.write('\n===== g.es: %r\n' % s)
     if app.batchMode:
         if app.log:
             app.log.put(s)

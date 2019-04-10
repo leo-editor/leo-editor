@@ -2286,6 +2286,8 @@ class LoadManager(object):
                 lm.doDiff()
         if not ok:
             return
+        if g.pyzo:
+            g.app.writeWaitingLog(g.app.log.c)
         g.es('') # Clears horizontal scrolling in the log pane.
         if g.app.listen_to_log_flag:
             g.app.listenToLog()
