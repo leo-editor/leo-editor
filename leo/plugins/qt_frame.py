@@ -66,6 +66,7 @@ class DynamicWindow(dw_base):
         else:
             QtWidgets.QMainWindow.__init__(self, parent) # pylint: disable=non-parent-init-called
             self.leo_master = None # Set in construct.
+        self.setObjectName('DynamicWindow')
         self.leo_menubar = None # Set in createMenuBar.
         self.leo_ui = None # Set in construct.
         c._style_deltas = defaultdict(lambda: 0) # for adjusting styles dynamically
@@ -114,7 +115,7 @@ class DynamicWindow(dw_base):
             self.leo_master = master
                 # A LeoTabbedTopLevel for tabbed windows.
                 # None for non-tabbed windows.
-        ### g.pr('DynamicWindow.contruct: master:', repr(self.leo_master))
+        g.pr('DynamicWindow.contruct: master:', repr(self.leo_master))
         # Init the base class.
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.reloadSettings()
@@ -167,6 +168,7 @@ class DynamicWindow(dw_base):
         else:
             self.setMainWindowOptions()
             self.createCentralWidget()
+        g.pdb()
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
             # Creates .verticalLayout
         if self.bigTree:
@@ -279,8 +281,10 @@ class DynamicWindow(dw_base):
         # c = self.leo_c
         vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
         main_splitter = splitter_class(parent)
+        main_splitter.setObjectName('main_splitter')
         main_splitter.setOrientation(QtCore.Qt.Vertical)
         secondary_splitter = splitter_class(main_splitter)
+        secondary_splitter.setObjectName('secondary_splitter')
         secondary_splitter.setOrientation(QtCore.Qt.Horizontal)
         # Official ivar:
         self.verticalLayout = vLayout
@@ -511,6 +515,12 @@ class DynamicWindow(dw_base):
     #@+node:ekr.20110605121601.18164: *5* dw.createTreeWidget
     def createTreeWidget(self, parent, name):
         c = self.leo_c
+        if 1:
+            g.trace('parents...')
+            z = parent
+            while z:
+                g.pr('  '+ (z.objectName() or str(id(z))))
+                z = z.parent()
         # g.trace(' \n  %r\n  %r' % (parent, parent.parent()))
         assert isinstance(parent, QtWidgets.QFrame), repr(parent)
             # Regardless of g.pyzo.
@@ -1205,6 +1215,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         if self.factory:
             del kwargs['factory']
         QtWidgets.QTabWidget.__init__(self, *args, **kwargs)
+        self.setObjectName('LeoBaseTabWidget')
         self.detached = []
         self.setMovable(True)
 
@@ -3670,6 +3681,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             ###
         ### g.pr('LeoQTreeWidget.__init__: parent:', repr(parent))
         QtWidgets.QTreeWidget.__init__(self, parent)
+        self.setObjectName('LeoQTreeWidget')
         self.setAcceptDrops(True)
         enable_drag = c.config.getBool('enable-tree-dragging')
         self.setDragEnabled(bool(enable_drag))
@@ -4157,7 +4169,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         '''Return the commander's filename.'''
         return self.c.fileName() or '<unsaved file>'
     #@-others
-#@+node:ekr.20110605121601.18385: ** class LeoQtSpellTab
+#@+node:ekr.20110605121601.18385: ** class LeoQtSpellTab (object)
 class LeoQtSpellTab(object):
     #@+others
     #@+node:ekr.20110605121601.18386: *3* LeoQtSpellTab.__init__
@@ -4271,7 +4283,7 @@ class LeoQtSpellTab(object):
         ui.leo_spell_btn_FindChange.setDisabled(not state)
         return state
     #@-others
-#@+node:ekr.20110605121601.18438: ** class LeoQtTreeTab
+#@+node:ekr.20110605121601.18438: ** class LeoQtTreeTab (object)
 class LeoQtTreeTab(object):
     '''
     A class representing a so-called tree-tab.
@@ -4377,6 +4389,7 @@ class LeoTabbedTopLevel(LeoBaseTabWidget):
     def __init__(self, *args, **kwargs):
         LeoBaseTabWidget.__init__(self, *args, **kwargs)
         ## middle click close on tabs -- JMP 20140505
+        self.setObjectName('LeoTabbedTopLevel')
         self.setMovable(False)
         tb = QtTabBarWrapper(self)
         self.setTabBar(tb)
@@ -4391,6 +4404,7 @@ class QtTabBarWrapper(QtWidgets.QTabBar):
     #@+node:peckj.20140516114832.10108: *3* __init__
     def __init__(self, parent=None):
         QtWidgets.QTabBar.__init__(self, parent)
+        self.setObjectName('QtTabBarWrapper')
         self.setMovable(True)
     #@+node:peckj.20140516114832.10109: *3* mouseReleaseEvent (QtTabBarWrapper)
     def mouseReleaseEvent(self, event):
@@ -4415,6 +4429,7 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):
         # Presumably, the order of base classes also matters(!)
         LeoQtMenu.__init__(self, c, frame, label)
         QtWidgets.QMenu.__init__(self, parent)
+        self.setObjectName('QtMenuBarWrapper')
         label = label.replace('&', '').lower()
         self.leo_menu_label = label
         action = self.menuAction()

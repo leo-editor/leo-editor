@@ -237,6 +237,7 @@ class ConfigShim(config_base):
     def __init__(self):
         config_base.__init__(self)
         g.pr('\n===== ConfigShim: new_config: %s\n' % new_config)
+        self.setObjectName('ConfigShim')
     
     if new_config:
         #@+<< define bunch settings >>
@@ -586,6 +587,7 @@ class MainWindowShim(pyzo.core.main.MainWindow):
             #
             # Do **not** call MainWindow.__init__: it calls _populate!
             #
+        self.setObjectName('MainWindowShim')
         self.monkey_patch_leo()
         pyzo.loadConfig()
             # To be replaced by LeoPyzoConfig.loadConfig.
@@ -909,6 +911,10 @@ class MainWindowShim(pyzo.core.main.MainWindow):
 #@+node:ekr.20190330100146.1: ** class MenuShim (object) (To do)
 class MenuShim (object):
     '''Adaptor class standing between Leo and Pyzo menus.'''
+
+    def __init__(self):
+        self.setObjectName('MenuShim')
+
     #@+others
     #@-others
 #@+node:ekr.20190401085747.1: ** class OutlineEditorShim (QFrame)
@@ -959,6 +965,7 @@ class OutlineEditorShim(QtWidgets.QFrame):
         # g.printObj(g.callers(30).split(','), tag='OutlineEditorShim.__init__')
         super().__init__(parent, **kwargs)
             # CodeEditorBase only passes args to *its* base class.
+        self.setObjectName('OutlineEditorShim')
         self.c = None # Set in createOutlineFrame.
         self._filename = self.filename = filename
             # Essential, so the tab will close properly.
