@@ -67,6 +67,12 @@ class FastRead (object):
         v, g_element = self.readWithElementTree(path, s)
         self.scanGlobals(g_element)
             # Fix #1047: only this method changes splitter sizes.
+        #
+        # Fix bug 1111: ensure that all outlines have at least one node.
+        if not v.children:
+            new_vnode = leoNodes.VNode(context=self.c)
+            new_vnode.h = 'newHeadline'
+            v.children = [new_vnode]
         return v
         
     def readFileFromClipboard(self, s):
@@ -76,6 +82,12 @@ class FastRead (object):
         Unlike readFile above, this does not affect splitter sizes.
         '''
         v, g_element = self.readWithElementTree(path=None, s=s)
+        #
+        # Fix bug 1111: ensure that all outlines have at least one node.
+        if not v.children:
+            new_vnode = leoNodes.VNode(context=self.c)
+            new_vnode.h = 'newHeadline'
+            v.children = [new_vnode]
         return v
     #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
     translate_table = b''.join([g.toEncodedString(chr(z)) for z in range(20) if chr(z) not in '\t\r\n'])
@@ -530,11 +542,6 @@ class FileCommands(object):
                 v = FastRead(c, self.gnxDict).readFile(fileName)
                 if v:
                     c.hiddenRootNode = v
-                    # Fix bug 1111: ensure that all outlines have at least one node.
-                    if not v.children:
-                        new_vnode = leoNodes.VNode(context=c)
-                        new_vnode.h = 'newHeadline'
-                        v.children = [new_vnode]
             if v:
                 fc.resolveTnodeLists()
                     # Do this before reading external files.
