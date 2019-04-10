@@ -524,6 +524,11 @@ class FileCommands(object):
                 v = FastRead(c, self.gnxDict).readFile(fileName)
                 if v:
                     c.hiddenRootNode = v
+                    # Fix bug 1111: ensure that all outlines have at least one node.
+                    if not v.children:
+                        new_vnode = leoNodes.VNode(context=c)
+                        new_vnode.h = 'newHeadline'
+                        v.children = [new_vnode]
             if v:
                 fc.resolveTnodeLists()
                     # Do this before reading external files.
