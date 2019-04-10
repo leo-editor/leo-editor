@@ -6088,8 +6088,6 @@ def es(*args, **keys):
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
-    if g.pyzo:
-        return ###
     if not app or app.killed:
         return
     if app.gui and app.gui.consoleOnly:
@@ -6128,6 +6126,7 @@ def es(*args, **keys):
             if ch == '\n': log.newlines += 1
             else: log.newlines = 0
     else:
+        ### g.pr('WAITING:', s)
         app.logWaiting.append((s, color, newline, d),)
         
 log = es

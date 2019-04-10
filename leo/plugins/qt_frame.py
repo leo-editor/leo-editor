@@ -105,7 +105,7 @@ class DynamicWindow(dw_base):
 
     def do_leo_spell_btn_Ignore(self):
         self.doSpellBtn('onIgnoreButton')
-    #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers (Test)
+    #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers (2 shims: menu/status)
     def construct(self, master=None):
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         c = self.leo_c
@@ -168,7 +168,6 @@ class DynamicWindow(dw_base):
         else:
             self.setMainWindowOptions()
             self.createCentralWidget()
-        g.pdb()
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
             # Creates .verticalLayout
         if self.bigTree:
@@ -291,7 +290,7 @@ class DynamicWindow(dw_base):
         self.setSizePolicy(secondary_splitter)
         self.verticalLayout.addWidget(main_splitter)
         return main_splitter, secondary_splitter
-    #@+node:ekr.20110605121601.18147: *5* dw.createMenuBar (changed)
+    #@+node:ekr.20110605121601.18147: *5* dw.createMenuBar (1 shim: dw.leo_menubar)
     def createMenuBar(self):
         '''Create Leo's menu bar.'''
         dw = self
@@ -379,7 +378,7 @@ class DynamicWindow(dw_base):
         # Official ivars...
         self.treeWidget = treeWidget
         return treeFrame
-    #@+node:ekr.20110605121601.18150: *5* dw.createStatusBar (changed)
+    #@+node:ekr.20110605121601.18150: *5* dw.createStatusBar (1 shim: dw.statusbar)
     def createStatusBar(self, parent):
         '''Create the widgets and ivars for Leo's status area.'''
         if g.pyzo:
@@ -1404,7 +1403,7 @@ class LeoQtBody(leoFrame.LeoBody):
         if c.frame.body.colorizer.showInvisibles:
             option.setFlags(QtGui.QTextOption.ShowTabsAndSpaces)
         d.setDefaultTextOption(option)
-    #@+node:ekr.20140901062324.18563: *4* LeoQtBody.set_widget (Test)
+    #@+node:ekr.20140901062324.18563: *4* LeoQtBody.set_widget (Test) (1 shim: Null Colorizer)
     def set_widget(self, parentFrame=None):
         '''Set the actual gui widget.'''
         c = self.c

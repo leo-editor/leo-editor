@@ -1244,6 +1244,8 @@ class LeoApp(object):
         '''Write all waiting lines to the log.'''
         #
         # Do not call g.es, g.es_print, g.pr or g.trace here!
+        if 1:
+            sys.__stdout__.write('\n===== writeWaitingLog: c.frame.log: %r\n\n' % c.frame.log)
         app = self
         if not c or not c.exists:
             return
@@ -1271,6 +1273,8 @@ class LeoApp(object):
                 s, color, newline = msg[:3]
                 kwargs = {} if len(msg) < 4 else msg[3]
                 kwargs = {k:v for k,v in kwargs.items() if k not in ('color', 'newline')}
+                if 1:
+                    sys.__stdout__.write('  writeWaitingLog: %r\n' % s)
                 g.es('', s, color=color, newline=newline, **kwargs)
             if hasattr(c.frame.log, 'scrollToEnd'):
                 g.app.gui.runAtIdle(c.frame.log.scrollToEnd)
@@ -2305,7 +2309,7 @@ class LoadManager(object):
         if len(commanders) == 2:
             c = commanders[0]
             c.editFileCommands.compareAnyTwoFiles(event=None)
-    #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
+    #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers (1 shim: g.app.log)
     def doPostPluginsInit(self):
         '''Create a Leo window for each file in the lm.files list.'''
         # Clear g.app.initing _before_ creating commanders.
@@ -2336,7 +2340,7 @@ class LoadManager(object):
                             c = c1 = None
         # Enable redraws.
         g.app.disable_redraw = False
-        if new:
+        if new: # Set above.
             c = None
             fileName = None ###
             g.app.log = g.TracingNullObject(tag='g.app.log')
@@ -2366,6 +2370,8 @@ class LoadManager(object):
         if c:
             c.setLog()
             c.redraw()
+        else:
+            assert g.app.log, 'NO LOG'
         p = c.p if c else None
         g.doHook("start2", c=c, p=p, fileName=fileName)
         if c:

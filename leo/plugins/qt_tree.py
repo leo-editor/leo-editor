@@ -49,7 +49,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if g.pyzo:
             self.treeWidget = w = frame.top.treeWidget
                 # frame.top is a DynamicWindow.
-            g.pr('LeoQtTree.treeWidget.__init__: frame: %s treeWidget: %s' % (frame, w))
+            ### g.pr('LeoQtTree.treeWidget.__init__: frame: %s treeWidget: %s' % (frame, w))
         else:
             self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.
@@ -1182,12 +1182,9 @@ class LeoQtTree(leoFrame.LeoTree):
         wrapper = self.connectEditorWidget(e, item)
         self.sizeTreeEditor(self.c, e)
         return e, wrapper
-    #@+node:ekr.20110605121601.18421: *4* qtree.createTreeItem (shim: tree item)
+    #@+node:ekr.20110605121601.18421: *4* qtree.createTreeItem
     def createTreeItem(self, p, parent_item):
-        
-        if g.pyzo:
-            return g.TracingNullObject(tag='tree item')
-
+        '''Create a Qt tree item.'''
         w = self.treeWidget
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
@@ -1196,7 +1193,6 @@ class LeoQtTree(leoFrame.LeoTree):
             g.visit_tree_item(self.c, p, item)
         except leoPlugins.TryNext:
             pass
-        #print "item",item
         return item
     #@+node:ekr.20110605121601.18422: *4* qtree.editLabelHelper
     def editLabelHelper(self, item, selectAll=False, selection=None):

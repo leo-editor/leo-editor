@@ -954,7 +954,7 @@ class OutlineEditorShim(QtWidgets.QFrame):
     breakPointsChanged = Signal()
     
     #@+others
-    #@+node:ekr.20190405075322.1: *3* OutlineEditorShim.__init__
+    #@+node:ekr.20190405075322.1: *3* OutlineEditorShim.__init__ (1 shim: parser)
     def __init__(self, filename, parent, **kwargs):
         '''
         Called automatically from pyzo's createEditor function.
@@ -1013,7 +1013,7 @@ class OutlineEditorShim(QtWidgets.QFrame):
             # import leo.plugins.qt_menu as qt_menu
             # import leo.core.leoFrame as leoFrame
         self.c = c
-        g.pr('----- OutlineEditorShim.finishCreate')
+        g.pr('----- OutlineEditorShim.finishCreate: g.app.log:', repr(g.app.log))
         f = c.frame
             # A LeoFrame, *not* a QWidget.
         c.frame.c = c
@@ -1038,6 +1038,12 @@ class OutlineEditorShim(QtWidgets.QFrame):
         f.menu=g.NullObject(tag='c.frame.menu')
         g.app.windowList.append(f)
         f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
+        ### Experimental.
+        g.app.writeWaitingLog(c)
+        c.setLog()
+        assert c.frame.log
+        assert g.app.log
+        c.redraw()
         c.bodyWantsFocus()
     #@+node:ekr.20190406165302.1: *3* OutlineEditorShim.set_style
     def setStyle(self, style):

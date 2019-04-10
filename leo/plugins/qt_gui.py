@@ -1200,7 +1200,10 @@ class LeoQtGui(leoGui.LeoGui):
         import leo.core.leoTips as leoTips
         if g.app.unitTesting:
             return
-        c = g.app.log.c
+        c = g.app.log and g.app.log.c
+        if not c:
+            g.pr('qt_gui:show_tips: NO g.app.log')
+            return ### pyzo guard.
         self.show_tips_flag = c.config.getBool('show-tips', default=False)
         if not force and not self.show_tips_flag:
             return
