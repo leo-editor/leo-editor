@@ -524,6 +524,8 @@ class FileCommands(object):
                 v = FastRead(c, self.gnxDict).readFile(fileName)
                 if v:
                     c.hiddenRootNode = v
+                    ### Leo will crash with minimal outline
+                    ### g.trace('AFTER FAST READ', fileName)
             if v:
                 fc.resolveTnodeLists()
                     # Do this before reading external files.

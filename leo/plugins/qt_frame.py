@@ -59,7 +59,7 @@ class DynamicWindow(dw_base):
             # For qttabs gui, parent is a LeoTabbedTopLevel.
         self.leo_c = c
         if g.pyzo:
-            g.pr('===== DynamicWindow.__init__')
+            # g.pr('===== DynamicWindow.__init__')
             assert parent, g.callers()
             QtWidgets.QFrame.__init__(self, parent)
             self.leo_master = parent

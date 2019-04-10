@@ -1032,10 +1032,8 @@ class Commands(object):
         # 2011/02/25: Compute the position directly.
         if c.hiddenRootNode.children:
             v = c.hiddenRootNode.children[0]
-            ### g.trace('NOT NONE', c.shortFileName(), g.callers())
             return leoNodes.Position(v, childIndex=0, stack=None)
         else:
-            ### g.trace('NONE', c.shortFileName(), g.callers())
             return None
 
     # For compatibiility with old scripts...

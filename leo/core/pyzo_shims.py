@@ -1003,7 +1003,7 @@ class OutlineEditorShim(QtWidgets.QFrame):
             parentFrame=self,
         )
         c.bodyWantsFocus()
-    #@+node:ekr.20190407044153.1: *3* OutlineEditorShim.finishCreate (FINISH)
+    #@+node:ekr.20190407044153.1: *3* OutlineEditorShim.finishCreate (WORKS)
     def finishCreate(self, c):
         '''Create the entire Leo main window in the shim itself.'''
         import leo.plugins.qt_frame as qt_frame
@@ -1014,7 +1014,6 @@ class OutlineEditorShim(QtWidgets.QFrame):
             # import leo.core.leoFrame as leoFrame
         self.c = c
         g.pr('\n----- OutlineEditorShim.finishCreate: g.app.log: %r\n' % g.app.log)
-        g.trace(g.callers(10))
             # Called by c.finishCreate.
         f = c.frame
             # A LeoFrame, *not* a QWidget.
@@ -1037,8 +1036,6 @@ class OutlineEditorShim(QtWidgets.QFrame):
         ### f.createStatusLine() # A base class method.
         f.createFirstTreeNode() # Call the base-class method.
             # Does some basic inits.
-        
-        assert c.rootPosition()
         if 1:
             lm = g.app.loadManager
             fn = c.fileName()
@@ -1055,7 +1052,8 @@ class OutlineEditorShim(QtWidgets.QFrame):
                 assert c.p
                 ok = lm.readOpenedLeoFile(c, fn, readAtFileNodesFlag, theFile)
                     # Call c.fileCommands.openLeoFile to read the .leo file.
-                g.trace('ok', ok)
+                if not ok:
+                    g.trace('lm.readOpenedLeoFile FAILED', fn)
         ### f.menu = qt_menu.LeoQtMenu(c, f, label='top-level-menu')
         f.menu=g.NullObject(tag='c.frame.menu')
         g.app.windowList.append(f)
