@@ -1013,7 +1013,9 @@ class OutlineEditorShim(QtWidgets.QFrame):
             # import leo.plugins.qt_menu as qt_menu
             # import leo.core.leoFrame as leoFrame
         self.c = c
-        g.pr('----- OutlineEditorShim.finishCreate: g.app.log:', repr(g.app.log))
+        g.pr('\n----- OutlineEditorShim.finishCreate: g.app.log: %r\n' % g.app.log)
+        g.trace(g.callers(10))
+            # Called by c.finishCreate.
         f = c.frame
             # A LeoFrame, *not* a QWidget.
         c.frame.c = c
@@ -1034,6 +1036,26 @@ class OutlineEditorShim(QtWidgets.QFrame):
         f.createSplitterComponents()
         ### f.createStatusLine() # A base class method.
         f.createFirstTreeNode() # Call the base-class method.
+            # Does some basic inits.
+        
+        assert c.rootPosition()
+        if 1:
+            lm = g.app.loadManager
+            fn = c.fileName()
+            theFile = lm.openLeoOrZipFile(fn)
+            # Enable the log.
+            g.app.unlockLog()
+            c.frame.log.enable(True)
+            # Phase 2: Create the outline.
+            ### g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)
+            if theFile:
+                ### readAtFileNodesFlag = bool(previousSettings)
+                readAtFileNodesFlag = True
+                # The log is not set properly here.
+                assert c.p
+                ok = lm.readOpenedLeoFile(c, fn, readAtFileNodesFlag, theFile)
+                    # Call c.fileCommands.openLeoFile to read the .leo file.
+                g.trace('ok', ok)
         ### f.menu = qt_menu.LeoQtMenu(c, f, label='top-level-menu')
         f.menu=g.NullObject(tag='c.frame.menu')
         g.app.windowList.append(f)
@@ -1078,6 +1100,10 @@ class OutlineEditorShim(QtWidgets.QFrame):
 
     def setIndentUsingSpaces(self, style):
         pass
+        
+    def setChanged(self, *args, **kwargs):
+        pass
+        # sys.__stdout__.write('OutlineEditorShim: %r, %r' % (args, kwargs))
 
     def setCheckedOption(self, val):
         pass

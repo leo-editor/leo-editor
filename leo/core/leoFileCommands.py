@@ -618,7 +618,7 @@ class FileCommands(object):
     def readExternalFiles(self, fileName):
         '''Read all external files.'''
         c, fc = self.c, self
-        c.atFileCommands.readAll(c.rootVnode(), force=False)
+        c.atFileCommands.readAll(c.rootPosition(), force=False)
         recoveryNode = fc.handleNodeConflicts()
         # Do this after reading external files.
         # The descendent nodes won't exist unless we have read

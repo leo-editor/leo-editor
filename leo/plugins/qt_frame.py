@@ -115,7 +115,7 @@ class DynamicWindow(dw_base):
             self.leo_master = master
                 # A LeoTabbedTopLevel for tabbed windows.
                 # None for non-tabbed windows.
-        g.pr('DynamicWindow.contruct: master:', repr(self.leo_master))
+        ### g.pr('DynamicWindow.contruct: master:', repr(self.leo_master))
         # Init the base class.
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.reloadSettings()
@@ -514,7 +514,7 @@ class DynamicWindow(dw_base):
     #@+node:ekr.20110605121601.18164: *5* dw.createTreeWidget
     def createTreeWidget(self, parent, name):
         c = self.leo_c
-        if 1:
+        if 0:
             g.trace('parents...')
             z = parent
             while z:

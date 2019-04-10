@@ -3334,6 +3334,8 @@ class LoadManager(object):
         # New in Leo 4.10: The open1 event does not allow an override of the init logic.
         assert theFile
         # lm = self
+        assert c.p
+        ### g.pdb()
         ok = c.fileCommands.openLeoFile(theFile, fn,
             readAtFileNodesFlag=readAtFileNodesFlag)
                 # closes file.
