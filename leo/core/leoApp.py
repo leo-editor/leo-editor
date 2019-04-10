@@ -1244,8 +1244,7 @@ class LeoApp(object):
         '''Write all waiting lines to the log.'''
         #
         # Do not call g.es, g.es_print, g.pr or g.trace here!
-        if 1:
-            sys.__stdout__.write('\n===== writeWaitingLog: c.frame.log: %r\n\n' % c.frame.log)
+        ### sys.__stdout__.write('\n===== writeWaitingLog: c.frame.log: %r\n\n' % c.frame.log)
         app = self
         if not c or not c.exists:
             return
@@ -1273,8 +1272,7 @@ class LeoApp(object):
                 s, color, newline = msg[:3]
                 kwargs = {} if len(msg) < 4 else msg[3]
                 kwargs = {k:v for k,v in kwargs.items() if k not in ('color', 'newline')}
-                if 1:
-                    sys.__stdout__.write('  writeWaitingLog: %r\n' % s)
+                ### sys.__stdout__.write('  writeWaitingLog: %r\n' % s)
                 g.es('', s, color=color, newline=newline, **kwargs)
             if hasattr(c.frame.log, 'scrollToEnd'):
                 g.app.gui.runAtIdle(c.frame.log.scrollToEnd)
