@@ -8,9 +8,8 @@ pyzo_support.py: Allow access to pyzo features within Leo.
 This plugin is active only if pyzo modules import successfully.
 
 To do:
-
-1. Support pyzo file browser.
-2. Support pyzo shell & debugger.
+    1. Support pyzo file browser.
+    2. Support pyzo shell & debugger.
 '''
 import sys
 import leo.core.leoGlobals as g
