@@ -111,10 +111,8 @@ class LeoApp(object):
             # True: execute listen-to-log command.
         self.qt_use_tabs = False
             # True: allow tabbed main window.
-        self.restore_session = False
-            # True: restore session on startup.
-        self.save_session = False
-            # True: save session on close.
+        self.loaded_session = False
+            # Set by startup logic to True if no files specified on the command line.
         self.silentMode = False
             # True: no signon.
         self.start_fullscreen = False
@@ -2684,9 +2682,14 @@ class LoadManager(object):
     def scanOptions(self, fileName, pymacs):
         '''Handle all options, remove them from sys.argv and set lm.options.'''
         lm = self
-        if '--no-cache' in sys.argv:
-            sys.argv.remove('--no-cache')
-            print('\nIgnoring the deprecated --no-cache option\n')
+        table = (
+            '--no-cache',
+            '--session-restore',
+            '--session-save',
+        )
+        for bad_option in table:
+            if bad_option in sys.argv:
+                sys.argv.remove(bad_option)
         lm.old_argv = sys.argv[:]
         parser = optparse.OptionParser(
             usage="usage: launchLeo.py [options] file1, file2, ...")
@@ -2748,8 +2751,6 @@ class LoadManager(object):
         add_other('--script',       'execute a script and then exit', m="PATH")
         add_bool('--script-window', 'execute script using default gui')
         add_other('--select',       'headline or gnx of node to select', m='ID')
-        add_bool('--session-restore','restore session tabs at startup')
-        add_bool('--session-save',  'save session tabs on exit')
         add_bool('--silent',        'disable all log messages')
         add_other('--theme',        'use the named theme file', m='NAME')
         add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
@@ -2872,8 +2873,8 @@ class LoadManager(object):
         g.pyzo = g.pyzo and options.pyzo
         g.pr('\n===== py3.pyzo branch: --pyzo:', bool(g.pyzo))
         # --session-restore & --session-save
-        g.app.restore_session = bool(options.session_restore)
-        g.app.save_session = bool(options.session_save)
+        g.app.restore_session = True
+        g.app.save_session = True
         # --silent
         g.app.silentMode = options.silent
         #
