@@ -19,13 +19,14 @@ import leo.core.leoGlobals as g
 # Only my personal copy of pyzo supports these switches:
 #
 # --pyzo is part 1 of the two-step enabling of traces.
+#
+# The unpatch pyzo will say that the file '--pyzo' does not exist.
 if '--pyzo' not in sys.argv:
     sys.argv.append('--pyzo')
-
 #
 # These switches are part 2 of two-step enabling of traces.
-# My personal copy uses getattr(g, 'switch_name', None) to avoid
-# crashes in case these traces do not exist at all.
+# My personal copy of pyzo uses `getattr(g, 'switch_name', None)`
+# to avoid crashes in case these vars do not exist.
 g.pyzo = True
 g.pyzo_trace = True
 g.pyzo_trace_imports = True
