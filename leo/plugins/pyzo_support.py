@@ -6,26 +6,31 @@
 pyzo_support.py: Allow access to pyzo features within Leo.
 
 This plugin is active only if pyzo modules import successfully.
+
+To do:
+
+1. Support pyzo file browser.
+2. Support pyzo shell & debugger.
 '''
-# To do:
-# 1. Support pyzo file browser.
-# 2. Support pyzo shell & debugger.
 import sys
 import leo.core.leoGlobals as g
-#@+<< add --pyzo to sys.argv >>
-#@+node:ekr.20190410200815.1: ** << add --pyzo to sys.argv >>
+#@+<< set switches >>
+#@+node:ekr.20190410200749.1: ** << set switches >>
 #
-# This is a convention used in my personal copy of pyzo.
-
+# Only my personal copy of pyzo supports these switches:
+#
+# --pyzo is part 1 of the two-step enabling of traces.
 if '--pyzo' not in sys.argv:
     sys.argv.append('--pyzo')
-#@-<< add --pyzo to sys.argv >>
-#@+<< set default traces >>
-#@+node:ekr.20190410200749.1: ** << set default traces >>
+
+#
+# These switches are part 2 of two-step enabling of traces.
+# My personal copy uses getattr(g, 'switch_name', None) to avoid
+# crashes in case these traces do not exist at all.
 g.pyzo = True
 g.pyzo_trace = True
 g.pyzo_trace_imports = True
-#@-<< set default traces >>
+#@-<< set switches >>
 #@+others
 #@+node:ekr.20190410171905.1: ** function: init
 def init():
