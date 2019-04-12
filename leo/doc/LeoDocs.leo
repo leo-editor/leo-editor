@@ -29694,6 +29694,8 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **The highlights of Leo 5.9**
 
+This will be the last version of Leo that supports Python 2.
+
 Major features
 - LeoWapp: Leo in a browser.
 - Optional syntax coloring using pygments.
