@@ -50,6 +50,30 @@ leo_color_database = {
     "leoblue": "#F0F8FF", #alice blue
     "leoyellow": "#ffffec",
     "leopink": "#FFE4E1", # misty rose
+    # Solarized colors
+    'altsolarizedgreen': '#84c805',
+    'darkbase0': '#fdffdd',
+    'darkbase00': '#657b83',
+    'darkbase01': '#586e75',
+    'darkbase02': '#073642',
+    'darkbase03': '#000005',
+    'darkbase04': '#000059',
+    'darkbase05': '#003b00',
+    'darkbase06': '#3b0000',
+    'darkbase1': '#93a1a1',
+    'darkbase2': '#eee8d5',
+    'darkbase3': '#fdf6e3',
+    'solarizedblack': '#000005', # Unofficial.
+    'solarizedblue': '#268bd2',
+    'solarizedcyan': '#2aa198',
+    'solarizedgreen': '#859900',
+    'solarizedmagenta': '#d33682',
+    'solarizedred': '#dc322f',
+    'solarizedorange': '#cb4b16',
+    'solarizedviolet': '#6c71c4',
+    'solarizedwhite': '#fdf6e3',  # Unofficial: same as solorarized-base3
+    'solarizedyellow': '#b58900',
+    # Qt colors
     "aliceblue": "#F0F8FF",
     "antiquewhite": "#FAEBD7",
     "antiquewhite1": "#FFEFDB",
