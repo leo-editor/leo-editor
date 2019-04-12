@@ -8,7 +8,7 @@
 from codecs import open # To use a consistent encoding
 import os
 import platform
-from shutil import rmtree
+# from shutil import rmtree
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
 import sys
 
