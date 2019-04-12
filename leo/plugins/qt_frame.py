@@ -313,7 +313,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 if w.hasSelectedText():
                     i = w.selectionStart()
                     s = w.selectedText()
-                    s = g.u(s)
+                    ### s = g.u(s)
                     j = i + len(s)
                 else:
                     i = j = ins
@@ -814,7 +814,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
             #@+node:ekr.20131118172620.16894: *8* keyPress (EventWrapper)
             def keyPress(self, event):
 
-                s = g.u(event.text())
+                ### s = g.u(event.text())
+                s = event.text()
                 out = s and s in '\t\r\n'
                 if out:
                     # Move focus to next widget.
@@ -988,10 +989,12 @@ class FindTabManager(object):
         self.replace_all_button = None
     #@+node:ekr.20131117164142.16853: *3* ftm.text getters/setters
     def getFindText(self):
-        return g.u(self.find_findbox.text())
+        ### return g.u(self.find_findbox.text())
+        return self.find_findbox.text()
 
     def getReplaceText(self):
-        return g.u(self.find_replacebox.text())
+        ### return g.u(self.find_replacebox.text())
+        return self.find_replacebox.text()
 
     getChangeText = getReplaceText
 
@@ -1017,7 +1020,8 @@ class FindTabManager(object):
         self.set_entry_focus()
         w = self.find_findbox
         w.setFocus()
-        s = g.u(w.text())
+        ### s = g.u(w.text())
+        s = w.text()
         w.setSelection(0, len(s))
 
     def set_entry_focus(self):
@@ -1051,7 +1055,7 @@ class FindTabManager(object):
         )
         for ivar, setting_name, default in table:
             s = c.config.getString(setting_name) or default
-            s = g.u(s)
+            ### s = g.u(s)
             w = getattr(self, ivar)
             w.insert(s)
             if find.minibuffer_mode:
@@ -1266,7 +1270,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         i = self.indexOf(dw)
         if i < 0: return
         s = self.tabText(i)
-        s = g.u(s)
+        ### s = g.u(s)
         if len(s) > 2:
             if changed:
                 if not s.startswith('* '):
@@ -2219,7 +2223,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         def compute_columns(self, block, cursor):
             
             c = self.c
-            line = g.u(block.text())
+            ### line = g.u(block.text())
+            line = block.text()
             col = cursor.columnNumber()
             offset = c.p.textOffset()
             fcol_offset = 0
@@ -2488,7 +2493,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 action_container.insertAction(
                     action_container.actions()[top_offset], act)
                 action_container.setText(
-                    g.u(action_container.text()) +
+                    action_container.text() +
                     (c.config.getString('mod-scripting-subtext') or '')
                 )
         #@-others
@@ -2993,8 +2998,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
         # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
         w = self.top.leo_master if g.app.qt_use_tabs else self.top
-        s = g.u(w.windowTitle())
-        return s
+        ### s = g.u(w.windowTitle())
+        ### return s
+        return w.windowTitle()
 
     def setTitle(self, s):
         # pylint: disable=arguments-differ
@@ -3588,7 +3594,8 @@ class LeoQtMenu(leoMenu.LeoMenu):
     def setMenuLabel(self, menu, name, label, underline=-1):
 
         def munge(s):
-            return g.u(s or '').replace('&', '')
+            ### return g.u(s or '').replace('&', '')
+            return (s or '').replace('&', '')
 
         # menu is a QtMenuWrapper.
         if not menu: return
@@ -3842,10 +3849,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     def parseText(self, md):
         '''Parse md.text() into (fn,s)'''
         fn = ''
-        # Fix bug 1046195: character encoding changes when dragging outline between leo files
-        # Python3: md.text() is a (unicode) str.  Python2: md.text is a QString.
-        s = g.u(md.text())
-        # s = g.toUnicode(s,'utf-8')
+        ### s = g.u(md.text())
+        s = md.text()
         if s:
             i = s.find(',')
             if i == -1:
@@ -4294,7 +4299,8 @@ class LeoQtTreeTab(object):
             if g.isInt(s):
                 s = '' if s == -1 else tt.w.currentText()
             else: # s is the tab name.
-                s = g.u(s)
+                ### s = g.u(s)
+                pass
             if s and not tt.cc.selectChapterLockout:
                 tt.selectTab(s)
         # A change: the argument could now be an int instead of a string.
@@ -4319,7 +4325,7 @@ class LeoQtTreeTab(object):
     def selectTab(self, tabName):
         '''LeoQtTreeTab.'''
         tt, c, cc = self, self.c, self.cc
-        tabName = g.u(tabName)
+        ### tabName = g.u(tabName)
         exists = tabName in self.tabNames
         c.treeWantsFocusNow()
             # Fix #969. Somehow this is important.

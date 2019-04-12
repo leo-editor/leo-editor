@@ -284,8 +284,9 @@ class QLineEditWrapper(QTextMixin):
         '''QHeadlineWrapper.'''
         if self.check():
             w = self.widget
-            s = w.text()
-            return g.u(s)
+            ### s = w.text()
+            ### return g.u(s)
+            return w.text()
         else:
             return ''
     #@+node:ekr.20110605121601.18121: *4* qlew.getInsertPoint
@@ -304,7 +305,7 @@ class QLineEditWrapper(QTextMixin):
             if w.hasSelectedText():
                 i = w.selectionStart()
                 s = w.selectedText()
-                s = g.u(s)
+                ### s = g.u(s)
                 j = i + len(s)
             else:
                 i = j = w.cursorPosition()
@@ -344,7 +345,7 @@ class QLineEditWrapper(QTextMixin):
         w = self.widget
         if s is None:
             s = w.text()
-            s = g.u(s)
+            ### s = g.u(s)
         i = self.toPythonIndex(i)
         i = max(0, min(i, len(s)))
         w.setCursorPosition(i)
@@ -356,7 +357,7 @@ class QLineEditWrapper(QTextMixin):
         if i > j: i, j = j, i
         if s is None:
             s = w.text()
-            s = g.u(s)
+            ### s = g.u(s)
         n = len(s)
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
@@ -487,7 +488,8 @@ if QtWidgets:
             #@+node:ekr.20141024170936.7: *5* lqlw.get_selection
             def get_selection(self):
                 '''Return the presently selected item's text.'''
-                return g.u(self.currentItem().text())
+                ### return g.u(self.currentItem().text())
+                return self.currentItem().text()
             #@+node:ekr.20110605121601.18013: *5* lqlw.keyPressEvent
             def keyPressEvent(self, event):
                 '''Handle a key event from QListWidget.'''
@@ -537,7 +539,6 @@ if QtWidgets:
                 w = c.k.autoCompleter.w or c.frame.body.wrapper # 2014/09/19
                 if w is None: return
                 # Replace the tail of the prefix with the completion.
-                # completion = g.u(self.currentItem().text())
                 prefix = c.k.autoCompleter.get_autocompleter_prefix()
                 parts = prefix.split('.')
                 if len(parts) < 2:
@@ -1056,7 +1057,7 @@ class QScintillaWrapper(QTextMixin):
         '''Get all text from a QsciScintilla widget.'''
         w = self.widget
         s = w.text()
-        s = g.u(s)
+        ### s = g.u(s)
         return s
     #@+node:ekr.20110605121601.18109: *4* qsciw.getInsertPoint
     def getInsertPoint(self):
@@ -1316,8 +1317,9 @@ class QTextEditWrapper(QTextMixin):
     def getAllText(self):
         '''QTextEditWrapper.'''
         w = self.widget
-        s = g.u(w.toPlainText())
-        return s
+        ### s = g.u(w.toPlainText())
+        ### return s
+        return w.toPlainText()
     #@+node:ekr.20110605121601.18082: *4* qtew.getInsertPoint
     def getInsertPoint(self):
         '''QTextEditWrapper.'''
