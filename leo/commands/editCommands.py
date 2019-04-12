@@ -106,7 +106,7 @@ def mark_first_parents(event):
         c.setChanged()
         c.redraw()
     return changed
-#@+node:ekr.20190412165240.1: ** @g.command('promote-bodies')
+#@+node:ekr.20190323084957.1: ** @g.command('promote-bodies')
 @g.command('promote-bodies')
 def promoteBodies(event):
     '''Copy the body text of all descendants to the parent's body text.'''
@@ -129,7 +129,7 @@ def promoteBodies(event):
         result.append('')
     p.b = '\n'.join(result)
     c.undoer.afterChangeNodeContents(p,'promote-bodies',b)
-#@+node:ekr.20190412165258.1: ** @g.command('promote-headlines')
+#@+node:ekr.20190323085410.1: ** @g.command('promote-headlines')
 @g.command('promote-headlines')
 def promoteHeadlines(event):
     '''Copy the headlines of all descendants to the parent's body text.'''
