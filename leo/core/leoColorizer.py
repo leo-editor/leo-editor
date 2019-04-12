@@ -2945,7 +2945,12 @@ if pygments:
             statestack = list(self._saved_state_stack)
         else:
             statestack = list(stack)
-        statetokens = tokendefs[statestack[-1]]
+        # Fix #1113...
+        try:
+            statetokens = tokendefs[statestack[-1]]
+        except Exception:
+            # g.es_exception()
+            return
         while 1:
             for rexmatch, action, new_state in statetokens:
                 m = rexmatch(text, pos)
