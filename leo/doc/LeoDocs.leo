@@ -29844,21 +29844,21 @@ https://github.com/leo-editor/leo-editor/issues/977
 <t tx="ekr.20190123122138.1"></t>
 <t tx="ekr.20190307093145.1">@language rest
 
-g.execute_shell_command tales a single argument, which may be either a string or a list of strings. Each string represents one command. g.execute_shell_command executes each command in order.  Commands starting with '&amp;' are executed without waiting. Commands that do not start with '&amp;' finish before running later commands. Examples:
+g.execute_shell_command tales a single argument, which may be either a string or a list of strings. Each string represents one command. g.execute_shell_command executes each command in order.  Commands starting with '&amp;' are executed without waiting. Commands that do not start with '&amp;' finish before running later commands. Examples::
 
 @language python
 
-# Run the qml app in a separate process:
-g.execute_shell_commands('qmlscene /test/qml_test.qml')
-
-# List the contents of a directory:
-g.execute_shell_commands([
-    'cd ~/test',
-    'ls -a',
-])
-
-# Run a python test in a separate process.
-g.execute_shell_commands('python /test/qt_test.py')
+    # Run the qml app in a separate process:
+    g.execute_shell_commands('qmlscene /test/qml_test.qml')
+    
+    # List the contents of a directory:
+    g.execute_shell_commands([
+        'cd ~/test',
+        'ls -a',
+    ])
+    
+    # Run a python test in a separate process.
+    g.execute_shell_commands('python /test/qt_test.py')
 
 @language rest
 
