@@ -1393,8 +1393,7 @@ class LeoApp(object):
     def onQuit(self, event=None):
         '''Exit Leo, prompting to save unsaved outlines first.'''
         g.app.quitting = True
-        # if trace: print('onQuit',g.app.save_session,g.app.sessionManager)
-        if g.app.save_session and g.app.sessionManager:
+        if g.app.loaded_session and g.app.sessionManager:
             g.app.sessionManager.save_snapshot()
         while g.app.windowList:
             w = g.app.windowList[0]
@@ -2314,7 +2313,7 @@ class LoadManager(object):
                 c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
                     # Returns None if the file is open in another instance of Leo.
                 if not c1: c1 = c
-        if g.app.restore_session:
+        if g.app.loaded_session:
             m = g.app.sessionManager
             if m:
                 aList = m.load_snapshot()
@@ -2848,9 +2847,6 @@ class LoadManager(object):
         g.app.use_splash_screen = (
             not options.no_splash and
             not options.minimized)
-        # --session-restore & --session-save
-        g.app.restore_session = True
-        g.app.save_session = True
         # --silent
         g.app.silentMode = options.silent
         #
