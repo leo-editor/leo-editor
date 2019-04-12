@@ -6,22 +6,126 @@
 #@@language python
 #@@killbeautify
 #@+all
-#@+node:ekr.20181015141543.1: ** Unused documentation
-#@+node:ekr.20181015141550.1: *3* Macro commands
-.. _`Emacs macro commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Keyboard-Macros.html#Keyboard-Macros
+#@+node:ekr.20190412154346.1: ** Unused commands
+#@+node:ekr.20150514063305.107: *3* debug.enable/disableGcTrace
+@cmd('gc-trace-disable')
+def disableGcTrace(self, event=None):
+    '''Enable tracing of Python's Garbage Collector.'''
+    g.trace_gc = False
 
-The following commands emulate the `Emacs macro commands`_::
-
-    macro-call
-    macro-call-last
-    macro-end-recording
-    macro-load-all
-    macro-name-last
-    macro-print-all
-    macro-print-last
-    macro-save-all
-    macro-start-recording
-#@+node:ekr.20180404124945.1: ** Older unused code
+@cmd('gc-trace-enable')
+def enableGcTrace(self, event=None):
+    '''Disable tracing of Python's Garbage Collector.'''
+    g.trace_gc = True
+    g.enable_gc_debug()
+    if g.trace_gc_verbose:
+        g.blue('enabled verbose gc stats')
+    else:
+        g.blue('enabled brief gc stats')
+#@+node:ekr.20101103093942.5941: *3* @g.command(head-to-prev-node)
+@g.command('head-to-prev-node')
+def headToPrevNode(event):
+    '''Move the code preceding a def to end of previous node.'''
+    c = event.get('c')
+    if not c: return
+    p = c.p
+    try:
+        import leo.plugins.importers.python as python
+    except ImportError:
+        return
+    scanner = python.Py_Importer(c.importCommands)
+    kind, i, junk = scanner.find_class(p)
+    p2 = p.back()
+    if p2 and kind in ('class', 'def') and i > 0:
+        u = c.undoer; undoType = 'move-head-to-prev'
+        head = p.b[: i].rstrip()
+        u.beforeChangeGroup(p, undoType)
+        b = u.beforeChangeNodeContents(p)
+        p.b = p.b[i:]
+        u.afterChangeNodeContents(p, undoType, b)
+        if head:
+            b2 = u.beforeChangeNodeContents(p2)
+            p2.b = p2.b.rstrip() + '\n\n' + head + '\n'
+            u.afterChangeNodeContents(p2, undoType, b2)
+        u.afterChangeGroup(p, undoType)
+        c.selectPosition(p2)
+#@+node:ekr.20101103093942.5943: *3* @g.command(tail-to-next-node)
+@g.command('tail-to-next-node')
+def tailToNextNode(event=None):
+    '''Move the code following a def to start of next node.'''
+    c = event.get('c')
+    if not c: return
+    p = c.p
+    try:
+        import leo.plugins.importers.python as python
+    except ImportError:
+        return
+    scanner = python.Py_Importer(c.importCommands)
+    kind, junk, j = scanner.find_class(p)
+    p2 = p.next()
+    if p2 and kind in ('class', 'def') and j < len(p.b):
+        u = c.undoer; undoType = 'move-tail-to-next'
+        tail = p.b[j:].rstrip()
+        u.beforeChangeGroup(p, undoType)
+        b = u.beforeChangeNodeContents(p)
+        p.b = p.b[: j]
+        u.afterChangeNodeContents(p, undoType, b)
+        if tail:
+            b2 = u.beforeChangeNodeContents(p2)
+            p2.b = tail + '\n\n' + p2.b
+            u.afterChangeNodeContents(p2, undoType, b2)
+        u.afterChangeGroup(p, undoType)
+        c.selectPosition(p2)
+#@+node:ekr.20070919133659.1: *3* fc.checkLeoFile
+@cmd('check-leo-file')
+def checkLeoFile(self, event=None):
+    '''The check-leo-file command.'''
+    fc = self; c = fc.c; p = c.p
+    # 
+    # Put the body (minus the @nocolor) into the file buffer.
+    s = p.b
+    tag = '@nocolor\n'
+    if s.startswith(tag): s = s[len(tag):]
+    # Do a trial read.
+    self.checking = True
+    self.initReadIvars()
+    c.loading = True # disable c.changed
+    try:
+        try:
+            theFile = g.app.loadManager.openLeoOrZipFile(c.mFileName)
+            gnxDict = self.gnxDict
+            self.gnxDict = {} # Always allocate new vnodes.
+            try:
+                s = theFile.read()
+                FastRead(c, self.gnxDict).readFile(s=s)
+            finally:
+                self.gnxDict = gnxDict
+            g.blue('check-leo-file passed')
+        except Exception:
+            junk, message, junk = sys.exc_info()
+            g.error('check-leo-file failed:', g.toUnicode(message))
+    finally:
+        self.checking = False
+        c.loading = False # reenable c.changed
+#@+node:ekr.20180504182541.1: *3* efc.getDiffBranch (not used)
+@cmd('git-diff-branch')
+def gitDiffBranch(self, event):
+    '''Prompt for a branch name, then diff one file against it.'''
+    c = self.c
+    roots = g.findRootsWithPredicate(c, c.p)
+        # Looks up and down the tree.
+    if not roots:
+        g.es_print('no .py files found')
+        return
+    gdc = GitDiffController(self.c, 'HEAD')
+    
+    def callback(args, *extra, **kwargs):
+        if g._assert(len(args) == 1):
+            for p in roots:
+                gdc.diff_branch(branch=args[0], fn=p.anyAtFileNodeName())
+                
+    c.interactive(callback, event, prompts=['Branch name: '])
+#@+node:ekr.20190412154439.1: ** Abandoned projects
 #@+node:ekr.20170203080350.1: *3* Abandoned #396: Show images in Leo's body pane
 https://github.com/leo-editor/leo-editor/issues/396
 
@@ -532,177 +636,7 @@ class LeoTagWidget(QtWidgets.QWidget):
 
 '''
 assert s_2
-#@+node:ekr.20150312225028.6: *3* class LogManager (not used yet)
-class LogManager:
-
-    '''A class to handle the global log, and especially
-    switching the log from commander to commander.'''
-
-    def __init__ (self):
-
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug('(LogManager)')
-
-        self.log = None             # The LeoFrame containing the present log.
-        self.logInited = False      # False: all log message go to logWaiting list.
-        self.logIsLocked = False    # True: no changes to log are allowed.
-        self.logWaiting = []        # List of messages waiting to go to a log.
-        self.printWaiting = []      # Queue of messages to be sent to the printer.
-        self.signon_printed = False # True: the global signon has been printed.
-
-    @others
-#@+node:ekr.20150312225028.7: *4* LogM.setLog, lockLog, unlocklog
-def setLog (self,log):
-
-    """set the frame to which log messages will go"""
-
-    # print("app.setLog:",log,g.callers())
-    if not self.logIsLocked:
-        self.log = log
-
-def lockLog(self):
-    """Disable changes to the log"""
-    self.logIsLocked = True
-
-def unlockLog(self):
-    """Enable changes to the log"""
-    self.logIsLocked = False
-#@+node:ekr.20150312225028.8: *4* LogM.writeWaitingLog
-def writeWaitingLog (self,c):
-    '''Write all waiting lines to the log.'''
-    trace = True
-    lm = self
-    if trace:
-        # Do not call g.es, g.es_print, g.pr or g.trace here!
-        print('** writeWaitingLog','silent',g.app.silentMode,c.shortFileName())
-        # print('writeWaitingLog',g.callers())
-        # import sys ; print('writeWaitingLog: argv',sys.argv)
-    if not c or not c.exists:
-        return
-    if g.unitTesting:
-        lm.printWaiting = []
-        lm.logWaiting = []
-        g.app.setLog(None) # Prepare to requeue for other commanders.
-        return
-    table = [
-        ('Leo Log Window','red'),
-        (g.app.signon,'black'),
-        (g.app.signon2,'black'),
-    ]
-    table.reverse()
-    c.setLog()
-    lm.logInited = True # Prevent recursive call.
-    if not lm.signon_printed:
-        lm.signon_printed = True
-        if not g.app.silentMode:
-            print('')
-            print('** isPython3: %s' % g.isPython3)
-            if not g.enableDB:
-                print('** caching disabled')
-            print(g.app.signon)
-            print(g.app.signon2)
-    if not g.app.silentMode:
-        for s in lm.printWaiting:
-            print(s)
-    lm.printWaiting = []
-    if not g.app.silentMode:
-        for s,color in table:
-            lm.logWaiting.insert(0,(s+'\n',color),)
-        for s,color in lm.logWaiting:
-            g.es('',s,color=color,newline=0)
-                # The caller must write the newlines.
-    lm.logWaiting = []
-    # Essential when opening multiple files...
-    lm.setLog(None)
-#@+node:ekr.20150526115312.1: *3* compare_ast (can hang?)
-# http://stackoverflow.com/questions/3312989/
-# elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
-
-def compare_ast(node1, node2):
-
-    trace = False and not g.unitTesting
-
-    def fail(node1, node2, tag):
-        '''Report a failed mismatch in the beautifier. This is a bug.'''
-        name1 = node1.__class__.__name__
-        name2 = node2.__class__.__name__
-        format = 'compare_ast failed: %s: %s %s %r %r'
-        if name1 == 'str':
-            print(format % (tag, name1, name2, node1, node2))
-        elif name1 == 'Str':
-            print(format % (tag, name1, name2, node1.s, node2.s))
-        elif 1:
-            format = 'compare_ast failed: %s: %s %s\n%r\n%r'
-            print(format % (tag, name1, name2, node1, node2))
-        else:
-            format = 'compare_ast failed: %s: %s %s\n%r\n%r\n%r %r'
-            attr1 = getattr(node1, 'lineno', '<no lineno>')
-            attr2 = getattr(node2, 'lineno', '<no lineno>')
-            print(format % (tag, name1, name2, node1, node2, attr1, attr2))
-
-    # pylint: disable=unidiomatic-typecheck
-    if type(node1) != type(node2):
-        if trace: fail(node1, node2, 'type mismatch')
-        return False
-    # The types of node1 and node2 match. Recursively compare components.
-    if isinstance(node1, ast.AST):
-        for kind, var in vars(node1).items():
-            if kind not in ('lineno', 'col_offset', 'ctx'):
-                var2 = vars(node2).get(kind) # Bug fix: 2016/05/16.
-                if not compare_ast(var, var2):
-                    if trace: fail(var, var2, 'AST subnode mismatch')
-                    return False
-        return True
-    elif isinstance(node1, list):
-        if len(node1) != len(node2):
-            if trace: fail(node1, node2, 'list len mismatch')
-            return False
-        for i in range(len(node1)):
-            if not compare_ast(node1[i], node2[i]):
-                if trace: fail(node1, node2, 'list element mismatch')
-                return False
-        return True
-    elif node1 != node2:
-        if trace: fail(node1, node2, 'node mismatch')
-        return False
-    else:
-        return True
-#@+node:ekr.20141012064706.18394: *3* d.extra_attributes & helpers (not used)
-def extra_attributes(self, node):
-    '''Return the tuple (field,repr(field)) for all extra fields.'''
-    d = {
-        # 'e': self.do_repr,
-        # 'cache':self.do_cache_list,
-        # 'reach':self.do_reaching_list,
-        # 'typ':  self.do_types_list,
-    }
-    aList = []
-    for attr in sorted(d.keys()):
-        if hasattr(node, attr):
-            val = getattr(node, attr)
-            f = d.get(attr)
-            s = f(attr, node, val)
-            if s:
-                aList.append((attr, s),)
-    return aList
-#@+node:ekr.20141012064706.18395: *4* d.do_cache_list
-def do_cache_list(self, attr, node, val):
-    return self.node.dump_cache(node)
-#@+node:ekr.20141012064706.18396: *4* d.do_reaching_list
-def do_reaching_list(self, attr, node, val):
-    assert attr == 'reach'
-    return '[%s]' % ','.join([repr(z) for z in getattr(node, attr)])
-        # self.format(z).strip() or repr(z)
-        # for z in getattr(node, attr)])
-#@+node:ekr.20141012064706.18397: *4* d.do_repr
-def do_repr(self, attr, node, val):
-    return repr(val)
-#@+node:ekr.20141012064706.18398: *4* d.do_types_list
-def do_types_list(self, attr, node, val):
-    assert attr == 'typ'
-    return '[%s]' % ','.join(
-        [repr(z) for z in getattr(node, attr)])
-#@+node:ekr.20150312225028.29: *3* leoViews...
+#@+node:ekr.20150312225028.29: *3* leoViews project
 This was a major project, now abandoned.
 #@+node:ekr.20150312225028.31: *4* class OrganizerData
 class OrganizerData:
@@ -2771,503 +2705,8 @@ def regularize_node(self, p, scanner):
     if not ok:
         g.es_print('please regularize:', p.h)
     return ok
-#@+node:ekr.20170116050723.1: *3* Syntax coloring...
-#@+node:ekr.20170128133257.1: *4* OLD class PythonQSyntaxHighlighter
-class PythonQSyntaxHighlighter(object):
-    '''
-    Python implementation of QtGui.QSyntaxHighlighter.
-
-    This allows incremental coloring of text at idle time, trading slower
-    overall speed for much faster response time.
-    '''
-    @others
-#@+node:ekr.20170128133257.2: *5* pqsh.Birth & death
-def __init__(self, parent, c=None, delay=10, limit=50):
-    '''
-    Ctor for QSyntaxHighlighter class.
-    Parent is a QTextDocument or QTextEdit: it becomes the owner of the QSyntaxHighlighter.
-    '''
-    # g.trace('(PythonQSyntaxBrowser)', parent)
-    # Ivars corresponding to QSH ivars...
-    self.c = c # The commander.
-    self.cb = None # The current block: a QTextBlock.
-    self.d = None # The QTextDocument attached to this colorizers.
-    self.formats = [] # An array of QTextLayout.FormatRange objects.
-    self.inReformatBlocks = False
-    self.rehighlightPending = False
-    # Ivars for reformatBlocks and idle_handler...
-    self.idle_active = False # True if the idle_handler should colorize.
-    self.r_block = None # The block to be colorized.
-    self.r_end = None # The ultimate ending position.
-    self.r_delay = delay # The waiting time, in msec. for self.timer.
-    self.r_force = False # True if the next block must be recolored.
-    self.r_limit = limit # The max number of lines to color at one time.
-    self.timer = g.IdleTime(
-        handler=self.idle_handler,
-        delay=self.r_delay,
-        tag='pqsh.idle_handler')
-    # Attach the parent's QTextDocument and set self.d.
-    self.setDocument(parent)
-#@+node:ekr.20170128133257.3: *5* pqsh.Entry points
-#@+node:ekr.20170128133257.4: *6* pqsh.kill
-def kill(self):
-    '''Kill any queued coloring.'''
-    trace = False and not g.unitTesting
-    if self.idle_active:
-        if trace: g.trace('(PythonQSyntaxHighlighter)')
-        self.idle_active = False
-        if self.timer:
-            self.timer.stop()
-#@+node:ekr.20170128133257.5: *6* pqsh.rehighlight
-def rehighlight(self):
-    '''Color the whole document.'''
-    trace = False and not g.unitTesting
-    c, d = self.c, self.d
-    if d:
-        n = d.characterCount()
-        if 0 < c.max_pre_loaded_body_chars < n:
-            if trace: g.trace('big text: no color', c.p.h)
-        elif n > 1000*10:
-
-            def rehightlight_callback(c=c, d=d, p=c.p, self=self):
-                if p == c.p:
-                    if trace: g.trace('=====', n, p.h)
-                    cursor = QtGui.QTextCursor(d)
-                    self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
-                else:
-                    if trace: g.trace('node not selected', p.h)
-
-            QtCore.QTimer.singleShot(200, rehightlight_callback)
-        else:
-            if trace: g.trace('(pqsh)', n)
-            cursor = QtGui.QTextCursor(d)
-            self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
-#@+node:ekr.20170128133257.6: *6* pqsh.rehighlightBlock (not used)
-def rehighlightBlock(self, block):
-    '''Reapplies the highlighting to the given QTextBlock block.'''
-    d = self.d
-    if d and self.is_valid(block) and block.document() == d:
-        self.rehighlightPending = d.rehighlightPending
-        cursor = QtGui.QTextCursor(block)
-        g.trace(g.u(block.text()))
-        self.rehighlight_helper(cursor, QtGui.QTextCursor.EndOfBlock)
-        if self.rehighlightPending:
-            d.rehighlightPending = self.rehighlightPending
-#@+node:ekr.20170128133257.7: *6* pqsh.rehighlight_helper
-def rehighlight_helper(self, cursor, operation):
-        # QtGui.QTextCursor &cursor
-        # QtGui.QTextCursor.MoveOperation operation
-    self.inReformatBlocks = True
-    try:
-        cursor.beginEditBlock()
-        from_ = cursor.position()
-        cursor.movePosition(operation)
-        self.reformatBlocks(from_, 0, cursor.position() - from_)
-        cursor.endEditBlock()
-    finally:
-        self.inReformatBlocks = False
-#@+node:ekr.20170128133257.8: *5* pqsh.Getters & Setters
-#@+node:ekr.20170128133257.9: *6* pqsh.currentBlock & currentBlockUserData
-def currentBlock(self):
-    '''Returns the current text block.'''
-    return self.cb
-
-def currentBlockUserData(self):
-    '''Returns the QTextBlockUserData object attached to the current text block.'''
-    return self.cb.userData() if self.is_valid(self.cb) else None
-#@+node:ekr.20170128133257.10: *6* pqsh.currentBlockState & previousBlockState
-def currentBlockState(self):
-    '''Returns the state of the current block or -1.'''
-    return self.cb.userState() if self.is_valid(self.cb) else - 1
-
-def previousBlockState(self):
-    '''Returns the end state previous text block or -1'''
-    if self.is_valid(self.cb):
-        previous = self.cb.previous()
-        return previous.userState() if self.is_valid(previous) else - 1
-    else:
-        return -1
-#@+node:ekr.20170128133257.11: *6* pqsh.document
-def document(self):
-    '''Returns the QTextDocument on which this syntax highlighter is installed.'''
-    return self.d
-#@+node:ekr.20170128133257.12: *6* pqsh.format
-def format(self, pos):
-    '''Return the format at the given position in the current text block.'''
-    if 0 <= pos < len(self.formatChanges):
-        return self.formatChanges[pos]
-    else:
-        return QtGui.QTextCharFormat()
-#@+node:ekr.20170128133257.13: *6* pqsh.setCurrentBlockState & setCurrentBlockUserData
-def setCurrentBlockState(self, newState):
-    '''Sets the state of the current text block.'''
-    if self.is_valid(self.cb):
-        self.cb.setUserState(newState)
-
-def setCurrentBlockUserData(self, data):
-    '''Set the user data of the current text block.'''
-    if self.is_valid(self.cb):
-        self.cb.setUserData(data)
-#@+node:ekr.20170128133257.14: *6* pqsh.setDocument
-def setDocument(self, parent):
-    '''Install self on the given QTextDocument.'''
-    d = self.d
-    if d:
-        d.contentsChange.disconnect()
-        cursor = QtGui.QTextCursor(d)
-        cursor.beginEditBlock()
-        blk = d.begin()
-        while self.is_valid(blk): # blk: QTextBlock
-            blk.layout().clearAdditionalFormats()
-            blk = blk.next()
-        cursor.endEditBlock()
-    self.d = d = parent.document()
-    assert isinstance(d, QtGui.QTextDocument), d
-    if d:
-        d.contentsChange.connect(self.q_reformatBlocks)
-        d.rehighlightPending = True
-            # Set d's pending flag.
-        QtCore.QTimer.singleShot(0, self.delayedRehighlight)
-#@+node:ekr.20170128133257.15: *6* pqsh.setFormat (start,count,format)
-def setFormat(self, start, count, format):
-    '''Remember the requested formatting.'''
-    trace = False and not g.unitTesting
-    verbose = False
-    if start >= 0:
-        r = QtGui.QTextLayout.FormatRange()
-        r.start, r.length, r.format = start, count, format
-        self.formats.append(r)
-        if trace and verbose: g.trace('%3s %3s %s %s' % (
-            start, count, self.format_to_color(format), self.cb.text()))
-    elif trace:
-        g.trace('bad start value', repr(start), g.callers())
-# Not used by Leo...
-# def setFormat(self,start,count,color):
-    # format = QTextCharFormat()
-    # format.setForeground(color)
-    # setFormat(start,count,format)
-# def setFormat(self,start,count,font):
-    # format = QTextCharFormat()
-    # format.setFont(font)
-    # self.setFormat(start,count,format)
-#@+node:ekr.20170128133257.16: *5* pqsh.Helpers
-# These helpers are the main reason QSyntaxHighlighter exists.
-# Getting this code exactly right is the main challenge for PythonQSyntaxHighlighter.
-#@+node:ekr.20170128133257.17: *6* pqsh.applyFormatChanges
-def applyFormatChanges(self):
-    '''Apply self.formats to the current layout.'''
-    if self.formats:
-        layout = self.cb.layout()
-        layout.setAdditionalFormats(self.formats)
-        self.formats = []
-        self.d.markContentsDirty(self.cb.position(), self.cb.length())
-#@+node:ekr.20170128133257.18: *6* pqsh.delayedRehighlight
-def delayedRehighlight(self): # inline
-    '''Queued rehighlight.'''
-    # g.trace('=====',self.rehighlightPending)
-    if self.rehighlightPending:
-        self.rehighlightPending = False
-        self.rehighlight()
-#@+node:ekr.20170128133257.19: *6* pqsh.format_to_color
-def format_to_color(self, format):
-    '''Return the foreground color of the given character format.'''
-    return str(format.foreground().color().name())
-#@+node:ekr.20170128133257.20: *6* pqsh.highlightBlock
-def highlightBlock(self, s):
-    g.trace('must be defined in subclasses.' '')
-#@+node:ekr.20170128133257.21: *6* pqsh.idle_handler
-def idle_handler(self, timer):
-    trace = False and not g.unitTesting
-    verbose = True
-    if not self.idle_active:
-        # Shortcut everything else.
-        return
-    c = self.c
-    if trace and verbose:
-        s = g.u(self.r_block.text()).lstrip()
-        g.trace('force: %5s s: %s' % (self.r_force, s[: 20]))
-    # This is defensive code.  Apparently it is never needed.
-    # This is the only place c is used, so the c argument to the ctor is optional.
-    if c:
-        if c.p == self.r_p:
-            self.reformat_blocks_helper()
-        elif trace:
-            self.idle_active = False
-            g.trace('node changed: old: %s new: %s' % (
-                self.r_p and self.r_p.h[: 10], c.p and c.p.h[: 10]))
-#@+node:ekr.20170128133257.22: *6* pqsh.is_valid
-def is_valid(self, obj):
-    return obj and obj.isValid()
-#@+node:ekr.20170128133257.23: *6* pqsh.q_reformatBlocks
-def q_reformatBlocks(self, from_, charsRemoved, charsAdded):
-    if not self.inReformatBlocks:
-        # g.trace(from_,charsRemoved,charsAdded)
-        self.reformatBlocks(from_, charsRemoved, charsAdded)
-#@+node:ekr.20170128133257.24: *6* pqsh.reformat_blocks_helper
-def reformat_blocks_helper(self):
-    '''The common code shared by reformatBlocks and idle_handler.'''
-    block = self.r_block
-    n, start = 0, False
-    while self.is_valid(block) and (block.position() < self.r_end or self.r_force):
-        n += 1
-        if n >= self.r_limit > 0 and self.timer:
-            start = True
-            break
-        else:
-            before_state = block.userState()
-            self.reformatBlock(block)
-            self.r_force = block.userState() != before_state
-            block = self.r_block = block.next()
-    self.formatChanges = []
-    self.idle_active = start
-    if self.timer and start:
-        self.timer.start()
-    elif self.timer:
-        self.timer.stop()
-        # g.trace('--end',g.app.allow_see,self.c.p and self.c.p.h or None)
-        # Fix bug 78: find-next match not always scrolled into view.
-        # https://github.com/leo-editor/leo-editor/issues/78
-        w = self.c.frame.body.wrapper
-        if g.app.allow_delayed_see and w:
-            w.seeInsertPoint()
-        g.app.allow_delayed_see = False
-#@+node:ekr.20170128133257.25: *6* pqsh.reformatBlock
-def reformatBlock(self, block):
-    trace = False and not g.unitTesting
-    if self.is_valid(self.cb) and not isQt5:
-        g.trace('can not happen: called recursively')
-    else:
-        self.cb = block
-        self.formats = []
-        for i in range(block.length()):
-            r = QtGui.QTextLayout.FormatRange()
-            r.start, r.length, r.format = i, 1, QtGui.QTextCharFormat()
-            self.formats.append(r)
-        if trace: g.trace(str(block.text()))
-        self.highlightBlock(block.text())
-        self.applyFormatChanges()
-        self.cb = QtGui.QTextBlock()
-#@+node:ekr.20170128133257.26: *6* pqsh.reformatBlocks (main line)
-def reformatBlocks(self, from_, charsRemoved, charsAdded):
-    '''Main line: Reformat the lines in the indicated range.'''
-    self.rehighlightPending = False
-    block = self.d.findBlock(from_)
-    if not self.is_valid(block):
-        return
-    # Set the ivars for reformat_blocks_helper.
-    adjust = 1 if charsRemoved > 0 else 0
-    lastBlock = self.d.findBlock(from_ + charsAdded + adjust)
-    if self.is_valid(lastBlock):
-        self.r_end = lastBlock.position() + lastBlock.length()
-    else:
-        self.r_end = self.d.blockCount()
-    self.r_block = block
-    self.r_p = self.c.p.copy()
-    self.r_force = False
-    # Delegate the colorizing to shared helper.
-    self.reformat_blocks_helper()
-#@+node:ekr.20140906143232.18697: *4* OLD class PythonLexer
-# Stuck: regardless of class: there seems to be no way to force a recolor.
-if Qsci:
-
-    class PythonLexer(Qsci.QsciLexerCustom):
-        '''A subclass of the Python lexer that colorizers section references.'''
-
-        def __init__(self, parent=None):
-            '''Ctor for PythonLexer class.'''
-            Qsci.QsciLexerCustom.__init__(self, parent)
-                # Init the base class.
-            self.lexer = None
-            self.parent = parent
-            self.tag = '(PythonLexer)'
-
-        def setStringsOverNewlineAllowed(self, aBool):
-            pass
-
-        def description(self, style):
-            return self.tag
-
-        def setStyling(self, length, style):
-            g.trace(self.tag, length, style)
-
-        def styleText(self, start, end):
-            '''Style the text from start to end.'''
-            g.trace(self.tag, start, end)
-            self.lexer = Qsci.QsciLexerPython(parent=self.parent)
-            self.lexer.setStringsOverNewlineAllowed(True)
-            # self.lexer.styleText(start,end)
-
-        def configure_lexer(self):
-            '''Configure the QScintilla lexer.'''
-            lexer = self
-            # To do: use c.config setting.
-            # pylint: disable=no-member
-            font = QtGui.QFont("DejaVu Sans Mono", 14)
-            lexer.setFont(font)
-#@+node:ekr.20150514063305.107: ** debug.enable/disableGcTrace
-@cmd('gc-trace-disable')
-def disableGcTrace(self, event=None):
-    '''Enable tracing of Python's Garbage Collector.'''
-    g.trace_gc = False
-
-@cmd('gc-trace-enable')
-def enableGcTrace(self, event=None):
-    '''Disable tracing of Python's Garbage Collector.'''
-    g.trace_gc = True
-    g.enable_gc_debug()
-    if g.trace_gc_verbose:
-        g.blue('enabled verbose gc stats')
-    else:
-        g.blue('enabled brief gc stats')
-#@+node:ekr.20180504182541.1: ** efc.getDiffBranch (not used)
-@cmd('git-diff-branch')
-def gitDiffBranch(self, event):
-    '''Prompt for a branch name, then diff one file against it.'''
-    c = self.c
-    roots = g.findRootsWithPredicate(c, c.p)
-        # Looks up and down the tree.
-    if not roots:
-        g.es_print('no .py files found')
-        return
-    gdc = GitDiffController(self.c, 'HEAD')
-    
-    def callback(args, *extra, **kwargs):
-        if g._assert(len(args) == 1):
-            for p in roots:
-                gdc.diff_branch(branch=args[0], fn=p.anyAtFileNodeName())
-                
-    c.interactive(callback, event, prompts=['Branch name: '])
-#@+node:ekr.20160505044925.1: **  unused json importer code
-if 0:
-    @others
-#@+node:ekr.20160505045041.1: *3* unused write code
-#@+node:ekr.20160504144545.1: *4* json.put
-def put(self, s):
-    '''Write line s using at.os, taking special care of newlines.'''
-    at = self.c.leoAtFile
-    at.os(s[: -1] if s.endswith('\n') else s)
-    at.onl()
-#@+node:ekr.20160504144241.7: *4* json.vnode_dict
-def vnode_dict(self, v):
-    return {
-        'gnx': v.gnx,
-        'h': v.h, 'b': v.b,
-        # 'ua': v.u,
-        'children': [z.gnx for z in v.children]
-    }
-#@+node:ekr.20160504144455.1: *4* json.write
-def write(self, root):
-    """Write all the @auto-json node."""
-    nodes = list(set([p.v for p in root.subtree()]))
-    nodes = [self.vnode_dict(v) for v in nodes]
-    d = {
-        'top': self.vnode_dict(root.v),
-        'nodes': nodes,
-    }
-    s = json.dumps(d,
-        sort_keys=True,
-        indent=2, # Pretty print.
-        separators=(',', ': '))
-    self.put(s)
-    root.setVisited()
-    return True
-#@+node:ekr.20160505045049.1: *3* unused read code
-#@+node:ekr.20160504144241.3: *4* json.import_files
-def import_files(self, files):
-    '''Import a list of MindMap (.csv) files.'''
-    c = self.c
-    if files:
-        self.tab_width = c.getTabWidth(c.p)
-        for fileName in files:
-            g.setGlobalOpenDir(fileName)
-            p = self.create_outline(fileName)
-            p.contract()
-            p.setDirty()
-            c.setChanged(True)
-        c.redraw(p)
-#@+node:ekr.20160504144241.4: *4* json.prompt_for_files
-def prompt_for_files(self):
-    '''Prompt for a list of MindJet (.csv) files and import them.'''
-    c = self.c
-    types = [
-        ("JSON files", "*.json"),
-        ("All files", "*"),
-    ]
-    names = g.app.gui.runOpenFileDialog(c,
-        title="Import MindJet File",
-        filetypes=types,
-        defaultextension=".csv",
-        multiple=True)
-    c.bringToFront()
-    if names:
-        g.chdir(names[0])
-        self.import_files(names)
-#@+node:ekr.20070919133659.1: ** fc.checkLeoFile
-@cmd('check-leo-file')
-def checkLeoFile(self, event=None):
-    '''The check-leo-file command.'''
-    fc = self; c = fc.c; p = c.p
-    # 
-    # Put the body (minus the @nocolor) into the file buffer.
-    s = p.b
-    tag = '@nocolor\n'
-    if s.startswith(tag): s = s[len(tag):]
-    # Do a trial read.
-    self.checking = True
-    self.initReadIvars()
-    c.loading = True # disable c.changed
-    try:
-        try:
-            theFile = g.app.loadManager.openLeoOrZipFile(c.mFileName)
-            gnxDict = self.gnxDict
-            self.gnxDict = {} # Always allocate new vnodes.
-            try:
-                s = theFile.read()
-                FastRead(c, self.gnxDict).readFile(s=s)
-            finally:
-                self.gnxDict = gnxDict
-            g.blue('check-leo-file passed')
-        except Exception:
-            junk, message, junk = sys.exc_info()
-            g.error('check-leo-file failed:', g.toUnicode(message))
-    finally:
-        self.checking = False
-        c.loading = False # reenable c.changed
-#@+node:tbrown.20140615093933.89639: ** fc.bytesToUnicode (unused)
-def bytesToUnicode(self, ob):
-    """recursively convert bytes objects in strings / lists / dicts to str
-    objects, thanks to TNT
-    http://stackoverflow.com/questions/22840092/unpickling-data-from-python-2-with-unicode-strings-in-python-3
-
-    Needed for reading Python 2.7 pickles in Python 3.4 in getSaxUa()
-    """
-    # pylint: disable=unidiomatic-typecheck
-    # This is simpler than using isinstance.
-    t = type(ob)
-    if t in (list, tuple):
-        l = [str(i, 'utf-8') if type(i) is bytes else i for i in ob]
-        l = [self.bytes_to_unicode(i) if type(i) in (list, tuple, dict) else i
-            for i in l]
-        ro = tuple(l) if t is tuple else l
-    elif t is dict:
-        byte_keys = [i for i in ob if type(i) is bytes]
-        for bk in byte_keys:
-            v = ob[bk]
-            del(ob[bk])
-            ob[str(bk, 'utf-8')] = v
-        for k in ob:
-            if type(ob[k]) is bytes:
-                ob[k] = str(ob[k], 'utf-8')
-            elif type(ob[k]) in (list, tuple, dict):
-                ob[k] = self.bytes_to_unicode(ob[k])
-        ro = ob
-    elif t is bytes: # TNB added this clause
-        ro = str(ob, 'utf-8')
-    else:
-        ro = ob
-    return ro
-#@+node:ekr.20180813063846.1: ** Not used (fast-draw branches)
-#@+node:ekr.20180808075509.1: *3* qtree.partialDraw & helpers (never used)
+#@+node:ekr.20180813063846.1: *3* Fast-draw branches
+#@+node:ekr.20180808075509.1: *4* qtree.partialDraw & helpers (never used)
 def partialDraw(self, p):
 
     trace = True and not g.unitTesting
@@ -3287,7 +2726,7 @@ def partialDraw(self, p):
         else:
             aList = self.computeVisiblePositions(aList1, aList2, p)
             self.drawList(aList)
-#@+node:ekr.20180809110957.1: *4* qtree.computeVisiblePositions
+#@+node:ekr.20180809110957.1: *5* qtree.computeVisiblePositions
 def computeVisiblePositions(self, aList1, aList2, p):
     '''
     Compute the list of *visible* positions to be drawn.
@@ -3307,7 +2746,7 @@ def computeVisiblePositions(self, aList1, aList2, p):
         if not p:
             break
     return aList
-#@+node:ekr.20180809123937.1: *4* qtree.countVisible
+#@+node:ekr.20180809123937.1: *5* qtree.countVisible
 def countVisible(self, first_p, target_p):
     """
     Return the number of visible positions from first_p to target_p.
@@ -3355,7 +2794,7 @@ def countVisible(self, first_p, target_p):
     if target_p:
         g.trace('NOT FOUND:', target_p.h)
     return aList
-#@+node:ekr.20180809115019.1: *4* qtree.drawList
+#@+node:ekr.20180809115019.1: *5* qtree.drawList
 def drawList(self, aList):
     
     trace = False
@@ -3405,13 +2844,13 @@ def drawList(self, aList):
         # Set current item.
         if p == c.p:
             w.setCurrentItem(item)
-#@+node:ekr.20180809111725.1: *4* qtree.printParents
+#@+node:ekr.20180809111725.1: *5* qtree.printParents
 def print_parents(self, parents, tag):
     print(tag)
     g.printObj([
         '%10s %s' % (id(z), z.__class__.__name__)
             for z in parents])
-#@+node:ekr.20180810060655.1: *3* test vieldVisible
+#@+node:ekr.20180810060655.1: *4* test vieldVisible
 g.cls()
 import time
 tree = c.frame.tree
@@ -3457,7 +2896,7 @@ finally:
     for v in c.all_nodes():
         v.contract()
     c.redraw()
-#@+node:ekr.20180810111515.1: *3* benchmark
+#@+node:ekr.20180810111515.1: *4* benchmark
 import time
 t1 = time.clock()
 c.expandAllHeadlines()
@@ -3475,7 +2914,7 @@ for p in tree.yieldVisible(c.rootPosition()):
         w.setCurrentItem(item)
 t4 = time.clock()
 print('%s nodes in %5.2f sec' % (n, t4-t3))
-#@+node:ekr.20110605121601.17879: *3* qtree.rememberItem
+#@+node:ekr.20110605121601.17879: *4* qtree.rememberItem
 def rememberItem(self, p, item):
 
     v = p.v
@@ -3493,7 +2932,7 @@ def rememberItem(self, p, item):
     else:
         aList.append(item)
     d[v] = aList
-#@+node:ekr.20120219154958.10488: *3* LM.initFocusAndDraw (not used)
+#@+node:ekr.20120219154958.10488: *4* LM.initFocusAndDraw (not used)
 def initFocusAndDraw(self, c, fileName):
 
     def init_focus_handler(timer, c=c, p=c.p):
@@ -3512,6 +2951,141 @@ def initFocusAndDraw(self, c, fileName):
         c.initialFocusHelper()
         c.k.showStateAndMode()
         c.outerUpdate()
+#@+node:ekr.20150312225028.6: ** class LogManager (not used yet)
+class LogManager:
+
+    '''A class to handle the global log, and especially
+    switching the log from commander to commander.'''
+
+    def __init__ (self):
+
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: g.es_debug('(LogManager)')
+
+        self.log = None             # The LeoFrame containing the present log.
+        self.logInited = False      # False: all log message go to logWaiting list.
+        self.logIsLocked = False    # True: no changes to log are allowed.
+        self.logWaiting = []        # List of messages waiting to go to a log.
+        self.printWaiting = []      # Queue of messages to be sent to the printer.
+        self.signon_printed = False # True: the global signon has been printed.
+
+    @others
+#@+node:ekr.20150312225028.7: *3* LogM.setLog, lockLog, unlocklog
+def setLog (self,log):
+
+    """set the frame to which log messages will go"""
+
+    # print("app.setLog:",log,g.callers())
+    if not self.logIsLocked:
+        self.log = log
+
+def lockLog(self):
+    """Disable changes to the log"""
+    self.logIsLocked = True
+
+def unlockLog(self):
+    """Enable changes to the log"""
+    self.logIsLocked = False
+#@+node:ekr.20150312225028.8: *3* LogM.writeWaitingLog
+def writeWaitingLog (self,c):
+    '''Write all waiting lines to the log.'''
+    trace = True
+    lm = self
+    if trace:
+        # Do not call g.es, g.es_print, g.pr or g.trace here!
+        print('** writeWaitingLog','silent',g.app.silentMode,c.shortFileName())
+        # print('writeWaitingLog',g.callers())
+        # import sys ; print('writeWaitingLog: argv',sys.argv)
+    if not c or not c.exists:
+        return
+    if g.unitTesting:
+        lm.printWaiting = []
+        lm.logWaiting = []
+        g.app.setLog(None) # Prepare to requeue for other commanders.
+        return
+    table = [
+        ('Leo Log Window','red'),
+        (g.app.signon,'black'),
+        (g.app.signon2,'black'),
+    ]
+    table.reverse()
+    c.setLog()
+    lm.logInited = True # Prevent recursive call.
+    if not lm.signon_printed:
+        lm.signon_printed = True
+        if not g.app.silentMode:
+            print('')
+            print('** isPython3: %s' % g.isPython3)
+            if not g.enableDB:
+                print('** caching disabled')
+            print(g.app.signon)
+            print(g.app.signon2)
+    if not g.app.silentMode:
+        for s in lm.printWaiting:
+            print(s)
+    lm.printWaiting = []
+    if not g.app.silentMode:
+        for s,color in table:
+            lm.logWaiting.insert(0,(s+'\n',color),)
+        for s,color in lm.logWaiting:
+            g.es('',s,color=color,newline=0)
+                # The caller must write the newlines.
+    lm.logWaiting = []
+    # Essential when opening multiple files...
+    lm.setLog(None)
+#@+node:ekr.20150526115312.1: ** compare_ast (can hang!?!)
+# http://stackoverflow.com/questions/3312989/
+# elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
+
+def compare_ast(node1, node2):
+
+    trace = False and not g.unitTesting
+
+    def fail(node1, node2, tag):
+        '''Report a failed mismatch in the beautifier. This is a bug.'''
+        name1 = node1.__class__.__name__
+        name2 = node2.__class__.__name__
+        format = 'compare_ast failed: %s: %s %s %r %r'
+        if name1 == 'str':
+            print(format % (tag, name1, name2, node1, node2))
+        elif name1 == 'Str':
+            print(format % (tag, name1, name2, node1.s, node2.s))
+        elif 1:
+            format = 'compare_ast failed: %s: %s %s\n%r\n%r'
+            print(format % (tag, name1, name2, node1, node2))
+        else:
+            format = 'compare_ast failed: %s: %s %s\n%r\n%r\n%r %r'
+            attr1 = getattr(node1, 'lineno', '<no lineno>')
+            attr2 = getattr(node2, 'lineno', '<no lineno>')
+            print(format % (tag, name1, name2, node1, node2, attr1, attr2))
+
+    # pylint: disable=unidiomatic-typecheck
+    if type(node1) != type(node2):
+        if trace: fail(node1, node2, 'type mismatch')
+        return False
+    # The types of node1 and node2 match. Recursively compare components.
+    if isinstance(node1, ast.AST):
+        for kind, var in vars(node1).items():
+            if kind not in ('lineno', 'col_offset', 'ctx'):
+                var2 = vars(node2).get(kind) # Bug fix: 2016/05/16.
+                if not compare_ast(var, var2):
+                    if trace: fail(var, var2, 'AST subnode mismatch')
+                    return False
+        return True
+    elif isinstance(node1, list):
+        if len(node1) != len(node2):
+            if trace: fail(node1, node2, 'list len mismatch')
+            return False
+        for i in range(len(node1)):
+            if not compare_ast(node1[i], node2[i]):
+                if trace: fail(node1, node2, 'list element mismatch')
+                return False
+        return True
+    elif node1 != node2:
+        if trace: fail(node1, node2, 'node mismatch')
+        return False
+    else:
+        return True
 #@+node:ekr.20180826065640.1: ** vr.embed_pyplot_widget (not used)
 def embed_pyplot_widget(self):
 
@@ -3538,354 +3112,1133 @@ def embed_pyplot_widget(self):
 
     if pc.pyplot_canvas:
         pc.embed_widget(w, delete_callback=delete_callback)
-#@+node:ekr.20181008060101.1: ** #986: caching settings
-https://github.com/leo-editor/leo-editor/issues/986
-This is not going to happen. There is no significant speedup.
-#@+node:ekr.20181008134339.1: *3* COPY app.saveConfig (TODO)
-def saveConfig(self):
-    ### lm = g.app.loadManager
-    c = g.app.log and g.app.log.c
-    if not c:
-        g.trace('========== no c')
-        return
-    if g.app.save_config:
-        table = (
-            ('settings-cache', c.config.settingsDict),
-            ('shortcuts-cache', c.config.shortcutsDict),
-        )
-        for key, d in table:
-            g.app.db [key] = d
-            g.trace('=====', key, len(d.d.keys()))
-        g.app.save_config = False
-        ### g.app.global_cacher.dump()
-        ### g.app.commander_cacher.dump()
-    else:
-        del g.app.db ['config-cache']
-        del g.app.db ['settings-cache']
-        del g.app.db ['shortcuts-cache']
-#@+node:ekr.20181009024609.1: *3* COPY LM.readCachedSettings (TODO)
-def readCachedSettings(self):
-    '''Read the cached settings as if they all were global settings.'''
-    lm = self
-    ####### Only works when clicking close button!
-    settings_d, bindings_d = lm.createDefaultSettingsDicts()
-    lm.globalSettingsDict = d = g.app.db.get('settings-cache') or settings_d
-    g.trace('===== settings', len(d.d.keys()))
-    lm.globalBindingsDict = d = g.app.db.get('shortcuts-cache') or bindings_d
-    g.trace('===== shortcuts', len(d.d.keys()))
-    ### return PreviousSettings(settings_d, bindings_d)
-#@+node:ekr.20040701065235.2: ** fc.putDescendentAttributes (no longer used)
-def putDescendentAttributes(self, p):
+#@+node:ekr.20190412154124.1: ** COPY pyzo_shims.py
+@first # -*- coding: utf-8 -*-
+'''Shims to adapt pyzo classes to Leo.'''
+<< copyright notices >>
+import leo.core.leoGlobals as g
+import sys
+sys.argv.append('--pyzo')
+    # To retain g.pyzo and other global switches.
+if g.pyzo_trace_imports:
+    print('\npyzo_shims.py')
+<< non-pyzo imports (pyzo_shims.py) >>
 
-    # Create lists of all tnodes whose vnodes are marked or expanded.
-    marks = []; expanded = []
-    for p in p.subtree():
-        v = p.v
-        if p.isMarked() and p.v not in marks:
-            marks.append(v)
-        if p.hasChildren() and p.isExpanded() and v not in expanded:
-            expanded.append(v)
-    result = []
-    for theList, tag in ((marks, "marks"), (expanded, "expanded")):
-        if theList:
-            sList = []
-            for v in theList:
-                sList.append("%s," % v.fileIndex)
-            s = ''.join(sList)
-            result.append('\n%s="%s"' % (tag, s))
-    return ''.join(result)
-#@+node:ekr.20041005105605.162: ** at.ensureTrailingNewline
-def ensureTrailingNewline(self, s):
-    '''
-    Ensure a trailing newline in s.
-    If we add a trailing newline, we'll generate an @nonl sentinel below.
+old_loadFile = None
+    # Set by monkey_patch.
+    # Save a permanent reference.
 
-    - We always ensure a newline in @file and @thin trees.
-    - This code is not used used in @asis trees.
-    - New in Leo 4.4.3 b1: We add a newline in @clean/@nosent trees unless
-      @bool force_newlines_in_at_nosent_bodies = False
-    '''
-    at = self
-    if s:
-        trailingNewlineFlag = s[-1] == '\n'
-        if not trailingNewlineFlag:
-            if at.sentinels or at.force_newlines_in_at_nosent_bodies:
-                s = s + '\n'
-    else:
-        trailingNewlineFlag = True # don't need to generate an @nonl
-    g.trace(trailingNewlineFlag, repr(s and g.splitLines(s)[-1]))
-    return s, trailingNewlineFlag
-#@+node:ekr.20190119122558.1: ** qtFrame.getActualRatios
-def getActualRatios(self):
-    '''
-    Return the actual values corresponding to frame.ratio and frame.secondary_ratio.
-    '''
-    c = self.c
-    if not c:
-        return 0.5, 0.5
-    layout = c.free_layout
-    if not layout:
-        return 0.5, 0.5
-        
-    def get_ratio(w, tag):
-        if w:
-            try:
-                f1, f2 = w.sizes()
-                r = float(f1)/float(f1+f2)
-                # g.trace('%s %2d %2d => %5.2f' % (tag, f1, f2, r))
-                return r
-            except ValueError:
-                pass
-        return 0.5, 0.5
-                
-    r1 = get_ratio(layout.get_main_splitter(), 'r1')
-    r2 = get_ratio(layout.get_secondary_splitter(), 'r2')
-    return r1, r2
-#@+node:ekr.20190123070114.1: ** efc.is_open_elsewhere
-def is_open_elsewhere(self, path):
-    '''
-    Return True if there is an open handle on path.
-    https://stackoverflow.com/questions/11114492
-    '''
-    # This is very slow, and does not work.
-    return False ###
+# Be explicit about where everything comes from...
+import pyzo
+import pyzo.core.editor
+import pyzo.core.main
+import pyzo.core.splash
+import pyzo.util
+
+@others
+#@+node:ekr.20190412154124.2: *3* << copyright notices >>
+#
+# Portions of this file are based on pyzo's source code:
+# Copyright (C) 2013-2018 by Almar Klein.
+#
+# Search for the above copyright to see the relevant code.
+#@+node:ekr.20190412154124.3: *3*  << non-pyzo imports (pyzo_shims.py) >>
+import os
+import sys
+import time
+from leo.core.leoQt import QtCore, QtWidgets
+try:
+    from PyQt5.QtCore import pyqtSignal as Signal
+except ImportError:
     try:
-        import psutil
-        for proc in psutil.process_iter():
-            ### g.trace('*****', proc)
-            try:
-                for item in proc.open_files():
-                    ### g.trace(item.path)
-                    if path == item.path:
-                        g.trace('===== FOUND', path)
-                        return True
-            except Exception:
-                pass
-        return False
+        from PyQt4.QtCore import pyqtSignal as Signal
     except ImportError:
+        Signal = g.TracingNullObject
+
+#@+node:ekr.20190412154124.4: *3*  function: createEditor (from editor.py)
+# Imports: editor.py
+
+# import os, sys
+# import re, codecs
+
+# from pyzo.util.qt import QtCore, QtGui, QtWidgets
+# qt = QtGui
+
+# from pyzo.codeeditor import Manager
+# from pyzo.core.menu import EditorContextMenu
+# from pyzo.core.baseTextCtrl import BaseTextCtrl, normalizePath
+# from pyzo.core.pyzoLogging import print  # noqa
+# import pyzo
+
+from pyzo.core.editor import determineEncoding, determineLineEnding, determineIndentation
+from pyzo.core.editor import PyzoEditor
+from pyzo.codeeditor import Manager
+
+def createEditor(parent, filename=None):
+    """ Tries to load the file given by the filename and
+    if succesful, creates an editor instance to put it in,
+    which is returned.
+    If filename is None, an new/unsaved/temp file is created.
+    """
+    
+    if g.pyzo_trace:
+        g.pr('createEditor: %r' % filename)
+
+    if filename is None:
+        # Increase counter
+        global newFileCounter
+        newFileCounter  += 1
+        # Create editor
+        editor = PyzoEditor(parent)
+        editor.document().setModified(True)
+        # Set name
+        editor._name = "<tmp {}>".format(newFileCounter)
+    elif g.pyzo_outline_tab and g.pyzo and g.pyzo_patch and filename.endswith('.leo'):
+        from leo.core.pyzo_shims import OutlineEditorShim
+        << createEditor patch >>
+        return editor
+    else:
+        # check and normalize
+        if not os.path.isfile(filename):
+            raise IOError("File does not exist '%s'." % filename)
+        # load file (as bytes)
+        with open(filename, 'rb') as f:
+            bb = f.read()
+            f.close()
+        # convert to text, be gentle with files not encoded with utf-8
+        encoding = determineEncoding(bb)
+        text = bb.decode(encoding,'replace')
+
+        # process line endings
+        lineEndings = determineLineEnding(text)
+
+        # if we got here safely ...
+
+        # create editor and set text
+        editor = PyzoEditor(parent) # showlinenumbers=False)
+        editor.setPlainText(text)
+        editor.lineEndings = lineEndings
+        editor.encoding = encoding
+        editor.document().setModified(False)
+
+        # store name and filename
+        editor._filename = filename
+        editor._name = os.path.split(filename)[1]
+
+        # process indentation
+        indentWidth = determineIndentation(text)
+        if indentWidth == -1: #Tabs
+            editor.setIndentWidth(pyzo.config.settings.defaultIndentWidth)
+            editor.setIndentUsingSpaces(False)
+        elif indentWidth:
+            editor.setIndentWidth(indentWidth)
+            editor.setIndentUsingSpaces(True)
+
+    if editor._filename:
+        editor._modifyTime = os.path.getmtime(editor._filename)
+
+    # Set parser
+    if editor._filename:
+        ext = os.path.splitext(editor._filename)[1]
+        parser = Manager.suggestParser(ext, text)
+        editor.setParser(parser)
+    else:
+        # todo: rename style -> parser
+        editor.setParser(pyzo.config.settings.defaultStyle)
+
+    # return
+    return editor
+#@+node:ekr.20190412154124.5: *4* << createEditor patch >>
+# check and normalize
+if not os.path.isfile(filename):
+    raise IOError("File does not exist '%s'." % filename)
+#
+# load file (as bytes)
+with open(filename, 'rb') as f:
+    bb = f.read()
+    f.close()
+    
+# convert to text, be gentle with files not encoded with utf-8
+encoding = determineEncoding(bb)
+text = bb.decode(encoding,'replace')
+
+# process line endings
+lineEndings = determineLineEnding(text)
+
+# if we got here safely ...
+
+# create editor and set text
+### editor = PyzoEditor(parent)
+editor = OutlineEditorShim(filename, parent)
+editor.setPlainText(text)
+# g.trace('len(text)', len(text))
+
+editor.lineEndings = lineEndings
+editor.encoding = encoding
+editor.document().setModified(False)
+
+# store name and filename
+# Now done in OutlineEditorShim.
+    # editor._filename = filename
+    # editor._name = os.path.split(filename)[1]
+
+# process indentation
+###
+    # indentWidth = determineIndentation(text)
+    # if indentWidth == -1: #Tabs
+        # editor.setIndentWidth(pyzo.config.settings.defaultIndentWidth)
+        # editor.setIndentUsingSpaces(False)
+    # elif indentWidth:
+        # editor.setIndentWidth(indentWidth)
+        # editor.setIndentUsingSpaces(True)
+
+if editor._filename:
+    editor._modifyTime = os.path.getmtime(editor._filename)
+
+# Set parser
+if 0:
+    if editor._filename:
+        ### ext = os.path.splitext(editor._filename)[1]
+        ext = '.py'
+        parser = Manager.suggestParser(ext, text)
+        editor.setParser(parser)
+    else:
+        # todo: rename style -> parser
+        editor.setParser(pyzo.config.settings.defaultStyle)
+#@+node:ekr.20190412154124.6: *3*  function: loadFile (pyzo_shims.py)
+# This probably isn't the place to patch pyzo.
+
+def loadFile(self, filename, updateTabs=True):
+    '''
+    A monkey-patched replacement for pyzo.core.editorTabs.EditorTabs.loadFile.
+    '''
+    # Not used, and will probably never be used.
+    print('----- patched loadFile: filename:', filename)
+    if filename.endswith('leo'):
+        print('----- ignoring .leo file')
+        return None
+    try:
+        return old_loadFile(self, filename, updateTabs)
+    except Exception:
         g.es_exception()
-        return False
-#@+node:ekr.20150427145447.1: ** efc.dump_d
-def dump_d(self, d, tag):
-    '''Print dictionary d.  Similar to g.printDict.'''
-    if d:
-        indent = ''
-        n = 6
-        for key in sorted(d):
-            if g.isString(key):
-                n = max(n, len(key))
-        g.pr('%s...{' % (tag) if tag else '{')
-        for key in sorted(d):
-            val = d.get(key)
-            if key == 'body':
-                val = 'len(body) = %s' % (len(val))
-            else:
-                val = repr(val).strip()
-            # g.pr("%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip()))
-            g.pr("%s%*s: %s" % (indent, n, key, val))
-        g.pr('}')
-    else:
-        g.pr('%s...{}' % (tag) if tag else '{}')
-#@+node:ekr.20101103093942.5941: ** @g.command(head-to-prev-node)
-@g.command('head-to-prev-node')
-def headToPrevNode(event):
-    '''Move the code preceding a def to end of previous node.'''
-    c = event.get('c')
-    if not c: return
-    p = c.p
-    try:
-        import leo.plugins.importers.python as python
-    except ImportError:
-        return
-    scanner = python.Py_Importer(c.importCommands)
-    kind, i, junk = scanner.find_class(p)
-    p2 = p.back()
-    if p2 and kind in ('class', 'def') and i > 0:
-        u = c.undoer; undoType = 'move-head-to-prev'
-        head = p.b[: i].rstrip()
-        u.beforeChangeGroup(p, undoType)
-        b = u.beforeChangeNodeContents(p)
-        p.b = p.b[i:]
-        u.afterChangeNodeContents(p, undoType, b)
-        if head:
-            b2 = u.beforeChangeNodeContents(p2)
-            p2.b = p2.b.rstrip() + '\n\n' + head + '\n'
-            u.afterChangeNodeContents(p2, undoType, b2)
-        u.afterChangeGroup(p, undoType)
-        c.selectPosition(p2)
-#@+node:ekr.20101103093942.5943: ** @g.command(tail-to-next-node)
-@g.command('tail-to-next-node')
-def tailToNextNode(event=None):
-    '''Move the code following a def to start of next node.'''
-    c = event.get('c')
-    if not c: return
-    p = c.p
-    try:
-        import leo.plugins.importers.python as python
-    except ImportError:
-        return
-    scanner = python.Py_Importer(c.importCommands)
-    kind, junk, j = scanner.find_class(p)
-    p2 = p.next()
-    if p2 and kind in ('class', 'def') and j < len(p.b):
-        u = c.undoer; undoType = 'move-tail-to-next'
-        tail = p.b[j:].rstrip()
-        u.beforeChangeGroup(p, undoType)
-        b = u.beforeChangeNodeContents(p)
-        p.b = p.b[: j]
-        u.afterChangeNodeContents(p, undoType, b)
-        if tail:
-            b2 = u.beforeChangeNodeContents(p2)
-            p2.b = tail + '\n\n' + p2.b
-            u.afterChangeNodeContents(p2, undoType, b2)
-        u.afterChangeGroup(p, undoType)
-        c.selectPosition(p2)
-#@+node:ekr.20190320062624.6: ** class PygmentsHighlighter(QSyntaxHighlighter) (NOT YET)
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
+        return None
+#@+node:ekr.20190412154124.7: *3* class ConfigShim
+new_config = True
+    # Works when False.
+    
+config_shim_seen = {}
+    # Keys are bunches.
 
-class PygmentsHighlighter(QtGui.QSyntaxHighlighter):
-    """ Syntax highlighter that uses Pygments for parsing. """
+try:  # pragma: no cover
+    from collections import OrderedDict as _dict
+except ImportError:
+    _dict = dict
+    
+from pyzo.util.zon import Dict
+
+# config_base = _dict if new_config else Dict
+
+config_base = _dict if new_config else Dict
+    # The old code needs _dict, not dict.
+
+class ConfigShim(config_base):
+    
+    def __init__(self):
+        config_base.__init__(self)
+        g.pr('\n===== ConfigShim: new_config: %s\n' % new_config)
+        self.setObjectName('ConfigShim')
+    
+    if new_config:
+        << define bunch settings >>
+        << new config methods >>
+    else:
+        << old config methods >>
 
     @others
-#@+node:ekr.20190320062624.7: *3* pyg_h.__init__
-def __init__(self, parent, lexer=None):
+#@+node:ekr.20190412154124.8: *4* << define bunch settings >>
+# '(\w+)': With: \1 = 
+
+advanced = g.Bunch(
+    autoCompDelay=200,
+    fileExtensionsToLoadFromDir='py,pyw,pyx,txt,bat',
+    find_autoHide_timeout=10,
+    homeAndEndWorkOnDisplayedLine=0,
+    shellMaxLines=10000,
+    titleText='{fileName} ({fullPath}) - Interactive Editor for Python',
+)
+
+settings = g.Bunch(   
+    allowFloatingShell=0,
+    autoCallTip=1,
+    autoClose_Brackets=1,
+    autoClose_Quotes=1,
+    autoComplete=1,
+    autoComplete_acceptKeys='Tab',
+    autoComplete_caseSensitive=0,
+    autoComplete_fillups='\n',
+    autoComplete_keywords=1,
+    autoIndent=1,
+    changeDirOnFileExec=0,
+    defaultIndentUsingSpaces=1,
+    defaultIndentWidth=4,
+    defaultLineEndings='CRLF',
+    defaultStyle='python',
+    justificationWidth=70,
+    language='English (US)',
+    removeTrailingWhitespaceWhenSaving=0,
+)
+
+shellConfigs2 = [
+    g.Bunch(
+        argv = '',
+        environ = '',
+        exe = 'c:\\anaconda3\\python.exe',
+        gui = 'auto',
+        ipython = 'yes',
+        name = 'Python',
+        projectPath = '',
+        pythonPath = '',
+        scriptFile = '',
+        startDir = '',
+        startupScript = '',
+        )
+]
+
+shortcuts2 = g.bunch(
+    << define bunch shortcuts2 >>
+)
+
+state = g.Bunch(
+    editorState2=[
+        << define editorState2 >>
+    ],
+    find_autoHide=1,
+    find_matchCase=0,
+    find_regExp=0,
+    find_show=0,
+    find_wholeWord=1,
+    loadedTools=['pyzofilebrowser', 'pyzologger', 'pyzosourcestructure'],
+    newUser=1,
+    windowGeometry='AdnQywACAAAAAAGjAAAA2AAABv0AAANWAAABqwAAAPcAAAb1AAADTgAAAAAAAAAAB4A=\n',
+    windowState=(
+        'AAAA/wAAAAD9AAAAAgAAAAAAAACeAAACRPwCAAAAAfwAAAAUAAACRAAAAYgA/////AIAAAAC+wAA\n'
+        'AB4AcAB5AHoAbwBmAGkAbABlAGIAcgBvAHcAcwBlAHIBAAAAFAAAAWEAAAEIAP////sAAAAmAHAA\n'
+        'eQB6AG8AcwBvAHUAcgBjAGUAcwB0AHIAdQBjAHQAdQByAGUBAAABewAAAN0AAAB6AP///wAAAAEA\n'
+        'AAGEAAACRPwCAAAABvsAAAAMAHMAaABlAGwAbABzAQAAABQAAAD/AAAAcwD////7AAAAFABwAHkA\n'
+        'egBvAGwAbwBnAGcAZQByAQAAARkAAAE/AAAAWQD////7AAAAGgBwAHkAegBvAHcAbwByAGsAcwBw\n'
+        'AGEAYwBlAAAAAT4AAAEaAAAAAAAAAAD7AAAAJgBwAHkAegBvAGkAbgB0AGUAcgBhAGMAdABpAHYA\n'
+        'ZQBoAGUAbABwAAAAAnkAAAB6AAAAAAAAAAD7AAAAIgBwAHkAegBvAGgAaQBzAHQAbwByAHkAdgBp\n'
+        'AGUAdwBlAHIAAAACGgAAAVsAAAAAAAAAAPsAAAAcAHAAeQB6AG8AdwBlAGIAYgByAG8AdwBzAGUA\n'
+        'cgAAAAKwAAAAxQAAAAAAAAAAAAADHQAAAkQAAAAEAAAABAAAAAgAAAAI/AAAAAA=\n'
+    )
+)
+
+tools = g.Bunch(
+    pyzofilebrowser = g.Bunch(),
+    pyzofilebrowser2 = g.Bunch(
+        expandedDirs = ['c:\\apps\\pyzo\\source\\pyzo'],
+        nameFilter = '!*.pyc',
+        path = 'c:\\apps\\pyzo\\source\\pyzo',
+        searchMatchCase = 0,
+        searchRegExp = 0,
+        searchSubDirs = 1,
+        starredDirs =[
+            g.Bunch(
+                addToPythonpath = 0,
+                name = 'Pyzo sources',
+                path = 'c:\\apps\\pyzo\\source',
+            )
+        ]
+    ),
+    pyzohistoryviewer = g.Bunch(),
+    pyzointeractivehelp = g.Bunch(
+        fontSize = 14,
+        noNewlines = 1,
+        smartNewlines = 1
+    ),
+    pyzologger = g.Bunch(),
+    pyzosourcestructure = g.Bunch(
+        level = 1,
+        showTypes = ['class', 'def', 'cell', 'todo'],
+    ),
+    pyzowebbrowser = g.Bunch(
+        bookMarks = [
+            'docs.python.org',
+            'scipy.org',
+            'doc.qt.nokia.com/4.5/',
+            'pyzo.org',
+        ],
+        zoomFactor = 1.0,
+    ),
+    pyzoworkspace = g.Bunch(
+        hideTypes = [],
+        typeTranslation = g.Bunch(
+            builtin_function_or_method = 'function',
+            method = 'function'
+        )
+    )
+) 
+
+view = g.Bunch(
+    autoComplete_popupSize=[300, 100],
+    codeFolding=0,
+    doBraceMatch=1,
+    edgeColumn=80,
+    fontname='DejaVu Sans Mono',
+    highlightCurrentLine=1,
+    highlightMatchingBracket=1,
+    qtstyle='fusion',
+    showIndentationGuides=1,
+    showLineEndings=0,
+    showStatusbar=0,
+    showWhitespace=0,
+    showWrapSymbols=0,
+    tabWidth=4,
+    wrap=1,
+    zoom=2
+)
+#@+node:ekr.20190412154124.9: *5* << define bunch shortcuts2 >>
+edit__comment = 'Ctrl+R,',
+edit__copy = 'Ctrl+C,Ctrl+Insert',
+edit__cut = 'Ctrl+X,Shift+Delete',
+edit__dedent = 'Shift+Tab,',
+edit__delete_line = 'Ctrl+D,',
+edit__duplicate_line = 'Ctrl+Shift+D,',
+edit__find_next = 'Ctrl+G,F3',
+edit__find_or_replace = 'Ctrl+F,',
+edit__find_previous = 'Ctrl+Shift+G,Shift+F3',
+edit__find_selection = 'Ctrl+F3,',
+edit__find_selection_backward = 'Ctrl+Shift+F3,',
+edit__indent = 'Tab,',
+edit__justify_commentdocstring = 'Ctrl+J,',
+edit__paste = 'Ctrl+V,Shift+Insert',
+edit__paste_and_select = 'Ctrl+Shift+V',
+edit__redo = 'Ctrl+Y,',
+edit__select_all = 'Ctrl+A,',
+edit__toggle_breakpoint = 'Ctrl+B,',
+edit__uncomment = 'Ctrl+T,',
+edit__undo = 'Ctrl+Z,',
+file__close = 'Ctrl+W,',
+file__new = 'Ctrl+N,',
+file__open = 'Ctrl+O,',
+file__save = 'Ctrl+S,',
+run__execute_cell = 'Ctrl+Return,Ctrl+Enter',
+run__execute_cell_and_advance = 'Ctrl+Shift+Return,Ctrl+Shift+Enter',
+run__execute_file = 'Ctrl+E,F5',
+run__execute_main_file = 'Ctrl+M,F6',
+run__execute_selection = 'Alt+Return,F9',
+run__execute_selection_and_advance = 'Shift+F9,Shift+Alt+Return',
+run__run_file_as_script = 'Ctrl+Shift+E,Ctrl+F5',
+run__run_main_file_as_script = 'Ctrl+Shift+M,Ctrl+F6',
+shell__clear_screen = 'Ctrl+L,',
+shell__close = 'Alt+K,',
+shell__create_shell_1_ = 'Ctrl+1,',
+shell__create_shell_2_ = 'Ctrl+2,',
+shell__create_shell_3_ = 'Ctrl+3,',
+shell__create_shell_4_ = 'Ctrl+4,',
+shell__create_shell_5_ = 'Ctrl+5,',
+shell__create_shell_6_ = 'Ctrl+6,',
+shell__create_shell_7_ = 'Ctrl+7,',
+shell__create_shell_8_ = 'Ctrl+8,',
+shell__interrupt = 'Ctrl+I,Meta+C',
+shell__postmortem_debug_from_last_traceback = 'Ctrl+P,',
+shell__restart = 'Ctrl+K,',
+shell__terminate = 'Ctrl+Shift+K,',
+view__select_editor = 'Ctrl+9,F2',
+view__select_previous_file = 'Ctrl+Tab,',
+view__select_shell = 'Ctrl+0,F1',
+view__zooming__zoom_in = 'Ctrl+=,Ctrl++',
+view__zooming__zoom_out = 'Ctrl+-,',
+view__zooming__zoom_reset = 'Ctrl+\\,'
+#@+node:ekr.20190412154124.10: *5* << define editorState2 >>
+[
+    'C:\\apps\\pyzo\\source\\pyzo\\codeeditor\\highlighter.py',
+    3279,
+    96
+],
+[
+    'C:\\apps\\pyzo\\source\\pyzo\\core\\editorTabs.py',
+    22913,
+    693
+],
+[
+    'C:\\apps\\pyzo\\source\\pyzo\\codeeditor\\highlighter.py',
+    'hist'
+],
+[
+    'C:\\apps\\pyzo\\source\\pyzo\\core\\editorTabs.py',
+    'hist'
+]
+#@+node:ekr.20190412154124.11: *4* << new config methods >>
+@others
+#@+node:ekr.20190412154124.12: *5* ConfigShim.__repr__
+def __repr__(self):
     
-    super(PygmentsHighlighter, self).__init__(parent)
-    self._document = self.document()
-    ### self._formatter = HtmlFormatter(nowrap=True)
-    self.set_style('default')
-    if lexer is not None:
-        self._lexer = lexer
-    elif g.isPython3:
-        self._lexer = Python3Lexer()
-    else:
-        self._lexer = PythonLexer()
-#@+node:ekr.20190320062624.8: *3* pyg_h.highlightBlock
-# QSyntaxHighlighter interface
+    return 'ConfigShim'
+    # return g.obj2string(self)
+        # Can't do this: it calls repr!
+#@+node:ekr.20190412154124.13: *5* ConfigShim.__getattribute__ 
+def __getattribute__(self, key):
+    '''The usual shinanigans...'''
+    ### return object.__getattribute__(self, key)
+    try:
+        val = object.__getattribute__(self, key)
+    except AttributeError:
+        if key in self:
+            val = self[key]
+        else:
+            raise
+    if key not in config_shim_seen:
+        config_shim_seen [key] = True
+        g.pr('\n===== ConfigShim.__getattribute__', key, val)
+    return val
+#@+node:ekr.20190412154124.14: *5* ConfigShim.__setattr__ (not used)
+# def __setattr__(self, key, val):
+    # if key in Dict.__reserved_names__:
+        # # Either let OrderedDict do its work, or disallow
+        # if key not in Dict.__pure_names__:
+            # return _dict.__setattr__(self, key, val)
+        # else:
+            # raise AttributeError('Reserved name, this key can only ' +
+                                 # 'be set via ``d[%r] = X``' % key)
+    # else:
+        # # if isinstance(val, dict): val = Dict(val) -> no, makes a copy!
+        # self[key] = val
+#@+node:ekr.20190412154124.15: *4* << old config methods >>
+@others
+#@+node:ekr.20190412154124.16: *5* ConfigShim.__repr__
+def __repr__(self):
 
-def highlightBlock(self, string):
-    """ Highlight a block of text.
-    """
-    prev_data = self.currentBlock().previous().userData()
-    if prev_data is not None:
-        self._lexer._saved_state_stack = prev_data.syntax_stack
-    elif hasattr(self._lexer, '_saved_state_stack'):
-        del self._lexer._saved_state_stack
+    from pyzo.util.zon import isidentifier
+        # Changed import.
+    identifier_items = []
+    nonidentifier_items = []
+    for key, val in self.items():
+        if isidentifier(key):
+            identifier_items.append('%s=%r' % (key, val))
+        else:
+            nonidentifier_items.append('(%r, %r)' % (key, val))
+    if nonidentifier_items:
+        return 'Dict([%s], %s)' % (', '.join(nonidentifier_items),
+                                   ', '.join(identifier_items))
+    else:
+        return 'Dict(%s)' % (', '.join(identifier_items))
+#@+node:ekr.20190412154124.17: *5* ConfigShim.__getattribute__
+def __getattribute__(self, key):
+    try:
+        ### return object.__getattribute__(self, key)
+        val = object.__getattribute__(self, key)
+        if False and key not in ('advanced', 'shortcuts2', 'settings'):
+            # g.pr('===== LeoPyzoConfig 1: %r: %r' % (key, val))
+            g.pr('===== LeoPyzoConfig 1: %r' % key)
+        return val
+    except AttributeError:
+        if key in self:
+            if False and key not in ('advanced', 'shortcuts2', 'settings'):
+                # g.pr('===== LeoPyzoConfig 1: %r: %r' % (key, g.truncate(self[key], 50)))
+                g.pr('===== LeoPyzoConfig 2: %r' % key)
+            return self[key]
+        else:
+            raise
+#@+node:ekr.20190412154124.18: *5* ConfigShim.__setattr__
+def __setattr__(self, key, val):
+    if key in Dict.__reserved_names__:
+        # Either let OrderedDict do its work, or disallow
+        if key not in Dict.__pure_names__:
+            return _dict.__setattr__(self, key, val)
+        else:
+            raise AttributeError('Reserved name, this key can only ' +
+                                 'be set via ``d[%r] = X``' % key)
+    else:
+        # if isinstance(val, dict): val = Dict(val) -> no, makes a copy!
+        self[key] = val
+#@+node:ekr.20190412154124.19: *3* class MainWindowShim (pyzo.core.main.MainWindow)
+class MainWindowShim(pyzo.core.main.MainWindow):
+    
+    << MainWindowShim switches >>
+
+    @others
+#@+node:ekr.20190412154124.20: *4* << MainWindowShim switches >>
+initial_draw = False
+    # True: do an initial draw. Works either way.
+use_shell = False
+    # There is no great flash when use_shell is True.
+use_menu = False
+#
+# The shell never warms up if there are no menus.
+# So for now just force use_menu to True.
+if use_shell and not use_menu:
+    g.pr('\nMainWindowShim: use_shell sets use_menu = True\n')
+    use_menu = True
+#@+node:ekr.20190412154124.21: *4* MainWindowShim.__init__
+def __init__(self, parent=None, locale=None):
+    '''
+    Important: do *all* inits here.  Do *not* call MainWindow.__init__.
+    
+    This allows us complete control over all aspects of the startup process.
+
+    This method is based on pyzo code
+    Copyright (C) 2013-2018 by Almar Klein.
+    
+    '''
     #
-    # Lex the text using Pygments
-    index = 0
-    for token, text in self._lexer.get_tokens(string):
-        length = len(text)
-        self.setFormat(index, length, self._get_format(token))
-        index += length
+    # pylint: disable=non-parent-init-called, super-init-not-called
+    QtWidgets.QMainWindow.__init__(self, parent)
+        #
+        # Do **not** call MainWindow.__init__: it calls _populate!
+        #
+    self.setObjectName('MainWindowShim')
+    self.monkey_patch_leo()
+    pyzo.loadConfig()
+        # To be replaced by LeoPyzoConfig.loadConfig.
+    self._closeflag = 0
+        # Used during closing/restarting
+    #
+    # Init window title and application icon
+    # Set title to something nice. On Ubuntu 12.10 this text is what
+    # is being shown at the fancy title bar (since it's not properly
+    # updated)
+    self.setWindowTitle('Leo Main Window')
+    pyzo.core.main.loadAppIcons()
+    g.app.gui.attachLeoIcon(self)
+    #
+    # Restore window geometry before drawing for the first time.
+    self.resize(800, 600) # default size
+    self.restoreGeometry()
+    #
+    # This just slows down the initial draw.
+        # self.setCentralWidget(SplashShim(parent))
+    #
+    # These do nothing, even when use_shell is True.
+        # self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
+        # self.setStyleSheet("QMainWindow { background-color: red;}")
+    #
+    # Show empty window and disable updates for a while
+    if self.initial_draw:
+        self.show()
+        self.paintNow()
+    self.setUpdatesEnabled(False)
+    #
+    # Set locale of main widget, for translate.
+    if locale:
+        self.setLocale(locale)
+    #
+    # Store myself
+    pyzo.main = self
+    #
+    # Init dockwidget settings
+    self.setTabPosition(QtCore.Qt.AllDockWidgetAreas, QtWidgets.QTabWidget.South)
+    self.setDockOptions(
+            QtWidgets.QMainWindow.AllowNestedDocks |
+            QtWidgets.QMainWindow.AllowTabbedDocks
+            #|  QtWidgets.QMainWindow.AnimatedDocks
+        )
+    #
+    # Set window atrributes
+    self.setAttribute(QtCore.Qt.WA_AlwaysShowToolTips, True)
+    #
+    # Load pyzo icons and fonts.
+    pyzo.core.main.loadIcons()
+    pyzo.core.main.loadFonts()
+    #
+    # Set qt style and test success
+    self.setQtStyle(None) # None means init!
+    #    
+    # Populate the window (imports more code)
+    self._populate()
+    #
+    # Revert to normal background, and enable updates
+    self.setStyleSheet('')
+        # Required.
+    self.setUpdatesEnabled(True)
+    #
+    # Restore window state, force updating, and restore again
+    self.restoreState()
+    if not self.initial_draw:
+        self.show()
+    self.paintNow()
+    self.restoreState()
+    #
+    # Create new shell config if there is None
+    if not pyzo.config.shellConfigs2:
+        from pyzo.core.kernelbroker import KernelInfo
+        pyzo.config.shellConfigs2.append( KernelInfo() )
+    #
+    # EKR: Set background.
+    if getattr(pyzo.config.settings, 'dark_theme', None):
+        bg = getattr(pyzo.config.settings, 'dark_background', '#657b83')
+            # Default: solarized base00
+        try:
+            self.setStyleSheet("background: %s" % bg) 
+        except Exception:
+            g.pr('oops: MainWindow.__init__')
+    #
+    # Put the focus on editor
+    e = pyzo.editors.getCurrentEditor()
+    if e is not None:
+        e.setFocus()
+    #
+    # Handle any actions
+    pyzo.core.commandline.handle_cmd_args()
+#@+node:ekr.20190412154124.22: *4* MainWindowShim._populate (5 shims)
+def _populate(self):
+    '''
+    This method is based on pyzo code
+    Copyright (C) 2013-2018 by Almar Klein.
+    '''
+    
+    trace = False and g.pyzo_trace_imports
 
-    if hasattr(self._lexer, '_saved_state_stack'):
-        data = PygmentsBlockUserData(
-            syntax_stack=self._lexer._saved_state_stack)
-        self.currentBlock().setUserData(data)
-        # Clean up for the next go-round.
-        del self._lexer._saved_state_stack
-
-#@+node:ekr.20190320062624.9: *3* pyg_h.set_style
-def set_style(self, style):
-    """ Sets the style to the specified Pygments style.
-    """
-    ###if isinstance(style, string_types):
-    if g.isString(style):
-        style = get_style_by_name(style)
-    self._style = style
-    self._clear_caches()
-#@+node:ekr.20190320062624.10: *3* pyg_h.set_style_sheet (not used)
-###
-# def set_style_sheet(self, stylesheet):
-    # """
-    # Sets a CSS stylesheet. The classes in the stylesheet should
-    # correspond to those generated by:
-
-        # pygmentize -S <style> -f html
-
-    # Note that 'set_style' and 'set_style_sheet' completely override each
-    # other, i.e. they cannot be used in conjunction.
-    # """
-    # self._document.setDefaultStyleSheet(stylesheet)
-    # self._style = None
-    # self._clear_caches()
-#@+node:ekr.20190320063234.1: *3* Protected interface
-# Protected interface
-#@+node:ekr.20190320062624.11: *4* pyg_h._clear_caches
-def _clear_caches(self):
-    """ Clear caches for brushes and formats.
-    """
-    self._brushes = {}
-    self._formats = {}
-#@+node:ekr.20190320062624.12: *4* pyg_h._get_format & helpers
-def _get_format(self, token):
-    """ Returns a QTextCharFormat for token or None.
-    """
-    if token in self._formats:
-        return self._formats[token]
-    if self._style is None:
-        g.trace('**** no _style ***')
-        result = self._get_format_from_document(token, self._document)
+    # Delayed imports, exactly as in MainWindow._populate.
+    if trace:
+        g.pr('\n===== MainWindowShim._populate\n')
+    from pyzo.core.editorTabs import EditorTabs
+    from pyzo.core.shellStack import ShellStackWidget
+    from pyzo.core import codeparser
+    from pyzo.core.history import CommandHistory
+    from pyzo.tools import ToolManager
+    if trace:
+        g.pr('\n===== MainWindowShim._populate: end of delayed imports\n')
+        g.pr('initial_draw:', self.initial_draw)
+        g.pr('    use_menu:', self.use_menu)
+        g.pr('   use_shell:', self.use_shell)
+    #
+    # Instantiate tool manager
+    pyzo.toolManager = ToolManager()
+    #
+    # Instantiate and start source-code parser
+    if pyzo.parser is None:
+        pyzo.parser = codeparser.Parser()
+        pyzo.parser.start()
+    #
+    # Create editor stack and make the central widget
+    pyzo.editors = EditorTabs(self)
+    self.setCentralWidget(pyzo.editors)
+    #
+    # Create floater for shell
+    self._shellDock = dock = QtWidgets.QDockWidget(self)
+    if pyzo.config.settings.allowFloatingShell:
+        dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
     else:
-        result = self._get_format_from_style(token, self._style)
-    self._formats[token] = result
-    return result
-#@+node:ekr.20190320062624.13: *5* pyg_h._get_format_from_document
-def _get_format_from_document(self, token, document):
-    """ Returns a QTextCharFormat for token by
+        dock.setFeatures(dock.DockWidgetMovable)
+    dock.setObjectName('shells')
+    dock.setWindowTitle('Shells')
+    self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
+    #
+    # Create shell stack
+    if self.use_shell:
+        # Disabling the shell works.
+        pyzo.shells = ShellStackWidget(self)
+        dock.setWidget(pyzo.shells)
+        pyzo.shells.menu = g.TracingNullObject(tag='pyzo.shells.menu')
+            # To suppress menu events.
+    else:
+        pyzo.shells = g.TracingNullObject(tag='pyzo.shells')
+    #
+    # Initialize command history
+    pyzo.command_history = CommandHistory('command_history.py')
+    #
+    # Create the default shell when returning to the event queue
+    if self.use_shell:
+        pyzo.core.main.callLater(pyzo.shells.addShell)
+    #
+    # Create statusbar
+    if pyzo.config.view.showStatusbar:
+        pyzo.status = self.statusBar()
+    else:
+        pyzo.status = None
+        self.setStatusBar(None)
+    #
+    # Create the menu.
+    if self.use_menu:
+        from pyzo.core import menu
+        pyzo.keyMapper = menu.KeyMapper()
+        assert not isinstance(pyzo.keyMapper, (g.TracingNullObject, g.NullObject))
+            # This should not be a Shim.
+        menu.buildMenus(self.menuBar())
+        pyzo.editors.addContextMenu()
+        pyzo.shells.addContextMenu()
+    else:
+        # Shim:
+        pyzo.shells = g.TracingNullObject(tag='pyzo.shells')
+        pyzo.keyMapper = g.TracingNullObject(tag='pyzo.keyMapper')
+        
+        from pyzo.core.shellStack import ShellStackWidget
+        
+        def null_menu_callback(*args, **kwargs):
+            pass # g.trace(args, kwargs)
+            
+        # Apparently, doing nothing prevents the Shell from warming up.
+        # For now, use_shell sets use_menu.
+        assert not self.use_shell
+        g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellStateChange')
+        g.funcToMethod(null_menu_callback, ShellStackWidget, name='onShellDebugStateChange')
+    #
+    # Load tools
+    if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
+        pyzo.toolManager.loadTool('pyzosourcestructure')
+        pyzo.toolManager.loadTool('pyzofilebrowser', 'pyzosourcestructure')
+    elif pyzo.config.state.loadedTools:
+        for toolId in pyzo.config.state.loadedTools:
+            pyzo.toolManager.loadTool(toolId)
+#@+node:ekr.20190412154124.23: *4* MainWindowShim.closeEvent (traces)
+def closeEvent(self, event):
+    """ Override close event handler. """
+    import pyzo.core.commandline as commandline
+    
+    g.pr('\nMainWindowShim.closeEvent 1')
+    
+    t1 = time.clock()
+
+    # Are we restaring?
+    ### restarting = time.time() - self._closeflag < 1.0
+
+    # Save settings
+    pyzo.saveConfig()
+    pyzo.command_history.save()
+
+    # Stop command server
+    commandline.stop_our_server()
+
+    # Proceed with closing...
+    result = pyzo.editors.closeAll()
+    if not result:
+        self._closeflag = False
+        event.ignore()
+        return
+    else:
+        self._closeflag = True
+        
+    t2 = time.clock()
+
+    # Proceed with closing shells
+    pyzo.localKernelManager.terminateAll() # pylint: disable=no-member
+    for shell in pyzo.shells:
+        shell._context.close()
+        
+    t3 = time.clock()
+
+    # Close tools
+    for toolname in pyzo.toolManager.getLoadedTools():
+        tool = pyzo.toolManager.getTool(toolname)
+        tool.close()
+        
+    t4 = time.clock()
+
+    # Stop all threads (this should really only be daemon threads)
+    import threading
+    for thread in threading.enumerate():
+        if hasattr(thread, 'stop'):
+            try:
+                thread.stop(0.1)
+            except Exception:
+                pass
+                
+    t5 = time.clock()
+
+    if 1: # EKR
+        g.pr('\nMainWindowShim.closeEvent 2')
+        g.pr('stage 1:          %5.2f' % (t2-t1))
+        g.pr('stage 2: shells:  %5.2f' % (t3-t2))
+        g.pr('stage 3: tools:   %5.2f' % (t4-t3))
+        g.pr('stage 4: threads: %5.2f' % (t5-t4))
+
+    # Proceed as normal
+    QtWidgets.QMainWindow.closeEvent(self, event)
+
+    # Harder exit to prevent segfault. Not really a solution,
+    # but it does the job until Pyside gets fixed.
+    if sys.version_info >= (3,3,0): # and not restarting:
+        if hasattr(os, '_exit'):
+            os._exit(0)
+#@+node:ekr.20190412154124.24: *4* MainWindowShim.monkey_patch_leo
+def monkey_patch_leo(self):
+
+    global old_loadFile
+    #
+    # Use a Leonine pyzo.config.
+    if 0:
+        # Works, but uses light theme.
+        pyzo.config = ConfigShim()
+    #
+    # Ignore .leo files.
+    if 0:
+        # Probably will never be needed: it's fine to load .leo files for now.
+        from pyzo.core.editorTabs import EditorTabs
+        old_loadFile = EditorTabs.loadFile
+        g.funcToMethod(loadFile, EditorTabs)
+    #
+    # Patch pyzo.core.editor.createEditor function
+    if 1:
+        import pyzo.core.editor
+        pyzo.core.editor.createEditor = createEditor
+#@+node:ekr.20190412154124.25: *4* MainWindowShim.setMainTitle
+def setMainTitle(self, path=None):
+    """ Set the title of the main window, by giving a file path.
     """
-    code, html = next(self._formatter._format_lines([(token, u'dummy')]))
-    self._document.setHtml(html)
-    format = QtGui.QTextCursor(self._document).charFormat()
-    g.trace(format) ###
-    return format
-#@+node:ekr.20190320062624.14: *5* pyg_h._get_format_from_style
-def _get_format_from_style(self, token, style):
-    """ Returns a QTextCharFormat for token by reading a Pygments style.
-    """
-    result = QtGui.QTextCharFormat()
-    for key, value in style.style_for_token(token).items():
-        if value:
-            if key == 'color':
-                result.setForeground(self._get_brush(value))
-            elif key == 'bgcolor':
-                result.setBackground(self._get_brush(value))
-            elif key == 'bold':
-                result.setFontWeight(QtGui.QFont.Bold)
-            elif key == 'italic':
-                result.setFontItalic(True)
-            elif key == 'underline':
-                result.setUnderlineStyle(
-                    QtGui.QTextCharFormat.SingleUnderline)
-            elif key == 'sans':
-                result.setFontStyleHint(QtGui.QFont.SansSerif)
-            elif key == 'roman':
-                result.setFontStyleHint(QtGui.QFont.Times)
-            elif key == 'mono':
-                result.setFontStyleHint(QtGui.QFont.TypeWriter)
-    return result
-#@+node:ekr.20190320062624.15: *5* pyg_h._get_brush
-def _get_brush(self, color):
-    """ Returns a brush for the color.
-    """
-    result = self._brushes.get(color)
-    if result is None:
-        qcolor = self._get_color(color)
-        result = QtGui.QBrush(qcolor)
-        self._brushes[color] = result
-    return result
-#@+node:ekr.20190320062624.16: *5* pyg_h._get_color
-def _get_color(self, color):
-    """ Returns a QColor built from a Pygments color string.
-    """
-    qcolor = QtGui.QColor()
-    qcolor.setRgb(
-        int(color[:2], base=16),
-        int(color[2:4], base=16),
-        int(color[4:6], base=16))
-    return qcolor
+    self.setWindowTitle('Leo Main Window')
+    ### From MainWindow
+        # if not path:
+            # # Plain title
+            # title = "Interactive Editor for Python"
+        # else:
+            # # Title with a filename
+            # name = os.path.basename(path)
+            # if os.path.isfile(path):
+                # pass
+            # elif name == path:
+                # path = translate("main", 'unsaved')
+            # else:
+                # pass  # We hope the given path is informative
+            # # Set title
+            # tmp = { 'fileName':name, 'filename':name, 'name':name,
+                    # 'fullPath':path, 'fullpath':path, 'path':path }
+            # title = pyzo.config.advanced.titleText.format(**tmp)
+    
+        # # Set
+        # self.setWindowTitle(title)
+#@+node:ekr.20190412154124.26: *4* MainWindowShim.setStyleSheet (override)
+firstStyleSheet = True
+
+def setStyleSheet(self, style, *args, **kwargs):
+    # print('MainWindowShim.setStyleSheet', style, args, kwargs)
+    # A hack: Ignore the first call.
+    if self.firstStyleSheet:
+        self.firstStyleSheet = False
+        return
+    QtWidgets.QMainWindow.setStyleSheet(self, style)
+#@+node:ekr.20190412154124.27: *3* class MenuShim (object) (To do)
+class MenuShim (object):
+    '''Adaptor class standing between Leo and Pyzo menus.'''
+
+    def __init__(self):
+        self.setObjectName('MenuShim')
+
+    @others
+#@+node:ekr.20190412154124.28: *3* class OutlineEditorShim (QFrame)
+<< shim classes for OutlineEditorShim >>
+
+from pyzo.codeeditor import CodeEditorBase
+assert CodeEditorBase
+QAbstractScrollArea = QtWidgets.QAbstractScrollArea
+
+class OutlineEditorShim(QtWidgets.QFrame):
+    # QtWidgets.QAbstractScrollArea: placed properly?
+    # QtWidgets.QFrame isn't placed properly!
+    # Was pyzo.core.editor.PyzoEditor
+
+    somethingChanged = Signal()
+    blockCountChanged = Signal()
+    breakPointsChanged = Signal()
+    
+    @others
+    
+#@+node:ekr.20190412154124.29: *4* << shim classes for OutlineEditorShim >>
+class DocumentShim(object):
+    modified = False
+    def isModified(self):
+        return self.modified
+    def setModified(self, aBool):
+        self.modified = aBool
+
+class ScrollBarShim(object):
+    def setValue(self, value):
+        pass
+    def value(self):
+        return 0
+
+class TextCursorShim(object):
+    def position(self):
+        return 0
+    def setPosition(self, pos):
+        pass
+#@+node:ekr.20190412154124.30: *4* OutlineEditorShim.__init__ (1 shim: parser)
+def __init__(self, filename, parent, **kwargs):
+    '''
+    Called automatically from pyzo's createEditor function.
+    '''
+    
+    assert g.pyzo, g.callers()
+    g.pr('\nOutlineEditorShim.__init__', g.shortFileName(filename))
+    # g.printObj(g.callers(30).split(','), tag='OutlineEditorShim.__init__')
+    super().__init__(parent, **kwargs)
+        # CodeEditorBase only passes args to *its* base class.
+    self.setObjectName('OutlineEditorShim')
+    self.c = None # Set in createOutlineFrame.
+    self._filename = self.filename = filename
+        # Essential, so the tab will close properly.
+    self._name = self.name = os.path.split(filename)[1]
+        # To set the tab's name properly.
+    if not isinstance(self, CodeEditorBase):
+        g.pr('\nOutlineEditorShim: using shims\n')
+        #
+        # Needed if this is just a QWidget.
+        self._breakPoints = {}
+        # self.breakPointsChanged.emit(self)
+        # self.__breakPointArea.update()
+        self.lineEndingsHumanReadable = 'CRLF'
+        self.document = DocumentShim
+        self.horizontalScrollBar = ScrollBarShim
+        self.parser = g.TracingNullObject(tag='OutlineEditorShim.parser')
+        self.textCursor = TextCursorShim
+        self.verticalScrollBar = ScrollBarShim
+    # Create the outline!
+    self.createOutlineFrame()
+#@+node:ekr.20190412154124.31: *4* OutlineEditorShim.__repr__
+def __repr__(self):
+    return '<OutlineEditorShim at %s>' % id(self)
+#@+node:ekr.20190412154124.32: *4* OutlineEditorShim.createOutlineFrame
+def createOutlineFrame(self):
+    '''Create the outline frame.'''
+    assert g.pyzo, g.callers()
+    #
+    # Create a new commander.
+    # c.frame.finishCreate creates the outline pane.
+    #
+    g.pr('----- OutlineEditorShim.createOutlineFrame 1')
+    self.c = c = g.app.newCommander(
+        fileName=self.filename,
+        parentFrame=self,
+    )
+    c.bodyWantsFocus()
+#@+node:ekr.20190412154124.33: *4* OutlineEditorShim.finishCreate (WORKS)
+def finishCreate(self, c):
+    '''Create the entire Leo main window in the shim itself.'''
+    import leo.plugins.qt_frame as qt_frame
+    import leo.plugins.qt_text as qt_text
+    ###
+        # import leo.plugins.qt_tree as qt_tree
+        # import leo.plugins.qt_menu as qt_menu
+        # import leo.core.leoFrame as leoFrame
+    self.c = c
+    g.pr('\n----- OutlineEditorShim.finishCreate: g.app.log: %r\n' % g.app.log)
+        # Called by c.finishCreate.
+    f = c.frame
+        # A LeoFrame, *not* a QWidget.
+    c.frame.c = c
+    assert isinstance(c.frame, qt_frame.LeoQtFrame), repr(c.frame)
+    self.setStyleSheet('background: red')
+        # No longer seen, which is good.
+    #
+    # From SDIFrameFactory.createFrame
+    dw = qt_frame.DynamicWindow(c, parent=self)
+    dw.construct()
+        # This just creates frames for components.
+    dw.show()
+    f.top = dw
+    assert isinstance(dw.treeWidget, qt_frame.LeoQTreeWidget), repr(dw.treeWidget)
+    #
+    # From LeoQtFrame.finishCreate.
+    f.createIconBar() # A base class method.
+    f.createSplitterComponents()
+    ### f.createStatusLine() # A base class method.
+    f.createFirstTreeNode() # Call the base-class method.
+        # Does some basic inits.
+    if 1:
+        lm = g.app.loadManager
+        fn = c.fileName()
+        theFile = lm.openLeoOrZipFile(fn)
+        # Enable the log.
+        g.app.unlockLog()
+        c.frame.log.enable(True)
+        # Phase 2: Create the outline.
+        ### g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)
+        if theFile:
+            ### readAtFileNodesFlag = bool(previousSettings)
+            readAtFileNodesFlag = True
+            # The log is not set properly here.
+            assert c.p
+            ok = lm.readOpenedLeoFile(c, fn, readAtFileNodesFlag, theFile)
+                # Call c.fileCommands.openLeoFile to read the .leo file.
+            if not ok:
+                g.trace('lm.readOpenedLeoFile FAILED', fn)
+    ### f.menu = qt_menu.LeoQtMenu(c, f, label='top-level-menu')
+    f.menu=g.NullObject(tag='c.frame.menu')
+    g.app.windowList.append(f)
+    f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
+    c.setLog()
+    c.redraw()
+    c.bodyWantsFocus()
+#@+node:ekr.20190412154124.34: *4* OutlineEditorShim.set_style
+def setStyle(self, style):
+    
+    suppress = (
+        'Editor.Highlight current line',
+        'Editor.Indentation guides',
+        'Editor.Line numbers',
+        'Editor.Long line indicator',
+    )
+    
+    def use_style(key):
+        return key not in suppress and not key.startswith('Syntax')
+
+    super().setStyle({
+        z: style.get(z) for z in style.keys() if use_style(z)
+    })
+#@+node:ekr.20190412154124.35: *4* OutlineEditorShim:do-nothings
+def blockCount(self):
+    return 0
+
+def breakPoints(self):
+    return list(sorted(self._breakPoints))
+
+def id(self):
+    return self._filename or self._name
+
+def indentUsingSpaces(self):
+    return True
+
+def indentWidth(self):
+    return 4
+
+def save(self, filename=None):
+    pass
+
+def setIndentUsingSpaces(self, style):
+    pass
+    
+def setChanged(self, *args, **kwargs):
+    pass
+    # sys.__stdout__.write('OutlineEditorShim: %r, %r' % (args, kwargs))
+
+def setCheckedOption(self, val):
+    pass
+
+def setDebugLineIndicator(self, val):
+    pass
+
+def setIndentWidth(self, width):
+    pass
+
+def setParser(self, val):
+    pass
+
+def setPlainText(self, text):
+    pass
+
+def setTextCursor(self, obj):
+    pass
+
+def setTitleInMainWindow(self):
+    pass
+#@+node:ekr.20190412154124.36: *3* class ToolShim (Needed???)
+class ToolShim (object):
+    '''
+    A Shim to make a QWidget into a Pyzo Tool window.
+    
+    From the docstring in pyzo/tools.__init__.py:
+    
+    A tool consists of a module which contains a class:
+    - The id of a tool is its lower-cased module name.
+    - The module should contain a class corresponding to its id.
+    
+    The module may contain the following extra variables,
+    which should be placed within the first 50 lines of code:
+    
+    - tool_name:      A readable name for the tool. May contain spaces.
+    - tool_summary:   A single line short summary of the tool.
+                      Will be displayed in the statusbar.
+    '''
 #@-all
 #@@nosearch
 #@-leo
