@@ -6,1896 +6,2851 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240"><vh>Startup</vh>
-<v t="ekr.20080412053100.5"><vh>@settings</vh>
-<v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20150531102337.1"><vh>@bool tidy-keep-blank-lines = False</vh></v>
-<v t="ekr.20150617060607.1"><vh>@bool tidy_autobeautify = False</vh></v>
-<v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
-<v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
-<v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
-<v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
-<v t="ekr.20160122104332.1"><vh>Buttons</vh>
-<v t="ekr.20180324065741.1"><vh>@@button copy-to-next</vh></v>
-<v t="ekr.20150507170849.1"><vh>@@button create decorators</vh>
-<v t="ekr.20150508063538.1"><vh>create_d</vh></v>
-<v t="ekr.20150508071622.1"><vh>create_decorator (@button)</vh></v>
-<v t="ekr.20150508063412.1"><vh>create_decorators</vh></v>
-<v t="ekr.20150508074623.1"><vh>create_fixups</vh></v>
-<v t="ekr.20150508063926.1"><vh>find_class</vh></v>
-<v t="ekr.20150507174711.1"><vh>find_next_clone</vh></v>
-<v t="ekr.20150507175246.1"><vh>munge_lines</vh></v>
-<v t="ekr.20150508062944.1"><vh>run</vh></v>
+<v t="ekr.20160122104302.1"><vh>Startup</vh>
+<v t="ekr.20160510132151.1"><vh>@button backup</vh></v>
+<v t="ekr.20170811173231.1"><vh>@button backup-repo</vh></v>
+<v t="ekr.20170203054655.1"><vh>@ignore unused buttons</vh>
+<v t="ekr.20161122014821.1"><vh>@button make-importer</vh>
+<v t="ekr.20161122020451.1"><vh>&lt;&lt; define run &amp; helpers &gt;&gt;</vh>
+<v t="ekr.20161122020932.1"><vh>copy_tree</vh></v>
+<v t="ekr.20161122021006.1"><vh>make_substitutions</vh></v>
+<v t="ekr.20161122023427.1"><vh>run</vh></v>
+<v t="ekr.20161122021342.1"><vh>substitue</vh></v>
 </v>
-<v t="ekr.20150509183433.1"><vh>@@button make-decorators2</vh>
-<v t="ekr.20150509183433.2"><vh>create_d</vh></v>
-<v t="ekr.20150509183433.3"><vh>create_decorator (@button)</vh></v>
-<v t="ekr.20150509183433.4"><vh>create_decorators V2</vh></v>
-<v t="ekr.20150509183832.1"><vh>define_s</vh></v>
-<v t="ekr.20150509183433.8"><vh>munge_lines</vh></v>
-<v t="ekr.20150509183433.9"><vh>run V2</vh></v>
-</v>
-<v t="ekr.20150703061709.1"><vh>@@button run-pylint</vh></v>
-<v t="ekr.20180824065751.1"><vh>@@button show-gnx</vh></v>
-<v t="ekr.20131121084830.16362"><vh>@@button toggle-debug</vh></v>
-<v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
-<v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
-<v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
+<v t="ekr.20161122023554.1"><vh>@@file importers/{{name}}.py</vh>
+<v t="ekr.20161122023554.2"><vh>class {{cap_name}}_Importer</vh>
+<v t="ekr.20161122023554.3"><vh>{{name}}.Overrides</vh>
+<v t="ekr.20161122023554.4"><vh>{{name}}.clean_headline</vh></v>
+<v t="ekr.20161122023554.5"><vh>{{name}}.clean_nodes</vh></v>
 </v>
 </v>
-<v t="ekr.20140103105930.16446"><vh>@views</vh>
-<v t="ekr.20140102162014.16438"><vh>@view added strip_comments keyword arg to two config.getData methods</vh></v>
-</v>
-<v t="ekr.20140808103117.18035"><vh>@persistence</vh>
-<v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20160425070345.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
-<v t="ekr.20160425070345.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20160420054135.4"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
-<v t="ekr.20160420054135.5"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150604130353.1"><vh>@data:@auto test/unit_tests.py</vh>
-<v t="ekr.20150604130353.2"><vh>@gnxs</vh></v>
-</v>
-</v>
-<v t="ekr.20170427114412.1"><vh>scripts</vh>
-<v t="ekr.20170427112302.1"><vh>check leoPy.leo</vh></v>
-<v t="ekr.20170428084123.1"><vh>Recursive import script</vh>
-<v t="ekr.20170428084123.2"><vh>&lt;&lt; old dir_ settings &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20180816105258.1"><vh>script: diff-branches</vh></v>
-<v t="ekr.20181102040815.1"><vh>script: warn about long lines</vh></v>
-</v>
-</v>
-<v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20190122185223.1"><vh>regex: find all kwargs</vh></v>
-<v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
-<v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
-<v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
-<v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
-</v>
-<v t="ekr.20190116145049.1"><vh>To do</vh>
-<v t="ekr.20190116145036.1"><vh>To do: No milestone</vh>
-<v t="ekr.20181027151243.1"><vh>#1006: Allow @button and @command only from trusted directories</vh>
-<v t="ekr.20181027133311.1"><vh>g.issueSecurityWarning</vh></v>
-<v t="ekr.20140114145953.16691"><vh>c.config.isLocalSetting</vh></v>
-<v t="ekr.20150514043850.8"><vh>abbrev.init_settings (called from reload_settings)</vh></v>
-</v>
-<v t="ekr.20180604114211.408"><vh>#388: wikiview.py plugin problem</vh></v>
-<v t="ekr.20180604114156.2"><vh>#433: Complete the tables.py plugin</vh>
-<v t="ekr.20180604114156.3"><vh>Error running the demo on Windows 10</vh></v>
-</v>
-<v t="ekr.20180604114211.561"><vh>#678: Graphics version of outline pane</vh></v>
-<v t="ekr.20180619063409.1"><vh>#929: Improve FreeMind importer</vh>
-<v t="ekr.20160503145550.1"><vh>class FreeMindImporter</vh>
-<v t="ekr.20170222084048.1"><vh>freemind.add_children</vh></v>
-<v t="ekr.20160503125844.1"><vh>freemind.create_outline</vh></v>
-<v t="ekr.20160503191518.4"><vh>freemind.import_file</vh></v>
-<v t="ekr.20160503145113.1"><vh>freemind.import_files</vh></v>
-<v t="ekr.20160504043823.1"><vh>freemind.prompt_for_files</vh></v>
+<v t="ekr.20161122023554.6"><vh>class {{cap_name}}_ScanState</vh>
+<v t="ekr.20161122023554.7"><vh>{{name}}_state.level</vh></v>
+<v t="ekr.20161122023554.8"><vh>{{name}}_state.update</vh></v>
 </v>
 </v>
 </v>
+<v t="ekr.20161030154232.1"><vh>@button pep8 @key=Ctrl-5</vh>
+<v t="ekr.20161031124905.1"><vh>class Pep8</vh>
+<v t="ekr.20161031053537.1"><vh>change_all &amp; helpers</vh>
+<v t="ekr.20161031074727.1"><vh>change_body</vh></v>
+<v t="ekr.20161031075018.1"><vh>change_headline</vh></v>
 </v>
-<v t="ekr.20031218072017.2406"><vh>Code</vh>
-<v t="ekr.20140902032918.18591"><vh> About this file</vh>
-<v t="ekr.20140831085423.18639"><vh>About widgets and wrappers</vh></v>
-<v t="ekr.20140831085423.18630"><vh>Terminology</vh></v>
-<v t="ekr.20140831085423.18631"><vh>Official ivars</vh></v>
+<v t="ekr.20161031051319.1"><vh>get_name</vh></v>
+<v t="ekr.20161031125119.1"><vh>run</vh></v>
+<v t="ekr.20161031051342.1"><vh>to_pep8</vh></v>
 </v>
-<v t="ekr.20031218072017.2604"><vh>Core classes</vh>
-<v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
-<v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
-<v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
-<v t="ekr.20161026193447.1"><vh>@file leoBackground.py</vh></v>
-<v t="ekr.20150521115018.1"><vh>@file leoBeautify.py</vh></v>
-<v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
-<v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
-<v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
-<v t="ekr.20150605175037.1"><vh>@file leoCheck.py</vh></v>
-<v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
-<v t="ekr.20140827092102.18574"><vh>@file leoColorizer.py</vh></v>
-<v t="ekr.20031218072017.2810" descendentVnodeUnknownAttributes="7d7100580c000000302e312e31312e322e352e3771017d71025808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323031382d30382d313871077573732e"><vh>@file leoCommands.py</vh></v>
-<v t="ekr.20180212072657.2"><vh>@file leoCompare.py</vh></v>
-<v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
-<v t="ekr.20130302121602.10208"><vh>@file leoDebugger.py</vh></v>
-<v t="ekr.20160306114544.1"><vh>@file leoExternalFiles.py</vh></v>
-<v t="ekr.20181202062518.1"><vh>@file leoFastRedraw.py</vh></v>
-<v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31382e3171017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
-<v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
-<v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
-<v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
-<v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
-<v t="ekr.20140821055201.18331"><vh>@file leoPersistence.py</vh></v>
-<v t="ekr.20031218072017.3439"><vh>@file leoPlugins.py</vh></v>
-<v t="ekr.20150419124739.1"><vh>@file leoPrinting.py</vh></v>
-<v t="ekr.20061024060248.1"><vh>@file leoPymacs.py</vh></v>
-<v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
-<v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
-<v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
-<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3071017d71022858090000007374725f6374696d657103580c000000313331393439313330362e30710458090000007374725f6d74696d657105580d000000313331393439323330312e3532710658090000007374725f6174696d657107580d000000313331393534393339302e38397108755805000000302e332e3171097d710a2858090000007374725f6374696d65710b580c000000313331393436303438332e30710c58090000007374725f6d74696d65710d580d000000313331393436373033382e3235710e58090000007374725f6174696d65710f580c000000313332303432323637302e397110755805000000302e332e3271117d71122858090000007374725f6374696d657113580c000000313331393436303438332e30711458090000007374725f6d74696d657115580d000000313331393436373035302e3438711658090000007374725f6174696d657117580d000000313331393436373035302e34387118755805000000302e332e3371197d711a2858090000007374725f6374696d65711b580c000000313331393436303438332e30711c58090000007374725f6d74696d65711d580d000000313332303432323639302e3534711e58090000007374725f6174696d65711f580d000000313332303433343235372e33367120755805000000302e332e3471217d71222858090000007374725f6374696d657123580c000000313331393633383634382e30712458090000007374725f6d74696d657125580d000000313331393634313038352e3038712658090000007374725f6174696d657127580c000000313331393634353330362e327128755805000000302e332e3571297d712a2858090000007374725f6374696d65712b580c000000313331393633383634382e30712c58090000007374725f6d74696d65712d580c000000313331393634313131372e39712e58090000007374725f6174696d65712f580d000000313331393634313435352e3937713075752e"><vh>@file leoSessions.py</vh></v>
-<v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
-<v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
-<v t="ekr.20180121041003.1"><vh>@file leoTips.py</vh></v>
-<v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
-<v t="ekr.20131109170017.16504"><vh>@file leoVim.py</vh></v>
+<v t="ekr.20161031065339.1"><vh>clear</vh></v>
 </v>
-<v t="ekr.20150514035207.1"><vh>Command classes</vh>
-<v t="ekr.20150514035236.1"><vh>@file ../commands/abbrevCommands.py</vh></v>
-<v t="ekr.20150514035943.1"><vh>@file ../commands/baseCommands.py</vh></v>
-<v t="ekr.20150514035559.1"><vh>@file ../commands/bufferCommands.py</vh></v>
-<v t="ekr.20161021090740.1"><vh>@file ../commands/checkerCommands.py</vh></v>
-<v t="ekr.20171123135539.1"><vh>@file ../commands/commanderEditCommands.py</vh></v>
-<v t="ekr.20171123095353.1"><vh>@file ../commands/commanderFileCommands.py</vh></v>
-<v t="ekr.20171124072110.1"><vh>@file ../commands/commanderFindCommands.py</vh></v>
-<v t="ekr.20171124073126.1"><vh>@file ../commands/commanderHelpCommands.py</vh></v>
-<v t="ekr.20171124080430.1"><vh>@file ../commands/commanderOutlineCommands.py</vh></v>
-<v t="ekr.20150514040100.1"><vh>@file ../commands/controlCommands.py</vh></v>
-<v t="ekr.20160316095222.1"><vh>@file ../commands/convertCommands.py</vh></v>
-<v t="ekr.20150514040118.1"><vh>@file ../commands/debugCommands.py</vh></v>
-<v t="ekr.20150514035813.1"><vh>@file ../commands/editCommands.py</vh></v>
-<v t="ekr.20150514041209.1"><vh>@file ../commands/editFileCommands.py</vh></v>
-<v t="ekr.20150624112334.1"><vh>@file ../commands/gotoCommands.py</vh></v>
-<v t="ekr.20150514040138.1"><vh>@file ../commands/helpCommands.py</vh></v>
-<v t="ekr.20150514040140.1"><vh>@file ../commands/keyCommands.py</vh></v>
-<v t="ekr.20150514040142.1"><vh>@file ../commands/killBufferCommands.py</vh></v>
-<v t="ekr.20150514040146.1"><vh>@file ../commands/rectangleCommands.py</vh></v>
-<v t="ekr.20150514040239.1"><vh>@file ../commands/spellCommands.py</vh></v>
+<v t="ekr.20160412101845.1"><vh>@button test-jup-export</vh></v>
+<v t="ekr.20160412101537.1"><vh>@button test-jup-import</vh></v>
 </v>
-<v t="ekr.20031218072017.3625"><vh>Gui base classes</vh>
-<v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
-<v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
-<v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
-<v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
-<v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
-<v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
+<v t="ekr.20160122104400.1"><vh>@settings</vh>
+<v t="ekr.20170709095709.1"><vh>@@bool minibuffer_find_mode = True</vh></v>
+<v t="ekr.20160122104357.1"><vh>@data history-list</vh></v>
 </v>
-<v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
-<v t="ekr.20171031111403.1"><vh>Leo Edit Pane</vh>
-<v t="tbrown.20171029210211.1"><vh>@file ../plugins/editpane/clicky_splitter.py</vh></v>
-<v t="tbrown.20171028115144.6"><vh>@file ../plugins/editpane/editpane.py</vh></v>
-<v t="tbrown.20171028115144.5"><vh>@file ../plugins/editpane/leotextedit.py</vh></v>
-<v t="tbrown.20171028115144.4"><vh>@file ../plugins/editpane/markdownview.py</vh></v>
-<v t="tbrown.20171028115144.3"><vh>@file ../plugins/editpane/pandownview.py</vh></v>
-<v t="tbrown.20171028115144.2"><vh>@file ../plugins/editpane/plaintextedit.py</vh></v>
-<v t="tbrown.20171028115144.1"><vh>@file ../plugins/editpane/plaintextview.py</vh></v>
-<v t="tbrown.20171028115143.3"><vh>@file ../plugins/editpane/vanillascintilla.py</vh></v>
-<v t="tbrown.20171028115143.2"><vh>@file ../plugins/editpane/webengineview.py</vh></v>
-<v t="tbrown.20171028115143.1"><vh>@file ../plugins/editpane/webkitview.py</vh></v>
-<v t="tbrown.20171028115144.8"><vh>@file ../plugins/editpane/__init__.py</vh></v>
-<v t="tbrown.20171028115541.1"><vh>@file signal_manager.py</vh></v>
+<v t="ekr.20170420085814.1"><vh>Recursive import script</vh></v>
+<v t="ekr.20181017164437.1"><vh>script: regularize settings</vh></v>
 </v>
-<v t="ekr.20120419093256.10048"><vh>@file ../plugins/free_layout.py</vh></v>
-<v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
-<v t="ekr.20110605121601.17996"><vh>@file ../plugins/qt_commands.py</vh></v>
-<v t="ekr.20140907103315.18766"><vh>@file ../plugins/qt_events.py</vh></v>
-<v t="ekr.20140907123524.18774"><vh>@file ../plugins/qt_frame.py</vh></v>
-<v t="ekr.20140907085654.18699"><vh>@file ../plugins/qt_gui.py</vh></v>
-<v t="ekr.20140907103315.18777"><vh>@file ../plugins/qt_idle_time.py</vh></v>
-<v t="ekr.20140907123524.18777"><vh>@file ../plugins/qt_quickheadlines.py</vh></v>
-<v t="ekr.20140831085423.18598"><vh>@file ../plugins/qt_text.py</vh></v>
-<v t="ekr.20140907131341.18707"><vh>@file ../plugins/qt_tree.py</vh></v>
-<v t="ekr.20110605121601.18002"><vh>@file ../plugins/qtGui.py</vh></v>
-<v t="ekr.20161223152017.1"><vh>@edit ../plugins/qt_quicksearch.py</vh></v>
-<v t="ekr.20161223152353.1"><vh>@edit ../plugins/qt_quicksearch_sub.py</vh></v>
+<v t="ekr.20090430075506.4"><vh>Notes</vh>
+<v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
 </v>
-<v t="ekr.20180225010644.1"><vh>Other files</vh>
-<v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
-<v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
-<v t="ekr.20150304125314.4"><vh>@clean ../../leo_to_html.xsl</vh>
-<v t="ekr.20150304130753.5"><vh>&lt;&lt;style&gt;&gt;</vh></v>
-<v t="ekr.20150304130753.6"><vh>&lt;&lt;scripts&gt;&gt;</vh></v>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
+<v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
+<v t="ekr.20050303051035"><vh>  Templates</vh>
+<v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
+<v t="ekr.20050306071629"><vh>Template for plugins that override commander methods</vh>
+<v t="ekr.20050306071629.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20050306071629.3"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20050306071629.4"><vh>init</vh></v>
+<v t="ekr.20050306071540"><vh>onStart2</vh></v>
 </v>
-<v t="ekr.20181009072707.1"><vh>@clean ../../run_travis_unit_tests.py</vh>
-<v t="ekr.20181009084156.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20181009084245.1"><vh>&lt;&lt; compute path &gt;&gt;</vh></v>
-<v t="ekr.20181009084323.1"><vh>&lt;&lt; run tests &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20160124165611.1"><vh>@file ../../launchLeo-unified.spec</vh></v>
-<v t="ekr.20181014073705.1"><vh>@file ../../run_pytest_tests.py</vh></v>
-<v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
-</v>
-<v t="ekr.20180225010913.1"><vh>In leo/core</vh>
-<v t="ekr.20031218072017.2605"><vh>@file runLeo.py</vh></v>
-</v>
-<v t="ekr.20180225010743.1"><vh>In leo/external</vh>
-<v t="ekr.20160123142722.1"><vh>@clean ../external/make_stub_files.cfg</vh></v>
-<v t="ekr.20180708145905.1"><vh>@clean ../external/py2cs_theory.md</vh>
-<v t="ekr.20180708152000.1"><vh>The problem</vh></v>
-<v t="ekr.20180708152018.1"><vh>Design</vh></v>
-<v t="ekr.20180708145905.6"><vh>Using TokenSync class</vh></v>
-<v t="ekr.20180708145905.7"><vh>Summary</vh></v>
-</v>
-<v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
-<v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
-<v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
-<v t="ekr.20170429161422.1"><vh>@file ../external/log_broadcast.py</vh></v>
-<v t="ekr.20170429153135.1"><vh>@file ../external/log_listener.py</vh></v>
-<v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
-<v t="ekr.20160317054700.1"><vh>@file ../external/make_stub_files.py</vh></v>
-<v t="ekr.20160316091132.1"><vh>@file ../external/py2cs.py</vh></v>
-<v t="ekr.20170428085201.1"><vh>npyscreen</vh>
-<v t="ekr.20170428084207.3"><vh>@file ../external/npyscreen/apNPSApplication.py</vh></v>
-<v t="ekr.20170428084207.11"><vh>@file ../external/npyscreen/apNPSApplicationAdvanced.py</vh></v>
-<v t="ekr.20170428084207.15"><vh>@file ../external/npyscreen/apNPSApplicationEvents.py</vh></v>
-<v t="ekr.20170428084207.29"><vh>@file ../external/npyscreen/apNPSApplicationManaged.py</vh></v>
-<v t="ekr.20170428084207.50"><vh>@file ../external/npyscreen/apOptions.py</vh></v>
-<v t="ekr.20170428084207.111"><vh>@file ../external/npyscreen/eveventhandler.py</vh></v>
-<v t="ekr.20170428084207.121"><vh>@file ../external/npyscreen/fmActionForm.py</vh></v>
-<v t="ekr.20170428084207.131"><vh>@file ../external/npyscreen/fmActionFormV2.py</vh></v>
-<v t="ekr.20170428084207.153"><vh>@file ../external/npyscreen/fmFileSelector.py</vh></v>
-<v t="ekr.20170428084207.174"><vh>@file ../external/npyscreen/fmForm.py</vh></v>
-<v t="ekr.20170428084207.223"><vh>@file ../external/npyscreen/fmFormMultiPage.py</vh></v>
-<v t="ekr.20170428084207.248"><vh>@file ../external/npyscreen/fmFormMutt.py</vh></v>
-<v t="ekr.20170428084207.258"><vh>@file ../external/npyscreen/fmFormMuttActive.py</vh></v>
-<v t="ekr.20170428084207.285"><vh>@file ../external/npyscreen/fmFormWithMenus.py</vh></v>
-<v t="ekr.20170428084207.303"><vh>@file ../external/npyscreen/fmPopup.py</vh></v>
-<v t="ekr.20170428084207.311"><vh>@file ../external/npyscreen/fm_form_edit_loop.py</vh></v>
-<v t="ekr.20170428084207.322"><vh>@file ../external/npyscreen/globals.py</vh></v>
-<v t="ekr.20170428084207.324"><vh>@file ../external/npyscreen/muMenu.py</vh></v>
-<v t="ekr.20170428084207.332"><vh>@file ../external/npyscreen/muNewMenu.py</vh></v>
-<v t="ekr.20170428084207.351"><vh>@file ../external/npyscreen/npysGlobalOptions.py</vh></v>
-<v t="ekr.20170428084207.353"><vh>@file ../external/npyscreen/npysNPSFilteredData.py</vh></v>
-<v t="ekr.20170428084207.364"><vh>@file ../external/npyscreen/npyspmfuncs.py</vh></v>
-<v t="ekr.20170428084207.370"><vh>@file ../external/npyscreen/npyssafewrapper.py</vh></v>
-<v t="ekr.20170428084207.377"><vh>@file ../external/npyscreen/npysThemeManagers.py</vh></v>
-<v t="ekr.20170428084207.390"><vh>@file ../external/npyscreen/npysThemes.py</vh></v>
-<v t="ekr.20170428084207.399"><vh>@file ../external/npyscreen/npysTree.py</vh></v>
-<v t="ekr.20170428084207.422"><vh>@file ../external/npyscreen/proto_fm_screen_area.py</vh></v>
-<v t="ekr.20170428084207.434"><vh>@file ../external/npyscreen/stdfmemail.py</vh></v>
-<v t="ekr.20170428084207.464"><vh>@file ../external/npyscreen/utilNotify.py</vh></v>
-<v t="ekr.20170428084207.477"><vh>@file ../external/npyscreen/util_viewhelp.py</vh></v>
-<v t="ekr.20170428084207.480"><vh>@file ../external/npyscreen/wgannotatetextbox.py</vh></v>
-<v t="ekr.20170428084207.494"><vh>@file ../external/npyscreen/wgautocomplete.py</vh></v>
-<v t="ekr.20170428084207.503"><vh>@file ../external/npyscreen/wgboxwidget.py</vh></v>
-<v t="ekr.20170428084207.524"><vh>@file ../external/npyscreen/wgbutton.py</vh></v>
-<v t="ekr.20170428084207.536"><vh>@file ../external/npyscreen/wgcheckbox.py</vh></v>
-<v t="ekr.20170428084207.561"><vh>@file ../external/npyscreen/wgcombobox.py</vh></v>
-<v t="ekr.20170428084207.575"><vh>@file ../external/npyscreen/wgdatecombo.py</vh></v>
-<v t="ekr.20170428084207.586"><vh>@file ../external/npyscreen/wgeditmultiline.py</vh></v>
-<v t="ekr.20170428084207.611"><vh>@file ../external/npyscreen/wgfilenamecombo.py</vh></v>
-<v t="ekr.20170428084207.618"><vh>@file ../external/npyscreen/wgFormControlCheckbox.py</vh></v>
-<v t="ekr.20170428084208.1"><vh>@file ../external/npyscreen/wggrid.py</vh></v>
-<v t="ekr.20170428084208.36"><vh>@file ../external/npyscreen/wggridcoltitles.py</vh></v>
-<v t="ekr.20170428084208.43"><vh>@file ../external/npyscreen/wgmonthbox.py</vh></v>
-<v t="ekr.20170428084208.68"><vh>@file ../external/npyscreen/wgmultiline.py</vh></v>
-<v t="ekr.20170428084208.157"><vh>@file ../external/npyscreen/wgmultilineeditable.py</vh></v>
-<v t="ekr.20170428084208.173"><vh>@file ../external/npyscreen/wgmultilinetree.py</vh></v>
-<v t="ekr.20170428084208.213"><vh>@file ../external/npyscreen/wgmultilinetreeselectable.py</vh></v>
-<v t="ekr.20170428084208.225"><vh>@file ../external/npyscreen/wgmultiselect.py</vh></v>
-<v t="ekr.20170428084208.245"><vh>@file ../external/npyscreen/wgmultiselecttree.py</vh></v>
-<v t="ekr.20170428084208.253"><vh>@file ../external/npyscreen/wgNMenuDisplay.py</vh></v>
-<v t="ekr.20170428084208.285"><vh>@file ../external/npyscreen/wgpassword.py</vh></v>
-<v t="ekr.20170428084208.290"><vh>@file ../external/npyscreen/wgselectone.py</vh></v>
-<v t="ekr.20170428084208.297"><vh>@file ../external/npyscreen/wgslider.py</vh></v>
-<v t="ekr.20170428084208.318"><vh>@file ../external/npyscreen/wgtextbox.py</vh></v>
-<v t="ekr.20170428084208.354"><vh>@file ../external/npyscreen/wgtextboxunicode.py</vh></v>
-<v t="ekr.20170428084208.359"><vh>@file ../external/npyscreen/wgtextbox_controlchrs.py</vh></v>
-<v t="ekr.20170428084208.366"><vh>@file ../external/npyscreen/wgtexttokens.py</vh></v>
-<v t="ekr.20170428084208.381"><vh>@file ../external/npyscreen/wgtitlefield.py</vh></v>
-<v t="ekr.20170428084208.398"><vh>@file ../external/npyscreen/wgwidget.py</vh></v>
-<v t="ekr.20170428084208.436"><vh>@file ../external/npyscreen/wgwidget_proto.py</vh></v>
-<v t="ekr.20170428084208.443"><vh>@@file ../external/npyscreen/__init__.py</vh>
-<v t="ekr.20170428084208.444"><vh>Declarations</vh></v>
+<v t="ekr.20050303051035.2"><vh>Template for plugins with per-commander controller class</vh>
+<v t="ekr.20050303051035.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20050303051101"><vh>init</vh></v>
+<v t="ekr.20050303051150"><vh>onCreate</vh></v>
+<v t="ekr.20050303051222"><vh>class pluginController</vh>
+<v t="ekr.20050303051222.1"><vh>__init__</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20180225010850.1"><vh>In leo/modes</vh>
-<v t="ekr.20150326145530.1"><vh>@clean ../modes/forth.py</vh>
-<v t="ekr.20150326145530.2"><vh>&lt;&lt; define mode rules &gt;&gt;</vh></v>
-<v t="ekr.20150326145530.3"><vh>&lt;&lt; define mode data &gt;&gt;</vh></v>
-<v t="ekr.20150326145530.4"><vh>&lt;&lt; define extendForth class &gt;&gt;</vh>
-<v t="ekr.20150326145530.5"><vh>ctor</vh></v>
-<v t="ekr.20150326145530.6"><vh>init &amp; helper</vh>
-<v t="ekr.20150326145530.7"><vh>splitList</vh></v>
+<v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
+<v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
+<v t="ville.20091204224145.5355"><vh>@file codewisecompleter.py</vh></v>
 </v>
-<v t="ekr.20150326145530.8"><vh>createBracketRules &amp; helper</vh></v>
-<v t="ekr.20150326145530.9"><vh>createDefiningWordRules &amp; helper</vh></v>
-<v t="ekr.20150326145530.10"><vh>createKeywords</vh></v>
-<v t="ekr.20150326145530.11"><vh>createStringRule</vh></v>
-<v t="ekr.20150326145530.12"><vh>extendRulesDict</vh></v>
+<v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
+<v t="edream.110203113231.741"><vh>@file add_directives.py</vh></v>
+<v t="ekr.20101110084839.5682"><vh>@file bzr_qcommands.py</vh></v>
+<v t="EKR.20040517080049.1"><vh>@file empty_leo_file.py</vh></v>
+<v t="edream.110203113231.669"><vh>@file import_cisco_config.py</vh></v>
+<v t="ekr.20101110092851.5812"><vh>@file initinclass.py</vh></v>
+<v t="ekr.20101110091234.5700"><vh>@file leo_interface.py</vh></v>
+<v t="ekr.20040419105219"><vh>@file lineNumbers.py</vh></v>
+<v t="ekr.20040916084945"><vh>@file macros.py</vh></v>
+<v t="edream.110203113231.724"><vh>@file mod_autosave.py</vh></v>
+<v t="ekr.20050301083306"><vh>@file mod_read_dir_outline.py</vh></v>
+<v t="edream.110203113231.727"><vh>@file mod_timestamp.py</vh></v>
+<v t="TL.20090225102340.32"><vh>@file nodeActions.py</vh></v>
+<v t="edream.110203113231.720"><vh>@file outline_export.py</vh></v>
+<v t="danr7.20060912105041.1"><vh>@file paste_as_headlines.py</vh></v>
+<v t="ekr.20041021120118"><vh>@file pretty_print.py</vh></v>
+<v t="tbrown.20070117104409"><vh>@file quickMove.py</vh></v>
+<v t="ekr.20081214160729.1"><vh>@file setHomeDirectory.py</vh></v>
+<v t="danr7.20061010105952.1"><vh>@file word_count.py</vh></v>
+</v>
+<v t="edream.110203113231.729"><vh>Debugging</vh>
+<v t="ekr.20101110091234.5689"><vh>@file debugger_pudb.py</vh></v>
+<v t="edream.110203113231.730"><vh>@file dump_globals.py</vh></v>
+<v t="edream.110203113231.732"><vh>@file enable_gc.py</vh></v>
+<v t="edream.110203113231.734"><vh>@file quit_leo.py</vh></v>
+<v t="edream.110203113231.735"><vh>@file trace_gc_plugin.py</vh></v>
+<v t="edream.110203113231.736"><vh>@file trace_keys.py</vh></v>
+<v t="edream.110203113231.738"><vh>@file trace_tags.py</vh></v>
+</v>
+<v t="ekr.20041030092101"><vh>Dyna plugins by e</vh></v>
+<v t="ekr.20040722141148"><vh>Examples</vh>
+<v t="edream.110203113231.916"><vh>@file examples/override_classes.py</vh></v>
+<v t="edream.110203113231.919"><vh>@file examples/override_commands.py</vh></v>
+<v t="edream.110203113231.921"><vh>@file examples/redefine_put.py</vh></v>
+<v t="ekr.20060621123339"><vh>@file examples/print_cp.py</vh></v>
+<v t="ekr.20040828105233"><vh>@file examples/chinese_menu.py</vh></v>
+<v t="EKR.20040517080202.3"><vh>@file examples/french_fm.py</vh></v>
+<v t="ekr.20180119164431.1"><vh>@file patch_python_colorizer.py</vh></v>
+</v>
+<v t="ekr.20101110150056.9457"><vh>Experimental</vh>
+<v t="ekr.20090704103932.5160"><vh>@file leo_pdf.py</vh></v>
+<v t="danr7.20060902083957"><vh>@file leo_to_rtf.py</vh></v>
+<v t="ekr.20040205071616"><vh>@file mnplugins.py</vh></v>
+<v t="ekr.20101110094759.5843"><vh>@file mod_speedups.py</vh></v>
+<v t="ekr.20040910070811.1"><vh>@file run_nodes.py</vh></v>
+<v t="ekr.20100103093121.5339"><vh>@file stickynotes_plus.py</vh></v>
+<v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
+<v t="ekr.20101110093449.5822"><vh>@file mod_leo2ascd.py</vh></v>
+<v t="ekr.20101110150056.9445"><vh>@file mod_leo2ascd.txt</vh></v>
+</v>
+</v>
+<v t="EKR.20040517075715"><vh>External programs</vh>
+<v t="ekr.20110125103904.12504"><vh>@file gitarchive.py</vh></v>
+<v t="EKR.20040517080049.4"><vh>@file open_shell.py</vh></v>
+<v t="ville.20090503124249.1"><vh>@file tomboy_import.py</vh></v>
+<v t="EKR.20040517075715.10"><vh>@file vim.py</vh></v>
+<v t="EKR.20040517075715.12"><vh>@file xemacs.py</vh></v>
+<v t="EKR.20040517075715.13"><vh>Word export</vh>
+<v t="EKR.20040517075715.14"><vh>@file word_export.py</vh></v>
+<v t="EKR.20040517075715.20"><vh>@file-nosent word_export.ini</vh></v>
+</v>
+</v>
+<v t="edream.110203113231.872"><vh>Files and nodes</vh>
+<v t="tbrown.20080613095157.2"><vh>@file active_path.py</vh></v>
+<v t="edream.110203113231.873"><vh>@file at_folder.py</vh></v>
+<v t="ekr.20040915085351"><vh>@file at_produce.py</vh></v>
+<v t="ktenney.20041211072654.1"><vh>@file at_view.py</vh></v>
+<v t="ekr.20170619151859.2"><vh>@file auto_colorize2_0.py</vh></v>
+<v t="tbrown.20081223111325.3"><vh>@file backlink.py</vh></v>
+<v t="tbrown.20070322113635"><vh>@file bookmarks.py</vh></v>
+<v t="ekr.20060807103814.1"><vh>@file datenodes.py</vh></v>
+<v t="ajones.20070122153625"><vh>@file expfolder.py</vh></v>
+<v t="ekr.20040915105758.13"><vh>@file FileActions.py</vh></v>
+<v t="ekr.20110110105526.5463"><vh>@file ftp.py</vh></v>
+<v t="tbrown.20091214233510.5347"><vh>@file geotag.py</vh></v>
+<v t="tbrown.20100228141752.5691"><vh>@file leocursor.py</vh></v>
+<v t="ville.20120503224623.3574"><vh>@file leomylyn.py</vh></v>
+<v t="ekr.20101110092851.5742"><vh>@file leoOPML.py</vh></v>
+<v t="dan.20090217132953.1"><vh>@file mime.py</vh></v>
+<v t="mork.20041018204908.1"><vh>@file multifile.py</vh></v>
+<v t="ekr.20040331151007"><vh>@file niceNosent.py</vh></v>
+<v t="edream.110203113231.876"><vh>@file read_only_nodes.py</vh></v>
+<v t="ekr.20040828103325"><vh>@file startfile.py</vh></v>
+<v t="ekr.20130808211520.15893"><vh>@file timestamp.py</vh></v>
+<v t="tbrown.20110428144124.29061"><vh>@file xml_edit.py</vh></v>
+<v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
+</v>
+<v t="ekr.20181030041436.1"><vh>Gui</vh>
+<v t="ekr.20150107090324.1"><vh>@file cursesGui.py</vh></v>
+<v t="ekr.20170419092835.1"><vh>@file cursesGui2.py</vh></v>
+<v t="ekr.20181103094900.1"><vh>@file leoflexx.py</vh></v>
+<v t="ekr.201811100000000.1"><vh>@file leoflexx_js.py</vh></v>
+<v t="ekr.20190410171646.1"><vh>@file pyzo_support.py</vh></v>
+</v>
+<v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
+<v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>
+<v t="ekr.20140723122936.17926"><vh>@file importers/c.py</vh></v>
+<v t="ekr.20160505094722.1"><vh>@file importers/coffeescript.py</vh></v>
+<v t="ekr.20140723122936.18140"><vh>@file importers/csharp.py</vh></v>
+<v t="tbrown.20140801105909.47549"><vh>@file importers/ctext.py</vh></v>
+<v t="ekr.20141116100154.1"><vh>@file importers/dart.py</vh></v>
+<v t="ekr.20140723122936.18141"><vh>@file importers/elisp.py</vh></v>
+<v t="ekr.20140723122936.18138"><vh>@file importers/html.py</vh></v>
+<v t="ekr.20140723122936.18142"><vh>@file importers/ini.py</vh></v>
+<v t="ekr.20160412101008.1"><vh>@file importers/ipynb.py</vh></v>
+<v t="ekr.20140723122936.18143"><vh>@file importers/java.py</vh></v>
+<v t="ekr.20140723122936.18144"><vh>@file importers/javascript.py</vh></v>
+<v t="ekr.20160504080826.1"><vh>@file importers/leo_json.py</vh></v>
+<v t="ekr.20140723122936.18151"><vh>@file importers/leo_rst.py</vh></v>
+<v t="ekr.20161108125620.1"><vh>@file importers/linescanner.py</vh></v>
+<v t="ekr.20170530024520.2"><vh>@file importers/lua.py</vh></v>
+<v t="ekr.20140725190808.18066"><vh>@file importers/markdown.py</vh></v>
+<v t="ekr.20140723122936.18146"><vh>@file importers/org.py</vh></v>
+<v t="ekr.20140723122936.18150"><vh>@file importers/otl.py</vh></v>
+<v t="ekr.20140723122936.18147"><vh>@file importers/pascal.py</vh></v>
+<v t="ekr.20161027100313.1"><vh>@file importers/perl.py</vh></v>
+<v t="ekr.20140723122936.18148"><vh>@file importers/php.py</vh></v>
+<v t="ekr.20140723122936.18149"><vh>@file importers/python.py</vh></v>
+<v t="ekr.20170615153639.2"><vh>@file importers/tcl.py</vh></v>
+<v t="ekr.20180201203240.2"><vh>@file importers/treepad.py</vh></v>
+<v t="ekr.20140723122936.18152"><vh>@file importers/typescript.py</vh></v>
+<v t="ekr.20140723122936.18137"><vh>@file importers/xml.py</vh></v>
+</v>
+<v t="ekr.20180504192522.1"><vh>leo_babel</vh>
+<v t="ekr.20180504191650.34"><vh>@clean leo_babel/__init__.py</vh></v>
+<v t="ekr.20180504191650.36"><vh>examples</vh>
+<v t="bob.20170716135108.2"><vh>@file leo_babel/examples/slowOut.py</vh></v>
+<v t="bob.20170716135108.3"><vh>@file leo_babel/examples/slowOutNoFlush.py</vh></v>
+</v>
+<v t="ekr.20180504191650.42"><vh>tests</vh>
+<v t="ekr.20180504191650.68"><vh>@clean leo_babel/tests/__init__.py</vh></v>
+<v t="bob.20180206123613.1"><vh>@file leo_babel/tests/idle_time.py</vh></v>
+<v t="bob.20180205135005.1"><vh>@file leo_babel/tests/lib_test.py</vh></v>
+<v t="bob.20180125160225.1"><vh>@file leo_babel/tests/tests.py</vh></v>
+</v>
+</v>
+<v t="ekr.20130927050813.13031"><vh>Obsolete</vh>
+<v t="ajones.20070122160142"><vh>@file textnode.py</vh></v>
+<v t="ekr.20050817132814"><vh>rst3</vh>
+<v t="ekr.20050805162550"><vh>@@file rst3.py</vh>
+<v t="ekr.20050805162550.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20050805162550.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20050806162146"><vh>&lt;&lt; to do &gt;&gt;</vh>
+<v t="ekr.20050804081215"><vh>More options</vh></v>
+</v>
+<v t="ekr.20050805162550.4"><vh>Module level</vh>
+<v t="ekr.20050805162550.5"><vh> init</vh></v>
+<v t="ekr.20050805162550.6"><vh>onCreate</vh></v>
+<v t="ekr.20050806101253"><vh>code_block</vh></v>
+<v t="ekr.20090429055156.63"><vh>runUnitTests</vh></v>
+</v>
+<v t="ekr.20050805162550.39"><vh>html parser classes</vh>
+<v t="ekr.20050805162550.40"><vh> &lt;&lt; class linkAnchorParserClass &gt;&gt; (subclass of HTMLParser.HTMLParser)</vh>
+<v t="ekr.20050805162550.41"><vh>__init__</vh></v>
+<v t="ekr.20050805162550.42"><vh>is_anchor</vh></v>
+<v t="ekr.20050805162550.43"><vh>is_link</vh></v>
+<v t="ekr.20050815164715"><vh>is_node_marker</vh></v>
+</v>
+<v t="ekr.20050805162550.44"><vh>class htmlParserClass (linkAnchorParserClass)</vh>
+<v t="ekr.20050805162550.45"><vh>__init__</vh></v>
+<v t="ekr.20050805162550.46"><vh>handle_starttag</vh>
+<v t="ekr.20050815164715.1"><vh>&lt;&lt; trace the unknownAttribute &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20050805162550.47"><vh>handle_endtag</vh></v>
+<v t="ekr.20050805162550.49"><vh>feed</vh></v>
+</v>
+<v t="ekr.20050805162550.50"><vh>class anchor_htmlParserClass (linkAnchorParserClass)</vh>
+<v t="ekr.20050805162550.51"><vh> __init__</vh></v>
+<v t="ekr.20050805162550.52"><vh>handle_starttag</vh></v>
+</v>
+<v t="ekr.20050805162550.53"><vh>class link_htmlParserClass (linkAnchorParserClass)</vh>
+<v t="ekr.20050805162550.54"><vh>__init__</vh></v>
+<v t="ekr.20050805162550.55"><vh>handle_starttag</vh></v>
+<v t="ekr.20050805162550.56"><vh>get_replacements</vh></v>
+</v>
+</v>
+<v t="ekr.20050805162550.8"><vh>class rstClass</vh>
+<v t="ekr.20050805162550.9"><vh> Birth &amp; init</vh>
+<v t="ekr.20050805162550.10"><vh> ctor (rstClass)</vh>
+<v t="ekr.20050805162550.11"><vh>&lt;&lt; init ivars &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20050805162550.12"><vh>addMenu (rstClass, rst3.py)</vh></v>
+<v t="ekr.20050813083007"><vh>initHeadlineCommands</vh></v>
+<v t="ekr.20050813085236"><vh>initSingleNodeOptions</vh></v>
+<v t="ekr.20050808072943"><vh>munge</vh></v>
+</v>
+<v t="ekr.20050812122236"><vh>options...</vh>
+<v t="ekr.20050808064245"><vh>createDefaultOptionsDict</vh></v>
+<v t="ekr.20050812120933"><vh>dumpSettings (debugging)</vh></v>
+<v t="ekr.20050814134351"><vh>getOption</vh></v>
+<v t="ekr.20071015110830"><vh>initCodeBlockString</vh></v>
+<v t="ekr.20050807120331.1"><vh>preprocessTree &amp; helpers</vh>
+<v t="ekr.20051204070141"><vh>preprocessNode</vh></v>
+<v t="ekr.20050808072943.1"><vh>parseOptionLine</vh></v>
+<v t="ekr.20050808070018.2"><vh>scanForOptionDocParts</vh></v>
+<v t="ekr.20050811173750"><vh>scanHeadlineForOptions</vh></v>
+<v t="ekr.20050807120331.2"><vh>scanNodeForOptions</vh></v>
+<v t="ekr.20050808070018"><vh>scanOption</vh></v>
+<v t="ekr.20050808070018.1"><vh>scanOptions</vh></v>
+</v>
+<v t="ekr.20050808142313.28"><vh>scanAllOptions &amp; helpers</vh>
+<v t="ekr.20050805162550.13"><vh>initOptionsFromSettings</vh></v>
+<v t="ekr.20050810103731"><vh>handleSingleNodeOptions</vh></v>
+</v>
+<v t="ekr.20050811135526"><vh>setOption</vh></v>
+</v>
+<v t="ekr.20050809074827"><vh>write methods</vh>
+<v t="ekr.20050809082854"><vh> Top-level write code</vh>
+<v t="ekr.20050809075309"><vh>initWrite</vh></v>
+<v t="ekr.20050809080925"><vh>writeNormalTree</vh></v>
+<v t="ekr.20051121102358"><vh>processTopTree</vh></v>
+<v t="ekr.20050805162550.17"><vh>processTree</vh></v>
+<v t="ekr.20050805162550.21"><vh>writeSpecialTree</vh></v>
+<v t="ekr.20050809082854.1"><vh>writeToDocutils (sets argv) &amp; helper</vh>
+<v t="ekr.20090428082801.64"><vh>handleMissingStyleSheetArgs</vh></v>
+</v>
+<v t="ekr.20060525102337"><vh>writeNodeToString (New in 4.4.1)</vh></v>
+</v>
+<v t="ekr.20050811154552"><vh>getDocPart</vh>
+<v t="ekr.20060610104435"><vh>&lt;&lt; Append whatever follows @doc or @space to result &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20050811102607"><vh>skip_literal_block</vh></v>
+<v t="ekr.20050811101550.1"><vh>writeBody &amp; helpers</vh>
+<v t="ekr.20050811150541"><vh>handleCodeMode &amp; helper</vh>
+<v t="ekr.20050811152104"><vh>formatCodeModeLine</vh></v>
+<v t="ekr.20050813155021"><vh>rstripList</vh></v>
+<v t="ekr.20050813160208"><vh>finishCodePart</vh></v>
+</v>
+<v t="ekr.20060608094815"><vh>handleDocOnlyMode</vh></v>
+<v t="ekr.20060608094815.1"><vh>isAnyDocPart</vh></v>
+<v t="ekr.20050811153208"><vh>isSpecialDocPart</vh></v>
+<v t="ekr.20050811163802"><vh>isAnySpecialDocPart</vh></v>
+<v t="ekr.20050811105438"><vh>removeLeoDirectives</vh></v>
+<v t="ekr.20050811105438.1"><vh>handleSpecialDocParts</vh></v>
+<v t="ekr.20050805162550.30"><vh>replaceCodeBlockDirectives</vh></v>
+</v>
+<v t="ekr.20050805162550.26"><vh>writeHeadline &amp; helper</vh>
+<v t="ekr.20060608102001"><vh>writeHeadlineHelper</vh></v>
+</v>
+<v t="ekr.20050810083057"><vh>writeNode</vh></v>
+<v t="ekr.20071115061253"><vh>writePreformat</vh></v>
+<v t="ekr.20050805162550.23"><vh>writeTree</vh></v>
+</v>
+<v t="ekr.20050810083314"><vh>Utils</vh>
+<v t="ekr.20051202070028"><vh>computeOutputFileName</vh></v>
+<v t="ekr.20050805162550.16"><vh>encode</vh></v>
+<v t="ekr.20050805162550.20"><vh>report</vh></v>
+<v t="ekr.20050810083856"><vh>rstComment</vh></v>
+<v t="ekr.20050805162550.19"><vh>underline</vh></v>
+<v t="ekr.20050809080031"><vh>write</vh></v>
+</v>
+<v t="ekr.20050805162550.33"><vh>Support for http plugin</vh>
+<v t="ekr.20050815091008.1"><vh>http_addNodeMarker</vh></v>
+<v t="ekr.20050805162550.34"><vh>http_endTree &amp; helpers</vh>
+<v t="ekr.20050805162550.36"><vh>set_initial_http_attributes</vh></v>
+<v t="ekr.20050805162550.38"><vh>find_anchors</vh></v>
+<v t="ekr.20050805162550.37"><vh>relocate_references</vh></v>
+<v t="ekr.20050805162550.35"><vh>http_attribute_iter</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20181013081645.1"><vh>In leo/core/test</vh></v>
 </v>
-<v t="ekr.20080730161153.8"><vh>Testing</vh>
-<v t="ekr.20160517182239.1"><vh>@file ../../flake8-leo.py</vh></v>
-<v t="ekr.20160518000549.1"><vh>@file ../../pyflakes-leo.py</vh></v>
-<v t="ekr.20100221142603.5638"><vh>@file ../../pylint-leo.py</vh></v>
-<v t="ekr.20170805060844.1"><vh>@file ../test/leo-bridge-test.py</vh></v>
-<v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
-<v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
-<v t="ekr.20051104075904"><vh>@file leoTest.py</vh></v>
 </v>
-<v t="ekr.20090802181029.5988"><vh>Version</vh>
-<v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
+</v>
+<v t="ekr.20041001210557"><vh>Scripting</vh>
+<v t="tbrown.20100226095909.12777"><vh>@file leoscreen.py</vh></v>
+<v t="tbrown.20140806084727.30174"><vh>@file livecode.py</vh></v>
+<v t="ekr.20060328125248"><vh>@file mod_scripting.py</vh></v>
+<v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
+</v>
+<v t="ekr.20120309073937.9878"><vh>Searching</vh>
+<v t="ekr.20120309073748.9872"><vh>@file bigdash.py</vh></v>
+<v t="peckj.20140804114520.9427"><vh>@file nodetags.py</vh></v>
+<v t="peckj.20131130132659.5964"><vh>@file nodewatch.py</vh></v>
+</v>
+<v t="ekr.20050111122605"><vh>Servers &amp; web stuff</vh>
+<v t="ekr.20170925083314.1"><vh>@auto leo_cloud.py</vh></v>
+<v t="ekr.20170925083853.1"><vh>@auto leo_cloud_server.py</vh></v>
+<v t="ville.20110206142055.10640"><vh>@file leofeeds.py</vh></v>
+<v t="ville.20110125222411.10536"><vh>@file leomail.py</vh></v>
+<v t="ville.20091009202416.10040"><vh>@file leoremote.py</vh></v>
+<v t="EKR.20040517080250.1"><vh>@file mod_http.py</vh></v>
+<v t="ekr.20131004162848.11444"><vh>@file rss.py</vh></v>
+<v t="peckj.20140811080604.9496"><vh>@file sftp.py</vh></v>
+</v>
+<v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
+<v t="ekr.20170128213103.1"><vh>@file demo.py</vh></v>
+<v t="ekr.20120913110135.10579"><vh>@file screencast.py</vh></v>
+<v t="ekr.20101121031443.5330"><vh>@file screenshots.py</vh></v>
+<v t="ekr.20060831165821"><vh>@file slideshow.py</vh></v>
+</v>
+<v t="ekr.20071113084440"><vh>Testing</vh>
+<v t="ekr.20080214092357"><vh>@file test/ekr_test.py</vh></v>
+<v t="ekr.20050130120433"><vh>@@file test/failed_import.py</vh></v>
+<v t="ekr.20071113085315"><vh>@file test/failed_to_load_plugin.py</vh></v>
+<v t="ekr.20051016160700"><vh>@file testRegisterCommand.py</vh></v>
+</v>
+<v t="ekr.20050306081349"><vh>Text formatting</vh>
+<v t="timo.20050213160555"><vh>@file bibtex.py</vh></v>
+<v t="ekr.20070119094733.1"><vh>@file dtest.py</vh></v>
+<v t="ville.20110409151021.5699"><vh>@file jinjarender.py</vh></v>
+<v t="danr7.20060902215215.1"><vh>@file leo_to_html.py</vh></v>
+<v t="tbrown.20130930160706.23451"><vh>@file markup_inline.py</vh></v>
+<v t="peckj.20140113150237.7083"><vh>@file nodediff.py</vh></v>
+<v t="tbrown.20130813134319.11942"><vh>@file richtext.py</vh></v>
+<v t="ekr.20170217164004.1"><vh>@file tables.py</vh></v>
+</v>
+<v t="ekr.20121126102050.10134"><vh>Threading</vh>
+<v t="ekr.20121126095734.12418"><vh>@file threadutil.py</vh></v>
+</v>
+<v t="ekr.20040915073259"><vh>User interface</vh>
+<v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
+<v t="tbrown.20091029123555.5319"><vh>@file attrib_edit.py</vh></v>
+<v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
+<v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
+<v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
+<v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
+<v t="ville.20120604212857.4215"><vh>@file notebook.py</vh></v>
+<v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
+<v t="ekr.20160928073518.1"><vh>@file pyplot_backend.py</vh></v>
+<v t="ville.20090314215508.4"><vh>@file quicksearch.py</vh></v>
+<v t="tbrown.20130420091241.44181"><vh>@file screen_capture.py</vh></v>
+<v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
+<v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
+<v t="tbrown.20090119215428.2" descendentVnodeUnknownAttributes="7d71005808000000302e362e31332e3071017d71025808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323031382d30382d313871077573732e"><vh>@file todo.py</vh></v>
+<v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
+<v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
+</v>
+<v t="ekr.20061023142737"><vh> UNL plugin</vh>
+<v t="ekr.20061023142737.1"><vh>Tests</vh>
+<v t="rogererens.20041130095659"><vh>@url 'file: ./../../plugins/leoPlugins.leo#Plugins--&gt;UNL plugin--&gt;To do'</vh></v>
+<v t="ekr.20061023141638"><vh>@url 'file:./../doc/leoDocs.leo#Users Guide--&gt;Basics--&gt;Customizing Leo'</vh></v>
+</v>
+</v>
+<v t="ekr.20160519123329.1"><vh>@edit QNCalendarWidget.py</vh></v>
+<v t="ekr.20060328125925"><vh>@file chapter_hoist.py</vh></v>
+<v t="ville.20110115234843.8742"><vh>@file dragdropgoodies.py</vh></v>
+<v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
+<v t="vitalije.20170727201534.1"><vh>@file line_numbering.py</vh></v>
+<v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
+<v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
+<v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
+<v t="peckj.20150428142633.1"><vh>@file python_terminal.py</vh></v>
+<v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
+<v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
+<v t="ekr.20170313020320.1"><vh>@file settings_finder.py</vh></v>
+<v t="ville.20110304230157.6513"><vh>@file systray.py</vh></v>
+<v t="tbrown.20141101114322.1"><vh>@file wikiview.py</vh></v>
+<v t="ekr.20181004143535.1"><vh>@file xdb_pane.py</vh></v>
+<v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
+</v>
+<v t="ekr.20140726091031.18071"><vh>Writer plugins</vh>
+<v t="ekr.20140726091031.18152"><vh>@file writers/__init__.py</vh></v>
+<v t="ekr.20140726091031.18143"><vh>@file writers/basewriter.py</vh></v>
+<v t="tbrown.20140804103545.29975"><vh>@file writers/ctext.py</vh></v>
+<v t="ekr.20141116100154.2"><vh>@file writers/dart.py</vh></v>
+<v t="ekr.20160412101901.1"><vh>@file writers/ipynb.py</vh></v>
+<v t="ekr.20160504083330.1"><vh>@file writers/leo_json.py</vh></v>
+<v t="ekr.20180202053206.1"><vh>@file writers/treepad.py</vh></v>
+<v t="ekr.20140726091031.18080"><vh>@file writers/leo_rst.py</vh></v>
+<v t="ekr.20140726091031.18073"><vh>@file writers/markdown.py</vh></v>
+<v t="ekr.20140726091031.18079"><vh>@file writers/org.py</vh></v>
+<v t="ekr.20140726091031.18078"><vh>@file writers/otl.py</vh></v>
 </v>
 </v>
 </vnodes>
 <tnodes>
-<t tx="EKR.20040430162943">@nosearch
+<t tx="EKR.20040517075715"></t>
+<t tx="EKR.20040517075715.13"></t>
+<t tx="EKR.20040517075715.20">[Main]
+use_styles = Yes
+use_section_numbers = Yes
+use_current_document = Yes
+max_headings = 6
+header_style = Heading
 </t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
-# See the "About this file" node for important notes.
-@language python
+<t tx="EKR.20040517090508">@nocolor-node
+
+Enable plugins by creating@enabled-plugins nodes in leoSettings files,
+typically myLeoSettings.leo.See the node
+
+Users Guide-- &gt; Chapter 8: Customizing Leo-- &gt;@rst
+html\customizing.html-- &gt; Specifying settings-- &gt; Complex settings nodes
+
+in LeoDocs.leo for full details.
+
+**Important**: Leo no longer uses pluginsManager.txt to enable or disable plugins.
 </t>
-<t tx="ekr.20031218072017.2604"></t>
-<t tx="ekr.20031218072017.3625">&lt;&lt; about gui classes and gui plugins &gt;&gt;
+<t tx="edream.110203113231.618">@language python
+@tabwidth -4
+@pagewidth 80
 </t>
-<t tx="ekr.20050721093241">@nobeautify
-@nocolor
+<t tx="edream.110203113231.667"></t>
+<t tx="edream.110203113231.729"></t>
+<t tx="edream.110203113231.872">@nocolor-node
 
-The following are notes for anyone who is interested in writing
-alternate gui's for Leo.
+These plugins create new kinds of nodes, some of which affect the file system.</t>
+<t tx="ekr.20040331071919"></t>
+<t tx="ekr.20040722141148">@nocolor-node
+@
 
-Rule 1: Leo's core is (or should be) free of gui-specific code.
+You would typically not enable any of the following "plugins".
 
-Core code calls 'gui wrapper methods' defined by gui-specific classes.
-The base classes for these gui-specific classes are in the node
-Code--&gt;Gui Base classes.
-
-Rule 2: Gui-specific code should be localized.
-
-The @file nodes contained in the node 'Code--&gt;Gui Tkinter classes' in
-leoPy.leo contain all of Leo's Tkinter-specific code. Gui plugins
-would typically put all similar code in a single file.
-
-Rule 3: Gui-specific code can call gui methods directly.
-
-There are no restrictions about the code in the gui-specific classes.
-
-Rule 4: Gui-specific classes must implement the 'gui wrapper methods'
-specified in the gui base classes.
-
-This is the way that gui-specific classes provide gui-specific
-services to Leo's core.
-
-The alternative would be to implement all gui-specific commands
-directly in the gui-specific code.  But this would be much more work
-than needed.  For example, only a few gui-specific wrappers are needed
-to implement all commands that deal with body text.  Implementing each
-of these commands 'from scratch' would duplicate a lot of code
-unnecessarily.
-
-Using the gui wrapper methods is a bit messy for two reasons:
-
-1. It requires defining enough wrappers (both in the base gui classes
-   and subclasses) so that all gui-specific services needed by Leo's
-   core are available.  Adding a wrapper to a gui base class involves
-   adding it to all gui-specific subclasses.  It's easy to forget to
-   add a wrapper.  The gui base class defines all wrappers as a
-   function that just calls oops().  This prints a warning that the
-   wrapper should be defined in a subclass.
-
-2. The original wrappers assumed Tkinter-like indices.  Wrappers that
-   were defined later assume Python indices (see Rule 5 below).  The
-   newer style wrappers that use Python indices have 'Python' in their
-   name.  Having two sets of wrappers is one of the ugliest features
-   of the present code.  I find it hard to remember which wrappers
-   exist and what exactly they do :-)
-
-Rule 5: Leo's core should use Python indices, not gui-specific
-indices.
-
-Leo's core mostly follows this rule: there may be a few exceptions.
-
-A Python index is an int that runs from 0 (beginning of text) to
-len(s) (end of text s).  That is, there are exactly len(s) + 1 valid
-indices.  In contrast, Tkinter indices run from "1.0" to "x.y" where
-text s has x lines and where the length of the last line is y-1.
-
-Two (recently written) functions in leoGlobals.py support conversions
-from Python indices to the row/column indices used by Tkinter.
-
-- g.convertPythonIndexToRowCol converts a Python index to a row/column
-  index used by Tkinter.
-
-- g.convertRowColToPythonIndex does the reverse.
-
-Important: the first Tkinter index is '1.0', not '0.0', but the row
-returned by g.convertPythonIndexToRowCol is zero based, so the code
-that actually creates Tkinter indices from row/col must add 1 to the
-row.  Similar remarks apply when going in the reverse direction.
+These plugins contain example code only.
 </t>
-<t tx="ekr.20051031040240"></t>
-<t tx="ekr.20080412053100.5">@language rest
-</t>
-<t tx="ekr.20080730161153.8"></t>
-<t tx="ekr.20090802181029.5988"></t>
-<t tx="ekr.20110605121601.17862"># These files are true plugins, but it is more convenient to put them here.
-</t>
-<t tx="ekr.20131111060930.18010"># Standard bindings...
-# run-selected-unit-tests-externally = Alt-4 
-# run-marked-unit-tests-externally = Alt-5
-# run-marked-unit-tests-locally = Alt-6
-run-selected-unit-tests-locally = Alt-4
-do-nothing = Alt-5
-run-marked-unit-tests-locally = Alt-6
-</t>
-<t tx="ekr.20131121084830.16362">@language python
+<t tx="ekr.20040915073259">@nocolor-node
 
-# Toggle the settings.
-g.app.debug_app = not g.app.debug_app
-g.app.debug_widgets = not g.app.debug_widgets
-# Report the new settings.
-print('g.app.debug_app: %s' % g.app.debug_app)
-print('g.app.debug_widgets: %s' % g.app.debug_widgets)
+These plugins add buttons and other widgets to the icon area or
+affect Leo's panes and windows in various ways.
+
 </t>
-<t tx="ekr.20140102162014.16438">unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;class LocalConfigManager--&gt;c.config.Getters--&gt;c.config.Getters--&gt;c.config.getData
-unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;class GlobalConfigManager--&gt;gcm.Getters...--&gt;gcm.getData &amp; getOutlineData
-unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;&lt;&lt; class ParserBaseClass &gt;&gt;--&gt;kind handlers (ParserBaseClass)--&gt;doData
-@language rest
-The parser for @data nodes, doData, no longer strips *anything*.</t>
-<t tx="ekr.20140103105930.16446"></t>
-<t tx="ekr.20140114145953.16691">def isLocalSetting(self, setting, kind):
-    '''Return True if the indicated setting comes from a local .leo file.'''
-    if not kind or kind in ('shortcut', 'shortcuts', 'openwithtable'):
-        return False
-    key = g.app.config.munge(setting)
-    if key is None:
-        return False
-    if not self.settingsDict:
-        return False
-    gs = self.settingsDict.get(key)
-    if not gs:
-        return False
-    assert g.isGeneralSetting(gs), gs
-    path = gs.path.lower()
-    for fn in ('myLeoSettings.leo', 'leoSettings.leo'):
-        if path.endswith(fn.lower()):
-            return False
+<t tx="ekr.20041001210557"></t>
+<t tx="ekr.20041030092101">@Notes by EKR: The dyna plugin is a remarkable body of work by 'e'. Have fun with it.
+
+You may download the latest version at: http: // rclick.netfirms.com / dyna_menu.py.html
+</t>
+<t tx="ekr.20041114102139">@nocolor
+
+Comments
+--------
+
+Most of the comments in the style guide are comments*about*the style guide.
+You would replace these comments with your own, or eliminate them entirely in
+your plugin.
+
+Docstrings
+----------
+
+Several plugins show the docstring, so please take care to do a good job of
+describing what the plugin does and how to use it.
+
+Directives
+----------
+
+Please put the following at the end of the plugin's top-level node.
+
+    @language python
+    @tabwidth-4
+
+Imports
+-------
+
+-Do* not*assume that modules like Qt are always available.
+
+-Do* not*use from m import*
+
+-Your code should test whether modules have been imported only if those modules
+  may not be available on all platforms.
+
+-To fail gracefully if the Qt gui is not in effect, put the following at
+  the top level::
+
+      g.assertUi('qt')
+
+Exceptions
+----------
+
+It is usually best* not*to catch exceptions in plugins: doHook catches all
+exceptions and disables further calls to plugins.
+
+If a plugin catches exceptions during startup it should do either raise the
+exception again or provide an init function at the top level that reports the
+failure by returning False.
+
+Use separate nodes
+------------------
+
+**Please**define each class, function or method in a separate node!To
+make this work, just put@others in the root of your plugin as shown.Note
+that@others may be nested, as shown in class myClass.
+</t>
+<t tx="ekr.20050111122605"></t>
+<t tx="ekr.20050130120433">'''A plugin to test import problems.'''
+
+import leo.core.leoGlobals as g
+
+def onStart(tag,keywords):
+    pass
+
+# pylint: disable=unused-import
+try:
+    import xyzzy
+except ImportError:
+    g.cantImport('xyzzy',pluginName='failed_import')
+
+def init():
+    '''Return True if the plugin has loaded successfully.'''
+    g.registerHandler("start2", onStart)
+    g.plugin_signon(__name__)
     return True
 </t>
-<t tx="ekr.20140808103117.18035"></t>
-<t tx="ekr.20140808103117.18038">gnx: ekr.20110605121601.18698
-</t>
-<t tx="ekr.20140808103117.18040">gnx: ekr.20110605121601.18703
-</t>
-<t tx="ekr.20140808103117.18042">gnx: ekr.20110605121601.18704
-</t>
-<t tx="ekr.20140808103117.18044">gnx: ekr.20110605121601.18709
-</t>
-<t tx="ekr.20140831085423.18630">This outline contains all of Leo's core source code.
-
-Leo's code uses the following conventions throughout:
-
-c:  a commander.
-ch: a character.
-d:  a dialog or a dict.
-f:  an open file.
-fn: a file name.
-g:  the leoGlobals module.
-i, j, k: indices into a string.
-p:  a Position.
-s:  a string.
-t:  a text widget.
-u:  an undoer.
-w:  a gui widget.
-v:  a Vnode
-z:  a local temp.
-
-In more limited contexts, the following conventions apply:
-
-si:     a g.ShortcutInfo object.
-ks:     a g.KeyStroke object
-stroke: a KeyStroke object.
-
-btw:    leoFrame.BaseTextWrapper
-stw:    leoFrame.StringTextWrapper
-
-bqtw:   qt_text.BaseQTextWrapper
-lqtb:   qt_text.LeoQTextBrowser
-qhlw:   qt_text.QHeadlineWrapper
-qmbw:   qt_text.QMinibufferWrapper
-qlew:   qt_text.QLineEditWrapper
-qsciw:  qt_text.QScintiallaWrapper
-qtew:   qt_text.QTextEditWrapper</t>
-<t tx="ekr.20140831085423.18631">The following 'official' ivars will always exist:
-
-c.frame                 The frame containing the log,body,tree, etc.
-c.frame.body            The body pane.
-c.frame.body.widget     The gui widget for the body pane.
-c.frame.body.wrapper    The high level interface for the body widget.
-c.frame.iconBar         The icon bar.
-c.frame.log             The log pane.
-c.frame.log.widget      The gui widget for the log pane.
-c.frame.log.wrapper     The high-level inteface for the log pane.
-c.frame.tree            The tree pane.
-
-The following were official ivars that no longer exist:
-
-c.frame.body.bodyCtrl   Use c.frame.body.wrapper instead.
-c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
-</t>
-<t tx="ekr.20140831085423.18639">Here is what you *must know* to understand Leo's core:
-
-1. A **widget** is an actual Qt widget.
-
-Leo's core seldom accesses widgets directly.  Instead...
-
-2. A **wrapper class** defines a standard api that hides the details
-   of the underlying gui **text** widgets.
-
-Leo's core uses this api almost exclusively. That is, Leo's core code treats wrappers *as if* they were only text widgets there are!
-
-There is, however, a back door for (hopefully rare!) special cases. All wrapper classes define an official ``widget`` ivar, so core or plugin code can gain access to the real Qt widget using wrapper.widget. Searching for wrapper.widget will find all gui-dependent snippets of code in Leo's core.
-</t>
-<t tx="ekr.20140902032918.18591">@
-@language rest
-@wrap
-
-Leo uses a model/view/controller architecture.
-
-- Controller: The Commands class and its helpers in leoCommands.py and leoEditCommands.py.
-
-- Model: The VNode and Position classes in leoNodes.py.
-
-- View: The gui-independent base classes are in the node "Gui Base Classes". The Qt-Specific subclasses are in the node "Qt gui".
-
-**Important**: The general organization of these classes have changed hardly at all in Leo's 20+ year history.  The reason is that what each class does is fairly obvious.  How the gets the job done may have changed drastically, but *that's an internal implementation detail of the class itself*.  This is the crucial design principle that allows Leo's code to remain stable.  *Classes do not know or meddle in the internal details of other classes*.  As a result, nobody, including EKR, needs to remember internal details.
-@c
-</t>
-<t tx="ekr.20140902155015.18674"></t>
-<t tx="ekr.20140916101314.19538">The default language if no @language or @comment is in effect.
-
-Valid values are (case is ignored):
-
-actionscript,c,csharp,css,cweb,elisp,html,java,latex,
-pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
-<t tx="ekr.20140920064112.17946"></t>
-<t tx="ekr.20150304125314.4">@tabwidth -2
-@killbeautify
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;xsl:stylesheet version="1.0"
-xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
-
-&lt;xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/&gt;
-
-&lt;!-- The default setting. Not needed unless there is a strip-space element. --&gt;
-  &lt;!-- &lt;xsl:preserve-space elements='leo_file nodes t'/&gt; --&gt;
-
-&lt;xsl:template match ='leo_file'&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;!--
-    &lt;link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/default.min.css"&gt;
-    &lt;script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"&gt;&lt;/script&gt;
-    --&gt;
-    &lt;&lt;style&gt;&gt;
-    &lt;&lt;scripts&gt;&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;xsl:apply-templates select='tnodes'/&gt;
-    &lt;div class="outlinepane"&gt;
-      &lt;!-- &lt;h4&gt;Outline Pane&lt;/h4&gt; --&gt;
-      &lt;xsl:apply-templates select='vnodes'/&gt;
-    &lt;/div&gt;
-    &lt;div class="bodypane"&gt;
-      &lt;!-- &lt;h4&gt;Body Pane&lt;/h4&gt; --&gt;
-      &lt;pre class="body-text"&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-&lt;/xsl:template&gt;
-
-&lt;xsl:template match = 'tnodes'&gt;
-&lt;div class="tnodes"&gt;
-  &lt;xsl:for-each select = 't'&gt;
-    &lt;div class="tnode"&gt;
-      &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@tx'/&gt;&lt;/xsl:attribute&gt;
-      &lt;xsl:value-of select='.'/&gt;
-    &lt;/div&gt;
-  &lt;/xsl:for-each&gt;
-&lt;/div&gt;
-&lt;/xsl:template&gt;
-
-&lt;xsl:template match = 'vnodes'&gt;
-  &lt;xsl:for-each select = 'v'&gt;
-    &lt;xsl:apply-templates select ='.'/&gt;
-  &lt;/xsl:for-each&gt;
-&lt;/xsl:template&gt;
-
-&lt;xsl:template match='v'&gt;
-  &lt;div class="node"&gt;
-    &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@t'/&gt;&lt;/xsl:attribute&gt;
-    &lt;xsl:choose&gt;
-      &lt;xsl:when test ='./v' &gt;
-        &lt;xsl:attribute name="has-children"&gt;1&lt;/xsl:attribute&gt;
-        &lt;h1&gt;+ &lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
-        &lt;xsl:apply-templates select = 'v'/&gt;
-      &lt;/xsl:when&gt;
-      &lt;xsl:when test ='vh' &gt;
-        &lt;h1&gt;- &lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
-      &lt;/xsl:when&gt;
-      &lt;!--
-      &lt;xsl:otherwise&gt;
-        &lt;h1&gt;- &lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
-      &lt;/xsl:otherwise&gt;
-      --&gt;
-    &lt;/xsl:choose&gt;
-  &lt;/div&gt;
-&lt;/xsl:template&gt;
-
-&lt;/xsl:stylesheet&gt;
-</t>
-<t tx="ekr.20150304130753.4">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;xsl:stylesheet version="1.0"
-xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
-
-&lt;xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/&gt;
-
-&lt;!-- The default setting. Not needed unless there is a strip-space element. --&gt;
-  &lt;!-- &lt;xsl:preserve-space elements='leo_file nodes t'/&gt; --&gt;
-
-&lt;xsl:template match ='leo_file'&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;&lt;style&gt;&gt;
-    &lt;&lt;scripts&gt;&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;xsl:apply-templates select='tnodes'/&gt;
-    &lt;div class="outlinepane"&gt;
-      &lt;xsl:apply-templates select='vnodes'/&gt;
-    &lt;/div&gt;
-    &lt;div class="bodypane"&gt;
-      &lt;h1&gt;Body Pane&lt;/h1&gt;
-      &lt;pre class="body-text"&gt;body&lt;/pre&gt;
-    &lt;/div&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-&lt;/xsl:template&gt;
-
-&lt;xsl:template match = 'tnodes'&gt;
-&lt;div class="tnodes"&gt;
-  &lt;xsl:for-each select = 't'&gt;
-    &lt;div class="tnode"&gt;
-      &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@tx'/&gt;&lt;/xsl:attribute&gt;
-      &lt;xsl:value-of select='.'/&gt;
-    &lt;/div&gt;
-  &lt;/xsl:for-each&gt;
-&lt;/div&gt;
-&lt;/xsl:template&gt;
-
-&lt;xsl:template match = 'vnodes'&gt;
-  &lt;xsl:for-each select = 'v'&gt;
-    &lt;xsl:apply-templates select ='.'/&gt;
-  &lt;/xsl:for-each&gt;
-&lt;/xsl:template&gt;
-
-&lt;xsl:template match='v'&gt;
-  &lt;div class="node"&gt;
-    &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@t'/&gt;&lt;/xsl:attribute&gt;
-    &lt;h1&gt;&lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
-    &lt;xsl:if test ='./v' &gt;
-      &lt;xsl:apply-templates select = 'v'/&gt;
-    &lt;/xsl:if&gt;
-  &lt;/div&gt;
-&lt;/xsl:template&gt;
-
-&lt;/xsl:stylesheet&gt;
-</t>
-<t tx="ekr.20150304130753.5">&lt;style&gt;
-    /* pre { background:#FFE7C6; } */
-    /* Must use h1 for nodes: see below. */
-    h1 {
-      font-size: 12pt;
-      font-style: normal;
-      font-weight: normal;
-    }
-    div.outlinepane {
-      position: absolute;
-      background: #ffffec; /* Leo yellow */
-      top: 10px;
-      height: 300px;
-      width: 700px;
-      overflow: scroll;
-      line-height: 0.8;
-
-    }
-    div.bodypane {
-      position: absolute;
-      top: 310px;
-      height: 300px;
-      width: 700px;
-      overflow: scroll;
-    }
-    div.tnode {
-        visibility: hidden;
-        height: 0;
-    }
-    div.node {
-        position: relative;
-        left: 20px;
-    }
-    div.node[has-children] &gt; h1 {
-        &lt;!-- works --&gt;
-        &lt;!-- background: red; --&gt;
-    }
-&lt;/style&gt;
-</t>
-<t tx="ekr.20150304130753.6">@language javascript
-
-&lt;script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-
-  $(document).ready(function(){
-    if (true) {
-        // Toggle all but top-level nodes.
-        // This requires an indication
-        $(".node").toggle()
-        $(".outlinepane").children(".node").toggle()
-    } else {
-        // Toggle all second-level nodes.
-        // Safer, until we can see which nodes have children.
-        $(".outlinepane").children(".node").children(".node").toggle()
-    }
-    $("h1").click(function(){
-      $(this).parent().children("div.node").toggle();
-      // The parent div's id is v.x.
-      // Find the tnode div whose id is t.x.
-      console.clear();
-      parent_id=$(this).parent().attr("id");
-      if (parent_id) {
-        target=$(this).parent().attr("id").substring(2);
-          console.log("clicked:"+$(this).text())
-          // console.log("parent:"+$(this).parent())
-          // console.log("target:"+target)
-        $(".tnode").each(function(){
-          console.log($(this).attr("id"))
-          target2=$(this).attr("id").substring(2);
-          if (target === target2) {
-            console.log("found:"+target2)
-            // $("pre.body-text").text($(this).text());
-            $("code").text($(this).text());
-          };
-        }); // end .each.
-      };
-    });
-  });
-@language html
-&lt;/script&gt;
-</t>
-<t tx="ekr.20150326145530.1"># Hand-written Leo colorizer control file for forth mode.
-# This file is in the public domain.
-@killbeautify
-import leo.core.leoGlobals as g
-&lt;&lt; define mode rules &gt;&gt;
-&lt;&lt; define mode data &gt;&gt;
-&lt;&lt; define extendForth class &gt;&gt;
-e = extendForth()
-
-def pre_init_mode(c):
-    e.c = c
-    e.init()
-    e.createKeywords()
-    e.createBracketRules()
-    e.createDefiningWordRules()
-</t>
-<t tx="ekr.20150326145530.10">def createKeywords(self):
-    '''Create the mode keyword table and
-    entries in the rulesDict for the forth_keyword_rule'''
-    # global forth_main_keywords_dict
-    # global forth_keyword_rule
-    table = (
-        (self.keywords, 'keyword1'),
-      # (self.definingwords,    'keyword2'), # Done in createDefiningWordRules.
-        (self.boldwords, 'keyword3'),
-        (self.bolditalicwords, 'keyword4'),
-        (self.italicwords, 'keyword5'),
-        (self.stringwords, 'string'),
-    )
-    d = forth_main_keywords_dict
-    for keywordList, kind in table:
-        for z in keywordList:
-            # Create the entry in the keyword table.
-            if kind == 'string':
-                func = self.createStringRule(d, z)
-            else:
-                func = forth_keyword_rule
-            # Always make the entry.
-            d[z] = kind
-            self.extendRulesDict(ch=z[0], func=func)
-</t>
-<t tx="ekr.20150326145530.11">def createStringRule(self, d, pair):
-    '''Create an entry in d for a string keyword.'''
-    aList = pair.split(' ')
-    if len(aList) != 2:
-        g.trace('can not happen: expecting pair of forth strings:', pair)
-        return
-    begin, end = aList
-
-    def forth_string_word_rule(colorer, s, i):
-        return colorer.match_span(s, i, kind="literal1", begin=begin.strip(), end=end.strip(),
-            at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False) # Don't require ending word.
-
-    return forth_string_word_rule
-</t>
-<t tx="ekr.20150326145530.12">def extendRulesDict(self, ch, func):
-    global rulesDict
-    # Extend the rulesDict entry for the first character of z.
-    aList = rulesDict.get(ch, [])
-    if func not in aList:
-        aList.append(func)
-        rulesDict[ch] = aList
-</t>
-<t tx="ekr.20150326145530.2"># Rules for forth_main ruleset.
-
-def forth_block_comment_rule(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment2", begin="(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
-
-def forth_comment_rule(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="\\",
-        at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word
-        delegate="", exclude_match=False)
-
-def forth_keyword_rule(colorer, s, i):
-    return colorer.match_keywords(s, i)
-
-def forth_string_rule(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
-# ==========================
-
-if 0:
-
-    def forth_rule0(colorer, s, i):
-        return colorer.match_eol_span(s, i, kind="comment1", seq="#",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False)
-
-    def forth_rule1(colorer, s, i):
-        return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False)
-
-    def forth_rule2(colorer, s, i):
-        return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False)
-
-    def forth_rule3(colorer, s, i):
-        return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False)
-
-    def forth_rule4(colorer, s, i):
-        return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False)
-
-    def forth_rule5(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="=",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule6(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="!",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule7(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="&gt;=",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule8(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="&lt;=",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule9(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="+",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule10(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="-",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule11(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="/",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule12(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="*",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule13(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="&gt;",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule14(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="&lt;",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule15(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="%",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule16(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="&amp;",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule17(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="|",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule18(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="^",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule19(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="~",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule20(colorer, s, i):
-        return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
-
-    def forth_rule21(colorer, s, i):
-        return colorer.match_keywords(s, i)
-</t>
-<t tx="ekr.20150326145530.3"># Properties for forth mode.
-properties = {
-    # "indentNextLines": "\\s*[^#]{3,}:\\s*(#.*)?",
-    "lineComment": "\\",
-}
-# Attributes dict for forth_main ruleset.
-forth_main_attributes_dict = {
-    "default": "null",
-    "digit_re": "",
-    # "escape": "\\",
-    "highlight_digits": "false",
-    "ignore_case": "false",
-    "no_word_sep": "",
-}
-# Dictionary of attributes dictionaries for forth mode.
-attributesDictDict = {
-    "forth_main": forth_main_attributes_dict,
-}
-# Keywords dict for forth_main ruleset.
-forth_main_keywords_dict = {} # Created by extendForth class.
-# Dictionary of keywords dictionaries for forth mode.
-keywordsDictDict = {
-    "forth_main": forth_main_keywords_dict,
-}
-# Rules dict for forth_main ruleset.
-# This is extended by extendForth.
-rulesDict = {
-    '(': [forth_block_comment_rule],
-    '\\': [forth_comment_rule],
-    '"': [forth_string_rule],
-}
-# x.rulesDictDict for forth mode.
-rulesDictDict = {
-    "forth_main": rulesDict,
-}
-# Import dict for forth mode.
-importDict = {}
-</t>
-<t tx="ekr.20150326145530.4">class extendForth(object):
-    '''A helper class to extend the mode tables from @data forth-x settings.'''
-    @others
-</t>
-<t tx="ekr.20150326145530.5">def __init__(self):
-    self.c = None # set by pre_init_mode function.
-    #
-    # Default forth keywords: extended by @data forth-words
-    # Forth words to be rendered in boldface: extended by @data forth-bold-words
-    self.boldwords = []
-    #
-    # Forth bold-italics words: extended by @data forth-bold-italic-words
-    # Note: on some boxen, bold italics may show in plain bold.
-    self.bolditalicwords = []
-    #
-    # Forth words that define brackets: extended by @data forth-delimiter-pairs
-    self.brackets = [] # Helper: a list of tuples.
-    self.brackets1 = []
-    self.brackets2 = []
-    #
-    # Words which define other words: extended by forth-defwords
-    self.definingwords = []
-    #
-    # Forth words to be rendered in italics: extended by forth-italic-words
-    self.italicwords = []
-    #
-    # Default keywords: extended by @data forth-keywords
-    self.keywords = []
-        # "variable", "constant", "code", "end-code",
-        # "dup", "2dup", "swap", "2swap", "drop", "2drop",
-        # "r&gt;", "&gt;r", "2r&gt;", "2&gt;r",
-        # "if", "else", "then",
-        # "begin", "again", "until", "while", "repeat",
-        # "v-for", "v-next", "exit",
-        # "meta", "host", "target", "picasm", "macro",
-        # "needs", "include",
-        # "'", "[']",
-        # # ":", # Now a defining word.
-        # ";",
-        # "@", "!", ",", "1+", "+", "-",
-        # "&lt;", "&lt;=", "=", "&gt;=", "&gt;",
-        # "invert", "and", "or",
-    #
-    # Forth words which start strings: extended by @data forth-string-word-pairs
-    self.stringwords = []
-    self.stringwords1 = []
-    self.stringwords2 = []
-    self.verbose = False # True: tell when extending forth words.
-
-</t>
-<t tx="ekr.20150326145530.6">def init(self):
-    '''Set our ivars from settings.'''
-    c = self.c
-    assert(c)
-    table = (
-        (self.definingwords, "forth-defwords"),
-        (self.brackets, "forth-delimiter-pairs"),
-        (self.keywords, "forth-words"),
-        (self.stringwords, "forth-string-word-pairs"),
-        (self.boldwords, "forth-bold-words"),
-        (self.bolditalicwords, "forth-bold-italic-words"),
-        (self.italicwords, "forth-italic-words"),
-    )
-    # Add entries from @data nodes (if they exist) to the corresponding lists.
-    for(ivarList, setting) in table:
-        extras = []
-        aList = c.config.getData(setting)
-        if aList:
-            for s in aList:
-                s = s.strip()
-                if s and s[0] != '\\':
-                    extras.append(s)
-            if extras:
-                if self.verbose:
-                    if not g.app.unitTesting and not g.app.batchMode:
-                        g.pr("Found extra forth: %s" % " ".join(extras))
-                ivarList.extend(extras)
-    # Create brackets1/2 and stringwords1/2 lists.
-    table2 = (
-        ("brackets", "@data forth-delimiter-pairs"),
-        ("stringwords", "@data forth-string-word-pairs"),
-    )
-    for(ivar, setting) in table2:
-        self.splitList(ivar, setting)
-</t>
-<t tx="ekr.20150326145530.7">def splitList(self, ivar, setting):
-    '''Process lines containing pairs of entries
-    in a list whose *name* is ivar.
-    Put the results in ivars whose names are ivar1 and ivar2.'''
-    result1 = []; result2 = []
-    aList = getattr(self, ivar)
-    # Look for pairs.  Comments have already been removed.
-    for s in aList:
-        pair = s.split(' ')
-        if len(pair) == 2 and pair[0].strip() and pair[1].strip():
-            result1.append(pair[0].strip())
-            result2.append(pair[1].strip())
-        else:
-            g.es_print('%s: ignoring line: %s' % (setting, s))
-    # Set the ivars.
-    name1 = '%s1' % ivar
-    name2 = '%s2' % ivar
-    setattr(self, name1, result1)
-    setattr(self, name2, result2)
-</t>
-<t tx="ekr.20150326145530.8">def createBracketRules(self):
-    for z in self.brackets1:
-        func = self.createBracketRule(z)
-        self.extendRulesDict(ch=z[0], func=func)
-
-def createBracketRule(self, begin):
-    i = self.brackets1.index(begin)
-    end = self.brackets2[i]
-
-    def forth_bracket_rule(colorer, s, i):
-        return colorer.match_span(s, i, kind="bracketRange", begin=begin, end=end,
-            at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=True) # Require word.
-
-    return forth_bracket_rule
-</t>
-<t tx="ekr.20150326145530.9">def createDefiningWordRules(self):
-    for z in self.definingwords:
-        func = self.createDefiningWordRule(z)
-        self.extendRulesDict(ch=z[0], func=func)
-
-def createDefiningWordRule(self, word):
-
-    def forth_defining_word_rule(colorer, s, i):
-
-        return colorer.match_word_and_regexp(s, i,
-            kind1="keyword2", # defining word
-            word=word,
-            kind2="keyword3", # bold
-            pattern=r'(\s)*(\S)+',
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            exclude_match=False)
-
-    return forth_defining_word_rule
-</t>
-<t tx="ekr.20150413091056.1">'''Warn if leoProjects.txt or leoToDo.txt contain any clones.'''
-
-clones,nodes,seen = 0,0,set()
-table = (
-  '@file ../doc/leoProjects.txt',
-  '@file ../doc/leoToDo.txt',
-)
-
-def check_clone(c,p0,root):
-    '''Warn if p appears in any @&lt;file&gt; node outside of root's tree.'''
-    global nodes,seen
-    v = p0.v
-    for p in c.all_positions():
-        nodes += 1
-        if p.v == v:
-            # Check *all* ancestors, not just the nearest one.
-            for parent in p.self_and_parents():
-                nodes += 1
-                if parent.isAnyAtFileNode() and parent.v != root.v:
-                    if parent.v not in seen:
-                        seen.add(parent.v)
-                        g.es_print('%s and %s contain clone: %s' % (
-                            root.h,parent.h,p0.h))
-
-for h in table:
-    root = g.findNodeAnywhere(c,h)
-    if root:
-        for p in root.self_and_subtree():
-            nodes += 1
-            if p.isCloned():
-                clones += 1
-                check_clone(c,p,root)
-    else:
-        g.es_print('not found',h,color='red')
-print('done: %s nodes, %s clones' % (nodes,clones))
-
-@tabwidth -4
+<t tx="ekr.20050303051035">@nocolor-node
+
+The following nodes show recommended style when writing plugins.</t>
+<t tx="ekr.20050303051035.2">'''
+A docstring describing your plugin and how to use it.
+If it's long, you might put it in a separate section.
+'''
+&lt;&lt; imports &gt;&gt;
+@others
 @language python
+@tabwidth-4
 </t>
-<t tx="ekr.20150425145248.1">run-pylint
-clone-to-at-spot
-beautify-tree
-cfa-code
-sort-lines
-# show-data
-# test-ptb
-check-clones
-expand-log-pane
-contract-log-pane</t>
-<t tx="ekr.20150502050609.1">c.backup_helper(sub_dir='leoPy')
-</t>
-<t tx="ekr.20150507170849.1">g.cls()
+<t tx="ekr.20050303051035.5">import leo.core.leoGlobals as g
 
-print('===== Start =====')
+# Whatever other imports your plugins uses.
+</t>
+<t tx="ekr.20050303051101">def init():
+    '''Return True if the plugin has loaded successfully.'''
+    ok=g.app.gui.guiName() in('qt','qttabs')
+    if ok:
+        if 1: # Use this if you want to create the commander class before the frame is fully created.
+            g.registerHandler('before-create-leo-frame',onCreate)
+        else: # Use this if you want to create the commander class after the frame is fully created.
+            g.registerHandler('after-create-leo-frame',onCreate)
+    return ok</t>
+<t tx="ekr.20050303051150">def onCreate(tag, keys):
 
-class CreateDecorators(object):
-    '''
-    A class to create decorators from tables in getPublicCommands.
-    
-    Note: the node "Found: getPublicCommands" must exist.
-    '''
-    def __init__(self,c,make_changes):
-        self.c = c
-        self.fixups = self.create_fixups()
-        self.n = 0
-        self.n_fail = 0
-        self.make_changes=make_changes
-        self.suppress = [
-            'c.frame.body and c.frame.body.addEditor',
-            'cls','cloneFindParents','cycleTabFocus',
-            'k and k.keyboardQuit',
-            'menuShortcutPlaceHolder','removeBlankLines',
-            'saveBuffersKillLeo',
-        ]
-    @others
+    c=keys.get('c')
+    if not c: return
 
-CreateDecorators(c,make_changes=False).run()
+    thePluginController=pluginController(c)
 </t>
-<t tx="ekr.20150507174711.1">def find_next_clone(self,p):
-    v = p.v
-    p = p.copy()
-    p.moveToThreadNext()
-    wrapped = False
-    while 1:
-        # g.trace(p.v,p.h)
-        if p and p.v == v:
-            break
-        elif p:
-            p.moveToThreadNext()
-        elif wrapped:
-            break
-        else:
-            wrapped = True
-            p = c.rootPosition()
-    return p
-</t>
-<t tx="ekr.20150507175246.1">def munge_lines(self,root,publicCommands):
-    '''Return munged lines of '''
-    # print('')
-    # g.trace(root.h)
-    s = publicCommands.b
-    i,j = s.find('{'),s.find('}')
-    s = s[i+1:j]
-    # print(s)
-    lines = sorted([z.strip() for z in g.splitLines(s) if z.strip()])
-    lines = [z for z in lines if not z.startswith('#')]
-    lines = [z[:z.find('#')] if z.find('#') &gt; -1 else z for z in lines]
-    lines = [z.rstrip().rstrip(',') for z in lines]
-    lines = [z[1:] for z in lines]
-    lines = [z.replace("':",' ') for z in lines]
-    # print('\n'.join(lines))
-    self.n += len(lines)
-    return lines
-</t>
-<t tx="ekr.20150508062944.1">def run(self):
-    '''Top-level code.'''
-    self.n = 0
-    found = g.findNodeAnywhere(c,'Found: getPublicCommands')
-    assert found
-    for child in found.children():
-        publicCommands = self.find_next_clone(child)
-        root = self.find_class(publicCommands)
-        if root:
-            lines = self.munge_lines(root,publicCommands)
-            d = self.create_d(lines,publicCommands)
-            self.create_decorators(d,root)
-    print('\n%s commands %s failed' % (self.n,self.n_fail))
-</t>
-<t tx="ekr.20150508063412.1">def create_decorators(self,d,root):
-    '''Create decorators for all items in d in root's tree.'''
-    # print('***** %s' % root.h)
-    if root.h in self.fixups:
-        roots = []
-        aList = self.fixups.get(root.h)
-        for root2_h in aList:
-            root2 = g.findNodeAnywhere(self.c,root2_h)
-            if root2:
-                # g.trace(root.h,'=====&gt;',root2.h)
-                roots.append(root2)
-            else:
-                g.trace('===== not found',root2_h)
-    else:
-        roots = [root]
-    for f_name in sorted(d.keys()):
-        found = False
-        for root in roots:
-            c_name = d.get(f_name)
-            found = self.create_decorator(c_name,f_name,root)
-            if found: break
-        if not found and f_name not in self.suppress:
-            print('===== not found: %30s %s' % (root.h,f_name))
-            self.n_fail += 1
-</t>
-<t tx="ekr.20150508063538.1">def create_d(self,lines,publicCommands):
-    '''Create a dict. keys are method names; values are command names.'''
-    trace = False
-    if trace:
-        print('')
-        g.trace(publicCommands.h)
-    d = {}
-    for s in lines:
-        aList = s.split()
-        if len(aList) &gt; 2:
-            aList = [aList[0],' '.join(aList[1:])]
-        c_name,f_name = aList[0].strip(),aList[1].strip()
-        if ' ' not in f_name:
-            f_name = f_name.split('.')[-1]
-        # if '(' in f_name:
-            # f_name = f_name[:f_name.find('(')]
-        if trace: g.trace('%45s %s' % (c_name,f_name))
-        d [f_name] = c_name
-    return d
-</t>
-<t tx="ekr.20150508063926.1">def find_class(self,p):
-    '''Return the position of the class enclosing p.'''
-    for p2 in p.parents():
-        if p2.h.lower().find('class') &gt; -1 and p2.b.find('class') &gt; -1:
-            return p2
-    else:
-        g.trace('*** no class for p.h')
-        return None
-</t>
-<t tx="ekr.20150508071622.1">def create_decorator(self,c_name,f_name,root):
-    '''
-    Search root for a definition of f_name.
-    If found, insert @cmd(f_name) before the definition.
-    '''
-    # g.trace('%45s %s' % (c_name,f_name))
-    trace = False
-    found = False
-    decorator = "@cmd('%s')\n" % (c_name)
-    for p in root.self_and_subtree(copy=False):
-        changed,result = False,[]
-        for s in g.splitLines(p.b):
-            if g.match_word(s,0,'def ' + f_name):
-                if found:
-                    if f_name not in self.suppress:
-                        g.trace('duplicate def',f_name)
-                else:
-                    changed,found = True,True
-                    result.append(decorator)
-                    # print('%s%s' % (decorator,s))
-            result.append(s)
-        # if changed and self.make_changes:
-            # new_body = ''.join(result)
-            # # use git as our undo :-)
-            # p.b = new_body
-    return found
-</t>
-<t tx="ekr.20150508074623.1">def create_fixups(self):
-    '''
-    Return a fixup dict.
-    Keys are headlines for classes.
-    Values are new headlines of nodes containing the actual class.
-    '''
-    return {
-        'ChapterCommandsClass': ['class ChapterController'],
-        'EditCommandsClass': [
-            'EditCommandsClass',
-            'class Commands',
-            'class LeoQtFrame',
-            'class LeoBody',
-        ],
-        'class SearchCommandsClass': ['class LeoFind (LeoFind.py)'],
-        'KeyHandlerCommandsClass (add docstrings)': [
-            'class KeyHandlerClass',
-            'class AutoCompleterClass',
-        ]
-    }
-</t>
-<t tx="ekr.20150509183433.1">g.cls()
+<t tx="ekr.20050303051222">class pluginController(object):
 
-# Changed files:
-# leoApp.py
-# leoAtFile.py
-# leoCommands.py
-# leoFileCommands.py
-# leoFrame.py
-# leoUndo.py
-# qt_frame.py
+    @others</t>
+<t tx="ekr.20050303051222.1">def __init__(self,c):
 
-make_changes = True
-    # True, actually make the change
+    self.c=c
+    # Warning: hook handlers must use keywords.get('c'), NOT self.c.
+</t>
+<t tx="ekr.20050306071540">def onStart2(tag, keywords):
 
-class CreateDecorators(object):
-    '''
-    A class to create decorators from tables in getPublicCommands.
-    
-    Note: the node "Found: getPublicCommands" must exist.
-    '''
-    def __init__(self):
-        self.n = 0
-        self.n_fail = 0
-        self.s = self.define_s()
-    @others
+    """
+    Showing how to define a global hook that affects all commanders.
+    """
 
-CreateDecorators().run()
-</t>
-<t tx="ekr.20150509183433.2">def create_d(self,lines):
-    '''Create a dict. keys are method names; values are command names.'''
-    trace = False
-    d = {}
-    for s in lines:
-        aList = s.split()
-        if len(aList) &gt; 2:
-            aList = [aList[0],' '.join(aList[1:])]
-        c_name,f_name = aList[0].strip(),aList[1].strip()
-        if ' ' not in f_name:
-            f_name = f_name.split('.')[-1]
-        # if '(' in f_name:
-            # f_name = f_name[:f_name.find('(')]
-        if trace: g.trace('%45s %s' % (c_name,f_name))
-        d [f_name] = c_name
-    return d
-</t>
-<t tx="ekr.20150509183433.3">def create_decorator(self,c_name,f_name,root):
-    '''
-    Search root for a definition of f_name.
-    If found, insert @cmd(f_name) before the definition.
-    '''
-    trace = True
-    found = False
-    decorator = "@cmd('%s')\n" % (c_name)
-    for p in root.self_and_subtree(copy=False):
-        changed,result = False,[]
-        for s in g.splitLines(p.b):
-            if g.match_word(s,0,'def ' + f_name):
-                if found:
-                    if f_name not in self.suppress:
-                        g.trace('duplicate def',f_name)
-                else:
-                    changed,found = True,True
-                    result.append(decorator)
-                    # print('%s%s' % (decorator,s))
-            result.append(s)
-        if changed and make_changes:
-            new_body = ''.join(result)
-            print('%40s %s' % (p.h[:40],decorator.rstrip()))
-            # use git as our undo :-)
-            # p.b = new_body
-    return found
-</t>
-<t tx="ekr.20150509183433.4">def create_decorators(self,d):
-    '''Create decorators for all items in d in root's tree.'''
-    table = (
-        'class Commands', # c.
-        'class LeoQtFrame', # f.
-        'class LeoFrame', # f.
-        'class LeoApp', # g.app.
-        '@file leoAtFile.py', # c.atFileCommands
-        '@file leoFileCommands.py', # c.fileCommands
-        'class Undoer', # c.undoer
-    )
-    roots = []
-    for h in table:
-        root = g.findNodeAnywhere(c,h)
-        assert root,h
-        roots.append(root)
-    for f_name in sorted(d.keys()):
-        found = False
-        for root in roots:
-            c_name = d.get(f_name)
-            found = self.create_decorator(c_name,f_name,root)
-            if found: break
-        if not found and f_name not in self.suppress:
-            print('===== not found: %s' % (f_name))
-            self.n_fail += 1
-</t>
-<t tx="ekr.20150509183433.8">def munge_lines(self,s):
-    '''Return munged lines of s. '''
-    lines = sorted([z.strip() for z in g.splitLines(s) if z.strip()])
-    lines = [z for z in lines if not z.startswith('#')]
-    lines = [z[:z.find('#')] if z.find('#') &gt; -1 else z for z in lines]
-    lines = [z.rstrip().rstrip(',') for z in lines]
-    lines = [z[1:] for z in lines]
-    lines = [z.replace("':",' ') for z in lines]
-    self.n += len(lines)
-    return lines
-</t>
-<t tx="ekr.20150509183433.9">def run(self):
-    '''Top-level code.'''
-    lines = self.munge_lines(self.s)
-    d = self.create_d(lines)
-    self.create_decorators(d)
-    print('%s commands %s failed' % (self.n,self.n_fail))
-</t>
-<t tx="ekr.20150509183832.1"># 'check-all-python-code':      c.checkAllPythonCode,
-# 'check-python-code':          c.checkPythonCode,
-# 'extract-python-method':        c.extractPythonMethod,
-# 'extract-section':              c.extractSection,
-# 'import-at-file':               c.importAtFile,
-# 'import-at-root':               c.importAtRoot,
-# 'import-cweb-files':            c.importCWEBFiles,
-# 'import-derived-file':          c.importDerivedFile,
-# 'import-flattened-outline':     c.importFlattenedOutline,
-# 'import-noweb-files':           c.importNowebFiles,
-# 'mark-changed-roots':           c.markChangedRoots,
-# 'mark-clones':                c.markClones,
-# 'open-compare-window':        c.openCompareWindow,
-# 'open-online-tutorial':       c.leoTutorial,
-# 'reformat-body':              c.reformatBody, # 2013/10/02.
-def define_s(self):
-    return '''
-'abort-edit-headline':          f.abortEditLabelCommand,
-'about-leo':                    c.about,
-'add-comments':                 c.addComments,     
-'beautify':                     c.beautifyPythonCode,
-'beautify-all':                 c.beautifyAllPythonCode,
-'beautify-c':                   c.beautifyCCode,
-'beautify-tree':                c.beautifyPythonTree,
-'cascade-windows':              f.cascade,
-'check-derived-file':           c.atFileCommands.checkDerivedFile,
-'check-leo-file':               c.fileCommands.checkLeoFile,
-'check-outline':                c.fullCheckOutline,
-'clean-recent-files':           c.cleanRecentFiles,
-'clear-recent-files':           c.clearRecentFiles,
-'clone-node':                   c.clone,
-'clone-node-to-last-node':      c.cloneToLastNode,
-'close-window':                 c.close,
-'contract-all':                 c.contractAllHeadlines,
-'contract-all-other-nodes':     c.contractAllOtherNodes,
-'contract-node':                c.contractNode,
-'contract-or-go-left':          c.contractNodeOrGoToParent,
-'contract-parent':              c.contractParent,
-'convert-all-blanks':           c.convertAllBlanks,
-'convert-all-tabs':             c.convertAllTabs,
-'convert-blanks':               c.convertBlanks,
-'convert-tabs':                 c.convertTabs,
-'copy-node':                    c.copyOutline,
-'copy-text':                    f.copyText,
-'cut-node':                     c.cutOutline,
-'cut-text':                     f.cutText,
-'de-hoist':                     c.dehoist,
-'delete-comments':              c.deleteComments,
-'delete-node':                  c.deleteOutline,
-'demote':                       c.demote,
-'dump-outline':                 c.dumpOutline,
-'edit-headline':                c.editHeadline,
-'end-edit-headline':            f.endEditLabelCommand,
-'equal-sized-panes':            f.equalSizedPanes,
-'execute-script':               c.executeScript,
-'exit-leo':                     g.app.onQuit,
-'expand-all':                   c.expandAllHeadlines,
-'expand-all-subheads':          c.expandAllSubheads,
-'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
-'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
-'expand-next-level':            c.expandNextLevel,
-'expand-node':                  c.expandNode,
-'expand-or-go-right':           c.expandNodeOrGoToFirstChild,
-'expand-prev-level':            c.expandPrevLevel,
-'expand-to-level-1':            c.expandLevel1,
-'expand-to-level-2':            c.expandLevel2,
-'expand-to-level-3':            c.expandLevel3,
-'expand-to-level-4':            c.expandLevel4,
-'expand-to-level-5':            c.expandLevel5,
-'expand-to-level-6':            c.expandLevel6,
-'expand-to-level-7':            c.expandLevel7,
-'expand-to-level-8':            c.expandLevel8,
-'expand-to-level-9':            c.expandLevel9,
-'export-headlines':             c.exportHeadlines,
-'extract':                      c.extract,
-'extract-names':                c.extractSectionNames,
-'find-next-clone':              c.findNextClone,
-'flatten-outline':              c.flattenOutline,
-'flatten-outline-to-node':      c.flattenOutlineToNode,
-'go-back':                      c.goPrevVisitedNode,
-'go-forward':                   c.goNextVisitedNode,
-'goto-first-node':              c.goToFirstNode,
-'goto-first-sibling':           c.goToFirstSibling,
-'goto-first-visible-node':      c.goToFirstVisibleNode,
-'goto-last-node':               c.goToLastNode,
-'goto-last-sibling':            c.goToLastSibling,
-'goto-last-visible-node':       c.goToLastVisibleNode,
-'goto-next-changed':            c.goToNextDirtyHeadline,
-'goto-next-clone':              c.goToNextClone,
-'goto-next-history-node':       c.goToNextHistory,
-'goto-next-marked':             c.goToNextMarkedHeadline,
-'goto-next-node':               c.selectThreadNext,
-'goto-next-sibling':            c.goToNextSibling,
-'goto-next-visible':            c.selectVisNext,
-'goto-parent':                  c.goToParent,
-'goto-prev-history-node':       c.goToPrevHistory,
-'goto-prev-node':               c.selectThreadBack,
-'goto-prev-sibling':            c.goToPrevSibling,
-'goto-prev-visible':            c.selectVisBack,
-'hide-invisibles':              c.hideInvisibles,
-'hoist':                        c.hoist,
-'import-file':                  c.importAnyFile,
-'indent-region':                c.indentBody,
-'insert-body-time':             c.insertBodyTime,
-'insert-child':                 c.insertChild,
-'insert-node':                  c.insertHeadline,
-'insert-node-before':           c.insertHeadlineBefore,
-'mark':                         c.markHeadline,
-'mark-changed-items':           c.markChangedHeadlines,
-'mark-subheads':                c.markSubheads,
-'match-brackets':               c.findMatchingBracket,
-'minimize-all':                 f.minimizeAll,
-'move-outline-down':            c.moveOutlineDown,
-'move-outline-left':            c.moveOutlineLeft,
-'move-outline-right':           c.moveOutlineRight,
-'move-outline-up':              c.moveOutlineUp,
-'new':                          c.new,
-'open-cheat-sheet-leo':         c.openCheatSheet,
-'open-leoDocs-leo':             c.leoDocumentation,
-'open-leoPlugins-leo':          c.openLeoPlugins,
-'open-leoSettings-leo':         c.openLeoSettings,
-'open-local-settings':          c.selectAtSettingsNode,
-'open-myLeoSettings-leo':       c.openMyLeoSettings,
-'open-offline-tutorial':        f.leoHelp,
-'open-online-home':             c.leoHome,
-'open-online-toc':              c.openLeoTOC,
-'open-online-tutorials':        c.openLeoTutorials,
-'open-online-videos':           c.openLeoVideos,
-'open-outline':                 c.open,
-'open-python-window':           c.openPythonWindow,
-'open-quickstart-leo':          c.leoQuickStart,
-'open-scripts-leo':             c.openLeoScripts,
-'open-users-guide':             c.openLeoUsersGuide,
-'open-with':                    c.openWith,
-'outline-to-cweb':              c.outlineToCWEB,
-'outline-to-noweb':             c.outlineToNoweb,
-'paste-node':                   c.pasteOutline,
-'paste-retaining-clones':       c.pasteOutlineRetainingClones,
-'paste-text':                   f.pasteText,
-'pretty-print-all-python-code': c.prettyPrintAllPythonCode,
-'pretty-print-python-code':     c.prettyPrintPythonCode,
-'promote':                      c.promote,
-'read-at-auto-nodes':           c.readAtAutoNodes,
-'read-at-file-nodes':           c.readAtFileNodes,
-'read-at-shadow-nodes':         c.readAtShadowNodes,
-'read-file-into-node':          c.readFileIntoNode,
-'read-outline-only':            c.readOutlineOnly,
-'redo':                         c.undoer.redo,
-'reformat-paragraph':           c.reformatParagraph,
-'refresh-from-disk':            c.refreshFromDisk,
-'remove-sentinels':             c.removeSentinels,
-'resize-to-screen':             f.resizeToScreen,
-'revert':                       c.revert,
-'save-all':                     c.saveAll,
-'save-file':                    c.save,
-'save-file-as':                 c.saveAs,
-'save-file-as-unzipped':        c.saveAsUnzipped,
-'save-file-as-zipped':          c.saveAsZipped,
-'save-file-to':                 c.saveTo,
-'set-colors':                   c.colorPanel,
-'set-font':                     c.fontPanel,
-'settings':                     c.preferences,
-'show-invisibles':              c.showInvisibles,
-'sort-children':                c.sortChildren,
-'sort-recent-files':            c.sortRecentFiles,
-'sort-siblings':                c.sortSiblings,
-'tangle':                       c.tangle,
-'tangle-all':                   c.tangleAll,
-'tangle-marked':                c.tangleMarked,
-'toggle-active-pane':           f.toggleActivePane,
-'toggle-angle-brackets':        c.toggleAngleBrackets,
-'toggle-invisibles':            c.toggleShowInvisibles,
-'toggle-sparse-move':           c.toggleSparseMove,
-'toggle-split-direction':       f.toggleSplitDirection,
-'undo':                         c.undoer.undo,
-'unformat-paragraph':           c.unformatParagraph,
-'unindent-region':              c.dedentBody,
-'unmark-all':                   c.unmarkAll,
-'untangle':                     c.untangle,
-'untangle-all':                 c.untangleAll,
-'untangle-marked':              c.untangleMarked,
-'weave':                        c.weave,
-'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
-'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
-'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
-'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
-'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
-'write-dirty-at-shadow-nodes':  c.fileCommands.writeDirtyAtShadowNodes,
-'write-file-from-node':         c.writeFileFromNode,
-'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
-'write-outline-only':           c.fileCommands.writeOutlineOnly,
+    log=c.frame.log.__class__
+
+    # Replace frame.put with newPut (not shown).
+    g.funcToMethod(newPut,log,"put")</t>
+<t tx="ekr.20050306071629">'''
+A docstring describing your plugin and how to use it.
+If it's long, you might put it in a separate section.
+'''
+&lt;&lt; imports &gt;&gt;
+@others
+@language python
+@tabwidth-4</t>
+<t tx="ekr.20050306071629.1">'''This docstring should be a clear, concise description of
+what the plugin does and how to use it.
 '''
 </t>
-<t tx="ekr.20150514035207.1"></t>
-<t tx="ekr.20150514043850.8">def init_settings(self):
-    '''Called from AbbrevCommands.reload_settings aka reloadSettings.'''
+<t tx="ekr.20050306071629.3">import leo.core.leoGlobals as g
+
+# Whatever other imports your plugins uses.
+</t>
+<t tx="ekr.20050306071629.4">def init():
+    '''Return True if the plugin has loaded successfully.'''
+    ok=True # This might depend on imports, etc.
+    if ok:
+        g.registerHandler('start2',onStart2)
+    return ok</t>
+<t tx="ekr.20050306081349"></t>
+<t tx="ekr.20050804081215">@nocolor
+@
+http://sourceforge.net/forum/message.php?msg_id=3276408
+
+Leo has great potential for smoothing some of the bumps
+outside of learning the details of the markup.
+Here is my wish list;
+
+(done) - Section level handling.
+  - one of the problems with using rst comes when a new
+    section level is inserted into a document. Leo can
+    take care of this effortlessly, providing a correct
+   underline character for each section heading.
+
+    Other than the section management, I want Leo to
+    assume that I'm writing rst, and should be rendered
+    as-is. If I want to include some pretty Python, I put
+    it in a ..  python-code:: block (or some such)
+
+    On top of this base could be built special case
+    handling.
+
+- Assist in viewing rendered output
+  - easy access to the command to render a tree to  html.
+  - I would like an option which automatically inserted
+    a @url node which pointed to the rendered file, or
+    some other trick to make switching between source
+    and output painless.
+
+- Assist in working with the CSS file
+  - a CSS file is now required by docutils. A @setting
+    could specify the file. I would like some kind of
+    sugar which made it easy to edit the CSS file, maybe
+    an option to create a @file node automatically,
+    like the @url node above. Again, I want to be able
+    to effortlessly edit the CSS and see the results.
+
+- The third file of interest when writing rst is the config
+   file which controls many behaviours of the renderer.
+   Again, some intelligence which located it, made it
+   convenient to edit it, maybe even linked to
+   documentation for it, would be very nice.
+
+(done) - I would like a setting which would save the file with the
+  rst markup and make it easy to examine and edit.
+
+- On the someday/maybe list would be a @publish
+  feature, which configured a directory to ftp the rendered
+  file to.
+</t>
+<t tx="ekr.20050805162550">&lt;&lt; docstring &gt;&gt;
+
+# Original rst code by Josef Dalcolmo:
+# contributed under the same licensed as Leo.py itself.
+# rst3.py based on rst2.py v2.4.
+# This has largely been superceded by leo.core.leoRst.
+
+&lt;&lt; imports &gt;&gt;
+&lt;&lt; to do &gt;&gt;
+
+bwm_file = None
+if 0:
+    bwm_file = open("bwm_file", "w")
+controllers = {} # For use by @button rst3 code.
+
+@others
+</t>
+<t tx="ekr.20050805162550.1">''' Creates output files from Leo outlines containing rST (reStructuredText)
+markup. This plugin has been superseded by Leo's core rst3 command.
+
+This is a powerful plugin with many options.  The full documentation is at:
+http://leoeditor.com//rstplugin3.html
+
+The rst3 plugin adds the Write Restructured Text command to Leo's Edit menu. This
+command searches the selected outline looking for **rst root nodes** whose
+headline have the form @rst &lt;filename&gt;. The plugin then creates the named file
+in various ways depending which rst3 options are in effect.
+
+By default, the rst3 plugin creates rST headings automatically from outlines, so
+the higher-level nodes in the outline correspond to higher-level sections in the
+output. Creating rST headings automatically eliminates one of the most tedious
+chores associated with rST markup.
+
+To use this plugin effectively, Python's docutils module must be installed. The
+rst3 plugin will use the SilverCity syntax coloring package if it installed.
+
+This plugin sends .htm, .html or .tex files to the docutils module for further
+processing. Docutils generates HTML files or LaTeX files depending on the file's
+extension. HTML files generated by docutils refer to three .css (cascading style
+sheet) files that should exist in the same directory as the generated HTML file.
+You can control the formatting of the HTML file by altering these .css files.
+
+rst3 options control most aspects of this plugin's operations. You can set
+options in @settings trees, in headlines and in body text. There are too many
+details to discuss here. For full details see:
+http://leoeditor.com//rstplugin3.html
+
+'''
+</t>
+<t tx="ekr.20050805162550.10">def __init__ (self,c):
+
+    global SilverCity
+    self.c = c
+    &lt;&lt; init ivars &gt;&gt;
+
+    self.createDefaultOptionsDict()
+    self.initOptionsFromSettings() # Still needed.
+    self.initHeadlineCommands() # Only needs to be done once.
+    self.initSingleNodeOptions()
+    self.addMenu()
+</t>
+<t tx="ekr.20050805162550.11">self.silverCityWarningGiven = False
+
+# The options dictionary.
+self.optionsDict = {}
+self.option_prefix = '@rst-option'
+
+# Formatting...
+self.code_block_string = ''
+self.node_counter = 0
+self.toplevel = 0
+self.topNode = None
+self.use_alternate_code_block = SilverCity is None
+
+# Http support...
+self.nodeNumber = 0
+# All nodes are numbered so that unique anchors can be generated.
+
+self.http_map = {}
+# Keys are named hyperlink targets.  Value are positions.
+# The targets mark the beginning of the html code specific
+# for this position.
+
+self.anchor_map = {}
+# Maps anchors (generated by this module) to positions
+
+self.rst3_all = False
+# Set to True by the button which processes all @rst trees.
+
+# For writing.
+self.defaultEncoding = 'utf-8'
+self.leoDirectivesList = g.globalDirectiveList
+self.encoding = self.defaultEncoding
+self.ext = None # The file extension.
+self.outputFileName = None # The name of the file being written.
+self.outputFile = None # The open file being written.
+self.path = '' # The path from any @path directive.
+self.source = None # The written source as a string.
+</t>
+<t tx="ekr.20050805162550.12">def addMenu (self):
+
+    c = self.c ; editMenu = c.frame.menu.getMenu('Edit')
+
+    def rst3PluginCallback (event=None):
+        self.processTopTree(c.p)
+
+    c.k.registerCommand('write-restructured-text', rst3PluginCallback)
+    table = (
+        ("-",None,None),
+        # ("Write Restructed Text","",rst3PluginCallback),
+        '&amp;write-restructured-text',
+    )
+    c.frame.menu.createMenuEntries(editMenu,table,dynamicMenu=True)
+</t>
+<t tx="ekr.20050805162550.13">def initOptionsFromSettings (self):
+    '''Init all options from settings.'''
     c = self.c
-    c.k.abbrevOn = c.config.getBool('enable-abbreviations', default=False)
-    # Init these here for k.masterCommand.
-    c.abbrev_place_end = c.config.getString('abbreviations-place-end')
-    c.abbrev_place_start = c.config.getString('abbreviations-place-start')
-    c.abbrev_subst_end = c.config.getString('abbreviations-subst-end')
-    c.abbrev_subst_env = {'c': c, 'g': g, '_values': {},}
-        # The environment for all substitutions.
-        # May be augmented in init_env.
-    c.abbrev_subst_start = c.config.getString('abbreviations-subst-start')
-    # Local settings.
-    self.enabled = (
-        c.config.getBool('scripting-at-script-nodes') or
-        c.config.getBool('scripting-abbreviations'))
-    self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
-    # @data abbreviations-subst-env must *only* be defined in leoSettings.leo or myLeoSettings.leo!
-    if c.config:
-        key = 'abbreviations-subst-env'
-        if c.config.isLocalSetting(key, 'data'):
-            g.issueSecurityWarning('@data %s' % key)
-            self.subst_env = ""
-        else:
-            self.subst_env = c.config.getData(key, strip_data=False)
+    d = self.defaultOptionsDict
+    for key in sorted(d.keys()):
+        for getter,kind in (
+            (c.config.getBool,'@bool'),
+            (c.config.getString,'@string'),
+            (d.get,'default'),
+        ):
+            val = getter(key)
+            if kind == 'default' or val is not None:
+                self.setOption(key,val,'initOptionsFromSettings')
+                break
+    # Special case.
+    if self.getOption('http_server_support') and not mod_http:
+        g.error('No http_server_support: can not import mod_http plugin')
+        self.setOption('http_server_support',False,tag='initOptionsFromSettings')
 </t>
-<t tx="ekr.20150531102337.1"></t>
-<t tx="ekr.20150604130353.1">gnx: ekr.20150604130223.363
+<t tx="ekr.20050805162550.16">def encode (self,s):
+
+    return g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
 </t>
-<t tx="ekr.20150604130353.2"></t>
-<t tx="ekr.20150617060607.1"></t>
-<t tx="ekr.20150703061709.1">@language python
+<t tx="ekr.20050805162550.17">def processTree(self,p,ext,toString,justOneFile):
 
-'''myLeoSettings.py: save the outline and run the pylint command'''
+    '''Process all @rst nodes in a tree.'''
 
-# print('@button run-pylint: %s' % c.shortFileName())
-if c.isChanged():
-    c.save()
-c.k.simulateCommand('pylint')
+    self.preprocessTree(p)
+    found = False ; self.stringOutput = ''
+    p = p.copy() ; after= p.nodeAfterTree()
+    while p and p != after:
+        h = p.h.strip()
+        if g.match_word(h,0,"@rst"):
+            self.outputFileName = h[4:].strip()
+            if (
+                (self.outputFileName and self.outputFileName[0] != '-') or
+                (toString and not self.outputFileName)
+            ):
+                found = True
+                self.toplevel = p.level() # Define toplevel separately for each rst file.
+                if toString:
+                    self.ext = ext
+                else:
+                    self.ext = g.os_path_splitext(self.outputFileName)[1].lower()
+                if self.ext in ('.htm','.html','.tex','.pdf'):
+                    ok = self.writeSpecialTree(p,toString=toString,justOneFile=justOneFile)
+                else:
+                    ok = self.writeNormalTree(p,toString=toString)
+                self.scanAllOptions(p) # Restore the top-level verbose setting.
+                if toString:
+                    return p.copy(),self.stringOutput
+                else:
+                    if ok: self.report(self.outputFileName)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        else: p.moveToThreadNext()
+    if not found:
+        g.warning('No @rst nodes in selected tree')
+    return None,None
 </t>
-<t tx="ekr.20160122104332.1">@language python
+<t tx="ekr.20050805162550.19">def underline (self,s,p):
+    '''Return the underlining string to be used at the given level for string s.'''
+    u = self.getOption('underline_characters') #  '''#=+*^~"'`-:&gt;&lt;_'''
+    level = max(0,p.level()-self.toplevel)
+    level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
+    ch = u [level]
+    n = max(4,len(s))
+    return ch * n + '\n'
 </t>
-<t tx="ekr.20160123142722.1"># An example configuration file for make_stub_files.py.
-# By default, this is ~/stubs/make_stub_files.cfg.
-# Can be changed using the --config=path command-line option.
+<t tx="ekr.20050805162550.2">import leo.core.leoGlobals as g
 
-[Global]
+import html.parser as HTMLParser
+import os
+import pprint
+import io
+StringIO = io.StringIO
+import sys
 
-files:
+# Make sure the present directory in in sys.path.
+dir,junk = os.path.split(__file__)
+if dir not in sys.path: sys.path.append(dir)
 
-    # Files to be used *only* if no files are given on the command line.
-    # glob.glob wildcards are supported.
+try:
+    import leo.plugins.mod_http as mod_http
+except ImportError:
+    mod_http = None
 
-    # c:/leo.repo/leo-editor/leo/core/leoAst.py
-    # c:/leo.repo/leo-editor/leo/core/*.py
-    # c:/leo.repo/leo-editor/plugins/*.py
+try:
+    import docutils
+    import docutils.parsers.rst
+    import docutils.core
+    import docutils.io
+except ImportError:
+    # This message given in init.
+    # g.pr('rst3 plugin: can not import docutils')
+    docutils = None
 
-output_directory: ~/stubs
-
-prefix_lines:
-    # Lines to be inserted at the start of each stub file.
-    from typing import TypeVar, Iterable, Tuple
-    T = TypeVar('T', int, float, complex)
-
-[Def Name Patterns]
-
-[General Patterns]
+try:
+    import SilverCity
+except ImportError:
+    if '--silent' not in sys.argv and not g.unitTesting and not g.app.batchMode:
+        g.pr('rst3 plugin: SilverCity not loaded')
+    SilverCity = None
 </t>
-<t tx="ekr.20160420054135.4">gnx: ekr.20160412193816.5
-unl: qt_quicksearch declarations
-gnx: ekr.20160412193816.6
-unl: class Ui_LeoQuickSearchWidget
-gnx: ekr.20160412193816.7
-unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
-gnx: ekr.20160412193816.8
-unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
+<t tx="ekr.20050805162550.20">def report (self,name):
+
+    if self.getOption('verbose'):
+
+        name = g.os_path_finalize(name)
+
+        g.blue('wrote: %s' % (name))
 </t>
-<t tx="ekr.20160420054135.5"></t>
-<t tx="ekr.20160425070345.1">gnx: ekr.20160412193816.1
-unl: qt_main declarations
-gnx: ekr.20160412193816.2
-unl: class Ui_MainWindow
-gnx: ekr.20160412193816.3
-unl: class Ui_MainWindow--&gt;setupUi
-gnx: ekr.20160412193816.4
-unl: class Ui_MainWindow--&gt;retranslateUi
-</t>
-<t tx="ekr.20160425070345.2"></t>
-<t tx="ekr.20160503125844.1">def create_outline(self, path):
-    '''Create a tree of nodes from a FreeMind file.'''
+<t tx="ekr.20050805162550.21">def writeSpecialTree (self,p,toString,justOneFile):
+
     c = self.c
-    junk, fileName = g.os_path_split(path)
-    undoData = c.undoer.beforeInsertNode(c.p)
+    isHtml = self.ext in ('.html','.htm')
+    if isHtml and not SilverCity:
+        if not self.silverCityWarningGiven:
+            self.silverCityWarningGiven = True
+            g.es('SilverCity not present so no syntax highlighting')
+
+    self.initWrite(p)
+        # was ,encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
+    self.outputFile = StringIO()
+    self.writeTree(p)
+    self.source = self.outputFile.getvalue()
+    self.outputFile = None
+
+    if not toString:
+        # Compute this here for use by intermediate file.
+        self.outputFileName = self.computeOutputFileName(self.outputFileName)
+
+        # Create the directory if it doesn't exist.
+        theDir, junk = g.os_path_split(self.outputFileName)
+        theDir = c.os_path_finalize(theDir)
+        if not g.os_path_exists(theDir):
+            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+            if not ok:
+                g.error('did not create:',theDir)
+                return False
+
+        # if not os.access(theDir,os.F_OK):
+            # os.mkdir(theDir)
+
+        if self.getOption('write_intermediate_file'):
+            name = self.outputFileName + '.txt'
+            f = open(name,'w')
+            f.write(self.source)
+            f.close()
+            self.report(name)
+
     try:
-        self.import_file(path)
-        c.undoer.afterInsertNode(c.p, 'Import', undoData)
+        output = self.writeToDocutils(self.source)
+        ok = True
     except Exception:
-        g.es_print('Exception importing FreeMind file', g.shortFileName(path))
+        g.pr('Exception in docutils')
         g.es_exception()
-    return c.p
-</t>
-<t tx="ekr.20160503145113.1">def import_files(self, files):
-    '''Import a list of FreeMind (.mmap) files.'''
-    c = self.c
-    if files:
-        self.tab_width = c.getTabWidth(c.p)
-        for fileName in files:
-            g.setGlobalOpenDir(fileName)
-            p = self.create_outline(fileName)
-            p.contract()
-            p.setDirty()
-            c.setChanged(True)
-        c.redraw(p)
-</t>
-<t tx="ekr.20160503145550.1">class FreeMindImporter(object):
-    '''Importer class for FreeMind (.mmap) files.'''
+        ok = False
 
-    def __init__(self, c):
-        '''ctor for FreeMind Importer class.'''
-        self.c = c
-        self.count = 0
-        self.d = {}
+    if ok:
+        if isHtml:
+            import re
+            idxTitle = output.find('&lt;title&gt;&lt;/title&gt;')
+            if idxTitle &gt; -1:
+                m = re.search('&lt;h1&gt;([^&lt;]*)&lt;/h1&gt;', output)
+                if not m:
+                    m = re.search('&lt;h1&gt;&lt;[^&gt;]+&gt;([^&lt;]*)&lt;/a&gt;&lt;/h1&gt;', output)
+                if m:
+                    output = output.replace(
+                        '&lt;title&gt;&lt;/title&gt;',
+                        '&lt;title&gt;%s&lt;/title&gt;' % m.group(1)
+                    )
+
+
+        if toString:
+            self.stringOutput = output
+        else:
+            # Write the file to the directory containing the .leo file.
+            f = open(self.outputFileName,'w')
+            f.write(output)
+            f.close()
+            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
+
+    return ok
+</t>
+<t tx="ekr.20050805162550.23">def writeTree(self,p):
+    '''Write p's tree to self.outputFile.'''
+    self.scanAllOptions(p)
+    if self.getOption('generate_rst'):
+        if self.getOption('generate_rst_header_comment'):
+            self.write(self.rstComment(
+                'rst3: filename: %s\n\n' % self.outputFileName))
+    # We can't use an iterator because we may skip parts of the tree.
+    p = p.copy() # Only one copy is needed for traversal.
+    self.topNode = p.copy() # Indicate the top of this tree.
+    after = p.nodeAfterTree()
+    while p and p != after:
+        self.writeNode(p)
+</t>
+<t tx="ekr.20050805162550.26">def writeHeadline (self,p):
+
+    '''Generate an rST section if options permit it.
+    Remove headline commands from the headline first,
+    and never generate an rST section for @rst-option and @rst-options.'''
+
+    docOnly             =  self.getOption('doc_only_mode')
+    ignore              = self.getOption('ignore_this_headline')
+    showHeadlines       = self.getOption('show_headlines')
+    showThisHeadline    = self.getOption('show_this_headline')
+    showOrganizers      = self.getOption('show_organizer_nodes')
+
+    if (
+        p == self.topNode or
+        ignore or
+        docOnly or # handleDocOnlyMode handles this.
+        not showHeadlines and not showThisHeadline or
+        # docOnly and not showOrganizers and not thisHeadline or
+        not p.h.strip() and not showOrganizers or
+        not p.b.strip() and not showOrganizers
+    ):
+        return
+
+    self.writeHeadlineHelper(p)
+</t>
+<t tx="ekr.20050805162550.30">def replaceCodeBlockDirectives (self,lines):
+
+    '''Replace code-block directive, but not in literal blocks.'''
+
+    n = 0 ; result = []
+    while n &lt; len(lines):
+        s = lines [n] ; n += 1
+        if s.strip().endswith('::'):
+            n, lit = self.skip_literal_block(lines,n-1)
+            result.extend(lit)
+        else:
+            i = g.skip_ws(s,0)
+            if g.match(s,i,'..'):
+                i = g.skip_ws(s,i+2)
+                if g.match_word(s,i,'code-block'):
+                    if 1: # Create a literal block to hold the code.
+                        result.append('::\n')
+                    else: # This 'annotated' literal block is confusing.
+                        result.append('%s code::\n' % s[i+len('code-block'):])
+                else:
+                    result.append(s)
+            else:
+                result.append(s)
+
+    return result
+</t>
+<t tx="ekr.20050805162550.33"></t>
+<t tx="ekr.20050805162550.34"># Was http_support_main
+
+def http_endTree (self,filename,p,justOneFile):
+
+    '''Do end-of-tree processing to support the http plugin.'''
+
+    if (
+        self.getOption('http_server_support') and
+        self.getOption('generate_rst')
+    ):
+        self.set_initial_http_attributes(filename)
+        self.find_anchors(p)
+        if justOneFile:
+            self.relocate_references(p.self_and_subtree)
+
+        g.blue('html updated for http plugin')
+
+        if self.getOption('clear_http_attributes'):
+            g.es_print("http attributes cleared")
+</t>
+<t tx="ekr.20050805162550.35">def http_attribute_iter (self, p):
+    """
+    Iterator for all the nodes which have html code.
+    Look at the descendents of p.
+    Used for relocation.
+    """
+
+    for p1 in p.self_and_subtree():
+        attr = mod_http.get_http_attribute(p1)
+        if attr:
+            yield (p1.copy(),attr)
+</t>
+<t tx="ekr.20050805162550.36">def set_initial_http_attributes (self,filename):
+
+    f = open(filename)
+    parser = htmlParserClass(self)
+
+    for line in f.readlines():
+        parser.feed(line)
+
+    f.close()
+</t>
+<t tx="ekr.20050805162550.37">@ Relocate references here if we are only running for one file.
+
+Otherwise we must postpone the relocation until we have processed all files.
+@c
+
+def relocate_references (self, iterator_generator):
+
+    for p in iterator_generator():
+        attr = mod_http.get_http_attribute(p)
+        if not attr:
+            continue
+        if bwm_file:
+            print &gt;&gt; bwm_file
+            print &gt;&gt; bwm_file, "relocate_references(1): Position, attr:"
+            pprint.pprint((p, attr), bwm_file)
+        # http_lines = attr [3:]
+        parser = link_htmlparserClass(self,p)
+        for line in attr [3:]:
+            try:
+                parser.feed(line)
+            except Exception:
+                line = ''.join([ch for ch in line if ord(ch) &lt;= 127])
+                parser.feed(line)
+        replacements = parser.get_replacements()
+        replacements.reverse()
+        if not replacements:
+            continue
+        if bwm_file:
+            print &gt;&gt; bwm_file, "relocate_references(2): Replacements:"
+            pprint.pprint(replacements, bwm_file)
+        for line, column, href, href_file, http_node_ref in replacements:
+            if bwm_file:
+                print &gt;&gt; bwm_file, ( "relocate_references(3): line:",
+                    line, "Column:", column, "href:", href,
+                    "href_file:", href_file, "http_node_ref:", http_node_ref)
+            marker_parts = href.split("#")
+            if len(marker_parts) == 2:
+                marker = marker_parts [1]
+                replacement = "%s#%s" % (http_node_ref,marker)
+                try:
+                    attr [line + 2] = attr [line + 2].replace(
+                        'href="%s"' % href,'href="%s"' % replacement)
+                except Exception:
+                    g.es("Skipped ", attr[line + 2])
+            else:
+                # filename = marker_parts [0]
+                try:
+                    attr [line + 2] = attr [line + 2].replace(
+                        'href="%s"' % href,
+                        'href="%s"' % http_node_ref)
+                except Exception:
+                    g.es("Skipped", attr[line+2])
+</t>
+<t tx="ekr.20050805162550.38">def find_anchors (self, p):
+
+    '''Find the anchors in all the nodes.'''
+
+    for p1, attrs in self.http_attribute_iter(p):
+        html = mod_http.reconstruct_html_from_attrs(attrs)
+        parser = anchor_htmlParserClass(self, p1)
+        for line in html:
+            try:
+                parser.feed(line)
+            except Exception:
+                line = ''.join([ch for ch in line if ord(ch) &lt;= 127])
+                # filter out non-ascii characters.
+                # bwm: not quite sure what's going on here.
+                parser.feed(line)
+</t>
+<t tx="ekr.20050805162550.39">@
+The parser classes are used to construct the html code for nodes. The algorithm has two phases:
+    1. In the first phase, the html code for each node is identified.
+    2. The second phase identifies all links and checks if these links need to be modified.
+The first phase of scanning is done by the anchor_hmlParserClass. The second phase of this algorithm is
+done with the link_htmlParserClass.
+@code
+
+&lt;&lt; class linkAnchorParserClass &gt;&gt;
+
+@others
+</t>
+<t tx="ekr.20050805162550.4"></t>
+<t tx="ekr.20050805162550.40">class linkAnchorParserClass (HTMLParser.HTMLParser):
+
+    '''
+    A class to recognize anchors and links in HTML documents.
+    A special marker is the "node_marker" which demarkates the border between
+    node and the next.
+    '''
 
     @others
 </t>
-<t tx="ekr.20160503191518.4">def import_file(self, path):
-    '''The main line of the FreeMindImporter class.'''
-    c = self.c
-    sfn = g.shortFileName(path)
-    if g.os_path_exists(path):
-        htmltree = lxml.html.parse(path)
-        root = htmltree.getroot()
-        body = root.findall('body')[0]
-        if body is None:
-            g.error('no body in: %s' % sfn)
+<t tx="ekr.20050805162550.41">def __init__(self,rst):
+
+    HTMLParser.HTMLParser.__init__(self) # Init the base class.
+
+    self.rst = rst
+
+    # Set ivars from options.  This works only if we don't change nodes!
+    self.node_begin_marker      = rst.getOption('node_begin_marker')
+    self.clear_http_attributes  = rst.getOption('clear_http_attributes')
+
+    self.current_file = rst.outputFileName
+</t>
+<t tx="ekr.20050805162550.42">def is_anchor(self, tag, attrs):
+    """
+    Check if the current tag is an anchor.
+    Returns *all* anchors.
+    Works with docutils 0.4
+    """
+
+    if tag == 'a':
+        return True
+
+    if self.is_node_marker(attrs):
+        return True
+    return tag == "span"
+</t>
+<t tx="ekr.20050805162550.43">def is_link(self, tag, attrs):
+    '''
+    Return True if tag, attrs is represents a link.
+    '''
+
+    if tag != 'a':
+        return False
+
+    result = 'href' in dict(attrs)
+    return result
+</t>
+<t tx="ekr.20050805162550.44">class htmlParserClass (linkAnchorParserClass):
+
+    '''
+    The responsibility of the html parser is:
+        1. Find out which html code belongs to which node.
+        2. Keep a stack of open tags which apply to the current node.
+        3. Keep a list of tags which should be included in the nodes, even
+           though they might be closed.
+           The &lt;style&gt; tag is one example of that.
+
+    Later, we have to relocate inter-file links: if a reference to another location
+    is in a file, we must change the link.
+
+    '''
+
+    @others
+</t>
+<t tx="ekr.20050805162550.45">def __init__ (self,rst):
+
+    linkAnchorParserClass.__init__(self,rst) # Init the base class.
+
+    self.stack = None
+    # The stack contains lists of the form:
+        # [text1, text2, previous].
+        # text1 is the opening tag
+        # text2 is the closing tag
+        # previous points to the previous stack element
+
+    self.node_marker_stack = []
+    # self.node_marker_stack.pop() returns True for a closing
+    # tag if the opening tag identified an anchor belonging to a vnode.
+
+    self.node_code = []
+        # Accumulated html code.
+        # Once the hmtl code is assigned a vnode, it is deleted here.
+
+    self.deleted_lines = 0 # Number of lines deleted in self.node_code
+
+    self.endpos_pending = False
+    # Do not include self.node_code[0:self.endpos_pending] in the html code.
+
+    self.last_position = None
+    # Last position; we must attach html code to this node.
+
+    self.last_marker = None
+</t>
+<t tx="ekr.20050805162550.46">def handle_starttag (self,tag,attrs):
+    '''
+    1. Find out if the current tag is an achor.
+    2. If it is an anchor, we check if this anchor marks the beginning of a new
+       node
+    3. If a new node begins, then we might have to store html code for the previous
+       node.
+    4. In any case, put the new tag on the stack.
+    '''
+    is_node_marker = False
+    if self.is_anchor(tag,attrs) and self.is_node_marker(attrs):
+        is_node_marker = self.is_node_marker(attrs)
+        line, column = self.getpos()
+        if self.last_position:
+            lines = self.node_code [:]
+            lines [0] = lines [0] [self.startpos:]
+            del lines [line-self.deleted_lines-1:]
+            mod_http.get_http_attribute(self.last_position).extend(lines)
+            &lt;&lt; trace the unknownAttribute &gt;&gt;
+        if self.deleted_lines &lt; line-1:
+            del self.node_code [: line-1-self.deleted_lines]
+            self.deleted_lines = line-1
+            self.endpos_pending = True
+    starttag = self.get_starttag_text()
+    self.stack = [starttag, None, self.stack]
+    self.node_marker_stack.append(is_node_marker)
+</t>
+<t tx="ekr.20050805162550.47">def handle_endtag(self, tag):
+    '''
+    1. Set the second element of the current top of stack.
+    2. If this is the end tag for an anchor for a node,
+       store the current stack for that node.
+    '''
+    self.stack[1] = "&lt;/" + tag + "&gt;"
+
+    if self.endpos_pending:
+        line, column = self.getpos()
+        self.startpos = self.node_code[0].find("&gt;", column) + 1
+        self.endpos_pending = False
+
+    is_node_marker = self.node_marker_stack.pop()
+
+    if is_node_marker and not self.clear_http_attributes:
+        self.last_position = self.rst.http_map[is_node_marker]
+        if is_node_marker != self.last_marker:
+            if bwm_file: print &gt;&gt; bwm_file, "Handle endtag:", is_node_marker, self.stack
+            mod_http.set_http_attribute(self.rst.http_map[is_node_marker], self.stack)
+            self.last_marker = is_node_marker
+            #bwm: last_marker is not needed?
+
+    self.stack = self.stack[2]
+</t>
+<t tx="ekr.20050805162550.49">def feed(self, line):
+
+    self.node_code.append(line)
+
+    HTMLParser.HTMLParser.feed(self, line) # Call the base class's feed().
+</t>
+<t tx="ekr.20050805162550.5">def init ():
+    '''Return True if the plugin has loaded successfully.'''
+    ok = docutils is not None # Ok for unit testing.
+    if ok:
+        g.registerHandler('after-create-leo-frame', onCreate)
+        g.plugin_signon(__name__)
+    else:
+        g.error('rst3 plugin not loaded: can not load docutils')
+    return ok
+</t>
+<t tx="ekr.20050805162550.50">class anchor_htmlParserClass (linkAnchorParserClass):
+
+    '''
+    This htmlparser does the first step of relocating: finding all the anchors within the html nodes.
+
+    Each anchor is mapped to a tuple:
+        (current_file, position).
+
+    Filters out markers which mark the beginning of the html code for a node.
+    '''
+
+    @others
+</t>
+<t tx="ekr.20050805162550.51">def __init__ (self,rst,p):
+
+    linkAnchorParserClass.__init__(self,rst)
+
+    self.p = p.copy()
+    self.anchor_map = rst.anchor_map
+</t>
+<t tx="ekr.20050805162550.52">def handle_starttag(self, tag, attrs):
+    '''
+    1. Find out if the current tag is an achor.
+    2. If the current tag is an anchor, update the mapping;
+         anchor -&gt; (filename, p)
+    '''
+    if not self.is_anchor(tag, attrs):
+        return
+
+    if self.current_file not in self.anchor_map:
+        self.anchor_map[self.current_file] = (self.current_file, self.p)
+        simple_name = g.os_path_split(self.current_file)[1]
+        self.anchor_map[simple_name] = self.anchor_map[self.current_file]
+        if bwm_file: print &gt;&gt; bwm_file, (
+            "anchor(1): current_file:", self.current_file,
+            "position:", self.p,
+            "Simple name:", simple_name,
+        )
+        # Not sure what to do here, exactly. Do I need to manipulate
+        # the pathname?
+
+    for name, value in attrs:
+        if name == 'name' or tag == 'span' and name == 'id':
+            if not value.startswith(self.node_begin_marker):
+                if bwm_file: print &gt;&gt; bwm_file, "anchor(2):", value, self.p
+                self.anchor_map[value] = (self.current_file, self.p.copy())
+</t>
+<t tx="ekr.20050805162550.53">class link_htmlparserClass (linkAnchorParserClass):
+
+    '''This html parser does the second step of relocating links:
+    1. It scans the html code for links.
+    2. If there is a link which links to a previously processed file
+       then this link is changed so that it now refers to the node.
+    '''
+
+    @others
+</t>
+<t tx="ekr.20050805162550.54">def __init__ (self,rst,p):
+
+    linkAnchorParserClass.__init__(self,rst)
+
+    self.p = p.copy()
+    self.anchor_map = rst.anchor_map
+    self.replacements = []
+</t>
+<t tx="ekr.20050805162550.55">def handle_starttag(self, tag, attrs):
+    '''
+    1. Find out if the current tag is an achor.
+    2. If the current tag is an anchor, update the mapping;
+         anchor -&gt; p
+        Update the list of replacements for the document.
+    '''
+    if bwm_file: print &gt;&gt; bwm_file, "Is link?", tag, attrs
+    if not self.is_link(tag, attrs):
+        return
+
+    marker = self.node_begin_marker
+    for name, value in attrs:
+        if name == 'href':
+            href = value
+            href_parts = href.split("#")
+            if len(href_parts) == 1:
+                href_a = href_parts[0]
+            else:
+                href_a = href_parts[1]
+            if bwm_file: print &gt;&gt; bwm_file, "link(1):", name, value, href_a
+            if not href_a.startswith(marker):
+                if href_a in self.anchor_map:
+                    href_file, href_node = self.anchor_map[href_a]
+                    http_node_ref = mod_http.node_reference(href_node)
+                    line, column = self.getpos()
+                    if bwm_file: print &gt;&gt; bwm_file, "link(2):", line, column, href, href_file, http_node_ref
+                    self.replacements.append((line, column, href, href_file, http_node_ref))
+</t>
+<t tx="ekr.20050805162550.56">def get_replacements(self):
+
+    return self.replacements
+</t>
+<t tx="ekr.20050805162550.6">def onCreate(tag, keywords):
+
+    c = keywords.get('new_c') or keywords.get('c')
+    if c:
+        global controllers
+        controllers[c] = rstClass(c)
+        # Warning: Do not return anything but None here!
+        # Doing so suppresses the loading of other 'new' or 'open2' hooks!
+</t>
+<t tx="ekr.20050805162550.8">class rstClass(object):
+
+    '''A class to write rst markup in Leo outlines.'''
+
+@ This plugin optionally stores information for the http plugin.
+
+Each node can have one additional attribute, with the name rst_http_attributename, which is a list.
+
+The first three elements are stack of tags, the rest is html code.
+
+[&lt;tag n start&gt;, &lt;tag n end&gt;, &lt;other stack elements&gt;, &lt;html line 1&gt;, &lt;html line 2&gt;, ...]
+
+&lt;other stack elements has the same structure:
+    [&lt;tag n-1 start&gt;, &lt;tag n-1 end&gt;, &lt;other stack elements&gt;]
+@c
+
+    @others
+</t>
+<t tx="ekr.20050805162550.9"></t>
+<t tx="ekr.20050806101253">def code_block (name,arguments,options,content,lineno,content_offset,block_text,state,state_machine):
+
+    '''Implement the code-block directive for docutils.'''
+
+    try:
+        language = arguments [0]
+        # See http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/252170
+        module = SilverCity and getattr(SilverCity,language)
+        generator = module and getattr(module,language+"HTMLGenerator")
+        if generator:
+            io = StringIO()
+            generator().generate_html(io,'\n'.join(content))
+            html = '&lt;div class="code-block"&gt;\n%s\n&lt;/div&gt;\n' % io.getvalue()
         else:
-            root_p = c.lastTopLevel().insertAfter()
-            root_p.h = g.shortFileName(path)
-            for child in body:
-                if child != body:
-                    self.add_children(root_p, child)
-            c.selectPosition(root_p)
-            c.redraw()
-    else:
-        g.error('file not found: %s' % sfn)
-</t>
-<t tx="ekr.20160504043823.1">def prompt_for_files(self):
-    '''Prompt for a list of FreeMind (.mm.html) files and import them.'''
-    c = self.c
-    types = [
-        ("FreeMind files", "*.mm.html"),
-        ("All files", "*"),
-    ]
-    names = g.app.gui.runOpenFileDialog(c,
-        title="Import FreeMind File",
-        filetypes=types,
-        defaultextension=".html",
-        multiple=True)
-    c.bringToFront()
-    if names:
-        g.chdir(names[0])
-        self.import_files(names)
-</t>
-<t tx="ekr.20170222084048.1">def add_children(self, parent, element):
-    '''
-    parent is the parent position, element is the parent element.
-    Recursively add all the child elements as descendants of parent_p.
-    '''
-    p = parent.insertAsLastChild()
-    attrib_text = element.attrib.get('text','').strip()
-    tag = element.tag if g.isString(element.tag) else ''
-    text = element.text or ''
-    if not tag: text = text.strip()
-    p.h = attrib_text or tag or 'Comment'
-    p.b = text if text.strip() else ''
-    for child in element:
-        self.add_children(p, child)
-</t>
-<t tx="ekr.20170427112302.1">g.cls()
-import glob
-files = glob.glob(g.os_path_join(g.app.loadDir, '*.py'))
-files = [z for z in files if g.os_path_basename(z).startswith('leo')]
-if 0:
-    g.printList(files)
-found = set()
-for p in c.all_unique_positions():
-    name = p.isAnyAtFileNode()
-    if name and name.startswith('leo'):
-        path = g.os_path_join(g.app.loadDir, name)
-        found.add(path)
-if 0:
-    print('found')
-    g.printList(list(found))
+            html = '&lt;div class="code-block"&gt;\n%s\n&lt;/div&gt;\n' % '&lt;br&gt;\n'.join(content)
+        raw = docutils.nodes.raw('',html,format='html')
+        return [raw]
+    except Exception: # Return html as shown.  Lines are separated by &lt;br&gt; elements.
+        g.es_trace('exception in rst3:code_block()')
+        g.es_exception()
+        return [None]
+
+# See http://docutils.sourceforge.net/spec/howto/rst-directives.html
+code_block.arguments = (
+    1, # Number of required arguments.
+    0, # Number of optional arguments.
+    0) # True if final argument may contain whitespace.
+
+# A mapping from option name to conversion function.
+if docutils:
+    code_block.options = {
+        'language':
+        docutils.parsers.rst.directives.unchanged # Return the text argument, unchanged.
+    }
+    code_block.content = 1 # True if content is allowed.
+
+    # Register the directive with docutils.
+    docutils.parsers.rst.directives.register_directive('code-block',code_block)
 else:
-    missing = set(files) - found
-    if missing:
-        print('not found...')
-        g.printList(list(sorted(missing)))
+    code_block.options = {}
+
+</t>
+<t tx="ekr.20050806162146">@nocolor
+@
+
+- Specify option for the spelling of special doc parts.
+    - The present code assumes to much about these commands.
+- Warn if option gets set twice in same vnode.
+
+Later or never:
+    - show_context option.
+    - encoding option: can override @encoding directives
+    - Support docutils config files.
+
+@c
+
+@others
+</t>
+<t tx="ekr.20050807120331.1">def preprocessTree (self,root):
+
+    self.tnodeOptionDict = {}
+
+    # Bug fix 12/4/05: must preprocess parents too.
+    for p in root.parents():
+        self.preprocessNode(p)
+
+    for p in root.self_and_subtree():
+        self.preprocessNode(p)
+
+    if 0:
+        g.trace(root.h)
+        for key in self.tnodeOptionDict.keys():
+            g.trace(key)
+            g.printDict(self.tnodeOptionDict.get(key))
+</t>
+<t tx="ekr.20050807120331.2">def scanNodeForOptions (self,p):
+    '''
+    Return a dictionary containing all the option-name:value entries in p.
+
+    Such entries may arise from @rst-option or @rst-options in the headline,
+    or from @ @rst-options doc parts.
+    '''
+    d = self.scanHeadlineForOptions(p)
+    d2 = self.scanForOptionDocParts(p,p.b)
+    # A fine point: body options over-ride headline options.
+    d.update(d2)
+    return d
+</t>
+<t tx="ekr.20050808064245">def createDefaultOptionsDict(self):
+
+    # Warning: changing the names of options changes the names of the corresponding ivars.
+
+    self.defaultOptionsDict = {
+        # Http options...
+        'rst3_clear_http_attributes':   False,
+        'rst3_http_server_support':     False,
+        'rst3_http_attributename':      'rst_http_attribute',
+        'rst3_node_begin_marker':       'http-node-marker-',
+        # Path options...
+        'rst3_default_path': None, # New in Leo 4.4a4 # Bug fix: must be None, not ''.
+        'rst3_stylesheet_name': 'default.css',
+        'rst3_stylesheet_path': None, # Bug fix: must be None, not ''.
+        'rst3_publish_argv_for_missing_stylesheets': None,
+        # Global options...
+        'rst3_code_block_string': '',
+        'rst3_number_code_lines': True,
+        'rst3_underline_characters': '''#=+*^~"'`-:&gt;&lt;_''',
+        'rst3_verbose':True,
+        'rst3_write_intermediate_file': False, # Used only if generate_rst is True.
+        # Mode options...
+        'rst3_code_mode': False, # True: generate rst markup from @code and @doc parts.
+        'rst3_doc_only_mode': False, # True: generate only from @doc parts.
+        'rst3_generate_rst': True, # True: generate rst markup.  False: generate plain text.
+        'rst3_generate_rst_header_comment': True,
+            # True generate header comment (requires generate_rst option)
+        # Formatting options that apply to both code and rst modes....
+        'rst3_show_headlines': True,  # Can be set by @rst-no-head headlines.
+        'rst3_show_organizer_nodes': True,
+        'rst3_show_options_nodes': False,
+        'rst3_show_sections': True,
+        'rst3_strip_at_file_prefixes': True,
+        'rst3_show_doc_parts_in_rst_mode': True,
+        # Formatting options that apply only to code mode.
+        'rst3_show_doc_parts_as_paragraphs': False,
+        'rst3_show_leo_directives': True,
+        'rst3_show_markup_doc_parts': False,
+        'rst3_show_options_doc_parts': False,
+        # *Names* of headline commands...
+        'rst3_code_prefix':             '@rst-code',     # Enter code mode.
+        'rst3_doc_only_prefix':         '@rst-doc-only', # Enter doc-only mode.
+        'rst3_rst_prefix':              '@rst',          # Enter rst mode.
+        'rst3_ignore_headline_prefix':  '@rst-no-head',
+        'rst3_ignore_headlines_prefix': '@rst-no-headlines',
+        'rst3_ignore_node_prefix':      '@rst-ignore-node',
+        'rst3_ignore_prefix':           '@rst-ignore',
+        'rst3_ignore_tree_prefix':      '@rst-ignore-tree',
+        'rst3_option_prefix':           '@rst-option',
+        'rst3_options_prefix':          '@rst-options',
+        'rst3_preformat_prefix':        '@rst-preformat',
+        'rst3_show_headline_prefix':    '@rst-head',
+    }
+</t>
+<t tx="ekr.20050808070018">def scanOption (self,p,s):
+    '''
+    Return { name:val } if s is a line of the form name=val.
+    Otherwise return {}
+    '''
+    if not s.strip() or s.strip().startswith('..'):
+        return {}
+    data = self.parseOptionLine(s)
+    if data:
+        name,val = data
+        fullName = 'rst3_' + self.munge(name)
+        if fullName in self.defaultOptionsDict.keys():
+            if   val.lower() == 'true': val = True
+            elif val.lower() == 'false': val = False
+            return { self.munge(name): val }
+        else:
+            g.error('ignoring unknown option: %s' % (name))
+            return {}
     else:
-        print('done')
-        </t>
-<t tx="ekr.20170427114412.1"></t>
-<t tx="ekr.20170428084123.1">'''Recursively import all python files in a directory and clean the result.'''
-if 0:
-    &lt;&lt; old dir_ settings &gt;&gt;
+        g.trace(repr(s))
+        g.error('bad rst3 option in %s: %s' % (p.h,s))
+        return {}
+</t>
+<t tx="ekr.20050808070018.1">def scanOptions (self,p,s):
+
+    '''Return a dictionary containing all the options in s.'''
+
+    d = {}
+
+    for line in g.splitLines(s):
+        d2 = self.scanOption(p,line)
+        if d2: d.update(d2)
+
+    return d
+</t>
+<t tx="ekr.20050808070018.2">def scanForOptionDocParts (self,p,s):
+
+    '''Return a dictionary containing all options from @rst-options doc parts in p.
+    Multiple @rst-options doc parts are allowed: this code aggregates all options.
+    '''
+
+    d = {} ; n = 0 ; lines = g.splitLines(s)
+    while n &lt; len(lines):
+        line = lines[n] ; n += 1
+        if line.startswith('@'):
+            i = g.skip_ws(line,1)
+            for kind in ('@rst-options','@rst-option'):
+                if g.match_word(line,i,kind):
+                    # Allow options on the same line.
+                    line = line[i+len(kind):]
+                    d.update(self.scanOption(p,line))
+                    # Add options until the end of the doc part.
+                    while n &lt; len(lines):
+                        line = lines[n] ; n += 1 ; found = False
+                        for stop in ('@c','@code', '@'):
+                            if g.match_word(line,0,stop):
+                                found = True ; break
+                        if found:
+                            break
+                        else:
+                            d.update(self.scanOption(p,line))
+                    break
+    return d
+</t>
+<t tx="ekr.20050808072943">def munge (self,name):
+
+    '''Convert an option name to the equivalent ivar name.'''
+
+    i = 3 if name.startswith('rst') else 0
+
+    while i &lt; len(name) and name[i].isdigit():
+        i += 1
+
+    if i &lt; len(name) and name[i] == '_':
+        i += 1
+
+    s = name[i:].lower()
+    s = s.replace('-','_')
+
+    return s
+</t>
+<t tx="ekr.20050808072943.1">def parseOptionLine (self,s):
+    '''
+    Parse a line containing name=val and return (name,value) or None.
+    If no value is found, default to True.
+    '''
+    s = s.strip()
+    if s.endswith(','): s = s[:-1]
+    # Get name.  Names may contain '-' and '_'.
+    i = g.skip_id(s,0,chars='-_')
+    name = s [:i]
+    if not name:
+        return None,'False'
+    j = g.skip_ws(s,i)
+    if g.match(s,j,'='):
+        val = s [j+1:].strip()
+        return name,val
+    else:
+        return name,'True'
+</t>
+<t tx="ekr.20050808142313.28"># Once an option is seen, no other related options in ancestor nodes have any effect.
+
+def scanAllOptions(self,p):
+
+    '''Scan position p and p's ancestors looking for options,
+    setting corresponding ivars.
+    '''
+
+    self.initOptionsFromSettings()
+        # Must be done on every node.
+    self.handleSingleNodeOptions(p)
+    seen = self.singleNodeOptions[:]
+        # Suppress inheritance of single-node options.
+    for p in p.self_and_parents():
+        d = self.tnodeOptionDict.get(p.v,{})
+        for key in d.keys():
+            ivar = self.munge(key)
+            if ivar not in seen:
+                seen.append(ivar)
+                val = d.get(key)
+                self.setOption(key,val,p.h)
+    # self.dumpSettings()
+    if self.rst3_all:
+        self.setOption("generate_rst", True, "rst3_all")
+        self.setOption("generate_rst_header_comment",True, "rst3_all")
+        self.setOption("http_server_support", True, "rst3_all")
+        self.setOption("write_intermediate_file", True, "rst3_all")
+</t>
+<t tx="ekr.20050809074827"></t>
+<t tx="ekr.20050809075309">def initWrite (self,p):
+
+    self.initOptionsFromSettings() # Still needed.
+
+    # Set the encoding from any parent @encoding directive.
+    # This can be overridden by @rst-option encoding=whatever.
+    c = self.c
+    d = c.scanAllDirectives(p)
+    self.encoding = d.get('encoding') or self.defaultEncoding
+    self.path = d.get('path') or ''
+</t>
+<t tx="ekr.20050809080031">def write (self,s):
+
+    s = self.encode(s)
+
+    self.outputFile.write(s)
+</t>
+<t tx="ekr.20050809080925">def writeNormalTree (self,p,toString=False):
+
+    self.initWrite(p)
+
+    # Always write to a string first.
+    self.outputFile = StringIO()
+    self.writeTree(p)
+    self.source = self.stringOutput = self.outputFile.getvalue()
+
+    # Copy to a file if requested.
+    if not toString:
+        # Comput the output file name *after* calling writeTree.
+        self.outputFileName = self.computeOutputFileName(self.outputFileName)
+        self.outputFile = open(self.outputFileName,'w')
+        self.outputFile.write(self.stringOutput)
+        self.outputFile.close()
+
+    return True
+</t>
+<t tx="ekr.20050809082854"></t>
+<t tx="ekr.20050809082854.1">def writeToDocutils (self,s):
+    '''
+    Send s to docutils using the writer implied by self.ext and return the
+    result.
+    '''
+    # openDirectory = self.c.frame.openDirectory
+    overrides = {'output_encoding': self.encoding }
+    # Compute the args list if the stylesheet path does not exist.
+    styleSheetArgsDict = self.handleMissingStyleSheetArgs()
+    writer = None
+    for ext,writer in (
+        ('.html','html'),
+        ('.htm','html'),
+        ('.tex','latex'),
+        ('.pdf','leo_pdf'),
+    ):
+        if self.ext == ext:
+            break
+    else:
+        g.error('unknown docutils extension: %s' % (self.ext))
+        return ''
+
+    # Make the stylesheet path relative to the directory containing the output file.
+    rel_stylesheet_path = self.getOption('stylesheet_path') or ''
+
+    # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
+    stylesheet_path = g.os_path_finalize_join(
+        self.c.frame.openDirectory,rel_stylesheet_path)
+
+    path = g.os_path_finalize_join(
+        stylesheet_path,self.getOption('stylesheet_name'))
+
+    res = ""
+    if g.os_path_exists(path):
+        if self.ext != '.pdf':
+            overrides['stylesheet'] = path
+            overrides['stylesheet_path'] = None
+    elif styleSheetArgsDict:
+        g.es_print('using publish_argv_for_missing_stylesheets',
+            styleSheetArgsDict)
+        overrides.update(styleSheetArgsDict)
+            # MWC add args to settings
+    elif rel_stylesheet_path == stylesheet_path:
+        g.error('stylesheet not found: %s' % (path))
+    else:
+        g.error('stylesheet not found\n',path)
+        if self.path:g.es_print('@path:', self.path)
+        g.es_print('open path:',self.c.frame.openDirectory)
+        if rel_stylesheet_path:
+            g.es_print('relative path:', rel_stylesheet_path)
+    try:
+        # All paths now come through here.
+        res = docutils.core.publish_string(source=s,
+                reader_name='standalone',
+                parser_name='restructuredtext',
+                writer_name=writer,
+                settings_overrides=overrides)
+    except docutils.ApplicationError as error:
+        g.es_print('Error (%s): %s' % (error.__class__.__name__, error))
+    return res
+</t>
+<t tx="ekr.20050810083057">def writeNode (self,p):
+
+    '''Format a node according to the options presently in effect.'''
+
+    self.initCodeBlockString(p)
+    self.scanAllOptions(p)
+
+    if 0:
+        g.trace('%24s code_mode %s' % (p.h,self.getOption('code_mode')))
+
+    h = p.h.strip()
+
+    if self.getOption('preformat_this_node'):
+        self.http_addNodeMarker(p)
+        self.writePreformat(p)
+        p.moveToThreadNext()
+    elif self.getOption('ignore_this_tree'):
+        p.moveToNodeAfterTree()
+    elif self.getOption('ignore_this_node'):
+        p.moveToThreadNext()
+    elif g.match_word(h,0,'@rst-options') and not self.getOption('show_options_nodes'):
+        p.moveToThreadNext()
+    else:
+        self.http_addNodeMarker(p)
+        self.writeHeadline(p)
+        self.writeBody(p)
+        p.moveToThreadNext()
+</t>
+<t tx="ekr.20050810083314"></t>
+<t tx="ekr.20050810083856">def rstComment (self,s):
+
+    return '.. %s' % s
+</t>
+<t tx="ekr.20050810103731">def handleSingleNodeOptions (self,p):
+
+    '''Init the settings of single-node options from the tnodeOptionsDict.
+
+    All such options default to False.'''
+
+    d = self.tnodeOptionDict.get(p.v, {} )
+
+    for ivar in self.singleNodeOptions:
+        val = d.get(ivar,False)
+        self.setOption(ivar,val,p.h)
+
+</t>
+<t tx="ekr.20050811101550.1">def writeBody (self,p):
+
+    # remove trailing cruft and split into lines.
+    lines = p.b.rstrip().split('\n')
+
+    if self.getOption('code_mode'):
+        if not self.getOption('show_options_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-options',
+                retainContents=False)
+        if not self.getOption('show_markup_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-markup',
+                retainContents=False)
+        if not self.getOption('show_leo_directives'):
+            lines = self.removeLeoDirectives(lines)
+        lines = self.handleCodeMode(lines)
+    elif self.getOption('doc_only_mode'):
+        # New in version 1.15
+        lines = self.handleDocOnlyMode(p,lines)
+    else:
+        lines = self.handleSpecialDocParts(lines,'@rst-options',
+            retainContents=False)
+        lines = self.handleSpecialDocParts(lines,'@rst-markup',
+            retainContents=self.getOption('generate_rst'))
+        if self.getOption('show_doc_parts_in_rst_mode') is True:
+            pass  # original behaviour, treat as plain text
+        elif self.getOption('show_doc_parts_in_rst_mode'):
+            # use value as class for content
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
+        else:  # option evaluates to false, cut them out
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=False)
+        lines = self.removeLeoDirectives(lines)
+        if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
+            lines = self.replaceCodeBlockDirectives(lines)
+
+    s = '\n'.join(lines).strip()
+    if s:
+        self.write('%s\n\n' % s)
+</t>
+<t tx="ekr.20050811102607">def skip_literal_block (self,lines,n):
+
+    s = lines[n] ; result = [s] ; n += 1
+    indent = g.skip_ws(s,0)
+
+    # Skip lines until a non-blank line is found with same or less indent.
+    while n &lt; len(lines):
+        s = lines[n]
+        indent2 = g.skip_ws(s,0)
+        if s and not s.isspace() and indent2 &lt;= indent:
+            break # We will rescan lines [n]
+        n += 1
+        result.append(s)
+
+    # g.printList(result,tag='literal block')
+    return n, result
+</t>
+<t tx="ekr.20050811105438">def removeLeoDirectives (self,lines):
+
+    '''Remove all Leo directives, except within literal blocks.'''
+
+    n = 0 ; result = []
+    while n &lt; len(lines):
+        s = lines [n] ; n += 1
+        if s.strip().endswith('::'):
+            n, lit = self.skip_literal_block(lines,n-1)
+            result.extend(lit)
+        elif s.startswith('@') and not self.isAnySpecialDocPart(s):
+            for key in self.leoDirectivesList:
+                if g.match_word(s,0,key):
+                    break
+            else:
+                result.append(s)
+        else:
+            result.append(s)
+
+    return result
+</t>
+<t tx="ekr.20050811105438.1">def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
+
+    result = [] ; n = 0
+    while n &lt; len(lines):
+        s = lines [n] ; n += 1
+        if s.strip().endswith('::'):
+            n, lit = self.skip_literal_block(lines,n-1)
+            result.extend(lit)
+        elif self.isSpecialDocPart(s,kind):
+            n, lines2 = self.getDocPart(lines,n)
+            if retainContents:
+                result.extend([''])
+                if asClass:
+                    result.extend(['.. container:: '+asClass, ''])
+                    if 'literal' in asClass.split():
+                        result.extend(['  ::', ''])
+                    for l2 in lines2: result.append('    '+l2)
+                else:
+                    result.extend(lines2)
+                result.extend([''])
+        else:
+            result.append(s)
+
+    return result
+</t>
+<t tx="ekr.20050811135526">def setOption (self,name,val,tag):
+
+    ivar = self.munge(name)
+    self.optionsDict [ivar] = val
+</t>
+<t tx="ekr.20050811150541">def handleCodeMode (self,lines):
+
+    '''Handle the preprocessed body text in code mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - Everything else gets put into a code-block directive.'''
+
+    result = [] ; n = 0 ; code = []
+    while n &lt; len(lines):
+        s = lines [n] ; n += 1
+        if (
+            self.isSpecialDocPart(s,'@rst-markup') or
+            (self.getOption('show_doc_parts_as_paragraphs') and self.isSpecialDocPart(s,None))
+        ):
+            if code:
+                self.finishCodePart(result,code)
+                code = []
+            result.append('')
+            n, lines2 = self.getDocPart(lines,n)
+            result.extend(lines2)
+        elif not s.strip() and not code:
+            pass # Ignore blank lines before the first code block.
+        elif not code: # Start the code block.
+            result.append('')
+            result.append(self.code_block_string)
+            code.append(s)
+        else: # Continue the code block.
+            code.append(s)
+
+    if code:
+        self.finishCodePart(result,code)
+        code = []
+    return self.rstripList(result)
+</t>
+<t tx="ekr.20050811152104">def formatCodeModeLine (self,s,n,numberOption):
+
+    if not s.strip(): s = ''
+
+    if numberOption:
+        return '\t%d: %s' % (n,s)
+    else:
+        return '\t%s' % s
+</t>
+<t tx="ekr.20050811153208">def isSpecialDocPart (self,s,kind):
+
+    '''Return True if s is a special doc part of the indicated kind.
+
+    If kind is None, return True if s is any doc part.'''
+
+    if s.startswith('@') and len(s) &gt; 1 and s[1].isspace():
+        if kind:
+            i = g.skip_ws(s,1)
+            result = g.match_word(s,i,kind)
+        else:
+            result = True
+    elif not kind:
+        result = g.match_word(s,0,'@doc') or g.match_word(s,0,'@')
+    else:
+        result = False
+
+    return result
+</t>
+<t tx="ekr.20050811154552">def getDocPart (self,lines,n):
+
+    result = []
+    &lt;&lt; Append whatever follows @doc or @space to result &gt;&gt;
+    while n &lt; len(lines):
+        s = lines [n] ; n += 1
+        if g.match_word(s,0,'@code') or g.match_word(s,0,'@c'):
+            break
+        result.append(s)
+    return n, result
+</t>
+<t tx="ekr.20050811163802">def isAnySpecialDocPart (self,s):
+
+    for kind in (
+        '@rst-markup',
+        '@rst-option',
+        '@rst-options',
+    ):
+        if self.isSpecialDocPart(s,kind):
+            return True
+
+    return False
+</t>
+<t tx="ekr.20050811173750">def scanHeadlineForOptions (self,p):
+
+    '''Return a dictionary containing the options implied by p's headline.'''
+
+    h = p.h.strip()
+
+    if p == self.topNode:
+        return {} # Don't mess with the root node.
+    elif g.match_word(h,0,self.getOption('option_prefix')): # '@rst-option'
+        s = h [len(self.option_prefix):]
+        return self.scanOption(p,s)
+    elif g.match_word(h,0,self.getOption('options_prefix')): # '@rst-options'
+        return self.scanOptions(p,p.b)
+    else:
+        # Careful: can't use g.match_word because options may have '-' chars.
+        i = g.skip_id(h,0,chars='@-')
+        word = h[0:i]
+
+        for prefix,ivar,val in (
+            ('code_prefix','code_mode',True), # '@rst-code'
+            ('doc_mode_prefix','doc_only_mode',True), # @rst-doc-only.
+            ('default_path_prefix','default_prefix',''), # '@rst-default-path'
+            ('rst_prefix','code_mode',False), # '@rst'
+            ('ignore_headline_prefix','ignore_this_headline',True), # '@rst-no-head'
+            ('show_headline_prefix','show_this_headline',True), # '@rst-head'
+            ('ignore_headlines_prefix','show_headlines',False), # '@rst-no-headlines'
+            ('ignore_prefix','ignore_this_tree',True),      # '@rst-ignore'
+            ('ignore_node_prefix','ignore_this_node',True), # '@rst-ignore-node'
+            ('ignore_tree_prefix','ignore_this_tree',True), # '@rst-ignore-tree'
+            ('preformat_prefix','preformat_this_node',True), # '@rst-preformat
+        ):
+            prefix = self.getOption(prefix)
+            if prefix and word == prefix: # Do _not_ munge this prefix!
+                d = { ivar: val }
+                if ivar != 'code_mode':
+                    d ['code_mode'] = False # Enter rst mode.
+                    d ['doc_only_mode'] = False
+                # Special case: Treat a bare @rst like @rst-no-head
+                if h == self.getOption('rst_prefix'):
+                    d ['ignore_this_headline'] = True
+                return d
+
+        if h.startswith('@rst'):
+            g.trace('word',word,'rst_prefix',self.getOption('rst_prefix'))
+            g.trace('unknown kind of @rst headline',p.h)
+
+        return {}
+</t>
+<t tx="ekr.20050812120933">def dumpSettings (self):
+
+    d = self.optionsDict
+    keys = list(d.keys())
+    keys.sort()
+
+    g.pr('present settings...')
+    for key in keys:
+        g.pr('%20s %s' % (key,d.get(key)))
+</t>
+<t tx="ekr.20050812122236"></t>
+<t tx="ekr.20050813083007">def initHeadlineCommands (self):
+
+    '''Init the list of headline commands used by writeHeadline.'''
+
+    self.headlineCommands = [
+        self.getOption('code_prefix'),
+        self.getOption('doc_only_prefix'),
+        self.getOption('default_path_prefix'),
+        self.getOption('rst_prefix'),
+        self.getOption('ignore_headline_prefix'),
+        self.getOption('ignore_headlines_prefix'),
+        self.getOption('ignore_node_prefix'),
+        self.getOption('ignore_tree_prefix'),
+        self.getOption('option_prefix'),
+        self.getOption('options_prefix'),
+        self.getOption('show_headline_prefix'),
+        # # Suggested by Hemanth P.S.: prevent @file nodes from creating headings.
+        # self.getOption('keep_at_file_prefix'),
+        # self.getOption('strip_at_file_prefix'),
+    ]
+</t>
+<t tx="ekr.20050813085236">def initSingleNodeOptions (self):
+
+    self.singleNodeOptions = [
+        'ignore_this_headline',
+        'ignore_this_node',
+        'ignore_this_tree',
+        'preformat_this_node',
+        'show_this_headline',
+    ]
+</t>
+<t tx="ekr.20050813155021">def rstripList (self,theList):
+
+    '''Removed trailing blank lines from theList.'''
+
+    s = '\n'.join(theList).rstrip()
+    return s.split('\n')
+</t>
+<t tx="ekr.20050813160208">def finishCodePart (self,result,code):
+
+    numberOption = self.getOption('number_code_lines')
+    code = self.rstripList(code)
+    i = 0
+    for line in code:
+        i += 1
+        result.append(self.formatCodeModeLine(line,i,numberOption))
+</t>
+<t tx="ekr.20050814134351">def getOption (self,name):
+
+    bwm = False
+    if bwm:
+        g.trace("bwm: getOption self:%s, name:%s, value:%s" % (
+            self, name, self.optionsDict.get(name)))
+
+    return self.optionsDict.get(name)
+</t>
+<t tx="ekr.20050815091008.1">def http_addNodeMarker (self,p):
+
+    if (
+        self.getOption('http_server_support') and
+        self.getOption('generate_rst')
+    ):
+        self.nodeNumber += 1
+        anchorname = "%s%s" % (self.getOption('node_begin_marker'),self.nodeNumber)
+        s = "\n\n.. _%s:\n\n" % anchorname
+        self.write(s)
+        self.http_map [anchorname] = p.copy()
+        if bwm_file: print &gt;&gt; bwm_file, "addNodeMarker", anchorname, p
+</t>
+<t tx="ekr.20050815164715">def is_node_marker (self,attrs):
+    '''
+    Return the name of the anchor, if this is an anchor for the beginning of a node,
+    False otherwise.
+    '''
+
+    d = dict(attrs)
+    result = 'id' in d and d['id'].startswith(self.node_begin_marker)
+    if result:
+        return d['id']
+    return result
+</t>
+<t tx="ekr.20050815164715.1">if 0:
+    g.pr("rst3: unknownAttributes[self.http_attributename]")
+    g.pr("For:", self.last_position)
+    pprint.pprint(mod_http.get_http_attribute(self.last_position))
+</t>
+<t tx="ekr.20050817132814">@nocolor-node
+
+Important: the rst3 plugin has largely been superceded by similar
+commands built into Leo's core.
+
+To activate the rst3 plugin, do the following:
+
+1. Go to http://silvercity.sourceforge.net/.
+- Follow the link 'SilverCity Releases'.
+- Download the release that fits to your Python version.
+- Double-klick on the downloaded file.
+
+2. Go to http://docutils.sourceforge.net/.
+- Have a look for item 'Download'
+- Get, as the editor says, the latest snapshot by following the link
+  'docutils-snapshot.tgz'.
+- Make sure you have a application that can handle this format. 7zip is doing this great.
+- Unpack it to a temporary folder.
+- Open a console window, go to the temporary folder and type 'setup.py install'
+  or '&lt;path_to_python.exe&gt;\python setup.py install'.
+
+3. Start up Leo
+- Check in the menu 'Edit' for item 'Write-Restructured-Text'.
+</t>
+<t tx="ekr.20051121102358">def processTopTree (self,p,justOneFile=False):
+
+    current = p.copy()
+    for p in current.self_and_parents():
+        h = p.h
+        if h.startswith('@rst') and not h.startswith('@rst-'):
+            self.processTree(p,
+                ext=None,
+                toString=False,
+                justOneFile=justOneFile,
+            )
+            break
+    else:
+        self.processTree(current,
+            ext=None,
+            toString=False,
+            justOneFile=justOneFile,
+        )
+    g.blue('done')
+</t>
+<t tx="ekr.20051202070028">def computeOutputFileName (self,fileName):
+
+    openDirectory = self.c.frame.openDirectory
+    default_path = self.getOption('default_path')
+    if default_path:
+        path = g.os_path_finalize_join(self.path,default_path,fileName)
+    elif self.path:
+        path = g.os_path_finalize_join(self.path,fileName)
+    elif openDirectory:
+        path = g.os_path_finalize_join(self.path,openDirectory,fileName)
+    else:
+        path = g.os_path_finalize_join(fileName)
+
+    return path
+</t>
+<t tx="ekr.20051204070141">def preprocessNode (self,p):
+
+    d = self.tnodeOptionDict.get(p.v)
+    if d is None:
+        d = self.scanNodeForOptions(p)
+        self.tnodeOptionDict [p.v] = d
+</t>
+<t tx="ekr.20060525102337">def writeNodeToString (self,p=None,ext=None):
+    '''
+    Scan p's tree (defaults to presently selected tree) looking for @rst nodes.
+    Convert the first node found to an ouput of the type specified by ext.
+
+    The @rst may or may not be followed by a filename; the filename is *ignored*,
+    and its type does not affect ext or the output generated in any way.
+
+    ext should start with a period:  .html, .tex or None (specifies rst output).
+
+    Returns p, s, where p is the position of the @rst node and s is the converted text.
+    '''
+    c = self.c
+    current = p or c.p
+    for p in current.self_and_parents():
+        if p.h.startswith('@rst'):
+            return self.processTree(p,ext=ext,toString=True,justOneFile=True)
+    return self.processTree(current,ext=ext,toString=True,justOneFile=True)
+</t>
+<t tx="ekr.20060608094815">def handleDocOnlyMode (self,p,lines):
+    '''
+    Handle the preprocessed body text in doc_only mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - All doc parts get copied.
+    - All code parts are ignored.
+    '''
+    # ignore            = self.getOption('ignore_this_headline')
+    showHeadlines       = self.getOption('show_headlines')
+    showThisHeadline    = self.getOption('show_this_headline')
+    showOrganizers      = self.getOption('show_organizer_nodes')
+    result = [] ; n = 0
+    while n &lt; len(lines):
+        s = lines [n] ; n += 1
+        if self.isSpecialDocPart(s,'@rst-options'):
+            n, lines2 = self.getDocPart(lines,n) # ignore.
+        elif self.isAnyDocPart(s):
+            # Handle any other doc part, including @rst-markup.
+            n, lines2 = self.getDocPart(lines,n)
+            if lines2: result.extend(lines2)
+    if not result: result = []
+    if showHeadlines:
+        if result or showThisHeadline or showOrganizers or p == self.topNode:
+            self.writeHeadlineHelper(p)
+    return result
+</t>
+<t tx="ekr.20060608094815.1">def isAnyDocPart (self,s):
+
+    if s.startswith('@doc'):
+        return True
+    elif not s.startswith('@'):
+        return False
+    else:
+        return len(s) == 1 or s[1].isspace()
+</t>
+<t tx="ekr.20060608102001">def writeHeadlineHelper (self,p):
+
+    h = p.h.strip()
+
+    # Remove any headline command before writing the
+    i = g.skip_id(h,0,chars='@-')
+    word = h [:i]
+    if word:
+        # Never generate a section for @rst-option or @rst-options.
+        if word in (self.getOption('option_prefix'),self.getOption('options_prefix')):
+            return
+        # Remove all other headline commands from the headline.
+        for prefix in self.headlineCommands:
+            if word == prefix:
+                h = h [len(word):].strip()
+                break
+
+        # New in Leo 4.4.4.
+        if word.startswith('@'):
+            if self.getOption('strip_at_file_prefixes'):
+                for s in ('@auto','@file','@nosent','@thin',):
+                    if g.match_word(word,0,s):
+                        h = h [len(s):].strip()
+
+    if not h.strip(): return
+
+    if self.getOption('show_sections'):
+        if self.getOption('generate_rst'):
+            self.write('%s\n%s\n' % (h,self.underline(h,p)))
+        else:
+            self.write('\n%s\n' % h)
+    else:
+        self.write('\n**%s**\n\n' % h.replace('*',''))
+</t>
+<t tx="ekr.20060610104435">if n &gt; 0:
+    line = lines[n-1]
+    if line.startswith('@doc'):
+        s = line[4:].lstrip()
+    elif line.startswith('@'):
+        s = line[1:].lstrip()
+    else:
+        s = ''
+
+    # New in Leo 4.4.4: remove these special tags.
+    for tag in ('@rst-options','@rst-option','@rst-markup'):
+        if g.match_word(s,0,tag):
+            s = s[len(tag):].strip()
+
+    if s.strip():
+        result.append(s)
+</t>
+<t tx="ekr.20061023141638"></t>
+<t tx="ekr.20061023142737"></t>
+<t tx="ekr.20061023142737.1"></t>
+<t tx="ekr.20071015110830">def initCodeBlockString(self,p):
+
+    # New in Leo 4.4.4: do this here, not in initWrite:
+    c = self.c
+    d = c.scanAllDirectives(p)
+    language = d.get('language')
+    if language is None:
+        language = 'python'
+    else:
+        language = language.lower()
+    syntax = SilverCity is not None
+    s = self.getOption('code_block_string')
+    if s:
+        self.code_block_string = s.replace('\\n','\n')
+    elif syntax and language in ('python','ruby','perl','c'):
+        self.code_block_string = '**code**:\n\n.. code-block:: %s\n' % language.title()
+    else:
+        self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n'
+</t>
+<t tx="ekr.20071113084440"># These plugins are for testing Leo's own plugin loading logic.
+# There is no reason ever to enable these plugins.</t>
+<t tx="ekr.20071115061253">def writePreformat (self,p):
+
+    '''Write p's body text lines as if preformatted.
+
+     ::
+
+        line 1
+        line 2 etc.
+    '''
+    lines = p.b.split('\n')
+    lines = [' '*4 + z for z in lines]
+    lines.insert(0,'::\n')
+    s = '\n'.join(lines)
+    if s.strip():
+        self.write('%s\n\n' % s)
+</t>
+<t tx="ekr.20090428082801.64">def handleMissingStyleSheetArgs (self,s=None):
+
+    '''Parse the publish_argv_for_missing_stylesheets option,
+    returning a dict containing the parsed args.'''
+
+    d = {}
+    if not s:
+        s = self.getOption('publish_argv_for_missing_stylesheets')
+    if not s: return d
+
+    args = s.strip()
+    if args.find(',') == -1:
+        args = [args]
+    else:
+        args = args.split(',')
+
+    for arg in args:
+        data = arg.split('=')
+        if len(data) == 1:
+            key = data[0]
+            d[str(key)] = ""
+        elif len(data) == 2:
+            key,value = data
+            d[str(key)] = str(value)
+        else:
+            g.error('bad option: %s' % s)
+            break
+
+    return d
+</t>
+<t tx="ekr.20090429055156.63">def runUnitTests(c):
+
+    rstClass(c)
+    p = g.findNodeAnywhere(c,'UnitTests')
+    if p:
+        c.selectPosition(p)
+        c.testManager.doTests(all=None, marked=None, verbosity=1)
+</t>
+<t tx="ekr.20090430075506.4">@nosearch</t>
+<t tx="ekr.20100103093121.5365"># These are experimental plugins.
+</t>
+<t tx="ekr.20101004082701.5674"></t>
+<t tx="ekr.20101110150056.9453"># Some of the most important recent plugins work only with the Qt gui.
+</t>
+<t tx="ekr.20101110150056.9457"></t>
+<t tx="ekr.20120309073937.9878"></t>
+<t tx="ekr.20121126102050.10134"></t>
+<t tx="ekr.20130927050813.13031"></t>
+<t tx="ekr.20140723122936.17925"># Leo loads these plugins automatically.  Do not add them to @enabled-plugins nodes.
+
+# These plugins now contain the importer code for all kinds of @auto nodes.
+# Each plugin must define a top-level importer_dict dictionary describing the plugin.
+@language python
+</t>
+<t tx="ekr.20140726091031.18071"># Leo loads these plugins automatically.  Do not add them to @enabled-plugins nodes.
+
+# These plugins now contain the write code for all kinds special @auto nodes.
+# Each plugin must define a top-level writer_dict dictionary describing the plugin.
+@language python
+</t>
+<t tx="ekr.20160122104302.1">@nosearch</t>
+<t tx="ekr.20160122104357.1">pylint
+beautify-node
+beautify-tree
+</t>
+<t tx="ekr.20160122104400.1"></t>
+<t tx="ekr.20160412101537.1">'''Imports c:\prog\Julia.ipynb to the node import-Julia.ipynb'''
+import nbformat
+@others
 g.cls()
-dir_ = r'C:\leo.repo\leo-editor\leo\core\editpane'
-# dir_ = r'C:\leo.repo\leo-editor\leo\external\npyscreen'
+if 0:
+    # fn = r'c:\test\Julia.ipynb'
+    fn = r'c:\test\export-neural-networds.ipynb'
+    h = 'import-Julia.ipynb'
+else:
+    h = fn = r'c:\test\04_Neural_Networks.ipynb'
+root = g.findTopLevelNode(c, h)
+if root:
+    while root.hasChildren():
+        root.lastChild().doDelete()
+else:
+    p = c.lastTopLevel()
+    root = p.insertAfter()
+    root.h = h
+x = Import_IPYNB(c)
+x.import_file(fn, root)
+if not g.unitTesting:
+    # These don't work when running unit tests.
+    c.selectPosition(root)
+    # c.expandAllSubheads()
+    c.redraw() 
+    g.es_print('done')
+</t>
+<t tx="ekr.20160412101845.1"># g.cls()
+import re
+import sys
+if 1:
+    h = 'import-neural-networks.ipynb'
+    fn = r'c:\test\export-neural-networds.ipynb'
+else:
+    h = 'import-Julia.ipynb'
+    fn = r'c:\test\export-julia.ipynb'
+p = g.findTopLevelNode(c, h)
+assert p, h
+@others
+Export_IPYNB(c).export_outline(p, fn=fn)
+</t>
+<t tx="ekr.20160510132151.1">c.backup_helper(sub_dir='leoPlugins')
+</t>
+<t tx="ekr.20161030154232.1">'''Converts the word at the cursor to pep8 style throughout a given tree.'''
+# aTestExample notFoundExample.
+import re
+# clear()
+table = (
+    # 'BLS.new_scan',
+    # 'BLS.Code generation',
+    # 'class Importer',
+)
+@others
+Pep8(table, change=True).run()
+</t>
+<t tx="ekr.20161031051319.1">def get_name(self):
+    i, j = c.editCommands.extendToWord(event=None, select=False)
+    w = c.frame.body.wrapper
+    s = w.getAllText()
+    name = s[i:j]
+    return name
+</t>
+<t tx="ekr.20161031051342.1">def to_pep8(self, s):
+    
+    if len(s) &gt; 1 and s[0].islower() and s.lower() != s:
+        result = []
+        for ch in s:
+            result.append(ch)
+            if ch.isupper():
+                result.pop()
+                result.append('_%s' % (ch.lower()))
+        return ''.join(result)
+    else:
+        return name</t>
+<t tx="ekr.20161031053537.1">def change_all(self, name, new_name, root):
+    '''Change name to new_name throughout root's tree.'''
+    u = c.undoer
+    bunch = u.beforeChangeTree(root)
+    found = False
+    self.pattern = re.compile(r'\b%s\b' % name)
+    for p in root.self_and_subtree():
+        found = self.change_headline(name, new_name, p) or found
+        found = self.change_body(name, new_name, p) or found
+    if found:
+        u.afterChangeTree(root, 'pep8', bunch)
+    return found
+</t>
+<t tx="ekr.20161031065339.1">def clear():
+    g.cls()
+    c.k.simulateCommand('clear-log')
+</t>
+<t tx="ekr.20161031074727.1">def change_body(self, name, new_name, p):
+    indices = []
+    for m in self.pattern.finditer(p.b):
+        indices.append(str(m.start()))
+    if indices:
+        n = len(indices)
+        g.es_print('%s change%s: %s' % (n, g.plural(n), p.h))
+        s = p.b
+        for i in reversed(indices):
+            i = int(i)
+            s = s[:i] + new_name + s[i+len(name):]
+        if self.change:
+            p.b = s
+            p.setDirty()
+        else:
+            g.es_print(s)
+    return bool(indices)</t>
+<t tx="ekr.20161031075018.1">def change_headline(self, name, new_name, p):
+    m = self.pattern.search(p.h)
+    if m:
+        i = m.start()
+        s = p.h
+        s = s[:i] + new_name + s[i+len(name):]
+        if self.change:
+            p.h = s
+            p.setDirty()
+            g.es_print('changed headline', s)
+        else:
+            g.es_print('headline', s)
+    return bool(m)
+</t>
+<t tx="ekr.20161031124905.1">class Pep8:
+    '''
+    Convert the word under the cursor to pep8 style in all subtrees in
+    table.
+    '''
+    
+    def __init__ (self, table, change=False):
+        '''Ctor for Pep8 class.'''
+        self.change = change
+        self.table = table
+        
+    @others
+</t>
+<t tx="ekr.20161031125119.1">def run(self):
+    # self.clear()
+    name = self.get_name()
+    new_name = self.to_pep8(name)
+    if len(name) &lt; 2:
+        g.es_print('name too short:', name)
+    elif new_name == name:
+        g.es_print('already pep8:', name)
+    else:
+        g.es_print('%s -&gt; %s' % (name, new_name))
+        c.findCommands.ftm.setFindText(new_name)
+            # Preload the replacement text.
+        found = False
+        for target in table:
+            root = g.findNodeAnywhere(c, target)
+            if root:
+                found = self.change_all(name, new_name, root) or found
+            else:
+                g.es_print('not found: %s' % target)
+        if found:
+            c.redraw()
+        else:
+            g.es_print('not found:', name)
+</t>
+<t tx="ekr.20161122014821.1">g.cls()
+# define constants that describe the new language.
+name = 'php'
+    # The name of the file, and the prefix for classes.
+language = 'php'
+    # The name of the language, case doesn't matter.
+extensions = ['.php',]
+    # A list of file extensions supported by this importer.
+strict = False
+    # True if leading whitespace is particularly significant.
+state_ivar = 'self.curlies'
+    # 'self.indent' for python, coffeescript.
+    # 'self.curlies' for many other languages
+    # '(self, curlies, self.parens)' for more complex comparisons
+&lt;&lt; define run &amp; helpers &gt;&gt;
+run(extensions, language, name, state_ivar)
+</t>
+<t tx="ekr.20161122020451.1">@others</t>
+<t tx="ekr.20161122020932.1">def copy_tree(source, root, h):
+    '''Copy the source tree to the node after p, with headline h.'''
+    p2 = root.insertAfter()
+    source.copyTreeFromSelfTo(p2)
+    p2.h = h
+    return p2
+ </t>
+<t tx="ekr.20161122021006.1">def make_substitutions(destination, patterns):
+    '''Make all substitutions in the destination tree.'''
+    for p in destination.self_and_subtree():
+        h = substitute(p.h, patterns)
+        if p.h != h:
+            # g.trace('CHANGED:', p.h, '==&gt;', h)
+            p.h = h
+        b = substitute(p.b, patterns)
+        if p.b != b:
+            # g.trace('CHANGED:', p.b, '==&gt;', b)
+            p.b = b
+</t>
+<t tx="ekr.20161122021342.1">def substitute(s, patterns):
+    '''Make all substitutions in s.'''
+    for pattern in patterns:
+        find = '{{%s}}' % pattern
+        replace = patterns.get(pattern)
+        i = 0
+        while i &lt; len(s):
+            progress = i
+            j = s.find(find, i)
+            if j == -1: break
+            s = s[:j] + replace + s[j+len(find):]
+            i = j+len(replace)
+            assert progress &lt; i
+    return s
+</t>
+<t tx="ekr.20161122023427.1">def run(extensions, language, name, state_ivar):
+    '''The driver for this script.'''
+    patterns = {
+        'cap_name': name.capitalize(),
+        'extensions': '[%s]' % ', '.join(["'%s'" % (z) for z in extensions]),
+        'language': language.lower(),
+        'name': name.lower(),
+        'strict': 'True' if strict else 'False',
+        'state_ivar': state_ivar,
+    }
+    h = '@button make-importer'
+    root = g.findNodeAnywhere(c, h)
+    assert root, h
+    h = '@@file importers/{{name}}.py'
+    source = g.findNodeInTree(c, root, h)
+    assert source, h
+    destination = copy_tree(source, root, h)
+    make_substitutions(destination, patterns)
+    c.contractAllHeadlines()
+    c.redraw()</t>
+<t tx="ekr.20161122023554.1">'''The @auto importer for the {{name}} language.'''
+import leo.plugins.importers.linescanner as linescanner
+Importer = linescanner.Importer
+@others
+importer_dict = {
+    'class': {{cap_name}}_Importer,
+    'extensions': {{extensions}},
+}
+@language python
+@tabwidth -4
+
+
+</t>
+<t tx="ekr.20161122023554.2">class {{cap_name}}_Importer(Importer):
+    '''The importer for the {{name}} lanuage.'''
+
+    def __init__(self, importCommands, atAuto):
+        '''{{cap_name}}_Importer.__init__'''
+        # Init the base class.
+        Importer.__init__(self,
+            importCommands,
+            atAuto = atAuto,
+            language = '{{language}}',
+            state_class = {{cap_name}}_ScanState,
+            strict = {{strict}},
+        )
+        
+    @others
+</t>
+<t tx="ekr.20161122023554.3"># These can be overridden in subclasses.
+</t>
+<t tx="ekr.20161122023554.4">### Define an override if desired...
+
+if 0: # The base class
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        return s.strip()
+        
+if 0: # A more complex example, for the C language.
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        import re
+        type1 = r'(static|extern)*'
+        type2 = r'(void|int|float|double|char)*'
+        class_pattern = r'\s*(%s)\s*class\s+(\w+)' % (type1)
+        pattern = r'\s*(%s)\s*(%s)\s*(\w+)' % (type1, type2)
+        m = re.match(class_pattern, s)
+        if m:
+            prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
+            return '%sclass %s' % (prefix1, m.group(2))
+        m = re.match(pattern, s)
+        if m:
+            prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
+            prefix2 = '%s ' % (m.group(2)) if m.group(2) else ''
+            h = m.group(3) or '&lt;no c function name&gt;'
+            return '%s%s%s' % (prefix1, prefix2, h)
+        else:
+            return s
+</t>
+<t tx="ekr.20161122023554.5">def clean_nodes(self, parent):
+    '''
+    Clean all nodes in parent's tree.
+    Subclasses override this as desired.
+    See perl_i.clean_nodes for an examplle.
+    '''
+    pass
+</t>
+<t tx="ekr.20161122023554.6">class {{cap_name}}_ScanState:
+    '''A class representing the state of the {{name}} line-oriented scan.'''
+    
+    def __init__(self, d=None):
+        '''{{cap_name}}_ScanState.__init__'''
+        if d:
+            prev = d.get('prev')
+            self.context = prev.context
+            ### Adjust these by hand.
+            self.curlies = prev.curlies
+        else:
+            self.context = ''
+            ### Adjust these by hand.
+            self.curlies = 0
+
+    def __repr__(self):
+        '''{{cap_name}}_ScanState.__repr__'''
+        ### Adjust these by hand.
+        return "{{cap_name}}_ScanState context: %r curlies: %s" % (
+            self.context, self.curlies)
+
+    __str__ = __repr__
+
+    @others
+</t>
+<t tx="ekr.20161122023554.7">def level(self):
+    '''{{cap_name}}_ScanState.level.'''
+    return {{state_ivar}}
+
+</t>
+<t tx="ekr.20161122023554.8">def update(self, data):
+    '''
+    {{cap_name}}_ScanState.update
+
+    Update the state using the 6-tuple returned by v2_scan_line.
+    Return i = data[1]
+    '''
+    context, i, delta_c, delta_p, delta_s, bs_nl = data
+    # All ScanState classes must have a context ivar.
+    self.context = context
+    self.curlies += delta_c  
+    ### Update {{cap_name}}_ScanState ivars
+    # self.bs_nl = bs_nl
+    # self.parens += delta_p
+    # self.squares += delta_s
+    return i
+</t>
+<t tx="ekr.20170203054655.1"></t>
+<t tx="ekr.20170420085814.1">'''Recursively import all python files in a directory and clean the result.'''
+dir_ = r'C:\leo.repo\leo-editor\leo\plugins\leo_babel'
+g.cls()
 c.recursiveImport(
     dir_ = dir_,
     kind = '@file', # '@clean', #'@nosent','@auto','@file',
@@ -1904,145 +2859,8 @@ c.recursiveImport(
     theTypes = ['.py',],
 )
 </t>
-<t tx="ekr.20170428084123.2">dir_ = r'C:\prog\yoton',
-dir_ = r'c:\leo.repo\ace\lib'
-# Tests: 2017/04/07
-dir_ = r'c:\leo.repo\ace\demo\kitchen-sink\dev_util.js' # pass.
-dir_ = r'c:\leo.repo\ace\demo\static-highlighter\server.js' # Perfect import fails.
-dir_ = r'c:\leo.repo\ace\lib\ace\mode\asciidoc_highlight_rules.js' # undefined sections.
-dir_ = r'c:\leo.repo\ace\lib\ace\mode\abap.js' # pass.
-dir_ = r'c:\leo.repo\ace\lib\ace\lib\event.js' # pass.
-dir_ = r'c:\leo.repo\ace\lib\ace\lib' # pass.
-dir_ = r'c:\leo.repo\ace\demo' # All pass except server.js
-dir_ = r'c:\test\js-import-test.js' # pass.
-dir_ = r'c:\leo.repo\ace\lib\ace\mode\coffee\coffee.js'
-# Perfect import fails. Compressed code. Maybe will never pass.
-dir_ = r'c:\leo.repo\ace\lib\ace\mode\behaviour' # All pass
-dir_ = r'c:\leo.repo\ace\lib\ace\mode' # One failure.
-dir_ = r'c:\leo.repo\ace\lib\ace\mode\xquery\xqlint.js' # perfect import fails.
-dir_ = r'c:\prog\brython-home.html'</t>
-<t tx="ekr.20170428084208.443">#!/usr/bin/python
-# This file generates pyflakes warnings for *all* imported symbols.
-@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20170428084208.444">from .globals                   import DEBUG, DISABLE_RESIZE_SYSTEM
-
-from .wgwidget                  import TEST_SETTINGS, ExhaustedTestInput, add_test_input_from_iterable, add_test_input_ch
-
-from .npyssafewrapper           import wrapper, wrapper_basic
-
-from   .npysThemeManagers       import ThemeManager, disableColor, enableColor
-from   . import npysThemes      as     Themes
-from   .apNPSApplication        import NPSApp
-from   .apNPSApplicationManaged import NPSAppManaged
-from   .proto_fm_screen_area    import setTheme
-from   .fmForm                  import FormBaseNew, Form, TitleForm, TitleFooterForm, SplitForm, FormExpanded, FormBaseNewExpanded, blank_terminal
-from   .fmActionForm            import ActionForm, ActionFormExpanded
-from   .fmActionFormV2          import ActionFormV2, ActionFormExpandedV2, ActionFormMinimal
-from   .fmFormWithMenus         import FormWithMenus, ActionFormWithMenus, \
-                                       FormBaseNewWithMenus, SplitFormWithMenus, \
-                                       ActionFormV2WithMenus
-from   .fmPopup                 import Popup, MessagePopup, ActionPopup, PopupWide, ActionPopupWide
-from   .fmFormMutt              import FormMutt, FormMuttWithMenus
-from   .fmFileSelector          import FileSelector, selectFile
-
-from .fmFormMuttActive          import ActionControllerSimple, TextCommandBox, \
-                                       FormMuttActive, FormMuttActiveWithMenus
-from .fmFormMuttActive          import FormMuttActiveTraditional, FormMuttActiveTraditionalWithMenus
-
-
-from .fmFormMultiPage           import FormMultiPage, FormMultiPageAction,\
-                                       FormMultiPageActionWithMenus, FormMultiPageWithMenus
-
-from .npysNPSFilteredData       import NPSFilteredDataBase, NPSFilteredDataList
-
-from .wgbutton                  import MiniButton
-from .wgbutton                  import MiniButtonPress
-from .wgbutton                  import MiniButton      as Button
-from .wgbutton                  import MiniButtonPress as ButtonPress
-
-from .wgtextbox                 import Textfield, FixedText
-from .wgtitlefield              import TitleText, TitleFixedText
-from .wgpassword                import PasswordEntry, TitlePassword
-from .wgannotatetextbox         import AnnotateTextboxBase
-from .wgannotatetextbox         import AnnotateTextboxBaseRight
-
-from .wgslider                  import Slider, TitleSlider
-from .wgslider                  import SliderNoLabel, TitleSliderNoLabel
-from .wgslider                  import SliderPercent, TitleSliderPercent
-
-from .wgwidget                  import DummyWidget, NotEnoughSpaceForWidget
-from . import wgwidget as widget
-
-from .wgmultiline               import MultiLine, Pager, TitleMultiLine, TitlePager, MultiLineAction, BufferPager, TitleBufferPager
-from .wgmultiselect             import MultiSelect, TitleMultiSelect, MultiSelectFixed, \
-                                       TitleMultiSelectFixed, MultiSelectAction
-from .wgeditmultiline           import MultiLineEdit
-from .wgcombobox                import ComboBox, TitleCombo
-from .wgcheckbox                import Checkbox, RoundCheckBox, CheckBoxMultiline, RoundCheckBoxMultiline, CheckBox, CheckboxBare
-from .wgFormControlCheckbox     import FormControlCheckbox
-from .wgautocomplete            import TitleFilename, Filename, Autocomplete
-from .muMenu                    import Menu
-from .wgselectone               import SelectOne, TitleSelectOne
-from .wgdatecombo               import DateCombo, TitleDateCombo
-
-from .npysTree import TreeData
-from .wgmultilinetree           import MLTree, MLTreeAnnotated, MLTreeAction, MLTreeAnnotatedAction
-from .wgmultilinetreeselectable import MLTreeMultiSelect, TreeLineSelectable
-from .wgmultilinetreeselectable import MLTreeMultiSelectAnnotated, TreeLineSelectableAnnotated
-
-
-# The following are maintained for compatibility with old code only. ##########################################
-
-from .compatibility_code.oldtreeclasses import MultiLineTree, SelectOneTree
-from .compatibility_code.oldtreeclasses import MultiLineTreeNew, MultiLineTreeNewAction, TreeLine, TreeLineAnnotated # Experimental
-from .compatibility_code.oldtreeclasses import MultiLineTreeNewAnnotatedAction, MultiLineTreeNewAnnotated # Experimental
-from .compatibility_code.npysNPSTree import NPSTreeData
-
-# End compatibility. ###########################################################################################
-
-from .wgfilenamecombo           import FilenameCombo, TitleFilenameCombo
-from .wgboxwidget               import BoxBasic, BoxTitle
-from .wgmultiline               import MultiLineActionWithShortcuts
-from .wgmultilineeditable       import MultiLineEditable, MultiLineEditableTitle, MultiLineEditableBoxed
-
-from .wgmonthbox                import MonthBox
-from .wggrid                    import SimpleGrid
-from .wggridcoltitles           import GridColTitles
-
-from .muNewMenu                 import NewMenu, MenuItem
-from .wgNMenuDisplay            import MenuDisplay, MenuDisplayScreen
-
-from .npyspmfuncs               import CallSubShell
-
-from .utilNotify                 import notify, notify_confirm, notify_wait, notify_ok_cancel, notify_yes_no
-
-# Base classes for overriding:
-
-# Standard Forms:
-from . import stdfmemail
-
-# Experimental Only
-from .wgtextboxunicode import TextfieldUnicode
-from .wgtexttokens     import TextTokens, TitleTextTokens
-
-# Very experimental. Don't use for anything serious
-from .apOptions import SimpleOptionForm
-from .apOptions import OptionListDisplay, OptionChanger, OptionList, OptionLimitedChoices, OptionListDisplayLine
-from .apOptions import OptionFreeText, OptionSingleChoice, OptionMultiChoice, OptionMultiFreeList, \
-                       OptionBoolean, OptionFilename, OptionDate, OptionMultiFreeText
-
-
-# This really is about as experimental as it gets
-from .apNPSApplicationEvents import StandardApp
-from .eveventhandler import Event
-
-
-</t>
-<t tx="ekr.20170428085201.1">@nosearch</t>
-<t tx="ekr.20170811173924.1">@language python
+<t tx="ekr.20170709095709.1">**Temporary**: So I can fix #516 without going crazy.</t>
+<t tx="ekr.20170811173231.1">@language python
 import os
 import subprocess
 import sys
@@ -2068,331 +2886,51 @@ proc.wait()
 os.chdir(old_dir)
 print('done! wrote %s' % fn)
 </t>
-<t tx="ekr.20171031111403.1"></t>
-<t tx="ekr.20180225010644.1"></t>
-<t tx="ekr.20180225010707.1"></t>
-<t tx="ekr.20180225010743.1">@nosearch</t>
-<t tx="ekr.20180225010850.1"></t>
-<t tx="ekr.20180225010913.1"></t>
-<t tx="ekr.20180324065741.1">'''Copy the selected text to the next node.'''
-w = c.frame.body.wrapper
-s = w.getSelectedText()
-if s.strip():
-    w.deleteTextSelection()
-    c.p.b = w.getAllText()
-    w.setInsertPoint(0)
-    p = c.insertHeadline()
-    c.selectPosition(p)
-    p.b = s
-    c.editHeadline()
-else:
-    g.es_print('no text selected')
-</t>
-<t tx="ekr.20180604114156.2">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/433
-
-- Report error: see child node.
-- Ask: Do I need to accept Terry's work?
-
-Terry's code is in plugins/editpane/editpane.py
-
-@language python
-</t>
-<t tx="ekr.20180604114156.3">@language rest
-@wrap
-
-LEP: __init__ LEP
-LEP: Loaded module: plaintextedit
-LEP: Loaded module: plaintextview
-LEP: Loaded module: __init__
-LEP: Loaded module: clicky_splitter
-LEP: Loaded module: csvedit
-LEP: Loaded module: editpane
-LEP: Loaded module: leotextedit
-LEP: Loaded module: markdownview
-LEP: Module not loaded (unmet dependencies?): pandownview
-LEP: Module not loaded (unmet dependencies?): vanillascintilla
-LEP: Module not loaded (unmet dependencies?): webengineview
-LEP: Loaded module: webkitview
-LEP: build layout
-LEP: new edit position
-LEP: text changed, NOT focused
-LEP: new view position
-LEP: update edit position
-LEP: update editor text
-LEP: text changed, NOT focused
-LEP: update view position
-LEP:
-register handlers
-LEP: unregister handlers</t>
-<t tx="ekr.20180604114211.408">@language rest
-@wrap
-wikiview.py plugin problem with new colorizing code
-https://github.com/leo-editor/leo-editor/issues/388
-
-@language python
-</t>
-<t tx="ekr.20180604114211.561">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/678
-
-10 years ago:
-http://leo.zwiki.org/GraphsInTrees
-
-@language python
-</t>
-<t tx="ekr.20180619063409.1">@language rest
-@wrap
-
-The freemind importer should use ElementTree, not lxml
-https://github.com/leo-editor/leo-editor/issues/929
-ElementTree is more widely available.
-
-@language python
-</t>
-<t tx="ekr.20180708145905.1">@language rest
-@wrap
-
-This is the theory of operation document for py2cs.py. The most interesting aspect of this script is the TokenSync class. This class provides a reliable way of associating tokenizer tokens with ast nodes.
-
-@others
-</t>
-<t tx="ekr.20180708145905.6">
-### Using the TokenSync class
-
-The present code is driven by ast trees, but each visitor of the CoffeeScriptTraverser class takes care to preserve **otherwise-ignored tokens**. These are tokens that would otherwise be ignored: namely blank lines and comments, both entire-line comments and trailing comments.
-
-The visitor for each statement intersperses otherwise ignored tokens using calls to the TokenSync class.  The simplest cases are like this:
-
-    def do_Break(self, node):
-        head = self.leading_string(node)
-        tail = self.trailing_comment(node)
-        return head + self.indent('break') + tail
-
-The leading_string and trailing_comment methods simply redirect to the corresponding methods in the TokenSync class.  Saves a bit of typing. Compound statements are a bit more bother, but not overly so. For example:
-
-    def do_If(self, node):
-
-        result = self.leading_lines(node)
-        tail = self.trailing_comment(node)
-        s = 'if %s:%s' % (self.visit(node.test), tail)
-        result.append(self.indent(s))
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-        if node.orelse:
-            tail = self.tail_after_body(node.body, node.orelse, result)
-            result.append(self.indent('else:' + tail))
-            for z in node.orelse:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
-        return ''.join(result)
-
-The line:
-
-        tail = self.tail_after_body(node.body, node.orelse, result)
-
-is a hack needed to compensate for the lack of an actual ast.Else node.
-</t>
-<t tx="ekr.20180708145905.7">
-### Summary
-
-The TokenSync class is, a new, elegant, unexpected and happy development. It is a relatively easy-to-use helper that allows parser-based code to preserve data that is not easily accessible in parse trees.
-
-The TokenSync class avoids [problems with the col_offset field](
-http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a-python-ast-node) in ast nodes. The TokenSync class depends only on the ast.lineno field and the tokenize module. We can expect it to be rock solid.
-
-Edward K. Ream
-February 20 to 25, 2016
-
-
-
-</t>
-<t tx="ekr.20180708152000.1">
-### The problem
-
-The initial version of py2cs.py (the script) used only tokens. This solved all token-related problems, but made parsing difficult. Alas, it is [difficult](http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a-python-ast-node) to associate tokens with ast nodes.
-
-The script needs the following token-related data:
-
-- The **ignored lines** (comment lines and blank lines) that precede any statement.
-
-- The **trailing comment** strings that might follow any line.
-
-- Optionally, the **line breaks** occurring within lines. At present, this script does not preserve such breaks, and it's probably not worth doing. Indeed, automatically breaking long lines seems more useful, especially considering that coffeescript lines may be substantially shorter than the corresponding python lines.
-
-- The **exact spelling** of all strings.
-
-The [ast_utils module](
-https://bitbucket.org/plas/thonny/src/3b71fda7ac0b66d5c475f7a668ffbdc7ae48c2b5/thonny/ast_utils.py?at=master) purports to solve this problem with convoluted adjustments to the col_offset field. This approach is subject to subtle Python bugs, and subtle differences between Python 2 and Python 3. There is a better way...
-</t>
-<t tx="ekr.20180708152018.1">
-### Design
-
-The main idea is to use *only* the ast.lineno fields and the tokenizer module to recreate token data. The design assumes only that both the ast.lineno field and Python's tokenizer module are solid. This is a much more reasonable assumption than assuming that the col_offset field always tells the truth. In short, this design *ignores* the ast.col_offset field.
-
-At startup, the TokenSync ctor assigns all the incoming tokens to various lists.  These lists are indexed by lineno:
-
-    ts.line_tokens[i]: all the tokens on line i
-    ts.string_tokens[i]: all string tokens on line i
-    st.ignored_lines: the blank or comment line on line i
-
-It is very easy to create these lists. The code does not depend on any arcane details.
-
-#### Recovering the exact spelling of stings.
-
-ts.synch_string returns the *next* string on the line. Here it is, stripped of defensive code:
-
-    def sync_string(self, node):
-        '''Return the spelling of the string at the given node.'''
-        tokens = self.string_tokens[node.lineno-1]
-        token = tokens.pop(0)
-        self.string_tokens[node.lineno-1] = tokens
-        return self.token_val(token)
-
-Stripped of defensive code, the do_Str visitor is just:
-
-    def do_Str(self, node):
-        '''A string constant, including docstrings.'''
-        return self.sync_string(node)
-
-#### Recovering otherwise ignored nodes
-
-**ts.leading_lines(node)** returns a list of otherwise ignored lines that
-precede the node's line that have not already been returned.
-**ts.leading_string(node)** is a convenience method that returns ''.join(ts.leading_lines(node)). The visitors of the CoffeeScriptTraverser class show how to use these methods.
-</t>
-<t tx="ekr.20180816105258.1">import leo.commands.editFileCommands as efc
-
-efc.GitDiffController(c).diff_two_branches(
-    branch1='devel',
-    branch2='5.8-b1-rel',
-    fn='leo/plugins/qt_tree.py',
-    directory=None,
+<t tx="ekr.20180504191650.34"></t>
+<t tx="ekr.20180504191650.36"></t>
+<t tx="ekr.20180504191650.42"></t>
+<t tx="ekr.20180504191650.68"></t>
+<t tx="ekr.20180504192522.1"></t>
+<t tx="ekr.20181017164437.1"># Replace underscore by - in settings names.
+g.cls()
+import re
+kinds = (
+    'Bool', 'Color',
+    'Directory', 'Encoding', # Not found.
+    'Float', 'Int',
+    'Path', 'Ratio', # Not found.
+    'String',
 )
-</t>
-<t tx="ekr.20180824065751.1">print(p.gnx)</t>
-<t tx="ekr.20181009072707.1">@first # -*- coding: utf-8 -*-
-&lt;&lt; imports &gt;&gt;
-&lt;&lt; compute path &gt;&gt;
-controller = leoBridge.controller(gui='nullGui',
-    loadPlugins=False, readSettings=True,
-    silent=False, verbose=False)
-g = controller.globals()
-c = controller.openLeoFile(path)
-try:
-    # Run all unit tests locally.
-    root = g.findTopLevelNode(c, 'Active Unit Tests', exact=True)
-    assert root, 'Not found: Active Unit Tests'
-    c.selectPosition(root)
-    &lt;&lt; run tests &gt;&gt;
-except Exception as e:
-    print('Unexpected exception 2', e)
-    sys.exit(1)
-</t>
-<t tx="ekr.20181009084156.1">import leo.core.leoBridge as leoBridge
-import os
-import sys
-# import pdb ; pdb.set_trace()
-import unittest
-
-</t>
-<t tx="ekr.20181009084245.1">load_dir = os.path.abspath(os.path.dirname(__file__))
-test_dir = os.path.join(load_dir, 'leo', 'test')
-path = os.path.join(test_dir, 'unitTest.leo')
-assert os.path.exists(path), repr(path)
-</t>
-<t tx="ekr.20181009084323.1">tm = c.testManager
-g.unitTesting = g.app.unitTesting = True
-suite = unittest.makeSuite(unittest.TestCase)
-aList = tm.findAllUnitTestNodes(all=False, marked=False)
-setup_script = None
-found = False
-for p in aList:
-    if tm.isTestSetupNode(p):
-        setup_script = p.b
-        test = None
-    elif tm.isTestNode(p):
-        test = tm.makeTestCase(p, setup_script)
-    elif tm.isSuiteNode(p):
-        test = tm.makeTestSuite(p, setup_script)
-    elif tm.isTestClassNode(p):
-        test = tm.makeTestClass(p)
-    else:
-        test = None
-    if test:
-        suite.addTest(test)
-        found = True
-if not found:
-    print('No unit tests')
-    sys.exit(1)
-runner = unittest.TextTestRunner(
-    failfast=True, verbosity=1)
-try:
-    result = runner.run(suite)
-    if result.errors or result.failures:
-        print('errors: %s, failures: %s' % (
-            len(result.errors), len(result.failures)))
-        sys.exit(1)
-    else:
-        print('Travis unit tests all passed.')
-        sys.exit(0)
-except Exception:
-    print('Unexpected exception')
-    g.es_exception()
-    sys.exit(1)
-</t>
-<t tx="ekr.20181013081645.1">@path test</t>
-<t tx="ekr.20181027133311.1">def issueSecurityWarning(setting):
-    g.es('Security warning! Ignoring...',color='red')
-    g.es(setting, color='red')
-    g.es('This setting can be set only in')
-    g.es('leoSettings.leo or myLeoSettings.leo')
-</t>
-<t tx="ekr.20181027151243.1">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/1006
-
-@language python
-</t>
-<t tx="ekr.20181102040815.1">files = [
-    'test/unittest.leo',
-]
-for fn in files:
-    path = g.os_path_finalize_join(g.app.loadDir, '..', fn)
-    assert g.os_path_exists(path), repr(path)
-    with open(path, 'r') as f:
-        s = f.read()
-        for line in g.splitLines(s):
-            if len(line) &gt; 150:
-                print(line)</t>
-<t tx="ekr.20190116145036.1"></t>
-<t tx="ekr.20190116145049.1">@language rest
-@wrap
-
-*** Add *real* vim emulation to Leo.
-    Use nvim-python: https://github.com/neovim/pynvim
-*** Add *real* org mode emulation to Leo
-
-@language python
-</t>
-<t tx="ekr.20190122185223.1">@language text
-
-Find all kwargs using regex:
-
-^\s*(def\s+\w+\s*\(.*\=.*\))
-
-found 1154 nodes
-
-^\s*(def\s+\w+\s*\(.*\=.*\=.*\))
-
-found 284 nodes
+for kind in kinds:
+    print('===== %s =====\n' % kind)
+    pat = re.compile(r"get%s\s*\([\'\"]([\w_]+)[\'\"][,)]" % kind)
+    for p in c.all_positions():
+        s = p.b
+        i, found = 0, False
+        while True:
+            m = pat.search(s[i:])
+            if not m:
+                break
+            start, end = m.start(1), m.end(1)
+            all = s[i+m.start(0):i+m.end(0)]
+            word = s[i+start:i+end]
+            if '_' in word:
+                found = True
+                print('')
+                print('-----', p.h)
+                print(all)
+                s = s[:i+start] + word.replace('_','-') + s[i+end:]
+                print(s[i+m.start(0):i+m.end(0)])
+            i += end
+        if found:
+            assert p.b != s, p.h
+            # print(s)
+            p.b = s
+            p.v.setDirty()
+c.setChanged()
+c.redraw()     </t>
+<t tx="ekr.20181030041436.1"></t>
+<t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
 </tnodes>
 </leo_file>
