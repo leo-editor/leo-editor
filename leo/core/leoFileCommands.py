@@ -62,7 +62,7 @@ class FastRead (object):
         self.scanGlobals(g_element)
             # Fix #1047: only this method changes splitter sizes.
         #
-        # Fix bug 1111: ensure that all outlines have at least one node.
+        # Fix bug #1111: ensure that all outlines have at least one node.
         if not v.children:
             new_vnode = leoNodes.VNode(context=self.c)
             new_vnode.h = 'newHeadline'
@@ -77,7 +77,7 @@ class FastRead (object):
         '''
         v, g_element = self.readWithElementTree(path=None, s=s)
         #
-        # Fix bug 1111: ensure that all outlines have at least one node.
+        # Fix bug #1111: ensure that all outlines have at least one node.
         if not v.children:
             new_vnode = leoNodes.VNode(context=self.c)
             new_vnode.h = 'newHeadline'
