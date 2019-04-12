@@ -1995,6 +1995,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         c = self.c
         assert c
         # returns DynamicWindow
+        if 0: # #1109. This does not work. Don't know why.
+            f.setQtStyle()
         f.top = g.app.gui.frameFactory.createFrame(f)
         f.createIconBar() # A base class method.
         f.createSplitterComponents()
@@ -2013,6 +2015,37 @@ class LeoQtFrame(leoFrame.LeoFrame):
         f.splitVerticalFlag, ratio, secondary_ratio = f.initialRatios()
         f.resizePanesToRatio(ratio, secondary_ratio)
 
+    #@+node:ekr.20190412044556.1: *5* qtFrame.setQtStyle
+    def setQtStyle(self):
+        """
+        Set the default Qt style.  Based on pyzo code.
+        
+        Copyright (C) 2013-2018, the Pyzo development team
+
+        Pyzo is distributed under the terms of the (new) BSD License.
+        The full license can be found in 'license.txt'.
+        """
+        c = self.c
+        #
+        # Get the requested style name.
+        stylename = c.config.getString('qt-style-name') or ''
+        if not stylename:
+            return
+        #
+        # Return if the style does not exist.
+        styles = [z.lower() for z in QtWidgets.QStyleFactory.keys()]
+        if stylename.lower() not in styles:
+            g.es_print('ignoring unknown Qt style name: %r' % stylename)
+            return
+        #
+        # Change the style and palette.
+        QtWidgets.qApp.nativePalette = QtWidgets.qApp.palette()
+        qstyle = QtWidgets.qApp.setStyle(stylename)
+        if not qstyle:
+            g.es_print('failed to set Qt style name: %r' % stylename)
+            return
+        g.app.gui.qtApp.setPalette(QtWidgets.qApp.nativePalette)
+        # g.es_print('set qt style: %r' % stylename)
     #@+node:ekr.20110605121601.18252: *4* qtFrame.initCompleteHint
     def initCompleteHint(self):
         '''A kludge: called to enable text changed events.'''
