@@ -11,6 +11,19 @@ To do:
     1. Support pyzo file browser.
     2. Support pyzo shell & debugger.
 '''
+#@+<< copyright >>
+#@+node:ekr.20190412042616.1: ** << copyright >>
+#@+at
+# This file uses code from pyzo. Here is the pyzo copyright notice:
+# 
+# Copyright (C) 2013-2018, the Pyzo development team
+# 
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+# 
+# Yoton is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+#@-<< copyright >>
 import sys
 import leo.core.leoGlobals as g
 #@+<< set switches >>
@@ -35,11 +48,14 @@ g.pyzo_trace_imports = True
 #@+node:ekr.20190410171905.1: ** function: init
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    if not g.isPython3:
+        print('pyzo_support.py requires Python 3.6 or above.')
+        return False
     if g.app.gui.guiName() != "qt":
-        print('pyzo_support plugin requires Qt gui')
+        print('pyzo_support.py requires Qt gui')
         return False
     if not is_pyzo_loaded():
-        print('pyzo_support plugin requires pyzo')
+        print('pyzo_support.py requires pyzo')
         return False
     g.plugin_signon(__name__)
     # g.registerHandler('after-create-leo-frame',onCreate)
