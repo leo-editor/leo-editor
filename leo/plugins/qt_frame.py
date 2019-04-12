@@ -58,7 +58,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_c = c
         self.leo_master = None # Set in construct.
         self.leo_menubar = None # Set in createMenuBar.
-        self.leo_ui = None # Set in construct.
+        ### #1112: this is just a synonym for self!!!
+        ### self.leo_ui = None # Set in construct.
         c._style_deltas = defaultdict(lambda: 0) # for adjusting styles dynamically
         self.reloadSettings()
 
@@ -142,7 +143,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         Called instead of uic.loadUi(ui_description_file, self)
         '''
         dw = self
-        self.leo_ui = self
+        ### self.leo_ui = self
         self.setMainWindowOptions()
         self.createCentralWidget()
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
@@ -1364,7 +1365,8 @@ class LeoQtBody(leoFrame.LeoBody):
         '''Set the actual gui widget.'''
         c = self.c
         top = c.frame.top
-        sw = top.leo_ui.stackedWidget
+        ### sw = top.leo_ui.stackedWidget
+        sw = top.stackedWidget
         sw.setCurrentIndex(1)
         if self.useScintilla and not Qsci:
             g.trace('Can not import Qsci: ignoring @bool qt-use-scintilla')
@@ -1375,7 +1377,8 @@ class LeoQtBody(leoFrame.LeoBody):
             self.wrapper = qt_text.QScintillaWrapper(self.widget, name='body', c=c)
             self.colorizer = leoColorizer.QScintillaColorizer(c, self.widget, self.wrapper)
         else:
-            self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
+            ### self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
+            self.widget = top.richTextEdit # A LeoQTextBrowser
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
             self.widget.setAcceptRichText(False)
             self.colorizer = leoColorizer.make_colorizer(c, self.widget, self.wrapper)
@@ -1447,7 +1450,9 @@ class LeoQtBody(leoFrame.LeoBody):
     def createEditor(self, name):
         '''Create a new body editor.'''
         c, p = self.c, self.c.p
-        parent_frame = c.frame.top.leo_ui.leo_body_inner_frame
+        ### parent_frame = c.frame.top.leo_ui.leo_body_inner_frame
+        parent_frame = c.frame.top.leo_body_inner_frame
+        
         # To do: #1061: Create a frame for line numbers, if necessary
         #
         # Step 1: create the editor.
@@ -1504,7 +1509,8 @@ class LeoQtBody(leoFrame.LeoBody):
         c.p.b = wrapper.getAllText()
         # Actually delete the widget.
         del d[name]
-        f = c.frame.top.leo_ui.leo_body_inner_frame
+        ### f = c.frame.top.leo_ui.leo_body_inner_frame
+        f = c.frame.top.leo_body_inner_frame
         layout = f.layout()
         for z in (w, w.leo_label):
             if z:
@@ -1716,7 +1722,8 @@ class LeoQtBody(leoFrame.LeoBody):
     def packLabel(self, w, n=None):
 
         c = self.c
-        f = c.frame.top.leo_ui.leo_body_inner_frame
+        ### f = c.frame.top.leo_ui.leo_body_inner_frame
+        f = c.frame.top.leo_body_inner_frame
         if n is None: n = self.numberOfEditors
         layout = f.layout()
         f.setObjectName('editorFrame')
@@ -1831,7 +1838,8 @@ class LeoQtBody(leoFrame.LeoBody):
             return
         # Actually delete the widget.
         del d[name]
-        f = c.frame.top.leo_ui.leo_body_inner_frame
+        ### f = c.frame.top.leo_ui.leo_body_inner_frame
+        f = c.frame.top.leo_body_inner_frame
         layout = f.layout()
         for z in (w, w.leo_label):
             if z: # 2011/11/12
@@ -1864,7 +1872,8 @@ class LeoQtBody(leoFrame.LeoBody):
             return
         # Actually delete the widget.
         del d[name]
-        f = c.frame.top.leo_ui.leo_body_inner_frame
+        ### f = c.frame.top.leo_ui.leo_body_inner_frame
+        f = c.frame.top.leo_body_inner_frame
         layout = f.layout()
         for z in (w, w.leo_label):
             if z: # 2011/11/12
@@ -1901,7 +1910,8 @@ class LeoQtBody(leoFrame.LeoBody):
     def showCanvasRenderer(self, event=None):
         '''Show the canvas area in the body pane, creating it if necessary.'''
         c = self.c
-        f = c.frame.top.leo_ui.leo_body_inner_frame
+        ### f = c.frame.top.leo_ui.leo_body_inner_frame
+        f = c.frame.top.leo_body_inner_frame
         assert isinstance(f, QtWidgets.QFrame), f
         if not self.canvasRenderer:
             name = 'Graphics Renderer'
@@ -1916,7 +1926,8 @@ class LeoQtBody(leoFrame.LeoBody):
     def showTextRenderer(self, event=None):
         '''Show the canvas area in the body pane, creating it if necessary.'''
         c = self.c
-        f = c.frame.top.leo_ui.leo_body_inner_frame
+        ### f = c.frame.top.leo_ui.leo_body_inner_frame
+        f = c.frame.top.leo_body_inner_frame
         assert isinstance(f, QtWidgets.QFrame), f
         if not self.textRenderer:
             name = 'Text Renderer'
@@ -3031,7 +3042,8 @@ class LeoQtLog(leoFrame.LeoLog):
         self.logDict = {} # Keys are tab names text widgets.  Values are the widgets.
         self.logWidget = None # Set in finishCreate.
         self.menu = None # A menu that pops up on right clicks in the hull or in tabs.
-        self.tabWidget = tw = c.frame.top.leo_ui.tabWidget
+        ### self.tabWidget = tw = c.frame.top.leo_ui.tabWidget
+        self.tabWidget = tw = c.frame.top.tabWidget
             # The Qt.QTabWidget that holds all the tabs.
         # Fixes bug 917814: Switching Log Pane tabs is done incompletely.
         tw.currentChanged.connect(self.onCurrentChanged)
@@ -4131,10 +4143,15 @@ class LeoQtSpellTab(object):
         # hack:
         handler.workCtrl = leoFrame.StringTextWrapper(c, 'spell-workctrl')
         self.tabName = tabName
-        ui = c.frame.top.leo_ui
-        if hasattr(ui, 'leo_spell_label'):
-            self.wordLabel = ui.leo_spell_label
-            self.listBox = ui.leo_spell_listBox
+        ### ui = c.frame.top.leo_ui
+        top = c.frame.top
+        ### if hasattr(ui, 'leo_spell_label'):
+        if hasattr(top, 'leo_spell_label'):
+            ###
+                # self.wordLabel = ui.leo_spell_label
+                # self.listBox = ui.leo_spell_listBox
+            self.wordLabel = top.leo_spell_label
+            self.listBox = top.leo_spell_listBox
             self.fillbox([])
         else:
             self.handler.loaded = False
@@ -4227,11 +4244,13 @@ class LeoQtSpellTab(object):
     def updateButtons(self):
         """Enable or disable buttons in the Check Spelling dialog."""
         c = self.c
-        ui = c.frame.top.leo_ui
-        w = c.frame.body.wrapper
+        ### ui = c.frame.top.leo_ui
+        top, w = c.frame.top, c.frame.body.wrapper
         state = self.suggestions and w.hasSelection()
-        ui.leo_spell_btn_Change.setDisabled(not state)
-        ui.leo_spell_btn_FindChange.setDisabled(not state)
+        # ui.leo_spell_btn_Change.setDisabled(not state)
+        # ui.leo_spell_btn_FindChange.setDisabled(not state)
+        top.leo_spell_btn_Change.setDisabled(not state)
+        top.leo_spell_btn_FindChange.setDisabled(not state)
         return state
     #@-others
 #@+node:ekr.20110605121601.18438: ** class LeoQtTreeTab

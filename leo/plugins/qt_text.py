@@ -900,7 +900,8 @@ class QMinibufferWrapper(QLineEditWrapper):
     def __init__(self, c):
         '''Ctor for QMinibufferWrapper class.'''
         self.c = c
-        w = c.frame.top.leo_ui.lineEdit # QLineEdit
+        ### w = c.frame.top.leo_ui.lineEdit # QLineEdit
+        w = c.frame.top.lineEdit # QLineEdit
         QLineEditWrapper.__init__(self, widget=w, name='minibuffer', c=c)
             # Init the base class.
         assert self.widget
