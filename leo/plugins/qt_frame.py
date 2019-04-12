@@ -313,7 +313,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 if w.hasSelectedText():
                     i = w.selectionStart()
                     s = w.selectedText()
-                    ### s = g.u(s)
                     j = i + len(s)
                 else:
                     i = j = ins
@@ -814,7 +813,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             #@+node:ekr.20131118172620.16894: *8* keyPress (EventWrapper)
             def keyPress(self, event):
 
-                ### s = g.u(event.text())
                 s = event.text()
                 out = s and s in '\t\r\n'
                 if out:
@@ -989,11 +987,9 @@ class FindTabManager(object):
         self.replace_all_button = None
     #@+node:ekr.20131117164142.16853: *3* ftm.text getters/setters
     def getFindText(self):
-        ### return g.u(self.find_findbox.text())
         return self.find_findbox.text()
 
     def getReplaceText(self):
-        ### return g.u(self.find_replacebox.text())
         return self.find_replacebox.text()
 
     getChangeText = getReplaceText
@@ -1020,7 +1016,6 @@ class FindTabManager(object):
         self.set_entry_focus()
         w = self.find_findbox
         w.setFocus()
-        ### s = g.u(w.text())
         s = w.text()
         w.setSelection(0, len(s))
 
@@ -1055,7 +1050,6 @@ class FindTabManager(object):
         )
         for ivar, setting_name, default in table:
             s = c.config.getString(setting_name) or default
-            ### s = g.u(s)
             w = getattr(self, ivar)
             w.insert(s)
             if find.minibuffer_mode:
@@ -1270,7 +1264,6 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         i = self.indexOf(dw)
         if i < 0: return
         s = self.tabText(i)
-        ### s = g.u(s)
         if len(s) > 2:
             if changed:
                 if not s.startswith('* '):
@@ -2223,7 +2216,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         def compute_columns(self, block, cursor):
             
             c = self.c
-            ### line = g.u(block.text())
             line = block.text()
             col = cursor.columnNumber()
             offset = c.p.textOffset()
@@ -2998,8 +2990,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
         # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
         w = self.top.leo_master if g.app.qt_use_tabs else self.top
-        ### s = g.u(w.windowTitle())
-        ### return s
         return w.windowTitle()
 
     def setTitle(self, s):
@@ -3594,7 +3584,6 @@ class LeoQtMenu(leoMenu.LeoMenu):
     def setMenuLabel(self, menu, name, label, underline=-1):
 
         def munge(s):
-            ### return g.u(s or '').replace('&', '')
             return (s or '').replace('&', '')
 
         # menu is a QtMenuWrapper.
@@ -3849,7 +3838,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     def parseText(self, md):
         '''Parse md.text() into (fn,s)'''
         fn = ''
-        ### s = g.u(md.text())
         s = md.text()
         if s:
             i = s.find(',')
@@ -4299,7 +4287,6 @@ class LeoQtTreeTab(object):
             if g.isInt(s):
                 s = '' if s == -1 else tt.w.currentText()
             else: # s is the tab name.
-                ### s = g.u(s)
                 pass
             if s and not tt.cc.selectChapterLockout:
                 tt.selectTab(s)
@@ -4325,7 +4312,6 @@ class LeoQtTreeTab(object):
     def selectTab(self, tabName):
         '''LeoQtTreeTab.'''
         tt, c, cc = self, self.c, self.cc
-        ### tabName = g.u(tabName)
         exists = tabName in self.tabNames
         c.treeWantsFocusNow()
             # Fix #969. Somehow this is important.
