@@ -900,7 +900,6 @@ class QMinibufferWrapper(QLineEditWrapper):
     def __init__(self, c):
         '''Ctor for QMinibufferWrapper class.'''
         self.c = c
-        ### w = c.frame.top.leo_ui.lineEdit # QLineEdit
         w = c.frame.top.lineEdit # QLineEdit
         QLineEditWrapper.__init__(self, widget=w, name='minibuffer', c=c)
             # Init the base class.
@@ -927,6 +926,7 @@ class QMinibufferWrapper(QLineEditWrapper):
 
     def setStyleClass(self, style_class):
         self.widget.setProperty('style_class', style_class)
+        #
         # to get the appearance to change because of a property
         # change, unlike a focus or hover change, we need to
         # re-apply the stylesheet.  But re-applying at the top level

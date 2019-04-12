@@ -46,9 +46,9 @@ class LeoQtTree(leoFrame.LeoTree):
         # Components.
         self.canvas = self # An official ivar used by Leo's core.
         self.headlineWrapper = qt_text.QHeadlineWrapper # This is a class.
-        ### self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
         self.treeWidget = w = frame.top.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.
+        #
         # "declutter", node appearance tweaking
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
         self.declutter_update = False  # true when update on idle needed
@@ -56,7 +56,6 @@ class LeoQtTree(leoFrame.LeoTree):
             g.registerHandler('save1', self.clear_visual_icons)
             g.registerHandler('headkey2', self.update_appearance)
             g.registerHandler('idle', self.update_appearance_idle)
-
         if 0: # Drag and drop
             w.setDragEnabled(True)
             w.viewport().setAcceptDrops(True)
