@@ -198,10 +198,32 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+################
+Other Copyrights
+################
+
+Portions of Leo's pygments interface use code from the Jupyter qtconsole package.
+
+These parts are are clearly marked in Leo's code as follows:
+
+    Copyright (c) Jupyter Development Team.
+    Distributed under the terms of the Modified BSD License.
+    
+Portions of Leo's pyzo interface uses code from pyzo:
+
+    Copyright (C) 2013-2019, the Pyzo development team
+    
+    Pyzo is distributed under the terms of the (new) BSD License.
+    The full license can be found in 'license.txt'.
+    
+    Yoton is distributed under the terms of the (new) BSD License.
+    The full license can be found in 'license.txt'.
+
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.8.1
+Version: 5.9
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -731,7 +753,7 @@ leo/core/commit_timestamp.json merge=ours
 
 2. Search for copyright
 
-    Latest copyright date: 20198.
+    Latest copyright date: 2019.
 
     Note: install.txt file embeds a copyright message in the nsi installer.</t>
 <t tx="ekr.20150416081546.1"></t>
