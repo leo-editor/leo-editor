@@ -71,8 +71,9 @@ def global_search_f(event):
 #@+node:ville.20120302233106.3580: *3* init (bigdash.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
-    if not QtWebKitWidgets:
-        return False
+    # Fix #1114: Don't require QtWebKitWidgets here.
+        # if not QtWebKitWidgets:
+            # return False
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.app._global_search = GlobalSearch()
@@ -98,8 +99,12 @@ class BigDash(object):
         self.w = w = QtWidgets.QWidget()
         w.setWindowTitle("Leo search")
         lay = QtWidgets.QVBoxLayout()
-        # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
-        if isQt5 and sys.platform.startswith('win'):
+        if (
+            not QtWebKitWidgets
+                # Workaround #1114: https://github.com/leo-editor/leo-editor/issues/1114
+            or isQt5 and sys.platform.startswith('win')
+                # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
+        ):
             self.web = web = QtWidgets.QTextBrowser(w)
         else:
             self.web = web = QtWebKitWidgets.QWebView(w)
