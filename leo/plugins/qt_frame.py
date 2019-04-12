@@ -3685,9 +3685,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c = self.c
         fn = self.fileName()
         s = c.fileCommands.putLeoOutline()
-        if not g.isPython3:
-            s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
-            fn = g.toEncodedString(fn, encoding='utf-8', reportErrors=True)
         md.setText('%s,%s' % (fn, s))
     #@+node:ekr.20110605121601.18365: *4* LeoQTreeWidget.dropEvent & helpers
     def dropEvent(self, ev):
