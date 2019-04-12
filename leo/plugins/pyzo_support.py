@@ -48,9 +48,6 @@ g.pyzo_trace_imports = True
 #@+node:ekr.20190410171905.1: ** function: init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    if not g.isPython3:
-        print('pyzo_support.py requires Python 3.6 or above.')
-        return False
     if g.app.gui.guiName() != "qt":
         print('pyzo_support.py requires Qt gui')
         return False
