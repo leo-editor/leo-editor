@@ -2313,17 +2313,17 @@ class LoadManager(object):
                 c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
                     # Returns None if the file is open in another instance of Leo.
                 if not c1: c1 = c
-        if g.app.loaded_session:
-            m = g.app.sessionManager
-            if m:
-                aList = m.load_snapshot()
-                if aList:
-                    m.load_session(c1, aList)
-                    # tag:#659.
-                    if g.app.windowList:
-                        c = c1 = g.app.windowList[0].c
-                    else:
-                        c = c1 = None
+        g.app.loaded_session = not lm.files
+            # Load (and save later) a session only no files were given on the command line.
+        if g.app.sessionManager and g.app.loaded_session:
+            aList = g.app.sessionManager.load_snapshot()
+            if aList:
+                g.app.sessionManager.load_session(c1, aList)
+                # tag:#659.
+                if g.app.windowList:
+                    c = c1 = g.app.windowList[0].c
+                else:
+                    c = c1 = None
         # Enable redraws.
         g.app.disable_redraw = False
         if not c1 or not g.app.windowList:
