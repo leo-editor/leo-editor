@@ -50,6 +50,7 @@
 <v t="ekr.20160122104357.1"><vh>@data history-list</vh></v>
 </v>
 <v t="ekr.20170420085814.1"><vh>Recursive import script</vh></v>
+<v t="ekr.20181017164437.1"><vh>script: regularize settings</vh></v>
 </v>
 <v t="ekr.20090430075506.4"><vh>Notes</vh>
 <v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
@@ -164,11 +165,12 @@
 <v t="tbrown.20110428144124.29061"><vh>@file xml_edit.py</vh></v>
 <v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
 </v>
-<v t="ekr.20181030041210.1"><vh>Gui</vh>
+<v t="ekr.20181030041436.1"><vh>Gui</vh>
 <v t="ekr.20150107090324.1"><vh>@file cursesGui.py</vh></v>
 <v t="ekr.20170419092835.1"><vh>@file cursesGui2.py</vh></v>
 <v t="ekr.20181103094900.1"><vh>@file leoflexx.py</vh></v>
 <v t="ekr.201811100000000.1"><vh>@file leoflexx_js.py</vh></v>
+<v t="ekr.20190410171646.1"><vh>@file pyzo_support.py</vh></v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>
@@ -799,7 +801,7 @@ self.source = None # The written source as a string.
     c.k.registerCommand('write-restructured-text', rst3PluginCallback)
     table = (
         ("-",None,None),
-        ### ("Write Restructed Text","",rst3PluginCallback),
+        # ("Write Restructed Text","",rst3PluginCallback),
         '&amp;write-restructured-text',
     )
     c.frame.menu.createMenuEntries(editMenu,table,dynamicMenu=True)
@@ -876,19 +878,11 @@ self.source = None # The written source as a string.
 </t>
 <t tx="ekr.20050805162550.2">import leo.core.leoGlobals as g
 
-if g.isPython3:
-    import html.parser as HTMLParser
-else:
-    import HTMLParser
-
+import html.parser as HTMLParser
 import os
 import pprint
-
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    import StringIO
+import io
+StringIO = io.StringIO
 import sys
 
 # Make sure the present directory in in sys.path.
@@ -2897,7 +2891,45 @@ print('done! wrote %s' % fn)
 <t tx="ekr.20180504191650.42"></t>
 <t tx="ekr.20180504191650.68"></t>
 <t tx="ekr.20180504192522.1"></t>
-<t tx="ekr.20181030041210.1"></t>
+<t tx="ekr.20181017164437.1"># Replace underscore by - in settings names.
+g.cls()
+import re
+kinds = (
+    'Bool', 'Color',
+    'Directory', 'Encoding', # Not found.
+    'Float', 'Int',
+    'Path', 'Ratio', # Not found.
+    'String',
+)
+for kind in kinds:
+    print('===== %s =====\n' % kind)
+    pat = re.compile(r"get%s\s*\([\'\"]([\w_]+)[\'\"][,)]" % kind)
+    for p in c.all_positions():
+        s = p.b
+        i, found = 0, False
+        while True:
+            m = pat.search(s[i:])
+            if not m:
+                break
+            start, end = m.start(1), m.end(1)
+            all = s[i+m.start(0):i+m.end(0)]
+            word = s[i+start:i+end]
+            if '_' in word:
+                found = True
+                print('')
+                print('-----', p.h)
+                print(all)
+                s = s[:i+start] + word.replace('_','-') + s[i+end:]
+                print(s[i+m.start(0):i+m.end(0)])
+            i += end
+        if found:
+            assert p.b != s, p.h
+            # print(s)
+            p.b = s
+            p.v.setDirty()
+c.setChanged()
+c.redraw()     </t>
+<t tx="ekr.20181030041436.1"></t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
 </tnodes>

@@ -3279,7 +3279,7 @@
 <v t="ekr.20180828034324.56"><vh>Removed --no-cache &amp; --trace-cache</vh></v>
 </v>
 </v>
-<v t="ekr.20190122052932.1"><vh>Leo 5.8.1: LeoWapp, TravisCI</vh>
+<v t="ekr.20190122052932.1"><vh>Leo 5.9: LeoWapp, TravisCI</vh>
 <v t="ekr.20190122052932.2"><vh>5.8.1: Bugs fixed</vh>
 <v t="ekr.20190122052932.3"><vh>#0804: ~= in style sheets</vh></v>
 <v t="ekr.20190122052932.4"><vh>#0998: Fix recursive import problems</vh></v>
@@ -25672,15 +25672,20 @@ The change was to load_session.</t>
 
 The fix was in abbrev.init_tree_abbrev_helper.
 </t>
-<t tx="ekr.20190122052932.1">Leo 5.8.1 beta 1, http://leoeditor.com, is now available on
+<t tx="ekr.20190122052932.1">Leo 5.9 beta 1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 5.8.1**
+**The highlights of Leo 5.9**
 
+Major features
 - LeoWapp: Leo in a browser.
+- Optional syntax coloring using pygments.
+  Optional: you may use @color &amp; @font directives instead of pygments styles.
 - Integrated debugger.
+
+Other features
 - Nested @clean nodes, useful for LaTex files.
 - A major refactoring of the code that writes external files.
 - Better error recovery.

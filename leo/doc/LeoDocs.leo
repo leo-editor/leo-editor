@@ -2230,20 +2230,21 @@
 </v>
 </v>
 </v>
-<v t="ekr.20190122044116.1"><vh>What's new in Leo 5.8.1</vh></v>
-<v t="ekr.20190117143933.1"><vh>Leo 5.8.1 release notes</vh>
-<v t="ekr.20190119065631.1"><vh>5.8.1: Bugs fixed</vh>
+<v t="ekr.20190122044116.1"><vh>What's new in Leo 5.9</vh></v>
+<v t="ekr.20190117143933.1"><vh>Leo 9 release notes</vh>
+<v t="ekr.20190119065631.1"><vh>5.9: Bugs fixed</vh>
 <v t="ekr.20190117143942.673"><vh>#0804: ~= in style sheets</vh></v>
-<v t="ekr.20190123075604.1"><vh>#0981 &amp; #977: File syncing</vh></v>
+<v t="ekr.20190123075604.1"><vh>#0981: &amp; #977: File syncing</vh></v>
 <v t="ekr.20190117143942.957"><vh>#0998: Fix recursive import problems</vh></v>
-<v t="ekr.20190117143942.2"><vh>#1002 self.assertEqual in a @test node is not comparing lists properly</vh></v>
+<v t="ekr.20190117143942.2"><vh>#1002: self.assertEqual in a @test node is not comparing lists properly</vh></v>
 <v t="ekr.20190117143942.394"><vh>#1007: console gui doesn't load</vh></v>
+<v t="ekr.20190412074507.6"><vh>#1018: marks</vh></v>
 <v t="ekr.20190118222654.1"><vh>#1021: Fixed add-editor</vh></v>
 <v t="ekr.20190117143942.395"><vh>#1023: Marked and expansion bits no longer affect .leo files</vh></v>
 <v t="ekr.20190117143942.403"><vh>#1032: importers should not clean blank lines</vh></v>
 <v t="ekr.20190117143942.438"><vh>#1033: No @path directive added for empty imported files</vh></v>
-<v t="ekr.20190117143942.450"><vh>#1036 and #1046: strip control chars before reading .leo files</vh></v>
-<v t="ekr.20190118222624.1"><vh>#1048 &amp; #1037: trailing blank lines</vh></v>
+<v t="ekr.20190117143942.450"><vh>#1036: and #1046: strip control chars before reading .leo files</vh></v>
+<v t="ekr.20190118222624.1"><vh>#1048: &amp; #1037: trailing blank lines</vh></v>
 <v t="ekr.20190117143942.633"><vh>#1049: crash kills Leo</vh></v>
 <v t="ekr.20190117143942.647"><vh>#1051: eliminate ui interface refs</vh></v>
 <v t="ekr.20190117143942.650"><vh>#1053: Unwanted @shadow message on saves</vh></v>
@@ -2251,8 +2252,12 @@
 <v t="ekr.20190117143942.976"><vh>#1057: Unwanted loadOnePlugin messages on startup</vh></v>
 <v t="ekr.20190118222636.1"><vh>#1059: cycle-tab-focus exception</vh></v>
 <v t="ekr.20190123075859.1"><vh>#1065: refresh-from-disk</vh></v>
+<v t="ekr.20190412074507.3"><vh>#1098: crash in json scanner</vh></v>
+<v t="ekr.20190412074507.26"><vh>#1111: Read minimal .leo files without crashing</vh></v>
+<v t="ekr.20190412074507.50"><vh>#1113: @language lisp crash w/ pygments</vh></v>
+<v t="ekr.20190412074507.52"><vh>#1114: bigdash does not load</vh></v>
 </v>
-<v t="ekr.20190119070017.1"><vh>5.8.1: Features</vh>
+<v t="ekr.20190119070017.1"><vh>5.9: Features</vh>
 <v t="ekr.20190117143942.654"><vh>#0525: Nested @clean</vh></v>
 <v t="ekr.20190325062650.1"><vh>#0568 &amp; #1102: pygments syntax coloring</vh></v>
 <v t="ekr.20190117143942.672"><vh>#0672: Leo uses TravisCI</vh></v>
@@ -2264,14 +2269,17 @@
 <v t="ekr.20190122042300.1"><vh>#1047: Tree Window Resizes on Paste Node</vh></v>
 <v t="ekr.20190327105147.364"><vh>#1081: @asis</vh></v>
 <v t="ekr.20190327105525.1"><vh>#1085: The py3 branch</vh></v>
+<v t="ekr.20190412074507.4"><vh>#1090: --script path</vh></v>
+<v t="ekr.20190412074507.11"><vh>#1107: Automatic sessions</vh></v>
 <v t="ekr.20190327105503.1"><vh>Added g.get_files_in_directory</vh></v>
 <v t="ekr.20190327105000.1"><vh>Added promote-headline command</vh></v>
-<v t="ekr.20190327105249.1"><vh>Created py3 branch, for Leo 6.0</vh></v>
 <v t="ekr.20190123122138.1"><vh>Retired the head-to-prev node and tail-to-next-node commands </vh></v>
 </v>
-<v t="ekr.20190119071258.1"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
+<v t="ekr.20190412075452.1"><vh>5.9: Code</vh>
+<v t="ekr.20190327105249.1"><vh>Created py3 branch, for Leo 6.0</vh></v>
 </v>
-<v t="ekr.20131012060912.16788"></v>
+<v t="ekr.20190119071258.1"><vh>5.9: Settings &amp; command-line arguments</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -4154,7 +4162,7 @@ Despite I am no programmer, I have been using Leo for some years now as my "Inte
 
 I had used Leo for a long time as a PIM to track my work, but moved to emacs org mode for a period of time because of its explicit agenda and work tracking capabilities. But I went back to Leo because it seems more flexible when it comes to viewing various aspects of a project. For some recent performance data collection work, under one outline are the theory behind the project, the code (generation) for the project, the project web page (generated from an @rst node tree),  and project deployment (little more than clicking a button). One can change focus from one aspect to another very quickly and use clones to really drill down into an area (for me it's typically the code) when needed. Leo is an impressive tool, and I have only scratched the surface--Robert Shanley.
 
-I am a manager, physicist and perhaps an electrical engineer. I use serveral differnt editors all the time, for different reasons, like vim and scite sometime  emacs. I use Leo on complex projects, involving many files. I have small python and Lua scripts, Lua tables, plain text files, many LaTeX files, CSV files, Markdown files, lots of PDF's for reference, spreadsheets, todo lists. I write documentation, write simple tools to help with business and scientific calculations. I do this all in a company with 20 people, working in small teams.
+I am a manager, physicist and perhaps an electrical engineer. I use several different editors all the time, for different reasons, like vim and scite sometime  emacs. I use Leo on complex projects, involving many files. I have small python and Lua scripts, Lua tables, plain text files, many LaTeX files, CSV files, Markdown files, lots of PDF's for reference, spreadsheets, todo lists. I write documentation, write simple tools to help with business and scientific calculations. I do this all in a company with 20 people, working in small teams.
 
 I use Leo as a project manager. It glues together all kind of stuff, allows me to do some jobs with a little script, and interfaces well with others. Some other tools may be better for some other things and I use other tools too, but I keep coming back to Leo for much of my work. Leo manages to be generic enough to co-exist well with other tools and bring all these different files together.--Josef Dalcomo.</t>
 <t tx="ekr.20050830074815.8">"I've written documentation in WordPerfert, Ventura, Word, PageMaker, and FrameMaker and even though they create wonderfully looking and useful documents, they've never been able to do what I've been looking for. HTML, compiled help files, and later PDF came closer, but still not there...I think I've found it in Leo, a way to make a "living" document. A document built out of discrete parts that can be re-organized on the fly to meet the needs of a varying audience...I've already started converting the IT Procedures manual from Open Office to Leo because I know it's going to be much more useful to me and anyone else...just the possibility of keeping system maintenance scripts in the IT manual is mind boggling."---David Nichols
@@ -7570,6 +7578,16 @@ These parts are are clearly marked in Leo's code as follows:
 
     Copyright (c) Jupyter Development Team.
     Distributed under the terms of the Modified BSD License.
+    
+Portions of Leo's pyzo interface uses code from pyzo:
+
+    Copyright (C) 2013-2019, the Pyzo development team
+    
+    Pyzo is distributed under the terms of the (new) BSD License.
+    The full license can be found in 'license.txt'.
+    
+    Yoton is distributed under the terms of the (new) BSD License.
+    The full license can be found in 'license.txt'.
 </t>
 <t tx="ekr.20090223065025.3">**Important**: The changes you make below **will not persist** unless your script calls c.frame.body.onBodyChanged after making those changes. This method has the following signature::
 
@@ -11757,7 +11775,7 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 | screenshot = [http://sourceforge.net/project/screenshots.php?group_id=3458&amp;ssid=22298 Screenshots]
 | caption =
 | developer = Edward K. Ream
-| latest_release_version = 5.8b1
+| latest_release_version = 5.9b1
 | latest_release_date = {{release date and age|2018|01|27}}
 | operating_system = [[Cross-platform]]
 | genre = [[Text editor]], [[Outliner]], [[Integrated development environment|IDE]]
@@ -22502,7 +22520,7 @@ Then run::
 
 You may `download Leo's sources`_ in one of three ways. If the sources
 are zipped, unzip them into a folder in your home directory, say
-~/leo-5.8.
+~/leo-5.9.
 
 You now have several choices.
 
@@ -22510,7 +22528,7 @@ You now have several choices.
 
 2. You can install leo into /usr/local/lib and /usr/local/bin with:
 
-    cd ~/leo-5.8
+    cd ~/leo-5.9
     sudo python setup.py install
 
 See `Running Leo`_ for how to run Leo after installing it.
@@ -26794,7 +26812,7 @@ At all times, anyone can pull stable code from master.
 
 Only the maintainer (EKR) is supposed to work on release or master, so nobody needs to hold back or knows what is going on in them. At all times everyone can happily hack on devel,  or better, their personal feature branches.
 
-To prepare a new release,  the maintainer branches devel to a new branch, say 5.8.x.  The maintainer runs tests on it, and makes any last-minute fixes. To publish the release, the maintainer merges the release to master **and** to devel, then optionally deletes the release branch.
+To prepare a new release,  the maintainer branches devel to a new branch, say 5.9.x.  The maintainer runs tests on it, and makes any last-minute fixes. To publish the release, the maintainer merges the release to master **and** to devel, then optionally deletes the release branch.
 
 This visualization made it all clear to me:
 https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-3.png</t>
@@ -29669,12 +29687,12 @@ The body text of an @data history-list *setting node* preloads commands into the
             reportFlag=False,
             dirtyVnodeList=dirtyVnodeList)
 </t>
-<t tx="ekr.20190117143933.1">Leo 5.8.1 beta 1, http://leoeditor.com, is now available on
+<t tx="ekr.20190117143933.1">Leo 5.9 beta 1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 5.8.1**
+**The highlights of Leo 5.9**
 
 Major features
 - LeoWapp: Leo in a browser.
@@ -29777,7 +29795,7 @@ The culprit was a mistaken fix to #690:
 https://github.com/leo-editor/leo-editor/issues/690
 </t>
 <t tx="ekr.20190119065631.1">For the complete list, see:
-https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.8.1+label%3Abug+is%3Aclosed</t>
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.9+label%3ABug+is%3Aclosed</t>
 <t tx="ekr.20190119070017.1"></t>
 <t tx="ekr.20190119071258.1">New settings (defaults as shown):
 
@@ -29792,6 +29810,7 @@ Changed/improved settings:
 - #993: use -, not underscore, for settings names.
 
 Removed settings:
+- Removed --session-save and --session-restore command-line arguments.
 - Removed @string trailing-body-newlines.
 - Remove @string qt-ui-file-name.
   https://github.com/leo-editor/leo-editor/issues/993
@@ -29809,6 +29828,8 @@ The following call FastRead().readFileFromClipboard:
 <t tx="ekr.20190122044116.1">- LeoWapp: Leo in a browser.
 - Integrated debugger.
 - Support for pygments syntax coloring.
+- Automatic sessions
+  (Removed --session-save and --session-restore command-line arguments.)
 - Nested @clean nodes, useful for LaTex files.
 - A major refactoring of the code that writes external files.
 - Better error recovery.
@@ -29823,21 +29844,21 @@ https://github.com/leo-editor/leo-editor/issues/977
 <t tx="ekr.20190123122138.1"></t>
 <t tx="ekr.20190307093145.1">@language rest
 
-g.execute_shell_command tales a single argument, which may be either a string or a list of strings. Each string represents one command. g.execute_shell_command executes each command in order.  Commands starting with '&amp;' are executed without waiting. Commands that do not start with '&amp;' finish before running later commands. Examples:
+g.execute_shell_command tales a single argument, which may be either a string or a list of strings. Each string represents one command. g.execute_shell_command executes each command in order.  Commands starting with '&amp;' are executed without waiting. Commands that do not start with '&amp;' finish before running later commands. Examples::
 
 @language python
 
-# Run the qml app in a separate process:
-g.execute_shell_commands('qmlscene /test/qml_test.qml')
-
-# List the contents of a directory:
-g.execute_shell_commands([
-    'cd ~/test',
-    'ls -a',
-])
-
-# Run a python test in a separate process.
-g.execute_shell_commands('python /test/qt_test.py')
+    # Run the qml app in a separate process:
+    g.execute_shell_commands('qmlscene /test/qml_test.qml')
+    
+    # List the contents of a directory:
+    g.execute_shell_commands([
+        'cd ~/test',
+        'ls -a',
+    ])
+    
+    # Run a python test in a separate process.
+    g.execute_shell_commands('python /test/qt_test.py')
 
 @language rest
 
@@ -29883,6 +29904,39 @@ The following methods will not be removed:
 This branch removes all Python 2 compatibility code.
 It will be the basis of Leo 6.0.
  </t>
+<t tx="ekr.20190412074507.11">https://github.com/leo-editor/leo-editor/issues/1107
+
+Removed --session-save and --session-restore command-line arguments.
+
+Leo saves and restores loaded files only if file names are *not* given on the command line.
+
+**Startup**
+- If the command line contains file names, Leo will load only those files.
+  In that case, Leo does *not* save session data on exit.
+- Otherwise, Leo loads files from the previously saved session data in session.leo.
+  If session.leo does not exist, Leo will load the default workbook.leo
+
+**Shutdown**
+- Leo saves session data to leo.session only if g.app.loaded_session is True.
+
+This will work as usual for newbies: Leo will open the default Workbook.
+</t>
+<t tx="ekr.20190412074507.26">https://github.com/leo-editor/leo-editor/issues/1111</t>
+<t tx="ekr.20190412074507.3">https://github.com/leo-editor/leo-editor/issues/1098
+</t>
+<t tx="ekr.20190412074507.4">https://github.com/leo-editor/leo-editor/issues/1090
+
+command line--script relative path is relative to `leo/core` instead of file-system
+</t>
+<t tx="ekr.20190412074507.50">https://github.com/leo-editor/leo-editor/issues/1113
+</t>
+<t tx="ekr.20190412074507.52">https://github.com/leo-editor/leo-editor/issues/1114</t>
+<t tx="ekr.20190412074507.6">https://github.com/leo-editor/leo-editor/issues/1018
+
+fc.setCachedBits scans *all* nodes for cached data.
+This simplifies fc.compute_attribute_bits.
+</t>
+<t tx="ekr.20190412075452.1"></t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with

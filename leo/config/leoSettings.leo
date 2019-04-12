@@ -2922,6 +2922,7 @@ optionalCommandPrefixes = ['group-operations']
 optionalCommandNames = [
     # These are the command names as defined by plugins.
     # LeoSlideShows.leo defines buttons whose commands do not end in '-command'.
+    'find-quick-selected',
     'next-slide-command','next-slide-show-command',
     'prev-slide-command','prev-slide-show-command',
     # The ipython plugin.
