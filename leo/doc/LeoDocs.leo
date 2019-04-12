@@ -2231,7 +2231,7 @@
 </v>
 </v>
 <v t="ekr.20190122044116.1"><vh>What's new in Leo 5.9</vh></v>
-<v t="ekr.20190117143933.1"><vh>Leo 9 release notes</vh>
+<v t="ekr.20190117143933.1"><vh>Leo 5.9 release notes</vh>
 <v t="ekr.20190119065631.1"><vh>5.9: Bugs fixed</vh>
 <v t="ekr.20190117143942.673"><vh>#0804: ~= in style sheets</vh></v>
 <v t="ekr.20190123075604.1"><vh>#0981: &amp; #977: File syncing</vh></v>
