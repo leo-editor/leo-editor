@@ -4,7 +4,7 @@
 #@@first
 '''Leo's general editing commands.'''
 #@+<< imports >>
-#@+node:ekr.20150514050149.1: ** << imports >> (editCommands.py)
+#@+node:ekr.20150514050149.1: **  << imports >> (editCommands.py)
 import os
 import re
 import leo.core.leoGlobals as g
@@ -16,6 +16,167 @@ def cmd(name):
     return g.new_cmd_decorator(name, ['c', 'editCommands',])
 
 #@+others
+#@+node:ekr.20180504180844.1: **  Top-level helper functions
+#@+node:ekr.20180504180247.2: *3* find_next_trace
+if_pat = re.compile(r'\n[ \t]*(if|elif)\s*trace\b.*:')
+    # Will not find in comments, which is fine.
+    
+skip_pat = re.compile(r'=.*in g.app.debug')
+
+def find_next_trace(ins, p):
+    while p:
+        ins = max(0, ins-1) # Back up over newline.
+        s = p.b[ins:]
+        m = re.search(skip_pat, s)
+        if m:
+            # Skip this node.
+            g.es_print('Skipping', p.h)
+        else:
+            m = re.search(if_pat, s)
+            if m:
+                i = m.start()+1
+                j = m.end()
+                k = find_trace_block(i, j, s)
+                i += ins
+                k += ins
+                return i, k, p
+        p.moveToThreadNext()
+        ins = 0
+    return None, None, p
+#@+node:ekr.20180504180247.3: *3* find_trace_block
+def find_trace_block(i, j, s):
+    '''Find the statement or block starting at i.'''
+    assert s[i] != '\n'
+    s = s[i:]
+    lws = len(s) - len(s.lstrip())
+    n = 1 # Number of lines to skip.
+    lines = g.splitLines(s)
+    for line in lines[1:]:
+        lws2 = len(line) - len(line.lstrip())
+        if lws2 <= lws:
+            break
+        n += 1
+    assert n >= 1
+    result_lines = lines[:n]
+    return i + len(''.join(result_lines))
+#@+node:ekr.20180504180134.1: ** @g.command('delete-trace-statements')
+@g.command('delete-trace-statements')
+def delete_trace_statements(event=None):
+    '''
+    Delete all trace statements/blocks from c.p to the end of the outline.
+    
+    **Warning**: Use this command at your own risk.
+    
+    It can cause "if" and "else" clauses to become empty, resulting in
+    syntax errors. Having said that, pyflakes & pylint will usually catch
+    the problems.
+    '''
+    c = event.get('c')
+    if not c:
+        return
+    p = c.p
+    ins = 0
+    seen = []
+    while True:
+        i, k, p = find_next_trace(ins, p)
+        if not p:
+            g.es_print('done')
+            return
+        s = p.b
+        if p.h not in seen:
+            seen.append(p.h)
+            g.es_print('Changed:', p.h)
+        ins = 0 # Rescanning is essential.
+        p.b = s[:i] + s[k:]
+#@+node:ekr.20180210160930.1: ** @g.command('mark-first-parents')
+@g.command('mark-first-parents')
+def mark_first_parents(event):
+    '''Mark the node and all its parents.'''
+    c = event.get('c')
+    if not c:
+        return
+    changed = []
+    for parent in c.p.self_and_parents():
+        if not parent.isMarked():
+            parent.v.setMarked()
+            parent.setAllAncestorAtFileNodesDirty()
+            changed.append(parent.copy())
+    if changed:
+        # g.es("marked: " + ', '.join([z.h for z in changed]))
+        c.setChanged()
+        c.redraw()
+    return changed
+#@+node:ekr.20190412165240.1: ** @g.command('promote-bodies')
+@g.command('promote-bodies')
+def promoteBodies(event):
+    '''Copy the body text of all descendants to the parent's body text.'''
+    c = event.get('c')
+    if not c:
+        return
+    p = c.p
+    result = [p.b.rstrip()+'\n'] if p.b.strip() else []
+    b = c.undoer.beforeChangeNodeContents(p)
+    for child in p.subtree():
+        h = child.h.strip()
+        if child.b:
+            body = '\n'.join(['  %s' % (z) for z in g.splitLines(child.b)])
+            s = '- %s\n%s' % (h,body)
+        else:
+            s = '- %s' % h
+        if s.strip():
+            result.append(s.strip())
+    if result:
+        result.append('')
+    p.b = '\n'.join(result)
+    c.undoer.afterChangeNodeContents(p,'promote-bodies',b)
+#@+node:ekr.20190412165258.1: ** @g.command('promote-headlines')
+@g.command('promote-headlines')
+def promoteHeadlines(event):
+    '''Copy the headlines of all descendants to the parent's body text.'''
+    c = event.get('c')
+    if not c:
+        return
+    p = c.p
+    b = c.undoer.beforeChangeNodeContents(p)
+    result = '\n'.join([p.h.rstrip() for p in p.subtree()])
+    if result:
+        p.b = p.b.lstrip() + '\n' + result
+        c.undoer.afterChangeNodeContents(p,'promote-headlines',b)
+#@+node:ekr.20180504180647.1: ** @g.command('select-next-trace-statement')
+@g.command('select-next-trace-statement')
+def select_next_trace_statement(event=None):
+    '''Select the next statement/block enabled by "if trace...:"'''
+    c = event.get('c')
+    if not c:
+        return
+    w = c.frame.body.wrapper
+    ins = w.getInsertPoint()
+    i, k, p = find_next_trace(ins, c.p)
+    if p:
+        c.selectPosition(p)
+        c.redraw()
+        w.setSelectionRange(i, k, insert=k)
+    else:
+        g.es_print('done')
+    c.bodyWantsFocus()
+#@+node:ekr.20180210161001.1: ** @g.command('unmark-first-parents')
+@g.command('unmark-first-parents')
+def unmark_first_parents(event=None):
+    '''Mark the node and all its parents.'''
+    c = event.get('c')
+    if not c:
+        return
+    changed = []
+    for parent in c.p.self_and_parents():
+        if parent.isMarked():
+            parent.v.clearMarked()
+            parent.setAllAncestorAtFileNodesDirty()
+            changed.append(parent.copy())
+    if changed:
+        # g.es("unmarked: " + ', '.join([z.h for z in changed]))
+        c.setChanged()
+        c.redraw()
+    return changed
 #@+node:ekr.20160514100029.1: ** class EditCommandsClass
 class EditCommandsClass(BaseEditCommandsClass):
     '''Editing commands with little or no state.'''
@@ -3519,130 +3680,5 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         k.showStateAndMode()
     #@-others
-#@+node:ekr.20180210160930.1: ** @g.command('mark-first-parents')
-@g.command('mark-first-parents')
-def mark_first_parents(event):
-    '''Mark the node and all its parents.'''
-    c = event.get('c')
-    if not c:
-        return
-    changed = []
-    for parent in c.p.self_and_parents():
-        if not parent.isMarked():
-            parent.v.setMarked()
-            parent.setAllAncestorAtFileNodesDirty()
-            changed.append(parent.copy())
-    if changed:
-        # g.es("marked: " + ', '.join([z.h for z in changed]))
-        c.setChanged()
-        c.redraw()
-    return changed
-#@+node:ekr.20180210161001.1: ** @g.command('unmark-first-parents')
-@g.command('unmark-first-parents')
-def unmark_first_parents(event=None):
-    '''Mark the node and all its parents.'''
-    c = event.get('c')
-    if not c:
-        return
-    changed = []
-    for parent in c.p.self_and_parents():
-        if parent.isMarked():
-            parent.v.clearMarked()
-            parent.setAllAncestorAtFileNodesDirty()
-            changed.append(parent.copy())
-    if changed:
-        # g.es("unmarked: " + ', '.join([z.h for z in changed]))
-        c.setChanged()
-        c.redraw()
-    return changed
-#@+node:ekr.20180504180844.1: ** Top-level helper functions
-#@+node:ekr.20180504180247.2: *3* find_next_trace
-if_pat = re.compile(r'\n[ \t]*(if|elif)\s*trace\b.*:')
-    # Will not find in comments, which is fine.
-    
-skip_pat = re.compile(r'=.*in g.app.debug')
-
-def find_next_trace(ins, p):
-    while p:
-        ins = max(0, ins-1) # Back up over newline.
-        s = p.b[ins:]
-        m = re.search(skip_pat, s)
-        if m:
-            # Skip this node.
-            g.es_print('Skipping', p.h)
-        else:
-            m = re.search(if_pat, s)
-            if m:
-                i = m.start()+1
-                j = m.end()
-                k = find_trace_block(i, j, s)
-                i += ins
-                k += ins
-                return i, k, p
-        p.moveToThreadNext()
-        ins = 0
-    return None, None, p
-#@+node:ekr.20180504180247.3: *3* find_trace_block
-def find_trace_block(i, j, s):
-    '''Find the statement or block starting at i.'''
-    assert s[i] != '\n'
-    s = s[i:]
-    lws = len(s) - len(s.lstrip())
-    n = 1 # Number of lines to skip.
-    lines = g.splitLines(s)
-    for line in lines[1:]:
-        lws2 = len(line) - len(line.lstrip())
-        if lws2 <= lws:
-            break
-        n += 1
-    assert n >= 1
-    result_lines = lines[:n]
-    return i + len(''.join(result_lines))
-#@+node:ekr.20180504180134.1: ** @g.command('delete-trace-statements')
-@g.command('delete-trace-statements')
-def delete_trace_statements(event=None):
-    '''
-    Delete all trace statements/blocks from c.p to the end of the outline.
-    
-    **Warning**: Use this command at your own risk.
-    
-    It can cause "if" and "else" clauses to become empty, resulting in
-    syntax errors. Having said that, pyflakes & pylint will usually catch
-    the problems.
-    '''
-    c = event.get('c')
-    if not c:
-        return
-    p = c.p
-    ins = 0
-    seen = []
-    while True:
-        i, k, p = find_next_trace(ins, p)
-        if not p:
-            g.es_print('done')
-            return
-        s = p.b
-        if p.h not in seen:
-            seen.append(p.h)
-            g.es_print('Changed:', p.h)
-        ins = 0 # Rescanning is essential.
-        p.b = s[:i] + s[k:]
-#@+node:ekr.20180504180647.1: ** @g.command('select-next-trace-statement')
-@g.command('select-next-trace-statement')
-def select_next_trace_statement(event=None):
-    '''Select the next statement/block enabled by "if trace...:"'''
-    c = event.get('c')
-    if not c:
-        return
-    w = c.frame.body.wrapper
-    ins = w.getInsertPoint()
-    i, k, p = find_next_trace(ins, c.p)
-    if p:
-        c.selectPosition(p)
-        c.redraw()
-        w.setSelectionRange(i, k, insert=k)
-    else:
-        g.es_print('done')
-    c.bodyWantsFocus()
 #@-others
 #@-leo
