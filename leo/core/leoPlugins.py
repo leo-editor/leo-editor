@@ -443,10 +443,6 @@ class LeoPluginsController(object):
         def pr(*args, **keys):
             if not g.app.unitTesting:
                 g.es_print(*args, **keys)
-                
-        if g.pyzo:
-            g.trace('DISABLE plugins: g.pyzo is True')
-            return
 
         s = g.app.config.getEnabledPlugins()
         if not s: return

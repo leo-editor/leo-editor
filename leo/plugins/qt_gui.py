@@ -759,8 +759,6 @@ class LeoQtGui(leoGui.LeoGui):
         w is a wrapper object, not necessarily a QWidget.
         '''
         # gui = self
-        if g.pyzo:
-            return
         assert isinstance(obj, QtWidgets.QWidget), obj
         theFilter = qt_events.LeoQtEventFilter(c, w=w, tag=tag)
         obj.installEventFilter(theFilter)
@@ -1114,8 +1112,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20130930062914.16000: *4* qt_gui.runMainLoop
     def runMainLoop(self):
         '''Start the Qt main loop.'''
-        if g.pyzo:
-            g.trace('START MAIN LOOP')
         g.app.gui.dismiss_splash_screen()
         g.app.gui.show_tips()
         if self.script:

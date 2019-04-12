@@ -20,18 +20,6 @@ isWindows = sys.platform.startswith('win')
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
-pyzo = True
-    # It's now safe to enable this permanently,
-    # because LM.scanOptions clears it unless --pyzo is in effect.
-pyzo_patch = True
-    # True: allow patches to pyzo itself.
-pyzo_outline_tab = True
-    # True: OutlineEditorShim for .leo files.
-    # Patches createEditor function in pzyo/core/editor.py
-pyzo_trace = False
-    # True: enable traces in pyzo itself.
-pyzo_trace_imports = True
-    # True: enable traces of imports in pyzo itself.
 SQLITE = True
     # True: Enable SQLite DB.
 #@-<< global switches >>

@@ -983,14 +983,11 @@ class LeoApp(object):
         app = self
         if app.silentMode:
             return
-        if g.pyzo:
-            pass
-        else:
-            if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
-                print('Note: sys.stdout.encoding is not UTF-8')
-                print('Encoding is: %r' % sys.stdout.encoding)
-                print('See: https://stackoverflow.com/questions/14109024')
-                print('')
+        if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+            print('Note: sys.stdout.encoding is not UTF-8')
+            print('Encoding is: %r' % sys.stdout.encoding)
+            print('See: https://stackoverflow.com/questions/14109024')
+            print('')
         print(app.signon)
         if verbose:
             print(app.signon1)
@@ -1574,8 +1571,6 @@ class LeoApp(object):
         # Create the commander and its subcommanders.
         # This takes about 3/4 sec when called by the leoBridge module.
         import leo.core.leoCommands as leoCommands
-        if g.pyzo:
-            g.pr('----- app.newCommander', g.shortFileName(fileName))
         c = leoCommands.Commands(fileName,
             gui=gui,
             parentFrame=parentFrame,
@@ -2282,8 +2277,6 @@ class LoadManager(object):
                 lm.doDiff()
         if not ok:
             return
-        if g.pyzo:
-            g.app.writeWaitingLog(g.app.log.c)
         g.es('') # Clears horizontal scrolling in the log pane.
         if g.app.listen_to_log_flag:
             g.app.listenToLog()
@@ -2314,52 +2307,40 @@ class LoadManager(object):
         lm = self
         g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.  Show it and all queued messages.
-        new = True and g.pyzo
         c = c1 = None
-        if new:
-            pass
-        else:
-            if lm.files:
-                for n, fn in enumerate(lm.files):
-                    lm.more_cmdline_files = n < len(lm.files) - 1
-                    c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
-                        # Returns None if the file is open in another instance of Leo.
-                    if not c1: c1 = c
-            if g.app.restore_session:
-                m = g.app.sessionManager
-                if m:
-                    aList = m.load_snapshot()
-                    if aList:
-                        m.load_session(c1, aList)
-                        # tag:#659.
-                        if g.app.windowList:
-                            c = c1 = g.app.windowList[0].c
-                        else:
-                            c = c1 = None
+        if lm.files:
+            for n, fn in enumerate(lm.files):
+                lm.more_cmdline_files = n < len(lm.files) - 1
+                c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+                    # Returns None if the file is open in another instance of Leo.
+                if not c1: c1 = c
+        if g.app.restore_session:
+            m = g.app.sessionManager
+            if m:
+                aList = m.load_snapshot()
+                if aList:
+                    m.load_session(c1, aList)
+                    # tag:#659.
+                    if g.app.windowList:
+                        c = c1 = g.app.windowList[0].c
+                    else:
+                        c = c1 = None
         # Enable redraws.
         g.app.disable_redraw = False
-        if new: # Set above.
-            c = None
-            fileName = None ###
-            g.app.log = g.TracingNullObject(tag='g.app.log')
-            # Import *all* of the pyzo packages.
-            import leo.core.pyzo_shims as pyzo_shims
-            pyzo_shims.MainWindowShim()
-        else:
-            if not c1 or not g.app.windowList:
-                c1 = lm.openEmptyWorkBook()
-            # Fix bug #199.
-            g.app.runAlreadyOpenDialog(c1)
-            # Put the focus in the first-opened file.
-            fileName = lm.files[0] if lm.files else None
-            c = c1
-            # For qttabs gui, select the first-loaded tab.
-            if hasattr(g.app.gui, 'frameFactory'):
-                factory = g.app.gui.frameFactory
-                if factory and hasattr(factory, 'setTabForCommander'):
-                    factory.setTabForCommander(c)
-            if not c:
-                return False # Force an immediate exit.
+        if not c1 or not g.app.windowList:
+            c1 = lm.openEmptyWorkBook()
+        # Fix bug #199.
+        g.app.runAlreadyOpenDialog(c1)
+        # Put the focus in the first-opened file.
+        fileName = lm.files[0] if lm.files else None
+        c = c1
+        # For qttabs gui, select the first-loaded tab.
+        if hasattr(g.app.gui, 'frameFactory'):
+            factory = g.app.gui.frameFactory
+            if factory and hasattr(factory, 'setTabForCommander'):
+                factory.setTabForCommander(c)
+        if not c:
+            return False # Force an immediate exit.
         # Fix bug 844953: tell Unity which menu to use.
             # if c: c.enableMenuBar()
         # Do the final inits.
@@ -2745,8 +2726,6 @@ class LoadManager(object):
         add_bool('--minimized',     'start minimized')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
-        if g.pyzo:
-            add_bool('--pyzo',      'enable experimental pyzo code')
         add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
         add_other('--script',       'execute a script and then exit', m="PATH")
         add_bool('--script-window', 'execute script using default gui')
@@ -2869,9 +2848,6 @@ class LoadManager(object):
         g.app.use_splash_screen = (
             not options.no_splash and
             not options.minimized)
-        # --pyzo
-        g.pyzo = g.pyzo and options.pyzo
-        g.pr('\n===== py3.pyzo branch: --pyzo:', bool(g.pyzo))
         # --session-restore & --session-save
         g.app.restore_session = True
         g.app.save_session = True

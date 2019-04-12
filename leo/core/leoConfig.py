@@ -1712,10 +1712,7 @@ class LocalConfigManager(object):
         c = self.c
         d = self.shortcutsDict
         if not c.frame.menu:
-            if g.pyzo:
-                pass
-            else:
-                g.trace('no menu: %s' % (commandName))
+            g.trace('no menu: %s' % (commandName))
             return None, []
         if d:
             assert g.isTypedDictOfLists(d), d
