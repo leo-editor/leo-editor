@@ -16,13 +16,13 @@ import time
 assert time
 #@-<< imports >>
 #@+others
-#@+node:ekr.20160514120051.1: ** class LeoQtTree (leoFrame.LeoTree)
+#@+node:ekr.20160514120051.1: ** class LeoQtTree
 class LeoQtTree(leoFrame.LeoTree):
     '''Leo Qt tree class'''
     callbacksInjected = False # A class var.
     #@+others
     #@+node:ekr.20110605121601.18404: *3* qtree.Birth
-    #@+node:ekr.20110605121601.18405: *4* qtree.__init__ (changed)
+    #@+node:ekr.20110605121601.18405: *4* qtree.__init__
     def __init__(self, c, frame):
         '''Ctor for the LeoQtTree class.'''
         leoFrame.LeoTree.__init__(self, frame)
@@ -46,13 +46,9 @@ class LeoQtTree(leoFrame.LeoTree):
         # Components.
         self.canvas = self # An official ivar used by Leo's core.
         self.headlineWrapper = qt_text.QHeadlineWrapper # This is a class.
-        if g.pyzo:
-            self.treeWidget = w = frame.top.treeWidget
-                # frame.top is a DynamicWindow.
-            ### g.pr('LeoQtTree.treeWidget.__init__: frame: %s treeWidget: %s' % (frame, w))
-        else:
-            self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
+        self.treeWidget = w = frame.top.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.
+        #
         # "declutter", node appearance tweaking
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
         self.declutter_update = False  # true when update on idle needed
@@ -60,7 +56,6 @@ class LeoQtTree(leoFrame.LeoTree):
             g.registerHandler('save1', self.clear_visual_icons)
             g.registerHandler('headkey2', self.update_appearance)
             g.registerHandler('idle', self.update_appearance_idle)
-
         if 0: # Drag and drop
             w.setDragEnabled(True)
             w.viewport().setAcceptDrops(True)
@@ -76,8 +71,6 @@ class LeoQtTree(leoFrame.LeoTree):
                 def mimeData(self, indexes):
                     g.trace()
         # Early inits...
-        if g.pyzo:
-            return
         try:
             w.headerItem().setHidden(True)
         except Exception:
@@ -374,7 +367,7 @@ class LeoQtTree(leoFrame.LeoTree):
                         warned = True
                         g.log('Declutter patterns must start with RULE*',
                             color='error')
-        text = str(item.text(0))
+        text = str(item.text(0)) if g.isPython3 else g.u(item.text(0))
         new_icons = []
         for pattern, cmds in self.declutter_patterns:
             for func in (pattern.match, pattern.search):
@@ -758,7 +751,7 @@ class LeoQtTree(leoFrame.LeoTree):
             e = self.getTreeEditorForItem(item)
         if not e:
             return
-        s = e.text()
+        s = g.u(e.text())
         self.closeEditorHelper(e, item)
         oldHead = p.h
         changed = s != oldHead
@@ -1184,7 +1177,7 @@ class LeoQtTree(leoFrame.LeoTree):
         return e, wrapper
     #@+node:ekr.20110605121601.18421: *4* qtree.createTreeItem
     def createTreeItem(self, p, parent_item):
-        '''Create a Qt tree item.'''
+
         w = self.treeWidget
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
@@ -1193,6 +1186,7 @@ class LeoQtTree(leoFrame.LeoTree):
             g.visit_tree_item(self.c, p, item)
         except leoPlugins.TryNext:
             pass
+        #print "item",item
         return item
     #@+node:ekr.20110605121601.18422: *4* qtree.editLabelHelper
     def editLabelHelper(self, item, selectAll=False, selection=None):
@@ -1244,7 +1238,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def getItemText(self, item):
         '''Return the text of the item.'''
         if item:
-            return item.text(0)
+            return g.u(item.text(0))
         else:
             return '<no item>'
     #@+node:ekr.20110605121601.18425: *4* qtree.getParentItem

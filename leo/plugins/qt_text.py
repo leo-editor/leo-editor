@@ -284,7 +284,8 @@ class QLineEditWrapper(QTextMixin):
         '''QHeadlineWrapper.'''
         if self.check():
             w = self.widget
-            return w.text()
+            s = w.text()
+            return g.u(s)
         else:
             return ''
     #@+node:ekr.20110605121601.18121: *4* qlew.getInsertPoint
@@ -303,6 +304,7 @@ class QLineEditWrapper(QTextMixin):
             if w.hasSelectedText():
                 i = w.selectionStart()
                 s = w.selectedText()
+                s = g.u(s)
                 j = i + len(s)
             else:
                 i = j = w.cursorPosition()
@@ -342,6 +344,7 @@ class QLineEditWrapper(QTextMixin):
         w = self.widget
         if s is None:
             s = w.text()
+            s = g.u(s)
         i = self.toPythonIndex(i)
         i = max(0, min(i, len(s)))
         w.setCursorPosition(i)
@@ -353,6 +356,7 @@ class QLineEditWrapper(QTextMixin):
         if i > j: i, j = j, i
         if s is None:
             s = w.text()
+            s = g.u(s)
         n = len(s)
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
@@ -372,6 +376,7 @@ class QLineEditWrapper(QTextMixin):
                 w.setSelection(j, -length)
             else:
                 w.setSelection(i, length)
+    # setSelectionRangeHelper = setSelectionRange
     #@-others
 #@+node:ekr.20150403094619.1: ** class LeoLineTextWidget(QFrame)
 class LeoLineTextWidget(QtWidgets.QFrame):
@@ -482,7 +487,7 @@ if QtWidgets:
             #@+node:ekr.20141024170936.7: *5* lqlw.get_selection
             def get_selection(self):
                 '''Return the presently selected item's text.'''
-                return self.currentItem().text()
+                return g.u(self.currentItem().text())
             #@+node:ekr.20110605121601.18013: *5* lqlw.keyPressEvent
             def keyPressEvent(self, event):
                 '''Handle a key event from QListWidget.'''
@@ -530,9 +535,9 @@ if QtWidgets:
                 '''Called when user hits tab on an item in the QListWidget.'''
                 c = self.leo_c
                 w = c.k.autoCompleter.w or c.frame.body.wrapper # 2014/09/19
-                if w is None:
-                    return
+                if w is None: return
                 # Replace the tail of the prefix with the completion.
+                # completion = g.u(self.currentItem().text())
                 prefix = c.k.autoCompleter.get_autocompleter_prefix()
                 parts = prefix.split('.')
                 if len(parts) < 2:
@@ -895,7 +900,7 @@ class QMinibufferWrapper(QLineEditWrapper):
     def __init__(self, c):
         '''Ctor for QMinibufferWrapper class.'''
         self.c = c
-        w = c.frame.top.leo_ui.lineEdit # QLineEdit
+        w = c.frame.top.lineEdit # QLineEdit
         QLineEditWrapper.__init__(self, widget=w, name='minibuffer', c=c)
             # Init the base class.
         assert self.widget
@@ -921,6 +926,7 @@ class QMinibufferWrapper(QLineEditWrapper):
 
     def setStyleClass(self, style_class):
         self.widget.setProperty('style_class', style_class)
+        #
         # to get the appearance to change because of a property
         # change, unlike a focus or hover change, we need to
         # re-apply the stylesheet.  But re-applying at the top level
@@ -1049,7 +1055,9 @@ class QScintillaWrapper(QTextMixin):
     def getAllText(self):
         '''Get all text from a QsciScintilla widget.'''
         w = self.widget
-        return w.text()
+        s = w.text()
+        s = g.u(s)
+        return s
     #@+node:ekr.20110605121601.18109: *4* qsciw.getInsertPoint
     def getInsertPoint(self):
         '''Get the insertion point from a QsciScintilla widget.'''
@@ -1133,7 +1141,11 @@ class QScintillaWrapper(QTextMixin):
         '''Set the text of a QScintilla widget.'''
         w = self.widget
         assert isinstance(w, Qsci.QsciScintilla), w
-        w.setText(s)
+        if g.isPython3:
+            w.setText(s)
+        else:
+            w.setText(g.toEncodedString(s))
+        # w.update()
     #@+node:ekr.20110605121601.18114: *4* qsciw.setInsertPoint
     def setInsertPoint(self, i, s=None):
         '''Set the insertion point in a QsciScintilla widget.'''
@@ -1307,7 +1319,8 @@ class QTextEditWrapper(QTextMixin):
     def getAllText(self):
         '''QTextEditWrapper.'''
         w = self.widget
-        return w.toPlainText()
+        s = g.u(w.toPlainText())
+        return s
     #@+node:ekr.20110605121601.18082: *4* qtew.getInsertPoint
     def getInsertPoint(self):
         '''QTextEditWrapper.'''
