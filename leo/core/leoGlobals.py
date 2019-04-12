@@ -5752,8 +5752,12 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
     return s
 #@+node:ekr.20091206161352.6232: *4* g.u
 def u(s):
-    '''Return s, converted to unicode from Qt widgets.'''
-    # This can not be removed, because it can be a stand-in for QString.
+    '''
+    Return s, converted to unicode from Qt widgets.
+    
+    This can not be removed, because it can be a stand-in for QString.
+    However, almost all other calls to g.u can and should be removed.
+    '''
     return s
 #@+node:ekr.20031218072017.3197: *3* g.Whitespace
 #@+node:ekr.20031218072017.3198: *4* g.computeLeadingWhitespace
@@ -6116,7 +6120,6 @@ def es(*args, **keys):
             if ch == '\n': log.newlines += 1
             else: log.newlines = 0
     else:
-        ### g.pr('WAITING:', s)
         app.logWaiting.append((s, color, newline, d),)
         
 log = es

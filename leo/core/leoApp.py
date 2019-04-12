@@ -1239,7 +1239,7 @@ class LeoApp(object):
         '''Write all waiting lines to the log.'''
         #
         # Do not call g.es, g.es_print, g.pr or g.trace here!
-        ### sys.__stdout__.write('\n===== writeWaitingLog: c.frame.log: %r\n\n' % c.frame.log)
+            # sys.__stdout__.write('\n===== writeWaitingLog: c.frame.log: %r\n\n' % c.frame.log)
         app = self
         if not c or not c.exists:
             return
@@ -2348,8 +2348,6 @@ class LoadManager(object):
         if c:
             c.setLog()
             c.redraw()
-        else:
-            assert g.app.log, 'NO LOG'
         p = c.p if c else None
         g.doHook("start2", c=c, p=p, fileName=fileName)
         if c:
@@ -2670,6 +2668,7 @@ class LoadManager(object):
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)
+                print('\nIgnoring the deprecated %s option\n' % bad_option)
         lm.old_argv = sys.argv[:]
         parser = optparse.OptionParser(
             usage="usage: launchLeo.py [options] file1, file2, ...")
