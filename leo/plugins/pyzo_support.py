@@ -888,6 +888,7 @@ def open_file_browser(use_main_imports, use_pyzo_config, use_pyzo_logging):
  # use_config
         if use_pyzo_logging:
             from pyzo.core import pyzoLogging
+                # Importing this module actually starts logging.
             assert pyzoLogging
         #@+<< import the file browser >>
         #@+node:ekr.20190413074155.8: *3* << import the file browser >>
