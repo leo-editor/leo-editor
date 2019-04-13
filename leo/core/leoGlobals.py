@@ -22,6 +22,15 @@ in_bridge = False
     # This tells leoApp to load a null Gui.
 SQLITE = True
     # True: Enable SQLite DB.
+#
+# Pyzo-related trace vars: part 2 of two-step enabling of traces.
+#
+# My personal copy of pyzo uses `getattr(g, 'switch_name', None)`
+# to avoid crashes in case these vars do not exist.
+pyzo = True
+pyzo_pdb = False
+pyzo_trace = True
+pyzo_trace_imports = True
 #@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
