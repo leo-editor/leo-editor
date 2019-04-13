@@ -960,5 +960,6 @@ def open_file_browser(use_main_imports, use_pyzo_config, use_pyzo_logging):
     except Exception:
         g.es_exception()
         return None
+#@+node:ekr.20190413082316.1: ** function: open_shell_window (to do)
 #@-others
 #@-leo
