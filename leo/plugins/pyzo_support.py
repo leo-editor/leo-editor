@@ -699,15 +699,14 @@ def start_pyzo():
 
     
     
-#@+node:ekr.20190413074155.1: ** function: open_file_browser (milestone!)
+#@+node:ekr.20190413074155.1: ** function: open_file_browser
 # function: open_file_browser
 class ConfigShim(object):
     pass
 
-def open_file_browser():
+def open_file_browser(use_main_imports, use_pyzo_config, use_pyzo_logging):
     '''A test bed for importing pyzo's file browser.'''
     # Prefer explicit imports to implicit.
-    use_config = True
     import sys
     #@+<< set g.pyzo switches >>
     #@+node:ekr.20190413074155.3: *3* << set g.pyzo switches >>
@@ -719,175 +718,177 @@ def open_file_browser():
     g.pyzo_trace_imports = True
     #@-<< set g.pyzo switches >>
     try:
-        #@+<< pyzo/__init__.py imports >>
-        #@+node:ekr.20190413074155.4: *3* << pyzo/__init__.py imports >>
-        import os
-        # import sys #EKR: imported above.
-        import locale
-        import traceback
-
-        # Check Python version
-        if sys.version < '3':
-            raise RuntimeError('Pyzo requires Python 3.x to run.')
-
-        # Make each OS find platform plugins etc.
-        if hasattr(sys, 'frozen') and sys.frozen:
-            app_dir = os.path.dirname(sys.executable)
-            if sys.platform.startswith('win'):
-                os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = app_dir
-            if sys.platform.startswith('linux'):
-                os.environ['QT_XKB_CONFIG_ROOT'] = '.'
-                os.environ['FONTCONFIG_FILE'] = os.path.join(
-                    app_dir,
-                    'source/pyzo/resources',
-                    'fonts/linux_fonts.conf')
-
-        # Import yoton as an absolute package
-        from pyzo import yotonloader  # noqa
-            # Inserts directory of yotonloader into sys.argv.
-        from pyzo.util import paths
-
-        # If there already is an instance of Pyzo, and the user is trying an
-        # Pyzo command, we should send the command to the other process and quit.
-        # We do this here, were we have not yet loaded Qt, so we are very light.
-        from pyzo.core import commandline
-        if commandline.is_our_server_running():
-            print('Started our command server')
+        if use_main_imports:
+            from pyzo.__main__ import main
         else:
-            # Handle command line args now
-            res = commandline.handle_cmd_args()
-            if res:
-                print(res)
-                sys.exit()
+            #@+<< pyzo/__init__.py imports >>
+            #@+node:ekr.20190413074155.4: *3* << pyzo/__init__.py imports >>
+            import os
+            # import sys #EKR: imported above.
+            import locale
+            import traceback
+
+            # Check Python version
+            if sys.version < '3':
+                raise RuntimeError('Pyzo requires Python 3.x to run.')
+
+            # Make each OS find platform plugins etc.
+            if hasattr(sys, 'frozen') and sys.frozen:
+                app_dir = os.path.dirname(sys.executable)
+                if sys.platform.startswith('win'):
+                    os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = app_dir
+                if sys.platform.startswith('linux'):
+                    os.environ['QT_XKB_CONFIG_ROOT'] = '.'
+                    os.environ['FONTCONFIG_FILE'] = os.path.join(
+                        app_dir,
+                        'source/pyzo/resources',
+                        'fonts/linux_fonts.conf')
+
+            # Import yoton as an absolute package
+            from pyzo import yotonloader  # noqa
+                # Inserts directory of yotonloader into sys.argv.
+            from pyzo.util import paths
+
+            # If there already is an instance of Pyzo, and the user is trying an
+            # Pyzo command, we should send the command to the other process and quit.
+            # We do this here, were we have not yet loaded Qt, so we are very light.
+            from pyzo.core import commandline
+            if commandline.is_our_server_running():
+                print('Started our command server')
             else:
-                # No args, proceed with starting up
-                print('Our command server is *not* running')
+                # Handle command line args now
+                res = commandline.handle_cmd_args()
+                if res:
+                    print(res)
+                    sys.exit()
+                else:
+                    # No args, proceed with starting up
+                    print('Our command server is *not* running')
 
-        from pyzo.util import zon as ssdf  # zon is ssdf-light
-        from pyzo.util.qt import QtCore, QtGui, QtWidgets
+            from pyzo.util import zon as ssdf  # zon is ssdf-light
+            from pyzo.util.qt import QtCore, QtGui, QtWidgets
 
-        # Import language/translation tools
-        from pyzo.util._locale import translate, setLanguage  # noqa
-        #@-<< pyzo/__init__.py imports >>
-        #@+<< pyzo.__init__.py early bindings >>
-        #@+node:ekr.20190413074155.5: *3* << pyzo.__init__.py early bindings >>
-        # Set environ to let kernel know some stats about us
-        os.environ['PYZO_PREFIX'] = sys.prefix
-        _is_pyqt4 = hasattr(QtCore, 'PYQT_VERSION_STR')
-        os.environ['PYZO_QTLIB'] = 'PyQt4' if _is_pyqt4 else 'PySide'
-        #@-<< pyzo.__init__.py early bindings >>
-        #@+others
-        #@+node:ekr.20190413074155.12: *3* getResourceDirs
-        def getResourceDirs():
-            """ getResourceDirs()
-            Get the directories to the resources: (pyzoDir, appDataDir).
-            Also makes sure that the appDataDir has a "tools" directory and
-            a style file.
-            """
+            # Import language/translation tools
+            from pyzo.util._locale import translate, setLanguage  # noqa
+            #@-<< pyzo/__init__.py imports >>
+            #@+<< pyzo.__init__.py early bindings >>
+            #@+node:ekr.20190413074155.5: *3* << pyzo.__init__.py early bindings >>
+            # Set environ to let kernel know some stats about us
+            os.environ['PYZO_PREFIX'] = sys.prefix
+            _is_pyqt4 = hasattr(QtCore, 'PYQT_VERSION_STR')
+            os.environ['PYZO_QTLIB'] = 'PyQt4' if _is_pyqt4 else 'PySide'
+            #@-<< pyzo.__init__.py early bindings >>
+            #@+others
+            #@+node:ekr.20190413074155.12: *3* getResourceDirs
+            def getResourceDirs():
+                """ getResourceDirs()
+                Get the directories to the resources: (pyzoDir, appDataDir).
+                Also makes sure that the appDataDir has a "tools" directory and
+                a style file.
+                """
 
-            #   # Get root of the Pyzo code. If frozen its in a subdir of the app dir
-            #   pyzoDir = paths.application_dir()
-            #   if paths.is_frozen():
-            #       pyzoDir = os.path.join(pyzoDir, 'source')
-            if 1:
-                ### Hack
-                g.trace('using static pyzoDir')
-                pyzoDir = r'C:\apps\pyzo\source\pyzo'
+                #   # Get root of the Pyzo code. If frozen its in a subdir of the app dir
+                #   pyzoDir = paths.application_dir()
+                #   if paths.is_frozen():
+                #       pyzoDir = os.path.join(pyzoDir, 'source')
+                if 1:
+                    ### Hack
+                    g.trace('using static pyzoDir')
+                    pyzoDir = r'C:\apps\pyzo\source\pyzo'
+                else:
+                    pyzoDir = os.path.abspath(os.path.dirname(__file__))
+                if '.zip' in pyzoDir:
+                    raise RuntimeError('The Pyzo package cannot be run from a zipfile.')
+
+                # Get where the application data is stored (use old behavior on Mac)
+                appDataDir = paths.appdata_dir('pyzo', roaming=True, macAsLinux=True)
+
+                # Create tooldir if necessary
+                toolDir = os.path.join(appDataDir, 'tools')
+                if not os.path.isdir(toolDir):
+                    os.mkdir(toolDir)
+
+                return pyzoDir, appDataDir
+            #@+node:ekr.20190413074155.13: *3* loadConfig (pyzo.__init__.py)
+            def loadConfig(defaultsOnly=False):
+                """ loadConfig(defaultsOnly=False)
+                Load default and site-wide configuration file(s) and that of the user (if it exists).
+                Any missing fields in the user config are set to the defaults.
+                """
+
+                # Function to insert names from one config in another
+                def replaceFields(base, new):
+                    for key in new:
+                        if key in base and isinstance(base[key], ssdf.Struct):
+                            replaceFields(base[key], new[key])
+                        else:
+                            base[key] = new[key]
+
+                # Reset our pyzo.config structure
+                ssdf.clear(config)
+
+                # Load default and inject in the pyzo.config
+                fname = os.path.join(pyzoDir, 'resources', 'defaultConfig.ssdf')
+                defaultConfig = ssdf.load(fname)
+                replaceFields(config, defaultConfig)
+
+                # Platform specific keybinding: on Mac, Ctrl+Tab (actually Cmd+Tab) is a system shortcut
+                if sys.platform == 'darwin':
+                    config.shortcuts2.view__select_previous_file = 'Alt+Tab,'
+
+                # Load site-wide config if it exists and inject in pyzo.config
+                fname = os.path.join(pyzoDir, 'resources', 'siteConfig.ssdf')
+                if os.path.isfile(fname):
+                    try:
+                        siteConfig = ssdf.load(fname)
+                        replaceFields(config, siteConfig)
+                    except Exception:
+                        t = 'Error while reading config file %r, maybe its corrupt?'
+                        print(t % fname)
+                        raise
+
+                # Load user config and inject in pyzo.config
+                fname = os.path.join(appDataDir, "config.ssdf")
+                if os.path.isfile(fname):
+                    try:
+                        userConfig = ssdf.load(fname)
+                        replaceFields(config, userConfig)
+                    except Exception:
+                        t = 'Error while reading config file %r, maybe its corrupt?'
+                        print(t % fname)
+                        raise
+            #@-others
+            #@+<< pyzo.__init__.py late bindings >>
+            #@+node:ekr.20190413074155.6: *3* << pyzo.__init__.py late bindings >> (use_pyzo_config)
+            ## Init
+
+            # List of names that are later overriden (in main.py)
+            editors = None # The editor stack instance
+            shells = None # The shell stack instance
+            main = None # The mainwindow
+            icon = None # The icon
+            parser = None # The source parser
+            status = None # The statusbar (or None)
+
+            # Get directories of interest
+            pyzoDir, appDataDir = getResourceDirs()
+
+            # Create ssdf in module namespace, and fill it
+            if use_pyzo_config:
+                _saveConfigFile = True
+                config = ssdf.new()
+                loadConfig()
             else:
-                pyzoDir = os.path.abspath(os.path.dirname(__file__))
-            if '.zip' in pyzoDir:
-                raise RuntimeError('The Pyzo package cannot be run from a zipfile.')
+                config = ConfigShim() # g.TracingNullObject(tag='config shim')
 
-            # Get where the application data is stored (use old behavior on Mac)
-            appDataDir = paths.appdata_dir('pyzo', roaming=True, macAsLinux=True)
-
-            # Create tooldir if necessary
-            toolDir = os.path.join(appDataDir, 'tools')
-            if not os.path.isdir(toolDir):
-                os.mkdir(toolDir)
-
-            return pyzoDir, appDataDir
-        #@+node:ekr.20190413074155.13: *3* loadConfig (pyzo.__init__.py)
-        def loadConfig(defaultsOnly=False):
-            """ loadConfig(defaultsOnly=False)
-            Load default and site-wide configuration file(s) and that of the user (if it exists).
-            Any missing fields in the user config are set to the defaults.
-            """
-
-            # Function to insert names from one config in another
-            def replaceFields(base, new):
-                for key in new:
-                    if key in base and isinstance(base[key], ssdf.Struct):
-                        replaceFields(base[key], new[key])
-                    else:
-                        base[key] = new[key]
-
-            # Reset our pyzo.config structure
-            ssdf.clear(config)
-
-            # Load default and inject in the pyzo.config
-            fname = os.path.join(pyzoDir, 'resources', 'defaultConfig.ssdf')
-            defaultConfig = ssdf.load(fname)
-            replaceFields(config, defaultConfig)
-
-            # Platform specific keybinding: on Mac, Ctrl+Tab (actually Cmd+Tab) is a system shortcut
-            if sys.platform == 'darwin':
-                config.shortcuts2.view__select_previous_file = 'Alt+Tab,'
-
-            # Load site-wide config if it exists and inject in pyzo.config
-            fname = os.path.join(pyzoDir, 'resources', 'siteConfig.ssdf')
-            if os.path.isfile(fname):
-                try:
-                    siteConfig = ssdf.load(fname)
-                    replaceFields(config, siteConfig)
-                except Exception:
-                    t = 'Error while reading config file %r, maybe its corrupt?'
-                    print(t % fname)
-                    raise
-
-            # Load user config and inject in pyzo.config
-            fname = os.path.join(appDataDir, "config.ssdf")
-            if os.path.isfile(fname):
-                try:
-                    userConfig = ssdf.load(fname)
-                    replaceFields(config, userConfig)
-                except Exception:
-                    t = 'Error while reading config file %r, maybe its corrupt?'
-                    print(t % fname)
-                    raise
-        #@-others
-        #@+<< pyzo.__init__.py late bindings >>
-        #@+node:ekr.20190413074155.6: *3* << pyzo.__init__.py late bindings >>
-        ## Init
-
-        # List of names that are later overriden (in main.py)
-        editors = None # The editor stack instance
-        shells = None # The shell stack instance
-        main = None # The mainwindow
-        icon = None # The icon
-        parser = None # The source parser
-        status = None # The statusbar (or None)
-
-        # Get directories of interest
-        pyzoDir, appDataDir = getResourceDirs()
-
-        # Create ssdf in module namespace, and fill it
-        if use_config:
-            _saveConfigFile = True
-            config = ssdf.new()
-            loadConfig()
-        else:
-            config = ConfigShim() # g.TracingNullObject(tag='config shim')
-
-        # Init default style name (set in main.restorePyzoState())
-        defaultQtStyleName = ''
-        #@-<< pyzo.__init__.py late bindings >>
-        #@afterref
+            # Init default style name (set in main.restorePyzoState())
+            defaultQtStyleName = ''
+            #@-<< pyzo.__init__.py late bindings >>
+            #@afterref
  # use_config
-        #@+<< imports from start >>
-        #@+node:ekr.20190413074155.7: *3* << imports from start >>
-        from pyzo.core import pyzoLogging
-        #@-<< imports from start >>
+        if use_pyzo_logging:
+            from pyzo.core import pyzoLogging
+            assert pyzoLogging
         #@+<< import the file browser >>
         #@+node:ekr.20190413074155.8: *3* << import the file browser >>
         #@+<< unused imports >>
@@ -941,7 +942,6 @@ def open_file_browser():
             print(defaultQtStyleName)
             print(icon)
             print(parser)
-            print(pyzoLogging)
             print(shells)
             print(status)
             
