@@ -732,6 +732,12 @@ leo_color_database = {
     "yellowgreen": "#9ACD32"
 }
 #@-<< define leo_color_database >>
+#
+# Check that all keys are normalized.
+# This is essential for Leo's jEdit-based colorizers.
+for key in leo_color_database:
+    if not key.isalnum():
+        print('\nleoColor.py: non-normalized key: %s\n' % repr(key))
 #@+others
 #@+node:bob.20080115070511.3: ** color database functions
 #@+node:bob.20071231111744.2: *3* get / getColor
