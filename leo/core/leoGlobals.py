@@ -2276,7 +2276,7 @@ def isTextWrapper(w):
     return w and g.app.gui.isTextWrapper(w)
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
-#@+node:ekr.20031218072017.3105: *4* g.alert
+#@+node:ekr.20031218072017.3105: *4* g.alert (deprecated)
 def alert(message, c=None):
     '''Raise an alert.
 
@@ -5646,28 +5646,26 @@ def getPythonEncodingFromString(s):
                 if e and g.isValidEncoding(e):
                     encoding = e
     return encoding
-#@+node:ekr.20080816125725.2: *4* g.isBytes/Callable/Int/String/Unicode (deprecated)
-# The syntax of these functions must be valid on Python2K and Python3K.
-#@+node:ekr.20160229070349.2: *5* g.isBytes (deprecated)
+#@+node:ekr.20160229070349.2: *4* g.isBytes (deprecated)
 def isBytes(s):
     '''Return True if s is a bytes type.'''
     return isinstance(s, bytes)
-#@+node:ekr.20160229070349.3: *5* g.isCallable (deprecated)
+#@+node:ekr.20160229070349.3: *4* g.isCallable (deprecated)
 def isCallable(obj):
     return hasattr(obj, '__call__')
-#@+node:ekr.20160229070429.1: *5* g.isInt (deprecated)
+#@+node:ekr.20160229070429.1: *4* g.isInt (deprecated)
 def isInt(obj):
     '''Return True if obj is an int or a long.'''
     return isinstance(obj, int)
-#@+node:ekr.20161223082445.1: *5* g.isList (deprecated)
+#@+node:ekr.20161223082445.1: *4* g.isList (deprecated)
 def isList(s):
     '''Return True if s is a list.'''
     return isinstance(s, list)
-#@+node:ekr.20160229070349.5: *5* g.isString (deprecated)
+#@+node:ekr.20160229070349.5: *4* g.isString (deprecated)
 def isString(s):
     '''Return True if s is any string, but not bytes.'''
     return isinstance(s, str)
-#@+node:ekr.20160229070349.6: *5* g.isUnicode (deprecated)
+#@+node:ekr.20160229070349.6: *4* g.isUnicode (deprecated)
 def isUnicode(s):
     '''Return True if s is a unicode string.'''
     return isinstance(s, str)
@@ -5722,6 +5720,24 @@ def stripBOM(s):
             if bom == s[: len(bom)]:
                 return e, s[len(bom):]
     return None, s
+#@+node:ekr.20050208093800: *4* g.toEncodedString
+def toEncodedString(s, encoding='utf-8', reportErrors=False):
+    '''Convert unicode string to an encoded string.'''
+    if not g.isUnicode(s):
+        return s
+    if not encoding:
+        encoding = 'utf-8'
+    # These are the only significant calls to s.encode in Leo.
+    try:
+        s = s.encode(encoding, "strict")
+    except UnicodeError:
+        s = s.encode(encoding, "replace")
+        if reportErrors:
+            g.error("Error converting %s from unicode to %s encoding" % (s, encoding))
+    # Tracing these calls directly yields thousands of calls.
+    # Never call g.trace here!
+        # g.dump_encoded_string(encoding,s)
+    return s
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
 def toUnicode(s, encoding='utf-8', reportErrors=False):
     '''Convert a non-unicode string with the given encoding to unicode.'''
@@ -5741,31 +5757,16 @@ def toUnicode(s, encoding='utf-8', reportErrors=False):
             g.error("toUnicode: Error converting %s...from %s encoding to unicode" % (
                 s[: 200], encoding))
     return s
-#@+node:ekr.20050208093800: *4* g.toEncodedString
-def toEncodedString(s, encoding='utf-8', reportErrors=False):
-    '''Convert unicode string to an encoded string.'''
-    if not g.isUnicode(s):
-        return s
-    if not encoding:
-        encoding = 'utf-8'
-    # These are the only significant calls to s.encode in Leo.
-    try:
-        s = s.encode(encoding, "strict")
-    except UnicodeError:
-        s = s.encode(encoding, "replace")
-        if reportErrors:
-            g.error("Error converting %s from unicode to %s encoding" % (s, encoding))
-    # Tracing these calls directly yields thousands of calls.
-    # Never call g.trace here!
-        # g.dump_encoded_string(encoding,s)
-    return s
-#@+node:ekr.20091206161352.6232: *4* g.u
+#@+node:ekr.20091206161352.6232: *4* g.u (deprecated)
 def u(s):
     '''
     Return s, converted to unicode from Qt widgets.
     
-    This can not be removed, because it can be a stand-in for QString.
-    However, almost all other calls to g.u can and should be removed.
+    leoQt.py uses is as a stand-in for QString, but all other calls to
+    g.u can and should be removed.
+    
+    Neither Leo's core nor any of Leo's official plugins call this
+    method directly.
     '''
     return s
 #@+node:ekr.20031218072017.3197: *3* g.Whitespace
