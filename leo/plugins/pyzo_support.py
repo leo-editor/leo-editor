@@ -70,10 +70,6 @@ def onCreate(tag, keys):
         c.pyzoController = PyzoController(c)
 
     
-#@+node:ekr.20190415053931.1: *3* placate_pyflakes (pyzo_support.py)
-def placate_pyflakes(*args, **keys):
-    '''Prevent a pyflakes complaint'''
-    pass
 #@+node:ekr.20190414034531.1: ** class ConfigShim
 class ConfigShim(object):
     # pylint: disable=no-member
@@ -107,7 +103,7 @@ class PyzoController (object):
         import locale
         import traceback
 
-        placate_pyflakes (locale, traceback)
+        self.placate_pyflakes (locale, traceback)
 
         # Check Python version
         if sys.version < '3':
@@ -154,7 +150,7 @@ class PyzoController (object):
         # Import language/translation tools
         from pyzo.util._locale import translate, setLanguage  # noqa
 
-        placate_pyflakes(QtCore, QtGui, QtWidgets, setLanguage, translate, yotonloader)
+        self.placate_pyflakes(QtCore, QtGui, QtWidgets, setLanguage, translate, yotonloader)
         #@-<< pyzo/__init__.py imports >>
         #@+<< pyzo.__init__.py early bindings >>
         #@+node:ekr.20190415051125.6: *4* << pyzo.__init__.py early bindings >>
@@ -226,7 +222,7 @@ class PyzoController (object):
         parser = None # The source parser
         status = None # The statusbar (or None)
 
-        placate_pyflakes(editors, icon, parser, shells, status)
+        self.placate_pyflakes(editors, icon, parser, shells, status)
 
         # Get directories of interest
         pyzoDir, appDataDir = self.getResourceDirs()
@@ -242,13 +238,13 @@ class PyzoController (object):
         # Init default style name (set in main.restorePyzoState())
         defaultQtStyleName = ''
 
-        placate_pyflakes(_saveConfigFile, defaultQtStyleName)
+        self.placate_pyflakes(_saveConfigFile, defaultQtStyleName)
         #@-<< pyzo.__init__.py late bindings >>
         #@+<< imports from start >>
         #@+node:ekr.20190415051125.8: *4* << imports from start >>
         from pyzo.core import pyzoLogging
 
-        placate_pyflakes(pyzoLogging)
+        self.placate_pyflakes(pyzoLogging)
         #@-<< imports from start >>
         #@+<< import the file browser >>
         #@+node:ekr.20190415051125.9: *4* << import the file browser >>
@@ -264,7 +260,7 @@ class PyzoController (object):
 
         self.PyzoFileBrowser = PyzoFileBrowser
 
-        placate_pyflakes(icons, Menu, Tree)
+        self.placate_pyflakes(icons, Menu, Tree)
 
         #@-<< import the file browser >>
     #@+node:ekr.20190415051125.11: *3* pz.getResourceDirs
@@ -338,6 +334,10 @@ class PyzoController (object):
             print('Done')
         except Exception:
             g.es_exception()
+    #@+node:ekr.20190415053931.1: *3* pz.placate_pyflakes
+    def placate_pyflakes(self, *args, **keys):
+        '''Prevent a pyflakes complaint'''
+        pass
     #@-others
 #@-others
 #@-leo
