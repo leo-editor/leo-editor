@@ -23,7 +23,7 @@ This plugin will work only if pyzo can be imported successfully.
 import os
 import sys
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore
+# from leo.core.leoQt import QtCore
 #@+<< set pyzo switches >>
 #@+node:ekr.20190410200749.1: ** << set pyzo switches >>
 #
@@ -88,127 +88,6 @@ class PyzoController (object):
         self.PyzoFileBrowser = None
 
     #@+others
-    #@+node:ekr.20190415061516.1: *3* pz.do_pyzo imports
-    def do_pyzo_imports(self):
-        
-        # Prefer explicit imports to implicit.
-        #
-        #@+<< pyzo/__init__.py imports >>
-        #@+node:ekr.20190415051125.5: *4* << pyzo/__init__.py imports >>
-        # Make each OS find platform plugins etc.
-        #
-        ### if hasattr(sys, 'frozen') and sys.frozen:
-        if getattr(sys, 'frozen', None): 
-            app_dir = os.path.dirname(sys.executable)
-            if sys.platform.startswith('win'):
-                os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = app_dir
-            if sys.platform.startswith('linux'):
-                os.environ['QT_XKB_CONFIG_ROOT'] = '.'
-                os.environ['FONTCONFIG_FILE'] = os.path.join(
-                    app_dir,
-                    'source/pyzo/resources',
-                    'fonts/linux_fonts.conf')
-         
-        import pyzo # New.
-
-        # Import yoton as an absolute package
-        from pyzo import yotonloader  # noqa
-            # Inserts directory of yotonloader into sys.argv.
-            
-        self.placate_pyflakes(yotonloader)
-            
-        # from pyzo.util import paths
-
-        if 0: ### Experimental.
-            # If there already is an instance of Pyzo, and the user is trying an
-            # Pyzo command, we should send the command to the other process and quit.
-            # We do this here, were we have not yet loaded Qt, so we are very light.
-            from pyzo.core import commandline
-            
-            if commandline.is_our_server_running():
-                print('Started our command server')
-            else:
-                # Handle command line args now
-                res = commandline.handle_cmd_args()
-                if res:
-                    print(res)
-                    sys.exit()
-                else:
-                    # No args, proceed with starting up
-                    print('Our command server is *not* running')
-
-        from pyzo.util import zon as ssdf  # zon is ssdf-light
-
-        ### from pyzo.util.qt import QtCore, QtGui, QtWidgets
-
-        # Import language/translation tools
-        ### from pyzo.util._locale import translate, setLanguage  # noqa
-
-        ### self.placate_pyflakes(QtCore, QtGui, QtWidgets, setLanguage, translate, yotonloader)
-        #@-<< pyzo/__init__.py imports >>
-        #@+<< pyzo.__init__.py early bindings >>
-        #@+node:ekr.20190415051125.6: *4* << pyzo.__init__.py early bindings >>
-        # Set environ to let kernel know some stats about us
-        os.environ['PYZO_PREFIX'] = sys.prefix
-        _is_pyqt4 = hasattr(QtCore, 'PYQT_VERSION_STR')
-        os.environ['PYZO_QTLIB'] = 'PyQt4' if _is_pyqt4 else 'PySide'
-        #@-<< pyzo.__init__.py early bindings >>
-        #@+<< pyzo.__init__.py late bindings >>
-        #@+node:ekr.20190415051125.7: *4* << pyzo.__init__.py late bindings >>
-        ## Init
-
-        # List of names that are later overriden (in main.py)
-            # editors = None # The editor stack instance
-            # shells = None # The shell stack instance
-            # main = None # The mainwindow
-            # icon = None # The icon
-            # parser = None # The source parser
-            # status = None # The statusbar (or None)
-            
-            # self.placate_pyflakes(editors, icon, parser, shells, status)
-
-        # Get directories of interest
-            ### pyzoDir, appDataDir = self.getResourceDirs()
-            # junk, appDataDir = pyzo.getResourceDirs()
-            # pyzoDir = r'C:\apps\pyzo\source\pyzo'
-
-        # Create ssdf in module namespace, and fill it
-        if self.use_config:
-            _saveConfigFile = True
-            config = ssdf.new()
-            ### loadConfig()
-        # else: config = ConfigShim() # g.TracingNullObject(tag='config shim')
-
-        # Init default style name (set in main.restorePyzoState())
-        ### defaultQtStyleName = ''
-
-        self.placate_pyflakes(_saveConfigFile, config) ###, defaultQtStyleName)
-        #@-<< pyzo.__init__.py late bindings >>
-        #@+<< imports from start >>
-        #@+node:ekr.20190415051125.8: *4* << imports from start >>
-        from pyzo.core import pyzoLogging
-
-        self.placate_pyflakes(pyzoLogging)
-        #@-<< imports from start >>
-        #@+<< import the file browser >>
-        #@+node:ekr.20190415051125.9: *4* << import the file browser >>
-        #
-        # Prerequisites...
-        import pyzo.core.main as main
-        main.loadIcons()
-        main.loadFonts()
-        from pyzo.core.menu import Menu
-        from pyzo.tools.pyzoFileBrowser.tree import Tree
-        import pyzo.core.icons as icons
-        from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
-
-        self.PyzoFileBrowser = PyzoFileBrowser
-
-        self.placate_pyflakes(icons, Menu, Tree)
-
-        #@-<< import the file browser >>
-        if self.use_config:
-            pyzo.loadConfig()
     #@+node:ekr.20190415051125.13: *3* pz.monkey_patch
     def monkey_patch(self):
         
@@ -226,17 +105,35 @@ class PyzoController (object):
     def open_file_browser(self):
         '''Open pyzo's file browser.'''
         try:
-            self.do_pyzo_imports()
+            #@+<< import the file browser >>
+            #@+node:ekr.20190415051125.9: *4* << import the file browser >>
+            #
+            # Modified from pyzo.
+            # Copyright (C) 2013-2018, the Pyzo development team
+            #
+            # 1. Import main, which imports pyzo.
+            import pyzo.core.main as main
+            #
+            # 2. Set fonts and icons.
+            main.loadIcons()
+            main.loadFonts()
+            #
+            # 3. Import menu and tree packages.
+            from pyzo.core.menu import Menu
+            from pyzo.tools.pyzoFileBrowser.tree import Tree
+            assert Menu
+            assert Tree
+            #
+            # 4. Import the pyzoFileBrowser package.
+            from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
+            self.PyzoFileBrowser = PyzoFileBrowser
+            #@-<< import the file browser >>
             self.monkey_patch()
             w = self.PyzoFileBrowser(parent=None)
             w.show()
             self.widgets.append(w)
         except Exception:
             g.es_exception()
-    #@+node:ekr.20190415053931.1: *3* pz.placate_pyflakes
-    def placate_pyflakes(self, *args, **keys):
-        '''Prevent a pyflakes complaint'''
-        pass
     #@-others
 #@-others
 #@-leo
