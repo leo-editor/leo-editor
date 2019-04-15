@@ -5,9 +5,7 @@
 '''
 pyzo_support.py: Allow access to pyzo features within Leo.
 
-This plugin is active only if pyzo modules import successfully.
-
-
+This plugin will work only if pyzo can be imported successfully.
 '''
 #@+<< copyright >>
 #@+node:ekr.20190412042616.1: ** << copyright >>
@@ -329,7 +327,6 @@ class PyzoController (object):
             w = self.PyzoFileBrowser(parent=None)
             w.show()
             self.widgets.append(w)
-            print('Done')
         except Exception:
             g.es_exception()
     #@+node:ekr.20190415053931.1: *3* pz.placate_pyflakes
