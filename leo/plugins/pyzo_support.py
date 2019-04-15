@@ -30,8 +30,6 @@ try:
 except Exception:
     pyzo=None
 #@-<< imports >>
-
-# from leo.core.leoQt import QtCore
 #@+<< set pyzo switches >>
 #@+node:ekr.20190410200749.1: ** << set pyzo switches >>
 #
@@ -71,8 +69,6 @@ def onCreate(tag, keys):
     c = keys.get('c')
     if c:
         c.pyzoController = PyzoController(c)
-
-    
 #@+node:ekr.20190414034531.1: ** class ConfigShim
 class ConfigShim(object):
     # pylint: disable=no-member
