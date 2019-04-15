@@ -23,6 +23,7 @@ This plugin will work only if pyzo can be imported successfully.
 import os
 import sys
 import leo.core.leoGlobals as g
+from leo.core.leoQt import QtCore
 #@+<< set pyzo switches >>
 #@+node:ekr.20190410200749.1: ** << set pyzo switches >>
 #
@@ -94,22 +95,10 @@ class PyzoController (object):
         #
         #@+<< pyzo/__init__.py imports >>
         #@+node:ekr.20190415051125.5: *4* << pyzo/__init__.py imports >>
-        import os
-        # import sys #EKR: imported above.
-        import locale
-        import traceback
-
-        self.placate_pyflakes (locale, traceback)
-
-        # Check Python version
-        if sys.version < '3':
-            raise RuntimeError('Pyzo requires Python 3.x to run.')
-            
-
-
         # Make each OS find platform plugins etc.
-        # pylint: disable=no-member
-        if hasattr(sys, 'frozen') and sys.frozen:
+        #
+        ### if hasattr(sys, 'frozen') and sys.frozen:
+        if getattr(sys, 'frozen', None): 
             app_dir = os.path.dirname(sys.executable)
             if sys.platform.startswith('win'):
                 os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = app_dir
@@ -120,37 +109,42 @@ class PyzoController (object):
                     'source/pyzo/resources',
                     'fonts/linux_fonts.conf')
          
-        import pyzo ### Experimental.
+        import pyzo # New.
 
         # Import yoton as an absolute package
         from pyzo import yotonloader  # noqa
             # Inserts directory of yotonloader into sys.argv.
             
+        self.placate_pyflakes(yotonloader)
+            
         # from pyzo.util import paths
 
-        # If there already is an instance of Pyzo, and the user is trying an
-        # Pyzo command, we should send the command to the other process and quit.
-        # We do this here, were we have not yet loaded Qt, so we are very light.
-        from pyzo.core import commandline
-        if commandline.is_our_server_running():
-            print('Started our command server')
-        else:
-            # Handle command line args now
-            res = commandline.handle_cmd_args()
-            if res:
-                print(res)
-                sys.exit()
+        if 0: ### Experimental.
+            # If there already is an instance of Pyzo, and the user is trying an
+            # Pyzo command, we should send the command to the other process and quit.
+            # We do this here, were we have not yet loaded Qt, so we are very light.
+            from pyzo.core import commandline
+            
+            if commandline.is_our_server_running():
+                print('Started our command server')
             else:
-                # No args, proceed with starting up
-                print('Our command server is *not* running')
+                # Handle command line args now
+                res = commandline.handle_cmd_args()
+                if res:
+                    print(res)
+                    sys.exit()
+                else:
+                    # No args, proceed with starting up
+                    print('Our command server is *not* running')
 
         from pyzo.util import zon as ssdf  # zon is ssdf-light
-        from pyzo.util.qt import QtCore, QtGui, QtWidgets
+
+        ### from pyzo.util.qt import QtCore, QtGui, QtWidgets
 
         # Import language/translation tools
-        from pyzo.util._locale import translate, setLanguage  # noqa
+        ### from pyzo.util._locale import translate, setLanguage  # noqa
 
-        self.placate_pyflakes(QtCore, QtGui, QtWidgets, setLanguage, translate, yotonloader)
+        ### self.placate_pyflakes(QtCore, QtGui, QtWidgets, setLanguage, translate, yotonloader)
         #@-<< pyzo/__init__.py imports >>
         #@+<< pyzo.__init__.py early bindings >>
         #@+node:ekr.20190415051125.6: *4* << pyzo.__init__.py early bindings >>
@@ -159,24 +153,24 @@ class PyzoController (object):
         _is_pyqt4 = hasattr(QtCore, 'PYQT_VERSION_STR')
         os.environ['PYZO_QTLIB'] = 'PyQt4' if _is_pyqt4 else 'PySide'
         #@-<< pyzo.__init__.py early bindings >>
-        #@+others
-        #@-others
         #@+<< pyzo.__init__.py late bindings >>
         #@+node:ekr.20190415051125.7: *4* << pyzo.__init__.py late bindings >>
         ## Init
 
         # List of names that are later overriden (in main.py)
-        editors = None # The editor stack instance
-        shells = None # The shell stack instance
-        main = None # The mainwindow
-        icon = None # The icon
-        parser = None # The source parser
-        status = None # The statusbar (or None)
-
-        self.placate_pyflakes(editors, icon, parser, shells, status)
+            # editors = None # The editor stack instance
+            # shells = None # The shell stack instance
+            # main = None # The mainwindow
+            # icon = None # The icon
+            # parser = None # The source parser
+            # status = None # The statusbar (or None)
+            
+            # self.placate_pyflakes(editors, icon, parser, shells, status)
 
         # Get directories of interest
-        pyzoDir, appDataDir = self.getResourceDirs()
+            ### pyzoDir, appDataDir = self.getResourceDirs()
+            # junk, appDataDir = pyzo.getResourceDirs()
+            # pyzoDir = r'C:\apps\pyzo\source\pyzo'
 
         # Create ssdf in module namespace, and fill it
         if self.use_config:
@@ -186,9 +180,9 @@ class PyzoController (object):
         # else: config = ConfigShim() # g.TracingNullObject(tag='config shim')
 
         # Init default style name (set in main.restorePyzoState())
-        defaultQtStyleName = ''
+        ### defaultQtStyleName = ''
 
-        self.placate_pyflakes(_saveConfigFile, config, defaultQtStyleName)
+        self.placate_pyflakes(_saveConfigFile, config) ###, defaultQtStyleName)
         #@-<< pyzo.__init__.py late bindings >>
         #@+<< imports from start >>
         #@+node:ekr.20190415051125.8: *4* << imports from start >>
@@ -214,50 +208,13 @@ class PyzoController (object):
 
         #@-<< import the file browser >>
         if self.use_config:
-            
             pyzo.loadConfig()
-    #@+node:ekr.20190415051125.11: *3* pz.getResourceDirs
-    def getResourceDirs(self):
-        """
-        getResourceDirs()
-        Get the directories to the resources: (pyzoDir, appDataDir).
-        Also makes sure that the appDataDir has a "tools" directory and
-        a style file.
-        """
-        
-        from pyzo.util import paths
-
-        #   # Get root of the Pyzo code. If frozen its in a subdir of the app dir
-        #   pyzoDir = paths.application_dir()
-        #   if paths.is_frozen():
-        #       pyzoDir = os.path.join(pyzoDir, 'source')
-        if 1:
-            ### Hack
-            g.trace('using static pyzoDir')
-            pyzoDir = r'C:\apps\pyzo\source\pyzo'
-        else:
-            pyzoDir = os.path.abspath(os.path.dirname(__file__))
-        if '.zip' in pyzoDir:
-            raise RuntimeError('The Pyzo package cannot be run from a zipfile.')
-
-        # Get where the application data is stored (use old behavior on Mac)
-       
-        appDataDir = paths.appdata_dir('pyzo', roaming=True, macAsLinux=True)
-
-        # Create tooldir if necessary
-        toolDir = os.path.join(appDataDir, 'tools')
-        if not os.path.isdir(toolDir):
-            os.mkdir(toolDir)
-
-        return pyzoDir, appDataDir
     #@+node:ekr.20190415051125.13: *3* pz.monkey_patch
     def monkey_patch(self):
         
         from pyzo.tools.pyzoFileBrowser.tree import FileItem
 
         def patchedOnActivated(self, c=self.c):
-            # todo: someday we should be able to simply pass the proxy object to the editors
-            # so that we can open files on any file system
             path = self.path()
             g.trace(path)
             ext = os.path.splitext(path)[1]
