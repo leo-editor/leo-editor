@@ -104,6 +104,8 @@ class PyzoController (object):
         # Check Python version
         if sys.version < '3':
             raise RuntimeError('Pyzo requires Python 3.x to run.')
+            
+
 
         # Make each OS find platform plugins etc.
         # pylint: disable=no-member
@@ -117,6 +119,8 @@ class PyzoController (object):
                     app_dir,
                     'source/pyzo/resources',
                     'fonts/linux_fonts.conf')
+         
+        import pyzo ### Experimental.
 
         # Import yoton as an absolute package
         from pyzo import yotonloader  # noqa
@@ -156,55 +160,6 @@ class PyzoController (object):
         os.environ['PYZO_QTLIB'] = 'PyQt4' if _is_pyqt4 else 'PySide'
         #@-<< pyzo.__init__.py early bindings >>
         #@+others
-        #@+node:ekr.20190415051125.12: *4* function: loadConfig (pyzo.__init__.py)
-        def loadConfig(defaultsOnly=False):
-            """ loadConfig(defaultsOnly=False)
-            Load default and site-wide configuration file(s) and that of the user (if it exists).
-            Any missing fields in the user config are set to the defaults.
-            """
-
-            # Function to insert names from one config in another
-            def replaceFields(base, new):
-                for key in new:
-                    if key in base and isinstance(base[key], ssdf.Struct):
-                        replaceFields(base[key], new[key])
-                    else:
-                        base[key] = new[key]
-
-            # Reset our pyzo.config structure
-            ssdf.clear(config)
-
-            # Load default and inject in the pyzo.config
-            fname = os.path.join(pyzoDir, 'resources', 'defaultConfig.ssdf')
-            defaultConfig = ssdf.load(fname)
-            replaceFields(config, defaultConfig)
-
-            # Platform specific keybinding: on Mac, Ctrl+Tab (actually Cmd+Tab) is a system shortcut
-            if sys.platform == 'darwin':
-                # pylint: disable=no-member
-                config.shortcuts2.view__select_previous_file = 'Alt+Tab,'
-
-            # Load site-wide config if it exists and inject in pyzo.config
-            fname = os.path.join(pyzoDir, 'resources', 'siteConfig.ssdf')
-            if os.path.isfile(fname):
-                try:
-                    siteConfig = ssdf.load(fname)
-                    replaceFields(config, siteConfig)
-                except Exception:
-                    t = 'Error while reading config file %r, maybe its corrupt?'
-                    print(t % fname)
-                    raise
-
-            # Load user config and inject in pyzo.config
-            fname = os.path.join(appDataDir, "config.ssdf")
-            if os.path.isfile(fname):
-                try:
-                    userConfig = ssdf.load(fname)
-                    replaceFields(config, userConfig)
-                except Exception:
-                    t = 'Error while reading config file %r, maybe its corrupt?'
-                    print(t % fname)
-                    raise
         #@-others
         #@+<< pyzo.__init__.py late bindings >>
         #@+node:ekr.20190415051125.7: *4* << pyzo.__init__.py late bindings >>
@@ -227,14 +182,13 @@ class PyzoController (object):
         if self.use_config:
             _saveConfigFile = True
             config = ssdf.new()
-            loadConfig()
-        else:
-            config = ConfigShim() # g.TracingNullObject(tag='config shim')
+            ### loadConfig()
+        # else: config = ConfigShim() # g.TracingNullObject(tag='config shim')
 
         # Init default style name (set in main.restorePyzoState())
         defaultQtStyleName = ''
 
-        self.placate_pyflakes(_saveConfigFile, defaultQtStyleName)
+        self.placate_pyflakes(_saveConfigFile, config, defaultQtStyleName)
         #@-<< pyzo.__init__.py late bindings >>
         #@+<< imports from start >>
         #@+node:ekr.20190415051125.8: *4* << imports from start >>
@@ -259,6 +213,9 @@ class PyzoController (object):
         self.placate_pyflakes(icons, Menu, Tree)
 
         #@-<< import the file browser >>
+        if self.use_config:
+            
+            pyzo.loadConfig()
     #@+node:ekr.20190415051125.11: *3* pz.getResourceDirs
     def getResourceDirs(self):
         """
@@ -310,17 +267,7 @@ class PyzoController (object):
         FileItem.onActivated = patchedOnActivated
     #@+node:ekr.20190413074155.1: *3* pz.open_file_browser
     def open_file_browser(self):
-        '''A test bed for importing pyzo's file browser.'''
-        #@+<< set g.pyzo switches >>
-        #@+node:ekr.20190415051125.3: *4* << set g.pyzo switches >>
-        import sys
-        if '--pyzo' not in sys.argv:
-            sys.argv.append('--pyzo')
-        g.pyzo = True
-        g.pyzo_pdb = False
-        g.pyzo_trace = True
-        g.pyzo_trace_imports = True
-        #@-<< set g.pyzo switches >>
+        '''Open pyzo's file browser.'''
         try:
             self.do_pyzo_imports()
             self.monkey_patch()
