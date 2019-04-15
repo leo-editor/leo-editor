@@ -1057,6 +1057,7 @@
 <v t="ekr.20131002055813.19837"><vh>Undoing and redoing changes</vh></v>
 <v t="ekr.20160428113347.1"><vh>Clone-find commands</vh></v>
 <v t="ekr.20131001100335.15947"><vh>Help commands</vh></v>
+<v t="ekr.20190414191837.1"><vh>Debugger commands</vh></v>
 <v t="ekr.20180130094948.1"><vh>Operations on reference .leo files</vh></v>
 </v>
 <v t="ekr.20170215103337.1"><vh>All other commands</vh>
@@ -1520,6 +1521,7 @@
 <v t="ekr.20131008041326.16341"><vh>@rst html/appendices.html</vh>
 <v t="EKR.20040524104904.357"><vh>Format of .leo files</vh></v>
 <v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
+<v t="ekr.20190414193500.1"><vh>The Leonine way to refactor code</vh></v>
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
 <v t="ekr.20120319170934.6109"><vh>Valid URL's</vh></v>
 <v t="ekr.20150210062226.4"><vh>The Mulder/Ream update algorithm</vh>
@@ -2231,6 +2233,7 @@
 </v>
 </v>
 <v t="ekr.20190122044116.1"><vh>What's new in Leo 5.9</vh></v>
+<v t="ekr.20190414191837.1"></v>
 <v t="ekr.20190117143933.1"><vh>Leo 5.9 release notes</vh>
 <v t="ekr.20190119065631.1"><vh>5.9: Bugs fixed</vh>
 <v t="ekr.20190117143942.673"><vh>#0804: ~= in style sheets</vh></v>
@@ -2265,7 +2268,6 @@
 <v t="ekr.20190122041941.1"><vh>#0926: Organize @outline-data tree-abbreviations</vh></v>
 <v t="ekr.20190117143942.29"><vh>#1005: LeoWapp: Leo in a browser</vh></v>
 <v t="ekr.20190117143942.399"><vh>#1031, #1050 and #1003: Better error recovery</vh></v>
-<v t="ekr.20190117143942.463"><vh>#1040: Simplify atFile.write code</vh></v>
 <v t="ekr.20190122042300.1"><vh>#1047: Tree Window Resizes on Paste Node</vh></v>
 <v t="ekr.20190327105147.364"><vh>#1081: @asis</vh></v>
 <v t="ekr.20190327105525.1"><vh>#1085: The py3 branch</vh></v>
@@ -2275,7 +2277,9 @@
 <v t="ekr.20190327105000.1"><vh>Added promote-headline command</vh></v>
 <v t="ekr.20190123122138.1"><vh>Retired the head-to-prev node and tail-to-next-node commands </vh></v>
 </v>
-<v t="ekr.20190412075452.1"><vh>5.9: Code</vh>
+<v t="ekr.20190414193153.1"><vh>5.9: Code</vh>
+<v t="ekr.20190117143942.463"><vh>#1040: Simplify atFile.write code</vh></v>
+<v t="ekr.20190414193128.1"><vh>Added leo/core/leoFastRedraw.py</vh></v>
 <v t="ekr.20190327105249.1"><vh>Created py3 branch, for Leo 6.0</vh></v>
 </v>
 <v t="ekr.20190119071258.1"><vh>5.9: Settings &amp; command-line arguments</vh></v>
@@ -29726,6 +29730,10 @@ Other features
 <t tx="ekr.20190117143942.2">https://github.com/leo-editor/leo-editor/issues/1002
 </t>
 <t tx="ekr.20190117143942.29">https://github.com/leo-editor/leo-editor/issues/1005
+
+You can run Leo in a browser this way:
+
+python &lt;path to&gt;launchLeo.py --no-splash --gui=browser %*
 </t>
 <t tx="ekr.20190117143942.394">https://github.com/leo-editor/leo-editor/issues/1007
 </t>
@@ -29775,7 +29783,46 @@ Changed various style sheets as a workaround for a serious Qt bug.
 </t>
 <t tx="ekr.20190117143942.681">https://github.com/leo-editor/leo-editor/issues/915
 
-Creates the xdb command and db-* commands.The xdb_pane.py plugin is optional, but recommended.
+Added the xdb command and various db-* commands, corresponding to the pdb commands:
+
+xdb:  Start a Leo's integrated debugger in a separate thread.
+
+At present, you should run Leo from a console window.  That will change soon.  See below.
+
+Start the debugger from any part of any @&lt;file&gt; tree. Now you are ready to execute all the db-* commands. You can execute these commands from the minibuffer, or, if the xdb_pane.py plugin is enabled, from the the Debug pane. The following correspond to the pdb commands:
+
+db-b: Set a breakpoint at the line shown in Leo. It should be an executable line.
+db-c: Continue, that is, run until the next breakpoint.
+db-h: Print the help message (in the console, for now)
+db-l: List a few lines around present location.
+db-n: Execute the next line.
+db-q: End the debugger.
+db-r: Return from the present function/method.
+db-s: Step into the next line.
+db-w: Print the stack.
+
+There are two additional commands:
+
+db-again: Run the previous db-command.
+db-input: Prompt for any pdb command, then execute it.
+
+The db-input command allows you can enter any pdb command at all.  For example: "print c".
+
+But you don't have to run these commands from the minibuffer, as discussed next.
+
+Setting breakpoints in the gutter
+
+When @bool use_gutter = True, Leo shows a border in the body pane.  By default, the line-numbering.py plugin is enabled, and if so, the gutter shows correct line number in the external file.
+
+After executing the xdb command, you can set a breakpoint on any executable line by clicking in the gutter to the right of the line number.  You can also set a breakpoint any time the debugger is stopped.
+
+Using the gutter is optional. You can also set breakpoints with the db-b command or by typing "d line-number" or "d file-name:line-number using the db-input command, or by using the Debug pane (see below)
+
+The Debug pane
+
+The xdb_pane.py plugin creates the Debug pane in the Log pane.  The pane contains buttons corresponding to all the commands listed above.  In addition, there is an input area in which you can enter pdb commands. This is a bit easier to use than the db-input command.
+
+Soon, all xdb/pdb output will be sent to an output area in the debug pane.  Once that happens, you will be able to run the debugger without running Leo from a console window.
 </t>
 <t tx="ekr.20190117143942.957">https://github.com/leo-editor/leo-editor/issues/998
 </t>
@@ -29801,8 +29848,10 @@ https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.9+lab
 <t tx="ekr.20190119070017.1"></t>
 <t tx="ekr.20190119071258.1">New settings (defaults as shown):
 
+- @bool use_gutter = False
 - @bool use-pygments = False
 - @bool use-pygments-styles = True
+- @bool use_xdb_pane_output_= True
 - @string pygments-style-name = default
 - Created a 'leonine' style.
   See: https://github.com/leo-editor/leo-editor-contrib/blob/master/leonine.py
@@ -29938,7 +29987,116 @@ command line--script relative path is relative to `leo/core` instead of file-sys
 fc.setCachedBits scans *all* nodes for cached data.
 This simplifies fc.compute_attribute_bits.
 </t>
-<t tx="ekr.20190412075452.1"></t>
+<t tx="ekr.20190414191837.1">``xdb``
+    Start a Leo's integrated debugger in a separate thread.
+
+    Start the debugger from any part of any @&lt;file&gt; tree. Now you are ready
+    to execute all the db-* commands.
+    
+    You can execute these commands from the minibuffer, or, if the
+    xdb_pane.py plugin is enabled, from the the Debug pane.
+    
+The following commands correspond to the pdb commands:
+
+``db-b``
+    Set a breakpoint at the line shown in Leo.
+    It should be an executable line.
+``db-c``
+    Continue, that is, run until the next breakpoint.
+``db-h``
+    Print the help message (in the console, for now)
+``db-l``
+    List a few lines around present location.
+``db-n``
+    Execute the next line.
+``db-q``
+    End the debugger.
+``db-r``
+    Return from the present function/method.
+``db-s``
+    Step into the next line.
+``db-w``
+    Print the stack.
+
+There are two additional commands:
+
+``db-again``
+    Run the previous db-command.
+``db-input``
+    Prompt for any pdb command, then execute it.
+
+    The db-input command allows you can enter any pdb command at all.
+    For example: "print c".
+
+But you don't have to run these commands from the minibuffer, as discussed next.
+
+**Setting breakpoints in the gutter**
+
+When @bool use_gutter = True, Leo shows a border in the body pane.  By default, the line-numbering.py plugin is enabled, and if so, the gutter shows correct line number in the external file.
+
+After executing the xdb command, you can set a breakpoint on any executable line by clicking in the gutter to the right of the line number.  You can also set a breakpoint any time the debugger is stopped.
+
+Using the gutter is optional. You can also set breakpoints with the db-b command or by typing "d line-number" or "d file-name:line-number using the db-input command, or by using the Debug pane (see below)
+
+**The Debug pane**
+
+The xdb_pane.py plugin creates the Debug pane in the Log pane.  The pane contains buttons corresponding to all the commands listed above.  In addition, there is an input area in which you can enter pdb commands. This is a bit easier to use than the db-input command.
+
+**Settings**
+
+When @bool use_xdb_pane_output_area is True, all debugger output is sent to an output area in the Debug pane. The default is True, so you need this setting only if you don't want output set to the Debug pane.
+</t>
+<t tx="ekr.20190414193128.1">This module contains the fast-redraw code that used to be in leoflexx.py.It
+deserves to be in Leo's core because it does not in any way depend on which
+gui is in effect.</t>
+<t tx="ekr.20190414193153.1"></t>
+<t tx="ekr.20190414193500.1">This paper explains how to use cff (clone-find-flattened) while
+refactoring code. I could not have completed the refactoring of Leo's
+atFile write code without using continuous, extensive use of cff.
+
+There are two key ideas:
+
+1. The clones produced by cff are short-term or medium-term data,
+   easily created and easily dispensed with.
+
+Such clones are valuable, but not precious. They will eventually be discarded.
+
+2. Unlike tags (or any other kind of non-Leonine data), the clones
+   produced by cff can be reorganized.
+
+This is the priceless, unique advantage of clones.  You don't understand clones if you don't get this.
+
+Example
+
+1. While refactoring, it is essential to see all actual uses of a
+   symbol (method, or ivar, whatever).
+
+The starting point is to use cff to find all potential uses of the
+symbol. If multiple files or classes use the symbol, you can use the
+suboutline-only option to limit the matches created by cff.
+
+2. After finding all potential uses of the symbol, you can reorganize
+   the resulting clones as follows:
+
+- Delete nodes that are completely irrelevant.
+- Squirrel away likely-irrelevant nodes in a new organizer node.
+- Highlight the defining node, say by making it the preceding sibling of the cff node.
+- Leave all actual uses of the symbol where they are.
+
+3. You have now focused your attention on the nodes that will likely
+   change.
+
+You can now rerun the search only on those cloned nodes to see all
+instances of the symbol that might be changed. This is a crucial
+double check on proposed changes.
+
+Summary
+
+I highly recommend that all Leonine programmers use the approach just
+described when refactoring code.
+
+Neither tags, nor filters, nor refactoring packages can emulate the
+Leonine way of refactoring.</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
