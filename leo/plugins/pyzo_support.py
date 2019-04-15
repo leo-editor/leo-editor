@@ -85,6 +85,9 @@ class PyzoController (object):
     def __init__(self, c):
         # g.pr('PyzoController.__init__')
         self.c = c
+        self.use_config = True
+            # True: use pyzo's config.
+            # False: use ConfigShim class.
         self.widgets = []
             # Permanent references, to prevent widgets from disappearing.
 
@@ -127,7 +130,6 @@ class PyzoController (object):
     def open_file_browser(self):
         '''A test bed for importing pyzo's file browser.'''
         g.trace('='*20)
-        use_config = True
         #@+<< set g.pyzo switches >>
         #@+node:ekr.20190415051125.3: *4* << set g.pyzo switches >>
         import sys
@@ -275,7 +277,7 @@ class PyzoController (object):
             pyzoDir, appDataDir = self.getResourceDirs()
 
             # Create ssdf in module namespace, and fill it
-            if use_config:
+            if self.use_config:
                 _saveConfigFile = True
                 config = ssdf.new()
                 loadConfig()
@@ -287,8 +289,6 @@ class PyzoController (object):
 
             placate_pyflakes(_saveConfigFile, defaultQtStyleName)
             #@-<< pyzo.__init__.py late bindings >>
-            #@afterref
- # use_config
             #@+<< imports from start >>
             #@+node:ekr.20190415051125.8: *5* << imports from start >>
             from pyzo.core import pyzoLogging
