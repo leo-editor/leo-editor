@@ -104,6 +104,24 @@ class PyzoController (object):
                 pyzo_controller.open_file_in_commander(ext, path)
         
         FileItem.onActivated = patchedOnActivated
+    #@+node:ekr.20190415182936.1: *3* pz.monkey_patch_shell (to do)
+    def monkey_patch_shell(self):
+        pass
+        
+        ###
+            # from pyzo.tools.pyzoFileBrowser.tree import FileItem
+            # pyzo_controller = self
+        
+            # def patchedOnActivated(self):
+                # path = self.path()
+                # ext = os.path.splitext(path)[1]
+                # #
+                # # This test is not great,
+                # # but other tests for binary files may be worse.
+                # if ext not in ['.pyc','.pyo','.png','.jpg','.ico']:
+                    # pyzo_controller.open_file_in_commander(ext, path)
+            
+            # FileItem.onActivated = patchedOnActivated
     #@+node:ekr.20190415122136.1: *3* pz.open_file_in_commander
     def open_file_in_commander(self, ext, path):
         '''Open the given path in a Leonine manner.'''
@@ -163,6 +181,32 @@ class PyzoController (object):
             w = PyzoFileBrowser(parent=None)
             w.show()
             self.widgets.append(w)
+        except Exception:
+            g.es_exception()
+    #@+node:ekr.20190415182735.1: *3* pz.open_shell_window (To do)
+    def open_shell_window(self):
+        '''Open pyzo's file browser.'''
+        try:
+            #@+<< imports for the shell >>
+            #@+node:ekr.20190415182821.1: *4* << imports for the shell >>
+            #
+            # Order is important!
+            #
+            # import pyzo # Done at the top level.
+            import pyzo.core.main as main
+            main.loadIcons()
+            main.loadFonts()
+            #
+            # from pyzo.core.menu import Menu
+            # from pyzo.tools.pyzoFileBrowser.tree import Tree
+            # assert Menu and Tree # Keep pyflakes happy.
+            #
+            # from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
+            #@-<< imports for the shell >>
+            self.monkey_patch_shell()
+            # w = PyzoFileBrowser(parent=None)
+            # w.show()
+            # self.widgets.append(w)
         except Exception:
             g.es_exception()
     #@-others
