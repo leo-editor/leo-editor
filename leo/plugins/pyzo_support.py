@@ -7,9 +7,7 @@ pyzo_support.py: Allow access to pyzo features within Leo.
 
 This plugin is active only if pyzo modules import successfully.
 
-To do:
-    1. Support pyzo file browser.
-    2. Support pyzo shell & debugger.
+
 '''
 #@+<< copyright >>
 #@+node:ekr.20190412042616.1: ** << copyright >>
@@ -27,8 +25,8 @@ To do:
 import os
 import sys
 import leo.core.leoGlobals as g
-#@+<< set switches >>
-#@+node:ekr.20190410200749.1: ** << set switches >>
+#@+<< set pyzo switches >>
+#@+node:ekr.20190410200749.1: ** << set pyzo switches >>
 #
 # Only my personal copy of pyzo supports these switches:
 #
@@ -45,7 +43,7 @@ g.pyzo = True
 g.pyzo_pdb = False
 g.pyzo_trace = True
 g.pyzo_trace_imports = True
-#@-<< set switches >>
+#@-<< set pyzo switches >>
 _saveConfigFile = False
 #@+others
 #@+node:ekr.20190415051706.1: **  top-level functions
