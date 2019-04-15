@@ -86,8 +86,8 @@ class PyzoController (object):
             # Permanent references, to prevent widgets from disappearing.
 
     #@+others
-    #@+node:ekr.20190415051125.13: *3* pz.monkey_patch
-    def monkey_patch(self):
+    #@+node:ekr.20190415051125.13: *3* pz.monkey_patch_file_browser
+    def monkey_patch_file_browser(self):
         
         from pyzo.tools.pyzoFileBrowser.tree import FileItem
 
@@ -126,7 +126,7 @@ class PyzoController (object):
             from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
             self.PyzoFileBrowser = PyzoFileBrowser
             #@-<< import the file browser >>
-            self.monkey_patch()
+            self.monkey_patch_file_browser()
             w = PyzoFileBrowser(parent=None)
             w.show()
             self.widgets.append(w)
