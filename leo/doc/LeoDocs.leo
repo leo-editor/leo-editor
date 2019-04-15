@@ -2280,6 +2280,9 @@
 </v>
 <v t="ekr.20190119071258.1"><vh>5.9: Settings &amp; command-line arguments</vh></v>
 </v>
+<v t="ekr.20190415090533.1"><vh>** Update Syntax Coloring chapter</vh></v>
+<v t="ekr.20190415090740.1"><vh>** Embed Joe Orr's demo on home page</vh></v>
+<v t="ekr.20100808060203.4273"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -29939,6 +29942,18 @@ fc.setCachedBits scans *all* nodes for cached data.
 This simplifies fc.compute_attribute_bits.
 </t>
 <t tx="ekr.20190412075452.1"></t>
+<t tx="ekr.20190415090533.1"></t>
+<t tx="ekr.20190415090740.1">Clone the repository https://github.com/kaleguy/leovue.git
+
+Upload the files and the static directory in the dist folder to a
+directory called leovue on your server. 
+
+&lt;iframe
+    src="https://github.com/kaleguy/leovue/#/t/2"
+    src="https://chrisgeorge.ca/leovue/#/t/1"
+    style="height:768px;width:1024px"&gt;
+&lt;/iframe&gt;
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
