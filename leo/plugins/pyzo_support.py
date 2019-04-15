@@ -20,9 +20,17 @@ This plugin will work only if pyzo can be imported successfully.
 # Yoton is distributed under the terms of the (new) BSD License.
 # The full license can be found in 'license.txt'.
 #@-<< copyright >>
+#@+<< imports >>
+#@+node:ekr.20190415121818.1: ** << imports >> (pyzo_support.py)
 import os
 import sys
 import leo.core.leoGlobals as g
+try:
+    import pyzo
+except Exception:
+    pyzo=None
+#@-<< imports >>
+
 # from leo.core.leoQt import QtCore
 #@+<< set pyzo switches >>
 #@+node:ekr.20190410200749.1: ** << set pyzo switches >>
@@ -40,8 +48,8 @@ if '--pyzo' not in sys.argv:
 # to avoid crashes in case these vars do not exist.
 g.pyzo = True
 g.pyzo_pdb = False
-g.pyzo_trace = True
-g.pyzo_trace_imports = True
+g.pyzo_trace = False
+g.pyzo_trace_imports = False
 #@-<< set pyzo switches >>
 _saveConfigFile = False
 #@+others
@@ -52,11 +60,9 @@ def init():
     if g.app.gui.guiName() != "qt":
         print('pyzo_support.py requires Qt gui')
         return False
-    ###
-        # This obscures testing of pyzo imports.
-        # if not is_pyzo_loaded():
-            # print('pyzo_support.py requires pyzo')
-            # return False
+    if not pyzo:
+        print('pyzo_support.py requires pyzo')
+        return False
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
     return True
@@ -90,15 +96,53 @@ class PyzoController (object):
     def monkey_patch_file_browser(self):
         
         from pyzo.tools.pyzoFileBrowser.tree import FileItem
+        pyzo_controller = self
 
-        def patchedOnActivated(self, c=self.c):
+        def patchedOnActivated(self):
             path = self.path()
-            g.trace(path)
             ext = os.path.splitext(path)[1]
-            if ext == '.leo': ### not in ['.pyc','.pyo','.png','.jpg','.ico']:
-                g.openWithFileName(path, old_c=c)
+            #
+            # This test is not great,
+            # but other tests for binary files may be worse.
+            if ext not in ['.pyc','.pyo','.png','.jpg','.ico']:
+                pyzo_controller.open_file_in_commander(ext, path)
         
         FileItem.onActivated = patchedOnActivated
+    #@+node:ekr.20190415122136.1: *3* pz.open_file_in_commander
+    def open_file_in_commander(self, ext, path):
+        '''Open the given path in a Leonine manner.'''
+        #
+        # 1. Open .leo files as in open-outline command...
+        path = os.path.normpath(path)
+        if g.app.loadManager.isLeoFile(path):
+            c = g.openWithFileName(path, old_c=self.c)
+            if not c:
+                return
+            c.k.makeAllBindings()
+            g.chdir(path)
+            g.setGlobalOpenDir(path)
+            return
+        #
+        # 2. Search open commanders for a matching @<file> node.
+        for c in g.app.commanders():
+            for p in c.all_unique_positions():
+                if (
+                    p.isAnyAtFileNode() and
+                    path == os.path.normpath(g.fullPath(c, p))
+                ):
+                    if getattr(c.frame.top, 'leo_master', None):
+                        c.frame.top.leo_master.select(c)
+                        c.selectPosition(p)
+                    c.redraw()
+                    return
+        #
+        # 3. Open a dummy file, removing sentinels from derived files.
+        c = g.openWithFileName(path, old_c=self.c)
+        c.k.makeAllBindings()
+        g.chdir(path)
+        g.setGlobalOpenDir(path)
+        c.selectPosition(c.rootPosition())
+        c.redraw()
     #@+node:ekr.20190413074155.1: *3* pz.open_file_browser
     def open_file_browser(self):
         '''Open pyzo's file browser.'''
@@ -106,25 +150,18 @@ class PyzoController (object):
             #@+<< import the file browser >>
             #@+node:ekr.20190415051125.9: *4* << import the file browser >>
             #
-            # Modified from pyzo.
-            # Copyright (C) 2013-2018, the Pyzo development team
+            # Order is important!
             #
-            # 1. Import main, which imports pyzo.
+            # import pyzo # Done at the top level.
             import pyzo.core.main as main
-            #
-            # 2. Set fonts and icons.
             main.loadIcons()
             main.loadFonts()
             #
-            # 3. Import menu and tree packages.
             from pyzo.core.menu import Menu
             from pyzo.tools.pyzoFileBrowser.tree import Tree
-            assert Menu
-            assert Tree
+            assert Menu and Tree # Keep pyflakes happy.
             #
-            # 4. Import the pyzoFileBrowser package.
             from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
-            self.PyzoFileBrowser = PyzoFileBrowser
             #@-<< import the file browser >>
             self.monkey_patch_file_browser()
             w = PyzoFileBrowser(parent=None)
