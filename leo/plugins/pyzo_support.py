@@ -76,16 +76,14 @@ class PyzoController (object):
     '''A per-commander controller providing pyzo support.'''
     
     def __init__(self, c):
-        # g.pr('PyzoController.__init__')
+    
         self.c = c
-        self.use_config = True
-            # True: use pyzo's config.
-            # False: use ConfigShim class.
+        # Not used at present: importing main sets pyzo's config.
+            # self.use_config = True
+                # True: use pyzo's config.
+                # False: use ConfigShim class.
         self.widgets = []
             # Permanent references, to prevent widgets from disappearing.
-        #
-        # Copies of imported names.
-        self.PyzoFileBrowser = None
 
     #@+others
     #@+node:ekr.20190415051125.13: *3* pz.monkey_patch
@@ -129,7 +127,7 @@ class PyzoController (object):
             self.PyzoFileBrowser = PyzoFileBrowser
             #@-<< import the file browser >>
             self.monkey_patch()
-            w = self.PyzoFileBrowser(parent=None)
+            w = PyzoFileBrowser(parent=None)
             w.show()
             self.widgets.append(w)
         except Exception:
