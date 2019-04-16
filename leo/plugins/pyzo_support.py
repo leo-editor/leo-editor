@@ -23,32 +23,22 @@ This plugin will work only if pyzo can be imported successfully.
 #@+<< imports >>
 #@+node:ekr.20190415121818.1: ** << imports >> (pyzo_support.py)
 import os
-import sys
 import leo.core.leoGlobals as g
 try:
     import pyzo
+        # Remember! Importing pyzo has these side effects:
+            # ==== pyzo/yotonloader.py
+            # import pyzo.yoton
+            # import pyzo.yoton.channels
+            # import pyzo.util
+            # import pyzo.core
+            # ==== pyzo/core/commandline.py
+            # Started our command server
+            # import pyzo.util.qt
 except Exception:
+    # The top-level init method gives the error message.
     pyzo=None
 #@-<< imports >>
-#@+<< set pyzo switches >>
-#@+node:ekr.20190410200749.1: ** << set pyzo switches >>
-#
-# Only my personal copy of pyzo supports these switches:
-#
-# --pyzo is part 1 of the two-step enabling of traces.
-#
-# The unpatch pyzo will say that the file '--pyzo' does not exist.
-if '--pyzo' not in sys.argv:
-    sys.argv.append('--pyzo')
-#
-# These switches are part 2 of two-step enabling of traces.
-# My personal copy of pyzo uses `getattr(g, 'switch_name', None)`
-# to avoid crashes in case these vars do not exist.
-g.pyzo = True
-g.pyzo_pdb = False
-g.pyzo_trace = False
-g.pyzo_trace_imports = False
-#@-<< set pyzo switches >>
 _saveConfigFile = False
 #@+others
 #@+node:ekr.20190415051706.1: **  top-level functions
@@ -173,7 +163,7 @@ class PyzoController (object):
             #
             from pyzo.core.menu import Menu
             from pyzo.tools.pyzoFileBrowser.tree import Tree
-            assert Menu and Tree # Keep pyflakes happy.
+            if 0: print(Menu, Tree) # Keep pyflakes happy.
             #
             from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
             #@-<< import the file browser >>
@@ -183,32 +173,45 @@ class PyzoController (object):
             self.widgets.append(w)
         except Exception:
             g.es_exception()
-    #@+node:ekr.20190415182735.1: *3* pz.open_shell_window (To do)
-    def open_shell_window(self):
+    #@+node:ekr.20190415182735.1: *3* pz.open_shell_window
+    def open_shell_window(self, parent=None):
         '''Open pyzo's file browser.'''
         try:
-            #@+<< imports for the shell >>
-            #@+node:ekr.20190415182821.1: *4* << imports for the shell >>
+            if not parent:
+                # Create a "large enough" parent window.
+                from leo.core.leoQt import QtWidgets
+                parent = QtWidgets.QFrame()
+                parent.setMinimumSize(800, 500)
+                self.widgets.append(parent)
+            #@+<< import the shell >>
+            #@+node:ekr.20190415182821.1: *4* << import the shell >>
             #
-            # Order is important!
-            #
-            # import pyzo # Done at the top level.
+            # Standard prerequisites.
+            import pyzo
             import pyzo.core.main as main
             main.loadIcons()
             main.loadFonts()
+            from pyzo.core.menu import Menu
+            from pyzo.tools.pyzoFileBrowser.tree import Tree
+            if 0: print(pyzo, Menu, Tree)
             #
-            # from pyzo.core.menu import Menu
-            # from pyzo.tools.pyzoFileBrowser.tree import Tree
-            # assert Menu and Tree # Keep pyflakes happy.
-            #
-            # from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
-            #@-<< imports for the shell >>
+            # Shell-related...
+            import pyzo.core.shellStack as shellStack
+            import pyzo.core.shell as shell
+            from pyzo.core import kernelbroker
+            import pyzo.tools as tools
+            from pyzo.core.shellStack import ShellStackWidget
+            if 0: print(shellStack, shell, kernelbroker, tools)
+            #@-<< import the shell >>
             self.monkey_patch_shell()
-            # w = PyzoFileBrowser(parent=None)
-            # w.show()
-            # self.widgets.append(w)
+            shell_widget = ShellStackWidget(parent=parent)
+            self.widgets.append(shell_widget)
+            parent.show()
+                # Must be done after creating the shell widget.
+            return shell_widget
         except Exception:
             g.es_exception()
+            return None
     #@-others
 #@-others
 #@-leo
