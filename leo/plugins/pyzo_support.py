@@ -182,6 +182,7 @@ class PyzoController (object):
                 from leo.core.leoQt import QtWidgets
                 parent = QtWidgets.QFrame()
                 parent.setMinimumSize(800, 500)
+                    # Avoids an error.
                 self.widgets.append(parent)
             #@+<< import the shell >>
             #@+node:ekr.20190415182821.1: *4* << import the shell >>
@@ -193,7 +194,8 @@ class PyzoController (object):
             main.loadFonts()
             from pyzo.core.menu import Menu
             from pyzo.tools.pyzoFileBrowser.tree import Tree
-            if 0: print(pyzo, Menu, Tree)
+            if 0: # To keep pyflakes quiet.
+                print(pyzo, Menu, Tree) 
             #
             # Shell-related...
             import pyzo.core.shellStack as shellStack
@@ -201,7 +203,8 @@ class PyzoController (object):
             from pyzo.core import kernelbroker
             import pyzo.tools as tools
             from pyzo.core.shellStack import ShellStackWidget
-            if 0: print(shellStack, shell, kernelbroker, tools)
+            if 0: # To keep pyflakes quiet.
+                print(shellStack, shell, kernelbroker, tools)
             #@-<< import the shell >>
             self.monkey_patch_shell()
             shell_widget = ShellStackWidget(parent=parent)
