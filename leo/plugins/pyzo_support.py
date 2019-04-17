@@ -197,6 +197,10 @@ class PyzoController (object):
             if 0: # To keep pyflakes quiet.
                 print(pyzo, Menu, Tree) 
             #
+            # Build the keymapper
+            from pyzo.core import menu
+            pyzo.keyMapper = menu.KeyMapper()
+            #
             # Shell-related...
             import pyzo.core.shellStack as shellStack
             import pyzo.core.shell as shell
