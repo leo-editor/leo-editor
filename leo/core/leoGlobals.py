@@ -31,6 +31,7 @@ pyzo = True
 pyzo_pdb = False
 pyzo_trace = True
 pyzo_trace_imports = True
+pyzo_patch = False
 #@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)

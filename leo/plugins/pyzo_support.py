@@ -30,8 +30,8 @@ import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 try:
     import pyzo
-        # Remember! Importing pyzo has these side effects:
-            # ==== pyzo/yotonloader.py
+        # Importing pyzo has these side effects:
+            # pyzo/yotonloader.py
             # import pyzo.yoton
             # import pyzo.yoton.channels
             # import pyzo.util
@@ -191,6 +191,21 @@ def init_pyzo():
                 pyzo.toolManager.loadTool(toolId)
                 
     g.pr('pyzo_support: init_pyzo: END\n')
+#@+node:ekr.20190417141817.1: *3* load_hidden_pyzo (pyzo_support.py)
+def load_hidden_pyzo():
+    '''Load a hidden version of pyzo.'''
+
+    from pyzo.core import main as main_module
+    from pyzo.__main__ import main as main_function
+
+    class HiddenMainWindow(main_module.MainWindow):
+        def show(self):
+            self.hide() # Hehe.
+            
+    if 0: # Only after testing.
+        main_module.MainWindow = HiddenMainWindow
+            
+    main_function()
 #@+node:ekr.20190415051754.1: *3* onCreate (pyzo_support.py)
 def onCreate(tag, keys):
     c = keys.get('c')
@@ -201,7 +216,7 @@ def onCreate(tag, keys):
 class ConfigShim(object):
     # pylint: disable=no-member
     pass
-#@+node:ekr.20190417092403.1: *3* class MainWindowShim(QtCore.QObject)
+#@+node:ekr.20190417092403.1: *3* class MainWindowShim(QObject)
 class MainWindowShim(QtCore.QObject): ### pyzo.core.main.MainWindow
 
     def __init__(self, parent=None, locale=None):
