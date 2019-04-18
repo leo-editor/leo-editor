@@ -29,18 +29,16 @@ assert time
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 try:
-    # sys.argv = []
-        # Necessary, with the new pyzo startup code.
     import pyzo
         # Importing pyzo has these side effects:
-            # pyzo/yotonle --oader.py
-            # import pyzo.yoton
-            # import pyzo.yoton.channels
-            # import pyzo.util
-            # import pyzo.core
+            # pyzo/yotonloader.py
+            # IMPORT pyzo.yoton
+            # IMPORT pyzo.yoton.channels
+            # IMPORT pyzo.util
+            # IMPORT pyzo.core
             # pyzo/core/commandline.py
             # Started our command server
-            # import pyzo.util.qt
+            # IMPORT pyzo.util.qt
 except Exception:
     # The top-level init method gives the error message.
     g.es_exception()
@@ -200,15 +198,78 @@ def load_hidden_pyzo():
 
     from pyzo.core import main as main_module
     from pyzo.__main__ import main as main_function
-
+    
+    #@+others # class HiddenMainWindow
+    #@+node:ekr.20190418053258.1: *4* class HiddenMainWindow(MainWindow)
     class HiddenMainWindow(main_module.MainWindow):
-        def show(self):
-            self.hide() # Hehe.
+        #@+others
+        #@+node:ekr.20190418053355.1: *5* HiddenMainWindow.closeEvent
+        def closeEvent(self, event):
+            """ Override close event handler. """
             
-    if 0: # Only after testing.
-        main_module.MainWindow = HiddenMainWindow
+            from pyzo.core import commandline
+                # Added
             
-    main_function()
+            if g: g.pr('HiddenMainWindow.closeEvent')
+
+            # Are we restaring?
+            # restarting = time.time() - self._closeflag < 1.0
+
+            # Save settings
+            pyzo.saveConfig()
+            pyzo.command_history.save()
+
+            # Stop command server
+            commandline.stop_our_server()
+
+            # Proceed with closing...
+            result = pyzo.editors.closeAll()
+            if not result:
+                self._closeflag = False
+                event.ignore()
+                return
+            else:
+                self._closeflag = True
+                #event.accept()  # Had to comment on Windows+py3.3 to prevent error
+
+            # Proceed with closing shells
+            pyzo.localKernelManager.terminateAll()
+            for shell in pyzo.shells:
+                shell._context.close()
+
+            # Close tools
+            for toolname in pyzo.toolManager.getLoadedTools():
+                tool = pyzo.toolManager.getTool(toolname)
+                tool.close()
+
+            # Stop all threads (this should really only be daemon threads)
+            import threading
+            for thread in threading.enumerate():
+                if hasattr(thread, 'stop'):
+                    try:
+                        thread.stop(0.1)
+                    except Exception:
+                        pass
+
+            # Proceed as normal
+            QtWidgets.QMainWindow.closeEvent(self, event)
+
+            # Harder exit to prevent segfault. Not really a solution,
+            # but it does the job until Pyside gets fixed.
+            if 0:
+                # Do **Not** exit Leo.
+                if sys.version_info >= (3,3,0): # and not restarting:
+                    if hasattr(os, '_exit'):
+                        os._exit(0)
+        #@-others
+                
+    #@-others
+
+    main_module.MainWindow = HiddenMainWindow
+    try:
+        main_function()
+    except Exception:
+        g.es_exception()
 #@+node:ekr.20190415051754.1: *3* onCreate (pyzo_support.py)
 def onCreate(tag, keys):
     c = keys.get('c')
