@@ -57,86 +57,6 @@ def init():
     g.registerHandler('after-create-leo-frame', onCreate)
     g.app.close_pyzo = GlobalPyzoController().close_pyzo
     return True
-#@+node:ekr.20190417141817.1: *3* load_hidden_pyzo (pyzo_support.py)
-def load_hidden_pyzo():
-    '''Load a hidden version of pyzo.'''
-
-    from pyzo.core import main as main_module
-    from pyzo.__main__ import main as main_function
-    
-    #@+others # class HiddenMainWindow
-    #@+node:ekr.20190418053258.1: *4* class HiddenMainWindow(MainWindow)
-    class HiddenMainWindow(main_module.MainWindow):
-
-        #@+others
-        #@+node:ekr.20190418053355.1: *5* HiddenMainWindow.closeEvent
-        def closeEvent(self, event):
-            """ Override close event handler. """
-            
-            from pyzo.core import commandline
-                # Added
-            
-            if g: g.pr('HiddenMainWindow.closeEvent')
-
-            # Are we restaring?
-            # restarting = time.time() - self._closeflag < 1.0
-
-            # Save settings
-            pyzo.saveConfig()
-            pyzo.command_history.save()
-
-            # Stop command server
-            commandline.stop_our_server()
-
-            # Proceed with closing...
-            result = pyzo.editors.closeAll()
-            
-            if 0: # Force the close.
-                if not result:
-                    self._closeflag = False
-                    event.ignore()
-                    return
-                else:
-                    self._closeflag = True
-                    #event.accept()  # Had to comment on Windows+py3.3 to prevent error
-
-            # Proceed with closing shells
-            pyzo.localKernelManager.terminateAll()
-            for shell in pyzo.shells:
-                shell._context.close()
-
-            # Close tools
-            for toolname in pyzo.toolManager.getLoadedTools():
-                tool = pyzo.toolManager.getTool(toolname)
-                tool.close()
-
-            # Stop all threads (this should really only be daemon threads)
-            import threading
-            for thread in threading.enumerate():
-                if hasattr(thread, 'stop'):
-                    try:
-                        thread.stop(0.1)
-                    except Exception:
-                        pass
-
-            # Proceed as normal
-            QtWidgets.QMainWindow.closeEvent(self, event)
-
-            # Harder exit to prevent segfault. Not really a solution,
-            # but it does the job until Pyside gets fixed.
-            if 0:
-                # Do **Not** exit Leo.
-                if sys.version_info >= (3,3,0): # and not restarting:
-                    if hasattr(os, '_exit'):
-                        os._exit(0)
-        #@-others
-                
-    #@-others
-
-    main_module.MainWindow = HiddenMainWindow
-    main_function()
-    g.trace('HIDE', g.app.gui.hidden_main_window)
-    g.app.gui.hidden_main_window.hide()
 #@+node:ekr.20190415051754.1: *3* onCreate (pyzo_support.py)
 def onCreate(tag, keys):
     c = keys.get('c')
@@ -239,10 +159,6 @@ class MainWindowShim(QtCore.QObject): ### pyzo.core.main.MainWindow
     #@-others
 #@+node:ekr.20190418161712.1: ** class GlobalPyzoController (object)
 class GlobalPyzoController(object):
-    
-    def __init___(self):
-
-        self.init_pyzo()
 
     #@+others
     #@+node:ekr.20190418163637.1: *3* gpc.close_pyzo
@@ -251,7 +167,7 @@ class GlobalPyzoController(object):
         if hasattr(g.app.gui, 'hidden_main_window'):
             event = QtGui.QCloseEvent()
             g.app.gui.hidden_main_window.closeEvent(event)
-    #@+node:ekr.20190417072017.1: *3* gpc.init_pyzo
+    #@+node:ekr.20190417072017.1: *3* gpc.init_pyzo (NOT USED)
     def init_pyzo(self):
         '''
         Do all common pyzo inits, without initing pyzo's main window or menus.
@@ -384,6 +300,87 @@ class GlobalPyzoController(object):
                     pyzo.toolManager.loadTool(toolId)
                     
         g.pr('pyzo_support: init_pyzo: END\n')
+    #@+node:ekr.20190417141817.1: *3* gpc.load_hidden_pyzo
+    def load_hidden_pyzo(self):
+        '''Load a hidden version of pyzo.'''
+
+        from pyzo.core import main as main_module
+        from pyzo.__main__ import main as main_function
+        
+        #@+others # class HiddenMainWindow
+        #@+node:ekr.20190418053258.1: *4* class HiddenMainWindow(MainWindow)
+        class HiddenMainWindow(main_module.MainWindow):
+
+            #@+others
+            #@+node:ekr.20190418053355.1: *5* HiddenMainWindow.closeEvent
+            def closeEvent(self, event):
+                """ Override close event handler. """
+                
+                from pyzo.core import commandline
+                    # Added
+                
+                if g: g.pr('HiddenMainWindow.closeEvent')
+
+                # Are we restaring?
+                # restarting = time.time() - self._closeflag < 1.0
+
+                # Save settings
+                pyzo.saveConfig()
+                pyzo.command_history.save()
+
+                # Stop command server
+                commandline.stop_our_server()
+
+                # Proceed with closing...
+                result = pyzo.editors.closeAll()
+                
+                if 0: # Force the close.
+                    if not result:
+                        self._closeflag = False
+                        event.ignore()
+                        return
+                    else:
+                        self._closeflag = True
+                        #event.accept()  # Had to comment on Windows+py3.3 to prevent error
+
+                # Proceed with closing shells
+                pyzo.localKernelManager.terminateAll()
+                for shell in pyzo.shells:
+                    shell._context.close()
+
+                # Close tools
+                for toolname in pyzo.toolManager.getLoadedTools():
+                    tool = pyzo.toolManager.getTool(toolname)
+                    tool.close()
+
+                # Stop all threads (this should really only be daemon threads)
+                import threading
+                for thread in threading.enumerate():
+                    if hasattr(thread, 'stop'):
+                        try:
+                            thread.stop(0.1)
+                        except Exception:
+                            pass
+
+                # Proceed as normal
+                QtWidgets.QMainWindow.closeEvent(self, event)
+
+                # Harder exit to prevent segfault. Not really a solution,
+                # but it does the job until Pyside gets fixed.
+                if 0:
+                    # Do **Not** exit Leo.
+                    if sys.version_info >= (3,3,0): # and not restarting:
+                        if hasattr(os, '_exit'):
+                            os._exit(0)
+            #@-others
+                    
+        #@-others
+
+        main_module.MainWindow = HiddenMainWindow
+            # The patched version of start() in pyzo.__init__
+            # sets g.app.gui.hidden_main_window.
+        main_function()
+        g.app.gui.hidden_main_window.hide()
     #@-others
 #@+node:ekr.20190417091444.1: ** class MenuBarShim (QMenuBar)
 class MenuBarShim(QtWidgets.QMenuBar):
@@ -398,7 +395,7 @@ class MenuBarShim(QtWidgets.QMenuBar):
 
     def _addAction(self, *args, **kwargs):
         g.pr('MenuBarShim._addAction', args, kwargs)
-#@+node:ekr.20190415051335.1: ** class PyzoController
+#@+node:ekr.20190415051335.1: ** class PyzoController (object)
 class PyzoController (object):
     '''A per-commander controller providing pyzo support.'''
     
