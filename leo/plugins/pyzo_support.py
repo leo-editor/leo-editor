@@ -21,13 +21,11 @@ This plugin will work only if pyzo can be imported successfully.
 # The full license can be found in 'license.txt'.
 #@-<< copyright >>
 #@+<< imports >>
-#@+node:ekr.20190415121818.1: ** << imports >> (pyzo_support.py)
+#@+node:ekr.20190418165001.1: ** << imports >>
 import os
 import sys
-import time
-assert time
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 try:
     import pyzo
         # Importing pyzo has these side effects:
@@ -42,9 +40,8 @@ try:
 except Exception:
     # The top-level init method gives the error message.
     g.es_exception()
-    pyzo=None
+    pyzo = None
 #@-<< imports >>
-_saveConfigFile = False
 #@+others
 #@+node:ekr.20190415051706.1: **  top-level functions
 #@+node:ekr.20190410171905.1: *3* init (pyzo_support.py)
@@ -58,140 +55,8 @@ def init():
         return False
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
+    g.app.close_pyzo = GlobalPyzoController().close_pyzo
     return True
-#@+node:ekr.20190417072017.1: *3* init_pyzo (pyzo_support.py
-def init_pyzo():
-    '''
-    Do all common pyzo inits, without initing pyzo's main window or menus.
-
-    I would prefer never to instantiate a QMainWindow, but we shall see...
-    '''
-    use_dock = False
-    #
-    # Standard prerequisites.
-    assert pyzo
-    g.pr('\npyzo_support: init_pyzo: START')
-    g.pr('pyzo_support: init_pyzo: Standard prerequisites...')
-        
-    import pyzo.core.main as main
-    main.loadIcons()
-    main.loadFonts()
-    #
-    # Tricky: MainWindow.__init__ sets pyzo.main = self.
-    pyzo.main = MainWindowShim()
-    #
-    g.pr('pyzo_support: init_pyzo: MainWindow._populate...')
-    #
-    # New imports
-    from leo.core.leoQt import QtCore, QtWidgets
-    #
-    # A hack:
-    # self = g.TracingNullObject('_populate.self')
-    self = w = QtWidgets.QFrame()
-    w.setObjectName('init_pyzo.self=DummyFrame')
-    w.menuBar = menuBar = MenuBarShim()
-    #
-    # Monkey-patch
-    main.menuBar = menuBar
-    #
-    # Delayed imports
-    from pyzo.core.editorTabs import EditorTabs
-    from pyzo.core.shellStack import ShellStackWidget
-    from pyzo.core import codeparser
-    from pyzo.core.history import CommandHistory
-    from pyzo.tools import ToolManager
-
-    # Instantiate tool manager
-    pyzo.toolManager = ToolManager()
-
-    # Check to install conda now ...
-    #from pyzo.util.bootstrapconda import check_for_conda_env
-    #check_for_conda_env()
-    
-    # Instantiate and start source-code parser
-    if pyzo.parser is None:
-        pyzo.parser = codeparser.Parser()
-        pyzo.parser.start()
-
-    # Create editor stack and make the central widget
-    if 1: #
-        pyzo.editors = EditorTabs(self)
-        assert isinstance(pyzo.editors, EditorTabs), repr(pyzo.editors)
-        
-    if 0: # Never
-        self.setCentralWidget(pyzo.editors)
-            # EKR: QMainWindow.setCentralWidget
-
-    # Create floater for shell
-    if use_dock: # Experimental: works when enabled.
-        self._shellDock = dock = QtWidgets.QDockWidget(self)
-        if pyzo.config.settings.allowFloatingShell:
-            dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
-        else:
-            dock.setFeatures(dock.DockWidgetMovable)
-        dock.setObjectName('shells')
-        dock.setWindowTitle('Shells')
-        
-    if 0: # Never.
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-
-    # Create shell stack
-    pyzo.shells = ShellStackWidget(self)
-        # This creates a ShellControl.
-    if 1: #### Desperation.
-        g.app.permanentScriptDict ['_stack'] = pyzo.shells._stack
-        g.app.permanentScriptDict ['ShellControl'] = pyzo.shells._shellButton
-    assert isinstance(pyzo.shells, ShellStackWidget), repr(pyzo.shells)
-    g.trace('id(pyzo.shells._shellButton)', id(pyzo.shells._shellButton))
-    #
-    # Weird: why is this deleted??
-    if 0:
-        from pyzo.core.shellStack import ShellControl
-        assert isinstance(pyzo.shells._shellButton, ShellControl)
-
-    if use_dock:
-        dock.setWidget(pyzo.shells)
-
-    # Initialize command history
-    pyzo.command_history = CommandHistory('command_history.py')
-
-    # Create the default shell when returning to the event queue
-    if 0: # Experimental: works.
-        from pyzo.codeeditor.misc import callLater
-        callLater(pyzo.shells.addShell)
-
-    if 0: # Not now.  Probably never.
-        # Create statusbar
-        if pyzo.config.view.showStatusbar:
-            pyzo.status = self.statusBar()
-        else:
-            pyzo.status = None
-            self.setStatusBar(None)
-
-    # Create menu
-    from pyzo.core import menu
-    pyzo.keyMapper = menu.KeyMapper()
-    
-    if 0: # FAILS.
-        ### menu.buildMenus(self.menuBar())
-        # menuBar = QtWidgets.QMenuBar()
-        menu.buildMenus(menuBar)
-
-    # Add the context menu to the editor
-    if 0: # Fails.
-        pyzo.editors.addContextMenu()
-        pyzo.shells.addContextMenu()
-
-    if 0: # Unlikely.
-        # Load tools
-        if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
-            pyzo.toolManager.loadTool('pyzosourcestructure')
-            pyzo.toolManager.loadTool('pyzofilebrowser', 'pyzosourcestructure')
-        elif pyzo.config.state.loadedTools:
-            for toolId in pyzo.config.state.loadedTools:
-                pyzo.toolManager.loadTool(toolId)
-                
-    g.pr('pyzo_support: init_pyzo: END\n')
 #@+node:ekr.20190417141817.1: *3* load_hidden_pyzo (pyzo_support.py)
 def load_hidden_pyzo():
     '''Load a hidden version of pyzo.'''
@@ -225,13 +90,15 @@ def load_hidden_pyzo():
 
             # Proceed with closing...
             result = pyzo.editors.closeAll()
-            if not result:
-                self._closeflag = False
-                event.ignore()
-                return
-            else:
-                self._closeflag = True
-                #event.accept()  # Had to comment on Windows+py3.3 to prevent error
+            
+            if 0: # Force the close.
+                if not result:
+                    self._closeflag = False
+                    event.ignore()
+                    return
+                else:
+                    self._closeflag = True
+                    #event.accept()  # Had to comment on Windows+py3.3 to prevent error
 
             # Proceed with closing shells
             pyzo.localKernelManager.terminateAll()
@@ -298,6 +165,7 @@ class MainWindowShim(QtCore.QObject): ### pyzo.core.main.MainWindow
     #@+node:ekr.20190417092403.5: *4* MainWindowShim.closeEvent (traces)
     def closeEvent(self, event):
         """ Override close event handler. """
+        import time
         import pyzo.core.commandline as commandline
         
         g.pr('===== MainWindowShim.closeEvent 1')
@@ -368,6 +236,154 @@ class MainWindowShim(QtCore.QObject): ### pyzo.core.main.MainWindow
             if sys.version_info >= (3,3,0): # and not restarting:
                 if hasattr(os, '_exit'):
                     os._exit(0)
+    #@-others
+#@+node:ekr.20190418161712.1: ** class GlobalPyzoController (object)
+class GlobalPyzoController(object):
+    
+    def __init___(self):
+
+        self.init_pyzo()
+
+    #@+others
+    #@+node:ekr.20190418163637.1: *3* gpc.close_pyzo
+    def close_pyzo(self):
+        '''Completely close pyzo.'''
+        if hasattr(g.app.gui, 'hidden_main_window'):
+            event = QtGui.QCloseEvent()
+            g.app.gui.hidden_main_window.closeEvent(event)
+    #@+node:ekr.20190417072017.1: *3* gpc.init_pyzo
+    def init_pyzo(self):
+        '''
+        Do all common pyzo inits, without initing pyzo's main window or menus.
+
+        I would prefer never to instantiate a QMainWindow, but we shall see...
+        '''
+        use_dock = False
+        #
+        # Standard prerequisites.
+        assert pyzo
+        g.pr('\npyzo_support: init_pyzo: START')
+        g.pr('pyzo_support: init_pyzo: Standard prerequisites...')
+            
+        import pyzo.core.main as main
+        main.loadIcons()
+        main.loadFonts()
+        #
+        # Tricky: MainWindow.__init__ sets pyzo.main = self.
+        pyzo.main = MainWindowShim()
+        #
+        g.pr('pyzo_support: init_pyzo: MainWindow._populate...')
+        #
+        # New imports
+        from leo.core.leoQt import QtCore, QtWidgets
+        #
+        # A hack:
+        # self = g.TracingNullObject('_populate.self')
+        self = w = QtWidgets.QFrame()
+        w.setObjectName('init_pyzo.self=DummyFrame')
+        w.menuBar = menuBar = MenuBarShim()
+        #
+        # Monkey-patch
+        main.menuBar = menuBar
+        #
+        # Delayed imports
+        from pyzo.core.editorTabs import EditorTabs
+        from pyzo.core.shellStack import ShellStackWidget
+        from pyzo.core import codeparser
+        from pyzo.core.history import CommandHistory
+        from pyzo.tools import ToolManager
+
+        # Instantiate tool manager
+        pyzo.toolManager = ToolManager()
+
+        # Check to install conda now ...
+        #from pyzo.util.bootstrapconda import check_for_conda_env
+        #check_for_conda_env()
+        
+        # Instantiate and start source-code parser
+        if pyzo.parser is None:
+            pyzo.parser = codeparser.Parser()
+            pyzo.parser.start()
+
+        # Create editor stack and make the central widget
+        if 1: #
+            pyzo.editors = EditorTabs(self)
+            assert isinstance(pyzo.editors, EditorTabs), repr(pyzo.editors)
+            
+        if 0: # Never
+            self.setCentralWidget(pyzo.editors)
+                # EKR: QMainWindow.setCentralWidget
+
+        # Create floater for shell
+        if use_dock: # Experimental: works when enabled.
+            self._shellDock = dock = QtWidgets.QDockWidget(self)
+            if pyzo.config.settings.allowFloatingShell:
+                dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
+            else:
+                dock.setFeatures(dock.DockWidgetMovable)
+            dock.setObjectName('shells')
+            dock.setWindowTitle('Shells')
+            
+        if 0: # Never.
+            self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
+
+        # Create shell stack
+        pyzo.shells = ShellStackWidget(self)
+            # This creates a ShellControl.
+        if 1: #### Desperation.
+            g.app.permanentScriptDict ['_stack'] = pyzo.shells._stack
+            g.app.permanentScriptDict ['ShellControl'] = pyzo.shells._shellButton
+        assert isinstance(pyzo.shells, ShellStackWidget), repr(pyzo.shells)
+        g.trace('id(pyzo.shells._shellButton)', id(pyzo.shells._shellButton))
+        #
+        # Weird: why is this deleted??
+        if 0:
+            from pyzo.core.shellStack import ShellControl
+            assert isinstance(pyzo.shells._shellButton, ShellControl)
+
+        if use_dock:
+            dock.setWidget(pyzo.shells)
+
+        # Initialize command history
+        pyzo.command_history = CommandHistory('command_history.py')
+
+        # Create the default shell when returning to the event queue
+        if 0: # Experimental: works.
+            from pyzo.codeeditor.misc import callLater
+            callLater(pyzo.shells.addShell)
+
+        if 0: # Not now.  Probably never.
+            # Create statusbar
+            if pyzo.config.view.showStatusbar:
+                pyzo.status = self.statusBar()
+            else:
+                pyzo.status = None
+                self.setStatusBar(None)
+
+        # Create menu
+        from pyzo.core import menu
+        pyzo.keyMapper = menu.KeyMapper()
+        
+        if 0: # FAILS.
+            ### menu.buildMenus(self.menuBar())
+            # menuBar = QtWidgets.QMenuBar()
+            menu.buildMenus(menuBar)
+
+        # Add the context menu to the editor
+        if 0: # Fails.
+            pyzo.editors.addContextMenu()
+            pyzo.shells.addContextMenu()
+
+        if 0: # Unlikely.
+            # Load tools
+            if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
+                pyzo.toolManager.loadTool('pyzosourcestructure')
+                pyzo.toolManager.loadTool('pyzofilebrowser', 'pyzosourcestructure')
+            elif pyzo.config.state.loadedTools:
+                for toolId in pyzo.config.state.loadedTools:
+                    pyzo.toolManager.loadTool(toolId)
+                    
+        g.pr('pyzo_support: init_pyzo: END\n')
     #@-others
 #@+node:ekr.20190417091444.1: ** class MenuBarShim (QMenuBar)
 class MenuBarShim(QtWidgets.QMenuBar):
@@ -539,4 +555,6 @@ class PyzoController (object):
             return None
     #@-others
 #@-others
+if pyzo:
+    g.app.global_pyzo_controller = GlobalPyzoController()
 #@-leo
