@@ -202,6 +202,7 @@ def load_hidden_pyzo():
     #@+others # class HiddenMainWindow
     #@+node:ekr.20190418053258.1: *4* class HiddenMainWindow(MainWindow)
     class HiddenMainWindow(main_module.MainWindow):
+
         #@+others
         #@+node:ekr.20190418053355.1: *5* HiddenMainWindow.closeEvent
         def closeEvent(self, event):
@@ -266,10 +267,9 @@ def load_hidden_pyzo():
     #@-others
 
     main_module.MainWindow = HiddenMainWindow
-    try:
-        main_function()
-    except Exception:
-        g.es_exception()
+    main_function()
+    g.trace('HIDE', g.app.gui.hidden_main_window)
+    g.app.gui.hidden_main_window.hide()
 #@+node:ekr.20190415051754.1: *3* onCreate (pyzo_support.py)
 def onCreate(tag, keys):
     c = keys.get('c')
