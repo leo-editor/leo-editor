@@ -25,22 +25,25 @@ This plugin will work only if pyzo can be imported successfully.
 import os
 import sys
 import time
-if 0: print(time)
+assert time
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 try:
+    sys.argv = []
+        # Necessary, with the new pyzo startup code.
     import pyzo
         # Importing pyzo has these side effects:
-            # pyzo/yotonloader.py
+            # pyzo/yotonle --oader.py
             # import pyzo.yoton
             # import pyzo.yoton.channels
             # import pyzo.util
             # import pyzo.core
-            # ==== pyzo/core/commandline.py
+            # pyzo/core/commandline.py
             # Started our command server
             # import pyzo.util.qt
 except Exception:
     # The top-level init method gives the error message.
+    g.es_exception()
     pyzo=None
 #@-<< imports >>
 _saveConfigFile = False
