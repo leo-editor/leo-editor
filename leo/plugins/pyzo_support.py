@@ -29,7 +29,7 @@ assert time
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 try:
-    sys.argv = []
+    # sys.argv = []
         # Necessary, with the new pyzo startup code.
     import pyzo
         # Importing pyzo has these side effects:
