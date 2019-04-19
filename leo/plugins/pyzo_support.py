@@ -259,7 +259,6 @@ class GlobalPyzoController(object):
         #@-<< define closeEvent >>
         sys.argv = []
             # Avoid trying to load extra files.
-        g.pr('\ncalling pyzo.start')
         pyzo.start()
             # __main__.py imports pyzo, then calls pyzo.start.
             # We can do so directly, because pyzo has aleady been imported.
