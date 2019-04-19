@@ -7,6 +7,7 @@ pyzo_support.py: Allow access to pyzo features within Leo.
 
 This plugin will work only if pyzo can be imported successfully.
 '''
+# Work on this project started March 6, 2019.
 #@+<< copyright >>
 #@+node:ekr.20190412042616.1: ** << copyright >>
 #@+at
@@ -261,11 +262,12 @@ class GlobalPyzoController(object):
             # Avoid trying to load extra files.
         pyzo.start()
             # __main__.py imports pyzo, then calls pyzo.start.
-            # We can do so directly, because pyzo has aleady been imported.
+            # We can do so directly, because pyzo has already been imported.
         g.pr('\nfrom pyzo.core.import main')
+        #
+        # Late monkey-patches...
         from pyzo.core import main
-            # Important: pyzo.start imports pyzo.core,
-            # so this import has no side effects.
+            # This import has no side effects because pyzo.start imports pyzo.core..
         g.funcToMethod(closeEvent, main.MainWindow)
             # Monkey-patch MainWindow.closeEvent.
     #@-others
