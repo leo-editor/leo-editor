@@ -42,6 +42,119 @@ except Exception:
     g.es_exception()
     pyzo = None
 #@-<< imports >>
+#@+<< shim classes >>
+#@+node:ekr.20190417092320.1: ** << shim classes >>
+if pyzo:
+    #@+others
+    #@+node:ekr.20190414034531.1: *3* class ConfigShim (object)
+    class ConfigShim(object):
+        # pylint: disable=no-member
+        pass
+    #@+node:ekr.20190417092403.1: *3* class MainWindowShim(QObject)
+    class MainWindowShim(QtCore.QObject): ### pyzo.core.main.MainWindow
+
+        def __init__(self, parent=None, locale=None):
+            
+            QtCore.QObject.__init__(self)
+            self.setObjectName('MainWindowShim')
+            
+        def setMainTitle(self, path=None):
+            g.trace('IGNORE', repr(path))
+            
+        def setStyleSheet(self, style, *args, **kwargs):
+            g.trace('IGNORE', repr(style))
+
+        #@+others
+        #@+node:ekr.20190417092403.5: *4* MainWindowShim.closeEvent (traces)
+        def closeEvent(self, event):
+            """ Override close event handler. """
+            import time
+            import pyzo.core.commandline as commandline
+
+            g.pr('===== MainWindowShim.closeEvent 1')
+            
+            t1 = time.clock()
+
+            if 0: # never.
+                # Save settings
+                pyzo.saveConfig()
+                pyzo.command_history.save()
+
+            if 1: # Experimental.
+                # Stop command server
+                commandline.stop_our_server()
+
+            if 0: # Never.
+                # Proceed with closing...
+                result = pyzo.editors.closeAll()
+                if not result:
+                    self._closeflag = False
+                    event.ignore()
+                    return
+                else:
+                    self._closeflag = True
+                
+            t2 = time.clock()
+
+            # Proceed with closing shells
+            pyzo.localKernelManager.terminateAll() # pylint: disable=no-member
+            for shell in pyzo.shells:
+                shell._context.close()
+                
+            t3 = time.clock()
+            
+            if 0: # unlikely.
+                # Close tools
+                for toolname in pyzo.toolManager.getLoadedTools():
+                    tool = pyzo.toolManager.getTool(toolname)
+                    tool.close()
+                
+            t4 = time.clock()
+
+            # Stop all threads (this should really only be daemon threads)
+            if 1: # Experimental.
+                import threading
+                for thread in threading.enumerate():
+                    if hasattr(thread, 'stop'):
+                        try:
+                            thread.stop(0.1)
+                        except Exception:
+                            pass
+                        
+            t5 = time.clock()
+
+            if 1: # Trace
+                g.pr('\nMainWindowShim.closeEvent 2')
+                g.pr('stage 1:          %5.2f' % (t2-t1))
+                g.pr('stage 2: shells:  %5.2f' % (t3-t2))
+                g.pr('stage 3: tools:   %5.2f' % (t4-t3))
+                g.pr('stage 4: threads: %5.2f' % (t5-t4))
+                
+            if 0: # Never.
+                # Proceed as normal
+                QtWidgets.QMainWindow.closeEvent(self, event)
+            
+                # Harder exit to prevent segfault. Not really a solution,
+                # but it does the job until Pyside gets fixed.
+                if sys.version_info >= (3,3,0): # and not restarting:
+                    if hasattr(os, '_exit'):
+                        os._exit(0)
+        #@-others
+    #@+node:ekr.20190417091444.1: *3* class MenuBarShim (QMenuBar)
+    class MenuBarShim(QtWidgets.QMenuBar):
+        
+        if 0:
+            def __init__(self):
+                QtWidgets.QMenuBar.__init__(self)
+        
+            def menuBar(self):
+                return self
+                    # g.TracingNullObject('MenuBarShim.menuBar')
+
+        def _addAction(self, *args, **kwargs):
+            g.pr('MenuBarShim._addAction', args, kwargs)
+    #@-others
+#@-<< shim classes >>
 #@+others
 #@+node:ekr.20190415051706.1: **  top-level functions
 #@+node:ekr.20190410171905.1: *3* init (pyzo_support.py)
@@ -62,101 +175,6 @@ def onCreate(tag, keys):
     c = keys.get('c')
     if c:
         c.pyzoController = PyzoController(c)
-#@+node:ekr.20190417092320.1: **  shims...
-#@+node:ekr.20190414034531.1: *3* class ConfigShim
-class ConfigShim(object):
-    # pylint: disable=no-member
-    pass
-#@+node:ekr.20190417092403.1: *3* class MainWindowShim(QObject)
-class MainWindowShim(QtCore.QObject): ### pyzo.core.main.MainWindow
-
-    def __init__(self, parent=None, locale=None):
-        
-        QtCore.QObject.__init__(self)
-        self.setObjectName('MainWindowShim')
-        
-    def setMainTitle(self, path=None):
-        g.trace('IGNORE', repr(path))
-        
-    def setStyleSheet(self, style, *args, **kwargs):
-        g.trace('IGNORE', repr(style))
-
-    #@+others
-    #@+node:ekr.20190417092403.5: *4* MainWindowShim.closeEvent (traces)
-    def closeEvent(self, event):
-        """ Override close event handler. """
-        import time
-        import pyzo.core.commandline as commandline
-        
-        g.pr('===== MainWindowShim.closeEvent 1')
-        
-        t1 = time.clock()
-
-        if 0: # never.
-            # Save settings
-            pyzo.saveConfig()
-            pyzo.command_history.save()
-
-        if 1: # Experimental.
-            # Stop command server
-            commandline.stop_our_server()
-
-        if 0: # Never.
-            # Proceed with closing...
-            result = pyzo.editors.closeAll()
-            if not result:
-                self._closeflag = False
-                event.ignore()
-                return
-            else:
-                self._closeflag = True
-            
-        t2 = time.clock()
-
-        # Proceed with closing shells
-        pyzo.localKernelManager.terminateAll() # pylint: disable=no-member
-        for shell in pyzo.shells:
-            shell._context.close()
-            
-        t3 = time.clock()
-        
-        if 0: # unlikely.
-            # Close tools
-            for toolname in pyzo.toolManager.getLoadedTools():
-                tool = pyzo.toolManager.getTool(toolname)
-                tool.close()
-            
-        t4 = time.clock()
-
-        # Stop all threads (this should really only be daemon threads)
-        if 1: # Experimental.
-            import threading
-            for thread in threading.enumerate():
-                if hasattr(thread, 'stop'):
-                    try:
-                        thread.stop(0.1)
-                    except Exception:
-                        pass
-                    
-        t5 = time.clock()
-
-        if 1: # Trace
-            g.pr('\nMainWindowShim.closeEvent 2')
-            g.pr('stage 1:          %5.2f' % (t2-t1))
-            g.pr('stage 2: shells:  %5.2f' % (t3-t2))
-            g.pr('stage 3: tools:   %5.2f' % (t4-t3))
-            g.pr('stage 4: threads: %5.2f' % (t5-t4))
-            
-        if 0: # Never.
-            # Proceed as normal
-            QtWidgets.QMainWindow.closeEvent(self, event)
-        
-            # Harder exit to prevent segfault. Not really a solution,
-            # but it does the job until Pyside gets fixed.
-            if sys.version_info >= (3,3,0): # and not restarting:
-                if hasattr(os, '_exit'):
-                    os._exit(0)
-    #@-others
 #@+node:ekr.20190418161712.1: ** class GlobalPyzoController (object)
 class GlobalPyzoController(object):
 
@@ -167,234 +185,91 @@ class GlobalPyzoController(object):
         if hasattr(g.app.gui, 'hidden_main_window'):
             event = QtGui.QCloseEvent()
             g.app.gui.hidden_main_window.closeEvent(event)
-    #@+node:ekr.20190417072017.1: *3* gpc.init_pyzo (NOT USED)
-    def init_pyzo(self):
+                # Call the monkey-patched MainWindow.closeEvent. 
+    #@+node:ekr.20190417141817.1: *3* gpc.load_pyzo
+    def load_pyzo(self):
         '''
-        Do all common pyzo inits, without initing pyzo's main window or menus.
-
-        I would prefer never to instantiate a QMainWindow, but we shall see...
+        Go through pyzo's *entire* startup logic.
+        Monkey-patch MainWindow.closeEvent to handle Leo shutdown.
         '''
-        use_dock = False
-        #
-        # Standard prerequisites.
-        assert pyzo
-        g.pr('\npyzo_support: init_pyzo: START')
-        g.pr('pyzo_support: init_pyzo: Standard prerequisites...')
+        #@+<< define closeEvent >>
+        #@+node:ekr.20190418204559.1: *4* << define closeEvent >>
+        def closeEvent(self, event):
+            '''
+            A monkey-patched version of MainWindow.closeEvent
+            that shuts down pyzo when Leo exits.
+            '''
             
-        import pyzo.core.main as main
-        main.loadIcons()
-        main.loadFonts()
-        #
-        # Tricky: MainWindow.__init__ sets pyzo.main = self.
-        pyzo.main = MainWindowShim()
-        #
-        g.pr('pyzo_support: init_pyzo: MainWindow._populate...')
-        #
-        # New imports
-        from leo.core.leoQt import QtCore, QtWidgets
-        #
-        # A hack:
-        # self = g.TracingNullObject('_populate.self')
-        self = w = QtWidgets.QFrame()
-        w.setObjectName('init_pyzo.self=DummyFrame')
-        w.menuBar = menuBar = MenuBarShim()
-        #
-        # Monkey-patch
-        main.menuBar = menuBar
-        #
-        # Delayed imports
-        from pyzo.core.editorTabs import EditorTabs
-        from pyzo.core.shellStack import ShellStackWidget
-        from pyzo.core import codeparser
-        from pyzo.core.history import CommandHistory
-        from pyzo.tools import ToolManager
-
-        # Instantiate tool manager
-        pyzo.toolManager = ToolManager()
-
-        # Check to install conda now ...
-        #from pyzo.util.bootstrapconda import check_for_conda_env
-        #check_for_conda_env()
-        
-        # Instantiate and start source-code parser
-        if pyzo.parser is None:
-            pyzo.parser = codeparser.Parser()
-            pyzo.parser.start()
-
-        # Create editor stack and make the central widget
-        if 1: #
-            pyzo.editors = EditorTabs(self)
-            assert isinstance(pyzo.editors, EditorTabs), repr(pyzo.editors)
+            from pyzo.core import commandline
+                # Added
             
-        if 0: # Never
-            self.setCentralWidget(pyzo.editors)
-                # EKR: QMainWindow.setCentralWidget
+            if g: g.pr('PATCHED MainWindow.closeEvent')
 
-        # Create floater for shell
-        if use_dock: # Experimental: works when enabled.
-            self._shellDock = dock = QtWidgets.QDockWidget(self)
-            if pyzo.config.settings.allowFloatingShell:
-                dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
-            else:
-                dock.setFeatures(dock.DockWidgetMovable)
-            dock.setObjectName('shells')
-            dock.setWindowTitle('Shells')
+            # Are we restaring?
+            # restarting = time.time() - self._closeflag < 1.0
+
+            # Save settings
+            pyzo.saveConfig()
+            pyzo.command_history.save()
+
+            # Stop command server
+            commandline.stop_our_server()
+
+            # Proceed with closing...
+            result = pyzo.editors.closeAll()
             
-        if 0: # Never.
-            self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
+            if 0: # Force the close.
+                if not result:
+                    self._closeflag = False
+                    event.ignore()
+                    return
+                else:
+                    self._closeflag = True
+                    #event.accept()  # Had to comment on Windows+py3.3 to prevent error
 
-        # Create shell stack
-        pyzo.shells = ShellStackWidget(self)
-            # This creates a ShellControl.
-        if 1: #### Desperation.
-            g.app.permanentScriptDict ['_stack'] = pyzo.shells._stack
-            g.app.permanentScriptDict ['ShellControl'] = pyzo.shells._shellButton
-        assert isinstance(pyzo.shells, ShellStackWidget), repr(pyzo.shells)
-        g.trace('id(pyzo.shells._shellButton)', id(pyzo.shells._shellButton))
-        #
-        # Weird: why is this deleted??
-        if 0:
-            from pyzo.core.shellStack import ShellControl
-            assert isinstance(pyzo.shells._shellButton, ShellControl)
+            # Proceed with closing shells
+            pyzo.localKernelManager.terminateAll()
+            for shell in pyzo.shells:
+                shell._context.close()
 
-        if use_dock:
-            dock.setWidget(pyzo.shells)
+            # Close tools
+            for toolname in pyzo.toolManager.getLoadedTools():
+                tool = pyzo.toolManager.getTool(toolname)
+                tool.close()
 
-        # Initialize command history
-        pyzo.command_history = CommandHistory('command_history.py')
+            # Stop all threads (this should really only be daemon threads)
+            import threading
+            for thread in threading.enumerate():
+                if hasattr(thread, 'stop'):
+                    try:
+                        thread.stop(0.1)
+                    except Exception:
+                        pass
 
-        # Create the default shell when returning to the event queue
-        if 0: # Experimental: works.
-            from pyzo.codeeditor.misc import callLater
-            callLater(pyzo.shells.addShell)
+            # Proceed as normal
+            QtWidgets.QMainWindow.closeEvent(self, event)
 
-        if 0: # Not now.  Probably never.
-            # Create statusbar
-            if pyzo.config.view.showStatusbar:
-                pyzo.status = self.statusBar()
-            else:
-                pyzo.status = None
-                self.setStatusBar(None)
-
-        # Create menu
-        from pyzo.core import menu
-        pyzo.keyMapper = menu.KeyMapper()
-        
-        if 0: # FAILS.
-            ### menu.buildMenus(self.menuBar())
-            # menuBar = QtWidgets.QMenuBar()
-            menu.buildMenus(menuBar)
-
-        # Add the context menu to the editor
-        if 0: # Fails.
-            pyzo.editors.addContextMenu()
-            pyzo.shells.addContextMenu()
-
-        if 0: # Unlikely.
-            # Load tools
-            if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
-                pyzo.toolManager.loadTool('pyzosourcestructure')
-                pyzo.toolManager.loadTool('pyzofilebrowser', 'pyzosourcestructure')
-            elif pyzo.config.state.loadedTools:
-                for toolId in pyzo.config.state.loadedTools:
-                    pyzo.toolManager.loadTool(toolId)
-                    
-        g.pr('pyzo_support: init_pyzo: END\n')
-    #@+node:ekr.20190417141817.1: *3* gpc.load_hidden_pyzo
-    def load_hidden_pyzo(self):
-        '''Load a hidden version of pyzo.'''
-
-        from pyzo.core import main as main_module
-        from pyzo.__main__ import main as main_function
-        
-        #@+others # class HiddenMainWindow
-        #@+node:ekr.20190418053258.1: *4* class HiddenMainWindow(MainWindow)
-        class HiddenMainWindow(main_module.MainWindow):
-
-            #@+others
-            #@+node:ekr.20190418053355.1: *5* HiddenMainWindow.closeEvent
-            def closeEvent(self, event):
-                """ Override close event handler. """
-                
-                from pyzo.core import commandline
-                    # Added
-                
-                if g: g.pr('HiddenMainWindow.closeEvent')
-
-                # Are we restaring?
-                # restarting = time.time() - self._closeflag < 1.0
-
-                # Save settings
-                pyzo.saveConfig()
-                pyzo.command_history.save()
-
-                # Stop command server
-                commandline.stop_our_server()
-
-                # Proceed with closing...
-                result = pyzo.editors.closeAll()
-                
-                if 0: # Force the close.
-                    if not result:
-                        self._closeflag = False
-                        event.ignore()
-                        return
-                    else:
-                        self._closeflag = True
-                        #event.accept()  # Had to comment on Windows+py3.3 to prevent error
-
-                # Proceed with closing shells
-                pyzo.localKernelManager.terminateAll()
-                for shell in pyzo.shells:
-                    shell._context.close()
-
-                # Close tools
-                for toolname in pyzo.toolManager.getLoadedTools():
-                    tool = pyzo.toolManager.getTool(toolname)
-                    tool.close()
-
-                # Stop all threads (this should really only be daemon threads)
-                import threading
-                for thread in threading.enumerate():
-                    if hasattr(thread, 'stop'):
-                        try:
-                            thread.stop(0.1)
-                        except Exception:
-                            pass
-
-                # Proceed as normal
-                QtWidgets.QMainWindow.closeEvent(self, event)
-
-                # Harder exit to prevent segfault. Not really a solution,
-                # but it does the job until Pyside gets fixed.
-                if 0:
-                    # Do **Not** exit Leo.
-                    if sys.version_info >= (3,3,0): # and not restarting:
-                        if hasattr(os, '_exit'):
-                            os._exit(0)
-            #@-others
-                    
-        #@-others
-
-        main_module.MainWindow = HiddenMainWindow
-            # The patched version of start() in pyzo.__init__
-            # sets g.app.gui.hidden_main_window.
-        main_function()
-        g.app.gui.hidden_main_window.hide()
+            # Harder exit to prevent segfault. Not really a solution,
+            # but it does the job until Pyside gets fixed.
+            if 0:
+                # Do **Not** exit Leo.
+                if sys.version_info >= (3,3,0): # and not restarting:
+                    if hasattr(os, '_exit'):
+                        os._exit(0)
+        #@-<< define closeEvent >>
+        sys.argv = []
+            # Avoid trying to load extra files.
+        g.pr('\ncalling pyzo.start')
+        pyzo.start()
+            # __main__.py imports pyzo, then calls pyzo.start.
+            # We can do so directly, because pyzo has aleady been imported.
+        g.pr('\nfrom pyzo.core.import main')
+        from pyzo.core import main
+            # Important: pyzo.start imports pyzo.core,
+            # so this import has no side effects.
+        g.funcToMethod(closeEvent, main.MainWindow)
+            # Monkey-patch MainWindow.closeEvent.
     #@-others
-#@+node:ekr.20190417091444.1: ** class MenuBarShim (QMenuBar)
-class MenuBarShim(QtWidgets.QMenuBar):
-    
-    if 0:
-        def __init__(self):
-            QtWidgets.QMenuBar.__init__(self)
-    
-        def menuBar(self):
-            return self
-                # g.TracingNullObject('MenuBarShim.menuBar')
-
-    def _addAction(self, *args, **kwargs):
-        g.pr('MenuBarShim._addAction', args, kwargs)
 #@+node:ekr.20190415051335.1: ** class PyzoController (object)
 class PyzoController (object):
     '''A per-commander controller providing pyzo support.'''
@@ -426,24 +301,6 @@ class PyzoController (object):
                 pyzo_controller.open_file_in_commander(ext, path)
         
         FileItem.onActivated = patchedOnActivated
-    #@+node:ekr.20190415182936.1: *3* pz.monkey_patch_shell (to do)
-    def monkey_patch_shell(self):
-        pass
-        
-        ###
-            # from pyzo.tools.pyzoFileBrowser.tree import FileItem
-            # pyzo_controller = self
-        
-            # def patchedOnActivated(self):
-                # path = self.path()
-                # ext = os.path.splitext(path)[1]
-                # #
-                # # This test is not great,
-                # # but other tests for binary files may be worse.
-                # if ext not in ['.pyc','.pyo','.png','.jpg','.ico']:
-                    # pyzo_controller.open_file_in_commander(ext, path)
-            
-            # FileItem.onActivated = patchedOnActivated
     #@+node:ekr.20190415122136.1: *3* pz.open_file_in_commander
     def open_file_in_commander(self, ext, path):
         '''Open the given path in a Leonine manner.'''
