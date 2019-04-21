@@ -251,7 +251,7 @@ class GlobalPyzoController(object):
                 try:
                     self.setStyleSheet("background: %s" % bg) 
                 except Exception:
-                    if g: g.pr('oops: MainWindow.__init__')
+                    if g: g.pr('oops: PATCHED MainWindow.__init__')
 
             # Focus on editor
             e = pyzo.editors.getCurrentEditor()
@@ -261,7 +261,7 @@ class GlobalPyzoController(object):
             # Handle any actions
             commandline.handle_cmd_args()
             
-            if g: g.pr('END PATCHED MainWindow.__init__\n')
+            if g: g.pr('END PATCHED MainWindow.__init__')
 
         # To force drawing ourselves
         #@+node:ekr.20190421034940.1: *4* MainWindow._populate
@@ -403,14 +403,16 @@ class GlobalPyzoController(object):
                         # os._exit(0)
         #@-others
         #
-        # Part 4: Monkey-patch the MainWindow class.
+        # Part 4: Early patches: *before* instantiating pyzo objects.
         g.funcToMethod(__init__, main.MainWindow)
         g.funcToMethod(_populate, main.MainWindow)
-        g.funcToMethod(closeEvent, main.MainWindow)
         #
         # Part 5: Do pyzo's official startup.
         #        __main__.py calls pyzo.start after importing pyzo.
         pyzo.start()
+        #
+        # Part 6: Late patches: *after* instantiating pyzo objects.
+        g.funcToMethod(closeEvent, main.MainWindow)
         if 1:
             # Reparent the dock.
             main_window = g.app.gui.hidden_main_window
