@@ -123,6 +123,22 @@ class GlobalPyzoController(object):
         #
         early = True
             # True: attempt early monkey-patch
+        sys.argv = []
+            # Avoid trying to load extra files.
+        if early:
+            # Import main.py so we can monkey-patch main.MainWindow.
+            g.pr('\nload_pyzo: EARLY IMPORT: from pyzo.core.import main')
+            from pyzo.core import commandline, main, splash
+                # This early import appears safe,
+                # because it imports the only following:
+                    # pyzo.core.main.py
+                    # pyzo.core.icons.py
+                    # pyzo.core.splash.py
+            # from main import loadAppIcons, loadIcons, loadFonts
+            # from splash import SplashWidget
+            g.pr('\nload_pyzo: AFTER early imports')
+        #
+        # Define the monkey-patched functions *after* the early imports.
         #@+others # define patched functions
         #@+node:ekr.20190421025254.1: *4* patched: MainWindow.__init__
         def __init__(self, parent=None, locale=None):
@@ -315,22 +331,8 @@ class GlobalPyzoController(object):
                     # if hasattr(os, '_exit'):
                         # os._exit(0)
         #@-others
-        sys.argv = []
-            # Avoid trying to load extra files.
         if early:
-            # Import main.py so we can monkey-patch main.MainWindow.
-            g.pr('\nload_pyzo: EARLY IMPORT: from pyzo.core.import main')
-            from pyzo.core import commandline, main, splash
-                # This early import appears safe,
-                # because it imports the only following:
-                    # pyzo.core.main.py
-                    # pyzo.core.icons.py
-                    # pyzo.core.splash.py
-            # from main import loadAppIcons, loadIcons, loadFonts
-            # from splash import SplashWidget
-            g.pr('\nload_pyzo: AFTER early imports')
-            #
-            # Do the early monkey-patches
+            # Do the early monkey-patches *after* defining the functions.
             g.funcToMethod(__init__, main.MainWindow)
             g.funcToMethod(closeEvent, main.MainWindow)
         pyzo.start()
