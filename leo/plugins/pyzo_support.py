@@ -121,6 +121,8 @@ class GlobalPyzoController(object):
         # - Monkey-patch MainWindow to do *here* what is now done in pyzo.leo.
         #   Add MainWindow ivars for all important windows.
         #
+        early = False
+            # True: attempt early monkey-patch
         #@+others # define patched functions
         #@+node:ekr.20190418204559.1: *4* patched: closeEvent
         def closeEvent(self, event):
@@ -195,17 +197,23 @@ class GlobalPyzoController(object):
         #@-others
         sys.argv = []
             # Avoid trying to load extra files.
+        if early:
+            g.pr('load_pyzo: EARLY IMPORT: from pyzo.core.import main')
+            from pyzo.core import main
+                # This early import could cause problems.
+            placate_pyflakes(main)
         pyzo.start()
             # __main__.py imports pyzo, then calls pyzo.start.
             # We can do so directly, because pyzo has already been imported.
         #
         # Late monkey-patches...
-        g.pr('load_pyzo: from pyzo.core.import main')
-        from pyzo.core import main
-            # This import has no side effects because pyzo.start imports pyzo.core..
-        g.funcToMethod(closeEvent, main.MainWindow)
-            # Monkey-patch MainWindow.closeEvent.
-        if 0:
+        if not early:
+            g.pr('load_pyzo: from pyzo.core.import main')
+            from pyzo.core import main
+                # This import is safe because pyzo.start imports pyzo.core.
+            g.funcToMethod(closeEvent, main.MainWindow)
+                # Monkey-patch MainWindow.closeEvent.
+        if 1:
             # Reparent the dock.
             main_window = g.app.gui.hidden_main_window
             dock = main_window._shellDock
