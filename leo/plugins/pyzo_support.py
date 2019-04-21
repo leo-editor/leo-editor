@@ -128,6 +128,12 @@ class GlobalPyzoController(object):
             # pyzo.core.main.py
             # pyzo.core.icons.py
             # pyzo.core.splash.py
+        from pyzo.codeeditor.misc import callLater
+            # This imports...
+            # pyzo.codeeditor
+            # pyzo.codeeditor.parsers
+            # pyzo/codeeditor/base.py
+            # pyzo.codeeditor.highlighter.py
         g.pr('load_pyzo: AFTER early imports')
         #
         # Part 2: Add aliases for MainWindow. __init__.
@@ -253,9 +259,83 @@ class GlobalPyzoController(object):
             # Handle any actions
             commandline.handle_cmd_args()
             
-            if g: g.pr('\nEND PATCHED MainWindow.__init__')
+            if g: g.pr('END PATCHED MainWindow.__init__\n')
 
         # To force drawing ourselves
+        #@+node:ekr.20190421034940.1: *4* MainWindow._populate
+        def _populate(self):
+
+            if g: g.pr('\nBEGIN PATCHED MainWindow._populate')
+
+            # Delayed imports
+            from pyzo.core.editorTabs import EditorTabs
+            from pyzo.core.shellStack import ShellStackWidget
+            from pyzo.core import codeparser
+            from pyzo.core.history import CommandHistory
+            from pyzo.tools import ToolManager
+
+            # Instantiate tool manager
+            pyzo.toolManager = ToolManager()
+
+            # Check to install conda now ...
+            #from pyzo.util.bootstrapconda import check_for_conda_env
+            #check_for_conda_env()
+
+            # Instantiate and start source-code parser
+            if pyzo.parser is None:
+                pyzo.parser = codeparser.Parser()
+                pyzo.parser.start()
+
+            # Create editor stack and make the central widget
+            pyzo.editors = EditorTabs(self)
+            self.setCentralWidget(pyzo.editors)
+                # EKR: QMainWindow.setCentralWidget
+
+            # Create floater for shell
+            self._shellDock = dock = QtWidgets.QDockWidget(self)
+            if pyzo.config.settings.allowFloatingShell:
+                dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
+            else:
+                dock.setFeatures(dock.DockWidgetMovable)
+            dock.setObjectName('shells')
+            dock.setWindowTitle('Shells')
+            self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
+
+            # Create shell stack
+            pyzo.shells = ShellStackWidget(self)
+            dock.setWidget(pyzo.shells)
+
+            # Initialize command history
+            pyzo.command_history = CommandHistory('command_history.py')
+
+            # Create the default shell when returning to the event queue
+            callLater(pyzo.shells.addShell)
+
+            # Create statusbar
+            if pyzo.config.view.showStatusbar:
+                pyzo.status = self.statusBar()
+            else:
+                pyzo.status = None
+                self.setStatusBar(None)
+
+            # Create menu
+            from pyzo.core import menu
+            pyzo.keyMapper = menu.KeyMapper()
+            menu.buildMenus(self.menuBar())
+
+            # Add the context menu to the editor
+            pyzo.editors.addContextMenu()
+            pyzo.shells.addContextMenu()
+
+            # Load tools
+            if pyzo.config.state.newUser and not pyzo.config.state.loadedTools:
+                pyzo.toolManager.loadTool('pyzosourcestructure')
+                pyzo.toolManager.loadTool('pyzofilebrowser', 'pyzosourcestructure')
+            elif pyzo.config.state.loadedTools:
+                for toolId in pyzo.config.state.loadedTools:
+                    pyzo.toolManager.loadTool(toolId)
+                    
+            if g: g.pr('END PATCHED MainWindow._populate\n')
         #@+node:ekr.20190418204559.1: *4* patched: MainWindow.closeEvent
         def closeEvent(self, event):
             '''
@@ -323,6 +403,7 @@ class GlobalPyzoController(object):
         #
         # Part 4: Monkey-patch the MainWindow class.
         g.funcToMethod(__init__, main.MainWindow)
+        g.funcToMethod(_populate, main.MainWindow)
         g.funcToMethod(closeEvent, main.MainWindow)
         #
         # Part 5: Do pyzo's official startup.
