@@ -124,21 +124,18 @@ class GlobalPyzoController(object):
         early = True
             # True: attempt early monkey-patch
         #@+others # define patched functions
-        #@+node:ekr.20190418204559.1: *4* patched: closeEvent
+        #@+node:ekr.20190418204559.1: *4* patched: MainWindow.closeEvent
         def closeEvent(self, event):
             '''
-            A monkey-patched version of MainWindow.closeEvent that shuts down pyzo
-            when Leo exits.
+            A monkey-patched version of MainWindow.closeEvent.
             
             Copyright (C) 2013-2018, the Pyzo development team
             '''
-            # pylint: disable=no-member
-                # This is patched into the MainWindow class.
-            # pylint: disable=not-an-iterable
-                # Non-iterable value pyzo.shells is used in an iterating context.
-            
+            # pylint: disable=no-member, not-an-iterable
+                # This is patched into the MainWindow class, which confuses pylint.
+            #
+            # Added imports...
             from pyzo.core import commandline
-                # Added
             
             if g: g.pr('PATCHED MainWindow.closeEvent')
 
@@ -162,7 +159,6 @@ class GlobalPyzoController(object):
                     return
                 else:
                     self._closeflag = True
-                    #event.accept()  # Had to comment on Windows+py3.3 to prevent error
 
             # Proceed with closing shells
             pyzo.localKernelManager.terminateAll()
@@ -187,26 +183,28 @@ class GlobalPyzoController(object):
             # Proceed as normal
             QtWidgets.QMainWindow.closeEvent(self, event)
 
-            # Harder exit to prevent segfault. Not really a solution,
-            # but it does the job until Pyside gets fixed.
-            if 0:
-                # Do **Not** exit Leo.
-                if sys.version_info >= (3,3,0): # and not restarting:
-                    if hasattr(os, '_exit'):
-                        os._exit(0)
+            # Don't exit Leo!
+                # if sys.version_info >= (3,3,0): # and not restarting:
+                    # if hasattr(os, '_exit'):
+                        # os._exit(0)
+        #@+node:ekr.20190421025254.1: *4* patched: MainWindow.__init__
         #@-others
         sys.argv = []
             # Avoid trying to load extra files.
         if early:
+            # Import main.py so we can monkey-patch main.MainWindow.
             g.pr('\nload_pyzo: EARLY IMPORT: from pyzo.core.import main')
             from pyzo.core import main
-                # This early import could cause problems.
-            # placate_pyflakes(main)
+                # This early import appears safe,
+                # because it imports the only following:
+                    # pyzo.core.main.py
+                    # pyzo.core.icons.py
+                    # pyzo.core.splash.py
             g.funcToMethod(closeEvent, main.MainWindow)
                 # Monkey-patch MainWindow.closeEvent.
         pyzo.start()
-            # __main__.py imports pyzo, then calls pyzo.start.
-            # We can do so directly, because pyzo has already been imported.
+            # We can call pyzo.start directly here:
+            # __main__.py just imports pyzo and calls pyzo.start.
         #
         # Late monkey-patches...
         if not early:
