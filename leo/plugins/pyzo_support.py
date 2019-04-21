@@ -25,9 +25,9 @@ This plugin will work only if pyzo can be imported successfully.
 #@+node:ekr.20190418165001.1: ** << imports >>
 import os
 import sys
-# import time
+import time
 import leo.core.leoGlobals as g
-# from leo.core.leoQt import QtCore
+from leo.core.leoQt import QtCore
 from leo.core.leoQt import QtGui, QtWidgets
 try:
     import pyzo
@@ -124,6 +124,133 @@ class GlobalPyzoController(object):
         early = True
             # True: attempt early monkey-patch
         #@+others # define patched functions
+        #@+node:ekr.20190421025254.1: *4* patched: MainWindow.__init__
+        def __init__(self, parent=None, locale=None):
+            
+            '''
+            A monkey-patched version of MainWindow.__init__.py.
+            
+            Copyright (C) 2013-2018, the Pyzo development team
+            '''
+            
+            if g: g.pr('\nBEGIN PATCHED MainWindow.__init__')
+
+            # if 0: # placate pyflakes
+                # loadAppIcons, loadIcons, loadFonts = None
+                # commandline, QtCore, time = None
+                # SplashWidget = None
+
+            QtWidgets.QMainWindow.__init__(self, parent)
+            
+            # self.setObjectName('MainWindow') # EKR.
+
+            self._closeflag = 0  # Used during closing/restarting
+
+            # Init window title and application icon
+            # Set title to something nice. On Ubuntu 12.10 this text is what
+            # is being shown at the fancy title bar (since it's not properly
+            # updated)
+            self.setMainTitle()
+            ### loadAppIcons()
+            main.loadAppIcons()
+            self.setWindowIcon(pyzo.icon)
+
+            # Restore window geometry before drawing for the first time,
+            # such that the window is in the right place
+            self.resize(800, 600) # default size
+            self.restoreGeometry()
+
+            # Show splash screen (we need to set our color too)
+            ### w = SplashWidget(self, distro='no distro')
+            w = splash.SplashWidget(self, distro='no distro')
+            self.setCentralWidget(w)
+            self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
+
+            # Show empty window and disable updates for a while
+            self.show()
+            self.paintNow()
+            self.setUpdatesEnabled(False)
+
+            # Determine timeout for showing splash screen
+            splash_timeout = time.time() + 1.0
+
+            # Set locale of main widget, so that qt strings are translated
+            # in the right way
+            if locale:
+                self.setLocale(locale)
+
+            # Store myself
+            pyzo.main = self
+
+            # Init dockwidget settings
+            self.setTabPosition(QtCore.Qt.AllDockWidgetAreas,QtWidgets.QTabWidget.South)
+            self.setDockOptions(
+                    QtWidgets.QMainWindow.AllowNestedDocks |
+                    QtWidgets.QMainWindow.AllowTabbedDocks
+                    #|  QtWidgets.QMainWindow.AnimatedDocks
+                )
+
+            # Set window atrributes
+            self.setAttribute(QtCore.Qt.WA_AlwaysShowToolTips, True)
+
+            # Load icons and fonts
+            ### loadIcons()
+            ### loadFonts()
+            main.loadIcons()
+            main.loadFonts()
+
+            # Set qt style and test success
+            self.setQtStyle(None) # None means init!
+
+            # Hold the splash screen if needed
+            while time.time() < splash_timeout:
+                QtWidgets.qApp.flush()
+                QtWidgets.qApp.processEvents()
+                time.sleep(0.05)
+
+            # Populate the window (imports more code)
+            self._populate()
+
+            # Revert to normal background, and enable updates
+            self.setStyleSheet('')
+            self.setUpdatesEnabled(True)
+
+            # Restore window state, force updating, and restore again
+            self.restoreState()
+            self.paintNow()
+            self.restoreState()
+
+            # Present user with wizard if he/she is new.
+            if False:  # pyzo.config.state.newUser:
+                from pyzo.util.pyzowizard import PyzoWizard
+                w = PyzoWizard(self)
+                w.show() # Use show() instead of exec_() so the user can interact with pyzo
+
+            # Create new shell config if there is None
+            if not pyzo.config.shellConfigs2:
+                from pyzo.core.kernelbroker import KernelInfo
+                pyzo.config.shellConfigs2.append( KernelInfo() )
+
+            # EKR:patch Set background.
+            if True:
+                bg = getattr(pyzo.config.settings, 'dark_background', '#657b83')
+                    # Default: solarized base00
+                try:
+                    self.setStyleSheet("background: %s" % bg) 
+                except Exception:
+                    if g: g.pr('oops: MainWindow.__init__')
+
+            # Focus on editor
+            e = pyzo.editors.getCurrentEditor()
+            if e is not None:
+                e.setFocus()
+
+            # Handle any actions
+            commandline.handle_cmd_args()
+            
+            if g: g.pr('\nEND PATCHED MainWindow.__init__')
+
+        # To force drawing ourselves
         #@+node:ekr.20190418204559.1: *4* patched: MainWindow.closeEvent
         def closeEvent(self, event):
             '''
@@ -187,21 +314,25 @@ class GlobalPyzoController(object):
                 # if sys.version_info >= (3,3,0): # and not restarting:
                     # if hasattr(os, '_exit'):
                         # os._exit(0)
-        #@+node:ekr.20190421025254.1: *4* patched: MainWindow.__init__
         #@-others
         sys.argv = []
             # Avoid trying to load extra files.
         if early:
             # Import main.py so we can monkey-patch main.MainWindow.
             g.pr('\nload_pyzo: EARLY IMPORT: from pyzo.core.import main')
-            from pyzo.core import main
+            from pyzo.core import commandline, main, splash
                 # This early import appears safe,
                 # because it imports the only following:
                     # pyzo.core.main.py
                     # pyzo.core.icons.py
                     # pyzo.core.splash.py
+            # from main import loadAppIcons, loadIcons, loadFonts
+            # from splash import SplashWidget
+            g.pr('\nload_pyzo: AFTER early imports')
+            #
+            # Do the early monkey-patches
+            g.funcToMethod(__init__, main.MainWindow)
             g.funcToMethod(closeEvent, main.MainWindow)
-                # Monkey-patch MainWindow.closeEvent.
         pyzo.start()
             # We can call pyzo.start directly here:
             # __main__.py just imports pyzo and calls pyzo.start.
