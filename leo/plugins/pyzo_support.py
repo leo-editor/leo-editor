@@ -134,8 +134,12 @@ class GlobalPyzoController(object):
                     # pyzo.core.main.py
                     # pyzo.core.icons.py
                     # pyzo.core.splash.py
-            # from main import loadAppIcons, loadIcons, loadFonts
-            # from splash import SplashWidget
+            #
+            # Add aliases, so __init__ does not need to change.
+            loadAppIcons = main.loadAppIcons
+            loadIcons = main.loadIcons
+            loadFonts = main.loadFonts
+            SplashWidget = splash.SplashWidget
             g.pr('\nload_pyzo: AFTER early imports')
         #
         # Define the monkey-patched functions *after* the early imports.
@@ -148,13 +152,8 @@ class GlobalPyzoController(object):
             
             Copyright (C) 2013-2018, the Pyzo development team
             '''
-            
-            if g: g.pr('\nBEGIN PATCHED MainWindow.__init__')
 
-            # if 0: # placate pyflakes
-                # loadAppIcons, loadIcons, loadFonts = None
-                # commandline, QtCore, time = None
-                # SplashWidget = None
+            if g: g.pr('\nBEGIN PATCHED MainWindow.__init__')
 
             QtWidgets.QMainWindow.__init__(self, parent)
             
@@ -167,8 +166,7 @@ class GlobalPyzoController(object):
             # is being shown at the fancy title bar (since it's not properly
             # updated)
             self.setMainTitle()
-            ### loadAppIcons()
-            main.loadAppIcons()
+            loadAppIcons()
             self.setWindowIcon(pyzo.icon)
 
             # Restore window geometry before drawing for the first time,
@@ -177,8 +175,7 @@ class GlobalPyzoController(object):
             self.restoreGeometry()
 
             # Show splash screen (we need to set our color too)
-            ### w = SplashWidget(self, distro='no distro')
-            w = splash.SplashWidget(self, distro='no distro')
+            w = SplashWidget(self, distro='no distro')
             self.setCentralWidget(w)
             self.setStyleSheet("QMainWindow { background-color: #268bd2;}")
 
@@ -210,10 +207,8 @@ class GlobalPyzoController(object):
             self.setAttribute(QtCore.Qt.WA_AlwaysShowToolTips, True)
 
             # Load icons and fonts
-            ### loadIcons()
-            ### loadFonts()
-            main.loadIcons()
-            main.loadFonts()
+            loadIcons()
+            loadFonts()
 
             # Set qt style and test success
             self.setQtStyle(None) # None means init!
