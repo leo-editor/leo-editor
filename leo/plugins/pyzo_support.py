@@ -123,11 +123,15 @@ class GlobalPyzoController(object):
         # Part 1. Do *extra* early imports before calling pyzo.start.
         #         These are needed so we can monkey-patch main.MainWindow.
         g.pr('\nload_pyzo: EARLY imports...')
+        #
+        # For MainWindow.__init__.
         from pyzo.core import commandline, main, splash
             # This imports...
             # pyzo.core.main.py
             # pyzo.core.icons.py
             # pyzo.core.splash.py
+        #
+        # For MainWindow._populate.
         from pyzo.codeeditor.misc import callLater
             # This imports...
             # pyzo.codeeditor
@@ -146,13 +150,11 @@ class GlobalPyzoController(object):
         #@+others
         #@+node:ekr.20190421025254.1: *4* patched: MainWindow.__init__
         def __init__(self, parent=None, locale=None):
-            
             '''
             A monkey-patched version of MainWindow.__init__.py.
             
             Copyright (C) 2013-2018, the Pyzo development team
             '''
-
             if g: g.pr('\nBEGIN PATCHED MainWindow.__init__')
 
             QtWidgets.QMainWindow.__init__(self, parent)
@@ -264,7 +266,11 @@ class GlobalPyzoController(object):
         # To force drawing ourselves
         #@+node:ekr.20190421034940.1: *4* MainWindow._populate
         def _populate(self):
-
+            '''
+            A monkey-patched version of MainWindow._populate.
+            
+            Copyright (C) 2013-2018, the Pyzo development team
+            '''
             if g: g.pr('\nBEGIN PATCHED MainWindow._populate')
 
             # Delayed imports
@@ -344,11 +350,7 @@ class GlobalPyzoController(object):
             Copyright (C) 2013-2018, the Pyzo development team
             '''
             # pylint: disable=no-member, not-an-iterable
-                # This is patched into the MainWindow class, which confuses pylint.
-            #
-            # Added imports...
-            from pyzo.core import commandline
-            
+                # Pylint gets confused by monkey-patches.
             if g: g.pr('PATCHED MainWindow.closeEvent')
 
             # Are we restaring?
