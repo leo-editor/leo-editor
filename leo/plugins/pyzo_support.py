@@ -403,15 +403,17 @@ class GlobalPyzoController(object):
                         # os._exit(0)
         #@-others
         #
-        # Part 4: Early patches: *before* instantiating pyzo objects.
+        # Part 4: Early patches: *before* calling pyzo.start()
         g.funcToMethod(__init__, main.MainWindow)
         g.funcToMethod(_populate, main.MainWindow)
         #
-        # Part 5: Do pyzo's official startup.
-        #        __main__.py calls pyzo.start after importing pyzo.
+        # Part 5: Do pyzo's official startup:
+        #         - Does all pyzo imports 
+        #         - Instantiates all pyzo objects.
         pyzo.start()
         #
-        # Part 6: Late patches: *after* instantiating pyzo objects.
+        # Part 6: Late patches: *after* calling pyzo.start()
+        #         Late patches are safe because all pyzo imports have been done.
         g.funcToMethod(closeEvent, main.MainWindow)
         if 1:
             # Reparent the dock.
