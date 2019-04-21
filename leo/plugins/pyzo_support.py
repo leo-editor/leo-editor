@@ -117,33 +117,27 @@ class GlobalPyzoController(object):
         Go through pyzo's *entire* startup logic with monkey-patches to
         integrate pyzo with Leo.
         '''
-        # To do:
-        # - Monkey-patch MainWindow to do *here* what is now done in pyzo.leo.
-        #   Add MainWindow ivars for all important windows.
-        #
-        early = True
-            # True: attempt early monkey-patch
         sys.argv = []
             # Avoid trying to load extra files.
-        if early:
-            # Import main.py so we can monkey-patch main.MainWindow.
-            g.pr('\nload_pyzo: EARLY IMPORT: from pyzo.core.import main')
-            from pyzo.core import commandline, main, splash
-                # This early import appears safe,
-                # because it imports the only following:
-                    # pyzo.core.main.py
-                    # pyzo.core.icons.py
-                    # pyzo.core.splash.py
-            #
-            # Add aliases, so __init__ does not need to change.
-            loadAppIcons = main.loadAppIcons
-            loadIcons = main.loadIcons
-            loadFonts = main.loadFonts
-            SplashWidget = splash.SplashWidget
-            g.pr('\nload_pyzo: AFTER early imports')
         #
-        # Define the monkey-patched functions *after* the early imports.
-        #@+others # define patched functions
+        # Part 1. Do *extra* early imports before calling pyzo.start.
+        #         These are needed so we can monkey-patch main.MainWindow.
+        g.pr('\nload_pyzo: EARLY imports...')
+        from pyzo.core import commandline, main, splash
+            # This imports...
+            # pyzo.core.main.py
+            # pyzo.core.icons.py
+            # pyzo.core.splash.py
+        g.pr('load_pyzo: AFTER early imports')
+        #
+        # Part 2: Add aliases for MainWindow. __init__.
+        loadAppIcons = main.loadAppIcons
+        loadIcons = main.loadIcons
+        loadFonts = main.loadFonts
+        SplashWidget = splash.SplashWidget
+        #
+        # Part 3: Define the monkey-patched functions.
+        #@+others
         #@+node:ekr.20190421025254.1: *4* patched: MainWindow.__init__
         def __init__(self, parent=None, locale=None):
             
@@ -326,21 +320,14 @@ class GlobalPyzoController(object):
                     # if hasattr(os, '_exit'):
                         # os._exit(0)
         #@-others
-        if early:
-            # Do the early monkey-patches *after* defining the functions.
-            g.funcToMethod(__init__, main.MainWindow)
-            g.funcToMethod(closeEvent, main.MainWindow)
-        pyzo.start()
-            # We can call pyzo.start directly here:
-            # __main__.py just imports pyzo and calls pyzo.start.
         #
-        # Late monkey-patches...
-        if not early:
-            g.pr('load_pyzo: from pyzo.core.import main')
-            from pyzo.core import main
-                # This import is safe because pyzo.start imports pyzo.core.
-            g.funcToMethod(closeEvent, main.MainWindow)
-                # Monkey-patch MainWindow.closeEvent.
+        # Part 4: Monkey-patch the MainWindow class.
+        g.funcToMethod(__init__, main.MainWindow)
+        g.funcToMethod(closeEvent, main.MainWindow)
+        #
+        # Part 5: Do pyzo's official startup.
+        #        __main__.py calls pyzo.start after importing pyzo.
+        pyzo.start()
         if 1:
             # Reparent the dock.
             main_window = g.app.gui.hidden_main_window
