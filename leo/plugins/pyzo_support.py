@@ -83,7 +83,8 @@ def init():
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
     g.app.global_pyzo_controller = GlobalPyzoController()
-    ### g.app.close_pyzo = GlobalPyzoController().close_pyzo
+    # g.app.global_pyzo_controller.load_pyzo()
+        # Works, but for testing it may be better to do this explicitly.
     return True
 #@+node:ekr.20190415051754.1: *3* onCreate (pyzo_support.py)
 def onCreate(tag, keys):
@@ -113,9 +114,13 @@ class GlobalPyzoController(object):
     #@+node:ekr.20190417141817.1: *3* gpc.load_pyzo
     def load_pyzo(self):
         '''
-        Go through pyzo's *entire* startup logic.
-        Monkey-patch MainWindow.closeEvent to handle Leo shutdown.
+        Go through pyzo's *entire* startup logic with monkey-patches to
+        integrate pyzo with Leo.
         '''
+        # To do:
+        # - Monkey-patch MainWindow to do *here* what is now done in pyzo.leo.
+        #   Add MainWindow ivars for all important windows.
+        #
         #@+others # define patched functions
         #@+node:ekr.20190418204559.1: *4* patched: closeEvent
         def closeEvent(self, event):
@@ -200,16 +205,14 @@ class GlobalPyzoController(object):
             # This import has no side effects because pyzo.start imports pyzo.core..
         g.funcToMethod(closeEvent, main.MainWindow)
             # Monkey-patch MainWindow.closeEvent.
-        #
-        # Reparent the dock.
-        # To do: set ivars in MainWindow to allow us to reparent everything.
-        main_window = g.app.gui.hidden_main_window
-        dock = main_window._shellDock
-        dock.setParent(None)
-        dock.setMinimumSize(800, 500)
-        dock.showNormal()
-            # Confusing, during testing.
-            # dock.showMinimized() 
+        if 0:
+            # Reparent the dock.
+            main_window = g.app.gui.hidden_main_window
+            dock = main_window._shellDock
+            dock.setParent(None)
+            dock.setMinimumSize(800, 500)
+            dock.showNormal()
+                # dock.showMinimized() # confusing, for now.
     #@-others
 #@+node:ekr.20190415051335.1: ** class PyzoController (object)
 class PyzoController (object):
