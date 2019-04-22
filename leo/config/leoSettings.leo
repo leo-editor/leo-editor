@@ -207,6 +207,7 @@
 </v>
 <v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
 <v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
+<v t="ekr.20190422173857.1"><vh>@string qt-style-name = None</vh></v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
@@ -1984,19 +1985,6 @@
 <v t="ekr.20181018112756.1"><vh>leoscreen plugin</vh>
 <v t="ekr.20181018112805.1"><vh>@string leoscreen-prefix = None</vh></v>
 <v t="ekr.20181018112823.1"><vh>@string leoscreen-time-fmt = %Y-%m-%d %H:%M:%S</vh></v>
-</v>
-<v t="ekr.20181028103333.1"><vh>leowapp plugin</vh>
-<v t="ekr.20181028103333.2"><vh>@int leowapp-port = 8100</vh></v>
-<v t="ekr.20181028103333.3"><vh>@string leowapp-ip = 127.0.0.1</vh></v>
-<v t="ekr.20181028103333.4"><vh>stylesheet</vh>
-<v t="ekr.20181028145011.1"><vh>@data leowapp-stylesheet</vh>
-<v t="ekr.20181028145011.2"><vh>borders</vh></v>
-<v t="ekr.20181028145011.3"><vh>panes</vh></v>
-<v t="ekr.20181028145011.4"><vh>text</vh></v>
-<v t="ekr.20181028145011.5"><vh>tree components</vh></v>
-<v t="ekr.20181028145011.6"><vh>tree icons</vh></v>
-</v>
-</v>
 </v>
 <v t="ekr.20181018113203.1"><vh>mime plugin</vh>
 <v t="ekr.20181018113210.1"><vh>@string mime-open-cmd = None</vh></v>
@@ -11720,174 +11708,6 @@ See https://jedi.readthedocs.io/en/latest/index.html
 </t>
 <t tx="ekr.20181018113813.1"></t>
 <t tx="ekr.20181018113857.1"></t>
-<t tx="ekr.20181028103333.1"></t>
-<t tx="ekr.20181028103333.2"></t>
-<t tx="ekr.20181028103333.3"></t>
-<t tx="ekr.20181028103333.4">@language css</t>
-<t tx="ekr.20181028145011.1">/*
-    The main .css stylesheet for the mod_http.py plugin.
-    This stylesheet allocates fix-sized areas for the outline and body panes.
-*/
-div.container {
-    position: absolute;
-}
-
-@others
-</t>
-<t tx="ekr.20181028145011.2">.borderclass{
-    border-color: #C1E0FF;
-    border-width: 1px;
-    border-style: solid;
-}
-.unborderclass{
-    border-color: white;
-    border-width: 1px;
-    border-style: solid;
-}
-</t>
-<t tx="ekr.20181028145011.3">/*
-    In page order:
-    outline: top: 10px
-    body:    top: 310px
-    log:     top: 510px
-    mini:    top: 710px
-
-    Fixed height/width creates scrollbars.
-*/
-div.outlinepane {
-    background: #ffffec; /* Leo yellow */
-    top: 10px;
-    height: 300px;
-    /* ---------- */
-    /* position: absolute: */
-    width: 1000px;
-    left: 10px;
-    bottom: 0px;
-    overflow: scroll;
-    line-height: 0.8;
-    resize: none;
-}
-div.bodypane {
-    background: yellow;
-    top: 310px;
-    height: 200px;
-    /* ---------- */
-    overflow: scroll;
-    position: absolute;
-    resize: none;
-    /* ---------- */
-    bottom: 0px;
-    left: 10px;
-    width: 1000px;
-}
-div.logpane {
-    background: orange;
-    top: 510px;
-    height: 200px;
-    /* ---------- */
-    overflow: scroll;
-    position: absolute;
-    resize: none;
-    /* ---------- */
-    bottom: 0px;
-    width: 1000px;
-    left: 10px;
-}
-div.minibufferpane {
-    background: red;
-    top: 710px;
-    height: 50px;
-    /* ---------- */
-    position: absolute;
-    overflow: scroll;
-    resize: none;
-    /* ---------- */
-    bottom: 0px;
-    left: 10px;
-    width: 1000px;
-}
-</t>
-<t tx="ekr.20181028145011.4">code {
-    font-family: "Courier New", Courier, monospace;
-    font-size: 12pt;
-}
-h1 {
-    /* font-size: 16pt; */
-    /* color: red; */
-}
-</t>
-<t tx="ekr.20181028145011.5">div.headline {
-    color: blue;
-    font-size: 16pt;
-    font-style: normal;
-    font-weight: normal;
-    /* Prevent false clicks. */
-    margin-top: 2px;
-    margin-bottom: 2px;
-    padding: 4px;
-}
-div.node {
-    position: relative;
-    left: 20px;
-}
-</t>
-<t tx="ekr.20181028145011.6">/* Indicator icons...
-
-    Alas, the following does not work::
-
-        node::before {
-            content: url(attr(icon_url)) " " attr(expand) " ";
-        }
-*/
-div.headline[icon="00"]::before {
-    content: url("http://leoeditor.com/box00.GIF") " " attr(expand) " ";
-}
-div.headline[icon="01"]::before {
-    content: url("http://leoeditor.com/box01.GIF") " " attr(expand) " ";
-}
-div.headline[icon="02"]::before {
-    content: url("http://leoeditor.com/box02.GIF") " " attr(expand) " ";
-}
-div.headline[icon="03"]::before {
-    content: url("http://leoeditor.com/box03.GIF") " " attr(expand) " ";
-}
-div.headline[icon="04"]::before {
-    content: url("http://leoeditor.com/box04.GIF") " " attr(expand) " ";
-}
-div.headline[icon="05"]::before {
-    content: url("http://leoeditor.com/box05.GIF") " " attr(expand) " ";
-}
-div.headline[icon="06"]::before {
-    content: url("http://leoeditor.com/box06.GIF") " " attr(expand) " ";
-}
-div.headline[icon="07"]::before {
-    content: url("http://leoeditor.com/box07.GIF") " " attr(expand) " ";
-}
-div.headline[icon="08"]::before {
-    content: url("http://leoeditor.com/box08.GIF") " " attr(expand) " ";
-}
-div.headline[icon="09"]::before {
-    content: url("http://leoeditor.com/box09.GIF") " " attr(expand) " ";
-}
-div.headline[icon="10"]::before {
-    content: url("http://leoeditor.com/box10.GIF") " " attr(expand) " ";
-}
-div.headline[icon="11"]::before {
-    content: url("http://leoeditor.com/box11.GIF") " " attr(expand) " ";
-}
-div.headline[icon="12"]::before {
-    content: url("http://leoeditor.com/box12.GIF") " " attr(expand) " ";
-}
-div.headline[icon="13"]::before {
-    content: url("http://leoeditor.com/box13.GIF") " " attr(expand) " ";
-}
-div.headline[icon="14"]::before {
-    content: url("http://leoeditor.com/box14.GIF") " " attr(expand) " ";
-}
-div.headline[icon="15"]::before {
-    content: url("http://leoeditor.com/box15.GIF") " " attr(expand) " ";
-}
-</t>
 <t tx="ekr.20190106080417.1">/* ----- Minibuffer ----- */
 
 QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
@@ -12026,6 +11846,7 @@ c.redraw()
 <t tx="ekr.20190325050733.8"></t>
 <t tx="ekr.20190325050733.9"></t>
 <t tx="ekr.20190325052226.1"></t>
+<t tx="ekr.20190422173857.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
