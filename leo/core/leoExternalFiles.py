@@ -172,22 +172,28 @@ class ExternalFilesController(object):
         Check all external files corresponding to @<file> nodes in c for
         changes.
         '''
-        p = c.rootPosition()
-        seen = set()
-        while p:
-            if p.v in seen:
-                p.moveToNodeAfterTree()
-            elif p.isAtCleanNode():
-                # Fix #1074: nested @clean nodes.
-                seen.add(p.v)
+        # Fix #1100: always scan the entire file for @<file> nodes.
+        for p in c.all_unique_positions():
+            if p.isAnyAtFileNode():
                 self.idle_check_at_file_node(c, p)
-                p.moveToThreadNext()
-            elif p.isAnyAtFileNode():
-                seen.add(p.v)
-                self.idle_check_at_file_node(c, p)
-                p.moveToNodeAfterTree()
-            else:
-                p.moveToThreadNext()
+        #
+        ### Old code.
+            # p = c.rootPosition()
+            # seen = set()
+            # while p:
+                # if p.v in seen:
+                    # p.moveToNodeAfterTree()
+                # elif p.isAtCleanNode():
+                    # # Fix #1074: nested @clean nodes.
+                    # seen.add(p.v)
+                    # self.idle_check_at_file_node(c, p)
+                    # p.moveToThreadNext()
+                # elif p.isAnyAtFileNode():
+                    # seen.add(p.v)
+                    # self.idle_check_at_file_node(c, p)
+                    # p.moveToNodeAfterTree()
+                # else:
+                    # p.moveToThreadNext()
     #@+node:ekr.20150403044823.1: *5* efc.idle_check_at_file_node
     def idle_check_at_file_node(self, c, p):
         '''Check the @<file> node at p for external changes.'''
