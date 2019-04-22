@@ -1236,7 +1236,10 @@
 <v t="ekr.20131008041326.16099"><vh>@rst html/intermediatetopics.html</vh></v>
 <v t="ekr.20060430221745"><vh>Controlling syntax coloring</vh>
 <v t="ekr.20060430221745.1"><vh>@rst html\coloring.html</vh>
-<v t="ekr.20060830142929"><vh>Syntax coloring settings</vh></v>
+<v t="ekr.20060830142929"><vh>Settings for syntax coloring</vh>
+<v t="ekr.20190422181351.1"><vh>Color settings</vh></v>
+<v t="ekr.20190422182440.1"><vh>Font settings</vh></v>
+</v>
 <v t="ekr.20060430220749"><vh>Files</vh></v>
 <v t="ekr.20060502084233"><vh>The colorizer's inner loop</vh></v>
 <v t="ekr.20060502084233.1"><vh>Format of colorizer control files</vh>
@@ -5133,7 +5136,8 @@ The colorizer calls rules functions until one matches, at which point a range of
 
 Rules methods (and functions) return n &gt; 0 if they match, and n == 0 if they fail.
 </t>
-<t tx="ekr.20060502084233.1">The following sections describe the top-level data in x.py.
+<t tx="ekr.20060502084233.1">The following sections describe the top-level data in leo/modes/x.py.  This data is used by Leo's Legacy (jEdit-based) colorizer. Leo's pygments syntax colorizer does not use these files.
+
 </t>
 <t tx="ekr.20060502090516">**x.properties** is a Python dictionary corresponding to the &lt;PROPS&gt; element in x.xml. Keys are property names; values are strings, namely the contents of &lt;PROPERTY&gt; elements in x.xml. x.properties contains properties for the entire mode. That is, only modes have &lt;PROPS&gt; elements. For example, here is x.properties in php.py::
 
@@ -5286,7 +5290,7 @@ The colorizer uses ruleset names to gain access to all data structures in x.py. 
 
 In fact, ruleset names (and x.rulesDict and x.keywordsDictDict) are the **only** names that the colorizer needs to know in order to access all information in x.py.
 </t>
-<t tx="ekr.20060502122950">This section describes each rules method in Leo's new colorizer. Rules methods are called by rules functions in colorizer control file; they correspond directly to rules elements in jEdit's language description files. In fact, this documentation is a 'refactoring' of `jEdit's documentation`_.
+<t tx="ekr.20060502122950">This section describes each rules method in Leo's jEdit-based colorizer. Rules methods are called by rules functions in colorizer control file; they correspond directly to rules elements in jEdit's language description files. In fact, this documentation is a 'refactoring' of `jEdit's documentation`_.
 
 All rule methods attempt to match a pattern at a particular spot in a string. These methods all return True if the match succeeds.
 </t>
@@ -5837,49 +5841,6 @@ Development on long-delayed projects accelerated after 4.4 final went out the do
 <t tx="ekr.20060830142929">.. _`Customizing Leo`: customizing.html
 
 This section discusses only those settings that affect syntax coloring. See `Customizing Leo`_ for a general discussion of Leo's settings.
-
-Both the old colorizer (in Leo's core) and the new colorizer (the threading_colorizer and qtGui plugins) now support @color and @font settings for colorizing options. The settings for the old colorizer are::
-
-    comment_font, cweb_section_name_font, directive_font,
-    doc_part_font, keyword_font, leo_keyword_font, section_name_font,
-    section_name_brackets_font, string_font, undefined_section_name_font,
-    latexBackground_font, and latex_background_font.
-
-The settings for the new colorizer are all of the above (except keyword_font) plus the following::
-
-    comment1_font, comment2_font, comment3_font, comment4_font, function_font,
-    keyword1_font, keyword2_font, keyword3_font, keyword4_font, label_font,
-    literal1_font, literal2_font, literal3_font, literal4_font, markup_font,
-    null_font, and operator_font.
-    
-To specify a color, say for comment1, for *all* languages, create an @color node::
-
-    @color comment1_color = blue
-    
-To specify a color for a **particular** language, say Python, prepend the setting name
-with the language name.  For example::
-
-    @color python_comment1_color = pink
-
-To specify a font, say for keyword_font, to be used as the default font for **all** languages, put the following in the body text of an @font node in leoSettings.leo::
-
-    # keyword_font_family = None
-    keyword_font_size = 16
-    keyword_font_slant = roman
-        # roman, italic
-    keyword_font_weight = bold
-        # normal, bold
-
-Comments are allowed and undefined settings are set to reasonable defaults. At present, comments can not follow a setting: comments must start a line.
-
-You can specify per-language settings by preceding the settings names by a prefix x. Such settings affect only colorizing for language x (i.e., all the modes in modes/x.py when using the new colorizer). For example, to specify a font for php (only), put the following in the body text of an @font node in leoSettings.leo::
-
-    # php_keyword_font_family = None
-    php_keyword_font_size = 16
-    php_keyword_font_slant = roman
-        # roman, italic
-    php_keyword_font_weight = bold
-        # normal, bold
 </t>
 <t tx="ekr.20060913164304"></t>
 <t tx="ekr.20060913164304.1">###################
@@ -30097,6 +30058,143 @@ described when refactoring code.
 
 Neither tags, nor filters, nor refactoring packages can emulate the
 Leonine way of refactoring.</t>
+<t tx="ekr.20190422181351.1">To specify a color, say for comment1, for *all* languages, create an @color node::
+
+    @color comment1 = blue
+    
+To specify a color for a **particular** language, say Python, prepend the setting name
+with the language name.  For example::
+
+    @color python_comment1 = pink
+    
+Here are Leo's legacy (jEdit-based) @color settings:
+
+    @color comment1
+    @color comment2
+    @color comment3
+    @color comment4
+    @color doc-part
+    @color function
+    @color keyword1
+    @color keyword2
+    @color keyword3
+    @color keyword4
+    @color keyword5
+    @color label
+    @color leo-keyword
+    @color link
+    @color literal1
+    @color literal2
+    @color literal3
+    @color literal4
+    @color markup
+    @color name
+    @color name-brackets
+    @color null
+    @color operator
+    @color show-invisibles-space
+    @color tab
+    @color trailing-whitespace
+    @color url
+    
+In addition, the pygments colorizer uses these settings::
+    
+    @color comment
+    @color comment.hashbang
+    @color comment.multiline
+    @color comment.preproc
+    @color comment.single
+    @color comment.special
+    @color error
+    @color generic
+    @color generic.deleted
+    @color generic.emph
+    @color generic.error
+    @color generic.heading
+    @color generic.inserted
+    @color generic.output
+    @color generic.prompt
+    @color generic.strong
+    @color generic.subheading
+    @color generic.traceback
+    @color keyword
+    @color keyword.constant
+    @color keyword.declaration
+    @color keyword.namespace
+    @color keyword.pseudo
+    @color keyword.reserved
+    @color keyword.type
+    @color literal
+    @color literal.date
+    @color name.attribute
+    @color name.builtin
+    @color name.builtin.pseudo
+    @color name.class
+    @color name.constant
+    @color name.decorator
+    @color name.entity
+    @color name.exception
+    @color name.function
+    @color name.function.magic
+    @color name.label
+    @color name.namespace
+    @color name.other
+    @color name.pygments
+    @color name.tag
+    @color name.variable
+    @color name.variable.class
+    @color name.variable.global
+    @color name.variable.instance
+    @color name.variable.magic
+    @color number
+    @color number.bin
+    @color number.float
+    @color number.hex
+    @color number.integer
+    @color number.integer.long
+    @color number.oct
+    @color operator.word
+    @color other
+    @color punctuation
+    @color string
+    @color string.affix
+    @color string.backtick
+    @color string.char
+    @color string.delimiter
+    @color string.doc
+    @color string.double
+    @color string.escape
+    @color string.heredoc
+    @color string.interpol
+    @color string.other
+    @color string.regex
+    @color string.single
+    @color string.symbol
+    @color whitespace
+    @color xt
+    
+**Note**: all @color settings may optionally end with the _color suffix.
+</t>
+<t tx="ekr.20190422182440.1">To specify a font, say for keyword_font, to be used as the default font for **all** languages, put the following in the body text of an @font node in leoSettings.leo::
+
+    # keyword_font_family = None
+    keyword_font_size = 16
+    keyword_font_slant = roman
+        # roman, italic
+    keyword_font_weight = bold
+        # normal, bold
+
+Comments are allowed and undefined settings are set to reasonable defaults. At present, comments can not follow a setting: comments must start a line.
+
+You can specify per-language settings by preceding the settings names by a prefix x. Such settings affect only colorizing for language x (i.e., all the modes in modes/x.py when using the new colorizer). For example, to specify a font for php (only), put the following in the body text of an @font node in leoSettings.leo::
+
+    # php_keyword_font_family = None
+    php_keyword_font_size = 16
+    php_keyword_font_slant = roman
+        # roman, italic
+    php_keyword_font_weight = bold
+        # normal, bold
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
