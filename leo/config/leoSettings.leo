@@ -1013,7 +1013,7 @@
 </v>
 <v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write Files</vh>
 <v t="ekr.20131213135427.21842"><vh>@item check-derived-file</vh></v>
-<v t="ekr.20131213135427.21843"><vh>@item check-leo-file</vh></v>
+<v t="ekr.20131213135427.21843"><vh>@@@item check-leo-file</vh></v>
 <v t="ekr.20131213135427.21844"><vh>@item file-compare-two-leo-files</vh></v>
 <v t="ekr.20131213135427.21845"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21846"><vh>@item read-outline-only</vh></v>
