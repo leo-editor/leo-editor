@@ -3655,6 +3655,7 @@ class KeyHandlerClass(object):
         if commandName and not func:
             func = c.commandsDict.get(commandName.replace('&', ''))
             if not func:
+                g.es_print('no command for @item %r' % (commandName), color='red')
                 return
         commandName = commandName or func and func.__name__ or '<no function>'
         if 'keys' in g.app.debug:
