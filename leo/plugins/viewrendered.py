@@ -863,7 +863,7 @@ if QtWidgets: # NOQA
             '''Update html in the vr pane.'''
             pc = self
             c = pc.c
-            if pc.must_change_widget(QtWebKitWidgets.QWebView):
+            if QtWebKitWidgets and pc.must_change_widget(QtWebKitWidgets.QWebView):
                 w = QtWebKitWidgets.QWebView()
                 n = c.config.getInt('qweb-view-font-size')
                 if n:
@@ -910,7 +910,7 @@ if QtWidgets: # NOQA
             '''Update @jupyter node in the vr pane.'''
             pc = self
             c = pc.c
-            if pc.must_change_widget(QtWebKitWidgets.QWebView):
+            if QtWebKitWidgets and pc.must_change_widget(QtWebKitWidgets.QWebView):
                 w = QtWebKitWidgets.QWebView()
                 n = c.config.getInt('qweb-view-font-size')
                 if n:
@@ -965,22 +965,22 @@ if QtWidgets: # NOQA
                 pc.show()
                 w.setPlainText(s)
                 c.bodyWantsFocusNow()
+                return
+            if QtWebKitWidgets and pc.must_change_widget(QtWebKitWidgets.QWebView):
+                w = QtWebKitWidgets.QWebView()
+                n = c.config.getInt('qweb-view-font-size')
+                if n:
+                    settings = w.settings()
+                    settings.setFontSize(settings.DefaultFontSize, n)
+                pc.embed_widget(w)
+                assert(w == pc.w)
             else:
-                if pc.must_change_widget(QtWebKitWidgets.QWebView):
-                    w = QtWebKitWidgets.QWebView()
-                    n = c.config.getInt('qweb-view-font-size')
-                    if n:
-                        settings = w.settings()
-                        settings.setFontSize(settings.DefaultFontSize, n)
-                    pc.embed_widget(w)
-                    assert(w == pc.w)
-                else:
-                    w = pc.w
-                w.hide() # This forces a proper update.
-                s = self.create_latex_html(s)
-                w.setHtml(s)
-                w.show()
-                c.bodyWantsFocusNow()
+                w = pc.w
+            w.hide() # This forces a proper update.
+            s = self.create_latex_html(s)
+            w.setHtml(s)
+            w.show()
+            c.bodyWantsFocusNow()
 
         #@+node:ekr.20170324085132.1: *5* vr.create_latex_html
         def create_latex_html(self, s):
