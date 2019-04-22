@@ -2703,7 +2703,7 @@ class CoreTree (leoFrame.LeoTree):
         e.setAllText(s)
         if trace: g.trace(e)
     #@+node:ekr.20170523115818.1: *5* CTree.set_body_text_after_select
-    def set_body_text_after_select(self, p, old_p, traceTime, force=False):
+    def set_body_text_after_select(self, p, old_p, traceTime=False, force=False):
         '''Set the text after selecting a node.'''
         c = self.c
         wrapper = c.frame.body.wrapper
