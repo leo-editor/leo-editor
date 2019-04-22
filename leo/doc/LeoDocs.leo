@@ -2233,7 +2233,6 @@
 </v>
 </v>
 <v t="ekr.20190122044116.1"><vh>What's new in Leo 5.9</vh></v>
-<v t="ekr.20190414191837.1"></v>
 <v t="ekr.20190117143933.1"><vh>Leo 5.9 release notes</vh>
 <v t="ekr.20190119065631.1"><vh>5.9: Bugs fixed</vh>
 <v t="ekr.20190117143942.673"><vh>#0804: ~= in style sheets</vh></v>
@@ -2284,6 +2283,7 @@
 </v>
 <v t="ekr.20190119071258.1"><vh>5.9: Settings &amp; command-line arguments</vh></v>
 </v>
+<v t="ekr.20060430221745"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
