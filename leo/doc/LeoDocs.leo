@@ -14996,7 +14996,7 @@ These commands discuss special topics::
     help-for-minibuffer
     help-for-regular-expressions
     help-for-scripting
-    help-for-sessions
+
 
 </t>
 <t tx="ekr.20131002055813.15973">Here is a screenshot of Leo's main window:
