@@ -41,16 +41,16 @@ class SessionManager(object):
     def get_session(self):
         '''Return a list of UNLs for open tabs.'''
         result = []
-
+        # Fix #1118, part 2.
+        if not getattr(g.app.gui, 'frameFactory', None):
+            return result
         mf = getattr(g.app.gui.frameFactory, 'masterFrame', None)
         if mf:
             outlines = [mf.widget(i).leo_c for i in range(mf.count())]
         else:
             outlines = [i.c for i in g.app.windowList]
-
         for c in outlines:
             result.append(c.p.get_UNL(with_file=True, with_proto=False, with_index=True))
-
         return result
     #@+node:ekr.20120420054855.14416: *3* SessionManager.get_session_path
     def get_session_path(self):
