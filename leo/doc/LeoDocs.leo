@@ -2286,7 +2286,6 @@
 </v>
 <v t="ekr.20190119071258.1"><vh>5.9: Settings &amp; command-line arguments</vh></v>
 </v>
-<v t="ekr.20060430221745"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3329,7 +3328,6 @@ def onQuit(self, event=None):
     trace = self.trace_shutdown and not g.unitTesting
     if trace: print('onQuit: %s' % g.callers())
     g.app.quitting = True
-    # if trace: print('onQuit',g.app.save_session,g.app.sessionManager)
     if g.app.save_session and g.app.sessionManager:
         g.app.sessionManager.save_snapshot()
     while g.app.windowList:
@@ -13132,10 +13130,6 @@ There are four ways to download Leo:
         help='open a window for scripts')
     add('--select', dest='select',
         help='headline or gnx of node to select')
-    add('--session-restore', action='store_true', dest='session_restore',
-        help='restore previously saved session tabs at startup')
-    add('--session-save', action='store_true', dest='session_save',
-        help='save session tabs on exit')
     add('--silent', action='store_true', dest='silent',
         help='disable all log messages')
     add('--trace-plugins', action='store_true', dest='trace_plugins',
@@ -13228,9 +13222,6 @@ There are four ways to download Leo:
     if select:
         select = select.strip('"')
         if trace: print('scanOptions: select', repr(select))
-    # --session-restore &amp; --session-save
-    g.app.restore_session = bool(options.session_restore)
-    g.app.save_session = bool(options.session_save)
     # --silent
     g.app.silentMode = options.silent
     # print('scanOptions: silentMode',g.app.silentMode)
@@ -15188,7 +15179,7 @@ Please take a few moments to experiment with clones:
 ``Ctrl-Q (exit-leo)``
     Exits Leo.  Leo will prompt you to save any unsaved outlines.
     
-A **session** specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. When the ``--session-save`` and ``--session-restore`` command-line options are in effect, Leo will save session data on exit and will reload outlines when Leo restarts. For full details, see `Using sessions &lt;commands.html#using-sessions&gt;`_ in Leo's `Users Guide &lt;usersguide.html&gt;`_.
+A **session** specifies a list of .leo files that Leo opens automatically when Leo first starts.  Leo will reload the last session provided that command-line arguments *don't* contain any file names.
 </t>
 <t tx="ekr.20131005214621.16088"></t>
 <t tx="ekr.20131005214621.16090">Leo is a full-featured outliner with the following special features:
@@ -15558,8 +15549,6 @@ You will get something like the following::
       --script-window=SCRIPT_WINDOW
                             open a window for scripts
       --select=SELECT       headline or gnx of node to select
-      --session-restore     restore previously saved session tabs at startup
-      --session-save        save session tabs on exit
       --silent              disable all log messages
       --trace-binding=BINDING
                             trace key bindings
@@ -17215,8 +17204,6 @@ More: Associate leo files
       --script-window=SCRIPT_WINDOW
                             open a window for scripts
       --select=SELECT       headline or gnx of node to select
-      --session-restore     restore previously saved session tabs at startup
-      --session-save        save session tabs on exit
       --silent              disable all log messages
       --trace-plugins       trace imports of plugins
       -v, --version         print version number and exit
@@ -18353,12 +18340,9 @@ Now I can continue what I was doing! This is such a simple idea, but it's really
 It's super important to deal with new ideas *instantly* but *without* greatly interrupting the task at hand. Creating "**" nodes does that. This new workflow has been a big improvement to my GTD practice.
 </t>
 <t tx="ekr.20141117065749.3"></t>
-<t tx="ekr.20141124094250.2">A **session** specifies a list of .leo files that Leo opens automatically when Leo first starts. Like this::
-
-    leo --session-save --session-restore &lt;list of .leo files&gt;
+<t tx="ekr.20141124094250.2">A **session** specifies a list of .leo files that Leo opens automatically when Leo first starts.  Leo will reload the last session provided that command-line arguments *don't* contain any file names.
     
-When Leo closes, it stores session state in ``~/.leo/leo.session``. Session state consists of the list of open files and the selected node in each file. The next time Leo starts with those options, Leo will open these files and will select the appropriate nodes.
-</t>
+Leo stores session state in ``~/.leo/leo.session``. Session state consists of the list of open files and the selected node in each file.</t>
 <t tx="ekr.20141210095600.11">I am a microbiologist mostly analyzing large numbers of bacteria genomes for which I use almost entirely Python tools. A couple of years ago while working at Yale University I gave Leo go for writing Python and organizing my notes with.
 
 Not only do I now use Leo is a central repository for scripts I write as I explore the data, generate plots, start analyses with third party applications etc., but also for storing and organizing ideas for research and notes parsed out of PDFs of academic papers. And that's just for work!
@@ -19282,7 +19266,7 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
 ``session-snapshot-save``
     Saves a snapshot of the present session to the leo.session file.
 
-**About sessions**: An @session node specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. The ``--session-save`` and ``--session-restore`` command-line options write and read ``@session nodes`` from the leo.session file. The next time Leo is started with those options, the files will be open, and the nodes focused as when the previous session ended.
+A **session** specifies a list of .leo files that Leo opens automatically when Leo first starts.  Leo will reload the last session provided that command-line arguments *don't* contain any file names.
 </t>
 <t tx="ekr.20150318110552.34">.. _`Idle`: http://en.wikipedia.org/wiki/IDLE_%28Python%29
 .. _`Open Office`: https://www.openoffice.org/
@@ -21614,10 +21598,6 @@ self.ipython_inited = False
     # True if leoIpython.py imports succeeded.
 self.qt_use_tabs = False
     # True: allow tabbed main window.
-self.restore_session = False
-    # True: restore session on startup.
-self.save_session = False
-    # True: save session on close.
 self.silentMode = False
     # True: no signon.
 self.start_fullscreen = False
@@ -21736,8 +21716,6 @@ self.nodeIndices = None
     # The singleton nodeIndices instance.
 self.pluginsController = None
     # The singleton PluginsManager instance.
-self.sessionManager = None
-    # The singleton SessionManager instance.
 # The Commands class...
 self.commandName = None
     # The name of the command being executed.
