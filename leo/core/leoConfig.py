@@ -5,6 +5,7 @@
 #@+<< imports >>
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import os
+import string
 import sys
 from leo.plugins.mod_scripting import build_rclick_tree
 import leo.core.leoGlobals as g
@@ -486,6 +487,8 @@ class ParserBaseClass(object):
         p = p.copy()
         after = p.nodeAfterTree()
         p.moveToThreadNext()
+        chars = g.toUnicode(string.ascii_letters + string.digits + '@' + '-')
+            # Characters valid in command names.
         while p and p != after:
             self.debug_count += 1
             h = p.h
@@ -509,7 +512,10 @@ class ParserBaseClass(object):
                         else:
                             kind = tag
                             head = itemName
-                            aList.append((kind, head, body),)
+                            # Fix #1117: Similar to cleanButtonText in mod_scripting.py.
+                            s = ''.join([ch if ch in chars else '' for ch in g.toUnicode(head)])
+                            head2 = s.replace('--', '-').lower()
+                            aList.append((kind, head2, body),)
                             p.moveToThreadNext()
                             break
             else:
