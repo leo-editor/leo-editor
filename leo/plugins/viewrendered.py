@@ -299,7 +299,6 @@ def decorate_window(w):
     # This interferes with themes
         # w.setStyleSheet(stickynote_stylesheet)
     g.app.gui.attachLeoIcon(w)
-        ### w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 #@+node:tbrown.20100318101414.5995: *3* vr.init
 def init():
@@ -782,7 +781,7 @@ if QtWidgets: # NOQA
         def create_base_text_widget(self):
             '''Create a QWebView or a QTextBrowser.'''
             c = self.c
-            w = BaseTextWidget() ### QtWebKitWidgets.QWebView()
+            w = BaseTextWidget()
             n = c.config.getInt('qweb-view-font-size')
             if n:
                 try:
@@ -888,7 +887,6 @@ if QtWidgets: # NOQA
             '''Update html in the vr pane.'''
             pc = self
             c = pc.c
-            ### if QtWebKitWidgets and pc.must_change_widget(QtWebKitWidgets.QWebView):
             if pc.must_change_widget(BaseTextWidget):
                 w = self.create_base_text_widget()
                 pc.embed_widget(w)
@@ -932,7 +930,6 @@ if QtWidgets: # NOQA
             '''Update @jupyter node in the vr pane.'''
             pc = self
             c = pc.c
-            ### if QtWebKitWidgets and pc.must_change_widget(QtWebKitWidgets.QWebView):
             if pc.must_change_widget(BaseTextWidget):
                 w = self.create_base_text_widget()
                 pc.embed_widget(w)
@@ -985,7 +982,6 @@ if QtWidgets: # NOQA
                 w.setPlainText(s)
                 c.bodyWantsFocusNow()
                 return
-            ### if QtWebKitWidgets and pc.must_change_widget(QtWebKitWidgets.QWebView):
             if pc.must_change_widget(BaseTextWidget):
                 w = self.create_base_text_widget()
                 pc.embed_widget(w)
