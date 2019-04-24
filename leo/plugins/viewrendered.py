@@ -249,6 +249,16 @@ except ImportError:
     except ImportError:
         urllib = None
 #@-<< imports >>
+#@+<< set BaseTextWidget >>
+#@+node:ekr.20190424081947.1: ** << set BaseTextWidget >> (vr)
+if QtWidgets:
+    try:
+        BaseTextWidget = QtWebKitWidgets.QWebView
+    except Exception:
+        BaseTextWidget = QtWidgets.QTextBrowser
+else:
+    BaseTextWidget = None
+#@-<< set BaseTextWidget >>
 #@+<< define html templates >>
 #@+node:ekr.20170324090828.1: ** << define html templates >> (vr)
 image_template = '''\
@@ -289,7 +299,6 @@ def decorate_window(w):
     # This interferes with themes
         # w.setStyleSheet(stickynote_stylesheet)
     g.app.gui.attachLeoIcon(w)
-        # w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 #@+node:tbrown.20100318101414.5995: *3* vr.init
 def init():
@@ -768,6 +777,21 @@ if QtWidgets: # NOQA
                         pc.deactivate()
                 # Will be called at idle time.
                 # if trace: g.trace('no update')
+        #@+node:ekr.20190424083049.1: *4* vr.create_base_text_widget
+        def create_base_text_widget(self):
+            '''Create a QWebView or a QTextBrowser.'''
+            c = self.c
+            w = BaseTextWidget()
+            n = c.config.getInt('qweb-view-font-size')
+            if n:
+                try:
+                    # BaseTextWidget is a QWebView.
+                    settings = w.settings()
+                    settings.setFontSize(settings.DefaultFontSize, n)
+                except AttributeError:
+                    # BaseTextWidget is a QTextBrowser.
+                    pass
+            return w
         #@+node:ekr.20110320120020.14486: *4* vr.embed_widget & helper
         def embed_widget(self, w, delete_callback=None):
             '''Embed widget w in the free_layout splitter.'''
@@ -863,12 +887,8 @@ if QtWidgets: # NOQA
             '''Update html in the vr pane.'''
             pc = self
             c = pc.c
-            if QtWebKitWidgets and pc.must_change_widget(QtWebKitWidgets.QWebView):
-                w = QtWebKitWidgets.QWebView()
-                n = c.config.getInt('qweb-view-font-size')
-                if n:
-                    settings = w.settings()
-                    settings.setFontSize(settings.DefaultFontSize, n)
+            if pc.must_change_widget(BaseTextWidget):
+                w = self.create_base_text_widget()
                 pc.embed_widget(w)
                 assert(w == pc.w)
             else:
@@ -910,12 +930,8 @@ if QtWidgets: # NOQA
             '''Update @jupyter node in the vr pane.'''
             pc = self
             c = pc.c
-            if QtWebKitWidgets and pc.must_change_widget(QtWebKitWidgets.QWebView):
-                w = QtWebKitWidgets.QWebView()
-                n = c.config.getInt('qweb-view-font-size')
-                if n:
-                    settings = w.settings()
-                    settings.setFontSize(settings.DefaultFontSize, n)
+            if pc.must_change_widget(BaseTextWidget):
+                w = self.create_base_text_widget()
                 pc.embed_widget(w)
                 assert(w == pc.w)
             else:
@@ -967,12 +983,8 @@ if QtWidgets: # NOQA
                 w.setPlainText(s)
                 c.bodyWantsFocusNow()
                 return
-            if QtWebKitWidgets and pc.must_change_widget(QtWebKitWidgets.QWebView):
-                w = QtWebKitWidgets.QWebView()
-                n = c.config.getInt('qweb-view-font-size')
-                if n:
-                    settings = w.settings()
-                    settings.setFontSize(settings.DefaultFontSize, n)
+            if pc.must_change_widget(BaseTextWidget):
+                w = self.create_base_text_widget()
                 pc.embed_widget(w)
                 assert(w == pc.w)
             else:
@@ -982,7 +994,6 @@ if QtWidgets: # NOQA
             w.setHtml(s)
             w.show()
             c.bodyWantsFocusNow()
-
         #@+node:ekr.20170324085132.1: *5* vr.create_latex_html
         def create_latex_html(self, s):
             '''Create an html page embedding the latex code s.'''
