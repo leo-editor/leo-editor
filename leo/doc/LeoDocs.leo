@@ -2258,9 +2258,12 @@
 <v t="ekr.20190118222636.1"><vh>#1059: cycle-tab-focus exception</vh></v>
 <v t="ekr.20190123075859.1"><vh>#1065: refresh-from-disk</vh></v>
 <v t="ekr.20190412074507.3"><vh>#1098: crash in json scanner</vh></v>
+<v t="ekr.20190424063410.2"><vh>#1100: changes to external files</vh></v>
 <v t="ekr.20190412074507.26"><vh>#1111: Read minimal .leo files without crashing</vh></v>
 <v t="ekr.20190412074507.50"><vh>#1113: @language lisp crash w/ pygments</vh></v>
 <v t="ekr.20190412074507.52"><vh>#1114: bigdash does not load</vh></v>
+<v t="ekr.20190424063410.37"><vh>#1116: Crash in viewrendered plugin</vh></v>
+<v t="ekr.20190424063410.38"><vh>#1118: Crash in console gui</vh></v>
 </v>
 <v t="ekr.20190119070017.1"><vh>5.9: Features</vh>
 <v t="ekr.20190117143942.654"><vh>#0525: Nested @clean</vh></v>
@@ -30172,6 +30175,12 @@ You can specify per-language settings by preceding the settings names by a prefi
         # roman, italic
     php_keyword_font_weight = bold
         # normal, bold
+</t>
+<t tx="ekr.20190424063410.2">https://github.com/leo-editor/leo-editor/issues/1100
+</t>
+<t tx="ekr.20190424063410.37">https://github.com/leo-editor/leo-editor/issues/1116
+</t>
+<t tx="ekr.20190424063410.38">https://github.com/leo-editor/leo-editor/issues/1118
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
