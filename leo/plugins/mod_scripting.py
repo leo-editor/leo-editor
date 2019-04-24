@@ -514,7 +514,7 @@ class ScriptingController(object):
         if 0:
             # Do not assume the script will want to remain in this commander.
             c.bodyWantsFocus()
-    #@+node:ekr.20060328125248.8: *3* sc.createAllButtons (revised)
+    #@+node:ekr.20060328125248.8: *3* sc.createAllButtons
     def createAllButtons(self):
         '''Scan for @button, @rclick, @command, @plugin and @script nodes.'''
         c = self.c
@@ -803,7 +803,7 @@ class ScriptingController(object):
                 self.seen.add(gnx)
                 script = self.getScript(p)
                 self.createCommonCommand(p, script)
-    #@+node:ekr.20150401130818.1: *4* sc.createCommonCommand (common @command) CHANGED
+    #@+node:ekr.20150401130818.1: *4* sc.createCommonCommand (common @command)
     def createCommonCommand(self, p, script):
         '''
         Handle a single @command node.
@@ -997,7 +997,8 @@ class ScriptingController(object):
                 else:
                     s = s[: i]
                 s = s.strip()
-        if 1: # Not great, but spaces, etc. interfere with tab completion.
+        if 1:
+            # Not great, but spaces, etc. interfere with tab completion.
             # 2011/10/16 *do* allow '@' sign.
             chars = g.toUnicode(string.ascii_letters + string.digits + '@' + '-')
             aList = [ch if ch in chars else '-' for ch in g.toUnicode(s)]
