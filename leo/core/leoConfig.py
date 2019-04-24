@@ -487,7 +487,7 @@ class ParserBaseClass(object):
         p = p.copy()
         after = p.nodeAfterTree()
         p.moveToThreadNext()
-        chars = g.toUnicode(string.ascii_letters + string.digits + '@' + '-')
+        chars = string.ascii_letters + string.digits + '@' + '-'
             # Characters valid in command names.
         while p and p != after:
             self.debug_count += 1
@@ -513,7 +513,7 @@ class ParserBaseClass(object):
                             kind = tag
                             head = itemName
                             # Fix #1117: Similar to cleanButtonText in mod_scripting.py.
-                            s = ''.join([ch if ch in chars else '' for ch in g.toUnicode(head)])
+                            s = ''.join([ch if ch in chars else '' for ch in head])
                             head2 = s.replace('--', '-').lower()
                             aList.append((kind, head2, body),)
                             p.moveToThreadNext()
