@@ -110,45 +110,65 @@ class GlobalPyzoController(object):
             event = QtGui.QCloseEvent()
             g.app.gui.hidden_main_window.closeEvent(event)
                 # Call the monkey-patched MainWindow.closeEvent. 
+    #@+node:ekr.20190425050851.1: *3* gpc.dump_pyzo_menus
+    def dump_pyzo_menus(self):
+        '''
+        Add pyzo's menus to Leo's 'Pyzo' menu.
+        
+        To do: Suppress translations.
+        '''
+        main_window = g.app.gui.hidden_main_window
+        menuBar = main_window.menuBar()
+        #@+<< menu dumps >>
+        #@+node:ekr.20190426075514.1: *4* << menu dumps >>
+        # pylint: disable=no-member
+            # pyzo.icons *does* exist.
+        if 0:
+            g.trace('menuBar.children()...')
+            for child in menuBar.children():
+                g.pr(child) # pyzo.core.menu.FileMenu, etc.
+        if 0:
+            g.trace('menuBar.actions()...')
+            for action in menuBar.actions():
+                g.pr(action)
+        if 0:
+            g.trace('pyzo.icons...')
+            for key, icon in pyzo.icons.items():
+                g.pr('%30s %0x' % (key, id(icon)))
+        #
+        # Show icons that exist in pyzo.icons.
+        if 0:
+            g.printObj(pyzo.icons, tag='pyzo.icons')
+        if 0:
+            values = list(pyzo.icons.values())
+            # g.printObj(values, tag='pyzo.icons.values()')
+            g.pr('Action icons in pyzo.icons...')
+            for key, menu in menuBar._menumap.items():
+                # Keys are menu names, values are menus.
+                for action in menu.actions():
+                    if action.icon() in values:
+                        g.pr('FOUND icon: id=%s', id(action.icon()))
+        #
+        # Dump all menus.
+        if 0:
+            for key, menu in menuBar._menumap.items():
+                # Keys are menu names, values are menus.
+                g.pr('MENU: %s' % key)
+                for action in menu.actions():
+                    g.pr('action: %015x icon: %015x text: %s' % (
+                        id(action), id(action.icon()), action.text()))
+                g.pr('')
+
+        # We want to know the receiveres of the action's triggered() signal.
+
+        # g.printObj(action.receivers('*'), tag='receivers')
+            # TypeError: receivers(self, PYQT_SIGNAL): argument 1 has unexpected type 'str'
+        #@-<< menu dumps >>
     #@+node:ekr.20190424174413.1: *3* gpc.dump_pyzo_objects
     def dump_pyzo_objects(self):
         '''Dump pyzo's objects.'''
         main_window = g.app.gui.hidden_main_window
         g.trace(main_window)
-    #@+node:ekr.20190425061611.1: *3* gpc.load_icons (experimental)
-    def load_icons():
-        """
-        Adapted from pyzo.core.main.loadIcons.
-        
-        Copyright (C) 2013-2018, the Pyzo development team
-        
-        Load all icons in the icon dir.
-        """
-        # Get directory containing the icons
-        iconDir = os.path.join(pyzo.pyzoDir, 'resources', 'icons')
-
-        # Construct other icons
-        ### dummyIcon = IconArtist().finish()
-        ### pyzo.icons = {}
-        d = {}
-        for fname in os.listdir(iconDir):
-            if fname.endswith('.png'):
-                try:
-                    # Short and full name
-                    name = fname.split('.')[0]
-                    name = name.replace('pyzo_', '')  # discart prefix
-                    ffname = os.path.join(iconDir,fname)
-                    # Create icon
-                    icon = QtGui.QIcon()
-                    icon.addFile(ffname, QtCore.QSize(16,16))
-                    # Store
-                    ### pyzo.icons[name] = icon
-                    d [name] = icon
-                except Exception as err:
-                    ### pyzo.icons[name] = None ### dummyIcon
-                    d [name] = None
-                    print('Could not load icon %s: %s' % (fname, str(err)))
-        return d
     #@+node:ekr.20190417141817.1: *3* gpc.load_pyzo & patches
     def load_pyzo(self):
         '''
@@ -515,7 +535,7 @@ class PyzoController (object):
                     g.trace('can not create', menu_name)
                     # g.printObj(menuBar._menumap, tag='menuBar._menumap')
             else:
-                g.trace('no menu:', menu_name)
+                g.trace('no pyzo menu:', menu_name)
     #@+node:ekr.20190415051125.13: *3* pz.monkey_patch_file_browser
     def monkey_patch_file_browser(self):
         
