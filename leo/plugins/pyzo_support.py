@@ -499,13 +499,20 @@ class PyzoController (object):
         #
         # Create a new *Leo* menu.
         leo_pyzo_menu = c.frame.menu.createNewMenu('Pyzo')
+        c.frame.menu.setMenu('Pyzo', leo_pyzo_menu)
         #
         # Populate the menu with sub-menus containing *Pyzo* actions.
         for menu_name in ('shell', 'run', 'tools'):
             pyzo_menu = menuBar._menumap.get(menu_name)
             if pyzo_menu:
-                for action in pyzo_menu.actions():
-                    leo_pyzo_menu.addAction(action)
+                leo_parent_menu = c.frame.menu.createNewMenu(
+                    'Pyzo ' + menu_name.capitalize(), parentName='Pyzo')
+                if leo_parent_menu:
+                    for action in pyzo_menu.actions():
+                        leo_parent_menu.addAction(action)
+                else:
+                    g.trace('can not create', menu_name)
+                    # g.printObj(menuBar._menumap, tag='menuBar._menumap')
             else:
                 g.trace('no menu:', menu_name)
     #@+node:ekr.20190415051125.13: *3* pz.monkey_patch_file_browser
