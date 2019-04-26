@@ -170,7 +170,6 @@
 <v t="ekr.20170419092835.1"><vh>@file cursesGui2.py</vh></v>
 <v t="ekr.20181103094900.1"><vh>@file leoflexx.py</vh></v>
 <v t="ekr.201811100000000.1"><vh>@file leoflexx_js.py</vh></v>
-<v t="ekr.20190410171646.1"><vh>@file pyzo_support.py</vh></v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>

@@ -1,9 +1,11 @@
-Leo 5.9 beta 1, http://leoeditor.com, is now available on
+Leo 5.9 beta 2, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 5.9**
+
+This will be the last version of Leo that supports Python 2.
 
 Major features
 - LeoWapp: Leo in a browser.
@@ -16,7 +18,7 @@ Other features
 - A major refactoring of the code that writes external files.
 - Better error recovery.
 - Support for continuous integration with TravisCI.
-- The usual minor bug fixes.
+- More than 50 minor bug fixes.
 
 **Links**
 

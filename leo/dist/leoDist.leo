@@ -243,12 +243,14 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.9 beta 1, http://leoeditor.com, is now available on
+<t tx="EKR.20040519090846.9">Leo 5.9 beta 2, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 5.9**
+
+This will be the last version of Leo that supports Python 2.
 
 Major features
 - LeoWapp: Leo in a browser.
@@ -261,7 +263,7 @@ Other features
 - A major refactoring of the code that writes external files.
 - Better error recovery.
 - Support for continuous integration with TravisCI.
-- The usual minor bug fixes.
+- More than 50 minor bug fixes.
 
 **Links**
 
@@ -1100,12 +1102,15 @@ Run pyinstaller on Linux:
     - leoPy.leo
     - LeoDocs.leo
 </t>
-<t tx="ekr.20161020041000.1">Create a git tag **last**
+<t tx="ekr.20161020041000.1">- Create a full (annotated) tag:
+  - Do not use the -f option.
+  - Make sure the tag does not conflict with the release branch.
+    Release *branches* should end with "-rel"
+    Tags should start with "v".
+    Tags should *not* end with "-rel"
 
-- Create a full (annotated) tag: do not use the -f option.
-
-    git tag -a 5.xxx -m "Added 5.xxx tag"
-    git push --follow-tags
+git tag -a v5.9.x -m "Added v5.9.x tag"
+git push --follow-tags
 </t>
 <t tx="ekr.20161024113526.1">@language rest
 @wrap
@@ -1533,9 +1538,10 @@ Create a git tag **last**
   - Do not use the -f option.
   - Make sure the tag does not conflict with the release branch.
     Release *branches* should end with "-rel"
+    Tags should start with "v".
     Tags should *not* end with "-rel"
 
-git tag -a 5.xxx -m "Added 5.xxx tag"
+git tag -a v5.9.x -m "Added v5.9.x tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180405171433.8">- Create a documentation file at SourceForge, directing people to GitHub.
@@ -1574,7 +1580,8 @@ git push origin x.y-final-rel
 <t tx="ekr.20180828095843.1">leoVersion.py:
 - Update version constant.
 </t>
-<t tx="ekr.20181001112153.1"></t>
+<t tx="ekr.20181001112153.1">git checkout master
+git merge devel</t>
 <t tx="ekr.20181001112218.1"></t>
 <t tx="ekr.20190122052801.1">Leo 5.8.1 beta 1, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).

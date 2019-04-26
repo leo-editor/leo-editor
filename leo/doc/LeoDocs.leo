@@ -29633,7 +29633,7 @@ The body text of an @data history-list *setting node* preloads commands into the
             reportFlag=False,
             dirtyVnodeList=dirtyVnodeList)
 </t>
-<t tx="ekr.20190117143933.1">Leo 5.9 beta 1, http://leoeditor.com, is now available on
+<t tx="ekr.20190117143933.1">Leo 5.9 beta 2, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
@@ -29653,7 +29653,7 @@ Other features
 - A major refactoring of the code that writes external files.
 - Better error recovery.
 - Support for continuous integration with TravisCI.
-- The usual minor bug fixes.
+- More than 50 minor bug fixes.
 
 **Links**
 
@@ -29827,7 +29827,7 @@ The following call FastRead().readFileFromClipboard:
 - A major refactoring of the code that writes external files.
 - Better error recovery.
 - Support for continuous integration with TravisCI.
-- The usual minor bug fixes.</t>
+- More than 50 minor bug fixes.</t>
 <t tx="ekr.20190123075604.1">https://github.com/leo-editor/leo-editor/issues/981
 https://github.com/leo-editor/leo-editor/issues/977
 
