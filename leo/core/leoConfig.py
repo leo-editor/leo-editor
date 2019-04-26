@@ -509,6 +509,11 @@ class ParserBaseClass(object):
                         else:
                             kind = tag
                             head = itemName
+                            # Wrong: we must not clean non-unicode characters!
+                                # # Fix #1117: Similar to cleanButtonText in mod_scripting.py.
+                                # s = ''.join([ch if ch in chars else '' for ch in g.toUnicode(head)])
+                                # head2 = s.replace('--', '-').lower()
+                                # aList.append((kind, head2, body),)
                             aList.append((kind, head, body),)
                             p.moveToThreadNext()
                             break

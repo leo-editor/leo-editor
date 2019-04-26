@@ -456,12 +456,16 @@ class LeoQtEventFilter(QtCore.QObject):
             if self.tag in exclude_names:
                 return
             if eventType == val:
+                tag = obj.objectName() if hasattr(obj, 'objectName') else 'id: %s, %s' % (
+                    id(obj), obj.__class__.__name__)
                 if traceKey: g.trace(
                     '%-25s %-25s in-state: %5r, obj: %s' % (
-                    kind, self.tag, c.k and c.k.inState(), obj.__class__.__name__))
+                    kind, self.tag, c.k and c.k.inState(), tag))
                 return
         if eventType not in ignore:
-            g.trace('%-25s %-25s %s' % (eventType, self.tag, obj.__class__.__name__))
+            tag = obj.objectName() if hasattr(obj, 'objectName') else 'id: %s, %s' % (
+                id(obj), obj.__class__.__name__)
+            g.trace('%-25s %-25s %s' % (eventType, self.tag, tag))
     #@+node:ekr.20131121050226.16331: *4* filter.traceWidget
     def traceWidget(self, event):
         '''Show unexpected events in unusual widgets.'''
@@ -557,10 +561,14 @@ class LeoQtEventFilter(QtCore.QObject):
         if isinstance(w, QtWidgets.QLineEdit):
             if et not in line_edit_ignore_d:
                 t = focus_d.get(et) or et
-                g.trace('%20s %s' % (t, w.__class__))
+                tag = w.objectName() if hasattr(w, 'objectName') else 'id: %s, %s' % (
+                    id(w), w.__class__.__name__)
+                g.trace('%20s %s' % (t, tag))
             return
         t = focus_d.get(et) or et
-        g.trace('%20s %s' % (t, w.__class__))
+        tag = w.objectName() if hasattr(w, 'objectName') else 'id: %s, %s' % (
+            id(w), w.__class__.__name__)
+        g.trace('%20s %s' % (t, tag))
     #@-others
 #@-others
 #@@language python

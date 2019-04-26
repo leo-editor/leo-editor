@@ -1057,6 +1057,7 @@
 <v t="ekr.20131002055813.19837"><vh>Undoing and redoing changes</vh></v>
 <v t="ekr.20160428113347.1"><vh>Clone-find commands</vh></v>
 <v t="ekr.20131001100335.15947"><vh>Help commands</vh></v>
+<v t="ekr.20190414191837.1"><vh>Debugger commands</vh></v>
 <v t="ekr.20180130094948.1"><vh>Operations on reference .leo files</vh></v>
 </v>
 <v t="ekr.20170215103337.1"><vh>All other commands</vh>
@@ -1235,7 +1236,10 @@
 <v t="ekr.20131008041326.16099"><vh>@rst html/intermediatetopics.html</vh></v>
 <v t="ekr.20060430221745"><vh>Controlling syntax coloring</vh>
 <v t="ekr.20060430221745.1"><vh>@rst html\coloring.html</vh>
-<v t="ekr.20060830142929"><vh>Syntax coloring settings</vh></v>
+<v t="ekr.20060830142929"><vh>Settings for syntax coloring</vh>
+<v t="ekr.20190422181351.1"><vh>Color settings</vh></v>
+<v t="ekr.20190422182440.1"><vh>Font settings</vh></v>
+</v>
 <v t="ekr.20060430220749"><vh>Files</vh></v>
 <v t="ekr.20060502084233"><vh>The colorizer's inner loop</vh></v>
 <v t="ekr.20060502084233.1"><vh>Format of colorizer control files</vh>
@@ -1520,6 +1524,7 @@
 <v t="ekr.20131008041326.16341"><vh>@rst html/appendices.html</vh>
 <v t="EKR.20040524104904.357"><vh>Format of .leo files</vh></v>
 <v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
+<v t="ekr.20190414193500.1"><vh>The Leonine way to refactor code</vh></v>
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
 <v t="ekr.20120319170934.6109"><vh>Valid URL's</vh></v>
 <v t="ekr.20150210062226.4"><vh>The Mulder/Ream update algorithm</vh>
@@ -2231,7 +2236,7 @@
 </v>
 </v>
 <v t="ekr.20190122044116.1"><vh>What's new in Leo 5.9</vh></v>
-<v t="ekr.20190117143933.1"><vh>Leo 9 release notes</vh>
+<v t="ekr.20190117143933.1"><vh>Leo 5.9 release notes</vh>
 <v t="ekr.20190119065631.1"><vh>5.9: Bugs fixed</vh>
 <v t="ekr.20190117143942.673"><vh>#0804: ~= in style sheets</vh></v>
 <v t="ekr.20190123075604.1"><vh>#0981: &amp; #977: File syncing</vh></v>
@@ -2253,9 +2258,12 @@
 <v t="ekr.20190118222636.1"><vh>#1059: cycle-tab-focus exception</vh></v>
 <v t="ekr.20190123075859.1"><vh>#1065: refresh-from-disk</vh></v>
 <v t="ekr.20190412074507.3"><vh>#1098: crash in json scanner</vh></v>
+<v t="ekr.20190424063410.2"><vh>#1100: changes to external files</vh></v>
 <v t="ekr.20190412074507.26"><vh>#1111: Read minimal .leo files without crashing</vh></v>
 <v t="ekr.20190412074507.50"><vh>#1113: @language lisp crash w/ pygments</vh></v>
 <v t="ekr.20190412074507.52"><vh>#1114: bigdash does not load</vh></v>
+<v t="ekr.20190424063410.37"><vh>#1116: Crash in viewrendered plugin</vh></v>
+<v t="ekr.20190424063410.38"><vh>#1118: Crash in console gui</vh></v>
 </v>
 <v t="ekr.20190119070017.1"><vh>5.9: Features</vh>
 <v t="ekr.20190117143942.654"><vh>#0525: Nested @clean</vh></v>
@@ -2265,7 +2273,6 @@
 <v t="ekr.20190122041941.1"><vh>#0926: Organize @outline-data tree-abbreviations</vh></v>
 <v t="ekr.20190117143942.29"><vh>#1005: LeoWapp: Leo in a browser</vh></v>
 <v t="ekr.20190117143942.399"><vh>#1031, #1050 and #1003: Better error recovery</vh></v>
-<v t="ekr.20190117143942.463"><vh>#1040: Simplify atFile.write code</vh></v>
 <v t="ekr.20190122042300.1"><vh>#1047: Tree Window Resizes on Paste Node</vh></v>
 <v t="ekr.20190327105147.364"><vh>#1081: @asis</vh></v>
 <v t="ekr.20190327105525.1"><vh>#1085: The py3 branch</vh></v>
@@ -2275,7 +2282,9 @@
 <v t="ekr.20190327105000.1"><vh>Added promote-headline command</vh></v>
 <v t="ekr.20190123122138.1"><vh>Retired the head-to-prev node and tail-to-next-node commands </vh></v>
 </v>
-<v t="ekr.20190412075452.1"><vh>5.9: Code</vh>
+<v t="ekr.20190414193153.1"><vh>5.9: Code</vh>
+<v t="ekr.20190117143942.463"><vh>#1040: Simplify atFile.write code</vh></v>
+<v t="ekr.20190414193128.1"><vh>Added leo/core/leoFastRedraw.py</vh></v>
 <v t="ekr.20190327105249.1"><vh>Created py3 branch, for Leo 6.0</vh></v>
 </v>
 <v t="ekr.20190119071258.1"><vh>5.9: Settings &amp; command-line arguments</vh></v>
@@ -3322,7 +3331,6 @@ def onQuit(self, event=None):
     trace = self.trace_shutdown and not g.unitTesting
     if trace: print('onQuit: %s' % g.callers())
     g.app.quitting = True
-    # if trace: print('onQuit',g.app.save_session,g.app.sessionManager)
     if g.app.save_session and g.app.sessionManager:
         g.app.sessionManager.save_snapshot()
     while g.app.windowList:
@@ -5129,7 +5137,8 @@ The colorizer calls rules functions until one matches, at which point a range of
 
 Rules methods (and functions) return n &gt; 0 if they match, and n == 0 if they fail.
 </t>
-<t tx="ekr.20060502084233.1">The following sections describe the top-level data in x.py.
+<t tx="ekr.20060502084233.1">The following sections describe the top-level data in leo/modes/x.py.  This data is used by Leo's Legacy (jEdit-based) colorizer. Leo's pygments syntax colorizer does not use these files.
+
 </t>
 <t tx="ekr.20060502090516">**x.properties** is a Python dictionary corresponding to the &lt;PROPS&gt; element in x.xml. Keys are property names; values are strings, namely the contents of &lt;PROPERTY&gt; elements in x.xml. x.properties contains properties for the entire mode. That is, only modes have &lt;PROPS&gt; elements. For example, here is x.properties in php.py::
 
@@ -5282,7 +5291,7 @@ The colorizer uses ruleset names to gain access to all data structures in x.py. 
 
 In fact, ruleset names (and x.rulesDict and x.keywordsDictDict) are the **only** names that the colorizer needs to know in order to access all information in x.py.
 </t>
-<t tx="ekr.20060502122950">This section describes each rules method in Leo's new colorizer. Rules methods are called by rules functions in colorizer control file; they correspond directly to rules elements in jEdit's language description files. In fact, this documentation is a 'refactoring' of `jEdit's documentation`_.
+<t tx="ekr.20060502122950">This section describes each rules method in Leo's jEdit-based colorizer. Rules methods are called by rules functions in colorizer control file; they correspond directly to rules elements in jEdit's language description files. In fact, this documentation is a 'refactoring' of `jEdit's documentation`_.
 
 All rule methods attempt to match a pattern at a particular spot in a string. These methods all return True if the match succeeds.
 </t>
@@ -5833,49 +5842,6 @@ Development on long-delayed projects accelerated after 4.4 final went out the do
 <t tx="ekr.20060830142929">.. _`Customizing Leo`: customizing.html
 
 This section discusses only those settings that affect syntax coloring. See `Customizing Leo`_ for a general discussion of Leo's settings.
-
-Both the old colorizer (in Leo's core) and the new colorizer (the threading_colorizer and qtGui plugins) now support @color and @font settings for colorizing options. The settings for the old colorizer are::
-
-    comment_font, cweb_section_name_font, directive_font,
-    doc_part_font, keyword_font, leo_keyword_font, section_name_font,
-    section_name_brackets_font, string_font, undefined_section_name_font,
-    latexBackground_font, and latex_background_font.
-
-The settings for the new colorizer are all of the above (except keyword_font) plus the following::
-
-    comment1_font, comment2_font, comment3_font, comment4_font, function_font,
-    keyword1_font, keyword2_font, keyword3_font, keyword4_font, label_font,
-    literal1_font, literal2_font, literal3_font, literal4_font, markup_font,
-    null_font, and operator_font.
-    
-To specify a color, say for comment1, for *all* languages, create an @color node::
-
-    @color comment1_color = blue
-    
-To specify a color for a **particular** language, say Python, prepend the setting name
-with the language name.  For example::
-
-    @color python_comment1_color = pink
-
-To specify a font, say for keyword_font, to be used as the default font for **all** languages, put the following in the body text of an @font node in leoSettings.leo::
-
-    # keyword_font_family = None
-    keyword_font_size = 16
-    keyword_font_slant = roman
-        # roman, italic
-    keyword_font_weight = bold
-        # normal, bold
-
-Comments are allowed and undefined settings are set to reasonable defaults. At present, comments can not follow a setting: comments must start a line.
-
-You can specify per-language settings by preceding the settings names by a prefix x. Such settings affect only colorizing for language x (i.e., all the modes in modes/x.py when using the new colorizer). For example, to specify a font for php (only), put the following in the body text of an @font node in leoSettings.leo::
-
-    # php_keyword_font_family = None
-    php_keyword_font_size = 16
-    php_keyword_font_slant = roman
-        # roman, italic
-    php_keyword_font_weight = bold
-        # normal, bold
 </t>
 <t tx="ekr.20060913164304"></t>
 <t tx="ekr.20060913164304.1">###################
@@ -13167,10 +13133,6 @@ There are four ways to download Leo:
         help='open a window for scripts')
     add('--select', dest='select',
         help='headline or gnx of node to select')
-    add('--session-restore', action='store_true', dest='session_restore',
-        help='restore previously saved session tabs at startup')
-    add('--session-save', action='store_true', dest='session_save',
-        help='save session tabs on exit')
     add('--silent', action='store_true', dest='silent',
         help='disable all log messages')
     add('--trace-plugins', action='store_true', dest='trace_plugins',
@@ -13263,9 +13225,6 @@ There are four ways to download Leo:
     if select:
         select = select.strip('"')
         if trace: print('scanOptions: select', repr(select))
-    # --session-restore &amp; --session-save
-    g.app.restore_session = bool(options.session_restore)
-    g.app.save_session = bool(options.session_save)
     # --silent
     g.app.silentMode = options.silent
     # print('scanOptions: silentMode',g.app.silentMode)
@@ -15040,7 +14999,7 @@ These commands discuss special topics::
     help-for-minibuffer
     help-for-regular-expressions
     help-for-scripting
-    help-for-sessions
+
 
 </t>
 <t tx="ekr.20131002055813.15973">Here is a screenshot of Leo's main window:
@@ -15223,7 +15182,7 @@ Please take a few moments to experiment with clones:
 ``Ctrl-Q (exit-leo)``
     Exits Leo.  Leo will prompt you to save any unsaved outlines.
     
-A **session** specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. When the ``--session-save`` and ``--session-restore`` command-line options are in effect, Leo will save session data on exit and will reload outlines when Leo restarts. For full details, see `Using sessions &lt;commands.html#using-sessions&gt;`_ in Leo's `Users Guide &lt;usersguide.html&gt;`_.
+A **session** specifies a list of .leo files that Leo opens automatically when Leo first starts.  Leo will reload the last session provided that command-line arguments *don't* contain any file names.
 </t>
 <t tx="ekr.20131005214621.16088"></t>
 <t tx="ekr.20131005214621.16090">Leo is a full-featured outliner with the following special features:
@@ -15593,8 +15552,6 @@ You will get something like the following::
       --script-window=SCRIPT_WINDOW
                             open a window for scripts
       --select=SELECT       headline or gnx of node to select
-      --session-restore     restore previously saved session tabs at startup
-      --session-save        save session tabs on exit
       --silent              disable all log messages
       --trace-binding=BINDING
                             trace key bindings
@@ -17250,8 +17207,6 @@ More: Associate leo files
       --script-window=SCRIPT_WINDOW
                             open a window for scripts
       --select=SELECT       headline or gnx of node to select
-      --session-restore     restore previously saved session tabs at startup
-      --session-save        save session tabs on exit
       --silent              disable all log messages
       --trace-plugins       trace imports of plugins
       -v, --version         print version number and exit
@@ -18388,12 +18343,9 @@ Now I can continue what I was doing! This is such a simple idea, but it's really
 It's super important to deal with new ideas *instantly* but *without* greatly interrupting the task at hand. Creating "**" nodes does that. This new workflow has been a big improvement to my GTD practice.
 </t>
 <t tx="ekr.20141117065749.3"></t>
-<t tx="ekr.20141124094250.2">A **session** specifies a list of .leo files that Leo opens automatically when Leo first starts. Like this::
-
-    leo --session-save --session-restore &lt;list of .leo files&gt;
+<t tx="ekr.20141124094250.2">A **session** specifies a list of .leo files that Leo opens automatically when Leo first starts.  Leo will reload the last session provided that command-line arguments *don't* contain any file names.
     
-When Leo closes, it stores session state in ``~/.leo/leo.session``. Session state consists of the list of open files and the selected node in each file. The next time Leo starts with those options, Leo will open these files and will select the appropriate nodes.
-</t>
+Leo stores session state in ``~/.leo/leo.session``. Session state consists of the list of open files and the selected node in each file.</t>
 <t tx="ekr.20141210095600.11">I am a microbiologist mostly analyzing large numbers of bacteria genomes for which I use almost entirely Python tools. A couple of years ago while working at Yale University I gave Leo go for writing Python and organizing my notes with.
 
 Not only do I now use Leo is a central repository for scripts I write as I explore the data, generate plots, start analyses with third party applications etc., but also for storing and organizing ideas for research and notes parsed out of PDFs of academic papers. And that's just for work!
@@ -19317,7 +19269,7 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
 ``session-snapshot-save``
     Saves a snapshot of the present session to the leo.session file.
 
-**About sessions**: An @session node specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. The ``--session-save`` and ``--session-restore`` command-line options write and read ``@session nodes`` from the leo.session file. The next time Leo is started with those options, the files will be open, and the nodes focused as when the previous session ended.
+A **session** specifies a list of .leo files that Leo opens automatically when Leo first starts.  Leo will reload the last session provided that command-line arguments *don't* contain any file names.
 </t>
 <t tx="ekr.20150318110552.34">.. _`Idle`: http://en.wikipedia.org/wiki/IDLE_%28Python%29
 .. _`Open Office`: https://www.openoffice.org/
@@ -21649,10 +21601,6 @@ self.ipython_inited = False
     # True if leoIpython.py imports succeeded.
 self.qt_use_tabs = False
     # True: allow tabbed main window.
-self.restore_session = False
-    # True: restore session on startup.
-self.save_session = False
-    # True: save session on close.
 self.silentMode = False
     # True: no signon.
 self.start_fullscreen = False
@@ -21771,8 +21719,6 @@ self.nodeIndices = None
     # The singleton nodeIndices instance.
 self.pluginsController = None
     # The singleton PluginsManager instance.
-self.sessionManager = None
-    # The singleton SessionManager instance.
 # The Commands class...
 self.commandName = None
     # The name of the command being executed.
@@ -29687,12 +29633,14 @@ The body text of an @data history-list *setting node* preloads commands into the
             reportFlag=False,
             dirtyVnodeList=dirtyVnodeList)
 </t>
-<t tx="ekr.20190117143933.1">Leo 5.9 beta 1, http://leoeditor.com, is now available on
+<t tx="ekr.20190117143933.1">Leo 5.9 beta 2, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 5.9**
+
+This will be the last version of Leo that supports Python 2.
 
 Major features
 - LeoWapp: Leo in a browser.
@@ -29705,7 +29653,7 @@ Other features
 - A major refactoring of the code that writes external files.
 - Better error recovery.
 - Support for continuous integration with TravisCI.
-- The usual minor bug fixes.
+- More than 50 minor bug fixes.
 
 **Links**
 
@@ -29724,6 +29672,10 @@ Other features
 <t tx="ekr.20190117143942.2">https://github.com/leo-editor/leo-editor/issues/1002
 </t>
 <t tx="ekr.20190117143942.29">https://github.com/leo-editor/leo-editor/issues/1005
+
+You can run Leo in a browser this way:
+
+python &lt;path to&gt;launchLeo.py --no-splash --gui=browser %*
 </t>
 <t tx="ekr.20190117143942.394">https://github.com/leo-editor/leo-editor/issues/1007
 </t>
@@ -29773,7 +29725,46 @@ Changed various style sheets as a workaround for a serious Qt bug.
 </t>
 <t tx="ekr.20190117143942.681">https://github.com/leo-editor/leo-editor/issues/915
 
-Creates the xdb command and db-* commands.The xdb_pane.py plugin is optional, but recommended.
+Added the xdb command and various db-* commands, corresponding to the pdb commands:
+
+xdb:  Start a Leo's integrated debugger in a separate thread.
+
+At present, you should run Leo from a console window.  That will change soon.  See below.
+
+Start the debugger from any part of any @&lt;file&gt; tree. Now you are ready to execute all the db-* commands. You can execute these commands from the minibuffer, or, if the xdb_pane.py plugin is enabled, from the the Debug pane. The following correspond to the pdb commands:
+
+db-b: Set a breakpoint at the line shown in Leo. It should be an executable line.
+db-c: Continue, that is, run until the next breakpoint.
+db-h: Print the help message (in the console, for now)
+db-l: List a few lines around present location.
+db-n: Execute the next line.
+db-q: End the debugger.
+db-r: Return from the present function/method.
+db-s: Step into the next line.
+db-w: Print the stack.
+
+There are two additional commands:
+
+db-again: Run the previous db-command.
+db-input: Prompt for any pdb command, then execute it.
+
+The db-input command allows you can enter any pdb command at all.  For example: "print c".
+
+But you don't have to run these commands from the minibuffer, as discussed next.
+
+Setting breakpoints in the gutter
+
+When @bool use_gutter = True, Leo shows a border in the body pane.  By default, the line-numbering.py plugin is enabled, and if so, the gutter shows correct line number in the external file.
+
+After executing the xdb command, you can set a breakpoint on any executable line by clicking in the gutter to the right of the line number.  You can also set a breakpoint any time the debugger is stopped.
+
+Using the gutter is optional. You can also set breakpoints with the db-b command or by typing "d line-number" or "d file-name:line-number using the db-input command, or by using the Debug pane (see below)
+
+The Debug pane
+
+The xdb_pane.py plugin creates the Debug pane in the Log pane.  The pane contains buttons corresponding to all the commands listed above.  In addition, there is an input area in which you can enter pdb commands. This is a bit easier to use than the db-input command.
+
+Soon, all xdb/pdb output will be sent to an output area in the debug pane.  Once that happens, you will be able to run the debugger without running Leo from a console window.
 </t>
 <t tx="ekr.20190117143942.957">https://github.com/leo-editor/leo-editor/issues/998
 </t>
@@ -29799,8 +29790,10 @@ https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.9+lab
 <t tx="ekr.20190119070017.1"></t>
 <t tx="ekr.20190119071258.1">New settings (defaults as shown):
 
+- @bool use_gutter = False
 - @bool use-pygments = False
 - @bool use-pygments-styles = True
+- @bool use_xdb_pane_output_= True
 - @string pygments-style-name = default
 - Created a 'leonine' style.
   See: https://github.com/leo-editor/leo-editor-contrib/blob/master/leonine.py
@@ -29834,7 +29827,7 @@ The following call FastRead().readFileFromClipboard:
 - A major refactoring of the code that writes external files.
 - Better error recovery.
 - Support for continuous integration with TravisCI.
-- The usual minor bug fixes.</t>
+- More than 50 minor bug fixes.</t>
 <t tx="ekr.20190123075604.1">https://github.com/leo-editor/leo-editor/issues/981
 https://github.com/leo-editor/leo-editor/issues/977
 
@@ -29936,7 +29929,259 @@ command line--script relative path is relative to `leo/core` instead of file-sys
 fc.setCachedBits scans *all* nodes for cached data.
 This simplifies fc.compute_attribute_bits.
 </t>
-<t tx="ekr.20190412075452.1"></t>
+<t tx="ekr.20190414191837.1">``xdb``
+    Start a Leo's integrated debugger in a separate thread.
+
+    Start the debugger from any part of any @&lt;file&gt; tree. Now you are ready
+    to execute all the db-* commands.
+    
+    You can execute these commands from the minibuffer, or, if the
+    xdb_pane.py plugin is enabled, from the the Debug pane.
+    
+The following commands correspond to the pdb commands:
+
+``db-b``
+    Set a breakpoint at the line shown in Leo.
+    It should be an executable line.
+``db-c``
+    Continue, that is, run until the next breakpoint.
+``db-h``
+    Print the help message (in the console, for now)
+``db-l``
+    List a few lines around present location.
+``db-n``
+    Execute the next line.
+``db-q``
+    End the debugger.
+``db-r``
+    Return from the present function/method.
+``db-s``
+    Step into the next line.
+``db-w``
+    Print the stack.
+
+There are two additional commands:
+
+``db-again``
+    Run the previous db-command.
+``db-input``
+    Prompt for any pdb command, then execute it.
+
+    The db-input command allows you can enter any pdb command at all.
+    For example: "print c".
+
+But you don't have to run these commands from the minibuffer, as discussed next.
+
+**Setting breakpoints in the gutter**
+
+When @bool use_gutter = True, Leo shows a border in the body pane.  By default, the line-numbering.py plugin is enabled, and if so, the gutter shows correct line number in the external file.
+
+After executing the xdb command, you can set a breakpoint on any executable line by clicking in the gutter to the right of the line number.  You can also set a breakpoint any time the debugger is stopped.
+
+Using the gutter is optional. You can also set breakpoints with the db-b command or by typing "d line-number" or "d file-name:line-number using the db-input command, or by using the Debug pane (see below)
+
+**The Debug pane**
+
+The xdb_pane.py plugin creates the Debug pane in the Log pane.  The pane contains buttons corresponding to all the commands listed above.  In addition, there is an input area in which you can enter pdb commands. This is a bit easier to use than the db-input command.
+
+**Settings**
+
+When @bool use_xdb_pane_output_area is True, all debugger output is sent to an output area in the Debug pane. The default is True, so you need this setting only if you don't want output set to the Debug pane.
+</t>
+<t tx="ekr.20190414193128.1">This module contains the fast-redraw code that used to be in leoflexx.py.It
+deserves to be in Leo's core because it does not in any way depend on which
+gui is in effect.</t>
+<t tx="ekr.20190414193153.1"></t>
+<t tx="ekr.20190414193500.1">This paper explains how to use cff (clone-find-flattened) while
+refactoring code. I could not have completed the refactoring of Leo's
+atFile write code without using continuous, extensive use of cff.
+
+There are two key ideas:
+
+1. The clones produced by cff are short-term or medium-term data,
+   easily created and easily dispensed with.
+
+Such clones are valuable, but not precious. They will eventually be discarded.
+
+2. Unlike tags (or any other kind of non-Leonine data), the clones
+   produced by cff can be reorganized.
+
+This is the priceless, unique advantage of clones.  You don't understand clones if you don't get this.
+
+Example
+
+1. While refactoring, it is essential to see all actual uses of a
+   symbol (method, or ivar, whatever).
+
+The starting point is to use cff to find all potential uses of the
+symbol. If multiple files or classes use the symbol, you can use the
+suboutline-only option to limit the matches created by cff.
+
+2. After finding all potential uses of the symbol, you can reorganize
+   the resulting clones as follows:
+
+- Delete nodes that are completely irrelevant.
+- Squirrel away likely-irrelevant nodes in a new organizer node.
+- Highlight the defining node, say by making it the preceding sibling of the cff node.
+- Leave all actual uses of the symbol where they are.
+
+3. You have now focused your attention on the nodes that will likely
+   change.
+
+You can now rerun the search only on those cloned nodes to see all
+instances of the symbol that might be changed. This is a crucial
+double check on proposed changes.
+
+Summary
+
+I highly recommend that all Leonine programmers use the approach just
+described when refactoring code.
+
+Neither tags, nor filters, nor refactoring packages can emulate the
+Leonine way of refactoring.</t>
+<t tx="ekr.20190422181351.1">To specify a color, say for comment1, for *all* languages, create an @color node::
+
+    @color comment1 = blue
+    
+To specify a color for a **particular** language, say Python, prepend the setting name
+with the language name.  For example::
+
+    @color python_comment1 = pink
+    
+Here are Leo's legacy (jEdit-based) @color settings:
+
+    @color comment1
+    @color comment2
+    @color comment3
+    @color comment4
+    @color doc-part
+    @color function
+    @color keyword1
+    @color keyword2
+    @color keyword3
+    @color keyword4
+    @color keyword5
+    @color label
+    @color leo-keyword
+    @color link
+    @color literal1
+    @color literal2
+    @color literal3
+    @color literal4
+    @color markup
+    @color name
+    @color name-brackets
+    @color null
+    @color operator
+    @color show-invisibles-space
+    @color tab
+    @color trailing-whitespace
+    @color url
+    
+In addition, the pygments colorizer uses these settings::
+    
+    @color comment
+    @color comment.hashbang
+    @color comment.multiline
+    @color comment.preproc
+    @color comment.single
+    @color comment.special
+    @color error
+    @color generic
+    @color generic.deleted
+    @color generic.emph
+    @color generic.error
+    @color generic.heading
+    @color generic.inserted
+    @color generic.output
+    @color generic.prompt
+    @color generic.strong
+    @color generic.subheading
+    @color generic.traceback
+    @color keyword
+    @color keyword.constant
+    @color keyword.declaration
+    @color keyword.namespace
+    @color keyword.pseudo
+    @color keyword.reserved
+    @color keyword.type
+    @color literal
+    @color literal.date
+    @color name.attribute
+    @color name.builtin
+    @color name.builtin.pseudo
+    @color name.class
+    @color name.constant
+    @color name.decorator
+    @color name.entity
+    @color name.exception
+    @color name.function
+    @color name.function.magic
+    @color name.label
+    @color name.namespace
+    @color name.other
+    @color name.pygments
+    @color name.tag
+    @color name.variable
+    @color name.variable.class
+    @color name.variable.global
+    @color name.variable.instance
+    @color name.variable.magic
+    @color number
+    @color number.bin
+    @color number.float
+    @color number.hex
+    @color number.integer
+    @color number.integer.long
+    @color number.oct
+    @color operator.word
+    @color other
+    @color punctuation
+    @color string
+    @color string.affix
+    @color string.backtick
+    @color string.char
+    @color string.delimiter
+    @color string.doc
+    @color string.double
+    @color string.escape
+    @color string.heredoc
+    @color string.interpol
+    @color string.other
+    @color string.regex
+    @color string.single
+    @color string.symbol
+    @color whitespace
+    @color xt
+    
+**Note**: all @color settings may optionally end with the _color suffix.
+</t>
+<t tx="ekr.20190422182440.1">To specify a font, say for keyword_font, to be used as the default font for **all** languages, put the following in the body text of an @font node in leoSettings.leo::
+
+    # keyword_font_family = None
+    keyword_font_size = 16
+    keyword_font_slant = roman
+        # roman, italic
+    keyword_font_weight = bold
+        # normal, bold
+
+Comments are allowed and undefined settings are set to reasonable defaults. At present, comments can not follow a setting: comments must start a line.
+
+You can specify per-language settings by preceding the settings names by a prefix x. Such settings affect only colorizing for language x (i.e., all the modes in modes/x.py when using the new colorizer). For example, to specify a font for php (only), put the following in the body text of an @font node in leoSettings.leo::
+
+    # php_keyword_font_family = None
+    php_keyword_font_size = 16
+    php_keyword_font_slant = roman
+        # roman, italic
+    php_keyword_font_weight = bold
+        # normal, bold
+</t>
+<t tx="ekr.20190424063410.2">https://github.com/leo-editor/leo-editor/issues/1100
+</t>
+<t tx="ekr.20190424063410.37">https://github.com/leo-editor/leo-editor/issues/1116
+</t>
+<t tx="ekr.20190424063410.38">https://github.com/leo-editor/leo-editor/issues/1118
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with

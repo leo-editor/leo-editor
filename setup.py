@@ -8,7 +8,7 @@
 from codecs import open # To use a consistent encoding
 import os
 import platform
-from shutil import rmtree
+# from shutil import rmtree
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
 import sys
 
@@ -63,7 +63,7 @@ def git_version(file, version=None):
 
 #@+node:maphew.20180224170257.1: *4* clean_git_tag
 def clean_git_tag(tag):
-    '''Return only version number from tag name. Ignore unkown formats.
+    '''Return only version number from tag name. Ignore unknown formats.
        Is specific to tags in Leo's repository.
             5.7b1          -->	5.7b1
             Leo-4-4-8-b1   -->	4-4-8-b1
