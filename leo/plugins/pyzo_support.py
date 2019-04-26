@@ -103,68 +103,6 @@ class GlobalPyzoController(object):
     '''
 
     #@+others
-    #@+node:ekr.20190425050851.1: *3* gpc.add_pyzo_menus
-    def add_pyzo_menus(self):
-        '''
-        Add pyzo's menus to Leo's 'Pyzo' menu.
-        
-        To do: Suppress translations.
-        '''
-        main_window = g.app.gui.hidden_main_window
-        menuBar = main_window.menuBar()
-        #@+<< menu dumps >>
-        #@+node:ekr.20190426075514.1: *4* << menu dumps >>
-        if 0:
-            g.trace('menuBar.children()...')
-            for child in menuBar.children():
-                g.pr(child) # pyzo.core.menu.FileMenu, etc.
-        if 0:
-            g.trace('menuBar.actions()...')
-            for action in menuBar.actions():
-                g.pr(action)
-        if 0:
-            g.trace('pyzo.icons...')
-            for key, icon in pyzo.icons.items():
-                g.pr('%30s %0x' % (key, id(icon)))
-        #
-        # Show icons that exist in pyzo.icons.
-        if 0:
-            g.printObj(pyzo.icons, tag='pyzo.icons')
-        if 0:
-            values = list(pyzo.icons.values())
-            # g.printObj(values, tag='pyzo.icons.values()')
-            g.pr('Action icons in pyzo.icons...')
-            for key, menu in menuBar._menumap.items():
-                # Keys are menu names, values are menus.
-                for action in menu.actions():
-                    if action.icon() in values:
-                        g.pr('FOUND icon: id=%s', id(action.icon()))
-        #
-        # Dump all menus.
-        if 0:
-            for key, menu in menuBar._menumap.items():
-                # Keys are menu names, values are menus.
-                g.pr('MENU: %s' % key)
-                for action in menu.actions():
-                    g.pr('action: %015x icon: %015x text: %s' % (
-                        id(action), id(action.icon()), action.text()))
-                g.pr('')
-
-        # We want to know the receiveres of the action's triggered() signal.
-
-        # g.printObj(action.receivers('*'), tag='receivers')
-            # TypeError: receivers(self, PYQT_SIGNAL): argument 1 has unexpected type 'str'
-        #@-<< menu dumps >>
-        #
-        # Create g.app.pyzo_menus: keys are 
-        if 0:
-            for key, menu in menuBar._menumap.items():
-                # Keys are menu names, values are menus.
-                g.pr('MENU: %s' % key)
-                for action in menu.actions():
-                    g.pr('action: %015x icon: %015x text: %s' % (
-                        id(action), id(action.icon()), action.text()))
-                g.pr('')
     #@+node:ekr.20190418163637.1: *3* gpc.close_pyzo
     def close_pyzo(self):
         '''Completely close pyzo.'''
@@ -219,7 +157,6 @@ class GlobalPyzoController(object):
         
         Called by the the top-level init() function in pyzo_support.py.
         '''
-        patch = True
         sys.argv = []
             # Avoid trying to load extra files.
         #
@@ -507,9 +444,8 @@ class GlobalPyzoController(object):
         #@-others
         #
         # Part 4: Early patches: *before* calling pyzo.start()
-        if patch:
-            g.funcToMethod(__init__, main.MainWindow)
-            g.funcToMethod(_populate, main.MainWindow)
+        g.funcToMethod(__init__, main.MainWindow)
+        g.funcToMethod(_populate, main.MainWindow)
         #
         # Part 5: Do pyzo's official startup:
         #         - Does all pyzo imports 
@@ -521,7 +457,7 @@ class GlobalPyzoController(object):
         g.funcToMethod(closeEvent, main.MainWindow)
         #
         # Part 7: Late inits.
-        self.add_pyzo_menus()
+        # Each PyzoController instance inits menus, etc.
         if 0:
             self.dump_pyzo_objects()
         if 0:
@@ -562,12 +498,16 @@ class PyzoController (object):
         menuBar = main_window.menuBar()
         #
         # Create a new *Leo* menu.
-        pyzo_menu = c.frame.menu.createNewMenu('Pyzo')
+        leo_pyzo_menu = c.frame.menu.createNewMenu('Pyzo')
         #
-        # Populate the menu with *Pyzo* actions.
-        file_menu = menuBar._menumap.get('file')
-        for action in file_menu.actions():
-            pyzo_menu.addAction(action)
+        # Populate the menu with sub-menus containing *Pyzo* actions.
+        for menu_name in ('shell', 'run', 'tools'):
+            pyzo_menu = menuBar._menumap.get(menu_name)
+            if pyzo_menu:
+                for action in pyzo_menu.actions():
+                    leo_pyzo_menu.addAction(action)
+            else:
+                g.trace('no menu:', menu_name)
     #@+node:ekr.20190415051125.13: *3* pz.monkey_patch_file_browser
     def monkey_patch_file_browser(self):
         
