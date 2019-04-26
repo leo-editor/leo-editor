@@ -82,9 +82,8 @@ def init():
         return False
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
-    g.app.global_pyzo_controller = GlobalPyzoController()
-    # g.app.global_pyzo_controller.load_pyzo()
-        # Works, but for testing it may be better to do this explicitly.
+    g.app.global_pyzo_controller = gpc = GlobalPyzoController()
+    gpc.load_pyzo()
     return True
 #@+node:ekr.20190415051754.1: *3* onCreate (pyzo_support.py)
 def onCreate(tag, keys):
@@ -104,6 +103,62 @@ class GlobalPyzoController(object):
     '''
 
     #@+others
+    #@+node:ekr.20190425050851.1: *3* gpc.add_pyzo_menus
+    def add_pyzo_menus(self):
+        '''
+        Add pyzo's menus to Leo's 'Pyzo' menu.
+        
+        To do: Suppress translations.
+        '''
+        main_window = g.app.gui.hidden_main_window
+        menuBar = main_window.menuBar()
+        #
+        # Invert pyzo.icons dict.
+        if 1:
+            d = { pyzo.icons.get(z): z for z in pyzo.icons }
+            # g.printObj(pyzo.icons, tag='pyzo.icons')
+            # g.trace('unique pyzo.icons', len(list(set(pyzo.icons.values()))))
+        else:
+            ### Not yet.
+            icons_d = self.load_icons()
+            d = { pyzo.icons.get(z): z for z in icons_d }
+        if 0:
+            assert d
+            return ###
+
+        # def icon_name(icon):
+            # if icon.isNull():
+                # return '<no icon>'
+            # else:
+                # return d.get(icon, '<unknown: %0x>' % id(icon))
+                
+        if 0:
+            g.trace('menuBar.children()...')
+            for child in menuBar.children():
+                g.pr(child) # pyzo.core.menu.FileMenu, etc.
+        if 0:
+            g.trace('menuBar.actions()...')
+            for action in menuBar.actions():
+                g.pr(action)
+
+        if 0:
+            g.trace('pyzo.icons...')
+            for key, icon in pyzo.icons.items():
+                g.pr('%30s %0x' % (key, id(icon)))
+        #
+        # Dump all menus.
+        for key, menu in menuBar._menumap.items():
+            g.pr('MENU: %s' % key)
+            if key == 'file':
+                for action in menu.actions():
+                    g.pr('action: %015x icon: %015x text: %s' % (
+                        id(action), id(action.icon()), action.text()))
+                g.pr('')
+      
+        # We want to know the receiveres of the action's triggered() signal.
+
+        # g.printObj(action.receivers('*'), tag='receivers')
+            # TypeError: receivers(self, PYQT_SIGNAL): argument 1 has unexpected type 'str'
     #@+node:ekr.20190418163637.1: *3* gpc.close_pyzo
     def close_pyzo(self):
         '''Completely close pyzo.'''
@@ -111,11 +166,52 @@ class GlobalPyzoController(object):
             event = QtGui.QCloseEvent()
             g.app.gui.hidden_main_window.closeEvent(event)
                 # Call the monkey-patched MainWindow.closeEvent. 
-    #@+node:ekr.20190417141817.1: *3* gpc.load_pyzo
+    #@+node:ekr.20190424174413.1: *3* gpc.dump_pyzo_objects
+    def dump_pyzo_objects(self):
+        '''Dump pyzo's objects.'''
+        main_window = g.app.gui.hidden_main_window
+        g.trace(main_window)
+    #@+node:ekr.20190425061611.1: *3* gpc.load_icons (experimental)
+    def load_icons():
+        """
+        Adapted from pyzo.core.main.loadIcons.
+        
+        Copyright (C) 2013-2018, the Pyzo development team
+        
+        Load all icons in the icon dir.
+        """
+        # Get directory containing the icons
+        iconDir = os.path.join(pyzo.pyzoDir, 'resources', 'icons')
+
+        # Construct other icons
+        ### dummyIcon = IconArtist().finish()
+        ### pyzo.icons = {}
+        d = {}
+        for fname in os.listdir(iconDir):
+            if fname.endswith('.png'):
+                try:
+                    # Short and full name
+                    name = fname.split('.')[0]
+                    name = name.replace('pyzo_', '')  # discart prefix
+                    ffname = os.path.join(iconDir,fname)
+                    # Create icon
+                    icon = QtGui.QIcon()
+                    icon.addFile(ffname, QtCore.QSize(16,16))
+                    # Store
+                    ### pyzo.icons[name] = icon
+                    d [name] = icon
+                except Exception as err:
+                    ### pyzo.icons[name] = None ### dummyIcon
+                    d [name] = None
+                    print('Could not load icon %s: %s' % (fname, str(err)))
+        return d
+    #@+node:ekr.20190417141817.1: *3* gpc.load_pyzo & patches
     def load_pyzo(self):
         '''
         Go through pyzo's *entire* startup logic with monkey-patches to
         integrate pyzo with Leo.
+        
+        Called by the the top-level init() function in pyzo_support.py.
         '''
         sys.argv = []
             # Avoid trying to load extra files.
@@ -153,7 +249,7 @@ class GlobalPyzoController(object):
             '''
             A monkey-patched version of MainWindow.__init__.py.
             
-            Copyright (C) 2013-2018, the Pyzo development team
+            Copyright (C) 2013-2018, the Pyzo development team.
             '''
             if g: g.pr('\nBEGIN PATCHED MainWindow.__init__')
 
@@ -264,7 +360,7 @@ class GlobalPyzoController(object):
             if g: g.pr('END PATCHED MainWindow.__init__')
 
         # To force drawing ourselves
-        #@+node:ekr.20190421034940.1: *4* MainWindow._populate
+        #@+node:ekr.20190421034940.1: *4* patched: MainWindow._populate
         def _populate(self):
             '''
             A monkey-patched version of MainWindow._populate.
@@ -415,14 +511,21 @@ class GlobalPyzoController(object):
         # Part 6: Late patches: *after* calling pyzo.start()
         #         Late patches are safe because all pyzo imports have been done.
         g.funcToMethod(closeEvent, main.MainWindow)
+        self.add_pyzo_menus()
+        if 0:
+            self.dump_pyzo_objects()
         if 1:
-            # Reparent the dock.
-            main_window = g.app.gui.hidden_main_window
-            dock = main_window._shellDock
-            dock.setParent(None)
-            dock.setMinimumSize(800, 500)
-            dock.showNormal()
-                # dock.showMinimized() # confusing, for now.
+            self.reparent_dock()
+    #@+node:ekr.20190424174328.1: *3* gpc.reparent_dock
+    def reparent_dock(self):
+        '''Reparent the pyzo dock window into Leo.'''
+        g.trace()
+        main_window = g.app.gui.hidden_main_window
+        dock = main_window._shellDock
+        dock.setParent(None)
+        dock.setMinimumSize(800, 500)
+        dock.showNormal()
+            # dock.showMinimized() # confusing, for now.
     #@-others
 #@+node:ekr.20190415051335.1: ** class PyzoController (object)
 class PyzoController (object):
