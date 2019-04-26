@@ -494,8 +494,8 @@ class PyzoController (object):
     def init_menus(self):
         '''Init pyzo menus for this commander.'''
         c = self.c
-        main_window = g.app.gui.hidden_main_window
-        menuBar = main_window.menuBar()
+        pyzo_main_window = g.app.gui.hidden_main_window
+        pyzo_menu_map = pyzo_main_window.menuBar()._menumap
         #
         # Create a new *Leo* menu.
         leo_pyzo_menu = c.frame.menu.createNewMenu('&Pyzo') ###, before='Run')
@@ -503,10 +503,11 @@ class PyzoController (object):
         #
         # Populate the menu with sub-menus containing *Pyzo* actions.
         for menu_name in ('shell', 'run', 'tools'):
-            pyzo_menu = menuBar._menumap.get(menu_name)
+            pyzo_menu = pyzo_menu_map.get(menu_name)
             if pyzo_menu:
                 leo_parent_menu = c.frame.menu.createNewMenu(
                     'Pyzo ' + menu_name.capitalize(), parentName='Pyzo')
+                        # Add pyzo prefix to work around Leo bug.
                 if leo_parent_menu:
                     for action in pyzo_menu.actions():
                         leo_parent_menu.addAction(action)
