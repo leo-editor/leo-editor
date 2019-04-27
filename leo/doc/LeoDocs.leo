@@ -3506,9 +3506,10 @@ To generate these docs:
     cd leo/doc/html
     make html
     
-    The make file requires sphinx to be installed, but the result are plain html files.
-
-    The resulting html files are in the leo/doc/html/_build/html directory.
+    This creates html files in the leo/doc/html/_build/html directory.
+    
+    The make file requires sphinx to be installed,
+    but sphinx does not have to be installed to use the resulting html files.
 
 3. Copy the entire leo/doc/html/_build/html directory to the server, but
 
