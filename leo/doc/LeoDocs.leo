@@ -3495,7 +3495,11 @@ They contain sphinx markup. See::
     http://sphinx.pocoo.org/
     http://docutils.sourceforge.net/docs/user/rst/quickstart.html
     
-To generate these docs::
+To generate these docs:
+
+1. Select this node, then run the rst3 command.
+
+2. From a console::
 
     cd leo/doc/html
     make html
