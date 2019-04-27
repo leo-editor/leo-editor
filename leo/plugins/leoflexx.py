@@ -22,7 +22,7 @@ https://github.com/leo-editor/leo-editor/issues/1005.
 
 See #1005 for a status report and list of to-do's.
 
-# Prerequites
+# Prerequisites
 
 Install flexx: https://flexx.readthedocs.io/en/stable/start.html
     
