@@ -29712,8 +29712,8 @@ Start Leo using the --gui=browser option. Like this::
 
 The code is in leo/plugins/leoflexx.py, but this is *not* a plugin.
 
-Prerequites
------------
+Prerequisites
+-------------
 
 Install flexx: https://flexx.readthedocs.io/en/stable/start.html
 
