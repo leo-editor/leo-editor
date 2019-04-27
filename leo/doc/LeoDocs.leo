@@ -3499,10 +3499,22 @@ To generate these docs:
 
 1. Select this node, then run the rst3 command.
 
+   This command will generate about 50 .html.txt files in leo/doc/html folder.
+
 2. From a console::
 
     cd leo/doc/html
     make html
+    
+    The make file requires sphinx to be installed, but the result are plain html files.
+
+    The resulting html files are in the leo/doc/html/_build/html directory.
+
+3. Copy the entire leo/doc/html/_build/html directory to the server, but
+
+   **do not copy _build/html/searchindex.js**
+
+   I don't remember why searchindex.js is toxic, but it is.
     
 Important files:
 
