@@ -20230,11 +20230,6 @@ for s,expected1,expected2 in table:
         repr(s),repr(expected1),repr(result1))
     assert result2 == expected2,'fail2: given %s expected %s got %s' % (
         repr(s),repr(expected2),repr(result2))
-#@+node:ekr.20060913084600: *4* @test v/t.__hash__
-import leo.core.leoNodes as leoNodes
-
-if leoNodes.use_zodb:
-    p.v.__hash__()
 #@+node:ekr.20071113202452: *4* @test zz end of leoNodes tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoNodes tests.')

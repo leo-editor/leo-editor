@@ -1,28 +1,14 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3320: * @file leoNodes.py
 '''Leo's fundamental data classes.'''
-use_zodb = False
 #@+<< imports >>
 #@+node:ekr.20060904165452.1: ** << imports >> (leoNodes)
-import leo.core.leoGlobals as g
-import leo.core.signal_manager as sig
-# if g.app and g.app.use_psyco:
-    # # g.pr("enabled psyco classes",__file__)
-    # try: from psyco.classes import *
-    # except ImportError: pass
 import copy
+import itertools
 import time
 import re
-import itertools
-if use_zodb:
-    # It may be important to import ZODB first.
-    try:
-        import ZODB
-        import ZODB.FileStorage
-    except ImportError:
-        ZODB = None
-else:
-    ZODB = None
+import leo.core.leoGlobals as g
+import leo.core.signal_manager as sig
 #@-<< imports >>
 #@+others
 #@+node:ekr.20031218072017.1991: ** class NodeIndices
@@ -1914,7 +1900,7 @@ Poslist = PosList # compatibility.
 #@+node:ekr.20031218072017.3341: ** class VNode
 #@@nobeautify
 
-class VNodeBase(object):
+class VNode(object):
     #@+<< VNode constants >>
     #@+node:ekr.20031218072017.951: *3* << VNode constants >>
     # Define the meaning of status bits in new vnodes.
@@ -1996,11 +1982,6 @@ class VNodeBase(object):
         print('len(children): %s' % len(v.children))
         print('parents: %s' % g.listToString(v.parents))
         print('children: %s' % g.listToString(v.children))
-    #@+node:ekr.20060910100316: *4* v.__hash__ (only for zodb)
-    if use_zodb and ZODB:
-
-        def __hash__(self):
-            return self.__hash__()
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
     def findAtFileName(self, names, h=''):
@@ -2661,14 +2642,6 @@ class VNodeBase(object):
         __get_gnx, # __set_gnx,
         doc="VNode gnx property")
     #@-others
-
-if use_zodb and ZODB:
-
-    class VNode(ZODB.Persistence.Persistent, VNodeBase):
-        pass
-
-else:
-    VNode = VNodeBase
 
 vnode = VNode # compatibility.
 
