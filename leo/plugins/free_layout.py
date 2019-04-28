@@ -191,7 +191,6 @@ class FreeLayoutController(object):
         # Careful: we could be unit testing.
         f = self.c.frame
         if hasattr(f, 'top') and f.top:
-            ### return f.top.findChild(NestedSplitter).top()
             child = f.top.findChild(NestedSplitter)
             return child and child.top()
         else:

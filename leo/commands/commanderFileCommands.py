@@ -198,8 +198,9 @@ def open(self, event=None):
     table = [
         # 2010/10/09: Fix an interface blunder. Show all files by default.
         ("All files", "*"),
-        g.fileFilters("LEOFILES"),
-        ("Python files", "*.py"),]
+        ("Leo files", "*.leo *.db"),
+        ("Python files", "*.py"),
+    ]
     fileName = ''.join(c.k.givenArgs)
     if not fileName:
         fileName = g.app.gui.runOpenFileDialog(c,
@@ -240,7 +241,6 @@ def refreshFromDisk(self, event=None):
     c, p, u = self, self.p, self.undoer
     c.nodeConflictList = []
     fn = p.anyAtFileNodeName()
-    ### shouldDelete = (not g.SQLITE) or (c.sqlite_connection is None)
     shouldDelete = c.sqlite_connection is None
     if not fn:
         g.warning('not an @<file> node:\n%r' % (p.h))
@@ -343,7 +343,7 @@ def save(self, event=None, fileName=None):
                 fileName = g.app.gui.runSaveFileDialog(c,
                     initialfile=c.mFileName,
                     title="Save",
-                    filetypes=[g.fileFilters('LEOFILES')],
+                    filetypes=[("Leo files", "*.leo *.db"),],
                     defaultextension=g.defaultLeoFileExtension(c))
         c.bringToFront()
         if fileName:
@@ -408,7 +408,7 @@ def saveAs(self, event=None, fileName=None):
         fileName = g.app.gui.runSaveFileDialog(c,
             initialfile=c.mFileName,
             title="Save As",
-            filetypes=[g.fileFilters('LEOFILES')],
+            filetypes=[("Leo files", "*.leo *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
     c.bringToFront()
     if fileName:
@@ -461,7 +461,7 @@ def saveTo(self, event=None, fileName=None, silent=False):
         fileName = g.app.gui.runSaveFileDialog(c,
             initialfile=c.mFileName,
             title="Save To",
-            filetypes=[g.fileFilters('LEOFILES')],
+            filetypes=[("Leo files", "*.leo *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
     c.bringToFront()
     if fileName:
@@ -903,10 +903,9 @@ def setReferenceFile(self, event=None):
     contents of reference Leo file.
     '''
     c = self
-    table = [ g.fileFilters("LEOFILES"),]
     fileName = g.app.gui.runOpenFileDialog(c,
             title="Select reference Leo file",
-            filetypes=table,
+            filetypes=[("Leo files", "*.leo *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
     if not fileName: return
     c.fileCommands.setReferenceFile(fileName)
@@ -955,7 +954,7 @@ def open_theme_file(self, event):
     fn = g.app.gui.runOpenFileDialog(c,
         title="Open Theme File",
         filetypes=[
-             g.fileFilters("LEOFILES"),
+            ("Leo files", "*.leo *.db"),
             ("All files", "*"),
         ],
         defaultextension=g.defaultLeoFileExtension(c),

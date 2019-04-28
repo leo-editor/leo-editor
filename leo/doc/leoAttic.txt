@@ -2993,6 +2993,10 @@ def embed_pyplot_widget(self):
 
     if pc.pyplot_canvas:
         pc.embed_widget(w, delete_callback=delete_callback)
+#@+node:vitalije.20170714085317.1: ** g.fileFilters
+def fileFilters(key):
+    if key == 'LEOFILES':
+        return ("Leo files", "*.leo *.db")
 #@-all
 #@@nosearch
 #@-leo

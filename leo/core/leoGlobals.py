@@ -1327,7 +1327,7 @@ class TracingNullObject(object):
     #
     # All other methods...
     def __bool__(self):
-        if 0: ### To do: print only once.
+        if 0: # To do: print only once.
             suppress = ('getShortcut','on_idle', 'setItemText')
             callers = g.callers(2)
             if not callers.endswith(suppress):
@@ -1339,7 +1339,6 @@ class TracingNullObject(object):
     def __getitem__(self, key):
         g.null_object_print(id(self), '__getitem__')
         return None
-        ### raise KeyError
     def __iter__(self):
         g.null_object_print(id(self), '__iter__')
         return self
@@ -3552,13 +3551,6 @@ def ensure_extension(name, ext):
         return name
     else:
         return name + ext
-#@+node:vitalije.20170714085317.1: *3* g.fileFilters
-def fileFilters(key):
-    if key == 'LEOFILES':
-        return ("Leo files", "*.leo *.db")
-    ###
-        # elif key == 'LEOFILES':
-            # return ("Leo files", "*.leo")
 #@+node:ekr.20150403150655.1: *3* g.fullPath
 def fullPath(c, p, simulate=False):
     '''

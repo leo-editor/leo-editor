@@ -1267,7 +1267,6 @@ class LeoApp(object):
                 s, color, newline = msg[:3]
                 kwargs = {} if len(msg) < 4 else msg[3]
                 kwargs = {k:v for k,v in kwargs.items() if k not in ('color', 'newline')}
-                ### sys.__stdout__.write('  writeWaitingLog: %r\n' % s)
                 g.es('', s, color=color, newline=newline, **kwargs)
             if hasattr(c.frame.log, 'scrollToEnd'):
                 g.app.gui.runAtIdle(c.frame.log.scrollToEnd)
@@ -1564,7 +1563,7 @@ class LeoApp(object):
     #@+node:ekr.20031218072017.2188: *3* app.newCommander
     def newCommander(self, fileName,
         gui=None,
-        parentFrame=None, ### New, experimental.
+        parentFrame=None,
         previousSettings=None,
         relativeFileName=None,
     ):
