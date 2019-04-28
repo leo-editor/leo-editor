@@ -12,39 +12,23 @@
 flexx.py: LeoWapp (Leo as a web browser), implemented using flexx:
 https://flexx.readthedocs.io/en/stable/
 
+Start Leo using the --gui=browser option. Like this::
+
+    leo --gui=browser
+    leo --gui=browser-firefox-browser​
+
 This file is the main line of the LeoWapp project.
 https://github.com/leo-editor/leo-editor/issues/1005.
 
 See #1005 for a status report and list of to-do's.
 
-# Prerequites
+# Prerequisites
 
 Install flexx: https://flexx.readthedocs.io/en/stable/start.html
-
-# Running stand-alone
-
-You can run leoflexx.py in stand-alone mode from a console:
-
-    python <path to>leoflexx.py --flexx-webruntime=firefox-browser​
-
-The --flex-webruntime command-line arg is optional. If omitted, you'll use
-the webruntime environment.
-
-When running stand-alone, the startup code uses Leo's bridge module to load
-unitTest.leo.
-
-# Running as Leo's gui
-
-You can also run leoflexx.py as Leo's gui:
-
-    leo --gui=browser
-    leo --gui=browser-firefox-browser​
     
 # What you should see
     
-However you start leoflexx.py you should see the flexx (Tornado) server
-start up in the console.
-
+You should see the flexx (Tornado) server start up in the console.
 Something that looks like Leo should then appear in the browser. Everything
 you see is real, and most of it is "live".
 '''
