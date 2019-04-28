@@ -1464,7 +1464,7 @@ class FileCommands(object):
         if fc.isReadOnly(fileName):
             return False
 
-        if g.SQLITE and fileName and fileName.endswith('.db'):
+        if fileName and fileName.endswith('.db'):
             return fc.exportToSqlite(fileName)
 
         try:

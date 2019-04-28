@@ -240,7 +240,8 @@ def refreshFromDisk(self, event=None):
     c, p, u = self, self.p, self.undoer
     c.nodeConflictList = []
     fn = p.anyAtFileNodeName()
-    shouldDelete = (not g.SQLITE) or (c.sqlite_connection is None)
+    ### shouldDelete = (not g.SQLITE) or (c.sqlite_connection is None)
+    shouldDelete = c.sqlite_connection is None
     if not fn:
         g.warning('not an @<file> node:\n%r' % (p.h))
         return

@@ -20,7 +20,6 @@ isfile = g.os_path_isfile
 join = g.os_path_join
 normcase = g.os_path_normcase
 split = g.os_path_split
-SQLITE = True
 #@+others
 #@+node:ekr.20100208062523.5885: ** class CommanderCacher
 class CommanderCacher(object):
@@ -29,7 +28,7 @@ class CommanderCacher(object):
     def __init__(self):
         try:
             path = join(g.app.homeLeoDir, 'db', 'global_data')
-            self.db = SqlitePickleShare(path) if SQLITE else PickleShareDB(path)
+            self.db = SqlitePickleShare(path)
         except Exception:
             self.db = {}
 
@@ -47,14 +46,14 @@ class CommanderCacher(object):
     #@+node:ekr.20180627062431.1: *3* cacher.close
     def close(self):
         # Careful: self.db may be a dict.
-        if SQLITE and hasattr(self.db, 'conn'):
+        if hasattr(self.db, 'conn'):
             # pylint: disable=no-member
             self.db.conn.commit()
             self.db.conn.close()
     #@+node:ekr.20180627042809.1: *3* cacher.commit
     def commit(self):
         # Careful: self.db may be a dict.
-        if SQLITE and hasattr(self.db, 'conn'):
+        if hasattr(self.db, 'conn'):
             # pylint: disable=no-member
             self.db.conn.commit()
     #@+node:ekr.20180611054447.1: *3* cacher.dump
@@ -97,8 +96,7 @@ class CommanderCacher(object):
         
         save and save-as set changeName to True, save-to does not.
         '''
-        if SQLITE:
-            self.commit()
+        self.commit()
         if changeName:
             c.db = self.get_wrapper(c, fn=fn)
     #@-others
@@ -142,7 +140,7 @@ class GlobalCacher(object):
         '''Ctor for the GlobalCacher class.'''
         try:
             path = join(g.app.homeLeoDir, 'db', 'g_app_db')
-            self.db = SqlitePickleShare(path) if SQLITE else PickleShareDB(path)
+            self.db = SqlitePickleShare(path)
         except Exception:
             self.db = {} # Use a plain dict as a dummy.
 
@@ -162,7 +160,7 @@ class GlobalCacher(object):
     #@+node:ekr.20180627042948.1: *3* g_cacher.commit_and_close()
     def commit_and_close(self):
         # Careful: self.db may be a dict.
-        if SQLITE and hasattr(self.db, 'conn'):
+        if hasattr(self.db, 'conn'):
             # pylint: disable=no-member
             self.db.conn.commit()
             self.db.conn.close()

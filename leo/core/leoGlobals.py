@@ -20,8 +20,6 @@ isWindows = sys.platform.startswith('win')
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
-SQLITE = True
-    # True: Enable SQLite DB.
 #@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
@@ -3548,7 +3546,7 @@ def ensure_extension(name, ext):
     theFile, old_ext = g.os_path_splitext(name)
     if not name:
         return name # don't add to an empty name.
-    elif g.SQLITE and old_ext in ('.db', '.leo'):
+    elif old_ext in ('.db', '.leo'):
         return name
     elif old_ext and old_ext == ext:
         return name
@@ -3556,10 +3554,11 @@ def ensure_extension(name, ext):
         return name + ext
 #@+node:vitalije.20170714085317.1: *3* g.fileFilters
 def fileFilters(key):
-    if key == 'LEOFILES' and g.SQLITE:
+    if key == 'LEOFILES':
         return ("Leo files", "*.leo *.db")
-    elif key == 'LEOFILES':
-        return ("Leo files", "*.leo")
+    ###
+        # elif key == 'LEOFILES':
+            # return ("Leo files", "*.leo")
 #@+node:ekr.20150403150655.1: *3* g.fullPath
 def fullPath(c, p, simulate=False):
     '''

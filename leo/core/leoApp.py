@@ -3253,18 +3253,15 @@ class LoadManager(object):
         return c
     #@+node:ekr.20120223062418.10419: *6* LM.isLeoFile & LM.isZippedFile
     def isLeoFile(self, fn):
-        if g.SQLITE:
-            return fn and (zipfile.is_zipfile(fn) or fn.endswith('.leo') or fn.endswith('.db'))
-        return fn and (zipfile.is_zipfile(fn) or fn.endswith('.leo'))
-
+        return fn and (zipfile.is_zipfile(fn) or fn.endswith('.leo') or fn.endswith('.db'))
+        
     def isZippedFile(self, fn):
         return fn and zipfile.is_zipfile(fn)
     #@+node:ekr.20120224161905.10030: *6* LM.openLeoOrZipFile
     def openLeoOrZipFile(self, fn):
         lm = self
-        if g.SQLITE:
-            if fn.endswith('.db'):
-                return sqlite3.connect(fn)
+        if fn.endswith('.db'):
+            return sqlite3.connect(fn)
         zipped = lm.isZippedFile(fn)
         if lm.isLeoFile(fn) and g.os_path_exists(fn):
             if zipped:
