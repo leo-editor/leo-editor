@@ -38,6 +38,8 @@ import leo.core.leoGlobals as g
 # 5.8b1:  August 29, 2018.
 # 5.9b1:  April 12, 2019.
 #@-<< version dates >>
+version = '6.0-devel'
+static_date = 'April 29, 2019'
 #@+others
 #@+node:ekr.20190429093839.1: ** compute_module_vars (leoVersion.py)
 def compute_module_vars(static_date):
@@ -50,8 +52,6 @@ def compute_module_vars(static_date):
     branch = g.gitBranchName()
     return date or static_date, branch, build
 #@-others
-version = '6.0-devel'
-static_date = 'April 29, 2019'
 date, branch, build = compute_module_vars(static_date)
 #@@language python
 #@@tabwidth -4
