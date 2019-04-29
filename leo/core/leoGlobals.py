@@ -5063,7 +5063,7 @@ def gitInfo(path=None):
         except IOError:
             pass
     return branch, commit
-#@+node:ekr.20170414041333.1: *3* g.jsonCommitInfo
+#@+node:ekr.20170414041333.1: *3* g.jsonCommitInfo (to be changed)
 def jsonCommitInfo():
     '''
     return asctime and timestamp from leo/core/commit_timestamp.json.

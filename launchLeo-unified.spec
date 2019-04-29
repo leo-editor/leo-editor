@@ -84,7 +84,7 @@ def define_added_binaries():
             )
         )
     return []
-#@+node:edward.20160313203338.1: ** define_datas
+#@+node:edward.20160313203338.1: ** define_datas (minor change)
 def define_datas():
     '''Return all needed data files.'''
     return [
