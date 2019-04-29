@@ -3,11 +3,12 @@
 '''
 A module holding the following version-related info:
 
-leoVersion.branch:  The git branch name, or ''.
-leoVersion.build:   The timestamp field from commit_timestamp.json.
-leoVersion.date:    The asctime field from commit_timestamp.json.
-leoVersion.version: Leo's version number, set below.
-
+leoVersion.branch:      The git branch name, or ''.
+leoVersion.build:       The timestamp field from commit_timestamp.json.
+leoVersion.date:        The asctime field from commit_timestamp.json.
+leoVersion.static_date: The date of official releases.
+                        Also used when the git repo is not available.
+leoVersion.version:     Leo's version number, set below.
 '''
 import leo.core.leoGlobals as g
 #@+<< version dates >>
@@ -37,21 +38,21 @@ import leo.core.leoGlobals as g
 # 5.8b1:  August 29, 2018.
 # 5.9b1:  April 12, 2019.
 #@-<< version dates >>
-#@+<< about install hooks >>
-#@+node:ekr.20150409201910.1: ** << about install hooks >>
-#@@nocolor-node
-#@+at
-# 
-# Developers should copy commit-msg & pre-commit from leo/extensions/hooks to
-# leo-editor/.git/hooks.
-# 
-# These hooks cause Leo to update commit_timestamp.json automatically.
-# 
-# The install_hooks.py script copies these two files to leo-editor/.git/hooks.
-#@-<< about install hooks >>
-version = "5.9-final-devel"
-date, build = g.jsonCommitInfo()
-branch = g.gitBranchName()
+#@+others
+#@+node:ekr.20190429093839.1: ** compute_module_vars (leoVersion.py)
+def compute_module_vars(static_date):
+    '''
+    Return (date, branch, build), using git if possible.
+    
+    Fall back to (static_date, '', '') when git is not available.
+    '''
+    date, build = g.jsonCommitInfo()
+    branch = g.gitBranchName()
+    return date or static_date, branch, build
+#@-others
+version = '6.0-devel'
+static_date = 'April 29, 2019'
+date, branch, build = compute_module_vars(static_date)
 #@@language python
 #@@tabwidth -4
 #@-leo
