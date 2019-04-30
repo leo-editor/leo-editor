@@ -33,7 +33,7 @@ cmd_classes = {}
 if CleanCommand is not None:
    cmd_classes['clean'] = CleanCommand
 
-#@+node:maphew.20181010203342.385: ** get_version (setup.py)
+#@+node:maphew.20181010203342.385: ** get_version & helper (setup.py)
 def get_version(file, version=None):
     '''Determine current Leo version. Use git if in checkout, else internal Leo'''
     root = os.path.dirname(os.path.realpath(file))

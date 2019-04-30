@@ -4785,6 +4785,23 @@ def skip_ws_and_nl(s, i):
         i += 1
     return i
 #@+node:ekr.20170414034616.1: ** g.Git
+#@+node:ekr.20180325025502.1: *3* g.backupGitIssues
+def backupGitIssues(c, base_url=None):
+    '''Get a list of issues from Leo's GitHub site.'''
+    import time
+
+    if base_url is None:
+        base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
+    
+    root = c.lastTopLevel().insertAfter()
+    root.h = 'Backup of issues: %s' % time.strftime("%Y/%m/%d")
+    label_list = []
+    GitIssueController().backup_issues(base_url, c, label_list, root)
+    root.expand()
+    c.selectPosition(root)
+    c.redraw()
+    g.trace('done')
+   
 #@+node:ekr.20170616102324.1: *3* g.execGitCommand
 def execGitCommand(command, directory=None):
     '''Execute the given git command in the given directory.'''
@@ -4806,23 +4823,6 @@ def execGitCommand(command, directory=None):
     out, err = p.communicate()
     lines = [g.toUnicode(z) for z in g.splitLines(out or [])]
     return lines
-#@+node:ekr.20180325025502.1: *3* g.backupGitIssues
-def backupGitIssues(c, base_url=None):
-    '''Get a list of issues from Leo's GitHub site.'''
-    import time
-
-    if base_url is None:
-        base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
-    
-    root = c.lastTopLevel().insertAfter()
-    root.h = 'Backup of issues: %s' % time.strftime("%Y/%m/%d")
-    label_list = []
-    GitIssueController().backup_issues(base_url, c, label_list, root)
-    root.expand()
-    c.selectPosition(root)
-    c.redraw()
-    g.trace('done')
-   
 #@+node:ekr.20180126043905.1: *3* g.getGitIssues
 def getGitIssues(c,
     base_url=None,
@@ -4971,6 +4971,20 @@ class GitIssueController(object):
             for key in r.headers:
                 print('%35s: %s' % (key, r.headers.get(key)))
     #@-others
+#@+node:ekr.20190428173354.1: *3* g.getGitVersion (new)
+def getGitVersion():
+    '''Return a tuple (author, build, date) from the git log, or None.'''
+    #
+    # -n: Get only the last log.
+    s = subprocess.check_output('git log -n 1', 
+        cwd=g.app.loadDir, shell=True)
+    if not s:
+        return None
+    info = [g.toUnicode(z) for z in s.splitlines()]
+    ### g.printObj(info, tag='git.info')
+    commit, author, date = info[2], info[4], info[5]
+        # info[6:] are the lines of the commit log.
+    return author, commit, date
 #@+node:ekr.20170414034616.2: *3* g.gitBranchName
 def gitBranchName(path=None):
     '''
@@ -5063,24 +5077,33 @@ def gitInfo(path=None):
         except IOError:
             pass
     return branch, commit
-#@+node:ekr.20170414041333.1: *3* g.jsonCommitInfo (to be changed)
+#@+node:ekr.20170414041333.1: *3* g.jsonCommitInfo (changed)
 def jsonCommitInfo():
-    '''
-    return asctime and timestamp from leo/core/commit_timestamp.json.
-    return ('', '') if the file does not exist or is not a valid .json file.
-    '''
-    import json
-    leo_core_path = g.os_path_dirname(g.os_path_realpath(__file__))
-    json_path = g.os_path_join(leo_core_path, 'commit_timestamp.json')
-    if not g.os_path_exists(json_path):
-        return '', ''
-    try:
-        info = json.load(open(json_path))
-        return info['asctime'], info['timestamp']
-    except Exception:
-        g.trace('error loading leo/core/commit_timestamp.json')
-        # g.es_exception()
-        return '', ''
+    '''Return a tuple (author, build, date) or None.'''
+    if 1: # #1126.
+        data = g.getGitVersion()
+        if not data:
+            return '', '', ''
+        author, build, date = data
+        build = build.lstrip('commit').strip()[:10]
+        author = author.lstrip('Author:').strip()
+        date = date.lstrip('Date:').strip()
+        return author, build, date
+            # Alpha order.
+    else: # Legacy code.
+        # return asctime and timestamp from leo/core/commit_timestamp.json.
+        import json
+        leo_core_path = g.os_path_dirname(g.os_path_realpath(__file__))
+        json_path = g.os_path_join(leo_core_path, 'commit_timestamp.json')
+        if not g.os_path_exists(json_path):
+            return '', ''
+        try:
+            info = json.load(open(json_path))
+            return info['asctime'], info['timestamp']
+        except Exception:
+            g.trace('error loading leo/core/commit_timestamp.json')
+            # g.es_exception()
+            return '', ''
 #@+node:ekr.20031218072017.3139: ** g.Hooks & Plugins
 #@+node:ekr.20101028131948.5860: *3* g.act_on_node
 def dummy_act_on_node(c, p, event):
