@@ -24,7 +24,7 @@
 <v t="ekr.20170911061827.1"><vh>@button check .leo files</vh>
 <v t="ekr.20170911062209.1"><vh>&lt;&lt; define files &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20190429113053.1"><vh>@button make leo</vh>
+<v t="ekr.20190429113053.1"><vh>@@button make leo</vh>
 <v t="ekr.20190429113053.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20190429113053.3"><vh>&lt;&lt; define global paths and file names &gt;&gt;</vh></v>
 <v t="ekr.20190429113053.4"><vh>class LeoMaker</vh>
@@ -52,9 +52,22 @@
 </v>
 </v>
 </v>
+<v t="DSR.20181126072740.2"><vh>@file git_install.py</vh></v>
+<v t="ekr.20150416081546.1"><vh>Scripts</vh>
+<v t="ekr.20150416081546.2"><vh>Catch mixed newlines in distribution files</vh>
+<v t="ekr.20150416081546.3"><vh>check</vh></v>
+</v>
+<v t="ekr.20150416081546.4"><vh>Catch mixed tab &amp; space in derived files</vh>
+<v t="ekr.20150416081546.5"><vh>check</vh></v>
+</v>
+<v t="ekr.20150416081546.6"><vh>Check all colorizer files for problem regex's</vh></v>
+<v t="ekr.20150416081546.7"><vh>Clean ekr-spellpyx.txt</vh></v>
+<v t="ekr.20150416081546.8"><vh>Linux install script</vh></v>
+<v t="ekr.20150416081546.9"><vh>Warn if leoProjects.txt or leoToDo.txt contain clones</vh></v>
+</v>
 </v>
 <v t="ekr.20161024113526.1"><vh>Notes</vh>
-<v t="ekr.20160501153808.1"><vh>Anaconda install notes</vh></v>
+<v t="ekr.20190430042152.1"><vh>Obsolete notes</vh>
 <v t="ekr.20161024113542.1"><vh>#106 Homebrew (MacOS) notes</vh>
 <v t="ekr.20161025114444.1"><vh>The latest formula</vh></v>
 <v t="ekr.20161025114433.1"><vh>Posts</vh>
@@ -67,42 +80,23 @@
 </v>
 <v t="ekr.20161024115257.1"><vh>How to compute the sha256 hash</vh></v>
 </v>
-<v t="matt.20181004031246.1"><vh>Travis Continual Integration</vh>
-<v t="maphew.20181010205346.1"><vh>Troubleshooting</vh></v>
+<v t="EKR.20040519091259.1"><vh>Download statistics from SourceForge</vh></v>
+<v t="ekr.20101027160251.1500"><vh>NSIS Notes</vh>
+<v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
+<v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
+<v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
 </v>
+<v t="ekr.20100202061222.1494"><vh>Obsolete: SourceForce distribution checklist</vh>
+<v t="ekr.20161015091353.2"><vh>Files</vh></v>
+<v t="ekr.20161015091353.1"><vh>Web docs</vh></v>
+<v t="ekr.20161015091350.1"><vh>Pre-testing</vh></v>
+<v t="ekr.20161015092224.1"><vh>Create distribution</vh></v>
+<v t="ekr.20161020040946.1"><vh>Test</vh></v>
+<v t="ekr.20161020041000.1"><vh>Create git tag</vh></v>
+<v t="ekr.20170316104916.1"><vh>Publish release</vh></v>
+<v t="ekr.20161015091353.3"><vh>Announcements</vh></v>
+<v t="ekr.20180301115911.1"><vh>Create python wheel</vh></v>
 </v>
-<v t="EKR.20040519091259"><vh>Announcements</vh>
-<v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
-<v t="ekr.20190122052801.1"><vh>Leo 5.8.1 release notes</vh>
-<v t="ekr.20190122052801.2"><vh>5.8.1: Bugs fixed</vh>
-<v t="ekr.20190122052801.3"><vh>#0804: ~= in style sheets</vh></v>
-<v t="ekr.20190122052801.4"><vh>#0998: Fix recursive import problems</vh></v>
-<v t="ekr.20190122052801.5"><vh>#1002 self.assertEqual in a @test node is not comparing lists properly</vh></v>
-<v t="ekr.20190122052801.6"><vh>#1007: console gui doesn't load</vh></v>
-<v t="ekr.20190122052801.7"><vh>#1021: Fixed add-editor</vh></v>
-<v t="ekr.20190122052801.8"><vh>#1023: Marked and expansion bits no longer affect .leo files</vh></v>
-<v t="ekr.20190122052801.9"><vh>#1032: importers should not clean blank lines</vh></v>
-<v t="ekr.20190122052801.10"><vh>#1033: No @path directive added for empty imported files</vh></v>
-<v t="ekr.20190122052801.11"><vh>#1036 and #1046: strip control chars before reading .leo files</vh></v>
-<v t="ekr.20190122052801.12"><vh>#1048 &amp; #1037: trailing blank lines</vh></v>
-<v t="ekr.20190122052801.13"><vh>#1049: crash kills Leo</vh></v>
-<v t="ekr.20190122052801.14"><vh>#1051: eliminate ui interface refs</vh></v>
-<v t="ekr.20190122052801.15"><vh>#1053: Unwanted @shadow message on saves</vh></v>
-<v t="ekr.20190122052801.16"><vh>#1056: Column numbers in the status line do not work</vh></v>
-<v t="ekr.20190122052801.17"><vh>#1057: Unwanted loadOnePlugin messages on startup</vh></v>
-<v t="ekr.20190122052801.18"><vh>#1059: cycle-tab-focus exception</vh></v>
-</v>
-<v t="ekr.20190122052801.19"><vh>5.8.1: Features</vh>
-<v t="ekr.20190122052801.20"><vh>#0525: Nested @clean</vh></v>
-<v t="ekr.20190122052801.21"><vh>#0672: Leo uses TravisCI</vh></v>
-<v t="ekr.20190122052801.22"><vh>#0915: Leo debugger</vh></v>
-<v t="ekr.20190122052801.23"><vh>#0926: Organize @outline-data tree-abbreviations</vh></v>
-<v t="ekr.20190122052801.24"><vh>#1005: LeoWapp: Leo in a browser</vh></v>
-<v t="ekr.20190122052801.25"><vh>#1031, #1050 and #1003: Better error recovery</vh></v>
-<v t="ekr.20190122052801.26"><vh>#1040: Simplify atFile.write code</vh></v>
-<v t="ekr.20190122052801.27"><vh>#1047: Tree Window Resizes on Paste Node</vh></v>
-</v>
-<v t="ekr.20190122052801.28"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
 </v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
@@ -115,20 +109,19 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
+<v t="matt.20181004031246.1"><vh>Travis Continual Integration</vh>
+<v t="maphew.20181010205346.1"><vh>Troubleshooting</vh></v>
+</v>
+<v t="ekr.20141118074110.3"><vh>How to Install Leo on Linux</vh></v>
+<v t="maphew.20180128212042.1"><vh>How to build Leo's PyPi Package</vh>
+<v t="maphew.20180128212042.3"><vh>Create an PyPi.org account</vh></v>
+<v t="maphew.20180128212042.2"><vh>Build requirements</vh></v>
+<v t="maphew.20180128212042.4"><vh>Build &amp; publish a release</vh></v>
+<v t="maphew.20180128213245.1"><vh>Not recommended: Test with TestPyPI</vh></v>
+<v t="maphew.20180128212042.5"><vh>Caveats</vh></v>
+</v>
 </v>
 <v t="ekr.20150326055410.1"><vh>Update versions</vh></v>
-<v t="ekr.20150416081546.1"><vh>Distribution check scripts</vh>
-<v t="ekr.20150416081546.2"><vh>Catch mixed newlines in distribution files</vh>
-<v t="ekr.20150416081546.3"><vh>check</vh></v>
-</v>
-<v t="ekr.20150416081546.4"><vh>Catch mixed tab &amp; space in derived files</vh>
-<v t="ekr.20150416081546.5"><vh>check</vh></v>
-</v>
-<v t="ekr.20150416081546.6"><vh>Check all colorizer files for problem regex's</vh></v>
-<v t="ekr.20150416081546.7"><vh>Clean ekr-spellpyx.txt</vh></v>
-<v t="ekr.20150416081546.8"><vh>Linux install script</vh></v>
-<v t="ekr.20150416081546.9"><vh>Warn if leoProjects.txt or leoToDo.txt contain clones</vh></v>
-</v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@asis ../../.gitattributes</vh></v>
 <v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh>
@@ -155,37 +148,30 @@
 <v t="maphew.20190206032329.1"><vh>@asis ../../pyproject.toml</vh></v>
 <v t="maphew.20190208142757.1"><vh>@clean ../../optional-tools.txt</vh></v>
 </v>
+<v t="ekr.20101027131034.1490"><vh>Obsolete NSIS source files</vh>
+<v t="ekr.20160510090441.1"><vh>@@file ../../leo_assoc.nsi</vh>
+<v t="ekr.20160510090943.1"><vh>&lt;&lt; assoc prolog &gt;&gt;</vh></v>
+<v t="ekr.20160510091130.1"><vh>&lt;&lt; assoc pages &gt;&gt;</vh></v>
+<v t="ekr.20160510093344.1"><vh>LeoAssoc</vh></v>
+<v t="ekr.20160510093411.1"><vh>Section FileAssociation</vh></v>
+<v t="ekr.20160510093822.1"><vh>Section Desktop Shortcut</vh></v>
+<v t="ekr.20160510093859.1"><vh>Section Start Menu</vh></v>
+<v t="ekr.20160510095724.1"><vh>Section Uninstall</vh></v>
+<v t="ekr.20160510095711.1"><vh>Section -Post</vh></v>
 </v>
-<v t="ekr.20141118074110.4"><vh>How to...</vh>
-<v t="ekr.20141118074110.3"><vh>How to Install Leo on Linux</vh></v>
-<v t="maphew.20180128212042.1"><vh>How to build Leo's PyPi Package</vh>
-<v t="maphew.20180128212042.3"><vh>Create an PyPi.org account</vh></v>
-<v t="maphew.20180128212042.2"><vh>Build requirements</vh></v>
-<v t="maphew.20180128212042.4"><vh>Build &amp; publish a release</vh></v>
-<v t="maphew.20180128213245.1"><vh>Not recommended: Test with TestPyPI</vh></v>
-<v t="maphew.20180128212042.5"><vh>Caveats</vh></v>
+<v t="ekr.20101027054254.1590"><vh>@@file ../../leo.nsi</vh>
+<v t="ekr.20161017094430.1"><vh>&lt;&lt; defines &gt;&gt;</vh></v>
+<v t="ekr.20161017094235.2"><vh>&lt;&lt; prolog &gt;&gt;</vh></v>
+<v t="ekr.20161017094235.3"><vh>&lt;&lt; pages &gt;&gt;</vh></v>
+<v t="ekr.20161017094235.4"><vh>onInit</vh></v>
+<v t="ekr.20161017094235.5"><vh>Section Leo</vh></v>
+<v t="ekr.20161017094235.6"><vh>Section File Association</vh></v>
+<v t="ekr.20161017094235.7"><vh>Section Desktop Shortcut</vh></v>
+<v t="ekr.20161017094235.8"><vh>Section Start Menu</vh></v>
+<v t="ekr.20161017094235.9"><vh>Section -Post</vh></v>
+<v t="ekr.20161017094235.10"><vh>Section Uninstall</vh></v>
 </v>
-<v t="ekr.20180124100848.1"><vh>Failures in unified version</vh></v>
 </v>
-<v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
-<v t="ekr.20101027160251.1500"><vh>Notes</vh>
-<v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
-<v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
-<v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
-</v>
-<v t="ekr.20160510090441.1"><vh>@file ../../leo_assoc.nsi</vh></v>
-<v t="ekr.20101027054254.1590"><vh>@file ../../leo.nsi</vh></v>
-</v>
-<v t="ekr.20100202061222.1494"><vh>Distribution checklist (Full)</vh>
-<v t="ekr.20161015091353.2"><vh>Files</vh></v>
-<v t="ekr.20161015091353.1"><vh>Web docs</vh></v>
-<v t="ekr.20161015091350.1"><vh>Pre-testing</vh></v>
-<v t="ekr.20161015092224.1"><vh>Create distribution</vh></v>
-<v t="ekr.20161020040946.1"><vh>Test</vh></v>
-<v t="ekr.20161020041000.1"><vh>Create git tag</vh></v>
-<v t="ekr.20170316104916.1"><vh>Publish release</vh></v>
-<v t="ekr.20161015091353.3"><vh>Announcements</vh></v>
-<v t="ekr.20180301115911.1"><vh>Create python wheel</vh></v>
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist (GitHub Only)</vh>
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
@@ -199,7 +185,6 @@
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20180405171433.9"><vh>Announcements</vh></v>
 </v>
-<v t="DSR.20181126072740.2"><vh>@file git_install.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -307,11 +292,6 @@ Other features
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
 </t>
-<t tx="EKR.20040519091259">@pagewidth 70
-@language rest
-@wrap
-
-See LeoDocs.leo for previous release notes.</t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617
 4.4.5       setup: 547   zip: 379  2007-12-11
@@ -544,7 +524,11 @@ SectionEnd
     return ''.join(result)
 </t>
 <t tx="ekr.20100202061222.1494">@language rest
-</t>
+
+This checklist is obsolete, for the following reasons:
+
+1. There never was a SourceForge release for Leo 5.8.
+2. Matt's distribution script creates a more standard way of releasing Leo.</t>
 <t tx="ekr.20101025095431.1517">@language rest</t>
 <t tx="ekr.20101025095431.1518">https://bugs.launchpad.net/leo-editor/+bug/514656
 </t>
@@ -570,6 +554,27 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\2.7\InstallPath
     val = c:\python27\
 HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
     val = c:\Python27\Lib;\Python27\DLLs;C:\Python27\Lib\lib-tk
+</t>
+<t tx="ekr.20101027054254.1590">@language nsi
+
+&lt;&lt; defines &gt;&gt;
+
+;;; !include nsi-boilerplate.txt
+
+; RequestExecutionLevel highest
+; RequestExecutionLevel admin
+
+&lt;&lt; prolog &gt;&gt;
+&lt;&lt; pages &gt;&gt;
+
+; Language should follow pages.
+!insertmacro MUI_LANGUAGE "English"
+
+; The order of sections *does* matter slightly.
+; It determines the order of items in the components dialog.
+; It may also have some other very subtle effects.
+
+@others
 </t>
 <t tx="ekr.20101027131034.1490">@color</t>
 <t tx="ekr.20101027135430.1492">http://nsis.sourceforge.net/Docs/Modern%20UI%202/Readme.html</t>
@@ -773,7 +778,6 @@ leo/core/commit_timestamp.json merge=ours
 <t tx="ekr.20141117135127.2"></t>
 <t tx="ekr.20141117135127.3"></t>
 <t tx="ekr.20141118074110.3">https://groups.google.com/forum/#!topic/leo-editor/VvnDYjV4aIk</t>
-<t tx="ekr.20141118074110.4"></t>
 <t tx="ekr.20150326055410.1">@language rest
 
 1. Search for ##version
@@ -1029,11 +1033,167 @@ Notes:
    when you exit leo.exe. If you want to do real work with Leo you must
    create .leo files in a permanent folder on your machine.
 </t>
-<t tx="ekr.20160501153808.1">- Install pyenchant. (spelling)
-- Install meta (livecode plugin)
-- Downinstall setuptools:
-    - Erase setuptools stuff from Lib/sitecustomize.
-    - pip2/3 install setuptools==19.2
+<t tx="ekr.20160510090441.1">@language nsi
+
+;##version
+!define version         "5.9-b2"
+
+!include MUI2.nsh
+!include nsDialogs.nsh
+!include LogicLib.nsh
+
+; Globals.
+Var PythonDirectory
+    ; Directory containing Python.exe
+Var PythonExe
+    ; "python.exe" or "pythonw.exe"
+Var PythonExecutable
+    ; $PythonDirectory/$PythonExe
+
+!define app_icon        "leo\Icons\LeoApp.ico"
+!define doc_icon        "leo\Icons\LeoDoc.ico"
+!define ext             ".leo"
+!define leo_hklm        "SOFTWARE\EKR\Leo"
+!define license         "LICENSE"
+!define name            "Leo"
+!define publisher       "Edward K. Ream"
+!define site            "http://leoeditor.com/"
+!define target_file     "LeoAssoc.exe"
+!define uninst_key      "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
+
+; Locations
+Name "Leo Associations"
+OutFile "LeoAssoc.exe"
+InstallDir "$PROGRAMFILES\Leo-${version}"
+
+; Icons
+!define MUI_ICON "${app_icon}"
+
+&lt;&lt; assoc prolog &gt;&gt;
+&lt;&lt; assoc pages &gt;&gt;
+@others
+; Language should follow pages.
+!insertmacro MUI_LANGUAGE "English"
+</t>
+<t tx="ekr.20160510090943.1">
+
+!addincludedir C:\leo.repo\leo-editor\leo\dist
+
+; Boilerplate
+SetCompressor bzip2
+Caption "Leo File Associations Installer"
+AutoCloseWindow false 
+SilentInstall normal
+CRCCheck on
+SetCompress auto
+SetDatablockOptimize on
+WindowIcon on
+ShowInstDetails show
+ShowUnInstDetails show
+</t>
+<t tx="ekr.20160510091130.1">@language nsi
+
+Var StartMenuFolder
+
+!insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_LICENSE       ${license}
+!insertmacro MUI_PAGE_COMPONENTS
+
+; Define these here so the back button works.
+!define MUI_PAGE_HEADER_TEXT "Choose Installed Location"
+!define MUI_PAGE_HEADER_SUBTEXT "Choose the folder in which Leo has been installed."
+!define MUI_DIRECTORYPAGE_TEXT_TOP "Setup installs file associations for Leo in the Windows registry."
+!define MUI_DIRECTORYPAGE_TEXT_DESTINATION "Select the top-level leo-editor Folder"
+!insertmacro MUI_PAGE_DIRECTORY
+
+; It's so easy: just set these *before* creating another directory page!
+!define MUI_PAGE_HEADER_TEXT "Choose Python Location"
+!define MUI_PAGE_HEADER_SUBTEXT "Select the top-level Python directory"
+!define MUI_DIRECTORYPAGE_TEXT_TOP "Choose the top-level Python folder."
+!define MUI_DIRECTORYPAGE_TEXT_DESTINATION "Python Folder"
+!define MUI_DIRECTORYPAGE_VARIABLE $PythonDirectory
+!insertmacro MUI_PAGE_DIRECTORY
+
+!insertmacro MUI_PAGE_STARTMENU "Application" $StartMenuFolder
+!insertmacro MUI_PAGE_INSTFILES
+!insertmacro MUI_PAGE_FINISH
+
+; ----- uninstaller pages -----
+
+!insertmacro MUI_UNPAGE_WELCOME
+!insertmacro MUI_UNPAGE_DIRECTORY
+!insertmacro MUI_UNPAGE_INSTFILES
+!insertmacro MUI_UNPAGE_FINISH
+</t>
+<t tx="ekr.20160510093344.1">; The name of this section must be "Leo".
+Section "LeoAssoc" SEC01
+    ; This section is required, but does not need any contents.
+    ; It must have the name of the .exe file.
+SectionEnd
+</t>
+<t tx="ekr.20160510093411.1">Section "${ext} File Association" SEC02
+    MessageBox MB_YESNO "Launch Leo in Python console? (recommended for Python 3)" IDYES true IDNO false
+    true:
+        StrCpy $PythonExe "python.exe"
+        goto next
+    false:
+        StrCpy $PythonExe "pythonw.exe"
+    next:
+    StrCpy $PythonExecutable "$PythonDirectory\$PythonExe"
+        ; Set for all other sections.
+    SectionIn 1 2 3 4
+    WriteRegStr HKCR "${ext}" "" "Leo File"
+    WriteRegStr HKCR "LeoFile" "" "Leo File"
+    WriteRegStr HKCR "LeoFile\shell" "" "open"
+    ; The single quotes below appear to be required.
+    WriteRegStr HKCR "LeoFile\DefaultIcon" "" '"$INSTDIR\${app_icon}"'
+        ; https://github.com/leo-editor/leo-editor/issues/24
+    WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\launchLeo.py %*"'
+SectionEnd
+</t>
+<t tx="ekr.20160510093822.1">
+Section "Leo Desktop Shortcut" SEC03
+  ; This sets the "Start in folder" box!!!"
+  SetOutPath "$INSTDIR\leo"
+  ;This is **tricky**.  We need single quotes to handle paths containing spaces.
+  ;Add single quotes around PythonExecutable and launchLeo.py args, but *not* the app_icon arg.
+  CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\${app_icon}"
+SectionEnd
+</t>
+<t tx="ekr.20160510093859.1">
+Section "Leo Start Menu" SEC04
+  ; This is **tricky**.
+  ; We need single quotes to handle paths containing spaces.
+  ; Add single quotes around PythonExecutable and launchLeo.py args,
+  ; but *not* the app_icon arg.
+  CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\${app_icon}"
+  CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" '"$INSTDIR\uninst.exe"'
+SectionEnd
+</t>
+<t tx="ekr.20160510095711.1">
+Section -Post
+  WriteRegStr HKLM ${leo_hklm} "" "$INSTDIR"
+  WriteUninstaller "$INSTDIR\uninst.exe"
+  WriteRegStr HKLM "${uninst_key}" "DisplayName" "Leo File Associations (remove only)"
+  WriteRegStr HKLM "${uninst_key}" "UninstallString" "$INSTDIR\uninst.exe"
+  WriteRegStr HKLM "${uninst_key}" "DisplayVersion" "Leo File Associations"
+  WriteRegStr HKLM "${uninst_key}" "URLInfoAbout" "${site}"
+  WriteRegStr HKLM "${uninst_key}" "Publisher" "${publisher}"
+SectionEnd
+</t>
+<t tx="ekr.20160510095724.1">
+Section Uninstall
+    DeleteRegKey HKLM "${leo_hklm}"
+    DeleteRegKey HKCR "${ext}"
+    DeleteRegKey HKCR "LeoFile"
+    ; Remove links.
+    Delete "$SMPROGRAMS\Leo\Uninstall.lnk"
+    Delete "$SMPROGRAMS\Leo.lnk"
+    Delete "$DESKTOP\Leo.lnk"
+    DeleteRegKey HKLM "${uninst_key}" 
+    SetAutoClose false
+
+SectionEnd ; end Uninstall section
 </t>
 <t tx="ekr.20161015091350.1">- Make sure no distributed .leo file contains xml-stylesheet elements.
   Run @button check .leo files in leo-dist.leo.
@@ -1121,6 +1281,240 @@ Run pyinstaller on Linux:
 - Test a *copy* of the result so .pyo files are not added to the package)
 - Compress the folder to Leo_&lt;version&gt;_Linux_64_bit.tar.gz.
 </t>
+<t tx="ekr.20161017094235.10">
+Section Uninstall
+
+    DeleteRegKey HKLM "${leo_hklm}"
+    DeleteRegKey HKCR "${ext}"
+    DeleteRegKey HKCR "${name}File"
+    ; Safely removes all files and directories, including $INSTDIR.
+    ; The make-leo button creates nsi-uninstall-files.txt.
+    !include nsi-uninstall-files.txt
+    ; Remove links.
+    Delete "$SMPROGRAMS\${name}\Uninstall.lnk"
+    Delete "$SMPROGRAMS\${name}.lnk"
+    ; RMDir  "$SMPROGRAMS\${name}-${version}"
+    RMDir  "$SMPROGRAMS\${name}"
+    Delete "$DESKTOP\${name}.lnk"
+    DeleteRegKey HKLM "${uninst_key}" 
+    SetAutoClose false
+
+SectionEnd ; end Uninstall section
+</t>
+<t tx="ekr.20161017094235.2">; Globals.
+Var PythonDirectory
+    ; Directory containing Pythonw.exe
+    ; Set by onInit.  May be set in Python Directory page.
+
+!define PythonExecutable "$PythonDirectory\pythonw.exe"
+    ;;; Always use pythonw.exe here.
+    ;;; To debug, set the target to python.exe in the desktop icon properties.
+
+!addincludedir C:\leo.repo\leo-editor\leo\dist
+
+; Boilerplate
+SetCompressor bzip2
+Caption "${name}-${version} Installer"
+AutoCloseWindow false 
+SilentInstall normal
+CRCCheck on
+SetCompress auto
+SetDatablockOptimize on
+WindowIcon on
+ShowInstDetails show
+ShowUnInstDetails show
+
+; Locations
+Name "${name}"
+OutFile "${target_file}"
+InstallDir "$PROGRAMFILES\${name}-${version}"
+
+; Icons
+!define MUI_ICON "${app_icon}"
+</t>
+<t tx="ekr.20161017094235.3">@language nsi
+
+Var StartMenuFolder
+
+; Define the TEXT_TOP for both the MUI_PAGE_DIRECTORY pages.
+; "${s1a} ${s2} ${s3}" is the TEXT_TOP for the Install Location page.
+; "${s2b} ${s2} ${s3}" is the TEXT_TOP for the Choose Python Folder page.
+!define s1a "Setup will install ${name} in the following folder."
+!define s1b "Setup will use the following folder as the Python location."
+!define s2 "To install in a different folder, click Browse and select another folder."
+!define s3 "Click next to continue."
+
+!insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_LICENSE       ${license}
+!insertmacro MUI_PAGE_COMPONENTS
+
+; These are the defaults, but defined them here so the back button works.
+!define MUI_PAGE_HEADER_TEXT "Choose Install Location"
+!define MUI_PAGE_HEADER_SUBTEXT "Choose the folder in which to install ${name}"
+!define MUI_DIRECTORYPAGE_TEXT_TOP "${s1a} ${s2} ${s3}"
+!define MUI_DIRECTORYPAGE_TEXT_DESTINATION "Destination Folder"
+!insertmacro MUI_PAGE_DIRECTORY
+
+; It's so easy: just set these *before* creating another directory page!
+!define MUI_PAGE_HEADER_TEXT "Choose Python Location"
+!define MUI_PAGE_HEADER_SUBTEXT "Select the top-level Python directory"
+!define MUI_DIRECTORYPAGE_TEXT_TOP "${s1b} ${s2} ${s3}"
+!define MUI_DIRECTORYPAGE_TEXT_DESTINATION "Python Folder"
+!define MUI_DIRECTORYPAGE_VARIABLE $PythonDirectory
+!insertmacro MUI_PAGE_DIRECTORY
+
+!insertmacro MUI_PAGE_STARTMENU     "Application" $StartMenuFolder
+!insertmacro MUI_PAGE_INSTFILES
+!insertmacro MUI_PAGE_FINISH
+
+; ----- uninstaller pages -----
+
+!insertmacro MUI_UNPAGE_WELCOME
+; !insertmacro MUI_UNPAGE_LICENSE   ${license}
+; !insertmacro MUI_UNPAGE_CONFIRM
+; !insertmacro MUI_UNPAGE_COMPONENTS ; doesn't actually list components.
+!insertmacro MUI_UNPAGE_DIRECTORY
+!insertmacro MUI_UNPAGE_INSTFILES
+!insertmacro MUI_UNPAGE_FINISH
+</t>
+<t tx="ekr.20161017094235.4">
+; Set PythonDirectory to the top-level Python path.
+; For now, prefer Python 2.x to Python 3.x.
+Function .onInit
+    ;try27:
+        SetRegView 64
+        ReadRegStr $9 HKLM Software\Python\PythonCore\2.7\InstallPath ""
+        StrCmp $9 "" try26 ok
+    try26:
+        ReadRegStr $9 HKLM SOFTWARE\Python\PythonCore\2.6\InstallPath ""
+        StrCmp $9 "" try35 ok
+    try35:
+        ReadRegStr $9 HKLM Software\Python\PythonCore\3.5\InstallPath ""
+        StrCmp $9 "" try34 ok
+    try34:
+        ReadRegStr $9 HKLM Software\Python\PythonCore\3.4\InstallPath ""
+        StrCmp $9 "" try33 ok
+    try33:
+        ReadRegStr $9 HKLM Software\Python\PythonCore\3.3\InstallPath ""
+        StrCmp $9 "" try32 ok
+    try32:
+        ReadRegStr $9 HKLM Software\Python\PythonCore\3.2\InstallPath ""
+        StrCmp $9 "" try31 ok
+    try31:
+        ReadRegStr $9 HKLM Software\Python\PythonCore\3.1\InstallPath ""
+        StrCmp $9 "" try30 ok
+    try30:
+        ReadRegStr $9 HKLM Software\Python\PythonCore\3.0\InstallPath ""
+        StrCmp $9 "" tryReg32 ok
+    ; Entries not found in 64-bit registry: try 32-bit registry...
+    tryReg32:
+        SetRegView 32
+        ReadRegStr $9 HKLM Software\Python\PythonCore\2.7\InstallPath ""
+        StrCmp $9 "" try26_32 ok
+    try26_32:
+        ReadRegStr $9 HKLM Software\Python\PythonCore\2.6\InstallPath ""
+        StrCmp $9 "" try35_32 ok
+    try35_32:
+        ReadRegStr $9 HKLM Software\Python\PythonCore\3.5\InstallPath ""
+        StrCmp $9 "" try34_32 ok
+    try34_32:
+        ReadRegStr $9 HKLM Software\Python\PythonCore\3.4\InstallPath ""
+        StrCmp $9 "" try33_32 ok
+    try33_32:
+        ReadRegStr $9 HKLM Software\Python\PythonCore\3.3\InstallPath ""
+        StrCmp $9 "" try32_32 ok
+    try32_32:
+        ReadRegStr $9 HKLM Software\Python\PythonCore\3.2\InstallPath ""
+        StrCmp $9 "" try31_32 ok
+    try31_32:
+        ReadRegStr $9 HKLM Software\Python\PythonCore\3.1\InstallPath ""
+        StrCmp $9 "" try30_32 ok
+    try30_32:
+        ReadRegStr $9 HKLM Software\Python\PythonCore\3.0\InstallPath ""
+        StrCmp $9 "" oops ok
+    oops:
+        MessageBox MB_OK "Python not found"
+        StrCpy $PythonDirectory ""
+        Goto done
+    ok:
+        StrCpy $PythonDirectory $9
+    done:
+FunctionEnd ; End .onInit
+</t>
+<t tx="ekr.20161017094235.5">
+; The name of this section must be "Leo".
+Section "Leo" SEC01
+    ; Add all files and directories.
+    ; The make-leo button creates nsi-install-files.txt.
+    !include nsi-install-files.txt
+SectionEnd
+</t>
+<t tx="ekr.20161017094235.6">
+Section "${ext} File Association" SEC02
+    SectionIn 1 2 3 4
+    WriteRegStr HKCR "${ext}" "" "${name}File"
+    WriteRegStr HKCR "${name}File" "" "${name} File"
+    WriteRegStr HKCR "${name}File\shell" "" "open"
+    ; The single quotes below appear to be required.
+    WriteRegStr HKCR "${name}File\DefaultIcon" "" '"$INSTDIR\${app_icon}"'
+    ; https://github.com/leo-editor/leo-editor/issues/24
+    WriteRegStr HKCR "${name}File\shell\open\command" "" '"${PythonExecutable}" "$INSTDIR\launchLeo.py %*"'
+SectionEnd
+</t>
+<t tx="ekr.20161017094235.7">
+Section "${name} Desktop Shortcut" SEC03
+  ; This sets the "Start in folder" box!!!"
+  SetOutPath "$INSTDIR\leo"
+  ;;; This is **tricky**.  We need single quotes to handle paths containing spaces.
+  ;;; Add single quotes around PythonExecutable and launchLeo.py args, but *not* the app_icon arg.
+  CreateShortCut "$DESKTOP\${name}.lnk" '"${PythonExecutable}"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\${app_icon}"
+SectionEnd
+</t>
+<t tx="ekr.20161017094235.8">
+Section "${name} Start Menu" SEC04
+  CreateDirectory "$SMPROGRAMS\${name}"
+  ;;; This is **tricky**.  We need single quotes to handle paths containing spaces.
+  ;;; Add single quotes around PythonExecutable and launchLeo.py args, but *not* the app_icon arg.
+  CreateShortCut "$SMPROGRAMS\${name}\${name}.lnk" '"${PythonExecutable}"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\${app_icon}"
+  CreateShortCut "$SMPROGRAMS\${name}\Uninstall.lnk" '"$INSTDIR\uninst.exe"'
+SectionEnd
+</t>
+<t tx="ekr.20161017094235.9">
+Section -Post
+  WriteRegStr HKLM ${leo_hklm} "" "$INSTDIR"
+  WriteUninstaller "$INSTDIR\uninst.exe"
+  WriteRegStr HKLM "${uninst_key}" "DisplayName" "${name}-${version} (remove only)"
+  WriteRegStr HKLM "${uninst_key}" "UninstallString" "$INSTDIR\uninst.exe"
+  WriteRegStr HKLM "${uninst_key}" "DisplayVersion" "${version}"
+  WriteRegStr HKLM "${uninst_key}" "URLInfoAbout" "${site}"
+  WriteRegStr HKLM "${uninst_key}" "Publisher" "${publisher}"
+SectionEnd
+</t>
+<t tx="ekr.20161017094430.1">;;; This doesn't work.
+;;; !addincludedir C:\leo.repo\leo-editor\leo\dist
+
+!include MUI2.nsh
+!include nsDialogs.nsh
+!include LogicLib.nsh
+
+;##version
+!define version         "5.9-b2"
+
+; These are *not* Python strings--backslashes are fine.
+
+!define app_icon        "leo\Icons\LeoApp.ico"
+!define doc_icon        "leo\Icons\LeoDoc.ico"
+; This works, but the icon is too small.
+;!define icon            "C:\leo.repo\trunk\leo\Icons\SplashScreen.ico"
+!define ext             ".leo"
+!define leo_hklm        "SOFTWARE\EKR\Leo"
+!define license         "LICENSE"
+!define name            "Leo"
+!define publisher       "Edward K. Ream"
+!define site            "http://leoeditor.com/"
+!define target_file     "LeoSetup-${version}.exe"
+!define uninst_key      "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
+</t>
 <t tx="ekr.20161020040946.1">Test files in installed folder:
 
 - Run all unit tests in the installed folder, with the installed Leo.
@@ -1142,7 +1536,8 @@ git push --follow-tags
 </t>
 <t tx="ekr.20161024113526.1">@language rest
 @wrap
-</t>
+
+See LeoDocs.leo for all previous release notes.</t>
 <t tx="ekr.20161024113542.1">@language rest
 @wrap
 
@@ -1415,104 +1810,6 @@ g.es_print('done')
     'scripts/scripts.leo',
     'test/test.leo',
 )</t>
-<t tx="ekr.20180124100848.1">c:\Test\LeoAppFolder&gt;LeoApp.exe
-
-
-reading settings in C:\Users\edreamleo\.leo\workbook.leo
-reading settings in C:\Test\LEOAPP~1\leo\test\unitTest.leo
-reading: @file unitTestStartup.txt
-reading: @file activeUnitTests.txt
-.saved: save-new-test.py
-....
-Traceback (most recent call last):
-  File "launchLeo.py", line 8, in &lt;module&gt;
-  File "leo\core\runLeo.py", line 71, in run
-    g.app.loadManager.load(fileName, pymacs)
-  File "leo\core\leoApp.py", line 2117, in load
-    ok = lm.doPostPluginsInit()
-  File "leo\core\leoApp.py", line 2722, in doPostPluginsInit
-    c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
-  File "leo\core\leoApp.py", line 2959, in loadLocalFile
-    c = lm.openFileByName(fn, gui, old_c, previousSettings)
-  File "leo\core\leoApp.py", line 3007, in openFileByName
-    lm.initWrapperLeoFile(c, fn)
-  File "leo\core\leoApp.py", line 3084, in initWrapperLeoFile
-    p.h = g.shortFileName(fn) if fn.endswith('.leo') else '@edit %s' % fn
-AttributeError: 'NoneType' object has no attribute 'h'
-Failed to execute script launchLeo
-F...................test of at.printError: La Pe?a
-..............s...........................
-End of leoAtFile tests
-..........s...
-c:\Test\LeoAppFolder&gt;python2 C:\Test\LEOAPP~1\leo\test\leo-bridge-test.py
-
-c:\Test\LeoAppFolder&gt;c:\Anaconda2\python.exe C:\Test\LEOAPP~1\leo\test\leo-bridge-test.py
-.ssss........................................
-End of leoColor tests
-................................
-End of leoCommands tests
-........
-End of leoConfig tests
-....ss...................................
-.........................................................................................................................................s...........................
-End of typing tests
-.
-End of leoEditCommands tests.
-............
-End of leoFileCommands tests.
-.....
-End of leoFind tests.
-.............
-End of leoFrame tests.
-..........................F.............................................
-End of leoGlobals tests.
-...
-End of leoGui tests.
-...............................................................................................................................
-End of leoImport tests.
-..s....
-End of leoKeys tests.
-.........................................
-End of leoNodes tests.
-................................s..................................................................
-End of leoUndo tests.
-...............................................................................................................................................................
-End of plugins unit tests
-.@test print redraw count: 736
-..all unit tests done
-..
-======================================================================
-FAIL: runTest (leo.core.leoTest.GeneralTestCase)
-@test batch mode
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "leo\core\leoTest.py", line 211, in runTest
-    builtins.execfile(scriptFile, d)
-  File "C:\Test\LEOAPP~1\leo\test\scriptFile.py", line 38, in &lt;module&gt;
-    assert(g.os_path_exists(test_file))
-AssertionError
-
-======================================================================
-FAIL: runTest (leo.core.leoTest.GeneralTestCase)
-@test g.importModule
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "leo\core\leoTest.py", line 211, in runTest
-    builtins.execfile(scriptFile, d)
-  File "C:\Test\LEOAPP~1\leo\test\scriptFile.py", line 5, in &lt;module&gt;
-    assert g.importModule('rope',verbose=False)
-AssertionError
-
-----------------------------------------------------------------------
-Ran 916 tests in 123.577s
-
-FAILED (failures=2, skipped=11)
-
-c:\Test\LeoAppFolder&gt;
-
-##### can not open @edit C:\Test\LEOAPP~1\README.MD</t>
 <t tx="ekr.20180301115911.1">- git checkout {release-tag}
 - python setup.py bdist_wheel
 - twine upload dist/leo*.whl
@@ -1522,7 +1819,8 @@ c:\Test\LeoAppFolder&gt;
 Overview:
 
 1. Do as much work as possible in "devel".
-2. Update leoVersion.py *after* creating -rel branch.</t>
+2. Update leoVersion.py *after* creating -rel branch.
+</t>
 <t tx="ekr.20180405171433.2">LeoDocs.leo:
 - Make sure copyright dates are correct.
 - Update the "last updated" text in index.html.
@@ -1611,129 +1909,13 @@ git push origin x.y-final-rel
 <t tx="ekr.20181001112153.1">git checkout master
 git merge devel</t>
 <t tx="ekr.20181001112218.1"></t>
-<t tx="ekr.20190122052801.1">Leo 5.8.1 beta 1, http://leoeditor.com, is now available on
-[GitHub](https://github.com/leo-editor/leo-editor).
-
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
-
-**The highlights of Leo 5.8.1**
-
-- LeoWapp: Leo in a browser.
-- Integrated debugger.
-- Nested @clean nodes, useful for LaTex files.
-- A major refactoring of the code that writes external files.
-- Better error recovery.
-- Support for continuous integration with TravisCI.
-- The usual minor bug fixes.
-
-**Links**
-
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
-- [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
-- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
-- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
-</t>
-<t tx="ekr.20190122052801.10">https://github.com/leo-editor/leo-editor/issues/1033
-</t>
-<t tx="ekr.20190122052801.11">https://github.com/leo-editor/leo-editor/issues/1036
-https://github.com/leo-editor/leo-editor/issues/1046</t>
-<t tx="ekr.20190122052801.12">Leo no longer generates @nonl sentinels, so regularizing trailing ws is much easier.
-
-#1048 @clean: https://github.com/leo-editor/leo-editor/issues/1048
-#1037 @file:  https://github.com/leo-editor/leo-editor/issues/1037
-
-</t>
-<t tx="ekr.20190122052801.13">https://github.com/leo-editor/leo-editor/issues/1049
-</t>
-<t tx="ekr.20190122052801.14">https://github.com/leo-editor/leo-editor/issues/1051
-
-Removed @string qt-ui-file-name.
-</t>
-<t tx="ekr.20190122052801.15">https://github.com/leo-editor/leo-editor/issues/1053
-
-This was an ancient bug!
-
-The fix was to call c.setFileTimeStamp(fileName) in x.replaceFileWithString.
-</t>
-<t tx="ekr.20190122052801.16">https://github.com/leo-editor/leo-editor/issues/1056
-</t>
-<t tx="ekr.20190122052801.17">https://github.com/leo-editor/leo-editor/issues/1057
-</t>
-<t tx="ekr.20190122052801.18">https://github.com/leo-editor/leo-editor/issues/1059
-</t>
-<t tx="ekr.20190122052801.19"></t>
-<t tx="ekr.20190122052801.2">For the complete list, see:
-https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.8.1+label%3Abug+is%3Aclosed</t>
-<t tx="ekr.20190122052801.20">https://github.com/leo-editor/leo-editor/issues/525
-
-See this posting:
-https://groups.google.com/forum/#!msg/leo-editor/WGQIzBzQ058/QTJRUvl9CwAJ</t>
-<t tx="ekr.20190122052801.21">https://github.com/leo-editor/leo-editor/issues/672
-
-TravisCI: https://travis-ci.org/
-</t>
-<t tx="ekr.20190122052801.22">https://github.com/leo-editor/leo-editor/issues/915
-
-Creates the xdb command and db-* commands.The xdb_pane.py plugin is optional, but recommended.
-</t>
-<t tx="ekr.20190122052801.23">https://github.com/leo-editor/leo-editor/issues/926
-</t>
-<t tx="ekr.20190122052801.24">https://github.com/leo-editor/leo-editor/issues/1005
-</t>
-<t tx="ekr.20190122052801.25">When saving a file, Leo now raises a dialog warning if quitting might lose data.
-
-There are three related issues:
-https://github.com/leo-editor/leo-editor/issues/1031
-https://github.com/leo-editor/leo-editor/issues/1050
-https://github.com/leo-editor/leo-editor/issues/1003
-</t>
-<t tx="ekr.20190122052801.26">https://github.com/leo-editor/leo-editor/issues/1040
-
-This was a major refactoring of Leo's code.
-
-See this post: https://groups.google.com/forum/#!topic/leo-editor/JfAUMMOSdvQ
-</t>
-<t tx="ekr.20190122052801.27">https://github.com/leo-editor/leo-editor/issues/1047
-
-The following call FastRead().readFileFromClipboard:
-    
-- fc.getLeoOutlineFromClipBoard.
-- fc.getLeoOutlineFromClipBoardRetainingClones.
-- fc.getPos/VnodeFromClipboard.
-</t>
-<t tx="ekr.20190122052801.28">- Removed @string trailing-body-newlines.
-- Remove @string qt-ui-file-name.
-- #993: use -, not underscore, for settings names.
-  https://github.com/leo-editor/leo-editor/issues/993
-</t>
-<t tx="ekr.20190122052801.3">https://github.com/leo-editor/leo-editor/issues/804
-
-Changed various style sheets as a workaround for a serious Qt bug.
-</t>
-<t tx="ekr.20190122052801.4">https://github.com/leo-editor/leo-editor/issues/998
-</t>
-<t tx="ekr.20190122052801.5">https://github.com/leo-editor/leo-editor/issues/1002
-</t>
-<t tx="ekr.20190122052801.6">https://github.com/leo-editor/leo-editor/issues/1007
-</t>
-<t tx="ekr.20190122052801.7">https://github.com/leo-editor/leo-editor/issues/1021
-
-The culprit was a mistaken fix to #690:
-https://github.com/leo-editor/leo-editor/issues/690
-</t>
-<t tx="ekr.20190122052801.8">https://github.com/leo-editor/leo-editor/issues/1023
-</t>
-<t tx="ekr.20190122052801.9">https://github.com/leo-editor/leo-editor/issues/1032</t>
 <t tx="ekr.20190429113053.1"># Commit all files before running this script.
 
 '''
+This script is OBSOLETE. It used NSIS to create a full distribution to SourceForge.
+
+Also, pyinstaller is no longer used: See the obsolete SourceForce distribution checklist.
+
 Make these files in the top-level folder::
 
     git-manifest.txt
@@ -2183,6 +2365,7 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
+<t tx="ekr.20190430042152.1"></t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
