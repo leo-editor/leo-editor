@@ -942,8 +942,6 @@ class LeoApp(object):
     def computeSignon(self):
         import leo.core.leoVersion as leoVersion
         app = self
-        ### build, date = leoVersion.build, leoVersion.date
-            # Prefer g.getGitVersion.
         guiVersion = ', ' + app.gui.getFullVersion() if app.gui else ''
         leoVer = leoVersion.version
         n1, n2, n3, junk, junk = sys.version_info

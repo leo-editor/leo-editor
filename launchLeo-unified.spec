@@ -89,7 +89,6 @@ def define_datas():
     '''Return all needed data files.'''
     return [
     # Required for startup...
-        ### ('leo/core/commit_timestamp.json', 'leo/core'),
         ('leo/core',),
         ext('.ui', 'leo/plugins'),
     # Required for plugins...
