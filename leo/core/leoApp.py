@@ -964,7 +964,8 @@ class LeoApp(object):
             except Exception:
                 pass
         else: sysVersion = sys.platform
-        branch, commit = g.gitInfo()
+        branch, junk_commit = g.gitInfo()
+        author, commit, date = g.getGitVersion()
         if not commit:
             app.signon1 = 'Not running from a git repo'
         else:

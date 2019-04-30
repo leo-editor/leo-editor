@@ -875,7 +875,7 @@ class GitDiffController:
                 g.trace('not found:', path)
                 s = ''
         return g.toUnicode(s).replace('\r','')
-    #@+node:ekr.20170806094320.9: *4* gdc.get_files (minor change)
+    #@+node:ekr.20170806094320.9: *4* gdc.get_files
     def get_files(self, rev1, rev2):
         '''Return a list of changed files.'''
 

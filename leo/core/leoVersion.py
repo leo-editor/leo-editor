@@ -54,11 +54,11 @@ def compute_module_vars(static_date):
         # alpha order.
 #@-others
 author, date, branch, build = compute_module_vars(static_date)
-###
-    # print('AUTHOR', author)
-    # print('DATE', date)
-    # print('BRANCH', branch)
-    # print('BUILD', build)
+if 1:
+    print('AUTHOR', author)
+    print('DATE  ', date)
+    print('BRANCH', branch)
+    print('BUILD ', build)
 #@@language python
 #@@tabwidth -4
 #@-leo

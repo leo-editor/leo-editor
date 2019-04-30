@@ -4976,15 +4976,19 @@ def getGitVersion():
     '''Return a tuple (author, build, date) from the git log, or None.'''
     #
     # -n: Get only the last log.
-    s = subprocess.check_output('git log -n 1', 
+    s = subprocess.check_output('git log -n 1 --date=iso', 
         cwd=g.app.loadDir, shell=True)
-    if not s:
-        return None
+        
     info = [g.toUnicode(z) for z in s.splitlines()]
-    ### g.printObj(info, tag='git.info')
-    commit, author, date = info[2], info[4], info[5]
-        # info[6:] are the lines of the commit log.
-    return author, commit, date
+    # g.printObj(info, tag='git.info')
+    
+    def find(kind):
+        for z in info:
+            if z.startswith(kind):
+                return z.lstrip(kind).lstrip(':').strip()
+        return ''
+        
+    return find('Author'), find('commit')[:10], find('Date')
 #@+node:ekr.20170414034616.2: *3* g.gitBranchName
 def gitBranchName(path=None):
     '''
@@ -5081,14 +5085,13 @@ def gitInfo(path=None):
 def jsonCommitInfo():
     '''Return a tuple (author, build, date) or None.'''
     if 1: # #1126.
-        data = g.getGitVersion()
-        if not data:
-            return '', '', ''
-        author, build, date = data
-        build = build.lstrip('commit').strip()[:10]
-        author = author.lstrip('Author:').strip()
-        date = date.lstrip('Date:').strip()
-        return author, build, date
+        return g.getGitVersion()
+        # author, build, date = g.getGitVersion()
+            # # This may return ('', '', '')
+        # build = build.lstrip('commit').strip()[:10]
+        # author = author.lstrip('Author:').strip()
+        # date = date.lstrip('Date:').strip()
+        # return author, build, date
             # Alpha order.
     else: # Legacy code.
         # return asctime and timestamp from leo/core/commit_timestamp.json.
