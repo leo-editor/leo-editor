@@ -1191,7 +1191,8 @@ class LeoBrowserGui(leoGui.NullGui):
             (g.app.signon2, None),
         ]
         for message, color in table:
-            w.log.put(message.rstrip())
+            if message.strip():
+                w.log.put(message.rstrip())
         #
         # Write all the queued log entries.
             # c.setLog()

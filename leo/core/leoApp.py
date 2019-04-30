@@ -305,6 +305,7 @@ class LeoApp(object):
         self.printWaiting = []
             # Queue of messages to be sent to the printer.
         self.signon = ''
+        self.signon1 = ''
         self.signon2 = ''
         #@-<< LeoApp: the global log >>
         #@+<< LeoApp: global theme data >>
@@ -941,7 +942,8 @@ class LeoApp(object):
     def computeSignon(self):
         import leo.core.leoVersion as leoVersion
         app = self
-        build, date = leoVersion.build, leoVersion.date
+        ### build, date = leoVersion.build, leoVersion.date
+            # Prefer g.getGitVersion.
         guiVersion = ', ' + app.gui.getFullVersion() if app.gui else ''
         leoVer = leoVersion.version
         n1, n2, n3, junk, junk = sys.version_info
@@ -966,17 +968,25 @@ class LeoApp(object):
         else: sysVersion = sys.platform
         branch, junk_commit = g.gitInfo()
         author, commit, date = g.getGitVersion()
-        if not commit:
-            app.signon1 = 'Not running from a git repo'
+        if 1:
+            signon = ['Leo %s' % leoVer]
+            if branch:
+                signon.append(', %s branch' % branch)
+            if commit:
+                signon.append(', build '+ commit)
+            if date:
+                signon.append('\n' + date)
+            app.signon = ''.join(signon)
         else:
-            app.signon1 = 'Git branch: %s, commit: %s' % (
-                branch or '(none)', commit)
-        app.signon = 'Leo %s' % leoVer
-        if build:
-            app.signon += ', build '+build
-        if date:
-            app.signon += ', '+date
-        app.signon2 = 'Python %s.%s.%s%s\n%s' % (
+            app.signon = 'Leo %s' % leoVer
+            if branch:
+                app.signon += ', %s branch' % branch
+            if commit: ### build:
+                app.signon += ', build '+ commit ### build
+            if date:
+                # app.signon += ', '+date
+                app.signon += '\n' + date
+        app.signon1 = 'Python %s.%s.%s%s\n%s' % (
             n1, n2, n3, guiVersion, sysVersion)
             
     def printSignon(self, verbose=False):
@@ -992,7 +1002,6 @@ class LeoApp(object):
         print(app.signon)
         if verbose:
             print(app.signon1)
-            print(app.signon2)
     #@+node:ekr.20100831090251.5838: *4* app.createXGui
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
@@ -1253,7 +1262,6 @@ class LeoApp(object):
             ('Leo Log Window', 'red'),
             (app.signon, None),
             (app.signon1, None),
-            (app.signon2, None),
         ]
         table.reverse()
         c.setLog()
@@ -2432,7 +2440,7 @@ class LoadManager(object):
         # Create the gui after reading options and settings.
         lm.createGui(pymacs)
         # We can't print the signon until we know the gui.
-        g.app.computeSignon() # Set app.signon/signon2 for commanders.
+        g.app.computeSignon() # Set app.signon/signon1 for commanders.
     #@+node:ekr.20170302093006.1: *5* LM.createAllImporetersData & helpers (new)
     def createAllImporetersData(self):
         '''
