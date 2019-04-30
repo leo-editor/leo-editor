@@ -408,6 +408,7 @@ class LeoBrowserApp(flx.PyComponent):
         Will be called *in addition* to any inner key handlers,
         unless the inner key handler calls e.preventDefault()
         '''
+        g.trace(ev, ivar)
         c = self.c
         browser_wrapper = getattr(c.frame, ivar)
             # Essential: there is no way to pass the actual wrapper.
@@ -1523,7 +1524,7 @@ class JS_Editor(flx.Widget):
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        if 0: print('jse.key_press: %s %r' % (self.name, ev))
+        print('jse.key_press: %s %r' % (self.name, ev))
         if self.should_be_leo_key(ev):
             e.preventDefault()
         return ev
@@ -1799,7 +1800,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
         # Backspace is not emitted.
         ev = self._create_key_event(e)
         key, mods = ev ['key'], ev ['modifiers']
-        if 0: print('mini.key_press: %r %r' % (mods, key))
+        print('mini.key_press: %r %r' % (mods, key))
         if mods:
             e.preventDefault()
             return ev
@@ -1817,7 +1818,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
     def on_key_press(self, *events):
         '''Pass *all* keys Leo's core.'''
         for ev in events:
-            if 0: print('mini.on_key_press: %r %r' % (ev ['modifiers'], ev['key']))
+            print('mini.on_key_press: %r %r' % (ev ['modifiers'], ev['key']))
             self.root.do_key(ev, 'minibufferWidget')
     #@+node:ekr.20181129174405.1: *4* flx_minibuffer.do_enter_key
     def do_enter_key(self, key, mods):
