@@ -54,7 +54,7 @@ def compute_module_vars(static_date):
         # alpha order.
 #@-others
 author, date, branch, build = compute_module_vars(static_date)
-if 0: ###
+if 0:
     print('AUTHOR', author)
     print('DATE  ', date)
     print('BRANCH', branch)

@@ -968,24 +968,16 @@ class LeoApp(object):
         else: sysVersion = sys.platform
         branch, junk_commit = g.gitInfo()
         author, commit, date = g.getGitVersion()
-        if 1:
-            signon = ['Leo %s' % leoVer]
-            if branch:
-                signon.append(', %s branch' % branch)
-            if commit:
-                signon.append(', build '+ commit)
-            if date:
-                signon.append('\n' + date)
-            app.signon = ''.join(signon)
-        else:
-            app.signon = 'Leo %s' % leoVer
-            if branch:
-                app.signon += ', %s branch' % branch
-            if commit: ### build:
-                app.signon += ', build '+ commit ### build
-            if date:
-                # app.signon += ', '+date
-                app.signon += '\n' + date
+        # Compute g.app.signon.
+        signon = ['Leo %s' % leoVer]
+        if branch:
+            signon.append(', %s branch' % branch)
+        if commit:
+            signon.append(', build '+ commit)
+        if date:
+            signon.append('\n' + date)
+        app.signon = ''.join(signon)
+        # Compute g.app.signon1.
         app.signon1 = 'Python %s.%s.%s%s\n%s' % (
             n1, n2, n3, guiVersion, sysVersion)
             

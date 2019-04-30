@@ -4980,9 +4980,9 @@ def getGitVersion():
         cwd=g.app.loadDir, shell=True)
         
     info = [g.toUnicode(z) for z in s.splitlines()]
-    # g.printObj(info, tag='git.info')
     
     def find(kind):
+        '''Return the given type of log line.'''
         for z in info:
             if z.startswith(kind):
                 return z.lstrip(kind).lstrip(':').strip()
