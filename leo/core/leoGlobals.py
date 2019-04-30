@@ -5081,32 +5081,6 @@ def gitInfo(path=None):
         except IOError:
             pass
     return branch, commit
-#@+node:ekr.20170414041333.1: *3* g.jsonCommitInfo (changed)
-def jsonCommitInfo():
-    '''Return a tuple (author, build, date) or None.'''
-    if 1: # #1126.
-        return g.getGitVersion()
-        # author, build, date = g.getGitVersion()
-            # # This may return ('', '', '')
-        # build = build.lstrip('commit').strip()[:10]
-        # author = author.lstrip('Author:').strip()
-        # date = date.lstrip('Date:').strip()
-        # return author, build, date
-            # Alpha order.
-    else: # Legacy code.
-        # return asctime and timestamp from leo/core/commit_timestamp.json.
-        import json
-        leo_core_path = g.os_path_dirname(g.os_path_realpath(__file__))
-        json_path = g.os_path_join(leo_core_path, 'commit_timestamp.json')
-        if not g.os_path_exists(json_path):
-            return '', ''
-        try:
-            info = json.load(open(json_path))
-            return info['asctime'], info['timestamp']
-        except Exception:
-            g.trace('error loading leo/core/commit_timestamp.json')
-            # g.es_exception()
-            return '', ''
 #@+node:ekr.20031218072017.3139: ** g.Hooks & Plugins
 #@+node:ekr.20101028131948.5860: *3* g.act_on_node
 def dummy_act_on_node(c, p, event):

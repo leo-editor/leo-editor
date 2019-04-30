@@ -48,13 +48,13 @@ def compute_module_vars(static_date):
     
     Fall back to (static_date, '', '') when git is not available.
     '''
-    author, build, date = g.jsonCommitInfo()
+    author, build, date = g.getGitVersion()
     branch = g.gitBranchName()
     return author, date or static_date, branch, build
         # alpha order.
 #@-others
 author, date, branch, build = compute_module_vars(static_date)
-if 1:
+if 0: ###
     print('AUTHOR', author)
     print('DATE  ', date)
     print('BRANCH', branch)
