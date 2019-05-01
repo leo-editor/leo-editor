@@ -3038,7 +3038,7 @@ if 0:
     print('DATE  ', date)
     print('BRANCH', branch)
     print('BUILD ', build)
-#@+node:ekr.20190429093839.1: *4* compute_module_vars (leoVersion.py)
+#@+node:ekr.20190429093839.1: *4* compute_module_vars (leoVersion.py) (not used)
 def compute_module_vars(static_date):
     '''
     Return (date, branch, build), using git if possible.
