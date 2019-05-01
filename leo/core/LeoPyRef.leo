@@ -197,7 +197,6 @@
 <v t="ekr.20181009084245.1"><vh>&lt;&lt; compute path &gt;&gt;</vh></v>
 <v t="ekr.20181009084323.1"><vh>&lt;&lt; run tests &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20160124165611.1"><vh>@file ../../launchLeo-unified.spec</vh></v>
 <v t="ekr.20181014073705.1"><vh>@file ../../run_pytest_tests.py</vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
 </v>
