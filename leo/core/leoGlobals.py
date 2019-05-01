@@ -4977,7 +4977,8 @@ def getGitVersion():
     #
     # -n: Get only the last log.
     try:
-        s = subprocess.check_output('git log -n 1 --date=iso', 
+        s = subprocess.check_output(
+            'git log -n 1 --date=iso', 
             cwd=g.app.loadDir,
             stderr=subprocess.DEVNULL,
             shell=True,
