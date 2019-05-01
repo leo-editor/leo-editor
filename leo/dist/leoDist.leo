@@ -183,9 +183,6 @@
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20180405171433.9"><vh>Announcements</vh></v>
 </v>
-<v t="ekr.20190501101302.1"><vh>git diff HEAD </vh>
-<v t="ekr.20190501101302.2"><vh>INSTALL.TXT</vh></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -2353,39 +2350,6 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
                 g.error('does not exist',dst_path)
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
-</t>
-<t tx="ekr.20190501101302.1">@ignore
-@nosearch
-HEAD=f9a655301</t>
-<t tx="ekr.20190501101302.2">@ignore
-@nosearch
-@language patch
---- HEAD
-+++ uncommitted
-@@ -53,22 +53,10 @@
- 
- Install Python and Qt, as described above.
- 
--Now you have a choice.  You can use Leo's binary (single-click) installer
--or download Leo's sources directly.
--
--1. Using the single-click installer
--
--Leo has a binary installer for Windows, available at
--http://sourceforge.net/projects/leo/files/Leo/ The binary installer
--installs Leo and sets Windows file associations.
--
--2. Installing from sources
--
- You may download Leo's sources in one of three ways, as described at:
- http://leoeditor.com/download.html If the sources are zipped, unpack them
- into a temp folder. You may place the sources anywhere you like, including
--Python's *site-packages* folder, for example,
--C:\Python26\Lib\site-packages.
-+Python's *site-packages* folder, for example, C:\Python36\Lib\site-packages.
- 
- 
- Running Leo
 </t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
