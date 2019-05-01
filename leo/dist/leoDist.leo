@@ -67,7 +67,6 @@
 </v>
 </v>
 <v t="ekr.20161024113526.1"><vh>Notes</vh>
-<v t="ekr.20190430042152.1"><vh>Obsolete notes</vh>
 <v t="ekr.20161024113542.1"><vh>#106 Homebrew (MacOS) notes</vh>
 <v t="ekr.20161025114444.1"><vh>The latest formula</vh></v>
 <v t="ekr.20161025114433.1"><vh>Posts</vh>
@@ -81,10 +80,42 @@
 <v t="ekr.20161024115257.1"><vh>How to compute the sha256 hash</vh></v>
 </v>
 <v t="EKR.20040519091259.1"><vh>Download statistics from SourceForge</vh></v>
+<v t="maphew.20180128212042.1"><vh>How to build Leo's PyPi Package</vh>
+<v t="maphew.20180128212042.3"><vh>Create an PyPi.org account</vh></v>
+<v t="maphew.20180128212042.2"><vh>Build requirements</vh></v>
+<v t="maphew.20180128212042.4"><vh>Build &amp; publish a release</vh></v>
+<v t="maphew.20180128213245.1"><vh>Not recommended: Test with TestPyPI</vh></v>
+<v t="maphew.20180128212042.5"><vh>Caveats</vh></v>
+</v>
+<v t="ekr.20141118074110.3"><vh>How to Install Leo on Linux</vh></v>
 <v t="ekr.20101027160251.1500"><vh>NSIS Notes</vh>
 <v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
 <v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
 <v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
+</v>
+<v t="ekr.20101027131034.1490"><vh>Obsolete: NSIS source files</vh>
+<v t="ekr.20160510090441.1"><vh>@@file ../../leo_assoc.nsi</vh>
+<v t="ekr.20160510090943.1"><vh>&lt;&lt; assoc prolog &gt;&gt;</vh></v>
+<v t="ekr.20160510091130.1"><vh>&lt;&lt; assoc pages &gt;&gt;</vh></v>
+<v t="ekr.20160510093344.1"><vh>LeoAssoc</vh></v>
+<v t="ekr.20160510093411.1"><vh>Section FileAssociation</vh></v>
+<v t="ekr.20160510093822.1"><vh>Section Desktop Shortcut</vh></v>
+<v t="ekr.20160510093859.1"><vh>Section Start Menu</vh></v>
+<v t="ekr.20160510095724.1"><vh>Section Uninstall</vh></v>
+<v t="ekr.20160510095711.1"><vh>Section -Post</vh></v>
+</v>
+<v t="ekr.20101027054254.1590"><vh>@@file ../../leo.nsi</vh>
+<v t="ekr.20161017094430.1"><vh>&lt;&lt; defines &gt;&gt;</vh></v>
+<v t="ekr.20161017094235.2"><vh>&lt;&lt; prolog &gt;&gt;</vh></v>
+<v t="ekr.20161017094235.3"><vh>&lt;&lt; pages &gt;&gt;</vh></v>
+<v t="ekr.20161017094235.4"><vh>onInit</vh></v>
+<v t="ekr.20161017094235.5"><vh>Section Leo</vh></v>
+<v t="ekr.20161017094235.6"><vh>Section File Association</vh></v>
+<v t="ekr.20161017094235.7"><vh>Section Desktop Shortcut</vh></v>
+<v t="ekr.20161017094235.8"><vh>Section Start Menu</vh></v>
+<v t="ekr.20161017094235.9"><vh>Section -Post</vh></v>
+<v t="ekr.20161017094235.10"><vh>Section Uninstall</vh></v>
+</v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Obsolete: SourceForce distribution checklist</vh>
 <v t="ekr.20161015091353.2"><vh>Files</vh></v>
@@ -96,7 +127,7 @@
 <v t="ekr.20170316104916.1"><vh>Publish release</vh></v>
 <v t="ekr.20161015091353.3"><vh>Announcements</vh></v>
 <v t="ekr.20180301115911.1"><vh>Create python wheel</vh></v>
-</v>
+<v t="ekr.20150326055410.1"><vh>Update versions</vh></v>
 </v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
@@ -112,16 +143,7 @@
 <v t="matt.20181004031246.1"><vh>Travis Continual Integration</vh>
 <v t="maphew.20181010205346.1"><vh>Troubleshooting</vh></v>
 </v>
-<v t="ekr.20141118074110.3"><vh>How to Install Leo on Linux</vh></v>
-<v t="maphew.20180128212042.1"><vh>How to build Leo's PyPi Package</vh>
-<v t="maphew.20180128212042.3"><vh>Create an PyPi.org account</vh></v>
-<v t="maphew.20180128212042.2"><vh>Build requirements</vh></v>
-<v t="maphew.20180128212042.4"><vh>Build &amp; publish a release</vh></v>
-<v t="maphew.20180128213245.1"><vh>Not recommended: Test with TestPyPI</vh></v>
-<v t="maphew.20180128212042.5"><vh>Caveats</vh></v>
 </v>
-</v>
-<v t="ekr.20150326055410.1"><vh>Update versions</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@asis ../../.gitattributes</vh></v>
 <v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh>
@@ -148,30 +170,6 @@
 <v t="maphew.20190206032329.1"><vh>@asis ../../pyproject.toml</vh></v>
 <v t="maphew.20190208142757.1"><vh>@clean ../../optional-tools.txt</vh></v>
 </v>
-<v t="ekr.20101027131034.1490"><vh>Obsolete NSIS source files</vh>
-<v t="ekr.20160510090441.1"><vh>@@file ../../leo_assoc.nsi</vh>
-<v t="ekr.20160510090943.1"><vh>&lt;&lt; assoc prolog &gt;&gt;</vh></v>
-<v t="ekr.20160510091130.1"><vh>&lt;&lt; assoc pages &gt;&gt;</vh></v>
-<v t="ekr.20160510093344.1"><vh>LeoAssoc</vh></v>
-<v t="ekr.20160510093411.1"><vh>Section FileAssociation</vh></v>
-<v t="ekr.20160510093822.1"><vh>Section Desktop Shortcut</vh></v>
-<v t="ekr.20160510093859.1"><vh>Section Start Menu</vh></v>
-<v t="ekr.20160510095724.1"><vh>Section Uninstall</vh></v>
-<v t="ekr.20160510095711.1"><vh>Section -Post</vh></v>
-</v>
-<v t="ekr.20101027054254.1590"><vh>@@file ../../leo.nsi</vh>
-<v t="ekr.20161017094430.1"><vh>&lt;&lt; defines &gt;&gt;</vh></v>
-<v t="ekr.20161017094235.2"><vh>&lt;&lt; prolog &gt;&gt;</vh></v>
-<v t="ekr.20161017094235.3"><vh>&lt;&lt; pages &gt;&gt;</vh></v>
-<v t="ekr.20161017094235.4"><vh>onInit</vh></v>
-<v t="ekr.20161017094235.5"><vh>Section Leo</vh></v>
-<v t="ekr.20161017094235.6"><vh>Section File Association</vh></v>
-<v t="ekr.20161017094235.7"><vh>Section Desktop Shortcut</vh></v>
-<v t="ekr.20161017094235.8"><vh>Section Start Menu</vh></v>
-<v t="ekr.20161017094235.9"><vh>Section -Post</vh></v>
-<v t="ekr.20161017094235.10"><vh>Section Uninstall</vh></v>
-</v>
-</v>
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist (GitHub Only)</vh>
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
@@ -184,6 +182,9 @@
 <v t="ekr.20180405171433.8"><vh>Publish release</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20180405171433.9"><vh>Announcements</vh></v>
+</v>
+<v t="ekr.20190501101302.1"><vh>git diff HEAD </vh>
+<v t="ekr.20190501101302.2"><vh>INSTALL.TXT</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -256,7 +257,7 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.9 beta 2, http://leoeditor.com, is now available on
+<t tx="EKR.20040519090846.9">Leo 5.9 final, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
@@ -576,7 +577,8 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
 
 @others
 </t>
-<t tx="ekr.20101027131034.1490">@color</t>
+<t tx="ekr.20101027131034.1490">@color
+</t>
 <t tx="ekr.20101027135430.1492">http://nsis.sourceforge.net/Docs/Modern%20UI%202/Readme.html</t>
 <t tx="ekr.20101027135430.1493">http://nsis.sourceforge.net/Docs/Chapter4.html#4.5</t>
 <t tx="ekr.20101027160251.1497">http://nsis.sourceforge.net/Docs/nsDialogs/Readme.html</t>
@@ -640,22 +642,10 @@ Installing Leo on Windows
 
 Install Python and Qt, as described above.
 
-Now you have a choice.  You can use Leo's binary (single-click) installer
-or download Leo's sources directly.
-
-1. Using the single-click installer
-
-Leo has a binary installer for Windows, available at
-http://sourceforge.net/projects/leo/files/Leo/ The binary installer
-installs Leo and sets Windows file associations.
-
-2. Installing from sources
-
 You may download Leo's sources in one of three ways, as described at:
 http://leoeditor.com/download.html If the sources are zipped, unpack them
 into a temp folder. You may place the sources anywhere you like, including
-Python's *site-packages* folder, for example,
-C:\Python26\Lib\site-packages.
+Python's *site-packages* folder, for example, C:\Python36\Lib\site-packages.
 
 </t>
 <t tx="ekr.20130809141000.1995">
@@ -1035,8 +1025,8 @@ Notes:
 </t>
 <t tx="ekr.20160510090441.1">@language nsi
 
-;##version
-!define version         "5.9-b2"
+;#version # No longer used
+!define version         "5.9"
 
 !include MUI2.nsh
 !include nsDialogs.nsh
@@ -1497,8 +1487,8 @@ SectionEnd
 !include nsDialogs.nsh
 !include LogicLib.nsh
 
-;##version
-!define version         "5.9-b2"
+;#version
+!define version         "5.9"
 
 ; These are *not* Python strings--backslashes are fine.
 
@@ -1835,7 +1825,6 @@ Overview:
 
 LeoDist.leo:
 - Make sure copyright dates are correct.
-- Update version numbers: search leoDist.leo for ##version.
 - Update readme.md.
 - Check readme.md spelling.
 - Check 'PKG-INFO.TXT'
@@ -2365,7 +2354,39 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190430042152.1"></t>
+<t tx="ekr.20190501101302.1">@ignore
+@nosearch
+HEAD=f9a655301</t>
+<t tx="ekr.20190501101302.2">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -53,22 +53,10 @@
+ 
+ Install Python and Qt, as described above.
+ 
+-Now you have a choice.  You can use Leo's binary (single-click) installer
+-or download Leo's sources directly.
+-
+-1. Using the single-click installer
+-
+-Leo has a binary installer for Windows, available at
+-http://sourceforge.net/projects/leo/files/Leo/ The binary installer
+-installs Leo and sets Windows file associations.
+-
+-2. Installing from sources
+-
+ You may download Leo's sources in one of three ways, as described at:
+ http://leoeditor.com/download.html If the sources are zipped, unpack them
+ into a temp folder. You may place the sources anywhere you like, including
+-Python's *site-packages* folder, for example,
+-C:\Python26\Lib\site-packages.
++Python's *site-packages* folder, for example, C:\Python36\Lib\site-packages.
+ 
+ 
+ Running Leo
+</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
