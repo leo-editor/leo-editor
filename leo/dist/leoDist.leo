@@ -1838,8 +1838,8 @@ LeoPyRef.leo and LeoPluginsRef.leo:
   Run @button check .leo files in leo-dist.leo.
 - Make sure Leo looks good without myLeoSettings.leo.
 - Run the "check-bindings" button in leoSettings.leo.
-- Run all unit tests with *both* Python 2 and 3.
-- Run ll -a with *both* Python 2 and 3.</t>
+- Run all unit tests with Python 3.
+- Run ll -a with with Python 3.</t>
 <t tx="ekr.20180405171433.7">Merge the -rel branch into master.
 - Run all unit tests.
 - Run pylint on all files.
