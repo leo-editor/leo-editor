@@ -2671,7 +2671,7 @@ class PygmentsColorizer(BaseJEditColorizer):
                 # One of the lexer's will not exist.
             if trace:
                 g.trace('--trace-coloring: no lexer for %r' % language)
-            lexer = lexers.Python3Lexer() if g.isPython3 else lexers.PythonLexer()
+            lexer = lexers.Python3Lexer()
             if trace and 'python' not in self.lexers_dict:
                 g.trace('--trace-coloring: default lexer for python: %r' % lexer)
         return lexer
