@@ -4976,8 +4976,11 @@ def getGitVersion():
     '''Return a tuple (author, build, date) from the git log, or None.'''
     #
     # -n: Get only the last log.
-    s = subprocess.check_output('git log -n 1 --date=iso', 
-        cwd=g.app.loadDir, shell=True)
+    try:
+        s = subprocess.check_output('git log -n 1 --date=iso', 
+            cwd=g.app.loadDir, shell=True)
+    except Exception:
+        return '', '', ''
         
     info = [g.toUnicode(z) for z in s.splitlines()]
     
