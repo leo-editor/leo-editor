@@ -4972,14 +4972,14 @@ class GitIssueController(object):
                 print('%35s: %s' % (key, r.headers.get(key)))
     #@-others
 #@+node:ekr.20190428173354.1: *3* g.getGitVersion
-def getGitVersion():
+def getGitVersion(directory=None):
     '''Return a tuple (author, build, date) from the git log, or None.'''
     #
     # -n: Get only the last log.
     try:
         s = subprocess.check_output(
             'git log -n 1 --date=iso', 
-            cwd=g.app.loadDir,
+            cwd=directory or g.app.loadDir,
             stderr=subprocess.DEVNULL,
             shell=True,
         )
