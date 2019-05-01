@@ -235,11 +235,6 @@
 <v t="ekr.20100731163237.5782"><vh>@thin unittest/at-thin-html-test.html</vh></v>
 <v t="ekr.20090704085350.5022"><vh>@thin unittest/at-thin-test.py</vh></v>
 </v>
-<v t="ekr.20190218125637.1"><vh>Python 2 tests</vh>
-<v t="ekr.20130910062920.4149"><vh>@@test g.stripBOM (Python 2 only)</vh></v>
-<v t="ekr.20050208104202"><vh>@@test of round-tripping toUnicode &amp; toEncodedString (Python 2 only)'</vh></v>
-<v t="ekr.20071113145804.24"><vh>@@test round trip toUnicode toEncodedString</vh></v>
-</v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20181102063435.1"><vh>Fails...</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
@@ -276,29 +271,6 @@ run method is the body of the @suite or @test node.
 </t>
 <t tx="ekr.20041121151002"># Many of these are required for unit tests.
 # Do not change them without running all unit tests.</t>
-<t tx="ekr.20050208104202">@first # -*- coding: utf-8 -*-
-
-if not g.isPython3: # Does not work with Python 3.x
-
-    for s,encoding in (
-        ('a',    'utf-8'),
-        ('a',    'ascii'),
-        ('äöü',  'utf-8'),
-        ('äöü',  'mbcs'),
-        ('炰',    'utf-8'),
-        ('炰',    'mbcs'),
-    ):
-        if g.isValidEncoding(encoding):
-            s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-            assert ok, 'toUnicodeWithErrorCode fails for %s' %s
-            s3,ok = g.toEncodedStringWithErrorCode(s2,encoding)
-            assert ok, 'toEncodedStringWithErrorCode fails for %s' % s2
-            assert s3 == s, 'Round-trip one fails for %s' %s
-
-            s2 = g.toUnicode(s,encoding)
-            s3 = g.toEncodedString(s2,encoding)
-            assert s3 == s, 'Round-trip two fails for %s' %s
-</t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
@@ -719,37 +691,6 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
-<t tx="ekr.20071113145804.24">@first # -*- coding: utf-8 -*-
-
-if not g.isPython3: # Does not work with Python 3.x
-
-    table = [
-        ('a',    'utf-8'),
-        ('a',    'ascii'),
-        ('äöü',  'utf-8'),
-        ('äöü',  'mbcs'),
-        ('炰',   'utf-8'),
-    ]
-
-    # __pychecker__ = '--no-reimport'
-    import sys
-
-    if sys.platform.startswith('win'):
-        data = '炰','mbcs'
-        table.append(data)
-
-    for s,encoding in table:
-        if g.isValidEncoding(encoding):
-            s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-            assert ok, 'toUnicodeWithErrorCode fails for %s' %s
-            s3,ok = g.toEncodedStringWithErrorCode(s2,encoding)
-            assert ok, 'toEncodedStringWithErrorCode fails for %s' % s2
-            assert s3 == s, 'Round-trip one failed for %s' %s
-
-            s2 = g.toUnicode(s,encoding)
-            s3 = g.toEncodedString(s2,encoding)
-            assert s3 == s, 'Round-trip two failed for %s' %s
-</t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
@@ -1144,25 +1085,6 @@ try:
 finally:
     setup()</t>
 <t tx="ekr.20111211094936.3970"></t>
-<t tx="ekr.20130910062920.4149">import codecs
-
-# The hack of computing s below is not valid in Python 3.
-if not g.isPython3:
-    table = (
-        ('utf-8',  codecs.BOM_UTF8),
-        ('utf-16', codecs.BOM_UTF16_BE),
-        ('utf-16', codecs.BOM_UTF16_LE),
-        ('utf-32', codecs.BOM_UTF32_BE),
-        ('utf-32', codecs.BOM_UTF32_LE),
-    )
-    for e,bom in table:
-        s1 = 'this is a test'
-        s = bom + 'this is a test'
-        # print('%6s bom: %18r s: %s' % (e,bom,repr(s)))
-        e2,s2 = g.stripBOM(s)
-        assert e2 == e,'%s,%s' % (e,e2)
-        assert s2 == s1,repr(s2)
-</t>
 <t tx="ekr.20131111155830.4249"></t>
 <t tx="ekr.20131111155830.4250"># Not yet...
 
@@ -1718,7 +1640,6 @@ unl: spam
 gnx: ekr.20190113124246.31
 unl: eggs
 </t>
-<t tx="ekr.20190218125637.1"></t>
 <t tx="ekr.20190319020829.1"></t>
 <t tx="ekr.20190319020829.2"></t>
 <t tx="ekr.20190319020829.3"></t>
