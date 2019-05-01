@@ -3495,10 +3495,27 @@ They contain sphinx markup. See::
     http://sphinx.pocoo.org/
     http://docutils.sourceforge.net/docs/user/rst/quickstart.html
     
-To generate these docs::
+To generate these docs:
+
+1. Select this node, then run the rst3 command.
+
+   This command will generate about 50 .html.txt files in leo/doc/html folder.
+
+2. From a console::
 
     cd leo/doc/html
     make html
+    
+    This creates html files in the leo/doc/html/_build/html directory.
+    
+    The make file requires sphinx to be installed,
+    but sphinx does not have to be installed to use the resulting html files.
+
+3. Copy the entire leo/doc/html/_build/html directory to the server, but
+
+   **do not copy _build/html/searchindex.js**
+
+   I don't remember why searchindex.js is toxic, but it is.
     
 Important files:
 
@@ -15533,36 +15550,48 @@ You will get something like the following::
 
     Options:
       -h, --help            show this help message and exit
-      --debug               enable debug mode
       --diff                use Leo as an external git diff
       --fullscreen          start fullscreen
       --ipython             enable ipython support
       --fail-fast           stop unit tests after the first failure
       --gui=GUI             gui to use (qt/qttabs/console/null)
       --listen-to-log       start log_listener.py on startup
-      --load-type=LOAD_TYPE @&lt;file&gt; type for loading non-outlines from command line
+      --load-type=TYPE      @&lt;file&gt; type for non-outlines
       --maximized           start maximized
       --minimized           start minimized
-      --no-cache            disable reading of cached files
       --no-plugins          disable all plugins
       --no-splash           disable the splash screen
-      --screen-shot=SCREENSHOT_FN
-                            take a screen shot and then exit
-      --script=SCRIPT       execute a script and then exit
-      --script-window=SCRIPT_WINDOW
-                            open a window for scripts
-      --select=SELECT       headline or gnx of node to select
+      --screen-shot=PATH    take a screen shot and then exit
+      --script=PATH         execute a script and then exit
+      --script-window       execute script using default gui
+      --select=ID           headline or gnx of node to select
       --silent              disable all log messages
-      --trace-binding=BINDING
-                            trace key bindings
+      --theme=NAME          use the named theme file
+      --trace-binding=KEY   trace commands bound to a key
+      --trace-coloring      trace syntax coloring
+      --trace-drawing       trace outline redraws
+      --trace-events        trace non-key events
       --trace-focus         trace changes of focus
+      --trace-gnx           trace gnx logic
+      --trace-ipython       trace ipython bridge
+      --trace-keys          trace key events
       --trace-plugins       trace imports of plugins
-      --trace-setting=SETTING
-                            trace where setting is set
+      --trace-setting=NAME  trace where named setting is set
       --trace-shutdown      trace shutdown logic
+      --trace-startup       trace startup logic
+      --trace-syntax        trace syntax coloring
+      --trace-themes        trace theme init logic
+      --window-size=SIZE    initial window size (height x width)
       -v, --version         print version number and exit
-      --window-size=WINDOW_SIZE
-                            initial window size (height x width)</t>
+      
+**Important**
+
+Use one of the following command-line arguments to start Leo in a web browser::
+
+    leo --gui=browser
+    leo --gui=browser-firefox-browser​
+    
+For details, see https://github.com/leo-editor/leo-editor/issues/1005.</t>
 <t tx="ekr.20131008041326.16178"></t>
 <t tx="ekr.20131008041326.16203">.. |---| unicode:: U+02015
    :trim:
@@ -29673,9 +29702,28 @@ Other features
 </t>
 <t tx="ekr.20190117143942.29">https://github.com/leo-editor/leo-editor/issues/1005
 
-You can run Leo in a browser this way:
+LeoWapp (Leo as a web browser), implemented using flexx:
+https://flexx.readthedocs.io/en/stable/
 
-python &lt;path to&gt;launchLeo.py --no-splash --gui=browser %*
+Start Leo using the --gui=browser option. Like this::
+
+    leo --gui=browser
+    leo --gui=browser-firefox-browser​
+
+The code is in leo/plugins/leoflexx.py, but this is *not* a plugin.
+
+Prerequisites
+-------------
+
+Install flexx: https://flexx.readthedocs.io/en/stable/start.html
+
+    
+What you should see
+-------------------
+    
+You should see the flexx (Tornado) server start up in the console.
+Something that looks like Leo should then appear in the browser. Everything
+you see is real, and most of it is "live".
 </t>
 <t tx="ekr.20190117143942.394">https://github.com/leo-editor/leo-editor/issues/1007
 </t>

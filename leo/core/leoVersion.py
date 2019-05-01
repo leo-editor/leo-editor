@@ -50,7 +50,7 @@ import leo.core.leoGlobals as g
 # 
 # The install_hooks.py script copies these two files to leo-editor/.git/hooks.
 #@-<< about install hooks >>
-version = "5.9-b2"
+version = "5.9-final"
 date, build = g.jsonCommitInfo()
 branch = g.gitBranchName()
 #@@language python
