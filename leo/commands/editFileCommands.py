@@ -798,16 +798,17 @@ class GitDiffController:
         old_private_lines = at.write_at_clean_sentinels(hidden_root)
         marker = x.markerFromFileLines(old_private_lines, fn)
         old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
-        assert old_public_lines
-        new_private_lines = x.propagate_changed_lines(
-            new_public_lines, old_private_lines, marker, p=hidden_root)
-        at.fast_read_into_root(
-            c = hidden_c,
-            contents = ''.join(new_private_lines),
-            gnx2vnode = {},
-            path = fn,
-            root = hidden_root,
-        )
+        if old_public_lines:
+            # Fix #1136: The old lines might not exist.
+            new_private_lines = x.propagate_changed_lines(
+                new_public_lines, old_private_lines, marker, p=hidden_root)
+            at.fast_read_into_root(
+                c = hidden_c,
+                contents = ''.join(new_private_lines),
+                gnx2vnode = {},
+                path = fn,
+                root = hidden_root,
+            )
         return hidden_c
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806094320.18: *4* gdc.create_root
@@ -913,7 +914,6 @@ class GitDiffController:
     #@+node:ekr.20170806094321.3: *5* gdc.find_git_working_directory
     def find_git_working_directory(self, directory):
         '''Return the git working directory, starting at directory.'''
-        assert directory
         while directory:
             if g.os_path_exists(g.os_path_finalize_join(directory, '.git')):
                 return directory
