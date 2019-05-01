@@ -29662,7 +29662,7 @@ The body text of an @data history-list *setting node* preloads commands into the
             reportFlag=False,
             dirtyVnodeList=dirtyVnodeList)
 </t>
-<t tx="ekr.20190117143933.1">Leo 5.9 beta 2, http://leoeditor.com, is now available on
+<t tx="ekr.20190117143933.1">Leo 5.9 final, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).

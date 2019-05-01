@@ -740,7 +740,6 @@ editing ``.leoID.txt``.
 
 .gitattributes                  export-ignore
 .gitignore                      export-ignore
-nsi.log.txt                     export-ignore
 
 git-manifest.txt                export-ignore
 MakeFile                        export-ignore
@@ -759,8 +758,6 @@ docs/*                          export-ignore
 leo/core/leoPy.leo              export-ignore
 leo/core/ekrLeoPy.leo           export-ignore
 leo/test/unittest/.leo_shadow/  export-ignore
-
-leo/core/commit_timestamp.json merge=ours
 </t>
 <t tx="ekr.20141117135127.2"></t>
 <t tx="ekr.20141117135127.3"></t>
