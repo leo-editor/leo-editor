@@ -1887,7 +1887,7 @@ class BaseTangleCommands(object):
         p1 = g.skip_ws_and_nl(s1, p1)
         p2 = g.skip_ws_and_nl(s2, p2)
         return p1 == len(s1) and p2 == len(s2)
-    #@+node:ekr.20031218072017.3548: *4* forgiving_compare
+    #@+node:ekr.20031218072017.3548: *4* forgiving_compare (tangle)
     #@+at
     # This is the "forgiving compare" function. It compares two texts and
     # returns True if they are identical except for comments or non-critical
@@ -2441,7 +2441,7 @@ class BaseTangleCommands(object):
                 self.refpart_stack.append(r)
                 for j in range(-1, -(count + 1), -1):
                     self.refpart_stack.append(r.parts[j])
-    #@+node:ekr.20031218072017.3573: *4* update_def (pass 2)
+    #@+node:ekr.20031218072017.3573: *4* update_def (untangle: pass 2)
     #@+at
     # This function handles the actual updating of section definitions in the web.
     # Only code parts are updated, never doc parts.

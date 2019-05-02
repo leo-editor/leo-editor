@@ -237,7 +237,6 @@ class GoToCommands(object):
         return (p,found)
         '''
         if gnx:
-            assert g.isString(gnx)
             gnx = g.toUnicode(gnx)
             for p in root.self_and_subtree(copy=False):
                 if p.matchHeadline(vnodeName):

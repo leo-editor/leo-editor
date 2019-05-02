@@ -5728,12 +5728,19 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
         # g.dump_encoded_string(encoding,s)
     return s
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
+toUnicode_dict = {}
+
 def toUnicode(s, encoding='utf-8', reportErrors=False):
     '''Convert a non-unicode string with the given encoding to unicode.'''
     if isinstance(s, str):
         return s
     if not encoding:
         encoding = 'utf-8'
+    ### Tracing
+        # callers = g.callers(1)
+        # if callers not in toUnicode_dict:
+            # g.trace(callers)
+            # toUnicode_dict [callers] = True
     #
     # These are the only significant calls to s.decode in Leo.
     try:

@@ -744,7 +744,7 @@ class BaseJEditColorizer (BaseColorizer):
             if key not in keys:
                 d[key] = 'leokeyword'
         # Create a temporary chars list.  It will be converted to a dict later.
-        chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
+        chars = [z for z in string.ascii_letters + string.digits]
         for key in list(d.keys()):
             for ch in key:
                 if ch not in chars:
