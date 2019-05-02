@@ -408,7 +408,8 @@ class LeoBrowserApp(flx.PyComponent):
         Will be called *in addition* to any inner key handlers,
         unless the inner key handler calls e.preventDefault()
         '''
-        g.trace(ev, ivar)
+        if 'keys' in g.app.debug:
+            g.trace(ev, ivar)
         c = self.c
         browser_wrapper = getattr(c.frame, ivar)
             # Essential: there is no way to pass the actual wrapper.
@@ -1548,7 +1549,8 @@ class JS_Editor(flx.Widget):
         self.ignore_up = True
             # Ignore all further key ups, until the next key down
         should_be_leo = bool(self.should_be_leo_key(ev))
-        print('       jse.key_up: %s %r Leo: %s' % (self.name, ev, should_be_leo))
+        if 'keys' in g.app.debug:
+            print('       jse.key_up: %s %r Leo: %s' % (self.name, ev, should_be_leo))
         if should_be_leo: ### self.should_be_leo_key(ev):
             e.preventDefault()
             ivar = 'minibufferWidget' if self.name == 'minibuffer' else self.name
@@ -1562,7 +1564,8 @@ class JS_Editor(flx.Widget):
         self.last_down = None
         # Ignore all key ups until the next key down.
         self.ignore_up = True
-        print('    jse.key_press: %s %r' % (self.name, ev))
+        if 'keys' in g.app.debug:
+            print('    jse.key_press: %s %r' % (self.name, ev))
         if self.should_be_leo_key(ev):
             e.preventDefault()
         return ev
@@ -1571,7 +1574,8 @@ class JS_Editor(flx.Widget):
     def on_key_press(self, *events):
         # The JS editor has already** handled the key!
         for ev in events:
-            print(' jse.on_key_press: %s %r' % (self.name, ev))
+            if 'keys' in g.app.debug:
+                print(' jse.on_key_press: %s %r' % (self.name, ev))
             if self.should_be_leo_key(ev):
                 ivar = 'minibufferWidget' if self.name == 'minibuffer' else self.name
                 self.root.do_key(ev, ivar)
@@ -1581,11 +1585,12 @@ class JS_Editor(flx.Widget):
         Return True if Leo should handle the key.
         Leo handles only modified keys, not F-keys or plain keys.
         '''
-        key, mods, tag = ev['key'], ev['modifiers'], 'JSE.should_be_leo_key'
+        key, mods = ev['key'], ev['modifiers']
+            # tag = 'JSE.should_be_leo_key'
         #
         # The widget handles F-keys.
         if not mods and key.startswith('F'):
-            if 0: print('%s: %r %r return: false' % (tag, mods, key))
+            # print('%s: %r %r return: false' % (tag, mods, key))
             return False
         mods2 = mods
         if 'Shift' in mods2:
@@ -1594,11 +1599,11 @@ class JS_Editor(flx.Widget):
         # Send only Ctrl-Arrow keys to body.
         if mods2 == ['Ctrl'] and key in ('RtArrow', 'LtArrow', 'UpArrow', 'DownArrow'):
             # This never fires: Neither editor widget emis Ctrl/Arrow keys or Alt-Arrow keys.
-            if 0: print(tag, 'Arrow key: send to to body', repr(mods), repr(key))
+            # print(tag, 'Arrow key: send to to body', repr(mods), repr(key))
             return False
         #
         # Leo should handle all other modified keys.
-        if 0: print('%s: %r %r return: %s' % (tag, mods, key, bool(mods2)))
+        # print('%s: %r %r return: %s' % (tag, mods, key, bool(mods2)))
         return mods2
     #@+node:ekr.20181215083642.1: *4* jse.focus
     @flx.action
@@ -1839,7 +1844,8 @@ class LeoFlexxMiniBuffer(JS_Editor):
         # Backspace is not emitted.
         ev = self._create_key_event(e)
         key, mods = ev ['key'], ev ['modifiers']
-        print('mini.key_press: %r %r' % (mods, key))
+        if 'keys' in g.app.debug:
+            print('mini.key_press: %r %r' % (mods, key))
         if mods:
             e.preventDefault()
             return ev
@@ -1857,7 +1863,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
     def on_key_press(self, *events):
         '''Pass *all* keys Leo's core.'''
         for ev in events:
-            print('mini.on_key_press: %r %r' % (ev ['modifiers'], ev['key']))
+            # print('mini.on_key_press: %r %r' % (ev ['modifiers'], ev['key']))
             self.root.do_key(ev, 'minibufferWidget')
     #@+node:ekr.20181129174405.1: *4* flx_minibuffer.do_enter_key
     def do_enter_key(self, key, mods):
