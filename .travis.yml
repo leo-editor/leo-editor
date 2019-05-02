@@ -3,7 +3,7 @@ python:
   - "3.6"
 git:
     ## Clone depth, must be big enough to include a tag
-    depth: 100
+    depth: 500
 install:
     ## Using PEP-518 (pypoject.toml) requires pip >v10 
     - python -m pip install --upgrade pip
@@ -13,8 +13,7 @@ script:
     - python run_travis_unit_tests.py
 
     ## Test: Build python wheel, install, and run Leo in console mode
-    # reverse grep to hide excessive 'adding' and 'copying'
-    - python setup.py bdist_wheel | grep -v -e '^adding' -e '^copying' -e '^creating'
+    - python setup.py --quiet bdist_wheel
     - pip install dist/*.whl
     - leo-console --version
     
