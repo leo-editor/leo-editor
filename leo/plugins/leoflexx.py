@@ -1521,10 +1521,48 @@ class JS_Editor(flx.Widget):
     #@+others
     #@+node:ekr.20181121072246.1: *4* jse.Keys
     #@+node:ekr.20181215083729.1: *5* jse.key_press & on_key_press
+    last_down = None
+    ignore_up = False
+
+    @flx.emitter # New
+    def key_down(self, e):
+        self.ignore_up = False
+        ev = self._create_key_event(e)
+        down =  '%s %r' % (self.name, ev)
+        if down != self.last_down:
+            self.last_down = down
+            # print('     jse.key_down:', down)
+        if self.should_be_leo_key(ev):
+            e.preventDefault()
+        return ev
+        
+    @flx.emitter # New
+    def key_up(self, e):
+        self.last_down = None
+            # Enable key downs.
+        ev = self._create_key_event(e)
+        if self.ignore_up:
+            # print('IGNORE jse.key_up: %s %r' % (self.name, ev))
+            e.preventDefault()
+            return ev
+        self.ignore_up = True
+            # Ignore all further key ups, until the next key down
+        should_be_leo = bool(self.should_be_leo_key(ev))
+        print('       jse.key_up: %s %r Leo: %s' % (self.name, ev, should_be_leo))
+        if should_be_leo: ### self.should_be_leo_key(ev):
+            e.preventDefault()
+            ivar = 'minibufferWidget' if self.name == 'minibuffer' else self.name
+            self.root.do_key(ev, ivar)
+        return ev
+
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
-        print('jse.key_press: %s %r' % (self.name, ev))
+        # Init the key_down state.
+        self.last_down = None
+        # Ignore all key ups until the next key down.
+        self.ignore_up = True
+        print('    jse.key_press: %s %r' % (self.name, ev))
         if self.should_be_leo_key(ev):
             e.preventDefault()
         return ev
@@ -1533,6 +1571,7 @@ class JS_Editor(flx.Widget):
     def on_key_press(self, *events):
         # The JS editor has already** handled the key!
         for ev in events:
+            print(' jse.on_key_press: %s %r' % (self.name, ev))
             if self.should_be_leo_key(ev):
                 ivar = 'minibufferWidget' if self.name == 'minibuffer' else self.name
                 self.root.do_key(ev, ivar)
