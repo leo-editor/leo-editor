@@ -29678,7 +29678,7 @@ Major features
 - Integrated debugger.
 
 Other features
-- Nested @clean nodes, useful for LaTex files.
+- *Experimental*: nested @clean nodes, useful for LaTex files.
 - A major refactoring of the code that writes external files.
 - Better error recovery.
 - Support for continuous integration with TravisCI.
@@ -29760,6 +29760,8 @@ This was an ancient bug!
 The fix was to call c.setFileTimeStamp(fileName) in x.replaceFileWithString.
 </t>
 <t tx="ekr.20190117143942.654">https://github.com/leo-editor/leo-editor/issues/525
+
+This is an experimental feature.  It may be removed in future.
 
 See this posting:
 https://groups.google.com/forum/#!msg/leo-editor/WGQIzBzQ058/QTJRUvl9CwAJ</t>
