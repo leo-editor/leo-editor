@@ -1233,6 +1233,7 @@ class LeoBrowserLog(leoFrame.NullLog):
         self.tag = '(log wrapper)'
         assert isinstance(self.widget, leoFrame.StringTextWrapper)
         self.logCtrl = self.widget
+        self.logWidget = self.widget
         self.wrapper = self.widget
         #
         # Monkey-patch self.wrapper, a StringTextWrapper.
