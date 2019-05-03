@@ -979,8 +979,13 @@ class ScriptingController(object):
     #@+node:ekr.20061014075212: *3* sc.Utils
     #@+node:ekr.20060929135558: *4* sc.cleanButtonText
     def cleanButtonText(self, s, minimal=False):
-        '''Clean the text following @button or @command so that it is a valid name of a minibuffer command.'''
-        # 2011/10/16: Delete {tag}
+        '''
+        Clean the text following @button or @command so
+        that it is a valid name of a minibuffer command.
+        '''
+        if not g.isascii(s):
+            # #1121.
+            return s
         s = s.strip()
         i, j = s.find('{'), s.find('}')
         if -1 < i < j:

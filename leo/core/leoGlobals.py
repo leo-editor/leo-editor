@@ -5524,6 +5524,10 @@ def list_to_string(obj):
     '''
     return ''.join([z for z in flatten_list(obj)])
 #@+node:ekr.20140526144610.17601: *3* g.Strings
+#@+node:ekr.20190503145501.1: *4* g.isascii
+def isascii(s):
+    # s.isascii() is defined in Python 3.7.
+    return all(ord(ch) < 128 for ch in s)
 #@+node:ekr.20031218072017.3106: *4* g.angleBrackets & virtual_event_name
 # Returns < < s > >
 

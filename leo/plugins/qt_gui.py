@@ -1059,11 +1059,16 @@ class LeoQtGui(leoGui.LeoGui):
                 g.blue('bound @button', buttonText, 'to', shortcut)
             #@-<< bind the shortcut to executeScriptCallback >>
         #@+<< create press-buttonText-button command >>
-        #@+node:ekr.20110605121601.18532: *4* << create press-buttonText-button command >>
-        aList = [ch if ch.isalnum() else '-' for ch in buttonText]
-        buttonCommandName = ''.join(aList)
-        buttonCommandName = buttonCommandName.replace('--', '-')
-        buttonCommandName = 'press-%s-button' % buttonCommandName.lower()
+        #@+node:ekr.20110605121601.18532: *4* << create press-buttonText-button command >> (changed)
+        # #1121.
+        if g.isascii(buttonText):
+            aList = [ch if ch.isalnum() else '-' for ch in buttonText]
+            buttonCommandName = ''.join(aList)
+            buttonCommandName = buttonCommandName.replace('--', '-')
+            buttonCommandName = 'press-%s-button' % buttonCommandName.lower()
+        else:
+            buttonCommandName = 'press-%s-button' % buttonText
+        #
         # This will use any shortcut defined in an @shortcuts node.
         k.registerCommand(buttonCommandName, executeScriptCallback, pane='button')
         #@-<< create press-buttonText-button command >>

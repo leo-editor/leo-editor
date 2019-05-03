@@ -1529,32 +1529,33 @@ class GetArg(object):
             'completion', self.arg_completion,
             'handler', self.handler and self.handler.__name__ or 'None',
         )
-    #@+node:ekr.20140818074502.18222: *3* ga.get_command
+    #@+node:ekr.20140818074502.18222: *3* ga.get_command (changed)
     def get_command(self, s):
         '''Return the command part of a minibuffer contents s.'''
         if s.startswith(':'):
             # A vim-like command.
             if len(s) == 1:
                 return s
-            elif s[1].isalpha():
+            if s[1].isalpha():
                 command = [':']
                 for ch in s[1:]:
                     if ch.isalnum() or ch == '-':
                         command.append(ch)
                     else: break
                 return ''.join(command)
-            elif s.startswith(':%s'):
+            if s.startswith(':%s'):
                 return s[: 3]
-            else:
-                # Special case for :! and :% etc.
-                return s[: 2]
-        else:
+            # Special case for :! and :% etc.
+            return s[: 2]
+        if g.isascii(s):
             command = []
             for ch in s:
                 if ch.isalnum() or ch in '@_-':
                     command.append(ch)
                 else: break
             return ''.join(command)
+        # #1121.
+        return s
     #@+node:ekr.20140818085719.18227: *3* ga.get_minibuffer_command_name
     def get_minibuffer_command_name(self):
         '''Return the command name in the minibuffer.'''
@@ -1562,27 +1563,29 @@ class GetArg(object):
         command = self.get_command(s)
         tail = s[len(command):]
         return command, tail
-    #@+node:ekr.20140818074502.18221: *3* ga.is_command
+    #@+node:ekr.20140818074502.18221: *3* ga.is_command (changed)
     def is_command(self, s):
         '''Return False if something, even a blank, follows a command.'''
+        if not g.isascii(s):
+            # #1121.
+            return True
         if s.startswith('@'):
             return True
-        elif s.startswith(':'):
+        if s.startswith(':'):
+            # A vim command?
             if len(s) == 1:
                 return True
-            elif s[1].isalpha():
+            if s[1].isalpha():
                 for ch in s[1:]:
                     if not ch.isalnum() and ch != '-':
                         return False
                 return True
-            else:
-                # Special case for :! and :% etc.
-                return len(s) == 2
-        else:
-            for ch in s:
-                if not ch.isalnum() and ch not in '_-':
-                    return False
-            return True
+            # Special case for :! and :% etc.
+            return len(s) == 2
+        for ch in s:
+            if not ch.isalnum() and ch not in '_-':
+                return False
+        return True
     #@+node:ekr.20140816165728.18959: *3* ga.show_tab_list & helper
     def show_tab_list(self, tabList):
         '''Show the tab list in the log tab.'''

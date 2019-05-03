@@ -242,16 +242,27 @@ class LeoMenu(object):
         else:
             return False
     #@+node:ekr.20051022053758.1: *3* LeoMenu.Helpers
-    #@+node:ekr.20031218072017.3783: *4* LeoMenu.canonicalizeMenuName & cononicalizeTranslatedMenuName
+    #@+node:ekr.20031218072017.3783: *4* LeoMenu.canonicalize* (changed)
     def canonicalizeMenuName(self, name):
-        return ''.join([ch for ch in name.lower() if ch.isalnum()])
+        # #1121.
+        if g.isascii(name):
+            return ''.join([ch for ch in name.lower() if ch.isalnum()])
+        return name
 
     def canonicalizeTranslatedMenuName(self, name):
-        return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
-    #@+node:ekr.20051022044950: *4* LeoMenu.computeOldStyleShortcutKey
+        # #1121.
+        if g.isascii(name):
+            return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
+        return name
+
+    #@+node:ekr.20051022044950: *4* LeoMenu.computeOldStyleShortcutKey (changed)
     def computeOldStyleShortcutKey(self, s):
         '''Compute the old-style shortcut key for @shortcuts entries.'''
-        return ''.join([ch for ch in s.strip().lower() if ch.isalnum()])
+        # #1121.
+        if g.isascii(s):
+            return ''.join([ch for ch in s.strip().lower() if ch.isalnum()])
+        return s
+
     #@+node:ekr.20031218072017.1723: *4* LeoMenu.createMenuEntries & helpers
     def createMenuEntries(self, menu, table, dynamicMenu=False):
         '''Create a menu entry from the table.
