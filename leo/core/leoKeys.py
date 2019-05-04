@@ -1529,7 +1529,7 @@ class GetArg(object):
             'completion', self.arg_completion,
             'handler', self.handler and self.handler.__name__ or 'None',
         )
-    #@+node:ekr.20140818074502.18222: *3* ga.get_command (changed)
+    #@+node:ekr.20140818074502.18222: *3* ga.get_command
     def get_command(self, s):
         '''Return the command part of a minibuffer contents s.'''
         if s.startswith(':'):
@@ -1563,7 +1563,7 @@ class GetArg(object):
         command = self.get_command(s)
         tail = s[len(command):]
         return command, tail
-    #@+node:ekr.20140818074502.18221: *3* ga.is_command (changed)
+    #@+node:ekr.20140818074502.18221: *3* ga.is_command
     def is_command(self, s):
         '''Return False if something, even a blank, follows a command.'''
         if not g.isascii(s):
