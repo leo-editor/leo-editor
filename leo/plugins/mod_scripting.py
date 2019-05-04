@@ -983,7 +983,7 @@ class ScriptingController(object):
         Clean the text following @button or @command so
         that it is a valid name of a minibuffer command.
         '''
-        # #1121: Experimental: don't lowercase anything.
+        # #1121: Don't lowercase anything.
         if minimal:
             return s.replace(' ','-').strip('-')
         for tag in ('@key', '@args', '@color',):
