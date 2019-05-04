@@ -226,7 +226,7 @@ import leo.core.leoColor as leoColor
 import leo.core.leoGui as leoGui
 import pprint
 import re
-import string
+# import string
 import sys
 import textwrap
 #@-<< imports >>
@@ -983,16 +983,9 @@ class ScriptingController(object):
         Clean the text following @button or @command so
         that it is a valid name of a minibuffer command.
         '''
-        if not g.isascii(s):
-            # #1121.
-            return s
-        s = s.strip()
-        i, j = s.find('{'), s.find('}')
-        if -1 < i < j:
-            s = s[: i] + s[j + 1:]
-            s = s.strip()
+        # #1121: Experimental: don't lowercase anything.
         if minimal:
-            return s.lower()
+            return s.replace(' ','-').strip('-')
         for tag in ('@key', '@args', '@color',):
             i = s.find(tag)
             if i > -1:
@@ -1002,14 +995,7 @@ class ScriptingController(object):
                 else:
                     s = s[: i]
                 s = s.strip()
-        if 1:
-            # Not great, but spaces, etc. interfere with tab completion.
-            # 2011/10/16 *do* allow '@' sign.
-            chars = g.toUnicode(string.ascii_letters + string.digits + '@' + '-')
-            aList = [ch if ch in chars else '-' for ch in g.toUnicode(s)]
-            s = ''.join(aList)
-            s = s.replace('--', '-')
-        return s.strip('-').lower()
+        return s.replace(' ','-').strip('-')
     #@+node:ekr.20060522104419.1: *4* sc.createBalloon (gui-dependent)
     def createBalloon(self, w, label):
         'Create a balloon for a widget.'
@@ -1107,8 +1093,11 @@ class ScriptingController(object):
     def registerAllCommands(self, args, func, h, pane, source_c=None, tag=None):
         '''Register @button <name> and @rclick <name> and <name>'''
         c, k = self.c, self.c.k
+        trace = False and not g.unitTesting
         shortcut = self.getShortcut(h) or ''
         commandName = self.cleanButtonText(h)
+        if trace and not g.isascii(commandName):
+            g.trace(commandName)
         # Register the original function.
         k.registerCommand(
             allowBinding=True,
@@ -1133,8 +1122,8 @@ class ScriptingController(object):
                 registerAllCommandsCallback.__doc__ = func.__doc__
                 # Make sure we never redefine an existing commandName.
                 if commandName2 in c.commandsDict:
-                    # A warning here would probably be annoying.
-                    pass
+                    # A warning here would be annoying.
+                    if trace: g.trace('Already in commandsDict: %r' % commandName2)
                 else:
                     k.registerCommand(
                         commandName=commandName2,
