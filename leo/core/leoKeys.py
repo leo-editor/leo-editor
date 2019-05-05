@@ -2884,7 +2884,7 @@ class KeyHandlerClass(object):
         stroke = k.getStrokeForCommandName(commandName)
         assert g.isStroke(stroke), stroke.__class__.__name__
         shortcut = stroke.s
-        assert g.isString(shortcut)
+        shortcut = g.checkUnicode(shortcut)
         if shortcut and w:
             g.app.gui.set_focus(c, w)
             g.app.gui.event_generate(c, None, shortcut, w)

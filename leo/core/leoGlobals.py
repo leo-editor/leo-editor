@@ -2531,7 +2531,7 @@ def objToString(obj, indent='', printCaller=False, tag=None):
         s = listToString(obj, indent=indent)
     elif isinstance(obj, tuple):
         s = tupleToString(obj, indent=indent)
-    elif g.isString(obj):
+    elif isinstance(obj, str):
         # Print multi-line strings as lists.
         s = obj
         lines = g.splitLines(s)
@@ -5476,7 +5476,7 @@ def flatten_list(obj):
             for s in flatten_list(obj2):
                 yield s
     elif obj:
-        if g.isString(obj):
+        if isinstance(obj, str):
             yield obj
         else:
             yield repr(obj) # Not likely to be useful.
