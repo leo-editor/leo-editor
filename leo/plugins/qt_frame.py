@@ -3215,7 +3215,7 @@ class LeoQtLog(leoFrame.LeoLog):
             # #884: Always convert leading blanks and tabs to &nbsp.
             n = len(s) - len(s.lstrip())
             if n > 0 and s.strip():
-                s = '&nbsp;' * (n+1) + s[n:]
+                s = '&nbsp;' * (n) + s[n:]
             if not self.wrap:
                 # Convert all other blanks to &nbsp;
                 s = s.replace(' ', '&nbsp;')
