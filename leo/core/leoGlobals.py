@@ -5619,6 +5619,10 @@ checkUnicode_dict = {}
 def checkUnicode(s, encoding=None):
     '''
     Warn when converting bytes. Report *all* errors.
+    
+    This method is meant to document defensive programming. We don't expect
+    these errors, but they might arise as the result of problems in
+    user-defined plugins or scripts.
     '''
     if isinstance(s, str):
         return s
