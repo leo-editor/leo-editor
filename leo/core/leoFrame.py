@@ -2090,7 +2090,8 @@ class StringTextWrapper(object):
     #@+node:ekr.20140903172510.18592: *4* stw.appendText
     def appendText(self, s):
         '''StringTextWrapper.'''
-        self.s = self.s + s
+        self.s = self.s + g.toUnicode(s)
+            # defensive
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
     #@+node:ekr.20140903172510.18593: *4* stw.delete
