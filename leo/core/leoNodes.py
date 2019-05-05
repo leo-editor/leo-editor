@@ -2450,15 +2450,9 @@ class VNode(object):
         v = self
         if g.isUnicode(s):
             v._headString = s.replace('\n','')
-        else:
-            try:
-                s = g.toUnicode(s, reportErrors=True)
-                v._headString = s.replace('\n','')
-            except Exception:
-                if not self.unicode_warning_given:
-                    self.unicode_warning_given = True
-                    g.internalError(s)
-                    g.es_exception()
+            return
+        s = g.toUnicode(s, reportErrors=True)
+        v._headString = s.replace('\n','')
 
     initBodyString = setBodyString
     initHeadString = setHeadString
