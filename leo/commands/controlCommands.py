@@ -25,7 +25,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
         self.c = c
 
     #@+others
-    #@+node:ekr.20150514063305.91: *3* executeSubprocess (improved)
+    #@+node:ekr.20150514063305.91: *3* executeSubprocess
     def executeSubprocess(self, event, command):
         '''Execute a command in a separate process.'''
         trace = False

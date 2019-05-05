@@ -557,7 +557,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20161121111502.1: *4* abbrev_get_ch
     def get_ch(self, event, stroke, w):
         '''Get the ch from the stroke.'''
-        ch = g.toUnicode(event and event.char or '')
+        ch = g.checkUnicode(event and event.char or '')
         if self.expanding: return None
         if w.hasSelection(): return None
         assert g.isStrokeOrNone(stroke), stroke

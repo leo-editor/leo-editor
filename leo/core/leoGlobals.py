@@ -5630,7 +5630,7 @@ def checkUnicode(s, encoding=None):
     # Report the unexpected conversion.
     callers = g.callers(1)
     if callers not in checkUnicode_dict:
-        g.error('%s: expected unicode. got: %r' % (tag, s))
+        g.error('\n%s: expected unicode. got: %r\n' % (tag, s))
         checkUnicode_dict [callers] = True
     #
     # Convert to unicode, reporting all errors.

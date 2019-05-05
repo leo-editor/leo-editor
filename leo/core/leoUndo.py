@@ -1701,7 +1701,7 @@ class Undoer(object):
         #@+node:ekr.20061106105812.1: *5* << Compute the result using p's body text >>
         # Recreate the text using the present body text.
         body = p.b
-        body = g.toUnicode(body)
+        body = g.checkUnicode(body)
         body_lines = body.split('\n')
         s = []
         if leading > 0:

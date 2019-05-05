@@ -1671,7 +1671,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         oldText = p.b if name.startswith('body') else ''
         undoType = 'Typing'
         brackets = self.openBracketsList + self.closeBracketsList
-        inBrackets = ch and g.toUnicode(ch) in brackets
+        inBrackets = ch and g.checkUnicode(ch) in brackets
         #@-<< set local vars >>
         assert g.isStrokeOrNone(stroke)
         if g.doHook("bodykey1", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType):

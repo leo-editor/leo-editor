@@ -748,7 +748,7 @@ class BaseJEditColorizer (BaseColorizer):
         for key in list(d.keys()):
             for ch in key:
                 if ch not in chars:
-                    chars.append(g.toUnicode(ch))
+                    chars.append(g.checkUnicode(ch))
         # jEdit2Py now does this check, so this isn't really needed.
         # But it is needed for forth.py.
         for ch in (' ', '\t'):

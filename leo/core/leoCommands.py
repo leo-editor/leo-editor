@@ -1136,7 +1136,6 @@ class Commands(object):
         c = self
         if not s: return
         body = p.b
-        assert(g.isUnicode(body))
         s = g.toUnicode(s)
         c.setBodyString(p, body + s)
     #@+node:ekr.20031218072017.2984: *5* c.clearAllMarked
