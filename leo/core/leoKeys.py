@@ -1532,29 +1532,9 @@ class GetArg(object):
     #@+node:ekr.20140818074502.18222: *3* ga.get_command
     def get_command(self, s):
         '''Return the command part of a minibuffer contents s.'''
-        if s.startswith(':'):
-            # A vim-like command.
-            if len(s) == 1:
-                return s
-            if s[1].isalpha():
-                command = [':']
-                for ch in s[1:]:
-                    if ch.isalnum() or ch == '-':
-                        command.append(ch)
-                    else: break
-                return ''.join(command)
-            if s.startswith(':%s'):
-                return s[: 3]
-            # Special case for :! and :% etc.
-            return s[: 2]
-        if g.isascii(s):
-            command = []
-            for ch in s:
-                if ch.isalnum() or ch in '@_-':
-                    command.append(ch)
-                else: break
-            return ''.join(command)
         # #1121.
+        if ' ' in s:
+            return s[:s.find(' ')].strip()
         return s
     #@+node:ekr.20140818085719.18227: *3* ga.get_minibuffer_command_name
     def get_minibuffer_command_name(self):
@@ -1566,26 +1546,8 @@ class GetArg(object):
     #@+node:ekr.20140818074502.18221: *3* ga.is_command
     def is_command(self, s):
         '''Return False if something, even a blank, follows a command.'''
-        if not g.isascii(s):
-            # #1121.
-            return True
-        if s.startswith('@'):
-            return True
-        if s.startswith(':'):
-            # A vim command?
-            if len(s) == 1:
-                return True
-            if s[1].isalpha():
-                for ch in s[1:]:
-                    if not ch.isalnum() and ch != '-':
-                        return False
-                return True
-            # Special case for :! and :% etc.
-            return len(s) == 2
-        for ch in s:
-            if not ch.isalnum() and ch not in '_-':
-                return False
-        return True
+        # #1121: only ascii space terminates a command.
+        return ' ' not in s
     #@+node:ekr.20140816165728.18959: *3* ga.show_tab_list & helper
     def show_tab_list(self, tabList):
         '''Show the tab list in the log tab.'''
