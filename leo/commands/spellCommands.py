@@ -334,7 +334,7 @@ class EnchantWrapper(BaseSpellWrapper):
     def init_language(self):
         '''Init self.language.'''
         c = self.c
-        language = g.toUnicode(c.config.getString('enchant-language'))
+        language = g.checkUnicode(c.config.getString('enchant-language'))
         if language:
             try:
                 ok = enchant.dict_exists(language)

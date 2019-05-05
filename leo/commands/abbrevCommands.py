@@ -473,7 +473,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def match_prefix(self, ch, i, j, prefix, s):
 
         i = j - len(prefix)
-        word = g.toUnicode(prefix) + g.toUnicode(ch)
+        word = g.checkUnicode(prefix) + g.checkUnicode(ch)
         tag = 'tree'
         val = self.tree_abbrevs_d.get(word)
         if not val:

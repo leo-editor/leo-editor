@@ -442,7 +442,7 @@ class AtFile(object):
     def isFileLike(self, s):
         '''Return True if s has file-like sentinels.'''
         at = self; tag = "@+leo"
-        s = g.toUnicode(s)
+        s = g.checkUnicode(s)
         i = s.find(tag)
         if i == -1:
             return True # Don't use the cache.
@@ -2492,11 +2492,13 @@ class AtFile(object):
         s = g.toUnicode(s, at.encoding)
         at.outputList.append(s)
     #@+node:ekr.20041005105605.205: *5* at.outputStringWithLineEndings
-    # Write the string s as-is except that we replace '\n' with the proper line ending.
-
     def outputStringWithLineEndings(self, s):
+        '''
+        Write the string s as-is except that we replace '\n' with the proper line ending.
+        
+        Calling self.onl() runs afoul of queued newlines.
+        '''
         at = self
-        # Calling self.onl() runs afoul of queued newlines.
         s = g.toUnicode(s, at.encoding)
         s = s.replace('\n', at.output_newline)
         self.os(s)

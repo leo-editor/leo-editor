@@ -2561,7 +2561,7 @@ class LeoFind(object):
         # The caller is responsible for removing most trailing cruft.
         # Among other things, this allows Leo to search for a single trailing space.
         s = ftm.getFindText()
-        s = g.toUnicode(s)
+        s = g.checkUnicode(s)
         if s and s[-1] in ('\r', '\n'):
             s = s[: -1]
         if self.radioButtonsChanged or s != self.find_text:
@@ -2582,7 +2582,7 @@ class LeoFind(object):
                 ftm.set_ignore_case(not mixed)
         # Get replacement text.
         s = ftm.getReplaceText()
-        s = g.toUnicode(s)
+        s = g.checkUnicode(s)
         if s and s[-1] in ('\r', '\n'):
             s = s[: -1]
         self.change_text = s

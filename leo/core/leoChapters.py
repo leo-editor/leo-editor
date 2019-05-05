@@ -222,7 +222,7 @@ class ChapterController(object):
         but users may move them anywhere.
         '''
         cc = self
-        name = g.toUnicode(name)
+        name = g.checkUnicode(name)
         for p in cc.c.all_positions():
             chapterName, binding = self.parseHeadline(p)
             if chapterName == name:
@@ -342,7 +342,7 @@ class Chapter(object):
     def __init__(self, c, chapterController, name):
         self.c = c
         self.cc = cc = chapterController
-        self.name = g.toUnicode(name)
+        self.name = g.checkUnicode(name)
         self.selectLockout = False # True: in chapter.select logic.
         # State variables: saved/restored when the chapter is unselected/selected.
         self.p = c.p
