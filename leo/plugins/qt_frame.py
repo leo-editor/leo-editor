@@ -996,13 +996,13 @@ class FindTabManager(object):
 
     def setFindText(self, s):
         w = self.find_findbox
-        s = g.toUnicode(s)
+        s = g.checkUnicode(s)
         w.clear()
         w.insert(s)
 
     def setReplaceText(self, s):
         w = self.find_replacebox
-        s = g.toUnicode(s)
+        s = g.checkUnicode(s)
         w.clear()
         w.insert(s)
 
@@ -3571,7 +3571,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         if menu and name:
             val = bool(val)
             for action in menu.actions():
-                s = g.toUnicode(action.text()).replace('&', '')
+                s = g.checkUnicode(action.text()).replace('&', '')
                 if s.startswith(name):
                     action.setEnabled(val)
                     break
@@ -4110,7 +4110,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     def dump(self, ev, p, tag):
         if ev:
             md = ev.mimeData()
-            s = g.toUnicode(md.text(), 'utf-8')
+            s = g.checkUnicode(md.text(), encoding='utf-8')
             g.trace('md.text:', repr(s) if len(s) < 100 else len(s))
             for url in md.urls() or []:
                 g.trace('     url:', url)

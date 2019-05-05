@@ -554,9 +554,9 @@ class LeoBody(object):
         before = s[0: i]
         ins = s[i: j]
         after = s[j:]
-        before = g.toUnicode(before)
-        ins = g.toUnicode(ins)
-        after = g.toUnicode(after)
+        before = g.checkUnicode(before)
+        ins = g.checkUnicode(ins)
+        after = g.checkUnicode(after)
         return before, ins, after
     #@+node:ekr.20031218072017.4031: *4* LeoBody.getSelectionAreas
     def getSelectionAreas(self):
@@ -577,9 +577,9 @@ class LeoBody(object):
         before = s[0: i]
         sel = s[i: j]
         after = s[j:]
-        before = g.toUnicode(before)
-        sel = g.toUnicode(sel)
-        after = g.toUnicode(after)
+        before = g.checkUnicode(before)
+        sel = g.checkUnicode(sel)
+        after = g.checkUnicode(after)
         return before, sel, after
     #@+node:ekr.20031218072017.2377: *4* LeoBody.getSelectionLines
     def getSelectionLines(self):
@@ -604,9 +604,9 @@ class LeoBody(object):
         else:
             i, junk = g.getLine(s, i)
             junk, j = g.getLine(s, j)
-        before = g.toUnicode(s[0: i])
-        sel = g.toUnicode(s[i: j])
-        after = g.toUnicode(s[j: len(s)])
+        before = g.checkUnicode(s[0: i])
+        sel = g.checkUnicode(s[i: j])
+        after = g.checkUnicode(s[j: len(s)])
         return before, sel, after # 3 strings.
     #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged
     # This is the only key handler for the body pane.
@@ -618,7 +618,7 @@ class LeoBody(object):
         p = c.p
         insert = w.getInsertPoint()
         ch = '' if insert == 0 else w.get(insert - 1)
-        ch = g.toUnicode(ch)
+        ch = g.checkUnicode(ch)
         newText = w.getAllText() # Note: getAllText converts to unicode.
         newSel = w.getSelectionRange()
         if not oldText:
@@ -991,7 +991,7 @@ class LeoFrame(object):
             c.k.previousSelection = None
         else:
             s = g.app.gui.getTextFromClipboard()
-        s = g.toUnicode(s)
+        s = g.checkUnicode(s)
         singleLine = wname.startswith('head') or wname.startswith('minibuffer')
         if singleLine:
             # Strip trailing newlines so the truncation doesn't cause confusion.
@@ -1313,7 +1313,7 @@ class LeoTree(object):
         if len(s) > limit:
             g.warning("truncating headline to", limit, "characters")
             s = s[: limit]
-        s = g.toUnicode(s or '')
+        s = g.checkUnicode(s or '')
         #@-<< truncate s if it has multiple lines >>
         # Make the change official, but undo to the *old* revert point.
         oldRevert = self.revertHeadline
@@ -2122,7 +2122,7 @@ class StringTextWrapper(object):
     def getAllText(self):
         '''StringTextWrapper.'''
         s = self.s
-        return g.toUnicode(s)
+        return g.checkUnicode(s)
     #@+node:ekr.20140903172510.18584: *4* stw.getInsertPoint
     def getInsertPoint(self):
         '''StringTextWrapper.'''
@@ -2139,7 +2139,7 @@ class StringTextWrapper(object):
         '''StringTextWrapper.'''
         i, j = self.sel
         s = self.s[i: j]
-        return g.toUnicode(s)
+        return g.checkUnicode(s)
     #@+node:ekr.20140903172510.18585: *4* stw.getSelectionRange
     def getSelectionRange(self, sort=True):
         '''Return the selected range of the widget.'''

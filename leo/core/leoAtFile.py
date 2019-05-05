@@ -3578,8 +3578,8 @@ class FastAtRead (object):
             #@-<< Last 2. handle remaining @doc lines >>
             #@+<< Last 3. handle remaining @ lines >>
             #@+node:ekr.20180602103135.17: *4* << Last 3. handle remaining @ lines >>
-            # Probably can't happen: an apparent sentinel line.
-            # Such lines should be @@ lines or follow @verbatim.
+            # Handle an apparent sentinel line.
+            # This *can* happen, as the result of the git-diff command.
             #
             # This assert verifies the short-circuit test.
             assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
