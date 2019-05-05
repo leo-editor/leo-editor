@@ -5613,6 +5613,41 @@ def unCamel(s):
     if word: result.append(''.join(word))
     return result
 #@+node:ekr.20031218072017.1498: *3* g.Unicode
+#@+node:ekr.20190505052756.1: *4* g.checkUnicode
+checkUnicode_dict = {}
+
+def checkUnicode(s, encoding=None):
+    '''
+    Warn when converting bytes. Report *all* errors.
+    '''
+    if isinstance(s, str):
+        return s
+    tag = 'g.checkUnicode'
+    if not isinstance(s, bytes):
+        g.error('%s: unexpected argument: %r' % (tag, s))
+        return ''
+    #
+    # Report the unexpected conversion.
+    callers = g.callers(1)
+    if callers not in checkUnicode_dict:
+        g.error('%s: expected unicode. got: %r' % (tag, s))
+        checkUnicode_dict [callers] = True
+    #
+    # Convert to unicode, reporting all errors.
+    if not encoding:
+        encoding = 'utf-8'
+    try:
+        s = s.decode(encoding, 'strict')
+    except (UnicodeDecodeError, UnicodeError):
+        # https://wiki.python.org/moin/UnicodeDecodeError
+        s = s.decode(encoding, 'replace')
+        g.trace(g.callers())
+        g.error('%s: unicode error. encoding: %r, s:\n%r' % (tag, encoding, s))
+    except Exception:
+        g.trace(g.callers())
+        g.es_excption()
+        g.error('%s: unexpected error! encoding: %r, s:\n%r' % (tag, encoding, s))
+    return s
 #@+node:ekr.20100125073206.8709: *4* g.getPythonEncodingFromString
 def getPythonEncodingFromString(s):
     '''Return the encoding given by Python's encoding line.
@@ -5732,21 +5767,16 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
         # g.dump_encoded_string(encoding,s)
     return s
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
-toUnicode_dict = {}
-
-def toUnicode(s, encoding='utf-8', reportErrors=False):
-    '''Convert a non-unicode string with the given encoding to unicode.'''
+def toUnicode(s, encoding=None, reportErrors=False):
+    '''Convert bytes to unicode if necessary.'''
     if isinstance(s, str):
         return s
+    tag = 'g.toUnicode'
+    if not isinstance(s, bytes):
+        g.error('%s: unexpected argument: %r' % (tag, s))
+        return ''
     if not encoding:
         encoding = 'utf-8'
-    ### Tracing
-        # callers = g.callers(1)
-        # if callers not in toUnicode_dict:
-            # g.trace(callers)
-            # toUnicode_dict [callers] = True
-    #
-    # These are the only significant calls to s.decode in Leo.
     try:
         s = s.decode(encoding, 'strict')
     except (UnicodeDecodeError, UnicodeError):
@@ -5754,8 +5784,11 @@ def toUnicode(s, encoding='utf-8', reportErrors=False):
         s = s.decode(encoding, 'replace')
         if reportErrors:
             g.trace(g.callers())
-            g.error("toUnicode: Error converting %s...from %s encoding to unicode" % (
-                s[: 200], encoding))
+            g.error('%s: unicode error. encoding: %r, s:\n%r' % (tag, encoding, s))
+    except Exception:
+        g.trace(g.callers())
+        g.es_exception()
+        g.error('%s: unexpected error! encoding: %r, s:\n%r' % (tag, encoding, s))
     return s
 #@+node:ekr.20091206161352.6232: *4* g.u (deprecated)
 def u(s):

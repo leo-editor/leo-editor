@@ -1158,7 +1158,8 @@ class Commands(object):
     #@+node:ekr.20040305223522: *5* c.setBodyString
     def setBodyString(self, p, s):
         c = self; v = p.v
-        if not c or not v: return
+        if not c or not v:
+            return
         s = g.toUnicode(s)
         current = c.p
         # 1/22/05: Major change: the previous test was: 'if p == current:'

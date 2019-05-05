@@ -2160,13 +2160,12 @@ class VNode(object):
 
     def bodyString(self):
         # This message should never be printed and we want to avoid crashing here!
-        if g.isUnicode(self._bodyString):
+        if isinstance(self._bodyString, str):
             return self._bodyString
-        else:
-            if not self.body_unicode_warning:
-                self.body_unicode_warning = True
-                g.internalError('not unicode:', repr(self._bodyString), self._headString)
-            return g.toUnicode(self._bodyString)
+        if not self.body_unicode_warning:
+            self.body_unicode_warning = True
+            g.internalError('not unicode:', repr(self._bodyString), self._headString)
+        return g.toUnicode(self._bodyString)
 
     getBody = bodyString
         # Deprecated, but here for compatibility.
@@ -2433,16 +2432,16 @@ class VNode(object):
 
     def setBodyString(self, s):
         v = self
-        if g.isUnicode(s):
+        if isinstance(s, str):
             v._bodyString = s
-        else:
-            try:
-                v._bodyString = g.toUnicode(s, reportErrors=True)
-            except Exception:
-                if not self.unicode_warning_given:
-                    self.unicode_warning_given = True
-                    g.internalError(s)
-                    g.es_exception()
+            return
+        try:
+            v._bodyString = g.toUnicode(s, reportErrors=True)
+        except Exception:
+            if not self.unicode_warning_given:
+                self.unicode_warning_given = True
+                g.internalError(s)
+                g.es_exception()
         sig.emit(self.context, 'body_changed', self)
 
     def setHeadString(self, s):

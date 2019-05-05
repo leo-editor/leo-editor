@@ -2489,8 +2489,7 @@ class AtFile(object):
             except Exception:
                 at.exception("exception writing:" + s)
                 return
-        if not g.isUnicode(s):
-            s = g.toUnicode(s, at.encoding)
+        s = g.toUnicode(s, at.encoding)
         at.outputList.append(s)
     #@+node:ekr.20041005105605.205: *5* at.outputStringWithLineEndings
     # Write the string s as-is except that we replace '\n' with the proper line ending.
