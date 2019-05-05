@@ -6734,7 +6734,7 @@ if 0: # Testing:
 #@+node:ekr.20160417174224.1: *3* g.plural
 def plural(obj):
     '''Return "s" or "" depending on n.'''
-    if isinstance(obj, (list, tuple)) or g.isString(obj):
+    if isinstance(obj, (list, tuple, str)):
         n = len(obj)
     else:
         n = obj

@@ -317,18 +317,11 @@ class AstFormatter(object):
                 args2.append(args[i])
             else:
                 args2.append('%s=%s' % (args[i], defaults[i - n_plain]))
-        if g.isPython3:
-            # Add the vararg and kwarg expressions.
-            vararg = getattr(node, 'vararg', None)
-            if vararg: args2.append('*' + self.visit(vararg))
-            kwarg = getattr(node, 'kwarg', None)
-            if kwarg: args2.append('**' + self.visit(kwarg))
-        else:
-            # Add the vararg and kwarg names.
-            name = getattr(node, 'vararg', None)
-            if name: args2.append('*' + name)
-            name = getattr(node, 'kwarg', None)
-            if name: args2.append('**' + name)
+        # Add the vararg and kwarg expressions.
+        vararg = getattr(node, 'vararg', None)
+        if vararg: args2.append('*' + self.visit(vararg))
+        kwarg = getattr(node, 'kwarg', None)
+        if kwarg: args2.append('**' + self.visit(kwarg))
         return ','.join(args2)
     #@+node:ekr.20141012064706.18417: *4* f.arg (Python3 only)
     # 3: arg = (identifier arg, expr? annotation)
@@ -731,8 +724,7 @@ class AstFormatter(object):
 
     def do_Raise(self, node):
         args = []
-        attrs = ('exc', 'cause') if g.isPython3 else ('type', 'inst', 'tback')
-        for attr in attrs:
+        for attr in ('exc', 'cause'):
             if getattr(node, attr, None) is not None:
                 args.append(self.visit(getattr(node, attr)))
         if args:
@@ -1031,10 +1023,10 @@ class AstFullTraverser(object):
 
         for z in node.args:
             self.visit(z)
-        if g.isPython3 and getattr(node, 'vararg', None):
+        if getattr(node, 'vararg', None):
             # An identifier in Python 2.
             self.visit(node.vararg)
-        if g.isPython3 and getattr(node, 'kwarg', None):
+        if getattr(node, 'kwarg', None):
             # An identifier in Python 2.
             self.visit_list(node.kwarg)
         if getattr(node, 'kwonlyargs', None): # Python 3.
@@ -1130,7 +1122,7 @@ class AstFullTraverser(object):
             self.visit(z)
     #@+node:ekr.20170721073315.1: *4* ft.Constant (Python 3.6+)
     def do_Constant(self, node): # Python 3.6+ only.
-        assert g.isPython3
+        pass
     #@+node:ekr.20141012064706.18489: *4* ft.Dict
     # Dict(expr* keys, expr* values)
 
@@ -1414,8 +1406,7 @@ class AstFullTraverser(object):
 
     def do_Raise(self, node):
 
-        attrs = ('exc', 'cause') if g.isPython3 else ('type', 'inst', 'tback')
-        for attr in attrs:
+        for attr in ('exc', 'cause'):
             if getattr(node, attr, None):
                 self.visit(getattr(node, attr))
     #@+node:ekr.20141012064706.18521: *4* ft.Return
@@ -2506,8 +2497,7 @@ class HTMLReportTraverser(object):
 
         self.div('statement')
         self.keyword("raise")
-        attrs = ('exc', 'cause') if g.isPython3 else ('type', 'inst', 'tback')
-        for attr in attrs:
+        for attr in ('exc', 'cause'):
             if getattr(node, attr, None) is not None:
                 self.visit(getattr(node, attr))
         self.end_div('statement')
