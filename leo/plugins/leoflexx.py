@@ -1977,6 +1977,12 @@ class LeoFlexxTree(flx.Widget):
         tag = 'flx.tree.clear_tree'
         # pylint: disable=access-member-before-definition
         items = list(self.tree_items_dict.values())
+        # Doesn't work
+            # # Can't use python set.
+            # for z in list(self.tree.get_all_items()):
+                # if z not in items:
+                    # if trace: print('%s: ADD %s' % (tag, repr(z)))
+                    # items.append(z)
         if trace:
             print('')
             print('%s: %s items' % (tag, len(items)))
@@ -1985,6 +1991,8 @@ class LeoFlexxTree(flx.Widget):
             if trace: print('  %s %s' % (repr(item), item.text))
             item.dispose()
         self.tree_items_dict = {}
+        self.populated_items_dict = {}
+            # #1127: A possible fix.
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
     def redraw_with_dict(self, redraw_dict, redraw_instructions):
@@ -2013,6 +2021,8 @@ class LeoFlexxTree(flx.Widget):
         #
         # Select c.p.
         self.select_ap(redraw_dict['c.p'])
+        redraw_dict = {}
+            # #1127: Remove references to deleted items.
     #@+node:ekr.20181124194248.1: *6* tree.create_item_with_parent
     def create_item_with_parent(self, item, parent):
         '''Create a tree item for item and all its visible children.'''
