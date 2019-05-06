@@ -858,6 +858,18 @@ class Commands(object):
 
     # For compatibiility with old scripts...
     currentVnode = currentPosition
+    #@+node:ekr.20190506060937.1: *5* c.dumpExpanded
+    @cmd('dump-expanded')
+    def dump_expanded(self, event):
+        c = event.get('c')
+        if not c:
+            return
+        g.es_print('dump-expanded...')
+        for p in c.all_positions():
+            if p.v.expandedPositions:
+                indent = ' '*p.level()
+                print('%s%s' % (indent, p.h))
+                g.printObj(p.v.expandedPositions, indent=indent)
     #@+node:ekr.20040306220230.1: *5* c.edit_widget
     def edit_widget(self, p):
         c = self
