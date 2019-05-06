@@ -67,11 +67,6 @@ flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< leoflexx: assets >>
 #
-# Switches.
-debug_focus = False # True: put 'focus' in g.app.debug.
-debug_keys = False # True: put 'keys' in g.app.debug.
-is_public = True # True: public code issues various alerts.
-#
 # pylint: disable=logging-not-lazy
 # pylint: disable=missing-super-argument
 #@+others
@@ -358,12 +353,6 @@ class LeoBrowserApp(flx.PyComponent):
         assert g.app.windowList
         for frame in g.app.windowList:
             assert isinstance(frame, DummyFrame), repr(frame)
-        #
-        # Set g.app debugging ivars.
-        if debug_focus:
-            g.app.debug.append('focus')
-        if debug_keys:
-            g.app.debug.append('keys')
         #
         # Instantiate all wrappers here, not in app.finish_create.
         title = c.computeWindowTitle(c.mFileName)
@@ -1772,14 +1761,13 @@ class LeoFlexxMainWindow(flx.Widget):
             status_line = LeoFlexxStatusLine()
         #@+<< define unload action >>
         #@+node:ekr.20181206044554.1: *4* << define unload action >>
-        if is_public:
-            RawJS("""\
-            // Called from Mozilla, but not webruntime.
-            window.onbeforeunload = function(){
-                // console.log("window.onbeforeunload")
-                return "Are you sure?"
-            };
-            """)
+        RawJS("""\
+        // Called from Mozilla, but not webruntime.
+        window.onbeforeunload = function(){
+            // console.log("window.onbeforeunload")
+            return "Are you sure?"
+        };
+        """)
         #@-<< define unload action >>
         self._mutate('body', body)
         self._mutate('log', log)
