@@ -501,7 +501,8 @@ class AtFile(object):
                 p.isAtAutoNode() or
                 p.isAtEditNode() or
                 p.isAtShadowFileNode() or
-                p.isAtFileNode()
+                p.isAtFileNode() or
+                p.isAtCleanNode() # 1134.
             ):
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
@@ -509,10 +510,11 @@ class AtFile(object):
                 # Note (see #1081): @asis and @nosent can *not* be updated automatically.
                 # Doing so using refresh-from-disk will delete all child nodes.
                 p.moveToNodeAfterTree()
-            elif p.isAtCleanNode():
-                files.append(p.copy())
-                p.moveToThreadNext()
-                    # #525: Nested nodes.
+            ###
+                # elif p.isAtCleanNode():
+                    # files.append(p.copy())
+                    # p.moveToThreadNext()
+                        # # #525: Nested nodes.
             else:
                 p.moveToThreadNext()
         return files
@@ -1099,8 +1101,11 @@ class AtFile(object):
                 if data not in seen:
                     seen.add(data)
                     files.append(p.copy())
-                p.moveToThreadNext()
-                    #525: Scan for nested @<file> nodes
+                p.moveToNodeAfterTree()
+                    # #1134.
+                ###
+                    # p.moveToThreadNext()
+                        #525: Scan for nested @<file> nodes
             else:
                 p.moveToThreadNext()
         if not force:
@@ -1892,19 +1897,19 @@ class AtFile(object):
         isSection, junk = at.isSectionName(p.h, i)
         if isSection:
             return False # A section definition node.
-        elif at.sentinels:
+        if at.sentinels:
             # @ignore must not stop expansion here!
             return True
-        elif p.isAtIgnoreNode():
+        if p.isAtIgnoreNode():
             g.error('did not write @ignore node', p.v.h)
             return False
-        elif p.isAtCleanNode():
-            p.v.setVisited()
-                # # 525: Nested @clean.
-                # Suppress a future error. Requires other changes.
-            return False
-        else:
-            return True
+        ### #1134.
+            # if p.isAtCleanNode():
+                # p.v.setVisited()
+                    # # # 525: Nested @clean.
+                    # # Suppress a future error. Requires other changes.
+                # return False
+        return True
     #@+node:ekr.20041005105605.174: *6* at.putCodeLine
     def putCodeLine(self, s, i):
         '''Put a normal code line.'''
