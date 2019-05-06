@@ -2267,11 +2267,13 @@ class LeoFlexxTreeItem(flx.TreeItem):
     #@+others
     #@-others
 #@-others
-if __name__ == '__main__':
-    #
-    # Stand-alone mode.
-    # gui.runMainLoop executes similar code when using --gui=browser.
-    flx.launch(LeoBrowserApp)
-    flx.set_log_level('ERROR')
-    flx.run()
+#
+# No longer supported
+# if __name__ == '__main__':
+    # #
+    # # Stand-alone mode.
+    # # gui.runMainLoop executes similar code when using --gui=browser.
+    # flx.launch(LeoBrowserApp)
+    # flx.set_log_level('ERROR')
+    # flx.run()
 #@-leo
