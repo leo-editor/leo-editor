@@ -650,6 +650,13 @@ class LeoBrowserApp(flx.PyComponent):
         w.tree.select_ap(ap)
         c.frame.tree.super_select(p)
             # call LeoTree.select, but not self.select_p.
+    #@+node:ekr.20190506100026.1: *5* app.action.select_minibuffer
+    @flx.action
+    def select_minibuffer(self):
+        '''Select the minibuffer in response to user click.'''
+        c = self.c
+        event = g.app.gui.create_key_event(c, w=c.frame.body.wrapper)
+        c.k.fullCommand(event)
     #@+node:ekr.20181118061020.1: *5* app.action.select_p
     @flx.action
     def select_p(self, p):
@@ -1798,6 +1805,10 @@ class LeoFlexxMiniBuffer(JS_Editor):
             flx.Label(text='Minibuffer')
             w = MinibufferEditor(flex=1)
             self.editor = w.editor
+            
+    @flx.reaction('pointer_down')
+    def on_select(self):
+        self.root.select_minibuffer()
 
     #@+others
     #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
@@ -1861,7 +1872,8 @@ class LeoFlexxMiniBuffer(JS_Editor):
         This will only be called if the user has entered the minibuffer via a click.
         '''
         command = self.editor.getValue()
-        if 0: print('mini.do_enter_key', repr(command))
+        if 'keys' in g.app.debug:
+            print('mini.do_enter_key', repr(command))
         if command.strip():
             if command.startswith('full-command:'):
                 command = command[len('full-command:'):].strip()
