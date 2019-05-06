@@ -1973,12 +1973,16 @@ class LeoFlexxTree(flx.Widget):
         
         Important: we do *not* clear self.tree itself!
         '''
+        trace = 'drawing' in g.app.debug
+        tag = 'flx.tree.clear_tree'
         # pylint: disable=access-member-before-definition
         items = list(self.tree_items_dict.values())
-        if 1: print('===== flx.tree.clear_tree: %s items' % (len(items)))
+        if trace:
+            print('')
+            print('%s: %s items' % (tag, len(items)))
         # Clear all tree items.
         for item in items:
-            print(repr(item))
+            if trace: print('  %s %s' % (repr(item), item.text))
             item.dispose()
         self.tree_items_dict = {}
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
@@ -1995,14 +1999,17 @@ class LeoFlexxTree(flx.Widget):
                 ],
             }
         '''
-        tag = '%s: redraw_with_dict' % self.tag
+        trace = 'drawing' in g.app.debug
+        tag = 'redraw_with_dict'
         assert redraw_dict
         self.clear_tree()
         items = redraw_dict ['items']
-        if 1: print('%s: %s direct children' % (tag, len(items)))
+        if trace:
+            print('')
+            print('%s: %s direct children' % (tag, len(items)))
         for item in items:
             tree_item = self.create_item_with_parent(item, self.tree)
-            if 1: print('  item %20s %s' % (repr(tree_item), item['headline']))
+            if trace: print('  %s %s' % (repr(tree_item), item['headline']))
         #
         # Select c.p.
         self.select_ap(redraw_dict['c.p'])
@@ -2011,8 +2018,9 @@ class LeoFlexxTree(flx.Widget):
         '''Create a tree item for item and all its visible children.'''
         # pylint: disable=no-member
             # set_collapsed is in the base class.
+        trace = 'drawing' in g.app.debug
+        tag = 'create_item_with_parent'
         ap = item ['ap']
-        if 0: print('%s%s' % ('  '*ap ['level'], ap['headline']))
         #
         # Create the node.
         with parent:
@@ -2022,12 +2030,13 @@ class LeoFlexxTree(flx.Widget):
         # Set the data.
         key = self.ap_to_key(ap)
         self.tree_items_dict [key] = tree_item
+        #
         # Children are *not* necessarily sent, so set the populated 'bit' only if they are.
         if item['children']:
-            if 0: print('create_item_with_parent: **populated**', ap['headline'])
+            if trace: print(tag, '**populated**', ap['headline'])
             self.populated_items_dict[key] = True
         if hasattr(parent, 'leo_children'):
-            # print('create_item_with_parent', parent.leo_ap['headline'], ap['headline'])
+            # print(tag, parent.leo_ap['headline'], ap['headline'])
             parent.leo_children.append(tree_item)
         #
         # Create the children.
