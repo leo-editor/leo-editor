@@ -2832,6 +2832,188 @@ def initFocusAndDraw(self, c, fileName):
         c.initialFocusHelper()
         c.k.showStateAndMode()
         c.outerUpdate()
+#@+node:ekr.20190506094028.1: ** Demo stuff
+#@+node:ekr.20190506094028.2: *3* @@button demo1 @key=Ctrl-8
+g.cls()
+if c.isChanged(): c.save()
+import imp
+import leo.plugins.demo as demo
+imp.reload(demo)
+<< class MyDemo >>
+h = 'demo1-commands'
+button_p = g.findNodeAnywhere(c, '@button demo1 @key=Ctrl-8')
+commands = g.findNodeInTree(c, button_p, h)
+if commands:
+    MyDemo(c).start(commands)
+else:
+    print('not found', h, c.p.h)
+#@+node:ekr.20190506094028.3: *4* << class MyDemo >>
+class MyDemo(demo.Demo):
+    
+    @others
+    
+#@+node:ekr.20190506094028.4: *5* setup
+def setup(self, p):
+    
+    c = self.c
+    self.delta = 0
+    self.clear_log()
+    p = g.findNodeAnywhere(c, 'Demo area')
+    if p:
+        c.selectPosition(p)
+#@+node:ekr.20190506094028.5: *5* teardown
+def teardown(self):
+    
+    c = self.c
+    if self.delta:
+        self.set_text_delta(-self.delta)
+    p = g.findNodeAnywhere(c, 'Demo area')
+    if p:
+        c.selectPosition(p)
+        next = p.next()
+        if next and next.h == 'This is a test':
+            c.selectPosition(next)
+            next.doDelete()
+            c.selectPosition(p)
+            c.setChanged(False)
+            c.redraw()
+    
+
+#@+node:ekr.20190506094028.6: *4* demo1-commands
+print('demo1-commands')
+# c.contractAllHeadlines()
+#@+node:ekr.20190506094028.7: *5* @ignore-tree
+#@+node:ekr.20190506094028.8: *6* set_text_delta
+print('increasing text size by 10')
+demo.delta = 10
+demo.set_text_delta(demo.delta)
+#@+node:ekr.20190506094028.9: *6* undo
+undo_type = c.undoer.undoType
+if undo_type == 'Insert Node':
+    c.undoer.undo()
+#@+node:ekr.20190506094028.10: *6* caption
+demo.caption('My Caption', 'body')
+#@+node:ekr.20190506094028.11: *6* @image
+demo.delete_widgets()
+fn = 'SplashScreen.ico'
+demo.image('body', fn, center=True, height=None, width=None)
+#@+node:ekr.20190506094028.12: *6* open menu
+demo.delete_widgets()
+demo.open_menu('Import')
+#@+node:ekr.20190506094028.13: *6* close menu
+demo.dismiss_menu_bar()
+#@+node:ekr.20190506094028.14: *6* Alt-X insert-node
+demo.key('Alt+x') # Not the same as Alt-X
+demo.keys('insert-node')
+# demo.wait(0.8)
+# demo.key('\n') # Works.
+#@+node:ekr.20190506094028.15: *6* Return
+demo.key('\n')
+#@+node:ekr.20190506094028.16: *5* headline
+c.k.simulateCommand('insert-node')
+demo.head_keys('This is a test')
+#@+node:ekr.20190506094028.17: *3* Test: import c:\test\demo-it.el
+g.cls()
+import imp
+import leo.plugins.importers.linescanner as linescanner
+import leo.plugins.importers.elisp as elisp
+imp.reload(linescanner)
+imp.reload(elisp)
+x = elisp.Elisp_Importer(c.importCommands, atAuto=False)
+with open('c:/test/demo-it.el') as f:
+    s = f.read()
+parent = p.next()
+assert parent.h == 'demo.el', parent.h
+parent.b = ''
+parent.deleteAllChildren()
+try:
+    x.run(s, parent)
+except Exception:
+    g.es_exception()
+parent.expand()
+c.selectPosition(parent)
+c.redraw()
+# g.printList(g.splitLines(s))
+#@+node:ekr.20190506094028.18: *3* demo.image & helper
+def image(self, fn, center=None, height=None, pane=None, width=None):
+    '''Put an image in the indicated pane.'''
+    parent = self.pane_widget(pane or 'body')
+    if parent:
+        w = QtWidgets.QLabel('label', parent)
+        fn = self.resolve_icon_fn(fn)
+        if not fn: return None
+        pixmap = QtGui.QPixmap(fn)
+        if not pixmap:
+            return g.trace('Not a pixmap: %s' % (fn))
+        if height:
+            pixmap = pixmap.scaledToHeight(height)
+        if width:
+            pixmap = pixmap.scaledToWidth(width)
+        w.setPixmap(pixmap)
+        if center:
+            g_w = w.geometry()
+            g_p = parent.geometry()
+            dx = (g_p.width() - g_w.width()) / 2
+            w.move(g_w.x() + dx, g_w.y() + 10)
+        w.show()
+        self.widgets.append(w)
+        return w
+    else:
+        g.trace('bad pane: %s' % (pane))
+        return None
+#@+node:ekr.20190506094028.19: *4* demo.resolve_icon_fn
+def resolve_icon_fn(self, fn):
+    '''Resolve fn relative to the Icons directory.'''
+    dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
+    path = g.os_path_finalize_join(dir_, fn)
+    if g.os_path_exists(path):
+        return path
+    else:
+        g.trace('does not exist: %s' % (path))
+        return None
+#@+node:ekr.20190506094028.20: *3* demo.caption & body, log, tree
+def caption(self, s, pane): # To do: center option.
+    '''Pop up a QPlainTextEdit in the indicated pane.'''
+    parent = self.pane_widget(pane)
+    if parent:
+        s = s.rstrip()
+        if s and s[-1].isalpha(): s = s + '.'
+        w = QtWidgets.QPlainTextEdit(s, parent)
+        w.setObjectName('screencastcaption')
+        self.widgets.append(w)
+        w2 = self.pane_widget(pane)
+        geom = w2.geometry()
+        w.resize(geom.width(), min(150, geom.height() / 2))
+        off = QtCore.Qt.ScrollBarAlwaysOff
+        w.setHorizontalScrollBarPolicy(off)
+        w.setVerticalScrollBarPolicy(off)
+        w.show()
+        return w
+    else:
+        g.trace('bad pane: %s' % (pane))
+        return None
+
+def body(self, s):
+    return self.caption(s, 'body')
+
+def log(self, s):
+    return self.caption(s, 'log')
+
+def tree(self, s):
+    return self.caption(s, 'tree')
+#@+node:ekr.20190506094028.21: *3* demo.body, log, tree
+def body(self, s):
+    return TextEdit(s, 'body')
+
+def log(self, s):
+    return TextEdit(s, 'log')
+
+def tree(self, s):
+    return TextEdit(s, 'tree')
+#@+node:ekr.20190506094028.22: *3* Demo area
+@language python
+
+# A python comment.
 #@+node:ekr.20150312225028.6: ** class LogManager (not used yet)
 class LogManager:
 
