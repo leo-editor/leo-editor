@@ -1992,7 +1992,6 @@ class LeoFlexxTree(flx.Widget):
             item.dispose()
         self.tree_items_dict = {}
         self.populated_items_dict = {}
-            # #1127: A possible fix, but does not work.
         self.tree._render_dom()
             # #1127: A possible fix.
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
