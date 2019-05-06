@@ -1975,10 +1975,10 @@ class LeoFlexxTree(flx.Widget):
         '''
         # pylint: disable=access-member-before-definition
         items = list(self.tree_items_dict.values())
-        if 0: print('===== flx.tree.clear_tree: %s items' % (len(items)))
+        if 1: print('===== flx.tree.clear_tree: %s items' % (len(items)))
         # Clear all tree items.
         for item in items:
-            # print(repr(item))
+            print(repr(item))
             item.dispose()
         self.tree_items_dict = {}
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
@@ -1999,10 +1999,10 @@ class LeoFlexxTree(flx.Widget):
         assert redraw_dict
         self.clear_tree()
         items = redraw_dict ['items']
-        if 0: print('%s: %s direct children' % (tag, len(items)))
+        if 1: print('%s: %s direct children' % (tag, len(items)))
         for item in items:
-            if 0: print('  item', repr(item['headline']))
-            self.create_item_with_parent(item, self.tree)
+            tree_item = self.create_item_with_parent(item, self.tree)
+            if 1: print('  item %20s %s' % (repr(tree_item), item['headline']))
         #
         # Select c.p.
         self.select_ap(redraw_dict['c.p'])
@@ -2033,6 +2033,7 @@ class LeoFlexxTree(flx.Widget):
         # Create the children.
         for child in item ['children']:
             self.create_item_with_parent(child, tree_item)
+        return tree_item # Debugging
     #@+node:ekr.20181114072307.1: *5* flx_tree.ap_to_key
     def ap_to_key(self, ap):
         '''Produce a key for the given ap.'''
