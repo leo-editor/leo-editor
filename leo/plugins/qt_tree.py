@@ -208,7 +208,7 @@ class LeoQtTree(leoFrame.LeoTree):
         t2 = time.clock()
         if t2-t1 > 0.1:
             g.trace('%s nodes, %5.3f sec' % (n, t2-t1))
-    #@+node:ekr.20180810052056.2: *5* qtree.yieldVisible
+    #@+node:ekr.20180810052056.2: *5* qtree.yieldVisible (not used)
     def yieldVisible(self, first_p, target_p=None):
         """
         A generator yielding positions from first_p to target_p.

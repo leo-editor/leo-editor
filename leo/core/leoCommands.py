@@ -2705,6 +2705,12 @@ class Commands(object):
         c = self
         c.enableRedrawFlag = True
     #@+node:ekr.20090110073010.1: *6* c.redraw
+    @cmd('redraw')
+    def redraw_command(self, event):
+        c = event.get('c')
+        if c:
+            c.redraw()
+
     def redraw(self, p=None):
         '''Redraw the screen immediately.'''
         c = self
