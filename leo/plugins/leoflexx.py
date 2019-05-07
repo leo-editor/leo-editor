@@ -1184,6 +1184,7 @@ class LeoBrowserGui(leoGui.NullGui):
         # Print the signon.
         table = [
             ('Leo Log Window', 'red'),
+            ('flexx version: %s' % (flx.__version__), None),
             (g.app.signon, None),
             (g.app.signon1, None),
             (g.app.signon2, None),
@@ -1328,6 +1329,9 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
             
     def setStyleClass(self, name):
         w = self.root.main_window
+        if not w:
+            g.trace('NO MAIN WINDOW')
+            return
         w.minibuffer.set_style(name)
         self.update('setStyleClass:%r' % name)
     #@-others
@@ -1524,30 +1528,31 @@ class JS_Editor(flx.Widget):
 
     @flx.emitter # New
     def key_down(self, e):
+        trace = 'keys' in g.app.debug
         self.ignore_up = False
         ev = self._create_key_event(e)
         down =  '%s %r' % (self.name, ev)
         if down != self.last_down:
             self.last_down = down
-            # print('     jse.key_down:', down)
+            if trace: print('     jse.key_down:', down)
         if self.should_be_leo_key(ev):
             e.preventDefault()
         return ev
         
     @flx.emitter # New
     def key_up(self, e):
+        trace = 'keys' in g.app.debug
         self.last_down = None
             # Enable key downs.
         ev = self._create_key_event(e)
         if self.ignore_up:
-            # print('IGNORE jse.key_up: %s %r' % (self.name, ev))
+            if trace: print('IGNORE jse.key_up: %s %r' % (self.name, ev))
             e.preventDefault()
             return ev
         self.ignore_up = True
             # Ignore all further key ups, until the next key down
         should_be_leo = bool(self.should_be_leo_key(ev))
-        if 'keys' in g.app.debug:
-            print('       jse.key_up: %s %r Leo: %s' % (self.name, ev, should_be_leo))
+        if trace: print('       jse.key_up: %s %r Leo: %s' % (self.name, ev, should_be_leo))
         if should_be_leo: ### self.should_be_leo_key(ev):
             e.preventDefault()
             ivar = 'minibufferWidget' if self.name == 'minibuffer' else self.name
@@ -1556,12 +1561,13 @@ class JS_Editor(flx.Widget):
 
     @flx.emitter
     def key_press(self, e):
+        trace = 'keys' in g.app.debug
         ev = self._create_key_event(e)
         # Init the key_down state.
         self.last_down = None
         # Ignore all key ups until the next key down.
         self.ignore_up = True
-        if 'keys' in g.app.debug:
+        if trace:
             print('    jse.key_press: %s %r' % (self.name, ev))
         if self.should_be_leo_key(ev):
             e.preventDefault()
@@ -1582,12 +1588,13 @@ class JS_Editor(flx.Widget):
         Return True if Leo should handle the key.
         Leo handles only modified keys, not F-keys or plain keys.
         '''
+        trace = 'keys' in g.app.debug
+        tag = 'JSE.should_be_leo_key'
         key, mods = ev['key'], ev['modifiers']
-            # tag = 'JSE.should_be_leo_key'
         #
         # The widget handles F-keys.
         if not mods and key.startswith('F'):
-            # print('%s: %r %r return: false' % (tag, mods, key))
+            if trace: print('%s: %r %r return: false' % (tag, mods, key))
             return False
         mods2 = mods
         if 'Shift' in mods2:
@@ -1596,11 +1603,11 @@ class JS_Editor(flx.Widget):
         # Send only Ctrl-Arrow keys to body.
         if mods2 == ['Ctrl'] and key in ('RtArrow', 'LtArrow', 'UpArrow', 'DownArrow'):
             # This never fires: Neither editor widget emis Ctrl/Arrow keys or Alt-Arrow keys.
-            # print(tag, 'Arrow key: send to to body', repr(mods), repr(key))
+            if trace: print(tag, 'Arrow key: send to to body', repr(mods), repr(key))
             return False
         #
         # Leo should handle all other modified keys.
-        # print('%s: %r %r return: %s' % (tag, mods, key, bool(mods2)))
+        if trace: print('%s: %r %r return: %s' % (tag, mods, key, bool(mods2)))
         return mods2
     #@+node:ekr.20181215083642.1: *4* jse.focus
     @flx.action
@@ -2004,7 +2011,7 @@ class LeoFlexxTree(flx.Widget):
             self.populating_tree_item = None
             for item in items:
                 # Could this trace cause problems?
-                # if trace: print('  %s %s' % (repr(item), item.text))
+                if trace: print('  %s %s' % (repr(item), item.text))
                 item.dispose()
             self.tree._render_dom()
                 # #1127: A possible fix.
