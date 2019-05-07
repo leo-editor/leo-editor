@@ -893,6 +893,7 @@ def insertHeadlineHelper(c,
             p = current.insertAsNthChild(0)
     else:
         p = current.insertAfter()
+    g.trace('p.b', repr(p.b))
     g.doHook('create-node', c=c, p=p)
     p.setDirty(setDescendentsDirty=False)
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()

@@ -199,6 +199,7 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         '''The common setter code.'''
         c = self.c
         # At present, self.name is always 'body'.
+        g.trace(self.name, tag, 'self.s:', repr(self.s)) # g.callers(8))
         if self.name == 'body':
             c.p.v.setBodyString(self.s)
                 # p.b = self.s will cause an unbounded recursion.
@@ -385,6 +386,11 @@ class LeoBrowserApp(flx.PyComponent):
             return
         c = bridge.openLeoFile(path)
         return c, g
+    #@+node:ekr.20190507110902.1: *4* app.action.cls
+    @flx.action
+    def cls(self):
+        '''Clear the console'''
+        g.cls()
     #@+node:ekr.20181117163223.1: *4* app.action.do_key
     # https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
     # See Widget._create_key_event in flexx/ui/_widget.py:
@@ -453,6 +459,14 @@ class LeoBrowserApp(flx.PyComponent):
             g.app.debug = old_debug
         #@-<< create key_event >>
         c.k.masterKeyHandler(key_event)
+    #@+node:ekr.20181124054536.1: *4* app.action.dump_dict
+    @flx.action
+    def dump_dict(self, obj, tag): # indent='', printCaller=False, 
+        g.printObj(obj, tag=tag)
+
+    # def message(self, s):
+        # '''For testing.'''
+        # print('app.message: %s' % s)
     #@+node:ekr.20181207080933.1: *4* app.action.set_body_text & set_status
     # These must be separate because they are called from the tree logic.
 
@@ -479,13 +493,21 @@ class LeoBrowserApp(flx.PyComponent):
         
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
+        trace = 'drawing' in g.app.debug
+        tag = 'LeoBrowserApp.redraw'
         c = self.c
         p = p or c.p
+        # #1142.
+        c.selectPosition(p)
+        if trace:
+            print('')
+            print(tag, p.h, repr(p.b))
         redrawer = self.fast_redrawer
         w = self.main_window
         #
         # Be careful: c.frame.redraw can be called before app.finish_create.
         if not w or not w.tree:
+            if trace: print(tag, 'no w.tree')
             return
         #
         # Profile times when all nodes are expanded.
@@ -679,7 +701,7 @@ class LeoBrowserApp(flx.PyComponent):
     @flx.action
     def complete_unselect(self, d):
         '''A helper action, called from flx_body.sync_before_select.'''
-        if 0: print('app.complete_unselect:', d ['headline'])
+        if 1: g.printObj(d, tag='app.complete_unselect.d') ### d ['headline'])
         self.c.frame.tree.complete_unselect(d)
 
     @flx.action
@@ -950,6 +972,13 @@ class LeoBrowserApp(flx.PyComponent):
                 c.widgetWantsFocusNow(event and event.widget)
                     # Important, so cut-text works, e.g.
                 c.executeAnyCommand(func, event)
+            # #1142.
+            # self.root.main_window.body.sync_after_command({
+                # 'char': char,
+                # 'commandName': commandName,
+                # 'headline': c.p.h, # Debugging.
+                # 'mods': mods,
+            # })
             k.endCommand(commandName)
             return True
         if 0: # Not ready yet
@@ -1021,15 +1050,6 @@ class LeoBrowserApp(flx.PyComponent):
         new_len = len(list(self.gnx_to_vnode.keys()))
         assert old_len == new_len, (old_len, new_len)
         # print('app.test_round_trip_positions: %5.3f sec' % (time.clock()-t1))
-    #@+node:ekr.20181124054536.1: *4* app.Utils
-    @flx.action
-    def cls(self):
-        '''Clear the console'''
-        g.cls()
-
-    # def message(self, s):
-        # '''For testing.'''
-        # print('app.message: %s' % s)
     #@-others
 #@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
 class LeoBrowserBody(leoFrame.NullBody):
@@ -1419,7 +1439,7 @@ class LeoBrowserTree(leoFrame.NullTree):
     def select(self, p):
         '''Override NullTree.select, which is actually LeoTree.select.'''
         if self.root.inited:
-            if 0: print('===== tree.select: %r ==> %r' % (self.root.c.p.h, p.h))
+            if 1: print('===== tree.select: %r ==> %r' % (self.root.c.p.h, p.h))
             w = self.root.main_window
             w.body.sync_before_select({
                 'ap': self.root.p_to_ap(p),
@@ -1438,7 +1458,10 @@ class LeoBrowserTree(leoFrame.NullTree):
         self.root.update_body_from_dict(d)
             # Complete the syncing of the body pane.
         p = self.root.ap_to_p(d ['ap'])
-        if 0: print('tree.complete_unselect: p: %r ==> %r' % (self.root.c.p.h, p.h))
+        if 1:
+            tag = 'tree.complete_unselect'
+            print(tag, 'p: %r ==> %r' % (self.root.c.p.h, p.h))
+            self.root.dump_dict(d, tag)
         super().select(p)
             # Call LeoTree.select.'''
         self.root.select_p(p)
@@ -1694,23 +1717,24 @@ class LeoFlexxBody(JS_Editor):
         self.editor = make_editor_function(self.name, self.node)
 
     #@+others
-    #@+node:ekr.20181215061402.1: *4* flx_body.sync_before_command/select
+    #@+node:ekr.20181215061402.1: *4* flx_body.sync*
     @flx.action
     def sync_before_command(self, d):
         '''Update p.b, etc. before executing a minibuffer command..'''
-        if 0: print('flx_body.sync_before_command')
+        if 1: self.root.dump_dict(d, tag='flx_body.sync_before_command')
         self.update_body_dict(d)
         self.root.complete_minibuffer_command(d)
         
     @flx.action
     def sync_before_select(self, d):
         '''Update p.b, etc. before selecting a new node.'''
-        if 0: print('===== flx_body.sync_before_select')
+        if 1: self.root.dump_dict(d, tag='flx_body.sync_before_select')
         self.update_body_dict(d)
         self.root.complete_unselect(d)
         
     def update_body_dict(self, d):
         '''Add keys to d describing the body pane.'''
+        if 1: self.root.dump_dict(d, tag='flx_body.update_body_dict')
         d ['s'] = self.get_text()
         d ['ins_row'], d ['ins_col'] = self.get_ins()
         row1, col1, row2, col2 = self.get_sel()
