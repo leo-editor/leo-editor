@@ -1989,23 +1989,25 @@ class LeoFlexxTree(flx.Widget):
         tag = 'flx.tree.clear_tree'
         # pylint: disable=access-member-before-definition
         items = list(self.tree_items_dict.values())
-        # Doesn't work
-            # # Can't use python set.
-            # for z in list(self.tree.get_all_items()):
-                # if z not in items:
-                    # if trace: print('%s: ADD %s' % (tag, repr(z)))
-                    # items.append(z)
         if trace:
             print('')
             print('%s: %s items' % (tag, len(items)))
-        # Clear all tree items.
-        for item in items:
-            if trace: print('  %s %s' % (repr(item), item.text))
-            item.dispose()
-        self.tree_items_dict = {}
-        self.populated_items_dict = {}
-        self.tree._render_dom()
-            # #1127: A possible fix.
+        if 0:
+            # RuntimeError: TreeWidgetxx needs a session
+            self.tree.dispose()
+            self.tree = flx.TreeWidget(flex=1, max_selected=1)
+        else:
+            # Clear all tree items.
+            # #1127: Clear *all* references first.
+            self.tree_items_dict = {}
+            self.populated_items_dict = {}
+            self.populating_tree_item = None
+            for item in items:
+                # Could this trace cause problems?
+                # if trace: print('  %s %s' % (repr(item), item.text))
+                item.dispose()
+            self.tree._render_dom()
+                # #1127: A possible fix.
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
     def redraw_with_dict(self, redraw_dict, redraw_instructions):
