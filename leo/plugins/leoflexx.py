@@ -294,8 +294,9 @@ class LeoBrowserApp(flx.PyComponent):
         self.old_flattened_outline = self.fast_redrawer.flatten_outline(c)
         self.old_redraw_dict = self.make_redraw_dict(c.p)
         # Select the proper position.
-        c.contractAllHeadlines()
         c.selectPosition(c.p or c.rootPosition())
+        c.contractAllHeadlines()
+            # #1127: This calls c.redraw. Do *not* call it again below.
         # Monkey-patch the FindTabManager
         c.findCommands.minibuffer_mode = True
         c.findCommands.ftm = g.NullObject()
@@ -303,7 +304,6 @@ class LeoBrowserApp(flx.PyComponent):
         g.app.gui.writeWaitingLog2()
         self.set_body_text()
         self.set_status()
-        self.redraw(c.p)
         # Init the focus. It's debatable...
         if 0:
             self.gui.set_focus(c, c.frame.tree)
@@ -1322,7 +1322,7 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
     def setAllText(self, s):
         super().setAllText(s)
         self.update('setAllText')
-        
+
     def setSelectionRange(self, i, j, insert=None):
         super().setSelectionRange(i, j, insert)
         self.update('setSelectionRange')
@@ -1999,22 +1999,16 @@ class LeoFlexxTree(flx.Widget):
         if trace:
             print('')
             print('%s: %s items' % (tag, len(items)))
-        if 0:
-            # RuntimeError: TreeWidgetxx needs a session
-            self.tree.dispose()
-            self.tree = flx.TreeWidget(flex=1, max_selected=1)
-        else:
-            # Clear all tree items.
-            # #1127: Clear *all* references first.
-            self.tree_items_dict = {}
-            self.populated_items_dict = {}
-            self.populating_tree_item = None
-            for item in items:
-                # Could this trace cause problems?
-                if trace: print('  %s %s' % (repr(item), item.text))
-                item.dispose()
-            self.tree._render_dom()
-                # #1127: A possible fix.
+        #
+        # Clear *all* references first.
+        self.tree_items_dict = {}
+        self.populated_items_dict = {}
+        self.populating_tree_item = None
+        #
+        # Clear all tree items.
+        for item in items:
+            if trace: print('  %s %s' % (repr(item), item.text))
+            item.dispose()
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
     def redraw_with_dict(self, redraw_dict, redraw_instructions):
@@ -2029,6 +2023,7 @@ class LeoFlexxTree(flx.Widget):
                 ],
             }
         '''
+        # This is called only from app.action.redraw.
         trace = 'drawing' in g.app.debug
         tag = 'redraw_with_dict'
         assert redraw_dict
