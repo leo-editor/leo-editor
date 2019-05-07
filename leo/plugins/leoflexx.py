@@ -327,7 +327,7 @@ class LeoBrowserApp(flx.PyComponent):
             if isinstance(g.app.log, leoFrame.NullLog):
                 c = g.app.log.c
             else:
-                print('app.init: ===== Ctrl-H ===== ?')
+                # print('app.init: ===== Ctrl-H ===== ?')
                 return 
         else:
             # We are running stand-alone.
