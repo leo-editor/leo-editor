@@ -2817,7 +2817,8 @@ class Commands(object):
         c = self
         c.requestLaterRedraw = True
         if 'drawing' in g.app.debug:
-            g.trace('\n' + g.callers(8))
+            # g.trace('\n' + g.callers(8))
+            g.trace(g.callers())
     #@+node:ekr.20080514131122.17: *5* c.widget_name
     def widget_name(self, widget):
         # c = self

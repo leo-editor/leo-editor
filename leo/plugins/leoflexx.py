@@ -2007,7 +2007,7 @@ class LeoFlexxTree(flx.Widget):
         #
         # Clear all tree items.
         for item in items:
-            if trace: print('  %s %s' % (repr(item), item.text))
+            if trace: print('  %r %s' % (item, item.text))
             item.dispose()
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
@@ -2034,7 +2034,7 @@ class LeoFlexxTree(flx.Widget):
             print('%s: %s direct children' % (tag, len(items)))
         for item in items:
             tree_item = self.create_item_with_parent(item, self.tree)
-            if trace: print('  %s %s' % (repr(tree_item), item['headline']))
+            if trace: print('  %r %s' % (tree_item, item['headline']))
         #
         # Select c.p.
         self.select_ap(redraw_dict['c.p'])
