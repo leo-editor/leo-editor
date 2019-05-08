@@ -1545,18 +1545,18 @@ class LeoTree(object):
         '''Select the new node, part 1.'''
         c = self.c
         call_event_handlers = p != old_p
-        if call_event_handlers:
-            select = not g.doHook("select1",
-                c=c, new_p=p, old_p=old_p,
-                new_v=p, old_v=old_p)
-        else:
-            select = True
-        if select:
-            self.revertHeadline = p.h
+        if (
+            call_event_handlers and g.doHook("select1",
+            c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+        ):
+            if 'select' in g.app.debug:
+                g.trace('select1 override')
+            return
+        self.revertHeadline = p.h
+        c.frame.setWrap(p)
             # Not that expensive
-            c.frame.setWrap(p)
-            self.set_body_text_after_select(p, old_p)
-            c.nodeHistory.update(p)
+        self.set_body_text_after_select(p, old_p)
+        c.nodeHistory.update(p)
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
     def set_body_text_after_select(self, p, old_p, force=False):
         '''Set the text after selecting a node.'''
