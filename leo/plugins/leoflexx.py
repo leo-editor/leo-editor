@@ -302,8 +302,6 @@ class LeoBrowserApp(flx.PyComponent):
         # Monkey-patch the FindTabManager
         c.findCommands.minibuffer_mode = True
         c.findCommands.ftm = g.NullObject()
-        # Monkey-patch the all-important LeoTree.select method.
-        ### c.frame.tree.select = self.tree_select
         # Init the log, body, status line and tree.
         g.app.gui.writeWaitingLog2()
         self.set_body_text()
@@ -364,159 +362,6 @@ class LeoBrowserApp(flx.PyComponent):
         # The main window will be created (much) later.
         main_window = LeoFlexxMainWindow()
         self._mutate('main_window', main_window)
-    #@+node:ekr.20190508072204.1: *5* app.tree_select & helpers
-    tree_select_lockout = False
-
-    def tree_select(self, p):
-        '''
-        A monkey-patced version of LeoTree.select.
-
-        Select a node.
-        Never redraws outline, but may change coloring of individual headlines.
-        The scroll argument is used by the gui to suppress scrolling while dragging.
-        '''
-        if g.app.killed or self.tree_select_lockout: # Essential.
-            return None
-        try:
-            c = self.c
-            self.tree_select_lockout = True
-            self.prev_v = c.p.v
-            self.selectHelper(p)
-        finally:
-            self.tree_select_lockout = False
-            if c.enableRedrawFlag:
-                p = c.p
-                # Don't redraw during unit testing: an important speedup.
-                if c.expandAllAncestors(p) and not g.unitTesting:
-                    # This can happen when doing goto-next-clone.
-                    c.redraw_later()
-                        # This *does* happen sometimes.
-                else:
-                    c.outerUpdate() # Bring the tree up to date.
-                    if hasattr(self, 'setItemForCurrentPosition'):
-                        # pylint: disable=no-member
-                        self.setItemForCurrentPosition()
-            else:
-                c.requestLaterRedraw = True
-    #@+node:ekr.20190508072204.2: *6* LeoTree.selectHelper & helpers
-    def selectHelper(self, p):
-        '''
-        A helper function for leoTree.select.
-        Do **not** "optimize" this by returning if p==c.p!
-        '''
-        if not p:
-            # This is not an error! We may be changing roots.
-            # Do *not* test c.positionExists(p) here!
-            return
-        c = self.c
-        if not c.frame.body.wrapper:
-            return # Defensive.
-        if p.v.context != c:
-            # Selecting a foreign position will not be pretty.
-            g.trace('Wrong context: %r != %r' % (p.v.context, c))
-            return
-        old_p = c.p
-        call_event_handlers = p != old_p
-        if 'select' in g.app.debug:
-            print('')
-            g.trace(call_event_handlers, p.h)
-            print('')
-        # Order is important...
-        self.unselect_helper(old_p, p)
-            # 1. Call c.endEditLabel.
-        self.select_new_node(old_p, p)
-            # 2. Call set_body_text_after_select.
-        self.change_current_position(old_p, p)
-            # 3. Call c.undoer.onSelect.
-        self.scroll_cursor(p)
-            # 4. Set cursor in body.
-        self.set_status_line(p)
-            # 5. Last tweaks.
-        if call_event_handlers:
-            g.doHook("select2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
-            g.doHook("select3", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
-    #@+node:ekr.20190508072204.3: *7* 1. LeoTree.unselect_helper
-    def unselect_helper(self, old_p, p):
-        '''Unselect the old node, calling the unselect hooks.'''
-        c = self.c
-        call_event_handlers = p != old_p
-        if call_event_handlers:
-            unselect = not g.doHook("unselect1", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
-        else:
-            unselect = True
-        if unselect and old_p != p:
-            # Actually unselect the old node.
-            self.endEditLabel()
-        if call_event_handlers:
-            g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
-    #@+node:ekr.20190508072204.4: *7* 2. LeoTree.select_new_node & helper
-    def select_new_node(self, old_p, p):
-        '''Select the new node, part 1.'''
-        c = self.c
-        call_event_handlers = p != old_p
-        if (
-            call_event_handlers and g.doHook("select1",
-            c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
-        ):
-            if 'select' in g.app.debug:
-                g.trace('select1 override')
-            return
-        self.revertHeadline = p.h
-        c.frame.setWrap(p)
-            # Not that expensive
-        self.set_body_text_after_select(p, old_p)
-        c.nodeHistory.update(p)
-    #@+node:ekr.20190508072204.5: *8* LeoTree.set_body_text_after_select
-    def set_body_text_after_select(self, p, old_p, force=False):
-        '''Set the text after selecting a node.'''
-        c = self.c
-        w = c.frame.body.wrapper
-        s = p.v.b # Guaranteed to be unicode.
-        # Part 1: get the old text.
-        old_s = w.getAllText()
-        if not force and p and p == old_p and s == old_s:
-            return
-        # Part 2: set the new text. This forces a recolor.
-        c.setCurrentPosition(p)
-            # Important: do this *before* setting text,
-            # so that the colorizer will have the proper c.p.
-        w.setAllText(s)
-        # This is now done after c.p has been changed.
-            # p.restoreCursorAndScroll()
-    #@+node:ekr.20190508072204.6: *7* 3. LeoTree.change_current_position
-    def change_current_position(self, old_p, p):
-        '''Select the new node, part 2.'''
-        c = self.c
-        # c.setCurrentPosition(p)
-            # This is now done in set_body_text_after_select.
-        c.frame.scanForTabWidth(p)
-            #GS I believe this should also get into the select1 hook
-        use_chapters = c.config.getBool('use-chapters')
-        if use_chapters:
-            cc = c.chapterController
-            theChapter = cc and cc.getSelectedChapter()
-            if theChapter:
-                theChapter.p = p.copy()
-        # Do not call treeFocusHelper here!
-            # c.treeFocusHelper()
-        c.undoer.onSelect(old_p, p)
-    #@+node:ekr.20190508072204.7: *7* 4. LeoTree.scroll_cursor
-    def scroll_cursor(self, p):
-        '''Scroll the cursor.'''
-        p.restoreCursorAndScroll()
-            # Was in setBodyTextAfterSelect
-    #@+node:ekr.20190508072204.8: *7* 5. LeoTree.set_status_line
-    def set_status_line(self, p):
-        '''Update the status line.'''
-        c = self.c
-        c.frame.body.assignPositionToEditor(p)
-            # New in Leo 4.4.1.
-        c.frame.updateStatusLine()
-            # New in Leo 4.4.1.
-        c.frame.clearStatusLine()
-        verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
-        if p and p.v:
-            c.frame.putStatusLine(p.get_UNL(with_proto=verbose, with_index=verbose))
     #@+node:ekr.20190507110902.1: *4* app.action.cls
     @flx.action
     def cls(self):
@@ -1575,7 +1420,7 @@ class LeoBrowserTree(leoFrame.NullTree):
     #@+others
     #@+node:ekr.20181116081421.1: *4* tree.select, super_select, endEditLabel
     def select(self, p):
-        '''Override NullTree.select, which is actually LeoTree.select.'''
+        '''Override NullTree.select, that is LeoTree.select.'''
         if self.root.inited:
             if 1: print('===== tree.select: %r ==> %r' % (self.root.c.p.h, p.h))
             w = self.root.main_window
@@ -1585,6 +1430,9 @@ class LeoBrowserTree(leoFrame.NullTree):
             })
                 # The callback is self.complete_unselect.
         else:
+            print('')
+            print('tree.select: before init')
+            print('')
             # Don't sync the body pane.
             super().select(p)
                 # Call LeoTree.select.'''
