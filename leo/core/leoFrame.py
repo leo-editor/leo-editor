@@ -1057,18 +1057,17 @@ class LeoFrame(object):
         c = frame.c; k = c.k
         if g.app.batchMode:
             c.notValidInBatchMode("End Edit Headline")
+            return
+        w = c.get_focus()
+        w_name = g.app.gui.widget_name(w)
+        if w_name.startswith('head'):
+            c.endEditing()
+            c.treeWantsFocus()
         else:
-            w = c.get_focus()
-            w_name = g.app.gui.widget_name(w)
-            if w_name.startswith('head'):
-                c.endEditing()
-                c.treeWantsFocus()
-            else:
-                # c.endEditing()
-                c.bodyWantsFocus()
-                k.setDefaultInputState()
+            c.bodyWantsFocus()
+            k.setDefaultInputState()
+            k.showStateAndMode(w=c.frame.body.wrapper)
                 # Recolor the *body* text, **not** the headline.
-                k.showStateAndMode(w=c.frame.body.wrapper)
     #@+node:ekr.20031218072017.3680: *3* LeoFrame.Must be defined in subclasses
     def bringToFront(self): self.oops()
     def cascade(self, event=None): self.oops()
@@ -1512,6 +1511,10 @@ class LeoTree(object):
             return
         old_p = c.p
         call_event_handlers = p != old_p
+        if 'select' in g.app.debug:
+            print('')
+            g.trace(call_event_handlers, p.h)
+            print('')
         # Order is important...
         self.unselect_helper(old_p, p)
             # 1. Call c.endEditLabel.
