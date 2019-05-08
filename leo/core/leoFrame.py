@@ -1493,7 +1493,7 @@ class LeoTree(object):
                         self.setItemForCurrentPosition()
             else:
                 c.requestLaterRedraw = True
-    #@+node:ekr.20070423101911: *4* selectHelper (LeoTree) & helpers
+    #@+node:ekr.20070423101911: *4* LeoTree.selectHelper & helpers
     def selectHelper(self, p):
         '''
         A helper function for leoTree.select.
@@ -1601,7 +1601,7 @@ class LeoTree(object):
         verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
         if p and p.v:
             c.frame.putStatusLine(p.get_UNL(with_proto=verbose, with_index=verbose))
-    #@+node:ekr.20031218072017.3718: *3* oops
+    #@+node:ekr.20031218072017.3718: *3* LeoTree.oops
     def oops(self):
         g.pr("LeoTree oops:", g.callers(4), "should be overridden in subclass")
     #@-others
