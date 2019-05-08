@@ -1506,20 +1506,27 @@ class LeoTree(object):
         c = self.c
         if not c.frame.body.wrapper:
             return # Defensive.
-        assert p.v.context == c
+        if p.v.context != c:
             # Selecting a foreign position will not be pretty.
+            g.trace('Wrong context: %r != %r' % (p.v.context, c))
+            return
         old_p = c.p
         call_event_handlers = p != old_p
         # Order is important...
         self.unselect_helper(old_p, p)
+            # 1. Call c.endEditLabel.
         self.select_new_node(old_p, p)
+            # 2. Call set_body_text_after_select.
         self.change_current_position(old_p, p)
+            # 3. Call c.undoer.onSelect.
         self.scroll_cursor(p)
+            # 4. Set cursor in body.
         self.set_status_line(p)
+            # 5. Last tweaks.
         if call_event_handlers:
             g.doHook("select2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
             g.doHook("select3", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
-    #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper & helper
+    #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper
     def unselect_helper(self, old_p, p):
         '''Unselect the old node, calling the unselect hooks.'''
         c = self.c

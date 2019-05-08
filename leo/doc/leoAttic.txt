@@ -3176,7 +3176,8 @@ def embed_pyplot_widget(self):
 
     if pc.pyplot_canvas:
         pc.embed_widget(w, delete_callback=delete_callback)
-#@+node:ekr.20140831085423.18637: ** LeoTree.is_qt_body (from LeoTree.select)
+#@+node:ekr.20190508063206.1: ** From LeoTree.select
+#@+node:ekr.20140831085423.18637: *3* LeoTree.is_qt_body (from LeoTree.select)
 if 0:
 
     def is_qt_body(self):
