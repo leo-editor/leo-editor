@@ -198,10 +198,9 @@ class API_Wrapper (leoFrame.StringTextWrapper):
     def finish_setter(self, tag):
         '''The common setter code.'''
         c = self.c
-        # At present, self.name is always 'body'.
-        g.trace(self.name, tag, 'self.s:', repr(self.s)) # g.callers(8))
-        g.trace(self.name, tag, 'c.p.b', repr(c.p.b))
+        tag = ' body.setter'
         if self.name == 'body':
+            if 1: print('%s: %s' % (tag, len(self.s)))
             c.p.v.setBodyString(self.s)
                 # p.b = self.s will cause an unbounded recursion.
         if 0:
@@ -478,7 +477,7 @@ class LeoBrowserApp(flx.PyComponent):
         c.selectPosition(p)
         if trace:
             print('')
-            print(tag, p.h, repr(p.b))
+            print(tag, p.h, len(p.b))
         redrawer = self.fast_redrawer
         w = self.main_window
         #
@@ -664,34 +663,36 @@ class LeoBrowserApp(flx.PyComponent):
         
         Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
         '''
-        ### c = self.c
         w = self.main_window
         ap = self.p_to_ap(p)
         # Be careful during startup.
-        if w and w.tree:
-            w.tree.set_ap(ap)
-            ### body = c.frame.body.wrapper
-            if 1:
-                print('app.select_p: len(p.s): %s %s' % (len(p.b), p.h))
-                # print('app.select_p: sel: %r len(p.s): %s %s' % (
-                    # body.sel, len(p.s), p.h))
-                print('app.select_p:', g.callers(8))
-            ### w.body.set_text(body.s)
-            w.body.set_text(p.b)
-            ### w.body.set_insert_point(body.ins, body.sel)
-            ### w.body.set_insert_point(...)
+        if not (w and w.tree):
+            return
+        if 1: print('app.select_p: %s %s' % (len(p.b), p.h))
+        w.tree.set_ap(ap)
+        w.body.set_text(p.b)
+        ### body = c.frame.body.wrapper
+        ### w.body.set_text(body.s)
+        ### w.body.set_insert_point(body.ins, body.sel)
+        ### w.body.set_insert_point(...)
     #@+node:ekr.20181216051109.1: *5* app.action.select helpers
     @flx.action
-    def complete_unselect(self, d):
-        '''A helper action, called from flx_body.sync_before_select.'''
-        if 1:
-            g.printObj(d, tag='app.complete_unselect.d') ### d ['headline'])
-        self.c.frame.tree.complete_unselect(d)
+    def complete_select(self, d):
+        '''
+        A helper action, called from flx_body.sync_before_select.
+        
+        d.keys: ap, headline, ins_col/row, s, sel_col1/2, sel_row1/2.
+        '''
+        tag=' app.complete_select'
+        if 1: print(tag, len(d['s']), d['ap']['gnx'], d['headline'])
+        if 0: g.printObj(d, tag)
+        self.c.frame.tree.complete_select(d)
 
     @flx.action
     def select_tree_using_ap(self, ap):
         '''A helper action, called from flx_tree.on_selected_event.'''
-        if 0: print('app.select_tree_using_ap:', ap ['headline'])
+        tag = 'app.select_tree_using_ap'
+        if 1: print(tag, ap ['headline'])
         p = self.ap_to_p(ap)
         self.c.frame.tree.select(p)
     #@+node:ekr.20181111204659.1: *5* app.p_to_ap (updates app.gnx_to_vnode)
@@ -1420,36 +1421,40 @@ class LeoBrowserTree(leoFrame.NullTree):
     #@+others
     #@+node:ekr.20181116081421.1: *4* tree.select, super_select, endEditLabel
     def select(self, p):
-        '''Override NullTree.select, that is LeoTree.select.'''
-        if self.root.inited:
-            if 1: print('===== tree.select: %r ==> %r' % (self.root.c.p.h, p.h))
-            w = self.root.main_window
-            w.body.sync_before_select({
-                'ap': self.root.p_to_ap(p),
-                'headline': p.h, # Debugging.
-            })
-                # The callback is self.complete_unselect.
-        else:
-            print('')
-            print('tree.select: before init')
-            print('')
-            # Don't sync the body pane.
+        '''
+        Override NullTree.select, that is LeoTree.select.
+        
+        This must do the *entire* selection logic.
+        '''
+        if not self.root.inited:
+            # Don't sync the body pane during startup.
             super().select(p)
                 # Call LeoTree.select.'''
             self.root.select_p(p)
                 # Call app.select_position.
+            return
+        old_p = self.root.c.p
+        if 1:
+            print('\ntree.select: %s ==> %s %r ==> %r' % (
+                len(old_p.v._bodyString), len(p.v._bodyString), old_p.h, p.h))
+                    # Don't use p.b here.
+        w = self.root.main_window
+        w.body.sync_before_select({
+            'ap': self.root.p_to_ap(p),
+            'headline': p.h, # Debugging.
+            's': p.v._bodyString, # Don't use p.b!
+        })
+            # The callback is self.complete_unselect.
 
-    def complete_unselect(self, d):
-        '''Complete the unselection of the old node.'''
+    def complete_select(self, d):
+        '''Complete the selection'''
+        ### c = self.root.c
+        tag = 'tree.complete_select'
         self.root.update_body_from_dict(d)
             # Complete the syncing of the body pane.
         p = self.root.ap_to_p(d ['ap'])
-        if 1:
-            c = self.root.c
-            tag = 'tree.complete_unselect'
-            print(tag, 'p: %r ==> %r' % (c.p.h, p.h))
-            print(tag, 'c.p.b', repr(c.p.b))
-            self.root.dump_dict(d, tag)
+        if 1: print(tag, len(d['s']), p.gnx, p.h)
+        if 0: self.root.dump_dict(d, tag)
         super().select(p)
             # Call LeoTree.select.'''
         self.root.select_p(p)
@@ -1682,7 +1687,7 @@ class JS_Editor(flx.Widget):
     @flx.action
     def set_text(self, s):
         '''Set the entire text'''
-        if 1: print('%s: set_text: len(s): %s' % (self.tag, len(s)))
+        if 0: print('%s: set_text: len(s): %s' % (self.tag, len(s)))
         self.editor.setValue(s)
     #@-others
 #@+node:ekr.20181104082144.1: *3* class LeoFlexxBody (JS_Editor)
@@ -1720,7 +1725,7 @@ class LeoFlexxBody(JS_Editor):
         # Called by tree.select. d has 'ap' and 'headline' keys.
         if 0: self.root.dump_dict(d, 'flx_body.sync_before_select')
         self.update_body_dict(d)
-        self.root.complete_unselect(d)
+        self.root.complete_select(d)
         
     def update_body_dict(self, d):
         '''Add keys to d describing the body pane.'''
