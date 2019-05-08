@@ -200,7 +200,7 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         c = self.c
         tag = ' body.setter'
         if self.name == 'body':
-            if 1: print('%s: %s' % (tag, len(self.s)))
+            if 0: print('%s: %s' % (tag, len(self.s)))
             c.p.v.setBodyString(self.s)
                 # p.b = self.s will cause an unbounded recursion.
         if 0:
@@ -475,9 +475,6 @@ class LeoBrowserApp(flx.PyComponent):
         p = p or c.p
         # #1142.
         c.selectPosition(p)
-        if trace:
-            print('')
-            print(tag, p.h, len(p.b))
         redrawer = self.fast_redrawer
         w = self.main_window
         #
@@ -505,7 +502,7 @@ class LeoBrowserApp(flx.PyComponent):
             # The redraw instructions are not used.
         #
         # Do not call c.setChanged() here.
-        if 0: print('app.redraw: %5.3f sec.' % (time.clock()-t1))
+        if trace: print('app.redraw: %5.3f sec.' % (time.clock()-t1))
         #
         # Move to the next redraw generation.
         self.old_flattened_outline = new_flattened_outline
@@ -663,18 +660,18 @@ class LeoBrowserApp(flx.PyComponent):
         
         Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
         '''
+        c = self.c
         w = self.main_window
         ap = self.p_to_ap(p)
         # Be careful during startup.
         if not (w and w.tree):
             return
-        if 1: print('app.select_p: %s %s' % (len(p.b), p.h))
+        if 0: print('app.select_p: %s %s %s' % (len(p.b), p.gnx, p.h))
         w.tree.set_ap(ap)
-        w.body.set_text(p.b)
-        ### body = c.frame.body.wrapper
-        ### w.body.set_text(body.s)
-        ### w.body.set_insert_point(body.ins, body.sel)
-        ### w.body.set_insert_point(...)
+        # #1142: This code was not the problem.
+        body = c.frame.body.wrapper
+        w.body.set_text(body.s)
+        w.body.set_insert_point(body.ins, body.sel)
     #@+node:ekr.20181216051109.1: *5* app.action.select helpers
     @flx.action
     def complete_select(self, d):
@@ -684,7 +681,7 @@ class LeoBrowserApp(flx.PyComponent):
         d.keys: ap, headline, ins_col/row, s, sel_col1/2, sel_row1/2.
         '''
         tag=' app.complete_select'
-        if 1: print(tag, len(d['s']), d['ap']['gnx'], d['headline'])
+        if 0: print(tag, len(d['s']), d['ap']['gnx'], d['headline'])
         if 0: g.printObj(d, tag)
         self.c.frame.tree.complete_select(d)
 
@@ -692,7 +689,7 @@ class LeoBrowserApp(flx.PyComponent):
     def select_tree_using_ap(self, ap):
         '''A helper action, called from flx_tree.on_selected_event.'''
         tag = 'app.select_tree_using_ap'
-        if 1: print(tag, ap ['headline'])
+        if 0: print(tag, ap ['headline'])
         p = self.ap_to_p(ap)
         self.c.frame.tree.select(p)
     #@+node:ekr.20181111204659.1: *5* app.p_to_ap (updates app.gnx_to_vnode)
@@ -959,10 +956,6 @@ class LeoBrowserApp(flx.PyComponent):
                 c.widgetWantsFocusNow(event and event.widget)
                     # Important, so cut-text works, e.g.
                 c.executeAnyCommand(func, event)
-            g.trace(c.p.h)
-            # #1142.
-            self.root.set_body_text()
-            self.root.set_status()
             k.endCommand(commandName)
             return True
         if 0: # Not ready yet
@@ -1433,27 +1426,28 @@ class LeoBrowserTree(leoFrame.NullTree):
             self.root.select_p(p)
                 # Call app.select_position.
             return
+        self.select_lockout = True
         old_p = self.root.c.p
-        if 1:
-            print('\ntree.select: %s ==> %s %r ==> %r' % (
-                len(old_p.v._bodyString), len(p.v._bodyString), old_p.h, p.h))
-                    # Don't use p.b here.
+        if 0: print('tree.select: %s ==> %s %r ==> %r' % (
+            len(old_p.v._bodyString), len(p.v._bodyString), old_p.h, p.h))
+                # Don't use p.b here.
         w = self.root.main_window
         w.body.sync_before_select({
             'ap': self.root.p_to_ap(p),
             'headline': p.h, # Debugging.
             's': p.v._bodyString, # Don't use p.b!
+                # #1142. This is a flag for flx.body.update_body_dict.
         })
-            # The callback is self.complete_unselect.
+            # The callback is self.complete_select.
 
     def complete_select(self, d):
         '''Complete the selection'''
-        ### c = self.root.c
         tag = 'tree.complete_select'
+        self.select_lockout = False
         self.root.update_body_from_dict(d)
             # Complete the syncing of the body pane.
         p = self.root.ap_to_p(d ['ap'])
-        if 1: print(tag, len(d['s']), p.gnx, p.h)
+        if 0: print(tag, len(d['s']), p.gnx, p.h)
         if 0: self.root.dump_dict(d, tag)
         super().select(p)
             # Call LeoTree.select.'''
@@ -1462,7 +1456,7 @@ class LeoBrowserTree(leoFrame.NullTree):
             
     def select_ap(self, ap):
         p = self.root.ap_to_p(ap)
-        if 0: print('===== tree.select_ap: p: %r' % (p))
+        if 0: print('tree.select_ap: %s %s' % (p.v.fileIndex, p.v._headString))
         self.select(p)
 
     def super_select(self, p):
@@ -1475,8 +1469,7 @@ class LeoBrowserTree(leoFrame.NullTree):
 
         This must be a do-nothing, because app.end_set_headline takes its place.
         '''
-        # print(self.tag, 'endEditLabel', g.callers())
-        
+        # print(flx.tree.endEditLabel')
     #@+node:ekr.20181118052203.1: *4* tree.redraw
     def redraw(self, p=None):
         '''This is c.frame.tree.redraw!'''
@@ -1730,7 +1723,8 @@ class LeoFlexxBody(JS_Editor):
     def update_body_dict(self, d):
         '''Add keys to d describing the body pane.'''
         if 0: self.root.dump_dict(d, 'flx_body.update_body_dict')
-        d ['s'] = self.get_text()
+        if 's' not in d: # 1142.
+            d ['s'] = self.get_text()
         d ['ins_row'], d ['ins_col'] = self.get_ins()
         row1, col1, row2, col2 = self.get_sel()
         d ['sel_row1'], d ['sel_col1'] = row1, col1
@@ -2242,8 +2236,6 @@ class LeoFlexxTree(flx.Widget):
             self.root.do_key(ev, 'tree')
     #@+node:ekr.20181121195235.1: *4* flx_tree.Selecting...
     #@+node:ekr.20181123171958.1: *5* flx_tree.action.set_ap
-    # This must exist so app.select_p can call it.
-
     @flx.action
     def set_ap(self, ap):
         '''self.selected_ap. Called from app.select_ap.'''
