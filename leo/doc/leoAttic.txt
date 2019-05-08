@@ -3189,6 +3189,31 @@ if 0:
             # c.frame.body.wrapper.widget is a LeoQTextBrowser.
             # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
         return val
+#@+node:ekr.20190508111530.1: ** From leoflexx.py
+#@+node:ekr.20190508111539.1: *3* app.open_bridge
+def open_bridge(self):
+    '''Can't be in JS.'''
+    bridge = leoBridge.controller(gui = None,
+        loadPlugins = False,
+        readSettings = True, # Required to get bindings!
+        silent = True, # Use silentmode to keep queuing log message.
+        tracePlugins = False,
+        verbose = True, # True: prints log messages.
+    )
+    print('')
+    print('Stand-alone operation of leoflexx.py is for testing only.')
+    print('Opening unitTest.leo...')
+    print('')
+    if not bridge.isOpen():
+        flx.logger.error('Error opening leoBridge')
+        return
+    g = bridge.globals()
+    path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unitTest.leo')
+    if not g.os_path_exists(path):
+        flx.logger.error('open_bridge: does not exist: %r' % path)
+        return
+    c = bridge.openLeoFile(path)
+    return c, g
 #@-all
 #@@nosearch
 #@-leo
