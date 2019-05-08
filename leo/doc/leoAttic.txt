@@ -3014,7 +3014,8 @@ def tree(self, s):
 @language python
 
 # A python comment.
-#@+node:ekr.20150312225028.6: ** class LogManager (not used yet)
+#@+node:ekr.20190508062044.1: ** Do not delete
+#@+node:ekr.20150312225028.6: *3* class LogManager (not used yet)
 class LogManager:
 
     '''A class to handle the global log, and especially
@@ -3033,7 +3034,7 @@ class LogManager:
         self.signon_printed = False # True: the global signon has been printed.
 
     @others
-#@+node:ekr.20150312225028.7: *3* LogM.setLog, lockLog, unlocklog
+#@+node:ekr.20150312225028.7: *4* LogM.setLog, lockLog, unlocklog
 def setLog (self,log):
 
     """set the frame to which log messages will go"""
@@ -3049,7 +3050,7 @@ def lockLog(self):
 def unlockLog(self):
     """Enable changes to the log"""
     self.logIsLocked = False
-#@+node:ekr.20150312225028.8: *3* LogM.writeWaitingLog
+#@+node:ekr.20150312225028.8: *4* LogM.writeWaitingLog
 def writeWaitingLog (self,c):
     '''Write all waiting lines to the log.'''
     trace = True
@@ -3096,7 +3097,7 @@ def writeWaitingLog (self,c):
     lm.logWaiting = []
     # Essential when opening multiple files...
     lm.setLog(None)
-#@+node:ekr.20150526115312.1: ** compare_ast (can hang!?!)
+#@+node:ekr.20150526115312.1: *3* compare_ast (can hang!?!)
 # http://stackoverflow.com/questions/3312989/
 # elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
 
@@ -3149,7 +3150,7 @@ def compare_ast(node1, node2):
         return False
     else:
         return True
-#@+node:ekr.20180826065640.1: ** vr.embed_pyplot_widget (not used)
+#@+node:ekr.20180826065640.1: *3* vr.embed_pyplot_widget (not used)
 def embed_pyplot_widget(self):
 
     pc = self
@@ -3175,62 +3176,18 @@ def embed_pyplot_widget(self):
 
     if pc.pyplot_canvas:
         pc.embed_widget(w, delete_callback=delete_callback)
-#@+node:vitalije.20170714085317.1: ** g.fileFilters (not used)
-def fileFilters(key):
-    if key == 'LEOFILES':
-        return ("Leo files", "*.leo *.db")
-#@+node:ekr.20190430064555.1: ** version stuff...
-#@+node:ekr.20170414041333.1: *3* g.jsonCommitInfo (not used)
-def jsonCommitInfo():
-    '''Return a tuple (author, build, date) or None.'''
-    if 1: # #1126.
-        return g.getGitVersion()
-        # author, build, date = g.getGitVersion()
-            # # This may return ('', '', '')
-        # build = build.lstrip('commit').strip()[:10]
-        # author = author.lstrip('Author:').strip()
-        # date = date.lstrip('Date:').strip()
-        # return author, build, date
-            # Alpha order.
-    else: # Legacy code.
-        # return asctime and timestamp from leo/core/commit_timestamp.json.
-        import json
-        leo_core_path = g.os_path_dirname(g.os_path_realpath(__file__))
-        json_path = g.os_path_join(leo_core_path, 'commit_timestamp.json')
-        if not g.os_path_exists(json_path):
-            return '', ''
-        try:
-            info = json.load(open(json_path))
-            return info['asctime'], info['timestamp']
-        except Exception:
-            g.trace('error loading leo/core/commit_timestamp.json')
-            # g.es_exception()
-            return '', ''
-#@+node:ekr.20190430064523.1: *3* from leoVersion.py
-'''
-leoVersion.branch:      The git branch name, or ''.
-leoVersion.build:       The timestamp field from commit_timestamp.json.
-leoVersion.date:        The asctime field from commit_timestamp.json.
-'''
-
-@others
-author, date, branch, build = compute_module_vars(static_date)
+#@+node:ekr.20140831085423.18637: ** LeoTree.is_qt_body (from LeoTree.select)
 if 0:
-    print('AUTHOR', author)
-    print('DATE  ', date)
-    print('BRANCH', branch)
-    print('BUILD ', build)
-#@+node:ekr.20190429093839.1: *4* compute_module_vars (leoVersion.py) (not used)
-def compute_module_vars(static_date):
-    '''
-    Return (date, branch, build), using git if possible.
-    
-    Fall back to (static_date, '', '') when git is not available.
-    '''
-    author, build, date = g.getGitVersion()
-    branch = g.gitBranchName()
-    return author, date or static_date, branch, build
-        # alpha order.
+
+    def is_qt_body(self):
+        '''Return True if the body widget is a QTextEdit.'''
+        c = self.c
+        import leo.plugins.qt_text as qt_text
+        w = c.frame.body.wrapper.widget
+        val = isinstance(w, qt_text.LeoQTextBrowser)
+            # c.frame.body.wrapper.widget is a LeoQTextBrowser.
+            # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
+        return val
 #@-all
 #@@nosearch
 #@-leo

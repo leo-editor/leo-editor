@@ -1519,18 +1519,6 @@ class LeoTree(object):
         if call_event_handlers:
             g.doHook("select2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
             g.doHook("select3", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
-    #@+node:ekr.20140831085423.18637: *5* LeoTree.is_qt_body (not used)
-    if 0:
-
-        def is_qt_body(self):
-            '''Return True if the body widget is a QTextEdit.'''
-            c = self.c
-            import leo.plugins.qt_text as qt_text
-            w = c.frame.body.wrapper.widget
-            val = isinstance(w, qt_text.LeoQTextBrowser)
-                # c.frame.body.wrapper.widget is a LeoQTextBrowser.
-                # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
-            return val
     #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper & helper
     def unselect_helper(self, old_p, p):
         '''Unselect the old node, calling the unselect hooks.'''
