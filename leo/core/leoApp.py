@@ -2740,6 +2740,7 @@ class LoadManager(object):
         add_bool('--trace-keys',    'trace key events')
         add_bool('--trace-plugins', 'trace imports of plugins')
         add_other('--trace-setting', 'trace where named setting is set', m="NAME")
+        add_bool('--trace-select',  'trace selection logic')
         add_bool('--trace-shutdown', 'trace shutdown logic')
         add_bool('--trace-startup',  'trace startup logic')
         add_bool('--trace-themes',  'trace theme init logic')
@@ -2854,14 +2855,15 @@ class LoadManager(object):
             # ('cache', options.trace_cache),
             ('coloring', options.trace_coloring),
             ('drawing', options.trace_drawing),
-            ('events', options.trace_events), # New
+            ('events', options.trace_events),
             ('focus', options.trace_focus),
-            ('gnx', options.trace_gnx), # New.
-            ('keys', options.trace_keys), # New
-            ('ipython', options.trace_ipython), # New
+            ('gnx', options.trace_gnx),
+            ('keys', options.trace_keys),
+            ('ipython', options.trace_ipython),
             ('plugins', options.trace_plugins),
+            ('select', options.trace_select),
             ('shutdown', options.trace_shutdown),
-            ('startup', options.trace_startup), # New
+            ('startup', options.trace_startup),
             ('themes', options.trace_themes),
         )
         for val, option in table:
