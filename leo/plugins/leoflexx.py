@@ -1723,7 +1723,7 @@ class LeoFlexxBody(JS_Editor):
     def update_body_dict(self, d):
         '''Add keys to d describing the body pane.'''
         if 0: self.root.dump_dict(d, 'flx_body.update_body_dict')
-        if 's' not in d: # 1142.
+        if 's' not in d: # #1142.
             d ['s'] = self.get_text()
         d ['ins_row'], d ['ins_col'] = self.get_ins()
         row1, col1, row2, col2 = self.get_sel()
