@@ -366,7 +366,8 @@ exclude = ['leoIPython.py',]
 modules = tm.importAllModulesInPath(path,exclude=exclude)
 suite   = tm.createUnitTestsFromDoctests(modules)
 #@+node:ekr.20190509044054.1: ** @test print gui name
-print('\nGui: %s\n' % g.app.gui.guiName())
+print('\ng.app.old_gui: %s, g.app.gui: %s\n' % (
+    g.app.old_gui.__class__.__name__, g.app.gui.guiName()))
 #@+node:ekr.20100131171342.5471: ** General
 #@+node:ekr.20100210222021.5388: *3* @test save new file
 if g.in_bridge:
@@ -647,12 +648,12 @@ else:
 fails = []
 for ivar in ivars:
     assert hasattr(g.app, ivar), 'missing app ivar: %s %r' % (ivar,g.app)
-    if ivar not in mayBeNone:
+    if ivar not in mayBeNone and g.app.old_gui_name != 'browser':
         val = getattr(g.app, ivar)
         if val is None:
             fails.append(ivar)
-assert not fails, 'null g.app ivars in %s...\n%s' % (
-    g.app, g.objToString(fails))
+assert not fails, 'old gui: %s: null g.app ivars in %s...\n%s' % (
+    g.app.old_gui_name, g.app, g.objToString(fails))
 
 #@+node:ekr.20071113194858: ** Organized by file
 # All the following files have problems when run with Alt-5.

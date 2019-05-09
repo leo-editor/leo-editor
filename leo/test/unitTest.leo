@@ -236,6 +236,8 @@
 <v t="ekr.20090704085350.5022"><vh>@thin unittest/at-thin-test.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e342e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
+</v>
 <v t="ekr.20181102063435.1"><vh>Fails...</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
@@ -244,8 +246,7 @@
 <v t="ekr.20190319020829.2"><vh>B</vh></v>
 </v>
 </v>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e342e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
-</v>
+<v t="ekr.20190509044054.1"><vh>@test print gui name</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -984,12 +985,12 @@ else:
 fails = []
 for ivar in ivars:
     assert hasattr(g.app, ivar), 'missing app ivar: %s %r' % (ivar,g.app)
-    if ivar not in mayBeNone:
+    if ivar not in mayBeNone and g.app.old_gui_name != 'browser':
         val = getattr(g.app, ivar)
         if val is None:
             fails.append(ivar)
-assert not fails, 'null g.app ivars in %s...\n%s' % (
-    g.app, g.objToString(fails))
+assert not fails, 'old gui: %s: null g.app ivars in %s...\n%s' % (
+    g.app.old_gui_name, g.app, g.objToString(fails))
 
 </t>
 <t tx="ekr.20101220161557.6016"># Nov. 2016: 878 tests.
@@ -1643,5 +1644,8 @@ unl: eggs
 <t tx="ekr.20190319020829.1"></t>
 <t tx="ekr.20190319020829.2"></t>
 <t tx="ekr.20190319020829.3"></t>
+<t tx="ekr.20190509044054.1">print('\ng.app.old_gui: %s, g.app.gui: %s\n' % (
+    g.app.old_gui.__class__.__name__, g.app.gui.guiName()))
+</t>
 </tnodes>
 </leo_file>
