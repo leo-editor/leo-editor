@@ -365,6 +365,8 @@ exclude = ['leoIPython.py',]
     # leoIPython.py will give an annoying error if IPython can't be imported.
 modules = tm.importAllModulesInPath(path,exclude=exclude)
 suite   = tm.createUnitTestsFromDoctests(modules)
+#@+node:ekr.20190509044054.1: ** @test print gui name
+print('\nGui: %s\n' % g.app.gui.guiName())
 #@+node:ekr.20100131171342.5471: ** General
 #@+node:ekr.20100210222021.5388: *3* @test save new file
 if g.in_bridge:
