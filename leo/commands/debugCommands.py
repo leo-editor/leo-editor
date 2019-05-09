@@ -176,6 +176,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Tests are run in the outline's process, so tests *can* change the outline.'''
         self.c.testManager.doTests(all=True, marked=True)
 
+    @cmd('run-tests')
     @cmd('run-selected-unit-tests-locally')
     def runSelectedUnitTestsLocally(self, event=None):
         '''Run all unit tests contained in the presently selected outline.
