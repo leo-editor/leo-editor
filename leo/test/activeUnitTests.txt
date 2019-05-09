@@ -3,6 +3,9 @@
 # All the following should pass when run locally (Alt-4).
 #@@language python
 #@+all
+#@+node:ekr.20190509044054.1: ** @test print gui name
+print('\ng.app.old_gui_name: %r, g.app.gui.guiName(): %s\n' % (
+    getattr(g.app, 'old_gui_name', None), g.app.gui.guiName()))
 #@+node:ekr.20111112092813.4060: ** @mark-for-unit-tests
 @nocolor-node
 
@@ -365,9 +368,6 @@ exclude = ['leoIPython.py',]
     # leoIPython.py will give an annoying error if IPython can't be imported.
 modules = tm.importAllModulesInPath(path,exclude=exclude)
 suite   = tm.createUnitTestsFromDoctests(modules)
-#@+node:ekr.20190509044054.1: ** @test print gui name
-print('\ng.app.old_gui: %s, g.app.gui: %s\n' % (
-    g.app.old_gui.__class__.__name__, g.app.gui.guiName()))
 #@+node:ekr.20100131171342.5471: ** General
 #@+node:ekr.20100210222021.5388: *3* @test save new file
 if g.in_bridge:
@@ -21452,10 +21452,8 @@ assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
-if g.app.gui.guiName() == 'browser':
-    self.skipTest('browser gui')
-if g.app.gui.guiName() == 'browser':
-    self.skipTest('browser gui')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
 # A kludge: run the test in 
 openDirectory = c.frame.openDirectory
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
@@ -22028,8 +22026,8 @@ hr { /* EKR */
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
-if g.app.gui.guiName() == 'browser':
-    self.skipTest('browser gui')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
@@ -22624,8 +22622,8 @@ This is the body of the section.</p>
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
-if g.app.gui.guiName() == 'browser':
-    self.skipTest('browser gui')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
@@ -23218,8 +23216,8 @@ This is the body of the section.</p>
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
-if g.app.gui.guiName() == 'browser':
-    self.skipTest('browser gui')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
@@ -23810,8 +23808,8 @@ This is the body of the section.</p>
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
-if g.app.gui.guiName() == 'browser':
-    self.skipTest('browser gui')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
@@ -24412,8 +24410,8 @@ This is the body of the section.</p>
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
-if g.app.gui.guiName() == 'browser':
-    self.skipTest('browser gui')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)

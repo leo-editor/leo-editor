@@ -235,10 +235,8 @@
 <v t="ekr.20100731163237.5782"><vh>@thin unittest/at-thin-html-test.html</vh></v>
 <v t="ekr.20090704085350.5022"><vh>@thin unittest/at-thin-test.py</vh></v>
 </v>
-<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e342e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
-</v>
-<v t="ekr.20181102063435.1"><vh>Fails...</vh>
+<v t="ekr.20181102063435.1"><vh>Recent...</vh>
+<v t="ekr.20190509044054.1"><vh>@test print gui name</vh></v>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
 <v t="ekr.20190319020829.1"><vh>A</vh></v>
@@ -246,7 +244,9 @@
 <v t="ekr.20190319020829.2"><vh>B</vh></v>
 </v>
 </v>
-<v t="ekr.20190509044054.1"><vh>@test print gui name</vh></v>
+<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e342e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1644,8 +1644,8 @@ unl: eggs
 <t tx="ekr.20190319020829.1"></t>
 <t tx="ekr.20190319020829.2"></t>
 <t tx="ekr.20190319020829.3"></t>
-<t tx="ekr.20190509044054.1">print('\ng.app.old_gui: %s, g.app.gui: %s\n' % (
-    g.app.old_gui.__class__.__name__, g.app.gui.guiName()))
+<t tx="ekr.20190509044054.1">print('\ng.app.old_gui_name: %r, g.app.gui.guiName(): %s\n' % (
+    getattr(g.app, 'old_gui_name', None), g.app.gui.guiName()))
 </t>
 </tnodes>
 </leo_file>
