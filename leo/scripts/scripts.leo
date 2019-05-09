@@ -383,6 +383,7 @@
 <v t="ekr.20190117144035.2"><vh>script: stand-alone run pytest</vh></v>
 <v t="ekr.20190307044803.1"><vh>script: recursive-clean-lines</vh></v>
 </v>
+<v t="ekr.20190509062342.1"><vh>sqlite3 demo</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -4514,6 +4515,56 @@ def clean_file(path):
             print('wrote: %s' % path)
     
 clean_dir(directory)
+</t>
+<t tx="ekr.20190509062342.1"># From https://docs.python.org/3/library/sqlite3.html
+
+# I'll only mention changes to the python demo here.
+
+import datetime
+import sqlite3
+conn = sqlite3.connect('example.db')
+
+# Change 1:  Name the cursor 'cursor' to preserve Leo's c.
+cursor = conn.cursor()
+    
+# Change 2: Catch any exception.
+# This allows this demo to continue if the table already exists.
+try:
+    cursor.execute('''CREATE TABLE stocks
+    (date text, trans text, symbol text, qty real, price real)''')
+except Exception:
+    pass
+
+cursor.execute("INSERT INTO stocks VALUES ('2006-01-05','BUY','RHAT',100,35.14)")
+conn.commit()
+
+# Change 3: don't bother closing and reopning the connection.
+
+t = ('RHAT',)
+cursor.execute('SELECT * FROM stocks WHERE symbol=?', t)
+purchases = [
+    ('2006-03-28', 'BUY',  'IBM',  1000, 45.00),
+    ('2006-04-05', 'BUY',  'MSFT', 1000, 72.00),
+    ('2006-04-06', 'SELL', 'IBM',  500,  53.00),
+]
+cursor.executemany('INSERT INTO stocks VALUES (?,?,?,?,?)', purchases)
+
+# Change 4: Get the result as a iterator.
+
+# Don't exhaust the iterator by printing results!
+query = 'SELECT * FROM stocks ORDER BY price'
+result = cursor.execute(query)
+
+# Change 5: Put the results a new @query node, with a timestamp.
+last = c.lastTopLevel()
+p = last.insertAfter()
+timestamp = datetime.datetime.now().strftime("%Y%m%d:%H%M%S")
+p.h = '@query %s: %s' % (timestamp, query)
+p.b = '\n'.join([str(z) for z in result])
+#
+# Make the new node visible.
+last.expand()
+c.redraw() 
 </t>
 <t tx="maphew.20130510011223.1646">This is what the resulting registry key should look like, once exported from
 regedit. The translated hex code for Open Command is:
