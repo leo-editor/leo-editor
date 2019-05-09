@@ -450,6 +450,7 @@ class LeoBrowserApp(flx.PyComponent):
     def set_body_text(self):
         c = self.c
         c.frame.body.wrapper.setAllText(c.p.b)
+        if 0: print('app.set_body_text', len(c.p.b), c.p.h)
             # Using the wrapper sets the text *and* the insert point and selection range.
 
     @flx.action
@@ -722,11 +723,13 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181215154640.1: *5* app.update_body_from_dict
     def update_body_from_dict(self, d):
         '''Update p.b, etc, using d.'''
+        tag = 'update_body_from_dict'
         c = self.c
         v = c.p.v
         assert v, g.callers()
         w = c.frame.body.wrapper
-        if 0: self.dump_dict(d, 'update_body_from_dict')
+        if 0: print(tag, len(d['s']), c.p.h)
+        if 0: self.dump_dict(d, tag)
         # Compute the insert point.
         s = d['s']
         col, row = d['ins_col'], d['ins_row']
@@ -742,9 +745,8 @@ class LeoBrowserApp(flx.PyComponent):
         v.insertSpot = ins
         v.sel = sel
         w.ins, w.sel, w.s = ins, sel, s
-        if 0:
-            print('===== app.update_body_from_dict: %s (%s, %s) p: %s ==> %s' % (
-                ins, sel[0], sel[1], c.p.h, d['headline']))
+        if 0: print('===== app.update_body_from_dict: %s (%s, %s) p: %s ==> %s' % (
+            ins, sel[0], sel[1], c.p.h, d['headline']))
     #@+node:ekr.20181122132009.1: *4* app.Testing...
     #@+node:ekr.20181111142921.1: *5* app.action: do_command & helpers
     @flx.action
@@ -1412,7 +1414,35 @@ class LeoBrowserTree(leoFrame.NullTree):
         return 'canvas(tree)' # Required for proper pane bindings.
 
     #@+others
-    #@+node:ekr.20181116081421.1: *4* tree.select, super_select, endEditLabel
+    #@+node:ekr.20181116081421.1: *4* tree.selection...
+
+
+    #@+node:ekr.20190508121417.1: *5* tree.complete_select
+    def complete_select(self, d):
+        '''Complete the selection.'''
+        tag = 'tree.complete_select'
+        self.select_lockout = False
+        self.root.update_body_from_dict(d)
+            # Complete the syncing of the body pane.
+        p = self.root.ap_to_p(d ['ap'])
+        if 0: print(tag, len(d['s']), len(p.b), p.gnx, p.h)
+        if 0: self.root.dump_dict(d, tag)
+        super().select(p)
+            # Call LeoTree.select.'''
+        self.root.select_p(p)
+            # Call app.select_position.
+            
+    #@+node:ekr.20190508121510.1: *5* tree.endEditLabel
+    def endEditLabel(self):
+        '''
+        End editing.
+
+        This must be a do-nothing, because app.end_set_headline takes its place.
+        '''
+        # print(flx.tree.endEditLabel')
+    #@+node:ekr.20190508121414.1: *5* tree.select
+    select_lockout = False
+
     def select(self, p):
         '''
         Override NullTree.select, that is LeoTree.select.
@@ -1426,10 +1456,13 @@ class LeoBrowserTree(leoFrame.NullTree):
             self.root.select_p(p)
                 # Call app.select_position.
             return
+        if self.select_lockout:
+            print('tree.select: Lockout', p.h)
+            return
         self.select_lockout = True
         old_p = self.root.c.p
-        if 0: print('tree.select: %s ==> %s %r ==> %r' % (
-            len(old_p.v._bodyString), len(p.v._bodyString), old_p.h, p.h))
+        if 0: print('tree.select: %s %s ==> %s %s ' % (
+            len(old_p.v._bodyString), old_p.h, len(p.v._bodyString), p.h))
                 # Don't use p.b here.
         w = self.root.main_window
         w.body.sync_before_select({
@@ -1439,37 +1472,16 @@ class LeoBrowserTree(leoFrame.NullTree):
                 # #1142. This is a flag for flx.body.update_body_dict.
         })
             # The callback is self.complete_select.
-
-    def complete_select(self, d):
-        '''Complete the selection'''
-        tag = 'tree.complete_select'
-        self.select_lockout = False
-        self.root.update_body_from_dict(d)
-            # Complete the syncing of the body pane.
-        p = self.root.ap_to_p(d ['ap'])
-        if 0: print(tag, len(d['s']), p.gnx, p.h)
-        if 0: self.root.dump_dict(d, tag)
-        super().select(p)
-            # Call LeoTree.select.'''
-        self.root.select_p(p)
-            # Call app.select_position.
-            
+    #@+node:ekr.20190508121417.2: *5* tree.select_ap
     def select_ap(self, ap):
         p = self.root.ap_to_p(ap)
         if 0: print('tree.select_ap: %s %s' % (p.v.fileIndex, p.v._headString))
         self.select(p)
-
+    #@+node:ekr.20190508121417.3: *5* tree.super_select
     def super_select(self, p):
         '''Call only LeoTree.select.'''
         super().select(p)
 
-    def endEditLabel(self):
-        '''
-        End editing.
-
-        This must be a do-nothing, because app.end_set_headline takes its place.
-        '''
-        # print(flx.tree.endEditLabel')
     #@+node:ekr.20181118052203.1: *4* tree.redraw
     def redraw(self, p=None):
         '''This is c.frame.tree.redraw!'''
@@ -1722,8 +1734,10 @@ class LeoFlexxBody(JS_Editor):
         
     def update_body_dict(self, d):
         '''Add keys to d describing the body pane.'''
-        if 0: self.root.dump_dict(d, 'flx_body.update_body_dict')
-        if 's' not in d: # #1142.
+        tag = 'flx_body.update_body_dict'
+        if 0: print(tag, len(self.get_text()), len(d['s']))
+        if 0: self.root.dump_dict(d, tag)
+        if True: ### 's' not in d: # #1142.
             d ['s'] = self.get_text()
         d ['ins_row'], d ['ins_col'] = self.get_ins()
         row1, col1, row2, col2 = self.get_sel()
