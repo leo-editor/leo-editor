@@ -1469,8 +1469,13 @@ class LeoTree(object):
         Never redraws outline, but may change coloring of individual headlines.
         The scroll argument is used by the gui to suppress scrolling while dragging.
         '''
+        trace = 'select' in g.app.debug
         if g.app.killed or self.tree_select_lockout: # Essential.
             return None
+        if trace: # and g.app.gui.guiName().startswith('browser'):
+            tag = 'LeoTree.select'
+            print('%20s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
+                # Format matches traces in leoflexx.py
         try:
             c = self.c
             self.tree_select_lockout = True

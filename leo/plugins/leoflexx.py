@@ -526,7 +526,7 @@ class LeoBrowserApp(flx.PyComponent):
         assert p, repr(parent_ap)
         if 0:
             # There is a similar trace in flx.tree.receive_children.
-            print('===== send_children_to_tree: %s children' % len(list(p.children())))
+            print('send_children_to_tree: %s children' % len(list(p.children())))
             if 0: # Corresponds to the trace in flx_tree.populate_children.
                 for child in p.children():
                     print('  ' + child.h)
@@ -559,7 +559,7 @@ class LeoBrowserApp(flx.PyComponent):
         '''Dump the top-level nodes.'''
         if 0:
             c = self.c
-            print('===== app.dump_top_level...')
+            print('\napp.dump_top_level...')
             # print('root:', c.rootPosition().h)
             # print(' c.p:', c.p.h)
             # print('')
@@ -629,11 +629,26 @@ class LeoBrowserApp(flx.PyComponent):
     def edit_headline_completer(self, headline):
         print('app.edit_headline_completer')
     #@+node:ekr.20181124095316.1: *4* app.Selecting...
+    #@+node:ekr.20181216051109.1: *5* app.action.complete_select
+    @flx.action
+    def complete_select(self, d):
+        '''
+        A helper action, called from flx_body.sync_body_before_select.
+        
+        d.keys: ap, headline, ins_col/row, s, sel_col1/2, sel_row1/2.
+        '''
+        if 'select' in g.app.debug:
+            tag=' app.complete_select'
+            print('%20s: %4s %s %s' % (tag, len(d['s']), d['ap']['gnx'], d['headline']))
+            # g.printObj(d, tag)
+        self.c.frame.tree.complete_select(d)
+
     #@+node:ekr.20181111202747.1: *5* app.action.select_ap
     @flx.action
     def select_ap(self, ap):
         '''
         Select the position in Leo's core corresponding to the archived position.
+
         Nothing in the flx.tree needs to be updated.
         '''
         assert ap, g.callers()
@@ -642,7 +657,7 @@ class LeoBrowserApp(flx.PyComponent):
         assert p, (repr(ap), g.callers())
         lt, rt = c.frame.statusLine.update()
         w.status_line.update(lt, rt)
-        # print('===== app.select_ap', repr(ap))
+        # print('app.select_ap', repr(ap))
         w.tree.select_ap(ap)
         c.frame.tree.super_select(p)
             # call LeoTree.select, but not self.select_p.
@@ -661,31 +676,22 @@ class LeoBrowserApp(flx.PyComponent):
         
         Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
         '''
+        trace = 'select' in g.app.debug
         c = self.c
         w = self.main_window
         ap = self.p_to_ap(p)
         # Be careful during startup.
         if not (w and w.tree):
             return
-        if 0: print('app.select_p: %s %s %s' % (len(p.b), p.gnx, p.h))
+        if trace:
+            tag = 'app.select_p'
+            print('%20s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
         w.tree.set_ap(ap)
         # #1142: This code was not the problem.
         body = c.frame.body.wrapper
         w.body.set_text(body.s)
         w.body.set_insert_point(body.ins, body.sel)
-    #@+node:ekr.20181216051109.1: *5* app.action.select helpers
-    @flx.action
-    def complete_select(self, d):
-        '''
-        A helper action, called from flx_body.sync_before_select.
-        
-        d.keys: ap, headline, ins_col/row, s, sel_col1/2, sel_row1/2.
-        '''
-        tag=' app.complete_select'
-        if 0: print(tag, len(d['s']), d['ap']['gnx'], d['headline'])
-        if 0: g.printObj(d, tag)
-        self.c.frame.tree.complete_select(d)
-
+    #@+node:ekr.20190510053112.1: *5* app.action.select_tree_using_ap
     @flx.action
     def select_tree_using_ap(self, ap):
         '''A helper action, called from flx_tree.on_selected_event.'''
@@ -693,7 +699,7 @@ class LeoBrowserApp(flx.PyComponent):
         if 0: print(tag, ap ['headline'])
         p = self.ap_to_p(ap)
         self.c.frame.tree.select(p)
-    #@+node:ekr.20181111204659.1: *5* app.p_to_ap (updates app.gnx_to_vnode)
+    #@+node:ekr.20181111204659.1: *5* app.p_to_ap (updates dict)
     def p_to_ap(self, p):
         '''
         Convert a true Leo position to a serializable archived position.
@@ -745,7 +751,7 @@ class LeoBrowserApp(flx.PyComponent):
         v.insertSpot = ins
         v.sel = sel
         w.ins, w.sel, w.s = ins, sel, s
-        if 0: print('===== app.update_body_from_dict: %s (%s, %s) p: %s ==> %s' % (
+        if 0: print('\napp.update_body_from_dict: %s (%s, %s) p: %s ==> %s' % (
             ins, sel[0], sel[1], c.p.h, d['headline']))
     #@+node:ekr.20181122132009.1: *4* app.Testing...
     #@+node:ekr.20181111142921.1: *5* app.action: do_command & helpers
@@ -907,7 +913,7 @@ class LeoBrowserApp(flx.PyComponent):
         '''Start the execution of a minibuffer command.'''
         c = self.c
         w = self.root.main_window
-        w.body.sync_before_command({
+        w.body.sync_body_before_command({
             'char': char,
             'commandName': commandName,
             'headline': c.p.h, # Debugging.
@@ -916,7 +922,7 @@ class LeoBrowserApp(flx.PyComponent):
             
     @flx.action
     def complete_minibuffer_command(self, d):
-        '''Called from flx.body.sync_before_command to complete the minibuffer command.'''
+        '''Called from flx.body.sync_body_before_command to complete the minibuffer command.'''
         c = self.c
         k, w = c.k, c.frame.body.wrapper
         self.update_body_from_dict(d)
@@ -1166,7 +1172,7 @@ class LeoBrowserGui(leoGui.NullGui):
             self.focusWidget = widget
         elif isinstance(widget, API_Wrapper):
             # This does sometimes get executed.
-            if 0: print('===== gui.set_focus: redirect AceWrapper to LeoBrowserBody')
+            if 0: print('gui.set_focus: redirect AceWrapper to LeoBrowserBody')
             assert isinstance(c.frame.body, LeoBrowserBody), repr(c.frame.body)
             assert widget.name == 'body', repr(widget.name)
             c.frame.body.wrapper.setFocus()
@@ -1300,7 +1306,7 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
     def update(self, tag):
         w = self.root.main_window
         i, j = self.sel
-        # print('===== mini.%-20s sel: %2s %2s ins: %2s %r' % (tag+':', i, j, self.ins, self.s))
+        # print('mini.%-20s sel: %2s %2s ins: %2s %r' % (tag+':', i, j, self.ins, self.s))
         w.minibuffer.set_text(self.s)
         w.minibuffer.set_selection(i, j)
         w.minibuffer.set_insert(self.ins)
@@ -1311,7 +1317,7 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
         
     def getAllText(self):
         # i, j = self.sel
-        # print('===== mini.%-20s sel: %2s %2s ins: %2s %r' % ('getAllText:', i, j, self.ins, self.s))
+        # print('mini.%-20s sel: %2s %2s ins: %2s %r' % ('getAllText:', i, j, self.ins, self.s))
         return self.s
 
     def insert(self, i, s):
@@ -1420,11 +1426,14 @@ class LeoBrowserTree(leoFrame.NullTree):
     #@+node:ekr.20190508121417.1: *5* tree.complete_select
     def complete_select(self, d):
         '''Complete the selection.'''
-        tag = 'tree.complete_select'
+        trace = 'select' in g.app.debug
         self.select_lockout = False
         self.root.update_body_from_dict(d)
             # Complete the syncing of the body pane.
         p = self.root.ap_to_p(d ['ap'])
+        if trace:
+            tag = 'tree.complete_select'
+            
         if 0: print(tag, len(d['s']), len(p.b), p.gnx, p.h)
         if 0: self.root.dump_dict(d, tag)
         super().select(p)
@@ -1445,10 +1454,17 @@ class LeoBrowserTree(leoFrame.NullTree):
 
     def select(self, p):
         '''
-        Override NullTree.select, that is LeoTree.select.
+        Override LeoTree.select.
         
-        This must do the *entire* selection logic.
+        Operations across the Python/JS divide do not happen immediately. As a result,
+        the selection must happen in three phases:
+            
+        Phase 1: update old_p.b and related vnode ivars from the body pane.
+        Phase 2: update the body pane from new_p.b.
+        Phase 3: (maybe??) call LeoTree.select itself.
         '''
+        trace = 'select' in g.app.debug
+        tag = 'flx.tree.select'
         if not self.root.inited:
             # Don't sync the body pane during startup.
             super().select(p)
@@ -1457,15 +1473,17 @@ class LeoBrowserTree(leoFrame.NullTree):
                 # Call app.select_position.
             return
         if self.select_lockout:
-            print('tree.select: Lockout', p.h)
+            if trace:
+                print('%20s: %s %s' % (tag, ' Lockout', p.h))
             return
         self.select_lockout = True
         old_p = self.root.c.p
-        if 0: print('tree.select: %s %s ==> %s %s ' % (
-            len(old_p.v._bodyString), old_p.h, len(p.v._bodyString), p.h))
-                # Don't use p.b here.
+        if 0:
+            print('%20s: %s %s ==> %s %s ' % (
+                tag, len(old_p.v._bodyString), old_p.h, len(p.v._bodyString), p.h))
+                    # Don't use p.b here.
         w = self.root.main_window
-        w.body.sync_before_select({
+        w.body.sync_body_before_select({
             'ap': self.root.p_to_ap(p),
             'headline': p.h, # Debugging.
             's': p.v._bodyString, # Don't use p.b!
@@ -1717,18 +1735,18 @@ class LeoFlexxBody(JS_Editor):
     #@+others
     #@+node:ekr.20181215061402.1: *4* flx_body.sync*
     @flx.action
-    def sync_before_command(self, d):
+    def sync_body_before_command(self, d):
         '''Update p.b, etc. before executing a minibuffer command..'''
         # Called by execute_minibuffer_command. d has 'ap' and 'headline' keys.
-        if 0: self.root.dump_dict(d, 'flx_body.sync_before_command')
+        if 0: self.root.dump_dict(d, 'flx_body.sync_body_before_command')
         self.update_body_dict(d)
         self.root.complete_minibuffer_command(d)
         
     @flx.action
-    def sync_before_select(self, d):
+    def sync_body_before_select(self, d):
         '''Update p.b, etc. before selecting a new node.'''
         # Called by tree.select. d has 'ap' and 'headline' keys.
-        if 0: self.root.dump_dict(d, 'flx_body.sync_before_select')
+        if 0: self.root.dump_dict(d, 'flx_body.sync_body_before_select')
         self.update_body_dict(d)
         self.root.complete_select(d)
         
@@ -1850,26 +1868,26 @@ class LeoFlexxMiniBuffer(JS_Editor):
 
     @flx.action
     def set_focus(self):
-        if 0: print('===== flx.mini.set_focus')
+        if 0: print('flx.mini.set_focus')
         self.editor.focus()
         
     @flx.action
     def set_insert(self, i):
-        if 0: print('===== flx.mini.set_insert', i)
+        if 0: print('flx.mini.set_insert', i)
 
     @flx.action
     def set_selection(self, i, j):
-        if 0: print('===== flx.mini.set_selection', i, j)
+        if 0: print('flx.mini.set_selection', i, j)
         
     @flx.action
     def set_style(self, style):
-        if 0: print('===== flx.mini.set_style: %r %r' % (style, self.editor.getValue()))
+        if 0: print('flx.mini.set_style: %r %r' % (style, self.editor.getValue()))
         # A hack. Also set focus.
         self.editor.focus()
         
     @flx.action
     def set_text(self, s):
-        if 0: print('===== flx.minibuffer.set_text', repr(s))
+        if 0: print('flx.minibuffer.set_text', repr(s))
         self.editor.setValue(s)
     #@+node:ekr.20181203150409.1: *4* flx_minibuffer.Key handling
     @flx.emitter
@@ -2160,7 +2178,7 @@ class LeoFlexxTree(flx.Widget):
                 tree_item = ev.source
                 ap = tree_item.leo_ap
                 if ap['expanded']:
-                    if 0: print('===== flx.tree.on_tree_event: already expanded', ap['headline'])
+                    if 0: print('flx.tree.on_tree_event: already expanded', ap['headline'])
                 else:
                     ap['expanded'] = True
                     self.start_populating_children(ap, tree_item)
@@ -2223,7 +2241,7 @@ class LeoFlexxTree(flx.Widget):
         '''
         parent_ap = d ['parent_ap']
         children = d ['items']
-        if 0: print('===== flx.tree.receive_children: %s children' % (len(children)))
+        if 0: print('flx.tree.receive_children: %s children' % (len(children)))
         self.populate_children(children, parent_ap)
     #@+node:ekr.20181120061140.1: *4* flx_tree.Key handling
     @flx.emitter
@@ -2264,7 +2282,7 @@ class LeoFlexxTree(flx.Widget):
         
         Called from the mutator, and also on_selected_event.
         '''
-        # print('===== flx.tree.select_ap', repr(ap), ap ['headline'])
+        # print('flx.tree.select_ap', repr(ap), ap ['headline'])
         key = self.ap_to_key(ap)
         item = self.tree_items_dict.get(key)
         if item:
@@ -2296,7 +2314,7 @@ class LeoFlexxTree(flx.Widget):
         for ev in events:
             if ev.new_value: # A selection event.
                 ap = ev.source.leo_ap
-                if 0: print('===== on_selected_event: select:', ap['headline'])
+                if 0: print('on_selected_event: select:', ap['headline'])
                 self.select_ap(ap)
                     # Selects the corresponding LeoTreeItem.
                 self.set_ap(ap)
@@ -2319,13 +2337,4 @@ class LeoFlexxTreeItem(flx.TreeItem):
     #@+others
     #@-others
 #@-others
-#
-# No longer supported
-# if __name__ == '__main__':
-    # #
-    # # Stand-alone mode.
-    # # gui.runMainLoop executes similar code when using --gui=browser.
-    # flx.launch(LeoBrowserApp)
-    # flx.set_log_level('ERROR')
-    # flx.run()
 #@-leo
