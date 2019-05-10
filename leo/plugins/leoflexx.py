@@ -1412,6 +1412,7 @@ class LeoBrowserTree(leoFrame.NullTree):
     def __init__(self, frame):
         super().__init__(frame)
         self.root = get_root()
+        self.select_lockout = False
         self.tag = '(tree wrapper)'
         self.widget = self
         self.wrapper = self
@@ -1450,8 +1451,6 @@ class LeoBrowserTree(leoFrame.NullTree):
         '''
         # print(flx.tree.endEditLabel')
     #@+node:ekr.20190508121414.1: *5* tree.select
-    select_lockout = False
-
     def select(self, p):
         '''
         Override LeoTree.select.
@@ -1474,15 +1473,16 @@ class LeoBrowserTree(leoFrame.NullTree):
             return
         if self.select_lockout:
             if trace:
+                ### print(repr(self), repr(self.select_lockout))
                 print('%30s: %s %s' % (tag, ' Lockout', p.h))
             return
         self.select_lockout = True
         old_p = self.root.c.p
-        if 0:
-            print('%30s: %s %s ==> %s %s ' % (
-                tag, len(old_p.v._bodyString), old_p.h, len(p.v._bodyString), p.h))
-                    # Don't use p.b here.
         w = self.root.main_window
+        if trace: print('%30s: %s %s ==> %s %s ' % (
+            tag, len(old_p.v._bodyString), old_p.h, len(p.v._bodyString), p.h))
+        #
+        # Must update body *now*.
         w.body.sync_body_before_select({
             'ap': self.root.p_to_ap(p),
             'headline': p.h, # Debugging.

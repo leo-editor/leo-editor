@@ -1470,10 +1470,11 @@ class LeoTree(object):
         The scroll argument is used by the gui to suppress scrolling while dragging.
         '''
         trace = 'select' in g.app.debug
+        tag = 'LeoTree.select'
         if g.app.killed or self.tree_select_lockout: # Essential.
+            # if trace: print('%30s: LOCKOUT' % (tag))
             return None
         if trace: # and g.app.gui.guiName().startswith('browser'):
-            tag = 'LeoTree.select'
             print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
                 # Format matches traces in leoflexx.py
         try:
