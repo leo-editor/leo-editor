@@ -639,7 +639,7 @@ class LeoBrowserApp(flx.PyComponent):
         '''
         if 'select' in g.app.debug:
             tag=' app.complete_select'
-            print('%20s: %4s %s %s' % (tag, len(d['s']), d['ap']['gnx'], d['headline']))
+            print('%30s: %4s %s %s' % (tag, len(d['s']), d['ap']['gnx'], d['headline']))
             # g.printObj(d, tag)
         self.c.frame.tree.complete_select(d)
 
@@ -685,7 +685,7 @@ class LeoBrowserApp(flx.PyComponent):
             return
         if trace:
             tag = 'app.select_p'
-            print('%20s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
+            print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
         w.tree.set_ap(ap)
         # #1142: This code was not the problem.
         body = c.frame.body.wrapper
@@ -1432,15 +1432,15 @@ class LeoBrowserTree(leoFrame.NullTree):
             # Complete the syncing of the body pane.
         p = self.root.ap_to_p(d ['ap'])
         if trace:
-            tag = 'tree.complete_select'
-            
-        if 0: print(tag, len(d['s']), len(p.b), p.gnx, p.h)
-        if 0: self.root.dump_dict(d, tag)
+            tag = 'flx.tree.complete_select'
+            print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
+            if d['s'] != p.b:
+                print('\n%32s: body mismatch!' % (tag))
+            # self.root.dump_dict(d, tag)
         super().select(p)
             # Call LeoTree.select.'''
         self.root.select_p(p)
             # Call app.select_position.
-            
     #@+node:ekr.20190508121510.1: *5* tree.endEditLabel
     def endEditLabel(self):
         '''
@@ -1474,12 +1474,12 @@ class LeoBrowserTree(leoFrame.NullTree):
             return
         if self.select_lockout:
             if trace:
-                print('%20s: %s %s' % (tag, ' Lockout', p.h))
+                print('%30s: %s %s' % (tag, ' Lockout', p.h))
             return
         self.select_lockout = True
         old_p = self.root.c.p
         if 0:
-            print('%20s: %s %s ==> %s %s ' % (
+            print('%30s: %s %s ==> %s %s ' % (
                 tag, len(old_p.v._bodyString), old_p.h, len(p.v._bodyString), p.h))
                     # Don't use p.b here.
         w = self.root.main_window
@@ -1492,12 +1492,19 @@ class LeoBrowserTree(leoFrame.NullTree):
             # The callback is self.complete_select.
     #@+node:ekr.20190508121417.2: *5* tree.select_ap
     def select_ap(self, ap):
+        trace = 'select' in g.app.debug
         p = self.root.ap_to_p(ap)
-        if 0: print('tree.select_ap: %s %s' % (p.v.fileIndex, p.v._headString))
+        if trace:
+            tag = 'flx.tree.select_ap'
+            print('20s: %s %s' % (tag, p.v.fileIndex, p.v._headString))
         self.select(p)
     #@+node:ekr.20190508121417.3: *5* tree.super_select
     def super_select(self, p):
         '''Call only LeoTree.select.'''
+        trace = 'select' in g.app.debug
+        if trace:
+            tag = 'flx.tree.super_select'
+            print('%30s %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
         super().select(p)
 
     #@+node:ekr.20181118052203.1: *4* tree.redraw

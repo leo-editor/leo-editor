@@ -1474,7 +1474,7 @@ class LeoTree(object):
             return None
         if trace: # and g.app.gui.guiName().startswith('browser'):
             tag = 'LeoTree.select'
-            print('%20s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
+            print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
                 # Format matches traces in leoflexx.py
         try:
             c = self.c

@@ -157,6 +157,11 @@ class DebugCommandsClass(BaseEditCommandsClass):
     def printGcSummary(self, event=None):
         '''Print a brief summary of all Python objects.'''
         g.printGcSummary()
+    #@+node:ekr.20190510060918.1: ** debug.print-sep
+    @cmd('print-sep')
+    def printSep(self, event=None):
+        '''Print a separator'''
+        print('\n==========\n')
     #@+node:ekr.20150514063305.112: ** debug.printStats
     def printStats(self, event=None):
         '''Print statistics about the objects that Leo is using.'''
