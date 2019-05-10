@@ -1517,9 +1517,6 @@ class LeoTree(object):
             return
         old_p = c.p
         call_event_handlers = p != old_p
-        if 'select' in g.app.debug and call_event_handlers:
-            print('')
-            g.trace(p.h)
         # Order is important...
         self.unselect_helper(old_p, p)
             # 1. Call c.endEditLabel.

@@ -676,14 +676,13 @@ class LeoBrowserApp(flx.PyComponent):
         
         Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
         '''
-        trace = 'select' in g.app.debug
         c = self.c
         w = self.main_window
         ap = self.p_to_ap(p)
         # Be careful during startup.
         if not (w and w.tree):
             return
-        if trace:
+        if 'select' in g.app.debug:
             tag = 'app.select_p'
             print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
         w.tree.set_ap(ap)
@@ -730,14 +729,18 @@ class LeoBrowserApp(flx.PyComponent):
     def update_body_from_dict(self, d):
         '''Update p.b, etc, using d.'''
         tag = 'update_body_from_dict'
-        c = self.c
-        v = c.p.v
+        c, p, v = self.c, self.c.p, self.c.p.v
         assert v, g.callers()
         w = c.frame.body.wrapper
-        if 0: print(tag, len(d['s']), c.p.h)
-        if 0: self.dump_dict(d, tag)
+        d_s = d['s']
+        if 'select' in g.app.debug:
+            tag = 'app.update_body_from_dict'
+            print('%30s: %4s %s %s' % (tag, ' ', p.gnx, p.h))
+            print('%30s: p.b: %s d.s: %s' % (tag, len(p.b), len(d_s)))
+            # self.dump_dict(d, tag)
         # Compute the insert point.
-        s = d['s']
+        s = d_s
+            ### This is not always correct!!!
         col, row = d['ins_col'], d['ins_row']
         ins = g.convertRowColToPythonIndex(s, row, col)
         # Compute the selection range.
@@ -1426,18 +1429,20 @@ class LeoBrowserTree(leoFrame.NullTree):
 
     #@+node:ekr.20190508121417.1: *5* tree.complete_select
     def complete_select(self, d):
-        '''Complete the selection.'''
+        '''Complete the selection of the tree.'''
         trace = 'select' in g.app.debug
+        tag = 'flx.tree.complete_select'
         self.select_lockout = False
         self.root.update_body_from_dict(d)
             # Complete the syncing of the body pane.
         p = self.root.ap_to_p(d ['ap'])
+        ### d['s'] can be either the old OR new text!!!
+        d_s = d['s']
         if trace:
-            tag = 'flx.tree.complete_select'
             print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
-            if d['s'] != p.b:
-                print('\n%32s: body mismatch!' % (tag))
             # self.root.dump_dict(d, tag)
+            if d_s != p.b:
+                print('%30s: DIFF: p.b: %s, d.s: %s' % (tag, len(p.b), len(d_s)))
         super().select(p)
             # Call LeoTree.select.'''
         self.root.select_p(p)
@@ -1464,6 +1469,10 @@ class LeoBrowserTree(leoFrame.NullTree):
         '''
         trace = 'select' in g.app.debug
         tag = 'flx.tree.select'
+        if self.select_lockout:
+            if trace:
+                print('%30s: %s %s' % (tag, ' Lockout', p.h))
+            return
         if not self.root.inited:
             # Don't sync the body pane during startup.
             super().select(p)
@@ -1471,15 +1480,10 @@ class LeoBrowserTree(leoFrame.NullTree):
             self.root.select_p(p)
                 # Call app.select_position.
             return
-        if self.select_lockout:
-            if trace:
-                ### print(repr(self), repr(self.select_lockout))
-                print('%30s: %s %s' % (tag, ' Lockout', p.h))
-            return
         self.select_lockout = True
         old_p = self.root.c.p
         w = self.root.main_window
-        if trace: print('%30s: %s %s ==> %s %s ' % (
+        if trace: print('\n%30s: %4s %s ==> %s %s ' % (
             tag, len(old_p.v._bodyString), old_p.h, len(p.v._bodyString), p.h))
         #
         # Must update body *now*.
@@ -1741,29 +1745,45 @@ class LeoFlexxBody(JS_Editor):
 
     #@+others
     #@+node:ekr.20181215061402.1: *4* flx_body.sync*
+
+        
+    #@+node:ekr.20190510070006.1: *5* flx.body.action.sync_body_before_command
     @flx.action
     def sync_body_before_command(self, d):
         '''Update p.b, etc. before executing a minibuffer command..'''
+        
+        ### d does not contain any info about p.b!!!
+        ### Update body_dict does: d ['s'] = self.get_text()
+
         # Called by execute_minibuffer_command. d has 'ap' and 'headline' keys.
-        if 0: self.root.dump_dict(d, 'flx_body.sync_body_before_command')
+        if 'select' in g.app.debug:
+            tag = 'flx.body.sync_body_before_command'
+            # print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
+            print('%30s:' % (tag))
+            # self.root.dump_dict(d, tag)
         self.update_body_dict(d)
         self.root.complete_minibuffer_command(d)
-        
+    #@+node:ekr.20190510070009.1: *5* flx.body.action.sync_body_before_select
     @flx.action
     def sync_body_before_select(self, d):
         '''Update p.b, etc. before selecting a new node.'''
         # Called by tree.select. d has 'ap' and 'headline' keys.
-        if 0: self.root.dump_dict(d, 'flx_body.sync_body_before_select')
+        if 'select' in g.app.debug:
+            tag = 'flx.body.sync_body_before_select'
+            # print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
+            print('%30s:' % (tag))
+            # self.root.dump_dict(d, tag)
         self.update_body_dict(d)
         self.root.complete_select(d)
         
+    #@+node:ekr.20190510070010.1: *5* flx.body.update_body_dict
     def update_body_dict(self, d):
         '''Add keys to d describing the body pane.'''
-        tag = 'flx_body.update_body_dict'
-        if 0: print(tag, len(self.get_text()), len(d['s']))
-        if 0: self.root.dump_dict(d, tag)
-        if True: ### 's' not in d: # #1142.
-            d ['s'] = self.get_text()
+        if 'select' in g.app.debug:
+            tag = 'flx_body.update_body_dict'
+            print('%30s: %4s' % (tag, len(self.get_text())))
+            # self.root.dump_dict(d, tag)
+        d ['s'] = self.get_text()
         d ['ins_row'], d ['ins_col'] = self.get_ins()
         row1, col1, row2, col2 = self.get_sel()
         d ['sel_row1'], d ['sel_col1'] = row1, col1
