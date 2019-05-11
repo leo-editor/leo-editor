@@ -66,7 +66,6 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< leoflexx: assets >>
-new_select = True
 #
 # pylint: disable=logging-not-lazy
 # pylint: disable=missing-super-argument
@@ -633,21 +632,9 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181216051109.1: *5* app.action.complete_select
     @flx.action
     def complete_select(self, d):
-        '''
-        A helper action, called from flx_body.sync_body_before_select.
-        
-        Common keys: old_ap, new_ap.
-        
-        Added keys: ins_col/row, s, sel_col1/2, sel_row1/2.
-        
-        These are the values of the OLD c.p.
-        '''
-        if 'select' in g.app.debug:
-            tag='py.app.complete_select'
-            new_ap = d['new_ap']
-            print('%30s: %4s %s %s' % (
-                tag, len(d['s']), new_ap['gnx'], new_ap['headline']))
+        '''Complete the selection of the d['new_ap']'''
         self.c.frame.tree.complete_select(d)
+            # tree.complete_select has direct ivars to tree ivars.
     #@+node:ekr.20181111202747.1: *5* app.action.select_ap
     @flx.action
     def select_ap(self, ap):
@@ -734,11 +721,18 @@ class LeoBrowserApp(flx.PyComponent):
     def update_body_from_dict(self, d):
         '''
         Update the *old* p.b from d.
+        
+        Add 'ins_row/col', 'sel_row/col/1/2' keys.
         '''
         tag = 'py.app.update_body_from_dict'
         c, p, v = self.c, self.c.p, self.c.p.v
         assert v, g.callers()
-       
+        #
+        # Check d[old_ap]
+        old_p = self.ap_to_p(d['old_ap'])
+        if p != old_p:
+            print('%30s: MISMATCH: %s ==> %s' % (tag, old_p.h, p.h))
+            return
         d_s = d['s']
         if 'select' in g.app.debug:
             tag = 'py.app.update_body_from_dict'
@@ -761,11 +755,11 @@ class LeoBrowserApp(flx.PyComponent):
         v.sel = sel
         #
         # Update the body wrapper's ivars (for minibuffer commands).
-        if 0: ########## Really ?????????????
+        if 0:
+            # These don't seem to work properly.
+            # Besides, we are about to change nodes.
             w = c.frame.body.wrapper
             w.ins, w.sel, w.s = ins, sel, d_s
-            if 0: print('\napp.update_body_from_dict: %s (%s, %s) p: %s ==> %s' % (
-                ins, sel[0], sel[1], c.p.h, d['headline']))
     #@+node:ekr.20181122132009.1: *4* app.Testing...
     #@+node:ekr.20181111142921.1: *5* app.action: do_command & helpers
     @flx.action
@@ -926,34 +920,19 @@ class LeoBrowserApp(flx.PyComponent):
         '''Start the execution of a minibuffer command.'''
         # Called by app.do_command.
         c = self.c
-        if new_select:
-            # New code: execute directly.
-            self.complete_minibuffer_command({
-                'char': char,
-                'commandName': commandName,
-                'headline': c.p.h, # Debugging.
-                'mods': mods,
-            })
-        else:
-            # Old code: sync hack.
-            w = self.root.main_window
-            w.body.sync_body_before_command({
-                'char': char,
-                'commandName': commandName,
-                'headline': c.p.h, # Debugging.
-                'mods': mods,
-            })
+        # New code: execute directly.
+        self.complete_minibuffer_command({
+            'char': char,
+            'commandName': commandName,
+            'headline': c.p.h, # Debugging.
+            'mods': mods,
+        })
     #@+node:ekr.20190510133737.1: *5* app.action.complete_minibuffer_command
     @flx.action
     def complete_minibuffer_command(self, d):
         '''Called from flx.body.sync_body_before_command to complete the minibuffer command.'''
         c = self.c
         k, w = c.k, c.frame.body.wrapper
-        if new_select:
-            pass
-        else:
-            self.update_body_from_dict(d)
-                # Update the OLD c.p.
         #
         # Do the minibuffer command: like k.callAltXFunction.
         commandName, char, mods = d['commandName'], d['char'], d['mods']
@@ -1455,23 +1434,22 @@ class LeoBrowserTree(leoFrame.NullTree):
 
     #@+node:ekr.20190508121417.1: *5* tree.complete_select
     def complete_select(self, d):
-        '''
-        Complete the selection of the tree.
-        
-        c.p is the *old* position.
-        '''
+        '''Complete the selection of the tree.'''
         trace = 'select' in g.app.debug
         tag = 'py.tree.complete_select'
-        self.select_lockout = False
-        self.root.update_body_from_dict(d)
-            # Update the OLD values of c.p.
+        if not self.new_p:
+            self.select_lockout = False
+            print('%30s: can not happen: no new_p')
+            return
         p = self.root.ap_to_p(d ['new_ap'])
-        d_s = d['s']
+        if p != self.new_p:
+            print('%30s: expected: %s, got: %s' % (tag, self.new_p.h, p.h))
+            return
         if trace:
             print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
-            # self.root.dump_dict(d, tag)
-            if d_s != p.b:
-                print('%30s: DIFF: p.b: %s, d.s: %s' % (tag, len(p.b), len(d_s)))
+        #
+        # Allow a new select.
+        self.select_lockout = False
         #
         # Make everything official in Leo's core.
         super().select(p)
@@ -1517,6 +1495,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         '''
         trace = 'select' in g.app.debug
         tag = '===== py.tree.select'
+        w = self.root.main_window
         if self.select_lockout:
             self.new_p = p.copy()
             if trace:
@@ -1529,9 +1508,11 @@ class LeoBrowserTree(leoFrame.NullTree):
             self.root.select_p(p)
                 # Call app.select_position.
             return
+        #
+        # Begin the selection.
         self.select_lockout = True
+        self.new_p = p.copy()
         old_p = self.root.c.p
-        w = self.root.main_window
         if trace: print('\n%30s: %4s %s ==> %s %s ' % (
             tag, len(old_p.v._bodyString), old_p.h, len(p.v._bodyString), p.h))
         #
@@ -1549,7 +1530,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         p = self.root.ap_to_p(ap)
         if trace:
             tag = 'py.tree.select_ap'
-            print('20s: %s %s' % (tag, p.v.fileIndex, p.v._headString))
+            print('%30s: %s %s' % (tag, p.v.fileIndex, p.v._headString))
         self.select(p)
     #@+node:ekr.20190508121417.3: *5* tree.super_select
     def super_select(self, p):
