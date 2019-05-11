@@ -985,7 +985,7 @@ else:
 fails = []
 for ivar in ivars:
     assert hasattr(g.app, ivar), 'missing app ivar: %s %r' % (ivar,g.app)
-    if ivar not in mayBeNone and g.app.old_gui_name != 'browser':
+    if ivar not in mayBeNone and getattr(g.app, 'old_gui_name', None) != 'browser':
         val = getattr(g.app, ivar)
         if val is None:
             fails.append(ivar)
