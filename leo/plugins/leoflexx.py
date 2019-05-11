@@ -302,9 +302,14 @@ class LeoBrowserApp(flx.PyComponent):
         # Monkey-patch the FindTabManager
         c.findCommands.minibuffer_mode = True
         c.findCommands.ftm = g.NullObject()
-        # #1143: monkey-patch c.endEditing
+        #
+        # #1143: monkey-patch Leo's save commands.
         self.old_save_file = c.fileCommands.save
         c.fileCommands.save = self.save_file
+        self.old_save_file_as = c.fileCommands.saveAs
+        c.fileCommands.saveAs = self.save_file_as
+        self.old_save_file_to = c.fileCommands.saveTo
+        c.fileCommands.saveTo = self.save_file_to
         #
         # Init the log, body, status line and tree.
         g.app.gui.writeWaitingLog2()
@@ -635,34 +640,6 @@ class LeoBrowserApp(flx.PyComponent):
         
     def edit_headline_completer(self, headline):
         print('app.edit_headline_completer')
-    #@+node:ekr.20190511100908.1: *4* app.save_file (override)
-    def save_file(self, fileName):
-        '''
-        Monkey-patched override of c.fileCommands.save.
-        
-        Sync p.b before calling the original method.
-        '''
-        if not self.root.inited:
-            return
-        if 'select' in g.app.debug:
-            tag = 'py.app.save_file'
-            print('%30s' % tag)
-        c = self.c
-        w = self.root.main_window
-        w.body.sync_body_before_save_file({
-            'ap': self.root.p_to_ap(c.p),
-            'fn': fileName,
-        })
-
-    @flx.action
-    def complete_save_file(self, d):
-        self.update_body_from_dict_helper(d)
-            # Use the helper, to skip checks.
-        fn = d['fn']
-        if 'select' in g.app.debug:
-            tag = 'py.app.complete_save_file'
-            print('%30s: %s' % (tag, fn))
-        self.old_save_file(fn)
     #@+node:ekr.20190511091236.1: *4* app.Minibuffer
     #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command
     def execute_minibuffer_command(self, commandName, char, mods):
@@ -732,6 +709,92 @@ class LeoBrowserApp(flx.PyComponent):
                 k.setStatusLabel('Command does not exist: %s' % commandName)
                 c.bodyWantsFocus()
         return False
+    #@+node:ekr.20190511102058.1: *4* app.Save commands
+    # These all monkey-patch the corresponding c.fileCommands methods.
+    #@+node:ekr.20190511100908.1: *5* app.save_file
+    def save_file(self, fileName):
+        '''
+        Monkey-patched override of c.fileCommands.save.
+        
+        Sync p.b before calling the original method.
+        '''
+        if not self.root.inited:
+            return
+        if 'select' in g.app.debug:
+            tag = 'py.app.save_file'
+            print('%30s: %s' % (tag, fileName))
+        c = self.c
+        w = self.root.main_window
+        w.body.sync_body_before_save_file({
+            'ap': self.root.p_to_ap(c.p),
+            'fn': fileName,
+        })
+
+    @flx.action
+    def complete_save_file(self, d):
+        self.update_body_from_dict_helper(d)
+            # Use the helper, to skip checks.
+        fn = d['fn']
+        if 'select' in g.app.debug:
+            tag = 'py.app.complete_save_file'
+            print('%30s: %s' % (tag, fn))
+        self.old_save_file(fn)
+    #@+node:ekr.20190511102119.1: *5* app.save_file_as
+    def save_file_as(self, fileName):
+        '''
+        Monkey-patched override of c.fileCommands.saveAs.
+        
+        Sync p.b before calling the original method.
+        '''
+        if not self.root.inited:
+            return
+        if 'select' in g.app.debug:
+            tag = 'py.app.save_file_as'
+            print('%30s: %s' % (tag, fileName))
+        c = self.c
+        w = self.root.main_window
+        w.body.sync_body_before_save_file_as({
+            'ap': self.root.p_to_ap(c.p),
+            'fn': fileName,
+        })
+
+    @flx.action
+    def complete_save_file_as(self, d):
+        self.update_body_from_dict_helper(d)
+            # Use the helper, to skip checks.
+        fn = d['fn']
+        if 'select' in g.app.debug:
+            tag = 'py.app.complete_save_file'
+            print('%30s: %s' % (tag, fn))
+        self.old_save_file_as(fn)
+    #@+node:ekr.20190511102120.1: *5* app.save_file_to
+    def save_file_to(self, fileName):
+        '''
+        Monkey-patched override of c.fileCommands.saveTo.
+        
+        Sync p.b before calling the original method.
+        '''
+        if not self.root.inited:
+            return
+        if 'select' in g.app.debug:
+            tag = 'py.app.save_file_to'
+            print('%30s: %s' % (tag, fileName))
+        c = self.c
+        w = self.root.main_window
+        w.body.sync_body_before_save_file_to({
+            'ap': self.root.p_to_ap(c.p),
+            'fn': fileName,
+        })
+
+    @flx.action
+    def complete_save_file_to(self, d):
+        self.update_body_from_dict_helper(d)
+            # Use the helper, to skip checks.
+        fn = d['fn']
+        if 'select' in g.app.debug:
+            tag = 'py.app.complete_save_file'
+            print('%30s: %s' % (tag, fn))
+        self.old_save_file_to(fn)
     #@+node:ekr.20181124095316.1: *4* app.Selecting...
     #@+node:ekr.20181216051109.1: *5* app.action.complete_select
     @flx.action
@@ -1820,6 +1883,33 @@ class LeoFlexxBody(JS_Editor):
     #@+node:ekr.20181215061402.1: *4* flx_body.sync*
 
         
+    #@+node:ekr.20190511092226.1: *5* flx.body.action.sync_body_before_save_file
+    @flx.action
+    def sync_body_before_save_file(self, d):
+        '''Update p.b, etc. before executing calling c.fileCommands.save.'''
+        self.update_body_dict(d)
+        if 'select' in g.app.debug:
+            tag = 'flx.body.sync_body_before_save_file'
+            print('%30s: %r' % (tag, d['s']))
+        self.root.complete_save_file(d)
+    #@+node:ekr.20190511102428.1: *5* flx.body.action.sync_body_before_save_file_as
+    @flx.action
+    def sync_body_before_save_file_as(self, d):
+        '''Update p.b, etc. before executing calling c.fileCommands.saveAs.'''
+        self.update_body_dict(d)
+        if 'select' in g.app.debug:
+            tag = 'flx.body.sync_body_before_save_file_as'
+            print('%30s: %r' % (tag, d['s']))
+        self.root.complete_save_file_as(d)
+    #@+node:ekr.20190511102429.1: *5* flx.body.action.sync_body_before_save_file_to
+    @flx.action
+    def sync_body_before_save_file_to(self, d):
+        '''Update p.b, etc. before executing calling c.fileCommands.saveTo.'''
+        self.update_body_dict(d)
+        if 'select' in g.app.debug:
+            tag = 'flx.body.sync_body_before_save_file_to'
+            print('%30s: %r' % (tag, d['s']))
+        self.root.complete_save_file_to(d)
     #@+node:ekr.20190510070009.1: *5* flx.body.action.sync_body_before_select
     @flx.action
     def sync_body_before_select(self, d):
@@ -1864,15 +1954,6 @@ class LeoFlexxBody(JS_Editor):
                 for z in d_s.split('\n'):
                     print(repr(z))
                 print('')
-    #@+node:ekr.20190511092226.1: *5* flx.body.action.sync_body_before_save_file
-    @flx.action
-    def sync_body_before_save_file(self, d):
-        '''Update p.b, etc. before executing calling c.endEditing().'''
-        self.update_body_dict(d)
-        if 'select' in g.app.debug:
-            tag = 'flx.body.sync_body_before_save_file'
-            print('%30s: %r' % (tag, d['s']))
-        self.root.complete_save_file(d)
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog (JS_Editor)
 class LeoFlexxLog(JS_Editor):
