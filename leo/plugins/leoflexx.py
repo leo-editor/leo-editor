@@ -633,6 +633,7 @@ class LeoBrowserApp(flx.PyComponent):
     @flx.action
     def complete_select(self, d):
         '''Complete the selection of the d['new_ap']'''
+        self.update_body_from_dict(d)
         self.c.frame.tree.complete_select(d)
             # tree.complete_select has direct ivars to tree ivars.
     #@+node:ekr.20181111202747.1: *5* app.action.select_ap
@@ -1818,7 +1819,7 @@ class LeoFlexxBody(JS_Editor):
         '''
         Add keys to d describing flx.body.
         
-        This sets d.s from the *old* position.
+        This sets d.s & other keys from the *old* position.
         '''
         #
         # Remember the body text.
@@ -1830,9 +1831,14 @@ class LeoFlexxBody(JS_Editor):
         d ['sel_row1'], d ['sel_col1'] = row1, col1
         d ['sel_row2'], d ['sel_col2'] = row2, col2
         if 'select' in g.app.debug:
+            d_s = d ['s']
             tag = 'flx.body.update_body_dict'
-            print('%30s: %4s' % (tag, len(d ['s'])))
-            # self.root.dump_dict(d, tag)
+            print('%30s: OLD: %4s' % (tag, len(d_s)))
+            if 0:
+                print('')
+                for z in d_s.split('\n'):
+                    print(repr(z))
+                print('')
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog (JS_Editor)
 class LeoFlexxLog(JS_Editor):
