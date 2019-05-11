@@ -66,6 +66,7 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< leoflexx: assets >>
+new_select = True
 #
 # pylint: disable=logging-not-lazy
 # pylint: disable=missing-super-argument
@@ -142,7 +143,7 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         super().__init__(c, name)
         assert self.c == c
         assert self.name == name
-        self.tag = '(API_Wrapper: %s)' % name
+        self.tag = '(py.StringTextWrapper: %s)' % name
         self.root = get_root()
         
     def flx_wrapper(self):
@@ -198,7 +199,7 @@ class API_Wrapper (leoFrame.StringTextWrapper):
     def finish_setter(self, tag):
         '''The common setter code.'''
         c = self.c
-        tag = ' body.setter'
+        tag = 'py.body.setter'
         if self.name == 'body':
             if 0: print('%s: %s' % (tag, len(self.s)))
             c.p.v.setBodyString(self.s)
@@ -321,7 +322,7 @@ class LeoBrowserApp(flx.PyComponent):
             # Always use the imported g.
         self.inited = False
             # Set in finish_create
-        self.tag = '(app wrapper)'
+        self.tag = '(py.app wrapper)'
         #
         # Open or get the first file.
         if not g.app:
@@ -471,7 +472,7 @@ class LeoBrowserApp(flx.PyComponent):
         As a side effect, app.make_redraw_dict updates all internal dicts.
         '''
         trace = 'drawing' in g.app.debug
-        tag = 'LeoBrowserApp.redraw'
+        tag = 'py.app.redraw'
         c = self.c
         p = p or c.p
         # #1142.
@@ -635,14 +636,18 @@ class LeoBrowserApp(flx.PyComponent):
         '''
         A helper action, called from flx_body.sync_body_before_select.
         
-        d.keys: ap, headline, ins_col/row, s, sel_col1/2, sel_row1/2.
+        Common keys: old_ap, new_ap.
+        
+        Added keys: ins_col/row, s, sel_col1/2, sel_row1/2.
+        
+        These are the values of the OLD c.p.
         '''
         if 'select' in g.app.debug:
-            tag=' app.complete_select'
-            print('%30s: %4s %s %s' % (tag, len(d['s']), d['ap']['gnx'], d['headline']))
-            # g.printObj(d, tag)
+            tag='py.app.complete_select'
+            new_ap = d['new_ap']
+            print('%30s: %4s %s %s' % (
+                tag, len(d['s']), new_ap['gnx'], new_ap['headline']))
         self.c.frame.tree.complete_select(d)
-
     #@+node:ekr.20181111202747.1: *5* app.action.select_ap
     @flx.action
     def select_ap(self, ap):
@@ -683,7 +688,7 @@ class LeoBrowserApp(flx.PyComponent):
         if not (w and w.tree):
             return
         if 'select' in g.app.debug:
-            tag = 'app.select_p'
+            tag = 'py.app.select_p'
             print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
         w.tree.set_ap(ap)
         # #1142: This code was not the problem.
@@ -694,7 +699,7 @@ class LeoBrowserApp(flx.PyComponent):
     @flx.action
     def select_tree_using_ap(self, ap):
         '''A helper action, called from flx_tree.on_selected_event.'''
-        tag = 'app.select_tree_using_ap'
+        tag = 'py.app.select_tree_using_ap'
         if 0: print(tag, ap ['headline'])
         p = self.ap_to_p(ap)
         self.c.frame.tree.select(p)
@@ -727,35 +732,40 @@ class LeoBrowserApp(flx.PyComponent):
         }
     #@+node:ekr.20181215154640.1: *5* app.update_body_from_dict
     def update_body_from_dict(self, d):
-        '''Update p.b, etc, using d.'''
-        tag = 'update_body_from_dict'
+        '''
+        Update the *old* p.b from d.
+        '''
+        tag = 'py.app.update_body_from_dict'
         c, p, v = self.c, self.c.p, self.c.p.v
         assert v, g.callers()
-        w = c.frame.body.wrapper
+       
         d_s = d['s']
         if 'select' in g.app.debug:
-            tag = 'app.update_body_from_dict'
+            tag = 'py.app.update_body_from_dict'
             print('%30s: %4s %s %s' % (tag, ' ', p.gnx, p.h))
             print('%30s: p.b: %s d.s: %s' % (tag, len(p.b), len(d_s)))
             # self.dump_dict(d, tag)
-        # Compute the insert point.
-        s = d_s
-            ### This is not always correct!!!
+        #
+        # Compute the insert point and selection range.
         col, row = d['ins_col'], d['ins_row']
-        ins = g.convertRowColToPythonIndex(s, row, col)
-        # Compute the selection range.
-        col1, row1 =  d ['sel_col1'], d ['sel_row1']
-        col2, row2 =  d ['sel_col2'], d ['sel_row2']
-        sel1 = g.convertRowColToPythonIndex(s, row1, col1)
-        sel2 = g.convertRowColToPythonIndex(s, row2, col2)
+        ins = g.convertRowColToPythonIndex(d_s, row, col)
+        col1, row1 = d ['sel_col1'], d ['sel_row1']
+        col2, row2 = d ['sel_col2'], d ['sel_row2']
+        sel1 = g.convertRowColToPythonIndex(d_s, row1, col1)
+        sel2 = g.convertRowColToPythonIndex(d_s, row2, col2)
         sel = (sel1, sel2)
-        # Update v's ivars, *and* the body text's ivars (for minibuffer commands).
-        v.setBodyString(s)
+        #
+        # Update v's ivars
+        v.setBodyString(d_s)
         v.insertSpot = ins
         v.sel = sel
-        w.ins, w.sel, w.s = ins, sel, s
-        if 0: print('\napp.update_body_from_dict: %s (%s, %s) p: %s ==> %s' % (
-            ins, sel[0], sel[1], c.p.h, d['headline']))
+        #
+        # Update the body wrapper's ivars (for minibuffer commands).
+        if 0: ########## Really ?????????????
+            w = c.frame.body.wrapper
+            w.ins, w.sel, w.s = ins, sel, d_s
+            if 0: print('\napp.update_body_from_dict: %s (%s, %s) p: %s ==> %s' % (
+                ins, sel[0], sel[1], c.p.h, d['headline']))
     #@+node:ekr.20181122132009.1: *4* app.Testing...
     #@+node:ekr.20181111142921.1: *5* app.action: do_command & helpers
     @flx.action
@@ -911,24 +921,40 @@ class LeoBrowserApp(flx.PyComponent):
     def do_unit(self):
         # This ends up exiting.
         self.run_all_unit_tests()
-    #@+node:ekr.20181127070903.1: *5* app.execute/complete_minibuffer_command
+    #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command
     def execute_minibuffer_command(self, commandName, char, mods):
         '''Start the execution of a minibuffer command.'''
+        # Called by app.do_command.
         c = self.c
-        w = self.root.main_window
-        w.body.sync_body_before_command({
-            'char': char,
-            'commandName': commandName,
-            'headline': c.p.h, # Debugging.
-            'mods': mods,
-        })
-            
+        if new_select:
+            # New code: execute directly.
+            self.complete_minibuffer_command({
+                'char': char,
+                'commandName': commandName,
+                'headline': c.p.h, # Debugging.
+                'mods': mods,
+            })
+        else:
+            # Old code: sync hack.
+            w = self.root.main_window
+            w.body.sync_body_before_command({
+                'char': char,
+                'commandName': commandName,
+                'headline': c.p.h, # Debugging.
+                'mods': mods,
+            })
+    #@+node:ekr.20190510133737.1: *5* app.action.complete_minibuffer_command
     @flx.action
     def complete_minibuffer_command(self, d):
         '''Called from flx.body.sync_body_before_command to complete the minibuffer command.'''
         c = self.c
         k, w = c.k, c.frame.body.wrapper
-        self.update_body_from_dict(d)
+        if new_select:
+            pass
+        else:
+            self.update_body_from_dict(d)
+                # Update the OLD c.p.
+        #
         # Do the minibuffer command: like k.callAltXFunction.
         commandName, char, mods = d['commandName'], d['char'], d['mods']
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
@@ -1048,7 +1074,7 @@ class LeoBrowserBody(leoFrame.NullBody):
         super().__init__(frame, parentFrame=None)
         self.c = c = frame.c
         self.root = get_root()
-        self.tag = '(body wrapper)'
+        self.tag = '(py.body wrapper)'
         # Replace the StringTextWrapper with the ace wrapper.
         assert isinstance(self.wrapper, leoFrame.StringTextWrapper)
         self.wrapper = API_Wrapper(c, 'body')
@@ -1071,7 +1097,7 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         assert self.c == c
         frame = self
         self.root = get_root()
-        self.tag = '(frame wrapper)'
+        self.tag = '(py.frame wrapper)'
         #
         # Instantiate the other wrappers.
         self.body = LeoBrowserBody(frame)
@@ -1103,7 +1129,7 @@ class LeoBrowserGui(leoGui.NullGui):
         self.logWaiting = []
         self.root = None # Will be set later.
         self.silentMode = True # Don't print a single signon line.
-        self.tag = '(browser gui)'
+        self.tag = '(py.gui)'
         self.specific_browser = gui_name.lstrip('browser').lstrip(':').lstrip('-').strip()
         if not self.specific_browser:
             self.specific_browser = 'browser'
@@ -1225,7 +1251,7 @@ class LeoBrowserIconBar(leoFrame.NullIconBarClass):
         super().__init__(c, parentFrame)
         assert self.c == c
         self.root = get_root()
-        self.tag = '(icon bar wrapper)'
+        self.tag = '(py.icon bar wrapper)'
             
     #@+others
     #@-others
@@ -1235,7 +1261,7 @@ class LeoBrowserLog(leoFrame.NullLog):
     def __init__(self, frame, parentFrame=None):
         super().__init__(frame, parentFrame)
         self.root = get_root()
-        self.tag = '(log wrapper)'
+        self.tag = '(py.log wrapper)'
         assert isinstance(self.widget, leoFrame.StringTextWrapper)
         self.logCtrl = self.widget
         self.logWidget = self.widget
@@ -1272,7 +1298,7 @@ class LeoBrowserMenu(leoMenu.NullMenu):
     # def __init__(self, frame):
         # super().__init__(frame)
         # self.root = get_root()
-        # self.tag = '(menu wrapper)'
+        # self.tag = '(py.menu wrapper)'
 
     # @others
 #@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer (StringTextWrapper)
@@ -1291,7 +1317,7 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
         assert self.getName() == 'minibuffer'
         self.frame = frame
         self.root = get_root()
-        self.tag = '(minibuffer wrapper)'
+        self.tag = '(py.minibuffer wrapper)'
         self.widget = self
         self.wrapper = self
         # Hook this class up to the key handler.
@@ -1349,7 +1375,7 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
     def __init__(self, c, parentFrame):
         super().__init__(c, parentFrame)
         self.root = get_root()
-        self.tag = '(status line wrapper)'
+        self.tag = '(py.status line wrapper)'
         self.w = self # Required.
         
     def getName(self):
@@ -1416,7 +1442,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         super().__init__(frame)
         self.root = get_root()
         self.select_lockout = False
-        self.tag = '(tree wrapper)'
+        self.tag = '(py.tree wrapper)'
         self.widget = self
         self.wrapper = self
 
@@ -1429,20 +1455,25 @@ class LeoBrowserTree(leoFrame.NullTree):
 
     #@+node:ekr.20190508121417.1: *5* tree.complete_select
     def complete_select(self, d):
-        '''Complete the selection of the tree.'''
+        '''
+        Complete the selection of the tree.
+        
+        c.p is the *old* position.
+        '''
         trace = 'select' in g.app.debug
-        tag = 'flx.tree.complete_select'
+        tag = 'py.tree.complete_select'
         self.select_lockout = False
         self.root.update_body_from_dict(d)
-            # Complete the syncing of the body pane.
-        p = self.root.ap_to_p(d ['ap'])
-        ### d['s'] can be either the old OR new text!!!
+            # Update the OLD values of c.p.
+        p = self.root.ap_to_p(d ['new_ap'])
         d_s = d['s']
         if trace:
             print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
             # self.root.dump_dict(d, tag)
             if d_s != p.b:
                 print('%30s: DIFF: p.b: %s, d.s: %s' % (tag, len(p.b), len(d_s)))
+        #
+        # Make everything official in Leo's core.
         super().select(p)
             # Call LeoTree.select.'''
         self.root.select_p(p)
@@ -1455,21 +1486,39 @@ class LeoBrowserTree(leoFrame.NullTree):
         This must be a do-nothing, because app.end_set_headline takes its place.
         '''
         # print(flx.tree.endEditLabel')
-    #@+node:ekr.20190508121414.1: *5* tree.select
+    #@+node:ekr.20190508121414.1: *5*  tree.select 
+    # The lockout ensures that old_p never changes during the selection process.
+    select_lockout = False
+    old_p = None
+    new_p = None
+
     def select(self, p):
         '''
         Override LeoTree.select.
         
         Operations across the Python/JS divide do not happen immediately. As a result,
-        the selection must happen in three phases:
+        the selection must happen in phases:
             
-        Phase 1: update old_p.b and related vnode ivars from the body pane.
-        Phase 2: update the body pane from new_p.b.
-        Phase 3: (maybe??) call LeoTree.select itself.
+        Phase 1a: PY side:
+        - Remember the old and new p.
+        - Schedule sync_body_before_select to update of the old p.b on the JS side.
+        - Set the lockout, so only one JS update is ever done.
+        
+        Phase 1b: PY side: 
+        - If the lockout is set, just update the *new* p.
+        
+        Phase 2: JS side:
+        - Update the *old* p.b and related vnode ivars from the body pane.
+          Important: The lockout never changes the *old* p.
+        - Call flx.tree.complete_select to update the widget.
+        - Schedule app.complete_select.
+          
+        Phase 3: PY side:
         '''
         trace = 'select' in g.app.debug
-        tag = 'flx.tree.select'
+        tag = '===== py.tree.select'
         if self.select_lockout:
+            self.new_p = p.copy()
             if trace:
                 print('%30s: %s %s' % (tag, ' Lockout', p.h))
             return
@@ -1486,20 +1535,20 @@ class LeoBrowserTree(leoFrame.NullTree):
         if trace: print('\n%30s: %4s %s ==> %s %s ' % (
             tag, len(old_p.v._bodyString), old_p.h, len(p.v._bodyString), p.h))
         #
-        # Must update body *now*.
+        # Schdule JS side to:
+        # 1. Update *old* p.b from flx.body.
+        #    The lockout ensures that the old p never changes.
+        # 2. Schedule self.complete_select.
         w.body.sync_body_before_select({
-            'ap': self.root.p_to_ap(p),
-            'headline': p.h, # Debugging.
-            's': p.v._bodyString, # Don't use p.b!
-                # #1142. This is a flag for flx.body.update_body_dict.
+            'old_ap': self.root.p_to_ap(old_p),
+            'new_ap': self.root.p_to_ap(p),
         })
-            # The callback is self.complete_select.
     #@+node:ekr.20190508121417.2: *5* tree.select_ap
     def select_ap(self, ap):
         trace = 'select' in g.app.debug
         p = self.root.ap_to_p(ap)
         if trace:
-            tag = 'flx.tree.select_ap'
+            tag = 'py.tree.select_ap'
             print('20s: %s %s' % (tag, p.v.fileIndex, p.v._headString))
         self.select(p)
     #@+node:ekr.20190508121417.3: *5* tree.super_select
@@ -1507,7 +1556,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         '''Call only LeoTree.select.'''
         trace = 'select' in g.app.debug
         if trace:
-            tag = 'flx.tree.super_select'
+            tag = 'py.tree.super_select'
             print('%30s %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
         super().select(p)
 
@@ -1759,35 +1808,50 @@ class LeoFlexxBody(JS_Editor):
         if 'select' in g.app.debug:
             tag = 'flx.body.sync_body_before_command'
             # print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
-            print('%30s:' % (tag))
+            print('')
+            print('%30s: %s' % (tag, d['commandName']))
             # self.root.dump_dict(d, tag)
         self.update_body_dict(d)
         self.root.complete_minibuffer_command(d)
     #@+node:ekr.20190510070009.1: *5* flx.body.action.sync_body_before_select
     @flx.action
     def sync_body_before_select(self, d):
-        '''Update p.b, etc. before selecting a new node.'''
-        # Called by tree.select. d has 'ap' and 'headline' keys.
+        '''
+        Called by app.tree.select to update the *old* p.b, etc. before selecting a new node.
+        
+        d['old_ap']: The AP for the old node.
+        d['new_ap']: The AP for the new node.
+        '''
         if 'select' in g.app.debug:
             tag = 'flx.body.sync_body_before_select'
-            # print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
-            print('%30s:' % (tag))
+            print('')
+            print('%30s: %s ==> %s' % (
+                tag, d['old_ap']['headline'], d['old_ap']['headline']) )
             # self.root.dump_dict(d, tag)
         self.update_body_dict(d)
+            # Sets d.s, etc., describing insert point & selection range.
         self.root.complete_select(d)
         
-    #@+node:ekr.20190510070010.1: *5* flx.body.update_body_dict
+    #@+node:ekr.20190510070010.1: *5* flx.body.update_body_dict (set d.s from flx.body)
     def update_body_dict(self, d):
-        '''Add keys to d describing the body pane.'''
-        if 'select' in g.app.debug:
-            tag = 'flx_body.update_body_dict'
-            print('%30s: %4s' % (tag, len(self.get_text())))
-            # self.root.dump_dict(d, tag)
+        '''
+        Add keys to d describing flx.body.
+        
+        This sets d.s from the *old* position.
+        '''
+        #
+        # Remember the body text.
         d ['s'] = self.get_text()
         d ['ins_row'], d ['ins_col'] = self.get_ins()
+        #
+        # Remember the selection ranges.
         row1, col1, row2, col2 = self.get_sel()
         d ['sel_row1'], d ['sel_col1'] = row1, col1
         d ['sel_row2'], d ['sel_col2'] = row2, col2
+        if 'select' in g.app.debug:
+            tag = 'flx.body.update_body_dict'
+            print('%30s: %4s' % (tag, len(d ['s'])))
+            # self.root.dump_dict(d, tag)
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog (JS_Editor)
 class LeoFlexxLog(JS_Editor):
