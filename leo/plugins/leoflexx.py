@@ -298,13 +298,19 @@ class LeoBrowserApp(flx.PyComponent):
         c.selectPosition(c.p or c.rootPosition())
         c.contractAllHeadlines()
             # #1127: This calls c.redraw. Do *not* call it again below.
+        #
         # Monkey-patch the FindTabManager
         c.findCommands.minibuffer_mode = True
         c.findCommands.ftm = g.NullObject()
+        # #1143: monkey-patch c.endEditing
+        self.old_endEditing = c.endEditing
+        c.endEditing = self.end_editing
+        #
         # Init the log, body, status line and tree.
         g.app.gui.writeWaitingLog2()
         self.set_body_text()
         self.set_status()
+        #
         # Init the focus. It's debatable...
         if 0:
             self.gui.set_focus(c, c.frame.tree)
@@ -618,7 +624,8 @@ class LeoBrowserApp(flx.PyComponent):
             'gnx': p.v.gnx,
             'headline': p.v.h,
         }
-    #@+node:ekr.20181129122147.1: *4* app.edit_headline & helper
+    #@+node:ekr.20190511091601.1: *4* app.Editing
+    #@+node:ekr.20181129122147.1: *5* app.edit_headline & helper
     def edit_headline(self):
         '''Simulate editing the headline in the minibuffer.'''
         w = self.root.main_window
@@ -628,6 +635,101 @@ class LeoBrowserApp(flx.PyComponent):
         
     def edit_headline_completer(self, headline):
         print('app.edit_headline_completer')
+    #@+node:ekr.20190511091608.1: *5* app.endEditing (override)
+    def end_editing(self):
+        '''
+        Monkey-patched override of c.endEditing.
+        
+        Sync the p.b before calling the original c.endEditing.
+        '''
+        if not self.root.inited:
+            return
+        if 'select' in g.app.debug:
+            tag = 'py.app.end_editing'
+            print('%30s' % tag)
+        c = self.c
+        w = self.root.main_window
+        w.body.sync_body_before_end_edit({
+            'ap': self.root.p_to_ap(c.p),
+        })
+
+    @flx.action
+    def complete_end_edit(self, d):
+        self.update_body_from_dict_helper(d)
+            # Use the helper, to skip checks.
+        if 'select' in g.app.debug:
+            tag = 'py.app.complete_end_edit'
+            print('%30s: %r' % (tag, self.c.p.b)) # len(d['s'])))
+        self.old_endEditing()
+    #@+node:ekr.20190511091236.1: *4* app.Minibuffer
+    #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command
+    def execute_minibuffer_command(self, commandName, char, mods):
+        '''Start the execution of a minibuffer command.'''
+        # Called by app.do_command.
+        c = self.c
+        # New code: execute directly.
+        self.complete_minibuffer_command({
+            'char': char,
+            'commandName': commandName,
+            'headline': c.p.h, # Debugging.
+            'mods': mods,
+        })
+    #@+node:ekr.20190510133737.1: *5* app.action.complete_minibuffer_command
+    @flx.action
+    def complete_minibuffer_command(self, d):
+        '''Complete the minibuffer command using d.'''
+        c = self.c
+        k, w = c.k, c.frame.body.wrapper
+        #
+        # Do the minibuffer command: like k.callAltXFunction.
+        commandName, char, mods = d['commandName'], d['char'], d['mods']
+        binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
+            # Same as in app.do_key.
+        event = g.Bunch(
+            c=c,
+            char=char,
+            stroke=binding,
+            widget=w, # Use the body pane by default.
+        )
+            # Another hack.
+        k.functionTail = None
+        if commandName and commandName.isdigit():
+            # The line number Easter Egg.
+            def func(event=None):
+                c.gotoCommands.find_file_line(n=int(commandName))
+        else:
+            func = c.commandsDict.get(commandName)
+        k.newMinibufferWidget = None
+        if func:
+            # These must be done *after* getting the command.
+            k.clearState()
+            k.resetLabel()
+            if commandName != 'repeat-complex-command':
+                k.mb_history.insert(0, commandName)
+            w = event and event.widget
+            if hasattr(w, 'permanent') and not w.permanent:
+                # In a headline that is being edited.
+                # g.es('Can not execute commands from headlines')
+                c.endEditing()
+                c.bodyWantsFocusNow()
+                # Change the event widget so we don't refer to the to-be-deleted headline widget.
+                event.w = event.widget = c.frame.body.wrapper.widget
+                c.executeAnyCommand(func, event)
+            else:
+                c.widgetWantsFocusNow(event and event.widget)
+                    # Important, so cut-text works, e.g.
+                c.executeAnyCommand(func, event)
+            k.endCommand(commandName)
+            return True
+        if 0: # Not ready yet
+            # Show possible completions if the command does not exist.
+            if 1: # Useful.
+                k.doTabCompletion(list(c.commandsDict.keys()))
+            else: # Annoying.
+                k.keyboardQuit()
+                k.setStatusLabel('Command does not exist: %s' % commandName)
+                c.bodyWantsFocus()
+        return False
     #@+node:ekr.20181124095316.1: *4* app.Selecting...
     #@+node:ekr.20181216051109.1: *5* app.action.complete_select
     @flx.action
@@ -718,7 +820,7 @@ class LeoBrowserApp(flx.PyComponent):
                 'headline': stack_v.h,
             } for (stack_v, stack_childIndex) in p.stack ],
         }
-    #@+node:ekr.20181215154640.1: *5* app.update_body_from_dict
+    #@+node:ekr.20181215154640.1: *5* app.update_body_from_dict & helper
     def update_body_from_dict(self, d):
         '''
         Update the *old* p.b from d.
@@ -726,20 +828,26 @@ class LeoBrowserApp(flx.PyComponent):
         Add 'ins_row/col', 'sel_row/col/1/2' keys.
         '''
         tag = 'py.app.update_body_from_dict'
-        c, p, v = self.c, self.c.p, self.c.p.v
+        p, v = self.c.p, self.c.p.v
         assert v, g.callers()
         #
-        # Check d[old_ap]
+        # Check d[old_ap], if it exists.
         old_p = self.ap_to_p(d['old_ap'])
         if p != old_p:
             print('%30s: MISMATCH: %s ==> %s' % (tag, old_p.h, p.h))
             return
-        d_s = d['s']
         if 'select' in g.app.debug:
             tag = 'py.app.update_body_from_dict'
+            d_s = d['s']
             print('%30s: %4s %s %s' % (tag, ' ', p.gnx, p.h))
             print('%30s: p.b: %s d.s: %s' % (tag, len(p.b), len(d_s)))
             # self.dump_dict(d, tag)
+        self.update_body_from_dict_helper(d)
+    #@+node:ekr.20190511094352.1: *6* app.update_body_from_dict_helper
+    def update_body_from_dict_helper(self, d):
+        '''Update the body dict, without checks.'''
+        c, v = self.c, self.c.p.v
+        d_s = d['s']
         #
         # Compute the insert point and selection range.
         col, row = d['ins_col'], d['ins_row']
@@ -916,74 +1024,6 @@ class LeoBrowserApp(flx.PyComponent):
     def do_unit(self):
         # This ends up exiting.
         self.run_all_unit_tests()
-    #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command
-    def execute_minibuffer_command(self, commandName, char, mods):
-        '''Start the execution of a minibuffer command.'''
-        # Called by app.do_command.
-        c = self.c
-        # New code: execute directly.
-        self.complete_minibuffer_command({
-            'char': char,
-            'commandName': commandName,
-            'headline': c.p.h, # Debugging.
-            'mods': mods,
-        })
-    #@+node:ekr.20190510133737.1: *5* app.action.complete_minibuffer_command
-    @flx.action
-    def complete_minibuffer_command(self, d):
-        '''Called from flx.body.sync_body_before_command to complete the minibuffer command.'''
-        c = self.c
-        k, w = c.k, c.frame.body.wrapper
-        #
-        # Do the minibuffer command: like k.callAltXFunction.
-        commandName, char, mods = d['commandName'], d['char'], d['mods']
-        binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
-            # Same as in app.do_key.
-        event = g.Bunch(
-            c=c,
-            char=char,
-            stroke=binding,
-            widget=w, # Use the body pane by default.
-        )
-            # Another hack.
-        k.functionTail = None
-        if commandName and commandName.isdigit():
-            # The line number Easter Egg.
-            def func(event=None):
-                c.gotoCommands.find_file_line(n=int(commandName))
-        else:
-            func = c.commandsDict.get(commandName)
-        k.newMinibufferWidget = None
-        if func:
-            # These must be done *after* getting the command.
-            k.clearState()
-            k.resetLabel()
-            if commandName != 'repeat-complex-command':
-                k.mb_history.insert(0, commandName)
-            w = event and event.widget
-            if hasattr(w, 'permanent') and not w.permanent:
-                # In a headline that is being edited.
-                # g.es('Can not execute commands from headlines')
-                c.endEditing()
-                c.bodyWantsFocusNow()
-                # Change the event widget so we don't refer to the to-be-deleted headline widget.
-                event.w = event.widget = c.frame.body.wrapper.widget
-                c.executeAnyCommand(func, event)
-            else:
-                c.widgetWantsFocusNow(event and event.widget)
-                    # Important, so cut-text works, e.g.
-                c.executeAnyCommand(func, event)
-            k.endCommand(commandName)
-            return True
-        if 0: # Not ready yet
-            # Show possible completions if the command does not exist.
-            if 1: # Useful.
-                k.doTabCompletion(list(c.commandsDict.keys()))
-            else: # Annoying.
-                k.keyboardQuit()
-                k.setStatusLabel('Command does not exist: %s' % commandName)
-                c.bodyWantsFocus()
-        return False
     #@+node:ekr.20181112182636.1: *5* app.run_all_unit_tests
     def run_all_unit_tests (self):
         '''Run all unit tests from the bridge.'''
@@ -1778,23 +1818,6 @@ class LeoFlexxBody(JS_Editor):
     #@+node:ekr.20181215061402.1: *4* flx_body.sync*
 
         
-    #@+node:ekr.20190510070006.1: *5* flx.body.action.sync_body_before_command
-    @flx.action
-    def sync_body_before_command(self, d):
-        '''Update p.b, etc. before executing a minibuffer command..'''
-        
-        ### d does not contain any info about p.b!!!
-        ### Update body_dict does: d ['s'] = self.get_text()
-
-        # Called by execute_minibuffer_command. d has 'ap' and 'headline' keys.
-        if 'select' in g.app.debug:
-            tag = 'flx.body.sync_body_before_command'
-            # print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
-            print('')
-            print('%30s: %s' % (tag, d['commandName']))
-            # self.root.dump_dict(d, tag)
-        self.update_body_dict(d)
-        self.root.complete_minibuffer_command(d)
     #@+node:ekr.20190510070009.1: *5* flx.body.action.sync_body_before_select
     @flx.action
     def sync_body_before_select(self, d):
@@ -1833,12 +1856,24 @@ class LeoFlexxBody(JS_Editor):
         if 'select' in g.app.debug:
             d_s = d ['s']
             tag = 'flx.body.update_body_dict'
-            print('%30s: OLD: %4s' % (tag, len(d_s)))
+            print('%30s: len(d_s): %4s' % (tag, len(d_s)))
             if 0:
                 print('')
                 for z in d_s.split('\n'):
                     print(repr(z))
                 print('')
+    #@+node:ekr.20190511092226.1: *5* flx.body.action.sync_body_before_end_edit
+    @flx.action
+    def sync_body_before_end_edit(self, d):
+        '''Update p.b, etc. before executing calling c.endEditing().'''
+        self.update_body_dict(d)
+        if 'select' in g.app.debug:
+            tag = 'flx.body.sync_body_before_end_edit'
+            # ap = d['ap']
+            # print('')
+            # print('%30s: %s %s' % (tag, len(ap['s']), ap['headline']))
+            print('%30s: %r' % (tag, d['s']))
+        self.root.complete_end_edit(d)
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog (JS_Editor)
 class LeoFlexxLog(JS_Editor):

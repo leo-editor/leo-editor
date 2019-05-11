@@ -1470,7 +1470,7 @@ class LeoTree(object):
         The scroll argument is used by the gui to suppress scrolling while dragging.
         '''
         trace = 'select' in g.app.debug and not g.unitTesting
-        tag = '===== LeoTree.select'
+        tag = 'LeoTree.select'
         c = self.c
         if g.app.killed or self.tree_select_lockout: # Essential.
             # if trace: print('%30s: LOCKOUT' % (tag))
