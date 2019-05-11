@@ -303,8 +303,8 @@ class LeoBrowserApp(flx.PyComponent):
         c.findCommands.minibuffer_mode = True
         c.findCommands.ftm = g.NullObject()
         # #1143: monkey-patch c.endEditing
-        self.old_endEditing = c.endEditing
-        c.endEditing = self.end_editing
+        self.old_save_file = c.fileCommands.save
+        c.fileCommands.save = self.save_file
         #
         # Init the log, body, status line and tree.
         g.app.gui.writeWaitingLog2()
@@ -635,32 +635,34 @@ class LeoBrowserApp(flx.PyComponent):
         
     def edit_headline_completer(self, headline):
         print('app.edit_headline_completer')
-    #@+node:ekr.20190511091608.1: *5* app.endEditing (override)
-    def end_editing(self):
+    #@+node:ekr.20190511100908.1: *4* app.save_file (override)
+    def save_file(self, fileName):
         '''
-        Monkey-patched override of c.endEditing.
+        Monkey-patched override of c.fileCommands.save.
         
-        Sync the p.b before calling the original c.endEditing.
+        Sync p.b before calling the original method.
         '''
         if not self.root.inited:
             return
         if 'select' in g.app.debug:
-            tag = 'py.app.end_editing'
+            tag = 'py.app.save_file'
             print('%30s' % tag)
         c = self.c
         w = self.root.main_window
-        w.body.sync_body_before_end_edit({
+        w.body.sync_body_before_save_file({
             'ap': self.root.p_to_ap(c.p),
+            'fn': fileName,
         })
 
     @flx.action
-    def complete_end_edit(self, d):
+    def complete_save_file(self, d):
         self.update_body_from_dict_helper(d)
             # Use the helper, to skip checks.
+        fn = d['fn']
         if 'select' in g.app.debug:
-            tag = 'py.app.complete_end_edit'
-            print('%30s: %r' % (tag, self.c.p.b)) # len(d['s'])))
-        self.old_endEditing()
+            tag = 'py.app.complete_save_file'
+            print('%30s: %s' % (tag, fn))
+        self.old_save_file(fn)
     #@+node:ekr.20190511091236.1: *4* app.Minibuffer
     #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command
     def execute_minibuffer_command(self, commandName, char, mods):
@@ -1862,18 +1864,15 @@ class LeoFlexxBody(JS_Editor):
                 for z in d_s.split('\n'):
                     print(repr(z))
                 print('')
-    #@+node:ekr.20190511092226.1: *5* flx.body.action.sync_body_before_end_edit
+    #@+node:ekr.20190511092226.1: *5* flx.body.action.sync_body_before_save_file
     @flx.action
-    def sync_body_before_end_edit(self, d):
+    def sync_body_before_save_file(self, d):
         '''Update p.b, etc. before executing calling c.endEditing().'''
         self.update_body_dict(d)
         if 'select' in g.app.debug:
-            tag = 'flx.body.sync_body_before_end_edit'
-            # ap = d['ap']
-            # print('')
-            # print('%30s: %s %s' % (tag, len(ap['s']), ap['headline']))
+            tag = 'flx.body.sync_body_before_save_file'
             print('%30s: %r' % (tag, d['s']))
-        self.root.complete_end_edit(d)
+        self.root.complete_save_file(d)
     #@-others
 #@+node:ekr.20181104082149.1: *3* class LeoFlexxLog (JS_Editor)
 class LeoFlexxLog(JS_Editor):
