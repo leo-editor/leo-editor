@@ -288,6 +288,8 @@ def refreshFromDisk(self, event=None):
         c.fileCommands.handleNodeConflicts()
         c.redraw()
 #@+node:ekr.20031218072017.2834: *3* c_file.save
+@g.commander_command('save')
+@g.commander_command('file-save')
 @g.commander_command('save-file')
 def save(self, event=None, fileName=None):
     '''Save a Leo outline to a file.'''
@@ -382,6 +384,7 @@ def saveAll(self, event=None):
     dw = c.frame.top # A DynamicWindow
     dw.select(c)
 #@+node:ekr.20031218072017.2835: *3* c_file.saveAs
+@g.commander_command('save-as')
 @g.commander_command('file-save-as')
 @g.commander_command('save-file-as')
 def saveAs(self, event=None, fileName=None):
@@ -439,6 +442,7 @@ def saveAs(self, event=None, fileName=None):
     else:
         c.treeWantsFocus()
 #@+node:ekr.20031218072017.2836: *3* c_file.saveTo
+@g.commander_command('save-to')
 @g.commander_command('file-save-to')
 @g.commander_command('save-file-to')
 def saveTo(self, event=None, fileName=None, silent=False):
