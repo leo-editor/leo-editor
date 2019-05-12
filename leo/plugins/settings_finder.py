@@ -83,7 +83,8 @@ class SettingsFinder(object):
             self.c.config.getOutlineData("settings-finder-menu"))
         aList = []
         self.tree_to_menulist(aList, finder_menu)
-        menu.createMenuFromConfigList("Edit settings", aList[0][1])
+        menu.createMenuFromConfigList("Edit Settings", aList[0][1])
+            # #1144: Case must match.
             # aList is [['@outline-data settings-finder-menu', <list of submenus>, None]]
             # so aList[0][1] is the list of submenus
         return aList

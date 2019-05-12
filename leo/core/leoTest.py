@@ -678,8 +678,9 @@ class TestManager(object):
                 verbosity=verbosity,
             )
         #
-        # 2. Run the unit tests, with the NullGui or BrowserGui.
+        # 2. Run the unit tests, with the NullGui.
         g.app.old_gui = old_gui = g.app.gui
+        g.app.old_gui_name = g.app.gui.guiName()
         new_gui = self.instantiate_gui()
             # New in Leo 5.8.1.
         old_frame = c.frame

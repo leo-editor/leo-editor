@@ -177,6 +177,8 @@ class LeoMenu(object):
         :param list aList: list of entries as described above
         """
         parentMenu = self.getMenu(parentName)
+        if not parentMenu:
+            g.trace('NO PARENT', parentName, g.callers())
         table = []
         for z in aList:
             kind, val, val2 = z
@@ -405,21 +407,20 @@ class LeoMenu(object):
                 # Not an error.
                 # g.error("menu already exists:", menuName)
                 return None # Fix #528.
+            menu = self.new_menu(parent, tearoff=0, label=menuName)
+            self.setMenu(menuName, menu)
+            label = self.getRealMenuName(menuName)
+            amp_index = label.find("&")
+            label = label.replace("&", "")
+            if before: # Insert the menu before the "before" menu.
+                index_label = self.getRealMenuName(before)
+                amp_index = index_label.find("&")
+                index_label = index_label.replace("&", "")
+                index = parent.index(index_label)
+                self.insert_cascade(parent, index=index, label=label, menu=menu, underline=amp_index)
             else:
-                menu = self.new_menu(parent, tearoff=0, label=menuName)
-                self.setMenu(menuName, menu)
-                label = self.getRealMenuName(menuName)
-                amp_index = label.find("&")
-                label = label.replace("&", "")
-                if before: # Insert the menu before the "before" menu.
-                    index_label = self.getRealMenuName(before)
-                    amp_index = index_label.find("&")
-                    index_label = index_label.replace("&", "")
-                    index = parent.index(index_label)
-                    self.insert_cascade(parent, index=index, label=label, menu=menu, underline=amp_index)
-                else:
-                    self.add_cascade(parent, label=label, menu=menu, underline=amp_index)
-                return menu
+                self.add_cascade(parent, label=label, menu=menu, underline=amp_index)
+            return menu
         except Exception:
             g.es("exception creating", menuName, "menu")
             g.es_exception()

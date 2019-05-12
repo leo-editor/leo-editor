@@ -2712,6 +2712,12 @@ class LoadManager(object):
 
         def add_other(option, help, dest=None, m=None):
             add(option, dest=dest, help=help, metavar=m)
+            
+        trace_h ='add one or more strings to g.app.debug'
+        trace_m='''coloring,drawing,events,focus,gnx,ipython,
+          keys,plugins,select,shutdown,startup,themes'''
+        # trace_m='LIST'
+        # trace_h='trace one or more values:   binding,coloring,drawing,events,focus,gnx,ipython,keys,plugins,settings'
 
         add_bool('--diff',          'use Leo as an external git diff')
         add_bool('--fullscreen',    'start fullscreen')
@@ -2730,19 +2736,21 @@ class LoadManager(object):
         add_other('--select',       'headline or gnx of node to select', m='ID')
         add_bool('--silent',        'disable all log messages')
         add_other('--theme',        'use the named theme file', m='NAME')
+        add_other('--trace',        trace_h, m=trace_m)
         add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
-        add_bool('--trace-coloring', 'trace syntax coloring')
-        add_bool('--trace-drawing', 'trace outline redraws')
-        add_bool('--trace-events',  'trace non-key events')
-        add_bool('--trace-focus',   'trace changes of focus')
-        add_bool('--trace-gnx',     'trace gnx logic')
-        add_bool('--trace-ipython', 'trace ipython bridge')
-        add_bool('--trace-keys',    'trace key events')
-        add_bool('--trace-plugins', 'trace imports of plugins')
         add_other('--trace-setting', 'trace where named setting is set', m="NAME")
-        add_bool('--trace-shutdown', 'trace shutdown logic')
-        add_bool('--trace-startup',  'trace startup logic')
-        add_bool('--trace-themes',  'trace theme init logic')
+        # add_bool('--trace-coloring', 'trace syntax coloring')
+        # add_bool('--trace-drawing', 'trace outline redraws')
+        # add_bool('--trace-events',  'trace non-key events')
+        # add_bool('--trace-focus',   'trace changes of focus')
+        # add_bool('--trace-gnx',     'trace gnx logic')
+        # add_bool('--trace-ipython', 'trace ipython bridge')
+        # add_bool('--trace-keys',    'trace key events')
+        # add_bool('--trace-plugins', 'trace imports of plugins')
+        # add_bool('--trace-select',  'trace selection logic')
+        # add_bool('--trace-shutdown', 'trace shutdown logic')
+        # add_bool('--trace-startup',  'trace startup logic')
+        # add_bool('--trace-themes',  'trace theme init logic')
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         # Multiple bool values.
         add('-v', '--version', action='store_true',
@@ -2848,26 +2856,14 @@ class LoadManager(object):
             not options.minimized)
         # --silent
         g.app.silentMode = options.silent
-        #
-        # Most --trace- options append items to g.app.debug.
-        table = (
-            # ('cache', options.trace_cache),
-            ('coloring', options.trace_coloring),
-            ('drawing', options.trace_drawing),
-            ('events', options.trace_events), # New
-            ('focus', options.trace_focus),
-            ('gnx', options.trace_gnx), # New.
-            ('keys', options.trace_keys), # New
-            ('ipython', options.trace_ipython), # New
-            ('plugins', options.trace_plugins),
-            ('shutdown', options.trace_shutdown),
-            ('startup', options.trace_startup), # New
-            ('themes', options.trace_themes),
-        )
-        for val, option in table:
-            if option:
-                g.app.debug.append(val)
-        #
+        valid = 'coloring,drawing,events,focus,gnx,ipython,keys,plugins,select,shutdown,startup,themes'.split(',')
+        if options.trace:
+            values = options.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
+            for val in values.split(','):
+                if val in valid:
+                    g.app.debug.append(val)
+                else:
+                    g.es_print('unknown --trace value: %s' % val) 
         # These are not bool options.
         # --trace-binding
         g.app.trace_binding = options.trace_binding

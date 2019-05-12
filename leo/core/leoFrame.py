@@ -1057,18 +1057,17 @@ class LeoFrame(object):
         c = frame.c; k = c.k
         if g.app.batchMode:
             c.notValidInBatchMode("End Edit Headline")
+            return
+        w = c.get_focus()
+        w_name = g.app.gui.widget_name(w)
+        if w_name.startswith('head'):
+            c.endEditing()
+            c.treeWantsFocus()
         else:
-            w = c.get_focus()
-            w_name = g.app.gui.widget_name(w)
-            if w_name.startswith('head'):
-                c.endEditing()
-                c.treeWantsFocus()
-            else:
-                # c.endEditing()
-                c.bodyWantsFocus()
-                k.setDefaultInputState()
+            c.bodyWantsFocus()
+            k.setDefaultInputState()
+            k.showStateAndMode(w=c.frame.body.wrapper)
                 # Recolor the *body* text, **not** the headline.
-                k.showStateAndMode(w=c.frame.body.wrapper)
     #@+node:ekr.20031218072017.3680: *3* LeoFrame.Must be defined in subclasses
     def bringToFront(self): self.oops()
     def cascade(self, event=None): self.oops()
@@ -1470,10 +1469,16 @@ class LeoTree(object):
         Never redraws outline, but may change coloring of individual headlines.
         The scroll argument is used by the gui to suppress scrolling while dragging.
         '''
+        trace = 'select' in g.app.debug and not g.unitTesting
+        tag = 'LeoTree.select'
+        c = self.c
         if g.app.killed or self.tree_select_lockout: # Essential.
+            # if trace: print('%30s: LOCKOUT' % (tag))
             return None
+        if trace: # and c.p != p:
+            print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
+                # Format matches traces in leoflexx.py
         try:
-            c = self.c
             self.tree_select_lockout = True
             self.prev_v = c.p.v
             self.selectHelper(p)
@@ -1493,7 +1498,7 @@ class LeoTree(object):
                         self.setItemForCurrentPosition()
             else:
                 c.requestLaterRedraw = True
-    #@+node:ekr.20070423101911: *4* selectHelper (LeoTree) & helpers
+    #@+node:ekr.20070423101911: *4* LeoTree.selectHelper & helpers
     def selectHelper(self, p):
         '''
         A helper function for leoTree.select.
@@ -1506,32 +1511,27 @@ class LeoTree(object):
         c = self.c
         if not c.frame.body.wrapper:
             return # Defensive.
-        assert p.v.context == c
+        if p.v.context != c:
             # Selecting a foreign position will not be pretty.
+            g.trace('Wrong context: %r != %r' % (p.v.context, c))
+            return
         old_p = c.p
         call_event_handlers = p != old_p
         # Order is important...
         self.unselect_helper(old_p, p)
+            # 1. Call c.endEditLabel.
         self.select_new_node(old_p, p)
+            # 2. Call set_body_text_after_select.
         self.change_current_position(old_p, p)
+            # 3. Call c.undoer.onSelect.
         self.scroll_cursor(p)
+            # 4. Set cursor in body.
         self.set_status_line(p)
+            # 5. Last tweaks.
         if call_event_handlers:
             g.doHook("select2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
             g.doHook("select3", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
-    #@+node:ekr.20140831085423.18637: *5* LeoTree.is_qt_body (not used)
-    if 0:
-
-        def is_qt_body(self):
-            '''Return True if the body widget is a QTextEdit.'''
-            c = self.c
-            import leo.plugins.qt_text as qt_text
-            w = c.frame.body.wrapper.widget
-            val = isinstance(w, qt_text.LeoQTextBrowser)
-                # c.frame.body.wrapper.widget is a LeoQTextBrowser.
-                # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
-            return val
-    #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper & helper
+    #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper
     def unselect_helper(self, old_p, p):
         '''Unselect the old node, calling the unselect hooks.'''
         c = self.c
@@ -1550,18 +1550,18 @@ class LeoTree(object):
         '''Select the new node, part 1.'''
         c = self.c
         call_event_handlers = p != old_p
-        if call_event_handlers:
-            select = not g.doHook("select1",
-                c=c, new_p=p, old_p=old_p,
-                new_v=p, old_v=old_p)
-        else:
-            select = True
-        if select:
-            self.revertHeadline = p.h
+        if (
+            call_event_handlers and g.doHook("select1",
+            c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+        ):
+            if 'select' in g.app.debug:
+                g.trace('select1 override')
+            return
+        self.revertHeadline = p.h
+        c.frame.setWrap(p)
             # Not that expensive
-            c.frame.setWrap(p)
-            self.set_body_text_after_select(p, old_p)
-            c.nodeHistory.update(p)
+        self.set_body_text_after_select(p, old_p)
+        c.nodeHistory.update(p)
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
     def set_body_text_after_select(self, p, old_p, force=False):
         '''Set the text after selecting a node.'''
@@ -1613,7 +1613,7 @@ class LeoTree(object):
         verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
         if p and p.v:
             c.frame.putStatusLine(p.get_UNL(with_proto=verbose, with_index=verbose))
-    #@+node:ekr.20031218072017.3718: *3* oops
+    #@+node:ekr.20031218072017.3718: *3* LeoTree.oops
     def oops(self):
         g.pr("LeoTree oops:", g.callers(4), "should be overridden in subclass")
     #@-others

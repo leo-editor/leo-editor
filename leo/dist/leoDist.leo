@@ -179,6 +179,7 @@
 <v t="ekr.20180828095843.1"><vh>Update verions.py in the -rel branch</vh></v>
 <v t="ekr.20181001112153.1"><vh>Merge -rel branch into master</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
+<v t="ekr.20190506132427.1"><vh>Merge git *tag* into devel</vh></v>
 <v t="ekr.20180405171433.8"><vh>Publish release</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20180405171433.9"><vh>Announcements</vh></v>
@@ -2348,6 +2349,7 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
+<t tx="ekr.20190506132427.1">Matt: When a release tag is created on Master it should be merged to Devel quickly.</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
