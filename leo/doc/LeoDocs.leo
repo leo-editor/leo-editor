@@ -15567,20 +15567,11 @@ You will get something like the following::
       --select=ID           headline or gnx of node to select
       --silent              disable all log messages
       --theme=NAME          use the named theme file
+      --trace=coloring,drawing,events,focus,gnx,ipython,
+              keys,plugins,select,shutdown,startup,themes
+                            add one or more strings to g.app.debug
       --trace-binding=KEY   trace commands bound to a key
-      --trace-coloring      trace syntax coloring
-      --trace-drawing       trace outline redraws
-      --trace-events        trace non-key events
-      --trace-focus         trace changes of focus
-      --trace-gnx           trace gnx logic
-      --trace-ipython       trace ipython bridge
-      --trace-keys          trace key events
-      --trace-plugins       trace imports of plugins
       --trace-setting=NAME  trace where named setting is set
-      --trace-shutdown      trace shutdown logic
-      --trace-startup       trace startup logic
-      --trace-syntax        trace syntax coloring
-      --trace-themes        trace theme init logic
       --window-size=SIZE    initial window size (height x width)
       -v, --version         print version number and exit
       
