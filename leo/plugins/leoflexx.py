@@ -142,7 +142,7 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         super().__init__(c, name)
         assert self.c == c
         assert self.name == name
-        self.tag = '(py.StringTextWrapper: %s)' % name
+        self.tag = 'py.%s.wrap' % name
         self.root = get_root()
         
     def flx_wrapper(self):
@@ -160,8 +160,9 @@ class API_Wrapper (leoFrame.StringTextWrapper):
     #@+node:ekr.20181128101421.1: *4* API_Wrapper.Selection Setters
     def finish_set_insert(self, tag):
         '''Common helper for selection setters.'''
-        if 0:
-            print('%s: %s: %s %r' % (self.tag, tag, self.ins, self.sel))
+        if 'select' in g.app.debug:
+            tag = '%s.%s' % (self.tag, 'finish_set_insert')
+            print('%30s: %s %r' % (tag, self.ins, self.sel))
         self.flx_wrapper().set_insert_point(self.ins, self.sel)
 
     def seeInsertPoint(self):
@@ -303,6 +304,10 @@ class LeoBrowserApp(flx.PyComponent):
         c.findCommands.minibuffer_mode = True
         c.findCommands.ftm = g.NullObject()
         #
+        # Monkey-patch c.request_focus
+        self.old_request_focus = c.request_focus
+        c.request_focus = self.request_focus
+        #
         # #1143: monkey-patch Leo's save commands.
         self.old_save_file = c.fileCommands.save
         c.fileCommands.save = self.save_file
@@ -332,7 +337,7 @@ class LeoBrowserApp(flx.PyComponent):
             # Always use the imported g.
         self.inited = False
             # Set in finish_create
-        self.tag = '(py.app wrapper)'
+        self.tag = 'py.app.wrap'
         #
         # Open or get the first file.
         if not g.app:
@@ -640,6 +645,29 @@ class LeoBrowserApp(flx.PyComponent):
         
     def edit_headline_completer(self, headline):
         print('app.edit_headline_completer')
+    #@+node:ekr.20190512081356.1: *4* app.request_focus
+    def request_focus(self, w):
+        '''Monkey-patched c.request_focus.'''
+        tag = 'py.app.request_focus'
+        trace = 'focus' in g.app.debug
+        name = repr(w)
+        if trace:
+            print('%30s: w: %s' % (('***** ' + tag), name))
+        #
+        # Schedule the change in focus.
+        mw = self.main_window
+        table = (
+            ('body', mw.body),
+            ('log', mw.log),
+            ('mini', mw.minibuffer),
+            ('tree', mw.tree),
+        )
+        for w_name, flx_w in table:
+            if w_name in name:
+                print('%30s: w: %s' % (tag, flx_w))
+                flx_w.set_focus()
+                # self.old_request_focus(w)
+                break
     #@+node:ekr.20190511091236.1: *4* app.Minibuffer
     #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command
     def execute_minibuffer_command(self, commandName, char, mods):
@@ -1159,7 +1187,7 @@ class LeoBrowserBody(leoFrame.NullBody):
         super().__init__(frame, parentFrame=None)
         self.c = c = frame.c
         self.root = get_root()
-        self.tag = '(py.body wrapper)'
+        self.tag = 'py.body.wrap'
         # Replace the StringTextWrapper with the ace wrapper.
         assert isinstance(self.wrapper, leoFrame.StringTextWrapper)
         self.wrapper = API_Wrapper(c, 'body')
@@ -1182,7 +1210,7 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         assert self.c == c
         frame = self
         self.root = get_root()
-        self.tag = '(py.frame wrapper)'
+        self.tag = 'py.frame.wrap'
         #
         # Instantiate the other wrappers.
         self.body = LeoBrowserBody(frame)
@@ -1214,7 +1242,7 @@ class LeoBrowserGui(leoGui.NullGui):
         self.logWaiting = []
         self.root = None # Will be set later.
         self.silentMode = True # Don't print a single signon line.
-        self.tag = '(py.gui)'
+        self.tag = 'py.gui'
         self.specific_browser = gui_name.lstrip('browser').lstrip(':').lstrip('-').strip()
         if not self.specific_browser:
             self.specific_browser = 'browser'
@@ -1336,7 +1364,7 @@ class LeoBrowserIconBar(leoFrame.NullIconBarClass):
         super().__init__(c, parentFrame)
         assert self.c == c
         self.root = get_root()
-        self.tag = '(py.icon bar wrapper)'
+        self.tag = 'py.icon bar.wrap'
             
     #@+others
     #@-others
@@ -1346,7 +1374,7 @@ class LeoBrowserLog(leoFrame.NullLog):
     def __init__(self, frame, parentFrame=None):
         super().__init__(frame, parentFrame)
         self.root = get_root()
-        self.tag = '(py.log wrapper)'
+        self.tag = 'py.log.wrap'
         assert isinstance(self.widget, leoFrame.StringTextWrapper)
         self.logCtrl = self.widget
         self.logWidget = self.widget
@@ -1383,7 +1411,7 @@ class LeoBrowserMenu(leoMenu.NullMenu):
     # def __init__(self, frame):
         # super().__init__(frame)
         # self.root = get_root()
-        # self.tag = '(py.menu wrapper)'
+        # self.tag = '(py.menu.wrap)'
 
     # @others
 #@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer (StringTextWrapper)
@@ -1402,7 +1430,7 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
         assert self.getName() == 'minibuffer'
         self.frame = frame
         self.root = get_root()
-        self.tag = '(py.minibuffer wrapper)'
+        self.tag = 'py.mini.wrap'
         self.widget = self
         self.wrapper = self
         # Hook this class up to the key handler.
@@ -1420,7 +1448,10 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
     def update(self, tag):
         w = self.root.main_window
         i, j = self.sel
-        # print('mini.%-20s sel: %2s %2s ins: %2s %r' % (tag+':', i, j, self.ins, self.s))
+        if 'select' in g.app.debug:
+            tag = 'py.minibuffer.update'
+            print('%30s: sel: %3s %3s ins: %3s len(s): %s' % (
+                tag, i, j, self.ins, len(self.s)))
         w.minibuffer.set_text(self.s)
         w.minibuffer.set_selection(i, j)
         w.minibuffer.set_insert(self.ins)
@@ -1460,7 +1491,7 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
     def __init__(self, c, parentFrame):
         super().__init__(c, parentFrame)
         self.root = get_root()
-        self.tag = '(py.status line wrapper)'
+        self.tag = 'py.status.wrap'
         self.w = self # Required.
         
     def getName(self):
@@ -1527,7 +1558,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         super().__init__(frame)
         self.root = get_root()
         self.select_lockout = False
-        self.tag = '(py.tree wrapper)'
+        self.tag = 'py.tree.wrap'
         self.widget = self
         self.wrapper = self
 
@@ -1699,7 +1730,7 @@ class JS_Editor(flx.Widget):
         # pylint: disable=arguments-differ
         assert name in ('body', 'log', 'minibuffer'), repr(name)
         self.name = name
-        self.tag = '(flx.%s)' % name
+        self.tag = 'flx.%s' % name
         self.editor = None # Now done in subclasses.
 
     @flx.reaction('size')
@@ -1714,7 +1745,7 @@ class JS_Editor(flx.Widget):
 
     @flx.emitter # New
     def key_down(self, e):
-        trace = 'keys' in g.app.debug
+        trace = False and 'keys' in g.app.debug
         self.ignore_up = False
         ev = self._create_key_event(e)
         down =  '%s %r' % (self.name, ev)
@@ -1727,7 +1758,7 @@ class JS_Editor(flx.Widget):
         
     @flx.emitter # New
     def key_up(self, e):
-        trace = 'keys' in g.app.debug
+        trace = False and 'keys' in g.app.debug
         self.last_down = None
             # Enable key downs.
         ev = self._create_key_event(e)
@@ -1774,7 +1805,7 @@ class JS_Editor(flx.Widget):
         Return True if Leo should handle the key.
         Leo handles only modified keys, not F-keys or plain keys.
         '''
-        trace = 'keys' in g.app.debug
+        trace = False and 'keys' in g.app.debug
         tag = 'JSE.should_be_leo_key'
         key, mods = ev['key'], ev['modifiers']
         #
@@ -1798,11 +1829,11 @@ class JS_Editor(flx.Widget):
     #@+node:ekr.20181215083642.1: *4* jse.focus
     @flx.action
     def see_insert_point(self):
-        if 0: print(self.tag, 'jse.see_insert_point')
+        if 'focus' in g.app.debug: print(self.tag, 'jse.see_insert_point')
         
     @flx.action
     def set_focus(self):
-        if 0: print(self.tag, 'jse.set_focus')
+        if 'focus' in g.app.debug: print(self.tag, 'jse.set_focus')
         self.editor.focus()
     #@+node:ekr.20181215061810.1: *4* jse.text getters
     def get_ins(self):
@@ -1838,16 +1869,17 @@ class JS_Editor(flx.Widget):
 
     @flx.action
     def select_all_text(self):
-        if 0: print(self.tag, 'select_all_text')
+        if 'select' in g.app.debug: print(self.tag, 'select_all_text')
 
     @flx.action
     def set_insert_point(self, insert, sel):
         s = self.editor.getValue()
         row, col = g.convertPythonIndexToRowCol(s, insert)
         row = max(0, row-1)
-        if 0:
-            print('%s: set_insert_point: i: %s = (%s, %s)' % (
-                self.tag, str(insert).ljust(3), row, col))
+        if 'select' in g.app.debug:
+            tag = '%s.%s' % (self.tag, 'set_insert_point')
+            print('%30s: i: %s = (%s, %s)' % (
+                tag, str(insert).ljust(3), row, col))
         self.editor.moveCursorTo(row, col)
 
     @flx.action
@@ -1857,7 +1889,7 @@ class JS_Editor(flx.Widget):
     @flx.action
     def set_text(self, s):
         '''Set the entire text'''
-        if 0: print('%s: set_text: len(s): %s' % (self.tag, len(s)))
+        if 0: print('%s.set_text: len(s): %s' % (self.tag, len(s)))
         self.editor.setValue(s)
     #@-others
 #@+node:ekr.20181104082144.1: *3* class LeoFlexxBody (JS_Editor)
@@ -1880,6 +1912,13 @@ class LeoFlexxBody(JS_Editor):
         self.editor = make_editor_function(self.name, self.node)
 
     #@+others
+    #@+node:ekr.20190512094614.1: *4* flx_body.set_focus
+    @flx.action
+    def set_focus(self):
+        if 'focus' in g.app.debug:
+            tag = '===== flx.body.set_focus'
+            print('%30s:' % tag)
+        self.editor.focus()
     #@+node:ekr.20181215061402.1: *4* flx_body.sync*
 
         
@@ -1985,7 +2024,7 @@ class LeoFlexxLog(JS_Editor):
         
     @flx.action
     def set_focus(self):
-        if 0: print('flx.log.set_focus()')
+        if 'focus' in g.app.debug: print('flx.log.set_focus()')
         self.editor.focus()
     #@-others
 #@+node:ekr.20181104082130.1: *3* class LeoFlexxMainWindow
@@ -2003,7 +2042,7 @@ class LeoFlexxMainWindow(flx.Widget):
     tree = flx.ComponentProp(settable=True)
 
     def init(self):
-        self.tag = '(flx main window)'
+        self.tag = 'flx.main window'
         with flx.VSplit():
             with flx.HSplit(flex=1):
                 tree = LeoFlexxTree(flex=1)
@@ -2061,23 +2100,25 @@ class LeoFlexxMiniBuffer(JS_Editor):
 
     @flx.action
     def set_focus(self):
-        if 0: print('flx.mini.set_focus')
+        if 'focus' in g.app.debug: print('flx.mini.set_focus')
         self.editor.focus()
         
     @flx.action
     def set_insert(self, i):
-        if 0: print('flx.mini.set_insert', i)
+        if 'select' in g.app.debug: print('flx.mini.set_insert', i)
+        ### Where is call???
 
     @flx.action
     def set_selection(self, i, j):
-        if 0: print('flx.mini.set_selection', i, j)
+        if False and 'select' in g.app.debug: print('flx.mini.set_selection', i, j)
+        ### Where is the call???
         
     @flx.action
     def set_style(self, style):
         if 0: print('flx.mini.set_style: %r %r' % (style, self.editor.getValue()))
         # A hack. Also set focus.
         self.editor.focus()
-        
+
     @flx.action
     def set_text(self, s):
         if 0: print('flx.minibuffer.set_text', repr(s))
@@ -2133,7 +2174,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
 class LeoFlexxStatusLine(flx.Widget):
     
     def init(self):
-        self.tag = '(flx status line)'
+        self.tag = 'flx.status'
         with flx.HBox():
             flx.Label(text='Status Line')
             self.widget = flx.LineEdit(flex=1)
@@ -2200,7 +2241,7 @@ class LeoFlexxTree(flx.Widget):
     def init(self):
         self.widget = self
         self.wrapper = self
-        self.tag = '(flx tree)'
+        self.tag = 'flx.tree'
         # Init local ivars...
         self.populated_items_dict = {}
             # Keys are ap **keys**, values are True.
