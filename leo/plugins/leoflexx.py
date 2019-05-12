@@ -1912,14 +1912,14 @@ class LeoFlexxBody(JS_Editor):
         self.editor = make_editor_function(self.name, self.node)
 
     #@+others
-    #@+node:ekr.20190512094614.1: *4* flx_body.set_focus
+    #@+node:ekr.20190512094614.1: *4* flx_body.action.set_focus
     @flx.action
     def set_focus(self):
         if 'focus' in g.app.debug:
             tag = '===== flx.body.set_focus'
             print('%30s:' % tag)
         self.editor.focus()
-    #@+node:ekr.20181215061402.1: *4* flx_body.sync*
+    #@+node:ekr.20181215061402.1: *4* flx_body.action.sync*
 
         
     #@+node:ekr.20190511092226.1: *5* flx.body.action.sync_body_before_save_file
@@ -1968,7 +1968,7 @@ class LeoFlexxBody(JS_Editor):
             # Sets d.s, etc., describing insert point & selection range.
         self.root.complete_select(d)
         
-    #@+node:ekr.20190510070010.1: *5* flx.body.update_body_dict (set d.s from flx.body)
+    #@+node:ekr.20190510070010.1: *4* flx.body.update_body_dict
     def update_body_dict(self, d):
         '''
         Add keys to d describing flx.body.
