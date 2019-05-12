@@ -2856,37 +2856,14 @@ class LoadManager(object):
             not options.minimized)
         # --silent
         g.app.silentMode = options.silent
-        if 1:
-            valid = 'coloring,drawing,events,focus,gnx,ipython,keys,plugins,select,shutdown,startup,themes'.split(',')
-            if options.trace:
-                values = options.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
-                for val in values.split(','):
-                    if val in valid:
-                        g.app.debug.append(val)
-                    else:
-                        g.es_print('unknown --trace value: %s' % val) 
-        else:
-            #
-            # Most --trace- options append items to g.app.debug.
-            table = (
-                # ('cache', options.trace_cache),
-                ('coloring', options.trace_coloring),
-                ('drawing', options.trace_drawing),
-                ('events', options.trace_events),
-                ('focus', options.trace_focus),
-                ('gnx', options.trace_gnx),
-                ('keys', options.trace_keys),
-                ('ipython', options.trace_ipython),
-                ('plugins', options.trace_plugins),
-                ('select', options.trace_select),
-                ('shutdown', options.trace_shutdown),
-                ('startup', options.trace_startup),
-                ('themes', options.trace_themes),
-            )
-            for val, option in table:
-                if option:
+        valid = 'coloring,drawing,events,focus,gnx,ipython,keys,plugins,select,shutdown,startup,themes'.split(',')
+        if options.trace:
+            values = options.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
+            for val in values.split(','):
+                if val in valid:
                     g.app.debug.append(val)
-            #
+                else:
+                    g.es_print('unknown --trace value: %s' % val) 
         # These are not bool options.
         # --trace-binding
         g.app.trace_binding = options.trace_binding
