@@ -651,8 +651,7 @@ class LeoBrowserApp(flx.PyComponent):
         tag = '===== py.app.request_focus'
         trace = 'focus' in g.app.debug
         if not w:
-            # print('%30s: NO W' % ('***** ' + tag))
-            # print(g.callers())
+            print('%30s: NO W: %s' % (tag, g.callers()))
             return
         #
         # Schedule the change in focus.
@@ -1439,6 +1438,7 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
         self.wrapper = self
         # Hook this class up to the key handler.
         c.k.w = self
+        c.miniBufferWidget = self # #1146.
         frame.minibufferWidget = self
 
     # Overrides.
@@ -1493,7 +1493,11 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
         if not w:
             g.trace('NO MAIN WINDOW')
             return
-        w.minibuffer.set_style(name)
+        if 'focus' in g.app.debug:
+            tag = '===== py.mini.setStyleClass'
+            print('%30s: %r' % (tag, name), g.callers())
+        ### Don't do this. It sets focus.
+            # w.minibuffer.set_style(name)
         self.update('setStyleClass:%r' % name)
     #@-others
 #@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine
@@ -2140,13 +2144,13 @@ class LeoFlexxMiniBuffer(JS_Editor):
         
     @flx.action
     def set_style(self, style):
-        if 0: print('flx.mini.set_style: %r %r' % (style, self.editor.getValue()))
-        # A hack. Also set focus.
-        self.editor.focus()
+        pass
 
     @flx.action
     def set_text(self, s):
-        if 0: print('flx.minibuffer.set_text', repr(s))
+        if 'focus' in g.app.debug:
+            tag = '===== flx.mini.set_text'
+            print('%30s: %r' % (tag, s))
         self.editor.setValue(s)
     #@+node:ekr.20181203150409.1: *4* flx_minibuffer.Key handling
     @flx.emitter
