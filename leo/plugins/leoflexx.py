@@ -648,11 +648,12 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20190512081356.1: *4* app.request_focus
     def request_focus(self, w):
         '''Monkey-patched c.request_focus.'''
-        tag = 'py.app.request_focus'
+        tag = '===== py.app.request_focus'
         trace = 'focus' in g.app.debug
-        name = repr(w)
-        if trace:
-            print('%30s: w: %s' % (('***** ' + tag), name))
+        if not w:
+            # print('%30s: NO W' % ('***** ' + tag))
+            # print(g.callers())
+            return
         #
         # Schedule the change in focus.
         mw = self.main_window
@@ -663,11 +664,12 @@ class LeoBrowserApp(flx.PyComponent):
             ('tree', mw.tree),
         )
         for w_name, flx_w in table:
-            if w_name in name:
-                print('%30s: w: %s' % (tag, flx_w))
+            if w_name in repr(w):
+                print('%30s: %s' % (tag, flx_w.__class__.__name__))
                 flx_w.set_focus()
-                # self.old_request_focus(w)
-                break
+                return
+        if trace:
+            print('%30s: FAIL %r' % (tag, w))
     #@+node:ekr.20190511091236.1: *4* app.Minibuffer
     #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command
     def execute_minibuffer_command(self, commandName, char, mods):
@@ -1309,7 +1311,9 @@ class LeoBrowserGui(leoGui.NullGui):
             LeoBrowserMinibuffer,
             LeoBrowserTree,
         )):
-            if 0: print(self.tag, 'set_focus', widget.tag)
+            if 'focus' in g.app.debug:
+                tag = 'gui.set_focus'
+                print('%30s: %s' % (tag, widget.tag))
             widget.setFocus()
             self.focusWidget = widget
         elif isinstance(widget, API_Wrapper):
@@ -1445,11 +1449,18 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
     #@+node:ekr.20181208062449.1: *4* mini.called by k.minibuffer
     # Override the methods called by k.minibuffer:
         
+    last_ins = None
+    last_sel = None
+    last_s = None
+        
     def update(self, tag):
         w = self.root.main_window
         i, j = self.sel
+        if self.s == self.last_s and self.last_ins == self.ins and self.sel == self.last_sel:
+            return
+        self.last_ins, self.last_s, self.last_sel = self.ins, self.s, self.sel
         if 'select' in g.app.debug:
-            tag = 'py.minibuffer.update'
+            tag = 'py.mini.update'
             print('%30s: sel: %3s %3s ins: %3s len(s): %s' % (
                 tag, i, j, self.ins, len(self.s)))
         w.minibuffer.set_text(self.s)
@@ -1829,11 +1840,15 @@ class JS_Editor(flx.Widget):
     #@+node:ekr.20181215083642.1: *4* jse.focus
     @flx.action
     def see_insert_point(self):
-        if 'focus' in g.app.debug: print(self.tag, 'jse.see_insert_point')
+        if 'focus' in g.app.debug:
+            tag = '%s.%s' % (self.tag, 'jse.see_insert_point')
+            print('%30s:' % tag)
         
     @flx.action
     def set_focus(self):
-        if 'focus' in g.app.debug: print(self.tag, 'jse.set_focus')
+        if 'focus' in g.app.debug:
+            tag = '%s.%s' % (self.tag, 'jse.set_focus')
+            print('%30s:' % tag)
         self.editor.focus()
     #@+node:ekr.20181215061810.1: *4* jse.text getters
     def get_ins(self):
@@ -2024,7 +2039,9 @@ class LeoFlexxLog(JS_Editor):
         
     @flx.action
     def set_focus(self):
-        if 'focus' in g.app.debug: print('flx.log.set_focus()')
+        if 'focus' in g.app.debug:
+            tag = '===== flx.log.set_focus'
+            print('%30s:' % tag)
         self.editor.focus()
     #@-others
 #@+node:ekr.20181104082130.1: *3* class LeoFlexxMainWindow
@@ -2040,6 +2057,7 @@ class LeoFlexxMainWindow(flx.Widget):
     minibuffer = flx.ComponentProp(settable=True)
     status_line = flx.ComponentProp(settable=True)
     tree = flx.ComponentProp(settable=True)
+    ### focus_widget = flx.ComponentProp(settable=True)
 
     def init(self):
         self.tag = 'flx.main window'
@@ -2060,6 +2078,7 @@ class LeoFlexxMainWindow(flx.Widget):
         };
         """)
         #@-<< define unload action >>
+        ### self._mutate('focus_widget', None)
         self._mutate('body', body)
         self._mutate('log', log)
         self._mutate('minibuffer', minibuffer)
@@ -2071,8 +2090,12 @@ class LeoFlexxMainWindow(flx.Widget):
     def after_init(self):
         self.root.finish_create()
 
-    #@+others
-    #@-others
+    ###
+    # @flx.action
+    # def set_focus_widget(self, w):
+        # print('')
+        # print('flx.main_window.set_focus_widget', repr(w))
+        # self._mutate('focus_widget', w)
 #@+node:ekr.20181104082154.1: *3* class LeoFlexxMiniBuffer (JS_Editor)
 class MinibufferEditor(flx.Widget):
 
@@ -2100,12 +2123,14 @@ class LeoFlexxMiniBuffer(JS_Editor):
 
     @flx.action
     def set_focus(self):
-        if 'focus' in g.app.debug: print('flx.mini.set_focus')
+        if 'focus' in g.app.debug:
+            tag = '===== flx.mini.set_focus'
+            print('%30s:' % tag)
         self.editor.focus()
         
     @flx.action
     def set_insert(self, i):
-        if 'select' in g.app.debug: print('flx.mini.set_insert', i)
+        if False and 'select' in g.app.debug: print('flx.mini.set_insert', i)
         ### Where is call???
 
     @flx.action
@@ -2420,7 +2445,9 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181120063735.1: *4* flx_tree.Focus
     @flx.action
     def set_focus(self):
-        if 0: print('flx.tree.set_focus()')
+        if 'focus' in g.app.debug:
+            tag = '===== flx.tree.set_focus'
+            print('%30s:' % tag)
         self.node.focus()
     #@+node:ekr.20181123165819.1: *4* flx_tree.Incremental Drawing...
     # This are not used, at present, but they may come back.
