@@ -86,7 +86,7 @@ class AsciiDoctorCommands(object):
         if not self.create_directory(fn):
             return None
         try:
-            return open(fn, 'w')
+            return open(fn, 'w', encoding='utf-8', errors='replace')
         except Exception:
             g.es_print('can not open: %r' % fn)
             g.es_exception()
