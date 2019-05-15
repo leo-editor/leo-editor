@@ -27,23 +27,34 @@ class AsciiDoctorCommands(object):
         self.root_level = 0
 
     #@+others
-    #@+node:ekr.20190515070742.22: ** ad.ad_command *** doctring
+    #@+node:ekr.20190515070742.22: ** adoc.ad_command
     @cmd('adoc')
     def ad_command(self, event=None):
         #@+<< adoc command docstring >>
         #@+node:ekr.20190515115100.1: *3* << adoc command docstring >>
         '''
-        The adoc command writes all @adoc nodes in the selected tree to the files given in each @doc node.
+        The adoc command writes all @adoc nodes in the selected tree to the files
+        given in each @doc node.
 
+        Each @adoc node should have the form: `@adoc x.adoc`. Relative file names
+        are relative to c.frame.openDirectory.
 
+        By default, the adoc command creates AsciiDoctor headings from Leo
+        headlines. However, the following kinds of nodes are treated differently:
+            
+        - @ignore-tree: Ignore the node and its descendants.
+        - @ignore-node: Ignore the node.
+        - @no-head:     Ignore the headline.
+
+        After running the adoc command, use the asciidoctor command to convert the x.adoc files to x.html.
         '''
         #@-<< adoc command docstring >>
-        c = self.c
 
         def predicate(p):
             return self.ad_filename(p)
 
         # Find all roots.
+        c = self.c
         roots = g.findRootsWithPredicate(c, c.p, predicate=predicate)
         if not roots:
             g.warning('No @ascii-doctor nodes in', c.p.h)
@@ -52,11 +63,10 @@ class AsciiDoctorCommands(object):
         t1 = time.time()
         self.n_written = 0
         for p in roots:
-            ### self.root = p.copy()
             self.write_root(p)
         t2 = time.time()
         g.es_print('ad: %s files in %4.2f sec.' % (self.n_written, t2 - t1))
-    #@+node:ekr.20190515084219.1: ** ad.ad_filename
+    #@+node:ekr.20190515084219.1: ** adoc.ad_filename
     ad_pattern = re.compile(r'^@(adoc|ascii-doctor)')
 
     def ad_filename(self, p):
@@ -67,7 +77,7 @@ class AsciiDoctorCommands(object):
             return None
         prefix = m.group(1)
         return h[1+len(prefix):].strip()
-    #@+node:ekr.20190515091706.1: ** ad.open_file & helper
+    #@+node:ekr.20190515091706.1: ** adoc.open_file & helper
     def open_file(self, fn):
         
         c = self.c
@@ -80,7 +90,7 @@ class AsciiDoctorCommands(object):
             g.es_print('can not open: %r' % fn)
             g.es_exception()
             return None
-    #@+node:ekr.20190515070742.79: *3* ad.create_directory
+    #@+node:ekr.20190515070742.79: *3* adoc.create_directory
     def create_directory(self, fn):
         '''
         Create the directory for fn if
@@ -99,7 +109,7 @@ class AsciiDoctorCommands(object):
             if not ok:
                 g.error('did not create:', theDir)
             return ok
-    #@+node:ekr.20190515070742.24: ** ad.write_root & helpers
+    #@+node:ekr.20190515070742.24: ** adoc.write_root & helpers
     def write_root(self, root):
         '''Process all nodes in an @ad tree.'''
         fn =  self.ad_filename(root)
@@ -129,17 +139,17 @@ class AsciiDoctorCommands(object):
             self.write_body(p)
             p.moveToThreadNext()
         self.output_file.close()
-    #@+node:ekr.20190515114836.1: *3* ad.compute_root_level (to do)
+    #@+node:ekr.20190515114836.1: *3* adoc.compute_root_level (to do)
     def compute_root_level(self, root):
         return root.level()
-    #@+node:ekr.20190515070742.38: *3* ad.write_body
+    #@+node:ekr.20190515070742.38: *3* adoc.write_body
     def write_body(self, p):
         '''Write p.b'''
         # We no longer add newlines to the start of nodes because
         # we write a blank line after all sections.
         g.trace(p.h)
         self.output_file.write(g.ensureTrailingNewlines(p.b, 2))
-    #@+node:ekr.20190515070742.47: *3* ad.write_headline
+    #@+node:ekr.20190515070742.47: *3* adoc.write_headline
     def write_headline(self, p):
         '''Generate an AsciiDoctor section'''
         g.trace(p.h)
