@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20190515070742.1: * @file leoAsciiDoctor.py
 #@@first
-'''Support for AsciiDoctor.'''
+'''Supports AsciiDoctor by defining the adoc command.'''
 #@+<< imports >>
 #@+node:ekr.20190515070742.3: ** << imports >> (AsciiDoctor)
 import io
@@ -15,11 +15,8 @@ import leo.core.leoGlobals as g
 #@+node:ekr.20190515074440.1: ** << define cmd decorator >> (AsciiDoctor)
 def cmd(name):
     '''Command decorator for the AsiiDoctorCommands class.'''
-    # pylint: disable=no-self-argument
     return g.new_cmd_decorator(name, ['c', 'asciiDoctorCommands',])
 #@-<< define cmd decorator >>
-
-### Define encoding???
 
 class AsciiDoctorCommands(object):
     '''A class to write AsiiDoctor markup in Leo outlines.'''
@@ -30,10 +27,17 @@ class AsciiDoctorCommands(object):
         self.root_level = 0
 
     #@+others
-    #@+node:ekr.20190515070742.22: ** ad.ad_command
+    #@+node:ekr.20190515070742.22: ** ad.ad_command *** doctring
     @cmd('adoc')
     def ad_command(self, event=None):
-        '''Write all @ascii-doctor nodes.'''
+        #@+<< adoc command docstring >>
+        #@+node:ekr.20190515115100.1: *3* << adoc command docstring >>
+        '''
+        The adoc command writes all @adoc nodes in the selected tree to the files given in each @doc node.
+
+
+        '''
+        #@-<< adoc command docstring >>
         c = self.c
 
         def predicate(p):
@@ -96,23 +100,22 @@ class AsciiDoctorCommands(object):
                 g.error('did not create:', theDir)
             return ok
     #@+node:ekr.20190515070742.24: ** ad.write_root & helpers
-    def write_root(self, p):
+    def write_root(self, root):
         '''Process all nodes in an @ad tree.'''
-        fn =  self.ad_filename(p)
+        fn =  self.ad_filename(root)
         if not fn:
-            g.es_print('Can not happen: not a @ad node: %r' % p.h)
+            g.es_print('Can not happen: not a @ad node: %r' % root.h)
             return
         self.output_file = self.open_file(fn)
         if not self.output_file:
             return
-        # Write only the body of the root.
-        self.write_body(p)
-        # Write all nodes of the tree, except ignored nodes.
         self.n_written += 1
-        self.root_level = p.level()
-        p = p.copy()
-        after = p.nodeAfterTree()
-        p.moveToThreadNext()
+        # Write only the body of the root.
+        self.write_body(root)
+        # Write all nodes of the tree, except ignored nodes.
+        self.root_level = self.compute_root_level(root)
+        p = root.threadNext() # Returns a copy.
+        after = root.nodeAfterTree()
         while p and p != after:
             h = p.h.rstrip()
             if g.match_word(h, 0, '@ignore-tree'):
@@ -126,6 +129,9 @@ class AsciiDoctorCommands(object):
             self.write_body(p)
             p.moveToThreadNext()
         self.output_file.close()
+    #@+node:ekr.20190515114836.1: *3* ad.compute_root_level (to do)
+    def compute_root_level(self, root):
+        return root.level()
     #@+node:ekr.20190515070742.38: *3* ad.write_body
     def write_body(self, p):
         '''Write p.b'''
