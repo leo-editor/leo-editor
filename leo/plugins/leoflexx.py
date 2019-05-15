@@ -1457,8 +1457,10 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
     def update(self, tag):
         w = self.root.main_window
         i, j = self.sel
+        # Do nothing if there will be no changes.
         if self.s == self.last_s and self.last_ins == self.ins and self.sel == self.last_sel:
             return
+        # Remember the present values.
         self.last_ins, self.last_s, self.last_sel = self.ins, self.s, self.sel
         if 'select' in g.app.debug:
             tag = 'py.mini.update'
@@ -1473,8 +1475,6 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
         self.update('delete')
         
     def getAllText(self):
-        # i, j = self.sel
-        # print('mini.%-20s sel: %2s %2s ins: %2s %r' % ('getAllText:', i, j, self.ins, self.s))
         return self.s
 
     def insert(self, i, s):
@@ -1494,9 +1494,9 @@ class LeoBrowserMinibuffer (leoFrame.StringTextWrapper):
         if not w:
             g.trace('NO MAIN WINDOW')
             return
-        if 'focus' in g.app.debug:
-            tag = 'py.mini.setStyleClass'
-            print('%30s: %r' % (tag, name), g.callers())
+        # if 'focus' in g.app.debug:
+            # tag = 'py.mini.setStyleClass'
+            # print('%30s: %r' % (tag, name))
         w.minibuffer.set_style(name)
         self.update('setStyleClass:%r' % name)
     #@-others
@@ -2081,7 +2081,6 @@ class LeoFlexxMainWindow(flx.Widget):
         };
         """)
         #@-<< define unload action >>
-        ### self._mutate('focus_widget', None)
         self._mutate('body', body)
         self._mutate('log', log)
         self._mutate('minibuffer', minibuffer)
@@ -2126,12 +2125,14 @@ class LeoFlexxMiniBuffer(JS_Editor):
         
     @flx.action
     def set_insert(self, i):
-        if False and 'select' in g.app.debug: print('flx.mini.set_insert', i)
+        if False and 'select' in g.app.debug:
+            print('flx.mini.set_insert', i)
         # Where is call?
 
     @flx.action
     def set_selection(self, i, j):
-        if False and 'select' in g.app.debug: print('flx.mini.set_selection', i, j)
+        if False and 'select' in g.app.debug:
+            print('flx.mini.set_selection', i, j)
         # Where is the call?
         
     @flx.action
