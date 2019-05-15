@@ -142,7 +142,7 @@ class AsciiDoctorCommands(object):
             p.moveToThreadNext()
         self.output_file.close()
     #@+node:ekr.20190515114836.1: *3* adoc.compute_level_offset
-    title_pattern = re.compile(r'^=')
+    title_pattern = re.compile(r'^= ')
 
     def compute_level_offset(self, root):
         '''
