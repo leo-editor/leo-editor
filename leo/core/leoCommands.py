@@ -299,6 +299,7 @@ class Commands(object):
         import leo.commands.commanderOutlineCommands as commanderOutlineCommands
         assert commanderOutlineCommands
         # Other subcommanders.
+        import leo.core.leoAsciiDoctor as leoAsciiDoctor
         import leo.core.leoFind as leoFind # Leo 4.11.1
         import leo.core.leoKeys as leoKeys
         import leo.core.leoFileCommands as leoFileCommands
@@ -312,6 +313,7 @@ class Commands(object):
         import leo.core.leoUndo as leoUndo
         import leo.core.leoVim as leoVim
         # Define the subcommanders.
+        self.asciiDoctorCommands    = leoAsciiDoctor.AsciiDoctorCommands(c)
         self.keyHandler = self.k    = leoKeys.KeyHandlerClass(c)
         self.chapterController      = leoChapters.ChapterController(c)
         self.shadowController       = leoShadow.ShadowController(c)
