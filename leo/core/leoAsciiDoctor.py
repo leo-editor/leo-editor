@@ -24,6 +24,7 @@ class AsciiDoctorCommands(object):
     def __init__(self, c):
         self.c = c
         self.n_written = 0
+        self.level_offset = 0
         self.root_level = 0
 
     #@+others
@@ -123,7 +124,8 @@ class AsciiDoctorCommands(object):
         # Write only the body of the root.
         self.write_body(root)
         # Write all nodes of the tree, except ignored nodes.
-        self.root_level = self.compute_root_level(root)
+        self.level_offset = self.compute_level_offset(root)
+        self.root_level = root.level()
         p = root.threadNext() # Returns a copy.
         after = root.nodeAfterTree()
         while p and p != after:
@@ -139,9 +141,15 @@ class AsciiDoctorCommands(object):
             self.write_body(p)
             p.moveToThreadNext()
         self.output_file.close()
-    #@+node:ekr.20190515114836.1: *3* adoc.compute_root_level (to do)
-    def compute_root_level(self, root):
-        return root.level()
+    #@+node:ekr.20190515114836.1: *3* adoc.compute_level_offset
+    title_pattern = re.compile(r'^=')
+
+    def compute_level_offset(self, root):
+        '''
+        Return 1 if the root.b contains a title.  Otherwise 0.
+        '''
+        m = self.title_pattern.match(root.b)
+        return 1 if m else 0
     #@+node:ekr.20190515070742.38: *3* adoc.write_body
     def write_body(self, p):
         '''Write p.b'''
@@ -155,10 +163,7 @@ class AsciiDoctorCommands(object):
         g.trace(p.h)
         if not p.h.strip():
             return
-        section = '=' * max(0, 1+ p.level() - self.root_level)
-        # if not hashes:
-            # g.es_print('can not happen: wrong level for: %r' % p.h)
-            # return
+        section = '=' * max(0, self.level_offset + p.level() - self.root_level)
         self.output_file.write('%s %s\n' % (section, p.h))
     #@-others
 
