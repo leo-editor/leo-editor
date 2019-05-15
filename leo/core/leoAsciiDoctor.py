@@ -31,7 +31,7 @@ class AsciiDoctorCommands(object):
 
     #@+others
     #@+node:ekr.20190515070742.22: ** ad.ad_command
-    @cmd('ad')
+    @cmd('adoc')
     def ad_command(self, event=None):
         '''Write all @ascii-doctor nodes.'''
         c = self.c
@@ -53,7 +53,7 @@ class AsciiDoctorCommands(object):
         t2 = time.time()
         g.es_print('ad: %s files in %4.2f sec.' % (self.n_written, t2 - t1))
     #@+node:ekr.20190515084219.1: ** ad.ad_filename
-    ad_pattern = re.compile(r'^@(ad|ascii-doctor)')
+    ad_pattern = re.compile(r'^@(adoc|ascii-doctor)')
 
     def ad_filename(self, p):
         '''Return the filename of the @ad node, or None.'''
