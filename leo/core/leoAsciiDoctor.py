@@ -160,12 +160,10 @@ class AsciiDoctorCommands(object):
         '''Write p.b'''
         # We no longer add newlines to the start of nodes because
         # we write a blank line after all sections.
-        g.trace(p.h)
         self.output_file.write(g.ensureTrailingNewlines(p.b, 2))
     #@+node:ekr.20190515070742.47: *3* adoc.write_headline
     def write_headline(self, p):
         '''Generate an AsciiDoctor section'''
-        g.trace(p.h)
         if not p.h.strip():
             return
         section = '=' * max(0, self.level_offset + p.level() - self.root_level)
