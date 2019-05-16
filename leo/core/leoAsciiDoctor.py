@@ -47,7 +47,23 @@ class AsciiDoctorCommands(object):
         - @ignore-node: Ignore the node.
         - @no-head:     Ignore the headline.
 
-        After running the adoc command, use the asciidoctor command to convert the x.adoc files to x.html.
+        After running the adoc command, use the asciidoctor command to convert the
+        x.adoc files to x.html.
+
+        Settings
+        --------
+
+        @string adoc-base-directory specifies the base for relative file names.
+        The default is c.frame.openDirectory
+
+        Scripting interface
+        -------------------
+
+        Scripts may invoke the adoc command as follows::
+            
+            event = g.Bunch(base_dicrectory=my_directory, p=some_node)
+            c.asciiDoctorCommands.ad_command(event=event)
+
         '''
         #@-<< adoc command docstring >>
 
