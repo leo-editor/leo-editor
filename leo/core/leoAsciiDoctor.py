@@ -56,17 +56,22 @@ class AsciiDoctorCommands(object):
 
         # Find all roots.
         c = self.c
-        roots = g.findRootsWithPredicate(c, c.p, predicate=predicate)
+        p = event.p if event and hasattr(event, 'p') else c.p
+        roots = g.findRootsWithPredicate(c, p, predicate=predicate)
         if not roots:
-            g.warning('No @ascii-doctor nodes in', c.p.h)
+            g.warning('No @ascii-doctor nodes in', p.h)
             return
         # Write each root.
         t1 = time.time()
         self.n_written = 0
+        paths = [] # The full paths of the roots.
         for p in roots:
-            self.write_root(p)
+            path = self.write_root(p)
+            paths.append(path)
         t2 = time.time()
         g.es_print('ad: %s files in %4.2f sec.' % (self.n_written, t2 - t1))
+        return paths
+
     #@+node:ekr.20190515084219.1: ** adoc.ad_filename
     ad_pattern = re.compile(r'^@(adoc|ascii-doctor)')
 
@@ -80,17 +85,17 @@ class AsciiDoctorCommands(object):
         return h[1+len(prefix):].strip()
     #@+node:ekr.20190515091706.1: ** adoc.open_file & helper
     def open_file(self, fn):
-        
+        '''Open the file, returning (fn, f)'''
         c = self.c
         fn = g.os_path_finalize_join(c.frame.openDirectory, fn)
         if not self.create_directory(fn):
-            return None
+            return fn, None
         try:
-            return open(fn, 'w', encoding='utf-8', errors='replace')
+            return fn, open(fn, 'w', encoding='utf-8', errors='replace')
         except Exception:
             g.es_print('can not open: %r' % fn)
             g.es_exception()
-            return None
+            return fn, None
     #@+node:ekr.20190515070742.79: *3* adoc.create_directory
     def create_directory(self, fn):
         '''
@@ -117,9 +122,9 @@ class AsciiDoctorCommands(object):
         if not fn:
             g.es_print('Can not happen: not a @ad node: %r' % root.h)
             return
-        self.output_file = self.open_file(fn)
+        path, self.output_file = self.open_file(fn)
         if not self.output_file:
-            return
+            return None
         self.n_written += 1
         # Write only the body of the root.
         self.write_body(root)
@@ -141,6 +146,7 @@ class AsciiDoctorCommands(object):
             self.write_body(p)
             p.moveToThreadNext()
         self.output_file.close()
+        return path
     #@+node:ekr.20190515114836.1: *3* adoc.compute_level_offset
     title_pattern = re.compile(r'^= ')
 
