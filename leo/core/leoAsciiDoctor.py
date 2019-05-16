@@ -68,7 +68,8 @@ class AsciiDoctorCommands(object):
             if path:
                 paths.append(path)
         t2 = time.time()
-        g.es_print('adoc: %s files in %4.2f sec.' % (len(paths), t2 - t1))
+        g.es_print('adoc: wrote %s file%s in %4.2f sec.' % (
+            len(paths), g.plural(len(paths)), t2 - t1))
         return paths
 
     #@+node:ekr.20190515084219.1: ** adoc.ad_filename
