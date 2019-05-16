@@ -60,7 +60,7 @@ class AsciiDoctorCommands(object):
         if event and hasattr(event, 'base_directory'):
             self.base_directory = event.base_directory
         else:
-            directory = c.config.getString('adoc_base_directory')
+            directory = c.config.getString('adoc-base-directory')
             self.base_directory = directory or c.frame.openDirectory
         roots = g.findRootsWithPredicate(c, p, predicate=predicate)
         if not roots:
