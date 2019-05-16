@@ -53,6 +53,16 @@ class AsciiDoctorCommands(object):
         Settings
         --------
 
+        AsciiDoctor itself provides many settings, including::
+            
+            = Title
+            :stylesdir: mystylesheets/
+            :stylesheet: mystyles.css
+            
+        These can also be specified on the command line::
+
+            asciidoctor -a stylesdir=mystylesheets/ -a stylesheet=mystyles.css 
+
         @string adoc-base-directory specifies the base for relative file names.
         The default is c.frame.openDirectory
 
