@@ -154,7 +154,7 @@ class AsciiDoctorCommands(object):
         Return 1 if the root.b contains a title.  Otherwise 0.
         '''
         for line in g.splitLines(root.b):
-            if self.title_pattern.match(root.b):
+            if self.title_pattern.match(line):
                 return 1
         return 0
     #@+node:ekr.20190515070742.38: *3* adoc.write_body
