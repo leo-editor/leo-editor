@@ -34,22 +34,23 @@ class AsciiDoctorCommands(object):
         #@+<< adoc command docstring >>
         #@+node:ekr.20190515115100.1: *3* << adoc command docstring >>
         '''
-        The adoc command writes all @adoc nodes in the selected tree to the files
-        given in each @doc node.
+        The adoc command writes all @adoc nodes in the selected tree to the
+        files given in each @doc node. If no @adoc nodes are found, the
+        command looks up the tree.
 
         Each @adoc node should have the form: `@adoc x.adoc`. Relative file names
-        are relative to c.frame.openDirectory.
+        are relative to the base directory.  See below.
 
         By default, the adoc command creates AsciiDoctor headings from Leo
         headlines. However, the following kinds of nodes are treated differently:
             
         - @ignore-tree: Ignore the node and its descendants.
         - @ignore-node: Ignore the node.
-        - @no-head:     Ignore the headline.
+        - @no-head:     Ignore the headline. Do not generate a heading.
 
         After running the adoc command, use the asciidoctor command to convert the
         x.adoc files to x.html.
-
+            
         Settings
         --------
 
@@ -73,6 +74,14 @@ class AsciiDoctorCommands(object):
             
             event = g.Bunch(base_dicrectory=my_directory, p=some_node)
             c.asciiDoctorCommands.ad_command(event=event)
+            
+        This @button node runs the adoc command and coverts all results to .html::
+            
+            import os
+            paths = c.asciiDoctorCommands.ad_command(event=g.Bunch(p=p))
+            paths = [z.replace('/', os.path.sep) for z in paths]
+            input_paths = ' '.join(paths)
+            g.execute_shell_commands(['asciidoctor %s' % input_paths])
 
         '''
         #@-<< adoc command docstring >>
@@ -81,6 +90,7 @@ class AsciiDoctorCommands(object):
             return self.ad_filename(p)
 
         # Find all roots.
+        t1 = time.time()
         c = self.c
         p = event.p if event and hasattr(event, 'p') else c.p
         if event and hasattr(event, 'base_directory'):
@@ -93,7 +103,6 @@ class AsciiDoctorCommands(object):
             g.warning('No @ascii-doctor nodes in', p.h)
             return
         # Write each root.
-        t1 = time.time()
         paths = []
         for p in roots:
             path = self.write_root(p)
