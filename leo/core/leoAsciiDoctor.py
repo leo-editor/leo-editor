@@ -23,7 +23,6 @@ class AsciiDoctorCommands(object):
     
     def __init__(self, c):
         self.c = c
-        self.n_written = 0
         self.level_offset = 0
         self.root_level = 0
 
@@ -63,13 +62,13 @@ class AsciiDoctorCommands(object):
             return
         # Write each root.
         t1 = time.time()
-        self.n_written = 0
-        paths = [] # The full paths of the roots.
+        paths = []
         for p in roots:
             path = self.write_root(p)
-            paths.append(path)
+            if path:
+                paths.append(path)
         t2 = time.time()
-        g.es_print('ad: %s files in %4.2f sec.' % (self.n_written, t2 - t1))
+        g.es_print('ad: %s files in %4.2f sec.' % (len(paths), t2 - t1))
         return paths
 
     #@+node:ekr.20190515084219.1: ** adoc.ad_filename
@@ -125,7 +124,6 @@ class AsciiDoctorCommands(object):
         path, self.output_file = self.open_file(fn)
         if not self.output_file:
             return None
-        self.n_written += 1
         # Write only the body of the root.
         self.write_body(root)
         # Write all nodes of the tree, except ignored nodes.
