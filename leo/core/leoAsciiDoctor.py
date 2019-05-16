@@ -23,6 +23,7 @@ class AsciiDoctorCommands(object):
     
     def __init__(self, c):
         self.c = c
+        self.base_directory = None
         self.level_offset = 0
         self.root_level = 0
 
@@ -56,6 +57,11 @@ class AsciiDoctorCommands(object):
         # Find all roots.
         c = self.c
         p = event.p if event and hasattr(event, 'p') else c.p
+        if event and hasattr(event, 'base_directory'):
+            self.base_directory = event.base_directory
+        else:
+            directory = c.config.getString('adoc_base_directory')
+            self.base_directory = directory or c.frame.openDirectory
         roots = g.findRootsWithPredicate(c, p, predicate=predicate)
         if not roots:
             g.warning('No @ascii-doctor nodes in', p.h)
@@ -86,8 +92,7 @@ class AsciiDoctorCommands(object):
     #@+node:ekr.20190515091706.1: ** adoc.open_file & helper
     def open_file(self, fn):
         '''Open the file, returning (fn, f)'''
-        c = self.c
-        fn = g.os_path_finalize_join(c.frame.openDirectory, fn)
+        fn = g.os_path_finalize_join(self.base_directory, fn)
         if not self.create_directory(fn):
             return fn, None
         try:
