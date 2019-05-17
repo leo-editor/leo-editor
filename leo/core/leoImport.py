@@ -2339,6 +2339,18 @@ if lxml:
         c = event.get('c')
         if c:
             FreeMindImporter(c).prompt_for_files()
+
+else:
+    
+    @g.command('import-free-mind-files')
+    def import_free_mind_files(event):
+        '''
+        Prompt for free-mind files and import them.
+        
+        This command is disabled.  Please install lxml:
+        https://lxml.de/installation.html
+        '''
+    
 #@+node:ekr.20160504050325.1: *3* @g.command(import-mind-map-files
 @g.command('import-mind-jet-files')
 def import_mind_jet_files(event):
