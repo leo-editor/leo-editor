@@ -100,6 +100,8 @@ def placate_pyflakes(*args):
 class GlobalPyzoController(object):
     '''
     A class representing the singleton running instance of pyzo.
+    
+    Instantiated in the top-level init() function.
     '''
 
     #@+others
