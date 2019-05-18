@@ -107,12 +107,13 @@ def loadConfig(defaultsOnly=False):
 ## Init
 
 # List of names that are later overriden (in main.py)
-editors = None # The editor stack instance
-shells = None # The shell stack instance
-main = None # The mainwindow
-icon = None # The icon
-parser = None # The source parser
-status = None # The statusbar (or None)
+if 0: ###
+    editors = None # The editor stack instance
+    shells = None # The shell stack instance
+    main = None # The mainwindow
+    icon = None # The icon
+    parser = None # The source parser
+    status = None # The statusbar (or None)
 
 # Get directories of interest
 pyzoDir, appDataDir = getResourceDirs()
@@ -122,4 +123,4 @@ config = ssdf.new()
 loadConfig()
 
 # Init default style name (set in main.restorePyzoState())
-defaultQtStyleName = ''
+### defaultQtStyleName = ''
