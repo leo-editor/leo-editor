@@ -23,60 +23,11 @@ import traceback
 from pyzo import yotonloader  # noqa
 from pyzo.util import paths
 
-if 0: ### EKR
-
-    # If there already is an instance of Pyzo, and the user is trying an
-    # Pyzo command, we should send the command to the other process and quit.
-    # We do this here, were we have not yet loaded Qt, so we are very light.
-    from pyzo.core import commandline
-
-    import leo.core.leoGlobals as g
-    g.trace('pyzo.__init__.py', g.callers())
-    if commandline.is_our_server_running():
-        print('Started our command server')
-    else:
-        # Handle command line args now
-        res = commandline.handle_cmd_args()
-        if res:
-            print(res)
-            sys.exit()
-        else:
-            # No args, proceed with starting up
-            print('Our command server is *not* running')
-
-
 from pyzo.util import zon as ssdf  # zon is ssdf-light
 from pyzo.util.qt import QtCore, QtGui, QtWidgets
 
 # Import language/translation tools
 from pyzo.util._locale import translate, setLanguage  # noqa
-
-if 0: ### EKR
-
-    # Set environ to let kernel know some stats about us
-    os.environ['PYZO_PREFIX'] = sys.prefix
-    _is_pyqt4 = hasattr(QtCore, 'PYQT_VERSION_STR')
-    os.environ['PYZO_QTLIB'] = 'PyQt4' if _is_pyqt4 else 'PySide'
-
-
-    class MyApp(QtWidgets.QApplication):
-        """ So we an open .py files on OSX.
-        OSX is smart enough to call this on the existing process.
-        """
-        def event(self, event):
-            if isinstance(event, QtGui.QFileOpenEvent):
-                fname = str(event.file())
-                if fname and fname != 'pyzo':
-                    sys.argv[1:] = []
-                    sys.argv.append(fname)
-                    res = commandline.handle_cmd_args()
-                    if not commandline.is_our_server_running():
-                        print(res)
-                        sys.exit()
-            return QtWidgets.QApplication.event(self, event)
-
-    if not sys.platform.startswith('darwin'):
-        MyApp = QtWidgets.QApplication  # noqa
 
 ## Install excepthook
 # In PyQt5 exceptions in Python will cuase an abort
@@ -88,7 +39,7 @@ def pyzo_excepthook(type, value, tb):
     out += '\n'
     sys.stderr.write(out)
 
-sys.excepthook = pyzo_excepthook
+### sys.excepthook = pyzo_excepthook
 
 
 ## Define some functions
