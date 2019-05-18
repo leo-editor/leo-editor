@@ -539,11 +539,13 @@ class LeoQtGui(leoGui.LeoGui):
         defaultextension='',
         multiple=False,
         startpath=None,
+        callback=None,
+            # New in Leo 6.0.  If a callback is given, use the pyzo file browser.
     ):
         """
         Create and run an Qt open file dialog.
         """
-        new = False
+        # pylint: disable=arguments-differ
         if g.unitTesting:
             return ''
         #
@@ -553,31 +555,17 @@ class LeoQtGui(leoGui.LeoGui):
         if not startpath:
             startpath = g.init_dialog_folder(c, c.p, use_at_path=True)
                 # Returns c.last_dir or os.curdir
-        if new:
+        if callback:
             dialog = self.PyzoFileDialog()
             dialog.init()
-            dialog.open_dialog(defaultextension, startpath)
-        else:
-            filter_ = self.makeFilter(filetypes)
-            dialog = QtWidgets.QFileDialog()
-            dialog.setStyleSheet(c.active_stylesheet)
-            self.attachLeoIcon(dialog)
-       
-        if new:
-            files = dialog.get_filenames(
-                caption=title,
-                directory=startpath,
-                filetypes = filetypes,
-                multiple=multiple,
-                parent=None,
-            )
-            files = [g.os_path_normslashes(s) for s in files]
-            if not files:
-                return [] if multiple else None
-            c.last_dir = g.os_path_dirname(files[-1])
-            return files if multiple else files[0]
-        ###
-        ### Old code
+            dialog.open_dialog(callback, defaultextension, startpath)
+            return
+        #
+        # No callback: use the legacy file browser.
+        filter_ = self.makeFilter(filetypes)
+        dialog = QtWidgets.QFileDialog()
+        dialog.setStyleSheet(c.active_stylesheet)
+        self.attachLeoIcon(dialog)
         func = dialog.getOpenFileNames if multiple else dialog.getOpenFileName
         c.in_qt_dialog = True
         try:
@@ -591,16 +579,15 @@ class LeoQtGui(leoGui.LeoGui):
             c.in_qt_dialog = False
         if isQt5: # this is a *Py*Qt change rather than a Qt change
             val, junk_selected_filter = val
-        elif multiple:
+        if multiple:
             files = [g.os_path_normslashes(s) for s in val]
             if files:
                 c.last_dir = g.os_path_dirname(files[-1])
             return files
-        else:
-            s = g.os_path_normslashes(val)
-            if s:
-                c.last_dir = g.os_path_dirname(s)
-            return s
+        s = g.os_path_normslashes(val)
+        if s:
+            c.last_dir = g.os_path_dirname(s)
+        return s
     #@+node:ekr.20190518102229.1: *5* class PyzoFileDialog
     class PyzoFileDialog(object):
         '''A class supporting the pyzo file dialog.'''
@@ -662,12 +649,11 @@ class LeoQtGui(leoGui.LeoGui):
             w = self.file_browser.PyzoFileBrowser(parent=parent)
                 # Instantiate a file browser.
             g.app.permanentScriptDict ['file_browser'] = w
-                ### Temp
                 # Save reference to the window so it won't disappear.
             g.trace(w)
             w.setPath(g.os_path_dirname(startpath))
                 # Tell it what to look at.
-            w.setStyleSheet("background: #657b83;")
+            ### w.setStyleSheet("background: #657b83;")
                 ### Use dark background.
             #
             # Monkey patch double-clicks.
@@ -686,17 +672,6 @@ class LeoQtGui(leoGui.LeoGui):
             # Show it!
             w.show()
 
-        #@+node:ekr.20190518103331.1: *6* pfd.get_filenames
-        def get_filenames(self,
-            caption = '',
-            directory = None,
-            filetypes = None,
-            multiple = True,
-            parent = None
-        ):
-            '''Return one or more filenames.'''
-            g.trace()
-            return []
         #@-others
     #@+node:ekr.20110605121601.18501: *4* qt_gui.runPropertiesDialog
     def runPropertiesDialog(self,

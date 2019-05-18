@@ -181,11 +181,42 @@ def new(self, event=None, gui=None):
     g.app.disable_redraw = False
     c.redraw()
     return c # For unit tests and scripts.
-#@+node:ekr.20031218072017.2821: *3* c_file.open
+#@+node:ekr.20031218072017.2821: *3* c_file.open & callback
 @g.commander_command('open-outline')
-def open(self, event=None):
+def open_outline(self, event=None):
     '''Open a Leo window containing the contents of a .leo file.'''
     c = self
+    #@+others
+    #@+node:ekr.20190518121302.1: *4* function: open_completer
+    def open_completer(c, closeFlag, fileName):
+
+        c.bringToFront()
+        c.init_error_dialogs()
+        ok = False
+        if fileName:
+            if g.app.loadManager.isLeoFile(fileName):
+                c2 = g.openWithFileName(fileName, old_c=c)
+                if c2:
+                    c2.k.makeAllBindings()
+                        # Fix #579: Key bindings don't take for commands defined in plugins.
+                    g.chdir(fileName)
+                    g.setGlobalOpenDir(fileName)
+                if c2 and closeFlag:
+                    g.app.destroyWindow(c.frame)
+            elif c.looksLikeDerivedFile(fileName):
+                # Create an @file node for files containing Leo sentinels.
+                ok = c.importCommands.importDerivedFiles(parent=c.p,
+                    paths=[fileName], command='Open')
+            else:
+                # otherwise, create an @edit node.
+                ok = c.createNodeFromExternalFile(fileName)
+        c.raise_error_dialogs(kind='write')
+        g.app.runAlreadyOpenDialog(c)
+        # openWithFileName sets focus if ok.
+        if not ok:
+            c.initialFocusHelper()
+    #@-others
+    new = False
     # Close the window if this command completes successfully?
     closeFlag = (
         c.frame.startupWindow and
@@ -196,42 +227,33 @@ def open(self, event=None):
             # Only one untitled window has ever been opened
     )
     table = [
-        # 2010/10/09: Fix an interface blunder. Show all files by default.
+        # Show all files by default.
         ("All files", "*"),
         ("Leo files", "*.leo *.db"),
         ("Python files", "*.py"),
     ]
     fileName = ''.join(c.k.givenArgs)
-    if not fileName:
+    
+    if fileName:
+        c.open_completer(fileName)
+        return
+
+    if new:
+        g.app.gui.runOpenFileDialog(c,
+            callback=open_completer,
+            closeFlag=closeFlag,
+            filetypes=table,
+            title="Open",
+            defaultextension=g.defaultLeoFileExtension(c),
+        )
+    else:
+        # Equivalent to legacy code.
         fileName = g.app.gui.runOpenFileDialog(c,
             title="Open",
             filetypes=table,
-            defaultextension=g.defaultLeoFileExtension(c))
-    c.bringToFront()
-    c.init_error_dialogs()
-    ok = False
-    if fileName:
-        if g.app.loadManager.isLeoFile(fileName):
-            c2 = g.openWithFileName(fileName, old_c=c)
-            if c2:
-                c2.k.makeAllBindings()
-                    # Fix #579: Key bindings don't take for commands defined in plugins.
-                g.chdir(fileName)
-                g.setGlobalOpenDir(fileName)
-            if c2 and closeFlag:
-                g.app.destroyWindow(c.frame)
-        elif c.looksLikeDerivedFile(fileName):
-            # Create an @file node for files containing Leo sentinels.
-            ok = c.importCommands.importDerivedFiles(parent=c.p,
-                paths=[fileName], command='Open')
-        else:
-            # otherwise, create an @edit node.
-            ok = c.createNodeFromExternalFile(fileName)
-    c.raise_error_dialogs(kind='write')
-    g.app.runAlreadyOpenDialog(c)
-    # openWithFileName sets focus if ok.
-    if not ok:
-        c.initialFocusHelper()
+            defaultextension=g.defaultLeoFileExtension(c),
+        )
+        open_completer(c, closeFlag, fileName)
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
 # refresh_pattern = re.compile('^(@[\w-]+)')
 
