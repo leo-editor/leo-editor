@@ -6,6 +6,7 @@ Defines the tree widget to display the contents of a selected directory.
 """
 
 
+
 import os
 import sys
 import subprocess
@@ -13,6 +14,8 @@ import fnmatch
 import os.path as op
 
 import pyzo
+
+
 from pyzo import translate
 from . import QtCore, QtGui, QtWidgets
 

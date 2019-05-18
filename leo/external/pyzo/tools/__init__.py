@@ -35,9 +35,6 @@ displayed in the statusbar.
 
 import os, sys, imp
 
-import leo.core.leoGlobals as g
-g.pdb()
-
 import pyzo
 from pyzo.util.qt import QtCore, QtGui, QtWidgets  # noqa
 from pyzo.util import zon as ssdf
