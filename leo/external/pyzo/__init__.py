@@ -49,35 +49,36 @@ import locale
 import traceback
 
 # Check Python version
-if sys.version < '3':
-    raise RuntimeError('Pyzo requires Python 3.x to run.')
+if 0: ### EKR
+    if sys.version < '3':
+        raise RuntimeError('Pyzo requires Python 3.x to run.')
 
-# Make each OS find platform plugins etc.
-if hasattr(sys, 'frozen') and sys.frozen:
-    app_dir = os.path.dirname(sys.executable)
-    if sys.platform.startswith('win'):
-        os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = app_dir
-    if sys.platform.startswith('linux'):
-        os.environ['QT_XKB_CONFIG_ROOT'] = '.'
-        os.environ['FONTCONFIG_FILE'] = os.path.join(app_dir, 'source/pyzo/resources',
-                                                    'fonts/linux_fonts.conf')
+    # Make each OS find platform plugins etc.
+    if hasattr(sys, 'frozen') and sys.frozen:
+        app_dir = os.path.dirname(sys.executable)
+        if sys.platform.startswith('win'):
+            os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = app_dir
+        if sys.platform.startswith('linux'):
+            os.environ['QT_XKB_CONFIG_ROOT'] = '.'
+            os.environ['FONTCONFIG_FILE'] = os.path.join(app_dir, 'source/pyzo/resources',
+                                                        'fonts/linux_fonts.conf')
 
-# Automatically scale along on HDPI displays (I think. I cannot test it for real
-# but if I change the Windows scale factor, things stay crisp with this setting
-# while they are blurry without).
-os.environ['QT_AUTO_SCREEN_SCALE_FACTOR'] = "true"
+    # Automatically scale along on HDPI displays (I think. I cannot test it for real
+    # but if I change the Windows scale factor, things stay crisp with this setting
+    # while they are blurry without).
+    os.environ['QT_AUTO_SCREEN_SCALE_FACTOR'] = "true"
 
 # Import yoton as an absolute package
 from pyzo import yotonloader  # noqa
 from pyzo.util import paths
 
-# If there already is an instance of Pyzo, and the user is trying an
-# Pyzo command, we should send the command to the other process and quit.
-# We do this here, were we have not yet loaded Qt, so we are very light.
-from pyzo.core import commandline
-
-
 if 0: ### EKR
+
+    # If there already is an instance of Pyzo, and the user is trying an
+    # Pyzo command, we should send the command to the other process and quit.
+    # We do this here, were we have not yet loaded Qt, so we are very light.
+    from pyzo.core import commandline
+
     import leo.core.leoGlobals as g
     g.trace('pyzo.__init__.py', g.callers())
     if commandline.is_our_server_running():
