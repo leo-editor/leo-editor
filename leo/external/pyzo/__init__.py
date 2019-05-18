@@ -75,17 +75,22 @@ from pyzo.util import paths
 # Pyzo command, we should send the command to the other process and quit.
 # We do this here, were we have not yet loaded Qt, so we are very light.
 from pyzo.core import commandline
-if commandline.is_our_server_running():
-    print('Started our command server')
-else:
-    # Handle command line args now
-    res = commandline.handle_cmd_args()
-    if res:
-        print(res)
-        sys.exit()
+
+
+if 0: ### EKR
+    import leo.core.leoGlobals as g
+    g.trace('pyzo.__init__.py', g.callers())
+    if commandline.is_our_server_running():
+        print('Started our command server')
     else:
-        # No args, proceed with starting up
-        print('Our command server is *not* running')
+        # Handle command line args now
+        res = commandline.handle_cmd_args()
+        if res:
+            print(res)
+            sys.exit()
+        else:
+            # No args, proceed with starting up
+            print('Our command server is *not* running')
 
 
 from pyzo.util import zon as ssdf  # zon is ssdf-light
