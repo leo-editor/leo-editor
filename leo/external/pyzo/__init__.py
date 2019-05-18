@@ -100,30 +100,32 @@ from pyzo.util.qt import QtCore, QtGui, QtWidgets
 # Import language/translation tools
 from pyzo.util._locale import translate, setLanguage  # noqa
 
-# Set environ to let kernel know some stats about us
-os.environ['PYZO_PREFIX'] = sys.prefix
-_is_pyqt4 = hasattr(QtCore, 'PYQT_VERSION_STR')
-os.environ['PYZO_QTLIB'] = 'PyQt4' if _is_pyqt4 else 'PySide'
+if 0: ### EKR
+
+    # Set environ to let kernel know some stats about us
+    os.environ['PYZO_PREFIX'] = sys.prefix
+    _is_pyqt4 = hasattr(QtCore, 'PYQT_VERSION_STR')
+    os.environ['PYZO_QTLIB'] = 'PyQt4' if _is_pyqt4 else 'PySide'
 
 
-class MyApp(QtWidgets.QApplication):
-    """ So we an open .py files on OSX.
-    OSX is smart enough to call this on the existing process.
-    """
-    def event(self, event):
-        if isinstance(event, QtGui.QFileOpenEvent):
-            fname = str(event.file())
-            if fname and fname != 'pyzo':
-                sys.argv[1:] = []
-                sys.argv.append(fname)
-                res = commandline.handle_cmd_args()
-                if not commandline.is_our_server_running():
-                    print(res)
-                    sys.exit()
-        return QtWidgets.QApplication.event(self, event)
+    class MyApp(QtWidgets.QApplication):
+        """ So we an open .py files on OSX.
+        OSX is smart enough to call this on the existing process.
+        """
+        def event(self, event):
+            if isinstance(event, QtGui.QFileOpenEvent):
+                fname = str(event.file())
+                if fname and fname != 'pyzo':
+                    sys.argv[1:] = []
+                    sys.argv.append(fname)
+                    res = commandline.handle_cmd_args()
+                    if not commandline.is_our_server_running():
+                        print(res)
+                        sys.exit()
+            return QtWidgets.QApplication.event(self, event)
 
-if not sys.platform.startswith('darwin'):
-    MyApp = QtWidgets.QApplication  # noqa
+    if not sys.platform.startswith('darwin'):
+        MyApp = QtWidgets.QApplication  # noqa
 
 ## Install excepthook
 # In PyQt5 exceptions in Python will cuase an abort
