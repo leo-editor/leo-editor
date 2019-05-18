@@ -5,38 +5,9 @@
 # Pyzo is distributed under the terms of the (new) BSD License.
 # The full license can be found in 'license.txt'.
 
-"""
-Pyzo is a cross-platform Python IDE focused on
-interactivity and introspection, which makes it very suitable for
-scientific computing. Its practical design is aimed at simplicity and
-efficiency.
+"""EKR: A stripped-down version of pyzo.__init__.py, for use only with the file browser.
 
-Pyzo is written in Python 3 and Qt. Binaries are available for Windows,
-Linux, and Mac. For questions, there is a discussion group.
-
-**Two components + tools**
-
-
-Pyzo consists of two main components, the editor and the shell, and uses
-a set of pluggable tools to help the programmer in various ways. Some
-example tools are source structure, project manager, interactive help,
-and workspace.
-
-**Some key features**
-
-
-* Powerful *introspection* (autocompletion, calltips, interactive help)
-* Allows various ways to *run code interactively* or to run a file as a script.
-* The shells runs in a *subprocess* and can therefore be interrupted or killed.
-* *Multiple shells* can be used at the same time, and can be of different
-  Python versions (from v2.4 to 3.x, including pypy)
-* Support for using several *GUI toolkits* interactively: PySide, PyQt4,
-  wx, fltk, GTK, Tk.
-* Run IPython shell or native shell.
-* *Full Unicode support* in both editor and shell.
-* Various handy *tools*, plus the ability to make your own.
-* Matlab-style *cell notation* to mark code sections (by starting a line
-  with '##').
+Leo will never copy all of pyzo into leo/external.
 
 """
 
@@ -47,26 +18,6 @@ import os
 import sys
 import locale
 import traceback
-
-# Check Python version
-if 0: ### EKR
-    if sys.version < '3':
-        raise RuntimeError('Pyzo requires Python 3.x to run.')
-
-    # Make each OS find platform plugins etc.
-    if hasattr(sys, 'frozen') and sys.frozen:
-        app_dir = os.path.dirname(sys.executable)
-        if sys.platform.startswith('win'):
-            os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = app_dir
-        if sys.platform.startswith('linux'):
-            os.environ['QT_XKB_CONFIG_ROOT'] = '.'
-            os.environ['FONTCONFIG_FILE'] = os.path.join(app_dir, 'source/pyzo/resources',
-                                                        'fonts/linux_fonts.conf')
-
-    # Automatically scale along on HDPI displays (I think. I cannot test it for real
-    # but if I change the Windows scale factor, things stay crisp with this setting
-    # while they are blurry without).
-    os.environ['QT_AUTO_SCREEN_SCALE_FACTOR'] = "true"
 
 # Import yoton as an absolute package
 from pyzo import yotonloader  # noqa
