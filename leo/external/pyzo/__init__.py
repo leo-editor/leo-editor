@@ -31,8 +31,6 @@ from pyzo.util._locale import translate, setLanguage  # noqa
 
 ## Define some functions
 
-# todo: move some stuff out of this module ...
-
 def getResourceDirs():
     """ getResourceDirs()
     Get the directories to the resources: (pyzoDir, appDataDir).
@@ -57,20 +55,6 @@ def getResourceDirs():
         os.mkdir(toolDir)
 
     return pyzoDir, appDataDir
-
-
-def resetConfig(preserveState=True):
-    """ resetConfig()
-    Deletes the config file to revert to default and prevent Pyzo from storing
-    its config on the next shutdown.
-    """
-    # Get filenames
-    configFileName2 = os.path.join(appDataDir, 'config.ssdf')
-    os.remove(configFileName2)
-    global _saveConfigFile
-    _saveConfigFile = False
-    print("Deleted user config file. Restart Pyzo to revert to the default config.")
-
 
 def loadConfig(defaultsOnly=False):
     """ loadConfig(defaultsOnly=False)
@@ -132,9 +116,6 @@ status = None # The statusbar (or None)
 
 # Get directories of interest
 pyzoDir, appDataDir = getResourceDirs()
-
-# Whether the config file should be saved
-_saveConfigFile = True
 
 # Create ssdf in module namespace, and fill it
 config = ssdf.new()
