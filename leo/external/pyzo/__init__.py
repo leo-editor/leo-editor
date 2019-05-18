@@ -138,42 +138,6 @@ def saveConfig():
         ssdf.save( os.path.join(appDataDir, "config.ssdf"), config )
 
 
-def start():
-    """ Run Pyzo.
-    """
-
-    # Do some imports
-    from pyzo.core import pyzoLogging  # noqa - to start logging asap
-    from pyzo.core.main import MainWindow
-
-    # Apply users' preferences w.r.t. date representation etc
-    # this is required for e.g. strftime("%c")
-    # Just using '' does not seem to work on OSX. Thus
-    # this odd loop.
-    #locale.setlocale(locale.LC_ALL, "")
-    for x in ('', 'C', 'en_US', 'en_US.utf8', 'en_US.UTF-8'):
-        try:
-            locale.setlocale(locale.LC_ALL, x)
-            break
-        except locale.Error:
-            pass
-
-    # Set to be aware of the systems native colors, fonts, etc.
-    QtWidgets.QApplication.setDesktopSettingsAware(True)
-
-    # Instantiate the application
-    QtWidgets.qApp = MyApp(sys.argv)  # QtWidgets.QApplication([])
-
-    # Choose language, get locale
-    appLocale = setLanguage(config.settings.language)
-
-    # Create main window, using the selected locale
-    MainWindow(None, appLocale)
-
-    # Enter the main loop
-    QtWidgets.qApp.exec_()
-
-
 ## Init
 
 # List of names that are later overriden (in main.py)
