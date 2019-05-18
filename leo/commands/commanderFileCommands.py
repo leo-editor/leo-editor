@@ -216,7 +216,8 @@ def open_outline(self, event=None):
         if not ok:
             c.initialFocusHelper()
     #@-others
-    new = True
+        # Defines open_completer function.
+    #
     # Close the window if this command completes successfully?
     closeFlag = (
         c.frame.startupWindow and
@@ -236,7 +237,7 @@ def open_outline(self, event=None):
     if fileName:
         c.open_completer(c, closeFlag, fileName)
         return
-    if new:
+    if False: # This seems not to be worth the trouble.
         g.app.gui.runOpenFileDialog(c,
             callback=open_completer,
             defaultextension=g.defaultLeoFileExtension(c),
