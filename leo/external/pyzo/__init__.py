@@ -120,24 +120,6 @@ def loadConfig(defaultsOnly=False):
             print(t % fname)
             raise
 
-def saveConfig():
-    """ saveConfig()
-    Save all configureations to file.
-    """
-
-    # Let the editorStack save its state
-    if editors:
-        editors.saveEditorState()
-
-    # Let the main window save its state
-    if main:
-        main.saveWindowState()
-
-    # Store config
-    if _saveConfigFile:
-        ssdf.save( os.path.join(appDataDir, "config.ssdf"), config )
-
-
 ## Init
 
 # List of names that are later overriden (in main.py)
