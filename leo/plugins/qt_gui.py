@@ -558,7 +558,7 @@ class LeoQtGui(leoGui.LeoGui):
         if callback:
             dialog = self.PyzoFileDialog()
             dialog.init()
-            dialog.open_dialog(callback, defaultextension, startpath)
+            dialog.open_dialog(c, callback, defaultextension, startpath)
             return
         #
         # No callback: use the legacy file browser.
@@ -644,17 +644,19 @@ class LeoQtGui(leoGui.LeoGui):
             self.file_browser = fb
                 # For open_dialog.
         #@+node:ekr.20190518103005.1: *6* pfd.open_dialog
-        def open_dialog(self, defaultextension, startpath, parent=None):
+        def open_dialog(self, c, callback, defaultextension, startpath, parent=None):
             '''Open pyzo's file browser.'''
             w = self.file_browser.PyzoFileBrowser(parent=parent)
                 # Instantiate a file browser.
             g.app.permanentScriptDict ['file_browser'] = w
                 # Save reference to the window so it won't disappear.
-            g.trace(w)
-            w.setPath(g.os_path_dirname(startpath))
+            g.trace('startpath:', startpath)
+            g.app.gui.attachLeoIcon(w)
+            ### w.setPath(g.os_path_dirname(startpath))
+            w.setPath(startpath)
                 # Tell it what to look at.
-            ### w.setStyleSheet("background: #657b83;")
-                ### Use dark background.
+            w.setStyleSheet("background: #657b83;")
+                # Use dark background.
             #
             # Monkey patch double-clicks.
             tree = w._browsers[0]._tree
@@ -664,14 +666,86 @@ class LeoQtGui(leoGui.LeoGui):
                 item = self.itemAt(event.x(), event.y())
                     # item is a tree.DirItem or tree.FileItem
                     # item._proxy is a DirProxy or FileProxy.
-                g.trace(item)
-                g.trace(item._proxy) 
+                path = item._proxy.path()
+                if g.os_path_isfile(path):
+                    callback(c, False, path)
+                        # This is the open_completer function.
             
             tree.mouseDoubleClickEvent = double_click_callback
             #
             # Show it!
             w.show()
 
+        #@+node:ekr.20031218072017.2821: *6* c_file.open_outline & callback
+        @g.commander_command('open-outline')
+        def open_outline(self, event=None):
+            '''Open a Leo window containing the contents of a .leo file.'''
+            c = self
+            #@+others
+            #@+node:ekr.20190518121302.1: *7* function: open_completer
+            def open_completer(c, closeFlag, fileName):
+
+                c.bringToFront()
+                c.init_error_dialogs()
+                ok = False
+                if fileName:
+                    if g.app.loadManager.isLeoFile(fileName):
+                        c2 = g.openWithFileName(fileName, old_c=c)
+                        if c2:
+                            c2.k.makeAllBindings()
+                                # Fix #579: Key bindings don't take for commands defined in plugins.
+                            g.chdir(fileName)
+                            g.setGlobalOpenDir(fileName)
+                        if c2 and closeFlag:
+                            g.app.destroyWindow(c.frame)
+                    elif c.looksLikeDerivedFile(fileName):
+                        # Create an @file node for files containing Leo sentinels.
+                        ok = c.importCommands.importDerivedFiles(parent=c.p,
+                            paths=[fileName], command='Open')
+                    else:
+                        # otherwise, create an @edit node.
+                        ok = c.createNodeFromExternalFile(fileName)
+                c.raise_error_dialogs(kind='write')
+                g.app.runAlreadyOpenDialog(c)
+                # openWithFileName sets focus if ok.
+                if not ok:
+                    c.initialFocusHelper()
+            #@-others
+            new = True
+            # Close the window if this command completes successfully?
+            closeFlag = (
+                c.frame.startupWindow and
+                    # The window was open on startup
+                not c.changed and not c.frame.saved and
+                    # The window has never been changed
+                g.app.numberOfUntitledWindows == 1
+                    # Only one untitled window has ever been opened
+            )
+            table = [
+                # Show all files by default.
+                ("All files", "*"),
+                ("Leo files", "*.leo *.db"),
+                ("Python files", "*.py"),
+            ]
+            fileName = ''.join(c.k.givenArgs)
+            if fileName:
+                c.open_completer(fileName)
+                return
+            if new:
+                g.app.gui.runOpenFileDialog(c,
+                    callback=open_completer,
+                    defaultextension=g.defaultLeoFileExtension(c),
+                    filetypes=table,
+                    title="Open",
+                )
+                return
+            ### Equivalent to legacy code.
+            fileName = g.app.gui.runOpenFileDialog(c,
+                defaultextension=g.defaultLeoFileExtension(c),
+                filetypes=table,
+                title="Open",
+            )
+            open_completer(c, closeFlag, fileName)
         #@-others
     #@+node:ekr.20110605121601.18501: *4* qt_gui.runPropertiesDialog
     def runPropertiesDialog(self,

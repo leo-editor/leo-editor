@@ -181,7 +181,7 @@ def new(self, event=None, gui=None):
     g.app.disable_redraw = False
     c.redraw()
     return c # For unit tests and scripts.
-#@+node:ekr.20031218072017.2821: *3* c_file.open & callback
+#@+node:ekr.20031218072017.2821: *3* c_file.open_outline & callback
 @g.commander_command('open-outline')
 def open_outline(self, event=None):
     '''Open a Leo window containing the contents of a .leo file.'''
@@ -216,7 +216,7 @@ def open_outline(self, event=None):
         if not ok:
             c.initialFocusHelper()
     #@-others
-    new = False
+    new = True
     # Close the window if this command completes successfully?
     closeFlag = (
         c.frame.startupWindow and
@@ -233,27 +233,24 @@ def open_outline(self, event=None):
         ("Python files", "*.py"),
     ]
     fileName = ''.join(c.k.givenArgs)
-    
     if fileName:
         c.open_completer(fileName)
         return
-
     if new:
         g.app.gui.runOpenFileDialog(c,
             callback=open_completer,
-            closeFlag=closeFlag,
+            defaultextension=g.defaultLeoFileExtension(c),
             filetypes=table,
             title="Open",
-            defaultextension=g.defaultLeoFileExtension(c),
         )
-    else:
-        # Equivalent to legacy code.
-        fileName = g.app.gui.runOpenFileDialog(c,
-            title="Open",
-            filetypes=table,
-            defaultextension=g.defaultLeoFileExtension(c),
-        )
-        open_completer(c, closeFlag, fileName)
+        return
+    ### Equivalent to legacy code.
+    fileName = g.app.gui.runOpenFileDialog(c,
+        defaultextension=g.defaultLeoFileExtension(c),
+        filetypes=table,
+        title="Open",
+    )
+    open_completer(c, closeFlag, fileName)
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
 # refresh_pattern = re.compile('^(@[\w-]+)')
 
