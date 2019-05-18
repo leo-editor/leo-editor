@@ -543,7 +543,7 @@ class LeoQtGui(leoGui.LeoGui):
         """
         Create and run an Qt open file dialog.
         """
-        new = False ###
+        new = False
         if g.unitTesting:
             return ''
         #
@@ -572,8 +572,9 @@ class LeoQtGui(leoGui.LeoGui):
                 parent=None,
             )
             files = [g.os_path_normslashes(s) for s in files]
-            if files:
-                c.last_dir = g.os_path_dirname(files[-1])
+            if not files:
+                return [] if multiple else None
+            c.last_dir = g.os_path_dirname(files[-1])
             return files if multiple else files[0]
         ###
         ### Old code
@@ -603,24 +604,28 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20190518102229.1: *5* class PyzoFileDialog
     class PyzoFileDialog(object):
         '''A class supporting the pyzo file dialog.'''
-        dialog = None
-            # The dialog instance.
+
         file_browser = None
             # A module.
 
         #@+others
-        #@+node:ekr.20190518102720.1: *6* pfd.init
+        #@+node:ekr.20190518102720.1: *6* pfd.init & helpers
         def init(self):
             '''
             Initialize the browser code, using the actual pyzo if possible, or the
             code in leo/external/pyzo otherwise.    
             '''
-            ### To do: is pyzo support running?
-            pass
-        #@+node:ekr.20190518102823.1: *6* pfd.init_leo_pyzo
-        def init_leo_pyzo(self):
-            
+            if g.app.pluginsController.isLoaded('pyzo_support.py'):
+                self.init_real_pyzo()
+            else:
+                self.init_internal_pyzo()
+        #@+node:ekr.20190518102823.1: *7* pfd.init_internal_pyzo
+        def init_internal_pyzo(self):
+            '''
+            Init the internal version of pyzo in leo/external/pyzo.
+            '''
             # Adjust sys.path.
+            g.trace()
             path = g.os_path_finalize_join(g.app.loadDir,'..','external')
             assert g.os_path_exists(path), repr(path)
             if not path in sys.path:
@@ -639,9 +644,10 @@ class LeoQtGui(leoGui.LeoGui):
             from pyzo.core.main import loadIcons
             loadIcons()
                 # Required to instantiate PyzoFileBrowser.
-        #@+node:ekr.20190518110307.1: *6* pfd.init_real_pyzo
+        #@+node:ekr.20190518110307.1: *7* pfd.init_real_pyzo
         def init_real_pyzo(self):
-            
+            '''Init the real pyzo, which has already been inited by pyzo_support.py'''
+            g.trace()
             if 0: ### Probably already done.
                 import pyzo
                 import pyzo.core.menu as menu
@@ -651,18 +657,18 @@ class LeoQtGui(leoGui.LeoGui):
             self.file_browser = fb
                 # For open_dialog.
         #@+node:ekr.20190518103005.1: *6* pfd.open_dialog
-        dialog = None
-
         def open_dialog(self, defaultextension, startpath, parent=None):
             '''Open pyzo's file browser.'''
-            self.dialog = w = self.file_browser.PyzoFileBrowser(parent=parent)
+            w = self.file_browser.PyzoFileBrowser(parent=parent)
                 # Instantiate a file browser.
+            g.app.permanentScriptDict ['file_browser'] = w
+                ### Temp
                 # Save reference to the window so it won't disappear.
+            g.trace(w)
             w.setPath(g.os_path_dirname(startpath))
                 # Tell it what to look at.
             w.setStyleSheet("background: #657b83;")
                 ### Use dark background.
-            w.show()
             #
             # Monkey patch double-clicks.
             tree = w._browsers[0]._tree
@@ -676,17 +682,21 @@ class LeoQtGui(leoGui.LeoGui):
                 g.trace(item._proxy) 
             
             tree.mouseDoubleClickEvent = double_click_callback
-           
+            #
+            # Show it!
+            w.show()
+
         #@+node:ekr.20190518103331.1: *6* pfd.get_filenames
         def get_filenames(self,
             caption = '',
             directory = None,
-            filtertypes = None,
+            filetypes = None,
             multiple = True,
             parent = None
         ):
             '''Return one or more filenames.'''
-            return None
+            g.trace()
+            return []
         #@-others
     #@+node:ekr.20110605121601.18501: *4* qt_gui.runPropertiesDialog
     def runPropertiesDialog(self,
