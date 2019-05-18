@@ -12,7 +12,7 @@ Leo will never copy all of pyzo into leo/external.
 """
 
 # Set version number
-__version__ = '4.6.2'
+__version__ = '0.0.0'
 
 import os
 import sys
@@ -106,21 +106,9 @@ def loadConfig(defaultsOnly=False):
 
 ## Init
 
-# List of names that are later overriden (in main.py)
-if 0: ###
-    editors = None # The editor stack instance
-    shells = None # The shell stack instance
-    main = None # The mainwindow
-    icon = None # The icon
-    parser = None # The source parser
-    status = None # The statusbar (or None)
-
 # Get directories of interest
 pyzoDir, appDataDir = getResourceDirs()
 
 # Create ssdf in module namespace, and fill it
 config = ssdf.new()
 loadConfig()
-
-# Init default style name (set in main.restorePyzoState())
-### defaultQtStyleName = ''
