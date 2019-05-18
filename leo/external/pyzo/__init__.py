@@ -24,7 +24,6 @@ from pyzo import yotonloader  # noqa
 from pyzo.util import paths
 
 from pyzo.util import zon as ssdf  # zon is ssdf-light
-from pyzo.util.qt import QtCore, QtGui, QtWidgets
 
 # Import language/translation tools
 from pyzo.util._locale import translate, setLanguage  # noqa
