@@ -234,7 +234,7 @@ def open_outline(self, event=None):
     ]
     fileName = ''.join(c.k.givenArgs)
     if fileName:
-        c.open_completer(fileName)
+        c.open_completer(c, closeFlag, fileName)
         return
     if new:
         g.app.gui.runOpenFileDialog(c,
