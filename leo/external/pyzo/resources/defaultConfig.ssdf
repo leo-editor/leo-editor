@@ -1,0 +1,132 @@
+# This file contains the default configuration for Pyzo. The user
+# configuration is stored in the Pyzo application data directory.
+
+# Some parameters are named xxx2. This was done in case the representation
+# of a parameter was changed, or if we wanted to "refresh" the parameter for
+# another reason. This enables using the same config file for all versions, 
+# which means that users that start using a new version dont have to recreate
+# all their settings each time.
+
+state = dict:
+    find_regExp = 0
+    find_matchCase = 0
+    find_wholeWord = 0
+    find_show = 0
+    find_autoHide = 1
+    editorState2 = [] # What files where loaded and where the cursor was
+    loadedTools = []
+    windowState = '' # Of window and tools  
+    windowGeometry = '' # Position and size of window, whether maximized, etc.
+    newUser = 1 # So we can guide new users a bit
+
+view = dict:       
+    showWhitespace = 0
+    showLineEndings = 0
+    showWrapSymbols = 0
+    showIndentationGuides = 1
+    showStatusbar = 0
+    #
+    wrap = 1
+    highlightCurrentLine = 1
+    highlightMatchingBracket = 1
+    doBraceMatch = 1  # Both in editor and shell
+    codeFolding = 0
+    autoComplete_popupSize = [300, 100]
+    #
+    qtstyle = ''
+    edgeColumn = 80    
+    fontname = 'DejaVu Sans Mono'
+    zoom = 0  # Both for editor and shell
+    tabWidth = 4
+
+settings= dict:
+    language = ''
+    defaultStyle = 'python'
+    defaultIndentWidth = 4
+    defaultIndentUsingSpaces = 1
+    defaultLineEndings = '' # Set depending on OS
+    autoIndent = 1
+    autoCallTip = 1
+    autoComplete_keywords = 1
+    autoComplete = 1
+    autoComplete_caseSensitive = 0
+    autoComplete_fillups = '\n'
+    autoComplete_acceptKeys = 'Tab'
+    justificationWidth = 70
+    removeTrailingWhitespaceWhenSaving = 0
+    changeDirOnFileExec = 0
+    allowFloatingShell = 0
+    autoClose_Quotes = 1
+    autoClose_Brackets = 1
+advanced = dict:
+    shellMaxLines = 10000
+    fileExtensionsToLoadFromDir = 'py,pyw,pyx,txt,bat'
+    autoCompDelay = 200
+    titleText = '{fileName} ({fullPath}) - Interactive Editor for Python'
+    homeAndEndWorkOnDisplayedLine = 0
+    find_autoHide_timeout = 10
+  
+tools = dict:
+    pyzologger = dict:
+    pyzointeractivehelp = dict:
+        noNewlines = 1
+    pyzosourcestructure = dict:
+        showTypes = ['def', 'cell', 'todo', 'class']
+        level = 3
+
+shellConfigs2 = list:
+    # Empty, let pyzo create one on startup
+
+shortcuts2 = dict:
+    edit__comment = 'Ctrl+R,'
+    edit__copy = 'Ctrl+C,Ctrl+Insert'
+    edit__cut = 'Ctrl+X,Shift+Delete'
+    edit__dedent = 'Shift+Tab,'
+    edit__duplicate_line = 'Ctrl+Shift+D,'
+    edit__delete_line = 'Ctrl+Shift+K,'
+    edit__find_next = 'Ctrl+G,F3'
+    edit__find_or_replace = 'Ctrl+F,'
+    edit__find_previous = 'Ctrl+Shift+G,Shift+F3'
+    edit__find_selection = 'Ctrl+F3,'
+    edit__find_selection_backward = 'Ctrl+Shift+F3,'
+    edit__indent = 'Tab,'
+    edit__justify_commentdocstring = 'Ctrl+J,'
+    edit__paste = 'Ctrl+V,Shift+Insert'
+    edit__paste_and_select = 'Ctrl+Shift+V'
+    edit__redo = 'Ctrl+Y,'
+    edit__select_all = 'Ctrl+A,'
+    edit__uncomment = 'Ctrl+T,'
+    edit__undo = 'Ctrl+Z,'
+    edit__toggle_breakpoint = 'Ctrl+B,'
+    file__close = 'Ctrl+W,'
+    file__new = 'Ctrl+N,'
+    file__open = 'Ctrl+O,'
+    file__save = 'Ctrl+S,'
+    run__run_file_as_script = 'Ctrl+Shift+E,Ctrl+F5'
+    run__run_main_file_as_script = 'Ctrl+Shift+M,Ctrl+F6'
+    run__execute_selection = 'Alt+Return,F9'
+    run__execute_cell = 'Ctrl+Return,Ctrl+Enter'
+    run__execute_cell_and_advance = 'Ctrl+Shift+Return,Ctrl+Shift+Enter'
+    run__execute_selection_and_advance = 'Shift+F9,Shift+Alt+Return'
+    run__execute_file = 'Ctrl+E,F5'
+    run__execute_main_file = 'Ctrl+M,F6'
+    shell__clear_screen = 'Ctrl+L,'
+    shell__close = 'Alt+K,'
+    shell__create_shell_1_ = 'Ctrl+1,'
+    shell__create_shell_2_ = 'Ctrl+2,'
+    shell__create_shell_3_ = 'Ctrl+3,'
+    shell__create_shell_4_ = 'Ctrl+4,'
+    shell__create_shell_5_ = 'Ctrl+5,'
+    shell__create_shell_6_ = 'Ctrl+6,'
+    shell__create_shell_7_ = 'Ctrl+7,'
+    shell__create_shell_8_ = 'Ctrl+8,'
+    shell__interrupt = 'Ctrl+I,Meta+C'
+    shell__restart = 'Ctrl+K,'
+    shell__terminate = 'Ctrl+Shift+K,'
+    shell__postmortem_debug_from_last_traceback = 'Ctrl+P,'
+    view__select_editor = 'Ctrl+9,F2'
+    view__select_previous_file = 'Ctrl+Tab,' # On Mac, this is replaced by Alt+Tab in pyzo.py
+    view__select_shell = 'Ctrl+0,F1'
+    view__zooming__zoom_in = 'Ctrl+=,Ctrl++'
+    view__zooming__zoom_out = 'Ctrl+-,'
+    view__zooming__zoom_reset = 'Ctrl+\,'

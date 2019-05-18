@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Pyzo
+GenericName=Pyzo
+Comment=Interactive editor for scientific Python
+TryExec=pyzo
+Exec=pyzo %f
+Categories=Development;Science;IDE;Qt;
+Keywords=Python;IDE;science;interactive;
+Icon=pyzologo
+Terminal=false
+StartupNotify=true
+MimeType=text/x-python;

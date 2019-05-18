@@ -1,0 +1,1531 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS><TS version="2.0" language="pt" sourcelanguage="">
+<context>
+    <name>debug</name>
+    <message>
+        <location filename="../../core/shellStack.py" line="491"/>
+        <source>Stack</source>
+        <translation>Montão</translation>
+    </message>
+</context>
+<context>
+    <name>editor</name>
+    <message>
+        <location filename="../../core/editorTabs.py" line="1423"/>
+        <source>Close, Discard, Cancel, Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="1450"/>
+        <source>Closing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="1450"/>
+        <source>Save modified file?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="1493"/>
+        <source>Closing pinned</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="1493"/>
+        <source>Are you sure you want to close this pinned file?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>editorTabs</name>
+    <message>
+        <location filename="../../core/editorTabs.py" line="1163"/>
+        <source>Select one or more files to open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="1340"/>
+        <source>Select the file to save to</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>filebrowser</name>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/browser.py" line="45"/>
+        <source>Filename filter</source>
+        <translation>filtro do nome do arquivo</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/browser.py" line="50"/>
+        <source>Search in files</source>
+        <translation>Procurar em ficheiros</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/browser.py" line="446"/>
+        <source>Projects:</source>
+        <translation>Projetos:</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/browser.py" line="451"/>
+        <source>Click star to bookmark current dir</source>
+        <translation>Clique estrela para marcar o seu favorito corrente dir</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/browser.py" line="460"/>
+        <source>Remove project</source>
+        <translation>Remover projeto</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/browser.py" line="465"/>
+        <source>Change project name</source>
+        <translation>Alterar nome do projeto</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/browser.py" line="472"/>
+        <source>Add path to Python path</source>
+        <translation>Adicionar caminho para Python caminho</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/browser.py" line="481"/>
+        <source>Go to this directory in the current shell</source>
+        <translation>Vá para este diretório no shell corrente</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/browser.py" line="498"/>
+        <source>New project name:</source>
+        <translation>Novo nome do projeto:</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/browser.py" line="654"/>
+        <source>Match case</source>
+        <translation>maiúsculas de minúsculas</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/browser.py" line="655"/>
+        <source>RegExp</source>
+        <translation>Expressão regular</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/browser.py" line="656"/>
+        <source>Search in subdirs</source>
+        <translation>Procurar em subdiretórios</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="810"/>
+        <source>Unstar this directory</source>
+        <translation>Remover estrela este diretório</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="812"/>
+        <source>Star this directory</source>
+        <translation>Estrela este diretório</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="817"/>
+        <source>Open</source>
+        <translation>Abrir</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="835"/>
+        <source>Reveal in Finder</source>
+        <translation>Revelar no Finder</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="838"/>
+        <source>Copy path</source>
+        <translation>Copiar caminho</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="825"/>
+        <source>Import data...</source>
+        <translation>Importar dados ...</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="965"/>
+        <source>Rename</source>
+        <translation>Renomear</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="991"/>
+        <source>Delete</source>
+        <translation>Apagar</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="935"/>
+        <source>Create new file</source>
+        <translation>Criar novo arquivo</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="938"/>
+        <source>Create new directory</source>
+        <translation>Criar novo diretório</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="966"/>
+        <source>Give the new name for the file</source>
+        <translation>Dê um novo nome para o arquivo</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="939"/>
+        <source>Give the name for the new directory</source>
+        <translation>Dar um nome para o novo diretório</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="968"/>
+        <source>Duplicate</source>
+        <translation>duplicar</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="969"/>
+        <source>Give the name for the new file</source>
+        <translation>Dar um nome para o novo arquivo</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="991"/>
+        <source>Are you sure that you want to delete</source>
+        <translation>Você tem certeza que deseja deletar</translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/browser.py" line="498"/>
+        <source>Project name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="819"/>
+        <source>Run as script</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="822"/>
+        <source>Run Jupyter notebook</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="832"/>
+        <source>Open outside Pyzo</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>importwizard</name>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/importwizard.py" line="69"/>
+        <source>Select file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/importwizard.py" line="72"/>
+        <source>Browse...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/importwizard.py" line="83"/>
+        <source>Preview:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/importwizard.py" line="175"/>
+        <source>Select columns to import:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/importwizard.py" line="395"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/importwizard.py" line="398"/>
+        <source>Import data as single array</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/importwizard.py" line="399"/>
+        <source>Import data into one variable per column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/importwizard.py" line="402"/>
+        <source>Raise error upon invalid data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/importwizard.py" line="535"/>
+        <source>Import data wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/importwizard.py" line="477"/>
+        <source>No current shell active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/importwizard.py" line="487"/>
+        <source>No current file open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/importwizard.py" line="522"/>
+        <source>Import data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/importwizard.py" line="535"/>
+        <source>The import data wizard is already open</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>main</name>
+    <message>
+        <location filename="../../core/main.py" line="224"/>
+        <source>unsaved</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>menu</name>
+    <message>
+        <location filename="../../core/menu.py" line="33"/>
+        <source>File</source>
+        <translation>Arquivo</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="34"/>
+        <source>Edit</source>
+        <translation>editar</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="35"/>
+        <source>View</source>
+        <translation>Vista</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="36"/>
+        <source>Settings</source>
+        <translation>Configurações</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="37"/>
+        <source>Shell</source>
+        <translation>Concha</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="38"/>
+        <source>Run</source>
+        <translation>Corrida</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="39"/>
+        <source>Tools</source>
+        <translation>Ferramentas</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="40"/>
+        <source>Help</source>
+        <translation>Ajudar</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="413"/>
+        <source>Use tabs</source>
+        <translation>Utilize os separadores</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="415"/>
+        <source>Use spaces</source>
+        <translation>Utilize espaços</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="419"/>
+        <source>spaces</source>
+        <comment>plural of spacebar character</comment>
+        <translation>espaços</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="443"/>
+        <source>Indentation ::: The indentation used of the current file.</source>
+        <translation>Recuo ::: O recuo usado do arquivo atual.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="448"/>
+        <source>Syntax parser ::: The syntax parser of the current file.</source>
+        <translation>Sintaxe parser ::: O analisador de sintaxe do arquivo atual.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="453"/>
+        <source>Line endings ::: The line ending character of the current file.</source>
+        <translation>Finais de linha ::: A linha de caracteres do arquivo atual de término.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="458"/>
+        <source>Encoding ::: The character encoding of the current file.</source>
+        <translation>Codificação ::: A codificação de caracteres do arquivo atual.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="466"/>
+        <source>New ::: Create a new (or temporary) file.</source>
+        <translation>Novo ::: Criar um novo (ou temporária) de arquivos.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="468"/>
+        <source>Open... ::: Open an existing file from disk.</source>
+        <translation>Abrir ... ::: Abra um arquivo existente do disco.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1282"/>
+        <source>Save ::: Save the current file to disk.</source>
+        <translation>Salve ::: Salve o arquivo atual no disco.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1284"/>
+        <source>Save as... ::: Save the current file under another name.</source>
+        <translation>Salvar como ... ::: Salve o arquivo atual com outro nome.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="476"/>
+        <source>Save all ::: Save all open files.</source>
+        <translation>Salve todo ::: Salve todos os arquivos abertos.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1286"/>
+        <source>Close ::: Close the current file.</source>
+        <translation>Fechar ::: Feche o arquivo atual.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1290"/>
+        <source>Close all ::: Close all files.</source>
+        <translation>Feche todos ::: Fechar todos os arquivos.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="627"/>
+        <source>Undo ::: Undo the latest editing action.</source>
+        <translation>Desfazer ::: Desfazer a última ação de edição.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="629"/>
+        <source>Redo ::: Redo the last undone editong action.</source>
+        <translation>Refazer ::: Refazer a última ação editong desfeita.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1217"/>
+        <source>Cut ::: Cut the selected text.</source>
+        <translation>Cortar ::: Cortar o texto selecionado.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1219"/>
+        <source>Copy ::: Copy the selected text to the clipboard.</source>
+        <translation>Copiar ::: Copie o texto selecionado para a área de transferência.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1221"/>
+        <source>Paste ::: Paste the text that is now on the clipboard.</source>
+        <translation>Cole ::: Cole o texto que está agora na área de transferência.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1223"/>
+        <source>Select all ::: Select all text.</source>
+        <translation>Selecionar todos ::: Selecione todo o texto.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1226"/>
+        <source>Indent ::: Indent the selected line.</source>
+        <translation>Recuo ::: recuo da linha selecionada.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1228"/>
+        <source>Dedent ::: Unindent the selected line.</source>
+        <translation>Dedent ::: Unindent da linha selecionada.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1230"/>
+        <source>Comment ::: Comment the selected line.</source>
+        <translation>Comentário ::: Comente a linha selecionada.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1232"/>
+        <source>Uncomment ::: Uncomment the selected line.</source>
+        <translation>Descomente ::: Remova o comentário da linha selecionada.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1234"/>
+        <source>Justify comment/docstring::: Reshape the selected text so it is aligned to around 70 characters.</source>
+        <translation>Justificar comentário / docstring ::: Remodelar o texto selecionado para que ele está alinhado com cerca de 70 caracteres.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="653"/>
+        <source>Go to line ::: Go to a specific line number.</source>
+        <translation>Ir para linha ::: Ir para um número de linha específico.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="660"/>
+        <source>Toggle breakpoint ::: Toggle breakpoint on the current line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1242"/>
+        <source>Find or replace ::: Show find/replace widget. Initialize with selected text.</source>
+        <translation>Localizar ou substituir ::: Mostrar localizar / substituir widget. Inicializar com o texto selecionado.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1244"/>
+        <source>Find selection ::: Find the next occurrence of the selected text.</source>
+        <translation>Encontre seleção ::: Localizar a próxima ocorrência do texto selecionado.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1246"/>
+        <source>Find selection backward ::: Find the previous occurrence of the selected text.</source>
+        <translation>Encontre seleção backward ::: Localizar a ocorrência anterior do texto selecionado.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="672"/>
+        <source>Find next ::: Find the next occurrence of the search string.</source>
+        <translation>Localizar próxima ::: Localizar a próxima ocorrência da seqüência de pesquisa.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="674"/>
+        <source>Find previous ::: Find the previous occurrence of the search string.</source>
+        <translation>Encontre anterior ::: Localizar a ocorrência anterior da seqüência de pesquisa.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1772"/>
+        <source>Accept autocompletion with:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="692"/>
+        <source>Zoom in</source>
+        <translation>ampliar</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="693"/>
+        <source>Zoom out</source>
+        <translation>Diminuir o zoom</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="694"/>
+        <source>Zoom reset</source>
+        <translation>redefinição Zoom</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="748"/>
+        <source>Location of long line indicator ::: The location of the long-line-indicator.</source>
+        <translation>Localização do indicador de linha longa ::: A localização do indicador de longo-line.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="756"/>
+        <source>Qt theme ::: The styling of the user interface widgets.</source>
+        <translation>Qt tema ::: O estilo dos widgets de interface de usuário.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="769"/>
+        <source>Select shell ::: Focus the cursor on the current shell.</source>
+        <translation>Selecione shell ::: Foco o cursor sobre o shell atual.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="771"/>
+        <source>Select editor ::: Focus the cursor on the current editor.</source>
+        <translation>Selecione editor ::: Foco o cursor sobre o editor atual.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="773"/>
+        <source>Select previous file ::: Select the previously selected file.</source>
+        <translation>Selecione o arquivo anterior ::: Selecione o arquivo selecionado anteriormente.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="776"/>
+        <source>Show whitespace ::: Show spaces and tabs.</source>
+        <translation>Mostrar espaço em branco ::: Mostrar espaços e tabulações.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="778"/>
+        <source>Show line endings ::: Show the end of each line.</source>
+        <translation>Terminações Mostrar linha ::: Mostrar ao final de cada linha.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="780"/>
+        <source>Show indentation guides ::: Show vertical lines to indicate indentation.</source>
+        <translation>Mostrar recuo orienta ::: Mostrar linhas verticais para indicar recuo.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="783"/>
+        <source>Wrap long lines ::: Wrap lines that do not fit on the screen (i.e. no horizontal scrolling).</source>
+        <translation>Enrole longas filas ::: linhas envoltório que não cabem na tela (ou seja, sem a rolagem horizontal).</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="785"/>
+        <source>Highlight current line ::: Highlight the line where the cursor is.</source>
+        <translation>Destaque linha atual ::: Selecione a linha onde está o cursor.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="800"/>
+        <source>Font</source>
+        <translation>fonte</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="801"/>
+        <source>Zooming</source>
+        <translation>zunir</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="975"/>
+        <source>Clear screen ::: Clear the screen.</source>
+        <translation>Limpar ecrã ::: Limpe a tela.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="977"/>
+        <source>Interrupt ::: Interrupt the current running code (does not work for extension code).</source>
+        <translation>Interromper ::: Interromper o código de execução atual (não funciona para o código de extensão).</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="979"/>
+        <source>Restart ::: Terminate and restart the interpreter.</source>
+        <translation>Reinicie ::: Encerrar e reiniciar o intérprete.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="981"/>
+        <source>Terminate ::: Terminate the interpreter, leaving the shell open.</source>
+        <translation>Terminar ::: Terminar o intérprete, deixando a casca.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="983"/>
+        <source>Close ::: Terminate the interpreter and close the shell.</source>
+        <translation>Fechar ::: Terminar o intérprete e fechar a shell.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="993"/>
+        <source>Debug next: proceed until next line</source>
+        <translation>Depurar seguinte: continue até a próxima linha</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="995"/>
+        <source>Debug step into: proceed one step</source>
+        <translation>Retorno Depurar: Prosseguir Ate a Volta</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="997"/>
+        <source>Debug return: proceed until returns</source>
+        <translation>Depurar retorno: prosseguir até a volta</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="999"/>
+        <source>Debug continue: proceed to next breakpoint</source>
+        <translation>Depurar continuar: proceder ao próximo ponto de interrupção</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1001"/>
+        <source>Stop debugging</source>
+        <translation>Pare de depuração</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1021"/>
+        <source>Clear all {} breakpoints</source>
+        <translation>Limpe todos os {} pontos de interrupção</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1023"/>
+        <source>Postmortem: debug from last traceback</source>
+        <translation>Postmortem: debug do último rastreamento</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1103"/>
+        <source>Edit shell configurations... ::: Add new shell configs and edit interpreter properties.</source>
+        <translation>Editar configurações do shell ... ::: Adicionar novas configs shell e editar as propriedades do intérprete.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1106"/>
+        <source>New shell ... ::: Create new shell to run code in.</source>
+        <translation>New shell ... ::: Criar novo shell para executar um código dentro.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1251"/>
+        <source>Run selection ::: Run the current editor&apos;s selected lines, selected words on the current line, or current line if there is no selection.</source>
+        <translation>Seleção Corrida ::: Corrida linhas do editor atual selecionados, palavras selecionadas na linha atual, ou a linha atual se não houver nenhuma seleção.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1288"/>
+        <source>Close others::: Close all files but this one.</source>
+        <translation>Fechar outros ::: Fechar todos os arquivos, mas este.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1292"/>
+        <source>Rename ::: Rename this file.</source>
+        <translation>Renomeie ::: Renomeie esse arquivo.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1296"/>
+        <source>Copy path ::: Copy the full path of this file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1303"/>
+        <source>Pin/Unpin ::: Pinned files get closed less easily.</source>
+        <translation>Arquivos Pin / Unpin ::: Fixado ficar fechado menos facilmente.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1305"/>
+        <source>Set/Unset as MAIN file ::: The main file can be run while another file is selected.</source>
+        <translation>Activado / desactivado como arquivo principal ::: O arquivo principal pode ser executado enquanto um outro arquivo é selecionado.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1309"/>
+        <source>Run file ::: Run the code in this file.</source>
+        <translation>Corrida arquivo ::: Execute o código neste arquivo.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1311"/>
+        <source>Run file as script ::: Run this file as a script (restarts the interpreter).</source>
+        <translation>Corrida arquivo como script ::: Corrida o arquivo como um script (reinicia o intérprete).</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1369"/>
+        <source>Run file as script ::: Restart and run the current file as a script.</source>
+        <translation>Corrida arquivo como script ::: Restart e execute o arquivo atual como um script.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1371"/>
+        <source>Run main file as script ::: Restart and run the main file as a script.</source>
+        <translation>Corrida arquivo principal como script ::: Reinicie e execute o arquivo principal como um script.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1376"/>
+        <source>Execute selection ::: Execute the current editor&apos;s selected lines, selected words on the current line, or current line if there is no selection.</source>
+        <translation>Executar seleção ::: Executar linhas do editor atual selecionados, palavras selecionadas na linha atual, ou a linha atual se não houver nenhuma seleção.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1378"/>
+        <source>Execute cell ::: Execute the current editors&apos;s cell in the current shell.</source>
+        <translation>Executar celular ::: Executar célula do atual editores no shell atual.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1391"/>
+        <source>Execute cell and advance ::: Execute the current editors&apos;s cell and advance to the next cell.</source>
+        <translation>Executar celular e avanço ::: Executar celular e avanço do atual editores para a próxima célula.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1382"/>
+        <source>Execute file ::: Execute the current file in the current shell.</source>
+        <translation>Executa o ficheiro ::: Execute o arquivo atual no shell atual.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1384"/>
+        <source>Execute main file ::: Execute the main file in the current shell.</source>
+        <translation>Executa o ficheiro principal ::: Execute o arquivo principal no shell atual.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1648"/>
+        <source>Reload tools ::: For people who develop tools.</source>
+        <translation>Atualizar ferramentas ::: Para as pessoas que desenvolvem ferramentas.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1683"/>
+        <source>Ask a question ::: Need help?</source>
+        <translation>Faça uma pergunta ::: precisar de ajuda?</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1836"/>
+        <source>Automatically indent ::: Indent when pressing enter after a colon.</source>
+        <translation>Automaticamente travessão ::: recuo ao pressionar enter depois de dois pontos.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1838"/>
+        <source>Enable calltips ::: Show calltips with function signatures.</source>
+        <translation>Ativar calltips ::: Mostrar calltips com assinaturas de função.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1780"/>
+        <source>Autocomplete keywords ::: The autocompletion list includes keywords.</source>
+        <translation>Palavras preenchimento automático ::: A lista inclui autocompletar palavras.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1844"/>
+        <source>Edit key mappings... ::: Edit the shortcuts for menu items.</source>
+        <translation>Edite mapeamentos de teclas ... ::: Edite os atalhos para os itens do menu.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1846"/>
+        <source>Edit syntax styles... ::: Change the coloring of your code.</source>
+        <translation>Editar estilos de sintaxe ... ::: Mude a cor do seu código.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="482"/>
+        <source>Export to PDF ::: Export current file to PDF (e.g. for printing).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="638"/>
+        <source>Paste and select ::: Paste the text that is now on the clipboard and keep it selected in order to change its indentation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="790"/>
+        <source>Previous cell ::: Go back to the previous cell.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="792"/>
+        <source>Next cell ::: Advance to the next cell.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="794"/>
+        <source>Previous object ::: Go back to the previous top-level structure.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="796"/>
+        <source>Next object ::: Advance to the next top-level structure.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1237"/>
+        <source>Goto Definition ::: Go to definition of word under cursor.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="497"/>
+        <source>Restart Pyzo ::: Restart the application.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="499"/>
+        <source>Quit Pyzo ::: Close the application.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1685"/>
+        <source>Report an issue ::: Did you found a bug in Pyzo, or do you have a feature request?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1693"/>
+        <source>Check for updates ::: Are you using the latest version?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1696"/>
+        <source>About Pyzo ::: More information about Pyzo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1830"/>
+        <source>Select language ::: The language used by Pyzo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1674"/>
+        <source>Pyzo website ::: Open the Pyzo website in your browser.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1676"/>
+        <source>Pyzo guide ::: Open the Pyzo guide in your browser.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1687"/>
+        <source>Local documentation ::: Documentation on Python and the Scipy Stack.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="787"/>
+        <source>Highlight brackets ::: Highlight matched and unmatched brackets.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1427"/>
+        <source>There is no main file selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1629"/>
+        <source>Could not save the file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1631"/>
+        <source>Can only run scripts that are in the file system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1678"/>
+        <source>Pyzo wizard ::: Get started quickly.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="751"/>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1035"/>
+        <source>Create new Python environment... ::: Install miniconda.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1118"/>
+        <source>Create shell %s: (%s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1389"/>
+        <source>Execute selection and advance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1398"/>
+        <source>Help on running code ::: Open the pyzo wizard at the page about running code.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1596"/>
+        <source> (as script)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1757"/>
+        <source>No autocompletion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1758"/>
+        <source>Automatic popup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1759"/>
+        <source>Only show popup when pressing Tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1841"/>
+        <source>Autocompletion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1849"/>
+        <source>Advanced settings... ::: Configure Pyzo even further.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1873"/>
+        <source>
+        More settings are available via the logger-tool:
+        <byte value="xd"/><byte value="xd"/>
+        - Advanced settings are stored in the struct &quot;pyzo.config.advanced&quot;.
+          Type &quot;print(pyzo.config.advanced)&quot; to view all advanced settings.<byte value="xd"/>
+        - Call &quot;pyzo.resetConfig()&quot; to reset all settings.<byte value="xd"/>
+        - Call &quot;pyzo.resetConfig(True)&quot; to reset all settings and state.<byte value="xd"/>
+        <byte value="xd"/><byte value="xd"/>
+        Note that most settings require a restart for the change to
+        take effect.
+        </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoHistoryViewer.py" line="54"/>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoHistoryViewer.py" line="63"/>
+        <source>History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoHistoryViewer.py" line="64"/>
+        <source>Copy ::: Copy selected lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoHistoryViewer.py" line="66"/>
+        <source>Run ::: Run selected lines in current shell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoHistoryViewer.py" line="68"/>
+        <source>Remove ::: Remove selected history items(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="655"/>
+        <source>Duplicate line ::: Duplicate the selected line(s).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="657"/>
+        <source>Delete line ::: Delete the selected line(s).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="764"/>
+        <source>default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1148"/>
+        <source>Open current directory in file browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1150"/>
+        <source>Change current directory to the file browser&apos;s path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1298"/>
+        <source>Open directory in file browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1421"/>
+        <source>No shell to run code in.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1431"/>
+        <source>No editor selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1152"/>
+        <source>Change current directory to editor file path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1396"/>
+        <source>Change directory when executing file ::: like Run File As Script does</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="663"/>
+        <source>Toggle Case ::: Change selected text to lower or upper case</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1786"/>
+        <source>Auto close quotes ::: Auto close single and double quotes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1789"/>
+        <source>Auto close brackets ::: Auto close ( { [ ] } ).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1767"/>
+        <source>Tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1768"/>
+        <source>Enter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1769"/>
+        <source>Tab, Enter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1770"/>
+        <source>Tab, (, [</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1771"/>
+        <source>Tab, Enter, (, [</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>menu dialog</name>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="895"/>
+        <source>Could not run</source>
+        <translation>Não foi possível executar</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1635"/>
+        <source>Could not run script.</source>
+        <translation>Não foi possível executar script.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1727"/>
+        <source>Check for the latest version.</source>
+        <translation>Verifique se a versão mais recente.</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1864"/>
+        <source>Edit syntax styling</source>
+        <translation>Editar sintaxe estilo</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1885"/>
+        <source>Advanced settings</source>
+        <translation>configurações avançadas</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1911"/>
+        <source>Language changed</source>
+        <translation>Idioma alterado</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="2148"/>
+        <source>Edit shortcut mapping</source>
+        <translation>Mapeamento Editar atalho</translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="2297"/>
+        <source>Shortcut mappings</source>
+        <translation>mapeamentos de atalho</translation>
+    </message>
+    <message>
+        <location filename="../../core/about.py" line="15"/>
+        <source>About Pyzo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoFileBrowser/tree.py" line="908"/>
+        <source>Could not run notebook</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1906"/>
+        <source>
+        The language has been changed.
+        Pyzo needs to restart for the change to take effect.
+        </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/menu.py" line="1179"/>
+        <source>Could not change dir</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>pyzoHistoryViewer</name>
+    <message>
+        <location filename="../../tools/pyzoHistoryViewer.py" line="20"/>
+        <source>History viewer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>pyzoSourceStructure</name>
+    <message>
+        <location filename="../../tools/pyzoSourceStructure.py" line="11"/>
+        <source>Source structure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../tools/pyzoSourceStructure.py" line="172"/>
+        <source>Parsing </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>search</name>
+    <message>
+        <location filename="../../core/editorTabs.py" line="219"/>
+        <source>Hide search widget (Escape)</source>
+        <translation>Esconder widget de busca (Escape)</translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="238"/>
+        <source>Find pattern</source>
+        <translation>Encontre padrão</translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="245"/>
+        <source>Previous ::: Find previous occurrence of the pattern.</source>
+        <translation>Anterior ::: Localizar ocorrência anterior do padrão.</translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="254"/>
+        <source>Next ::: Find next occurrence of the pattern.</source>
+        <translation>Próxima ::: Localizar próxima ocorrência do padrão.</translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="271"/>
+        <source>Replace pattern</source>
+        <translation>Substituir padrão</translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="277"/>
+        <source>Replace ::: Replace this match.</source>
+        <translation>Substitua ::: Substituir este jogo.</translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="302"/>
+        <source>Match case ::: Find words that match case.</source>
+        <translation>Maiúsculas de minúsculas ::: Encontre palavras que correspondem caso.</translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="308"/>
+        <source>RegExp ::: Find using regular expressions.</source>
+        <translation>RegExp ::: Encontre usando expressões regulares.</translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="321"/>
+        <source>Whole words ::: Find only whole words.</source>
+        <translation>Palavras inteiras ::: encontrar somente palavras inteiras.</translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="328"/>
+        <source>Auto hide ::: Hide search/replace when unused for 10 s.</source>
+        <translation>Esconder Auto ::: Esconder busca / substituição quando não for utilizado por 10 s.</translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="287"/>
+        <source>one</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="288"/>
+        <source>all in this file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/editorTabs.py" line="289"/>
+        <source>all in all files</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>shell</name>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="481"/>
+        <source>name ::: The name of this configuration.</source>
+        <translation>nomear ::: O nome desta configuração.</translation>
+    </message>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="483"/>
+        <source>ipython ::: Use IPython shell if available.</source>
+        <translation>ipython ::: Use IPython shell if available.
+</translation>
+    </message>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="334"/>
+        <source>Use system default</source>
+        <translation>Utilize padrão do sistema</translation>
+    </message>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="342"/>
+        <source>File to run at startup</source>
+        <translation>Arquivo para executar na inicialização</translation>
+    </message>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="348"/>
+        <source>Code to run at startup</source>
+        <translation>Código para executar na inicialização</translation>
+    </message>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="482"/>
+        <source>exe ::: The Python executable.</source>
+        <translation>exe ::: O executável Python.</translation>
+    </message>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="484"/>
+        <source>gui ::: The GUI toolkit to integrate (for interactive plotting, etc.).</source>
+        <translation>gui ::: O kit de ferramentas GUI para integrar (para plotagem interativo, etc.).</translation>
+    </message>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="485"/>
+        <source>pythonPath ::: A list of directories to search for modules and packages. Write each path on a new line, or separate with the default seperator for this OS.</source>
+        <translation>PythonPath ::: A lista de diretórios para procurar por módulos e pacotes. Escreva cada caminho em uma nova linha, ou separar com o separador padrão para este sistema operacional.</translation>
+    </message>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="486"/>
+        <source>startupScript ::: The script to run at startup (not in script mode).</source>
+        <translation>StartupScript ::: O script para ser executado na inicialização (não no modo de script).</translation>
+    </message>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="487"/>
+        <source>startDir ::: The start directory (not in script mode).</source>
+        <translation>startDir ::: O diretório de partida (não no modo de script).</translation>
+    </message>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="488"/>
+        <source>argv ::: The command line arguments (sys.argv).</source>
+        <translation>argv ::: Os argumentos de linha de comando (sys.argv).</translation>
+    </message>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="489"/>
+        <source>environ ::: Extra environment variables (os.environ).</source>
+        <translation>ambiente ::: variáveis ​​de ambiente extra (os.environ).</translation>
+    </message>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="526"/>
+        <source>Delete ::: Delete this shell configuration</source>
+        <translation>Excluir ::: Apagar esta configuração shell</translation>
+    </message>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="603"/>
+        <source>Shell configurations</source>
+        <translation>configurações Concha</translation>
+    </message>
+    <message>
+        <location filename="../../core/shellInfoDialog.py" line="633"/>
+        <source>Add config</source>
+        <translation>Adicionar configuração</translation>
+    </message>
+</context>
+<context>
+    <name>shells</name>
+    <message>
+        <location filename="../../core/shellStack.py" line="311"/>
+        <source>Click to select shell.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>splash</name>
+    <message>
+        <location filename="../../core/splash.py" line="68"/>
+        <source>This is &lt;b&gt;Pyzo&lt;/b&gt;&lt;br /&gt;the Python IDE for scientific computing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/splash.py" line="69"/>
+        <source>Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../core/splash.py" line="70"/>
+        <source>Pyzo is open source software and freely available for everyone.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>wizard</name>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="93"/>
+        <source>Step</source>
+        <translation>passo</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="162"/>
+        <source>Welcome to the Interactive Editor for Python!</source>
+        <translation>Bem-vindo ao editor interativo para Python!</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="184"/>
+        <source>Select language</source>
+        <translation>Selecione o idioma</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="236"/>
+        <source>Language changed</source>
+        <translation>Idioma alterado</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="258"/>
+        <source>You can execute commands directly in the *shell*,</source>
+        <translation>Você pode executar comandos diretamente no shell * *</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="260"/>
+        <source>or you can write code in the *editor* and execute that.</source>
+        <translation>ou você pode escrever código no * editor * e executar isso.</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="267"/>
+        <source>The editor is where you write your code</source>
+        <translation>O editor é onde você escreve seu código</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="270"/>
+        <source>In the *editor*, each open file is represented as a tab. By
+        right-clicking on a tab, files can be run, saved, closed, etc.</source>
+        <translation>No * editor *, cada arquivo aberto é representado como um guia. Clicando com o botão direito em uma guia, os arquivos podem ser executados, salvo, fechado, etc.</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="282"/>
+        <source>The shell is where your code gets executed</source>
+        <translation>A casca é onde o código é executado</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="298"/>
+        <source>Configuring shells</source>
+        <translation>Configurando conchas</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="304"/>
+        <source>Via &apos;Shell &gt; Edit shell configurations&apos;, you can edit and add
+        *shell configurations*. This allows you to for example select the
+        initial directory, or use a custom Pythonpath.</source>
+        <translation>Via &apos;Concha configurações&gt; Editar shell&apos;, você pode editar e adicionar * configurações do shell *. Isto permite-lhe, por exemplo, selecione o diretório inicial, ou usar um PythonPath personalizado.</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="313"/>
+        <source>Running code</source>
+        <translation>código em execução</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="323"/>
+        <source>*Run cell:* a cell is everything between two lines starting with &apos;##&apos;.</source>
+        <translation>* Célula de execução: * a célula é tudo entre duas linhas que começam com &apos;# #&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="325"/>
+        <source>*Run file:* run all the code in the current file.</source>
+        <translation>* Arquivo de execução: * executar todo o código no arquivo atual.</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="327"/>
+        <source>*Run project main file:* run the code in the current project&apos;s main file.</source>
+        <translation>* Arquivo principal projeto Run: * executar o código no arquivo principal do projeto atual.</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="334"/>
+        <source>Interactive mode vs running as script</source>
+        <translation>O modo interativo vs executado como roteiro</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="343"/>
+        <source>In interactive mode, sys.path[0] is an empty string (i.e. the current dir),
+        and sys.argv is set to [&apos;&apos;].</source>
+        <translation>No modo interativo, sys.path [0] é uma cadeia vazia (ou seja, o diretório atual) e sys.argv está definido para [&apos;&apos;].</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="354"/>
+        <source>Tools for your convenience</source>
+        <translation>Ferramentas para a sua conveniência</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="357"/>
+        <source>Via the *Tools menu*, one can select which tools to use. The tools can
+        be positioned in any way you want, and can also be un-docked.</source>
+        <translation>Via o * menu Ferramentas *, pode-se selecionar quais ferramentas usar. As ferramentas podem ser posicionados em qualquer maneira que você quiser, e também pode ser un-encaixado.</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="360"/>
+        <source>Note that the tools system is designed such that it&apos;s easy to
+        create your own tools. Look at the online wiki for more information,
+        or use one of the existing tools as an example.</source>
+        <translation>Note-se que o sistema de ferramentas é projetado de tal forma que é fácil criar suas próprias ferramentas. Olhe para o wiki on-line para obter mais informações, ou utilizar uma das ferramentas existentes como exemplo.</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="369"/>
+        <source>Recommended tools</source>
+        <translation>ferramentas recomendadas</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="372"/>
+        <source>We especially recommend the following tools:</source>
+        <translation>Recomendamos especialmente as seguintes ferramentas:</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="374"/>
+        <source>The *Source structure tool* gives an outline of the source code.</source>
+        <translation>O * estrutura ferramenta Fonte * dá um esboço do código fonte.</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="376"/>
+        <source>The *File browser tool* helps keep an overview of all files
+        in a directory. To manage your projects, click the star icon.</source>
+        <translation>A ferramenta * navegador Arquivo * ajuda a manter uma visão geral de todos os arquivos em um diretório. Para gerenciar seus projetos, clique no ícone de estrela.</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="384"/>
+        <source>Get coding!</source>
+        <translation>Obter codificação!</translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="40"/>
+        <source>Getting started with Pyzo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="165"/>
+        <source>This wizard helps you get familiarized with the workings of Pyzo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="167"/>
+        <source>Pyzo is a cross-platform Python IDE
+        focused on *interactivity* and *introspection*, which makes it
+        very suitable for scientific computing. Its practical design
+        is aimed at *simplicity* and *efficiency*.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="177"/>
+        <source>This wizard can be opened using &apos;Help &gt; Pyzo wizard&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="231"/>
+        <source>
+        The language has been changed for this wizard.
+        Pyzo needs to restart for the change to take effect application-wide.
+        </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="255"/>
+        <source>Pyzo consists of two main components</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="285"/>
+        <source>When Pyzo starts, a default *shell* is created. You can add more
+        shells that run simultaneously, and which may be of different
+        Python versions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="289"/>
+        <source>Shells run in a sub-process, such that when it is busy, Pyzo
+        itself stays responsive, allowing you to keep coding and even
+        run code in another shell.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="301"/>
+        <source>Pyzo can integrate the event loop of five different *GUI toolkits*,
+        thus enabling interactive plotting with e.g. Visvis or Matplotlib.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="316"/>
+        <source>Pyzo supports several ways to run source code in the editor. (see the &apos;Run&apos; menu).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="387"/>
+        <source>This concludes the Pyzo wizard. Now, get coding and have fun!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="273"/>
+        <source>The right mouse button also enables one to make a file the
+        *main file* of a project. This file can be recognized by its star
+        symbol, and it enables running the file more easily.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="318"/>
+        <source>*Run selection:* if there is no selected text, the current line
+        is executed; if the selection is on a single line, the selection
+        is evaluated; if the selection spans multiple lines, Pyzo will
+        run the the (complete) selected lines.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="338"/>
+        <source>You can run the current file or the main file normally, or as a script.
+        When run as script, the shell is restared to provide a clean
+        environment. The shell is also initialized differently so that it
+        closely resembles a normal script execution.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../util/pyzowizard.py" line="346"/>
+        <source>In script mode, __file__ and sys.argv[0] are set to the scripts filename,
+        sys.path[0] and the working dir are set to the directory containing the script.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+</TS>
