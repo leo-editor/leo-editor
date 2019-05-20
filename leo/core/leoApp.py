@@ -2840,8 +2840,7 @@ class LoadManager(object):
             not options.minimized)
         # --silent
         g.app.silentMode = options.silent
-        # valid = 'coloring,dock,drawing,events,focus,gnx,ipython,keys,plugins,select,shutdown,startup,themes'.split(',')
-        valid = trace_m.replace(' ','').split(',')
+        valid = trace_m.replace(' ','').replace('\n','').split(',')
         if options.trace:
             values = options.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
             for val in values.split(','):
