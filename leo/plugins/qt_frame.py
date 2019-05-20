@@ -104,7 +104,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Init the base class.
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.reloadSettings()
-        main_splitter, secondary_splitter = self.createMainWindow()
+        if 'dock' in g.app.debug:
+            self.createMainWindow()
+        else:
+            main_splitter, secondary_splitter = self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")
         self.set_icon_bar_orientation(c)
         # #266 A setting to hide the icon bar.
@@ -114,8 +117,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_menubar = self.menuBar()
         self.statusBar = QtWidgets.QStatusBar()
         self.setStatusBar(self.statusBar)
-        orientation = c.config.getString('initial-split-orientation')
-        self.setSplitDirection(main_splitter, secondary_splitter, orientation)
+        if 'dock' in g.app.debug:
+            pass
+        else:
+            orientation = c.config.getString('initial-split-orientation')
+            self.setSplitDirection(main_splitter, secondary_splitter, orientation)
         if hasattr(c, 'styleSheetManager'):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
     #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
@@ -140,26 +146,57 @@ class DynamicWindow(QtWidgets.QMainWindow):
         Copied/adapted from qt_main.py.
         Called instead of uic.loadUi(ui_description_file, self)
         '''
-        dw = self
         self.setMainWindowOptions()
+        if 'dock' in g.app.debug:
+            self.setStyleSheet("background: #657b83")
+            # self.setStyleSheet("background: white;")
+            ### self.createCentralWidget()
+            #
+            # Create all the dock widgets.
+            Qt = QtCore.Qt
+            ### top = Qt.TopDockWidgetArea
+            ### bottom = Qt.BottomDockWidgetArea
+            lt = Qt.LeftDockWidgetArea
+            rt = Qt.RightDockWidgetArea
+            table = (
+                (lt, 'outline', self.createOutlinePane),
+                (lt, 'body', self.createBodyPane),
+                (rt, 'shell', None),
+                (rt, 'log', self.createLogPane),
+            )
+            for area, name, creator in table:
+                w = self.createDockWidget(name, parent=self)
+                if creator:
+                    creator(parent=w)
+                self.addDockWidget(area, w)
+            self.createMiniBuffer(self)
+            self.createMenuBar()
+            self.createStatusBar(self)
+            # Signals...
+            QtCore.QMetaObject.connectSlotsByName(self)
+            return
+        #
+        ### Old code.
         self.createCentralWidget()
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
             # Creates .verticalLayout
         if self.bigTree:
+            # Top pane contains only outline.  Bottom pane contains body and log panes.
             self.createBodyPane(secondary_splitter)
             self.createLogPane(secondary_splitter)
             treeFrame = self.createOutlinePane(main_splitter)
             main_splitter.addWidget(treeFrame)
             main_splitter.addWidget(secondary_splitter)
         else:
+            # Top pane contains outline and log panes.
             self.createOutlinePane(secondary_splitter)
             self.createLogPane(secondary_splitter)
             self.createBodyPane(main_splitter)
         self.createMiniBuffer(self.centralwidget)
         self.createMenuBar()
-        self.createStatusBar(dw)
+        self.createStatusBar(self)
         # Signals...
-        QtCore.QMetaObject.connectSlotsByName(dw)
+        QtCore.QMetaObject.connectSlotsByName(self)
         return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18142: *4* dw.top-level
     #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
@@ -174,19 +211,28 @@ class DynamicWindow(QtWidgets.QMainWindow):
         page2 = QtWidgets.QWidget()
         self.setName(page2, 'bodyPage2')
         body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
-        # Pack.
-        vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=6)
-        grid = self.createGrid(bodyFrame, 'bodyGrid')
-        innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
-        if self.use_gutter:
-            lineWidget = qt_text.LeoLineTextWidget(c, body)
-            vLayout.addWidget(lineWidget)
+        page2 = QtWidgets.QWidget()
+        self.setName(page2, 'bodyPage2')
+        body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
+        if 'dock' in g.app.debug:
+            pass
+            # sw.show()
+            # bodyFrame.show()
         else:
-            vLayout.addWidget(body)
-        sw.addWidget(page2)
-        innerGrid.addWidget(sw, 0, 0, 1, 1)
-        grid.addWidget(innerFrame, 0, 0, 1, 1)
-        self.verticalLayout.addWidget(parent)
+            # Pack.
+            vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=6)
+            grid = self.createGrid(bodyFrame, 'bodyGrid')
+            innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
+            if self.use_gutter:
+                lineWidget = qt_text.LeoLineTextWidget(c, body)
+                vLayout.addWidget(lineWidget)
+            else:
+                vLayout.addWidget(body)
+            sw.addWidget(page2)
+            innerGrid.addWidget(sw, 0, 0, 1, 1)
+            grid.addWidget(innerFrame, 0, 0, 1, 1)
+            self.verticalLayout.addWidget(parent)
+        #
         # Official ivars
         self.text_page = page2
         self.stackedWidget = sw # used by LeoQtBody
@@ -202,13 +248,18 @@ class DynamicWindow(QtWidgets.QMainWindow):
         dw.setCentralWidget(w)
         # Official ivars.
         self.centralwidget = w
+        return w
     #@+node:ekr.20110605121601.18145: *5* dw.createLogPane & helpers
     def createLogPane(self, parent):
         '''Create all parts of Leo's log pane.'''
         # Create widgets.
-        c = self.leo_c
+        dw = self
+        c = dw.leo_c
         logFrame = self.createFrame(parent, 'logFrame',
             vPolicy=QtWidgets.QSizePolicy.Minimum)
+        ###
+        # if 'dock' in g.app.debug:
+            # logFrame.setMinimumSize(500, 500)
         innerFrame = self.createFrame(logFrame, 'logInnerFrame',
             hPolicy=QtWidgets.QSizePolicy.Preferred,
             vPolicy=QtWidgets.QSizePolicy.Expanding)
@@ -277,10 +328,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18148: *5* dw.createMiniBuffer
     def createMiniBuffer(self, parent):
         '''Create the widgets for Leo's minibuffer area.'''
+        g.trace(parent)
         # Create widgets.
-        frame = self.createFrame(self.centralwidget, 'minibufferFrame',
+        frame_parent = parent if 'dock' in g.app.debug else self.centralwidget
+        frame = self.createFrame(frame_parent, 'minibufferFrame',
             hPolicy=QtWidgets.QSizePolicy.MinimumExpanding,
             vPolicy=QtWidgets.QSizePolicy.Fixed)
+        #
+        # Common code
         frame.setMinimumSize(QtCore.QSize(100, 0))
         label = self.createLabel(frame, 'minibufferLabel', 'Minibuffer:')
 
@@ -321,12 +376,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
         lineEdit = VisLineEdit(frame)
         lineEdit._sel_and_insert = (0, 0, 0)
         lineEdit.setObjectName('lineEdit') # name important.
-        # Pack.
-        hLayout = self.createHLayout(frame, 'minibufferHLayout', spacing=4)
-        hLayout.setContentsMargins(3, 2, 2, 0)
-        hLayout.addWidget(label)
-        hLayout.addWidget(lineEdit)
-        self.verticalLayout.addWidget(frame)
+        if 'dock' in g.app.debug:
+            pass
+        else:
+            # Pack.
+            hLayout = self.createHLayout(frame, 'minibufferHLayout', spacing=4)
+            hLayout.setContentsMargins(3, 2, 2, 0)
+            hLayout.addWidget(label)
+            hLayout.addWidget(lineEdit)
+            self.verticalLayout.addWidget(frame)
         label.setBuddy(lineEdit)
         # Official ivars.
         self.lineEdit = lineEdit
@@ -378,6 +436,22 @@ class DynamicWindow(QtWidgets.QMainWindow):
         w = QtWidgets.QCheckBox(parent)
         self.setName(w, name)
         w.setText(self.tr(label))
+        return w
+    #@+node:ekr.20190520055122.1: *5* dw.createDockWidget (new)
+    def createDockWidget(self, name, parent=None):
+        '''Make a new docwidget'''
+        w = QtWidgets.QDockWidget(parent or self)
+        w.setFeatures(
+            w.DockWidgetMovable |
+            w.DockWidgetFloatable | # Allow widget to be undocked.
+            w.DockWidgetClosable
+        )
+        w.setObjectName(name)
+        w.setWindowTitle(name)
+        w.setStyleSheet('background: yellow;')
+            # 'border: 3px solid red;')
+            # 'background: yellow; margin: 5px; border: 5px;')
+        w.show() # Essential!
         return w
     #@+node:ekr.20110605121601.18155: *5* dw.createFrame
     def createFrame(self, parent, name,
@@ -2010,10 +2084,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18251: *5* qtFrame.createSplitterComponents
     def createSplitterComponents(self):
+        
         c, f = self.c, self
         f.tree = qt_tree.LeoQtTree(c, f)
         f.log = LeoQtLog(f, None)
         f.body = LeoQtBody(f, None)
+        if 'dock' in g.app.debug:
+            return 
         f.splitVerticalFlag, ratio, secondary_ratio = f.initialRatios()
         f.resizePanesToRatio(ratio, secondary_ratio)
 
@@ -4497,6 +4574,15 @@ class TabbedFrameFactory(object):
         if self.masterFrame is None:
             self.createMaster()
         tabw = self.masterFrame
+        if 'dock' in g.app.debug:
+            if 0: ###
+                # Use the fusion style.
+                app = g.app.gui.qtApp
+                nativePalette = app.palette()
+                style = app.setStyle('Fusion') # 'Cleanlooks'
+                if style:
+                    g.trace('set style', repr(style))
+                    app.setPalette(nativePalette)
         dw = DynamicWindow(c, tabw)
         self.leoFrames[dw] = leoFrame
         # Shorten the title.
