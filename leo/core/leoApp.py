@@ -2714,8 +2714,6 @@ class LoadManager(object):
 
         def add_other(option, help, dest=None, m=None):
             add(option, dest=dest, help=help, metavar=m)
-            
-        trace_h ='add one or more strings to g.app.debug'
 
         add_bool('--diff',          'use Leo as an external git diff')
         add_bool('--fullscreen',    'start fullscreen')
@@ -2734,7 +2732,7 @@ class LoadManager(object):
         add_other('--select',       'headline or gnx of node to select', m='ID')
         add_bool('--silent',        'disable all log messages')
         add_other('--theme',        'use the named theme file', m='NAME')
-        add_other('--trace',        trace_h, m=trace_m)
+        add_other('--trace',        'add one or more strings to g.app.debug', m=trace_m)
         add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
         add_other('--trace-setting', 'trace where named setting is set', m="NAME")
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
