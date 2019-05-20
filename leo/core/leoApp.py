@@ -2665,6 +2665,8 @@ class LoadManager(object):
             '--session-restore',
             '--session-save',
         )
+        trace_m='''coloring,dock,drawing,events,focus,gnx,ipython,
+          keys,plugins,select,shutdown,startup,themes'''
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)
@@ -2675,12 +2677,12 @@ class LoadManager(object):
             # Automatically implements the --help option.
         #
         # Parse the options, and remove them from sys.argv.
-        self.addOptionsToParser(parser)
+        self.addOptionsToParser(parser, trace_m)
         options, args = parser.parse_args()
         sys.argv = [sys.argv[0]]
         sys.argv.extend(args)
         # Handle simple args...
-        self.doSimpleOptions(options)
+        self.doSimpleOptions(options, trace_m)
         # Compute the lm.files ivar.
         lm.files = lm.computeFilesList(options, fileName)
         script = None if pymacs else self.doScriptOption(options, parser)
@@ -2703,7 +2705,7 @@ class LoadManager(object):
     #@+node:ekr.20180312150559.1: *6* LM.addOptionsToParser
     #@@nobeautify
 
-    def addOptionsToParser(self, parser):
+    def addOptionsToParser(self, parser, trace_m):
         
         add = parser.add_option
         
@@ -2714,10 +2716,6 @@ class LoadManager(object):
             add(option, dest=dest, help=help, metavar=m)
             
         trace_h ='add one or more strings to g.app.debug'
-        trace_m='''coloring,drawing,events,focus,gnx,ipython,
-          keys,plugins,select,shutdown,startup,themes'''
-        # trace_m='LIST'
-        # trace_h='trace one or more values:   binding,coloring,drawing,events,focus,gnx,ipython,keys,plugins,settings'
 
         add_bool('--diff',          'use Leo as an external git diff')
         add_bool('--fullscreen',    'start fullscreen')
@@ -2739,18 +2737,6 @@ class LoadManager(object):
         add_other('--trace',        trace_h, m=trace_m)
         add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
         add_other('--trace-setting', 'trace where named setting is set', m="NAME")
-        # add_bool('--trace-coloring', 'trace syntax coloring')
-        # add_bool('--trace-drawing', 'trace outline redraws')
-        # add_bool('--trace-events',  'trace non-key events')
-        # add_bool('--trace-focus',   'trace changes of focus')
-        # add_bool('--trace-gnx',     'trace gnx logic')
-        # add_bool('--trace-ipython', 'trace ipython bridge')
-        # add_bool('--trace-keys',    'trace key events')
-        # add_bool('--trace-plugins', 'trace imports of plugins')
-        # add_bool('--trace-select',  'trace selection logic')
-        # add_bool('--trace-shutdown', 'trace shutdown logic')
-        # add_bool('--trace-startup',  'trace startup logic')
-        # add_bool('--trace-themes',  'trace theme init logic')
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         # Multiple bool values.
         add('-v', '--version', action='store_true',
@@ -2831,7 +2817,7 @@ class LoadManager(object):
             script = None
         return script
     #@+node:ekr.20180312151544.1: *6* LM.doSimpleOptions
-    def doSimpleOptions(self, options):
+    def doSimpleOptions(self, options, trace_m):
         '''These args just set g.app ivars.'''
         # --fail-fast
         g.app.failFast = options.fail_fast
@@ -2856,7 +2842,8 @@ class LoadManager(object):
             not options.minimized)
         # --silent
         g.app.silentMode = options.silent
-        valid = 'coloring,drawing,events,focus,gnx,ipython,keys,plugins,select,shutdown,startup,themes'.split(',')
+        # valid = 'coloring,dock,drawing,events,focus,gnx,ipython,keys,plugins,select,shutdown,startup,themes'.split(',')
+        valid = trace_m.replace(' ','').split(',')
         if options.trace:
             values = options.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
             for val in values.split(','):
