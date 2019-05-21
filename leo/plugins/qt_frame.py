@@ -328,7 +328,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18148: *5* dw.createMiniBuffer
     def createMiniBuffer(self, parent):
         '''Create the widgets for Leo's minibuffer area.'''
-        g.trace(parent)
         # Create widgets.
         frame_parent = parent if 'dock' in g.app.debug else self.centralwidget
         frame = self.createFrame(frame_parent, 'minibufferFrame',
