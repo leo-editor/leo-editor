@@ -149,7 +149,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setMainWindowOptions()
         if g.app.dock:
             # Create all the dock widgets.
-            self.setStyleSheet("background: #657b83")
+            ### self.setStyleSheet("background: #657b83")
+            self.setStyleSheet("background: black")
+                ### Temp.
             Qt = QtCore.Qt
             # top = Qt.TopDockWidgetArea
             # bottom = Qt.BottomDockWidgetArea
@@ -168,8 +170,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
             #
             # Create minibuffer.
             bottom_toolbar = QtWidgets.QToolBar(self)
-            bottom_toolbar.setStyleSheet('background: black')
-                ### Temp.
+            bottom_toolbar.setObjectName('minibuffer-toolbar')
+            ### bottom_toolbar.setStyleSheet('background: black')
             self.addToolBar(Qt.BottomToolBarArea, bottom_toolbar)
             w = self.createMiniBuffer(bottom_toolbar)
             bottom_toolbar.addWidget(w)
@@ -440,20 +442,20 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setName(w, name)
         w.setText(self.tr(label))
         return w
-    #@+node:ekr.20190520055122.1: *5* dw.createDockWidget (new)
+    #@+node:ekr.20190520055122.1: *5* dw.createDockWidget
     def createDockWidget(self, closeable, height, name):
         '''Make a new docwidget in Leo's QMainWindow.'''
         w = QtWidgets.QDockWidget(self)
             # The parent must be a QMainWindow.
+        stylesheet = '''
+            background: #657b83;
+            border: 3px solid white;
+        '''
+        features = w.DockWidgetMovable | w.DockWidgetFloatable
         if closeable:
-            w.setFeatures(
-                w.DockWidgetMovable |
-                w.DockWidgetFloatable | # Allow widget to be undocked.
-                w.DockWidgetClosable
-            )
-        else:
-             w.setFeatures(w.DockWidgetMovable | w.DockWidgetFloatable)
-        w.setStyleSheet('background: dodgerblue; border: 5px; margin: 5px;')
+            features |= w.DockWidgetClosable
+        w.setFeatures(features)
+        w.setStyleSheet(stylesheet)
         w.setMinimumHeight(height)
         w.setObjectName('dock-frame:-%s' % name)
         w.setWindowTitle(name.capitalize())
