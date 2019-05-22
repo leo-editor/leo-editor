@@ -104,7 +104,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Init the base class.
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.reloadSettings()
-        if 'dock' in g.app.debug:
+        if g.app.dock:
             self.createMainWindow()
         else:
             main_splitter, secondary_splitter = self.createMainWindow()
@@ -117,7 +117,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_menubar = self.menuBar()
         self.statusBar = QtWidgets.QStatusBar()
         self.setStatusBar(self.statusBar)
-        if 'dock' in g.app.debug:
+        if g.app.dock:
             pass
         else:
             orientation = c.config.getString('initial-split-orientation')
@@ -147,7 +147,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         Called instead of uic.loadUi(ui_description_file, self)
         '''
         self.setMainWindowOptions()
-        if 'dock' in g.app.debug:
+        if g.app.dock:
             self.setStyleSheet("background: #657b83")
             # self.setStyleSheet("background: white;")
             ### self.createCentralWidget()
@@ -214,7 +214,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         page2 = QtWidgets.QWidget()
         self.setName(page2, 'bodyPage2')
         body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
-        if 'dock' in g.app.debug:
+        if g.app.dock:
             pass
             # sw.show()
             # bodyFrame.show()
@@ -258,7 +258,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         logFrame = self.createFrame(parent, 'logFrame',
             vPolicy=QtWidgets.QSizePolicy.Minimum)
         ###
-        # if 'dock' in g.app.debug:
+        # if g.app.dock:
             # logFrame.setMinimumSize(500, 500)
         innerFrame = self.createFrame(logFrame, 'logInnerFrame',
             hPolicy=QtWidgets.QSizePolicy.Preferred,
@@ -329,7 +329,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createMiniBuffer(self, parent):
         '''Create the widgets for Leo's minibuffer area.'''
         # Create widgets.
-        frame_parent = parent if 'dock' in g.app.debug else self.centralwidget
+        frame_parent = parent if g.app.dock else self.centralwidget
         frame = self.createFrame(frame_parent, 'minibufferFrame',
             hPolicy=QtWidgets.QSizePolicy.MinimumExpanding,
             vPolicy=QtWidgets.QSizePolicy.Fixed)
@@ -375,7 +375,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         lineEdit = VisLineEdit(frame)
         lineEdit._sel_and_insert = (0, 0, 0)
         lineEdit.setObjectName('lineEdit') # name important.
-        if 'dock' in g.app.debug:
+        if g.app.dock:
             pass
         else:
             # Pack.
@@ -2088,7 +2088,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         f.tree = qt_tree.LeoQtTree(c, f)
         f.log = LeoQtLog(f, None)
         f.body = LeoQtBody(f, None)
-        if 'dock' in g.app.debug:
+        if g.app.dock:
             return 
         f.splitVerticalFlag, ratio, secondary_ratio = f.initialRatios()
         f.resizePanesToRatio(ratio, secondary_ratio)
@@ -4573,7 +4573,7 @@ class TabbedFrameFactory(object):
         if self.masterFrame is None:
             self.createMaster()
         tabw = self.masterFrame
-        if 'dock' in g.app.debug:
+        if g.app.dock:
             if 0: ###
                 # Use the fusion style.
                 app = g.app.gui.qtApp

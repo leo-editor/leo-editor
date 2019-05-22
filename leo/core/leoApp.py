@@ -95,6 +95,8 @@ class LeoApp(object):
             # A list of switches to be enabled.
         self.diff = False
             # True: run Leo in diff mode.
+        self.dock = False
+            # True: use a QDockWidget.
         self.enablePlugins = True
             # True: run start1 hook to load plugins. --no-plugins
         self.failFast = False
@@ -2665,7 +2667,7 @@ class LoadManager(object):
             '--session-restore',
             '--session-save',
         )
-        trace_m='''coloring,dock,drawing,events,focus,gnx,ipython,
+        trace_m='''coloring,drawing,events,focus,gnx,ipython,
           keys,plugins,select,shutdown,startup,themes'''
         for bad_option in table:
             if bad_option in sys.argv:
@@ -2716,6 +2718,7 @@ class LoadManager(object):
             add(option, dest=dest, help=help, metavar=m)
 
         add_bool('--diff',          'use Leo as an external git diff')
+        add_bool('--dock',          'use a Qt dock')
         add_bool('--fullscreen',    'start fullscreen')
         add_bool('--ipython',       'enable ipython support')
         add_bool('--fail-fast',     'stop unit tests after the first failure')
@@ -2817,6 +2820,8 @@ class LoadManager(object):
     #@+node:ekr.20180312151544.1: *6* LM.doSimpleOptions
     def doSimpleOptions(self, options, trace_m):
         '''These args just set g.app ivars.'''
+        # --dock
+        g.app.dock = options.dock
         # --fail-fast
         g.app.failFast = options.fail_fast
         # --fullscreen
@@ -2840,6 +2845,7 @@ class LoadManager(object):
             not options.minimized)
         # --silent
         g.app.silentMode = options.silent
+        # --trace=...
         valid = trace_m.replace(' ','').replace('\n','').split(',')
         if options.trace:
             values = options.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
