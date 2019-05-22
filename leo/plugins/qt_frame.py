@@ -149,7 +149,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setMainWindowOptions()
         if g.app.dock:
             # Create all the dock widgets.
-            ### self.setStyleSheet("background: #657b83")
             self.setStyleSheet("background: black")
                 ### Temp.
             Qt = QtCore.Qt
@@ -157,21 +156,19 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # bottom = Qt.BottomDockWidgetArea
             lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
             table = (
-                (True, 400, lt, 'outline', self.createOutlinePane),
-                (True, 400, lt, 'body', self.createBodyPane),
-                (True, 800, rt, 'log', self.createLogPane),
-                # (False, 40, bottom, 'minibuffer', self.createMiniBuffer),  
+                (True, 200, lt, 'outline', self.createOutlinePane),
+                (True, 200, lt, 'body', self.createBodyPane),
+                (True, 400, rt, 'log', self.createLogPane),
             )
             for closeable, height, area, name, creator in table:
-                w = self.createDockWidget(closeable, height, name)
-                if creator:
-                    creator(parent=w)
-                self.addDockWidget(area, w)
+                dock = self.createDockWidget(closeable, height, name)
+                w = creator(parent=None)
+                dock.setWidget(w)
+                self.addDockWidget(area, dock)
             #
             # Create minibuffer.
             bottom_toolbar = QtWidgets.QToolBar(self)
             bottom_toolbar.setObjectName('minibuffer-toolbar')
-            ### bottom_toolbar.setStyleSheet('background: black')
             self.addToolBar(Qt.BottomToolBarArea, bottom_toolbar)
             w = self.createMiniBuffer(bottom_toolbar)
             bottom_toolbar.addWidget(w)
@@ -211,9 +208,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''Create the body pane.'''
         # Create widgets.
         c = self.leo_c
+        expanding = QtWidgets.QSizePolicy.Expanding
         bodyFrame = self.createFrame(parent, 'bodyFrame')
-        innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame',
-            hPolicy=QtWidgets.QSizePolicy.Expanding)
+            # hPolicy=expanding, vPolicy=expanding)
+        innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
+            # hPolicy=expanding, vPolicy=expanding,
         sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget')
         page2 = QtWidgets.QWidget()
         self.setName(page2, 'bodyPage2')
@@ -221,23 +220,21 @@ class DynamicWindow(QtWidgets.QMainWindow):
         page2 = QtWidgets.QWidget()
         self.setName(page2, 'bodyPage2')
         body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
+        # Pack.
+        vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=6)
+        grid = self.createGrid(bodyFrame, 'bodyGrid')
+        innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
+        if self.use_gutter:
+            lineWidget = qt_text.LeoLineTextWidget(c, body)
+            vLayout.addWidget(lineWidget)
+        else:
+            vLayout.addWidget(body)
+        sw.addWidget(page2)
+        innerGrid.addWidget(sw, 0, 0, 1, 1)
+        grid.addWidget(innerFrame, 0, 0, 1, 1)
         if g.app.dock:
             pass
-            # sw.show()
-            # bodyFrame.show()
         else:
-            # Pack.
-            vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=6)
-            grid = self.createGrid(bodyFrame, 'bodyGrid')
-            innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
-            if self.use_gutter:
-                lineWidget = qt_text.LeoLineTextWidget(c, body)
-                vLayout.addWidget(lineWidget)
-            else:
-                vLayout.addWidget(body)
-            sw.addWidget(page2)
-            innerGrid.addWidget(sw, 0, 0, 1, 1)
-            grid.addWidget(innerFrame, 0, 0, 1, 1)
             self.verticalLayout.addWidget(parent)
         #
         # Official ivars
@@ -246,6 +243,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.richTextEdit = body
         self.leo_body_frame = bodyFrame
         self.leo_body_inner_frame = innerFrame
+        return bodyFrame # For dock.
     #@+node:ekr.20110605121601.18144: *5* dw.createCentralWidget
     def createCentralWidget(self):
         '''Create the central widget.'''
@@ -264,9 +262,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         c = dw.leo_c
         logFrame = self.createFrame(parent, 'logFrame',
             vPolicy=QtWidgets.QSizePolicy.Minimum)
-        ###
-        # if g.app.dock:
-            # logFrame.setMinimumSize(500, 500)
         innerFrame = self.createFrame(logFrame, 'logInnerFrame',
             hPolicy=QtWidgets.QSizePolicy.Preferred,
             vPolicy=QtWidgets.QSizePolicy.Expanding)
@@ -298,6 +293,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         tabWidget.setCurrentIndex(1)
         # Official ivars
         self.tabWidget = tabWidget # Used by LeoQtLog.
+        return logFrame # For dock.
     #@+node:ekr.20131118172620.16858: *6* dw.finishCreateLogPane
     def finishCreateLogPane(self):
         '''It's useful to create this late, because c.config is now valid.'''
@@ -457,7 +453,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         w.setFeatures(features)
         w.setStyleSheet(stylesheet)
         w.setMinimumHeight(height)
-        w.setObjectName('dock-frame:-%s' % name)
+        w.setObjectName('QDockWidget for %s' % name)
         w.setWindowTitle(name.capitalize())
         w.show() # Essential!
         return w
