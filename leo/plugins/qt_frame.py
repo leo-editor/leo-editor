@@ -156,8 +156,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
             table = (
                 (True, 200, lt, 'outline', self.createOutlinePane),
                 (True, 200, lt, 'body', self.createBodyPane),
-                (True, 400, rt, 'log', self.createLogPane),
+                (True, 400, rt, 'tabs', self.createLogPane),
             )
+            
             for closeable, height, area, name, creator in table:
                 dock = self.createDockWidget(closeable, height, name)
                 w = creator(parent=None)
@@ -206,19 +207,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''Create the body pane.'''
         # Create widgets.
         c = self.leo_c
-        bodyFrame = self.createFrame(parent, 'bodyFrame',
-            vPolicy=QtWidgets.QSizePolicy.Expanding)
+        bodyFrame = self.createFrame(parent, 'bodyFrame')
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
-        sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget')
-        page2 = QtWidgets.QWidget()
-            # For multiple body panes?
-        self.setName(page2, 'bodyPage2')
-        body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
+        sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
+             vPolicy=QtWidgets.QSizePolicy.Expanding)
         page2 = QtWidgets.QWidget()
         self.setName(page2, 'bodyPage2')
         body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
         # Pack.
-        vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=6)
+        vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0) # was: spacing=6
         grid = self.createGrid(bodyFrame, 'bodyGrid')
         innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
         if self.use_gutter:
@@ -468,7 +465,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createGrid(self, parent, name, margin=0, spacing=0):
         w = QtWidgets.QGridLayout(parent)
         w.setContentsMargins(QtCore.QMargins(margin, margin, margin, margin))
-            # 2014/08/24: honor margin argument.
         w.setSpacing(spacing)
         self.setName(w, name)
         return w
@@ -526,7 +522,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         return w
     #@+node:ekr.20110605121601.18163: *5* dw.createText
     def createText(self, parent, name,
-        # hPolicy=None,vPolicy=None,
         lineWidth=0,
         shadow=QtWidgets.QFrame.Plain,
         shape=QtWidgets.QFrame.NoFrame,
@@ -539,7 +534,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.scintilla_widget = w
         else:
             w = qt_text.LeoQTextBrowser(parent, c, None)
-            # self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
             w.setFrameShape(shape)
             w.setFrameShadow(shadow)
             w.setLineWidth(lineWidth)

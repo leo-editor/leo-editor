@@ -418,7 +418,7 @@ if QtWidgets:
     class LeoQTextBrowser(QtWidgets.QTextBrowser):
         '''A subclass of QTextBrowser that overrides the mouse event handlers.'''
         #@+others
-        #@+node:ekr.20110605121601.18006: *3*  lqtb.ctor (** no longer instantiates leo_h)
+        #@+node:ekr.20110605121601.18006: *3*  lqtb.ctor
         def __init__(self, parent, c, wrapper):
             '''ctor for LeoQTextBrowser class.'''
             for attr in ('leo_c', 'leo_wrapper',):
