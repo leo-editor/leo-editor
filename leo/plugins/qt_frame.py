@@ -148,28 +148,33 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''
         self.setMainWindowOptions()
         if g.app.dock:
-            # From createMainLayout
-            ### self.verticalLayout = self.createVLayout(self, 'mainVLayout', margin=3)
             # Create all the dock widgets.
             self.setStyleSheet("background: #657b83")
             Qt = QtCore.Qt
-            #top = Qt.TopDockWidgetArea
+            # top = Qt.TopDockWidgetArea
+            # bottom = Qt.BottomDockWidgetArea
             lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
-            bottom = Qt.BottomDockWidgetArea
             table = (
                 (True, 400, lt, 'outline', self.createOutlinePane),
                 (True, 400, lt, 'body', self.createBodyPane),
                 (True, 800, rt, 'log', self.createLogPane),
-                (False, 40, bottom, 'minibuffer', self.createMiniBuffer),  
+                # (False, 40, bottom, 'minibuffer', self.createMiniBuffer),  
             )
             for closeable, height, area, name, creator in table:
                 w = self.createDockWidget(closeable, height, name)
                 if creator:
                     creator(parent=w)
                 self.addDockWidget(area, w)
-            # Minibuffer is a special case.
-            # self.setCorner(Qt.BottomLeftCorner, bottom)
-            ### self.createMiniBuffer(self)
+            #
+            # Create minibuffer.
+            bottom_toolbar = QtWidgets.QToolBar(self)
+            bottom_toolbar.setStyleSheet('background: black')
+                ### Temp.
+            self.addToolBar(Qt.BottomToolBarArea, bottom_toolbar)
+            w = self.createMiniBuffer(bottom_toolbar)
+            bottom_toolbar.addWidget(w)
+            # 
+            # Create other widgets...
             self.createMenuBar()
             self.createStatusBar(self)
             # Signals...
@@ -387,6 +392,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.lineEdit = lineEdit
         # self.leo_minibuffer_frame = frame
         # self.leo_minibuffer_layout = layout
+        return frame
     #@+node:ekr.20110605121601.18149: *5* dw.createOutlinePane
     def createOutlinePane(self, parent):
         '''Create the widgets and ivars for Leo's outline.'''
