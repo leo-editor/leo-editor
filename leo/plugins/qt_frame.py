@@ -178,7 +178,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             QtCore.QMetaObject.connectSlotsByName(self)
             return
         #
-        # Legacy code: will not go away any time soon.
+        # Legacy code: will not go away.
         self.createCentralWidget()
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
             # Creates .verticalLayout
@@ -209,11 +209,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         bodyFrame = self.createFrame(parent, 'bodyFrame',
             vPolicy=QtWidgets.QSizePolicy.Expanding)
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
-            # hPolicy=expanding, vPolicy=expanding,
-            # hPolicy=QtWidgets.QSizePolicy.Preferred,
         sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget')
         page2 = QtWidgets.QWidget()
-            ### This is probably the cause of the "extra" area.
+            # For multiple body panes?
         self.setName(page2, 'bodyPage2')
         body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
         page2 = QtWidgets.QWidget()
@@ -4569,26 +4567,18 @@ class TabbedFrameFactory(object):
         if self.masterFrame is None:
             self.createMaster()
         tabw = self.masterFrame
-        if g.app.dock:
-            if 0: ###
-                # Use the fusion style.
-                app = g.app.gui.qtApp
-                nativePalette = app.palette()
-                style = app.setStyle('Fusion') # 'Cleanlooks'
-                if style:
-                    g.trace('set style', repr(style))
-                    app.setPalette(nativePalette)
         dw = DynamicWindow(c, tabw)
         self.leoFrames[dw] = leoFrame
         # Shorten the title.
         title = os.path.basename(c.mFileName) if c.mFileName else leoFrame.title
         tip = leoFrame.title
-        dw.setWindowTitle(tip) # 2010/1/1
+        dw.setWindowTitle(tip)
         idx = tabw.addTab(dw, title)
         if tip: tabw.setTabToolTip(idx, tip)
         dw.construct(master=tabw)
         tabw.setCurrentIndex(idx)
         g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
+        #
         # Work around the problem with missing dirty indicator
         # by always showing the tab.
         tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
