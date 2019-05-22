@@ -149,12 +149,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setMainWindowOptions()
         if g.app.dock:
             # Create all the dock widgets.
-            self.setStyleSheet("background: black")
-                ### Temp.
             Qt = QtCore.Qt
-            # top = Qt.TopDockWidgetArea
-            # bottom = Qt.BottomDockWidgetArea
+            bottom, top = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
             lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
+            g.placate_pyflakes(bottom, lt, rt, top)
             table = (
                 (True, 200, lt, 'outline', self.createOutlinePane),
                 (True, 200, lt, 'body', self.createBodyPane),
@@ -208,13 +206,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''Create the body pane.'''
         # Create widgets.
         c = self.leo_c
-        expanding = QtWidgets.QSizePolicy.Expanding
-        bodyFrame = self.createFrame(parent, 'bodyFrame')
-            # hPolicy=expanding, vPolicy=expanding)
+        bodyFrame = self.createFrame(parent, 'bodyFrame',
+            vPolicy=QtWidgets.QSizePolicy.Expanding)
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
             # hPolicy=expanding, vPolicy=expanding,
+            # hPolicy=QtWidgets.QSizePolicy.Preferred,
         sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget')
         page2 = QtWidgets.QWidget()
+            ### This is probably the cause of the "extra" area.
         self.setName(page2, 'bodyPage2')
         body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
         page2 = QtWidgets.QWidget()
@@ -443,15 +442,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''Make a new docwidget in Leo's QMainWindow.'''
         w = QtWidgets.QDockWidget(self)
             # The parent must be a QMainWindow.
-        stylesheet = '''
-            background: #657b83;
-            border: 3px solid white;
-        '''
         features = w.DockWidgetMovable | w.DockWidgetFloatable
         if closeable:
             features |= w.DockWidgetClosable
         w.setFeatures(features)
-        w.setStyleSheet(stylesheet)
         w.setMinimumHeight(height)
         w.setObjectName('QDockWidget for %s' % name)
         w.setWindowTitle(name.capitalize())
@@ -2074,9 +2068,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         f = self
         c = self.c
         assert c
-        # returns DynamicWindow
-        if 0: # #1109. This does not work. Don't know why.
-            f.setQtStyle()
         f.top = g.app.gui.frameFactory.createFrame(f)
         f.createIconBar() # A base class method.
         f.createSplitterComponents()
