@@ -148,23 +148,28 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''
         self.setMainWindowOptions()
         if g.app.dock:
+            # From createMainLayout
+            ### self.verticalLayout = self.createVLayout(self, 'mainVLayout', margin=3)
             # Create all the dock widgets.
             self.setStyleSheet("background: #657b83")
             Qt = QtCore.Qt
-            # top, bottom = Qt.TopDockWidgetArea, Qt.BottomDockWidgetArea
+            #top = Qt.TopDockWidgetArea
             lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
+            bottom = Qt.BottomDockWidgetArea
             table = (
-                (lt, 'outline', self.createOutlinePane),
-                (lt, 'body', self.createBodyPane),
-                # (rt, 'shell', None),
-                (rt, 'log', self.createLogPane),
+                (True, 400, lt, 'outline', self.createOutlinePane),
+                (True, 400, lt, 'body', self.createBodyPane),
+                (True, 800, rt, 'log', self.createLogPane),
+                (False, 40, bottom, 'minibuffer', self.createMiniBuffer),  
             )
-            for area, name, creator in table:
-                w = self.createDockWidget(name)
+            for closeable, height, area, name, creator in table:
+                w = self.createDockWidget(closeable, height, name)
                 if creator:
                     creator(parent=w)
                 self.addDockWidget(area, w)
-            self.createMiniBuffer(self)
+            # Minibuffer is a special case.
+            # self.setCorner(Qt.BottomLeftCorner, bottom)
+            ### self.createMiniBuffer(self)
             self.createMenuBar()
             self.createStatusBar(self)
             # Signals...
@@ -324,12 +329,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createMiniBuffer(self, parent):
         '''Create the widgets for Leo's minibuffer area.'''
         # Create widgets.
-        frame_parent = parent if g.app.dock else self.centralwidget
-        frame = self.createFrame(frame_parent, 'minibufferFrame',
+        frame = self.createFrame(parent, 'minibufferFrame',
             hPolicy=QtWidgets.QSizePolicy.MinimumExpanding,
             vPolicy=QtWidgets.QSizePolicy.Fixed)
-        #
-        # Common code
         frame.setMinimumSize(QtCore.QSize(100, 0))
         label = self.createLabel(frame, 'minibufferLabel', 'Minibuffer:')
 
@@ -370,14 +372,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
         lineEdit = VisLineEdit(frame)
         lineEdit._sel_and_insert = (0, 0, 0)
         lineEdit.setObjectName('lineEdit') # name important.
+        # Pack.
+        hLayout = self.createHLayout(frame, 'minibufferHLayout', spacing=4)
+        hLayout.setContentsMargins(3, 2, 2, 0)
+        hLayout.addWidget(label)
+        hLayout.addWidget(lineEdit)
         if g.app.dock:
+            # Parent is a QDockWidget.
             pass
         else:
-            # Pack.
-            hLayout = self.createHLayout(frame, 'minibufferHLayout', spacing=4)
-            hLayout.setContentsMargins(3, 2, 2, 0)
-            hLayout.addWidget(label)
-            hLayout.addWidget(lineEdit)
             self.verticalLayout.addWidget(frame)
         label.setBuddy(lineEdit)
         # Official ivars.
@@ -432,11 +435,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
         w.setText(self.tr(label))
         return w
     #@+node:ekr.20190520055122.1: *5* dw.createDockWidget (new)
-    def createDockWidget(self, name, closable=True):
+    def createDockWidget(self, closeable, height, name):
         '''Make a new docwidget in Leo's QMainWindow.'''
         w = QtWidgets.QDockWidget(self)
             # The parent must be a QMainWindow.
-        if closable:
+        if closeable:
             w.setFeatures(
                 w.DockWidgetMovable |
                 w.DockWidgetFloatable | # Allow widget to be undocked.
@@ -445,7 +448,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
              w.setFeatures(w.DockWidgetMovable | w.DockWidgetFloatable)
         w.setStyleSheet('background: dodgerblue; border: 5px; margin: 5px;')
-        w.setMinimumHeight(100)
+        w.setMinimumHeight(height)
         w.setObjectName('dock-frame:-%s' % name)
         w.setWindowTitle(name.capitalize())
         w.show() # Essential!
