@@ -148,34 +148,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''
         self.setMainWindowOptions()
         if g.app.dock:
-            # Create all the dock widgets.
-            Qt = QtCore.Qt
-            bottom, top = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
-            lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
-            g.placate_pyflakes(bottom, lt, rt, top)
-            table = (
-                (True, 200, lt, 'outline', self.createOutlinePane),
-                (True, 200, lt, 'body', self.createBodyPane),
-                (True, 400, rt, 'tabs', self.createLogPane),
-            )
-            
-            for closeable, height, area, name, creator in table:
-                dock = self.createDockWidget(closeable, height, name)
-                w = creator(parent=None)
-                dock.setWidget(w)
-                self.addDockWidget(area, dock)
-            #
-            # Create minibuffer.
-            bottom_toolbar = QtWidgets.QToolBar(self)
-            bottom_toolbar.setObjectName('minibuffer-toolbar')
-            self.addToolBar(Qt.BottomToolBarArea, bottom_toolbar)
-            w = self.createMiniBuffer(bottom_toolbar)
-            bottom_toolbar.addWidget(w)
-            # 
-            # Create other widgets...
-            self.createMenuBar()
-            self.createStatusBar(self)
-            # Signals...
+            # Widgets.
+            self.createAllDockWidgets()
+            # Signals.
             QtCore.QMetaObject.connectSlotsByName(self)
             return
         #
@@ -202,6 +177,35 @@ class DynamicWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(self)
         return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18142: *4* dw.top-level
+    #@+node:ekr.20190522165123.1: *5* dw.createAllDockWidgets
+    def createAllDockWidgets(self):
+        '''Create all the dock widgets.'''
+        Qt = QtCore.Qt
+        bottom, top = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
+        lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
+        g.placate_pyflakes(bottom, lt, rt, top)
+        table = (
+            (True, 200, lt, 'outline', self.createOutlinePane),
+            (True, 200, lt, 'body', self.createBodyPane),
+            (True, 400, rt, 'tabs', self.createLogPane),
+        )
+        
+        for closeable, height, area, name, creator in table:
+            dock = self.createDockWidget(closeable, height, name)
+            w = creator(parent=None)
+            dock.setWidget(w)
+            self.addDockWidget(area, dock)
+        #
+        # Create minibuffer.
+        bottom_toolbar = QtWidgets.QToolBar(self)
+        bottom_toolbar.setObjectName('minibuffer-toolbar')
+        self.addToolBar(Qt.BottomToolBarArea, bottom_toolbar)
+        w = self.createMiniBuffer(bottom_toolbar)
+        bottom_toolbar.addWidget(w)
+        # 
+        # Create other widgets...
+        self.createMenuBar()
+        self.createStatusBar(self)
     #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
     def createBodyPane(self, parent):
         '''Create the body pane.'''
