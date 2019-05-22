@@ -2937,7 +2937,15 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18307: *5* qtFrame.toggleSplitDirection
     @cmd('toggle-split-direction')
     def toggleSplitDirection(self, event=None):
-        '''Toggle the split direction in the present Leo window.'''
+        '''
+        Toggle the split direction in the present Leo window.
+        
+        This command does noting when --dock is in effect.
+        '''
+        if g.app.dock:
+            g.es('toggle-split-direction does nothing')
+            g.es('when --dock is in effect')
+            return
         if hasattr(self.c, 'free_layout'):
             self.c.free_layout.get_top_splitter().rotate()
     #@+node:ekr.20110605121601.18308: *5* qtFrame.resizeToScreen
