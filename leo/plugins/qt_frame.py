@@ -148,24 +148,19 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''
         self.setMainWindowOptions()
         if g.app.dock:
-            self.setStyleSheet("background: #657b83")
-            # self.setStyleSheet("background: white;")
-            ### self.createCentralWidget()
-            #
             # Create all the dock widgets.
+            self.setStyleSheet("background: #657b83")
             Qt = QtCore.Qt
-            ### top = Qt.TopDockWidgetArea
-            ### bottom = Qt.BottomDockWidgetArea
-            lt = Qt.LeftDockWidgetArea
-            rt = Qt.RightDockWidgetArea
+            # top, bottom = Qt.TopDockWidgetArea, Qt.BottomDockWidgetArea
+            lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
             table = (
                 (lt, 'outline', self.createOutlinePane),
                 (lt, 'body', self.createBodyPane),
-                (rt, 'shell', None),
+                # (rt, 'shell', None),
                 (rt, 'log', self.createLogPane),
             )
             for area, name, creator in table:
-                w = self.createDockWidget(name, parent=self)
+                w = self.createDockWidget(name)
                 if creator:
                     creator(parent=w)
                 self.addDockWidget(area, w)
@@ -176,7 +171,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             QtCore.QMetaObject.connectSlotsByName(self)
             return
         #
-        ### Old code.
+        # Legacy code: will not go away any time soon.
         self.createCentralWidget()
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
             # Creates .verticalLayout
@@ -437,19 +432,22 @@ class DynamicWindow(QtWidgets.QMainWindow):
         w.setText(self.tr(label))
         return w
     #@+node:ekr.20190520055122.1: *5* dw.createDockWidget (new)
-    def createDockWidget(self, name, parent=None):
-        '''Make a new docwidget'''
-        w = QtWidgets.QDockWidget(parent or self)
-        w.setFeatures(
-            w.DockWidgetMovable |
-            w.DockWidgetFloatable | # Allow widget to be undocked.
-            w.DockWidgetClosable
-        )
-        w.setObjectName(name)
-        w.setWindowTitle(name)
-        w.setStyleSheet('background: yellow;')
-            # 'border: 3px solid red;')
-            # 'background: yellow; margin: 5px; border: 5px;')
+    def createDockWidget(self, name, closable=True):
+        '''Make a new docwidget in Leo's QMainWindow.'''
+        w = QtWidgets.QDockWidget(self)
+            # The parent must be a QMainWindow.
+        if closable:
+            w.setFeatures(
+                w.DockWidgetMovable |
+                w.DockWidgetFloatable | # Allow widget to be undocked.
+                w.DockWidgetClosable
+            )
+        else:
+             w.setFeatures(w.DockWidgetMovable | w.DockWidgetFloatable)
+        w.setStyleSheet('background: dodgerblue; border: 5px; margin: 5px;')
+        w.setMinimumHeight(100)
+        w.setObjectName('dock-frame:-%s' % name)
+        w.setWindowTitle(name.capitalize())
         w.show() # Essential!
         return w
     #@+node:ekr.20110605121601.18155: *5* dw.createFrame
