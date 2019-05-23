@@ -264,7 +264,7 @@ class FreeLayoutController(object):
         ans.append(('Restore default layout', '_fl_restore_default:'))
         ans.append(('Help for this menu', '_fl_help:'))
         return ans
-    #@+node:tbrown.20110628083641.11732: *3* flc.ns_do_context (FreeLayoutController)
+    #@+node:tbrown.20110628083641.11732: *3* flc.ns_do_context
     def ns_do_context(self, id_, splitter, index):
         if id_.startswith('_fl_embed_layout'):
             self.embed()

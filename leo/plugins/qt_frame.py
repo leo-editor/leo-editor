@@ -990,7 +990,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
             w = c.frame.body.wrapper
             g.app.gui.set_focus(c, w)
-    #@+node:ekr.20110605121601.18178: *3* dw.setGeometry
+    #@+node:ekr.20190523064421.1: *3* dw.save/restoreWindowState
+    #@+node:ekr.20190523064553.1: *4* dw.restoreWindowState
+    def restoreWindowState(self):
+        pass
+    #@+node:ekr.20190523064527.1: *4* dw.saveWindowState
+    def saveWindowState(self):
+        pass
+    #@+node:ekr.20110605121601.18178: *4* dw.setGeometry (already exists)
     def setGeometry(self, rect):
         '''Set the window geometry, but only once when using the qttabs gui.'''
         if g.app.qt_use_tabs:
