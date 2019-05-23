@@ -437,6 +437,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         w.setText(self.tr(label))
         return w
     #@+node:ekr.20190520055122.1: *5* dw.createDockWidget
+    dock_names = []
+
     def createDockWidget(self, closeable, height, name):
         '''Make a new docwidget in Leo's QMainWindow.'''
         w = QtWidgets.QDockWidget(self)
@@ -446,7 +448,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
             features |= w.DockWidgetClosable
         w.setFeatures(features)
         w.setMinimumHeight(height)
-        w.setObjectName('QDockWidget for %s' % name)
+        if name in self.dock_names:
+            g.es_print('\nDuplicate dock name:', repr(name))
+        else:
+            self.dock_names.append(name)
+        w.setObjectName('dock.%s' % name)
         w.setWindowTitle(name.capitalize())
         w.show() # Essential!
         return w
