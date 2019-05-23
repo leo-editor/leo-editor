@@ -189,9 +189,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
         g.placate_pyflakes(bottom, lt, rt, top)
         table = (
-            (False, True, 200, lt, 'outline', self.createOutlinePane),
-            (False, True, 200, lt, 'body', self.createBodyPane),
-            (False, True, 400, rt, 'tabs', self.createLogPane),
+            (False, True, 100, lt, 'outline', self.createOutlinePane),
+            (False, True, 100, lt, 'body', self.createBodyPane),
+            (False, True, 200, rt, 'tabs', self.createLogPane),
         )
         for closeable, moveable, height, area, name, creator in table:
             dock = self.createDockWidget(closeable, moveable, height, name)
@@ -1081,6 +1081,26 @@ class DynamicWindow(QtWidgets.QMainWindow):
             g.trace('***(DynamicWindow)', s, self.parent())
             # Call the base class method.
             QtWidgets.QMainWindow.setWindowTitle(self, s)
+    #@+node:ekr.20190523115826.1: *3* dw.addEditorDock
+    added_bodies = 0
+
+    def addEditorDock(self, c):
+        '''Add an editor dock, which *can* be deleted.'''
+        ###
+            # wrapper = c.frame.body.wrapper # A QTextEditWrapper
+            # widget = wrapper.widget
+        g.trace(c.shortFileName())
+        self.added_bodies += 1
+        dock = self.createDockWidget(
+            closeable=True,
+            moveable=True,
+            height=100,
+            name='body-%s' % (self.added_bodies),
+        )
+        w = self.createBodyPane(parent=None)
+        dock.setWidget(w)
+        area = QtCore.Qt.RightDockWidgetArea
+        self.addDockWidget(area, dock)
     #@-others
 #@+node:ekr.20131117054619.16698: ** class FindTabManager
 class FindTabManager(object):
@@ -1531,11 +1551,20 @@ class LeoQtBody(leoFrame.LeoBody):
     def addEditor(self, event=None):
         '''Add another editor to the body pane.'''
         c, p = self.c, self.c.p
+        if g.app.dock:
+            ### New, highly experimental code.
+            dw = c.frame.top
+            if dw:
+                dw.addEditorDock(c)
+            else:
+                g.trace('No Dynamic Window!')
+            return
         d = self.editorWidgets
         wrapper = c.frame.body.wrapper # A QTextEditWrapper
         widget = wrapper.widget
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
+       
         if self.totalNumberOfEditors == 2:
             self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
@@ -1613,6 +1642,10 @@ class LeoQtBody(leoFrame.LeoBody):
         c, d = self.c, self.editorWidgets
         wrapper = c.frame.body.wrapper
         w = wrapper.widget
+        if g.app.dock:
+            g.es_print('not ready yet')
+            ### Maybe this can be done automatically.
+            return
         # This seems not to be a valid assertion.
             # assert wrapper == d.get(name),'wrong wrapper'
         assert g.isTextWrapper(wrapper), wrapper
