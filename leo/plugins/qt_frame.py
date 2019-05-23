@@ -186,9 +186,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
         g.placate_pyflakes(bottom, lt, rt, top)
         table = (
-            (True, 200, lt, 'outline', self.createOutlinePane),
-            (True, 200, lt, 'body', self.createBodyPane),
-            (True, 400, rt, 'tabs', self.createLogPane),
+            (False, 200, lt, 'outline', self.createOutlinePane),
+            (False, 200, lt, 'body', self.createBodyPane),
+            (False, 400, rt, 'tabs', self.createLogPane),
         )
         for closeable, height, area, name, creator in table:
             dock = self.createDockWidget(closeable, height, name)
