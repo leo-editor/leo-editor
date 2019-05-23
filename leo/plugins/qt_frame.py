@@ -190,7 +190,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             (True, 200, lt, 'body', self.createBodyPane),
             (True, 400, rt, 'tabs', self.createLogPane),
         )
-        
         for closeable, height, area, name, creator in table:
             dock = self.createDockWidget(closeable, height, name)
             w = creator(parent=None)
@@ -442,6 +441,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     def createDockWidget(self, closeable, height, name):
         '''Make a new docwidget in Leo's QMainWindow.'''
+        c = self.leo_c
         w = QtWidgets.QDockWidget(self)
             # The parent must be a QMainWindow.
         features = w.DockWidgetMovable | w.DockWidgetFloatable
@@ -449,10 +449,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
             features |= w.DockWidgetClosable
         w.setFeatures(features)
         w.setMinimumHeight(height)
-        if name in self.dock_names:
-            g.es_print('\nDuplicate dock name:', repr(name))
+        # An important check.
+        key = '%s.%s:%s' % (id(c), c.shortFileName(),name)
+        if key in self.dock_names:
+            g.es_print('\nDuplicate dock name: %s' % key)
         else:
-            self.dock_names.append(name)
+            self.dock_names.append(key)
         w.setObjectName('dock.%s' % name)
         w.setWindowTitle(name.capitalize())
         w.show() # Essential!
