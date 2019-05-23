@@ -153,6 +153,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if g.app.dock:
             # Widgets.
             self.createAllDockWidgets()
+            self.restoreWindowState()
             # Signals.
             QtCore.QMetaObject.connectSlotsByName(self)
             return
@@ -1020,8 +1021,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     method(val)
                 except Exception as err:
                     g.trace('Can not restore window %s: %s' % (kind, err))
-            else:
-                g.trace('missing c.db key:', key)
+            # This is not an error.
+            # else: g.trace('missing c.db key:', key)
     #@+node:ekr.20190523064527.1: *4* dw.saveWindowState (new)
     def saveWindowState(self):
         '''Save the window geometry and layout of dock widgets and toolbars.'''
