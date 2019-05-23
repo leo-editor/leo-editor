@@ -110,6 +110,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
             main_splitter, secondary_splitter = self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")
+        self.iconBar.setObjectName('icon-bar')
+            # Required for QMainWindow.saveState().
         self.set_icon_bar_orientation(c)
         # #266 A setting to hide the icon bar.
         # Calling reloadSettings again would also work.
@@ -973,17 +975,22 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         '''Handle a close event in the Leo window.'''
         c = self.leo_c
+        ### g.trace(c.shortFileName())
+        saver = getattr(c.frame.top, 'saveWindowState', None)
+        if saver:
+            saver() # DynamicWindow
         if not c.exists:
             # Fixes double-prompt bug on Linux.
             event.accept()
-        elif c.inCommand:
+            return
+        if c.inCommand:
             c.requestCloseWindow = True
+            return
+        ok = g.app.closeLeoWindow(c.frame)
+        if ok:
+            event.accept()
         else:
-            ok = g.app.closeLeoWindow(c.frame)
-            if ok:
-                event.accept()
-            else:
-                event.ignore()
+            event.ignore()
     #@+node:ekr.20110605121601.18173: *3* dw.select
     def select(self, c):
         '''Select the window or tab for c. self is c.frame.top.'''
@@ -1019,6 +1026,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def saveWindowState(self):
         '''Save the window geometry and layout of dock widgets and toolbars.'''
         c = self.leo_c
+        g.trace(c.shortFileName())
         table = (
             ('windowGeometry', self.saveGeometry),
             ('windowState', self.saveState),
