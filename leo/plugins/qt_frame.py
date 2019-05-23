@@ -17,6 +17,7 @@ import leo.plugins.qt_events as qt_events
 import leo.plugins.qt_text as qt_text
 import leo.plugins.qt_tree as qt_tree
 from leo.plugins.mod_scripting import build_rclick_tree
+import base64
 import os
 import sys
 import platform
@@ -991,13 +992,45 @@ class DynamicWindow(QtWidgets.QMainWindow):
             w = c.frame.body.wrapper
             g.app.gui.set_focus(c, w)
     #@+node:ekr.20190523064421.1: *3* dw.save/restoreWindowState
-    #@+node:ekr.20190523064553.1: *4* dw.restoreWindowState
+    #@+node:ekr.20190523064553.1: *4* dw.restoreWindowState (new)
     def restoreWindowState(self):
-        pass
-    #@+node:ekr.20190523064527.1: *4* dw.saveWindowState
+        '''
+        Restore window geometry and layout of dock widgets and toolbars.
+        '''
+        c = self.leo_c
+        table = (
+            ('windowGeometry', 'geometry', self.restoreGeometry),
+            ('windowState', 'state', self.restoreState),
+        )
+        for key, kind, method in table:
+            val = c.db.get(key)
+            if val:
+                try:
+                    val = base64.decodebytes(val.encode('ascii'))
+                        # Elegant pyzo code.
+                    method(val)
+                except Exception as err:
+                    g.trace('Can not restore window %s: %s' % (kind, err))
+            else:
+                g.trace('missing c.db key:', key)
+    #@+node:ekr.20190523064527.1: *4* dw.saveWindowState (new)
     def saveWindowState(self):
-        pass
-    #@+node:ekr.20110605121601.18178: *4* dw.setGeometry (already exists)
+        '''Save the window geometry and layout of dock widgets and toolbars.'''
+        c = self.leo_c
+        table = (
+            ('windowGeometry', self.saveGeometry),
+            ('windowState', self.saveState),
+        )
+        for key, method in table:
+            # This is pyzo code...
+            val = method()
+                # Method is a QMainWindow method.
+            try:
+                val = bytes(val) # PyQt4
+            except Exception:
+                val = bytes().join(val) # PySide
+            c.db [key] = base64.encodebytes(val).decode('ascii')
+    #@+node:ekr.20110605121601.18178: *4* dw.setGeometry (legacy)
     def setGeometry(self, rect):
         '''Set the window geometry, but only once when using the qttabs gui.'''
         if g.app.qt_use_tabs:
