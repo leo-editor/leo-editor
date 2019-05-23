@@ -189,12 +189,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
         g.placate_pyflakes(bottom, lt, rt, top)
         table = (
-            (False, 200, lt, 'outline', self.createOutlinePane),
-            (False, 200, lt, 'body', self.createBodyPane),
-            (False, 400, rt, 'tabs', self.createLogPane),
+            (False, True, 200, lt, 'outline', self.createOutlinePane),
+            (False, True, 200, lt, 'body', self.createBodyPane),
+            (False, True, 400, rt, 'tabs', self.createLogPane),
         )
-        for closeable, height, area, name, creator in table:
-            dock = self.createDockWidget(closeable, height, name)
+        for closeable, moveable, height, area, name, creator in table:
+            dock = self.createDockWidget(closeable, moveable, height, name)
             w = creator(parent=None)
             dock.setWidget(w)
             self.addDockWidget(area, dock)
@@ -442,12 +442,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20190520055122.1: *5* dw.createDockWidget
     dock_names = []
 
-    def createDockWidget(self, closeable, height, name):
+    def createDockWidget(self, closeable, moveable, height, name):
         '''Make a new docwidget in Leo's QMainWindow.'''
         c = self.leo_c
         w = QtWidgets.QDockWidget(self)
             # The parent must be a QMainWindow.
-        features = w.DockWidgetMovable | w.DockWidgetFloatable
+        features = w.DockWidgetFloatable
+        if moveable:
+            features |= w.DockWidgetMovable
         if closeable:
             features |= w.DockWidgetClosable
         w.setFeatures(features)
@@ -1007,6 +1009,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''
         Restore window geometry and layout of dock widgets and toolbars.
         '''
+        if not g.app.dock:
+            return
         c = self.leo_c
         table = (
             ('windowGeometry', 'geometry', self.restoreGeometry),
@@ -1027,7 +1031,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def saveWindowState(self):
         '''Save the window geometry and layout of dock widgets and toolbars.'''
         c = self.leo_c
-        g.trace(c.shortFileName())
+        if not g.app.dock:
+            return
         table = (
             ('windowGeometry', self.saveGeometry),
             ('windowState', self.saveState),
