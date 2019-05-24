@@ -189,19 +189,23 @@ class DynamicWindow(QtWidgets.QMainWindow):
         lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
         g.placate_pyflakes(bottom, lt, rt, top)
         table = (
-            (False, True, 100, lt, 'outline', self.createOutlinePane),
-            (False, True, 100, lt, 'body', self.createBodyPane),
-            (False, True, 200, rt, 'tabs', self.createLogPane),
+            (False, False, 100, lt, 'outline', self.createOutlinePane),
+            (False, True, 100, bottom, 'body', self.createBodyPane),
+            (False, True, 100, rt, 'tabs', self.createLogPane),
         )
         for closeable, moveable, height, area, name, creator in table:
             dock = self.createDockWidget(closeable, moveable, height, name)
             w = creator(parent=None)
             dock.setWidget(w)
-            self.addDockWidget(area, dock)
+            if name == 'outline':
+                self.setCentralWidget(dock)
+            else:
+                self.addDockWidget(area, dock)
         #
         # Create minibuffer.
         bottom_toolbar = QtWidgets.QToolBar(self)
         bottom_toolbar.setObjectName('minibuffer-toolbar')
+        bottom_toolbar.setWindowTitle('Minibuffer')
         self.addToolBar(Qt.BottomToolBarArea, bottom_toolbar)
         w = self.createMiniBuffer(bottom_toolbar)
         bottom_toolbar.addWidget(w)
@@ -217,7 +221,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         bodyFrame = self.createFrame(parent, 'bodyFrame')
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
         sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
-             vPolicy=QtWidgets.QSizePolicy.Expanding)
+             hPolicy=QtWidgets.QSizePolicy.Expanding,
+                # Needed for docks.
+             vPolicy=QtWidgets.QSizePolicy.Expanding,
+        )
         page2 = QtWidgets.QWidget()
         self.setName(page2, 'bodyPage2')
         body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
@@ -225,7 +232,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0) # was: spacing=6
         grid = self.createGrid(bodyFrame, 'bodyGrid')
         innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
-        if self.use_gutter:
+        if g.app.dock:
+            vLayout.addWidget(body)
+        elif self.use_gutter:
             lineWidget = qt_text.LeoLineTextWidget(c, body)
             vLayout.addWidget(lineWidget)
         else:
@@ -234,7 +243,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         innerGrid.addWidget(sw, 0, 0, 1, 1)
         grid.addWidget(innerFrame, 0, 0, 1, 1)
         if g.app.dock:
-            pass
+            # Doesn't work.
+            bodyFrame.setMinimumHeight(100)
+            bodyFrame.setMinimumWidth(400)
         else:
             self.verticalLayout.addWidget(parent)
         #
@@ -1086,9 +1097,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     def addEditorDock(self, c):
         '''Add an editor dock, which *can* be deleted.'''
-        ###
-            # wrapper = c.frame.body.wrapper # A QTextEditWrapper
-            # widget = wrapper.widget
         g.trace(c.shortFileName())
         self.added_bodies += 1
         dock = self.createDockWidget(
@@ -1099,7 +1107,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         )
         w = self.createBodyPane(parent=None)
         dock.setWidget(w)
-        area = QtCore.Qt.RightDockWidgetArea
+        area = QtCore.Qt.BottomDockWidgetArea
         self.addDockWidget(area, dock)
     #@-others
 #@+node:ekr.20131117054619.16698: ** class FindTabManager
@@ -1551,21 +1559,14 @@ class LeoQtBody(leoFrame.LeoBody):
     def addEditor(self, event=None):
         '''Add another editor to the body pane.'''
         c, p = self.c, self.c.p
-        if g.app.dock:
-            ### New, highly experimental code.
-            dw = c.frame.top
-            if dw:
-                dw.addEditorDock(c)
-            else:
-                g.trace('No Dynamic Window!')
-            return
         d = self.editorWidgets
         wrapper = c.frame.body.wrapper # A QTextEditWrapper
         widget = wrapper.widget
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
-       
-        if self.totalNumberOfEditors == 2:
+        if g.app.dock:
+            c.frame.top.addEditorDock(c)
+        elif self.totalNumberOfEditors == 2:
             self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
             # Fix #1021: Pack differently depending on whether the gutter exists.
@@ -1602,6 +1603,7 @@ class LeoQtBody(leoFrame.LeoBody):
         '''Create a new body editor.'''
         c, p = self.c, self.c.p
         parent_frame = c.frame.top.leo_body_inner_frame
+        g.trace(parent_frame.objectName())
         #
         # Step 1: create the editor.
         w = widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
