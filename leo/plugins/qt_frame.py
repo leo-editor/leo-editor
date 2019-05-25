@@ -1095,7 +1095,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     def addEditorDock(self):
         '''Add an editor dock, which *can* be deleted.'''
-        ### c = self.leo_c
         self.added_bodies += 1
         dock = self.createDockWidget(
             closeable=True,
@@ -1560,7 +1559,6 @@ class LeoQtBody(leoFrame.LeoBody):
         d = self.editorWidgets
         wrapper = c.frame.body.wrapper # A QTextEditWrapper
         widget = wrapper.widget
-        g.trace(widget.objectName()) ###
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
         if self.totalNumberOfEditors == 2:
@@ -1576,7 +1574,7 @@ class LeoQtBody(leoFrame.LeoBody):
         f, wrapper = self.addNewEditor(name)
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(widget), widget
-        assert isinstance(f, QtWidgets.QFrame), f
+        assert isinstance(f, (QtWidgets.QFrame, QtWidgets.QDockWidget)), f
         d[name] = wrapper
         if self.numberOfEditors == 2:
             # Inject the ivars into the first editor.
@@ -1606,14 +1604,12 @@ class LeoQtBody(leoFrame.LeoBody):
                 # Splits the body dock.
         else:
             parent_frame = c.frame.top.leo_body_inner_frame
-        g.trace(parent_frame.objectName()) ###
         widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
         widget.setObjectName('richTextEdit') # Will be changed later.
         wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
         self.packLabel(widget)
         #
         # Step 2: inject ivars, set bindings, etc.
-        ### self.injectIvars(parent_frame, name, p, wrapper)
         inner_frame = c.frame.top.leo_body_inner_frame
             # Inject ivars *here*, regardless of docking.
         self.injectIvars(inner_frame, name, p, wrapper)
@@ -1884,9 +1880,8 @@ class LeoQtBody(leoFrame.LeoBody):
         f = c.frame.top.leo_body_inner_frame
         if n is None: n = self.numberOfEditors
         layout = f.layout()
-        g.trace('layout', layout.objectName())
-        assert layout, g.callers()
-        ### f.setObjectName('editorFrame')
+        ### g.trace('layout', layout.objectName())
+        # 
         # Create the text: to do: use stylesheet to set font, height.
         lab = QtWidgets.QLineEdit(f)
         lab.setObjectName('editorLabel')
