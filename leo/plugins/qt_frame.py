@@ -226,11 +226,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Create widgets.
         bodyFrame = self.createFrame(parent, 'bodyFrame')
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
-        sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
-             hPolicy=QtWidgets.QSizePolicy.Expanding,
-                # Needed for docks.
-             vPolicy=QtWidgets.QSizePolicy.Expanding,
-        )
+        if g.app.dock:
+            sw = None
+        else:
+            sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
+                 hPolicy=QtWidgets.QSizePolicy.Expanding,
+                    # Needed for docks.
+                 vPolicy=QtWidgets.QSizePolicy.Expanding,
+            )
         page2 = QtWidgets.QWidget()
         self.setName(page2, 'bodyPage2')
         body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
@@ -244,8 +247,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
             vLayout.addWidget(lineWidget)
         else:
             vLayout.addWidget(body)
-        sw.addWidget(page2)
-        innerGrid.addWidget(sw, 0, 0, 1, 1)
+        if g.app.dock:
+            innerGrid.addWidget(page2, 0, 0, 1, 1)
+        else:
+            sw.addWidget(page2)
+            innerGrid.addWidget(sw, 0, 0, 1, 1)
         grid.addWidget(innerFrame, 0, 0, 1, 1)
         if g.app.dock:
             pass
@@ -1897,7 +1903,7 @@ class LeoQtBody(leoFrame.LeoBody):
         # Pack the label and the text widget.
         # layout.setHorizontalSpacing(4)
         if g.app.dock:
-            layout.addWidget(lab, 0, 0, QtCore.Qt.AlignVCenter)
+            layout.addWidget(lab, 0, 0, QtCore.Qt.AlignLeft)
             layout.addWidget(w, 1, 0)
         else:
             layout.addWidget(lab, 0, max(0, n - 1), QtCore.Qt.AlignVCenter)
