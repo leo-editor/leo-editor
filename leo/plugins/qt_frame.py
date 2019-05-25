@@ -1611,7 +1611,7 @@ class LeoQtBody(leoFrame.LeoBody):
         else:
             parent_frame = c.frame.top.leo_body_inner_frame
         widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
-        widget.setObjectName('richTextEdit')
+        widget.setObjectName('richTextEdit') # Will be changed later.
         wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
         self.packLabel(widget)
         #
@@ -1883,16 +1883,16 @@ class LeoQtBody(leoFrame.LeoBody):
     def packLabel(self, w, n=None):
         '''Pack the body frame, w.  w is a LeoQTextBrowser.'''
         c = self.c
-        parent_frame = c.frame.top.leo_body_inner_frame
+        f = c.frame.top.leo_body_inner_frame
         if n is None: n = self.numberOfEditors
-        layout = parent_frame.layout()
+        layout = f.layout()
         # 
         # Create the label.
         if g.app.dock:
-            label_frame = QtWidgets.QWidget(parent_frame)
+            label_frame = QtWidgets.QWidget(f)
             label = QtWidgets.QLineEdit(label_frame)
         else:
-            label = QtWidgets.QLineEdit(parent_frame)
+            label = QtWidgets.QLineEdit(f)
         label.setObjectName('editorLabel')
         label.setText(c.p.h)
         #
