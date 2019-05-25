@@ -196,6 +196,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
             dock = self.createDockWidget(closeable, moveable, height, name)
             w = creator(parent=None)
             dock.setWidget(w)
+            # Remember the dock.
+            setattr(self, '%s_dock' % (name), dock)
             if name == 'outline':
                 self.setCentralWidget(dock)
             else:
@@ -1095,7 +1097,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     def addEditorDock(self, c):
         '''Add an editor dock, which *can* be deleted.'''
-        g.trace(c.shortFileName())
         self.added_bodies += 1
         dock = self.createDockWidget(
             closeable=True,
@@ -1105,8 +1106,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         )
         w = self.createBodyPane(parent=None)
         dock.setWidget(w)
-        area = QtCore.Qt.BottomDockWidgetArea
-        self.addDockWidget(area, dock)
+        self.splitDockWidget(self.body_dock, dock, QtCore.Qt.Horizontal)
     #@-others
 #@+node:ekr.20131117054619.16698: ** class FindTabManager
 class FindTabManager(object):
