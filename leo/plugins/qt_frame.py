@@ -1885,9 +1885,8 @@ class LeoQtBody(leoFrame.LeoBody):
         f = c.frame.top.leo_body_inner_frame
         if n is None: n = self.numberOfEditors
         layout = f.layout()
-        g.trace(layout.objectName(), c.p.h) ###
         # 
-        # Create the text: to do: use stylesheet to set font, height.
+        # Create the label.
         if g.app.dock:
             label_frame = QtWidgets.QWidget(f)
             label = QtWidgets.QLineEdit(label_frame)
@@ -1897,9 +1896,7 @@ class LeoQtBody(leoFrame.LeoBody):
         label.setText(c.p.h)
         #
         # Pack the label and the text widget.
-        # layout.setHorizontalSpacing(4)
         if g.app.dock:
-            ### layout.addWidget(lab, 0, 0, QtCore.Qt.AlignVCenter)
             layout.addWidget(label_frame, 0, 0, QtCore.Qt.AlignVCenter)
             layout.addWidget(w, 1, 0)
         else:
