@@ -1895,10 +1895,14 @@ class LeoQtBody(leoFrame.LeoBody):
         #
         # Pack the label and the text widget.
         # layout.setHorizontalSpacing(4)
-        layout.addWidget(lab, 0, max(0, n - 1), QtCore.Qt.AlignVCenter)
-        layout.addWidget(w, 1, max(0, n - 1))
-        layout.setRowStretch(0, 0)
-        layout.setRowStretch(1, 1) # Give row 1 as much as possible.
+        if g.app.dock:
+            layout.addWidget(lab, 0, 0, QtCore.Qt.AlignVCenter)
+            layout.addWidget(w, 1, 0)
+        else:
+            layout.addWidget(lab, 0, max(0, n - 1), QtCore.Qt.AlignVCenter)
+            layout.addWidget(w, 1, max(0, n - 1))
+            layout.setRowStretch(0, 0)
+            layout.setRowStretch(1, 1) # Give row 1 as much as possible.
         w.leo_label = lab # Inject the ivar.
     #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (QScintilla only)
     def recolorWidget(self, p, wrapper):
