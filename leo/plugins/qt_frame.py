@@ -233,7 +233,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0) # was: spacing=6
         grid = self.createGrid(bodyFrame, 'bodyGrid')
         innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
-        if g.app.dock:
+        if False and g.app.dock: ###
             vLayout.addWidget(body)
         elif self.use_gutter:
             lineWidget = qt_text.LeoLineTextWidget(c, body)
@@ -1562,7 +1562,7 @@ class LeoQtBody(leoFrame.LeoBody):
         widget = wrapper.widget
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
-        if g.app.dock:
+        if False and g.app.dock: ###
             c.frame.top.addEditorDock(c)
         elif self.totalNumberOfEditors == 2:
             self.editorWidgets['1'] = wrapper
