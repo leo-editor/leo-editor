@@ -545,7 +545,7 @@ class GitDiffController:
                 c1 = c2 = None
         if c1 and c2:
             self.make_diff_outlines(c1, c2, fn)
-            self.file_node.b = '%s\n@language %s\n\@nosearch' % (
+            self.file_node.b = '%s\n@language %s\n' % (
                 self.file_node.b.rstrip(), c2.target_language)
         self.finish()
     #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
