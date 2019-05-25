@@ -1521,7 +1521,8 @@ class LeoQtBody(leoFrame.LeoBody):
         c = self.c
         top = c.frame.top
         sw = top.stackedWidget
-        sw.setCurrentIndex(1)
+        if sw:
+            sw.setCurrentIndex(1)
         if self.useScintilla and not Qsci:
             g.trace('Can not import Qsci: ignoring @bool qt-use-scintilla')
         if self.useScintilla and Qsci:
