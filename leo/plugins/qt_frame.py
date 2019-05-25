@@ -214,7 +214,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Create other widgets...
         self.createMenuBar()
         self.createStatusBar(self)
-    #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane (unchanged)
+    #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
     def createBodyPane(self, parent):
         '''Create the body pane.'''
         # Create widgets.
@@ -1549,7 +1549,7 @@ class LeoQtBody(leoFrame.LeoBody):
         w.setWordWrapMode(wrap)
     #@+node:ekr.20110605121601.18193: *3* LeoQtBody.Editors
     #@+node:ekr.20110605121601.18194: *4* LeoQtBody.entries
-    #@+node:ekr.20110605121601.18195: *5* LeoQtBody.add_editor_command & helper (unchanged)
+    #@+node:ekr.20110605121601.18195: *5* LeoQtBody.add_editor_command & helper
     # An override of leoFrame.addEditor.
 
     @cmd('editor-add')
@@ -1595,7 +1595,7 @@ class LeoQtBody(leoFrame.LeoBody):
         self.selectEditor(wrapper)
         self.updateEditors()
         c.bodyWantsFocus()
-    #@+node:ekr.20190118150859.10: *6* LeoQtBody.addNewEditor (changed)
+    #@+node:ekr.20190118150859.10: *6* LeoQtBody.addNewEditor (***)
     def addNewEditor(self, name):
         '''Create a new body editor.'''
         c, p = self.c, self.c.p
@@ -1881,7 +1881,9 @@ class LeoQtBody(leoFrame.LeoBody):
         f = c.frame.top.leo_body_inner_frame
         if n is None: n = self.numberOfEditors
         layout = f.layout()
-        f.setObjectName('editorFrame')
+        g.trace('layout', layout.objectName())
+        assert layout, g.callers()
+        ### f.setObjectName('editorFrame')
         # Create the text: to do: use stylesheet to set font, height.
         lab = QtWidgets.QLineEdit(f)
         lab.setObjectName('editorLabel')
