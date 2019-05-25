@@ -214,7 +214,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Create other widgets...
         self.createMenuBar()
         self.createStatusBar(self)
-    #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
+    #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane (unchanged)
     def createBodyPane(self, parent):
         '''Create the body pane.'''
         # Create widgets.
@@ -233,9 +233,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0) # was: spacing=6
         grid = self.createGrid(bodyFrame, 'bodyGrid')
         innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
-        if False and g.app.dock: ###
-            vLayout.addWidget(body)
-        elif self.use_gutter:
+        if self.use_gutter:
             lineWidget = qt_text.LeoLineTextWidget(c, body)
             vLayout.addWidget(lineWidget)
         else:
@@ -1095,8 +1093,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20190523115826.1: *3* dw.addEditorDock
     added_bodies = 0
 
-    def addEditorDock(self, c):
+    def addEditorDock(self):
         '''Add an editor dock, which *can* be deleted.'''
+        ### c = self.leo_c
         self.added_bodies += 1
         dock = self.createDockWidget(
             closeable=True,
@@ -1107,6 +1106,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         w = self.createBodyPane(parent=None)
         dock.setWidget(w)
         self.splitDockWidget(self.body_dock, dock, QtCore.Qt.Horizontal)
+        return dock
     #@-others
 #@+node:ekr.20131117054619.16698: ** class FindTabManager
 class FindTabManager(object):
@@ -1549,22 +1549,21 @@ class LeoQtBody(leoFrame.LeoBody):
         w.setWordWrapMode(wrap)
     #@+node:ekr.20110605121601.18193: *3* LeoQtBody.Editors
     #@+node:ekr.20110605121601.18194: *4* LeoQtBody.entries
-    #@+node:ekr.20110605121601.18195: *5* LeoQtBody.addEditor & helper
+    #@+node:ekr.20110605121601.18195: *5* LeoQtBody.add_editor_command & helper (unchanged)
     # An override of leoFrame.addEditor.
 
     @cmd('editor-add')
     @cmd('add-editor')
-    def addEditor(self, event=None):
+    def add_editor_command(self, event=None):
         '''Add another editor to the body pane.'''
         c, p = self.c, self.c.p
         d = self.editorWidgets
         wrapper = c.frame.body.wrapper # A QTextEditWrapper
         widget = wrapper.widget
+        g.trace(widget.objectName()) ###
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
-        if False and g.app.dock: ###
-            c.frame.top.addEditorDock(c)
-        elif self.totalNumberOfEditors == 2:
+        if self.totalNumberOfEditors == 2:
             self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
             # Fix #1021: Pack differently depending on whether the gutter exists.
@@ -1574,7 +1573,7 @@ class LeoQtBody(leoFrame.LeoBody):
             else:
                 self.packLabel(widget, n=1)
         name = '%d' % self.totalNumberOfEditors
-        f, wrapper = self.createEditor(name)
+        f, wrapper = self.addNewEditor(name)
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(widget), widget
         assert isinstance(f, QtWidgets.QFrame), f
@@ -1596,26 +1595,30 @@ class LeoQtBody(leoFrame.LeoBody):
         self.selectEditor(wrapper)
         self.updateEditors()
         c.bodyWantsFocus()
-    #@+node:ekr.20190118150859.10: *6* LeoQtBody.createEditor
-    def createEditor(self, name):
+    #@+node:ekr.20190118150859.10: *6* LeoQtBody.addNewEditor (changed)
+    def addNewEditor(self, name):
         '''Create a new body editor.'''
         c, p = self.c, self.c.p
-        parent_frame = c.frame.top.leo_body_inner_frame
-        g.trace(parent_frame.objectName()) ###
         #
         # Step 1: create the editor.
-        w = widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
-        w.setObjectName('richTextEdit') # Will be changed later.
-        wrapper = qt_text.QTextEditWrapper(w, name='body', c=c)
-        self.packLabel(w)
+        if False: ### g.app.dock:
+            parent_frame = c.frame.top.addEditorDock()
+                # Splits the body dock.
+        else:
+            parent_frame = c.frame.top.leo_body_inner_frame
+        g.trace(parent_frame.objectName()) ###
+        widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
+        widget.setObjectName('richTextEdit') # Will be changed later.
+        wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
+        self.packLabel(widget)
         #
         # Step 2: inject ivars, set bindings, etc.
         self.injectIvars(parent_frame, name, p, wrapper)
-        self.updateInjectedIvars(w, p)
+        self.updateInjectedIvars(widget, p)
         wrapper.setAllText(p.b)
         wrapper.see(0)
         c.k.completeAllBindingsForWidget(wrapper)
-        if isinstance(w, QtWidgets.QTextEdit):
+        if isinstance(widget, QtWidgets.QTextEdit):
             colorizer = leoColorizer.make_colorizer(c, widget, wrapper)
             colorizer.highlighter.setDocument(widget.document())
         else:
