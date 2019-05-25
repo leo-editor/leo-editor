@@ -1601,7 +1601,7 @@ class LeoQtBody(leoFrame.LeoBody):
         c, p = self.c, self.c.p
         #
         # Step 1: create the editor.
-        if False: ### g.app.dock:
+        if g.app.dock:
             parent_frame = c.frame.top.addEditorDock()
                 # Splits the body dock.
         else:
