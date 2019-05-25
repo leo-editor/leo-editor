@@ -225,11 +225,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Create widgets.
         bodyFrame = self.createFrame(parent, 'bodyFrame')
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
-        sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
-             hPolicy=QtWidgets.QSizePolicy.Expanding,
-                # Needed for docks.
-             vPolicy=QtWidgets.QSizePolicy.Expanding,
-        )
+        if g.app.dock:
+            sw = None
+        else:
+            sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
+                 hPolicy=QtWidgets.QSizePolicy.Expanding,
+                    # Needed for docks.
+                 vPolicy=QtWidgets.QSizePolicy.Expanding,
+            )
         page2 = QtWidgets.QWidget()
         self.setName(page2, 'bodyPage2')
         body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
@@ -243,8 +246,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
             vLayout.addWidget(lineWidget)
         else:
             vLayout.addWidget(body)
-        sw.addWidget(page2)
-        innerGrid.addWidget(sw, 0, 0, 1, 1)
+        if g.app.dock:
+            pass
+        else:
+            sw.addWidget(page2)
+            innerGrid.addWidget(sw, 0, 0, 1, 1)
         grid.addWidget(innerFrame, 0, 0, 1, 1)
         if g.app.dock:
             pass
@@ -1520,7 +1526,10 @@ class LeoQtBody(leoFrame.LeoBody):
         c = self.c
         top = c.frame.top
         sw = top.stackedWidget
-        sw.setCurrentIndex(1)
+        if g.app.dock:
+            pass
+        else:
+            sw.setCurrentIndex(1)
         if self.useScintilla and not Qsci:
             g.trace('Can not import Qsci: ignoring @bool qt-use-scintilla')
         if self.useScintilla and Qsci:
@@ -1880,15 +1889,15 @@ class LeoQtBody(leoFrame.LeoBody):
         w.leo_wrapper = wrapper
     #@+node:ekr.20110605121601.18212: *5* LeoQtBody.packLabel
     def packLabel(self, w, n=None):
-        '''Pack the body frame, w.  w is a LeoQTextBrowser.'''
+        '''Pack w in the body frame's grid layout.'''
         c = self.c
         f = c.frame.top.leo_body_inner_frame
-        if n is None: n = self.numberOfEditors
-        layout = f.layout()
-        g.trace(layout.objectName(), c.p.h) ###
-        # 
-        # Create the text: to do: use stylesheet to set font, height.
+        if n is None:
+            n = self.numberOfEditors
+        #
+        # Create the label.
         if g.app.dock:
+            # Allow the QLineEdit to expand.
             label_frame = QtWidgets.QWidget(f)
             label = QtWidgets.QLineEdit(label_frame)
         else:
@@ -1896,11 +1905,10 @@ class LeoQtBody(leoFrame.LeoBody):
         label.setObjectName('editorLabel')
         label.setText(c.p.h)
         #
-        # Pack the label and the text widget.
-        # layout.setHorizontalSpacing(4)
+        # Pack.
+        layout = f.layout()
         if g.app.dock:
-            ### layout.addWidget(lab, 0, 0, QtCore.Qt.AlignVCenter)
-            layout.addWidget(label_frame, 0, 0, QtCore.Qt.AlignVCenter)
+            layout.addWidget(label_frame, 0, 0, QtCore.Qt.AlignLeft)
             layout.addWidget(w, 1, 0)
         else:
             layout.addWidget(label, 0, max(0, n - 1), QtCore.Qt.AlignVCenter)
