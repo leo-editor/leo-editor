@@ -214,25 +214,23 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Create other widgets...
         self.createMenuBar()
         self.createStatusBar(self)
-    #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
+    #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane (***)
     def createBodyPane(self, parent):
         '''
         Create the body pane.
         parent is None when --dock is in effect.
         '''
         c = self.leo_c
+        g.trace(c.p and c.p.h)
         #
         # Create widgets.
         bodyFrame = self.createFrame(parent, 'bodyFrame')
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
-        if g.app.dock:
-            sw = None
-        else:
-            sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
-                 hPolicy=QtWidgets.QSizePolicy.Expanding,
-                    # Needed for docks.
-                 vPolicy=QtWidgets.QSizePolicy.Expanding,
-            )
+        sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
+             hPolicy=QtWidgets.QSizePolicy.Expanding,
+                # Needed for docks.
+             vPolicy=QtWidgets.QSizePolicy.Expanding,
+        )
         page2 = QtWidgets.QWidget()
         self.setName(page2, 'bodyPage2')
         body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
@@ -246,11 +244,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
             vLayout.addWidget(lineWidget)
         else:
             vLayout.addWidget(body)
-        if g.app.dock:
-            pass
-        else:
-            sw.addWidget(page2)
-            innerGrid.addWidget(sw, 0, 0, 1, 1)
+        sw.addWidget(page2)
+        innerGrid.addWidget(sw, 0, 0, 1, 1)
         grid.addWidget(innerFrame, 0, 0, 1, 1)
         if g.app.dock:
             pass
@@ -1526,10 +1521,7 @@ class LeoQtBody(leoFrame.LeoBody):
         c = self.c
         top = c.frame.top
         sw = top.stackedWidget
-        if g.app.dock:
-            pass
-        else:
-            sw.setCurrentIndex(1)
+        sw.setCurrentIndex(1)
         if self.useScintilla and not Qsci:
             g.trace('Can not import Qsci: ignoring @bool qt-use-scintilla')
         if self.useScintilla and Qsci:
@@ -1887,35 +1879,31 @@ class LeoQtBody(leoFrame.LeoBody):
         # w.leo_label = None # Injected by packLabel.
         w.leo_name = name
         w.leo_wrapper = wrapper
-    #@+node:ekr.20110605121601.18212: *5* LeoQtBody.packLabel
+    #@+node:ekr.20110605121601.18212: *5* LeoQtBody.packLabel (***)
     def packLabel(self, w, n=None):
-        '''Pack w in the body frame's grid layout.'''
+        '''Pack the body frame, w.  w is a LeoQTextBrowser.'''
         c = self.c
         f = c.frame.top.leo_body_inner_frame
-        if n is None:
-            n = self.numberOfEditors
-        #
-        # Create the label.
-        if g.app.dock:
-            # Allow the QLineEdit to expand.
-            label_frame = QtWidgets.QWidget(f)
-            label = QtWidgets.QLineEdit(label_frame)
-        else:
-            label = QtWidgets.QLineEdit(f)
-        label.setObjectName('editorLabel')
-        label.setText(c.p.h)
-        #
-        # Pack.
+        if n is None: n = self.numberOfEditors
         layout = f.layout()
+        g.trace(layout.objectName(), c.p.h) ###
+        # 
+        # Create the text: to do: use stylesheet to set font, height.
+        lab = QtWidgets.QLineEdit(f)
+        lab.setObjectName('editorLabel')
+        lab.setText(c.p.h)
+        #
+        # Pack the label and the text widget.
+        # layout.setHorizontalSpacing(4)
         if g.app.dock:
-            layout.addWidget(label_frame, 0, 0, QtCore.Qt.AlignLeft)
+            layout.addWidget(lab, 0, 0, QtCore.Qt.AlignVCenter)
             layout.addWidget(w, 1, 0)
         else:
-            layout.addWidget(label, 0, max(0, n - 1), QtCore.Qt.AlignVCenter)
+            layout.addWidget(lab, 0, max(0, n - 1), QtCore.Qt.AlignVCenter)
             layout.addWidget(w, 1, max(0, n - 1))
             layout.setRowStretch(0, 0)
             layout.setRowStretch(1, 1) # Give row 1 as much as possible.
-        w.leo_label = label # Inject the ivar.
+        w.leo_label = lab # Inject the ivar.
     #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (QScintilla only)
     def recolorWidget(self, p, wrapper):
         '''Support QScintillaColorizer.colorize.'''
