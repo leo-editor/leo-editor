@@ -188,7 +188,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
         g.placate_pyflakes(bottom, lt, rt, top)
         table = (
-            (False, False, 100, lt, 'outline', self.createOutlinePane),
+            (False, True, 100, lt, 'outline', self.createOutlinePane),
             (False, True, 100, bottom, 'body', self.createBodyPane),
             (False, True, 100, rt, 'tabs', self.createLogPane),
         )
@@ -1027,7 +1027,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         )
         for key, kind, method in table:
             val = c.db.get(key)
-            # if trace: g.trace(key, val)
             if val:
                 try:
                     val = base64.decodebytes(val.encode('ascii'))
