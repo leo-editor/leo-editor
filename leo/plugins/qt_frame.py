@@ -407,8 +407,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createOutlinePane(self, parent):
         '''Create the widgets and ivars for Leo's outline.'''
         # Create widgets.
-        treeFrame = self.createFrame(parent, 'outlineFrame',
-            vPolicy=QtWidgets.QSizePolicy.Expanding)
+        treeFrame = self.createFrame(parent, 'outlineFrame')
+            # vPolicy=QtWidgets.QSizePolicy.Expanding)
         innerFrame = self.createFrame(treeFrame, 'outlineInnerFrame',
             hPolicy=QtWidgets.QSizePolicy.Preferred)
         treeWidget = self.createTreeWidget(innerFrame, 'treeWidget')
@@ -458,9 +458,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         c = self.leo_c
         w = QtWidgets.QDockWidget(self)
             # The parent must be a QMainWindow.
-        features = w.DockWidgetFloatable
+        features = w.NoDockWidgetFeatures
         if moveable:
-            features |= w.DockWidgetMovable
+            features |= (w.DockWidgetMovable | w.DockWidgetFloatable)
         if closeable:
             features |= w.DockWidgetClosable
         w.setFeatures(features)
@@ -1020,6 +1020,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''
         Restore window geometry and layout of dock widgets and toolbars.
         '''
+        return ### For testing.
         if not g.app.dock:
             return
         c = self.leo_c
