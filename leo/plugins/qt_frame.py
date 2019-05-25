@@ -153,7 +153,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if g.app.dock:
             # Widgets.
             self.createAllDockWidgets()
-            self.restoreWindowState()
             # Signals.
             QtCore.QMetaObject.connectSlotsByName(self)
             return
@@ -989,7 +988,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         '''Handle a close event in the Leo window.'''
         c = self.leo_c
-        ### g.trace(c.shortFileName())
         saver = getattr(c.frame.top, 'saveWindowState', None)
         if saver:
             saver() # DynamicWindow
@@ -1020,7 +1018,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''
         Restore window geometry and layout of dock widgets and toolbars.
         '''
-        return ### For testing.
         if not g.app.dock:
             return
         c = self.leo_c
@@ -1030,6 +1027,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         )
         for key, kind, method in table:
             val = c.db.get(key)
+            # if trace: g.trace(key, val)
             if val:
                 try:
                     val = base64.decodebytes(val.encode('ascii'))
@@ -1069,6 +1067,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 m.leo_geom_inited = True
                 self.leo_master.setGeometry(rect)
                 super().setGeometry(rect)
+            # Restore dock geometry *after* restoring the overall geometry.
+            self.restoreWindowState()
         else:
             super().setGeometry(rect)
     #@+node:ekr.20110605121601.18177: *3* dw.setLeoWindowIcon
