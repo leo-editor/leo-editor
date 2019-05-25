@@ -1613,7 +1613,10 @@ class LeoQtBody(leoFrame.LeoBody):
         self.packLabel(widget)
         #
         # Step 2: inject ivars, set bindings, etc.
-        self.injectIvars(parent_frame, name, p, wrapper)
+        ### self.injectIvars(parent_frame, name, p, wrapper)
+        inner_frame = c.frame.top.leo_body_inner_frame
+            # Inject ivars *here*, regardless of docking.
+        self.injectIvars(inner_frame, name, p, wrapper)
         self.updateInjectedIvars(widget, p)
         wrapper.setAllText(p.b)
         wrapper.see(0)
