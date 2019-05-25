@@ -214,7 +214,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Create other widgets...
         self.createMenuBar()
         self.createStatusBar(self)
-    #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane (***)
+    #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
     def createBodyPane(self, parent):
         '''
         Create the body pane.
@@ -1520,8 +1520,7 @@ class LeoQtBody(leoFrame.LeoBody):
         c = self.c
         top = c.frame.top
         sw = top.stackedWidget
-        if sw:
-            sw.setCurrentIndex(1)
+        sw.setCurrentIndex(1)
         if self.useScintilla and not Qsci:
             g.trace('Can not import Qsci: ignoring @bool qt-use-scintilla')
         if self.useScintilla and Qsci:
