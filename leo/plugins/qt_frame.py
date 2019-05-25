@@ -242,9 +242,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         innerGrid.addWidget(sw, 0, 0, 1, 1)
         grid.addWidget(innerFrame, 0, 0, 1, 1)
         if g.app.dock:
-            # Doesn't work.
-            bodyFrame.setMinimumHeight(100)
-            bodyFrame.setMinimumWidth(400)
+            pass
         else:
             self.verticalLayout.addWidget(parent)
         #
@@ -406,8 +404,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createOutlinePane(self, parent):
         '''Create the widgets and ivars for Leo's outline.'''
         # Create widgets.
-        treeFrame = self.createFrame(parent, 'outlineFrame')
-            # vPolicy=QtWidgets.QSizePolicy.Expanding)
+        treeFrame = self.createFrame(parent, 'outlineFrame',
+            vPolicy=QtWidgets.QSizePolicy.Expanding)
         innerFrame = self.createFrame(treeFrame, 'outlineInnerFrame',
             hPolicy=QtWidgets.QSizePolicy.Preferred)
         treeWidget = self.createTreeWidget(innerFrame, 'treeWidget')
@@ -1603,7 +1601,7 @@ class LeoQtBody(leoFrame.LeoBody):
         '''Create a new body editor.'''
         c, p = self.c, self.c.p
         parent_frame = c.frame.top.leo_body_inner_frame
-        g.trace(parent_frame.objectName())
+        g.trace(parent_frame.objectName()) ###
         #
         # Step 1: create the editor.
         w = widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
