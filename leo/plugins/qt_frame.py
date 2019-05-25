@@ -214,11 +214,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Create other widgets...
         self.createMenuBar()
         self.createStatusBar(self)
-    #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
+    #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane (***)
     def createBodyPane(self, parent):
-        '''Create the body pane.'''
-        # Create widgets.
+        '''
+        Create the body pane.
+        parent is None when --dock is in effect.
+        '''
         c = self.leo_c
+        g.trace(c.p and c.p.h)
+        #
+        # Create widgets.
         bodyFrame = self.createFrame(parent, 'bodyFrame')
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
         sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
@@ -229,8 +234,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         page2 = QtWidgets.QWidget()
         self.setName(page2, 'bodyPage2')
         body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
+        #
         # Pack.
-        vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0) # was: spacing=6
+        vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0)
         grid = self.createGrid(bodyFrame, 'bodyGrid')
         innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
         if self.use_gutter:
@@ -1593,7 +1599,7 @@ class LeoQtBody(leoFrame.LeoBody):
         self.selectEditor(wrapper)
         self.updateEditors()
         c.bodyWantsFocus()
-    #@+node:ekr.20190118150859.10: *6* LeoQtBody.addNewEditor (***)
+    #@+node:ekr.20190118150859.10: *6* LeoQtBody.addNewEditor
     def addNewEditor(self, name):
         '''Create a new body editor.'''
         c, p = self.c, self.c.p
@@ -1873,14 +1879,14 @@ class LeoQtBody(leoFrame.LeoBody):
         # w.leo_label = None # Injected by packLabel.
         w.leo_name = name
         w.leo_wrapper = wrapper
-    #@+node:ekr.20110605121601.18212: *5* LeoQtBody.packLabel
+    #@+node:ekr.20110605121601.18212: *5* LeoQtBody.packLabel (***)
     def packLabel(self, w, n=None):
-
+        '''Pack the body frame, w.  w is a LeoQTextBrowser.'''
         c = self.c
         f = c.frame.top.leo_body_inner_frame
         if n is None: n = self.numberOfEditors
         layout = f.layout()
-        ### g.trace('layout', layout.objectName())
+        g.trace(layout.objectName(), c.p.h) ###
         # 
         # Create the text: to do: use stylesheet to set font, height.
         lab = QtWidgets.QLineEdit(f)
