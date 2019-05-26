@@ -211,8 +211,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
             else:
                 # Scintilla only.
                 body.recolorWidget(p, wrapper)
-            return parent_frame, wrapper
+
             #@-<< legacy dw.addNewEditor >>
+            return parent_frame, wrapper
         #
         # Step 1: create the editor.
         parent_frame = self.addEditorDock()
@@ -314,8 +315,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.richTextEdit = body
             self.leo_body_frame = bodyFrame
             self.leo_body_inner_frame = innerFrame
-            return bodyFrame # For dock.
             #@-<< legacy createBodyPane >>
+            return bodyFrame
         #
         # Create widgets.
         bodyFrame = self.createFrame(parent, 'bodyFrame')
@@ -337,7 +338,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.richTextEdit = body
         self.leo_body_frame = bodyFrame
         self.leo_body_inner_frame = innerFrame
-        return bodyFrame # For dock.
+        return bodyFrame
     #@+node:ekr.20110605121601.18144: *5* dw.createCentralWidget
     def createCentralWidget(self):
         '''Create the central widget.'''
@@ -534,8 +535,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
             layout.setRowStretch(0, 0)
             layout.setRowStretch(1, 1) # Give row 1 as much as possible.
             w.leo_label = lab # Inject the ivar.
-            return
+
             #@-<< legacy dw.packLabel >>
+            return
         #
         # Reuse the grid layout in the body frame.
         grid = self.leo_body_frame.layout()
