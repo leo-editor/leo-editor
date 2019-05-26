@@ -221,19 +221,47 @@ class DynamicWindow(QtWidgets.QMainWindow):
         parent is None when --dock is in effect.
         '''
         c = self.leo_c
-        g.trace(c.p and c.p.h)
+        if g.app.dock:
+            g.trace(c.p and c.p.h)
+            #
+            # Create widgets.
+            bodyFrame = self.createFrame(parent, 'bodyFrame')
+            innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
+            page2 = QtWidgets.QWidget()
+            self.setName(page2, 'bodyPage2')
+            body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
+            #
+            # Pack.
+            vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0)
+            grid = self.createGrid(bodyFrame, 'bodyGrid')
+            innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
+            if self.use_gutter:
+                lineWidget = qt_text.LeoLineTextWidget(c, body)
+                vLayout.addWidget(lineWidget)
+            else:
+                vLayout.addWidget(body)
+            
+                innerGrid.addWidget(page2, 0, 0)
+            grid.addWidget(innerFrame, 0, 0, 1, 1)
+            #
+            # Official ivars
+            self.text_page = page2
+            self.stackedWidget = None # used by LeoQtBody
+            self.richTextEdit = body
+            self.leo_body_frame = bodyFrame
+            self.leo_body_inner_frame = innerFrame
+            return bodyFrame # For dock.
+        #
+        # Legacy code
         #
         # Create widgets.
         bodyFrame = self.createFrame(parent, 'bodyFrame')
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
-        if g.app.dock:
-            sw = None
-        else:
-            sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
-                 hPolicy=QtWidgets.QSizePolicy.Expanding,
-                    # Needed for docks.
-                 vPolicy=QtWidgets.QSizePolicy.Expanding,
-            )
+        sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
+             hPolicy=QtWidgets.QSizePolicy.Expanding,
+                # Needed for docks.
+             vPolicy=QtWidgets.QSizePolicy.Expanding,
+        )
         page2 = QtWidgets.QWidget()
         self.setName(page2, 'bodyPage2')
         body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
@@ -247,16 +275,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
             vLayout.addWidget(lineWidget)
         else:
             vLayout.addWidget(body)
-        if g.app.dock:
-            innerGrid.addWidget(page2, 0, 0, 1, 1)
-        else:
-            sw.addWidget(page2)
-            innerGrid.addWidget(sw, 0, 0, 1, 1)
+        sw.addWidget(page2)
+        innerGrid.addWidget(sw, 0, 0, 1, 1)
         grid.addWidget(innerFrame, 0, 0, 1, 1)
-        if g.app.dock:
-            pass
-        else:
-            self.verticalLayout.addWidget(parent)
+        self.verticalLayout.addWidget(parent)
         #
         # Official ivars
         self.text_page = page2
@@ -1890,20 +1912,25 @@ class LeoQtBody(leoFrame.LeoBody):
     def packLabel(self, w, n=None):
         '''Pack the body frame, w.  w is a LeoQTextBrowser.'''
         c = self.c
+        Qt = QtCore.Qt
         f = c.frame.top.leo_body_inner_frame
         if n is None: n = self.numberOfEditors
         layout = f.layout()
-        g.trace(layout.objectName(), c.p.h) ###
+        g.trace(layout.objectName(), layout.parent().objectName(), c.p.h) ###
         # 
         # Create the text: to do: use stylesheet to set font, height.
+        ### Doesn't work
+            # policy = QtWidgets.QSizePolicy
+            # label_frame = QtWidgets.QFrame(f)
+            # label_frame.setSizePolicy(policy.MinimumExpanding, policy.Minimum)
+            # lab = QtWidgets.QLineEdit(label_frame)
         lab = QtWidgets.QLineEdit(f)
         lab.setObjectName('editorLabel')
         lab.setText(c.p.h)
         #
         # Pack the label and the text widget.
-        # layout.setHorizontalSpacing(4)
         if g.app.dock:
-            layout.addWidget(lab, 0, 0, QtCore.Qt.AlignLeft)
+            layout.addWidget(lab, 0, 0, Qt.AlignLeft)
             layout.addWidget(w, 1, 0)
         else:
             layout.addWidget(lab, 0, max(0, n - 1), QtCore.Qt.AlignVCenter)
