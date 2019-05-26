@@ -252,7 +252,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.leo_body_inner_frame = innerFrame
             return bodyFrame # For dock.
         #
-        # Legacy code
+        # Legacy code...
         #
         # Create widgets.
         bodyFrame = self.createFrame(parent, 'bodyFrame')
@@ -1913,30 +1913,48 @@ class LeoQtBody(leoFrame.LeoBody):
         '''Pack the body frame, w.  w is a LeoQTextBrowser.'''
         c = self.c
         Qt = QtCore.Qt
+        if g.app.dock:
+            f = c.frame.top.leo_body_inner_frame
+            layout = f.layout()
+            g.trace(layout.objectName(), layout.parent().objectName(), c.p.h) ###
+            
+            # g.trace('%s\n%s' % (layout, w.parent().parent(), layout()))
+            # 
+            # Create the text: to do: use stylesheet to set font, height.
+            ### Doesn't work
+                # policy = QtWidgets.QSizePolicy
+                # label_frame = QtWidgets.QFrame(f)
+                # label_frame.setSizePolicy(policy.MinimumExpanding, policy.Minimum)
+                # lab = QtWidgets.QLineEdit(label_frame)
+            lab = QtWidgets.QLineEdit(f)
+            lab.setObjectName('editorLabel')
+            lab.setText(c.p.h)
+            #
+            # Pack the label and the text widget.
+            layout.addWidget(lab, 0, 0, Qt.AlignLeft)
+            layout.addWidget(w, 1, 0)
+            layout.setRowStretch(0, 0)
+            layout.setRowStretch(1, 1) # Give row 1 as much as possible.
+            w.leo_label = lab # Inject the ivar.
+            return
+        #
+        # Legacy code...
+        #
         f = c.frame.top.leo_body_inner_frame
         if n is None: n = self.numberOfEditors
         layout = f.layout()
         g.trace(layout.objectName(), layout.parent().objectName(), c.p.h) ###
         # 
-        # Create the text: to do: use stylesheet to set font, height.
-        ### Doesn't work
-            # policy = QtWidgets.QSizePolicy
-            # label_frame = QtWidgets.QFrame(f)
-            # label_frame.setSizePolicy(policy.MinimumExpanding, policy.Minimum)
-            # lab = QtWidgets.QLineEdit(label_frame)
+        # Create the text.
         lab = QtWidgets.QLineEdit(f)
         lab.setObjectName('editorLabel')
         lab.setText(c.p.h)
         #
         # Pack the label and the text widget.
-        if g.app.dock:
-            layout.addWidget(lab, 0, 0, Qt.AlignLeft)
-            layout.addWidget(w, 1, 0)
-        else:
-            layout.addWidget(lab, 0, max(0, n - 1), QtCore.Qt.AlignVCenter)
-            layout.addWidget(w, 1, max(0, n - 1))
-            layout.setRowStretch(0, 0)
-            layout.setRowStretch(1, 1) # Give row 1 as much as possible.
+        layout.addWidget(lab, 0, max(0, n - 1), QtCore.Qt.AlignVCenter)
+        layout.addWidget(w, 1, max(0, n - 1))
+        layout.setRowStretch(0, 0)
+        layout.setRowStretch(1, 1) # Give row 1 as much as possible.
         w.leo_label = lab # Inject the ivar.
     #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (QScintilla only)
     def recolorWidget(self, p, wrapper):
