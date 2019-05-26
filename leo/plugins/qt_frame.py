@@ -180,6 +180,40 @@ class DynamicWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(self)
         return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18142: *4* dw.top-level
+    #@+node:ekr.20190118150859.10: *5* dw.addNewEditor (***)
+    def addNewEditor(self, name):
+        '''Create a new body editor.'''
+        c, p = self.leo_c, self.leo_c.p
+        body = c.frame.body
+        assert isinstance(body, LeoQtBody), repr(body)
+        #
+        # Step 1: create the editor.
+        if g.app.dock:
+            parent_frame = self.addEditorDock()
+            widget = qt_text.LeoQTextBrowser(None, c, self)
+                # Splits the body dock.
+        else:
+            parent_frame = c.frame.top.leo_body_inner_frame
+            widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
+        widget.setObjectName('richTextEdit') # Will be changed later.
+        wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
+        self.packLabel(widget)
+        #
+        # Step 2: inject ivars, set bindings, etc.
+        inner_frame = c.frame.top.leo_body_inner_frame
+            # Inject ivars *here*, regardless of docking.
+        body.injectIvars(inner_frame, name, p, wrapper)
+        body.updateInjectedIvars(widget, p)
+        wrapper.setAllText(p.b)
+        wrapper.see(0)
+        c.k.completeAllBindingsForWidget(wrapper)
+        if isinstance(widget, QtWidgets.QTextEdit):
+            colorizer = leoColorizer.make_colorizer(c, widget, wrapper)
+            colorizer.highlighter.setDocument(widget.document())
+        else:
+            # Scintilla only.
+            body.recolorWidget(p, wrapper)
+        return parent_frame, wrapper
     #@+node:ekr.20190522165123.1: *5* dw.createAllDockWidgets
     def createAllDockWidgets(self):
         '''Create all the dock widgets.'''
@@ -457,6 +491,55 @@ class DynamicWindow(QtWidgets.QMainWindow):
         parent.setStatusBar(w)
         # Official ivars.
         self.statusBar = w
+    #@+node:ekr.20110605121601.18212: *5* dw.packLabel (***)
+    def packLabel(self, w, n=None):
+        '''Pack the body frame, w.  w is a LeoQTextBrowser.'''
+        c = self.leo_c
+        Qt = QtCore.Qt
+        if g.app.dock:
+            f = c.frame.top.leo_body_inner_frame
+            ### Wrong.
+            ### assert f == w.parent().parent(), w.parent().parent().objectName()
+            layout = f.layout()
+            g.trace(layout.objectName(), layout.parent().objectName(), c.p.h) ###
+            
+            # 
+            # Create the text: to do: use stylesheet to set font, height.
+            ### Doesn't work
+                # policy = QtWidgets.QSizePolicy
+                # label_frame = QtWidgets.QFrame(f)
+                # label_frame.setSizePolicy(policy.MinimumExpanding, policy.Minimum)
+                # lab = QtWidgets.QLineEdit(label_frame)
+            lab = QtWidgets.QLineEdit(f)
+            lab.setObjectName('editorLabel')
+            lab.setText(c.p.h)
+            #
+            # Pack the label and the text widget.
+            layout.addWidget(lab, 0, 0, Qt.AlignLeft)
+            layout.addWidget(w, 1, 0)
+            layout.setRowStretch(0, 0)
+            layout.setRowStretch(1, 1) # Give row 1 as much as possible.
+            w.leo_label = lab # Inject the ivar.
+            return
+        #
+        # Legacy code...
+        #
+        f = c.frame.top.leo_body_inner_frame
+        if n is None: n = self.numberOfEditors
+        layout = f.layout()
+        g.trace(layout.objectName(), layout.parent().objectName(), c.p.h) ###
+        # 
+        # Create the text.
+        lab = QtWidgets.QLineEdit(f)
+        lab.setObjectName('editorLabel')
+        lab.setText(c.p.h)
+        #
+        # Pack the label and the text widget.
+        layout.addWidget(lab, 0, max(0, n - 1), QtCore.Qt.AlignVCenter)
+        layout.addWidget(w, 1, max(0, n - 1))
+        layout.setRowStretch(0, 0)
+        layout.setRowStretch(1, 1) # Give row 1 as much as possible.
+        w.leo_label = lab # Inject the ivar.
     #@+node:ekr.20110605121601.18151: *5* dw.setMainWindowOptions
     def setMainWindowOptions(self):
         '''Set default options for Leo's main window.'''
@@ -1590,6 +1673,7 @@ class LeoQtBody(leoFrame.LeoBody):
     def add_editor_command(self, event=None):
         '''Add another editor to the body pane.'''
         c, p = self.c, self.c.p
+        dw = c.frame.top
         d = self.editorWidgets
         wrapper = c.frame.body.wrapper # A QTextEditWrapper
         widget = wrapper.widget
@@ -1600,12 +1684,13 @@ class LeoQtBody(leoFrame.LeoBody):
             # Pack the original body editor.
             # Fix #1021: Pack differently depending on whether the gutter exists.
             if self.use_gutter:
-                self.packLabel(widget.parent(), n=1)
+                dw.packLabel(widget.parent(), n=1)
                 widget.leo_label = widget.parent().leo_label
             else:
-                self.packLabel(widget, n=1)
+                dw.packLabel(widget, n=1)
         name = '%d' % self.totalNumberOfEditors
-        f, wrapper = self.addNewEditor(name)
+        ### f, wrapper = self.addNewEditor(name)
+        f, wrapper = dw.addNewEditor(name)
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(widget), widget
         assert isinstance(f, (QtWidgets.QFrame, QtWidgets.QDockWidget)), f
@@ -1627,37 +1712,6 @@ class LeoQtBody(leoFrame.LeoBody):
         self.selectEditor(wrapper)
         self.updateEditors()
         c.bodyWantsFocus()
-    #@+node:ekr.20190118150859.10: *6* LeoQtBody.addNewEditor
-    def addNewEditor(self, name):
-        '''Create a new body editor.'''
-        c, p = self.c, self.c.p
-        #
-        # Step 1: create the editor.
-        if g.app.dock:
-            parent_frame = c.frame.top.addEditorDock()
-                # Splits the body dock.
-        else:
-            parent_frame = c.frame.top.leo_body_inner_frame
-        widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
-        widget.setObjectName('richTextEdit') # Will be changed later.
-        wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
-        self.packLabel(widget)
-        #
-        # Step 2: inject ivars, set bindings, etc.
-        inner_frame = c.frame.top.leo_body_inner_frame
-            # Inject ivars *here*, regardless of docking.
-        self.injectIvars(inner_frame, name, p, wrapper)
-        self.updateInjectedIvars(widget, p)
-        wrapper.setAllText(p.b)
-        wrapper.see(0)
-        c.k.completeAllBindingsForWidget(wrapper)
-        if isinstance(widget, QtWidgets.QTextEdit):
-            colorizer = leoColorizer.make_colorizer(c, widget, wrapper)
-            colorizer.highlighter.setDocument(widget.document())
-        else:
-            # Scintilla only.
-            self.recolorWidget(p, wrapper)
-        return parent_frame, wrapper
     #@+node:ekr.20110605121601.18197: *5* LeoQtBody.assignPositionToEditor
     def assignPositionToEditor(self, p):
         '''Called *only* from tree.select to select the present body editor.'''
@@ -1907,55 +1961,6 @@ class LeoQtBody(leoFrame.LeoBody):
         # w.leo_label = None # Injected by packLabel.
         w.leo_name = name
         w.leo_wrapper = wrapper
-    #@+node:ekr.20110605121601.18212: *5* LeoQtBody.packLabel (***)
-    def packLabel(self, w, n=None):
-        '''Pack the body frame, w.  w is a LeoQTextBrowser.'''
-        c = self.c
-        Qt = QtCore.Qt
-        if g.app.dock:
-            f = c.frame.top.leo_body_inner_frame
-            ### Wrong.
-            ### assert f == w.parent().parent(), w.parent().parent().objectName()
-            layout = f.layout()
-            g.trace(layout.objectName(), layout.parent().objectName(), c.p.h) ###
-            
-            # 
-            # Create the text: to do: use stylesheet to set font, height.
-            ### Doesn't work
-                # policy = QtWidgets.QSizePolicy
-                # label_frame = QtWidgets.QFrame(f)
-                # label_frame.setSizePolicy(policy.MinimumExpanding, policy.Minimum)
-                # lab = QtWidgets.QLineEdit(label_frame)
-            lab = QtWidgets.QLineEdit(f)
-            lab.setObjectName('editorLabel')
-            lab.setText(c.p.h)
-            #
-            # Pack the label and the text widget.
-            layout.addWidget(lab, 0, 0, Qt.AlignLeft)
-            layout.addWidget(w, 1, 0)
-            layout.setRowStretch(0, 0)
-            layout.setRowStretch(1, 1) # Give row 1 as much as possible.
-            w.leo_label = lab # Inject the ivar.
-            return
-        #
-        # Legacy code...
-        #
-        f = c.frame.top.leo_body_inner_frame
-        if n is None: n = self.numberOfEditors
-        layout = f.layout()
-        g.trace(layout.objectName(), layout.parent().objectName(), c.p.h) ###
-        # 
-        # Create the text.
-        lab = QtWidgets.QLineEdit(f)
-        lab.setObjectName('editorLabel')
-        lab.setText(c.p.h)
-        #
-        # Pack the label and the text widget.
-        layout.addWidget(lab, 0, max(0, n - 1), QtCore.Qt.AlignVCenter)
-        layout.addWidget(w, 1, max(0, n - 1))
-        layout.setRowStretch(0, 0)
-        layout.setRowStretch(1, 1) # Give row 1 as much as possible.
-        w.leo_label = lab # Inject the ivar.
     #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (QScintilla only)
     def recolorWidget(self, p, wrapper):
         '''Support QScintillaColorizer.colorize.'''
