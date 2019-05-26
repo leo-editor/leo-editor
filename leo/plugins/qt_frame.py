@@ -222,30 +222,27 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''
         c = self.leo_c
         if g.app.dock:
-            g.trace(c.p and c.p.h)
+            assert parent is None, repr(parent)
             #
             # Create widgets.
-            bodyFrame = self.createFrame(parent, 'bodyFrame')
-            innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
-            page2 = QtWidgets.QWidget()
-            self.setName(page2, 'bodyPage2')
-            body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
-            #
-            # Pack.
-            vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0)
-            grid = self.createGrid(bodyFrame, 'bodyGrid')
-            innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
-            if self.use_gutter:
-                lineWidget = qt_text.LeoLineTextWidget(c, body)
-                vLayout.addWidget(lineWidget)
+            frame = self.createFrame(None, 'bodyFrame')
+            ### innerFrame = self.createFrame(frame, 'innerBodyFrame')
+            innerFrame = bodyFrame = frame
+            frame.setMinimumHeight(100)
+            grid = QtWidgets.QGridLayout(frame)
+            body = qt_text.LeoQTextBrowser(None, c, None)
+            if 0:
+                # Pack
+                c.frame.body.packLabel(body)
+            elif 0: # Don't include label
+                grid.addWidget(body, 0, 0)
             else:
-                vLayout.addWidget(body)
-            
-                innerGrid.addWidget(page2, 0, 0)
-            grid.addWidget(innerFrame, 0, 0, 1, 1)
+                label = QtWidgets.QLabel()
+                label.setText(c.p.h if c.p else '')
+                grid.addWidget(label, 0, 0)
+                grid.addWidget(body, 1, 0)
             #
             # Official ivars
-            ### self.stackedWidget = None # used by LeoQtBody
             self.richTextEdit = body
             self.leo_body_frame = bodyFrame
             self.leo_body_inner_frame = innerFrame
@@ -1634,6 +1631,7 @@ class LeoQtBody(leoFrame.LeoBody):
         #
         # Step 1: create the editor.
         if g.app.dock:
+            g.trace(name, g.callers())
             parent_frame = c.frame.top.addEditorDock()
                 # Splits the body dock.
         else:
@@ -1914,28 +1912,20 @@ class LeoQtBody(leoFrame.LeoBody):
         Qt = QtCore.Qt
         if g.app.dock:
             f = c.frame.top.leo_body_inner_frame
-            ### Wrong.
-            ### assert f == w.parent().parent(), w.parent().parent().objectName()
             layout = f.layout()
-            g.trace(layout.objectName(), layout.parent().objectName(), c.p.h) ###
-            
+            # g.trace(layout.objectName(), layout.parent().objectName(), c.p.h) ###
             # 
-            # Create the text: to do: use stylesheet to set font, height.
-            ### Doesn't work
-                # policy = QtWidgets.QSizePolicy
-                # label_frame = QtWidgets.QFrame(f)
-                # label_frame.setSizePolicy(policy.MinimumExpanding, policy.Minimum)
-                # lab = QtWidgets.QLineEdit(label_frame)
-            lab = QtWidgets.QLineEdit(f)
-            lab.setObjectName('editorLabel')
-            lab.setText(c.p.h)
+            # Create the label.
+            label = QtWidgets.QLineEdit(f)
+            label.setObjectName('editorLabel')
+            label.setText(c.p.h)
             #
             # Pack the label and the text widget.
-            layout.addWidget(lab, 0, 0, Qt.AlignLeft)
+            layout.addWidget(label, 0, 0, Qt.AlignLeft)
             layout.addWidget(w, 1, 0)
             layout.setRowStretch(0, 0)
             layout.setRowStretch(1, 1) # Give row 1 as much as possible.
-            w.leo_label = lab # Inject the ivar.
+            w.leo_label = label # Inject the ivar.
             return
         #
         # Legacy code...
