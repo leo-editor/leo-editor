@@ -245,8 +245,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             grid.addWidget(innerFrame, 0, 0, 1, 1)
             #
             # Official ivars
-            self.text_page = page2
-            self.stackedWidget = None # used by LeoQtBody
+            ### self.stackedWidget = None # used by LeoQtBody
             self.richTextEdit = body
             self.leo_body_frame = bodyFrame
             self.leo_body_inner_frame = innerFrame
@@ -1548,7 +1547,7 @@ class LeoQtBody(leoFrame.LeoBody):
         '''Set the actual gui widget.'''
         c = self.c
         top = c.frame.top
-        sw = top.stackedWidget
+        sw = getattr(top, 'stackedWidget', None)
         if sw:
             sw.setCurrentIndex(1)
         if self.useScintilla and not Qsci:
@@ -1915,10 +1914,11 @@ class LeoQtBody(leoFrame.LeoBody):
         Qt = QtCore.Qt
         if g.app.dock:
             f = c.frame.top.leo_body_inner_frame
+            ### Wrong.
+            ### assert f == w.parent().parent(), w.parent().parent().objectName()
             layout = f.layout()
             g.trace(layout.objectName(), layout.parent().objectName(), c.p.h) ###
             
-            # g.trace('%s\n%s' % (layout, w.parent().parent(), layout()))
             # 
             # Create the text: to do: use stylesheet to set font, height.
             ### Doesn't work
