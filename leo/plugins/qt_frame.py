@@ -546,15 +546,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
         label = QtWidgets.QLineEdit(None)
         label.setObjectName('editorLabel')
         label.setText(c.p.h)
-        # Doesn't work.  Use the innerFrame???
-        policy = QtWidgets.QSizePolicy()
-        label.setSizePolicy(policy.Maximum, policy.Fixed)
         #
         # Pack the label and the text widget.
-        grid.addWidget(label, 0, 0, QtCore.Qt.AlignLeft)
+        grid.addWidget(label, 0, 0)
         grid.addWidget(w, 1, 0)
-        grid.setRowStretch(0, 0)
-        grid.setRowStretch(1, 1) # Give row 1 as much as possible.
+        grid.setColumnStretch(0, 1) # Grow the label horizontally.
+        grid.setRowStretch(0, 0) # Don't grow the label vertically.
+        grid.setRowStretch(1, 1) # Give row 1 as much as vertical room as possible.
         w.leo_label = label # Inject the ivar.
     #@+node:ekr.20110605121601.18151: *5* dw.setMainWindowOptions
     def setMainWindowOptions(self):
