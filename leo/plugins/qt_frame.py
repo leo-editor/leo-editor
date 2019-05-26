@@ -224,7 +224,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.packLabel(widget)
         #
         # Step 2: inject ivars, set bindings, etc.
-        inner_frame = c.frame.top.leo_body_inner_frame
+        inner_frame = self.leo_body_inner_frame
             # Inject ivars *here*, regardless of docking.
         body.injectIvars(inner_frame, name, p, wrapper)
         body.updateInjectedIvars(widget, p)
@@ -546,6 +546,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         label = QtWidgets.QLineEdit(None)
         label.setObjectName('editorLabel')
         label.setText(c.p.h)
+        # Doesn't work.  Use the innerFrame???
+        policy = QtWidgets.QSizePolicy()
+        label.setSizePolicy(policy.Maximum, policy.Fixed)
         #
         # Pack the label and the text widget.
         grid.addWidget(label, 0, 0, QtCore.Qt.AlignLeft)
