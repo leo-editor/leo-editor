@@ -2732,6 +2732,7 @@ class LoadManager(object):
         add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
         add_bool('--maximized',     'start maximized')
         add_bool('--minimized',     'start minimized')
+        add_bool('--no-dock',       'use legacy look & feel')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
         add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
@@ -2825,8 +2826,10 @@ class LoadManager(object):
     #@+node:ekr.20180312151544.1: *6* LM.doSimpleOptions
     def doSimpleOptions(self, options, trace_m):
         '''These args just set g.app ivars.'''
-        # --dock
+        # --dock & --no-dock
         g.app.dock = options.dock
+        if g.app.dock and options.no_dock:
+            g.app.dock = False
         # --fail-fast
         g.app.failFast = options.fail_fast
         # --fullscreen
