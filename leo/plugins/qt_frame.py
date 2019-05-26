@@ -219,7 +219,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         parent_frame = self.addEditorDock()
         widget = qt_text.LeoQTextBrowser(None, c, self)
             # Splits the body dock.
-            ###### Retains the layout ????????
         widget.setObjectName('richTextEdit')
         wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
         self.packLabel(widget)
@@ -276,7 +275,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane (***)
     def createBodyPane(self, parent):
         '''
-        Create the body pane.
+        Create the *pane* for the body, but does not create the actual QTextBrowser.
         parent is None when --dock is in effect.
         '''
         c = self.leo_c
@@ -318,26 +317,27 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.leo_body_inner_frame = innerFrame
             return bodyFrame # For dock.
             #@-<< legacy createBodyPane >>
-        g.trace(c.p and c.p.h)
         #
         # Create widgets.
         bodyFrame = self.createFrame(parent, 'bodyFrame')
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
-        page2 = QtWidgets.QWidget()
-        self.setName(page2, 'bodyPage2')
-        body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
+        ### page2 = QtWidgets.QWidget()
+        ### self.setName(page2, 'bodyPage2')
+        ### body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
+        body = self.createText(None, 'richTextEdit') # A LeoQTextBrowser
         #
         # Pack.
-        vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0)
+        ### vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0)
         grid = self.createGrid(bodyFrame, 'bodyGrid')
-        innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
+        vLayout = self.createVLayout(innerFrame, 'bodyVLayout', spacing=0)
+        g.trace('innerFrame.layout()', repr(innerFrame.layout()))
+        ### innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
         if self.use_gutter:
             lineWidget = qt_text.LeoLineTextWidget(c, body)
             vLayout.addWidget(lineWidget)
         else:
             vLayout.addWidget(body)
-        
-            innerGrid.addWidget(page2, 0, 0)
+            ### innerGrid.addWidget(page2, 0, 0)
         grid.addWidget(innerFrame, 0, 0, 1, 1)
         #
         # Official ivars
@@ -518,9 +518,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.statusBar = w
     #@+node:ekr.20110605121601.18212: *5* dw.packLabel (***)
     def packLabel(self, w, n=None):
-        '''Pack the body frame, w.  w is a LeoQTextBrowser.'''
+        '''Pack the body frame, w.'''
         c = self.leo_c
-        Qt = QtCore.Qt
+        assert isinstance(w, QtWidgets.QTextEdit), repr(w)
         if not g.app.dock:
             #@+<< legacy dw.packLabel >>
             #@+node:ekr.20190526113247.1: *6* << legacy dw.packLabel >>
@@ -545,19 +545,21 @@ class DynamicWindow(QtWidgets.QMainWindow):
             w.leo_label = lab # Inject the ivar.
             return
             #@-<< legacy dw.packLabel >>
-        f = c.frame.top.leo_body_inner_frame
-        layout = f.layout()
-        g.trace(layout.objectName(), layout.parent().objectName(), c.p.h) ###
-        lab = QtWidgets.QLineEdit(f)
-        lab.setObjectName('editorLabel')
-        lab.setText(c.p.h)
+        #
+        # Reuse the grid layout in the body frame.
+        grid = self.leo_body_frame.layout()
+        #
+        # Create the label.
+        label = QtWidgets.QLineEdit(None)
+        label.setObjectName('editorLabel')
+        label.setText(c.p.h)
         #
         # Pack the label and the text widget.
-        layout.addWidget(lab, 0, 0, Qt.AlignLeft)
-        layout.addWidget(w, 1, 0)
-        layout.setRowStretch(0, 0)
-        layout.setRowStretch(1, 1) # Give row 1 as much as possible.
-        w.leo_label = lab # Inject the ivar.
+        grid.addWidget(label, 0, 0, QtCore.Qt.AlignLeft)
+        grid.addWidget(w, 1, 0)
+        grid.setRowStretch(0, 0)
+        grid.setRowStretch(1, 1) # Give row 1 as much as possible.
+        w.leo_label = label # Inject the ivar.
     #@+node:ekr.20110605121601.18151: *5* dw.setMainWindowOptions
     def setMainWindowOptions(self):
         '''Set default options for Leo's main window.'''
@@ -680,7 +682,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
         self.setName(w, name)
         return w
-    #@+node:ekr.20110605121601.18163: *5* dw.createText
+    #@+node:ekr.20110605121601.18163: *5* dw.createText (creates QTextBrowser)
     def createText(self, parent, name,
         lineWidth=0,
         shadow=QtWidgets.QFrame.Plain,
@@ -1685,7 +1687,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18194: *4* LeoQtBody.entries
     #@+node:ekr.20110605121601.18195: *5* LeoQtBody.add_editor_command (***)
     # An override of leoFrame.addEditor.
-
+    @cmd('ad') ### testing only
     @cmd('editor-add')
     @cmd('add-editor')
     def add_editor_command(self, event=None):
@@ -1701,6 +1703,7 @@ class LeoQtBody(leoFrame.LeoBody):
             self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
             # Fix #1021: Pack differently depending on whether the gutter exists.
+            ########## Should be done in pack.
             if self.use_gutter:
                 dw.packLabel(widget.parent(), n=1)
                 widget.leo_label = widget.parent().leo_label
