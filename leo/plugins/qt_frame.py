@@ -180,7 +180,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(self)
         return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18142: *4* dw.top-level
-    #@+node:ekr.20190118150859.10: *5* dw.addNewEditor (***)
+    #@+node:ekr.20190118150859.10: *5* dw.addNewEditor
     def addNewEditor(self, name):
         '''Create a new body editor.'''
         c, p = self.leo_c, self.leo_c.p
@@ -272,7 +272,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Create other widgets...
         self.createMenuBar()
         self.createStatusBar(self)
-    #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane (***)
+    #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
     def createBodyPane(self, parent):
         '''
         Create the *pane* for the body, but does not create the actual QTextBrowser.
@@ -513,7 +513,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         parent.setStatusBar(w)
         # Official ivars.
         self.statusBar = w
-    #@+node:ekr.20110605121601.18212: *5* dw.packLabel (unified)
+    #@+node:ekr.20110605121601.18212: *5* dw.packLabel
     def packLabel(self, w, n=None):
         '''
         Pack w into the body frame's QVGridLayout.
@@ -1670,7 +1670,7 @@ class LeoQtBody(leoFrame.LeoBody):
         w.setWordWrapMode(wrap)
     #@+node:ekr.20110605121601.18193: *3* LeoQtBody.Editors
     #@+node:ekr.20110605121601.18194: *4* LeoQtBody.entries
-    #@+node:ekr.20110605121601.18195: *5* LeoQtBody.add_editor_command (***)
+    #@+node:ekr.20110605121601.18195: *5* LeoQtBody.add_editor_command
     # An override of leoFrame.addEditor.
     @cmd('editor-add')
     @cmd('add-editor')
@@ -1727,50 +1727,60 @@ class LeoQtBody(leoFrame.LeoBody):
             self.selectLabel(wrapper)
     #@+node:ekr.20110605121601.18198: *5* LeoQtBody.cycleEditorFocus
     # Use the base class method.
-    #@+node:ekr.20110605121601.18199: *5* LeoQtBody.deleteEditor
+    #@+node:ekr.20110605121601.18199: *5* LeoQtBody.delete_editor_command
     @cmd('delete-editor')
     @cmd('editor-delete')
-    def deleteEditor(self, event=None):
+    def delete_editor_command(self, event=None):
         '''Delete the presently selected body text editor.'''
         c, d = self.c, self.editorWidgets
         wrapper = c.frame.body.wrapper
         w = wrapper.widget
-        if g.app.dock:
-            g.es_print('not ready yet')
-            ### Maybe this can be done automatically.
-            return
-        # This seems not to be a valid assertion.
-            # assert wrapper == d.get(name),'wrong wrapper'
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(w), w
-        if len(list(d.keys())) <= 1: return
+        #
+        # Don't delete last editor.
         name = w.leo_name if hasattr(w, 'leo_name') else '1'
-            # Defensive programming.
-        # At present, can not delete the first column.
-        if name == '1':
-            g.warning('can not delete leftmost editor')
+        if len(list(d.keys())) <= 1 or name == '1':
+            g.warning('can not delete main editor')
             return
+        #
         # Fix bug 228: make *sure* the old text is saved.
         c.p.b = wrapper.getAllText()
+        if not g.app.dock:
+            #@+<< legacy delete_editor_command >>
+            #@+node:ekr.20190527072132.1: *6* << legacy delete_editor_command >>
+            #
+            # Actually delete the widget.
+            del d[name]
+            f = c.frame.top.leo_body_inner_frame
+            layout = f.layout()
+            for z in (w, w.leo_label):
+                if z:
+                    self.unpackWidget(layout, z)
+            w.leo_label = None # 2011/11/12
+            #
+            # Select another editor.
+            new_wrapper = list(d.values())[0]
+            self.numberOfEditors -= 1
+            if self.numberOfEditors == 1:
+                w = new_wrapper.widget
+                # if w.leo_label:  # 2011/11/12
+                if getattr(w, 'leo_label', None): # 2018/02/23
+                    self.unpackWidget(layout, w.leo_label)
+                    w.leo_label = None # 2011/11/12
+            self.selectEditor(new_wrapper)
+            #@-<< legacy delete_editor_command >>
+            return
         #
         # Actually delete the widget.
-        del d[name]
-        f = c.frame.top.leo_body_inner_frame
-        layout = f.layout()
-        for z in (w, w.leo_label):
-            if z:
-                self.unpackWidget(layout, z)
-        w.leo_label = None # 2011/11/12
+        dock = w.parent().parent()
+        assert isinstance(dock, QtWidgets.QDockWidget), repr(dock)
+        c.frame.top.removeDockWidget(dock)
         #
         # Select another editor.
+        w.leo_label = None
         new_wrapper = list(d.values())[0]
         self.numberOfEditors -= 1
-        if self.numberOfEditors == 1:
-            w = new_wrapper.widget
-            # if w.leo_label:  # 2011/11/12
-            if getattr(w, 'leo_label', None): # 2018/02/23
-                self.unpackWidget(layout, w.leo_label)
-                w.leo_label = None # 2011/11/12
         self.selectEditor(new_wrapper)
     #@+node:ekr.20110605121601.18200: *5* LeoQtBody.findEditorForChapter
     def findEditorForChapter(self, chapter, p):
@@ -1994,6 +2004,8 @@ class LeoQtBody(leoFrame.LeoBody):
     def unpackWidget(self, layout, w):
 
         index = layout.indexOf(w)
+        if index == -1:
+            return
         item = layout.itemAt(index)
         item.setGeometry(QtCore.QRect(0, 0, 0, 0))
         layout.removeItem(item)
