@@ -520,21 +520,24 @@ class DynamicWindow(QtWidgets.QMainWindow):
             #@+node:ekr.20190526113247.1: *6* << legacy dw.packLabel >>
             body = c.frame.body
             f = self.leo_body_inner_frame
-            if n is None: n = body.numberOfEditors
-            layout = f.layout()
+            if n is None:
+                n = body.numberOfEditors
+            n = max(0, n-1)
+            grid = f.layout()
             # 
             # Create the text.
-            lab = QtWidgets.QLineEdit(f)
-            lab.setObjectName('editorLabel')
-            lab.setText(c.p.h)
+            label = QtWidgets.QLineEdit(f)
+            label.setObjectName('editorLabel')
+            label.setText(c.p.h)
             #
             # Pack the label and the text widget.
             # Unlike with docks, we have to compute the column manually.
-            layout.addWidget(lab, 0, max(0, n - 1), QtCore.Qt.AlignLeft)
-            layout.addWidget(w, 1, max(0, n - 1))
-            layout.setRowStretch(0, 0)
-            layout.setRowStretch(1, 1) # Give row 1 as much as possible.
-            w.leo_label = lab # Inject the ivar.
+            grid.addWidget(label, 0, n)
+            grid.addWidget(w, 1, n)
+            grid.setColumnStretch(0, 1) # Grow the label horizontally.
+            grid.setRowStretch(0, 0) # Don't grow the label vertically.
+            grid.setRowStretch(1, 1) # Give row 1 as much as vertical room as possible.
+            w.leo_label = label # Inject the ivar.
 
             #@-<< legacy dw.packLabel >>
             return
