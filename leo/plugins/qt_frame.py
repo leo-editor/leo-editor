@@ -96,6 +96,52 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     def do_leo_spell_btn_Ignore(self):
         self.doSpellBtn('onIgnoreButton')
+    #@+node:ekr.20190523115826.1: *3* dw.addEditorDock
+    added_bodies = 0
+
+    def addEditorDock(self, closeable=True, moveable=True):
+        '''Add an editor dock'''
+        #
+        # Create the new dock.
+        c = self.leo_c
+        self.added_bodies += 1
+        dock = self.createDockWidget(
+            closeable=closeable,
+            moveable=moveable,
+            height=100,
+            name='body-%s' % (self.added_bodies),
+        )
+        self.leo_docks.append(dock)
+        ### bg.printObj([z.objectName() for z in self.leo_docks]) ###
+        w = self.createBodyPane(parent=None)
+        dock.setWidget(w)
+        self.splitDockWidget(self.body_dock, dock, QtCore.Qt.Horizontal)
+        #
+        # monkey-patch dock.closeEvent
+        def patched_closeEvent(event=None):
+            c.frame.body.delete_editor_command(event,dock=dock)
+           
+        dock.closeEvent = patched_closeEvent
+        return dock
+    #@+node:ekr.20110605121601.18140: *3* dw.closeEvent
+    def closeEvent(self, event):
+        '''Handle a close event in the Leo window.'''
+        c = self.leo_c
+        saver = getattr(c.frame.top, 'saveWindowState', None)
+        if saver:
+            saver() # DynamicWindow
+        if not c.exists:
+            # Fixes double-prompt bug on Linux.
+            event.accept()
+            return
+        if c.inCommand:
+            c.requestCloseWindow = True
+            return
+        ok = g.app.closeLeoWindow(c.frame)
+        if ok:
+            event.accept()
+        else:
+            event.ignore()
     #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers
     def construct(self, master=None):
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
@@ -247,9 +293,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
         g.placate_pyflakes(bottom, lt, rt, top)
         table = (
+            # close? move?
             (False, True, 100, lt, 'outline', self.createOutlinePane),
             (False, True, 100, bottom, 'body', self.createBodyPane),
-            (False, True, 100, rt, 'tabs', self.createLogPane),
+            (False, True, 20, rt, 'log', self.createLogDock),
+            (True, True, 20, rt, 'find', self.createFindDock),
+            (True, True, 20, rt, 'spell', self.createSpellDock),
         )
         for closeable, moveable, height, area, name, creator in table:
             dock = self.createDockWidget(closeable, moveable, height, name)
@@ -353,24 +402,27 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Official ivars.
         self.centralwidget = w
         return w
-    #@+node:ekr.20110605121601.18145: *5* dw.createLogPane & helpers
+    #@+node:ekr.20110605121601.18145: *5* dw.createLogPane & helpers (legacy)
     def createLogPane(self, parent):
         '''Create all parts of Leo's log pane.'''
-        # Create widgets.
-        dw = self
-        c = dw.leo_c
+        c = self.leo_c
+        g.trace('=====')
+        #
+        # Create the log frame.
         logFrame = self.createFrame(parent, 'logFrame',
             vPolicy=QtWidgets.QSizePolicy.Minimum)
         innerFrame = self.createFrame(logFrame, 'logInnerFrame',
             hPolicy=QtWidgets.QSizePolicy.Preferred,
             vPolicy=QtWidgets.QSizePolicy.Expanding)
         tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
+        #
         # Pack.
         innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
         innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
         outerGrid = self.createGrid(logFrame, 'logGrid')
         outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
-        # Embed the Find tab in a QScrollArea.
+        #
+        # Create the Find tab, embedded in a QScrollArea.
         findScrollArea = QtWidgets.QScrollArea()
         findScrollArea.setObjectName('findScrollArea')
         # Find tab.
@@ -384,15 +436,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Do this later, in LeoFind.finishCreate
         self.findScrollArea = findScrollArea
         self.findTab = findTab
+        #
         # Spell tab.
         spellTab = QtWidgets.QWidget()
         spellTab.setObjectName('spellTab')
         tabWidget.addTab(spellTab, 'Spell')
         self.createSpellTab(spellTab)
         tabWidget.setCurrentIndex(1)
+        #
         # Official ivars
         self.tabWidget = tabWidget # Used by LeoQtLog.
-        return logFrame # For dock.
     #@+node:ekr.20131118172620.16858: *6* dw.finishCreateLogPane
     def finishCreateLogPane(self):
         '''It's useful to create this late, because c.config is now valid.'''
@@ -400,6 +453,71 @@ class DynamicWindow(QtWidgets.QMainWindow):
         assert self.findTab
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
+    #@+node:ekr.20190527121112.1: *5* dw.createLogDock ***
+    def createLogDock(self, parent):
+        '''Create a Log dock.'''
+        assert g.app.dock
+        assert not parent, repr(parent)
+        #
+        # Create the log contents
+        logFrame = self.createFrame(None, 'logFrame',
+            vPolicy=QtWidgets.QSizePolicy.Minimum)
+        innerFrame = self.createFrame(logFrame, 'logInnerFrame',
+            hPolicy=QtWidgets.QSizePolicy.Preferred,
+            vPolicy=QtWidgets.QSizePolicy.Expanding)
+        tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
+        #
+        # Pack. This *is* required.
+        innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
+        innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
+        outerGrid = self.createGrid(logFrame, 'logGrid')
+        outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
+        #
+        # Official ivars
+        self.tabWidget = tabWidget # Used by LeoQtLog.
+        return logFrame
+    #@+node:ekr.20190527120808.1: *5* dw.createFindDock
+    def createFindDock(self, parent):
+        '''Create a Find dock.'''
+        assert g.app.dock
+        assert not parent, repr(parent)
+        #
+        # Embed the Find tab in a QScrollArea.
+        findScrollArea = QtWidgets.QScrollArea()
+        findScrollArea.setObjectName('findScrollArea')
+        #
+        # Find tab.
+        findTab = QtWidgets.QWidget()
+        findTab.setObjectName('findTab')
+        ###
+            #
+            # Fix #516:
+            # if 0:
+                # c = self.leo_c
+                # use_minibuffer = c.config.getBool('minibuffer-find-mode', default=False)
+                # use_dialog = c.config.getBool('use-find-dialog', default=False)
+                # if not use_minibuffer and not use_dialog:
+                   # tabWidget.addTab(findScrollArea, 'Find')
+            # Do this later, in LeoFind.finishCreate
+        #
+        # Official ivars.
+        self.findScrollArea = findScrollArea
+        self.findTab = findTab
+        return findScrollArea
+    #@+node:ekr.20190527120829.1: *5* dw.createSpellDock
+    def createSpellDock(self, parent):
+        '''Create a Spell dock.'''
+        g.trace()
+        assert g.app.dock
+        assert not parent, repr(parent)
+        ### tabWidget = self.createTabWidget(None, 'spellTabWidget')
+        # Spell tab.
+        spellTab = QtWidgets.QWidget()
+        spellTab.setObjectName('docked.spellTab')
+        ### tabWidget.addTab(spellTab, 'Spell')
+        self.createSpellTab(spellTab)
+        ### tabWidget.setCurrentIndex(1)
+        return spellTab
     #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
     def createMainLayout(self, parent):
         '''Create the layout for Leo's main window.'''
@@ -708,6 +826,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18167: *5* dw.createSpellTab
     def createSpellTab(self, parent):
         # dw = self
+        g.trace(parent and parent.objectName())
         vLayout = self.createVLayout(parent, 'spellVLayout', margin=2)
         spellFrame = self.createFrame(parent, 'spellFrame')
         vLayout2 = self.createVLayout(spellFrame, 'spellVLayout')
@@ -1103,35 +1222,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 s,
                 None,
                 QtWidgets.QApplication.UnicodeUTF8)
-    #@+node:ekr.20110605121601.18179: *3* dw.Event handlers
-    #@+node:ekr.20110605121601.18140: *4* dw.closeEvent
-    def closeEvent(self, event):
-        '''Handle a close event in the Leo window.'''
-        c = self.leo_c
-        saver = getattr(c.frame.top, 'saveWindowState', None)
-        if saver:
-            saver() # DynamicWindow
-        if not c.exists:
-            # Fixes double-prompt bug on Linux.
-            event.accept()
-            return
-        if c.inCommand:
-            c.requestCloseWindow = True
-            return
-        ok = g.app.closeLeoWindow(c.frame)
-        if ok:
-            event.accept()
-        else:
-            event.ignore()
-    #@+node:ekr.20110605121601.18173: *3* dw.select
-    def select(self, c):
-        '''Select the window or tab for c. self is c.frame.top.'''
-        if self.leo_master:
-            # A LeoTabbedTopLevel.
-            self.leo_master.select(c)
-        else:
-            w = c.frame.body.wrapper
-            g.app.gui.set_focus(c, w)
     #@+node:ekr.20190523064421.1: *3* dw.save/restoreWindowState
     #@+node:ekr.20190523064553.1: *4* dw.restoreWindowState (new)
     def restoreWindowState(self):
@@ -1190,6 +1280,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.restoreWindowState()
         else:
             super().setGeometry(rect)
+    #@+node:ekr.20110605121601.18173: *3* dw.select
+    def select(self, c):
+        '''Select the window or tab for c. self is c.frame.top.'''
+        if self.leo_master:
+            # A LeoTabbedTopLevel.
+            self.leo_master.select(c)
+        else:
+            w = c.frame.body.wrapper
+            g.app.gui.set_focus(c, w)
     #@+node:ekr.20110605121601.18177: *3* dw.setLeoWindowIcon
     def setLeoWindowIcon(self):
         """ Set icon visible in title bar and task bar """
@@ -1212,33 +1311,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             g.trace('***(DynamicWindow)', s, self.parent())
             # Call the base class method.
             QtWidgets.QMainWindow.setWindowTitle(self, s)
-    #@+node:ekr.20190523115826.1: *3* dw.addEditorDock ***
-    added_bodies = 0
-
-    def addEditorDock(self):
-        '''Add an editor dock, which *can* be deleted.'''
-        #
-        # Create the new dock.
-        c = self.leo_c
-        self.added_bodies += 1
-        dock = self.createDockWidget(
-            closeable=True,
-            moveable=True,
-            height=100,
-            name='body-%s' % (self.added_bodies),
-        )
-        self.leo_docks.append(dock)
-        ### bg.printObj([z.objectName() for z in self.leo_docks]) ###
-        w = self.createBodyPane(parent=None)
-        dock.setWidget(w)
-        self.splitDockWidget(self.body_dock, dock, QtCore.Qt.Horizontal)
-        #
-        # monkey-patch dock.closeEvent
-        def patched_closeEvent(event=None):
-            c.frame.body.delete_editor_command(event,dock=dock)
-           
-        dock.closeEvent = patched_closeEvent
-        return dock
     #@-others
 #@+node:ekr.20131117054619.16698: ** class FindTabManager
 class FindTabManager(object):
