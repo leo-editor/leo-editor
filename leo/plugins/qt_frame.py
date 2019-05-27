@@ -31,6 +31,8 @@ except ImportError:
     print('Can not import nested_splitter')
     splitter_class = QtWidgets.QSplitter
 #@-<< imports >>
+legacy_log_dock = True
+    # True: use legacy log dock.
 #@+others
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QtWidgets.QMainWindow)
 class DynamicWindow(QtWidgets.QMainWindow):
@@ -292,14 +294,22 @@ class DynamicWindow(QtWidgets.QMainWindow):
         bottom, top = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
         lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
         g.placate_pyflakes(bottom, lt, rt, top)
-        table = (
-            # close? move?
-            (False, True, 100, lt, 'outline', self.createOutlinePane),
-            (False, True, 100, bottom, 'body', self.createBodyPane),
-            (False, True, 20, rt, 'log', self.createLogDock),
-            (True, True, 20, rt, 'find', self.createFindDock),
-            (True, True, 20, rt, 'spell', self.createSpellDock),
-        )
+        if legacy_log_dock:
+            # Simple and good enough, imo.
+            table = (
+                (False, True, 100, lt, 'outline', self.createOutlinePane),
+                (False, True, 100, bottom, 'body', self.createBodyPane),
+                (False, True, 100, rt, 'tabs', self.createTabbedLogDock),
+            )
+        else:
+            # This is clumsy, and a bit of make work.
+            table = (
+                (False, True, 100, lt, 'outline', self.createOutlinePane),
+                (False, True, 100, bottom, 'body', self.createBodyPane),
+                (False, True, 20, rt, 'log', self.createLogDock),
+                (True, True, 20, rt, 'find', self.createFindDock),
+                (True, True, 20, rt, 'spell', self.createSpellDock),
+            )
         for closeable, moveable, height, area, name, creator in table:
             dock = self.createDockWidget(closeable, moveable, height, name)
             w = creator(parent=None)
@@ -406,7 +416,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createLogPane(self, parent):
         '''Create all parts of Leo's log pane.'''
         c = self.leo_c
-        g.trace('=====')
         #
         # Create the log frame.
         logFrame = self.createFrame(parent, 'logFrame',
@@ -453,71 +462,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         assert self.findTab
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
-    #@+node:ekr.20190527121112.1: *5* dw.createLogDock ***
-    def createLogDock(self, parent):
-        '''Create a Log dock.'''
-        assert g.app.dock
-        assert not parent, repr(parent)
-        #
-        # Create the log contents
-        logFrame = self.createFrame(None, 'logFrame',
-            vPolicy=QtWidgets.QSizePolicy.Minimum)
-        innerFrame = self.createFrame(logFrame, 'logInnerFrame',
-            hPolicy=QtWidgets.QSizePolicy.Preferred,
-            vPolicy=QtWidgets.QSizePolicy.Expanding)
-        tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
-        #
-        # Pack. This *is* required.
-        innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
-        innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
-        outerGrid = self.createGrid(logFrame, 'logGrid')
-        outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
-        #
-        # Official ivars
-        self.tabWidget = tabWidget # Used by LeoQtLog.
-        return logFrame
-    #@+node:ekr.20190527120808.1: *5* dw.createFindDock
-    def createFindDock(self, parent):
-        '''Create a Find dock.'''
-        assert g.app.dock
-        assert not parent, repr(parent)
-        #
-        # Embed the Find tab in a QScrollArea.
-        findScrollArea = QtWidgets.QScrollArea()
-        findScrollArea.setObjectName('findScrollArea')
-        #
-        # Find tab.
-        findTab = QtWidgets.QWidget()
-        findTab.setObjectName('findTab')
-        ###
-            #
-            # Fix #516:
-            # if 0:
-                # c = self.leo_c
-                # use_minibuffer = c.config.getBool('minibuffer-find-mode', default=False)
-                # use_dialog = c.config.getBool('use-find-dialog', default=False)
-                # if not use_minibuffer and not use_dialog:
-                   # tabWidget.addTab(findScrollArea, 'Find')
-            # Do this later, in LeoFind.finishCreate
-        #
-        # Official ivars.
-        self.findScrollArea = findScrollArea
-        self.findTab = findTab
-        return findScrollArea
-    #@+node:ekr.20190527120829.1: *5* dw.createSpellDock
-    def createSpellDock(self, parent):
-        '''Create a Spell dock.'''
-        g.trace()
-        assert g.app.dock
-        assert not parent, repr(parent)
-        ### tabWidget = self.createTabWidget(None, 'spellTabWidget')
-        # Spell tab.
-        spellTab = QtWidgets.QWidget()
-        spellTab.setObjectName('docked.spellTab')
-        ### tabWidget.addTab(spellTab, 'Spell')
-        self.createSpellTab(spellTab)
-        ### tabWidget.setCurrentIndex(1)
-        return spellTab
     #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
     def createMainLayout(self, parent):
         '''Create the layout for Leo's main window.'''
@@ -674,6 +618,141 @@ class DynamicWindow(QtWidgets.QMainWindow):
         dw.setDockOptions(
             QtWidgets.QMainWindow.AllowTabbedDocks |
             QtWidgets.QMainWindow.AnimatedDocks)
+    #@+node:ekr.20190527162547.1: *4* dw.docks
+    # Used when legacy_log_dock is False.
+    #@+node:ekr.20190527120808.1: *5* dw.createFindDock
+    def createFindDock(self, parent):
+        '''Create a Find dock.'''
+        assert g.app.dock
+        assert not parent, repr(parent)
+        #
+        # Embed the Find tab in a QScrollArea.
+        findScrollArea = QtWidgets.QScrollArea()
+        findScrollArea.setObjectName('findScrollArea')
+        #
+        # Find tab.
+        findTab = QtWidgets.QWidget()
+        findTab.setObjectName('findTab')
+        ###
+            #
+            # Fix #516:
+            # if 0:
+                # c = self.leo_c
+                # use_minibuffer = c.config.getBool('minibuffer-find-mode', default=False)
+                # use_dialog = c.config.getBool('use-find-dialog', default=False)
+                # if not use_minibuffer and not use_dialog:
+                   # tabWidget.addTab(findScrollArea, 'Find')
+            # Do this later, in LeoFind.finishCreate
+        #
+        # Official ivars.
+        self.findScrollArea = findScrollArea
+        self.findTab = findTab
+        return findScrollArea
+    #@+node:ekr.20190527121112.1: *5* dw.createLogDock ***
+    def createLogDock(self, parent):
+        '''Create a Log dock.'''
+        assert g.app.dock
+        assert not parent, repr(parent)
+        #
+        # Create the log contents
+        logFrame = self.createFrame(None, 'logFrame',
+            vPolicy=QtWidgets.QSizePolicy.Minimum)
+        innerFrame = self.createFrame(logFrame, 'logInnerFrame',
+            hPolicy=QtWidgets.QSizePolicy.Preferred,
+            vPolicy=QtWidgets.QSizePolicy.Expanding)
+        tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
+        #
+        # Pack. This *is* required.
+        innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
+        innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
+        outerGrid = self.createGrid(logFrame, 'logGrid')
+        outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
+        #
+        # Official ivars
+        self.tabWidget = tabWidget # Used by LeoQtLog.
+        return logFrame
+    #@+node:ekr.20190527120829.1: *5* dw.createSpellDock
+    def createSpellDock(self, parent):
+        '''Create a Spell dock.'''
+        g.trace()
+        assert g.app.dock
+        assert not parent, repr(parent)
+        ### tabWidget = self.createTabWidget(None, 'spellTabWidget')
+        # Spell tab.
+        spellTab = QtWidgets.QWidget()
+        spellTab.setObjectName('docked.spellTab')
+        ### tabWidget.addTab(spellTab, 'Spell')
+        self.createSpellTab(spellTab)
+        ### tabWidget.setCurrentIndex(1)
+        return spellTab
+    #@+node:ekr.20190527163203.1: *5* dw.createTabbedLogDock
+    def createTabbedLogDock(self, parent):
+        '''Create a tabbed (legacy) Log dock.'''
+        assert g.app.dock
+        assert not parent, repr(parent)
+        c = self.leo_c
+        #
+        # Create the log frame.
+        logFrame = self.createFrame(parent, 'logFrame',
+            vPolicy=QtWidgets.QSizePolicy.Minimum)
+        innerFrame = self.createFrame(logFrame, 'logInnerFrame',
+            hPolicy=QtWidgets.QSizePolicy.Preferred,
+            vPolicy=QtWidgets.QSizePolicy.Expanding)
+        tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
+        #
+        # Pack.
+        innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
+        innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
+        outerGrid = self.createGrid(logFrame, 'logGrid')
+        outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
+        #
+        # Create the Find tab, embedded in a QScrollArea.
+        findScrollArea = QtWidgets.QScrollArea()
+        findScrollArea.setObjectName('findScrollArea')
+        # Find tab.
+        findTab = QtWidgets.QWidget()
+        findTab.setObjectName('findTab')
+        # Fix #516:
+        use_minibuffer = c.config.getBool('minibuffer-find-mode', default=False)
+        use_dialog = c.config.getBool('use-find-dialog', default=False)
+        if not use_minibuffer and not use_dialog:
+            tabWidget.addTab(findScrollArea, 'Find')
+        # Do this later, in LeoFind.finishCreate
+        self.findScrollArea = findScrollArea
+        self.findTab = findTab
+        #
+        # Spell tab.
+        spellTab = QtWidgets.QWidget()
+        spellTab.setObjectName('spellTab')
+        tabWidget.addTab(spellTab, 'Spell')
+        self.createSpellTab(spellTab)
+        tabWidget.setCurrentIndex(1)
+        #
+        # Official ivars
+        self.tabWidget = tabWidget # Used by LeoQtLog.
+        return logFrame
+
+        
+        
+        
+        # #
+        # # Create the log contents
+        # logFrame = self.createFrame(None, 'logFrame',
+            # vPolicy=QtWidgets.QSizePolicy.Minimum)
+        # innerFrame = self.createFrame(logFrame, 'logInnerFrame',
+            # hPolicy=QtWidgets.QSizePolicy.Preferred,
+            # vPolicy=QtWidgets.QSizePolicy.Expanding)
+        # tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
+        # #
+        # # Pack. This *is* required.
+        # innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
+        # innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
+        # outerGrid = self.createGrid(logFrame, 'logGrid')
+        # outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
+        # #
+        # # Official ivars
+        # self.tabWidget = tabWidget # Used by LeoQtLog.
+        # return logFrame
     #@+node:ekr.20110605121601.18152: *4* dw.widgets
     #@+node:ekr.20110605121601.18153: *5* dw.createButton
     def createButton(self, parent, name, label):
