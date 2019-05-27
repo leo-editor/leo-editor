@@ -50,13 +50,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
     support operations requested by Leo's core.
     '''
     #@+others
-    #@+node:ekr.20110605121601.18138: *3*  ctor & reloadSettings (DynamicWindow)
+    #@+node:ekr.20110605121601.18138: *3*  dw.ctor & reloadSettings
     def __init__(self, c, parent=None):
         '''Ctor for the DynamicWindow class.  The main window is c.frame.top'''
             # Called from LeoQtFrame.finishCreate.
             # For qttabs gui, parent is a LeoTabbedTopLevel.
         QtWidgets.QMainWindow.__init__(self, parent)
         self.leo_c = c
+        self.leo_docks = [] # List of created QDockWidgets.
         self.leo_master = None # Set in construct.
         self.leo_menubar = None # Set in createMenuBar.
         c._style_deltas = defaultdict(lambda: 0) # for adjusting styles dynamically
@@ -1211,7 +1212,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             g.trace('***(DynamicWindow)', s, self.parent())
             # Call the base class method.
             QtWidgets.QMainWindow.setWindowTitle(self, s)
-    #@+node:ekr.20190523115826.1: *3* dw.addEditorDock
+    #@+node:ekr.20190523115826.1: *3* dw.addEditorDock ***
     added_bodies = 0
 
     def addEditorDock(self):
@@ -1226,13 +1227,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
             height=100,
             name='body-%s' % (self.added_bodies),
         )
+        self.leo_docks.append(dock)
+        ### bg.printObj([z.objectName() for z in self.leo_docks]) ###
         w = self.createBodyPane(parent=None)
         dock.setWidget(w)
         self.splitDockWidget(self.body_dock, dock, QtCore.Qt.Horizontal)
         #
         # monkey-patch dock.closeEvent
         def patched_closeEvent(event=None):
-            c.frame.body.delete_editor_command(event)
+            c.frame.body.delete_editor_command(event,dock=dock)
            
         dock.closeEvent = patched_closeEvent
         return dock
@@ -1739,25 +1742,23 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18199: *5* LeoQtBody.delete_editor_command
     @cmd('delete-editor')
     @cmd('editor-delete')
-    def delete_editor_command(self, event=None):
+    def delete_editor_command(self, event=None, dock=None):
         '''Delete the presently selected body text editor.'''
         c, d = self.c, self.editorWidgets
+        dw = c.frame.top
         wrapper = c.frame.body.wrapper
         w = wrapper.widget
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(w), w
-        #
-        # Don't delete last editor.
-        name = w.leo_name if hasattr(w, 'leo_name') else '1'
-        if len(list(d.keys())) <= 1 or name == '1':
-            g.warning('can not delete main editor')
-            return
-        #
         # Fix bug 228: make *sure* the old text is saved.
         c.p.b = wrapper.getAllText()
         if not g.app.dock:
             #@+<< legacy delete_editor_command >>
             #@+node:ekr.20190527072132.1: *6* << legacy delete_editor_command >>
+            name = getattr(w, 'leo_name', None)
+            if len(list(d.keys())) <= 1 or name == '1':
+                g.warning('can not delete main editor')
+                return
             #
             # Actually delete the widget.
             del d[name]
@@ -1780,10 +1781,21 @@ class LeoQtBody(leoFrame.LeoBody):
             #@-<< legacy delete_editor_command >>
             return
         #
+        # Sanity checks.
+        if not dock:
+            dock = w.parent().parent()
+            if (getattr(w, 'leo_name', None) == '1' or
+                not isinstance(dock, QtWidgets.QDockWidget)
+            ):
+                g.warning('can not delete main editor')
+                return
+        #
         # Actually delete the widget.
-        dock = w.parent().parent()
-        assert isinstance(dock, QtWidgets.QDockWidget), repr(dock)
-        c.frame.top.removeDockWidget(dock)
+        if dock in dw.leo_docks:
+            dw.leo_docks.remove(dock)
+        ### g.printObj([z.objectName() for z in dw.leo_docks]) ###
+        dw.removeDockWidget(dock)
+            # A QMainWidget method.
         #
         # Select another editor.
         w.leo_label = None
