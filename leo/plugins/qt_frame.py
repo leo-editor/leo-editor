@@ -319,19 +319,22 @@ class DynamicWindow(QtWidgets.QMainWindow):
             return bodyFrame
         #
         # Create widgets.
-        bodyFrame = self.createFrame(parent, 'bodyFrame')
-        innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
-        body = self.createText(None, 'richTextEdit') # A LeoQTextBrowser
         #
-        # Pack.
+        # bodyFrame has a VGridLayout.
+        bodyFrame = self.createFrame(parent, 'bodyFrame')
         grid = self.createGrid(bodyFrame, 'bodyGrid')
-        vLayout = self.createVLayout(innerFrame, 'bodyVLayout', spacing=0)
+        #
+        # innerFrame has a VBoxLayout.
+        innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
+        box = self.createVLayout(innerFrame, 'bodyVLayout', spacing=0)
+        #
+        # Pack the body alone or *within* a LeoLineTextWidget.
+        body = self.createText(None, 'richTextEdit') # A LeoQTextBrowser
         if self.use_gutter:
             lineWidget = qt_text.LeoLineTextWidget(c, body)
-            vLayout.addWidget(lineWidget)
+            box.addWidget(lineWidget)
         else:
-            vLayout.addWidget(body)
-            ### innerGrid.addWidget(page2, 0, 0)
+            box.addWidget(body)
         grid.addWidget(innerFrame, 0, 0, 1, 1)
         #
         # Official ivars
@@ -510,37 +513,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
         parent.setStatusBar(w)
         # Official ivars.
         self.statusBar = w
-    #@+node:ekr.20110605121601.18212: *5* dw.packLabel (***)
+    #@+node:ekr.20110605121601.18212: *5* dw.packLabel (unified)
     def packLabel(self, w, n=None):
-        '''Pack the body frame, w.'''
+        '''
+        Pack w into the body frame's QVGridLayout.
+        
+        The type of w does not affect the following code. In fact, w is a
+        QTextBrowser possibly packed inside a LeoLineTextWidget.
+        '''
         c = self.leo_c
-        assert isinstance(w, QtWidgets.QTextEdit), repr(w)
-        if not g.app.dock:
-            #@+<< legacy dw.packLabel >>
-            #@+node:ekr.20190526113247.1: *6* << legacy dw.packLabel >>
-            body = c.frame.body
-            f = self.leo_body_inner_frame
-            if n is None:
-                n = body.numberOfEditors
-            n = max(0, n-1)
-            grid = f.layout()
-            # 
-            # Create the text.
-            label = QtWidgets.QLineEdit(f)
-            label.setObjectName('editorLabel')
-            label.setText(c.p.h)
-            #
-            # Pack the label and the text widget.
-            # Unlike with docks, we have to compute the column manually.
-            grid.addWidget(label, 0, n)
-            grid.addWidget(w, 1, n)
-            grid.setColumnStretch(0, 1) # Grow the label horizontally.
-            grid.setRowStretch(0, 0) # Don't grow the label vertically.
-            grid.setRowStretch(1, 1) # Give row 1 as much as vertical room as possible.
-            w.leo_label = label # Inject the ivar.
-
-            #@-<< legacy dw.packLabel >>
-            return
         #
         # Reuse the grid layout in the body frame.
         grid = self.leo_body_frame.layout()
@@ -551,8 +532,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
         label.setText(c.p.h)
         #
         # Pack the label and the text widget.
-        grid.addWidget(label, 0, 0)
-        grid.addWidget(w, 1, 0)
+        if g.app.dock:
+            grid.addWidget(label, 0, 0)
+            grid.addWidget(w, 1, 0)
+        else:
+            if n is None:
+                n = c.frame.body.numberOfEditors
+            n = max(0, n-1)
+            grid.addWidget(label, 0, n)
+            grid.addWidget(w, 1, n)
         grid.setColumnStretch(0, 1) # Grow the label horizontally.
         grid.setRowStretch(0, 0) # Don't grow the label vertically.
         grid.setRowStretch(1, 1) # Give row 1 as much as vertical room as possible.
@@ -1699,7 +1687,6 @@ class LeoQtBody(leoFrame.LeoBody):
             self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
             # Fix #1021: Pack differently depending on whether the gutter exists.
-            ### Should be done in pack ???
             if self.use_gutter:
                 dw.packLabel(widget.parent(), n=1)
                 widget.leo_label = widget.parent().leo_label
