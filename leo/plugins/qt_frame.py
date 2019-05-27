@@ -215,7 +215,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             #@-<< legacy dw.addNewEditor >>
             return parent_frame, wrapper
         #
-        # Step 1: create the editor.
+        # Create the editor.
         parent_frame = self.addEditorDock()
         widget = qt_text.LeoQTextBrowser(None, c, self)
             # Splits the body dock.
@@ -223,7 +223,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
         self.packLabel(widget)
         #
-        # Step 2: inject ivars, set bindings, etc.
+        # Inject ivars, set bindings, etc.
         inner_frame = self.leo_body_inner_frame
             # Inject ivars *here*, regardless of docking.
         body.injectIvars(inner_frame, name, p, wrapper)
@@ -1216,6 +1216,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     def addEditorDock(self):
         '''Add an editor dock, which *can* be deleted.'''
+        #
+        # Create the new dock.
+        c = self.leo_c
         self.added_bodies += 1
         dock = self.createDockWidget(
             closeable=True,
@@ -1226,6 +1229,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         w = self.createBodyPane(parent=None)
         dock.setWidget(w)
         self.splitDockWidget(self.body_dock, dock, QtCore.Qt.Horizontal)
+        #
+        # monkey-patch dock.closeEvent
+        def patched_closeEvent(event=None):
+            c.frame.body.delete_editor_command(event)
+           
+        dock.closeEvent = patched_closeEvent
         return dock
     #@-others
 #@+node:ekr.20131117054619.16698: ** class FindTabManager
