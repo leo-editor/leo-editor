@@ -1752,22 +1752,21 @@ class LeoQtBody(leoFrame.LeoBody):
             #
             # Actually delete the widget.
             del d[name]
-            f = c.frame.top.leo_body_inner_frame
+            f = c.frame.top.leo_body_frame
             layout = f.layout()
             for z in (w, w.leo_label):
                 if z:
                     self.unpackWidget(layout, z)
-            w.leo_label = None # 2011/11/12
             #
             # Select another editor.
             new_wrapper = list(d.values())[0]
             self.numberOfEditors -= 1
             if self.numberOfEditors == 1:
                 w = new_wrapper.widget
-                # if w.leo_label:  # 2011/11/12
-                if getattr(w, 'leo_label', None): # 2018/02/23
-                    self.unpackWidget(layout, w.leo_label)
-                    w.leo_label = None # 2011/11/12
+                label = getattr(w, 'leo_label', None)
+                if label:
+                    self.unpackWidget(layout, label)
+            w.leo_label = None
             self.selectEditor(new_wrapper)
             #@-<< legacy delete_editor_command >>
             return
@@ -2007,8 +2006,9 @@ class LeoQtBody(leoFrame.LeoBody):
         if index == -1:
             return
         item = layout.itemAt(index)
-        item.setGeometry(QtCore.QRect(0, 0, 0, 0))
-        layout.removeItem(item)
+        if item:
+            item.setGeometry(QtCore.QRect(0, 0, 0, 0))
+            layout.removeItem(item)
     #@+node:ekr.20110605121601.18215: *5* LeoQtBody.updateInjectedIvars
     def updateInjectedIvars(self, w, p):
 
