@@ -32,7 +32,9 @@ except ImportError:
     splitter_class = QtWidgets.QSplitter
 #@-<< imports >>
 legacy_log_dock = True
-    # True: use legacy log dock.
+    # True:  (legacy) put Spell and Find Tabs inside the Tabs dock.
+    # False: (clumsy) put Spell and Find tabs in separate docks.
+
 #@+others
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QtWidgets.QMainWindow)
 class DynamicWindow(QtWidgets.QMainWindow):
@@ -114,7 +116,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             name='body-%s' % (self.added_bodies),
         )
         self.leo_docks.append(dock)
-        ### bg.printObj([z.objectName() for z in self.leo_docks]) ###
         w = self.createBodyPane(parent=None)
         dock.setWidget(w)
         self.splitDockWidget(self.body_dock, dock, QtCore.Qt.Horizontal)
@@ -306,7 +307,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             table = (
                 (False, True, 100, lt, 'outline', self.createOutlinePane),
                 (False, True, 100, bottom, 'body', self.createBodyPane),
-                (False, True, 20, rt, 'log', self.createLogDock),
+                (False, True, 20, rt, 'tabs', self.createTabsDock),
                 (True, True, 20, rt, 'find', self.createFindDock),
                 (True, True, 20, rt, 'spell', self.createSpellDock),
             )
@@ -633,24 +634,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Find tab.
         findTab = QtWidgets.QWidget()
         findTab.setObjectName('findTab')
-        ###
-            #
-            # Fix #516:
-            # if 0:
-                # c = self.leo_c
-                # use_minibuffer = c.config.getBool('minibuffer-find-mode', default=False)
-                # use_dialog = c.config.getBool('use-find-dialog', default=False)
-                # if not use_minibuffer and not use_dialog:
-                   # tabWidget.addTab(findScrollArea, 'Find')
-            # Do this later, in LeoFind.finishCreate
         #
         # Official ivars.
         self.findScrollArea = findScrollArea
         self.findTab = findTab
         return findScrollArea
-    #@+node:ekr.20190527121112.1: *5* dw.createLogDock ***
-    def createLogDock(self, parent):
-        '''Create a Log dock.'''
+    #@+node:ekr.20190527121112.1: *5* dw.createTabsDock (legacy_log_dock = False)
+    def createTabsDock(self, parent):
+        '''Create the Tabs dock.'''
         assert g.app.dock
         assert not parent, repr(parent)
         #
@@ -674,18 +665,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20190527120829.1: *5* dw.createSpellDock
     def createSpellDock(self, parent):
         '''Create a Spell dock.'''
-        g.trace()
         assert g.app.dock
         assert not parent, repr(parent)
-        ### tabWidget = self.createTabWidget(None, 'spellTabWidget')
-        # Spell tab.
+        #
+        # Create the spell tab.
         spellTab = QtWidgets.QWidget()
         spellTab.setObjectName('docked.spellTab')
-        ### tabWidget.addTab(spellTab, 'Spell')
         self.createSpellTab(spellTab)
-        ### tabWidget.setCurrentIndex(1)
         return spellTab
-    #@+node:ekr.20190527163203.1: *5* dw.createTabbedLogDock
+    #@+node:ekr.20190527163203.1: *5* dw.createTabbedLogDock (legacy_log_dock = True)
     def createTabbedLogDock(self, parent):
         '''Create a tabbed (legacy) Log dock.'''
         assert g.app.dock
@@ -731,28 +719,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Official ivars
         self.tabWidget = tabWidget # Used by LeoQtLog.
         return logFrame
-
-        
-        
-        
-        # #
-        # # Create the log contents
-        # logFrame = self.createFrame(None, 'logFrame',
-            # vPolicy=QtWidgets.QSizePolicy.Minimum)
-        # innerFrame = self.createFrame(logFrame, 'logInnerFrame',
-            # hPolicy=QtWidgets.QSizePolicy.Preferred,
-            # vPolicy=QtWidgets.QSizePolicy.Expanding)
-        # tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
-        # #
-        # # Pack. This *is* required.
-        # innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
-        # innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
-        # outerGrid = self.createGrid(logFrame, 'logGrid')
-        # outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
-        # #
-        # # Official ivars
-        # self.tabWidget = tabWidget # Used by LeoQtLog.
-        # return logFrame
     #@+node:ekr.20110605121601.18152: *4* dw.widgets
     #@+node:ekr.20110605121601.18153: *5* dw.createButton
     def createButton(self, parent, name, label):
@@ -905,7 +871,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18167: *5* dw.createSpellTab
     def createSpellTab(self, parent):
         # dw = self
-        g.trace(parent and parent.objectName())
         vLayout = self.createVLayout(parent, 'spellVLayout', margin=2)
         spellFrame = self.createFrame(parent, 'spellFrame')
         vLayout2 = self.createVLayout(spellFrame, 'spellVLayout')
@@ -1944,7 +1909,6 @@ class LeoQtBody(leoFrame.LeoBody):
         # Actually delete the widget.
         if dock in dw.leo_docks:
             dw.leo_docks.remove(dock)
-        ### g.printObj([z.objectName() for z in dw.leo_docks]) ###
         dw.removeDockWidget(dock)
             # A QMainWidget method.
         #
@@ -3484,7 +3448,7 @@ class LeoQtLog(leoFrame.LeoLog):
         c = self.c
         self.wrap = bool(c.config.getBool('log-pane-wraps'))
         
-    #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
+    #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate (changed)
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''
         c, log, w = self.c, self, self.tabWidget
@@ -3511,7 +3475,8 @@ class LeoQtLog(leoFrame.LeoLog):
             if w.tabText(i) == 'Log':
                 w.removeTab(i)
         w.insertTab(0, logWidget, 'Log')
-        c.spellCommands.openSpellTab()
+        if legacy_log_dock:
+            c.spellCommands.openSpellTab()
         # set up links in log handling
         logWidget.setTextInteractionFlags(
             QtCore.Qt.LinksAccessibleByMouse |
