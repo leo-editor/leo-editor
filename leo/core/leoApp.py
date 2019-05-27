@@ -95,7 +95,7 @@ class LeoApp(object):
             # A list of switches to be enabled.
         self.diff = False
             # True: run Leo in diff mode.
-        self.dock = False
+        self.dock = True
             # True: use a QDockWidget.
         self.enablePlugins = True
             # True: run start1 hook to load plugins. --no-plugins
@@ -2668,6 +2668,7 @@ class LoadManager(object):
         '''Handle all options, remove them from sys.argv and set lm.options.'''
         lm = self
         table = (
+            '--dock',
             '--no-cache',
             '--session-restore',
             '--session-save',
@@ -2723,7 +2724,7 @@ class LoadManager(object):
             add(option, dest=dest, help=help, metavar=m)
 
         add_bool('--diff',          'use Leo as an external git diff')
-        add_bool('--dock',          'use a Qt dock')
+        # add_bool('--dock',          'use a Qt dock')
         add_bool('--fullscreen',    'start fullscreen')
         add_bool('--ipython',       'enable ipython support')
         add_bool('--fail-fast',     'stop unit tests after the first failure')
@@ -2826,10 +2827,6 @@ class LoadManager(object):
     #@+node:ekr.20180312151544.1: *6* LM.doSimpleOptions
     def doSimpleOptions(self, options, trace_m):
         '''These args just set g.app ivars.'''
-        # --dock & --no-dock
-        g.app.dock = options.dock
-        if g.app.dock and options.no_dock:
-            g.app.dock = False
         # --fail-fast
         g.app.failFast = options.fail_fast
         # --fullscreen
@@ -2844,6 +2841,9 @@ class LoadManager(object):
         g.app.start_maximized = options.maximized
         # --minimized
         g.app.start_minimized = options.minimized
+        # --no-dock
+        if options.no_dock:
+            g.app.dock = False
         # --no-plugins
         if options.no_plugins:
             g.app.enablePlugins = False
