@@ -499,9 +499,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
             def focusInEvent(self, event):
+                g.trace('(VisLineEdit)') ###
                 self.parent().show()
-                QtWidgets.QLineEdit.focusInEvent(self, event)
-                    # EKR: 2014/06/28: Call the base class method.
+                super().focusInEvent(event)
+                    # Call the base class method.
+                    
+            def focusOutEvent(self, event):
+                self.store_selection()
+                super().focusOutEvent(event)
+
             def restore_selection(self):
                 w = self
                 i, j, ins = self._sel_and_insert
@@ -515,9 +521,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     else:
                         w.setSelection(i, length)
 
-            def focusOutEvent(self, event):
-                self.store_selection()
-                QtWidgets.QLineEdit.focusOutEvent(self, event)
             def store_selection(self):
                 w = self
                 ins = w.cursorPosition()
@@ -543,6 +546,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
             self.verticalLayout.addWidget(frame)
         label.setBuddy(lineEdit)
+            # Transfers focus request from label to lineEdit.
+        #
         # Official ivars.
         self.lineEdit = lineEdit
         # self.leo_minibuffer_frame = frame

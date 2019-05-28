@@ -882,21 +882,30 @@ class LeoQtGui(leoGui.LeoGui):
                 # with wrapper = None, so return the LeoQtBody.
                 w = c.frame.body
         if trace:
-            g.trace('\n(LeoQtGui)', w.__class__.__name__)
-            g.trace(g.callers(6))
+            name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+            g.trace('(LeoQtGui)', name)
         return w
 
     def set_focus(self, c, w):
         """Put the focus on the widget."""
         # pylint: disable=arguments-differ
-        # gui = self
-        if w:
-            if hasattr(w, 'widget') and w.widget:
-                w = w.widget
-            if 'focus' in g.app.debug:
-                g.trace('\n(LeoQtGui)',  w.__class__.__name__)
-                g.trace(g.callers(6))
-            w.setFocus()
+        if not w:
+            return
+        if getattr(w, 'widget', None):
+            w = w.widget
+        if 'focus' in g.app.debug:
+            name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+            g.trace('(LeoQtGui)', name)
+        ###
+            # if hasattr(w, 'activateWindow') and self.activate_lockout == 0:
+                # if g.app.initComplete:
+                    # try:
+                        # self.activate_lockout += 1
+                        # g.trace('ACTIVATE')
+                        # ### w.activateWindow()
+                    # finally:
+                        # self.activate_lockout -= 1
+        w.setFocus()
 
     def ensure_commander_visible(self, c1):
         """

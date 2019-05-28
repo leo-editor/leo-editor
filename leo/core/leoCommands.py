@@ -2684,7 +2684,8 @@ class Commands(object):
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
             if 'focus' in g.app.debug and not g.unitTesting:
-                g.trace('\nDELAYED FOCUS', g.callers())
+                name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+                g.trace('DELAYED FOCUS', name)
             c.set_focus(w)
             c.requestedFocusWidget = None
         table = (
@@ -2957,8 +2958,10 @@ class Commands(object):
         c = self
         w = g.app.gui and g.app.gui.get_focus(c)
         if 'focus' in g.app.debug:
-            g.trace('\n(c)',  w.__class__.__name__)
-            g.trace(g.callers(6))
+            name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+            g.trace('(c)', name)
+            # g.trace('\n(c)',  w.__class__.__name__)
+            # g.trace(g.callers(6))
         return w
 
     def get_requested_focus(self):
@@ -2969,7 +2972,9 @@ class Commands(object):
         c = self
         if w and g.app.gui:
             if 'focus' in g.app.debug:
-                g.trace('\n(c)', repr(w))
+                # g.trace('\n(c)', repr(w))
+                name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+                g.trace('(c)', name)
             c.requestedFocusWidget = w
 
     def set_focus(self, w, force=False):
@@ -2977,7 +2982,8 @@ class Commands(object):
         c = self
         if w and g.app.gui:
             if trace:
-                g.trace('\n(c)', repr(w))
+                name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+                g.trace('(c)', name)
             g.app.gui.set_focus(c, w)
         else:
             if trace: g.trace('(c) no w')
