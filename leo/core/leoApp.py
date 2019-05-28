@@ -1416,7 +1416,7 @@ class LeoApp(object):
         dw = c.frame.top
         if not dw:
             return
-        g.trace('=====', c.shortFileName())
+        ### g.trace('=====', c.shortFileName())
         fn = c.fileName()
         table = (
             ('windowGeometry:%s' % (fn) , dw.saveGeometry),
@@ -1638,7 +1638,7 @@ class LeoApp(object):
         dw = c.frame.top
         if not dw:
             return
-        g.trace('=====', c.shortFileName())
+        ### g.trace('=====', c.shortFileName())
         fn = c.fileName()
         table = (
             ('windowGeometry:%s' % (fn), dw.restoreGeometry),
