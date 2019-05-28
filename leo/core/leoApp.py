@@ -6,6 +6,7 @@
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
 import leo.core.leoGlobals as g
 import leo.core.leoExternalFiles as leoExternalFiles
+import base64
 import importlib
 import io
 StringIO = io.StringIO
@@ -1307,6 +1308,9 @@ class LeoApp(object):
             if veto: return False
         g.app.setLog(None) # no log until we reactive a window.
         g.doHook("close-frame", c=c)
+        #
+        # Save the window state for *all* open files.
+        g.app.saveWindowState(c)
         g.app.commander_cacher.commit()
             # store cache, but don't close it.
         # This may remove frame from the window list.
@@ -1346,6 +1350,7 @@ class LeoApp(object):
     #@+node:ekr.20031218072017.1732: *4* app.finishQuit
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
+        assert self == g.app, repr(g.app)
         if 'shutdown' in g.app.debug:
             g.pr('finishQuit: killed:', g.app.killed)
         if not g.app.killed:
@@ -1355,7 +1360,7 @@ class LeoApp(object):
             g.app.commander_cacher.close()
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
-        self.destroyAllOpenWithFiles()
+        g.app.destroyAllOpenWithFiles()
         if hasattr(g.app, 'global_pyzo_controller'):
             g.app.global_pyzo_controller.close_pyzo()
         g.app.killed = True
@@ -1403,6 +1408,30 @@ class LeoApp(object):
                 break
         if g.app.windowList:
             g.app.quitting = False # If we get here the quit has been disabled.
+    #@+node:ekr.20190528045643.1: *4* app.saveWindowState
+    def saveWindowState(self, c):
+        '''Save the window geometry and layout of dock widgets and toolbars.'''
+        if not self.dock:
+            return
+        dw = c.frame.top
+        if not dw:
+            return
+        g.trace('=====', c.shortFileName())
+        fn = c.fileName()
+        table = (
+            ('windowGeometry:%s' % (fn) , dw.saveGeometry),
+            ('windowState:%s' % (fn), dw.saveState),
+        )
+        for key, method in table:
+            # This is pyzo code...
+            g.trace(key)
+            val = method()
+                # Method is a QMainWindow method.
+            try:
+                val = bytes(val) # PyQt4
+            except Exception:
+                val = bytes().join(val) # PySide
+            self.db [key] = base64.encodebytes(val).decode('ascii')
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self):
         """ Return list of currently active controllers """
@@ -1599,6 +1628,34 @@ class LeoApp(object):
         else:
             c.bodyWantsFocus()
         c.outerUpdate()
+    #@+node:ekr.20190528045549.1: *3* app.restoreWindowState
+    def restoreWindowState(self, c):
+        '''
+        Restore window geometry and layout of dock widgets and toolbars.
+        '''
+        if not self.dock:
+            return
+        dw = c.frame.top
+        if not dw:
+            return
+        g.trace('=====', c.shortFileName())
+        fn = c.fileName()
+        table = (
+            ('windowGeometry:%s' % (fn), dw.restoreGeometry),
+            ('windowState:%s' % (fn), dw.restoreState),
+        )
+        for key, method in table:
+            val = self.db.get(key)
+            if val:
+                try:
+                    val = base64.decodebytes(val.encode('ascii'))
+                        # Elegant pyzo code.
+                    method(val)
+                except Exception as err:
+                    g.trace('No key: %s' % (key, err))
+            # This is not an error.
+            elif 1:
+                g.trace('missing key:', key)
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager(object):
@@ -2306,7 +2363,7 @@ class LoadManager(object):
         if len(commanders) == 2:
             c = commanders[0]
             c.editFileCommands.compareAnyTwoFiles(event=None)
-    #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers (1 shim: g.app.log)
+    #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
     def doPostPluginsInit(self):
         '''Create a Leo window for each file in the lm.files list.'''
         # Clear g.app.initing _before_ creating commanders.
@@ -2350,6 +2407,7 @@ class LoadManager(object):
         # Fix bug 844953: tell Unity which menu to use.
             # if c: c.enableMenuBar()
         # Do the final inits.
+        g.app.restoreWindowState(c1)
         g.app.logInited = True
         g.app.initComplete = True
         if c:
