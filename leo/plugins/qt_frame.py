@@ -292,16 +292,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
         lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
         g.placate_pyflakes(bottom, lt, rt, top)
         if legacy_log_dock:
-            # Simple and good enough, imo.
             table = (
-                (False, True, 100, lt, 'outline', self.createOutlinePane),
+                (False, False, 100, lt, 'outline', self.createOutlinePane),
                 (False, True, 100, bottom, 'body', self.createBodyPane),
                 (False, True, 100, rt, 'tabs', self.createTabbedLogDock),
             )
         else:
-            # This is clumsy, and a bit of make work.
             table = (
-                (False, True, 100, lt, 'outline', self.createOutlinePane),
+                (False, False, 100, lt, 'outline', self.createOutlineDock),
                 (False, True, 100, bottom, 'body', self.createBodyPane),
                 (False, True, 20, rt, 'tabs', self.createTabsDock),
                 (True, True, 20, rt, 'find', self.createFindDock),
@@ -309,6 +307,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             )
         for closeable, moveable, height, area, name, creator in table:
             dock = self.createDockWidget(closeable, moveable, height, name)
+                # Important: the central widget should be a dock.
             w = creator(parent=None)
             dock.setWidget(w)
             # Remember the dock.
@@ -635,29 +634,22 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.findScrollArea = findScrollArea
         self.findTab = findTab
         return findScrollArea
-    #@+node:ekr.20190527121112.1: *5* dw.createTabsDock (legacy_log_dock = False)
-    def createTabsDock(self, parent):
-        '''Create the Tabs dock.'''
-        assert g.app.dock
-        assert not parent, repr(parent)
-        #
-        # Create the log contents
-        logFrame = self.createFrame(None, 'logFrame',
-            vPolicy=QtWidgets.QSizePolicy.Minimum)
-        innerFrame = self.createFrame(logFrame, 'logInnerFrame',
-            hPolicy=QtWidgets.QSizePolicy.Preferred,
+    #@+node:ekr.20190528112002.1: *5* dw.createOutlineDock
+    def createOutlineDock(self, parent):
+        '''Create the widgets and ivars for Leo's outline.'''
+        # Create widgets.
+        treeFrame = self.createFrame(parent, 'outlineFrame',
             vPolicy=QtWidgets.QSizePolicy.Expanding)
-        tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
-        #
-        # Pack. This *is* required.
-        innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
-        innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
-        outerGrid = self.createGrid(logFrame, 'logGrid')
-        outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
-        #
-        # Official ivars
-        self.tabWidget = tabWidget # Used by LeoQtLog.
-        return logFrame
+        innerFrame = self.createFrame(treeFrame, 'outlineInnerFrame',
+            hPolicy=QtWidgets.QSizePolicy.Preferred)
+        treeWidget = self.createTreeWidget(innerFrame, 'treeWidget')
+        grid = self.createGrid(treeFrame, 'outlineGrid')
+        grid.addWidget(innerFrame, 0, 0, 1, 1)
+        innerGrid = self.createGrid(innerFrame, 'outlineInnerGrid')
+        innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
+        # Official ivars...
+        self.treeWidget = treeWidget
+        return treeFrame
     #@+node:ekr.20190527120829.1: *5* dw.createSpellDock
     def createSpellDock(self, parent):
         '''Create a Spell dock.'''
@@ -711,6 +703,29 @@ class DynamicWindow(QtWidgets.QMainWindow):
         tabWidget.addTab(spellTab, 'Spell')
         self.createSpellTab(spellTab)
         tabWidget.setCurrentIndex(1)
+        #
+        # Official ivars
+        self.tabWidget = tabWidget # Used by LeoQtLog.
+        return logFrame
+    #@+node:ekr.20190527121112.1: *5* dw.createTabsDock (legacy_log_dock = False)
+    def createTabsDock(self, parent):
+        '''Create the Tabs dock.'''
+        assert g.app.dock
+        assert not parent, repr(parent)
+        #
+        # Create the log contents
+        logFrame = self.createFrame(None, 'logFrame',
+            vPolicy=QtWidgets.QSizePolicy.Minimum)
+        innerFrame = self.createFrame(logFrame, 'logInnerFrame',
+            hPolicy=QtWidgets.QSizePolicy.Preferred,
+            vPolicy=QtWidgets.QSizePolicy.Expanding)
+        tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
+        #
+        # Pack. This *is* required.
+        innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
+        innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
+        outerGrid = self.createGrid(logFrame, 'logGrid')
+        outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
         #
         # Official ivars
         self.tabWidget = tabWidget # Used by LeoQtLog.
