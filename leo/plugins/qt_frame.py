@@ -33,6 +33,7 @@ except ImportError:
 legacy_log_dock = False
     # True:  Put Spell and Find Tabs inside the Tabs dock.
     # False: Put Spell and Find tabs in separate docks.
+floatable_docks = False
 
 #@+others
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QtWidgets.QMainWindow)
@@ -758,7 +759,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # The parent must be a QMainWindow.
         features = w.NoDockWidgetFeatures
         if moveable:
-            features |= (w.DockWidgetMovable | w.DockWidgetFloatable)
+            features |= w.DockWidgetMovable
+        if moveable and floatable_docks:
+            features |= w.DockWidgetFloatable
         if closeable:
             features |= w.DockWidgetClosable
         w.setFeatures(features)
