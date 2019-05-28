@@ -15647,7 +15647,7 @@ Creating Documents from Outlines
 .. _`Sphinx documentation`: http://sphinx-doc.org/contents.html
 .. _`docutils`: http://docutils.sourceforge.net
 .. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
-.. _`rST primer`: http://sphinx-doc.org/rest.html
+.. _`rST primer`: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
 .. _`first tutorial`: tutorial-basics.html
 
 ..  "I am a huge fan of Leo. I think it's quite possibly the most
