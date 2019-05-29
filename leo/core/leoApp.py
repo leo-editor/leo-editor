@@ -1417,7 +1417,7 @@ class LeoApp(object):
         
         This is called for all closed windows.
         '''
-        trace = 'dock' in g.app.debug or 'startup' in g.app.debug
+        trace = any([z in g.app.debug for z in ('dock', 'cache', 'startup')])
         if not g.app.dock:
             if trace: g.trace('g.app.dock is False')
             return
@@ -1646,8 +1646,8 @@ class LeoApp(object):
         
         Use the per-file state of the first loaded .leo file, or the global state.
         '''
-        trace = 'dock' in g.app.debug or 'startup' in g.app.debug
-        if not self.dock:
+        trace = any([z in g.app.debug for z in ('dock', 'cache', 'startup')])
+        if not g.app.dock:
             if trace: g.trace('g.app.dock is False')
             return
         dw = c.frame.top
@@ -2755,7 +2755,7 @@ class LoadManager(object):
             '--session-restore',
             '--session-save',
         )
-        trace_m='''coloring,dock,drawing,events,focus,gnx,ipython,
+        trace_m='''cache,coloring,dock,drawing,events,focus,gnx,ipython,
           keys,plugins,select,shutdown,startup,themes'''
         for bad_option in table:
             if bad_option in sys.argv:
@@ -2937,13 +2937,17 @@ class LoadManager(object):
         g.app.silentMode = options.silent
         # --trace=...
         valid = trace_m.replace(' ','').replace('\n','').split(',')
+        # g.trace('valid', valid)
         if options.trace:
             values = options.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
             for val in values.split(','):
                 if val in valid:
+                    # g.trace('val', val)
                     g.app.debug.append(val)
                 else:
-                    g.es_print('unknown --trace value: %s' % val) 
+                    g.es_print('unknown --trace value: %s' % val)
+        # g.trace('g.app.debug', repr(g.app.debug))
+        #
         # These are not bool options.
         # --trace-binding
         g.app.trace_binding = options.trace_binding

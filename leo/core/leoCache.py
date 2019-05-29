@@ -149,6 +149,8 @@ class GlobalCacher(object):
     def clear(self):
         '''Clear the global cache.'''
         # Careful: self.db may be a Python dict.
+        if 'cache' in g.app.debug:
+            g.trace('clear g.app.db')
         try:
             self.db.clear(verbose=True)
         except TypeError:
@@ -162,6 +164,8 @@ class GlobalCacher(object):
         # Careful: self.db may be a dict.
         if hasattr(self.db, 'conn'):
             # pylint: disable=no-member
+            if 'cache' in g.app.debug:
+                self.dump()
             self.db.conn.commit()
             self.db.conn.close()
     #@+node:ekr.20180627045953.1: *3* g_cacher.dump
@@ -694,7 +698,9 @@ def dump_list(heading, aList):
     for aTuple in aList:
         key, val = aTuple
         if g.isString(val):
-            if key.endswith(('leo_expanded', 'leo_marked')):
+            if key.startswith('windowState'):
+                print(key)
+            elif key.endswith(('leo_expanded', 'leo_marked')):
                 if val:
                     print('%30s:' % key)
                     g.printObj(val.split(','))
