@@ -1441,7 +1441,7 @@ class LeoApp(object):
                 val = bytes(val) # PyQt4
             except Exception:
                 val = bytes().join(val) # PySide
-            self.db [key] = base64.encodebytes(val).decode('ascii')
+            g.app.db [key] = base64.encodebytes(val).decode('ascii')
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self):
         """ Return list of currently active controllers """
@@ -1672,7 +1672,7 @@ class LeoApp(object):
                     method(val)
                     return
                 except Exception as err:
-                    g.trace('No key: %s' % (key, err))
+                    g.trace('No key: %s %s' % (key, err))
             # This is not an error.
             elif trace:
                 g.trace('missing key:', key)
