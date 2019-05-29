@@ -138,10 +138,15 @@ class GlobalCacher(object):
     
     def __init__(self):
         '''Ctor for the GlobalCacher class.'''
+        trace = 'cache' in g.app.debug
         try:
             path = join(g.app.homeLeoDir, 'db', 'g_app_db')
             self.db = SqlitePickleShare(path)
+            if trace and self.db is not None:
+                self.dump(tag='Startup')
         except Exception:
+            if trace:
+                g.es_exception()
             self.db = {} # Use a plain dict as a dummy.
 
     #@+others
@@ -165,13 +170,16 @@ class GlobalCacher(object):
         if hasattr(self.db, 'conn'):
             # pylint: disable=no-member
             if 'cache' in g.app.debug:
-                self.dump()
+                self.dump(tag='Shutdown')
             self.db.conn.commit()
             self.db.conn.close()
     #@+node:ekr.20180627045953.1: *3* g_cacher.dump
-    def dump(self):
+    def dump(self, tag=''):
         '''Dump the indicated cache if --trace-cache is in effect.'''
-        dump_cache(g.app.db, 'Global Cache')
+        tag0 = 'Global Cache'
+        tag2 = '%s: %s' % (tag0, tag) if tag else tag0
+        dump_cache(self.db, tag2)
+            # Careful: g.app.db may not be set yet.
     #@-others
 #@+node:ekr.20100208223942.5967: ** class PickleShareDB
 _sentinel = object()
@@ -669,6 +677,9 @@ class SqlitePickleShare(object):
 def dump_cache(db, tag):
     '''Dump the given cache.'''
     print('\n===== %s =====\n' % tag)
+    if db is None:
+        print('db is None!')
+        return
     # Create a dict, sorted by file prefixes.
     d = {}
     for key in db.keys():
@@ -689,7 +700,7 @@ def dump_cache(db, tag):
             dump_list('File: ' + key, d.get(key))
             files += 1
     if d.get('None'):
-        heading = 'All others' if files else None
+        heading = 'All others (%s)' % (tag) if files else None
         dump_list(heading, d.get('None'))
         
 def dump_list(heading, aList):
