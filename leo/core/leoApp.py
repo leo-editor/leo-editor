@@ -1294,7 +1294,7 @@ class LeoApp(object):
         """
         c = frame.c
         if 'shutdown' in g.app.debug:
-            g.pr('closeLeoWindow: changed: %s %s' % (c.changed, c.shortFileName()))
+            g.trace('changed: %s %s' % (c.changed, c.shortFileName()))
         c.endEditing() # Commit any open edits.
         if c.promptingForClose:
             # There is already a dialog open asking what to do.
@@ -1399,6 +1399,8 @@ class LeoApp(object):
     @cmd('quit-leo')
     def onQuit(self, event=None):
         '''Exit Leo, prompting to save unsaved outlines first.'''
+        if 'shutdown' in g.app.debug:
+            g.trace()
         g.app.quitting = True
         if g.app.loaded_session and g.app.sessionManager:
             g.app.sessionManager.save_snapshot()
@@ -1410,21 +1412,29 @@ class LeoApp(object):
             g.app.quitting = False # If we get here the quit has been disabled.
     #@+node:ekr.20190528045643.1: *4* app.saveWindowState
     def saveWindowState(self, c):
-        '''Save the window geometry and layout of dock widgets and toolbars.'''
+        '''
+        Save the window geometry and layout of dock widgets and toolbars.
+        
+        This is called for all closed windows. The last state wins.
+        '''
         if not self.dock:
             return
         dw = c.frame.top
         if not dw:
             return
-        ### g.trace('=====', c.shortFileName())
-        fn = c.fileName()
+        if 'dock' in g.app.debug or 'shutdown' in g.app.debug:
+            g.trace(c.shortFileName())
+        # fn = c.fileName()
         table = (
-            ('windowGeometry:%s' % (fn) , dw.saveGeometry),
-            ('windowState:%s' % (fn), dw.saveState),
+            # Save only a *global* state, for *all* outline files.
+            ('windowState:', dw.saveState),
+            # ('windowState:%s' % (fn), dw.saveState),
+            #
+            # Do not save/restore window geometry.
+            # ('windowGeometry:%s' % (fn) , dw.saveGeometry),
         )
         for key, method in table:
             # This is pyzo code...
-            g.trace(key)
             val = method()
                 # Method is a QMainWindow method.
             try:
@@ -1638,11 +1648,15 @@ class LeoApp(object):
         dw = c.frame.top
         if not dw:
             return
-        ### g.trace('=====', c.shortFileName())
-        fn = c.fileName()
+        if 'dock' in g.app.debug or 'startup' in g.app.debug:
+            g.trace(c.shortFileName())
         table = (
-            ('windowGeometry:%s' % (fn), dw.restoreGeometry),
-            ('windowState:%s' % (fn), dw.restoreState),
+            # Restore the actual window state.
+            ('windowState:', dw.restoreState),
+            # ('windowState:%s' % (fn), dw.restoreState),
+            #
+            # The window geometry has already been restored.
+            # ('windowGeometry:%s' % (fn), dw.restoreGeometry),
         )
         for key, method in table:
             val = self.db.get(key)
@@ -2376,7 +2390,9 @@ class LoadManager(object):
                 lm.more_cmdline_files = n < len(lm.files) - 1
                 c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
                     # Returns None if the file is open in another instance of Leo.
-                if not c1: c1 = c
+                if c and not c1: c1 = c
+                if c:
+                    g.app.restoreWindowState(c) ###
         g.app.loaded_session = not lm.files
             # Load (and save later) a session only no files were given on the command line.
         if g.app.sessionManager and g.app.loaded_session:
@@ -2407,7 +2423,7 @@ class LoadManager(object):
         # Fix bug 844953: tell Unity which menu to use.
             # if c: c.enableMenuBar()
         # Do the final inits.
-        g.app.restoreWindowState(c1)
+        ### g.app.restoreWindowState(c1)
         g.app.logInited = True
         g.app.initComplete = True
         if c:
@@ -2731,7 +2747,7 @@ class LoadManager(object):
             '--session-restore',
             '--session-save',
         )
-        trace_m='''coloring,drawing,events,focus,gnx,ipython,
+        trace_m='''coloring,dock,drawing,events,focus,gnx,ipython,
           keys,plugins,select,shutdown,startup,themes'''
         for bad_option in table:
             if bad_option in sys.argv:

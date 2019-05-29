@@ -1304,8 +1304,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 m.leo_geom_inited = True
                 self.leo_master.setGeometry(rect)
                 super().setGeometry(rect)
-            # Restore dock geometry *after* restoring the overall geometry.
-            ### self.restoreWindowState()
         else:
             super().setGeometry(rect)
     #@+node:ekr.20110605121601.18173: *3* dw.select
