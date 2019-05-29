@@ -2400,7 +2400,7 @@ class LoadManager(object):
                     # Returns None if the file is open in another instance of Leo.
                 if c and not c1: c1 = c
                 if c:
-                    g.app.restoreWindowState(c) ###
+                    g.app.restoreWindowState(c)
         g.app.loaded_session = not lm.files
             # Load (and save later) a session only no files were given on the command line.
         if g.app.sessionManager and g.app.loaded_session:
@@ -2410,6 +2410,7 @@ class LoadManager(object):
                 # tag:#659.
                 if g.app.windowList:
                     c = c1 = g.app.windowList[0].c
+                    g.app.restoreWindowState(c)
                 else:
                     c = c1 = None
         # Enable redraws.
