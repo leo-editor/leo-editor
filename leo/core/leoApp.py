@@ -1415,7 +1415,7 @@ class LeoApp(object):
         '''
         Save the window geometry and layout of dock widgets and toolbars.
         
-        This is called for all closed windows. The last state wins.
+        This is called for all closed windows.
         '''
         if not self.dock:
             return
@@ -1424,14 +1424,14 @@ class LeoApp(object):
             return
         if 'dock' in g.app.debug or 'shutdown' in g.app.debug:
             g.trace(c.shortFileName())
-        # fn = c.fileName()
         table = (
-            # Save only a *global* state, for *all* outline files.
+            # Save a default *global* state, for *all* outline files.
             ('windowState:', dw.saveState),
-            # ('windowState:%s' % (fn), dw.saveState),
+            # Save a per-file state.
+            ('windowState:%s' % (c.fileName()), dw.saveState),
             #
-            # Do not save/restore window geometry.
-            # ('windowGeometry:%s' % (fn) , dw.saveGeometry),
+            # Do not save/restore window geometry. That is done elsewhere.
+            # ('windowGeometry:%s' % (c.fileName()) , dw.saveGeometry),
         )
         for key, method in table:
             # This is pyzo code...
@@ -1641,19 +1641,23 @@ class LeoApp(object):
     #@+node:ekr.20190528045549.1: *3* app.restoreWindowState
     def restoreWindowState(self, c):
         '''
-        Restore window geometry and layout of dock widgets and toolbars.
+        Restore the layout of dock widgets and toolbars.
+        
+        Use the per-file state of the first loaded .leo file, or the global state.
         '''
+        trace = 'dock' in g.app.debug or 'startup' in g.app.debug
         if not self.dock:
             return
         dw = c.frame.top
         if not dw:
             return
-        if 'dock' in g.app.debug or 'startup' in g.app.debug:
+        if trace:
             g.trace(c.shortFileName())
         table = (
+            # First, try the per-outline state.
+            ('windowState:%s' % (c.fileName()), dw.restoreState),
             # Restore the actual window state.
             ('windowState:', dw.restoreState),
-            # ('windowState:%s' % (fn), dw.restoreState),
             #
             # The window geometry has already been restored.
             # ('windowGeometry:%s' % (fn), dw.restoreGeometry),
@@ -1661,14 +1665,16 @@ class LeoApp(object):
         for key, method in table:
             val = self.db.get(key)
             if val:
+                if trace: g.trace('Found key:', key)
                 try:
                     val = base64.decodebytes(val.encode('ascii'))
                         # Elegant pyzo code.
                     method(val)
+                    return
                 except Exception as err:
                     g.trace('No key: %s' % (key, err))
             # This is not an error.
-            elif 1:
+            elif trace:
                 g.trace('missing key:', key)
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
