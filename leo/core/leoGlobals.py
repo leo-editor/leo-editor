@@ -1419,7 +1419,6 @@ def null_object_print(id_, kind):
         # Print each signature once.
         tracing_signatures [signature] = True
         g.pr('%40s %s' % (s, callers))
-#@+node:ekr.20190317093640.1: *3* NOT USED: << class NullObject >>
 #@+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
 class PosList(list):
     #@+<< docstring for PosList >>
@@ -5140,16 +5139,58 @@ def doHook(tag, *args, **keywords):
         g.app.hookError = True # Supress this function.
         g.app.idle_time_hooks_enabled = False
         return None
-#@+node:ekr.20031218072017.1315: *3* g.idle time functions
-#@+node:EKR.20040602125018.1: *4* g.disableIdleTimeHook
+#@+node:ekr.20100910075900.5950: *3* g.Wrappers for g.app.pluginController methods
+# Important: we can not define g.pc here!
+#@+node:ekr.20100910075900.5951: *4* g.Loading & registration
+def loadOnePlugin(pluginName, verbose=False):
+    pc = g.app.pluginsController
+    return pc.loadOnePlugin(pluginName, verbose=verbose)
+
+def registerExclusiveHandler(tags, fn):
+    pc = g.app.pluginsController
+    return pc.registerExclusiveHandler(tags, fn)
+
+def registerHandler(tags, fn):
+    pc = g.app.pluginsController
+    return pc.registerHandler(tags, fn)
+
+def plugin_signon(module_name, verbose=False):
+    pc = g.app.pluginsController
+    return pc.plugin_signon(module_name, verbose)
+
+def unloadOnePlugin(moduleOrFileName, verbose=False):
+    pc = g.app.pluginsController
+    return pc.unloadOnePlugin(moduleOrFileName, verbose)
+
+def unregisterHandler(tags, fn):
+    pc = g.app.pluginsController
+    return pc.unregisterHandler(tags, fn)
+#@+node:ekr.20100910075900.5952: *4* g.Information
+def getHandlersForTag(tags):
+    pc = g.app.pluginsController
+    return pc.getHandlersForTag(tags)
+
+def getLoadedPlugins():
+    pc = g.app.pluginsController
+    return pc.getLoadedPlugins()
+
+def getPluginModule(moduleName):
+    pc = g.app.pluginsController
+    return pc.getPluginModule(moduleName)
+
+def pluginIsLoaded(fn):
+    pc = g.app.pluginsController
+    return pc.isLoaded(fn)
+#@+node:ekr.20031218072017.1315: ** g.Idle time functions
+#@+node:EKR.20040602125018.1: *3* g.disableIdleTimeHook
 def disableIdleTimeHook():
     '''Disable the global idle-time hook.'''
     g.app.idle_time_hooks_enabled = False
-#@+node:EKR.20040602125018: *4* g.enableIdleTimeHook
+#@+node:EKR.20040602125018: *3* g.enableIdleTimeHook
 def enableIdleTimeHook(*args, **keys):
     '''Enable idle-time processing.'''
     g.app.idle_time_hooks_enabled = True
-#@+node:ekr.20140825042850.18410: *4* g.IdleTime
+#@+node:ekr.20140825042850.18410: *3* g.IdleTime
 def IdleTime(handler, delay=500, tag=None):
     '''
     A thin wrapper for the LeoQtGui.IdleTime class.
@@ -5195,53 +5236,11 @@ def IdleTime(handler, delay=500, tag=None):
         return g.app.gui.idleTimeClass(handler, delay, tag)
     except Exception:
         return None
-#@+node:ekr.20161027205025.1: *4* g.idleTimeHookHandler (stub)
+#@+node:ekr.20161027205025.1: *3* g.idleTimeHookHandler (stub)
 def idleTimeHookHandler(timer):
     '''This function exists for compatibility.'''
     g.es_print('Replaced by IdleTimeManager.on_idle')
     g.trace(g.callers())
-#@+node:ekr.20100910075900.5950: *3* g.Wrappers for g.app.pluginController methods
-# Important: we can not define g.pc here!
-#@+node:ekr.20100910075900.5951: *4* g.Loading & registration
-def loadOnePlugin(pluginName, verbose=False):
-    pc = g.app.pluginsController
-    return pc.loadOnePlugin(pluginName, verbose=verbose)
-
-def registerExclusiveHandler(tags, fn):
-    pc = g.app.pluginsController
-    return pc.registerExclusiveHandler(tags, fn)
-
-def registerHandler(tags, fn):
-    pc = g.app.pluginsController
-    return pc.registerHandler(tags, fn)
-
-def plugin_signon(module_name, verbose=False):
-    pc = g.app.pluginsController
-    return pc.plugin_signon(module_name, verbose)
-
-def unloadOnePlugin(moduleOrFileName, verbose=False):
-    pc = g.app.pluginsController
-    return pc.unloadOnePlugin(moduleOrFileName, verbose)
-
-def unregisterHandler(tags, fn):
-    pc = g.app.pluginsController
-    return pc.unregisterHandler(tags, fn)
-#@+node:ekr.20100910075900.5952: *4* g.Information
-def getHandlersForTag(tags):
-    pc = g.app.pluginsController
-    return pc.getHandlersForTag(tags)
-
-def getLoadedPlugins():
-    pc = g.app.pluginsController
-    return pc.getLoadedPlugins()
-
-def getPluginModule(moduleName):
-    pc = g.app.pluginsController
-    return pc.getPluginModule(moduleName)
-
-def pluginIsLoaded(fn):
-    pc = g.app.pluginsController
-    return pc.isLoaded(fn)
 #@+node:ekr.20041219095213: ** g.Importing
 #@+node:ekr.20040917061619: *3* g.cantImport
 def cantImport(moduleName, pluginName=None, verbose=True):

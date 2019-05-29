@@ -307,6 +307,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 (True, True, 20, rt, 'spell', self.createSpellDock),
             )
         for closeable, moveable, height, area, name, creator in table:
+            height = 0
             dock = self.createDockWidget(closeable, moveable, height, name)
                 # Important: the central widget should be a dock.
             w = creator(parent=None)
@@ -486,9 +487,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         dw.setMenuBar(w)
         # Official ivars.
         self.leo_menubar = w
-    #@+node:ekr.20110605121601.18148: *5* dw.createMiniBuffer
+    #@+node:ekr.20110605121601.18148: *5* dw.createMiniBuffer (class VisLineEdit)
     def createMiniBuffer(self, parent):
         '''Create the widgets for Leo's minibuffer area.'''
+        dw = self # For VisLineEdit
         # Create widgets.
         frame = self.createFrame(parent, 'minibufferFrame',
             hPolicy=QtWidgets.QSizePolicy.MinimumExpanding,
@@ -500,11 +502,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
             def focusInEvent(self, event):
-                g.trace('(VisLineEdit)') ###
                 self.parent().show()
+                if g.app.dock:
+                    # Ensure the Tabs dock is visible, for completions.
+                    dock = getattr(dw, 'tabs_dock', None)
+                    if dock:
+                        dock.raise_()
+                        parent.raise_()
                 super().focusInEvent(event)
                     # Call the base class method.
-                    
+
             def focusOutEvent(self, event):
                 self.store_selection()
                 super().focusOutEvent(event)
