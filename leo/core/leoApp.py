@@ -1417,19 +1417,19 @@ class LeoApp(object):
         
         This is called for all closed windows.
         '''
-        if not self.dock:
+        trace = 'dock' in g.app.debug or 'startup' in g.app.debug
+        if not g.app.dock:
+            if trace: g.trace('g.app.dock is False')
             return
         dw = c.frame.top
         if not dw or not hasattr(dw, 'saveState'):
+            if trace: g.trace('no dw.saveState. dw:', repr(dw))
             return
-        if 'dock' in g.app.debug or 'shutdown' in g.app.debug:
-            g.trace(c.shortFileName())
         table = (
             # Save a default *global* state, for *all* outline files.
             ('windowState:', dw.saveState),
             # Save a per-file state.
             ('windowState:%s' % (c.fileName()), dw.saveState),
-            #
             # Do not save/restore window geometry. That is done elsewhere.
             # ('windowGeometry:%s' % (c.fileName()) , dw.saveGeometry),
         )
@@ -1441,6 +1441,7 @@ class LeoApp(object):
                 val = bytes(val) # PyQt4
             except Exception:
                 val = bytes().join(val) # PySide
+            if trace: g.trace('%s set key: %s' % (c.shortFileName(), key))
             g.app.db [key] = base64.encodebytes(val).decode('ascii')
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self):
@@ -1647,12 +1648,13 @@ class LeoApp(object):
         '''
         trace = 'dock' in g.app.debug or 'startup' in g.app.debug
         if not self.dock:
+            if trace: g.trace('g.app.dock is False')
             return
         dw = c.frame.top
         if not dw or not hasattr(dw, 'restoreState'):
+            if trace: g.trace('no dw.restoreState. dw:', repr(dw))
             return
-        if trace:
-            g.trace(c.shortFileName())
+        sfn = c.shortFileName()
         table = (
             # First, try the per-outline state.
             ('windowState:%s' % (c.fileName()), dw.restoreState),
@@ -1665,17 +1667,17 @@ class LeoApp(object):
         for key, method in table:
             val = self.db.get(key)
             if val:
-                if trace: g.trace('Found key:', key)
+                if trace: g.trace('%s found key: %s' % (sfn, key))
                 try:
                     val = base64.decodebytes(val.encode('ascii'))
                         # Elegant pyzo code.
                     method(val)
                     return
                 except Exception as err:
-                    g.trace('No key: %s %s' % (key, err))
+                    g.trace('%s bad value: %s %s' % (sfn, key, err))
             # This is not an error.
             elif trace:
-                g.trace('missing key:', key)
+                g.trace('%s missing key: %s' % (sfn, key))
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager(object):
