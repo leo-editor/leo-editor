@@ -80,6 +80,9 @@ def init():
     if not pyzo:
         print('pyzo_support.py requires pyzo')
         return False
+    if not g.app.dock:
+        print('pyzo_support.py is incompatible with --no-dock')
+        return False
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
     g.app.global_pyzo_controller = gpc = GlobalPyzoController()
