@@ -1420,7 +1420,7 @@ class LeoApp(object):
         if not self.dock:
             return
         dw = c.frame.top
-        if not dw:
+        if not dw or not hasattr(dw, 'saveState'):
             return
         if 'dock' in g.app.debug or 'shutdown' in g.app.debug:
             g.trace(c.shortFileName())
@@ -1649,7 +1649,7 @@ class LeoApp(object):
         if not self.dock:
             return
         dw = c.frame.top
-        if not dw:
+        if not dw or not hasattr(dw, 'restoreState'):
             return
         if trace:
             g.trace(c.shortFileName())
