@@ -2410,9 +2410,10 @@ class LoadManager(object):
                 # tag:#659.
                 if g.app.windowList:
                     c = c1 = g.app.windowList[0].c
-                    g.app.restoreWindowState(c)
                 else:
                     c = c1 = None
+                for frame in g.app.windowList:
+                    g.app.restoreWindowState(frame.c)
         # Enable redraws.
         g.app.disable_redraw = False
         if not c1 or not g.app.windowList:
