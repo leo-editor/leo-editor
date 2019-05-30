@@ -141,6 +141,8 @@ class GlobalCacher(object):
         trace = 'cache' in g.app.debug
         try:
             path = join(g.app.homeLeoDir, 'db', 'g_app_db')
+            if trace:
+                print('path for g.app.db:', repr(path))
             self.db = SqlitePickleShare(path)
             if trace and self.db is not None:
                 self.dump(tag='Startup')
