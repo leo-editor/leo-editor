@@ -75,7 +75,7 @@ if pyzo:
 def init():
     '''Return True if the plugin has loaded successfully.'''
     if g.app.gui.guiName() != "qt":
-        print('pyzo_support.py requires Qt gui')
+        print(' requires Qt gui')
         return False
     if not pyzo:
         print('pyzo_support.py requires pyzo')
@@ -83,6 +83,10 @@ def init():
     if not g.app.dock:
         print('pyzo_support.py is incompatible with --no-dock')
         return False
+    if 1: # Decommission this file as a plugin.
+        print('pyzo_support.py is not a real plugin.')
+        return False
+    # Allow this file as a true plugin.
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
     g.app.global_pyzo_controller = gpc = GlobalPyzoController()
