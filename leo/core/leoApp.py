@@ -2399,8 +2399,6 @@ class LoadManager(object):
                 c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
                     # Returns None if the file is open in another instance of Leo.
                 if c and not c1: c1 = c
-                if c:
-                    g.app.restoreWindowState(c)
         g.app.loaded_session = not lm.files
             # Load (and save later) a session only no files were given on the command line.
         if g.app.sessionManager and g.app.loaded_session:
@@ -2412,12 +2410,13 @@ class LoadManager(object):
                     c = c1 = g.app.windowList[0].c
                 else:
                     c = c1 = None
-                for frame in g.app.windowList:
-                    g.app.restoreWindowState(frame.c)
         # Enable redraws.
         g.app.disable_redraw = False
         if not c1 or not g.app.windowList:
             c1 = lm.openEmptyWorkBook()
+        # Restore *all* open outlines.
+        for frame in g.app.windowList:
+            g.app.restoreWindowState(frame.c)
         # Fix bug #199.
         g.app.runAlreadyOpenDialog(c1)
         # Put the focus in the first-opened file.
