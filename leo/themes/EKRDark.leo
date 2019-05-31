@@ -171,6 +171,7 @@
 <v t="ekr.20180318145515.815"><vh>Body &amp; other text</vh></v>
 <v t="ekr.20180318145515.816"><vh>Borders</vh></v>
 <v t="ekr.20180318145515.817"><vh>Buttons</vh></v>
+<v t="ekr.20190531140643.1"><vh>Dock</vh></v>
 <v t="ekr.20180318145515.818"><vh>Log</vh></v>
 <v t="ekr.20181005084517.1"><vh>Gutter</vh></v>
 <v t="ekr.20180318145515.819"><vh>Menus</vh></v>
@@ -1021,5 +1022,23 @@ QLineEdit#status2[style_class ~= 'fail'] {
     background: @solarized-red;
     color:      @solarized-white;
 }</t>
+<t tx="ekr.20190531140643.1">QMainWindow::separator {
+    /* The separator between QDockWidget's. */
+    background: @dark-base01;
+    width: 4px; height: 4px;
+    border: 2px solid black;
+}
+QDockWidget::title {
+    color: @dark-base3;
+    background: black; /* @solarized-base01; */
+    border: 1px solid @dark-base2;
+}
+QDockWidget::close-button, QDockWidget::float-button {
+    background: @solarized-base01;
+}
+QLineEdit#editorLabel {
+    border: 1px solid @dark-base2;
+}
+</t>
 </tnodes>
 </leo_file>

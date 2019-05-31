@@ -151,6 +151,7 @@
 <v t="ekr.20180309185230.106"><vh>Body &amp; other text</vh></v>
 <v t="ekr.20180309185230.107"><vh>Borders</vh></v>
 <v t="ekr.20180309185230.108"><vh>Buttons</vh></v>
+<v t="ekr.20190531140811.1"><vh>Dock</vh></v>
 <v t="ekr.20180309185230.109"><vh>Log</vh></v>
 <v t="ekr.20180309185230.110"><vh>Menus</vh></v>
 <v t="ekr.20180309185230.111"><vh>Minibuffer &amp; label</vh></v>
@@ -708,6 +709,24 @@ QLineEdit#status1[style_class ~= 'fail'],
 QLineEdit#status2[style_class ~= 'fail'] {
     background: @red;
     color:      @white;
+}
+</t>
+<t tx="ekr.20190531140811.1">QMainWindow::separator {
+    /* The separator between QDockWidget's. */
+    /* background: @dark-base01; */
+    /* width: 4px; height: 4px; */
+    /* border: 2px solid black; */
+}
+QDockWidget::title {
+    /* color: @dark-base3; */
+    /* background: black; /* @solarized-base01; */ */
+    /* border: 1px solid @dark-base2; */
+}
+QDockWidget::close-button, QDockWidget::float-button {
+    /* background: @solarized-base01; */
+}
+QLineEdit#editorLabel {
+    /* border: 1px solid @dark-base2; */
 }
 </t>
 </tnodes>

@@ -157,6 +157,7 @@
 <v t="chris.20180313181652.125"><vh>Minibuffer &amp; label</vh></v>
 <v t="chris.20180313181652.121"><vh>Borders</vh></v>
 <v t="chris.20180313181652.122"><vh>Buttons</vh></v>
+<v t="ekr.20190531135641.1"><vh>Dock</vh></v>
 <v t="chris.20180313181652.123"><vh>Log, Find, Spell, Tag</vh></v>
 <v t="chris.20180313181652.124"><vh>Menus</vh></v>
 <v t="chris.20180313181652.126"><vh>Plugins</vh></v>
@@ -2645,6 +2646,24 @@ g.es_print('black',color='black')</t>
 <t tx="chris.20180322154730.1"></t>
 <t tx="ekr.20180312111155.1">A dark theme based loosely on Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy. Some modifications were required. :-)
 
+</t>
+<t tx="ekr.20190531135641.1">QMainWindow::separator {
+    /* The separator between QDockWidget's. */
+    background: @dark-base01;
+    width: 4px; height: 4px;
+    border: 2px solid black;
+}
+QDockWidget::title {
+    color: @dark-base0;
+    background: @dark-base3;
+    border: 1px solid @dark-base2;
+}
+QDockWidget::close-button, QDockWidget::float-button {
+    background: @solarized-base2;
+}
+QLineEdit#editorLabel {
+    border: 1px solid @dark-base2;
+}
 </t>
 </tnodes>
 </leo_file>
