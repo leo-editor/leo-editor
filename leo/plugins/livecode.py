@@ -23,13 +23,18 @@ except ImportError:
 
 #@+others
 #@+node:tbrown.20140806084727.30178: ** init
+warning_given = False
+
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    global warning_given
     if g.unitTesting:
         return False
     if not asttools:
-        g.es_print('livecode.py: can not import meta')
-        g.es_print('pip install meta')
+        if not warning_given:
+            warning_given = True
+            g.es_print('livecode.py: can not import meta')
+            g.es_print('you can install meta with `pip install meta`')
         return False
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
