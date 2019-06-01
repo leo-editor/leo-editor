@@ -1292,8 +1292,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 s,
                 None,
                 QtWidgets.QApplication.UnicodeUTF8)
-    #@+node:ekr.20190523064421.1: *3* dw.save/restoreWindowState
-    #@+node:ekr.20110605121601.18178: *4* dw.setGeometry (legacy)
+    #@+node:ekr.20110605121601.18173: *3* dw.select
+    def select(self, c):
+        '''Select the window or tab for c. self is c.frame.top.'''
+        if self.leo_master:
+            # A LeoTabbedTopLevel.
+            self.leo_master.select(c)
+        else:
+            w = c.frame.body.wrapper
+            g.app.gui.set_focus(c, w)
+    #@+node:ekr.20110605121601.18178: *3* dw.setGeometry (legacy)
     def setGeometry(self, rect):
         '''Set the window geometry, but only once when using the qttabs gui.'''
         if g.app.qt_use_tabs:
@@ -1306,15 +1314,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 super().setGeometry(rect)
         else:
             super().setGeometry(rect)
-    #@+node:ekr.20110605121601.18173: *3* dw.select
-    def select(self, c):
-        '''Select the window or tab for c. self is c.frame.top.'''
-        if self.leo_master:
-            # A LeoTabbedTopLevel.
-            self.leo_master.select(c)
-        else:
-            w = c.frame.body.wrapper
-            g.app.gui.set_focus(c, w)
     #@+node:ekr.20110605121601.18177: *3* dw.setLeoWindowIcon
     def setLeoWindowIcon(self):
         """ Set icon visible in title bar and task bar """
@@ -3583,31 +3582,32 @@ class LeoQtLog(leoFrame.LeoLog):
                 color = 'black'
         self.selectTab(tabName or 'Log')
         # Must be done after the call to selectTab.
-        w = self.logCtrl.widget # w is a QTextBrowser
-        if w:
-            sb = w.horizontalScrollBar()
-            s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-            # #884: Always convert leading blanks and tabs to &nbsp.
-            n = len(s) - len(s.lstrip())
-            if n > 0 and s.strip():
-                s = '&nbsp;' * (n) + s[n:]
-            if not self.wrap:
-                # Convert all other blanks to &nbsp;
-                s = s.replace(' ', '&nbsp;')
-            s = s.replace('\n', '<br>')
-                # The caller is responsible for newlines!
-            s = '<font color="%s">%s</font>' % (color, s)
-            if nodeLink:
-                url = nodeLink
-                for scheme in 'file', 'unl':
-                    # QUrl requires paths start with '/'
-                    if url.startswith(scheme+'://') and not url.startswith(scheme+':///'):
-                        url = url.replace('://', ':///', 1)
-                s = '<a href="%s" title="%s">%s</a>' % (url, nodeLink, s)
-            w.insertHtml(s)
-            w.moveCursor(QtGui.QTextCursor.End)
-            sb.setSliderPosition(0) # Force the slider to the initial position.
-            w.repaint() # Slow, but essential.
+        w = getattr(self.logCtrl, 'widget', None) # w is a QTextBrowser
+        if not w:
+            return
+        sb = w.horizontalScrollBar()
+        s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        # #884: Always convert leading blanks and tabs to &nbsp.
+        n = len(s) - len(s.lstrip())
+        if n > 0 and s.strip():
+            s = '&nbsp;' * (n) + s[n:]
+        if not self.wrap:
+            # Convert all other blanks to &nbsp;
+            s = s.replace(' ', '&nbsp;')
+        s = s.replace('\n', '<br>')
+            # The caller is responsible for newlines!
+        s = '<font color="%s">%s</font>' % (color, s)
+        if nodeLink:
+            url = nodeLink
+            for scheme in 'file', 'unl':
+                # QUrl requires paths start with '/'
+                if url.startswith(scheme+'://') and not url.startswith(scheme+':///'):
+                    url = url.replace('://', ':///', 1)
+            s = '<a href="%s" title="%s">%s</a>' % (url, nodeLink, s)
+        w.insertHtml(s)
+        w.moveCursor(QtGui.QTextCursor.End)
+        sb.setSliderPosition(0) # Force the slider to the initial position.
+        w.repaint() # Slow, but essential.
     #@+node:ekr.20110605121601.18323: *4* LeoQtLog.putnl
     def putnl(self, tabName='Log'):
         '''Put a newline to the Qt log.'''
@@ -3617,7 +3617,10 @@ class LeoQtLog(leoFrame.LeoLog):
             return
         if tabName:
             self.selectTab(tabName)
-        w = self.logCtrl.widget
+        w = getattr(self.logCtrl, 'widget', None) # w is a QTextBrowser
+        if not w:
+            g.trace('Can not happen: no logCtrl.widget', self.logCtrl.__class__.__name__)
+            return
         if w:
             sb = w.horizontalScrollBar()
             pos = sb.sliderPosition()
@@ -3662,6 +3665,15 @@ class LeoQtLog(leoFrame.LeoLog):
         c = self.c
         if g.app.dock and tabName in ('Find', 'Spell'):
             return None
+        if g.app.dock and tabName == 'Log':
+            dw = self.c.frame.top
+            if dw:
+                dock = getattr(dw, 'tabs_dock', None)
+                if dock:
+                    self.logCtrl = dock
+                else:
+                    g.trace('CAN NOT SET logCtrl ivar')
+                    self.logCtrl = None
         if widget is None:
             widget = qt_text.LeoQTextBrowser(parent=None, c=c, wrapper=self)
                 # widget is subclass of QTextBrowser.
@@ -3740,6 +3752,7 @@ class LeoQtLog(leoFrame.LeoLog):
         # #1159: raise a parent QDockWidget.
         c, w = self.c, self.tabWidget
         if g.app.dock and tabName in ('Log', 'Find', 'Spell'):
+            self.tabName = tabName
             # Raise the proper dock.
             dw = c.frame.top
             if tabName == 'Log':

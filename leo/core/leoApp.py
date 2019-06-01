@@ -2414,9 +2414,10 @@ class LoadManager(object):
         g.app.disable_redraw = False
         if not c1 or not g.app.windowList:
             c1 = lm.openEmptyWorkBook()
-        # Restore *all* open outlines.
-        for frame in g.app.windowList:
-            g.app.restoreWindowState(frame.c)
+        # Now done in loadLocalFile.
+            # Restore *all* open outlines.
+            # for frame in g.app.windowList:
+                # g.app.restoreWindowState(frame.c)
         # Fix bug #199.
         g.app.runAlreadyOpenDialog(c1)
         # Put the focus in the first-opened file.
@@ -2432,7 +2433,6 @@ class LoadManager(object):
         # Fix bug 844953: tell Unity which menu to use.
             # if c: c.enableMenuBar()
         # Do the final inits.
-        ### g.app.restoreWindowState(c1)
         g.app.logInited = True
         g.app.initComplete = True
         if c:
@@ -3177,6 +3177,8 @@ class LoadManager(object):
         # Step 2: open the outline in the requested gui.
         # For .leo files (and zipped .leo file) this opens the file a second time.
         c = lm.openFileByName(fn, gui, old_c, previousSettings)
+        if c:
+            g.app.restoreWindowState(c)
         return c
     #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
     def openFileByName(self, fn, gui, old_c, previousSettings):
