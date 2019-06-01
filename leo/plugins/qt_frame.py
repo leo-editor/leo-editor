@@ -3658,6 +3658,9 @@ class LeoQtLog(leoFrame.LeoLog):
         if widget is None, Create a QTextBrowser,
         suitable for log functionality.
         """
+        # #1159
+        if g.app.dock and tabName in ('Find', 'Spell'):
+            return None
         c = self.c
         if widget is None:
             widget = qt_text.LeoQTextBrowser(parent=None, c=c, wrapper=self)
@@ -3735,14 +3738,8 @@ class LeoQtLog(leoFrame.LeoLog):
     def selectHelper(self, tabName):
 
         # #1159: raise a parent QDockWidget.
-        if g.app.dock:
-            parent_w = self.tabWidget
-            while parent_w:
-                if isinstance(parent_w, QtWidgets.QDockWidget):
-                    parent_w.raise_()
-                    break
-                parent_w = parent_w.parent()
         c, w = self.c, self.tabWidget
+        g.app.gui.raise_dock(w)
         for i in range(w.count()):
             if tabName == w.tabText(i):
                 w.setCurrentIndex(i)
@@ -3754,9 +3751,8 @@ class LeoQtLog(leoFrame.LeoLog):
                     self.logCtrl = wrapper
                 #
                 # Do *not* set focus here!
-                    # c.widgetWantsFocus(tab_widget)
                 if tabName == 'Find':
-                    # Fix bug 1254861: Ctrl-f doesn't ensure find input field visible.
+                    # #1254861: Ctrl-f doesn't ensure find input field visible.
                     if c.config.getBool('auto-scroll-find-tab', default=True):
                         # This is the cause of unwanted scrolling.
                         findbox = c.findCommands.ftm.find_findbox

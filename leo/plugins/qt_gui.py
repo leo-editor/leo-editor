@@ -865,6 +865,27 @@ class LeoQtGui(leoGui.LeoGui):
         w.ev_filter = theFilter
             # Set the official ivar in w.
     #@+node:ekr.20110605121601.18508: *3* qt_gui.Focus
+    #@+node:ekr.20190601055031.1: *4* qt_gui.ensure_commander_visible
+    def ensure_commander_visible(self, c1):
+        """
+        Check to see if c.frame is in a tabbed ui, and if so, make sure
+        the tab is visible
+        """
+        # pylint: disable=arguments-differ
+        #
+        # START: copy from Code-->Startup & external files-->
+        # @file runLeo.py -->run & helpers-->doPostPluginsInit & helpers (runLeo.py)
+        # For qttabs gui, select the first-loaded tab.
+        if 'focus' in g.app.debug:
+            g.trace(c1)
+        if hasattr(g.app.gui, 'frameFactory'):
+            factory = g.app.gui.frameFactory
+            if factory and hasattr(factory, 'setTabForCommander'):
+                c = c1
+                factory.setTabForCommander(c)
+                c.bodyWantsFocusNow()
+        # END: copy
+    #@+node:ekr.20190601054958.1: *4* qt_gui.get_focus
     def get_focus(self, c=None, raw=False, at_idle=False):
         """Returns the widget that has focus."""
         # pylint: disable=arguments-differ
@@ -886,48 +907,33 @@ class LeoQtGui(leoGui.LeoGui):
             g.trace('(LeoQtGui)', name)
         return w
 
+
+    #@+node:ekr.20190601054955.1: *4* qt_gui.raise_dock
+    def raise_dock(self, widget):
+        '''Raise the nearest parent QDockWidget, if any.'''
+        while widget:
+            if isinstance(widget, QtWidgets.QDockWidget):
+                widget.raise_()
+                return
+            if not hasattr(widget, 'parent'):
+                return
+            widget = widget.parent()
+    #@+node:ekr.20190601054959.1: *4* qt_gui.set_focus
     def set_focus(self, c, w):
         """Put the focus on the widget."""
         # pylint: disable=arguments-differ
         if not w:
             return
         if getattr(w, 'widget', None):
-            w = w.widget
+            if not isinstance(w, QtWidgets.QWidget):
+                # w should be a wrapper.
+                w = w.widget
         if 'focus' in g.app.debug:
             name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
             g.trace('(LeoQtGui)', name)
         # #1159: raise a parent QDockWidget.
-        if g.app.dock:
-            parent_w = w
-            while parent_w:
-                if isinstance(parent_w, QtWidgets.QDockWidget):
-                    parent_w.raise_()
-                    break
-                if hasattr(parent_w, 'parent'):
-                    parent_w = parent_w.parent()
-                else:
-                    break
+        self.raise_dock(w)
         w.setFocus()
-
-    def ensure_commander_visible(self, c1):
-        """
-        Check to see if c.frame is in a tabbed ui, and if so, make sure
-        the tab is visible
-        """
-        # pylint: disable=arguments-differ
-        #
-        # START: copy from Code-->Startup & external files-->
-        # @file runLeo.py -->run & helpers-->doPostPluginsInit & helpers (runLeo.py)
-        # For qttabs gui, select the first-loaded tab.
-        if 'focus' in g.app.debug:
-            g.trace(c1)
-        if hasattr(g.app.gui, 'frameFactory'):
-            factory = g.app.gui.frameFactory
-            if factory and hasattr(factory, 'setTabForCommander'):
-                c = c1
-                factory.setTabForCommander(c)
-                c.bodyWantsFocusNow()
-        # END: copy
     #@+node:ekr.20110605121601.18510: *3* qt_gui.getFontFromParams
     size_warnings = []
 
