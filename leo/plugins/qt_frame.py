@@ -3619,20 +3619,15 @@ class LeoQtLog(leoFrame.LeoLog):
             self.selectTab(tabName)
         w = getattr(self.logCtrl, 'widget', None) # w is a QTextBrowser
         if not w:
-            g.trace('Can not happen: no logCtrl.widget', self.logCtrl.__class__.__name__)
             return
-        if w:
-            sb = w.horizontalScrollBar()
-            pos = sb.sliderPosition()
-            # Not needed!
-                # contents = w.toHtml()
-                # w.setHtml(contents + '\n')
-            w.moveCursor(QtGui.QTextCursor.End)
-            sb.setSliderPosition(pos)
-            w.repaint() # Slow, but essential.
-        else:
-            # put s to logWaiting and print  a newline
-            g.app.logWaiting.append(('\n', 'black', True),)
+        sb = w.horizontalScrollBar()
+        pos = sb.sliderPosition()
+        # Not needed!
+            # contents = w.toHtml()
+            # w.setHtml(contents + '\n')
+        w.moveCursor(QtGui.QTextCursor.End)
+        sb.setSliderPosition(pos)
+        w.repaint() # Slow, but essential.
     #@+node:ekr.20150205181818.5: *4* LeoQtLog.scrollToEnd
     def scrollToEnd(self, tabName='Log'):
         '''Scroll the log to the end.'''

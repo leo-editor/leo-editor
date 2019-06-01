@@ -2414,10 +2414,6 @@ class LoadManager(object):
         g.app.disable_redraw = False
         if not c1 or not g.app.windowList:
             c1 = lm.openEmptyWorkBook()
-        # Now done in loadLocalFile.
-            # Restore *all* open outlines.
-            # for frame in g.app.windowList:
-                # g.app.restoreWindowState(frame.c)
         # Fix bug #199.
         g.app.runAlreadyOpenDialog(c1)
         # Put the focus in the first-opened file.
