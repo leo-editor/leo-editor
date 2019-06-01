@@ -3659,9 +3659,9 @@ class LeoQtLog(leoFrame.LeoLog):
         suitable for log functionality.
         """
         # #1159
+        c = self.c
         if g.app.dock and tabName in ('Find', 'Spell'):
             return None
-        c = self.c
         if widget is None:
             widget = qt_text.LeoQTextBrowser(parent=None, c=c, wrapper=self)
                 # widget is subclass of QTextBrowser.
@@ -3739,14 +3739,27 @@ class LeoQtLog(leoFrame.LeoLog):
 
         # #1159: raise a parent QDockWidget.
         c, w = self.c, self.tabWidget
-        g.app.gui.raise_dock(w)
+        if g.app.dock and tabName in ('Log', 'Find', 'Spell'):
+            # Raise the proper dock.
+            dw = c.frame.top
+            if tabName == 'Log':
+                tabName = 'tabs'
+            ivar = '%s_dock' % tabName.lower()
+            dock = getattr(dw, ivar, None)
+            if dock:
+                dock.raise_()
+            # Set the official ivar.
+            if tabName == 'Log':
+                self.logCtrl = dock
+            # Don't create a new tab.
+            return True
         for i in range(w.count()):
             if tabName == w.tabText(i):
                 w.setCurrentIndex(i)
                 widget = w.widget(i)
                 #
                 # Set the .widget ivar only if there is a wrapper.
-                wrapper = hasattr(widget, 'leo_log_wrapper') and widget.leo_log_wrapper
+                wrapper = getattr(widget, 'leo_log_wrapper', None)
                 if wrapper:
                     self.logCtrl = wrapper
                 #
