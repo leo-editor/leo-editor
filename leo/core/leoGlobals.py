@@ -7460,7 +7460,7 @@ def extractExecutableString(c, p, s):
     for i, line in enumerate(g.splitLines(s)):
         m = re.match(pattern, line)
         if m:
-            g.trace(language, m.group(1))
+            # g.trace(language, m.group(1))
             extracting = m.group(1) == language
         elif extracting:
             result.append(line)
