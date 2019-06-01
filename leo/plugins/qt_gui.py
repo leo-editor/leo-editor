@@ -896,15 +896,6 @@ class LeoQtGui(leoGui.LeoGui):
         if 'focus' in g.app.debug:
             name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
             g.trace('(LeoQtGui)', name)
-        ###
-            # if hasattr(w, 'activateWindow') and self.activate_lockout == 0:
-                # if g.app.initComplete:
-                    # try:
-                        # self.activate_lockout += 1
-                        # g.trace('ACTIVATE')
-                        # ### w.activateWindow()
-                    # finally:
-                        # self.activate_lockout -= 1
         w.setFocus()
 
     def ensure_commander_visible(self, c1):
