@@ -29,17 +29,26 @@ import time
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore
 from leo.core.leoQt import QtGui, QtWidgets
+
+warning_given = False
 try:
-    import pyzo
-        # Importing pyzo has these side effects:
-            # pyzo/yotonloader.py
-            # IMPORT pyzo.yoton
-            # IMPORT pyzo.yoton.channels
-            # IMPORT pyzo.util
-            # IMPORT pyzo.core
-            # pyzo/core/commandline.py
-            # Started our command server
-            # IMPORT pyzo.util.qt
+    # Issue a warning if the plugins controller is trying to import us.
+    for moduleName in g.app.pluginsController.loadingModuleNameStack:
+        if 'pyzo_support' in moduleName.split('.'):
+            print('pyzo_support.py is not a real plugin')
+            warning_given = True
+            pyzo = None
+    if not warning_given:
+        import pyzo
+            # Importing pyzo has these side effects:
+                # pyzo/yotonloader.py
+                # IMPORT pyzo.yoton
+                # IMPORT pyzo.yoton.channels
+                # IMPORT pyzo.util
+                # IMPORT pyzo.core
+                # pyzo/core/commandline.py
+                # Started our command server
+                # IMPORT pyzo.util.qt
 except Exception:
     # The top-level init method gives the error message.
     g.es_exception()
@@ -74,24 +83,29 @@ if pyzo:
 #@+node:ekr.20190410171905.1: *3* init (pyzo_support.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    
+    def oops(message):
+        global warning_given
+        if not warning_given:
+            warning_given = True
+            print('pyzo_support.py %s' % message)
+        return False
+            
     if g.app.gui.guiName() != "qt":
-        print(' requires Qt gui')
-        return False
+        return oops('requires Qt gui')
     if not pyzo:
-        print('pyzo_support.py requires pyzo')
-        return False
+        return oops('requires pyzo')
     if not g.app.dock:
-        print('pyzo_support.py is incompatible with --no-dock')
-        return False
+        return oops('is incompatible with --no-dock')
     if 1: # Decommission this file as a plugin.
-        print('pyzo_support.py is not a real plugin.')
-        return False
-    # Allow this file as a true plugin.
-    g.plugin_signon(__name__)
-    g.registerHandler('after-create-leo-frame', onCreate)
-    g.app.global_pyzo_controller = gpc = GlobalPyzoController()
-    gpc.load_pyzo()
-    return True
+        return oops('is not a real plugin.')
+    else:
+        # Allow this file as a true plugin.
+        g.plugin_signon(__name__)
+        g.registerHandler('after-create-leo-frame', onCreate)
+        g.app.global_pyzo_controller = gpc = GlobalPyzoController()
+        gpc.load_pyzo()
+        return True
 #@+node:ekr.20190415051754.1: *3* onCreate (pyzo_support.py)
 def onCreate(tag, keys):
     c = keys.get('c')
