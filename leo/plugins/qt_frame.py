@@ -3735,12 +3735,13 @@ class LeoQtLog(leoFrame.LeoLog):
     def selectHelper(self, tabName):
 
         # #1159: raise a parent QDockWidget.
-        parent_w = self.tabWidget
-        while parent_w:
-            if isinstance(parent_w, QtWidgets.QDockWidget):
-                parent_w.raise_()
-                break
-            parent_w = parent_w.parent()
+        if g.app.dock:
+            parent_w = self.tabWidget
+            while parent_w:
+                if isinstance(parent_w, QtWidgets.QDockWidget):
+                    parent_w.raise_()
+                    break
+                parent_w = parent_w.parent()
         c, w = self.c, self.tabWidget
         for i in range(w.count()):
             if tabName == w.tabText(i):

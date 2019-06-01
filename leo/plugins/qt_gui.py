@@ -896,6 +896,17 @@ class LeoQtGui(leoGui.LeoGui):
         if 'focus' in g.app.debug:
             name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
             g.trace('(LeoQtGui)', name)
+        # #1159: raise a parent QDockWidget.
+        if g.app.dock:
+            parent_w = w
+            while parent_w:
+                if isinstance(parent_w, QtWidgets.QDockWidget):
+                    parent_w.raise_()
+                    break
+                if hasattr(parent_w, 'parent'):
+                    parent_w = parent_w.parent()
+                else:
+                    break
         w.setFocus()
 
     def ensure_commander_visible(self, c1):
