@@ -674,7 +674,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         spellTab.setObjectName('docked.spellTab')
         self.createSpellTab(spellTab)
         return spellTab
-    #@+node:ekr.20190527163203.1: *5* dw.createTabbedLogDock (legacy_log_dock = True)
+    #@+node:ekr.20190527163203.1: *5* dw.createTabbedLogDock (legacy)
     def createTabbedLogDock(self, parent):
         '''Create a tabbed (legacy) Log dock.'''
         assert g.app.dock
@@ -720,7 +720,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Official ivars
         self.tabWidget = tabWidget # Used by LeoQtLog.
         return logFrame
-    #@+node:ekr.20190527121112.1: *5* dw.createTabsDock (legacy_log_dock = False)
+    #@+node:ekr.20190527121112.1: *5* dw.createTabsDock (not legacy)
     def createTabsDock(self, parent):
         '''Create the Tabs dock.'''
         assert g.app.dock
@@ -3555,9 +3555,12 @@ class LeoQtLog(leoFrame.LeoLog):
 
         tabw = self.tabWidget
         w = tabw.widget(idx)
-        # Fixes bug 917814: Switching Log Pane tabs is done incompletely
-        wrapper = hasattr(w, 'leo_log_wrapper') and w.leo_log_wrapper
-        if wrapper:
+        #
+        # #917814: Switching Log Pane tabs is done incompletely
+        wrapper = getattr(w, 'leo_log_wrapper', None)
+        #
+        # #1161: Don't change logs unless the wrapper is correct.
+        if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
             self.logCtrl = wrapper
     #@+node:ekr.20110605121601.18321: *3* LeoQtLog.put & putnl
     #@+node:ekr.20110605121601.18322: *4* LeoQtLog.put
@@ -3582,8 +3585,13 @@ class LeoQtLog(leoFrame.LeoLog):
                 color = 'black'
         self.selectTab(tabName or 'Log')
         # Must be done after the call to selectTab.
-        w = getattr(self.logCtrl, 'widget', None) # w is a QTextBrowser
-        if not w:
+        wrapper = self.logCtrl
+        if not isinstance(wrapper, qt_text.QTextEditWrapper):
+            g.trace('BAD wrapper', wrapper.__class__.__name__)
+            return
+        w = wrapper.widget
+        if not isinstance(w, QtWidgets.QTextEdit):
+            g.trace('BAD widget', w.__class__.__name__)
             return
         sb = w.horizontalScrollBar()
         s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
@@ -3617,8 +3625,13 @@ class LeoQtLog(leoFrame.LeoLog):
             return
         if tabName:
             self.selectTab(tabName)
-        w = getattr(self.logCtrl, 'widget', None) # w is a QTextBrowser
-        if not w:
+        wrapper = self.logCtrl
+        if not isinstance(wrapper, qt_text.QTextEditWrapper):
+            g.trace('BAD wrapper', wrapper.__class__.__name__)
+            return
+        w = wrapper.widget
+        if not isinstance(w, QtWidgets.QTextEdit):
+            g.trace('BAD widget', w.__class__.__name__)
             return
         sb = w.horizontalScrollBar()
         pos = sb.sliderPosition()
@@ -3656,19 +3669,10 @@ class LeoQtLog(leoFrame.LeoLog):
         if widget is None, Create a QTextBrowser,
         suitable for log functionality.
         """
-        # #1159
         c = self.c
+        # #1159
         if g.app.dock and tabName in ('Find', 'Spell'):
             return None
-        if g.app.dock and tabName == 'Log':
-            dw = self.c.frame.top
-            if dw:
-                dock = getattr(dw, 'tabs_dock', None)
-                if dock:
-                    self.logCtrl = dock
-                else:
-                    g.trace('CAN NOT SET logCtrl ivar')
-                    self.logCtrl = None
         if widget is None:
             widget = qt_text.LeoQTextBrowser(parent=None, c=c, wrapper=self)
                 # widget is subclass of QTextBrowser.
@@ -3688,10 +3692,15 @@ class LeoQtLog(leoFrame.LeoLog):
             self.contentsDict[tabName] = widget
             self.tabWidget.addTab(widget, tabName)
         else:
+            # #1161: Don't set the wrapper unless it has the correct type.
             contents = widget
                 # Unlike text widgets, contents is the actual widget.
-            widget.leo_log_wrapper = contents
-                # The leo_log_wrapper is the widget itself.
+            if isinstance(contents, qt_text.QTextEditWrapper):
+                widget.leo_log_wrapper = widget
+                    # The leo_log_wrapper is the widget itself.
+            else:
+                widget.leo_log_wrapper = None
+                    # Tell the truth.
             g.app.gui.setFilter(c, widget, contents, 'tabWidget')
             self.contentsDict[tabName] = contents
             self.tabWidget.addTab(contents, tabName)
@@ -3746,30 +3755,34 @@ class LeoQtLog(leoFrame.LeoLog):
 
         # #1159: raise a parent QDockWidget.
         c, w = self.c, self.tabWidget
-        if g.app.dock and tabName in ('Log', 'Find', 'Spell'):
-            self.tabName = tabName
+        #
+        # Raise the dock.
+        dock_tabs = ('Log', 'Find', 'Spell')
+        if g.app.dock and tabName in dock_tabs:
             # Raise the proper dock.
             dw = c.frame.top
-            if tabName == 'Log':
-                tabName = 'tabs'
-            ivar = '%s_dock' % tabName.lower()
+            tabName2 = 'tabs' if tabName == 'Log' else tabName
+            ivar = '%s_dock' % tabName2.lower()
             dock = getattr(dw, ivar, None)
             if dock:
                 dock.raise_()
-            # Set the official ivar.
-            if tabName == 'Log':
-                self.logCtrl = dock
-            # Don't create a new tab.
-            return True
+        #
+        # Select the proper tab, regardless of g.app.dock.
         for i in range(w.count()):
             if tabName == w.tabText(i):
                 w.setCurrentIndex(i)
                 widget = w.widget(i)
                 #
-                # Set the .widget ivar only if there is a wrapper.
-                wrapper = getattr(widget, 'leo_log_wrapper', None)
-                if wrapper:
-                    self.logCtrl = wrapper
+                # # #1161.
+                if tabName == 'Log':
+                    wrapper = None
+                    widget = self.contentsDict.get('Log')
+                        # a qt_text.QTextEditWrapper
+                    if widget:
+                        wrapper = getattr(widget, 'leo_log_wrapper', None)
+                        if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
+                            self.logCtrl = wrapper
+                    if not wrapper: g.trace('NO LOG WRAPPER') 
                 #
                 # Do *not* set focus here!
                 if tabName == 'Find':
@@ -3786,11 +3799,14 @@ class LeoQtLog(leoFrame.LeoLog):
                     # the base class uses this as a flag to see if the spell system needs initing
                     self.frameDict['Spell'] = widget
                 self.tabName = tabName
-                return True
+                break ### return True
+        else:
+            self.tabName = None
         #
-        # General case.
-        self.tabName = None
-        return False
+        # Signal whether we should create the tab.
+        if g.app.dock and tabName in dock_tabs:
+            return True # Don't create the tab.
+        return True
     #@-others
 #@+node:ekr.20110605121601.18340: ** class LeoQtMenu (LeoMenu)
 class LeoQtMenu(leoMenu.LeoMenu):
