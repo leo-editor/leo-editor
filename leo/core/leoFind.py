@@ -1997,10 +1997,13 @@ class LeoFind(object):
             flags = re.MULTILINE
             if self.ignore_case: flags |= re.IGNORECASE
             # Escape the search text.
-            b, s = '\\b', self.find_text
-            if self.whole_word:
-                if not s.startswith(b): s = b + s
-                if not s.endswith(b): s = s + b
+            # Ignore the whole_word option.
+            s =  self.find_text
+            # A bad idea: insert \b automatically.
+                # b, s = '\\b', self.find_text
+                # if self.whole_word:
+                    # if not s.startswith(b): s = b + s
+                    # if not s.endswith(b): s = s + b
             self.re_obj = re.compile(s, flags)
             return True
         except Exception:
