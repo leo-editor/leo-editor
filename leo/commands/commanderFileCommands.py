@@ -245,7 +245,7 @@ def open_outline(self, event=None):
             title="Open",
         )
         return
-    ### Equivalent to legacy code.
+    # Equivalent to legacy code.
     fileName = g.app.gui.runOpenFileDialog(c,
         defaultextension=g.defaultLeoFileExtension(c),
         filetypes=table,
