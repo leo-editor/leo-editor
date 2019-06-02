@@ -635,7 +635,7 @@ class LeoQtGui(leoGui.LeoGui):
         def init_real_pyzo(self):
             '''Init the real pyzo, which has already been inited by pyzo_support.py'''
             g.trace()
-            if 0: ### Probably already done.
+            if 0: # Probably already done.
                 import pyzo
                 import pyzo.core.menu as menu
                 pyzo.core.menu = menu

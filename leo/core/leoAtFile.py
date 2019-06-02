@@ -510,11 +510,6 @@ class AtFile(object):
                 # Note (see #1081): @asis and @nosent can *not* be updated automatically.
                 # Doing so using refresh-from-disk will delete all child nodes.
                 p.moveToNodeAfterTree()
-            ###
-                # elif p.isAtCleanNode():
-                    # files.append(p.copy())
-                    # p.moveToThreadNext()
-                        # # #525: Nested nodes.
             else:
                 p.moveToThreadNext()
         return files
@@ -1103,9 +1098,6 @@ class AtFile(object):
                     files.append(p.copy())
                 p.moveToNodeAfterTree()
                     # #1134.
-                ###
-                    # p.moveToThreadNext()
-                        #525: Scan for nested @<file> nodes
             else:
                 p.moveToThreadNext()
         if not force:
@@ -1903,12 +1895,6 @@ class AtFile(object):
         if p.isAtIgnoreNode():
             g.error('did not write @ignore node', p.v.h)
             return False
-        ### #1134.
-            # if p.isAtCleanNode():
-                # p.v.setVisited()
-                    # # # 525: Nested @clean.
-                    # # Suppress a future error. Requires other changes.
-                # return False
         return True
     #@+node:ekr.20041005105605.174: *6* at.putCodeLine
     def putCodeLine(self, s, i):
