@@ -1398,57 +1398,6 @@ class LeoFind(object):
     def setupSearchPattern(self, pattern):
         self.ftm.setFindText(pattern)
     #@+node:ekr.20031218072017.3067: *3* LeoFind.Utils
-    #@+node:ekr.20031218072017.2293: *4* find.batchChange
-    def batchChange(self, pos1, pos2):
-        '''
-        Do a single batch change operation, updating the head or body string of
-        p and leaving the result in s_ctrl.
-
-        s_ctrl contains the found text on entry and contains the changed text
-        on exit. pos and pos2 indicate the selection. The selection will never
-        be empty.
-        '''
-        c, u = self.c, self.c.undoer
-        p = self.p
-        if not p:
-            g.trace('===== can not happen: no p.')
-            return
-        w = self.s_ctrl
-        # Replace the selection with self.change_text
-        if pos1 > pos2:
-            pos1, pos2 = pos2, pos1
-        s = w.getAllText()
-        if pos1 != pos2:
-            w.delete(pos1, pos2)
-        w.insert(pos1, self.change_text)
-        # Update the selection.
-        insert = pos1 if self.reverse else pos1 + len(self.change_text)
-        w.setSelectionRange(insert, insert)
-        w.setInsertPoint(insert)
-        # Update the node
-        s = w.getAllText()
-        if s and s[-1] == '\n': s = s[: -1]
-        changed = s != p.h if self.in_headline else s != p.b
-        if changed:
-            undoData = u.beforeChangeNodeContents(p)
-            if self.in_headline:
-                p.initHeadString(s)
-            else:
-                # Fix #456: replace-all is very slow.
-                # p.b calls c.setBodyString, which is *very* slow.
-                p.v.setBodyString(s)
-            if self.mark_changes:
-                p.setMarked() # Just calls v.setMarked.
-            # Fix #456: replace-all is very slow.
-            # p.setDirty if very slow.
-            p.v.setDirty()
-            if not c.isChanged():
-                c.setChanged(True)
-            u.afterChangeNodeContents(
-                p,
-                'Change Headline' if self.in_headline else 'Change Body',
-                undoData,
-            )
     #@+node:ekr.20031218072017.3068: *4* find.change
     @cmd('replace')
     def change(self, event=None):
@@ -1457,7 +1406,7 @@ class LeoFind(object):
             self.changeSelection()
 
     replace = change
-    #@+node:ekr.20031218072017.3069: *4* find.changeAll
+    #@+node:ekr.20031218072017.3069: *4* find.changeAll & helpers
     def changeAll(self):
 
         c = self.c; u = c.undoer; undoType = 'Replace All'
@@ -1472,21 +1421,130 @@ class LeoFind(object):
         u.beforeChangeGroup(current, undoType)
         # Fix bug 338172: ReplaceAll will not replace newlines
         # indicated as \n in target string.
+        if not self.find_text:
+            return
         self.change_text = self.replaceBackSlashes(self.change_text)
-        while 1:
-            pos1, pos2 = self.findNextMatch()
-            if pos1 is None:
-                break
-            count += 1
-            self.batchChange(pos1, pos2)
+        if self.pattern_match:
+            ok = self.precompilePattern()
+            if not ok:
+                return
+        if not self.search_headline and not self.search_body:
+            return
+        count = 0
+        for p in c.all_unique_positions():
+            count_h, count_b = 0, 0
+            undoData = u.beforeChangeNodeContents(p)
+            if self.search_headline:
+                count_h, new_h = self.batchSearchAndReplace(p.h)
+                if count_h:
+                    count += count_h
+                    p.h = new_h
+            if self.search_body:
+                count_b, new_b = self.batchSearchAndReplace(p.b)
+                if count_b:
+                    count += count_b
+                    p.b = new_b
+            if count_h or count_b:
+                u.afterChangeNodeContents(p, 'Replace All', undoData)
         p = c.p
         u.afterChangeGroup(p, undoType, reportFlag=True)
         t2 = time.clock()
-        g.es('changed %s instances in %4.2f sec.' % (count, (t2-t1)))
-            # self.find_text, self.change_text,
+        g.es_print('changed %s instances%s in %4.2f sec.' % (
+            count, g.plural(count), (t2-t1)))
         c.recolor()
         c.redraw(p)
         self.restore(saveData)
+    #@+node:ekr.20190602134414.1: *5* find.batchSearchAndReplace & helpers
+    def batchSearchAndReplace(self, s):
+        """
+        Search s for self.find_text and replace with self.change_text.
+        
+        Return (found, new text)
+        """
+        if sys.platform.lower().startswith('win'):
+            s = s.replace('\r', '')
+                # Ignore '\r' characters, which may appear in @edit nodes.
+                # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+                # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
+        if not s:
+            return False, None
+        #
+        # Order matters: regex matches ignore whole-word.
+        if self.pattern_match:
+            return self.batchRegexReplace(s)
+        if self.whole_word:
+            return self.batchWordReplace(s)
+        return self.batchPlainReplace(s)
+    #@+node:ekr.20190602151043.4: *6* batchPlainReplace (new)
+    def batchPlainReplace(self, s):
+        '''
+        Perform all plain find/replace on s.\
+        return (count, new_s)
+        '''
+        find, change = self.find_text, self.change_text
+        if self.ignore_case:
+            s = s.lower()
+            find = find.lower()
+        find = self.replaceBackSlashes(find)
+        count, prev_i, result = 0, 0, []
+        while True:
+            i = s.find(find, prev_i)
+            if i == -1:
+                break
+            count += 1
+            result.append(s[prev_i:i])
+            result.append(change)
+            prev_i = i + len(find)
+        # Compute the result.
+        result.append(s[prev_i:])
+        s = ''.join(result)
+        return count, s
+    #@+node:ekr.20190602151043.2: *6* batchRegexReplace (new)
+    def batchRegexReplace(self, s):
+        '''
+        Perform all regex find/replace on s.
+        return (count, new_s)
+        '''
+        count, prev_i, result = 0, 0, []
+        for m in re.finditer(self.find_text, s, re.MULTILINE):
+            count += 1
+            i = m.start()
+            result.append(s[prev_i:i])
+            result.append(self.change_text)
+            prev_i = m.end()
+        # Compute the result.
+        result.append(s[prev_i:])
+        s = ''.join(result)
+        return count, s
+    #@+node:ekr.20190602155933.1: *6* batchWordReplace (new)
+    def batchWordReplace(self, s):
+        '''
+        Perform all whole word find/replace on s.
+        return (count, new_s)
+        '''
+        g.trace(len(s))
+        find, change = self.find_text, self.change_text
+        if self.ignore_case:
+            s = s.lower()
+            find = find.lower()
+        find = self.replaceBackSlashes(find)
+        count, prev_i, result = 0, 0, []
+        while True:
+            i = s.find(find, prev_i)
+            if i == -1:
+                break
+            result.append(s[prev_i:i])
+            if g.match_word(s, i, find):
+                count += 1
+                result.append(change)
+            else:
+                result.append(find)
+            prev_i = i + len(find)
+        # Compute the result.
+        result.append(s[prev_i:])
+        s = ''.join(result)
+        return count, s
+        
     #@+node:ekr.20031218072017.3070: *4* find.changeSelection
     # Replace selection with self.change_text.
     # If no selection, insert self.change_text at the cursor.
