@@ -3722,23 +3722,16 @@ class LeoQtLog(leoFrame.LeoLog):
         '''Delete the tab if it exists.  Otherwise do *nothing*.'''
         c = self.c
         w = self.tabWidget
-        if force or tabName not in ('Log', 'Find', 'Spell'):
-            i = self.findTabIndex(tabName)
-            if i is None:
-                return
-            w.removeTab(i)
-            self.selectTab('Log')
-            c.invalidateFocus()
-            c.bodyWantsFocus()
-            ###
-            # for i in range(w.count()):
-                # if tabName == w.tabText(i):
-                    # w.removeTab(i)
-                    # self.selectTab('Log')
-                    # c.invalidateFocus()
-                    # c.bodyWantsFocus()
-                    # return
-    #@+node:ekr.20190603062456.1: *4* LeoQtLog.findTabIndex (new)
+        if not force and tabName in ('Log', 'Find', 'Spell'):
+            return
+        i = self.findTabIndex(tabName)
+        if i is None:
+            return
+        w.removeTab(i)
+        self.selectTab('Log')
+        c.invalidateFocus()
+        c.bodyWantsFocus()
+    #@+node:ekr.20190603062456.1: *4* LeoQtLog.findTabIndex
     def findTabIndex(self, tabName):
         '''Return the tab index for tabName, or None.'''
         w = self.tabWidget
@@ -3758,22 +3751,49 @@ class LeoQtLog(leoFrame.LeoLog):
     def numberOfVisibleTabs(self):
         return len([val for val in self.contentsDict.values() if val is not None])
             # **Note**: the base-class version of this uses frameDict.
-    #@+node:ekr.20110605121601.18331: *4* LeoQtLog.selectTab & helper (changed)
-    # createText is used by LeoLog.selectTab.
-
+    #@+node:ekr.20110605121601.18331: *4* LeoQtLog.selectTab & helpers (changed)
     def selectTab(self, tabName, createText=True, widget=None, wrap='none'):
         '''Create the tab if necessary and make it active.'''
-        self.selectHelper(tabName)
         i = self.findTabIndex(tabName)
         if i is None:
             self.createTab(tabName, widget=widget, wrap=wrap)
-            self.selectHelper(tabName)
-        ###
-        # if not self.selectHelper(tabName):
-            # self.createTab(tabName, widget=widget, wrap=wrap)
-            # self.selectHelper(tabName)
-    #@+node:ekr.20110605121601.18332: *5* LeoQtLog.selectHelper
-    def selectHelper(self, tabName):
+            self.finishCreateTab(tabName)
+        self.finishSelectTab(tabName)
+    #@+node:ekr.20190603064815.1: *5* LeoQtLog.finishCreateTab (new)
+    def finishCreateTab(self, tabName):
+        '''Finish creating the given tab. Do not set focus!'''
+        c = self.c
+        i = self.findTabIndex(tabName)
+        if i is None:
+            g.trace('Can not happen', tabName)
+            self.tabName = None
+            return
+        # # #1161.
+        if tabName == 'Log':
+            wrapper = None
+            widget = self.contentsDict.get('Log')
+                # a qt_text.QTextEditWrapper
+            if widget:
+                wrapper = getattr(widget, 'leo_log_wrapper', None)
+                if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
+                    self.logCtrl = wrapper
+            if not wrapper: g.trace('NO LOG WRAPPER')
+        if tabName == 'Find':
+            # Do *not* set focus here!
+            # #1254861: Ctrl-f doesn't ensure find input field visible.
+            if c.config.getBool('auto-scroll-find-tab', default=True):
+                # This is the cause of unwanted scrolling.
+                findbox = c.findCommands.ftm.find_findbox
+                if hasattr(widget, 'ensureWidgetVisible'):
+                    widget.ensureWidgetVisible(findbox)
+                else:
+                    findbox.setFocus()
+        if tabName == 'Spell':
+            # Set a flag for the spell system.
+            self.frameDict['Spell'] = widget
+                
+    #@+node:ekr.20190603064816.1: *5* LeoQtLog.finishSelectTab (new)
+    def finishSelectTab(self, tabName):
         '''
         Select the proper tab, raising it's enclosing dock as needed.
         '''
@@ -3781,8 +3801,7 @@ class LeoQtLog(leoFrame.LeoLog):
         c, w = self.c, self.tabWidget
         #
         # Raise the dock.
-        ### dock_tabs = ('Completion', 'Log', 'Find', 'Spell')
-        if g.app.dock: ###  and tabName in dock_tabs:
+        if g.app.dock:
             # Raise the proper dock.
             dw = c.frame.top
             tabName2 = 'tabs' if tabName in ('Completion', 'Log') else tabName
@@ -3792,45 +3811,14 @@ class LeoQtLog(leoFrame.LeoLog):
                 dock.raise_()
         #
         # Select the proper tab, regardless of g.app.dock.
-        for i in range(w.count()):
-            if tabName == w.tabText(i):
-                w.setCurrentIndex(i)
-                widget = w.widget(i)
-                # # #1161.
-                if tabName == 'Log':
-                    wrapper = None
-                    widget = self.contentsDict.get('Log')
-                        # a qt_text.QTextEditWrapper
-                    if widget:
-                        wrapper = getattr(widget, 'leo_log_wrapper', None)
-                        if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
-                            self.logCtrl = wrapper
-                    if not wrapper: g.trace('NO LOG WRAPPER') 
-                # Do *not* set focus here!
-                if tabName == 'Find':
-                    # #1254861: Ctrl-f doesn't ensure find input field visible.
-                    if c.config.getBool('auto-scroll-find-tab', default=True):
-                        # This is the cause of unwanted scrolling.
-                        findbox = c.findCommands.ftm.find_findbox
-                        if hasattr(widget, 'ensureWidgetVisible'):
-                            widget.ensureWidgetVisible(findbox)
-                        else:
-                            findbox.setFocus()
-                elif tabName == 'Spell':
-                    # Set a flag for the spell system.
-                    self.frameDict['Spell'] = widget
-                self.tabName = tabName
-                break
-        else:
+        i = self.findTabIndex(tabName)
+        if i is None:
+            g.trace('can not happen', tabName)
             self.tabName = None
-        ### whew.  No longer needed.
-            # #
-            # # Signal whether we should create the tab.
-            # if g.app.dock: ### and tabName in dock_tabs:
-                # return True
-                    # # Don't create the tab.
-            # return False
-                # # Do create the tab.
+            return
+        w.setCurrentIndex(i)
+        ### widget = w.widget(i)
+        self.tabName = tabName
     #@-others
 #@+node:ekr.20110605121601.18340: ** class LeoQtMenu (LeoMenu)
 class LeoQtMenu(leoMenu.LeoMenu):
