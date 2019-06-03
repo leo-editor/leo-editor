@@ -3285,7 +3285,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     if 0:
                         g.es("exception downloading", "sbooks.chm")
                         g.es_exception()
-    #@+node:ekr.20160424080647.1: *3* qtFrame.Properties (new)
+    #@+node:ekr.20160424080647.1: *3* qtFrame.Properties
     # The ratio and secondary_ratio properties are read-only.
     #@+node:ekr.20160424080815.2: *4* qtFrame.ratio property
     def __get_ratio(self):
@@ -3760,7 +3760,7 @@ class LeoQtLog(leoFrame.LeoLog):
             self.createTab(tabName, widget=widget, wrap=wrap)
             self.finishCreateTab(tabName)
         self.finishSelectTab(tabName)
-    #@+node:ekr.20190603064815.1: *5* LeoQtLog.finishCreateTab (new)
+    #@+node:ekr.20190603064815.1: *5* LeoQtLog.finishCreateTab
     def finishCreateTab(self, tabName):
         '''Finish creating the given tab. Do not set focus!'''
         c = self.c
@@ -3796,7 +3796,7 @@ class LeoQtLog(leoFrame.LeoLog):
             # Set a flag for the spell system.
             widget = self.tabWidget.widget(i)
             self.frameDict['Spell'] = widget
-    #@+node:ekr.20190603064816.1: *5* LeoQtLog.finishSelectTab (new)
+    #@+node:ekr.20190603064816.1: *5* LeoQtLog.finishSelectTab
     def finishSelectTab(self, tabName):
         '''
         Select the proper tab, raising it's enclosing dock as needed.
