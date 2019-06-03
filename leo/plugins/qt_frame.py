@@ -30,9 +30,6 @@ except ImportError:
     print('Can not import nested_splitter')
     splitter_class = QtWidgets.QSplitter
 #@-<< imports >>
-### legacy_log_dock = False
-    # True:  Put Spell and Find Tabs inside the Tabs dock.
-    # False: Put Spell and Find tabs in separate docks.
 floatable_docks = False
 
 #@+others
@@ -81,7 +78,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 self.iconBar.hide()
     #@+node:ekr.20110605121601.18172: *3* do_leo_spell_btn_*
     def doSpellBtn(self, btn):
-        ### getattr(self.leo_c.spellCommands.handler.tab, btn)()
+        '''Execute btn, a button handler.'''
+        # Make *sure* this never crashes.
         try:
             tab = self.leo_c.spellCommands.handler.tab
             button = getattr(tab, btn)
@@ -298,14 +296,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         bottom, top = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
         lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
         g.placate_pyflakes(bottom, lt, rt, top)
-        ###
-            # if legacy_log_dock:
-                # table = (
-                    # (False, False, 100, lt, 'outline', self.createOutlinePane),
-                    # (False, True, 100, bottom, 'body', self.createBodyPane),
-                    # (False, True, 100, rt, 'tabs', self.createTabbedLogDock),
-                # )
-            # else:
         table = (
             (False, False, 100, lt, 'outline', self.createOutlineDock),
             (False, True, 100, bottom, 'body', self.createBodyPane),
@@ -675,20 +665,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''Create a Spell dock.'''
         assert g.app.dock
         assert not parent, repr(parent)
-        g.trace('=====')
         #
         # Create the spell tab.
         spellTab = QtWidgets.QWidget()
         spellTab.setObjectName('docked.spellTab')
         self.createSpellTab(spellTab)
         return spellTab
-
-        # Spell tab.
-        # spellTab = QtWidgets.QWidget()
-        # spellTab.setObjectName('spellTab')
-        # tabWidget.addTab(spellTab, 'Spell')
-        # self.createSpellTab(spellTab)
-        # tabWidget.setCurrentIndex(1)
     #@+node:ekr.20190527163203.1: *5* dw.createTabbedLogDock (legacy)
     def createTabbedLogDock(self, parent):
         '''Create a tabbed (legacy) Log dock.'''
