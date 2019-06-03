@@ -461,6 +461,8 @@ class SpellCommandsClass(BaseEditCommandsClass):
         c = self.c
         log = c.frame.log
         tabName = 'Spell'
+        g.trace(g.callers())
+        g.printObj(self.frameDict) ###
         if log.frameDict.get(tabName):
             log.selectTab(tabName)
         else:

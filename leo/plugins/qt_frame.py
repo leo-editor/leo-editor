@@ -81,7 +81,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 self.iconBar.hide()
     #@+node:ekr.20110605121601.18172: *3* do_leo_spell_btn_*
     def doSpellBtn(self, btn):
-        getattr(self.leo_c.spellCommands.handler.tab, btn)()
+        ### getattr(self.leo_c.spellCommands.handler.tab, btn)()
+        try:
+            tab = self.leo_c.spellCommands.handler.tab
+            button = getattr(tab, btn)
+            button()
+        except Exception:
+            g.es_exception()
 
     def do_leo_spell_btn_Add(self):
         self.doSpellBtn('onAddButton')
@@ -3756,7 +3762,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def numberOfVisibleTabs(self):
         return len([val for val in self.contentsDict.values() if val is not None])
             # **Note**: the base-class version of this uses frameDict.
-    #@+node:ekr.20110605121601.18331: *4* LeoQtLog.selectTab & helpers (changed)
+    #@+node:ekr.20110605121601.18331: *4* LeoQtLog.selectTab & helpers
     def selectTab(self, tabName, createText=True, widget=None, wrap='none'):
         '''Create the tab if necessary and make it active.'''
         i = self.findTabIndex(tabName)
