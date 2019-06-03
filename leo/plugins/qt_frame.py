@@ -30,7 +30,7 @@ except ImportError:
     print('Can not import nested_splitter')
     splitter_class = QtWidgets.QSplitter
 #@-<< imports >>
-legacy_log_dock = False
+### legacy_log_dock = False
     # True:  Put Spell and Find Tabs inside the Tabs dock.
     # False: Put Spell and Find tabs in separate docks.
 floatable_docks = False
@@ -298,20 +298,21 @@ class DynamicWindow(QtWidgets.QMainWindow):
         bottom, top = Qt.BottomDockWidgetArea, Qt.TopDockWidgetArea
         lt, rt = Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea
         g.placate_pyflakes(bottom, lt, rt, top)
-        if legacy_log_dock:
-            table = (
-                (False, False, 100, lt, 'outline', self.createOutlinePane),
-                (False, True, 100, bottom, 'body', self.createBodyPane),
-                (False, True, 100, rt, 'tabs', self.createTabbedLogDock),
-            )
-        else:
-            table = (
-                (False, False, 100, lt, 'outline', self.createOutlineDock),
-                (False, True, 100, bottom, 'body', self.createBodyPane),
-                (False, True, 20, rt, 'tabs', self.createTabsDock),
-                (True, True, 20, rt, 'find', self.createFindDock),
-                (True, True, 20, rt, 'spell', self.createSpellDock),
-            )
+        ###
+            # if legacy_log_dock:
+                # table = (
+                    # (False, False, 100, lt, 'outline', self.createOutlinePane),
+                    # (False, True, 100, bottom, 'body', self.createBodyPane),
+                    # (False, True, 100, rt, 'tabs', self.createTabbedLogDock),
+                # )
+            # else:
+        table = (
+            (False, False, 100, lt, 'outline', self.createOutlineDock),
+            (False, True, 100, bottom, 'body', self.createBodyPane),
+            (False, True, 20, rt, 'tabs', self.createTabsDock),
+            (True, True, 20, rt, 'find', self.createFindDock),
+            (True, True, 20, rt, 'spell', self.createSpellDock),
+        )
         for closeable, moveable, height, area, name, creator in table:
             height = 0
             dock = self.createDockWidget(closeable, moveable, height, name)
@@ -674,12 +675,20 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''Create a Spell dock.'''
         assert g.app.dock
         assert not parent, repr(parent)
+        g.trace('=====')
         #
         # Create the spell tab.
         spellTab = QtWidgets.QWidget()
         spellTab.setObjectName('docked.spellTab')
         self.createSpellTab(spellTab)
         return spellTab
+
+        # Spell tab.
+        # spellTab = QtWidgets.QWidget()
+        # spellTab.setObjectName('spellTab')
+        # tabWidget.addTab(spellTab, 'Spell')
+        # self.createSpellTab(spellTab)
+        # tabWidget.setCurrentIndex(1)
     #@+node:ekr.20190527163203.1: *5* dw.createTabbedLogDock (legacy)
     def createTabbedLogDock(self, parent):
         '''Create a tabbed (legacy) Log dock.'''
@@ -3462,7 +3471,7 @@ class LeoQtLog(leoFrame.LeoLog):
             if w.tabText(i) == 'Log':
                 w.removeTab(i)
         w.insertTab(0, logWidget, 'Log')
-        if legacy_log_dock:
+        if True: ### legacy_log_dock:
             c.spellCommands.openSpellTab()
         # set up links in log handling
         logWidget.setTextInteractionFlags(
