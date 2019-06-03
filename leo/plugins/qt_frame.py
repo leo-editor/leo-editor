@@ -3444,7 +3444,7 @@ class LeoQtLog(leoFrame.LeoLog):
         c = self.c
         self.wrap = bool(c.config.getBool('log-pane-wraps'))
         
-    #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate (changed)
+    #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''
         c, log, w = self.c, self, self.tabWidget
@@ -3471,8 +3471,7 @@ class LeoQtLog(leoFrame.LeoLog):
             if w.tabText(i) == 'Log':
                 w.removeTab(i)
         w.insertTab(0, logWidget, 'Log')
-        if True: ### legacy_log_dock:
-            c.spellCommands.openSpellTab()
+        c.spellCommands.openSpellTab()
         # set up links in log handling
         logWidget.setTextInteractionFlags(
             QtCore.Qt.LinksAccessibleByMouse |
@@ -3783,6 +3782,9 @@ class LeoQtLog(leoFrame.LeoLog):
     def finishCreateTab(self, tabName):
         '''Finish creating the given tab. Do not set focus!'''
         c = self.c
+        # Special case for the Spell tab.
+        if g.app.dock and tabName == 'Spell':
+            return
         i = self.findTabIndex(tabName)
         if i is None:
             g.trace('Can not happen', tabName)
@@ -3810,8 +3812,8 @@ class LeoQtLog(leoFrame.LeoLog):
                     findbox.setFocus()
         if tabName == 'Spell':
             # Set a flag for the spell system.
+            widget = self.tabWidget.widget(i)
             self.frameDict['Spell'] = widget
-                
     #@+node:ekr.20190603064816.1: *5* LeoQtLog.finishSelectTab (new)
     def finishSelectTab(self, tabName):
         '''
@@ -3830,6 +3832,10 @@ class LeoQtLog(leoFrame.LeoLog):
             if dock:
                 dock.raise_()
         #
+        # Special case for Spell tab.
+        if tabName == 'Spell':
+            return
+        #
         # Select the proper tab, regardless of g.app.dock.
         i = self.findTabIndex(tabName)
         if i is None:
@@ -3837,7 +3843,6 @@ class LeoQtLog(leoFrame.LeoLog):
             self.tabName = None
             return
         w.setCurrentIndex(i)
-        ### widget = w.widget(i)
         self.tabName = tabName
     #@-others
 #@+node:ekr.20110605121601.18340: ** class LeoQtMenu (LeoMenu)
