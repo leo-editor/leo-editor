@@ -31,6 +31,7 @@ except ImportError:
     splitter_class = QtWidgets.QSplitter
 #@-<< imports >>
 floatable_docks = False
+    # True: allow QDockWidgets to float.
 
 #@+others
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QtWidgets.QMainWindow)
