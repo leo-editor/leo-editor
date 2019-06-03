@@ -3752,7 +3752,11 @@ class LeoQtLog(leoFrame.LeoLog):
             self.selectHelper(tabName)
     #@+node:ekr.20110605121601.18332: *5* LeoQtLog.selectHelper
     def selectHelper(self, tabName):
-
+        '''
+        Select the proper tab, raising it's enclosing dock as needed.
+        
+        Return True if the tab already exists.
+        '''
         # #1159: raise a parent QDockWidget.
         c, w = self.c, self.tabWidget
         #
@@ -3761,7 +3765,7 @@ class LeoQtLog(leoFrame.LeoLog):
         if g.app.dock and tabName in dock_tabs:
             # Raise the proper dock.
             dw = c.frame.top
-            tabName2 = 'tabs' if tabName == 'Log' else tabName
+            tabName2 = 'tabs' if tabName in ('Completion', 'Log') else tabName
             ivar = '%s_dock' % tabName2.lower()
             dock = getattr(dw, ivar, None)
             if dock:
@@ -3799,14 +3803,16 @@ class LeoQtLog(leoFrame.LeoLog):
                     # the base class uses this as a flag to see if the spell system needs initing
                     self.frameDict['Spell'] = widget
                 self.tabName = tabName
-                break ### return True
+                break
         else:
             self.tabName = None
         #
         # Signal whether we should create the tab.
         if g.app.dock and tabName in dock_tabs:
-            return True # Don't create the tab.
-        return True
+            return True
+                # Don't create the tab.
+        return False
+            # Do create the tab.
     #@-others
 #@+node:ekr.20110605121601.18340: ** class LeoQtMenu (LeoMenu)
 class LeoQtMenu(leoMenu.LeoMenu):
