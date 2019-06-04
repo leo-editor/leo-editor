@@ -9,7 +9,7 @@ import leo.plugins.writers.basewriter as basewriter
 class MarkdownWriter(basewriter.BaseWriter):
     '''The writer class for markdown files.'''
     # def __init__(self,c):
-        # basewriter.BaseWriter.__init__(self,c)
+        # super().__init__(c)
     #@+others
     #@+node:ekr.20140726091031.18076: *3* mdw.write
     def write(self, root):

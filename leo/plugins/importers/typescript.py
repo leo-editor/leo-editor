@@ -42,7 +42,7 @@ class TS_Importer(Importer):
     def __init__(self, importCommands, **kwargs):
         '''The ctor for the TS_ImportController class.'''
         # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'typescript', # Case is important.
             state_class = TS_ScanState,

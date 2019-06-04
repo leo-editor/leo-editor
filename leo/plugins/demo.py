@@ -807,7 +807,7 @@ class Image (QtWidgets.QLabel):
         '''Image.__init__.'''
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
-        QtWidgets.QLabel.__init__(self, parent=parent)
+        super().__init__(parent=parent)
         self.init_image(fn, magnification, position, size)
         w.show()
         demo.widgets.append(w)
@@ -855,7 +855,7 @@ class Text (QtWidgets.QPlainTextEdit):
         '''Pop up a QPlainTextEdit in the indicated pane.'''
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
-        QtWidgets.QPlainTextEdit.__init__(self, text.rstrip(), parent=parent)
+        super().__init__(text.rstrip(), parent=parent)
         self.init(font, position, size, stylesheet)
         w.show()
         demo.widgets.append(self)
@@ -900,7 +900,7 @@ class Title(Label):
                 background-color : mistyrose;
                 color : black;
             }'''
-        Label.__init__(self, text, font=font, pane=pane,
+        super().__init__(text, font=font, pane=pane,
                 position=position, stylesheet=stylesheet)
         # Do this *after* initing the base class.
         demo.set_position(w, position or

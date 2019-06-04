@@ -77,7 +77,7 @@ class LeoBodyTextfield (npyscreen.Textfield):
     '''
 
     def __init__(self, *args, **kwargs):
-        npyscreen.Textfield.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.set_handlers()
 
     #@+others
@@ -213,7 +213,7 @@ class LeoLogTextfield (npyscreen.Textfield):
     '''
 
     def __init__(self, *args, **kwargs):
-        npyscreen.Textfield.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.set_handlers()
 
     #@+others
@@ -2125,7 +2125,7 @@ class CoreBody (leoFrame.LeoBody):
 
     def __init__(self, c):
 
-        leoFrame.LeoBody.__init__(self, frame=c.frame, parentFrame=None)
+        super().__init__(frame=c.frame, parentFrame=None)
             # Init the base class.
         self.c = c
         self.colorizer = leoFrame.NullColorizer(c)
@@ -2405,11 +2405,7 @@ class CoreLog (leoFrame.LeoLog):
     #@+node:ekr.20170419143731.4: *4* CLog.__init__
     def __init__(self, c):
         '''Ctor for CLog class.'''
-        leoFrame.LeoLog.__init__(self,
-            frame = None,
-            parentFrame = None,
-        )
-            # Init the base class.
+        super().__init__(frame=None, parentFrame=None)
         self.c = c
         self.enabled = True
             # Required by Leo's core.
@@ -2482,7 +2478,7 @@ class CoreMenu (leoMenu.LeoMenu):
     def __init__ (self, c):
 
         dummy_frame = g.Bunch(c=c)
-        leoMenu.LeoMenu.__init__(self, dummy_frame)
+        super().__init__(dummy_frame)
         self.c = c
         self.d = {}
 
@@ -4281,7 +4277,7 @@ class HeadWrapper(leoFrame.StringTextWrapper):
 
     def __init__(self, c, name, p):
         '''Ctor for HeadWrapper class'''
-        leoFrame.StringTextWrapper.__init__(self, c, name)
+        super().__init__(c, name)
         self.trace = False # For tracing in base class.
         self.p = p.copy()
         self.s = p.v._headString
@@ -4303,7 +4299,7 @@ class LogWrapper(leoFrame.StringTextWrapper):
 
     def __init__(self, c, name, w):
         '''Ctor for LogWrapper class'''
-        leoFrame.StringTextWrapper.__init__(self, c, name)
+        super().__init__(c, name)
         self.trace = False # For tracing in base class.
         self.widget = w
 
@@ -4315,7 +4311,7 @@ class MiniBufferWrapper(leoFrame.StringTextWrapper):
 
     def __init__(self, c, name, w):
         '''Ctor for MiniBufferWrapper class'''
-        leoFrame.StringTextWrapper.__init__(self, c, name)
+        super().__init__(c, name)
         self.trace = False # For tracing in base class.
         self.box = None # Injected
         self.widget = w
@@ -4325,7 +4321,7 @@ class StatusLineWrapper(leoFrame.StringTextWrapper):
 
     def __init__(self, c, name, w):
         '''Ctor for StatusLineWrapper class'''
-        leoFrame.StringTextWrapper.__init__(self, c, name)
+        super().__init__(c, name)
         self.trace = False # For tracing in base class.
         self.widget = w
         

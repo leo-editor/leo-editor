@@ -223,7 +223,7 @@ if QtWidgets:
         #@+others
         #@+node:peckj.20140804114520.15200: *3* tag_w.__init__
         def __init__(self,c,parent=None):
-            QtWidgets.QWidget.__init__(self, parent)
+            super().__init__(parent)
             self.c = c
             self.tc = self.c.theTagController
             self.initUI()

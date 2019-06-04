@@ -21,7 +21,7 @@ def init():
 
                 def __init__(self, title=None):
                     g.pr("myLeoFrame ctor", title)
-                    leoFrame.LeoFrame.__init__(self, title)
+                    super().__init__(title)
 
             leoFrame.LeoFrame = myLeoFrame
         if 0:

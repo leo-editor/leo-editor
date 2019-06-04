@@ -239,9 +239,7 @@ class GlobalPyzoController(object):
             Copyright (C) 2013-2018, the Pyzo development team.
             '''
             if g: g.pr('\nBEGIN PATCHED MainWindow.__init__')
-
-            QtWidgets.QMainWindow.__init__(self, parent)
-            
+            super().__init__(parent)
             # self.setObjectName('MainWindow') # EKR.
 
             self._closeflag = 0  # Used during closing/restarting

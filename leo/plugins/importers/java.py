@@ -14,8 +14,7 @@ class Java_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''Java_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'java',
             state_class = Java_ScanState,

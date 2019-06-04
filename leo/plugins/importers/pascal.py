@@ -12,8 +12,7 @@ class Pascal_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''Pascal_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'pascal',
             state_class = Pascal_ScanState,

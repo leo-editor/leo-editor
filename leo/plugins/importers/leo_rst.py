@@ -18,9 +18,7 @@ class Rst_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''Rst_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
-            importCommands,
+        super().__init__(importCommands,
             language = 'rest',
             state_class = Rst_ScanState,
             strict = False,

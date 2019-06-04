@@ -18,8 +18,7 @@ class Lua_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''Lua_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'lua',
             state_class = Lua_ScanState,

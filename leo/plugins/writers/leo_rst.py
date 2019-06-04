@@ -20,7 +20,7 @@ class RstWriter(basewriter.BaseWriter):
     This is *very* different from rst3 command's write code.
     '''
     # def __init__(self,c):
-        # basewriter.BaseWriter.__init__(self,c)
+        # super().__init__(c)
     #@+others
     #@+node:ekr.20140726091031.18150: *3* rstw.underline_char
     def underline_char(self, p, root_level):

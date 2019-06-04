@@ -12,9 +12,7 @@ class Markdown_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''Markdown_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
-            importCommands,
+        super().__init__(importCommands,
             language = 'md',
             state_class = None,
             strict = False,

@@ -11,8 +11,7 @@ class Dart_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''Dart_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'dart',
             state_class = Dart_ScanState,

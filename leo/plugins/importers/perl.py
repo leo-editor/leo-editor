@@ -12,8 +12,7 @@ class Perl_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''The ctor for the Perl_ImportController class.'''
-        # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'perl',
             state_class = Perl_ScanState,

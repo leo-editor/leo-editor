@@ -34,8 +34,7 @@ class MyPrettyPrinter(leoBeautify.PythonTokenBeautifier):
     #@+node:ekr.20041021123018: *3* myPrettyPrinter.__init__
     def __init__ (self,c):
         '''Ctor for MyPrettyPrinter class.'''
-        leoBeautify.PythonTokenBeautifier.__init__(self,c)
-            # Init the base class.
+        super().__init__(c)
         self.tracing = False
         # g.pr("Overriding class leoBeautifier.PythonTokenBeautifier")
     #@-others

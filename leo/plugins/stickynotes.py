@@ -293,7 +293,7 @@ class TextEditSearch(QtWidgets.QWidget):
         return f
 
     def __init__(self, *args, **kwargs):
-        QtWidgets.QWidget.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.textedit = QtWidgets.QTextEdit(*args, **kwargs)
         # need to call focusin/out set on parent by FocusingPlaintextEdit / mknote
         self.textedit.focusInEvent = self._call_old_first(
@@ -339,7 +339,7 @@ class FocusingPlaintextEdit(TextEditSearch):
         self.focusin = focusin
         self.focusout = focusout
         self.closed = closed
-        TextEditSearch.__init__(self, parent)
+        super().__init__(parent)
 
     def focusOutEvent (self, event):
         self.focusout()

@@ -601,7 +601,7 @@ if QtWidgets: # NOQA
             '''Ctor for ViewRenderedController class.'''
             self.c = c
             # Create the widget.
-            QtWidgets.QWidget.__init__(self, parent)
+            super().__init__(parent)
             self.setObjectName('viewrendered_pane')
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setContentsMargins(0, 0, 0, 0)

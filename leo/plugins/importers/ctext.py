@@ -39,7 +39,7 @@ class CText_Importer(Importer):
     #@+node:ekr.20161130053335.1: *3* ctext_i.__init__
     def __init__(self, importCommands, **kwargs):
         '''Ctor for CoffeeScriptScanner class.'''
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'ctext',
             state_class = None,

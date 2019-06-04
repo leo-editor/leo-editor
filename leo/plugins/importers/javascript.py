@@ -13,7 +13,7 @@ class JS_Importer(Importer):
     def __init__(self, importCommands, force_at_others=False, **kwargs):
         '''The ctor for the JS_ImportController class.'''
         # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             gen_refs = False, # Fix #639.
             language = 'javascript',

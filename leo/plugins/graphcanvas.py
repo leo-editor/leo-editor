@@ -314,7 +314,7 @@ class nodeBase(QtWidgets.QGraphicsItemGroup):
 
     def __init__(self, owner, node, *args, **kargs):
 
-        QtWidgets.QGraphicsItemGroup.__init__(self, *args, **kargs)
+        super().__init__(*args, **kargs)
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
 
         self.owner = owner
@@ -355,7 +355,7 @@ class nodeRect(nodeBase):
     """text with shape behind it node type"""
 
     def __init__(self, *args, **kargs):
-        nodeBase.__init__(self, *args, **kargs)
+        super().__init__(*args, **kargs)
 
         self.text = self.text_item()
         # .text must be first for nodeComment, see its bg_item()
@@ -412,7 +412,7 @@ class nodeNone(nodeBase):
     """text with shape behind it node type"""
 
     def __init__(self, *args, **kargs):
-        nodeBase.__init__(self, *args, **kargs)
+        super().__init__(*args, **kargs)
 
         self.text = self.text_item()
 
@@ -523,18 +523,14 @@ nodeBase.node_types[nodeComment.__name__] = nodeComment
 class nodeTable(nodeRect):
 
     def __init__(self, *args, **kargs):
-        nodeRect.__init__(self, *args, **kargs)
-
+        super().__init__(*args, **kargs)
         # can't load children here, because we don't know where we are yet
-
         self.updating = False
 
     def do_update(self):
         nodeRect.do_update(self)
-
         if self.updating:
             return
-
         what = []
         dy = self.text.document().size().height()
         for n, child in enumerate(self.node.children):
@@ -573,7 +569,7 @@ nodeBase.node_types[nodeTable.__name__] = nodeTable
 class nodeImage(nodeBase):
 
     def __init__(self, *args, **kargs):
-        nodeBase.__init__(self, *args, **kargs)
+        super().__init__(*args, **kargs)
 
         self.bg = self.bg_item()
 

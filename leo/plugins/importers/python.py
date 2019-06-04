@@ -14,8 +14,7 @@ class Py_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''Py_Importer.ctor.'''
-        # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language='python',
             state_class = Python_ScanState,

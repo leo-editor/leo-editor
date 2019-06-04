@@ -8,7 +8,7 @@ import leo.plugins.writers.basewriter as basewriter
 class OtlWriter(basewriter.BaseWriter):
     '''The writer class for .otl files.'''
     # def __init__(self,c):
-        # basewriter.BaseWriter.__init__(self,c)
+        # super().__init__(c)
     #@+others
     #@+node:ekr.20140726091031.18082: *3* otlw.write
     def write(self, root):

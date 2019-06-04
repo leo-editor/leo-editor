@@ -11047,8 +11047,7 @@ importer_dict = {
 
     def __init__(self, importCommands):
         '''{|{x=cap_name}|}_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = '{|{x=name}|}',
             state_class = {|{x=cap_name}|}_ScanState,

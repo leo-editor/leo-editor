@@ -91,8 +91,7 @@ if QtWidgets:
                 loc['c'] = self.c
                 loc['g'] = g
                 loc['p'] = self.c.p
-
-                code.InteractiveInterpreter.__init__(self, loc)
+                super().__init__(loc)
             #@+node:peckj.20150428142729.8: *4* InteractiveInterpreter.runIt
             def runIt(self, command):
 

@@ -16,7 +16,7 @@ class Xml_Importer(Importer):
     def __init__(self, importCommands, tags_setting='import_xml_tags', **kwargs):
         '''Xml_Importer.__init__'''
         # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'xml',
             state_class = Xml_ScanState,

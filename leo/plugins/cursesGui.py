@@ -313,8 +313,7 @@ class textLeoMenu(leoMenu.LeoMenu):
     def __init__(self, frame):
         self.entries = []
         self.c = frame.c
-        # Init the base class
-        leoMenu.LeoMenu.__init__(self, frame)
+        super().__init__(frame)
     #@+node:ekr.20150107090324.47: *3* createMenuBar
     def createMenuBar(self, frame):
         g.trace(frame.c)

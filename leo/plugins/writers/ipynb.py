@@ -14,8 +14,7 @@ class Export_IPYNB(basewriter.BaseWriter):
     
     def __init__(self, c):
         '''Ctor for Import_IPYNB class.'''
-        basewriter.BaseWriter.__init__(self, c)
-            # Init the base class.
+        super().__init__(c)
         self.c = c
             # Commander of present outline.
         self.root = None
