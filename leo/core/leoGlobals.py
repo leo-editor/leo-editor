@@ -1449,7 +1449,7 @@ class PosList(list):
     #@+node:ekr.20140531104908.17611: *4* ctor
     def __init__(self, c, aList=None):
         self.c = c
-        list.__init__(self) # Init the base class
+        super().__init__()
         if aList is None:
             for p in c.all_positions():
                 self.append(p.copy())

@@ -37,8 +37,8 @@ class EditBodyTestCase(unittest.TestCase):
     #@+others
     #@+node:ekr.20051104075904.71: *3*  __init__(EditBodyTestCase)
     def __init__(self, c, parent, before, after, sel, ins, tempNode):
-        # Init the base class.
-        unittest.TestCase.__init__(self)
+
+        super().__init__()
         self.c = c
         self.failFlag = False
         self.parent = parent.copy()
@@ -212,8 +212,8 @@ class ImportExportTestCase(unittest.TestCase):
         g.app.unitTestDict["fail"] = g.callers()
     #@+node:ekr.20051104075904.80: *3* __init__ (ImportExportTestCase)
     def __init__(self, c, p, dialog, temp_p, doImport):
-        # Init the base class.
-        unittest.TestCase.__init__(self)
+
+        super().__init__(self)
         self.c = c
         self.dialog = dialog
         self.p = p.copy()

@@ -551,8 +551,7 @@ class ShadowController(object):
         #@+node:ekr.20080709062932.6: *4* __init__ (AtShadowTestCase)
         def __init__(self, c, p, shadowController, delims=None, trace=False):
             '''Ctor for AtShadowTestCase class.'''
-            unittest.TestCase.__init__(self)
-                # Init the base class.
+            super().__init__()
             self.c = c
             self.p = p.copy()
             self.shadowController = x = shadowController

@@ -890,8 +890,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     #@+node:ekr.20160108105958.2: *3*  p1.ctor
     def __init__(self, fn):
 
-        # Init the base class.
-        leoAst.AstFullTraverser.__init__(self)
+        super().__init__()
         self.fn = fn
         # Abbreviations...
         self.stats = Stats()

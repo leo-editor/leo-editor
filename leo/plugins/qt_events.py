@@ -48,8 +48,7 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20110605121601.18539: *3* filter.ctor
     def __init__(self, c, w, tag=''):
         '''Ctor for LeoQtEventFilter class.'''
-        # Init the base class.
-        QtCore.QObject.__init__(self)
+        super().__init__()
         self.c = c
         self.w = w # A leoQtX object, *not* a Qt object.
         self.tag = tag

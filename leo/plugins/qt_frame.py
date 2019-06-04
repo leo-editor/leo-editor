@@ -154,7 +154,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_master = master
             # A LeoTabbedTopLevel for tabbed windows.
             # None for non-tabbed windows.
-        # Init the base class.
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.reloadSettings()
         if g.app.dock:
@@ -4701,7 +4700,7 @@ class LeoQtTreeTab(object):
 
             def __init__(self, tt):
                 self.leo_tt = tt
-                QtWidgets.QComboBox.__init__(self) # Init the base class.
+                super().__init__()
                 # Fix #458: Chapters drop-down list is not automatically resized.
                 self.setSizeAdjustPolicy(self.AdjustToContents)
 
