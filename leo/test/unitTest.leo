@@ -247,6 +247,18 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005808000000302e342e31312e3471017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20071113193527"><vh>leoFind</vh>
+<v t="ekr.20060130151716.3"><vh>@test minibuffer find commands</vh></v>
+<v t="ekr.20190603184713.1"><vh>@test replace-all: plain search</vh></v>
+<v t="ekr.20190603192140.1"><vh>@test replace-all: plain search: ignore case</vh></v>
+<v t="ekr.20190603193938.1"><vh>@test replace-all: regex search</vh></v>
+<v t="ekr.20190603193204.1"><vh>@test replace-all: word search</vh></v>
+<v t="ekr.20190603193214.1"><vh>@test replace-all: word search: ignore case</vh></v>
+<v t="ekr.20060130151716.2"><vh>@test set find mode commands</vh></v>
+<v t="ekr.20060130151716.4"><vh>@test show-find-options</vh></v>
+<v t="ekr.20060130151716.1"><vh>@test toggle find options commands</vh></v>
+<v t="ekr.20071113202153"><vh>@test zz end of leoFind tests</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -513,6 +525,54 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957">@nosearch</t>
 <t tx="ekr.20051013162226"></t>
+<t tx="ekr.20060130151716.1">if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+table = (
+    # 'toggle-find-clone-find-all-option',
+    'toggle-find-ignore-case-option',
+    'toggle-find-in-body-option',
+    'toggle-find-in-headline-option',
+    'toggle-find-mark-changes-option',
+    'toggle-find-mark-finds-option',
+    'toggle-find-regex-option',
+    # 'toggle-find-reverse-option',
+    'toggle-find-word-option',
+    'toggle-find-wrap-around-option',
+)
+for command in table:
+    c.k.simulateCommand(command)
+    c.k.simulateCommand(command)
+</t>
+<t tx="ekr.20060130151716.2">if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+table = (
+    'set-find-everywhere',
+    'set-find-node-only',
+    'set-find-suboutline-only',
+)
+# show-find-tab-options     = Ctrl-o
+# show-find-options         = o
+for command in table:
+    c.k.simulateCommand(command)
+</t>
+<t tx="ekr.20060130151716.3">if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+table = (
+    're-search-forward',
+    're-search-backward',
+    'search-forward',
+    'search-backward',
+    'word-search-forward',
+    'word-search-backward',
+)
+
+for command in table:
+    # This is not a full test.  We must use keyboardQuit here!
+    c.k.simulateCommand(command)
+    c.k.keyboardQuit(None)
+</t>
+<t tx="ekr.20060130151716.4">c.k.simulateCommand('show-find-options')
+</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -692,6 +752,11 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
+<t tx="ekr.20071113193527"># 4 failures with Alt-5
+</t>
+<t tx="ekr.20071113202153"># Print does not work: it is redirected.
+g.pr('\nEnd of leoFind tests.')
+</t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
@@ -1646,6 +1711,88 @@ unl: eggs
 <t tx="ekr.20190319020829.3"></t>
 <t tx="ekr.20190509044054.1">print('\ng.app.old_gui_name: %r, g.app.gui.guiName(): %s\n' % (
     getattr(g.app, 'old_gui_name', None), g.app.gui.guiName()))
+</t>
+<t tx="ekr.20190603184713.1">fc = c.findCommands
+
+plain_table = (
+    # s         find    change  count   result
+    ('aA',      'a',    'C',    1,      'CA'),
+    ('Aa',      'A',    'C',    1,      'Ca'),
+    ('Aba',     'b',    'C',    1,      'ACa'),
+)
+for s, find, change, count, result in plain_table:
+    fc.ignore_case = False
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc.batchPlainReplace(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+print('pass')
+</t>
+<t tx="ekr.20190603192140.1">fc = c.findCommands
+
+plain_table = (
+    # s         find    change  count   result
+    ('aA',      'a',    'C',    2,      'CC'),
+    ('AbBa',    'b',    'C',    2,      'ACCa'),
+)
+for s, find, change, count, result in plain_table:
+    fc.ignore_case = True
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc.batchPlainReplace(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+</t>
+<t tx="ekr.20190603193204.1">fc = c.findCommands
+
+word_table = (
+    # s                 find    change  count   result
+    ('a ba aa a ab a',  'a',    'C',    3,      'C ba aa C ab C'),
+    ('a ba aa a ab a',  'aa',   'C',    1,      'a ba C a ab a'),
+)
+for s, find, change, count, result in word_table:
+    fc.ignore_case = False
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc.batchWordReplace(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+</t>
+<t tx="ekr.20190603193214.1">fc = c.findCommands
+
+word_table = (
+    # s                 find    change  count   result
+    ('a ba aa A ab a',  'a',    'C',    3,      'C ba aa C ab C'),
+    ('a ba aa AA ab a', 'aa',   'C',    2,      'a ba C C ab a'),
+)
+for s, find, change, count, result in word_table:
+    fc.ignore_case = True
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc.batchWordReplace(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+</t>
+<t tx="ekr.20190603193938.1">fc = c.findCommands
+regex_table = (
+    # s                 find        change  count   result
+    ('a ba aa a ab a',  r'\b\w+\b', 'C',    6,      'C C C C C C'),
+    ('a AA aa aab ab a',r'\baa\b',  'C',    1,      'a AA C aab ab a'),
+    # Multi-line
+    ('aaa AA\naa aab',  r'\baa\b',  'C',    1,      'aaa AA\nC aab'),
+)
+for s, find, change, count, result in regex_table:
+    fc.ignore_case = False
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc.batchRegexReplace(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
 </t>
 </tnodes>
 </leo_file>

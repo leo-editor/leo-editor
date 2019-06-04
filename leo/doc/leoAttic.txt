@@ -3214,6 +3214,57 @@ def open_bridge(self):
         return
     c = bridge.openLeoFile(path)
     return c, g
+#@+node:ekr.20190602145908.12: ** No longer used: find.batchChange
+def batchChange(self, pos1, pos2):
+    '''
+    Do a single batch change operation, updating the head or body string of
+    p and leaving the result in s_ctrl.
+
+    s_ctrl contains the found text on entry and contains the changed text
+    on exit. pos and pos2 indicate the selection. The selection will never
+    be empty.
+    '''
+    c, u = self.c, self.c.undoer
+    p = self.p
+    if not p:
+        g.trace('===== can not happen: no p.')
+        return
+    w = self.s_ctrl
+    # Replace the selection with self.change_text
+    if pos1 > pos2:
+        pos1, pos2 = pos2, pos1
+    s = w.getAllText()
+    if pos1 != pos2:
+        w.delete(pos1, pos2)
+    w.insert(pos1, self.change_text)
+    # Update the selection.
+    insert = pos1 if self.reverse else pos1 + len(self.change_text)
+    w.setSelectionRange(insert, insert)
+    w.setInsertPoint(insert)
+    # Update the node
+    s = w.getAllText()
+    if s and s[-1] == '\n': s = s[: -1]
+    changed = s != p.h if self.in_headline else s != p.b
+    if changed:
+        undoData = u.beforeChangeNodeContents(p)
+        if self.in_headline:
+            p.initHeadString(s)
+        else:
+            # Fix #456: replace-all is very slow.
+            # p.b calls c.setBodyString, which is *very* slow.
+            p.v.setBodyString(s)
+        if self.mark_changes:
+            p.setMarked() # Just calls v.setMarked.
+        # Fix #456: replace-all is very slow.
+        # p.setDirty if very slow.
+        p.v.setDirty()
+        if not c.isChanged():
+            c.setChanged(True)
+        u.afterChangeNodeContents(
+            p,
+            'Change Headline' if self.in_headline else 'Change Body',
+            undoData,
+        )
 #@-all
 #@@nosearch
 #@-leo

@@ -9694,6 +9694,88 @@ for command in table:
     # This is not a full test.  We must use keyboardQuit here!
     c.k.simulateCommand(command)
     c.k.keyboardQuit(None)
+#@+node:ekr.20190603184713.1: *4* @test replace-all: plain search
+fc = c.findCommands
+
+plain_table = (
+    # s         find    change  count   result
+    ('aA',      'a',    'C',    1,      'CA'),
+    ('Aa',      'A',    'C',    1,      'Ca'),
+    ('Aba',     'b',    'C',    1,      'ACa'),
+)
+for s, find, change, count, result in plain_table:
+    fc.ignore_case = False
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc.batchPlainReplace(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+print('pass')
+#@+node:ekr.20190603192140.1: *4* @test replace-all: plain search: ignore case
+fc = c.findCommands
+
+plain_table = (
+    # s         find    change  count   result
+    ('aA',      'a',    'C',    2,      'CC'),
+    ('AbBa',    'b',    'C',    2,      'ACCa'),
+)
+for s, find, change, count, result in plain_table:
+    fc.ignore_case = True
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc.batchPlainReplace(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+#@+node:ekr.20190603193938.1: *4* @test replace-all: regex search
+fc = c.findCommands
+regex_table = (
+    # s                 find        change  count   result
+    ('a ba aa a ab a',  r'\b\w+\b', 'C',    6,      'C C C C C C'),
+    ('a AA aa aab ab a',r'\baa\b',  'C',    1,      'a AA C aab ab a'),
+    # Multi-line
+    ('aaa AA\naa aab',  r'\baa\b',  'C',    1,      'aaa AA\nC aab'),
+)
+for s, find, change, count, result in regex_table:
+    fc.ignore_case = False
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc.batchRegexReplace(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+#@+node:ekr.20190603193204.1: *4* @test replace-all: word search
+fc = c.findCommands
+
+word_table = (
+    # s                 find    change  count   result
+    ('a ba aa a ab a',  'a',    'C',    3,      'C ba aa C ab C'),
+    ('a ba aa a ab a',  'aa',   'C',    1,      'a ba C a ab a'),
+)
+for s, find, change, count, result in word_table:
+    fc.ignore_case = False
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc.batchWordReplace(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+#@+node:ekr.20190603193214.1: *4* @test replace-all: word search: ignore case
+fc = c.findCommands
+
+word_table = (
+    # s                 find    change  count   result
+    ('a ba aa A ab a',  'a',    'C',    3,      'C ba aa C ab C'),
+    ('a ba aa AA ab a', 'aa',   'C',    2,      'a ba C C ab a'),
+)
+for s, find, change, count, result in word_table:
+    fc.ignore_case = True
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc.batchWordReplace(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
 #@+node:ekr.20060130151716.2: *4* @test set find mode commands
 if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')

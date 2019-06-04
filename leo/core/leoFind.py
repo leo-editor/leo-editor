@@ -1475,38 +1475,45 @@ class LeoFind(object):
         if self.whole_word:
             return self.batchWordReplace(s)
         return self.batchPlainReplace(s)
-    #@+node:ekr.20190602151043.4: *6* batchPlainReplace (new)
+    #@+node:ekr.20190602151043.4: *6* batchPlainReplace
     def batchPlainReplace(self, s):
         '''
         Perform all plain find/replace on s.\
         return (count, new_s)
         '''
         find, change = self.find_text, self.change_text
+        # #1166: s0 and find0 aren't affected by ignore-case.
+        s0 = s
+        find0 = self.replaceBackSlashes(find)
         if self.ignore_case:
-            s = s.lower()
-            find = find.lower()
-        find = self.replaceBackSlashes(find)
+            s = s0.lower()
+            find = find0.lower()
         count, prev_i, result = 0, 0, []
         while True:
+            # #1166: Scan using s and find.
             i = s.find(find, prev_i)
             if i == -1:
                 break
+            # #1166: Replace using s0 & change.
             count += 1
-            result.append(s[prev_i:i])
+            result.append(s0[prev_i:i])
             result.append(change)
             prev_i = i + len(find)
-        # Compute the result.
-        result.append(s[prev_i:])
-        s = ''.join(result)
-        return count, s
-    #@+node:ekr.20190602151043.2: *6* batchRegexReplace (new)
+        # #1166: Complete the result using s0.
+        result.append(s0[prev_i:])
+        return count, ''.join(result)
+    #@+node:ekr.20190602151043.2: *6* batchRegexReplace
     def batchRegexReplace(self, s):
         '''
         Perform all regex find/replace on s.
         return (count, new_s)
         '''
         count, prev_i, result = 0, 0, []
-        for m in re.finditer(self.find_text, s, re.MULTILINE):
+        
+        flags = re.MULTILINE
+        if self.ignore_case:
+            flags |= re.IGNORECASE
+        for m in re.finditer(self.find_text, s, flags):
             count += 1
             i = m.start()
             result.append(s[prev_i:i])
@@ -1516,34 +1523,36 @@ class LeoFind(object):
         result.append(s[prev_i:])
         s = ''.join(result)
         return count, s
-    #@+node:ekr.20190602155933.1: *6* batchWordReplace (new)
+    #@+node:ekr.20190602155933.1: *6* batchWordReplace
     def batchWordReplace(self, s):
         '''
         Perform all whole word find/replace on s.
         return (count, new_s)
         '''
-        g.trace(len(s))
         find, change = self.find_text, self.change_text
+        # #1166: s0 and find0 aren't affected by ignore-case.
+        s0 = s
+        find0 = self.replaceBackSlashes(find)
         if self.ignore_case:
-            s = s.lower()
-            find = find.lower()
-        find = self.replaceBackSlashes(find)
+            s = s0.lower()
+            find = find0.lower()
         count, prev_i, result = 0, 0, []
         while True:
+            # #1166: Scan using s and find.
             i = s.find(find, prev_i)
             if i == -1:
                 break
-            result.append(s[prev_i:i])
+            # #1166: Replace using s0, change & find0.
+            result.append(s0[prev_i:i])
             if g.match_word(s, i, find):
                 count += 1
                 result.append(change)
             else:
-                result.append(find)
+                result.append(find0)
             prev_i = i + len(find)
-        # Compute the result.
-        result.append(s[prev_i:])
-        s = ''.join(result)
-        return count, s
+        # #1166: Complete the result using s0.
+        result.append(s0[prev_i:])
+        return count, ''.join(result)
         
     #@+node:ekr.20031218072017.3070: *4* find.changeSelection
     # Replace selection with self.change_text.
