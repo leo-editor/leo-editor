@@ -236,7 +236,7 @@ def createExportMenus (tag,keywords):
             command = lambda c = c, cmd=cmd: c.k.simulateCommand(cmd)
         )
 #@+node:bob.20080107154757: ** class pluginController
-class pluginController(object):
+class pluginController:
     """A per commander plugin controller to create and handle
     minibuffer commands that control the plugins functions.
     """
@@ -351,7 +351,7 @@ class pluginController(object):
         self.show_html_node(bullet='head')
     #@-others
 #@+node:bob.20080107154746: ** class Leo_to_HTML
-class Leo_to_HTML(object):
+class Leo_to_HTML:
 
     """
     This class provides all the functionality of the leo_to_html plugin.

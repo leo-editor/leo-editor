@@ -90,7 +90,7 @@ def jinja_install():
     g.act_on_node.add(jinja_act_on_node, 50)
 
 #@+node:ekr.20120525090541.10867: *3* class JinjaCl
-class JinjaCl(object):
+class JinjaCl:
     #@+others
     #@+node:ekr.20120525090541.10868: *4* __init__
     def __init__(self, c):

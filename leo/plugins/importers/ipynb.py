@@ -10,7 +10,7 @@ except ImportError:
     nbformat = None
 #@+others
 #@+node:ekr.20160412101537.2: ** class Import_IPYNB
-class Import_IPYNB(object):
+class Import_IPYNB:
     '''A class to import .ipynb files.'''
     
     def __init__(self, c=None, importCommands=None, **kwargs):

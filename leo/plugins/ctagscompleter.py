@@ -112,7 +112,7 @@ def start(event):
             controllers[h] = cc = CtagsController(c)
         cc.start(event)
 #@+node:ekr.20110307092028.14154: ** class CtagsController
-class CtagsController(object):
+class CtagsController:
 
     # To do: put cursor at end of word initially.
 

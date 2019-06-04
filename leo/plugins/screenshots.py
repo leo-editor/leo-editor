@@ -402,7 +402,7 @@ def make_screen_shot(path):
         w = pix.grabWindow(app.activeWindow().winId())
     w.save(path, 'png')
 #@+node:ekr.20100908110845.5531: ** class ScreenShotController
-class ScreenShotController(object):
+class ScreenShotController:
     '''A class to take screen shots and control Inkscape.
 
     help-for-screenshots contains a more complete description.'''

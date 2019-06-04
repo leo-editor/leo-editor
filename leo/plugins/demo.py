@@ -56,7 +56,7 @@ def init():
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20170128213103.8: ** class Demo
-class Demo(object):
+class Demo:
     #@+others
     #@+node:ekr.20170128213103.9: *3* demo.__init__ & init_*
     def __init__(self, c, trace=False):

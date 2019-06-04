@@ -84,7 +84,7 @@ Tk = None
 Qt = None
 #@+others
 #@+node:ekr.20090616105756.3942: ** class backlinkController
-class backlinkController(object):
+class backlinkController:
     """Display and edit links in leo trees"""
     #@+others
     #@+node:ekr.20090616105756.3943: *3* __init__ & reloadSettings (backlinkController)
@@ -829,7 +829,7 @@ if g.app.gui.guiName() == "tkinter":
         verbose=True,
         required=True)
 
-    class backlinkTkUI(object):
+    class backlinkTkUI:
         # pylint: disable=no-member
         # This is old code.
         #@+others

@@ -39,7 +39,7 @@ def findTests(cmdrT):
         for lbr in rpx.children_iter():
             yield lbr
 #@+node:bob.20180116151937.1: ** class EsCapture
-class EsCapture(object):
+class EsCapture:
     """ Object to capture leoG.es() output
     """
 
@@ -117,7 +117,7 @@ class EsCapture(object):
         return self._collectedDict
     #@-others
 #@+node:bob.20180116154559.1: ** class TestCmdr
-class TestCmdr(object):
+class TestCmdr:
     """ Global Parameters for Test Code
     """
 

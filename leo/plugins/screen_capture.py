@@ -45,7 +45,7 @@ def init():
     g.plugin_signon(__name__)
     return ok
 #@+node:tbrown.20130419143128.29669: ** class Recorder
-class Recorder(object):
+class Recorder:
     """Recorder - record video of Leo
 
     These shell commands convert saved frames to video

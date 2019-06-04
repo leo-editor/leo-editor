@@ -10,7 +10,7 @@ import os
 #@+node:ekr.20141110071911.17: ** << define classes >>
 #@+others
 #@+node:ekr.20101110094152.5824: *3* class _AssignUniqueConstantValue
-class   _AssignUniqueConstantValue(object):
+class   _AssignUniqueConstantValue:
     """ Provide unique value to be used as a constant """
 
     #@+others
@@ -45,7 +45,7 @@ class   _AssignUniqueConstantValue(object):
         return(self.UniqueInternalValue)
     #@-others
 #@+node:ekr.20101110094152.5830: *3* class _ConfigOptions
-class _ConfigOptions(object):
+class _ConfigOptions:
     """Hold current configuration options."""
     #@+others
     #@+node:ekr.20101110094152.5831: *4* __init__

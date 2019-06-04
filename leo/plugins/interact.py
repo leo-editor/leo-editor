@@ -56,7 +56,7 @@ def init():
 def onCreate(tag, keywords):
     InteractController(keywords['c'])
 #@+node:tbrown.20090603104805.4940: ** class Interact
-class Interact(object):
+class Interact:
     #@+others
     #@+node:tbrown.20090603104805.4941: *3* __init__
     def __init__(self, c):
@@ -287,7 +287,7 @@ class InteractBASH(Interact):
         return path
     #@-others
 #@+node:tbrown.20090603104805.4961: ** class InteractController
-class InteractController(object):
+class InteractController:
 
     """quickMove binds to a controller, adds menu entries for
        creating buttons, and creates buttons as needed
@@ -331,7 +331,7 @@ class InteractController(object):
             )
     #@-others
 #@+node:tbrown.20090603104805.4966: ** class InteractButton
-class InteractButton(object):
+class InteractButton:
 
     """contains target data and function for moving node"""
     #@+others

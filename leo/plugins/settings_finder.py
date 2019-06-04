@@ -24,7 +24,7 @@ def onCreate (tag, key):
         sf.build_menu()
 
 #@+node:tbrown.20150818161651.1: ** class SettingsFinder
-class SettingsFinder(object):
+class SettingsFinder:
     """SettingsFinder - Let the user pick settings from a menu and then
     find the relevant @settings nodes and open them.
     """

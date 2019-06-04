@@ -60,7 +60,7 @@ def onCreate(tag, keys):
     if not c: return
     slideshowController(c)
 #@+node:ekr.20060831165845.6: ** class slideshowController
-class slideshowController(object):
+class slideshowController:
     #@+others
     #@+node:ekr.20060831165845.7: *3* __init__
     def __init__(self, c):

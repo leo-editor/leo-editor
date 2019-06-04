@@ -1706,7 +1706,7 @@ class LeoBrowserTree(leoFrame.NullTree):
 #@+node:ekr.20181119094122.1: *3* class TracingNullObject
 #@@nobeautify
 
-class TracingNullObject(object):
+class TracingNullObject:
     '''A tracing version of g.NullObject.'''
     def __init__(self, *args, **keys):
         pass

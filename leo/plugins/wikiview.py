@@ -93,7 +93,7 @@ def cmd_show_all(event):
     c = event.get('c')
     c._wikiview.unhide(all=True)
 #@+node:tbrown.20141101114322.9: ** class WikiView
-class WikiView(object):
+class WikiView:
     """Manage wikiview for an outline"""
 
     #@+others

@@ -15,7 +15,7 @@ import re
 
 #@+others
 #@+node:tbrown.20100206093439.5452: ** class AttribManager
-class AttribManager(object):
+class AttribManager:
 
     """Class responsible for reading / writing attributes from
     vnodes for LeoCursor"""
@@ -103,7 +103,7 @@ class AM_CapColon(AM_Colon):
 
     pattern = r"^([A-Z][A-Za-z0-9_]*:)(\s+(\S.*))*$"
 #@+node:tbrown.20100206093439.5451: ** class LeoCursor
-class LeoCursor(object):
+class LeoCursor:
 
     """See module docs."""
 

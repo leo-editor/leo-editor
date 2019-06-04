@@ -60,7 +60,7 @@ def onClose(tag, keys):
         nc.removeButtons()
         del controllers[h]
 #@+node:ville.20090518182905.5425: ** class NavController
-class NavController(object):
+class NavController:
 
     #@+others
     #@+node:ville.20090518182905.5426: *3* __init__

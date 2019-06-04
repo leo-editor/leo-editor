@@ -34,7 +34,7 @@ def onCreate (tag, keys):
         if not nb:
             controllers [h] = NbController(c)
 #@+node:ville.20120604212857.4227: ** class ModelWrapper
-class ModelWrapper(object):
+class ModelWrapper:
     #@+others
     #@+node:ville.20120604212857.4228: *3* __init__
     def __init__(self, fieldlist):
@@ -60,7 +60,7 @@ class ModelWrapper(object):
         return si
     #@-others
 #@+node:ville.20120604212857.4237: ** class NbController
-class NbController(object):
+class NbController:
     #@+others
     #@+node:ville.20120604212857.4241: *3* __init__
     def __init__(self, c):

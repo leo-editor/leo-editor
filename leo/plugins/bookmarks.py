@@ -606,7 +606,7 @@ class FlowLayout(QtWidgets.QLayout):
     #@-others
 
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
-class BookMarkDisplay(object):
+class BookMarkDisplay:
     """Manage a pane showing bookmarks"""
 
     Bookmark = namedtuple('Bookmark', 'head url ancestors siblings children v')
@@ -1156,7 +1156,7 @@ class BookMarkDisplay(object):
     #@-others
 
 #@+node:tbrown.20110712121053.19746: ** class BookMarkDisplayProvider
-class BookMarkDisplayProvider(object):
+class BookMarkDisplayProvider:
     #@+others
     #@+node:tbrown.20110712121053.19747: *3* __init__
     def __init__(self, c):

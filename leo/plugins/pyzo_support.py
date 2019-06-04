@@ -59,7 +59,7 @@ except Exception:
 if pyzo:
     #@+others
     #@+node:ekr.20190414034531.1: *3* class ConfigShim (object)
-    class ConfigShim(object):
+    class ConfigShim:
         # pylint: disable=no-member
         pass
     #@+node:ekr.20190417091444.1: *3* class MenuBarShim (QMenuBar)
@@ -117,7 +117,7 @@ def placate_pyflakes(*args):
     '''
     pass
 #@+node:ekr.20190418161712.1: ** class GlobalPyzoController (object)
-class GlobalPyzoController(object):
+class GlobalPyzoController:
     '''
     A class representing the singleton running instance of pyzo.
     
@@ -514,7 +514,7 @@ class GlobalPyzoController(object):
             # dock.showMinimized() # confusing, for now.
     #@-others
 #@+node:ekr.20190415051335.1: ** class PyzoController (object)
-class PyzoController (object):
+class PyzoController:
     '''A per-commander controller providing pyzo support.'''
     
     def __init__(self, c):

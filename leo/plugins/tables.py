@@ -44,7 +44,7 @@ def onCreate(tag, keys):
     else:
         g.trace('can not create TableController')
 #@+node:ekr.20170217164903.1: ** class TableController
-class TableController (object):
+class TableController :
     '''A class to create and align tables.'''
 
     def __init__ (self, c):

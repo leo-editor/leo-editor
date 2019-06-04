@@ -361,7 +361,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
         self.hide()
     #@-others
 #@+node:ville.20090314215508.12: ** class QuickSearchController (Object)
-class QuickSearchController(object):
+class QuickSearchController:
 
     #@+others
     #@+node:ekr.20111015194452.15685: *3* __init__

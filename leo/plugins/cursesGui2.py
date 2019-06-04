@@ -861,7 +861,7 @@ def method_name(f):
         return repr(f)
 #@+node:ekr.20170524123950.1: ** Gui classes
 #@+node:ekr.20171128051435.1: *3* class StringFindTabManager
-class StringFindTabManager(object):
+class StringFindTabManager:
     '''A helper class for the LeoFind class.'''
     # A complete rewrite of the FindTabManager in qt_frame.py.
     #@+others
@@ -1052,7 +1052,7 @@ class StringFindTabManager(object):
         if trace: g.trace(checkbox_name, getattr(fc, checkbox_name, None))
     #@-others
 #@+node:edward.20170428174322.1: *3* class KeyEvent (object)
-class KeyEvent(object):
+class KeyEvent:
     '''A gui-independent wrapper for gui events.'''
     #@+others
     #@+node:edward.20170428174322.2: *4* KeyEvent.__init__
@@ -1095,7 +1095,7 @@ class KeyEvent(object):
         return 'KeyEvent'
     #@-others
 #@+node:ekr.20170430114840.1: *3* class KeyHandler (object)
-class KeyHandler (object):
+class KeyHandler:
 
     #@+others
     #@+node:ekr.20170430114930.1: *4* CKey.do_key & helpers
@@ -2715,7 +2715,7 @@ class CoreTree (leoFrame.LeoTree):
                 # p.restoreCursorAndScroll()
     #@-others
 #@+node:ekr.20171129200050.1: *3* class CoreStatusLine (object)
-class CoreStatusLine(object):
+class CoreStatusLine:
     '''A do-nothing status line.'''
 
     def __init__(self, c, parentFrame):
@@ -2733,7 +2733,7 @@ class CoreStatusLine(object):
     #@+others
     #@-others
 #@+node:ekr.20170502093200.1: *3* class TopFrame (object)
-class TopFrame (object):
+class TopFrame :
     '''A representation of c.frame.top.'''
 
     def __init__(self, c):
@@ -4061,7 +4061,7 @@ class LeoValues(npyscreen.TreeData):
 #@+node:ekr.20170522081122.1: ** Wrapper classes
 #@+others
 #@+node:ekr.20170511053143.1: *3*  class TextMixin (object)
-class TextMixin(object):
+class TextMixin:
     '''A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes.'''
     #@+others
     #@+node:ekr.20170511053143.2: *4* tm.ctor & helper

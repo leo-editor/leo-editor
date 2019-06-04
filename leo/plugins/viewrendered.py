@@ -564,7 +564,7 @@ def zoom_rendering_pane(event):
                     break
     vr.zoomed = not vr.zoomed
 #@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider (vr)
-class ViewRenderedProvider(object):
+class ViewRenderedProvider:
     #@+others
     #@+node:tbrown.20110629084915.35154: *3* vr.__init__
     def __init__(self, c):

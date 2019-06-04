@@ -124,7 +124,7 @@ def onCreate (tag,key):
 
     attrib_edit_Controller(c)
 #@+node:tbrown.20091103080354.1400: ** class AttributeGetter
-class AttributeGetter(object):
+class AttributeGetter:
 
     implementations = []
 
@@ -462,7 +462,7 @@ class ListDialog(QtWidgets.QDialog):
         self.accept()
     #@-others
 #@+node:tbrown.20091010211613.5257: ** class editWatcher
-class editWatcher(object):
+class editWatcher:
     """class to supply widget for editing attribute and handle
     its textChanged signal"""
 
@@ -517,7 +517,7 @@ class editWatcher(object):
     #X         a = a.setdefault(i, {})
     #X     a[path[-1]] = value
 #@+node:tbrown.20091009210724.10979: ** class attrib_edit_Controller
-class attrib_edit_Controller(object):
+class attrib_edit_Controller:
 
     '''A per-commander class that manages attribute editing.'''
 

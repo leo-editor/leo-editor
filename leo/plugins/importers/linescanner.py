@@ -83,7 +83,7 @@ import re
 #@-<< linescanner imports >>
 #@+others
 #@+node:ekr.20161108155730.1: ** class Importer
-class Importer(object):
+class Importer:
     '''
     The new, unified, simplified, interface to Leo's importer code.
 

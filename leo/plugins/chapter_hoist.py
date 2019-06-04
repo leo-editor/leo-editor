@@ -44,7 +44,7 @@ def onCreate (tag, keys):
         sc = scriptingController(c)
         chapterHoist(sc,c)
 #@+node:ekr.20060328125925.6: ** class chapterHoist
-class chapterHoist(object):
+class chapterHoist:
     #@+others
     #@+node:ekr.20060328125925.7: *3*  ctor
     def __init__ (self,sc,c):

@@ -211,7 +211,7 @@ def vim_open_node_command(event):
     if c:
         VimCommander(c, entire_file=False)
 #@+node:ekr.20150326153420.1: ** class VimCommander
-class VimCommander(object):
+class VimCommander:
     '''A class implementing the vim plugin.'''
     #@+others
     #@+node:ekr.20150326155343.1: *3*  vim.ctor

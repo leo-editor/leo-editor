@@ -59,7 +59,7 @@ keep_tag_lines = True
     #        tags file many times.
 #@+others
 #@+node:ville.20091205173337.10141: ** class ContextSniffer
-class ContextSniffer(object):
+class ContextSniffer:
 
     """ Class to analyze surrounding context and guess class
 
@@ -191,7 +191,7 @@ def suggest(event):
 
     cc.suggest(event)
 #@+node:ekr.20110309051057.14270: ** class CodewiseController
-class CodewiseController(object):
+class CodewiseController:
 
     #@+others
     #@+node:ekr.20110309051057.14275: *3*  ctor

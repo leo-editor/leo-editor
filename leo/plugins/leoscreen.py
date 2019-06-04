@@ -170,7 +170,7 @@ def onCreate (tag,key):
 
     leoscreen_Controller(c)
 #@+node:tbrown.20100226095909.12783: ** class leoscreen_Controller
-class leoscreen_Controller(object):
+class leoscreen_Controller:
 
     '''A per-commander class that manages screen interaction.'''
 

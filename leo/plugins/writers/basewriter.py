@@ -2,7 +2,7 @@
 #@+node:ekr.20140726091031.18143: * @file writers/basewriter.py
 '''A module defining the base class for all writers in leo.plugins.writers.'''
 
-class BaseWriter(object):
+class BaseWriter:
     '''The base writer class for all writers in leo.plugins.writers.'''
 
     def __init__(self, c):

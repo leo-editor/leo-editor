@@ -42,7 +42,7 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     return True
 #@+node:ekr.20101110092416.5700: ** class node_with_parent
-class node_with_parent(object):
+class node_with_parent:
 
     #@+others
     #@+node:ekr.20101110092416.5702: *3* set_parent
@@ -55,7 +55,7 @@ class node_with_parent(object):
 #@+node:ekr.20101110092416.5705: ** class LeoNode
 error_count = 0
 
-class LeoNode(object):
+class LeoNode:
     """
     Abstrace class for generating xml.
     """

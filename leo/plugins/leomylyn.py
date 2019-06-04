@@ -22,7 +22,7 @@ def init ():
     return ok
 
 #@+node:ekr.20160519050823.1: ** class MylynController
-class MylynController(object):
+class MylynController:
     #@+others
     #@+node:ekr.20160519050823.2: *3* __init__
     def __init__(self):

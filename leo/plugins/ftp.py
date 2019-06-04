@@ -36,7 +36,7 @@ def onCreate (tag, keys):
         if p:
             pluginController(c)
 #@+node:ekr.20110110105526.5469: ** class pluginController
-class pluginController(object):
+class pluginController:
 
     #@+others
     #@+node:ekr.20110110105526.5470: *3* __init__(pluginController, ftp.py)

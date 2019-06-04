@@ -50,7 +50,7 @@ def onCreate (tag, keywords):
         controller = pluginController(c)
         controller.load_menu()
 #@+node:ekr.20060107110126.2: ** class pluginController
-class pluginController(object):
+class pluginController:
 
     #@+others
     #@+node:ekr.20060107110126.3: *3* ctor

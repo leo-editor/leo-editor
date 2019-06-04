@@ -84,7 +84,7 @@ def init():
     g.plugin_signon(__name__)
     return True # OK for unit testing.
 #@+node:gfunch.20041207100416.5: ** class DateNodes
-class DateNodes(object):
+class DateNodes:
     """Main DateNodes class"""
 
     # The defaults for all possible settings.

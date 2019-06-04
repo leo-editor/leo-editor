@@ -211,7 +211,7 @@ def keyboard_action(event):
         return
     c.quickMove.keyboard_action()
 #@+node:tbrown.20070117104409.4: ** class quickMove
-class quickMove(object):
+class quickMove:
 
     """quickMove binds to a controller, adds menu entries for
        creating buttons, and creates buttons as needed
@@ -841,7 +841,7 @@ class quickMove(object):
     #@-others
 
 #@+node:tbrown.20070117104409.5: ** class quickMoveButton
-class quickMoveButton(object):
+class quickMoveButton:
 
     """contains target data and function for moving node"""
 

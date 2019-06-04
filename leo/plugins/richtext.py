@@ -234,7 +234,7 @@ if QtWidgets:
             return QtWidgets.QWidget.close(self)
         #@-others
 #@+node:tbrown.20130813134319.5694: ** class CKEPaneProvider
-class CKEPaneProvider(object):
+class CKEPaneProvider:
     ns_id = '_add_cke_pane'
     def __init__(self, c):
         self.c = c

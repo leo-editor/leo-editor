@@ -312,7 +312,7 @@ def onCreate(tag, keys):
         sc.createAllButtons()
         c.evalController = EvalController(c)
 #@+node:ekr.20141031053508.7: ** class AtButtonCallback
-class AtButtonCallback(object):
+class AtButtonCallback:
     '''A class whose __call__ method is a callback for @button nodes.'''
     #@+others
     #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback)
@@ -387,7 +387,7 @@ class AtButtonCallback(object):
         return self.script
     #@-others
 #@+node:ekr.20060328125248.6: ** class ScriptingController
-class ScriptingController(object):
+class ScriptingController:
     '''A class defining scripting commands.'''
     #@+others
     #@+node:ekr.20060328125248.7: *3*  sc.ctor
@@ -1167,7 +1167,7 @@ class ScriptingController(object):
 
 scriptingController = ScriptingController
 #@+node:ekr.20180328085038.1: ** class EvalController
-class EvalController(object):
+class EvalController:
     '''A class defining all eval-* commands.'''
     #@+others
     #@+node:ekr.20180328130835.1: *3* eval.Birth

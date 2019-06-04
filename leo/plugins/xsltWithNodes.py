@@ -320,7 +320,7 @@ import csv
 import weakref
 import Pmw
 
-class CSVVisualizer(object):
+class CSVVisualizer:
     arrays = []
     #@+others
     #@+node:ekr.20140906065955.18788: *5* init

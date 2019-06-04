@@ -212,7 +212,7 @@ def vs_update(event):
 
     get_vs(event['c']).update()
 #@+node:ekr.20110408065137.14219: ** class ValueSpaceController
-class ValueSpaceController(object):
+class ValueSpaceController:
 
     '''A class supporting per-commander evaluation spaces
     containing @a, @r and @= nodes.

@@ -272,7 +272,7 @@ class textBody(leoFrame.LeoBody):
 class textBodyCtrl(leoFrame.StringTextWrapper):
     pass
 #@+node:ekr.20150107090324.37: ** class textMenuCascade
-class textMenuCascade(object):
+class textMenuCascade:
     #@+others
     #@+node:ekr.20150107090324.38: *3* __init__
     def __init__(self, menu, label, underline):
@@ -287,7 +287,7 @@ class textMenuCascade(object):
         return ret
     #@-others
 #@+node:ekr.20150107090324.40: ** class textMenuEntry
-class textMenuEntry(object):
+class textMenuEntry:
     #@+others
     #@+node:ekr.20150107090324.41: *3* __init__
     def __init__(self, label, underline, accel, callback):
@@ -300,7 +300,7 @@ class textMenuEntry(object):
         return "%s %s" % (underline(self.label, self.underline), self.accel,)
     #@-others
 #@+node:ekr.20150107090324.43: ** class textMenuSep
-class textMenuSep(object):
+class textMenuSep:
     #@+others
     #@+node:ekr.20150107090324.44: *3* display
     def display(self):

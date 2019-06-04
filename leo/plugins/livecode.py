@@ -54,7 +54,7 @@ def cmd_show(event):
         w = splitter.get_provided('_leo_livecode_show')
         splitter.add_adjacent(w, 'bodyFrame')
 #@+node:tbrown.20140806084727.30187: ** class LiveCodeDisplay
-class LiveCodeDisplay(object):
+class LiveCodeDisplay:
     """Manage a pane showing livecode"""
 
     CodeBlock = namedtuple('CodeBlock', 'code, result')
@@ -212,7 +212,7 @@ class LiveCodeDisplay(object):
             self.status.setText("ACTIVE: %d blocks" % run_count)
     #@-others
 #@+node:tbrown.20140806084727.30203: ** class LiveCodeDisplayProvider
-class LiveCodeDisplayProvider(object):
+class LiveCodeDisplayProvider:
     #@+others
     #@+node:tbrown.20140806084727.30204: *3* __init__
     def __init__(self, c):

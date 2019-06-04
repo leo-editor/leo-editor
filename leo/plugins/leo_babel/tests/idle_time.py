@@ -23,7 +23,7 @@ version = '1.0'
 
 #@+others
 #@+node:bob.20180206123725.1: ** class IdleTime
-class IdleTime(object):
+class IdleTime:
     """ This is an implementation of the Leo-Editor
     class IdleTime() for use with Leo-Bridge.
     """

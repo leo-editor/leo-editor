@@ -88,7 +88,7 @@ def init ():
         g.plugin_signon(__name__)
     return ok
 #@+node:edream.110203113231.879: ** class FTPurl
-class FTPurl(object):
+class FTPurl:
     """An FTP wrapper class to store/retrieve files using an FTP URL.
 
     To create a connection, call the class with the constructor:

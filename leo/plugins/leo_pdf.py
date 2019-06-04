@@ -466,7 +466,7 @@ def getStyleSheet():
 def get_language (doctree):
     '''A wrapper for changing docutils get_language method.'''
 
-    class Reporter (object):
+    class Reporter:
         def warning(self,s):
             g.es_print('Reporter.warning',s)
 
@@ -495,7 +495,7 @@ def get_language (doctree):
 #         point.isok = True
 #@@c
 
-class Bunch (object):
+class Bunch:
 
     """A class that represents a colection of things.
 

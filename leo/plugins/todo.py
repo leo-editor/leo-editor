@@ -304,7 +304,7 @@ if g.app.gui.guiName() == "qt":
         #@-others
 
 #@+node:tbrown.20090119215428.9: ** class todoController
-class todoController(object):
+class todoController:
 
     '''A per-commander class that manages tasks.'''
 

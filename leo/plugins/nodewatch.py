@@ -125,7 +125,7 @@ def onCreate (tag, keys):
     theNodewatchController = NodewatchController(c)
     c.theNodewatchController = theNodewatchController
 #@+node:peckj.20131101132841.6450: ** class NodewatchController
-class NodewatchController(object):
+class NodewatchController:
     #@+others
     #@+node:peckj.20131101132841.6452: *3* __init__
     def __init__(self, c):

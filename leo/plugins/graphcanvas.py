@@ -216,7 +216,7 @@ class GraphicsView(QtWidgets.QGraphicsView):
         self.glue.newNode(pnt=self.mapToScene(event.pos()))
     #@-others
 #@+node:tbrown.20110413094721.24681: ** class GetImage
-class GetImage(object):
+class GetImage:
     """Image handling functions"""
 
     @staticmethod
@@ -661,7 +661,7 @@ class linkItem(QtWidgets.QGraphicsItemGroup):
         self.head.setPolygon(QtGui.QPolygonF(pts))
     #@-others
 #@+node:bob.20110119123023.7408: ** class graphcanvasController
-class graphcanvasController(object):
+class graphcanvasController:
     """Display and edit links in leo"""
     #@+others
     #@+node:bob.20110119123023.7409: *3* __init__ & reloadSettings (graphcanvasController)

@@ -46,7 +46,7 @@ def onCreate(tag, keywords):
     g.registerHandler("idle", myView.idle)
     g.plugin_signon(__name__)
 #@+node:ktenney.20041211072654.7: ** class View
-class View(object):
+class View:
 
     '''A class to support @view, @strip and @clip nodes.'''
 

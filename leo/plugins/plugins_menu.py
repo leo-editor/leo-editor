@@ -177,7 +177,7 @@ def init():
         g.plugin_signon(__name__)
     return ok
 #@+node:pap.20050305152751: ** class PluginDatabase
-class _PluginDatabase(object):
+class _PluginDatabase:
     """Stores information on Plugins"""
     #@+others
     #@+node:pap.20050305152751.1: *3* __init__
@@ -213,7 +213,7 @@ class _PluginDatabase(object):
 
 PluginDatabase = _PluginDatabase()
 #@+node:EKR.20040517080555.3: ** class Plugin
-class PlugIn(object):
+class PlugIn:
     """A class to hold information about one plugin"""
     #@+others
     #@+node:EKR.20040517080555.4: *3* __init__ (Plugin) & helper

@@ -341,7 +341,7 @@ def getData(setting):
     s = ''.join(aList or [])
     return s
 #@+node:bwmulder.20050326191345: ** class config
-class config(object):
+class config:
     enabled = None # True when security check re http-allow-remote-exec passes.
     http_active = False
     http_timeout = 0
@@ -387,7 +387,7 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
         return result
     #@-others
 #@+node:EKR.20040517080250.20: ** class leo_interface
-class leo_interface(object):
+class leo_interface:
     # pylint: disable=no-member
         # .path, .send_error, .send_response and .end_headers
         # appear to be undefined.
@@ -672,7 +672,7 @@ class leo_interface(object):
             f.write("</h2>\n")
     #@-others
 #@+node:tbrown.20110930093028.34530: ** class LeoActions
-class LeoActions(object):
+class LeoActions:
     """
     A place to collect other URL based actions like saving bookmarks from
     the browser. Conceptually this stuff could go in class leo_interface
@@ -892,7 +892,7 @@ class LeoActions(object):
         return f
     #@-others
 #@+node:tbrown.20150729112701.1: ** class ExecHandler
-class ExecHandler(object):
+class ExecHandler:
     """
     Quasi-RPC GET based interface
     """

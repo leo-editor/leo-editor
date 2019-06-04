@@ -122,7 +122,7 @@ def onCreate (tag, keys):
     if c:
         c.theTagController = TagController(c)
 #@+node:peckj.20140804103733.9246: ** class TagController
-class TagController(object):
+class TagController:
     
     TAG_LIST_KEY = '__node_tags'
 
