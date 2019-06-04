@@ -306,6 +306,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         )
         for closeable, moveable, height, area, name, creator in table:
             height = 0
+            closeable = False
+                # A temporary workaround for #1167.
             dock = self.createDockWidget(closeable, moveable, height, name)
                 # Important: the central widget should be a dock.
             w = creator(parent=None)
