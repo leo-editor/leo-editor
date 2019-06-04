@@ -38,6 +38,7 @@ def edit_pane_test_open(event):
 
     if not hasattr(c, '__edit_pane_test'):
         c.__edit_pane_test = True
+
         class MinimalDemoProvider:
             def ns_provides(self):
                 return [("Demo editor", "__demo_provider_minimal_slider")]
@@ -48,6 +49,7 @@ def edit_pane_test_open(event):
                 return None
             def ns_provider_id(self):
                 return "__demo_provider_minimal"
+
         c.free_layout.get_top_splitter().register_provider(MinimalDemoProvider())
 
     s = c.free_layout.get_top_splitter()

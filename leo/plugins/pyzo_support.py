@@ -65,13 +65,12 @@ if pyzo:
     #@+node:ekr.20190417091444.1: *3* class MenuBarShim (QMenuBar)
     class MenuBarShim(QtWidgets.QMenuBar):
         
-        if 0:
-            def __init__(self):
-                super().__init__()
+        # Not needed.
+            # def __init__(self):
+                # super().__init__()
         
-            def menuBar(self):
-                return self
-                    # g.TracingNullObject('MenuBarShim.menuBar')
+            # def menuBar(self):
+                # return self
 
         def _addAction(self, *args, **kwargs):
             g.pr('MenuBarShim._addAction', args, kwargs)

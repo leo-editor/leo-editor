@@ -12,15 +12,11 @@ from collections import defaultdict
 #@+others
 #@+node:tbrown.20171028115601.2: ** class SignalData
 class SignalData:
-    #@+others
-    #@+node:tbrown.20171028115601.3: *3* __init__
+    
     def __init__(self):
         self.listeners = defaultdict(list)
         self.emitters = []
         self.locked = False
-
-
-    #@-others
 #@+node:tbrown.20171028115601.4: ** class MsgSignalHandled
 class MsgSignalHandled:
     """A listener can return SignalManager.MsgSignalHandled to prevent

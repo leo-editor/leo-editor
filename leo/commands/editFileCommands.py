@@ -503,15 +503,15 @@ class EditFileCommandsClass(BaseEditCommandsClass):
 #@+node:ekr.20170806094320.13: ** class GitDiffController
 class GitDiffController:
     '''A class to do git diffs.'''
-    #@+others
-    #@+node:ekr.20170806094320.4: *3* gdc.__init__ & helper
+    
     def __init__ (self, c, repo_dir=None):
-        '''Ctor for the GitDiffController class.'''
         self.c = c
         self.file_node = None
         self.old_dir = g.os_path_abspath('.')
         self.repo_dir = repo_dir
         self.root = None
+
+    #@+others
     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
     #@+node:ekr.20180506064102.10: *4* gdc.diff_two_branches
     def diff_two_branches(self, branch1, branch2, fn, directory=None):

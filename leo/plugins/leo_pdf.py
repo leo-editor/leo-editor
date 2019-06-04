@@ -571,13 +571,11 @@ if docutils:
         output = None
             # Final translated form of `document`.
         #@-<< class Writer declarations >>
+    
+        # def __init__(self):
+            # super().__init__()
+
         #@+others
-        #@+node:ekr.20090704103932.5183: *3* __init__ (Writer)
-        def __init__(self):
-
-            super().__init__()
-
-            # self.translator_class = PDFTranslator
         #@+node:ekr.20090704103932.5184: *3* createParagraphsFromIntermediateFile
         def createParagraphsFromIntermediateFile (self,s,story,visitor):
 
