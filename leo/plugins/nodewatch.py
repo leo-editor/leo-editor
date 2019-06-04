@@ -144,7 +144,7 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
     #@+others
     #@+node:peckj.20131101132841.6454: *3* __init__
     def __init__(self,c,parent=None):
-        QtWidgets.QWidget.__init__(self, parent)
+        super().__init__(parent)
         self.c = c
         self.initUI()
         self.registerCallbacks()

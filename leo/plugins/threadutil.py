@@ -140,7 +140,7 @@ class Repeater(QtCore.QThread):
     #@+node:ekr.20121126095734.12428: *3* __init__
     def __init__(self, f, parent = None):
 
-        QtCore.QThread.__init__(self, parent)
+        super().__init__(parent)
         self.f = f
 
     #@+node:ekr.20121126095734.12429: *3* run
@@ -159,7 +159,7 @@ class RRunner(QtCore.QThread):
     #@+node:ekr.20121126095734.12425: *3* __init__
     def __init__(self, f, parent = None):
 
-        QtCore.QThread.__init__(self, parent)
+        super().__init__(parent)
         self.f = f
 
     #@+node:ekr.20121126095734.12426: *3* run

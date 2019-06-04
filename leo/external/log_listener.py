@@ -87,7 +87,7 @@ class LogRecordSocketReceiver(SocketServer.ThreadingTCPServer):
         port=logging.handlers.DEFAULT_TCP_LOGGING_PORT,
         handler=LogRecordStreamHandler,
     ):
-        SocketServer.ThreadingTCPServer.__init__(self, (host, port), handler)
+        super().__init__((host, port), handler)
         self.abort = 0
         self.timeout = 1
         self.logname = None

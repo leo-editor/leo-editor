@@ -73,7 +73,7 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
     def __init__(self, canvas, num):
         '''Ctor for the LeoFigureManagerQt class.'''
         self.c = c = g.app.log.c
-        FigureManagerBase.__init__(self, canvas, num)
+        super().__init__(canvas, num)
         self.canvas = canvas
 
         # New code for Leo: embed the canvas in the viewrendered area.

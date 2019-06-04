@@ -123,7 +123,7 @@ class LeoReader(ContentHandler):
     #@+node:ekr.20120519121124.9927: *3* __init__
     def __init__(self, *args, **kwargs):
         """Set ivars"""
-        ContentHandler.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.root = LeoNode()
 
         self.root.h = g.u('ROOT')

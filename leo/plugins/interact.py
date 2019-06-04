@@ -82,7 +82,7 @@ class InteractPSQL(Interact):
     #@+others
     #@+node:tbrown.20090603104805.4947: *3* __init__
     def __init__(self, c):
-        Interact.__init__(self, c)
+        super().__init__(c)
         prompts = ' '.join(['--set PROMPT%d=%s'%(i,self.prompt) for i in range(1,4)])
         prompts += ' --pset pager=off'
         self._available = True
@@ -178,7 +178,7 @@ class InteractBASH(Interact):
     #@+others
     #@+node:tbrown.20090603104805.4954: *3* __init__
     def __init__(self, c):
-        Interact.__init__(self, c)
+        super().__init__(c)
         self._available = True
         try:
             self.bashLink = pexpect.spawn('bash -i')

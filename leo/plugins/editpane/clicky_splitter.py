@@ -26,7 +26,7 @@ class ClickySplitter(QtWidgets.QSplitter):
     """Splitter that rotates / flips when its handle's clicked"""
     def __init__(self, *args, **kwargs):
         """set initial state"""
-        QtWidgets.QSplitter.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._click_state = 'spin'
     def createHandle(self):
         """use custom handle"""

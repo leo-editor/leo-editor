@@ -93,7 +93,7 @@ if QtWidgets:
 
             self.c = kwargs['c']
             del kwargs['c']
-            QtWidgets.QWidget.__init__(self, *args, **kwargs)
+            super().__init__(*args, **kwargs)
             # were we opened by an @ rich node? Calling code will set
             self.at_rich = False
             # are we being closed by leaving an @ rich node? Calling code will set

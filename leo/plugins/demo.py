@@ -739,7 +739,7 @@ class Label (QtWidgets.QLabel):
         '''
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
-        QtWidgets.QLabel.__init__(self, text, parent)
+        super().__init__(text, parent)
         # w.setWordWrap(True)
         self.init(font, position, stylesheet)
         w.show()
@@ -774,7 +774,7 @@ class Arrow(Label):
                 background: transparent;
                 color : black;
             }'''
-        Label.__init__(self, text, font=font, pane=pane,
+        super().__init__(text, font=font, pane=pane,
                 position=position, stylesheet=stylesheet)
         # Do this *after* initing the base class.
         demo.set_position(w, position or 'center')
@@ -792,8 +792,11 @@ class Callout(Label):
                 background-color : lightblue;
                 color : black;
             }'''
-        Label.__init__(self, text, font=font, pane=pane,
-                position=position, stylesheet=stylesheet)
+        super().__init__(text,
+            font=font,
+            pane=pane,
+            position=position,
+            stylesheet=stylesheet)
         # Do this *after* initing the base class.
         demo.set_position(w, position or 'center')
 #@+node:ekr.20170208065111.1: *3* class Image (QLabel)

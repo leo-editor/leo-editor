@@ -29,7 +29,7 @@ class TryNext(Exception):
     """
 
     def __init__(self, *args, **kwargs):
-        Exception.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.args = args
         self.kwargs = kwargs
 #@+node:ekr.20100908125007.6033: ** class CommandChainDispatcher
@@ -106,7 +106,7 @@ class BaseLeoPlugin(object):
     - in the __init__ method of the class, call the parent constructor::
 
         def __init__(self, tag, keywords):
-            leoBasePlugin.__init__(self, tag, keywords)
+            super().__init__(tag, keywords)
 
     - put the actual plugin code into a method; for this example, the work
       is done by myPlugin.handler()
@@ -157,7 +157,7 @@ class BaseLeoPlugin(object):
             def __init__(self, tag, keywords):
 
                 # call parent __init__
-                BaseLeoPlugin.__init__(self, tag, keywords)
+                super().__init__(tag, keywords)
 
                 # if the plugin object defines only one command,
                 # just give it a name. You can then create a button and menu entry

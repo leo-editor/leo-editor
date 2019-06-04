@@ -193,7 +193,7 @@ class GraphicsView(QtWidgets.QGraphicsView):
     def __init__(self, glue, *args, **kargs):
         self.glue = glue
         self.current_scale = 0
-        QtWidgets.QGraphicsView.__init__(self, *args)
+        super().__init__(*args)
     #@+node:tbrown.20110122085529.15399: *3* wheelEvent
     def wheelEvent(self, event):
 

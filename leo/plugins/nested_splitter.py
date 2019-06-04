@@ -29,7 +29,7 @@ if QtWidgets:
         #@+node:ekr.20110605121601.17958: *3* __init__(DemoWidget)
         def __init__(self, parent=None, color=None):
             '''Ctor for DemoWidget class.'''
-            QtWidgets.QWidget.__init__(self, parent)
+            super().__init__(parent)
                 # Init the base class.
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
@@ -72,7 +72,7 @@ if QtWidgets:
             del kargs['owner']
             window_title = kargs.get('window_title')
             del kargs['window_title']
-            QtWidgets.QWidget.__init__(self, *args, **kargs)
+            super().__init__(*args, **kargs)
             if window_title:
                 self.setWindowTitle(window_title)
         #@+node:tbrown.20120418121002.25714: *3* closeEvent
@@ -114,7 +114,7 @@ if QtWidgets:
         #@+node:ekr.20110605121601.17960: *3* __init__ (NestedSplitterChoice)
         def __init__(self, parent=None):
             '''ctor for NestedSplitterChoice class.'''
-            QtWidgets.QWidget.__init__(self, parent)
+            super().__init__(parent)
             self.setLayout(QtWidgets.QVBoxLayout())
             button = QtWidgets.QPushButton("Action", self) # EKR: 2011/03/15
             self.layout().addWidget(button)
@@ -135,7 +135,7 @@ if QtWidgets:
         #@+node:ekr.20110605121601.17962: *3* nsh.__init__
         def __init__(self, owner):
             '''Ctor for NestedSplitterHandle class.'''
-            QtWidgets.QSplitterHandle.__init__(self, owner.orientation(), owner)
+            super().__init__(owner.orientation(), owner)
             # Confusing!
                 # self.setStyleSheet("background-color: green;")
             self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -414,7 +414,7 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110605121601.17967: *3* ns.__init__
         def __init__(self, parent=None, orientation=QtCore.Qt.Horizontal, root=None):
             '''Ctor for NestedSplitter class.'''
-            QtWidgets.QSplitter.__init__(self, orientation, parent)
+            super().__init__(orientation, parent)
                 # This creates a NestedSplitterHandle.
             if root is None:
                 root = self.top(local=True)

@@ -660,7 +660,7 @@ if docutils:
             self.settings = doctree.settings
             # self.styleSheet = stylesheet and stylesheet.getStyleSheet()
             self.styleSheet = getStyleSheet()
-            docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.
+            super().__init__(doctree) # Init the base class.
             self.language = get_language(doctree)
                 # docutils.languages.get_language(doctree.settings.language_code,self.reporter)
         #@+node:ekr.20090704103932.5190: *3* as_what
@@ -739,7 +739,7 @@ if docutils: # NOQA
             self.settings = doctree.settings
             # self.styleSheet = stylesheet and stylesheet.getStyleSheet()
             self.styleSheet = getStyleSheet()
-            docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.
+            super().__init__(doctree) # Init the base class.
             self.language = get_language(doctree)
                 # docutils.languages.get_language(doctree.settings.language_code,self.reporter)
             self.in_docinfo = False

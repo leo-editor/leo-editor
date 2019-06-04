@@ -985,7 +985,7 @@ class RequestHandler(
     #@+node:EKR.20040517080250.14: *3* __init__
     def __init__(self, conn, addr, server):
         self.leo_actions = LeoActions(self)
-        asynchat.async_chat.__init__(self, conn)
+        super().__init__(conn)
         self.client_address = addr
         self.connection = conn
         self.server = server

@@ -262,7 +262,7 @@ class QLineEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18060: *3* qlew.Birth
     def __init__(self, widget, name, c=None):
         '''Ctor for QLineEditWrapper class.'''
-        QTextMixin.__init__(self, c)
+        super().__init__(c)
             # Init the base class.
         self.widget = widget
         self.name = name
@@ -385,7 +385,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):
     #@+node:ekr.20150403094706.9: *3* __init__(LeoLineTextWidget)
     def __init__(self, c, e, *args):
         '''Ctor for LineTextWidget.'''
-        QtWidgets.QFrame.__init__(self, *args)
+        super().__init__(*args)
             # Init the base class.
         self.c = c
         self.setFrameStyle(self.StyledPanel | self.Sunken)
@@ -427,7 +427,7 @@ if QtWidgets:
             self.leo_s = '' # The cached text.
             self.leo_wrapper = wrapper
             self.htmlFlag = True
-            QtWidgets.QTextBrowser.__init__(self, parent)
+            super().__init__(parent)
             self.setCursorWidth(c.config.getInt('qt-cursor-width') or 1)
             # Connect event handlers...
             if 0: # Not a good idea: it will complicate delayed loading of body text.
@@ -708,7 +708,7 @@ class NumberBar(QtWidgets.QFrame):
     #@+node:ekr.20150403094706.3: *3* NumberBar.__init__
     def __init__(self, c, e, *args):
         '''Ctor for NumberBar class.'''
-        QtWidgets.QFrame.__init__(self, *args)
+        super().__init__(*args)
             # Init the base class.
         self.c = c
         self.edit = e
@@ -864,7 +864,7 @@ class QHeadlineWrapper(QLineEditWrapper):
     def __init__(self, c, item, name, widget):
         '''The ctor for the QHeadlineWrapper class.'''
         assert isinstance(widget, QtWidgets.QLineEdit), widget
-        QLineEditWrapper.__init__(self, widget, name, c)
+        super().__init__(widget, name, c)
             # Init the base class.
         # Set ivars.
         self.c = c
@@ -896,7 +896,7 @@ class QMinibufferWrapper(QLineEditWrapper):
         '''Ctor for QMinibufferWrapper class.'''
         self.c = c
         w = c.frame.top.lineEdit # QLineEdit
-        QLineEditWrapper.__init__(self, widget=w, name='minibuffer', c=c)
+        super().__init__(widget=w, name='minibuffer', c=c)
             # Init the base class.
         assert self.widget
         g.app.gui.setFilter(c, w, self, tag='minibuffer')
@@ -948,7 +948,7 @@ class QScintillaWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18105: *3* qsciw.ctor
     def __init__(self, widget, c, name=None):
         '''Ctor for the QScintillaWrapper class.'''
-        QTextMixin.__init__(self, c)
+        super().__init__(c)
             # init the base class.
         self.baseClassName = 'QScintillaWrapper'
         self.c = c
@@ -1169,7 +1169,7 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18073: *3* qtew.ctor & helpers
     def __init__(self, widget, name, c=None):
         '''Ctor for QTextEditWrapper class. widget is a QTextEdit/QTextBrowser.'''
-        QTextMixin.__init__(self, c)
+        super().__init__(c)
             # Init the base class.
         # Make sure all ivars are set.
         self.baseClassName = 'QTextEditWrapper'

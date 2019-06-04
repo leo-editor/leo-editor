@@ -161,7 +161,7 @@ class Xdb(pdb.Pdb, threading.Thread):
             self.timer.start()
         # Init the base classes.
         threading.Thread.__init__(self)
-        pdb.Pdb.__init__(self,
+        super().__init__(
             stdin=stdin_q,
             stdout=stdout_q,
             readrc=False,

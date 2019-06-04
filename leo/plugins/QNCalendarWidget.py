@@ -117,7 +117,7 @@ class QNDateEdit(QtWidgets.QDateEdit):
         - `columns`: months to display before start a new row
         """
 
-        QtWidgets.QDateEdit.__init__(self, parent)
+        super().__init__(parent)
         self.setCalendarPopup(True)
         self.cw = QNCalendarWidget(n=n, columns=columns)
         self.setCalendarWidget(self.cw)

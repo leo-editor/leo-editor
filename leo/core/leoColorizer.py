@@ -1045,7 +1045,7 @@ class JEditColorizer(BaseJEditColorizer):
     #@+node:ekr.20110605121601.18572: *3* jedit.__init__ & helpers
     def __init__(self, c, widget, wrapper):
         '''Ctor for JEditColorizer class.'''
-        BaseJEditColorizer.__init__(self, c, widget, wrapper)
+        super().__init__(c, widget, wrapper)
         #
         # Create the highlighter. The default is NullObject.
         if isinstance(widget, QtWidgets.QTextEdit):
@@ -2294,7 +2294,7 @@ if QtGui:
             assert isinstance(document, QtGui.QTextDocument), document
                 # Alas, a QsciDocument is not a QTextDocument.
             self.leo_document = document
-            QtGui.QSyntaxHighlighter.__init__(self, document)
+            super().__init__(document)
                 # Init the base class.
             self.reloadSettings()
         #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
@@ -2445,7 +2445,7 @@ if Qsci:
         '''A do-nothing colorizer for Scintilla.'''
 
         def __init__(self, c, parent=None):
-            Qsci.QsciLexerCustom.__init__(self, parent)
+            super().__init__(parent)
                 # Init the pase class
             self.leo_c = c
             self.configure_lexer()
@@ -2478,7 +2478,7 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+node:ekr.20190319151826.3: *3* pyg_c.__init__ & helpers
     def __init__(self, c, widget, wrapper):
         '''Ctor for JEditColorizer class.'''
-        BaseJEditColorizer.__init__(self, c, widget, wrapper)
+        super().__init__(c, widget, wrapper)
         #
         # Create the highlighter. The default is NullObject.
         if isinstance(widget, QtWidgets.QTextEdit):
@@ -2759,7 +2759,7 @@ class QScintillaColorizer(BaseColorizer):
     #@+node:ekr.20140906081909.18709: *3* qsc.__init__ & reloadSettings
     def __init__(self, c, widget, wrapper):
         '''Ctor for QScintillaColorizer. widget is a '''
-        BaseColorizer.__init__(self, c)
+        super().__init__(c)
             # init the base class.
         self.count = 0 # For unit testing.
         self.colorCacheFlag = False

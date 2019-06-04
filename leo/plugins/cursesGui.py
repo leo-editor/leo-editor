@@ -67,7 +67,7 @@ class textGui(leoGui.LeoGui):
     #@+others
     #@+node:ekr.20150107090324.7: *3* __init__
     def __init__(self):
-        leoGui.LeoGui.__init__(self, "text")
+        super().__init__("text")
         self.frames = []
         self.killed = False
         # TODO leoTkinterFrame finishCreate g.app.windowList.append(f) - use that?
@@ -164,7 +164,7 @@ class TextFrame(leoFrame.LeoFrame):
     #@+others
     #@+node:ekr.20150107090324.22: *3* __init__
     def __init__(self, c, gui):
-        leoFrame.LeoFrame.__init__(self, c, gui)
+        super().__init__(c, gui)
         assert self.c == c
         self.top = None
         self.ratio = self.secondary_ratio = 0.0
@@ -244,7 +244,7 @@ class textBody(leoFrame.LeoBody):
     #@+others
     #@+node:ekr.20150107090324.32: *3* __init__
     def __init__(self, frame, parentFrame):
-        leoFrame.LeoBody.__init__(self, frame, parentFrame)
+        super().__init__(frame, parentFrame)
         c = frame.c
         name = 'body'
         self.bodyCtrl = textBodyCtrl(c, name)
@@ -433,7 +433,7 @@ class textTree(leoFrame.LeoTree):
         # undoc: openWithFileName -> treeWantsFocus -> c.frame.tree.canvas
         self.c = frame.c
         self.canvas = None
-        leoFrame.LeoTree.__init__(self, frame)
+        super().__init__(frame)
     #@+node:ekr.20150107090324.65: *3* select
     def select(self, p, scroll=True):
         # TODO Much more here: there's four hooks and all sorts of other things called in the TK version.

@@ -304,7 +304,7 @@ class NullGui(LeoGui):
     #@+node:ekr.20031218072017.2225: *3* NullGui.__init__
     def __init__(self, guiName='nullGui'):
         '''ctor for the NullGui class.'''
-        LeoGui.__init__(self, guiName)
+        super().__init__(guiName)
             # init the base class.
         self.clipboardContents = ''
         self.focusWidget = None
@@ -531,7 +531,7 @@ class UnitTestGui(NullGui):
     def __init__(self, theDict=None):
         '''ctor for the UnitTestGui class.'''
         self.oldGui = g.app.gui
-        NullGui.__init__(self, "UnitTestGui")
+        super().__init__("UnitTestGui")
             # Init the base class
         self.theDict = {} if theDict is None else theDict
         g.app.gui = self

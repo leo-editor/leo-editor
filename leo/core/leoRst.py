@@ -1790,7 +1790,7 @@ class LinkAnchorParserClass(HTMLParser.HTMLParser):
     #@+node:ekr.20120219194520.10446: *4* __init__
     def __init__(self, rst, p):
         '''Ctor for the LinkAnchorParserClass class.'''
-        HTMLParser.HTMLParser.__init__(self, p)
+        super().__init__(p)
             # Init the base class.
         self.rst = rst
         # Set ivars from options.
@@ -1847,7 +1847,7 @@ class HtmlParserClass(LinkAnchorParserClass):
     #@+node:ekr.20120219194520.10451: *4* __init__
     def __init__(self, rst, p):
         '''Ctor for the HtmlParserClass class.'''
-        LinkAnchorParserClass.__init__(self, rst, p)
+        super().__init__(rst, p)
             # Init the base class.
         self.stack = None
             # The stack contains lists of the form:
@@ -1942,7 +1942,7 @@ class AnchorHtmlParserClass(LinkAnchorParserClass):
     #@+node:ekr.20120219194520.10457: *4*  __init__
     def __init__(self, rst, p):
         '''Ctor for the AnchorHtmlParserClass class.'''
-        LinkAnchorParserClass.__init__(self, rst, p)
+        super().__init__(rst, p)
             # Init the base class.
         self.p = p.copy()
         self.anchor_map = rst.anchor_map
@@ -1981,7 +1981,7 @@ class LinkHtmlparserClass(LinkAnchorParserClass):
     #@+node:ekr.20120219194520.10460: *4* __init__
     def __init__(self, rst, p):
         '''Ctor for the LinkHtmlParserClass class.'''
-        LinkAnchorParserClass.__init__(self, rst)
+        super().__init__(rst)
             # Init the base class.
         self.p = p.copy()
         self.anchor_map = rst.anchor_map

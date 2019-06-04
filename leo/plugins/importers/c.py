@@ -14,7 +14,7 @@ class C_Importer(Importer):
     def __init__(self, importCommands, **kwargs):
         '''C_Importer.__init__'''
         # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'c',
             state_class = C_ScanState,

@@ -45,7 +45,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ & reloadSettings
     def __init__(self):
         '''Ctor for LeoQtGui class.'''
-        leoGui.LeoGui.__init__(self, 'qt')
+        super().__init__('qt')
              # Initialize the base class.
         self.active = True
         self.consoleOnly = False # Console is separate from the log.
@@ -330,9 +330,9 @@ class LeoQtGui(leoGui.LeoGui):
                 if step_min is None: step_min = {}
                 self.step_min = step_min
                 if init:
-                    QtWidgets.QDateTimeEdit.__init__(self, init, parent)
+                    super().__init__(init, parent)
                 else:
-                    QtWidgets.QDateTimeEdit.__init__(self, parent)
+                    super().__init__(parent)
 
             def stepBy(self, step):
                 cs = self.currentSection()
@@ -349,7 +349,7 @@ class LeoQtGui(leoGui.LeoGui):
                 step_min=None
             ):
                 if step_min is None: step_min = {}
-                QtWidgets.QDialog.__init__(self, parent)
+                super().__init__(parent)
                 layout = QtWidgets.QVBoxLayout()
                 self.setLayout(layout)
                 layout.addWidget(QtWidgets.QLabel(message))

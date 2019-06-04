@@ -57,7 +57,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''Ctor for the DynamicWindow class.  The main window is c.frame.top'''
             # Called from LeoQtFrame.finishCreate.
             # For qttabs gui, parent is a LeoTabbedTopLevel.
-        QtWidgets.QMainWindow.__init__(self, parent)
+        super().__init__(parent)
         self.leo_c = c
         self.leo_docks = [] # List of created QDockWidgets.
         self.leo_master = None # Set in construct.
@@ -1551,7 +1551,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         self.factory = kwargs.get('factory')
         if self.factory:
             del kwargs['factory']
-        QtWidgets.QTabWidget.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.detached = []
         self.setMovable(True)
 
@@ -1702,7 +1702,7 @@ class LeoQtBody(leoFrame.LeoBody):
     def __init__(self, frame, parentFrame):
         '''Ctor for LeoQtBody class.'''
         # Call the base class constructor.
-        leoFrame.LeoBody.__init__(self, frame, parentFrame)
+        super().__init__(frame, parentFrame)
         c = self.c
         assert c.frame == frame and frame.c == c
         self.reloadSettings()
@@ -2303,7 +2303,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18247: *4* qtFrame.__init__ & reloadSettings
     def __init__(self, c, title, gui):
         # Init the base class.
-        leoFrame.LeoFrame.__init__(self, c, gui)
+        super().__init__(c, gui)
         assert self.c == c
         leoFrame.LeoFrame.instances += 1 # Increment the class var.
         # Official ivars...
@@ -2677,7 +2677,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             class leoIconBarButton(QtWidgets.QWidgetAction):
 
                 def __init__(self, parent, text, toolbar):
-                    QtWidgets.QWidgetAction.__init__(self, parent)
+                    super().__init__(parent)
                     self.button = None # set below
                     self.text = text
                     self.toolbar = toolbar
@@ -3394,7 +3394,7 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18314: *4* LeoQtLog.__init__ & reloadSettings
     def __init__(self, frame, parentFrame):
         '''Ctor for LeoQtLog class.'''
-        leoFrame.LeoLog.__init__(self, frame, parentFrame)
+        super().__init__(frame, parentFrame)
             # Init the base class. Calls createControl.
         assert self.logCtrl is None, self.logCtrl # Set in finishCreate.
             # Important: depeding on the log *tab*,
@@ -3839,7 +3839,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         assert frame
         assert frame.c
         # Init the base class.
-        leoMenu.LeoMenu.__init__(self, frame)
+        super().__init__(frame)
         self.leo_menu_label = label.replace('&', '').lower()
         # called from createMenuFromConfigList,createNewMenu,new_menu,QtMenuWrapper.ctor.
         self.frame = frame
@@ -4073,7 +4073,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     # To do: Generate @auto or @file nodes when appropriate.
 
     def __init__(self, c, parent):
-        QtWidgets.QTreeWidget.__init__(self, parent)
+        super().__init__(parent)
         self.setAcceptDrops(True)
         enable_drag = c.config.getBool('enable-tree-dragging')
         self.setDragEnabled(bool(enable_drag))
@@ -4777,7 +4777,7 @@ class LeoTabbedTopLevel(LeoBaseTabWidget):
     """ Toplevel frame for tabbed ui """
 
     def __init__(self, *args, **kwargs):
-        LeoBaseTabWidget.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         ## middle click close on tabs -- JMP 20140505
         self.setMovable(False)
         tb = QtTabBarWrapper(self)
@@ -4787,7 +4787,7 @@ class QtTabBarWrapper(QtWidgets.QTabBar):
     #@+others
     #@+node:peckj.20140516114832.10108: *3* __init__
     def __init__(self, parent=None):
-        QtWidgets.QTabBar.__init__(self, parent)
+        super().__init__(parent)
         self.setMovable(True)
     #@+node:peckj.20140516114832.10109: *3* mouseReleaseEvent (QtTabBarWrapper)
     def mouseReleaseEvent(self, event):

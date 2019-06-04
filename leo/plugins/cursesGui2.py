@@ -1279,7 +1279,7 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20170608112335.1: *5* CGui.__init__
     def __init__(self):
         '''Ctor for the CursesGui class.'''
-        leoGui.LeoGui.__init__(self, 'curses')
+        super().__init__('curses')
             # Init the base class.
         self.consoleOnly = False
             # Required attribute.
@@ -2140,7 +2140,7 @@ class CoreFrame (leoFrame.LeoFrame):
     def __init__ (self, c, title):
 
         leoFrame.LeoFrame.instances += 1 # Increment the class var.
-        leoFrame.LeoFrame.__init__(self, c, gui=g.app.gui)
+        super().__init__(c, gui=g.app.gui)
             # Init the base class.
         assert c and self.c == c
         c.frame = self # Bug fix: 2017/05/10.
@@ -2508,7 +2508,7 @@ class CoreTree (leoFrame.LeoTree):
     def __init__(self, c):
 
         dummy_frame = self.DummyFrame(c)
-        leoFrame.LeoTree.__init__(self, dummy_frame)
+        super().__init__(dummy_frame)
             # Init the base class.
         assert self.c
         assert not hasattr(self, 'widget')
@@ -4245,7 +4245,7 @@ class BodyWrapper(leoFrame.StringTextWrapper):
 
     def __init__(self, c, name, w):
         '''Ctor for BodyWrapper class'''
-        leoFrame.StringTextWrapper.__init__(self, c, name)
+        super().__init__(c, name)
         self.changingText = False
             # A lockout for onTextChanged.
         self.widget = w

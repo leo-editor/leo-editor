@@ -1872,11 +1872,12 @@ class SettingsTreeParser(ParserBaseClass):
     '''A class that inits settings found in an @settings tree.
 
     Used by read settings logic.'''
+    
+    # def __init__(self, c, localFlag=True):
+        # super().__init__(c, localFlag)
+
     #@+others
     #@+node:ekr.20041119204103: *3* ctor (SettingsTreeParser)
-    def __init__(self, c, localFlag=True):
-        # Init the base class.
-        ParserBaseClass.__init__(self, c, localFlag)
     #@+node:ekr.20041119204714: *3* visitNode (SettingsTreeParser)
     def visitNode(self, p):
         """Init any settings found in node p."""

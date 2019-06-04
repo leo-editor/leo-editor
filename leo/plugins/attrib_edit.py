@@ -171,7 +171,7 @@ class AttributeGetterUA(AttributeGetter):
     #@+node:tbrown.20091103080354.6240: *3* __init__
     def __init__(self, c):
 
-        AttributeGetter.__init__(self, c)
+        super().__init__(c)
     #@+node:tbrown.20091103080354.1409: *3* recSearch
     def recSearch(self, d, path, ans):
         """recursive search of tree of dicts for values whose
@@ -292,7 +292,7 @@ class AttributeGetterAt(AttributeGetter):
     #@+node:tbrown.20091103080354.6238: *3* __init__
     def __init__(self, c):
 
-        AttributeGetter.__init__(self, c)
+        super().__init__(c)
     #@+node:tbrown.20091103080354.1422: *3* getAttribs
     def getAttribs(self, v):
         """Return a list of tuples describing editable uAs.
@@ -369,7 +369,7 @@ class AttributeGetterColon(AttributeGetter):
     #@+node:tbrown.20091103080354.6242: *3* __init__
     def __init__(self, c):
 
-        AttributeGetter.__init__(self, c)
+        super().__init__(c)
     #@+node:tbrown.20091103080354.1428: *3* getAttribs
     def getAttribs(self, v):
 
@@ -431,7 +431,7 @@ class ListDialog(QtWidgets.QDialog):
     def __init__(self, parent, title, text, entries):
 
         self.entries = entries
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
         vbox = QtWidgets.QVBoxLayout()
         sa = QtWidgets.QScrollArea()
         salo = QtWidgets.QVBoxLayout()

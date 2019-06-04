@@ -472,7 +472,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def __init__(self, c):
             '''Ctor for C_To_Python class.'''
             # pylint: disable=super-init-not-called
-            c.convertCommands.To_Python.__init__(self, c)
+            super().__init__(c)
                 # init the base class
             # Internal state...
             self.class_name = ''
@@ -1190,7 +1190,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def __init__(self, c):
                 '''Ctor for TS_To_Python class.'''
                 # pylint: disable=super-init-not-called
-                c.convertCommands.To_Python.__init__(self, c)
+                super().__init__(c)
                     # init the base class
                 self.class_name = ''
                     # The class name for the present function.  Used to modify ivars.
