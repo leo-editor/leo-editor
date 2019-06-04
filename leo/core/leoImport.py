@@ -1761,7 +1761,7 @@ class MORE_Importer:
 
     def check_lines(self, strings):
 
-        if len(strings) < 1: return False
+        if not strings: return False
         level1, plusFlag = self.headlineLevel(strings[0])
         if level1 == -1: return False
         # Check the level of all headlines.
