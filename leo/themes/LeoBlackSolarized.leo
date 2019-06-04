@@ -16,7 +16,6 @@
 <v t="ekr.20180306170402.1"><vh>Test g.es(color=*)</vh></v>
 </v>
 <v t="ekr.20180306142738.3"><vh>@settings</vh>
-<v t="ekr.20180306144200.1"><vh>@bool show-tips = False</vh></v>
 <v t="ekr.20180306144227.1"><vh>@bool use-gutter = False</vh></v>
 <v t="ekr.20180306144735.1"><vh>@@string font-size-body = 24px</vh></v>
 <v t="ekr.20180307010409.1"><vh>@theme Leo Black Solarized</vh>
@@ -208,7 +207,6 @@ def spam():
     pass
 </t>
 <t tx="ekr.20180306143127.2">Test.</t>
-<t tx="ekr.20180306144200.1">True: show user tips on startup.</t>
 <t tx="ekr.20180306144227.1"># For line_numbering plugin.</t>
 <t tx="ekr.20180306144735.1">The *last* setting in the tree wins.
 </t>
