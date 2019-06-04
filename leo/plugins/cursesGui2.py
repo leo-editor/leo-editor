@@ -3416,6 +3416,7 @@ class LeoMLTree(npyscreen.MLTree, object):
             self.values.clear_cache()
         else:
             try:
+                # pylint: disable=unsupported-assignment-operation
                 self.values[self.cursor_line] = active_line.value
             except IndexError:
                 self.values.append(active_line.value)
