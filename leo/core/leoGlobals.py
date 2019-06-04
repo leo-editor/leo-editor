@@ -3418,7 +3418,7 @@ def set_language(s, i, issue_errors_flag=False):
         return language, delim1, delim2, delim3
     if issue_errors_flag:
         g.es("ignoring:", g.get_line(s, i))
-    return None, None, None, None,
+    return None, None, None, None
 #@+node:ekr.20081001062423.9: *3* g.setDefaultDirectory & helper
 def setDefaultDirectory(c, p, importing=False):
     ''' Return a default directory by scanning @path directives.'''
