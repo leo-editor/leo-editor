@@ -38,7 +38,7 @@ def make_colorizer(c, widget, wrapper):
     else:
         return JEditColorizer(c, widget, wrapper)
 #@+node:ekr.20170127141855.1: ** class BaseColorizer (object)
-class BaseColorizer(object):
+class BaseColorizer:
     '''The base class for all Leo colorizers.'''
 
     #@+others

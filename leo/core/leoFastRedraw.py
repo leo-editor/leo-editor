@@ -14,7 +14,7 @@ import difflib
 import re
 import time
 
-class FastRedraw(object):
+class FastRedraw:
     #@+others
     #@+node:ekr.20181202060924.4: ** LeoGui.dump_diff_op_codes
     def dump_diff_op_codes(self, a, b, op_codes):

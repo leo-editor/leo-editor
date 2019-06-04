@@ -110,7 +110,7 @@ class Xdb(pdb.Pdb, threading.Thread):
     '''
     #@+others
     #@+node:ekr.20180701050839.4: *3* class QueueStdin (obj)
-    class QueueStdin(object):
+    class QueueStdin:
         '''
         A replacement for Python's stdin class containing only readline().
         '''
@@ -132,7 +132,7 @@ class Xdb(pdb.Pdb, threading.Thread):
                     print(s)
             return s
     #@+node:ekr.20181003020344.1: *3* class QueueStdout (obj)
-    class QueueStdout(object):
+    class QueueStdout:
         '''
         A replacement for Python's stdout class containing only write().
         '''

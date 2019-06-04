@@ -16,7 +16,7 @@ import time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160514120655.1: ** class AtFile
-class AtFile(object):
+class AtFile:
     """A class implementing the atFile subcommander."""
     #@+<< define class constants >>
     #@+node:ekr.20131224053735.16380: *3* << define class constants >>
@@ -3036,7 +3036,7 @@ class AtFile(object):
 
 atFile = AtFile # compatibility
 #@+node:ekr.20180602102448.1: ** class FastAtRead
-class FastAtRead (object):
+class FastAtRead:
     '''
     Read an exteral file, created from an @file tree.
     This is Vitalije's code, edited by EKR.

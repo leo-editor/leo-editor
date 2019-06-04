@@ -8,7 +8,7 @@ import leo.core.leoGlobals as g
 import re
 #@+others
 #@+node:ekr.20150625050355.1: ** class GoToCommands
-class GoToCommands(object):
+class GoToCommands:
     '''A class implementing goto-global-line.'''
     #@+others
     #@+node:ekr.20100216141722.5621: *3* goto.ctor

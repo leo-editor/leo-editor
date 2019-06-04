@@ -6,7 +6,7 @@ import leo.core.leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20160514120255.1: ** class NodeHistory
-class NodeHistory(object):
+class NodeHistory:
     '''A class encapsulating knowledge of visited nodes.'''
     #@+others
     #@+node:ekr.20070615131604.1: *3* NodeHistory.ctor

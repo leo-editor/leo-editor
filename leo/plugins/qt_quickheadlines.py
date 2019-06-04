@@ -14,7 +14,7 @@ def install_qt_quickheadlines_tab(c):
 
 g.insqh = install_qt_quickheadlines_tab
 #@+node:ekr.20110605121601.18534: ** class QuickHeadlines
-class QuickHeadlines(object):
+class QuickHeadlines:
 
     def __init__(self, c):
         self.c = c

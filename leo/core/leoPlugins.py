@@ -33,7 +33,7 @@ class TryNext(Exception):
         self.args = args
         self.kwargs = kwargs
 #@+node:ekr.20100908125007.6033: ** class CommandChainDispatcher
-class CommandChainDispatcher(object):
+class CommandChainDispatcher:
     """ Dispatch calls to a chain of commands until some func can handle it
 
     Usage: instantiate, execute "add" to add commands (with optional
@@ -82,7 +82,7 @@ class CommandChainDispatcher(object):
         """
         return iter(self.chain)
 #@+node:ekr.20100908125007.6009: ** class BaseLeoPlugin
-class BaseLeoPlugin(object):
+class BaseLeoPlugin:
     #@+<<docstring>>
     #@+node:ekr.20100908125007.6010: *3* <<docstring>>
     """A Convenience class to simplify plugin authoring
@@ -246,7 +246,7 @@ class BaseLeoPlugin(object):
             buttonText=buttonText, bg=color)
     #@-others
 #@+node:ekr.20100908125007.6007: ** class LeoPluginsController
-class LeoPluginsController(object):
+class LeoPluginsController:
     '''The global plugins controller, g.app.pluginsController'''
     #@+others
     #@+node:ekr.20100909065501.5954: *3* plugins.Birth

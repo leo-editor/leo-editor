@@ -97,7 +97,7 @@ def unit_test(raise_on_fail=True):
     else:
         print(s)
 #@+node:ekr.20141012064706.18390: ** class AstDumper
-class AstDumper(object):
+class AstDumper:
     '''
     Return a formatted dump (a string) of the AST node.
 
@@ -149,7 +149,7 @@ class AstDumper(object):
         )
     #@-others
 #@+node:ekr.20141012064706.18399: ** class AstFormatter
-class AstFormatter(object):
+class AstFormatter:
     '''
     A class to recreate source code from an AST.
 
@@ -887,7 +887,7 @@ class AstFormatter(object):
         return '%s%s' % (' ' * 4 * self.level, s)
     #@-others
 #@+node:ekr.20141012064706.18471: ** class AstFullTraverser
-class AstFullTraverser(object):
+class AstFullTraverser:
     '''
     A fast traverser for AST trees: it visits every node (except node.ctx fields).
 
@@ -1565,7 +1565,7 @@ class AstPatternFormatter(AstFormatter):
         return 'Str' # return repr(node.s)
     #@-others
 #@+node:ekr.20150722204300.1: ** class HTMLReportTraverser
-class HTMLReportTraverser(object):
+class HTMLReportTraverser:
     '''
     Create html reports from an AST tree.
 
@@ -2699,7 +2699,7 @@ class HTMLReportTraverser(object):
         self.end_div('statement')
     #@-others
 #@+node:ekr.20160225102931.1: ** class TokenSync
-class TokenSync(object):
+class TokenSync:
     '''A class to sync and remember tokens.'''
     # To do: handle comments, line breaks...
     #@+others

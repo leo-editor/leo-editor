@@ -12,7 +12,7 @@ import leo.core.signal_manager as sig
 #@-<< imports >>
 #@+others
 #@+node:ekr.20031218072017.1991: ** class NodeIndices
-class NodeIndices(object):
+class NodeIndices:
     '''A class managing global node indices (gnx's).'''
     #@+others
     #@+node:ekr.20031218072017.1992: *3* ni.__init__
@@ -178,7 +178,7 @@ class NodeIndices(object):
 #@-<< about the position class >>
 # Positions should *never* be saved by the ZOBD.
 
-class Position(object):
+class Position:
     #@+others
     #@+node:ekr.20040228094013: *3*  p.ctor & other special methods...
     #@+node:ekr.20080416161551.190: *4*  p.__init__
@@ -1900,7 +1900,7 @@ Poslist = PosList # compatibility.
 #@+node:ekr.20031218072017.3341: ** class VNode
 #@@nobeautify
 
-class VNode(object):
+class VNode:
     #@+<< VNode constants >>
     #@+node:ekr.20031218072017.951: *3* << VNode constants >>
     # Define the meaning of status bits in new vnodes.

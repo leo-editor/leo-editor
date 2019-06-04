@@ -112,7 +112,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             g.es_exception()
         return None
     #@+node:ekr.20150514063305.416: *3* iterateKillBuffer
-    class KillBufferIterClass(object):
+    class KillBufferIterClass:
         """Returns a list of positions in a subtree, possibly including the root of the subtree."""
         #@+others
         #@+node:ekr.20150514063305.417: *4* __init__ & __iter__ (iterateKillBuffer)

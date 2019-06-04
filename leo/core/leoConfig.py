@@ -11,7 +11,7 @@ import leo.core.leoGlobals as g
 #@-<< imports >>
 #@+<< class ParserBaseClass >>
 #@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>
-class ParserBaseClass(object):
+class ParserBaseClass:
     """The base class for settings parsers."""
     #@+<< ParserBaseClass data >>
     #@+node:ekr.20041121130043: *3* << ParserBaseClass data >>
@@ -904,7 +904,7 @@ class ParserBaseClass(object):
 #@-<< class ParserBaseClass >>
 #@+others
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
-class GlobalConfigManager(object):
+class GlobalConfigManager:
     """A class to manage configuration settings."""
     #@+<< GlobalConfigManager class data >>
     #@+node:ekr.20041122094813: *3* << GlobalConfigManager class data >>
@@ -1386,7 +1386,7 @@ class GlobalConfigManager(object):
         return None
     #@-others
 #@+node:ekr.20041118104831.1: ** class LocalConfigManager
-class LocalConfigManager(object):
+class LocalConfigManager:
     """A class to hold config settings for commanders."""
     #@+others
     #@+node:ekr.20120215072959.12472: *3* c.config.Birth

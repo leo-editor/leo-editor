@@ -7,7 +7,7 @@ import filecmp
 import os
 #@+others
 #@+node:ekr.20031218072017.3633: ** class LeoCompare
-class BaseLeoCompare(object):
+class BaseLeoCompare:
     """The base class for Leo's compare code."""
     #@+others
     #@+node:ekr.20031218072017.3634: *3* compare.__init__
@@ -417,7 +417,7 @@ class LeoCompare(BaseLeoCompare):
     """
     pass
 #@+node:ekr.20180211170333.1: ** class CompareLeoOutlines
-class CompareLeoOutlines(object):
+class CompareLeoOutlines:
     '''
     A class to do outline-oriented diffs of two or more .leo files.
     Similar to GitDiffController, adapted for use by scripts.

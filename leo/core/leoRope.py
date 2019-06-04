@@ -21,7 +21,7 @@ if has_rope:
 #@-<< leoRope imports >>
 #@+others
 #@+node:ekr.20140526123310.17592: ** class RopeController
-class RopeController(object):
+class RopeController:
     #@+others
     #@+node:ekr.20140525065558.15809: *3* ctor
     def __init__(self, c):

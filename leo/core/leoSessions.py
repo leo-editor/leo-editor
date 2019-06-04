@@ -22,7 +22,7 @@ class LeoSessionException(Exception):
 #@+node:ekr.20120420054855.14349: ** class SessionManager
 # These were top-level nodes of leotools.py
 
-class SessionManager(object):
+class SessionManager:
     #@+others
     #@+node:ekr.20120420054855.14351: *3* SessionManager.ctor
     def __init__(self):

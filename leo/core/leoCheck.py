@@ -18,7 +18,7 @@ import re
 import time
 #@+others
 #@+node:ekr.20171207095816.1: ** class ConventionChecker
-class ConventionChecker (object):
+class ConventionChecker:
     '''
     A prototype of an extensible convention-checking tool.
     See: https://github.com/leo-editor/leo-editor/issues/632
@@ -716,7 +716,7 @@ class ConventionChecker (object):
                 for node in self.context_stack
             ])
     #@+node:ekr.20171212101613.1: *3* class CCStats
-    class CCStats(object):
+    class CCStats:
         '''
         A basic statistics class.  Use this way:
             
@@ -774,7 +774,7 @@ class ConventionChecker (object):
             if after_method:
                 after_method(node)
     #@+node:ekr.20171209030742.1: *3* class Type
-    class Type (object):
+    class Type:
         '''A class to hold all type-related data.'''
 
         kinds = ('error', 'class', 'func', 'instance', 'module', 'unknown')
@@ -796,7 +796,7 @@ class ConventionChecker (object):
             return self.kind == other.kind and self.name == other.name
     #@-others
 #@+node:ekr.20160109102859.1: ** class Context
-class Context(object):
+class Context:
     '''
     Context class (NEW)
 
@@ -1335,7 +1335,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         cx.statements_list.append(node)
     #@-others
 #@+node:ekr.20150525123715.1: ** class ProjectUtils
-class ProjectUtils(object):
+class ProjectUtils:
     '''A class to compute the files in a project.'''
     # To do: get project info from @data nodes.
     #@+others
@@ -1453,7 +1453,7 @@ class ProjectUtils(object):
             return files
     #@-others
 #@+node:ekr.20171213155537.1: ** class NewShowData
-class NewShowData(object):
+class NewShowData:
     '''The driver class for analysis project.'''
     assigns_d = {}
     calls_d = {}
@@ -1550,7 +1550,7 @@ class NewShowData(object):
             yield self.format(node)
     #@-others
 #@+node:ekr.20150604164113.1: ** class ShowData
-class ShowData(object):
+class ShowData:
     '''The driver class for analysis project.'''
     #@+others
     #@+node:ekr.20150604165500.1: *3*  ctor
@@ -2033,7 +2033,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             self.visit(node.value)
     #@-others
 #@+node:ekr.20171211163833.1: ** class Stats
-class Stats(object):
+class Stats:
     '''
     A basic statistics class.  Use this way:
         

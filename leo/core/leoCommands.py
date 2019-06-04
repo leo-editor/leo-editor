@@ -26,7 +26,7 @@ def cmd(name):
 
 #@+others
 #@+node:ekr.20160514120615.1: ** class Commands (object)
-class Commands(object):
+class Commands:
     """
     A per-outline class that implements most of Leo's commands. The
     "c" predefined object is an instance of this class.

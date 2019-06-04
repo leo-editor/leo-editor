@@ -51,7 +51,7 @@ assert time
 # These classes are for documentation and unit testing.
 # They are the base class for no class.
 #@+node:ekr.20140904043623.18576: *3* class StatusLineAPI
-class StatusLineAPI(object):
+class StatusLineAPI:
     '''The required API for c.frame.statusLine.'''
 
     def __init__(self, c, parentFrame): pass
@@ -72,7 +72,7 @@ class StatusLineAPI(object):
 
     def update(self): pass
 #@+node:ekr.20140907201613.18663: *3* class TreeAPI
-class TreeAPI(object):
+class TreeAPI:
     '''The required API for c.frame.tree.'''
 
     def __init__(self, frame): pass
@@ -121,7 +121,7 @@ class TreeAPI(object):
 
     def updateHead(self, event, w): pass
 #@+node:ekr.20140903025053.18631: *3* class WrapperAPI
-class WrapperAPI(object):
+class WrapperAPI:
     '''A class specifying the wrapper api used throughout Leo's core.'''
 
     def __init__(self, c): pass
@@ -184,7 +184,7 @@ class WrapperAPI(object):
 
     def toPythonIndexRowCol(self, index): return (0, 0, 0)
 #@+node:ekr.20140904043623.18552: ** class IconBarAPI
-class IconBarAPI(object):
+class IconBarAPI:
     '''The required API for c.frame.iconBar.'''
 
     def __init__(self, c, parentFrame): pass
@@ -207,7 +207,7 @@ class IconBarAPI(object):
 
     def setCommandForButton(self, button, command, command_p, controller, gnx, script): pass
 #@+node:ekr.20031218072017.3656: ** class LeoBody
-class LeoBody(object):
+class LeoBody:
     '''The base class for the body pane in Leo windows.'''
     #@+others
     #@+node:ekr.20031218072017.3657: *3* LeoBody.__init__
@@ -678,7 +678,7 @@ class LeoBody(object):
         return i, j
     #@-others
 #@+node:ekr.20031218072017.3678: ** class LeoFrame
-class LeoFrame(object):
+class LeoFrame:
     '''The base class for all Leo windows.'''
     instances = 0
     #@+others
@@ -1102,7 +1102,7 @@ class LeoFrame(object):
     def toggleSplitDirection(self, event=None): self.oops()
     #@-others
 #@+node:ekr.20031218072017.3694: ** class LeoLog
-class LeoLog(object):
+class LeoLog:
     '''The base class for the log pane in Leo windows.'''
     #@+others
     #@+node:ekr.20150509054436.1: *3* LeoLog.Birth
@@ -1237,7 +1237,7 @@ class LeoLog(object):
         return tabFrame
     #@-others
 #@+node:ekr.20031218072017.3704: ** class LeoTree
-class LeoTree(object):
+class LeoTree:
     '''The base class for the outline pane in Leo windows.'''
     #@+others
     #@+node:ekr.20031218072017.3705: *3* LeoTree.__init__
@@ -1618,7 +1618,7 @@ class LeoTree(object):
         g.pr("LeoTree oops:", g.callers(4), "should be overridden in subclass")
     #@-others
 #@+node:ekr.20070317073627: ** class LeoTreeTab
-class LeoTreeTab(object):
+class LeoTreeTab:
     '''A class representing a tabbed outline pane.'''
     #@+others
     #@+node:ekr.20070317073627.1: *3*  ctor (LeoTreeTab)
@@ -1775,7 +1775,7 @@ class NullFrame(LeoFrame):
             # Call the base LeoFrame method.
     #@-others
 #@+node:ekr.20070301164543: ** class NullIconBarClass
-class NullIconBarClass(object):
+class NullIconBarClass:
     '''A class representing the singleton Icon bar'''
     #@+others
     #@+node:ekr.20070301164543.1: *3*  NullIconBarClass.ctor
@@ -1907,7 +1907,7 @@ class NullLog(LeoLog):
     def selectTab(self, tabName, createText=True, widget=None, wrap='none'): pass
     #@-others
 #@+node:ekr.20070302171509: ** class NullStatusLineClass
-class NullStatusLineClass(object):
+class NullStatusLineClass:
     '''A do-nothing status line.'''
 
     def __init__(self, c, parentFrame):
@@ -2036,7 +2036,7 @@ class NullTree(LeoTree):
             g.trace('-' * 20, 'oops')
     #@-others
 #@+node:ekr.20070228074228.1: ** class StringTextWrapper
-class StringTextWrapper(object):
+class StringTextWrapper:
     '''A class that represents text as a Python string.'''
     #@+others
     #@+node:ekr.20070228074228.2: *3* stw.ctor

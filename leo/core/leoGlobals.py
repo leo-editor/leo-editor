@@ -175,7 +175,7 @@ def check_cmd_instance_dict(c, g):
             if name != key:
                 g.trace('class mismatch', key, name)
 #@+node:ville.20090521164644.5924: *3* g.command (decorator)
-class Command(object):
+class Command:
     '''
     A global decorator for creating commands.
 
@@ -213,7 +213,7 @@ def command_alias(alias, func):
     assert hasattr(leoCommands.Commands, func.__name__)
     funcToMethod(func, leoCommands.Commands, alias)
 #@+node:ekr.20171123095526.1: *3* g.commander_command (decorator)
-class CommanderCommand(object):
+class CommanderCommand:
     '''
     A global decorator for creating commander commands, that is, commands
     that were formerly methods of the Commands class in leoCommands.py.
@@ -331,7 +331,7 @@ unitTesting = False # A synonym for app.unitTesting.
 #         point.isok = True
 #@@c
 
-class Bunch(object):
+class Bunch:
     """A class that represents a colection of things.
 
     Especially useful for representing a collection of related variables."""
@@ -377,7 +377,7 @@ bunch = Bunch
 #@+node:ekr.20040331083824.1: *3* class g.FileLikeObject
 # Note: we could use StringIo for this.
 
-class FileLikeObject(object):
+class FileLikeObject:
     """Define a file-like object for redirecting writes to a string.
 
     The caller is responsible for handling newlines correctly."""
@@ -432,7 +432,7 @@ fileLikeObject = FileLikeObject
 # Important: The startup code uses this class,
 # so it is convenient to define it in leoGlobals.py.
 
-class GeneralSetting(object):
+class GeneralSetting:
     '''A class representing any kind of setting except shortcuts.'''
 
     def __init__(self, kind, encoding=None, ivar=None, setting=None, val=None, path=None, tag='setting', unl=None):
@@ -460,7 +460,7 @@ class GeneralSetting(object):
 def isGeneralSetting(obj):
     return isinstance(obj, GeneralSetting)
 #@+node:ekr.20120201164453.10090: *3* class g.KeyStroke & isStroke/OrNone
-class KeyStroke(object):
+class KeyStroke:
     '''
     A class that represent any key stroke or binding.
     
@@ -848,7 +848,7 @@ def isStroke(obj):
 def isStrokeOrNone(obj):
     return obj is None or isinstance(obj, KeyStroke)
 #@+node:ekr.20160119093947.1: *3* class g.MatchBrackets
-class MatchBrackets(object):
+class MatchBrackets:
     '''
     A class implementing the match-brackets command. In the interest of
     speed, the code assumes that the user invokes the match-bracket command
@@ -1270,7 +1270,7 @@ class MatchBrackets(object):
 #@+node:ekr.20031219074948.1: *3* class g.Tracing/NullObject & helpers
 #@@nobeautify
 
-class NullObject(object):
+class NullObject:
     """An object that does nothing, and does it very well."""
     def __init__(self, *args, **keys): pass
     def __call__(self, *args, **keys): return self
@@ -1295,7 +1295,7 @@ tracing_tags = {}
 tracing_signatures = {}
     # Keys are signatures: '%s.%s:%s' % (tag, attr, callers). Values not important.
 
-class TracingNullObject(object):
+class TracingNullObject:
     '''Tracing NullObject.'''
     def __init__(self, tag, *args, **kwargs):
         tracing_tags [id(self)] = tag
@@ -1488,7 +1488,7 @@ class PosList(list):
         return aList2
     #@-others
 #@+node:EKR.20040612114220.4: *3* class g.ReadLinesClass
-class ReadLinesClass(object):
+class ReadLinesClass:
     """A class whose next method provides a readline method for Python's tokenize module."""
 
     def __init__(self, s):
@@ -1505,7 +1505,7 @@ class ReadLinesClass(object):
 
     __next__ = next
 #@+node:ekr.20031218072017.3121: *3* class g.RedirectClass & convenience functions
-class RedirectClass(object):
+class RedirectClass:
     """A class to redirect stdout and stderr to Leo's log pane."""
     #@+<< RedirectClass methods >>
     #@+node:ekr.20031218072017.1656: *4* << RedirectClass methods >>
@@ -1602,7 +1602,7 @@ def rawPrint(s):
 #@-others
 #@-<< define convenience methods for redirecting streams >>
 #@+node:ekr.20121128031949.12605: *3* class g.SherlockTracer
-class SherlockTracer(object):
+class SherlockTracer:
     '''
     A stand-alone tracer class with many of Sherlock's features.
 
@@ -1941,7 +1941,7 @@ class SherlockTracer(object):
         sys.settrace(None)
     #@-others
 #@+node:ekr.20120123115816.10209: *3* class g.BindingInfo & isBindingInfo
-class BindingInfo(object):
+class BindingInfo:
     '''
     A class representing any kind of key binding line.
 
@@ -1993,7 +1993,7 @@ class BindingInfo(object):
 def isBindingInfo(obj):
     return isinstance(obj, BindingInfo)
 #@+node:ekr.20080531075119.1: *3* class g.Tracer
-class Tracer(object):
+class Tracer:
     '''A "debugger" that computes a call graph.
 
     To trace a function and its callers, put the following at the function's start:
@@ -2110,7 +2110,7 @@ def startTracer(limit=0, trace=False, verbose=False):
     sys.settrace(t.tracer)
     return t
 #@+node:ekr.20120129181245.10220: *3* class g.TypedDict/OfLists & isTypedDict/OfLists
-class TypedDict(object):
+class TypedDict:
     '''A class containing a name and enforcing type checking.'''
     #@+others
     #@+node:ekr.20120205022040.17769: *4* td.ctor
@@ -4843,7 +4843,7 @@ def getGitIssues(c,
     else:
         g.trace('label_list must be a list or tuple', repr(label_list))
 #@+node:ekr.20180126044602.1: *4* class GitIssueController
-class GitIssueController(object):
+class GitIssueController:
     '''
     A class encapsulating the retrieval of GitHub issues.
     

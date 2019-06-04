@@ -47,7 +47,7 @@ import leo.core.leoGlobals as g
 # pylint: disable=unpacking-non-sequence
 #@+others
 #@+node:ekr.20031218072017.3605: ** class Undoer
-class Undoer(object):
+class Undoer:
     """A class that implements unlimited undo and redo."""
     # pylint: disable=not-an-iterable
     # pylint: disable=unsubscriptable-object

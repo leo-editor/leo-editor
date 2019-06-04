@@ -82,7 +82,7 @@ def pyflakes_command(event):
         else:
             g.es_print('can not import pyflakes')
 #@+node:ekr.20160517133049.1: ** class Flake8Command
-class Flake8Command(object):
+class Flake8Command:
     '''A class to run flake8 on all Python @<file> nodes in c.p's tree.'''
 
     def __init__(self, c, quiet=False):
@@ -181,7 +181,7 @@ class Flake8Command(object):
             len(paths), g.plural(paths), g.timeSince(t1)))
     #@-others
 #@+node:ekr.20160516072613.2: ** class PyflakesCommand
-class PyflakesCommand(object):
+class PyflakesCommand:
     '''A class to run pyflakes on all Python @<file> nodes in c.p's tree.'''
 
     def __init__(self, c):
@@ -302,7 +302,7 @@ class PyflakesCommand(object):
         return ok
     #@-others
 #@+node:ekr.20150514125218.8: ** class PylintCommand
-class PylintCommand(object):
+class PylintCommand:
     '''A class to run pylint on all Python @<file> nodes in c.p's tree.'''
 
     def __init__(self, c):

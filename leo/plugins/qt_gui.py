@@ -589,7 +589,7 @@ class LeoQtGui(leoGui.LeoGui):
             c.last_dir = g.os_path_dirname(s)
         return s
     #@+node:ekr.20190518102229.1: *5* class PyzoFileDialog
-    class PyzoFileDialog(object):
+    class PyzoFileDialog:
         '''A class supporting the pyzo file dialog.'''
 
         file_browser = None
@@ -1466,7 +1466,7 @@ class LeoQtGui(leoGui.LeoGui):
             QtCore.QObject.emit = new_emit
     #@-others
 #@+node:tbrown.20150724090431.1: ** class StyleClassManager
-class StyleClassManager(object):
+class StyleClassManager:
     style_sclass_property = 'style_class' # name of QObject property for styling
     #@+others
     #@+node:tbrown.20150724090431.2: *3* update_view
@@ -1598,7 +1598,7 @@ class StyleClassManager(object):
         self.set_sclasses(w, props)
     #@-others
 #@+node:ekr.20140913054442.17860: ** class StyleSheetManager
-class StyleSheetManager(object):
+class StyleSheetManager:
     '''A class to manage (reload) Qt style sheets.'''
     #@+others
     #@+node:ekr.20180316091829.1: *3*  ssm.Birth

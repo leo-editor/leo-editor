@@ -8,7 +8,7 @@
 
 from leo.core.leoQt import isQt5, QtCore, QtWidgets # QtGui,
 QtGui = QtWidgets
-class Ui_LeoQuickSearchWidget(object):
+class Ui_LeoQuickSearchWidget:
 
     def setupUi(self, LeoQuickSearchWidget):
         LeoQuickSearchWidget.setObjectName("LeoQuickSearchWidget")

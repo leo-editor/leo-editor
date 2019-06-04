@@ -5,7 +5,7 @@ import leo.core.leoGlobals as g
 # import sys
 #@+others
 #@+node:ekr.20031218072017.3750: ** class LeoMenu
-class LeoMenu(object):
+class LeoMenu:
     """The base class for all Leo menus."""
     #@+others
     #@+node:ekr.20120124042346.12938: *3* LeoMenu.Birth

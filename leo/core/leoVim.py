@@ -30,7 +30,7 @@ def show_stroke(stroke):
     }
     return d.get(s, s)
 #@+node:ekr.20140802183521.17996: ** class VimEvent
-class VimEvent(object):
+class VimEvent:
     '''A class to contain the components of the dot.'''
 
     def __init__(self, c, char, stroke, w):
@@ -47,7 +47,7 @@ class VimEvent(object):
 
     __str__ = __repr__
 #@+node:ekr.20131113045621.16547: ** class VimCommands
-class VimCommands(object):
+class VimCommands:
     '''A class that handles vim simulation in Leo.'''
     #@+others
     #@+node:ekr.20131109170017.16507: *3*  vc.ctor & helpers
@@ -1913,7 +1913,7 @@ class VimCommands(object):
                 self.old_sel = self.w.getSelectionRange()
     #@+node:ekr.20140815160132.18821: *3* vc.external commands
     #@+node:ekr.20140815160132.18823: *4* class vc.LoadFileAtCursor (:r)
-    class LoadFileAtCursor(object):
+    class LoadFileAtCursor:
         '''
         A class to handle Vim's :r command.
         This class supports the do_tab callback.
@@ -1951,7 +1951,7 @@ class VimCommands(object):
             self.vc.c.k.getFileName(event=None, callback=self.load_file_at_cursor)
         #@-others
     #@+node:ekr.20140815160132.18828: *4* class vc.Substitution (:%s & :s)
-    class Substitution(object):
+    class Substitution:
         '''A class to handle Vim's :% command.'''
 
         def __init__(self, vc, all_lines):
@@ -2004,7 +2004,7 @@ class VimCommands(object):
                 k.extendLabel(':%' + tail + '/')
         #@-others
     #@+node:ekr.20140815160132.18829: *4* class vc.Tabnew (:e & :tabnew)
-    class Tabnew(object):
+    class Tabnew:
         '''
         A class to handle Vim's :tabnew command.
         This class supports the do_tab callback.

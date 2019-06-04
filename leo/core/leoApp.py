@@ -23,7 +23,7 @@ import sqlite3
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161026122804.1: ** class IdleTimeManager
-class IdleTimeManager(object):
+class IdleTimeManager:
     '''
     A singleton class to manage idle-time handling. This class handles all
     details of running code at idle time, including running 'idle' hooks.
@@ -75,7 +75,7 @@ class IdleTimeManager(object):
             self.timer.start()
     #@-others
 #@+node:ekr.20120209051836.10241: ** class LeoApp
-class LeoApp(object):
+class LeoApp:
     """A class representing the Leo application itself.
 
     Ivars of this class are Leo's global variables."""
@@ -1680,7 +1680,7 @@ class LeoApp(object):
                 g.trace('%s missing key: %s' % (sfn, key))
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
-class LoadManager(object):
+class LoadManager:
     '''A class to manage loading .leo files, including configuration files.'''
     #@+others
     #@+node:ekr.20120214060149.15851: *3*  LM.ctor
@@ -3057,7 +3057,7 @@ class LoadManager(object):
                     import Tkinter as Tk
                     #@+<< define emergency dialog class >>
                     #@+node:ekr.20120219154958.10492: *5* << define emergency dialog class >>
-                    class EmergencyDialog(object):
+                    class EmergencyDialog:
                         """A class that creates an Tkinter dialog with a single OK button."""
                         #@+others
                         #@+node:ekr.20120219154958.10493: *6* __init__ (emergencyDialog)
@@ -3407,7 +3407,7 @@ class LoadManager(object):
                 # Closes the file.
     #@-others
 #@+node:ekr.20120223062418.10420: ** class PreviousSettings
-class PreviousSettings(object):
+class PreviousSettings:
     '''A class holding the settings and shortcuts dictionaries
     that are computed in the first pass when loading local
     files and passed to the second pass.'''
@@ -3424,7 +3424,7 @@ class PreviousSettings(object):
 
     __str__ = __repr__
 #@+node:ekr.20120225072226.10283: ** class RecentFilesManager
-class RecentFilesManager(object):
+class RecentFilesManager:
     '''A class to manipulate leoRecentFiles.txt.'''
 
     def __init__(self):

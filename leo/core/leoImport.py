@@ -29,7 +29,7 @@ import urllib
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160503145550.1: ** class FreeMindImporter
-class FreeMindImporter(object):
+class FreeMindImporter:
     '''Importer class for FreeMind (.mmap) files.'''
 
     def __init__(self, c):
@@ -120,7 +120,7 @@ class FreeMindImporter(object):
             self.import_files(names)
     #@-others
 #@+node:ekr.20160504144241.1: ** class JSON_Import_Helper
-class JSON_Import_Helper(object):
+class JSON_Import_Helper:
     '''
     A class that helps client scripts import .json files.
 
@@ -187,7 +187,7 @@ class JSON_Import_Helper(object):
         return bool(top_d)
     #@-others
 #@+node:ekr.20071127175948: ** class LeoImportCommands
-class LeoImportCommands(object):
+class LeoImportCommands:
     '''
     A class implementing all of Leo's import/export code. This class
     uses **importers** in the leo/plugins/importers folder.
@@ -1476,7 +1476,7 @@ class LeoImportCommands(object):
             self.encoding = 'utf-8'
     #@-others
 #@+node:ekr.20160503144404.1: ** class MindMapImporter
-class MindMapImporter(object):
+class MindMapImporter:
     '''Mind Map Importer class.'''
 
     def __init__(self, c):
@@ -1591,7 +1591,7 @@ class MindMapImporter(object):
         return None
     #@-others
 #@+node:ekr.20161006100941.1: ** class MORE_Importer
-class MORE_Importer(object):
+class MORE_Importer:
     '''Class to import MORE files.'''
 
     def __init__(self, c):
@@ -1782,7 +1782,7 @@ class MORE_Importer(object):
         return True
     #@-others
 #@+node:ekr.20130823083943.12596: ** class RecursiveImportController
-class RecursiveImportController(object):
+class RecursiveImportController:
     '''Recursively import all python files in a directory and clean the result.'''
     #@+others
     #@+node:ekr.20130823083943.12615: *3* ric.ctor
@@ -2198,7 +2198,7 @@ class TabImporter:
             return ''
     #@-others
 #@+node:ekr.20141210051628.26: ** class ZimImportController
-class ZimImportController(object):
+class ZimImportController:
     '''
     A class to import Zim folders and files: http://zim-wiki.org/
     First use Zim to export your project to rst files.

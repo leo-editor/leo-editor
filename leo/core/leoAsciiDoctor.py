@@ -18,7 +18,7 @@ def cmd(name):
     return g.new_cmd_decorator(name, ['c', 'asciiDoctorCommands',])
 #@-<< define cmd decorator >>
 
-class AsciiDoctorCommands(object):
+class AsciiDoctorCommands:
     '''A class to write AsiiDoctor markup in Leo outlines.'''
     
     def __init__(self, c):

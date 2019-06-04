@@ -100,7 +100,7 @@ if docutils:
 else:
     code_block.options = {}
 #@+node:ekr.20090502071837.33: ** class RstCommands
-class RstCommands(object):
+class RstCommands:
     '''
     A class to write rst markup in Leo outlines.
 

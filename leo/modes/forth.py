@@ -158,7 +158,7 @@ rulesDictDict = {
 }
 # Import dict for forth mode.
 importDict = {}
-class extendForth(object):
+class extendForth:
     '''A helper class to extend the mode tables from @data forth-x settings.'''
     def __init__(self):
         self.c = None # set by pre_init_mode function.

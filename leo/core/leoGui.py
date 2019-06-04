@@ -15,7 +15,7 @@ import leo.core.leoFrame as leoFrame
     # for NullGui and StringTextWrapper.
 #@+others
 #@+node:ekr.20031218072017.3720: ** class LeoGui (object)
-class LeoGui(object):
+class LeoGui:
     """The base class of all gui classes.
 
     Subclasses are expected to override all do-nothing methods of this class.
@@ -249,7 +249,7 @@ class LeoGui(object):
             return repr(w)
     #@-others
 #@+node:ekr.20070228160107: ** class LeoKeyEvent (object)
-class LeoKeyEvent(object):
+class LeoKeyEvent:
     '''A gui-independent wrapper for gui events.'''
     #@+others
     #@+node:ekr.20110605121601.18846: *3* LeoKeyEvent.__init__
@@ -429,7 +429,7 @@ class NullGui(LeoGui):
         # Getting here will terminate Leo.
     #@-others
 #@+node:ekr.20080707150137.5: ** class NullScriptingControllerClass
-class NullScriptingControllerClass(object):
+class NullScriptingControllerClass:
     '''A default, do-nothing class to be overridden by mod_scripting or other plugins.
 
     This keeps pylint happy.'''
@@ -441,7 +441,7 @@ class NullScriptingControllerClass(object):
     def createAllButtons(self):
         pass
 #@+node:ekr.20171128093401.1: ** class StringCheckBox (object)
-class StringCheckBox(object):
+class StringCheckBox:
     '''Simulate a QCheckBox.'''
     
     def __init__(self, name, label):
@@ -476,7 +476,7 @@ class StringGui(LeoGui):
         self.oops()
     #@-others
 #@+node:ekr.20171128093503.1: ** class StringLineEdit (object)
-class StringLineEdit(object):
+class StringLineEdit:
     
     '''Simulate a QLineEdit.'''
         
@@ -502,7 +502,7 @@ class StringLineEdit(object):
     def text(self):
         return self.s
 #@+node:ekr.20171128093602.1: ** class StringRadioButton (object)
-class StringRadioButton(object):
+class StringRadioButton:
     
     '''Simulate QRadioButton.'''
     

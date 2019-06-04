@@ -143,7 +143,7 @@ at_last = 18
 #@+others
 #@+node:ekr.20031218072017.3448: ** node classes
 #@+node:ekr.20031218072017.3449: *3* class TstNode
-class TstNode(object):
+class TstNode:
     #@+others
     #@+node:ekr.20031218072017.3450: *4* TstNode.__init__
     def __init__(self, name, root_flag):
@@ -176,7 +176,7 @@ class TstNode(object):
         return s
     #@-others
 #@+node:ekr.20031218072017.3452: *3* class PartNode
-class PartNode(object):
+class PartNode:
     #@+others
     #@+node:ekr.20031218072017.3453: *4* PartNode.__init__
     def __init__(self, name, code, doc, is_root, is_dirty, delims):
@@ -198,7 +198,7 @@ class PartNode(object):
         return self.refs
     #@-others
 #@+node:ekr.20031218072017.3455: *3* class UstNode
-class UstNode(object):
+class UstNode:
     #@+others
     #@+node:ekr.20031218072017.3456: *4* UstNode.__init__
     #@+at
@@ -230,7 +230,7 @@ class UstNode(object):
         return s
     #@-others
 #@+node:ekr.20031218072017.3458: *3* class DefNode
-class DefNode(object):
+class DefNode:
     #@+others
     #@+node:ekr.20031218072017.3459: *4* DefNode.__init__
     #@+at
@@ -259,7 +259,7 @@ class DefNode(object):
 # easy-to-use container.
 #@@c
 
-class RootAttributes(object):
+class RootAttributes:
     #@+others
     #@+node:ekr.20031218072017.3462: *4* RootAttributes.__init__
     #@+at Stephen P. Schaefer, 9/2/2002
@@ -292,11 +292,11 @@ class RootAttributes(object):
             ", first_lines: " + self.first_lines)
     #@-others
 #@+node:ekr.20031218072017.3465: ** class TangleCommands methods
-class BaseTangleCommands(object):
+class BaseTangleCommands:
     """The base class for Leo's tangle and untangle commands."""
     #@+others
     #@+node:sps.20100629094515.20943: *3* class RegexpForLanguageOrComment
-    class RegexpForLanguageOrComment(object):
+    class RegexpForLanguageOrComment:
         import re
         regex = re.compile(r'''
             ^(

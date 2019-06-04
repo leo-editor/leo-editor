@@ -7,7 +7,7 @@ import leo.core.leoGlobals as g
 
 #@+others
 #@+node:ekr.20160514095639.1: ** class BaseEditCommandsClass
-class BaseEditCommandsClass(object):
+class BaseEditCommandsClass:
     '''The base class for all edit command classes'''
     #@+others
     #@+node:ekr.20150516040334.1: *3* BaseEdit.ctor

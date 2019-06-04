@@ -22,7 +22,7 @@ def view_pack_command(event):
     if c and c.persistenceController:
         c.persistenceController.clean()
 #@+node:ekr.20140711111623.17790: ** class PersistenceDataController
-class PersistenceDataController(object):
+class PersistenceDataController:
     #@+<< docstring >>
     #@+node:ekr.20140711111623.17791: *3*  << docstring >> (class persistenceController)
     '''

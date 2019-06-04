@@ -40,7 +40,7 @@ def init():
     '''Return True if the free_layout plugin can be loaded.'''
     return g.app.gui.guiName() == "qt"
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
-class FreeLayoutController(object):
+class FreeLayoutController:
     """Glue between Leo and the NestedSplitter gui widget.  All Leo aware
     code should be in here, none in NestedSplitter.
 

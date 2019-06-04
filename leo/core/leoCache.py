@@ -22,7 +22,7 @@ normcase = g.os_path_normcase
 split = g.os_path_split
 #@+others
 #@+node:ekr.20100208062523.5885: ** class CommanderCacher
-class CommanderCacher(object):
+class CommanderCacher:
     '''A class to manage per-commander caches.'''
 
     def __init__(self):
@@ -101,7 +101,7 @@ class CommanderCacher(object):
             c.db = self.get_wrapper(c, fn=fn)
     #@-others
 #@+node:ekr.20180627052459.1: ** class CommanderWrapper
-class CommanderWrapper(object):
+class CommanderWrapper:
     '''A class to distinguish keys from separate commanders.'''
 
     def __init__(self, c, fn=None):
@@ -133,7 +133,7 @@ class CommanderWrapper(object):
         self.user_keys.add(key)
         self.db ['%s:::%s' % (self.key, key)] = value
 #@+node:ekr.20180627041556.1: ** class GlobalCacher
-class GlobalCacher(object):
+class GlobalCacher:
     '''A singleton global cacher, g.app.db'''
     
     def __init__(self):
@@ -186,7 +186,7 @@ class GlobalCacher(object):
 #@+node:ekr.20100208223942.5967: ** class PickleShareDB
 _sentinel = object()
 
-class PickleShareDB(object):
+class PickleShareDB:
     """ The main 'connection' object for PickleShare database """
     #@+others
     #@+node:ekr.20100208223942.5968: *3*  Birth & special methods
@@ -456,7 +456,7 @@ class PickleShareDB(object):
 #@+node:vitalije.20170716201700.1: ** class SqlitePickleShare
 _sentinel = object()
 
-class SqlitePickleShare(object):
+class SqlitePickleShare:
     """ The main 'connection' object for SqlitePickleShare database """
     #@+others
     #@+node:vitalije.20170716201700.2: *3*  Birth & special methods

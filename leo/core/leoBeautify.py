@@ -476,7 +476,7 @@ def test_beautifier(c, h, p, settings):
     return beautifier
         # For statistics.
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
-class CPrettyPrinter(object):
+class CPrettyPrinter:
     #@+others
     #@+node:ekr.20110917174948.6904: *3* cpp.__init__
     def __init__(self, c):
@@ -727,11 +727,11 @@ class CPrettyPrinter(object):
             return j + 2
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
-class PythonTokenBeautifier(object):
+class PythonTokenBeautifier:
     '''A token-based Python beautifier.'''
     #@+others
     #@+node:ekr.20150523132558.1: *3* class OutputToken
-    class OutputToken(object):
+    class OutputToken:
         '''A class representing Output Tokens'''
 
         def __init__(self, kind, value):
@@ -751,7 +751,7 @@ class PythonTokenBeautifier(object):
             '''Convert an output token to a string.'''
             return self.value if g.isString(self.value) else ''
     #@+node:ekr.20150527113020.1: *3* class ParseState
-    class ParseState(object):
+    class ParseState:
         '''A class representing items parse state stack.'''
 
         def __init__(self, kind, value):

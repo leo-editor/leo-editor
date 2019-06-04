@@ -10,7 +10,7 @@ import tempfile
 import time
 #@+others
 #@+node:ekr.20160306110233.1: ** class ExternalFile
-class ExternalFile(object):
+class ExternalFile:
     '''A class holding all data about an external file.'''
 
     def __init__(self, c, ext, p, path, time):
@@ -37,7 +37,7 @@ class ExternalFile(object):
         return g.os_path_exists(self.path)
     #@-others
 #@+node:ekr.20150405073203.1: ** class ExternalFilesController
-class ExternalFilesController(object):
+class ExternalFilesController:
     '''
     A class tracking changes to external files:
 

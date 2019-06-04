@@ -20,7 +20,7 @@ def cmd(name):
     return g.new_cmd_decorator(name, ['c', 'spellCommands',])
 #@+others
 #@+node:ekr.20180207071908.1: ** class BaseSpellWrapper
-class BaseSpellWrapper(object):
+class BaseSpellWrapper:
     '''Code common to EnchantWrapper and DefaultWrapper'''
     # pylint: disable=no-member
     # Subclasses set self.c and self.d
@@ -114,7 +114,7 @@ class BaseSpellWrapper(object):
             return d.suggest(word)
     #@-others
 #@+node:ekr.20180207075606.1: ** class DefaultDict (object)
-class DefaultDict(object):
+class DefaultDict:
     '''A class with the same interface as the enchant dict class.'''
     
     def __init__(self, words=None):
@@ -682,7 +682,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocusNow()
     #@-others
 #@+node:ekr.20150514063305.499: ** class SpellTabHandler
-class SpellTabHandler(object):
+class SpellTabHandler:
     """A class to create and manage Leo's Spell Check dialog."""
     #@+others
     #@+node:ekr.20150514063305.501: *3* SpellTabHandler.__init__

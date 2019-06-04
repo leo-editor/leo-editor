@@ -10,7 +10,7 @@ import subprocess
 
 #@+others
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
-class BackgroundProcessManager(object):
+class BackgroundProcessManager:
     #@+<< BPM docstring>>
     #@+node:ekr.20161029063227.1: *3* << BPM docstring>>
     '''
@@ -62,7 +62,7 @@ class BackgroundProcessManager(object):
             # The process id of the running process.
         g.app.idleTimeManager.add_callback(self.on_idle)
     #@+node:ekr.20161028090624.1: *3* class ProcessData
-    class ProcessData(object):
+    class ProcessData:
         '''A class to hold data about running or queued processes.'''
 
         def __init__(self, c, kind, fn, link_pattern, link_root, shell):

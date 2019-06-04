@@ -39,7 +39,7 @@ class BadLeoFile(Exception):
     def __str__(self):
         return "Bad Leo File:" + self.message
 #@+node:ekr.20180602062323.1: ** class FastRead
-class FastRead (object):
+class FastRead:
     
     nativeVnodeAttributes = (
         'a',
@@ -334,7 +334,7 @@ class FastRead (object):
         return hidden_v
     #@-others
 #@+node:ekr.20160514120347.1: ** class FileCommands
-class FileCommands(object):
+class FileCommands:
     """A class creating the FileCommands subcommander."""
     #@+others
     #@+node:ekr.20090218115025.4: *3* fc.Birth

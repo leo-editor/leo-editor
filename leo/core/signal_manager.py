@@ -88,7 +88,7 @@ def unlock(obj):
     _setup(obj)
     obj._signal_data.locked = False
 #@+node:tbrown.20171028115601.12: ** class SignalManager
-class SignalManager(object):
+class SignalManager:
     """SignalManager - light weight signal management mixin."""
 
     #@+others

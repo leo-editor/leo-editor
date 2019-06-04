@@ -441,7 +441,7 @@ class LinterTable():
             return []
     #@-others
 #@+node:ekr.20070627140344: ** class RunTestExternallyHelperClass
-class RunTestExternallyHelperClass(object):
+class RunTestExternallyHelperClass:
     '''A helper class to run tests externally.'''
     #@+others
     #@+node:ekr.20070627140344.1: *3*  ctor: RunTestExternallyHelperClass
@@ -561,7 +561,7 @@ class RunTestExternallyHelperClass(object):
         os.spawnve(os.P_NOWAIT, sys.executable, args, env)
     #@-others
 #@+node:ekr.20120220070422.10417: ** class TestManager
-class TestManager(object):
+class TestManager:
     '''A controller class to encapuslate test-runners.'''
     #@+others
     #@+node:ekr.20120220070422.10418: *3*  ctor (TestManager)

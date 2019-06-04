@@ -71,7 +71,7 @@ def controller(
             verbose)
     return gBridgeController
 #@+node:ekr.20070227092442.2: ** class BridgeController
-class BridgeController(object):
+class BridgeController:
     '''Creates a way for host programs to access Leo.'''
     #@+others
     #@+node:ekr.20070227092442.3: *3* bridge.ctor

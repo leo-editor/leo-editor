@@ -8,7 +8,7 @@ import leo.core.leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20180121041252.1: ** class TipManager
-class TipManager(object):
+class TipManager:
     '''A class to manage user tips.'''
     
     key = 'shown-tips'
@@ -33,7 +33,7 @@ class TipManager(object):
         return tips[i]
     #@-others
 #@+node:ekr.20180121041301.1: ** class UserTip
-class UserTip(object):
+class UserTip:
     '''A User Tip.'''
     
     def __init__(self, n=0, tags=None, text='', title=''):

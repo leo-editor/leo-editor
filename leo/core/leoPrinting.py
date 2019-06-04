@@ -8,7 +8,7 @@ import leo.core.leoGlobals as g
 from leo.core.leoQt import printsupport, QtGui
 #@+others
 #@+node:ekr.20150420120520.1: ** class PrintingController
-class PrintingController(object):
+class PrintingController:
     '''A class supporting the commands in Leo's File:Print menu.'''
     #@+others
     #@+node:ekr.20150419124739.6: *3* pr.__init__ & helpers

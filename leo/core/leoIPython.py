@@ -51,7 +51,7 @@ g.app.ipython_inited = IPKernelApp is not None
 #@-<< imports >>
 #@+others
 #@+node:ekr.20130930062914.15993: ** class InternalIPKernel
-class InternalIPKernel(object):
+class InternalIPKernel:
     '''
     An interface class between Leo's core and IPython.
     Called from LeoQtGui.runWithIpythonKernel()
@@ -240,7 +240,7 @@ class InternalIPKernel(object):
         connect_qtconsole()
     #@-others
 #@+node:ekr.20130930062914.16002: ** class LeoNameSpace
-class LeoNameSpace(object):
+class LeoNameSpace:
     '''An interface class passed to IPython that provides easy
     access to "g" and all commanders.
 

@@ -8,7 +8,7 @@ import time
 from leo.core.leoQt import QtCore # ,QtGui,QtWidgets
 #@+others
 #@+node:ekr.20141028061518.24: ** class IdleTime
-class IdleTime(object):
+class IdleTime:
     '''
     A class that executes a handler with a given delay at idle time. The
     handler takes a single argument, the IdleTime instance::
