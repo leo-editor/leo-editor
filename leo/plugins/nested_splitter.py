@@ -30,7 +30,6 @@ if QtWidgets:
         def __init__(self, parent=None, color=None):
             '''Ctor for DemoWidget class.'''
             super().__init__(parent)
-                # Init the base class.
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
             self.layout().setSpacing(0)

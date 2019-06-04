@@ -26,7 +26,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def __init__(self, c, frame):
         '''Ctor for the LeoQtTree class.'''
         super().__init__(frame)
-            # Init the base class.
         self.c = c
         # Widget independent status ivars...
         self.prev_v = None

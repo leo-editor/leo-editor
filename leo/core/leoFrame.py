@@ -1654,7 +1654,6 @@ class NullBody(LeoBody):
     def __init__(self, frame=None, parentFrame=None):
         '''Ctor for NullBody class.'''
         super().__init__(frame, parentFrame)
-            # Init the base class.
         self.insertPoint = 0
         self.selection = 0, 0
         self.s = "" # The body text
@@ -1713,7 +1712,6 @@ class NullFrame(LeoFrame):
     def __init__(self, c, title, gui):
         '''Ctor for the NullFrame class.'''
         super().__init__(c, gui)
-            # Init the base class.
         assert self.c
         self.wrapper = None
         self.iconBar = NullIconBarClass(self.c, self)
@@ -1849,7 +1847,7 @@ class NullLog(LeoLog):
     #@+node:ekr.20070302095500: *3* NullLog.Birth
     #@+node:ekr.20041012083237: *4* NullLog.__init__
     def __init__(self, frame=None, parentFrame=None):
-        # Init the base class.
+
         super().__init__(frame, parentFrame)
         self.isNull = True
         self.logNumber = 0
@@ -1957,10 +1955,11 @@ class NullTree(LeoTree):
     #@+node:ekr.20031218072017.2234: *3*  NullTree.__init__
     def __init__(self, frame):
         '''Ctor for NullTree class.'''
-        super().__init__(frame) # Init the base class.
+        super().__init__(frame)
         assert(self.frame)
         self.c = frame.c
-        self.editWidgetsDict = {} # Keys are tnodes, values are StringTextWidgets.
+        self.editWidgetsDict = {}
+            # Keys are tnodes, values are StringTextWidgets.
         self.font = None
         self.fontName = None
         self.canvas = None

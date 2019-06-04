@@ -665,7 +665,6 @@ class NullMenu(LeoMenu):
     #@+others
     #@+node:ekr.20050104094308: *3* ctor (NullMenu)
     def __init__(self, frame):
-        # Init the base class.
         super().__init__(frame)
         self.isNull = True
     #@+node:ekr.20050104094029: *3* oops

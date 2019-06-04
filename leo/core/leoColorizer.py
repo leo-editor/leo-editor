@@ -2295,7 +2295,6 @@ if QtGui:
                 # Alas, a QsciDocument is not a QTextDocument.
             self.leo_document = document
             super().__init__(document)
-                # Init the base class.
             self.reloadSettings()
         #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
         def highlightBlock(self, s):
@@ -2760,7 +2759,6 @@ class QScintillaColorizer(BaseColorizer):
     def __init__(self, c, widget, wrapper):
         '''Ctor for QScintillaColorizer. widget is a '''
         super().__init__(c)
-            # init the base class.
         self.count = 0 # For unit testing.
         self.colorCacheFlag = False
         self.error = False # Set if there is an error in jeditColorizer.recolor
@@ -2769,15 +2767,6 @@ class QScintillaColorizer(BaseColorizer):
         self.language = 'python' # set by scanLanguageDirectives.
         self.highlighter = None
         self.lexer = None # Set in changeLexer.
-        # if self.NEW:
-            # self.jeditColorizer = JEditColorizer(c, widget, wrapper)
-            # self.highlighter = PythonHighlighter(c)
-            # self.jeditColorizer.highlighter = self.highlighter
-        # Alas QsciDocument is not a QDocument.
-            # g.printList(sorted(dir(widget.document)))
-            # self.highlighter = LeoHighlighter(c,
-                # colorizer = self,
-                # document = widget.document())
         widget.leo_colorizer = self
         # Define/configure various lexers.
         self.reloadSettings()

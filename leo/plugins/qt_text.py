@@ -263,7 +263,6 @@ class QLineEditWrapper(QTextMixin):
     def __init__(self, widget, name, c=None):
         '''Ctor for QLineEditWrapper class.'''
         super().__init__(c)
-            # Init the base class.
         self.widget = widget
         self.name = name
         self.baseClassName = 'QLineEditWrapper'
@@ -386,7 +385,6 @@ class LeoLineTextWidget(QtWidgets.QFrame):
     def __init__(self, c, e, *args):
         '''Ctor for LineTextWidget.'''
         super().__init__(*args)
-            # Init the base class.
         self.c = c
         self.setFrameStyle(self.StyledPanel | self.Sunken)
         self.edit = e # A QTextEdit
@@ -709,7 +707,6 @@ class NumberBar(QtWidgets.QFrame):
     def __init__(self, c, e, *args):
         '''Ctor for NumberBar class.'''
         super().__init__(*args)
-            # Init the base class.
         self.c = c
         self.edit = e
             # A QTextEdit.
@@ -865,7 +862,6 @@ class QHeadlineWrapper(QLineEditWrapper):
         '''The ctor for the QHeadlineWrapper class.'''
         assert isinstance(widget, QtWidgets.QLineEdit), widget
         super().__init__(widget, name, c)
-            # Init the base class.
         # Set ivars.
         self.c = c
         self.item = item
@@ -897,7 +893,6 @@ class QMinibufferWrapper(QLineEditWrapper):
         self.c = c
         w = c.frame.top.lineEdit # QLineEdit
         super().__init__(widget=w, name='minibuffer', c=c)
-            # Init the base class.
         assert self.widget
         g.app.gui.setFilter(c, w, self, tag='minibuffer')
         # Monkey-patch the event handlers
@@ -949,7 +944,6 @@ class QScintillaWrapper(QTextMixin):
     def __init__(self, widget, c, name=None):
         '''Ctor for the QScintillaWrapper class.'''
         super().__init__(c)
-            # init the base class.
         self.baseClassName = 'QScintillaWrapper'
         self.c = c
         self.name = name
@@ -1170,7 +1164,6 @@ class QTextEditWrapper(QTextMixin):
     def __init__(self, widget, name, c=None):
         '''Ctor for QTextEditWrapper class. widget is a QTextEdit/QTextBrowser.'''
         super().__init__(c)
-            # Init the base class.
         # Make sure all ivars are set.
         self.baseClassName = 'QTextEditWrapper'
         self.c = c

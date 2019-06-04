@@ -471,9 +471,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20150514063305.161: *5* ctor & helpers (C_To_Python)
         def __init__(self, c):
             '''Ctor for C_To_Python class.'''
-            # pylint: disable=super-init-not-called
             super().__init__(c)
-                # init the base class
+            #
             # Internal state...
             self.class_name = ''
                 # The class name for the present function.  Used to modify ivars.
@@ -1189,9 +1188,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20150514063305.177: *5* ctor (TS_To_Python)
             def __init__(self, c):
                 '''Ctor for TS_To_Python class.'''
-                # pylint: disable=super-init-not-called
                 super().__init__(c)
-                    # init the base class
                 self.class_name = ''
                     # The class name for the present function.  Used to modify ivars.
             #@+node:ekr.20150514063305.178: *5* convertCodeList (TS_To_Python) & helpers

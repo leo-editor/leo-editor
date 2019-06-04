@@ -166,12 +166,11 @@ class AttributeGetter(object):
         raise NotImplementedError
 #@+node:tbrown.20091103080354.1402: ** class AttributeGetterUA
 class AttributeGetterUA(AttributeGetter):
+    
+    # def __init__(self, c):
+        # super().__init__(c)
 
     #@+others
-    #@+node:tbrown.20091103080354.6240: *3* __init__
-    def __init__(self, c):
-
-        super().__init__(c)
     #@+node:tbrown.20091103080354.1409: *3* recSearch
     def recSearch(self, d, path, ans):
         """recursive search of tree of dicts for values whose
@@ -287,12 +286,11 @@ class AttributeGetterUA(AttributeGetter):
 AttributeGetter.register(AttributeGetterUA)
 #@+node:tbrown.20091103080354.1420: ** class AttributeGetterAt
 class AttributeGetterAt(AttributeGetter):
+    
+    # def __init__(self, c):
+        # super().__init__(c)
 
     #@+others
-    #@+node:tbrown.20091103080354.6238: *3* __init__
-    def __init__(self, c):
-
-        super().__init__(c)
     #@+node:tbrown.20091103080354.1422: *3* getAttribs
     def getAttribs(self, v):
         """Return a list of tuples describing editable uAs.
@@ -364,12 +362,9 @@ class AttributeGetterAt(AttributeGetter):
 AttributeGetter.register(AttributeGetterAt)
 #@+node:tbrown.20091103080354.1427: ** class AttributeGetterColon
 class AttributeGetterColon(AttributeGetter):
-
+    # def __init__(self, c):
+        # super().__init__(c)
     #@+others
-    #@+node:tbrown.20091103080354.6242: *3* __init__
-    def __init__(self, c):
-
-        super().__init__(c)
     #@+node:tbrown.20091103080354.1428: *3* getAttribs
     def getAttribs(self, v):
 

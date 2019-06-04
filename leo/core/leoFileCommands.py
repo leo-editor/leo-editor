@@ -34,7 +34,7 @@ class BadLeoFile(Exception):
 
     def __init__(self, message):
         self.message = message
-        super().__init__(message) # Init the base class.
+        super().__init__(message)
 
     def __str__(self):
         return "Bad Leo File:" + self.message

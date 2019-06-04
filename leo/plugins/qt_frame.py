@@ -2302,7 +2302,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18246: *3*  qtFrame.Birth & Death
     #@+node:ekr.20110605121601.18247: *4* qtFrame.__init__ & reloadSettings
     def __init__(self, c, title, gui):
-        # Init the base class.
+
         super().__init__(c, gui)
         assert self.c == c
         leoFrame.LeoFrame.instances += 1 # Increment the class var.
@@ -3395,7 +3395,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def __init__(self, frame, parentFrame):
         '''Ctor for LeoQtLog class.'''
         super().__init__(frame, parentFrame)
-            # Init the base class. Calls createControl.
+            # Calls createControl.
         assert self.logCtrl is None, self.logCtrl # Set in finishCreate.
             # Important: depeding on the log *tab*,
             # logCtrl may be either a wrapper or a widget.
@@ -3838,10 +3838,8 @@ class LeoQtMenu(leoMenu.LeoMenu):
         '''ctor for LeoQtMenu class.'''
         assert frame
         assert frame.c
-        # Init the base class.
         super().__init__(frame)
         self.leo_menu_label = label.replace('&', '').lower()
-        # called from createMenuFromConfigList,createNewMenu,new_menu,QtMenuWrapper.ctor.
         self.frame = frame
         self.c = c
         self.menuBar = c.frame.top.menuBar()

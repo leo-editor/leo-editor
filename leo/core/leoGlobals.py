@@ -2232,7 +2232,7 @@ class TypedDictOfLists(TypedDict):
     '''A class whose values are lists of typed values.'''
 
     def __init__(self, name, keyType, valType):
-        super().__init__(name, keyType, valType) # Init the base class
+        super().__init__(name, keyType, valType)
         self.isList = True
 
     def __repr__(self):
