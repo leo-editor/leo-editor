@@ -13,7 +13,7 @@ from . import fmForm
 
 
 #@+node:ekr.20170428084207.326: ** class Menu
-class Menu(object):
+class Menu:
     "This class is obsolete and Depricated.  Use NewMenu instead."
 
     #@+others

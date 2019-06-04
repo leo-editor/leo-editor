@@ -76,7 +76,7 @@ class OptionChanger(fmPopup.ActionPopupWide):
 
     #@-others
 #@+node:ekr.20170428084207.64: ** class OptionList
-class OptionList(object):
+class OptionList:
     #@+others
     #@+node:ekr.20170428084207.65: *3* __init__
     def __init__(self, filename=None):
@@ -232,7 +232,7 @@ class OptionList(object):
 
     #@-others
 #@+node:ekr.20170428084207.84: ** class Option
-class Option(object):
+class Option:
     DEFAULT = ''
     #@+others
     #@+node:ekr.20170428084207.85: *3* __init__

@@ -6,7 +6,7 @@ import leo.core.leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20170428084207.401: ** class TreeData (object)
-class TreeData(object):
+class TreeData:
     # This is a new version of NPSTreeData that follows PEP8.
     CHILDCLASS = None
     #@+others

@@ -54,7 +54,7 @@ def mk_send_bytes(msg):
     return lendesc + msg
 
 #@+node:ville.20091010205847.1362: ** class LProtoBuf
-class LProtoBuf(object):
+class LProtoBuf:
     def __init__(self):
 
         self.plen = -1
@@ -95,7 +95,7 @@ class LProtoBuf(object):
 
         lprint("in buf",self.buf)
 #@+node:ville.20091009234538.1374: ** class LProtoServer
-class LProtoServer(object):
+class LProtoServer:
 
     #@+others
     #@+node:ekr.20111012070545.7254: *3* __init__ (LProtoServer)
@@ -169,7 +169,7 @@ if 0:
             lprint("client connected")
         #@-others
 #@+node:ville.20091010233144.10051: ** class LProtoClient
-class LProtoClient(object):
+class LProtoClient:
 
     #@+others
     #@+node:ekr.20111012070545.7210: *3* ctor (LProtoClient)

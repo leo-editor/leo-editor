@@ -208,7 +208,7 @@ def truncate(s, n):
 #@+node:ekr.20160316091132.12: ** class CoffeeScriptTraverser
 
 
-class CoffeeScriptTraverser(object):
+class CoffeeScriptTraverser:
     '''A class to convert python sources to coffeescript sources.'''
     # pylint: disable=consider-using-enumerate
     #@+others
@@ -1176,13 +1176,13 @@ class CoffeeScriptTraverser(object):
 #@+node:ekr.20160316091132.80: ** class LeoGlobals
 
 
-class LeoGlobals(object):
+class LeoGlobals:
     '''A class supporting g.pdb and g.trace for compatibility with Leo.'''
     #@+others
     #@+node:ekr.20160316091132.81: *3* class NullObject (Python Cookbook)
 
 
-    class NullObject(object):
+    class NullObject:
         """
         An object that does nothing, and does it very well.
         From the Python cookbook, recipe 5.23
@@ -1199,7 +1199,7 @@ class LeoGlobals(object):
     #@+node:ekr.20160316091132.82: *3* class ReadLinesClass
 
 
-    class ReadLinesClass(object):
+    class ReadLinesClass:
         """A class whose next method provides a readline method for Python's tokenize module."""
 
         def __init__(self, s):
@@ -1389,7 +1389,7 @@ class LeoGlobals(object):
 #@+node:ekr.20160316091132.95: ** class MakeCoffeeScriptController
 
 
-class MakeCoffeeScriptController(object):
+class MakeCoffeeScriptController:
     '''The controller class for python_to_coffeescript.py.'''
 
     #@+others
@@ -1621,7 +1621,7 @@ class MakeCoffeeScriptController(object):
 #@+node:ekr.20160316091132.108: ** class ParseState
 
 
-class ParseState(object):
+class ParseState:
     '''A class representing items parse state stack.'''
 
     def __init__(self, kind, value):
@@ -1635,7 +1635,7 @@ class ParseState(object):
 #@+node:ekr.20160316091132.109: ** class TokenSync
 
 
-class TokenSync(object):
+class TokenSync:
     '''A class to sync and remember tokens.'''
     # To do: handle comments, line breaks...
     #@+others

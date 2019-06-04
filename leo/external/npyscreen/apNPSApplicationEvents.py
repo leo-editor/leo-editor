@@ -8,7 +8,7 @@ from .apNPSApplicationManaged import NPSAppManaged
 from .eveventhandler import EventHandler
 
 #@+node:ekr.20170428084207.17: ** class NPSEventQueue
-class NPSEventQueue(object):
+class NPSEventQueue:
     #@+others
     #@+node:ekr.20170428084207.18: *3* __init__
     def __init__(self):

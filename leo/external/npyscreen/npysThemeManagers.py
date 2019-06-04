@@ -16,7 +16,7 @@ def enableColor():
     npysGlobalOptions.DISABLE_ALL_COLORS = False
 
 #@+node:ekr.20170428084207.381: ** class ThemeManager
-class ThemeManager(object):
+class ThemeManager:
     # a tuple with (color_number, (r, g, b))
     # you can use this to redefine colour values.
     # This will only work on compatible terminals.

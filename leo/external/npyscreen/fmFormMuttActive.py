@@ -21,7 +21,7 @@ from . import wgtextbox
 ##########################################################################################
 
 #@+node:ekr.20170428084207.260: ** class ActionControllerSimple
-class ActionControllerSimple(object):
+class ActionControllerSimple:
     #@+others
     #@+node:ekr.20170428084207.261: *3* __init__
     def __init__(self, parent=None):

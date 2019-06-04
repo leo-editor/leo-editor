@@ -35,7 +35,7 @@ def getTheme():
 
 
 #@+node:ekr.20170428084207.426: ** class ScreenArea
-class ScreenArea(object):
+class ScreenArea:
     BLANK_LINES_BASE   =0
     BLANK_COLUMNS_RIGHT=0
     DEFAULT_NEXTRELY=2

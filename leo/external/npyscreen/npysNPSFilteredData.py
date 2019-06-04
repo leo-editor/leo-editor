@@ -2,7 +2,7 @@
 #@+node:ekr.20170428084207.353: * @file ../external/npyscreen/npysNPSFilteredData.py
 #@+others
 #@+node:ekr.20170428084207.354: ** class NPSFilteredDataBase
-class NPSFilteredDataBase(object):
+class NPSFilteredDataBase:
     #@+others
     #@+node:ekr.20170428084207.355: *3* __init__
     def __init__(self, values=None):

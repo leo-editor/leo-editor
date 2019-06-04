@@ -18,7 +18,7 @@ Copyright (c) 2008 __MyCompanyName__. All rights reserved.
 import weakref
 
 #@+node:ekr.20170428084207.313: ** class FormNewEditLoop
-class FormNewEditLoop(object):
+class FormNewEditLoop:
     "Edit Fields .editing = False"
     #@+others
     #@+node:ekr.20170428084207.314: *3* pre_edit_loop
@@ -65,7 +65,7 @@ class FormNewEditLoop(object):
 
     #@-others
 #@+node:ekr.20170428084207.319: ** class FormDefaultEditLoop
-class FormDefaultEditLoop(object):
+class FormDefaultEditLoop:
     #@+others
     #@+node:ekr.20170428084207.320: *3* FormDefaultEditLoop.edit (fm_form_edit_loop.py)
     def edit(self):

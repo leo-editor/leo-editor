@@ -68,7 +68,7 @@ class NotEnoughSpaceForWidget(Exception):
     pass
 
 #@+node:ekr.20170428084208.404: ** class InputHandler (wgwidget.py)
-class InputHandler(object):
+class InputHandler:
     "An object that can handle user input"
 
     #@+others

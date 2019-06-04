@@ -17,7 +17,7 @@ class AlreadyOver(Exception):
     pass
 
 #@+node:ekr.20170428084207.6: ** class NPSApp
-class NPSApp(object):
+class NPSApp:
     _run_called = 0
     #@+others
     #@+node:ekr.20170428084207.7: *3* main

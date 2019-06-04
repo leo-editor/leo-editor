@@ -158,7 +158,7 @@ def truncate(s, n):
     '''Return s truncated to n characters.'''
     return s if len(s) <= n else s[:n-3] + '...'
 #@+node:ekr.20160317055215.1: **  class AstFormatter
-class AstFormatter(object):
+class AstFormatter:
     '''
     A class to recreate source code from an AST.
 
@@ -1042,12 +1042,12 @@ class AstArgFormatter (AstFormatter):
 #@+node:ekr.20160317054700.86: ** class LeoGlobals
 
 
-class LeoGlobals(object):
+class LeoGlobals:
     '''A class supporting g.pdb and g.trace for compatibility with Leo.'''
     #@+others
     #@+node:ekr.20160317054700.87: *3* class NullObject (Python Cookbook)
 
-    class NullObject(object):
+    class NullObject:
         """
         An object that does nothing, and does it very well.
         From the Python cookbook, recipe 5.23
@@ -1164,7 +1164,7 @@ class LeoGlobals(object):
 #@+node:ekr.20160317054700.95: ** class Pattern(object)
 
 
-class Pattern(object):
+class Pattern:
     '''
     A class representing regex or balanced patterns.
 
@@ -1612,7 +1612,7 @@ class ReduceTypes:
 #@+node:ekr.20160317054700.118: ** class StandAloneMakeStubFile
 
 
-class StandAloneMakeStubFile(object):
+class StandAloneMakeStubFile:
     '''
     A class to make Python stub (.pyi) files in the ~/stubs directory for
     every file mentioned in the [Source Files] section of
@@ -2006,7 +2006,7 @@ class StandAloneMakeStubFile(object):
 #@+node:ekr.20160317054700.134: ** class Stub(object)
 
 
-class Stub(object):
+class Stub:
     '''
     A class representing all the generated stub for a class or def.
     stub.full_name should represent the complete context of a def.
@@ -2960,7 +2960,7 @@ class StubTraverser (ast.NodeVisitor):
 #@+node:ekr.20160317054700.188: ** class TestClass
 
 
-class TestClass(object):
+class TestClass:
     '''
     A class containing constructs that have caused difficulties.
     This is in the make_stub_files directory, not the test directory.
