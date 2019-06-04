@@ -145,7 +145,7 @@ class GeneralTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.6: *3* __init__ (GeneralTestCase)
     def __init__(self, c, p, setup_script=None):
         '''Ctor for the GeneralTestCase class.'''
-        unittest.TestCase.__init__(self)
+        super().__init__()
         self.c = c
         self.p = p.copy()
         self.setup_script = setup_script
@@ -213,7 +213,7 @@ class ImportExportTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.80: *3* __init__ (ImportExportTestCase)
     def __init__(self, c, p, dialog, temp_p, doImport):
 
-        super().__init__(self)
+        super().__init__()
         self.c = c
         self.dialog = dialog
         self.p = p.copy()

@@ -748,7 +748,7 @@ if g.app.gui.guiName() == "qt":
         def __init__(self, owner):
             '''Ctor for backlinkQtUI class.'''
             self.owner = owner
-            QtWidgets.QWidget.__init__(self)
+            super().__init__()
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Backlink.ui')
             form_class, base_class = uic.loadUiType(uiPath)
             self.owner.c.frame.log.createTab('Links', widget = self)

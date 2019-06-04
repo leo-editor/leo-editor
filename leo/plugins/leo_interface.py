@@ -198,7 +198,7 @@ class leo_node(LeoNode, node_with_parent):
     #@+others
     #@+node:ekr.20101110092416.5751: *3* __init__
     def __init__(self, headline='', body=''):
-        self.__super_leo_node.__init__(self)
+        super().__init__()
         leo_node.count += 1
         self.nr = leo_node.count
         self.headline =  headline

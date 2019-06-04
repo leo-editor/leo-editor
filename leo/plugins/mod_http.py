@@ -1150,7 +1150,7 @@ class Server(asyncore.dispatcher):
         self.ip = ip
         self.port = port
         self.handler = handler
-        asyncore.dispatcher.__init__(self)
+        super().__init__()
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.set_reuse_addr()
         self.bind((ip, port))

@@ -67,7 +67,7 @@ if pyzo:
         
         if 0:
             def __init__(self):
-                QtWidgets.QMenuBar.__init__(self)
+                super().__init__()
         
             def menuBar(self):
                 return self

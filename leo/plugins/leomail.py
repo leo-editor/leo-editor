@@ -56,7 +56,7 @@ class MLStripper(HTMLParser):
     # pylint: disable=abstract-method
 
     def __init__(self):
-        HTMLParser.__init__(self)
+        super().__init__()
             # Can't use plain super in Python 2.
         self.reset()
         self.fed = []

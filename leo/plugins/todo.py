@@ -109,7 +109,7 @@ if g.app.gui.guiName() == "qt":
         def __init__(self, owner, logTab=True):
 
             self.owner = owner
-            QtWidgets.QWidget.__init__(self)
+            super().__init__()
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
             # change dir to get themed icons, needed for uic resources
             # 20180327 this is working, these are icons for todo UI, not

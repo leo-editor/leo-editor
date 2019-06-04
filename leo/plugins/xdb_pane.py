@@ -35,7 +35,7 @@ if g.app.gui.guiName() == "qt":
         
         def __init__(self, c):
             self.c = c
-            QtWidgets.QWidget.__init__(self)
+            super().__init__()
             self.create()
 
         #@+others

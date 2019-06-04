@@ -82,7 +82,7 @@ def init ():
 class FocusingPlaintextEdit(QPlainTextEdit):
 
     def __init__(self, focusin, focusout):
-        QPlainTextEdit.__init__(self)
+        super().__init__()
         self.focusin = focusin
         self.focusout = focusout
 
@@ -101,7 +101,7 @@ class FocusingPlaintextEdit(QPlainTextEdit):
 #@+node:ekr.20100103100944.5395: ** class SimpleRichText
 class SimpleRichText(QTextEdit):
     def __init__(self, focusin, focusout):
-        QTextEdit.__init__(self)
+        super().__init__()
         self.focusin = focusin
         self.focusout = focusout
         self.createActions()

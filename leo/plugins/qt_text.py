@@ -449,7 +449,7 @@ if QtWidgets:
             #@+node:ekr.20110605121601.18010: *5* lqlw.ctor
             def __init__(self, c):
                 '''ctor for LeoQListWidget class'''
-                QtWidgets.QListWidget.__init__(self)
+                super().__init__()
                 self.setWindowFlags(QtCore.Qt.Popup | self.windowFlags())
                 # Make this window a modal window.
                 # Calling this does not fix the Ubuntu-specific modal behavior.
@@ -848,7 +848,7 @@ class PlainTextWrapper(QTextMixin):
 
     def __init__(self, widget):
         '''Ctor for the PlainTextWrapper class.'''
-        QTextMixin.__init__(self)
+        super().__init__()
         self.widget = widget
 #@+node:ekr.20110605121601.18116: ** class QHeadlineWrapper (QLineEditWrapper)
 class QHeadlineWrapper(QLineEditWrapper):

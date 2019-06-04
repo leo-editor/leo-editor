@@ -575,7 +575,7 @@ if docutils:
         #@+node:ekr.20090704103932.5183: *3* __init__ (Writer)
         def __init__(self):
 
-            docutils.writers.Writer.__init__(self)
+            super().__init__()
 
             # self.translator_class = PDFTranslator
         #@+node:ekr.20090704103932.5184: *3* createParagraphsFromIntermediateFile

@@ -1278,7 +1278,7 @@ class LeoQtGui(leoGui.LeoGui):
     class DialogWithCheckBox(QtWidgets.QMessageBox):
 
         def __init__(self, controller, tip):
-            QtWidgets.QMessageBox.__init__(self)
+            super().__init__()
             c = g.app.log.c
             self.leo_checked = True
             self.setObjectName('TipMessageBox')

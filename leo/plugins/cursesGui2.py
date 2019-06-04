@@ -2760,7 +2760,7 @@ class LeoApp(npyscreen.NPSApp):
 
     # No ctor needed.
         # def __init__(self):
-            # npyscreen.NPSApp.__init__(self)
+            # super().__init__()
 
     def main(self):
         '''

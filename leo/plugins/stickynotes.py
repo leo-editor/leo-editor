@@ -358,7 +358,7 @@ class SimpleRichText(QTextEdit):
     # pylint: disable=method-hidden
 
     def __init__(self, focusin, focusout):
-        QTextEdit.__init__(self)
+        super().__init__()
         self.focusin = focusin
         self.focusout = focusout
         self.createActions()
@@ -574,7 +574,7 @@ class Tabula(QMainWindow):
     #@+node:ekr.20101114061906.5445: *4* __init__
     def __init__(self, c):
 
-        QMainWindow.__init__(self)
+        super().__init__()
         mdi = self.mdi = QMdiArea(self)
         self.setCentralWidget(mdi)
         self.create_actions()

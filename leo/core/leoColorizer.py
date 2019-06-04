@@ -3000,7 +3000,7 @@ if pygments:
             def __init__(self, **kwds):
                 for key, value in kwds.items():
                     setattr(self, key, value)
-                QtGui.QTextBlockUserData.__init__(self)
+                super().__init__()
         
             def __repr__(self):
                 attrs = ['syntax_stack']

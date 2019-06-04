@@ -263,8 +263,8 @@ class QuickSearchEventFilter(QtCore.QObject):
     #@+others
     #@+node:ekr.20111015194452.15718: *3* quick_ev.ctor
     def __init__(self,c,w, lineedit):
-        QtCore.QObject.__init__(self)
-            # Init the base class.
+
+        super().__init__()
         self.c = c
         self.listWidget = w
         self.lineEdit = lineedit

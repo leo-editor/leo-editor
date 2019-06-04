@@ -566,8 +566,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         '''Ctor for SaxContentHandler class (OMPL plugin).'''
         self.c = c
         self.inputFileName = inputFileName
-        xml.sax.saxutils.XMLGenerator.__init__(self)
-            # Init the base class.
+        super().__init__()
         self.dispatchDict = self.define_dispatch_dict()
         # Semantics.
         self.content = []

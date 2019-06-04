@@ -240,7 +240,7 @@ class UnitWorker(QtCore.QThread):
     #@+others
     #@+node:ekr.20121126095734.12437: *3* __init__
     def __init__(self):
-        QtCore.QThread.__init__(self)
+        super().__init__()
         self.cond = QtCore.QWaitCondition()
         self.mutex = QtCore.QMutex()
         self.input = None

@@ -120,7 +120,7 @@ class graphcanvasUI(QtWidgets.QWidget):
     def __init__(self, owner=None):
 
         self.owner = owner
-        QtWidgets.QWidget.__init__(self)
+        super().__init__()
         uiPath = g.os_path_join(g.app.leoDir,
             'plugins', 'GraphCanvas', 'GraphCanvas.ui')
         # change directory for this to work
@@ -608,7 +608,7 @@ class linkItem(QtWidgets.QGraphicsItemGroup):
         # pylint: disable=keyword-arg-before-vararg
             # putting *args first is invalid in Python 2.x.
         self.glue = glue
-        QtWidgets.QGraphicsItemGroup.__init__(self)
+        super().__init__()
         self.line = QtWidgets.QGraphicsLineItem(*args)
 
         pen = QtGui.QPen()

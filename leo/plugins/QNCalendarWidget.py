@@ -28,7 +28,7 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):
         - `month`: month of first calendar
         """
 
-        QtWidgets.QCalendarWidget.__init__(self)
+        super().__init__()
 
         self.build(n, columns, year=year, month=month)
 
