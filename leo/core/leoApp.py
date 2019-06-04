@@ -2549,6 +2549,7 @@ class LoadManager(object):
                         m = importlib.import_module(
                             'leo.plugins.importers.%s' % module_name)
                         self.parse_importer_dict(sfn, m)
+                        # print('createImporterData', m.__name__)
                     except Exception:
                         g.warning('can not import leo.plugins.importers.%s' % (
                             module_name))
