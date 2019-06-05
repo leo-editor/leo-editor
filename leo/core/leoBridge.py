@@ -271,8 +271,7 @@ class BridgeController:
                 log.isNull = False
                 log.enabled = True
             return c
-        else:
-            return None
+        return None
     #@+node:ekr.20070227093629.5: *4* bridge.completeFileName
     def completeFileName(self, fileName):
         g = self.g

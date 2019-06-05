@@ -212,8 +212,7 @@ class PickleShareDB:
                     g.es("Unpickling error - Python 3 data accessed from Python 2?")
                     return None
                 return val
-            else:
-                return None
+            return None
 
         def dumpz(val, fileobj):
             if fileobj:
@@ -412,9 +411,8 @@ class PickleShareDB:
         segments += dest_list[i:]
         if segments:
             return join(*segments)
-        else:
-            # If they happen to be identical, use os.curdir.
-            return os.curdir
+        # If they happen to be identical, use os.curdir.
+        return os.curdir
     #@+node:ekr.20100208223942.10462: *4* _splitall
     # Used by relpathto.
 
@@ -487,8 +485,7 @@ class SqlitePickleShare:
                     g.es("Unpickling error - Python 3 data accessed from Python 2?")
                     return None
                 return val
-            else:
-                return None
+            return None
 
         def dumpz(val):
             try:

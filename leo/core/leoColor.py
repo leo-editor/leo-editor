@@ -782,9 +782,8 @@ def getColorCairo(name, default=None):
     color = getColorRGB(name, default)
     if color is None:
         return None
-    else:
-        r, g, b = color
-        return r / 255.0, g / 255.0, b / 255.0
+    r, g, b = color
+    return r / 255.0, g / 255.0, b / 255.0
 
 getCairo = getColorCairo
 #@-others

@@ -410,9 +410,9 @@ class ConventionChecker:
         methods = the_class.get('methods')
         if ivar == 'self':
             return self.Type('instance', class_name)
-        elif methods.get(ivar):
+        if methods.get(ivar):
             return self.Type('func', ivar)
-        elif ivars.get(ivar):
+        if ivars.get(ivar):
             val = ivars.get(ivar)
             if isinstance(val, self.Type):
                 return val
@@ -421,7 +421,7 @@ class ConventionChecker:
                 tail = val[len(special_name):]
                 if val == special_name:
                     return special_obj
-                elif val.startswith(special_name) and tail.startswith('.'):
+                if val.startswith(special_name) and tail.startswith('.'):
                     # Resovle the rest of the tail in the found context.
                     return self.resolve_chain(node, tail[1:], special_obj)
             # Avoid recursion .
@@ -434,13 +434,12 @@ class ConventionChecker:
                 if 0: g.trace('recursive %s: %r --> %r' % (name2, old_context, context))
             if 0: g.trace('END RECURSIVE: %r', context)
             return context
-        elif ivar in self.special_names_dict:
+        if ivar in self.special_names_dict:
             val = self.special_names_dict.get(ivar)
             return val
-        else:
-            # Remember the unknown.
-            self.remember_unknown_ivar(ivar)
-            return self.Type('error', 'no member %s' % ivar)
+        # Remember the unknown.
+        self.remember_unknown_ivar(ivar)
+        return self.Type('error', 'no member %s' % ivar)
     #@+node:ekr.20171217102701.1: *5* checker.remember_unknown_ivar
     def remember_unknown_ivar(self, ivar):
 
@@ -529,11 +528,10 @@ class ConventionChecker:
         if class1 == class2:
             self.stats.sig_infer_ok += 1
             return 'ok'
-        else:
-            # The caller reports the failure.
-            # self.error(node, 'FAIL', arg1, arg2, class1, class2)
-            self.stats.sig_infer_fail += 1
-            return 'fail'
+        # The caller reports the failure.
+        # self.error(node, 'FAIL', arg1, arg2, class1, class2)
+        self.stats.sig_infer_fail += 1
+        return 'fail'
     #@+node:ekr.20171215074959.1: *3* checker.Visitors & helpers
     #@+node:ekr.20171215074959.2: *4* checker.Assign & helpers
     def before_Assign(self, node):
@@ -709,8 +707,7 @@ class ConventionChecker:
         if isinstance(node, ast.Name):
             chain.append(node)
             return list(reversed(chain))
-        else:
-            return []
+        return []
     #@+node:ekr.20171215082648.1: *4* checker.show_stack
     def show_stack(self):
 
@@ -1188,8 +1185,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
             return ''
         if path.endswith('.pyd'):
             return ''
-        else:
-            return path
+        return path
     #@+node:ekr.20160108105958.29: *4* Operators... To be deleted???
     # operator = Add | BitAnd | BitOr | BitXor | Div
     # FloorDiv | LShift | Mod | Mult | Pow | RShift | Sub |
@@ -1421,14 +1417,13 @@ class ProjectUtils:
         if name == 'leo':
             # Get the leo files directly.
             return self.leo_core_files()
-        else:
-            # Import the appropriate module.
-            try:
-                m = importlib.import_module(name, name)
-                theDir = g.os_path_dirname(m.__file__)
-            except ImportError:
-                g.trace('package not found', name)
-                return []
+        # Import the appropriate module.
+        try:
+            m = importlib.import_module(name, name)
+            theDir = g.os_path_dirname(m.__file__)
+        except ImportError:
+            g.trace('package not found', name)
+            return []
         d = {
             'coverage': (['.py'], ['.bzr', 'htmlfiles']),
             'lib2to3':  (['.py'], ['tests']),
@@ -1452,8 +1447,7 @@ class ProjectUtils:
             g.trace('no files found for %s in %s' % (name, theDir))
         if g.app.runningAllUnitTests and len(files) > 1 and not force_all:
             return [files[0]]
-        else:
-            return files
+        return files
     #@-others
 #@+node:ekr.20171213155537.1: ** class NewShowData
 class NewShowData:
@@ -1853,8 +1847,7 @@ class ShowData:
                 j = g.skip_c_id(s, i)
                 result.append(s[i: j])
             return reversed(result)
-        else:
-            return ['', '']
+        return ['', '']
     #@-others
 #@+node:ekr.20150606024455.1: ** class ShowDataTraverser (AstFullTraverser)
 class ShowDataTraverser(leoAst.AstFullTraverser):

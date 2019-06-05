@@ -361,8 +361,7 @@ class Chapter:
         '''Return the @chapter node for this chapter.'''
         if self.name == 'main':
             return None
-        else:
-            return self.cc.findChapterNode(self.name)
+        return self.cc.findChapterNode(self.name)
     #@+node:ekr.20070317131205.1: *3* chapter.select & helpers
     def select(self, w=None, selectEditor=True):
         '''Restore chapter information and redraw the tree when a chapter is selected.'''
