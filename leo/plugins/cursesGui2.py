@@ -3311,7 +3311,7 @@ class LeoStatusLine(npyscreen.Textfield):
     #@+others
     #@-others
 #@+node:ekr.20170506035146.1: *3* class LeoMLTree (npyscreen.MLTree, object)
-class LeoMLTree(npyscreen.MLTree, object):
+class LeoMLTree(npyscreen.MLTree):
 
     # pylint: disable=used-before-assignment
     _contained_widgets = LeoTreeLine

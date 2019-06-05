@@ -22,5 +22,6 @@ def onCommand(tag, keywords):
     if keywords.get("label") == "equalsizedpanes":
         g.es("over-riding Equal Sized Panes")
         return "override" # Anything other than None overrides.
+    return None
 #@-others
 #@-leo
