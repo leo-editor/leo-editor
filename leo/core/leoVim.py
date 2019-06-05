@@ -1891,13 +1891,12 @@ class VimCommands:
             # Escape will end insert mode.
             self.vim_esc()
             return True
-        elif self.stroke == '\n' and self.in_headline(self.w):
+        if self.stroke == '\n' and self.in_headline(self.w):
             # End headline editing and enter normal mode.
             self.c.endEditing()
             self.done()
             return True
-        else:
-            return False
+        return False
     #@+node:ekr.20140802120757.18003: *4* vc.init_scanner_vars
     def init_scanner_vars(self, event):
         '''Init all ivars used by the scanner.'''
@@ -2238,9 +2237,8 @@ class VimCommands:
                 if not self.j_changed:
                     c.setChanged(False)
                 return True
-            else:
-                # Remember the changed state when we saw the first 'j'.
-                self.j_changed = c.isChanged()
+            # Remember the changed state when we saw the first 'j'.
+            self.j_changed = c.isChanged()
         return False
     #@+node:ekr.20140803220119.18091: *4* vc.do_normal_mode
     def do_normal_mode(self):
