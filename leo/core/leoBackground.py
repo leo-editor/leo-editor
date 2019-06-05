@@ -154,37 +154,32 @@ class BackgroundProcessManager:
         Put a string to the originating log.
         This is not what g.es_print does!
         '''
-        #
         # Warning: don't use g.es or g.es_print here!
-        #
         s = s and s.rstrip()
         if not s:
             return
-        #
         # Make sure c still exists
         data = self.data
         c = data and data.c
         if not c or not c.exists:
             return
-        #
         # Always print the message.
         print(s)
-        #
         # Put the plain message if there are no links.
         link_pattern, link_root = data.link_pattern, data.link_root
         if not (link_pattern and link_root):
             c.frame.log.put(s + '\n')
             return
-        #
-        # Put a clickable link if the message matches the link. pattern
+        # Put a clickable link if the message matches the link pattern.
         m = link_pattern.match(s)
         if m:
             line = int(m.group(1))
             unl = link_root.get_UNL(with_proto=True, with_count=True)
             nodeLink = "%s,%d" % (unl, -line)
             c.frame.log.put(s + '\n', nodeLink=nodeLink)
-        else:
-            c.frame.log.put(s + '\n')
+            return
+        # No match. Just print s.
+        c.frame.log.put(s + '\n')
     #@+node:ekr.20161026193609.5: *3* bpm.start_process
     def start_process(self, c, command, kind,
         fn=None,
@@ -193,7 +188,8 @@ class BackgroundProcessManager:
         shell=False,
     ):
         '''Start or queue a process described by command and fn.'''
-        self.data = data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
+        self.data = data = self.ProcessData(c,
+            kind, fn, link_pattern, link_root, shell)
         if self.pid:
             # A process is already active.  Add a new callback.
 

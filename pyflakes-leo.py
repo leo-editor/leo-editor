@@ -23,7 +23,7 @@ import time
 #@+others
 #@+node:ekr.20160518000549.10: ** main (pyflakes-leo.py)
 def main(files):
-    '''Call run on all tables in tables_table.'''
+    '''Call main in all given files.'''
     t1 = time.time()
     for fn in files:
         # Report the file name.

@@ -78,31 +78,6 @@ def get_flake8_config():
 def check_all(files, style):
     '''Run flake8 on all paths.'''
     from flake8 import main
-    # loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
-    # paths = []
-    # for fn in files:
-        # if dir_:
-            # fn = g.os_path_join(loadDir, dir_, fn)
-        # else:
-            # fn = g.os_path_join(loadDir, fn)
-        # fn = g.os_path_abspath(fn)
-        # if not fn.endswith('.py'):
-            # fn = fn+'.py'
-        # if g.os_path_exists(fn):
-            # # Make *sure* that we check files only once.
-            # if fn in seen:
-                # pass
-            # else:
-                # seen.add(fn)
-                # paths.append(fn)
-        # else:
-            # print('does not exist: %s' % (fn))
-
-    # Set statistics here, instead of from the command line.
-    # options = style.options
-    # options.statistics = True
-    # options.total_errors = True
-    # options.benchmark = True
     report = style.check_files(paths=files)
     main.print_report(report, style)
 #@+node:ekr.20160517182239.11: ** report_version

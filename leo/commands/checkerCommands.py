@@ -402,7 +402,9 @@ class PylintCommand:
         bpm.start_process(c, command,
             fn=fn,
             kind='pylint',
-            link_pattern = r'^\w+:(.*),.*:(.*)$',
+            link_pattern = r'^[\w\\\.]+?:(.*?)[,:]',
+                # r'^\w+:(.*),.*:(.*)$', # Old pylint.
+                # m.group(1) is the line.
             link_root = roots and roots[0],
         )
     #@-others
