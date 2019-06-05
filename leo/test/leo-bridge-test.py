@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170805060844.1: * @file ../test/leo-bridge-test.py
 '''A simple test bed for the leoBridge module.'''
+# pylint: disable=invalid-name
 import os
 import sys
 

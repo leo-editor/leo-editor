@@ -187,16 +187,10 @@ class LeoEditPane(QtWidgets.QWidget):
         :param dict keywords: c, p, etc.
         :return: None
         """
-
         p = self.c.vnode2position(v)
-
         DBG("after body key")
-
         #X if self.update:
         self.update_position(p)
-
-        return None
-
     #@+node:tbrown.20171028115438.9: *3* _after_select
     def _after_select(self, tag, keywords):
         """_after_select - after Leo selects another node

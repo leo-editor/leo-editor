@@ -2853,8 +2853,7 @@ class KeyHandlerClass:
             message = 'no shortcut for %s' % (commandName)
             if g.app.unitTesting:
                 raise AttributeError(message)
-            else:
-                g.error(message)
+            g.error(message)
     #@+node:ekr.20071212104050: *4* k.overrideCommand
     def overrideCommand(self, commandName, func):
         # Override entries in c.k.masterBindingsDict
