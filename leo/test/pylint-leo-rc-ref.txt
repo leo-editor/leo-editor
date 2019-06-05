@@ -40,34 +40,34 @@ load-plugins=
 disable=
     #
     # Always disable these. They could cause more harm than good.
-        assignment-from-no-return,
-        assignment-from-none,
+        assignment-from-no-return, # Causes problems when base class return None.
+        assignment-from-none, # Causes problems when base class return None.
         consider-using-in,
         consider-using-dict-comprehension,
         consider-using-set-comprehension,
+        consider-using-ternary,
+        keyword-arg-before-vararg, # See https://github.com/PyCQA/pylint/issues/2027
+        unnecessary-pass, # Can be pedantic in some situations.
         useless-import-alias, # the "as" keeps pyflakes happy.
     #
-    # Good warnings:
+    # Good warnings. Don't suppress these.
         # len-as-condition,
-        # unsupported-assignment-operation,
         # inconsistent-return-statements,
+        # no-else-raise,
+        # no-value-for-parameter,
         # trailing-comma-tuple,
+        # unsupported-assignment-operation,
+        # useless-object-inheritance, # class x(object):
         # useless-return,
     #
-    # New warnings: consider enabling them soon.
-        no-else-raise,
-        no-value-for-parameter,
-        unnecessary-pass,
-        useless-object-inheritance, # class x(object):
-    #
-    # new warnings...
+    # new warnings...suppressed for now.
         chained-comparison,
         literal-comparison,
         not-an-iterable,
         unsupported-delete-operation,
         unsubscriptable-object,
     #
-    # Previous warnings.
+    # Previously suppressed warnings.
     design,import,format,similarities,
     attribute-defined-outside-init,
     bad-builtin,
@@ -84,8 +84,7 @@ disable=
     misplaced-comparison-constant,
     missing-docstring,
     multiple-statements,
-    no-else-return,
-       ###
+    no-else-return, # This enforces good style, but it generates too many warnings.
     no-init,
     no-self-use,
     old-style-class,
@@ -106,11 +105,6 @@ disable=
     using-constant-test,
     wrong-import-position,
     wrong-import-order,
-#
-# bad-whitespace,
-# consider-using-ternary,
-# consider-iterating-dictionary,
-# consider-using-enumerate,
 
 # Categories:
 # basic,classes,design,import,format,similarities,typecheck,variables
