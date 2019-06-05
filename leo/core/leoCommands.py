@@ -647,8 +647,7 @@ class Commands:
                 except Exception:
                     if raiseFlag:
                         raise
-                    else:
-                        g.handleScriptException(c, script_p, script, script1)
+                    g.handleScriptException(c, script_p, script, script1)
                 finally:
                     del sys.path[0]
                     del sys.path[0]
@@ -2066,9 +2065,8 @@ class Commands:
                 c.inCommand = False
                 if g.app.unitTesting:
                     raise
-                else:
-                    g.es_print("exception executing command")
-                    g.es_exception(c=c)
+                g.es_print("exception executing command")
+                g.es_exception(c=c)
             if c and c.exists:
                 if c.requestCloseWindow:
                     c.requestCloseWindow = False

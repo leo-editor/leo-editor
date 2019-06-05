@@ -38,16 +38,42 @@ load-plugins=
 
 # Disable the message, report, category or checker with the given id(s).
 disable=
+    #
+    # Always disable these. They could cause more harm than good.
+        assignment-from-no-return,
+        assignment-from-none,
+        consider-using-in,
+        consider-using-dict-comprehension,
+        consider-using-set-comprehension,
+        useless-import-alias, # the "as" keeps pyflakes happy.
+    #
+    # Good warnings:
+        # len-as-condition,
+        # unsupported-assignment-operation,
+        # inconsistent-return-statements,
+        # trailing-comma-tuple,
+        # useless-return,
+    #
+    # New warnings: consider enabling them soon.
+        no-else-raise,
+        no-value-for-parameter,
+        unnecessary-pass,
+        useless-object-inheritance, # class x(object):
+    #
+    # new warnings...
+        chained-comparison,
+        literal-comparison,
+        not-an-iterable,
+        unsupported-delete-operation,
+        unsubscriptable-object,
+    #
+    # Previous warnings.
     design,import,format,similarities,
     attribute-defined-outside-init,
     bad-builtin,
     bad-continuation,
     bad-option-value,
-    bad-whitespace,
-    broad-except,
-    consider-iterating-dictionary,
-    consider-using-enumerate,
-    consider-using-ternary,
+    broad-except, # except Exception is justified if followed by g.es_exception.
     deprecated-module,
     exec-used,
     global-statement,
@@ -59,6 +85,7 @@ disable=
     missing-docstring,
     multiple-statements,
     no-else-return,
+       ###
     no-init,
     no-self-use,
     old-style-class,
@@ -79,7 +106,12 @@ disable=
     using-constant-test,
     wrong-import-position,
     wrong-import-order,
-    
+#
+# bad-whitespace,
+# consider-using-ternary,
+# consider-iterating-dictionary,
+# consider-using-enumerate,
+
 # Categories:
 # basic,classes,design,import,format,similarities,typecheck,variables
 
@@ -89,16 +121,6 @@ disable=
 # - line-too-long can happen because of @others.
 # - global-statement: Assume we know what we are doing.
 # - superfluous-parens: must be disabled for Python 3 code.
-
-# Previously disabled...
-# assignment-from-no-return,
-# dangerous-default-value, # should *never* be disabled.
-# import-self,
-# misplaced-bare-raise,
-# super-init-not-called,
-# undefined-loop-variable,
-# unidiomatic-typecheck, # very bad style.
-# wildcard-import,
 
 [REPORTS]
 

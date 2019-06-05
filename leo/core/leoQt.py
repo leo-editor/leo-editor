@@ -31,13 +31,12 @@ except ImportError:
         from PyQt4 import Qt
         assert Qt # for pyflakes
     except ImportError:
+        fail = True
         if strict:
             print('leoQt.py: can not import either PyQt4 or PyQt5.')
-            g.es_exception() # PR #339.
+            g.es_exception() # #339.
             print('')
             raise
-        else:
-            fail = True
 # Complete the imports.
 if fail:
     isQt5 = False

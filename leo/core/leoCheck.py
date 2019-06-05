@@ -1917,10 +1917,10 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
     #@+node:ekr.20150607200422.1: *4* sd.Assign
     def do_Assign(self, node):
         '''Handle an assignment statement: Assign(expr* targets, expr value)'''
-        value = self.format(self.visit(node.value))
+        value = self.format(self.visit(node.value), self.level)
         assign_tuples = []
         for target in node.targets:
-            target = self.format(self.visit(target))
+            target = self.format(self.visit(target), self.level)
             s = '%s=%s' % (target, value)
             context2, context1 = self.context_names()
             assign_tuple = context2, context1, s
@@ -1934,8 +1934,8 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         Handle an augmented assignement:
         AugAssign(expr target, operator op, expr value).
         '''
-        target = self.format(self.visit(node.target))
-        s = '%s=%s' % (target, self.format(self.visit(node.value)))
+        target = self.format(self.visit(node.target), self.level)
+        s = '%s=%s' % (target, self.format(self.visit(node.value), self.level))
         context2, context1 = self.context_names()
         assign_tuple = context2, context1, s
         aList = self.controller.assigns_d.get(target, [])
@@ -1948,8 +1948,8 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
         '''
         # Update data.
-        s = self.format(node)
-        name = self.format(node.func)
+        s = self.format(node, self.level)
+        name = self.format(node.func, self.level)
         context2, context1 = self.context_names()
         call_tuple = context2, context1, s
         aList = self.controller.calls_d.get(name, [])
@@ -1974,7 +1974,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         # pylint: disable=arguments-differ
         # Format.
         if node.bases:
-            bases = [self.format(z) for z in node.bases]
+            bases = [self.format(z, self.level) for z in node.bases]
             s = 'class %s(%s):' % (node.name, ','.join(bases))
         else:
             s = 'class %s:' % node.name
@@ -2003,7 +2003,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         '''
         # pylint: disable=arguments-differ
         # Format.
-        args = self.format(node.args) if node.args else ''
+        args = self.format(node.args, self.level) if node.args else ''
         s = 'def %s(%s):' % (node.name, args)
         # Enter the new context.
         context_tuple = self.fn, 'def', s
@@ -2025,7 +2025,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
     def do_Return(self, node):
         '''Handle a 'return' statement: Return(expr? value)'''
         # Update data.
-        s = self.format(node)
+        s = self.format(node, self.level)
         context, name = self.context_names()
         aList = self.controller.returns_d.get(name, [])
         return_tuple = context, s

@@ -2307,35 +2307,31 @@ class AtFile:
             junk, msg, junk = sys.exc_info()
             if suppress:
                 raise
-            else:
-                g.error("ParserError in", p.h)
-                g.es('', str(msg))
+            g.error("ParserError in", p.h)
+            g.es('', str(msg))
         except IndentationError:
             junk, msg, junk = sys.exc_info()
             if suppress:
                 raise
-            else:
-                g.error("IndentationError in", p.h)
-                g.es('', str(msg))
+            g.error("IndentationError in", p.h)
+            g.es('', str(msg))
         except tokenize.TokenError:
             junk, msg, junk = sys.exc_info()
             if suppress:
                 raise
-            else:
-                g.error("TokenError in", p.h)
-                g.es('', str(msg))
+            g.error("TokenError in", p.h)
+            g.es('', str(msg))
         except tabnanny.NannyNag:
             junk, nag, junk = sys.exc_info()
             if suppress:
                 raise
-            else:
-                badline = nag.get_lineno()
-                line = nag.get_line()
-                message = nag.get_msg()
-                g.error("indentation error in", p.h, "line", badline)
-                g.es(message)
-                line2 = repr(str(line))[1: -1]
-                g.es("offending line:\n", line2)
+            badline = nag.get_lineno()
+            line = nag.get_line()
+            message = nag.get_msg()
+            g.error("indentation error in", p.h, "line", badline)
+            g.es(message)
+            line2 = repr(str(line))[1: -1]
+            g.es("offending line:\n", line2)
         except Exception:
             g.trace("unexpected exception")
             g.es_exception()
