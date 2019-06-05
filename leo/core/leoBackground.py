@@ -157,6 +157,7 @@ class BackgroundProcessManager:
         # Warning: don't use g.es or g.es_print here!
         s = s and s.rstrip()
         if not s:
+            print('bpm.put_log: no s')
             return
         # Make sure c still exists
         data = self.data
@@ -174,7 +175,12 @@ class BackgroundProcessManager:
         # Put a clickable link if the message matches the link pattern.
         m = link_pattern.match(s)
         if m:
-            line = int(m.group(1))
+            print('m.group(0)', m.group(0))
+            try:
+                line = int(m.group(1))
+            except ValueError:
+                print('Bad line number: %r' % m.group(1))
+                return
             unl = link_root.get_UNL(with_proto=True, with_count=True)
             nodeLink = "%s,%d" % (unl, -line)
             c.frame.log.put(s + '\n', nodeLink=nodeLink)
@@ -196,7 +202,7 @@ class BackgroundProcessManager:
 
             def callback(data=data, kind=kind):
                 fn = data.fn
-                self.put_log('%s: %s\n' % (kind, g.shortFileName(fn)))
+                self.put_log('queued: %s: %s\n' % (kind, g.shortFileName(fn)))
                 self.pid = subprocess.Popen(
                     command,
                     shell=shell,

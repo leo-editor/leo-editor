@@ -313,21 +313,28 @@ class PylintCommand:
     #@+others
     #@+node:ekr.20150514125218.9: *3* pylint.check
     def check(self, p, rc_fn):
-        '''Check a single node.  Return True if it is a Python @<file> node.'''
+        '''
+        Run pylint on node p, provided it is an @file node for a python file.
+        Return True if run_python was called.
+        '''
         c = self.c
-        found = False
-        if p.isAnyAtFileNode():
-            # Fix bug: https://github.com/leo-editor/leo-editor/issues/67
-            aList = g.get_directives_dict_list(p)
-            path = c.scanAtPathDirectives(aList)
-            fn = p.anyAtFileNodeName()
-            if fn.endswith('.py'):
-                fn = g.os_path_finalize_join(path, fn)
-                if p.v not in self.seen:
-                    self.seen.append(p.v)
-                    self.run_pylint(fn, rc_fn)
-                    found = True
-        return found
+        if not p.isAnyAtFileNode():
+            g.trace('not an @<file> node: %r' % p.h)
+            return False
+        # Fix bug: https://github.com/leo-editor/leo-editor/issues/67
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        fn = p.anyAtFileNodeName()
+        if not fn.endswith('.py'):
+            g.trace('not a python file: %r' % p.h)
+            return False
+        fn = g.os_path_finalize_join(path, fn)
+        if p.v in self.seen:
+            g.trace('already seen: %r' % p.h)
+            return False
+        self.seen.append(p.v)
+        self.run_pylint(fn, rc_fn)
+        return True
     #@+node:ekr.20150514125218.10: *3* pylint.get_rc_file
     def get_rc_file(self):
         '''Return the path to the pylint configuration file.'''
@@ -399,6 +406,9 @@ class PylintCommand:
         # Run the command using the BPM.
         bpm = g.app.backgroundProcessManager
         roots = g.findRootsWithPredicate(c, c.p, predicate=None)
+        # g.trace(roots and roots[0].h)
+        # g.trace(command)
+        # g.trace(fn)
         bpm.start_process(c, command,
             fn=fn,
             kind='pylint',
