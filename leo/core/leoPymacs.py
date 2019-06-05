@@ -62,8 +62,7 @@ def init():
     global inited
     if inited:
         return
-    else:
-        inited = True # Only try once, no matter what happens.
+    inited = True # Only try once, no matter what happens.
     # Add the parent path of this file to sys.path
     import os
     import sys

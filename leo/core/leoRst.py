@@ -684,10 +684,9 @@ class RstCommands:
     def isAnyDocPart(self, s):
         if s.startswith('@doc'):
             return True
-        elif not s.startswith('@'):
+        if not s.startswith('@'):
             return False
-        else:
-            return len(s) == 1 or s[1].isspace()
+        return len(s) == 1 or s[1].isspace()
     #@+node:ekr.20090502071837.79: *6* rst.isAnySpecialDocPart
     def isAnySpecialDocPart(self, s):
         for kind in (
@@ -914,8 +913,7 @@ class RstCommands:
         if not s.strip(): s = ''
         if numberOption:
             return '\t%d: %s' % (n, s)
-        else:
-            return '\t%s' % s
+        return '\t%s' % s
     #@+node:ekr.20090502071837.74: *8* rst.rstripList
     def rstripList(self, theList):
         '''Removed trailing blank lines from theList.'''
@@ -1248,45 +1246,44 @@ class RstCommands:
         h = p.h.strip()
         if p == self.topNode:
             return {} # Don't mess with the root node.
-        elif g.match_word(h, 0, '@rst-option'):
+        if g.match_word(h, 0, '@rst-option'):
             s = h[len('@rst-option'):]
             d = self.scanOption(p, s)
             return d
-        elif g.match_word(h, 0, '@rst-options'):
+        if g.match_word(h, 0, '@rst-options'):
             d = self.scanOptions(p, p.b)
             return d
-        else:
-            # Careful: can't use g.match_word because options may have '-' chars.
-            i = g.skip_id(h, 0, chars='@-')
-            word = h[0: i]
-            for option, ivar, val in (
-                ('@rst', 'code_mode', False),
-                ('@rst-code', 'code_mode', True),
-                ('@rst-default-path', 'default_prefix', ''),
-                ('@rst-doc-only', 'doc_only_mode', True),
-                ('@rst-head', 'show_this_headline', True),
-                # ('@rst-head' ,        'show_headlines',False),
-                ('@rst-ignore', 'ignore_this_node', True),
-                ('@rst-ignore-node', 'ignore_this_node', True),
-                ('@rst-ignore-tree', 'ignore_this_tree', True),
-                ('@rst-no-head', 'ignore_this_headline', True),
-                ('@rst-table', 'table', True), # Leo 5.3.
-                ('@rst-preformat', 'preformat_this_node', True),
-            ):
-                if word == option:
-                    d = {ivar: val}
-                    # Special case: code mode and doc-only modes are linked.
-                    if ivar == 'code_mode':
-                        d['doc_only_mode'] = False
-                    elif ivar == 'doc_only_mode':
-                        d['code_mode'] = False
-                    # Special case: Treat a bare @rst like @rst-no-head
-                    if h == '@rst':
-                        d['ignore_this_headline'] = True
-                    return d
-            if h.startswith('@rst'):
-                g.trace('unknown kind of @rst headline', p.h, g.callers(4))
-            return {}
+        # Careful: can't use g.match_word because options may have '-' chars.
+        i = g.skip_id(h, 0, chars='@-')
+        word = h[0: i]
+        for option, ivar, val in (
+            ('@rst', 'code_mode', False),
+            ('@rst-code', 'code_mode', True),
+            ('@rst-default-path', 'default_prefix', ''),
+            ('@rst-doc-only', 'doc_only_mode', True),
+            ('@rst-head', 'show_this_headline', True),
+            # ('@rst-head' ,        'show_headlines',False),
+            ('@rst-ignore', 'ignore_this_node', True),
+            ('@rst-ignore-node', 'ignore_this_node', True),
+            ('@rst-ignore-tree', 'ignore_this_tree', True),
+            ('@rst-no-head', 'ignore_this_headline', True),
+            ('@rst-table', 'table', True), # Leo 5.3.
+            ('@rst-preformat', 'preformat_this_node', True),
+        ):
+            if word == option:
+                d = {ivar: val}
+                # Special case: code mode and doc-only modes are linked.
+                if ivar == 'code_mode':
+                    d['doc_only_mode'] = False
+                elif ivar == 'doc_only_mode':
+                    d['code_mode'] = False
+                # Special case: Treat a bare @rst like @rst-no-head
+                if h == '@rst':
+                    d['ignore_this_headline'] = True
+                return d
+        if h.startswith('@rst'):
+            g.trace('unknown kind of @rst headline', p.h, g.callers(4))
+        return {}
     #@+node:ekr.20090502071837.49: *7* rst.scanForOptionDocParts
     def scanForOptionDocParts(self, p, s):
         '''
@@ -1340,13 +1337,11 @@ class RstCommands:
                 elif val.lower() == 'false': val = False
                 d = {self.munge(name): val}
                 return d
-            else:
-                g.error('ignoring unknown option:', name)
-                return {}
-        else:
-            g.trace(repr(s))
-            g.error('bad rst3 option', s, 'in', p.h)
+            g.error('ignoring unknown option:', name)
             return {}
+        g.trace(repr(s))
+        g.error('bad rst3 option', s, 'in', p.h)
+        return {}
     #@+node:ekr.20090502071837.48: *7* rst.parseOptionLine
     def parseOptionLine(self, s):
         '''
@@ -1364,8 +1359,7 @@ class RstCommands:
         if g.match(s, j, '='):
             val = s[j + 1:].strip()
             return name, val
-        else:
-            return name, 'True'
+        return name, 'True'
     #@+node:ekr.20090502071837.59: *3* rst.Shared write code
     #@+node:ekr.20090502071837.96: *4* rst.http_addNodeMarker
     def http_addNodeMarker(self, p):
@@ -1534,11 +1528,10 @@ class RstCommands:
         theDir = c.os_path_finalize(theDir)
         if g.os_path_exists(theDir):
             return True
-        else:
-            ok = g.makeAllNonExistentDirectories(theDir, c=c, force=False)
-            if not ok:
-                g.error('did not create:', theDir)
-            return ok
+        ok = g.makeAllNonExistentDirectories(theDir, c=c, force=False)
+        if not ok:
+            g.error('did not create:', theDir)
+        return ok
     #@+node:ekr.20100813041139.5912: *5* rst.createIntermediateFile
     def createIntermediateFile(self, fn, p, s):
         '''Write s to to the file whose name is fn.'''
@@ -1759,17 +1752,15 @@ class RstCommands:
             n = max(4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
             if level == 0 and self.underlines2:
                 return '%s\n%s\n%s\n\n' % (ch * n, p.h, ch * n)
-            else:
-                return '%s\n%s\n\n' % (p.h, ch * n)
-        else:
-            # The user is responsible for top-level overlining.
-            u = self.getOption(p, 'underline_characters') #  '''#=+*^~"'`-:><_'''
-            level = max(0, p.level() - self.topLevel)
-            level = min(level + 1, len(u) - 1) # Reserve the first character for explicit titles.
-            ch = u[level]
-            n = max(4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
-            return '%s\n%s\n\n' % (s.strip(), ch * n)
-                # Fixes bug 618570:
+            return '%s\n%s\n\n' % (p.h, ch * n)
+        # The user is responsible for top-level overlining.
+        u = self.getOption(p, 'underline_characters') #  '''#=+*^~"'`-:><_'''
+        level = max(0, p.level() - self.topLevel)
+        level = min(level + 1, len(u) - 1) # Reserve the first character for explicit titles.
+        ch = u[level]
+        n = max(4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
+        return '%s\n%s\n\n' % (s.strip(), ch * n)
+            # Fixes bug 618570:
     #@-others
 #@+node:ekr.20120219194520.10444: ** html parser classes
 # pylint: disable=abstract-method
@@ -1816,8 +1807,7 @@ class LinkAnchorParserClass(HTMLParser.HTMLParser):
         '''Return True if tag, attrs is represents a link.'''
         if tag == 'a':
             return 'href' in dict(attrs)
-        else:
-            return False
+        return False
     #@+node:ekr.20120219194520.10449: *4* is_node_marker
     def is_node_marker(self, attrs):
         '''
@@ -1827,8 +1817,7 @@ class LinkAnchorParserClass(HTMLParser.HTMLParser):
         d = dict(attrs)
         if d.get('id', '').startswith(self.node_begin_marker):
             return d['id']
-        else:
-            return False
+        return False
     #@-others
 #@+node:ekr.20120219194520.10450: *3* class HtmlParserClass (LinkAnchorParserClass)
 class HtmlParserClass(LinkAnchorParserClass):

@@ -308,10 +308,8 @@ class PersistenceDataController:
         unl_list = unl.split('-->')
         if not unl_list or len(unl_list) == 1 and not unl_list[0]:
             return root
-        if 1:
-            return self.find_exact_match(root, unl_list)
-        else:
-            return self.find_best_match(root, unl_list)
+        return self.find_exact_match(root, unl_list)
+            # return self.find_best_match(root, unl_list)
     #@+node:ekr.20140716021139.17764: *6* pd.find_best_match
     def find_best_match(self, root, unl_list):
         '''Find the best partial matches of the tail in root's tree.'''
@@ -339,8 +337,7 @@ class PersistenceDataController:
 
             n, p = list(sorted(matches, key=key))[-1]
             return p
-        else:
-            return None
+        return None
     #@+node:ekr.20140716021139.17765: *6* pd.find_exact_match
     def find_exact_match(self, root, unl_list):
         '''
@@ -428,8 +425,7 @@ class PersistenceDataController:
         if self.at_persistence:
             p = self.has_at_data_node(root)
             return p and g.findNodeInTree(self.c, p, '@gnxs')
-        else:
-            return None
+        return None
     #@+node:ekr.20140711111623.17894: *5* pd.has_at_uas_node
     def has_at_uas_node(self, root):
         '''
@@ -439,8 +435,7 @@ class PersistenceDataController:
         if self.at_persistence:
             p = self.has_at_data_node(root)
             return p and g.findNodeInTree(self.c, p, '@uas')
-        else:
-            return None
+        return None
     #@+node:ekr.20140711111623.17869: *5* pd.has_at_persistence_node
     def has_at_persistence_node(self):
         '''Return the @persistence node or None if it does not exist.'''

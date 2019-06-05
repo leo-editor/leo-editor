@@ -345,8 +345,7 @@ class LeoPluginsController:
                 aList = self.getHandlersForOneTag(tag)
                 result.extend(aList)
             return result
-        else:
-            return self.getHandlersForOneTag(tags)
+        return self.getHandlersForOneTag(tags)
 
     def getHandlersForOneTag(self, tag):
         aList = self.handlers.get(tag, [])

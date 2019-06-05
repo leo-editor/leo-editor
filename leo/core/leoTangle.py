@@ -1491,7 +1491,7 @@ class BaseTangleCommands:
         #@-<< Output leading white space except for blank lines >>
         if i >= len(s):
             return i
-        elif kind == at_web or kind == at_at:
+        if kind == at_web or kind == at_at:
             i += 2 # Allow the line to be scanned.
         elif kind == at_doc or kind == at_code:
             pass
@@ -1770,10 +1770,9 @@ class BaseTangleCommands:
         if key in self.tst:
             section = self.tst[key]
             return section
-        else:
-            section = TstNode(key, is_root_flag)
-            self.tst[key] = section
-            return section
+        section = TstNode(key, is_root_flag)
+        self.tst[key] = section
+        return section
     #@+node:ekr.20031218072017.3538: *3* ust
     #@+node:ekr.20031218072017.3539: *4* ust_dump
     def ust_dump(self):
@@ -2584,8 +2583,8 @@ class BaseTangleCommands:
                     i1 += 1; i2 += 1
                 else: return False
             return False
-        else: # A root name.
-            return s1 == s2
+        # A root name.
+        return s1 == s2
     #@+node:ekr.20031218072017.3578: *4* copy
     def copy(self, s):
         assert self.def_stack

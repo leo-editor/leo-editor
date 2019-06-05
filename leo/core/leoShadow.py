@@ -79,9 +79,8 @@ class ShadowController:
         x = self; c = x.c; filename = c.fileName()
         if filename:
             return g.os_path_dirname(c.os_path_finalize(filename))
-        else:
-            self.error('Can not compute shadow path: .leo file has not been saved')
-            return None
+        self.error('Can not compute shadow path: .leo file has not been saved')
+        return None
     #@+node:ekr.20080711063656.4: *4* x.dirName and pathName
     def dirName(self, filename):
         '''Return the directory for filename.'''
@@ -697,18 +696,16 @@ class ShadowController:
             '''Return the pair of delims to be used in sentinel lines.'''
             if self.delim1:
                 return self.delim1, ''
-            else:
-                return self.delim2, self.delim3
+            return self.delim2, self.delim3
         #@+node:ekr.20090529061522.6259: *4* isSentinel
         def isSentinel(self, s, suffix=''):
             '''Return True is line s contains a valid sentinel comment.'''
             s = s.strip()
             if self.delim1 and s.startswith(self.delim1):
                 return s.startswith(self.delim1 + '@' + suffix)
-            elif self.delim2:
+            if self.delim2:
                 return s.startswith(self.delim2 + '@' + suffix) and s.endswith(self.delim3)
-            else:
-                return False
+            return False
         #@+node:ekr.20090529061522.6260: *4* isVerbatimSentinel
         def isVerbatimSentinel(self, s):
             '''Return True if s is an @verbatim sentinel.'''

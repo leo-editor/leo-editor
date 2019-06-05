@@ -179,8 +179,7 @@ class Undoer:
         n = len(u.beads)
         if n > 0:
             return self.dumpBead(n - 1)
-        else:
-            return '<no top bead>'
+        return '<no top bead>'
     #@+node:EKR.20040526150818: *4* u.getBead
     def getBead(self, n):
         '''Set Undoer ivars from the bunch at the top of the undo stack.'''
@@ -196,8 +195,7 @@ class Undoer:
         u = self
         if n < 0 or n >= len(u.beads):
             return None
-        else:
-            return u.beads[n]
+        return u.beads[n]
     #@+node:ekr.20060127113243: *4* u.pushBead
     def pushBead(self, bunch):
         u = self
@@ -240,14 +238,12 @@ class Undoer:
     def redoMenuName(self, name):
         if name == "Can't Redo":
             return name
-        else:
-            return "Redo " + name
+        return "Redo " + name
 
     def undoMenuName(self, name):
         if name == "Can't Undo":
             return name
-        else:
-            return "Undo " + name
+        return "Undo " + name
     #@+node:ekr.20060127070008: *4* u.setIvarsFromBunch
     def setIvarsFromBunch(self, bunch):
         u = self
