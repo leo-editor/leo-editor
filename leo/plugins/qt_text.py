@@ -187,9 +187,8 @@ class QTextMixin:
         i, j = self.getSelectionRange()
         if i == j:
             return ''
-        else:
-            s = self.getAllText()
-            return s[i: j]
+        s = self.getAllText()
+        return s[i: j]
     #@+node:ekr.20140901141402.18702: *5* qtm.insert
     def insert(self, i, s):
         '''QTextMixin'''
@@ -284,16 +283,13 @@ class QLineEditWrapper(QTextMixin):
         if self.check():
             w = self.widget
             return w.text()
-        else:
-            return ''
+        return ''
     #@+node:ekr.20110605121601.18121: *4* qlew.getInsertPoint
     def getInsertPoint(self):
         '''QHeadlineWrapper.'''
         if self.check():
-            i = self.widget.cursorPosition()
-            return i
-        else:
-            return 0
+            return self.widget.cursorPosition()
+        return 0
     #@+node:ekr.20110605121601.18122: *4* qlew.getSelectionRange
     def getSelectionRange(self, sort=True):
         '''QHeadlineWrapper.'''
@@ -306,15 +302,13 @@ class QLineEditWrapper(QTextMixin):
             else:
                 i = j = w.cursorPosition()
             return i, j
-        else:
-            return 0, 0
+        return 0, 0
     #@+node:ekr.20110605121601.18123: *4* qlew.hasSelection
     def hasSelection(self):
         '''QHeadlineWrapper.'''
         if self.check():
             return self.widget.hasSelectedText()
-        else:
-            return False
+        return False
     #@+node:ekr.20110605121601.18124: *4* qlew.see & seeInsertPoint
     def see(self, i):
         '''QHeadlineWrapper.'''
@@ -407,8 +401,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         if obj in (self.edit, self.edit.viewport()):
             self.number_bar.update()
             return False
-        else:
-            return QtWidgets.QFrame.eventFilter(obj, event)
+        return QtWidgets.QFrame.eventFilter(obj, event)
     #@-others
 #@+node:ekr.20110605121601.18005: ** class LeoQTextBrowser (QtWidgets.QTextBrowser)
 if QtWidgets:
@@ -1559,23 +1552,21 @@ class QTextEditWrapper(QTextMixin):
         te = self.widget
         if index is None:
             return 0
-        elif g.isInt(index):
+        if g.isInt(index):
             return index
-        elif index == '1.0':
+        if index == '1.0':
             return 0
-        elif index == 'end':
+        if index == 'end':
             return w.getLastPosition()
-        else:
-            doc = te.document()
-            data = index.split('.')
-            if len(data) == 2:
-                row, col = data
-                row, col = int(row), int(col)
-                bl = doc.findBlockByNumber(row - 1)
-                return bl.position() + col
-            else:
-                g.trace('bad string index: %s' % index)
-                return 0
+        doc = te.document()
+        data = index.split('.')
+        if len(data) == 2:
+            row, col = data
+            row, col = int(row), int(col)
+            bl = doc.findBlockByNumber(row - 1)
+            return bl.position() + col
+        g.trace('bad string index: %s' % index)
+        return 0
     #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index):
         w = self

@@ -82,8 +82,7 @@ class IdleTime:
         tag = self.tag
         if tag:
             return '<IdleTime: %s>' % (tag if g.isString(tag) else repr(tag))
-        else:
-            return '<IdleTime: id: %s>' % id(self)
+        return '<IdleTime: id: %s>' % id(self)
 
     __str__ = __repr__
     #@+node:ekr.20140825042850.18407: *3* IdleTime.at_idle_time

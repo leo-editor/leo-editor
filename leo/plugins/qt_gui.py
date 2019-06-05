@@ -33,11 +33,10 @@ def init():
         return False
     if g.app.gui:
         return g.app.gui.guiName() == 'qt'
-    else:
-        g.app.gui = LeoQtGui()
-        g.app.gui.finishCreate()
-        g.plugin_signon(__name__)
-        return True
+    g.app.gui = LeoQtGui()
+    g.app.gui.finishCreate()
+    g.plugin_signon(__name__)
+    return True
 #@+node:ekr.20140907085654.18700: ** class LeoQtGui(leoGui.LeoGui)
 class LeoQtGui(leoGui.LeoGui):
     '''A class implementing Leo's Qt gui.'''
@@ -167,9 +166,8 @@ class LeoQtGui(leoGui.LeoGui):
         if cb:
             QtWidgets.QApplication.processEvents()
             return cb.text()
-        else:
-            g.trace('no clipboard!')
-            return ''
+        g.trace('no clipboard!')
+        return ''
     #@+node:ekr.20160917130023.1: *4* qt_gui.setClipboardSelection
     def setClipboardSelection(self, s):
         '''
@@ -377,8 +375,7 @@ class LeoQtGui(leoGui.LeoGui):
         c.in_qt_dialog = False
         if val != d.Accepted:
             return None
-        else:
-            return d.dt.dateTime().toPyDateTime()
+        return d.dt.dateTime().toPyDateTime()
     #@+node:ekr.20110605121601.18494: *4* qt_gui.runAskLeoIDDialog
     def runAskLeoIDDialog(self):
         """Create and run a dialog to get g.app.LeoID."""
@@ -698,26 +695,25 @@ class LeoQtGui(leoGui.LeoGui):
             filetypes = []
         if g.unitTesting:
             return ''
-        else:
-            parent = None
-            filter_ = self.makeFilter(filetypes)
-            d = QtWidgets.QFileDialog()
-            d.setStyleSheet(c.active_stylesheet)
-            self.attachLeoIcon(d)
-            c.in_qt_dialog = True
-            obj = d.getSaveFileName(
-                parent,
-                title,
-                # os.curdir,
-                g.init_dialog_folder(c, c.p, use_at_path=True),
-                filter_)
-            c.in_qt_dialog = False
-            # Very bizarre: PyQt5 version can return a tuple!
-            s = obj[0] if isinstance(obj, (list, tuple)) else obj
-            s = s or ''
-            if s:
-                c.last_dir = g.os_path_dirname(s)
-            return s
+        parent = None
+        filter_ = self.makeFilter(filetypes)
+        d = QtWidgets.QFileDialog()
+        d.setStyleSheet(c.active_stylesheet)
+        self.attachLeoIcon(d)
+        c.in_qt_dialog = True
+        obj = d.getSaveFileName(
+            parent,
+            title,
+            # os.curdir,
+            g.init_dialog_folder(c, c.p, use_at_path=True),
+            filter_)
+        c.in_qt_dialog = False
+        # Very bizarre: PyQt5 version can return a tuple!
+        s = obj[0] if isinstance(obj, (list, tuple)) else obj
+        s = s or ''
+        if s:
+            c.last_dir = g.os_path_dirname(s)
+        return s
     #@+node:ekr.20110605121601.18503: *4* qt_gui.runScrolledMessageDialog
     def runScrolledMessageDialog(self,
         short_title='',
@@ -1088,7 +1084,7 @@ class LeoQtGui(leoGui.LeoGui):
             if exists(path):
                 if trace: g.trace('%s is  in %s\n' % (name, base_dir))
                 return path
-            elif trace:
+            if trace:
                 g.trace(name, 'not in', base_dir)
         g.trace('not found:', name)
         return None
@@ -1097,8 +1093,7 @@ class LeoQtGui(leoGui.LeoGui):
         image = QtGui.QPixmap(path)
         if image.height() > 0 and image.width() > 0:
             return image, image.height()
-        else:
-            return None, None
+        return None, None
     #@+node:ekr.20131007055150.17608: *3* qt_gui.insertKeyEvent
     def insertKeyEvent(self, event, i):
         '''Insert the key given by event in location i of widget event.w.'''
@@ -1393,8 +1388,7 @@ class LeoQtGui(leoGui.LeoGui):
         '''Return True if w is some kind of Qt text widget.'''
         if Qsci:
             return isinstance(w, (Qsci.QsciScintilla, QtWidgets.QTextEdit)), w
-        else:
-            return isinstance(w, QtWidgets.QTextEdit), w
+        return isinstance(w, QtWidgets.QTextEdit), w
 
     def isTextWrapper(self, w):
         '''Return True if w is a Text widget suitable for text-oriented commands.'''

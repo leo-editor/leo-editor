@@ -192,8 +192,7 @@ class FreeLayoutController:
         if hasattr(f, 'top') and f.top:
             child = f.top.findChild(NestedSplitter)
             return child and child.top()
-        else:
-            return None
+        return None
     #@+node:ekr.20120419095424.9927: *3* flc.loadLayouts (sets wrap=True)
     def loadLayouts(self, tag, keys, reloading=False):
         """loadLayouts - Load the outlines layout

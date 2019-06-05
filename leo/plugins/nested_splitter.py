@@ -843,8 +843,7 @@ if QtWidgets: # NOQA
             if widget.close():
                 widget.setParent(None)
                 return True
-            else:
-                return False
+            return False
         #@+node:ekr.20110605121601.17982: *3* ns.replace_widget & replace_widget_at_index
         def replace_widget(self, old, new):
             "Swap the provided widgets in place" ""

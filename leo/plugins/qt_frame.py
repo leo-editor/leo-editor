@@ -1207,7 +1207,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 # Must intercept KeyPress for events that generate FocusOut!
                 if type_ == e.KeyPress:
                     return self.keyPress(event)
-                elif type_ == e.KeyRelease:
+                if type_ == e.KeyRelease:
                     return self.keyRelease(event)
                 return self.oldEvent(event)
             #@+node:ekr.20131118172620.16894: *8* keyPress (EventWrapper)
@@ -1285,12 +1285,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if isQt5:
             # QApplication.UnicodeUTF8 no longer exists.
             return QtWidgets.QApplication.translate('MainWindow', s, None)
-        else:
-            return QtWidgets.QApplication.translate(
-                'MainWindow',
-                s,
-                None,
-                QtWidgets.QApplication.UnicodeUTF8)
+        return QtWidgets.QApplication.translate(
+            'MainWindow',
+            s,
+            None,
+            QtWidgets.QApplication.UnicodeUTF8)
     #@+node:ekr.20110605121601.18173: *3* dw.select
     def select(self, c):
         '''Select the window or tab for c. self is c.frame.top.'''
@@ -2614,8 +2613,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if p:
                 goto = gotoCommands.GoToCommands(c)
                 return goto.find_node_start(p)
-            else:
-                return None
+            return None
         #@+node:ekr.20190118082047.1: *5* qstatus.put_status_line
         def put_status_line(self, col, fcol, row, words):
             
@@ -2745,8 +2743,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             f = c.frame
             if f.use_chapters and f.use_chapter_tabs:
                 return LeoQtTreeTab(c, f.iconBar)
-            else:
-                return None
+            return None
         #@+node:ekr.20110605121601.18270: *4* deleteButton
         def deleteButton(self, w):
             """ w is button """
@@ -3017,9 +3014,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if g.doHook("bodyclick1", c=c, p=p, event=event):
                 g.doHook("bodyclick2", c=c, p=p, event=event)
                 return
-            else:
-                c.k.showStateAndMode(w=c.frame.body.wrapper)
-                g.doHook("bodyclick2", c=c, p=p, event=event)
+            c.k.showStateAndMode(w=c.frame.body.wrapper)
+            g.doHook("bodyclick2", c=c, p=p, event=event)
         except Exception:
             g.es_event_exception("bodyclick")
 
@@ -3029,9 +3025,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if g.doHook("bodyrclick1", c=c, p=p, event=event):
                 g.doHook("bodyrclick2", c=c, p=p, event=event)
                 return
-            else:
-                c.k.showStateAndMode(w=c.frame.body.wrapper)
-                g.doHook("bodyrclick2", c=c, p=p, event=event)
+            c.k.showStateAndMode(w=c.frame.body.wrapper)
+            g.doHook("bodyrclick2", c=c, p=p, event=event)
         except Exception:
             g.es_event_exception("iconrclick")
     #@+node:ekr.20110605121601.18292: *4* qtFrame.OnBodyDoubleClick (Events) (not used)
@@ -4342,32 +4337,31 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if self.isLeoFile(fn, s) and not self.was_control_drag:
             g.openWithFileName(fn, old_c=c)
             return False # Don't set the changed marker in the original file.
-        else:
-            u, undoType = c.undoer, 'Drag File'
-            undoData = u.beforeInsertNode(p, pasteAsClone=False, copiedBunchList=[])
-            if p.hasChildren() and p.isExpanded():
-                p2 = p.insertAsNthChild(0)
-                parent = p
-            elif p.h.startswith('@path '):
-                # Fix bug https://github.com/leo-editor/leo-editor/issues/60
-                # create relative paths & urls when dragging files
-                p2 = p.insertAsNthChild(0)
-                p.expand()
-                parent = p
-            else:
-                p2 = p.insertAfter()
-                parent = p.parent()
+        u, undoType = c.undoer, 'Drag File'
+        undoData = u.beforeInsertNode(p, pasteAsClone=False, copiedBunchList=[])
+        if p.hasChildren() and p.isExpanded():
+            p2 = p.insertAsNthChild(0)
+            parent = p
+        elif p.h.startswith('@path '):
             # Fix bug https://github.com/leo-editor/leo-editor/issues/60
             # create relative paths & urls when dragging files
-            aList = g.get_directives_dict_list(parent)
-            path = g.scanAtPathDirectives(c, aList)
-            if path:
-                fn = os.path.relpath(fn, path)
-                fn = g.toUnicodeFileEncoding(fn)
-            self.createAtFileNode(fn, p2, s)
-            u.afterInsertNode(p2, undoType, undoData)
-            c.selectPosition(p2)
-            return True # The original .leo file has changed.
+            p2 = p.insertAsNthChild(0)
+            p.expand()
+            parent = p
+        else:
+            p2 = p.insertAfter()
+            parent = p.parent()
+        # Fix bug https://github.com/leo-editor/leo-editor/issues/60
+        # create relative paths & urls when dragging files
+        aList = g.get_directives_dict_list(parent)
+        path = g.scanAtPathDirectives(c, aList)
+        if path:
+            fn = os.path.relpath(fn, path)
+            fn = g.toUnicodeFileEncoding(fn)
+        self.createAtFileNode(fn, p2, s)
+        u.afterInsertNode(p2, undoType, undoData)
+        c.selectPosition(p2)
+        return True # The original .leo file has changed.
     #@+node:ekr.20110605121601.18372: *8* LeoQTreeWidget.createAtFileNode & helpers (QTreeWidget)
     def createAtFileNode(self, fn, p, s):
         '''
@@ -4497,12 +4491,11 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         i = s.find('@+leo')
         if i == -1:
             return False
-        else:
-            # Like at.isFileLike.
-            j, k = g.getLine(s, i)
-            line = s[j: k]
-            valid, new_df, start, end, isThin = at.parseLeoSentinel(line)
-            return valid and new_df and isThin
+        # Like at.isFileLike.
+        j, k = g.getLine(s, i)
+        line = s[j: k]
+        valid, new_df, start, end, isThin = at.parseLeoSentinel(line)
+        return valid and new_df and isThin
     #@+node:ekr.20110605121601.18378: *9* LeoQTreeWidget.warnIfNodeExists
     def warnIfNodeExists(self, p):
         c = self.c; h = p.h

@@ -131,14 +131,12 @@ class LeoQtTree(leoFrame.LeoTree):
         if item:
             # A QTreeWidgetItem.
             return 'item %s: %s' % (id(item), self.getItemText(item))
-        else:
-            return '<no item>'
+        return '<no item>'
 
     def traceCallers(self):
         if self.traceCallersFlag:
             return g.callers(5, excludeCaller=True)
-        else:
-            return ''
+        return ''
     #@+node:ekr.20110605121601.17872: *3* qtree.Drawing
     #@+node:ekr.20110605121601.18408: *4* qtree.clear
     def clear(self):
@@ -396,20 +394,19 @@ class LeoQtTree(leoFrame.LeoTree):
             text = pattern.sub(arg, text)
             item.setText(0, text)
             return True
-        elif cmd == 'REPLACE-HEAD':
+        if cmd == 'REPLACE-HEAD':
             s = text[:m.start()]
             item.setText(0, s.rstrip())
             return True
-        elif cmd == 'REPLACE-TAIL':
+        if cmd == 'REPLACE-TAIL':
             s = text[m.end():]
             item.setText(0, s.lstrip())
             return True
-        elif cmd == 'REPLACE-REST':
+        if cmd == 'REPLACE-REST':
             s = text[:m.start] + text[m.end():]
             item.setText(0, s.strip())
             return True
-        else:
-            return False
+        return False
         
     #@+node:ekr.20171122055719.1: *6* qtree.declutter_style
     def declutter_style(self, arg, c, cmd, item, new_icons):
@@ -1030,8 +1027,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # User icons are not supported in the base class.
         if g.app.gui.isNullGui:
             return None
-        else:
-            return self.getStatusIconImage(p)
+        return self.getStatusIconImage(p)
     #@+node:ekr.20110605121601.17948: *4* qtree.getStatusIconImage
     def getStatusIconImage(self, p):
         val = p.v.computeIcon()
@@ -1237,10 +1233,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18424: *4* qtree.getItemText
     def getItemText(self, item):
         '''Return the text of the item.'''
-        if item:
-            return item.text(0)
-        else:
-            return '<no item>'
+        return item.text(0) if item else '<no item>'
     #@+node:ekr.20110605121601.18425: *4* qtree.getParentItem
     def getParentItem(self, item):
         return item and item.parent()
@@ -1270,9 +1263,8 @@ class LeoQtTree(leoFrame.LeoTree):
                     wrapper = self.headlineWrapper(c, item, name='head', widget=e)
                     self.editWidgetsDict[e] = wrapper
             return wrapper
-        else:
-            g.trace('no e')
-            return None
+        g.trace('no e')
+        return None
     #@+node:ekr.20110605121601.18429: *4* qtree.nthChildItem
     def nthChildItem(self, n, parent_item):
         children = self.childItems(parent_item)
@@ -1379,12 +1371,10 @@ class LeoQtTree(leoFrame.LeoTree):
                 # Create a wrapper widget for Leo's core.
                 w = self.getWrapper(e, item)
                 return w
-            else:
-                # This is not an error
-                # But warning: calling this method twice might not work!
-                return None
-        else:
+            # This is not an error
+            # But warning: calling this method twice might not work!
             return None
+        return None
     #@+node:ekr.20110605121601.17909: *4* qtree.editLabel
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""

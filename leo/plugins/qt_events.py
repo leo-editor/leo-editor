@@ -141,11 +141,10 @@ class LeoQtEventFilter(QtCore.QObject):
         eventType = event.type()
         isEditWidget = (obj == c.frame.tree.edit_widget(c.p))
         if isEditWidget:
-            # QLineEdit: ignore all key events except keyRelease events.
             return eventType != ev.KeyRelease
-        else:
+                # QLineEdit: ignore all key events except keyRelease events.
+        return eventType != ev.KeyPress
             # QTextEdit: ignore all key events except keyPress events.
-            return eventType != ev.KeyPress
     #@+node:ekr.20110605121601.18543: *4* filter.toBinding & helpers
     def toBinding(self, event):
         '''
