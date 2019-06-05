@@ -436,9 +436,8 @@ class LinterTable():
                         print('does not exist: %s' % fn)
             paths = sorted(set(paths))
             return paths
-        else:
-            print('LinterTable.get_table: bad scope', scope)
-            return []
+        print('LinterTable.get_table: bad scope', scope)
+        return []
     #@-others
 #@+node:ekr.20070627140344: ** class RunTestExternallyHelperClass
 class RunTestExternallyHelperClass:
@@ -504,21 +503,20 @@ class RunTestExternallyHelperClass:
                 # Last is in c2, so there is no problem.
                 last = self.addNode(p, last)
             return True
-        elif 1:
-            last = root
-            current = c.p
-            aList = c.testManager.findMarkForUnitTestNodes()
-            for p in aList: last = self.addNode(p, last)
-            self.addNode(current, last)
-            return True
-        else: # old code
-            aList = c.testManager.findMarkForUnitTestNodes()
-            aList2 = c.testManager.findAllUnitTestNodes(self.all, self.marked)
-            last = root
-            if aList2:
-                for p in aList: last = self.addNode(p, last)
-                for p in aList2: last = self.addNode(p, last)
-            return bool(aList2)
+        last = root
+        current = c.p
+        aList = c.testManager.findMarkForUnitTestNodes()
+        for p in aList: last = self.addNode(p, last)
+        self.addNode(current, last)
+        return True
+        # old code
+            # aList = c.testManager.findMarkForUnitTestNodes()
+            # aList2 = c.testManager.findAllUnitTestNodes(self.all, self.marked)
+            # last = root
+            # if aList2:
+                # for p in aList: last = self.addNode(p, last)
+                # for p in aList2: last = self.addNode(p, last)
+            # return bool(aList2)
     #@+node:ekr.20070705065154.1: *5* addNode
     def addNode(self, p, last):
         '''
@@ -777,8 +775,7 @@ class TestManager:
         p = p.copy()
         if p.b.strip():
             return GeneralTestCase(c, p, setup_script)
-        else:
-            return None
+        return None
     #@+node:ekr.20120912094259.10546: *5* tm.makeTestClass
     def makeTestClass(self, p):
         """Create a subclass of unittest.TestCase"""
