@@ -221,18 +221,17 @@ class LeoMenu:
             # Create the plugins menu using a hook.
             g.doHook("create-optional-menus", c=c)
             return True
-        elif name2.startswith('recentfiles'):
+        if name2.startswith('recentfiles'):
             # Just create the menu.
             # createRecentFilesMenuItems will create the contents later.
             g.app.recentFilesManager.recentFilesMenuName = alt_name or name
                 #848
             self.createNewMenu(alt_name or name, parentName)
             return True
-        elif name2 == 'help' and g.isMac:
+        if name2 == 'help' and g.isMac:
             helpMenu = self.getMacHelpMenu(table)
             return helpMenu is not None
-        else:
-            return False
+        return False
     #@+node:ekr.20031218072017.3780: *4* LeoMenu.hasSelection
     # Returns True if text in the outline or body text is selected.
 
@@ -241,8 +240,7 @@ class LeoMenu:
         if c.frame.body:
             first, last = w.getSelectionRange()
             return first != last
-        else:
-            return False
+        return False
     #@+node:ekr.20051022053758.1: *3* LeoMenu.Helpers
     #@+node:ekr.20031218072017.3783: *4* LeoMenu.canonicalize*
     def canonicalizeMenuName(self, name):
@@ -284,6 +282,9 @@ class LeoMenu:
                 underline=amp_index)
     #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback
     def createMasterMenuCallback(self, dynamicMenu, command, commandName):
+        
+        # pylint: disable=no-else-return
+            # This code is simpler as it is.
 
         c = self.c
 
@@ -526,6 +527,8 @@ class LeoMenu:
                 self.destroyMenu(i)
     #@+node:ekr.20031218072017.4117: *4* LeoMenu.defineMenuCallback
     def defineMenuCallback(self, command, name, minibufferCommand):
+        # pylint: disable=no-else-return
+            # This code is simpler as it is.
         c = self.c
         if minibufferCommand:
             # Create a dummy event as a signal to doCommand.

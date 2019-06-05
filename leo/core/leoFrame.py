@@ -471,15 +471,14 @@ class LeoBody:
         c = self.c
         if c.positionExists(w.leo_p):
             return True
-        else:
-            g.trace('***** does not exist', w.leo_name)
-            for p2 in c.all_unique_positions():
-                if p2.v and p2.v == w.leo_v:
-                    w.leo_p = p2.copy()
-                    return True
-            # This *can* happen when selecting a deleted node.
-            w.leo_p = c.p
-            return False
+        g.trace('***** does not exist', w.leo_name)
+        for p2 in c.all_unique_positions():
+            if p2.v and p2.v == w.leo_v:
+                w.leo_p = p2.copy()
+                return True
+        # This *can* happen when selecting a deleted node.
+        w.leo_p = c.p
+        return False
     #@+node:ekr.20070424080640: *5* LeoBody.deactivateActiveEditor
     # Not used in Qt.
 
@@ -820,20 +819,19 @@ class LeoFrame:
                 if root.isDirty():
                     c.atFileCommands.writeOneAtEditNode(root) 
                 return False # Don't save and don't veto.
-            else:
-                c.mFileName = g.app.gui.runSaveFileDialog(c,
-                    initialfile='',
-                    title="Save",
-                    filetypes=[("Leo files", "*.leo")],
-                    defaultextension=".leo")
-                c.bringToFront()
+            c.mFileName = g.app.gui.runSaveFileDialog(c,
+                initialfile='',
+                title="Save",
+                filetypes=[("Leo files", "*.leo")],
+                defaultextension=".leo")
+            c.bringToFront()
         if c.mFileName:
             if g.app.gui.guiName() == 'curses':
                 g.pr('Saving: %s' % c.mFileName)
             ok = c.fileCommands.save(c.mFileName)
-            return not ok # New in 4.2: Veto if the save did not succeed.
-        else:
-            return True # Veto.
+            return not ok
+                # Veto if the save did not succeed.
+        return True # Veto.
     #@+node:ekr.20031218072017.1375: *4* LeoFrame.frame.scanForTabWidth
     def scanForTabWidth(self, p):
         '''Return the tab width in effect at p.'''
@@ -911,8 +909,9 @@ class LeoFrame:
         if self.statusLine: self.statusLine.setFocus()
 
     def statusLineIsEnabled(self):
-        if self.statusLine: return self.statusLine.isEnabled()
-        else: return False
+        if self.statusLine:
+            return self.statusLine.isEnabled()
+        return False
 
     def updateStatusLine(self):
         if self.statusLine: self.statusLine.update()
@@ -1995,8 +1994,7 @@ class NullTree(LeoTree):
             wrapper = StringTextWrapper(c=self.c, name='head-wrapper')
             e = None
             return e, wrapper
-        else:
-            return None, None
+        return None, None
     #@+node:ekr.20070228173611: *3* NullTree.printWidgets
     def printWidgets(self):
         d = self.editWidgetsDict
@@ -2156,9 +2154,8 @@ class StringTextWrapper:
             i, j = sel
             if sort and i > j: sel = j, i # Bug fix: 10/5/07
             return sel
-        else:
-            i = self.ins
-            return i, i
+        i = self.ins
+        return i, i
     #@+node:ekr.20140903172510.18586: *4* stw.hasSelection
     def hasSelection(self):
         '''StringTextWrapper.'''

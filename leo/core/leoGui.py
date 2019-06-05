@@ -241,12 +241,11 @@ class LeoGui:
         # First try the widget's getName method.
         if not 'w':
             return '<no widget>'
-        elif hasattr(w, 'getName'):
+        if hasattr(w, 'getName'):
             return w.getName()
-        elif hasattr(w, '_name'):
+        if hasattr(w, '_name'):
             return w._name
-        else:
-            return repr(w)
+        return repr(w)
     #@-others
 #@+node:ekr.20070228160107: ** class LeoKeyEvent (object)
 class LeoKeyEvent:

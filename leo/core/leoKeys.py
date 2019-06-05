@@ -767,7 +767,7 @@ class AutoCompleterClass:
         common_prefix, prefix1, aList = self.compute_completion_list()
         if not aList:
             return None, prefix1
-        elif len(aList) == 1:
+        if len(aList) == 1:
             prefix = aList[0]
         else:
             prefix = common_prefix
@@ -1251,11 +1251,10 @@ class GetArg:
         if self.is_command(command):
             tabList, common_prefix = g.itemsMatchingPrefixInList(command, tabList)
             return common_prefix, tabList
-                # note order.
-        else:
-            # For now, disallow further completions if something follows the command.
-            command = self.get_command(command)
-            return command, [command]
+        #
+        # For now, disallow further completions if something follows the command.
+        command = self.get_command(command)
+        return command, [command]
     #@+node:ekr.20140816165728.18965: *3* ga.do_back_space (entry)
     # Called from k.fullCommand: with defaultTabList = list(c.commandsDict.keys())
 
@@ -1304,11 +1303,9 @@ class GetArg:
             # a 'tab_callback' attribute.
             if len(tabList) == 1 and self.do_tab_callback():
                 return
-            else:
-                # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
-                # A big simplifcation: always call ga.do_tab_list
-                self.do_tab_cycling(common_prefix, tabList)
-
+            # #323: https://github.com/leo-editor/leo-editor/issues/323
+            # *Always* call ga.do_tab_list
+            self.do_tab_cycling(common_prefix, tabList)
         c.minibufferWantsFocus()
     #@+node:ekr.20140818145250.18235: *4* ga.do_tab_callback
     def do_tab_callback(self):
@@ -1325,8 +1322,7 @@ class GetArg:
                 # For k.getFileName.
             handler.tab_callback()
             return True
-        else:
-            return False
+        return False
     #@+node:ekr.20140819050118.18317: *4* ga.do_tab_cycling
     def do_tab_cycling(self, common_prefix, tabList):
         '''Put the next (or first) completion in the minibuffer.'''
@@ -1598,14 +1594,11 @@ class GetArg:
                 fn2 = c2.shortFileName().lower()
                 if fn2.endswith('myleosettings.leo'):
                     return 'M'
-                elif fn2.endswith('leosettings.leo'):
+                if fn2.endswith('leosettings.leo'):
                     return 'G'
-                else:
-                    return 'L'
-            else:
-                return '?'
-        else:
-            return ' '
+                return 'L'
+            return '?'
+        return ' '
     #@-others
 #@+node:ekr.20061031131434.74: ** class KeyHandlerClass
 class KeyHandlerClass:
@@ -2050,8 +2043,7 @@ class KeyHandlerClass:
         if pane.endswith('-mode'):
             g.trace('oops: ignoring mode binding', stroke, commandName, g.callers())
             return False
-        else:
-            return True
+        return True
     #@+node:ekr.20120130074511.10227: *5* k.kill_one_shortcut
     def kill_one_shortcut(self, stroke):
         '''
@@ -2445,15 +2437,15 @@ class KeyHandlerClass:
                 c.executeAnyCommand(func, event)
             k.endCommand(commandName)
             return True
-        else:
-            # Show possible completions if the command does not exist.
-            if 1: # Useful.
-                k.doTabCompletion(list(c.commandsDict.keys()))
-            else: # Annoying.
-                k.keyboardQuit()
-                k.setStatusLabel('Command does not exist: %s' % commandName)
-                c.bodyWantsFocus()
-            return False
+        #
+        # Show possible completions if the command does not exist.
+        if 1: # Useful.
+            k.doTabCompletion(list(c.commandsDict.keys()))
+        else: # Annoying.
+            k.keyboardQuit()
+            k.setStatusLabel('Command does not exist: %s' % commandName)
+            c.bodyWantsFocus()
+        return False
     #@+node:ekr.20061031131434.113: *4* k.endCommand
     def endCommand(self, commandName):
         '''Make sure Leo updates the widget following a command.
@@ -2968,15 +2960,13 @@ class KeyHandlerClass:
             k.masterCommand(event=event, func=func)
             if c.exists:
                 return k.funcReturn
-            else:
-                return None
-        elif g.app.unitTesting:
-            raise AttributeError('no such command: %s' % commandName)
-        elif g.app.inBridge:
-            raise AttributeError('no such command: %s' % commandName)
-        else:
-            g.error('simulateCommand: no command for %s' % (commandName))
             return None
+        if g.app.unitTesting:
+            raise AttributeError('no such command: %s' % commandName)
+        if g.app.inBridge:
+            raise AttributeError('no such command: %s' % commandName)
+        g.error('simulateCommand: no command for %s' % (commandName))
+        return None
     #@+node:ekr.20170324143353.1: *5* k.commandExists
     def commandExists(self, commandName):
         '''Return the command handler for the given command name, or None.'''
@@ -2991,8 +2981,7 @@ class KeyHandlerClass:
                 k.givenArgs = aList[1:]
             func = c.commandsDict.get(commandName)
             return func
-        else:
-            return None
+        return None
     #@+node:ekr.20140813052702.18203: *4* k.getFileName
     def getFileName(self, event, callback=None,
         filterExt=None, prompt='Enter File Name: ', tabName='Dired'
@@ -3251,10 +3240,9 @@ class KeyHandlerClass:
                     modeName=state,
                     nextMode=bi.nextMode)
                 return True
-            else:
-                # Unbound keys end mode.
-                k.endMode()
-                return False
+            # Unbound keys end mode.
+            k.endMode()
+            return False
         #
         # Fourth, call the state handler.
         #
@@ -3390,7 +3378,7 @@ class KeyHandlerClass:
             cmdname = m.group(0).rstrip('= ')
             k.editShortcut_do_bind_helper(stroke, cmdname)
             return
-        elif p.h.startswith(('@command', '@button')):
+        if p.h.startswith(('@command', '@button')):
             udata = c.undoer.beforeChangeNodeContents(p)
             cmd = p.h.split('@key',1)[0]
             p.h = '%s @key=%s' % (cmd, stroke.s)
@@ -3401,9 +3389,8 @@ class KeyHandlerClass:
             except IndexError:
                 pass
             return
-        else:
-            # this should never happen
-            g.error('not in settings node shortcut')
+        # this should never happen
+        g.error('not in settings node shortcut')
     #@+node:vitalije.20170709151653.1: *6* k.isInShortcutBodyLine
     _cmd_handle_input_pattern = re.compile(r'[A-Za-z0-9_\-]+\s*=')
 
@@ -3713,8 +3700,7 @@ class KeyHandlerClass:
                     c.selectPosition(p)
                     c.redraw()
                     return
-                else:
-                    p.moveToVisNext(c)
+                p.moveToVisNext(c)
 
         # Too confusing for the user.
         # re_pat = re.compile(r'^@(\w)+[ \t](.+)')
@@ -3760,8 +3746,7 @@ class KeyHandlerClass:
         s = w.getAllText()
         if ignorePrompt:
             return s[len(k.mb_prefix):]
-        else:
-            return s or ''
+        return s or ''
     #@+node:ekr.20080408060320.791: *4* k.killLine
     def killLine(self, protect=True):
         k = self
@@ -4068,13 +4053,9 @@ class KeyHandlerClass:
         if not d:
             self.badMode(modeName)
             return
-        else:
-            k.modeBindingsDict = d
-            bi = d.get('*command-prompt*')
-            if bi:
-                prompt = bi.kind # A kludge.
-            else:
-                prompt = modeName
+        k.modeBindingsDict = d
+        bi = d.get('*command-prompt*')
+        prompt = bi.kind if bi else modeName
         k.inputModeName = modeName
         k.silentMode = False
         aList = d.get('*entry-commands*', [])
@@ -4251,8 +4232,7 @@ class KeyHandlerClass:
         k = self
         if kind:
             return k.state.kind == kind and k.state.n is not None
-        else:
-            return k.state.kind and k.state.n is not None
+        return k.state.kind and k.state.n is not None
     #@+node:ekr.20080511122507.4: *4* k.setDefaultInputState
     def setDefaultInputState(self):
         k = self; state = k.defaultUnboundKeyAction

@@ -1885,10 +1885,9 @@ class LeoFind:
             self.restore(data)
             self.showStatus(False)
             return False # for vim-mode find commands.
-        else:
-            self.showSuccess(pos, newpos)
-            self.showStatus(True)
-            return True # for vim-mode find commands.
+        self.showSuccess(pos, newpos)
+        self.showStatus(True)
+        return True # for vim-mode find commands.
     #@+node:ekr.20150622095118.1: *5* find.getFindResultStatus
     def getFindResultStatus(self, find_all=False):
         '''Return the status to be shown in the status line after a find command completes.'''
@@ -1965,8 +1964,7 @@ class LeoFind:
                 p = p.next()
             p = p.lastNode()
             return p
-        else:
-            return c.rootPosition()
+        return c.rootPosition()
     #@+node:ekr.20131124060912.16473: *5* find.firstSearchPane
     def firstSearchPane(self):
         '''
@@ -1977,14 +1975,12 @@ class LeoFind:
             # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
             if self.reverse:
                 return False # Search the body pane first.
-            else:
-                return True # Search the headline pane first.
-        elif self.search_headline or self.search_body:
+            return True # Search the headline pane first.
+        if self.search_headline or self.search_body:
             # Search the only enabled pane.
             return self.search_headline
-        else:
-            g.trace('can not happen: no search enabled')
-            return False # search the body.
+        g.trace('can not happen: no search enabled')
+        return False # search the body.
     #@+node:ekr.20131123132043.16477: *5* find.initNextText
     def initNextText(self, ins=None):
         '''
@@ -2031,8 +2027,7 @@ class LeoFind:
             return None
         if wrap and p == self.wrapPosition:
             return None
-        else:
-            return p
+        return p
     #@+node:ekr.20131123071505.16465: *6* find.outsideSearchRange
     def outsideSearchRange(self, p):
         '''
@@ -2236,14 +2231,12 @@ class LeoFind:
                 if k == -1: return -1, -1
                 if self.matchWord(s, k, pattern):
                     return k, k + n
-                else:
-                    j = max(0, k - 1)
+                j = max(0, k - 1)
         else:
             k = s.rfind(pattern, i, j)
             if k == -1:
                 return -1, -1
-            else:
-                return k, k + n
+            return k, k + n
     #@+node:ekr.20060526093531: *6* plainHelper
     def plainHelper(self, s, i, j, pattern, nocase, word):
         '''Do a plain search.'''
@@ -2256,15 +2249,14 @@ class LeoFind:
                 k = s.find(pattern, i, j)
                 if k == -1:
                     return -1, -1
-                elif self.matchWord(s, k, pattern):
+                if self.matchWord(s, k, pattern):
                     return k, k + n
-                else: i = k + n
+                i = k + n
         else:
             k = s.find(pattern, i, j)
             if k == -1:
                 return -1, -1
-            else:
-                return k, k + n
+            return k, k + n
     #@+node:ekr.20060526140744.1: *6* matchWord
     def matchWord(self, s, i, pattern):
         '''Do a whole-word search.'''
