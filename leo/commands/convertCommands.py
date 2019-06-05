@@ -99,14 +99,12 @@ class To_Python:
             j = i + len(pat)
             if j >= len(s):
                 return True
-            elif not pat[-1].isalnum():
+            if not pat[-1].isalnum():
                 # Bug fix 10/16/2012: The pattern terminates the word.
                 return True
-            else:
-                ch = s[j]
-                return not ch.isalnum() and ch != '_'
-        else:
-            return False
+            ch = s[j]
+            return not ch.isalnum() and ch != '_'
+        return False
     #@+node:ekr.20150514063305.132: *4* insert_not
     def insert_not(self, aList):
         '''Change "!" to "not" except before "="'''
@@ -203,8 +201,8 @@ class To_Python:
                 del aList[i: i + 1]
                 # print "returning:", ''.join(aList[i:j])
                 return j - 1
-            else: return j + 1
-        else: return j
+            return j + 1
+        return j
     #@+node:ekr.20150514063305.143: *5* removeSemicolonsAtEndOfLines
     def removeSemicolonsAtEndOfLines(self, aList):
         i = 0
@@ -355,8 +353,7 @@ class To_Python:
         while i < len(s):
             if self.match(s, i, "*/"):
                 return i + 2
-            else:
-                i += 1
+            i += 1
         return i
     #@+node:ekr.20150514063305.153: *5* skip_line
     def skip_line(self, s, i):
@@ -391,7 +388,7 @@ class To_Python:
         while i < len(s):
             if s[i] == delim:
                 return i + 1
-            elif s[i] == '\\':
+            if s[i] == '\\':
                 i += 2
             else:
                 i += 1

@@ -112,8 +112,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
                 debugger = c.os_path_finalize(debugger)
                 if g.os_path_exists(debugger):
                     return debugger
-                else:
-                    g.warning('debugger does not exist:', debugger)
+                g.warning('debugger does not exist:', debugger)
         g.es('no debugger found.')
         return None
     #@+node:ekr.20170429154309.1: ** debug.killLogListener

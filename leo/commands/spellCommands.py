@@ -90,7 +90,7 @@ class BaseSpellWrapper:
         d = self.d
         if not d:
             return None
-        elif d.check(word):
+        if d.check(word):
             return None
         # Speed doesn't matter here. The more we find, the more convenient.
         word = ''.join([i for i in word if not i.isdigit()])
@@ -110,8 +110,7 @@ class BaseSpellWrapper:
                 if not d.check(word2) and not d.check(word2.lower()):
                     return d.suggest(word)
             return None
-        else:
-            return d.suggest(word)
+        return d.suggest(word)
     #@-others
 #@+node:ekr.20180207075606.1: ** class DefaultDict (object)
 class DefaultDict:
@@ -399,7 +398,7 @@ class EnchantWrapper(BaseSpellWrapper):
         d = self.d
         if not d:
             return None
-        elif d.check(word):
+        if d.check(word):
             return None
         # Speed doesn't matter here. The more we find, the more convenient.
         word = ''.join([i for i in word if not i.isdigit()])
@@ -419,8 +418,7 @@ class EnchantWrapper(BaseSpellWrapper):
                 if not d.check(word2) and not d.check(word2.lower()):
                     return d.suggest(word)
             return None
-        else:
-            return d.suggest(word)
+        return d.suggest(word)
     #@+node:ekr.20180209142310.1: *3* spell.show_info
     def show_info(self):
 
@@ -795,8 +793,7 @@ class SpellTabHandler:
                     w.setSelectionRange(i, j, insert=j)
                     w.see(j)
                     return
-                else:
-                    self.seen.add(word)
+                self.seen.add(word)
             # No more misspellings in p
             p.moveToThreadNext()
             if p:

@@ -43,11 +43,9 @@ class GoToCommands:
             if gnx and found:
                 self.success(lines, n, offset, p)
                 return p, offset, True
-            else:
-                self.fail(lines, n, root)
-                return None, -1, False
-        else:
-            return self.find_script_line(n, p)
+            self.fail(lines, n, root)
+            return None, -1, False
+        return self.find_script_line(n, p)
     #@+node:ekr.20160921210529.1: *3* goto.find_node_start
     def find_node_start(self, p, s=None):
         '''Return the global line number of the first line of p.b'''
@@ -84,9 +82,8 @@ class GoToCommands:
         if gnx and found:
             self.success(lines, n, offset, p)
             return p, offset, True
-        else:
-            self.fail(lines, n, root)
-            return None, -1, False
+        self.fail(lines, n, root)
+        return None, -1, False
     #@+node:ekr.20181003080042.1: *3* goto.node_offset_to_file_line (new)
     def node_offset_to_file_line(self, target_offset, target_p, root):
         '''
@@ -243,8 +240,7 @@ class GoToCommands:
                     if p.v.fileIndex == gnx:
                         return p.copy(), True
             return None, False
-        else:
-            return root, False
+        return root, False
     #@+node:ekr.20100216141722.5627: *4* goto.find_root
     def find_root(self, p):
         '''
@@ -281,8 +277,7 @@ class GoToCommands:
         delims1, delims2, delims3 = d.get('delims')
         if delims1:
             return delims1, None
-        else:
-            return delims2, delims3
+        return delims2, delims3
     #@+node:ekr.20150624143903.1: *4* goto.get_external_file_with_sentinels (changed)
     def get_external_file_with_sentinels(self, root):
         '''
@@ -304,13 +299,12 @@ class GoToCommands:
                 if hasattr(at, ivar):
                     delattr(at, ivar)
             return s
-        else:
-            return g.composeScript( # Fix # 429.
-                c = c,
-                p = root,
-                s = root.b,
-                forcePythonSentinels=False, # See #247.
-                useSentinels=True)
+        return g.composeScript( # Fix # 429.
+            c = c,
+            p = root,
+            s = root.b,
+            forcePythonSentinels=False, # See #247.
+            useSentinels=True)
     #@+node:ekr.20150623175738.1: *4* goto.get_script_node_info
     def get_script_node_info(self, s, delim2):
         '''Return the gnx and headline of a #@+node.'''
@@ -319,13 +313,12 @@ class GoToCommands:
         if i == -1 or j == -1:
             g.error("bad @+node sentinel", s)
             return None, None
-        else:
-            gnx = s[i + 1: j]
-            h = s[j + 1:]
-            h = self.remove_level_stars(h).strip()
-            if delim2:
-                h = h.rstrip(delim2)
-            return gnx, h
+        gnx = s[i + 1: j]
+        h = s[j + 1:]
+        h = self.remove_level_stars(h).strip()
+        if delim2:
+            h = h.rstrip(delim2)
+        return gnx, h
     #@+node:ekr.20150625124027.1: *4* goto.is_sentinel
     def is_sentinel(self, delim1, delim2, s):
         '''Return True if s is a sentinel line with the given delims.'''
@@ -334,8 +327,7 @@ class GoToCommands:
         if delim2:
             j = s.find(delim2)
             return -1 < i < j
-        else:
-            return -1 < i
+        return -1 < i
     #@+node:ekr.20100728074713.5843: *4* goto.remove_level_stars
     def remove_level_stars(self, s):
         i = g.skip_ws(s, 0)

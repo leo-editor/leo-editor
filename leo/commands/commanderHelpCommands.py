@@ -97,9 +97,8 @@ def openCheatSheet(self, event=None, redraw=True):
                 p.expand()
             c2.redraw()
         return c2
-    else:
-        g.es('file not found: %s' % fn)
-        return None
+    g.es('file not found: %s' % fn)
+    return None
 #@+node:ekr.20161025090405.1: *3* c_help.openLeoDist
 @g.commander_command('open-leo-dist-leo')
 @g.commander_command('leo-dist-leo')
@@ -161,9 +160,8 @@ def openLeoSettings(self, event=None):
     path = lm.computeLeoSettingsPath()
     if path:
         return g.openWithFileName(path, old_c=c)
-    else:
-        g.es('not found: leoSettings.leo')
-        return None
+    g.es('not found: leoSettings.leo')
+    return None
 
 @g.commander_command('open-my-leo-settings')
 @g.commander_command('my-leo-settings')
@@ -173,9 +171,8 @@ def openMyLeoSettings(self, event=None):
     path = lm.computeMyLeoSettingsPath()
     if path:
         return g.openWithFileName(path, old_c=c)
-    else:
-        g.es('not found: myLeoSettings.leo')
-        return createMyLeoSettings(c)
+    g.es('not found: myLeoSettings.leo')
+    return createMyLeoSettings(c)
 #@+node:ekr.20141119161908.2: *4* def c_help.createMyLeoSettings
 def createMyLeoSettings(c):
     """createMyLeoSettings - Return true if myLeoSettings.leo created ok

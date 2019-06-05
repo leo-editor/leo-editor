@@ -748,10 +748,9 @@ def clone(self, event=None):
         c.redraw(clone)
         c.treeWantsFocus()
         return clone # For mod_labels and chapters plugins.
-    else:
-        clone.doDelete()
-        c.setCurrentPosition(p)
-        return None
+    clone.doDelete()
+    c.setCurrentPosition(p)
+    return None
 #@+node:ekr.20150630152607.1: *3* c_oc.cloneToAtSpot
 @g.commander_command('clone-to-at-spot')
 def cloneToAtSpot(self, event=None):

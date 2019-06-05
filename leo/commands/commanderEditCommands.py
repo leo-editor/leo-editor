@@ -695,8 +695,7 @@ def find_bound_paragraph(c):
         tail_lines = para_lines[i:] if ended else []
         tail = g.joinLines(tail_lines)
         return head, result, tail # string, list, string
-    else:
-        return None, None, None
+    return None, None, None
 #@+node:ekr.20171123135625.45: *3* def rp_get_args
 def rp_get_args(c):
     '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''

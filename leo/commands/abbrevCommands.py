@@ -306,8 +306,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             while p:
                 if self.find_place_holder(p, do_placeholder):
                     return
-                else:
-                    p.moveToThreadNext()
+                p.moveToThreadNext()
         else:
             self.find_place_holder(p, do_placeholder)
     #@+node:ekr.20150514043850.13: *4* abbrev.expand_tree (entry) & helpers
@@ -395,11 +394,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 w.seeInsertPoint()
             c.bodyWantsFocusNow()
             return True
-        else:
-            # Fix bug 453: do nothing here.
-                # c.frame.body.forceFullRecolor()
-                # c.bodyWantsFocusNow()
-            return False
+        # #453: do nothing here.
+            # c.frame.body.forceFullRecolor()
+            # c.bodyWantsFocusNow()
+        return False
     #@+node:ekr.20150514043850.15: *4* abbrev.make_script_substitutions
     def make_script_substitutions(self, i, j, val):
         '''Make scripting substitutions in node p.'''

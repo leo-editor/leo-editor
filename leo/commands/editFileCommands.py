@@ -199,8 +199,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         if theFile:
             c2.fileCommands.openLeoFile(theFile, fn, readAtFileNodesFlag=True, silent=True)
             return c2
-        else:
-            return None
+        return None
     #@+node:ekr.20170806094317.17: *4* efc.createFileDict
     def createFileDict(self, c):
         '''Create a dictionary of all relevant positions in commander c.'''
@@ -771,8 +770,7 @@ class GitDiffController:
                 revspec)
             lines = g.execGitCommand(command, self.repo_dir)
             return ''.join(lines).strip()
-        else:
-            return 'uncommitted'
+        return 'uncommitted'
     #@+node:ekr.20170820084258.1: *5* gdc.make_at_clean_outline
     def make_at_clean_outline(self, fn, root, s, rev):
         '''

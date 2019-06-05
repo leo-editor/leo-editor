@@ -872,8 +872,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             if p.isCloned():
                 c.selectPosition(p)
                 return
-            else:
-                p.moveToThreadNext()
+            p.moveToThreadNext()
         g.es('no clones found after', c.p.h)
     #@+node:ekr.20150514063305.226: *4* ec.gotoCharacter
     @cmd('goto-char')
@@ -2538,8 +2537,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             if select:
                 w.setSelectionRange(i1, i)
             return i1, i
-        else:
-            return 0, 0
+        return 0, 0
     #@+node:ekr.20170707072837.1: *4* ec.finishOfLine/ExtendSelection (new)
     @cmd('finish-of-line')
     def finishOfLine(self, event):

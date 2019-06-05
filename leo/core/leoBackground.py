@@ -175,11 +175,11 @@ class BackgroundProcessManager:
         # Put a clickable link if the message matches the link pattern.
         m = link_pattern.match(s)
         if m:
-            print('m.group(0)', m.group(0))
+            # Not an error.  It's just a false match.
             try:
                 line = int(m.group(1))
             except ValueError:
-                print('Bad line number: %r' % m.group(1))
+                c.frame.log.put(s + '\n')
                 return
             unl = link_root.get_UNL(with_proto=True, with_count=True)
             nodeLink = "%s,%d" % (unl, -line)
@@ -202,7 +202,7 @@ class BackgroundProcessManager:
 
             def callback(data=data, kind=kind):
                 fn = data.fn
-                self.put_log('queued: %s: %s\n' % (kind, g.shortFileName(fn)))
+                self.put_log('%s: %s\n' % (kind, g.shortFileName(fn)))
                 self.pid = subprocess.Popen(
                     command,
                     shell=shell,
