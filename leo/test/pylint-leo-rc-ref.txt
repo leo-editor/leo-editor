@@ -60,6 +60,9 @@ disable=
         # useless-object-inheritance, # class x(object):
         # useless-return,
     #
+    # Enforce these only for Leo's core.  I'll disable them for all other files.
+        no-else-return, # Generates lots of warnings.
+    #
     # new warnings...suppressed for now.
         chained-comparison,
         literal-comparison,
@@ -84,7 +87,6 @@ disable=
     misplaced-comparison-constant,
     missing-docstring,
     multiple-statements,
-    no-else-return, # This enforces good style, but it generates too many warnings.
     no-init,
     no-self-use,
     old-style-class,
