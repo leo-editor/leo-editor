@@ -345,9 +345,9 @@ class BaseLeoCompare:
         j = s.find(tag)
         if j > 0:
             i = g.skip_ws(s, 0)
-            if i < j: return s[i: j]
-            else: return None
-        else: return None
+            if i < j:
+                return s[i:j]
+        return None
 
     def isSentinel(self, s, sentinelComment):
         i = g.skip_ws(s, 0)

@@ -449,8 +449,7 @@ class Commands:
         c = self
         if c.mFileName:
             return c.os_path_finalize(c.mFileName).lower()
-        else:
-            return 0
+        return 0
     #@+node:ekr.20110509064011.14563: *4* c.idle_focus_helper & helpers
     idle_focus_count = 0
 
@@ -492,22 +491,13 @@ class Commands:
     #@+node:ekr.20160427062131.1: *5* c.is_unusual_focus
     def is_unusual_focus(self, w):
         '''Return True if w is not in an expected place.'''
-        if 1:
-            # Fix bug 270: Leo's keyboard events doesn't work after "Insert"
-            # on headline and Alt+Tab, Alt+Tab
-            # Fix #276: Focus lost...in Nav text input
-            import leo.plugins.qt_frame as qt_frame
-            return isinstance(w, qt_frame.QtTabBarWrapper)
-        else:
-            # Wrong: we can't list all the "usual" widgets.
-            from leo.core.leoQt import QtWidgets
-            table = (
-                QtWidgets.QListWidget,
-                QtWidgets.QTextEdit,
-                QtWidgets.QLineEdit,
-                qt_frame.LeoQTreeWidget,
-            )
-            return not isinstance(w, table)
+        #
+        # #270: Leo's keyboard events doesn't work after "Insert"
+        #       on headline and Alt+Tab, Alt+Tab
+        #
+        # #276: Focus lost...in Nav text input
+        import leo.plugins.qt_frame as qt_frame
+        return isinstance(w, qt_frame.QtTabBarWrapper)
     #@+node:ekr.20150403063658.1: *5* c.trace_idle_focus
     last_unusual_focus = None
     # last_no_focus = False
@@ -852,10 +842,9 @@ class Commands:
         """
         c = self
         if hasattr(c, '_currentPosition') and getattr(c, '_currentPosition'):
-            # New in Leo 4.4.2: *always* return a copy.
+            # *Always* return a copy.
             return c._currentPosition.copy()
-        else:
-            return c.rootPosition()
+        return c.rootPosition()
 
     # For compatibiility with old scripts...
     currentVnode = currentPosition
@@ -965,8 +954,7 @@ class Commands:
         c = self
         if p is None or c._currentPosition is None:
             return False
-        else:
-            return p == c._currentPosition
+        return p == c._currentPosition
     #@+node:ekr.20040803112450.1: *6* c.isRootPosition
     def isRootPosition(self, p):
         c = self
@@ -1018,7 +1006,7 @@ class Commands:
             p.moveToParent()
             if root and p == root:
                 return True
-            elif not old_v.isNthChildOf(old_n, p.v):
+            if not old_v.isNthChildOf(old_n, p.v):
                 return False
         if root:
             exists = p == root
@@ -1046,8 +1034,7 @@ class Commands:
         if c.hiddenRootNode.children:
             v = c.hiddenRootNode.children[0]
             return leoNodes.Position(v, childIndex=0, stack=None)
-        else:
-            return None
+        return None
 
     # For compatibiility with old scripts...
     rootVnode = rootPosition
@@ -1081,8 +1068,7 @@ class Commands:
             p = bunch.p
             limitIsVisible = not cc or not p.h.startswith('@chapter')
             return p, limitIsVisible
-        else:
-            return None, None
+        return None, None
     #@+node:tbrown.20091206142842.10296: *5* c.vnode2allPositions
     def vnode2allPositions(self, v):
         '''Given a VNode v, find all valid positions p such that p.v = v.
@@ -1295,8 +1281,7 @@ class Commands:
         c = self
         if c._topPosition:
             return c._topPosition.copy()
-        else:
-            return None
+        return None
 
     def setTopPosition(self, p):
         """Set the root positioin."""
@@ -1554,8 +1539,7 @@ class Commands:
         parent = None
         if root:
             return root.validateOutlineWithParent(parent)
-        else:
-            return True
+        return True
     #@+node:ekr.20040723094220: *3* c.Check Python code
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
@@ -1995,9 +1979,9 @@ class Commands:
         for d in aList:
             if 'root-code' in d:
                 return 'code'
-            elif 'root-doc' in d:
+            if 'root-doc' in d:
                 return 'doc'
-            elif 'root' in d:
+            if 'root' in d:
                 return 'doc' if start_in_doc else 'code'
         return None
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
@@ -2097,9 +2081,8 @@ class Commands:
             event = g.app.gui.create_key_event(c)
             k.masterCommand(commandName=None, event=event, func=func)
             return k.funcReturn
-        else:
-            g.error('no such command: %s %s' % (commandName, g.callers()))
-            return None
+        g.error('no such command: %s %s' % (commandName, g.callers()))
+        return None
     #@+node:ekr.20131016084446.16724: *4* c.setComplexCommand
     def setComplexCommand(self, commandName):
         '''Make commandName the command to be executed by repeat-complex-command.'''
@@ -2266,8 +2249,7 @@ class Commands:
         c = self
         if g.app.externalFilesController:
             return g.app.externalFilesController.check_overwrite(c, fn)
-        else:
-            return True
+        return True
     #@+node:ekr.20090212054250.9: *4* c.createNodeFromExternalFile
     def createNodeFromExternalFile(self, fn):
         '''
@@ -2874,9 +2856,8 @@ class Commands:
         deltaTime = c.config.getFloat('outline-nav-extend-delay')
         if deltaTime in (None, 0.0):
             return False
-        else:
-            nearTime = c.navTime and time.time() - c.navTime < deltaTime
-            return nearTime
+        nearTime = c.navTime and time.time() - c.navTime < deltaTime
+        return nearTime
     #@+node:ekr.20061002095711: *6* c.navHelper
     def navHelper(self, p, ch, extend):
         c = self; h = p.h.lower()
@@ -3085,8 +3066,7 @@ class Commands:
             current = c.p
             bunch = c.hoistStack[-1]
             return current != bunch.p
-        else:
-            return True
+        return True
     #@+node:ekr.20031218072017.2956: *6* c.canContractAllHeadlines
     def canContractAllHeadlines(self):
         '''Contract all nodes in the tree.'''
@@ -3119,11 +3099,7 @@ class Commands:
         if c.hoistStack:
             bunch = c.hoistStack[0]
             if p == bunch.p: return False
-        if False: # c.config.getBool('select-next-after-delete'):
-            # #721: Optionally select next node after delete.
-            return p.hasParent() or p.hasBack()
-        else:
-            return p.hasParent() or p.hasThreadBack() or p.hasNext()
+        return p.hasParent() or p.hasThreadBack() or p.hasNext()
 
     canCutOutline = canDeleteHeadline
     #@+node:ekr.20031218072017.2961: *6* c.canDemote
@@ -3221,34 +3197,30 @@ class Commands:
             if p and p.hasParent():
                 p.moveToParent()
                 return p != bunch.p and bunch.p.isAncestorOf(p)
-            else:
-                return False
-        else:
-            return p and p.hasParent()
+            return False
+        return p and p.hasParent()
     #@+node:ekr.20031218072017.2972: *6* c.canMoveOutlineRight
     def canMoveOutlineRight(self):
         c = self; p = c.p
         if c.hoistStack:
             bunch = c.hoistStack[-1]
             return p and p.hasBack() and p != bunch.p
-        else:
-            return p and p.hasBack()
+        return p and p.hasBack()
     #@+node:ekr.20031218072017.2973: *6* c.canMoveOutlineUp
     def canMoveOutlineUp(self):
         c = self; current = c.p
         visBack = current and current.visBack(c)
         if not visBack:
             return False
-        elif visBack.visBack(c):
+        if visBack.visBack(c):
             return True
-        elif c.hoistStack:
+        if c.hoistStack:
             limit, limitIsVisible = c.visLimit()
             if limitIsVisible: # A hoist
                 return current != limit
-            else: # A chapter.
-                return current != limit.firstChild()
-        else:
-            return current != c.rootPosition()
+            # A chapter.
+            return current != limit.firstChild()
+        return current != c.rootPosition()
     #@+node:ekr.20031218072017.2974: *6* c.canPasteOutline
     def canPasteOutline(self, s=None):
         # c = self

@@ -162,6 +162,7 @@ class BackgroundProcessManager:
         data = self.data
         c = data and data.c
         if not c or not c.exists:
+            print('bpm.put_log: no c!')
             return
         # Always print the message.
         print(s)

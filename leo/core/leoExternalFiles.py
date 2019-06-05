@@ -95,8 +95,7 @@ class ExternalFilesController:
             return True
         if self.has_changed(c, path):
             return self.ask(c, path)
-        else:
-            return True
+        return True
     #@+node:ekr.20031218072017.2613: *4* efc.destroy_frame
     def destroy_frame(self, frame):
         """
@@ -556,16 +555,15 @@ class ExternalFilesController:
             # Return False so we don't prompt the user for an update.
             self.set_time(path, new_time)
             return False
-        else:
-            # The file has really changed.
-            assert old_time, path
-            if 0: # Fix bug 208: external change overwrite protection only works once
-                # https://github.com/leo-editor/leo-editor/issues/208
-                # These next two lines mean that if the Leo version
-                # is changed (dirtied) again, overwrite will occur without warning.
-                self.set_time(path, new_time)
-                self.checksum_d[path] = new_sum
-            return True
+        # The file has really changed.
+        assert old_time, path
+        if 0: # Fix bug 208: external change overwrite protection only works once
+            # https://github.com/leo-editor/leo-editor/issues/208
+            # These next two lines mean that if the Leo version
+            # is changed (dirtied) again, overwrite will occur without warning.
+            self.set_time(path, new_time)
+            self.checksum_d[path] = new_sum
+        return True
     #@+node:ekr.20150405104340.1: *4* efc.is_enabled
     def is_enabled(self, c):
         '''Return the cached @bool check_for_changed_external_file setting.'''

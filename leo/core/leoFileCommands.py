@@ -1913,9 +1913,8 @@ class FileCommands:
                 [self.putUaHelper(torv, key, val)
                     for key, val in attrDict.items()])
             return val
-        else:
-            g.warning("ignoring non-dictionary unknownAttributes for", torv)
-            return ''
+        g.warning("ignoring non-dictionary unknownAttributes for", torv)
+        return ''
     #@+node:ekr.20080805132422.3: *4* fc.resolveArchivedPosition
     def resolveArchivedPosition(self, archivedPosition, root_v):
         '''

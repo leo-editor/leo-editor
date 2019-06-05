@@ -1144,8 +1144,7 @@ class GlobalConfigManager:
         if d:
             junk, found = self.getValFromDict(d, setting, kind)
             return found
-        else:
-            return False
+        return False
     #@+node:ekr.20041117083141: *4* gcm.get & allies
     def get(self, setting, kind):
         """Get the setting and make sure its type matches the expected type."""
@@ -1157,15 +1156,15 @@ class GlobalConfigManager:
             assert g.isTypedDict(d), d
             val, junk = self.getValFromDict(d, setting, kind)
             return val
-        else:
-            return None
+        return None
     #@+node:ekr.20041121143823: *5* gcm.getValFromDict
     def getValFromDict(self, d, setting, requestedType, warn=True):
         '''Look up the setting in d. If warn is True, warn if the requested type
         does not (loosely) match the actual type.
         returns (val,exists)'''
         gs = d.get(self.munge(setting))
-        if not gs: return None, False
+        if not gs:
+            return None, False
         assert isinstance(gs, g.GeneralSetting)
         val = gs.val
         isNone = val in ('None', 'none', '')
@@ -1178,11 +1177,10 @@ class GlobalConfigManager:
                 g.error('warning: ignoring', gs.kind, '', setting, 'is not', requestedType)
                 g.error('there may be conflicting settings!')
             return None, False
-        elif isNone:
+        if isNone:
             return '', True
                 # 2011/10/24: Exists, a *user-defined* empty value.
-        else:
-            return val, True
+        return val, True
     #@+node:ekr.20051015093141: *5* gcm.typesMatch
     def typesMatch(self, type1, type2):
         '''
@@ -1216,8 +1214,7 @@ class GlobalConfigManager:
         val = self.get(setting, "bool")
         if val in (True, False):
             return val
-        else:
-            return default
+        return default
     #@+node:ekr.20070926082018: *4* gcm.getButtons
     def getButtons(self):
         '''Return a list of tuples (x,y) for common @button nodes.'''
@@ -1254,8 +1251,7 @@ class GlobalConfigManager:
         theDir = self.get(setting, 'directory')
         if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
             return theDir
-        else:
-            return None
+        return None
     #@+node:ekr.20070224075914.1: *4* gcm.getEnabledPlugins
     def getEnabledPlugins(self):
         '''Return the body text of the @enabled-plugins node.'''
@@ -1322,10 +1318,9 @@ class GlobalConfigManager:
             val = float(val)
             if 0.0 <= val <= 1.0:
                 return val
-            else:
-                return None
         except TypeError:
-            return None
+            pass
+        return None
     #@+node:ekr.20041117062717.11: *4* gcm.getRecentFiles
     def getRecentFiles(self):
         '''Return the list of recently opened files.'''
@@ -1506,8 +1501,7 @@ class LocalConfigManager:
             assert g.isTypedDict(d), d
             val, junk = self.getValFromDict(d, setting, kind)
             return val
-        else:
-            return None
+        return None
     #@+node:ekr.20120215072959.12520: *6* getValFromDict
     def getValFromDict(self, d, setting, requestedType, warn=True):
         '''Look up the setting in d. If warn is True, warn if the requested type
@@ -1517,7 +1511,7 @@ class LocalConfigManager:
         if not gs: return None, False
         assert g.isGeneralSetting(gs), gs
         val = gs.val
-        isNone = val in ('None', 'none', '') # ,None)
+        isNone = val in ('None', 'none', '')
         if not self.typesMatch(gs.kind, requestedType):
             # New in 4.4: make sure the types match.
             # A serious warning: one setting may have destroyed another!
@@ -1527,11 +1521,10 @@ class LocalConfigManager:
                 g.error('warning: ignoring', gs.kind, '', setting, 'is not', requestedType)
                 g.error('there may be conflicting settings!')
             return None, False
-        elif isNone:
+        if isNone:
             return '', True
                 # 2011/10/24: Exists, a *user-defined* empty value.
-        else:
-            return val, True
+        return val, True
     #@+node:ekr.20120215072959.12521: *6* typesMatch
     def typesMatch(self, type1, type2):
         '''
@@ -1565,8 +1558,7 @@ class LocalConfigManager:
         val = self.get(setting, "bool")
         if val in (True, False):
             return val
-        else:
-            return default
+        return default
     #@+node:ekr.20120215072959.12525: *5* c.config.getColor
     def getColor(self, setting):
         '''Return the value of @color setting.'''
@@ -1620,8 +1612,7 @@ class LocalConfigManager:
         theDir = self.get(setting, 'directory')
         if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
             return theDir
-        else:
-            return None
+        return None
     #@+node:ekr.20120215072959.12530: *5* c.config.getFloat
     def getFloat(self, setting):
         '''Return the value of @float setting.'''
@@ -1690,10 +1681,9 @@ class LocalConfigManager:
             val = float(val)
             if 0.0 <= val <= 1.0:
                 return val
-            else:
-                return None
         except TypeError:
-            return None
+            pass
+        return None
     #@+node:ekr.20120215072959.12538: *5* c.config.getSettingSource
     def getSettingSource(self, setting):
         '''return the name of the file responsible for setting.'''
@@ -1703,13 +1693,12 @@ class LocalConfigManager:
             bi = d.get(setting)
             if bi is None:
                 return 'unknown setting', None
-            else:
-                return bi.path, bi.val
-        else:
-            # lm.readGlobalSettingsFiles is opening a settings file.
-            # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
-            assert d is None
-            return None
+            return bi.path, bi.val
+        #
+        # lm.readGlobalSettingsFiles is opening a settings file.
+        # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
+        assert d is None
+        return None
     #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut (changed)
     def getShortcut(self, commandName):
         '''Return rawKey,accel for shortcutName'''
@@ -1728,10 +1717,10 @@ class LocalConfigManager:
                 aList = [z for z in aList
                     if z.stroke and z.stroke.lower() != 'none']
             return key, aList
-        else:
-            # lm.readGlobalSettingsFiles is opening a settings file.
-            # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
-            return None, []
+        #
+        # lm.readGlobalSettingsFiles is opening a settings file.
+        # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
+        return None, []
     #@+node:ekr.20120215072959.12540: *5* c.config.getString
     def getString(self, setting):
         '''Return the value of @string setting.'''
