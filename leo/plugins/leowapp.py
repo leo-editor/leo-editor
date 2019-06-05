@@ -8,12 +8,6 @@ This file is deprecated/obsolete. It may be removed soon.
 leoflexx.py implements LeoWapp using flexx.
 
 '''
-#@+<< docstring >>
-#@+node:ekr.20181028052650.2: ** << docstring >>
-#@@language rest
-#@@wrap
-
-#@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20181028052650.3: ** << imports >>
 import leo.core.leoGlobals as g
@@ -31,7 +25,7 @@ import xml.sax.saxutils as saxutils
 #@-<< imports >>
 #@+<< config >>
 #@+node:ekr.20181029070405.1: ** << config >>
-class Config (object):
+class Config:
     
     # ip = g.app.config.getString("leowapp-ip") or '127.0.0.1'
     # port = g.app.config.getInt("leowapp-port") or 8100
