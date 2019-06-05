@@ -402,26 +402,25 @@ class LeoImportCommands:
                 g.match_word(s, i, "@code") # 2/25/03
             ):
                 return i, result
-            elif(g.match(s, i, "<<") and # must be on separate lines.
+            if(g.match(s, i, "<<") and # must be on separate lines.
                 g.find_on_line(s, i, ">>=") > -1
             ):
                 return i, result
+            # Copy the entire line, escaping '@' and
+            # Converting @others to < < @ others > >
+            i = g.skip_line(s, j); line = s[j: i]
+            if theType == "cweb":
+                line = line.replace("@", "@@")
             else:
-                # Copy the entire line, escaping '@' and
-                # Converting @others to < < @ others > >
-                i = g.skip_line(s, j); line = s[j: i]
-                if theType == "cweb":
-                    line = line.replace("@", "@@")
-                else:
-                    j = g.skip_ws(line, 0)
-                    if g.match(line, j, "@others"):
-                        line = line.replace("@others", lb + "@others" + rb)
-                    elif g.match(line, 0, "@"):
-                        # Special case: do not escape @ %defs.
-                        k = g.skip_ws(line, 1)
-                        if not g.match(line, k, "%defs"):
-                            line = "@" + line
-                result += line
+                j = g.skip_ws(line, 0)
+                if g.match(line, j, "@others"):
+                    line = line.replace("@others", lb + "@others" + rb)
+                elif g.match(line, 0, "@"):
+                    # Special case: do not escape @ %defs.
+                    k = g.skip_ws(line, 1)
+                    if not g.match(line, k, "%defs"):
+                        line = "@" + line
+            result += line
             assert(progress < i)
         return i, result.rstrip()
     #@+node:ekr.20031218072017.1462: *4* ic.exportHeadlines
@@ -938,9 +937,11 @@ class LeoImportCommands:
             if g.is_c_id(s[i]):
                 j = i; i = g.skip_c_id(s, i); name = s[j: i]
             elif s[i] == '(':
-                if name: return name
-                else: break
-            else: i += 1
+                if name:
+                    return name
+                break
+            else:
+                i += 1
         return None
     #@+node:ekr.20031218072017.3228: *5* scanBodyForHeadline
     #@+at This method returns the proper headline text.
@@ -966,13 +967,14 @@ class LeoImportCommands:
                     directive = s[i: i + 2]
                     i = g.skip_ws(s, i + 2) # skip the @d or @f
                     if i < len(s) and g.is_c_id(s[i]):
-                        j = i; g.skip_c_id(s, i); return s[j: i]
-                    else: return directive
-                elif g.match(s, i, "@c") or g.match(s, i, "@p"):
+                        j = i; g.skip_c_id(s, i)
+                        return s[j: i]
+                    return directive
+                if g.match(s, i, "@c") or g.match(s, i, "@p"):
                     # Look for a function def.
                     name = self.findFunctionDef(s, i + 2)
                     return name if name else "outer function"
-                elif g.match(s, i, "@<"):
+                if g.match(s, i, "@<"):
                     # Look for a section def.
                     # A small bug: the section def must end on this line.
                     j = i; k = g.find_on_line(s, i, "@>")
@@ -1259,8 +1261,7 @@ class LeoImportCommands:
     def rstUnitTest(self, p, fileName=None, s=None, showTree=False):
         if docutils:
             return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.rst')
-        else:
-            return None
+        return None
 
     def textUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.txt')
@@ -1392,18 +1393,16 @@ class LeoImportCommands:
         j = g.skip_ws(s, i + 1)
         if g.match(s, j, "%defs"):
             return False
-        elif self.webType == "cweb" and g.match(s, i, "@*"):
+        if self.webType == "cweb" and g.match(s, i, "@*"):
             return True
-        else:
-            return g.match(s, i, "@ ") or g.match(s, i, "@\t") or g.match(s, i, "@\n")
+        return g.match(s, i, "@ ") or g.match(s, i, "@\t") or g.match(s, i, "@\n")
 
     def isModuleStart(self, s, i):
         if self.isDocStart(s, i):
             return True
-        else:
-            return self.webType == "cweb" and (
-                g.match(s, i, "@c") or g.match(s, i, "@p") or
-                g.match(s, i, "@d") or g.match(s, i, "@f"))
+        return self.webType == "cweb" and (
+            g.match(s, i, "@c") or g.match(s, i, "@p") or
+            g.match(s, i, "@d") or g.match(s, i, "@f"))
     #@+node:ekr.20031218072017.3312: *4* ic.massageWebBody
     def massageWebBody(self, s):
         theType = self.webType
@@ -1576,8 +1575,7 @@ class MindMapImporter:
         while count <= len(row):
             if row[count]:
                 return count+1
-            else:
-                count = count+1
+            count = count+1
         return -1
     #@+node:ekr.20160503130810.5: *4* mindmap.csv_string
     def csv_string(self, row):
@@ -1586,8 +1584,7 @@ class MindMapImporter:
         while count<=len(row):
             if row[count]:
                 return row[count]
-            else:
-                count = count+1
+            count = count+1
         return None
     #@-others
 #@+node:ekr.20161006100941.1: ** class MORE_Importer
@@ -1753,8 +1750,7 @@ class MORE_Importer:
         plusFlag = g.match(s, i, "+")
         if g.match(s, i, "+ ") or g.match(s, i, "- "):
             return level, plusFlag
-        else:
-            return -1, plusFlag
+        return -1, plusFlag
     #@+node:ekr.20031218072017.3223: *3* MORE.check & check_lines
     def check(self, s):
         s = s.replace("\r", "")
@@ -1772,15 +1768,14 @@ class MORE_Importer:
             level, newFlag = self.headlineLevel(s)
             if level == -1:
                 return True # A body line.
-            elif level < level1 or level > lastLevel + 1:
+            if level < level1 or level > lastLevel + 1:
                 return False # improper level.
-            elif level > lastLevel and not plusFlag:
+            if level > lastLevel and not plusFlag:
                 return False # parent of this node has no children.
-            elif level == lastLevel and plusFlag:
+            if level == lastLevel and plusFlag:
                 return False # last node has missing child.
-            else:
-                lastLevel = level
-                plusFlag = newFlag
+            lastLevel = level
+            plusFlag = newFlag
         return True
     #@-others
 #@+node:ekr.20130823083943.12596: ** class RecursiveImportController
@@ -1896,7 +1891,7 @@ class RecursiveImportController:
             s, e = g.readFileIntoString(path, kind=self.kind)
             p.v.b = s
             return
-        elif self.kind == '@auto':
+        if self.kind == '@auto':
             p = parent.insertAsLastChild()
             p.v.h = path.replace('\\', '/')
             p.clearDirty()
@@ -2014,8 +2009,7 @@ class RecursiveImportController:
         '''Strip the prefix from the path and return the result.'''
         if path.startswith(prefix):
             return path[len(prefix):]
-        else:
-            return '' # A signal.
+        return '' # A signal.
 
     #@+node:ekr.20130823083943.12612: *5* ric.remove_empty_nodes
     def remove_empty_nodes(self, p):
@@ -2054,8 +2048,7 @@ class TabImporter:
             if warn:
                 g.es_print('intermixed leading blanks and tabs.')
             return False
-        else:
-            return True
+        return True
     #@+node:ekr.20161006071801.3: *3* tabbed.dump_stack
     def dump_stack(self):
         '''Dump the stack, containing (level, p) tuples.'''
@@ -2196,8 +2189,7 @@ class TabImporter:
                     g.trace('bad indentation: %r' % s)
                     return s
             return ''.join([z[len(lws):] for z in lines])
-        else:
-            return ''
+        return ''
     #@-others
 #@+node:ekr.20141210051628.26: ** class ZimImportController
 class ZimImportController:

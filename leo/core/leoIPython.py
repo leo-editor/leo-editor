@@ -263,10 +263,9 @@ class LeoNameSpace:
         self.update()
         if self.commander and self.commander in self.commanders_list:
             return self.commander
-        elif len(self.commanders_list) == 1:
+        if len(self.commanders_list) == 1:
             return self.commanders_list[0]
-        else:
-            return None
+        return None
 
     def __set_c(self, c):
         '''Designate the commander to be returned by the getter.'''

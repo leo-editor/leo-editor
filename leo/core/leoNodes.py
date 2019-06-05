@@ -204,13 +204,12 @@ class Position:
             return False
         if p2 is None or p2.v is None:
             return p1.v is None
-        elif isinstance(p2, self.__class__):
+        if isinstance(p2, self.__class__):
             return (p1.v == p2.v and
                 p1._childIndex == p2._childIndex and
                 p1.stack == p2.stack)
-        else:
-            # Do this only after testing for None.
-            return NotImplemented
+        # Do this only after testing for None.
+        return NotImplemented
 
     def __ne__(self, p2):
         """Return True if two postions are not equivalent."""
@@ -232,19 +231,21 @@ class Position:
         # Compare the common part of the stacks.
         for item1, item2 in zip(stack1, stack2):
             v1, x1 = item1; v2, x2 = item2
-            if x1 > x2: return True
-            elif x1 < x2: return False
+            if x1 > x2:
+                return True
+            if x1 < x2:
+                return False
         # Finish the comparison.
         if n1 == n2:
             x1, x2 = self._childIndex, other._childIndex
             return x1 > x2
-        elif n1 < n2:
+        if n1 < n2:
             x1 = self._childIndex; v2, x2 = other.stack[n]
             return x1 > x2
-        else: # n1 > n2
-            # 2011/07/28: Bug fix suggested by SegundoBob.
-            x1 = other._childIndex; v2, x2 = self.stack[n]
-            return x2 >= x1
+        # n1 > n2
+        # 2011/07/28: Bug fix suggested by SegundoBob.
+        x1 = other._childIndex; v2, x2 = self.stack[n]
+        return x2 >= x1
     #@+node:ekr.20040117170612: *4* p.__getattr__ (no longer used)
     # No longer used.  All code must now be aware of the one-node world.
     # def __getattr__ (self,attr):
@@ -275,8 +276,7 @@ class Position:
         if p.v:
             return "<pos %d childIndex: %d lvl: %d key: %s %s>" % (
                 id(p), p._childIndex, p.level(), p.key(), p.h)
-        else:
-            return "<pos %d [%d] None>" % (id(p), len(p.stack))
+        return "<pos %d [%d] None>" % (id(p), len(p.stack))
 
     __repr__ = __str__
     #@+node:ekr.20061006092649: *4* p.archivedPosition
@@ -744,10 +744,9 @@ class Position:
             # return ("file://%s#%s" % (self.v.context.fileName(), UNL)).replace(' ', '%20')
             s = "unl:" + "//%s#%s" % (self.v.context.fileName(), UNL)
             return s.replace(' ', '%20')
-        elif with_file:
+        if with_file:
             return ("%s#%s" % (self.v.context.fileName(), UNL))
-        else:
-            return UNL
+        return UNL
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self):
         p = self
@@ -837,13 +836,11 @@ class Position:
             if p == root:
                 # Fix bug: https://github.com/leo-editor/leo-editor/issues/12
                 return True
-            else:
-                return root.isAncestorOf(p) and visible(p, root=root)
-        else:
-            for root in c.rootPosition().self_and_siblings(copy=False):
-                if root == p or root.isAncestorOf(p):
-                    return visible(p)
-            return False
+            return root.isAncestorOf(p) and visible(p, root=root)
+        for root in c.rootPosition().self_and_siblings(copy=False):
+            if root == p or root.isAncestorOf(p):
+                return visible(p)
+        return False
     #@+node:ekr.20080416161551.197: *4* p.level & simpleLevel
     def level(self):
         '''Return the number of p's parents.'''
@@ -885,8 +882,7 @@ class Position:
             p = p.copy()
             p.v = next.v
             return p
-        else:
-            return p.nodeAfterTree()
+        return p.nodeAfterTree()
     #@+node:shadow.20080825171547.2: *4* p.textOffset
     def textOffset(self):
         '''
@@ -1024,10 +1020,8 @@ class Position:
             if data:
                 v, junk = data
                 return v
-            else:
-                return p.v.context.hiddenRootNode
-        else:
-            return None
+            return p.v.context.hiddenRootNode
+        return None
     #@+node:ekr.20131219220412.16582: *4* p._relinkAsCloneOf
     def _relinkAsCloneOf(self, p2):
         '''A low-level method to replace p.v by a p2.v.'''
@@ -1239,12 +1233,10 @@ class Position:
         if limit == p:
             if limitIsVisible and p.isVisible(c):
                 return True, p
-            else:
-                return True, None
-        elif limit.isAncestorOf(p):
-            return False, None
-        else:
             return True, None
+        if limit.isAncestorOf(p):
+            return False, None
+        return True, None
 
     #@+node:ekr.20080416161551.211: *4* p.moveToVisNext & helper
     def moveToVisNext(self, c):
@@ -1686,8 +1678,7 @@ class Position:
         if p.isCloned():
             c = p.v.context
             return c.shouldBeExpanded(p)
-        else:
-            return p.v.isExpanded()
+        return p.v.isExpanded()
     #@+node:ekr.20040306220634.9: *5* p.Status bits
     # Clone bits are no longer used.
     # Dirty bits are handled carefully by the position class.
@@ -1996,8 +1987,7 @@ class VNode:
         if word in names and g.match_word(h, 0, word):
             name = h[i:].strip()
             return name
-        else:
-            return ""
+        return ""
     #@+node:ekr.20031218072017.3350: *4* v.anyAtFileNodeName
     def anyAtFileNodeName(self):
         """Return the file name following an @file node or an empty string."""
@@ -2109,9 +2099,8 @@ class VNode:
         # 2011/10/08: honor @ignore in headlines.  Sheesh.
         if g.match_word(self._headString, 0, '@ignore'):
             return True
-        else:
-            flag, i = g.is_special(self._bodyString, "@ignore")
-            return flag
+        flag, i = g.is_special(self._bodyString, "@ignore")
+        return flag
     #@+node:ekr.20031218072017.3352: *4* v.isAtOthersNode
     def isAtOthersNode(self):
         """Returns True if the receiver contains @others in its body at the start of a line."""
@@ -2191,8 +2180,7 @@ class VNode:
         v = self
         if 0 <= n < len(v.children):
             return v.children[n]
-        else:
-            return None
+        return None
     #@+node:ekr.20031218072017.3366: *5* v.numberOfChildren
     def numberOfChildren(self):
         v = self
