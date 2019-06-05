@@ -68,7 +68,8 @@ class Py_Importer(Importer):
         index = 0
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
-            if self.starts_block(i, lines, new_state, prev_state):
+            if self.starts_block(i, lines, new_state, prev_state, stack):
+                    # Bug fix 2019/06/05: added "stack" arg(!)
                 return self.skip_block(i, index, lines, new_state, stack)
             prev_state = new_state
             index += len(line)
