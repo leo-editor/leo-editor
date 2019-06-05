@@ -446,11 +446,10 @@ class AtFile:
         i = s.find(tag)
         if i == -1:
             return True # Don't use the cache.
-        else:
-            j, k = g.getLine(s, i)
-            line = s[j: k]
-            valid, new_df, start, end, isThin = at.parseLeoSentinel(line)
-            return not isThin
+        j, k = g.getLine(s, i)
+        line = s[j: k]
+        valid, new_df, start, end, isThin = at.parseLeoSentinel(line)
+        return not isThin
     #@+node:ekr.20041005105605.26: *5* at.readAll & helpers
     def readAll(self, root, force=False):
         """Scan positions, looking for @<file> nodes to read."""
@@ -901,8 +900,8 @@ class AtFile:
             s = at.read_lines[at.read_i]
             at.read_i += 1
             return s
-        else:
-            return '' # Not an error.
+        return ''
+            # Not an error.
     #@+node:ekr.20041005105605.129: *5* at.scanHeader
     def scanHeader(self, fileName, giveErrors=True):
         """
@@ -1454,8 +1453,8 @@ class AtFile:
                     return None
 
             return writer_for_ext_cb
-        else:
-            return None
+
+        return None
     #@+node:ekr.20090225080846.5: *6* at.writeOneAtEditNode
     def writeOneAtEditNode(self, p): 
         '''Write one @edit node.'''
@@ -1984,8 +1983,7 @@ class AtFile:
                     break
             name = s[n1:n2+2]
             return name, n1, n2+2
-        else:
-            return None, n1, len(s)
+        return None, n1, len(s)
     #@+node:ekr.20041005105605.178: *7* at.putAfterLastRef
     def putAfterLastRef(self, s, start, delta):
         """Handle whatever follows the last ref of a line."""
@@ -2095,8 +2093,7 @@ class AtFile:
         level = 1 + p.level() - self.root.level()
         if level > 2:
             return "%s: *%s* %s" % (gnx, level, h)
-        else:
-            return "%s: %s %s" % (gnx, '*' * level, h)
+        return "%s: %s %s" % (gnx, '*' * level, h)
     #@+node:ekr.20041005105605.189: *6* at.removeCommentDelims
     def removeCommentDelims(self, p):
         '''
@@ -2291,8 +2288,7 @@ class AtFile:
                 x = checkerCommands.PyflakesCommand(self.c)
                 ok = x.run(p=root,pyflakes_errors_only=pyflakes_errors_only)
                 return ok
-            else:
-                return True # Suppress error if pyflakes can not be imported.
+            return True # Suppress error if pyflakes can not be imported.
         except Exception:
             g.es_exception()
     #@+node:ekr.20090514111518.5665: *6* at.tabNannyNode
@@ -2355,10 +2351,9 @@ class AtFile:
             j = g.skip_ws(s, i)
             if g.match_word(s, j, "@others"):
                 return at.othersDirective
-            elif g.match_word(s, j, "@all"):
+            if g.match_word(s, j, "@all"):
                 return at.allDirective
-            else:
-                return at.noDirective
+            return at.noDirective
         table = (
             ("@all", at.allDirective),
             ("@c", at.cDirective),
@@ -2391,8 +2386,7 @@ class AtFile:
             s3 = s2[m.end(1):]
             if s3 and s3[0] in ".(":
                 return at.noDirective
-            else:
-                return at.miscDirective
+            return at.miscDirective
         return at.noDirective
     #@+node:ekr.20041005105605.200: *5* at.isSectionName
     # returns (flag, end). end is the index of the character after the section name.
@@ -2406,8 +2400,7 @@ class AtFile:
         i = g.find_on_line(s, i, ">>")
         if i > -1:
             return True, i + 2
-        else:
-            return False, -1
+        return False, -1
     #@+node:ekr.20190113043601.1: *5* at.open/closeOutputFile
     def openOutputFile(self):
         '''Open the output file, which must be file-like'''
@@ -2604,8 +2597,9 @@ class AtFile:
         tag = self.underindentEscapeString
         if s.startswith(tag):
             n2, s2 = self.parseUnderindentTag(s)
-            if n2 >= n: return
-            elif n > 0: n -= n2
+            if n2 >= n:
+                return
+            if n > 0: n -= n2
             else: n += n2
         if n > 0:
             w = self.tab_width
@@ -2818,8 +2812,7 @@ class AtFile:
         if hasattr(p.v, 'tempAttributes'):
             d = p.v.tempAttributes.get('read-path', {})
             return d.get('path')
-        else:
-            return ''
+        return ''
 
     def setPathUa(self, p, path):
         if not hasattr(p.v, 'tempAttributes'):
@@ -2845,8 +2838,7 @@ class AtFile:
             if i < len(s2) and s2[i] == '.':
                 i += 1
             return n, s2[i:]
-        else:
-            return 0, s
+        return 0, s
     #@+node:ekr.20090712050729.6017: *4* at.promptForDangerousWrite
     def promptForDangerousWrite(self, fileName, kind, message=None):
         '''Raise a dialog asking the user whether to overwrite an existing file.'''
@@ -3011,14 +3003,13 @@ class AtFile:
         if not g.os_path_exists(fn):
             # No danger of overwriting fn.
             return False
-        elif hasattr(p.v, 'at_read'):
+        if hasattr(p.v, 'at_read'):
             # Fix bug #50: body text lost switching @file to @auto-rst
             d = p.v.at_read
             aSet = d.get(fn, set())
             return p.h not in aSet
-        else:
-            return True
-                # The file was never read.
+        return True
+            # The file was never read.
     #@+node:ekr.20041005105605.20: *4* at.warnOnReadOnlyFile
     def warnOnReadOnlyFile(self, fn):
         # os.access() may not exist on all platforms.

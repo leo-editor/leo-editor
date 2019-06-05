@@ -343,28 +343,27 @@ def uncomment_special_lines(comment, i, lines, p, result, s):
             if ends_doc_part(s):
                 break
         return i
-    else:
-        j = s.find('<<')
-        k = s.find('>>') if j > -1 else -1
-        if -1 < j < k or s.find('@others') > -1:
-            # A section reference line or an @others line.
-            # Such lines are followed by a pass line.
-            # The beautifier may insert blank lines before the pass line.
-            kind = 'section ref' if -1 < j < k else '@others'
-            # Restore the original line, including leading whitespace.
-            result.append(s)
-            # Skip blank lines.
-            while i < len(lines) and not lines[i].strip():
-                i += 1
-            # Skip the pass line.
-            if i < len(lines) and lines[i].lstrip().startswith('pass'):
-                i += 1
-            else:
-                g.trace('*** no pass after %s: %s' % (kind, p.h))
+    j = s.find('<<')
+    k = s.find('>>') if j > -1 else -1
+    if -1 < j < k or s.find('@others') > -1:
+        # A section reference line or an @others line.
+        # Such lines are followed by a pass line.
+        # The beautifier may insert blank lines before the pass line.
+        kind = 'section ref' if -1 < j < k else '@others'
+        # Restore the original line, including leading whitespace.
+        result.append(s)
+        # Skip blank lines.
+        while i < len(lines) and not lines[i].strip():
+            i += 1
+        # Skip the pass line.
+        if i < len(lines) and lines[i].lstrip().startswith('pass'):
+            i += 1
         else:
-            # A directive line.
-            result.append(s)
-        return i
+            g.trace('*** no pass after %s: %s' % (kind, p.h))
+    else:
+        # A directive line.
+        result.append(s)
+    return i
 #@+node:ekr.20150602154951.1: *3* should_beautify
 def should_beautify(p):
     '''
@@ -375,23 +374,22 @@ def should_beautify(p):
         d = g.get_directives_dict(p2)
         if 'killbeautify' in d:
             return False
-        elif 'beautify' in d and 'nobeautify' in d:
+        if 'beautify' in d and 'nobeautify' in d:
             if p == p2:
                 # honor whichever comes first.
                 for line in g.splitLines(p2.b):
                     if line.startswith('@beautify'):
                         return True
-                    elif line.startswith('@nobeautify'):
+                    if line.startswith('@nobeautify'):
                         return False
                 g.trace('can not happen', p2.h)
                 return False
-            else:
-                # The ambiguous node has no effect.
-                # Look up the tree.
-                pass
+            # The ambiguous node has no effect.
+            # Look up the tree.
+            pass
         elif 'beautify' in d:
             return True
-        elif 'nobeautify' in d:
+        if 'nobeautify' in d:
             # This message would quickly become annoying.
             # self.skip_message('@nobeautify',p)
             return False
@@ -510,8 +508,7 @@ class CPrettyPrinter:
             self.put_token(s)
         if toList:
             return self.result
-        else:
-            return ''.join(self.result)
+        return ''.join(self.result)
     #@+node:ekr.20110918225821.6815: *4* add_statement_braces
     def add_statement_braces(self, s, giveWarnings=False):
         p = self.p
@@ -652,7 +649,7 @@ class CPrettyPrinter:
             s2 = self.result[i]
             if s == s2:
                 return True
-            elif s.isspace() or s.startswith('//') or s.startswith('/*'):
+            if s.isspace() or s.startswith('//') or s.startswith('/*'):
                 i -= 1
             else:
                 return False
@@ -723,8 +720,7 @@ class CPrettyPrinter:
         j = s.find("*/", i)
         if j == -1:
             return len(s)
-        else:
-            return j + 2
+        return j + 2
     #@-others
 #@+node:ekr.20150519111457.1: ** class PythonTokenBeautifier
 class PythonTokenBeautifier:
@@ -742,8 +738,7 @@ class PythonTokenBeautifier:
             if self.kind == 'line-indent':
                 assert not self.value.strip(' ')
                 return '%15s %s' % (self.kind, len(self.value))
-            else:
-                return '%15s %r' % (self.kind, self.value)
+            return '%15s %r' % (self.kind, self.value)
 
         __str__ = __repr__
 

@@ -1564,8 +1564,7 @@ class LeoApp:
             scanner_for_ext_cb.scanner_name = aClass.__name__
                 # For traces in ic.createOutline.
             return scanner_for_ext_cb
-        else:
-            return None
+        return None
     #@+node:ekr.20170429152049.1: *3* app.listenToLog
     @cmd('listen-to-log')
     @cmd('log-listen')
@@ -1969,19 +1968,18 @@ class LoadManager:
         fn = g.os_path_finalize(fn)
         if not fn:
             return None
-        elif g.os_path_exists(fn):
+        if g.os_path_exists(fn):
             return fn
-        elif g.unitTesting or g.app.batchMode:
+        if g.unitTesting or g.app.batchMode:
             # 2017/02/18: unit tests must not create a workbook.
             # Neither should batch mode operation.
             return None
-        elif g.os_path_isabs(fn):
+        if g.os_path_isabs(fn):
             # Create the file.
             g.error('Using default leo file name:\n%s' % (fn))
             return fn
-        else:
-            # It's too risky to open a default file if it is relative.
-            return None
+        # It's too risky to open a default file if it is relative.
+        return None
     #@+node:ekr.20120219154958.10485: *4* LM.reportDirectories
     def reportDirectories(self, verbose):
         '''Report directories.'''
@@ -2019,8 +2017,7 @@ class LoadManager:
                 return letter
         if kind == 'register-command' or kind.find('mode') > -1:
             return '@'
-        else:
-            return 'D'
+        return 'D'
     #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings
     def computeLocalSettings(self, c, settings_d, bindings_d, localFlag):
         '''
@@ -2442,8 +2439,7 @@ class LoadManager:
         if screenshot_fn:
             lm.make_screen_shot(screenshot_fn)
             return False # Force an immediate exit.
-        else:
-            return True
+        return True
     #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
     def make_screen_shot(self, fn):
         '''Create a screenshot of the present Leo outline and save it to path.'''
@@ -2706,13 +2702,12 @@ class LoadManager:
             return None
         if g.os_path_exists(fn):
             return fn
-        elif g.os_path_isabs(fn):
+        if g.os_path_isabs(fn):
             # Create the file.
             g.error('Using default leo file name:\n%s' % (fn))
             return fn
-        else:
-            # It's too risky to open a default file if it is relative.
-            return None
+        # It's too risky to open a default file if it is relative.
+        return None
     #@+node:ekr.20120219154958.10484: *5* LM.initApp
     def initApp(self, verbose):
 
@@ -3016,8 +3011,9 @@ class LoadManager:
                 # Handle keywords for g.pr and g.es_print.
                 d = g.doKeywordArgs(keys, d)
                 color = d.get('color')
-                if color == 'suppress': return
-                elif log and color is None:
+                if color == 'suppress':
+                    return
+                if log and color is None:
                     color = g.actualColor('black')
                 color = g.actualColor(color)
                 tabName = d.get('tabName') or 'Log'

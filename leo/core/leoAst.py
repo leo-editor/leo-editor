@@ -131,16 +131,14 @@ class AstDumper:
             name = node.__class__.__name__
             if compressed and len(','.join(aList)) < 100:
                 return '%s(%s)' % (name, ','.join(aList))
-            else:
-                sep = '' if len(aList) <= 1 else sep1
-                return '%s(%s%s)' % (name, sep, sep1.join(aList))
-        elif isinstance(node, list):
+            sep = '' if len(aList) <= 1 else sep1
+            return '%s(%s%s)' % (name, sep, sep1.join(aList))
+        if isinstance(node, list):
             compressed = not any([isinstance(z, list) and len(z) > 1 for z in node])
             sep = '' if compressed and len(node) <= 1 else sep1
             return '[%s]' % ''.join(
                 ['%s%s' % (sep, self.dump(z, level + 1)) for z in node])
-        else:
-            return repr(node)
+        return repr(node)
     #@+node:ekr.20141012064706.18393: *3* d.get_fields
     def get_fields(self, node):
         return (
@@ -176,15 +174,14 @@ class AstFormatter:
         '''Return the formatted version of an Ast node, or list of Ast nodes.'''
         if isinstance(node, (list, tuple)):
             return ','.join([self.visit(z) for z in node])
-        elif node is None:
+        if node is None:
             return 'None'
-        else:
-            assert isinstance(node, ast.AST), node.__class__.__name__
-            method_name = 'do_' + node.__class__.__name__
-            method = getattr(self, method_name)
-            s = method(node, *args, **keys)
-            assert g.isString(s), type(s)
-            return s
+        assert isinstance(node, ast.AST), node.__class__.__name__
+        method_name = 'do_' + node.__class__.__name__
+        method = getattr(self, method_name)
+        s = method(node, *args, **keys)
+        assert g.isString(s), type(s)
+        return s
     #@+node:ekr.20141012064706.18404: *3* f.Contexts
     #@+node:ekr.20141012064706.18405: *4* f.ClassDef
     # 2: ClassDef(identifier name, expr* bases,
@@ -329,8 +326,7 @@ class AstFormatter:
     def do_arg(self, node):
         if getattr(node, 'annotation', None):
             return self.visit(node.annotation)
-        else:
-            return node.arg
+        return node.arg
     #@+node:ekr.20141012064706.18418: *4* f.Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
 
@@ -484,8 +480,7 @@ class AstFormatter:
             step = self.visit(node.step)
         if step:
             return '%s:%s:%s' % (lower, upper, step)
-        else:
-            return '%s:%s' % (lower, upper)
+        return '%s:%s' % (lower, upper)
     #@+node:ekr.20141012064706.18433: *4* f.Str
     def do_Str(self, node):
         '''This represents a string constant.'''
@@ -560,8 +555,7 @@ class AstFormatter:
         if getattr(node, 'msg', None):
             message = self.visit(node.msg)
             return self.indent('assert %s, %s' % (test, message))
-        else:
-            return self.indent('assert %s' % test)
+        return self.indent('assert %s' % test)
     #@+node:ekr.20141012064706.18444: *4* f.Assign
     def do_Assign(self, node):
         return self.indent('%s=%s\n' % (
@@ -620,8 +614,7 @@ class AstFormatter:
         if args:
             return self.indent('exec %s in %s\n' % (
                 body, ','.join(args)))
-        else:
-            return self.indent('exec %s\n' % (body))
+        return self.indent('exec %s\n' % (body))
     #@+node:ekr.20141012064706.18451: *4* f.For & AsnchFor (Python 3)
     def do_For(self, node, async_flag=False):
         result = []
@@ -730,15 +723,13 @@ class AstFormatter:
         if args:
             return self.indent('raise %s\n' % (
                 ','.join(args)))
-        else:
-            return self.indent('raise\n')
+        return self.indent('raise\n')
     #@+node:ekr.20141012064706.18460: *4* f.Return
     def do_Return(self, node):
         if node.value:
             return self.indent('return %s\n' % (
                 self.visit(node.value)))
-        else:
-            return self.indent('return\n')
+        return self.indent('return\n')
     #@+node:ekr.20160317050557.3: *4* f.Starred (Python 3)
     # Starred(expr value, expr_context ctx)
 
@@ -868,8 +859,7 @@ class AstFormatter:
         if getattr(node, 'value', None):
             return self.indent('yield %s\n' % (
                 self.visit(node.value)))
-        else:
-            return self.indent('yield\n')
+        return self.indent('yield\n')
     #@+node:ekr.20160317050557.5: *4* f.YieldFrom (Python 3)
     # YieldFrom(expr value)
 
@@ -1524,11 +1514,10 @@ class AstFullTraverser:
             for z in aList:
                 self.visit(z)
             return None
-        elif isinstance(aList, ast.AST):
+        if isinstance(aList, ast.AST):
             return self.visit(aList)
-        else:
-            g.trace('(CCTraverser) ===== oops', repr(aList), g.callers())
-            return None
+        g.trace('(CCTraverser) ===== oops', repr(aList), g.callers())
+        return None
     #@-others
 #@+node:ekr.20141012064706.18530: ** class AstPatternFormatter (AstFormatter)
 class AstPatternFormatter(AstFormatter):
@@ -2797,15 +2786,13 @@ class TokenSync:
         '''Dump the token. It is either a string or a 5-tuple.'''
         if g.isString(token):
             return token
-        else:
-            t1, t2, t3, t4, t5 = token
-            kind = g.toUnicode(token_module.tok_name[t1].lower())
-            # raw_val = g.toUnicode(t5)
-            val = g.toUnicode(t2)
-            if verbose:
-                return 'token: %10s %r' % (kind, val)
-            else:
-                return val
+        t1, t2, t3, t4, t5 = token
+        kind = g.toUnicode(token_module.tok_name[t1].lower())
+        # raw_val = g.toUnicode(t5)
+        val = g.toUnicode(t2)
+        if verbose:
+            return 'token: %10s %r' % (kind, val)
+        return val
     #@+node:ekr.20160225102931.10: *3* ts.is_line_comment
     def is_line_comment(self, token):
         '''Return True if the token represents a full-line comment.'''
@@ -2873,7 +2860,7 @@ class TokenSync:
         n = getattr(node, 'lineno', None)
         if n is None:
             return '<no line> for %s' % node.__class__.__name__
-        elif continued_lines:
+        if continued_lines:
             aList, n = [], n - 1
             while n < len(self.lines):
                 s = self.lines[n]
@@ -2884,8 +2871,7 @@ class TokenSync:
                     aList.append(s)
                     break
             return ''.join(aList)
-        else:
-            return self.lines[n - 1]
+        return self.lines[n - 1]
     #@+node:ekr.20160225102931.16: *3* ts.sync_string
     def sync_string(self, node):
         '''Return the spelling of the string at the given node.'''
@@ -2895,9 +2881,8 @@ class TokenSync:
             token = tokens.pop(0)
             self.string_tokens[n - 1] = tokens
             return self.token_val(token)
-        else:
-            g.trace('===== underflow', n, node.s)
-            return node.s
+        g.trace('===== underflow', n, node.s)
+        return node.s
     #@+node:ekr.20160225102931.17: *3* ts.token_kind/raw_val/val
     def token_kind(self, token):
         '''Return the token's type.'''
@@ -2930,9 +2915,8 @@ class TokenSync:
         '''
         if hasattr(node, 'lineno'):
             return self.trailing_comment_at_lineno(node.lineno)
-        else:
-            g.trace('no lineno', node.__class__.__name__, g.callers())
-            return '\n'
+        g.trace('no lineno', node.__class__.__name__, g.callers())
+        return '\n'
     #@+node:ekr.20160225102931.20: *3* ts.trailing_comment_at_lineno
     def trailing_comment_at_lineno(self, lineno):
         '''Return any trailing comment at the given node.lineno.'''

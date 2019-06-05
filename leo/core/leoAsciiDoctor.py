@@ -150,11 +150,10 @@ class AsciiDoctorCommands:
         theDir = c.os_path_finalize(theDir)
         if g.os_path_exists(theDir):
             return True
-        else:
-            ok = g.makeAllNonExistentDirectories(theDir, c=c, force=False)
-            if not ok:
-                g.error('did not create:', theDir)
-            return ok
+        ok = g.makeAllNonExistentDirectories(theDir, c=c, force=False)
+        if not ok:
+            g.error('did not create:', theDir)
+        return ok
     #@+node:ekr.20190515070742.24: ** adoc.write_root & helpers
     def write_root(self, root):
         '''Process all nodes in an @ad tree.'''
