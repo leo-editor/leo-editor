@@ -377,10 +377,11 @@ class QuickSearchController:
 
         self.frozen = False
         self._search_patterns = []
+
         def searcher(inp):
             #print("searcher", inp)
             if self.frozen:
-                return
+                return None
             exp = inp.replace(" ", "*")
             res =  self.bgSearch(exp)
             return res
@@ -637,8 +638,7 @@ class QuickSearchController:
         #self.clear()
 
         if self.frozen:
-            return
-
+            return None
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*'+ pat + '*').replace(r"\Z(?ms)","")
             # bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")

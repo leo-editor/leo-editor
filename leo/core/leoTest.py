@@ -816,6 +816,7 @@ class TestManager:
             print('\n%s: exception creating test class in %s' % (fname, p.h))
             g.es_print_exception()
             return None
+        return None
     #@+node:ekr.20051104075904.12: *5* tm.makeTestSuite
     # This code executes the script in an @suite node.
     # This code assumes that the script sets the 'suite' var to the test suite.

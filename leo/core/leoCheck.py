@@ -175,13 +175,16 @@ class ConventionChecker:
                 if s:
                     s = g.toEncodedString(s, encoding=e)
                 else:
-                    return g.trace('empty file:', sfn)
+                    g.trace('empty file:', sfn)
+                    return
             else:
-                return g.trace('file not found:', sfn)
+                g.trace('file not found:', sfn)
+                return
         elif s:
             sfn = '<string>'
         else:
-            return g.trace('no fn or s argument')
+            g.trace('no fn or s argument')
+            return
         # Check the source
         if trace_fn:
             if fn:

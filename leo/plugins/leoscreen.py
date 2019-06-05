@@ -292,45 +292,32 @@ class leoscreen_Controller:
         """Get the next line of output from the last command"""
 
         if c and c != self.c:
-            return
-
+            return None
         if not c:
             c = self.c
-
         if not self.output:
             self._get_output()
-
         if not self.output:
             g.es('No output retreived')
-            return
-
+            return ''
         line = self.output[self.next_unread_line]
-
         self.next_unread_line -= 1
-
         return line
     #@+node:tbrown.20100422203442.5579: *3* get_all
     def get_all(self, c=None):
         """Get all output from the last command"""
 
         if c and c != self.c:
-            return
-
+            return None
         if not c:
             c = self.c
-
         self.output = None  # trick get_line into getting output
         self.get_line()     # updates self.output, ignore returned line
-
         sm = difflib.SequenceMatcher(None, self.old_output, self.output)
         x = sm.find_longest_match(0, len(self.old_output)-1, 0, len(self.output)-1)
-        # print x, len(self.old_output), len(self.output)
-
         ans = self.output[:]
         del ans[x.b:x.b+x.size]
-
         return '\n'.join(ans[:self.first_line])
-
     #@+node:tbrown.20100502155649.5599: *3* get_note
     def get_note(self, c=None):
         """Get all output from the last command"""

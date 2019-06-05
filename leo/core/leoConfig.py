@@ -307,8 +307,7 @@ class ParserBaseClass:
                 return 'skip'
         elif h != s:
             return 'skip'
-        else:
-            return None
+        return None
     #@+node:ekr.20041120104215: *4* pbc.doIfPlatform
     def doIfPlatform(self, p, kind, name, val):
         '''Support @ifplatform in @settings trees.'''

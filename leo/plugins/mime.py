@@ -95,7 +95,7 @@ def open_mimetype(tag, keywords, val=None):
     c = keywords.get('c')
     p = keywords.get('p')
     if not c or not p:
-        return
+        return None
 
     if p.h.startswith('@mime'):
         fname = p.h[6:]

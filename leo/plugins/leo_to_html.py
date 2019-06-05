@@ -478,6 +478,7 @@ class Leo_to_HTML:
         s = p.h
         if not self.flagIgnoreFiles or s[:len('@file')] != '@file':
             return True
+        return False
     #@+node:bob.20080107154746.9: *3* main
     def main(self, bullet=None, show=False, node=False):
         """Generate the html and write the files.
@@ -541,7 +542,9 @@ class Leo_to_HTML:
 
         def flag(s):
             ss = config(s)
-            if ss: return ss.lower()[0] in ('y', 't', '1')
+            if ss:
+                return ss.lower()[0] in ('y', 't', '1')
+            return None
 
         fileName = abspath(g.app.loadDir,"..","plugins","leo_to_html.ini")
         configParser = ConfigParser.ConfigParser()
@@ -647,34 +650,24 @@ class Leo_to_HTML:
         Setting browser_command to a bad command will slow down browser launch.
 
         """
-
         tempdir = g.os_path_finalize_join(tempfile.gettempdir(),'leo_show')
-
         if not g.os_path_exists(tempdir):
             os.mkdir(tempdir)
-
         filename = g.sanitize_filename(self.myFileName)
         filepath = g.os_path_finalize_join(tempdir, filename + '.html')
-
         self.write(filepath, self.xhtml, basedir='', path='')
-
         url = "file://%s" % filepath
-
         msg = ''
         if self.browser_command:
-
             g.trace(self.browser_command)
-
             try:
                 subprocess.Popen([self.browser_command, url])
-                return True
+                return
             except Exception:
                 msg = 'can\'t open browser using \n    %s\n'%self.browser_command + \
                 'Using default browser instead.'
-
         if msg:
             self.announce_fail(msg)
-
         webbrowser.open(url)
     #@+node:bob.20080107171331: *3* writeall
     def writeall(self):

@@ -281,9 +281,9 @@ class LeoQtTree(leoFrame.LeoTree):
         '''
         c = self.c
         if g.app.disable_redraw:
-            return
+            return None
         if self.busy:
-            return
+            return None
         # Cancel the delayed redraw request.
         c.requestLaterRedraw = False
         if not p:
@@ -444,7 +444,8 @@ class LeoQtTree(leoFrame.LeoTree):
     def drawChildren(self, p, parent_item):
         '''Draw the children of p if they should be expanded.'''
         if not p:
-            return g.trace('can not happen: no p')
+            g.trace('can not happen: no p')
+            return
         if p.hasChildren():
             if p.isExpanded():
                 self.expandItem(parent_item)
@@ -1388,7 +1389,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
         if self.busy:
-            return
+            return None
         c = self.c
         c.outerUpdate()
             # Do any scheduled redraw.

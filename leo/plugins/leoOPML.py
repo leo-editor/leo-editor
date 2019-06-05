@@ -270,14 +270,15 @@ class OpmlController:
         '''Read the opml file.'''
         dumpTree = False
         if not fileName:
-            return g.trace('no fileName')
+            g.trace('no fileName')
+            return None
         c = self.c.new()
             # Create the new commander *now*
             # so that created vnodes will have the proper context.
         # Pass one: create the intermediate nodes.
         dummyRoot = self.parse_opml_file(fileName)
         if not dummyRoot:
-            return
+            return None
         if dumpTree:
             self.dumpTree(dummyRoot)
         # Pass two: create the outline from the sax nodes.
@@ -287,7 +288,8 @@ class OpmlController:
         errors = c.checkOutline()
         if errors:
             c.dumpOutline()
-            return g.trace('%s errors!' % errors)
+            g.trace('%s errors!' % errors)
+            return None
         # if self.opml_read_derived_files:
             # at = c.atFileCommands
             # c.fileCommands.tnodesDict = self.createTnodesDict()

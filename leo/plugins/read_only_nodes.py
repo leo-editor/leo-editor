@@ -373,6 +373,7 @@ def on_bodykey1 (tag,keywords):
             w.delete("1.0","end")
             w.insert("1.0",p.b)
         return 1 # Override the body key event handler.
+    return None
 #@+node:edream.110203113231.898: ** on_headkey2
 # update the body text when we press enter
 

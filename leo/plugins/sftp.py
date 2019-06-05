@@ -183,42 +183,34 @@ class SFTPController:
         or
         @sftp hostname:path/to/remote/file
         '''
-
         username = None
         port = None
-
         headline = headline.split(' ',1)[1] # strip the @sftp bit
         has_username = '@' in headline
         has_port = '!' in headline
         has_path = ':' in headline
-
         if not has_path:
             self.log("ERROR: need a file path!", color='red')
-            return
+            return None
         else:
             remotefile = headline.split(':')[1].strip()
         if not remotefile:
             self.log("ERROR: need a file path!", color='red')
-            return
-
+            return None
         if has_port:
             try:
                 port = int(headline[headline.find('!')+1:headline.find(':')])
             except Exception:
                 self.log("ERROR parsing port.  Falling back to port 22.", color='red')
-
         if has_username:
             username = headline.split('@',1)[0]
             if not username:
                 self.log("ERROR parsing username.  Falling back to leoID value.", color='red')
-
         hostname = headline.split(':')[0]
         if has_port: hostname = hostname.split('!')[0]
         if has_username: hostname = hostname.split('@')[1]
-
         if not port: port = 22
         if not username: username = g.app.leoID
-
         return {'port': port, 'hostname': hostname, 'username': username, 'remotefile': remotefile}
     #@+node:peckj.20140218144401.6160: *4* get_password
     def get_password(self, username, hostname):

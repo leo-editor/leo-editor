@@ -1279,14 +1279,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20150514063305.180: *7* handle_scope_keyword
             def handle_scope_keyword(self, aList, i):
                 i1 = i
-                # pylint: disable=undefined-loop-variable
-                # word *is* defined below.
                 for word in ('public', 'private', 'export'):
                     if self.match_word(aList, i, word):
                         i += len(word)
                         break
                 else:
-                    return
+                    return None
                 # Skip any following spaces.
                 i2 = self.skip_ws(aList, i)
                 # Scan to the next newline:

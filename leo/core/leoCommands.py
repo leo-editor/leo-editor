@@ -1003,7 +1003,7 @@ class Commands:
         In fact, there are no longer any calls to this method in Leo's core.
         '''
         g.trace('This method is deprecated. Instead, just use None.')
-        return None
+        # pylint complains if we return None.
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self, p, root=None, trace=False):
         """Return True if a position exists in c's tree"""
@@ -2200,7 +2200,7 @@ class Commands:
         c = self
         fn = fileName or c.fileName()
         if not fn:
-            return
+            return None
         theDir, base = g.os_path_split(fn)
         if useTimeStamp:
             if base.endswith('.leo'):
@@ -2796,7 +2796,7 @@ class Commands:
         '''
         c = self
         if c.enableRedrawFlag:
-            return self.frame.tree.redraw_after_head_changed()
+            self.frame.tree.redraw_after_head_changed()
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090110073010.4: *6* c.redraw_after_select
@@ -3256,11 +3256,9 @@ class Commands:
         # c = self
         if not s:
             s = g.app.gui.getTextFromClipboard()
-        if s:
-            if g.match(s, 0, g.app.prolog_prefix_string):
-                return True
-        else:
-            return False
+        if s and g.match(s, 0, g.app.prolog_prefix_string):
+            return True
+        return False
     #@+node:ekr.20031218072017.2975: *6* c.canPromote
     def canPromote(self):
         c = self; v = c.currentVnode()
@@ -3829,10 +3827,12 @@ class Commands:
     #@+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
     def doBatchOperations(self, aList=None):
         # Validate aList and create the parents dict
-        if aList is None: aList = []
+        if aList is None:
+            aList = []
         ok, d = self.checkBatchOperationsList(aList)
         if not ok:
-            return g.error('do-batch-operations: invalid list argument')
+            g.error('do-batch-operations: invalid list argument')
+            return
         for v in list(d.keys()):
             aList2 = d.get(v, [])
             if aList2:

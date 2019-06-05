@@ -401,12 +401,12 @@ class LeoBody:
         #  Called whenever wrapper must be selected.
         c = self.c
         if self.selectEditorLockout:
-            return
+            return None
         if w and w == self.c.frame.body.widget:
             if w.leo_p and w.leo_p != c.p:
                 c.selectPosition(w.leo_p)
                 c.bodyWantsFocus()
-            return
+            return None
         try:
             val = None
             self.selectEditorLockout = True
@@ -842,17 +842,24 @@ class LeoFrame:
         c.frame.setTabWidth(tab_width)
     #@+node:ekr.20061119120006: *4* LeoFrame.Icon area convenience methods
     def addIconButton(self, *args, **keys):
-        if self.iconBar: return self.iconBar.add(*args, **keys)
-        else: return None
+        if self.iconBar:
+            return self.iconBar.add(*args, **keys)
+        return None
 
     def addIconRow(self):
-        if self.iconBar: return self.iconBar.addRow()
+        if self.iconBar:
+            return self.iconBar.addRow()
+        return None
 
     def addIconWidget(self, w):
-        if self.iconBar: return self.iconBar.addWidget(w)
+        if self.iconBar:
+            return self.iconBar.addWidget(w)
+        return None
 
     def clearIconBar(self):
-        if self.iconBar: self.iconBar.clear()
+        if self.iconBar:
+            return self.iconBar.clear()
+        return None
 
     def createIconBar(self):
         c = self.c
@@ -1166,6 +1173,7 @@ class LeoLog:
             tabName = list(d.keys())[i]
             self.selectTab(tabName)
             return i
+        return None
     #@+node:ekr.20070302094848.5: *3* LeoLog.deleteTab
     def deleteTab(self, tabName, force=False):
         c = self.c
@@ -1474,7 +1482,7 @@ class LeoTree:
         c = self.c
         if g.app.killed or self.tree_select_lockout: # Essential.
             # if trace: print('%30s: LOCKOUT' % (tag))
-            return None
+            return
         if trace: # and c.p != p:
             print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
                 # Format matches traces in leoflexx.py

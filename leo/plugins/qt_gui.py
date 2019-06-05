@@ -287,7 +287,8 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18493: *4* qt_gui.runAboutLeoDialog
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         """Create and run a qt About Leo dialog."""
-        if g.unitTesting: return None
+        if g.unitTesting:
+            return
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
         d.setText('%s\n%s\n%s\n%s' % (
@@ -439,7 +440,8 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18495: *4* qt_gui.runAskOkDialog
     def runAskOkDialog(self, c, title, message=None, text="Ok"):
         """Create and run a qt askOK dialog ."""
-        if g.unitTesting: return None
+        if g.unitTesting:
+            return
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
@@ -559,7 +561,7 @@ class LeoQtGui(leoGui.LeoGui):
             dialog = self.PyzoFileDialog()
             dialog.init()
             dialog.open_dialog(c, callback, defaultextension, startpath)
-            return
+            return None
         #
         # No callback: use the legacy file browser.
         filter_ = self.makeFilter(filetypes)
@@ -1497,13 +1499,12 @@ class StyleClassManager:
     def has_sclass(self, w, prop):
         """Check for style class or list of classes prop on QWidget w"""
         if not prop:
-            return
+            return None
         props = self.sclasses(w)
         if isinstance(prop, str):
             ans = [prop in props]
         else:
             ans = [i in props for i in prop]
-
         return all(ans)
     #@+node:tbrown.20150724090431.6: *3* remove_sclass
     def remove_sclass(self, w, prop):

@@ -342,7 +342,7 @@ def onClose(tag, keys):
 #@+node:tbrown.20110629132207.8984: *3* vr.show_scrolled_message
 def show_scrolled_message(tag, kw):
     if g.unitTesting:
-        return # This just slows the unit tests.
+        return None # This just slows the unit tests.
     c = kw.get('c')
     flags = kw.get('flags') or 'rst'
     vr = viewrendered(event=kw)
@@ -589,6 +589,7 @@ class ViewRenderedProvider:
                 layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
             # return ViewRenderedController(self.c)
             return vr
+        return None
     #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
 if QtWidgets: # NOQA

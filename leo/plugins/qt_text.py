@@ -1371,7 +1371,8 @@ class QTextEditWrapper(QTextMixin):
         op = d.get(kind)
         mode = tc.KeepAnchor if extend else tc.MoveAnchor
         if not op:
-            return g.trace('can not happen: bad kind: %s' % kind)
+            g.trace('can not happen: bad kind: %s' % kind)
+            return
         if kind in ('page-down', 'page-up'):
             self.pageUpDown(op, mode)
         elif kind == 'exchange': # exchange-point-and-mark

@@ -597,7 +597,9 @@ class RstCommands:
         p = p.copy(); h = p.h
         i = g.skip_id(h, 1) # Skip the '@'
         kind, fn = h[: i].strip(), h[i:].strip()
-        if not fn: return g.error('%s requires file name' % (kind))
+        if not fn:
+            g.error('%s requires file name' % (kind))
+            return
         title = p.firstChild().h if p and p.firstChild() else '<no slide>'
         title = title.strip().capitalize()
         n_tot = p.numberOfChildren()

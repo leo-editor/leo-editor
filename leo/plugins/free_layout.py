@@ -98,11 +98,10 @@ class FreeLayoutController:
         c = self.c
         if c != keys.get('c'):
             return
-
         # Careful: we could be unit testing.
         splitter = self.get_top_splitter() # A NestedSplitter.
         if not splitter:
-            return None
+            return
         # by default NestedSplitter's context menus are disabled, needed
         # once to globally enable them
         NestedSplitter.enabled = True

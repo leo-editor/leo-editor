@@ -194,7 +194,7 @@ def createMyLeoSettings(c):
         message = 'Create myLeoSettings.leo in %s?' % (homeLeoDir),
     )
     if ok == 'no':
-        return
+        return None
     # get '@enabled-plugins' from g.app.globalConfigDir
     fileName = g.os_path_join(configDir, "leoSettings.leo")
     leosettings = g.openWithFileName(fileName, old_c=c)

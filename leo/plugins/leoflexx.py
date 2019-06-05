@@ -1550,10 +1550,10 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         '''
         # pylint: disable=arguments-differ
         if g.app.killed:
-            return
+            return None
         c, p = self.c, self.c.p
         if not p:
-            return
+            return None
         # Calculate lt_part
         row, col = g.convertPythonIndexToRowCol(body_text, insert_point)
         fcol = c.gotoCommands.find_node_start(p)

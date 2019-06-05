@@ -238,8 +238,7 @@ if QtWidgets:
                 suggestion = completer.complete(line, 0)
                 if suggestion is not None:
                     self.insertPlainText(suggestion[len(line):])
-                return None
-
+                return
             if event.key() == qt.Key_Down:
                 if self.historyIndex == len(self.history):
                     self.historyIndex -= 1
@@ -251,8 +250,7 @@ if QtWidgets:
                         self.clearCurrentBlock()
                 except Exception:
                     pass
-                return None
-
+                return
             if event.key() == qt.Key_Up:
                 try:
                     if len(self.history) - 1 > self.historyIndex:
@@ -262,8 +260,7 @@ if QtWidgets:
                         self.historyIndex = len(self.history)
                 except Exception:
                     pass
-                return None
-
+                return
             if event.key() == qt.Key_Home:
                 # set cursor to position 4 in current block. 4 because that's where
                 # the marker stops
@@ -273,19 +270,17 @@ if QtWidgets:
                 textCursor  = self.textCursor()
                 textCursor.setPosition(position)
                 self.setTextCursor(textCursor)
-                return None
-
+                return
             if event.key() in [qt.Key_Left, qt.Key_Backspace]:
                 # don't allow deletion of marker
                 if self.textCursor().positionInBlock() == 4:
-                    return None
-
+                    return
             if event.key() in [qt.Key_Return, qt.Key_Enter]:
                 self.doEnter(event)
-                return None
-                
+                return
             # allow all other key events
             super(PyInterp, self).keyPressEvent(event)
+            
         #@+node:ekr.20180307132016.1: *4* PyInterp.doEnter
         def doEnter(self, event):
             '''Handle the <return> key.'''

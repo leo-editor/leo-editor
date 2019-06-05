@@ -629,8 +629,9 @@ class LeoMenu:
     def insert_cascade(self, parent, index, label, menu, underline):
         self.oops()
 
-    def new_menu(self, parent, tearoff=0, label=''): # 2010: added label arg for pylint.
-        self.oops(); return None
+    def new_menu(self, parent, tearoff=0, label=''):
+        # 2010: added label arg for pylint.
+        self.oops()
     #@+node:ekr.20031218072017.3810: *4* LeoMenu.9 Routines with new spellings
     def activateMenu(self, menuName): # New in Leo 4.4b2.
         self.oops()
@@ -642,7 +643,7 @@ class LeoMenu:
         self.oops()
 
     def createOpenWithMenu(self, parent, label, index, amp_index):
-        self.oops(); return None
+        self.oops()
 
     def disableMenu(self, menu, name):
         self.oops()

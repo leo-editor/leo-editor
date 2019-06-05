@@ -237,7 +237,6 @@ class AtFile:
     @cmd('check-derived-file')
     def checkDerivedFile(self, event=None):
         '''Make sure an external file written by Leo may be read properly.'''
-        g.trace('=====')
         at = self; c = at.c; p = c.p
         if not p.isAtFileNode() and not p.isAtThinFileNode():
             return g.red('Please select an @thin or @file node')
@@ -247,7 +246,8 @@ class AtFile:
         if not g.os_path_exists(fn):
             return g.error('file not found: %s' % (fn))
         s, e = g.readFileIntoString(fn)
-        if s is None: return
+        if s is None:
+            return None
         #
         # Create a dummy, unconnected, VNode as the root.
         root_v = leoNodes.VNode(context=c)
@@ -646,7 +646,7 @@ class AtFile:
         if not g.os_path_exists(fileName):
             g.es_print('not found: %s' % (fileName), color='red',
                 nodeLink=root.get_UNL(with_proto=True))
-            return
+            return False
         at.rememberReadPath(fileName, root)
         at.initReadIvars(root, fileName)
             # Must be called before at.scanAllDirectives.

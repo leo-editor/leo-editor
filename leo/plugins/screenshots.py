@@ -495,7 +495,8 @@ class ScreenShotController:
         sc = self
         ok = sc.init(p)
         if not ok:
-            return g.error('sc.init failed')
+            g.error('sc.init failed')
+            return
         table = (
             ('\npaths...', ''),
             ('at_image_fn      ', sc.at_image_fn),
@@ -528,7 +529,8 @@ class ScreenShotController:
         if not sc.inkscape_bin:
             return # The ctor has given the warning.
         if not sc.match(p, '@slideshow'):
-            return g.error('Not an @slideshow node:', p.h)
+            g.error('Not an @slideshow node:', p.h)
+            return
         after = p.nodeAfterTree()
         p = p.firstChild()
         while p and p != after:
@@ -548,7 +550,8 @@ class ScreenShotController:
         if not sc.inkscape_bin:
             return # The ctor has given the warning.
         if not sc.find_slideshow_node(p):
-            return g.error('Not in slide show:', p.h)
+            g.error('Not in slide show:', p.h)
+            return
         slide_node = sc.find_slide_node(p)
         sc.remove_built_slide_node(slide_node)
         sc.run(p)
@@ -564,7 +567,8 @@ class ScreenShotController:
         if not sc.inkscape_bin:
             return # The ctor has given the warning.
         if not sc.find_slideshow_node(p):
-            return g.error('Not in slide show:', p.h)
+            g.error('Not in slide show:', p.h)
+            return
         sc.meld(p)
     #@+node:ekr.20101008112639.5628: *4* sc.build
     def build(self):
@@ -1752,7 +1756,8 @@ class ScreenShotController:
         sc = self
         if not sc.init(p): return
         if not sc.wink_path:
-            return g.error('No @wink_path node')
+            g.error('No @wink_path node')
+            return
         print('=' * 20)
         aList = sc.get_wink_screenshots()
         if not aList:
@@ -1914,9 +1919,9 @@ class ScreenShotController:
     def copy_screenshot(self, aList, slide_n, wink_n):
         sc = self
         if wink_n >= len(aList):
-            return g.trace('can not happen: '
-                'len(aList): %s, n: %s' % (
-                    len(aList), wink_n))
+            g.trace('can not happen: len(aList): %s, n: %s' % (
+                len(aList), wink_n))
+            return
         fn_src = aList[wink_n]
         fn_dst = sc.finalize('slide-%03d.png' % (slide_n))
         shutil.copyfile(fn_src, fn_dst)

@@ -1149,6 +1149,7 @@ class FileCommands:
     def deleteFileWithMessage(self, fileName, unused_kind):
         try:
             os.remove(fileName)
+            return True
         except Exception:
             if self.read_only:
                 g.error("read only")

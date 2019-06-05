@@ -359,6 +359,7 @@ def WriteNode(v,startinglevel, ascFile):
             inCodeExtract = False
     if containsAscIignore is not None:
         return CV.NODE_IGNORE # flag ignore tree to caller
+    return None
 #@+node:ekr.20101110094152.5838: *3* WriteTreeAsAsc
 def WriteTreeAsAsc(p,fn):
     'Writes the tree under p to the file ascFile'

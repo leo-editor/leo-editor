@@ -433,7 +433,7 @@ class leo_interface:
                     self.send_error(404, "Node not found")
                     return None
             if f is None:
-                return
+                return None
             length = f.tell()
             f.seek(0)
             self.send_response(200)
@@ -445,6 +445,7 @@ class leo_interface:
             import traceback
             traceback.print_exc()
             raise
+        return None
     #@+node:EKR.20040517080250.26: *4* find_window_and_root
     def find_window_and_root(self, path):
         """

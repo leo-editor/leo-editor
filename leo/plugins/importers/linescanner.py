@@ -405,7 +405,7 @@ class Importer:
         c = self.c
         # Fix #449: Cloned @auto nodes duplicates section references.
         if parent.isCloned() and parent.hasChildren():
-            return
+            return None
         self.root = root = parent.copy()
         self.file_s = s
         # Init the error/status info.

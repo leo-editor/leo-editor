@@ -823,7 +823,8 @@ class Image (QtWidgets.QLabel):
             return
         pixmap = QtGui.QPixmap(fn)
         if not pixmap:
-            return g.trace('Not a pixmap:', fn)
+            g.trace('Not a pixmap:', fn)
+            return
         if magnification:
             if size:
                 h, w = size

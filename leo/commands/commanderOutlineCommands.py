@@ -906,11 +906,12 @@ def insertHeadlineBefore(self, event=None):
     '''Insert a node before the presently selected node.'''
     c, current, u = self, self.p, self.undoer
     op_name = 'Insert Node Before'
-    if not current: return
+    if not current:
+        return None
     # Can not insert before the base of a hoist.
     if c.hoistStack and current == c.hoistStack[-1].p:
         g.warning('can not insert a node before the base of a hoist')
-        return
+        return None
     c.endEditing()
     undoData = u.beforeInsertNode(current)
     p = current.insertBefore()
@@ -1030,7 +1031,8 @@ def moveMarked(self, event=None):
         if v.isMarked():
             break
     else:
-        return g.warning('no marked nodes')
+        g.warning('no marked nodes')
+        return
     result = g.app.gui.runAskYesNoDialog(c,
         'Move Marked Nodes?',
         message='move-marked-nodes is not undoable\nProceed?',

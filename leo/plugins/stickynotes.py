@@ -467,6 +467,7 @@ def get_workbook():
     for co in g.app.commanders():
         if co.mFileName.endswith('workbook.leo'):
             return co
+    return None
 #@+node:ville.20100703194946.5587: *3* mknote
 def mknote(c,p, parent=None, focusin=None, focusout=None):
     """ Launch editable 'sticky note' for the node """

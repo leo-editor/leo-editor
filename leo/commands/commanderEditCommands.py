@@ -283,7 +283,7 @@ def editHeadline(self, event=None):
     k, tree = c.k, c.frame.tree
     if g.app.batchMode:
         c.notValidInBatchMode("Edit Headline")
-        return
+        return None, None
     e, wrapper = tree.editLabel(c.p)
     if k:
         # k.setDefaultInputState()
@@ -396,6 +396,7 @@ def extractDef_find(c, lines):
         def_h = extractDef(c, line.strip())
         if def_h:
             return def_h
+    return None
 #@+node:ekr.20171123135625.25: *3* def extractRef
 def extractRef(c, s):
     '''Return s if it starts with a section name.'''

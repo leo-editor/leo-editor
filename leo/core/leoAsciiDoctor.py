@@ -101,7 +101,7 @@ class AsciiDoctorCommands:
         roots = g.findRootsWithPredicate(c, p, predicate=predicate)
         if not roots:
             g.warning('No @ascii-doctor nodes in', p.h)
-            return
+            return []
         # Write each root.
         paths = []
         for p in roots:
@@ -161,7 +161,7 @@ class AsciiDoctorCommands:
         fn =  self.ad_filename(root)
         if not fn:
             g.es_print('Can not happen: not a @ad node: %r' % root.h)
-            return
+            return None
         path, self.output_file = self.open_file(fn)
         if not self.output_file:
             return None

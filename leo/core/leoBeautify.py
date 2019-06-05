@@ -410,7 +410,7 @@ def test_beautifier(c, h, p, settings):
     '''Test Leo's beautifier code'''
     if not p:
         g.trace('not found: %s' % h)
-        return
+        return None
     s = g.getScript(c, p,
             useSelectedText=False,
             forcePythonSentinels=True,
@@ -496,9 +496,9 @@ class CPrettyPrinter:
     def indent(self, p, toList=False, giveWarnings=True):
         '''Beautify a node with @language C in effect.'''
         if not should_beautify(p):
-            return
+            return None
         if not p.b:
-            return
+            return None
         self.p = p.copy()
         aList = self.tokenize(p.b)
         assert ''.join(aList) == p.b

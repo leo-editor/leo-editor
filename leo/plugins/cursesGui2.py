@@ -145,6 +145,7 @@ class LeoBodyTextfield (npyscreen.Textfield):
             # self.leo_parent.set_box_name('Body Pane')
         self.editing = False
         self.how_exited = EXITED_DOWN
+        return None
     #@+node:ekr.20170602110807.3: *5* LeoBodyTextfield.h_exit_escape
     def h_exit_escape(self, ch_i):
         '''From InputHandler.h_exit_escape'''
@@ -172,7 +173,6 @@ class LeoBodyTextfield (npyscreen.Textfield):
                 assert ch == curses.KEY_MOUSE
             self.editing = False
             self.how_exited = EXITED_MOUSE
-        return None
     #@+node:ekr.20170602110807.5: *5* LeoBodyTextfield.h_exit_up
     def h_exit_up(self, ch_i):
         '''LeoBodyTextfield.h_exit_up.'''
@@ -180,7 +180,6 @@ class LeoBodyTextfield (npyscreen.Textfield):
             # self.leo_parent.set_box_name('Body Pane')
         self.editing = False
         self.how_exited = EXITED_UP
-        return None
     #@+node:ekr.20170604180351.1: *5* LeoBodyTextfield.set_handlers
     def set_handlers(self):
 
@@ -246,14 +245,10 @@ class LeoLogTextfield (npyscreen.Textfield):
                 assert ch == curses.KEY_MOUSE
             self.editing = False
             self.how_exited = EXITED_MOUSE
-        return None
     #@+node:ekr.20170603104320.8: *5* LeoLogTextfield.h_exit_down
     def h_exit_down(self, ch_i):
         '''LeoLogTextfield.h_exit_up. Delegate to LeoLog.'''
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace('(LeoLogTextfield)', self._test_safe_to_exit())
-                # ch_i, 'LeoLog.cursor_line:', parent_w.cursor_line)
+        # g.trace('(LeoLogTextfield)', self._test_safe_to_exit())
         if ch_i in (curses.ascii.CR, curses.ascii.NL):
             # A pretty horrible kludge.
             self.h_addch(ord(' '))
@@ -265,6 +260,7 @@ class LeoLogTextfield (npyscreen.Textfield):
             return False
         self.editing = False
         self.how_exited = EXITED_DOWN
+        return None
     #@+node:ekr.20170603104320.9: *5* LeoLogTextfield.h_exit_up
     def h_exit_up(self, ch_i):
         '''LeoLogTextfield.h_exit_up. Delegate to LeoLog.'''
@@ -1958,10 +1954,10 @@ class LeoCursesGui(leoGui.LeoGui):
             g.trace(g.callers(verbose=verbose))
         if not widget:
             if trace or not w: g.trace('no widget', repr(w))
-            return None
+            return
         if not isinstance(widget, npyscreen.wgwidget.Widget):
             g.trace('not an npyscreen.Widget', repr(w))
-            return None
+            return
         form = self.curses_form
         if 1: # Seems to cause problems.
             # End editing in the previous form.
@@ -1999,7 +1995,6 @@ class LeoCursesGui(leoGui.LeoGui):
         if trace and widget not in self.set_focus_fail:
             self.set_focus_fail.append(widget)
             g.trace('Fail\n%r\n%r' % (widget, w))
-        return
     #@+node:ekr.20170514060742.1: *4* CGui.Fonts
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
 
@@ -2818,6 +2813,7 @@ class LeoBody (npyscreen.MultiLineEditable):
             return False
         self.editing = False
         self.how_exited = EXITED_DOWN
+        return None
     #@+node:ekr.20170604181821.1: *5* LeoBody.h_exit_up
     def h_exit_up(self, ch_i):
 
@@ -2827,6 +2823,7 @@ class LeoBody (npyscreen.MultiLineEditable):
         # Called when the user leaves the widget to the previous widget
         self.editing = False
         self.how_exited = EXITED_UP
+        return None
     #@+node:ekr.20170526114452.2: *5* LeoBody.h_edit_cursor_line_value
     def h_edit_cursor_line_value(self, ch_i):
        '''From MultiLineEditable.h_edit_cursor_line_value'''
@@ -3046,6 +3043,7 @@ class LeoLog (npyscreen.MultiLineEditable):
             return False
         self.editing = False
         self.how_exited = EXITED_DOWN
+        return None
     #@+node:ekr.20170604113733.4: *5* LeoLog.h_exit_up
     def h_exit_up(self, ch_i):
         self.set_box_name('Log Pane')
@@ -3054,6 +3052,7 @@ class LeoLog (npyscreen.MultiLineEditable):
         # Called when the user leaves the widget to the previous widget
         self.editing = False
         self.how_exited = EXITED_UP
+        return None
     #@+node:ekr.20170603103946.34: *4* LeoLog.make_contained_widgets
     def make_contained_widgets(self):
         '''
@@ -3227,6 +3226,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
                 return False
             self.editing = False
             self.how_exited = EXITED_DOWN
+        return None
     #@+node:ekr.20170510095136.7: *5* LeoMiniBuffer.h_insert
     def h_insert(self, ch):
 

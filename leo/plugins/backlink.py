@@ -571,12 +571,11 @@ class backlinkController:
     #@+node:ekr.20090616105756.3964: *3* showMenu
     def showMenu(self,tag,k):
 
-        if k['c'] != self.c: return  # not our problem
-
+        if k['c'] != self.c:
+            return # not our problem
         p = k['p']
         self.c.selectPosition(p)
         v = p.v
-
         c = self.c
 
         # Create the menu.
@@ -590,7 +589,6 @@ class backlinkController:
             (True, 'Undirected link', self.linkUnd),
             (True, 'Rescan links', self.loadLinksInt),
         ]
-
         if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
             i = 0
             links = v.unknownAttributes['_bklnk']['links']
@@ -627,13 +625,10 @@ class backlinkController:
                 continue
             c.add_command(menu,label=text,
                 underline=0,command=com)
-
-
+        #
         # Show the menu.
         event = k['event']
         g.app.gui.postPopupMenu(self.c, menu, event.x_root,event.y_root)
-
-        return None # 'break' # EKR: Prevent other right clicks.
     #@+node:ekr.20090616105756.3965: *3* showMessage
     def showMessage(self, msg, optional=False, color='black'):
         """Show the message, but don't overwrite earlier important

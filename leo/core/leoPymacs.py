@@ -93,7 +93,7 @@ def open(fileName=None):
     global g
     init()
     if g.app.unitTesting:
-        return
+        return None
     if not fileName:
         g.es_print('', 'leoPymacs.open:', 'no file name')
         return None

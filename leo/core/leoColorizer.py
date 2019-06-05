@@ -997,7 +997,8 @@ class BaseJEditColorizer (BaseColorizer):
             if color.isValid():
                 self.actualColorDict[colorName] = color
             else:
-                return g.trace('unknown color name', colorName, g.callers())
+                g.trace('unknown color name', colorName, g.callers())
+                return
         underline = wrapper.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
         font = self.fonts.get(tag)

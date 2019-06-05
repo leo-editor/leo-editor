@@ -670,7 +670,7 @@ class ScriptingController:
         c = self.c
         if c.disableCommandsMessage:
             g.blue(c.disableCommandsMessage)
-            return None
+            return
         if not p and not script:
             g.trace('can not happen: no p and no script')
             return
@@ -1369,7 +1369,7 @@ class EvalController:
         '''Evaluate string s.'''
         s = textwrap.dedent(s)
         if not s.strip():
-            return
+            return None
         self.redirect()
         if self.legacy:
             blocks = re.split('\n(?=[^\\s])', s)
@@ -1380,6 +1380,7 @@ class EvalController:
             self.new_exec(s)
             self.show_answers()
         self.unredirect()
+        return None
     #@+node:ekr.20180329130626.1: *5* eval.new_exec
     def new_exec(self, s):
         try:

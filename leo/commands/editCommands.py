@@ -93,9 +93,9 @@ def delete_trace_statements(event=None):
 def mark_first_parents(event):
     '''Mark the node and all its parents.'''
     c = event.get('c')
-    if not c:
-        return
     changed = []
+    if not c:
+        return changed
     for parent in c.p.self_and_parents():
         if not parent.isMarked():
             parent.v.setMarked()
@@ -164,9 +164,9 @@ def select_next_trace_statement(event=None):
 def unmark_first_parents(event=None):
     '''Mark the node and all its parents.'''
     c = event.get('c')
-    if not c:
-        return
     changed = []
+    if not c:
+        return changed
     for parent in c.p.self_and_parents():
         if parent.isMarked():
             parent.v.clearMarked()

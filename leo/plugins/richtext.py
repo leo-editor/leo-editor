@@ -180,14 +180,13 @@ if QtWidgets:
 
             c = kwargs['c']
             if c != self.c:
-                return
-
+                return None
             # read initial content and request and wait for final content
             frame = self.webview.page().mainFrame()
             ele = frame.findFirstElement("#initial")
             text = str(ele.toPlainText()).strip()
             if text == '[empty]':
-                return  # no edit
+                return None # no edit
             frame.evaluateJavaScript('save_final();')
             ele = frame.findFirstElement("#final")
             for attempt in range(10):  # wait for up to 1 second
@@ -198,13 +197,10 @@ if QtWidgets:
                 break
             if new_text == '[empty]':
                 print("Didn't get new text")
-                return
-
+                return None
             text = unquote(str(text))
             new_text = unquote(str(new_text))
-
             if new_text != text:
-
                 if self.c._ckeeditor_autosave:
                     ans = 'yes'
                 else:
@@ -223,6 +219,7 @@ if QtWidgets:
                     return 'STOP'
                 else:
                     pass  # discard edits
+            return None
         #@+node:tbrown.20130813134319.7229: *3* close
         def close(self):
             if self.c and not self.at_rich_close:
@@ -236,6 +233,7 @@ if QtWidgets:
 #@+node:tbrown.20130813134319.5694: ** class CKEPaneProvider
 class CKEPaneProvider:
     ns_id = '_add_cke_pane'
+
     def __init__(self, c):
         self.c = c
         # Careful: we may be unit testing.
@@ -243,12 +241,16 @@ class CKEPaneProvider:
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
+
     def ns_provides(self):
         return[('Rich text CKE editor', self.ns_id)]
+
     def ns_provide(self, id_):
         if id_ == self.ns_id:
             w = CKEEditor(c=self.c)
             return w
+        return None
+
     def ns_provider_id(self):
         # used by register_provider() to unregister previously registered
         # providers of the same service

@@ -413,20 +413,19 @@ class AutoCompleterClass:
             # self.onUp()
         elif is_plain and ch and ch in string.printable:
             self.insert_general_char(ch)
-        else:
-            if stroke == k.autoCompleteForceKey:
-                # This is probably redundant because completions will exist.
-                # However, it doesn't hurt, and it may be useful rarely.
-                common_prefix, prefix, tabList = self.compute_completion_list()
-                if tabList:
-                    self.show_completion_list(common_prefix, prefix, tabList)
-                else:
-                    g.warning('No completions')
-                    self.exit()
-                return None
+        elif stroke == k.autoCompleteForceKey:
+            # This is probably redundant because completions will exist.
+            # However, it doesn't hurt, and it may be useful rarely.
+            common_prefix, prefix, tabList = self.compute_completion_list()
+            if tabList:
+                self.show_completion_list(common_prefix, prefix, tabList)
             else:
-                self.abort() # 2011/06/17.
-                return 'do-standard-keys'
+                g.warning('No completions')
+                self.exit()
+        else:
+            self.abort()
+            return 'do-standard-keys'
+        return None
     #@+node:ekr.20061031131434.20: *4* ac.calltip & helpers
     def calltip(self):
         '''Show the calltips for the present prefix.
@@ -2625,7 +2624,7 @@ class KeyHandlerClass:
             k.clearState() # Bug fix.
             c.commandsDict[last](event)
         else:
-            return k.keyboardQuit()
+            k.keyboardQuit()
     #@+node:ekr.20061031131434.123: *4* k.set-xxx-State
     @cmd('set-command-state')
     def setCommandState(self, event):

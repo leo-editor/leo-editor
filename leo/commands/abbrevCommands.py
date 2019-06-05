@@ -205,7 +205,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         c = self.c
         hidden_root = c.fileCommands.getPosFromClipboard(tree_s)
         if not hidden_root:
-            return g.trace('no pasted node')
+            g.trace('no pasted node')
+            return
         for p in hidden_root.children():
             for s in g.splitLines(p.b):
                 if s.strip() and not s.startswith('#'):
@@ -248,7 +249,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     # Do not call c.endEditing here.
                 break
         else:
-
             return False
         # 448: Add abbreviations for commands.
         if 0: # Not worth documenting.
@@ -259,7 +259,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 commandName = val
                 func = c.commandsDict.get(commandName)
                 c.doCommand(func, commandName, event)
-                return
+                return False
         c.abbrev_subst_env['_abr'] = word
         if tag == 'tree':
             self.root = p.copy()
@@ -318,7 +318,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         '''
         c, u = self.c, self.c.undoer
         if not c.canPasteOutline(tree_s):
-            return g.trace('bad copied outline: %s' % tree_s)
+            g.trace('bad copied outline: %s' % tree_s)
+            return
         old_p = c.p.copy()
         bunch = u.beforeChangeTree(old_p)
         self.replace_selection(w, i, j, None)

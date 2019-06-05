@@ -1153,6 +1153,7 @@ if QtWidgets: # NOQA
                     ))
             if _depth == 1:
                 return '\n'.join(_ans)
+            return None
         #@+node:tbrown.20140522153032.32656: *3* ns.zoom_toggle
         def zoom_toggle(self, local=False):
             """zoom_toggle - (Un)zoom current pane to be only expanded pane
@@ -1224,6 +1225,7 @@ def main():
         def ns_provide(self, id_):
             if id_ == '_add_demo_widget':
                 return DemoWidget()
+            return None
 
     splitter.register_provider(DemoProvider())
     holder = QtWidgets.QWidget()

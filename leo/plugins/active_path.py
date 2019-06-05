@@ -259,7 +259,8 @@ def subDir(d, p):
 def onSelect (tag,keywords):
     """Determine if a file or directory node was clicked, and the path"""
     c = keywords.get('c') or keywords.get('new_c')
-    if not c: return
+    if not c:
+        return None
     p = keywords.get("p")
     p.expand()
     pos = p.copy()

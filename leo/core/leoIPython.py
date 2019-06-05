@@ -301,6 +301,7 @@ class LeoNameSpace:
             short_fn = g.shortFileName(fn)
             if fn == path or short_fn == short_path:
                 return c
+        return None
     #@+node:ekr.20130930062914.16003: *3* LeoNS.update
     def update(self):
         '''Update the list of available commanders.'''

@@ -332,7 +332,7 @@ class LeoPluginsController:
     def doPlugins(self, tag, keywords):
         '''The default g.app.hookFunction.'''
         if g.app.killed:
-            return
+            return None
         if tag in ('start1', 'open0'):
             self.loadHandlers(tag, keywords)
         return self.doHandlersForTag(tag, keywords)

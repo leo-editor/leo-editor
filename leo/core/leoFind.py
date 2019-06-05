@@ -702,7 +702,8 @@ class LeoFind:
         reverse = not self.isearch_forward
         pattern = k.getLabel(ignorePrompt=True)
         if not pattern:
-            return self.abortSearch()
+            self.abortSearch()
+            return
         # Get the base ivars from the find tab.
         self.update_ivars()
         # Save
@@ -1179,7 +1180,8 @@ class LeoFind:
                 if func:
                     func(event)
                 else:
-                    return g.trace('unknown command', command)
+                    g.trace('unknown command', command)
+                    return
             else:
                 # Switch to the replace command.
                 if self.findAllFlag: self.changeAllFlag = True
@@ -1566,7 +1568,7 @@ class LeoFind:
         if not w:
             self.in_headline = False
             w = wrapper
-        if not w: return
+        if not w: return False
         oldSel = sel = w.getSelectionRange()
         start, end = sel
         if start > end: start, end = end, start
@@ -1637,7 +1639,7 @@ class LeoFind:
         tc = c.theTagController
         if not tc:
             g.es_print('nodetags not active')
-            return
+            return 0
         clones = tc.get_tagged_nodes(tag)
         if clones:
             undoType = 'Clone Find Tag'
@@ -1683,7 +1685,7 @@ class LeoFind:
         else:
             undoType = 'Find All'
         if not self.checkArgs():
-            return
+            return 0
         self.initInHeadline()
         data = self.save()
         self.initBatchCommands()
@@ -1692,7 +1694,7 @@ class LeoFind:
         # Much simpler: does not set self.p or any other state.
         if self.pattern_match or self.findAllUniqueFlag:
             ok = self.precompilePattern()
-            if not ok: return
+            if not ok: return 0
         if self.suboutline_only:
             p = c.p
             after = p.nodeAfterTree()

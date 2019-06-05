@@ -2702,7 +2702,8 @@ class LoadManager:
         # Get the name of the workbook.
         fn = g.app.config.getString('default-leo-file')
         fn = g.os_path_finalize(fn)
-        if not fn: return
+        if not fn:
+            return None
         if g.os_path_exists(fn):
             return fn
         elif g.os_path_isabs(fn):
@@ -3123,7 +3124,6 @@ class LoadManager:
                         def onKey(self, event):
                             """Handle Key events in askOk dialogs."""
                             self.okButton()
-                            return # (for Tk) "break"
                         #@+node:ekr.20120219154958.10498: *6* run
                         def run(self):
                             """Run the modal emergency dialog."""

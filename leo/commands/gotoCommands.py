@@ -23,7 +23,7 @@ class GoToCommands:
         '''
         c = self.c
         if n < 0:
-            return
+            return None, -1, False
         p = p or c.p
         root, fileName = self.find_root(p)
         if root:

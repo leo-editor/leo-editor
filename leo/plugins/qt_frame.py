@@ -206,7 +206,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.createAllDockWidgets()
             # Signals.
             QtCore.QMetaObject.connectSlotsByName(self)
-            return
+            return None
         #
         # Legacy code: will not go away.
         self.createCentralWidget()
@@ -1941,7 +1941,7 @@ class LeoQtBody(leoFrame.LeoBody):
         if not wrapper:
             return c.frame.body.wrapper
         if self.selectEditorLockout:
-            return
+            return None
         w = wrapper.widget
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(w), w
@@ -1955,7 +1955,7 @@ class LeoQtBody(leoFrame.LeoBody):
             if hasattr(w, 'leo_p') and w.leo_p and w.leo_p != c.p:
                 c.selectPosition(w.leo_p)
                 c.bodyWantsFocus()
-            return
+            return None
         try:
             val = None
             self.selectEditorLockout = True
@@ -1986,7 +1986,8 @@ class LeoQtBody(leoFrame.LeoBody):
         if not self.ensurePositionExists(w):
             return g.trace('***** no position editor!')
         if not (hasattr(w, 'leo_p') and w.leo_p):
-            return g.trace('***** no w.leo_p', w)
+            g.trace('***** no w.leo_p', w)
+            return None
         p = w.leo_p
         assert p, p
         c.expandAllAncestors(p)
@@ -1996,6 +1997,7 @@ class LeoQtBody(leoFrame.LeoBody):
         c.redraw()
         c.recolor()
         c.bodyWantsFocus()
+        return None
     #@+node:ekr.20110605121601.18205: *5* LeoQtBody.updateEditors
     # Called from addEditor and assignPositionToEditor
 
@@ -2662,7 +2664,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         def add(self, *args, **keys):
             '''Add a button to the icon bar.'''
             c = self.c
-            if not self.w: return
+            if not self.w:
+                return None
             command = keys.get('command')
             text = keys.get('text')
             # able to specify low-level QAction directly (QPushButton not forced)

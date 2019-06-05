@@ -231,6 +231,7 @@ class LiveCodeDisplayProvider:
             if not hasattr(c, '_livecode'):
                 c._livecode = LiveCodeDisplay(self.c)
             return c._livecode.w
+        return None
     #@-others
 #@-others
 #@@language python

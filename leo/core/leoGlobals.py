@@ -1338,7 +1338,8 @@ class TracingNullObject:
         return False
     def __getitem__(self, key):
         g.null_object_print(id(self), '__getitem__')
-        return None
+        # pylint doesn't like trailing return None.
+        # return None
     def __iter__(self):
         g.null_object_print(id(self), '__iter__')
         return self
@@ -1350,7 +1351,8 @@ class TracingNullObject:
         raise StopIteration
     def __setitem__(self, key, val):
         g.null_object_print(id(self), '__setitem__')
-        return None
+        # pylint doesn't like trailing return None.
+        # return None
 #@+node:ekr.20190330062625.1: *4* g.null_object_print_attr
 def null_object_print_attr(id_, attr):
     suppress = True
@@ -2283,15 +2285,17 @@ def assert_is(obj, list_or_class, warn=True):
                 obj, list_or_class, obj.__class__.__name__))
             g.es_print(g.callers())
         return ok
-    else:
-        assert isinstance(obj, list_or_class), (
-            obj, obj.__class__.__name__, g.callers())
+    ok = isinstance(obj, list_or_class)
+    assert ok, (obj, obj.__class__.__name__, g.callers())
+    return ok
+
+        
 #@+node:ekr.20180420081530.1: *4* g._assert
 def _assert(condition, show_callers=True):
     '''A safer alternative to a bare assert.'''
     if g.unitTesting:
         assert condition
-        return
+        return True
     ok = bool(condition)
     if ok:
         return True
@@ -2572,11 +2576,14 @@ def run_pylint(fn, rc,
     try:
         from pylint import lint
     except ImportError:
-        return g.trace('can not import pylint')
+        g.trace('can not import pylint')
+        return
     if not g.os_path_exists(fn):
-        return g.trace('does not exist:', fn)
+        g.trace('does not exist:', fn)
+        return
     if not g.os_path_exists(rc):
-        return g.trace('does not exist', rc)
+        g.trace('does not exist', rc)
+        return
     args = ['--rcfile=%s' % (rc)]
     # Prints error number.
         # args.append('--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}')
@@ -2939,7 +2946,7 @@ g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
 def findTabWidthDirectives(c, p):
     '''Return the language in effect at position p.'''
     if c is None:
-        return # c may be None for testing.
+        return None # c may be None for testing.
     w = None
     # 2009/10/02: no need for copy arg to iter
     for p in p.self_and_parents(copy=False):
@@ -2960,7 +2967,7 @@ g_language_pat = re.compile(r'(^@language)', re.MULTILINE)
 def findLanguageDirectives(c, p):
     '''Return the language in effect at position p.'''
     if c is None:
-        return # c may be None for testing.
+        return None # c may be None for testing.
     if c.target_language:
         language = c.target_language.lower()
     else:
@@ -7757,7 +7764,7 @@ def traceUrl(c, path, parsed, url):
 def handleUnl(unl, c):
     '''Handle a Leo UNL. This must *never* open a browser.'''
     if not unl:
-        return
+        return None
     unll = unl.lower()
     if unll.startswith('unl:' + '//'):
         unl = unl[6:]
@@ -7765,7 +7772,7 @@ def handleUnl(unl, c):
         unl = unl[7:]
     unl = unl.strip()
     if not unl:
-        return
+        return None
     unl = g.unquoteUrl(unl)
     # Compute path and unl.
     if unl.find('#') == -1 and unl.find('-->') == -1:
@@ -7806,7 +7813,7 @@ def handleUnl(unl, c):
             break
     else:
         g.es_print('path not found', repr(path))
-        return
+        return None
     # End editing in *this* outline, so typing in the new outline works.
     c.endEditing()
     c.redraw()
@@ -7819,6 +7826,7 @@ def handleUnl(unl, c):
         if c2:
             c2.bringToFront()
             return c2
+    return None
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url):
     '''Return true if url *looks* like a valid url.'''
@@ -7866,7 +7874,8 @@ def openUrlOnClick(event, url=None):
 def openUrlHelper(event, url=None):
     '''Open the UNL or URL under the cursor.  Return it for unit testing.'''
     c = getattr(event, 'c', None)
-    if not c: return None
+    if not c:
+        return None
     w = getattr(event, 'w', c.frame.body.wrapper)
     if not g.app.gui.isTextWrapper(w):
         g.internalError('must be a text wrapper', w)
@@ -7877,7 +7886,8 @@ def openUrlHelper(event, url=None):
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
-        if i != j: return None # So find doesn't open the url.
+        if i != j:
+            return None # So find doesn't open the url.
         row, col = g.convertPythonIndexToRowCol(s, ins)
         i, j = g.getLine(s, ins)
         line = s[i: j]
@@ -7895,7 +7905,7 @@ def openUrlHelper(event, url=None):
                 if match.start() <= col < match.end():
                     unl = match.group()
                     g.handleUnl(unl, c)
-                    return
+                    return None
     elif not g.isString(url):
         url = url.toString()
         url = g.toUnicode(url)
@@ -7907,14 +7917,13 @@ def openUrlHelper(event, url=None):
             g.handleUrl(url, c=c, p=p)
         g.doHook("@url2", c=c, p=p)
         return url
-    else:
-        # Part 3: call find-def.
-        if not w.hasSelection():
-            c.editCommands.extendToWord(event, select=True)
-        word = w.getSelectedText().strip()
-        if word:
-            c.findCommands.findDef(event)
-        return None
+    # Part 3: call find-def.
+    if not w.hasSelection():
+        c.editCommands.extendToWord(event, select=True)
+    word = w.getSelectedText().strip()
+    if word:
+        c.findCommands.findDef(event)
+    return None
 #@-others
 # set g when the import is about to complete.
 g = sys.modules.get('leo.core.leoGlobals')

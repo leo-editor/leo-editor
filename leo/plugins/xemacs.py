@@ -84,6 +84,7 @@ def open_in_emacs(tag, keywords):
     p = keywords.get('p')
     if c:
         return open_in_emacs_helper(c, p or c.p)
+    return None
 #@+node:ekr.20120315101404.9748: ** xemacs.open_in_emacs_helper
 def open_in_emacs_helper(c, p):
     global contextmenu_message_given

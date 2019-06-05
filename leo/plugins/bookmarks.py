@@ -688,7 +688,8 @@ class BookMarkDisplay:
         """
 
         if event.button() == QtCore.Qt.RightButton:
-            return self.context_menu(event, container=row_parent)
+            self.context_menu(event, container=row_parent)
+            return
 
         # Alt => edit bookmarks in the outline
         mods = event.modifiers()
@@ -708,7 +709,8 @@ class BookMarkDisplay:
         """
 
         if event.button() == QtCore.Qt.RightButton:
-            return self.button_menu(event, bm, but, up=up)
+            self.button_menu(event, bm, but, up=up)
+            return
 
         action_name = self.mod_map.get(self.ModMap.get(int(event.modifiers())))
         if action_name is None:
@@ -864,7 +866,7 @@ class BookMarkDisplay:
         # v might not be in this outline
         p = self.v.context.vnode2position(self.v)
         if not p:
-            return
+            return None
 
         if levels is None:
             levels = self.levels
@@ -1065,7 +1067,7 @@ class BookMarkDisplay:
         """re-show the current list of bookmarks"""
 
         if keywords['c'] is not self.c:
-            return
+            return None
 
         self.show_list(self.get_list())
 
@@ -1217,6 +1219,7 @@ class BookMarkDisplayProvider:
 
             bmd = BookMarkDisplay(self.c, v=v)
             return bmd.w
+        return None
 
     #@-others
 

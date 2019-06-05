@@ -267,6 +267,7 @@ class RSSController:
                 return published
         if published is None:
             return self._NO_TIME
+        return None
     #@+node:peckj.20131011131135.5850: *4* grab_date
     def grab_date(self, entry):
         published = None
@@ -277,6 +278,7 @@ class RSSController:
                 return published
         if published is None:
             return ""
+        return None
     #@+node:peckj.20131003102740.5570: *3* history stuff
     #@+node:peckj.20131003095152.10662: *4* hash_entry
     def hash_entry(self, entry):

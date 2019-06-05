@@ -105,11 +105,9 @@ def onSave(tag, keys):
 
     c = keys.get('c')
     if not c:
-        return
-
+        return None
     if getattr(c, '_leo_cloud'):
         c._leo_cloud.save_clouds()
-
     return None  # explicitly not stopping save1 hook
 
 @g.command("lc-read-current")
@@ -348,9 +346,8 @@ class LeoCloud:
             p = p.parent()
         if not p.h.startswith("@leo_cloud"):
             g.es("No @leo_cloud node found", color='red')
-            return
+            return None
         return p
-
     def _find_clouds_recursive(self, v, found):
         """see find_clouds()"""
         if v.h.startswith('@ignore'):

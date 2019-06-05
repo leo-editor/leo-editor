@@ -781,7 +781,7 @@ def getColorCairo(name, default=None):
     # pylint: disable=unpacking-non-sequence
     color = getColorRGB(name, default)
     if color is None:
-        return
+        return None
     else:
         r, g, b = color
         return r / 255.0, g / 255.0, b / 255.0

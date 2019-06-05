@@ -297,7 +297,7 @@ def onCreate(tag, keys):
 #@+node:ekr.20140226074510.4194: *3* vr2.show_scrolled_message
 def show_scrolled_message(tag, kw):
     if g.unitTesting:
-        return # This just slows the unit tests.
+        return None # This just slows the unit tests.
     c = kw.get('c')
     vr = viewrendered(event=kw)
     title = kw.get('short_title', '').strip()
@@ -1370,6 +1370,7 @@ class ViewRenderedProvider(object):
             vr = controllers.get(c.hash()) or ViewRenderedController(c)
             # return ViewRenderedController(self.c)
             return vr
+        return None
     #@-others
 #@+node:ekr.20140226074510.4211: ** class ViewRenderedController (QWidget) (vr2)
 class ViewRenderedController(QtWidgets.QWidget):

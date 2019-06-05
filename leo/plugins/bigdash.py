@@ -278,10 +278,10 @@ class GlobalSearch:
         if ss.startswith("f "):
             q = ss[2:]
         if not (q or ss.startswith("fts ")):
-            return False
+            return
         if not whoosh:
             g.es("Whoosh not installed (easy_install whoosh)")
-            return False
+            return
         # print("Doing fts: %s" % qs)
         fts = self.fts
         if ss.strip() == "fts init":
@@ -345,10 +345,12 @@ class GlobalSearch:
 
         ss = str(qs)
         hitparas = []
+        
         def em(l):
             hitparas.append(l)
+
         if not ss.startswith("s "):
-            return False
+            return
         s = ss[2:]
         for ndxc,c2 in enumerate(g.app.commanders()):
             hits = c2.find_b(s)
@@ -368,7 +370,6 @@ class GlobalSearch:
         html = "".join(hitparas)
         tgt.web.setHtml(html)
         self.bd.set_link_handler(self.do_link)
-
     #@+node:ekr.20140919160020.17900: *3* do_stats
     def do_stats(self, tgt, qs):
         '''Show statistics.'''

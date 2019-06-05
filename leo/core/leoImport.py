@@ -506,7 +506,8 @@ class LeoImportCommands:
             g.setGlobalOpenDir(fileName)
             path, self.fileName = g.os_path_split(fileName)
             s, e = g.readFileIntoString(fileName, self.encoding)
-            if s is None: return
+            if s is None:
+                return None
             if e: self.encoding = e
             #@+<< set delims from the header line >>
             #@+node:ekr.20031218072017.3302: *5* << set delims from the header line >>
@@ -520,7 +521,7 @@ class LeoImportCommands:
             valid, junk, start_delim, end_delim, junk = at.parseLeoSentinel(line)
             if not valid:
                 if not toString: g.es("invalid @+leo sentinel in", fileName)
-                return
+                return None
             if end_delim:
                 line_delim = None
             else:
@@ -537,20 +538,19 @@ class LeoImportCommands:
                 newFileName = c.os_path_finalize_join(path, head + ext + ext2)
             if toString:
                 return s
-            else:
-                #@+<< Write s into newFileName >>
-                #@+node:ekr.20031218072017.1149: *5* << Write s into newFileName >> (remove-sentinels)
-                # Remove sentinels command.
-                try:
-                    with open(newFileName, 'w') as theFile:
-                        theFile.write(s)
-                    if not g.unitTesting:
-                        g.es("created:", newFileName)
-                except Exception:
-                    g.es("exception creating:", newFileName)
-                    g.es_print_exception()
-                #@-<< Write s into newFileName >>
-                return None
+            #@+<< Write s into newFileName >>
+            #@+node:ekr.20031218072017.1149: *5* << Write s into newFileName >> (remove-sentinels)
+            # Remove sentinels command.
+            try:
+                with open(newFileName, 'w') as theFile:
+                    theFile.write(s)
+                if not g.unitTesting:
+                    g.es("created:", newFileName)
+            except Exception:
+                g.es("exception creating:", newFileName)
+                g.es_print_exception()
+            #@-<< Write s into newFileName >>
+        return None
     #@+node:ekr.20031218072017.3303: *4* ic.removeSentinelLines
     # This does not handle @nonl properly, but that no longer matters.
 
@@ -638,7 +638,7 @@ class LeoImportCommands:
         )
         ext, s = self.init_import(atShadow, ext, fileName, s)
         if s is None:
-            return
+            return None
         # Get the so-called scanning func.
         func = self.dispatch(ext, p)
             # Func is a callback. It must have a c argument.
@@ -859,7 +859,7 @@ class LeoImportCommands:
         g.setGlobalOpenDir(fileName)
         s, e = g.readFileIntoString(fileName)
         if s is None or not s.strip():
-            return ''
+            return
         s = s.replace('\r', '') # Fixes bug 626101.
         array = s.split("\n")
         # Convert the string to an outline and insert it after the current node.
@@ -1636,11 +1636,13 @@ class MORE_Importer:
     def import_file(self, fileName): # Not a command, so no event arg.
         c = self.c; u = c.undoer
         ic = c.importCommands
-        if not c.p: return
+        if not c.p:
+            return None
         ic.setEncoding()
         g.setGlobalOpenDir(fileName)
         s, e = g.readFileIntoString(fileName)
-        if s is None: return None
+        if s is None:
+            return None
         s = s.replace('\r', '') # Fixes bug 626101.
         lines = g.splitLines(s)
         # Convert the string to an outline and insert it after the current node.

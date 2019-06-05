@@ -326,7 +326,8 @@ class Xdb(pdb.Pdb, threading.Thread):
             code = compile(source, fn, 'exec')
         except Exception:
             g.es_exception()
-            return g.trace('can not compile', path)
+            g.trace('can not compile', path)
+            return
         self.reset()
         sys.settrace(self.trace_dispatch)
         try:
@@ -416,11 +417,11 @@ def make_at_file_node(line, path):
     '''
     c = g.app.log.c
     if not c:
-        return
+        return None
     path = g.os_path_finalize(path).replace('\\','/')
     if not g.os_path_exists(path):
         g.trace('Not found:', repr(path))
-        return
+        return None
     # Create the new node.
     p = c.lastTopLevel().insertAfter()
     # Like c.looksLikeDerivedFile, but retaining the contents.
@@ -548,7 +549,8 @@ def xdb_input(event):
     '''Prompt the user for a pdb command and execute it.'''
     c = event.get('c')
     if not c:
-        return g.trace('no c')
+        g.trace('no c')
+        return
     xdb = getattr(g.app, 'xdb', None)
     if not xdb:
         print('xdb not active')
@@ -591,7 +593,8 @@ def xdb_command(event):
         g.trace('Not in an @<file> tree')
         return
     if not g.os_path_exists(path):
-        return g.trace('not found', path)
+        g.trace('not found', path)
+        return
     os.chdir(g.os_path_dirname(path))
     xdb = getattr(g.app, 'xdb', None)
     if xdb:

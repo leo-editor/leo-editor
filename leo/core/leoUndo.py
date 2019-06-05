@@ -1442,7 +1442,8 @@ class Undoer:
         u = self; c = u.c
         w = c.frame.body.wrapper
         if not c.p:
-            return g.trace('no current position')
+            g.trace('no current position')
+            return
         # End editing *before* getting state.
         c.endEditing()
         if u.per_node_undo: # 2011/05/19

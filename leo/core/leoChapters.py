@@ -131,7 +131,8 @@ class ChapterController:
         if self.selectChapterLockout:
             return
         if g.isInt(name):
-            return cc.note('PyQt5 chapters not supported')
+            cc.note('PyQt5 chapters not supported')
+            return
         chapter = cc.getChapter(name)
         if not chapter:
             g.es_print('no such @chapter node: %s' % name)

@@ -731,7 +731,7 @@ class SpellTabHandler:
     def change(self, event=None):
         """Make the selected change to the text"""
         if not self.loaded:
-            return
+            return False
         c = self.c
         w = c.frame.body.wrapper
         selection = self.tab.getSuggestion()
