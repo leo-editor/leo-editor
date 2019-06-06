@@ -96,15 +96,15 @@ def init():
         return oops('requires pyzo')
     if not g.app.dock:
         return oops('is incompatible with --no-dock')
-    if 1: # Decommission this file as a plugin.
-        return oops('is not a real plugin.')
-    else:
-        # Allow this file as a true plugin.
-        g.plugin_signon(__name__)
-        g.registerHandler('after-create-leo-frame', onCreate)
-        g.app.global_pyzo_controller = gpc = GlobalPyzoController()
-        gpc.load_pyzo()
-        return True
+    # Decommission this file as a plugin.
+    return oops('is not a real plugin.')
+    #
+    # Allow this file as a true plugin.
+        # g.plugin_signon(__name__)
+        # g.registerHandler('after-create-leo-frame', onCreate)
+        # g.app.global_pyzo_controller = gpc = GlobalPyzoController()
+        # gpc.load_pyzo()
+        # return True
 #@+node:ekr.20190415051754.1: *3* onCreate (pyzo_support.py)
 def onCreate(tag, keys):
     c = keys.get('c')
@@ -451,8 +451,7 @@ class GlobalPyzoController:
                     self._closeflag = False
                     event.ignore()
                     return
-                else:
-                    self._closeflag = True
+                self._closeflag = True
 
             # Proceed with closing shells
             pyzo.localKernelManager.terminateAll()

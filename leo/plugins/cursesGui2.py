@@ -328,8 +328,7 @@ class LeoTreeData(npyscreen.TreeData):
             p = self.content
             assert p and isinstance(p, leoNodes.Position), repr(p)
             return '<LeoTreeData: %s, %s>' % (id(p), p.h)
-        else:
-            return '<LeoTreeData: %r>' % self.content
+        return '<LeoTreeData: %r>' % self.content
     __str__ = __repr__
 
     #@+others
@@ -348,8 +347,7 @@ class LeoTreeData(npyscreen.TreeData):
         while parent:
             if parent == self:
                 return True
-            else:
-                parent = parent._parent
+            parent = parent._parent
         return False
     #@+node:ekr.20170516085427.1: *4* LeoTreeData.overrides
     # Don't use weakrefs!
@@ -359,28 +357,25 @@ class LeoTreeData(npyscreen.TreeData):
             p = self.content
             n = p.level()
             return n
-        else:
-            parent = self.get_parent()
-            while parent:
-                d += 1
-                parent = parent.get_parent()
-            return d
+        parent = self.get_parent()
+        while parent:
+            d += 1
+            parent = parent.get_parent()
+        return d
     #@+node:ekr.20170516085427.2: *5* LeoTreeData.get_children
     def get_children(self):
 
         if native:
             p = self.content
             return p.children()
-        else:
-            return self._children
+        return self._children
     #@+node:ekr.20170518103807.11: *5* LeoTreeData.get_parent
     def get_parent(self):
 
         if native:
             p = self.content
             return p.parent()
-        else:
-            return self._parent
+        return self._parent
     #@+node:ekr.20170516085427.3: *5* LeoTreeData.get_tree_as_list
     def get_tree_as_list(self): # only_expanded=True, sort=None, key=None):
         '''
@@ -510,8 +505,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             if p is not None:
                 assert p and isinstance(p, leoNodes.Position), repr(p)
             return '<LeoTreeLine: %s>' % (p.h if p else 'None')
-        else:
-            return '<LeoTreeLine: %s>' % (val.content if val else 'None')
+        return '<LeoTreeLine: %s>' % (val.content if val else 'None')
 
     __str__ = __repr__
 
@@ -526,10 +520,8 @@ class LeoTreeLine(npyscreen.TreeLine):
                 p = self.value.content
                 assert p and isinstance(p, leoNodes.Position), repr(p)
                 return p.h or ' '
-            else:
-                return ''
-        else:
-            s = self.value.content if self.value else None
+            return ''
+        s = self.value.content if self.value else None
         return g.toUnicode(s) if s else None
     #@+node:ekr.20170522032805.1: *4* LeoTreeLine._print
     def _print(self, left_margin=0):
@@ -577,8 +569,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             p = vl.content
             assert p and isinstance(p, leoNodes.Position), repr(p)
             return p.h or ' '
-        else:
-            return vl.content if vl else ''
+        return vl.content if vl else ''
     #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
     def edit(self):
         """Allow the user to edit the widget: ie. start handling keypresses."""
@@ -754,9 +745,8 @@ def init():
             s = "Can't install text gui: previous gui installed"
             g.es_print(s, color="red")
         return False
-    else:
-        return curses and not g.app.gui and not g.app.unitTesting
-            # Not Ok for unit testing!
+    return curses and not g.app.gui and not g.app.unitTesting
+        # Not Ok for unit testing!
 #@+node:ekr.20170501032705.1: *3* curses2: leoGlobals replacements
 # CGui.init_logger monkey-patches leoGlobals with these functions.
 #@+node:ekr.20170430112645.1: *4* curses2: es
@@ -851,10 +841,7 @@ def method_name(f):
     if m:
         return '%20s%s' % (m.group(1), m.group(2))
             # Shows actual method: very useful
-        # return '%s.%s' % (m.group(4), m.group(2))
-            # Always shows subclass: not useful.
-    else:
-        return repr(f)
+    return repr(f)
 #@+node:ekr.20170524123950.1: ** Gui classes
 #@+node:ekr.20171128051435.1: *3* class StringFindTabManager
 class StringFindTabManager:
@@ -1106,7 +1093,7 @@ class KeyHandler:
         k = c and c.k
         if not c:
             return True # We are shutting down.
-        elif self.is_key_event(ch_i):
+        if self.is_key_event(ch_i):
             try:
                 ch = chr(ch_i)
             except Exception:
@@ -1123,9 +1110,8 @@ class KeyHandler:
                     g.es_exception()
             g.app.gui.show_label(c)
             return bool(shortcut)
-        else:
-            g.app.gui.show_label(c)
-            return False
+        g.app.gui.show_label(c)
+        return False
     #@+node:ekr.20170430115131.4: *5* CKey.char_to_tk_name
     tk_dict = {
         # Part 1: same as g.app.guiBindNamesDict
@@ -1664,14 +1650,12 @@ class LeoCursesGui(leoGui.LeoGui):
         """Create and run askOkCancelNumber dialog ."""
         if g.unitTesting:
             return False
-        elif self.curses_app:
+        if self.curses_app:
             self.in_dialog = True
             val = utilNotify.notify_ok_cancel(message=message,title=title)
             self.in_dialog = False
             return val
-        else:
-            return False
-
+        return False
     #@+node:ekr.20171126182120.6: *5* CGui.runAskOkCancelStringDialog
     def runAskOkCancelStringDialog(self, c, title, message,
         cancelButtonText=None,
@@ -1682,13 +1666,11 @@ class LeoCursesGui(leoGui.LeoGui):
         """Create and run askOkCancelString dialog ."""
         if g.unitTesting:
             return False
-        else:
-            self.in_dialog = True
-            val = utilNotify.notify_ok_cancel(message=message,title=title)
-                # val is True/False
-            self.in_dialog = False
-            return 'yes' if val else 'no'
-
+        self.in_dialog = True
+        val = utilNotify.notify_ok_cancel(message=message,title=title)
+            # val is True/False
+        self.in_dialog = False
+        return 'yes' if val else 'no'
     #@+node:ekr.20171126182120.4: *5* CGui.runAskOkDialog
     def runAskOkDialog(self, c, title,
         message=None,
@@ -1697,13 +1679,12 @@ class LeoCursesGui(leoGui.LeoGui):
         """Create and run an askOK dialog ."""
         if g.unitTesting:
             return False
-        elif self.curses_app:
+        if self.curses_app:
             self.in_dialog = True
             val = utilNotify.notify_confirm(message=message,title=title)
             self.in_dialog = False
             return val
-        else:
-            return False
+        return False
 
     #@+node:ekr.20171126182120.8: *5* CGui.runAskYesNoCancelDialog
     def runAskYesNoCancelDialog(self, c, title,
@@ -1717,13 +1698,12 @@ class LeoCursesGui(leoGui.LeoGui):
         """Create and run an askYesNoCancel dialog ."""
         if g.unitTesting:
             return False
-        else:
-            g.trace(g.callers())
-            self.in_dialog = True
-            val = utilNotify.notify_yes_no(message=message,title=title)
-                # Important: don't use notify_ok_cancel.
-            self.in_dialog = False
-            return 'yes' if val else 'no'
+        g.trace(g.callers())
+        self.in_dialog = True
+        val = utilNotify.notify_yes_no(message=message,title=title)
+            # Important: don't use notify_ok_cancel.
+        self.in_dialog = False
+        return 'yes' if val else 'no'
 
     #@+node:ekr.20171126182120.7: *5* CGui.runAskYesNoDialog
     def runAskYesNoDialog(self, c, title,
@@ -1734,11 +1714,10 @@ class LeoCursesGui(leoGui.LeoGui):
         """Create and run an askYesNo dialog."""
         if g.unitTesting:
             return False
-        else:
-            self.in_dialog = True
-            val = utilNotify.notify_ok_cancel(message=message,title=title)
-            self.in_dialog = False
-            return 'yes' if val else 'no'
+        self.in_dialog = True
+        val = utilNotify.notify_ok_cancel(message=message,title=title)
+        self.in_dialog = False
+        return 'yes' if val else 'no'
 
     #@+node:ekr.20171126182120.9: *5* CGui.runOpenFileDialog
     def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
@@ -1760,20 +1739,19 @@ class LeoCursesGui(leoGui.LeoGui):
     def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
         if g.unitTesting:
             return None
-        else:
-            # Not tested.
-            self.in_dialog = True
-            s = utilNotify.selectFile(
-                select_dir=False,
-                must_exist=False,
-                confirm_if_exists=True,
-                sort_by_extension=True,
-            )
-            self.in_dialog = False
-            s = s or ''
-            if s:
-                c.last_dir = g.os_path_dirname(s)
-            return s
+        # Not tested.
+        self.in_dialog = True
+        s = utilNotify.selectFile(
+            select_dir=False,
+            must_exist=False,
+            confirm_if_exists=True,
+            sort_by_extension=True,
+        )
+        self.in_dialog = False
+        s = s or ''
+        if s:
+            c.last_dir = g.os_path_dirname(s)
+        return s
     #@+node:ekr.20170430114709.1: *4* CGui.do_key
     def do_key(self, ch_i):
 
@@ -1841,10 +1819,9 @@ class LeoCursesGui(leoGui.LeoGui):
                 g.trace('(CursesGui)', widget.leo_wrapper.__class__.__name__)
                 g.trace(g.callers())
             return widget.leo_wrapper
-        else:
-            g.trace('(CursesGui) ===== no leo_wrapper', widget)
-                # At present, HeadWrappers have no widgets.
-            return None
+        g.trace('(CursesGui) ===== no leo_wrapper', widget)
+            # At present, HeadWrappers have no widgets.
+        return None
     #@+node:ekr.20171128041805.1: *5* CGui.set_focus & helpers
     set_focus_fail = []
 
@@ -1853,8 +1830,7 @@ class LeoCursesGui(leoGui.LeoGui):
         new_focus = False
         if new_focus:
             return self.NEW_set_focus(c,w)
-        else:
-            return self.OLD_set_focus(c, w)
+        return self.OLD_set_focus(c, w)
     #@+node:ekr.20171204040620.1: *6* CGui.NEW_set_focus & helper
     def NEW_set_focus(self, c, w):
         '''
@@ -3436,9 +3412,8 @@ class LeoMLTree(npyscreen.MLTree):
         while p:
             if i == n:
                 return p
-            else:
-                p.moveToVisNext(c)
-                i += 1
+            p.moveToVisNext(c)
+            i += 1
         g.trace('Can not happen', n)
         return None
     #@+node:ekr.20171128191134.1: *5* LeoMLTree.select_leo_node
@@ -3463,9 +3438,8 @@ class LeoMLTree(npyscreen.MLTree):
                         i -= 1
                 self.start_display_at = i
                 return
-            else:
-                p2.moveToVisNext(c)
-                i += 1
+            p2.moveToVisNext(c)
+            i += 1
         if trace:
             # Can happen during unit tests.
             g.trace('Not found', p and p.h)
@@ -3965,10 +3939,9 @@ class LeoMLTree(npyscreen.MLTree):
             # pylint: disable=access-member-before-definition
             if getattr(self, '_cached_tree', None):
                 return self._cached_tree_as_list
-            else:
-                self._cached_tree = self._myFullValues
-                self._cached_tree_as_list = self._myFullValues.get_tree_as_list()
-                return self._cached_tree_as_list
+            self._cached_tree = self._myFullValues
+            self._cached_tree_as_list = self._myFullValues.get_tree_as_list()
+            return self._cached_tree_as_list
 
         #@+node:ekr.20170518054457.1: *5* _setValues
         def _setValues(self, tree):
@@ -4012,11 +3985,10 @@ class LeoValues(npyscreen.TreeData):
         # This will almost always be true, because __len__ updates the cache.
         if self.last_len > -1 and c.frame.tree.generation == self.last_generation:
             return self.data_cache.get(n)
-        else:
-            self.refresh_cache()
-            data = self.data_cache.get(n)
-            g.trace('uncached', data)
-            return data
+        self.refresh_cache()
+        data = self.data_cache.get(n)
+        g.trace('uncached', data)
+        return data
     #@+node:ekr.20170518060014.1: *4* values.__len__
     def __len__(self):
         '''
@@ -4032,9 +4004,8 @@ class LeoValues(npyscreen.TreeData):
         tree_gen = c.frame.tree.generation
         if self.last_len > -1 and  tree_gen == self.last_generation:
             return self.last_len
-        else:
-            self.last_len = self.refresh_cache()
-            return self.last_len
+        self.last_len = self.refresh_cache()
+        return self.last_len
     #@+node:ekr.20170519041459.1: *4* values.clear_cache
     def clear_cache(self):
         '''Called only from this file.'''
@@ -4164,9 +4135,8 @@ class TextMixin:
         i, j = self.getSelectionRange()
         if i == j:
             return ''
-        else:
-            s = self.getAllText()
-            return s[i: j]
+        s = self.getAllText()
+        return s[i: j]
     #@+node:ekr.20170511053143.19: *5* tm.insert
     def insert(self, i, s):
         '''TextMixin'''
