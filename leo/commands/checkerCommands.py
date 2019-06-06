@@ -305,15 +305,16 @@ class PyflakesCommand:
 class PylintCommand:
     '''A class to run pylint on all Python @<file> nodes in c.p's tree.'''
     
-    regex = r'^[\w\\\.\:]+?:([0-9]+):[0-9]+:'
-        # m.group(1) is the line number
-        # r'^\w+:(.*),.*:(.*)$', # old pylint.
-   
-    data = None # Data for the *running* process.
-    rc_fn = None # Name of the rc file.
-    
+    regex = '^[^:]+?:([0-9]+):[0-9]+:.*?(\(.*\))\s*$'
+        # m.group(1) is the line number.
+        # m.group(2) is the (unused) test name.
+        
+    # Example message: file-name:3966:12: R1705:xxxx (no-else-return)
+
     def __init__(self, c):
         self.c = c
+        self.data = None # Data for the *running* process.
+        self.rc_fn = None # Name of the rc file.
 
     #@+others
     #@+node:ekr.20150514125218.11: *3* 1. pylint.run
