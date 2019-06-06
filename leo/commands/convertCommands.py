@@ -193,13 +193,11 @@ class To_Python:
     #@+node:ekr.20150514063305.142: *5* removeMatchingBrackets
     def removeMatchingBrackets(self, aList, i):
         j = self.skip_to_matching_bracket(aList, i)
-        if j > i and j < len(aList):
-            # print "del brackets:", ''.join(aList[i:j+1])
+        if i < j < len(aList):
             c = aList[j]
             if c == ')' or c == ']' or c == '}':
                 del aList[j: j + 1]
                 del aList[i: i + 1]
-                # print "returning:", ''.join(aList[i:j])
                 return j - 1
             return j + 1
         return j
@@ -615,7 +613,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     k += 1
                 if not found:
                     j = self.removeMatchingBrackets(aList, i)
-                if j > i and j < len(aList):
+                if i < j < len(aList):
                     ch = aList[j]
                     aList[j: j + 1] = [ch, ":", " "]
                     j = j + 2
@@ -1344,7 +1342,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         k += 1
                     if not found:
                         j = self.removeMatchingBrackets(aList, i)
-                    if j > i and j < len(aList):
+                    if i < j < len(aList):
                         ch = aList[j]
                         aList[j: j + 1] = [ch, ":", " "]
                         j = j + 2

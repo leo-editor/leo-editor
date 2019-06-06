@@ -149,7 +149,7 @@ class Undoer:
     #@+node:ekr.20060127052111.1: *4* u.cutStack
     def cutStack(self):
         u = self; n = u.max_undo_stack_size
-        if n > 0 and u.bead >= n and not g.app.unitTesting:
+        if u.bead >= n > 0 and not g.app.unitTesting:
             # Do nothing if we are in the middle of creating a group.
             i = len(u.beads) - 1
             while i >= 0:

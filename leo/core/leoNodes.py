@@ -148,6 +148,8 @@ class NodeIndices:
     def updateLastIndex(self, gnx):
         '''Update ni.lastIndex if the gnx affects it.'''
         id_, t, n = self.scanGnx(gnx)
+        # pylint: disable=literal-comparison
+            # Don't you dare touch this code to keep pylint happy.
         if not id_ or (n is not 0 and not n):
             return # the gnx is not well formed or n in ('',None)
         if id_ == self.userId and t == self.timeString:
