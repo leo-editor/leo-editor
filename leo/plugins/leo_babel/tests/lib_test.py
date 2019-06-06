@@ -141,20 +141,14 @@ class TestCmdr:
             """
 
             colorx = cmdr.config.getColor(settingName)
-            if colorx:
-                return colorx
-            else:
-                return default
+            return colorx or default
         #@+node:bob.20180116154857.1: *4* _getString()
         def _getString(cmdr, settingName, default=None):
             """ Add a default option to c.config.getString()
             """
 
             strx = cmdr.config.getString(settingName)
-            if strx:
-                return strx
-            else:
-                return default
+            return strx or default
         #@-others
 
         self.colorStdout = _getColor(cmdrT, 'Leo-Babel-stdout', default='#00ff00')
@@ -211,29 +205,30 @@ def  runTests(itPoll, cmdrT, fdR, testCmdr, genFindTests):
         testCmdr.babelExecCnt = 0
     else:
         if testCmdr.babelExecCnt >= babelCmdr.babelExecCnt:
-            return      # Waiting for test to complete
-        else:
-            # Most Recent Test has finished.
-            testCmdr.babelExecCnt = babelCmdr.babelExecCnt
-            fdR.write('||* Test Name *|| {0}\n'.format(testCmdr.testRootMostRecnt.h))
-            testCmdr.esCapture.endCollection()
-            data = testCmdr.esCapture.getData()
-            colorList = list(data.keys())
-            colorList.sort()
-            for color in colorList:
-                outList = data[color]
-                if color == testCmdr.colorStdout:
-                    fdR.write('||* stdout *||\n')
-                    fdR.write(formatCaptured(outList))
-                elif color == testCmdr.colorStderr:
-                    fdR.write('||* stderr *||\n')
-                    fdR.write(formatCaptured(outList))
-                elif color == testCmdr.colorCompletion:
-                    fdR.write('||* Completion *||\n')
-                    fdR.write(formatCaptured(outList))
-                else:
-                    fdR.write('||* Other Color *|| {0}\n'.format(color))
-                    fdR.write(formatCaptured(outList))
+            return # Waiting for test to complete
+        #
+        # Most Recent Test has finished.
+        testCmdr.babelExecCnt = babelCmdr.babelExecCnt
+        fdR.write('||* Test Name *|| {0}\n'.format(testCmdr.testRootMostRecnt.h))
+        testCmdr.esCapture.endCollection()
+        data = testCmdr.esCapture.getData()
+        colorList = list(data.keys())
+        colorList.sort()
+        for color in colorList:
+            outList = data[color]
+            if color == testCmdr.colorStdout:
+                fdR.write('||* stdout *||\n')
+                fdR.write(formatCaptured(outList))
+            elif color == testCmdr.colorStderr:
+                fdR.write('||* stderr *||\n')
+                fdR.write(formatCaptured(outList))
+            elif color == testCmdr.colorCompletion:
+                fdR.write('||* Completion *||\n')
+                fdR.write(formatCaptured(outList))
+            else:
+                fdR.write('||* Other Color *|| {0}\n'.format(color))
+                fdR.write(formatCaptured(outList))
+    #
     # Most Recent Test (if any) if done and its output recorded
     # Start the next test.
     try:
@@ -246,7 +241,8 @@ def  runTests(itPoll, cmdrT, fdR, testCmdr, genFindTests):
     cmdrT.selectPosition(testRoot)  # babel_exec() expects the root node to be selected.
     testCmdr.esCapture.beginCollection()
     cmdrT.executeMinibufferCommand('babel-exec-p')
-    # cmdrT.executeMinibufferCommand() returns immediately--Long before the command is executed.
+    # cmdrT.executeMinibufferCommand() returns immediately
+    # Long before the command is executed.
 #@+node:bob.20180205135258.1: ** main()
 def main():
     """ Command Line Program Entry point
