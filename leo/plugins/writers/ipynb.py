@@ -143,8 +143,9 @@ class Export_IPYNB(basewriter.BaseWriter):
         d = p.v.u.get('ipynb')
         if not d:
             return {}
-        else:
-            return d.get(key) if key else d
+        if key:
+            return d.get(key)
+        return d
     #@+node:ekr.20180407191219.1: *3* ipy_w.make_notebook
     def make_notebook(self):
         '''Create a JSON notebook'''

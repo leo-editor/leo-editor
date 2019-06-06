@@ -34,11 +34,8 @@ class BaseWriter:
     #@+node:ekr.20161125140611.1: ** basewriter.split_lines
     def split_lines(self, s):
         '''Exactly the same as g.splitLines(s).'''
-        if s:
-            return s.splitlines(True)
-                # This is a Python string function!
-        else:
-            return []
+        return s.splitlines(True) if s else []
+            # This is a Python string function!
     #@-others
 
 #@@language python
