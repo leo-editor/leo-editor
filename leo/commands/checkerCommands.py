@@ -14,7 +14,7 @@ try:
     import pyflakes
 except ImportError:
     pyflakes = None
-import os
+# import os
 import shlex
 # import subprocess
 import sys
@@ -304,38 +304,52 @@ class PyflakesCommand:
 #@+node:ekr.20150514125218.8: ** class PylintCommand
 class PylintCommand:
     '''A class to run pylint on all Python @<file> nodes in c.p's tree.'''
-
+    
+    regex = r'^[\w\\\.\:]+?:([0-9]+):[0-9]+:'
+        # m.group(1) is the line number
+        # r'^\w+:(.*),.*:(.*)$', # old pylint.
+   
+    data = None # Data for the *running* process.
+    rc_fn = None # Name of the rc file.
+    
     def __init__(self, c):
-        '''ctor for PylintCommand class.'''
         self.c = c
-        self.seen = [] # List of checked vnodes.
 
     #@+others
-    #@+node:ekr.20150514125218.9: *3* pylint.check
-    def check(self, p, rc_fn):
-        '''
-        Run pylint on node p, provided it is an @file node for a python file.
-        Return True if run_python was called.
-        '''
-        c = self.c
-        if not p.isAnyAtFileNode():
-            g.trace('not an @<file> node: %r' % p.h)
+    #@+node:ekr.20150514125218.11: *3* 1. pylint.run
+    def run(self):
+        '''Run Pylint on all Python @<file> nodes in c.p's tree.'''
+        c, root = self.c, self.c.p
+        if not self.import_lint():
+            return
+        self.rc_fn = self.get_rc_file()
+        if not self.rc_fn:
+            return
+        # Make sure Leo is on sys.path.
+        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
+        if leo_path not in sys.path:
+            sys.path.append(leo_path)
+        roots = g.findRootsWithPredicate(c, root, predicate=None)
+        # g.printObj([z.h for z in roots])
+        data = [(self.get_fn(p), p.copy()) for p in roots]
+        data = [z for z in data if z[0] is not None]
+        if not data:
+            g.es('pylint: no files found', color='red')
+            return
+        for fn, p in data:
+            self.run_pylint(fn, p)
+        
+    #@+node:ekr.20190605183824.1: *3* 2. pylint.import_lint
+    def import_lint(self):
+        '''Make sure lint can be imported.'''
+        try:
+            from pylint import lint
+            g.placate_pyflakes(lint)
+            return True
+        except ImportError:
+            g.es_print('pylint is not installed')
             return False
-        # Fix bug: https://github.com/leo-editor/leo-editor/issues/67
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        fn = p.anyAtFileNodeName()
-        if not fn.endswith('.py'):
-            g.trace('not a python file: %r' % p.h)
-            return False
-        fn = g.os_path_finalize_join(path, fn)
-        if p.v in self.seen:
-            g.trace('already seen: %r' % p.h)
-            return False
-        self.seen.append(p.v)
-        self.run_pylint(fn, rc_fn)
-        return True
-    #@+node:ekr.20150514125218.10: *3* pylint.get_rc_file
+    #@+node:ekr.20150514125218.10: *3* 3. pylint.get_rc_file
     def get_rc_file(self):
         '''Return the path to the pylint configuration file.'''
         base = 'pylint-leo-rc.txt'
@@ -352,71 +366,53 @@ class PylintCommand:
         g.es_print('no pylint configuration file found in\n%s' % (
             '\n'.join(table)))
         return None
-    #@+node:ekr.20150514125218.11: *3* pylint.run
-    def run(self):
-        '''Run Pylint on all Python @<file> nodes in c.p's tree.'''
-        c, root = self.c, self.c.p
-        rc_fn = self.get_rc_file()
-        if not rc_fn:
-            return
-        # Make sure Leo is on sys.path.
-        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        if leo_path not in sys.path:
-            sys.path.append(leo_path)
-        roots = g.findRootsWithPredicate(c, root, predicate=None)
-        if roots:
-            for p in roots:
-                self.check(p, rc_fn)
-        else:
-            g.es('pylint: no files found', color='red')
-    #@+node:ekr.20150514125218.12: *3* pylint.run_pylint
-    pylint_install_message = False
-
-    def run_pylint(self, fn, rc_fn):
-        '''Run pylint on fn with the given pylint configuration file.'''
+    #@+node:ekr.20150514125218.9: *3* 4. pylint.get_fn
+    def get_fn(self, p):
+        '''
+        Finalize p's file name.
+        Return if p is not an @file node for a python file.
+        '''
         c = self.c
-        try:
-            from pylint import lint
-            assert lint # to molify pyflakes
-        except ImportError:
-            if not self.pylint_install_message:
-                self.pylint_install_message = True
-                g.es_print('pylint is not installed')
-            return
-        if not os.path.exists(fn):
-            g.es_print('pylint: file not found:', fn)
-            return
-        if 1: # Invoke pylint directly.
-            # Escaping args is harder here because we are creating an args array.
-            is_win = sys.platform.startswith('win')
-            args =  ','.join(["'--rcfile=%s'" % (rc_fn), "'%s'" % (fn),])
-            if is_win:
-                args = args.replace('\\','\\\\')
-            command = '%s -c "from pylint import lint; args=[%s]; lint.Run(args)"' % (
-                sys.executable, args)
-            if not is_win:
-                command = shlex.split(command)
-        else:
-            # Invoke g.run_pylint.
-            args = ["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn),]
-            # When shell is True, it's recommended to pass a string, not a sequence.
-            command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
-                sys.executable, ','.join(args))
+        if not p.isAnyAtFileNode():
+            g.trace('not an @<file> node: %r' % p.h)
+            return None
+        # Fix bug: https://github.com/leo-editor/leo-editor/issues/67
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        fn = p.anyAtFileNodeName()
+        if not fn.endswith('.py'):
+            g.trace('not a python file: %r' % p.h)
+            return None
+        return g.os_path_finalize_join(path, fn)
+    #@+node:ekr.20150514125218.12: *3* 5. pylint.run_pylint
+    def run_pylint(self, fn, p):
+        '''Run pylint on fn with the given pylint configuration file.'''
+        c, rc_fn = self.c, self.rc_fn
+        #
+        # Invoke pylint directly.
+        is_win = sys.platform.startswith('win')
+        args =  ','.join(["'--rcfile=%s'" % (rc_fn), "'%s'" % (fn),])
+        if is_win:
+            args = args.replace('\\','\\\\')
+        command = '%s -c "from pylint import lint; args=[%s]; lint.Run(args)"' % (
+            sys.executable, args)
+        if not is_win:
+            command = shlex.split(command)
         #
         # Run the command using the BPM.
         bpm = g.app.backgroundProcessManager
-        roots = g.findRootsWithPredicate(c, c.p, predicate=None)
-        # g.trace(roots and roots[0].h)
-        # g.trace(command)
-        # g.trace(fn)
         bpm.start_process(c, command,
             fn=fn,
             kind='pylint',
-            link_pattern = r'^[\w\\\.]+?:(.*?)[,:]',
-                # r'^\w+:(.*),.*:(.*)$', # Old pylint.
-                # m.group(1) is the line.
-            link_root = roots and roots[0],
+            link_pattern = self.regex,
+            link_root = p,
         )
+        
+        # Old code: Invoke g.run_pylint.
+            # args = ["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn),]
+            # # When shell is True, it's recommended to pass a string, not a sequence.
+            # command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
+                # sys.executable, ','.join(args))
     #@-others
 #@-others
 #@@language python
