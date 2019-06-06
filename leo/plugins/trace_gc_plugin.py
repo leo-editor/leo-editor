@@ -29,7 +29,7 @@ def printIdleGC(tag, keywords):
     # Calling printGc is too expensive to do on every idle call.
     if g.app.killed:
         return
-    elif tag == "idle":
+    if tag == "idle":
         global gcCount; gcCount += 1
         if (gcCount % 20) == 0:
             g.printGc(tag)

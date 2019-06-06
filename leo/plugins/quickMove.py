@@ -619,7 +619,7 @@ class quickMove:
         if not ans:
             g.es("Didn't find button")
             return
-        elif len(ans) != 1:
+        if len(ans) != 1:
             g.es("Note: found multiple %s/first=%s buttons, using first"%(type_,first))
 
         qmb, b = ans[0]

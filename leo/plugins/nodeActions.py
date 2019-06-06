@@ -237,11 +237,10 @@ def onIconDoubleClickNA(tag, keywords):
         return None
 
     if doNodeAction(p,c):
-        return True #Action was taken - Stop other double-click handlers from running
-    else:
-        return None #No action taken - Let other double-click handlers run
-
-
+        return True
+            #Action was taken - Stop other double-click handlers from running
+    return None
+        #No action taken - Let other double-click handlers run
 #@+node:TL.20080507213950.7: ** init (nodeActions.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
@@ -367,21 +366,21 @@ def doNodeAction(pClicked, c):
             if messageLevel >= 1:
                 g.blue("nA: No patterns matched to """ + hClicked + '"')
             return False #TL - Inform onIconDoubleClick that no action was taken
-        elif passEventExternal:
+        if passEventExternal:
             #last matched pattern has directive to pass event to next plugin
             if messageLevel >= 2:
                 g.blue("nA: Event passed to next plugin")
             return False #TL - Inform onIconDoubleClick to pass double-click event
-        else:
-            #last matched pattern did not have directive to pass event to plugin
-            if messageLevel >= 2:
-                g.blue("nA: Event not passed to next plugin")
-            return True #TL - Inform onIconDoubleClick to not pass double-click
-    else:
-        #nodeActions plugin enabled without a 'nodeActions' node
-        if messageLevel >= 4:
-            g.blue("nA: The ""nodeActions"" node does not exist")
-        return False #TL - Inform onIconDoubleClick that no action was taken
+        #
+        #last matched pattern did not have directive to pass event to plugin
+        if messageLevel >= 2:
+            g.blue("nA: Event not passed to next plugin")
+        return True #TL - Inform onIconDoubleClick to not pass double-click
+    # 
+    # nodeActions plugin enabled without a 'nodeActions' node
+    if messageLevel >= 4:
+        g.blue("nA: The ""nodeActions"" node does not exist")
+    return False #TL - Inform onIconDoubleClick that no action was taken
 #@+node:TL.20080507213950.10: ** applyNodeAction
 def applyNodeAction(pScript, pClicked, c):
 
