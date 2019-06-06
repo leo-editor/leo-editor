@@ -375,7 +375,7 @@ def WriteTreeAsAsc(p,fn):
         if  val == CV.END_PROGRAM:
             ascFile.close()
             return
-        elif val == CV.NODE_IGNORE:
+        if val == CV.NODE_IGNORE:
             p.moveToNodeAfterTree() # ran into an @ascignore
         else:
             p.moveToThreadNext()

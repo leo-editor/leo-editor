@@ -264,8 +264,7 @@ class VimCommander:
             return False
         if not self.open_url_nodes and p.h.startswith('@url'):
             return False
-        else:
-            return True
+        return True
     #@+node:ekr.20150326154203.1: *5* vim.load_context_menu
     def load_context_menu(self):
         '''Load the contextmenu plugin.'''

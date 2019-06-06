@@ -76,17 +76,12 @@ class pluginController:
         c = self.c
         dict = c.scanAllDirectives(p)
         d = dict.get("path")
-
         if p.isAnyAtFileNode():
             filename = p.anyAtFileNodeName()
             filename = g.os_path_join(d,filename)
             if filename:
                 d = g.os_path_dirname(filename)
-
-        if d is None:
-            return ""
-        else:
-            return g.os_path_normpath(d)
+        return '' if d is None else g.os_path_normpath(d)
     #@+node:EKR.20040517080049.8: *3* _getCurrentNodePath
     def _getCurrentNodePath(self):
 

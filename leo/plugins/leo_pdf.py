@@ -519,8 +519,7 @@ class Bunch:
             for key in self.ivars() if key != 'tag']
         if tag:
             return "Bunch(tag=%s)...\n%s\n" % (tag,'\n'.join(entries))
-        else:
-            return "Bunch...\n%s\n" % '\n'.join(entries)
+        return "Bunch...\n%s\n" % '\n'.join(entries)
 
     # Used by new undo code.
     def __setitem__ (self,key,value):
@@ -579,36 +578,26 @@ if docutils:
         #@+node:ekr.20090704103932.5184: *3* createParagraphsFromIntermediateFile
         def createParagraphsFromIntermediateFile (self,s,story,visitor):
 
-            if 0: # Not needed now that putParaFromIntermediateFile is in the visitor.
-                self.styleSheet = visitor.styleSheet
-                self.encode = visitor.encode
-            if reportlab:
-                # out = StringIO.StringIO()
-                out = StringIO()
-                reportlab.platypus.SimpleDocTemplate(out,
-                    pagesize=reportlab.lib.pagesizes.A4)
-                # The 'real' code is doc.build(story)
-                visitor.buildFromIntermediateFile(s,story,visitor)
-                return out.getvalue()
-            else:
+            if not reportlab:
                 return ''
+            out = StringIO()
+            reportlab.platypus.SimpleDocTemplate(out,
+                pagesize=reportlab.lib.pagesizes.A4)
+            #
+            # The 'real' code is doc.build(story)
+            visitor.buildFromIntermediateFile(s,story,visitor)
+            return out.getvalue()
         #@+node:ekr.20090704103932.5185: *3* createPDF_usingPlatypus
         def createPDF_usingPlatypus (self,story):
 
-            if reportlab:
-
-                # out = StringIO.StringIO()
-                out = StringIO()
-
-                doc = reportlab.platypus.SimpleDocTemplate(out,
-                    pagesize=reportlab.lib.pagesizes.A4)
-
-                doc.build(story)
-
-                return out.getvalue()
-
-            else:
+            if not reportlab:
                 return ''
+            out = StringIO()
+            doc = reportlab.platypus.SimpleDocTemplate(out,
+                pagesize=reportlab.lib.pagesizes.A4)
+            doc.build(story)
+            return out.getvalue()
+
         #@+node:ekr.20090704103932.5186: *3* lower
         def lower(self):
 

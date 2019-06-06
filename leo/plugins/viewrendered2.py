@@ -693,9 +693,12 @@ class WebViewPlus(QtWidgets.QWidget):
             return self.plockmode
         default = self.pc.default_kind
         h = self.c.p.h
-        if h.startswith('@rst'): return 'rst'
-        elif h.startswith('@md'): return 'md'
-        elif h.startswith('@html'): return 'html'
+        if h.startswith('@rst'):
+            return 'rst'
+        if h.startswith('@md'):
+            return 'md'
+        if h.startswith('@html'):
+            return 'html'
         return default
     #@+node:ekr.20140226081920.16816: *4* vr2.tooltip_text
     def tooltip_text(self, s):
@@ -914,8 +917,7 @@ class WebViewPlus(QtWidgets.QWidget):
             msg = sm.args[0]
             if 'SEVERE' in msg or 'FATAL' in msg:
                 return 'RST error:\n%s\n\n%s' % (msg, html)
-            else:
-                return html
+            return html
     #@+node:ekr.20140226075611.16797: *6* vr2.process_nodes & helpers
     def process_nodes(self, p, tree=True):
         """
@@ -951,11 +953,9 @@ class WebViewPlus(QtWidgets.QWidget):
     def code_directive(self, lang):
         '''Return an reST block or code directive.'''
         if pygments:
-            # g.trace('using pygments')
             # See code in initCodeBlock for complications.
             return '\n\n.. code:: ' + lang + '\n\n'
-        else:
-            return '\n\n::\n\n'
+        return '\n\n::\n\n'
     #@+node:ekr.20140227055626.16841: *7* vr2.initCodeBlockString (from leoRst, for reference)
     def initCodeBlockString(self, p, language):
         '''Reference code illustrating the complications of code blocks.'''
@@ -1218,8 +1218,7 @@ class WebViewPlus(QtWidgets.QWidget):
         if pygments:
             d = '\n    :::' + lang
             return d
-        else:
-            return '\n'
+        return '\n'
     #@+node:peckj.20140228100832.6397: *7* vr2.md_process_one_node
     def md_process_one_node(self, p, result, environment):
         '''Handle one node.'''
@@ -1888,8 +1887,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             pc.embed_widget(w) # Creates w.wrapper
             assert(w == pc.w)
             return pc.w
-        else:
-            return pc.w
+        return pc.w
     #@+node:ekr.20140226074510.4235: *5* vr2.get_kind
     def get_kind(self, p):
         '''Return the proper rendering kind for node p.'''

@@ -79,16 +79,14 @@ def is_subnodesOK(v):
 
     if not v.hasChildren():
         return True
-    else:
-        ok = False
-        child=v.firstChild()
-        while child:
-            s=child.h
-            ok=s[0:len(OKFLAG)]==OKFLAG
-            if not ok:break
-            child=child.next()
+    ok = False
+    child=v.firstChild()
+    while child:
+        s=child.h
+        ok=s[0:len(OKFLAG)]==OKFLAG
+        if not ok:break
+        child=child.next()
     return ok
-
 #@+node:ekr.20040205071616.7: ** onRclick
 def onRclick(tag,keywords):
 
