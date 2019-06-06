@@ -460,6 +460,7 @@ class Demo:
     #@+node:ekr.20170128213103.39: *4* demo.new_key_event
     def new_key_event(self, shortcut, w):
         '''Create a LeoKeyEvent for a *raw* shortcut.'''
+        # pylint: disable=literal-comparison
         # Using the *input* logic seems best.
         event = self.filter_.create_key_event(
             event=None,

@@ -947,6 +947,7 @@ class ExecHandler:
         query = urlparse.parse_qs(parsed_url.query)
         # work out which commander to use, zero index int, full path name, or file name
         c_idx = query.get('c', [0])[0]
+        # pylint: disable=literal-comparison
         if c_idx is not 0:
             try:
                 c_idx = int(c_idx)

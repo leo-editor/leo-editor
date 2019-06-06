@@ -84,9 +84,8 @@ def paste_as_headlines(c):
             if indent > ancestors[-1][0]:
                 ancestors.append((indent,cur_pos))
             else:
-                while indent < ancestors[-1][0] and indent >= init_indent:
+                while init_indent <= indent < ancestors[-1][0]:
                     ancestors.pop()
-
             # cur_indent = indent
             insertNode = ancestors[-1][1].insertAsLastChild()
             cur_pos = insertNode.copy()

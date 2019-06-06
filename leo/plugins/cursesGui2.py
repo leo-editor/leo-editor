@@ -61,6 +61,7 @@ if npyscreen:
     from npyscreen.wgwidget import  EXITED_DOWN, EXITED_ESCAPE, EXITED_MOUSE, EXITED_UP
 #@-<< cursesGui2 imports >>
 # pylint: disable=arguments-differ,logging-not-lazy
+# pylint: disable=not-an-iterable,unsubscriptable-object,unsupported-delete-operation
 native = True
     # True: use native Leo data structures, replacing the
     # the values property by a singleton LeoValues object.

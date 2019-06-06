@@ -518,13 +518,12 @@ class FlowLayout(QtWidgets.QLayout):
 
     #@+node:ekr.20140917180536.17902: *3* itemAt
     def itemAt(self, index):
-        if index >= 0 and index < len(self.itemList):
+        if 0 <= index < len(self.itemList):
             return self.itemList[index]
         return None
-
     #@+node:ekr.20140917180536.17903: *3* takeAt
     def takeAt(self, index):
-        if index >= 0 and index < len(self.itemList):
+        if 0 <= index < len(self.itemList):
             return self.itemList.pop(index)
         return None
 
