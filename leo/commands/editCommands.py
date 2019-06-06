@@ -757,7 +757,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.fillPrefix = s[i: j]
     #@+node:ekr.20150514063305.219: *4* ec._addPrefix
     def _addPrefix(self, ntxt):
-        # pylint: disable=deprecated-lambda
         ntxt = ntxt.split('.')
         ntxt = map(lambda a: self.fillPrefix + a, ntxt)
         ntxt = '.'.join(ntxt)
@@ -2522,7 +2521,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             # Next, look backward.
             if not (0 <= i < n and g.isWordChar(s[i])):
                 i = i1 - 1 if (i >= n or s[i] == '\n') else i1
-                while 0 <= i and not g.isWordChar(s[i]) and s[i] != '\n':
+                while i >= 0 and not g.isWordChar(s[i]) and s[i] != '\n':
                     i -= 1
         # Make sure s[i] is a word char.
         if 0 <= i < n and g.isWordChar(s[i]):

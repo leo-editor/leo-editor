@@ -1078,7 +1078,7 @@ class MatchBrackets:
             if self.single_comment:
                 # Scan backward for any single-comment delim.
                 i -= 1
-                while 0 <= i and s[i] != '\n':
+                while i >= 0 and s[i] != '\n':
                     if g.match(s, i, self.single_comment):
                         return True
                     i -= 1
@@ -1091,7 +1091,7 @@ class MatchBrackets:
     def scan_back(self, ch1, target, s, i):
         '''Scan backwards for delim.'''
         level = 0
-        while 0 <= i:
+        while i >= 0:
             progress = i
             ch = s[i]
             if self.ends_comment(s, i):
@@ -1121,7 +1121,7 @@ class MatchBrackets:
         if g.match(s, i, self.end_comment):
             i1 += len(self.end_comment) # For traces.
             i -= 1
-            while 0 <= i:
+            while i >= 0:
                 if g.match(s, i, self.start_comment):
                     i -= 1
                     return i
@@ -1131,7 +1131,7 @@ class MatchBrackets:
         # Careful: scan to the *first* target on the line
         found = None
         i -= 1
-        while 0 <= i and s[i] != '\n':
+        while i >= 0 and s[i] != '\n':
             if g.match(s, i, self.single_comment):
                 found = i-1
             i -= 1
@@ -1158,7 +1158,7 @@ class MatchBrackets:
                 # Scan backward for single-line comment delims or quotes.
                 quote = None
                 i -= 1
-                while 0 <= i and s[i] != '\n':
+                while i >= 0 and s[i] != '\n':
                     progress = i
                     if quote and s[i] == quote:
                         quote = None
@@ -1171,7 +1171,7 @@ class MatchBrackets:
                         # Assume that there is a comment only if the comment delim
                         # isn't inside a string that begins and ends on *this* line.
                         if quote:
-                            while 0 <= i and s[i] != 'n':
+                            while i >= 0 and s[i] != 'n':
                                 if s[i] == quote:
                                     return False
                                 i -= 1
