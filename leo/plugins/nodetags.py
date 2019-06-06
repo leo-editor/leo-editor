@@ -189,8 +189,7 @@ class TagController:
         if p:
             tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
             return list(tags)
-        else:
-            return []
+        return []
     #@+node:peckj.20140804103733.9260: *4* tag_c.add_tag
     def add_tag(self, p, tag):
         ''' adds 'tag' to the taglist of v '''
@@ -427,11 +426,10 @@ if QtWidgets:
             tag = str(self.comboBox.currentText()).strip()
             if not tag:
                 return # no error message, probably an honest mistake
-            elif len(re.split(self.search_re,tag)) > 1:
+            if len(re.split(self.search_re,tag)) > 1:
                 g.es('Cannot add tags containing any of these characters: &|^-', color='red')
                 return # don't add unsearchable tags
-            else:
-                self.tc.add_tag(p,tag)
+            self.tc.add_tag(p,tag)
         #@+node:peckj.20140811082039.6623: *3* tag_w:event hooks
         #@+node:peckj.20140804195456.13487: *4* tag_w.select2_hook
         def select2_hook(self, tag, keywords):
