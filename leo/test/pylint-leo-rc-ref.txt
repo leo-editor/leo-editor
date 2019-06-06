@@ -40,20 +40,31 @@ load-plugins=
 disable=
     #
     # Always disable these. They could cause more harm than good.
+        design,import,format,similarities, # Make work.
         assignment-from-no-return, # Causes problems when base class return None.
         assignment-from-none, # Causes problems when base class return None.
+        broad-except, # except Exception is justified if followed by g.es_exception.
         consider-using-in,
         consider-using-dict-comprehension,
         consider-using-set-comprehension,
         consider-using-ternary,
         keyword-arg-before-vararg, # See https://github.com/PyCQA/pylint/issues/2027
+        reimported,
+        too-few-public-methods,
         ungrouped-imports,
         unnecessary-pass, # Can be pedantic in some situations.
+        unused-argument,
         useless-import-alias, # the "as" keeps pyflakes happy.
+        using-constant-test,
         wrong-import-position,
         wrong-import-order,
+        unused-variable, # way too many false positives, esp. tuple unpacking.
     #
     # Good warnings. Don't suppress these.
+        # bad-builtin,
+        # bad-continuation,
+        # bad-option-value, # obsolete pylint option.
+        # deprecated-module,
         # chained-comparison,
         # len-as-condition,
         # inconsistent-return-statements,
@@ -63,7 +74,11 @@ disable=
         # no-else-return, # Leo's new style.
         # no-value-for-parameter,
         # not-an-iterable,
+        # simplifiable-if-statement,
+        # singleton-comparison,
+        # superfluous-parens,
         # trailing-comma-tuple,
+        # trailing-whitespace,
         # unsupported-assignment-operation,
         # unsupported-delete-operation,
         # unsubscriptable-object,
@@ -71,13 +86,7 @@ disable=
         # useless-return,
     #
     # Previously suppressed warnings.
-    design,import,format,similarities,
     attribute-defined-outside-init,
-    bad-builtin,
-    bad-continuation,
-    bad-option-value,
-    broad-except, # except Exception is justified if followed by g.es_exception.
-    deprecated-module,
     exec-used,
     global-statement,
     global-variable-not-assigned,
@@ -94,16 +103,6 @@ disable=
     redefined-outer-name,
     redefined-variable-type,
     redefined-argument-from-local,
-    reimported,
-    simplifiable-if-statement,
-    singleton-comparison,
-    superfluous-parens,
-    too-few-public-methods,
-    trailing-whitespace,
-    unused-argument,
-    unused-variable,
-    using-constant-test,
-    
 
 # Categories:
 # basic,classes,design,import,format,similarities,typecheck,variables
@@ -236,7 +235,7 @@ extension-pkg-whitelist=PyQt4, PyQt5, lxml.etree
 init-import=no
 
 # A regular expression matching names used for dummy variables (i.e. not used).
-dummy-variables-rgx=_|dummy|junk|args|keys|keywords|event|tag|unused_.*
+dummy-variables-rgx=_|dummy|junk|args|keys|keywords|event|tag|z|unused_.*
 
 # List of additional names supposed to be defined in builtins.
 # Avoid defining new builtins when possible.
@@ -298,7 +297,7 @@ max-public-methods=20
 [IMPORTS]
 
 # Deprecated modules which should not be used, separated by a comma
-deprecated-modules=regsub,string,TERMIOS,Bastion,rexec
+deprecated-modules=regsub,TERMIOS,Bastion,rexec # string
 
 # Create a graph of internal and external dependencies in the given graph.
 # (report R0402 must not be disabled)

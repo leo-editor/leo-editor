@@ -2286,7 +2286,7 @@ class KeyHandlerClass:
             if i == len(h) -1:
                 # fall off the bottom
                 i = None
-            elif i != None:
+            elif i is not None:
                 # move to next down in list
                 i += 1
                 commandName = h[i]
@@ -2301,7 +2301,7 @@ class KeyHandlerClass:
         k = self
         h, i = k.commandHistory, k.commandIndex
         if h:
-            if i == None:
+            if i is None:
                 # first time in - set to last entry
                 i = len(h) -1
             elif i > 0:

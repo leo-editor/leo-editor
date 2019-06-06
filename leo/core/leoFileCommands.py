@@ -1754,7 +1754,6 @@ class FileCommands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        # pylint: disable=deprecated-lambda
         conn.executemany(
             'replace into extra_infos(name, value) values(?,?)',
             map(lambda x:(x[1], md5(x[0])), files))

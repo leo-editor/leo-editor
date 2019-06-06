@@ -3799,7 +3799,7 @@ class LeoMLTree(npyscreen.MLTree):
             ('value', self._last_value is not self.value),
             ('values', self.values != self._last_values),
             ('start', self.start_display_at != self._last_start_display_at),
-            ('clear', clear != True),
+            ('clear', not clear),
             ('cursor', self._last_cursor_line != self.cursor_line),
             ('filter', self._last_filter != self._filter),
             ('editing', not self.editing),
@@ -3924,7 +3924,6 @@ class LeoMLTree(npyscreen.MLTree):
         _myFullValues = LeoTreeData()
         values = None
     else:
-        # pylint: disable=property-on-old-class
         #
         # This property converts the (possibly cached) result of converting
         # the root node (_myFullValues) and its *visible* decendants to a list.
