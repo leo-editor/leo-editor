@@ -162,24 +162,15 @@ class NodeDiffController:
     #@+node:peckj.20140113131037.5799: *4* get_selection
     def get_selection(self):
         s = self.c.getSelectedPositions()
-        if len(s) != 2:
-            return None
-        else:
-            return s
+        return s if len(s) == 2 else None
     #@+node:peckj.20140113131037.5800: *4* get_marked
     def get_marked(self):
         m = [n.copy() for n in self.c.all_positions() if n.isMarked()]
-        if len(m) != 2:
-            return None
-        else:
-            return m
+        return m if len(m) == 2 else None
     #@+node:peckj.20140113131037.5801: *4* get_subtree
     def get_subtree(self):
         st = [p.copy() for p in self.c.p.children()]
-        if len(st) != 2:
-            return None
-        else:
-            return st
+        return st if len(st) == 2 else None
     #@+node:peckj.20140113131037.5803: *3* differs
     #@+node:peckj.20140113131037.5804: *4* run_compare
     def run_compare(self, l):

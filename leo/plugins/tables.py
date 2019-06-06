@@ -105,10 +105,9 @@ class TableController :
                             pass # Table head already found.
                     elif i1 is None:
                         return -1, s1, []
-                    else:
-                        # Selected line ends the table.
-                        return i_row1, s1, lines[i1:i]
-                elif is_row:
+                    # Selected line ends the table.
+                    return i_row1, s1, lines[i1:i]
+                if is_row:
                     if i1 is None:
                         i1 = i2 = i # Row i starts the head.
                     elif i > i_row1:
@@ -128,13 +127,11 @@ class TableController :
             if i_row1 == len(lines) and starts_row1 and not i1:
                 g.trace('FOUND-end', i1)
                 return i_row1, s1, [s1]
-            elif i1 is None or i2 is None:
+            if i1 is None or i2 is None:
                 return -1, s1, []
-            else:
-                # Last line ends the table.
-                return i_row1, s1, lines[i1:len(lines)]
-        else:
-            return -1, s1, []
+            # Last line ends the table.
+            return i_row1, s1, lines[i1:len(lines)]
+        return -1, s1, []
     #@+node:ekr.20170218075243.1: *3* table.insert_newline
     def insert_newline(self, event):
         '''TableController: override c.editCommands.insertNewLine.'''
