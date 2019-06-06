@@ -685,10 +685,7 @@ class ScreenShotController:
         sc = self
         tag = '@select'
         p2 = sc.find_node(p, tag)
-        if p2:
-            return p2.h[len(tag):].strip()
-        else:
-            return ''
+        return p2.h[len(tag):].strip() if p2 else ''
     #@+node:ekr.20100915074635.5652: *5* find_slide_node
     def find_slide_node(self, p):
         '''Return the @slide node at or near p.'''
@@ -699,14 +696,14 @@ class ScreenShotController:
         for parent in p.self_and_parents():
             if sc.match(parent, '@slide'):
                 return parent
-            elif sc.match(parent, '@slideshow'):
+            if sc.match(parent, '@slideshow'):
                 break
         # Look down the tree.
         p = p.firstChild()
         while p:
             if sc.match(p, '@slide'):
                 return p
-            elif sc.match(p, '@slideshow'):
+            if sc.match(p, '@slideshow'):
                 break
             else:
                 p.moveToThreadNext()
@@ -816,9 +813,8 @@ class ScreenShotController:
             theDir = sc.sanitize(h)
             path = sc.fix(g.os_path_finalize_join(sc.sphinx_path, 'slides', theDir))
             return path
-        else:
-            g.error('@slideshow node has no name')
-            return None
+        g.error('@slideshow node has no name')
+        return None
     #@+node:ekr.20100911044508.5633: *5* get_sphinx_path
     def get_sphinx_path(self):
         '''Return the full, absolute, path to the sphinx directory.
@@ -863,9 +859,8 @@ class ScreenShotController:
                 '..', 'doc', 'inkscape-template.svg'))
         if g.os_path_exists(fn):
             return fn
-        else:
-            g.error('template file not found:', fn)
-            return None
+        g.error('template file not found:', fn)
+        return None
     #@+node:ekr.20100911044508.5626: *5* get_working_fn
     def get_working_fn(self):
         '''Return the full, absolute, name of the working file.'''
@@ -921,13 +916,12 @@ class ScreenShotController:
         '''Return the text of the callout at p.'''
         if p.b.strip():
             return p.b
-        else:
-            s = p.h
-            assert g.match_word(s, 0, '@callout')
-            i = g.skip_id(s, 0, chars='@')
-                # Match @callout or @callouts, etc.
-            s = s[i:].strip()
-            return s
+        s = p.h
+        assert g.match_word(s, 0, '@callout')
+        i = g.skip_id(s, 0, chars='@')
+            # Match @callout or @callouts, etc.
+        s = s[i:].strip()
+        return s
     #@+node:ekr.20100911044508.5620: *5* get_edit_flag
     def get_edit_flag(self, p):
         '''Return True if any of p's children is an @edit node.'''
@@ -981,10 +975,8 @@ class ScreenShotController:
                         elif not val:
                             g.warning('ignoring setting', child.h)
                         return val
-                    else:
-                        g.warning('ignoring setting:', child.h)
-                        return None
-        # if trace: g.trace(option,repr(None))
+                    g.warning('ignoring setting:', child.h)
+                    return None
         return None
     #@+node:ekr.20100913085058.5630: *5* get_pause_flag
     def get_pause_flag(self, p):
@@ -1025,16 +1017,14 @@ class ScreenShotController:
             if s:
                 if tag == '@title':
                     return s
-                else:
-                    try:
-                        return s % d
-                    except Exception:
-                        g.warning('bad %s' % repr(self.c.p.h))
+                try:
+                    return s % d
+                except Exception:
+                    g.warning('bad %s' % repr(self.c.p.h))
         if slide_name and not slide_name.strip().startswith('(('):
             return slide_name
-        else:
-            s = sc.default_slide_pattern % d
-            return s
+        s = sc.default_slide_pattern % d
+        return s
     #@+node:ekr.20101006060338.5706: *5* get_verbose_flag
     def get_verbose_flag(self):
         sc = self
@@ -1088,7 +1078,7 @@ class ScreenShotController:
         while p:
             if p == p1:
                 return n
-            elif g.match_word(p.h, 0, '@slide'):
+            if g.match_word(p.h, 0, '@slide'):
                 n += 1
                 # Skip the entire tree, including
                 # any inner @screenshot trees.
@@ -1414,9 +1404,8 @@ class ScreenShotController:
         bbox = diff.getbbox()
         if bbox:
             return im.crop(bbox)
-        else:
-            # found no content
-            raise ValueError("cannot trim; image was empty")
+        # found no content
+        raise ValueError("cannot trim; image was empty")
     #@+node:ekr.20101004082701.5739: *4* make_slide & helpers
     #  Don't call rstCommands.writeToDocutils--we are using sphinx!
 
@@ -1545,9 +1534,8 @@ class ScreenShotController:
         ids = list(ids_d.keys())
         if set(sc.ids) <= set(ids):
             return template
-        else:
-            g.error('template did not include all required IDs:', sc.template_fn)
-            return None
+        g.error('template did not include all required IDs:', sc.template_fn)
+        return None
     #@+node:ekr.20100908110845.5549: *6* move_element
     def move_element(self, element, x, y):
         if not element.get('transform'):
@@ -1744,13 +1732,14 @@ class ScreenShotController:
         sc = self
         cb = g.app.gui.qtApp.clipboard()
         if not cb:
-            return g.error('no clipboard')
+            g.error('no clipboard')
+            return False
         image = cb.image()
         if image:
             image.save(sc.screenshot_fn)
             return True
-        else:
-            return g.error('no image on clipboard')
+        g.error('no image on clipboard')
+        return False
     #@+node:ekr.20101113193341.5447: *3* sc.meld & helpers
     def meld(self, p):
         sc = self
@@ -1943,9 +1932,8 @@ class ScreenShotController:
                 while i >= 0 and n[i:].isdigit():
                     i -= 1
                 return int(n[i + 1:])
-            else:
-                g.error('wink screenshot file names must end with a number: %s' % (s))
-                raise KeyError
+            g.error('wink screenshot file names must end with a number: %s' % (s))
+            raise KeyError
 
         aList.sort(key=key) # Essential.
         return aList

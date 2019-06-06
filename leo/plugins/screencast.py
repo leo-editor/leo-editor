@@ -317,23 +317,23 @@ class ScreenCastController:
         '''Pop up a QPlainTextEdit in the indicated pane.'''
         m = self
         parent = m.pane_widget(pane)
-        if parent:
-            s = s.rstrip()
-            if s and s[-1].isalpha(): s = s + '.'
-            w = QtWidgets.QPlainTextEdit(s, parent)
-            w.setObjectName('screencastcaption')
-            m.widgets.append(w)
-            w2 = m.pane_widget(pane)
-            geom = w2.geometry()
-            w.resize(geom.width(), min(150, geom.height() / 2))
-            off = QtCore.Qt.ScrollBarAlwaysOff
-            w.setHorizontalScrollBarPolicy(off)
-            w.setVerticalScrollBarPolicy(off)
-            w.show()
-            return w
-        else:
+        if not parent:
             g.trace('bad pane: %s' % (pane))
             return None
+        s = s.rstrip()
+        if s and s[-1].isalpha():
+            s = s + '.'
+        w = QtWidgets.QPlainTextEdit(s, parent)
+        w.setObjectName('screencastcaption')
+        m.widgets.append(w)
+        w2 = m.pane_widget(pane)
+        geom = w2.geometry()
+        w.resize(geom.width(), min(150, geom.height() / 2))
+        off = QtCore.Qt.ScrollBarAlwaysOff
+        w.setHorizontalScrollBarPolicy(off)
+        w.setVerticalScrollBarPolicy(off)
+        w.show()
+        return w
 
     def body(self, s):
         return self.caption(s, 'body')
@@ -378,8 +378,7 @@ class ScreenCastController:
         while p:
             if p.h.startswith('@screencast'):
                 return p
-            else:
-                p.moveToThreadNext()
+            p.moveToThreadNext()
         return None
     #@+node:ekr.20120916193057.10609: *5* sc.find_prev_screencast
     def find_prev_screencast(self, p):
@@ -388,8 +387,7 @@ class ScreenCastController:
         while p:
             if p.h.startswith('@screencast'):
                 return p
-            else:
-                p.moveToThreadBack()
+            p.moveToThreadBack()
         return None
     #@+node:ekr.20120913110135.10582: *4* sc.focus
     def focus(self, pane):
@@ -443,29 +441,29 @@ class ScreenCastController:
         '''Put an image in the indicated pane.'''
         m = self
         parent = m.pane_widget(pane)
-        if parent:
-            w = QtWidgets.QLabel('label', parent)
-            fn = m.resolve_icon_fn(fn)
-            if not fn: return None
-            pixmap = QtGui.QPixmap(fn)
-            if not pixmap:
-                return g.trace('Not a pixmap: %s' % (fn))
-            if height:
-                pixmap = pixmap.scaledToHeight(height)
-            if width:
-                pixmap = pixmap.scaledToWidth(width)
-            w.setPixmap(pixmap)
-            if center:
-                g_w = w.geometry()
-                g_p = parent.geometry()
-                dx = (g_p.width() - g_w.width()) / 2
-                w.move(g_w.x() + dx, g_w.y() + 10)
-            w.show()
-            m.widgets.append(w)
-            return w
-        else:
+        if not parent:
             g.trace('bad pane: %s' % (pane))
             return None
+        w = QtWidgets.QLabel('label', parent)
+        fn = m.resolve_icon_fn(fn)
+        if not fn:
+            return None
+        pixmap = QtGui.QPixmap(fn)
+        if not pixmap:
+            return g.trace('Not a pixmap: %s' % (fn))
+        if height:
+            pixmap = pixmap.scaledToHeight(height)
+        if width:
+            pixmap = pixmap.scaledToWidth(width)
+        w.setPixmap(pixmap)
+        if center:
+            g_w = w.geometry()
+            g_p = parent.geometry()
+            dx = (g_p.width() - g_w.width()) / 2
+            w.move(g_w.x() + dx, g_w.y() + 10)
+        w.show()
+        m.widgets.append(w)
+        return w
     #@+node:ekr.20120921064434.10605: *4* sc.open_menu
     def open_menu(self, menu_name):
         '''Activate the indicated *top-level* menu.'''
@@ -709,14 +707,13 @@ class ScreenCastController:
         '''Undo the previous screencast scene.'''
         m = self
         m.delete_widgets()
-        if m.node_stack:
-            c = m.c
-            m.p = m.node_stack.pop()
-            c.undoer.undo()
-            c.redraw()
-            return m.p
-        else:
+        if not m.node_stack:
             return None
+        c = m.c
+        m.p = m.node_stack.pop()
+        c.undoer.undo()
+        c.redraw()
+        return m.p
     #@+node:ekr.20120916062255.10596: *4* sc.set_state & clear_state
     def set_state(self, state):
         m = self
@@ -770,9 +767,8 @@ class ScreenCastController:
         path = g.os_path_finalize_join(dir_, fn)
         if g.os_path_exists(path):
             return path
-        else:
-            g.trace('does not exist: %s' % (path))
-            return None
+        g.trace('does not exist: %s' % (path))
+        return None
     #@+node:ekr.20120913110135.10587: *4* sc.wait
     def wait(self, n1=1, n2=0):
         '''Wait for an interval between n1 and n2.'''

@@ -87,7 +87,7 @@ class slideshowController:
             if h.startswith('@slideshow'):
                 self.firstSlideShow = p.copy()
                 return p
-            elif g.match_word(h, 0, '@ignore'):
+            if g.match_word(h, 0, '@ignore'):
                 p = p.nodeAfterTree()
         self.firstSlideShow = None
         return None
@@ -126,7 +126,7 @@ class slideshowController:
         self.findFirstSlideShow()
         if not self.firstSlideShow:
             return g.es('No slide show found')
-        elif not self.slideShowRoot:
+        if not self.slideShowRoot:
             return self.select(self.firstSlideShow)
         p = c.p
         h = p.h.strip()
@@ -170,15 +170,14 @@ class slideshowController:
         if p:
             self.select(p)
             return g.es('At start of first slide show')
-        else:
-            return g.es('No slide show found')
+        return g.es('No slide show found')
     #@+node:ekr.20060901142848.1: *3* prevSlideShow
     def prevSlideShow(self, event=None):
         c = self.c
         self.findFirstSlideShow()
         if not self.firstSlideShow:
             return g.es('No slide show found')
-        elif not self.slideShowRoot:
+        if not self.slideShowRoot:
             return self.select(self.firstSlideShow)
         p = c.p
         h = p.h.strip()

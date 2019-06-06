@@ -397,9 +397,8 @@ class Demo:
         path = g.os_path_finalize_join(dir_, fn)
         if g.os_path_exists(path):
             return path
-        else:
-            g.trace('does not exist: %s' % (path))
-            return None
+        g.trace('does not exist: %s' % (path))
+        return None
     #@+node:ekr.20170211045726.1: *3* demo.Keys
     #@+node:ekr.20170128213103.11: *4* demo.body_keys
     def body_keys(self, s, speed=None, undo=False):
@@ -536,21 +535,20 @@ class Demo:
         '''Return the x, y, width, height coordinates of p, for use by demo.set_geometry.'''
         tree = self.c.frame.tree
         item = tree.position2itemDict.get(p.key())
-        if item:
-            treeWidget = tree.treeWidget
-            w = treeWidget.itemWidget(item, 0)
-            if w:
-                geom = w.geometry()
-            else:
-                # Create a temp edit item
-                treeWidget.editItem(item)
-                w = treeWidget.itemWidget(item, 0)
-                geom = w.geometry()
-                # End the editing.
-                treeWidget.closeEditor(w, QtWidgets.QAbstractItemDelegate.NoHint)
-            return geom.x(), geom.y(), geom.width(), geom.height()
-        else:
+        if not item:
             return None
+        treeWidget = tree.treeWidget
+        w = treeWidget.itemWidget(item, 0)
+        if w:
+            geom = w.geometry()
+        else:
+            # Create a temp edit item
+            treeWidget.editItem(item)
+            w = treeWidget.itemWidget(item, 0)
+            geom = w.geometry()
+            # End the editing.
+            treeWidget.closeEditor(w, QtWidgets.QAbstractItemDelegate.NoHint)
+        return geom.x(), geom.y(), geom.width(), geom.height()
     #@+node:ekr.20170210232228.1: *4* demo.get/set_top_geometry/size
     def get_top_geometry(self):
         top = self.c.frame.top
@@ -676,13 +674,12 @@ class Demo:
         '''Convert obj to an int, if needed.'''
         if isinstance(obj, int):
             return obj
-        else:
-            try:
-                return int(obj)
-            except ValueError:
-                g.es_exception()
-                g.trace('bad x position', repr(obj))
-                return None
+        try:
+            return int(obj)
+        except ValueError:
+            g.es_exception()
+            g.trace('bad x position', repr(obj))
+            return None
     #@+node:ekr.20170213145241.1: *4* demo.get/set_ratios
     def get_ratios(self):
         '''Return the two pane ratios.'''
