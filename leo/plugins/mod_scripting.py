@@ -349,8 +349,7 @@ class AtButtonCallback:
         '''AtButtonCallback.__getattr__. Implement __name__.'''
         if attr == '__name__':
             return 'AtButtonCallback: %s' % self.gnx
-        else:
-            return None
+        return None
     #@+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script & helper
     def execute_script(self):
         '''Execute the script associated with this button.'''
@@ -1376,9 +1375,8 @@ class EvalController:
             ans = self.old_exec(blocks, s)
             self.show_legacy_answer(ans, blocks)
             return ans  # needed by mod_http
-        else:
-            self.new_exec(s)
-            self.show_answers()
+        self.new_exec(s)
+        self.show_answers()
         self.unredirect()
         return None
     #@+node:ekr.20180329130626.1: *5* eval.new_exec
@@ -1488,9 +1486,8 @@ class EvalController:
             exec(compile(block, '<string>', mode='exec'), ns)
             # pylint: disable=eval-used
             return eval(compile(last, '<string>', mode='eval'), ns)
-        else:
-            exec(compile(block, '<string>', mode='exec'), ns)
-            return ""
+        exec(compile(block, '<string>', mode='exec'), ns)
+        return ""
     #@+node:tbrown.20170516194332.1: *4* eval.get_blocks
     def get_blocks(self):
         """get_blocks - iterate code blocks
@@ -1545,9 +1542,8 @@ class EvalController:
                 junk, i2 = g.getLine(body, k)
                 w.setSelectionRange(k, i2)
                 return None
-            else:
-                i1, i2 = g.getLine(body, i)
-                s = body[i1:i2].strip()
+            i1, i2 = g.getLine(body, i)
+            s = body[i1:i2].strip()
         # Select next line for next eval.
         if self.legacy:
             i = j = i2
