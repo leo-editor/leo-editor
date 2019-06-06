@@ -254,37 +254,24 @@ class GetImage:
             testpath = src
             if '//' in testpath:
                 testpath = testpath.split('//',1)[-1]
-
+            #
             # file on local file system
             testpath = g.os_path_finalize_join(path, testpath)
             if g.os_path_exists(testpath):
                 return QtWidgets.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
-
+            #
             # explicit file://, but no such file exists
             if src.startswith('file://'):
-                if fail_ok:
-                    return None
-                else:
-                    return GetImage._no_image()
-
+                return None if fail_ok else GetImage._no_image()
+        #
         # no explict file://, so try other protocols
-
-        if '//' not in src:
-            testpath = 'http://%s' % src
-        else:
-            testpath = src
-
+        testpath = src if '//' in src else 'http://%s' % (src)
         data = GetImage.get_url(testpath)
-
         if data:
             img = QtGui.QPixmap()
             if img.loadFromData(data):
                 return QtWidgets.QGraphicsPixmapItem(img)
-
-        if fail_ok:
-            return None
-
-        return GetImage._no_image()
+        return None if fail_ok else GetImage._no_image()
 
     @staticmethod
     def get_url(url):
@@ -293,7 +280,6 @@ class GetImage:
             response = urllib.urlopen(url)
         except urllib.URLError:  # hopefully not including redirection
             return False
-
         return response.read()
 
     @staticmethod
@@ -302,7 +288,6 @@ class GetImage:
         testpath = g.os_path_abspath(g.os_path_join(
             g.app.loadDir,'../plugins/GraphCanvas/no_image.png'))
         return QtWidgets.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
-
 #@+node:tbrown.20110407091036.17531: ** class nodeBase
 class nodeBase(QtWidgets.QGraphicsItemGroup):
 
@@ -707,7 +692,7 @@ class graphcanvasController:
                 ('dot', lambda: self.layout('dot')),
                 ('dot LR', lambda: self.layout('dot LR')),
             ]
-        elif pydot:
+        if pydot:
             return [
                 ('PyDot:', lambda: None),
                 ('neato', lambda: self.layout('neato')),
@@ -718,8 +703,7 @@ class graphcanvasController:
                 ('osage', lambda: self.layout('osage')),
                 ('sfdp', lambda: self.layout('sfdp')),
         ]
-        else:
-            return [('install pygraphviz or pydot for layouts', lambda: None)]
+        return [('install pygraphviz or pydot for layouts', lambda: None)]
 
     #@+node:tbrown.20110122085529.15403: *3* layout
     def layout(self, type_):

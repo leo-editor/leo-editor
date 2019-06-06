@@ -848,10 +848,9 @@ if QtWidgets: # NOQA
                 if pc.get_kind(p) in ('html', 'pyplot'):
                     pc.length = len(p.b)
                     return False # Only update explicitly.
-                else:
-                    return True
-            # This will be called at idle time.
-            # if trace: g.trace('no change')
+                return True
+            # This trace would be called at idle time.
+                # g.trace('no change')
             return False
         #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
         def update_graphics_script(self, s, keywords):
@@ -1295,13 +1294,12 @@ if QtWidgets: # NOQA
                 # Fix #344: don't use c.target_language as a default.
             if got_markdown and language in ('md', 'markdown'):
                 return language
-            elif got_docutils and language in ('rest', 'rst'):
+            if got_docutils and language in ('rest', 'rst'):
                 return language
-            elif language and language in pc.dispatch_dict:
+            if language and language in pc.dispatch_dict:
                 return language
-            else:
-                # To do: look at ancestors, or uA's.
-                return pc.default_kind # The default.
+            # To do: look at ancestors, or uA's.
+            return pc.default_kind # The default.
         #@+node:ekr.20110320233639.5776: *5* vr.get_fn
         def get_fn(self, s, tag):
             pc = self

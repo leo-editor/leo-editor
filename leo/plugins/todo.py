@@ -581,8 +581,7 @@ class todoController:
             if attrib in self._time_fields and g.isString(x):
                 x = self._time(x)
             return x
-        else:
-            return 9999 if attrib == "priority" else ''
+        return 9999 if attrib == "priority" else ''
     #@+node:tbrown.20090119215428.23: *4* testDefault
     def testDefault(self, attrib, val):
         "return true if val is default val for attrib"

@@ -170,11 +170,11 @@ if QtWidgets:
             length = len(self.document().lastBlock().text()[4:])
             if length == 0:
                 return None
-            else:
-                # should have a better way of doing this but I can't find it.
-                # [self.textCursor().deletePreviousChar() for x in xrange(length)]
-                for x in range(length):
-                    self.textCursor().deletePreviousChar()
+            #
+            # should have a better way of doing this but I can't find it.
+            # [self.textCursor().deletePreviousChar() for x in xrange(length)]
+            for x in range(length):
+                self.textCursor().deletePreviousChar()
             return True
         #@+node:peckj.20150428142729.17: *3* PyInterp.recallHistory
         def recallHistory(self):

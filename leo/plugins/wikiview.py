@@ -59,10 +59,9 @@ def init():
     '''Return True if this plugin should be enabled.'''
     if g.unitTesting:
         return False
-    else:
-        g.registerHandler('after-create-leo-frame', onCreate)
-        g.plugin_signon(__name__)
-        return True
+    g.registerHandler('after-create-leo-frame', onCreate)
+    g.plugin_signon(__name__)
+    return True
 #@+node:tbrown.20141101114322.5: ** onCreate
 def onCreate(tag, keys):
 
